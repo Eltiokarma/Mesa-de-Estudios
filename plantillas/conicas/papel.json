@@ -13,7 +13,35 @@
         "(x + 5)² es (x − (−5))²: el centro es (−5; 2), con los signos cambiados respecto a los de la ecuación.",
         "r² = 16, así que r = 4 (el 16 es el radio al cuadrado, no el radio)."
       ],
-      "verificar": [ { "fn": "circunferenciaGeneral", "args": [{ "D": 10, "E": -4, "F": 13 }], "espera": { "texto": "(−5; 2) y r = 4", "completada": "(x + 5)² + (y − 2)² = 16" } } ]
+      "verificar": [ { "fn": "circunferenciaGeneral", "args": [{ "D": 10, "E": -4, "F": 13 }], "espera": { "texto": "(−5; 2) y r = 4", "completada": "(x + 5)² + (y − 2)² = 16" } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Una circunferencia tiene la ecuación x² + y² + 10x − 4y + 13 = 0.",
+          "pregunta": "¿Cuáles son su centro y su radio?",
+          "correcta": { "fn": "circunferenciaGeneral", "args": [{ "D": 10, "E": -4, "F": 13 }], "campo": "texto", "valor": "(−5; 2) y r = 4" },
+          "errores": [
+            {
+              "id": "CO8-signos",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste el centro con los signos de (x + 5) y (y − 2). (x + 5)² es (x − (−5))²: el centro tiene los signos cambiados, (−5; 2).",
+              "fn": "circunferenciaGeneral",
+              "args": [{ "D": 10, "E": -4, "F": 13 }],
+              "campo": "errores.signos.texto",
+              "valor": "(5; −2) y r = 4"
+            },
+            {
+              "id": "CO9-radio-cuadrado",
+              "respaldo": "hipotesis",
+              "explicacion": "El 16 es el radio al cuadrado. El radio es √16 = 4.",
+              "fn": "circunferenciaGeneral",
+              "args": [{ "D": 10, "E": -4, "F": 13 }],
+              "campo": "errores.radioCuadrado.texto",
+              "valor": "(−5; 2) y r = 16"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -26,7 +54,70 @@
         "La directriz está 3 unidades debajo del vértice: y = 3 − 3 = 0.",
         "LR = 4|p| = 12. Sus extremos son (−7; 6) y (5; 6), a 2|p| = 6 del foco."
       ],
-      "verificar": [ { "fn": "parabola", "args": [{ "eje": "y", "h": -1, "k": 3, "cuatroP": 12 }], "espera": { "verticeTexto": "(−1; 3)", "focoTexto": "(−1; 6)", "directriz": "y = 0", "lr.texto": "12", "extremosLR": "(−7; 6) y (5; 6)" } } ]
+      "verificar": [ { "fn": "parabola", "args": [{ "eje": "y", "h": -1, "k": 3, "cuatroP": 12 }], "espera": { "verticeTexto": "(−1; 3)", "focoTexto": "(−1; 6)", "directriz": "y = 0", "lr.texto": "12", "extremosLR": "(−7; 6) y (5; 6)" } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Una parábola tiene la ecuación (x + 1)² = 12(y − 3).",
+          "pregunta": "¿Dónde está su foco?",
+          "correcta": { "fn": "parabola", "args": [{ "eje": "y", "h": -1, "k": 3, "cuatroP": 12 }], "campo": "foco.texto", "valor": "(−1; 6)" },
+          "errores": [
+            {
+              "id": "CO11-signo",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste el foco debajo del vértice. Con p = 3 > 0 abre hacia arriba: el foco está 3 arriba, en (−1; 6).",
+              "fn": "parabola",
+              "args": [{ "eje": "y", "h": -1, "k": 3, "cuatroP": 12 }],
+              "campo": "foco.errores.signo.texto",
+              "valor": "(−1; 0)"
+            },
+            {
+              "id": "CO12-cuatro-p",
+              "respaldo": "hipotesis",
+              "explicacion": "Avanzaste 12 desde el vértice. El 12 es 4p; el foco está a p = 3 del vértice.",
+              "fn": "parabola",
+              "args": [{ "eje": "y", "h": -1, "k": 3, "cuatroP": 12 }],
+              "campo": "foco.errores.cuatroP.texto",
+              "valor": "(−1; 15)"
+            },
+            {
+              "id": "CO13-otro-eje",
+              "respaldo": "hipotesis",
+              "explicacion": "Moviste el foco en horizontal. La variable al cuadrado es x: el eje es vertical y el foco sube.",
+              "fn": "parabola",
+              "args": [{ "eje": "y", "h": -1, "k": 3, "cuatroP": 12 }],
+              "campo": "foco.errores.eje.texto",
+              "valor": "(2; 3)"
+            }
+          ]
+        },
+        {
+          "id": "p2b",
+          "enunciado": "Una parábola tiene la ecuación (x + 1)² = 12(y − 3).",
+          "pregunta": "¿Cuánto mide su lado recto?",
+          "correcta": { "fn": "parabola", "args": [{ "eje": "y", "h": -1, "k": 3, "cuatroP": 12 }], "campo": "lr.texto", "valor": "12" },
+          "errores": [
+            {
+              "id": "CO15-dos-p",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es 2|p|, la distancia del foco a un extremo. El lado recto entero mide 4|p| = 12.",
+              "fn": "parabola",
+              "args": [{ "eje": "y", "h": -1, "k": 3, "cuatroP": 12 }],
+              "campo": "lr.errores.dosP.texto",
+              "valor": "6"
+            },
+            {
+              "id": "CO16-solo-p",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es p, la distancia del vértice al foco. El lado recto mide 4|p| = 12.",
+              "fn": "parabola",
+              "args": [{ "eje": "y", "h": -1, "k": 3, "cuatroP": 12 }],
+              "campo": "lr.errores.soloP.texto",
+              "valor": "3"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -40,7 +131,44 @@
         "Control: el punto (−3; 6) está en la parábola (36 = −12 · (−3)); su distancia al foco es 6 y a la directriz, 3 − (−3) = 6."
       ],
       "verificar": [ { "fn": "parabola", "args": [{ "eje": "x", "h": 0, "k": 0, "p": -3 }], "espera": { "ecuacion": "y² = −12x", "focoTexto": "(−3; 0)", "directriz": "x = 3", "abre": "a la izquierda" } },
-                     { "fn": "distancias", "args": [{ "tipo": "parabola", "eje": "x", "h": 0, "k": 0, "p": -3, "F": [-3, 0] }, { "x": -3, "y": 6 }], "espera": { "PF": 6, "PD": 6 } } ]
+                     { "fn": "distancias", "args": [{ "tipo": "parabola", "eje": "x", "h": 0, "k": 0, "p": -3, "F": [-3, 0] }, { "x": -3, "y": 6 }], "espera": { "PF": 6, "PD": 6 } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Una parábola tiene foco F(−3; 0) y directriz x = 3.",
+          "pregunta": "¿Cuál es su ecuación?",
+          "correcta": { "fn": "parabola", "args": [{ "eje": "x", "h": 0, "k": 0, "p": -3 }], "campo": "ecuacion", "valor": "y² = −12x" },
+          "errores": [
+            {
+              "id": "CO11-signo",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste p = 3. El foco está a la izquierda del vértice: p = −3 y la parábola abre a la izquierda.",
+              "fn": "parabola",
+              "args": [{ "eje": "x", "h": 0, "k": 0, "p": 3 }],
+              "campo": "ecuacion",
+              "valor": "y² = 12x"
+            },
+            {
+              "id": "CO12-cuatro-p",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste −3 en el lugar de 4p. El −3 es p, la distancia con signo del vértice al foco: 4p = −12.",
+              "fn": "parabola",
+              "args": [{ "eje": "x", "h": 0, "k": 0, "cuatroP": -3 }],
+              "campo": "ecuacion",
+              "valor": "y² = −3x"
+            },
+            {
+              "id": "CO13-otro-eje",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste x al cuadrado. El foco está sobre el eje x: el eje es horizontal y lo que va al cuadrado es y.",
+              "fn": "parabola",
+              "args": [{ "eje": "y", "h": 0, "k": 0, "p": -3 }],
+              "campo": "ecuacion",
+              "valor": "x² = −12y"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -53,7 +181,114 @@
         "e = c/a = 5/13, menor que 1, como en toda elipse.",
         "LR = 2b²/a = 2 · 144/13 = 288/13."
       ],
-      "verificar": [ { "fn": "elipse", "args": [{ "nx": 169, "ny": 144 }], "espera": { "focosTexto": "(±5; 0)", "e.texto": "5/13", "LR.texto": "288/13" } } ]
+      "verificar": [ { "fn": "elipse", "args": [{ "nx": 169, "ny": 144 }], "espera": { "focosTexto": "(±5; 0)", "e.texto": "5/13", "LR.texto": "288/13" } } ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Una elipse tiene la ecuación x²/169 + y²/144 = 1.",
+          "pregunta": "¿Dónde están sus focos?",
+          "correcta": { "fn": "elipse", "args": [{ "nx": 169, "ny": 144 }], "campo": "focos.texto", "valor": "(±5; 0)" },
+          "errores": [
+            {
+              "id": "CO7-eje-cambiado",
+              "respaldo": "hipotesis",
+              "explicacion": "El denominador mayor, 169, está bajo x: el eje mayor es horizontal y los focos van sobre el eje x.",
+              "fn": "elipse",
+              "args": [{ "nx": 169, "ny": 144 }],
+              "campo": "focos.errores.ejeCambiado.texto",
+              "valor": "(0; ±5)"
+            },
+            {
+              "id": "CO1-c-hiperbola",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste a² + b². Esa es la relación de la hipérbola; en la elipse c² = a² − b² = 25.",
+              "fn": "elipse",
+              "args": [{ "nx": 169, "ny": 144 }],
+              "campo": "focos.errores.cHiperbola.texto",
+              "valor": "(±√313; 0)"
+            },
+            {
+              "id": "CO18-vertices",
+              "respaldo": "hipotesis",
+              "explicacion": "Esos son los vértices, a 13 del centro. Los focos están más adentro, a c = 5.",
+              "fn": "elipse",
+              "args": [{ "nx": 169, "ny": 144 }],
+              "campo": "focos.errores.vertices.texto",
+              "valor": "(±13; 0)"
+            }
+          ]
+        },
+        {
+          "id": "p4b",
+          "enunciado": "Una elipse tiene la ecuación x²/169 + y²/144 = 1.",
+          "pregunta": "¿Cuál es su excentricidad?",
+          "correcta": { "fn": "elipse", "args": [{ "nx": 169, "ny": 144 }], "campo": "excentricidad.texto", "valor": "5/13" },
+          "errores": [
+            {
+              "id": "CO5-invertida",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste al revés. e = c/a = 5/13; en una elipse siempre sale menor que 1.",
+              "fn": "elipse",
+              "args": [{ "nx": 169, "ny": 144 }],
+              "campo": "excentricidad.errores.invertida.texto",
+              "valor": "13/5"
+            },
+            {
+              "id": "CO6-otro-semieje",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste b = 12. La excentricidad usa c, la distancia al foco: e = c/a = 5/13.",
+              "fn": "elipse",
+              "args": [{ "nx": 169, "ny": 144 }],
+              "campo": "excentricidad.errores.otroSemieje.texto",
+              "valor": "12/13"
+            },
+            {
+              "id": "CO24-dos-c",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 2c, la distancia entre los focos. La excentricidad es c/a, con c = 5.",
+              "fn": "elipse",
+              "args": [{ "nx": 169, "ny": 144 }],
+              "campo": "excentricidad.errores.dosC.texto",
+              "valor": "10/13"
+            }
+          ]
+        },
+        {
+          "id": "p4c",
+          "enunciado": "Una elipse tiene la ecuación x²/169 + y²/144 = 1.",
+          "pregunta": "¿Cuánto mide su lado recto?",
+          "correcta": { "fn": "elipse", "args": [{ "nx": 169, "ny": 144 }], "campo": "ladoRecto.texto", "valor": "288/13" },
+          "errores": [
+            {
+              "id": "CO25-sin-cuadrado",
+              "respaldo": "hipotesis",
+              "explicacion": "Olvidaste elevar b al cuadrado. LR = 2b²/a = 2 · 144/13.",
+              "fn": "elipse",
+              "args": [{ "nx": 169, "ny": 144 }],
+              "campo": "ladoRecto.errores.sinCuadrado.texto",
+              "valor": "24/13"
+            },
+            {
+              "id": "CO26-sin-dos",
+              "respaldo": "hipotesis",
+              "explicacion": "Esa es la mitad del lado recto. LR = 2b²/a = 288/13.",
+              "fn": "elipse",
+              "args": [{ "nx": 169, "ny": 144 }],
+              "campo": "ladoRecto.errores.sinDos.texto",
+              "valor": "144/13"
+            },
+            {
+              "id": "CO27-cambiado",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiaste a y b de lugar. LR = 2b²/a: el cuadrado es del semieje menor.",
+              "fn": "elipse",
+              "args": [{ "nx": 169, "ny": 144 }],
+              "campo": "ladoRecto.errores.cambiado.texto",
+              "valor": "169/6"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p5",
@@ -66,7 +301,79 @@
         "Los focos están sobre el eje x: x²/100 + y²/64 = 1.",
         "e = c/a = 6/10 = 3/5."
       ],
-      "verificar": [ { "fn": "elipse", "args": [{ "a": 10, "c": 6 }], "espera": { "ecuacion": "x²/100 + y²/64 = 1", "b.texto": "8", "e.texto": "3/5" } } ]
+      "verificar": [ { "fn": "elipse", "args": [{ "a": 10, "c": 6 }], "espera": { "ecuacion": "x²/100 + y²/64 = 1", "b.texto": "8", "e.texto": "3/5" } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Una elipse tiene centro en el origen, focos (±6; 0) y eje mayor de longitud 20.",
+          "pregunta": "¿Cuál es su ecuación?",
+          "correcta": { "fn": "elipse", "args": [{ "a": 10, "c": 6 }], "campo": "ecuacion", "valor": "x²/100 + y²/64 = 1" },
+          "errores": [
+            {
+              "id": "CO1-c-hiperbola",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste a² + c². En la elipse, b² = a² − c² = 100 − 36 = 64.",
+              "fn": "elipse",
+              "args": [{ "nx": 100, "ny": 136 }],
+              "campo": "ecuacion",
+              "valor": "x²/100 + y²/136 = 1"
+            },
+            {
+              "id": "CO3-resta",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste b = a − c = 4. a y c no se restan así: b² = a² − c² = 64, b = 8.",
+              "fn": "elipse",
+              "args": [{ "nx": 100, "ny": 16 }],
+              "campo": "ecuacion",
+              "valor": "x²/100 + y²/16 = 1"
+            },
+            {
+              "id": "CO7-eje-cambiado",
+              "respaldo": "hipotesis",
+              "explicacion": "Los focos están sobre el eje x: el denominador mayor, a² = 100, va bajo x.",
+              "fn": "elipse",
+              "args": [{ "nx": 64, "ny": 100 }],
+              "campo": "ecuacion",
+              "valor": "x²/64 + y²/100 = 1"
+            }
+          ]
+        },
+        {
+          "id": "p5b",
+          "enunciado": "Una elipse tiene centro en el origen, focos (±6; 0) y eje mayor de longitud 20.",
+          "pregunta": "¿Cuál es su excentricidad?",
+          "correcta": { "fn": "elipse", "args": [{ "a": 10, "c": 6 }], "campo": "excentricidad.texto", "valor": "3/5" },
+          "errores": [
+            {
+              "id": "CO5-invertida",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste al revés. e = c/a = 6/10; en una elipse siempre sale menor que 1.",
+              "fn": "elipse",
+              "args": [{ "a": 10, "c": 6 }],
+              "campo": "excentricidad.errores.invertida.texto",
+              "valor": "5/3"
+            },
+            {
+              "id": "CO6-otro-semieje",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste b = 8. La excentricidad usa c, la distancia al foco: e = 6/10.",
+              "fn": "elipse",
+              "args": [{ "a": 10, "c": 6 }],
+              "campo": "excentricidad.errores.otroSemieje.texto",
+              "valor": "4/5"
+            },
+            {
+              "id": "CO24-dos-c",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 2c = 12, la distancia entre los focos. La excentricidad es c/a, con c = 6.",
+              "fn": "elipse",
+              "args": [{ "a": 10, "c": 6 }],
+              "campo": "excentricidad.errores.dosC.texto",
+              "valor": "6/5"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -79,7 +386,79 @@
         "c² = 25 − 16 = 9, c = 3: focos (1; 5) y (1; −1).",
         "e = 3/5. Si hubieras puesto a² bajo x, los focos te saldrían en una recta horizontal: revisa siempre cuál denominador es mayor."
       ],
-      "verificar": [ { "fn": "elipse", "args": [{ "h": 1, "k": 2, "nx": 16, "ny": 25 }], "espera": { "eje": "y", "verticesTexto": "(1; 7) y (1; −3)", "focosTexto": "(1; 5) y (1; −1)", "e.texto": "3/5" } } ]
+      "verificar": [ { "fn": "elipse", "args": [{ "h": 1, "k": 2, "nx": 16, "ny": 25 }], "espera": { "eje": "y", "verticesTexto": "(1; 7) y (1; −3)", "focosTexto": "(1; 5) y (1; −1)", "e.texto": "3/5" } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Una elipse tiene la ecuación (x − 1)²/16 + (y − 2)²/25 = 1.",
+          "pregunta": "¿Dónde están sus vértices?",
+          "correcta": { "fn": "elipse", "args": [{ "h": 1, "k": 2, "nx": 16, "ny": 25 }], "campo": "verticesTexto", "valor": "(1; 7) y (1; −3)" },
+          "errores": [
+            {
+              "id": "CO7-eje-cambiado",
+              "respaldo": "hipotesis",
+              "explicacion": "El denominador mayor, 25, está bajo y: el eje mayor es vertical y los vértices van arriba y abajo del centro.",
+              "fn": "elipse",
+              "args": [{ "h": 1, "k": 2, "nx": 25, "ny": 16 }],
+              "campo": "verticesTexto",
+              "valor": "(−4; 2) y (6; 2)"
+            },
+            {
+              "id": "CO8-signos",
+              "respaldo": "hipotesis",
+              "explicacion": "Copiaste los signos de la ecuación. (x − 1) y (y − 2) dan el centro (1; 2), no (−1; −2).",
+              "fn": "elipse",
+              "args": [{ "h": -1, "k": -2, "nx": 16, "ny": 25 }],
+              "campo": "verticesTexto",
+              "valor": "(−1; 3) y (−1; −7)"
+            }
+          ]
+        },
+        {
+          "id": "p6b",
+          "enunciado": "Una elipse tiene la ecuación (x − 1)²/16 + (y − 2)²/25 = 1.",
+          "pregunta": "¿Dónde están sus focos?",
+          "correcta": { "fn": "elipse", "args": [{ "h": 1, "k": 2, "nx": 16, "ny": 25 }], "campo": "focos.texto", "valor": "(1; 5) y (1; −1)" },
+          "errores": [
+            {
+              "id": "CO8-signos",
+              "respaldo": "hipotesis",
+              "explicacion": "Copiaste los signos de la ecuación. El centro es (1; 2), no (−1; −2).",
+              "fn": "elipse",
+              "args": [{ "h": 1, "k": 2, "nx": 16, "ny": 25 }],
+              "campo": "focos.errores.signos.texto",
+              "valor": "(−1; 1) y (−1; −5)"
+            },
+            {
+              "id": "CO7-eje-cambiado",
+              "respaldo": "hipotesis",
+              "explicacion": "El 25 está bajo y: el eje mayor es vertical y los focos están arriba y abajo del centro.",
+              "fn": "elipse",
+              "args": [{ "h": 1, "k": 2, "nx": 16, "ny": 25 }],
+              "campo": "focos.errores.ejeCambiado.texto",
+              "valor": "(−2; 2) y (4; 2)"
+            },
+            {
+              "id": "CO1-c-hiperbola",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste a² + b². En la elipse c² = a² − b² = 9, c = 3.",
+              "fn": "elipse",
+              "args": [{ "h": 1, "k": 2, "nx": 16, "ny": 25 }],
+              "campo": "focos.errores.cHiperbola.texto",
+              "valor": "(1; 2 + √41) y (1; 2 − √41)"
+            },
+            {
+              "id": "CO18-vertices",
+              "respaldo": "hipotesis",
+              "explicacion": "Esos son los vértices, a 5 del centro. Los focos están a c = 3.",
+              "fn": "elipse",
+              "args": [{ "h": 1, "k": 2, "nx": 16, "ny": 25 }],
+              "campo": "focos.errores.vertices.texto",
+              "valor": "(1; 7) y (1; −3)"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -92,7 +471,96 @@
         "e = c/a = 13/12, mayor que 1, como en toda hipérbola.",
         "Asíntotas: y = ±(b/a)x = ±(5/12)x. Salen de igualar a 0 el lado izquierdo: x²/144 = y²/25."
       ],
-      "verificar": [ { "fn": "hiperbola", "args": [{ "a2": 144, "b2": 25, "eje": "x" }], "espera": { "focosTexto": "(±13; 0)", "e.texto": "13/12", "asintotas": "y = ±(5/12)x" } } ]
+      "verificar": [ { "fn": "hiperbola", "args": [{ "a2": 144, "b2": 25, "eje": "x" }], "espera": { "focosTexto": "(±13; 0)", "e.texto": "13/12", "asintotas": "y = ±(5/12)x" } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Una hipérbola tiene la ecuación x²/144 − y²/25 = 1.",
+          "pregunta": "¿Dónde están sus focos?",
+          "correcta": { "fn": "hiperbola", "args": [{ "a2": 144, "b2": 25, "eje": "x" }], "campo": "focos.texto", "valor": "(±13; 0)" },
+          "errores": [
+            {
+              "id": "CO2-c-elipse",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste a² − b². Esa es la relación de la elipse; en la hipérbola c² = a² + b² = 169.",
+              "fn": "hiperbola",
+              "args": [{ "a2": 144, "b2": 25, "eje": "x" }],
+              "campo": "focos.errores.cElipse.texto",
+              "valor": "(±√119; 0)"
+            },
+            {
+              "id": "CO18-vertices",
+              "respaldo": "hipotesis",
+              "explicacion": "Esos son los vértices, a 12 del centro. En la hipérbola los focos están más afuera, a c = 13.",
+              "fn": "hiperbola",
+              "args": [{ "a2": 144, "b2": 25, "eje": "x" }],
+              "campo": "focos.errores.vertices.texto",
+              "valor": "(±12; 0)"
+            }
+          ]
+        },
+        {
+          "id": "p7b",
+          "enunciado": "Una hipérbola tiene la ecuación x²/144 − y²/25 = 1.",
+          "pregunta": "¿Cuál es su excentricidad?",
+          "correcta": { "fn": "hiperbola", "args": [{ "a2": 144, "b2": 25, "eje": "x" }], "campo": "excentricidad.texto", "valor": "13/12" },
+          "errores": [
+            {
+              "id": "CO5-invertida",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste al revés. e = c/a = 13/12; en una hipérbola siempre sale mayor que 1.",
+              "fn": "hiperbola",
+              "args": [{ "a2": 144, "b2": 25, "eje": "x" }],
+              "campo": "excentricidad.errores.invertida.texto",
+              "valor": "12/13"
+            },
+            {
+              "id": "CO24-dos-c",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 2c = 26, la distancia entre los focos. La excentricidad es c/a, con c = 13.",
+              "fn": "hiperbola",
+              "args": [{ "a2": 144, "b2": 25, "eje": "x" }],
+              "campo": "excentricidad.errores.dosC.texto",
+              "valor": "13/6"
+            }
+          ]
+        },
+        {
+          "id": "p7c",
+          "enunciado": "Una hipérbola tiene la ecuación x²/144 − y²/25 = 1.",
+          "pregunta": "¿Qué pendientes tienen sus asíntotas?",
+          "correcta": { "fn": "hiperbola", "args": [{ "a2": 144, "b2": 25, "eje": "x" }], "campo": "pendiente.texto", "valor": "±5/12" },
+          "errores": [
+            {
+              "id": "CO21-invertida",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste la razón al revés. Iguala a 0: x²/144 = y²/25, y = ±(5/12)x.",
+              "fn": "hiperbola",
+              "args": [{ "a2": 144, "b2": 25, "eje": "x" }],
+              "campo": "pendiente.errores.invertida.texto",
+              "valor": "±12/5"
+            },
+            {
+              "id": "CO22-sin-raiz",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste los cuadrados, 25/144. La pendiente es b/a = 5/12: saca la raíz.",
+              "fn": "hiperbola",
+              "args": [{ "a2": 144, "b2": 25, "eje": "x" }],
+              "campo": "pendiente.errores.sinRaiz.texto",
+              "valor": "±25/144"
+            },
+            {
+              "id": "CO23-invertida-sin-raiz",
+              "respaldo": "hipotesis",
+              "explicacion": "Dos tropiezos: los cuadrados sin raíz y la razón al revés. Sale b/a = 5/12.",
+              "fn": "hiperbola",
+              "args": [{ "a2": 144, "b2": 25, "eje": "x" }],
+              "campo": "pendiente.errores.invertidaSinRaiz.texto",
+              "valor": "±144/25"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -105,7 +573,79 @@
         "Con eje vertical, las asíntotas son y = ±(a/b)x = ±(3/4)x.",
         "Control: si igualas a 0, y²/9 = x²/16, y = ±(3/4)x: sale lo mismo sin memorizar cuál razón va."
       ],
-      "verificar": [ { "fn": "hiperbola", "args": [{ "a2": 9, "b2": 16, "eje": "y" }], "espera": { "verticesTexto": "(0; ±3)", "focosTexto": "(0; ±5)", "asintotas": "y = ±(3/4)x" } } ]
+      "verificar": [ { "fn": "hiperbola", "args": [{ "a2": 9, "b2": 16, "eje": "y" }], "espera": { "verticesTexto": "(0; ±3)", "focosTexto": "(0; ±5)", "asintotas": "y = ±(3/4)x" } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "Una hipérbola tiene la ecuación y²/9 − x²/16 = 1.",
+          "pregunta": "¿Dónde están sus focos?",
+          "correcta": { "fn": "hiperbola", "args": [{ "a2": 9, "b2": 16, "eje": "y" }], "campo": "focos.texto", "valor": "(0; ±5)" },
+          "errores": [
+            {
+              "id": "CO2-c-elipse",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste 16 − 9. Esa resta es de la elipse; en la hipérbola c² = a² + b² = 25.",
+              "fn": "hiperbola",
+              "args": [{ "a2": 9, "b2": 16, "eje": "y" }],
+              "campo": "focos.errores.cElipse.texto",
+              "valor": "(0; ±√7)"
+            },
+            {
+              "id": "CO17-a-mayor",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste el denominador mayor como a². En la hipérbola manda el término positivo, el de y: el eje focal es vertical.",
+              "fn": "hiperbola",
+              "args": [{ "a2": 9, "b2": 16, "eje": "y" }],
+              "campo": "focos.errores.aMayor.texto",
+              "valor": "(±5; 0)"
+            },
+            {
+              "id": "CO18-vertices",
+              "respaldo": "hipotesis",
+              "explicacion": "Esos son los vértices, a 3 del centro. Los focos están a c = 5.",
+              "fn": "hiperbola",
+              "args": [{ "a2": 9, "b2": 16, "eje": "y" }],
+              "campo": "focos.errores.vertices.texto",
+              "valor": "(0; ±3)"
+            }
+          ]
+        },
+        {
+          "id": "p8b",
+          "enunciado": "Una hipérbola tiene la ecuación y²/9 − x²/16 = 1.",
+          "pregunta": "¿Qué pendientes tienen sus asíntotas?",
+          "correcta": { "fn": "hiperbola", "args": [{ "a2": 9, "b2": 16, "eje": "y" }], "campo": "pendiente.texto", "valor": "±3/4" },
+          "errores": [
+            {
+              "id": "CO21-invertida",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste b/a. Con eje vertical la razón es a/b. Iguala a 0: y²/9 = x²/16, y = ±(3/4)x.",
+              "fn": "hiperbola",
+              "args": [{ "a2": 9, "b2": 16, "eje": "y" }],
+              "campo": "pendiente.errores.invertida.texto",
+              "valor": "±4/3"
+            },
+            {
+              "id": "CO22-sin-raiz",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste los cuadrados, 9/16. Saca la raíz: 3/4.",
+              "fn": "hiperbola",
+              "args": [{ "a2": 9, "b2": 16, "eje": "y" }],
+              "campo": "pendiente.errores.sinRaiz.texto",
+              "valor": "±9/16"
+            },
+            {
+              "id": "CO23-invertida-sin-raiz",
+              "respaldo": "hipotesis",
+              "explicacion": "Dos tropiezos: los cuadrados sin raíz y la razón al revés. Sale 3/4.",
+              "fn": "hiperbola",
+              "args": [{ "a2": 9, "b2": 16, "eje": "y" }],
+              "campo": "pendiente.errores.invertidaSinRaiz.texto",
+              "valor": "±16/9"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
@@ -119,7 +659,93 @@
         "Vértices a 3 del centro: (1; 1) y (1; −5). c² = 9 − 4 = 5, c = √5: focos (1; −2 + √5) y (1; −2 − √5)."
       ],
       "verificar": [ { "fn": "general", "args": [{ "A": 9, "C": 4, "D": -18, "E": 16, "F": -11 }], "espera": { "tipo": "elipse", "completada": "9(x − 1)² + 4(y + 2)² = 36", "canonica": "(x − 1)²/4 + (y + 2)²/9 = 1",
-        "conica.verticesTexto": "(1; 1) y (1; −5)", "conica.focosTexto": "(1; −2 + √5) y (1; −2 − √5)" } } ]
+        "conica.verticesTexto": "(1; 1) y (1; −5)", "conica.focosTexto": "(1; −2 + √5) y (1; −2 − √5)" } } ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "Una cónica tiene la ecuación 9x² + 4y² − 18x + 16y − 11 = 0.",
+          "pregunta": "¿Qué cónica es?",
+          "correcta": { "fn": "general", "args": [{ "A": 9, "C": 4, "D": -18, "E": 16, "F": -11 }], "campo": "texto", "valor": "una elipse" },
+          "errores": [
+            {
+              "id": "CO19-cambia-signo",
+              "respaldo": "hipotesis",
+              "explicacion": "La hipérbola tiene x² e y² con signos distintos. Aquí 9 y 4 son los dos positivos.",
+              "fn": "general",
+              "args": [{ "A": 9, "C": 4, "D": -18, "E": 16, "F": -11 }],
+              "campo": "errores.cambiaSigno.texto",
+              "valor": "una hipérbola"
+            },
+            {
+              "id": "CO20-dos-cuadrados",
+              "respaldo": "hipotesis",
+              "explicacion": "Para ser circunferencia, x² e y² deben tener el mismo coeficiente. Aquí son 9 y 4: es una elipse.",
+              "fn": "general",
+              "args": [{ "A": 9, "C": 4, "D": -18, "E": 16, "F": -11 }],
+              "campo": "errores.dosCuadrados.texto",
+              "valor": "una circunferencia"
+            },
+            {
+              "id": "CO28-lineales",
+              "respaldo": "hipotesis",
+              "explicacion": "Los términos en x y en y solo mueven el centro. Una parábola tiene un solo cuadrado.",
+              "fn": "general",
+              "args": [{ "A": 9, "C": 4, "D": -18, "E": 16, "F": -11 }],
+              "campo": "errores.lineales.texto",
+              "valor": "una parábola"
+            }
+          ]
+        },
+        {
+          "id": "p9b",
+          "enunciado": "Una cónica tiene la ecuación 9x² + 4y² − 18x + 16y − 11 = 0.",
+          "pregunta": "¿Dónde están sus focos?",
+          "correcta": {
+            "fn": "general",
+            "args": [{ "A": 9, "C": 4, "D": -18, "E": 16, "F": -11 }],
+            "campo": "conica.focos.texto",
+            "valor": "(1; −2 + √5) y (1; −2 − √5)"
+          },
+          "errores": [
+            {
+              "id": "CO8-signos",
+              "respaldo": "hipotesis",
+              "explicacion": "Al completar quedó (x − 1)² y (y + 2)²: el centro es (1; −2); tomaste (−1; 2).",
+              "fn": "general",
+              "args": [{ "A": 9, "C": 4, "D": -18, "E": 16, "F": -11 }],
+              "campo": "conica.focos.errores.signos.texto",
+              "valor": "(−1; 2 + √5) y (−1; 2 − √5)"
+            },
+            {
+              "id": "CO7-eje-cambiado",
+              "respaldo": "hipotesis",
+              "explicacion": "En (x − 1)²/4 + (y + 2)²/9 = 1 el 9 está bajo y: los focos van arriba y abajo del centro.",
+              "fn": "general",
+              "args": [{ "A": 9, "C": 4, "D": -18, "E": 16, "F": -11 }],
+              "campo": "conica.focos.errores.ejeCambiado.texto",
+              "valor": "(1 − √5; −2) y (1 + √5; −2)"
+            },
+            {
+              "id": "CO1-c-hiperbola",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste 9 + 4. En la elipse c² = a² − b² = 5.",
+              "fn": "general",
+              "args": [{ "A": 9, "C": 4, "D": -18, "E": 16, "F": -11 }],
+              "campo": "conica.focos.errores.cHiperbola.texto",
+              "valor": "(1; −2 + √13) y (1; −2 − √13)"
+            },
+            {
+              "id": "CO18-vertices",
+              "respaldo": "hipotesis",
+              "explicacion": "Esos son los vértices, a 3 del centro. Los focos están a c = √5.",
+              "fn": "general",
+              "args": [{ "A": 9, "C": 4, "D": -18, "E": 16, "F": -11 }],
+              "campo": "conica.focos.errores.vertices.texto",
+              "valor": "(1; 1) y (1; −5)"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p10",
@@ -132,7 +758,44 @@
         "Vértice (−1; 3). 4p = 8, p = 2 > 0: abre a la derecha.",
         "Foco 2 a la derecha del vértice: (1; 3). Directriz 2 a la izquierda: x = −3."
       ],
-      "verificar": [ { "fn": "general", "args": [{ "A": 0, "C": 1, "D": -8, "E": -6, "F": 1 }], "espera": { "tipo": "parabola", "canonica": "(y − 3)² = 8(x + 1)", "conica.verticeTexto": "(−1; 3)", "conica.focoTexto": "(1; 3)", "conica.directriz": "x = −3" } } ]
+      "verificar": [ { "fn": "general", "args": [{ "A": 0, "C": 1, "D": -8, "E": -6, "F": 1 }], "espera": { "tipo": "parabola", "canonica": "(y − 3)² = 8(x + 1)", "conica.verticeTexto": "(−1; 3)", "conica.focoTexto": "(1; 3)", "conica.directriz": "x = −3" } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Una parábola tiene la ecuación y² − 6y − 8x + 1 = 0.",
+          "pregunta": "¿Dónde está su foco?",
+          "correcta": { "fn": "general", "args": [{ "A": 0, "C": 1, "D": -8, "E": -6, "F": 1 }], "campo": "conica.foco.texto", "valor": "(1; 3)" },
+          "errores": [
+            {
+              "id": "CO11-signo",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste el foco a la izquierda. Queda (y − 3)² = 8(x + 1), con p = 2 > 0: abre a la derecha.",
+              "fn": "general",
+              "args": [{ "A": 0, "C": 1, "D": -8, "E": -6, "F": 1 }],
+              "campo": "conica.foco.errores.signo.texto",
+              "valor": "(−3; 3)"
+            },
+            {
+              "id": "CO12-cuatro-p",
+              "respaldo": "hipotesis",
+              "explicacion": "Avanzaste 8 desde el vértice. El 8 es 4p; el foco está a p = 2.",
+              "fn": "general",
+              "args": [{ "A": 0, "C": 1, "D": -8, "E": -6, "F": 1 }],
+              "campo": "conica.foco.errores.cuatroP.texto",
+              "valor": "(7; 3)"
+            },
+            {
+              "id": "CO13-otro-eje",
+              "respaldo": "hipotesis",
+              "explicacion": "Solo y va al cuadrado: el eje es horizontal y el foco se mueve en x.",
+              "fn": "general",
+              "args": [{ "A": 0, "C": 1, "D": -8, "E": -6, "F": 1 }],
+              "campo": "conica.foco.errores.eje.texto",
+              "valor": "(−1; 5)"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
