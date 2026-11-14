@@ -222,7 +222,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
       <div class="legend" id="leyenda2"></div>
     </section>
     <section class="guide">
-      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
       <div aria-live="polite">
         <p class="step-k" id="k2"></p>
         <h2 class="step-t" id="t2"></h2>
@@ -263,6 +263,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'ondas-electromagneticas', unidad: 'fisica.ondas-electromagneticas', version: '0.2.0' };
@@ -1061,6 +1062,19 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1, true); });
 $('prev').addEventListener('click', () => go(S.step - 1, true));
 go(0);
+
+// Regla 3 (decisión 20): antes de preguntar, el alumno juega. Juego libre: la antena con su onda quieta y el
+// deslizador de frecuencia; solo se lee f. No se dibuja B (paso 2), ni se nombra la región (paso 3), ni se da λ
+// (paso 4), y la onda no avanza, para no mostrar su rapidez (paso 1).
+const juegoOnda = () => E.config({ vista:'onda', mueve:false, t:{ f:F_FM }, ver:{ B:0, lam:'no' }, ctl:{ f:true },
+  lect: () => [['f', 'Frecuencia f', hz(E.t.f)]],
+  desc: () => 'Una antena a la izquierda emite una onda; el campo eléctrico oscila de arriba abajo. Con el deslizador cambias la frecuencia.' });
+E.compacto = false; Celular.compactar($('m1'), false); juegoOnda();
+JugarPrimero.montar({
+  escena: $('cv').closest('.bench'), preguntas: [$('m1').querySelector('.guide')],
+  consigna: 'Mueve la frecuencia y mira cómo cambia la onda.', minimo: 2,
+  alListo: () => go(0),
+});
 })();
 </script>
 
@@ -1073,7 +1087,7 @@ go(0);
    responder: mientras tanto queda quieta y las lecturas que darían la respuesta van con «?». */
 (function(){
 const $ = id => document.getElementById(id);
-const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', null);
+const E = crearEscena($('cv2'), 'desc2', 'lect2', 'leyenda2', 'ctl2'); // ctl2: solo el juego libre lo usa
 const AM = MO.onda(600, 'kHz'), SOL = MO.viaje(1.5e11), CB = MO.campos(300), MW = MO.onda(2.45, 'GHz'), F_LUZ = MO.ondaDeLambda(L_LUZ, 'nm').f;
 const F_CAMPOS = MO.aHz(1, 'GHz');
 const descOnda = () => 'Una antena a la izquierda emite una onda que avanza hacia la derecha: el campo eléctrico oscila de arriba abajo y el campo magnético B de lado a lado, en fase.';
@@ -1192,6 +1206,19 @@ function ir(k){
   pintar();
 }
 ir(0);
+
+// Regla 3 (decisión 20): antes de preguntar, el alumno juega. Juego libre: la antena con su onda y el deslizador de
+// frecuencia; solo se lee f y no se dibuja B. Los experimentos preguntan por la potencia, el viaje de la luz del Sol,
+// la rejilla del horno y el valor de B: el juego no muestra ninguno. Se juega una vez al abrir el modo.
+E.compacto = false; Celular.compactar($('m2'), false);
+E.config({ vista:'onda', mueve:true, t:{ f:F_FM }, ver:{ B:0, lam:'no' }, ctl:{ f:true },
+  lect: () => [['f', 'Frecuencia f', hz(E.t.f)]],
+  desc: () => 'Una antena a la izquierda emite una onda que avanza hacia la derecha. Con el deslizador cambias la frecuencia.' });
+JugarPrimero.montar({
+  escena: $('cv2').closest('.bench'), preguntas: [$('body2')],
+  consigna: 'Mueve la frecuencia y mira cómo cambia la onda.', minimo: 2,
+  alListo: () => ir(S.k),
+});
 })();
 </script>
 
@@ -1319,7 +1346,7 @@ function dibujar(){
     ctx.restore();
   }
   // manija
-  if (S.fase >= 2){
+  if (S.fase >= 2 || S.juego){
     ctx.beginPath(); ctx.arc(P.x, P.y, 11, 0, 2*Math.PI); ctx.fillStyle = c.paper; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = c.i; ctx.stroke();
     ctx.beginPath(); ctx.arc(P.x, P.y, 4, 0, 2*Math.PI); ctx.fillStyle = c.i; ctx.fill();
   }
@@ -1348,7 +1375,7 @@ function leyenda(){
 function cambio(){ lecturas(); dibujar(); }
 
 // ----- arrastre y deslizador (solo en la exploración) -----
-const libre = () => S.fase >= 2;
+const libre = () => S.fase >= 2 || !!S.juego;
 Celular.arrastre(cv, {
   activo: libre,
   cerca: (p, r) => { const { O, rho } = geo(), P = punto(O, rho, S.i, true, -1); return Math.hypot(p.x - P.x, p.y - P.y) <= r; },
@@ -1357,6 +1384,12 @@ Celular.arrastre(cv, {
 });
 function controles(){
   if (!libre()){ $('ctl3').innerHTML = ''; return; }
+  if (S.juego){
+    $('ctl3').innerHTML = `<label class="ctl" style="--k:var(--c-i)" for="angI"><span>Ángulo de incidencia ${i_('i')}</span><output id="oI">${grad(S.i)}</output>
+      <input id="angI" type="range" min="0" max="89" step="1" value="${S.i}" aria-valuetext="${grad(S.i)}"></label>`;
+    $('angI').oninput = e => { S.i = +e.target.value; sincronizar(); cambio(); };
+    return;
+  }
   const med = Object.keys(MEDIOS).map(k => `<button type="button" aria-pressed="${S.medio === k}" data-m="${k}">${MEDIOS[k].nombre}</button>`).join('');
   $('ctl3').innerHTML = `<label class="ctl" style="--k:var(--c-i)" for="angI"><span>Ángulo de incidencia ${i_('i')}</span><output id="oI">${grad(S.i)}</output>
       <input id="angI" type="range" min="0" max="89" step="1" value="${S.i}" aria-valuetext="${grad(S.i)}"></label>
@@ -1466,6 +1499,17 @@ function explorar(){
 }
 addEventListener('modo', () => { if (!$('m3').hidden){ W = 0; resize(); } });
 abrir(0);
+
+// Regla 3 (decisión 20): antes de preguntar, el alumno juega. Juego libre: el rayo ENTRA del aire al agua y se
+// arrastra (o se usa el deslizador). Las dos predicciones son con el rayo que SALE del agua: el juego no las muestra
+// (entrando nunca hay reflexión total).
+S.juego = true; S.medio = 'agua'; S.sale = false; S.i = 30; S.mostrar = true; S.ver = 1;
+compactar(false); controles(); leyenda(); cambio();
+JugarPrimero.montar({
+  escena: cv.closest('.bench'), preguntas: [$('body3')],
+  consigna: 'Arrastra el rayo y mira cómo entra al agua.', minimo: 2,
+  alListo: () => { S.juego = false; abrir(0); },
+});
 })();
 </script>
 
