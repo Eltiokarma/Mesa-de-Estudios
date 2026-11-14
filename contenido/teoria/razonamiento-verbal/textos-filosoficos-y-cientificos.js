@@ -18,11 +18,22 @@
  * definición). Sin códigos nuevos.
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): un marcador que se arrastra por la lista y se suelta en una oración; la manija
+  // va sobre su número (rv-texto.ancla) y salta a la más cercana al dedo (rv-texto.cercana). Mueve el control «Marca»
+  // (el número de la oración), que conserva sus botones como alternativa.
+  const RV = () => Kit.piezas['rv-texto'];
+  // Solo el rótulo (antes de «:») va de color: el resto se parte por palabras y cabe en la miniatura de un caso guardado.
+  const rotulo = (fn, t) => { const k = t.indexOf(': '); return k > 0 ? [fn(t.slice(0, k)), t.slice(k)] : corto(fn, t); };
+  const marcaOracion = datos => ({
+    id: 'frase', etiqueta: 'marcador de la oración', color: 'c-o',
+    donde: val => RV().ancla(datos, `o${val.k}`),
+    mover: pt => ({ k: +RV().cercana(datos, pt, datos.secciones[0].fragmentos.map(f => f.id)).slice(1) }),
+  });
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
@@ -48,12 +59,13 @@
     temas: ['Rasgos del texto científico'],
     pieza: 'rv-texto',
     juega: {
-      consigna: 'Marca cada oración del informe y mira qué función cumple: dato, método, explicación o límite del estudio.',
+      consigna: 'Arrastra el marcador por el informe y mira qué función cumple cada oración: dato, método, explicación o límite.',
       voz: 'Lo observado y lo que se propone para explicarlo no pesan igual.',
       controles: [{ id: 'k', etiqueta: 'Marca', opciones: [1, 2, 3, 4].map(k => ({ valor: k, texto: `${k}` })) }],
       dibujo: val => ({ datos: lista('Informe', EST), estado: { marcas: { [`o${val.k}`]: PARTE[val.k][1] }, sellos: { o: { t: PARTE[val.k][0].split(':')[0], c: PARTE[val.k][1] } } } }),
-      lectura: val => [corto(PARTE[val.k][1] === 'o' ? concl : PARTE[val.k][1] === 'd' ? marco : dato, PARTE[val.k][0])],
+      lectura: val => [rotulo(PARTE[val.k][1] === 'o' ? concl : PARTE[val.k][1] === 'd' ? marco : dato, PARTE[val.k][0])],
       minimo: 3,
+      arrastres: [marcaOracion(lista('Informe', EST))],
     },
     predice: {
       pregunta: 'Según este informe sobre leer y las notas, ¿qué conclusión está respaldada?',
@@ -78,7 +90,7 @@
     },
     regla: {
       texto: 'Un texto científico separa datos, método, explicación y límites. La explicación propuesta es una hipótesis; que dos cosas aparezcan juntas no prueba que una cause la otra.',
-      ecuacion: [dato('datos'), ' + ', marco('método'), ' → ', concl('hipótesis'), ' (con ', marco('límites'), ')'],
+      ecuacion: [dato('datos'), ' + ', marco('método'), ' → ', { llave: [concl('hipótesis')], nota: 'aún no probada', color: 'c-o' }, ' (con ', marco('límites'), ')'],
       condicion: 'la conclusión no va más allá de lo que el método observó; palabras como «quizá» o «posible» marcan hipótesis.',
     },
     ahoraTu: {
@@ -113,12 +125,13 @@
     temas: ['Rasgos del texto filosófico'],
     pieza: 'rv-texto',
     juega: {
-      consigna: 'Marca cada oración del texto sobre la amistad y mira su función: pregunta, término, tesis, objeción o respuesta.',
+      consigna: 'Arrastra el marcador por el texto sobre la amistad: pregunta, término, tesis, objeción o respuesta.',
       voz: 'Un texto filosófico razona: no solo opina.',
       controles: [{ id: 'k', etiqueta: 'Marca', opciones: [1, 2, 3, 4, 5].map(k => ({ valor: k, texto: `${k}` })) }],
       dibujo: val => ({ datos: lista('Texto', FIL), estado: { marcas: { [`o${val.k}`]: PFIL[val.k][1] }, sellos: { o: { t: PFIL[val.k][0].split(':')[0], c: PFIL[val.k][1] } } } }),
-      lectura: val => [corto(PFIL[val.k][1] === 'h' ? excede : PFIL[val.k][1] === 'o' ? concl : PFIL[val.k][1] === 'd' ? marco : dato, PFIL[val.k][0])],
+      lectura: val => [rotulo(PFIL[val.k][1] === 'h' ? excede : PFIL[val.k][1] === 'o' ? concl : PFIL[val.k][1] === 'd' ? marco : dato, PFIL[val.k][0])],
       minimo: 3,
+      arrastres: [marcaOracion(lista('Texto', FIL))],
     },
     predice: {
       pregunta: 'En este texto, ¿qué entiende el autor por «valiente»?',
@@ -142,7 +155,7 @@
     },
     regla: {
       texto: 'Un texto filosófico plantea una pregunta, define o distingue sus términos y defiende una tesis con razones, respondiendo objeciones. Lo que entiende por un término se lee en su definición.',
-      ecuacion: [marco('pregunta'), ' → ', marco('términos'), ' → ', concl('tesis'), ' ← ', excede('objeción')],
+      ecuacion: [marco('pregunta'), ' → ', { llave: [marco('términos')], nota: 'definidos por él', color: 'c-d' }, ' → ', concl('tesis'), ' ← ', { llave: [excede('objeción')], nota: 'lo de otros', color: 'c-h' }],
       condicion: 'se separa lo que el autor sostiene de lo que cita para discutir; un ejemplo no reemplaza la definición.',
     },
     ahoraTu: {
@@ -166,9 +179,43 @@
     },
   };
 
+  // ---------- Laboratorio: ¿cuánto puede decir el informe? ----------
+  // Lo que la idea 1 deja fijo: el método, la palabra de la conclusión y su alcance. El código revisa tres fallas:
+  // sin comparación no hay «más» que afirmar; «causa» excede un estudio que solo observa (aunque compare); «todos los
+  // colegios» excede los diez que se estudiaron. Sin fallas, la conclusión queda respaldada.
+  // Sin arrastre: cada control cambia una parte del informe, no un lugar que se pueda agarrar.
+  const METODO = { compara: 'Se comparó con diez colegios sin huerto, de la misma zona.', no: 'No se comparó con colegios sin huerto.' };
+  const VERBO = { juntos: 'tener huerto y comer más verduras van juntos', quiza: 'quizá el huerto explique que coman más verduras', causa: 'el huerto causa que coman más verduras' };
+  const ALCANCE = { diez: 'en esos diez colegios', todos: 'en todos los colegios del país' };
+  const fallas = val => [
+    val.metodo === 'no' && 'sin comparar',
+    val.verbo === 'causa' && 'dice causa',
+    val.alcance === 'todos' && 'generaliza',
+  ].filter(Boolean);
+  const figInf = val => lista('Informe', [
+    'En diez colegios con huerto, los alumnos comían verduras cada día.',
+    METODO[val.metodo],
+    `Conclusión: ${VERBO[val.verbo]} ${ALCANCE[val.alcance]}.`,
+  ]);
+  const mesaInforme = {
+    id: 'cuanto-dice', titulo: '¿Cuánto puede decir el informe?', pieza: 'rv-texto',
+    consigna: 'Cambia el método, la palabra de la conclusión y su alcance. Mira cuándo la conclusión queda respaldada y cuándo excede.',
+    voz: 'La conclusión no puede ir más allá del método.',
+    controles: [
+      { id: 'metodo', etiqueta: 'Método', opciones: [{ valor: 'compara', texto: 'compara' }, { valor: 'no', texto: 'no compara' }] },
+      { id: 'verbo', etiqueta: 'Conclusión', opciones: [{ valor: 'juntos', texto: 'van juntos' }, { valor: 'quiza', texto: 'quizá' }, { valor: 'causa', texto: 'causa' }] },
+      { id: 'alcance', etiqueta: 'Alcance', opciones: [{ valor: 'diez', texto: 'diez colegios' }, { valor: 'todos', texto: 'todo el país' }] },
+    ],
+    dibujo: val => {
+      const f = fallas(val);
+      return { datos: figInf(val), estado: { marcas: { o1: 'i', o2: val.metodo === 'no' ? 'h' : 'd', o3: f.length ? 'h' : 'o' }, sellos: { o: f.length ? { t: 'Excede', c: 'h' } : { t: 'Respaldada', c: 'i' } } } };
+    },
+    lectura: val => { const f = fallas(val); return f.length ? [excede('Excede'), `: ${f.join(', ')}`] : [dato('Respaldada'), val.verbo === 'quiza' ? ': como hipótesis' : ': lo observado']; },
+  };
+
   return {
     unidad: 'razonamiento-verbal.textos-filosoficos-y-cientificos',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -176,6 +223,11 @@
       pregunta: '¿Qué diferencia hay entre observar algo y explicarlo?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Descartes 1637; Philosophical Transactions 1665)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/txtargumentativo.htm' },
     },
+    laboratorio: [
+      mesaInforme,
+      Object.assign({ id: 'informe', titulo: 'El informe de los huertos', pieza: 'rv-texto' }, cientifico.juega),
+      Object.assign({ id: 'amistad', titulo: 'El texto de la amistad', pieza: 'rv-texto' }, filosofico.juega),
+    ],
     ideas: [cientifico, filosofico],
   };
 });
