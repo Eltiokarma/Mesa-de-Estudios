@@ -217,6 +217,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'numeros-reales', unidad: 'algebra.numeros-reales', version: '0.1.0' };
@@ -495,6 +496,25 @@ function pintarLupa(D, arriba, w0, w1, abajo){
   ctx.setLineDash([4, 4]);
   ctx.beginPath(); ctx.moveTo(xa - 3, arriba.y + 6); ctx.lineTo(abajo.x0 - 8, abajo.y - 16); ctx.moveTo(xb + 3, arriba.y + 6); ctx.lineTo(abajo.x1 + 8, abajo.y - 16); ctx.stroke();
   ctx.restore();
+}
+// Regla 3: juego libre antes de la primera pregunta de cada modo. Dos puntos que se arrastran por la recta,
+// unidos por un trazo simple: sin corchetes, puntos llenos o vacíos, operaciones ni imágenes, que es lo que se
+// pregunta después.
+function configJuego(E){
+  const J = { p:-1, q:2.5 };
+  E.config({ pintar:D => {
+      const m = D.eje({ id:'r', y:Math.round(D.H*.6), v0:-4, v1:6, paso:1 });
+      D.linea(m.X(Math.min(J.p, J.q)), m.y - 22, m.X(Math.max(J.p, J.q)), m.y - 22, D.c.A, 5);
+      D.punto(m, m.y, J.p, D.c.x, `p = ${N_(J.p)}`, { dy:34 });
+      D.punto(m, m.y, J.q, D.c.x, `q = ${N_(J.q)}`, { dy:52 });
+    },
+    manijas:{ eje:'r', paso:.5, ayuda:'Arrastra los puntos p y q sobre la recta, o toca el dibujo y usa las flechas (↑ ↓ cambia de punto).',
+      lista:() => [{ id:'p', x:E.ejes.r.X(J.p), y:E.ejes.r.y, nombre:'el punto p', color:css('--c-x') }, { id:'q', x:E.ejes.r.X(J.q), y:E.ejes.r.y, nombre:'el punto q', color:css('--c-x') }],
+      mover:(id, v) => { J[id] = v; } },
+    ley:[['x', 'los puntos p y q', 'pt'], ['A', 'el trozo entre p y q']],
+    lect:[() => ['x', 'p', N_(J.p)], () => ['x', 'q', N_(J.q)]],
+    desc:'La recta numérica de −4 a 6 con dos puntos, p y q, unidos por un trazo.' });
+  E.compactar(false);
 }
 </script>
 
@@ -868,6 +888,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if ($('next').disabled) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+configJuego(E);
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra los puntos p y q por la recta y mira sus valores.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 <script>
@@ -1103,6 +1126,9 @@ function ir(k){
   pintar();
 }
 ir(0);
+configJuego(E);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra los puntos p y q por la recta antes de empezar.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 
