@@ -289,6 +289,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'solidos', unidad: 'geometria.prisma-y-piramide', version: '0.2.0' };
@@ -1346,6 +1347,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta se juega con la caja del paso 1 (se abre con el control y se gira).
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Abre y cierra la caja con el control; gírala arrastrando el dibujo.', minimo:2 });
 })();
 </script>
 
@@ -1475,12 +1479,22 @@ function botones(){
     : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
   $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
 }
+// Regla 3: antes del primer experimento, juego libre con una pirámide de base triangular que se abre con un
+// control y se gira (ninguno de los sólidos que se preguntan después).
+let jugado = false;
+const juegoLibre = () => E.config({ modo:'solido', tipo:'piramide', d:{ base:{ tipo:'triangulo', lado:5 }, h:4 }, prog:{ f:0 }, az:20,
+  ley:[['AB', 'la base'], ['AL', 'las caras laterales']], lect:[], desc:'Una pirámide de base triangular que se abre con el control.' });
+const abrir = document.createElement('div'); abrir.className = 'abrir';
+abrir.innerHTML = '<label for="f2">Abrir</label><input type="range" id="f2" min="0" max="100" step="1" value="0" aria-describedby="fo2"><output id="fo2" for="f2">cerrada</output>';
+$('cv2').closest('.lienzo').after(abrir);
+$('f2').oninput = () => { E.gen++; E.prog.f = Number($('f2').value)/100; E.dibujar();
+  const t = E.prog.f <= .005 ? 'cerrada' : E.prog.f >= .995 ? 'abierta' : `${Math.round(E.prog.f*100)} %`; $('fo2').textContent = t; $('f2').setAttribute('aria-valuetext', t); };
 function ir(k){
   if (k > primeraLibre()) return;
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k];
-  x.antes(!!S.pred[x.id]);
-  E.compactar(!S.pred[x.id]);
+  if (jugado) x.antes(!!S.pred[x.id]); else juegoLibre();
+  E.compactar(jugado && !S.pred[x.id]);
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -1507,6 +1521,9 @@ function ir(k){
   pintar();
 }
 ir(0);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Abre la pirámide con el control y gírala arrastrando el dibujo.', minimo:2,
+  alListo:() => { jugado = true; abrir.remove(); ir(S.k); } });
 })();
 </script>
 
@@ -1786,6 +1803,20 @@ function prediccion(s){
 $('next3').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev3').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, juego libre con el nivel del agua en un vaso cilíndrico, sin volúmenes
+// (el vaso que se pregunta es otro: un tronco de cono).
+(function(){
+  E.compactar(false);
+  E.config({ modo:'vaso', R:5, r:5, h:6, hChico:0, kNivel:.3, marca:false, el:20, caja:caja(5.9, -.3, 6.5), pad:{ l:64, r:30, t:26, b:26 },
+    prog:{ nivel:1, cono:0, marcas:0 }, ley:[['V', 'el agua']], lect:[], desc:'Un vaso cilíndrico de radio 5 y altura 6, con agua. El control cambia el nivel.' });
+  $('nivel3').hidden = false;
+  const r = $('f3'), pinta = () => { const z = 6*E.cfg.kNivel; r.value = Math.round(E.cfg.kNivel*100); $('fo3').textContent = `${fmt(z, 1)} cm`; r.setAttribute('aria-valuetext', `agua hasta ${fmt(z, 1)} cm`); };
+  pinta();
+  r.oninput = () => { E.cfg.kNivel = Number(r.value)/100; E.dibujar(); pinta(); };
+})();
+JugarPrimero.montar({ escena:document.querySelector('#m3 .bench'), preguntas:[document.querySelector('#m3 .guide')],
+  consigna:'Sube y baja el agua del vaso con el control de nivel.', minimo:2,
+  alListo:() => go(0) });
 })();
 </script>
 
