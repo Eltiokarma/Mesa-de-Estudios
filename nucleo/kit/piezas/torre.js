@@ -9,6 +9,7 @@
  *   alto: 20,                                   // metros de la regla
  *   pelotas: [{ y, v, marcas: [y, …], rotulo, grande }],   // una o dos; y es la altura del punto más bajo de la pelota
  *   g: true,                                    // dibuja la flecha de g en cada pelota
+ *   colores: { y, v, a },                       // opcional: tokens de la unidad (regla 4); por defecto y 'i', v 'h', a 'd'
  * }
  * Todo número que se ve lo trae quien llama. La pieza solo convierte metros a píxeles.
  */
@@ -24,12 +25,13 @@
   const W = 320, ALTO_SVG = 262, SUELO = 232, TECHO = 44, RX = 52;      // la regla va de SUELO (0 m) a TECHO (alto)
   const COLUMNAS = [150, 236];                                          // centro de cada pelota
   const PX_V = 2.2;                                                     // px por m/s en la flecha de v
-  const COLOR = { y: 'i', v: 'h', a: 'd' };
+  const COLOR_BASE = { y: 'i', v: 'h', a: 'd' };
 
   const alto = d => (d.alto > 0 ? d.alto : 20);
   const Y = (d, y) => SUELO - (SUELO - TECHO) * y / alto(d);
 
   function dibujar(d) {
+    const COLOR = Object.assign({}, COLOR_BASE, d.colores || {});
     let s = '';
     // Suelo y regla vertical con rayitas cada metro y números cada 5.
     s += T.linea(16, SUELO, W - 8, SUELO, { grosor: T.GROSOR.contorno, opacidad: 0.55 });

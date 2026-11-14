@@ -3,7 +3,15 @@
  * referencia; las demás copian su forma, no sus temas.
  * Fuente del contenido: docs/teoria/matriz/fisica.json (unidad 2) y docs/teoria/fuentes/historia-ecuaciones.pdf.
  * Colores (regla 4): x turquesa (c-i, el de la pista), v naranja (c-o), a verde (c-d), t rojo (c-h).
- * Estado: borrador. Faltan la idea de caída libre (g también en la cima) y la de encuentros y velocidad relativa.
+ * Estado: completa (14 nov 2026): cinco ideas que cubren los siete temas del catálogo.
+ *
+ * Ficha de tarea (diseno-y-animacion):
+ *   Promesa: cinco relaciones del movimiento en una recta, cada una jugada antes de preguntarla.
+ *   Persona y condiciones: postulante de 3.º a 5.º, celular de gama baja a 360 px, a veces sin conexión.
+ *   Resultado observable: predice dónde está un móvil, lee pendiente y área en v–t, y halla un encuentro.
+ *   Orden de atención: 1.º la figura que se mueve · 2.º la lectura en vivo · acción: el botón fijo · fondo: Tilo.
+ *   Estados: juego sin tocar · predicción pendiente · coincide / no coincide · paso de mira · caso nuevo · «No sé».
+ *   Duda que resuelve: ¿por qué la velocidad, la aceleración y la posición no son la misma cosa?
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -272,16 +280,221 @@
     },
   };
 
+  // ---------- Idea 4: caída libre, g también en la cima ----------
+  // Cambia: la altura y la flecha de v de la pelota · Permanece: la flecha de g, igual en todo instante ·
+  // Progresa: el tiempo, con marcas cada 0,5 s · Se reserva: la cima, donde v = 0 y g sigue ·
+  // Debe verse: que la pendiente de v–t es −g en todos los puntos, también en v = 0.
+  const G = 10; // convención didáctica declarada en la regla (g ≈ 9,8 m/s² en Juliaca y en el resto del Perú)
+  const g = { v: 'c-d', t: 'g' }, y = { v: 'c-i', t: 'y' };
+  const COL_TORRE = { y: 'i', v: 'o', a: 'd' };
+  const alturaEn = (vi, ti) => Math.max(0, vi * ti - G * ti * ti / 2);
+  const torreEn = (vi, ti, alto = 25) => {
+    const tv = 2 * vi / G, tt = Math.min(ti, tv);
+    const marcas = [];
+    for (let k = 0; k * 0.5 <= tt + 1e-9; k++) marcas.push(alturaEn(vi, k * 0.5));
+    return { datos: { alto, colores: COL_TORRE, pelotas: [{ y: alturaEn(vi, tt), v: tt >= tv ? 0 : vi - G * tt, marcas }] }, estado: {} };
+  };
+  const caida = {
+    id: 'caida-libre',
+    titulo: 'En la cima, g sigue',
+    temas: ['Caída libre', 'Gráficas x-t, v-t y a-t'],
+    pieza: 'torre',
+    juega: {
+      consigna: 'Lanza la pelota hacia arriba y avanza el reloj. Cada medio segundo deja una marca.',
+      voz: 'Fíjate en las dos flechas: una cambia y la otra no.',
+      controles: [
+        { id: 'v0', etiqueta: 'v₀', color: 'c-o', min: 10, max: 20, paso: 5, inicio: 15, unidad: 'm/s', decimales: 0 },
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 4, paso: 0.5, inicio: 0.5, unidad: 's', decimales: 1 },
+      ],
+      dibujo: val => torreEn(val.v0, val.t),
+      lectura: val => {
+        const tv = 2 * val.v0 / G, tt = Math.min(val.t, tv);
+        return tt >= tv ? ['En el suelo · ', g, ' = 10 m/s² hacia abajo'] : [v, ` = ${f(val.v0 - G * tt, 1)} m/s · `, g, ' = 10 m/s² hacia abajo'];
+      },
+      minimo: 3,
+    },
+    predice: {
+      pregunta: ['Una pelota sube con ', v0, ' = 20 m/s y llega a su punto más alto. Justo ahí, ¿cuánto vale su aceleración?'],
+      opciones: [
+        { id: 'c', texto: '10 m/s², hacia abajo', correcta: true },
+        { id: 'cero', texto: '0: está detenida', error: 'C1', siFuera: 'v = 0 en la cima es cierto. Pero a mide cómo cambia v, y un instante después ya baja.' },
+        { id: 'arriba', texto: '10 m/s², hacia arriba', error: 'K3', siFuera: 'Hacia arriba iba la velocidad al subir. La gravedad tira hacia abajo todo el tiempo.' },
+        { id: 'masa', texto: 'Depende de la masa de la pelota', error: 'C2', siFuera: 'Con aire, la forma y la masa importan. Sin aire, todas caen con el mismo g.' },
+      ],
+      dibujo: torreEn(20, 1.5),
+      revelar: torreEn(20, 2),
+      coincide: 'Coincide: en la cima v = 0, pero la velocidad sigue cambiando 10 m/s cada segundo.',
+    },
+    mira: {
+      pieza: 'ejes',
+      datos: {
+        x: { min: 0, max: 4, paso: 1, nombre: 't', unidad: 's', decimales: 0, color: 'h' },
+        y: { min: -20, max: 20, paso: 10, nombre: 'v', unidad: 'm/s', decimales: 0, color: 'o' },
+        curvas: [{ puntos: [[0, 20], [4, -20]], color: 'o', desde: 1 }],
+        areas: [{ puntos: [[0, 20], [2, 0]], color: 'i', rotulo: '+20 m', desde: 3 }, { puntos: [[2, 0], [4, -20]], color: 'i', rotulo: '−20 m', desde: 4 }],
+        puntos: [{ x: 0, y: 20, color: 'o', desde: 1 }, { x: 2, y: 0, color: 'o', rotulo: 'cima', guias: true, desde: 2 }],
+      },
+      pasos: [
+        { estado: { corte: 1 }, texto: 'Sale a 20 m/s y pierde 10 m/s cada segundo.', ecuacion: [v, ' = 20 − 10 ', t] },
+        { estado: { corte: 2 }, texto: 'A los 2 s, v = 0: es la cima. La recta no se quiebra.', ecuacion: [t, ' = ', { frac: [v0, g] }, ' = 2 s'] },
+        { estado: { corte: 2 }, texto: 'La pendiente es la misma antes, en y después de la cima.', ecuacion: [a, ' = −', g, ' = −10 m/s²'] },
+        { estado: { corte: 3 }, texto: 'El área hasta la cima es lo que subió.', ecuacion: [{ sub: [y, 'máx'] }, ' = ½ · 20 · 2 = 20 m'] },
+        { estado: { corte: 4 }, texto: 'Bajando, el área es negativa: vuelve al punto de partida a los 4 s.', ecuacion: [dx, ' = 20 − 20 = 0'] },
+      ],
+    },
+    regla: {
+      texto: 'En caída libre la única aceleración es g, hacia abajo, al subir, en la cima y al bajar. Con el eje hacia arriba:',
+      ecuacion: [v, ' = ', v0, ' − ', g, t, '   ·   ', y, ' = ', v0, t, ' − ½ ', g, { sup: [t, '2'] }],
+      condicion: 'sin resistencia del aire y cerca del suelo. Aquí g = 10 m/s²; el valor medido es cercano a 9,8 m/s².',
+    },
+    ahoraTu: {
+      pieza: 'torre',
+      generar(s) {
+        const r = azar(s), vi = [10, 15, 20, 25, 30][r.ent(0, 4)], pide = ['tiempo', 'altura', 'velocidad'][s % 3];
+        const ts = vi / G, hm = vi * vi / (2 * G), alto = Math.ceil(hm / 10) * 10;
+        const dib = { datos: { alto, colores: COL_TORRE, pelotas: [{ y: 0, v: vi, marcas: [] }] }, estado: {} };
+        if (pide === 'tiempo') return {
+          pregunta: ['Se lanza una pelota hacia arriba con ', v0, ` = ${f(vi)} m/s. Sin aire y con g = 10 m/s², ¿cuánto tarda en llegar a la cima?`],
+          dibujo: dib,
+          opciones: opciones(ts, [
+            { id: 'ida-vuelta', valor: 2 * ts, error: 'C-VUELTA', siFuera: 'Ese es el tiempo de subir y volver a bajar.' },
+            { id: 'altura', valor: hm / 10, error: 'C-ALTURA', siFuera: 'Eso divide la altura entre 10; el tiempo sale de v₀ entre g.' },
+            { id: 'por', valor: vi * G, error: 'K4', siFuera: 'Eso multiplica v₀ por g. v baja g cada segundo: se divide.' },
+          ], n => `${f(n, 1)} s`),
+          solucion: { texto: `Pierde 10 m/s cada segundo hasta llegar a v = 0.`, ecuacion: [t, ` = ${f(vi)} / 10 = ${f(ts, 1)} s`], dibujo: { datos: Object.assign({}, dib.datos, { pelotas: [{ y: hm, v: 0, marcas: [] }] }), estado: {} } },
+        };
+        if (pide === 'altura') return {
+          pregunta: ['Se lanza una pelota hacia arriba con ', v0, ` = ${f(vi)} m/s. Sin aire y con g = 10 m/s², ¿qué altura máxima alcanza?`],
+          dibujo: dib,
+          opciones: opciones(hm, [
+            { id: 'sin-medio', valor: 2 * hm, error: 'C-MEDIO', siFuera: 'Eso olvida el ½: la rapidez media al subir es la mitad de v₀.' },
+            { id: 'vt', valor: vi * ts / 4, error: 'C-AREA', siFuera: 'Esa área usa la mitad del tiempo de subida.' },
+            { id: 'v-g', valor: vi / G, error: 'C-TIEMPO', siFuera: 'Ese número es el tiempo de subida, no la altura.' },
+          ], n => `${f(n, 2)} m`),
+          solucion: { texto: 'Es el área del triángulo de v–t hasta la cima.', ecuacion: [{ sub: [y, 'máx'] }, ` = ½ · ${f(vi)} · ${f(ts, 1)} = ${f(hm, 2)} m`], dibujo: { datos: Object.assign({}, dib.datos, { pelotas: [{ y: hm, v: 0, marcas: [] }] }), estado: {} } },
+        };
+        const tq = ts + [0.5, 1][r.ent(0, 1)], vq = vi - G * tq;
+        return {
+          pregunta: ['Se lanza una pelota hacia arriba con ', v0, ` = ${f(vi)} m/s. Con el eje hacia arriba y g = 10 m/s², ¿qué velocidad tiene en `, t, ` = ${f(tq, 1)} s?`],
+          dibujo: dib,
+          opciones: opciones(vq, [
+            { id: 'sin-signo', valor: -vq, error: 'K-SIGNO', siFuera: 'Ese es el valor de la rapidez, pero ya pasó la cima: va hacia abajo.' },
+            { id: 'cima', valor: 0, error: 'C1', siFuera: 'v = 0 solo en la cima, que fue antes.' },
+            { id: 'suma', valor: vi + G * tq, error: 'K3', siFuera: 'Eso suma g, como si la gravedad empujara hacia arriba.' },
+          ], n => `${f(n, 1)} m/s`),
+          solucion: { texto: 'Pierde 10 m/s cada segundo, también después de la cima.', ecuacion: [v, ` = ${f(vi)} − 10 · ${f(tq, 1)} = ${f(vq, 1)} m/s`] },
+        };
+      },
+    },
+  };
+
+  // ---------- Idea 5: encuentros y velocidad relativa ----------
+  // Cambia: las rapideces de A y B · Permanece: la separación inicial (24 m) y el reloj común ·
+  // Progresa: las marcas de cada segundo, que cierran la brecha · Se reserva: el cruce de las dos rectas x–t ·
+  // Debe verse: en el encuentro coinciden las posiciones, no las velocidades.
+  const SEP = 24, LARGO_E = 30;
+  const vA = { v: 'c-o', t: 'v_A' };
+  const tEnc = (va, vb, d = SEP) => (va - vb > 0 ? d / (va - vb) : Infinity);
+  const pistaEnc = (va, vb, conEnc = true, d = SEP, largo = LARGO_E) => {
+    const te = tEnc(va, vb, d), tm = Number.isFinite(te) ? Math.min(te, 6) : 6;
+    const ks = Array.from({ length: Math.floor(tm + 1e-9) + 1 }, (_, k) => k);
+    const ma = ks.map(k => va * k).filter(m => m >= 0 && m <= largo), mb = ks.map(k => d + vb * k).filter(m => m >= 0 && m <= largo);
+    const xa = Math.min(largo, va * tm), xb = Math.max(0, Math.min(largo, d + vb * tm));
+    return {
+      datos: {
+        largo, cada: 6,
+        carriles: [{ x: xa, variante: 'a', marcas: ma, rotulo: 'A' }, { x: xb, variante: 'b', marcas: mb, rotulo: 'B' }],
+        encuentro: conEnc && Number.isFinite(te) && va * te <= largo ? { x: va * te, rotulo: `${f(te, 2)} s` } : null,
+      }, estado: {},
+    };
+  };
+  const encuentro = {
+    id: 'encuentro',
+    titulo: 'Encontrarse es estar juntos',
+    temas: ['MRU y velocidad relativa', 'Posición, desplazamiento y distancia'],
+    pieza: 'pista',
+    juega: {
+      consigna: 'A sale de 0 y B sale de 24 m al mismo tiempo. Elige sus velocidades: negativa es hacia la izquierda.',
+      voz: 'Mira cuánto se acorta la distancia entre ellos cada segundo.',
+      controles: [
+        { id: 'va', etiqueta: 'v de A', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 3, unidad: 'm/s', decimales: 0 },
+        { id: 'vb', etiqueta: 'v de B', min: -4, max: 4, paso: 1, inicio: -1, unidad: 'm/s', decimales: 0 },
+      ],
+      dibujo: val => pistaEnc(val.va, val.vb),
+      lectura: val => {
+        const vr = val.va - val.vb;
+        return vr > 0 ? [`Se acercan ${f(vr)} m cada segundo`] : ['No se acercan: B no es alcanzado'];
+      },
+      minimo: 3,
+    },
+    predice: {
+      pregunta: 'A sale de x = 0 a 4 m/s hacia la derecha. B sale a la vez de x = 18 m a 2 m/s hacia la izquierda. ¿En qué instante se encuentran?',
+      opciones: [
+        { id: 'c', texto: '3 s', correcta: true },
+        { id: 'resta', texto: '9 s', error: 'VR-RESTA', siFuera: 'Restar 4 − 2 sería cierto si fueran al mismo lado. Aquí van uno hacia el otro.' },
+        { id: 'solo-a', texto: '4,5 s', error: 'VR-UNO', siFuera: 'Ese es el tiempo de A si B se quedara quieto en 18 m.' },
+        { id: 'velocidad', texto: 'Cuando tengan la misma velocidad', error: 'K1', siFuera: 'Igual velocidad dice que no se acercan más. Encontrarse es tener la misma posición.' },
+      ],
+      dibujo: pistaEnc(4, -2, false, 18, 20),
+      revelar: pistaEnc(4, -2, true, 18, 20),
+      coincide: 'Coincide: se acercan 4 + 2 = 6 m cada segundo, y había 18 m entre ellos.',
+    },
+    mira: {
+      pieza: 'ejes',
+      datos: {
+        x: { min: 0, max: 5, paso: 1, nombre: 't', unidad: 's', decimales: 0, color: 'h' },
+        y: { min: 0, max: 20, paso: 6, nombre: 'x', unidad: 'm', decimales: 0, color: 'i' },
+        curvas: [{ puntos: [[0, 0], [5, 20]], color: 'o', rotulo: 'A', desde: 1 }, { puntos: [[0, 18], [5, 8]], color: 'h', rotulo: 'B', desde: 1 }],
+        puntos: [{ x: 0, y: 18, color: 'h', rotulo: '18 m', desde: 1 }, { x: 3, y: 12, color: 'i', rotulo: '(3 s; 12 m)', guias: true, desde: 3 }],
+      },
+      pasos: [
+        { estado: { corte: 1 }, texto: 'Cada recta es la posición de un carrito en el tiempo.', ecuacion: [{ sub: [x, 'A'] }, ' = 4', t, '   ·   ', { sub: [x, 'B'] }, ' = 18 − 2', t] },
+        { estado: { corte: 2 }, texto: 'Cada segundo la brecha baja 4 + 2 = 6 m.', ecuacion: [{ sub: [v, 'A/B'] }, ' = 4 − (−2) = 6 m/s'] },
+        { estado: { corte: 3 }, texto: 'Se encuentran donde las rectas se cruzan: misma x, mismo t.', ecuacion: [t, ' = ', { frac: ['18', '6'] }, ' = 3 s   ·   ', x, ' = 12 m'] },
+        { estado: { corte: 3 }, texto: 'En el cruce las pendientes son distintas: sus velocidades no son iguales.', ecuacion: [{ sub: [v, 'A'] }, ' = 4 m/s ≠ ', { sub: [v, 'B'] }, ' = −2 m/s'] },
+      ],
+    },
+    regla: {
+      texto: 'Dos móviles se encuentran cuando están en la misma posición en el mismo instante. La brecha se cierra con la velocidad relativa.',
+      ecuacion: [{ sub: [t, 'e'] }, ' = ', { frac: ['d', { sub: [v, 'A/B'] }] }, '   ·   ', { sub: [v, 'A/B'] }, ' = ', { sub: [v, 'A'] }, ' − ', { sub: [v, 'B'] }],
+      condicion: 'los dos salen a la vez, en MRU y sobre el mismo eje. Si la brecha no se achica, no se encuentran.',
+    },
+    ahoraTu: {
+      pieza: 'pista',
+      generar(s) {
+        const r = azar(s), opuesto = s % 2 === 0;
+        const va = r.ent(3, 7), vb = (opuesto ? -1 : 1) * r.ent(1, Math.min(4, va - 1));
+        const vr = va - vb, te = r.ent(2, 5), d = vr * te, xe = va * te;
+        const largo = Math.ceil(Math.max(d, xe) / 10) * 10 + 10;
+        const cuenta = opuesto ? `${f(va)} + ${f(-vb)}` : `${f(va)} − ${f(vb)}`;
+        return {
+          pregunta: `A sale de x = 0 a ${f(va)} m/s hacia la derecha. B sale a la vez de x = ${f(d)} m a ${f(Math.abs(vb))} m/s hacia ${opuesto ? 'la izquierda' : 'la derecha'}. ¿Cuándo se encuentran?`,
+          dibujo: { datos: { largo, cada: 10, carriles: [{ x: 0, variante: 'a', marcas: [], rotulo: 'A' }, { x: d, variante: 'b', marcas: [], rotulo: 'B' }] }, estado: {} },
+          opciones: opciones(te, [
+            { id: 'cambio', valor: d / (va + vb), error: opuesto ? 'VR-RESTA' : 'VR-SUMA', siFuera: opuesto ? 'Restar rapideces sirve si van al mismo lado.' : 'Sumar rapideces sirve si van uno hacia el otro.' },
+            { id: 'solo-a', valor: d / va, error: 'VR-UNO', siFuera: 'Ese sería el tiempo si B se quedara quieto.' },
+            { id: 'pos', valor: xe, error: 'VR-POSICION', siFuera: 'Ese número es la posición del encuentro, en metros.' },
+          ], n => `${f(n, 2)} s`),
+          solucion: {
+            texto: opuesto ? 'Van uno hacia el otro: la brecha se cierra con la suma.' : 'Van al mismo lado: la brecha se cierra con la diferencia.',
+            ecuacion: [{ sub: [t, 'e'] }, ` = ${f(d)} / (${cuenta}) = ${f(te)} s`],
+            dibujo: { datos: { largo, cada: 10, carriles: [{ x: xe, variante: 'a', marcas: [], rotulo: 'A' }, { x: xe, variante: 'b', marcas: [], rotulo: 'B' }], encuentro: { x: xe, rotulo: `${f(xe)} m` } }, estado: {} },
+          },
+        };
+      },
+    },
+  };
+
   return {
     unidad: 'fisica.movimiento-rectilineo',
-    version: '0.1.0',
-    estado: 'borrador',
-    requiere: ['/nucleo/kit/piezas/pista.js', '/nucleo/kit/piezas/ejes.js'],
+    version: '0.2.0',
+    estado: 'completa',
+    requiere: ['/nucleo/kit/piezas/pista.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/torre.js'],
     historia: {
       texto: 'Una caída es demasiado rápida para medirla con relojes de agua. En el siglo XVII, Galileo usó planos inclinados para frenar el movimiento y comparar distancias con tiempos iguales. Nuestras gráficas y ecuaciones son la forma moderna de escribir esas comparaciones.',
       pregunta: '¿Cómo medirías algo que pasa demasiado rápido?',
       fuente: { titulo: 'Museo Galileo — Science of Motion', url: 'https://catalogue.museogalileo.it/section/ScienceOfMotion.html' },
     },
-    ideas: [mru, distancia, mruv],
+    ideas: [mru, distancia, mruv, caida, encuentro],
   };
 });
