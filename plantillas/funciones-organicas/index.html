@@ -138,6 +138,8 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
 .btn:disabled{opacity:.45; cursor:not-allowed}
 .fila{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.juego[hidden]{display:none}
+.juego .estado{flex:1 1 100%; min-height:1.4em}
 button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
 .hint{font-size:.88rem; color:var(--muted)}
 .fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
@@ -177,6 +179,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   <div id="m1" class="mode">
     <section class="bench" aria-label="Las moléculas">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="Moléculas de bolitas y palitos: carbonos grises, hidrógenos turquesa, oxígenos rojos y nitrógenos azules"></canvas></div>
+      <div class="fila juego" id="juego1" role="group" aria-label="La molécula del juego"><p class="estado" aria-live="polite"></p><button type="button" class="btn" data-a="grupo">Cambiar el grupo</button><button type="button" class="btn" data-a="mas">Alargar la cadena</button><button type="button" class="btn" data-a="menos">Acortar la cadena</button></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
       <div class="legend" id="ley1"></div>
     </section>
@@ -198,6 +201,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   <div id="m2" class="mode" hidden>
     <section class="bench" aria-label="Experimentos con grupos funcionales">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="El experimento: moléculas de bolitas y palitos"></canvas></div>
+      <div class="fila juego" id="juego2" role="group" aria-label="La molécula del juego"><p class="estado" aria-live="polite"></p><button type="button" class="btn" data-a="grupo">Cambiar el grupo</button><button type="button" class="btn" data-a="mas">Alargar la cadena</button><button type="button" class="btn" data-a="menos">Acortar la cadena</button></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="legend" id="ley2"></div>
     </section>
@@ -225,6 +229,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'funciones-organicas', unidad: 'quimica.funciones-organicas', version: '0.1.0' };
@@ -636,6 +641,35 @@ function interaccionCaja(E){
   function poner(pos){ const K = E.caja; if (!K) return; const antes = K.r; K.pos = pos; K.r = MF.ponerGrupo(K.n, K.g, pos); K.alCambiar(K.r, antes); }
   E.ponerCaja = poner;
 }
+/* ----- Regla 3 (decisión 20): antes de cualquier pregunta se juega con una molécula de grupo en la punta. Se toca el
+   grupo para cambiarlo (–COOH, –CONH₂, –C≡N) o un carbono para alargar la cadena; también con los botones. Se ven el
+   nombre, la familia y la fórmula. Solo grupos que van en una punta, siempre en el carbono 1, y sin temperaturas ni
+   puentes: el lugar del grupo, la numeración, los isómeros, los alcoholes, las cetonas, los ésteres, las aminas y la
+   ebullición, que es lo que se pregunta, no salen en el juego. ----- */
+const GRUPOS_JUEGO = ['COOH', 'CONH2', 'CN'];
+function jugarConElGrupo(E, idJuego){
+  const caja = document.getElementById(idJuego), est = caja.querySelector('.estado'), J = { n:3, k:0, activo:true };
+  const poner = t => {
+    const r = MF.ponerGrupo(J.n, GRUPOS_JUEGO[J.k], 1), it = conNombre(deResumen(r), ['grupo', 'familia']);
+    it.rot2 = `${sub(r.formula)} · ${r.nombreFamilia}`; it.desc = `${r.nombre}: ${r.nombreFamilia}, ${J.n} carbonos en la cadena.`;
+    cortar(E); E.vista = { tipo:'mols', items:[it] }; E.compactar(false); E.resize(); E.dibujar(); E.describir();
+    if (t) est.textContent = t;
+  };
+  const grupo = () => { J.k = (J.k + 1) % GRUPOS_JUEGO.length; poner(`Cambiaste el grupo: ${MF.CAJA[GRUPOS_JUEGO[J.k]].texto}.`); };
+  const largo = d => { if (J.n + d < 1 || J.n + d > 6){ est.textContent = d > 0 ? 'Hasta aquí: seis carbonos.' : 'Queda un solo carbono.'; return; } J.n += d; poner(d > 0 ? 'Agregaste un carbono.' : 'Quitaste un carbono.'); };
+  caja.querySelectorAll('button').forEach(b => b.onclick = () => { const a = b.dataset.a; if (a === 'grupo') grupo(); else largo(a === 'mas' ? 1 : -1); });
+  // Toque en el dibujo: el grupo lo cambia; un carbono alarga la cadena.
+  E.cv.addEventListener('click', e => {
+    const it = J.activo && E.vista.items[0]; if (!it || !it._tf) return;
+    const r = E.cv.getBoundingClientRect(), q = E.local({ x: e.clientX - r.left, y: e.clientY - r.top });
+    let i = -1, d0 = Celular.RADIO_DEDO/E.esc;
+    it.c.atomos.forEach((p, k) => { if (p.padre !== null && p.padre !== undefined) return; const Q = it._tf.P(p), d = Math.hypot(Q.X - q.x, Q.Y - q.y); if (d < d0){ d0 = d; i = k; } });
+    if (i < 0) return;
+    if ((it.op.grupo || []).includes(i)) grupo(); else if (it.m.at[i] && it.m.at[i].el === 'C') largo(1);
+  });
+  poner('');
+  return () => { J.activo = false; caja.hidden = true; };
+}
 // En la caja salen juntos cadena, localizadores, grupo y temperatura: el nombre de un éster va sin sus dos partes de color.
 const sinPartesEster = r => ({ ...r, partes: r.partes.map(p => (p.tipo === 'ac' || p.tipo === 'al' ? { t: p.t } : p)) });
 // La vista de la caja: el esqueleto con su grupo, la cadena, los números, el grupo funcional y el termómetro.
@@ -950,6 +984,10 @@ $('prev').addEventListener('click', () => go(S.step - 1));
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
 go(0);
+const terminarJuego = jugarConElGrupo(E, 'juego1');
+JugarPrimero.montar({ escena: E.cv.closest('.bench'), preguntas: [...document.querySelectorAll('#m1 .guide > *')], minimo: 2,
+  consigna: 'Toca el grupo para cambiarlo, o un carbono para alargar la cadena.',
+  alListo: () => { terminarJuego(); go(0); } });
 })();
 </script>
 
@@ -1173,7 +1211,11 @@ function ir(k){
 }
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
-ir(0);
+botones();
+const terminarJuego = jugarConElGrupo(E, 'juego2');
+JugarPrimero.montar({ escena: E.cv.closest('.bench'), preguntas: [...document.querySelectorAll('#m2 .guide > *')], minimo: 2,
+  consigna: 'Toca el grupo para cambiarlo, o un carbono para alargar la cadena.',
+  alListo: () => { terminarJuego(); ir(0); } });
 })();
 </script>
 
