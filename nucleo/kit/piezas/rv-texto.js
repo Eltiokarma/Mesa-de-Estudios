@@ -11,7 +11,8 @@
  *     titulo: 'Texto A',              // opcional: cabecera en negrita
  *     modo: 'parrafo' | 'lista' | 'tarjeta',   // párrafo corrido · una oración por renglón, numerada · tarjeta con borde
  *     fragmentos: [{ id: 'f1', t: 'La biblioteca amplió su horario.' } | { id: 'f2', hueco: true, reserva: 'sin embargo,' }],
- *                                     // reserva: el texto más largo que puede entrar en el hueco (fija su ancho)
+ *                                     // reserva: el texto más largo que puede entrar en el hueco (fija su ancho);
+ *                                     // caja: false lo deja sin recuadro y en letra normal (texto que cambia, no hueco)
  *   }],
  *   numerar: false,                   // en párrafo, antepone (1), (2)… a cada fragmento
  * }
@@ -61,11 +62,12 @@
       if (numerar && !lista) palabras.unshift(`(${k})`);
       let actual = null;
       for (const [j, p] of palabras.entries()) {
-        const w = T.ancho(p, TAM, fr.hueco ? 700 : 400) + (fr.hueco ? 12 : 0);   // el hueco lleva aire a cada lado
+        const caja = fr.hueco && fr.caja !== false;
+        const w = T.ancho(p, TAM, caja ? 700 : 400) + (caja ? 12 : 0);   // el hueco con caja lleva aire a cada lado
         const lugar = x > izq ? esp : 0;
         if (x + lugar + w > x0 + ancho && x > izq) { y += LH; x = izq; actual = null; }
         const sep = x > izq ? esp : 0;
-        if (!actual) { actual = { id: fr.id, x: x + sep, y, texto: p, w, hueco: fr.hueco, n: numerar && !lista && j === 0 }; trozos.push(actual); }
+        if (!actual) { actual = { id: fr.id, x: x + sep, y, texto: p, w, hueco: fr.hueco, caja, n: numerar && !lista && j === 0 }; trozos.push(actual); }
         else { actual.texto += ' ' + p; actual.w = x + sep + w - actual.x; }
         x += sep + w;
         // El número entre paréntesis va solo: no se marca con el fragmento.
@@ -127,14 +129,14 @@
           const raya = c === 'o' ? ' stroke-dasharray="7 4"' : c === 'd' ? ' stroke-dasharray="1 5"' : '';
           encima += `<line class="rv-sub${cl}" x1="${T.n(tr.x)}" y1="${T.n(tr.y + 5)}" x2="${T.n(tr.x + w)}" y2="${T.n(tr.y + 5)}" stroke="${T.color(c)}" stroke-width="${T.GROSOR.variable}" stroke-linecap="round"${raya}/>`;
         }
-        if (tr.hueco && !tr.n) {
+        if (tr.caja && !tr.n) {
           fondo += `<rect x="${T.n(tr.x + 1)}" y="${T.n(tr.y - 16)}" width="${T.n(w - 2)}" height="22" rx="5" fill="none" stroke="${T.color(c || 'd')}" stroke-width="${T.GROSOR.contorno}" stroke-dasharray="5 4"/>`;
         }
         const tenue = tachar.has(id) && !tr.n;
         const largo = texto.length > 3 && !tr.hueco ? ` textLength="${T.n(w)}" lengthAdjust="spacing"` : '';
-        const xt = tr.hueco && !tr.n ? tr.x + (w - T.ancho(texto, TAM, 700)) / 2 : tr.x;
-        const colorTxt = tr.hueco && !tr.n ? T.color(c || 'd') : 'currentColor';   // lo que entra al hueco lleva el color de su marca
-        tinta += `<text class="kit-txt" x="${T.n(xt)}" y="${T.n(tr.y)}" fill="${colorTxt}" font-size="${tr.n ? 14 : TAM}"${tr.hueco || tr.n ? ' font-weight="700"' : ''}${tenue ? ' opacity="0.5"' : ''}${largo}>${T.esc(texto)}</text>`;
+        const xt = tr.caja && !tr.n ? tr.x + (w - T.ancho(texto, TAM, 700)) / 2 : tr.x;
+        const colorTxt = tr.caja && !tr.n ? T.color(c || 'd') : 'currentColor';   // lo que entra al hueco lleva el color de su marca
+        tinta += `<text class="kit-txt" x="${T.n(xt)}" y="${T.n(tr.y)}" fill="${colorTxt}" font-size="${tr.n ? 14 : TAM}"${tr.caja || tr.n ? ' font-weight="700"' : ''}${tenue ? ' opacity="0.5"' : ''}${largo}>${T.esc(texto)}</text>`;
         if (tenue) encima += `<line class="rv-tacha${cl}" x1="${T.n(tr.x - 1)}" y1="${T.n(tr.y - 5)}" x2="${T.n(tr.x + w + 1)}" y2="${T.n(tr.y - 5)}" stroke="currentColor" stroke-width="${T.GROSOR.contorno}" stroke-linecap="round"/>`;
       }
     }
