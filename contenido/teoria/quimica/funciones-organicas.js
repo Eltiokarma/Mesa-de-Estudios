@@ -112,6 +112,29 @@
     etanonitrilo: { m: est({ fila: ['CH₃', 'C', 'N'], enl: [1, 3] }), g: ['f1', 'f2'], fam: 'nitrilo', nombre: 'etanonitrilo' },
     propanonitrilo: { m: est({ fila: ['CH₃', 'CH₂', 'C', 'N'], enl: [1, 1, 3] }), g: ['f2', 'f3'], fam: 'nitrilo', nombre: 'propanonitrilo' },
   };
+
+  // Gesto directo (docs/teoria.md §4b). La pieza recentra la figura con todo lo que trae: cada punto se calcula con
+  // el encuadre del dibujo del valor actual. La manija va 22 px hacia afuera del átomo (desde el centro de la figura)
+  // para no tapar su rótulo. Con opciones, gana la opción cuya manija queda más cerca del dedo.
+  const QM = () => Kit.piezas['quim-molecula'];
+  const enFigura = (dib, id) => {
+    const d = dib.datos, g = QM().encuadre(d), a = d.atomos.find(x => x.id === id);
+    const x = g.X(a.x), y = g.Y(a.y), vx = x - 160, vy = y - g.alto / 2, L = Math.hypot(vx, vy);
+    return L < 1 ? { x, y: y - 22 } : { x: x + 22 * vx / L, y: y + 22 * vy / L };
+  };
+  const cercana = (valores, donde, pt, val, id) => {
+    let mejor = valores[0], dm = Infinity;
+    for (const o of valores) { const q = donde(Object.assign({}, val, { [id]: o })), dd = Math.hypot(q.x - pt.x, q.y - pt.y); if (dd < dm - 1e-9) { dm = dd; mejor = o; } }
+    return mejor;
+  };
+  // Fórmula molecular contada de los rótulos (C, H, N, O con sus subíndices), en orden de Hill.
+  const SUB = '₀₁₂₃₄₅₆₇₈₉';
+  const sb = n => (n > 1 ? String(n).split('').map(d => SUB[d]).join('') : '');
+  function cuentaMol(m) {
+    const c = { C: 0, H: 0, N: 0, O: 0 };
+    for (const a of m.n) for (const [, el, dig] of a.t.replace(/^\d+\s*/, '').matchAll(/([CHNO])([₀-₉]*)/g)) c[el] += dig ? [...dig].reduce((x, ch) => x * 10 + SUB.indexOf(ch), 0) : 1;
+    return `C${sb(c.C)}H${sb(c.H)}${c.N ? 'N' + sb(c.N) : ''}${c.O ? 'O' + sb(c.O) : ''}`;
+  }
   const NOMBRE_FAM = { alcohol: 'Alcohol', fenol: 'Fenol', eter: 'Éter', aldehido: 'Aldehído', cetona: 'Cetona', acido: 'Ácido carboxílico', ester: 'Éster', amina: 'Amina', amida: 'Amida', nitrilo: 'Nitrilo' };
   const vista = (k, extra) => una(MOL[k].m, MOL[k].g, NOMBRE_FAM[MOL[k].fam].toLowerCase(), extra);
   // Caso de «Ahora tú»: una molécula dibujada y las familias del grupo como opciones.
@@ -131,6 +154,8 @@
   // aromático, O entre carbonos · Se reserva: el ciclohexanol (OH en anillo que no es aromático) · Debe verse: a qué
   // está unido el oxígeno.
   const GRUPO_O = { etanol: 'OH en un carbono de cadena: alcohol.', metoximetano: 'O entre dos carbonos: éter.', fenol: 'OH en un anillo aromático: fenol.' };
+  const OX = { etanol: 'f2', metoximetano: 'f1', fenol: 's3' };
+  const vistaO = k => vista(k, { alto: 230 });   // más alto: la manija del OH del fenol cae bajo el anillo
   const oxigeno = {
     id: 'alcohol-fenol-eter',
     titulo: 'El oxígeno y sus vecinos',
@@ -140,9 +165,14 @@
       consigna: 'Las tres moléculas tienen oxígeno. Elige una y mira a qué átomos está unido el O: eso decide la familia.',
       voz: 'No basta ver un O: revisa sus dos vecinos.',
       controles: [{ id: 'k', etiqueta: 'Molécula', opciones: Object.keys(GRUPO_O).map(k => ({ valor: k, texto: MOL[k].nombre })) }],
-      dibujo: val => vista(val.k),
+      dibujo: val => vistaO(val.k),
       lectura: val => [GRUPO_O[val.k]],
       minimo: 3,
+      // Se agarra el oxígeno y se lleva a otro lugar: al extremo de la cadena (alcohol), entre los dos carbonos (éter,
+      // con los mismos átomos C₂H₆O) o al anillo (fenol). Responden el resalto del grupo y la familia de la lectura.
+      arrastres: [{ id: 'oxigeno', etiqueta: 'oxígeno: llévalo al extremo, al medio o al anillo', color: 'c-h',
+        donde: val => enFigura(vistaO(val.k), OX[val.k]),
+        mover: (pt, val) => ({ k: cercana(Object.keys(GRUPO_O), v => enFigura(vistaO(v.k), OX[v.k]), pt, val, 'k') }) }],
     },
     predice: {
       pregunta: 'El ciclohexanol tiene un OH unido a un anillo de seis carbonos, como el fenol. Pero su anillo solo tiene enlaces simples. ¿A qué familia pertenece?',
@@ -172,7 +202,7 @@
     },
     regla: {
       texto: 'Un grupo funcional es un patrón de átomos y uniones. Alcohol: OH en un carbono de solo simples. Fenol: OH en un anillo aromático. Éter: O entre dos carbonos.',
-      ecuacion: ['R–OH · Ar–OH · R–O–R′'],
+      ecuacion: [{ llave: ['R–OH'], nota: 'alcohol' }, '   ·   ', { llave: ['Ar–OH'], nota: 'fenol' }, '   ·   ', { llave: ['R–O–R′'], nota: 'éter' }],
       condicion: 'se mira todo el entorno del oxígeno, no solo que esté. R es una cadena de carbonos; Ar, un anillo aromático.',
       voz: 'Primero el O, después sus dos vecinos.',
     },
@@ -194,6 +224,7 @@
   // Cambia: dónde está el C=O · Permanece: la cadena de carbonos · Progresa: del extremo (con H) al medio (con dos C)
   // · Se reserva: el C=O en medio de una cadena larga · Debe verse: qué tiene el carbono del C=O además del O.
   const CARB = { propanal: 'C=O en el extremo, con un H: aldehído (-al).', propanona: 'C=O en medio, entre dos carbonos: cetona (-ona).', butanal: 'C=O en el extremo de cuatro carbonos: aldehído.', butanona: 'C=O en el carbono 2: cetona.' };
+  const oDe = k => MOL[k].g.find(x => x[0] === 'a');   // el O del C=O va arriba de su carbono
   const carbonilo = {
     id: 'aldehido-cetona',
     titulo: 'El C=O: extremo o medio',
@@ -206,6 +237,11 @@
       dibujo: val => vista(val.k),
       lectura: val => [CARB[val.k]],
       minimo: 3,
+      // Se agarra el O del C=O y se corre por la cadena: en el extremo queda un aldehído, en medio una cetona. Responde
+      // la lectura con la familia y el sufijo.
+      arrastres: [{ id: 'carbonilo', etiqueta: 'oxígeno del C=O: córrelo por la cadena', color: 'c-h',
+        donde: val => enFigura(vista(val.k), oDe(val.k)),
+        mover: (pt, val) => ({ k: cercana(Object.keys(CARB), v => enFigura(vista(v.k), oDe(v.k)), pt, val, 'k') }) }],
     },
     predice: {
       pregunta: 'En una cadena de cinco carbonos, el C=O está en el carbono 3, justo en el medio. ¿Qué es?',
@@ -234,7 +270,7 @@
     },
     regla: {
       texto: 'El carbonilo C=O es de aldehído si su carbono tiene un H (va en el extremo, -al) y de cetona si tiene dos carbonos vecinos (en medio, -ona).',
-      ecuacion: ['R–CHO (-al)   ·   R–CO–R′ (-ona)'],
+      ecuacion: [{ llave: ['R–CHO'], nota: 'aldehído, -al' }, '   ·   ', { llave: ['R–CO–R′'], nota: 'cetona, -ona' }],
       condicion: 'el C=O no debe tener un O o un N unidos al mismo carbono: eso ya sería ácido, éster o amida.',
       voz: 'Cuenta qué rodea al carbono del C=O.',
     },
@@ -276,6 +312,8 @@
       dibujo: val => vista(val.k),
       lectura: val => [ACID[val.k]],
       minimo: 3,
+      // Sin arrastre: lo que cambia es qué átomo hay junto al C=O (OH, O–CH₃ o CH₃), un reemplazo y no un lugar al
+      // que se lleve algo; son tres moléculas distintas que se eligen.
     },
     predice: {
       pregunta: 'El ácido etanoico y el etanol se unen y forman un éster, el etanoato de etilo. ¿Sale alguna otra molécula?',
@@ -310,7 +348,7 @@
     },
     regla: {
       texto: 'Ácido carboxílico: C=O con un OH en el mismo carbono (-oico). Éster: C=O con un O que sigue a otro carbono (-ato de -ilo). Ácido + alcohol → éster + agua.',
-      ecuacion: ['CH₃COOH + CH₃CH₂OH ⇌ CH₃COOCH₂CH₃ + H₂O'],
+      ecuacion: [{ llave: ['CH₃COOH'], nota: 'ácido' }, ' + ', { llave: ['CH₃CH₂OH'], nota: 'alcohol' }, ' ⇌ ', { llave: ['CH₃COOCH₂CH₃'], nota: 'éster' }, ' + ', { llave: ['H₂O'], nota: 'sale agua', color: 'c-h' }],
       condicion: 'es un equilibrio con catalizador ácido y no llega al 100 %. Esta unión suelta agua; una adición, no.',
       voz: 'Al nombrar el éster, el ácido va primero.',
     },
@@ -356,6 +394,8 @@
       dibujo: val => vista(val.k),
       lectura: val => [NIT[val.k]],
       minimo: 3,
+      // Sin arrastre: amina, amida y nitrilo difieren en el entorno del N (un C=O vecino, un triple), no en una
+      // posición que se pueda deslizar; son moléculas distintas que se eligen.
     },
     predice: {
       pregunta: 'La propanamida termina en NH₂, igual que la etanamina. ¿La propanamida es una amina?',
@@ -384,7 +424,7 @@
     },
     regla: {
       texto: 'Amina: N unido a carbonos de cadena (o a H). Amida: N unido al carbono de un C=O. Nitrilo: N con triple enlace al carbono final.',
-      ecuacion: ['R–NH₂ · R–CO–NH₂ · R–C≡N'],
+      ecuacion: [{ llave: ['R–NH₂'], nota: 'amina' }, '   ·   ', { llave: ['R–CO–NH₂'], nota: 'amida' }, '   ·   ', { llave: ['R–C≡N'], nota: 'nitrilo' }],
       condicion: 'se mira el carbono vecino del N. Una amida y una amina con NH₂ no se comportan igual.',
       voz: 'NH₂ no basta: mira el carbono de al lado.',
     },
@@ -434,6 +474,7 @@
       dibujo: val => par(val.k),
       lectura: val => [PARES[val.k].lee],
       minimo: 3,
+      // Sin arrastre: se elige un par de fórmulas; no hay nada que agarrar que lleve de un par a otro.
     },
     predice: {
       pregunta: 'El etanol hierve a 78 °C. El metoximetano tiene la misma fórmula, C₂H₆O. ¿Cómo es su punto de ebullición?',
@@ -448,6 +489,8 @@
       coincide: 'Coincide: el éter hierve mucho antes.',
       noCoincide: 'El metoximetano hierve a −24 °C: sus moléculas no forman puentes de hidrógeno.',
     },
+    // Hallazgo 9: la misma pieza con otro dibujo, a propósito. El juego compara el par (dos grupos); «Mira» pone dos
+    // moléculas de etanol juntas porque la ebullición depende de lo que une a las moléculas entre sí.
     mira: {
       datos: (() => { const d = puentes(true).datos; d.enlaces[d.enlaces.length - 1].desde = 2; d.textos[0].desde = 2; return d; })(),
       voz: 'Miremos dos moléculas de etanol juntas.',
@@ -460,7 +503,7 @@
     },
     regla: {
       texto: 'Isómeros de función: misma fórmula molecular y distinto grupo funcional. Por eso tienen propiedades distintas, como la temperatura de ebullición.',
-      ecuacion: ['C₂H₆O: etanol (78 °C) · metoximetano (−24 °C)'],
+      ecuacion: [{ llave: ['C₂H₆O'], nota: 'misma fórmula' }, '   ·   ', 'etanol: 78\u00a0°C', '   ·   ', 'metoximetano: −24\u00a0°C'],
       condicion: 'la comparación vale si el resto de la estructura es parecido. El grupo funcional no decide solo todas las propiedades.',
       voz: 'Misma fórmula no es misma sustancia.',
     },
@@ -521,6 +564,11 @@
         { id: 'd', etiqueta: 'Numerar desde', opciones: [{ valor: 'izq', texto: 'Izquierda' }, { valor: 'der', texto: 'Derecha' }] },
       ],
       dibujo: val => pentanol(val.p, val.d),
+      // Se agarra el OH y se desliza bajo la cadena: cae en el carbono más cercano. Responde el número que le toca
+      // según el extremo elegido, y el nombre, que siempre usa el menor.
+      arrastres: [{ id: 'oh', etiqueta: 'grupo OH: deslízalo bajo la cadena', color: 'c-d',
+        donde: val => enFigura(pentanol(val.p, val.d), `b${val.p - 1}`),
+        mover: (pt, val) => ({ p: cercana([1, 2, 3, 4, 5], v => enFigura(pentanol(v.p, v.d), `b${v.p - 1}`), pt, val, 'p') }) }],
       lectura: val => { const n = val.d === 'izq' ? val.p : 6 - val.p, menor = Math.min(val.p, 6 - val.p); return ['El OH queda en el ', { v: 'c-d', t: String(n) }, ` · nombre: pentan-${menor}-ol`]; },
       minimo: 4,
     },
@@ -537,6 +585,8 @@
       coincide: 'Coincide: la cadena principal lleva el grupo funcional.',
       noCoincide: 'La cadena principal debe llevar el OH, aunque haya otra más larga.',
     },
+    // Hallazgo 9: «Mira» pasa del pentanol del juego al caso reservado (la cadena más larga sin el OH), que es el que
+    // la predicción acaba de revelar; la pieza y los colores del número (c-d) son los mismos.
     mira: {
       datos: figura([[rama(), 0, 0, '']], {
         escala: 40, alto: 230,
@@ -553,7 +603,7 @@
     },
     regla: {
       texto: 'Para nombrar: la cadena principal lleva el grupo; se numera para darle el menor número; las ramas van con su número; al final, el sufijo (-ol, -al, -ona, -oico).',
-      ecuacion: ['número-rama + cadena + número-sufijo'],
+      ecuacion: [{ llave: ['2-etilbutan-', { v: 'c-d', t: '1' }, '-ol'], nota: 'rama, cadena, sufijo' }],
       condicion: 'para un solo grupo funcional (IUPAC). Con varios grupos, dobles o empates hay reglas extra; la cadena más larga no basta.',
       voz: 'Primero el grupo, después el largo.',
     },
@@ -579,6 +629,44 @@
     },
   };
 
+
+  // ---------- Laboratorio ----------
+  // Mesa 1: una cadena de 3 a 6 carbonos con un solo grupo (OH, C=O o NH₂) que se desliza por ella. El código pone
+  // los H de cada carbono, cuenta la fórmula de los rótulos y arma el nombre: familia por posición (C=O en el extremo
+  // es aldehído; en medio, cetona) y el menor localizador. Sin localizador cuando no hace falta (propanona, butanona).
+  const RAIZ = ['', 'met', 'et', 'prop', 'but', 'pent', 'hex'];
+  const GRUPOS = { oh: 'OH', co: 'C=O', nh2: 'NH₂' };
+  function grupoLab(val) {
+    const n = val.n, p = Math.min(val.p, n), g = val.g, extremo = p === 1 || p === n;
+    const fila = Array.from({ length: n }, (_, i) => {
+      const fin = i === 0 || i === n - 1;
+      if (i + 1 !== p) return fin ? 'CH₃' : 'CH₂';
+      if (g === 'co') return fin ? 'CH' : 'C';
+      return fin ? 'CH₂' : 'CH';
+    });
+    const m = g === 'co' ? est({ fila, arriba: { [p - 1]: ['O', 2] } }) : est({ fila, abajo: { [p - 1]: [GRUPOS[g]] } });
+    const menor = Math.min(p, n + 1 - p), loc = n <= 4 && g === 'co' ? '' : `-${menor}`;
+    const fam = g === 'oh' ? 'alcohol' : g === 'nh2' ? 'amina' : extremo ? 'aldehído' : 'cetona';
+    const nom = g === 'oh' ? `${RAIZ[n]}an${loc}-ol` : g === 'nh2' ? `${RAIZ[n]}an${loc}-amina` : extremo ? `${RAIZ[n]}anal` : loc ? `${RAIZ[n]}an${loc}-ona` : `${RAIZ[n]}anona`;
+    const id = g === 'co' ? `a${p - 1}` : `b${p - 1}`;
+    const textos = fila.map((_, i) => ({ x: i * 1.25, y: g === 'co' ? 1.0 : -0.95, t: String(i + 1), color: 'd' }));
+    return { dib: figura([[m, 0, 0, '']], { escala: 40, alto: 200, textos, resaltos: [{ atomos: [`f${p - 1}`, id], color: 'i' }] }), p, n, fam, nom, id, f: cuentaMol(m) };
+  }
+  const manijaGrupo = val => { const c = grupoLab(val); return enFigura(c.dib, c.id); };
+  const manijaFin = val => { const c = grupoLab(val); return enFigura(c.dib, `f${c.n - 1}`); };
+  // Mesa 2: todas las moléculas de la unidad con la misma fórmula, juntas. Las fórmulas las cuenta el código de los
+  // rótulos y se agrupan solas; solo quedan las fórmulas que tienen dos o más moléculas.
+  const POR_FORMULA = {};
+  for (const k of Object.keys(MOL)) (POR_FORMULA[cuentaMol(MOL[k].m)] = POR_FORMULA[cuentaMol(MOL[k].m)] || []).push(k);
+  const FORMULAS = Object.keys(POR_FORMULA).filter(fm => POR_FORMULA[fm].length >= 2);
+  function mismaFormula(fm) {
+    const ks = POR_FORMULA[fm].slice(0, 3);
+    return figura(ks.map((k, i) => [MOL[k].m, 0, 2.6 * i, `m${i}`]), {
+      escala: 36, alto: 90 + 95 * ks.length,
+      resaltos: ks.map((k, i) => ({ atomos: MOL[k].g.map(x => `m${i}${x}`), color: 'i', texto: NOMBRE_FAM[MOL[k].fam].toLowerCase() })),
+    });
+  }
+
   return {
     unidad: 'quimica.funciones-organicas',
     version: '0.1.0',
@@ -589,6 +677,40 @@
       pregunta: '¿Qué parte de una molécula conviene mirar primero?',
       fuente: { titulo: 'OpenStax, Organic Chemistry, §3.1', url: 'https://openstax.org/books/organic-chemistry/pages/3-1-functional-groups' },
     },
+    // Laboratorio (docs/teoria.md §4b): sin preguntas. La primera mesa es más rica que los juegos: tres grupos,
+    // cadenas de 3 a 6 y el nombre armado por el código, con dos manijas (el grupo y el extremo de la cadena).
+    // La segunda junta todas las moléculas de la unidad que comparten fórmula. La lectura dice entradas y resultado.
+    laboratorio: [
+      {
+        id: 'grupo-en-la-cadena', titulo: 'El grupo que recorre la cadena', pieza: 'quim-molecula',
+        consigna: 'Elige un grupo y deslízalo por la cadena; arrastra el último carbono para alargarla. Mira cuándo cambia la familia y cuándo el número.',
+        controles: [
+          { id: 'g', etiqueta: 'Grupo', opciones: [{ valor: 'oh', texto: 'OH' }, { valor: 'co', texto: 'C=O' }, { valor: 'nh2', texto: 'NH₂' }] },
+          { id: 'p', etiqueta: 'En el carbono', color: 'c-d', min: 1, max: 6, paso: 1, inicio: 2, unidad: '', decimales: 0 },
+          { id: 'n', etiqueta: 'Carbonos', color: 'c-i', min: 3, max: 6, paso: 1, inicio: 6, unidad: '', decimales: 0 },
+        ],
+        dibujo: val => grupoLab(val).dib,
+        lectura: val => { const c = grupoLab(val); return [`${GRUPOS[val.g]} en el `, { v: 'c-d', t: String(c.p) }, ` de ${c.n} → ${c.nom} (${c.fam}), ${c.f}`]; },
+        // El grupo se desliza por la cadena (cae en el carbono más cercano); el último carbono se arrastra para
+        // alargar o acortar. Responden el nombre, la familia (C=O en el extremo o en medio) y la fórmula.
+        arrastres: [
+          { id: 'grupo', etiqueta: 'grupo: deslízalo por la cadena', color: 'c-d',
+            donde: manijaGrupo,
+            mover: (pt, val) => ({ p: cercana(Array.from({ length: val.n }, (_, i) => i + 1), manijaGrupo, pt, Object.assign({}, val, { p: Math.min(val.p, val.n) }), 'p') }) },
+          { id: 'extremo', etiqueta: 'último carbono: alarga o acorta la cadena', color: 'c-i',
+            donde: manijaFin,
+            mover: (pt, val) => { const n = cercana([3, 4, 5, 6], manijaFin, pt, val, 'n'); return { n, p: Math.min(val.p, n) }; } },
+        ],
+      },
+      {
+        id: 'misma-formula', titulo: 'Todas las de una fórmula', pieza: 'quim-molecula',
+        consigna: 'Elige una fórmula molecular. Aparecen las moléculas de esta unidad que la comparten: compara su grupo funcional.',
+        controles: [{ id: 'f', etiqueta: 'Fórmula', opciones: FORMULAS.map(fm => ({ valor: fm, texto: fm })) }],
+        dibujo: val => mismaFormula(val.f),
+        lectura: val => { const fams = [...new Set(POR_FORMULA[val.f].slice(0, 3).map(k => NOMBRE_FAM[MOL[k].fam].toLowerCase()))]; return [`${val.f} → ${fams.length > 1 ? 'isómeros de función: ' + fams.join(', ') : 'mismo grupo, otras uniones: ' + fams[0]}`]; },
+        // Sin arrastre: se elige una fórmula; no hay una variable que agarrar.
+      },
+    ],
     ideas: [oxigeno, carbonilo, acidos, nitrogeno, isomeria, nombre],
   };
 });
