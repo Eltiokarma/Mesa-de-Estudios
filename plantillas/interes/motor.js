@@ -24,7 +24,7 @@
  *   capitalDesdeMonto({ M, r, tasa, t, tiempo, tipo })   valor presente: el capital que produce M
  *   tiempo({ C, M, r, tipo })                  periodos para que C llegue a M (simple o compuesto)
  *   descuento({ Vn, r, tasa, t, tiempo })      Dc = Vn·r·t/100 y Dr = Vn·r·t/(100 + r·t), con sus valores actuales
- *   nominalDesdeDescuentos({ Dc, Dr })         Vn = Dc·Dr/(Dc − Dr)
+ *   nominalDesdeDescuentos({ Dc, Dr, t, tiempo })   Vn = Dc·Dr/(Dc − Dr); con el plazo t, la tasa anual r
  *   vencimientoComun({ letras })               t = Σ Vn·t / Σ Vn (descuento comercial a la misma tasa)
  *
  * Cada resultado que es la respuesta de una predicción trae 'errores' con lo que dan los errores típicos
@@ -230,7 +230,13 @@
     if (!(Dc > Dr)) throw new Error('el descuento comercial siempre es mayor que el racional');
     const Vn = limpio(Dc * Dr / (Dc - Dr));
     const a = apartar({ suma: limpio(Dc + Dr), diferencia: limpio(Dc - Dr), promedio: limpio((Dc + Dr) / 2) }, Vn);
-    return { Vn, rt: limpio((Dc / Dr - 1) * 100), errores: a.errores, coinciden: a.coinciden };
+    const rt = limpio((Dc / Dr - 1) * 100), res = { Vn, rt, errores: a.errores, coinciden: a.coinciden };
+    // Con el plazo (t en la unidad 'tiempo', meses si no se dice): la tasa anual y la tasa por unidad de ese tiempo.
+    if (o.t !== undefined) {
+      const t = numero(o.t, 'el tiempo t', { positivo: true }), tiempo = o.tiempo === undefined ? 'meses' : unidadTiempo(o.tiempo);
+      res.r = limpio(rt / aAnios(t, tiempo)); res.rPorUnidad = limpio(rt / t);
+    }
+    return res;
   }
   // Dos montos del mismo capital en dos tiempos: se despejan C y r (r en % por unidad de tiempo).
   // Simple: el interés de cada periodo es (M2 − M1)/(t2 − t1). Compuesto: (1 + r/100)^(t2 − t1) = M2/M1.

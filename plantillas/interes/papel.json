@@ -12,7 +12,74 @@
         "Cada mes gana el 4 % de S/ 1800, que es S/ 72. En 5 meses: 5 · 72 = S/ 360. Con la fórmula: I = 1800 · 4 · 5/100 = 360.",
         "El monto es M = C + I = 1800 + 360 = S/ 2160."
       ],
-      "verificar": [ { "fn": "interesSimple", "args": [{ "C": 1800, "r": 4, "tasa": "mensual", "t": 5, "tiempo": "meses" }], "espera": { "I": 360, "M": 2160, "porPeriodo": 72 } } ]
+      "verificar": [ { "fn": "interesSimple", "args": [{ "C": 1800, "r": 4, "tasa": "mensual", "t": 5, "tiempo": "meses" }], "espera": { "I": 360, "M": 2160, "porPeriodo": 72 } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Rosa presta S/ 1800 al 4 % mensual de interés simple durante 5 meses.",
+          "pregunta": "¿Cuánto gana de interés?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "interesSimple", "args": [{ "C": 1800, "r": 4, "tasa": "mensual", "t": 5, "tiempo": "meses" }], "campo": "I", "valor": 360 },
+          "errores": [
+            {
+              "id": "AR5-da-el-monto",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el total que le devuelven, capital más interés. El interés solo es 5 · 72 = 360.",
+              "fn": "interesSimple",
+              "args": [{ "C": 1800, "r": 4, "tasa": "mensual", "t": 5, "tiempo": "meses" }],
+              "campo": "errores.daElMonto",
+              "valor": 2160
+            },
+            {
+              "id": "AR-un-solo-periodo",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el interés de un solo mes, el 4 % de 1800. En 5 meses: 5 · 72 = 360.",
+              "fn": "interesSimple",
+              "args": [{ "C": 1800, "r": 4, "tasa": "mensual", "t": 5, "tiempo": "meses" }],
+              "campo": "errores.unPeriodo",
+              "valor": 72
+            }
+          ]
+        },
+        {
+          "id": "p1b",
+          "enunciado": "Rosa presta S/ 1800 al 4 % mensual de interés simple durante 5 meses.",
+          "pregunta": "¿Cuánto le devuelven en total?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "interesSimple", "args": [{ "C": 1800, "r": 4, "tasa": "mensual", "t": 5, "tiempo": "meses" }], "campo": "M", "valor": 2160 },
+          "errores": [
+            {
+              "id": "AR5-da-el-interes",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es solo el interés. Le devuelven el capital más el interés: 1800 + 360 = 2160.",
+              "fn": "interesSimple",
+              "args": [{ "C": 1800, "r": 4, "tasa": "mensual", "t": 5, "tiempo": "meses" }],
+              "campo": "I",
+              "valor": 360
+            },
+            {
+              "id": "AR16-al-reves",
+              "respaldo": "hipotesis",
+              "explicacion": "Lo calculaste como compuesto. Aquí el interés es simple: cada mes suma lo mismo, 72 soles.",
+              "fn": "compuesto",
+              "args": [{ "C": 1800, "r": 4, "tasa": "mensual", "t": 5, "tiempo": "meses" }],
+              "campo": "M",
+              "valor": 2189.97522432
+            },
+            {
+              "id": "AR-un-solo-periodo",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste el interés de un solo mes. En 5 meses son 5 · 72 = 360, y el total es 2160.",
+              "fn": "interesSimple",
+              "args": [{ "C": 1800, "r": 4, "tasa": "mensual", "t": 1, "tiempo": "meses" }],
+              "campo": "M",
+              "valor": 1872
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -24,7 +91,37 @@
         "I = 5400 · 20 · 80/36 000 = 240. El 36 000 sale de 100 · 360.",
         "Si usas 80 como si fueran años, sale un interés de S/ 86 400, absurdo. Si usas 365 días, sale unos S/ 236,71: el examen usa el año comercial salvo que diga otra cosa."
       ],
-      "verificar": [ { "fn": "interesSimple", "args": [{ "C": 5400, "r": 20, "tasa": "anual", "t": 80, "tiempo": "dias" }], "espera": { "I": 240, "errores.sinConvertir": 86400, "errores.anio365": 236.7123287671233 } } ]
+      "verificar": [ { "fn": "interesSimple", "args": [{ "C": 5400, "r": 20, "tasa": "anual", "t": 80, "tiempo": "dias" }], "espera": { "I": 240, "errores.sinConvertir": 86400, "errores.anio365": 236.7123287671233 } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Un capital de S/ 5400 se coloca al 20 % anual de interés simple durante 80 días. Usa el año comercial.",
+          "pregunta": "¿Qué interés produce?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "interesSimple", "args": [{ "C": 5400, "r": 20, "tasa": "anual", "t": 80, "tiempo": "dias" }], "campo": "I", "valor": 240 },
+          "errores": [
+            {
+              "id": "AR-anio-de-365",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste el año de 365 días. El examen usa el año comercial, de 360: I = 5400 · 20 · 80/36 000.",
+              "fn": "interesSimple",
+              "args": [{ "C": 5400, "r": 20, "tasa": "anual", "t": 80, "tiempo": "dias" }],
+              "campo": "errores.anio365",
+              "valor": 236.712328767
+            },
+            {
+              "id": "AR-un-solo-periodo",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el interés de un año entero. Son solo 80 días: multiplica por 80/360.",
+              "fn": "interesSimple",
+              "args": [{ "C": 5400, "r": 20, "tasa": "anual", "t": 80, "tiempo": "dias" }],
+              "campo": "errores.unPeriodo",
+              "valor": 1080
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -36,7 +133,51 @@
         "Entonces el monto es el 115 % del capital: M = 1,15 · C, y C = 4600/1,15 = 4000.",
         "Ojo: el 15 % es del capital, no del monto. Restar el 15 % de 4600 da S/ 3910, que no es la respuesta: 3910 · 1,15 = 4496,50, no 4600."
       ],
-      "verificar": [ { "fn": "capitalDesdeMonto", "args": [{ "M": 4600, "r": 6, "tasa": "semestral", "t": 15, "tiempo": "meses", "tipo": "simple" }], "espera": { "C": 4000, "factor": 1.15, "errores.interesSobreMonto": 3910 } } ]
+      "verificar": [ { "fn": "capitalDesdeMonto", "args": [{ "M": 4600, "r": 6, "tasa": "semestral", "t": 15, "tiempo": "meses", "tipo": "simple" }], "espera": { "C": 4000, "factor": 1.15, "errores.interesSobreMonto": 3910 } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Un capital colocado al 6 % semestral de interés simple se convirtió en S/ 4600 al cabo de 15 meses.",
+          "pregunta": "¿Cuál era el capital?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": {
+            "fn": "capitalDesdeMonto",
+            "args": [{ "M": 4600, "r": 6, "tasa": "semestral", "t": 15, "tiempo": "meses", "tipo": "simple" }],
+            "campo": "C",
+            "valor": 4000
+          },
+          "errores": [
+            {
+              "id": "AR3-base-monto",
+              "respaldo": "parcial",
+              "explicacion": "Restaste el 15 % de 4600. El 15 % es del capital: 4600 es el 115 % del capital, y C = 4600/1,15.",
+              "fn": "capitalDesdeMonto",
+              "args": [{ "M": 4600, "r": 6, "tasa": "semestral", "t": 15, "tiempo": "meses", "tipo": "simple" }],
+              "campo": "errores.interesSobreMonto",
+              "valor": 3910
+            },
+            {
+              "id": "AR-sin-tiempo",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste entre 1,06, como si fuera un solo semestre. Son 2,5 semestres: el interés total es el 15 %.",
+              "fn": "capitalDesdeMonto",
+              "args": [{ "M": 4600, "r": 6, "tasa": "semestral", "t": 15, "tiempo": "meses", "tipo": "simple" }],
+              "campo": "errores.sinTiempo",
+              "valor": 4339.62264151
+            },
+            {
+              "id": "AR3-solo-la-tasa",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste el 6 % del monto. Falta el tiempo, 2,5 semestres, y el porcentaje es del capital: divide 4600 entre 1,15.",
+              "fn": "capitalDesdeMonto",
+              "args": [{ "M": 4600, "r": 6, "tasa": "semestral", "t": 15, "tiempo": "meses", "tipo": "simple" }],
+              "campo": "errores.restaTasa",
+              "valor": 4324
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -48,7 +189,88 @@
         "M = 8000 · (1,05)⁴ = 8000 · 1,21550625 = 9724,05.",
         "Con interés simple serían 8000 + 4 · 400 = 9600. La diferencia, 9724,05 − 9600 = 124,05, es el interés que ganaron los intereses anteriores."
       ],
-      "verificar": [ { "fn": "compuesto", "args": [{ "C": 8000, "r": 5, "tasa": "trimestral", "t": 1, "tiempo": "anios" }], "espera": { "M": 9724.05, "n": 4, "simple.M": 9600, "sobreInteres": 124.05 } } ]
+      "verificar": [ { "fn": "compuesto", "args": [{ "C": 8000, "r": 5, "tasa": "trimestral", "t": 1, "tiempo": "anios" }], "espera": { "M": 9724.05, "n": 4, "simple.M": 9600, "sobreInteres": 124.05 } } ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Se depositan S/ 8000 al 5 % trimestral con capitalización trimestral durante un año.",
+          "pregunta": "¿Cuál es el monto?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "compuesto", "args": [{ "C": 8000, "r": 5, "tasa": "trimestral", "t": 1, "tiempo": "anios" }], "campo": "M", "valor": 9724.05 },
+          "errores": [
+            {
+              "id": "AR16-como-simple",
+              "respaldo": "parcial",
+              "explicacion": "Lo calculaste como simple: 8000 + 4 · 400. Con capitalización, el interés también gana interés: 8000 · 1,05⁴.",
+              "fn": "compuesto",
+              "args": [{ "C": 8000, "r": 5, "tasa": "trimestral", "t": 1, "tiempo": "anios" }],
+              "campo": "errores.comoSimple",
+              "valor": 9600
+            },
+            {
+              "id": "AR-un-periodo-menos",
+              "respaldo": "hipotesis",
+              "explicacion": "Elevaste a la 3. Un año tiene 4 trimestres: son 4 periodos, 8000 · 1,05⁴.",
+              "fn": "compuesto",
+              "args": [{ "C": 8000, "r": 5, "tasa": "trimestral", "t": 1, "tiempo": "anios" }],
+              "campo": "errores.unPeriodoMenos",
+              "valor": 9261
+            },
+            {
+              "id": "AR-tiempo-sin-convertir",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste un solo periodo. La tasa es trimestral y un año tiene 4 trimestres: 8000 · 1,05⁴.",
+              "fn": "compuesto",
+              "args": [{ "C": 8000, "r": 5, "tasa": "trimestral", "t": 1, "tiempo": "trimestres" }],
+              "campo": "M",
+              "valor": 8400
+            }
+          ]
+        },
+        {
+          "id": "p4b",
+          "enunciado": "Se depositan S/ 8000 al 5 % trimestral con capitalización trimestral durante un año.",
+          "pregunta": "¿Cuánto del interés es interés sobre interés?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": {
+            "fn": "compuesto",
+            "args": [{ "C": 8000, "r": 5, "tasa": "trimestral", "t": 1, "tiempo": "anios" }],
+            "campo": "sobreInteres",
+            "valor": 124.05
+          },
+          "errores": [
+            {
+              "id": "AR-todo-el-interes",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es todo el interés. El interés sobre interés es lo que pasa del simple: 9724,05 − 9600.",
+              "fn": "compuesto",
+              "args": [{ "C": 8000, "r": 5, "tasa": "trimestral", "t": 1, "tiempo": "anios" }],
+              "campo": "I",
+              "valor": 1724.05
+            },
+            {
+              "id": "AR16-interes-simple",
+              "respaldo": "parcial",
+              "explicacion": "Ese es el interés que daría el simple. Lo que se pide es lo que el compuesto da de más: 9724,05 − 9600.",
+              "fn": "compuesto",
+              "args": [{ "C": 8000, "r": 5, "tasa": "trimestral", "t": 1, "tiempo": "anios" }],
+              "campo": "simple.I",
+              "valor": 1600
+            },
+            {
+              "id": "AR-un-periodo-menos",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste solo 3 trimestres. Un año tiene 4: el monto es 8000 · 1,05⁴ y el simple, 9600.",
+              "fn": "compuesto",
+              "args": [{ "C": 8000, "r": 5, "tasa": "trimestral", "t": 1, "tiempo": "anios" }],
+              "campo": "torre.3.sobreInteres",
+              "valor": 61
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p5",
@@ -60,7 +282,46 @@
         "En el año se multiplica por (1,03)⁶ ≈ 1,1941, así que gana un 19,41 %.",
         "No es 6 · 3 = 18 %: eso sería sin capitalizar. El 18 % es la tasa nominal anual; el 19,41 %, la efectiva."
       ],
-      "verificar": [ { "fn": "efectiva", "args": [{ "r": 3, "n": 6 }], "espera": { "efectiva": 19.40522965290001, "errores.proporcional": 18 } } ]
+      "verificar": [ { "fn": "efectiva", "args": [{ "r": 3, "n": 6 }], "espera": { "efectiva": 19.40522965290001, "errores.proporcional": 18 } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Un banco paga el 3 % bimestral con capitalización bimestral.",
+          "pregunta": "¿Qué tasa efectiva anual paga?",
+          "unidad": "%",
+          "decimales": 2,
+          "correcta": { "fn": "efectiva", "args": [{ "r": 3, "n": 6 }], "campo": "efectiva", "valor": 19.4052296529 },
+          "errores": [
+            {
+              "id": "AR16-proporcional",
+              "respaldo": "parcial",
+              "explicacion": "Multiplicaste 6 · 3. Eso es la tasa nominal, sin capitalizar. La efectiva es 1,03⁶ − 1, cerca de 19,41 %.",
+              "fn": "efectiva",
+              "args": [{ "r": 3, "n": 6 }],
+              "campo": "errores.proporcional",
+              "valor": 18
+            },
+            {
+              "id": "AR4-factor-como-tasa",
+              "respaldo": "parcial",
+              "explicacion": "Ese es el factor 1,1941 escrito como porcentaje. La ganancia es lo que pasa de 1: 19,41 %.",
+              "fn": "efectiva",
+              "args": [{ "r": 3, "n": 6 }],
+              "campo": "errores.factorComoTasa",
+              "valor": 119.405229653
+            },
+            {
+              "id": "AR-sin-cambio",
+              "respaldo": "hipotesis",
+              "explicacion": "Esa es la tasa de un bimestre. En el año hay 6 bimestres y cada uno capitaliza: 1,03⁶ − 1.",
+              "fn": "efectiva",
+              "args": [{ "r": 3, "n": 6 }],
+              "campo": "errores.sinCambio",
+              "valor": 3
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -72,7 +333,37 @@
         "Entonces 1 + r/100 = √1,44 = 1,2 y r = 20 %.",
         "No es 44/2 = 22 %: con 22 % semestral capitalizable, en el año el dinero se multiplicaría por 1,22² = 1,4884, no por 1,44."
       ],
-      "verificar": [ { "fn": "porPeriodo", "args": [{ "efectiva": 44, "n": 2 }], "espera": { "r": 20, "errores.proporcional": 22 } } ]
+      "verificar": [ { "fn": "porPeriodo", "args": [{ "efectiva": 44, "n": 2 }], "espera": { "r": 20, "errores.proporcional": 22 } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Se busca una tasa semestral, con capitalización semestral, que equivalga a una tasa efectiva del 44 % anual.",
+          "pregunta": "¿Qué tasa semestral es?",
+          "unidad": "%",
+          "decimales": 2,
+          "correcta": { "fn": "porPeriodo", "args": [{ "efectiva": 44, "n": 2 }], "campo": "r", "valor": 20 },
+          "errores": [
+            {
+              "id": "AR16-proporcional",
+              "respaldo": "parcial",
+              "explicacion": "Dividiste 44 entre 2. Con 22 % capitalizable, en el año sale 1,22² = 1,4884. Busca r con (1 + r/100)² = 1,44.",
+              "fn": "porPeriodo",
+              "args": [{ "efectiva": 44, "n": 2 }],
+              "campo": "errores.proporcional",
+              "valor": 22
+            },
+            {
+              "id": "AR-tasa-al-reves",
+              "respaldo": "hipotesis",
+              "explicacion": "Compusiste el 44 % dos veces: 1,44² − 1. El 44 % ya es del año; hay que sacar la raíz: √1,44 = 1,2.",
+              "fn": "efectiva",
+              "args": [{ "r": 44, "n": 2 }],
+              "campo": "efectiva",
+              "valor": 107.36
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -85,7 +376,46 @@
         "Es apenas más que con capitalización mensual (5000 · 1,01²⁴ ≈ 6348,67): capitalizar más seguido ayuda cada vez menos y el monto se acerca a un tope."
       ],
       "verificar": [ { "fn": "capitalizacion", "args": [{ "C": 5000, "j": 12, "m": "continua", "t": 2 }], "espera": { "M": 6356.245752 } },
-                     { "fn": "capitalizacion", "args": [{ "C": 5000, "j": 12, "m": 12, "t": 2 }], "espera": { "M": 6348.673243 } } ]
+                     { "fn": "capitalizacion", "args": [{ "C": 5000, "j": 12, "m": 12, "t": 2 }], "espera": { "M": 6348.673243 } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Se colocan S/ 5000 al 12 % nominal anual con capitalización continua durante 2 años. Usa que e elevado a 0,24 vale cerca de 1,27125.",
+          "pregunta": "¿Cuál es el monto?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "capitalizacion", "args": [{ "C": 5000, "j": 12, "m": "continua", "t": 2 }], "campo": "M", "valor": 6356.24575161 },
+          "errores": [
+            {
+              "id": "AR16-como-simple",
+              "respaldo": "parcial",
+              "explicacion": "Lo calculaste como simple: 5000 · 1,24. Con capitalización continua el monto es 5000 · e elevado a 0,24.",
+              "fn": "capitalizacion",
+              "args": [{ "C": 5000, "j": 12, "m": "continua", "t": 2 }],
+              "campo": "errores.comoAnual",
+              "valor": 6200
+            },
+            {
+              "id": "AR-capitaliza-anual",
+              "respaldo": "hipotesis",
+              "explicacion": "Capitalizaste una vez al año: 5000 · 1,12². Continua es capitalizar a cada instante: 5000 · e elevado a 0,24.",
+              "fn": "capitalizacion",
+              "args": [{ "C": 5000, "j": 12, "m": 1, "t": 2 }],
+              "campo": "M",
+              "valor": 6272
+            },
+            {
+              "id": "AR-un-solo-periodo",
+              "respaldo": "hipotesis",
+              "explicacion": "Calculaste un solo año, e elevado a 0,12. Son 2 años: el exponente es 12 · 2/100 = 0,24.",
+              "fn": "capitalizacion",
+              "args": [{ "C": 5000, "j": 12, "m": "continua", "t": 1 }],
+              "campo": "M",
+              "valor": 5637.4842579
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -98,7 +428,135 @@
         "El racional se calcula sobre el valor actual: Va + 3 % de Va = 8240, o sea 1,03 · Va = 8240 y Va = 8000. Dr = 8240 − 8000 = 240 = 8240 · 3/103.",
         "El comercial siempre es mayor: Dc − Dr = 7,20, que es justo el 3 % de 240."
       ],
-      "verificar": [ { "fn": "descuento", "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "meses" }], "espera": { "rt": 3, "comercial.D": 247.2, "comercial.Va": 7992.8, "racional.D": 240, "racional.Va": 8000, "diferencia": 7.2 } } ]
+      "verificar": [ { "fn": "descuento", "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "meses" }], "espera": { "rt": 3, "comercial.D": 247.2, "comercial.Va": 7992.8, "racional.D": 240, "racional.Va": 8000, "diferencia": 7.2 } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "Una letra de cambio de S/ 8240 se descuenta 2 meses antes de su vencimiento al 18 % anual.",
+          "pregunta": "¿Cuál es el descuento comercial?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "descuento", "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "meses" }], "campo": "comercial.D", "valor": 247.2 },
+          "errores": [
+            {
+              "id": "AR-racional-por-comercial",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el descuento racional, 8240 · 3/103. El comercial se saca sobre el nominal: 8240 · 3/100.",
+              "fn": "descuento",
+              "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "meses" }],
+              "campo": "comercial.errores.comoRacional",
+              "valor": 240
+            },
+            {
+              "id": "AR-tiempo-sin-convertir",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 2 como si fueran años. La tasa es anual: 2 meses son 2/12 de año, y r · t = 3 %.",
+              "fn": "descuento",
+              "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "meses" }],
+              "campo": "comercial.errores.sinConvertir",
+              "valor": 2966.4
+            }
+          ]
+        },
+        {
+          "id": "p8b",
+          "enunciado": "Una letra de cambio de S/ 8240 se descuenta 2 meses antes de su vencimiento al 18 % anual.",
+          "pregunta": "¿Cuánto se recibe con descuento comercial?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": {
+            "fn": "descuento",
+            "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "meses" }],
+            "campo": "comercial.Va",
+            "valor": 7992.8
+          },
+          "errores": [
+            {
+              "id": "AR-racional-por-comercial",
+              "respaldo": "hipotesis",
+              "explicacion": "Eso se recibe con descuento racional. Con el comercial se resta el 3 % del nominal: 8240 − 247,20.",
+              "fn": "descuento",
+              "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "meses" }],
+              "campo": "racional.Va",
+              "valor": 8000
+            },
+            {
+              "id": "AR-tiempo-sin-convertir",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 2 como si fueran años. La tasa es anual: 2 meses son 2/12 de año, y r · t = 3 %.",
+              "fn": "descuento",
+              "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "anios" }],
+              "campo": "comercial.Va",
+              "valor": 5273.6
+            }
+          ]
+        },
+        {
+          "id": "p8c",
+          "enunciado": "Una letra de cambio de S/ 8240 se descuenta 2 meses antes de su vencimiento al 18 % anual.",
+          "pregunta": "¿Cuál es el descuento racional?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "descuento", "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "meses" }], "campo": "racional.D", "valor": 240 },
+          "errores": [
+            {
+              "id": "AR-comercial-por-racional",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el comercial, sobre el nominal. El racional se saca sobre lo que se recibe: 1,03 · Va = 8240.",
+              "fn": "descuento",
+              "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "meses" }],
+              "campo": "racional.errores.comoComercial",
+              "valor": 247.2
+            },
+            {
+              "id": "AR3-base-equivocada",
+              "respaldo": "parcial",
+              "explicacion": "Sacaste el 3 % de 7992,80, lo que se recibe con el comercial. La base es el valor actual racional: 8240/1,03.",
+              "fn": "descuento",
+              "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "meses" }],
+              "campo": "racional.errores.sobreVaComercial",
+              "valor": 239.784
+            },
+            {
+              "id": "AR-tiempo-sin-convertir",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 2 como si fueran años. La tasa es anual: 2 meses son 2/12 de año, y r · t = 3 %.",
+              "fn": "descuento",
+              "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "meses" }],
+              "campo": "racional.errores.sinConvertir",
+              "valor": 2181.17647059
+            }
+          ]
+        },
+        {
+          "id": "p8d",
+          "enunciado": "Una letra de cambio de S/ 8240 se descuenta 2 meses antes de su vencimiento al 18 % anual.",
+          "pregunta": "¿Cuánto se recibe con descuento racional?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "descuento", "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "meses" }], "campo": "racional.Va", "valor": 8000 },
+          "errores": [
+            {
+              "id": "AR-comercial-por-racional",
+              "respaldo": "hipotesis",
+              "explicacion": "Eso se recibe con descuento comercial. Con el racional, 1,03 · Va = 8240 y Va = 8000.",
+              "fn": "descuento",
+              "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "meses" }],
+              "campo": "comercial.Va",
+              "valor": 7992.8
+            },
+            {
+              "id": "AR-tiempo-sin-convertir",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 2 como si fueran años. La tasa es anual: 2 meses son 2/12 de año, y r · t = 3 %.",
+              "fn": "descuento",
+              "args": [{ "Vn": 8240, "r": 18, "tasa": "anual", "t": 2, "tiempo": "anios" }],
+              "campo": "racional.Va",
+              "valor": 6058.82352941
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
@@ -111,7 +569,65 @@
         "Si r · t = 20 % en 8 meses, la tasa anual es r = 20 · 12/8 = 30 %."
       ],
       "verificar": [ { "fn": "nominalDesdeDescuentos", "args": [{ "Dc": 180, "Dr": 150 }], "espera": { "Vn": 900, "rt": 20 } },
-                     { "fn": "descuento", "args": [{ "Vn": 900, "r": 30, "tasa": "anual", "t": 8, "tiempo": "meses" }], "espera": { "comercial.D": 180, "racional.D": 150 } } ]
+                     { "fn": "descuento", "args": [{ "Vn": 900, "r": 30, "tasa": "anual", "t": 8, "tiempo": "meses" }], "espera": { "comercial.D": 180, "racional.D": 150 } } ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "Los descuentos comercial y racional de una letra que vence dentro de 8 meses son S/ 180 y S/ 150.",
+          "pregunta": "¿Cuál es el valor nominal de la letra?",
+          "unidad": "soles",
+          "decimales": 2,
+          "correcta": { "fn": "nominalDesdeDescuentos", "args": [{ "Dc": 180, "Dr": 150 }], "campo": "Vn", "valor": 900 },
+          "errores": [
+            {
+              "id": "AR-suma-descuentos",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste los dos descuentos. Dc − Dr = 30 es el 20 % de 150, así que r·t = 20 % y Vn = 180/0,20 = 900.",
+              "fn": "nominalDesdeDescuentos",
+              "args": [{ "Dc": 180, "Dr": 150 }],
+              "campo": "errores.suma",
+              "valor": 330
+            },
+            {
+              "id": "AR-promedio-descuentos",
+              "respaldo": "hipotesis",
+              "explicacion": "Promediaste los dos descuentos. El nominal sale de Vn = Dc · Dr/(Dc − Dr) = 180 · 150/30 = 900.",
+              "fn": "nominalDesdeDescuentos",
+              "args": [{ "Dc": 180, "Dr": 150 }],
+              "campo": "errores.promedio",
+              "valor": 165
+            }
+          ]
+        },
+        {
+          "id": "p9b",
+          "enunciado": "Los descuentos comercial y racional de una letra que vence dentro de 8 meses son S/ 180 y S/ 150.",
+          "pregunta": "¿Cuál es la tasa anual de descuento?",
+          "unidad": "%",
+          "decimales": 2,
+          "correcta": { "fn": "nominalDesdeDescuentos", "args": [{ "Dc": 180, "Dr": 150, "t": 8 }], "campo": "r", "valor": 30 },
+          "errores": [
+            {
+              "id": "AR-tiempo-sin-convertir",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese 20 % es r · t, lo de los 8 meses. Para la tasa anual: 20 · 12/8 = 30 %.",
+              "fn": "nominalDesdeDescuentos",
+              "args": [{ "Dc": 180, "Dr": 150, "t": 8 }],
+              "campo": "rt",
+              "valor": 20
+            },
+            {
+              "id": "AR-tasa-mensual",
+              "respaldo": "hipotesis",
+              "explicacion": "Esa es la tasa de un mes, 20/8. Se pide la anual: 2,5 · 12 = 30 %.",
+              "fn": "nominalDesdeDescuentos",
+              "args": [{ "Dc": 180, "Dr": 150, "t": 8 }],
+              "campo": "rPorUnidad",
+              "valor": 2.5
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p10",

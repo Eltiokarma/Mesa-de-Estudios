@@ -2,7 +2,7 @@
   "plantilla": "interes",
   "unidades": "Dinero en soles (S/), tasas en % (r = 10 es el 10 %), tiempo en la unidad que dice cada caso. Año comercial de 360 días y mes de 30 días.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.comoSimple, torre.2.sobreInteres); las listas se comparan completas y los textos exactos. 'tambien' son llamadas extra del mismo caso.",
-  "verificacion": "Los 19 casos originales los verificó un agente independiente (7 nov 2026); los casos y campos agregados después de la revisión (alReves, sobreVaComercial, daElMonto, coinciden, dosMontos con sus errores y los bordes con t = 0 y r = 0) también se verificaron aparte el 7 nov 2026, con 0 discrepancias. Calculados primero por el constructor con aritmética exacta en Python (fractions) y, para logaritmos, exponenciales y raíces, con math en coma flotante doble.",
+  "verificacion": "Los 19 casos originales los verificó un agente independiente (7 nov 2026); los casos y campos agregados después de la revisión (alReves, sobreVaComercial, daElMonto, coinciden, dosMontos con sus errores y los bordes con t = 0 y r = 0) también se verificaron aparte el 7 nov 2026, con 0 discrepancias. Calculados primero por el constructor con aritmética exacta en Python (fractions) y, para logaritmos, exponenciales y raíces, con math en coma flotante doble. Lo agregado el 14 nov 2026 para las preguntas de papel (la tasa anual en nominalDesdeDescuentos) se recalculó aparte con fractions en Python: r·t = (Dc − Dr)/Dr y r = r·t entre el plazo en años.",
   "tolerancia": 1e-09,
   "casos": [
     {
@@ -309,7 +309,11 @@
         "errores.suma": 630,
         "errores.diferencia": 30,
         "errores.promedio": 315
-      }
+      },
+      "tambien": [
+        { "args": [{ "Dc": 180, "Dr": 150, "t": 8 }], "espera": { "Vn": 900, "rt": 20, "r": 30, "rPorUnidad": 2.5 } },
+        { "args": [{ "Dc": 126, "Dr": 120, "t": 90, "tiempo": "dias" }], "espera": { "Vn": 2520, "rt": 5, "r": 20, "rPorUnidad": 0.05555555555555555 } }
+      ]
     },
     {
       "nombre": "¿Qué pasa si…? 4: S/ 3600 al 3 % mensual durante 45 días → I = S/ 162 (sin convertir: 4860; año de 365 días: 159,78; un solo mes: 108)",
