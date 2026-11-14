@@ -319,11 +319,52 @@ async function despuesDeCorrida() {
 // =============================== Parte 1b: dos carritos ===============================
 const ORDEN_1B = ['alcance', 'cruce', 'nunca'];
 const P1B = { i: 0, hechos: [] };
+// Regla de Gerson (14 nov): el alumno juega con la simulación antes de cualquier pregunta, también de una predicción.
 function parte1b() {
-  parte('1b', 'Dos carritos'); P1B.i = 0; $('registro').hidden = false; $('registro').innerHTML = '';
-  caso1b();
+  parte('1b', 'Dos carritos'); P1B.i = 0; $('registro').hidden = true; $('registro').innerHTML = '';
+  juego1b();
+}
+const J1B = { vA: 4, b: 0, corridas: 0 };
+function juego1b() {
+  const rot = (k, o) => `${k} · ${F(Math.abs(o.v0), 0)} m/s ${o.v0 > 0 ? '→' : '←'}`;
+  const armar = () => {
+    const A = { x0: 0, v0: J1B.vA }, B = L.SALIDAS_B[J1B.b];
+    pista = { largo: L.LARGO, cada: 5, carriles: [{ x: 0, variante: 'a', marcas: [], rotulo: rot('A', A) }, { x: B.x0, variante: 'b', marcas: [], rotulo: rot('B', B) }] };
+    grafica = { compacto: true, x: { min: 0, max: 5, paso: 1, nombre: 't', unidad: 's' }, y: { min: 0, max: 30, paso: 10, nombre: 'x', unidad: 'm', color: 'i' }, curvas: [] };
+    pintarPista(); pintarGrafica(); lectura(0, 0);
+  };
+  armar();
+  consigna('Juega: cambia las rapideces y suelta los carritos.');
+  aviso('');
+  const botones = () => controles([
+    { texto: `A: ${J1B.vA} m/s`, alClic: () => { J1B.vA = L.RAPIDECES[(L.RAPIDECES.indexOf(J1B.vA) + 1) % L.RAPIDECES.length]; armar(); botones(); } },
+    { texto: 'Cambiar B', alClic: () => { J1B.b = (J1B.b + 1) % L.SALIDAS_B.length; armar(); botones(); } },
+    { texto: 'Soltar', alClic: soltarJuego },
+  ]);
+  botones();
+  function soltarJuego() {
+    controles([]); seguir(null);
+    const d = L.dosCarritosCon({ x0: 0, v0: J1B.vA }, L.SALIDAS_B[J1B.b]);
+    correr({
+      dur: () => d.dur,
+      cada: (t, nuevoSeg) => {
+        if (nuevoSeg || RM) { const k = Math.floor(t + 1e-9); pista.carriles[0].marcas = d.marcasA.slice(0, k + 1); pista.carriles[1].marcas = d.marcasB.slice(0, k + 1); pintarPista(); }
+        moverCarrito(0, d.xA(t)); moverCarrito(1, d.xB(t)); lectura(t, d.xA(t));
+        grafica.curvas = [curva(d.xA, Math.max(t, 0.01), 'i', { rotulo: 'A' }), curva(d.xB, Math.max(t, 0.01), 'i', { rotulo: 'B', discontinua: true })];
+        pintarGrafica();
+      },
+      fin: () => {
+        J1B.corridas++;
+        if (d.encuentro) { pista.encuentro = { x: d.encuentro.x, rotulo: `${F(d.encuentro.x, 0)} m` }; grafica.puntos = [{ x: d.encuentro.t, y: d.encuentro.x, color: 'i', guias: true }]; pintarPista(); pintarGrafica(); }
+        aviso(d.encuentro ? `Se encontraron en ${F(d.encuentro.x, 0)} m.` : 'No se encontraron.');
+        controles([{ texto: 'Otra vez', alClic: () => { armar(); botones(); aviso(''); seguir('Ya jugué: a predecir', () => caso1b()); } }]);
+        seguir('Ya jugué: a predecir', () => caso1b());
+      },
+    });
+  }
 }
 function caso1b() {
+  $('registro').hidden = false;
   const caso = ORDEN_1B[P1B.i], d = L.dosCarritos(caso);
   const rot = (k, o) => `${k} · ${F(Math.abs(o.v0), 0)} m/s ${o.v0 > 0 ? '→' : '←'}`;
   pista = { largo: L.LARGO, cada: 5, carriles: [
@@ -396,16 +437,16 @@ const nombreCaso = c => ({ alcance: 'Uno alcanza al otro', cruce: 'Se cruzan', n
 
 // =============================== Parte 2: pisar (MRUV) ===============================
 const P2 = { eventos: [], predicho: false, tFin: Infinity, frenó: false };
-function parte2() {
-  parte(2, 'Pisar'); $('registro').hidden = true;
-  P2.eventos = [{ t: 0, pedal: 'suelto' }]; P2.predicho = false; P2.tFin = Infinity; P2.freno = false; P2.final = false;
+function parte2(libre = true) {
+  parte(2, 'Pisar'); $('registro').hidden = true; aviso(''); seguir(null);
+  P2.libre = libre;
+  P2.eventos = [{ t: 0, pedal: 'suelto' }]; P2.predicho = libre; P2.tFin = Infinity; P2.freno = false; P2.final = false;
   pista = { largo: L.LARGO, cada: 5, carriles: [{ x: 0, marcas: [] }] };
   grafica = { compacto: true, x: { min: 0, max: 10, paso: 2, nombre: 't', unidad: 's' }, y: { min: 0, max: 8, paso: 2, nombre: 'v', unidad: 'm/s', color: 'h' }, curvas: [] };
   pintarPista(); pintarGrafica(); lectura(0, 0, 0);
-  consigna('Mantén apretado «Acelerar». Suelta cuando quieras.');
-  aviso('');
+  consigna(libre ? 'Juega con los pedales: mantenlos apretados.' : 'Otra corrida. Mantén apretado «Acelerar».');
   const pedal = (nombre, on) => {
-    if (!corriendo && P2.eventos.length === 1 && nombre === 'acelera' && on) arrancar2();
+    if (!corriendo && P2.eventos.length === 1 && on && (nombre === 'acelera' || libre)) arrancar2();
     if (!corriendo) return;
     const t = tiempo2();
     P2.eventos.push({ t, pedal: on ? nombre : 'suelto' });
@@ -434,7 +475,8 @@ function arrancar2() {
       if (x >= L.LARGO) { x = L.LARGO; P2.tFin = t; P2.final = true; }
       if (m.tParada !== null && t > m.tParada + 0.6) P2.tFin = t;
       const e = P2.eventos[P2.eventos.length - 1], a = L.PEDAL[e.pedal] && m.v(t) > 0 ? L.PEDAL[e.pedal] : 0;
-      pista.carriles[0].flecha = a ? { a } : null;
+      // En la corrida libre no hay flecha de a: es lo que después se pregunta.
+      pista.carriles[0].flecha = a && !P2.libre ? { a } : null;
       if (nuevoSeg || RM) {
         pista.carriles[0].marcas = L.marcas(m, Math.min(t, P2.tFin)).filter(v => v <= L.LARGO);
         pintarPista();
@@ -448,9 +490,16 @@ function arrancar2() {
       controles([]);
       const m = L.corridaPedal(P2.eventos).movil;
       pista.carriles[0].flecha = null; pintarPista();
+      if (P2.libre) {
+        consigna('Juega otra vez o sigue.');
+        aviso('Mira las marcas y la gráfica v-t de tu corrida.');
+        controles([{ texto: 'Otra vez', alClic: () => { reloj2 = null; parte2(true); } }]);
+        seguir('Ya jugué: seguir', () => { reloj2 = null; parte2(false); });
+        return;
+      }
       if (P2.final && !P2.eventos.some(e => e.pedal === 'frena')) {
         consigna('Llegó al final sin frenar.'); aviso('Esta vez, frena antes del final.');
-        seguir('Otra vez', () => { reloj2 = null; parte2(); });
+        seguir('Otra vez', () => { reloj2 = null; parte2(false); });
         return;
       }
       consigna('Mira cómo cambian las marcas.');
@@ -506,8 +555,6 @@ async function parte3() {
   pintarPista(); pintarGrafica(); lectura(0, 0);
   consigna(propia ? 'Esta es la gráfica v-t de tu corrida con el pedal.' : 'Esta es la gráfica v-t de una corrida con el pedal.');
   if (!propia) aviso('No encontramos tu corrida de la sesión 1: usamos una de ejemplo.');
-  const r = await predecir('area', 'v2-area');
-  aviso(r.correcta ? '' : r.explica);
   consigna('Pasa el dedo por la gráfica: pinta lo que hay debajo.');
   let hasta = 0;
   const pintar = t => {
@@ -515,8 +562,8 @@ async function parte3() {
     const p = L.pintado(eventos, hasta);
     grafica.areas = hasta > 0 ? [{ puntos: curva(m.v, hasta, 'h').puntos, color: 'i' }] : [];
     pintarGrafica();
-    moverCarrito(0, p.area);
-    $('lectura').innerHTML = `${F(p.cuadritos, 1)} cuadritos de 2 m · <span class="v-x">x = ${F(p.area, 1)} m</span>`;
+    // Mientras pinta solo cuenta cuadritos: lo que miden se pregunta después y se ve en la regla al final.
+    $('lectura').textContent = `${F(p.cuadritos, 1)} cuadritos pintados`;
     if (hasta >= fin - 1e-9) terminar();
   };
   const el = $('grafica');
@@ -530,16 +577,21 @@ async function parte3() {
   el.onpointerup = el.onpointercancel = () => { el.onpointermove = null; };
   controles([{ texto: 'Pintar 1 s más', alClic: () => pintar(Math.floor(hasta + 1e-9) + 1) }, { texto: 'Pintar todo', alClic: () => pintar(fin) }]);
   let listo = false;
-  function terminar() {
+  async function terminar() {
     if (listo) return; listo = true;
     el.classList.remove('agarrable'); el.onpointerdown = el.onpointermove = null; controles([]);
+    const r = await predecir('area', 'v2-area');
+    aviso(r.correcta ? '' : r.explica);
+    // Ahora el carrito recorre la corrida: avanza lo mismo que el área pintada.
+    consigna('Mira la regla mientras el carrito recorre tu corrida.');
+    await new Promise(fin_ => correr({ dur: () => fin, cada: t => { moverCarrito(0, m.x(t)); $('lectura').innerHTML = `${F(L.pintado(eventos, t).cuadritos, 1)} cuadritos · <span class="v-x">x = ${F(m.x(t), 1)} m</span>`; }, fin: fin_ }));
     // Cada tramo con su área: así se arma la regla (rectángulo v·t, triángulo la mitad).
     grafica.areas = A.tramos.map(t => ({ puntos: tramo(m.v, t.t0, t.t1), color: 'i', rotulo: `${F(t.area, 1)} m` }));
     pintarGrafica();
     pista.carriles[0].marcas = []; pista.encuentro = { x: A.total, rotulo: `${F(A.total, 1)} m` }; pintarPista();
     const suma = A.tramos.map(t => F(t.area, 1)).join(' + ');
     consigna('Lo pintado es lo que avanzó.');
-    aviso(`${suma} = ${F(A.total, 1)} m, lo mismo que marca la regla. Rectángulo: v · t. Triángulo: la mitad.`);
+    aviso(`${r.correcta ? '' : r.explica + ' '}${suma} = ${F(A.total, 1)} m, lo mismo que marca la regla. Rectángulo: v · t. Triángulo: la mitad.`);
     seguir('Fin de la sesión 2 · Ir a la sesión 3', () => irSesion(3));
   }
 }
@@ -552,14 +604,13 @@ async function parte4() {
   limpiarFigura(); parte(4, 'Parar la pista');
   torre = { alto: L.ALTO, pelotas: [{ y: 0, marcas: [] }] };
   grafica = { compacto: true, x: { min: 0, max: 4, paso: 1, nombre: 't', unidad: 's' }, y: { min: -20, max: 20, paso: 10, nombre: 'v', unidad: 'm/s', color: 'h' }, curvas: [] };
+  torre.g = false;                      // en el juego libre no hay flecha de g: es lo que después se pregunta
   pintarTorre(); pintarGrafica();
   $('lectura').innerHTML = '';
-  consigna('La pista ahora está parada. Vas a lanzar la pelota hacia arriba.');
-  const r = await predecir('c1', 'v2-c1');
-  aviso(r.correcta ? '' : r.explica);
-  consigna('Lánzala hacia arriba con el dedo, o con un botón.');
+  consigna('La pista ahora está parada. Lanza la pelota hacia arriba, con el dedo o con un botón.');
+  let r = null, libres = 0;
   const lanzarCon = v0 => {
-    const el = $('lienzo'); el.classList.remove('agarrable'); el.onpointerdown = el.onpointermove = el.onpointerup = null; controles([]);
+    desactivarGesto(); controles([]);
     const l = L.lanzar(v0);
     aviso(`Tu lanzamiento: ${F(v0, 0)} m/s hacia arriba. Lo redondeamos a 10, 15 o 20 m/s.`);
     correr({
@@ -568,10 +619,27 @@ async function parte4() {
         const k = Math.floor(t / 0.5 + 1e-9);
         torre.pelotas[0] = { y: l.y(t), v: l.v(t), marcas: l.marcas.slice(0, k + 1) };
         pintarTorre();
-        $('lectura').innerHTML = `<span class="v-x">y = ${F(l.y(t), 1)} m</span> · <span class="v-v">v = ${F(l.v(t), 1)} m/s</span> · <span class="v-a">a = −10 m/s²</span>`;
+        $('lectura').innerHTML = `<span class="v-x">y = ${F(l.y(t), 1)} m</span> · <span class="v-v">v = ${F(l.v(t), 1)} m/s</span>` + (r ? ' · <span class="v-a">a = −10 m/s²</span>' : '');
         grafica.curvas = [curva(l.v, Math.max(t, 0.01), 'h')]; pintarGrafica();
       },
-      fin: () => {
+      fin: async () => {
+        if (!r) {
+          // Juego libre: puede lanzar otra vez o pasar a la pregunta.
+          libres++;
+          aviso(`Subió ${F(l.cima, 0)} m y tardó ${F(l.dur, 1)} s en volver.`);
+          controles(L.LANZAMIENTOS.map(v => ({ texto: `${v} m/s`, alClic: () => { seguir(null); lanzarCon(v); } })));
+          activarGesto();
+          seguir('Ya jugué: seguir', async () => {
+            controles([]); desactivarGesto();
+            r = await predecir('c1', 'v2-c1');
+            aviso(r.correcta ? '' : r.explica);
+            torre.g = true; torre.pelotas[0] = { y: 0, marcas: [] }; pintarTorre(); grafica.curvas = []; pintarGrafica();
+            consigna('Ahora con la flecha de la aceleración. Lánzala otra vez.');
+            controles(L.LANZAMIENTOS.map(v => ({ texto: `${v} m/s`, alClic: () => lanzarCon(v) })));
+            activarGesto();
+          });
+          return;
+        }
         // La cima queda a la vista: pelota arriba, v = 0 y la misma flecha de g.
         torre.pelotas[0] = { y: l.cima, v: 0, marcas: l.marcas };
         pintarTorre();
@@ -583,8 +651,11 @@ async function parte4() {
     });
   };
   // Gesto hacia arriba: la rapidez de los últimos 100 ms (en m/s de la torre), ajustada a 10, 15 o 20.
-  const el = $('lienzo'); el.classList.add('agarrable');
+  const el = $('lienzo');
   let muestras = null;
+  function desactivarGesto() { el.classList.remove('agarrable'); el.onpointerdown = el.onpointermove = el.onpointerup = null; }
+  function activarGesto() {
+  el.classList.add('agarrable');
   const escala = () => { const r = el.getBoundingClientRect(); return (320 / r.width) / ((Torre.constantes.SUELO - Torre.constantes.TECHO) / L.ALTO); };
   el.onpointerdown = ev => { ev.preventDefault(); el.setPointerCapture(ev.pointerId); muestras = [{ t: ev.timeStamp, x: -ev.clientY }]; };
   el.onpointermove = ev => { if (muestras) muestras.push({ t: ev.timeStamp, x: -ev.clientY }); };
@@ -594,12 +665,30 @@ async function parte4() {
     muestras = null;
     const v0 = v >= 2 ? L.LANZAMIENTOS.reduce((a, b) => (Math.abs(b - v) < Math.abs(a - v) ? b : a)) : null;
     if (v0 === null) { aviso('Suéltala mientras la mueves hacia arriba.'); return; }
-    lanzarCon(v0);
+    seguir(null); lanzarCon(v0);
   };
+  }
+  activarGesto();
   controles(L.LANZAMIENTOS.map(v => ({ texto: `${v} m/s`, alClic: () => lanzarCon(v) })));
 }
 async function parte4b() {
   limpiarFigura(); parte(4, 'Dos pelotas');
+  // Juego libre: soltar una pelota desde la altura que quiera, antes de preguntar por dos masas.
+  await new Promise(listo => {
+    torre = { alto: L.ALTO, pelotas: [{ y: L.ALTO, rotulo: '1 kg' }] };
+    pintarTorre(); $('lectura').innerHTML = ''; grafica = null; pintarGrafica();
+    consigna('Juega: suelta la pelota desde la altura que quieras.');
+    const soltarDesde = h => {
+      controles([]); seguir(null);
+      const d1 = L.soltarDos(h);
+      torre.pelotas[0].y = h; pintarTorre();
+      correr({ dur: () => d1.tSuelo, cada: t => { torre.pelotas[0].y = d1.y(t); pintarTorre(); $('lectura').innerHTML = `t = ${F(t, 1)} s`; },
+        fin: () => { aviso(`Desde ${F(h, 0)} m tardó ${F(d1.tSuelo, 2)} s.`); botones(); seguir('Ya jugué: seguir', listo); } });
+    };
+    const botones = () => controles([5, 10, 20].map(h => ({ texto: `Desde ${h} m`, alClic: () => soltarDesde(h) })));
+    botones();
+  });
+  aviso(''); controles([]);
   const d = L.soltarDos();
   torre = { alto: L.ALTO, pelotas: [{ y: L.ALTO, rotulo: '1 kg' }, { y: L.ALTO, rotulo: '5 kg', grande: true }] };
   pintarTorre(); $('lectura').innerHTML = ''; grafica = null; pintarGrafica();
