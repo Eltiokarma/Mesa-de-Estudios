@@ -136,6 +136,8 @@ select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border
 .seg button:disabled{opacity:.45; cursor:not-allowed}
 .exps{border-radius:20px}
 .cuenta{display:flex; flex-wrap:wrap; gap:8px}
+.juego{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.juego[hidden]{display:none}
 .cnt{display:flex; align-items:center; gap:6px; padding:6px 8px; border-radius:14px; border:1.5px solid var(--line); background:var(--paper)}
 .cnt .nom{font-weight:800; min-width:5.5em; text-align:center}
 .cnt button{width:44px; height:44px; border-radius:50%; border:1.5px solid var(--line); background:var(--card); color:var(--ink); font:800 1.2rem var(--font); cursor:pointer}
@@ -186,6 +188,7 @@ button:focus-visible, .v:focus-visible, select:focus-visible, a:focus-visible, c
       <div class="lienzo"><canvas id="cv" role="img" aria-label="El árbol de las funciones o la mesa de fichas, según el paso"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
       <div class="nombres" id="nom1" hidden></div>
+      <div class="juego" id="juego1" role="group" aria-label="Fichas de la mesa"></div>
       <div class="legend" id="ley1"></div>
     </section>
     <section class="guide">
@@ -208,6 +211,7 @@ button:focus-visible, .v:focus-visible, select:focus-visible, a:focus-visible, c
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="El árbol de las funciones o la mesa de fichas, según el experimento" tabindex="-1"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="nombres" id="nom2" hidden></div>
+      <div class="juego" id="juego2" role="group" aria-label="Fichas de la mesa"></div>
       <div class="legend" id="ley2"></div>
     </section>
     <section class="guide">
@@ -235,6 +239,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
 <script src="../../nucleo/elementos.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'nomenclatura-inorganica', unidad: 'quimica.nomenclatura-inorganica', version: '0.1.0' };
@@ -598,6 +603,39 @@ const gruposDe = (cat, an) => { const r = MN.formulaDeIones(cat, an); return [{ 
 // Combinaciones que juntarían dos colores parecidos (Elementos.CERCANOS): se apagan en la mesa y el árbol libres.
 const PAR_CERCA = new Set(Elementos.CERCANOS.map(([a, b]) => a + '|' + b).concat(Elementos.CERCANOS.map(([a, b]) => b + '|' + a)));
 const chocan = (fs) => { const els = [...new Set(fs.flatMap(f => Object.keys(MN.atomos(String(f).replace(/\^.*$/, '')))))]; return els.some(a => els.some(b => PAR_CERCA.has(a + '|' + b))); };
+// Regla 3 (decisión 20): antes de cualquier pregunta se juega con la mesa de fichas: Ca²⁺ y Cl⁻ se tocan o se arrastran
+// desde la bandeja a la mesa (tocar una ficha de la mesa la quita), o con los botones − y +. La mesa no suma la carga
+// ni muestra la fórmula ni los nombres: eso es lo que preguntan las predicciones, y el CaCl₂ no aparece en ninguna.
+const JUEGO_CAT = 'Ca^2+', JUEGO_AN = 'Cl^-', JUEGO_MAX = 6;
+function juegoMesa(E, cv, caja){
+  const J = { on:true, nC:1, nA:1 };
+  const vista = () => mesa([{ ion:JUEGO_CAT, n:J.nC }, { ion:JUEGO_AN, n:J.nA }].filter(g => g.n > 0), { suma:'no', bandeja:[JUEGO_CAT, JUEGO_AN], formulaTapa:true });
+  const ver = () => {
+    if (!J.on) return;
+    E.vista = vista(); E.nombres = null; E.dibujar(); E.describir();
+    caja.innerHTML = [[JUEGO_CAT, 'nC'], [JUEGO_AN, 'nA']].map(([i, k]) => `<div class="cnt"><button type="button" data-k="${k}" data-d="-1" aria-label="Una ficha menos de ${txt(i)}"${J[k] <= 0 ? ' disabled' : ''}>−</button><span class="nom">${J[k]} × ${Fh(i)}</span><button type="button" data-k="${k}" data-d="1" aria-label="Una ficha más de ${txt(i)}"${J[k] >= JUEGO_MAX ? ' disabled' : ''}>+</button></div>`).join('');
+    caja.querySelectorAll('button').forEach(b => b.onclick = () => agregar(b.dataset.k === 'nC' ? JUEGO_CAT : JUEGO_AN, +b.dataset.d));
+  };
+  const agregar = (ion, d) => { if (!J.on) return; const k = ion === JUEGO_CAT ? 'nC' : 'nA'; J[k] = clamp(J[k] + d, 0, JUEGO_MAX); ver(); };
+  let inicio = null;
+  Celular.arrastre(cv, {
+    activo: () => J.on,
+    cerca: (p, r) => E.cerca(p, r),
+    empezar: (p, e) => { const h = E.golpe(p, e && e.pointerType === 'mouse' ? Celular.RADIO_RATON : Celular.RADIO_DEDO, ['bandeja', 'mesa']); if (!h) return; inicio = { ...p }; const q = E.local(p); E.arr = { ion:h.ion, x:q.x, y:q.y, mov:false, desde:h.kind }; },
+    mover: p => { if (!E.arr) return; const q = E.local(p); E.arr.x = q.x; E.arr.y = q.y; if (Math.hypot(p.x - inicio.x, p.y - inicio.y) > 8) E.arr.mov = true; E.dibujar(); },
+    soltar: () => {
+      const a = E.arr; E.arr = null; if (!a) return;
+      const dentro = E.enMesaQ(a);
+      if (!a.mov) agregar(a.ion, a.desde === 'bandeja' ? 1 : -1);
+      else if (a.desde === 'bandeja' && dentro) agregar(a.ion, 1);
+      else if (a.desde === 'mesa' && !dentro) agregar(a.ion, -1);
+      else E.dibujar();
+    },
+  });
+  J.ver = ver;
+  J.terminar = () => { J.on = false; E.arr = null; caja.hidden = true; caja.innerHTML = ''; };
+  return J;
+}
 </script>
 
 <script>
@@ -813,6 +851,10 @@ $('prev').addEventListener('click', () => go(S.step - 1));
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
 go(0);
+const juego = juegoMesa(E, $('cv'), $('juego1')); juego.ver();
+JugarPrimero.montar({ escena: $('cv').closest('.bench'), preguntas: [...document.querySelector('#m1 .guide').children], minimo: 2,
+  consigna: 'Toca o arrastra fichas a la mesa; toca una para quitarla.',
+  alListo: () => { juego.terminar(); go(0); } });
 })();
 </script>
 
@@ -1078,6 +1120,10 @@ cv.addEventListener('click', e => {
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
 ir(0);
+const juego = juegoMesa(E, cv, $('juego2')); E.compactar(false); juego.ver();
+JugarPrimero.montar({ escena: cv.closest('.bench'), preguntas: [...document.querySelector('#m2 .guide').children], minimo: 2,
+  consigna: 'Toca o arrastra fichas a la mesa; toca una para quitarla.',
+  alListo: () => { juego.terminar(); ir(0); } });
 })();
 </script>
 
