@@ -4575,7 +4575,14 @@
      "grado": 3,
      "plantillas": [
       "textos-filosoficos-cientificos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/textos-filosoficos-y-cientificos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 2
+     }
     },
     {
      "id": "razonamiento-verbal.lectura-en-ingles",
