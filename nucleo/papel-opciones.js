@@ -28,8 +28,11 @@
   const RESPALDOS = ['documentado', 'parcial', 'hipotesis'];
   const MAX_PALABRAS_ERROR = 30; // docs/escena-viva.md pide 20 en el ejercicio vivo; aquí la explicación es lo único que ve
 
-  // campo: "P", "gases.He.P" o "valor" (el resultado mismo).
-  const campo = (r, k) => (!k || k === 'valor' ? r : String(k).split('.').reduce((o, p) => (o == null ? o : o[p]), r));
+  // campo: "P", "gases.He.P" o "valor": el resultado mismo si es un número o un texto, o su campo «valor» si el motor
+  // devuelve un objeto como { valor, simple } (cinética, mol y composición).
+  const campo = (r, k) => (!k || k === 'valor'
+    ? (r && typeof r === 'object' && 'valor' in r ? r.valor : r)
+    : String(k).split('.').reduce((o, p) => (o == null ? o : o[p]), r));
   function calcular(motor, c) {
     if (!motor || typeof motor[c.fn] !== 'function') throw new Error(`el motor no tiene ${c.fn}`);
     return campo(motor[c.fn](...JSON.parse(JSON.stringify(c.args || []))), c.campo);

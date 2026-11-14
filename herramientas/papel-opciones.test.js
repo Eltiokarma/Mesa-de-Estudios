@@ -36,3 +36,11 @@ for (const { id, papel } of conPreguntas) {
     }
   });
 }
+
+test('campo «valor»: el número mismo, o el campo valor si el motor devuelve un objeto', () => {
+  const motor = { n: () => 7, o: () => ({ valor: 3, simple: 9 }), t: () => 'tautología' };
+  assert.equal(PO.calcular(motor, { fn: 'n', args: [], campo: 'valor' }), 7);
+  assert.equal(PO.calcular(motor, { fn: 'o', args: [], campo: 'valor' }), 3);
+  assert.equal(PO.calcular(motor, { fn: 'o', args: [], campo: 'simple' }), 9);
+  assert.equal(PO.calcular(motor, { fn: 't', args: [], campo: 'valor' }), 'tautología');
+});
