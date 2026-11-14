@@ -133,6 +133,8 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .btn.primary{background:var(--ink); border-color:var(--ink); color:var(--card)}
 .btn:disabled{opacity:.45; cursor:not-allowed}
 .fila{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.juego[hidden]{display:none}
+.juego .estado{flex:1 1 100%; min-height:1.4em}
 button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
 .hint{font-size:.88rem; color:var(--muted)}
 .fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
@@ -171,6 +173,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   <div id="m1" class="mode">
     <section class="bench" aria-label="Las moléculas">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="Moléculas de bolitas y palitos: carbonos grises y hidrógenos turquesa"></canvas></div>
+      <div class="fila juego" id="juego1" role="group" aria-label="La cadena"><p class="estado" aria-live="polite"></p><button type="button" class="btn" data-d="1">Alargar la cadena</button><button type="button" class="btn" data-d="-1">Acortar la cadena</button></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
       <div class="legend" id="ley1"></div>
     </section>
@@ -192,6 +195,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   <div id="m2" class="mode" hidden>
     <section class="bench" aria-label="Experimentos con moléculas">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="El experimento: moléculas de bolitas y palitos"></canvas></div>
+      <div class="fila juego" id="juego2" role="group" aria-label="La cadena"><p class="estado" aria-live="polite"></p><button type="button" class="btn" data-d="1">Alargar la cadena</button><button type="button" class="btn" data-d="-1">Acortar la cadena</button></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="legend" id="ley2"></div>
     </section>
@@ -219,6 +223,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'hidrocarburos', unidad: 'quimica.hidrocarburos', version: '0.1.0' };
@@ -563,7 +568,7 @@ function interaccion(E){
     const x = it(); if (!x || !x._tf) return [];
     const A = x.c.atomos, P = x._tf.P, modo = E.inter.modo, l = [];
     if (modo === 'girar' || modo === 'enlace') x.m.en.forEach((e, k) => { const a = P(A[e.a]), b = P(A[e.b]); l.push({ enlace: k, X: (a.X + b.X)/2, Y: (a.Y + b.Y)/2 }); });
-    else x.m.at.forEach((a, i) => { if (a.el !== 'C') return; if (modo === 'agregar' && a.h < 1) return; if (modo === 'quitar' && x.m.en.filter(e => e.a === i || e.b === i).length > 1) return; const q = P(A[i]); l.push({ atomo: i, X: q.X, Y: q.Y }); });
+    else x.m.at.forEach((a, i) => { if (a.el !== 'C') return; if (modo === 'agregar' && a.h < 1) return; if ((modo === 'quitar' || modo === 'punta') && x.m.en.filter(e => e.a === i || e.b === i).length > 1) return; const q = P(A[i]); l.push({ atomo: i, X: q.X, Y: q.Y }); });
     return l;
   };
   const cercano = (p, r) => { const q = E.local(p); let mejor = null, d0 = r/E.esc; for (const o of objetivos()){ const d = Math.hypot(o.X - q.x, o.Y - q.y); if (d < d0){ d0 = d; mejor = o; } } return mejor; };
@@ -622,13 +627,39 @@ function interaccion(E){
         animar(E, 0.7, f => { x.c = MH.girar(x.m, c1, o.enlace, f*Math.PI, g.mueve).coords; }, () => { x.c = g.coords; E.ocupado = false; listo('Giraste media vuelta un enlace simple: cambió el dibujo.'); });
         return;
       }
-      const m2 = modo === 'agregar' ? MH.agregarC(x.m, o.atomo) : modo === 'quitar' ? MH.quitarC(x.m, o.atomo) : MH.cambiarEnlace(x.m, o.enlace);
+      const m2 = modo === 'agregar' || modo === 'punta' ? MH.agregarC(x.m, o.atomo) : modo === 'quitar' ? MH.quitarC(x.m, o.atomo) : MH.cambiarEnlace(x.m, o.enlace);
       x.m = m2; x.c = MH.coordenadas(m2); x.op.foco = null; E.foco = null;
       if (E.inter.cambio) E.inter.cambio(x);
-      E.resize(); E.dibujar(); listo(modo === 'agregar' ? 'Agregaste un carbono.' : modo === 'quitar' ? 'Quitaste un carbono.' : 'Cambiaste el enlace.');
+      E.resize(); E.dibujar(); listo(modo === 'agregar' || modo === 'punta' ? 'Agregaste un carbono.' : modo === 'quitar' ? 'Quitaste un carbono.' : 'Cambiaste el enlace.');
     } catch (err){ decir(err.message.replace('hidrocarburos: ', '').replace(/^./, s => s.toUpperCase()) + '.'); }
   }
   E.hacer = hacer;
+}
+
+/* ----- Regla 3 (decisión 20): antes de cualquier pregunta se juega con una cadena recta. Se toca un carbono de una
+   punta (o «Alargar la cadena» / «Acortar la cadena», o flechas y Enter sobre el dibujo) y la cadena crece o se acorta,
+   con su nombre y su fórmula. Solo se agrega en las puntas y no se gira nada: ramas, isómeros, giros de enlaces,
+   dobles enlaces y ángulos, que es lo que se pregunta, no salen en el juego. ----- */
+function jugarConLaCadena(E, idJuego){
+  const caja = document.getElementById(idJuego), est = caja.querySelector('.estado');
+  const vistaDe = m => { const it = { m, c: MH.coordenadas(m), op:{} }, r = MH.nombre(m);
+    it.rot = r.nombre; it.rot2 = MH.formula(m).texto.replace(/\d/g, d => SUBD[d]); it.rot2Color = 'ink'; it.desc = `${r.nombre}: ${contar(it)}, en fila.`;
+    return { tipo:'mols', items:[it] }; };
+  const nC = m => m.at.filter(a => a.el === 'C').length;
+  const punta = m => { const l = m.at.map((a, i) => i).filter(i => m.at[i].el === 'C' && m.en.filter(e => e.a === i || e.b === i).length <= 1); return l[l.length - 1]; };
+  const poner = m => { cortar(E); E.vista = vistaDe(m); E.compactar(false); E.resize(); E.dibujar(); E.describir(); };
+  const decir = t => { est.textContent = t; };
+  E.inter = { item:0, modo:'punta', decir, alHacer: decir, cambio: it => { if (nC(it.m) > 10){ it.m = MH.quitarC(it.m, punta(it.m)); decir('Hasta aquí: diez carbonos.'); } E.vista = vistaDe(it.m); E.describir(); } };
+  E.cv.tabIndex = 0;
+  caja.querySelectorAll('button').forEach(b => b.onclick = () => {
+    const m = E.vista.items[0].m;
+    try {
+      if (+b.dataset.d > 0){ if (nC(m) >= 10){ decir('Hasta aquí: diez carbonos.'); return; } poner(MH.agregarC(m, punta(m))); decir('Agregaste un carbono.'); }
+      else { poner(MH.quitarC(m, punta(m))); decir('Quitaste un carbono.'); }
+    } catch (err){ decir('Queda un solo carbono: el metano.'); }
+  });
+  poner(MH.molecula('CH3-CH2-CH3'));
+  return () => { E.inter = null; E.cv.tabIndex = -1; caja.hidden = true; };
 }
 </script>
 
@@ -947,6 +978,10 @@ $('prev').addEventListener('click', () => go(S.step - 1));
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
 go(0);
+const terminarJuego = jugarConLaCadena(E, 'juego1');
+JugarPrimero.montar({ escena: E.cv.closest('.bench'), preguntas: [...document.querySelectorAll('#m1 .guide > *')], minimo: 2,
+  consigna: 'Toca un carbono de una punta: la cadena crece. Mira su nombre.',
+  alListo: () => { terminarJuego(); go(0); } });
 })();
 </script>
 
@@ -1132,7 +1167,11 @@ function ir(k){
 }
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
-ir(0);
+botones();
+const terminarJuego = jugarConLaCadena(E, 'juego2');
+JugarPrimero.montar({ escena: E.cv.closest('.bench'), preguntas: [...document.querySelectorAll('#m2 .guide > *')], minimo: 2,
+  consigna: 'Toca un carbono de una punta: la cadena crece. Mira su nombre.',
+  alListo: () => { terminarJuego(); ir(0); } });
 })();
 </script>
 
