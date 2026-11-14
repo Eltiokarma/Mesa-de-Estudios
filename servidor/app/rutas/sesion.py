@@ -58,7 +58,7 @@ def login(datos: Login, request: Request, s: Session = Depends(db), c=Depends(de
         IntentoFallido.usuario == nombre, IntentoFallido.cuando >= desde))
     fallos_ip = s.scalar(select(func.count()).select_from(IntentoFallido).where(
         IntentoFallido.ip == ip, IntentoFallido.cuando >= desde))
-    if fallos_u >= c.intentos_max or fallos_ip >= c.intentos_max:
+    if fallos_u >= c.intentos_max or fallos_ip >= c.intentos_ip_max:
         raise ErrorApi(429, "demasiados-intentos",
                        f"Hubo muchos intentos fallidos. Espera {c.intentos_ventana_min} minutos o pide ayuda a tu profesor.")
     u = s.scalar(select(Usuario).where(Usuario.usuario == nombre))

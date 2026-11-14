@@ -39,7 +39,7 @@ def crear_app(cfg: Config | None = None) -> FastAPI:
     cfg.validar()
     app = FastAPI(title="Mesa de Estudios", docs_url=None if cfg.produccion else "/docs",
                   redoc_url=None, openapi_url=None if cfg.produccion else "/openapi.json")
-    motor = crear_motor(cfg.database_url)
+    motor = crear_motor(cfg.database_url, cfg.db_pool, cfg.db_pool_extra)
     crear_tablas(motor, Base)
     app.state.cfg, app.state.motor, app.state.sesiones = cfg, motor, crear_sesiones(motor)
     app.state.cofre = Cofre(cfg.dni_clave_fernet, cfg.dni_hmac_clave)

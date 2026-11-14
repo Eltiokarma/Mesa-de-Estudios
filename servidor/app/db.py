@@ -15,13 +15,13 @@ def ahora() -> datetime:
     return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
-def crear_motor(url: str):
+def crear_motor(url: str, pool: int = 5, extra: int = 10):
     if url.startswith("sqlite"):
         kw = {"connect_args": {"check_same_thread": False}}
         if url in ("sqlite://", "sqlite:///:memory:"):
             kw["poolclass"] = StaticPool
         return create_engine(url, **kw)
-    return create_engine(url, pool_pre_ping=True)
+    return create_engine(url, pool_pre_ping=True, pool_size=pool, max_overflow=extra)
 
 
 def crear_sesiones(motor):
