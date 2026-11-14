@@ -49,6 +49,11 @@
   const frac = (a, b) => ({ frac: [a, b] });
   const cb = { v: 'c-d', t: 'b' }, ch = { v: 'c-h', t: 'h' };
   const area = pts => Math.abs(U.area(pts));
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura; aPlano la vuelve coordenadas del
+  // problema y el lector ajusta cada valor al paso y al rango de su control.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const alPlano = (datos, q) => G.aPlano(datos, q);
+  const sep = '   ·   ';
 
   // ---------- Idea 1: área del triángulo ----------
   // Cambia: la posición de A sobre una paralela a la base · Permanece: base 4 y altura 3 · Progresa: nada: el área queda en 6 ·
@@ -80,6 +85,10 @@
       voz: 'Corre A lejos. Comprueba si el área cambia.',
       controles: [{ id: 'ax', etiqueta: 'A a lo ancho', min: -3, max: 8, paso: 1, inicio: 1, unidad: '', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: triFig(v.ax, { paralela: true }), estado: {} }),
+      // Se agarra A, que corre por la paralela a BC: la altura no cambia.
+      arrastres: [{ id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
+        donde: v => enPantalla(triFig(v.ax, { paralela: true }), [v.ax, 3]),
+        mover: (q, v) => ({ ax: alPlano(triFig(v.ax, { paralela: true }), q)[0] }) }],
       lectura: v => [`área = `, frac([cb, ' · ', ch], '2'), ' = ', frac('4 · 3', '2'), ' = 6'],
       minimo: 4,
     },
@@ -100,14 +109,14 @@
       datos: triFig(1.5, { copia: true, pasos: { h: 1, c: 2 }, alt: 'Una copia girada del triángulo completa un paralelogramo de base 4 y altura 3' }),
       voz: 'Una copia del triángulo arma un paralelogramo.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'La altura es perpendicular a la recta de la base.', ecuacion: [ch, ' = 3 · ', cb, ' = 4'] },
+        { estado: { corte: 1 }, texto: 'La altura es perpendicular a la recta de la base.', ecuacion: [ch, ' = 3', sep, cb, ' = 4'] },
         { estado: { corte: 2 }, texto: 'Una copia girada completa un paralelogramo.', ecuacion: ['paralelogramo = ', cb, ' · ', ch, ' = 12'] },
         { estado: { corte: 2 }, texto: 'El triángulo es la mitad.', ecuacion: ['S = ', frac([cb, ' · ', ch], '2'), ' = 6'] },
       ],
     },
     regla: {
       texto: 'El área de un triángulo es base por altura sobre dos. Con dos lados y el ángulo entre ellos, es la mitad de a · b · sen C.',
-      ecuacion: ['S = ', frac([cb, ' · ', ch], '2'), '   ·   S = ', frac('a · b · sen C', '2')],
+      ecuacion: ['S = ', frac([{ llave: [cb], nota: 'base', color: 'c-d' }, ' · ', { llave: [ch], nota: 'altura ⟂', color: 'c-h' }], '2'), '   ·   S = ', frac(['a · b · ', { llave: ['sen C'], nota: 'C entre a y b', color: 'c-i' }], '2')],
       condicion: 'la altura es perpendicular a la recta de la base, aunque caiga fuera; C es el ángulo entre a y b.',
       voz: 'La altura no es un lado inclinado: búscala en perpendicular.',
     },
@@ -170,7 +179,11 @@
       voz: 'Corre D. Compara la razón de áreas con la de bases.',
       controles: [{ id: 't', etiqueta: 'D en BC', min: 0.2, max: 0.8, paso: 0.1, inicio: 0.3, unidad: '', decimales: 1, color: 'c-h' }],
       dibujo: v => ({ datos: ceviana(v.t), estado: {} }),
-      lectura: v => [`áreas ${f(9 * v.t * 2)} : ${f((9 - 9 * v.t) * 2)} · bases ${f(9 * v.t)} : ${f(9 - 9 * v.t)}`],
+      // Se agarra D y corre por la base BC (de largo 9).
+      arrastres: [{ id: 'punto-d', etiqueta: 'punto D en la base', color: 'c-h',
+        donde: v => enPantalla(ceviana(v.t), [9 * v.t, 0]),
+        mover: (q, v) => ({ t: alPlano(ceviana(v.t), q)[0] / 9 }) }],
+      lectura: v => [`áreas ${f(9 * v.t * 2)} : ${f((9 - 9 * v.t) * 2)}${sep}bases ${f(9 * v.t)} : ${f(9 - 9 * v.t)}`],
       minimo: 3,
     },
     predice: {
@@ -197,7 +210,7 @@
     },
     regla: {
       texto: 'Triángulos con la misma altura tienen áreas proporcionales a sus bases; con la misma base, a sus alturas. Si son semejantes de razón k, sus áreas están en razón k².',
-      ecuacion: [frac('S₁', 'S₂'), ' = ', frac('b₁', 'b₂'), ' (misma h)   ·   ', frac('S₁', 'S₂'), ' = ', { sup: ['k', '2'] }, ' (semejantes)'],
+      ecuacion: [frac('S₁', 'S₂'), ' = ', { llave: [frac('b₁', 'b₂')], nota: 'razón de bases', color: 'c-d' }, ' (misma h)   ·   ', frac('S₁', 'S₂'), ' = ', { sup: [{ llave: ['k'], nota: 'razón de lados', color: 'c-o' }, '2'] }, ' (semejantes)'],
       condicion: 'las bases están en la misma recta y el vértice opuesto es común (o las alturas son iguales).',
       voz: 'Busca lo que comparten: altura, base o forma.',
     },
@@ -214,7 +227,7 @@
               { id: 'k3', valor: S * k ** 3, error: 'GE2', siFuera: 'k³ es para volúmenes.' },
               { id: 'suma', valor: S + k, error: 'GE1', siFuera: 'La escala multiplica, no suma.' },
             ], n => f(n)),
-            solucion: { texto: 'Semejantes: áreas en razón k².', ecuacion: [`${S} · ${k}² = ${S * k * k}`] },
+            solucion: { texto: 'Semejantes: áreas en razón k².', ecuacion: [`${S} · `, { sup: [`${k}`, '2'] }, ` = ${S * k * k}`] },
           };
         }
         const p = r.ent(1, 5), q = r.ent(1, 5), S = (p + q) * r.ent(2, 6);
@@ -267,7 +280,11 @@
       voz: 'Inclina sin cambiar los lados. Mira qué pasa con el área.',
       controles: [{ id: 't', etiqueta: '∠A', min: 30, max: 150, paso: 15, inicio: 60, unidad: '°', decimales: 0, color: 'c-i' }],
       dibujo: v => ({ datos: paraFig(v.t), estado: {} }),
-      lectura: v => [ch, ` = ${f(5 * Math.sin(U.rad(v.t)))} · área = 8 · `, ch, ` = ${f(40 * Math.sin(U.rad(v.t)))}`],
+      // Se agarra D: gira alrededor de A con el lado AD = 5 fijo, como una bisagra.
+      arrastres: [{ id: 'vertice-d', etiqueta: 'vértice D', color: 'c-i',
+        donde: v => enPantalla(paraFig(v.t), U.polar([0, 0], 5, v.t)),
+        mover: (q, v) => { const p = alPlano(paraFig(v.t), q); return { t: U.grados(Math.atan2(p[1], p[0])) }; } }],
+      lectura: v => [ch, ` = ${f(5 * Math.sin(U.rad(v.t)))}${sep}área = 8 · `, ch, ` = ${f(40 * Math.sin(U.rad(v.t)))}`],
       minimo: 4,
     },
     predice: {
@@ -283,6 +300,8 @@
       revelar: { datos: rombo({ caja: true }), estado: {} },
       coincide: 'Coincide: el rombo ocupa medio rectángulo de 10 por 6.',
     },
+    // Hallazgo 9: dos representaciones a propósito. El juego inclina el paralelogramo; la predicción y «Mira» pasan al
+    // rombo, el paralelogramo de lados iguales, cuyo dato natural son las diagonales.
     mira: {
       datos: rombo({ caja: true, pasos: { caja: 1 } }),
       voz: 'Encierra el rombo en un rectángulo y compara.',
@@ -294,7 +313,7 @@
     },
     regla: {
       texto: 'El área de un paralelogramo es base por su altura perpendicular. La de un rombo es el producto de sus diagonales sobre dos.',
-      ecuacion: ['paralelogramo: ', cb, ' · ', ch, ' = a · b · sen θ   ·   rombo: ', frac('D · d', '2')],
+      ecuacion: ['paralelogramo: ', cb, ' · ', ch, ' = a · ', { llave: ['b · sen θ'], nota: 'la altura', color: 'c-h' }, '   ·   rombo: ', frac([{ llave: ['D · d'], nota: 'diagonales', color: 'c-d' }], '2')],
       condicion: 'la altura es perpendicular a la base; en el rombo, las diagonales son perpendiculares. Dos lados oblicuos no son base y altura.',
       voz: 'Lado inclinado no es altura. Mídela en perpendicular.',
     },
@@ -368,6 +387,16 @@
         { id: 'b', etiqueta: 'b', min: 2, max: 6, paso: 1, inicio: 4, unidad: '', decimales: 0, color: 'c-d' },
       ],
       dibujo: v => ({ datos: trapFig(v.B, v.b), estado: {} }),
+      // Se agarran B (estira la base mayor) y C (estira la menor). El trapecio queda centrado: C está en
+      // (B + b)/2 + 0,6, así que b = 2·(x − 0,6) − B.
+      arrastres: [
+        { id: 'vertice-b', etiqueta: 'vértice B, base mayor', color: 'c-d',
+          donde: v => enPantalla(trapFig(v.B, v.b), [v.B, 0]),
+          mover: (q, v) => ({ B: alPlano(trapFig(v.B, v.b), q)[0] }) },
+        { id: 'vertice-c', etiqueta: 'vértice C, base menor', color: 'c-d',
+          donde: v => enPantalla(trapFig(v.B, v.b), [(v.B + v.b) / 2 + 0.6, 4]),
+          mover: (q, v) => ({ b: 2 * (alPlano(trapFig(v.B, v.b), q)[0] - 0.6) - v.B }) },
+      ],
       lectura: v => [`área = `, frac(`${v.B} + ${v.b}`, '2'), ` · 4 = ${f((v.B + v.b) * 2)}`],
       minimo: 3,
     },
@@ -384,6 +413,8 @@
       revelar: { datos: cuadDiag({ cuatro: true }), estado: {} },
       coincide: 'Coincide: 10 · 8 · sen 30° / 2 = 20.',
     },
+    // Hallazgo 9: dos representaciones a propósito. El juego mide el trapecio por sus bases; la predicción y «Mira» pasan
+    // al cuadrilátero sin lados paralelos, que solo se mide por sus diagonales.
     mira: {
       datos: cuadDiag({ cuatro: true, pasos: { t: 1 }, alt: 'Las diagonales parten el cuadrilátero en cuatro triángulos que comparten el ángulo de 30° o su suplemento' }),
       voz: 'Cuatro triángulos con el mismo seno.',
@@ -395,7 +426,7 @@
     },
     regla: {
       texto: 'Trapecio: la semisuma de las bases por la altura. Cuadrilátero convexo cualquiera: la mitad del producto de las diagonales por el seno del ángulo que forman.',
-      ecuacion: ['trapecio: ', frac('B + b', '2'), ' · ', ch, '   ·   cuadrilátero: ', frac('p · q · sen θ', '2')],
+      ecuacion: ['trapecio: ', { llave: [frac('B + b', '2')], nota: 'mediana', color: 'c-i' }, ' · ', ch, '   ·   cuadrilátero: ', frac(['p · q · ', { llave: ['sen θ'], nota: 'ángulo de diagonales', color: 'c-i' }], '2')],
       condicion: 'el cuadrilátero es convexo. Si las diagonales son perpendiculares, sen θ = 1 y queda pq/2.',
       voz: 'Sin lados paralelos, las diagonales hacen el trabajo.',
     },
@@ -470,6 +501,10 @@
         { id: 'py', etiqueta: 'P a lo alto', min: 1, max: 4, paso: 1, inicio: 2, unidad: '', decimales: 0, color: 'c-h' },
       ],
       dibujo: v => ({ datos: puntoP(v.px, v.py), estado: {} }),
+      // Se agarra P y se suelta en cualquier punto de dentro (de a una unidad).
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P', color: 'c-h',
+        donde: v => enPantalla(puntoP(v.px, v.py), [v.px, v.py]),
+        mover: (q, v) => { const p = alPlano(puntoP(v.px, v.py), q); return { px: p[0], py: p[1] }; } }],
       lectura: v => { const P = [v.px, v.py], a = area([P, PA[0], PA[1]]), c = area([P, PA[2], PA[3]]); return [{ v: 'c-o', t: `${f(a)}` }, ' + ', { v: 'c-i', t: `${f(c)}` }, ` = ${f(a + c)}`]; },
       minimo: 4,
     },
@@ -486,6 +521,8 @@
       revelar: { datos: varigArea({ sol: true }), estado: {} },
       coincide: 'Coincide: el paralelogramo de los puntos medios tiene la mitad del área.',
     },
+    // Hallazgo 9: dos representaciones a propósito. El juego deja a P dentro del paralelogramo; la predicción y «Mira»
+    // pasan al cuadrilátero de los puntos medios: la misma «mitad escondida», probada con una diagonal.
     mira: {
       datos: varigArea({ sol: true, esquinas: true, diag: true, pasos: { e1: 1, e2: 2 } }),
       voz: 'Usa una diagonal: cada esquina es un cuarto de un triángulo.',
@@ -497,7 +534,7 @@
     },
     regla: {
       texto: 'Con P dentro de un paralelogramo, PAB y PCD suman la mitad del área. El paralelogramo de los puntos medios de un cuadrilátero tiene la mitad de su área.',
-      ecuacion: ['[PAB] + [PCD] = ', frac('S', '2'), '   ·   [puntos medios] = ', frac('S', '2')],
+      ecuacion: ['[PAB] + [PCD] = ', { llave: [frac('S', '2')], nota: 'mitad del área', color: 'c-d' }, '   ·   [puntos medios] = ', frac('S', '2')],
       condicion: 'en la primera, ABCD es un paralelogramo y P es interior; la segunda vale para todo cuadrilátero convexo.',
       voz: 'Una diagonal parte el problema en triángulos conocidos.',
     },
@@ -530,9 +567,106 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 1: A se mueve en las dos direcciones (cambia la altura) y C estira la base. Se ve que
+  // el área depende solo de b y de h, también con la altura fuera.
+  const triLibre = (ax, ay, cx) => {
+    const A = [ax, ay], H = [ax, 0], fuera = ax < 0 || ax > cx;
+    return {
+      alt: `Triángulo de base ${f(cx)} y altura ${f(ay)}: área ${f(cx * ay / 2)}${fuera ? '; la altura cae fuera del lado' : ''}`,
+      vista: { x: [-4.6, 10.6], y: [-0.9, 6.4] },
+      puntos: [pt('A', A, { rotulo: 'A', lado: 90 }), pt('B', [0, 0], { rotulo: 'B', lado: -90 }), pt('C', [cx, 0], { rotulo: 'C', lado: -90 }), pt('H', H, { sinPunto: true })],
+      regiones: [{ puntos: ['A', 'B', 'C'], color: 'o', opacidad: 0.2 }],
+      segmentos: [{ de: 'A', a: 'B' }, { de: 'A', a: 'C' }, { de: 'B', a: 'C', color: 'd', grosor: 'variable', texto: 'b', lado: -1 },
+        ...(fuera ? [{ de: ax < 0 ? 'H' : 'C', a: ax < 0 ? 'B' : 'H', discontinua: true, grosor: 'fino' }] : []),
+        { de: 'A', a: 'H', color: 'h', grosor: 'variable', texto: 'h' }],
+      angulos: [{ en: 'H', de: ax > 0 && ax < cx ? 'C' : (ax <= 0 ? 'B' : 'C'), a: 'A', color: 'h' }],
+    };
+  };
+  const mesaTri = {
+    id: 'triangulo-libre', titulo: 'Base y altura libres', pieza: 'geo-figura',
+    consigna: 'Arrastra A a cualquier lado y C por la base. Busca dos triángulos distintos con la misma área.',
+    controles: [
+      { id: 'ax', etiqueta: 'A a lo ancho', min: -4, max: 10, paso: 0.5, inicio: 1, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'ay', etiqueta: 'A a lo alto', min: 0.5, max: 6, paso: 0.5, inicio: 3, unidad: '', decimales: 1, color: 'c-h' },
+      { id: 'cx', etiqueta: 'base BC', min: 1, max: 8, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-d' },
+    ],
+    dibujo: v => ({ datos: triLibre(v.ax, v.ay, v.cx), estado: {} }),
+    arrastres: [
+      { id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
+        donde: v => enPantalla(triLibre(v.ax, v.ay, v.cx), [v.ax, v.ay]),
+        mover: (q, v) => { const p = alPlano(triLibre(v.ax, v.ay, v.cx), q); return { ax: p[0], ay: p[1] }; } },
+      { id: 'vertice-c', etiqueta: 'vértice C', color: 'c-d',
+        donde: v => enPantalla(triLibre(v.ax, v.ay, v.cx), [v.cx, 0]),
+        mover: (q, v) => ({ cx: alPlano(triLibre(v.ax, v.ay, v.cx), q)[0] }) },
+    ],
+    lectura: v => [cb, ` = ${f(v.cx)}${sep}`, ch, ` = ${f(v.ay)}${sep}área = ${f(v.cx * v.ay / 2)}`],
+  };
+
+  // Mesa 2, más rica que la idea 5: un cuadrilátero que se deforma con C y D libres, también hasta volverse cóncavo.
+  // El paralelogramo de los puntos medios sigue siendo la mitad; la idea solo lo afirma con una figura fija.
+  const varLibre = (cx, cy, dx, dy) => {
+    const Q = [[0, 0], [8, 0], [cx, cy], [dx, dy]], M = Q.map((p, i) => U.medio(p, Q[(i + 1) % 4]));
+    return {
+      alt: `Cuadrilátero de área ${f(area(Q))}; el paralelogramo de sus puntos medios mide ${f(area(M))}`,
+      vista: { x: [-3.6, 11.6], y: [-0.9, 7.6] },
+      puntos: Q.map((p, i) => pt('ABCD'[i], p, { rotulo: 'ABCD'[i], lado: [-120, -60, 45, 135][i] })).concat(M.map((p, i) => pt('M' + i, p, { color: 'o' }))),
+      regiones: [{ puntos: ['A', 'B', 'C', 'D'], color: 'd', opacidad: 0.08, sinBorde: false }, { puntos: ['M0', 'M1', 'M2', 'M3'], color: 'o', opacidad: 0.3, sinBorde: false }],
+    };
+  };
+  const mesaVarignon = {
+    id: 'puntos-medios-libres', titulo: 'Puntos medios en cualquier cuadrilátero', pieza: 'geo-figura',
+    consigna: 'Arrastra C y D. Deforma el cuadrilátero, hasta hundir una esquina, y compara su área con la del paralelogramo.',
+    controles: [
+      { id: 'cx', etiqueta: 'C a lo ancho', min: 2, max: 11, paso: 0.5, inicio: 9, unidad: '', decimales: 1 },
+      { id: 'cy', etiqueta: 'C a lo alto', min: 1, max: 7, paso: 0.5, inicio: 5, unidad: '', decimales: 1 },
+      { id: 'dx', etiqueta: 'D a lo ancho', min: -3, max: 6, paso: 0.5, inicio: 1, unidad: '', decimales: 1 },
+      { id: 'dy', etiqueta: 'D a lo alto', min: 1, max: 7, paso: 0.5, inicio: 4, unidad: '', decimales: 1 },
+    ],
+    dibujo: v => ({ datos: varLibre(v.cx, v.cy, v.dx, v.dy), estado: {} }),
+    arrastres: [
+      { id: 'vertice-c', etiqueta: 'vértice C', color: 'c-d',
+        donde: v => enPantalla(varLibre(v.cx, v.cy, v.dx, v.dy), [v.cx, v.cy]),
+        mover: (q, v) => { const p = alPlano(varLibre(v.cx, v.cy, v.dx, v.dy), q); return { cx: p[0], cy: p[1] }; } },
+      { id: 'vertice-d', etiqueta: 'vértice D', color: 'c-d',
+        donde: v => enPantalla(varLibre(v.cx, v.cy, v.dx, v.dy), [v.dx, v.dy]),
+        mover: (q, v) => { const p = alPlano(varLibre(v.cx, v.cy, v.dx, v.dy), q); return { dx: p[0], dy: p[1] }; } },
+    ],
+    lectura: v => {
+      const Q = [[0, 0], [8, 0], [v.cx, v.cy], [v.dx, v.dy]], M = Q.map((p, i) => U.medio(p, Q[(i + 1) % 4]));
+      // Si los lados se cruzan, el área con signo de la figura deja de ser su área: se avisa en vez de dar un número falso.
+      const cruza = U.corte(Q[1], Q[2], Q[3], Q[0]) && (() => { const X = U.corte(Q[1], Q[2], Q[3], Q[0]), en = (P, R) => U.dist(P, X) + U.dist(X, R) - U.dist(P, R) < 1e-9; return en(Q[1], Q[2]) && en(Q[3], Q[0]); })();
+      return cruza ? ['los lados se cruzan: no es un cuadrilátero'] : [`ABCD = ${f(area(Q))}${sep}`, { v: 'c-o', t: 'medios' }, ` = ${f(area(M))}`];
+    },
+  };
+
+  // Mesa 3, el caso que la idea 5 no deja probar: P también fuera del paralelogramo. Dentro, PAB + PCD es la mitad;
+  // fuera, la mitad pasa a ser la diferencia.
+  const puntoLibre = (px, py) => Object.assign(puntoP(px, py), {
+    alt: `P en (${f(px)}; ${f(py)}): PAB mide ${f(area([[px, py], PA[0], PA[1]]))} y PCD mide ${f(area([[px, py], PA[2], PA[3]]))}`,
+    vista: { x: [-1.8, 12.8], y: [-2.6, 7.6] },
+  });
+  const mesaP = {
+    id: 'punto-p-libre', titulo: 'P dentro y fuera', pieza: 'geo-figura',
+    consigna: 'Arrastra P por dentro y después sácalo por arriba o por abajo. Compara la suma y la diferencia con 20.',
+    controles: [
+      { id: 'px', etiqueta: 'P a lo ancho', min: -1, max: 12, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-h' },
+      { id: 'py', etiqueta: 'P a lo alto', min: -2, max: 7, paso: 0.5, inicio: 2, unidad: '', decimales: 1, color: 'c-h' },
+    ],
+    dibujo: v => ({ datos: puntoLibre(v.px, v.py), estado: {} }),
+    arrastres: [{ id: 'punto-p', etiqueta: 'punto P', color: 'c-h',
+      donde: v => enPantalla(puntoLibre(v.px, v.py), [v.px, v.py]),
+      mover: (q, v) => { const p = alPlano(puntoLibre(v.px, v.py), q); return { px: p[0], py: p[1] }; } }],
+    lectura: v => {
+      const P = [v.px, v.py], a = area([P, PA[0], PA[1]]), c = area([P, PA[2], PA[3]]);
+      const dentro = v.py > 0 && v.py < 5 && v.px > 0.4 * v.py && v.px < 8 + 0.4 * v.py;
+      return [{ v: 'c-o', t: f(a) }, ' + ', { v: 'c-i', t: f(c) }, ` = ${f(a + c)}${sep}`, { abs: [{ v: 'c-o', t: f(a) }, ' − ', { v: 'c-i', t: f(c) }] }, ` = ${f(Math.abs(a - c))}${sep}${dentro ? 'dentro' : 'fuera'}`];
+    },
+  };
+
   return {
     unidad: 'geometria.areas-poligonales',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -540,6 +674,9 @@
       pregunta: '¿Cómo sabes que dos figuras distintas tienen la misma área?',
       fuente: { titulo: 'Euclides, Elementos I.35–41 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookI/propI41.html' },
     },
+    // Laboratorio: triángulo con base y altura libres, cuadrilátero libre con sus puntos medios y P dentro y fuera del
+    // paralelogramo; las tres abren casos que las ideas no dejan probar.
+    laboratorio: [mesaTri, mesaVarignon, mesaP],
     ideas: [triIdea, razon, paraIdea, trapIdea, relIdea],
   };
 });
