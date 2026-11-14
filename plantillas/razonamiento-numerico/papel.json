@@ -14,7 +14,46 @@
         "Hacen falta 36 ÷ 2 = 18 cambios: hay 18 cuyes y 30 − 18 = 12 patos.",
         "Comprobación: 18 × 4 + 12 × 2 = 72 + 24 = 96."
       ],
-      "verificar": [ { "fn": "corral", "args": [30, 96], "espera": { "respuesta": 18, "gallinas": 12, "supuestoTotal": 60, "faltan": 36 } } ]
+      "verificar": [ { "fn": "corral", "args": [30, 96], "espera": { "respuesta": 18, "gallinas": 12, "supuestoTotal": 60, "faltan": 36 } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "En una granja de Ayacucho hay patos y cuyes. Entre todos tienen 30 cabezas y 96 patas.",
+          "pregunta": "¿Cuántos cuyes hay?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": { "fn": "corral", "args": [30, 96], "campo": "respuesta", "valor": 18 },
+          "errores": [
+            {
+              "id": "RM-falsa-suposicion-da-los-supuestos",
+              "respaldo": "hipotesis",
+              "explicacion": "12 son los patos. Supusiste que todos eran patos: cada cambio convierte un pato en cuy, así que los 18 cambios son los cuyes.",
+              "fn": "corral",
+              "args": [30, 96],
+              "campo": "errores.daLosSupuestos",
+              "valor": 12
+            },
+            {
+              "id": "RM-falsa-suposicion-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "36 son las patas que faltan. Cada cambio de pato por cuy agrega solo 2 patas: hacen falta 36 ÷ 2 = 18 cambios.",
+              "fn": "corral",
+              "args": [30, 96],
+              "campo": "errores.faltanSinDividir",
+              "valor": 36
+            },
+            {
+              "id": "RM-falsa-suposicion-divide-entre-el-otro",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste entre 4, las patas de un cuy. Cambiar un pato por un cuy agrega 4 − 2 = 2 patas: 36 ÷ 2.",
+              "fn": "corral",
+              "args": [30, 96],
+              "campo": "errores.divideEntreElOtro",
+              "valor": 9
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -28,7 +67,37 @@
         "90 ÷ 10 = 9 cambios: 9 billetes de S/ 20 y 16 de S/ 10.",
         "Comprobación: 9 × 20 + 16 × 10 = 180 + 160 = 340."
       ],
-      "verificar": [ { "fn": "falsaSuposicion", "args": [25, 340, 10, 20], "espera": { "otros": 9, "supuestos": 16, "falta": 90 } } ]
+      "verificar": [ { "fn": "falsaSuposicion", "args": [25, 340, 10, 20], "espera": { "otros": 9, "supuestos": 16, "falta": 90 } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Rosa juntó S/ 340 en 25 billetes, unos de S/ 10 y otros de S/ 20.",
+          "pregunta": "¿Cuántos billetes de S/ 20 tiene?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": { "fn": "falsaSuposicion", "args": [25, 340, 10, 20], "campo": "otros", "valor": 9 },
+          "errores": [
+            {
+              "id": "RM-falsa-suposicion-da-los-supuestos",
+              "respaldo": "hipotesis",
+              "explicacion": "16 son los billetes de S/ 10. Supusiste que todos eran de S/ 10: los 9 cambios son los billetes de S/ 20.",
+              "fn": "falsaSuposicion",
+              "args": [25, 340, 10, 20],
+              "campo": "supuestos",
+              "valor": 16
+            },
+            {
+              "id": "RM-falsa-suposicion-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "90 son los soles que faltan. Cada cambio de un billete de S/ 10 por uno de S/ 20 agrega S/ 10: 90 ÷ 10.",
+              "fn": "falsaSuposicion",
+              "args": [25, 340, 10, 20],
+              "campo": "falta",
+              "valor": 90
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -42,7 +111,37 @@
         "98 ÷ 7 = 14 incorrectas, así que respondió bien 60 − 14 = 46.",
         "Comprobación: 46 × 5 − 14 × 2 = 230 − 28 = 202."
       ],
-      "verificar": [ { "fn": "examen", "args": [60, 202, 5, -2], "espera": { "respuesta": 46, "incorrectas": 14, "sobran": 98, "quita": 7 } } ]
+      "verificar": [ { "fn": "examen", "args": [60, 202, 5, -2], "espera": { "respuesta": 46, "incorrectas": 14, "sobran": 98, "quita": 7 } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Un examen tiene 60 preguntas. Cada respuesta correcta vale 5 puntos y cada incorrecta resta 2 puntos. Mariela respondió todas las preguntas y obtuvo 202 puntos.",
+          "pregunta": "¿Cuántas respondió correctamente?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": { "fn": "examen", "args": [60, 202, 5, -2], "campo": "respuesta", "valor": 46 },
+          "errores": [
+            {
+              "id": "RM-falsa-suposicion-da-los-cambios",
+              "respaldo": "hipotesis",
+              "explicacion": "14 son las incorrectas. Se pregunta por las correctas: 60 − 14 = 46.",
+              "fn": "examen",
+              "args": [60, 202, 5, -2],
+              "campo": "errores.daLasIncorrectas",
+              "valor": 14
+            },
+            {
+              "id": "RM-falsa-suposicion-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "98 son los puntos que sobran. Cada correcta que pasa a incorrecta baja 5 + 2 = 7 puntos: 98 ÷ 7 = 14 incorrectas.",
+              "fn": "examen",
+              "args": [60, 202, 5, -2],
+              "campo": "sobran",
+              "valor": 98
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -56,7 +155,37 @@
         "450 ÷ 75 = 6 días que faltó (trabajó 24).",
         "Comprobación: 24 × 60 − 6 × 15 = 1 440 − 90 = 1 350."
       ],
-      "verificar": [ { "fn": "examen", "args": [30, 1350, 60, -15], "espera": { "incorrectas": 6, "correctas": 24, "sobran": 450, "quita": 75 } } ]
+      "verificar": [ { "fn": "examen", "args": [30, 1350, 60, -15], "espera": { "incorrectas": 6, "correctas": 24, "sobran": 450, "quita": 75 } } ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "En una obra, a un albañil le pagan S/ 60 por cada día que trabaja y le descuentan S/ 15 por cada día que falta. Al cabo de 30 días recibió S/ 1 350.",
+          "pregunta": "¿Cuántos días faltó?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": { "fn": "examen", "args": [30, 1350, 60, -15], "campo": "incorrectas", "valor": 6 },
+          "errores": [
+            {
+              "id": "RM-falsa-suposicion-da-los-supuestos",
+              "respaldo": "hipotesis",
+              "explicacion": "24 son los días que trabajó. Se pregunta por los que faltó: 30 − 24 = 6.",
+              "fn": "examen",
+              "args": [30, 1350, 60, -15],
+              "campo": "correctas",
+              "valor": 24
+            },
+            {
+              "id": "RM-falsa-suposicion-resta-los-puntos",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste entre 60 − 15 = 45. Cada falta le quita los S/ 60 que no gana y además S/ 15: pierde 60 + 15 = 75.",
+              "fn": "examen",
+              "args": [30, 1350, 60, -15],
+              "campo": "daria.restaLosPuntos.malas",
+              "valor": 10
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p5",
@@ -71,7 +200,51 @@
         "Duplicó: se divide entre 2. 26 ÷ 2 = 13.",
         "Comprobación: 13 × 2 = 26; 26 + 9 = 35; 35 ÷ 5 = 7; 7 − 4 = 3."
       ],
-      "verificar": [ { "fn": "regresivo", "args": [[{ "op": "por", "k": 2 }, { "op": "mas", "k": 9 }, { "op": "entre", "k": 5 }, { "op": "menos", "k": 4 }], 3], "espera": { "respuesta": 13, "ida": [13, 26, 35, 7, 3] } } ]
+      "verificar": [ { "fn": "regresivo", "args": [[{ "op": "por", "k": 2 }, { "op": "mas", "k": 9 }, { "op": "entre", "k": 5 }, { "op": "menos", "k": 4 }], 3], "espera": { "respuesta": 13, "ida": [13, 26, 35, 7, 3] } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Jorge pensó un número. Lo duplicó, al resultado le sumó 9, lo que obtuvo lo dividió entre 5 y al final le restó 4. Le salió 3.",
+          "pregunta": "¿Qué número pensó?",
+          "unidad": "",
+          "decimales": 1,
+          "correcta": {
+            "fn": "regresivoNumeros",
+            "args": [[{ "op": "por", "k": 2 }, { "op": "mas", "k": 9 }, { "op": "entre", "k": 5 }, { "op": "menos", "k": 4 }], 3],
+            "campo": "respuesta",
+            "valor": 13
+          },
+          "errores": [
+            {
+              "id": "RM-regresivo-hacia-adelante",
+              "respaldo": "hipotesis",
+              "explicacion": "Hiciste las operaciones de ida empezando en 3. Para volver se deshace cada una con su contraria: + 4, × 5, − 9 y ÷ 2.",
+              "fn": "regresivoNumeros",
+              "args": [[{ "op": "por", "k": 2 }, { "op": "mas", "k": 9 }, { "op": "entre", "k": 5 }, { "op": "menos", "k": 4 }], 3],
+              "campo": "errores.haciaAdelante",
+              "valor": -1
+            },
+            {
+              "id": "RM-regresivo-orden-sin-invertir",
+              "respaldo": "hipotesis",
+              "explicacion": "Empezaste por la última, bien, pero sin cambiar las operaciones: restar 4 se deshace sumando 4, y dividir entre 5, multiplicando.",
+              "fn": "regresivoNumeros",
+              "args": [[{ "op": "por", "k": 2 }, { "op": "mas", "k": 9 }, { "op": "entre", "k": 5 }, { "op": "menos", "k": 4 }], 3],
+              "campo": "errores.ordenSinInvertir",
+              "valor": 17.6
+            },
+            {
+              "id": "RM-regresivo-invierte-sin-orden",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste las contrarias en el orden de ida. Se deshace de la última a la primera: primero + 4, después × 5.",
+              "fn": "regresivoNumeros",
+              "args": [[{ "op": "por", "k": 2 }, { "op": "mas", "k": 9 }, { "op": "entre", "k": 5 }, { "op": "menos", "k": 4 }], 3],
+              "campo": "errores.invierteSinOrden",
+              "valor": -33.5
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -85,7 +258,51 @@
         "Una tercera parte es 54 ÷ 2 = 27, así que al salir tenía 27 × 3 = S/ 81.",
         "Comprobación: 81 − 27 − 6 = 48; 48 − 24 − 4 = 20."
       ],
-      "verificar": [ { "fn": "regresivo", "args": [[{ "op": "gasta", "parte": [1, 3], "mas": 6 }, { "op": "gasta", "parte": [1, 2], "mas": 4 }], 20], "espera": { "respuesta": 81, "ida": [81, 48, 20] } } ]
+      "verificar": [ { "fn": "regresivo", "args": [[{ "op": "gasta", "parte": [1, 3], "mas": 6 }, { "op": "gasta", "parte": [1, 2], "mas": 4 }], 20], "espera": { "respuesta": 81, "ida": [81, 48, 20] } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Carla salió de compras. En la librería gastó la tercera parte de su dinero y S/ 6 más; en la farmacia, la mitad de lo que le quedaba y S/ 4 más. Volvió a casa con S/ 20.",
+          "pregunta": "¿Cuánto dinero tenía al salir?",
+          "unidad": "soles",
+          "decimales": 0,
+          "correcta": {
+            "fn": "regresivo",
+            "args": [[{ "op": "gasta", "parte": [1, 3], "mas": 6 }, { "op": "gasta", "parte": [1, 2], "mas": 4 }], 20],
+            "campo": "respuesta",
+            "valor": 81
+          },
+          "errores": [
+            {
+              "id": "RM-regresivo-devuelve-despues",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste primero y devolviste los S/ 4 y S/ 6 después. El extra se gastó al final: se devuelve antes, (20 + 4) × 2 = 48.",
+              "fn": "regresivo",
+              "args": [[{ "op": "gasta", "parte": [1, 3], "mas": 6 }, { "op": "gasta", "parte": [1, 2], "mas": 4 }], 20],
+              "campo": "errores.devuelveDespues",
+              "valor": 72
+            },
+            {
+              "id": "RM-regresivo-resta-el-extra",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste los S/ 4 y S/ 6. Esos soles se gastaron: para volver se suman, (20 + 4) × 2 = 48.",
+              "fn": "regresivo",
+              "args": [[{ "op": "gasta", "parte": [1, 3], "mas": 6 }, { "op": "gasta", "parte": [1, 2], "mas": 4 }], 20],
+              "campo": "errores.restaElExtra",
+              "valor": 39
+            },
+            {
+              "id": "RM-regresivo-olvida-el-extra",
+              "respaldo": "hipotesis",
+              "explicacion": "Olvidaste los S/ 4 y S/ 6 de más. Antes de duplicar hay que devolverlos: (20 + 4) × 2 = 48.",
+              "fn": "regresivo",
+              "args": [[{ "op": "gasta", "parte": [1, 3], "mas": 6 }, { "op": "gasta", "parte": [1, 2], "mas": 4 }], 20],
+              "campo": "errores.olvidaElExtra",
+              "valor": 60
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -98,7 +315,81 @@
         "Primera ronda: 6 + 8 = 14 y 14 ÷ 2 = 7.",
         "Comprobación: 7 → 14 → 6 → 12 → 4 → 8 → 0."
       ],
-      "verificar": [ { "fn": "regresivo", "args": [[{ "op": "por", "k": 2 }, { "op": "menos", "k": 8 }, { "op": "por", "k": 2 }, { "op": "menos", "k": 8 }, { "op": "por", "k": 2 }, { "op": "menos", "k": 8 }], 0], "espera": { "respuesta": 7, "ida": [7, 14, 6, 12, 4, 8, 0] } } ]
+      "verificar": [ { "fn": "regresivo", "args": [[{ "op": "por", "k": 2 }, { "op": "menos", "k": 8 }, { "op": "por", "k": 2 }, { "op": "menos", "k": 8 }, { "op": "por", "k": 2 }, { "op": "menos", "k": 8 }], 0], "espera": { "respuesta": 7, "ida": [7, 14, 6, 12, 4, 8, 0] } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "En un juego de mesa, en cada ronda el dinero de Pedro se duplica y luego él paga S/ 8. Después de tres rondas, Pedro se quedó sin dinero.",
+          "pregunta": "¿Con cuánto empezó?",
+          "unidad": "soles",
+          "decimales": 0,
+          "correcta": {
+            "fn": "regresivo",
+            "args": [
+              [
+                { "op": "por", "k": 2 },
+                { "op": "menos", "k": 8 },
+                { "op": "por", "k": 2 },
+                { "op": "menos", "k": 8 },
+                { "op": "por", "k": 2 },
+                { "op": "menos", "k": 8 }
+              ],
+              0
+            ],
+            "campo": "respuesta",
+            "valor": 7
+          },
+          "errores": [
+            {
+              "id": "RM-regresivo-invierte-sin-orden",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste entre 2 antes de devolver los S/ 8. En cada ronda pagó al final: primero se suma 8 y después se divide, (0 + 8) ÷ 2.",
+              "fn": "regresivo",
+              "args": [
+                [
+                  { "op": "por", "k": 2 },
+                  { "op": "menos", "k": 8 },
+                  { "op": "por", "k": 2 },
+                  { "op": "menos", "k": 8 },
+                  { "op": "por", "k": 2 },
+                  { "op": "menos", "k": 8 }
+                ],
+                0
+              ],
+              "campo": "errores.invierteSinOrden",
+              "valor": 14
+            },
+            {
+              "id": "RM-regresivo-hacia-adelante",
+              "respaldo": "hipotesis",
+              "explicacion": "Jugaste las rondas hacia adelante desde 0. Para volver, cada ronda se deshace: se suman los 8 y se divide entre 2.",
+              "fn": "regresivo",
+              "args": [
+                [
+                  { "op": "por", "k": 2 },
+                  { "op": "menos", "k": 8 },
+                  { "op": "por", "k": 2 },
+                  { "op": "menos", "k": 8 },
+                  { "op": "por", "k": 2 },
+                  { "op": "menos", "k": 8 }
+                ],
+                0
+              ],
+              "campo": "errores.haciaAdelante",
+              "valor": -56
+            },
+            {
+              "id": "RM-regresivo-de-golpe",
+              "respaldo": "hipotesis",
+              "explicacion": "Juntaste los tres pagos y dividiste entre 8 de una vez. Cada pago se hizo después de una duplicación: se deshacen ronda por ronda.",
+              "fn": "rondas",
+              "args": [3, 2, 8, 0],
+              "campo": "errores.deGolpe",
+              "valor": 3
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -114,7 +405,46 @@
       ],
       "verificar": [
         { "fn": "distribuir", "args": ["triangulo3", [1, 2, 3, 4, 5, 6]], "espera": { "mayor": 12, "detalle.3.compartidas": [4, 5, 6] } },
-        { "fn": "comprobar", "args": ["triangulo3", [4, 5, 6, 3, 1, 2]], "espera": { "valido": true, "suma": 12 } } ]
+        { "fn": "comprobar", "args": ["triangulo3", [4, 5, 6, 3, 1, 2]], "espera": { "valido": true, "suma": 12 } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "Las fichas del 1 al 6 se colocan en seis círculos: tres en las esquinas de un triángulo y tres en el medio de sus lados, una ficha en cada círculo. Los tres números de cada lado deben sumar lo mismo.",
+          "pregunta": "¿Cuál es la mayor suma por lado que se puede lograr?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": { "fn": "distribuir", "args": ["triangulo3", [1, 2, 3, 4, 5, 6]], "campo": "mayor", "valor": 12 },
+          "errores": [
+            {
+              "id": "RM-distribucion-total-entre-lineas",
+              "respaldo": "hipotesis",
+              "explicacion": "Repartiste 21 entre los 3 lados. Pero cada esquina está en dos lados y se cuenta dos veces: los lados suman 21 + esquinas.",
+              "fn": "menorSuma",
+              "args": ["triangulo3", [1, 2, 3, 4, 5, 6]],
+              "campo": "errores.totalEntreLineas",
+              "valor": 7
+            },
+            {
+              "id": "RM-distribucion-da-las-esquinas",
+              "respaldo": "hipotesis",
+              "explicacion": "15 es lo que suman las esquinas 4, 5 y 6. Los tres lados suman 21 + 15 = 36, y cada lado, 36 ÷ 3.",
+              "fn": "distribuir",
+              "args": ["triangulo3", [1, 2, 3, 4, 5, 6]],
+              "campo": "detalle.3.sumaCompartidas",
+              "valor": 15
+            },
+            {
+              "id": "RM-distribucion-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "36 es lo que suman los tres lados juntos. Cada lado suma la tercera parte: 36 ÷ 3.",
+              "fn": "distribuir",
+              "args": ["triangulo3", [1, 2, 3, 4, 5, 6]],
+              "campo": "cuenta.3.izquierda",
+              "valor": 36
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
@@ -140,7 +470,65 @@
         "Esas cuatro líneas usan los nueve números una vez, salvo el del centro, que aparece cuatro veces: 72 = 54 + 3 × centro.",
         "El centro es (72 − 54) ÷ 3 = 6."
       ],
-      "verificar": [ { "fn": "distribuir", "args": ["cuadrado3", [2, 3, 4, 5, 6, 7, 8, 9, 10]], "espera": { "sumas": [18], "posibles.4": [6] } } ]
+      "verificar": [ { "fn": "distribuir", "args": ["cuadrado3", [2, 3, 4, 5, 6, 7, 8, 9, 10]], "espera": { "sumas": [18], "posibles.4": [6] } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Los números del 2 al 10 se colocan en un cuadrado de 3 × 3 de modo que cada fila, cada columna y cada diagonal sumen lo mismo.",
+          "pregunta": "¿Cuánto suma cada fila?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": { "fn": "distribuir", "args": ["cuadrado3", [2, 3, 4, 5, 6, 7, 8, 9, 10]], "campo": "sumas.0", "valor": 18 },
+          "errores": [
+            {
+              "id": "RM-distribucion-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "54 es la suma de los nueve números. Las tres filas los usan una vez cada uno: cada fila suma 54 ÷ 3.",
+              "fn": "distribuir",
+              "args": ["cuadrado3", [2, 3, 4, 5, 6, 7, 8, 9, 10]],
+              "campo": "total",
+              "valor": 54
+            },
+            {
+              "id": "RM-cuadrado-magico-del-1-al-9",
+              "respaldo": "hipotesis",
+              "explicacion": "15 es la suma del cuadrado con fichas del 1 al 9. Aquí van del 2 al 10: suman 54, y cada fila, 54 ÷ 3.",
+              "fn": "centroMagico",
+              "args": [[1, 2, 3, 4, 5, 6, 7, 8, 9]],
+              "campo": "constante",
+              "valor": 15
+            }
+          ]
+        },
+        {
+          "id": "p10b",
+          "enunciado": "Los números del 2 al 10 se colocan en un cuadrado de 3 × 3 de modo que cada fila, cada columna y cada diagonal sumen 18.",
+          "pregunta": "¿Qué número va en la casilla del centro?",
+          "unidad": "",
+          "decimales": 0,
+          "correcta": { "fn": "centroMagico", "args": [[2, 3, 4, 5, 6, 7, 8, 9, 10]], "campo": "cuenta.centro", "valor": 6 },
+          "errores": [
+            {
+              "id": "RM-cuadrado-magico-del-1-al-9",
+              "respaldo": "hipotesis",
+              "explicacion": "El 5 va al centro con fichas del 1 al 9. Aquí, las cuatro líneas del centro suman 72 = 54 + 3 · centro: el centro es 6.",
+              "fn": "centroMagico",
+              "args": [[1, 2, 3, 4, 5, 6, 7, 8, 9]],
+              "campo": "cuenta.centro",
+              "valor": 5
+            },
+            {
+              "id": "RM-cuadrado-magico-el-mayor",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste el mayor al centro, pero no cabe: el 10 estaría en una línea con el 9, y 10 + 9 + 2 = 21 pasa de 18.",
+              "fn": "centroMagico",
+              "args": [[2, 3, 4, 5, 6, 7, 8, 9, 10]],
+              "campo": "errores.elMayor.0",
+              "valor": 10
+            }
+          ]
+        }
+      ]
     }
   ]
 }

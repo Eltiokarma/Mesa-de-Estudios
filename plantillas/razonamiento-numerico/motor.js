@@ -41,6 +41,11 @@
  *   regresivo(cadena, final)     el número de partida, los valores de ida, los pasos de vuelta y los errores; vueltaTexto
  *                                («30 − 10 = 20, …, y 48 ÷ 3 = 16», o por tramos con «gasta»: «(12 + 3) × 2 = 30 y …») y
  *                                trazas: la misma cuenta, paso por paso, de cada error que queda en «errores»
+ *   regresivoNumeros(cadena, final)   lo mismo que regresivo, pero la respuesta y los errores como números de JavaScript
+ *                                (n/d), para escribirlos con decimales en las alternativas del papel
+ *   rondas(n, k, pago, final)    n rondas de «se multiplica por k y paga pago», con final al terminar: con cuánto empezó
+ *                                (de vuelta, ronda por ronda: (x + pago) ÷ k) y el error de juntar los pagos y deshacer
+ *                                las multiplicaciones de golpe, (final + n·pago) ÷ kⁿ
  *   barras(cadena, inicio)       para dibujar «gastó»: lo que tenía, la parte, el extra y lo que le quedó en cada tramo,
  *                                lo que no gastó (lo que le quedó + el extra) y por cuánto se multiplica para volver
  *   ordenCambiado(cadena, final, i)   la misma cadena con las operaciones i e i + 1 intercambiadas (con la vuelta de las dos
@@ -282,6 +287,23 @@
     for (const k of Object.keys(e)) trazasTexto[k] = trazas[k].texto;
     return { cadena: cadena.map(textoOp), final: valor(final), respuesta, entero: entero(inicio), ida, vuelta, vueltaTexto: bien.texto,
       vueltaTramos: bien.tramos || bien.pasos.map(p => p.texto), errores: e, trazas: trazasTexto };
+  }
+  // La respuesta y los errores de regresivo como números (88/5 → 17,6), para alternativas con decimales.
+  function regresivoNumeros(cadena, final) {
+    const R = regresivo(cadena, final);
+    const n = v => { if (typeof v === 'number') return v; const [a, b] = String(v).replace('−', '-').split('/').map(Number); return a / (b || 1); };
+    const errores = {};
+    for (const [k, v] of Object.entries(R.errores)) errores[k] = n(v);
+    return { respuesta: n(R.respuesta), errores };
+  }
+  function rondas(n, k, pago, final) {
+    ent(n, 'las rondas'); ent(k, 'el factor'); ent(pago, 'el pago'); ent(final, 'lo del final');
+    if (n < 1) throw new Error('hace falta al menos una ronda');
+    if (k === 0) throw new Error('el factor no puede ser 0');
+    let x = F(final);
+    for (let i = 0; i < n; i++) x = divi(suma(x, pago), k);
+    return { n, k, pago, final, respuesta: valor(x),
+      errores: limpiar({ deGolpe: valor(divi(suma(final, n * pago), Math.pow(k, n))) }, valor(x)) };
   }
   function barras(cadena, inicio) {
     let x = F(inicio);
@@ -560,6 +582,6 @@
   }
 
   return { fr, frTexto, numTexto, milesTexto, suma, resta, prod, divi, falsaSuposicion, contarCorral, corral, corralAlReves, examen,
-    textoOp, aplicar, invertir, regresivo, barras, ordenCambiado, mercado, TABLEROS, tablero, distribuir, comprobar,
+    textoOp, aplicar, invertir, regresivo, regresivoNumeros, rondas, barras, ordenCambiado, mercado, TABLEROS, tablero, distribuir, comprobar,
     menorSuma, subirTodos, subirFichas, centroMagico, cuadradosDistintos, corralGeo, mitadDe, examenGeo, tiraGeo, tableroGeo, cercana, pl };
 });
