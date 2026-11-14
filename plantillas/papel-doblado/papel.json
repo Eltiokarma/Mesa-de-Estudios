@@ -89,6 +89,53 @@
             "y": 3
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Una hoja cuadriculada de 10 cm × 10 cm se dobla por la mitad llevando la derecha sobre la izquierda, y luego otra vez llevando la parte de arriba sobre la de abajo. En el paquete de 5 cm × 5 cm se hace un agujero redondo de radio 1 cm con centro a 2 cm del borde izquierdo y a 3 cm del borde de abajo.",
+          "pregunta": "Al abrir la hoja, ¿cuántos agujeros hay?",
+          "unidad": "agujeros",
+          "decimales": 0,
+          "correcta": {
+            "fn": "desplegar",
+            "args": [
+              { "ancho": 10, "alto": 10 },
+              [{ "recta": { "x": 5 }, "mueve": "derecha" }, { "recta": { "y": 5 }, "mueve": "arriba" }],
+              [{ "tipo": "circulo", "centro": { "x": 2, "y": 3 }, "r": 1 }]
+            ],
+            "campo": "agujeros",
+            "valor": 4
+          },
+          "errores": [
+            {
+              "id": "RME40-una-capa",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste el agujero de una sola capa. El paquete tiene 4 capas y la perforación atraviesa todas.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 10, "alto": 10 },
+                [{ "recta": { "x": 5 }, "mueve": "derecha" }, { "recta": { "y": 5 }, "mueve": "arriba" }],
+                [{ "tipo": "circulo", "centro": { "x": 2, "y": 3 }, "r": 1 }]
+              ],
+              "campo": "errores.unaCapa.agujeros",
+              "valor": 1
+            },
+            {
+              "id": "RME153-un-doblez",
+              "respaldo": "hipotesis",
+              "explicacion": "Deshiciste un solo doblez. Hay dos: cada uno duplica los agujeros, 1 → 2 → 4.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 10, "alto": 10 },
+                [{ "recta": { "x": 5 }, "mueve": "derecha" }, { "recta": { "y": 5 }, "mueve": "arriba" }],
+                [{ "tipo": "circulo", "centro": { "x": 2, "y": 3 }, "r": 1 }]
+              ],
+              "campo": "errores.soloDoblez.0.agujeros",
+              "valor": 2
+            }
+          ]
+        }
       ]
     },
     {
@@ -139,6 +186,109 @@
             "agujeros": 2,
             "perimetro.exacto": "40 + 8π"
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Una hoja de 12 cm × 8 cm se dobla por la mitad (derecha sobre izquierda) y otra vez por la mitad (arriba sobre abajo). Sobre el doblez horizontal del paquete se recorta un medio círculo de radio 2 cm, con el centro a 3 cm del borde izquierdo.",
+          "pregunta": "Al abrir, ¿cuántos agujeros quedan?",
+          "unidad": "agujeros",
+          "decimales": 0,
+          "correcta": {
+            "fn": "desplegar",
+            "args": [
+              { "ancho": 12, "alto": 8 },
+              [{ "recta": { "x": 6 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }],
+              [{ "tipo": "circulo", "centro": { "x": 3, "y": 4 }, "r": 2 }]
+            ],
+            "campo": "agujeros",
+            "valor": 2
+          },
+          "errores": [
+            {
+              "id": "RME40-una-capa",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste el corte de una sola capa. Cortan las 4, y el doblez vertical lo repite al otro lado.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 12, "alto": 8 },
+                [{ "recta": { "x": 6 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }],
+                [{ "tipo": "circulo", "centro": { "x": 3, "y": 4 }, "r": 2 }]
+              ],
+              "campo": "errores.unaCapa.agujeros",
+              "valor": 1
+            },
+            {
+              "id": "RME159-entero-por-capa",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste un agujero por capa. Las dos capas que se juntan en el doblez horizontal forman un solo círculo entero.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 12, "alto": 8 },
+                [{ "recta": { "x": 6 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }],
+                [{ "tipo": "circulo", "centro": { "x": 3, "y": 4 }, "r": 2 }]
+              ],
+              "campo": "errores.enteroPorCapa.agujeros",
+              "valor": 4
+            }
+          ]
+        },
+        {
+          "id": "p2b",
+          "enunciado": "Una hoja de 12 cm × 8 cm se dobla por la mitad (derecha sobre izquierda) y otra vez por la mitad (arriba sobre abajo). Sobre el doblez horizontal del paquete se recorta un medio círculo de radio 2 cm, con el centro a 3 cm del borde izquierdo.",
+          "pregunta": "Al abrir, ¿cuál es el perímetro total de la hoja, en cm (borde exterior más bordes de los agujeros)?",
+          "correcta": {
+            "fn": "desplegar",
+            "args": [
+              { "ancho": 12, "alto": 8 },
+              [{ "recta": { "x": 6 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }],
+              [{ "tipo": "circulo", "centro": { "x": 3, "y": 4 }, "r": 2 }]
+            ],
+            "campo": "perimetro.exacto",
+            "valor": "40 + 8π"
+          },
+          "errores": [
+            {
+              "id": "RME40-una-capa",
+              "respaldo": "hipotesis",
+              "explicacion": "Cortaste una sola capa: un medio círculo, con borde 2π + 4. Cortan las 4 capas: al abrir hay 2 círculos enteros, 8π, más 40 cm.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 12, "alto": 8 },
+                [{ "recta": { "x": 6 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }],
+                [{ "tipo": "circulo", "centro": { "x": 3, "y": 4 }, "r": 2 }]
+              ],
+              "campo": "errores.unaCapa.perimetro.exacto",
+              "valor": "44 + 2π"
+            },
+            {
+              "id": "RME158-tramos-del-doblez",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste el diámetro de cada medio círculo, 4 · 4 = 16 cm. Sobre el doblez se quitó papel de los dos lados: ahí no queda borde.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 12, "alto": 8 },
+                [{ "recta": { "x": 6 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }],
+                [{ "tipo": "circulo", "centro": { "x": 3, "y": 4 }, "r": 2 }]
+              ],
+              "campo": "errores.tramosDelDoblez.exacto",
+              "valor": "56 + 8π"
+            },
+            {
+              "id": "RME159-entero-por-capa",
+              "respaldo": "hipotesis",
+              "explicacion": "Diste un círculo entero a cada capa. Las dos capas del doblez forman juntas un solo círculo: son 2, no 4.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 12, "alto": 8 },
+                [{ "recta": { "x": 6 }, "mueve": "derecha" }, { "recta": { "y": 4 }, "mueve": "arriba" }],
+                [{ "tipo": "circulo", "centro": { "x": 3, "y": 4 }, "r": 2 }]
+              ],
+              "campo": "errores.enteroPorCapa.perimetro.exacto",
+              "valor": "40 + 16π"
+            }
+          ]
         }
       ]
     },
@@ -191,6 +341,64 @@
             "agujeros": 1,
             "perimetro.exacto": "40 + 4√10"
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p3b",
+          "enunciado": "Una hoja de 10 cm × 10 cm se dobla en cuatro (dos veces por la mitad). En la esquina del paquete que corresponde al centro de la hoja se recorta un triángulo rectángulo de catetos 1 cm (horizontal) y 3 cm (vertical), con el ángulo recto en esa esquina.",
+          "pregunta": "Al abrir, ¿cuál es el perímetro total de la hoja, en cm?",
+          "correcta": {
+            "fn": "desplegar",
+            "args": [
+              { "ancho": 10, "alto": 10 },
+              [{ "recta": { "x": 5 }, "mueve": "derecha" }, { "recta": { "y": 5 }, "mueve": "arriba" }],
+              [{ "tipo": "rombo", "centro": { "x": 5, "y": 5 }, "dx": 1, "dy": 3 }]
+            ],
+            "campo": "perimetro.exacto",
+            "valor": "40 + 4√10"
+          },
+          "errores": [
+            {
+              "id": "RME40-una-capa",
+              "respaldo": "hipotesis",
+              "explicacion": "Cortaste una sola capa: un triángulo de lados 1, 3 y √10, con borde 4 + √10. Las 4 capas juntas forman un rombo de borde 4√10.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 10, "alto": 10 },
+                [{ "recta": { "x": 5 }, "mueve": "derecha" }, { "recta": { "y": 5 }, "mueve": "arriba" }],
+                [{ "tipo": "rombo", "centro": { "x": 5, "y": 5 }, "dx": 1, "dy": 3 }]
+              ],
+              "campo": "errores.unaCapa.perimetro.exacto",
+              "valor": "44 + √10"
+            },
+            {
+              "id": "RME158-tramos-del-doblez",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste los catetos como borde. Están sobre los dobleces: al abrir desaparecen y solo queda el rombo.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 10, "alto": 10 },
+                [{ "recta": { "x": 5 }, "mueve": "derecha" }, { "recta": { "y": 5 }, "mueve": "arriba" }],
+                [{ "tipo": "rombo", "centro": { "x": 5, "y": 5 }, "dx": 1, "dy": 3 }]
+              ],
+              "campo": "errores.tramosDelDoblez.exacto",
+              "valor": "56 + 4√10"
+            },
+            {
+              "id": "RME159-entero-por-capa",
+              "respaldo": "hipotesis",
+              "explicacion": "Diste un rombo entero a cada capa. Las 4 capas juntas forman un solo rombo de lado √10.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 10, "alto": 10 },
+                [{ "recta": { "x": 5 }, "mueve": "derecha" }, { "recta": { "y": 5 }, "mueve": "arriba" }],
+                [{ "tipo": "rombo", "centro": { "x": 5, "y": 5 }, "dx": 1, "dy": 3 }]
+              ],
+              "campo": "errores.enteroPorCapa.perimetro.exacto",
+              "valor": "40 + 16√10"
+            }
+          ]
         }
       ]
     },
@@ -252,6 +460,66 @@
             ]
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Una tira de 9 cm × 3 cm se dobla en tres partes iguales como un acordeón (en x = 3 y en x = 6), quedando un cuadrado de 3 cm × 3 cm de tres capas. Se corta el paquete de arriba abajo por su mitad.",
+          "pregunta": "Al abrir, ¿cuántas piezas quedan?",
+          "unidad": "piezas",
+          "decimales": 0,
+          "correcta": {
+            "fn": "desplegar",
+            "args": [
+              { "ancho": 9, "alto": 3 },
+              [{ "recta": { "x": 3 }, "mueve": "izquierda" }, { "recta": { "x": 6 }, "mueve": "derecha" }],
+              [{ "tipo": "linea", "A": { "x": 4.5, "y": -1 }, "B": { "x": 4.5, "y": 4 } }]
+            ],
+            "campo": "piezas",
+            "valor": 4
+          },
+          "errores": [
+            {
+              "id": "RME40-una-capa",
+              "respaldo": "hipotesis",
+              "explicacion": "Cortaste una sola capa. El corte atraviesa las 3: al abrir hay 3 tajos.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 9, "alto": 3 },
+                [{ "recta": { "x": 3 }, "mueve": "izquierda" }, { "recta": { "x": 6 }, "mueve": "derecha" }],
+                [{ "tipo": "linea", "A": { "x": 4.5, "y": -1 }, "B": { "x": 4.5, "y": 4 } }]
+              ],
+              "campo": "errores.unaCapa.piezas",
+              "valor": 2
+            },
+            {
+              "id": "RME41-sin-uniones",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste dos mitades por capa. Las mitades que tocan un doblez siguen unidas: las del medio no se separan.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 9, "alto": 3 },
+                [{ "recta": { "x": 3 }, "mueve": "izquierda" }, { "recta": { "x": 6 }, "mueve": "derecha" }],
+                [{ "tipo": "linea", "A": { "x": 4.5, "y": -1 }, "B": { "x": 4.5, "y": 4 } }]
+              ],
+              "campo": "errores.sinUniones",
+              "valor": 6
+            },
+            {
+              "id": "RME157-tajos-como-piezas",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste los tajos. Tres tajos en una tira la parten en 4 piezas: siempre una más.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 9, "alto": 3 },
+                [{ "recta": { "x": 3 }, "mueve": "izquierda" }, { "recta": { "x": 6 }, "mueve": "derecha" }],
+                [{ "tipo": "linea", "A": { "x": 4.5, "y": -1 }, "B": { "x": 4.5, "y": 4 } }]
+              ],
+              "campo": "errores.cortesComoPiezas",
+              "valor": 3
+            }
+          ]
+        }
       ]
     },
     {
@@ -277,6 +545,73 @@
             "doblez": 15,
             "diagonal": 20
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Un rectángulo ABCD de 16 cm × 12 cm (AB = 16) se dobla de modo que el vértice C caiga sobre el vértice A. El doblez corta AB en E.",
+          "pregunta": "¿Cuánto mide AE?",
+          "unidad": "cm",
+          "decimales": 2,
+          "correcta": { "fn": "esquinaSobreEsquina", "args": [16, 12], "campo": "x", "valor": 12.5 },
+          "errores": [
+            {
+              "id": "RME151-punto-medio",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste E en el punto medio de AB. El doblez no es paralelo a un lado: E cumple EA = EC.",
+              "fn": "esquinaSobreEsquina",
+              "args": [16, 12],
+              "campo": "errores.xMitad",
+              "valor": 8
+            },
+            {
+              "id": "RME151-hipotenusa",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste 16 − x como hipotenusa y salió EB = 3,5. En el triángulo EBC la hipotenusa es EC = x: x² = (16 − x)² + 12².",
+              "fn": "esquinaSobreEsquina",
+              "args": [16, 12],
+              "campo": "errores.xHipotenusa",
+              "valor": 3.5
+            }
+          ]
+        },
+        {
+          "id": "p5b",
+          "enunciado": "Un rectángulo ABCD de 16 cm × 12 cm (AB = 16) se dobla de modo que el vértice C caiga sobre el vértice A. El doblez corta AB en E y CD en F.",
+          "pregunta": "¿Cuánto mide el doblez?",
+          "unidad": "cm",
+          "decimales": 2,
+          "correcta": { "fn": "esquinaSobreEsquina", "args": [16, 12], "campo": "doblez", "valor": 15 },
+          "errores": [
+            {
+              "id": "RME150-diagonal",
+              "respaldo": "hipotesis",
+              "explicacion": "Esa es la diagonal AC. El doblez es su mediatriz: la cruza por el medio, perpendicular, y va de E(12,5; 0) a F(3,5; 12), con A = (0; 0).",
+              "fn": "esquinaSobreEsquina",
+              "args": [16, 12],
+              "campo": "errores.diagonal",
+              "valor": 20
+            },
+            {
+              "id": "RME150-mitad-diagonal",
+              "respaldo": "hipotesis",
+              "explicacion": "Esa es la mitad de la diagonal. El doblez es otro segmento: la mediatriz de AC, de E a F.",
+              "fn": "esquinaSobreEsquina",
+              "args": [16, 12],
+              "campo": "errores.mitadDiagonal",
+              "valor": 10
+            },
+            {
+              "id": "RME151-lado-corto",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste el doblez paralelo al lado corto. Al juntar C con A, el doblez es la mediatriz de la diagonal, inclinado.",
+              "fn": "esquinaSobreEsquina",
+              "args": [16, 12],
+              "campo": "errores.ladoCorto",
+              "valor": 12
+            }
+          ]
         }
       ]
     },
@@ -393,6 +728,36 @@
             "errores.dividir": 3
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "Hay 8 vasos en fila, todos boca arriba. En cada jugada se voltean exactamente 3 vasos cualesquiera.",
+          "pregunta": "¿Cuál es el menor número de jugadas para dejarlos todos boca abajo?",
+          "unidad": "jugadas",
+          "decimales": 0,
+          "correcta": { "fn": "voltear", "args": ["11111111", "00000000", { "k": 3, "contiguas": false }], "campo": "minimo", "valor": 4 },
+          "errores": [
+            {
+              "id": "RME154-uno-por-uno",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste una jugada por vaso. En cada jugada se voltean 3 a la vez.",
+              "fn": "voltear",
+              "args": ["11111111", "00000000", { "k": 3, "contiguas": false }],
+              "campo": "errores.unoPorUno",
+              "valor": 8
+            },
+            {
+              "id": "RME155-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste 8 entre 3 y redondeaste. Cada vaso se voltea un número impar de veces; 8 impares suman par, y 3 jugadas dan 9 volteos: no alcanza.",
+              "fn": "voltear",
+              "args": ["11111111", "00000000", { "k": 3, "contiguas": false }],
+              "campo": "errores.dividir",
+              "valor": 3
+            }
+          ]
+        }
       ]
     },
     {
@@ -472,6 +837,53 @@
               8
             ]
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Una hoja de 8 cm × 4 cm se dobla por la mitad (queda de 4 × 4, con el doblez a la derecha) y se corta de arriba abajo a 2 cm del borde izquierdo del paquete.",
+          "pregunta": "Al abrir, ¿cuántas piezas hay?",
+          "unidad": "piezas",
+          "decimales": 0,
+          "correcta": {
+            "fn": "desplegar",
+            "args": [
+              { "ancho": 8, "alto": 4 },
+              [{ "recta": { "x": 4 }, "mueve": "derecha" }],
+              [{ "tipo": "linea", "A": { "x": 2, "y": -1 }, "B": { "x": 2, "y": 5 } }]
+            ],
+            "campo": "piezas",
+            "valor": 3
+          },
+          "errores": [
+            {
+              "id": "RME40-una-capa",
+              "respaldo": "hipotesis",
+              "explicacion": "Cortaste una sola capa. El corte atraviesa las 2: al abrir hay 2 tajos, a 2 cm de cada borde de la hoja.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 8, "alto": 4 },
+                [{ "recta": { "x": 4 }, "mueve": "derecha" }],
+                [{ "tipo": "linea", "A": { "x": 2, "y": -1 }, "B": { "x": 2, "y": 5 } }]
+              ],
+              "campo": "errores.unaCapa.piezas",
+              "valor": 2
+            },
+            {
+              "id": "RME41-sin-uniones",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste dos piezas por capa. La parte del medio contiene el doblez y no se separa: es una sola pieza.",
+              "fn": "desplegar",
+              "args": [
+                { "ancho": 8, "alto": 4 },
+                [{ "recta": { "x": 4 }, "mueve": "derecha" }],
+                [{ "tipo": "linea", "A": { "x": 2, "y": -1 }, "B": { "x": 2, "y": 5 } }]
+              ],
+              "campo": "errores.sinUniones",
+              "valor": 4
+            }
+          ]
         }
       ]
     }
