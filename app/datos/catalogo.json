@@ -4024,7 +4024,15 @@
       "traductor-enunciados",
       "rm-planteo",
       "rm-diofanticas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/planteo-de-ecuaciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/nucleo/kit/piezas/rm-fichas.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-matematico.transformaciones-de-figuras",
