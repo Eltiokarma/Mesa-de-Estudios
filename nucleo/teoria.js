@@ -122,6 +122,7 @@
         if (c.opciones) { if (!(c.opciones.length >= 2)) mal(d, `control ${c.id}: opciones de 2 o más`); continue; }
         if (!(c.max > c.min) || !(c.paso > 0)) mal(d, `control ${c.id}: min, max y paso`);
         else if (c.inicio < c.min || c.inicio > c.max) mal(d, `control ${c.id}: inicio fuera de rango`);
+        else if (Math.abs(ajustar(c, c.inicio) - c.inicio) > 1e-9) mal(d, `control ${c.id}: inicio ${c.inicio} no cae en la grilla min + k·paso`);
         if (c.color && !Ecuacion.COLORES.includes(c.color)) mal(d, `control ${c.id}: color ${c.color}`);
       }
       if (typeof j.dibujo !== 'function') { mal(d, 'dibujo(valores) debe ser una función'); return; }
@@ -313,7 +314,10 @@
   // Ajusta un valor de control a su paso y rango (lo que dibuja la pieza es siempre un valor limpio).
   function ajustar(c, v) {
     if (c.opciones) return c.opciones.some(o => o.valor === v) ? v : c.opciones[0].valor;
-    return Kit.respuesta.ajustar(+v, c.paso, c.min, c.max);
+    // La grilla del control cuenta desde su mínimo: con min 25 y paso 20 da 25, 45, 65… (no 20, 40, 60).
+    const n = Number.isFinite(+v) ? Math.round((+v - c.min) / c.paso) : 0;
+    const r = Math.min(c.max, Math.max(c.min, c.min + n * c.paso));
+    return Math.round(r * 1e6) / 1e6;
   }
 
   // Baraja las opciones con la semilla del caso, para que la correcta no quede siempre en el mismo lugar.
