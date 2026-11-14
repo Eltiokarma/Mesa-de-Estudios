@@ -8,7 +8,8 @@
     "nox",
     "tilo",
     "bruna",
-    "neri"
+    "neri",
+    "mara"
   ],
   "cursos": {
     "fisica": "tilo",
@@ -16,7 +17,7 @@
     "aritmetica": "luma",
     "algebra": "nox",
     "geometria": "neri",
-    "trigonometria": "gato",
+    "trigonometria": "mara",
     "razonamiento-matematico": "gato",
     "razonamiento-verbal": "gato"
   }
