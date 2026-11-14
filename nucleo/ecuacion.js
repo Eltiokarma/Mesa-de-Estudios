@@ -7,7 +7,8 @@
  *
  * Una ecuación es una lista de partes. Cada parte es:
  *   'texto'                         tal cual (operadores, números con su unidad: ' = ', ' m/s')
- *   { v: 'c-o', t: 'v' }            una variable con su color (c-o, c-i, c-h, c-d o c-f), igual que nucleo/predicciones.js
+ *   { v: 'c-o', t: 'v' }            una variable con su color (c-o, c-i, c-h, c-d o c-f), igual que nucleo/predicciones.js;
+ *                                   con largo: true, un trozo largo de color que puede partir línea (.var.largo)
  *   { frac: [num, den] }            fracción; num y den son a su vez listas de partes (o un texto)
  *   { sup: [base, exp] }            potencia: base^exp
  *   { sub: [base, ind] }            subíndice: v₀ se escribe { sub: [{ v: 'c-o', t: 'v' }, '0'] }
@@ -50,7 +51,7 @@
     return lista(partes).map(p => {
       if (typeof p === 'string' || typeof p === 'number') return esc(menos(p));
       if (Array.isArray(p)) return html(p);
-      if ('v' in p) return `<span class="var ${esc(p.v)} ec-v">${esc(p.t)}</span>`;
+      if ('v' in p) return `<span class="var ${esc(p.v)} ec-v${p.largo ? ' largo' : ''}">${esc(p.t)}</span>`;
       if (p.frac) return `<span class="ec-frac"><span class="ec-num">${html(p.frac[0])}</span><span class="ec-den">${html(p.frac[1])}</span></span>`;
       if (p.sup) return `${html(p.sup[0])}<sup class="ec-sup">${html(p.sup[1])}</sup>`;
       if (p.sub) return `${html(p.sub[0])}<sub class="ec-sub">${html(p.sub[1])}</sub>`;

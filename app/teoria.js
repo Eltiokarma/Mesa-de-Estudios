@@ -38,7 +38,7 @@
   function vista(ctx, u) {
     const { $app, esc } = ctx;
     const c = ctx.cat.cursos.find(x => x.unidades.some(y => y.id === u.id));
-    const [, , , sub] = location.hash.split('/');
+    const sub = decodeURIComponent(location.hash.split('/')[4] || '');   // #/unidad/<id>/teoria/<idea | ficha>
     $app.innerHTML = `<div class="card te-cargando" role="status">Abriendo la teoría…</div>`;
     const h = location.hash;
     cargarUnidad(u).then(def => {
@@ -317,7 +317,7 @@
     function reglaHTML(r, foco) {
       return `<div class="te-regla"${foco ? ' data-foco tabindex="-1"' : ''}><p class="te-rtx">${esc(r.texto)}</p>
         ${r.ecuacion ? `<p class="te-ec te-ec-grande">${E.html(r.ecuacion)}</p>` : ''}
-        <p class="te-cond"><b>Vale si</b> ${esc(r.condicion)}</p></div>`;
+        <p class="te-cond"><b>Vale si</b> ${esc(String(r.condicion).replace(/^si\s+/i, ''))}</p></div>`;
     }
 
     function vistaFicha() {
