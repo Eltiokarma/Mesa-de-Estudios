@@ -14,7 +14,54 @@
       ],
       "verificar": [ { "fn": "potenciaI", "args": [{ "n": 2027 }], "espera": { "texto": "−i" } },
                      { "fn": "potenciaI", "args": [{ "n": -2 }], "espera": { "texto": "−1" } },
-                     { "fn": "raizNegativa", "args": [{ "a": 25, "b": 4 }], "espera": { "texto": "−10" } } ]
+                     { "fn": "raizNegativa", "args": [{ "a": 25, "b": 4 }], "espera": { "texto": "−10" } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Recuerda que i² = −1.",
+          "pregunta": "¿Cuánto vale i²⁰²⁷?",
+          "decimales": 2,
+          "correcta": { "fn": "potenciaI", "args": [{ "n": 2027 }], "campo": "texto", "valor": "−i" },
+          "errores": [
+            {
+              "id": "CX1-i-cuadrado-uno",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste i² = 1. En realidad i² = −1: con 2027 = 4 · 506 + 3 quedan tres cuartos de vuelta, i³ = −i.",
+              "fn": "potenciaI",
+              "args": [{ "n": 2027 }],
+              "campo": "errores.cuadradoPositivo.texto",
+              "valor": "i"
+            },
+            {
+              "id": "CX3-cociente",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste el cociente, 506. Lo que cuenta es el resto: 2027 = 4 · 506 + 3, así que i²⁰²⁷ = i³ = −i.",
+              "fn": "potenciaI",
+              "args": [{ "n": 2027 }],
+              "campo": "errores.cociente.texto",
+              "valor": "−1"
+            },
+            {
+              "id": "CX4-ciclo-corrido",
+              "respaldo": "hipotesis",
+              "explicacion": "Empezaste el ciclo en i⁰ = i y el resto 3 te dio 1. El ciclo arranca en i⁰ = 1: i, −1, −i; con resto 3 queda −i.",
+              "fn": "potenciaI",
+              "args": [{ "n": 2027 }],
+              "campo": "errores.corrido.texto",
+              "valor": "1"
+            },
+            {
+              "id": "CX5-n-veces",
+              "respaldo": "hipotesis",
+              "explicacion": "El exponente no multiplica: iⁿ no es n·i. Cada potencia de i gira 90°; con resto 3 queda −i.",
+              "fn": "potenciaI",
+              "args": [{ "n": 2027 }],
+              "campo": "errores.nVeces.texto",
+              "valor": "2027i"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -28,7 +75,36 @@
       ],
       "verificar": [ { "fn": "sumar", "args": [{ "z": { "re": 4, "im": -3 }, "w": { "re": -1, "im": 5 } }], "espera": { "texto": "3 + 2i" } },
                      { "fn": "restar", "args": [{ "z": { "re": 4, "im": -3 }, "w": { "re": -1, "im": 5 } }], "espera": { "texto": "5 − 8i" } },
-                     { "fn": "opuesto", "args": [{ "z": { "re": -1, "im": 5 } }], "espera": { "texto": "1 − 5i" } } ]
+                     { "fn": "opuesto", "args": [{ "z": { "re": -1, "im": 5 } }], "espera": { "texto": "1 − 5i" } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Sean z = 4 − 3i y w = −1 + 5i.",
+          "pregunta": "¿Cuánto vale z − w?",
+          "decimales": 2,
+          "correcta": { "fn": "restar", "args": [{ "z": { "re": 4, "im": -3 }, "w": { "re": -1, "im": 5 } }], "campo": "texto", "valor": "5 − 8i" },
+          "errores": [
+            {
+              "id": "CX-signo-solo-a-la-real",
+              "respaldo": "hipotesis",
+              "explicacion": "El signo menos alcanza a las dos partes de w: −(−1 + 5i) = 1 − 5i, y queda (4 + 1) + (−3 − 5)i.",
+              "fn": "sumar",
+              "args": [{ "z": { "re": 4, "im": -3 }, "w": { "re": 1, "im": 5 } }],
+              "campo": "texto",
+              "valor": "5 + 2i"
+            },
+            {
+              "id": "CX-suma-en-vez-de-resta",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste z + w. Para restar se cambia el signo de las dos partes de w: (4 + 1) + (−3 − 5)i.",
+              "fn": "sumar",
+              "args": [{ "z": { "re": 4, "im": -3 }, "w": { "re": -1, "im": 5 } }],
+              "campo": "texto",
+              "valor": "3 + 2i"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -40,7 +116,45 @@
         "Como i² = −1, el último término es −5(−1) = +5.",
         "Se juntan las partes: (6 + 5) + (15 − 2)i = 11 + 13i."
       ],
-      "verificar": [ { "fn": "multiplicar", "args": [{ "z": { "re": 3, "im": -1 }, "w": { "re": 2, "im": 5 } }], "espera": { "texto": "11 + 13i" } } ]
+      "verificar": [ { "fn": "multiplicar", "args": [{ "z": { "re": 3, "im": -1 }, "w": { "re": 2, "im": 5 } }], "espera": { "texto": "11 + 13i" } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Se multiplican los complejos 3 − i y 2 + 5i.",
+          "pregunta": "¿Cuánto vale (3 − i)(2 + 5i)?",
+          "decimales": 2,
+          "correcta": { "fn": "multiplicar", "args": [{ "z": { "re": 3, "im": -1 }, "w": { "re": 2, "im": 5 } }], "campo": "texto", "valor": "11 + 13i" },
+          "errores": [
+            {
+              "id": "CX7-parte-por-parte",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste solo real por real e imaginaria por imaginaria. Se multiplica cada término por cada término: también salen 15i y −2i.",
+              "fn": "multiplicar",
+              "args": [{ "z": { "re": 3, "im": -1 }, "w": { "re": 2, "im": 5 } }],
+              "campo": "errores.partePorParte.texto",
+              "valor": "6 − 5i"
+            },
+            {
+              "id": "CX1-i-cuadrado-uno",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste i² = 1. Como i² = −1, el término −5i² vale +5: (6 + 5) + 13i.",
+              "fn": "multiplicar",
+              "args": [{ "z": { "re": 3, "im": -1 }, "w": { "re": 2, "im": 5 } }],
+              "campo": "errores.cuadradoPositivo.texto",
+              "valor": "1 + 13i"
+            },
+            {
+              "id": "CX6-sigue-i",
+              "respaldo": "hipotesis",
+              "explicacion": "Dejaste −5i² como −5i. Pero i · i = i² = −1: ese término es +5, un número real.",
+              "fn": "multiplicar",
+              "args": [{ "z": { "re": 3, "im": -1 }, "w": { "re": 2, "im": 5 } }],
+              "campo": "errores.sigueI.texto",
+              "valor": "6 + 8i"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -66,7 +180,72 @@
       ],
       "verificar": [ { "fn": "conjugado", "args": [{ "z": { "re": 5, "im": -12 } }], "espera": { "texto": "5 + 12i" } },
                      { "fn": "modulo", "args": [{ "z": { "re": 5, "im": -12 } }], "espera": { "texto": "13" } },
-                     { "fn": "multiplicar", "args": [{ "z": { "re": 5, "im": -12 }, "w": { "re": 5, "im": 12 } }], "espera": { "texto": "169" } } ]
+                     { "fn": "multiplicar", "args": [{ "z": { "re": 5, "im": -12 }, "w": { "re": 5, "im": 12 } }], "espera": { "texto": "169" } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Sea z = 5 − 12i.",
+          "pregunta": "¿Cuál es su conjugado z̄?",
+          "decimales": 2,
+          "correcta": { "fn": "conjugado", "args": [{ "z": { "re": 5, "im": -12 } }], "campo": "texto", "valor": "5 + 12i" },
+          "errores": [
+            {
+              "id": "CX12-cambia-la-real",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiaste el signo de la parte real. El conjugado cambia solo el de la parte imaginaria: 5 + 12i.",
+              "fn": "conjugado",
+              "args": [{ "z": { "re": 5, "im": -12 } }],
+              "campo": "errores.cambiaReal.texto",
+              "valor": "−5 − 12i"
+            },
+            {
+              "id": "CX13-opuesto",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el opuesto, −z. El conjugado cambia solo el signo de la parte imaginaria: es el reflejo en el eje real.",
+              "fn": "conjugado",
+              "args": [{ "z": { "re": 5, "im": -12 } }],
+              "campo": "errores.opuesto.texto",
+              "valor": "−5 + 12i"
+            }
+          ]
+        },
+        {
+          "id": "p5b",
+          "enunciado": "Sea z = 5 − 12i.",
+          "pregunta": "¿Cuánto vale |z|?",
+          "decimales": 2,
+          "correcta": { "fn": "modulo", "args": [{ "z": { "re": 5, "im": -12 } }], "campo": "texto", "valor": "13" },
+          "errores": [
+            {
+              "id": "AL9-suma-de-partes",
+              "respaldo": "parcial",
+              "explicacion": "Sumaste 5 + 12. El módulo es la hipotenusa: √(5² + 12²) = √169.",
+              "fn": "modulo",
+              "args": [{ "z": { "re": 5, "im": -12 } }],
+              "campo": "errores.sumaPartes.texto",
+              "valor": "17"
+            },
+            {
+              "id": "CX10-raiz-de-suma",
+              "respaldo": "hipotesis",
+              "explicacion": "Sacaste la raíz de 5 + 12. Primero se elevan al cuadrado: √(25 + 144).",
+              "fn": "modulo",
+              "args": [{ "z": { "re": 5, "im": -12 } }],
+              "campo": "errores.raizDeSuma.texto",
+              "valor": "√17"
+            },
+            {
+              "id": "CX11-sin-raiz",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es |z|², sin la raíz. El módulo es √169.",
+              "fn": "modulo",
+              "args": [{ "z": { "re": 5, "im": -12 } }],
+              "campo": "errores.sinRaiz.texto",
+              "valor": "169"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -78,7 +257,54 @@
         "Arriba: (1 + 7i)(3 − i) = 3 − i + 21i − 7i² = 3 + 7 + 20i = 10 + 20i. Abajo: (3 + i)(3 − i) = 9 + 1 = 10.",
         "Se divide cada parte entre 10: 1 + 2i. Dividir parte por parte (1/3 + 7i) da otra cosa."
       ],
-      "verificar": [ { "fn": "dividir", "args": [{ "z": { "re": 1, "im": 7 }, "w": { "re": 3, "im": 1 } }], "espera": { "texto": "1 + 2i", "numerador.texto": "10 + 20i", "denominador.texto": "10" } } ]
+      "verificar": [ { "fn": "dividir", "args": [{ "z": { "re": 1, "im": 7 }, "w": { "re": 3, "im": 1 } }], "espera": { "texto": "1 + 2i", "numerador.texto": "10 + 20i", "denominador.texto": "10" } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Se divide 1 + 7i entre 3 + i.",
+          "pregunta": "Expresa (1 + 7i)/(3 + i) en la forma a + bi.",
+          "decimales": 2,
+          "correcta": { "fn": "dividir", "args": [{ "z": { "re": 1, "im": 7 }, "w": { "re": 3, "im": 1 } }], "campo": "texto", "valor": "1 + 2i" },
+          "errores": [
+            {
+              "id": "CX15-parte-por-parte",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste parte por parte. Se multiplica arriba y abajo por el conjugado del denominador, 3 − i.",
+              "fn": "dividir",
+              "args": [{ "z": { "re": 1, "im": 7 }, "w": { "re": 3, "im": 1 } }],
+              "campo": "errores.partePorParte.texto",
+              "valor": "1/3 + 7i"
+            },
+            {
+              "id": "CX16-sin-denominador",
+              "respaldo": "hipotesis",
+              "explicacion": "Faltó dividir entre (3 + i)(3 − i) = 10: el numerador 10 + 20i va entre 10.",
+              "fn": "dividir",
+              "args": [{ "z": { "re": 1, "im": 7 }, "w": { "re": 3, "im": 1 } }],
+              "campo": "errores.sinDenominador.texto",
+              "valor": "10 + 20i"
+            },
+            {
+              "id": "CX1-i-cuadrado-uno",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste i² = 1 arriba. En (1 + 7i)(3 − i), el término −7i² vale +7.",
+              "fn": "dividir",
+              "args": [{ "z": { "re": 1, "im": 7 }, "w": { "re": 3, "im": 1 } }],
+              "campo": "errores.cuadradoPositivo.texto",
+              "valor": "−2/5 + 2i"
+            },
+            {
+              "id": "CX35-por-w",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste arriba por 3 + i. Se multiplica arriba y abajo por el conjugado, 3 − i.",
+              "fn": "dividir",
+              "args": [{ "z": { "re": 1, "im": 7 }, "w": { "re": 3, "im": 1 } }],
+              "campo": "errores.porW.texto",
+              "valor": "−2/5 + (11/5)i"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -91,7 +317,36 @@
         "arctan(b/a) = arctan(1/√3) daría 30°, que es del primer cuadrante. En el tercero el argumento es −180° + 30° = −150°."
       ],
       "verificar": [ { "fn": "polar", "args": [{ "z": { "re": "-√3", "im": -1 } }], "espera": { "texto": "2 cis (−150°)", "errores.arctanDirecto.texto": "2 cis 30°" } },
-                     { "fn": "argumento", "args": [{ "z": { "re": "-√3", "im": -1 } }], "espera": { "grados": -150, "positivo": 210 } } ]
+                     { "fn": "argumento", "args": [{ "z": { "re": "-√3", "im": -1 } }], "espera": { "grados": -150, "positivo": 210 } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Sea z = −√3 − i.",
+          "pregunta": "¿Cuál es su forma polar?",
+          "decimales": 2,
+          "correcta": { "fn": "polar", "args": [{ "z": { "re": "-√3", "im": -1 } }], "campo": "texto", "valor": "2 cis (−150°)" },
+          "errores": [
+            {
+              "id": "CX17-arctan-directo",
+              "respaldo": "parcial",
+              "explicacion": "arctan(1/√3) = 30° es del primer cuadrante. El punto (−√3; −1) está en el tercero: −180° + 30° = −150°.",
+              "fn": "polar",
+              "args": [{ "z": { "re": "-√3", "im": -1 } }],
+              "campo": "errores.arctanDirecto.texto",
+              "valor": "2 cis 30°"
+            },
+            {
+              "id": "CX11-sin-raiz",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 3 + 1 = 4 como módulo. Falta la raíz: |z| = √4 = 2.",
+              "fn": "polar",
+              "args": [{ "z": { "re": "-√3", "im": -1 } }],
+              "campo": "errores.sinRaiz.texto",
+              "valor": "4 cis (−150°)"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -105,7 +360,72 @@
       ],
       "verificar": [ { "fn": "productoPolar", "args": [{ "z": { "r": 4, "theta": 70 }, "w": { "r": 2, "theta": 25 } }], "espera": { "texto": "8 cis 95°" } },
                      { "fn": "cocientePolar", "args": [{ "z": { "r": 4, "theta": 70 }, "w": { "r": 2, "theta": 25 } }], "espera": { "texto": "2 cis 45°" } },
-                     { "fn": "binomica", "args": [{ "r": 2, "theta": 45 }], "espera": { "texto": "√2 + √2 i" } } ]
+                     { "fn": "binomica", "args": [{ "r": 2, "theta": 45 }], "espera": { "texto": "√2 + √2 i" } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "Sean z = 4 cis 70° y w = 2 cis 25°.",
+          "pregunta": "¿Cuánto vale z · w?",
+          "decimales": 2,
+          "correcta": { "fn": "productoPolar", "args": [{ "z": { "r": 4, "theta": 70 }, "w": { "r": 2, "theta": 25 } }], "campo": "texto", "valor": "8 cis 95°" },
+          "errores": [
+            {
+              "id": "CX19-suma-modulos",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste los módulos. Al multiplicar, los módulos se multiplican (4 · 2) y los argumentos se suman.",
+              "fn": "productoPolar",
+              "args": [{ "z": { "r": 4, "theta": 70 }, "w": { "r": 2, "theta": 25 } }],
+              "campo": "errores.sumaModulos.texto",
+              "valor": "6 cis 95°"
+            },
+            {
+              "id": "CX20-multiplica-argumentos",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste los argumentos. Al multiplicar complejos los ángulos se suman: 70° + 25°.",
+              "fn": "productoPolar",
+              "args": [{ "z": { "r": 4, "theta": 70 }, "w": { "r": 2, "theta": 25 } }],
+              "campo": "errores.multiplicaArgumentos.texto",
+              "valor": "8 cis 1750°"
+            },
+            {
+              "id": "CX21-resta-argumentos",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste los argumentos, que es la regla del cociente. En el producto se suman: 70° + 25°.",
+              "fn": "productoPolar",
+              "args": [{ "z": { "r": 4, "theta": 70 }, "w": { "r": 2, "theta": 25 } }],
+              "campo": "errores.restaArgumentos.texto",
+              "valor": "8 cis 45°"
+            }
+          ]
+        },
+        {
+          "id": "p8b",
+          "enunciado": "Sean z = 4 cis 70° y w = 2 cis 25°.",
+          "pregunta": "¿Cuánto vale z/w?",
+          "decimales": 2,
+          "correcta": { "fn": "cocientePolar", "args": [{ "z": { "r": 4, "theta": 70 }, "w": { "r": 2, "theta": 25 } }], "campo": "texto", "valor": "2 cis 45°" },
+          "errores": [
+            {
+              "id": "CX22-suma-argumentos",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste los argumentos, como en el producto. Al dividir se restan: 70° − 25°.",
+              "fn": "cocientePolar",
+              "args": [{ "z": { "r": 4, "theta": 70 }, "w": { "r": 2, "theta": 25 } }],
+              "campo": "errores.sumaArgumentos.texto",
+              "valor": "2 cis 95°"
+            },
+            {
+              "id": "CX24-resta-al-reves",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste al revés. Va el argumento de z menos el de w: 70° − 25°.",
+              "fn": "cocientePolar",
+              "args": [{ "z": { "r": 4, "theta": 70 }, "w": { "r": 2, "theta": 25 } }],
+              "campo": "errores.restaAlReves.texto",
+              "valor": "2 cis (−45°)"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
@@ -117,7 +437,36 @@
         "Por De Moivre: (2 cis 30°)⁶ = 2⁶ cis (6 · 30°) = 64 cis 180°.",
         "cis 180° = −1, así que el resultado es −64. Repartir el exponente, (√3)⁶ + i⁶ = 27 − 1 = 26, es un error."
       ],
-      "verificar": [ { "fn": "deMoivre", "args": [{ "z": { "re": "√3", "im": 1 }, "n": 6 }], "espera": { "texto": "−64", "polar": "64 cis 180°" } } ]
+      "verificar": [ { "fn": "deMoivre", "args": [{ "z": { "re": "√3", "im": 1 }, "n": 6 }], "espera": { "texto": "−64", "polar": "64 cis 180°" } } ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "Se eleva √3 + i a la sexta potencia.",
+          "pregunta": "¿Cuánto vale (√3 + i)⁶?",
+          "decimales": 2,
+          "correcta": { "fn": "deMoivre", "args": [{ "z": { "re": "√3", "im": 1 }, "n": 6 }], "campo": "texto", "valor": "−64" },
+          "errores": [
+            {
+              "id": "AL11-reparte-exponente",
+              "respaldo": "hipotesis",
+              "explicacion": "Repartiste el exponente: (√3)⁶ + i⁶. La potencia de una suma no es la suma de potencias; usa De Moivre: 2⁶ cis 180°.",
+              "fn": "deMoivre",
+              "args": [{ "z": { "re": "√3", "im": 1 }, "n": 6 }],
+              "campo": "errores.reparte.texto",
+              "valor": "26"
+            },
+            {
+              "id": "CX31-modulo-por-n",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste el módulo por 6. El módulo se eleva a la 6: 2⁶ = 64.",
+              "fn": "deMoivre",
+              "args": [{ "z": { "re": "√3", "im": 1 }, "n": 6 }],
+              "campo": "errores.porN.texto",
+              "valor": "−12"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p10",
@@ -129,7 +478,45 @@
         "√(−64) = 8i, así que x = (−6 ± 8i)/2 = −3 ± 4i. Se divide entre 2 la parte real y también la imaginaria.",
         "Las dos raíces son conjugadas: suman (−3 + 4i) + (−3 − 4i) = −6, el opuesto del coeficiente de x, y su producto es 9 + 16 = 25, el término independiente (aquí el coeficiente de x² es 1)."
       ],
-      "verificar": [ { "fn": "cuadratica", "args": [{ "a": 1, "b": 6, "c": 25 }], "espera": { "texto": "−3 ± 4i", "delta": -64, "suma": "−6", "producto": "25" } } ]
+      "verificar": [ { "fn": "cuadratica", "args": [{ "a": 1, "b": 6, "c": 25 }], "espera": { "texto": "−3 ± 4i", "delta": -64, "suma": "−6", "producto": "25" } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Se resuelve x² + 6x + 25 = 0 en los complejos.",
+          "pregunta": "¿Cuáles son las raíces de x² + 6x + 25 = 0 en los complejos?",
+          "decimales": 2,
+          "correcta": { "fn": "cuadratica", "args": [{ "a": 1, "b": 6, "c": 25 }], "campo": "texto", "valor": "−3 ± 4i" },
+          "errores": [
+            {
+              "id": "CX32-signo-de-b",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste +b. En la fórmula va −b: (−6 ± 8i)/2.",
+              "fn": "cuadratica",
+              "args": [{ "a": 1, "b": 6, "c": 25 }],
+              "campo": "errores.signoB.texto",
+              "valor": "3 ± 4i"
+            },
+            {
+              "id": "CX33-sin-dividir-la-imaginaria",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste entre 2 solo la parte real. También va la imaginaria: 8i/2 = 4i.",
+              "fn": "cuadratica",
+              "args": [{ "a": 1, "b": 6, "c": 25 }],
+              "campo": "errores.sinDividirIm.texto",
+              "valor": "−3 ± 8i"
+            },
+            {
+              "id": "CX34-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "Faltó dividir entre 2a = 2: (−6 ± 8i)/2.",
+              "fn": "cuadratica",
+              "args": [{ "a": 1, "b": 6, "c": 25 }],
+              "campo": "errores.sinDividir.texto",
+              "valor": "−6 ± 8i"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
