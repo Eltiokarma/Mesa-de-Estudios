@@ -72,7 +72,31 @@
     for (const c of caras) c.forEach((a, m) => { const b = c[(m + 1) % c.length]; aristas.add(a < b ? `${a}-${b}` : `${b}-${a}`); });
     return { caras, V: n, A: aristas.size, C: caras.length };
   }
-  const TD = { giro: -28, alza: 22 };
+  const TD = { giro: -28, alza: 22 }, ALZA = 22;
+  const SEP = '   ·   ';   // separa dos relaciones en una lectura o ecuación
+  const nb = t => t.replace(/ /g, '\u00a0');   // una relación de la lectura no se parte entre dos líneas
+  // Gesto directo (docs/teoria.md §4b): se agarra un vértice y se gira el sólido alrededor del eje vertical, para ver
+  // lo que estaba detrás. enPlano invierte la proyección en el plano horizontal del vértice (y = y0): si el dedo está
+  // a φ grados en ese plano, la cámara nueva es g = t0 − φ + g (t0: ángulo del vértice), así el vértice queda bajo el dedo.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const enPlano = (datos, O, e1, e2, p) => {
+    const g = G.geometria(datos), a = g.S(O), b = g.S([O[0] + e1[0], O[1] + e1[1], O[2] + e1[2]]), c = g.S([O[0] + e2[0], O[1] + e2[1], O[2] + e2[2]]);
+    const m = [b[0] - a[0], b[1] - a[1], c[0] - a[0], c[1] - a[1]], x = p.x - a[0], y = p.y - a[1], det = m[0] * m[3] - m[2] * m[1];
+    return [(x * m[3] - m[2] * y) / det, (m[0] * y - x * m[1]) / det];
+  };
+  // El vértice que se agarra: el primero que no está sobre el eje.
+  const agarre = P => P.find(p => Math.hypot(p[0], p[2]) > 0.5);
+  const camara = { id: 'giro', etiqueta: 'girar el sólido', min: -90, max: 90, paso: 15, inicio: -30, unidad: '°', decimales: 0 };
+  const giraArrastre = (puntos, fig) => ({
+    id: 'girar', etiqueta: 'vértice para girar el sólido',
+    donde: v => enPantalla(fig(v), agarre(puntos(v))),
+    mover: (p, v) => {
+      const q = agarre(puntos(v)), [u, w] = enPlano(fig(v), [0, q[1], 0], [1, 0, 0], [0, 0, 1], p);
+      const g = U.grados(Math.atan2(q[2], q[0])) - U.grados(Math.atan2(w, u)) + v.giro;
+      return { giro: ((g + 180) % 360 + 360) % 360 - 180 };
+    },
+  });
+  const tdGiro = g => ({ giro: g, alza: ALZA });
   const regular = (n, R, y, g0 = 90) => Array.from({ length: n }, (_, k) => { const t = U.rad(g0 + 360 * k / n); return [R * Math.cos(t), y, R * Math.sin(t)]; });
   const SOLIDOS = {
     prisma: n => [...regular(n, 1.5, -1.1), ...regular(n, 1.5, 1.1)],
@@ -98,6 +122,7 @@
   // Cambia: el tipo de sólido y los lados de la base · Permanece: la manera de contar ·
   // Progresa: V, A y C crecen con n · Se reserva: el prisma hexagonal · Debe verse: lo oculto también cuenta.
   const cuenta = (tipo, n) => (tipo === 'prisma' ? { V: 2 * n, A: 3 * n, C: n + 2 } : { V: n + 1, A: 2 * n, C: n + 1 });
+  const elemFig = v => solidoFig(SOLIDOS[v.tipo](v.n), `${v.tipo === 'prisma' ? 'Prisma' : 'Pirámide'} ${nombreBase(v.n)}`, { vertices: true, tresD: tdGiro(v.giro) });
   const elemIdea = {
     id: 'elementos',
     titulo: 'Contar también lo oculto',
@@ -109,9 +134,13 @@
       controles: [
         { id: 'tipo', etiqueta: 'sólido', opciones: [{ valor: 'prisma', texto: 'prisma' }, { valor: 'piramide', texto: 'pirámide' }] },
         { id: 'n', etiqueta: 'lados de la base', min: 3, max: 8, paso: 1, inicio: 5, unidad: '', decimales: 0, color: 'c-d' },
+        camara,
       ],
-      dibujo: v => ({ datos: solidoFig(SOLIDOS[v.tipo](v.n), `${v.tipo === 'prisma' ? 'Prisma' : 'Pirámide'} ${nombreBase(v.n)}`, { vertices: true }), estado: {} }),
-      lectura: v => { const c = cuenta(v.tipo, v.n); return [`V = ${c.V} · A = ${c.A} · C = ${c.C}`]; },
+      dibujo: v => ({ datos: elemFig(v), estado: {} }),
+      // Se agarra un vértice de la base y se gira el sólido: las aristas de atrás pasan adelante y siguen contando.
+      // Los lados de la base no se arrastran: son un número entero de lados, no una posición.
+      arrastres: [giraArrastre(v => SOLIDOS[v.tipo](v.n), elemFig)],
+      lectura: v => { const c = cuenta(v.tipo, v.n); return [nb(`V = ${c.V}`), SEP, nb(`A = ${c.A}`), SEP, nb(`C = ${c.C}`)]; },
       minimo: 4,
     },
     predice: {
@@ -133,12 +162,12 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'Cada base es un hexágono: 6 aristas arriba y 6 abajo.', ecuacion: ['6 + 6 = 12'] },
         { estado: { corte: 0 }, texto: 'Cada vértice de abajo sube por una arista lateral.', ecuacion: ['12 + 6 = 18 aristas'] },
-        { estado: { corte: 0 }, texto: 'Vértices: 6 abajo y 6 arriba. Caras: 6 laterales y 2 bases.', ecuacion: ['V = 12 · C = 8'] },
+        { estado: { corte: 0 }, texto: 'Vértices: 6 abajo y 6 arriba. Caras: 6 laterales y 2 bases.', ecuacion: ['V = 12', SEP, 'C = 8'] },
       ],
     },
     regla: {
       texto: 'Un poliedro está limitado por caras planas; sus lados son aristas y sus esquinas, vértices. Con base de n lados:',
-      ecuacion: ['prisma: ', cV, ' = 2n, ', cA, ' = 3n, ', cC, ' = n + 2   ·   pirámide: ', cV, ' = n + 1, ', cA, ' = 2n, ', cC, ' = n + 1'],
+      ecuacion: ['prisma: ', cV, ' = 2n, ', cA, ' = 3n, ', cC, ' = n + 2', '   ·   ', 'pirámide: ', cV, ' = n + 1, ', cA, ' = 2n, ', cC, ' = n + 1'],
       condicion: 'se cuentan todas las caras, aristas y vértices, también los que el dibujo deja atrás.',
       voz: 'Cuenta por grupos y suma; no cuentes lo mismo dos veces.',
     },
@@ -166,6 +195,7 @@
   // Se reserva: el dodecaedro sin contar · Debe verse: vale para convexos; un túnel la rompe.
   const LISTA = { tetraedro: 'tetraedro', cubo: 'cubo', octaedro: 'octaedro', prisma5: 'prisma pentagonal', piramide6: 'pirámide hexagonal', bipiramide5: 'bipirámide pentagonal' };
   const puntosDe = id => (id === 'prisma5' ? SOLIDOS.prisma(5) : id === 'piramide6' ? SOLIDOS.piramide(6) : id === 'bipiramide5' ? SOLIDOS.bipiramide(5) : SOLIDOS[id]());
+  const eulerFig = v => solidoFig(puntosDe(v.so), `${LISTA[v.so]} con sus vértices marcados`, { vertices: true, tresD: tdGiro(v.giro) });
   const eulerIdea = {
     id: 'euler',
     titulo: 'Caras más vértices',
@@ -174,9 +204,11 @@
     juega: {
       consigna: 'Elige un sólido. La cuenta de caras, vértices y aristas sale del modelo, no del dibujo. Mira qué número se repite.',
       voz: 'Prueba varios. ¿Cuánto da C + V − A cada vez?',
-      controles: [{ id: 'so', etiqueta: 'sólido', opciones: Object.entries(LISTA).map(([valor, texto]) => ({ valor, texto })) }],
-      dibujo: v => ({ datos: solidoFig(puntosDe(v.so), `${LISTA[v.so]} con sus vértices marcados`, { vertices: true }), estado: {} }),
-      lectura: v => { const h = casco(puntosDe(v.so)); return [`C = ${h.C} · V = ${h.V} · A = ${h.A}`, `C + V − A = ${h.C + h.V - h.A}`]; },
+      controles: [{ id: 'so', etiqueta: 'sólido', opciones: Object.entries(LISTA).map(([valor, texto]) => ({ valor, texto })) }, camara],
+      dibujo: v => ({ datos: eulerFig(v), estado: {} }),
+      // Se agarra un vértice y se gira el sólido: la cuenta no cambia aunque cambie lo que se ve.
+      arrastres: [giraArrastre(v => puntosDe(v.so), eulerFig)],
+      lectura: v => { const h = casco(puntosDe(v.so)); return [nb(`C = ${h.C}, V = ${h.V}, A = ${h.A}`), SEP, nb(`C + V − A = ${h.C + h.V - h.A}`)]; },
       minimo: 3,
     },
     predice: {
@@ -204,7 +236,7 @@
     },
     regla: {
       texto: 'En todo poliedro convexo, el número de caras más el de vértices es igual al de aristas más dos.',
-      ecuacion: [cC, ' + ', cV, ' = ', cA, ' + 2'],
+      ecuacion: [{ llave: [cC], nota: 'caras', color: 'c-d' }, ' + ', { llave: [cV], nota: 'vértices', color: 'c-o' }, ' = ', { llave: [cA], nota: 'aristas', color: 'c-i' }, ' + 2'],
       condicion: 'el poliedro es convexo. Un marco con un túnel tiene C + V = A: allí no vale.',
       voz: 'Antes de usar Euler, revisa que el sólido no tenga túneles.',
     },
@@ -282,7 +314,8 @@
         { id: 'q', etiqueta: 'por vértice', min: 3, max: 6, paso: 1, inicio: 3, unidad: '', decimales: 0, color: 'c-o' },
       ],
       dibujo: v => ({ datos: vertFig(+v.n, v.q), estado: {} }),
-      lectura: v => { const s = v.q * INT(+v.n), p = PLAT[`${v.n},${v.q}`]; return [`${v.q} · ${INT(+v.n)}° = ${s}° ${s < 360 ? '< 360°' : '≥ 360°'}`, p ? `se pliega: ${p}` : 'no forma poliedro'] ; },
+      // Sin arrastre: q es cuántos polígonos hay, no una posición; el borde rojo da varias vueltas y quedaría ambiguo.
+      lectura: v => { const s = v.q * INT(+v.n), p = PLAT[`${v.n},${v.q}`]; return [nb(`${v.q} · ${INT(+v.n)}° = ${s}° ${s < 360 ? '< 360°' : '≥ 360°'}`), SEP, p ? `se pliega: ${p}` : 'no forma poliedro']; },
       minimo: 5,
     },
     predice: {
@@ -309,7 +342,7 @@
     },
     regla: {
       texto: 'Un poliedro regular tiene caras polígonos regulares iguales y el mismo número de caras en cada vértice. Solo existen cinco.',
-      ecuacion: ['q · ángulo de la cara < 360°   ·   p · ', cC, ' = 2', cA, ' = q · ', cV],
+      ecuacion: [{ llave: ['q'], nota: 'caras por vértice' }, ' · ángulo de la cara < 360°', SEP, { llave: ['p'], nota: 'lados por cara' }, ' · ', cC, ' = 2', cA, ' = q · ', cV],
       condicion: 'cada cara tiene p lados, a cada vértice llegan q caras y cada arista es lado de dos caras.',
       voz: 'Cada arista la comparten dos caras: por eso se divide entre 2.',
     },
@@ -340,9 +373,38 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que las ideas 1 y 2: tres familias (también la bipirámide) y bases de hasta 12 lados, con la
+  // cuenta de Euler en vivo. Se gira con el vértice, como en las ideas.
+  const FAM = { prisma: 'prisma', piramide: 'pirámide', bipiramide: 'bipirámide' };
+  const familiaFig = v => solidoFig(SOLIDOS[v.tipo](v.n), `${FAM[v.tipo]} ${nombreBase(v.n)} con sus vértices marcados`, { vertices: v.n <= 8, tresD: tdGiro(v.giro) });
+  const mesaFamilias = {
+    id: 'familias', titulo: 'Tres familias, hasta 12 lados', pieza: 'geo-figura',
+    consigna: 'Elige la familia y los lados de la base. Gira el sólido desde un vértice. ¿Cambia C + V − A?',
+    controles: [
+      { id: 'tipo', etiqueta: 'familia', opciones: Object.entries(FAM).map(([valor, texto]) => ({ valor, texto })) },
+      { id: 'n', etiqueta: 'lados de la base', min: 3, max: 12, paso: 1, inicio: 6, unidad: '', decimales: 0, color: 'c-d' },
+      camara,
+    ],
+    dibujo: v => ({ datos: familiaFig(v), estado: {} }),
+    arrastres: [giraArrastre(v => SOLIDOS[v.tipo](v.n), familiaFig)],
+    lectura: v => { const h = casco(SOLIDOS[v.tipo](v.n)); return [nb(`C = ${h.C}, V = ${h.V}, A = ${h.A}`), SEP, nb(`C + V − A = ${h.C + h.V - h.A}`)]; },
+  };
+  // Mesa 3: los cinco regulares armados (la idea 3 solo los deja imaginar desde el desarrollo), con p y q en vivo.
+  const PLATON = { tetraedro: 'tetraedro', cubo: 'hexaedro', octaedro: 'octaedro', dodecaedro: 'dodecaedro', icosaedro: 'icosaedro' };
+  const platonFig = v => solidoFig(SOLIDOS[v.so](), `${PLATON[v.so]} regular con sus vértices marcados`, { vertices: true, tresD: tdGiro(v.giro) });
+  const mesaPlaton = {
+    id: 'cinco-regulares', titulo: 'Los cinco regulares', pieza: 'geo-figura',
+    consigna: 'Elige un poliedro regular y gíralo. Cuenta los lados por cara (p) y las caras por vértice (q).',
+    controles: [{ id: 'so', etiqueta: 'poliedro', opciones: Object.entries(PLATON).map(([valor, texto]) => ({ valor, texto })) }, camara],
+    dibujo: v => ({ datos: platonFig(v), estado: {} }),
+    arrastres: [giraArrastre(v => SOLIDOS[v.so](), platonFig)],
+    lectura: v => { const h = casco(SOLIDOS[v.so]()), p = 2 * h.A / h.C, q = 2 * h.A / h.V; return [`2A = ${2 * h.A} = ${p} · ${h.C} caras = ${q} · ${h.V} vértices`]; },
+  };
+
   return {
     unidad: 'geometria.poliedros',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -350,6 +412,8 @@
       pregunta: '¿Una regla que se cumple en muchos ejemplos vale para todos?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «A history of Topology», MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Topology_in_mathematics/' },
     },
+    // Laboratorio: familias y regulares son más ricas que sus ideas; la del vértice es el juego de la idea 3.
+    laboratorio: [mesaFamilias, Object.assign({ id: 'vertice', titulo: 'Polígonos en un vértice', pieza: 'geo-figura' }, regIdea.juega), mesaPlaton],
     ideas: [elemIdea, eulerIdea, regIdea],
   };
 });

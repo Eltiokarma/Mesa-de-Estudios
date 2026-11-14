@@ -285,5 +285,17 @@
     return `Figura geométrica a escala${nombres.length ? ` con los puntos ${nombres.join(', ')}` : ''}${textos.length ? `; medidas: ${textos.join(', ')}` : ''}`;
   }
 
-  return { id: 'geo-figura', dibujar, alt, geometria, util };
+  // ---------- Gesto directo (docs/teoria.md §4b): de coordenadas del problema a la pantalla y de vuelta ----------
+  // aPantalla(datos, [x, y(, z)]) → { x, y } en el viewBox: dónde va la manija de un punto del problema.
+  const aPantalla = (d, p) => { const q = geometria(d).S(p); return { x: q[0], y: q[1] }; };
+  // aPlano(datos, { x, y }) → [x, y] en unidades del problema (solo figuras planas; en 3D da el plano ya proyectado).
+  const aPlano = (d, pt) => { const g = geometria(d); return [g.x0 + (pt.x - g.X(g.x0)) / g.s, g.y1 - (pt.y - g.Y(g.y1)) / g.s]; };
+  // sobreRecta(datos, A, B, { x, y }) → t tal que A + t·(B − A) es el punto de la recta AB (vista en pantalla) más cercano
+  // al dedo. Sirve también en 3D: la manija se mueve a lo largo de una arista, una altura o un radio.
+  const sobreRecta = (d, A, B, pt) => {
+    const g = geometria(d), a = g.S(A), b = g.S(B), ux = b[0] - a[0], uy = b[1] - a[1], L2 = ux * ux + uy * uy;
+    return L2 < 1e-12 ? 0 : ((pt.x - a[0]) * ux + (pt.y - a[1]) * uy) / L2;
+  };
+
+  return { id: 'geo-figura', dibujar, alt, geometria, util, aPantalla, aPlano, sobreRecta };
 });

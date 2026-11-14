@@ -55,6 +55,14 @@
 
   // ---------- Siluetas de revolución en 3D (eje vertical, sin giro) ----------
   const ALZA = 20, TD = { giro: 0, alza: ALZA };
+  const SEP = '   ·   ';   // separa dos relaciones en una lectura o ecuación
+  const nb = t => t.replace(/ /g, '\u00a0');   // una relación de la lectura no se parte entre dos líneas
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura. En 3D cada manija corre por una
+  // recta (generatriz, altura, radio) y G.sobreRecta da el parámetro t, elegido para que sea el valor del control;
+  // en los cortes planos (desarrollo, zona, Pappus) se usa G.aPlano. El lector ajusta al paso y al rango.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const sobre = (datos, A, B, p) => G.sobreRecta(datos, A, B, p);
+  const alPlano = (datos, p) => G.aPlano(datos, p);
   const circ = (y, r, de = 0, a = 360, n = 48) => Array.from({ length: n + 1 }, (_, k) => { const t = U.rad(de + (a - de) * k / n); return [r * Math.cos(t), y, r * Math.sin(t)]; });
   // Parámetro t del punto de tangencia de la silueta de un cono de punta a altura ya sobre la base (y0, r).
   const tangente = (y0, ya, r) => { const s = Math.sin(U.rad(ALZA)), c = Math.cos(U.rad(ALZA)); return Math.asin(Math.max(-1, Math.min(1, r * s / ((y0 - ya) * c)))); };
@@ -90,6 +98,15 @@
         { id: 'g2', etiqueta: 'generatriz mayor', min: 3, max: 4, paso: 0.5, inicio: 3.5, unidad: '', decimales: 1, color: 'c-h' },
       ],
       dibujo: v => ({ datos: cilFig(1.5, v.g1, v.g2, { tg1: f(v.g1), tg2: f(v.g2) }), estado: {} }),
+      // Se agarra la punta de cada generatriz y se sube o se baja: el plano de corte se inclina.
+      arrastres: [
+        { id: 'generatriz-menor', etiqueta: 'punta de la generatriz menor', color: 'c-i',
+          donde: v => enPantalla(cilFig(1.5, v.g1, v.g2), [-1.5, -1.5 + v.g1, 0]),
+          mover: (p, v) => ({ g1: sobre(cilFig(1.5, v.g1, v.g2), [-1.5, -1.5, 0], [-1.5, -0.5, 0], p) }) },
+        { id: 'generatriz-mayor', etiqueta: 'punta de la generatriz mayor', color: 'c-h',
+          donde: v => enPantalla(cilFig(1.5, v.g1, v.g2), [1.5, -1.5 + v.g2, 0]),
+          mover: (p, v) => ({ g2: sobre(cilFig(1.5, v.g1, v.g2), [1.5, -1.5, 0], [1.5, -0.5, 0], p) }) },
+      ],
       lectura: v => [`V = π · 1,5² · (${f(v.g1)} + ${f(v.g2)}) / 2 = ${pi(2.25 * (v.g1 + v.g2) / 2)}`],
       minimo: 3,
     },
@@ -117,7 +134,7 @@
     },
     regla: {
       texto: 'Cilindro recto: volumen base por altura y área lateral 2πrh. Tronco de cilindro: base por el promedio de las generatrices mayor y menor.',
-      ecuacion: ['V = π', { sup: [cr, '2'] }, ch, '   ·   ', 'A', { sub: ['', 'L'] }, ' = 2π', cr, ch, '   ·   tronco: V = π', { sup: [cr, '2'] }, ' · ', frac(['g', { sub: ['', '1'] }, ' + g', { sub: ['', '2'] }], '2')],
+      ecuacion: ['V = π', { sup: [cr, '2'] }, ch, '   ·   ', 'A', { sub: ['', 'L'] }, ' = 2π', cr, ch, '   ·   ', 'tronco: V = π', { sup: [cr, '2'] }, ' · ', { llave: [frac(['g', { sub: ['', '1'] }, ' + g', { sub: ['', '2'] }], '2')], nota: 'altura promedio' }],
       condicion: 'el cilindro es recto y la base del tronco es un círculo perpendicular a las generatrices.',
       voz: 'Altura promedio, no la mayor ni la menor.',
     },
@@ -176,7 +193,11 @@
       voz: 'Sube la punta. ¿Qué crece más, h o g?',
       controles: [{ id: 'h', etiqueta: 'altura', min: 2, max: 7, paso: 1, inicio: 4, unidad: '', decimales: 0, color: 'c-i' }],
       dibujo: v => ({ datos: conoFig(3, v.h, { g: f(Math.hypot(3, v.h)) }), estado: {} }),
-      lectura: v => [`g = √(3² + ${v.h}²) = ${f(Math.hypot(3, v.h))}`, `lateral = ${pi(3 * Math.hypot(3, v.h))} · V = ${pi(3 * v.h)}`],
+      // Se agarra la punta V y se sube o se baja por la altura: la base no cambia, la generatriz sí.
+      arrastres: [{ id: 'punta-v', etiqueta: 'punta V del cono', color: 'c-i',
+        donde: v => enPantalla(conoFig(3, v.h), [0, -1.7 + 0.55 * v.h, 0]),
+        mover: (p, v) => ({ h: sobre(conoFig(3, v.h), [0, -1.7, 0], [0, -1.15, 0], p) }) }],
+      lectura: v => [nb(`g = √(3² + ${v.h}²) = ${f(Math.hypot(3, v.h))}`), SEP, nb(`lateral = ${pi(3 * Math.hypot(3, v.h))}`), SEP, nb(`V = ${pi(3 * v.h)}`)],
       minimo: 3,
     },
     predice: {
@@ -198,12 +219,12 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'La altura cae dentro del cono, al centro de la base.', ecuacion: ['h = 4, r = 3'] },
         { estado: { corte: 1 }, texto: 'La generatriz va por la superficie.', ecuacion: ['g = √(3² + 4²) = 5'] },
-        { estado: { corte: 1 }, texto: 'Área lateral con g; volumen con h.', ecuacion: ['π · 3 · 5 = 15π   ·   ', frac('π · 3² · 4', '3'), ' = 12π'] },
+        { estado: { corte: 1 }, texto: 'Área lateral con g; volumen con h.', ecuacion: ['π · 3 · 5 = 15π', '   ·   ', frac('π · 3² · 4', '3'), ' = 12π'] },
       ],
     },
     regla: {
       texto: 'En el cono recto, el área lateral es πrg y el volumen, un tercio de base por altura. El tronco de cono suma R², Rr y r².',
-      ecuacion: ['A', { sub: ['', 'L'] }, ' = π', cr, cg, '   ·   V = ', frac(['π', { sup: [cr, '2'] }, ch], '3'), '   ·   tronco: V = ', frac(['π', ch], '3'), '(', { sup: [cR, '2'] }, ' + ', cR, cr, ' + ', { sup: [cr, '2'] }, ')'],
+      ecuacion: ['A', { sub: ['', 'L'] }, ' = π', cr, { llave: [cg], nota: 'generatriz', color: 'c-d' }, '   ·   ', 'V = ', frac(['π', { sup: [cr, '2'] }, { llave: [ch], nota: 'altura', color: 'c-i' }], '3'), '   ·   ', 'tronco: V = ', frac(['π', ch], '3'), '(', { sup: [cR, '2'] }, ' + ', cR, cr, ' + ', { sup: [cr, '2'] }, ')'],
       condicion: 'el cono es recto: g² = r² + h². En el tronco, las bases son paralelas.',
       voz: 'g para la superficie; h para el volumen.',
     },
@@ -269,7 +290,17 @@
         { id: 'g', etiqueta: 'g', min: 5, max: 8, paso: 1, inicio: 5, unidad: '', decimales: 0, color: 'c-d' },
       ],
       dibujo: v => ({ datos: desFig(v.r, v.g), estado: {} }),
-      lectura: v => [`ángulo = 360° · ${v.r}/${v.g} = ${f(360 * v.r / v.g)}°`, `arco = 2π · ${v.r} = ${pi(2 * v.r)}`],
+      // Se agarran el borde del sector (abre o cierra el abanico: con r fijo, g = 360° · r / θ) y el borde del círculo
+      // de la base (r). El sector se dibuja siempre del mismo radio: lo que cambia es su ángulo.
+      arrastres: [
+        { id: 'borde-sector', etiqueta: 'borde del sector', color: 'c-d',
+          donde: v => { const q = U.polar([-2, 0], 2.6, 180 * v.r / v.g); return enPantalla(desFig(v.r, v.g), q); },
+          mover: (p, v) => { const q = alPlano(desFig(v.r, v.g), p), th = 2 * U.grados(Math.atan2(q[1], q[0] + 2)); return { g: th > 0 ? 360 * v.r / th : 99 }; } },
+        { id: 'radio-base', etiqueta: 'borde del círculo de la base', color: 'c-o',
+          donde: v => enPantalla(desFig(v.r, v.g), [3 + v.r * 2.6 / v.g, 0]),
+          mover: (p, v) => ({ r: (alPlano(desFig(v.r, v.g), p)[0] - 3) * v.g / 2.6 }) },
+      ],
+      lectura: v => [nb(`ángulo = 360° · ${v.r}/${v.g} = ${f(360 * v.r / v.g)}°`), SEP, nb(`arco = 2π · ${v.r} = ${pi(2 * v.r)}`)],
       minimo: 4,
     },
     predice: {
@@ -296,7 +327,7 @@
     },
     regla: {
       texto: 'La superficie lateral de un cono se desarrolla en un sector de radio g cuyo arco mide 2πr. La del cilindro, en un rectángulo de 2πr por h.',
-      ecuacion: ['θ = 360° · ', frac(cr, cg), '   ·   cilindro: 2π', cr, ' × ', ch],
+      ecuacion: ['θ = 360° · ', frac(cr, { llave: [cg], nota: 'radio del sector', color: 'c-d' }), '   ·   ', 'cilindro: 2π', cr, ' × ', ch],
       condicion: 'el cono es recto. La esfera no se puede aplanar sin deformarse.',
       voz: 'El arco del sector envuelve la base.',
     },
@@ -329,14 +360,17 @@
   // ---------- Idea 4: esfera ----------
   // Cambia: el radio · Permanece: el cilindro que la envuelve · Progresa: área y volumen ·
   // Se reserva: la razón 2/3 de Arquímedes · Debe verse: la esfera ocupa dos tercios del cilindro.
-  const esfFig = (o = {}) => ({
+  // o.s: radio dibujado (2 por defecto). En el juego crece con R, dentro del mismo marco, para que se pueda agarrar.
+  const AR = Math.SQRT1_2;
+  const esfFig = (o = {}) => { const s = o.s || 2; return {
     alt: 'Esfera de radio R dentro del cilindro de radio R y altura 2R que la envuelve',
     tresD: TD, vista: { x: [-2.6, 2.6], y: [-2.5, 2.5] },
-    puntos: [pt('O', [0, 0, 0], { rotulo: 'O', lado: 200 }), pt('A', [1.41, 0, 1.41], { sinPunto: true }), pt('L0', [-2, -2, 0], { sinPunto: true }), pt('L1', [-2, 2, 0], { sinPunto: true }), pt('D0', [2, -2, 0], { sinPunto: true }), pt('D1', [2, 2, 0], { sinPunto: true })],
-    circulos: [{ centro: 'O', r: 2, color: 'h', relleno: true, grosor: 'variable' }],
-    curvas: [{ puntos: circ(0, 2), atras: true, color: 'h' }, { puntos: circ(-2, 2), atras: true, color: 'i' }, { puntos: circ(2, 2), color: 'i' }],
-    segmentos: [{ de: 'L0', a: 'L1', color: 'i' }, { de: 'D0', a: 'D1', color: 'i', texto: o.h ?? '2R', lado: 1 }, { de: 'O', a: 'A', color: 'o', discontinua: true, texto: 'R' }],
-  });
+    puntos: [pt('O', [0, 0, 0], { rotulo: 'O', lado: 200 }), pt('A', [s * AR, 0, s * AR], { sinPunto: true }), pt('L0', [-s, -s, 0], { sinPunto: true }), pt('L1', [-s, s, 0], { sinPunto: true }), pt('D0', [s, -s, 0], { sinPunto: true }), pt('D1', [s, s, 0], { sinPunto: true })],
+    circulos: [{ centro: 'O', r: s, color: 'h', relleno: true, grosor: 'variable' }],
+    curvas: [{ puntos: circ(0, s), atras: true, color: 'h' }, { puntos: circ(-s, s), atras: true, color: 'i' }, { puntos: circ(s, s), color: 'i' }],
+    segmentos: [{ de: 'L0', a: 'L1', color: 'i' }, { de: 'D0', a: 'D1', color: 'i', texto: o.h ?? '2R', lado: 1 }, { de: 'O', a: 'A', color: 'o', discontinua: true, texto: o.R ?? 'R' }],
+  }; };
+  const ES = 0.35;   // radio dibujado por unidad de R en el juego
   const esfIdea = {
     id: 'esfera',
     titulo: 'La esfera en su cilindro',
@@ -346,8 +380,12 @@
       consigna: 'Una esfera de radio R cabe justo en un cilindro de radio R y altura 2R. Cambia R y compara volúmenes y áreas.',
       voz: 'Cambia R. Mira la razón entre esfera y cilindro.',
       controles: [{ id: 'R', etiqueta: 'R', min: 1, max: 6, paso: 1, inicio: 3, unidad: '', decimales: 0, color: 'c-o' }],
-      dibujo: () => ({ datos: esfFig(), estado: {} }),
-      lectura: v => [`esfera ${pi(4 * v.R ** 3 / 3)} · cilindro ${pi(2 * v.R ** 3)}`, `área esfera ${pi(4 * v.R * v.R)}`],
+      dibujo: v => ({ datos: esfFig({ s: ES * v.R, R: `${v.R}`, h: `${2 * v.R}` }), estado: {} }),
+      // Se agarra la punta del radio R y se estira: esfera y cilindro crecen juntos; la razón no cambia.
+      arrastres: [{ id: 'radio', etiqueta: 'punta del radio R', color: 'c-o',
+        donde: v => enPantalla(esfFig({ s: ES * v.R }), [ES * v.R * AR, 0, ES * v.R * AR]),
+        mover: (p, v) => ({ R: sobre(esfFig({ s: ES * v.R }), [0, 0, 0], [ES * AR, 0, ES * AR], p) }) }],
+      lectura: v => [nb(`esfera ${pi(4 * v.R ** 3 / 3)}`), SEP, nb(`cilindro ${pi(2 * v.R ** 3)}`), SEP, nb(`área esfera ${pi(4 * v.R * v.R)}`)],
       minimo: 3,
     },
     predice: {
@@ -375,7 +413,7 @@
     },
     regla: {
       texto: 'El área de la esfera es cuatro veces la de un círculo máximo; su volumen, cuatro tercios de π por el radio al cubo.',
-      ecuacion: ['A = 4π', { sup: [cR, '2'] }, '   ·   V = ', frac('4', '3'), 'π', { sup: [cR, '3'] }],
+      ecuacion: ['A = ', { llave: ['4π', { sup: [cR, '2'] }], nota: 'cuatro círculos máximos' }, '   ·   ', 'V = ', frac('4', '3'), 'π', { sup: [cR, '3'] }],
       condicion: 'R es el radio. Área en unidades cuadradas, volumen en cúbicas.',
       voz: 'Área con R², volumen con R³.',
     },
@@ -424,6 +462,10 @@
         { de: 'k0', a: 'k1', color: 'i', grosor: 'variable', texto: `${f(h)}` }],
     };
   };
+  const EZ = 2.2 / 5;
+  const zonaArrastre = (id, h, color) => Object.assign({ id: 'plano-bajo', etiqueta: 'plano de abajo de la franja' }, color ? { color } : {}, {
+    donde: v => enPantalla(zonaFig(v[id], typeof h === 'number' ? h : v[h]), [2.7, v[id] * EZ]),
+    mover: (p, v) => ({ [id]: alPlano(zonaFig(v[id], typeof h === 'number' ? h : v[h]), p)[1] / EZ }) });
   const zonaIdea = {
     id: 'zona-y-casquete',
     titulo: 'Franjas de igual área',
@@ -434,7 +476,9 @@
       voz: 'Mueve la franja del ecuador al polo. ¿Cambia el área?',
       controles: [{ id: 'y', etiqueta: 'altura del plano bajo', min: -5, max: 3, paso: 1, inicio: -1, unidad: '', decimales: 0, color: 'c-i' }],
       dibujo: v => ({ datos: zonaFig(v.y, 2), estado: {} }),
-      lectura: () => ['zona = 2π · 5 · 2 = 20π', 'banda del cilindro = 2π · 5 · 2 = 20π'],
+      // Se agarra el plano de abajo por su extremo derecho y se sube o se baja: la franja entera se mueve con él.
+      arrastres: [zonaArrastre('y', 2, 'c-i')],
+      lectura: () => [nb('zona = 2π · 5 · 2 = 20π'), SEP, nb('banda = 2π · 5 · 2 = 20π')],
       minimo: 4,
     },
     predice: {
@@ -461,7 +505,7 @@
     },
     regla: {
       texto: 'El área de una zona esférica o de un casquete es 2πRh, con h la distancia entre sus planos. El casquete sólido tiene volumen πh²(3R − h)/3.',
-      ecuacion: ['zona = 2π', cR, { v: 'c-i', t: 'h' }, '   ·   casquete sólido: V = ', frac(['π', { sup: [{ v: 'c-i', t: 'h' }, '2'] }, '(3', cR, ' − ', { v: 'c-i', t: 'h' }, ')'], '3')],
+      ecuacion: ['zona = 2π', cR, { llave: [{ v: 'c-i', t: 'h' }], nota: 'espesor', color: 'c-i' }, '   ·   ', 'casquete sólido: V = ', frac(['π', { sup: [{ v: 'c-i', t: 'h' }, '2'] }, '(3', cR, ' − ', { v: 'c-i', t: 'h' }, ')'], '3')],
       condicion: 'R es el radio de la esfera, no el del corte; h se mide perpendicular a los planos.',
       voz: 'Solo importan R y la separación h.',
     },
@@ -518,6 +562,10 @@
       voz: 'Aleja la región. ¿Por qué crece el volumen si el área es la misma?',
       controles: [{ id: 'd', etiqueta: 'distancia de G al eje', min: 1, max: 3.5, paso: 0.5, inicio: 2, unidad: '', decimales: 1, color: 'c-h' }],
       dibujo: v => ({ datos: pappFig(v.d, { d: f(v.d), A: 'A = 4', pasos: { g: 0 } }), estado: {} }),
+      // Se agarra el centro G y se aleja o se acerca al eje; la región va con él.
+      arrastres: [{ id: 'centro-g', etiqueta: 'centro G de la región', color: 'c-h',
+        donde: v => enPantalla(pappFig(v.d), [v.d, 0]),
+        mover: (p, v) => ({ d: alPlano(pappFig(v.d), p)[0] }) }],
       lectura: v => [`V = 4 · 2π · ${f(v.d)} = ${pi(8 * v.d)}`],
       minimo: 3,
     },
@@ -546,7 +594,7 @@
     },
     regla: {
       texto: 'Pappus-Guldin: el volumen engendrado por una región que gira es su área por la longitud que recorre su centroide. Para superficies, la longitud de la curva por ese recorrido.',
-      ecuacion: ['V = ', { v: 'c-o', t: 'A' }, ' · 2π', { v: 'c-h', t: 'd' }, '   ·   S = ', { v: 'c-d', t: 'L' }, ' · 2π', { v: 'c-h', t: 'd' }],
+      ecuacion: ['V = ', { v: 'c-o', t: 'A' }, ' · ', { llave: ['2π', { v: 'c-h', t: 'd' }], nota: 'camino del centro', color: 'c-h' }, '   ·   ', 'S = ', { v: 'c-d', t: 'L' }, ' · 2π', { v: 'c-h', t: 'd' }],
       condicion: 'el eje está en el plano de la región y no la atraviesa; d es la distancia del centroide al eje.',
       voz: 'Área por el camino del centro, no del borde.',
     },
@@ -580,9 +628,73 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que las ideas 2 y 3: radio y altura libres a la vez (en la idea el radio queda en 3), con la
+  // generatriz, el área lateral, el volumen y el ángulo del desarrollo en una sola lectura.
+  const conoLibre = v => conoFig(v.r, v.h, { r: f(v.r), h: f(v.h), g: f(Math.hypot(v.r, v.h)) });
+  const mesaCono = {
+    id: 'cono-libre', titulo: 'Cono con radio y altura', pieza: 'geo-figura',
+    consigna: 'Arrastra la punta V y el borde de la base. Haz un cono chato y uno alto: compara g, lateral y volumen.',
+    controles: [
+      { id: 'r', etiqueta: 'radio', min: 1, max: 3.5, paso: 0.5, inicio: 3, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'h', etiqueta: 'altura', min: 1.5, max: 7, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: conoLibre(v), estado: {} }),
+    arrastres: [
+      { id: 'punta-v', etiqueta: 'punta V del cono', color: 'c-i',
+        donde: v => enPantalla(conoLibre(v), [0, -1.7 + 0.55 * v.h, 0]),
+        mover: (p, v) => ({ h: sobre(conoLibre(v), [0, -1.7, 0], [0, -1.15, 0], p) }) },
+      { id: 'borde', etiqueta: 'borde de la base', color: 'c-o',
+        donde: v => enPantalla(conoLibre(v), [0.55 * v.r, -1.7, 0]),
+        mover: (p, v) => ({ r: sobre(conoLibre(v), [0, -1.7, 0], [0.55, -1.7, 0], p) }) },
+    ],
+    lectura: v => { const g = Math.hypot(v.r, v.h); return [nb(`g = ${f(g)}`), SEP, nb(`lateral ${pi(v.r * g)}`), SEP, nb(`V = ${pi(v.r * v.r * v.h / 3)}`), SEP, nb(`sector ${f(360 * v.r / g, 0)}°`)]; },
+  };
+  // Mesa 2, más rica que la idea 6: cuadrado o círculo, de tamaño libre, y el caso que la idea no deja probar: si la
+  // región cruza el eje, Pappus ya no vale (las dos mitades barren el mismo anillo).
+  const pappLibre = v => pappFig(v.d, { a: v.a, circulo: v.forma === 'circulo', d: f(v.d), pasos: { g: 0 },
+    alt: `Región ${v.forma === 'circulo' ? 'circular de diámetro' : 'cuadrada de lado'} ${f(v.a)} con su centro a ${f(v.d)} del eje${v.d < v.a / 2 ? '; cruza el eje' : ''}` });
+  const mesaPappus = {
+    id: 'pappus-libre', titulo: 'Pappus con cualquier región', pieza: 'geo-figura',
+    consigna: 'Elige la forma. Arrastra G y el borde de arriba. Acerca la región hasta que cruce el eje.',
+    controles: [
+      { id: 'forma', etiqueta: 'región', opciones: [{ valor: 'cuadrado', texto: 'cuadrado' }, { valor: 'circulo', texto: 'círculo' }] },
+      { id: 'a', etiqueta: 'lado o diámetro', min: 0.5, max: 2.5, paso: 0.5, inicio: 2, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'd', etiqueta: 'distancia de G al eje', min: 0.5, max: 3.5, paso: 0.25, inicio: 2, unidad: '', decimales: 2, color: 'c-h' },
+    ],
+    dibujo: v => ({ datos: pappLibre(v), estado: {} }),
+    arrastres: [
+      { id: 'centro-g', etiqueta: 'centro G de la región', color: 'c-h',
+        donde: v => enPantalla(pappLibre(v), [v.d, 0]),
+        mover: (p, v) => ({ d: alPlano(pappLibre(v), p)[0] }) },
+      { id: 'borde', etiqueta: 'borde de arriba de la región', color: 'c-o',
+        donde: v => enPantalla(pappLibre(v), [v.d, v.a / 2]),
+        mover: (p, v) => ({ a: 2 * alPlano(pappLibre(v), p)[1] }) },
+    ],
+    lectura: v => {
+      const circ = v.forma === 'circulo', A = circ ? v.a * v.a / 4 : v.a * v.a;   // en el círculo, A = π · a²/4
+      if (v.d < v.a / 2) return [nb(`A = ${circ ? pi(A) : f(A)}`), SEP, nb('cruza el eje: Pappus no vale')];
+      return [nb(`A = ${circ ? pi(A) : f(A)}`), SEP, nb(`V = ${circ ? pi2(2 * A * v.d) : pi(2 * A * v.d)}`)];
+    },
+  };
+  // Mesa 3, más rica que la idea 5: el espesor también cambia y la franja llega a los polos (casquete).
+  const mesaZona = {
+    id: 'zona-libre', titulo: 'Franja de espesor libre', pieza: 'geo-figura',
+    consigna: 'Arrastra los dos planos: el de abajo mueve la franja, el de arriba cambia el espesor. Llega a un polo: casquete.',
+    controles: [
+      { id: 'y', etiqueta: 'altura del plano bajo', min: -5, max: 1, paso: 1, inicio: -1, unidad: '', decimales: 0 },
+      { id: 'h', etiqueta: 'espesor', min: 1, max: 4, paso: 1, inicio: 2, unidad: '', decimales: 0, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: zonaFig(v.y, v.h), estado: {} }),
+    arrastres: [zonaArrastre('y', 'h'), { id: 'plano-alto', etiqueta: 'plano de arriba de la franja', color: 'c-i',
+      donde: v => enPantalla(zonaFig(v.y, v.h), [2.7, (v.y + v.h) * EZ]),
+      mover: (p, v) => ({ h: alPlano(zonaFig(v.y, v.h), p)[1] / EZ - v.y }) }],
+    lectura: v => [nb(`${v.y === -5 || v.y + v.h === 5 ? 'casquete' : 'zona'} = 2π · 5 · ${v.h} = ${pi(10 * v.h)}`)],
+  };
+
   return {
     unidad: 'geometria.solidos-de-revolucion',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -590,6 +702,8 @@
       pregunta: '¿Qué fracción del cilindro ocupa la esfera?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Archimedes», MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Archimedes/' },
     },
+    // Laboratorio: las tres mesas son más ricas que sus ideas (dos medidas libres, otra forma, el caso límite).
+    laboratorio: [mesaCono, mesaPappus, mesaZona],
     ideas: [cilIdea, conoIdea, desIdea, esfIdea, zonaIdea, pappIdea],
   };
 });

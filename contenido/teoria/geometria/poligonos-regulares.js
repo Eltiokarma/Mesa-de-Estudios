@@ -46,6 +46,12 @@
     return ops.slice(0, n);
   }
   const pt = (id, p, o = {}) => Object.assign({ id, x: p[0], y: p[1] }, o);
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura; aPlano la vuelve coordenadas del
+  // problema y el lector ajusta cada valor al paso y al rango de su control.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const alPlano = (datos, q) => G.aPlano(datos, q);
+  const sep = '   ·   ';
+  const sup2 = x => ({ sup: [x, '2'] });
   const frac = (a, b) => ({ frac: [a, b] });
   const cR = { v: 'c-o', t: 'R' }, cA = { v: 'c-i', t: 'a' }, cL = { v: 'c-d', t: 'ℓ' };
   const lado = (n, R) => 2 * R * Math.sin(Math.PI / n), apot = (n, R) => R * Math.cos(Math.PI / n);
@@ -69,6 +75,8 @@
   // ---------- Idea 1: ángulo central y apotema ----------
   // Cambia: el número de lados n · Permanece: el radio R = 3 · Progresa: los n triángulos centrales ·
   // Se reserva: el hexágono (radio = lado) · Debe verse: la apotema es la altura de cada triángulo, no el radio.
+  // Sin arrastre: n cuenta lados y no hay objeto que al moverse agregue uno. El radio, que sí se agarra, se arrastra en
+  // la mesa «poligono-libre» del laboratorio.
   const central = {
     id: 'central-y-apotema',
     titulo: 'Radio, apotema y ángulo central',
@@ -79,7 +87,7 @@
       voz: 'Sube n. Mira cómo la apotema se acerca al radio.',
       controles: [{ id: 'n', etiqueta: 'n', min: 3, max: 12, paso: 1, inicio: 5, unidad: 'lados', decimales: 0 }],
       dibujo: v => ({ datos: reg(v.n, 3, { tri: true, central: true, R: 'R', a: 'a' }), estado: {} }),
-      lectura: v => ['central ', `${f(360 / v.n, 1)}° · `, cR, ' = 3 · ', cA, ` = ${f(apot(v.n, 3))}`],
+      lectura: v => [`central ${f(360 / v.n, 1)}°`, sep, cR, ' = 3', sep, cA, ` = ${f(apot(v.n, 3))}`],
       minimo: 4,
     },
     predice: {
@@ -101,13 +109,13 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Seis triángulos iguales; el ángulo central mide 360°/6.', ecuacion: ['central = 60°'] },
         { estado: { corte: 1 }, texto: 'Con 60° y dos radios iguales, cada triángulo es equilátero: R = ℓ.', ecuacion: [cR, ' = ', cL, ' = 6'] },
-        { estado: { corte: 1 }, texto: 'La apotema es la altura del triángulo.', ecuacion: [cA, ' = ', { raiz: ['6² − 3²'] }, ' = 3√3'] },
+        { estado: { corte: 1 }, texto: 'La apotema es la altura del triángulo.', ecuacion: [cA, ' = ', { raiz: [sup2('6'), ' − ', sup2('3')] }, ' = 3√3'] },
         { estado: { corte: 1 }, texto: 'Área: n triángulos de base ℓ y altura a.', ecuacion: ['S = ', frac(['P · ', cA], '2'), ' = ', frac('36 · 3√3', '2'), ' = 54√3'] },
       ],
     },
     regla: {
       texto: 'Un polígono regular de n lados son n triángulos isósceles iguales: ángulo central 360°/n, lado 2R·sen(180°/n), apotema R·cos(180°/n) y área P · a / 2.',
-      ecuacion: [cL, ' = 2', cR, ' sen ', frac('180°', 'n'), '   ·   ', cA, ' = ', cR, ' cos ', frac('180°', 'n'), '   ·   S = ', frac(['P · ', cA], '2')],
+      ecuacion: [cL, ' = 2', cR, ' sen ', { llave: [frac('180°', 'n')], nota: 'medio central', color: 'c-h' }, sep, cA, ' = ', cR, ' cos ', frac('180°', 'n'), sep, 'S = ', frac(['P · ', cA], '2')],
       condicion: 'el polígono tiene lados y ángulos iguales. R llega al vértice y a llega perpendicular al punto medio del lado.',
       voz: 'Radio al vértice, apotema al medio del lado.',
     },
@@ -158,6 +166,8 @@
   // Cambia: el polígono (3, 4 o 6) · Permanece: la circunferencia de radio R · Progresa: lado y apotema en términos de R ·
   // Se reserva: la apotema del triángulo · Debe verse: en el triángulo, la apotema es un tercio de la altura: R/2.
   const NOT = { 3: ['R√3', 'R/2'], 4: ['R√2', 'R√2/2'], 6: ['R', 'R√3/2'] };
+  // Sin arrastre: el control elige entre tres polígonos (opciones), no es un número que se mueva. La mesa
+  // «inscritos-con-radio» agrega el radio, que sí se arrastra.
   const notIdea = {
     id: 'inscritos-notables',
     titulo: 'Triángulo, cuadrado y hexágono inscritos',
@@ -168,7 +178,7 @@
       voz: 'Cambia de polígono. Compara cada lado con R.',
       controles: [{ id: 'n', etiqueta: 'polígono', opciones: [{ valor: 4, texto: 'cuadrado' }, { valor: 6, texto: 'hexágono' }, { valor: 3, texto: 'triángulo' }] }],
       dibujo: v => ({ datos: Object.assign(reg(v.n, 3, { R: 'R', l: `ℓ = ${NOT[v.n][0]}`, a: v.n === 3 ? undefined : `a = ${NOT[v.n][1]}` }), { circulos: [{ centro: 'O', r: 3, grosor: 'fino', discontinua: true }] }), estado: {} }),
-      lectura: v => [cL, ` = ${NOT[v.n][0]} · `, cA, v.n === 3 ? ' = ?' : ` = ${NOT[v.n][1]}`],
+      lectura: v => [cL, ` = ${NOT[v.n][0]}`, sep, cA, v.n === 3 ? ' = ?' : ` = ${NOT[v.n][1]}`],
       minimo: 3,
     },
     predice: {
@@ -190,12 +200,12 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'En el equilátero, O es también el baricentro.', ecuacion: ['O = G'] },
         { estado: { corte: 0 }, texto: 'G parte la altura en 2 : 1: el radio es el tramo largo.', ecuacion: [cR, ' = 2 · ', cA] },
-        { estado: { corte: 0 }, texto: 'Así la apotema es la mitad del radio.', ecuacion: [cA, ' = ', frac(cR, '2'), ' = 3 · ', cL, ' = R√3 = 6√3'] },
+        { estado: { corte: 0 }, texto: 'Así la apotema es la mitad del radio.', ecuacion: [cA, ' = ', frac(cR, '2'), ' = 3', sep, cL, ' = R√3 = 6√3'] },
       ],
     },
     regla: {
       texto: 'Inscritos en la circunferencia de radio R, lado y apotema valen: triángulo, R√3 y R/2; cuadrado, R√2 y R√2/2; hexágono, R y R√3/2.',
-      ecuacion: [cL, '₃ = R√3 · ', cL, '₄ = R√2 · ', cL, '₆ = R'],
+      ecuacion: [{ sub: [cL, '3'] }, ' = R√3', sep, { sub: [cL, '4'] }, ' = R√2', sep, { sub: [cL, '6'] }, ' = R'],
       condicion: 'los polígonos son regulares y sus vértices están en la circunferencia de radio R.',
       voz: 'Tres polígonos, tres pares que conviene reconocer.',
     },
@@ -241,6 +251,9 @@
       angulos: o.letras ? [{ en: 'M', de: 'A', a: 'P', color: 'h', desde: k.ra || 0 }] : [],
     };
   };
+  // Sin arrastre: n cuenta lados (el polígono de 2n sale de partir cada arco); no hay objeto que agarrar.
+  // Hallazgo 9: «Mira» usa el mismo dibujo del juego (doble), con zoom al lado de abajo: el triángulo pequeño no se lee
+  // en la vista completa.
   const dobleIdea = {
     id: 'dos-n-lados',
     titulo: 'De n lados a 2n lados',
@@ -251,7 +264,7 @@
       voz: 'Duplica los lados. Mira qué tanto se acerca a la circunferencia.',
       controles: [{ id: 'n', etiqueta: 'n', min: 3, max: 8, paso: 1, inicio: 4, unidad: 'lados', decimales: 0 }],
       dibujo: v => ({ datos: doble(v.n, 3), estado: {} }),
-      lectura: v => [`perímetro de ${2 * v.n}: ${f(2 * v.n * lado(2 * v.n, 3))} · circunferencia: ${f(6 * Math.PI)}`],
+      lectura: v => [`perímetro de ${2 * v.n}: ${f(2 * v.n * lado(2 * v.n, 3))}`, sep, `circunferencia: ${f(6 * Math.PI)}`],
       minimo: 3,
     },
     predice: {
@@ -274,12 +287,13 @@
         { estado: { corte: 1 }, texto: 'La apotema del cuadrado llega al medio H del lado AB.', ecuacion: [cA, ' = R√2/2'] },
         { estado: { corte: 2 }, texto: 'De H al arco quedan R − a.', ecuacion: ['HP = R − ', cA] },
         { estado: { corte: 3 }, texto: 'AH es medio lado del cuadrado.', ecuacion: ['AH = ℓₙ/2'] },
-        { estado: { corte: 4 }, texto: 'AP, el lado de 2n, es la hipotenusa: Pitágoras y se simplifica.', ecuacion: ['ℓ₂ₙ² = (ℓₙ/2)² + (R − a)² = 2R² − 2R', cA] },
+        { estado: { corte: 4 }, texto: 'AP, el lado de 2n, es la hipotenusa: Pitágoras.', ecuacion: [sup2('ℓ₂ₙ'), ' = ', sup2('(ℓₙ/2)'), ' + ', sup2(['(R − ', cA, ')'])] },
+        { estado: { corte: 4 }, texto: 'Como (ℓₙ/2)² + a² = R², al desarrollar queda:', ecuacion: [sup2('ℓ₂ₙ'), ' = 2', sup2('R'), ' − 2R', cA] },
       ],
     },
     regla: {
       texto: 'Al pasar de n a 2n lados, el lado nuevo cumple ℓ₂ₙ² = 2R² − 2R·aₙ. El perímetro crece hacia la circunferencia, sin alcanzarla con n finito.',
-      ecuacion: ['ℓ₂ₙ = ', { raiz: ['2R² − 2R · aₙ'] }],
+      ecuacion: [sup2('ℓ₂ₙ'), ' = 2', sup2('R'), ' − 2R · ', { llave: [{ sub: [cA, 'n'] }], nota: 'apotema de n', color: 'c-i' }],
       condicion: 'los dos polígonos son regulares e inscritos en la misma circunferencia; aₙ es la apotema del de n lados.',
       voz: 'Más lados se acercan al círculo, pero no lo igualan.',
     },
@@ -325,6 +339,8 @@
       angulos: o.tri ? [{ en: 'V0', de: 'V2', a: 'V3', color: 'o', texto: '36°', radio: 30, desde: k.tri || 0 }, { en: 'V2', de: 'V3', a: 'V0', color: 'o', texto: '72°', radio: 20, desde: k.ang || 0 }] : [],
     };
   };
+  // Hallazgo 9: el juego corta un segmento y «Mira» usa el pentágono. Son dos representaciones a propósito: el corte es
+  // la definición de la razón; el pentágono, donde aparece sin buscarla. La predicción hace de puente entre las dos.
   const aurea = {
     id: 'seccion-aurea',
     titulo: 'La razón áurea del pentágono',
@@ -333,9 +349,13 @@
     juega: {
       consigna: 'AB mide 10. Corre P y compara el total entre la parte mayor (AB/AP) con la mayor entre la menor (AP/PB).',
       voz: 'Busca el punto donde las dos razones casi coinciden.',
-      controles: [{ id: 't', etiqueta: 'AP', min: 0.5, max: 0.75, paso: 0.01, inicio: 0.55, unidad: 'de AB', decimales: 2, color: 'c-o' }],
+      controles: [{ id: 't', etiqueta: 'AP / AB', min: 0.5, max: 0.75, paso: 0.01, inicio: 0.55, unidad: '', decimales: 2, color: 'c-o' }],
       dibujo: v => ({ datos: corteFig(v.t), estado: {} }),
-      lectura: v => [`AB/AP = ${f(1 / v.t, 3)} · AP/PB = ${f(v.t / (1 - v.t), 3)}`],
+      // Se agarra el punto de corte P y se corre por el segmento AB.
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto de corte P', color: 'c-o',
+        donde: v => enPantalla(corteFig(v.t), [10 * v.t, 0]),
+        mover: (q, v) => ({ t: alPlano(corteFig(v.t), q)[0] / 10 }) }],
+      lectura: v => [`AB/AP = ${f(1 / v.t, 3)}`, sep, `AP/PB = ${f(v.t / (1 - v.t), 3)}`],
       minimo: 4,
     },
     predice: {
@@ -355,14 +375,14 @@
       datos: penta({ tri: true, d: 'φ', pasos: { tri: 1, ang: 1 }, alt: 'El triángulo ACD de ángulos 36°, 72° y 72° tiene lados φ, φ y 1' }),
       voz: 'Un triángulo de 36°, 72° y 72° esconde a φ.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'ACD tiene ángulos de 36°, 72° y 72°: lados d, d y 1.', ecuacion: ['AC = AD = d · CD = 1'] },
+        { estado: { corte: 1 }, texto: 'ACD tiene ángulos de 36°, 72° y 72°: lados d, d y 1.', ecuacion: ['AC = AD = d', sep, 'CD = 1'] },
         { estado: { corte: 1 }, texto: 'La bisectriz de un ángulo de 72° arma otro igual, más chico.', ecuacion: [frac('d', '1'), ' = ', frac('1', 'd − 1')] },
-        { estado: { corte: 1 }, texto: 'Resuelve la ecuación cuadrática.', ecuacion: ['d² = d + 1 → d = ', frac('1 + √5', '2'), ' = φ'] },
+        { estado: { corte: 1 }, texto: 'Resuelve la ecuación cuadrática.', ecuacion: [sup2('d'), ' = d + 1 → d = ', frac('1 + √5', '2'), ' = φ'] },
       ],
     },
     regla: {
       texto: 'Hay sección áurea si el total es a la parte mayor como esta a la menor. Esa razón es φ = (1 + √5)/2; cumple φ² = φ + 1.',
-      ecuacion: ['φ = ', frac('1 + √5', '2'), ' ≈ 1,618   ·   ', { sup: ['φ', '2'] }, ' = φ + 1   ·   ', frac('diagonal', 'lado'), ' = φ'],
+      ecuacion: [{ llave: ['φ'], nota: 'razón áurea', color: 'c-h' }, ' = ', frac('1 + √5', '2'), ' ≈ 1,618', sep, { sup: ['φ', '2'] }, ' = φ + 1', sep, frac('diagonal', 'lado'), ' = φ'],
       condicion: 'el pentágono es regular: entonces diagonal entre lado da exactamente φ, para cualquier tamaño.',
       voz: 'φ no es una medida: es una razón. Úsala con su lado.',
     },
@@ -392,9 +412,61 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 1: n llega a 24 y el radio se arrastra desde un vértice. La lectura da lado, apotema
+  // y el cociente perímetro / diámetro, que se acerca a π sin alcanzarlo.
+  const regLibre = (n, R) => Object.assign(reg(n, R, { tri: n <= 12, central: true, R: 'R', a: 'a', vista: { x: [-4.8, 4.8], y: [-4.8, 4.8] } }),
+    { circulos: [{ centro: 'O', r: R, grosor: 'fino', discontinua: true }] });
+  const mesaPoligono = {
+    id: 'poligono-libre', titulo: 'Polígono que se vuelve círculo', pieza: 'geo-figura',
+    consigna: 'Sube n hasta 24 y arrastra un vértice para cambiar el radio. Mira el perímetro entre el diámetro.',
+    controles: [
+      { id: 'n', etiqueta: 'n', min: 3, max: 24, paso: 1, inicio: 6, unidad: 'lados', decimales: 0 },
+      { id: 'R', etiqueta: 'R', min: 1, max: 4, paso: 0.5, inicio: 3, unidad: '', decimales: 1, color: 'c-o' },
+    ],
+    dibujo: v => ({ datos: regLibre(v.n, v.R), estado: {} }),
+    // Se agarra el vértice del radio naranja: alejarlo del centro agranda el polígono sin cambiar su forma.
+    arrastres: [{ id: 'vertice-radio', etiqueta: 'vértice del radio', color: 'c-o',
+      donde: v => enPantalla(regLibre(v.n, v.R), vert(v.n, v.R)[0]),
+      mover: (q, v) => { const z = alPlano(regLibre(v.n, v.R), q); return { R: Math.hypot(z[0], z[1]) }; } }],
+    lectura: v => [cL, ` = ${f(lado(v.n, v.R))}`, sep, cA, ` = ${f(apot(v.n, v.R))}`, sep, frac('P', '2R'), ` = ${f(v.n * lado(v.n, 1) / 2, 3)}`],
+  };
+
+  // Mesa 2, más rica que la idea 2: además de elegir el polígono, el radio se arrastra; la lectura da la fórmula y su
+  // valor, para ver que R√3, R√2 y R siguen al radio.
+  const insLibre = (n, R) => Object.assign(reg(n, R, { R: 'R', l: 'ℓ', a: 'a', vista: { x: [-4.8, 4.8], y: [-4.8, 4.8] } }),
+    { circulos: [{ centro: 'O', r: R, grosor: 'fino', discontinua: true }] });
+  const NOTa = { 3: 'R/2', 4: 'R√2/2', 6: 'R√3/2' };
+  const mesaInscritos = {
+    id: 'inscritos-con-radio', titulo: 'Inscritos con radio libre', pieza: 'geo-figura',
+    consigna: 'Elige el polígono y arrastra un vértice para cambiar R. Compara el lado y la apotema con R.',
+    controles: [
+      { id: 'n', etiqueta: 'polígono', opciones: [{ valor: 3, texto: 'triángulo' }, { valor: 4, texto: 'cuadrado' }, { valor: 6, texto: 'hexágono' }] },
+      { id: 'R', etiqueta: 'R', min: 1, max: 4, paso: 0.5, inicio: 2, unidad: '', decimales: 1, color: 'c-o' },
+    ],
+    dibujo: v => ({ datos: insLibre(v.n, v.R), estado: {} }),
+    arrastres: [{ id: 'vertice-radio', etiqueta: 'vértice del radio', color: 'c-o',
+      donde: v => enPantalla(insLibre(v.n, v.R), vert(v.n, v.R)[0]),
+      mover: (q, v) => { const z = alPlano(insLibre(v.n, v.R), q); return { R: Math.hypot(z[0], z[1]) }; } }],
+    lectura: v => [cL, ` = ${NOT[v.n][0]} = ${f(lado(v.n, v.R))}`, sep, cA, ` = ${NOTa[v.n]} = ${f(apot(v.n, v.R))}`],
+  };
+
+  // Mesa 3, más rica que la idea 4: P recorre casi todo AB (la idea lo deja entre 0,5 y 0,75), así aparecen los dos
+  // puntos áureos; la lectura compara total/mayor con mayor/menor, sea cual sea la parte mayor.
+  const mesaCorte = {
+    id: 'corte-libre', titulo: 'Los dos cortes áureos', pieza: 'geo-figura',
+    consigna: 'Corre P por todo AB. Busca dónde total/mayor y mayor/menor coinciden. Hay dos lugares: encuéntralos.',
+    controles: [{ id: 't', etiqueta: 'AP / AB', min: 0.1, max: 0.9, paso: 0.002, inicio: 0.5, unidad: '', decimales: 3, color: 'c-o' }],
+    dibujo: v => ({ datos: corteFig(v.t), estado: {} }),
+    arrastres: [{ id: 'punto-p', etiqueta: 'punto de corte P', color: 'c-o',
+      donde: v => enPantalla(corteFig(v.t), [10 * v.t, 0]),
+      mover: (q, v) => ({ t: alPlano(corteFig(v.t), q)[0] / 10 }) }],
+    lectura: v => { const M = Math.max(v.t, 1 - v.t), m = Math.min(v.t, 1 - v.t); return [`total/mayor = ${f(1 / M, 3)}`, sep, `mayor/menor = ${f(M / m, 3)}`]; },
+  };
+
   return {
     unidad: 'geometria.poligonos-regulares',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -402,6 +474,9 @@
       pregunta: '¿Por qué más lados acercan el polígono al círculo sin igualarlo?',
       fuente: { titulo: 'Euclides, Elementos, libro IV (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookIV/bookIV.html' },
     },
+    // Laboratorio: las tres mesas son más ricas que sus ideas (n hasta 24 con radio libre, inscritos con radio libre y
+    // el corte áureo en todo el segmento).
+    laboratorio: [mesaPoligono, mesaInscritos, mesaCorte],
     ideas: [central, notIdea, dobleIdea, aurea],
   };
 });

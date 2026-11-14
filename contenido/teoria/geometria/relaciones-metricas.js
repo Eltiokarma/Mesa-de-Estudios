@@ -51,6 +51,13 @@
   const sup2 = x => ({ sup: [x, '2'] });
   // Triángulo con B = (0, 0), C = (a, 0) y lados c = AB, b = AC.
   const porLados = (a, b, c) => { const x = (c * c - b * b + a * a) / (2 * a); return [x, Math.sqrt(Math.max(0, c * c - x * x))]; };
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura; aPlano la vuelve coordenadas del
+  // problema y el lector ajusta cada valor al paso y al rango de su control.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const alPlano = (datos, q) => G.aPlano(datos, q);
+  // Ángulo de un rayo en grados, en [0, 180]: lo que cae por debajo del eje se pega al extremo más cercano.
+  const angSup = (x, y) => { const g = U.grados(Math.atan2(y, x)); return g >= 0 ? g : g < -90 ? 180 : 0; };
+  const sep = '   ·   ';
 
   // ---------- Idea 1: el triángulo rectángulo ----------
   // Cambia: C en la semicircunferencia · Permanece: la hipotenusa 10 · Progresa: h² frente a p · q ·
@@ -69,6 +76,8 @@
       angulos: [{ en: 'C', de: 'A', a: 'B' }, { en: 'H', de: 'B', a: 'C', color: 'h' }],
     };
   };
+  const enArco = fi => [5 + 5 * Math.cos(U.rad(fi)), 5 * Math.sin(U.rad(fi))];
+  // Hallazgo 9: «Mira» usa el mismo dibujo del juego (rect), con la hipotenusa 13 de la predicción.
   const rectIdea = {
     id: 'triangulo-rectangulo',
     titulo: 'La altura y sus proyecciones',
@@ -78,8 +87,12 @@
       consigna: 'C se mueve por la semicircunferencia de diámetro AB = 10: el ángulo C es recto. La altura CH parte la hipotenusa en p y q.',
       voz: 'Mueve C. Compara h con p y con q.',
       controles: [{ id: 'fi', etiqueta: 'C en el arco', min: 45, max: 135, paso: 15, inicio: 60, unidad: '°', decimales: 0, color: 'c-o' }],
-      dibujo: v => { const C = [5 + 5 * Math.cos(U.rad(v.fi)), 5 * Math.sin(U.rad(v.fi))]; return { datos: rect([0, 0], [10, 0], C), estado: {} }; },
-      lectura: v => { const C = [5 + 5 * Math.cos(U.rad(v.fi)), 5 * Math.sin(U.rad(v.fi))]; return [sup2({ v: 'c-h', t: 'h' }), ` = ${f(C[1] ** 2)} · `, { v: 'c-o', t: 'p' }, ' · ', { v: 'c-i', t: 'q' }, ` = ${f(C[0] * (10 - C[0]))}`]; },
+      dibujo: v => ({ datos: rect([0, 0], [10, 0], enArco(v.fi)), estado: {} }),
+      // Se agarra el vértice C: corre por la semicircunferencia, así el ángulo C sigue recto.
+      arrastres: [{ id: 'vertice-c', etiqueta: 'vértice C', color: 'c-o',
+        donde: v => enPantalla(rect([0, 0], [10, 0], enArco(v.fi)), enArco(v.fi)),
+        mover: (q, v) => { const z = alPlano(rect([0, 0], [10, 0], enArco(v.fi)), q); return { fi: angSup(z[0] - 5, z[1]) }; } }],
+      lectura: v => { const C = enArco(v.fi); return [sup2({ v: 'c-h', t: 'h' }), ` = ${f(C[1] ** 2)}`, sep, { v: 'c-o', t: 'p' }, ' · ', { v: 'c-i', t: 'q' }, ` = ${f(C[0] * (10 - C[0]))}`]; },
       minimo: 4,
     },
     predice: {
@@ -101,13 +114,13 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'AHC y CHB tienen los mismos ángulos: son semejantes.', ecuacion: [frac({ v: 'c-o', t: 'p' }, { v: 'c-h', t: 'h' }), ' = ', frac({ v: 'c-h', t: 'h' }, { v: 'c-i', t: 'q' })] },
         { estado: { corte: 1 }, texto: 'De la proporción sale la altura.', ecuacion: [sup2({ v: 'c-h', t: 'h' }), ' = ', { v: 'c-o', t: 'p' }, ' · ', { v: 'c-i', t: 'q' }, ' = 36 → h = 6'] },
-        { estado: { corte: 1 }, texto: 'Cada cateto al cuadrado: hipotenusa por su proyección.', ecuacion: ['AC² = 13 · 4 = 52 · BC² = 13 · 9 = 117'] },
-        { estado: { corte: 1 }, texto: 'Sumando, aparece Pitágoras.', ecuacion: ['52 + 117 = 169 = 13²'] },
+        { estado: { corte: 1 }, texto: 'Cada cateto al cuadrado: hipotenusa por su proyección.', ecuacion: [sup2('AC'), ' = 13 · 4 = 52', sep, sup2('BC'), ' = 13 · 9 = 117'] },
+        { estado: { corte: 1 }, texto: 'Sumando, aparece Pitágoras.', ecuacion: ['52 + 117 = 169 = ', sup2('13')] },
       ],
     },
     regla: {
       texto: 'En el triángulo rectángulo, la altura sobre la hipotenusa cumple h² = p · q, cada cateto al cuadrado es hipotenusa por su proyección, y a² + b² = c².',
-      ecuacion: [sup2({ v: 'c-h', t: 'h' }), ' = ', { v: 'c-o', t: 'p' }, { v: 'c-i', t: 'q' }, '   ·   ', sup2('a'), ' = c · ', { v: 'c-i', t: 'q' }, '   ·   ', sup2('a'), ' + ', sup2('b'), ' = ', sup2('c')],
+      ecuacion: [sup2({ v: 'c-h', t: 'h' }), ' = ', { llave: [{ v: 'c-o', t: 'p' }, { v: 'c-i', t: 'q' }], nota: 'proyecciones', color: 'c-o' }, sep, sup2('a'), ' = ', { llave: ['c · ', { v: 'c-i', t: 'q' }], nota: 'su proyección', color: 'c-i' }, sep, sup2('a'), ' + ', sup2('b'), ' = ', sup2('c')],
       condicion: 'el ángulo C es recto y c es la hipotenusa, opuesta a él; cada cateto se empareja con su propia proyección.',
       voz: 'Antes de usarlas, comprueba el ángulo recto.',
     },
@@ -162,6 +175,10 @@
       voz: 'Abre B poco a poco. Fíjate cuándo b² supera a 89.',
       controles: [{ id: 'B', etiqueta: '∠B', min: 30, max: 150, paso: 15, inicio: 60, unidad: '°', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: euc(v.B), estado: {} }),
+      // Se agarra el vértice A: gira alrededor de B con c = 5 fijo, como una bisagra que abre el ángulo B.
+      arrastres: [{ id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
+        donde: v => enPantalla(euc(v.B), U.polar([0, 0], 5, v.B)),
+        mover: (q, v) => { const z = alPlano(euc(v.B), q); return { B: angSup(z[0], z[1]) }; } }],
       lectura: v => { const b2 = 89 - 80 * Math.cos(U.rad(v.B)); return [sup2({ v: 'c-h', t: 'b' }), ` = ${f(b2)} ${b2 < 89 - 1e-9 ? '<' : b2 > 89 + 1e-9 ? '>' : '='} 89`]; },
       minimo: 4,
     },
@@ -182,14 +199,14 @@
       datos: euc(120, { pasos: { m: 1 } }),
       voz: 'Arma dos triángulos rectángulos con la altura AP.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'La altura AP cae fuera de BC: PB = m = 2,5.', ecuacion: ['AP² = c² − m² = 25 − 6,25'] },
-        { estado: { corte: 1 }, texto: 'En el triángulo APC, PC = a + m.', ecuacion: [sup2({ v: 'c-h', t: 'b' }), ' = AP² + (a + m)²'] },
-        { estado: { corte: 1 }, texto: 'Desarrollando, los m² se cancelan.', ecuacion: [sup2({ v: 'c-h', t: 'b' }), ' = a² + c² + 2am = 129'] },
+        { estado: { corte: 1 }, texto: 'La altura AP cae fuera de BC: PB = m = 2,5.', ecuacion: [sup2('AP'), ' = ', sup2('c'), ' − ', sup2({ v: 'c-i', t: 'm' }), ' = 25 − 6,25'] },
+        { estado: { corte: 1 }, texto: 'En el triángulo APC, PC = a + m.', ecuacion: [sup2({ v: 'c-h', t: 'b' }), ' = ', sup2('AP'), ' + ', sup2(['(a + ', { v: 'c-i', t: 'm' }, ')'])] },
+        { estado: { corte: 1 }, texto: 'Desarrollando, los m² se cancelan.', ecuacion: [sup2({ v: 'c-h', t: 'b' }), ' = ', sup2('a'), ' + ', sup2('c'), ' + ', { llave: ['2a', { v: 'c-i', t: 'm' }], nota: 'la corrección', color: 'c-i' }, ' = 129'] },
       ],
     },
     regla: {
       texto: 'Si el ángulo B es agudo, el lado opuesto cumple b² = a² + c² − 2am; si es obtuso, b² = a² + c² + 2am, donde m es la proyección de c sobre a.',
-      ecuacion: [sup2({ v: 'c-h', t: 'b' }), ' = ', sup2('a'), ' + ', sup2('c'), ' ∓ 2a', { v: 'c-i', t: 'm' }],
+      ecuacion: [sup2({ v: 'c-h', t: 'b' }), ' = ', { llave: [sup2('a'), ' + ', sup2('c')], nota: 'Pitágoras', color: 'c-d' }, ' ∓ ', { llave: ['2a', { v: 'c-i', t: 'm' }], nota: 'la corrección', color: 'c-i' }],
       condicion: 'm se mide sobre la recta de a; el ángulo B decide el signo. Si B es recto, m = 0: Pitágoras.',
       voz: 'El ángulo B decide el signo. Míralo primero.',
     },
@@ -236,7 +253,11 @@
       voz: 'Corre D por el lado. Observa el largo de AD.',
       controles: [{ id: 'm', etiqueta: 'm', min: 1, max: 7, paso: 0.5, inicio: 2, unidad: '', decimales: 1, color: 'c-o' }],
       dibujo: v => ({ datos: stew(v.m), estado: {} }),
-      lectura: v => [{ v: 'c-h', t: 'd' }, ` ≈ ${f(U.dist(A3, [v.m, 0]))} · b²m + c²n = ${f(49 * v.m + 25 * (8 - v.m))}`],
+      // Se agarra el pie D: corre por el lado BC y reparte a = 8 en m y n.
+      arrastres: [{ id: 'pie-d', etiqueta: 'pie D de la ceviana', color: 'c-h',
+        donde: v => enPantalla(stew(v.m), [v.m, 0]),
+        mover: (q, v) => ({ m: alPlano(stew(v.m), q)[0] }) }],
+      lectura: v => [{ v: 'c-h', t: 'd' }, ` ≈ ${f(U.dist(A3, [v.m, 0]))}`, sep, sup2('b'), { v: 'c-o', t: 'm' }, ' + ', sup2('c'), { v: 'c-i', t: 'n' }, ` = ${f(49 * v.m + 25 * (8 - v.m))}`],
       minimo: 3,
     },
     predice: {
@@ -256,14 +277,14 @@
       datos: stew(4, { marcas: true }),
       voz: 'Stewart con m = n: la fórmula de la mediana sale sola.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'Stewart: cada lado al cuadrado se pesa con el tramo opuesto.', ecuacion: ['b²m + c²n = a(d² + mn)'] },
-        { estado: { corte: 0 }, texto: 'Con m = n = 4 (mediana):', ecuacion: ['49 · 4 + 25 · 4 = 8(d² + 16)'] },
-        { estado: { corte: 0 }, texto: 'Despeja d².', ecuacion: [sup2({ v: 'c-h', t: 'd' }), ' = ', frac('2b² + 2c² − a²', '4'), ' = 21'] },
+        { estado: { corte: 0 }, texto: 'Stewart: cada lado al cuadrado se pesa con el tramo opuesto.', ecuacion: [sup2('b'), { v: 'c-o', t: 'm' }, ' + ', sup2('c'), { v: 'c-i', t: 'n' }, ' = a(', sup2({ v: 'c-h', t: 'd' }), ' + ', { v: 'c-o', t: 'm' }, { v: 'c-i', t: 'n' }, ')'] },
+        { estado: { corte: 0 }, texto: 'Con m = n = 4 (mediana):', ecuacion: ['49 · 4 + 25 · 4 = 8(', sup2({ v: 'c-h', t: 'd' }), ' + 16)'] },
+        { estado: { corte: 0 }, texto: 'Despeja d².', ecuacion: [sup2({ v: 'c-h', t: 'd' }), ' = ', frac(['2', sup2('b'), ' + 2', sup2('c'), ' − ', sup2('a')], '4'), ' = 21'] },
       ],
     },
     regla: {
       texto: 'Stewart: b²m + c²n = a(d² + mn), con m junto a c y n junto a b. Mediana: 4d² = 2b² + 2c² − a². Bisectriz de A: d² = bc − mn.',
-      ecuacion: [sup2('b'), { v: 'c-o', t: 'm' }, ' + ', sup2('c'), { v: 'c-i', t: 'n' }, ' = a(', sup2({ v: 'c-h', t: 'd' }), ' + ', { v: 'c-o', t: 'm' }, { v: 'c-i', t: 'n' }, ')'],
+      ecuacion: [{ llave: [sup2('b'), { v: 'c-o', t: 'm' }, ' + ', sup2('c'), { v: 'c-i', t: 'n' }], nota: 'lado por tramo', color: 'c-o' }, ' = a(', sup2({ v: 'c-h', t: 'd' }), ' + ', { v: 'c-o', t: 'm' }, { v: 'c-i', t: 'n' }, ')'],
       condicion: 'D está en BC, con m = BD y n = DC. En la bisectriz, m y n cumplen m/n = c/b.',
       voz: 'Ubica bien m y n: cada uno va con el lado de enfrente.',
     },
@@ -320,7 +341,7 @@
     const A = porLados(14, b, c), s = (14 + b + c) / 2, S = Math.sqrt(Math.max(0, s * (s - 14) * (s - b) * (s - c)));
     return {
       alt: o.alt || `Triángulo de lados 14, ${b} y ${c}: semiperímetro ${f(s)} y área ${f(S)}`,
-      vista: { x: [-2, 16], y: [-1.4, 13] },
+      vista: { x: [-2, 16], y: [-1.4, 14] },
       puntos: [pt('B', [0, 0], { rotulo: 'B', lado: -120 }), pt('C', [14, 0], { rotulo: 'C', lado: -60 }), pt('A', A, { rotulo: 'A', lado: 90 }), pt('H', [A[0], 0], { sinPunto: true })],
       regiones: [{ puntos: ['A', 'B', 'C'], color: 'o', opacidad: 0.16 }],
       segmentos: [{ de: 'B', a: 'C', texto: '14', color: 'd' }, { de: 'C', a: 'A', texto: `${b}`, color: 'i' }, { de: 'A', a: 'B', texto: `${c}`, color: 'o' },
@@ -341,7 +362,11 @@
         { id: 'c', etiqueta: 'AB', min: 9, max: 15, paso: 1, inicio: 10, unidad: '', decimales: 0, color: 'c-o' },
       ],
       dibujo: v => ({ datos: heronFig(v.b, v.c), estado: {} }),
-      lectura: v => { const s = (14 + v.b + v.c) / 2; return [`s = ${f(s)} · área = ${f(Math.sqrt(s * (s - 14) * (s - v.b) * (s - v.c)))}`]; },
+      // Se agarra el vértice A: su distancia a C es AC y su distancia a B es AB (de 1 en 1).
+      arrastres: [{ id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
+        donde: v => enPantalla(heronFig(v.b, v.c), porLados(14, v.b, v.c)),
+        mover: (q, v) => { const z = alPlano(heronFig(v.b, v.c), q); return { b: U.dist(z, [14, 0]), c: Math.hypot(z[0], z[1]) }; } }],
+      lectura: v => { const s = (14 + v.b + v.c) / 2; return [`s = ${f(s)}`, sep, `área = ${f(Math.sqrt(s * (s - 14) * (s - v.b) * (s - v.c)))}`]; },
       minimo: 4,
     },
     predice: {
@@ -362,14 +387,14 @@
       voz: 'Herón primero; la altura después, para comprobar.',
       pasos: [
         { estado: { corte: 0 }, texto: 'Semiperímetro: la mitad del borde.', ecuacion: ['s = (13 + 14 + 15)/2 = 21'] },
-        { estado: { corte: 0 }, texto: 'Resta cada lado de s.', ecuacion: ['s − a = 7 · s − b = 6 · s − c = 8'] },
+        { estado: { corte: 0 }, texto: 'Resta cada lado de s.', ecuacion: ['s − a = 7', sep, 's − b = 6', sep, 's − c = 8'] },
         { estado: { corte: 0 }, texto: 'Multiplica y saca la raíz.', ecuacion: ['S = ', { raiz: ['21 · 7 · 6 · 8'] }, ' = ', { raiz: ['7056'] }, ' = 84'] },
         { estado: { corte: 0 }, texto: 'Comprueba con base y altura: 14 · 12 / 2.', ecuacion: ['S = 84'] },
       ],
     },
     regla: {
       texto: 'Con los tres lados a, b y c, y el semiperímetro s, el área del triángulo es la raíz de s(s − a)(s − b)(s − c).',
-      ecuacion: ['S = ', { raiz: ['s(s − a)(s − b)(s − c)'] }, '   ·   s = ', frac('a + b + c', '2')],
+      ecuacion: ['S = ', { raiz: ['s(s − a)(s − b)(s − c)'] }, sep, { llave: ['s'], nota: 'semiperímetro', color: 'c-d' }, ' = ', frac('a + b + c', '2')],
       condicion: 'los tres lados forman un triángulo: cada uno es menor que la suma de los otros dos.',
       voz: 'Cuando no tienes la altura, Herón te la ahorra.',
     },
@@ -424,6 +449,8 @@
       angulos: o.tri ? [{ en: 'B', de: 'P', a: 'T', color: 'd', rayita: 1, radio: 26, desde: k.ang || 0 }, { en: 'T', de: 'P', a: 'A', color: 'd', rayita: 1, radio: 26, desde: k.ang || 0 }] : [],
     };
   };
+  // Hallazgo 9: el juego tiene P dentro y «Mira» lo saca fuera, con la tangente. Son dos dibujos a propósito: la
+  // predicción pide llevar la regla al caso que el juego no mostró; el laboratorio (mesa «potencia-libre») los une.
   const potencia = {
     id: 'potencia',
     titulo: 'Cuerdas, secantes y tangente',
@@ -434,6 +461,10 @@
       voz: 'Gira la cuerda. Uno crece, el otro baja: mira el producto.',
       controles: [{ id: 't', etiqueta: 'giro', min: 0, max: 150, paso: 15, inicio: 30, unidad: '°', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: dentroFig(v.t), estado: {} }),
+      // Se agarra el extremo B de la cuerda: la cuerda gira alrededor de P.
+      arrastres: [{ id: 'extremo-b', etiqueta: 'extremo B de la cuerda', color: 'c-i',
+        donde: v => enPantalla(dentroFig(v.t), cuerda([1.2, 0.4], v.t)[1]),
+        mover: (q, v) => { const z = alPlano(dentroFig(v.t), q); return { t: angSup(z[0] - 1.2, z[1] - 0.4) }; } }],
       lectura: v => { const [A, Bq] = cuerda([1.2, 0.4], v.t); return [{ v: 'c-o', t: 'PA' }, ' · ', { v: 'c-i', t: 'PB' }, ` = ${f(U.dist([1.2, 0.4], A))} · ${f(U.dist([1.2, 0.4], Bq))} = ${f(U.dist([1.2, 0.4], A) * U.dist([1.2, 0.4], Bq))}`]; },
       minimo: 4,
     },
@@ -456,12 +487,12 @@
       pasos: [
         { estado: { corte: 1 }, texto: '∠PTA (semiinscrito) y ∠PBT (inscrito) abarcan el arco AT.', ecuacion: ['∠PTA = ∠PBT'] },
         { estado: { corte: 2 }, texto: 'Con ∠P común, PTA y PBT son semejantes.', ecuacion: [frac('PT', 'PA'), ' = ', frac('PB', 'PT')] },
-        { estado: { corte: 2 }, texto: 'Multiplica en cruz.', ecuacion: ['PT² = PA · PB = 4 · 9 = 36'] },
+        { estado: { corte: 2 }, texto: 'Multiplica en cruz.', ecuacion: [sup2({ v: 'c-h', t: 'PT' }), ' = PA · PB = 4 · 9 = 36'] },
       ],
     },
     regla: {
       texto: 'Por un punto P, el producto de los dos tramos de cualquier cuerda o secante es constante. Con una tangente, ese producto es su cuadrado.',
-      ecuacion: [{ v: 'c-o', t: 'PA' }, ' · ', { v: 'c-i', t: 'PB' }, ' = PC · PD   ·   ', sup2({ v: 'c-h', t: 'PT' }), ' = PA · PB'],
+      ecuacion: [{ llave: [{ v: 'c-o', t: 'PA' }, ' · ', { v: 'c-i', t: 'PB' }], nota: 'desde P', color: 'c-o' }, ' = PC · PD', sep, sup2({ v: 'c-h', t: 'PT' }), ' = PA · PB'],
       condicion: 'los tramos se miden desde P hasta cada punto de corte; fuera, PB es la secante completa, no la cuerda.',
       voz: 'Mide siempre desde P. Ahí está la trampa.',
     },
@@ -536,6 +567,8 @@
       angulos: [{ en: 'A', de: 'B', a: 'D' }],
     };
   };
+  // Hallazgo 9: «Mira» cambia el cuadrilátero del juego por un rectángulo inscrito a propósito: es el caso en que
+  // Ptolomeo se vuelve Pitágoras, y se reconoce sin medir. El juego y el laboratorio dejan el cuadrilátero general.
   const ptolomeo = {
     id: 'ptolomeo',
     titulo: 'Diagonales del cuadrilátero inscrito',
@@ -546,7 +579,11 @@
       voz: 'Corre D. Comprueba las dos cuentas cada vez.',
       controles: [{ id: 'g', etiqueta: 'D en el arco', min: 240, max: 360, paso: 20, inicio: 300, unidad: '°', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: cuad(en(v.g)).d, estado: {} }),
-      lectura: v => { const q = cuad(en(v.g)); return [{ v: 'c-h', t: 'AC · BD' }, ` = ${f(q.izq)} · suma = ${f(q.der)}`]; },
+      // Se agarra el vértice D: corre por la circunferencia entre C y A.
+      arrastres: [{ id: 'vertice-d', etiqueta: 'vértice D', color: 'c-o',
+        donde: v => enPantalla(cuad(en(v.g)).d, en(v.g)),
+        mover: (q, v) => { const z = alPlano(cuad(en(v.g)).d, q); let g = U.grados(Math.atan2(z[1], z[0])); if (g < 0) g += 360; if (g < 120) g += 360; return { g }; } }],
+      lectura: v => { const q = cuad(en(v.g)); return [{ v: 'c-h', t: 'AC · BD' }, ` = ${f(q.izq)}`, sep, `suma = ${f(q.der)}`]; },
       minimo: 4,
     },
     predice: {
@@ -565,14 +602,14 @@
       datos: rectP({ pasos: { d: 1 } }),
       voz: 'Pon a prueba a Ptolomeo en un rectángulo.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'Un rectángulo siempre es inscriptible: lados 3√3 y 3.', ecuacion: ['AB = CD = 3√3 · BC = DA = 3'] },
+        { estado: { corte: 0 }, texto: 'Un rectángulo siempre es inscriptible: lados 3√3 y 3.', ecuacion: ['AB = CD = 3√3', sep, 'BC = DA = 3'] },
         { estado: { corte: 1 }, texto: 'Sus diagonales son diámetros: miden 6.', ecuacion: ['AC = BD = 6'] },
         { estado: { corte: 1 }, texto: 'Ptolomeo aquí es Pitágoras.', ecuacion: ['6 · 6 = 3√3 · 3√3 + 3 · 3 → 36 = 27 + 9'] },
       ],
     },
     regla: {
       texto: 'En un cuadrilátero inscrito, el producto de las diagonales es la suma de los productos de lados opuestos (Ptolomeo). Viette da su cociente.',
-      ecuacion: ['AC · BD = AB · CD + AD · BC   ·   ', frac('AC', 'BD'), ' = ', frac('AB · AD + CB · CD', 'BA · BC + DA · DC')],
+      ecuacion: [{ llave: [{ v: 'c-h', t: 'AC · BD' }], nota: 'diagonales', color: 'c-h' }, ' = ', { llave: ['AB · CD + AD · BC'], nota: 'lados opuestos', color: 'c-o' }, sep, frac('AC', 'BD'), ' = ', frac('AB · AD + CB · CD', 'BA · BC + DA · DC')],
       condicion: 'los cuatro vértices están en una circunferencia, en el orden A, B, C, D. Fuera de ella, AC · BD queda menor.',
       voz: 'Primero comprueba que es inscrito. Después multiplica.',
     },
@@ -609,9 +646,125 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 5: P se arrastra a cualquier lado (dentro, sobre o fuera de la circunferencia) y la
+  // recta gira con su timón. Junta el juego (P dentro) con la predicción (P fuera, con tangente) en un solo dibujo.
+  const potLibre = (px, py, t) => {
+    const P = [px, py], u = [Math.cos(U.rad(t)), Math.sin(U.rad(t))], pu = px * u[0] + py * u[1];
+    const OP2 = px * px + py * py, d2 = pu * pu - (OP2 - R5 * R5), corta = d2 >= 0;
+    const timon = [px + 2.6 * u[0], py + 2.6 * u[1]];
+    const puntos = [pt('O', [0, 0], { rotulo: 'O', lado: -90 }), pt('P', P, { rotulo: 'P', color: 'h', lado: t + 180 }), pt('R', timon, { sinPunto: true })];
+    const segmentos = [{ de: 'P', a: 'R', recta: true, grosor: 'fino', discontinua: true }];
+    if (corta) {
+      const A = U.mezcla(P, [px + u[0], py + u[1]], -pu - Math.sqrt(d2)), Bq = U.mezcla(P, [px + u[0], py + u[1]], -pu + Math.sqrt(d2));
+      puntos.push(pt('A', A, { rotulo: 'A', lado: t + 90 }), pt('B', Bq, { rotulo: 'B', lado: t - 90 }));
+      segmentos.push({ de: 'P', a: 'A', color: 'o', grosor: 'variable' }, { de: 'P', a: 'B', color: 'i', grosor: 'variable' });
+    }
+    if (OP2 > R5 * R5 + 1e-9) {
+      // Tangente desde P: T en la circunferencia con OT ⟂ PT.
+      const gT = U.grados(Math.atan2(py, px)) + U.grados(Math.acos(R5 / Math.sqrt(OP2)));
+      puntos.push(pt('T', U.polar([0, 0], R5, gT), { rotulo: 'T', lado: gT }));
+      segmentos.push({ de: 'P', a: 'T', color: 'h', grosor: 'variable' }, { de: 'O', a: 'T', grosor: 'fino', discontinua: true });
+    }
+    return {
+      alt: `P a ${f(Math.sqrt(OP2))} del centro de una circunferencia de radio 3${corta ? `: PA · PB = ${f(Math.abs(OP2 - 9))}` : ': la recta no la corta'}`,
+      vista: { x: [-8.4, 8.4], y: [-5.8, 5.8] },
+      puntos, circulos: [{ centro: 'O', r: R5 }], segmentos,
+    };
+  };
+  const potLectura = v => {
+    const OP2 = v.px * v.px + v.py * v.py, pot = OP2 - 9;
+    const u = [Math.cos(U.rad(v.t)), Math.sin(U.rad(v.t))], pu = v.px * u[0] + v.py * u[1], corta = pu * pu - pot >= 0;
+    const PAPB = [{ v: 'c-o', t: 'PA' }, ' · ', { v: 'c-i', t: 'PB' }];
+    if (Math.abs(pot) < 1e-9) return ['P en la circunferencia: ', ...PAPB, ' = 0'];
+    if (pot < 0) return [...PAPB, ` = ${f(-pot)}`, sep, `P dentro`];
+    return corta ? [...PAPB, ` = ${f(pot)} = `, sup2({ v: 'c-h', t: 'PT' })] : ['la recta no corta', sep, sup2({ v: 'c-h', t: 'PT' }), ` = ${f(pot)}`];
+  };
+  const mesaPotencia = {
+    id: 'potencia-libre', titulo: 'Punto P donde quieras', pieza: 'geo-figura',
+    consigna: 'Arrastra P dentro, sobre y fuera de la circunferencia. Gira la recta con su timón y mira si el producto cambia.',
+    controles: [
+      { id: 'px', etiqueta: 'P a lo ancho', min: -5.5, max: 5.5, paso: 0.5, inicio: -4.5, unidad: '', decimales: 1 },
+      { id: 'py', etiqueta: 'P a lo alto', min: -3, max: 3, paso: 0.5, inicio: 1, unidad: '', decimales: 1 },
+      { id: 't', etiqueta: 'giro de la recta', min: 0, max: 175, paso: 5, inicio: 10, unidad: '°', decimales: 0, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: potLibre(v.px, v.py, v.t), estado: {} }),
+    arrastres: [
+      { id: 'punto-p', etiqueta: 'punto P', color: 'c-h',
+        donde: v => enPantalla(potLibre(v.px, v.py, v.t), [v.px, v.py]),
+        mover: (q, v) => { const z = alPlano(potLibre(v.px, v.py, v.t), q); return { px: z[0], py: z[1] }; } },
+      // El timón es un punto de la recta discontinua a 2,6 de P: la recta se gira por ahí, corte o no corte la circunferencia.
+      { id: 'timon', etiqueta: 'timón de la recta', color: 'c-i',
+        donde: v => enPantalla(potLibre(v.px, v.py, v.t), [v.px + 2.6 * Math.cos(U.rad(v.t)), v.py + 2.6 * Math.sin(U.rad(v.t))]),
+        mover: (q, v) => { const z = alPlano(potLibre(v.px, v.py, v.t), q); let g = U.grados(Math.atan2(z[1] - v.py, z[0] - v.px)); if (g < 0) g += 180; if (g > 177.5) g -= 180; return { t: g }; } },
+    ],
+    lectura: potLectura,
+  };
+
+  // Mesa 2, más rica que la idea 2: A va a cualquier lado y C se corre, así B (y también C) puede ser agudo, recto u
+  // obtuso; la lectura muestra el signo de la corrección 2am y el valor de m con su signo.
+  const eucLibre = (ax, ay, a) => {
+    const A = [ax, ay], c = Math.hypot(ax, ay), b = U.dist(A, [a, 0]), P = [ax, 0];
+    return {
+      alt: `Lados a = ${f(a)} y c = ${f(c)}; la proyección de c sobre la recta de a mide ${f(Math.abs(ax))}${ax < 0 ? ' y cae fuera' : ''}; b mide ${f(b)}`,
+      vista: { x: [-4.6, 9.6], y: [-1.2, 6.4] },
+      puntos: [pt('B', [0, 0], { rotulo: 'B', lado: ax < 0 ? -40 : -140 }), pt('C', [a, 0], { rotulo: 'C', lado: -60 }), pt('A', A, { rotulo: 'A', lado: 90 }), pt('P', P, { rotulo: 'P', lado: ax < 0 ? -140 : -40, sinPunto: ax === 0 })],
+      regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', opacidad: 0.08 }],
+      segmentos: [{ de: 'B', a: 'C', color: 'd', grosor: 'variable', texto: `a = ${f(a)}`, lado: -1 }, { de: 'B', a: 'A', color: 'o', grosor: 'variable' }, { de: 'A', a: 'C', color: 'h', grosor: 'variable' },
+        ...(ax !== 0 ? [{ de: 'A', a: 'P', discontinua: true, grosor: 'fino' }, { de: 'B', a: 'P', color: 'i', grosor: 'variable', lado: 1 }] : [])],
+      angulos: [{ en: 'B', de: 'C', a: 'A', color: 'o', texto: `${f(U.angulo([0, 0], [a, 0], A), 0)}°`, radio: 20 }, ...(ax !== 0 ? [{ en: 'P', de: ax > 0 ? 'C' : 'B', a: 'A' }] : [])],
+    };
+  };
+  const mesaEuclides = {
+    id: 'euclides-libre', titulo: 'Proyección con signo', pieza: 'geo-figura',
+    consigna: 'Arrastra A y C. Haz el ángulo B agudo, recto y obtuso, y mira qué signo toma 2am.',
+    controles: [
+      { id: 'ax', etiqueta: 'A a lo ancho', min: -4, max: 9, paso: 0.5, inicio: 2, unidad: '', decimales: 1 },
+      { id: 'ay', etiqueta: 'A a lo alto', min: 0.5, max: 6, paso: 0.5, inicio: 4, unidad: '', decimales: 1 },
+      { id: 'a', etiqueta: 'Lado BC', min: 2, max: 9, paso: 0.5, inicio: 8, unidad: '', decimales: 1, color: 'c-d' },
+    ],
+    dibujo: v => ({ datos: eucLibre(v.ax, v.ay, v.a), estado: {} }),
+    arrastres: [
+      { id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
+        donde: v => enPantalla(eucLibre(v.ax, v.ay, v.a), [v.ax, v.ay]),
+        mover: (q, v) => { const z = alPlano(eucLibre(v.ax, v.ay, v.a), q); return { ax: z[0], ay: z[1] }; } },
+      { id: 'vertice-c', etiqueta: 'vértice C', color: 'c-d',
+        donde: v => enPantalla(eucLibre(v.ax, v.ay, v.a), [v.a, 0]),
+        mover: (q, v) => ({ a: alPlano(eucLibre(v.ax, v.ay, v.a), q)[0] }) },
+    ],
+    lectura: v => {
+      const c2 = v.ax * v.ax + v.ay * v.ay, base = v.a * v.a + c2, corr = 2 * v.a * Math.abs(v.ax);
+      const signo = v.ax > 0 ? ' − ' : v.ax < 0 ? ' + ' : ' ± ';
+      return [{ v: 'c-i', t: 'm' }, ` = ${f(v.ax)}`, sep, sup2({ v: 'c-h', t: 'b' }), ` = ${f(base)}${signo}${f(corr)} = ${f(base - 2 * v.a * v.ax)}`];
+    },
+  };
+
+  // Mesa 3, el caso raro de la idea 6: D se suelta de la circunferencia y va a cualquier punto (también dentro o
+  // fuera). La lectura dice si Ptolomeo se cumple con igualdad y a qué distancia del centro quedó D.
+  const ptoLibre = (dx, dy) => {
+    const q = cuad([dx, dy]);
+    return Object.assign({}, q.d, { circulos: [{ centro: 'O', r: R6, grosor: 'fino', discontinua: Math.abs(Math.hypot(dx, dy) - R6) > 1e-9 }], vista: { x: [-4.6, 4.6], y: [-4.6, 3.8] } });
+  };
+  const mesaPtolomeo = {
+    id: 'ptolomeo-libre', titulo: 'D fuera de la circunferencia', pieza: 'geo-figura',
+    consigna: 'Arrastra D a cualquier punto. Compara el producto de diagonales con la suma. Prueba D en (1,8; −2,4), sobre la circunferencia.',
+    controles: [
+      { id: 'dx', etiqueta: 'D a lo ancho', min: -1.5, max: 4.4, paso: 0.1, inicio: 1, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'dy', etiqueta: 'D a lo alto', min: -4.4, max: 0.5, paso: 0.1, inicio: -1.5, unidad: '', decimales: 1, color: 'c-o' },
+    ],
+    dibujo: v => ({ datos: ptoLibre(v.dx, v.dy), estado: {} }),
+    arrastres: [{ id: 'vertice-d', etiqueta: 'vértice D', color: 'c-o',
+      donde: v => enPantalla(ptoLibre(v.dx, v.dy), [v.dx, v.dy]),
+      mover: (q, v) => { const z = alPlano(ptoLibre(v.dx, v.dy), q); return { dx: z[0], dy: z[1] }; } }],
+    lectura: v => {
+      const q = cuad([v.dx, v.dy]), rel = Math.abs(q.izq - q.der) < 0.005 ? '=' : '<';
+      return [{ v: 'c-h', t: 'AC · BD' }, ` = ${f(q.izq)} ${rel} ${f(q.der)}`, sep, `OD = ${f(Math.hypot(v.dx, v.dy))}`];
+    },
+  };
+
   return {
     unidad: 'geometria.relaciones-metricas',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -619,6 +772,9 @@
       pregunta: '¿Qué agrega una demostración a un cálculo que ya funciona?',
       fuente: { titulo: 'Euclides, Elementos I.47 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookI/propI47.html' },
     },
+    // Laboratorio: las tres mesas son más ricas que sus ideas (P libre con tangente, A y C libres con el signo de 2am,
+    // y D suelto de la circunferencia).
+    laboratorio: [mesaPotencia, mesaEuclides, mesaPtolomeo],
     ideas: [rectIdea, euclides, stewart, heron, potencia, ptolomeo],
   };
 });

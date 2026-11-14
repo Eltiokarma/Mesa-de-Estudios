@@ -68,3 +68,17 @@ test('cubo: tres caras de frente y tres aristas ocultas discontinuas; la base ci
   assert.ok(Math.abs(G.util.area([[0, 0], [2, 0], [0, 2]]) - 2) < 1e-12);
   assert.ok(G.alt(CUBO).length > 15 && G.alt(TRI) === TRI.alt);
 });
+
+test('gesto directo: aPantalla y aPlano son inversas, y sobreRecta recorre una arista en 3D', () => {
+  for (const p of [[0, 0], [8, 0], [3, 4], [5.5, 2.25]]) {
+    const q = G.aPlano(TRI, G.aPantalla(TRI, p));
+    assert.ok(Math.abs(q[0] - p[0]) < 1e-9 && Math.abs(q[1] - p[1]) < 1e-9);
+  }
+  const g = G.geometria(TRI), C = g.S('C'), pc = G.aPantalla(TRI, [3, 4]);
+  assert.ok(Math.abs(pc.x - C[0]) < 1e-9 && Math.abs(pc.y - C[1]) < 1e-9);
+  const A = [-1, -1, 1], B = [-1, 1, 1];
+  for (const t of [0, 0.3, 1, 1.4]) {
+    const m = G.aPantalla(CUBO, A.map((v, i) => v + (B[i] - v) * t));
+    assert.ok(Math.abs(G.sobreRecta(CUBO, A, B, m) - t) < 1e-9);
+  }
+});

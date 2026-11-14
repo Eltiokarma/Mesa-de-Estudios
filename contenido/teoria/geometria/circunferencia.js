@@ -50,6 +50,13 @@
     return ops.slice(0, n);
   }
   const pt = (id, p, o = {}) => Object.assign({ id, x: p[0], y: p[1] }, o);
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura; aPlano la vuelve coordenadas del
+  // problema y el lector ajusta cada valor al paso y al rango de su control.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const alPlano = (datos, q) => G.aPlano(datos, q);
+  // Dirección de un punto del plano vista desde O, en grados de 0 a 360 (o desde «corte», para rangos que cruzan 0°).
+  const rumbo = (q, corte = 0) => { let g = U.grados(Math.atan2(q[1], q[0])); while (g < corte) g += 360; while (g >= corte + 360) g -= 360; return g; };
+  const sep = '   ·   ';
 
   // ---------- Idea 1: tangentes ----------
   // Cambia: la distancia de P al centro · Permanece: la circunferencia · Progresa: el largo de las dos tangentes ·
@@ -78,7 +85,11 @@
       voz: 'Mueve P. Compara las dos tangentes cada vez.',
       controles: [{ id: 'd', etiqueta: 'PO', min: 2.5, max: 8, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-o' }],
       dibujo: v => ({ datos: tang(v.d), estado: {} }),
-      lectura: v => [{ v: 'c-o', t: 'PT' }, ` = ${f(Math.sqrt(v.d * v.d - 4))} · `, { v: 'c-i', t: 'PS' }, ` = ${f(Math.sqrt(v.d * v.d - 4))}`],
+      // Se agarra P: corre por la recta que pasa por el centro.
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P', color: 'c-o',
+        donde: v => enPantalla(tang(v.d), [v.d, 0]),
+        mover: (q, v) => ({ d: alPlano(tang(v.d), q)[0] }) }],
+      lectura: v => [{ v: 'c-o', t: 'PT' }, ` = ${f(Math.sqrt(v.d * v.d - 4))}${sep}`, { v: 'c-i', t: 'PS' }, ` = ${f(Math.sqrt(v.d * v.d - 4))}`],
       minimo: 3,
     },
     predice: {
@@ -97,14 +108,15 @@
       datos: tang(5, { radios: true, pasos: { r: 1, op: 2 }, alt: 'OTP y OSP son triángulos rectángulos con la hipotenusa OP común y un cateto r: son congruentes' }),
       voz: 'Dos triángulos rectángulos que comparten hipotenusa.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'T es el punto de la tangente más cercano a O: OT ⟂ PT.', ecuacion: ['OT ⟂ PT · OS ⟂ PS'] },
+        { estado: { corte: 1 }, texto: 'T es el punto de la tangente más cercano a O: OT ⟂ PT.', ecuacion: ['OT ⟂ PT', sep, 'OS ⟂ PS'] },
         { estado: { corte: 2 }, texto: 'OTP y OSP: hipotenusa OP común y un cateto r igual.', ecuacion: ['△OTP ≅ △OSP'] },
-        { estado: { corte: 2 }, texto: 'Por eso las dos tangentes miden lo mismo.', ecuacion: [{ v: 'c-o', t: 'PT' }, ' = ', { v: 'c-i', t: 'PS' }, ' = ', { raiz: ['PO² − r²'] }] },
+        { estado: { corte: 2 }, texto: 'Por eso las dos tangentes miden lo mismo.', ecuacion: [{ v: 'c-o', t: 'PT' }, ' = ', { v: 'c-i', t: 'PS' }, ' = ', { raiz: [{ sup: ['PO', '2'] }, ' − ', { sup: ['r', '2'] }] }] },
       ],
     },
     regla: {
       texto: 'La tangente es perpendicular al radio en el punto de contacto. Desde un punto exterior, las dos tangentes miden lo mismo.',
-      ecuacion: [{ v: 'c-o', t: 'PT' }, ' = ', { v: 'c-i', t: 'PS' }, ' = ', { raiz: ['PO² − r²'] }],
+      ecuacion: [{ llave: [{ v: 'c-o', t: 'PT' }, ' = ', { v: 'c-i', t: 'PS' }], nota: 'las dos tangentes', color: 'c-o' }, ' = ',
+        { raiz: [{ llave: [{ sup: ['PO', '2'] }], nota: 'hipotenusa', color: 'c-d' }, ' − ', { llave: [{ sup: ['r', '2'] }], nota: 'radio', color: 'c-d' }] }],
       condicion: 'P está fuera de la circunferencia y T, S son los puntos de contacto.',
       voz: 'Ante una tangente, traza el radio al contacto.',
     },
@@ -122,7 +134,7 @@
             { id: 'suma', valor: Math.sqrt(d * d + (pideL ? radio : L) ** 2), error: 'GE-TAN2', siFuera: 'Eso suma los cuadrados: tomaría PO como cateto. PO es la hipotenusa.' },
             { id: 'igual', valor: d, error: 'GE-TAN1', siFuera: 'PO va al centro; la tangente llega al punto de contacto.' },
           ], x => f(x, 2)),
-          solucion: { texto: 'El radio y la tangente forman 90°: PO es la hipotenusa.', ecuacion: pideL ? [`PT = √(${d}² − ${radio}²) = ${L}`] : [`r = √(${d}² − ${L}²) = ${radio}`] },
+          solucion: { texto: 'El radio y la tangente forman 90°: PO es la hipotenusa.', ecuacion: pideL ? ['PT = ', { raiz: [{ sup: [`${d}`, '2'] }, ' − ', { sup: [`${radio}`, '2'] }] }, ` = ${L}`] : ['r = ', { raiz: [{ sup: [`${d}`, '2'] }, ' − ', { sup: [`${L}`, '2'] }] }, ` = ${radio}`] },
         };
       },
     },
@@ -149,7 +161,11 @@
       voz: 'Mueve d. Fíjate en el momento exacto en que se tocan.',
       controles: [{ id: 'd', etiqueta: 'd', min: 0, max: 8, paso: 1, inicio: 7, unidad: '', decimales: 0, color: 'c-h' }],
       dibujo: v => ({ datos: dos(v.d), estado: {} }),
-      lectura: v => [{ v: 'c-h', t: 'd' }, ` = ${v.d} · r₁ + r₂ = 6 · r₁ − r₂ = 2 · ${posicion(v.d, 4, 2)}`],
+      // Se agarra el centro O₂: la circunferencia chica se acerca o se aleja de la grande.
+      arrastres: [{ id: 'centro-o2', etiqueta: 'centro O₂', color: 'c-h',
+        donde: v => enPantalla(dos(v.d), [v.d, 0]),
+        mover: (q, v) => ({ d: alPlano(dos(v.d), q)[0] }) }],
+      lectura: v => [{ v: 'c-h', t: 'd' }, ` = ${v.d}${sep}suma 6${sep}resta 2${sep}${posicion(v.d, 4, 2)}`],
       minimo: 5,
     },
     predice: {
@@ -180,7 +196,7 @@
     },
     regla: {
       texto: 'Compara d con r₁ + r₂ y con r₁ − r₂: mayor que la suma, exteriores; igual, tangentes exteriores; entre ambas, secantes; igual a la diferencia, tangentes interiores; menor, interiores.',
-      ecuacion: ['r₁ − r₂ < ', { v: 'c-h', t: 'd' }, ' < r₁ + r₂  ⇔  secantes'],
+      ecuacion: [{ llave: ['r₁ − r₂'], nota: 'la resta', color: 'c-i' }, ' < ', { v: 'c-h', t: 'd' }, ' < ', { llave: ['r₁ + r₂'], nota: 'la suma', color: 'c-o' }, '  ⇔  secantes'],
       condicion: 'r₁ ≥ r₂ y d es la distancia entre los centros. Con d = 0 son concéntricas.',
       voz: 'Dos números deciden todo: la suma y la diferencia.',
     },
@@ -237,7 +253,11 @@
       voz: 'Corre P lejos y cerca de A. Comprueba si el ángulo cambia.',
       controles: [{ id: 'fi', etiqueta: 'P en el arco', min: -20, max: 200, paso: 20, inicio: 80, unidad: '°', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: inscr(v.fi), estado: {} }),
-      lectura: v => [{ v: 'c-i', t: '∠APB' }, ` = ${ARCO / 2}° · arco AB = ${ARCO}°`],
+      // Se agarra P y corre por la circunferencia; el ángulo se lee del centro (rumbo desde −90°, para cruzar 0°).
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P', color: 'c-o',
+        donde: v => enPantalla(inscr(v.fi), en(v.fi)),
+        mover: (q, v) => ({ fi: rumbo(alPlano(inscr(v.fi), q), -90) }) }],
+      lectura: v => [{ v: 'c-i', t: '∠APB' }, ` = ${f(U.angulo(en(v.fi), A3, B3), 0)}°${sep}arco AB = ${ARCO}°`],
       minimo: 4,
     },
     predice: {
@@ -265,7 +285,7 @@
     },
     regla: {
       texto: 'El ángulo central mide lo mismo que su arco. El inscrito y el semiinscrito (tangente con cuerda) miden la mitad del arco que abarcan.',
-      ecuacion: ['central = arco   ·   inscrito = semiinscrito = ', { frac: ['arco', '2'] }],
+      ecuacion: ['central = arco   ·   inscrito = semiinscrito = ', { llave: [{ frac: ['arco', '2'] }], nota: 'mitad del arco', color: 'c-o' }],
       condicion: 'el vértice del inscrito está en la circunferencia, fuera del arco que abarca; todos los inscritos en el mismo arco son iguales.',
       voz: 'Ubica el vértice antes de decidir si va el arco o su mitad.',
     },
@@ -322,7 +342,17 @@
         { id: 'b', etiqueta: 'arco de abajo', min: 20, max: 100, paso: 10, inicio: 30, unidad: '°', decimales: 0, color: 'c-i' },
       ],
       dibujo: v => ({ datos: cruce(v.a, v.b, false), estado: {} }),
-      lectura: v => [{ v: 'c-h', t: '∠Q' }, ` = ${f((v.a + v.b) / 2)}° · `, { frac: [[{ v: 'c-o', t: `${v.a}` }, ' + ', { v: 'c-i', t: `${v.b}` }], '2'] }],
+      // Se agarran A (borde del arco de arriba, centrado en 90°) y C (borde del de abajo, centrado en 270°): cada uno abre
+      // su arco de forma simétrica, así que el arco es el doble de lo que A o C se alejan del centro del arco.
+      arrastres: [
+        { id: 'punto-a', etiqueta: 'punto A, borde del arco de arriba', color: 'c-o',
+          donde: v => enPantalla(cruce(v.a, v.b, false), en(90 + v.a / 2)),
+          mover: (q, v) => ({ a: 2 * (rumbo(alPlano(cruce(v.a, v.b, false), q), -90) - 90) }) },
+        { id: 'punto-c', etiqueta: 'punto C, borde del arco de abajo', color: 'c-i',
+          donde: v => enPantalla(cruce(v.a, v.b, false), en(270 - v.b / 2)),
+          mover: (q, v) => ({ b: 2 * (270 - rumbo(alPlano(cruce(v.a, v.b, false), q), 90)) }) },
+      ],
+      lectura: v => [{ v: 'c-h', t: '∠Q' }, ` = ${f((v.a + v.b) / 2)}°${sep}`, { frac: [[{ v: 'c-o', t: `${v.a}` }, ' + ', { v: 'c-i', t: `${v.b}` }], '2'] }],
       minimo: 4,
     },
     predice: {
@@ -338,6 +368,8 @@
       revelar: { datos: cruce(110, 30, true), estado: {} },
       coincide: 'Coincide: (110° − 30°)/2 = 40°.',
     },
+    // Hallazgo 9: el juego mueve el vértice dentro y «Mira» explica el caso de fuera, que es el de la predicción; es la
+    // misma figura (dos rectas y sus dos arcos) con Q al otro lado de la circunferencia.
     mira: {
       datos: cruce(110, 30, true, { pasos: { ad: 1, ca: 2, q: 3 }, alt: 'La cuerda AD forma el triángulo QAD: su ángulo exterior en D es 55° y el ángulo en A es 15°' }),
       voz: 'Una cuerda auxiliar convierte el problema en un triángulo.',
@@ -349,7 +381,8 @@
     },
     regla: {
       texto: 'Con el vértice dentro, el ángulo mide la semisuma de los arcos que abarcan él y su opuesto. Con el vértice fuera, la semidiferencia: arco lejano menos arco cercano.',
-      ecuacion: ['dentro: ', { frac: [[{ v: 'c-o', t: 'a' }, ' + ', { v: 'c-i', t: 'b' }], '2'] }, '   ·   fuera: ', { frac: [[{ v: 'c-o', t: 'a' }, ' − ', { v: 'c-i', t: 'b' }], '2'] }],
+      ecuacion: ['dentro: ', { frac: [[{ v: 'c-o', t: 'a' }, ' + ', { v: 'c-i', t: 'b' }], '2'] }, '   ·   fuera: ',
+        { frac: [[{ llave: [{ v: 'c-o', t: 'a' }], nota: 'lejano', color: 'c-o' }, ' − ', { llave: [{ v: 'c-i', t: 'b' }], nota: 'cercano', color: 'c-i' }], '2'] }],
       condicion: 'Q es el vértice del ángulo; fuera, sus lados son secantes o tangentes; a es el arco lejano y b el cercano.',
       voz: 'Dentro se suma; fuera se resta. Siempre entre 2.',
     },
@@ -417,9 +450,14 @@
       voz: 'Deforma el cuadrilátero. Comprueba qué sumas permanecen iguales.',
       controles: [{ id: 't', etiqueta: 'forma', min: -30, max: 30, paso: 10, inicio: 10, unidad: '', decimales: 0 }],
       dibujo: v => ({ datos: pitotFig(TS(v.t)), estado: {} }),
+      // Se agarra el vértice B: está en la bisectriz de sus dos tangencias (en t y en 90°), así que su dirección desde
+      // O es la semisuma de ambas y t = 2·rumbo(B) − 90.
+      arrastres: [{ id: 'vertice-b', etiqueta: 'vértice B', color: 'c-o',
+        donde: v => enPantalla(pitotFig(TS(v.t)), vertice(v.t, 90)),
+        mover: (q, v) => ({ t: 2 * rumbo(alPlano(pitotFig(TS(v.t)), q), -90) - 90 }) }],
       lectura: v => {
         const ts = TS(v.t), V = ts.map((t, i) => vertice(t, ts[(i + 1) % 4])), L = V.map((p, i) => U.dist(p, V[(i + 1) % 4]));
-        return [{ v: 'c-o', t: 'AB + CD' }, ` = ${f(L[0] + L[2])} · `, { v: 'c-i', t: 'BC + DA' }, ` = ${f(L[1] + L[3])}`];
+        return [{ v: 'c-o', t: 'AB + CD' }, ` = ${f(L[0] + L[2])}${sep}`, { v: 'c-i', t: 'BC + DA' }, ` = ${f(L[1] + L[3])}`];
       },
       minimo: 4,
     },
@@ -436,6 +474,8 @@
       revelar: { datos: poncelet({ radios: true }), estado: {} },
       coincide: 'Coincide: 6 + 8 = 10 + 2r, así que r = 2.',
     },
+    // Hallazgo 9: son dos representaciones a propósito. El juego deja ver Pitot (cuadrilátero) y la predicción pasa al
+    // triángulo rectángulo; «Mira» prueba lo predicho con la misma idea: tangentes iguales desde cada vértice.
     mira: {
       datos: poncelet({ radios: true, pasos: { t: 1, cuad: 2 }, alt: 'Desde C, las dos tangentes miden r: forman un cuadrado con el centro; el resto de cada cateto se completa en la hipotenusa' }),
       voz: 'Sigue las tangentes desde cada vértice.',
@@ -447,7 +487,7 @@
     },
     regla: {
       texto: 'Pitot: si un cuadrilátero tiene circunferencia inscrita, sus lados opuestos suman lo mismo. Poncelet: en un triángulo rectángulo, los catetos suman la hipotenusa más el diámetro inscrito.',
-      ecuacion: [{ v: 'c-o', t: 'AB + CD' }, ' = ', { v: 'c-i', t: 'BC + DA' }, '   ·   a + b = c + 2r'],
+      ecuacion: [{ v: 'c-o', t: 'AB + CD' }, ' = ', { v: 'c-i', t: 'BC + DA' }, '   ·   a + b = ', { llave: ['c'], nota: 'hipotenusa', color: 'c-h' }, ' + ', { llave: ['2r'], nota: 'diámetro', color: 'c-d' }],
       condicion: 'para Pitot, el cuadrilátero es convexo y tiene circunferencia inscrita; para Poncelet, el triángulo es rectángulo y c es la hipotenusa.',
       voz: 'Los dos teoremas son tangentes iguales, nada más.',
     },
@@ -508,8 +548,12 @@
     juega: {
       consigna: 'A, B, C y D están en la circunferencia. Corre D por su arco y compara los ángulos opuestos B y D.',
       voz: 'Corre D. Suma los dos ángulos opuestos cada vez.',
-      controles: [{ id: 'fi', etiqueta: 'D en el arco', min: 230, max: 330, paso: 20, inicio: 270, unidad: '°', decimales: 0, color: 'c-o' }],
+      controles: [{ id: 'fi', etiqueta: 'D en el arco', min: 230, max: 330, paso: 10, inicio: 270, unidad: '°', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: cicl(v.fi), estado: {} }),
+      // Se agarra D y corre por su arco, entre A y C.
+      arrastres: [{ id: 'vertice-d', etiqueta: 'vértice D', color: 'c-o',
+        donde: v => enPantalla(cicl(v.fi), en(v.fi)),
+        mover: (q, v) => ({ fi: rumbo(alPlano(cicl(v.fi), q), 90) }) }],
       lectura: v => [{ v: 'c-o', t: '∠B' }, ' + ', { v: 'c-i', t: '∠D' }, ` = ${f(U.angulo(P6.B, P6.A, P6.C) + U.angulo(en(v.fi), P6.A, P6.C), 0)}°`],
       minimo: 3,
     },
@@ -536,7 +580,7 @@
     },
     regla: {
       texto: 'En un cuadrilátero inscrito, los ángulos opuestos son suplementarios. Al revés: si dos ángulos opuestos suman 180°, el cuadrilátero es inscriptible.',
-      ecuacion: [{ v: 'c-o', t: '∠B' }, ' + ', { v: 'c-i', t: '∠D' }, ' = 180°'],
+      ecuacion: [{ llave: [{ v: 'c-o', t: '∠B' }, ' + ', { v: 'c-i', t: '∠D' }], nota: 'opuestos', color: 'c-d' }, ' = 180°'],
       condicion: 'los cuatro vértices están en una circunferencia (cuadrilátero convexo); vale también para ∠A + ∠C.',
       voz: 'Antes de sumar 180°, comprueba que los cuatro estén en la circunferencia.',
     },
@@ -570,9 +614,116 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 2: los dos radios también se mueven (la idea los fija en 4 y 2), y la chica puede
+  // crecer más que la grande. Se agarran el centro O₂ y un punto de cada circunferencia (su radio).
+  const posLibre = (d, r1, r2) => {
+    const e = (p, q) => Math.abs(p - q) < 1e-9, s = r1 + r2, t = Math.abs(r1 - r2);
+    return d === 0 && e(r1, r2) ? 'coinciden' : d === 0 ? 'concéntricas' : d < t - 1e-9 ? 'interiores' : e(d, t) ? 'tangentes interiores'
+      : d < s - 1e-9 ? 'secantes' : e(d, s) ? 'tangentes exteriores' : 'exteriores';
+  };
+  const dosLibre = (d, r1, r2) => ({
+    alt: `Circunferencias de radios ${f(r1)} y ${f(r2)} con centros a ${f(d)}: ${posLibre(d, r1, r2)}`,
+    vista: { x: [-5.6, 15.6], y: [-5.6, 5.6] },
+    puntos: [pt('O1', [0, 0], { rotulo: 'O₁', lado: -100 }), pt('O2', [d, 0], { rotulo: 'O₂', color: 'o', lado: -80 }),
+      pt('R1', U.polar(O, r1, 120), { color: 'i' }), pt('R2', U.polar([d, 0], r2, 60), { color: 'o' })],
+    circulos: [{ centro: 'O1', r: r1, color: 'i' }, { centro: 'O2', r: r2, color: 'o' }],
+    segmentos: [{ de: 'O1', a: 'R1', color: 'i', grosor: 'fino', texto: 'r₁' }, { de: 'O2', a: 'R2', color: 'o', grosor: 'fino', texto: 'r₂' },
+      ...(d > 0 ? [{ de: 'O1', a: 'O2', color: 'h', grosor: 'variable', texto: 'd', lado: 1 }] : [])],
+  });
+  const mesaDos = {
+    id: 'dos-libres', titulo: 'Dos circunferencias libres', pieza: 'geo-figura',
+    consigna: 'Arrastra O₂ y el punto de cada circunferencia para cambiar su radio. Busca las dos tangencias y las concéntricas.',
+    controles: [
+      { id: 'd', etiqueta: 'd', min: 0, max: 10, paso: 0.5, inicio: 6.5, unidad: '', decimales: 1, color: 'c-h' },
+      { id: 'r1', etiqueta: 'r₁', min: 1.5, max: 5, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-i' },
+      { id: 'r2', etiqueta: 'r₂', min: 1.5, max: 5, paso: 0.5, inicio: 2, unidad: '', decimales: 1, color: 'c-o' },
+    ],
+    dibujo: v => ({ datos: dosLibre(v.d, v.r1, v.r2), estado: {} }),
+    arrastres: [
+      { id: 'centro-o2', etiqueta: 'centro O₂', color: 'c-h',
+        donde: v => enPantalla(dosLibre(v.d, v.r1, v.r2), [v.d, 0]),
+        mover: (q, v) => ({ d: alPlano(dosLibre(v.d, v.r1, v.r2), q)[0] }) },
+      { id: 'radio-1', etiqueta: 'punto de la circunferencia 1', color: 'c-i',
+        donde: v => enPantalla(dosLibre(v.d, v.r1, v.r2), U.polar(O, v.r1, 120)),
+        mover: (q, v) => ({ r1: U.dist(O, alPlano(dosLibre(v.d, v.r1, v.r2), q)) }) },
+      { id: 'radio-2', etiqueta: 'punto de la circunferencia 2', color: 'c-o',
+        donde: v => enPantalla(dosLibre(v.d, v.r1, v.r2), U.polar([v.d, 0], v.r2, 60)),
+        mover: (q, v) => ({ r2: U.dist([v.d, 0], alPlano(dosLibre(v.d, v.r1, v.r2), q)) }) },
+    ],
+    lectura: v => [{ v: 'c-h', t: 'd' }, ` = ${f(v.d)}${sep}suma ${f(v.r1 + v.r2)}${sep}resta ${f(Math.abs(v.r1 - v.r2))}${sep}${posLibre(v.d, v.r1, v.r2)}`],
+  };
+
+  // Mesa 2, más rica que la idea 3: el arco AB se abre de 20° a 340° y P recorre la circunferencia entera, también
+  // por dentro del arco AB (ahí abarca el otro arco: 180° − arco/2) y justo sobre A o B (semiinscrito, con su tangente).
+  const inscLibre = (arco, fi) => {
+    const A = en(270 - arco / 2), B = en(270 + arco / 2), P = en(fi);
+    const enA = U.dist(P, A) < 1e-6, enB = U.dist(P, B) < 1e-6, borde = enA || enB;
+    const dentro = !borde && rumbo(P, 270 - arco / 2) - (270 - arco / 2) < arco;         // P cae sobre el arco AB
+    const ang = borde ? arco / 2 : U.angulo(P, A, B);
+    const V = enA ? A : B, otro = enA ? B : A, gv = enA ? 270 - arco / 2 : 270 + arco / 2;
+    // La tangente en el vértice va hacia el lado del arco AB, para que el semiinscrito abarque ese arco.
+    const tg = U.polar(V, 2.4, gv + (enA ? 90 : -90));
+    return {
+      alt: `Arco AB de ${arco}°; P ${borde ? 'llega a ' + (enA ? 'A' : 'B') + ' y la tangente con la cuerda forma' : dentro ? 'está sobre el arco AB y el ángulo APB mide' : 'está fuera del arco AB y el ángulo APB mide'} ${f(ang, 0)}°`,
+      vista: { x: [-4.4, 4.4], y: [-4.4, 4.4] },
+      puntos: [pt('O', O, { sinPunto: true }), pt('A', A, { rotulo: 'A', lado: 270 - arco / 2 }), pt('B', B, { rotulo: 'B', lado: 270 + arco / 2 }),
+        pt('P', P, { rotulo: borde ? undefined : 'P', color: 'o', lado: fi }), pt('Tg', tg, { sinPunto: true })],
+      circulos: [{ centro: 'O', r: R }],
+      arcos: [{ centro: O, r: R, de: 270 - arco / 2, a: 270 + arco / 2, color: 'o', grosor: 'variable', texto: `${arco}°` }],
+      segmentos: borde ? [{ de: enA ? 'A' : 'B', a: enA ? 'B' : 'A', color: 'i' }, { de: enA ? 'A' : 'B', a: 'Tg', color: 'h', grosor: 'variable' }]
+        : [{ de: 'P', a: 'A', color: 'i' }, { de: 'P', a: 'B', color: 'i' }],
+      angulos: borde ? [{ en: enA ? 'A' : 'B', de: 'Tg', a: enA ? 'B' : 'A', color: 'h', texto: `${f(ang, 0)}°`, radio: 26 }]
+        : [{ en: 'P', de: 'A', a: 'B', color: 'i', texto: `${f(ang, 0)}°`, radio: 24 }],
+      _info: { ang, dentro, borde, otro },
+    };
+  };
+  const mesaInscrito = {
+    id: 'inscrito-libre', titulo: 'Arco libre y P suelto', pieza: 'geo-figura',
+    consigna: 'Arrastra B para abrir el arco y P por toda la circunferencia. Lleva P sobre el arco AB y hasta A.',
+    controles: [
+      { id: 'arco', etiqueta: 'arco AB', min: 40, max: 320, paso: 10, inicio: 100, unidad: '°', decimales: 0, color: 'c-o' },
+      { id: 'fi', etiqueta: 'P en la circunferencia', min: 0, max: 350, paso: 10, inicio: 90, unidad: '°', decimales: 0, color: 'c-o' },
+    ],
+    dibujo: v => { const d = inscLibre(v.arco, v.fi); return { datos: Object.assign({}, d, { _info: undefined }), estado: {} }; },
+    arrastres: [
+      { id: 'punto-b', etiqueta: 'punto B, borde del arco', color: 'c-o',
+        donde: v => enPantalla(inscLibre(v.arco, v.fi), en(270 + v.arco / 2)),
+        mover: (q, v) => ({ arco: 2 * (rumbo(alPlano(inscLibre(v.arco, v.fi), q), 90) - 270) }) },
+      { id: 'punto-p', etiqueta: 'punto P', color: 'c-o',
+        donde: v => enPantalla(inscLibre(v.arco, v.fi), en(v.fi)),
+        mover: (q, v) => ({ fi: rumbo(alPlano(inscLibre(v.arco, v.fi), q)) }) },
+    ],
+    lectura: v => {
+      const k = inscLibre(v.arco, v.fi)._info;
+      return [k.borde ? 'semiinscrito' : { v: 'c-i', t: '∠APB' }, ` = ${f(k.ang, 0)}°${sep}arco ${v.arco}°${sep}${k.borde ? 'P en el borde' : k.dentro ? 'P sobre el arco' : 'P fuera del arco'}`];
+    },
+  };
+
+  // Mesa 3, el caso que la idea 6 no deja probar: D sale de la circunferencia hacia dentro o hacia fuera.
+  // Se agarra D y se suelta donde sea (su rumbo y su distancia al centro); A, B y C quedan en la circunferencia.
+  const DL = (fi, od) => U.polar(O, od, fi);
+  const ciclLibre = (fi, od) => Object.assign(cicl(0, { D: DL(fi, od) }), { vista: { x: [-4.8, 4.8], y: [-4.9, 4.3] } });
+  const mesaCiclico = {
+    id: 'cuadrilatero-libre', titulo: 'D dentro, sobre o fuera', pieza: 'geo-figura',
+    consigna: 'Arrastra D por dentro, sobre y fuera de la circunferencia. Compara ∠B + ∠D en cada caso.',
+    controles: [
+      { id: 'fi', etiqueta: 'D, dirección', min: 240, max: 300, paso: 10, inicio: 270, unidad: '°', decimales: 0, color: 'c-o' },
+      { id: 'od', etiqueta: 'OD', min: 1.8, max: 4.2, paso: 0.1, inicio: 2.2, unidad: '', decimales: 1, color: 'c-d' },
+    ],
+    dibujo: v => ({ datos: ciclLibre(v.fi, v.od), estado: {} }),
+    arrastres: [{ id: 'vertice-d', etiqueta: 'vértice D', color: 'c-o',
+      donde: v => enPantalla(ciclLibre(v.fi, v.od), DL(v.fi, v.od)),
+      mover: (q, v) => { const p = alPlano(ciclLibre(v.fi, v.od), q); return { fi: rumbo(p, 90), od: U.dist(O, p) }; } }],
+    lectura: v => {
+      const s = U.angulo(P6.B, P6.A, P6.C) + U.angulo(DL(v.fi, v.od), P6.A, P6.C), donde = Math.abs(v.od - R) < 1e-9 ? 'sobre' : v.od < R ? 'dentro' : 'fuera';
+      return [{ v: 'c-o', t: '∠B' }, ' + ', { v: 'c-i', t: '∠D' }, ` = ${f(s, 0)}°${sep}D ${donde}, OD = ${f(v.od)}`];
+    },
+  };
+
   return {
     unidad: 'geometria.circunferencia',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -580,6 +731,9 @@
       pregunta: '¿Qué cambia si el vértice sale de la circunferencia?',
       fuente: { titulo: 'Euclides, Elementos III.20 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookIII/propIII20.html' },
     },
+    // Laboratorio: dos circunferencias con radios libres, el arco libre con P suelto y el cuadrilátero con D libre son
+    // más ricos que sus ideas (más controles y los casos borde que las ideas no dejan probar).
+    laboratorio: [mesaDos, mesaInscrito, mesaCiclico],
     ideas: [tangentes, posiciones, inscrito, intExt, pitot, ciclico],
   };
 });

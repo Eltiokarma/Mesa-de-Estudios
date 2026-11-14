@@ -33,6 +33,10 @@
     r.de = l => l[Math.floor(r() * l.length)];
     return r;
   }
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura; aPlano la vuelve coordenadas del
+  // problema y el lector ajusta cada valor al paso y al rango de su control.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const alPlano = (datos, pt) => G.aPlano(datos, pt);
   function opciones(correcta, distractores, fmt, n = 4) {
     const vistos = new Set([fmt(correcta)]);
     const ops = [{ id: 'c', texto: fmt(correcta), correcta: true }];
@@ -89,7 +93,11 @@
       voz: 'Para cada ángulo, cuenta cuántos triángulos puedes armar.',
       controles: [{ id: 't', etiqueta: '∠A', min: 20, max: 150, paso: 10, inicio: 60, unidad: '°', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: armado(v.t), estado: {} }),
-      lectura: v => [{ v: 'c-h', t: 'BC' }, ` = ${f(U.dist(U.polar([0, 0], 5, v.t), [7, 0]))} · un solo triángulo`],
+      // Se agarra la punta C del lado AC: gira alrededor de A con el lado de 5 fijo.
+      arrastres: [{ id: 'vertice-c', etiqueta: 'vértice C', color: 'c-o',
+        donde: v => enPantalla(armado(v.t), U.polar([0, 0], 5, v.t)),
+        mover: (pt, v) => { const q = alPlano(armado(v.t), pt); return { t: U.grados(Math.atan2(Math.max(q[1], 0), q[0])) }; } }],
+      lectura: v => [{ v: 'c-h', t: 'BC' }, ` = ${f(U.dist(U.polar([0, 0], 5, v.t), [7, 0]))}   ·   un solo triángulo`],
       minimo: 3,
     },
     predice: {
@@ -104,12 +112,14 @@
       revelar: { datos: lla({}), estado: {} },
       coincide: 'Coincide: el compás de radio 5 corta dos veces. LLA no fija el triángulo.',
     },
+    // Hallazgo 9: «Mira» usa el dibujo de la predicción (LLA con el compás), no el del juego (LAL): explica el caso que
+    // el alumno acaba de predecir. El juego ya mostró que con el ángulo entre los lados sale un solo triángulo.
     mira: {
       datos: lla({ compas: 1, c: 2 }),
       voz: 'Usa el compás como lo haría con lápiz y papel.',
       pasos: [
         { estado: { corte: 1 }, texto: 'C está a 5 de B: en la circunferencia de centro B.', ecuacion: ['BC = 5'] },
-        { estado: { corte: 2 }, texto: 'La circunferencia corta al lado de A en dos puntos.', ecuacion: [`A${'C'}₁ ≈ ${f(t1)} · A${'C'}₂ ≈ ${f(t2)}`] },
+        { estado: { corte: 2 }, texto: 'La circunferencia corta al lado de A en dos puntos.', ecuacion: [`A${'C'}₁ ≈ ${f(t1)}`, '   ·   ', `A${'C'}₂ ≈ ${f(t2)}`] },
         { estado: { corte: 2 }, texto: 'Dos triángulos distintos con los mismos datos: LLA no es criterio.', ecuacion: ['△ABC₁ ≠ △ABC₂'] },
       ],
     },
@@ -178,7 +188,11 @@
         { id: 'y', etiqueta: 'P a lo alto', min: -3, max: 4, paso: 1, inicio: 2, unidad: '', decimales: 0 },
       ],
       dibujo: v => ({ datos: mediatriz(v.dx, v.y), estado: {} }),
-      lectura: v => [PA, ` = ${f(U.dist([v.dx, v.y], [-3, 0]))} · `, PB, ` = ${f(U.dist([v.dx, v.y], [3, 0]))}`],
+      // Se agarra el punto P: se mueve a los lados y a lo alto.
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P', color: 'c-h',
+        donde: v => enPantalla(mediatriz(v.dx, v.y), [v.dx, v.y]),
+        mover: (pt, v) => { const q = alPlano(mediatriz(v.dx, v.y), pt); return { dx: q[0], y: q[1] }; } }],
+      lectura: v => [PA, ` = ${f(U.dist([v.dx, v.y], [-3, 0]))}   ·   `, PB, ` = ${f(U.dist([v.dx, v.y], [3, 0]))}`],
       minimo: 4,
     },
     predice: {
@@ -194,18 +208,20 @@
       revelar: { datos: bisec({ d1: '2,5', d2: '2,5' }), estado: {} },
       coincide: 'Coincide: los dos triángulos OHP y OKP son congruentes.',
     },
+    // Hallazgo 9: el juego mueve P junto a la mediatriz y «Mira» prueba el caso de la bisectriz, el de la predicción. Son
+    // dos lugares distintos de la misma idea (equidistar); la mediatriz ya quedó vista al jugar.
     mira: {
       datos: bisec({ d1: 'PH', d2: 'PK', pasos: { op: 1, d2: 2 } }),
       voz: 'Compara los dos triángulos rectángulos pieza por pieza.',
       pasos: [
         { estado: { corte: 1 }, texto: 'OHP y OKP comparten la hipotenusa OP.', ecuacion: ['OP común'] },
-        { estado: { corte: 2 }, texto: 'Tienen un ángulo recto y la mitad del ángulo O.', ecuacion: ['∠H = ∠K = 90° · ∠HOP = ∠KOP'] },
+        { estado: { corte: 2 }, texto: 'Tienen un ángulo recto y la mitad del ángulo O.', ecuacion: ['∠H = ∠K = 90°', '   ·   ', '∠HOP = ∠KOP'] },
         { estado: { corte: 2 }, texto: 'Por ALA son congruentes: los lados opuestos al ángulo igual coinciden.', ecuacion: [{ v: 'c-o', t: 'PH' }, ' = ', { v: 'c-i', t: 'PK' }] },
       ],
     },
     regla: {
       texto: 'Un punto de la mediatriz de AB equidista de A y de B. Un punto de la bisectriz de un ángulo equidista de sus dos lados.',
-      ecuacion: [PA, ' = ', PB, '   ·   ', { v: 'c-o', t: 'PH' }, ' = ', { v: 'c-i', t: 'PK' }],
+      ecuacion: [{ llave: [PA, ' = ', PB], nota: 'en la mediatriz', color: 'c-o' }, '   ·   ', { llave: [{ v: 'c-o', t: 'PH' }, ' = ', { v: 'c-i', t: 'PK' }], nota: 'en la bisectriz', color: 'c-i' }],
       condicion: 'la distancia a un lado se mide en perpendicular. Y al revés: quien equidista está en la mediatriz o en la bisectriz.',
       voz: 'Equidistar se mide con perpendiculares, no a ojo.',
     },
@@ -263,7 +279,11 @@
         { id: 'ay', etiqueta: 'A a lo alto', min: 2, max: 5, paso: 1, inicio: 4, unidad: '', decimales: 0 },
       ],
       dibujo: v => ({ datos: base(v.ax, v.ay, { paralela: true }), estado: {} }),
-      lectura: v => [{ v: 'c-o', t: 'MN' }, ' = 4 · ', { v: 'c-d', t: 'BC' }, ' = 8 · paralelas'],
+      // Se agarra el vértice A: M y N lo siguen, la base BC no se mueve.
+      arrastres: [{ id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
+        donde: v => enPantalla(base(v.ax, v.ay, { paralela: true }), [v.ax, v.ay]),
+        mover: (pt, v) => { const q = alPlano(base(v.ax, v.ay, { paralela: true }), pt); return { ax: q[0], ay: q[1] }; } }],
+      lectura: v => [{ v: 'c-o', t: 'MN' }, ' = 4   ·   ', { v: 'c-d', t: 'BC' }, ' = 8   ·   paralelas'],
       minimo: 3,
     },
     predice: {
@@ -290,7 +310,7 @@
     },
     regla: {
       texto: 'El segmento que une los puntos medios de dos lados es paralelo al tercero y mide su mitad. La paralela por un punto medio llega al otro punto medio.',
-      ecuacion: [{ v: 'c-o', t: 'MN' }, ' = ', { frac: [{ v: 'c-d', t: 'BC' }, '2'] }, '   ·   MN ∥ BC'],
+      ecuacion: [{ llave: [{ v: 'c-o', t: 'MN' }], nota: 'base media', color: 'c-o' }, ' = ', { frac: [{ v: 'c-d', t: 'BC' }, '2'] }, '   ·   ', 'MN ∥ BC'],
       condicion: 'M y N son puntos medios de dos lados del mismo triángulo; MN se compara con el tercer lado.',
       voz: 'La prueba usa congruencia. El dibujo solo la sugiere.',
     },
@@ -357,7 +377,11 @@
       voz: 'Corre C por el arco. Comprueba qué medidas permanecen.',
       controles: [{ id: 'fi', etiqueta: 'C en el arco', min: 20, max: 160, paso: 20, inicio: 60, unidad: '°', decimales: 0 }],
       dibujo: v => ({ datos: semi(v.fi), estado: {} }),
-      lectura: v => [{ v: 'c-o', t: '∠C' }, ` = 90° · `, { v: 'c-h', t: 'CM' }, ' = 5'],
+      // Se agarra el vértice C: corre por el arco, nunca fuera de él.
+      arrastres: [{ id: 'vertice-c', etiqueta: 'vértice C en el arco', color: 'c-o',
+        donde: v => enPantalla(semi(v.fi), U.polar([0, 0], 5, v.fi)),
+        mover: (pt, v) => { const q = alPlano(semi(v.fi), pt); return { fi: U.grados(Math.atan2(Math.max(q[1], 0), q[0])) }; } }],
+      lectura: v => [{ v: 'c-o', t: '∠C' }, ` = 90°   ·   `, { v: 'c-h', t: 'CM' }, ' = 5'],
       minimo: 3,
     },
     predice: {
@@ -377,13 +401,13 @@
       voz: 'Completa el rectángulo: la prueba sale de sus diagonales.',
       pasos: [
         { estado: { corte: 1 }, texto: 'Completamos el rectángulo ACBD con el ángulo recto en C.', ecuacion: ['ACBD rectángulo'] },
-        { estado: { corte: 2 }, texto: 'Sus diagonales son iguales y se cortan en su punto medio M.', ecuacion: ['CD = AB · M punto medio de ambas'] },
+        { estado: { corte: 2 }, texto: 'Sus diagonales son iguales y se cortan en su punto medio M.', ecuacion: ['CD = AB', '   ·   ', 'M punto medio de ambas'] },
         { estado: { corte: 3 }, texto: 'Por eso MC = MA = MB: C está en la circunferencia de diámetro AB.', ecuacion: [{ v: 'c-h', t: 'CM' }, ' = ', { frac: ['AB', '2'] }, ' = 5'] },
       ],
     },
     regla: {
       texto: 'En un triángulo rectángulo, la mediana relativa a la hipotenusa mide la mitad de la hipotenusa.',
-      ecuacion: [{ v: 'c-h', t: 'CM' }, ' = ', { frac: ['AB', '2'] }, ' = MA = MB'],
+      ecuacion: [{ llave: [{ v: 'c-h', t: 'CM' }], nota: 'mediana', color: 'c-h' }, ' = ', { llave: [{ frac: ['AB', '2'] }], nota: 'mitad de AB', color: 'c-h' }, '   ·   ', 'MA = MB = MC'],
       condicion: 'el ángulo en C es recto. Y al revés: si CM es la mitad de AB, el ángulo en C es recto.',
       voz: 'Sin ángulo recto, la igualdad se pierde. Verifícalo siempre.',
     },
@@ -450,6 +474,8 @@
         { id: 'k', etiqueta: 'k', min: 1, max: 4, paso: 1, inicio: 2, unidad: '', decimales: 0, color: 'c-o' },
       ],
       dibujo: v => ({ datos: notable(v.tipo, v.k), estado: {} }),
+      // Sin arrastre: el marco se ajusta a k (el triángulo llena la figura para todo k), así que un vértice no se mueve
+      // en pantalla al cambiar k. Lo que cambia son los rótulos de los lados.
       lectura: v => (v.tipo === '30-60' ? ['lados: k, k√3 y 2k con k = ', `${v.k}`] : ['lados: 3k, 4k y 5k con k = ', `${v.k}`]),
       minimo: 4,
     },
@@ -471,7 +497,7 @@
       voz: 'Copia el triángulo: aparece un cuadrado.',
       pasos: [
         { estado: { corte: 1 }, texto: 'Dos copias del triángulo de 45° forman un cuadrado de lado k.', ecuacion: ['cuadrado de lado k'] },
-        { estado: { corte: 1 }, texto: 'La hipotenusa es la diagonal: por Pitágoras, k√2.', ecuacion: [{ v: 'c-h', t: 'h' }, ' = ', { raiz: ['k² + k²'] }, ' = k√2'] },
+        { estado: { corte: 1 }, texto: 'La hipotenusa es la diagonal: por Pitágoras, k√2.', ecuacion: [{ v: 'c-h', t: 'h' }, ' = ', { raiz: [{ sup: ['k', '2'] }, ' + ', { sup: ['k', '2'] }] }, ' = k√2'] },
         { estado: { corte: 1 }, texto: 'Con hipotenusa 10: k = 10 ÷ √2 = 5√2.', ecuacion: ['k = ', { frac: ['10', '√2'] }, ' = 5√2'] },
       ],
     },
@@ -508,9 +534,104 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 1: el compás LLA con el ángulo A y el lado BC libres. La idea solo deja jugar LAL y
+  // muestra LLA en un caso fijo; aquí se buscan los tres finales: ninguno, uno o dos triángulos.
+  const VLLA = { x: [-3.6, 13], y: [-1, 9.6] };
+  const llaLibre = (g, a) => {
+    const c = Math.cos(U.rad(g)), disc = 49 * c * c - (49 - a * a);
+    const ts = disc < -1e-9 ? [] : [7 * c - Math.sqrt(Math.max(disc, 0)), 7 * c + Math.sqrt(Math.max(disc, 0))].filter(t => t > 1e-6);
+    const sol = [...new Set(ts.map(t => t.toFixed(6)))].map(Number);
+    const L = Math.min(11, 9.4 / Math.sin(U.rad(g)), g > 90 ? 3.4 / Math.abs(c) : Infinity), R = U.polar([0, 0], L, g);
+    const Cs = sol.map(t => U.polar([0, 0], t, g));
+    return {
+      alt: `AB = 7, ángulo A de ${g}° y BC = ${f(a)}: ${sol.length === 0 ? 'el compás no alcanza el lado, no hay triángulo' : sol.length === 1 ? 'un solo triángulo' : 'dos triángulos distintos'}`,
+      vista: VLLA,
+      puntos: [{ id: 'A', x: 0, y: 0, rotulo: 'A', lado: -120 }, { id: 'B', x: 7, y: 0, rotulo: 'B', lado: -60 }, { id: 'R', x: R[0], y: R[1], sinPunto: true },
+        ...Cs.map((C, i) => ({ id: `C${i}`, x: C[0], y: C[1], rotulo: Cs.length > 1 ? `C${'₁₂'[i]}` : 'C', color: 'h', lado: g + 90 }))],
+      circulos: [{ centro: 'B', r: a, color: 'i', discontinua: true }],
+      segmentos: [{ de: 'A', a: 'B', texto: '7', color: 'd', grosor: 'variable' }, { de: 'A', a: 'R', grosor: 'fino' },
+        ...Cs.map((C, i) => ({ de: 'B', a: `C${i}`, color: 'i', grosor: 'variable' }))],
+      regiones: Cs.map((C, i) => ({ puntos: ['A', 'B', `C${i}`], color: i ? 'h' : 'i', opacidad: 0.08 })),
+      angulos: [{ en: 'A', de: 'B', a: 'R', color: 'o', texto: `${g}°` }],
+    };
+  };
+  const cuantos = (g, a) => llaLibre(g, a).puntos.length - 3;
+  const mesaLLA = {
+    id: 'compas-lla', titulo: 'El compás de LLA', pieza: 'geo-figura',
+    consigna: 'Gira el lado de A y abre el compás en B. Busca cero, uno y dos triángulos con los mismos datos.',
+    controles: [
+      { id: 'g', etiqueta: '∠A', min: 20, max: 120, paso: 5, inicio: 40, unidad: '°', decimales: 0, color: 'c-o' },
+      { id: 'a', etiqueta: 'BC', min: 2, max: 9, paso: 0.5, inicio: 5, unidad: '', decimales: 1, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: llaLibre(v.g, v.a), estado: {} }),
+    arrastres: [
+      // Se agarra el lado que sale de A (a 5 del vértice): gira y cambia ∠A.
+      { id: 'lado-a', etiqueta: 'lado que sale de A', color: 'c-o',
+        donde: v => enPantalla(llaLibre(v.g, v.a), U.polar([0, 0], 5, v.g)),
+        mover: (pt, v) => { const q = alPlano(llaLibre(v.g, v.a), pt); return { g: U.grados(Math.atan2(Math.max(q[1], 0.01), q[0])) }; } },
+      // Se agarra el compás por su punto más alto: alejarlo de B lo abre.
+      { id: 'compas', etiqueta: 'abertura del compás', color: 'c-i',
+        donde: v => enPantalla(llaLibre(v.g, v.a), [7, v.a]),
+        mover: (pt, v) => { const q = alPlano(llaLibre(v.g, v.a), pt); return { a: Math.hypot(q[0] - 7, q[1]) }; } },
+    ],
+    lectura: v => {
+      const n = cuantos(v.g, v.a);
+      return [{ v: 'c-o', t: '∠A' }, ` ${v.g}°   ·   `, { v: 'c-i', t: 'BC' }, ` ${f(v.a)}   ·   ${['ningún triángulo', 'un triángulo', 'dos triángulos'][n]}`];
+    },
+  };
+  // Mesa 2: C libre dentro y fuera del círculo. La idea 4 deja a C en el arco; la predicción lo mete adentro una vez.
+  const semiLibre = (cx, cy) => Object.assign(semi(0, { C: [cx, cy], alt: `C en (${f(cx)}; ${f(cy)}): ángulo en C de ${f(U.angulo([cx, cy], [-5, 0], [5, 0]), 0)}° y mediana CM de ${f(Math.hypot(cx, cy))}` }), { vista: { x: [-5.8, 5.8], y: [-1.6, 7.6] } });
+  const mesaSemi = {
+    id: 'c-libre', titulo: 'C dentro y fuera del círculo', pieza: 'geo-figura',
+    consigna: 'Arrastra C a cualquier lugar. Compara el ángulo en C con la mediana CM: ¿cuándo vale 5?',
+    controles: [
+      { id: 'cx', etiqueta: 'C a lo ancho', min: -4.5, max: 4.5, paso: 0.5, inicio: 3, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'cy', etiqueta: 'C a lo alto', min: 0.5, max: 7, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-o' },
+    ],
+    dibujo: v => ({ datos: semiLibre(v.cx, v.cy), estado: {} }),
+    // Se agarra C: puede entrar o salir del círculo.
+    arrastres: [{ id: 'vertice-c', etiqueta: 'vértice C', color: 'c-o',
+      donde: v => enPantalla(semiLibre(v.cx, v.cy), [v.cx, v.cy]),
+      mover: (pt, v) => { const q = alPlano(semiLibre(v.cx, v.cy), pt); return { cx: q[0], cy: q[1] }; } }],
+    lectura: v => [{ v: 'c-o', t: '∠C' }, ` ${f(U.angulo([v.cx, v.cy], [-5, 0], [5, 0]), 0)}°   ·   `, { v: 'c-h', t: 'CM' }, ` ${f(Math.hypot(v.cx, v.cy))}   ·   AB/2 = 5`],
+  };
+  // Mesa 3: la base media con la base BC que también cambia (la idea la deja fija en 8) y A en un rango más amplio.
+  const baseLibre = (ax, ay, cx) => {
+    const A = [ax, ay], M = U.medio(A, [0, 0]), N = U.medio(A, [cx, 0]);
+    return {
+      alt: `M y N, puntos medios de AB y AC: MN mide ${f(cx / 2)}, la mitad de BC = ${f(cx)}`,
+      vista: { x: [-3.4, 12.4], y: [-0.8, 6.4] },
+      puntos: [{ id: 'A', x: ax, y: ay, rotulo: 'A', lado: 90 }, { id: 'B', x: 0, y: 0, rotulo: 'B', lado: -120 }, { id: 'C', x: cx, y: 0, rotulo: 'C', lado: -60 },
+        { id: 'M', x: M[0], y: M[1], rotulo: 'M', lado: 160 }, { id: 'N', x: N[0], y: N[1], rotulo: 'N', lado: 20 }],
+      regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', opacidad: 0.06 }],
+      segmentos: [{ de: 'A', a: 'M', marcas: 1 }, { de: 'M', a: 'B', marcas: 1 }, { de: 'A', a: 'N', marcas: 2 }, { de: 'N', a: 'C', marcas: 2 },
+        { de: 'B', a: 'C', color: 'd', grosor: 'variable', texto: f(cx), paralela: 1 }, { de: 'M', a: 'N', color: 'o', grosor: 'variable', texto: f(cx / 2), paralela: 1 }],
+    };
+  };
+  const mesaBase = {
+    id: 'base-libre', titulo: 'Base media con base libre', pieza: 'geo-figura',
+    consigna: 'Arrastra A y también C. Estira la base y deforma el triángulo: mira qué fracción de BC es MN.',
+    controles: [
+      { id: 'ax', etiqueta: 'A a lo ancho', min: -3, max: 12, paso: 0.5, inicio: 3, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'ay', etiqueta: 'A a lo alto', min: 1, max: 6, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'cx', etiqueta: 'BC', min: 2, max: 12, paso: 1, inicio: 8, unidad: '', decimales: 0, color: 'c-d' },
+    ],
+    dibujo: v => ({ datos: baseLibre(v.ax, v.ay, v.cx), estado: {} }),
+    arrastres: [
+      { id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
+        donde: v => enPantalla(baseLibre(v.ax, v.ay, v.cx), [v.ax, v.ay]),
+        mover: (pt, v) => { const q = alPlano(baseLibre(v.ax, v.ay, v.cx), pt); return { ax: q[0], ay: q[1] }; } },
+      { id: 'vertice-c', etiqueta: 'vértice C', color: 'c-d',
+        donde: v => enPantalla(baseLibre(v.ax, v.ay, v.cx), [v.cx, 0]),
+        mover: (pt, v) => ({ cx: alPlano(baseLibre(v.ax, v.ay, v.cx), pt)[0] }) },
+    ],
+    lectura: v => [{ v: 'c-o', t: 'MN' }, ` = ${f(v.cx / 2)}   ·   `, { v: 'c-d', t: 'BC' }, ` = ${f(v.cx)}   ·   paralelas`],
+  };
+
   return {
     unidad: 'geometria.congruencia',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -518,6 +639,9 @@
       pregunta: '¿Qué datos bastan para que no haya dos triángulos distintos?',
       fuente: { titulo: 'Euclides, Elementos I.4 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookI/propI4.html' },
     },
+    // Laboratorio: las tres mesas son más ricas que sus ideas: LLA con el ángulo y el compás libres, C fuera del arco y
+    // la base media con la base que se estira.
+    laboratorio: [mesaLLA, mesaSemi, mesaBase],
     ideas: [criterios, lugares, baseMedia, medianaHip, notables],
   };
 });

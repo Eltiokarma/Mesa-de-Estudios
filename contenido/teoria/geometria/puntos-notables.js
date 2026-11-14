@@ -46,6 +46,10 @@
     return ops.slice(0, n);
   }
   const pt = (id, p, o = {}) => Object.assign({ id, x: p[0], y: p[1] }, o);
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura; aPlano la vuelve coordenadas del
+  // problema y el lector ajusta cada valor al paso y al rango de su control.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const alPlano = (datos, p) => G.aPlano(datos, p);
   const B = [0, 0], C = [6, 0];
   // Centros del triángulo ABC (B y C fijos).
   const centros = A => {
@@ -77,6 +81,10 @@
         { de: 'B', a: 'Mb', grosor: 'fino' }, { de: 'C', a: 'Mc', grosor: 'fino' }, { de: 'B', a: 'Ma', marcas: 1 }, { de: 'Ma', a: 'C', marcas: 1 }],
     };
   };
+  // Manija del vértice A para las figuras que dependen de (ax, ay).
+  const arrastreA = dib => ({ id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
+    donde: v => enPantalla(dib(v.ax, v.ay), [v.ax, v.ay]),
+    mover: (p, v) => { const q = alPlano(dib(v.ax, v.ay), p); return { ax: q[0], ay: q[1] }; } });
   const baricentro = {
     id: 'baricentro',
     titulo: 'El baricentro parte en 2 : 1',
@@ -90,7 +98,9 @@
         { id: 'ay', etiqueta: 'A a lo alto', min: 2, max: 5, paso: 1, inicio: 4, unidad: '', decimales: 0, color: 'c-o' },
       ],
       dibujo: v => ({ datos: bari([v.ax, v.ay]), estado: {} }),
-      lectura: v => { const A = [v.ax, v.ay], g = centros(A).G, M = U.medio(B, C); return [{ v: 'c-o', t: 'AG' }, ` = ${f(U.dist(A, g))} · `, { v: 'c-i', t: 'GM' }, ` = ${f(U.dist(g, M))} · razón 2 : 1`]; },
+      // Se agarra el vértice A: las medianas y G lo siguen; la base BC no se mueve.
+      arrastres: [arrastreA((ax, ay) => bari([ax, ay]))],
+      lectura: v => { const A = [v.ax, v.ay], g = centros(A).G, M = U.medio(B, C); return [{ v: 'c-o', t: 'AG' }, ` = ${f(U.dist(A, g))}   ·   `, { v: 'c-i', t: 'GM' }, ` = ${f(U.dist(g, M))}   ·   razón 2 : 1`]; },
       minimo: 4,
     },
     predice: {
@@ -116,7 +126,7 @@
     },
     regla: {
       texto: 'El baricentro G es el corte de las medianas. Las divide en razón 2 : 1 desde el vértice, y las tres medianas forman seis triángulos de igual área.',
-      ecuacion: [{ v: 'c-o', t: 'AG' }, ' = 2 · ', { v: 'c-i', t: 'GM' }, ' = ', { frac: ['2', '3'] }, ' AM'],
+      ecuacion: [{ llave: [{ v: 'c-o', t: 'AG' }], nota: 'tramo largo', color: 'c-o' }, ' = 2 · ', { llave: [{ v: 'c-i', t: 'GM' }], nota: 'tramo corto', color: 'c-i' }, '   ·   ', { v: 'c-o', t: 'AG' }, ' = ', { frac: ['2', '3'] }, ' AM'],
       condicion: 'M es el punto medio del lado opuesto a A. Vale para cualquier triángulo: G siempre queda dentro.',
       voz: 'Dos tercios desde el vértice, uno hasta el lado.',
     },
@@ -204,7 +214,11 @@
         { id: 'ax', etiqueta: 'A a lo ancho', min: -1, max: 7, paso: 1, inicio: 2, unidad: '', decimales: 0, color: 'c-o' },
       ],
       dibujo: v => ({ datos: centroFig([v.ax + 0.5, 3.4], v.c), estado: {} }),
-      lectura: v => { const A = [v.ax + 0.5, 3.4], P = centros(A)[v.c]; return [`${tipo(A)} · ${NOMBRE[v.c]} ${dentro(P, A) ? 'dentro' : 'fuera'}`]; },
+      // Se agarra el vértice A, que corre en una paralela a BC (altura fija 3,4).
+      arrastres: [{ id: 'vertice-a', etiqueta: 'vértice A', color: 'c-o',
+        donde: v => enPantalla(centroFig([v.ax + 0.5, 3.4], v.c), [v.ax + 0.5, 3.4]),
+        mover: (p, v) => ({ ax: alPlano(centroFig([v.ax + 0.5, 3.4], v.c), p)[0] - 0.5 }) }],
+      lectura: v => { const A = [v.ax + 0.5, 3.4], P = centros(A)[v.c]; return [`${tipo(A)}   ·   ${NOMBRE[v.c]} ${dentro(P, A) ? 'dentro' : 'fuera'}`]; },
       minimo: 5,
     },
     predice: {
@@ -220,6 +234,8 @@
       revelar: { datos: recto({ marcas: true }), estado: {} },
       coincide: 'Coincide: O es el punto medio de la hipotenusa y H, el vértice recto.',
     },
+    // Hallazgo 9: «Mira» usa el triángulo rectángulo de la predicción, no el del juego: es el caso frontera (O y H en
+    // el borde) que el juego no alcanza, porque A corre a una altura fija y nunca forma 90° justos en B.
     mira: {
       datos: recto({ marcas: true, pasos: { o: 2, circ: 3 } }),
       voz: 'Cada centro se ubica por sus líneas, una por una.',
@@ -286,7 +302,9 @@
         { id: 'ay', etiqueta: 'A a lo alto', min: 3.5, max: 5, paso: 0.5, inicio: 4.5, unidad: '', decimales: 1, color: 'c-o' },
       ],
       dibujo: v => ({ datos: euler([v.ax, v.ay]), estado: {} }),
-      lectura: v => { const c = centros([v.ax, v.ay]); return [{ v: 'c-i', t: 'OG' }, ` = ${f(U.dist(c.O, c.G))} · `, { v: 'c-h', t: 'GH' }, ` = ${f(U.dist(c.G, c.H))}`]; },
+      // Se agarra el vértice A: O, G y H se mueven y siguen alineados.
+      arrastres: [arrastreA((ax, ay) => euler([ax, ay]))],
+      lectura: v => { const c = centros([v.ax, v.ay]); return [{ v: 'c-i', t: 'OG' }, ` = ${f(U.dist(c.O, c.G))}   ·   `, { v: 'c-h', t: 'GH' }, ` = ${f(U.dist(c.G, c.H))}`]; },
       minimo: 4,
     },
     predice: {
@@ -309,12 +327,12 @@
         { estado: { corte: 1 }, texto: 'O, G y H están alineados, con GH el doble de OG.', ecuacion: [{ v: 'c-h', t: 'GH' }, ' = 2 · ', { v: 'c-i', t: 'OG' }] },
         { estado: { corte: 2 }, texto: 'Los tres puntos medios de los lados…', ecuacion: ['M, M, M'] },
         { estado: { corte: 3 }, texto: '…los tres pies de las alturas…', ecuacion: ['F, F, F'] },
-        { estado: { corte: 4 }, texto: '…y los puntos medios de AH, BH y CH: una circunferencia.', ecuacion: ['centro N = punto medio de OH · radio = ', { frac: ['R', '2'] }] },
+        { estado: { corte: 4 }, texto: '…y los puntos medios de AH, BH y CH: una circunferencia.', ecuacion: ['centro N = punto medio de OH', '   ·   ', 'radio = ', { frac: ['R', '2'] }] },
       ],
     },
     regla: {
       texto: 'O, G y H están alineados (recta de Euler), con GH = 2 · OG. El círculo de nueve puntos tiene centro en el medio de OH y radio R/2.',
-      ecuacion: [{ v: 'c-h', t: 'GH' }, ' = 2 · ', { v: 'c-i', t: 'OG' }, '   ·   r₉ = ', { frac: ['R', '2'] }],
+      ecuacion: [{ v: 'c-h', t: 'GH' }, ' = 2 · ', { v: 'c-i', t: 'OG' }, '   ·   ', { llave: ['r₉'], nota: 'nueve puntos', color: 'c-d' }, ' = ', { llave: [{ frac: ['R', '2'] }], nota: 'mitad de R', color: 'c-d' }],
       condicion: 'el triángulo no es equilátero: en él los tres centros coinciden y no hay recta. R es el radio de la circunscrita.',
       voz: 'Tres puntos alineados, en razón 1 : 2. Comprueba el orden O, G, H.',
     },
@@ -353,9 +371,71 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 2: los cuatro centros a la vez, con A libre en el plano (la idea lo deja a altura fija y
+  // muestra un centro por vez). Deja buscar el rectángulo exacto, el isósceles con los centros alineados y el equilátero.
+  const VCU = { x: [-3.4, 9.4], y: [-3.6, 7.4] };
+  const cuatro = (ax, ay, circ) => {
+    const A = [ax, ay], c = centros(A), fuera = ['O', 'H'].filter(k => !dentro(c[k], A));
+    const lejos = p => p[0] < VCU.x[0] || p[0] > VCU.x[1] || p[1] < VCU.y[0] || p[1] > VCU.y[1];
+    return {
+      alt: `Triángulo ${tipo(A)}: baricentro e incentro dentro; circuncentro y ortocentro ${fuera.length ? `con ${fuera.map(k => NOMBRE[k]).join(' y ')} fuera` : 'dentro'}`,
+      vista: VCU,
+      puntos: [pt('A', A, { rotulo: 'A', lado: 90 }), pt('B', B, { rotulo: 'B', lado: -120 }), pt('C', C, { rotulo: 'C', lado: -60 }),
+        ...['O', 'H', 'G', 'I'].filter(k => !lejos(c[k])).map(k => pt(k, c[k], { rotulo: k, color: { O: 'i', H: 'h', G: 'o', I: 'd' }[k], lado: { O: -30, H: 150, G: 30, I: -150 }[k] }))],
+      regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', opacidad: 0.08 }],
+      circulos: circ === 'O' ? [{ centro: c.O, r: c.R, color: 'i', discontinua: true }] : circ === 'I' ? [{ centro: c.I, r: c.r, color: 'd' }] : [],
+      segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }],
+    };
+  };
+  const mesaCuatro = {
+    id: 'cuatro-centros', titulo: 'Los cuatro centros juntos', pieza: 'geo-figura',
+    consigna: 'Arrastra A por todo el plano. Mira qué centros salen y cuándo se juntan. Elige qué circunferencia ver.',
+    controles: [
+      { id: 'ax', etiqueta: 'A a lo ancho', min: -2, max: 8, paso: 0.5, inicio: 1.5, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'ay', etiqueta: 'A a lo alto', min: 1, max: 6, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'circ', etiqueta: 'Circunferencia', opciones: [{ valor: 'no', texto: 'ninguna' }, { valor: 'O', texto: 'circunscrita' }, { valor: 'I', texto: 'inscrita' }] },
+    ],
+    dibujo: v => ({ datos: cuatro(v.ax, v.ay, v.circ), estado: {} }),
+    arrastres: [arrastreA((ax, ay) => cuatro(ax, ay, 'no'))],
+    lectura: v => {
+      const A = [v.ax, v.ay], c = centros(A), fuera = ['O', 'H'].filter(k => !dentro(c[k], A));
+      return [`${tipo(A)}   ·   fuera: ${fuera.length ? fuera.join(' y ') : 'ninguno'}`];
+    },
+  };
+  // Mesa 2, más rica que la idea 3: la circunferencia de nueve puntos siempre a la vista y A en un rango más amplio
+  // (también obtusángulos, donde H sale del triángulo y la recta sigue).
+  const mesaEuler = {
+    id: 'euler-libre', titulo: 'Euler con nueve puntos', pieza: 'geo-figura',
+    consigna: 'Arrastra A, también hasta un obtusángulo. Comprueba que O, G y H siguen en línea y el radio, R/2.',
+    controles: [
+      { id: 'ax', etiqueta: 'A a lo ancho', min: -1, max: 7, paso: 0.5, inicio: 1.5, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'ay', etiqueta: 'A a lo alto', min: 2, max: 6, paso: 0.5, inicio: 4.5, unidad: '', decimales: 1, color: 'c-o' },
+    ],
+    dibujo: v => ({ datos: Object.assign(euler([v.ax, v.ay], { nueve: true }), { vista: { x: [-2.4, 8.4], y: [-3.4, 6.8] } }), estado: {} }),
+    arrastres: [arrastreA((ax, ay) => Object.assign(euler([ax, ay], { nueve: true }), { vista: { x: [-2.4, 8.4], y: [-3.4, 6.8] } }))],
+    lectura: v => {
+      const c = centros([v.ax, v.ay]), og = U.dist(c.O, c.G);
+      return [{ v: 'c-h', t: 'GH' }, ` : `, { v: 'c-i', t: 'OG' }, ` = ${og < 1e-6 ? '—' : f(U.dist(c.G, c.H) / og)}   ·   R/2 = ${f(c.R / 2)}`];
+    },
+  };
+  // Mesa 3: las seis áreas del baricentro, que la idea 1 reserva para la predicción, con A libre y el área en vivo.
+  const seisLibre = (ax, ay) => bari([ax, ay], { seis: true, alt: `Las medianas parten el triángulo en seis de área ${f(Math.abs(U.area([[ax, ay], B, C])) / 6)} cada uno` });
+  const mesaSeis = {
+    id: 'seis-areas', titulo: 'Seis triangulitos del baricentro', pieza: 'geo-figura',
+    consigna: 'Arrastra A y deforma el triángulo. Mira el área de cada uno de los seis triangulitos.',
+    controles: [
+      { id: 'ax', etiqueta: 'A a lo ancho', min: -1, max: 7, paso: 0.5, inicio: 1, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'ay', etiqueta: 'A a lo alto', min: 1, max: 5, paso: 0.5, inicio: 4.5, unidad: '', decimales: 1, color: 'c-o' },
+    ],
+    dibujo: v => ({ datos: seisLibre(v.ax, v.ay), estado: {} }),
+    arrastres: [arrastreA(seisLibre)],
+    lectura: v => { const S = Math.abs(U.area([[v.ax, v.ay], B, C])); return [`área ${f(S)}   ·   cada uno ${f(S / 6)}`]; },
+  };
+
   return {
     unidad: 'geometria.puntos-notables',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -363,6 +443,9 @@
       pregunta: '¿Qué tienen en común nueve puntos tan distintos?',
       fuente: { titulo: 'K. S. Kedlaya, Geometry Unbound, cap. 7', url: 'https://kskedlaya.org/geometryunbound/gu-060118.pdf' },
     },
+    // Laboratorio: los cuatro centros juntos con A libre, Euler con los nueve puntos y obtusángulos, y las seis áreas
+    // del baricentro: las tres son más ricas que sus ideas.
+    laboratorio: [mesaCuatro, mesaEuler, mesaSeis],
     ideas: [baricentro, centrosIdea, eulerIdea],
   };
 });
