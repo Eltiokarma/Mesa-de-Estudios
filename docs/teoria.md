@@ -90,6 +90,7 @@ Se copia la forma de `contenido/teoria/fisica/movimiento-rectilineo.js`: es la u
   - `{ v: 'c-o', t: 'v' }` (variable con su color);
   - `{ frac: [num, den] }`, `{ sup: [base, exp] }`, `{ sub: [base, índice] }`;
   - `{ raiz }`, `{ vec }`, `{ abs }` y `{ par }`.
+  Dos relaciones en una misma ecuación se separan con la parte `'   ·   '` (tres espacios a cada lado): en la regla grande cada una va en su línea.
   Un color por variable en toda la unidad, el mismo en el control, la figura, el texto y la ecuación (regla 4). Los colores de figura de las piezas son los mismos tokens sin `c-` (`'o'`, `'i'`, `'h'`, `'d'`).
 - **Regla 1:** todo número que se ve lo calcula el archivo con código. Ningún resultado se escribe a mano si sale de una cuenta. Los casos de «Ahora tú» salen de `generar(semilla)` y dan al menos 5 casos distintos.
 - **Las opciones incorrectas** llevan `error` (código de la idea errónea, el mismo de `docs/investigacion/` si existe; si no, uno nuevo marcado como hipótesis) y `siFuera`. `siFuera` empieza por lo que el alumno pensó bien y en qué caso sería cierto (regla 10 de `escena-viva.md`). Nunca «Incorrecto», «Elegiste…» ni «La correcta es…».
@@ -161,6 +162,7 @@ Cambia: … · Permanece: … · Progresa: … · Se reserva: … · Debe verse:
 | Razonamiento verbal | Iris, lechuza | Reflexiva, llana y respetuosa: «señala qué frase permite sostenerla» |
 
 - La asignación vive en `Teoria.PERSONAJES` (`nucleo/teoria.js`).
+- Si una idea no trae su `voz`, el compañero dice su línea por defecto (`Teoria.PERSONAJES[curso].voces`, diez por compañero, escritas con su voz de la guía).
 - Cada `voz` del archivo se escribe con la voz del compañero y respeta las reglas de la guía:
   - sin vergüenza ni sarcasmo;
   - el error se trata como «esta relación merece revisión»;
