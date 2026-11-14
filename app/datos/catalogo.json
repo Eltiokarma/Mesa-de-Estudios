@@ -1918,7 +1918,15 @@
      "grado": 3,
      "plantillas": [
       "logica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/logica-proposicional.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.conjuntos",
