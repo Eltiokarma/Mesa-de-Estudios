@@ -219,6 +219,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'cinta-radio', unidad: 'trigonometria.longitud-de-arco-y-sector', version: '0.1.0' };
@@ -1010,6 +1011,9 @@ function explorar(){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de cualquier pregunta, se juega con la figura del paso 1.
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra P y Q: abre el ángulo y cambia el radio.', minimo:2 });
 })();
 </script>
 <script>
@@ -1129,8 +1133,8 @@ function ir(k){
   if (k > primeraLibre()) return;
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k], ya = !!S.pred[x.id];
-  x.antes(ya);
-  E.compactar(!ya);
+  if (jugado) x.antes(ya); else juegoLibre();
+  E.compactar(jugado && !ya);
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -1166,7 +1170,13 @@ function ir(k){
   }
   pintar();
 }
+// Regla 3: antes del primer experimento, juego libre (sin lo que se pregunta después).
+let jugado = false;
+function juegoLibre(){ E.config({ modo:'circulo', th:rad(50), r:4, arr:{ th:true, r:true }, lect:['th','r'], rot:{ L:'L', th:'θ' } }); }
 ir(0);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra P y Q: abre el ángulo y cambia el radio.', minimo:2,
+  alListo:() => { jugado = true; ir(S.k); } });
 })();
 </script>
 
