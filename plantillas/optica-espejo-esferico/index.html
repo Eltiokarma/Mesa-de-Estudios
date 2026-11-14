@@ -117,6 +117,8 @@ b.v-o{color:var(--c-o)} b.v-R{color:var(--c-r)} b.v-h{color:var(--c-h)} b.v-i{co
 .slider{display:grid; gap:4px}
 .slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
 .slider output{font-family:var(--mono); color:var(--muted)}
+/* Juego libre antes de preguntar (regla 3): el deslizador del banco se va al pulsar «Ya jugué: seguir». */
+.slider.juego[hidden]{display:none}
 input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
 input.r-o{accent-color:var(--c-o)} input.r-R{accent-color:var(--c-r)}
 .doblez{display:grid; gap:8px}
@@ -172,6 +174,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
   <div id="m1" class="mode">
     <section class="bench" aria-label="Espejo, vela y rayos">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="Espejo esférico con una vela delante, sus puntos F y C, los rayos y la imagen"></canvas></div>
+      <div class="slider juego" id="jg1"><label for="jg1-o"><span>Distancia de la vela</span><output id="jg1-out"></output></label><input id="jg1-o" class="r-o" type="range" min="21" max="42" step="0.5" value="28"></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
       <div class="legend" id="leyenda1">
         <span><i style="background:var(--c-o)"></i>o · distancia del objeto</span>
@@ -199,6 +202,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
   <div id="m2" class="mode" hidden>
     <section class="bench" aria-label="Experimentos con espejos">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="Espejo, objeto, rayos e imagen del experimento elegido"></canvas></div>
+      <div class="slider juego" id="jg2"><label for="jg2-o"><span>Distancia de la vela</span><output id="jg2-out"></output></label><input id="jg2-o" class="r-o" type="range" min="21" max="40" step="0.5" value="30"></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="legend" id="leyenda2"></div>
     </section>
@@ -226,6 +230,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'optica-espejo-esferico', unidad: 'fisica.optica-geometrica', version: '0.2.0' };
@@ -1132,7 +1137,7 @@ Celular.arrastre(cv, {
   mover: p => {
     const [x, y] = L.aModelo(p.x, p.y);
     if (agarra === 'hoja'){ ponerS(MotorEspejo.sMasCercano({ x, y }, DOBLEZ.xHoja, DOBLEZ.yTab)); draw(); }
-    else if (agarra === 'vela'){ S.o = clamp(Math.round(-x*2)/2, 2, 42); vivo(); }
+    else if (agarra === 'vela'){ const [a, b] = limitesO(); S.o = clamp(Math.round(-x*2)/2, a, b); alMoverVela(); }
   },
   soltar: () => { agarra = null; cv.classList.remove('agarrando'); draw(); },
   sobre: on => { S.sobre = on; draw(); },
@@ -1146,7 +1151,7 @@ cv.addEventListener('keydown', e => {
       ponerS(k === 'Home' ? 0 : k === 'End' ? 1 : Math.round((Db.s + d)*20)/20); draw();
     }
   } else if (S.explora && (k === 'ArrowLeft' || k === 'ArrowRight')){
-    e.preventDefault(); S.o = clamp(S.o + (k === 'ArrowLeft' ? 0.5 : -0.5), 2, 42); vivo();
+    e.preventDefault(); const [a, b] = limitesO(); S.o = clamp(S.o + (k === 'ArrowLeft' ? 0.5 : -0.5), a, b); alMoverVela();
   }
 });
 cv.addEventListener('focus', () => { if (hojaActiva()){ S.sobre = true; draw(); } });
@@ -1175,6 +1180,25 @@ alRedibujarTema(draw);
 // Al cambiar de pestaña, las animaciones saltan a su final: nada queda a medias ni traba «Siguiente».
 addEventListener('modo', () => { if ($('m1').hidden) pararTodo(); L.resize(); });
 L.resize(); go(0);
+
+// Regla 3 (decisión 20): antes de preguntar, el alumno juega. Juego libre: el cóncavo del problema (R = 20 cm) con la
+// vela solo más allá de C (21 a 42 cm), con rayos e imagen. El paso 3 pregunta con la vela entre C y F, y el paso 7 el
+// signo de i: el juego no muestra ni esa zona ni el número de i.
+const jg = $('jg1-o');
+function limitesO(){ return S.juego ? [+jg.min, +jg.max] : [2, 42]; }
+function alMoverVela(){
+  if (!S.juego){ vivo(); return; }
+  jg.value = String(S.o); $('jg1-out').textContent = `${fmt(S.o)} cm`; draw(); describir();
+}
+jg.addEventListener('input', () => { S.o = +jg.value; alMoverVela(); });
+S.juego = true; S.explora = true;
+S.show = { obj:true, pts:true, o:true, f:true, R:true, img:true, i:true, iNum:false }; S.rays = [1,1,1]; S.active = -1;
+S.o = +jg.value; ponerLienzo(); alMoverVela();
+JugarPrimero.montar({
+  escena: cv.closest('.bench'), preguntas: [$('m1').querySelector('.guide')],
+  consigna: 'Arrastra la vela y mira cómo cambia su imagen.', minimo: 2,
+  alListo: () => { S.juego = false; $('jg1').hidden = true; go(0); },
+});
 })();
 </script>
 
@@ -1554,6 +1578,7 @@ function leyenda(x, resp){
     : base + `<span><i style="background:var(--c-f)"></i>F · foco</span><span><i style="background:var(--c-r)"></i>C · centro de curvatura</span>`;
 }
 function ponerLienzo(x, resp){
+  if (S.juego){ cv.tabIndex = 0; cv.setAttribute('aria-label', 'Espejo cóncavo, vela y cartulina. Con las flechas izquierda y derecha acercas o alejas la vela; la cartulina se acomoda donde la imagen sale nítida.'); cv.classList.add('arrastrable'); return; }
   const hoja = x.id === 'doblez-convexo' && resp, ojo = x.id === 'ojo' && resp;
   if (hoja){ cv.tabIndex = 0; cv.setAttribute('aria-label', 'La hoja de la luz que sale, doblada sobre la línea del espejo. Con las flechas izquierda y derecha la doblas o la desdoblas; Inicio la abre (lente) y Fin la dobla (espejo).'); }
   else if (ojo){ cv.tabIndex = 0; cv.setAttribute('aria-label', 'Espejo, vela y un ojo. Con las flechas mueves el ojo.'); }
@@ -1571,10 +1596,11 @@ function ir(k){
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k];
   reiniciar(x);
-  ponerVista(x.vista || DOBLEZ.vistaNormal);
+  if (S.juego) estadoJuego();
+  ponerVista(S.juego ? DOBLEZ.vistaNormal : x.vista || DOBLEZ.vistaNormal);
   const resp = S.pred[x.id];
   if (resp){ if (E.dob) terminarDoblez(); else x.despues(); }
-  L.compactar(!resp);
+  L.compactar(!resp && !S.juego);
   botones(); leyenda(x, !!resp); ponerLienzo(x, !!resp);
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -1644,10 +1670,14 @@ function moverOjo(x, y){
 
 /* ---------- Arrastre (nucleo/celular.js): el ojo en «Muevo el ojo» y la pestaña de la hoja en el experimento 5 ---------- */
 let agarra = null;
-const quien = () => { const x = EXPS[S.k]; if (!S.pred[x.id]) return null; return x.id === 'ojo' ? 'ojo' : x.id === 'doblez-convexo' && E.dob ? 'hoja' : null; };
+const quien = () => { if (S.juego) return 'vela'; const x = EXPS[S.k]; if (!S.pred[x.id]) return null; return x.id === 'ojo' ? 'ojo' : x.id === 'doblez-convexo' && E.dob ? 'hoja' : null; };
 function cercaDe(p, r){
   const q = quien();
   if (q === 'ojo') return Math.hypot(p.x - L.X(E.ojo.x), p.y - L.Y(E.ojo.y)) < r ? q : null;
+  if (q === 'vela'){
+    const x = L.X(-E.o), y1 = Math.min(L.Y(E.h), L.Y(0)), y2 = Math.max(L.Y(E.h), L.Y(0)), dy = p.y < y1 ? y1 - p.y : p.y > y2 ? p.y - y2 : 0;
+    return Math.hypot(p.x - x, dy) < r ? q : null;
+  }
   if (q === 'hoja'){ const t = pestanaPx(L, E.dob.s); return !pestanaOculta(L, E.dob.s, E.o, E.h) && Math.hypot(p.x - t.x, p.y - t.y) < r ? q : null; }
   return null;
 }
@@ -1658,6 +1688,7 @@ Celular.arrastre(cv, {
   mover: p => {
     const [x, y] = L.aModelo(p.x, p.y);
     if (agarra === 'ojo') moverOjo(clamp(Math.round(x*2)/2, -43, -6), clamp(Math.round(y*2)/2, -11, 11));
+    else if (agarra === 'vela'){ const jg = $('jg2-o'); jg.value = String(clamp(Math.round(-x*2)/2, +jg.min, +jg.max)); jg.dispatchEvent(new Event('input')); }
     else if (agarra === 'hoja') ponerS(MotorEspejo.sMasCercano({ x, y }, DOBLEZ.xHoja, DOBLEZ.yTab));
   },
   soltar: () => { agarra = null; cv.classList.remove('agarrando'); draw(); },
@@ -1665,6 +1696,10 @@ Celular.arrastre(cv, {
 });
 cv.addEventListener('keydown', e => {
   const q = quien(), k = e.key; if (!q) return;
+  if (q === 'vela'){
+    if (k !== 'ArrowLeft' && k !== 'ArrowRight') return;
+    e.preventDefault(); const jg = $('jg2-o'); jg.value = String(clamp(E.o + (k === 'ArrowLeft' ? 0.5 : -0.5), +jg.min, +jg.max)); jg.dispatchEvent(new Event('input')); return;
+  }
   if (q === 'hoja'){
     const d = k === 'ArrowRight' || k === 'ArrowUp' ? 0.05 : k === 'ArrowLeft' || k === 'ArrowDown' ? -0.05 : null;
     if (d === null && k !== 'Home' && k !== 'End') return;
@@ -1682,7 +1717,23 @@ cv.addEventListener('blur', () => { E.sobre = false; draw(); });
 alRedibujarTema(draw);
 // Al cambiar de pestaña, las animaciones saltan a su final: nada queda a medias.
 addEventListener('modo', () => { if ($('m2').hidden) pararTodo(); L.resize(); });
-L.resize(); ir(0);
+
+// Regla 3 (decisión 20): antes de preguntar, el alumno juega. Juego libre: cóncavo de f = 10 cm, vela solo más allá
+// de C (21 a 40 cm) y una cartulina que se acomoda sola donde la imagen sale nítida. No muestra lo que preguntan los
+// experimentos (mover el ojo, el convexo, quitar la cartulina, cruzar F, el doblez). Se juega una vez al abrir el
+// modo; los experimentos siguientes ya no lo piden.
+const jg = $('jg2-o');
+function estadoJuego(){ Object.assign(E, { f:10, o:+jg.value, h:4, D:20, obj:'vela', ojo:null, rayos:'abanico', pantalla:true, imagen:true, campo:false, dob:null, rec:null }); }
+jg.addEventListener('input', () => { E.o = +jg.value; $('jg2-out').textContent = `${fmt(E.o)} cm`; draw();
+  const r = MotorEspejo.imagen(E.o, E.f, E.h, 0.2);
+  $('desc2').textContent = `Vela a ${fmt(E.o)} cm del espejo cóncavo; la imagen nítida queda en la cartulina, a ${fmt(r.i)} cm.`; });
+S.juego = true;
+L.resize(); ir(0); jg.dispatchEvent(new Event('input'));
+JugarPrimero.montar({
+  escena: cv.closest('.bench'), preguntas: [$('body2')],
+  consigna: 'Arrastra la vela y mira la imagen en la cartulina.', minimo: 2,
+  alListo: () => { S.juego = false; $('jg2').hidden = true; ir(S.k); },
+});
 })();
 </script>
 
