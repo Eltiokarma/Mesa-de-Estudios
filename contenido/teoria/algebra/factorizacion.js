@@ -14,6 +14,13 @@
  * Orden de atención · 1.º la figura (rectángulo de piezas, aspa, gráfica) · 2.º el término que se reconstruye · acción: «Comprobar» · fondo: Nox.
  * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · cuándo una factorización está completa y cómo saber que no cambió el polinomio.
+ *
+ * Ronda 2 (14 nov 2026): gesto directo en «Primero el factor común» (los bordes del rectángulo), «El aspa reconstruye
+ * el centro» (la esquina de afuera) y «Si P(a) = 0, hay factor» (el punto por la curva), con la escala fija de
+ * alg-baldosas. Hallazgo 9: «Mira» del aspa empieza por el rectángulo y lo traduce al aspa; en las otras dos ideas
+ * con dos representaciones, el comentario de la idea dice por qué. Llaves en las reglas, separador «   ·   » y
+ * laboratorio de tres mesas: el aspa con coeficientes (dos esquinas), las raíces que se arrastran por el eje y el
+ * MCD y MCM con seis exponentes. La idea 3 (aspa doble) avanza por pasos y la 5 es una tabla: se quedan con − y +.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -58,13 +65,24 @@
   const fx = r => (r === 0 ? 'x' : r > 0 ? `x − ${r}` : `x + ${-r}`);
   const lin = (m, p) => `${m === 1 ? '' : m}x ${p < 0 ? '−' : '+'} ${Math.abs(p)}`;     // mx + p
   const conPot = (t, e) => (e === 0 ? '' : e === 1 ? `(${t})` : `(${t})${sup(e)}`);
+  // Gesto directo: la manija vive en el viewBox de la pieza (geometria de alg-baldosas o de ejes) y se convierte en
+  // valor con la escala de la pieza; el lector ajusta al paso y al rango del control.
+  const BALD = () => Kit.piezas['alg-baldosas'], EJES = () => Kit.piezas.ejes;
+  const inversa = (escala, p, q) => px => p + (px - escala(p)) * (q - p) / (escala(q) - escala(p));
+  const ESC = 22;   // px por unidad en los juegos de baldosas: el lado mayor llega a 198 px
 
   // ---------- Idea 1: factor común, después identidades ----------
   // Cambia: el número k y el factor común m · Permanece: el rectángulo de alto mx · Progresa: el ancho x + k
   // · Se reserva: la diferencia de cuadrados que todavía se factoriza · Debe verse: la suma es un solo rectángulo.
-  const rectangulo = (m, k) => ({
-    anchos: [{ t: 'x', v: 3, color: 'o' }, { t: String(k), v: k, color: 'i' }],
-    altos: [{ t: m === 1 ? 'x' : `${m}x`, v: 3 * m, color: 'o' }],
+  // Gesto: el alumno estira el rectángulo por sus bordes (k a lo ancho, m a lo alto), con la escala fija.
+  // Dos representaciones a propósito (hallazgo 9): el juego muestra el factor común como alto compartido; la
+  // predicción y «Mira» pasan a la tabla de pasos porque x² − 9 tiene un término negativo, que no es un área.
+  // x mide 2 unidades y la escala es 27 px: cada paso de m baja el borde 54 px y el lado mayor llega a 189 px.
+  const XC = 2, ESC1 = 27;
+  const rectangulo = (m, k, escala) => ({
+    escala,
+    anchos: [{ t: 'x', v: XC, color: 'o' }, { t: String(k), v: k, color: 'i' }],
+    altos: [{ t: m === 1 ? 'x' : `${m}x`, v: XC * m, color: 'o' }],
     celdas: [[{ t: poli([m, 0, 0]), color: 'o' }, { t: poli([m * k, 0]), color: 'i' }]],
     total: { t: `${poli([m, m * k, 0])} = ${m === 1 ? '' : m}x(x + ${k})` },
     alt: `Rectángulo de alto ${m === 1 ? '' : m}x y ancho x + ${k}: sus dos piezas suman ${poli([m, m * k, 0])}`,
@@ -81,9 +99,18 @@
         { id: 'k', etiqueta: 'k', min: 1, max: 5, paso: 1, inicio: 3, decimales: 0, color: 'c-i' },
         { id: 'm', etiqueta: 'm', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-o' },
       ],
-      dibujo: v => ({ datos: rectangulo(v.m, v.k), estado: {} }),
+      dibujo: v => ({ datos: rectangulo(v.m, v.k, ESC1), estado: {} }),
       lectura: v => [`${poli([v.m, v.m * v.k, 0])} = ${v.m === 1 ? '' : v.m}x(x + ${v.k})`],
       minimo: 3,
+      // El borde derecho estira el ancho (k); el borde de abajo, el alto común (m).
+      arrastres: [
+        { id: 'borde-k', etiqueta: 'borde derecho: el número k', color: 'c-i',
+          donde: v => { const g = BALD().geometria(rectangulo(v.m, v.k, ESC1)); return { x: g.xs[1][1], y: (g.ys[0][0] + g.ys[0][1]) / 2 }; },
+          mover: (pt, v) => { const g = BALD().geometria(rectangulo(v.m, v.k, ESC1)); return { k: (pt.x - g.xs[1][0]) / g.esc }; } },
+        { id: 'borde-m', etiqueta: 'borde de abajo: el factor m', color: 'c-o',
+          donde: v => { const g = BALD().geometria(rectangulo(v.m, v.k, ESC1)); return { x: (g.xs[0][0] + g.xs[0][1]) / 2, y: g.ys[0][1] }; },
+          mover: (pt, v) => { const g = BALD().geometria(rectangulo(v.m, v.k, ESC1)); return { m: (pt.y - g.y0) / g.esc / XC }; } },
+      ],
     },
     predice: {
       pregunta: '¿Cuál es la factorización completa de 2x³ − 18x?',
@@ -114,7 +141,7 @@
     },
     regla: {
       texto: 'Factorizar es reescribir como producto sin cambiar el polinomio. Primero se saca el factor común; después se reconocen identidades. Se comprueba multiplicando.',
-      ecuacion: ['ab + ac = a(b + c)   ;   a² − b² = (a + b)(a − b)   ;   a² + 2ab + b² = (a + b)²'],
+      ecuacion: ['ab + ac = ', { llave: ['a'], nota: 'común', color: 'c-o' }, '(b + c)', '   ·   ', 'a² − b² = (a + b)(a − b)', '   ·   ', 'a² + 2ab + b² = (a + b)²'],
       condicion: '«completa» depende de los números permitidos: x² − 2 no factoriza con racionales, pero con reales sí.',
     },
     ahoraTu: {
@@ -154,7 +181,10 @@
   // ---------- Idea 2: el aspa reconstruye el término central ----------
   // Cambia: los números p y q · Permanece: el rectángulo con x de lado · Progresa: los dos rectángulos px y qx
   // · Se reserva: los signos negativos, donde la figura ya no sirve · Debe verse: px + qx da el término central.
-  const piezas = (p, q) => ({
+  // Gesto: la esquina de afuera del rectángulo cambia p (a lo ancho) y q (a lo alto). La predicción usa el aspa en
+  // tabla porque trae negativos; «Mira» vuelve al rectángulo y lo traduce al aspa (hallazgo 9).
+  const piezas = (p, q, escala) => ({
+    escala,
     anchos: [{ t: 'x', v: 4, color: 'o' }, { t: String(p), v: p, color: 'i' }],
     altos: [{ t: 'x', v: 4, color: 'o' }, { t: String(q), v: q, color: 'i' }],
     celdas: [[{ t: 'x²', color: 'o' }, { t: `${p}x`, color: 'd' }], [{ t: `${q}x`, color: 'd' }, { t: String(p * q), color: 'i' }]],
@@ -182,9 +212,13 @@
         { id: 'p', etiqueta: 'p', min: 1, max: 5, paso: 1, inicio: 3, decimales: 0, color: 'c-i' },
         { id: 'q', etiqueta: 'q', min: 1, max: 5, paso: 1, inicio: 2, decimales: 0, color: 'c-i' },
       ],
-      dibujo: v => ({ datos: piezas(v.p, v.q), estado: {} }),
+      dibujo: v => ({ datos: piezas(v.p, v.q, ESC), estado: {} }),
       lectura: v => [`${poli([1, v.p + v.q, v.p * v.q])} = (x + ${v.p})(x + ${v.q})`],
       minimo: 3,
+      // La esquina de afuera: a lo ancho cambia p, a lo alto cambia q; las piezas verdes crecen con ella.
+      arrastres: [{ id: 'esquina', etiqueta: 'esquina de afuera: p a lo ancho, q a lo alto', color: 'c-i',
+        donde: v => { const g = BALD().geometria(piezas(v.p, v.q, ESC)); return { x: g.xs[1][1], y: g.ys[1][1] }; },
+        mover: (pt, v) => { const g = BALD().geometria(piezas(v.p, v.q, ESC)); return { p: (pt.x - g.xs[1][0]) / g.esc, q: (pt.y - g.ys[1][0]) / g.esc }; } }],
     },
     predice: (() => {
       const P = [1, -1, -12];
@@ -203,20 +237,30 @@
         coincide: 'Coincide: −4 · 3 = −12 y los cruzados suman 3x − 4x = −x.',
       };
     })(),
+    // Hallazgo 9: «Mira» empieza por el rectángulo que el alumno movió, ahora con lados 3x + 1 y 2x + 3, y muestra que
+    // las dos piezas verdes son los productos en cruz del aspa. El último paso pasa al caso con un negativo, sin área.
     mira: {
-      pieza: 'alg-tabla',
-      datos: aspaTabla([['3x', '−1'], ['2x', '+3']], ['+9x', '−2x'], '9x − 2x = 7x ✓', { a: 1, b: 2, c: 3 }),
+      pieza: 'alg-baldosas',
+      datos: {
+        anchos: [{ t: '3x', v: 6, color: 'o' }, { t: '1', v: 1, color: 'i' }],
+        altos: [{ t: '2x', v: 4, color: 'o' }, { t: '3', v: 3, color: 'i' }],
+        celdas: [[{ t: '6x²', color: 'o', desde: 1 }, { t: '2x', color: 'd', desde: 3 }], [{ t: '9x', color: 'd', desde: 3 }, { t: '3', color: 'i', desde: 2 }]],
+        total: { t: '6x² + 11x + 3 = (3x + 1)(2x + 3)', desde: 4 },
+        alt: 'Rectángulo de lados 3x + 1 y 2x + 3: piezas 6x², 2x, 9x y 3; las dos de x suman 11x',
+      },
       voz: 'Creo que esta partición sirve. Comprobemos el centro.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'El primer término se parte en dos factores.', ecuacion: ['6x² = 3x · 2x'] },
-        { estado: { corte: 2 }, texto: 'El último también: −3 = (−1) · 3.', ecuacion: ['−3 = (−1)(+3)'] },
-        { estado: { corte: 3 }, texto: 'Los productos en cruz deben sumar el término central.', ecuacion: ['3x · 3 + 2x · (−1) = 9x − 2x = 7x'] },
-        { estado: { corte: 3 }, texto: 'Se leen los factores por filas.', ecuacion: ['6x² + 7x − 3 = (3x − 1)(2x + 3)'] },
+        { estado: { corte: 1 }, texto: 'La esquina grande parte el primer término: 3x por 2x.', ecuacion: ['6x² = 3x · 2x'] },
+        { estado: { corte: 2 }, texto: 'La esquina chica parte el último: 1 por 3.', ecuacion: ['3 = 1 · 3'] },
+        { estado: { corte: 3 }, texto: 'Las dos piezas verdes son los productos en cruz.', ecuacion: [{ llave: ['3x · 3 + 2x · 1'], nota: 'en cruz', color: 'c-d' }, ' = 11x'] },
+        { estado: { corte: 4 }, texto: 'Los lados del rectángulo son los factores.', ecuacion: ['6x² + 11x + 3 = (3x + 1)(2x + 3)'] },
+        { estado: { corte: 4 }, texto: 'Con un −1 ya no hay área, pero el aspa suma igual.', ecuacion: ['3x · 3 + 2x · (−1) = 7x'] },
       ],
     },
     regla: {
       texto: 'En el aspa, los extremos se parten en productos y los productos en cruz deben sumar el término central. Si no suman, se prueba otra partición.',
-      ecuacion: ['ax² + bx + c = (mx + p)(nx + q),  con  mq + np = b'],
+      // Espacios duros dentro de cada factor: la línea no se parte a mitad de un paréntesis.
+      ecuacion: ['ax² + bx + c = (mx\u00a0+\u00a0p)(nx\u00a0+\u00a0q)', '   ·   ', { llave: ['mq + np'], nota: 'en cruz', color: 'c-d' }, ' = b'],
       condicion: 'se comprueba multiplicando; si ninguna partición con enteros reconstruye el centro, no factoriza con enteros.',
     },
     ahoraTu: {
@@ -329,7 +373,7 @@
     },
     regla: {
       texto: 'El aspa doble verifica tres aspas, una por cada par de columnas. En la doble especial, lo que falta del término central se reparte entre los términos de en medio.',
-      ecuacion: ['(2x + y + 3)(x + 3y + 2):   2x · 3y + x · y = 7xy'],
+      ecuacion: ['(2x + y + 3)(x + 3y + 2)', '   ·   ', { llave: ['2x · 3y + x · y'], nota: 'primera aspa', color: 'c-d' }, ' = 7xy'],
       condicion: 'cada producto cruzado debe reconstruir su término; si alguno falla, se cambia la partición y se comprueba multiplicando.',
     },
     ahoraTu: {
@@ -368,6 +412,9 @@
   // ---------- Idea 4: P(a) = 0 dice que x − a es factor ----------
   // Cambia: el valor a · Permanece: la gráfica de P · Progresa: el punto (a, P(a)) que recorre la curva
   // · Se reserva: el signo del factor (x − a con a negativo) · Debe verse: donde P vale 0, hay un factor.
+  // Gesto: el alumno lleva el punto por la curva hasta los cortes con el eje. «Mira» pasa a la tabla de candidatos a
+  // propósito (hallazgo 9): la gráfica muestra dónde, pero la lista de divisores de 6 dice qué probar sin dibujar.
+  // La mesa «Raíces que se arrastran» hace el camino inverso: se mueven las raíces y aparece el polinomio.
   const PF = [1, -2, -5, 6];                      // (x − 1)(x + 2)(x − 3)
   const curvaP = () => Array.from({ length: 71 }, (_, k) => { const x = -3 + k * 0.1; return [x, evaluar(PF, x)]; });
   const ejesP = (extra = {}) => Object.assign({
@@ -387,6 +434,10 @@
       dibujo: v => ({ datos: ejesP({ puntos: [{ x: v.a, y: evaluar(PF, v.a), color: 'o', rotulo: `P(${v.a}) = ${f(evaluar(PF, v.a), 0)}`, guias: true }] }), estado: {} }),
       lectura: v => [`P(${f(v.a, 0)}) = ${f(evaluar(PF, v.a), 0)}`],
       minimo: 4,
+      // Se arrastra el punto (a; P(a)) por la curva, con rango fijo: la manija no se escapa.
+      arrastres: [{ id: 'punto', etiqueta: 'punto (a; P(a)) de la curva', color: 'c-o',
+        donde: v => { const g = EJES().geometria(ejesP()); return { x: g.X(v.a), y: g.Y(evaluar(PF, v.a)) }; },
+        mover: (pt, v) => { const g = EJES().geometria(ejesP()); return { a: inversa(g.X, -3, 4)(pt.x) }; } }],
     },
     predice: {
       pregunta: 'Sabemos que P(−2) = 0. ¿Cuál de estos binomios es un factor de P(x)?',
@@ -417,7 +468,7 @@
     },
     regla: {
       texto: 'x − a es factor de P(x) exactamente cuando P(a) = 0. Con coeficientes enteros, una raíz entera divide al término independiente.',
-      ecuacion: ['P(', { v: 'c-o', t: 'a' }, ') = 0   ⇔   (x − ', { v: 'c-o', t: 'a' }, ') es factor de P(x)'],
+      ecuacion: ['P(', { v: 'c-o', t: 'a' }, ') = 0   ⇔   ', { llave: ['(x − ', { v: 'c-o', t: 'a' }, ')'], nota: 'cero en a', color: 'c-o' }, ' es factor de P(x)'],
       condicion: 'la lista de candidatos pide coeficientes enteros; si el principal no es 1, se prueban fracciones p/q. Ser candidato no basta.',
     },
     ahoraTu: {
@@ -492,7 +543,7 @@
     mira: {
       datos: Object.assign(tablaMult([['x − 1', 1, 2, 2], ['x + 1', 1, 0, 2]]), { filas: tablaMult([['x − 1', 1, 2, 2], ['x + 1', 1, 0, 2]]).filas.map(fl => fl.map((c, k) => (k === 1 || k === 2 ? { t: c, desde: 1 } : c))) }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'Primero se factoriza cada polinomio por completo.', ecuacion: ['P = (x + 1)(x − 1)   ;   Q = (x − 1)²'] },
+        { estado: { corte: 1 }, texto: 'Primero se factoriza cada polinomio por completo.', ecuacion: ['P = (x + 1)(x − 1)', '   ·   ', 'Q = (x − 1)²'] },
         { estado: { corte: 2 }, texto: 'MCD: los factores comunes con su menor exponente.', ecuacion: ['MCD = (x − 1)¹ = x − 1'] },
         { estado: { corte: 2 }, texto: 'MCM: todos los factores con su mayor exponente.', ecuacion: ['MCM = (x + 1)(x − 1)²'] },
         { estado: { corte: 2 }, texto: 'Comprobación: MCD por MCM da P por Q.', ecuacion: ['(x − 1) · (x + 1)(x − 1)² = P · Q'] },
@@ -500,7 +551,7 @@
     },
     regla: {
       texto: 'Se factorizan los polinomios por completo. El MCD lleva los factores comunes con su menor exponente; el MCM, todos los factores con su mayor exponente.',
-      ecuacion: ['MCD · MCM = P · Q   (para P y Q mónicos)'],
+      ecuacion: ['MCD · MCM = ', { llave: ['P · Q'], nota: 'mónicos', color: 'c-d' }],
       condicion: 'MCD y MCM se fijan salvo una constante: se eligen mónicos, con coeficiente principal 1.',
     },
     ahoraTu: {
@@ -531,11 +582,91 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: el aspa con coeficientes, (mx + p)(nx + q): la esquina interior cambia m y n; la de afuera, p y q.
+  const XL = 3;   // largo de x en la mesa (unidades de la pieza)
+  const aspaLab = v => ({
+    anchos: [{ t: `${v.m === 1 ? '' : v.m}x`, v: v.m * XL, color: 'o' }, { t: String(v.p), v: v.p, color: 'i' }],
+    altos: [{ t: `${v.n === 1 ? '' : v.n}x`, v: v.n * XL, color: 'o' }, { t: String(v.q), v: v.q, color: 'i' }],
+    celdas: [[{ t: poli([v.m * v.n, 0, 0]), color: 'o' }, { t: poli([v.p * v.n, 0]), color: 'd' }], [{ t: poli([v.m * v.q, 0]), color: 'd' }, { t: String(v.p * v.q), color: 'i' }]],
+    total: { t: `${poli([v.m * v.n, v.m * v.q + v.n * v.p, v.p * v.q])}` },
+    escala: 19,
+    alt: `Rectángulo de lados ${lin(v.m, v.p)} y ${lin(v.n, v.q)}: las piezas en cruz suman ${v.m * v.q + v.n * v.p}x`,
+  });
+  const mesaAspa = {
+    id: 'aspa-con-coeficientes', titulo: 'El aspa con coeficientes', pieza: 'alg-baldosas',
+    consigna: 'Arrastra la esquina de la pieza grande (m y n) y la de afuera (p y q). Las piezas verdes son el aspa.',
+    controles: [
+      { id: 'm', etiqueta: 'm', min: 1, max: 2, paso: 1, inicio: 2, decimales: 0, color: 'c-o' },
+      { id: 'n', etiqueta: 'n', min: 1, max: 2, paso: 1, inicio: 1, decimales: 0, color: 'c-o' },
+      { id: 'p', etiqueta: 'p', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
+      { id: 'q', etiqueta: 'q', min: 1, max: 4, paso: 1, inicio: 3, decimales: 0, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: aspaLab(v), estado: {} }),
+    lectura: v => [`${poli([v.m * v.n, v.m * v.q + v.n * v.p, v.p * v.q])} = (${lin(v.m, v.p)})(${lin(v.n, v.q)})`],
+    arrastres: [
+      { id: 'esquina-mn', etiqueta: 'esquina de la pieza grande: m a lo ancho, n a lo alto', color: 'c-o',
+        donde: v => { const g = BALD().geometria(aspaLab(v)); return { x: g.xs[0][1], y: g.ys[0][1] }; },
+        mover: (pt, v) => { const g = BALD().geometria(aspaLab(v)); return { m: (pt.x - g.x0) / g.esc / XL, n: (pt.y - g.y0) / g.esc / XL }; } },
+      { id: 'esquina-pq', etiqueta: 'esquina de afuera: p a lo ancho, q a lo alto', color: 'c-i',
+        donde: v => { const g = BALD().geometria(aspaLab(v)); return { x: g.xs[1][1], y: g.ys[1][1] }; },
+        mover: (pt, v) => { const g = BALD().geometria(aspaLab(v)); return { p: (pt.x - g.xs[1][0]) / g.esc, q: (pt.y - g.ys[1][0]) / g.esc }; } },
+    ],
+  };
+  // Mesa 2: el camino inverso del teorema del factor: se arrastran las tres raíces por el eje y aparece P.
+  const YMAX = 20;
+  const raicesLab = v => {
+    const cs = [v.r1, v.r2, v.r3].reduce((acc, a) => mult(acc, [1, -a]), [1]);
+    const pts = Array.from({ length: 81 }, (_, k) => { const x = -4 + k * 0.1; const y = evaluar(cs, x); return Math.abs(y) <= YMAX ? [Math.round(x * 10) / 10, y] : null; });
+    return {
+      x: { min: -4, max: 4, paso: 1, nombre: 'x', decimales: 0, color: 'o' },
+      y: { min: -YMAX, max: YMAX, paso: 10, nombre: 'P', decimales: 0, color: 'd' },
+      curvas: [{ puntos: pts, color: 'd' }],
+      puntos: [v.r1, v.r2, v.r3].map(a => ({ x: a, y: 0, color: 'o' })),
+      alt: `Curva de P(x) = ${poli(cs)}, que corta el eje en ${v.r1}, ${v.r2} y ${v.r3}`,
+    };
+  };
+  const raiz = (id, n) => ({ id, etiqueta: `raíz ${n} sobre el eje`, color: 'c-o',
+    donde: v => { const g = EJES().geometria(raicesLab(v)); return { x: g.X(v[id]), y: g.Y(0) }; },
+    mover: (pt, v) => { const g = EJES().geometria(raicesLab(v)); return { [id]: inversa(g.X, -4, 4)(pt.x) }; } });
+  const mesaRaices = {
+    id: 'raices-que-se-arrastran', titulo: 'Raíces que se arrastran', pieza: 'ejes',
+    consigna: 'Arrastra las tres raíces por el eje. La curva pasa por ellas y abajo aparece P desarrollado. Prueba juntar dos raíces.',
+    controles: [
+      { id: 'r1', etiqueta: 'raíz 1', min: -4, max: 4, paso: 1, inicio: -2, decimales: 0, color: 'c-o' },
+      { id: 'r2', etiqueta: 'raíz 2', min: -4, max: 4, paso: 1, inicio: 1, decimales: 0, color: 'c-o' },
+      { id: 'r3', etiqueta: 'raíz 3', min: -4, max: 4, paso: 1, inicio: 3, decimales: 0, color: 'c-o' },
+    ],
+    dibujo: v => ({ datos: raicesLab(v), estado: {} }),
+    lectura: v => [`${[v.r1, v.r2, v.r3].map(a => `(${fx(a)})`).join('')} = ${poli([v.r1, v.r2, v.r3].reduce((acc, a) => mult(acc, [1, -a]), [1]))}`],
+    arrastres: [raiz('r1', 1), raiz('r2', 2), raiz('r3', 3)],
+  };
+  // Mesa 3: MCD y MCM con los seis exponentes libres; la lectura compara grados: MCD · MCM tiene el grado de P · Q.
+  const mesaMCD = {
+    id: 'mcd-mcm-libre', titulo: 'Seis exponentes para comparar', pieza: 'alg-tabla',
+    consigna: 'Elige el exponente de cada factor en P y en Q. Compara el grado de MCD · MCM con el de P · Q.',
+    controles: [
+      { id: 'i1', etiqueta: 'x − 1 en P', min: 0, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-o' },
+      { id: 'j1', etiqueta: 'x − 1 en Q', min: 0, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
+      { id: 'i2', etiqueta: 'x + 2 en P', min: 0, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-o' },
+      { id: 'j2', etiqueta: 'x + 2 en Q', min: 0, max: 3, paso: 1, inicio: 3, decimales: 0, color: 'c-i' },
+      { id: 'i3', etiqueta: 'x + 3 en P', min: 0, max: 3, paso: 1, inicio: 0, decimales: 0, color: 'c-o' },
+      { id: 'j3', etiqueta: 'x + 3 en Q', min: 0, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: tablaMult([['x − 1', v.i1, v.j1], ['x + 2', v.i2, v.j2], ['x + 3', v.i3, v.j3]]), estado: {} }),
+    lectura: v => {
+      const ps = [[v.i1, v.j1], [v.i2, v.j2], [v.i3, v.j3]];
+      const gMcd = ps.reduce((a, [i, j]) => a + Math.min(i, j), 0), gMcm = ps.reduce((a, [i, j]) => a + Math.max(i, j), 0), gPQ = ps.reduce((a, [i, j]) => a + i + j, 0);
+      return [`grados: MCD ${gMcd}, MCM ${gMcm}, P · Q ${gPQ}`];
+    },
+  };
+
   return {
     unidad: 'algebra.factorizacion',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/alg-baldosas.js', '/nucleo/kit/piezas/ejes.js'],
+    laboratorio: [mesaAspa, mesaRaices, mesaMCD],
     historia: {
       texto: 'La proposición II.4 de los Elementos de Euclides parte el cuadrado sobre un segmento en dos cuadrados y dos rectángulos. Euclides lo dice con geometría; leerlo como (a + b)² es una interpretación moderna. Leer esa relación en los dos sentidos lleva de expandir a factorizar, con un límite: las longitudes no son negativas, y la identidad algebraica vale más allá de la figura.',
       pregunta: '¿Qué cambia si lees la misma igualdad al revés?',

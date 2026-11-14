@@ -14,6 +14,10 @@
  * Orden de atención · 1.º la región verde · 2.º la recta roja que se mueve · acción: «Comprobar» · fondo: Nox.
  * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué basta mirar los vértices, y cuándo eso no basta (lado óptimo, no acotada, vacía).
+ * Ronda 2 (14 nov 2026): gesto directo en las ideas 1 y 3 (el borde del semiplano y la recta de nivel se deslizan
+ * agarrándolas por su punto más cercano al origen); las ideas 2 y 4 se quedan con sus botones porque eligen entre
+ * casos (activa/apagada, tres regiones), no mueven una cantidad. Llaves en las reglas y laboratorio de tres mesas:
+ * la recta de nivel con Z que gira, la región con bordes que se arrastran (hasta vaciarla) y el semiplano.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -83,6 +87,21 @@
   const Q1 = [0, 0, 9, 6];                                 // primer cuadrante: x de 0 a 9, y de 0 a 6
   const ejQ1 = () => EJ(0, 9, 0, 6);
   const vertices = poli => poli.map(p => p.map(lim));
+  // Gesto directo (docs/teoria.md §4b): inversa lineal de la escala de la pieza; el lector ajusta al paso y al rango.
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+  const EJES = () => Kit.piezas.ejes;
+  // Manija de una recta px + qy = k: su punto más cercano al origen (pie de la perpendicular). Moverla en cualquier
+  // dirección da el k de la recta paralela que pasa por el dedo: la recta se desliza sin girar.
+  function manijaNivel(ejes, id, etiqueta, color, coef, kId) {
+    const g = () => EJES().geometria(ejes);
+    return { id, etiqueta, color,
+      donde: v => { const [p, q] = coef(v), n2 = p * p + q * q; return n2 ? { x: g().X(p * v[kId] / n2), y: g().Y(q * v[kId] / n2) } : { x: g().X(0), y: g().Y(0) }; },
+      mover: (pt, v) => {
+        const [p, q] = coef(v);
+        if (!p && !q) return {};
+        return { [kId]: p * inversa(g().X, ejes.x.min, ejes.x.max)(pt.x) + q * inversa(g().Y, ejes.y.min, ejes.y.max)(pt.y) };
+      } };
+  }
 
   // ---------- Idea 1: una desigualdad es un semiplano ----------
   // Cambia: a, b, c y el signo · Permanece: la ventana y el punto de prueba (0; 0) · Progresa: el lado sombreado ·
@@ -111,7 +130,7 @@
       controles: [
         { id: 'a', etiqueta: 'a', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0, color: 'c-o' },
         { id: 'b', etiqueta: 'b', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
-        { id: 'c', etiqueta: 'c', min: -3, max: 3, paso: 1, inicio: 2, decimales: 0 },
+        { id: 'c', etiqueta: 'c', color: 'c-d', min: -3, max: 3, paso: 1, inicio: 2, decimales: 0 },
         { id: 's', etiqueta: 'Signo', opciones: ['≤', '<', '≥', '>'].map(t => ({ valor: t, texto: t })) },
       ],
       dibujo: val => ({ datos: (val.a || val.b) ? semi([val.a, val.b, val.c], val.s) : Object.assign(EJ(-6, 6, -4, 4), { alt: 'Sin recta: a y b valen 0' }), estado: {} }),
@@ -122,6 +141,8 @@
         return [`(0; 0): 0 ${val.s} ${f(val.c)} es ${ok ? 'verdadero' : 'falso'}`];
       },
       minimo: 4,
+      // El borde se desliza: la manija es su punto más cercano al origen y mueve c (a y b no giran la recta aquí).
+      arrastres: [manijaNivel(EJ(-6, 6, -4, 4), 'borde', 'borde: desliza la recta (c)', 'c-d', v => [v.a, v.b], 'c')],
     },
     predice: (() => {
       const r = [2, -1, 4];
@@ -154,7 +175,7 @@
     })(),
     regla: {
       texto: 'Una desigualdad lineal ax + by ≤ c es un semiplano. La recta ax + by = c es su borde, y un punto de prueba decide qué lado cumple.',
-      ecuacion: ['a', X, ' + b', Y, ' ≤ c'],
+      ecuacion: [{ llave: ['a', X, ' + b', Y, ' ≤ c'], nota: 'medio plano', color: 'c-d' }, '   ·   ', { llave: ['a', X, ' + b', Y, ' = c'], nota: 'su borde', color: 'c-d' }],
       condicion: 'con ≤ o ≥ el borde entra (línea continua); con < o > no entra (línea discontinua).',
     },
     ahoraTu: {
@@ -216,6 +237,7 @@
         return [acotada ? `Región cerrada con ${poli.length} vértices` : 'Región abierta, sin borde arriba'];
       },
       minimo: 3,
+      // Sin arrastre: se elige qué restricción está activa, no una cantidad. Los bordes se arrastran en el laboratorio.
     },
     predice: (() => {
       const lista = [RESTR.r1, RESTR.r2], extra = [-1, -1, -8];       // se agrega x + y ≥ 8
@@ -245,6 +267,7 @@
     },
     regla: {
       texto: 'La región factible es la intersección de los semiplanos de todas las restricciones. Sus vértices son cruces de dos bordes. Puede ser cerrada, abierta o vacía.',
+      // Sin llave: con la nota, la intersección se partía en dos líneas a 360 px; el texto ya nombra cada S como semiplano.
       ecuacion: ['factible = ', { sub: ['S', '1'] }, ' ∩ ', { sub: ['S', '2'] }, ' ∩ … ∩ ', { sub: ['S', 'n'] }],
       condicion: 'se incluyen las restricciones del contexto, como x ≥ 0 e y ≥ 0 cuando no hay cantidades negativas.',
     },
@@ -314,7 +337,7 @@
     temas: ['Función objetivo', 'Método gráfico de optimización'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Región: x + y ≤ 4 y x ≤ 2. La recta roja junta los puntos con 3x + 2y = k. Sube k: ¿cuándo deja de tocar la región?',
+      consigna: 'Región: x + y ≤ 4 y x ≤ 2. La recta roja junta los puntos con 3x + 2y = k. Deslízala: ¿cuándo deja de tocar la región?',
       voz: 'Las rectas de nivel no giran: solo se corren.',
       controles: [{ id: 'k', etiqueta: 'k', min: 0, max: 14, paso: 1, inicio: 3, decimales: 0, color: 'c-h' }],
       dibujo: val => ({ datos: dib3(3, 2, [{ k: val.k, rotulo: `Z = ${val.k}` }]), estado: {} }),
@@ -323,6 +346,8 @@
         return [Z, ` = ${val.k}: `, val.k <= max ? 'toca la región' : 'ya no la toca'];
       },
       minimo: 4,
+      // La recta de nivel se agarra y se desliza (sin girar): su manija es el punto más cercano al origen.
+      arrastres: [manijaNivel(EJ(0, 6.75, 0, 4.5), 'nivel', 'recta de nivel: deslízala', 'c-h', () => [3, 2], 'k')],
     },
     predice: (() => {
       const zs = P3.map(Zf(3, 2)), imax = zs.indexOf(Math.max(...zs));
@@ -355,7 +380,7 @@
     })(),
     regla: {
       texto: 'Las rectas Z = k son paralelas. En una región cerrada, acotada y no vacía, el máximo y el mínimo de Z se alcanzan en vértices: basta evaluarlos.',
-      ecuacion: [{ sub: [Z, 'máx'] }, ' = el mayor ', Z, ' de los vértices'],
+      ecuacion: [{ llave: [{ sub: [Z, 'máx'] }], nota: 'el mejor valor', color: 'c-h' }, ' = el mayor ', Z, ' de los vértices'],
       condicion: 'si la recta de nivel es paralela a un lado, todo ese lado puede ser óptimo, no solo un vértice.',
     },
     ahoraTu: {
@@ -433,6 +458,7 @@
       dibujo: val => ({ datos: dib4(CASOS[val.caso]), estado: {} }),
       lectura: val => { const { max, abierta, top } = optimo(CASOS[val.caso]); return [abierta ? 'Sin máximo: Z crece sin tope' : top.length > 1 ? `Máximo ${f(max)} en todo un lado` : `Máximo ${f(max)} en un vértice`]; },
       minimo: 3,
+      // Sin arrastre: se elige entre tres casos. Z que gira hasta empatar con un lado está en el laboratorio.
     },
     predice: {
       pregunta: ['Con x ≥ 0, y ≥ 0 y x + y ≥ 3 como únicas restricciones, ¿cuál es el máximo de ', Z, ' = ', X, ' + ', Y, '?'],
@@ -458,7 +484,7 @@
         pasos: [
           { estado: { corte: 1 }, texto: 'Z = x + y tiene la misma inclinación que el lado x + y = 4.', ecuacion: [Z, ' = ', X, ' + ', Y] },
           { estado: { corte: 2 }, texto: `Al subir, llega a Z = ${f(max)} y se apoya en todo el lado.`, ecuacion: [Z, ` = ${f(max)}`] },
-          { estado: { corte: 3 }, texto: 'Dos vértices empatan: todo el lado entre ellos es óptimo.', ecuacion: [top.map(v => `Z${pt(v)} = ${f(max)}`).join('  ·  ')] },
+          { estado: { corte: 3 }, texto: 'Dos vértices empatan: todo el lado entre ellos es óptimo.', ecuacion: [`Z${pt(top[0])} = ${f(max)}`, '   ·   ', `Z${pt(top[1])} = ${f(max)}`] },
           { estado: { corte: 3 }, texto: 'Sin techo puede no haber máximo; sin región, no hay solución.', ecuacion: ['abierta · vacía'] },
         ],
       };
@@ -497,9 +523,79 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1, más rica que las ideas 3 y 4: Z = px + qy gira (su flecha (p; q) se arrastra) y la recta de nivel se
+  // desliza. Con p = q la recta queda paralela a x + y ≤ 6 y empata un lado entero.
+  const LISTA_L = [RESTR.r1, RESTR.r2, RESTR.r3];
+  const PL_L = region([...BASE, ...LISTA_L], caja(...Q1));
+  const nivelLibre = {
+    id: 'nivel-libre', titulo: 'Z que gira y se desliza', pieza: 'ejes',
+    consigna: 'Arrastra la punta de la flecha para cambiar Z = px + qy, y desliza la recta roja. ¿Cuál es el último punto que toca?',
+    controles: [
+      { id: 'p', etiqueta: 'p', color: 'c-o', min: 0, max: 4, paso: 1, inicio: 3, decimales: 0 },
+      { id: 'q', etiqueta: 'q', color: 'c-i', min: 0, max: 4, paso: 1, inicio: 2, decimales: 0 },
+      { id: 'k', etiqueta: 'k', color: 'c-h', min: 0, max: 30, paso: 1, inicio: 10, decimales: 0 },
+    ],
+    dibujo: v => {
+      const zs = PL_L.map(Zf(v.p, v.q)), max = Math.max(...zs), top = PL_L.filter((_, i) => zs[i] === max);
+      const t = (v.p || v.q) ? tramo([v.p, v.q, v.k], Q1) : null;
+      return { datos: Object.assign(ejQ1(), {
+        areas: [{ puntos: PL_L, color: 'd', cerrada: true }],
+        curvas: [
+          ...(t ? [{ puntos: t, color: 'h' }] : []),
+          ...(v.p || v.q ? [{ puntos: [[0, 0], [v.p, v.q]], color: 'h', discontinua: true }] : []),
+        ],
+        puntos: [...PL_L.map(w => ({ x: w[0], y: w[1], color: top.includes(w) && v.k >= max ? 'h' : 'd' })), { x: v.p, y: v.q, color: 'h', abierto: true }],
+        alt: `Región de vértices ${PL_L.map(pt).join(', ')}; recta ${v.p}x + ${v.q}y = ${v.k}; máximo ${f(max)}`,
+      }), estado: {} };
+    },
+    lectura: v => {
+      if (!v.p && !v.q) return [Z, ' = 0 en toda la región'];
+      const zs = PL_L.map(Zf(v.p, v.q)), max = Math.max(...zs), top = PL_L.filter((_, i) => zs[i] === max);
+      return [Z, ` = ${v.k}: ${v.k <= max ? 'toca' : 'no toca'} · máx ${f(max)} ${top.length > 1 ? 'en un lado' : `en ${pt(top[0])}`}`];
+    },
+    arrastres: [
+      { id: 'flecha', etiqueta: 'punta de la flecha (p; q): gira Z', color: 'c-h',
+        donde: v => { const g = EJES().geometria(ejQ1()); return { x: g.X(v.p), y: g.Y(v.q) }; },
+        mover: pt => { const g = EJES().geometria(ejQ1()); return { p: inversa(g.X, 0, 9)(pt.x), q: inversa(g.Y, 0, 6)(pt.y) }; } },
+      manijaNivel(ejQ1(), 'nivel', 'recta de nivel: deslízala', 'c-h', v => [v.p, v.q], 'k'),
+    ],
+  };
+  // Mesa 2: los bordes se arrastran. Con y ≥ t por encima de x + y ≤ m, la región se vacía: el caso raro que la idea
+  // 2 no deja probar. La lectura da los vértices y el máximo de 2x + y para comparar casos guardados.
+  const regionMovil = {
+    id: 'region-movil', titulo: 'Bordes que se arrastran', pieza: 'ejes',
+    consigna: 'Arrastra los tres bordes: x + y ≤ m, x ≤ n e y ≥ t. Busca una región de tres vértices y una vacía.',
+    controles: [
+      { id: 'm', etiqueta: 'm', color: 'c-d', min: 1, max: 6, paso: 1, inicio: 5, decimales: 0 },   // m ≤ 6: la región cabe entera en la ventana (y ≤ m), así que no se cuentan esquinas del dibujo como vértices
+      { id: 'n', etiqueta: 'n', color: 'c-d', min: 1, max: 8, paso: 1, inicio: 4, decimales: 0 },
+      { id: 't', etiqueta: 't', color: 'c-d', min: 0, max: 5, paso: 1, inicio: 1, decimales: 0 },
+    ],
+    dibujo: v => {
+      const lista = [[1, 1, v.m], [1, 0, v.n], [0, -1, -v.t]];
+      return { datos: Object.assign(dibRegion(lista, { conVertices: true }), { alt: `x + y ≤ ${v.m}, x ≤ ${v.n}, y ≥ ${v.t}: ${region([...BASE, ...lista], caja(...Q1)).length > 2 ? 'región con vértices' : 'región vacía'}` }), estado: {} };
+    },
+    lectura: v => {
+      const poli = region([...BASE, [1, 1, v.m], [1, 0, v.n], [0, -1, -v.t]], caja(...Q1));
+      if (poli.length < 3) return ['Vacía: ningún punto cumple todo'];
+      return [`${poli.length} vértices · máx de 2`, X, ' + ', Y, `: ${f(Math.max(...poli.map(Zf(2, 1))))}`];
+    },
+    arrastres: [
+      { id: 'borde-m', etiqueta: 'borde x + y = m', color: 'c-d',
+        donde: v => { const g = EJES().geometria(ejQ1()); return { x: g.X(v.m / 2), y: g.Y(v.m / 2) }; },
+        mover: pt => { const g = EJES().geometria(ejQ1()); return { m: inversa(g.X, 0, 9)(pt.x) + inversa(g.Y, 0, 6)(pt.y) }; } },
+      { id: 'borde-n', etiqueta: 'borde x = n', color: 'c-d',
+        donde: v => { const g = EJES().geometria(ejQ1()); return { x: g.X(v.n), y: g.Y(5.5) }; },
+        mover: pt => ({ n: inversa(EJES().geometria(ejQ1()).X, 0, 9)(pt.x) }) },
+      { id: 'borde-t', etiqueta: 'borde y = t', color: 'c-d',
+        donde: v => { const g = EJES().geometria(ejQ1()); return { x: g.X(8.5), y: g.Y(v.t) }; },
+        mover: pt => ({ t: inversa(EJES().geometria(ejQ1()).Y, 0, 6)(pt.y) }) },
+    ],
+  };
+
   return {
     unidad: 'algebra.programacion-lineal',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js'],
     historia: {
@@ -507,6 +603,7 @@
       pregunta: '¿Cómo elegirías el mejor plan si hay muchos posibles?',
       fuente: { titulo: 'O’Connor y Robertson, George Dantzig — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Dantzig_George/' },
     },
+    laboratorio: [nivelLibre, regionMovil, Object.assign({ id: 'semiplano-libre', titulo: 'Un semiplano', pieza: 'ejes' }, semiplano.juega, { minimo: undefined })],
     ideas: [semiplano, factible, nivelIdea, especiales],
   };
 });

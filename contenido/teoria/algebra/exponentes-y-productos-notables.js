@@ -14,6 +14,12 @@
  * Orden de atención · 1.º la figura (tabla, cuadrado de piezas, gráfica) · 2.º la pieza o fila que cambia · acción: «Comprobar» · fondo: Nox.
  * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué (a + b)² no es a² + b² y √(a + b) no es √a + √b.
+ *
+ * Ronda 2 (14 nov 2026): gesto directo en «El cuadrado de una suma» (las esquinas de a² y del cuadrado, con la escala
+ * fija de alg-baldosas), llaves en las reglas y en «Mira», separador «   ·   » y laboratorio de tres mesas: el
+ * rectángulo (x + p)(x + q) con dos esquinas, índice par contra impar con el punto que se arrastra hasta los negativos y
+ * la tabla de exponentes con signo. Las ideas 1, 2, 4 y 5 juegan con tablas: no hay figura que agarrar (sus filas se
+ * reacomodan con el valor) y se quedan con − y +.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -46,6 +52,9 @@
   // √k escrito sin raíz si k es un cuadrado perfecto.
   const esCuad = k => Number.isInteger(Math.sqrt(k));
   const rz = k => (esCuad(k) ? String(Math.sqrt(k)) : `√${k}`);
+
+  const BALD = () => Kit.piezas['alg-baldosas'], EJES = () => Kit.piezas.ejes;
+  const inversa = (escala, p, q) => px => p + (px - escala(p)) * (q - p) / (escala(q) - escala(p));
 
   // ---------- Idea 1: los exponentes cuentan factores ----------
   // Cambia: la base y los dos exponentes · Permanece: la tabla «expresión, factores, valor» · Progresa: los
@@ -103,12 +112,14 @@
         { estado: { corte: 1 }, texto: 'Bajar el exponente en 1 quita un factor 2: se divide entre 2.', ecuacion: ['8 → 4 → 2'] },
         { estado: { corte: 2 }, texto: 'Un paso más: 2 ÷ 2 = 1. Por eso a⁰ = 1.', ecuacion: ['2⁰ = 1'] },
         { estado: { corte: 3 }, texto: 'Si se sigue dividiendo, aparecen fracciones, no negativos.', ecuacion: ['2⁻³ = ', { frac: ['1', '2³'] }, ' = ', { frac: ['1', '8'] }] },
-        { estado: { corte: 3 }, texto: 'Con la ley de la suma: 2³ · 2⁻³ = 2⁰ = 1.', ecuacion: ['2³ · 2⁻³ = 2³⁺⁽⁻³⁾ = 1'] },
+        { estado: { corte: 3 }, texto: 'Con la ley de la suma: 2³ · 2⁻³ = 2⁰ = 1.', ecuacion: ['2³ · 2⁻³ = ', { llave: ['2³⁺⁽⁻³⁾'], nota: 'se suman', color: 'c-d' }, ' = 1'] },
       ],
     },
     regla: {
       texto: 'Al multiplicar potencias de igual base se suman los exponentes; al elevar una potencia, se multiplican. Un exponente negativo indica dividir.',
-      ecuacion: [{ sup: [a, m] }, ' · ', { sup: [a, n] }, ' = ', { sup: [a, [m, ' + ', n]] }, '   ;   ', { sup: [{ par: [{ sup: [a, m] }] }, n] }, ' = ', { sup: [a, [m, n]] }, '   ;   ', { sup: [a, ['−', n]] }, ' = ', { frac: ['1', { sup: [a, n] }] }],
+      ecuacion: [{ sup: [a, m] }, ' · ', { sup: [a, n] }, ' = ', { llave: [{ sup: [a, [m, ' + ', n]] }], nota: 'se suman', color: 'c-d' }, '   ·   ',
+        { sup: [{ par: [{ sup: [a, m] }] }, n] }, ' = ', { llave: [{ sup: [a, [m, n]] }], nota: 'se multiplican', color: 'c-d' }, '   ·   ',
+        { sup: [a, ['−', n]] }, ' = ', { llave: [{ frac: ['1', { sup: [a, n] }] }], nota: 'indica dividir', color: 'c-d' }],
       condicion: 'a ≠ 0 cuando el exponente es cero o negativo; 0⁰ y 0⁻¹ no se definen. Las leyes piden la misma base.',
       voz: 'Misma base, exponentes que se suman. Revisemos la base primero.',
     },
@@ -145,6 +156,9 @@
   // ---------- Idea 2: la raíz principal no es negativa ----------
   // Cambia: los dos números bajo la raíz · Permanece: las cuatro filas de la tabla · Progresa: la diferencia
   // entre √(a + b) y √a + √b · Se reserva: el x negativo bajo el cuadrado · Debe verse: √(x²) = |x|.
+  // Dos representaciones a propósito (hallazgo 9): el juego compara sumas y productos en la tabla, sin negativos, para
+  // que la predicción sobre √((−5)²) sea algo no visto; «Mira» pasa a la gráfica porque el caso negativo es lo nuevo.
+  // El laboratorio (índice par contra impar) junta las dos cosas con el punto que se arrastra.
   const ejesRaiz = (extra = {}) => Object.assign({
     x: { min: -6, max: 6, paso: 2, nombre: 'x', decimales: 0, color: 'o' },
     y: { min: -6, max: 6, paso: 2, nombre: 'y', decimales: 0 },
@@ -174,7 +188,7 @@
           }, estado: {},
         };
       },
-      lectura: v => [`√(a + b) = ${f(Math.sqrt(v.a + v.b))} · √a + √b = ${f(Math.sqrt(v.a) + Math.sqrt(v.b))}`],
+      lectura: v => [`√(a + b) = ${f(Math.sqrt(v.a + v.b))}`, '   ·   ', `√a + √b = ${f(Math.sqrt(v.a) + Math.sqrt(v.b))}`],
       minimo: 3,
     },
     predice: {
@@ -202,13 +216,13 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Para x ≥ 0, √(x²) coincide con x.', ecuacion: ['√(3²) = √9 = 3'] },
         { estado: { corte: 2 }, texto: 'Para x < 0, el cuadrado borra el signo y la raíz da el positivo.', ecuacion: ['√((−3)²) = √9 = 3'] },
-        { estado: { corte: 3 }, texto: 'En los dos casos el resultado es la distancia al cero.', ecuacion: [{ raiz: ['x²'] }, ' = ', { abs: ['x'] }] },
-        { estado: { corte: 3 }, texto: 'El producto se reparte; la suma no.', ecuacion: ['√(9 · 16) = 3 · 4 = 12   ;   √(9 + 16) = 5 ≠ 7'] },
+        { estado: { corte: 3 }, texto: 'En los dos casos el resultado es la distancia al cero.', ecuacion: [{ raiz: ['x²'] }, ' = ', { llave: [{ abs: ['x'] }], nota: 'distancia al cero', color: 'c-d' }] },
+        { estado: { corte: 3 }, texto: 'El producto se reparte; la suma no.', ecuacion: ['√(9 · 16) = 3 · 4 = 12', '   ·   ', '√(9 + 16) = 5 ≠ 7'] },
       ],
     },
     regla: {
       texto: 'El símbolo √ da la raíz principal, que nunca es negativa; por eso √(x²) = |x|. La raíz se reparte sobre un producto de no negativos, nunca sobre una suma.',
-      ecuacion: [{ raiz: ['x²'] }, ' = ', { abs: ['x'] }, '   ;   ', { raiz: [a, ' · ', b] }, ' = ', { raiz: [a] }, ' · ', { raiz: [b] }],
+      ecuacion: [{ raiz: ['x²'] }, ' = ', { llave: [{ abs: ['x'] }], nota: 'nunca negativo', color: 'c-d' }, '   ·   ', { raiz: [a, ' · ', b] }, ' = ', { raiz: [a] }, ' · ', { raiz: [b] }],
       condicion: 'en los reales, la raíz de índice par pide radicando no negativo (a, b ≥ 0); la impar admite negativos: ∛(−8) = −2.',
     },
     ahoraTu: {
@@ -252,6 +266,7 @@
   // ---------- Idea 3: el cuadrado de una suma tiene cuatro piezas ----------
   // Cambia: los largos a y b · Permanece: el cuadrado de lado a + b, a escala · Progresa: las piezas que lo llenan
   // · Se reserva: los dos rectángulos ab · Debe verse: a² + b² no alcanza a cubrir (a + b)².
+  // Gesto: el alumno estira el cuadrado por sus esquinas; los huecos ab crecen con él a la vista.
   const cuadrado = (va, vb, conAB, extra = {}) => ({
     anchos: [{ t: `a = ${va}`, v: va, color: 'o' }, { t: `b = ${vb}`, v: vb, color: 'i' }],
     altos: [{ t: 'a', v: va, color: 'o' }, { t: 'b', v: vb, color: 'i' }],
@@ -260,6 +275,19 @@
     total: { t: `(a + b)² = ${(va + vb) ** 2}` },
     alt: `Cuadrado de lado ${va} + ${vb}: ${conAB ? 'a², b² y dos rectángulos ab' : 'a² y b² dejan dos huecos'}`,
     ...extra,
+  });
+  // Gesto: la esquina interior de a² (diagonal) cambia a; la esquina de afuera de b² cambia b. Con escala fija
+  // (alg-baldosas `escala`), el cuadrado crece de verdad: lo que se ve es a + b, no una proporción.
+  const ESC_N = 24;   // px por unidad: a + b llega a 8 y el lado a 192 px, lo que cabe en la pieza
+  // Con la escala fija, un tramo de menos de 56 px muestra solo su letra (el valor está en el control y la lectura).
+  const rot = (t, v, val = v) => (v * ESC_N >= 56 ? `${t} = ${val}` : t);
+  const cuadJ = v => ({
+    anchos: [{ t: rot('a', v.a), v: v.a, color: 'o' }, { t: rot('b', v.b), v: v.b, color: 'i' }],
+    altos: [{ t: 'a', v: v.a, color: 'o' }, { t: 'b', v: v.b, color: 'i' }],
+    celdas: [[{ t: rot('a²', v.a, v.a * v.a), color: 'o' }, null], [null, { t: rot('b²', v.b, v.b * v.b), color: 'i' }]],
+    total: { t: `(a + b)² = ${(v.a + v.b) ** 2}` },
+    escala: ESC_N,
+    alt: `Cuadrado de lado ${v.a} + ${v.b}: a² y b² dejan dos huecos`,
   });
   const notables = {
     id: 'cuadrado-suma',
@@ -270,12 +298,20 @@
       consigna: 'Elige los largos a y b. El cuadrado mide a + b de lado; adentro ya están las piezas a² y b².',
       voz: 'Mira lo que queda sin cubrir.',
       controles: [
-        { id: 'a', etiqueta: 'a', min: 1, max: 6, paso: 1, inicio: 4, decimales: 0, color: 'c-o' },
-        { id: 'b', etiqueta: 'b', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0, color: 'c-i' },
+        { id: 'a', etiqueta: 'a', min: 1, max: 5, paso: 1, inicio: 4, decimales: 0, color: 'c-o' },
+        { id: 'b', etiqueta: 'b', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-i' },
       ],
-      dibujo: v => ({ datos: cuadrado(v.a, v.b, false), estado: {} }),
-      lectura: v => [`(a + b)² = ${(v.a + v.b) ** 2} · a² + b² = ${v.a ** 2 + v.b ** 2}`],
+      dibujo: v => ({ datos: cuadJ(v), estado: {} }),
+      lectura: v => [`(a + b)² = ${(v.a + v.b) ** 2}`, '   ·   ', `a² + b² = ${v.a ** 2 + v.b ** 2}`],
       minimo: 3,
+      arrastres: [
+        { id: 'esquina-a', etiqueta: 'esquina de la pieza a²', color: 'c-o',
+          donde: v => { const g = BALD().geometria(cuadJ(v)); return { x: g.xs[0][1], y: g.ys[0][1] }; },
+          mover: (pt, v) => { const g = BALD().geometria(cuadJ(v)); return { a: ((pt.x - g.x0) + (pt.y - g.y0)) / 2 / g.esc }; } },
+        { id: 'esquina-b', etiqueta: 'esquina de afuera del cuadrado', color: 'c-i',
+          donde: v => { const g = BALD().geometria(cuadJ(v)); return { x: g.xs[1][1], y: g.ys[1][1] }; },
+          mover: (pt, v) => { const g = BALD().geometria(cuadJ(v)); return { b: ((pt.x - g.xs[1][0]) + (pt.y - g.ys[1][0])) / 2 / g.esc }; } },
+      ],
     },
     predice: {
       pregunta: ['Con ', a, ' = 5 y ', b, ' = 2, ¿cuánto le falta a ', a, '² + ', b, '² para llegar a (', a, ' + ', b, ')²?'],
@@ -299,14 +335,15 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'La esquina de a por a: a².', ecuacion: [a, '² = 9'] },
         { estado: { corte: 2 }, texto: 'La esquina opuesta, de b por b: b².', ecuacion: [b, '² = 4'] },
-        { estado: { corte: 3 }, texto: 'Los dos huecos miden a por b: son 2ab.', ecuacion: ['2', a, b, ' = 2 · 3 · 2 = 12'] },
+        { estado: { corte: 3 }, texto: 'Los dos huecos miden a por b: son 2ab.', ecuacion: [{ llave: ['2', a, b], nota: 'dos rectángulos', color: 'c-d' }, ' = 2 · 3 · 2 = 12'] },
         { estado: { corte: 4 }, texto: 'Las cuatro piezas llenan el cuadrado de lado a + b.', ecuacion: ['9 + 12 + 4 = 25 = 5²'] },
         { estado: { corte: 4 }, texto: 'Con a = −3 no hay figura, pero la distributividad da igual.', ecuacion: ['(−3 + 2)² = 1 = 9 − 12 + 4'] },
       ],
     },
     regla: {
       texto: 'El cuadrado de una suma tiene dos cuadrados y dos rectángulos iguales. La suma por la diferencia deja solo la resta de los cuadrados.',
-      ecuacion: ['(', a, ' + ', b, ')² = ', a, '² + 2', a, b, ' + ', b, '²   ;   (', a, ' + ', b, ')(', a, ' − ', b, ') = ', a, '² − ', b, '²'],
+      ecuacion: ['(', a, ' + ', b, ')² = ', a, '² + ', { llave: ['2', a, b], nota: 'huecos', color: 'c-d' }, ' + ', b, '²', '   ·   ',
+        '(', a, ' + ', b, ')(', a, ' − ', b, ') = ', a, '² − ', b, '²'],
       condicion: 'valen para todo par de números reales a y b; la figura de áreas solo ilustra el caso de lados positivos.',
     },
     ahoraTu: {
@@ -399,8 +436,9 @@
     },
     regla: {
       texto: 'Un radical doble √(A ± 2√B) se vuelve simple si hay dos números x e y que suman A y se multiplican B.',
-      ecuacion: [{ raiz: ['A ± 2', { raiz: ['B'] }] }, ' = ', { raiz: [{ v: 'c-o', t: 'x' }] }, ' ± ', { raiz: [{ v: 'c-i', t: 'y' }] }],
-      condicion: 'x + y = A, x · y = B y x ≥ y ≥ 0. Con el signo menos va primero el mayor, y nada queda negativo.',
+      ecuacion: [{ raiz: ['A ± 2', { raiz: ['B'] }] }, ' = ', { raiz: [{ v: 'c-o', t: 'x' }] }, ' ± ', { raiz: [{ v: 'c-i', t: 'y' }] }, '   ·   ',
+        { llave: [{ v: 'c-o', t: 'x' }, ' + ', { v: 'c-i', t: 'y' }], nota: 'suman A', color: 'c-d' }, ' = A', '   ·   ', { llave: [{ v: 'c-o', t: 'x' }, ' · ', { v: 'c-i', t: 'y' }], nota: 'multiplican B', color: 'c-d' }, ' = B'],
+      condicion: 'x ≥ y ≥ 0, y con el signo menos va primero el mayor: así nada queda negativo.',
     },
     ahoraTu: {
       generar(s) {
@@ -471,7 +509,7 @@
     },
     regla: {
       texto: 'Racionalizar es multiplicar por una expresión igual a 1 que deja el denominador sin raíces. Con √a − √b se usa su conjugado √a + √b.',
-      ecuacion: [{ frac: ['1', ['√', a, ' − √', b]] }, ' = ', { frac: [['√', a, ' + √', b], [a, ' − ', b]] }],
+      ecuacion: [{ frac: ['1', ['√', a, ' − √', b]] }, ' = ', { frac: [{ llave: ['√', a, ' + √', b], nota: 'el conjugado', color: 'c-d', arriba: true }, { llave: [a, ' − ', b], nota: 'sin raíces', color: 'c-d' }] }],
       condicion: 'a ≠ b y el denominador no vale cero; el valor de la expresión y sus restricciones no cambian.',
     },
     ahoraTu: {
@@ -498,9 +536,85 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: el rectángulo (x + p)(x + q), con dos tramos distintos; si p = q vuelve el cuadrado de la idea 3.
+  const xx = { v: 'c-o', t: 'x' }, pp = { v: 'c-i', t: 'p' }, qq = { v: 'c-d', t: 'q' };
+  const rectXPQ = v => ({
+    anchos: [{ t: rot('x', v.x), v: v.x, color: 'o' }, { t: rot('p', v.p), v: v.p, color: 'i' }],
+    altos: [{ t: 'x', v: v.x, color: 'o' }, { t: rot('q', v.q), v: v.q, color: 'd' }],
+    celdas: [[{ t: rot('x²', v.x, v.x * v.x), color: 'o' }, { t: `${v.p * v.x}`, color: 'i' }], [{ t: `${v.q * v.x}`, color: 'd' }, { t: `${v.p * v.q}`, color: 'f' }]],
+    total: { t: `x² + ${v.p + v.q}x + ${v.p * v.q} = ${(v.x + v.p) * (v.x + v.q)}` },
+    escala: ESC_N,
+    alt: `Rectángulo de ${v.x} + ${v.p} por ${v.x} + ${v.q}: x², px, qx y pq suman ${(v.x + v.p) * (v.x + v.q)}`,
+  });
+  const mesaRect = {
+    id: 'rectangulo-x-p-q', titulo: 'El rectángulo (x + p)(x + q)', pieza: 'alg-baldosas',
+    consigna: 'Arrastra la esquina de x² para cambiar x y la esquina de afuera para cambiar p y q. ¿Cuándo vuelve a ser un cuadrado?',
+    controles: [
+      { id: 'x', etiqueta: 'x', min: 1, max: 5, paso: 1, inicio: 4, decimales: 0, color: 'c-o' },
+      { id: 'p', etiqueta: 'p', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-i' },
+      { id: 'q', etiqueta: 'q', min: 1, max: 3, paso: 1, inicio: 3, decimales: 0, color: 'c-d' },
+    ],
+    dibujo: v => ({ datos: rectXPQ(v), estado: {} }),
+    lectura: v => [xx, ` = ${v.x}, `, pp, ` = ${v.p}, `, qq, ` = ${v.q}: área ${(v.x + v.p) * (v.x + v.q)}`],
+    arrastres: [
+      { id: 'esquina-x', etiqueta: 'esquina de la pieza x²', color: 'c-o',
+        donde: v => { const g = BALD().geometria(rectXPQ(v)); return { x: g.xs[0][1], y: g.ys[0][1] }; },
+        mover: (pt, v) => { const g = BALD().geometria(rectXPQ(v)); return { x: ((pt.x - g.x0) + (pt.y - g.y0)) / 2 / g.esc }; } },
+      { id: 'esquina-pq', etiqueta: 'esquina de afuera: p a lo ancho, q a lo alto', color: 'c-i',
+        donde: v => { const g = BALD().geometria(rectXPQ(v)); return { x: g.xs[1][1], y: g.ys[1][1] }; },
+        mover: (pt, v) => { const g = BALD().geometria(rectXPQ(v)); return { p: (pt.x - g.xs[1][0]) / g.esc, q: (pt.y - g.ys[1][0]) / g.esc }; } },
+    ],
+  };
+  // Mesa 2: la raíz del cuadrado contra la raíz cúbica del cubo, con x negativo (lo que la idea 2 reserva).
+  const ejesIndice = v => ejesRaiz({
+    curvas: [{ puntos: [[-6, -6], [6, 6]], color: 'h', discontinua: true, rotulo: 'y = x', en: [4.5, 3] },
+      { puntos: VX.map(x => [x, v.k === 2 ? Math.abs(x) : x]), color: 'd', rotulo: v.k === 2 ? 'y = √(x²)' : 'y = ∛(x³)', en: v.k === 2 ? [-6, 6] : [-6, -6] }],
+    puntos: [{ x: v.x, y: v.k === 2 ? Math.abs(v.x) : v.x, color: 'o', rotulo: f(v.k === 2 ? Math.abs(v.x) : v.x, 0), guias: true }],
+    alt: v.k === 2 ? `Raíz de x al cuadrado: en x = ${v.x} vale ${Math.abs(v.x)}` : `Raíz cúbica de x al cubo: en x = ${v.x} vale ${v.x}`,
+  });
+  const mesaIndice = {
+    id: 'raiz-de-la-potencia', titulo: 'Índice par contra índice impar', pieza: 'ejes',
+    consigna: 'Arrastra el punto por la gráfica, también hacia los negativos. Cambia el índice y compara.',
+    controles: [
+      { id: 'x', etiqueta: 'x', min: -6, max: 6, paso: 1, inicio: -3, decimales: 0, color: 'c-o' },
+      { id: 'k', etiqueta: 'Índice', opciones: [{ valor: 2, texto: '√(x²)' }, { valor: 3, texto: '∛(x³)' }] },
+    ],
+    dibujo: v => ({ datos: ejesIndice(v), estado: {} }),
+    lectura: v => (v.k === 2 ? [{ v: 'c-o', t: 'x' }, ` = ${f(v.x, 0)}   →   √(x²) = ${f(Math.abs(v.x), 0)}`] : [{ v: 'c-o', t: 'x' }, ` = ${f(v.x, 0)}   →   ∛(x³) = ${f(v.x, 0)}`]),
+    arrastres: [
+      { id: 'punto', etiqueta: 'punto de la gráfica', color: 'c-o',
+        donde: v => { const g = EJES().geometria(ejesIndice(v)); return { x: g.X(v.x), y: g.Y(v.k === 2 ? Math.abs(v.x) : v.x) }; },
+        mover: (pt, v) => { const g = EJES().geometria(ejesIndice(v)); return { x: inversa(g.X, -6, 6)(pt.x) }; } },
+    ],
+  };
+  // Mesa 3: la tabla de la idea 1 con exponentes negativos, que la idea solo deja predecir.
+  const factoresConSigno = (base, e) => (e >= 0 ? factores(base, e) : `1/(${factores(base, -e)})`);
+  const mesaSigno = {
+    id: 'exponentes-con-signo', titulo: 'Exponentes con signo', pieza: 'alg-tabla',
+    consigna: 'Elige la base y dos exponentes, también negativos. La última fila suma los exponentes: ¿el valor coincide?',
+    controles: [
+      { id: 'a', etiqueta: 'Base', min: 2, max: 5, paso: 1, inicio: 2, decimales: 0 },
+      { id: 'm', etiqueta: 'm', min: -3, max: 3, paso: 1, inicio: 3, decimales: 0, color: 'c-o' },
+      { id: 'n', etiqueta: 'n', min: -3, max: 3, paso: 1, inicio: -2, decimales: 0, color: 'c-i' },
+    ],
+    dibujo: v => ({
+      datos: {
+        columnas: ['potencia', 'factores', 'valor'],
+        filas: [
+          [{ t: pot(v.a, v.m), color: 'o', fuerte: true }, factoresConSigno(v.a, v.m), valorPot(v.a, v.m)],
+          [{ t: pot(v.a, v.n), color: 'i', fuerte: true }, factoresConSigno(v.a, v.n), valorPot(v.a, v.n)],
+          [{ t: pot(v.a, v.m + v.n), color: 'd', fuerte: true }, `${f(v.m, 0)} + (${f(v.n, 0)}) = ${f(v.m + v.n, 0)}`, { t: valorPot(v.a, v.m + v.n), color: 'd', fuerte: true }],
+        ],
+        alt: `${v.a} elevado a ${v.m} por ${v.a} elevado a ${v.n} es ${v.a} elevado a ${v.m + v.n}, que vale ${valorPot(v.a, v.m + v.n)}`,
+      }, estado: {},
+    }),
+    lectura: v => [`${pot(v.a, v.m)} · ${pot(v.a, v.n)} = ${pot(v.a, v.m + v.n)} = ${valorPot(v.a, v.m + v.n)}`],
+  };
+
   return {
     unidad: 'algebra.exponentes-y-productos-notables',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/alg-baldosas.js', '/nucleo/kit/piezas/ejes.js'],
     historia: {
@@ -508,6 +622,7 @@
       pregunta: '¿Una figura demuestra una igualdad para todos los números?',
       fuente: { titulo: 'O’Connor y Robertson, René Descartes — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Descartes/' },
     },
+    laboratorio: [mesaRect, mesaIndice, mesaSigno],
     ideas: [leyes, radicales, notables, dobles, racionalizar],
   };
 });

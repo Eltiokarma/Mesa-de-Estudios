@@ -49,7 +49,9 @@
     const manija = eje + 52, fantasma = manija + 30;
     const span = d.max - d.min || 1;
     const x = v => X0 + (X1 - X0) * (v - d.min) / span;
-    return { filas, eje, manija, fantasma, alto: fantasma + 16, x, filaY: k => eje - FILA * k };
+    // v: la inversa de x (de píxeles del viewBox a un valor de la recta), para las manijas del gesto directo.
+    const v = px => d.min + (px - X0) * span / (X1 - X0);
+    return { filas, eje, manija, fantasma, alto: fantasma + 16, x, v, filaY: k => eje - FILA * k };
   }
   const fmt = (d, v) => `${d.prefijo || ''}${Kit.formatear(v, d.decimales === undefined ? 2 : d.decimales)}${d.sufijo || ''}`;
   const dentro = (d, v) => Math.min(d.max, Math.max(d.min, v));

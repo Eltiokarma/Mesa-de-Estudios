@@ -170,6 +170,21 @@
     return { cuerda, filaH, n, reglaY, fantasmaY, alto: fantasmaY + 16 };
   }
 
+  // Dónde quedan los platillos de una balanza (para las manijas del gesto directo): la del enunciado `o.balanza`
+  // o, si no se pide, la de trabajo en la vista `o.vista`. Devuelve el centro de cada platillo sobre su línea
+  // (x, y del plato), el punto de giro y los grados: los mismos números con que balanzaSVG la dibuja.
+  // (Con la marca activa, el platillo de la marca recibe figuras y su inclinación puede cambiar: no se cubre.)
+  function platillos(d, o = {}) {
+    const g = geometria(d);
+    let i, b;
+    if (Number.isInteger(o.balanza)) { i = o.balanza; b = (d.balanzas || [])[i]; }
+    else { i = (d.balanzas || []).length; b = (d.trabajo || [])[Math.max(0, Math.min((d.trabajo || []).length - 1, o.vista || 0))]; }
+    if (!b) return null;
+    const py = i * g.filaH + 26, grados = inclinacion(d, b), a = grados * Math.PI / 180;
+    const dx = BRAZO * Math.cos(a), dy = BRAZO * Math.sin(a);
+    return { izq: { x: CX - dx, y: py + dy + g.cuerda }, der: { x: CX + dx, y: py - dy + g.cuerda }, giro: { x: CX, y: py }, grados, alto: g.alto, ancho: W };
+  }
+
   // Una balanza en la fila i: travesaño inclinado según su peso, cuerdas, platillos y lo que hay encima.
   function balanzaSVG(d, g, i, b, o = {}) {
     const y0 = i * g.filaH, py = y0 + 26, grados = o.grados === undefined ? inclinacion(d, b) : o.grados;
@@ -321,5 +336,5 @@
     return `${bs.length === 1 ? 'Una balanza' : `${bs.length} balanzas`}: ${bs.join('; ')}`;
   }
 
-  return { id: 'balanza', dibujar, alt, controles, pesoLado, inclinacion, cabe, respuestaMarca };
+  return { id: 'balanza', dibujar, alt, controles, pesoLado, inclinacion, cabe, respuestaMarca, geometria, platillos };
 });

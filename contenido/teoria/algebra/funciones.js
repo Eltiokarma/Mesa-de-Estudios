@@ -5,12 +5,14 @@
  * y TAL-* nuevos (hipótesis de diseño, rutinas/teoria-algebra.md).
  * Colores (regla 4): x entrada naranja (c-o), y salida turquesa (c-i), h y a rojo (c-h), k y b verde (c-d).
  * Intervalos con la notación del curso: [a; b] cerrado, ⟨a; b⟩ abierto.
+ * Ronda 2 (14 nov 2026): gesto directo en cinco de las seis ideas (el punto de inicio, el vértice, el punto
+ * (x; f(x)), el punto trasladado y las tres raíces), llaves en las reglas y un laboratorio de tres mesas.
  *
  * Ficha de tarea (diseno-y-animacion):
  * Promesa · leer una función en su gráfica: qué entradas admite, qué salidas da y cómo se mueve al transformarla.
  * Persona y condiciones · 4.º de secundaria, celular de gama baja a 360 px, sin audio, en el aula o en casa.
  * Resultado observable · da dominio y rango, el vértice, el valor de ⌊x⌋ con negativos, una composición y una traslación.
- * Orden de atención · 1.º la curva en el plano · 2.º el punto que se mueve con el control · acción: «Comprobar» · fondo: Nox.
+ * Orden de atención · 1.º la curva en el plano · 2.º la manija que el alumno arrastra · acción: «Comprobar» · fondo: Nox.
  * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué f(x − 2) va a la derecha y por qué el rango no siempre es todo ℝ.
  */
@@ -55,10 +57,21 @@
     x: { min: xm, max: xM, paso: 1, cada: 1, nombre: 'x', color: 'o', decimales: 0 },
     y: { min: ym, max: yM, paso: 1, cada: 2, nombre: 'y', color: 'i', decimales: 0 },
   }, extra);
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la pieza «ejes»; mover la convierte en
+  // valores con la inversa lineal de su escala, y el lector los ajusta al paso y al rango de cada control. Todos los
+  // juegos con arrastre usan ejes de rango fijo, para que la manija no se escape al cambiar los valores.
+  const inversa = (escala, p, q) => px => p + (px - escala(p)) * (q - p) / (escala(q) - escala(p));
+  const EJES = () => Kit.piezas.ejes;
+  const lienzo = (xm, xM, ym, yM) => {
+    const g = EJES().geometria(ejesBase(xm, xM, ym, yM));
+    return { X: g.X, Y: g.Y, aX: inversa(g.X, xm, xM), aY: inversa(g.Y, ym, yM) };
+  };
+  const ajusta = (val, paso, lo, hi) => Math.min(hi, Math.max(lo, Math.round(val / paso) * paso));
 
   // ---------- Idea 1: entradas permitidas y salidas obtenidas ----------
-  // Cambia: h y k de y = √(x − h) + k · Permanece: la forma de la curva · Progresa: el punto de inicio (h; k)
-  // · Se reserva: el mínimo de x² + 3, que no es 0 · Debe verse: el rango empieza donde empieza la curva.
+  // Cambia: h y k de y = √(x − h) + k, arrastrando el punto de inicio · Permanece: la forma de la curva · Progresa:
+  // el punto de inicio (h; k) · Se reserva: el mínimo de x² + 3, que no es 0 · Debe verse: el rango empieza donde
+  // empieza la curva.
   const raiz = (hh, kk) => xx => (xx >= hh ? Math.sqrt(xx - hh) + kk : NaN);
   const dominioRango = {
     id: 'dominio-rango',
@@ -78,6 +91,10 @@
       }), estado: {} }),
       lectura: v => [`Dominio [${f(v.h)}; +∞⟩ · Rango [${f(v.k)}; +∞⟩`],
       minimo: 3,
+      // Arrastra el punto de inicio: mueve h a lo ancho y k a lo alto, y la curva entera lo sigue.
+      arrastres: [{ id: 'inicio', etiqueta: 'punto de inicio (h; k)', color: 'c-h',
+        donde: v => { const g = lienzo(-4, 7, -3, 6); return { x: g.X(v.h), y: g.Y(v.k) }; },
+        mover: pt => { const g = lienzo(-4, 7, -3, 6); return { h: g.aX(pt.x), k: g.aY(pt.y) }; } }],
     },
     predice: {
       pregunta: ['La función ', y, ' = ', x, '² + 3 admite cualquier ', x, ' real. ¿Cuál es su rango?'],
@@ -112,7 +129,7 @@
     },
     regla: {
       texto: 'El dominio son las entradas permitidas: no se divide entre 0 ni se saca raíz cuadrada de un negativo. El rango son las salidas que de verdad se obtienen.',
-      ecuacion: [y, ' = √(', x, ' − ', h, ') + ', k, ':   Dom = [', h, '; +∞⟩,   Ran = [', k, '; +∞⟩'],
+      ecuacion: [y, ' = √(', x, ' − ', h, ') + ', k, '   ·   ', 'Dom = [', { llave: [h], nota: 'x inicial', color: 'c-h' }, '; +∞⟩', '   ·   ', 'Ran = [', { llave: [k], nota: 'y inicial', color: 'c-d' }, '; +∞⟩'],
       condicion: 'el rango se comprueba: cada valor del rango debe salir de alguna x del dominio, no basta con el codominio.',
     },
     ahoraTu: {
@@ -166,8 +183,8 @@
   };
 
   // ---------- Idea 2: el vértice está a mitad de camino ----------
-  // Cambia: a, b y c · Permanece: los ejes · Progresa: la parábola y su vértice · Se reserva: a = 0, que la vuelve
-  // recta · Debe verse: el vértice queda en el eje de simetría, a mitad de las dos raíces.
+  // Cambia: a, b y c; el vértice se arrastra (mueve b y c) · Permanece: los ejes · Progresa: la parábola y su vértice
+  // · Se reserva: a = 0, que la vuelve recta · Debe verse: el vértice queda en el eje de simetría, a mitad de las raíces.
   const cuad = (A, B, C) => xx => A * xx * xx + B * xx + C;
   const cuadratica = {
     id: 'cuadratica',
@@ -188,6 +205,21 @@
       },
       lectura: v => (v.a === 0 ? [`a = 0: recta de pendiente ${f(v.b)}`] : [`Vértice en x = ${f(-v.b / (2 * v.a))} · abre hacia ${v.a > 0 ? 'arriba' : 'abajo'}`]),
       minimo: 4,
+      // Arrastra el vértice: a lo ancho cambia b (x = −b/2a), a lo alto cambia c. Con a = 0 no hay vértice y la
+      // manija queda en el corte con el eje y, donde solo mueve c.
+      arrastres: [{ id: 'vertice', etiqueta: 'vértice de la parábola', color: 'c-d',
+        donde: v => {
+          const g = lienzo(-5, 5, -8, 8);
+          if (v.a === 0) return { x: g.X(0), y: g.Y(v.c) };
+          const xv = -v.b / (2 * v.a);
+          return { x: g.X(xv), y: g.Y(cuad(v.a, v.b, v.c)(xv)) };
+        },
+        mover: (pt, v) => {
+          const g = lienzo(-5, 5, -8, 8);
+          if (v.a === 0) return { c: g.aY(pt.y) };
+          const B = ajusta(-2 * v.a * g.aX(pt.x), 2, -4, 4);
+          return { b: B, c: g.aY(pt.y) + B * B / (4 * v.a) };
+        } }],
     },
     predice: {
       pregunta: ['En ', y, ' = ', x, '² − 6', x, ' + 5, ¿en qué valor de ', x, ' está el vértice?'],
@@ -222,7 +254,7 @@
     },
     regla: {
       texto: 'En y = ax² + bx + c, el eje de simetría pasa por x = −b/(2a). Con a > 0 el vértice es el mínimo; con a < 0, el máximo.',
-      ecuacion: ['vértice en  ', x, ' = −', { frac: [b, ['2', a]] }],
+      ecuacion: ['vértice en  ', x, ' = ', { llave: ['−', { frac: [b, ['2', a]] }], nota: 'eje de simetría', color: 'c-d' }],
       condicion: 'a ≠ 0 para que sea cuadrática. Con a = 0 queda la función lineal, una recta de pendiente b.',
     },
     ahoraTu: {
@@ -261,6 +293,9 @@
   // ---------- Idea 3: el piso de un negativo ----------
   // Cambia: la familia y la entrada x · Permanece: los ejes y la escala · Progresa: el punto (x; f(x)) · Se reserva:
   // ⌊x⌋ con x negativo no entero · Debe verse: ⌊x⌋ es el entero de la izquierda en la recta, no «quitar decimales».
+  // Dos representaciones a propósito (hallazgo 9): el juego recorre las cuatro gráficas en el plano; predecir y «Mira»
+  // usan la recta numérica, porque ⌊−1,2⌋ es una pregunta de orden entre números, no de forma de una curva. El paso
+  // de x es 0,5 para que el juego ya muestre un piso con decimales antes de la predicción.
   const FAM = {
     '|x|': xx => Math.abs(xx), '√x': xx => (xx >= 0 ? Math.sqrt(xx) : NaN),
     'sgn(x)': xx => Math.sign(xx), '⌊x⌋': xx => Math.floor(xx),
@@ -283,19 +318,23 @@
     temas: ['Valor absoluto, raíz cuadrada, signo y máximo entero'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Elige una función y una entrada entera x. Mira el punto (x; f(x)). Prueba entradas negativas en las cuatro.',
+      consigna: 'Elige una función y arrastra el punto (x; f(x)) a lo largo del eje. Prueba entradas negativas y con decimales.',
       voz: 'Creo que √x se niega a algunas entradas. Compruébalo.',
       controles: [
         { id: 'fam', etiqueta: 'Función', opciones: Object.keys(FAM).map(t => ({ valor: t, texto: t })) },
-        { id: 'x', etiqueta: 'x', color: 'c-o', min: -3, max: 3, paso: 1, inicio: 2, decimales: 0 },
+        { id: 'x', etiqueta: 'x', color: 'c-o', min: -3, max: 3, paso: 0.5, inicio: 2, decimales: 1 },
       ],
       dibujo: v => {
         const g = grafFamilia(v.fam), yy = FAM[v.fam](v.x);
         const pts = Number.isFinite(yy) ? [{ x: v.x, y: yy, color: 'o', rotulo: par(v.x, yy), guias: true }] : [];
         return { datos: ejesBase(-4, 4, -4, 4, { curvas: g.curvas, puntos: [...g.puntos, ...pts] }), estado: {} };
       },
-      lectura: v => { const yy = FAM[v.fam](v.x); return Number.isFinite(yy) ? [v.fam.replace('x', f(v.x)), ` = ${f(yy)}`] : [`${v.fam} no existe para x = ${f(v.x)}`]; },
+      lectura: v => { const yy = FAM[v.fam](v.x); return Number.isFinite(yy) ? [v.fam.replace('x', f(v.x, 1)), ` = ${f(yy)}`] : [`${v.fam} no existe para x = ${f(v.x)}`]; },
       minimo: 4,
+      // Arrastra el punto a lo ancho: mueve la entrada x. Si f no existe ahí (√ de un negativo), la manija queda en el eje.
+      arrastres: [{ id: 'entrada', etiqueta: 'entrada x', color: 'c-o',
+        donde: v => { const g = lienzo(-4, 4, -4, 4), yy = FAM[v.fam](v.x); return { x: g.X(v.x), y: g.Y(Number.isFinite(yy) ? yy : 0) }; },
+        mover: pt => ({ x: lienzo(-4, 4, -4, 4).aX(pt.x) }) }],
     },
     predice: {
       pregunta: ['⌊', x, '⌋ es el mayor entero menor o igual que ', x, '. ¿Cuánto vale ⌊−1,2⌋?'],
@@ -372,6 +411,7 @@
   // ---------- Idea 4: primero g, después f ----------
   // Cambia: x y el orden de las máquinas · Permanece: f y g · Progresa: la tabla x → g(x) → f(g(x)) · Se reserva:
   // la x que g acepta y f rechaza · Debe verse: el dominio de f∘g mira las dos máquinas.
+  // Sin arrastre: la tabla no tiene nada que agarrar; elegir el orden es una decisión, no un gesto sobre la figura.
   const COMP = { f: v => v + 2, g: v => v * v };
   const raizMenos4 = v => (v - 4 >= 0 ? Math.sqrt(v - 4) : NaN);
   const tablaRaiz = (corte0 = 0) => ({
@@ -426,7 +466,7 @@
     },
     regla: {
       texto: '(f∘g)(x) = f(g(x)): primero actúa g y después f. El orden importa. Las operaciones f + g y f · g se hacen punto a punto.',
-      ecuacion: ['(f∘g)(', x, ') = f(g(', x, '))'],
+      ecuacion: ['(f∘g)(', x, ') = f(', { llave: ['g(', x, ')'], nota: 'actúa primero' }, ')'],
       condicion: 'x debe estar en el dominio de g, y g(x) en el de f. f + g usa el dominio común.',
     },
     ahoraTu: {
@@ -453,7 +493,8 @@
 
   // ---------- Idea 5: x − h va a la derecha ----------
   // Cambia: k y el reflejo · Permanece: la curva base √x (discontinua) · Progresa: la copia transformada y su punto
-  // de inicio · Se reserva: el corrimiento horizontal · Debe verse: f(x − 2) empieza donde x − 2 = 0.
+  // de inicio, que se arrastra a lo alto · Se reserva: el corrimiento horizontal (va al laboratorio) · Debe verse:
+  // f(x − 2) empieza donde x − 2 = 0.
   const BASE = xx => (xx >= 0 ? Math.sqrt(xx) : NaN);
   const REFL = { 'f(x)': (g, xx) => g(xx), '−f(x)': (g, xx) => -g(xx), 'f(−x)': (g, xx) => g(-xx) };
   const traslaciones = {
@@ -478,6 +519,10 @@
       },
       lectura: v => [y, ` = ${v.refl.replace('f(x)', '√x').replace('f(−x)', '√(−x)')}${v.k ? ` ${signo(v.k)}` : ''}`],
       minimo: 4,
+      // Arrastra el punto que seguías: solo se mueve a lo alto (k). El corrimiento a lo ancho se guarda para predecir.
+      arrastres: [{ id: 'seguido', etiqueta: 'punto que empieza en (4; 2)', color: 'c-d',
+        donde: v => { const g = lienzo(-6, 6, -5, 5); return { x: g.X(v.refl === 'f(−x)' ? -4 : 4), y: g.Y((v.refl === '−f(x)' ? -2 : 2) + v.k) }; },
+        mover: (pt, v) => ({ k: lienzo(-6, 6, -5, 5).aY(pt.y) - (v.refl === '−f(x)' ? -2 : 2) }) }],
     },
     predice: {
       pregunta: [y, ' = √', x, ' empieza en (0; 0). ¿Dónde empieza ', y, ' = √(', x, ' − 2) + 1?'],
@@ -512,7 +557,7 @@
     },
     regla: {
       texto: 'y = f(x − h) + k corre la gráfica h a la derecha y k hacia arriba. −f(x) la refleja en el eje x; f(−x), en el eje y.',
-      ecuacion: [y, ' = f(', x, ' − ', h, ') + ', k, ':   (', x, '; ', y, ')  →  (', x, ' + ', h, '; ', y, ' + ', k, ')'],
+      ecuacion: [y, ' = f(', x, ' − ', { llave: [h], nota: 'derecha', color: 'c-h' }, ') + ', { llave: [k], nota: 'arriba', color: 'c-d' }, '   ·   ', '(', x, '; ', y, ')  →  (', x, ' + ', h, '; ', y, ' + ', k, ')'],
       condicion: 'h se lee en la forma x − h: en f(x + 3), h = −3 y la gráfica va a la izquierda.',
     },
     ahoraTu: {
@@ -550,7 +595,7 @@
   };
 
   // ---------- Idea 6: raíces, multiplicidad y extremos ----------
-  // Cambia: las tres raíces · Permanece: el signo principal positivo · Progresa: los cortes con el eje · Se reserva:
+  // Cambia: las tres raíces, que se arrastran por el eje · Permanece: el signo principal positivo · Progresa: los cortes con el eje · Se reserva:
   // el signo principal negativo · Debe verse: el término de mayor grado decide hacia dónde se van los extremos.
   const cubica = (rs, lider = 1, esc = 1) => xx => lider * rs.reduce((pp, rr) => pp * (xx - rr), 1) / esc;
   const polinomial = {
@@ -578,6 +623,10 @@
         return [`Cortes en x = ${d.map(z => f(z)).join('; ')}`, d.length < 3 ? ' · una raíz repetida' : ''];
       },
       minimo: 4,
+      // Arrastra cada raíz por el eje x: la curva se rehace para pasar por las tres.
+      arrastres: ['r1', 'r2', 'r3'].map((id, i) => ({ id, etiqueta: `raíz ${i + 1}`, color: 'c-h',
+        donde: v => { const g = lienzo(-4, 4, -6, 6); return { x: g.X(v[id]), y: g.Y(0) }; },
+        mover: pt => ({ [id]: lienzo(-4, 4, -6, 6).aX(pt.x) }) })),
     },
     predice: {
       pregunta: ['En ', y, ' = −(', x, ' − 1)(', x, ' + 1)(', x, ' − 2), cuando ', x, ' crece mucho, ¿qué hace la gráfica?'],
@@ -605,14 +654,14 @@
       }),
       pasos: [
         { estado: { corte: 1 }, texto: 'Cada factor se anula en una raíz: −1, 1 y 2.', ecuacion: ['(', x, ' − 1)(', x, ' + 1)(', x, ' − 2) = 0'] },
-        { estado: { corte: 2 }, texto: `Fuera de las raíces: a la derecha y es negativo; a la izquierda, positivo.`, ecuacion: [y, `(2,5) = ${f(cubica([1, -1, 2], -1)(2.5))}   ·   `, y, `(−1,5) = ${f(cubica([1, -1, 2], -1)(-1.5))}`] },
+        { estado: { corte: 2 }, texto: `Fuera de las raíces: a la derecha y es negativo; a la izquierda, positivo.`, ecuacion: [y, `(2,5) = ${f(cubica([1, -1, 2], -1)(2.5))}`, '   ·   ', y, `(−1,5) = ${f(cubica([1, -1, 2], -1)(-1.5))}`] },
         { estado: { corte: 3 }, texto: 'Las raíces son simples: la curva cruza el eje en cada una.', ecuacion: ['multiplicidad 1  ⇒  cruza'] },
         { estado: { corte: 3 }, texto: 'El término principal −x³ manda: sube a la izquierda, baja a la derecha.', ecuacion: [y, ' ≈ −', x, '³  para |', x, '| grande'] },
       ],
     },
     regla: {
       texto: 'Las raíces reales son los cortes con el eje x. Con multiplicidad impar la gráfica cruza; con par, toca y rebota. El término de mayor grado decide los extremos.',
-      ecuacion: [y, ' = ', a, '(', x, ' − r₁)…(', x, ' − rₙ):  extremos como ', a, x, 'ⁿ'],
+      ecuacion: [y, ' = ', a, { llave: ['(', x, ' − r₁)…(', x, ' − rₙ)'], nota: 'uno por raíz', color: 'c-h' }, '   ·   ', 'extremos como ', { llave: [a, x, 'ⁿ'], nota: 'término principal', color: 'c-h' }],
       condicion: 'el polinomio está factorizado con raíces reales; una ventana de la gráfica no muestra todo el dominio.',
     },
     ahoraTu: {
@@ -663,11 +712,102 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: la traslación completa, con h (que la idea 5 reserva) y tres curvas base; se arrastra el punto ancla.
+  const BASES = { '√x': BASE, 'x²': xx => xx * xx, '|x|': xx => Math.abs(xx) };
+  const ANCLA = { '√x': 'empieza', 'x²': 'vértice', '|x|': 'vértice' };
+  const exprBase = (nom, H) => {
+    const adentro = H ? `x ${menos(H)}` : 'x';
+    return nom === '√x' ? (H ? `√(${adentro})` : '√x') : nom === 'x²' ? (H ? `(${adentro})²` : 'x²') : `|${adentro}|`;
+  };
+  const mesaTraslacion = {
+    id: 'trasladar', titulo: 'La gráfica que se traslada', pieza: 'ejes',
+    consigna: 'Elige la curva base y arrastra su punto ancla. La discontinua es la base; la turquesa, y = ±f(x − h) + k.',
+    controles: [
+      { id: 'base', etiqueta: 'Base', opciones: Object.keys(BASES).map(t => ({ valor: t, texto: t })) },
+      { id: 'h', etiqueta: 'h', color: 'c-h', min: -4, max: 4, paso: 1, inicio: 2, decimales: 0 },
+      { id: 'k', etiqueta: 'k', color: 'c-d', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'signo', etiqueta: 'Delante', opciones: [{ valor: 1, texto: '+f' }, { valor: -1, texto: '−f' }] },
+    ],
+    dibujo: v => {
+      const B = BASES[v.base], g = xx => v.signo * B(xx - v.h) + v.k;
+      return { datos: ejesBase(-6, 6, -5, 5, {
+        curvas: [{ puntos: muestra(B, -6, 6, -5, 5), color: 'o', discontinua: true }, { puntos: muestra(g, -6, 6, -5, 5), color: 'i' }],
+        puntos: [{ x: 0, y: 0, color: 'o', abierto: true }, { x: v.h, y: v.k, color: 'h', rotulo: par(v.h, v.k), guias: true }],
+      }), estado: {} };
+    },
+    lectura: v => [y, ` = ${v.signo < 0 ? '−' : ''}${exprBase(v.base, v.h)}${v.k ? ` ${signo(v.k)}` : ''} · ${ANCLA[v.base]} en ${par(v.h, v.k)}`],
+    arrastres: [{ id: 'ancla', etiqueta: 'punto ancla (h; k)', color: 'c-h',
+      donde: v => { const g = lienzo(-6, 6, -5, 5); return { x: g.X(v.h), y: g.Y(v.k) }; },
+      mover: pt => { const g = lienzo(-6, 6, -5, 5); return { h: g.aX(pt.x), k: g.aY(pt.y) }; } }],
+  };
+  // Mesa 2: la parábola con b de uno en uno y la cuenta de raíces (el discriminante, que las ideas no muestran).
+  const mesaParabola = {
+    id: 'parabola', titulo: 'Parábola: vértice y raíces', pieza: 'ejes',
+    consigna: 'Arrastra el vértice y cambia a. Mira cuántas veces corta el eje x la parábola y dónde.',
+    controles: [
+      { id: 'a', etiqueta: 'a', color: 'c-h', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'b', etiqueta: 'b', color: 'c-d', min: -4, max: 4, paso: 1, inicio: -2, decimales: 0 },
+      { id: 'c', etiqueta: 'c', min: -4, max: 4, paso: 1, inicio: -3, decimales: 0 },
+    ],
+    dibujo: v => {
+      const fn = cuad(v.a, v.b, v.c), D = v.b * v.b - 4 * v.a * v.c;
+      const raices = v.a === 0 ? (v.b ? [-v.c / v.b] : []) : D < 0 ? [] : [...new Set([(-v.b - Math.sqrt(D)) / (2 * v.a), (-v.b + Math.sqrt(D)) / (2 * v.a)])];
+      const pts = raices.filter(z => Math.abs(z) <= 5).map(z => ({ x: z, y: 0, color: 'h', rotulo: f(z) }));
+      if (v.a !== 0) { const xv = -v.b / (2 * v.a); pts.push({ x: xv, y: fn(xv), color: 'd', guias: true }); }
+      return { datos: ejesBase(-5, 5, -10, 10, { curvas: [{ puntos: muestra(fn, -5, 5, -10, 10), color: 'i' }], puntos: pts }), estado: {} };
+    },
+    lectura: v => {
+      if (v.a === 0) return [`a = 0: recta, ${v.b ? 'un corte' : v.c ? 'sin cortes' : 'es el eje'}`];
+      const xv = -v.b / (2 * v.a), D = v.b * v.b - 4 * v.a * v.c;
+      return [`Vértice ${par(xv, cuad(v.a, v.b, v.c)(xv))} · ${D > 0 ? 'dos raíces' : D === 0 ? 'una raíz doble' : 'sin raíces reales'}`];
+    },
+    arrastres: [{ id: 'vertice', etiqueta: 'vértice de la parábola', color: 'c-d',
+      donde: v => {
+        const g = lienzo(-5, 5, -10, 10);
+        if (v.a === 0) return { x: g.X(0), y: g.Y(v.c) };
+        const xv = -v.b / (2 * v.a);
+        return { x: g.X(xv), y: g.Y(cuad(v.a, v.b, v.c)(xv)) };
+      },
+      mover: (pt, v) => {
+        const g = lienzo(-5, 5, -10, 10);
+        if (v.a === 0) return { c: g.aY(pt.y) };
+        const B = ajusta(-2 * v.a * g.aX(pt.x), 1, -4, 4);
+        return { b: B, c: g.aY(pt.y) + B * B / (4 * v.a) };
+      } }],
+  };
+  // Mesa 3: el polinomio con su signo principal, que la idea 6 reserva para predecir.
+  const mesaPolinomio = {
+    id: 'polinomio', titulo: 'Raíces y signo principal', pieza: 'ejes',
+    consigna: 'Arrastra las tres raíces por el eje y cambia el signo de adelante. Junta dos raíces y mira si cruza o rebota.',
+    controles: [
+      { id: 'r1', etiqueta: 'r₁', color: 'c-h', min: -3, max: 3, paso: 1, inicio: -2, decimales: 0 },
+      { id: 'r2', etiqueta: 'r₂', color: 'c-h', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'r3', etiqueta: 'r₃', color: 'c-h', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'lider', etiqueta: 'Delante', opciones: [{ valor: 1, texto: '+' }, { valor: -1, texto: '−' }] },
+    ],
+    dibujo: v => {
+      const rs = [v.r1, v.r2, v.r3];
+      return { datos: ejesBase(-4, 4, -6, 6, {
+        curvas: [{ puntos: muestra(cubica(rs, v.lider, 4), -4, 4, -6, 6), color: 'i' }],
+        puntos: [...new Set(rs)].map(rr => ({ x: rr, y: 0, color: 'h' })),
+      }), estado: {} };
+    },
+    lectura: v => {
+      const rs = [v.r1, v.r2, v.r3], d = [...new Set(rs)].sort((p, q) => p - q);
+      const dobles = d.filter(z => rs.filter(w => w === z).length === 2).map(z => f(z));
+      return [`Raíces ${[...rs].sort((p, q) => p - q).map(z => f(z)).join('; ')} · ${dobles.length ? `rebota en ${dobles.join('')}` : 'cruza en cada una'} · ${v.lider > 0 ? 'sube' : 'baja'} al final`];
+    },
+    arrastres: polinomial.juega.arrastres,
+  };
+
   return {
     unidad: 'algebra.funciones',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/alg-tabla.js'],
+    // Laboratorio: tres mesas propias, todas con gesto directo y más controles que los juegos de las ideas.
+    laboratorio: [mesaTraslacion, mesaParabola, mesaPolinomio],
     historia: {
       texto: 'La idea de función no nació completa. Pasó por problemas de curvas y de cálculo, y en el siglo XVIII Euler la escribió como expresión analítica. Después se amplió: una función no tiene que ser una fórmula bonita ni una curva continua. Hoy lo decisivo es que cada entrada de su dominio tenga una única salida.',
       pregunta: '¿Toda tabla de valores describe una función?',

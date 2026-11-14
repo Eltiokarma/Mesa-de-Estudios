@@ -10,8 +10,14 @@
  * Persona y condiciones · 3.º de secundaria, celular de gama baja a 360 px, sin audio, en el aula o en casa.
  * Resultado observable · traduce necesaria y suficiente, niega un cuantificador y justifica una certeza en todos los casos.
  * Orden de atención · 1.º la figura (tabla, Venn, recta) · 2.º la fila o región que cambia · acción: «Comprobar» · fondo: Nox.
- * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
+ * Estados · juego sin tocar · arrastrando una manija · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué «si p, entonces q» no permite concluir p cuando q es verdadera.
+ *
+ * Ronda 2 (14 nov 2026): gesto directo en tres ideas (la fila de la tabla de verdad, la ficha de un número dentro
+ * del Venn y el testigo x sobre la recta). Sin arrastre: «equivalencias» (lo que cambia es la fórmula elegida),
+ * «potencia» (n es un conteo y la tabla crece al doble) y «certezas» (las pistas se prenden o apagan; las filas son
+ * resultados, no entradas). Llaves en las reglas y laboratorio con tres mesas: dos fórmulas fila por fila, tres
+ * conjuntos con una ficha, y el contraejemplo con todas las propiedades.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -47,7 +53,18 @@
     '(p ∧ q) → p': (a, b) => !(a && b) || a, 'p → (p ∨ q)': (a, b) => !a || a || b, '~(p ∧ ~p)': a => !(a && !a),
     '(p ∧ (p → q)) → q': (a, b) => !(a && (!a || b)) || b, '(p ∨ q) → p': (a, b) => !(a || b) || a,
     '(p → q) → p': (a, b) => !(!a || b) || a, 'q → (p ∧ q)': (a, b) => !b || (a && b), 'p → p': a => !a || a,
+    '~p ∨ ~q': (a, b) => !a || !b,
   };
+  // Gesto directo (docs/teoria.md §4b): la manija vive en coordenadas de la figura; la pieza da la escala.
+  const TABLA = () => Kit.piezas['alg-tabla'], VENN = () => Kit.piezas['alg-venn'], RECTA = () => Kit.piezas.recta;
+  // Fila de la tabla más cercana a un punto (0 a n − 1).
+  const filaDe = (g, py, n) => Math.max(0, Math.min(n - 1, Math.round((py - g.cy(0)) / (g.cy(1) - g.cy(0)))));
+  // La manija de una fila va en el borde izquierdo de la tabla, para no tapar sus valores.
+  const manijaFila = (datosDe, etiqueta) => ({
+    id: 'fila', etiqueta, color: 'c-d',
+    donde: val => { const g = TABLA().geometria(datosDe(val)); return { x: g.xs[0], y: g.cy(FILAS.findIndex(([a, b]) => VF(a) === val.p && VF(b) === val.q)) }; },
+    mover: (pt, val) => { const [a, b] = FILAS[filaDe(TABLA().geometria(datosDe(val)), pt.y, 4)]; return { p: VF(a), q: VF(b) }; },
+  });
   const valor = (txt, a, b) => !!FORMULAS[txt](a, b);
   const columna = txt => FILAS.map(([a, b]) => valor(txt, a, b));
   const tautologia = txt => columna(txt).every(Boolean);
@@ -56,7 +73,7 @@
   const celdaVF = (v, o = {}) => Object.assign({ t: VF(v), color: v ? 'd' : 'h', fuerte: !v }, o);
 
   // ---------- Idea 1: el condicional solo falla con V → F ----------
-  // Cambia: los valores de p y q y el conector · Permanece: las cuatro filas y sus colores · Progresa: la fila
+  // Cambia: los valores de p y q (se arrastra la fila) y el conector · Permanece: las cuatro filas y sus colores · Progresa: la fila
   // marcada · Se reserva: la única fila F de p → q · Debe verse: con q verdadera, p puede ser V o F.
   const CONECTORES = ['p ∧ q', 'p ∨ q', 'p → q', 'p ↔ q'];
   const tablaConector = (con, filaMarcada, oculto = false) => ({
@@ -83,6 +100,8 @@
       dibujo: val => tablaConector(val.con, FILAS.findIndex(([a, b]) => VF(a) === val.p && VF(b) === val.q)),
       lectura: val => [p, ` = ${val.p}, `, q, ` = ${val.q}: `, ...pinta(val.con), ` = ${VF(valor(val.con, val.p === 'V', val.q === 'V'))}`],
       minimo: 4,
+      // Arrastra la fila marcada hacia arriba o abajo: cada fila es un par de valores de p y q.
+      arrastres: [manijaFila(val => tablaConector(val.con, FILAS.findIndex(([a, b]) => VF(a) === val.p && VF(b) === val.q)).datos, 'fila de la tabla: valores de p y q')],
     },
     predice: {
       pregunta: ['Sabemos que ', ...pinta('p → q'), ' es verdadera y que ', q, ' es verdadera. ¿Qué se puede decir de ', p, '?'],
@@ -106,13 +125,13 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Se cumple p y se cumple q: la promesa se cumplió.', ecuacion: ['V → V = V'] },
         { estado: { corte: 2 }, texto: 'Se cumple p y no q: la promesa se rompió. Es la única F.', ecuacion: ['V → F = F'] },
-        { estado: { corte: 3 }, texto: 'Si p es falsa, la promesa no se pone a prueba: queda V.', ecuacion: ['F → V = V   ·   F → F = V'] },
+        { estado: { corte: 3 }, texto: 'Si p es falsa, la promesa no se pone a prueba: queda V.', ecuacion: ['F → V = V', '   ·   ', 'F → F = V'] },
         { estado: { corte: 4 }, texto: 'Con q verdadera hay dos filas: en una p es V; en otra, F.', ecuacion: [q, ' = V no decide el valor de ', p] },
       ],
     },
     regla: {
       texto: 'p → q solo es falsa cuando p es verdadera y q es falsa. Por eso p es suficiente para q, y q es necesaria para p.',
-      ecuacion: [...pinta('p → q'), '  ≡  ', ...pinta('~p ∨ q')],
+      ecuacion: [{ llave: [p], nota: 'suficiente', color: 'c-o' }, ' → ', { llave: [q], nota: 'necesaria', color: 'c-i' }, '   ·   ', '≡  ', ...pinta('~p ∨ q')],
       condicion: 'se lee «si p, entonces q»; no afirma la recíproca q → p, que es otra proposición.',
       voz: 'Suficiente va antes de la flecha; necesaria, después.',
     },
@@ -156,6 +175,7 @@
   };
 
   // ---------- Idea 2: misma columna, misma proposición ----------
+  // Sin arrastre: lo que cambia es la fórmula elegida, y ninguna parte de la tabla la representa.
   // Cambia: la fórmula elegida · Permanece: las cuatro filas de p y q · Progresa: las columnas que se llenan
   // · Se reserva: la columna de ~q → ~p que copia a p → q · Debe verse: dos columnas idénticas fila por fila.
   const JUEGO2 = ['p ∧ q', 'p ∨ q', 'p → q', 'p ↔ q', 'p ∨ ~p', 'p ∧ ~p'];
@@ -205,7 +225,7 @@
         alt: 'Tabla de ~q → ~p y p → q: las dos columnas son iguales',
       },
       pasos: [
-        { estado: { corte: 1 }, texto: 'Primero se niegan q y p en cada fila.', ecuacion: ['~V = F   ·   ~F = V'] },
+        { estado: { corte: 1 }, texto: 'Primero se niegan q y p en cada fila.', ecuacion: ['~V = F', '   ·   ', '~F = V'] },
         { estado: { corte: 2 }, texto: 'Con esas columnas se calcula el condicional ~q → ~p.', ecuacion: pinta('~q → ~p') },
         { estado: { corte: 3 }, texto: 'Al lado va p → q, calculado aparte.', ecuacion: pinta('p → q') },
         { estado: { corte: 4 }, texto: 'Las dos columnas coinciden en las cuatro filas: son equivalentes.', ecuacion: [...pinta('p → q'), '  ≡  ', ...pinta('~q → ~p')] },
@@ -234,7 +254,7 @@
   };
 
   // ---------- Idea 3: una operación es un grupo de regiones ----------
-  // Cambia: la operación · Permanece: U, A y B con sus elementos · Progresa: las regiones sombreadas
+  // Cambia: la operación y el número que se sigue (su ficha se arrastra de región en región) · Permanece: U, A y B con sus elementos · Progresa: las regiones sombreadas
   // · Se reserva: (A ∩ B)′ y A′ ∪ B′ que terminan iguales · Debe verse: cada elemento en una sola región.
   const U3 = [1, 2, 3, 4, 5, 6, 7, 8, 9], A3 = [2, 4, 6, 8], B3 = [3, 6, 9];
   const OPS = {
@@ -252,18 +272,36 @@
     regiones: Object.fromEntries(Object.entries(COD).map(([c, [a, b]]) => [c, { t: U.filter(x => Aa.includes(x) === a && Bb.includes(x) === b).join(', ') }])),
     ...extra,
   });
+  // Ficha de un número en el Venn: va a su región (alg-venn.ficha) y, al soltarla en otra, toma el número de esa
+  // región más cercano al actual. pertenece(n) da [en A, en B, (en C)].
+  const codigoDe = l => l.map(b => (b ? '1' : '0')).join('');
+  const fichaVenn = (datos, U, pertenece) => ({
+    id: 'ficha', etiqueta: 'ficha del número n', color: 'c-o',
+    donde: val => VENN().ficha(datos, codigoDe(pertenece(val.n))),
+    mover: (pt, val) => {
+      const cod = VENN().codigo(datos, pt.x, pt.y);
+      if (cod === codigoDe(pertenece(val.n))) return { n: val.n };
+      const ahi = U.filter(m => codigoDe(pertenece(m)) === cod).sort((u, w) => Math.abs(u - val.n) - Math.abs(w - val.n));
+      return { n: ahi.length ? ahi[0] : val.n };
+    },
+  });
   const operaciones = {
     id: 'operaciones',
     titulo: 'Cada operación junta regiones',
     temas: ['Conjuntos y operaciones'],
     pieza: 'alg-venn',
     juega: {
-      consigna: 'U = {1, …, 9}, A son los pares y B los múltiplos de 3. Elige una operación y mira qué regiones quedan sombreadas.',
+      consigna: 'U = {1, …, 9}, A son los pares y B los múltiplos de 3. Elige una operación y lleva la ficha a otra región.',
       voz: 'Fíjate en qué región vive cada número.',
-      controles: [{ id: 'op', etiqueta: 'Operación', opciones: ['A ∪ B', 'A ∩ B', 'A − B', 'B − A', 'A Δ B', '(A ∪ B)′'].map(t => ({ valor: t, texto: t })) }],
+      controles: [
+        { id: 'op', etiqueta: 'Operación', opciones: ['A ∪ B', 'A ∩ B', 'A − B', 'B − A', 'A Δ B', '(A ∪ B)′'].map(t => ({ valor: t, texto: t })) },
+        { id: 'n', etiqueta: 'Número de la ficha', min: 1, max: 9, paso: 1, inicio: 4, decimales: 0 },
+      ],
       dibujo: val => ({ datos: vennDe(U3, A3, B3), estado: { sombra: regiones(val.op) } }),
-      lectura: val => { const c = conjunto(val.op, U3, A3, B3); return [...pintaC(val.op), ` = ${llaves(c)}: ${c.length} elementos`]; },
+      lectura: val => { const c = conjunto(val.op, U3, A3, B3); return [...pintaC(val.op), ` = ${llaves(c)} · el ${val.n} ${c.includes(val.n) ? 'entra' : 'no entra'}`]; },
       minimo: 4,
+      // Arrastra la ficha a otra región: pasa a seguir al número de esa región más cercano al actual.
+      arrastres: [fichaVenn(vennDe(U3, A3, B3), U3, n => [A3.includes(n), B3.includes(n)])],
     },
     predice: {
       pregunta: ['¿Qué expresión da el mismo conjunto que ', ...pintaC('(A ∩ B)′'), ', el complemento de la intersección?'],
@@ -315,6 +353,9 @@
   };
 
   // ---------- Idea 4: con o sin cada elemento (potencia y cardinal) ----------
+  // Sin arrastre: n es un conteo y la tabla crece al doble (no hay un borde fijo que agarrar).
+  // Hallazgo 9: el juego muestra los subconjuntos y «Mira» la tabla de cuentas; es la misma pieza, y la cuenta
+  // resume lo que el juego dejó ver fila por fila.
   // Cambia: cuántos elementos tiene el conjunto · Permanece: la tabla «está o no está» · Progresa: el número de
   // filas, que se duplica · Se reserva: el elemento repetido que no suma · Debe verse: cada elemento nuevo duplica.
   const LETRAS = ['a', 'b', 'c'];
@@ -368,7 +409,7 @@
     },
     regla: {
       texto: 'Cada elemento distinto se pone o no se pone. Con n elementos distintos hay 2ⁿ subconjuntos, contando el vacío y el propio conjunto.',
-      ecuacion: ['n(P(', A, ')) = ', { sup: ['2', { v: 'c-o', t: 'n' }] }],
+      ecuacion: [{ llave: ['n(P(', A, '))'], nota: 'subconjuntos', color: 'c-d' }, ' = ', { llave: [{ sup: ['2', { v: 'c-o', t: 'n' }] }], nota: 'n distintos', color: 'c-o' }],
       condicion: 'n cuenta elementos distintos: {2, 3, 3, 5} tiene n = 3. En una unión, lo común se cuenta una sola vez.',
     },
     ahoraTu: {
@@ -411,18 +452,36 @@
   };
 
   // ---------- Idea 5: un contraejemplo basta ----------
-  // Cambia: la propiedad y el dominio · Permanece: la recta con los elementos del dominio · Progresa: los puntos
+  // Cambia: la propiedad, el dominio y el testigo x (se arrastra) · Permanece: la recta con los elementos del dominio · Progresa: los puntos
   // que cumplen (verde) y los que no (rojo, huecos) · Se reserva: el único contraejemplo · Debe verse: ∀ cae con uno.
   const PRED = {
     'x > 0': x => x > 0, 'x es par': x => x % 2 === 0, 'x² ≥ x': x => x * x >= x, 'x + 1 > x': () => true,
     'x² > 0': x => x * x > 0, 'x < 4': x => x < 4, '2x > x': x => 2 * x > x, 'x² ≠ 4': x => x * x !== 4,
   };
   const DOMS = { '{−2, …, 3}': [-2, -1, 0, 1, 2, 3], '{1, …, 5}': [1, 2, 3, 4, 5] };
+  const DOMS3 = Object.assign({ '{−3, …, 6}': [-3, -2, -1, 0, 1, 2, 3, 4, 5, 6], '{2, 4, 6}': [2, 4, 6] }, DOMS);
   const x = { v: 'c-o', t: 'x' };
-  const rectaDominio = (D, pr, ver = true, extra = []) => ({
-    min: D[0] - 1, max: D[D.length - 1] + 1, paso: 1, decimales: 0, variable: 'x', color: 'o', filas: 1,
+  // rango: { min, max } fijo para el juego (la recta no cambia de escala bajo la manija).
+  const rectaDominio = (D, pr, ver = true, extra = [], rango) => ({
+    min: rango ? rango.min : D[0] - 1, max: rango ? rango.max : D[D.length - 1] + 1, paso: 1, decimales: 0, variable: 'x', color: 'o', filas: 1,
     elementos: [...D.map(v => (ver ? { tipo: 'punto', x: v, color: PRED[pr](v) ? 'd' : 'h', abierto: !PRED[pr](v) } : { tipo: 'punto', x: v })), ...extra],
     alt: `Dominio ${D.join(', ')}: ${ver ? `cumplen ${pr}: ${D.filter(PRED[pr]).join(', ') || 'ninguno'}` : 'sin marcar'}`,
+  });
+  // El testigo: un número que el alumno pone sobre la recta (fila 1) para buscar un contraejemplo.
+  const estadoTestigo = (val, doms) => (!doms[val.dom].includes(val.t) ? 'fuera' : PRED[val.pr](val.t) ? 'cumple' : 'falla');
+  const rectaTestigo = (val, doms, rango) => {
+    const e = estadoTestigo(val, doms);
+    return rectaDominio(doms[val.dom], val.pr, true, [{ tipo: 'punto', x: val.t, fila: 1, color: e === 'cumple' ? 'd' : e === 'falla' ? 'h' : null, abierto: e !== 'cumple', rotulo: e === 'fuera' ? 'fuera del dominio' : e }], rango);
+  };
+  const lecturaTestigo = (val, doms) => {
+    const D = doms[val.dom], k = D.filter(PRED[val.pr]).length, e = estadoTestigo(val, doms);
+    // Espacios duros: la línea solo se parte en los «·», nunca dentro de «x = 2: cumple».
+    return [`Cumplen ${k} de ${D.length}: ∀\u00a0${k === D.length ? 'V' : 'F'} · ∃\u00a0${k ? 'V' : 'F'} · `, x, `\u00a0=\u00a0${f(val.t)}:\u00a0${e}`];
+  };
+  const manijaTestigo = (doms, rango) => ({
+    id: 'testigo', etiqueta: 'testigo x', color: 'c-o',
+    donde: val => { const g = RECTA().geometria(rectaTestigo(val, doms, rango)); return { x: g.x(val.t), y: g.filaY(1) }; },
+    mover: (pt, val) => ({ t: RECTA().geometria(rectaTestigo(val, doms, rango)).v(pt.x) }),
   });
   const cuantificadores = {
     id: 'cuantificadores',
@@ -430,18 +489,18 @@
     temas: ['Cuantificadores'],
     pieza: 'recta',
     juega: {
-      consigna: 'Elige una propiedad y un dominio. En verde, los números que la cumplen; en rojo y huecos, los que no.',
+      consigna: 'Elige una propiedad y un dominio. En verde, los números que la cumplen; en rojo y huecos, los que no. Arrastra el testigo x.',
       voz: 'Busca una propiedad que cumplan todos.',
       controles: [
         { id: 'pr', etiqueta: 'Propiedad', opciones: ['x > 0', 'x es par', 'x² ≥ x', 'x + 1 > x'].map(t => ({ valor: t, texto: t })) },
         { id: 'dom', etiqueta: 'Dominio', opciones: Object.keys(DOMS).map(t => ({ valor: t, texto: t })) },
+        { id: 't', etiqueta: 'Testigo x', color: 'c-o', min: -2, max: 5, paso: 1, inicio: 0, decimales: 0 },
       ],
-      dibujo: val => ({ datos: rectaDominio(DOMS[val.dom], val.pr), estado: {} }),
-      lectura: val => {
-        const D = DOMS[val.dom], k = D.filter(PRED[val.pr]).length;
-        return [`Cumplen ${k} de ${D.length}: ∀ ${k === D.length ? 'V' : 'F'} · ∃ ${k ? 'V' : 'F'}`];
-      },
+      dibujo: val => ({ datos: rectaTestigo(val, DOMS, { min: -3, max: 6 }), estado: {} }),
+      lectura: val => lecturaTestigo(val, DOMS),
       minimo: 4,
+      // Arrastra el testigo por la recta: dice si ese número cumple la propiedad.
+      arrastres: [manijaTestigo(DOMS, { min: -3, max: 6 })],
     },
     predice: {
       pregunta: 'En el dominio {−2, …, 3}, ¿cuál es la negación de «todo número del dominio es positivo»?',
@@ -462,14 +521,14 @@
       ]),
       pasos: [
         { estado: { corte: 1 }, texto: 'Afirmación: para todo x de {−2, …, 3}, x² > 0.', ecuacion: ['∀', x, ' ∈ {−2, …, 3}: ', x, '² > 0'] },
-        { estado: { corte: 2 }, texto: 'Cinco números la cumplen. Eso todavía no prueba el «todo».', ecuacion: ['(−2)² = 4 > 0  ·  …  ·  3² = 9 > 0'] },
+        { estado: { corte: 2 }, texto: 'Cinco números la cumplen. Eso todavía no prueba el «todo».', ecuacion: ['(−2)² = 4 > 0', '   ·   ', '…', '   ·   ', '3² = 9 > 0'] },
         { estado: { corte: 3 }, texto: 'Con x = 0: 0² = 0, que no es mayor que 0.', ecuacion: ['0² = 0'] },
         { estado: { corte: 3 }, texto: 'Un solo contraejemplo hace falsa la afirmación universal.', ecuacion: ['∃', x, ': ', x, '² ≤ 0   (', x, ' = 0)'] },
       ],
     },
     regla: {
       texto: 'Para negar «todo x cumple P» basta un x del dominio que no la cumpla. Negar «existe x que cumple P» exige que ninguno la cumpla.',
-      ecuacion: ['~(∀', x, ': P(', x, '))  ≡  ∃', x, ': ~P(', x, ')'],
+      ecuacion: ['~(∀', x, ': P(', x, '))  ≡  ', { llave: ['∃', x, ': ~P(', x, ')'], nota: 'un contraejemplo', color: 'c-h' }],
       condicion: 'el dominio es el que se declara: cambiar el dominio puede cambiar la verdad de la afirmación.',
     },
     ahoraTu: {
@@ -503,6 +562,7 @@
   };
 
   // ---------- Idea 6: seguro es «en todos los casos» ----------
+  // Sin arrastre: las pistas se prenden o se apagan; las filas que quedan son resultados, no entradas.
   // Cambia: las pistas activas · Permanece: los cuatro puestos y las cuatro personas · Progresa: los órdenes que
   // sobreviven · Se reserva: la pista 3, que deja dos órdenes · Debe verse: lo seguro coincide en todas las filas.
   const PERS = ['Ana', 'Beto', 'Ciro', 'Dina'];
@@ -632,11 +692,75 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que las ideas 1 y 2: dos fórmulas lado a lado, fila por fila, con la fila que se arrastra.
+  const LISTA2 = ['p → q', 'q → p', '~q → ~p', '~p → ~q', '~p ∨ q', 'p ↔ q', 'p ∧ q', 'p ∨ q', '~(p ∧ q)', '~p ∨ ~q', 'p ∧ ~q'];
+  const filaPQ = val => FILAS.findIndex(([a, b]) => VF(a) === val.p && VF(b) === val.q);
+  const tablaDos = val => Object.assign(tablaFormulas([val.f1, val.f2]), { resaltes: [{ f: filaPQ(val), c: 0, ancho: 4, color: 'd' }] });
+  // Mesa 2: tres conjuntos en U = {1, …, 12} y la ficha de un número que se lleva de región en región.
+  const U12 = Array.from({ length: 12 }, (_, k) => k + 1);
+  const en3 = n => [n % 2 === 0, n % 3 === 0, n > 6];
+  const OPS3 = {
+    'A ∩ B ∩ C': (a, b, c) => a && b && c, 'A ∪ B ∪ C': (a, b, c) => a || b || c, '(A ∪ B) ∩ C': (a, b, c) => (a || b) && c,
+    'A ∩ (B ∪ C)': (a, b, c) => a && (b || c), 'A − (B ∪ C)': (a, b, c) => a && !(b || c), '(A ∩ B)′ ∩ C': (a, b, c) => !(a && b) && c,
+  };
+  const COD3 = ['000', '100', '010', '001', '110', '101', '011', '111'];
+  const venn3 = () => ({
+    conjuntos: [{ t: 'A', color: 'o' }, { t: 'B', color: 'i' }, { t: 'C', color: 'f' }], universo: 'U',
+    regiones: Object.fromEntries(COD3.map(c => [c, { t: U12.filter(n => codigoDe(en3(n)) === c).join(', ') }])),
+    alt: 'U = {1, …, 12}: A los pares, B los múltiplos de 3 y C los mayores que 6',
+  });
+  const LABORATORIO = [
+    {
+      id: 'dos-formulas', titulo: 'Dos fórmulas, fila por fila', pieza: 'alg-tabla',
+      consigna: 'Elige dos fórmulas y arrastra la fila marcada. Busca dos que coincidan en las cuatro filas y dos que solo coincidan en algunas.',
+      controles: [
+        { id: 'f1', etiqueta: 'Fórmula 1', opciones: LISTA2.map(t => ({ valor: t, texto: t })) },
+        { id: 'f2', etiqueta: 'Fórmula 2', opciones: ['~q → ~p', ...LISTA2.filter(t => t !== '~q → ~p')].map(t => ({ valor: t, texto: t })) },
+        { id: 'p', etiqueta: 'p', opciones: [{ valor: 'V', texto: 'V' }, { valor: 'F', texto: 'F' }] },
+        { id: 'q', etiqueta: 'q', opciones: [{ valor: 'V', texto: 'V' }, { valor: 'F', texto: 'F' }] },
+      ],
+      dibujo: val => ({ datos: tablaDos(val), estado: {} }),
+      lectura: val => {
+        const a = val.p === 'V', b = val.q === 'V', igual = FILAS.filter(([u, w]) => valor(val.f1, u, w) === valor(val.f2, u, w)).length;
+        return [`Fila ${val.p}, ${val.q}: ${VF(valor(val.f1, a, b))} y ${VF(valor(val.f2, a, b))} · coinciden en ${igual} de 4`];
+      },
+      arrastres: [manijaFila(tablaDos, 'fila marcada: valores de p y q')],
+    },
+    {
+      id: 'tres-conjuntos', titulo: 'Tres conjuntos y una ficha', pieza: 'alg-venn',
+      consigna: 'U = {1, …, 12}: A pares, B múltiplos de 3 y C mayores que 6. Elige una operación y lleva la ficha por las regiones.',
+      controles: [
+        { id: 'op', etiqueta: 'Operación', opciones: Object.keys(OPS3).map(t => ({ valor: t, texto: t })) },
+        { id: 'n', etiqueta: 'Número de la ficha', min: 1, max: 12, paso: 1, inicio: 6, decimales: 0 },
+      ],
+      dibujo: val => ({ datos: venn3(), estado: { sombra: COD3.filter(c => OPS3[val.op](...c.split('').map(d => d === '1'))) } }),
+      lectura: val => {
+        const S = U12.filter(n => OPS3[val.op](...en3(n)));
+        return [`${val.op}: ${S.length} ${S.length === 1 ? "elemento" : "elementos"} · el ${val.n} ${S.includes(val.n) ? 'entra' : 'no entra'}`];
+      },
+      arrastres: [fichaVenn(venn3(), U12, en3)],
+    },
+    {
+      id: 'contraejemplo', titulo: 'Busca el contraejemplo', pieza: 'recta',
+      consigna: 'Elige una propiedad y un dominio, y arrastra el testigo x hasta encontrar un número que la rompa, si existe.',
+      controles: [
+        { id: 'pr', etiqueta: 'Propiedad', opciones: Object.keys(PRED).map(t => ({ valor: t, texto: t })) },
+        { id: 'dom', etiqueta: 'Dominio', opciones: Object.keys(DOMS3).map(t => ({ valor: t, texto: t })) },
+        { id: 't', etiqueta: 'Testigo x', color: 'c-o', min: -3, max: 6, paso: 1, inicio: 0, decimales: 0 },
+      ],
+      dibujo: val => ({ datos: rectaTestigo(val, DOMS3, { min: -4, max: 7 }), estado: {} }),
+      lectura: val => lecturaTestigo(val, DOMS3),
+      arrastres: [manijaTestigo(DOMS3, { min: -4, max: 7 })],
+    },
+  ];
+
   return {
     unidad: 'algebra.logica-y-conjuntos',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/alg-venn.js', '/nucleo/kit/piezas/recta.js'],
+    laboratorio: LABORATORIO,
     historia: {
       texto: 'En 1854, George Boole publicó Las leyes del pensamiento: trató las condiciones con un álgebra, con reglas para combinarlas. Las letras, los conectores y las tablas de verdad que usamos hoy son una presentación moderna. La idea de fondo sigue igual: revisar todos los casos posibles antes de aceptar una conclusión, aunque suene convincente.',
       pregunta: '¿Cómo sabrías que una conclusión vale siempre?',

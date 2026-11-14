@@ -13,6 +13,10 @@
  * Orden de atención · 1.º la tabla o el paralelogramo · 2.º la casilla o el área que cambia · acción: «Comprobar» · fondo: Nox.
  * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué AB no se calcula casilla por casilla y por qué det = 0 no es «la matriz es cero».
+ * Ronda 2 (14 nov 2026): gesto directo en la idea 3 (las puntas de las dos columnas se arrastran y el paralelogramo
+ * las sigue); las ideas 1, 2, 4 y 5 se quedan con − y + porque su figura es una tabla: una casilla no tiene un lugar
+ * en el plano que agarrar. Llaves en las reglas y laboratorio de tres mesas: las columnas libres (cuatro cuadrantes,
+ * con el cuadrado unidad para leer el determinante como factor de área), la adjunta e inversa, y el rango.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -62,6 +66,13 @@
   }
   // Una matriz en la pieza alg-tabla: entre corchetes, con color por fila o por columna.
   const celdas = (M, color = () => null, desde = () => 0) => M.map((fila, i) => fila.map((x, j) => ({ t: typeof x === 'string' ? x : f(x), color: color(i, j), desde: desde(i, j) })));
+  // Gesto directo (docs/teoria.md §4b): inversa lineal de la escala de la pieza; el lector ajusta al paso y al rango.
+  const inversaLin = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+  const EJES = () => Kit.piezas.ejes;
+  // Manija en la punta de una columna (p; q) de los ejes `ej`: mueve las dos casillas de esa columna.
+  const manijaColumna = (ej, id, etiqueta, color, kx, ky) => ({ id, etiqueta, color,
+    donde: v => { const g = EJES().geometria(ej); return { x: g.X(v[kx]), y: g.Y(v[ky]) }; },
+    mover: pt => { const g = EJES().geometria(ej); return { [kx]: inversaLin(g.X, ej.x.min, ej.x.max)(pt.x), [ky]: inversaLin(g.Y, ej.y.min, ej.y.max)(pt.y) }; } });
   const matriz = (M, o = {}) => ({ corchetes: true, filas: celdas(M, o.color, o.desde), alt: o.alt || `Matriz ${mt(M)}`, resaltes: o.resaltes || [], pie: o.pie || '' });
 
   // ---------- Idea 1: fila por columna ----------
@@ -98,6 +109,7 @@
       dibujo: val => ({ datos: tamanos(val), estado: {} }),
       lectura: val => [A, ` ${val.m}×${val.n} · `, B, ` ${val.p}×${val.q}: `, val.n === val.p ? `AB es ${val.m}×${val.q}` : 'AB no existe'],
       minimo: 4,
+      // Sin arrastre: la figura es una tabla de tamaños; un número de filas no tiene lugar que agarrar.
     },
     predice: (() => {
       const P = prod(PA, PB), Q = prod(PB, PA), E = PA.map((r, i) => r.map((x, j) => x * PB[i][j]));
@@ -114,6 +126,8 @@
         coincide: `Coincide: cada fila de A por cada columna de B da ${mt(P)}.`,
       };
     })(),
+    // Hallazgo 9: el juego mira los tamaños y «Mira» las casillas. Son dos representaciones a propósito: primero
+    // cuándo existe AB, después cómo se llena; las dos con A en naranja y B en turquesa.
     mira: (() => {
       const P = prod(PA, PB);
       return {
@@ -139,7 +153,7 @@
     })(),
     regla: {
       texto: 'AB existe si A tiene tantas columnas como filas tiene B. Su casilla (i, j) multiplica la fila i de A por la columna j de B.',
-      ecuacion: [{ sub: ['(AB)', 'ij'] }, ' = ', { sub: [A, 'i1'] }, { sub: [B, '1j'] }, ' + ', { sub: [A, 'i2'] }, { sub: [B, '2j'] }, ' + …'],
+      ecuacion: [{ sub: ['(AB)', 'ij'] }, ' = ', { llave: [{ sub: [A, 'i1'] }, { sub: [B, '1j'] }, ' + ', { sub: [A, 'i2'] }, { sub: [B, '2j'] }, ' + …'], nota: 'fila por columna', color: 'c-d' }],
       condicion: 'la suma A + B exige el mismo tamaño y va casilla por casilla; en general AB y BA son distintos.',
     },
     ahoraTu: {
@@ -203,6 +217,7 @@
         return [`${M.length}×${M[0].length} · `, t === null ? 'sin traza: no es cuadrada' : `traza = ${f(t)}`];
       },
       minimo: 4,
+      // Sin arrastre: se elige un tipo de matriz y una vista, no una cantidad.
     },
     predice: (() => {
       const M = [[1, 2], [3, 4]], N = [[1, 3], [3, 4]], O = [[1, -2], [2, 4]], Q = [[4, 2], [3, 1]];
@@ -240,7 +255,7 @@
     })(),
     regla: {
       texto: 'La transpuesta cambia filas por columnas. La traza suma la diagonal de una matriz cuadrada, y no cambia al transponer. Simétrica significa igual a su transpuesta.',
-      ecuacion: [{ sub: ['(Aᵀ)', 'ij'] }, ' = ', { sub: [A, 'ji'] }, '   ·   tr(Aᵀ) = tr(', A, ')'],
+      ecuacion: [{ sub: ['(Aᵀ)', 'ij'] }, ' = ', { llave: [{ sub: [A, 'ji'] }], nota: 'índices al revés', color: 'c-o' }, '   ·   ', 'tr(Aᵀ) = tr(', A, ')'],
       condicion: 'diagonal, identidad y triangular son matrices cuadradas; una de m×n tiene transpuesta de n×m.',
     },
     ahoraTu: {
@@ -312,7 +327,7 @@
     temas: ['Determinantes y propiedades'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Columnas (a, c) en naranja y (b, d) en turquesa. Mira el paralelogramo: verde si det > 0 y rojo si det < 0.',
+      consigna: 'Arrastra las puntas de las columnas (a, c) naranja y (b, d) turquesa. El paralelogramo es verde si det > 0 y rojo si det < 0.',
       voz: 'Busca columnas que dejen el paralelogramo aplastado.',
       controles: [
         { id: 'a', etiqueta: 'a', min: 1, max: 4, paso: 1, inicio: 3, decimales: 0, color: 'c-o' },
@@ -323,6 +338,11 @@
       dibujo: val => ({ datos: para(val.a, val.b, val.c, val.d), estado: {} }),
       lectura: val => [`det = ${f(val.a)}·${f(val.d)} − ${f(val.b)}·${f(val.c)} = ${f(val.a * val.d - val.b * val.c)}`],
       minimo: 4,
+      // Cada punta de columna se arrastra y mueve sus dos casillas a la vez: (a, c) o (b, d).
+      arrastres: [
+        manijaColumna(EJE3, 'columna-1', 'punta de la columna 1 (a, c)', 'c-o', 'a', 'c'),
+        manijaColumna(EJE3, 'columna-2', 'punta de la columna 2 (b, d)', 'c-i', 'b', 'd'),
+      ],
     },
     predice: {
       pregunta: 'Una matriz tiene columnas (2, 1) y (4, 2): la segunda es el doble de la primera. ¿Cuánto vale su determinante?',
@@ -360,7 +380,7 @@
     })(),
     regla: {
       texto: 'El determinante de una matriz 2×2 es el área con signo del paralelogramo de sus columnas. Vale 0 justo cuando las columnas están alineadas.',
-      ecuacion: ['det', { par: ['a, b; c, d'] }, ' = ad − bc'],
+      ecuacion: ['det', { par: ['a, b; c, d'] }, ' = ', { llave: ['ad − bc'], nota: 'área con signo', color: 'c-d' }],
       condicion: 'solo para matrices cuadradas; intercambiar dos columnas cambia el signo, y multiplicar una por k multiplica el determinante por k.',
     },
     ahoraTu: {
@@ -450,6 +470,7 @@
       dibujo: val => ({ datos: tablaInversa([[val.a, val.b], [val.c, val.d]]), estado: {} }),
       lectura: val => { const D = val.a * val.d - val.b * val.c; return [`det = ${f(D)}: `, D ? 'tiene inversa' : 'no tiene inversa']; },
       minimo: 4,
+      // Sin arrastre: tabla de casillas. Su det como área se arrastra en la idea 3 y en el laboratorio.
     },
     predice: (() => {
       const M = [[4, 2], [3, 2]], D = det2(M), J = adj2(M);
@@ -485,7 +506,7 @@
     })(),
     regla: {
       texto: 'Una matriz cuadrada tiene inversa si su determinante no es 0. En 2×2, a y d se intercambian, b y c cambian de signo, y se divide entre det.',
-      ecuacion: ['A⁻¹ = ', { frac: ['adj A', 'det A'] }],
+      ecuacion: ['A⁻¹ = ', { frac: ['adj A', 'det A'] }, '   ·   ', { llave: ['det A ≠ 0'], nota: 'o no existe', color: 'c-h' }],
       condicion: 'det A ≠ 0; la adjunta es la transpuesta de los cofactores, no la transpuesta sola.',
     },
     ahoraTu: {
@@ -575,6 +596,7 @@
       dibujo: val => { const F3 = comb(val.x, val.y); F3[2] += val.e; return { datos: tablaRango([R1, R2, F3], true), estado: { corte: 1 } }; },
       lectura: val => { const F3 = comb(val.x, val.y); F3[2] += val.e; return [`Rango ${rango([R1, R2, F3])} de 3`]; },
       minimo: 3,
+      // Sin arrastre: tabla de filas; x, y y el ajuste son coeficientes, sin lugar en la figura.
     },
     predice: (() => {
       const M = [[1, 2, 3], [2, 4, 6], [1, 0, 1]];
@@ -609,15 +631,15 @@
         },
         pasos: [
           { estado: { corte: 0 }, texto: 'F3 = (3, 3, 3) es la suma de F1 y F2.', ecuacion: ['F3 = F1 + F2'] },
-          { estado: { corte: 1 }, texto: 'Se anula la primera casilla de F2 y F3 restando múltiplos de F1.', ecuacion: ['F2 − 2F1 · F3 − 3F1'] },
+          { estado: { corte: 1 }, texto: 'Se anula la primera casilla de F2 y F3 restando múltiplos de F1.', ecuacion: ['F2 − 2F1', '   ·   ', 'F3 − 3F1'] },
           { estado: { corte: 2 }, texto: 'Ahora F3 es igual a F2: restarlas deja una fila de ceros.', ecuacion: [`F3 − F2 = (${filaTxt(Y[2].map(r6))})`] },
-          { estado: { corte: 2 }, texto: `Quedan ${rango(M)} filas no nulas: el rango es ${rango(M)}, aunque A sea 3×3.`, ecuacion: [`rango A = ${rango(M)}`, '   ·   det ', A, ` = ${f(det3(M))}`] },
+          { estado: { corte: 2 }, texto: `Quedan ${rango(M)} filas no nulas: el rango es ${rango(M)}, aunque A sea 3×3.`, ecuacion: [`rango A = ${rango(M)}`, '   ·   ', 'det ', A, ` = ${f(det3(M))}`] },
         ],
       };
     })(),
     regla: {
       texto: 'El rango es cuántas filas no se vuelven ceros al escalonar: las filas independientes. Una matriz n×n tiene rango n justo cuando su determinante no es 0.',
-      ecuacion: ['rango ', A, ' = n  ⇔  det ', A, ' ≠ 0'],
+      ecuacion: [{ llave: ['rango ', A], nota: 'filas independientes', color: 'c-o' }, ' = n  ⇔  det ', A, ' ≠ 0'],
       condicion: 'las operaciones de fila no cambian el rango; el rango nunca supera el número de filas ni el de columnas.',
     },
     ahoraTu: {
@@ -637,15 +659,51 @@
           dibujo: { datos: tablaRango(M, false), estado: {} },
           opciones: [1, 2, 3].map(k => (k === quiere ? { id: 'c', texto: f(k), correcta: true }
             : { id: `r${k}`, texto: f(k), error: k === 3 ? 'TAL-RANGO-ORDEN' : k > quiere ? 'TAL-RANGO-NULAS' : 'TAL-RANGO-UNO', siFuera: k === 3 ? 'Sería 3 si ninguna fila saliera de las otras.' : k > quiere ? `Al escalonar, ${quiere === 1 ? 'queda una sola fila no nula' : `quedan solo ${quiere} filas no nulas`}.` : `Hay ${quiere} filas que no salen unas de otras.` })),
-          solucion: { texto: `Al escalonar, ${quiere === 1 ? 'queda una fila no nula' : `quedan ${quiere} filas no nulas`}${n0 === 3 && quiere < 3 ? ', aunque ninguna sea de ceros al inicio' : ''}.`, ecuacion: [`rango A = ${quiere}`, quiere < 3 ? '   ·   det A = 0' : `   ·   det A = ${f(det3(M))}`], dibujo: { datos: tablaRango(M, true), estado: { corte: 1 } } },
+          solucion: { texto: `Al escalonar, ${quiere === 1 ? 'queda una fila no nula' : `quedan ${quiere} filas no nulas`}${n0 === 3 && quiere < 3 ? ', aunque ninguna sea de ceros al inicio' : ''}.`, ecuacion: [`rango A = ${quiere}`, '   ·   ', quiere < 3 ? 'det A = 0' : `det A = ${f(det3(M))}`], dibujo: { datos: tablaRango(M, true), estado: { corte: 1 } } },
         };
       },
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1, más rica que la idea 3: las columnas van a los cuatro cuadrantes (a y c también negativos) y el cuadrado
+  // unidad queda punteado al lado (rangos tales que el paralelogramo entero cabe en el plano): el determinante se lee como cuántas veces crece su área, y su signo, si se voltea.
+  const EJL = { x: { min: -6, max: 6, paso: 1, cada: 2, nombre: 'x', decimales: 0 }, y: { min: -4, max: 4, paso: 1, cada: 2, nombre: 'y', decimales: 0 } };
+  const columnasLibres = {
+    id: 'columnas-libres', titulo: 'Columnas en cuatro cuadrantes', pieza: 'ejes',
+    consigna: 'Arrastra las dos columnas a cualquier cuadrante. El cuadrado punteado tiene área 1: compáralo con el paralelogramo.',
+    controles: [
+      { id: 'a', etiqueta: 'a', color: 'c-o', min: -3, max: 3, paso: 1, inicio: 3, decimales: 0 },
+      { id: 'c', etiqueta: 'c', color: 'c-o', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'b', etiqueta: 'b', color: 'c-i', min: -3, max: 3, paso: 1, inicio: -1, decimales: 0 },
+      { id: 'd', etiqueta: 'd', color: 'c-i', min: -2, max: 2, paso: 1, inicio: 2, decimales: 0 },
+    ],
+    dibujo: v => {
+      const D = v.a * v.d - v.b * v.c;
+      return { datos: Object.assign({}, EJL, {
+        areas: [
+          { puntos: [[0, 0], [1, 0], [1, 1], [0, 1]], color: 'd', cerrada: true },
+          { puntos: [[0, 0], [v.a, v.c], [v.a + v.b, v.c + v.d], [v.b, v.d]], color: D >= 0 ? 'd' : 'h', cerrada: true },
+        ],
+        curvas: [{ puntos: [[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]], color: 'd', discontinua: true }, { puntos: [[0, 0], [v.a, v.c]], color: 'o' }, { puntos: [[0, 0], [v.b, v.d]], color: 'i' }],
+        puntos: [{ x: v.a, y: v.c, color: 'o' }, { x: v.b, y: v.d, color: 'i' }],
+        alt: `Cuadrado unidad y paralelogramo de las columnas (${v.a}, ${v.c}) y (${v.b}, ${v.d}); determinante ${D}`,
+      }), estado: {} };
+    },
+    lectura: v => {
+      const D = v.a * v.d - v.b * v.c;
+      if (!D) return ['det = 0: el cuadrado se aplasta en una recta'];
+      return [`det = ${f(D)}: área de ${f(Math.abs(D))} cuadrados${D < 0 ? ', volteada' : ''}`];
+    },
+    arrastres: [
+      manijaColumna(EJL, 'columna-1', 'punta de la columna 1 (a, c)', 'c-o', 'a', 'c'),
+      manijaColumna(EJL, 'columna-2', 'punta de la columna 2 (b, d)', 'c-i', 'b', 'd'),
+    ],
+  };
+
   return {
     unidad: 'algebra.matrices-y-determinantes',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/ejes.js'],
     historia: {
@@ -653,6 +711,11 @@
       pregunta: '¿Qué podría medir un solo número de una tabla?',
       fuente: { titulo: 'O’Connor y Robertson, Matrices and determinants — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Matrices_and_determinants/' },
     },
+    laboratorio: [
+      columnasLibres,
+      Object.assign({ id: 'adjunta-inversa', titulo: 'Adjunta e inversa', pieza: 'alg-tabla' }, inversa.juega, { minimo: undefined }),
+      Object.assign({ id: 'rango-libre', titulo: 'Filas que aportan', pieza: 'alg-tabla' }, rangoIdea.juega, { minimo: undefined }),
+    ],
     ideas: [producto, transpuesta, determinante, inversa, rangoIdea],
   };
 });

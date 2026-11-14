@@ -5,6 +5,9 @@
  * (pp. 57–68). Errores: TAL-* nuevos (hipótesis, rutinas/teoria-algebra.md); el de la ficha es TAL-TERMINO-CERO.
  * Colores (regla 4): término aₙ naranja (c-o); índice n turquesa (c-i); suma Sₙ verde (c-d); límite L o el valor
  * al que se acerca rojo (c-h).
+ * Ronda 2 (14 nov 2026): gesto directo en dos ideas (la última fila de la telescópica, el punto S₂ = 1 + r de la serie
+ * geométrica), llaves en las reglas y un laboratorio de tres mesas (banda ε del límite, razón libre, progresión con
+ * dos puntos). Sin arrastre, con su razón junto a cada idea: progresiones, límite, recurrencia y Gauss.
  *
  * Ficha de tarea (diseno-y-animacion):
  * Promesa · leer una sucesión como regla declarada y una serie como sucesión de sumas parciales.
@@ -51,10 +54,17 @@
       y: { min: Math.floor(ymin / paso) * paso, max: Math.ceil(ymax / paso) * paso, paso, nombre: 'aₙ', decimales: paso < 1 ? 1 : 0, color: 'o' },
     }, extra);
   };
+  // Gesto directo (docs/teoria.md §4b): manijas en coordenadas de la pieza («ejes» o «alg-tabla»), con la inversa
+  // lineal de su escala. Los juegos con arrastre usan ejes de rango fijo, para que la manija no se escape.
+  const invLineal = (escala, p, q) => px => p + (px - escala(p)) * (q - p) / (escala(q) - escala(p));
+  const PIEZA = id => Kit.piezas[id];
+  const lienzoDe = datos => { const g = PIEZA('ejes').geometria(datos); return { X: g.X, Y: g.Y, aX: invLineal(g.X, datos.x.min, datos.x.max), aY: invLineal(g.Y, datos.y.min, datos.y.max) }; };
 
   // ---------- Idea 1: suma lo mismo o multiplica lo mismo, y la regla se declara ----------
   // Cambia: el tipo, a₁ y d o r · Permanece: los ejes n y aₙ · Progresa: los puntos, término a término · Se reserva:
   // el cuarto término de 2, 4, 8, que depende del modelo · Debe verse: pocos términos no fijan la regla.
+  // Sin arrastre: la escala del eje cambia hasta 80 veces entre «suma» y «multiplica» (de 11 a 243), así que una manija
+  // de a₁ escaparía o mediría menos de un píxel por paso. La progresión que se arrastra está en el laboratorio.
   const termino = (tipo, a1, k, m) => (tipo === 'suma' ? a1 + (m - 1) * k : a1 * k ** (m - 1));
   const progresiones = {
     id: 'progresiones',
@@ -117,7 +127,7 @@
     },
     regla: {
       texto: 'Una progresión aritmética suma siempre la misma diferencia d; una geométrica multiplica siempre por la misma razón r. Unos pocos términos no fijan la regla.',
-      ecuacion: [an('n'), ' = ', an('1'), ' + (', n, ' − 1)d   ·   ', an('n'), ' = ', an('1'), { sup: ['r', [n, ' − 1']] }],
+      ecuacion: [an('n'), ' = ', an('1'), ' + ', { llave: ['(', n, ' − 1)'], nota: 'saltos', color: 'c-i' }, 'd', '   ·   ', an('n'), ' = ', an('1'), { sup: ['r', [n, ' − 1']] }],
       condicion: 'n es entero positivo, y el modelo, aritmético o geométrico, se declara o se justifica: no se adivina.',
     },
     ahoraTu: {
@@ -154,6 +164,8 @@
   // ---------- Idea 2: acercarse sin llegar ----------
   // Cambia: la sucesión · Permanece: los ejes y n de 1 a 12 · Progresa: la banda alrededor de L, cada vez más
   // angosta · Se reserva: el n desde el que todos entran · Debe verse: L no se alcanza; se entra en cualquier banda.
+  // Sin arrastre: el juego elige entre cinco sucesiones (una decisión, no un lugar de la figura). La banda ε que se
+  // arrastra va al laboratorio, después de «Mira», que es donde se presenta.
   const SUCES = {
     '3 − 2/n': { a: m => 3 - 2 / m, cota: true, lim: 3 },
     '1/n': { a: m => 1 / m, cota: true, lim: 0 },
@@ -215,7 +227,7 @@
     })(),
     regla: {
       texto: 'Una sucesión creciente y acotada por arriba converge. Su límite L cumple: desde algún n, todos los términos quedan tan cerca de L como se pida.',
-      ecuacion: ['lím ', an('n'), ' = ', L, '   (', n, ' → ∞)'],
+      ecuacion: ['lím ', an('n'), ' = ', { llave: [L], nota: 'destino', color: 'c-h' }, '   (', n, ' → ∞)'],
       condicion: 'acercarse no exige llegar a L. Monótona sola no basta: n/2 crece y no tiene límite.',
     },
     ahoraTu: {
@@ -241,6 +253,7 @@
   // ---------- Idea 3: la regla y sus condiciones iniciales ----------
   // Cambia: a₁ y a₂ · Permanece: la regla aₙ = aₙ₋₁ + aₙ₋₂ · Progresa: las casillas, una por paso · Se reserva: a₆
   // · Debe verse: cada casilla sale de las dos anteriores; con otros comienzos, otra sucesión.
+  // Sin arrastre: a₁ y a₂ son números escritos en casillas; no hay una posición que represente su valor.
   const recurrencia = (a1, a2, N) => { const v = [a1, a2]; while (v.length < N) v.push(v[v.length - 1] + v[v.length - 2]); return v; };
   const tablaRec = (v, { pasos = false, oculta = null, ver = Infinity, resaltar = null } = {}) => ({
     columnas: v.map((_, k) => `a${sub(k + 1)}`), colorCol: v.map((_, k) => (k < 2 ? 'o' : null)),
@@ -295,7 +308,7 @@
     })(),
     regla: {
       texto: 'Una sucesión recurrente da cada término a partir de los anteriores. Necesita sus condiciones iniciales: Fibonacci usa dos, a₁ y a₂.',
-      ecuacion: [an('n'), ' = ', an('n−1'), ' + ', an('n−2')],
+      ecuacion: [an('n'), ' = ', { llave: [an('n−1'), ' + ', an('n−2')], nota: 'los dos anteriores', color: 'c-o' }],
       condicion: 'la regla vale desde n = 3; sin a₁ y a₂ declarados, la sucesión no queda determinada.',
     },
     ahoraTu: {
@@ -333,6 +346,8 @@
   // ---------- Idea 4: al derecho y al revés (sumas notables) ----------
   // Cambia: n · Permanece: las dos filas, 1 … n y n … 1 · Progresa: las columnas que suman n + 1 · Se reserva: la
   // mitad final · Debe verse: dos copias de la suma forman n columnas iguales.
+  // Sin arrastre: la tabla reparte el ancho entre las columnas, así que la última se corre unos 10 px por cada n; una
+  // manija ahí no seguiría al dedo. (La telescópica sí: sus filas miden siempre 34 px.)
   const tablaGauss = (m, pasos = false) => ({
     columnas: Array.from({ length: m }, () => ''),
     rotulosFila: ['S', 'S', '2S'], colorFila: ['d', 'd', 'd'],
@@ -380,7 +395,7 @@
     },
     regla: {
       texto: 'Al sumar al derecho y al revés, cada columna da lo mismo: primer término más último. Así, 1 + 2 + … + n = n(n + 1)/2.',
-      ecuacion: [Sn('n'), ' = ', { frac: [[n, '(', an('1'), ' + ', an('n'), ')'], '2'] }],
+      ecuacion: [Sn('n'), ' = ', n, ' · ', { llave: ['(', an('1'), ' + ', an('n'), ')'], nota: 'cada columna', color: 'c-o' }, ' ÷ 2'],
       condicion: 'vale para progresiones aritméticas: términos que suben siempre lo mismo, como 1, 2, 3, … o 3, 7, 11, …',
     },
     ahoraTu: {
@@ -409,7 +424,7 @@
   };
 
   // ---------- Idea 5: lo de en medio se cancela (telescópica) ----------
-  // Cambia: n · Permanece: cada término escrito como 1/k − 1/(k + 1) · Progresa: las casillas que se cancelan
+  // Cambia: n, arrastrando la última fila · Permanece: cada término escrito como 1/k − 1/(k + 1) · Progresa: las casillas que se cancelan
   // · Se reserva: los dos extremos · Debe verse: la suma es el primero menos el último.
   const tablaTel = (m, { cancelar = true, pasos = false } = {}) => ({
     columnas: ['k', '1/k', '− 1/(k + 1)'], colorCol: ['i', 'o', 'o'],
@@ -435,6 +450,11 @@
       dibujo: val => ({ datos: tablaTel(val.n), estado: {} }),
       lectura: val => [Sn(String(val.n)), ` = 1 − 1/${val.n + 1} = ${fr(val.n, val.n + 1)}`],
       minimo: 3,
+      // Arrastra la última fila hacia abajo o hacia arriba: agrega o quita términos (cada fila mide lo mismo). La manija
+      // va a la izquierda de la fila, como agarradera, para no tapar el número k.
+      arrastres: [{ id: 'ultima-fila', etiqueta: 'última fila de la suma', color: 'c-i',
+        donde: val => { const g = PIEZA('alg-tabla').geometria(tablaTel(val.n)); return { x: Math.max(12, g.xs[0] - 16), y: g.cy(val.n - 1) }; },
+        mover: (pt, val) => { const g = PIEZA('alg-tabla').geometria(tablaTel(val.n)); return { n: 1 + (pt.y - g.cy(0)) / (g.cy(1) - g.cy(0)) }; } }],
     },
     predice: {
       pregunta: '¿Cuánto vale 1/(1·2) + 1/(2·3) + 1/(3·4) + … + 1/(9·10)?',
@@ -459,7 +479,7 @@
     },
     regla: {
       texto: 'Si cada término es una diferencia de la forma bₖ − bₖ₊₁, al sumar se cancelan los de en medio y quedan los extremos.',
-      ecuacion: [Sn('n'), ' = ', { sub: ['b', '1'] }, ' − ', { sub: ['b', 'n+1'] }],
+      ecuacion: [Sn('n'), ' = ', { llave: [{ sub: ['b', '1'] }], nota: 'el primero', color: 'c-d' }, ' − ', { llave: [{ sub: ['b', 'n+1'] }], nota: 'el último', color: 'c-d' }],
       condicion: 'todos los términos siguen el mismo patrón bₖ − bₖ₊₁, sin saltarse ninguno.',
     },
     ahoraTu: {
@@ -496,7 +516,7 @@
   };
 
   // ---------- Idea 6: la suma infinita es un límite ----------
-  // Cambia: la razón r · Permanece: a₁ = 1 y los ejes n, Sₙ · Progresa: las sumas parciales · Se reserva: la
+  // Cambia: la razón r, arrastrando S₂ = 1 + r · Permanece: a₁ = 1 y los ejes n, Sₙ (de rango fijo) · Progresa: las sumas parciales · Se reserva: la
   // armónica, cuyos términos tienden a 0 y la suma no se detiene · Debe verse: converger es que Sₙ se acerque.
   const RAZONES = { '1/2': [1, 2], '1/3': [1, 3], '2/3': [2, 3], '−1/2': [-1, 2], '1': [1, 1] };
   const parciales = (rr, N) => { let sAcc = 0; return Array.from({ length: N }, (_, k) => { sAcc += rr ** k; return { x: k + 1, y: sAcc }; }); };
@@ -511,16 +531,24 @@
       consigna: 'Se suma 1 + r + r² + r³ + … Elige la razón r: cada punto es la suma de los primeros n términos.',
       voz: 'Mira si los puntos se detienen en una altura.',
       controles: [{ id: 'r', etiqueta: 'r', opciones: ['1/2', '1/3', '2/3', '−1/2', '1'].map(t => ({ valor: t, texto: t })) }],
+      // Ejes fijos de 0 a 4: con r = 1 las sumas salen por arriba del plano, y eso también se lee.
       dibujo: val => {
         const [p, q] = RAZONES[val.r], rr = p / q, ps = parciales(rr, 10).map(o => Object.assign(o, { color: 'd' }));
         const lim = Math.abs(rr) < 1 ? q / (q - p) : null;
-        return { datos: ejesS(11, Math.max(3, ...ps.map(o => o.y)), { puntos: ps, curvas: lim === null ? [] : [{ puntos: [[0, lim], [11, lim]], color: 'h', discontinua: true, rotulo: fr(q, q - p) }], alt: `Sumas parciales con r = ${val.r}` }), estado: {} };
+        return { datos: ejesS(11, 4, { puntos: ps.filter(o => o.y <= 4), curvas: lim === null ? [] : [{ puntos: [[0, lim], [11, lim]], color: 'h', discontinua: true, rotulo: fr(q, q - p) }], alt: `Sumas parciales con r = ${val.r}` }), estado: {} };
       },
       lectura: val => {
         const [p, q] = RAZONES[val.r];
         return [Sn('10'), ` = ${f(parciales(p / q, 10)[9].y)} · ${Math.abs(p / q) < 1 ? `se acerca a ${fr(q, q - p)}` : 'crece sin tope'}`];
       },
       minimo: 3,
+      // Arrastra el punto S₂ = 1 + r a lo alto: elige la razón más cercana, y las demás sumas lo siguen.
+      arrastres: [{ id: 'razon', etiqueta: 'punto S₂ = 1 + r: la razón',
+        donde: val => { const [p, q] = RAZONES[val.r], g = lienzoDe(ejesS(11, 4)); return { x: g.X(2), y: g.Y(1 + p / q) }; },
+        mover: pt => {
+          const r = lienzoDe(ejesS(11, 4)).aY(pt.y) - 1;
+          return { r: Object.keys(RAZONES).reduce((m, k) => (Math.abs(RAZONES[k][0] / RAZONES[k][1] - r) < Math.abs(RAZONES[m][0] / RAZONES[m][1] - r) ? k : m)) };
+        } }],
     },
     predice: (() => {
       const H = armonica(64), marcas = [1, 2, 4, 8, 16, 32, 64];
@@ -559,7 +587,7 @@
     })(),
     regla: {
       texto: 'Una serie converge si sus sumas parciales se acercan a un número. La geométrica con |r| < 1 suma a₁/(1 − r). Que los términos tiendan a 0 no basta.',
-      ecuacion: [{ sub: ['S', '∞'] }, ' = ', { frac: [an('1'), '1 − r'] }],
+      ecuacion: [{ sub: ['S', '∞'] }, ' = ', { frac: [an('1'), '1 − r'] }, '   ·   ', { llave: ['|r| < 1'], nota: 'si no, no converge' }],
       condicion: '|r| < 1. Con |r| ≥ 1 la geométrica no converge; la armónica tiene términos que tienden a 0 y no converge.',
     },
     ahoraTu: {
@@ -587,11 +615,102 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: la banda alrededor del límite, con su ancho ε que se arrastra (lo que la idea 2 solo muestra en «Mira»).
+  // c: la distancia al límite es c/n, así que todos entran desde el primer n mayor que c/ε.
+  const SUC_BANDA = {
+    '3 − 2/n': { a: m => 3 - 2 / m, L: 3, c: 2, y0: 0, y1: 4 },
+    '2 + (−1)ⁿ/n': { a: m => 2 + (m % 2 ? -1 : 1) / m, L: 2, c: 1, y0: 0, y1: 4 },
+    '1/n': { a: m => 1 / m, L: 0, c: 1, y0: -2, y1: 2 },
+  };
+  const ejeBanda = S => ejes(31, S.y0, S.y1);
+  const desdeN = (S, e) => Math.floor(S.c / e + 1e-9) + 1;
+  const mesaBanda = {
+    id: 'banda', titulo: 'La banda alrededor del límite', pieza: 'ejes',
+    consigna: 'Elige una sucesión y arrastra el borde de la banda. Angóstala: ¿desde qué n quedan todos los puntos adentro?',
+    controles: [
+      { id: 's', etiqueta: 'aₙ', opciones: Object.keys(SUC_BANDA).map(t => ({ valor: t, texto: t })) },
+      { id: 'e', etiqueta: 'ancho ε', color: 'c-h', min: 0.05, max: 1, paso: 0.05, inicio: 0.2, decimales: 2 },
+    ],
+    dibujo: val => {
+      const S = SUC_BANDA[val.s], N = desdeN(S, val.e);
+      const ps = Array.from({ length: 30 }, (_, k) => ({ x: k + 1, y: S.a(k + 1), color: k + 1 >= N ? 'd' : 'o' }));
+      return { datos: ejes(31, S.y0, S.y1, {
+        puntos: ps,
+        areas: [{ puntos: [[0, S.L - val.e], [31, S.L - val.e], [31, S.L + val.e], [0, S.L + val.e]], color: 'h', cerrada: true }],
+        curvas: [{ puntos: [[0, S.L], [31, S.L]], color: 'h', discontinua: true }, ...(N <= 30 ? [{ puntos: [[N, S.y0], [N, S.y1]], color: 'd', discontinua: true, rotulo: `n = ${N}`, en: [N, S.y0] }] : [])],
+        alt: `Treinta términos de aₙ = ${val.s} y la banda de ancho ${f(val.e)} alrededor de ${f(S.L)}`,
+      }), estado: {} };
+    },
+    lectura: val => { const S = SUC_BANDA[val.s], N = desdeN(S, val.e); return [`ε = ${f(val.e)}: todos adentro desde n = ${N}${N > 30 ? ' (fuera de vista)' : ''}`]; },
+    arrastres: [{ id: 'borde', etiqueta: 'borde de arriba de la banda', color: 'c-h',
+      donde: val => { const S = SUC_BANDA[val.s], g = lienzoDe(ejeBanda(S)); return { x: g.X(16), y: g.Y(S.L + val.e) }; },
+      mover: (pt, val) => { const S = SUC_BANDA[val.s]; return { e: lienzoDe(ejeBanda(S)).aY(pt.y) - S.L }; } }],
+  };
+  // Mesa 2: la serie geométrica con a₁ y r libres, de −1,2 a 1,2 (r = 1, r = −1 y |r| > 1 incluidos).
+  const EJE_RAZON = (e => Object.assign(e, { y: Object.assign(e.y, { nombre: 'Sₙ', color: 'd' }) }))(ejes(16, -4, 12));
+  const mesaRazon = {
+    id: 'razon', titulo: 'La razón que se arrastra', pieza: 'ejes',
+    consigna: 'Elige a₁ y arrastra S₂ = a₁ + a₁r para cambiar la razón. ¿Para qué razones las sumas se detienen en una altura?',
+    controles: [
+      { id: 'a1', etiqueta: 'a₁', color: 'c-o', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0 },
+      { id: 'r', etiqueta: 'r', min: -1.2, max: 1.2, paso: 0.1, inicio: 0.5, decimales: 1 },
+    ],
+    dibujo: val => {
+      let acc = 0;
+      const ps = Array.from({ length: 15 }, (_, k) => { acc += val.a1 * val.r ** k; return { x: k + 1, y: acc, color: 'd' }; });
+      const conv = Math.abs(val.r) < 1 - 1e-9, lim = val.a1 / (1 - val.r);
+      return { datos: Object.assign({}, EJE_RAZON, {
+        puntos: ps.filter(o => o.y >= EJE_RAZON.y.min && o.y <= EJE_RAZON.y.max),
+        curvas: conv ? [{ puntos: [[0, lim], [16, lim]], color: 'h', discontinua: true, rotulo: f(lim) }] : [],
+        alt: `Sumas parciales de la geométrica con a₁ = ${val.a1} y r = ${f(val.r, 1)}`,
+      }), estado: {} };
+    },
+    lectura: val => {
+      const conv = Math.abs(val.r) < 1 - 1e-9;
+      return [`a₁ = ${val.a1}, r = ${f(val.r, 1)}: ${conv ? `la suma es ${f(val.a1 / (1 - val.r))}` : 'no converge'}`];
+    },
+    // Una sola manija: S₁ y S₂ quedan a 16 px y sus zonas de toque se pisarían; a₁ va con − y +.
+    arrastres: [
+      { id: 's2', etiqueta: 'S₂ = a₁ + a₁r: la razón',
+        donde: val => { const g = lienzoDe(EJE_RAZON); return { x: g.X(2), y: g.Y(val.a1 * (1 + val.r)) }; },
+        mover: (pt, val) => ({ r: lienzoDe(EJE_RAZON).aY(pt.y) / val.a1 - 1 }) },
+    ],
+  };
+  // Mesa 3: la progresión aritmética que se arma con dos puntos (a₁ y a₆, lejos para que sus manijas no se pisen), y su suma S₆ (las ideas no la dejan arrastrar).
+  const EJE_PA = ejes(7, -10, 15);
+  const mesaAritmetica = {
+    id: 'aritmetica', titulo: 'Progresión con dos puntos', pieza: 'ejes',
+    consigna: 'Arrastra el primer término y el sexto: la diferencia d sale de los dos. Mira los seis términos y su suma.',
+    controles: [
+      { id: 'a1', etiqueta: 'a₁', color: 'c-o', min: 0, max: 5, paso: 1, inicio: 2, decimales: 0 },
+      { id: 'd', etiqueta: 'd', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0 },
+    ],
+    dibujo: val => {
+      const ps = [1, 2, 3, 4, 5, 6].map(m => ({ x: m, y: val.a1 + (m - 1) * val.d, color: 'o' }));
+      return { datos: Object.assign({}, EJE_PA, {
+        puntos: ps, curvas: [{ puntos: ps.map(o => [o.x, o.y]), color: 'o', discontinua: true }],
+        alt: `Seis términos: ${ps.map(o => f(o.y)).join(', ')}`,
+      }), estado: {} };
+    },
+    lectura: val => { const a6 = val.a1 + 5 * val.d; return [an('1'), ` = ${val.a1}, d = ${f(val.d)}: `, an('6'), ` = ${f(a6)} · `, Sn('6'), ` = ${f(3 * (val.a1 + a6))}`]; },
+    arrastres: [
+      { id: 'a1', etiqueta: 'primer término', color: 'c-o',
+        donde: val => { const g = lienzoDe(EJE_PA); return { x: g.X(1), y: g.Y(val.a1) }; },
+        mover: pt => ({ a1: lienzoDe(EJE_PA).aY(pt.y) }) },
+      { id: 'a6', etiqueta: 'sexto término: la diferencia',
+        donde: val => { const g = lienzoDe(EJE_PA); return { x: g.X(6), y: g.Y(val.a1 + 5 * val.d) }; },
+        mover: (pt, val) => ({ d: (lienzoDe(EJE_PA).aY(pt.y) - val.a1) / 5 }) },
+    ],
+  };
+
   return {
     unidad: 'algebra.sucesiones-y-series',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-tabla.js'],
+    // Laboratorio: tres mesas propias con gesto directo (banda ε, razón libre, progresión con su suma).
+    laboratorio: [mesaBanda, mesaRazon, mesaAritmetica],
     historia: {
       texto: 'Las series infinitas resultaron muy útiles para calcular, pero sumar infinitos términos con las reglas de las sumas finitas podía llevar a errores. En su Curso de análisis de 1821, Cauchy impulsó estudiar la convergencia de forma explícita. La pregunta que queda es qué significa sumar infinitos términos: se mira la sucesión de sumas parciales y su límite.',
       pregunta: '¿Se puede sumar algo que nunca termina?',

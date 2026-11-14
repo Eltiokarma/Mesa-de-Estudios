@@ -11,8 +11,13 @@
  * Persona y condiciones · 4.º de secundaria, celular de gama baja a 360 px, sin audio, en el aula o en casa.
  * Resultado observable · arma el cuadro de signos, decide cada frontera y no multiplica por algo de signo desconocido.
  * Orden de atención · 1.º la recta con los puntos críticos · 2.º el signo de cada tramo · acción: «Comprobar» · fondo: Nox.
- * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
+ * Estados · juego sin tocar · arrastrando una manija · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué −2x > 8 da x < −4 y por qué x = −2 nunca entra en (x − 1)/(x + 2) ≥ 0.
+ *
+ * Ronda 2 (14 nov 2026): gesto directo en las cuatro ideas (el valor de prueba sobre la recta, las raíces de la
+ * parábola sobre el eje, el punto de prueba t y los ceros a y b del cociente), llaves en las reglas y laboratorio con
+ * tres mesas: tres factores con un exponente y el sentido, la parábola que abre hacia arriba o hacia abajo, y el
+ * cociente. Hallazgo 9: el juego y «Mira» usan la misma pieza en las cuatro ideas.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -38,6 +43,14 @@
   // Fracción irreducible p/q como texto («−7/2», «3»).
   const mcd = (u, v) => (v ? mcd(v, u % v) : Math.abs(u));
   const fr = (p, q) => { if (q < 0) { p = -p; q = -q; } const g = mcd(p, q) || 1; p /= g; q /= g; return q === 1 ? f(p) : `${p < 0 ? '−' : ''}${Math.abs(p)}/${q}`; };
+
+  // Gesto directo (docs/teoria.md §4b): la manija vive en coordenadas de la figura; la pieza da la escala y su inversa.
+  const RECTA = () => Kit.piezas.recta, EJES = () => Kit.piezas.ejes;
+  const enRecta = (datos, valor, fila) => { const g = RECTA().geometria(datos); return { x: g.x(valor), y: g.filaY(fila) }; };
+  const deRecta = (datos, px) => RECTA().geometria(datos).v(px);
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+  const enEje = (datos, v) => { const g = EJES().geometria(datos); return { x: g.X(v), y: g.Y(0) }; };
+  const deEje = (datos, px) => inversa(EJES().geometria(datos).X, datos.x.min, datos.x.max)(px);
 
   // ---------- Motor: conjunto solución de N(x)/D(x) rel 0, con N y D factorizados ----------
   // num, den: [{ r, m }] para (x − r)^m; signo: ±1 delante. Devuelve trozos { a, b, ca, cb } (null = infinito).
@@ -86,7 +99,8 @@
   // La recta con los signos de cada tramo (fila 1), los puntos críticos (fila 0) y, si se pide, la solución (fila 2).
   function rectaSignos(num, den, signo, rel, o = {}) {
     const C = [...new Set([...num, ...den].map(k => k.r))];
-    const lo = Math.min(...C) - 2, hi = Math.max(...C) + 2;
+    // o.min y o.max fijan el tramo: en el juego, la recta no se mueve bajo la manija.
+    const lo = o.min !== undefined ? o.min : Math.min(...C) - 2, hi = o.max !== undefined ? o.max : Math.max(...C) + 2;
     const sol = rel ? resolver(num, den, signo, rel) : [];
     const els = [
       ...tramos(num, den, signo).map(t => ({ tipo: 'intervalo', a: t.a, b: t.b, ca: false, cb: false, color: t.mas ? 'i' : 'h', rotulo: t.mas ? '+' : '−', fila: 1, desde: o.signosDesde })),
@@ -99,23 +113,34 @@
   }
 
   // ---------- Idea 1: un negativo voltea el sentido (lineales) ----------
-  // Cambia: el coeficiente a · Permanece: el lado derecho 6 · Progresa: el tramo solución que salta de lado
-  // · Se reserva: la división entre −2 · Debe verse: con a < 0 el sentido se invierte, y un valor de prueba lo confirma.
+  // Cambia: el coeficiente a y el valor de prueba x (se arrastra) · Permanece: el lado derecho 6 · Progresa: el tramo
+  // solución que salta de lado · Se reserva: la división entre −2 · Debe verse: con a < 0 se invierte; la prueba lo confirma.
+  const rectaLineal = val => {
+    const sol = val.a === 0 ? [{ a: null, b: null }] : val.a > 0 ? [{ a: null, b: 6 / val.a, cb: true }] : [{ a: 6 / val.a, ca: true, b: null }];
+    const ok = val.a * val.t <= 6;
+    return { min: -8, max: 8, paso: 1, cada: 2, decimales: 0, variable: 'x', color: 'o', filas: 2, elementos: [
+      ...sol.map(I => ({ tipo: 'intervalo', ...I, color: 'd', fila: 1, rotulo: 'cumplen' })),
+      { tipo: 'punto', x: val.t, color: ok ? 'd' : 'h', abierto: !ok, fila: 2, rotulo: `${f(val.a * val.t)} ≤ 6 ${ok ? '✓' : '✗'}` },
+    ], alt: `Solución de ${val.a}x ≤ 6; con x = ${val.t}, ${f(val.a * val.t)} ≤ 6 es ${ok ? 'verdadero' : 'falso'}` };
+  };
   const lineales = {
     id: 'lineales',
     titulo: 'Un negativo voltea el sentido',
     temas: ['Inecuaciones lineales'],
     pieza: 'recta',
     juega: {
-      consigna: 'Resuelve a·x ≤ 6 para distintos valores de a. En verde, los x que la cumplen. Fíjate hacia dónde apunta el tramo.',
+      consigna: 'Resuelve a·x ≤ 6 para distintos valores de a. En verde, los x que la cumplen. Arrastra un valor de prueba para comprobarlo.',
       voz: 'Prueba a positivo, negativo y cero.',
-      controles: [{ id: 'a', etiqueta: 'a', color: 'c-i', min: -3, max: 3, paso: 1, inicio: 2, decimales: 0 }],
-      dibujo: val => {
-        const sol = val.a === 0 ? [{ a: null, b: null }] : val.a > 0 ? [{ a: null, b: 6 / val.a, cb: true }] : [{ a: 6 / val.a, ca: true, b: null }];
-        return { datos: { min: -8, max: 8, paso: 1, cada: 2, decimales: 0, variable: 'x', color: 'o', filas: 1, elementos: sol.map(I => ({ tipo: 'intervalo', ...I, color: 'd', fila: 1, rotulo: 'cumplen' })), alt: `Solución de ${val.a}x ≤ 6` }, estado: {} };
-      },
-      lectura: val => [`${f(val.a)}`, x, ' ≤ 6 → ', ...(val.a === 0 ? ['todo ', x, ' (0 ≤ 6)'] : [x, ` ${val.a > 0 ? '≤' : '≥'} ${fr(6, val.a)}`])],
+      controles: [
+        { id: 'a', etiqueta: 'a', color: 'c-i', min: -3, max: 3, paso: 1, inicio: 2, decimales: 0 },
+        { id: 't', etiqueta: 'Prueba con x =', color: 'c-o', min: -8, max: 8, paso: 1, inicio: 0, decimales: 0 },
+      ],
+      dibujo: val => ({ datos: rectaLineal(val), estado: {} }),
+      lectura: val => [`${f(val.a)}`, x, ' ≤ 6 → ', ...(val.a === 0 ? ['todo ', x, ' (0 ≤ 6)'] : [x, ` ${val.a > 0 ? '≤' : '≥'} ${fr(6, val.a)}`]), ` · con `, x, ` = ${f(val.t)}: ${val.a * val.t <= 6 ? 'cumple' : 'no cumple'}`],
       minimo: 3,
+      // Arrastra el valor de prueba por la recta: verde si cumple, rojo y hueco si no.
+      arrastres: [{ id: 'prueba', etiqueta: 'valor de prueba x', color: 'c-o',
+        donde: val => enRecta(rectaLineal(val), val.t, 2), mover: (pt, val) => ({ t: deRecta(rectaLineal(val), pt.x) }) }],
     },
     predice: {
       pregunta: ['En −2', x, ' + 3 > 11 ya se restó 3 a ambos lados: −2', x, ' > 8. ¿Qué paso sigue?'],
@@ -149,7 +174,7 @@
     },
     regla: {
       texto: 'Una inecuación describe un conjunto. Sumar o restar lo conserva; multiplicar o dividir por un positivo, también. Por un negativo, el sentido se invierte.',
-      ecuacion: ['−2', x, ' > 8  ⇒  ', x, ' < −4'],
+      ecuacion: [{ llave: ['−2', x], nota: 'negativo', color: 'c-h' }, ' > 8  ⇒  ', { llave: [x, ' < −4'], nota: 'se invierte', color: 'c-h' }],
       condicion: 'el número por el que se multiplica tiene signo conocido. Una frontera con ≤ o ≥ entra; con < o >, no.',
     },
     ahoraTu: {
@@ -177,12 +202,13 @@
   };
 
   // ---------- Idea 2: la parábola decide los signos (cuadráticas) ----------
-  // Cambia: las raíces r₁ y r₂ y el sentido · Permanece: la parábola abre hacia arriba · Progresa: el tramo del eje
+  // Cambia: las raíces r₁ y r₂ (se arrastran sobre el eje) y el sentido · Permanece: la parábola abre hacia arriba · Progresa: el tramo del eje
   // donde la curva queda bajo o sobre el eje · Se reserva: x² < 9, con la raíz negativa · Debe verse: entre raíces, negativa.
   const ejesParabola = (r1, r2, rel, o = {}) => {
-    const g = v => (v - r1) * (v - r2), pts = [];
-    for (let k = 0; k <= 80; k++) { const v = -5 + k * 10 / 80, w = g(v); pts.push(w > o.ymax + 2 || w < -12 ? null : [v, w]); }
-    const sol = rel ? resolver([{ r: r1, m: 1 }, { r: r2, m: 1 }], [], 1, rel) : [];
+    // o.signo = −1: la parábola abre hacia abajo (solo en el laboratorio).
+    const sg = o.signo || 1, g = v => sg * (v - r1) * (v - r2), pts = [];
+    for (let k = 0; k <= 80; k++) { const v = -5 + k * 10 / 80, w = g(v); pts.push(w > (o.ymax || 12) + 2 || w < (sg > 0 ? -12 : -14) ? null : [v, w]); }
+    const sol = rel ? resolver([{ r: r1, m: 1 }, { r: r2, m: 1 }], [], sg, rel) : [];
     const seg = sol.flatMap(I => [[I.a === null ? -5 : I.a, 0], [I.b === null ? 5 : I.b, 0], null]);
     const dentro = [];
     for (let k = 0; k <= 20; k++) { const v = r1 + (r2 - r1) * k / 20; dentro.push([v, g(v)]); }
@@ -211,6 +237,10 @@
       dibujo: val => ({ datos: ejesParabola(val.r1, val.r2, val.rel, { ymax: 12 }), estado: {} }),
       lectura: val => [...producto([{ r: val.r1, m: 1 }, { r: val.r2, m: 1 }]), ` ${val.rel} 0 → ${conjunto(resolver([{ r: val.r1, m: 1 }, { r: val.r2, m: 1 }], [], 1, val.rel))}`],
       minimo: 4,
+      // Arrastra cada raíz por el eje x: la parábola la sigue (el plano no cambia de escala).
+      arrastres: ['r1', 'r2'].map((k, i) => ({ id: `raiz-${i + 1}`, etiqueta: `raíz r${i + 1}`, color: 'c-o',
+        donde: val => enEje(ejesParabola(val.r1, val.r2, val.rel, { ymax: 12 }), val[k]),
+        mover: (pt, val) => ({ [k]: deEje(ejesParabola(val.r1, val.r2, val.rel, { ymax: 12 }), pt.x) }) })),
     },
     predice: {
       pregunta: ['¿Qué valores de ', x, ' cumplen ', { sup: [x, '2'] }, ' < 9?'],
@@ -235,7 +265,7 @@
     },
     regla: {
       texto: 'Si a > 0 y hay dos raíces r₁ < r₂, ax² + bx + c es negativo entre las raíces y positivo fuera de ellas.',
-      ecuacion: ['(', x, ' − r₁)(', x, ' − r₂) < 0  ⇔  r₁ < ', x, ' < r₂'],
+      ecuacion: ['(', x, ' − r₁)(', x, ' − r₂) < 0  ⇔  ', { llave: ['r₁ < ', x, ' < r₂'], nota: 'entre raíces', color: 'c-d' }],
       condicion: 'si a < 0, los signos se invierten. Si no hay raíces reales, el signo es el de a en toda la recta.',
     },
     ahoraTu: {
@@ -272,7 +302,7 @@
   };
 
   // ---------- Idea 3: cada raíz cambia el signo… si es impar ----------
-  // Cambia: el punto de prueba t · Permanece: los factores y sus raíces · Progresa: los tramos con su signo
+  // Cambia: el punto de prueba t (se arrastra) · Permanece: los factores y sus raíces · Progresa: los tramos con su signo
   // · Se reserva: la raíz doble, que no cambia el signo · Debe verse: el signo es constante entre puntos críticos.
   const P3 = [{ r: -2, m: 1 }, { r: 1, m: 1 }, { r: 3, m: 1 }];
   const P3doble = [{ r: -2, m: 1 }, { r: 1, m: 2 }, { r: 3, m: 1 }];
@@ -296,6 +326,9 @@
       },
       lectura: val => { const t = val.t; return [`En t = ${f(t, 1)}: (${sgn(t + 2)})(${sgn(t - 1)})(${sgn(t - 3)}) → P ${sgn(valor(P3, [], 1, t))}`]; },
       minimo: 4,
+      // Arrastra t por la recta: el tramo con su signo aparece donde está t.
+      arrastres: [{ id: 'prueba-t', etiqueta: 'punto de prueba t', color: 'c-o',
+        donde: val => enRecta(rectaSignos(P3, [], 1, null), val.t, 0), mover: (pt, val) => ({ t: deRecta(rectaSignos(P3, [], 1, null), pt.x) }) }],
     },
     predice: {
       pregunta: ['Si el factor (', x, ' − 1) se eleva al cuadrado, P(', x, ') = (', x, ' + 2)(', x, ' − 1)²(', x, ' − 3). ¿Qué signos tiene P en (−2, 1) y en (1, 3)?'],
@@ -316,13 +349,13 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Puntos críticos: los ceros de cada factor, −2, 1 y 3.', ecuacion: ['(', x, ' + 2)(', x, ' − 1)²(', x, ' − 3) ≤ 0'] },
         { estado: { corte: 2 }, texto: 'A la derecha de 3 todos los factores son positivos: +.', ecuacion: [`con ${x.t} = 4: (+)(+)(+) = +`] },
-        { estado: { corte: 3 }, texto: 'Cruzar 3 (impar) cambia el signo; cruzar 1 (par), no.', ecuacion: ['(1, 3): −   ·   (−2, 1): −'] },
+        { estado: { corte: 3 }, texto: 'Cruzar 3 (impar) cambia el signo; cruzar 1 (par), no.', ecuacion: ['(1, 3): −', '   ·   ', '(−2, 1): −'] },
         { estado: { corte: 4 }, texto: 'Pide ≤ 0: los tramos negativos y los ceros.', ecuacion: [`${conjunto(resolver(P3doble, [], 1, '≤'))}`] },
       ],
     },
     regla: {
       texto: 'Los ceros de los factores parten la recta en tramos de signo constante. Al cruzar una raíz de multiplicidad impar el signo cambia; con multiplicidad par, no.',
-      ecuacion: ['(', x, ' − 1)² ≥ 0 a los dos lados de 1'],
+      ecuacion: [{ llave: ['(', x, ' − 1)²'], nota: 'exponente par', color: 'c-o' }, ' ≥ 0'],
       condicion: 'la expresión está factorizada en reales y se conoce el signo del coeficiente principal.',
     },
     ahoraTu: {
@@ -350,8 +383,12 @@
   };
 
   // ---------- Idea 4: el denominador nunca entra ----------
-  // Cambia: el cero del numerador a y el del denominador b · Permanece: la forma (x − a)/(x − b) · Progresa: los
+  // Cambia: el cero del numerador a y el del denominador b (se arrastran) · Permanece: la forma (x − a)/(x − b) · Progresa: los
   // signos por tramos · Se reserva: el punto b, hueco, que nunca entra · Debe verse: b parte la recta pero no es solución.
+  // Tramo fijo de −5 a 5: así la recta no cambia de escala mientras se arrastran a y b.
+  const rectaCociente = val => (val.a === val.b
+    ? { min: -5, max: 5, paso: 1, decimales: 0, variable: 'x', color: 'o', filas: 2, elementos: [{ tipo: 'intervalo', a: null, b: null, color: 'i', rotulo: '+ (vale 1)', fila: 1 }, { tipo: 'punto', x: val.b, color: 'h', abierto: true, fila: 0, rotulo: 'no entra' }], alt: 'La fracción vale 1 salvo en x = b, que no está en el dominio' }
+    : rectaSignos([{ r: val.a, m: 1 }], [{ r: val.b, m: 1 }], 1, null, { rotular: true, min: -5, max: 5 }));
   const fraccionarias = {
     id: 'fraccionarias',
     titulo: 'El denominador nunca entra',
@@ -364,11 +401,14 @@
         { id: 'a', etiqueta: 'a', color: 'c-o', min: -3, max: 3, paso: 1, inicio: 2, decimales: 0 },
         { id: 'b', etiqueta: 'b', color: 'c-h', min: -3, max: 3, paso: 1, inicio: -1, decimales: 0 },
       ],
-      dibujo: val => ({ datos: val.a === val.b
-        ? { min: -5, max: 5, paso: 1, decimales: 0, variable: 'x', color: 'o', filas: 2, elementos: [{ tipo: 'intervalo', a: null, b: null, color: 'i', rotulo: '+ (vale 1)', fila: 1 }, { tipo: 'punto', x: val.b, color: 'h', abierto: true, fila: 0, rotulo: 'no entra' }], alt: 'La fracción vale 1 salvo en x = b, que no está en el dominio' }
-        : rectaSignos([{ r: val.a, m: 1 }], [{ r: val.b, m: 1 }], 1, null, { rotular: true }), estado: {} }),
+      dibujo: val => ({ datos: rectaCociente(val), estado: {} }),
       lectura: val => ['Cero en ', x, ` = ${f(val.a)} · `, x, ` = ${f(val.b)} anula el denominador`],
       minimo: 4,
+      // Arrastra el cero del numerador (a) o el del denominador (b) sobre la recta.
+      arrastres: [
+        { id: 'cero-a', etiqueta: 'cero a del numerador', color: 'c-o', donde: val => enRecta(rectaCociente(val), val.a, 0), mover: (pt, val) => ({ a: deRecta(rectaCociente(val), pt.x) }) },
+        { id: 'cero-b', etiqueta: 'cero b del denominador', color: 'c-h', donde: val => enRecta(rectaCociente(val), val.b, 0), mover: (pt, val) => ({ b: deRecta(rectaCociente(val), pt.x) }) },
+      ],
     },
     predice: {
       pregunta: ['¿Qué valores de ', x, ' cumplen ', { frac: [['(', x, ' − 1)'], ['(', x, ' + 2)']] }, ' ≥ 0?'],
@@ -385,15 +425,15 @@
     mira: {
       datos: rectaSignos([{ r: 1, m: 1 }], [{ r: -2, m: 1 }], 1, '≥', { solucion: true, signosDesde: 2, solucionDesde: 4, rotular: true }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'Puntos críticos: 1 anula el numerador; −2, el denominador.', ecuacion: [x, ' − 1 = 0   ·   ', x, ' + 2 = 0'] },
-        { estado: { corte: 2 }, texto: 'Signos con un valor de prueba en cada tramo.', ecuacion: ['−3 → +   ·   0 → −   ·   2 → +'] },
+        { estado: { corte: 1 }, texto: 'Puntos críticos: 1 anula el numerador; −2, el denominador.', ecuacion: [x, ' − 1 = 0', '   ·   ', x, ' + 2 = 0'] },
+        { estado: { corte: 2 }, texto: 'Signos con un valor de prueba en cada tramo.', ecuacion: ['−3 → +', '   ·   ', '0 → −', '   ·   ', '2 → +'] },
         { estado: { corte: 3 }, texto: 'En x = 1 la fracción vale 0: con ≥, entra.', ecuacion: [{ frac: ['0', '3'] }, ' = 0'] },
         { estado: { corte: 4 }, texto: 'En x = −2 no existe: nunca entra.', ecuacion: ['(−∞, −2) ∪ [1, +∞)'] },
       ],
     },
     regla: {
       texto: 'En un cociente, los ceros del numerador y del denominador parten la recta. Los del numerador entran si hay igual; los del denominador, nunca.',
-      ecuacion: [{ frac: [['N(', x, ')'], ['D(', x, ')']] }, ' ≥ 0  con  D(', x, ') ≠ 0'],
+      ecuacion: [{ frac: [['N(', x, ')'], ['D(', x, ')']] }, ' ≥ 0  con  ', { llave: ['D(', x, ') ≠ 0'], nota: 'nunca entra', color: 'c-h' }],
       condicion: 'no se multiplica por el denominador sin conocer su signo, y simplificar un factor no devuelve el punto excluido.',
       voz: 'Ese valor queda fuera del dominio. Revisemos cuándo apareció.',
     },
@@ -420,11 +460,54 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 3: tres raíces arrastrables, el exponente del factor del medio y el sentido; si dos
+  // raíces coinciden, sus exponentes se suman (el caso que la idea no deja probar).
+  const tresF = val => [{ r: val.r1, m: 1 }, { r: val.r2, m: +val.m }, { r: val.r3, m: 1 }];
+  const rectaTres = val => rectaSignos(tresF(val), [], 1, val.rel, { solucion: true, min: -6, max: 6 });
+  const raizRecta = (k, n) => ({ id: `raiz-${n}`, etiqueta: `raíz ${n}`, color: 'c-o',
+    donde: val => enRecta(rectaTres(val), val[k], 0), mover: (pt, val) => ({ [k]: deRecta(rectaTres(val), pt.x) }) });
+  const REL4 = ['<', '≤', '>', '≥'].map(r => ({ valor: r, texto: `${r} 0` }));
+  // Mesa 2: la parábola con su signo: abre hacia arriba o hacia abajo (la regla de la idea 2 solo prueba a > 0).
+  const ejesLibre = val => ejesParabola(val.r1, val.r2, val.rel, { ymax: 12, signo: val.abre === 'abajo' ? -1 : 1 });
+  const LABORATORIO = [
+    {
+      id: 'tres-factores', titulo: 'Tres factores y un exponente', pieza: 'recta',
+      consigna: 'P(x) = (x − r₁)(x − r₂)ᵐ(x − r₃). Arrastra las tres raíces, elige el exponente m y el sentido. Junta dos raíces.',
+      controles: [
+        { id: 'r1', etiqueta: 'r₁', color: 'c-o', min: -5, max: 5, paso: 1, inicio: -2, decimales: 0 },
+        { id: 'r2', etiqueta: 'r₂', color: 'c-o', min: -5, max: 5, paso: 1, inicio: 1, decimales: 0 },
+        { id: 'r3', etiqueta: 'r₃', color: 'c-o', min: -5, max: 5, paso: 1, inicio: 3, decimales: 0 },
+        { id: 'm', etiqueta: 'Exponente m', opciones: [{ valor: 1, texto: '1' }, { valor: 2, texto: '2' }, { valor: 3, texto: '3' }] },
+        { id: 'rel', etiqueta: 'Sentido', opciones: REL4 },
+      ],
+      dibujo: val => ({ datos: rectaTres(val), estado: {} }),
+      lectura: val => [`P ${val.rel} 0 → ${conjunto(resolver(tresF(val), [], 1, val.rel))}`],
+      arrastres: [raizRecta('r1', 1), raizRecta('r2', 2), raizRecta('r3', 3)],
+    },
+    {
+      id: 'parabola-libre', titulo: 'La parábola que abre', pieza: 'ejes',
+      consigna: 'Arrastra las dos raíces, elige hacia dónde abre la parábola y el sentido. En verde, sobre el eje, los x que cumplen.',
+      controles: [
+        { id: 'r1', etiqueta: 'r₁', color: 'c-o', min: -4, max: 4, paso: 1, inicio: -1, decimales: 0 },
+        { id: 'r2', etiqueta: 'r₂', color: 'c-o', min: -4, max: 4, paso: 1, inicio: 2, decimales: 0 },
+        { id: 'abre', etiqueta: 'Abre hacia', opciones: [{ valor: 'arriba', texto: 'arriba (a > 0)' }, { valor: 'abajo', texto: 'abajo (a < 0)' }] },
+        { id: 'rel', etiqueta: 'Sentido', opciones: REL4 },
+      ],
+      dibujo: val => ({ datos: ejesLibre(val), estado: {} }),
+      lectura: val => { const sg = val.abre === 'abajo' ? -1 : 1, F = [{ r: val.r1, m: 1 }, { r: val.r2, m: 1 }]; return [...producto(F, sg), ` ${val.rel} 0 → ${conjunto(resolver(F, [], sg, val.rel))}`]; },
+      arrastres: ['r1', 'r2'].map((k, i) => ({ id: `raiz-${i + 1}`, etiqueta: `raíz r${i + 1}`, color: 'c-o',
+        donde: val => enEje(ejesLibre(val), val[k]), mover: (pt, val) => ({ [k]: deEje(ejesLibre(val), pt.x) }) })),
+    },
+    Object.assign({ id: 'cociente', titulo: 'El hueco del denominador', pieza: 'recta' }, fraccionarias.juega),
+  ];
+
   return {
     unidad: 'algebra.inecuaciones',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/ejes.js'],
+    laboratorio: LABORATORIO,
     historia: {
       texto: 'Los signos «menor que» y «mayor que» aparecen impresos en la Praxis de 1631, publicada después de la muerte de Thomas Harriot; los historiadores distinguen esa edición de sus manuscritos. La notación corta permitió escribir comparaciones dentro del álgebra. Aquí se trata de algo más que leer signos: transformar una condición sin perder ni agregar valores, y saber cuándo se invierte el orden.',
       pregunta: '¿Qué operación podría dar vuelta una desigualdad?',

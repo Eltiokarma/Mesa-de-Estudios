@@ -11,8 +11,13 @@
  * Persona y condiciones · 3.º de secundaria, celular de gama baja a 360 px, sin audio, en el aula o en casa.
  * Resultado observable · opera intervalos cuidando cada extremo, sabe cuándo se invierte una desigualdad y comprueba propiedades de una tabla.
  * Orden de atención · 1.º la recta o la tabla · 2.º el extremo o la casilla que cambia · acción: «Comprobar» · fondo: Nox.
- * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
+ * Estados · juego sin tocar · arrastrando una manija · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué (0, 1) no tiene máximo y por qué (−1, 3] ∩ (3, 5) es vacío.
+ *
+ * Ronda 2 (14 nov 2026): gesto directo en las cuatro ideas (se arrastran los puntos a y b y el punto c·b, el inicio
+ * de B, el extremo b de S y la casilla de la tabla), llaves en las reglas y laboratorio con tres mesas: dos
+ * intervalos con sus cuatro extremos, supremo e ínfimo con los dos extremos, y la tabla de la operación.
+ * Hallazgo 9: el juego y «Mira» usan la misma pieza en las cuatro ideas.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -62,18 +67,24 @@
     return `${I.a === null ? '(−∞' : (I.ca ? '[' : '(') + num(I.a)}, ${I.b === null ? '+∞)' : num(I.b) + (I.cb ? ']' : ')')}`;
   };
   const textoU = l => (l && l.length ? l.map(texto).join(' ∪ ') : '∅');
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la recta; geometria(d).v convierte
+  // píxeles en valor y el lector ajusta al paso y al rango del control.
+  const RECTA = () => Kit.piezas.recta, TABLA = () => Kit.piezas['alg-tabla'];
+  // Con un extremo de intervalo, la manija va media fila debajo: así se sigue viendo si el extremo es lleno o hueco.
+  const enRecta = (datos, valor, fila, extremo) => { const g = RECTA().geometria(datos); return { x: g.x(valor), y: g.filaY(fila) + (extremo ? 17 : 0) }; };
+  const deRecta = (datos, px) => RECTA().geometria(datos).v(px);
   const elem = (I, color, fila, rotulo, desde) => (I && I.a !== null && I.a === I.b
     ? { tipo: 'punto', x: I.a, color, fila, rotulo, desde }
     : { tipo: 'intervalo', a: I.a, b: I.b, ca: I.ca, cb: I.cb, color, fila, rotulo, desde });
 
   // ---------- Idea 1: un negativo voltea el orden ----------
-  // Cambia: a, b y el factor c · Permanece: la recta y el orden a < b · Progresa: los puntos ca y cb
-  // · Se reserva: el factor negativo, que cruza las flechas · Debe verse: sumar corre; multiplicar por negativo refleja.
+  // Cambia: a, b y el factor c (se arrastran a, b y el punto c·b) · Permanece: la recta y el orden a < b · Progresa:
+  // los puntos ca y cb · Se reserva: el factor negativo, que los cruza · Debe verse: por un negativo, el orden se refleja.
   const rectaOrden = (av, bv, cv) => {
     const ca = cv * av, cb = cv * bv;
     return {
       datos: {
-        min: -10, max: 10, paso: 1, cada: 2, decimales: 0, variable: 'x', color: 'o', filas: 2,
+        min: -10, max: 10, paso: 1, cada: 2, decimales: 0, variable: 'x', color: 'o', filas: 3,
         elementos: [
           { tipo: 'punto', x: av, color: 'o', rotulo: 'a', fila: 1 }, { tipo: 'punto', x: bv, color: 'i', rotulo: 'b', fila: 1 },
           { tipo: 'punto', x: ca, color: 'o', rotulo: 'ca', fila: 2 }, { tipo: 'punto', x: cb, color: 'i', rotulo: 'cb', fila: 2 },
@@ -99,6 +110,18 @@
       dibujo: val => rectaOrden(val.a, val.b, val.c),
       lectura: val => [a, ' < ', b, ' → ', c, a, ` = ${f(val.c * val.a)} ${rel(val.c * val.a, val.c * val.b)} ${f(val.c * val.b)} = `, c, b],
       minimo: 3,
+      // Arrastra a o b sobre la recta, o el punto c·b: moverlo cambia el factor c (c = posición / b, con b ≥ 2).
+      arrastres: [
+        { id: 'punto-a', etiqueta: 'punto a', color: 'c-o',
+          donde: val => enRecta(rectaOrden(val.a, val.b, val.c).datos, val.a, 1),
+          mover: (pt, val) => ({ a: deRecta(rectaOrden(val.a, val.b, val.c).datos, pt.x) }) },
+        { id: 'punto-b', etiqueta: 'punto b', color: 'c-i',
+          donde: val => enRecta(rectaOrden(val.a, val.b, val.c).datos, val.b, 1),
+          mover: (pt, val) => ({ b: deRecta(rectaOrden(val.a, val.b, val.c).datos, pt.x) }) },
+        { id: 'factor', etiqueta: 'punto c por b: cambia el factor c', color: 'c-h',
+          donde: val => enRecta(rectaOrden(val.a, val.b, val.c).datos, val.c * val.b, 2),
+          mover: (pt, val) => ({ c: deRecta(rectaOrden(val.a, val.b, val.c).datos, pt.x) / val.b }) },
+      ],
     },
     predice: {
       pregunta: ['Si ', a, ' < ', b, ', ¿qué relación hay entre ', a, ' − 5 y ', b, ' − 5?'],
@@ -135,7 +158,7 @@
     },
     regla: {
       texto: 'Sumar o restar el mismo número conserva una desigualdad; multiplicar o dividir por un positivo también. Multiplicar o dividir por un negativo la invierte.',
-      ecuacion: [c, ' < 0:  ', a, ' < ', b, ' ⇒ ', c, a, ' > ', c, b],
+      ecuacion: [{ llave: [c, ' < 0'], nota: 'negativo', color: 'c-h' }, '   ·   ', a, ' < ', b, ' ⇒ ', { llave: [c, a, ' > ', c, b], nota: 'se invierte', color: 'c-h' }],
       condicion: 'c distinto de 0: con c = 0 los dos lados quedan iguales. El 0 tampoco tiene inverso: no se divide entre 0.',
     },
     ahoraTu: {
@@ -158,7 +181,7 @@
   };
 
   // ---------- Idea 2: cada extremo se decide aparte ----------
-  // Cambia: dónde empieza B y la operación · Permanece: A = (−1, 3] · Progresa: el intervalo resultado
+  // Cambia: dónde empieza B (se arrastra) y la operación · Permanece: A = (−1, 3] · Progresa: el intervalo resultado
   // · Se reserva: el punto 3 que A incluye y B no · Debe verse: un extremo entra solo si entra donde se pide.
   const IA = { a: -1, b: 3, ca: false, cb: true };
   const rectaOp = (I, J, op, extra = []) => {
@@ -184,6 +207,10 @@
       dibujo: val => ({ datos: rectaOp(IA, { a: val.m, b: 5, ca: true, cb: false }, val.op), estado: {} }),
       lectura: val => { const J = { a: val.m, b: 5, ca: true, cb: false }; return [A, ` ${val.op} `, B, ` = ${val.op === '∩' ? texto(inter(IA, J)) : textoU(union(IA, J))}`]; },
       minimo: 4,
+      // Arrastra el extremo izquierdo de B, el corchete lleno en su fila.
+      arrastres: [{ id: 'inicio-b', etiqueta: 'inicio m de B', color: 'c-i',
+        donde: val => enRecta(rectaOp(IA, { a: val.m, b: 5, ca: true, cb: false }, val.op), val.m, 2, true),
+        mover: (pt, val) => ({ m: deRecta(rectaOp(IA, { a: val.m, b: 5, ca: true, cb: false }, val.op), pt.x) }) }],
     },
     predice: {
       pregunta: [A, ' = (−1, 3] y ', B, ' = (3, 5). ¿Cuál es ', A, ' ∩ ', B, '?'],
@@ -208,7 +235,7 @@
         };
       })(),
       pasos: [
-        { estado: { corte: 1 }, texto: 'A va de −1 (sin incluir) a 3 (incluido); B, de 2 a 5.', ecuacion: [A, ' = (−1, 3]   ·   ', B, ' = [2, 5)'] },
+        { estado: { corte: 1 }, texto: 'A va de −1 (sin incluir) a 3 (incluido); B, de 2 a 5.', ecuacion: [A, ' = (−1, 3]', '   ·   ', B, ' = [2, 5)'] },
         { estado: { corte: 2 }, texto: 'La intersección empieza en el mayor inicio: 2, que está en los dos.', ecuacion: ['máx(−1, 2) = 2'] },
         { estado: { corte: 3 }, texto: 'Termina en el menor final: 3, que A incluye y B también.', ecuacion: [A, ' ∩ ', B, ` = ${texto(inter(IA, { a: 2, b: 5, ca: true, cb: false }))}`] },
         { estado: { corte: 4 }, texto: 'La unión va del menor inicio al mayor final, sin huecos.', ecuacion: [A, ' ∪ ', B, ` = ${textoU(union(IA, { a: 2, b: 5, ca: true, cb: false }))}`] },
@@ -216,7 +243,7 @@
     },
     regla: {
       texto: 'La intersección va del mayor inicio al menor final, y un extremo entra solo si entra en los dos. En la unión, un extremo entra si entra en alguno.',
-      ecuacion: ['[', a, ', ', b, ') = {', x, ' : ', a, ' ≤ ', x, ' < ', b, '}'],
+      ecuacion: [{ llave: ['[', a], nota: 'entra', color: 'c-o' }, ', ', { llave: [b, ')'], nota: 'no entra', color: 'c-i' }, '   ·   ', a, ' ≤ ', x, ' < ', b],
       condicion: 'si el inicio queda después del final, o coinciden con un extremo abierto, la intersección es vacía.',
     },
     ahoraTu: {
@@ -253,8 +280,12 @@
   };
 
   // ---------- Idea 3: acotado no es tener máximo ----------
-  // Cambia: el extremo b y si entra · Permanece: el conjunto empieza en 0 · Progresa: los números cada vez más
+  // Cambia: el extremo b (se arrastra) y si entra · Permanece: el conjunto empieza en 0 · Progresa: los números cada vez más
   // cerca de 1 · Se reserva: el 1, que acota pero no pertenece · Debe verse: siempre hay otro entre x y 1.
+  const rectaS = val => ({ min: -1, max: 7, paso: 1, decimales: 0, variable: 'x', color: 'o', filas: 3, elementos: [
+    { tipo: 'intervalo', a: 0, b: val.b, ca: true, cb: val.cb === 'si', color: 'o', rotulo: 'S', fila: 1 },
+    { tipo: 'intervalo', a: val.b, b: null, ca: true, cb: false, color: 'i', rotulo: 'cotas superiores', fila: 2 },
+  ], alt: `S = [0, ${val.b}${val.cb === 'si' ? ']' : ')'}; sus cotas superiores son [${val.b}, +∞)` });
   const acotados = {
     id: 'acotados',
     titulo: 'Acotado no es tener máximo',
@@ -267,12 +298,12 @@
         { id: 'b', etiqueta: 'b', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 },
         { id: 'cb', etiqueta: 'b en S', opciones: [{ valor: 'no', texto: 'no entra' }, { valor: 'si', texto: 'entra' }] },
       ],
-      dibujo: val => ({ datos: { min: -1, max: 7, paso: 1, decimales: 0, variable: 'x', color: 'o', filas: 2, elementos: [
-        { tipo: 'intervalo', a: 0, b: val.b, ca: true, cb: val.cb === 'si', color: 'o', rotulo: 'S', fila: 1 },
-        { tipo: 'intervalo', a: val.b, b: null, ca: true, cb: false, color: 'i', rotulo: 'cotas superiores', fila: 2 },
-      ], alt: `S = [0, ${val.b}${val.cb === 'si' ? ']' : ')'}; sus cotas superiores son [${val.b}, +∞)` }, estado: {} }),
+      dibujo: val => ({ datos: rectaS(val), estado: {} }),
       lectura: val => [`S = [0, ${val.b}${val.cb === 'si' ? ']' : ')'} · cotas superiores: [${val.b}, +∞)`],
       minimo: 3,
+      // Arrastra el extremo derecho de S: las cotas superiores lo siguen.
+      arrastres: [{ id: 'extremo-b', etiqueta: 'extremo b de S', color: 'c-o',
+        donde: val => enRecta(rectaS(val), val.b, 1, true), mover: (pt, val) => ({ b: deRecta(rectaS(val), pt.x) }) }],
     },
     predice: {
       pregunta: '¿Cuál es el mayor elemento del intervalo (0, 1)?',
@@ -300,14 +331,14 @@
         pasos: [
           { estado: { corte: 1 }, texto: `Tomamos x = ${f(xs[0])}, que está en S.`, ecuacion: [x, ` = ${f(xs[0])}`] },
           { estado: { corte: 2 }, texto: 'El punto medio entre x y 1 también está en S, y es mayor.', ecuacion: [{ frac: [[x, ' + 1'], '2'] }, ` = ${f(xs[1])}`] },
-          { estado: { corte: 3 }, texto: 'Se repite sin fin: siempre aparece otro más cerca de 1.', ecuacion: [`${f(xs[2])}   ·   ${f(xs[3], 4)}`] },
-          { estado: { corte: 4 }, texto: 'El 1 acota a S sin estar en S: supremo, no máximo.', ecuacion: ['sup S = 1   ·   máx S no existe'] },
+          { estado: { corte: 3 }, texto: 'Se repite sin fin: siempre aparece otro más cerca de 1.', ecuacion: [`${f(xs[2])}`, '   ·   ', `${f(xs[3], 4)}`] },
+          { estado: { corte: 4 }, texto: 'El 1 acota a S sin estar en S: supremo, no máximo.', ecuacion: ['sup S = 1', '   ·   ', 'máx S no existe'] },
         ],
       };
     })(),
     regla: {
       texto: 'Un conjunto acotado puede no tener máximo. En (0, 1), para cada x hay otro mayor, (x + 1)/2. La menor cota superior, el supremo, es 1.',
-      ecuacion: [x, ' < ', { frac: [[x, ' + 1'], '2'] }, ' < 1'],
+      ecuacion: [x, ' < ', { llave: [{ frac: [[x, ' + 1'], '2'] }], nota: 'otro mayor', color: 'c-d' }, ' < ', { llave: ['1'], nota: 'el supremo', color: 'c-i' }],
       condicion: 'el máximo tiene que pertenecer al conjunto; el supremo no. Entre dos reales distintos siempre hay otro.',
     },
     ahoraTu: {
@@ -356,7 +387,7 @@
   };
 
   // ---------- Idea 4: una tabla no se supone, se comprueba ----------
-  // Cambia: la regla y la casilla elegida · Permanece: el conjunto {0, 1, 2, 3} · Progresa: las propiedades que
+  // Cambia: la regla y la casilla elegida (se arrastra por la tabla) · Permanece: el conjunto {0, 1, 2, 3} · Progresa: las propiedades que
   // se comprueban · Se reserva: el 3, que no tiene inverso dentro del conjunto · Debe verse: la fila del neutro repite el encabezado.
   const C4 = [0, 1, 2, 3];
   const REGLAS = { 'a − 2b': (p, q) => p - 2 * q, 'a + b − 1': (p, q) => p + q - 1, 'el mayor': (p, q) => Math.max(p, q) };
@@ -365,6 +396,7 @@
     filas: C4.map(p => [{ t: String(p), color: 'o', fuerte: true }, ...C4.map(q => String(f(REGLAS[regla](p, q))))]),
     alt: `Tabla de a ★ b = ${regla} para a y b en {0, 1, 2, 3}: filas a, columnas b`,
   }, extra);
+  const tablaCasilla = val => tablaOp(val.regla, { resaltes: [{ f: val.a, c: val.b + 1, color: 'd' }, { f: val.b, c: val.a + 1, color: 'h' }] });
   const operaciones = {
     id: 'tabla-operacion',
     titulo: 'Una tabla se comprueba',
@@ -378,9 +410,18 @@
         { id: 'a', etiqueta: 'a', color: 'c-o', min: 0, max: 3, paso: 1, inicio: 3, decimales: 0 },
         { id: 'b', etiqueta: 'b', color: 'c-i', min: 0, max: 3, paso: 1, inicio: 1, decimales: 0 },
       ],
-      dibujo: val => ({ datos: tablaOp(val.regla, { resaltes: [{ f: val.a, c: val.b + 1, color: 'd' }, { f: val.b, c: val.a + 1, color: 'h' }] }), estado: {} }),
+      dibujo: val => ({ datos: tablaCasilla(val), estado: {} }),
       lectura: val => [a, ' ★ ', b, ` = ${f(REGLAS[val.regla](val.a, val.b))} · `, b, ' ★ ', a, ` = ${f(REGLAS[val.regla](val.b, val.a))}`],
       minimo: 4,
+      // Arrastra la casilla verde por la tabla: la fila es a y la columna es b. La roja, b ★ a, la sigue en espejo.
+      // La manija va en el borde derecho de la casilla, para no tapar su número.
+      arrastres: [{ id: 'casilla', etiqueta: 'casilla a ★ b: fila a, columna b', color: 'c-d',
+        donde: val => { const g = TABLA().geometria(tablaCasilla(val)); return { x: g.xs[val.b + 2] - 1, y: g.cy(val.a) }; },
+        mover: (pt, val) => {
+          const g = TABLA().geometria(tablaCasilla(val)), alto = g.cy(1) - g.cy(0), borde = k => g.xs[k + 1] - 1;
+          let col = 1; for (let k = 1; k <= 4; k++) if (Math.abs(pt.x - borde(k)) < Math.abs(pt.x - borde(col))) col = k;
+          return { a: (pt.y - g.cy(0)) / alto, b: col - 1 };
+        } }],
     },
     predice: {
       pregunta: ['Con ', a, ' ★ ', b, ' = ', a, ' + ', b, ' − 1, ¿qué número e cumple ', a, ' ★ e = ', a, ' para todo ', a, '?'],
@@ -406,7 +447,7 @@
     },
     regla: {
       texto: 'Las propiedades de una operación se comprueban. Es conmutativa si la tabla es simétrica respecto de la diagonal; e es neutro si deja igual a cada elemento.',
-      ecuacion: [a, ' ★ e = e ★ ', a, ' = ', a],
+      ecuacion: [a, ' ★ ', { llave: ['e'], nota: 'el neutro', color: 'c-d' }, ' = e ★ ', a, ' = ', a],
       condicion: 'no se supone nada porque la regla se parezca a la suma. En los reales, el 0 no tiene inverso multiplicativo.',
     },
     ahoraTu: {
@@ -459,11 +500,85 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 2: los dos intervalos con sus cuatro extremos arrastrables, cuál entra y la operación.
+  // Si un extremo pasa al otro, el intervalo se lee de menor a mayor (la manija sigue en su punto).
+  const ordena = (p, q, cp, cq) => (p <= q ? { a: p, b: q, ca: cp, cb: cq } : { a: q, b: p, ca: cq, cb: cp });
+  const EXTREMOS = { ca: ['[ ]', '( )'], ac: ['( )', '[ ]'], cc: ['[ ]', '[ ]'], aa: ['( )', '( )'] };
+  const dosI = val => {
+    const [ea, eb] = EXTREMOS[val.ext], cA = ea === '[ ]', cB = eb === '[ ]';
+    const I = ordena(val.a1, val.b1, cA, cA), J = ordena(val.a2, val.b2, cB, cB);
+    const vI = vacio(I), vJ = vacio(J);
+    const R = val.op === '∩' ? (vI || vJ ? [] : (inter(I, J) ? [inter(I, J)] : [])) : vI && vJ ? [] : vI ? [J] : vJ ? [I] : union(I, J);
+    return { I, J, vI, vJ, R };
+  };
+  const rectaDosI = val => {
+    const { I, J, vI, vJ, R } = dosI(val);
+    return {
+      min: -5, max: 7, paso: 1, decimales: 0, variable: 'x', color: 'o', filas: 3,
+      elementos: [...(vI ? [] : [elem(I, 'o', 3, `A = ${texto(I)}`)]), ...(vJ ? [] : [elem(J, 'i', 2, `B = ${texto(J)}`)]), ...R.map((K, k) => elem(K, 'd', 1, k ? '' : `A ${val.op} B`))],
+      alt: `A = ${vI ? '∅' : texto(I)}, B = ${vJ ? '∅' : texto(J)}; A ${val.op} B = ${textoU(R)}`,
+    };
+  };
+  const extremoDe = (id, color, fila, etiqueta) => ({
+    id: id.replace(/\d/, m => `-${m}`), etiqueta, color,
+    donde: val => enRecta(rectaDosI(val), val[id], fila, true),
+    mover: (pt, val) => ({ [id]: deRecta(rectaDosI(val), pt.x) }),
+  });
+  // Mesa 2: S con sus dos extremos, cada uno dentro o fuera; se leen a la vez ínfimo, mínimo, supremo y máximo.
+  const rectaSupInf = val => {
+    const cp = val.cp === 'si', cq = val.cq === 'si';
+    return {
+      min: -5, max: 7, paso: 1, decimales: 0, variable: 'x', color: 'o', filas: 3,
+      elementos: [
+        { tipo: 'intervalo', a: val.p, b: val.q, ca: cp, cb: cq, color: 'o', rotulo: 'S', fila: 1 },
+        { tipo: 'intervalo', a: null, b: val.p, cb: true, color: 'd', rotulo: 'cotas inf.', fila: 2 },
+        { tipo: 'intervalo', a: val.q, b: null, ca: true, color: 'i', rotulo: 'cotas sup.', fila: 2 },
+      ],
+      alt: `S = ${texto({ a: val.p, b: val.q, ca: cp, cb: cq })}: ínfimo ${f(val.p)}, supremo ${f(val.q)}`,
+    };
+  };
+  const LABORATORIO = [
+    {
+      id: 'dos-intervalos', titulo: 'Dos intervalos, cuatro extremos', pieza: 'recta',
+      consigna: 'Arrastra los cuatro extremos de A y de B, elige cuáles entran y la operación. En verde, el resultado.',
+      controles: [
+        { id: 'a1', etiqueta: 'A desde', color: 'c-o', min: -5, max: 7, paso: 1, inicio: -1, decimales: 0 },
+        { id: 'b1', etiqueta: 'A hasta', color: 'c-o', min: -5, max: 7, paso: 1, inicio: 3, decimales: 0 },
+        { id: 'a2', etiqueta: 'B desde', color: 'c-i', min: -5, max: 7, paso: 1, inicio: 3, decimales: 0 },
+        { id: 'b2', etiqueta: 'B hasta', color: 'c-i', min: -5, max: 7, paso: 1, inicio: 5, decimales: 0 },
+        { id: 'ext', etiqueta: 'Extremos', opciones: Object.entries(EXTREMOS).map(([k, [ea, eb]]) => ({ valor: k, texto: `A ${ea}, B ${eb}` })) },
+        { id: 'op', etiqueta: 'Operación', opciones: [{ valor: '∩', texto: 'A ∩ B' }, { valor: '∪', texto: 'A ∪ B' }] },
+      ],
+      dibujo: val => ({ datos: rectaDosI(val), estado: {} }),
+      lectura: val => { const { I, J, vI, vJ, R } = dosI(val); return [`${vI ? '∅' : texto(I)} ${val.op} ${vJ ? '∅' : texto(J)} = ${textoU(R)}`]; },
+      arrastres: [extremoDe('a1', 'c-o', 3, 'inicio de A'), extremoDe('b1', 'c-o', 3, 'final de A'), extremoDe('a2', 'c-i', 2, 'inicio de B'), extremoDe('b2', 'c-i', 2, 'final de B')],
+    },
+    {
+      id: 'supremo-infimo', titulo: 'Supremo, ínfimo, máximo y mínimo', pieza: 'recta',
+      consigna: 'Arrastra los dos extremos de S y decide si cada uno entra. Mira cuándo el supremo es también máximo.',
+      controles: [
+        { id: 'p', etiqueta: 'S desde', color: 'c-o', min: -4, max: 1, paso: 1, inicio: 0, decimales: 0 },
+        { id: 'q', etiqueta: 'S hasta', color: 'c-o', min: 2, max: 6, paso: 1, inicio: 3, decimales: 0 },
+        { id: 'cp', etiqueta: 'Inicio en S', opciones: [{ valor: 'si', texto: 'entra' }, { valor: 'no', texto: 'no entra' }] },
+        { id: 'cq', etiqueta: 'Final en S', opciones: [{ valor: 'no', texto: 'no entra' }, { valor: 'si', texto: 'entra' }] },
+      ],
+      dibujo: val => ({ datos: rectaSupInf(val), estado: {} }),
+      lectura: val => [`ínf ${f(val.p)}${val.cp === 'si' ? ' = mín' : ', sin mínimo'} · sup ${f(val.q)}${val.cq === 'si' ? ' = máx' : ', sin máximo'}`],
+      arrastres: [
+        { id: 'desde', etiqueta: 'inicio de S', color: 'c-o', donde: val => enRecta(rectaSupInf(val), val.p, 1, true), mover: (pt, val) => ({ p: deRecta(rectaSupInf(val), pt.x) }) },
+        { id: 'hasta', etiqueta: 'final de S', color: 'c-o', donde: val => enRecta(rectaSupInf(val), val.q, 1, true), mover: (pt, val) => ({ q: deRecta(rectaSupInf(val), pt.x) }) },
+      ],
+    },
+    Object.assign({ id: 'tabla-libre', titulo: 'La tabla de una operación', pieza: 'alg-tabla' }, operaciones.juega),
+  ];
+
   return {
     unidad: 'algebra.numeros-reales',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/alg-tabla.js'],
+    laboratorio: LABORATORIO,
     historia: {
       texto: 'Los irracionales se usaron mucho antes de saber construirlos con rigor. En el siglo XIX, varios matemáticos los fundaron con cortes de racionales o con sucesiones; Dedekind publicó su propuesta en 1872. No se trataba de añadir cifras misteriosas, sino de que el orden y los límites funcionaran sin huecos. Los intervalos de esta unidad usan ese lenguaje moderno.',
       pregunta: '¿Hay un número justo antes del 1?',
