@@ -153,9 +153,10 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
 /* Juego libre antes de las preguntas (regla 3; nucleo/jugar.js) */
 .juego{display:grid; gap:8px; padding:4px 2px}
 .juego[hidden]{display:none}
-.paso-ctrl{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
-.paso-ctrl > span{font-weight:700; flex:1 1 150px}
-.paso-ctrl output{font-family:var(--mono); min-width:64px; text-align:center}
+.paso-ctrl{display:grid; grid-template-columns:minmax(0, 1fr) 44px minmax(56px, auto) 44px; align-items:center; gap:8px}
+.paso-ctrl > span{font-weight:700}
+.paso-ctrl > .seg{grid-column:2 / -1; justify-self:end}
+.paso-ctrl output{font-family:var(--mono); text-align:center}
 .paso-ctrl .btn{padding:8px 0; width:44px}
 .jugar-barra{color:var(--ink)}
 .jugar-seguir{background:var(--ink); color:var(--card); border:0}
