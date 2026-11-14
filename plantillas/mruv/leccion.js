@@ -36,11 +36,41 @@
     return b.t > a.t ? (b.x - a.x) / ((b.t - a.t) / 1000) : 0;
   }
 
+  /*
+   * Rapidez del empujón (px/s). En un celular, el dedo suele detenerse un instante antes de levantarse: con solo los
+   * últimos 100 ms daba 0 y el carrito no arrancaba (lo vio Gerson el 14 nov). Si al soltar el dedo ya estaba casi
+   * quieto, vale el tramo de 100 ms más rápido de los últimos 400 ms: el empujón que acaba de dar.
+   */
+  const RECUERDO = 400;
+  function rapidezEmpujon(muestras, tSoltar) {
+    const fin = tSoltar === undefined ? (muestras.length ? muestras[muestras.length - 1].t : 0) : tSoltar;
+    const ahora = rapidezDedo(muestras, fin);
+    let pico = ahora;
+    for (const m of muestras) {
+      if (m.t < fin - RECUERDO || m.t > fin) continue;
+      const v = rapidezDedo(muestras.filter(q => q.t <= m.t), m.t);
+      if (v > pico) pico = v;
+    }
+    return pico;
+  }
+
   // Rapidez del dedo en m/s → la rapidez limpia de la corrida (2, 4 o 6 m/s), o null si no alcanza para soltar.
   // Solo hacia adelante: un empujón hacia atrás no suelta el carrito.
   function ajustarRapidez(vMetros) {
     if (!(vMetros >= MINIMO)) return null;
     return RAPIDECES.reduce((a, b) => (Math.abs(b - vMetros) < Math.abs(a - vMetros) ? b : a));
+  }
+
+  /*
+   * Empujón del dedo en px de pantalla por segundo → 2, 4 o 6 m/s, o null si fue demasiado lento para soltar.
+   * Un dedo va mucho más rápido que el carrito a la escala de la pista: convertido metro a metro, casi todo
+   * empujón salía 6 m/s. Por eso se clasifica por la rapidez real del dedo. Umbrales: HIPÓTESIS, a calibrar con el
+   * celular de Gerson y con alumnos (docs/pendientes.md).
+   */
+  const UMBRALES_DEDO = { minimo: 60, medio: 450, fuerte: 1000 };   // px/s de pantalla
+  function clasificarEmpujon(pxPorSegundo) {
+    if (!(pxPorSegundo >= UMBRALES_DEDO.minimo)) return null;
+    return pxPorSegundo >= UMBRALES_DEDO.fuerte ? 6 : pxPorSegundo >= UMBRALES_DEDO.medio ? 4 : 2;
   }
 
   // Marcas de cada segundo (posiciones en m) de un móvil del motor, de t = 0 hasta dur.
@@ -296,7 +326,7 @@
     return { ...p, movil: m, fin, vmax: redondo(vmax), partes, total, opciones };
   }
 
-  return { LARGO, TMAX, RAPIDECES, BOTONES, VENTANA, PEDAL, CASOS, SALIDAS_B, PREDICCIONES, dosCarritosCon,
+  return { LARGO, TMAX, RAPIDECES, BOTONES, VENTANA, PEDAL, CASOS, SALIDAS_B, PREDICCIONES, dosCarritosCon, rapidezEmpujon, clasificarEmpujon, UMBRALES_DEDO,
     CORRIDA_DEFECTO, CUADRITO, areas, pintado, ALTO, LANZAMIENTOS, lanzar, soltarDos, PROBLEMAS, problema,
     rapidezDedo, ajustarRapidez, marcas, corridaMRU, dosCarritos, leerBandera, tramosDe, corridaPedal, responder };
 });

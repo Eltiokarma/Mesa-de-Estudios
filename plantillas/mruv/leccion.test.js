@@ -140,3 +140,24 @@ test('juego libre de dos carritos: A a 6 m/s contra B que sale de 30 m a −4 m/
   }
   assert.equal(L.dosCarritos('alcance').caso, 'alcance');
 });
+
+test('empujón con pausa antes de levantar el dedo: cuenta el empujón, no el instante quieto (Gerson, 14 nov)', () => {
+  // Empuja a 600 px/s durante 100 ms (6 px cada 10 ms), se detiene 150 ms y levanta.
+  const m = [...Array.from({ length: 11 }, (_, k) => ({ t: k * 10, x: k * 6 })), ...Array.from({ length: 15 }, (_, k) => ({ t: 110 + k * 10, x: 60 }))];
+  assert.equal(L.rapidezDedo(m, 250), 0, 'con solo los últimos 100 ms daba 0');
+  assert.ok(Math.abs(L.rapidezEmpujon(m, 250) - 600) < 1e-6, 'cuenta el tramo rápido de los últimos 400 ms');
+  // Un dedo que se quedó quieto más de 400 ms antes de levantar no suelta el carrito.
+  const quieto = [...m, ...Array.from({ length: 50 }, (_, k) => ({ t: 260 + k * 10, x: 60 }))];
+  assert.equal(L.rapidezEmpujon(quieto, 760), 0);
+  // Soltar en movimiento sigue igual.
+  assert.ok(Math.abs(L.rapidezEmpujon(m.slice(0, 11), 100) - 600) < 1e-6);
+});
+
+test('el empujón se clasifica por la rapidez real del dedo (umbrales de hipótesis)', () => {
+  assert.equal(L.clasificarEmpujon(30), null);
+  assert.equal(L.clasificarEmpujon(-800), null);
+  assert.equal(L.clasificarEmpujon(200), 2);
+  assert.equal(L.clasificarEmpujon(600), 4);
+  assert.equal(L.clasificarEmpujon(1500), 6);
+  assert.ok(L.UMBRALES_DEDO.minimo < L.UMBRALES_DEDO.medio && L.UMBRALES_DEDO.medio < L.UMBRALES_DEDO.fuerte);
+});

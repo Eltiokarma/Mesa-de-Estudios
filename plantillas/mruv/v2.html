@@ -235,6 +235,7 @@ function pedirEmpujon() {
 }
 // El dedo: sigue uno a uno mientras arrastra (hasta 6 m); al soltar, rapidez de los últimos 100 ms.
 let arrastrando = null;
+const ZONA_EMPUJE = 6;   // metros en los que el dedo empuja el carrito antes de soltarlo
 function aMetros(clientX) {
   const r = $('lienzo').getBoundingClientRect(), k = Pista.constantes;
   const px = (clientX - r.left) * 320 / r.width;
@@ -252,14 +253,17 @@ function arrastre(on) {
   el.onpointermove = on ? ev => {
     if (!arrastrando || ev.pointerId !== arrastrando.id) return;
     arrastrando.muestras.push({ t: ev.timeStamp, x: ev.clientX });
-    const x = Math.min(6, Math.max(0, arrastrando.x0 + aMetros(ev.clientX).m - arrastrando.m0));
-    moverCarrito(0, x);
+    const deseado = arrastrando.x0 + aMetros(ev.clientX).m - arrastrando.m0;
+    moverCarrito(0, Math.min(ZONA_EMPUJE, Math.max(0, deseado)));
+    // Al llegar al final de la zona de empuje con el dedo todavía empujando, el carrito se suelta solo
+    // (antes se quedaba pegado en 6 m hasta levantar el dedo).
+    if (deseado >= ZONA_EMPUJE) el.onpointerup(ev);
   } : null;
   el.onpointerup = el.onpointercancel = on ? ev => {
     if (!arrastrando || ev.pointerId !== arrastrando.id) return;
     const a = arrastrando; arrastrando = null;
-    const vpx = L.rapidezDedo(a.muestras, ev.timeStamp);
-    const v = L.ajustarRapidez(vpx * aMetros(ev.clientX).escala);
+    // Rapidez del dedo en px de pantalla por segundo (clientX), clasificada en suave, medio o fuerte.
+    const v = L.clasificarEmpujon(L.rapidezEmpujon(a.muestras, ev.timeStamp));
     if (v === null) { aviso('Suéltalo mientras lo mueves, como un empujón.'); return; }
     soltar(v, pista.carriles[0].x);
   } : null;
