@@ -451,7 +451,8 @@
           "id": "p10a",
           "enunciado": "Dos sonidos se describen con y = sen 12t e y = sen 8t (t en grados). Su suma es una onda rápida dentro de una envolvente.",
           "pregunta": "¿Cuántas veces se anula la envolvente entre t = 0° y t = 360°?",
-          "correcta": { "fn": "pulsos", "args": [{ "p": 12, "q": 8, "n": 2 }], "campo": "texto", "valor": "4" },
+          "decimales": 2,
+          "correcta": { "fn": "pulsos", "args": [{ "p": 12, "q": 8, "n": 2 }], "campo": "valor", "valor": 4 },
           "errores": [
             {
               "id": "TT2-intercambia",
@@ -459,8 +460,8 @@
               "explicacion": "Usaste 10t, la semisuma, que es la de la onda rápida, sen 10t. La envolvente es 2 cos 2t y se anula 4 veces.",
               "fn": "pulsos",
               "args": [{ "p": 12, "q": 8, "n": 2 }],
-              "campo": "errores.intercambia.texto",
-              "valor": "20"
+              "campo": "errores.intercambia.valor",
+              "valor": 20
             },
             {
               "id": "TT4-sin-dividir",
@@ -468,17 +469,8 @@
               "explicacion": "No dividiste entre 2: usaste cos 4t. La semidiferencia es (12t − 8t)/2 = 2t.",
               "fn": "pulsos",
               "args": [{ "p": 12, "q": 8, "n": 2 }],
-              "campo": "errores.sinDividir.texto",
-              "valor": "8"
-            },
-            {
-              "id": "TT12-nunca",
-              "respaldo": "hipotesis",
-              "explicacion": "Dos ondas que se suman sí pueden apagarse: la envolvente 2 cos 2t vale 0 en 45°, 135°, 225° y 315°.",
-              "fn": "pulsos",
-              "args": [{ "p": 12, "q": 8, "n": 2 }],
-              "campo": "errores.nunca.texto",
-              "valor": "0"
+              "campo": "errores.sinDividir.valor",
+              "valor": 8
             }
           ]
         }

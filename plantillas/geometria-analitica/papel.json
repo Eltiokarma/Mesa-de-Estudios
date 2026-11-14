@@ -23,7 +23,8 @@
           "id": "p1a",
           "enunciado": "Un triángulo tiene vértices A(−1; −1), B(5; −1) y C(5; 7).",
           "pregunta": "¿Cuánto mide el lado AC?",
-          "correcta": { "fn": "distancia", "args": [{ "A": [-1, -1], "B": [5, 7] }], "campo": "texto", "valor": "10" },
+          "decimales": 2,
+          "correcta": { "fn": "distancia", "args": [{ "A": [-1, -1], "B": [5, 7] }], "campo": "valor", "valor": 10 },
           "errores": [
             {
               "id": "GE11-suma-catetos",
@@ -31,8 +32,8 @@
               "explicacion": "Sumaste los catetos, 6 + 8. AC es la hipotenusa: con Pitágoras, √(6² + 8²) = 10.",
               "fn": "distancia",
               "args": [{ "A": [-1, -1], "B": [5, 7] }],
-              "campo": "errores.sumaCatetos.texto",
-              "valor": "14"
+              "campo": "errores.sumaCatetos.valor",
+              "valor": 14
             },
             {
               "id": "GA-sin-raiz",
@@ -40,17 +41,17 @@
               "explicacion": "Te quedaste en 6² + 8² = 100. Falta sacar la raíz: √100 = 10.",
               "fn": "distancia",
               "args": [{ "A": [-1, -1], "B": [5, 7] }],
-              "campo": "errores.sinRaiz.texto",
-              "valor": "100"
+              "campo": "errores.sinRaiz.valor",
+              "valor": 100
             },
             {
               "id": "GE11-resta-cuadrados",
               "respaldo": "parcial",
-              "explicacion": "Restaste los cuadrados: √(64 − 36) = √28 = 2√7. Para la hipotenusa se suman: √(36 + 64) = 10.",
+              "explicacion": "Restaste los cuadrados: √(64 − 36) = √28 ≈ 5,29. Para la hipotenusa se suman: √(36 + 64) = 10.",
               "fn": "distancia",
               "args": [{ "A": [-1, -1], "B": [5, 7] }],
-              "campo": "errores.restaCuadrados.texto",
-              "valor": "2√7"
+              "campo": "errores.restaCuadrados.valor",
+              "valor": 5.29150262213
             }
           ]
         }
@@ -141,7 +142,8 @@
           "id": "p4a",
           "enunciado": "Una recta pasa por A(−1; −2) y B(2; 1).",
           "pregunta": "¿Cuál es su pendiente?",
-          "correcta": { "fn": "pendiente", "args": [{ "A": [-1, -2], "B": [2, 1] }], "campo": "texto", "valor": "1" },
+          "decimales": 2,
+          "correcta": { "fn": "pendiente", "args": [{ "A": [-1, -2], "B": [2, 1] }], "campo": "valor", "valor": 1 },
           "errores": [
             {
               "id": "AL25-orden-cruzado",
@@ -149,8 +151,8 @@
               "explicacion": "Restaste en distinto orden arriba y abajo. Si arriba va B menos A, abajo también: 3/3 = 1.",
               "fn": "pendiente",
               "args": [{ "A": [-1, -2], "B": [2, 1] }],
-              "campo": "errores.ordenCruzado.texto",
-              "valor": "−1"
+              "campo": "errores.ordenCruzado.valor",
+              "valor": -1
             },
             {
               "id": "G2-un-punto",
@@ -158,8 +160,8 @@
               "explicacion": "Dividiste y entre x de un solo punto: con B, 1/2. La pendiente usa los dos puntos: Δy/Δx = 3/3 = 1.",
               "fn": "pendiente",
               "args": [{ "A": [-1, -2], "B": [2, 1] }],
-              "campo": "errores.unPunto.texto",
-              "valor": "1/2"
+              "campo": "errores.unPunto.valor",
+              "valor": 0.5
             }
           ]
         }
@@ -355,7 +357,8 @@
           "id": "p9a",
           "enunciado": "Un cuadrilátero tiene vértices A(−2; −1), B(4; −2), C(5; 3) y D(−1; 4).",
           "pregunta": "¿Cuál es su área, en u²?",
-          "correcta": { "fn": "area", "args": [{ "vertices": [[-2, -1], [4, -2], [5, 3], [-1, 4]] }], "campo": "texto", "valor": "31" },
+          "decimales": 2,
+          "correcta": { "fn": "area", "args": [{ "vertices": [[-2, -1], [4, -2], [5, 3], [-1, 4]] }], "campo": "valor", "valor": 31 },
           "errores": [
             {
               "id": "GA-area-sin-mitad",
@@ -363,8 +366,8 @@
               "explicacion": "Olvidaste dividir entre 2. El área es la mitad de |37 − (−25)|.",
               "fn": "area",
               "args": [{ "vertices": [[-2, -1], [4, -2], [5, 3], [-1, 4]] }],
-              "campo": "errores.sinMitad.texto",
-              "valor": "62"
+              "campo": "errores.sinMitad.valor",
+              "valor": 62
             },
             {
               "id": "GA-suma-diagonales",
@@ -372,8 +375,8 @@
               "explicacion": "Sumaste 37 y −25: 12/2 = 6. Los productos que suben se restan: |37 − (−25)|/2 = 62/2 = 31.",
               "fn": "area",
               "args": [{ "vertices": [[-2, -1], [4, -2], [5, 3], [-1, 4]] }],
-              "campo": "errores.sumaProductos.texto",
-              "valor": "6"
+              "campo": "errores.sumaProductos.valor",
+              "valor": 6
             }
           ]
         }

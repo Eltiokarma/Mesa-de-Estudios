@@ -95,7 +95,8 @@
           "id": "p2b",
           "enunciado": "Una parábola tiene la ecuación (x + 1)² = 12(y − 3).",
           "pregunta": "¿Cuánto mide su lado recto?",
-          "correcta": { "fn": "parabola", "args": [{ "eje": "y", "h": -1, "k": 3, "cuatroP": 12 }], "campo": "lr.texto", "valor": "12" },
+          "decimales": 2,
+          "correcta": { "fn": "parabola", "args": [{ "eje": "y", "h": -1, "k": 3, "cuatroP": 12 }], "campo": "lr.valor", "valor": 12 },
           "errores": [
             {
               "id": "CO15-dos-p",
@@ -103,8 +104,8 @@
               "explicacion": "Ese es 2|p|, la distancia del foco a un extremo. El lado recto entero mide 4|p| = 12.",
               "fn": "parabola",
               "args": [{ "eje": "y", "h": -1, "k": 3, "cuatroP": 12 }],
-              "campo": "lr.errores.dosP.texto",
-              "valor": "6"
+              "campo": "lr.errores.dosP.valor",
+              "valor": 6
             },
             {
               "id": "CO16-solo-p",
@@ -112,8 +113,8 @@
               "explicacion": "Ese es p, la distancia del vértice al foco. El lado recto mide 4|p| = 12.",
               "fn": "parabola",
               "args": [{ "eje": "y", "h": -1, "k": 3, "cuatroP": 12 }],
-              "campo": "lr.errores.soloP.texto",
-              "valor": "3"
+              "campo": "lr.errores.soloP.valor",
+              "valor": 3
             }
           ]
         }
