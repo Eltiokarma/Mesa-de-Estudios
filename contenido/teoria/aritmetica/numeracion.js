@@ -47,6 +47,15 @@
     return ops.slice(0, 4);
   }
 
+  // Gesto directo (docs/teoria.md §4b). En las fichas se tira del borde derecho de la primera fila: la fila se
+  // alarga o se acorta y la base cambia. El bloque está centrado y la ficha no cambia de tamaño, así que el borde
+  // está en centro + b · ficha / 2: de ahí sale b sin depender del estado (la manija no se dispara al soltar).
+  // En la tira de páginas se arrastra el final del libro.
+  const FICHAS = () => Kit.piezas['arit-fichas'], TIRAS = () => Kit.piezas['arit-tiras'];
+  // (Con menos fichas que b, la manija marca dónde terminaría la fila llena.)
+  const bordeFila = (datos, base) => { const g = FICHAS().geometria(datos), c = g.caja(0); return { x: c.x + c.ancho / 2 + base * g.paso / 2, y: c.y + g.paso / 2 }; };
+  const baseEn = (datos, x) => { const g = FICHAS().geometria(datos), c = g.caja(0); return 2 * (x - (c.x + c.ancho / 2)) / g.paso; };
+
   // ---------- Idea 1: agrupar de b en b (base de un sistema) ----------
   // Cambia: cuántas fichas y de a cuántas se agrupan. Permanece: el tamaño de cada ficha (la cantidad no se estira).
   // Progresa: sueltas → fila llena → canje por una ficha del orden siguiente. Se reserva: la ficha número b, que nunca queda suelta.
@@ -68,8 +77,13 @@
         { id: 'b', etiqueta: 'b', color: 'c-o', min: 5, max: 9, paso: 1, inicio: 5, decimales: 0 },
       ],
       dibujo: v => ({ datos: fichasBase(v.n, v.b), estado: {} }),
-      lectura: v => [`${Math.floor(v.n / v.b)} grupos de ${v.b} y ${v.n % v.b} sueltas → ${nb(enBase(v.n, v.b), v.b)}`],
+      lectura: v => { const q = Math.floor(v.n / v.b); return [`${q} ${q === 1 ? 'grupo' : 'grupos'} de ${v.b} y ${v.n % v.b} sueltas → ${nb(enBase(v.n, v.b), v.b)}`]; },
       minimo: 3,
+      // La cantidad de fichas va con − y +: el bloque se apoya abajo, y su última ficha queda siempre en la fila de
+      // abajo, así que arrastrarla no tiene una posición estable que leer.
+      arrastres: [{ id: 'fila', etiqueta: 'largo de la fila (la base)', color: 'c-o',
+        donde: v => bordeFila(fichasBase(v.n, v.b), v.b),
+        mover: (pt, v) => ({ b: baseEn(fichasBase(v.n, v.b), pt.x) }) }],
     },
     predice: {
       pregunta: ['En base ', { v: 'c-o', t: '4' }, ', ¿cuál de estas cifras nunca aparece en un numeral?'],
@@ -97,7 +111,7 @@
     },
     regla: {
       texto: 'En base b, cada b unidades de un orden se canjean por una del orden siguiente. Por eso cada cifra va de 0 a b − 1.',
-      ecuacion: ['0 ≤ ', d, ' ≤ ', b, ' − 1'],
+      ecuacion: ['0 ≤ ', d, ' ≤ ', { llave: [b, ' − 1'], nota: 'la cifra mayor', color: 'c-o' }],
       condicion: 'b es un entero de 2 o más. En un numeral de varias cifras, la primera no es 0.',
     },
     ahoraTu: {
@@ -190,7 +204,8 @@
     },
     regla: {
       texto: 'Cada cifra se multiplica por la potencia de la base de su lugar, contando desde 0 a la derecha, y se suma todo.',
-      ecuacion: [{ sub: [['(', { sub: [d, 'k'] }, '…', { sub: [d, '1'] }, { sub: [d, '0'] }, ')'], b] }, ' = ', { sub: [d, 'k'] }, ' ', { sup: [b, 'k'] }, ' + … + ', { sub: [d, '1'] }, ' ', b, ' + ', { sub: [d, '0'] }],
+      // A 360 px no cabe en una línea: el separador la parte en el «=» (sin él se partía entre «+» y d₀).
+      ecuacion: [{ sub: [['(', { sub: [d, 'k'] }, '…', { sub: [d, '1'] }, { sub: [d, '0'] }, ')'], b] }, ' =', '   ·   ', { sub: [d, 'k'] }, ' ', { sup: [b, 'k'] }, ' + … + ', { sub: [d, '1'] }, ' ', b, ' + ', { sub: [d, '0'] }],
       condicion: 'cada cifra cumple 0 ≤ d < b. El lugar de la derecha es b⁰ = 1.',
     },
     ahoraTu: {
@@ -268,7 +283,7 @@
     },
     regla: {
       texto: 'Para pasar de base 10 a base b se divide entre b hasta que el cociente es 0. Los restos, del último al primero, son las cifras.',
-      ecuacion: [N, ' = ', b, ' · q + ', r, ',   0 ≤ ', r, ' < ', b],
+      ecuacion: [N, ' = ', b, ' · q + ', { llave: [r], nota: 'una cifra', color: 'c-h' }, '   ·   ', '0 ≤ ', r, ' < ', b],
       condicion: 'el número no cambia, solo su escritura. Entre dos bases que no son 10, se pasa primero por base 10.',
     },
     ahoraTu: {
@@ -329,18 +344,37 @@
     return { columnas: [{ t: 'páginas' }, { t: 'cuántas' }, { t: 'cifras c/u' }, { t: 'cifras', color: 'i' }], filas, filasMax: 5 };
   };
   const totalCifras = P => bloques(P).reduce((a, x) => a + x.cifras, 0);
+  // Dos tiras a la misma escala: las páginas y las cifras que gastan, bloque por bloque (el relleno marca el bloque:
+  // más oscuro, más cifras por página). Cada página de k cifras estira la tira de abajo k veces.
+  const RELLENO = [0.08, 0.22, 0.4, 0.6];
+  function tirasPaginas(P, max, conCifras = true) {
+    const bl = bloques(P), cabe = (valor, txt) => 300 * valor / max >= 9 * txt.length + 14;
+    const t1 = bl.map(x => ({ valor: x.cuantos, relleno: RELLENO[x.k - 1] }));   // sin rótulos: el final del libro lleva su número
+    const t2 = bl.map(x => ({ valor: x.cifras, color: 'i', relleno: RELLENO[x.k - 1], texto: cabe(x.cifras, `${x.cuantos}·${x.k}`) ? `${x.cuantos}·${x.k}` : '' }));
+    return { max, filas: 2, alt: `Páginas de 1 a ${P} en bloques de 1, 2 y más cifras; abajo, las cifras que gasta cada bloque: ${totalCifras(P)}`, tiras: [
+      { rotulo: 'páginas', fin: String(P), tramos: t1 },
+      { rotulo: 'cifras', color: 'i', fin: String(totalCifras(P)), paso: conCifras ? 0 : 99, tramos: t2 },
+    ] };
+  }
+  const MAX_P = 1100;   // escala común del juego: las cifras de 1 a 400 (1092) caben a lo ancho
+  const finLibro = (P, max) => ({ id: 'fin', etiqueta: 'última página del libro',
+    donde: v => { const g = TIRAS().geometria(tirasPaginas(v[P], max)); return { x: g.x(v[P]), y: g.tiraY(0) }; },   // en el borde de arriba: no tapa el número del final
+    mover: (pt, v) => ({ [P]: TIRAS().geometria(tirasPaginas(v[P], max)).deX(pt.x) }) });
   const conteo = {
     id: 'conteo-cifras',
     titulo: 'Contar cifras por bloques',
     temas: ['Conteo de números y cifras'],
-    pieza: 'arit-tabla',
+    // Hallazgo 9: dos representaciones a propósito. El juego usa las dos tiras (se ve que el bloque de tres cifras se
+    // estira el triple); «Mira» y «Ahora tú» usan la tabla, que es como se cuenta en papel, con los mismos bloques.
+    pieza: 'arit-tiras',
     juega: {
-      consigna: 'Un libro se numera desde la página 1. Elige la última página y mira cuántas cifras gasta cada bloque.',
+      consigna: 'Un libro se numera desde la página 1. Arrastra el final del libro y mira cuántas cifras gasta cada bloque.',
       voz: 'Compara el bloque de dos cifras con el de tres.',
       controles: [{ id: 'P', etiqueta: 'Última página', min: 120, max: 400, paso: 20, inicio: 200, decimales: 0 }],
-      dibujo: v => ({ datos: tablaBloques(v.P), estado: {} }),
+      dibujo: v => ({ datos: tirasPaginas(v.P, MAX_P), estado: {} }),
       lectura: v => [`De 1 a ${v.P} se usan `, { v: 'c-d', t: String(totalCifras(v.P)) }, ' cifras'],
       minimo: 3,
+      arrastres: [finLibro('P', MAX_P)],
     },
     predice: {
       pregunta: '¿Cuántas cifras se usan para numerar las páginas de un libro de 1 a 100?',
@@ -350,11 +384,12 @@
         { id: 'sin-cien', texto: '189', error: 'AT-CONTEO', siFuera: '189 llega hasta la página 99; falta la página 100, con 3 cifras.' },
         { id: 'tres', texto: '300', error: 'AT-BLOQUE', siFuera: 'Solo la página 100 tiene tres cifras.' },
       ],
-      dibujo: { datos: tablaBloques(100, 0), estado: {} },
-      revelar: { datos: tablaBloques(100), estado: {} },
+      dibujo: { datos: tirasPaginas(100, 220, false), estado: {} },
+      revelar: { datos: tirasPaginas(100, 220), estado: {} },
       coincide: 'Coincide: 9 + 180 + 3 = 192.',
     },
     mira: {
+      pieza: 'arit-tabla',
       datos: tablaBloquesPasos(100),
       pasos: [
         { estado: { paso: 1, fila: 0 }, texto: 'De 1 a 9: nueve páginas de una cifra.', ecuacion: ['9 · 1 = 9'] },
@@ -365,10 +400,11 @@
     },
     regla: {
       texto: 'Los números de k cifras en base b van de bᵏ⁻¹ a bᵏ − 1. Se cuenta cada bloque por separado: cantidad por cifras.',
-      ecuacion: ['números de k cifras = (', b, ' − 1) · ', { sup: [b, 'k − 1'] }, '   ·   de a hasta z hay z − a + 1'],
+      ecuacion: [{ llave: ['(', b, ' − 1) · ', { sup: [b, 'k−1'] }], nota: 'los de k cifras', color: 'c-o' }, '   ·   ', 'de a hasta z: z − a + 1'],
       condicion: 'la primera cifra no es 0. Un bloque cortado se cuenta desde su primer número hasta la última página.',
     },
     ahoraTu: {
+      pieza: 'arit-tabla',
       generar(s) {
         const q = azar(s);
         if (s % 2 === 1) {
@@ -398,11 +434,43 @@
     },
   };
 
+  // Fichas del laboratorio: tamaño fijo de 16 (con 40 fichas en base 4 son 10 filas), para que el borde de la fila
+  // quede en centro + b · 16 / 2 en todos los casos.
+  const fichasLab = (n, base) => {
+    const q = Math.floor(n / base), s = n % base;
+    return { bloques: [{ n, columnas: base, color: 'i', marcoFilas: true, rotulo: `${n} = ${nb(enBase(n, base), base)}`, tramos: s ? [{ de: n - s, a: n - 1, color: 'h' }] : [] }], altoMax: 160, ficha: 16, alt: `${n} fichas en filas de ${base}: ${q} grupos completos y ${s} sueltas` };
+  };
+
   return {
     unidad: 'aritmetica.numeracion',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-tiras.js'],
+    // Laboratorio: juego libre, sin preguntas. «Canje amplio» abre la base de 4 a 10 (incluye base 10, el caso que
+    // el juego no deja) y hasta 40 fichas; «Libros largos» llega a 1500 páginas, con el bloque de cuatro cifras.
+    laboratorio: [
+      {
+        id: 'canje-amplio', titulo: 'Canje amplio', pieza: 'arit-fichas',
+        consigna: 'Hasta 40 fichas y bases de 4 a 10. Tira del borde de la fila para cambiar la base.',
+        controles: [
+          { id: 'n', etiqueta: 'Fichas', min: 3, max: 40, paso: 1, inicio: 30, decimales: 0 },
+          { id: 'b', etiqueta: 'b', color: 'c-o', min: 4, max: 10, paso: 1, inicio: 7, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: fichasLab(v.n, v.b), estado: {} }),
+        lectura: v => [`${v.n} fichas en base ${v.b}: ${nb(enBase(v.n, v.b), v.b)}`],
+        arrastres: [{ id: 'fila', etiqueta: 'largo de la fila (la base)', color: 'c-o',
+          donde: v => bordeFila(fichasLab(v.n, v.b), v.b),
+          mover: (pt, v) => ({ b: baseEn(fichasLab(v.n, v.b), pt.x) }) }],
+      },
+      {
+        id: 'libros-largos', titulo: 'Libros largos', pieza: 'arit-tiras',
+        consigna: 'Libros de hasta 1500 páginas. Arrastra el final del libro y mira el bloque de cuatro cifras.',
+        controles: [{ id: 'P', etiqueta: 'Última página', min: 5, max: 1500, paso: 5, inicio: 1200, decimales: 0 }],
+        dibujo: v => ({ datos: tirasPaginas(v.P, 4900), estado: {} }),
+        lectura: v => [`De 1 a ${v.P}: `, { v: 'c-d', t: String(totalCifras(v.P)) }, ' cifras'],
+        arrastres: [finLibro('P', 4900)],
+      },
+    ],
     historia: {
       texto: 'La numeración que usamos se fue armando entre la India, las sociedades de lengua árabe y Europa, durante siglos y con sistemas que convivían. Nadie la inventó de una vez. Su idea clave es que un símbolo vale según el lugar que ocupa. Escribir un número en otra base cambia cómo se ve, no cuánto es.',
       pregunta: '¿Qué cambia si contamos de cinco en cinco?',
