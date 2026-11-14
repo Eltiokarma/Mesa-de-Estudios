@@ -66,6 +66,390 @@
             "errores.cajaCompleta": 90
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Con 8 cubitos de alambre se arma un cubo de 2 × 2 × 2, pero se saca el cubito de arriba que está adelante a la derecha. Una hormiga va de la esquina de abajo, adelante a la izquierda, a la esquina de arriba, atrás a la derecha, y solo avanza (derecha, fondo o arriba).",
+          "pregunta": "¿Cuántas rutas tiene?",
+          "unidad": "rutas",
+          "decimales": 0,
+          "correcta": {
+            "fn": "dirigidas",
+            "args": [
+              {
+                "nodos": [
+                  [0, 0, 0],
+                  [1, 0, 0],
+                  [2, 0, 0],
+                  [0, 1, 0],
+                  [1, 1, 0],
+                  [2, 1, 0],
+                  [0, 2, 0],
+                  [1, 2, 0],
+                  [2, 2, 0],
+                  [0, 0, 1],
+                  [1, 0, 1],
+                  [2, 0, 1],
+                  [0, 1, 1],
+                  [1, 1, 1],
+                  [2, 1, 1],
+                  [0, 2, 1],
+                  [1, 2, 1],
+                  [2, 2, 1],
+                  [0, 0, 2],
+                  [1, 0, 2],
+                  [0, 1, 2],
+                  [1, 1, 2],
+                  [2, 1, 2],
+                  [0, 2, 2],
+                  [1, 2, 2],
+                  [2, 2, 2]
+                ],
+                "tramos": [
+                  [0, 1],
+                  [0, 3],
+                  [0, 9],
+                  [1, 2],
+                  [1, 4],
+                  [1, 10],
+                  [2, 5],
+                  [2, 11],
+                  [3, 4],
+                  [3, 6],
+                  [3, 12],
+                  [4, 5],
+                  [4, 7],
+                  [4, 13],
+                  [5, 8],
+                  [5, 14],
+                  [6, 7],
+                  [6, 15],
+                  [7, 8],
+                  [7, 16],
+                  [8, 17],
+                  [9, 10],
+                  [9, 12],
+                  [9, 18],
+                  [10, 11],
+                  [10, 13],
+                  [10, 19],
+                  [11, 14],
+                  [12, 13],
+                  [12, 15],
+                  [12, 20],
+                  [13, 14],
+                  [13, 16],
+                  [13, 21],
+                  [14, 17],
+                  [14, 22],
+                  [15, 16],
+                  [15, 23],
+                  [16, 17],
+                  [16, 24],
+                  [17, 25],
+                  [18, 19],
+                  [18, 20],
+                  [19, 21],
+                  [20, 21],
+                  [20, 23],
+                  [21, 22],
+                  [21, 24],
+                  [22, 25],
+                  [23, 24],
+                  [24, 25]
+                ]
+              },
+              { "desde": 0, "hasta": 25 }
+            ],
+            "campo": "total",
+            "valor": 84
+          },
+          "errores": [
+            {
+              "id": "RME140-caja-completa",
+              "respaldo": "hipotesis",
+              "explicacion": "Esas son las rutas del cubo entero. Al sacar el cubito se pierde su esquina, y con ella las 6 rutas que pasaban por ahí.",
+              "fn": "dirigidas",
+              "args": [
+                {
+                  "nodos": [
+                    [0, 0, 0],
+                    [1, 0, 0],
+                    [2, 0, 0],
+                    [0, 1, 0],
+                    [1, 1, 0],
+                    [2, 1, 0],
+                    [0, 2, 0],
+                    [1, 2, 0],
+                    [2, 2, 0],
+                    [0, 0, 1],
+                    [1, 0, 1],
+                    [2, 0, 1],
+                    [0, 1, 1],
+                    [1, 1, 1],
+                    [2, 1, 1],
+                    [0, 2, 1],
+                    [1, 2, 1],
+                    [2, 2, 1],
+                    [0, 0, 2],
+                    [1, 0, 2],
+                    [0, 1, 2],
+                    [1, 1, 2],
+                    [2, 1, 2],
+                    [0, 2, 2],
+                    [1, 2, 2],
+                    [2, 2, 2]
+                  ],
+                  "tramos": [
+                    [0, 1],
+                    [0, 3],
+                    [0, 9],
+                    [1, 2],
+                    [1, 4],
+                    [1, 10],
+                    [2, 5],
+                    [2, 11],
+                    [3, 4],
+                    [3, 6],
+                    [3, 12],
+                    [4, 5],
+                    [4, 7],
+                    [4, 13],
+                    [5, 8],
+                    [5, 14],
+                    [6, 7],
+                    [6, 15],
+                    [7, 8],
+                    [7, 16],
+                    [8, 17],
+                    [9, 10],
+                    [9, 12],
+                    [9, 18],
+                    [10, 11],
+                    [10, 13],
+                    [10, 19],
+                    [11, 14],
+                    [12, 13],
+                    [12, 15],
+                    [12, 20],
+                    [13, 14],
+                    [13, 16],
+                    [13, 21],
+                    [14, 17],
+                    [14, 22],
+                    [15, 16],
+                    [15, 23],
+                    [16, 17],
+                    [16, 24],
+                    [17, 25],
+                    [18, 19],
+                    [18, 20],
+                    [19, 21],
+                    [20, 21],
+                    [20, 23],
+                    [21, 22],
+                    [21, 24],
+                    [22, 25],
+                    [23, 24],
+                    [24, 25]
+                  ]
+                },
+                { "desde": 0, "hasta": 25 }
+              ],
+              "campo": "errores.cajaCompleta",
+              "valor": 90
+            },
+            {
+              "id": "RME189-tres-por-paso",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste 3 opciones en cada uno de los 6 pasos. Pero son justo 2 de cada dirección: no todas las combinaciones valen.",
+              "fn": "dirigidas",
+              "args": [
+                {
+                  "nodos": [
+                    [0, 0, 0],
+                    [1, 0, 0],
+                    [2, 0, 0],
+                    [0, 1, 0],
+                    [1, 1, 0],
+                    [2, 1, 0],
+                    [0, 2, 0],
+                    [1, 2, 0],
+                    [2, 2, 0],
+                    [0, 0, 1],
+                    [1, 0, 1],
+                    [2, 0, 1],
+                    [0, 1, 1],
+                    [1, 1, 1],
+                    [2, 1, 1],
+                    [0, 2, 1],
+                    [1, 2, 1],
+                    [2, 2, 1],
+                    [0, 0, 2],
+                    [1, 0, 2],
+                    [0, 1, 2],
+                    [1, 1, 2],
+                    [2, 1, 2],
+                    [0, 2, 2],
+                    [1, 2, 2],
+                    [2, 2, 2]
+                  ],
+                  "tramos": [
+                    [0, 1],
+                    [0, 3],
+                    [0, 9],
+                    [1, 2],
+                    [1, 4],
+                    [1, 10],
+                    [2, 5],
+                    [2, 11],
+                    [3, 4],
+                    [3, 6],
+                    [3, 12],
+                    [4, 5],
+                    [4, 7],
+                    [4, 13],
+                    [5, 8],
+                    [5, 14],
+                    [6, 7],
+                    [6, 15],
+                    [7, 8],
+                    [7, 16],
+                    [8, 17],
+                    [9, 10],
+                    [9, 12],
+                    [9, 18],
+                    [10, 11],
+                    [10, 13],
+                    [10, 19],
+                    [11, 14],
+                    [12, 13],
+                    [12, 15],
+                    [12, 20],
+                    [13, 14],
+                    [13, 16],
+                    [13, 21],
+                    [14, 17],
+                    [14, 22],
+                    [15, 16],
+                    [15, 23],
+                    [16, 17],
+                    [16, 24],
+                    [17, 25],
+                    [18, 19],
+                    [18, 20],
+                    [19, 21],
+                    [20, 21],
+                    [20, 23],
+                    [21, 22],
+                    [21, 24],
+                    [22, 25],
+                    [23, 24],
+                    [24, 25]
+                  ]
+                },
+                { "desde": 0, "hasta": 25 }
+              ],
+              "campo": "errores.potencia",
+              "valor": 729
+            },
+            {
+              "id": "AR18-a-mano",
+              "respaldo": "parcial",
+              "explicacion": "Faltan rutas: las que giran muchas veces se escapan al dibujarlas una por una. Numerar las esquinas por niveles no deja ninguna afuera.",
+              "fn": "dirigidas",
+              "args": [
+                {
+                  "nodos": [
+                    [0, 0, 0],
+                    [1, 0, 0],
+                    [2, 0, 0],
+                    [0, 1, 0],
+                    [1, 1, 0],
+                    [2, 1, 0],
+                    [0, 2, 0],
+                    [1, 2, 0],
+                    [2, 2, 0],
+                    [0, 0, 1],
+                    [1, 0, 1],
+                    [2, 0, 1],
+                    [0, 1, 1],
+                    [1, 1, 1],
+                    [2, 1, 1],
+                    [0, 2, 1],
+                    [1, 2, 1],
+                    [2, 2, 1],
+                    [0, 0, 2],
+                    [1, 0, 2],
+                    [0, 1, 2],
+                    [1, 1, 2],
+                    [2, 1, 2],
+                    [0, 2, 2],
+                    [1, 2, 2],
+                    [2, 2, 2]
+                  ],
+                  "tramos": [
+                    [0, 1],
+                    [0, 3],
+                    [0, 9],
+                    [1, 2],
+                    [1, 4],
+                    [1, 10],
+                    [2, 5],
+                    [2, 11],
+                    [3, 4],
+                    [3, 6],
+                    [3, 12],
+                    [4, 5],
+                    [4, 7],
+                    [4, 13],
+                    [5, 8],
+                    [5, 14],
+                    [6, 7],
+                    [6, 15],
+                    [7, 8],
+                    [7, 16],
+                    [8, 17],
+                    [9, 10],
+                    [9, 12],
+                    [9, 18],
+                    [10, 11],
+                    [10, 13],
+                    [10, 19],
+                    [11, 14],
+                    [12, 13],
+                    [12, 15],
+                    [12, 20],
+                    [13, 14],
+                    [13, 16],
+                    [13, 21],
+                    [14, 17],
+                    [14, 22],
+                    [15, 16],
+                    [15, 23],
+                    [16, 17],
+                    [16, 24],
+                    [17, 25],
+                    [18, 19],
+                    [18, 20],
+                    [19, 21],
+                    [20, 21],
+                    [20, 23],
+                    [21, 22],
+                    [21, 24],
+                    [22, 25],
+                    [23, 24],
+                    [24, 25]
+                  ]
+                },
+                { "desde": 0, "hasta": 25 }
+              ],
+              "campo": "errores.aMano",
+              "valor": 54
+            }
+          ]
+        }
       ]
     },
     {
@@ -101,6 +485,59 @@
               "4": 2
             }
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Una pirámide de base cuadrada está hecha con hilos: los 4 lados de la base y las 4 aristas que suben a la punta. Una araña va de una esquina de la base a la punta sin pasar dos veces por el mismo punto.",
+          "pregunta": "¿Cuántas rutas distintas puede seguir?",
+          "unidad": "rutas",
+          "decimales": 0,
+          "correcta": {
+            "fn": "rutasSinRepetir",
+            "args": [
+              {
+                "nodos": [[0, 0, 0], [2, 0, 0], [2, 2, 0], [0, 2, 0], [1, 1, 2]],
+                "tramos": [[0, 1], [1, 2], [2, 3], [0, 3], [0, 4], [1, 4], [2, 4], [3, 4]]
+              },
+              { "desde": 0, "hasta": 4 }
+            ],
+            "campo": "total",
+            "valor": 7
+          },
+          "errores": [
+            {
+              "id": "RME141-solo-cortas",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste solo la ruta más corta, la que sube directo. También valen las que dan vuelta por la base antes de subir.",
+              "fn": "rutasSinRepetir",
+              "args": [
+                {
+                  "nodos": [[0, 0, 0], [2, 0, 0], [2, 2, 0], [0, 2, 0], [1, 1, 2]],
+                  "tramos": [[0, 1], [1, 2], [2, 3], [0, 3], [0, 4], [1, 4], [2, 4], [3, 4]]
+                },
+                { "desde": 0, "hasta": 4 }
+              ],
+              "campo": "errores.soloCortas",
+              "valor": 1
+            },
+            {
+              "id": "RME195-sin-repetir-tramo",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste rutas que pasan dos veces por un mismo punto. La regla es no repetir punto, no solo no repetir hilo.",
+              "fn": "compararRepetir",
+              "args": [
+                {
+                  "nodos": [[0, 0, 0], [2, 0, 0], [2, 2, 0], [0, 2, 0], [1, 1, 2]],
+                  "tramos": [[0, 1], [1, 2], [2, 3], [0, 3], [0, 4], [1, 4], [2, 4], [3, 4]]
+                },
+                { "desde": 0, "hasta": 4 }
+              ],
+              "campo": "total",
+              "valor": 9
+            }
+          ]
         }
       ]
     },
@@ -153,6 +590,45 @@
             "total": 16
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Un adorno de alambre tiene una circunferencia y un hexágono regular inscrito en ella: entre cada dos vértices vecinos hay un lado recto y un arco. Se va de un vértice al opuesto sin pasar dos veces por el mismo punto.",
+          "pregunta": "¿Cuántas rutas hay?",
+          "unidad": "rutas",
+          "decimales": 0,
+          "correcta": { "fn": "porTramos", "args": [{ "cadenas": [[2, 2, 2], [2, 2, 2]] }], "campo": "total", "valor": 16 },
+          "errores": [
+            {
+              "id": "RME30-sumar-tramos",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste las opciones de cada tramo. Los tramos seguidos se multiplican: 2 · 2 · 2 = 8 por cada lado.",
+              "fn": "porTramos",
+              "args": [{ "cadenas": [[2, 2, 2], [2, 2, 2]] }],
+              "campo": "errores.sumarTodo",
+              "valor": 12
+            },
+            {
+              "id": "RME186-multiplicar-alternativas",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste el camino de arriba por el de abajo. Son alternativas, o uno o el otro: se suman, 8 + 8.",
+              "fn": "porTramos",
+              "args": [{ "cadenas": [[2, 2, 2], [2, 2, 2]] }],
+              "campo": "errores.multiplicarTodo",
+              "valor": 64
+            },
+            {
+              "id": "AR18-un-lado",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo las rutas por arriba. Por abajo hay otras 8.",
+              "fn": "porTramos",
+              "args": [{ "cadenas": [[2, 2, 2], [2, 2, 2]] }],
+              "campo": "errores.unaCadena",
+              "valor": 8
+            }
+          ]
+        }
       ]
     },
     {
@@ -181,6 +657,74 @@
           "espera": {
             "total": 3
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Una pirámide de base cuadrada ABCD está hecha con hilos: los 4 lados de la base y las 4 aristas que suben a la punta V. Una araña va de A a B, la esquina vecina, pasando exactamente una vez por cada uno de los 5 puntos (A, B, C, D y V).",
+          "pregunta": "¿Cuántas rutas puede seguir?",
+          "unidad": "rutas",
+          "decimales": 0,
+          "correcta": {
+            "fn": "hamiltonianos",
+            "args": [
+              {
+                "nodos": [[0, 0, 0], [2, 0, 0], [2, 2, 0], [0, 2, 0], [1, 1, 2]],
+                "tramos": [[0, 1], [1, 2], [2, 3], [0, 3], [0, 4], [1, 4], [2, 4], [3, 4]]
+              },
+              { "desde": 0, "hasta": 1 }
+            ],
+            "campo": "total",
+            "valor": 3
+          },
+          "errores": [
+            {
+              "id": "RME144-todas-simples",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste todas las rutas sin repetir punto. La araña tiene que pasar por los 5 puntos, y varias de esas se saltan alguno.",
+              "fn": "hamiltonianos",
+              "args": [
+                {
+                  "nodos": [[0, 0, 0], [2, 0, 0], [2, 2, 0], [0, 2, 0], [1, 1, 2]],
+                  "tramos": [[0, 1], [1, 2], [2, 3], [0, 3], [0, 4], [1, 4], [2, 4], [3, 4]]
+                },
+                { "desde": 0, "hasta": 1 }
+              ],
+              "campo": "errores.todasSimples",
+              "valor": 8
+            },
+            {
+              "id": "AR18-una-por-salida",
+              "respaldo": "parcial",
+              "explicacion": "Saliendo hacia D hay dos rutas, no una. Fija el primer hilo y lista todas las que siguen.",
+              "fn": "hamiltonianos",
+              "args": [
+                {
+                  "nodos": [[0, 0, 0], [2, 0, 0], [2, 2, 0], [0, 2, 0], [1, 1, 2]],
+                  "tramos": [[0, 1], [1, 2], [2, 3], [0, 3], [0, 4], [1, 4], [2, 4], [3, 4]]
+                },
+                { "desde": 0, "hasta": 1 }
+              ],
+              "campo": "errores.unaPorSalida",
+              "valor": 2
+            },
+            {
+              "id": "RME194-ordenar-todos",
+              "respaldo": "hipotesis",
+              "explicacion": "Ordenaste C, D y V de todas las formas, 3! = 6. Pero entre A y C, y entre D y B, no hay hilo: algunos órdenes no se pueden caminar.",
+              "fn": "hamiltonianos",
+              "args": [
+                {
+                  "nodos": [[0, 0, 0], [2, 0, 0], [2, 2, 0], [0, 2, 0], [1, 1, 2]],
+                  "tramos": [[0, 1], [1, 2], [2, 3], [0, 3], [0, 4], [1, 4], [2, 4], [3, 4]]
+                },
+                { "desde": 0, "hasta": 1 }
+              ],
+              "campo": "errores.ordenarTodos",
+              "valor": 6
+            }
+          ]
         }
       ]
     },
@@ -214,6 +758,45 @@
             "formula": "2^n"
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Una reja tiene 5 cuadraditos en una fila. Se va de la esquina de abajo a la izquierda a la de arriba a la derecha por las líneas de la reja, en cualquier dirección pero sin pasar dos veces por el mismo punto.",
+          "pregunta": "¿Cuántas rutas hay?",
+          "unidad": "rutas",
+          "decimales": 0,
+          "correcta": { "fn": "franjaPrediccion", "args": [{ "n": 5 }], "campo": "total", "valor": 32 },
+          "errores": [
+            {
+              "id": "RME167-lineal",
+              "respaldo": "hipotesis",
+              "explicacion": "Seguiste de 2 en 2: 2, 4, 6… Prueba con 3 cuadraditos: salen 8, no 6. Cada cuadradito nuevo duplica las rutas.",
+              "fn": "franjaPrediccion",
+              "args": [{ "n": 5 }],
+              "campo": "errores.lineal",
+              "valor": 10
+            },
+            {
+              "id": "RME197-por-puntos",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste 2⁶: subir o no en cada uno de los 6 palitos verticales. La ruta usa una cantidad impar de ellos, y eso deja la mitad: 2⁵.",
+              "fn": "franjaPrediccion",
+              "args": [{ "n": 5 }],
+              "campo": "errores.porPuntos",
+              "valor": 64
+            },
+            {
+              "id": "AR18-un-palito",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo las rutas que cambian de fila una vez. También valen las que suben y bajan varias veces.",
+              "fn": "franjaPrediccion",
+              "args": [{ "n": 5 }],
+              "campo": "unPalito",
+              "valor": 6
+            }
+          ]
+        }
       ]
     },
     {
@@ -240,6 +823,45 @@
             "L": 26,
             "exacto": "26"
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Un tubo mide 10 cm de alto y su contorno mide 8 cm. Una cinta sale de un punto del borde de abajo, da 3 vueltas al tubo y llega al punto del borde de arriba que está justo encima.",
+          "pregunta": "¿Cuánto mide como mínimo la cinta?",
+          "unidad": "cm",
+          "decimales": 2,
+          "correcta": { "fn": "helice", "args": [{ "contorno": 8, "altura": 10, "vueltas": 3 }], "campo": "L", "valor": 26 },
+          "errores": [
+            {
+              "id": "RME199-una-vuelta",
+              "respaldo": "hipotesis",
+              "explicacion": "Desarrollaste una sola vuelta. Con 3 vueltas se ponen 3 desarrollos juntos: 24 cm de ancho.",
+              "fn": "helice",
+              "args": [{ "contorno": 8, "altura": 10, "vueltas": 3 }],
+              "campo": "errores.unaVuelta",
+              "valor": 12.8062484749
+            },
+            {
+              "id": "RME31-por-borde",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste el alto y el ancho, como si la cinta fuera por los bordes. En el desarrollo, la cinta es la diagonal.",
+              "fn": "helice",
+              "args": [{ "contorno": 8, "altura": 10, "vueltas": 3 }],
+              "campo": "errores.porBorde",
+              "valor": 34
+            },
+            {
+              "id": "RME145-cada-vuelta",
+              "respaldo": "hipotesis",
+              "explicacion": "Diste a cada vuelta los 10 cm de alto. Las 3 vueltas juntas suben 10 cm: la diagonal es √(24² + 10²).",
+              "fn": "helice",
+              "args": [{ "contorno": 8, "altura": 10, "vueltas": 3 }],
+              "campo": "errores.cadaVuelta",
+              "valor": 38.4187454246
+            }
+          ]
         }
       ]
     },
@@ -268,6 +890,45 @@
             "L": 10,
             "exacto": "10"
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Un vaso sin tapa tiene un contorno de 16 cm. Una hormiga está por fuera, 2 cm debajo del borde. Por dentro, del lado opuesto, hay una gota de miel 4 cm debajo del borde.",
+          "pregunta": "¿Cuánto mide el camino más corto de la hormiga a la miel?",
+          "unidad": "cm",
+          "decimales": 2,
+          "correcta": { "fn": "tarro", "args": [{ "contorno": 16, "afuera": 2, "adentro": 4 }], "campo": "L", "valor": 10 },
+          "errores": [
+            {
+              "id": "RME31-por-borde",
+              "respaldo": "hipotesis",
+              "explicacion": "Fuiste por el borde: subir, rodear y bajar. En el desarrollo el camino es una sola recta.",
+              "fn": "tarro",
+              "args": [{ "contorno": 16, "afuera": 2, "adentro": 4 }],
+              "campo": "errores.porBorde",
+              "valor": 14
+            },
+            {
+              "id": "RME146-sin-reflejar",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste 4 − 2. Al desarrollar, la pared de adentro queda reflejada sobre el borde: las alturas se suman, 2 + 4 = 6.",
+              "fn": "tarro",
+              "args": [{ "contorno": 16, "afuera": 2, "adentro": 4 }],
+              "campo": "errores.sinReflejar",
+              "valor": 8.24621125124
+            },
+            {
+              "id": "RME31-vuelta-entera",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste la vuelta entera, 16 cm. La miel está del lado opuesto: media vuelta, 8 cm.",
+              "fn": "tarro",
+              "args": [{ "contorno": 16, "afuera": 2, "adentro": 4 }],
+              "campo": "errores.vueltaEntera",
+              "valor": 17.0880074906
+            }
+          ]
         }
       ]
     },
@@ -332,6 +993,45 @@
           "espera": {
             "exacto": "2√(9 + 4π²)"
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "Dos latas iguales, de 2 cm de radio y 6 cm de alto, están paradas y se tocan a lo largo de una recta. Una hormiga sale del borde de abajo de la primera lata, del lado opuesto al contacto, y llega al borde de arriba de la segunda, también del lado opuesto.",
+          "pregunta": "¿Cuánto mide su camino más corto?",
+          "unidad": "cm",
+          "decimales": 2,
+          "correcta": { "fn": "tangentes", "args": [{ "radio": 2, "altura": 6 }], "campo": "L", "valor": 13.9252888809 },
+          "errores": [
+            {
+              "id": "RME31-por-borde",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste el alto y las dos medias vueltas. Al desarrollar las dos medias latas, el camino es la diagonal del rectángulo.",
+              "fn": "tangentes",
+              "args": [{ "radio": 2, "altura": 6 }],
+              "campo": "errores.porBorde",
+              "valor": 18.5663706144
+            },
+            {
+              "id": "RME147-un-cilindro",
+              "respaldo": "hipotesis",
+              "explicacion": "Desarrollaste una sola lata. La hormiga recorre media vuelta de cada una: 2π + 2π = 4π de ancho.",
+              "fn": "tangentes",
+              "args": [{ "radio": 2, "altura": 6 }],
+              "campo": "errores.unCilindro",
+              "valor": 8.68783158241
+            },
+            {
+              "id": "RME-por-el-aire",
+              "respaldo": "hipotesis",
+              "explicacion": "Esa es la recta por el aire entre los dos puntos. La hormiga camina sobre las latas y pasa por la recta de contacto.",
+              "fn": "tangentes",
+              "args": [{ "radio": 2, "altura": 6 }],
+              "campo": "porElAire",
+              "valor": 10
+            }
+          ]
         }
       ]
     },
@@ -466,6 +1166,74 @@
             "maximo": 39,
             "quitarMinimo": 13
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Un tronco de pirámide de alambre tiene una base de abajo cuadrada de 6 cm de lado, una de arriba de 2 cm de lado y cuatro aristas laterales de 5 cm. Una hormiga va de una esquina de abajo a la esquina de arriba más alejada sin pasar dos veces por el mismo alambre.",
+          "pregunta": "¿Cuál es el recorrido más largo que puede hacer?",
+          "unidad": "cm",
+          "decimales": 0,
+          "correcta": {
+            "fn": "maximoSinRepetir",
+            "args": [
+              {
+                "nodos": [[0, 0, 0], [6, 0, 0], [6, 6, 0], [0, 6, 0], [2, 2, 4], [4, 2, 4], [4, 4, 4], [2, 4, 4]],
+                "tramos": [[0, 1, 6], [1, 2, 6], [2, 3, 6], [0, 3, 6], [4, 5, 2], [5, 6, 2], [6, 7, 2], [4, 7, 2], [0, 4, 5], [1, 5, 5], [2, 6, 5], [3, 7, 5]]
+              },
+              { "desde": 0, "hasta": 6 }
+            ],
+            "campo": "maximo",
+            "valor": 39
+          },
+          "errores": [
+            {
+              "id": "RME143-todas",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste todo el alambre. Las 8 esquinas son impares y solo la salida y la llegada pueden serlo: hay que dejar alambres sin usar.",
+              "fn": "maximoSinRepetir",
+              "args": [
+                {
+                  "nodos": [[0, 0, 0], [6, 0, 0], [6, 6, 0], [0, 6, 0], [2, 2, 4], [4, 2, 4], [4, 4, 4], [2, 4, 4]],
+                  "tramos": [[0, 1, 6], [1, 2, 6], [2, 3, 6], [0, 3, 6], [4, 5, 2], [5, 6, 2], [6, 7, 2], [4, 7, 2], [0, 4, 5], [1, 5, 5], [2, 6, 5], [3, 7, 5]]
+                },
+                { "desde": 0, "hasta": 6 }
+              ],
+              "campo": "errores.todas",
+              "valor": 52
+            },
+            {
+              "id": "RME148-una-por-impar",
+              "respaldo": "hipotesis",
+              "explicacion": "Quitaste un alambre de 2 cm por cada una de las 6 esquinas impares: 52 − 12. Cada alambre quitado arregla dos esquinas, y los que sirven suman 13 cm.",
+              "fn": "maximoSinRepetir",
+              "args": [
+                {
+                  "nodos": [[0, 0, 0], [6, 0, 0], [6, 6, 0], [0, 6, 0], [2, 2, 4], [4, 2, 4], [4, 4, 4], [2, 4, 4]],
+                  "tramos": [[0, 1, 6], [1, 2, 6], [2, 3, 6], [0, 3, 6], [4, 5, 2], [5, 6, 2], [6, 7, 2], [4, 7, 2], [0, 4, 5], [1, 5, 5], [2, 6, 5], [3, 7, 5]]
+                },
+                { "desde": 0, "hasta": 6 }
+              ],
+              "campo": "errores.unaPorImpar",
+              "valor": 40
+            },
+            {
+              "id": "RME149-sumar",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste lo que se repite. Eso da el recorrido mínimo que pasa por todo; aquí se pide el más largo sin repetir.",
+              "fn": "maximoSinRepetir",
+              "args": [
+                {
+                  "nodos": [[0, 0, 0], [6, 0, 0], [6, 6, 0], [0, 6, 0], [2, 2, 4], [4, 2, 4], [4, 4, 4], [2, 4, 4]],
+                  "tramos": [[0, 1, 6], [1, 2, 6], [2, 3, 6], [0, 3, 6], [4, 5, 2], [5, 6, 2], [6, 7, 2], [4, 7, 2], [0, 4, 5], [1, 5, 5], [2, 6, 5], [3, 7, 5]]
+                },
+                { "desde": 0, "hasta": 6 }
+              ],
+              "campo": "errores.sumar",
+              "valor": 65
+            }
+          ]
         }
       ]
     }
