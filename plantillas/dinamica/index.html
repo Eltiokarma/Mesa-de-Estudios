@@ -144,6 +144,16 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
 .fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
 .pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
 .pie a{color:var(--ink); font-weight:700}
+/* Juego libre antes de las preguntas (regla 3; nucleo/jugar.js) */
+.juego{display:grid; gap:8px; padding:4px 2px}
+.juego[hidden]{display:none}
+.paso-ctrl{display:grid; grid-template-columns:minmax(0, 1fr) 44px minmax(56px, auto) 44px; align-items:center; gap:8px}
+.paso-ctrl > span{font-weight:700}
+.paso-ctrl > .seg{grid-column:2 / -1; justify-self:end}
+.paso-ctrl output{font-family:var(--mono); text-align:center}
+.paso-ctrl .btn{padding:8px 0; width:44px}
+.jugar-barra{color:var(--ink)}
+.jugar-seguir{background:var(--ink); color:var(--card); border:0}
 .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
 .volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
   font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
@@ -188,6 +198,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <div class="lienzo"><canvas id="cv" tabindex="-1" role="img" aria-label="Una rampa inclinada con un saco encima y, cuando corresponde, las flechas de las fuerzas sobre el saco"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
       <div class="legend" id="ley1"></div>
+      <div class="juego" id="juego1"></div>
     </section>
     <section class="guide">
       <ol class="dots" id="dots"></ol>
@@ -209,6 +220,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <div class="lienzo"><canvas id="cv2" tabindex="-1" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="legend" id="ley2"></div>
+      <div class="juego" id="juego2"></div>
     </section>
     <section class="guide">
       <div class="seg exps" id="exps2" role="group" aria-label="Experimentos"></div>
@@ -226,6 +238,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <div class="lienzo"><canvas id="cv3" tabindex="-1" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
       <p class="sr" id="desc3" aria-live="polite"></p>
       <div class="legend" id="ley3"></div>
+      <div class="juego" id="juego3"></div>
     </section>
     <section class="guide">
       <div class="seg exps" id="exps3" role="group" aria-label="Experimentos"></div>
@@ -251,6 +264,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'dinamica', unidad: 'fisica.dinamica', version: '0.2.0' };
@@ -836,6 +850,68 @@ function crearAnimador(){
   };
   return A;
 }
+/* ---------- Jugar antes de preguntar (regla 3, decisión 20) ----------
+   Antes de la primera pregunta de cada pestaña, la rampa queda libre: se cambia el ángulo (arrastrando la punta de
+   arriba, con las flechas del teclado o con − y +), el roce y la masa, y se suelta el saco. El juego no muestra lo que
+   después se pregunta: no dibuja ninguna fuerza ni la aceleración, ni da cifras. Basta jugar en una pestaña. */
+const JG = { ang:25, mu:0.4, m:10 };
+const JUEGOS = [];
+function montarJuego(o){
+  const j = JugarPrimero.montar({ escena:o.escena, preguntas:o.preguntas, minimo:2,
+    consigna:'Inclina la rampa, cambia el roce y suelta el saco varias veces.',
+    alListo:() => { JUEGOS.forEach(x => { if (x !== j) x.saltar(); }); o.alListo(); } });
+  JUEGOS.push(j); return j;
+}
+// Controlador del juego sobre un lienzo (L) y su panel. redibujar() pinta el modo (que llama a J.dibujar).
+function crearJuegoPlano(L, cv, panel, redibujar){
+  const J = { on:true, s:1.6, agarra:false, sobre:false, A:crearAnimador() }, INI = 1.6, FIN = 4.6;
+  const r = () => M.plano({ m:JG.m, angulo:JG.ang, mus:JG.mu, muk:JG.mu });
+  const LIM = { ang:[0, 60, 5], mu:[0, 1, 0.1], m:[1, 50, 5] };
+  const fila = (k, et) => `<div class="paso-ctrl"><span>${et}</span>
+      <button type="button" class="btn" data-k="${k}" data-d="-1" aria-label="Bajar ${et.toLowerCase()}">−</button>
+      <output data-o="${k}"></output>
+      <button type="button" class="btn" data-k="${k}" data-d="1" aria-label="Subir ${et.toLowerCase()}">+</button></div>`;
+  panel.innerHTML = fila('ang', 'Ángulo de la rampa') + fila('mu', 'Roce de la rampa (μ)') + fila('m', 'Masa del saco')
+    + '<p><button type="button" class="btn primary" data-soltar>Soltar el saco</button></p>';
+  const pintar = () => {
+    panel.querySelector('[data-o="ang"]').textContent = `${fmt(JG.ang, 0)}°`;
+    panel.querySelector('[data-o="mu"]').textContent = fmt(JG.mu, 1);
+    panel.querySelector('[data-o="m"]').textContent = `${fmt(JG.m, 0)} kg`;
+  };
+  const cambio = () => { J.A.parar(); J.s = INI; pintar(); redibujar(); };
+  panel.querySelectorAll('[data-d]').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.k, [a, z, d] = LIM[k];
+    JG[k] = clamp(Math.round((JG[k] + d*b.dataset.d)*10)/10, a, z); if (k === 'm' && JG.m === 6) JG.m = 5; cambio();
+  }));
+  panel.querySelector('[data-soltar]').addEventListener('click', () => {
+    J.A.parar(); J.s = INI; const rr = r();
+    if (rr.sentido !== 'baja'){ redibujar(); return; }
+    const T = Math.sqrt(2*(FIN - INI)/rr.a);
+    J.A.anim(Math.min(2600, T*900), f => { const t = T*f; J.s = INI + rr.a*t*t/2; redibujar(); });
+  });
+  J.dibujar = c => {
+    vistaPlano(L, c, { r:r(), ang:JG.ang, s:J.s, largo:6, masa:`${fmt(JG.m, 0)} kg`, ver:{}, crece:1, hl:null, asa:true, sobreAsa:J.sobre || J.agarra, aEscala:10 });
+    return `Juego libre: rampa de ${fmt(JG.ang, 0)} grados, roce ${fmt(JG.mu, 1)}, saco de ${fmt(JG.m, 0)} kilogramos` + (J.s > INI + 0.01 ? ', bajando.' : ', en su lugar.');
+  };
+  Celular.arrastre(cv, {
+    activo: () => J.on,
+    cerca: (p, rad) => { const g = geoRampa(L.W, L.H, JG.ang); return Math.hypot(p.x - g.A.x, p.y - g.A.y) < rad; },
+    empezar: () => { J.agarra = true; J.B0 = geoRampa(L.W, L.H, JG.ang).B; redibujar(); },
+    mover: p => { const B = J.B0 || geoRampa(L.W, L.H, JG.ang).B;
+      const a = Math.round(clamp(Math.atan2(B.y - p.y, B.x - p.x)*180/Math.PI, 0, 60)); if (a !== JG.ang){ JG.ang = a; cambio(); } },
+    soltar: () => { J.agarra = false; J.B0 = null; redibujar(); },
+    sobre: v => { J.sobre = v; redibujar(); }
+  });
+  cv.addEventListener('keydown', e => {
+    if (!J.on) return;
+    const d = { ArrowUp:1, ArrowRight:1, ArrowDown:-1, ArrowLeft:-1 }[e.key]; if (!d) return;
+    e.preventDefault(); JG.ang = clamp(JG.ang + d, 0, 60); cambio();
+  });
+  J.encender = () => { cv.tabIndex = 0; cv.setAttribute('aria-label', 'Juego libre: rampa con un saco. Con las flechas del teclado cambias el ángulo.'); };
+  J.apagar = () => { J.on = false; J.A.parar(); panel.hidden = true; };
+  pintar(); J.encender();
+  return J;
+}
 const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idfb}"></p>`;
 </script>
 <script>
@@ -850,6 +926,7 @@ const S = { step:0, max:0, pred:{}, hl:null, s:0, crece:1, ocupado:false, explor
 const A1 = crearAnimador(), parar = () => A1.parar();
 const INICIO = 1.6; // en el explorador, el saco empieza a 1,6 m de la punta, lejos del asa
 const L = crearLienzo(cv, altoLienzo, draw);
+let J1 = null; // juego libre antes de preguntar (ver el final)
 const R = () => S.explora ? M.plano({ m:S.m, angulo:S.ang, mus:S.mus, muk:Math.min(S.muk, S.mus) }) : M.plano(GUIA);
 
 const P1 = { id:'dinamica-fuerzas', ok:'b',
@@ -939,6 +1016,7 @@ function verActual(){
 }
 function draw(){
   if (!L.W) return;
+  if (J1 && J1.on){ decir($('desc1'), J1.dibujar(colores(L.W))); return; }
   const c = colores(L.W), r = R();
   vistaPlano(L, c, { r, ang: S.explora ? S.ang : 37, s:S.s, largo:6, masa:`${fmt(S.explora ? S.m : 10, 0)} kg`, ver:verActual(), crece:S.crece, hl:S.hl,
     asa:S.explora, sobreAsa:S.sobreAsa || S.arrastrando, aEscala:S.explora ? 10 : 4 });
@@ -1092,7 +1170,11 @@ document.addEventListener('focusout', e => { if (e.target.closest && e.target.cl
 alRedibujarTema(draw);
 // Si se cambia de pestaña a mitad de una animación, salta a su final: «Siguiente» no queda trabado.
 addEventListener('modo', () => { if ($('m1').hidden) A1.terminar(); else L.resize(); });
-L.resize(); go(0);
+// Jugar antes de preguntar: la rampa abre en juego libre; la guía queda velada hasta «Ya jugué: seguir».
+J1 = crearJuegoPlano(L, cv, $('juego1'), draw);
+montarJuego({ escena: cv.closest('.bench'), preguntas: [cv.closest('.mode').querySelector('.guide')],
+  alListo: () => { J1.apagar(); go(S.step); } });
+L.resize(); go(0); J1.encender();
 })();
 </script>
 <script>
@@ -1118,7 +1200,9 @@ function montarExperimentos(o){
     const l = typeof x.ley === 'function' ? x.ley(resp) : (resp || !x.leyAntes ? x.ley : x.leyAntes);
     const k = JSON.stringify(l); if (k !== leyClave){ leyClave = k; leyenda($('ley' + suf), l); }
   }
-  function draw(){ if (!L.W || !E.tipo) return; o.dibujar(L, colores(L.W), S); ponerLeyenda(); cv.__mano = E.mano || null; /* para las pruebas en el navegador */ }
+  function draw(){
+    if (L.W && X.juego && X.juego.on){ decir($('desc' + suf), X.juego.dibujar(colores(L.W))); return; }
+    if (!L.W || !E.tipo) return; o.dibujar(L, colores(L.W), S); ponerLeyenda(); cv.__mano = E.mano || null; /* para las pruebas en el navegador */ }
   X.draw = draw;
   X.crecer = listo => { E.crece = 0; A.anim(600, f => { E.crece = f; draw(); }, () => { E.crece = 1; draw(); if (listo) listo(); }); };
   X.pausa = (ms, listo) => A.anim(ms, () => {}, listo);
@@ -1139,6 +1223,7 @@ function montarExperimentos(o){
   }
   const arrastrable = () => { const x = EXPS[S.k]; return !!(x.mano && S.pred[x.id] && E.mano); };
   function lienzoActivo(){
+    if (X.juego && X.juego.on) return X.juego.encender();
     const x = EXPS[S.k], a = !!(x.mano && S.pred[x.id]);
     cv.tabIndex = a ? 0 : -1;
     cv.setAttribute('aria-label', a ? x.ariaArrastre : 'Dibujo del experimento elegido');
@@ -1213,7 +1298,12 @@ function montarExperimentos(o){
   // Al cambiar de pestaña, lo que se estaba animando salta a su final: nada queda a medias ni corriendo escondido.
   addEventListener('modo', () => { if (modo.hidden) A.terminar(); else { L.resize(); if (o.alMostrar) o.alMostrar(); } });
   X.ir = ir;
+  // Jugar antes de preguntar: si se entra directo a esta pestaña, la rampa libre va primero (la botonera queda libre).
+  X.juego = crearJuegoPlano(L, cv, $('juego' + suf), draw);
+  montarJuego({ escena: cv.closest('.bench'), preguntas: [$('t' + suf).parentNode, $('body' + suf)],
+    alListo: () => { X.juego.apagar(); ir(S.k); } });
   L.resize(); ir(0);
+  L.compactar(false); // mientras se juega, el dibujo no se pega arriba (taparía la consigna)
   return X;
 }
 </script>
