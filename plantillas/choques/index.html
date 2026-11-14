@@ -141,6 +141,15 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
 .fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
 .pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
 .pie a{color:var(--ink); font-weight:700}
+/* Juego libre antes de las preguntas (regla 3; nucleo/jugar.js) */
+.juego{display:grid; gap:8px; padding:4px 2px}
+.juego[hidden]{display:none}
+.paso-ctrl{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.paso-ctrl > span{font-weight:700; flex:1 1 150px}
+.paso-ctrl output{font-family:var(--mono); min-width:64px; text-align:center}
+.paso-ctrl .btn{padding:8px 0; width:44px}
+.jugar-barra{color:var(--ink)}
+.jugar-seguir{background:var(--ink); color:var(--card); border:0}
 .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
 .volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
   font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
@@ -175,6 +184,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <div class="lienzo"><canvas id="cv" tabindex="-1" role="img" aria-label="Un riel visto de costado con dos carritos y sus flechas de velocidad; debajo, las flechas de cantidad de movimiento y las barras de energía cinética, antes y después del choque"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
       <div class="legend" id="ley1"></div>
+      <div class="juego" id="juego1"></div>
     </section>
     <section class="guide">
       <ol class="dots" id="dots"></ol>
@@ -196,6 +206,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <div class="lienzo"><canvas id="cv2" tabindex="-1" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="legend" id="ley2"></div>
+      <div class="juego" id="juego2"></div>
     </section>
     <section class="guide">
       <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
@@ -221,6 +232,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'choques', unidad: 'fisica.impulso-y-choques', version: '0.1.0' };
@@ -493,6 +505,68 @@ function leyenda(el, claves){
     k === 'AB' ? '<span>tono lleno: 1 · tono claro: 2</span>' :
     `<span><i style="background:var(--c-${k})"></i>${NOMBRES[k]}</span>`).join('');
 }
+/* ---------- Jugar antes de preguntar (regla 3, decisión 20) ----------
+   Antes de la primera pregunta de cada modo, el riel queda libre: se cambia la velocidad del carrito 1 (botones,
+   flechas del teclado sobre el dibujo o arrastrando la punta de su flecha), la masa del 2 y el tipo de choque, y se
+   suelta. El juego no muestra lo que después se pregunta: las velocidades de después y las filas de «después» quedan
+   con «?». Basta jugar en un modo: el otro ya no lo pide. */
+const JG = { m1:1, v1:5, m2:2, v2:0, e:0 };
+const JUEGOS = [];
+function montarJuego(o){
+  const j = JugarPrimero.montar({ escena:o.escena, preguntas:o.preguntas, minimo:2,
+    consigna:'Cambia los carritos y suéltalos varias veces. Mira qué pasa.',
+    alListo:() => { JUEGOS.forEach(x => { if (x !== j) x.saltar(); }); o.alListo(); } });
+  JUEGOS.push(j); return j;
+}
+// Panel de controles del juego (los mismos en los dos modos). alCambiar() se llama después de cada cambio.
+function panelJuego(el, alCambiar, alSoltar){
+  const fila = (k, et, d, min, max, u) => `<div class="paso-ctrl"><span>${et}</span>
+      <button type="button" class="btn" data-k="${k}" data-d="${-d}" aria-label="Bajar ${et.toLowerCase()}">−</button>
+      <output data-o="${k}"></output>
+      <button type="button" class="btn" data-k="${k}" data-d="${d}" aria-label="Subir ${et.toLowerCase()}">+</button></div>`;
+  el.innerHTML = fila('v1', 'Velocidad del carrito 1', 1, 1, 10) + fila('m2', 'Masa del carrito 2', 0.5, 0.5, 5)
+    + `<div class="paso-ctrl"><span>Entre los dos</span><div class="seg" role="group" aria-label="Qué hay entre los carritos">
+        <button type="button" data-e="0">Enganche</button><button type="button" data-e="1">Resorte</button></div></div>
+      <p><button type="button" class="btn primary" data-soltar>Soltar</button></p>`;
+  const LIM = { v1:[1, 10], m2:[0.5, 5] };
+  el.querySelectorAll('[data-d]').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.k; JG[k] = clamp(Math.round((JG[k] + +b.dataset.d)*2)/2, LIM[k][0], LIM[k][1]); alCambiar();
+  }));
+  el.querySelectorAll('[data-e]').forEach(b => b.addEventListener('click', () => { JG.e = +b.dataset.e; alCambiar(); }));
+  el.querySelector('[data-soltar]').addEventListener('click', alSoltar);
+  const pintar = () => {
+    el.querySelector('[data-o="v1"]').textContent = `${N(JG.v1)} m/s`;
+    el.querySelector('[data-o="m2"]').textContent = `${N(JG.m2)} kg`;
+    el.querySelectorAll('[data-e]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.e === JG.e)));
+  };
+  pintar(); return pintar;
+}
+function escenarioJuego(){
+  const o = Object.assign({}, JG), d = (anchoCarro(o.m1) + anchoCarro(o.m2))/2;
+  const s = M.escenario(Object.assign({}, o, { x1:1.6, x2:Math.max(6.4, 1.6 + d + 0.4), d }));
+  let fin = 4;
+  for (let t = 0; t <= 4; t += 0.01){
+    const e = s.estado(t);
+    if (e.x1 - anchoCarro(o.m1)/2 < 0.1 || e.x2 + anchoCarro(o.m2)/2 > 9.9){ fin = Math.max(0, t - 0.01); break; }
+  }
+  s.fin = fin; return { o, sc:s };
+}
+// Dibujo del juego: carritos y sus velocidades de antes; lo de después, con «?».
+function dibujarJuego(ctx, c, W, H, t){
+  const { o, sc } = escenarioJuego(), est = sc.estado(t), choco = sc.tChoque !== null && t >= sc.tChoque - 1e-9;
+  const altoRiel = clamp(H*0.44, 118, 190), r = M.choque(o);
+  const carros = [
+    { x:est.x1, m:o.m1, letra:'1', v:est.v1, vTxt: choco ? "v' = ?" : `v = ${N(est.v1)} m/s`, vOculta: choco },
+    { x:est.x2, m:o.m2, letra:'2', v:est.v2, vTxt: choco ? "v' = ?" : `v = ${N(est.v2)} m/s`, vOculta: choco }];
+  riel(ctx, c, { x:14, y:6, w:W - 28, h:altoRiel }, [0, 10], { carros, kv: clamp(W/60, 5, 9), resorte: o.e === 1 && !choco });
+  const yF = altoRiel + 30;
+  filas(ctx, c, { x:14, y:yF, w:W - 28, h:H - yF - 6 }, [
+    { et:'p antes', tipo:'p', partes:[{ v:r.p1, letra:'1' }, { v:r.p2, letra:'2' }], unidad:'kg·m/s' },
+    { et:'p después', tipo:'p', partes:[{ v:r.p1f }, { v:r.p2f }], unidad:'kg·m/s', oculta:true },
+    { et:'Ec antes', tipo:'E', partes:[{ v:r.Ec1, letra:'1' }, { v:r.Ec2, letra:'2' }], unidad:'J' },
+    { et:'Ec después', tipo:'E', partes:[{ v:r.Ec1f }, { v:r.Ec2f }], unidad:'J', oculta:true }]);
+  return `Juego libre: carrito 1 de 1 kilogramo a ${N(o.v1)} metros por segundo hacia el carrito 2, de ${N(o.m2)} kilogramos, quieto, con ${o.e ? 'un resorte' : 'un enganche'} entre los dos.` + (choco ? ' Ya chocaron.' : '');
+}
 const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idfb}" tabindex="-1"></p>`;
 </script>
 <script>
@@ -656,7 +730,9 @@ function datos(esc){
 function tiempoDe(cuando, sc){ return cuando === 'final' ? sc.fin : cuando === 'contacto' ? (sc.tChoque === null ? 0 : sc.tChoque) : 0; }
 function draw(){
   if (!L.W) return;
-  const { ctx, W, H } = L, c = Object.assign(colores(W), { hl:S.hl }), vista = vistaActual(), { o, sc, r } = datos(vista.esc), ver = vista.ver || {};
+  const { ctx, W, H } = L, c = Object.assign(colores(W), { hl:S.hl });
+  if (S.jugando){ ctx.clearRect(0, 0, W, H); decir($('desc1'), dibujarJuego(ctx, c, W, H, S.t)); return; }
+  const vista = vistaActual(), { o, sc, r } = datos(vista.esc), ver = vista.ver || {};
   ctx.clearRect(0, 0, W, H);
   const t = S.t, est = sc.estado(t), choco = sc.tChoque !== null && t >= sc.tChoque - 1e-9 && (vista.cuando !== 'contacto');
   const altoRiel = clamp(H*0.44, 118, 190);
@@ -686,7 +762,7 @@ function resumen(r){
 }
 function correr(listo){
   parar();
-  const { sc } = datos(vistaActual().esc), fin = sc.fin;
+  const { sc } = S.jugando ? escenarioJuego() : datos(vistaActual().esc), fin = sc.fin;
   parar = animarValor(Math.max(600, fin/0.55*1000), f => { S.t = fin*f; draw(); }, listo);
 }
 
@@ -700,7 +776,7 @@ function go(n){
   if (n < 0 || n >= steps.length || n > S.max) return;
   parar();
   const s = steps[n]; S.step = n; S.hl = null; S.explora = !!s.explora; S.cuando = 'inicio';
-  cv.tabIndex = S.explora ? 0 : -1;
+  cv.tabIndex = S.explora || S.jugando ? 0 : -1;
   cv.setAttribute('aria-label', S.explora ? 'Riel del explorador: con las flechas del teclado cambias la velocidad del carrito 1' : 'Un riel visto de costado con dos carritos y sus flechas de velocidad; debajo, las flechas de cantidad de movimiento y las barras de energía cinética, antes y después del choque');
   const v = vistaActual(); S.t = tiempoDe(v.cuando, datos(v.esc).sc);
   $('stepK').textContent = `${s.k} de ${steps.length}`;
@@ -785,20 +861,24 @@ function vivo(){
 function puntaA(){
   const { W } = L;
   const altoRiel = clamp(L.H*0.44, 118, 190), B = { x:14, w:W - 28 }, esc = B.w/(RIEL[1] - RIEL[0]);
-  const { sc, o } = datos('explora'), est = sc.estado(S.t), X = B.x + (est.x1 - RIEL[0])*esc;
+  const { sc, o } = S.jugando ? escenarioJuego() : datos('explora'), est = sc.estado(S.t), X = B.x + (est.x1 - RIEL[0])*esc;
   const hmax = Math.max(clamp(22 + 7*o.m1, 28, 54), clamp(22 + 7*o.m2, 28, 54));
   const yR = 6 + altoRiel - 14, yv = yR - hmax - 2 - 16;
   return { x: X + est.v1*clamp(W/60, 5, 9), y: yv, x0: X, kv: clamp(W/60, 5, 9) };
 }
 Celular.arrastre(cv, {
-  activo: () => S.explora && S.t === 0,
+  activo: () => (S.explora || S.jugando) && S.t === 0,
   cerca: (p, r) => { const q = puntaA(); return Math.hypot(p.x - q.x, p.y - q.y) < r; },
-  mover: p => { const q = puntaA(); const v = clamp(Math.round((p.x - q.x0)/q.kv*2)/2, -10, 10); if (v !== S.ex.v1){ S.ex.v1 = v; vivo(); } },
+  mover: p => { const q = puntaA();
+    if (S.jugando){ const v = clamp(Math.round((p.x - q.x0)/q.kv*2)/2, 1, 10); if (v !== JG.v1){ JG.v1 = v; pintarJuego(); draw(); } return; }
+    const v = clamp(Math.round((p.x - q.x0)/q.kv*2)/2, -10, 10); if (v !== S.ex.v1){ S.ex.v1 = v; vivo(); } },
 });
 cv.addEventListener('keydown', e => {
-  if (!S.explora) return;
+  if (!S.explora && !S.jugando) return;
   const d = { ArrowUp:0.5, ArrowRight:0.5, ArrowDown:-0.5, ArrowLeft:-0.5 }[e.key]; if (!d) return;
-  e.preventDefault(); parar(); S.t = 0; S.ex.v1 = clamp(S.ex.v1 + d, -10, 10); vivo();
+  e.preventDefault(); parar(); S.t = 0;
+  if (S.jugando){ JG.v1 = clamp(JG.v1 + d, 1, 10); pintarJuego(); draw(); return; }
+  S.ex.v1 = clamp(S.ex.v1 + d, -10, 10); vivo();
 });
 
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); $('stepT').focus({ preventScroll:true }); });
@@ -818,6 +898,11 @@ addEventListener('modo', () => {
   if ($('m1').hidden){ parar(); const v = vistaActual(); if (!S.explora) S.t = tiempoDe(v.cuando, datos(v.esc).sc); }
   else L.resize();
 });
+// Jugar antes de preguntar: el riel abre en juego libre; la guía queda velada hasta «Ya jugué: seguir».
+S.jugando = true;
+const pintarJuego = panelJuego($('juego1'), () => { parar(); S.t = 0; draw(); }, () => { S.t = 0; correr(); });
+montarJuego({ escena: cv.closest('.bench'), preguntas: [cv.closest('.mode').querySelector('.guide')],
+  alListo: () => { parar(); S.jugando = false; $('juego1').hidden = true; go(S.step); } });
 L.resize(); go(0);
 })();
 </script>
@@ -946,6 +1031,7 @@ function anim(dur){ parar(); E.f = 0; parar = animarValor(dur, f => { E.f = f; d
 
 // ----- dibujos de cada experimento -----
 function draw(){
+  if (L.W && S.jugando){ L.ctx.clearRect(0, 0, L.W, L.H); decir($('desc2'), dibujarJuego(L.ctx, colores(L.W), L.W, L.H, S.tj)); return; }
   if (!L.W || !E.tipo) return;
   const { ctx, W, H } = L, c = colores(W), x = EXPS[S.k], resp = !!S.pred[x.id];
   ctx.clearRect(0, 0, W, H);
@@ -1124,7 +1210,22 @@ function ir(k){
 alRedibujarTema(draw);
 // Al cambiar de pestaña, la animación se detiene en su estado final.
 addEventListener('modo', () => { if ($('m2').hidden){ parar(); if (S.pred[EXPS[S.k].id]) E.f = 1; } else { L.resize(); } });
+// Jugar antes de preguntar: si se entra directo aquí, el riel libre va primero (la botonera queda libre).
+S.jugando = true; S.tj = 0;
+const pintarJuego = panelJuego($('juego2'), () => { parar(); S.tj = 0; draw(); }, () => {
+  parar(); const fin = escenarioJuego().sc.fin; S.tj = 0;
+  parar = animarValor(Math.max(600, fin/0.55*1000), f => { S.tj = fin*f; draw(); });
+});
+cv.tabIndex = 0;
+cv.addEventListener('keydown', e => {
+  if (!S.jugando) return;
+  const d = { ArrowUp:0.5, ArrowRight:0.5, ArrowDown:-0.5, ArrowLeft:-0.5 }[e.key]; if (!d) return;
+  e.preventDefault(); parar(); S.tj = 0; JG.v1 = clamp(JG.v1 + d, 1, 10); pintarJuego(); draw();
+});
+montarJuego({ escena: cv.closest('.bench'), preguntas: [$('t2').parentNode, $('body2')],
+  alListo: () => { parar(); S.jugando = false; $('juego2').hidden = true; cv.tabIndex = -1; ir(S.k); } });
 L.resize(); ir(0);
+L.compactar(false); // mientras se juega, el dibujo no se pega arriba (taparía la consigna)
 })();
 </script>
 
