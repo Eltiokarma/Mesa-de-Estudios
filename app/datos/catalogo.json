@@ -2224,7 +2224,15 @@
      "plantillas": [
       "numeracion",
       "numeros-sucesiones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/numeracion.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-fichas.js",
+       "/nucleo/kit/piezas/arit-tabla.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "aritmetica.cuatro-operaciones",
