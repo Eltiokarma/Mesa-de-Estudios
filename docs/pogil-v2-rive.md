@@ -677,6 +677,8 @@ Costos y límites:
 
 Decisión de Gerson (13 nov): el formato nuevo arranca con esta unidad. Es de 3.º, así que los tres grados del piloto la estudian como propia. Además es la que `docs/escena-viva.md` ya diagnosticó: entre 112 y 231 palabras por paso, con las gráficas fuera de la pantalla mientras se lee. Ruta: **descubrir, con apoyo de un ejemplo (D+E)**. Gesto: **soltar**.
 
+**Regla de Gerson (14 nov): en cada parte, el alumno juega con la simulación antes de cualquier pregunta, también de una predicción.** La versión A lo cumple con un juego libre al comienzo de cada parte; la predicción va después, sobre algo que el juego no mostró.
+
 Ficha de tarea:
 
 - **Promesa:** el alumno ve nacer las gráficas de su propio movimiento y descubre que el área bajo v–t es lo que avanzó el carrito.

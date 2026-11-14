@@ -10,7 +10,7 @@ App de bajo costo para postulantes a universidades peruanas (UNI, San Marcos, UN
 
 1. **La física vive en el motor, nunca en el LLM.** Un modelo de lenguaje puede leer un enunciado y traducirlo a parámetros; el cálculo y el dibujo los hace código determinístico.
 2. **Toda plantilla trae casos de prueba** (`casos.json`) verificados con cálculo independiente. No se publica nada que no los pase.
-3. **Predecir antes de ver.** Cada escena pide al menos una predicción y bloquea el avance hasta que el alumno responda. Las opciones incorrectas salen de errores reales de postulantes.
+3. **Jugar, después predecir, después ver.** Antes de cualquier pregunta, también de una predicción, el alumno juega con la simulación (decisión de Gerson, 14 nov 2026: es obligatorio). Después, cada escena pide al menos una predicción sobre algo que todavía no vio, y bloquea el avance hasta que el alumno responda. Las opciones incorrectas salen de errores reales de postulantes.
 4. **Un color por variable**, el mismo en enunciado, dibujo y ecuación.
 5. **Contenido propio.** Los manuales de academia, solucionarios y libros de `fuentes/` sirven para saber qué y cómo se pregunta: nunca se copian sus problemas, soluciones, textos ni figuras al producto. **Excepción (decisión de Gerson, 12 nov 2026):** las preguntas de los exámenes oficiales de admisión de universidades públicas se pueden usar tal cual como ejercicios, citando universidad y periodo; la solución y la figura se rehacen (las de la academia no se copian), y los textos de lectura de esos exámenes, que suelen ser fragmentos de autores, no se copian. Que un ejercicio propio se parezca a uno de examen es normal y está bien.
 6. **Lápiz y papel.** Cada plantilla trae de 5 a 10 problemas para resolver sin la escena.
