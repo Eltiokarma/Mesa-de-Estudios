@@ -712,7 +712,7 @@
             {
               "id": "RME194-ordenar-todos",
               "respaldo": "hipotesis",
-              "explicacion": "Ordenaste C, D y V de todas las formas, 3! = 6. Pero entre A y C, y entre D y B, no hay hilo: algunos órdenes no se pueden caminar.",
+              "explicacion": "Ordenaste C, D y V de todas las formas, 3! = 6. Pero entre A y C, y entre D y B, no hay hilo: esos órdenes no se caminan.",
               "fn": "hamiltonianos",
               "args": [
                 {
