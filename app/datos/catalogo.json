@@ -1345,7 +1345,16 @@
      "plantillas": [
       "conjuntos",
       "logica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/logica-y-conjuntos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/alg-venn.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "algebra.numeros-reales",
