@@ -89,6 +89,16 @@
     return v <= 2 ? `${n}s${sup(v)}` : `${n}s² ${n}p${sup(v - 2)}`;
   };
   const tabla = extra => ({ datos: Object.assign({ periodos: 4, simbolos: SIMBOLOS }, extra), estado: {} });
+  // Gesto directo (docs/teoria.md §4b): con la geometría de quim-tabla (casilla, celda, zDe). La manija va al centro
+  // de la casilla del elemento; al soltarla, el Z es el de la casilla bajo el dedo. La casilla «d» del periodo 4
+  // reúne del Sc al Zn: si ya se estaba ahí, se queda el mismo Z; si no, entra el Sc (21). Fuera de la tabla, nada cambia.
+  const QT = () => Kit.piezas['quim-tabla'];
+  const enCasilla = z => { const c = QT().casilla(z); return { x: c.cx, y: c.cy }; };
+  const zBajo = (pt, z) => {
+    const c = QT().celda(pt, 4); if (!c) return z;
+    if (c.col === 2) return c.per === 4 ? (z >= 21 && z <= 30 ? z : 21) : z;
+    return QT().zDe(c.col, c.per) || z;
+  };
 
   // ---------- Idea 1: la tabla ordena por Z y repite propiedades ----------
   // Cambia: el elemento marcado y la vista (bloques o metales) · Permanece: la tabla de los grupos principales · Progresa:
@@ -109,6 +119,10 @@
       dibujo: v => tabla({ marcadas: [{ Z: v.z, color: 'h' }], bloques: v.vista === 'bloques', escalera: v.vista === 'metales' }),
       lectura: v => { const l = lugar(v.z); return [`${SIMB[v.z]}: periodo ${l.periodo} · grupo ${l.grupo} · bloque ${l.bloque} · ${clase(v.z)}`]; },
       minimo: 4,
+      // Se agarra la casilla marcada y se la lleva a otra: Z sigue al dedo, y la lectura da periodo, grupo y clase.
+      arrastres: [{ id: 'casilla', etiqueta: 'casilla marcada: llévala a otro elemento', color: 'c-h',
+        donde: v => enCasilla(v.z),
+        mover: (pt, v) => ({ z: zBajo(pt, v.z) }) }],
     },
     predice: {
       pregunta: 'En 1869, Mendeléiev ordenó los elementos y dejó dos casillas vacías: bajo el aluminio y bajo el silicio. ¿Qué pasó después?',
@@ -137,7 +151,7 @@
     },
     regla: {
       texto: 'La tabla ordena los elementos por Z y sus propiedades se repiten en columnas (grupos). El periodo es el último nivel ocupado; el bloque, el subnivel que se llena.',
-      ecuacion: ['periodo = n más alto   ·   bloque = s, p, d o f'],
+      ecuacion: ['periodo = ', { llave: ['n'], nota: 'nivel más alto' }, '   ·   ', 'bloque = s, p, d o f'],
       condicion: 'el orden es por número atómico, no por masa. Metales a la izquierda de la escalera; no metales a la derecha.',
       voz: 'Ubica primero la fila y después la columna.',
     },
@@ -173,6 +187,8 @@
     c.forEach((n, i) => { if (n === 2) pares.push({ en: 'a', ang: LADOS[i], desde }); else if (n === 1) cargas.push({ en: 'a', t: '•', ang: LADOS[i], desde }); });
     return { atomos: [{ id: 'a', t: SIMB[z], x: 0, y: 0 }], pares, cargas, escala: 40, alto: 130, alt: `Símbolo de Lewis del ${NOMBRE[z]}: ${v} puntos alrededor de ${SIMB[z]}.` };
   }
+  // Sin arrastre: el símbolo de Lewis es la respuesta que el alumno lee; no hay una magnitud natural que agarrar en
+  // él (los puntos salen de Z). Z se arrastra en la tabla de la idea 1 y del laboratorio.
   const ubicacion = {
     id: 'ubicacion-lewis',
     titulo: 'Del último nivel al lugar',
@@ -212,7 +228,7 @@
     },
     regla: {
       texto: 'El nivel más alto da el periodo. Sus electrones son los de valencia: dan el grupo y los puntos del símbolo de Lewis.',
-      ecuacion: ['grupos 1 y 2: grupo = valencia   ·   grupos 13 a 18: grupo = 10 + valencia'],
+      ecuacion: [{ llave: ['grupo = valencia'], nota: 'grupos 1 y 2' }, '   ·   ', { llave: ['grupo = 10 + valencia'], nota: 'grupos 13 a 18' }],
       condicion: 'vale para los grupos principales; en los de transición el grupo cuenta también los electrones d.',
       voz: 'Solo cuentan los del último nivel.',
     },
@@ -250,6 +266,11 @@
       consigna: 'Elige un grupo. El círculo de cada casilla es proporcional al radio del átomo. Mira cómo cambia de arriba abajo.',
       voz: 'Compara cada círculo con el de arriba.',
       controles: [{ id: 'g', etiqueta: 'Grupo', opciones: Object.keys(GRUPOS).map(g => ({ valor: g, texto: `Grupo ${g}` })) }],
+      // Se agarra la cabeza de la columna (sobre el número del grupo) y se la corre a otra: al soltar, cae en el grupo más cercano de los cuatro.
+      arrastres: [{ id: 'columna', etiqueta: 'columna del grupo', color: 'c-i',
+        donde: v => { const c = QT().casilla(GRUPOS[v.g][0]); return { x: c.cx, y: c.y - 12 }; },
+        mover: pt => { const col = (pt.x - QT().casilla(1).x) / QT().casilla(1).w - 0.5;
+          return { g: Object.keys(GRUPOS).reduce((a, b) => (Math.abs(QT().casilla(GRUPOS[b][0]).col - col) < Math.abs(QT().casilla(GRUPOS[a][0]).col - col) ? b : a)) }; } }],
       dibujo: v => tabla({ propiedad: { valores: valores(RADIO, GRUPOS[v.g]), max: 245, forma: 'circulo', color: 'i', nombre: 'radio (pm)' }, rotulo: 'r: radio calculado (pm)' }),
       lectura: v => { const zs = GRUPOS[v.g]; return [Rv, `: de ${RADIO[zs[0]]} pm (${SIMB[zs[0]]}) a ${RADIO[zs[zs.length - 1]]} pm (${SIMB[zs[zs.length - 1]]})`]; },
       minimo: 3,
@@ -275,7 +296,7 @@
         { estado: { corte: 0 }, texto: 'Hacia la derecha en un periodo, baja: el núcleo jala más.', ecuacion: ['Na 190 pm → Cl 79 pm'] },
         { estado: { corte: 1 }, texto: 'El más grande de esta tabla: el potasio, abajo a la izquierda.', ecuacion: ['K: 243 pm'] },
         { estado: { corte: 2 }, texto: 'Arriba a la derecha están los más pequeños, como el flúor.', ecuacion: ['F: 42 pm'] },
-        { estado: { corte: 2 }, texto: 'Un catión pierde electrones y se achica; un anión los gana y crece.', ecuacion: ['Na⁺ menor que Na · Cl⁻ mayor que Cl'] },
+        { estado: { corte: 2 }, texto: 'Un catión pierde electrones y se achica; un anión los gana y crece.', ecuacion: ['Na⁺ menor que Na', '   ·   ', 'Cl⁻ mayor que Cl'] },
       ],
     },
     regla: {
@@ -333,6 +354,10 @@
       consigna: 'Elige un periodo. Cada barra es la energía para quitarle un electrón al átomo gaseoso. Recorre la fila de izquierda a derecha.',
       voz: 'Busca las barras que no siguen la subida.',
       controles: [{ id: 'p', etiqueta: 'Periodo', opciones: Object.keys(PERIODOS).map(p => ({ valor: p, texto: `Periodo ${p}` })) }],
+      // Se agarra el comienzo de la fila y se lo sube o baja: al soltar, cae en el periodo 3 o en el 4.
+      arrastres: [{ id: 'fila', etiqueta: 'fila del periodo', color: 'c-o',
+        donde: v => enCasilla(PERIODOS[v.p][0]),
+        mover: pt => { const c = QT().casilla(11), per = 3 + (pt.y - c.cy) / c.h; return { p: per < 3.5 ? '3' : '4' }; } }],
       dibujo: v => barrasEI(PERIODOS[v.p]),
       lectura: v => { const zs = PERIODOS[v.p]; return [EIv, `: de ${EI[zs[0]]} (${SIMB[zs[0]]}) a ${EI[zs[7]]} kJ/mol (${SIMB[zs[7]]})`]; },
       minimo: 2,
@@ -363,7 +388,7 @@
     },
     regla: {
       texto: 'La energía de ionización es la que se necesita para quitar un electrón a un átomo gaseoso. Sube hacia la derecha y hacia arriba, con saltos.',
-      ecuacion: ['X(g) → X⁺(g) + e⁻   ·   ', EIv, ': N > O, Be > B'],
+      ecuacion: [{ llave: ['X(g)'], nota: 'gaseoso' }, ' → X⁺(g) + e⁻', '   ·   ', EIv, ': N > O, Be > B'],
       condicion: 'las flechas son tendencias, no leyes: se comparan los datos. La afinidad electrónica es otro proceso: X(g) + e⁻ → X⁻(g).',
       voz: 'Ante la duda, mira el dato.',
     },
@@ -394,6 +419,10 @@
   // átomo se corre el par de electrones.
   const PARES_EN = { 'H–Cl': [1, 17], 'C–H': [6, 1], 'O–H': [8, 1], 'Na–Cl': [11, 17], 'C–O': [6, 8] };
   const barrasEN = (zs, extra = {}) => tabla(Object.assign({ propiedad: { valores: valores(EN, zs), max: 4, forma: 'barra', color: 'd', nombre: 'EN (Pauling)' }, rotulo: 'EN: electronegatividad (Pauling)' }, extra));
+  // Sin arrastre: el control elige un enlace, es decir, un par de elementos; no hay un solo objeto que agarrar.
+  // (En el laboratorio, la mesa «Dos elementos lado a lado» deja arrastrar cada casilla por separado.)
+  // Hallazgo 9 de la auditoría: son dos representaciones a propósito. La tabla compara los valores de EN; «Mira»
+  // pasa a la molécula de HCl para mostrar qué hace esa diferencia dentro de un enlace (el par se corre).
   const electroneg = {
     id: 'electronegatividad',
     titulo: 'Quién jala el par compartido',
@@ -433,7 +462,7 @@
       },
       voz: 'Veamos qué hace la diferencia dentro de un enlace.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'H y Cl comparten un par de electrones.', ecuacion: [ENv, '(H) = 2,20 · ', ENv, '(Cl) = 3,16'] },
+        { estado: { corte: 1 }, texto: 'H y Cl comparten un par de electrones.', ecuacion: [ENv, '(H) = 2,20', '   ·   ', ENv, '(Cl) = 3,16'] },
         { estado: { corte: 2 }, texto: 'El Cl jala más el par: queda con carga parcial δ−.', ecuacion: ['Δ', ENv, ' = 3,16 − 2,20 = 0,96'] },
         { estado: { corte: 3 }, texto: 'La flecha del dipolo apunta al más electronegativo.', ecuacion: ['H → Cl'] },
         { estado: { corte: 3 }, texto: 'Con una diferencia grande, como Na–Cl, el par casi se transfiere.', ecuacion: ['Δ', ENv, '(Na–Cl) = 2,23'] },
@@ -441,7 +470,7 @@
     },
     regla: {
       texto: 'La electronegatividad mide cuánto atrae un átomo los electrones de un enlace. Crece hacia la derecha y hacia arriba; el flúor tiene el valor más alto.',
-      ecuacion: ['Δ', ENv, ' grande → enlace más polar'],
+      ecuacion: [{ llave: ['Δ', ENv], nota: 'diferencia', color: 'c-d' }, ' grande → ', 'enlace\u00a0más\u00a0polar'],
       condicion: 'se usa una sola escala (aquí, Pauling, sin unidades). He, Ne y Ar no tienen valor en ella.',
       voz: 'Electronegativo no es negativo: es quien jala más.',
     },
@@ -474,6 +503,18 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Las tres propiedades de la unidad, con su escala, sobre los 36 elementos (incluye los de transición en la casilla d).
+  const PROPS = {
+    r: { tabla: RADIO, max: 245, forma: 'circulo', color: 'i', nombre: 'radio (pm)', unidad: 'pm', dec: 0, v: Rv },
+    ei: { tabla: EI, max: 2400, forma: 'barra', color: 'o', nombre: 'EI (kJ/mol)', unidad: 'kJ/mol', dec: 0, v: EIv },
+    en: { tabla: EN, max: 4, forma: 'barra', color: 'd', nombre: 'EN (Pauling)', unidad: '', dec: 2, v: ENv },
+  };
+  const OP_PROPS = [{ valor: 'r', texto: 'Radio' }, { valor: 'ei', texto: 'Ionización' }, { valor: 'en', texto: 'Electronegatividad' }];
+  const valorDe = (k, z) => { const P = PROPS[k], x = P.tabla[z]; return x === null ? 'sin dato' : `${P.dec ? f(x, P.dec) : x}${P.unidad ? ` ${P.unidad}` : ''}`; };
+  const tablaProp = (k, marcadas) => { const P = PROPS[k]; return tabla({ propiedad: { valores: valores(P.tabla, TODOS), max: P.max, forma: P.forma, color: P.color, nombre: P.nombre }, marcadas }); };
+  const SIMBV = z => (z >= 21 && z <= 30 ? `${SIMB[z]} (d)` : SIMB[z]);
+
   return {
     unidad: 'quimica.tabla-periodica',
     version: '0.1.0',
@@ -484,6 +525,39 @@
       pregunta: '¿Cómo predices algo que todavía nadie ha visto?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §6.5', url: 'https://openstax.org/books/chemistry-2e/pages/6-5-periodic-variations-in-element-properties' },
     },
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera da las tres propiedades de un elemento a la
+    // vez, del H al Kr (con los de transición, que las ideas no muestran); la segunda pone dos elementos lado a lado,
+    // cada uno con su casilla arrastrable. La lectura dice los elementos y los valores, para que el caso se lea solo.
+    laboratorio: [
+      {
+        id: 'tres-propiedades', titulo: 'Un elemento, tres propiedades', pieza: 'quim-tabla',
+        consigna: 'Lleva la casilla a cualquier elemento, también a los de transición. Cambia la propiedad del fondo y compara con sus vecinos.',
+        controles: [
+          { id: 'z', etiqueta: 'Z', color: 'c-h', min: 1, max: 36, paso: 1, inicio: 11, decimales: 0 },
+          { id: 'p', etiqueta: 'Propiedad', opciones: OP_PROPS },
+        ],
+        dibujo: v => tablaProp(v.p, [{ Z: v.z, color: 'h' }]),
+        lectura: v => [`${SIMBV(v.z)}: `, Rv, ` ${valorDe('r', v.z)} · `, EIv, ` ${valorDe('ei', v.z)} · `, ENv, ` ${valorDe('en', v.z)}`],
+        arrastres: [{ id: 'casilla', etiqueta: 'casilla marcada: llévala a otro elemento', color: 'c-h',
+          donde: v => enCasilla(v.z),
+          mover: (pt, v) => ({ z: zBajo(pt, v.z) }) }],
+      },
+      {
+        id: 'dos-elementos', titulo: 'Dos elementos lado a lado', pieza: 'quim-tabla',
+        consigna: 'Arrastra las dos casillas a dos elementos y elige la propiedad. Busca un par que rompa la tendencia.',
+        controles: [
+          { id: 'a', etiqueta: 'Primero', color: 'c-h', min: 1, max: 36, paso: 1, inicio: 7, decimales: 0 },
+          { id: 'b', etiqueta: 'Segundo', color: 'c-i', min: 1, max: 36, paso: 1, inicio: 8, decimales: 0 },
+          { id: 'p', etiqueta: 'Propiedad', opciones: OP_PROPS, inicio: 'ei' },
+        ],
+        dibujo: v => tablaProp(v.p, [{ Z: v.a, color: 'h' }, { Z: v.b, color: 'i' }]),
+        lectura: v => [PROPS[v.p].v, `: ${SIMBV(v.a)} ${valorDe(v.p, v.a)} · ${SIMBV(v.b)} ${valorDe(v.p, v.b)}`],
+        arrastres: [
+          { id: 'primero', etiqueta: 'casilla del primer elemento', color: 'c-h', donde: v => enCasilla(v.a), mover: (pt, v) => ({ a: zBajo(pt, v.a) }) },
+          { id: 'segundo', etiqueta: 'casilla del segundo elemento', color: 'c-i', donde: v => enCasilla(v.b), mover: (pt, v) => ({ b: zBajo(pt, v.b) }) },
+        ],
+      },
+    ],
     ideas: [ley, ubicacion, radio, ionizacion, electroneg],
   };
 });
