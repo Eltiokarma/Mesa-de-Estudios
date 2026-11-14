@@ -68,7 +68,7 @@ h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; let
 /* El dedo desplaza la página sobre el dibujo; solo un toque que empieza sobre un átomo gira la molécula (nucleo/celular.js). */
 canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
 .giro{display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; padding:0 4px; font-size:.84rem; color:var(--muted)}
-.giro button{font:700 .85rem var(--font); padding:6px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:36px}
+.giro button{font:700 .85rem var(--font); padding:6px 12px; border-radius:999px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer; min-height:44px; min-width:44px}
 .legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
 .legend span{display:inline-flex; align-items:center; gap:6px}
 .legend i{width:14px; height:4px; border-radius:2px; display:inline-block}
@@ -223,6 +223,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
 <script src="../../nucleo/convencion.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'enlace', unidad: 'quimica.enlace-quimico', version: '0.1.0' };
@@ -570,6 +571,16 @@ const UYULGAN = 'un estudio con 88 futuros profesores de Turquía (Uyulgan y Akk
 // para no regalar ninguna respuesta de un experimento que aún no se respondió.
 const PRED_EXP = {};
 const DESCUBRE = 'descúbrelo en «¿Qué pasa si…?»';
+// Regla 3 (decisión 20): antes de cualquier pregunta se gira en 3D una molécula que no se pregunta, el PCl₅
+// (arrastrando desde un átomo, con ⟲ ⟳ o con las flechas). Sin pares libres ni dipolos, y sin el paso del papel
+// al 3D: la forma, los pares y la polaridad de las moléculas de las preguntas no se ven hasta responder.
+function jugarConPCl5(E){
+  E.giro = 0.2; E.inc = 0.45; cortar(E);
+  E.vista = { girable:true, paneles:[{ tipo:'mol', items:[{ mol:ME.molecula('PCl5'), f:1, rot:[[['PCl₅', 'ink', 800], ['  ·  ', 'muted'], ['bipirámide trigonal', 'ink', 800]]] }] }],
+    pie:'Cada raya es un enlace P–Cl.', vars:['enl'],
+    desc:'El pentacloruro de fósforo en 3D: tres cloros en un plano alrededor del fósforo, uno arriba y otro abajo.' };
+  E.compactar(false); E.dibujar(); E.describir();
+}
 // Qué tapa el explorador: forma ('forma') o solo los dipolos ('pol'), y la resonancia ('res').
 function tapaExp(mo){
   const n = mo.ligandos.length, m = mo.paresLibres, lig = mo.ligandos.slice().sort().join(',');
@@ -847,6 +858,10 @@ addEventListener('modo', () => {
   else { E.resize(); E.dibujar(); }
 });
 go(0);
+jugarConPCl5(E);
+JugarPrimero.montar({ escena: $('cv').closest('.bench'), preguntas: [...document.querySelectorAll('#m1 .guide > *')], minimo: 2,
+  consigna: 'Gira la molécula: arrástrala desde un átomo o usa los botones.',
+  alListo: () => { E.giro = 0.2; E.inc = 0.45; go(0); } });
 })();
 </script>
 
@@ -1021,7 +1036,11 @@ function ir(k){
 }
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); });
-ir(0);
+botones();
+jugarConPCl5(E);
+JugarPrimero.montar({ escena: $('cv2').closest('.bench'), preguntas: [...document.querySelectorAll('#m2 .guide > *')], minimo: 2,
+  consigna: 'Gira la molécula: arrástrala desde un átomo o usa los botones.',
+  alListo: () => ir(0) });
 })();
 </script>
 
