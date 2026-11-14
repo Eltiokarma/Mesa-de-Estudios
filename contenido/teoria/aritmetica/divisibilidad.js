@@ -43,6 +43,25 @@
     }
     return ops.slice(0, 4);
   }
+  // Gesto directo (docs/teoria.md §4b). Las fichas cuelgan de arriba (arit-fichas, arriba: true): la ficha número k
+  // no se mueve cuando n crece, así que la última ficha se puede agarrar. Como el tamaño de la ficha cambia con la
+  // cantidad de filas, mover no invierte una escala: elige el valor cuya manija quedaría más cerca del dedo. Eso
+  // depende solo del dedo, y la manija no se dispara aunque la figura se reacomode.
+  const FICHAS = () => Kit.piezas['arit-fichas'], TABLA = () => Kit.piezas['arit-tabla'];
+  const rango = (lo, hi) => Array.from({ length: hi - lo + 1 }, (_, i) => lo + i);
+  const masCerca = (cands, pos, pt) => {
+    let mejor = cands[0], dm = Infinity;
+    for (const c of cands) { const p = pos(c), d2 = (p.x - pt.x) ** 2 + (p.y - pt.y) ** 2; if (d2 < dm - 1e-9) { dm = d2; mejor = c; } }
+    return mejor;
+  };
+  const ultima = (datos, k, n) => FICHAS().geometria(datos).ficha(k, n - 1);
+  // El borde izquierdo de la primera fila (el bloque está centrado: crece hacia los dos lados). El derecho quedaba bajo
+  // el botón de la lupa, arriba a la derecha.
+  const bordeFila = (datos, k) => { const g = FICHAS().geometria(datos), c = g.caja(k); return { x: c.x, y: c.y + g.paso / 2 }; };
+  // En la tabla se arrastra la fila por su borde derecho (como en lógica): la fila elegida es el exponente.
+  const manijaFila = (datos, i) => { const g = TABLA().geometria(datos); return { x: g.xs[g.xs.length - 1] - 12, y: g.filaY(i) + g.altoFila / 2 }; };
+  const filaEn = (datos, y, hasta) => { const g = TABLA().geometria(datos); return Math.max(0, Math.min(hasta, Math.floor((y - g.filaY(0)) / g.altoFila))); };
+  const ARRIBA = { arriba: true };
   const filas = (nv, mv, extra = {}) => {
     const rv = nv % mv;
     return Object.assign({ bloques: [{ n: nv, columnas: mv, color: 'o', marcoFilas: true, rotulo: rv ? `${nv} = ${mv}·${Math.floor(nv / mv)} + ${rv}` : `${nv} = ${mv}·${nv / mv}`, tramos: rv ? [{ de: nv - rv, a: nv - 1, color: 'h' }] : [] }], altoMax: 160, ficha: 24, alt: `${nv} fichas en filas de ${mv}: ${Math.floor(nv / mv)} filas llenas${rv ? ` y sobran ${rv}` : ', no sobra ninguna'}` }, extra);
@@ -52,6 +71,14 @@
   // Cambia: n y el largo de fila m. Permanece: el tamaño de la ficha.
   // Progresa: filas llenas → sobrante. Se reserva: un número que parece primo y se acomoda justo.
   // Debe verse: m divide a n cuando no sobra ninguna ficha.
+  const arrastresFilas = (nMin, nMax, mMin, mMax, extra) => [
+    { id: 'ultima', etiqueta: 'última ficha (cuántas hay)', color: 'c-o',
+      donde: v => ultima(filas(v.n, v.m, extra), 0, v.n),
+      mover: (pt, v) => ({ n: masCerca(rango(nMin, nMax), c => ultima(filas(c, v.m, extra), 0, c), pt) }) },
+    { id: 'fila', etiqueta: 'borde de la primera fila (su largo)', color: 'c-i',
+      donde: v => bordeFila(filas(v.n, v.m, extra), 0),
+      mover: (pt, v) => ({ m: masCerca(rango(mMin, Math.min(mMax, v.n)), c => ({ x: bordeFila(filas(v.n, c, extra), 0).x, y: pt.y }), pt) }) },
+  ];
   const multiplos = {
     id: 'filas-de-m',
     titulo: 'Filas de m sin sobrante',
@@ -64,9 +91,11 @@
         { id: 'n', etiqueta: 'n', color: 'c-o', min: 12, max: 40, paso: 1, inicio: 24, decimales: 0 },
         { id: 'm', etiqueta: 'm', color: 'c-i', min: 2, max: 9, paso: 1, inicio: 5, decimales: 0 },
       ],
-      dibujo: v => ({ datos: filas(v.n, v.m), estado: {} }),
+      dibujo: v => ({ datos: filas(v.n, v.m, ARRIBA), estado: {} }),
       lectura: v => (v.n % v.m ? [m, ` no divide a ${v.n}: sobran `, { v: 'c-h', t: String(v.n % v.m) }] : [m, ` = ${v.m} divide a ${v.n}: no sobra nada`]),
       minimo: 3,
+      // La última ficha (cuántas hay) y el borde de la primera fila (su largo).
+      arrastres: arrastresFilas(12, 40, 2, 9, ARRIBA),
     },
     predice: {
       pregunta: ['Se acomodan ', { v: 'c-o', t: '91' }, ' fichas en filas de ', { v: 'c-i', t: '7' }, '. ¿Cuántas sobran?'],
@@ -93,7 +122,7 @@
     },
     regla: {
       texto: 'm divide a n cuando n se reparte en filas de m sin sobrante: n es m por un entero. Así, n es múltiplo de m.',
-      ecuacion: [m, ' | ', n_, '  ⇔  ', n_, ' = ', m, ' · k,  k entero'],
+      ecuacion: [{ llave: [m, ' | ', n_], nota: 'm divide n', color: 'c-i' }, '  ⇔  ', n_, ' = ', m, ' · k', '   ·   ', 'k entero'],
       condicion: 'm ≠ 0. Que un número «parezca primo» no prueba nada: se prueba dividiendo.',
     },
     ahoraTu: {
@@ -121,7 +150,16 @@
     { n: bv, columnas: mv, color: 'i', marcoFilas: true, rotulo: `b: ${bv % mv}`, tramos: bv % mv ? [{ de: bv - (bv % mv), a: bv - 1, color: 'h' }] : [] },
     // Los sobrantes juntos, en filas de m; los huecos punteados completan la fila (el bloque mide m de ancho siempre).
     { n: (av % mv) + (bv % mv), columnas: mv, color: 'h', marcoFilas: true, rotulo: `juntos: ${(av % mv) + (bv % mv)}`, paso: 1, huecos: ((av % mv) + (bv % mv)) % mv ? mv - (((av % mv) + (bv % mv)) % mv) : 0, huecosPaso: 1 },
-  ], altoMax: 130, ficha: 22, alt: `a = ${av} y b = ${bv} en filas de ${mv}; sus sobrantes juntos son ${(av % mv) + (bv % mv)}` });
+  ], altoMax: 130, ficha: 22, arriba: true, alt: `a = ${av} y b = ${bv} en filas de ${mv}; sus sobrantes juntos son ${(av % mv) + (bv % mv)}` });
+  // Manijas en la última ficha de a y de b (los bloques cuelgan de arriba).
+  const arrastresJuntar = (lo, hi, mDe) => [
+    { id: 'a', etiqueta: 'última ficha de a', color: 'c-o',
+      donde: v => ultima(juntar(v.a, v.b, mDe(v)), 0, v.a),
+      mover: (pt, v) => ({ a: masCerca(rango(lo, hi), c => ultima(juntar(c, v.b, mDe(v)), 0, c), pt) }) },
+    { id: 'b', etiqueta: 'última ficha de b', color: 'c-i',
+      donde: v => ultima(juntar(v.a, v.b, mDe(v)), 1, v.b),
+      mover: (pt, v) => ({ b: masCerca(rango(lo, hi), c => ultima(juntar(v.a, c, mDe(v)), 1, c), pt) }) },
+  ];
   const teoremas = {
     id: 'restos-suman',
     titulo: 'Los restos se suman y multiplican',
@@ -137,6 +175,7 @@
       dibujo: v => ({ datos: juntar(v.a, v.b, 5), estado: { paso: 1 } }),
       lectura: v => [`a + b = ${v.a + v.b} deja resto `, { v: 'c-h', t: String((v.a + v.b) % 5) }, ` · ${v.a % 5} + ${v.b % 5} → `, { v: 'c-h', t: String(((v.a % 5) + (v.b % 5)) % 5) }],
       minimo: 3,
+      arrastres: arrastresJuntar(6, 24, () => 5),
     },
     predice: {
       pregunta: ['a deja resto 4 al dividirlo entre ', { v: 'c-i', t: '7' }, ', y b deja resto 5. ¿Qué resto deja a · b entre 7?'],
@@ -160,7 +199,7 @@
     },
     regla: {
       texto: 'Si m divide a dos números, divide a cualquier suma de sus múltiplos. Por eso, para el resto de una suma o producto, basta operar los restos.',
-      ecuacion: [a, ' ≡ ', r, ',  b ≡ s  (mód ', m, ')  ⇒  a + b ≡ ', r, ' + s,  ab ≡ ', r, 's'],
+      ecuacion: [a, ' ≡ ', { llave: [r], nota: 'resto de a', color: 'c-h' }, ',  b ≡ s  (mód ', m, ')', '   ·   ', 'a + b ≡ ', r, ' + s', '   ·   ', 'ab ≡ ', r, 's'],
       condicion: 'al final se reduce otra vez entre m. No se puede dividir una congruencia entre cualquier número.',
     },
     ahoraTu: {
@@ -194,6 +233,10 @@
     }
     return { columnas: [{ t: 'potencia', color: 'o' }, { t: `resto entre ${k}`, color: 'h' }], filas: filasT, filasMax: n, cabeza: true };
   };
+  const lecturaPot = (b, k, e) => { const c = ciclo(b, k); return [`${b}${sup(e)} deja `, { v: 'c-h', t: String(powmod(b, e, k)) }, ` · ciclo de ${c.xs.length - c.ini}${c.xs.length - c.ini <= 6 ? ': ' + c.xs.slice(c.ini).join(', ') : ''}`]; };   // un ciclo largo no cabe en la lectura: la tabla lo muestra
+  const arrastrePot = n => ({ id: 'fila', etiqueta: 'fila de la tabla (el exponente)',
+    donde: v => manijaFila(tablaPot(v.b, v.k, n), v.e - 1),
+    mover: (pt, v) => ({ e: filaEn(tablaPot(v.b, v.k, n), pt.y, n - 1) + 1 }) });
   const potencias = {
     id: 'restos-potenciales',
     titulo: 'Los restos de potencias se repiten',
@@ -205,10 +248,13 @@
       controles: [
         { id: 'b', etiqueta: 'base', color: 'c-o', min: 2, max: 9, paso: 1, inicio: 3, decimales: 0 },
         { id: 'k', etiqueta: 'divisor', color: 'c-i', min: 4, max: 9, paso: 1, inicio: 5, decimales: 0 },
+        { id: 'e', etiqueta: 'exponente', min: 1, max: 8, paso: 1, inicio: 1, decimales: 0 },
       ],
-      dibujo: v => ({ datos: tablaPot(v.b, v.k), estado: {} }),
-      lectura: v => { const c = ciclo(v.b, v.k); return [`Ciclo de ${c.xs.length - c.ini}: `, { v: 'c-h', t: c.xs.slice(c.ini).join(', ') }]; },
+      dibujo: v => ({ datos: tablaPot(v.b, v.k), estado: { fila: v.e - 1 } }),
+      lectura: v => lecturaPot(v.b, v.k, v.e),
       minimo: 3,
+      // Se baja por las potencias arrastrando la fila: el resto de cada una sale del de la anterior.
+      arrastres: [arrastrePot(8)],
     },
     predice: {
       pregunta: ['¿Qué resto deja ', { sup: [{ v: 'c-o', t: '2' }, '50'] }, ' al dividirlo entre ', { v: 'c-i', t: '7' }, '?'],
@@ -232,7 +278,7 @@
     },
     regla: {
       texto: 'Los restos de a, a², a³, … entre m se repiten en un ciclo. Para aⁿ, se busca el lugar del ciclo con el resto de n entre su largo.',
-      ecuacion: [{ sup: [a, 'n'] }, ' ≡ ', { sup: [a, 'n mód L'] }, '  (mód ', m, ')'],
+      ecuacion: [{ sup: [a, 'n'] }, ' ≡ ', { llave: [{ sup: [a, 'n mód L'] }], nota: 'lugar del ciclo', color: 'c-o' }, '  (mód ', m, ')'],
       condicion: 'si n mód L es 0, toca el último del ciclo. El ciclo se comprueba en la tabla, no se supone.',
     },
     ahoraTu: {
@@ -307,7 +353,7 @@
     },
     regla: {
       texto: 'Cada criterio sale del resto de 10: entre 9 y 3 deja 1 (suma de cifras); entre 11, −1 (signos alternados); para 2, 4 y 5 bastan las últimas cifras.',
-      ecuacion: ['10 ≡ 1 (mód 9)  ⇒  ', { v: 'c-o', t: 'N' }, ' ≡ suma de cifras'],
+      ecuacion: [{ llave: ['10 ≡ 1'], nota: 'cada lugar' }, ' (mód 9)', '   ·   ', { v: 'c-o', t: 'N' }, ' ≡ suma de cifras'],
       condicion: 'vale para numerales en base 10. En base b, la suma de cifras sirve para b − 1.',
     },
     ahoraTu: {
@@ -379,7 +425,8 @@
     },
     regla: {
       texto: 'ax + by = c tiene soluciones enteras exactamente cuando el mcd de a y b divide a c. Si hay una, hay infinitas.',
-      ecuacion: ['mcd(', a, ', b) | c   ⇔   hay enteros con ', a, 'x + by = c'],
+      // En tres líneas: a 360 px «hay enteros con ax + by = c» se partía antes de la c.
+      ecuacion: [{ llave: ['mcd(', a, ', b) | c'], nota: 'la condición' }, ' ⇔', '   ·   ', a, 'x + by = c', '   ·   ', 'tiene x, y enteros'],
       condicion: 'para x, y naturales o acotados se revisan los límites: el mcd asegura enteros, no positivos.',
     },
     ahoraTu: {
@@ -410,11 +457,54 @@
     },
   };
 
+  // Fichas del laboratorio: cuelgan de arriba y la ficha es más chica, para que quepan 16 filas.
+  const LAB = { arriba: true, altoMax: 200, ficha: 20 };
+
   return {
     unidad: 'aritmetica.divisibilidad',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    // Laboratorio: juego libre, sin preguntas. «Filas grandes» abre n hasta 48 y filas hasta 12; «Juntar sobrantes»
+    // deja elegir el divisor (el juego lo fija en 5); «Ciclos largos» llega a la potencia 9 y a la base 12, con divisores que
+    // comparten factores con la base (ciclos que no empiezan en la primera potencia).
+    laboratorio: [
+      {
+        id: 'filas-grandes', titulo: 'Filas grandes', pieza: 'arit-fichas',
+        consigna: 'Hasta 48 fichas en filas de 3 a 12. Arrastra la última ficha o el borde de la fila.',
+        controles: [
+          { id: 'n', etiqueta: 'n', color: 'c-o', min: 13, max: 48, paso: 1, inicio: 36, decimales: 0 },
+          { id: 'm', etiqueta: 'm', color: 'c-i', min: 3, max: 12, paso: 1, inicio: 7, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: filas(v.n, v.m, LAB), estado: {} }),
+        lectura: v => (v.n % v.m ? [`${v.n} en filas de ${v.m}: sobran `, { v: 'c-h', t: String(v.n % v.m) }] : [`${v.n} en filas de ${v.m}: no sobra nada`]),
+        arrastres: arrastresFilas(13, 48, 3, 12, LAB),
+      },
+      {
+        id: 'juntar-sobrantes', titulo: 'Juntar sobrantes', pieza: 'arit-fichas',
+        consigna: 'Elige el divisor m. Arrastra la última ficha de a o de b y mira los sobrantes juntos.',
+        controles: [
+          { id: 'a', etiqueta: 'a', color: 'c-o', min: 3, max: 30, paso: 1, inicio: 17, decimales: 0 },
+          { id: 'b', etiqueta: 'b', color: 'c-i', min: 3, max: 30, paso: 1, inicio: 11, decimales: 0 },
+          { id: 'm', etiqueta: 'm', min: 3, max: 8, paso: 1, inicio: 6, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: juntar(v.a, v.b, v.m), estado: { paso: 1 } }),
+        lectura: v => [`m = ${v.m}: ${v.a % v.m} + ${v.b % v.m} → `, { v: 'c-h', t: String((v.a + v.b) % v.m) }, ` = resto de ${v.a + v.b}`],
+        arrastres: arrastresJuntar(3, 30, v => v.m),
+      },
+      {
+        id: 'ciclos-largos', titulo: 'Ciclos largos', pieza: 'arit-tabla',
+        consigna: 'Base de 2 a 12 y divisor de 2 a 10. Prueba un divisor que comparta factores con la base.',
+        controles: [
+          { id: 'b', etiqueta: 'base', color: 'c-o', min: 2, max: 12, paso: 1, inicio: 2, decimales: 0 },
+          { id: 'k', etiqueta: 'divisor', color: 'c-i', min: 2, max: 10, paso: 1, inicio: 10, decimales: 0 },
+          { id: 'e', etiqueta: 'exponente', min: 1, max: 9, paso: 1, inicio: 1, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: tablaPot(v.b, v.k, 9), estado: { fila: v.e - 1 } }),
+        lectura: v => lecturaPot(v.b, v.k, v.e),
+        arrastres: [arrastrePot(9)],
+      },
+    ],
     historia: {
       texto: 'Las preguntas sobre restos son muy antiguas, pero en 1801 Gauss las ordenó en sus Disquisitiones Arithmeticae con el lenguaje de las congruencias. Ese lenguaje permite trabajar con lo que sobra de una división sin calcular el número completo. Los criterios que vemos aquí salen de él: de lo que deja cada potencia de 10.',
       pregunta: '¿Se puede saber lo que sobra sin dividir todo?',
