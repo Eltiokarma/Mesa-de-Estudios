@@ -8,7 +8,7 @@ Actualizado el 13 de noviembre de 2026. La siguiente sesión empieza aquí: lée
 npm test
 ```
 
-Deben pasar 8066 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (83).
+Deben pasar 8081 pruebas. El servidor tiene las suyas: `cd servidor && pip install -r requirements.txt -r requirements-dev.txt && python -m pytest -q` (83).
 
 ```bash
 npm run dev
@@ -97,7 +97,10 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 - **El dibujo del texto** sale de `app/lectura.js` (`LecturaVista.pintor`), sin copiarlo.
 
 **Pendientes del repaso.**
-- **Paso 4: alternativas para los problemas de papel.** Los valores los calcula el motor de la plantilla y se verifican como el resto (reglas 1 y 2). Mientras un problema no las tenga, se repasa como autoevaluación. Falta el diseño del formato: qué error representa cada alternativa y cómo se calcula con `verificar`.
+- **Paso 4: alternativas para los problemas de papel (en curso, 14 nov).** Gerson decidió una pregunta por magnitud. El formato está en `docs/papel-opciones.md`, `nucleo/papel-opciones.js` y la prueba `herramientas/papel-opciones.test.js`, que recalcula cada valor con el motor. El molde es gases (15 preguntas). Las otras 30 escenas las trabajan tres sesiones en paralelo, y cada una agrega aquí su línea al terminar:
+  - tanda A (física, química y álgebra): termodinamica, ondas-electromagneticas, mol-composicion, cinetica, polinomios, numeros-complejos, sucesiones, binomio-newton, conjuntos y logica;
+  - tanda B (aritmética y geometría): regla-de-tres, interes, cuatro-operaciones, razonamiento-numerico, segmentos-angulos, congruencia, simetria, geometria-espacio, solidos y razonamiento-figuras;
+  - tanda C (trigonometría y razonamiento matemático): cinta-radio, circunferencia-trig, geometria-analitica, transformaciones-trig, conicas, trazos-rutas, cuadricula-piezas, rutas-espacio, papel-doblado y orden-informacion.
 - **Revisar las dos tablas de `nucleo/repaso-tipos.js`**, que las clasificó un modelo.
 - **La pregunta de seguridad (versión S).** Va después de la versión A de MRU y necesita diseño aprobado. No se empezó.
 - **Una unidad entra a la cola por los eventos que registran las escenas.** Si una escena de varias unidades anota siempre su unidad principal, las demás unidades no entran por esa escena.
