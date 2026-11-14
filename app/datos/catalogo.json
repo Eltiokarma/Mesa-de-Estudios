@@ -1806,7 +1806,15 @@
      "plantillas": [
       "numeros-complejos",
       "ecuaciones-polinomiales"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/numeros-complejos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/flechas.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "algebra.matrices-y-determinantes",
