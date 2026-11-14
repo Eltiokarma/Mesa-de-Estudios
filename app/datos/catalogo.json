@@ -1693,7 +1693,17 @@
      "plantillas": [
       "polinomios",
       "ecuaciones-polinomiales"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/ecuaciones-polinomiales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/flechas.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "algebra.funciones",
