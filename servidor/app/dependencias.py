@@ -1,7 +1,7 @@
 """Sesión de base de datos, usuario actual y control de acceso por rol, colegio y sección."""
 from fastapi import Depends, Request
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from .errores import ErrorApi
 from .modelos import Alumno, ProfesorSeccion, Seccion, Usuario
@@ -39,7 +39,11 @@ def usuario_actual(request: Request, s: Session = Depends(db)) -> Usuario:
     d = leer_acceso(request.app.state.cfg, h[7:].strip())
     if not d:
         raise ErrorApi(401, "token-vencido", "Tu sesión venció. Ingresa de nuevo.")
-    u = s.get(Usuario, int(d["sub"]))
+    u = s.get(Usuario, int(d["sub"]), options=[joinedload(Usuario.alumno)])  # el alumno viene en la misma consulta
+    # Se devuelve la conexión al pool ya mismo (expire_on_commit=False: u y u.alumno siguen cargados). FastAPI corre
+    # esta dependencia y la ruta en hilos distintos; si la conexión quedara tomada mientras la ruta espera un hilo libre,
+    # con el pool lleno los 40 hilos se quedan esperando conexión y el servidor se traba para siempre (docs/carga.md).
+    s.commit()
     if not u or not u.activo:
         raise ErrorApi(401, "no-autorizado", "Tienes que ingresar.")
     if u.debe_cambiar and request.url.path not in _PERMITIDAS_SIN_CAMBIO:

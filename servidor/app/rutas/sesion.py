@@ -62,6 +62,7 @@ def login(datos: Login, request: Request, s: Session = Depends(db), c=Depends(de
         raise ErrorApi(429, "demasiados-intentos",
                        f"Hubo muchos intentos fallidos. Espera {c.intentos_ventana_min} minutos o pide ayuda a tu profesor.")
     u = s.scalar(select(Usuario).where(Usuario.usuario == nombre))
+    s.commit()  # argon2 tarda 50 ms o más: no se calcula con una conexión del pool tomada
     if not verificar_contrasena(u.hash if u else None, datos.contrasena) or not u.activo:
         s.add(IntentoFallido(usuario=nombre, ip=ip))
         s.execute(delete(IntentoFallido).where(IntentoFallido.cuando < ahora() - timedelta(days=1)))
