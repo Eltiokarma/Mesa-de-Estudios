@@ -13,6 +13,11 @@
  * Orden de atención · 1.º la tabla de Ruffini o la gráfica · 2.º la casilla que sigue · acción: «Comprobar» · fondo: Nox.
  * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué el cociente de Ruffini para 2x − 2 no es el cociente de la división, y el resto sí lo es.
+ *
+ * Ronda 2 (14 nov 2026): gesto directo en «El resto es P(a)» (el punto (a; P(a)) se arrastra por la curva), llaves en
+ * las cinco reglas, separador «   ·   » en las lecturas y laboratorio de tres mesas: el resto de un cúbico que se arma
+ * con a en pasos de medio, Ruffini con cinco controles y el cociente notable con «+», donde el resto depende de n.
+ * Las ideas 1, 2, 3 y 5 juegan con tablas de Ruffini y de división, que se reacomodan con el valor: − y +.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -95,7 +100,7 @@
       voz: 'Compara el grado del resto con el de D.',
       controles: [{ id: 'd', etiqueta: 'Divisor D', opciones: Object.keys(DIVISORES).map(t => ({ valor: t, texto: t })) }],
       dibujo: val => ({ datos: tablaLarga(PDIV, DIVISORES[val.d]), estado: {} }),
-      lectura: val => { const { q, r } = dividir(PDIV, DIVISORES[val.d]); return [Q, ` = ${poli(q)} · `, R, ` = ${poli(r)}`]; },
+      lectura: val => { const { q, r } = dividir(PDIV, DIVISORES[val.d]); return [Q, ` = ${poli(q)}`, '   ·   ', R, ` = ${poli(r)}`]; },
       minimo: 3,
     },
     predice: {
@@ -126,7 +131,7 @@
     })(),
     regla: {
       texto: 'Dividir P entre D es hallar el cociente Q y el resto R con P = D · Q + R, donde el grado de R es menor que el de D.',
-      ecuacion: [P, ' = ', D, ' · ', Q, ' + ', R],
+      ecuacion: [P, ' = ', { llave: [D, ' · ', Q], nota: 'múltiplo de D', color: 'c-i' }, ' + ', { llave: [R], nota: 'menor que D', color: 'c-h' }],
       condicion: 'D no es el polinomio cero. El grado de Q es grado de P menos grado de D.',
     },
     ahoraTu: {
@@ -181,7 +186,7 @@
       voz: 'Sigue una flecha: multiplica por a y suma.',
       controles: [{ id: 'a', etiqueta: 'a', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-o' }],
       dibujo: val => ({ datos: tablaRuffini(PJ, val.a), estado: {} }),
-      lectura: val => { const b = ruffini(PJ, val.a); return [Q, ` = ${poli(b.slice(0, -1))} · `, R, ` = ${f(b[b.length - 1])}`]; },
+      lectura: val => { const b = ruffini(PJ, val.a); return [Q, ` = ${poli(b.slice(0, -1))}`, '   ·   ', R, ` = ${f(b[b.length - 1])}`]; },
       minimo: 3,
     },
     predice: (() => {
@@ -214,7 +219,7 @@
     })(),
     regla: {
       texto: 'Para dividir entre x − a, se baja el primer coeficiente; cada casilla nueva es el coeficiente de arriba más a por la casilla anterior. La última es el resto.',
-      ecuacion: [{ sub: ['b', 'k'] }, ' = ', { sub: ['c', 'k'] }, ' + ', a, ' · ', { sub: ['b', 'k−1'] }],
+      ecuacion: [{ sub: ['b', 'k'] }, ' = ', { llave: [{ sub: ['c', 'k'] }], nota: 'el de arriba', color: 'c-o' }, ' + ', a, ' · ', { llave: [{ sub: ['b', 'k−1'] }], nota: 'casilla anterior', color: 'c-d' }],
       condicion: 'el divisor es x − a; se escriben todos los coeficientes, con 0 en las potencias que faltan. Es el esquema de Horner.',
     },
     ahoraTu: {
@@ -342,6 +347,7 @@
   // ---------- Idea 4: el resto es P(a) ----------
   // Cambia: a en el divisor x − a · Permanece: la curva de P · Progresa: la curva (x − a)·Q, siempre R por debajo o
   // por encima · Se reserva: a = 3, donde R = 0 · Debe verse: en x = a el factor se anula y queda solo R.
+  // Gesto: el alumno lleva el punto (a; P(a)) por la curva y ve la curva punteada pasar por él.
   const PT = [1, -2, -3];
   const muestra = (cs, x0, x1) => Array.from({ length: Math.round((x1 - x0) * 10) + 1 }, (_, k) => { const t = x0 + k / 10; return [Math.round(t * 10) / 10, evaluar(cs, t)]; });
   function curvasResto(x, extra = []) {
@@ -355,6 +361,9 @@
     };
   }
   const P5 = [1, 0, 0, -3, 0, 7];   // x⁵ − 3x² + 7
+  // Gesto directo: la manija vive en el viewBox de la pieza; la inversa lineal de su escala da el valor.
+  const EJES = () => Kit.piezas.ejes;
+  const inversa = (escala, p, q) => px => p + (px - escala(p)) * (q - p) / (escala(q) - escala(p));
   const resto = {
     id: 'teorema-resto',
     titulo: 'El resto es P(a)',
@@ -367,6 +376,10 @@
       dibujo: val => ({ datos: curvasResto(val.a), estado: {} }),
       lectura: val => { const v = evaluar(PT, val.a); return [R, ` = ${f(v)}${v === 0 ? ': x − a es factor de P' : ''}`]; },
       minimo: 4,
+      // Se arrastra el punto (a; P(a)) por la curva: el dedo elige a y la altura que queda es el resto.
+      arrastres: [{ id: 'punto', etiqueta: 'punto (a; P(a)) de la curva', color: 'c-o',
+        donde: val => { const g = EJES().geometria(curvasResto(val.a)); return { x: g.X(val.a), y: g.Y(evaluar(PT, val.a)) }; },
+        mover: (pt, val) => { const g = EJES().geometria(curvasResto(val.a)); return { a: inversa(g.X, -2, 4)(pt.x) }; } }],
     },
     predice: (() => {
       const datos = (con) => ({
@@ -401,7 +414,7 @@
     },
     regla: {
       texto: 'El resto de dividir P(x) entre x − a es P(a). Si P(a) = 0, x − a es factor y P es divisible entre x − a.',
-      ecuacion: [P, ' = (x − ', a, ')·', Q, ' + ', P, '(', a, ')'],
+      ecuacion: [P, ' = (x − ', a, ')·', Q, ' + ', { llave: [P, '(', a, ')'], nota: 'el resto', color: 'c-h' }],
       condicion: 'el divisor es de grado 1. Para kx + b se evalúa en x = −b/k.',
     },
     ahoraTu: {
@@ -463,7 +476,7 @@
         { id: 'a', etiqueta: 'a', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-i' },
       ],
       dibujo: val => ({ datos: tablaNotable(val.n, val.a), estado: {} }),
-      lectura: val => [Q, ` tiene ${val.n} términos · `, R, ' = 0'],
+      lectura: val => [Q, ` tiene ${val.n} términos`, '   ·   ', R, ' = 0'],
       minimo: 3,
     },
     predice: {
@@ -490,7 +503,7 @@
     },
     regla: {
       texto: '(xⁿ − aⁿ) ÷ (x − a) tiene n términos: el exponente de x baja de uno en uno y el de a sube desde 0. Así se arma el término k.',
-      ecuacion: [{ sub: ['t', 'k'] }, ' = ', { sup: ['x', 'n − k'] }, '·', { sup: [{ v: 'c-i', t: 'a' }, 'k − 1'] }],
+      ecuacion: [{ sub: ['t', 'k'] }, ' = ', { llave: [{ sup: ['x', 'n − k'] }], nota: 'baja', color: 'c-o' }, '·', { llave: [{ sup: [{ v: 'c-i', t: 'a' }, 'k − 1'] }], nota: 'sube desde 0', color: 'c-i' }],
       condicion: 'vale para x ≠ a. Con x + a en el divisor, los signos se alternan: +, −, +, …',
     },
     ahoraTu: {
@@ -517,11 +530,68 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: el teorema del resto con un cúbico que el alumno arma y a en pasos de medio.
+  const cub = v => [1, v.b, v.c, v.d];
+  const restoLab = v => {
+    const cs = cub(v), Rv = evaluar(cs, v.a), sinR = cs.map((c, i) => (i === 3 ? c - Rv : c));
+    const ys = [...muestra(cs, -3, 3), ...muestra(sinR, -3, 3)].map(z => z[1]);
+    const lo = Math.floor(Math.min(0, ...ys) / 10) * 10, hi = Math.ceil(Math.max(0, ...ys) / 10) * 10;
+    return {
+      x: { min: -3, max: 3, paso: 1, nombre: 'x', decimales: 0, color: 'o' },
+      y: { min: lo, max: hi, paso: hi - lo > 60 ? 20 : 10, nombre: 'y', decimales: 0 },
+      curvas: [{ puntos: muestra(cs, -3, 3), color: 'o', rotulo: 'P', en: [3, evaluar(cs, 3)] }, { puntos: muestra(sinR, -3, 3), color: 'd', discontinua: true }],
+      puntos: [{ x: v.a, y: Rv, color: 'h', guias: true, rotulo: `R = ${f(Rv, 3)}` }],
+      alt: `P(x) = ${poli(cs)} entre x − ${f(v.a, 1)}: el resto es P(${f(v.a, 1)}) = ${f(Rv, 3)}`,
+    };
+  };
+  const mesaResto = {
+    id: 'resto-libre', titulo: 'El resto de tu polinomio', pieza: 'ejes',
+    consigna: 'P(x) = x³ + bx² + cx + d entre x − a. Arrastra el punto por la curva: ¿dónde el resto vale 0?',
+    controles: [
+      { id: 'a', etiqueta: 'a', min: -3, max: 3, paso: 0.5, inicio: 1, decimales: 1, color: 'c-o' },
+      { id: 'b', etiqueta: 'b', min: -3, max: 3, paso: 1, inicio: 0, decimales: 0 },
+      { id: 'c', etiqueta: 'c', min: -6, max: 6, paso: 1, inicio: -4, decimales: 0 },
+      { id: 'd', etiqueta: 'd', min: -6, max: 6, paso: 1, inicio: 0, decimales: 0 },
+    ],
+    dibujo: v => ({ datos: restoLab(v), estado: {} }),
+    lectura: v => [P, ` = ${poli(cub(v))}`, '   ·   ', R, ` = P(${f(v.a, 1)}) = ${f(evaluar(cub(v), v.a), 3)}`],
+    arrastres: [{ id: 'punto', etiqueta: 'punto (a; P(a)) de la curva', color: 'c-o',
+      donde: v => { const g = EJES().geometria(restoLab(v)); return { x: g.X(v.a), y: g.Y(evaluar(cub(v), v.a)) }; },
+      mover: (pt, v) => { const g = EJES().geometria(restoLab(v)); return { a: inversa(g.X, -3, 3)(pt.x) }; } }],
+  };
+  // Mesa 2: Ruffini con los cuatro coeficientes y a libres.
+  const mesaRuffini = {
+    id: 'ruffini-libre', titulo: 'Tu propio Ruffini', pieza: 'alg-tabla',
+    consigna: 'Arma P = px³ + qx² + rx + s y divide entre x − a. Compara la última casilla con P(a).',
+    controles: [
+      { id: 'a', etiqueta: 'a', min: -3, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-o' },
+      { id: 'p', etiqueta: 'p', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'q', etiqueta: 'q', min: -5, max: 5, paso: 1, inicio: 0, decimales: 0 },
+      { id: 'r', etiqueta: 'r', min: -5, max: 5, paso: 1, inicio: -3, decimales: 0 },
+      { id: 's', etiqueta: 's', min: -6, max: 6, paso: 1, inicio: 2, decimales: 0 },
+    ],
+    dibujo: v => ({ datos: tablaRuffini([v.p, v.q, v.r, v.s], v.a), estado: {} }),
+    lectura: v => { const cs = [v.p, v.q, v.r, v.s], b = ruffini(cs, v.a); return [Q, ` = ${poli(b.slice(0, -1))}`, '   ·   ', R, ` = ${f(b[3])} = P(${f(v.a)})`]; },
+  };
+  // Mesa 3: el cociente notable con «+»: los signos se alternan y el resto depende de n (lo que la idea 5 reserva).
+  const mesaSigno = {
+    id: 'notable-con-mas', titulo: 'Cociente notable con signo más', pieza: 'alg-tabla',
+    consigna: 'Divide xⁿ + aⁿ entre x + a: en Ruffini se usa −a. ¿Para qué n el resto es 0?',
+    controles: [
+      { id: 'n', etiqueta: 'n', min: 2, max: 6, paso: 1, inicio: 3, decimales: 0, color: 'c-o' },
+      { id: 'a', etiqueta: 'a', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: tablaRuffini([1, ...Array(v.n - 1).fill(0), v.a ** v.n], -v.a), estado: {} }),
+    lectura: v => { const b = ruffini([1, ...Array(v.n - 1).fill(0), v.a ** v.n], -v.a); return [`n = ${v.n}`, '   ·   ', R, ` = ${f(b[b.length - 1])}${b[b.length - 1] === 0 ? ': exacta' : ''}`]; },
+  };
+
   return {
     unidad: 'algebra.division-de-polinomios',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/ejes.js'],
+    laboratorio: [mesaResto, mesaRuffini, mesaSigno],
     historia: {
       texto: 'Ordenar los coeficientes para evaluar y dividir rápido no tiene un solo inventor. El llamado método de Horner tiene antecedentes, y su artículo de 1819 ni siquiera trae el procedimiento moderno, que aparece recién en uno de 1830. Más que el nombre, importa por qué funciona: la división entre x − a junta cociente, resto y el valor P(a) en una sola tabla.',
       pregunta: '¿Por qué ordenar los coeficientes ahorra operaciones?',
