@@ -6,6 +6,10 @@
  * Compañera: Mara (coneja), cercana y rigurosa: conserva el origen y el sentido del ángulo; el cuadrante decide.
  * Colores (regla 4): el ángulo θ (argumento) en naranja (c-o); el radio r (módulo |z|) en verde (c-d); las
  * coordenadas x, y (partes a, b de z = a + bi) en turquesa (c-i); el exponente n en rojo (c-h).
+ * Ronda 2 (14 nov, noche): manijas en las cinco ideas (el punto (r; θ), la punta de z, la punta de w, el primer
+ * peldaño z de la escalera y el punto de r·e^{iθ}): la punta del vector da módulo y argumento a la vez. Llaves en las
+ * reglas, separadores «   ·   » y laboratorio de tres mesas. Las cinco ideas usan la misma figura en «Juega» y en
+ * «Mira» (hallazgo 9 de docs/auditoria-teoria.md); De Moivre solo cambia la escala para que quepa (1 + i)⁸.
  * Notación: cis θ = cos θ + i sen θ (se declara en la regla de la idea 2). Argumentos entre 0° y 360°.
  * Errores: CP3, CP4, CP5, CP14 de plantillas/coordenadas-polares/motor.js (CP3 parcial, Habre 2017; los demás,
  * hipótesis); CX11, CX17, CX18, CX19, CX20, CX21, CX22, CX23, CX24, CX30, CX31 de plantillas/numeros-complejos/motor.js
@@ -35,6 +39,12 @@
   const mod360 = x => ((x % 360) + 360) % 360;
   const gcd = (p, q) => (q ? gcd(q, p % q) : Math.abs(p));
   const G = x => `${f(Math.round(x * 100) / 100)}°`;
+  const SEP = '   ·   ';
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza.
+  const TP = () => Kit.piezas['trig-plano'];
+  const enP = (d, m, t) => TP().enPx(d, m * Math.cos(rad(t)), m * Math.sin(rad(t)));
+  // Punta de una flecha (largo y giro) bajo el dedo: el giro sigue al valor actual (no salta de 360° a 0°).
+  const puntaDe = (d, pt, tActual) => { const q = TP().delPx(d, pt); return { m: Math.hypot(q.x, q.y), t: TP().anguloDe(d, pt, { cerca: tActual }) }; };
 
   // Números exactos de la forma (p/q)·√s, con s en {1, 2, 3}: [p, q, s].
   const simp = ([p, q, s]) => { if (!p) return [0, 1, 1]; const m = gcd(p, q) || 1; return [p / m * Math.sign(q), Math.abs(q / m), s]; };
@@ -122,6 +132,10 @@
       dibujo: val => ({ datos: polar(val.r, val.t), estado: {} }),
       lectura: val => ['(', r, '; ', th, `) = (${f(val.r)}; ${f(val.t)}°) → (`, xx, '; ', yy, `) = (${f(val.r * Math.cos(rad(val.t)))}; ${f(val.r * Math.sin(rad(val.t)))})`],
       minimo: 3,
+      // Se arrastra el punto: su distancia al polo es r y su giro es θ.
+      arrastres: [{ id: 'punto', etiqueta: 'punto (r; θ)', color: 'c-i',
+        donde: val => enP(polar(val.r, val.t), val.r, val.t),
+        mover: (pt, val) => { const u = puntaDe(polar(val.r, val.t), pt, val.t); return { r: u.m, t: u.t }; } }],
     },
     predice: {
       pregunta: ['¿Dónde está el punto de coordenadas polares (', r, '; ', th, ') = (−2; 30°)?'],
@@ -151,13 +165,13 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'θ = 30° marca la dirección del rayo.', ecuacion: [th, ' = 30°'] },
         { estado: { corte: 2 }, texto: 'r = −2: se camina 2 unidades hacia atrás, cruzando el polo.', ecuacion: [r, ' = −2'] },
-        { estado: { corte: 3 }, texto: 'Las fórmulas dan el punto con sus signos.', ecuacion: [xx, ' = −2 cos 30° = −√3;   ', yy, ' = −2 sen 30° = −1'] },
+        { estado: { corte: 3 }, texto: 'Las fórmulas dan el punto con sus signos.', ecuacion: [xx, ' = −2 cos 30° = −√3', SEP, yy, ' = −2 sen 30° = −1'] },
         { estado: { corte: 4 }, texto: 'El mismo punto se llama también (2; 210°).', ecuacion: ['(−2; 30°) = (2; 210°) = (2; −150°)'] },
       ],
     },
     regla: {
       texto: 'Un punto (r; θ) está en x = r cos θ, y = r sen θ. Tiene infinitos nombres: sumar vueltas a θ, o cambiar el signo de r y sumar 180°.',
-      ecuacion: [xx, ' = ', r, ' cos ', th, ';   ', yy, ' = ', r, ' sen ', th, ';   (', r, '; ', th, ') = (−', r, '; ', th, ' + 180°)'],
+      ecuacion: [xx, ' = ', { llave: [r], nota: 'al polo', color: 'c-d' }, ' cos ', { llave: [th], nota: 'el giro', color: 'c-o' }, SEP, yy, ' = ', r, ' sen ', th, SEP, '(', r, '; ', th, ') = (−', r, '; ', th, ' + 180°)'],
       condicion: 'θ desde el eje x positivo, antihorario. En el polo, r = 0 y cualquier θ sirve.',
       voz: 'Muchos nombres, un solo punto.',
     },
@@ -177,7 +191,7 @@
           ], v => v),
           solucion: {
             texto: rv < 0 ? 'Con r negativo, las fórmulas ya cruzan el polo.' : 'Se multiplica r por el coseno y por el seno.',
-            ecuacion: [xx, ` = ${f(rv)} cos ${tv}° = ${txt(X)};   `, yy, ` = ${f(rv)} sen ${tv}° = ${txt(Y)}`],
+            ecuacion: [xx, ` = ${f(rv)} cos ${tv}° = ${txt(X)}`, SEP, yy, ` = ${f(rv)} sen ${tv}° = ${txt(Y)}`],
             dibujo: { datos: polar(rv, tv, { ventana: { x: [-4.6, 4.6], y: [-4.6, 4.6] }, numeros: 2, segmentos: [{ de: [0, 0], a: [valE(X), valE(Y)], color: 'd', rotulo: `r = ${f(rv)}`, lado: rv < 0 ? 'adentro' : undefined }], puntos: [{ x: valE(X), y: valE(Y), color: 'i', rotulo: par(X, Y), lado: lado(valE(X), valE(Y)) }] }), estado: {} },
           },
         };
@@ -212,8 +226,12 @@
         { id: 'b', etiqueta: 'b', color: 'c-i', min: -3, max: 3, paso: 1, inicio: 2, decimales: 0 },
       ],
       dibujo: val => ({ datos: complejo(val.a, val.b), estado: {} }),
-      lectura: val => [mz, ` = ${f(Math.hypot(val.a, val.b))};  `, th, ` = ${G(mod360(deg(Math.atan2(val.b, val.a))))}`],
+      lectura: val => [mz, ` = ${f(Math.hypot(val.a, val.b))}`, SEP, th, ` = ${G(mod360(deg(Math.atan2(val.b, val.a))))}`],
       minimo: 3,
+      // Se arrastra la punta de z: sus coordenadas son a y b.
+      arrastres: [{ id: 'punta-z', etiqueta: 'punta de z = a + bi', color: 'c-i',
+        donde: val => TP().enPx(complejo(val.a, val.b), val.a, val.b),
+        mover: (pt, val) => { const q = TP().delPx(complejo(val.a, val.b), pt); return { a: q.x, b: q.y }; } }],
     },
     predice: {
       pregunta: ['¿Cuál es el argumento de z = −2 − 2i, entre 0° y 360°?'],
@@ -246,7 +264,7 @@
     },
     regla: {
       texto: 'Todo z ≠ 0 se escribe con su módulo y su argumento. El argumento se elige por el cuadrante de (a; b); arctan(b/a) solo da el ángulo de referencia.',
-      ecuacion: ['z = ', a, ' + ', b, 'i = ', mz, '(cos ', th, ' + i sen ', th, ') = ', mz, ' cis ', th, ';   ', mz, ' = √(', { sup: [a, '2'] }, ' + ', { sup: [b, '2'] }, ')'],
+      ecuacion: ['z = ', a, ' + ', b, 'i = ', { llave: [mz], nota: 'el largo', color: 'c-d' }, ' cis ', { llave: [th], nota: 'el giro', color: 'c-o' }, SEP, 'cis ', th, ' = cos ', th, ' + i sen ', th, SEP, mz, ' = √(', { sup: [a, '2'] }, ' + ', { sup: [b, '2'] }, ')'],
       condicion: '|z| nunca es negativo. θ se repite cada 360°; z = 0 no tiene argumento.',
       voz: 'El cuadrante decide; la tangente solo ayuda.',
     },
@@ -269,7 +287,7 @@
           ], fmt),
           solucion: {
             texto: `El punto está a ${m} del origen y gira ${G(tv)}.`,
-            ecuacion: [mz, ` = ${m};   `, th, ` = ${G(tv)}`],
+            ecuacion: [mz, ` = ${m}`, SEP, th, ` = ${G(tv)}`],
             dibujo: { datos: complejo(av, bv, { ventana: { x: [-6.8, 6.8], y: [-6.8, 6.8] }, numeros: 0, puntos: [{ x: av, y: bv, color: 'i', rotulo: bin(A, B), lado: lado(av, bv) }], segmentos: [{ de: [av, 0], a: [av, bv], color: 'i', discontinua: true, grosor: 'contorno' }, { de: [0, 0], a: [av, bv], color: 'd', punta: true, rotulo: `|z| = ${m}`, lado: av < 0 ? 'adentro' : undefined }] }), estado: {} },
           },
         };
@@ -306,6 +324,10 @@
       dibujo: val => ({ datos: producto(1.5, 30, val.m, val.t), estado: {} }),
       lectura: val => ['z·w = ', `${f(1.5 * val.m)} cis ${G(30 + val.t)}`],
       minimo: 3,
+      // Se arrastra la punta de w: su largo es |w| y su giro, arg w.
+      arrastres: [{ id: 'punta-w', etiqueta: 'punta de w: largo y giro', color: 'c-o',
+        donde: val => enP(producto(1.5, 30, val.m, val.t), val.m, val.t),
+        mover: (pt, val) => { const u = puntaDe(producto(1.5, 30, val.m, val.t), pt, val.t); return { m: u.m, t: u.t }; } }],
     },
     predice: {
       pregunta: ['z = 2 cis 300° y w = 3 cis 120°. ¿Cuánto vale z·w, con el argumento entre 0° y 360°?'],
@@ -330,14 +352,14 @@
       },
       voz: 'Primero los giros; después, los largos.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'z mide 2 y gira 300°; w mide 3 y gira 120°.', ecuacion: ['z = 2 cis 300°;   w = 3 cis 120°'] },
+        { estado: { corte: 1 }, texto: 'z mide 2 y gira 300°; w mide 3 y gira 120°.', ecuacion: ['z = 2 cis 300°', SEP, 'w = 3 cis 120°'] },
         { estado: { corte: 2 }, texto: 'Los giros se suman: una vuelta y 60° más.', ecuacion: ['300° + 120° = 420° = 360° + 60°'] },
-        { estado: { corte: 3 }, texto: 'Los largos se multiplican.', ecuacion: [{ abs: ['z·w'] }, ' = 2 · 3 = 6;   z·w = 6 cis 60°'] },
+        { estado: { corte: 3 }, texto: 'Los largos se multiplican.', ecuacion: [{ abs: ['z·w'] }, ' = 2 · 3 = 6', SEP, 'z·w = 6 cis 60°'] },
       ],
     },
     regla: {
       texto: 'Al multiplicar complejos, los módulos se multiplican y los argumentos se suman. Al dividir, los módulos se dividen y los argumentos se restan.',
-      ecuacion: [{ sub: [r, '1'] }, ' cis ', { sub: [th, '1'] }, ' · ', { sub: [r, '2'] }, ' cis ', { sub: [th, '2'] }, ' = ', { sub: [r, '1'] }, { sub: [r, '2'] }, ' cis(', { sub: [th, '1'] }, ' + ', { sub: [th, '2'] }, ')'],
+      ecuacion: [{ sub: [r, '1'] }, ' cis ', { sub: [th, '1'] }, ' · ', { sub: [r, '2'] }, ' cis ', { sub: [th, '2'] }, ' = ', { llave: [{ sub: [r, '1'] }, { sub: [r, '2'] }], nota: 'se multiplican', color: 'c-d' }, ' cis(', { llave: [{ sub: [th, '1'] }, ' + ', { sub: [th, '2'] }], nota: 'se suman', color: 'c-o' }, ')'],
       condicion: 'para dividir, el divisor no puede ser 0. El argumento final se puede llevar a [0°, 360°) quitando vueltas.',
       voz: 'Multiplicar estira y gira; dividir encoge y regresa.',
     },
@@ -363,7 +385,7 @@
           opciones: opciones([R, T], ds, fmt),
           solucion: {
             texto: op === 'mul' ? 'Módulos multiplicados; argumentos sumados.' : 'Módulos divididos; argumentos restados.',
-            ecuacion: [op === 'mul' ? `${r1} · ${r2} = ${f(R)};   ${t1}° + ${t2}° = ${T}°` : `${r1} / ${r2} = ${f(R)};   ${t1}° − ${t2}° = ${T}°`, mod360(T) !== T ? ` → ${G(mod360(T))}` : ''],
+            ecuacion: [op === 'mul' ? `${r1} · ${r2} = ${f(R)}` : `${r1} / ${r2} = ${f(R)}`, SEP, op === 'mul' ? `${t1}° + ${t2}° = ${T}°` : `${t1}° − ${t2}° = ${T}°`, mod360(T) !== T ? ` → ${G(mod360(T))}` : ''],
           },
         };
       },
@@ -403,6 +425,10 @@
       dibujo: val => ({ datos: escalera(val.r, val.t, val.n), estado: {} }),
       lectura: val => [{ sup: ['z', n] }, ` = ${f(val.r ** val.n)} cis ${G(val.n * val.t)}`],
       minimo: 3,
+      // Se arrastra z, el primer peldaño: sus potencias lo siguen.
+      arrastres: [{ id: 'punto-z', etiqueta: 'punto z: largo r y giro θ', color: 'c-i',
+        donde: val => enP(escalera(val.r, val.t, val.n), val.r, val.t),
+        mover: (pt, val) => { const u = puntaDe(escalera(val.r, val.t, val.n), pt, val.t); return { r: u.m, t: u.t }; } }],
     },
     predice: {
       pregunta: ['¿Cuánto vale ', { sup: ['(1 + i)', '8'] }, '?'],
@@ -430,12 +456,12 @@
       pasos: [
         { estado: { corte: 1 }, texto: '1 + i mide √2 y gira 45°.', ecuacion: ['1 + i = √2 cis 45°'] },
         { estado: { corte: 2 }, texto: 'Ocho potencias: ocho giros de 45°, una vuelta entera.', ecuacion: ['8 · 45° = 360°'] },
-        { estado: { corte: 3 }, texto: 'El largo se eleva a la 8 y cae en el eje real.', ecuacion: [{ sup: ['(√2)', '8'] }, ' = 16;   ', { sup: ['(1 + i)', '8'] }, ' = 16 cis 360° = 16'] },
+        { estado: { corte: 3 }, texto: 'El largo se eleva a la 8 y cae en el eje real.', ecuacion: [{ sup: ['(√2)', '8'] }, ' = 16', SEP, { sup: ['(1 + i)', '8'] }, ' = 16 cis 360° = 16'] },
       ],
     },
     regla: {
       texto: 'Teorema de De Moivre: para elevar un complejo a la n, se eleva su módulo a la n y se multiplica su argumento por n.',
-      ecuacion: [{ sup: [['(', r, ' cis ', th, ')'], n] }, ' = ', { sup: [r, n] }, ' cis(', n, th, ')'],
+      ecuacion: [{ sup: [['(', r, ' cis ', th, ')'], n] }, ' = ', { llave: [{ sup: [r, n] }], nota: 'largo', color: 'c-d' }, { llave: [' cis(', n, th, ')'], nota: 'el giro', color: 'c-o' }],
       condicion: 'n es un entero. Si n es negativo, z no puede ser 0.',
       voz: 'n giros iguales y n estiramientos iguales.',
     },
@@ -454,7 +480,7 @@
           ], fmt),
           solucion: {
             texto: `Módulo a la ${nv}; argumento por ${nv}.`,
-            ecuacion: [{ sup: [`(${rTxt(rv)})`, String(nv)] }, ` = ${R};   ${nv} · ${tv}° = ${nv * tv}°${mod360(nv * tv) !== nv * tv ? ' → ' + G(mod360(nv * tv)) : ''}`],
+            ecuacion: [{ sup: [`(${rTxt(rv)})`, String(nv)] }, ` = ${R}`, SEP, `${nv} · ${tv}° = ${nv * tv}°${mod360(nv * tv) !== nv * tv ? ' → ' + G(mod360(nv * tv)) : ''}`],
           },
         };
       },
@@ -494,6 +520,10 @@
       dibujo: val => ({ datos: expo(val.m, val.g), estado: {} }),
       lectura: val => [...ePow(val.m, val.g), ` = ${f(val.m * Math.cos(rad(val.g)))} ${Math.sin(rad(val.g)) < 0 ? '−' : '+'} ${f(Math.abs(val.m * Math.sin(rad(val.g))))}i`],
       minimo: 3,
+      // Se arrastra el punto: su largo es r y su giro, θ.
+      arrastres: [{ id: 'punto', etiqueta: 'punto: largo r y giro θ', color: 'c-i',
+        donde: val => enP(expo(val.m, val.g), val.m, val.g),
+        mover: (pt, val) => { const u = puntaDe(expo(val.m, val.g), pt, val.g); return { m: u.m, g: u.t }; } }],
     },
     predice: {
       pregunta: ['¿Cuánto vale ', { sup: ['e', 'iπ'] }, '?'],
@@ -524,7 +554,7 @@
     },
     regla: {
       texto: 'La forma exponencial escribe el mismo complejo con el giro como exponente. Multiplicar suma los exponentes, igual que se suman los argumentos.',
-      ecuacion: [r, { sup: ['e', ['i', th]] }, ' = ', r, '(cos ', th, ' + i sen ', th, ');   ', { sup: ['e', 'iα'] }, ' · ', { sup: ['e', 'iβ'] }, ' = ', { sup: ['e', 'i(α + β)'] }],
+      ecuacion: [{ llave: [r], nota: 'el largo', color: 'c-d' }, { sup: ['e', ['i', th]] }, ' = ', r, { llave: ['(cos ', th, ' + i sen ', th, ')'], nota: 'el giro', color: 'c-o' }, SEP, { sup: ['e', 'iα'] }, ' · ', { sup: ['e', 'iβ'] }, ' = ', { sup: ['e', 'i(α + β)'] }],
       condicion: 'θ va en radianes. r es el módulo, mayor o igual que 0.',
       voz: 'Exponente imaginario: giro; número delante: largo.',
     },
@@ -553,11 +583,97 @@
     },
   };
 
+  // ---------- Laboratorio: figuras propias de las mesas ----------
+  // Mesa 1: r con signo. El punto se mueve sobre la recta del rayo θ (r = proyección del dedo), también al otro
+  // lado del polo; la punta del rayo gira θ.
+  const RAYO = 2.5;
+  const polarLibre = val => polar(val.r, val.t, {
+    ventana: { x: [-2.7, 2.7], y: [-2.7, 2.7] },
+    rayos: [{ ang: val.t, largo: RAYO, grosor: 'contorno', discontinua: true, punta: false }, { ang: val.t + 180, largo: RAYO, grosor: 'cuadricula', discontinua: true, punta: false }],
+    arcos: [{ de: 0, a: val.t, r: 0.45, color: 'o', rotulo: `${f(val.t)}°` }],
+  });
+  // Mesa 2: z = a + bi en los cuatro cuadrantes, con arctan(b/a) a la vista para compararlo con el argumento.
+  // Mesa 3: z y w libres; la flecha verde es z·w o z/w.
+  function operacion(val) {
+    const mul = val.op === 'mul', R = mul ? val.rz * val.rw : val.rz / val.rw, T = mul ? val.tz + val.tw : val.tz - val.tw;
+    return {
+      ventana: { x: [-4.3, 4.3], y: [-4.3, 4.3] }, numeros: 1, nombres: ['Re', 'Im'],
+      circulos: [{ r: 1, discontinua: true }],
+      segmentos: [flecha(val.rz, val.tz, undefined, 'z', { grosor: 'contorno' }), flecha(val.rw, val.tw, 'i', 'w'), flecha(R, T, 'd', mul ? 'z·w' : 'z/w')],
+      arcos: [{ de: 0, a: val.tz, r: 0.5, color: 'o', espiral: 0 }, { de: val.tz, a: T, r: 0.75, color: 'o', espiral: 0 }],
+      alt: `z = ${f(val.rz)} cis ${G(val.tz)} y w = ${f(val.rw)} cis ${G(val.tw)}: ${mul ? 'z·w' : 'z/w'} = ${f(R)} cis ${G(mod360(T))}`,
+    };
+  }
+
   return {
     unidad: 'trigonometria.coordenadas-polares-y-complejos',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js'],
+    // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera deja r negativo (el caso que la idea 1
+    // reserva para la predicción) y muestra el otro nombre del punto; la segunda abre z a los cuatro cuadrantes, con
+    // arctan(b/a) al lado del argumento; la tercera suelta z y w a la vez y deja elegir producto o cociente.
+    laboratorio: [
+      {
+        id: 'radio-negativo', titulo: 'Radio con signo', pieza: 'trig-plano',
+        consigna: 'Arrastra el punto a lo largo de la recta, también al otro lado del polo, y gira el rayo con su punta.',
+        controles: [
+          { id: 'r', etiqueta: 'r', color: 'c-d', min: -2, max: 2, paso: 0.25, inicio: -1.5, decimales: 2 },
+          { id: 't', etiqueta: 'θ', color: 'c-o', min: 0, max: 360, paso: 15, inicio: 30, unidad: '°', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: polarLibre(val), estado: {} }),
+        lectura: val => [`(${f(val.r)}; ${f(val.t)}°) = (${f(-val.r)}; ${f(mod360(val.t + 180))}°)`, SEP, '(', xx, '; ', yy, `) = (${f(val.r * Math.cos(rad(val.t)))}; ${f(val.r * Math.sin(rad(val.t)))})`],
+        arrastres: [
+          { id: 'punto', etiqueta: 'punto: r con signo sobre la recta', color: 'c-d',
+            donde: val => enP(polarLibre(val), val.r, val.t),
+            mover: (pt, val) => { const q = TP().delPx(polarLibre(val), pt); return { r: q.x * Math.cos(rad(val.t)) + q.y * Math.sin(rad(val.t)) }; } },
+          { id: 'rayo', etiqueta: 'punta del rayo: gira θ', color: 'c-o',
+            donde: val => enP(polarLibre(val), RAYO, val.t),
+            mover: (pt, val) => ({ t: TP().anguloDe(polarLibre(val), pt, { cerca: val.t }) }) },
+        ],
+      },
+      {
+        id: 'cuatro-cuadrantes', titulo: 'Argumento en cuatro cuadrantes', pieza: 'trig-plano',
+        consigna: 'Lleva la punta de z a cualquier cuadrante. Compara el argumento θ con lo que da arctan(b/a).',
+        controles: [
+          { id: 'a', etiqueta: 'a', color: 'c-i', min: -3, max: 3, paso: 0.5, inicio: -2, decimales: 1 },
+          { id: 'b', etiqueta: 'b', color: 'c-i', min: -3, max: 3, paso: 0.5, inicio: -1, decimales: 1 },
+        ],
+        dibujo: val => ({ datos: complejo(val.a, val.b), estado: {} }),
+        lectura: val => {
+          if (!val.a && !val.b) return ['z = 0: sin argumento'];
+          const t = G(mod360(deg(Math.atan2(val.b, val.a))));
+          return [mz, ` = ${f(Math.hypot(val.a, val.b))}`, SEP, th, ` = ${t}`, SEP, val.a ? `arctan(b/a) = ${G(deg(Math.atan(val.b / val.a)))}` : 'a = 0: sin arctan'];
+        },
+        arrastres: [{ id: 'punta-z', etiqueta: 'punta de z = a + bi', color: 'c-i',
+          donde: val => TP().enPx(complejo(val.a, val.b), val.a, val.b),
+          mover: (pt, val) => { const q = TP().delPx(complejo(val.a, val.b), pt); return { a: q.x, b: q.y }; } }],
+      },
+      {
+        id: 'producto-cociente', titulo: 'Dos flechas: multiplicar o dividir', pieza: 'trig-plano',
+        consigna: 'Arrastra las puntas de z y de w. Elige multiplicar o dividir, y mira cómo gira y se estira la flecha verde.',
+        controles: [
+          { id: 'op', etiqueta: 'Operación', opciones: [{ valor: 'mul', texto: 'z·w' }, { valor: 'div', texto: 'z/w' }] },
+          { id: 'rz', etiqueta: '|z|', color: 'c-d', min: 0.5, max: 2, paso: 0.25, inicio: 2, decimales: 2 },
+          { id: 'tz', etiqueta: 'arg z', color: 'c-o', min: 0, max: 360, paso: 15, inicio: 30, unidad: '°', decimales: 0 },
+          { id: 'rw', etiqueta: '|w|', color: 'c-d', min: 0.5, max: 2, paso: 0.25, inicio: 1.5, decimales: 2 },
+          { id: 'tw', etiqueta: 'arg w', color: 'c-o', min: 0, max: 360, paso: 15, inicio: 75, unidad: '°', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: operacion(val), estado: {} }),
+        lectura: val => {
+          const mul = val.op === 'mul', R = mul ? val.rz * val.rw : val.rz / val.rw, T = mul ? val.tz + val.tw : val.tz - val.tw;
+          return [mul ? 'z·w = ' : 'z/w = ', `${f(R)} cis ${G(mod360(T))}`, SEP, `giro ${mul ? `${f(val.tz)}° + ${f(val.tw)}°` : `${f(val.tz)}° − ${f(val.tw)}°`}`];
+        },
+        arrastres: [
+          { id: 'punta-z', etiqueta: 'punta de z: largo y giro', color: 'c-o',
+            donde: val => enP(operacion(val), val.rz, val.tz),
+            mover: (pt, val) => { const u = puntaDe(operacion(val), pt, val.tz); return { rz: u.m, tz: u.t }; } },
+          { id: 'punta-w', etiqueta: 'punta de w: largo y giro', color: 'c-o',
+            donde: val => enP(operacion(val), val.rw, val.tw),
+            mover: (pt, val) => { const u = puntaDe(operacion(val), pt, val.tw); return { rw: u.m, tw: u.t }; } },
+        ],
+      },
+    ],
     historia: {
       texto: 'En el siglo XVIII, Abraham de Moivre encontró una relación entre las potencias de un número complejo y los múltiplos de un ángulo. Con ella, multiplicar se pudo ver como girar y estirar. La idea no nació sola: los complejos y sus notaciones siguieron cambiando con el trabajo de varios autores.',
       pregunta: '¿Qué tiene que ver multiplicar con girar?',

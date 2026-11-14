@@ -10,6 +10,10 @@
  * razón es proporcional al ángulo) son de docs/investigacion/trigonometria-ideas-erroneas.md. Hipótesis de
  * distractor (sin medir): RAZ-FALTA-ANGULO, REC-INVERSA, NOT-MISMO, NOT-RECIPROCA, NOT-CAMBIA, APROX-EXACTO,
  * APROX-ENTERO, APROX-MEDIR, COMP-MISMO-ANG, COMP-CALC, COMP-IGUALA, COMP-180, REC-COMPLEMENTO.
+ * Ronda 2 (14 nov, noche): manijas en las cuatro ideas (vértice B en tres, esquina de la base de la figura en los
+ * notables), con un «marco» invisible que fija la escala de la pieza triangulo; llaves en las reglas, separadores
+ * entre relaciones y laboratorio de tres mesas (tres razones, semejantes uno dentro de otro, cofunción de 1° a 89°).
+ * Las cuatro ideas usan la misma figura en «Juega» y en «Mira» (hallazgo 9 de docs/auditoria-teoria.md).
  *
  * Ficha de tarea (diseno-y-animacion):
  *   Promesa: una razón trigonométrica es un cociente de lados que depende solo del ángulo agudo, no del tamaño.
@@ -51,10 +55,24 @@
     return ops.slice(0, 4);
   }
 
+  // Gesto directo (docs/teoria.md §4b). La pieza «triangulo» ajusta la escala a sus puntos; para que la manija siga
+  // al dedo, los juegos agregan un «marco»: un punto que no se ve (paso 99) y fija la caja de la figura. La pieza no
+  // trae inversa: se invierte aquí, con su X e Y, que son lineales.
+  const TRI = () => Kit.piezas.triangulo;
+  const enPx = (dd, x, y) => { const g = TRI().geometria(dd); return { x: g.X(x), y: g.Y(y) }; };
+  const delPx = (dd, pt) => {
+    const g = TRI().geometria(dd), x0 = g.X(0), y0 = g.Y(0);
+    return { x: (pt.x - x0) / (g.X(1) - x0), y: (pt.y - y0) / (g.Y(1) - y0) };
+  };
+  const marco = (x, y) => [{ id: 'marco', x, y, paso: 99 }];
+  // Ángulo en A (en grados, de 0 a 180) del punto bajo el dedo.
+  const anguloEnA = (dd, pt) => { const q = delPx(dd, pt); return Math.atan2(q.y, q.x) * GRA; };
+
   // Triángulo rectángulo con θ en A, el recto en C: CA horizontal (turquesa), CO vertical (rojo), H (verde).
-  // o.co, o.ca, o.h: rótulos; o.ang: rótulo de θ; o.otro: rótulo del otro agudo (en B).
+  // o.co, o.ca, o.h: rótulos; o.ang: rótulo de θ; o.otro: rótulo del otro agudo (en B); o.marco: [x, y] del marco.
   const tri = (co, ca, o = {}) => ({
-    puntos: [{ id: 'A', x: 0, y: 0, rotulo: o.nombres ? 'A' : '' }, { id: 'C', x: ca, y: 0, rotulo: o.nombres ? 'C' : '' }, { id: 'B', x: ca, y: co, rotulo: o.nombres ? 'B' : '' }].concat(o.puntos || []),
+    puntos: [{ id: 'A', x: 0, y: 0, rotulo: o.nombres ? 'A' : '' }, { id: 'C', x: ca, y: 0, rotulo: o.nombres ? 'C' : '' }, { id: 'B', x: ca, y: co, rotulo: o.nombres ? 'B' : '' }]
+      .concat(o.puntos || [], o.marco ? marco(o.marco[0], o.marco[1]) : []),
     lados: [
       { de: 'A', a: 'C', color: 'i', texto: o.ca === undefined ? f(ca) : o.ca, grosor: 'variable' },
       { de: 'C', a: 'B', color: 'h', texto: o.co === undefined ? f(co) : o.co, grosor: 'variable' },
@@ -76,6 +94,7 @@
     ],
     angulos: [{ en: 'A', de: 'C', a: 'B', texto: 'θ', color: 'o' }, { en: 'C', de: 'A', a: 'B' }, { en: 'a', de: 'c', a: 'b', texto: 'θ', color: 'o', paso: 1 }, { en: 'c', de: 'a', a: 'b', paso: 1 }],
   };
+  const triJ = v => tri(v.co, v.ca, { marco: [5, 5] });
   const definicion = {
     id: 'razon-cociente',
     titulo: 'Una razón es un cociente',
@@ -88,9 +107,13 @@
         { id: 'co', etiqueta: 'CO', color: 'c-h', min: 1, max: 5, paso: 1, inicio: 3, unidad: '', decimales: 0 },
         { id: 'ca', etiqueta: 'CA', color: 'c-i', min: 1, max: 5, paso: 1, inicio: 4, unidad: '', decimales: 0 },
       ],
-      dibujo: v => ({ datos: tri(v.co, v.ca), estado: {} }),
-      lectura: v => [H, ` = ${f(Math.hypot(v.co, v.ca))};  sen `, th, ` = ${f(v.co)}/${f(Math.hypot(v.co, v.ca))} = ${f(v.co / Math.hypot(v.co, v.ca), 3)}`],
+      dibujo: v => ({ datos: triJ(v), estado: {} }),
+      lectura: v => [H, ` = ${f(Math.hypot(v.co, v.ca))} · sen `, th, ` = ${f(v.co)}/${f(Math.hypot(v.co, v.ca))} = ${f(v.co / Math.hypot(v.co, v.ca), 3)}`],
       minimo: 3,
+      // Se arrastra el vértice B: de lado cambia el adyacente CA; hacia arriba, el opuesto CO.
+      arrastres: [{ id: 'vertice-b', etiqueta: 'vértice B: CA de lado, CO hacia arriba', color: 'c-h',
+        donde: v => enPx(triJ(v), v.ca, v.co),
+        mover: (pt, v) => { const q = delPx(triJ(v), pt); return { ca: q.x, co: q.y }; } }],
     },
     predice: {
       pregunta: 'Un triángulo rectángulo tiene catetos 3 y 4; otro, catetos 6 y 8. En los dos, θ se opone al cateto menor. ¿Cuál tiene mayor sen θ?',
@@ -118,7 +141,7 @@
     },
     regla: {
       texto: 'En un triángulo rectángulo, cada razón divide dos lados vistos desde el ángulo agudo θ. Depende solo de θ, no del tamaño.',
-      ecuacion: ['sen ', th, ' = ', { frac: [CO, H] }, ';   cos ', th, ' = ', { frac: [CA, H] }],
+      ecuacion: ['sen ', th, ' = ', { frac: [{ llave: [CO], nota: 'opuesto a θ', color: 'c-h' }, H] }, '   ·   ', 'cos ', th, ' = ', { frac: [{ llave: [CA], nota: 'junto a θ', color: 'c-i' }, H] }],
       condicion: 'θ agudo de un triángulo rectángulo. tan θ = CO/CA; cot, sec y csc invierten tan, cos y sen.',
       voz: 'Una razón es un número sin unidades: compara dos largos.',
     },
@@ -177,6 +200,13 @@
   };
   const COF = { sen: 'cos', cos: 'sen', tan: 'cot', cot: 'tan', sec: 'csc', csc: 'sec' };
   const RECI = { sen: 'csc', cos: 'sec', tan: 'cot', cot: 'tan', sec: 'cos', csc: 'sen' };
+  const notJ = v => {
+    const dd = v.fig === 'cu' ? medioCuadrado(v.L) : medioEquilatero(v.L);
+    // El marco pasa apenas de 8 para que el rótulo de la altura quede siempre del lado de la mitad punteada.
+    dd.puntos.push(...marco(8.2, v.fig === 'cu' ? 8 : 8 * Math.sqrt(3) / 2));
+    if (v.fig !== 'cu') dd.lados[1].lado = -1;
+    return dd;
+  };
   const notables = {
     id: 'notables',
     titulo: 'Medio cuadrado, medio equilátero',
@@ -189,9 +219,14 @@
         { id: 'fig', etiqueta: 'Figura', opciones: [{ valor: 'eq', texto: 'Equilátero' }, { valor: 'cu', texto: 'Cuadrado' }], inicio: 'eq' },
         { id: 'L', etiqueta: 'Lado', min: 2, max: 8, paso: 2, inicio: 4, unidad: '', decimales: 0 },
       ],
-      dibujo: v => ({ datos: v.fig === 'cu' ? medioCuadrado(v.L) : medioEquilatero(v.L), estado: {} }),
-      lectura: v => (v.fig === 'cu' ? [CO, ` = ${v.L};  `, CA, ` = ${v.L};  `, H, ` = ${v.L}√2`] : [`frente a 30°: ${f(v.L / 2)};  frente a 60°: ${f(v.L / 2)}√3;  `, H, ` = ${v.L}`]),
+      dibujo: v => ({ datos: notJ(v), estado: {} }),
+      lectura: v => (v.fig === 'cu' ? [CO, ` = ${v.L} · `, CA, ` = ${v.L} · `, H, ` = ${v.L}√2`] : [`frente a 30°: ${f(v.L / 2)} · frente a 60°: ${f(v.L / 2)}√3 · `, H, ` = ${v.L}`]),
       minimo: 3,
+      // Se arrastra la esquina de la base de la figura entera (Q en el equilátero, C en el cuadrado): cambia el lado.
+      // La figura (cuadrado o equilátero) es una opción discreta y queda con sus botones.
+      arrastres: [{ id: 'esquina', etiqueta: 'esquina de la base: cambia el lado', color: 'c-i',
+        donde: v => enPx(notJ(v), v.L, 0),
+        mover: (pt, v) => ({ L: delPx(notJ(v), pt).x }) }],
     },
     predice: {
       pregunta: 'Sabemos que sen 30° = 1/2. ¿Cuánto vale sen 60°?',
@@ -221,15 +256,15 @@
       })(),
       voz: 'Primero los tres lados; después, los cocientes.',
       pasos: [
-        { estado: { paso: 0 }, texto: 'Un equilátero de lado 2 cortado por su altura: la base queda en 1.', ecuacion: ['hipotenusa 2;  cateto corto 1'] },
+        { estado: { paso: 0 }, texto: 'Un equilátero de lado 2 cortado por su altura: la base queda en 1.', ecuacion: ['hipotenusa 2', '   ·   ', 'cateto corto 1'] },
         { estado: { paso: 1 }, texto: 'La altura sale de Pitágoras.', ecuacion: [{ raiz: ['2² − 1²'] }, ' = √3'] },
-        { estado: { paso: 1 }, texto: 'Frente a 30° está el 1; frente a 60°, el √3.', ecuacion: ['sen 30° = ', { frac: ['1', '2'] }, ';  sen 60° = ', { frac: ['√3', '2'] }] },
+        { estado: { paso: 1 }, texto: 'Frente a 30° está el 1; frente a 60°, el √3.', ecuacion: ['sen 30° = ', { frac: ['1', '2'] }, '   ·   ', 'sen 60° = ', { frac: ['√3', '2'] }] },
         { estado: { paso: 3 }, texto: 'En el medio cuadrado, los catetos son iguales y la hipotenusa es √2.', ecuacion: ['sen 45° = ', { frac: ['1', '√2'] }, ' = ', { frac: ['√2', '2'] }] },
       ],
     },
     regla: {
       texto: 'Las razones de 30°, 45° y 60° son exactas: salen del medio cuadrado, con lados 1, 1 y √2, y del medio equilátero, con 1, √3 y 2.',
-      ecuacion: ['sen 30° = ', { frac: ['1', '2'] }, ';  sen 45° = ', { frac: ['√2', '2'] }, ';  sen 60° = ', { frac: ['√3', '2'] }],
+      ecuacion: ['sen 30° = ', { frac: ['1', '2'] }, '   ·   ', 'sen 45° = ', { frac: ['√2', '2'] }, '   ·   ', 'sen 60° = ', { frac: ['√3', '2'] }],
       condicion: 'se usan los valores exactos, sin redondear. El coseno lee el otro cateto; la tangente, opuesto entre adyacente.',
       voz: 'Dos figuras bastan para recordar los tres ángulos.',
     },
@@ -263,6 +298,7 @@
   const EX37 = Math.atan(3 / 4) * GRA, EX16 = Math.atan(7 / 24) * GRA;
   const DOS = tri(3, 4, { co: '3', ca: '4', h: '5', ang: 'θ', otro: `${f(90 - EX37)}°`, pasoOtro: 2 });
   DOS.angulos[0].final = `${f(EX37)}°`;
+  const aproxJ = v => tri(4 * Math.tan(v.g * RAD), 4, { ang: `${v.g}°`, co: f(4 * Math.tan(v.g * RAD), 1), ca: '4', h: f(4 / Math.cos(v.g * RAD), 1), marco: [4, 4 * Math.tan(60 * RAD)] });
   const aproximados = {
     id: 'aproximados',
     titulo: '37° es un redondeo',
@@ -272,9 +308,13 @@
       consigna: 'El cateto adyacente mide 4. Elige θ y mira cuánto mide el opuesto. Busca el ángulo que da un opuesto de 3.',
       voz: 'Anota con qué ángulo el opuesto se acerca a 3.',
       controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: 30, max: 60, paso: 1, inicio: 32, unidad: '°', decimales: 0 }],
-      dibujo: v => ({ datos: tri(4 * Math.tan(v.g * RAD), 4, { ang: `${v.g}°`, co: f(4 * Math.tan(v.g * RAD), 1), ca: '4', h: f(4 / Math.cos(v.g * RAD), 1) }), estado: {} }),
+      dibujo: v => ({ datos: aproxJ(v), estado: {} }),
       lectura: v => [CO, ` = 4 · tan ${v.g}° ≈ ${f(4 * Math.tan(v.g * RAD), 1)}`],
       minimo: 3,
+      // Se arrastra el vértice B por el cateto vertical: sube o baja el opuesto y con él cambia θ.
+      arrastres: [{ id: 'vertice-b', etiqueta: 'vértice B: cambia θ', color: 'c-o',
+        donde: v => enPx(aproxJ(v), 4, 4 * Math.tan(v.g * RAD)),
+        mover: (pt, v) => ({ g: Math.atan2(delPx(aproxJ(v), pt).y, 4) * GRA }) }],
     },
     predice: {
       pregunta: 'En el triángulo de catetos 3 y 4, el ángulo opuesto al 3 suele llamarse 37°. ¿Mide exactamente 37°?',
@@ -298,12 +338,12 @@
         { estado: { paso: 1 }, texto: 'En el triángulo 3-4-5, la tangente de θ es 3/4.', ecuacion: ['tan ', th, ' = ', { frac: ['3', '4'] }, ' = 0,75'] },
         { estado: { paso: 2, final: true }, texto: 'El ángulo exacto mide 36,87°; el otro agudo, 53,13°.', ecuacion: [th, ` = arctan 0,75 ≈ ${f(EX37)}°`] },
         { estado: { paso: 2, final: true, fantasma: { texto: `7-24-25: ${f(EX16)}° y ${f(90 - EX16)}°` } }, texto: 'En el triángulo 7-24-25, el menor mide 16,26°; el otro, 73,74°.', ecuacion: ['tan ', th, ' = ', { frac: ['7', '24'] }, `  ⇒  `, th, ` ≈ ${f(EX16)}°`] },
-        { estado: { paso: 2, final: true, fantasma: { texto: '37°, 53°, 16° y 74°: redondeos' } }, texto: 'El examen los redondea a 37°, 53°, 16° y 74°: es una convención.', ecuacion: ['sen 37° ≈ ', { frac: ['3', '5'] }, ';  sen 16° ≈ ', { frac: ['7', '25'] }] },
+        { estado: { paso: 2, final: true, fantasma: { texto: '37°, 53°, 16° y 74°: redondeos' } }, texto: 'El examen los redondea a 37°, 53°, 16° y 74°: es una convención.', ecuacion: ['sen 37° ≈ ', { frac: ['3', '5'] }, '   ·   ', 'sen 16° ≈ ', { frac: ['7', '25'] }] },
       ],
     },
     regla: {
       texto: 'Los ángulos de 37° y 53° son los del triángulo 3-4-5 redondeados; 16° y 74°, los del 7-24-25. Son aproximaciones de convención.',
-      ecuacion: ['sen 37° ≈ ', { frac: ['3', '5'] }, ';  sen 53° ≈ ', { frac: ['4', '5'] }, ';  sen 16° ≈ ', { frac: ['7', '25'] }],
+      ecuacion: ['sen ', { llave: ['37°'], nota: 'redondeado', color: 'c-o' }, ' ≈ ', { frac: ['3', '5'] }, '   ·   ', 'sen 53° ≈ ', { frac: ['4', '5'] }, '   ·   ', 'sen 16° ≈ ', { frac: ['7', '25'] }],
       condicion: `el problema o el examen indican esa convención. El valor exacto es arctan(3/4) ≈ ${f(EX37)}°.`,
       voz: 'Cuando aproximes, dilo: así nadie confunde el redondeo con lo exacto.',
     },
@@ -342,6 +382,7 @@
   // Progresa: los dos ángulos que se reparten 90°. · Se reserva: cos 65° a partir de sen 25° (la predicción).
   // Debe verse: el mismo cateto rojo es opuesto para θ y adyacente para 90° − θ.
   const complemento = (g, o = {}) => tri(Math.sin(g * RAD), Math.cos(g * RAD), Object.assign({ ang: `${g}°`, otro: `${90 - g}°`, co: f(Math.sin(g * RAD)), ca: f(Math.cos(g * RAD)), h: '1' }, o));
+  const compJ = v => complemento(v.g, { marco: [1, 1] });
   const complementarias = {
     id: 'complementarias',
     titulo: 'Complementarias y recíprocas',
@@ -351,9 +392,13 @@
       consigna: 'La hipotenusa mide 1. Elige θ y mira el otro ángulo agudo y los dos catetos.',
       voz: 'Fíjate en qué lado queda frente a cada ángulo.',
       controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: 20, max: 70, paso: 10, inicio: 30, unidad: '°', decimales: 0 }],
-      dibujo: v => ({ datos: complemento(v.g), estado: {} }),
-      lectura: v => [th, ` = ${v.g}°;  otro = ${90 - v.g}°;  `, CO, ` = ${f(Math.sin(v.g * RAD))}`],
+      dibujo: v => ({ datos: compJ(v), estado: {} }),
+      lectura: v => [th, ` = ${v.g}° · otro = ${90 - v.g}° · `, CO, ` = ${f(Math.sin(v.g * RAD))}`],
       minimo: 3,
+      // Se arrastra el vértice B: con la hipotenusa fija en 1, recorre un arco y reparte los 90° entre los dos agudos.
+      arrastres: [{ id: 'vertice-b', etiqueta: 'vértice B: cambia θ', color: 'c-o',
+        donde: v => enPx(compJ(v), Math.cos(v.g * RAD), Math.sin(v.g * RAD)),
+        mover: (pt, v) => ({ g: anguloEnA(compJ(v), pt) }) }],
     },
     predice: {
       pregunta: `Se sabe que sen 25° ≈ ${f(Math.sin(25 * RAD))}. ¿Cuánto vale cos 65°?`,
@@ -377,12 +422,12 @@
         { estado: { paso: 1 }, texto: 'Desde 25°, el cateto rojo es el opuesto.', ecuacion: ['sen 25° = ', { frac: [CO, H] }] },
         { estado: { paso: 2 }, texto: 'Desde 65°, ese mismo cateto es el adyacente.', ecuacion: ['cos 65° = ', { frac: [CO, H] }] },
         { estado: { paso: 2 }, texto: 'Mismo cociente: las cofunciones de ángulos complementarios son iguales.', ecuacion: ['sen ', th, ' = cos(90° − ', th, ')'] },
-        { estado: { paso: 2 }, texto: 'Invertir el cociente da la recíproca: su producto es 1.', ecuacion: ['csc 25° = ', { frac: [H, CO] }, ` ≈ ${f(1 / Math.sin(25 * RAD))};  sen · csc = 1`] },
+        { estado: { paso: 2 }, texto: 'Invertir el cociente da la recíproca: su producto es 1.', ecuacion: ['csc 25° = ', { frac: [H, CO] }, ` ≈ ${f(1 / Math.sin(25 * RAD))}`, '   ·   ', 'sen · csc = 1'] },
       ],
     },
     regla: {
       texto: 'Los agudos suman 90°: el opuesto de uno es el adyacente del otro, y sen θ = cos(90° − θ). Una recíproca invierte el cociente del mismo ángulo.',
-      ecuacion: ['sen ', th, ' = cos(90° − ', th, ');   sen ', th, ' · csc ', th, ' = 1'],
+      ecuacion: ['sen ', th, ' = cos', { llave: ['(90° − ', th, ')'], nota: 'el otro agudo', color: 'c-o' }, '   ·   ', 'sen ', th, ' · ', { llave: ['csc ', th], nota: 'la recíproca', color: 'c-o' }, ' = 1'],
       condicion: 'θ agudo. Cofunciones: ángulos que suman 90°. Recíprocas: el mismo ángulo en las dos razones.',
       voz: 'Cofunción, dos ángulos que suman 90°; recíproca, un mismo ángulo.',
     },
@@ -424,6 +469,23 @@
         };
   }
 
+  // ---------- Laboratorio ----------
+  const tresL = v => tri(v.co, v.ca, { marco: [8, 6] });
+  // Dos triángulos con el mismo θ en A: el chico de hipotenusa 2 (puntos c, b) y el grande de hipotenusa 2k (C, B).
+  function semL(v) {
+    const c = Math.cos(v.g * RAD), sn = Math.sin(v.g * RAD), K = 2 * v.k;
+    return {
+      puntos: [{ id: 'A', x: 0, y: 0 }, { id: 'c', x: 2 * c, y: 0 }, { id: 'b', x: 2 * c, y: 2 * sn }, { id: 'C', x: K * c, y: 0 }, { id: 'B', x: K * c, y: K * sn }].concat(marco(6, 6 * Math.sin(60 * RAD))),
+      lados: [
+        { de: 'A', a: 'C', color: 'i', texto: '', grosor: 'contorno' }, { de: 'C', a: 'B', color: 'h', texto: f(K * sn), grosor: 'variable' },
+        { de: 'A', a: 'B', color: 'd', texto: f(K), grosor: 'variable', lado: -1 },
+        { de: 'c', a: 'b', color: 'h', texto: f(2 * sn), grosor: 'variable', lado: -1 }, { de: 'A', a: 'b', color: 'd', texto: '', grosor: 'contorno' },
+      ],
+      angulos: [{ en: 'A', de: 'C', a: 'B', texto: 'θ', color: 'o' }, { en: 'C', de: 'A', a: 'B' }],
+    };
+  }
+  const compL = v => complemento(v.g, { marco: [1, 1], co: f(Math.sin(v.g * RAD), 3), ca: f(Math.cos(v.g * RAD), 3) });
+
   return {
     unidad: 'trigonometria.razones-trigonometricas-agudas',
     version: '0.1.0',
@@ -435,5 +497,56 @@
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Aryabhata I», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Aryabhata_I/' },
     },
     ideas: [definicion, notables, aproximados, complementarias],
+    // Laboratorio (docs/teoria.md §4b). «tres-razones»: catetos libres de medio en medio, con sen, cos, tan y el ángulo
+    // a la vez (la idea 1 solo da el seno). «semejantes»: un triángulo dentro de otro k veces mayor, con el mismo θ; el
+    // caso de la predicción, ahora con cualquier ángulo y escala. «complemento-libre»: θ de grado en grado hasta los
+    // bordes (1° y 89°), con la cofunción y la recíproca juntas.
+    laboratorio: [
+      {
+        id: 'tres-razones', titulo: 'Tres razones de un vistazo', pieza: 'triangulo',
+        consigna: 'Arrastra el vértice B a cualquier sitio. La lectura da seno, coseno y tangente de θ, y cuánto mide θ.',
+        controles: [
+          { id: 'co', etiqueta: 'CO', color: 'c-h', min: 0.5, max: 6, paso: 0.5, inicio: 3, unidad: '', decimales: 1 },
+          { id: 'ca', etiqueta: 'CA', color: 'c-i', min: 0.5, max: 8, paso: 0.5, inicio: 4, unidad: '', decimales: 1 },
+        ],
+        dibujo: v => ({ datos: tresL(v), estado: {} }),
+        lectura: v => {
+          const hv = Math.hypot(v.co, v.ca);
+          return ['sen ', th, ` = ${f(v.co / hv, 3)} · cos `, th, ` = ${f(v.ca / hv, 3)} · tan `, th, ` = ${f(v.co / v.ca, 3)} · `, th, ` ≈ ${f(Math.atan2(v.co, v.ca) * GRA)}°`];
+        },
+        // El vértice B: de lado cambia CA; hacia arriba, CO.
+        arrastres: [{ id: 'vertice-b', etiqueta: 'vértice B: CA de lado, CO hacia arriba', color: 'c-h',
+          donde: v => enPx(tresL(v), v.ca, v.co),
+          mover: (pt, v) => { const q = delPx(tresL(v), pt); return { ca: q.x, co: q.y }; } }],
+      },
+      {
+        id: 'semejantes', titulo: 'Uno dentro de otro', pieza: 'triangulo',
+        consigna: 'El triángulo chico tiene hipotenusa 2; el grande, k veces más. Arrastra la punta del grande: cambias θ y k.',
+        controles: [
+          { id: 'g', etiqueta: 'θ', color: 'c-o', min: 15, max: 60, paso: 1, inicio: 30, unidad: '°', decimales: 0 },
+          { id: 'k', etiqueta: 'k', min: 1.5, max: 3, paso: 0.5, inicio: 2, unidad: '', decimales: 1 },
+        ],
+        dibujo: v => ({ datos: semL(v), estado: {} }),
+        lectura: v => {
+          const sn = Math.sin(v.g * RAD);
+          return ['sen ', th, ` = ${f(2 * sn)}/2 = ${f(2 * v.k * sn)}/${f(2 * v.k)} = ${f(sn, 3)} · k = ${f(v.k)}`];
+        },
+        // La punta B del grande: su dirección es θ y su distancia a A, la hipotenusa 2k.
+        arrastres: [{ id: 'punta', etiqueta: 'punta del triángulo grande: θ y k', color: 'c-o',
+          donde: v => enPx(semL(v), 2 * v.k * Math.cos(v.g * RAD), 2 * v.k * Math.sin(v.g * RAD)),
+          mover: (pt, v) => { const q = delPx(semL(v), pt); return { g: Math.atan2(q.y, q.x) * GRA, k: Math.hypot(q.x, q.y) / 2 }; } }],
+      },
+      {
+        id: 'complemento-libre', titulo: 'Cofunción y recíproca, juntas', pieza: 'triangulo',
+        consigna: 'La hipotenusa mide 1. Lleva el vértice B hasta casi acostarlo o casi pararlo, y compara las cuatro razones.',
+        controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: 1, max: 89, paso: 1, inicio: 25, unidad: '°', decimales: 0 }],
+        dibujo: v => ({ datos: compL(v), estado: {} }),
+        lectura: v => [`sen ${v.g}° = cos ${90 - v.g}° = ${f(Math.sin(v.g * RAD), 3)} · csc ${v.g}° = ${f(1 / Math.sin(v.g * RAD), 3)}`],
+        // El vértice B recorre el arco de radio 1.
+        arrastres: [{ id: 'vertice-b', etiqueta: 'vértice B: cambia θ', color: 'c-o',
+          donde: v => enPx(compL(v), Math.cos(v.g * RAD), Math.sin(v.g * RAD)),
+          mover: (pt, v) => ({ g: anguloEnA(compL(v), pt) }) }],
+      },
+    ],
   };
 });

@@ -8,6 +8,10 @@
  * Colores (regla 4): el ángulo θ en naranja (c-o; el valor principal α también es un ángulo: naranja discontinuo),
  * el valor k de la primera ecuación (la recta y = k) en turquesa (c-i), el valor c de la segunda condición (la
  * recta x = c, el segundo factor o la segunda ecuación) en verde (c-d) y las vueltas n en rojo (c-h).
+ * Ronda 2 (14 nov, noche): manijas en las cinco ideas (la recta y = k por su extremo, el borde b de la franja, la
+ * recta x = c por su cruce con el eje x, y las dos rectas del sistema); la vuelta n de la idea 2 queda con − y +.
+ * Llaves en las cinco reglas, separadores «   ·   » y laboratorio de tres mesas. Cada idea usa en «Mira» la misma
+ * figura que movió en «Juega» (hallazgo 9).
  * Errores: TR21 y TR22 de docs/investigacion/trigonometria-ideas-erroneas.md (parcial); TR12 (parcial). Hipótesis
  * nuestras: ECU-SIEMPRE-DOS (dos soluciones por vuelta siempre), ECU-RANGO (busca solución con |k| > 1),
  * ECU-INFINITAS (da la solución general cuando piden un intervalo), ECU-CUADRANTE (pone las soluciones en otros
@@ -81,6 +85,13 @@
   // Arriba si c ≥ 0 y abajo si c < 0: así no choca con el nombre del eje y ni con los rótulos de los cortes.
   const nombreX = (cv, texto, color, extra = {}) => Object.assign({ x: cv + 0.07, y: cv >= 0 ? 1.2 : -1.2, texto, color, ancla: 'start' }, extra);
   const fnTxt = { sen: 'sen', cos: 'cos', tan: 'tan' };
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de las piezas. La de «ejes» no trae inversa:
+  // se invierte aquí con una función lineal (como `inversa` en fisica/movimiento-rectilineo.js).
+  const TP = () => Kit.piezas['trig-plano'], EJES = () => Kit.piezas.ejes;
+  const xDeEjes = (d, px) => { const G = EJES().geometria(d), a = G.X(d.x.min), b = G.X(d.x.max); return d.x.min + (px - a) / (b - a) * (d.x.max - d.x.min); };
+  const yDeEjes = (d, py) => { const G = EJES().geometria(d), a = G.Y(d.y.min), b = G.Y(d.y.max); return d.y.min + (py - a) / (b - a) * (d.y.max - d.y.min); };
+  // Manija de la recta y = k en su extremo derecho (o izquierdo, si ahí va su rótulo).
+  const manijaY = (d, kv, x = 1.58) => TP().enPx(d, x, kv);
 
   // ---------- Idea 1: cuántas veces corta la recta ----------
   // Cambia: la altura k de la recta y = k, entre −0,9 y 0,9. · Permanece: la circunferencia de radio 1 y el lado inicial.
@@ -111,6 +122,10 @@
         return ['sen ', th, ' = ', k, ` = ${f(val.k, 1)}:  `, th, ` = ${f(p, 1)}° o ${f(q, 1)}°`];
       },
       minimo: 3,
+      // Se arrastra la recta y = k por su extremo derecho, arriba y abajo: los dos cortes responden.
+      arrastres: [{ id: 'recta-k', etiqueta: 'recta y = k', color: 'c-i',
+        donde: val => manijaY(cortes(val.k), val.k),
+        mover: (pt, val) => ({ k: TP().delPx(cortes(val.k), pt).y }) }],
     },
     predice: {
       pregunta: ['En [0°, 360°), ¿cuántas soluciones tiene sen ', th, ' = 1?'],
@@ -142,7 +157,7 @@
     },
     regla: {
       texto: 'En una vuelta, sen θ = k tiene dos soluciones si |k| < 1, una si k = ±1 y ninguna si |k| > 1. Con cos θ = k pasa lo mismo.',
-      ecuacion: [{ abs: [k] }, ' < 1: dos;   ', k, ' = ±1: una;   ', { abs: [k] }, ' > 1: ninguna'],
+      ecuacion: [{ abs: [k] }, ' < 1: dos', '   ·   ', k, ' = ±1: una', '   ·   ', { llave: [{ abs: [k] }, ' > 1'], nota: 'fuera del círculo', color: 'c-i' }, ': ninguna'],
       condicion: 'se cuenta en una sola vuelta, por ejemplo en [0°, 360°). En k = 0 también hay dos: 0° y 180°.',
       voz: 'Antes de calcular, mira si la altura cabe en la circunferencia.',
     },
@@ -180,6 +195,16 @@
   // Cambia: el valor k (positivo) y la vuelta n. · Permanece: la recta y = k y la circunferencia.
   // Progresa: el arco que da n vueltas más hasta cada solución. · Se reserva: k negativo, donde el valor principal
   // es negativo (la predicción). · Debe verse: dos familias, α + 360°·n y 180° − α + 360°·n.
+  const vueltas = (kv, nv) => {
+    const a = deg(Math.asin(kv)), t1 = a + 360 * nv, t2 = 180 - a + 360 * nv;
+    return plano({
+      rectas: [{ y: kv, color: 'i' }],
+      rayos: [rayo(a, { grosor: undefined, discontinua: true, largo: 1.12 }), rayo(180 - a)],
+      arcos: [{ de: 0, a: t1, r: 0.28, color: 'o', espiral: 9 }, { de: 0, a: t2, r: 0.5, color: 'o', espiral: 9 }],
+      puntos: [pto(a, { rotulo: `${f(t1, 1)}°` }), pto(180 - a, { rotulo: `${f(t2, 1)}°` })],
+      alt: `Con k = ${f(kv, 1)} y n = ${nv}: soluciones ${f(t1, 1)} y ${f(t2, 1)} grados`,
+    });
+  };
   const familias = {
     id: 'solucion-general',
     titulo: 'La calculadora da un valor',
@@ -192,24 +217,16 @@
         { id: 'k', etiqueta: 'k', color: 'c-i', min: 0.1, max: 0.9, paso: 0.1, inicio: 0.5, decimales: 1 },
         { id: 'n', etiqueta: 'n', color: 'c-h', min: -1, max: 1, paso: 1, inicio: 0, decimales: 0 },
       ],
-      dibujo: val => {
-        const a = deg(Math.asin(val.k)), t1 = a + 360 * val.n, t2 = 180 - a + 360 * val.n;
-        return {
-          datos: plano({
-            rectas: [{ y: val.k, color: 'i' }],
-            rayos: [rayo(a, { grosor: undefined, discontinua: true, largo: 1.12 }), rayo(180 - a)],
-            arcos: [{ de: 0, a: t1, r: 0.28, color: 'o', espiral: 9 }, { de: 0, a: t2, r: 0.5, color: 'o', espiral: 9 }],
-            puntos: [pto(a, { rotulo: `${f(t1, 1)}°` }), pto(180 - a, { rotulo: `${f(t2, 1)}°` })],
-            alt: `Con k = ${f(val.k, 1)} y n = ${val.n}: soluciones ${f(t1, 1)} y ${f(t2, 1)} grados`,
-          }),
-          estado: {},
-        };
-      },
+      dibujo: val => ({ datos: vueltas(val.k, val.n), estado: {} }),
       lectura: val => {
         const a = deg(Math.asin(val.k));
-        return [al, ` = ${f(a, 1)};  `, th, ` = ${f(a + 360 * val.n, 1)}° o ${f(180 - a + 360 * val.n, 1)}°`];
+        return [al, ` = ${f(a, 1)}°`, '   ·   ', th, ` = ${f(a + 360 * val.n, 1)}° o ${f(180 - a + 360 * val.n, 1)}°`];
       },
       minimo: 3,
+      // Se arrastra la recta y = k; la vuelta n es un entero y queda con − y +.
+      arrastres: [{ id: 'recta-k', etiqueta: 'recta y = k', color: 'c-i',
+        donde: val => manijaY(vueltas(val.k, val.n), val.k),
+        mover: (pt, val) => ({ k: TP().delPx(vueltas(val.k, val.n), pt).y }) }],
     },
     predice: {
       pregunta: ['La calculadora da arcsen(−1/2) = −30°. ¿Qué soluciones tiene sen ', th, ' = −1/2 en [0°, 360°)?'],
@@ -243,7 +260,8 @@
     },
     regla: {
       texto: 'Si α es el valor que da la calculadora, sen θ = k tiene dos familias de soluciones. La solución particular son las que caen en el intervalo pedido.',
-      ecuacion: [th, ' = ', al, ' + 360°', n, '  o  ', th, ' = 180° − ', al, ' + 360°', n],
+      // Las dos familias van en líneas separadas («o» entre ellas: el texto de la regla lo dice).
+      ecuacion: [th, ' = ', { llave: [al], nota: 'calculadora', color: 'c-o' }, ' + 360°', n, '   ·   ', th, ' = ', { llave: ['180° − ', al], nota: 'el otro corte', color: 'c-o' }, ' + 360°', n],
       condicion: '|k| ≤ 1, α = arcsen k entre −90° y 90°, n entero. Coseno: θ = ±α + 360°n. Tangente: θ = α + 180°n.',
       voz: 'Una familia por cada corte; las vueltas las pone n.',
     },
@@ -290,6 +308,10 @@
     puntos,
     alt: `Gráfica de sen θ de 0 a 720 grados, la recta y = ${f(kv, 1)} y el intervalo hasta ${f(b)} grados sombreado`,
   }, extra);
+  const franja = b => {
+    const s = soluciones('sen', 0.5, 0, b, true);
+    return grafica(b, 0.5, [30, 150, 390, 510].map(g => ({ x: g, y: 0.5, color: 'o', abierto: !s.includes(g), rotulo: s.includes(g) ? `${g}°` : undefined })));
+  };
   const extremos = {
     id: 'extremos',
     titulo: 'Los extremos del intervalo cuentan',
@@ -300,14 +322,17 @@
       voz: 'Fíjate en lo que pasa justo cuando b cae en un corte.',
       controles: [{ id: 'b', etiqueta: 'b', color: 'c-d', min: 90, max: 720, paso: 30, inicio: 180, unidad: '°', decimales: 0 }],
       dibujo: val => {
-        const s = soluciones('sen', 0.5, 0, val.b, true);
-        return { datos: grafica(val.b, 0.5, [30, 150, 390, 510].map(g => ({ x: g, y: 0.5, color: 'o', abierto: !s.includes(g), rotulo: s.includes(g) ? `${g}°` : undefined }))), estado: {} };
+        return { datos: franja(val.b), estado: {} };
       },
       lectura: val => {
         const s = soluciones('sen', 0.5, 0, val.b, true);
         return [`[0°, ${f(val.b)}°]: `, th, ` = ${lista(s)}`];
       },
       minimo: 3,
+      // Se arrastra el borde derecho de la franja verde (el final b del intervalo), de lado a lado.
+      arrastres: [{ id: 'borde-b', etiqueta: 'final b del intervalo', color: 'c-d',
+        donde: val => { const d = franja(val.b), G = EJES().geometria(d); return { x: G.X(val.b), y: G.Y(-0.95) }; },
+        mover: (pt, val) => ({ b: xDeEjes(franja(val.b), pt.x) }) }],
     },
     predice: {
       pregunta: ['¿Cuántas soluciones tiene sen ', th, ' = 0 en el intervalo [0°, 360°)?'],
@@ -332,13 +357,13 @@
       voz: 'Primero todas las soluciones; después, la franja.',
       pasos: [
         { estado: { corte: 1 }, texto: 'La solución general de sen θ = 0 da un corte cada 180°.', ecuacion: [th, ' = 180° · ', n] },
-        { estado: { corte: 2 }, texto: 'Con n = 0 y n = 1 se cae dentro: 0° y 180°.', ecuacion: [n, ' = 0:  0°;   ', n, ' = 1:  180°'] },
+        { estado: { corte: 2 }, texto: 'Con n = 0 y n = 1 se cae dentro: 0° y 180°.', ecuacion: [n, ' = 0:  0°', '   ·   ', n, ' = 1:  180°'] },
         { estado: { corte: 3 }, texto: 'Con n = 2 sale 360°, y el «)» lo deja fuera.', ecuacion: ['0° ≤ ', th, ' < 360°'] },
       ],
     },
     regla: {
       texto: 'La solución particular sale de la general: se dan valores enteros a n y se conservan solo los ángulos del intervalo, mirando cada extremo.',
-      ecuacion: ['[ : el extremo entra;   ) : el extremo queda fuera'],
+      ecuacion: [{ llave: ['[0°'], nota: 'entra' }, ', ', { llave: ['360°)'], nota: 'queda fuera' }],
       condicion: 'el intervalo es parte de la ecuación. 0° y 360° son coterminales, pero son números distintos.',
       voz: 'Revisemos los extremos antes de dar la lista.',
     },
@@ -382,7 +407,8 @@
     const s1 = soluciones('sen', 0), a = deg(Math.acos(cv)), s2 = orden([a, 360 - a]);
     return plano(Object.assign({
       rectas: [{ y: 0, color: 'i' }, { x: cv, color: 'd' }],
-      rotulos: [nombreX(cv, `x = ${kTxt(cv)}`, 'd')],
+      // Con c grande, el rótulo pasa a la izquierda de la recta: arriba a la derecha está el botón de la lupa.
+      rotulos: [Object.assign(nombreX(cv, `x = ${kTxt(cv)}`, 'd'), cv > 0.5 ? { x: cv - 0.07, ancla: 'end' } : {})],
       puntos: [...s1.map(g => pto(g, { color: 'i' })), ...s2.map(g => pto(g, { color: 'd' }))],
       alt: `Los cortes de y = 0 (0 y 180 grados) y de x = ${f(cv, 1)} (${f(s2[0], 1)} y ${f(s2[1], 1)} grados) con la circunferencia`,
     }, extra));
@@ -402,6 +428,10 @@
         return [th, ` = ${lista(orden([0, 180, a, 360 - a]).map(x => Math.round(x * 10) / 10))}: cuatro`];
       },
       minimo: 3,
+      // Se arrastra la recta x = c por su cruce con el eje x (ahí no hay otro trazo), de lado a lado.
+      arrastres: [{ id: 'recta-c', etiqueta: 'recta x = c', color: 'c-d',
+        donde: val => TP().enPx(producto(val.c), val.c, 0),
+        mover: (pt, val) => ({ c: TP().delPx(producto(val.c), pt).x }) }],
     },
     predice: {
       pregunta: ['¿Qué soluciones tiene 2 sen ', th, ' cos ', th, ' = sen ', th, ' en [0°, 360°)?'],
@@ -429,12 +459,12 @@
         { estado: { corte: 1 }, texto: 'Se pasa todo a un lado y se saca el factor común.', ecuacion: ['sen ', th, ' · (2 cos ', th, ' − 1) = 0'] },
         { estado: { corte: 2 }, texto: 'Primer factor: sen θ = 0 da 0° y 180°.', ecuacion: ['sen ', th, ' = 0  ⇒  ', th, ' = 0°, 180°'] },
         { estado: { corte: 3 }, texto: 'Segundo factor: cos θ = 1/2 da 60° y 300°.', ecuacion: ['cos ', th, ' = ', c, ' = ', { frac: ['1', '2'] }, '  ⇒  ', th, ' = 60°, 300°'] },
-        { estado: { corte: 4 }, texto: 'Dividir entre sen θ supone que no es cero: se borran 0° y 180°.', ecuacion: ['4 soluciones;  dividiendo, solo 2'] },
+        { estado: { corte: 4 }, texto: 'Dividir entre sen θ supone que no es cero: se borran 0° y 180°.', ecuacion: ['4 soluciones', '   ·   ', 'dividiendo, solo 2'] },
       ],
     },
     regla: {
       texto: 'No dividas entre una expresión que puede valer cero. Pasa todo a un lado, factoriza e iguala a cero cada factor.',
-      ecuacion: ['A · B = 0  ⇔  A = 0  o  B = 0'],
+      ecuacion: [{ llave: ['A'], nota: 'factor 1' }, ' · ', { llave: ['B'], nota: 'factor 2' }, ' = 0', '   ·   ', '⇔  A = 0  o  B = 0'],
       condicion: 'cada factor está definido en ese ángulo. Si elevas al cuadrado, comprueba cada solución en la ecuación original.',
       voz: 'Cada factor merece su propia revisión.',
     },
@@ -501,9 +531,19 @@
       dibujo: val => ({ datos: sistema(val.k, val.c), estado: {} }),
       lectura: val => {
         const s = comunes(val.k, val.c);
-        return ['Cumplen las dos: ', s.length ? [th, ` = ${s.map(g => f(g, 1) + '°').join(' y ')}`] : 'ninguno'].flat();
+        return [k, ` = ${f(val.k, 1)} · `, c, ` = ${f(val.c, 1)} · cumplen las dos: `, s.length ? [th, ` = ${s.map(g => f(g, 1) + '°').join(' y ')}`] : 'ninguno'].flat();
       },
       minimo: 3,
+      // Se arrastran las dos rectas: y = k por su extremo izquierdo (a la derecha va su rótulo) y x = c por su
+      // cruce con el eje x.
+      arrastres: [
+        { id: 'recta-k', etiqueta: 'recta y = k', color: 'c-i',
+          donde: val => manijaY(sistema(val.k, val.c), val.k, -1.58),
+          mover: (pt, val) => ({ k: TP().delPx(sistema(val.k, val.c), pt).y }) },
+        { id: 'recta-c', etiqueta: 'recta x = c', color: 'c-d',
+          donde: val => TP().enPx(sistema(val.k, val.c), val.c, 0),
+          mover: (pt, val) => ({ c: TP().delPx(sistema(val.k, val.c), pt).x }) },
+      ],
     },
     predice: {
       pregunta: ['Sistema en [0°, 360°): sen ', th, ' = √3/2 y cos ', th, ' = −1/2. ¿Qué ángulos cumplen las dos ecuaciones?'],
@@ -535,7 +575,7 @@
     },
     regla: {
       texto: 'Un sistema pide que se cumplan todas sus ecuaciones a la vez. Su conjunto solución es la intersección de los conjuntos de cada ecuación.',
-      ecuacion: ['S = ', { sub: ['S', '1'] }, ' ∩ ', { sub: ['S', '2'] }],
+      ecuacion: ['S = ', { llave: [{ sub: ['S', '1'] }], nota: 'ecuación 1', color: 'c-i' }, ' ∩ ', { llave: [{ sub: ['S', '2'] }], nota: 'ecuación 2', color: 'c-d' }],
       condicion: 'los dos conjuntos se calculan en el mismo intervalo. Si no comparten ningún ángulo, el sistema no tiene solución.',
       voz: 'La unión junta; el sistema exige las dos.',
     },
@@ -559,11 +599,58 @@
           ], xs => (xs.length ? lista(xs) : 'Ninguno')),
           solucion: {
             texto: S.length ? 'Se queda el ángulo que está en las dos listas.' : 'Las dos listas no comparten ningún ángulo.',
-            ecuacion: [{ sub: ['S', '1'] }, ` = {${S1.map(g => g + '°').join(', ')}};  `, { sub: ['S', '2'] }, ` = {${S2.map(g => g + '°').join(', ')}};  S = ${S.length ? '{' + S.map(g => g + '°').join(', ') + '}' : '∅'}`],
+            ecuacion: [{ sub: ['S', '1'] }, ` = {${S1.map(g => g + '°').join(', ')}}`, '   ·   ', { sub: ['S', '2'] }, ` = {${S2.map(g => g + '°').join(', ')}}`, '   ·   ', `S = ${S.length ? '{' + S.map(g => g + '°').join(', ') + '}' : '∅'}`],
           },
         };
       },
     },
+  };
+
+  // ---------- Laboratorio: figuras propias de las mesas ----------
+  // Soluciones en una vuelta [0°, 360°), con decimales (las de `soluciones` son enteras): sen, cos o tan θ = v.
+  function vuelta(fn, v) {
+    if (fn === 'tan') { const a = deg(Math.atan(v)); return orden([mod360(a), mod360(a + 180)]); }
+    if (Math.abs(v) > 1 + 1e-12) return [];
+    const a = deg(fn === 'sen' ? Math.asin(Math.max(-1, Math.min(1, v))) : Math.acos(Math.max(-1, Math.min(1, v))));
+    return orden((fn === 'sen' ? [a, 180 - a] : [a, -a]).map(x => mod360(Math.round(x * 1e6) / 1e6)));
+  }
+  // Mesa 1: las tres funciones con k de −2 a 2 en una ventana más grande.
+  const VL = { x: [-2.3, 2.3], y: [-2.2, 2.2] };
+  const mesaTres = (fn, v) => {
+    const sols = vuelta(fn, v);
+    return plano({
+      ventana: VL,
+      rectas: [fn === 'sen' ? { y: v, color: 'i' } : { x: fn === 'cos' ? v : 1, color: 'i' }],
+      segmentos: fn === 'tan' ? [{ de: [-Math.cos(Math.atan(v)) * 1.6, -Math.sin(Math.atan(v)) * 1.6], a: [Math.cos(Math.atan(v)) * 1.6, Math.sin(Math.atan(v)) * 1.6], discontinua: true }] : [],
+      rayos: sols.map(g => rayo(g)),
+      puntos: [...sols.map(g => pto(g)), ...(fn === 'tan' ? [{ x: 1, y: v, color: 'i' }] : [])],
+      rotulos: sols.length ? [] : [{ x: 0, y: -1.55, texto: 'no corta: sin solución', color: 'i' }],
+      alt: `${fnTxt[fn]} θ = ${kTxt(v)}: ${sols.length} soluciones en una vuelta`,
+    });
+  };
+  const manijaTres = (fn, v) => (fn === 'sen' ? TP().enPx(mesaTres(fn, v), 2.1, v) : fn === 'cos' ? TP().enPx(mesaTres(fn, v), v, -1.95) : TP().enPx(mesaTres(fn, v), 1, v));
+  // Mesa 2: la franja [0°, b] sobre la gráfica de sen o cos, con k libre: los cortes se cuentan solos.
+  const curvaCos = { puntos: Array.from({ length: 145 }, (_, i) => [i * 5, Math.cos(rad(i * 5))]), color: 'o' };
+  const enFranja = (fn, v, b) => [0, 360].flatMap(o => vuelta(fn, v).map(g => g + o)).filter(g => g <= b + 1e-9);
+  const mesaFranja = (fn, v, b) => {
+    const todos = [0, 360].flatMap(o => vuelta(fn, v).map(g => g + o)), s = enFranja(fn, v, b);
+    if (Math.abs(v) <= 1 + 1e-12 && fn === 'cos' && Math.abs(v - 1) < 1e-9) todos.push(720);   // cos 720° = 1
+    return grafica(b, v, todos.map(g => ({ x: g, y: v, color: 'o', abierto: !(g <= b + 1e-9) })), {
+      curvas: [fn === 'sen' ? curvaSen : curvaCos, { puntos: [[0, v], [720, v]], color: 'i', discontinua: true }],
+      alt: `Gráfica de ${fnTxt[fn]} θ, la recta y = ${kTxt(v)} y el intervalo [0°, ${f(b)}°]: ${s.length} cortes dentro`,
+    });
+  };
+  const cuentaFranja = (fn, v, b) => enFranja(fn, v, b).length + (fn === 'cos' && Math.abs(v - 1) < 1e-9 && b >= 720 ? 1 : 0);
+  // Mesa 3: sen θ · (cos θ − c) = 0 con c de −1,5 a 1,5: el segundo factor puede no aportar o repetir un ángulo.
+  const mesaFactor = cv => {
+    const s1 = [0, 180], s2 = vuelta('cos', cv), todo = orden([...s1, ...s2]);
+    return plano({
+      ventana: { x: [-1.8, 1.8], y: [-1.3, 1.3] },
+      rectas: [{ y: 0, color: 'i' }, { x: cv, color: 'd' }],
+      rotulos: [Object.assign(nombreX(cv, `x = ${kTxt(cv)}`, 'd'), cv > 0.9 ? { x: cv - 0.07, ancla: 'end' } : {})],
+      puntos: [...s1.map(g => pto(g, { color: 'i', rotulo: undefined })), ...s2.map(g => pto(g, { color: 'd', rotulo: s1.includes(g) ? `${f(g)}°: repetido` : `${f(g, 1)}°` }))],
+      alt: `Cortes de y = 0 y de x = ${kTxt(cv)}: ${todo.length} soluciones distintas`,
+    });
   };
 
   return {
@@ -571,6 +658,63 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js', '/nucleo/kit/piezas/ejes.js'],
+    // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera compara seno, coseno y tangente con k de
+    // −2 a 2 (la tangente siempre corta dos veces; seno y coseno, no). La segunda junta la función, la recta y el
+    // final del intervalo en dos vueltas, con k = ±1 y 0 incluidos. La tercera abre c más allá de 1 en el producto
+    // sen θ · (cos θ − c) = 0: el segundo factor deja de aportar, o repite un ángulo con c = ±1.
+    laboratorio: [
+      {
+        id: 'tres-funciones', titulo: 'Seno, coseno y tangente', pieza: 'trig-plano',
+        consigna: 'Elige la función y mueve k entre −2 y 2. Cuenta los cortes de cada vuelta: la tangente se comporta distinto.',
+        controles: [
+          { id: 'fn', etiqueta: 'Función', opciones: [{ valor: 'sen', texto: 'sen' }, { valor: 'cos', texto: 'cos' }, { valor: 'tan', texto: 'tan' }], inicio: 'sen' },
+          { id: 'k', etiqueta: 'k', color: 'c-i', min: -2, max: 2, paso: 0.1, inicio: 1.2, decimales: 1 },
+        ],
+        dibujo: val => ({ datos: mesaTres(val.fn, val.k), estado: {} }),
+        lectura: val => {
+          const s = vuelta(val.fn, val.k);
+          return [`${fnTxt[val.fn]} `, th, ` = ${kTxt(val.k)}: `, s.length ? [th, ` = ${s.map(g => f(g, 1) + '°').join(' o ')}`] : 'sin solución'].flat();
+        },
+        arrastres: [{ id: 'valor-k', etiqueta: 'valor k en la figura', color: 'c-i',
+          donde: val => manijaTres(val.fn, val.k),
+          mover: (pt, val) => { const q = TP().delPx(mesaTres(val.fn, val.k), pt); return { k: val.fn === 'cos' ? q.x : q.y }; } }],
+      },
+      {
+        id: 'franja-libre', titulo: 'La franja y la recta', pieza: 'ejes',
+        consigna: 'Elige seno o coseno, sube o baja la recta y corre el final b. Prueba k = 1, k = 0 y b justo sobre un corte.',
+        controles: [
+          { id: 'fn', etiqueta: 'Función', opciones: [{ valor: 'sen', texto: 'sen' }, { valor: 'cos', texto: 'cos' }], inicio: 'cos' },
+          { id: 'k', etiqueta: 'k', color: 'c-i', min: -1, max: 1, paso: 0.25, inicio: 0.5, decimales: 2 },
+          { id: 'b', etiqueta: 'b', color: 'c-d', min: 30, max: 720, paso: 30, inicio: 300, unidad: '°', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: mesaFranja(val.fn, val.k, val.b), estado: {} }),
+        lectura: val => {
+          const m = cuentaFranja(val.fn, val.k, val.b);
+          return [`${fnTxt[val.fn]} `, th, ` = ${kTxt(val.k)} en [0°, ${f(val.b)}°]: ${m} ${m === 1 ? 'solución' : 'soluciones'}`];
+        },
+        arrastres: [
+          { id: 'borde-b', etiqueta: 'final b del intervalo', color: 'c-d',
+            donde: val => { const G = EJES().geometria(mesaFranja(val.fn, val.k, val.b)); return { x: G.X(val.b), y: G.Y(-0.95) }; },
+            mover: (pt, val) => ({ b: xDeEjes(mesaFranja(val.fn, val.k, val.b), pt.x) }) },
+          { id: 'recta-k', etiqueta: 'recta y = k', color: 'c-i',
+            donde: val => { const G = EJES().geometria(mesaFranja(val.fn, val.k, val.b)); return { x: G.X(705), y: G.Y(val.k) }; },
+            mover: (pt, val) => ({ k: yDeEjes(mesaFranja(val.fn, val.k, val.b), pt.y) }) },
+        ],
+      },
+      {
+        id: 'factor-fuera', titulo: 'Un factor que no aporta', pieza: 'trig-plano',
+        consigna: 'Ecuación: sen θ · (cos θ − c) = 0. Lleva c más allá de 1 y también justo a 1 o −1.',
+        controles: [{ id: 'c', etiqueta: 'c', color: 'c-d', min: -1.5, max: 1.5, paso: 0.1, inicio: 1.2, decimales: 1 }],
+        dibujo: val => ({ datos: mesaFactor(val.c), estado: {} }),
+        lectura: val => {
+          const m = orden([0, 180, ...vuelta('cos', val.c)]).length;
+          return [c, ` = ${kTxt(val.c)}: ${m} soluciones distintas`];
+        },
+        arrastres: [{ id: 'recta-c', etiqueta: 'recta x = c', color: 'c-d',
+          donde: val => TP().enPx(mesaFactor(val.c), val.c, 0),
+          mover: (pt, val) => ({ c: TP().delPx(mesaFactor(val.c), pt).x }) }],
+      },
+    ],
     historia: {
       texto: 'En 1593, Adriaan van Roomen desafió a los matemáticos con una ecuación de grado cuarenta y cinco. François Viète vio que escondía una relación entre un ángulo y su múltiplo, y en 1595 publicó sus soluciones. Mirar la ecuación como un problema de ángulos le mostró soluciones que el álgebra sola ocultaba.',
       pregunta: '¿Cuántas soluciones puede ocultar una sola ecuación?',

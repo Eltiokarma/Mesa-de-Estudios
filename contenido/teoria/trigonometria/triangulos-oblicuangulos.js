@@ -7,6 +7,10 @@
  * Colores (regla 4): cada lado va con su ángulo opuesto. A y a en naranja (c-o), B y b en turquesa (c-i),
  * C y c en verde (c-d); el radio circunscrito R (y su diámetro 2R) y los rumbos θ en rojo (c-h: no salen juntos).
  * La altura h y las líneas norte-sur van sin color (contorno): son construcciones, no datos.
+ * Ronda 2 (14 nov, noche): manijas en las cinco ideas (vértices C y A sobre la circunferencia, el compás por su
+ * arco, el vértice C del triángulo y el rayo del rumbo, que también elige el cuadrante); la pieza común
+ * «triangulo» no trae inversa: se invierte aquí (enTri, delTri). Llaves en las cinco reglas, separadores «   ·   »
+ * y laboratorio de tres mesas. Hallazgo 9: la idea 5 usa dos representaciones (ver su comentario en «Mira»).
  * Errores: TR10, TR23, TR24 y TR25 de docs/investigacion/trigonometria-ideas-erroneas.md (hipótesis de aula).
  * Nuevos, hipótesis sin medir: LS-RADIO, LS-LADO-MAYOR, LS-NUMERO, LS-INVERSA, LS-OPUESTO, LS-NINGUNO,
  * LS-SEGUNDO-SIEMPRE, LS-TOCA, LC-SUMA, LC-SUPLE, LC-SENO, LP-SIGNO, LP-AGUDO, LT-SIN-TAN, LT-TAN, LT-INVERSA,
@@ -70,6 +74,11 @@
     const p = [V[0] + s * u[0], V[1] + s * u[1]], q = [V[0] + s * w[0], V[1] + s * w[1]], m = [p[0] + s * w[0], p[1] + s * w[1]];
     return [Object.assign({ de: p, a: m, grosor: 'cuadricula' }, extra), Object.assign({ de: m, a: q, grosor: 'cuadricula' }, extra)];
   }
+  // Gesto directo (docs/teoria.md §4b). trig-plano trae inversas; la pieza común «triangulo» no (no se toca):
+  // su escala es lineal, así que se invierte aquí con dos puntos de su geometría.
+  const TP = () => Kit.piezas['trig-plano'], TRI = () => Kit.piezas.triangulo;
+  const enTri = (d, x, y) => { const G = TRI().geometria(d); return { x: G.X(x), y: G.Y(y) }; };
+  const delTri = (d, pt) => { const G = TRI().geometria(d), x0 = G.X(0), y0 = G.Y(0); return { x: (pt.x - x0) / (G.X(1) - x0), y: (pt.y - y0) / (G.Y(1) - y0) }; };
   const raizTxt = N => (Number.isInteger(Math.sqrt(N)) ? f(Math.sqrt(N)) : `√${f(N)} ≈ ${f(Math.sqrt(N))}`);
 
   // ---------- Idea 1: cada lado con su seno ----------
@@ -107,7 +116,7 @@
     temas: ['Ley de senos'],
     pieza: 'trig-plano',
     juega: {
-      consigna: 'Cambia A, B y el tamaño de la circunferencia. Cada lado lleva el color de su ángulo opuesto; la lectura lo divide entre ese seno.',
+      consigna: 'Arrastra los vértices C y A. Cada lado lleva el color de su ángulo opuesto; la lectura lo divide entre ese seno.',
       voz: 'Conservemos cada lado frente a su ángulo; después comparemos las tres razones.',
       controles: [
         { id: 'A', etiqueta: 'A', color: 'c-o', min: 20, max: 100, paso: 10, inicio: 50, unidad: '°', decimales: 0 },
@@ -115,8 +124,18 @@
         { id: 'R', etiqueta: 'tamaño', min: 1, max: 2, paso: 0.5, inicio: 1.5, decimales: 1 },
       ],
       dibujo: val => ({ datos: inscrito(val.A, val.B, val.R), estado: {} }),
-      lectura: val => [a, '/sen ', A, ' = ', b, '/sen ', B, ' = ', c, '/sen ', C, ` = ${f(2 * val.R)}`],
+      lectura: val => [A, ` = ${f(val.A)}° · `, B, ` = ${f(val.B)}° · `, a, '/sen ', A, ' = ', b, '/sen ', B, ` = ${f(2 * val.R)}`],
       minimo: 3,
+      // Se arrastran los vértices por la circunferencia: C cambia el ángulo A; A cambia B (y el ángulo A no cambia:
+      // todo ángulo inscrito que mira el mismo arco mide lo mismo).
+      arrastres: [
+        { id: 'vertice-c', etiqueta: 'vértice C: cambia A', color: 'c-o',
+          donde: val => TP().enPx(inscrito(val.A, val.B, val.R), ...P(val.R, -90 + val.A)),
+          mover: (pt, val) => ({ A: TP().anguloDe(inscrito(val.A, val.B, val.R), pt, { cerca: -90 + val.A }) + 90 }) },
+        { id: 'vertice-a', etiqueta: 'vértice A: cambia B', color: 'c-i',
+          donde: val => TP().enPx(inscrito(val.A, val.B, val.R), ...P(val.R, -90 + val.A + 2 * val.B)),
+          mover: (pt, val) => ({ B: (TP().anguloDe(inscrito(val.A, val.B, val.R), pt, { cerca: -90 + val.A + 2 * val.B }) + 90 - val.A) / 2 }) },
+      ],
     },
     predice: {
       pregunta: 'Las tres razones dan siempre el mismo número, aunque cambie la forma del triángulo. ¿Qué segmento de la figura mide exactamente ese número?',
@@ -149,7 +168,7 @@
     },
     regla: {
       texto: 'En todo triángulo, cada lado dividido entre el seno de su ángulo opuesto da lo mismo: el diámetro de la circunferencia que pasa por los tres vértices.',
-      ecuacion: [{ frac: [a, ['sen ', A]] }, ' = ', { frac: [b, ['sen ', B]] }, ' = ', { frac: [c, ['sen ', C]] }, ' = 2', R],
+      ecuacion: [{ llave: [{ frac: [a, ['sen ', A]] }], nota: 'lado y opuesto', color: 'c-o' }, ' = ', { frac: [b, ['sen ', B]] }, ' = ', { frac: [c, ['sen ', C]] }, ' = ', { llave: ['2', R], nota: 'el diámetro', color: 'c-h' }],
       condicion: 'a, b y c se oponen a A, B y C; el triángulo no es degenerado y R es el radio circunscrito.',
       voz: 'Un lado y su ángulo opuesto forman una pareja: no los separes.',
     },
@@ -229,6 +248,12 @@
     if (Math.abs(av - h) < 1e-9) return { n: 1, B1: 90 };
     return Ad + B2 < 180 - 1e-9 && av < bv ? { n: 2, B1, B2 } : { n: 1, B1 };
   };
+  // Manija del compás: un punto de su arco que siempre queda dentro de la ventana (y ≥ −0,9), a la derecha de C.
+  const manijaCompas = (Ad, bv, av, d) => {
+    const Cp = P(bv, Ad), phi = asen(Math.min(sen(35), (Cp[1] + 0.9) / av));
+    return TP().enPx(d, Cp[0] + av * cos(phi), Cp[1] - av * sen(phi));
+  };
+  const largoCompas = (Ad, bv, d, pt) => { const q = TP().delPx(d, pt), Cp = P(bv, Ad); return Math.hypot(q.x - Cp[0], q.y - Cp[1]); };
   const ambiguo = {
     id: 'caso-ambiguo',
     titulo: 'Dos triángulos, mismos datos',
@@ -245,6 +270,10 @@
           : [a, ` = ${f(val.a)}: dos triángulos, `, B, ` ≈ ${f(k.B1, 1)}° o ${f(k.B2, 1)}°`];
       },
       minimo: 3,
+      // Se arrastra el compás por su arco, abajo a la derecha de C: abrirlo o cerrarlo cambia a.
+      arrastres: [{ id: 'compas', etiqueta: 'punta del compás a', color: 'c-o',
+        donde: val => manijaCompas(35, 6, val.a, compas(35, 6, val.a).datos),
+        mover: (pt, val) => ({ a: largoCompas(35, 6, compas(35, 6, val.a).datos, pt) }) }],
     },
     predice: (() => {
       const k = cuenta(30, 8, 5);
@@ -269,17 +298,17 @@
         datos: compas(30, 8, 5, { L: 12.3, dh: 2, dc: 3, dt: [4, 5] }).datos,
         voz: 'La altura decide antes que la calculadora.',
         pasos: [
-          { estado: { corte: 1 }, texto: 'El ángulo A y el lado b fijan el vértice C.', ecuacion: [A, ' = 30°;  ', b, ' = 8'] },
+          { estado: { corte: 1 }, texto: 'El ángulo A y el lado b fijan el vértice C.', ecuacion: [A, ' = 30°', '   ·   ', b, ' = 8'] },
           { estado: { corte: 2 }, texto: 'La distancia de C a la base es la altura.', ecuacion: ['h = ', b, ' sen ', A, ' = 8 · 0,5 = 4'] },
           { estado: { corte: 3 }, texto: 'El compás mide 5: más que h y menos que b.', ecuacion: ['4 < ', a, ' = 5 < 8'] },
           { estado: { corte: 4 }, texto: 'La ley de senos da el primer ángulo.', ecuacion: ['sen ', B, ' = ', { frac: ['8 · sen 30°', '5'] }, ` = 0,8  ⇒  `, { sub: [B, '1'] }, ` ≈ ${f(k.B1)}°`] },
-          { estado: { corte: 5 }, texto: 'El suplemento tiene el mismo seno y también cabe.', ecuacion: [{ sub: [B, '2'] }, ` = 180° − ${f(k.B1)}° = ${f(k.B2)}°;  30° + ${f(k.B2)}° < 180°`] },
+          { estado: { corte: 5 }, texto: 'El suplemento tiene el mismo seno y también cabe.', ecuacion: [{ sub: [B, '2'] }, ` = 180° − ${f(k.B1)}° = ${f(k.B2)}°`, '   ·   ', `30° + ${f(k.B2)}° < 180°`] },
         ],
       };
     })(),
     regla: {
       texto: 'Con A agudo y no comprendido, compara a con h = b sen A y con b: a < h, ninguno; h < a < b, dos; a = h o a ≥ b, uno.',
-      ecuacion: ['sen ', B, ' = ', { frac: [[b, ' sen ', A], a] }, ';   ', { sub: [B, '2'] }, ' = 180° − ', { sub: [B, '1'] }],
+      ecuacion: ['sen ', B, ' = ', { frac: [[b, ' sen ', A], a] }, '   ·   ', { sub: [B, '2'] }, ' = ', { llave: ['180° − ', { sub: [B, '1'] }], nota: 'el suplemento', color: 'c-i' }],
       condicion: 'A es agudo y se opone a a. Cada candidato sirve solo si A + B < 180°.',
       voz: 'El arco seno da una rama; el suplemento puede ser la otra.',
     },
@@ -352,13 +381,17 @@
     juega: {
       consigna: 'Los lados b y c no cambian. Abre o cierra el ángulo A entre ellos y mira cómo cambia el lado a, frente a A.',
       voz: 'Fíjate en el signo del último término cuando A pasa de 90°.',
-      controles: [{ id: 'A', etiqueta: 'A', color: 'c-o', min: 30, max: 130, paso: 20, inicio: 50, unidad: '°', decimales: 0 }],
+      controles: [{ id: 'A', etiqueta: 'A', color: 'c-o', min: 30, max: 130, paso: 10, inicio: 50, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: triLC(val.A, 4, 6), estado: {} }),
       lectura: val => {
         const t = -48 * cos(val.A);
         return [{ sup: [a, '2'] }, ` = 16 + 36 ${t < 0 ? '−' : '+'} ${f(Math.abs(t))} = ${f(52 + t)}`];
       },
       minimo: 3,
+      // Se arrastra el vértice C alrededor de A (b no cambia): el ángulo A se abre o se cierra.
+      arrastres: [{ id: 'vertice-c', etiqueta: 'vértice C: cambia A', color: 'c-o',
+        donde: val => enTri(triLC(val.A, 4, 6), 4 * cos(val.A), 4 * sen(val.A)),
+        mover: (pt, val) => { const q = delTri(triLC(val.A, 4, 6), pt); return { A: Math.atan2(q.y, q.x) / RAD }; } }],
     },
     predice: (() => {
       const N = 25 + 64 + 40;
@@ -381,7 +414,7 @@
       datos: triLC(120, 5, 8, { altura: 2, aTexto: 'a = ?', aFinal: `a = ${raizTxt(129)}` }),
       voz: 'Una altura convierte el problema en Pitágoras.',
       pasos: [
-        { estado: { paso: 1 }, texto: 'Se conocen dos lados y el ángulo entre ellos.', ecuacion: [b, ' = 5;  ', c, ' = 8;  ', A, ' = 120°'] },
+        { estado: { paso: 1 }, texto: 'Se conocen dos lados y el ángulo entre ellos.', ecuacion: [b, ' = 5', '   ·   ', c, ' = 8', '   ·   ', A, ' = 120°'] },
         { estado: { paso: 2 }, texto: 'La altura desde C cae fuera, detrás de A.', ecuacion: ['h = ', b, ` sen 120° = ${f(5 * sen(120))}`] },
         { estado: { paso: 2 }, texto: 'De H a B hay c más la sombra de b.', ecuacion: ['HB = ', c, ' − ', b, ' cos ', A, ' = 8 + 2,5 = 10,5'] },
         { estado: { paso: 2 }, texto: 'Pitágoras en el triángulo CHB.', ecuacion: [{ sup: [a, '2'] }, ` = ${f(25 * 0.75)} + ${f(110.25)} = 129`] },
@@ -390,7 +423,7 @@
     },
     regla: {
       texto: 'Con dos lados y el ángulo entre ellos, el tercer lado sale de Pitágoras corregido: el término −2bc cos A resta si A es agudo y suma si es obtuso.',
-      ecuacion: [{ sup: [a, '2'] }, ' = ', { sup: [b, '2'] }, ' + ', { sup: [c, '2'] }, ' − 2', b, c, ' cos ', A],
+      ecuacion: [{ sup: [a, '2'] }, ' = ', { llave: [{ sup: [b, '2'] }, ' + ', { sup: [c, '2'] }], nota: 'Pitágoras' }, ' ', { llave: ['− 2', b, c, ' cos ', A], nota: 'la corrección', color: 'c-o' }],
       condicion: 'A es el ángulo comprendido entre b y c, y se opone a a. Con A = 90° queda Pitágoras.',
       voz: 'El coseno trae su signo; no lo cambies a mano.',
     },
@@ -466,6 +499,10 @@
         return [b, ' cos ', A, ' + ', a, ' cos ', B, ` ≈ ${f(t.bv * cos(val.A))} + ${f(t.av * cos(val.B))} = 6`];
       },
       minimo: 3,
+      // Se arrastra el vértice C: su posición fija los dos ángulos de la base, A y B, a la vez.
+      arrastres: [{ id: 'vertice-c', etiqueta: 'vértice C: cambia A y B', color: 'c-o',
+        donde: val => { const t = triLP(val.A, val.B, 6); return enTri(t, t.bv * cos(val.A), t.bv * sen(val.A)); },
+        mover: (pt, val) => { const q = delTri(triLP(val.A, val.B, 6), pt); return { A: Math.atan2(q.y, q.x) / RAD, B: Math.atan2(q.y, 6 - q.x) / RAD }; } }],
     },
     predice: {
       pregunta: 'Ahora B mide 110°: el pie de la altura cae fuera de la base, más allá de B. ¿Sigue valiendo c = b cos A + a cos B?',
@@ -486,7 +523,7 @@
         datos: t,
         voz: 'Una sombra por paso; el signo viene del coseno.',
         pasos: [
-          { estado: { paso: 1 }, texto: 'La altura desde C cae fuera, más allá de B.', ecuacion: [A, ' = 35°;  ', B, ' = 110°'] },
+          { estado: { paso: 1 }, texto: 'La altura desde C cae fuera, más allá de B.', ecuacion: [A, ' = 35°', '   ·   ', B, ' = 110°'] },
           { estado: { paso: 2 }, texto: 'La sombra de b sobre la base va de A a H.', ecuacion: ['AH = ', b, ` cos 35° ≈ ${f(t.bv * cos(35))}`] },
           { estado: { paso: 3 }, texto: 'La sombra de a va de B a H, hacia atrás.', ecuacion: [a, ` cos 110° ≈ ${f(t.av * cos(110))}`] },
           { estado: { paso: 3 }, texto: 'La base es la suma de las dos, con su signo.', ecuacion: [c, ` ≈ ${f(t.bv * cos(35))} + (${f(t.av * cos(110))}) = 6`] },
@@ -497,7 +534,7 @@
     })(),
     regla: {
       texto: 'Cada lado es la suma de las sombras de los otros dos sobre él. La diferencia de dos lados sobre su suma se lee con tangentes de semiángulos.',
-      ecuacion: [c, ' = ', a, ' cos ', B, ' + ', b, ' cos ', A, ';   ', { frac: [[a, ' − ', b], [a, ' + ', b]] }, ' = ', { frac: [['tan ', { frac: [[A, ' − ', B], '2'] }], ['tan ', { frac: [[A, ' + ', B], '2'] }]] }],
+      ecuacion: [c, ' = ', { llave: [a, ' cos ', B], nota: 'sombra de a', color: 'c-o' }, ' + ', { llave: [b, ' cos ', A], nota: 'sombra de b', color: 'c-i' }, '   ·   ', { frac: [[a, ' − ', b], [a, ' + ', b]] }, ' = ', { frac: [['tan ', { frac: [[A, ' − ', B], '2'] }], ['tan ', { frac: [[A, ' + ', B], '2'] }]] }],
       condicion: 'Las sombras llevan el signo del coseno: con ángulo obtuso, se restan. En las dos leyes, a se opone a A.',
       voz: 'Una sombra negativa no es un error: dice hacia dónde cae.',
     },
@@ -541,6 +578,11 @@
   // de dos tramos y el ángulo interior en el giro (la predicción). · Debe verse: que el ángulo del triángulo se
   // arma con los rumbos y las líneas norte-sur, no se lee directo.
   const estandar = (ns, t, eo) => (ns === 'N' ? (eo === 'E' ? 90 - t : 90 + t) : (eo === 'E' ? -90 + t : -90 - t));
+  // Del punto del dedo (x, y) al rumbo: N o S según y, E u O según x, y θ medido desde la línea norte-sur.
+  const rumboDe = q => {
+    const ns = q.y >= 0 ? 'N' : 'S', eo = q.x >= 0 ? 'E' : 'O';
+    return { q: ns + eo, t: Math.atan2(Math.abs(q.x), Math.abs(q.y)) / RAD };
+  };
   const rumboTxt = (ns, t, eo) => `${ns} ${f(t)}° ${eo}`;
   const rosa = (ns, t, eo) => {
     const g = estandar(ns, t, eo);
@@ -609,6 +651,11 @@
       dibujo: val => ({ datos: rosa(val.q[0], val.t, val.q[1]), estado: {} }),
       lectura: val => [`${rumboTxt(val.q[0], val.t, val.q[1])}: `, th, ` = ${f(val.t)}° desde el ${val.q[0] === 'N' ? 'norte' : 'sur'}`],
       minimo: 3,
+      // Se arrastra el rayo del rumbo (más adentro que su punta, donde va el rótulo): el cuadrante sale del lado
+      // hacia el que apunta y θ, del ángulo con la línea norte-sur.
+      arrastres: [{ id: 'rayo', etiqueta: 'rayo del rumbo θ', color: 'c-h',
+        donde: val => { const g = estandar(val.q[0], val.t, val.q[1]); return TP().enPx(rosa(val.q[0], val.t, val.q[1]), 0.72 * cos(g), 0.72 * sen(g)); },
+        mover: (pt, val) => rumboDe(TP().delPx(rosa(val.q[0], val.t, val.q[1]), pt)) }],
     },
     predice: (() => {
       const r1 = ['N', 40, 'E'], r2 = ['S', 70, 'E'];
@@ -627,6 +674,9 @@
         noCoincide: 'Revisemos con la línea norte-sur dibujada en C.',
       };
     })(),
+    // Hallazgo 9 (docs/auditoria-teoria.md): «Juega» usa la rosa de un solo rumbo y «Mira» el viaje de dos tramos.
+    // Son dos representaciones a propósito: la rosa fija cómo se lee un rumbo; el viaje la repite en cada punto
+    // (cada tramo lleva su propia rosa: la línea norte-sur y el arco rojo desde ella).
     mira: (() => {
       const v = viaje(['N', 40, 'E'], 5, ['S', 70, 'E'], 4);
       return {
@@ -644,7 +694,7 @@
     })(),
     regla: {
       texto: 'Un rumbo es un ángulo agudo medido desde el norte o el sur hacia el este o el oeste. El ángulo interior se arma con rumbos y líneas norte-sur.',
-      ecuacion: ['N ', th, ' E:  ', th, ' desde el norte hacia el este'],
+      ecuacion: ['N ', { llave: [th], nota: 'desde el norte', color: 'c-h' }, ' E'],
       condicion: 'Las líneas norte-sur de todos los puntos son paralelas; θ va de 0° a 90°.',
       voz: 'Primero traduce el rumbo; después elige la ley.',
     },
@@ -685,11 +735,102 @@
     },
   };
 
+  // ---------- Laboratorio: figuras propias de las mesas ----------
+  // Mesa 1: dos lados y el ángulo entre ellos, todo libre (A de 10° a 170°).
+  const mesaLC = (Ad, bv, cv) => triLC(Ad, bv, cv);
+  // Mesa 2: el compás con A, b y a libres; los cortes y los ángulos B salen de la figura.
+  const mesaCompas = (Ad, bv, av) => {
+    const L = Math.max(12, bv * cos(Ad) + av + 1);
+    const r = compas(Ad, bv, av, { L, alto: Math.max(bv * sen(Ad) + 1.2, 2.5) });
+    const Cp = P(bv, Ad);
+    return { datos: r.datos, Bs: r.xs.map(x => 180 - Math.atan2(Cp[1], Cp[0] - x) / RAD).sort((p, q) => p - q) };
+  };
+  // Mesa 3: un viaje de dos tramos con sus rumbos; se arrastran C (primer tramo) y B (segundo tramo).
+  const QS = [{ valor: 'NE', texto: 'N…E' }, { valor: 'NO', texto: 'N…O' }, { valor: 'SE', texto: 'S…E' }, { valor: 'SO', texto: 'S…O' }];
+  const mesaViaje = val => viajeDatos([val.q1[0], val.t1, val.q1[1]], val.b, [val.q2[0], val.t2, val.q2[1]], val.a);
+
   return {
     unidad: 'trigonometria.triangulos-oblicuangulos',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js', '/nucleo/kit/piezas/triangulo.js'],
+    // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera abre la ley de cosenos: b, c y A libres
+    // (A hasta 150°), con C que se arrastra (cambia A y b a la vez). La segunda abre el caso ambiguo: A, b y a libres,
+    // para ver cuándo la altura deja dos, uno o ningún triángulo. La tercera arma un viaje de dos tramos con
+    // cualquier rumbo y da el ángulo interior en C y la distancia de regreso.
+    laboratorio: [
+      {
+        id: 'cosenos-libre', titulo: 'Dos lados y su ángulo', pieza: 'triangulo',
+        consigna: 'Arrastra C para cambiar el ángulo A y el lado b; arrastra B para cambiar c. Compara a con Pitágoras.',
+        controles: [
+          { id: 'A', etiqueta: 'A', color: 'c-o', min: 10, max: 150, paso: 5, inicio: 100, unidad: '°', decimales: 0 },
+          { id: 'b', etiqueta: 'b', color: 'c-i', min: 2, max: 8, paso: 0.5, inicio: 4, decimales: 1 },
+          { id: 'c', etiqueta: 'c', color: 'c-d', min: 2, max: 8, paso: 0.5, inicio: 6, decimales: 1 },
+        ],
+        dibujo: val => ({ datos: mesaLC(val.A, val.b, val.c), estado: {} }),
+        lectura: val => {
+          const p = val.b * val.b + val.c * val.c, t = 2 * val.b * val.c * cos(val.A);
+          return [a, ` ≈ ${f(Math.sqrt(p - t))} · Pitágoras daría ${f(Math.sqrt(p))} · `, A, ` = ${f(val.A)}°`];
+        },
+        arrastres: [
+          { id: 'vertice-c', etiqueta: 'vértice C: cambia A y b', color: 'c-o',
+            donde: val => enTri(mesaLC(val.A, val.b, val.c), val.b * cos(val.A), val.b * sen(val.A)),
+            mover: (pt, val) => { const q = delTri(mesaLC(val.A, val.b, val.c), pt); return { A: Math.atan2(q.y, q.x) / RAD, b: Math.hypot(q.x, q.y) }; } },
+          { id: 'vertice-b', etiqueta: 'vértice B: cambia c', color: 'c-d',
+            donde: val => enTri(mesaLC(val.A, val.b, val.c), val.c, 0),
+            mover: (pt, val) => ({ c: delTri(mesaLC(val.A, val.b, val.c), pt).x }) },
+        ],
+      },
+      {
+        id: 'compas-libre', titulo: 'El compás con A libre', pieza: 'trig-plano',
+        consigna: 'Cambia el ángulo A, el lado b y el compás a. Busca dos triángulos, uno rectángulo y ninguno.',
+        controles: [
+          { id: 'A', etiqueta: 'A', color: 'c-o', min: 20, max: 80, paso: 5, inicio: 40, unidad: '°', decimales: 0 },
+          { id: 'b', etiqueta: 'b', color: 'c-i', min: 3, max: 8, paso: 0.5, inicio: 6, decimales: 1 },
+          { id: 'a', etiqueta: 'a', color: 'c-o', min: 1, max: 10, paso: 0.25, inicio: 4.5, decimales: 2 },
+        ],
+        dibujo: val => ({ datos: mesaCompas(val.A, val.b, val.a).datos, estado: {} }),
+        lectura: val => {
+          const h = val.b * sen(val.A), Bs = mesaCompas(val.A, val.b, val.a).Bs;
+          return [`h = ${f(h)} · `, Bs.length ? [`${Bs.length === 1 ? 'un triángulo' : 'dos triángulos'}: `, B, ` ≈ ${Bs.map(x => f(x, 1) + '°').join(' o ')}`] : 'ningún triángulo'].flat();
+        },
+        arrastres: [{ id: 'compas', etiqueta: 'punta del compás a', color: 'c-o',
+          donde: val => manijaCompas(val.A, val.b, val.a, mesaCompas(val.A, val.b, val.a).datos),
+          mover: (pt, val) => ({ a: largoCompas(val.A, val.b, mesaCompas(val.A, val.b, val.a).datos, pt) }) }],
+      },
+      {
+        id: 'viaje-libre', titulo: 'Un viaje con dos rumbos', pieza: 'trig-plano',
+        consigna: 'Arrastra C y B, o elige cada rumbo y cada largo. La lectura da el ángulo en C y la distancia de regreso.',
+        controles: [
+          { id: 't1', etiqueta: 'θ₁', color: 'c-h', min: 5, max: 85, paso: 5, inicio: 40, unidad: '°', decimales: 0 },
+          { id: 'q1', etiqueta: 'Tramo 1', opciones: QS, inicio: 'NE' },
+          { id: 'b', etiqueta: 'b', color: 'c-i', min: 2, max: 9, paso: 1, inicio: 5, unidad: 'km', decimales: 0 },
+          { id: 't2', etiqueta: 'θ₂', color: 'c-h', min: 5, max: 85, paso: 5, inicio: 70, unidad: '°', decimales: 0 },
+          { id: 'q2', etiqueta: 'Tramo 2', opciones: QS, inicio: 'SE' },
+          { id: 'a', etiqueta: 'a', color: 'c-o', min: 2, max: 9, paso: 1, inicio: 4, unidad: 'km', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: mesaViaje(val), estado: {} }),
+        lectura: val => {
+          const v = viaje([val.q1[0], val.t1, val.q1[1]], val.b, [val.q2[0], val.t2, val.q2[1]], val.a);
+          return [C, ` = ${f(v.ang)}° · `, c, ` ≈ ${f(v.cv)} km de regreso`];
+        },
+        arrastres: [
+          { id: 'punto-c', etiqueta: 'punto C: primer tramo', color: 'c-i',
+            donde: val => { const v = viaje([val.q1[0], val.t1, val.q1[1]], val.b, [val.q2[0], val.t2, val.q2[1]], val.a); return TP().enPx(mesaViaje(val), v.Cp[0], v.Cp[1]); },
+            mover: (pt, val) => {
+              const q = TP().delPx(mesaViaje(val), pt), r = rumboDe(q);
+              return { q1: r.q, t1: r.t, b: Math.hypot(q.x, q.y) };
+            } },
+          { id: 'punto-b', etiqueta: 'punto B: segundo tramo', color: 'c-o',
+            donde: val => { const v = viaje([val.q1[0], val.t1, val.q1[1]], val.b, [val.q2[0], val.t2, val.q2[1]], val.a); return TP().enPx(mesaViaje(val), v.Bp[0], v.Bp[1]); },
+            mover: (pt, val) => {
+              const v = viaje([val.q1[0], val.t1, val.q1[1]], val.b, [val.q2[0], val.t2, val.q2[1]], val.a);
+              const q = TP().delPx(mesaViaje(val), pt), d = { x: q.x - v.Cp[0], y: q.y - v.Cp[1] }, r = rumboDe(d);
+              return { q2: r.q, t2: r.t, a: Math.hypot(d.x, d.y) };
+            } },
+        ],
+      },
+    ],
     historia: {
       texto: 'En el siglo XIII, Nasir al-Din al-Tusi ordenó en su Tratado del cuadrilátero las relaciones de senos de la trigonometría plana y esférica, heredadas de la astronomía. Su pregunta sigue viva en cada triángulo oblicuángulo: ¿qué datos bastan para reconstruir la figura? A veces dos lados y un ángulo dejan dos respuestas posibles.',
       pregunta: '¿Tres datos bastan siempre para dibujar un solo triángulo?',

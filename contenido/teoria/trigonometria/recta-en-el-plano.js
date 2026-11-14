@@ -6,6 +6,10 @@
  * Colores (regla 4): el avance horizontal Δx en turquesa (c-i), la subida Δy en rojo (c-h), las distancias y las
  * áreas que se miden (d, A) en verde (c-d) y la pendiente m con su inclinación θ en naranja (c-o; la recta cuya
  * pendiente se estudia también va en naranja).
+ * Ronda 2 (14 nov, noche): manijas en las seis ideas (el punto B, el vértice C, la punta del avance y la subida,
+ * el corte b y un punto de la recta, y un punto de la recta naranja que gira), llaves en las reglas, separadores
+ * «   ·   » entre relaciones y laboratorio de tres mesas. Las seis ideas usan la misma pieza en «Juega» y en «Mira»;
+ * los datos de «Mira» son otro caso de la misma figura (hallazgo 9: ver el comentario de cada mira).
  * Errores: ninguno documentado en docs/investigacion/ para esta unidad. Hipótesis de distractor (sin medir):
  * DIST-SUMA, DIST-SIN-RAIZ, DIST-SIGNO, DIV-PESOS, DIV-MEDIO, DIV-TERCIO, AREA-MITAD, AREA-SIN-ABS, AREA-CAJA,
  * BAR-MITAD, BAR-SUMA, BAR-MEDIO-LADO, PEND-VERT-CERO, PEND-SOLO-DY, PEND-INFINITO, PEND-INVERSA, PEND-SIGNO,
@@ -35,6 +39,11 @@
   const GRA = 180 / Math.PI;
   const gcd = (a, b) => (b ? gcd(b, a % b) : Math.abs(a));
   const P = (x, y) => `(${f(x)}; ${f(y)})`;
+  // y = mx + b escrita sin «1x» ni «0x»: y = x − 1, y = −2.
+  const ecRecta = (mm, bb) => {
+    const t = mm === 0 ? '' : `${mm === 1 ? '' : mm === -1 ? '−' : f(mm)}x`;
+    return `y = ${t}${t ? (bb ? ` ${bb < 0 ? '−' : '+'} ${f(Math.abs(bb))}` : '') : f(bb)}`;
+  };
   const par = v => (v < 0 ? `(${f(v)})` : f(v));
   const menos = (letra, v) => (v === 0 ? letra : `${letra} ${v < 0 ? '+' : '−'} ${f(Math.abs(v))}`);
   // Fracción exacta p/q simplificada, con el signo adelante.
@@ -66,6 +75,9 @@
     return ops.slice(0, 4);
   }
 
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza (enPx y delPx).
+  const TP = () => Kit.piezas['trig-plano'];
+  const aPx = (dat, x, y) => TP().enPx(dat, x, y), dePx = (dat, pt) => TP().delPx(dat, pt);
   // Plano cuadriculado de la unidad (una sola escala) y una recta y = mx + b (o x = k) recortada a la ventana.
   const VEN = { x: [-6, 6], y: [-6, 6] };
   const plano = (o = {}) => Object.assign({ ventana: o.ventana || VEN, numeros: o.numeros === undefined ? 1 : o.numeros, segmentos: [], puntos: [], rotulos: [] }, o.extra || {});
@@ -94,6 +106,7 @@
       alt: `Puntos A ${P(x1, y1)} y B ${P(x2, y2)}: catetos de ${f(Math.abs(x2 - x1))} y ${f(Math.abs(y2 - y1))}, distancia ${f(Math.hypot(x2 - x1, y2 - y1))}`,
     },
   });
+  const dist1 = v => triDist(1, 1, v.x, v.y, { ventana: { x: [-1, 7.5], y: [-1, 7.5] }, ladoA: 'se' });
   const distancia = {
     id: 'distancia',
     titulo: 'La distancia es una hipotenusa',
@@ -106,9 +119,13 @@
         { id: 'x', etiqueta: 'x de B', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 4, decimales: 0 },
         { id: 'y', etiqueta: 'y de B', color: 'c-h', min: 2, max: 6, paso: 1, inicio: 4, decimales: 0 },
       ],
-      dibujo: v => ({ datos: triDist(1, 1, v.x, v.y, { ventana: { x: [-1, 7.5], y: [-1, 7.5] }, ladoA: 'se' }), estado: {} }),
+      dibujo: v => ({ datos: dist1(v), estado: {} }),
       lectura: v => [d, ` = √(${f(v.x - 1)}² + ${f(v.y - 1)}²) ≈ ${f(Math.hypot(v.x - 1, v.y - 1))}`],
       minimo: 3,
+      // Se arrastra el punto B: los dos catetos y la hipotenusa lo siguen.
+      arrastres: [{ id: 'punto-b', etiqueta: 'punto B',
+        donde: v => aPx(dist1(v), v.x, v.y),
+        mover: (pt, v) => { const q = dePx(dist1(v), pt); return { x: q.x, y: q.y }; } }],
     },
     predice: {
       pregunta: '¿Cuánto mide la distancia entre A = (−2; 3) y B = (4; −5)?',
@@ -124,6 +141,7 @@
       coincide: 'Coincide: catetos de 6 y 8, hipotenusa 10.',
       noCoincide: 'Revisemos los catetos: miden 6 y 8 cuadritos.',
     },
+    // Hallazgo 9: «Mira» usa la misma figura del juego (el triángulo de catetos), con el caso de la predicción.
     mira: {
       datos: triDist(-2, 3, 4, -5, { ventana: { x: [-4, 6], y: [-7, 5] }, rd: 'd = 10', ladoA: 'no', ladoB: 'e', p1: 1, p2: 2, p3: 3, numeros: 0 }),
       voz: 'Primero los dos catetos, con su signo; después Pitágoras.',
@@ -135,7 +153,7 @@
     },
     regla: {
       texto: 'La distancia entre dos puntos es la hipotenusa del triángulo rectángulo que forman la diferencia de las x y la diferencia de las y.',
-      ecuacion: [d, ' = ', { raiz: [cuad(dx), ' + ', cuad(dy)] }],
+      ecuacion: [d, ' = ', { raiz: [cuad({ llave: [dx], nota: 'avance', color: 'c-i' }), ' + ', cuad({ llave: [dy], nota: 'subida', color: 'c-h' })] }],
       condicion: 'Δx = x₂ − x₁ y Δy = y₂ − y₁, con ejes perpendiculares de igual escala. El orden de los puntos no importa.',
       voz: 'Resta con cuidado; Pitágoras hace el resto.',
     },
@@ -170,6 +188,10 @@
     puntos: [{ x: x1, y: y1, rotulo: `A${P(x1, y1)}`, lado: 'so' }, { x: x2, y: y2, rotulo: `B${P(x2, y2)}`, lado: 'ne' }],
     alt: `Segmento de A ${P(x1, y1)} a B ${P(x2, y2)}`,
   }, extra.datos || {}) });
+  const medio2 = v => {
+    const mx = (-4 + v.x) / 2, my = (-4 + v.y) / 2;
+    return segmento(-4, -4, v.x, v.y, { datos: { puntos: [{ x: -4, y: -4, rotulo: 'A(−4; −4)', lado: 'e' }, { x: v.x, y: v.y, rotulo: 'B', lado: 'ne' }, { x: mx, y: my, color: 'd', rotulo: `M${P(mx, my)}`, lado: 'no' }] } });
+  };
   const division = {
     id: 'division',
     titulo: 'Promedio con pesos cruzados',
@@ -182,12 +204,13 @@
         { id: 'x', etiqueta: 'x de B', color: 'c-i', min: -2, max: 4, paso: 2, inicio: 2, decimales: 0 },
         { id: 'y', etiqueta: 'y de B', color: 'c-h', min: -2, max: 4, paso: 2, inicio: 0, decimales: 0 },
       ],
-      dibujo: v => {
-        const mx = (-4 + v.x) / 2, my = (-4 + v.y) / 2;
-        return { datos: segmento(-4, -4, v.x, v.y, { datos: { puntos: [{ x: -4, y: -4, rotulo: 'A(−4; −4)', lado: 'e' }, { x: v.x, y: v.y, rotulo: 'B', lado: 'ne' }, { x: mx, y: my, color: 'd', rotulo: `M${P(mx, my)}`, lado: 'no' }] } }), estado: {} };
-      },
+      dibujo: v => ({ datos: medio2(v), estado: {} }),
       lectura: v => ['M = ', P((-4 + v.x) / 2, (-4 + v.y) / 2), ' = promedio de A y B'],
       minimo: 3,
+      // Se arrastra el extremo B: el punto medio M recorre la mitad del camino.
+      arrastres: [{ id: 'punto-b', etiqueta: 'extremo B',
+        donde: v => aPx(medio2(v), v.x, v.y),
+        mover: (pt, v) => { const q = dePx(medio2(v), pt); return { x: q.x, y: q.y }; } }],
     },
     predice: {
       pregunta: 'A = (1; 2) y B = (9; 6). El punto P está en el segmento AB con AP : PB = 1 : 3. ¿Cuáles son las coordenadas de P?',
@@ -203,6 +226,7 @@
       coincide: 'Coincide: P está a un cuarto del camino, cerca de A.',
       noCoincide: 'Revisemos: AB tiene 4 partes iguales y P está en la primera.',
     },
+    // Hallazgo 9: «Mira» es el mismo segmento del juego, ahora partido en m + n partes (el caso de la predicción).
     mira: {
       datos: segmento(1, 2, 9, 6, { ventana: { x: [-1, 11], y: [-1, 8] }, datos: {
         segmentos: [{ de: [1, 2], a: [9, 6], grosor: 'contorno' }, { de: [1, 2], a: [3, 3], color: 'd', rotulo: '1 parte', desde: 2 }, { de: [3, 3], a: [9, 6], grosor: 'variable', rotulo: '3 partes', lado: 'adentro', desde: 2 }],
@@ -218,7 +242,7 @@
     },
     regla: {
       texto: 'Si AP : PB = m : n, P es un promedio con pesos cruzados: A pesa n y B pesa m. El punto medio es el caso m = n.',
-      ecuacion: ['P = ', { frac: ['n · A + m · B', 'm + n'] }],
+      ecuacion: ['P = ', { llave: [{ frac: ['n · A + m · B', 'm + n'] }], nota: 'pesos cruzados', color: 'c-d' }],
       condicion: 'P entre A y B, con m y n positivos. Se calcula con las x y con las y por separado.',
       voz: 'El extremo más cercano pesa más.',
     },
@@ -253,6 +277,7 @@
   } });
   const det = (a, b, c) => (b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1]);
   const PQR = [[1, 1], [2, 6], [5, 2]];
+  const tri3 = v => triangulo([[-3, -3], [3, -3], [v.x, v.y]], { nombres: ['A', 'B', 'C'], lados: ['so', 'se', 'n'], puntos: [{ x: v.x / 3, y: (v.y - 6) / 3, color: 'o', rotulo: 'G', lado: 'e' }] });
   const area = {
     id: 'baricentro-area',
     titulo: 'Caja menos esquinas',
@@ -263,14 +288,15 @@
       voz: 'Con la base horizontal, la altura se cuenta en cuadritos.',
       controles: [
         { id: 'x', etiqueta: 'x de C', color: 'c-i', min: -3, max: 3, paso: 3, inicio: 0, decimales: 0 },
-        { id: 'y', etiqueta: 'y de C', color: 'c-h', min: 1, max: 4, paso: 3, inicio: 1, decimales: 0 },
+        { id: 'y', etiqueta: 'y de C', color: 'c-h', min: 0, max: 3, paso: 3, inicio: 0, decimales: 0 },
       ],
-      dibujo: v => {
-        const pts = [[-3, -2], [3, -2], [v.x, v.y]], gx = v.x / 3, gy = (v.y - 4) / 3;
-        return { datos: triangulo(pts, { nombres: ['A', 'B', 'C'], lados: ['so', 'se', 'n'], puntos: [{ x: gx, y: gy, color: 'o', rotulo: 'G', lado: 'e' }] }), estado: {} };
-      },
-      lectura: v => [A, ` = 6 · ${f(v.y + 2)} ÷ 2 = ${f(3 * (v.y + 2))};  G = ${P(v.x / 3, (v.y - 4) / 3)}`],
+      dibujo: v => ({ datos: tri3(v), estado: {} }),
+      lectura: v => [A, ` = 6 · ${f(v.y + 3)} ÷ 2 = ${f(3 * (v.y + 3))} · G = ${P(v.x / 3, (v.y - 6) / 3)}`],
       minimo: 3,
+      // Se arrastra el vértice C (salta de 3 en 3 para que G caiga en la cuadrícula).
+      arrastres: [{ id: 'vertice-c', etiqueta: 'vértice C',
+        donde: v => aPx(tri3(v), v.x, v.y),
+        mover: (pt, v) => { const q = dePx(tri3(v), pt); return { x: q.x, y: q.y }; } }],
     },
     predice: {
       pregunta: '¿Cuál es el área del triángulo de vértices P = (1; 1), Q = (2; 6) y R = (5; 2)?',
@@ -286,6 +312,8 @@
       coincide: 'Coincide: la caja de 20 menos tres esquinas que suman 10,5.',
       noCoincide: 'Revisemos: la caja punteada mide 20 y las esquinas suman 10,5.',
     },
+    // Hallazgo 9: el juego tiene base horizontal y se cuenta la altura; «Mira» toma el triángulo sin lados
+    // horizontales de la predicción, en la misma pieza, porque ahí la altura ya no se cuenta y hace falta la caja.
     mira: {
       datos: triangulo(PQR, {
         ventana: { x: [-1, 7], y: [-1, 8] }, nombres: ['P', 'Q', 'R'], lados: ['so', 'n', 'e'],
@@ -304,7 +332,7 @@
     },
     regla: {
       texto: 'Con dos lados que salen de un mismo vértice, el área es la mitad del valor absoluto de su determinante. El baricentro promedia los tres vértices.',
-      ecuacion: [A, ' = ', { frac: [{ abs: [sub(dx, '1'), sub(dy, '2'), ' − ', sub(dx, '2'), sub(dy, '1')] }, '2'] }, ';   G = ', { frac: ['P + Q + R', '3'] }],
+      ecuacion: [A, ' = ', { frac: [{ llave: [{ abs: [sub(dx, '1'), sub(dy, '2'), ' − ', sub(dx, '2'), sub(dy, '1')] }], nota: 'determinante sin signo', color: 'c-d', arriba: true }, '2'] }, '   ·   ', 'G = ', { llave: [{ frac: ['P + Q + R', '3'] }], nota: 'promedio', color: 'c-o' }],
       condicion: 'Δx₁, Δy₁ y Δx₂, Δy₂ son los dos lados que salen del mismo vértice. El valor absoluto quita el signo del orden.',
       voz: 'El signo dice el orden de los vértices; el área no lo lleva.',
     },
@@ -374,8 +402,12 @@
         { id: 'y', etiqueta: 'Δy', color: 'c-h', min: -4, max: 4, paso: 1, inicio: 3, decimales: 0 },
       ],
       dibujo: v => ({ datos: inclinada(v.x, v.y, { rt: '' }), estado: {} }),
-      lectura: v => [m, ` = ${fr(v.y, v.x)};  `, th, ` ≈ ${f(((Math.atan2(v.y, v.x) * GRA) + 180) % 180, 1)}°`],
+      lectura: v => [m, ` = ${fr(v.y, v.x)} · `, th, ` ≈ ${f(((Math.atan2(v.y, v.x) * GRA) + 180) % 180, 1)}°`],
       minimo: 3,
+      // Se arrastra la punta del escalón: a la derecha cambia el avance Δx; arriba y abajo, la subida Δy.
+      arrastres: [{ id: 'punta-escalon', etiqueta: 'punta del avance y la subida', color: 'c-o',
+        donde: v => aPx(inclinada(v.x, v.y), 1 + v.x, -3 + v.y),
+        mover: (pt, v) => { const q = dePx(inclinada(v.x, v.y), pt); return { x: q.x - 1, y: q.y + 3 }; } }],
     },
     predice: {
       pregunta: '¿Cuál es la pendiente de la recta que pasa por (2; 1) y (2; 5)?',
@@ -391,6 +423,8 @@
       coincide: 'Coincide: Δx = 0 y no se puede dividir entre 0.',
       noCoincide: 'Revisemos: los dos puntos tienen la misma x, así que Δx = 0.',
     },
+    // Hallazgo 9: el juego arma una recta con su escalón; «Mira» pone varias rectas en el mismo plano para
+    // compararlas (más empinada, vertical, bajando). Es la misma pieza; el escalón ya se vio al jugar.
     mira: {
       datos: plano({ extra: {
         segmentos: [recta(1, 0, VEN, { color: 'o', discontinua: true, desde: 1, hasta: 1 }), recta(3, 0, VEN, { color: 'o', discontinua: true, desde: 1, hasta: 1 }), recta(null, 0.02, VEN, { color: 'o', desde: 2, hasta: 2 }), recta(-1, 0, VEN, { color: 'o', desde: 3 })],
@@ -401,13 +435,13 @@
       voz: 'La inclinación siempre se mide desde el eje x positivo.',
       pasos: [
         { estado: { corte: 1 }, texto: 'Cuanto más empinada, mayor la pendiente: sube más por cada paso.', ecuacion: [m, ' = ', { frac: [dy, dx] }, ' = tan ', th] },
-        { estado: { corte: 2 }, texto: 'La vertical no avanza: Δx = 0 y no hay división.', ecuacion: [dx, ' = 0;  ', th, ' = 90°;  sin pendiente'] },
+        { estado: { corte: 2 }, texto: 'La vertical no avanza: Δx = 0 y no hay división.', ecuacion: [dx, ' = 0', '   ·   ', th, ' = 90°', '   ·   ', 'sin pendiente'] },
         { estado: { corte: 3 }, texto: 'Si baja, la pendiente es negativa y θ es obtuso.', ecuacion: [m, ' = −1 = tan 135°'] },
       ],
     },
     regla: {
       texto: 'La pendiente es lo que sube la recta por cada unidad que avanza, y es la tangente de su inclinación θ, medida desde el eje x positivo.',
-      ecuacion: [m, ' = ', { frac: [dy, dx] }, ' = tan ', th],
+      ecuacion: [m, ' = ', { frac: [{ llave: [dy], nota: 'subida', color: 'c-h', arriba: true }, { llave: [dx], nota: 'avance', color: 'c-i' }] }, ' = tan ', { llave: [th], nota: 'inclinación', color: 'c-o' }],
       condicion: 'Δx ≠ 0 y 0° ≤ θ < 180°. Una recta vertical tiene θ = 90° y no tiene pendiente.',
       voz: 'Primero el avance: si es cero, no hay pendiente.',
     },
@@ -446,6 +480,12 @@
   // Cambia: la pendiente m y el corte b con el eje y. · Permanece: la cuadrícula.
   // Progresa: la recta y = mx + b. · Se reserva: la recta dada por un punto que no es el corte (la predicción).
   // Debe verse: que punto-pendiente, ordenada al origen y general son la misma recta.
+  const paso5 = v => (Math.abs(2 * v.m + v.b) <= 5.5 ? 2 : 1);
+  const recta5 = v => plano({ extra: {
+    segmentos: [recta(v.m, v.b, VEN, { color: 'o' })],
+    puntos: [{ x: 0, y: v.b, rotulo: `(0; ${f(v.b)})`, lado: v.m > 0 ? 'no' : 'ne' }, { x: paso5(v), y: v.m * paso5(v) + v.b, color: 'o' }],
+    alt: `Recta ${ecRecta(v.m, v.b)}`,
+  } });
   const ecuaciones = {
     id: 'ecuaciones',
     titulo: 'Tres ecuaciones, una recta',
@@ -458,9 +498,19 @@
         { id: 'm', etiqueta: 'm', color: 'c-o', min: -2, max: 2, paso: 0.5, inicio: 1, decimales: 1 },
         { id: 'b', etiqueta: 'b', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0 },
       ],
-      dibujo: v => ({ datos: plano({ extra: { segmentos: [recta(v.m, v.b, VEN, { color: 'o' })], puntos: [{ x: 0, y: v.b, rotulo: `(0; ${f(v.b)})`, lado: v.m > 0 ? 'no' : 'ne' }], alt: `Recta y = ${f(v.m)}x + ${f(v.b)}` } }), estado: {} }),
-      lectura: v => [`y = ${f(v.m)}x ${v.b < 0 ? '−' : '+'} ${f(Math.abs(v.b))}`],
+      dibujo: v => ({ datos: recta5(v), estado: {} }),
+      lectura: v => [ecRecta(v.m, v.b)],
       minimo: 3,
+      // Se arrastran el corte (0; b), que sube o baja la recta, y un punto de ella a 2 pasos (o a 1, si a 2 se
+      // sale), que la inclina: la pendiente es lo que sube ese punto sobre el corte, por paso.
+      arrastres: [
+        { id: 'inclinar', etiqueta: 'punto de la recta: cambia m', color: 'c-o',
+          donde: v => aPx(recta5(v), paso5(v), v.m * paso5(v) + v.b),
+          mover: (pt, v) => ({ m: (dePx(recta5(v), pt).y - v.b) / paso5(v) }) },
+        { id: 'corte-b', etiqueta: 'corte con el eje y: cambia b',
+          donde: v => aPx(recta5(v), 0, v.b),
+          mover: (pt, v) => ({ b: dePx(recta5(v), pt).y }) },
+      ],
     },
     predice: {
       pregunta: 'Una recta tiene pendiente 3 y pasa por el punto (2; 1). ¿Cuál es su ecuación?',
@@ -476,6 +526,7 @@
       coincide: 'Coincide: al retroceder 2 pasos desde x = 2, baja 6: llega a −5.',
       noCoincide: 'Revisemos: desde (2; 1), retroceder 2 en x baja 6 en y.',
     },
+    // Hallazgo 9: «Mira» es la misma pieza y la misma recta naranja del juego, con el caso de la predicción.
     mira: {
       datos: plano({ ventana: { x: [-4, 6], y: [-7, 4] }, extra: {
         segmentos: [recta(3, -5, { x: [-4, 6], y: [-7, 4] }, { color: 'o', desde: 1 }), { de: [0, -5], a: [2, -5], color: 'i', rotulo: 'Δx = 2', desde: 2 }, { de: [2, -5], a: [2, 1], color: 'h', rotulo: 'Δy = 6', desde: 2 }],
@@ -487,12 +538,12 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Desde (2; 1), la recta sube 3 por cada paso.', ecuacion: ['y − 1 = 3(x − 2)'] },
         { estado: { corte: 2 }, texto: 'Despejando y aparece el corte con el eje y: −5.', ecuacion: ['y = 3x − 5'] },
-        { estado: { corte: 2 }, texto: 'Pasando todo a un lado queda la forma general.', ecuacion: ['3x − y − 5 = 0;   ', m, ' = −', { frac: ['A', 'B'] }, ' = −', { frac: ['3', '−1'] }, ' = 3'] },
+        { estado: { corte: 2 }, texto: 'Pasando todo a un lado queda la forma general.', ecuacion: ['3x − y − 5 = 0', '   ·   ', m, ' = −', { frac: ['A', 'B'] }, ' = −', { frac: ['3', '−1'] }, ' = 3'] },
       ],
     },
     regla: {
       texto: 'Una recta no vertical queda fija con un punto y su pendiente. Las formas punto-pendiente, y = mx + b y general describen la misma recta.',
-      ecuacion: ['y − ', sub('y', '0'), ' = ', m, '(x − ', sub('x', '0'), ');   y = ', m, 'x + b;   Ax + By + C = 0'],
+      ecuacion: [{ llave: ['y − ', sub('y', '0'), ' = ', m, '(x − ', sub('x', '0'), ')'], nota: 'punto y pendiente', color: 'c-o' }, '   ·   ', 'y = ', m, 'x + ', { llave: ['b'], nota: 'corte en y' }, '   ·   ', 'Ax + By + C = 0'],
       condicion: 'm existe: una recta vertical se escribe x = k. En la forma general, m = −A/B si B ≠ 0.',
       voz: 'Elige la forma que use los datos que tienes.',
     },
@@ -533,6 +584,11 @@
   const M1 = 0.5;
   const entre = m2 => { const a = Math.abs(Math.atan(m2) - Math.atan(M1)) * GRA; return Math.min(a, 180 - a); };
   const RECTA34 = { x: [-1, 5], y: [-1, 4.4] };
+  const dos6 = v => plano({ extra: {
+    segmentos: [recta(M1, 1, VEN, { grosor: 'contorno' }), recta(v.m, -2, VEN, { color: 'o' })],
+    puntos: [{ x: 0, y: -2 }, { x: 1.5, y: 1.5 * v.m - 2, color: 'o' }],
+    alt: `Recta fija de pendiente 1/2 y recta naranja de pendiente ${f(v.m)}: forman ${f(entre(v.m), 1)} grados`,
+  } });
   const perpendicular = {
     id: 'paralelas-perpendiculares',
     titulo: 'Paralelas, perpendiculares y distancia',
@@ -541,10 +597,14 @@
     juega: {
       consigna: 'La recta gris tiene pendiente 1/2. Elige la pendiente m₂ de la naranja y busca cuándo son paralelas y cuándo forman 90°.',
       voz: 'Mira el producto de las pendientes cuando forman 90°.',
-      controles: [{ id: 'm', etiqueta: 'm₂', color: 'c-o', min: -3, max: 3, paso: 0.5, inicio: 1, decimales: 1 }],
-      dibujo: v => ({ datos: plano({ extra: { segmentos: [recta(M1, 1, VEN, { grosor: 'contorno' }), recta(v.m, -2, VEN, { color: 'o' })], alt: `Recta fija de pendiente 1/2 y recta naranja de pendiente ${f(v.m)}: forman ${f(entre(v.m), 1)} grados` } }), estado: {} }),
-      lectura: v => [sub(m, '1'), ' · ', sub(m, '2'), ` = ${f(M1 * v.m)};  ángulo ≈ ${f(entre(v.m), 1)}°`],
+      controles: [{ id: 'm', etiqueta: 'm₂', color: 'c-o', min: -3, max: 3, paso: 0.5, inicio: 2, decimales: 1 }],
+      dibujo: v => ({ datos: dos6(v), estado: {} }),
+      lectura: v => [sub(m, '1'), ' · ', sub(m, '2'), ` = ${f(M1 * v.m)} · ángulo ≈ ${f(entre(v.m), 1)}°`],
       minimo: 3,
+      // Se arrastra un punto de la recta naranja: la recta gira alrededor de su corte (0; −2).
+      arrastres: [{ id: 'girar-recta', etiqueta: 'punto de la recta naranja: cambia m₂', color: 'c-o',
+        donde: v => aPx(dos6(v), 1.5, 1.5 * v.m - 2),
+        mover: (pt, v) => { const q = dePx(dos6(v), pt), ax = Math.abs(q.x) < 0.3 ? (q.x < 0 ? -0.3 : 0.3) : q.x; return { m: (q.y + 2) / ax }; } }],
     },
     predice: {
       pregunta: '¿Cuál es la distancia del origen a la recta 3x + 4y − 10 = 0?',
@@ -560,6 +620,8 @@
       coincide: 'Coincide: el camino perpendicular mide 2, menos que cualquier otro.',
       noCoincide: 'Revisemos: el segmento verde, perpendicular a la recta, mide 2.',
     },
+    // Hallazgo 9: el juego compara dos rectas; «Mira» pasa a la distancia punto-recta de la predicción, que se
+    // mide justo por la perpendicular que el alumno buscó al jugar. Misma pieza, otro caso.
     mira: {
       datos: plano({ ventana: RECTA34, extra: {
         segmentos: [recta(-0.75, 2.5, RECTA34, { grosor: 'contorno' }), { de: [0, 0], a: [0, 2.5], discontinua: true, rotulo: '2,5', desde: 1, hasta: 1 }, { de: [0, 0], a: [10 / 3, 0], discontinua: true, rotulo: '3,33', desde: 1, hasta: 1 }, { de: [0, 0], a: [1.2, 1.6], color: 'd', rotulo: 'd = 2', desde: 2 }],
@@ -576,7 +638,7 @@
     },
     regla: {
       texto: 'Las paralelas tienen la misma pendiente; las perpendiculares, pendientes cuyo producto es −1. La distancia de un punto a una recta se mide por la perpendicular.',
-      ecuacion: [sub(m, '1'), ' = ', sub(m, '2'), ';   ', sub(m, '1'), ' · ', sub(m, '2'), ' = −1;   ', d, ' = ', { frac: [{ abs: ['A', sub('x', '0'), ' + B', sub('y', '0'), ' + C'] }, { raiz: ['A² + B²'] }] }],
+      ecuacion: [{ llave: [sub(m, '1'), ' = ', sub(m, '2')], nota: 'paralelas', color: 'c-o' }, '   ·   ', { llave: [sub(m, '1'), ' · ', sub(m, '2'), ' = −1'], nota: 'perpendiculares', color: 'c-o' }, '   ·   ', d, ' = ', { frac: [{ abs: ['A', sub('x', '0'), ' + B', sub('y', '0'), ' + C'] }, { raiz: [{ sup: ['A', '2'] }, ' + ', { sup: ['B', '2'] }] }] }],
       condicion: 'm₁·m₂ = −1 vale si ninguna es vertical. Una horizontal y una vertical también son perpendiculares.',
       voz: 'Perpendicular: invierte y cambia el signo.',
     },
@@ -629,11 +691,100 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: dos puntos libres en los cuatro cuadrantes: distancia, pendiente (también la vertical) y punto medio.
+  const VLAB = { x: [-6, 7.5], y: [-6, 6] };     // más espacio a la derecha para los rótulos de Δy
+  function dosPuntos(v) {
+    const ax = v.x2 - v.x1, ay = v.y2 - v.y1, mx = (v.x1 + v.x2) / 2, my = (v.y1 + v.y2) / 2;
+    const linea = ax === 0 && ay === 0 ? [] : [recta(ax === 0 ? null : ay / ax, ax === 0 ? v.x1 : v.y1 - (ay / ax) * v.x1, VLAB, { color: 'o', grosor: 'contorno', discontinua: true })];
+    return plano({ ventana: VLAB, extra: {
+      segmentos: linea.concat([
+        { de: [v.x1, v.y1], a: [v.x2, v.y1], color: 'i', rotulo: ax ? `Δx = ${f(ax)}` : '' },
+        { de: [v.x2, v.y1], a: [v.x2, v.y2], color: 'h', rotulo: ay ? `Δy = ${f(ay)}` : '' },
+        { de: [v.x1, v.y1], a: [v.x2, v.y2], color: 'd' },
+      ]),
+      puntos: [{ x: v.x1, y: v.y1, rotulo: 'A', lado: 'so' }, { x: v.x2, y: v.y2, rotulo: 'B', lado: 'ne' }, { x: mx, y: my, color: 'd', rotulo: 'M', lado: 'no' }],
+      alt: `A ${P(v.x1, v.y1)} y B ${P(v.x2, v.y2)}: distancia ${f(Math.hypot(ax, ay))}, punto medio ${P(mx, my)}`,
+    } });
+  }
+  // Mesa 2: una recta y un punto: el pie de la perpendicular H y la distancia d (y el caso d = 0).
+  const pasoLab = v => (Math.abs(2 * v.m + v.b) <= 5.5 ? 2 : 1);
+  function rectaPunto(v) {
+    const t = (v.px + (v.py - v.b) * v.m) / (1 + v.m * v.m), hx = t, hy = v.b + v.m * t;
+    const dd = Math.abs(v.m * v.px - v.py + v.b) / Math.hypot(1, v.m);
+    return plano({ extra: {
+      segmentos: [recta(v.m, v.b, VEN, { color: 'o' })].concat(dd > 1e-9 ? [{ de: [v.px, v.py], a: [hx, hy], color: 'd', rotulo: `d ≈ ${f(dd)}` }] : []),
+      puntos: [{ x: 0, y: v.b }, { x: pasoLab(v), y: v.m * pasoLab(v) + v.b, color: 'o' }, { x: hx, y: hy, color: 'd', rotulo: 'H', lado: 'se', abierto: true }, { x: v.px, y: v.py, rotulo: 'P', lado: 'ne' }],
+      alt: `Recta ${ecRecta(v.m, v.b)} y punto P ${P(v.px, v.py)}: distancia ${f(dd)} por la perpendicular`,
+    } });
+  }
+  // Mesa 3: tres vértices libres: el determinante con su signo (sentido de recorrido), el área y el baricentro.
+  const triLab = v => [[v.ax, v.ay], [v.bx, v.by], [v.cx, v.cy]];
+  function triLibre(v) {
+    const pts = triLab(v), g = [(v.ax + v.bx + v.cx) / 3, (v.ay + v.by + v.cy) / 3];
+    return triangulo(pts, { puntos: pts.map((q, k) => ({ x: q[0], y: q[1], rotulo: 'PQR'[k], lado: ['so', 'n', 'e'][k] })).concat([{ x: g[0], y: g[1], color: 'o', rotulo: 'G', lado: 's' }]),
+      alt: `Triángulo ${pts.map(q => P(q[0], q[1])).join(', ')}: área ${f(Math.abs(det(...pts)) / 2)}` });
+  }
+  const manijaPunto = (id, etiqueta, dib, kx, ky) => ({ id, etiqueta,
+    donde: v => aPx(dib(v), v[kx], v[ky]),
+    mover: (pt, v) => { const q = dePx(dib(v), pt); return { [kx]: q.x, [ky]: q.y }; } });
+  const coord = (id, etiqueta, inicio) => ({ id, etiqueta, min: -5, max: 5, paso: 1, inicio, decimales: 0 });
+  const laboratorio = [
+    {
+      id: 'dos-puntos', titulo: 'Dos puntos en cualquier cuadrante', pieza: 'trig-plano',
+      consigna: 'Arrastra A y B por los cuatro cuadrantes. Pon los dos en la misma vertical y mira qué pasa con la pendiente.',
+      controles: [coord('x1', 'x de A', -3), coord('y1', 'y de A', -2), coord('x2', 'x de B', 3), coord('y2', 'y de B', 4)],
+      dibujo: v => ({ datos: dosPuntos(v), estado: {} }),
+      lectura: v => {
+        const ax = v.x2 - v.x1, ay = v.y2 - v.y1;
+        return [d, ` ≈ ${f(Math.hypot(ax, ay))} · `, m, ax ? ` = ${fr(ay, ax)}` : ': no hay (vertical)', ` · M = ${P((v.x1 + v.x2) / 2, (v.y1 + v.y2) / 2)}`];
+      },
+      arrastres: [manijaPunto('punto-a', 'punto A', dosPuntos, 'x1', 'y1'), manijaPunto('punto-b', 'punto B', dosPuntos, 'x2', 'y2')],
+    },
+    {
+      id: 'recta-y-punto', titulo: 'El camino más corto', pieza: 'trig-plano',
+      consigna: 'Mueve el punto P, el corte y la inclinación de la recta. El segmento verde es perpendicular: el camino más corto hasta ella.',
+      controles: [
+        { id: 'm', etiqueta: 'm', color: 'c-o', min: -3, max: 3, paso: 0.5, inicio: 0.5, decimales: 1 },
+        { id: 'b', etiqueta: 'b', min: -3, max: 3, paso: 1, inicio: -1, decimales: 0 },
+        coord('px', 'x de P', -2), coord('py', 'y de P', 3),
+      ],
+      dibujo: v => ({ datos: rectaPunto(v), estado: {} }),
+      lectura: v => {
+        const dd = Math.abs(v.m * v.px - v.py + v.b) / Math.hypot(1, v.m);
+        return [`${ecRecta(v.m, v.b)} · P${P(v.px, v.py)} · `, d, dd > 1e-9 ? ` ≈ ${f(dd)}` : ' = 0: P está en la recta'];
+      },
+      arrastres: [
+        manijaPunto('punto-p', 'punto P', rectaPunto, 'px', 'py'),
+        { id: 'inclinar', etiqueta: 'punto de la recta: cambia m', color: 'c-o',
+          donde: v => aPx(rectaPunto(v), pasoLab(v), v.m * pasoLab(v) + v.b),
+          mover: (pt, v) => ({ m: (dePx(rectaPunto(v), pt).y - v.b) / pasoLab(v) }) },
+        { id: 'corte-b', etiqueta: 'corte con el eje y: cambia b',
+          donde: v => aPx(rectaPunto(v), 0, v.b),
+          mover: (pt, v) => ({ b: dePx(rectaPunto(v), pt).y }) },
+      ],
+    },
+    {
+      id: 'triangulo-libre', titulo: 'Tres vértices y el signo', pieza: 'trig-plano',
+      consigna: 'Arrastra P, Q y R. El determinante cambia de signo si los recorres al revés; el área no. Prueba ponerlos en línea.',
+      controles: [coord('ax', 'x de P', -3), coord('ay', 'y de P', -2), coord('bx', 'x de Q', 0), coord('by', 'y de Q', 4), coord('cx', 'x de R', 4), coord('cy', 'y de R', -1)],
+      dibujo: v => ({ datos: triLibre(v), estado: {} }),
+      lectura: v => {
+        const D = det(...triLab(v));
+        return [A, ` = ${f(Math.abs(D) / 2)} · det = ${f(D)} · `, D > 0 ? 'P, Q, R antihorario' : D < 0 ? 'P, Q, R horario' : 'en línea, sin área'];
+      },
+      arrastres: [manijaPunto('vertice-p', 'vértice P', triLibre, 'ax', 'ay'), manijaPunto('vertice-q', 'vértice Q', triLibre, 'bx', 'by'), manijaPunto('vertice-r', 'vértice R', triLibre, 'cx', 'cy')],
+    },
+  ];
+
   return {
     unidad: 'trigonometria.recta-en-el-plano',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js'],
+    // Laboratorio: dos puntos libres (incluida la vertical), recta y punto con la perpendicular (y d = 0), y
+    // un triángulo de vértices libres con el signo del determinante (incluidos los vértices en línea).
+    laboratorio,
     historia: {
       texto: 'En el siglo XVII, Fermat estudió lugares geométricos con relaciones algebraicas y los compartió por cartas, al mismo tiempo que Descartes desarrollaba su geometría. El plano cartesiano no nació de una sola ocurrencia. La idea clave: todos los puntos de una recta cumplen una misma relación entre x e y, y la pendiente la resume.',
       pregunta: '¿Qué tienen en común todos los puntos de una misma recta?',

@@ -9,6 +9,10 @@
  * Compañera: Mara (coneja), cercana y rigurosa: la calculadora devuelve el ángulo de la rama, no cualquier ángulo.
  * Colores (regla 4): el ángulo que devuelve la inversa, θ, en naranja (c-o); el valor de entrada k (la razón) en
  * turquesa (c-i); la rama (el rango) en verde (c-d); el ángulo x que entra a una composición en rojo (c-h).
+ * Ronda 2 (14 nov, noche): manijas en cuatro de las cinco ideas (extremo de la recta y = k, lo que fija k en cada
+ * inversa, el punto de x en la circunferencia y el punto (k; arcsen k) de la gráfica); la idea 5 queda con controles
+ * porque su k es una lista discreta que salta el hueco −1 < k < 1. Llaves en las cinco reglas, separadores «   ·   » y
+ * laboratorio de tres mesas. Cada idea usa en «Mira» la misma figura que movió en «Juega» (hallazgo 9).
  * Errores: IN1 a IN29 de plantillas/funciones-trig-inversas/motor.js (hipótesis; anexo de
  * docs/investigacion/trigonometria-ideas-erroneas.md). Nuevos (hipótesis): INV-RANGO (cree que arcsen acepta |k| > 1).
  *
@@ -86,6 +90,17 @@
   };
   const nombreX = (cv, texto, color, extra = {}) => Object.assign({ x: cv + 0.07, y: cv > 0.15 ? 1.2 : -1.2, texto, color, ancla: 'start' }, extra);
   const nombreFn = { sen: 'arcsen', cos: 'arccos', tan: 'arctan', cot: 'arccot', sec: 'arcsec', csc: 'arccsc' };
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza.
+  const TP = () => Kit.piezas['trig-plano'];
+  // Dónde agarrar el valor k en la figura de cada inversa: el extremo derecho de y = k (arcsen), el extremo de
+  // abajo de x = k (arccos), el punto (1; k) de arctan o el punto (k; 1) de arccot. `xd` y `yd`: bordes de la ventana.
+  function manijaK(fn, v, d, xd = 1.5, yd = -1.15) {
+    if (fn === 'sen') return TP().enPx(d, xd, v);
+    if (fn === 'cos') return TP().enPx(d, v, yd);
+    if (fn === 'tan') return TP().enPx(d, 1, v);
+    return TP().enPx(d, v, 1);
+  }
+  const kDeManija = (fn, pt, d) => { const q = TP().delPx(d, pt); return fn === 'sen' || fn === 'tan' ? q.y : q.x; };
 
   // Figura de una inversa: la rama, lo que fija el valor k (recta, o punto en x = 1 o y = 1) y el ángulo θ.
   function figura(fn, v, extra = {}) {
@@ -135,6 +150,10 @@
       dibujo: val => ({ datos: figura('sen', val.k), estado: {} }),
       lectura: val => ['arcsen ', k, ` = arcsen(${f(val.k, 1)}) = `, th, ` = ${g(ARC.sen(val.k))}`],
       minimo: 3,
+      // Se arrastra el extremo derecho de la recta y = k, arriba y abajo: el ángulo θ de la rama responde.
+      arrastres: [{ id: 'recta-k', etiqueta: 'recta y = k', color: 'c-i',
+        donde: val => manijaK('sen', val.k, figura('sen', val.k)),
+        mover: (pt, val) => ({ k: kDeManija('sen', pt, figura('sen', val.k)) }) }],
     },
     predice: {
       pregunta: ['¿Cuánto vale arcsen(−1/2)?'],
@@ -167,7 +186,7 @@
     },
     regla: {
       texto: 'El seno repite valores, así que su inversa se queda con una rama: arcsen k es el único ángulo entre −90° y 90° cuyo seno es k.',
-      ecuacion: ['arcsen: [−1, 1] → [−90°, 90°];   arcsen(−', k, ') = −arcsen ', k],
+      ecuacion: [{ llave: ['[−1, 1]'], nota: 'entra k', color: 'c-i' }, ' → ', { llave: ['[−90°, 90°]'], nota: 'la rama', color: 'c-d' }, '   ·   ', 'arcsen(−', k, ') = −arcsen ', k],
       condicion: '−1 ≤ k ≤ 1. Fuera de ese intervalo, arcsen k no existe: ningún seno pasa de 1.',
       voz: 'Una entrada, un solo ángulo: el de la rama.',
     },
@@ -202,6 +221,13 @@
   // Cambia: la función (arcsen, arccos, arctan) y k entre 0 y 0,8. · Permanece: la circunferencia.
   // Progresa: la rama verde, que cambia de lugar según la función. · Se reserva: arccos de un número negativo (la
   // predicción). · Debe verse: la rama de arccos es la mitad de arriba; la de arctan, la derecha sin sus extremos.
+  // La figura de la idea 2: con arccos, el rótulo «x = k» de abajo se corre a la derecha para no quedar bajo la manija.
+  const figTres = (fn, v) => {
+    const d = figura(fn, v);
+    // Arriba a la derecha está el botón de la lupa: con k grande, el rótulo pasa al otro lado de la recta.
+    if (fn === 'cos') d.rotulos = d.rotulos.map(r => (r.y < 0 ? Object.assign({}, r, { x: r.x + 0.12 }) : v > 0.5 ? Object.assign({}, r, { x: v - 0.07, ancla: 'end' }) : r));
+    return d;
+  };
   const tres = {
     id: 'tres-ramas',
     titulo: 'Cada inversa, su rama',
@@ -214,9 +240,13 @@
         { id: 'fn', etiqueta: 'Inversa', opciones: [{ valor: 'sen', texto: 'arcsen' }, { valor: 'cos', texto: 'arccos' }, { valor: 'tan', texto: 'arctan' }], inicio: 'cos' },
         { id: 'k', etiqueta: 'k', color: 'c-i', min: 0, max: 0.8, paso: 0.2, inicio: 0.4, decimales: 1 },
       ],
-      dibujo: val => ({ datos: figura(val.fn, val.k), estado: {} }),
+      dibujo: val => ({ datos: figTres(val.fn, val.k), estado: {} }),
       lectura: val => [`${nombreFn[val.fn]} `, k, ` = ${nombreFn[val.fn]}(${f(val.k, 1)}) = `, th, ` = ${g(ARC[val.fn](val.k))}`],
       minimo: 3,
+      // Se arrastra lo que fija k en cada inversa: la recta y = k, la recta x = k (por abajo) o el punto (1; k).
+      arrastres: [{ id: 'valor-k', etiqueta: 'valor k en la figura', color: 'c-i',
+        donde: val => manijaK(val.fn, val.k, figTres(val.fn, val.k)),
+        mover: (pt, val) => ({ k: kDeManija(val.fn, pt, figTres(val.fn, val.k)) }) }],
     },
     predice: {
       pregunta: ['¿Cuánto vale arccos(−1/2)?'],
@@ -251,7 +281,7 @@
     },
     regla: {
       texto: 'Cada inversa devuelve un ángulo de su rama: arccos, de 0° a 180°; arctan, entre −90° y 90° sin llegar a ellos.',
-      ecuacion: ['arccos(−', k, ') = 180° − arccos ', k, ';   arctan(−', k, ') = −arctan ', k],
+      ecuacion: ['arccos(−', k, ') = ', { llave: ['180° − arccos ', k], nota: 'el simétrico', color: 'c-o' }, '   ·   ', 'arctan(−', k, ') = −arctan ', k],
       condicion: 'arccos pide −1 ≤ k ≤ 1. arctan acepta cualquier k, pero nunca devuelve ±90°.',
       voz: 'Con arccos, el signo de k no pasa al ángulo.',
     },
@@ -312,8 +342,12 @@
       voz: 'Mira qué pasa cuando x sale de la rama.',
       controles: [{ id: 'x', etiqueta: 'x', color: 'c-h', min: -90, max: 270, paso: 30, inicio: 60, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: compSen(val.x), estado: {} }),
-      lectura: val => ['arcsen(sen ', x, `) = arcsen(${kTxt(Math.sin(rad(val.x)))}) = ${g(ARC.sen(Math.sin(rad(val.x))))}`],
+      lectura: val => [x, ` = ${g(val.x)} · arcsen(sen `, x, `) = arcsen(${kTxt(Math.sin(rad(val.x)))}) = ${g(ARC.sen(Math.sin(rad(val.x))))}`],
       minimo: 3,
+      // Se arrastra el punto rojo de x por la circunferencia: el resultado naranja responde y vuelve a la rama.
+      arrastres: [{ id: 'punto-x', etiqueta: 'punto del ángulo x', color: 'c-h',
+        donde: val => TP().enPx(compSen(val.x), Math.cos(rad(val.x)), Math.sin(rad(val.x))),
+        mover: (pt, val) => ({ x: TP().anguloDe(compSen(val.x), pt, { cerca: val.x }) }) }],
     },
     predice: {
       pregunta: ['¿Cuánto vale arccos(cos 240°)?'],
@@ -347,7 +381,7 @@
     },
     regla: {
       texto: 'Una inversa compuesta con su función devuelve el ángulo de la rama que tiene la misma razón. Solo se cancelan si el ángulo ya estaba en la rama.',
-      ecuacion: ['arcsen(sen ', x, ') = ', x, '  si −90° ≤ ', x, ' ≤ 90°;   arccos(cos ', x, ') = ', x, '  si 0° ≤ ', x, ' ≤ 180°'],
+      ecuacion: ['arcsen(sen ', x, ') = ', x, '  si ', { llave: ['−90° ≤ ', x, ' ≤ 90°'], nota: 'x en la rama', color: 'c-d' }, '   ·   ', 'arccos(cos ', x, ') = ', x, '  si ', { llave: ['0° ≤ ', x, ' ≤ 180°'], nota: 'x en la rama', color: 'c-d' }],
       condicion: 'al revés siempre se cancelan: sen(arcsen k) = k para todo k entre −1 y 1.',
       voz: 'Antes de tachar, pregunta si el ángulo está en la rama.',
     },
@@ -405,6 +439,10 @@
       dibujo: val => ({ datos: reflejo(val.k), estado: {} }),
       lectura: val => ['arcsen ', k, ` = arcsen(${f(val.k, 2)}) = `, th, ` = ${f(Math.asin(val.k), 2)} rad`],
       minimo: 3,
+      // Se arrastra el punto naranja (k; arcsen k) a lo largo de la gráfica: su reflejo verde lo sigue.
+      arrastres: [{ id: 'punto-arcsen', etiqueta: 'punto (k; arcsen k)', color: 'c-i',
+        donde: val => TP().enPx(reflejo(val.k), val.k, Math.asin(val.k)),
+        mover: (pt, val) => ({ k: TP().delPx(reflejo(val.k), pt).x }) }],
     },
     predice: {
       pregunta: ['En la calculadora, la tecla sin⁻¹ calcula arcsen. ¿Qué número es sen⁻¹(1/2)?'],
@@ -430,14 +468,14 @@
       },
       voz: 'Un reflejo cambia las x por las y.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Se toma solo la rama del seno entre −π/2 y π/2.', ecuacion: ['y = sen x,  −π/2 ≤ x ≤ π/2'] },
+        { estado: { corte: 1 }, texto: 'Se toma solo la rama del seno entre −π/2 y π/2.', ecuacion: ['y = sen x', '   ·   ', '−π/2 ≤ x ≤ π/2'] },
         { estado: { corte: 2 }, texto: 'Se refleja en y = x: cada (a; b) pasa a (b; a).', ecuacion: ['y = arcsen x'] },
-        { estado: { corte: 3 }, texto: 'El dominio de arcsen es el rango de la rama, y al revés.', ecuacion: ['dominio [−1, 1];   rango [−π/2, π/2]'] },
+        { estado: { corte: 3 }, texto: 'El dominio de arcsen es el rango de la rama, y al revés.', ecuacion: ['dominio [−1, 1]', '   ·   ', 'rango [−π/2, π/2]'] },
       ],
     },
     regla: {
       texto: 'La gráfica de arcsen es la rama del seno reflejada en y = x. sen⁻¹ x es otro nombre de arcsen x: un ángulo, no 1/sen x.',
-      ecuacion: ['sen⁻¹ x = arcsen x ≠ ', { frac: ['1', 'sen x'] }, ' = csc x'],
+      ecuacion: [{ llave: [{ sup: ['sen', '−1'] }, ' x'], nota: 'la inversa', color: 'c-o' }, ' = arcsen x ≠ ', { llave: [{ frac: ['1', 'sen x'] }], nota: 'el recíproco' }, ' = csc x'],
       condicion: 'el reflejo vale para la rama elegida; sin rama, el seno no tiene inversa porque repite valores.',
       voz: 'El ⁻¹ de la función no es un exponente.',
     },
@@ -517,7 +555,7 @@
     },
     regla: {
       texto: 'arcsec y arccsc se pasan al recíproco y usan las ramas de arccos y arcsen. arccot usa la mitad de arriba, sin sus extremos.',
-      ecuacion: ['arcsec ', k, ' = arccos ', { frac: ['1', k] }, ';   arccsc ', k, ' = arcsen ', { frac: ['1', k] }, ';   0° < arccot ', k, ' < 180°'],
+      ecuacion: ['arcsec ', k, ' = arccos ', { llave: [{ frac: ['1', k] }], nota: 'el recíproco', color: 'c-i' }, '   ·   ', 'arccsc ', k, ' = arcsen ', { frac: ['1', k] }, '   ·   ', '0° < arccot ', k, ' < 180°'],
       condicion: 'arcsec y arccsc piden |k| ≥ 1; arccot acepta todo k. Algunos libros usan otra rama de arccot: revisa la del examen.',
       voz: 'Declaremos la rama antes de dar el número.',
     },
@@ -554,11 +592,117 @@
     },
   };
 
+  // ---------- Laboratorio: figuras propias de las mesas ----------
+  // Mesa 1: cuatro inversas con k de −2 a 2, en una ventana más grande; si la recta no corta, no hay ángulo.
+  const VL = { x: [-2.3, 2.3], y: [-2.2, 2.2] };
+  const mesaRamas = (fn, v) => {
+    if (Number.isFinite(ARC[fn](v))) return figura(fn, v, { ventana: VL });
+    const R = rama(fn);
+    return plano({
+      ventana: VL, arcos: R.arcos, puntos: R.huecos,
+      rectas: [fn === 'sen' ? { y: v, color: 'i' } : { x: v, color: 'i' }],
+      rotulos: [{ x: 0, y: -1.55, texto: 'no corta: no hay ángulo', color: 'i' }],
+      alt: `${nombreFn[fn]}(${kTxt(v)}) no existe: la recta queda fuera de la circunferencia`,
+    });
+  };
+  const manijaRamas = (fn, v) => manijaK(fn, v, mesaRamas(fn, v), 2.05, -1.95);
+  // Mesa 2: arcsen(sen x), arccos(cos x) y arctan(tan x) con x de −360° a 360°.
+  const cancela = (fn, xv) => {
+    const sinDef = fn === 'tan' && Math.abs(Math.cos(rad(xv))) < 1e-9;
+    const val = sinDef ? NaN : FN[fn](xv), t = sinDef ? NaN : redondo(ARC[fn](val));
+    return { val, t, sinDef, dentro: !sinDef && Math.abs(t - xv) < 1e-6 };
+  };
+  const mesaCancela = (fn, xv) => {
+    const c = cancela(fn, xv), R = rama(fn), fuera = !c.sinDef && !c.dentro;
+    return plano({
+      arcos: [...R.arcos, { de: 0, a: xv, r: 0.55, color: 'h', espiral: 6 }],
+      rectas: c.sinDef ? [] : [fn === 'sen' ? { y: c.val, color: 'i' } : fn === 'cos' ? { x: c.val, color: 'i' } : { x: 1, color: 'i' }],
+      segmentos: fn === 'tan' && !c.sinDef ? [{ de: [0, 0], a: [1, Math.max(-1.25, Math.min(1.25, c.val))], color: 'o', discontinua: true, grosor: 'contorno' }] : [],
+      rayos: [{ ang: xv, color: 'h' }, ...(fuera ? [{ ang: c.t, color: 'o' }] : [])],
+      puntos: [...R.huecos, pto(xv, { color: 'h', abierto: !c.dentro, rotulo: `x = ${g(xv)}` }), ...(fuera ? [pto(c.t, { rotulo: g(c.t) })] : [])],
+      alt: c.sinDef ? `x = ${g(xv)}: la tangente no existe` : `x = ${g(xv)}; ${nombreFn[fn]}(${fn} x) devuelve ${g(c.t)}, en la rama verde`,
+    });
+  };
+  // Mesa 3: las gráficas de arcsen, arccos y arctan como reflejo de su rama en y = x.
+  const VR = { x: [-1.8, 3.4], y: [-1.8, 3.4] };
+  const muestra = (a, b, h) => Array.from({ length: 65 }, (_, i) => { const t = a + (b - a) * i / 64; return [t, h(t)]; });
+  const GRAF = {
+    sen: { rama: muestra(-Math.PI / 2, Math.PI / 2, Math.sin), inv: Math.asin, en: [[Math.PI / 2, 1, 'e'], [1, Math.PI / 2, 'e']] },
+    cos: { rama: muestra(0, Math.PI, Math.cos), inv: Math.acos, en: [[Math.PI, -1, 's'], [-1, Math.PI, 'e']] },
+    tan: { rama: muestra(Math.atan(-1.8), Math.atan(3.3), Math.tan), inv: Math.atan, en: [[Math.atan(3.3), 3.3, 'e'], [3, Math.atan(3), 'n']] },
+  };
+  const mesaReflejo = (fn, kv) => {
+    const G = GRAF[fn], t = G.inv(kv);
+    const inv = fn === 'tan' ? muestra(-1.8, 3.4, Math.atan) : G.rama.map(([a, b]) => [b, a]);
+    return {
+      ventana: VR, numeros: 1,
+      segmentos: [{ de: [-1.7, -1.7], a: [3.3, 3.3], discontinua: true }],
+      rotulos: [{ x: 2.95, y: 2.35, texto: 'y = x' }],   // abajo de la recta: arriba está la lupa
+      curvas: [{ puntos: G.rama, color: 'd', rotulo: fn, en: G.en[0].slice(0, 2), lado: G.en[0][2] },
+        { puntos: inv, color: 'o', rotulo: nombreFn[fn], en: G.en[1].slice(0, 2), lado: G.en[1][2] }],
+      puntos: [{ x: kv, y: t, color: 'o' }, { x: t, y: kv, color: 'd', abierto: true }],
+      alt: `La rama de ${fn} y su reflejo en y = x, la gráfica de ${nombreFn[fn]}; el punto (${f(kv, 2)}; ${f(t, 2)})`,
+    };
+  };
+
   return {
     unidad: 'trigonometria.funciones-trigonometricas-inversas',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js'],
+    // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera abre k de −2 a 2 en cuatro inversas, con
+    // el caso que las ideas no dejan probar: |k| > 1 en arcsen y arccos, donde no hay ángulo. La segunda compone las
+    // tres inversas con x de −360° a 360° y dice si se cancelan. La tercera pone lado a lado las gráficas de arcsen,
+    // arccos y arctan como reflejo de su rama (la idea 4 solo muestra arcsen).
+    laboratorio: [
+      {
+        id: 'cuatro-ramas', titulo: 'Cuatro inversas, k libre', pieza: 'trig-plano',
+        consigna: 'Elige la inversa y mueve k entre −2 y 2. Mira qué corte cae en la rama verde y cuándo ya no hay corte.',
+        controles: [
+          { id: 'fn', etiqueta: 'Inversa', opciones: [{ valor: 'sen', texto: 'arcsen' }, { valor: 'cos', texto: 'arccos' }, { valor: 'tan', texto: 'arctan' }, { valor: 'cot', texto: 'arccot' }], inicio: 'cos' },
+          { id: 'k', etiqueta: 'k', color: 'c-i', min: -2, max: 2, paso: 0.1, inicio: -0.6, decimales: 1 },
+        ],
+        dibujo: val => ({ datos: mesaRamas(val.fn, val.k), estado: {} }),
+        lectura: val => {
+          const t = ARC[val.fn](val.k);
+          return Number.isFinite(t) ? [`${nombreFn[val.fn]}(${kTxt(val.k)}) = `, th, ` = ${g(t)}`]
+            : [`${nombreFn[val.fn]}(${kTxt(val.k)}) no existe: ningún ${val.fn === 'sen' ? 'seno' : 'coseno'} ${val.k > 0 ? 'pasa de 1' : 'baja de −1'}`];
+        },
+        arrastres: [{ id: 'valor-k', etiqueta: 'valor k en la figura', color: 'c-i',
+          donde: val => manijaRamas(val.fn, val.k),
+          mover: (pt, val) => ({ k: kDeManija(val.fn, pt, mesaRamas(val.fn, val.k)) }) }],
+      },
+      {
+        id: 'cancela-o-no', titulo: '¿Se cancela o no?', pieza: 'trig-plano',
+        consigna: 'Elige la inversa y gira x hasta una vuelta en cada sentido. La lectura dice si la inversa devuelve x o otro ángulo.',
+        controles: [
+          { id: 'fn', etiqueta: 'Inversa', opciones: [{ valor: 'sen', texto: 'arcsen' }, { valor: 'cos', texto: 'arccos' }, { valor: 'tan', texto: 'arctan' }], inicio: 'cos' },
+          { id: 'x', etiqueta: 'x', color: 'c-h', min: -360, max: 360, paso: 15, inicio: 240, unidad: '°', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: mesaCancela(val.fn, val.x), estado: {} }),
+        lectura: val => {
+          const c = cancela(val.fn, val.x);
+          if (c.sinDef) return [`tan ${g(val.x)} no existe: no hay nada que invertir`];
+          return [`${nombreFn[val.fn]}(${val.fn} ${g(val.x)}) = ${g(c.t)}`, '   ·   ', c.dentro ? 'se cancela' : 'no se cancela'];
+        },
+        arrastres: [{ id: 'punto-x', etiqueta: 'punto del ángulo x', color: 'c-h',
+          donde: val => TP().enPx(mesaCancela(val.fn, val.x), Math.cos(rad(val.x)), Math.sin(rad(val.x))),
+          mover: (pt, val) => ({ x: TP().anguloDe(mesaCancela(val.fn, val.x), pt, { cerca: val.x }) }) }],
+      },
+      {
+        id: 'tres-reflejos', titulo: 'Tres gráficas reflejadas', pieza: 'trig-plano',
+        consigna: 'Elige la inversa y arrastra el punto naranja por su gráfica. Su reflejo verde recorre la rama de la función.',
+        controles: [
+          { id: 'fn', etiqueta: 'Inversa', opciones: [{ valor: 'sen', texto: 'arcsen' }, { valor: 'cos', texto: 'arccos' }, { valor: 'tan', texto: 'arctan' }], inicio: 'cos' },
+          { id: 'k', etiqueta: 'k', color: 'c-i', min: -1, max: 1, paso: 0.05, inicio: 0.5, decimales: 2 },
+        ],
+        dibujo: val => ({ datos: mesaReflejo(val.fn, val.k), estado: {} }),
+        lectura: val => [`${nombreFn[val.fn]}(${f(val.k, 2)}) = `, th, ` = ${f(GRAF[val.fn].inv(val.k), 2)} rad`],
+        arrastres: [{ id: 'punto-inv', etiqueta: 'punto (k; inversa de k)', color: 'c-i',
+          donde: val => TP().enPx(mesaReflejo(val.fn, val.k), val.k, GRAF[val.fn].inv(val.k)),
+          mover: (pt, val) => ({ k: TP().delPx(mesaReflejo(val.fn, val.k), pt).x }) }],
+      },
+    ],
     historia: {
       texto: 'Buscar un ángulo a partir de una razón obligó a nombrar funciones nuevas. En el siglo XVIII, Daniel Bernoulli, Euler y Lagrange probaron varias notaciones; en 1813, John Herschel explicó la del exponente −1, que convivió con la forma «arc». Esa doble escritura todavía confunde: sen⁻¹ x es una inversa, no un recíproco.',
       pregunta: '¿Por qué un mismo símbolo puede significar dos cosas?',

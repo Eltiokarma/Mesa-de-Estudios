@@ -31,6 +31,8 @@
  * estado = { corte: 0..n }   // se ve lo que tiene desde ≤ corte (y hasta ≥ corte); lo de desde = corte es nuevo
  * Grosores: 3 para la variable en estudio (rayos, arcos, segmentos con color), 2 contornos, 1 cuadrícula.
  * El dibujo es una función pura de (datos, estado): sin ids, sin azar, sin reloj. Alto fijo para unos datos.
+ * Para las manijas: geometria(d) trae X, Y y sus inversas xDe, yDe; enPx(d, x, y), delPx(d, {x, y}) y
+ * anguloDe(d, {x, y}, { cx, cy, cerca }) convierten entre el dedo y el problema.
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -51,7 +53,23 @@
     const ox = (W - sx * k) / 2, alto = sy * k + 2 * M;
     const X = x => ox + (x - v.x[0]) * k;
     const Y = y => M + (v.y[1] - y) * k;
-    return { v, k, X, Y, alto, x0: X(v.x[0]), x1: X(v.x[1]), y0: Y(v.y[1]), y1: Y(v.y[0]) };
+    // Inversas (gesto directo, docs/teoria.md §4b): del píxel del dedo a la coordenada del problema.
+    const xDe = px => v.x[0] + (px - ox) / k;
+    const yDe = py => v.y[1] - (py - M) / k;
+    return { v, k, X, Y, xDe, yDe, alto, x0: X(v.x[0]), x1: X(v.x[1]), y0: Y(v.y[1]), y1: Y(v.y[0]) };
+  }
+
+  // Manijas (gesto directo): el píxel de un punto del problema, el punto del problema bajo el dedo y el ángulo
+  // (en grados, desde el centro) que marca el dedo. `cerca` elige, entre los coterminales, el más próximo al valor
+  // actual: así un giro de 700° sigue siendo de 700° al arrastrarlo, y no salta a −20°.
+  function enPx(d, x, y) { const g = geometria(d); return { x: g.X(x), y: g.Y(y) }; }
+  function delPx(d, pt) { const g = geometria(d); return { x: g.xDe(pt.x), y: g.yDe(pt.y) }; }
+  function anguloDe(d, pt, o = {}) {
+    const q = delPx(d, pt), cx = o.cx || 0, cy = o.cy || 0;
+    let a = Math.atan2(q.y - cy, q.x - cx) * 180 / Math.PI;
+    if (o.cerca !== undefined && Number.isFinite(o.cerca)) a += 360 * Math.round((o.cerca - a) / 360);
+    else if (a < 0) a += 360;
+    return a;
   }
 
   const c = (e, def) => (e.color === undefined ? def : e.color);
@@ -201,5 +219,5 @@
     return `Plano con ${d.circulos && d.circulos.length ? 'circunferencia y ' : ''}ejes x e y${partes.length ? ': ' + partes.join('; ') : ''}`;
   }
 
-  return { id: 'trig-plano', dibujar, alt, geometria };
+  return { id: 'trig-plano', dibujar, alt, geometria, enPx, delPx, anguloDe };
 });

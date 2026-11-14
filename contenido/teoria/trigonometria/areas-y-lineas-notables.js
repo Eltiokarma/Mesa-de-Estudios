@@ -6,6 +6,10 @@
  * Colores (regla 4): el ángulo (A, θ) en naranja (c-o); los largos que se dan, lados a, b, c y diagonales d₁, d₂,
  * en turquesa (c-i); los largos que se calculan (altura h, semiperímetro p, radios r, R, rₐ, ceviana t, mediana,
  * bisectriz y los trozos m, n) en verde (c-d); el área S en rojo (c-h).
+ * Ronda 2 (14 nov, noche): manijas en cuatro de las cinco ideas (vértice B que abre A, vértices A y C de Herón, pie D
+ * de la ceviana, punta de la diagonal d₂); la de los tres radios no tiene qué agarrar (sus controles son opciones).
+ * Llaves en las reglas, separadores «   ·   » y laboratorio de tres mesas. Las cinco ideas usan la misma figura en
+ * «Juega» y en «Mira» (hallazgo 9 de docs/auditoria-teoria.md). Los pasos de A y θ son múltiplos de su paso.
  * Errores (hipótesis de aula, docs/investigacion/trigonometria-ideas-erroneas.md no los mide): TR10 y TR25 existen;
  * nuevos: AREA-ANGULO, AREA-OBTUSO, AREA-SIN-MEDIO, AREA-COS, AREA-UNA-RAMA, HERON-IMPOSIBLE, HERON-PERIMETRO,
  * HERON-SIN-RAIZ, SEMI-CRUZA, SEMI-ENTERO, RADIO-CONFUNDE, RADIO-PERIMETRO, RADIO-ALTURA, EXRADIO-LADO,
@@ -35,6 +39,14 @@
   const RAD = Math.PI / 180;
   const sen = g => Math.sin(g * RAD), cos = g => Math.cos(g * RAD);
   const medio = { frac: ['1', '2'] };
+  const SEP = '   ·   ';
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza.
+  const TP = () => Kit.piezas['trig-plano'];
+  // Ángulo de un rayo que sale de V hacia el dedo, recortado a la mitad superior: abajo del eje cuenta como 0° o 180°.
+  function anguloArriba(d, pt, V = [0, 0]) {
+    const g = TP().anguloDe(d, pt, { cx: V[0], cy: V[1] });
+    return g <= 180 ? g : g > 270 ? 0 : 180;
+  }
   // Azar con semilla para «Ahora tú» (el de la unidad de referencia).
   function azar(sem) {
     let q = (sem * 2654435761 + 12345) >>> 0;
@@ -92,7 +104,8 @@
   const raizTxt = N => (Math.abs(Math.sqrt(N) - Math.round(Math.sqrt(N))) < 1e-9 ? f(Math.sqrt(N)) : `√${f(N)} ≈ ${f(Math.sqrt(N))}`);
 
   // ---------- Idea 1: el área cambia con el seno del ángulo ----------
-  // Cambia: el ángulo A entre los lados fijos b = 5 y c = 6. · Permanece: los dos lados y la base sobre el eje.
+  // Cambia: el ángulo A entre los lados fijos b = 5 y c = 6, de 25 en 25 (los pasos del control son múltiplos
+  // del paso: así ningún par del juego suma 180°). · Permanece: los dos lados y la base sobre el eje.
   // Progresa: la altura h = c sen A, que sube hasta 90° y vuelve a bajar. · Se reserva: un par de ángulos
   // suplementarios (la predicción; el juego no muestra ninguno). · Debe verse: que la altura, no el ángulo, decide el área.
   function abanico(Ad, extra = {}, cv = 6, bv = 5) {
@@ -118,10 +131,14 @@
     juega: {
       consigna: 'Los lados b = 5 y c = 6 no cambian. Abre o cierra el ángulo A entre ellos y mira la altura punteada y el área.',
       voz: 'Sigue a la altura mientras el ángulo crece.',
-      controles: [{ id: 'A', etiqueta: 'A', color: 'c-o', min: 25, max: 165, paso: 20, inicio: 45, unidad: '°', decimales: 0 }],
+      controles: [{ id: 'A', etiqueta: 'A', color: 'c-o', min: 25, max: 150, paso: 25, inicio: 50, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: abanico(val.A), estado: {} }),
-      lectura: val => [S, ' = ½ · 5 · 6 · sen ', A, ` ≈ ${f(15 * sen(val.A))}`],
+      lectura: val => [S, ' = ½ · 5 · 6 · sen ', { v: 'c-o', t: `${f(val.A)}°` }, ` ≈ ${f(15 * sen(val.A))}`],
       minimo: 3,
+      // Se arrastra el vértice B, punta del lado c: el lado gira alrededor de A y abre o cierra el ángulo.
+      arrastres: [{ id: 'vertice-b', etiqueta: 'vértice B: abre el ángulo A', color: 'c-o',
+        donde: val => TP().enPx(abanico(val.A), 6 * cos(val.A), 6 * sen(val.A)),
+        mover: pt => ({ A: anguloArriba(abanico(90), pt) }) }],
     },
     predice: {
       pregunta: 'Con los mismos lados 5 y 6, compara un triángulo con A = 30° y otro con A = 150°. ¿Cuál tiene más área?',
@@ -151,7 +168,7 @@
       })(),
       voz: 'Un solo cambio: la altura se escribe con el seno.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Dos lados y el ángulo que forman.', ecuacion: [b, ' = 5;  ', c, ' = 6;  ', A, ' = 150°'] },
+        { estado: { corte: 1 }, texto: 'Dos lados y el ángulo que forman.', ecuacion: [b, ' = 5', SEP, c, ' = 6', SEP, A, ' = 150°'] },
         { estado: { corte: 2 }, texto: 'La altura desde B cae fuera, sobre la prolongación de b.', ecuacion: [h, ' = ', c, ' sen ', A, ' = 6 · 0,5 = 3'] },
         { estado: { corte: 3 }, texto: 'El área es base por altura entre dos.', ecuacion: [S, ' = ', { frac: [[b, ' · ', h], '2'] }, ' = ', { frac: ['5 · 3', '2'] }, ' = 7,5'] },
         { estado: { corte: 3 }, texto: 'Con h = c sen A queda la fórmula.', ecuacion: [S, ' = ', medio, b, c, ' sen ', A] },
@@ -159,7 +176,7 @@
     },
     regla: {
       texto: 'El área de un triángulo es la mitad del producto de dos lados por el seno del ángulo que forman. Es máxima con 90°; A y 180° − A dan igual.',
-      ecuacion: [S, ' = ', medio, ' ', b, ' ', c, ' sen ', A],
+      ecuacion: [S, ' = ', medio, ' ', b, ' ', { llave: [c, ' sen ', A], nota: 'la altura h', color: 'c-d' }],
       condicion: 'A es el ángulo comprendido entre b y c, con 0° < A < 180°.',
       voz: 'El seno guarda la altura; por eso manda el ángulo comprendido.',
     },
@@ -208,6 +225,20 @@
     }, extra, { T, G, k });
   }
   const limpio = d => { const x = Object.assign({}, d); delete x.T; delete x.G; delete x.k; return x; };
+  // Ventana fija para arrastrar (cabe todo triángulo de lados 5 a 9): la figura no se reescala bajo el dedo.
+  const VH = { x: [-3.9, 9.9], y: [-1.6, 9.4] };
+  // Los nombres de A y C se apartan un poco más, para que la manija no los tape.
+  const aparta = d => Object.assign(d, { rotulos: d.rotulos.map(q => (q.texto === 'C' ? Object.assign({}, q, { x: q.x + 0.5 }) : q.texto === 'A' ? Object.assign({}, q, { y: q.y + 0.4 }) : q)) });
+  const triJuego = val => aparta(limpio(triangulo(val.a, val.b, val.c, { ventana: VH })));
+  // Manijas de Herón: el vértice A fija b y c a la vez (sus distancias a C y a B); el vértice C fija la base a.
+  const manijasHeron = (dib, txtA = 'vértice A: cambia b y c', txtC = 'vértice C: cambia a') => [
+    { id: 'vertice-a', etiqueta: txtA, color: 'c-i',
+      donde: val => { const T = porLados(val.a, val.b, val.c); return TP().enPx(dib(val), T.A[0], T.A[1]); },
+      mover: (pt, val) => { const q = TP().delPx(dib(val), pt); return { b: Math.hypot(q.x - val.a, q.y), c: Math.hypot(q.x, q.y) }; } },
+    { id: 'vertice-c', etiqueta: txtC, color: 'c-i',
+      donde: val => TP().enPx(dib(val), val.a, 0),
+      mover: (pt, val) => ({ a: TP().delPx(dib(val), pt).x }) },
+  ];
   // Tres lados que no cierran: la base y dos brazos que giran sin encontrarse.
   const noCierra = (cv, x, y) => ({
     ejes: false, ventana: { x: [-3.6, cv + 4.6], y: [-1.4, 4.8] },
@@ -229,9 +260,11 @@
         { id: 'b', etiqueta: 'b', color: 'c-i', min: 5, max: 9, paso: 1, inicio: 6, decimales: 0 },
         { id: 'c', etiqueta: 'c', color: 'c-i', min: 5, max: 9, paso: 1, inicio: 5, decimales: 0 },
       ],
-      dibujo: val => ({ datos: limpio(triangulo(val.a, val.b, val.c)), estado: {} }),
-      lectura: val => { const k = heron(val.a, val.b, val.c); return [p, ` = ${f(k.pv)};  `, S, ` = √(${f(k.pv)} · ${f(k.pv - val.a)} · ${f(k.pv - val.b)} · ${f(k.pv - val.c)}) ≈ ${f(Math.sqrt(k.rad))}`]; },
+      dibujo: val => ({ datos: triJuego(val), estado: {} }),
+      lectura: val => { const k = heron(val.a, val.b, val.c); return [p, ` = ${f(k.pv)}`, SEP, S, ` = √(${f(k.pv)} · ${f(k.pv - val.a)} · ${f(k.pv - val.b)} · ${f(k.pv - val.c)}) ≈ ${f(Math.sqrt(k.rad))}`]; },
       minimo: 3,
+      // Se arrastran los vértices: A cambia b y c a la vez; C estira o encoge la base a.
+      arrastres: manijasHeron(triJuego),
     },
     predice: {
       pregunta: 'Ahora los lados miden 3, 4 y 8. Con Herón, p = 7,5. ¿Cuál es el área de ese triángulo?',
@@ -269,7 +302,7 @@
     })(),
     regla: {
       texto: 'Con los tres lados basta: el área sale del semiperímetro y de sus diferencias con cada lado. Los semiángulos se escriben con los mismos factores.',
-      ecuacion: [S, ' = ', { raiz: [p, '(', p, ' − ', a, ')(', p, ' − ', b, ')(', p, ' − ', c, ')'] }, ';   cos ', { frac: [A, '2'] }, ' = ', { raiz: [{ frac: [[p, '(', p, ' − ', a, ')'], [b, c]] }] }],
+      ecuacion: [S, ' = ', { raiz: [p, '(', p, ' − ', a, ')(', p, ' − ', b, ')(', p, ' − ', c, ')'] }, SEP, { llave: [p], nota: 'semiperímetro', color: 'c-d' }, ' = ', { frac: [[a, ' + ', b, ' + ', c], '2'] }, SEP, 'cos ', { frac: [A, '2'] }, ' = ', { raiz: [{ frac: [[p, '(', p, ' − ', a, ')'], [b, c]] }] }],
       condicion: 'cada lado es menor que la suma de los otros dos; p es la mitad del perímetro.',
       voz: 'Un factor negativo no se arregla: avisa que no hay triángulo.',
     },
@@ -302,7 +335,7 @@
               { id: 'abs', texto: `≈ ${f(Math.sqrt(Math.abs(q.rad)))} m², quitando el signo`, error: 'HERON-IMPOSIBLE', siFuera: 'Bien que llegaste al factor negativo. Ese signo dice que el terreno no cierra.' },
               { id: 'catetos', texto: `${f(x * y / 2)} m², como triángulo rectángulo`, error: 'TR25', siFuera: `Sería cierto si ${f(x)} y ${f(y)} fueran catetos de un triángulo que cierra.` },
             ],
-            solucion: { texto: 'p − (lado mayor) sale negativo: los lados no cierran.', ecuacion: [p, ` = ${f(q.pv)};  `, p, ` − ${f(z)} = ${f(q.pv - z)} < 0`] },
+            solucion: { texto: 'p − (lado mayor) sale negativo: los lados no cierran.', ecuacion: [p, ` = ${f(q.pv)}`, SEP, p, ` − ${f(z)} = ${f(q.pv - z)} < 0`] },
           };
         }
         return {
@@ -411,7 +444,7 @@
     })(),
     regla: {
       texto: 'El área se escribe con cualquiera de los tres radios: el inscrito con el semiperímetro, el circunscrito con los tres lados y el exinscrito con p − a.',
-      ecuacion: [S, ' = ', p, r, ' = ', { frac: [[a, b, c], ['4', R]] }, ' = ', ra, '(', p, ' − ', a, ')'],
+      ecuacion: [S, ' = ', p, { llave: [r], nota: 'adentro', color: 'c-d' }, SEP, S, ' = ', { frac: [[a, b, c], ['4', { llave: [R], nota: 'vértices', color: 'c-d' }]] }, SEP, S, ' = ', { llave: [ra], nota: 'afuera', color: 'c-d' }, '(', p, ' − ', a, ')'],
       condicion: 'r toca los tres lados por dentro; R pasa por los tres vértices; rₐ toca el lado a por fuera.',
       voz: 'Antes de sustituir, nombra el círculo: adentro, por los vértices o afuera.',
     },
@@ -481,8 +514,12 @@
       voz: 'Observa cómo cambia t cuando D se acerca al pie de la altura.',
       controles: [{ id: 'm', etiqueta: 'm = BD', color: 'c-d', min: 1, max: 7, paso: 1, inicio: 2, decimales: 0 }],
       dibujo: val => ({ datos: ceviana(val.m), estado: {} }),
-      lectura: val => [m, ` = ${f(val.m)};  `, n, ` = ${f(8 - val.m)};  `, t, ` = AD ≈ ${f(Math.hypot(TC.A[0] - val.m, TC.A[1]))}`],
+      lectura: val => [m, ` = ${f(val.m)}`, SEP, n, ` = ${f(8 - val.m)}`, SEP, t, ` = AD ≈ ${f(Math.hypot(TC.A[0] - val.m, TC.A[1]))}`],
       minimo: 3,
+      // Se arrastra el pie D de la ceviana a lo largo de la base.
+      arrastres: [{ id: 'pie-d', etiqueta: 'punto D sobre la base: cambia m', color: 'c-d',
+        donde: val => TP().enPx(ceviana(val.m), val.m, 0),
+        mover: (pt, val) => ({ m: TP().delPx(ceviana(val.m), pt).x }) }],
     },
     predice: {
       pregunta: 'La bisectriz desde A parte el ángulo A en dos mitades iguales. ¿Dónde corta la base BC?',
@@ -524,7 +561,7 @@
     })(),
     regla: {
       texto: 'Una ceviana AD parte el lado a en m y n; Stewart da su largo. La mediana parte a por la mitad y la bisectriz, en la razón c : b.',
-      ecuacion: [{ sup: [b, '2'] }, m, ' + ', { sup: [c, '2'] }, n, ' = ', a, '(', { sup: [t, '2'] }, ' + ', m, n, ');   bisectriz: ', { frac: [m, n] }, ' = ', { frac: [c, b] }],
+      ecuacion: [{ sup: [b, '2'] }, m, ' + ', { sup: [c, '2'] }, n, ' = ', a, '(', { sup: [t, '2'] }, ' + ', m, n, ')', SEP, 'bisectriz: ', { llave: [{ frac: [m, n] }], nota: 'los trozos', color: 'c-d' }, ' = ', { llave: [{ frac: [c, b] }], nota: 'los lados', color: 'c-i' }],
       condicion: 'm = BD queda junto al lado c y n = DC junto al lado b; m + n = a.',
       voz: 'Cada trozo mira al lado que tiene al costado.',
     },
@@ -594,10 +631,14 @@
     juega: {
       consigna: 'Las diagonales miden 8 y 6. Cambia el ángulo θ con que se cruzan y mira cómo cambia el área del cuadrilátero.',
       voz: 'Compara el área con la del triángulo de dos lados y un ángulo.',
-      controles: [{ id: 't', etiqueta: 'θ', color: 'c-o', min: 30, max: 150, paso: 20, inicio: 50, unidad: '°', decimales: 0 }],
+      controles: [{ id: 't', etiqueta: 'θ', color: 'c-o', min: 30, max: 150, paso: 15, inicio: 45, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: cuadri(val.t), estado: {} }),
-      lectura: val => [S, ' = ½ · 8 · 6 · sen ', th, ` ≈ ${f(24 * sen(val.t))}`],
+      lectura: val => [S, ' = ½ · 8 · 6 · sen ', { v: 'c-o', t: `${f(val.t)}°` }, ` ≈ ${f(24 * sen(val.t))}`],
       minimo: 3,
+      // Se arrastra la punta de la diagonal d₂: gira alrededor del cruce y cambia θ.
+      arrastres: [{ id: 'punta-d2', etiqueta: 'punta de la diagonal d₂: cambia θ', color: 'c-o',
+        donde: val => TP().enPx(cuadri(val.t), 3 * cos(val.t), 3 * sen(val.t)),
+        mover: (pt, val) => ({ t: anguloArriba(cuadri(val.t), pt) }) }],
     },
     predice: {
       pregunta: 'Con el mismo θ = 70°, las diagonales se cruzan ahora muy cerca de un extremo. ¿Qué pasa con el área del cuadrilátero?',
@@ -626,7 +667,7 @@
         datos: u,
         voz: 'Cuatro triángulos alrededor del cruce, todos con el mismo seno.',
         pasos: [
-          { estado: { corte: 1 }, texto: 'Las diagonales se cruzan y forman el ángulo θ.', ecuacion: [d1, ' = 8;  ', d2, ' = 6;  ', th, ' = 70°'] },
+          { estado: { corte: 1 }, texto: 'Las diagonales se cruzan y forman el ángulo θ.', ecuacion: [d1, ' = 8', SEP, d2, ' = 6', SEP, th, ' = 70°'] },
           { estado: { corte: 2 }, texto: 'El cruce parte el cuadrilátero en cuatro triángulos.', ecuacion: [S, ' = ', { sub: [S, '1'] }, ' + ', { sub: [S, '2'] }, ' + ', { sub: [S, '3'] }, ' + ', { sub: [S, '4'] }] },
           { estado: { corte: 3 }, texto: 'Sus ángulos en el cruce son θ o 180° − θ: mismo seno.', ecuacion: ['sen 110° = sen 70°'] },
           { estado: { corte: 4 }, texto: 'Al sumar, los trozos de cada diagonal se juntan.', ecuacion: [S, ' = ', medio, d1, d2, ' sen ', th, ` ≈ ${f(24 * sen(70))}`] },
@@ -635,7 +676,7 @@
     })(),
     regla: {
       texto: 'El área de un cuadrilátero convexo es la mitad del producto de sus diagonales por el seno del ángulo entre ellas, se crucen donde se crucen.',
-      ecuacion: [S, ' = ', medio, ' ', d1, ' ', d2, ' sen ', th],
+      ecuacion: [S, ' = ', medio, ' ', d1, ' ', d2, ' sen ', { llave: [th], nota: 'el cruce', color: 'c-o' }],
       condicion: 'cuadrilátero convexo; θ es cualquiera de los ángulos entre las diagonales. Una fórmula de inscrito exige probar que lo es.',
       voz: 'Otra vez dos largos y el seno del ángulo entre ellos.',
     },
@@ -671,11 +712,123 @@
     },
   };
 
+  // ---------- Laboratorio: figuras propias de las mesas ----------
+  // Mesa 1: dos lados y el ángulo libres, en una ventana fija donde caben lados de hasta 7.
+  const VL1 = { x: [-7.3, 7.6], y: [-1.3, 7.7] };
+  // La altura se rotula arriba, a la izquierda de B: así no cruza el lado BC cuando el triángulo es angosto.
+  function abanicoLibre(val) {
+    const d = abanico(val.A, { ventana: VL1 }, val.c, val.b), hv = val.c * sen(val.A);
+    d.rotulos[2] = { x: val.c * cos(val.A) - 0.45, y: hv + 0.1, texto: `h = ${f(hv)}`, color: 'd', ancla: 'end' };
+    return d;
+  }
+  // Mesa 2: base de 3 a 10 y lados de 2 a 8; si no cierran, la base con dos brazos y sus arcos, que no se encuentran.
+  const VL2 = { x: [-4.4, 11.2], y: [-1.7, 8.8] };
+  const cierra = val => val.a < val.b + val.c && val.b < val.a + val.c && val.c < val.a + val.b;
+  const brazoC = val => [val.c * cos(70), val.c * sen(70)];
+  function ladosLibres(val) {
+    if (cierra(val)) return aparta(limpio(triangulo(val.a, val.b, val.c, { ventana: VL2 })));
+    const Bc = brazoC(val), Cb = [val.a - val.b * cos(55), val.b * sen(55)];
+    return {
+      ejes: false, ventana: VL2,
+      segmentos: [{ de: [0, 0], a: [val.a, 0], color: 'i' }, { de: [0, 0], a: Bc, color: 'i' }, { de: [val.a, 0], a: Cb, color: 'i' }],
+      // Cada arco mira hacia el otro: se ve que no alcanzan a tocarse.
+      arcos: [{ cx: 0, cy: 0, de: 0, a: 90, r: val.c, espiral: 0, flecha: false, grosor: 'cuadricula', color: 'i' },
+        { cx: val.a, cy: 0, de: 90, a: 150, r: val.b, espiral: 0, flecha: false, grosor: 'cuadricula', color: 'i' }],
+      rotulos: [{ x: val.a / 2, y: -1.1, texto: `a = ${f(val.a)}`, color: 'i' }, { x: Bc[0] / 2 - 0.3, y: Bc[1] / 2, texto: `c = ${f(val.c)}`, color: 'i', ancla: 'end' },
+        { x: (val.a + Cb[0]) / 2 + 0.3, y: Cb[1] / 2, texto: `b = ${f(val.b)}`, color: 'i', ancla: 'start' },
+        { x: -0.35, y: -0.6, texto: 'B', ancla: 'end' }, { x: val.a + 0.6, y: -0.8, texto: 'C', ancla: 'start' }],
+      alt: `Lados ${f(val.a)}, ${f(val.b)} y ${f(val.c)}: los brazos no alcanzan a cerrarse en un triángulo`,
+    };
+  }
+  // Mesa 3: base a = 8 y lado c = 5 fijos; el lado b mueve el vértice A sobre la circunferencia de radio 5.
+  const VL3 = { x: [-4.6, 9.4], y: [-2.3, 5.9] };
+  const pieBis = bv => 8 * 5 / (5 + bv);
+  function cevianaLibre(val) {
+    const T = porLados(8, val.b, 5), D = [val.m, 0], E = [pieBis(val.b), 0];
+    return {
+      ejes: false, ventana: VL3,
+      segmentos: [{ de: T.B, a: T.C, color: 'i' }, { de: T.C, a: T.A, color: 'i' }, { de: T.A, a: T.B, color: 'i' },
+        { de: T.A, a: [4, 0], discontinua: true, grosor: 'cuadricula' }, { de: T.A, a: E, discontinua: true, grosor: 'cuadricula' },
+        { de: T.A, a: D, color: 'd' }],
+      puntos: [{ x: val.m, y: 0, color: 'd', rotulo: 'D', lado: 's' }],
+      rotulos: [vertice(T.A, [4, 1], 'A', 0.8), { x: -0.35, y: -0.3, texto: 'B', ancla: 'end' }, { x: 8.35, y: -0.3, texto: 'C', ancla: 'start' },
+        lado(T.A, T.B, T.C, 'c = 5', 'i', 0.45), lado(T.C, T.A, T.B, `b = ${f(val.b)}`, 'i', 0.45),
+        { x: 4, y: -2, texto: 'mediana', ancla: E[0] < 4 ? 'start' : 'end' }, { x: E[0], y: -2, texto: 'bisectriz', ancla: E[0] < 4 ? 'end' : 'start' }],
+      alt: `Triángulo de base 8, lados 5 y ${f(val.b)}; ceviana AD con D a ${f(val.m)} de B; la bisectriz cae a ${f(E[0])} de B y la mediana a 4`,
+    };
+  }
+
   return {
     unidad: 'trigonometria.areas-y-lineas-notables',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js'],
+    // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera suelta los dos lados y el ángulo de
+    // 5° a 175° (la idea 1 fija los lados y salta de 25 en 25); la segunda deja elegir lados que no cierran, el caso
+    // que la idea 2 solo muestra en la predicción; la tercera mueve el lado b para ver la bisectriz alejarse de la mediana.
+    laboratorio: [
+      {
+        id: 'lados-y-angulo', titulo: 'Dos lados y su ángulo', pieza: 'trig-plano',
+        consigna: 'Arrastra el vértice B: cambian el ángulo A y el lado c. El vértice C estira b. Busca dos ángulos de igual área.',
+        controles: [
+          { id: 'A', etiqueta: 'A', color: 'c-o', min: 5, max: 175, paso: 5, inicio: 60, unidad: '°', decimales: 0 },
+          { id: 'b', etiqueta: 'b', color: 'c-i', min: 2, max: 7, paso: 1, inicio: 5, decimales: 0 },
+          { id: 'c', etiqueta: 'c', color: 'c-i', min: 2, max: 7, paso: 1, inicio: 6, decimales: 0 },
+        ],
+        dibujo: val => ({ datos: abanicoLibre(val), estado: {} }),
+        lectura: val => [S, ` = ½ · ${f(val.b)} · ${f(val.c)} · sen ${f(val.A)}° ≈ ${f(val.b * val.c * sen(val.A) / 2)}`, SEP, h, ` ≈ ${f(val.c * sen(val.A))}`],
+        arrastres: [
+          { id: 'vertice-b', etiqueta: 'vértice B: cambia A y c', color: 'c-o',
+            donde: val => TP().enPx(abanicoLibre(val), val.c * cos(val.A), val.c * sen(val.A)),
+            mover: (pt, val) => { const q = TP().delPx(abanicoLibre(val), pt); return { A: anguloArriba(abanicoLibre(val), pt), c: Math.hypot(q.x, q.y) }; } },
+          { id: 'vertice-c', etiqueta: 'vértice C: cambia b', color: 'c-i',
+            donde: val => TP().enPx(abanicoLibre(val), val.b, 0),
+            mover: (pt, val) => ({ b: TP().delPx(abanicoLibre(val), pt).x }) },
+        ],
+      },
+      {
+        id: 'heron-sin-cierre', titulo: 'Tres lados: ¿cierran?', pieza: 'trig-plano',
+        consigna: 'Elige tres lados, también unos que no cierren. Mira el signo de p menos el lado mayor y qué pasa con el área.',
+        controles: [
+          { id: 'a', etiqueta: 'a', color: 'c-i', min: 3, max: 10, paso: 1, inicio: 7, decimales: 0 },
+          { id: 'b', etiqueta: 'b', color: 'c-i', min: 2, max: 8, paso: 1, inicio: 4, decimales: 0 },
+          { id: 'c', etiqueta: 'c', color: 'c-i', min: 2, max: 8, paso: 1, inicio: 5, decimales: 0 },
+        ],
+        dibujo: val => ({ datos: ladosLibres(val), estado: {} }),
+        lectura: val => {
+          const k = heron(val.a, val.b, val.c), mayor = Math.max(val.a, val.b, val.c);
+          if (!cierra(val)) return [p, ` − ${f(mayor)} = ${f(k.pv - mayor)}`, ' ≤ 0: no hay triángulo'];
+          return [p, ` = ${f(k.pv)}`, SEP, p, ` − ${f(mayor)} = ${f(k.pv - mayor)}`, SEP, S, ` ≈ ${f(Math.sqrt(k.rad))}`];
+        },
+        // Si los lados cierran, el vértice A fija b y c; si no, la manija queda en la punta del brazo c.
+        arrastres: [
+          { id: 'vertice-a', etiqueta: 'vértice A: cambia b y c', color: 'c-i',
+            donde: val => { if (!cierra(val)) { const q = brazoC(val); return TP().enPx(ladosLibres(val), q[0], q[1]); } const T = porLados(val.a, val.b, val.c); return TP().enPx(ladosLibres(val), T.A[0], T.A[1]); },
+            mover: (pt, val) => { const q = TP().delPx(ladosLibres(val), pt); return cierra(val) ? { b: Math.hypot(q.x - val.a, q.y), c: Math.hypot(q.x, q.y) } : { c: Math.hypot(q.x, q.y) }; } },
+          { id: 'vertice-c', etiqueta: 'vértice C: cambia a', color: 'c-i',
+            donde: val => TP().enPx(ladosLibres(val), val.a, 0),
+            mover: (pt, val) => ({ a: TP().delPx(ladosLibres(val), pt).x }) },
+        ],
+      },
+      {
+        id: 'bisectriz-o-mediana', titulo: 'Bisectriz contra mediana', pieza: 'trig-plano',
+        consigna: 'Arrastra el vértice A para cambiar el lado b y el punto D sobre la base. ¿Cuándo caen juntas la bisectriz y la mediana?',
+        controles: [
+          { id: 'b', etiqueta: 'b', color: 'c-i', min: 4, max: 12, paso: 0.5, inicio: 7, decimales: 1 },
+          { id: 'm', etiqueta: 'm = BD', color: 'c-d', min: 0.5, max: 7.5, paso: 0.25, inicio: 2, decimales: 2 },
+        ],
+        dibujo: val => ({ datos: cevianaLibre(val), estado: {} }),
+        lectura: val => [t, ` ≈ ${f(Math.hypot(porLados(8, val.b, 5).A[0] - val.m, porLados(8, val.b, 5).A[1]))}`, SEP, `bisectriz en ${f(pieBis(val.b))}`, SEP, 'mediana en 4'],
+        arrastres: [
+          { id: 'vertice-a', etiqueta: 'vértice A: cambia b', color: 'c-i',
+            donde: val => { const T = porLados(8, val.b, 5); return TP().enPx(cevianaLibre(val), T.A[0], T.A[1]); },
+            mover: (pt, val) => { const q = TP().delPx(cevianaLibre(val), pt); return { b: Math.hypot(q.x - 8, q.y) }; } },
+          { id: 'pie-d', etiqueta: 'punto D: cambia m', color: 'c-d',
+            donde: val => TP().enPx(cevianaLibre(val), val.m, 0),
+            mover: (pt, val) => ({ m: TP().delPx(cevianaLibre(val), pt).x }) },
+        ],
+      },
+    ],
     historia: {
       texto: 'En el año 628, Brahmagupta escribió una regla para el área de un cuadrilátero que hoy sabemos válida solo si sus vértices están en una circunferencia. Es la prima de la fórmula de Herón para triángulos. Al repetirse de libro en libro, esa condición a veces se perdió. Por eso aquí cada fórmula viene con su condición.',
       pregunta: '¿Bastan los cuatro lados para saber el área de un cuadrilátero?',

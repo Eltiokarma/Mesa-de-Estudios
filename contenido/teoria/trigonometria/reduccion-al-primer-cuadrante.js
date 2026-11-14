@@ -7,6 +7,10 @@
  * Compañera: Mara (coneja), cercana y rigurosa: el signo se decide con el ángulo original, antes de reducir.
  * Colores (regla 4): el ángulo original θ en naranja (c-o), el ángulo de referencia agudo α en verde (c-d), la
  * abscisa x en turquesa (c-i) y la ordenada y en rojo (c-h).
+ * Ronda 2 (14 nov, noche): manijas en las cuatro ideas (la punta del rayo θ, los puntos P y Q del cuarto de vuelta,
+ * la punta del giro grande y los puntos P y P′ del espejo), llaves en las reglas que dicen en qué cuadrante o con qué
+ * espejo cae cada ángulo, separadores «   ·   » entre relaciones y laboratorio de dos mesas. «Juega» y «Mira» usan
+ * la misma figura; ver el comentario de cada mira (hallazgo 9).
  * Errores: TR11 (cruza x e y), TR12 (sin signo), TR14 (cambia o no cambia a la co-razón cuando no corresponde),
  * TR15 (el signo de −θ) de docs/investigacion/trigonometria-ideas-erroneas.md; hipótesis nuevas: TRRD-SIGNO-REF (toma
  * el signo del ángulo de referencia, siempre positivo), TRRD-ANALOGIA (aplica la regla de los suplementarios a los
@@ -42,6 +46,10 @@
     const e = EXACTOS.find(([n]) => Math.abs(Math.abs(v) - n) < 1e-9);
     return (v < -1e-9 ? '−' : '') + (e ? e[1] : f(Math.abs(v)));
   }
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza.
+  const TP = () => Kit.piezas['trig-plano'];
+  const enUno = (d, g) => TP().enPx(d, Math.cos(rad(g)), Math.sin(rad(g)));   // punto de la circunferencia de radio 1
+  const angulo = (d, pt, cerca) => TP().anguloDe(d, pt, { cerca });
   const opuesto = t => (t === '0' || t === 'no está definida' ? t : t[0] === '−' ? t.slice(1) : '−' + t);
   function azar(sem) {
     let q = (sem * 2654435761 + 12345) >>> 0;
@@ -94,6 +102,10 @@
         return q ? [th, ` = ${f(val.g)}° · cuadrante ${ROM[q]} · `, al, ` = ${f(refDe(val.g))}°`] : [th, ` = ${f(val.g)}° · sobre un eje`];
       },
       minimo: 4,
+      // Se arrastra la punta del rayo θ alrededor de la circunferencia; el arco verde α la sigue hasta el eje x.
+      arrastres: [{ id: 'punta', etiqueta: 'punta del rayo θ', color: 'c-o',
+        donde: val => enUno(referencia(val.g), val.g),
+        mover: (pt, val) => ({ g: angulo(referencia(val.g), pt, val.g) }) }],
     },
     predice: {
       pregunta: 'Sabemos que cos 30° = √3/2. ¿Cuánto vale cos 210°?',
@@ -109,6 +121,7 @@
       coincide: 'Coincide: la misma abscisa que en 30°, pero hacia la izquierda.',
       noCoincide: 'Revisemos: el punto de 210° está a la izquierda del eje y.',
     },
+    // Hallazgo 9: «Mira» arma, por partes, la misma figura del juego (rayo θ, arco α y punto hueco) en 210°.
     mira: {
       datos: {
         circulos: [{ r: 1 }],
@@ -127,7 +140,7 @@
     },
     regla: {
       texto: 'Cada razón de θ es igual, salvo el signo, a la misma razón de su ángulo de referencia α. El signo lo da el cuadrante de θ.',
-      ecuacion: ['sen(180° − ', al, ') = sen ', al, ';  cos(180° + ', al, ') = −cos ', al, ';  tan(360° − ', al, ') = −tan ', al],
+      ecuacion: [{ llave: ['sen(180° − ', al, ')'], nota: 'en el II', color: 'c-o' }, ' = sen ', al, '   ·   ', { llave: ['cos(180° + ', al, ')'], nota: 'en el III', color: 'c-o' }, ' = −cos ', al, '   ·   ', { llave: ['tan(360° − ', al, ')'], nota: 'en el IV', color: 'c-o' }, ' = −tan ', al],
       condicion: 'α es el ángulo agudo entre el lado final de θ y el eje x. El signo se decide con θ.',
       voz: 'El signo sale del ángulo original; el tamaño, del agudo.',
     },
@@ -183,6 +196,18 @@
         { id: 't', etiqueta: 'Q en', opciones: [{ valor: 'mas', texto: '90° + α' }, { valor: 'menos', texto: '90° − α' }] },
       ],
       dibujo: val => ({ datos: cuarto(val.a, val.t), estado: {} }),
+      // Se arrastran P (cambia α) y Q, que va un cuarto de vuelta adelante o atrás y también cambia α.
+      arrastres: [
+        { id: 'punto-p', etiqueta: 'punto P en α', color: 'c-d',
+          donde: val => enUno(cuarto(val.a, val.t), val.a),
+          mover: (pt, val) => ({ a: angulo(cuarto(val.a, val.t), pt, val.a) }) },
+        { id: 'punto-q', etiqueta: 'punto Q, a un cuarto de vuelta', color: 'c-o',
+          donde: val => enUno(cuarto(val.a, val.t), val.t === 'mas' ? 90 + val.a : 90 - val.a),
+          mover: (pt, val) => {
+            const g = angulo(cuarto(val.a, val.t), pt, val.t === 'mas' ? 90 + val.a : 90 - val.a);
+            return { a: val.t === 'mas' ? g - 90 : 90 - g };
+          } },
+      ],
       lectura: val => {
         const g = val.t === 'mas' ? 90 + val.a : 90 - val.a;
         return [`P(${f(Math.cos(rad(val.a)))}; ${f(Math.sin(rad(val.a)))}) · Q(${f(Math.cos(rad(g)))}; ${f(Math.sin(rad(g)))})`];
@@ -203,6 +228,7 @@
       coincide: 'Coincide: la altura de P se volvió la abscisa de Q, hacia la izquierda.',
       noCoincide: 'Revisemos: el tramo turquesa de Q mide lo que el rojo de P.',
     },
+    // Hallazgo 9: «Mira» es la figura del juego con α = 30° y Q en 90° + α, armada tramo por tramo.
     mira: {
       datos: {
         circulos: [{ r: 1 }],
@@ -225,7 +251,7 @@
     },
     regla: {
       texto: 'Con 90° o 270° la razón cambia a su co-razón: seno y coseno, tangente y cotangente. Con 180° o 360° se conserva. El signo, siempre del cuadrante de θ.',
-      ecuacion: ['cos(90° + ', al, ') = −sen ', al, ';  sen(270° − ', al, ') = −cos ', al],
+      ecuacion: [{ llave: ['cos(90° + ', al, ')'], nota: 'cuarto de vuelta', color: 'c-o' }, ' = −sen ', al, '   ·   ', { llave: ['sen(270° − ', al, ')'], nota: 'tres cuartos', color: 'c-o' }, ' = −cos ', al],
       condicion: 'Para decidir el signo, α se trata como agudo. Las igualdades valen después para todo α.',
       voz: 'Un cuarto de vuelta intercambia x e y; media vuelta solo las voltea.',
     },
@@ -275,6 +301,10 @@
       voz: 'Cuenta las vueltas antes de mirar el cuadrante.',
       controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: -720, max: 1080, paso: 45, inicio: 855, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: espiral(val.g), estado: {} }),
+      // Se arrastra la punta del giro: cada vuelta completa del dedo suma o quita 360°.
+      arrastres: [{ id: 'punta', etiqueta: 'punta del giro θ', color: 'c-o',
+        donde: val => enUno(espiral(val.g), val.g),
+        mover: (pt, val) => ({ g: angulo(espiral(val.g), pt, val.g) }) }],
       lectura: val => { const m = mod360(val.g), n = (val.g - m) / 360; return [th, ` = 360°·(${f(n)}) + ${f(m)}° · lado final de ${f(m)}°`]; },
       minimo: 3,
     },
@@ -292,6 +322,7 @@
       coincide: 'Coincide: tres vueltas horarias y 30° más, debajo del eje x.',
       noCoincide: 'Revisemos: el giro horario deja a P debajo del eje x.',
     },
+    // Hallazgo 9: «Mira» es la espiral del juego con −1110°, que se desenrolla hasta −30° y 330°.
     mira: {
       datos: {
         circulos: [{ r: 1 }],
@@ -311,7 +342,7 @@
     },
     regla: {
       texto: 'Primero se quitan las vueltas completas: no cambian el lado final. Si queda un ángulo negativo, el seno y la tangente cambian de signo; el coseno no.',
-      ecuacion: ['sen(360°·n + ', th, ') = sen ', th, ';  sen(−', th, ') = −sen ', th, ';  cos(−', th, ') = cos ', th],
+      ecuacion: [{ llave: ['sen(', th, ' + 360°n)'], nota: 'n vueltas más', color: 'c-o' }, ' = sen ', th, '   ·   ', 'sen(−', th, ') = −sen ', th, '   ·   ', 'cos(−', th, ') = cos ', th],
       condicion: 'n es un entero. tan(−θ) = −tan θ donde exista.',
       voz: 'Vueltas fuera primero; el sentido del giro se conserva.',
     },
@@ -365,7 +396,16 @@
       voz: 'Fíjate qué coordenada se conserva en el reflejo.',
       controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: 10, max: 170, paso: 10, inicio: 40, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: espejo(val.g, 'y'), estado: {} }),
-      lectura: val => ['sen ', th, ` = ${f(Math.sin(rad(val.g)))}; sen ${f(180 - val.g)}° = ${f(Math.sin(rad(180 - val.g)))} · cos `, th, ` = ${f(Math.cos(rad(val.g)))}`],
+      // Se arrastran P (cambia θ) y su reflejo P′, que mueve θ al revés: el espejo es el eje y.
+      arrastres: [
+        { id: 'punto-p', etiqueta: 'punto P en θ', color: 'c-o',
+          donde: val => enUno(espejo(val.g, 'y'), val.g),
+          mover: (pt, val) => ({ g: angulo(espejo(val.g, 'y'), pt, val.g) }) },
+        { id: 'reflejo', etiqueta: 'reflejo P′ en 180° − θ', color: 'c-o',
+          donde: val => enUno(espejo(val.g, 'y'), 180 - val.g),
+          mover: (pt, val) => ({ g: 180 - angulo(espejo(val.g, 'y'), pt, 180 - val.g) }) },
+      ],
+      lectura: val => ['sen ', th, ` = ${f(Math.sin(rad(val.g)))} · sen ${f(180 - val.g)}° = ${f(Math.sin(rad(180 - val.g)))} · cos `, th, ` = ${f(Math.cos(rad(val.g)))}`],
       minimo: 3,
     },
     predice: {
@@ -381,6 +421,7 @@
       coincide: 'Coincide: 360° − θ es el reflejo en el eje x, y la abscisa no cambia.',
       noCoincide: 'Revisemos: P′ quedó debajo de P, con la misma abscisa.',
     },
+    // Hallazgo 9: «Mira» es el espejo del juego con θ = 40°; después suma el otro espejo, el eje x de la predicción.
     mira: {
       datos: {
         circulos: [{ r: 1 }],
@@ -405,7 +446,7 @@
     },
     regla: {
       texto: 'Si dos ángulos suman 180°, tienen el mismo seno y cosenos opuestos. Si suman 360°, tienen el mismo coseno y senos opuestos. En los dos casos, tangentes opuestas.',
-      ecuacion: ['sen(180° − ', th, ') = sen ', th, ';  cos(360° − ', th, ') = cos ', th, ';  tan(180° − ', th, ') = tan(360° − ', th, ') = −tan ', th],
+      ecuacion: [{ llave: ['sen(180° − ', th, ')'], nota: 'espejo en y', color: 'c-o' }, ' = sen ', th, '   ·   ', { llave: ['cos(360° − ', th, ')'], nota: 'espejo en x', color: 'c-o' }, ' = cos ', th, '   ·   ', 'tan(180° − ', th, ') = −tan ', th, '   ·   ', 'tan(360° − ', th, ') = −tan ', th],
       condicion: 'Vale para todo θ donde las razones existan.',
       voz: 'Pregunta siempre en qué eje está el espejo.',
     },
@@ -434,11 +475,85 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: un giro cualquiera, de −720° a 1080° de 15 en 15: se quitan vueltas, se busca α y se decide el signo.
+  const labGiro = g => {
+    const d = referencia(g);
+    d.arcos = [{ de: 0, a: g, r: 0.18, espiral: 8, color: 'o', rotulo: `${f(g)}°` }].concat(d.arcos.slice(1));
+    d.alt = `Giro de ${f(g)} grados: termina como ${f(mod360(g))} grados, con ángulo de referencia de ${f(refDe(g))} grados`;
+    return d;
+  };
+  // Mesa 2: θ y un ángulo relacionado (90°, 180°, 270° o 360° ± θ): el reflejo o el cuarto de vuelta, en una tabla viva.
+  const RELS = [[90, 1], [90, -1], [180, -1], [180, 1], [270, -1], [270, 1], [360, -1]];
+  const relTxt = ([a, sg]) => `${a}° ${sg > 0 ? '+' : '−'} θ`;
+  const relPartes = ([a, sg]) => [`(${a}° ${sg > 0 ? '+' : '−'} `, th, ')'];
+  function relacion(val) {
+    const [a, sg] = RELS[val.rel], h = a + sg * val.g;
+    const x = Math.cos(rad(val.g)), y = Math.sin(rad(val.g)), x2 = Math.cos(rad(h)), y2 = Math.sin(rad(h));
+    return {
+      circulos: [{ r: 1 }],
+      rayos: [{ ang: 0, largo: 1, grosor: 'contorno' }, { ang: val.g, color: 'o' }, { ang: h, color: 'o', discontinua: true }],
+      arcos: [{ de: 0, a: val.g, r: 0.2, color: 'o', rotulo: 'θ' }],
+      segmentos: [{ de: [0, 0], a: [x, 0], color: 'i' }, { de: [x, 0], a: [x, y], color: 'h' }, { de: [0, 0], a: [x2, 0], color: 'i', discontinua: true }, { de: [x2, 0], a: [x2, y2], color: 'h', discontinua: true }],
+      puntos: [{ x, y, rotulo: 'P' }, { x: x2, y: y2, rotulo: 'P′', lado: y2 < 0 ? (x2 < 0 ? 'so' : 'se') : (x2 < 0 ? 'no' : 'ne') }],
+      alt: `θ = ${f(val.g)} grados y ${relTxt(RELS[val.rel])} = ${f(h)} grados, con sus coordenadas`,
+    };
+  }
+  // sen(a ± θ) = σ · (sen o cos) θ: la razón y el signo se deciden evaluando en un agudo genérico (10°), por código.
+  function reducida(fn, [a, sg]) {
+    const nueva = a % 180 ? CO[fn] : fn, v = FN[fn](a + sg * 10) / FN[nueva](10);
+    return [`${v < 0 ? '−' : ''}${nueva} `, th];
+  }
+  const laboratorio = [
+    {
+      id: 'cualquier-giro', titulo: 'Cualquier giro, paso a paso', pieza: 'trig-plano',
+      consigna: 'Gira P hasta tres vueltas, en cualquier sentido, y elige la razón. La lectura quita las vueltas, da α y el signo.',
+      controles: [
+        { id: 'g', etiqueta: 'θ', color: 'c-o', min: -720, max: 1080, paso: 15, inicio: 855, unidad: '°', decimales: 0 },
+        { id: 'fn', etiqueta: 'razón', opciones: ['sen', 'cos', 'tan'].map(v => ({ valor: v, texto: v })) },
+      ],
+      dibujo: val => ({ datos: labGiro(val.g), estado: {} }),
+      lectura: val => {
+        const m = mod360(val.g), a = refDe(m), v = FN[val.fn](val.g);
+        if (!Number.isFinite(v)) return [`${val.fn}(${f(val.g)}°) = ${val.fn} ${f(m)}°: no está definida`];
+        const sg = Math.abs(v) < 1e-9 ? '' : v < 0 ? '−' : '+';
+        return [`${val.fn}(${f(val.g)}°) = ${val.fn} ${f(m)}° = ${sg}${val.fn} `, al, ` · `, al, ` = ${f(a)}°`];
+      },
+      arrastres: [{ id: 'punta', etiqueta: 'punta del giro θ', color: 'c-o',
+        donde: val => enUno(labGiro(val.g), val.g),
+        mover: (pt, val) => ({ g: angulo(labGiro(val.g), pt, val.g) }) }],
+    },
+    {
+      id: 'siete-relaciones', titulo: 'Espejos y cuartos de vuelta', pieza: 'trig-plano',
+      consigna: 'Mueve θ o su pareja P′ y elige la pareja. La lectura dice si la razón se conserva o cambia a su co-razón.',
+      controles: [
+        { id: 'g', etiqueta: 'θ', color: 'c-o', min: 0, max: 90, paso: 5, inicio: 35, unidad: '°', decimales: 0 },
+        { id: 'rel', etiqueta: 'pareja', opciones: RELS.map((r, k) => ({ valor: k, texto: relTxt(r) })) },
+      ],
+      dibujo: val => ({ datos: relacion(val), estado: {} }),
+      lectura: val => {
+        const r = RELS[val.rel];
+        return [th, ` = ${f(val.g)}° · sen`, ...relPartes(r), ' = ', ...reducida('sen', r), ' · cos', ...relPartes(r), ' = ', ...reducida('cos', r)];
+      },
+      arrastres: [
+        { id: 'punto-p', etiqueta: 'punto P en θ', color: 'c-o',
+          donde: val => enUno(relacion(val), val.g),
+          mover: (pt, val) => ({ g: angulo(relacion(val), pt, val.g) }) },
+        { id: 'pareja', etiqueta: 'punto P′ de la pareja', color: 'c-o',
+          donde: val => { const [a, sg] = RELS[val.rel]; return enUno(relacion(val), a + sg * val.g); },
+          mover: (pt, val) => { const [a, sg] = RELS[val.rel]; return { g: sg * (angulo(relacion(val), pt, a + sg * val.g) - a) }; } },
+      ],
+    },
+  ];
+
   return {
     unidad: 'trigonometria.reduccion-al-primer-cuadrante',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js'],
+    // Laboratorio: un giro de hasta tres vueltas en los dos sentidos con la razón a elegir (rango y casos que las
+    // ideas no dan), y θ con sus siete parejas (90°, 180°, 270° y 360° ± θ) para comparar razón y signo de cada una.
+    laboratorio,
     historia: {
       texto: 'En el siglo XVI, Rheticus se propuso tablas de las seis razones con muchas cifras. Murió sin terminarlas; sus colaboradores siguieron y Valentin Otho publicó el Opus Palatinum. Calcular cada ángulo por separado era enorme. Las simetrías ayudan: si dos ángulos se relacionan, basta calcular uno y revisar el otro. Reducir al primer cuadrante es usar esas simetrías, y a veces cambian seno por coseno.',
       pregunta: '¿Cuántos valores de seno necesitarías calcular para cubrir toda la vuelta?',

@@ -13,6 +13,10 @@
  * vale para todo θ aunque un denominador se anule), TRID-MITAD (olvida dividir entre 2), TRID-SIN-CUADRADO (usa k en
  * lugar de k²), TRID-POTENCIA (sen⁴ + cos⁴ = 1 como la pitagórica), TRID-MUESTREO (probar valores demuestra; es el
  * error objetivo de la matriz) y TRID-RAIZ (√(sen²θ) = sen θ).
+ * Ronda 2 (14 nov, noche): manijas en las cuatro ideas (el punto P sobre la circunferencia en las ideas 1 y 2; el
+ * punto de la curva, que se corre en θ, en las ideas 3 y 4), llaves en las reglas (catetos y radio, recíprocas,
+ * denominadores no nulos, término doble), potencias con { sup } en las reglas, separadores «   ·   » donde había «;»
+ * y laboratorio de dos mesas. Hallazgo 9: «Juega» y «Mira» usan la misma pieza en cada idea (ver la idea 2).
  *
  * Ficha de tarea (diseno-y-animacion):
  *   Promesa: las identidades salen de Pitágoras en la C.T. y se demuestran transformando, con su dominio a la vista.
@@ -33,6 +37,18 @@
   const rad = g => g * Math.PI / 180;
   const gcd = (a, b) => (b ? gcd(b, a % b) : Math.abs(a));
   const ROM = ['', 'I', 'II', 'III', 'IV'];
+  // Potencias de las razones con { sup } (tipografía de la ronda 2): sen²θ, cos⁴θ…
+  const p2 = (fn, e = '2') => ({ sup: [fn, e] });
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de las piezas. La pieza ejes no trae inversa:
+  // se invierte su escala lineal aquí (como `inversa` en fisica/movimiento-rectilineo.js).
+  const TP = () => Kit.piezas['trig-plano'], EJES = () => Kit.piezas.ejes;
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+  const punta = (d, gr, L = 1) => TP().enPx(d, L * Math.cos(rad(gr)), L * Math.sin(rad(gr)));
+  // El ángulo del dedo entre 0° y 360°; cerca de 0° viniendo de arriba de 180°, se queda en 360° (atan2 da 0).
+  const giroDe = (d, pt, actual) => { const a = TP().anguloDe(d, pt); return a < 8 && actual > 180 ? 360 : a; };
+  // En una gráfica de ejes, el θ que marca el dedo (solo cuenta la x).
+  const thetaDe = (datos, pt) => inversa(v => EJES().geometria(datos).X(v), datos.x.min, datos.x.max)(pt.x);
+  const enEjes = (datos, x, y) => { const g = EJES().geometria(datos); return { x: g.X(x), y: g.Y(y) }; };
   // Fracción simplificada como texto: (−3, 5) → «−3/5».
   function fr(p, q) {
     if (p === 0) return '0';
@@ -73,7 +89,8 @@
       ],
       arcos: [{ de: 0, a: g, r: 0.2, color: 'o' }],
       puntos: [{ x, y, rotulo: 'P', lado: y >= 0 ? (x >= 0 ? 'ne' : 'no') : (x >= 0 ? 'se' : 'so') }],
-      rotulos: [(() => { const s = x * y > 0 ? 1 : -1; return { x: x / 2 - s * y * 0.13, y: y / 2 + s * x * 0.13 - 0.04, texto: '1', color: 'd' }; })()],
+      // Si el triángulo se aplana sobre un eje, el «1» se taparía con el cateto: no se rotula.
+      rotulos: Math.abs(x) < 0.15 || Math.abs(y) < 0.15 ? [] : [(() => { const s = x * y > 0 ? 1 : -1; return { x: x / 2 - s * y * 0.13, y: y / 2 + s * x * 0.13 - 0.04, texto: '1', color: 'd' }; })()],
       alt: `Triángulo en la circunferencia para θ = ${f(g)} grados: catetos ${f(Math.abs(x))} y ${f(Math.abs(y))}, hipotenusa 1`,
     }, extra);
   }
@@ -103,6 +120,10 @@
       dibujo: val => ({ datos: triangulo(val.g), estado: {} }),
       lectura: val => { const s2 = Math.sin(rad(val.g)) ** 2, c2 = Math.cos(rad(val.g)) ** 2; return [`sen²`, th, ' + cos²', th, ` = ${f(s2)} + ${f(c2)} = ${f(s2 + c2)}`]; },
       minimo: 3,
+      // Se arrastra P sobre la circunferencia: los catetos cambian y la hipotenusa sigue en 1.
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P del arco θ', color: 'c-o',
+        donde: val => punta(triangulo(val.g), val.g),
+        mover: (pt, val) => ({ g: giroDe(triangulo(val.g), pt, val.g) }) }],
     },
     predice: {
       pregunta: 'Si divides cada término de sen²θ + cos²θ = 1 entre cos²θ, ¿qué igualdad queda?',
@@ -129,7 +150,8 @@
     },
     regla: {
       texto: 'La pitagórica es Pitágoras en la circunferencia de radio 1. Dividida entre cos²θ o entre sen²θ, da las otras dos.',
-      ecuacion: ['sen²', th, ' + cos²', th, ' = 1;  1 + tan²', th, ' = sec²', th, ';  1 + cot²', th, ' = csc²', th],
+      ecuacion: [{ llave: [p2('sen'), th], nota: 'cateto al cuadrado', color: 'c-h' }, ' + ', { llave: [p2('cos'), th], nota: 'otro cateto', color: 'c-i' }, ' = ', { llave: ['1'], nota: 'radio', color: 'c-d' },
+        '   ·   ', '1 + ', p2('tan'), th, ' = ', p2('sec'), th, '   ·   ', '1 + ', p2('cot'), th, ' = ', p2('csc'), th],
       condicion: 'La primera, para todo θ. La segunda pide cos θ ≠ 0; la tercera, sen θ ≠ 0.',
       voz: 'Antes de dividir, anotemos qué no puede valer cero.',
     },
@@ -195,6 +217,10 @@
         return ['tan ', th, ` = ${f(y / x)} · sen/cos = ${f(y)}/${f(x)}`];
       },
       minimo: 4,
+      // Se arrastra P: la línea tangente responde y desaparece donde cos θ = 0.
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P del arco θ', color: 'c-o',
+        donde: val => punta(cociente(val.g), val.g),
+        mover: (pt, val) => ({ g: giroDe(cociente(val.g), pt, val.g) }) }],
     },
     predice: {
       pregunta: 'Como csc θ = 1/sen θ, sen θ · csc θ = 1. ¿Vale esa igualdad para todo θ entre 0° y 360°?',
@@ -210,6 +236,8 @@
       coincide: 'Coincide: donde sen θ = 0, csc θ no existe y no hay producto.',
       noCoincide: 'Revisemos los puntos donde la línea seno mide 0.',
     },
+    // Hallazgo 9: «Mira» se queda en la misma C.T. del juego, pero sin las líneas: muestra solo los huecos del dominio,
+    // que en el juego aparecían como «no existe». Es la misma figura, vista desde lo que falta.
     mira: {
       datos: {
         circulos: [{ r: 1 }],
@@ -222,12 +250,13 @@
         { estado: { corte: 1 }, texto: 'La cosecante es la recíproca del seno.', ecuacion: ['csc ', th, ' = ', { frac: ['1', 'sen θ'] }, '  ⇒  sen ', th, ' · csc ', th, ' = 1'] },
         { estado: { corte: 2 }, texto: 'En 0° y 180°, sen θ = 0: csc θ no existe.', ecuacion: ['sen 0° = sen 180° = 0'] },
         { estado: { corte: 3 }, texto: 'La identidad vale en todos los demás ángulos.', ecuacion: [th, ' ≠ 180°·k'] },
-        { estado: { corte: 4 }, texto: 'La tangente es un cociente: pide cos θ ≠ 0.', ecuacion: ['tan ', th, ' = ', { frac: ['sen θ', 'cos θ'] }, ';  ', th, ' ≠ 90° + 180°·k'] },
+        { estado: { corte: 4 }, texto: 'La tangente es un cociente: pide cos θ ≠ 0.', ecuacion: ['tan ', th, ' = ', { frac: ['sen θ', 'cos θ'] }, '   ·   ', th, ' ≠ 90° + 180°·k'] },
       ],
     },
     regla: {
       texto: 'Cada razón tiene su recíproca, y tangente y cotangente son cocientes de seno y coseno. Cada una vale solo donde su denominador no se anula.',
-      ecuacion: ['sen ', th, '·csc ', th, ' = 1;  cos ', th, '·sec ', th, ' = 1;  tan ', th, ' = ', { frac: ['sen θ', 'cos θ'] }, ';  cot ', th, ' = ', { frac: ['cos θ', 'sen θ'] }],
+      ecuacion: ['sen ', th, ' · ', { llave: ['csc ', th], nota: 'recíproca', color: 'c-h' }, ' = 1', '   ·   ', 'cos ', th, ' · ', { llave: ['sec ', th], nota: 'recíproca', color: 'c-i' }, ' = 1', '   ·   ',
+        'tan ', th, ' = ', { frac: ['sen θ', { llave: ['cos θ'], nota: 'no nulo', color: 'c-i' }] }, '   ·   ', 'cot ', th, ' = ', { frac: ['cos θ', 'sen θ'] }],
       condicion: 'sen θ ≠ 0 para csc y cot; cos θ ≠ 0 para sec y tan; k entero.',
       voz: 'Una identidad viene con su dominio; no lo olvidemos.',
     },
@@ -307,6 +336,10 @@
       }), estado: {} }),
       lectura: val => [`sen⁴`, th, ' + cos⁴', th, ` = ${f(cuarta(val.g))} · 2sen²·cos² = ${f(2 * (S(val.g) * C(val.g)) ** 2)}`],
       minimo: 3,
+      // Se arrastra el punto por la curva: el dedo elige θ y la altura dice cuánto falta para 1.
+      arrastres: [{ id: 'punto-curva', etiqueta: 'punto de la curva en θ', color: 'c-o',
+        donde: val => enEjes(ejesTh(0, 1.5), val.g, cuarta(val.g)),
+        mover: pt => ({ g: thetaDe(ejesTh(0, 1.5), pt) }) }],
     },
     predice: {
       pregunta: '¿A qué es igual (sen θ + cos θ)² para todo θ?',
@@ -338,13 +371,15 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'El cuadrado de una suma deja tres términos.', ecuacion: ['(sen ', th, ' + cos ', th, ')² = sen²', th, ' + 2 sen ', th, ' cos ', th, ' + cos²', th] },
         { estado: { corte: 2 }, texto: 'sen²θ + cos²θ se cambia por 1.', ecuacion: ['(sen ', th, ' + cos ', th, ')² = 1 + 2 sen ', th, ' cos ', th] },
-        { estado: { corte: 3 }, texto: 'Donde sen θ cos θ > 0 la curva sube; donde es negativo, baja.', ecuacion: ['45°: 1 + 1 = 2;  135°: 1 − 1 = 0'] },
+        { estado: { corte: 3 }, texto: 'Donde sen θ cos θ > 0 la curva sube; donde es negativo, baja.', ecuacion: ['45°: 1 + 1 = 2', '   ·   ', '135°: 1 − 1 = 0'] },
         { estado: { corte: 4 }, texto: 'Elevando sen²θ + cos²θ = 1 al cuadrado sale otra.', ecuacion: ['sen⁴', th, ' + cos⁴', th, ' = 1 − 2 sen²', th, ' cos²', th] },
       ],
     },
     regla: {
       texto: 'Las auxiliares salen de elevar al cuadrado y cambiar sen²θ + cos²θ por 1. El término doble no desaparece.',
-      ecuacion: ['(sen ', th, ' ± cos ', th, ')² = 1 ± 2 sen ', th, ' cos ', th, ';  sen⁴', th, ' + cos⁴', th, ' = 1 − 2 sen²', th, ' cos²', th],
+      // Con espacios duros (\u00a0) cada miembro queda entero: si no cabe, la línea se parte en el «=».
+      ecuacion: [{ sup: [{ par: ['sen\u00a0', th, '\u00a0±\u00a0cos\u00a0', th] }, '2'] }, ' = ', { llave: ['1\u00a0±\u00a02\u00a0sen\u00a0', th, '\u00a0cos\u00a0', th], nota: 'queda el doble', color: 'c-o' },
+        '   ·   ', p2('sen', '4'), th, '\u00a0+\u00a0', p2('cos', '4'), th, ' = ', '1\u00a0−\u00a02', { sup: [{ par: ['sen\u00a0', th, '\u00a0cos\u00a0', th] }, '2'] }],
       condicion: 'Valen para todo θ. Otra útil: tan θ + cot θ = sec θ · csc θ, con sen θ ≠ 0 y cos θ ≠ 0.',
       voz: 'Al cuadrado, el doble producto siempre se queda.',
     },
@@ -418,6 +453,10 @@
       dibujo: val => ({ datos: candidata(val.c, val.g), estado: {} }),
       lectura: val => { const c = CAND[val.c], vi = c.izq(val.g); return [`izquierda: ${Number.isFinite(vi) ? f(vi) : 'no existe'} · derecha: ${f(c.der(val.g))}`]; },
       minimo: 4,
+      // Se arrastra el punto naranja por la curva (o el verde, si el izquierdo no existe): el dedo elige θ.
+      arrastres: [{ id: 'punto-curva', etiqueta: 'punto de la curva en θ', color: 'c-o',
+        donde: val => { const c = CAND[val.c], vi = c.izq(val.g); return enEjes(candidata(val.c, val.g), val.g, Number.isFinite(vi) ? vi : c.der(val.g)); },
+        mover: (pt, val) => ({ g: thetaDe(candidata(val.c, val.g), pt) }) }],
     },
     predice: {
       pregunta: 'La igualdad sen θ + cos θ = 1 se cumple en θ = 0°, 90° y 360°. ¿Es una identidad?',
@@ -455,7 +494,7 @@
     },
     regla: {
       texto: 'Una identidad se demuestra transformando un lado, con igualdades válidas, hasta obtener el otro. Probar valores solo puede refutarla: un contraejemplo basta.',
-      ecuacion: [{ frac: ['1 − cos²θ', 'sen θ'] }, ' = sen ', th, ',  ', th, ' ≠ 180°·k;   ', { raiz: ['sen²θ'] }, ' = |sen ', th, '|'],
+      ecuacion: [{ frac: ['1 − cos²θ', { llave: ['sen θ'], nota: 'no nulo', color: 'c-h' }] }, ' = sen ', th, '   ·   ', th, ' ≠ 180°·k', '   ·   ', { raiz: [p2('sen'), th] }, ' = |sen ', th, '|'],
       condicion: 'Simplificar no devuelve los valores excluidos: un denominador que se anulaba sigue fuera del dominio.',
       voz: 'Anotemos el dominio al empezar y conservémoslo al terminar.',
     },
@@ -484,11 +523,102 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: los tres triángulos de la idea 1, de uno en uno y para cualquier θ (de 1° en 1°). Lo que sale de la
+  // ventana no se dibuja; la lectura da los números igual.
+  const VL = { x: [-2.2, 2.2], y: [-2.2, 2.2] };
+  const LADO = (x, y) => (y >= 0 ? (x >= 0 ? 'ne' : 'no') : (x >= 0 ? 'se' : 'so'));
+  function tresLibre(g, tri) {
+    const x = C(g), y = S(g), tn = Math.abs(x) < 1e-9 ? NaN : y / x, ct = Math.abs(y) < 1e-9 ? NaN : x / y;
+    const enV = v => Number.isFinite(v) && Math.abs(v) <= 2.1;
+    let seg = [], rectas = [];
+    if (tri === 'sc') seg = triangulo(g).segmentos;
+    if (tri === 'ts') {
+      rectas = [{ x: 1, color: 'd' }];
+      if (enV(tn)) seg = [{ de: [0, 0], a: [1, 0], color: 'd', rotulo: '1' }, { de: [1, 0], a: [1, tn], color: 'd', rotulo: Math.abs(tn) > 0.3 ? 'tan' : undefined }, { de: [0, 0], a: [1, tn], color: 'i', rotulo: 'sec', lado: 'adentro' }];
+    }
+    if (tri === 'cc') {
+      rectas = [{ y: 1, color: 'd' }];
+      if (enV(ct)) seg = [{ de: [0, 0], a: [0, 1], color: 'd', rotulo: '1' }, { de: [0, 1], a: [ct, 1], color: 'd', rotulo: Math.abs(ct) > 0.3 ? 'cot' : undefined }, { de: [0, 0], a: [ct, 1], color: 'h', rotulo: 'csc', lado: 'adentro' }];
+    }
+    return {
+      ventana: tri === 'sc' ? { x: [-1.3, 1.3], y: [-1.3, 1.3] } : VL,
+      circulos: [{ r: 1 }], rectas, segmentos: seg,
+      rayos: [{ ang: g, color: 'o', grosor: 'cuadricula', punta: false }],
+      arcos: g ? [{ de: 0, a: g, r: 0.2, color: 'o' }] : [],
+      puntos: [{ x, y, rotulo: 'P', lado: LADO(x, y) }],
+      alt: `Triángulo de la identidad ${{ sc: 'seno cuadrado más coseno cuadrado', ts: 'uno más tangente cuadrada', cc: 'uno más cotangente cuadrada' }[tri]} para θ = ${f(g)} grados`,
+    };
+  }
+  // Mesa 2: dos miembros de una igualdad candidata, con más candidatas que la idea 4 (dos de ellas sí son identidades).
+  const CAND2 = {
+    // enI y enD: dónde va el rótulo de cada miembro, junto a su curva.
+    a: Object.assign({ enI: [110, 1.6], enD: [270, -1.6] }, CAND.a), r: Object.assign({ enI: [250, 1.6], enD: [270, -1.6] }, CAND.r),
+    s: { izq: g => S(g) + C(g), der: () => 1, txtI: 'sen + cos', txtD: '1', enI: [60, 2], enD: [345, 1.5] },
+    t: { izq: g => (Math.abs(S(g) * C(g)) < 1e-9 ? NaN : S(g) / C(g) + C(g) / S(g)), der: g => (Math.abs(S(g) * C(g)) < 1e-9 ? NaN : 1 / (S(g) * C(g))), txtI: 'tan + cot', txtD: 'sec · csc', enI: [45, 2.7], enD: [135, -2.6] },
+    c: { izq: g => S(g) ** 4 - C(g) ** 4, der: g => S(g) ** 2 - C(g) ** 2, txtI: 'sen⁴ − cos⁴', txtD: 'sen² − cos²', enI: [90, 1.6], enD: [180, -1.6] },
+  };
+  const recorta = F => g => { const v = F(g); return Number.isFinite(v) && Math.abs(v) <= 3 ? v : NaN; };
+  function candidata2(id, g) {
+    const c = CAND2[id], vi = c.izq(g), vd = c.der(g), en = v => Number.isFinite(v) && Math.abs(v) <= 3;
+    return Object.assign(ejesTh(-3, 3, {
+      curvas: [{ puntos: muestras(recorta(c.der), 2), color: 'd', discontinua: true, rotulo: c.txtD, en: c.enD }, { puntos: muestras(recorta(c.izq), 2), color: 'o', rotulo: c.txtI, en: c.enI }],
+      puntos: (en(vi) ? [{ x: g, y: vi, color: 'o' }] : []).concat(en(vd) ? [{ x: g, y: vd, color: 'd', abierto: true }] : []),
+    }), { y: { min: -3, max: 3, paso: 1, decimales: 0 } });
+  }
+
   return {
     unidad: 'trigonometria.identidades-fundamentales',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js', '/nucleo/kit/piezas/ejes.js'],
+    // Laboratorio (docs/teoria.md §4b): dos mesas sin preguntas. La primera deja ver los tres triángulos de la idea 1
+    // para cualquier θ, de grado en grado, con la suma de cuadrados en la lectura (el juego solo muestra el primero);
+    // la segunda compara los dos miembros de cinco igualdades, tres que fallan y dos que sí son identidades, con su
+    // gráfica y sus huecos (la idea 4 trae dos que fallan).
+    laboratorio: [
+      {
+        id: 'tres-triangulos', titulo: 'Tres triángulos, cualquier ángulo', pieza: 'trig-plano',
+        consigna: 'Elige el triángulo y arrastra P. La lectura suma los cuadrados de los catetos y los compara con la hipotenusa al cuadrado.',
+        controles: [
+          { id: 'g', etiqueta: 'θ', color: 'c-o', min: 0, max: 360, paso: 1, inicio: 50, unidad: '°', decimales: 0 },
+          { id: 'tri', etiqueta: 'Triángulo', opciones: [{ valor: 'sc', texto: 'sen, cos, 1' }, { valor: 'ts', texto: '1, tan, sec' }, { valor: 'cc', texto: '1, cot, csc' }] },
+        ],
+        dibujo: v => ({ datos: tresLibre(v.g, v.tri), estado: {} }),
+        lectura: v => {
+          const x = C(v.g), y = S(v.g);
+          if (v.tri === 'sc') return [p2('sen'), th, ' + ', p2('cos'), th, ` = ${f(y * y)} + ${f(x * x)} = ${f(x * x + y * y)}`];
+          const [a, nom, hip] = v.tri === 'ts' ? [x, 'tan', 'sec'] : [y, 'cot', 'csc'];
+          if (Math.abs(a) < 1e-9) return [`${v.tri === 'ts' ? 'cos' : 'sen'} `, th, ` = 0: ${nom} y ${hip} no existen`];
+          const k = (v.tri === 'ts' ? y / x : x / y) ** 2;
+          return ['1 + ', p2(nom), th, ` = 1 + ${f(k)} = ${f(1 + k)} = `, p2(hip), th];
+        },
+        arrastres: [{ id: 'punto-p', etiqueta: 'punto P del arco θ', color: 'c-o',
+          donde: v => punta(tresLibre(v.g, v.tri), v.g),
+          mover: (pt, v) => ({ g: giroDe(tresLibre(v.g, v.tri), pt, v.g) }) }],
+      },
+      {
+        id: 'dos-miembros', titulo: '¿Identidad o casualidad?', pieza: 'ejes',
+        consigna: 'Elige una igualdad y arrastra el punto por la curva naranja. Si las dos curvas se separan en algún θ, no es identidad.',
+        controles: [
+          { id: 'c', etiqueta: 'Igualdad', opciones: [{ valor: 's', texto: 'sen θ + cos θ = 1' }, { valor: 'r', texto: '√(sen²θ) = sen θ' }, { valor: 'a', texto: '(1 − cos²θ)/sen θ = sen θ' }, { valor: 't', texto: 'tan θ + cot θ = sec θ · csc θ' }, { valor: 'c', texto: 'sen⁴θ − cos⁴θ = sen²θ − cos²θ' }] },
+          { id: 'g', etiqueta: 'θ', color: 'c-o', min: 0, max: 360, paso: 5, inicio: 45, unidad: '°', decimales: 0 },
+        ],
+        dibujo: v => ({ datos: candidata2(v.c, v.g), estado: {} }),
+        lectura: v => {
+          const c = CAND2[v.c], vi = c.izq(v.g), vd = c.der(v.g);
+          const ok = Number.isFinite(vi) && Number.isFinite(vd);
+          return [th, ` = ${f(v.g)}° · izquierda ${Number.isFinite(vi) ? f(vi) : 'no existe'} · derecha ${Number.isFinite(vd) ? f(vd) : 'no existe'} · ${!ok ? 'hueco' : Math.abs(vi - vd) < 5e-3 ? 'coinciden' : 'se separan'}`];
+        },
+        arrastres: [{ id: 'punto-curva', etiqueta: 'punto de la curva en θ', color: 'c-o',
+          donde: v => {
+            const c = CAND2[v.c], d = candidata2(v.c, v.g), en = x => Number.isFinite(x) && Math.abs(x) <= 3;
+            const y = en(c.izq(v.g)) ? c.izq(v.g) : en(c.der(v.g)) ? c.der(v.g) : 0;
+            return enEjes(d, v.g, y);
+          },
+          mover: (pt, v) => ({ g: thetaDe(candidata2(v.c, v.g), pt) }) }],
+      },
+    ],
     historia: {
       texto: 'En el siglo X, Abu’l-Wafa hizo tablas trigonométricas y estudió cómo se relacionan las seis líneas de un mismo arco, para la astronomía y para el cálculo. Su obra pertenece a una tradición de lengua árabe que recibió y transformó resultados anteriores. Lo valioso fue convertir relaciones geométricas en instrumentos de cálculo, cuidando los valores para los que cada expresión tiene sentido.',
       pregunta: '¿Para qué sirve una relación entre las seis líneas de un arco?',

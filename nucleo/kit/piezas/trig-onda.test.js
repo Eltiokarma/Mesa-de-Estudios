@@ -81,3 +81,9 @@ test('franja horizontal: cubre de y = −1 a y = 1, de borde a borde', () => {
   const [, y, h] = s.match(/<rect class="kit-aparece" x="[\d.]+" y="([\d.]+)" width="[\d.]+" height="([\d.]+)"/).map(Number);
   assert.ok(Math.abs(y - g.Y(1)) < 0.6 && Math.abs(y + h - g.Y(-1)) < 0.6);
 });
+
+test('manijas: xDe y yDe invierten X e Y', () => {
+  const g = P.geometria({ x: { min: -PI, max: 3 * PI }, y: { min: -2, max: 3 } });
+  for (const v of [-PI, 0, 1.3, 3 * PI]) assert.ok(Math.abs(g.xDe(g.X(v)) - v) < 1e-9);
+  for (const v of [-2, 0, 0.7, 3]) assert.ok(Math.abs(g.yDe(g.Y(v)) - v) < 1e-9);
+});
