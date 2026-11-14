@@ -14,6 +14,10 @@
  * Orden de atención · 1.º la figura (balanza, recta, parábola, tabla) · 2.º lo que cambia en ella · acción: «Comprobar» · fondo: Nox.
  * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué dividir entre x pierde la solución x = 0, y cuándo una ecuación no tiene solución o tiene todas.
+ * Ronda 2 (14 nov 2026): gesto directo en las ideas 1 a 4 (levantar cajas y pesas de los platillos, arrastrar el
+ * candidato por la recta, el vértice y el corte con el eje y de la parábola, y las dos raíces); la idea 5 se queda
+ * con − y + porque su tabla es un registro de números sin lugar que agarrar. Llaves en las reglas y laboratorio de
+ * tres mesas: la parábola con a, b y c (a = 0 incluida), los dos lados como rectas que se cruzan (o no) y las raíces.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -91,6 +95,11 @@
     return pts;
   }
 
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la figura; mover la convierte en valores
+  // con la inversa lineal de la escala de la pieza, y el lector los ajusta al paso y al rango de su control.
+  const inversa = (escala, a, bb) => px => a + (px - escala(a)) * (bb - a) / (escala(bb) - escala(a));
+  const BAL = () => Kit.piezas.balanza, RECTA = () => Kit.piezas.recta, EJES = () => Kit.piezas.ejes;
+
   // ---------- Idea 1: lo mismo en los dos platillos ----------
   // Cambia: lo que se quita de cada platillo · Permanece: la balanza y el peso real de x (4 kg) · Progresa: la
   // ecuación que queda · Se reserva: 2x + 5 = 2x + 9, que nunca se equilibra · Debe verse: solo lo igual conserva el equilibrio.
@@ -102,13 +111,15 @@
   const balanza = (vistas, pesos = { x: 4 }) => ({ unidad: 'kg', colores: COL1, incognitas: ['x'], pesos, balanzas: [], trabajo: vistas });
   const lado = (n, p) => (n ? [...(n === 1 ? [] : [f(n)]), x, ...(p ? [` + ${f(p)}`] : [])] : [f(p)]);
   const igualdad = (a1, b1, a2, b2) => [...lado(a1, b1), ' = ', ...lado(a2, b2)];
+  const ALZA = 34;   // cuánto sube la manija al levantar del todo una caja o las pesas (px)
+  const platosB1 = v => BAL().platillos(balanza([vista1(v.qi, v.qd, v.qp)]), { vista: 0 });
   const primerGrado = {
     id: 'balanza',
     titulo: 'Lo mismo en los dos platillos',
     temas: ['Ecuación de primer grado'],
     pieza: 'balanza',
     juega: {
-      consigna: 'La balanza muestra 3x + 4 = x + 12, y cada caja x pesa lo mismo. Quita cajas o pesas y mira si sigue en equilibrio.',
+      consigna: 'La balanza muestra 3x + 4 = x + 12, y cada caja x pesa lo mismo. Levanta cajas o pesas y mira si sigue en equilibrio.',
       voz: 'Prueba quitar algo solo de un lado.',
       controles: [
         { id: 'qi', etiqueta: 'Quita x a la izquierda', min: 0, max: 1, paso: 1, inicio: 0, decimales: 0, color: 'c-o' },
@@ -121,6 +132,20 @@
         return [...igualdad(3 - v.qi, 4 - v.qp, 1 - v.qd, 12 - v.qp), l === r ? ' · en equilibrio' : ' · se inclina'];
       },
       minimo: 3,
+      // Se levanta una caja x de un platillo (hacia arriba la saca) o las pesas de la derecha (sacan lo mismo de los
+      // dos lados). La manija de la caja va a la izquierda del platillo, donde la pieza pone las cajas; la de las
+      // pesas, sobre la pesa del platillo izquierdo (a la derecha la tapaba el botón de la lupa). Los platillos se leen de balanza.platillos.
+      arrastres: [
+        { id: 'caja-izq', etiqueta: 'una caja x del platillo izquierdo', color: 'c-o',
+          donde: v => { const p = platosB1(v).izq; return { x: p.x - 26, y: p.y - 10 - ALZA * v.qi }; },
+          mover: (pt, v) => ({ qi: (platosB1(v).izq.y - 10 - pt.y) / ALZA }) },
+        { id: 'caja-der', etiqueta: 'la caja x del platillo derecho', color: 'c-o',
+          donde: v => { const p = platosB1(v).der; return { x: p.x - 26, y: p.y - 10 - ALZA * v.qd }; },
+          mover: (pt, v) => ({ qd: (platosB1(v).der.y - 10 - pt.y) / ALZA }) },
+        { id: 'pesas', etiqueta: 'las pesas: lo mismo de cada lado',
+          donde: v => { const p = platosB1(v).izq; return { x: p.x + 34, y: p.y - 10 - ALZA * v.qp / 4 }; },
+          mover: (pt, v) => ({ qp: 4 * (platosB1(v).izq.y - 10 - pt.y) / ALZA }) },
+      ],
     },
     predice: {
       pregunta: ['En ', ...igualdad(2, 5, 2, 9), ' se quita 2', x, ' de cada lado. ¿Cuántas soluciones tiene la ecuación?'],
@@ -152,7 +177,7 @@
     },
     regla: {
       texto: 'Sumar o quitar lo mismo en los dos lados, o dividirlos entre un número no nulo, conserva las soluciones. Así, ax + b = 0 con a ≠ 0 da x = −b/a.',
-      ecuacion: ['a', x, ' + b = 0  ⇒  ', x, ' = ', { frac: ['−b', 'a'] }],
+      ecuacion: ['a', x, ' + b = 0  ⇒  ', x, ' = ', { llave: [{ frac: ['−b', 'a'] }], nota: 'si a ≠ 0', color: 'c-o' }],
       condicion: 'si a = 0, no hay solución cuando b ≠ 0, y todo número es solución cuando b = 0.',
     },
     ahoraTu: {
@@ -213,6 +238,10 @@
       },
       lectura: v => [x, `² = ${f(v.x * v.x)} · `, k, x, ` = ${f(v.k * v.x)} · ${v.x * v.x === v.k * v.x ? 'iguales' : 'distintos'}`],
       minimo: 4,
+      // El candidato se arrastra por la recta (fila 0, donde la pieza dibuja el punto).
+      arrastres: [{ id: 'candidato', etiqueta: 'candidato x', color: 'c-o',
+        donde: v => { const g = RECTA().geometria(rectaSol([])); return { x: g.x(v.x), y: g.filaY(0) }; },
+        mover: pt => ({ x: inversa(RECTA().geometria(rectaSol([])).x, -4, 6)(pt.x) }) }],
     },
     predice: {
       pregunta: ['¿Qué conjunto contiene todas las soluciones de ', x, '² = 3', x, '?'],
@@ -238,12 +267,12 @@
         { estado: { corte: 2 }, texto: 'Restamos 3x en ambos lados: no cambia ninguna solución.', ecuacion: [x, '² − 3', x, ' = 0'] },
         { estado: { corte: 3 }, texto: 'Escribimos el factor común. Al multiplicar, vuelve x² − 3x.', ecuacion: [x, '(', x, ' − 3) = 0'] },
         { estado: { corte: 4 }, texto: 'Un producto es cero si algún factor es cero.', ecuacion: [x, ' = 0   o   ', x, ' − 3 = 0'] },
-        { estado: { corte: 5 }, texto: 'Dividir entre x solo vale si x ≠ 0: así se pierde el 0.', ecuacion: [x, ' ≠ 0  ⇒  ', x, ' = 3;   ', x, ' = 0: 0 = 0 ✓'] },
+        { estado: { corte: 5 }, texto: 'Dividir entre x solo vale si x ≠ 0: así se pierde el 0.', ecuacion: [x, ' ≠ 0  ⇒  ', x, ' = 3', '   ·   ', x, ' = 0: 0 = 0 ✓'] },
       ],
     },
     regla: {
       texto: 'Antes de dividir entre una expresión, revisa el caso en que vale cero. Mejor lleva todo a un lado y factoriza: el producto es cero si algún factor lo es.',
-      ecuacion: [x, '(', x, ' − 3) = 0  ⇔  ', x, ' = 0  o  ', x, ' = 3'],
+      ecuacion: [x, '(', x, ' − 3) = 0  ⇔  ', { llave: [x, ' = 0'], nota: 'dividir la pierde', color: 'c-o' }, '  o  ', x, ' = 3'],
       condicion: 'el otro lado es cero: AB = 5 no da A = 5 o B = 5. En x²/x = 3, x = 0 queda excluido.',
       voz: 'Ese valor queda fuera del dominio solo si el enunciado lo excluye.',
     },
@@ -274,7 +303,7 @@
           const kk = r.uno([2, 3, 4, 5, -2, -3]);
           pregunta = ['Resuelve ', x, '²/', x, ` = ${f(kk)} en los reales.`];
           sol = [kk]; texto = 'x = 0 anula el denominador: no está en el dominio.';
-          ec = ['dominio ', x, ' ≠ 0;   ', x, ` = ${f(kk)}`];
+          ec = ['dominio ', x, ' ≠ 0', '   ·   ', x, ` = ${f(kk)}`];
           dist = [[[0, kk], 'TAL-DOMINIO', 'x = 0 haría cero el denominador; la expresión original no existe ahí.'], [[], 'TAL-DOMINIO', `x = ${f(kk)} cumple: ${f(kk * kk)}/${f(kk)} = ${f(kk)}.`], [[-kk, kk], 'TAL-OPUESTO', `Con x = ${f(-kk)} el cociente vale ${f(-kk)}.`]];
         }
         return {
@@ -290,10 +319,11 @@
   // ---------- Idea 3: Δ cuenta los cortes ----------
   // Cambia: b y c de la parábola · Permanece: los ejes y a = 1 · Progresa: Δ y los puntos de corte · Se reserva:
   // un caso con a = 2 que no corta · Debe verse: el signo de Δ dice si la parábola corta, toca o no toca el eje.
-  const EJES3 = { x: { min: -6, max: 6, paso: 1, cada: 2, nombre: 'x', decimales: 0, color: 'o' }, y: { min: -6, max: 10, paso: 2, nombre: 'y', decimales: 0 } };
+  // y llega a −8: el vértice más bajo del juego (b = ±4, c = −4) queda dentro del plano, y la manija con él.
+  const EJES3 = { x: { min: -6, max: 6, paso: 1, cada: 2, nombre: 'x', decimales: 0, color: 'o' }, y: { min: -8, max: 10, paso: 2, nombre: 'y', decimales: 0 } };
   const raices = (a, bb, cc) => { const d = bb * bb - 4 * a * cc; if (d < 0) return []; if (d === 0) return [-bb / (2 * a)]; const q = Math.sqrt(d); return [(-bb - q) / (2 * a), (-bb + q) / (2 * a)]; };
   const parabola = (a, bb, cc, extra = {}) => Object.assign({}, EJES3, {
-    curvas: [{ puntos: curva(z => a * z * z + bb * z + cc, -6, 6, -6, 10), color: 'i' }],
+    curvas: [{ puntos: curva(z => a * z * z + bb * z + cc, -6, 6, -8, 10), color: 'i' }],
     puntos: raices(a, bb, cc).map(z => ({ x: z, y: 0, color: 'o', rotulo: f(z) })),
     alt: `Parábola y = ${poliTxt([a, bb, cc])}: ${raices(a, bb, cc).length} cortes con el eje x`,
   }, extra);
@@ -313,6 +343,16 @@
       dibujo: v => ({ datos: parabola(1, v.b, v.c), estado: {} }),
       lectura: v => { const d = v.b * v.b - 4 * v.c; return [D, ` = ${f(d)}: ${cuantas(d)}`]; },
       minimo: 4,
+      // El corte con el eje y es (0; c): subirlo sube toda la parábola. El vértice (−b/2; c − b²/4) se corre de
+      // lado con b. Ejes de rango fijo: la manija no se escapa.
+      arrastres: [
+        { id: 'corte-y', etiqueta: 'corte con el eje y: sube o baja la parábola', color: 'c-h',
+          donde: v => { const g = EJES().geometria(EJES3); return { x: g.X(0), y: g.Y(v.c) }; },
+          mover: pt => ({ c: inversa(EJES().geometria(EJES3).Y, -8, 10)(pt.y) }) },
+        { id: 'vertice', etiqueta: 'vértice: se corre de lado con b', color: 'c-i',
+          donde: v => { const g = EJES().geometria(EJES3); return { x: g.X(-v.b / 2), y: g.Y(v.c - v.b * v.b / 4) }; },
+          mover: pt => ({ b: -2 * inversa(EJES().geometria(EJES3).X, -6, 6)(pt.x) }) },
+      ],
     },
     predice: {
       pregunta: ['¿Cuántas raíces reales tiene 2', x, '² − 4', x, ' + 3 = 0?'],
@@ -327,7 +367,7 @@
     },
     mira: {
       datos: Object.assign({}, EJES3, {
-        curvas: [{ puntos: curva(z => z * z - 2 * z - 3, -6, 6, -6, 10), color: 'i' }],
+        curvas: [{ puntos: curva(z => z * z - 2 * z - 3, -6, 6, -8, 10), color: 'i' }],
         puntos: [{ x: 1, y: -4, color: 'i', rotulo: '(1; −4)', guias: true, desde: 2 }, { x: -1, y: 0, color: 'o', rotulo: '−1', desde: 3 }, { x: 3, y: 0, color: 'o', rotulo: '3', desde: 3 }],
         alt: 'Parábola y = x² − 2x − 3 con vértice (1; −4) y raíces −1 y 3',
       }),
@@ -340,7 +380,7 @@
     },
     regla: {
       texto: 'En ax² + bx + c = 0 (a ≠ 0), Δ = b² − 4ac decide: dos raíces reales si Δ > 0, una doble si Δ = 0, ninguna real si Δ < 0.',
-      ecuacion: [x, ' = ', { frac: [['−', b, ' ± ', { raiz: [b, '² − 4a', c] }], '2a'] }],
+      ecuacion: [D, ' = ', { llave: [b, '² − 4a', c], nota: 'decide los cortes', color: 'c-d' }, '   ·   ', x, ' = ', { frac: [['−', b, ' ± ', { raiz: [D] }], '2a'] }],
       condicion: 'a ≠ 0. Si Δ < 0 la parábola no corta el eje x, aunque haya dos raíces complejas que la gráfica no muestra.',
     },
     ahoraTu: {
@@ -390,6 +430,10 @@
       }),
       lectura: v => ['y = ', ...poli([1, -(v.r + v.s), v.r * v.s]), ' · ', S, ` = ${f(v.r + v.s)} · `, P, ` = ${f(v.r * v.s)}`],
       minimo: 3,
+      // Cada raíz se arrastra por el eje x: la parábola la sigue.
+      arrastres: ['r', 's'].map(id => ({ id: `raiz-${id}`, etiqueta: `raíz ${id}`, color: 'c-o',
+        donde: v => { const g = EJES().geometria(EJES4); return { x: g.X(v[id]), y: g.Y(0) }; },
+        mover: pt => ({ [id]: inversa(EJES().geometria(EJES4).X, -5, 6)(pt.x) }) })),
     },
     predice: {
       pregunta: ['En 2', x, '² − 10', x, ' + 12 = 0, ¿cuánto suman las dos raíces?'],
@@ -404,16 +448,17 @@
       revelar: { datos: { columnas: ['a', 'b', 'c', 'suma', 'producto'], colorCol: [null, 'i', 'h', 'd', 'h'], filas: [['2', '−10', '12', { t: '5', fuerte: true }, { t: '6', fuerte: true }]], pie: 'raíces 2 y 3: 2 + 3 = 5, 2 · 3 = 6' }, estado: {} },
       coincide: 'Coincide: dividida entre 2 queda x² − 5x + 6, con raíces 2 y 3.',
     },
+    // Hallazgo 9: «Mira» empieza por la parábola que el alumno movió (y = (x − 2)(x − 3)) y en el paso 4 le suma la
+    // de 2x² − 10x + 12, más empinada pero con las mismas raíces: multiplicar por 2 cambia a, b y c, no los cortes.
     mira: {
-      pieza: 'alg-tabla',
-      datos: {
-        columnas: ['', 'a', 'b', 'c', '−b/a', 'c/a'], colorCol: [null, null, 'i', 'h', 'd', 'h'],
-        filas: [
-          [{ t: 'x² − 5x + 6', desde: 1 }, { t: '1', desde: 1 }, { t: '−5', desde: 1 }, { t: '6', desde: 1 }, { t: '5', desde: 3, fuerte: true }, { t: '6', desde: 3, fuerte: true }],
-          [{ t: '2x² − 10x + 12', desde: 4 }, { t: '2', desde: 4 }, { t: '−10', desde: 4 }, { t: '12', desde: 4 }, { t: '5', desde: 5, fuerte: true }, { t: '6', desde: 5, fuerte: true }],
+      datos: Object.assign({}, EJES4, {
+        curvas: [
+          { puntos: curva(z => (z - 2) * (z - 3), -5, 6, -8, 10), color: 'i', desde: 1 },
+          { puntos: curva(z => 2 * (z - 2) * (z - 3), -5, 6, -8, 10), color: 'd', discontinua: true, desde: 4 }   // sin rótulo: la ecuación del paso 4 la nombra (el rótulo caía bajo la lupa),
         ],
-        pie: '', alt: 'Tabla: en x² − 5x + 6 y en 2x² − 10x + 12, −b/a = 5 y c/a = 6',
-      },
+        puntos: [{ x: 2, y: 0, color: 'o', rotulo: '2', desde: 1 }, { x: 3, y: 0, color: 'o', rotulo: '3', desde: 1 }],
+        alt: 'Parábolas y = x² − 5x + 6 y y = 2x² − 10x + 12: las dos cortan el eje x en 2 y en 3',
+      }),
       pasos: [
         { estado: { corte: 1 }, texto: 'Con raíces 2 y 3, la ecuación es (x − 2)(x − 3) = 0.', ecuacion: ['(', x, ' − 2)(', x, ' − 3) = ', x, '² − 5', x, ' + 6'] },
         { estado: { corte: 2 }, texto: 'Al multiplicar, el término en x lleva la suma con signo menos.', ecuacion: [x, '² − (2 + 3)', x, ' + 2 · 3'] },
@@ -424,7 +469,7 @@
     },
     regla: {
       texto: 'Si r y s son las raíces de ax² + bx + c = 0, su suma es −b/a y su producto, c/a. No hace falta resolver la ecuación para conocerlos.',
-      ecuacion: [S, ' = ', { frac: [['−', b], 'a'] }, '   ·   ', P, ' = ', { frac: [c, 'a'] }],
+      ecuacion: [{ llave: [S], nota: 'suma de raíces', color: 'c-d' }, ' = ', { frac: [['−', b], 'a'] }, '   ·   ', { llave: [P], nota: 'su producto', color: 'c-h' }, ' = ', { frac: [c, 'a'] }],
       condicion: 'a ≠ 0. Vale también si las raíces son complejas; una raíz doble se cuenta dos veces.',
     },
     ahoraTu: {
@@ -493,6 +538,7 @@
       dibujo: v => ({ datos: { columnas: ['S', 'P', 'S = 6P', '6S = P'], colorCol: ['o', 'i'], filas: [[f(v.S), f(v.P), marca(v.S === 6 * v.P), marca(6 * v.S === v.P)]], pie: v.S === 6 * v.P ? '6 estudiantes por profesor' : `${f(v.S / v.P)} estudiantes por profesor` }, estado: {} }),
       lectura: v => [Sx, ` = ${f(v.S)}, `, Px, ` = ${f(v.P)}: ${f(v.S / v.P, 1)} por profesor`],
       minimo: 3,
+      // Sin arrastre: la tabla es un registro de números (S y P no tienen un lugar en la figura que agarrar).
     },
     predice: {
       pregunta: 'En un taller hay 4 alumnos por cada computadora. Si A es el número de alumnos y C el de computadoras, ¿qué ecuación es correcta?',
@@ -523,7 +569,7 @@
     },
     regla: {
       texto: 'Primero se dice qué cantidad representa la letra. Cada frase se vuelve una igualdad entre cantidades, y la respuesta se comprueba en el enunciado.',
-      ecuacion: ['6 estudiantes por profesor  ⇒  ', Sx, ' = 6', Px],
+      ecuacion: ['6 por profesor  ⇒  ', { llave: [Sx], nota: 'cuántos estudiantes', color: 'c-o' }, ' = 6', { llave: [Px], nota: 'cuántos profesores', color: 'c-i' }],
       condicion: 'la letra es un número (cuántos estudiantes), no una etiqueta («estudiante»); la solución debe tener sentido en el problema.',
     },
     ahoraTu: {
@@ -541,7 +587,7 @@
               { id: 'madre', texto: `${kk * xx} años`, error: 'AL3', siFuera: 'Esa es la edad de la madre hoy.' },
               { id: 'parentesis', texto: `${fr(m * n, kk - m)} años`, error: 'TAL-PARENTESIS', siFuera: `Falta sumar ${n} a la edad de la madre también.` },
             ]),
-            solucion: { texto: `Con x la edad del hijo hoy: ${kk}x + ${n} = ${m}(x + ${n}).`, ecuacion: [x, ` = ${xx}  ·  comprobación: ${kk * xx + n} = ${m} · ${xx + n}`] },
+            solucion: { texto: `Con x la edad del hijo hoy: ${kk}x + ${n} = ${m}(x + ${n}).`, ecuacion: [x, ` = ${xx}`, '   ·   ', `${kk * xx + n} = ${m} · ${xx + n} ✓`] },
           };
         }
         // Tres números consecutivos que suman N.
@@ -560,9 +606,96 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1, más rica que la idea 3: a también se mueve, hasta a = 0 (deja de ser cuadrática) y a < 0 (se abre
+  // hacia abajo). Manijas: el corte con el eje y (c) y el vértice (b); con a = 0 no hay vértice y la de b pasa al
+  // punto de x = 1, que inclina la recta.
+  const EJESL = { x: { min: -6, max: 6, paso: 1, cada: 2, nombre: 'x', decimales: 0, color: 'o' }, y: { min: -10, max: 10, paso: 2, cada: 2, nombre: 'y', decimales: 0 } };
+  const parabolaLibre = {
+    id: 'parabola-libre', titulo: 'La parábola con a, b, c', pieza: 'ejes',
+    consigna: 'En y = ax² + bx + c, prueba también a = 0 y a negativo. Arrastra el vértice y el corte con el eje y.',
+    controles: [
+      { id: 'a', etiqueta: 'a', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'b', etiqueta: 'b', color: 'c-i', min: -5, max: 5, paso: 1, inicio: -2, decimales: 0 },
+      { id: 'c', etiqueta: 'c', color: 'c-h', min: -5, max: 5, paso: 1, inicio: -3, decimales: 0 },
+    ],
+    dibujo: v => {
+      const rs = v.a ? raices(v.a, v.b, v.c) : v.b ? [-v.c / v.b] : [];
+      return { datos: Object.assign({}, EJESL, {
+        curvas: [{ puntos: curva(z => v.a * z * z + v.b * z + v.c, -6, 6, -10, 10), color: 'i' }],
+        puntos: rs.map(z => ({ x: z, y: 0, color: 'o', rotulo: f(z, 1) })),
+        alt: `Gráfica de y = ${poliTxt([v.a, v.b, v.c])}: ${rs.length} cortes con el eje x`,
+      }), estado: {} };
+    },
+    lectura: v => {
+      if (!v.a) return [...poli([v.b, v.c]), ' = 0 · sin x²: ', v.b ? 'una raíz' : v.c ? 'ninguna raíz' : 'todo número'];
+      const d = v.b * v.b - 4 * v.a * v.c;
+      return [D, ` = ${f(d)}: ${cuantas(d)}`];
+    },
+    arrastres: [
+      { id: 'corte-y', etiqueta: 'corte con el eje y', color: 'c-h',
+        donde: v => { const g = EJES().geometria(EJESL); return { x: g.X(0), y: g.Y(v.c) }; },
+        mover: pt => ({ c: inversa(EJES().geometria(EJESL).Y, -10, 10)(pt.y) }) },
+      { id: 'vertice', etiqueta: 'vértice (o punto de x = 1 si a = 0)', color: 'c-i',
+        donde: v => {
+          const g = EJES().geometria(EJESL);
+          if (!v.a) return { x: g.X(1), y: g.Y(v.b + v.c) };
+          const xv = -v.b / (2 * v.a);
+          return { x: g.X(xv), y: g.Y(Math.max(-10, Math.min(10, v.c - v.b * v.b / (4 * v.a)))) };
+        },
+        mover: (pt, v) => {
+          const g = EJES().geometria(EJESL);
+          if (!v.a) return { b: inversa(g.Y, -10, 10)(pt.y) - v.c };
+          return { b: -2 * v.a * inversa(g.X, -6, 6)(pt.x) };
+        } },
+    ],
+  };
+  // Mesa 2: cada lado de ax + b = cx + d es una recta; la solución es donde se cruzan. Las paralelas no se cruzan
+  // (sin solución) y la misma recta da todo número: el caso degenerado de la idea 1, visto en el plano.
+  const EJESR = { x: { min: -6, max: 6, paso: 1, cada: 2, nombre: 'x', decimales: 0, color: 'o' }, y: { min: -12, max: 12, paso: 4, nombre: 'y', decimales: 0 } };
+  const ladoTxt = (m, n) => Kit.plano(poli([m, n], 'x'));
+  const dosLados = {
+    id: 'dos-lados', titulo: 'Cada lado es una recta', pieza: 'ejes',
+    consigna: 'La recta turquesa es el lado izquierdo y la roja, el derecho. Donde se cruzan está la solución. Busca rectas que no se crucen.',
+    controles: [
+      { id: 'a', etiqueta: 'a (izquierda)', color: 'c-i', min: -3, max: 3, paso: 1, inicio: 3, decimales: 0 },
+      { id: 'b', etiqueta: 'b (izquierda)', color: 'c-i', min: -6, max: 6, paso: 1, inicio: 4, decimales: 0 },
+      { id: 'c', etiqueta: 'c (derecha)', color: 'c-h', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'd', etiqueta: 'd (derecha)', color: 'c-h', min: -6, max: 6, paso: 1, inicio: -2, decimales: 0 },
+    ],
+    dibujo: v => {
+      const cruza = v.a !== v.c, xs = cruza ? (v.d - v.b) / (v.a - v.c) : null, ys = cruza ? v.a * xs + v.b : null;
+      return { datos: Object.assign({}, EJESR, {
+        curvas: [
+          { puntos: curva(z => v.a * z + v.b, -6, 6, -12, 12, 2), color: 'i' },
+          { puntos: curva(z => v.c * z + v.d, -6, 6, -12, 12, 2), color: 'h', discontinua: v.a === v.c && v.b === v.d },
+        ],
+        puntos: cruza && Math.abs(xs) <= 6 && Math.abs(ys) <= 12 ? [{ x: xs, y: ys, color: 'o', guias: true }] : [],   // x va en la lectura: el rótulo tapaba las manijas
+        alt: `Rectas y = ${ladoTxt(v.a, v.b)} y y = ${ladoTxt(v.c, v.d)}: ${cruza ? `se cruzan en x = ${f(xs, 2)}` : v.b === v.d ? 'son la misma recta' : 'son paralelas'}`,
+      }), estado: {} };
+    },
+    lectura: v => {
+      const ec = [...poli([v.a, v.b]), ' = ', ...poli([v.c, v.d])];
+      if (v.a !== v.c) return [...ec, ' · ', x, ` = ${f((v.d - v.b) / (v.a - v.c), 2)}`];
+      return [...ec, v.b === v.d ? ' · todo número' : ' · sin solución'];
+    },
+    // Cada recta tiene dos manijas: su corte con el eje y (b o d) y un punto que la inclina (a o c): el de x = 2 en la
+    // izquierda y el de x = −2 en la derecha, para que no se encimen.
+    arrastres: [
+      ['corte-izq', 'corte de la recta izquierda', 'c-i', 'b', 0], ['incl-izq', 'inclinación de la recta izquierda', 'c-i', 'a', 2],
+      ['corte-der', 'corte de la recta derecha', 'c-h', 'd', 0], ['incl-der', 'inclinación de la recta derecha', 'c-h', 'c', -2],
+    ].map(([id, etiqueta, color, k, xm]) => ({ id, etiqueta, color,
+      donde: v => { const g = EJES().geometria(EJESR), m = k === 'a' || k === 'b' ? [v.a, v.b] : [v.c, v.d]; return { x: g.X(xm), y: g.Y(m[0] * xm + m[1]) }; },
+      mover: (pt, v) => {
+        const yv = inversa(EJES().geometria(EJESR).Y, -12, 12)(pt.y);
+        if (k === 'b') return { b: yv }; if (k === 'd') return { d: yv };
+        return k === 'a' ? { a: (yv - v.b) / xm } : { c: (yv - v.d) / xm };
+      } })),
+  };
+
   return {
     unidad: 'algebra.ecuaciones-lineales-y-cuadraticas',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/balanza.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-tabla.js'],
     historia: {
@@ -570,6 +703,7 @@
       pregunta: '¿Cómo sabes que no te falta ninguna solución?',
       fuente: { titulo: 'O’Connor y Robertson, Quadratic, cubic and quartic equations — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Quadratic_etc_equations/' },
     },
+    laboratorio: [parabolaLibre, dosLados, Object.assign({ id: 'raices-libres', titulo: 'Elige las dos raíces', pieza: 'ejes' }, vieta.juega, { minimo: undefined })],
     ideas: [primerGrado, dividirX, discriminante, vieta, planteo],
   };
 });
