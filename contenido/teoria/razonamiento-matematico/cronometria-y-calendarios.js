@@ -38,10 +38,23 @@
   const hhmm = (h, m) => `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')}`;
   const angulo = (h, m) => { const d = Math.abs((30 * (h % 12) + 0.5 * m) - 6 * m) % 360; return Math.min(d, 360 - d); };
   const grados = x => `${f(x, 1)}°`;
+  const plural = (n, uno, varios) => `${f(n, 0)} ${n === 1 ? uno : varios}`;
+
+  // Gesto directo (docs/teoria.md §4b): las manijas viven en la geometría que exportan las piezas.
+  const RELOJ = () => Kit.piezas['rm-reloj'], RECTA = () => Kit.piezas.recta, TAB = () => Kit.piezas['rm-tablero'];
+  // Minutero: la manija va en su punta; el ángulo del dedo da los minutos. Cerca de las 12 por la izquierda vuelve a 0.
+  const manijaMinutero = (datosDe, k, maxM) => ({
+    donde: val => { const d = datosDe(val), r = d.relojes[k]; return RELOJ().geometria(d).punta(k, RELOJ().angulos.minutero(r.m), 0.82); },
+    mover: (pt, val) => { const m = RELOJ().geometria(datosDe(val)).angulo(k, pt.x, pt.y) / 6; return { m: m > maxM + (60 - maxM) / 2 ? 0 : m }; },
+  });
+  // Horario: la manija va en su punta; el ángulo del dedo, menos lo que corrieron los minutos, da la hora (1 a 12).
+  const horaDe = (datosDe, k, val, pt) => { const d = datosDe(val), r = d.relojes[k]; const h = (RELOJ().geometria(d).angulo(k, pt.x, pt.y) - 0.5 * (r.m % 60)) / 30; return ((Math.round(h) % 12) + 12) % 12 || 12; };
+  const puntaHorario = (datosDe, k) => val => { const d = datosDe(val), r = d.relojes[k]; return RELOJ().geometria(d).punta(k, RELOJ().angulos.horario(r.h, r.m), 0.52); };
 
   // ---------- Idea 1: ángulo entre las agujas ----------
   // Cambia: la hora y los minutos · Permanece: la esfera de 12 horas · Progresa: el horario que se corre con los minutos ·
   // Se reserva: una hora fuera del juego (8:20) · Debe verse: el horario no se queda sobre el número.
+  const datosAng = val => ({ relojes: [{ h: val.h, m: val.m, arco: true, texto: grados(angulo(val.h, val.m)), rotulo: hhmm(val.h, val.m) }] });
   const ang = {
     id: 'angulo-agujas',
     titulo: 'El horario también camina',
@@ -54,9 +67,14 @@
         { id: 'h', etiqueta: 'Hora', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0, color: 'c-i' },
         { id: 'm', etiqueta: 'Minutos', min: 0, max: 45, paso: 15, inicio: 0, decimales: 0, color: 'c-o' },
       ],
-      dibujo: val => ({ datos: { relojes: [{ h: val.h, m: val.m, arco: true, texto: grados(angulo(val.h, val.m)), rotulo: hhmm(val.h, val.m) }] }, estado: {} }),
+      dibujo: val => ({ datos: datosAng(val), estado: {} }),
       lectura: val => [H, ` = ${f(30 * val.h + 0.5 * val.m, 1)}° · `, Mi, ` = ${6 * val.m}° · `, A, ` = ${grados(angulo(val.h, val.m))}`],
       minimo: 4,
+      // Se arrastran las agujas: la punta del minutero (minutos) y la del horario (hora).
+      arrastres: [
+        Object.assign({ id: 'minutero', etiqueta: 'punta del minutero', color: 'c-o' }, manijaMinutero(datosAng, 0, 45)),
+        { id: 'horario', etiqueta: 'punta del horario', color: 'c-i', donde: puntaHorario(datosAng, 0), mover: (pt, val) => ({ h: horaDe(datosAng, 0, val, pt) }) },
+      ],
     },
     predice: {
       pregunta: '¿Qué ángulo menor forman las agujas a las 8:20?',
@@ -80,7 +98,7 @@
     },
     regla: {
       texto: 'Desde las 12, el minutero está en 6M grados y el horario en 30H + 0,5M grados. El ángulo es la diferencia; el menor no pasa de 180°.',
-      ecuacion: [A, ' = | 30', H, ' − 5,5', Mi, ' |  (si pasa de 180°, 360° − ', A, ')'],
+      ecuacion: [A, ' = | ', { llave: ['30', H], nota: 'horas', color: 'c-i' }, ' − ', { llave: ['5,5', Mi], nota: 'minutos', color: 'c-o' }, ' |', '   ·   ', 'si pasa de 180°: 360° − ', A],
       condicion: 'H es la hora de 1 a 12 y M los minutos pasados de esa hora; las agujas se mueven sin saltos.',
     },
     ahoraTu: {
@@ -98,7 +116,7 @@
             { id: 'cinco', texto: grados(Math.abs(30 * (h % 12) - 5 * m)), error: 'RMT-REL-4', siFuera: 'El minutero va a 6° por minuto, no 5°.' },
             { id: 'dos', texto: grados(Math.abs(bien - 2)), error: 'RMT-REL-5', siFuera: 'Revisa el avance del horario: 0,5° por minuto.' },
           ]),
-          solucion: { texto: 'Horario y minutero en grados, y su diferencia.', ecuacion: [H, ` = ${f(30 * (h % 12) + 0.5 * m, 1)}°, `, Mi, ` = ${6 * m}°, `, A, ` = ${grados(bien)}`], dibujo: { datos: { relojes: [{ h, m, arco: true, texto: grados(bien), rotulo: hhmm(h, m) }] }, estado: {} } },
+          solucion: { texto: 'Horario y minutero en grados, y su diferencia.', ecuacion: [H, ` = ${f(30 * (h % 12) + 0.5 * m, 1)}°`, '   ·   ', Mi, ` = ${6 * m}°`, '   ·   ', A, ` = ${grados(bien)}`], dibujo: { datos: { relojes: [{ h, m, arco: true, texto: grados(bien), rotulo: hhmm(h, m) }] }, estado: {} } },
         };
       },
     },
@@ -109,6 +127,10 @@
   // Se reserva: el problema al revés (dada la hora marcada, la real) · Debe verse: el adelanto se mide contra el tiempo real.
   const relojes = (hr, mr, hi, mi, extra = {}) => ({ relojes: [{ h: hr, m: mr, rotulo: `Real ${hhmm(hr, mr)}` }, { h: hi, m: mi, rotulo: `Marca ${hhmm(hi, mi)}`, arco: false }], pie: extra.pie });
   const sumaMin = (h, m, x) => { const t = h * 60 + m + x; return [Math.floor(t / 60) % 24, ((t % 60) + 60) % 60]; };
+  const datosAdel = val => { const [hi, mi] = sumaMin(8 + val.t, 0, 3 * val.t); return relojes(8 + val.t, 0, hi, mi); };
+  // Horas reales desde las 8:00 según dónde quedó el horario. La vuelta por las 8 no salta: cerca del final sigue
+  // contando (hasta 12) y cerca del principio, si el dedo retrocede, se queda en 0.
+  const horasReales = (h, antes) => { const t = ((h - 8) % 12 + 12) % 12; return antes >= 9 && t <= 3 ? t + 12 : antes <= 3 && t >= 9 ? 0 : t; };
   const adelanto = {
     id: 'adelantos',
     titulo: 'El adelanto va por hora real',
@@ -118,9 +140,12 @@
       consigna: 'A las 8:00 se pone en hora un reloj que adelanta 3 minutos por cada hora real. Deja pasar horas y compara ambos relojes.',
       voz: 'El de la izquierda es el tiempo real.',
       controles: [{ id: 't', etiqueta: 'Horas reales', min: 0, max: 8, paso: 1, inicio: 0, decimales: 0, color: 'c-h' }],
-      dibujo: val => { const [hi, mi] = sumaMin(8 + val.t, 0, 3 * val.t); return { datos: relojes(8 + val.t, 0, hi, mi), estado: {} }; },
-      lectura: val => [`Pasaron ${val.t} h reales: adelanta ${3 * val.t} min`],
+      dibujo: val => ({ datos: datosAdel(val), estado: {} }),
+      lectura: val => [`Pasaron ${val.t}\u00a0h reales: adelanta ${3 * val.t}\u00a0min`],
       minimo: 3,
+      // Se arrastra el horario del reloj real (el de la izquierda): las horas reales que pasan desde las 8:00.
+      arrastres: [{ id: 'hora-real', etiqueta: 'horario del reloj real', color: 'c-h', donde: puntaHorario(datosAdel, 0),
+        mover: (pt, val) => ({ t: horasReales(horaDe(datosAdel, 0, val, pt), val.t) }) }],
     },
     predice: {
       pregunta: 'Ese reloj marca las 3:00 de la tarde. ¿Qué hora es en realidad?',
@@ -144,7 +169,7 @@
     },
     regla: {
       texto: 'Un reloj que gana g minutos por hora real marca 60 + g minutos por cada 60 reales. El adelanto acumulado es g por cada hora real que pasó.',
-      ecuacion: [{ frac: ['marcado', 'real'] }, ' = ', { frac: ['60 + g', '60'] }],
+      ecuacion: [{ frac: ['marcado', 'real'] }, ' = ', { llave: [{ frac: ['60 + g', '60'] }], nota: 'g: ganancia horaria', color: 'c-h' }],
       condicion: 'el reloj gana siempre lo mismo y se sabe si g es por hora real o por hora marcada.',
     },
     ahoraTu: {
@@ -177,9 +202,13 @@
   // Cambia: cuántas campanadas · Permanece: el tiempo entre una y otra · Progresa: los intervalos · Se reserva: el
   // cálculo de un intervalo desconocido · Debe verse: n campanadas dejan n − 1 intervalos.
   const campanas = (n, tau, extra = {}) => ({
-    min: 0, max: Math.max(10, (n - 1) * tau), paso: 1, cada: tau <= 2 ? 2 : tau, sufijo: ' s', decimales: 1, variable: 't', color: 'h', filas: 2,
+    min: 0, max: extra.max || Math.max(10, (n - 1) * tau), paso: 1, cada: tau <= 2 ? 2 : tau, sufijo: ' s', decimales: 1, variable: 't', color: 'h', filas: 2,
     elementos: [{ tipo: 'enteros', a: 0, b: (n - 1) * tau, cada: tau, color: 'h' }, { tipo: 'distancia', a: 0, b: (n - 1) * tau, color: 'd', rotulo: `${n - 1} intervalos`, fila: 1, desde: extra.desde || 0 }],
   });
+  // La manija va en la última campanada, sobre la recta; cada τ segundos más es una campanada más.
+  const manijaUltima = (tau, max) => ({ id: 'ultima', etiqueta: 'última campanada', color: 'c-h',
+    donde: val => { const g = RECTA().geometria(campanas(val.n, tau, { max })); return { x: g.x(tau * (val.n - 1)), y: g.eje }; },
+    mover: (pt, val) => { const g = RECTA().geometria(campanas(val.n, tau, { max })); return { n: 1 + (pt.x - g.x(0)) / (g.x(tau) - g.x(0)) }; } });
   const camp = {
     id: 'campanadas',
     titulo: 'Campanadas: se cuentan intervalos',
@@ -189,9 +218,11 @@
       consigna: 'Un reloj da campanadas separadas por 2 segundos. Cambia cuántas da y mira cuánto dura, de la primera a la última.',
       voz: 'Cuenta los espacios entre puntos, no los puntos.',
       controles: [{ id: 'n', etiqueta: 'Campanadas', min: 2, max: 7, paso: 1, inicio: 2, decimales: 0, color: 'c-h' }],
-      dibujo: val => ({ datos: campanas(val.n, 2), estado: { corte: 1 } }),
-      lectura: val => [N, ` = ${val.n} · duración = ${val.n - 1} · 2 = ${2 * (val.n - 1)} s`],
+      dibujo: val => ({ datos: campanas(val.n, 2, { max: 12 }), estado: { corte: 1 } }),
+      lectura: val => [N, ` = ${val.n}`, '   ·   ', `duración = ${val.n - 1} · 2 = ${2 * (val.n - 1)}\u00a0s`],
       minimo: 3,
+      // Se arrastra la última campanada por la recta del tiempo: cada 2 s más es una campanada más.
+      arrastres: [manijaUltima(2, 12)],
     },
     predice: {
       pregunta: 'Otro reloj da 6 campanadas en 10 segundos, de la primera a la última. ¿Cuánto tarda en dar 10 campanadas?',
@@ -214,7 +245,7 @@
     },
     regla: {
       texto: 'Entre n campanadas hay n − 1 intervalos. Primero se halla el intervalo con los datos y luego se multiplica por los intervalos pedidos.',
-      ecuacion: ['duración = (', N, ' − 1) · τ'],
+      ecuacion: ['duración = ', { llave: ['(', N, ' − 1)'], nota: 'intervalos', color: 'c-h' }, ' · ', { llave: ['τ'], nota: 'cada uno', color: 'c-d' }],
       condicion: 'el tiempo se mide de la primera a la última campanada y los intervalos son iguales.',
     },
     ahoraTu: {
@@ -249,6 +280,8 @@
       notas: [{ t: extra.nota || 'Bisiesto: 366 días' }],
     };
   }
+  // Sin arrastre: el año es una elección entre casos (2000, 2024, 2100…), no una cantidad que se desliza; la tabla
+  // muestra las tres divisiones, que no se agarran. Se juega con los botones de año.
   const bisiesto = {
     id: 'bisiestos',
     titulo: 'Cuándo un año es bisiesto',
@@ -283,7 +316,7 @@
     },
     regla: {
       texto: 'En el calendario gregoriano, un año es bisiesto si es divisible entre 4, salvo los divisibles entre 100 que no lo son entre 400.',
-      ecuacion: ['bisiesto ⇔ (÷4 y no ÷100) o ÷400'],
+      ecuacion: ['bisiesto  ⇔  ', { llave: ['(÷4 y no ÷100)'], nota: 'la regla común', color: 'c-d' }, ' o ', { llave: ['÷400'], nota: 'la excepción', color: 'c-o' }],
       condicion: 'se usa el calendario gregoriano; antes de su adopción, cada lugar usaba otro calendario.',
     },
     ahoraTu: {
@@ -319,6 +352,23 @@
     }
     return { columnas: ['L', 'M', 'M', 'J', 'V', 'S', 'D'], filas: null, ancho: 42, celdas: celdas.slice(0, 5).concat(celdas.length > 5 ? [] : []), notas: [{ t: extra.nota || '' }] };
   }
+  const datosSem = val => mes(0, 1 + val.n, { nota: `Día ${1 + val.n}: ${DIAS[val.n % 7]}` });
+  // La manija va en la casilla del día marcado; soltarla en otra casilla da los días que pasan desde el 1.
+  const manijaDia = (datosDe, inicioDe) => ({ id: 'dia', etiqueta: 'día al que se llega', color: 'c-o',
+    donde: val => { const g = TAB().geometria(datosDe(val)), k = inicioDe(val) + val.n; return g.centro(Math.floor(k / 7), k % 7); },
+    mover: (pt, val) => { const c = TAB().geometria(datosDe(val)).casilla(pt.x, pt.y); return { n: 7 * c.f + c.c - inicioDe(val) }; } });
+  function mesCompleto(inicio, marca) {
+    const d = mes(inicio, marca);
+    const celdas = [];
+    let fila = Array(7).fill('');
+    for (let k = 1; k <= 31; k++) {
+      const c = (inicio + k - 1) % 7;
+      fila[c] = { t: String(k), color: k === marca ? 'o' : k === 1 ? 'i' : undefined, resalto: k === marca ? 'o' : k === 1 ? 'i' : undefined };
+      if (c === 6 || k === 31) { celdas.push(fila); fila = Array(7).fill(''); }
+    }
+    while (celdas.length < 6) celdas.push(Array(7).fill(''));
+    return Object.assign(d, { celdas });
+  }
   const semana = {
     id: 'dia-de-la-semana',
     titulo: 'Las semanas completas no cuentan',
@@ -328,9 +378,11 @@
       consigna: 'El 1 de un mes cae lunes. Cambia cuántos días pasan y mira en qué día de la semana caes.',
       voz: 'Cada 7 días vuelves al mismo día de la semana.',
       controles: [{ id: 'n', etiqueta: 'Días después', min: 0, max: 27, paso: 1, inicio: 0, decimales: 0, color: 'c-h' }],
-      dibujo: val => ({ datos: mes(0, 1 + val.n, { nota: `Día ${1 + val.n}: ${DIAS[val.n % 7]}` }), estado: {} }),
+      dibujo: val => ({ datos: datosSem(val), estado: {} }),
       lectura: val => [N, ` = ${val.n} = 7 · ${Math.floor(val.n / 7)} + ${val.n % 7} → ${DIAS[val.n % 7]}`],
       minimo: 4,
+      // Se arrastra la marca naranja por el calendario: la casilla bajo el dedo es el día al que se llega.
+      arrastres: [manijaDia(datosSem, () => 0)],
     },
     predice: {
       pregunta: 'En otro mes, el 1 cae viernes. ¿Qué día de la semana es el 18 de ese mes?',
@@ -347,13 +399,13 @@
       datos: mes(4, 18, { nota: 'Viernes + 3 = lunes' }),
       pasos: [
         { estado: { corte: 0 }, texto: 'Del 1 al 18 pasan 17 días: el 1 no se cuenta.', ecuacion: [N, ' = 18 − 1 = 17'] },
-        { estado: { corte: 0 }, texto: 'Las semanas completas no cambian el día.', ecuacion: ['17 = 7 · 2 + 3'] },
+        { estado: { corte: 0 }, texto: 'Las semanas completas no cambian el día.', ecuacion: ['17 = ', { llave: ['7 · 2'], nota: 'semanas completas', color: 'c-i' }, ' + ', { llave: ['3'], nota: 'lo que avanza', color: 'c-h' }] },
         { estado: { corte: 0 }, texto: 'Se avanzan 3 días desde el viernes: lunes.', ecuacion: ['viernes + 3 = lunes'] },
       ],
     },
     regla: {
       texto: 'Se cuentan los días transcurridos desde una fecha de día conocido (sin contarla), se divide entre 7 y se avanza el residuo.',
-      ecuacion: ['día final = día inicial + (', N, ' mód 7)'],
+      ecuacion: ['día final = día inicial + ', { llave: ['(', N, ' mód 7)'], nota: 'días que sobran', color: 'c-h' }],
       condicion: 'si el intervalo cruza febrero, se revisa si el año es bisiesto para contar el 29.',
     },
     ahoraTu: {
@@ -376,11 +428,63 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: el reloj entero, con minutos de uno en uno (la idea solo deja cuartos de hora y de 1 a 6).
+  const datosLibre = val => ({ relojes: [{ h: val.h, m: val.m, arco: true, texto: grados(angulo(val.h, val.m)), rotulo: hhmm(val.h, val.m) }] });
+  const mesaReloj = {
+    id: 'reloj-libre', titulo: 'Reloj libre', pieza: 'rm-reloj',
+    consigna: 'Arrastra las dos agujas. Busca horas en que se superponen o forman 90° y compara sus ángulos.',
+    controles: [
+      { id: 'h', etiqueta: 'Hora', min: 1, max: 12, paso: 1, inicio: 3, decimales: 0, color: 'c-i' },
+      { id: 'm', etiqueta: 'Minutos', min: 0, max: 59, paso: 1, inicio: 0, decimales: 0, color: 'c-o' },
+    ],
+    dibujo: val => ({ datos: datosLibre(val), estado: {} }),
+    lectura: val => [`${hhmm(val.h, val.m)} · ángulo menor `, A, ` = ${grados(angulo(val.h, val.m))}`],
+    arrastres: [
+      Object.assign({ id: 'minutero', etiqueta: 'punta del minutero', color: 'c-o' }, manijaMinutero(datosLibre, 0, 59)),
+      { id: 'horario', etiqueta: 'punta del horario', color: 'c-i', donde: puntaHorario(datosLibre, 0), mover: (pt, val) => ({ h: horaDe(datosLibre, 0, val, pt) }) },
+    ],
+  };
+  // Mesa 2: un reloj que gana o pierde entre 1 y 6 minutos por hora real, hasta 12 horas (la idea fija +3).
+  const datosGana = val => { const [hi, mi] = sumaMin(8 + val.t, 0, val.g * val.t); return relojes(8 + val.t, 0, hi, mi); };
+  const mesaGana = {
+    id: 'reloj-que-gana', titulo: 'Reloj que gana o pierde', pieza: 'rm-reloj',
+    consigna: 'Puesto en hora a las 8:00. Elige cuánto gana (+) o pierde (−) por hora real y deja pasar horas.',
+    controles: [
+      { id: 'g', etiqueta: 'Por hora real', min: -6, max: 6, paso: 1, inicio: 4, unidad: 'min', decimales: 0, color: 'c-o' },
+      { id: 't', etiqueta: 'Horas reales', min: 0, max: 12, paso: 1, inicio: 0, decimales: 0, color: 'c-h' },
+    ],
+    dibujo: val => ({ datos: datosGana(val), estado: {} }),
+    lectura: val => [`${plural(val.t, 'hora real', 'horas reales')} a ${val.g > 0 ? '+' : ''}${val.g}\u00a0min: `, val.g === 0 ? 'va en hora' : `${val.g > 0 ? 'adelanta' : 'atrasa'} ${Math.abs(val.g * val.t)}\u00a0min`],
+    arrastres: [{ id: 'hora-real', etiqueta: 'horario del reloj real', color: 'c-h', donde: puntaHorario(datosGana, 0),
+      mover: (pt, val) => ({ t: horasReales(horaDe(datosGana, 0, val, pt), val.t) }) }],
+  };
+  // Mesa 3: el calendario con el día 1 en cualquier día de la semana, hasta el 31.
+  const datosCal = val => {
+    const base = mesCompleto(val.ini, 1 + val.n);
+    base.notas = [{ t: `El 1 es ${DIAS[val.ini]}; el ${1 + val.n}, ${DIAS[(val.ini + val.n) % 7]}` }];
+    return base;
+  };
+  const mesaCal = {
+    id: 'calendario', titulo: 'Calendario de un mes', pieza: 'rm-tablero',
+    consigna: 'Elige en qué día cae el 1 y arrastra la marca por el mes. Compara días que caen en la misma columna.',
+    controles: [
+      { id: 'ini', etiqueta: 'El 1 cae', opciones: DIAS.map((d, k) => ({ valor: k, texto: d })) },
+      { id: 'n', etiqueta: 'Días después', min: 0, max: 30, paso: 1, inicio: 0, decimales: 0, color: 'c-h' },
+    ],
+    dibujo: val => ({ datos: datosCal(val), estado: {} }),
+    lectura: val => [`${plural(val.n, 'día', 'días')} = 7 · ${Math.floor(val.n / 7)} + ${val.n % 7} → `, DIAS[(val.ini + val.n) % 7]],
+    arrastres: [manijaDia(datosCal, val => val.ini)],
+  };
+
   return {
     unidad: 'razonamiento-matematico.cronometria-y-calendarios',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-reloj.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/rm-tablero.js'],
+    // Laboratorio: el reloj con minutos de uno en uno, el reloj que gana o pierde lo que se quiera y el calendario con
+    // el 1 en cualquier día.
+    laboratorio: [mesaReloj, mesaGana, mesaCal],
     historia: {
       texto: 'Los calendarios intentan encajar ciclos del cielo en días enteros. La reforma gregoriana de 1582 corrigió la regla de los bisiestos del calendario juliano, y cada país la adoptó en fechas distintas. Para practicar, se usa la regla gregoriana; en una fecha histórica real, hay que revisar qué calendario regía.',
       pregunta: '¿Por qué no todos los años divisibles entre 4 son bisiestos?',
