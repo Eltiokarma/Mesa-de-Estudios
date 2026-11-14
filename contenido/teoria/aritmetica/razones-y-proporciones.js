@@ -44,12 +44,22 @@
     return ops.slice(0, 4);
   }
   // Una tira de n partes iguales de tamaño u (las partes se cuentan; el largo es n·u a la escala común).
+  // Gesto directo (docs/teoria.md §4b): las manijas viven en el viewBox de arit-tiras; geometria(datos).x y deX
+  // convierten entre valor y px con la misma escala común que dibuja la pieza.
+  const TIRAS = () => Kit.piezas['arit-tiras'];
+  // La manija va en el borde de abajo del fin de la tira: así no tapa el rótulo final, que va a media altura.
+  const finTira = (datos, k, valor) => { const g = TIRAS().geometria(datos); return { x: g.x(valor), y: g.tiraY(k) + g.altoTira }; };
+  const valorEn = (datos, px) => TIRAS().geometria(datos).deX(px);
   const tira = (rotulo, color, n, u, o = {}) => Object.assign({ rotulo, color, fin: o.fin, paso: o.paso, tramos: [{ valor: n * u, color, partes: n, texto: o.texto }] }, o.extra || {});
 
   // ---------- Idea 1: restar o dividir, dos comparaciones distintas ----------
   // Cambia: las dos tiras se estiran (×k) o se alargan (+s). Permanece: la escala común de 30 unidades.
   // Progresa: qué comparación sobrevive a cada cambio. Se reserva: el Sr. Alto, donde la diferencia no sirve.
   // Debe verse: al multiplicar, la razón queda igual y la diferencia crece.
+  const tirasComparar = v => {
+    const x = 3 * v.k + v.s, y = 5 * v.k + v.s;
+    return { max: 26, regla: { paso: 1, cada: 5 }, filas: 2, tiras: [tira('a', 'o', x, 1, { fin: f(x) }), tira('b', 'i', y, 1, { fin: f(y) })] };
+  };
   const comparar = {
     id: 'restar-dividir',
     titulo: 'Restar o dividir: dos comparaciones',
@@ -62,12 +72,18 @@
         { id: 'k', etiqueta: 'Multiplica ×', color: 'c-d', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
         { id: 's', etiqueta: 'Suma +', min: 0, max: 6, paso: 1, inicio: 0, decimales: 0 },
       ],
-      dibujo: v => {
-        const x = 3 * v.k + v.s, y = 5 * v.k + v.s;
-        return { datos: { max: 26, regla: { paso: 1, cada: 5 }, filas: 2, tiras: [tira('a', 'o', x, 1, { fin: f(x) }), tira('b', 'i', y, 1, { fin: f(y) })] }, estado: {} };
-      },
-      lectura: v => { const x = 3 * v.k + v.s, y = 5 * v.k + v.s; return [b, ' − ', a, ` = ${f(y - x)} · `, a, ' : ', b, ` = ${razon(x, y)}`]; },
+      dibujo: v => ({ datos: tirasComparar(v), estado: {} }),
+      lectura: v => { const x = 3 * v.k + v.s, y = 5 * v.k + v.s; return [b, ' − ', a, ` = ${f(y - x)}`, '   ·   ', a, ' : ', b, ` = ${razon(x, y)}`]; },
       minimo: 3,
+      // El fin de b estira las dos tiras ×k (b = 5k + s); el fin de a les suma lo mismo a las dos (a = 3k + s).
+      arrastres: [
+        { id: 'fin-b', etiqueta: 'fin de la tira b: multiplica las dos', color: 'c-d',
+          donde: v => finTira(tirasComparar(v), 1, 5 * v.k + v.s),
+          mover: (pt, v) => ({ k: (valorEn(tirasComparar(v), pt.x) - v.s) / 5 }) },
+        { id: 'fin-a', etiqueta: 'fin de la tira a: suma lo mismo a las dos',
+          donde: v => finTira(tirasComparar(v), 0, 3 * v.k + v.s),
+          mover: (pt, v) => ({ s: valorEn(tirasComparar(v), pt.x) - 3 * v.k }) },
+      ],
     },
     predice: {
       pregunta: 'El Sr. Bajo mide 4 botones o 6 clips. El Sr. Alto mide 6 botones. ¿Cuántos clips mide el Sr. Alto?',
@@ -81,6 +97,8 @@
       revelar: { datos: { max: 9, filas: 4, tiras: [tira('Bajo en botones', 'o', 4, 1.5), tira('Bajo en clips', 'i', 6, 1), tira('Alto en botones', 'o', 6, 1.5), tira('Alto en clips', 'i', 9, 1, { fin: '9' })] }, estado: {} },
       coincide: 'Coincide: cada botón mide lo mismo que 1,5 clips, en los dos señores.',
     },
+    // Hallazgo 9: «Mira» usa las mismas tiras a una escala común que el juego (arit-tiras); cambia el caso, no la
+    // representación: las tiras de botones y clips son el par a, b del juego con unidades distintas.
     mira: {
       datos: { max: 9, filas: 4, tiras: [tira('Bajo en botones', 'o', 4, 1.5), tira('Bajo en clips', 'i', 6, 1), tira('Alto en botones', 'o', 6, 1.5, { paso: 2 }), tira('Alto en clips', 'i', 9, 1, { paso: 3, fin: '9' })] },
       pasos: [
@@ -92,7 +110,7 @@
     },
     regla: {
       texto: 'La razón aritmética compara restando; la geométrica, dividiendo. Multiplicar las dos cantidades conserva la geométrica; sumarles lo mismo conserva la aritmética.',
-      ecuacion: ['razón aritmética: ', a, ' − ', b, '   ·   razón geométrica: ', { frac: [a, b] }, ' = ', k],
+      ecuacion: [{ llave: [a, ' − ', b], nota: 'aritmética' }, '   ·   ', { llave: [{ frac: [a, b] }], nota: 'geométrica' }, ' = ', k],
       condicion: 'b no es cero. «a y b están en razón 3 a 5» quiere decir a = 3k y b = 5k.',
     },
     ahoraTu: {
@@ -125,6 +143,7 @@
   // Cambia: las tiras c y d como k veces a y b. Permanece: el par a, b y la escala.
   // Progresa: de proporción discreta (cuatro términos) a continua (medio repetido). Se reserva: x² = 36 en el caso continuo.
   // Debe verse: a·d y b·c dan el mismo número.
+  const tirasProporcion = v => ({ max: 24, filas: 4, regla: { paso: 1, cada: 4 }, tiras: [tira('a', 'o', v.a, 1, { fin: f(v.a) }), tira('b', 'i', v.b, 1, { fin: f(v.b) }), tira('c', 'o', v.a * v.k, 1, { fin: f(v.a * v.k) }), tira('d', 'i', v.b * v.k, 1, { fin: f(v.b * v.k) })] });
   const proporcion = {
     id: 'proporcion',
     titulo: 'Proporción: los productos cruzados',
@@ -138,9 +157,21 @@
         { id: 'b', etiqueta: 'b', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0 },
         { id: 'k', etiqueta: 'k', color: 'c-d', min: 2, max: 4, paso: 1, inicio: 2, decimales: 0 },
       ],
-      dibujo: v => ({ datos: { max: 24, filas: 4, regla: { paso: 1, cada: 4 }, tiras: [tira('a', 'o', v.a, 1, { fin: f(v.a) }), tira('b', 'i', v.b, 1, { fin: f(v.b) }), tira('c', 'o', v.a * v.k, 1, { fin: f(v.a * v.k) }), tira('d', 'i', v.b * v.k, 1, { fin: f(v.b * v.k) })] }, estado: {} }),
-      lectura: v => [a, ' · ', d, ` = ${f(v.a * v.b * v.k)} · `, b, ' · ', c, ` = ${f(v.a * v.b * v.k)}`],
+      dibujo: v => ({ datos: tirasProporcion(v), estado: {} }),
+      lectura: v => [a, ' · ', d, ` = ${f(v.a * v.b * v.k)}`, '   ·   ', b, ' · ', c, ` = ${f(v.a * v.b * v.k)}`],
       minimo: 3,
+      // Se arrastran el fin de a, el de b y el de c (que fija k = c ÷ a); d sigue a b con el mismo k.
+      arrastres: [
+        { id: 'fin-a', etiqueta: 'fin de la tira a', color: 'c-o',
+          donde: v => finTira(tirasProporcion(v), 0, v.a),
+          mover: (pt, v) => ({ a: valorEn(tirasProporcion(v), pt.x) }) },
+        { id: 'fin-b', etiqueta: 'fin de la tira b', color: 'c-i',
+          donde: v => finTira(tirasProporcion(v), 1, v.b),
+          mover: (pt, v) => ({ b: valorEn(tirasProporcion(v), pt.x) }) },
+        { id: 'fin-c', etiqueta: 'fin de la tira c: fija k', color: 'c-d',
+          donde: v => finTira(tirasProporcion(v), 2, v.a * v.k),
+          mover: (pt, v) => ({ k: valorEn(tirasProporcion(v), pt.x) / v.a }) },
+      ],
     },
     predice: {
       pregunta: ['En la proporción continua ', { frac: ['4', 'x'] }, ' = ', { frac: ['x', '9'] }, ', ¿cuánto vale x?'],
@@ -154,6 +185,7 @@
       revelar: { datos: { max: 9, filas: 3, tiras: [tira('4', 'o', 4, 1), tira('x = 6', 'i', 6, 1), tira('9', 'o', 9, 1)] }, estado: {} },
       coincide: 'Coincide: 4 · 9 = 36 y 6 · 6 = 36.',
     },
+    // Hallazgo 9: las mismas tiras del juego; en la continua, b y c son la misma tira (x), por eso hay tres.
     mira: {
       datos: { max: 9, filas: 3, tiras: [tira('4', 'o', 4, 1), tira('x = 6', 'i', 6, 1, { paso: 3 }), tira('9', 'o', 9, 1)] },
       pasos: [
@@ -164,7 +196,7 @@
     },
     regla: {
       texto: 'Una proporción iguala dos razones y equivale a que los productos cruzados sean iguales. Es continua cuando los dos medios son el mismo número.',
-      ecuacion: [{ frac: [a, b] }, ' = ', { frac: [c, d] }, ' ⇔ ', a, ' · ', d, ' = ', b, ' · ', c, '   ·   continua: ', { sup: [b, '2'] }, ' = ', a, ' · ', d],
+      ecuacion: [{ frac: [a, b] }, ' = ', { frac: [c, d] }, ' ⇔ ', { llave: [a, ' · ', d], nota: 'extremos' }, ' = ', { llave: [b, ' · ', c], nota: 'medios' }, '   ·   ', 'continua: ', { sup: [b, '2'] }, ' = ', a, ' · ', d],
       condicion: 'b y d no son cero. En la continua a : b = b : d, b es media proporcional y d, tercera proporcional.',
     },
     ahoraTu: {
@@ -216,6 +248,11 @@
       ],
     }, extra.datos || {});
   };
+  const RECTA = () => Kit.piezas.recta;
+  const inversa = (escala, p, q) => px => p + (px - escala(p)) * (q - p) / (escala(q) - escala(p));
+  const puntoRecta = (datos, v) => { const g = RECTA().geometria(datos); return { x: g.x(v), y: g.filaY(0) }; };
+  const deRecta = (datos, px) => inversa(RECTA().geometria(datos).x, datos.min, datos.max)(px);
+  const rectaJuego = v => rectaMedias(v.x, v.y, { datos: { min: 0, max: 20, cada: 5 } });
   const medias = {
     id: 'medias',
     titulo: 'Tres medias para dos números',
@@ -228,9 +265,18 @@
         { id: 'x', etiqueta: 'a', color: 'c-o', min: 2, max: 18, paso: 2, inicio: 4, decimales: 0 },
         { id: 'y', etiqueta: 'b', color: 'c-i', min: 2, max: 18, paso: 2, inicio: 16, decimales: 0 },
       ],
-      dibujo: v => ({ datos: rectaMedias(v.x, v.y, { datos: { min: 0, max: 20, cada: 5 } }), estado: {} }),
-      lectura: v => [A, ` = ${f((v.x + v.y) / 2)} · `, G, ` = ${f(Math.sqrt(v.x * v.y))} · H = ${f(2 * v.x * v.y / (v.x + v.y))}`],
+      dibujo: v => ({ datos: rectaJuego(v), estado: {} }),
+      lectura: v => [A, ` = ${f((v.x + v.y) / 2)}`, '   ·   ', G, ` = ${f(Math.sqrt(v.x * v.y))}`, '   ·   ', `H = ${f(2 * v.x * v.y / (v.x + v.y))}`],
       minimo: 3,
+      // Se arrastran los dos números sobre la recta; las tres medias los siguen.
+      arrastres: [
+        { id: 'punto-a', etiqueta: 'el número a', color: 'c-o',
+          donde: v => puntoRecta(rectaJuego(v), v.x),
+          mover: (pt, v) => ({ x: deRecta(rectaJuego(v), pt.x) }) },
+        { id: 'punto-b', etiqueta: 'el número b', color: 'c-i',
+          donde: v => puntoRecta(rectaJuego(v), v.y),
+          mover: (pt, v) => ({ y: deRecta(rectaJuego(v), pt.x) }) },
+      ],
     },
     predice: {
       pregunta: 'Una combi va de Juliaca a Puno a 60 km/h y vuelve por la misma pista a 40 km/h. ¿Cuál es su rapidez media en todo el viaje?',
@@ -254,7 +300,7 @@
     },
     regla: {
       texto: 'Para dos positivos a y b hay tres medias, siempre en el orden H ≤ G ≤ A; las tres coinciden solo si a = b.',
-      ecuacion: [A, ' = ', { frac: [[a, ' + ', b], '2'] }, '   ·   ', G, ' = ', { raiz: [a, b] }, '   ·   H = ', { frac: [['2', a, b], [a, ' + ', b]] }],
+      ecuacion: [{ llave: [A], nota: 'aritmética', color: 'c-h' }, ' = ', { frac: [[a, ' + ', b], '2'] }, '   ·   ', { llave: [G], nota: 'geométrica', color: 'c-d' }, ' = ', { raiz: [a, b] }, '   ·   ', { llave: ['H'], nota: 'armónica' }, ' = ', { frac: [['2', a, b], [a, ' + ', b]] }],
       condicion: 'tiempos iguales piden la aritmética; distancias iguales en cada tramo piden la armónica; factores que se multiplican, la geométrica.',
     },
     ahoraTu: {
@@ -293,6 +339,7 @@
     tiras.push(tira('antecedentes', 'o', suma, kk, { fin: o.sinTexto ? '?' : f(suma * kk), paso: o.pasos ? 3 : 0, extra: { tramos: bs.map(bi => ({ valor: bi * kk, color: 'o', partes: bi })) } }));
     return { max: suma * Math.max(kk, 1), filas: bs.length + 2, tiras };
   };
+  const serieJuego = v => Object.assign(serieDatos([2, 3, 5], v.k), { max: 40 });
   const serie = {
     id: 'serie',
     titulo: 'Razones iguales: la suma también',
@@ -302,9 +349,16 @@
       consigna: 'Tres razones iguales: cada antecedente es k veces su consecuente 2, 3 y 5. Cambia k y compara las sumas.',
       voz: 'Divide la suma de arriba entre la suma de abajo.',
       controles: [{ id: 'k', etiqueta: 'k', color: 'c-d', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 }],
-      dibujo: v => ({ datos: serieDatos([2, 3, 5], v.k), estado: {} }),
+      dibujo: v => ({ datos: serieJuego(v), estado: {} }),
       lectura: v => [`Antecedentes ${f(10 * v.k)} ÷ consecuentes 10 = `, k, ` = ${f(v.k)}`],
       minimo: 3,
+      // Se arrastra el fin del par 3 (5k): estira los tres antecedentes a la vez. Va arriba, donde la figura se ve
+      // entera bajo la barra fija; la escala queda en 40 para que el dedo y la tira no se separen.
+      arrastres: [
+        { id: 'fin-par-3', etiqueta: 'fin del par 3: cambia k', color: 'c-d',
+          donde: v => finTira(serieJuego(v), 2, 5 * v.k),
+          mover: (pt, v) => ({ k: valorEn(serieJuego(v), pt.x) / 5 }) },
+      ],
     },
     predice: {
       pregunta: ['Se cumple ', { frac: [a, '3'] }, ' = ', { frac: [b, '5'] }, ' = ', { frac: [c, '7'] }, ' y ', a, ' + ', b, ' + ', c, ' = 60. ¿Cuánto vale ', b, '?'],
@@ -321,7 +375,7 @@
     mira: {
       datos: serieDatos([3, 5, 7], 4, { pasos: true }),
       pasos: [
-        { estado: { paso: 1 }, texto: 'Cada antecedente es k veces su consecuente.', ecuacion: [a, ' = 3', k, '   ', b, ' = 5', k, '   ', c, ' = 7', k] },
+        { estado: { paso: 1 }, texto: 'Cada antecedente es k veces su consecuente.', ecuacion: [a, ' = 3', k, '   ·   ', b, ' = 5', k, '   ·   ', c, ' = 7', k] },
         { estado: { paso: 2 }, texto: 'Los consecuentes suman 3 + 5 + 7 = 15 partes.', ecuacion: ['3 + 5 + 7 = 15'] },
         { estado: { paso: 3 }, texto: 'Los antecedentes suman 60: cada parte vale 4.', ecuacion: [k, ' = ', { frac: ['60', '15'] }, ' = 4'] },
         { estado: { paso: 3 }, texto: 'b tiene 5 partes de 4.', ecuacion: [b, ' = 5 · 4 = 20'] },
@@ -329,7 +383,7 @@
     },
     regla: {
       texto: 'Si varias razones son iguales a k, la suma de los antecedentes entre la suma de los consecuentes también es k.',
-      ecuacion: [{ frac: [a, '3'] }, ' = ', { frac: [b, '5'] }, ' = … = ', k, ' ⇒ ', { frac: [[a, ' + ', b, ' + …'], '3 + 5 + …'] }, ' = ', k],
+      ecuacion: [{ frac: [a, '3'] }, ' = ', { frac: [b, '5'] }, ' = … = ', k, '   ·   ', { frac: [[a, ' + ', b, ' + …'], '3 + 5 + …'] }, ' = ', { llave: [k], nota: 'la misma razón', color: 'c-d' }],
       condicion: 'ningún consecuente es cero y su suma tampoco. Con n razones, el producto de antecedentes entre el de consecuentes es kⁿ.',
     },
     ahoraTu: {
@@ -351,11 +405,60 @@
     },
   };
 
+  // Mesas del laboratorio: el par de antes (a, b) y el de después (a·k + s, b·k + s), a la misma escala de 40.
+  const tirasAntesDespues = v => {
+    const x = v.a * v.k + v.s, y = v.b * v.k + v.s;
+    return { max: 40, filas: 4, regla: { paso: 1, cada: 5 }, tiras: [tira('a', 'o', v.a, 1, { fin: f(v.a) }), tira('b', 'i', v.b, 1, { fin: f(v.b) }), tira('a después', 'o', x, 1, { fin: f(x) }), tira('b después', 'i', y, 1, { fin: f(y) })] };
+  };
+  const rectaLarga = v => rectaMedias(v.x, v.y, { datos: { min: 0, max: 40, paso: 1, cada: 10 } });
+
   return {
     unidad: 'aritmetica.razones-y-proporciones',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/recta.js'],
+    // Laboratorio: juego libre, sin preguntas. «Antes y después» junta las dos comparaciones con cuatro controles; «Tres
+    // medias» abre el rango hasta 40 (con pares impares e iguales); la serie es el juego de la idea 4.
+    laboratorio: [
+      {
+        id: 'antes-despues', titulo: 'Antes y después del cambio', pieza: 'arit-tiras',
+        consigna: 'Elige un par a y b. Luego multiplícalo y súmale lo mismo. Compara qué pasa con la resta y con la razón.',
+        controles: [
+          { id: 'a', etiqueta: 'a', color: 'c-o', min: 1, max: 8, paso: 1, inicio: 2, decimales: 0 },
+          { id: 'b', etiqueta: 'b', color: 'c-i', min: 1, max: 8, paso: 1, inicio: 3, decimales: 0 },
+          { id: 'k', etiqueta: 'Multiplica ×', color: 'c-d', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 },
+          { id: 's', etiqueta: 'Suma +', min: 0, max: 8, paso: 1, inicio: 0, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: tirasAntesDespues(v), estado: {} }),
+        lectura: v => {
+          const x = v.a * v.k + v.s, y = v.b * v.k + v.s;
+          return [`${f(v.a)} : ${f(v.b)} → ${f(x)} : ${f(y)}`, '   ·   ', `razón ${razon(x, y)}`, '   ·   ', b, ' − ', a, ` = ${f(y - x)}`];
+        },
+        arrastres: [
+          { id: 'fin-a', etiqueta: 'fin de la tira a', color: 'c-o',
+            donde: v => finTira(tirasAntesDespues(v), 0, v.a), mover: (pt, v) => ({ a: valorEn(tirasAntesDespues(v), pt.x) }) },
+          { id: 'fin-b', etiqueta: 'fin de la tira b', color: 'c-i',
+            donde: v => finTira(tirasAntesDespues(v), 1, v.b), mover: (pt, v) => ({ b: valorEn(tirasAntesDespues(v), pt.x) }) },
+          { id: 'fin-b2', etiqueta: 'fin de b después: multiplica', color: 'c-d',
+            donde: v => finTira(tirasAntesDespues(v), 3, v.b * v.k + v.s), mover: (pt, v) => ({ k: (valorEn(tirasAntesDespues(v), pt.x) - v.s) / v.b }) },
+        ],
+      },
+      {
+        id: 'tres-medias', titulo: 'Tres medias en una recta larga', pieza: 'recta',
+        consigna: 'Arrastra a y b por la recta, de 1 a 40. Busca cuándo las tres medias quedan juntas y cuándo se separan.',
+        controles: [
+          { id: 'x', etiqueta: 'a', color: 'c-o', min: 1, max: 40, paso: 1, inicio: 4, decimales: 0 },
+          { id: 'y', etiqueta: 'b', color: 'c-i', min: 1, max: 40, paso: 1, inicio: 36, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: rectaLarga(v), estado: {} }),
+        lectura: v => [`${f(v.x)} y ${f(v.y)}:`, ' ', 'H = ', f(2 * v.x * v.y / (v.x + v.y)), '   ·   ', G, ` = ${f(Math.sqrt(v.x * v.y))}`, '   ·   ', A, ` = ${f((v.x + v.y) / 2)}`],
+        arrastres: [
+          { id: 'punto-a', etiqueta: 'el número a', color: 'c-o', donde: v => puntoRecta(rectaLarga(v), v.x), mover: (pt, v) => ({ x: deRecta(rectaLarga(v), pt.x) }) },
+          { id: 'punto-b', etiqueta: 'el número b', color: 'c-i', donde: v => puntoRecta(rectaLarga(v), v.y), mover: (pt, v) => ({ y: deRecta(rectaLarga(v), pt.x) }) },
+        ],
+      },
+      Object.assign({ id: 'serie', titulo: 'Razones iguales que se suman', pieza: 'arit-tiras' }, serie.juega),
+    ],
     historia: {
       texto: 'En la matemática griega había longitudes que ninguna unidad común medía un número entero de veces. La teoría atribuida a Eudoxo, conservada en el libro V de los Elementos, comparaba esas magnitudes por sus múltiplos. No eran todavía fracciones escritas como hoy. Una proporción afirma que dos comparaciones son iguales: primero se decide qué se compara y en qué orden.',
       pregunta: '¿Cómo compararías dos largos sin una regla común?',
