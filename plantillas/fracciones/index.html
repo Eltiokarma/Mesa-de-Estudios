@@ -150,6 +150,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 /* tabla de Euclides */
 .tabla{border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:.92rem; background:var(--paper); border-radius:12px; overflow:hidden}
@@ -230,6 +231,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'fracciones', unidad: 'aritmetica.numeros-racionales', version: '0.1.0' };
@@ -272,6 +274,14 @@ function tween(dur, paso, fin, lineal){
 }
 const a_ = t => V('a', t), b_ = t => V('b', t), s_ = t => V('s', t), g_ = t => V('g', t), m_ = t => V('m', t);
 const T = f => M.texto(f);
+// Regla 3 (jugar antes de preguntar): el cuchillo parte dos barras en N trozos; no junta los trozos ni dice la suma.
+function cuchilloLibre(E, A, B){
+  const st = { A, B, N:4, fc:1, g:0, res:false, slider:true, rotR:'juntas', mover:c => { st.N = c.N; } };
+  const encaja = j => { const c = M.cuchillo([A, B], st.N).fracciones[j]; return c.encaja ? `${c.ampliada}/${st.N}` : 'no encaja'; };
+  E.config({ modo:'barras', st, ley:[['a', T(A)], ['b', T(B)], ['m', 'cortes del cuchillo']],
+    desc:`Dos barras: ${T(A)} y ${T(B)}. Un cuchillo las parte en N trozos iguales.`,
+    lect:[() => ['m', 'trozos N', String(st.N)], () => ['a', T(A), encaja(0)], () => ['b', T(B), encaja(1)]] });
+}
 // Un periódico como en las academias: arco sobre el periodo (0,1 6 con arco sobre el 6).
 const per = dec => `${dec.negativo ? '−' : ''}${dec.entero},${dec.anteperiodo}<span class="per">${dec.periodo}</span>`;
 // Hora del reloj a partir de los minutos desde las 6:00 (solo para mostrar).
@@ -1039,6 +1049,11 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta (1/2 + 1/3), juego libre con el cuchillo sobre 2/3 y 1/4 (o ← y → en el dibujo).
+E.compactar(false);
+cuchilloLibre(E, M.fr(2, 3), M.fr(1, 4));
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el cuchillo y mira cuándo sus cortes caen sobre los de cada barra.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 <script>
@@ -1193,6 +1208,11 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con el cuchillo sobre 3/4 y 5/6 (ningún experimento pregunta por ellas).
+E.compactar(false);
+cuchilloLibre(E, M.fr(3, 4), M.fr(5, 6));
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el cuchillo y mira cuándo sus cortes caen sobre los de cada barra.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 

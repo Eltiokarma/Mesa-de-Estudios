@@ -156,6 +156,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 .tabla{border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:.95rem; background:var(--paper); border-radius:12px; overflow:hidden}
 .tabla th,.tabla td{padding:5px 12px; border-bottom:1px solid var(--line); text-align:right}
@@ -233,6 +234,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'interes', unidad: 'aritmetica.interes-y-descuento', version: '0.1.0' };
@@ -904,6 +906,11 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta (meses con tasa anual), juego libre con la torre de S/ 1000 al 10 % simple, año por año.
+E.compactar(false);
+E.config(torreExplora('simple', 10, 10, 1100, null));
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el punto rojo de la gráfica y mira cómo crece la torre.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 <script>
@@ -1063,6 +1070,14 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con S/ 1000 al 5 % simple (ningún experimento usa esa tasa).
+E.compactar(false);
+E.config({ modo:'torre', graf:true, torre:{ C:1000, r:5, tipo:'simple', tmax:3, prog:3, imax:550 },
+  g:{ C:1000, r:5, tmax:10, ymin:0, ymax:3000, ypaso:500, simple:true, comp:false, cursor:3, drag:true },
+  lect:[E0 => ['t', 'Tiempo t', `${E0.g.cursor} años`], E0 => ['M', 'Monto M', soles(1000 + 50*E0.g.cursor)]],
+  desc:'S/ 1000 al 5 % anual de interés simple: una torre y su gráfica. El punto rojo cambia el tiempo.' });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el punto rojo de la gráfica y mira cómo crece la torre.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 

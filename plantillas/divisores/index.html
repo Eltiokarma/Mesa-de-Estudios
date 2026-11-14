@@ -150,6 +150,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 
 /* tabla de valores */
@@ -235,6 +236,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'divisores', unidad: 'aritmetica.numeros-primos-y-divisores', version: '0.1.0' };
@@ -747,6 +749,16 @@ function crearEscena(cv, idDesc, idLect, idLey){
   return E;
 }
 
+// Regla 3 (jugar antes de preguntar): n fichas con la manija de las filas, para un juego libre antes de la primera pregunta.
+function fichasLibres(E, n){
+  const h = [];
+  const anota = f => { if (n % f === 0 && !h.includes(f)) { h.push(f); h.sort((a, b) => a - b); } };
+  anota(1);
+  E.config({ modo:'fichas', st:{ n, filas:1, slider:true, hallados:h, mover:f => { E.st.filas = f; anota(f); } },
+    ley:[['n', 'fichas'], ['f', 'filas'], ['c', 'columnas'], ['r', 'las que sobran']],
+    desc:`${n} fichas en filas iguales. Una manija abajo cambia la cantidad de filas.`,
+    lect:[() => ['n', 'fichas', String(n)], () => ['f', 'filas', String(E.st.filas)], () => ['c', 'columnas', String(Math.floor(n/E.st.filas))], () => ['r', 'sobran', String(n % E.st.filas)]] });
+}
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}" tabindex="-1"></p>`;
 // La criba como lista de estados: primero el 1, luego cada primo y los múltiplos que tacha, y al final los que quedan.
 function estadosCriba(N){
@@ -1084,6 +1096,11 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta (las filas de 12), juego libre con 10 fichas y la manija (o ← y → en el dibujo).
+E.compactar(false);
+fichasLibres(E, 10);
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra la manija para repartir 10 fichas en filas iguales.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 
@@ -1258,6 +1275,11 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con 20 fichas (no es ninguno de los números que se preguntan).
+E.compactar(false);
+fichasLibres(E, 20);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra la manija para repartir 20 fichas en filas iguales.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 
