@@ -32,6 +32,101 @@
             "errores.volumen.comoArea": 94
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Una caja de cartón tiene base de 5 cm por 4 cm y altura de 3 cm.",
+          "pregunta": "¿Cuál es su área lateral?",
+          "unidad": "cm²",
+          "decimales": 0,
+          "correcta": { "fn": "prisma", "args": [{ "base": { "tipo": "rectangulo", "largo": 5, "ancho": 4 }, "h": 3 }], "campo": "lateral", "valor": 54 },
+          "errores": [
+            {
+              "id": "GE-lateral-con-bases",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste también las dos bases: eso es el área total. La lateral son solo las cuatro caras de los costados: 18 · 3.",
+              "fn": "prisma",
+              "args": [{ "base": { "tipo": "rectangulo", "largo": 5, "ancho": 4 }, "h": 3 }],
+              "campo": "errores.lateral.conBases",
+              "valor": 94
+            },
+            {
+              "id": "GE14-lateral-como-volumen",
+              "respaldo": "parcial",
+              "explicacion": "Multiplicaste las tres medidas: eso es el volumen. El área lateral es el perímetro de la base por la altura: 18 · 3.",
+              "fn": "prisma",
+              "args": [{ "base": { "tipo": "rectangulo", "largo": 5, "ancho": 4 }, "h": 3 }],
+              "campo": "volumen",
+              "valor": 60
+            }
+          ]
+        },
+        {
+          "id": "p1b",
+          "enunciado": "Una caja de cartón tiene base de 5 cm por 4 cm y altura de 3 cm.",
+          "pregunta": "¿Cuál es su área total?",
+          "unidad": "cm²",
+          "decimales": 0,
+          "correcta": { "fn": "prisma", "args": [{ "base": { "tipo": "rectangulo", "largo": 5, "ancho": 4 }, "h": 3 }], "campo": "total", "valor": 94 },
+          "errores": [
+            {
+              "id": "GE-total-una-base",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste una sola base. La caja tiene dos, la de abajo y la de arriba: 54 + 2 · 20.",
+              "fn": "prisma",
+              "args": [{ "base": { "tipo": "rectangulo", "largo": 5, "ancho": 4 }, "h": 3 }],
+              "campo": "errores.total.unaBase",
+              "valor": 74
+            },
+            {
+              "id": "GE-total-sin-bases",
+              "respaldo": "hipotesis",
+              "explicacion": "Te quedaste con el área lateral. El área total suma también las dos bases de 20 cm².",
+              "fn": "prisma",
+              "args": [{ "base": { "tipo": "rectangulo", "largo": 5, "ancho": 4 }, "h": 3 }],
+              "campo": "errores.total.sinBases",
+              "valor": 54
+            },
+            {
+              "id": "GE14-total-como-volumen",
+              "respaldo": "parcial",
+              "explicacion": "Multiplicaste las tres medidas: eso es el volumen, lo que cabe adentro. El área total suma las seis caras.",
+              "fn": "prisma",
+              "args": [{ "base": { "tipo": "rectangulo", "largo": 5, "ancho": 4 }, "h": 3 }],
+              "campo": "volumen",
+              "valor": 60
+            }
+          ]
+        },
+        {
+          "id": "p1c",
+          "enunciado": "Una caja de cartón tiene base de 5 cm por 4 cm y altura de 3 cm.",
+          "pregunta": "¿Cuál es su volumen?",
+          "unidad": "cm³",
+          "decimales": 0,
+          "correcta": { "fn": "prisma", "args": [{ "base": { "tipo": "rectangulo", "largo": 5, "ancho": 4 }, "h": 3 }], "campo": "volumen", "valor": 60 },
+          "errores": [
+            {
+              "id": "GE14-volumen-como-area-total",
+              "respaldo": "parcial",
+              "explicacion": "Sumaste las seis caras: eso es el área total. El volumen cuenta los cubitos de adentro: 20 · 3.",
+              "fn": "prisma",
+              "args": [{ "base": { "tipo": "rectangulo", "largo": 5, "ancho": 4 }, "h": 3 }],
+              "campo": "errores.volumen.comoArea",
+              "valor": 94
+            },
+            {
+              "id": "GE14-volumen-como-lateral",
+              "respaldo": "parcial",
+              "explicacion": "Calculaste el área de los costados. El volumen es el área de la base por la altura: 20 · 3.",
+              "fn": "prisma",
+              "args": [{ "base": { "tipo": "rectangulo", "largo": 5, "ancho": 4 }, "h": 3 }],
+              "campo": "errores.volumen.comoLateral",
+              "valor": 54
+            }
+          ]
+        }
       ]
     },
     {
@@ -66,6 +161,101 @@
             "errores.volumen.sinTercio": 1200
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Una pirámide cuadrangular regular tiene arista básica de 10 m y altura de 12 m.",
+          "pregunta": "¿Cuánto mide su apotema?",
+          "unidad": "m",
+          "decimales": 2,
+          "correcta": { "fn": "piramide", "args": [{ "base": { "tipo": "cuadrado", "lado": 10 }, "h": 12 }], "campo": "ap", "valor": 13 },
+          "errores": [
+            {
+              "id": "GE21-apotema-con-altura",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste la altura, 12, como apotema. La altura va por dentro y la apotema por la cara; se unen en un triángulo rectángulo: √(12² + 5²).",
+              "fn": "piramide",
+              "args": [{ "base": { "tipo": "cuadrado", "lado": 10 }, "h": 12 }],
+              "campo": "errores.ap.conAltura",
+              "valor": 12
+            },
+            {
+              "id": "GE-apotema-con-arista",
+              "respaldo": "hipotesis",
+              "explicacion": "Calculaste la arista lateral, que va a la esquina. La apotema baja al punto medio del lado: √(12² + 5²).",
+              "fn": "piramide",
+              "args": [{ "base": { "tipo": "cuadrado", "lado": 10 }, "h": 12 }],
+              "campo": "errores.ap.conArista",
+              "valor": 13.9283882772
+            }
+          ]
+        },
+        {
+          "id": "p2b",
+          "enunciado": "Una pirámide cuadrangular regular tiene arista básica de 10 m y altura de 12 m.",
+          "pregunta": "¿Cuál es su área total?",
+          "unidad": "m²",
+          "decimales": 0,
+          "correcta": { "fn": "piramide", "args": [{ "base": { "tipo": "cuadrado", "lado": 10 }, "h": 12 }], "campo": "total", "valor": 360 },
+          "errores": [
+            {
+              "id": "GE-total-sin-base",
+              "respaldo": "hipotesis",
+              "explicacion": "Te quedaste con el área lateral. El área total suma también la base cuadrada: 260 + 100.",
+              "fn": "piramide",
+              "args": [{ "base": { "tipo": "cuadrado", "lado": 10 }, "h": 12 }],
+              "campo": "errores.total.sinBase",
+              "valor": 260
+            },
+            {
+              "id": "GE21-total-con-altura",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste la altura, 12, en lugar de la apotema, 13. Las caras se miden por su apotema: 20 · 13 + 100.",
+              "fn": "piramide",
+              "args": [{ "base": { "tipo": "cuadrado", "lado": 10 }, "h": 12 }],
+              "campo": "errores.total.conAltura",
+              "valor": 340
+            }
+          ]
+        },
+        {
+          "id": "p2c",
+          "enunciado": "Una pirámide cuadrangular regular tiene arista básica de 10 m y altura de 12 m.",
+          "pregunta": "¿Cuál es su volumen?",
+          "unidad": "m³",
+          "decimales": 0,
+          "correcta": { "fn": "piramide", "args": [{ "base": { "tipo": "cuadrado", "lado": 10 }, "h": 12 }], "campo": "volumen", "valor": 400 },
+          "errores": [
+            {
+              "id": "GE20-sin-tercio",
+              "respaldo": "hipotesis",
+              "explicacion": "Te faltó el tercio: 100 · 12 es la caja de igual base y altura. La pirámide ocupa la tercera parte.",
+              "fn": "piramide",
+              "args": [{ "base": { "tipo": "cuadrado", "lado": 10 }, "h": 12 }],
+              "campo": "errores.volumen.sinTercio",
+              "valor": 1200
+            },
+            {
+              "id": "GE20-mitad",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste entre 2. La pirámide no es media caja: tres pirámides iguales llenan la caja de igual base y altura.",
+              "fn": "piramide",
+              "args": [{ "base": { "tipo": "cuadrado", "lado": 10 }, "h": 12 }],
+              "campo": "errores.volumen.mitad",
+              "valor": 600
+            },
+            {
+              "id": "GE21-volumen-con-apotema",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste la apotema, 13. El volumen se mide con la altura, que va por dentro: 100 · 12 / 3.",
+              "fn": "piramide",
+              "args": [{ "base": { "tipo": "cuadrado", "lado": 10 }, "h": 12 }],
+              "campo": "errores.volumen.conApotema",
+              "valor": 433.333333333
+            }
+          ]
+        }
       ]
     },
     {
@@ -95,6 +285,175 @@
             "pi.volumen": 128,
             "angulo": 288
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Un cono circular recto tiene radio de 8 cm y altura de 6 cm.",
+          "pregunta": "¿Cuánto mide su generatriz?",
+          "unidad": "cm",
+          "decimales": 2,
+          "correcta": { "fn": "cono", "args": [{ "r": 8, "h": 6 }], "campo": "g", "valor": 10 },
+          "errores": [
+            {
+              "id": "GE21-generatriz-con-altura",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste la altura por la generatriz. La generatriz va por el costado y es la hipotenusa: √(8² + 6²).",
+              "fn": "cono",
+              "args": [{ "r": 8, "h": 6 }],
+              "campo": "errores.g.conAltura",
+              "valor": 6
+            },
+            {
+              "id": "GE-suma-catetos",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste el radio y la altura. La generatriz es la hipotenusa del triángulo: √(8² + 6²), no 8 + 6.",
+              "fn": "cono",
+              "args": [{ "r": 8, "h": 6 }],
+              "campo": "errores.g.suma",
+              "valor": 14
+            }
+          ]
+        },
+        {
+          "id": "p3b",
+          "enunciado": "Un cono circular recto tiene radio de 8 cm y altura de 6 cm.",
+          "pregunta": "¿Cuál es su área lateral?",
+          "unidad": "π cm²",
+          "decimales": 0,
+          "correcta": { "fn": "cono", "args": [{ "r": 8, "h": 6 }], "campo": "pi.lateral", "valor": 80 },
+          "errores": [
+            {
+              "id": "GE21-lateral-con-altura",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste la altura, 6, en lugar de la generatriz, 10. El área lateral es π · r · g = π · 8 · 10.",
+              "fn": "cono",
+              "args": [{ "r": 8, "h": 6 }],
+              "campo": "errores.lateral.conAltura",
+              "valor": 48
+            },
+            {
+              "id": "GE19-diametro-como-radio",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste el diámetro, 16, como si fuera el radio. El área lateral es π · 8 · 10.",
+              "fn": "cono",
+              "args": [{ "r": 8, "h": 6 }],
+              "campo": "errores.lateral.conDiametro",
+              "valor": 160
+            },
+            {
+              "id": "GE-lateral-con-base",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste la base: eso es el área total. La lateral es solo el sector que envuelve al cono.",
+              "fn": "cono",
+              "args": [{ "r": 8, "h": 6 }],
+              "campo": "errores.lateral.conBase",
+              "valor": 144
+            }
+          ]
+        },
+        {
+          "id": "p3c",
+          "enunciado": "Un cono circular recto tiene radio de 8 cm y altura de 6 cm.",
+          "pregunta": "¿Cuál es su área total?",
+          "unidad": "π cm²",
+          "decimales": 0,
+          "correcta": { "fn": "cono", "args": [{ "r": 8, "h": 6 }], "campo": "pi.total", "valor": 144 },
+          "errores": [
+            {
+              "id": "GE-total-sin-base",
+              "respaldo": "hipotesis",
+              "explicacion": "Te quedaste con el área lateral. El área total suma también la base: 80π + 64π.",
+              "fn": "cono",
+              "args": [{ "r": 8, "h": 6 }],
+              "campo": "errores.total.sinBase",
+              "valor": 80
+            },
+            {
+              "id": "GE21-total-con-altura",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste la altura en lugar de la generatriz para el lateral: π · 8 · 10, no π · 8 · 6.",
+              "fn": "cono",
+              "args": [{ "r": 8, "h": 6 }],
+              "campo": "errores.total.conAltura",
+              "valor": 112
+            }
+          ]
+        },
+        {
+          "id": "p3d",
+          "enunciado": "Un cono circular recto tiene radio de 8 cm y altura de 6 cm.",
+          "pregunta": "¿Cuál es su volumen?",
+          "unidad": "π cm³",
+          "decimales": 2,
+          "correcta": { "fn": "cono", "args": [{ "r": 8, "h": 6 }], "campo": "pi.volumen", "valor": 128 },
+          "errores": [
+            {
+              "id": "GE20-sin-tercio",
+              "respaldo": "hipotesis",
+              "explicacion": "Te faltó el tercio: π · 64 · 6 es el cilindro de igual base y altura. Tres conos lo llenan.",
+              "fn": "cono",
+              "args": [{ "r": 8, "h": 6 }],
+              "campo": "errores.volumen.sinTercio",
+              "valor": 384
+            },
+            {
+              "id": "GE20-mitad",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste entre 2. El cono ocupa la tercera parte del cilindro de igual base y altura, no la mitad.",
+              "fn": "cono",
+              "args": [{ "r": 8, "h": 6 }],
+              "campo": "errores.volumen.mitad",
+              "valor": 192
+            },
+            {
+              "id": "GE21-volumen-con-generatriz",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste la generatriz, 10. El volumen se mide con la altura, que va por dentro: π · 64 · 6 / 3.",
+              "fn": "cono",
+              "args": [{ "r": 8, "h": 6 }],
+              "campo": "errores.volumen.conGeneratriz",
+              "valor": 213.333333333
+            }
+          ]
+        },
+        {
+          "id": "p3e",
+          "enunciado": "Un cono circular recto tiene radio de 8 cm y altura de 6 cm.",
+          "pregunta": "¿Cuánto mide el ángulo del sector de su desarrollo?",
+          "unidad": "°",
+          "decimales": 0,
+          "correcta": { "fn": "cono", "args": [{ "r": 8, "h": 6 }], "campo": "angulo", "valor": 288 },
+          "errores": [
+            {
+              "id": "GE21-angulo-con-altura",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste entre la altura. El radio del sector es la generatriz: 360° · 8/10.",
+              "fn": "cono",
+              "args": [{ "r": 8, "h": 6 }],
+              "campo": "errores.angulo.conAltura",
+              "valor": 480
+            },
+            {
+              "id": "GE-sector-completo",
+              "respaldo": "hipotesis",
+              "explicacion": "El desarrollo no es un círculo entero: su arco solo rodea la base, 16π, de una circunferencia de 20π.",
+              "fn": "cono",
+              "args": [{ "r": 8, "h": 6 }],
+              "campo": "errores.angulo.completo",
+              "valor": 360
+            },
+            {
+              "id": "GE-angulo-mitad",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 180° en lugar de 360°. El ángulo es la vuelta entera por r/g: 360° · 8/10.",
+              "fn": "cono",
+              "args": [{ "r": 8, "h": 6 }],
+              "campo": "errores.angulo.mitad",
+              "valor": 144
+            }
+          ]
         }
       ]
     },
@@ -138,6 +497,82 @@
             "errores.dh.subeLoQueMide": 4
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Un recipiente cilíndrico de 10 cm de diámetro tiene agua. Al hundir por completo una piedra, el nivel sube 1,2 cm.",
+          "pregunta": "¿Cuál es el volumen de la piedra?",
+          "unidad": "π cm³",
+          "decimales": 0,
+          "correcta": { "fn": "desplazamiento", "args": [{ "R": 5, "dh": 1.2 }], "campo": "piVolumen", "valor": 30 },
+          "errores": [
+            {
+              "id": "GE19-diametro-como-radio",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste el diámetro, 10, como radio. El radio es 5: π · 5² · 1,2.",
+              "fn": "desplazamiento",
+              "args": [{ "R": 5, "dh": 1.2 }],
+              "campo": "errores.piVolumen.conDiametro",
+              "valor": 120
+            },
+            {
+              "id": "GE19-circunferencia-con-area",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 2πr, el largo del borde. La base del agua que sube es un círculo: π · 5².",
+              "fn": "desplazamiento",
+              "args": [{ "R": 5, "dh": 1.2 }],
+              "campo": "errores.piVolumen.conCircunferencia",
+              "valor": 12
+            },
+            {
+              "id": "GE-sin-cuadrado",
+              "respaldo": "hipotesis",
+              "explicacion": "Te faltó elevar el radio al cuadrado: π · 5² · 1,2, no π · 5 · 1,2.",
+              "fn": "desplazamiento",
+              "args": [{ "R": 5, "dh": 1.2 }],
+              "campo": "errores.piVolumen.sinCuadrado",
+              "valor": 6
+            }
+          ]
+        },
+        {
+          "id": "p4b",
+          "enunciado": "Un recipiente cilíndrico de 10 cm de diámetro tiene agua. Se hunde un cubo de 4 cm de arista, que queda cubierto.",
+          "pregunta": "¿Cuánto sube el agua?",
+          "unidad": "cm",
+          "decimales": 2,
+          "correcta": { "fn": "desplazamiento", "args": [{ "R": 5, "pieza": { "tipo": "cubo", "a": 4 } }], "campo": "dh", "valor": 0.814873308631 },
+          "errores": [
+            {
+              "id": "GE19-diametro-como-radio",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste el diámetro, 10, como radio. La base del agua es π · 5²: 64/(25π).",
+              "fn": "desplazamiento",
+              "args": [{ "R": 5, "pieza": { "tipo": "cubo", "a": 4 } }],
+              "campo": "errores.dh.conDiametro",
+              "valor": 0.203718327158
+            },
+            {
+              "id": "GE19-circunferencia-con-area",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste entre 2πr, el largo del borde. Se divide entre el área de la base: 64/(25π).",
+              "fn": "desplazamiento",
+              "args": [{ "R": 5, "pieza": { "tipo": "cubo", "a": 4 } }],
+              "campo": "errores.dh.conCircunferencia",
+              "valor": 2.03718327158
+            },
+            {
+              "id": "GE-sube-lo-que-mide",
+              "respaldo": "hipotesis",
+              "explicacion": "El agua no sube lo que mide el cubo: el recipiente es más ancho. Sus 64 cm³ se reparten en una base de 25π cm²: 64/(25π).",
+              "fn": "desplazamiento",
+              "args": [{ "R": 5, "pieza": { "tipo": "cubo", "a": 4 } }],
+              "campo": "errores.dh.subeLoQueMide",
+              "valor": 4
+            }
+          ]
+        }
       ]
     },
     {
@@ -164,6 +599,54 @@
             "h": 6.708203932499369,
             "arcoPi": 12
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Con un sector circular de 240° y 9 cm de radio se arma la superficie lateral de un cono.",
+          "pregunta": "¿Cuál es el radio de la base del cono?",
+          "unidad": "cm",
+          "decimales": 2,
+          "correcta": { "fn": "conoDeSector", "args": [{ "g": 9, "angulo": 240 }], "campo": "r", "valor": 6 },
+          "errores": [
+            {
+              "id": "GE-radio-del-sector-como-radio-base",
+              "respaldo": "hipotesis",
+              "explicacion": "El radio del sector es la generatriz, no el radio de la base. La base es más chica: 9 · 240/360.",
+              "fn": "conoDeSector",
+              "args": [{ "g": 9, "angulo": 240 }],
+              "campo": "errores.r.igualG",
+              "valor": 9
+            },
+            {
+              "id": "GE19-circunferencia-con-area",
+              "respaldo": "hipotesis",
+              "explicacion": "Igualaste el arco a πr², el área. El arco rodea la base: 2πr = 12π.",
+              "fn": "conoDeSector",
+              "args": [{ "g": 9, "angulo": 240 }],
+              "campo": "errores.r.conArea",
+              "valor": 3.46410161514
+            },
+            {
+              "id": "GE-sin-pi",
+              "respaldo": "hipotesis",
+              "explicacion": "Te quedó r = 6π ≈ 18,85. Al despejar, el π se va: de 2πr = 12π sale r = 6.",
+              "fn": "conoDeSector",
+              "args": [{ "g": 9, "angulo": 240 }],
+              "campo": "errores.r.sinPi",
+              "valor": 18.8495559215
+            },
+            {
+              "id": "GE-radio-mitad",
+              "respaldo": "hipotesis",
+              "explicacion": "Calculaste el arco con π · 9, sin el 2. El arco es 2π · 9 · 240/360 = 12π, y de 2πr = 12π sale r = 6.",
+              "fn": "conoDeSector",
+              "args": [{ "g": 9, "angulo": 240 }],
+              "campo": "errores.r.mitad",
+              "valor": 3
+            }
+          ]
         }
       ]
     },
@@ -193,6 +676,91 @@
             "pi.volumen": 138.66666666666666,
             "fraccionArea": 0.2
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Una esfera de 10 cm de radio se corta con un plano y queda un casquete de 4 cm de altura.",
+          "pregunta": "¿Cuál es el área del casquete?",
+          "unidad": "π cm²",
+          "decimales": 0,
+          "correcta": { "fn": "casquete", "args": [{ "r": 10, "h": 4 }], "campo": "pi.area", "valor": 80 },
+          "errores": [
+            {
+              "id": "GE-casquete-como-disco",
+              "respaldo": "hipotesis",
+              "explicacion": "Calculaste el círculo de corte. El casquete se abomba encima y mide más: 2π · 10 · 4.",
+              "fn": "casquete",
+              "args": [{ "r": 10, "h": 4 }],
+              "campo": "errores.area.disco",
+              "valor": 64
+            },
+            {
+              "id": "GE-escala-k2",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste la esfera por (4/20)², como si se achicara. El casquete es una franja: su área crece parejo con la altura, 400π · 4/20.",
+              "fn": "casquete",
+              "args": [{ "r": 10, "h": 4 }],
+              "campo": "errores.area.escalaK2",
+              "valor": 16
+            },
+            {
+              "id": "GE19-diametro-como-radio",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste el diámetro, 20, como radio: 2π · 10 · 4, no 2π · 20 · 4.",
+              "fn": "casquete",
+              "args": [{ "r": 10, "h": 4 }],
+              "campo": "errores.area.conDiametro",
+              "valor": 160
+            },
+            {
+              "id": "GE-sin-dos",
+              "respaldo": "hipotesis",
+              "explicacion": "Te faltó el 2: la franja del cilindro mide 2πr · h = 2π · 10 · 4.",
+              "fn": "casquete",
+              "args": [{ "r": 10, "h": 4 }],
+              "campo": "errores.area.sinDos",
+              "valor": 40
+            }
+          ]
+        },
+        {
+          "id": "p6b",
+          "enunciado": "Una esfera de 10 cm de radio se corta con un plano y queda un casquete de 4 cm de altura.",
+          "pregunta": "¿Cuál es el volumen del segmento esférico que encierra?",
+          "unidad": "π cm³",
+          "decimales": 2,
+          "correcta": { "fn": "casquete", "args": [{ "r": 10, "h": 4 }], "campo": "pi.volumen", "valor": 138.666666667 },
+          "errores": [
+            {
+              "id": "GE-segmento-como-cilindro",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste un cilindro sobre el círculo de corte. El segmento se angosta hacia arriba: πh²(3r − h)/3.",
+              "fn": "casquete",
+              "args": [{ "r": 10, "h": 4 }],
+              "campo": "errores.volumen.cilindro",
+              "valor": 256
+            },
+            {
+              "id": "GE-segmento-como-cono",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste un cono sobre el círculo de corte. El segmento es más lleno que el cono: πh²(3r − h)/3.",
+              "fn": "casquete",
+              "args": [{ "r": 10, "h": 4 }],
+              "campo": "errores.volumen.cono",
+              "valor": 85.3333333333
+            },
+            {
+              "id": "GE14-volumen-como-area",
+              "respaldo": "parcial",
+              "explicacion": "Ese es el área del casquete, la cáscara. El volumen mide lo que hay adentro: πh²(3r − h)/3.",
+              "fn": "casquete",
+              "args": [{ "r": 10, "h": 4 }],
+              "campo": "errores.volumen.comoArea",
+              "valor": 80
+            }
+          ]
         }
       ]
     },
@@ -224,6 +792,91 @@
             "errores.agua.mitadDeVolumen": 312
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Una maceta tiene forma de tronco de cono: el fondo tiene 4 cm de radio, la boca 10 cm y la altura es de 12 cm. Se llena de tierra hasta la mitad de su altura.",
+          "pregunta": "¿Qué volumen de tierra tiene?",
+          "unidad": "π cm³",
+          "decimales": 1,
+          "correcta": { "fn": "troncoLlenado", "args": [{ "R": 10, "r": 4, "h": 12 }], "campo": "pi.agua", "valor": 186 },
+          "errores": [
+            {
+              "id": "GE2-mitad-de-altura-mitad-de-volumen",
+              "respaldo": "parcial",
+              "explicacion": "Media altura no es medio volumen: la parte de abajo es la angosta. Calcula el tronco de radios 4 y 7.",
+              "fn": "troncoLlenado",
+              "args": [{ "R": 10, "r": 4, "h": 12 }],
+              "campo": "errores.agua.mitadDeVolumen",
+              "valor": 312
+            },
+            {
+              "id": "GE-k3-al-tronco",
+              "respaldo": "hipotesis",
+              "explicacion": "Aplicaste (1/2)³ a la maceta, pero eso vale para conos con punta. La maceta es un tronco: calcula el de radios 4 y 7.",
+              "fn": "troncoLlenado",
+              "args": [{ "R": 10, "r": 4, "h": 12 }],
+              "campo": "errores.agua.k3AlTronco",
+              "valor": 78
+            },
+            {
+              "id": "GE22-radio-como-parte",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste 5 cm, la mitad de 10, como si la maceta terminara en punta. A media altura el radio es (4 + 10)/2 = 7.",
+              "fn": "troncoLlenado",
+              "args": [{ "R": 10, "r": 4, "h": 12 }],
+              "campo": "errores.agua.radioComoParte",
+              "valor": 122
+            },
+            {
+              "id": "GE-radio-promedio",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste un cilindro con el radio promedio, 5,5 cm. El tronco de radios 4 y 7 guarda un poco más.",
+              "fn": "troncoLlenado",
+              "args": [{ "R": 10, "r": 4, "h": 12 }],
+              "campo": "errores.agua.radioPromedio",
+              "valor": 181.5
+            }
+          ]
+        },
+        {
+          "id": "p7b",
+          "enunciado": "Una maceta tiene forma de tronco de cono: el fondo tiene 4 cm de radio, la boca 10 cm y la altura es de 12 cm. Se llena de tierra hasta la mitad de su altura.",
+          "pregunta": "¿Qué fracción de la maceta ocupa la tierra?",
+          "unidad": "",
+          "decimales": 2,
+          "correcta": { "fn": "troncoLlenado", "args": [{ "R": 10, "r": 4, "h": 12 }], "campo": "fraccion", "valor": 0.298076923077 },
+          "errores": [
+            {
+              "id": "GE2-mitad-de-altura-mitad-de-volumen",
+              "respaldo": "parcial",
+              "explicacion": "Media altura no es medio volumen: la parte de abajo es la angosta y guarda menos. Es 186π de 624π.",
+              "fn": "troncoLlenado",
+              "args": [{ "R": 10, "r": 4, "h": 12 }],
+              "campo": "errores.fraccion.mitadDeVolumen",
+              "valor": 0.5
+            },
+            {
+              "id": "GE-k3-al-tronco",
+              "respaldo": "hipotesis",
+              "explicacion": "Aplicaste (1/2)³, que vale para conos con punta. La maceta es un tronco: es 186π de 624π.",
+              "fn": "troncoLlenado",
+              "args": [{ "R": 10, "r": 4, "h": 12 }],
+              "campo": "errores.fraccion.k3AlTronco",
+              "valor": 0.125
+            },
+            {
+              "id": "GE22-radio-como-parte",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste 5 cm como radio a media altura. Es (4 + 10)/2 = 7 cm, y la tierra es 186π de 624π.",
+              "fn": "troncoLlenado",
+              "args": [{ "R": 10, "r": 4, "h": 12 }],
+              "campo": "errores.fraccion.radioComoParte",
+              "valor": 0.195512820513
+            }
+          ]
+        }
       ]
     },
     {
@@ -253,6 +906,45 @@
             "conoChico.piVolumen": 8,
             "errores.volumen.radioPromedio": 54
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "Un vaso tiene forma de tronco de cono: el radio de la boca es 4 cm, el del fondo 2 cm y la altura 6 cm.",
+          "pregunta": "¿Cuánto líquido le cabe?",
+          "unidad": "π cm³",
+          "decimales": 0,
+          "correcta": { "fn": "troncoCono", "args": [{ "R": 4, "r": 2, "h": 6 }], "campo": "pi.volumen", "valor": 56 },
+          "errores": [
+            {
+              "id": "GE20-sin-tercio",
+              "respaldo": "hipotesis",
+              "explicacion": "Te faltó dividir entre 3: π · h · (R² + r² + R · r)/3 = π · 6 · 28/3.",
+              "fn": "troncoCono",
+              "args": [{ "R": 4, "r": 2, "h": 6 }],
+              "campo": "errores.volumen.sinTercio",
+              "valor": 168
+            },
+            {
+              "id": "GE-radio-promedio",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste un cilindro con el radio promedio, 3 cm. El tronco guarda algo más: π · 6 · (16 + 4 + 8)/3.",
+              "fn": "troncoCono",
+              "args": [{ "R": 4, "r": 2, "h": 6 }],
+              "campo": "errores.volumen.radioPromedio",
+              "valor": 54
+            },
+            {
+              "id": "GE-bases-promedio",
+              "respaldo": "hipotesis",
+              "explicacion": "Promediaste las bases y multiplicaste por la altura. El tronco suma también R · r y divide entre 3: π · 6 · (16 + 4 + 8)/3.",
+              "fn": "troncoCono",
+              "args": [{ "R": 4, "r": 2, "h": 6 }],
+              "campo": "errores.volumen.basesPromedio",
+              "valor": 60
+            }
+          ]
         }
       ]
     },
@@ -323,6 +1015,36 @@
             "razon": 1.5,
             "respuestas.mayor": "bajo"
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Una cartulina de 12 cm por 8 cm se enrolla para formar la superficie lateral de un cilindro, sin solapar los bordes. Se puede enrollar de dos formas.",
+          "pregunta": "¿Cuál es el volumen del cilindro que guarda más?",
+          "unidad": "cm³",
+          "decimales": 2,
+          "correcta": { "fn": "hojaEnrollada", "args": [{ "largo": 12, "ancho": 8 }], "campo": "bajo.volumen", "valor": 91.6732472209 },
+          "errores": [
+            {
+              "id": "GE-alto-guarda-mas",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el cilindro alto. Guarda más el bajo y ancho, porque el radio entra al cuadrado: r = 6/π y h = 8.",
+              "fn": "hojaEnrollada",
+              "args": [{ "largo": 12, "ancho": 8 }],
+              "campo": "alto.volumen",
+              "valor": 61.1154981473
+            },
+            {
+              "id": "GE14-volumen-como-area",
+              "respaldo": "parcial",
+              "explicacion": "Ese es el área de la cartulina, 12 · 8. El volumen depende del radio: π · (6/π)² · 8.",
+              "fn": "hojaEnrollada",
+              "args": [{ "largo": 12, "ancho": 8 }],
+              "campo": "lateral",
+              "valor": 96
+            }
+          ]
         }
       ]
     }
