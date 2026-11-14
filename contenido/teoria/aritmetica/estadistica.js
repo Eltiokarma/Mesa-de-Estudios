@@ -13,6 +13,8 @@
  *   Duda que resuelve: «¿por qué la mediana casi no se mueve cuando aparece un dato muy grande?».
  * Colores (regla 4): los datos x naranja (c-o), las frecuencias f turquesa (c-i), la media verde (c-d), la mediana y los
  * cuartiles rojo (c-h).
+ * Ronda 2 (14 nov 2026): gesto directo en las ideas 2 a 6 (techo de la barra, el último dato, el promedio ponderado,
+ * el último dato tomado y el dato más alejado). La idea 1 es la tabla de la cuenta, sin lugar que agarrar.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -24,6 +26,9 @@
   const x = { v: 'c-o', t: 'x' }, fr = { v: 'c-i', t: 'f' }, xb = { v: 'c-d', t: 'x̄' }, Me = { v: 'c-h', t: 'Me' };
   const h = { v: 'c-i', t: 'h' }, Fa = { v: 'c-i', t: 'F' }, w = { v: 'c-i', t: 'w' };
   const sub = (b, i) => ({ sub: [b, i] });
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la pieza; el lector ajusta al paso y al rango.
+  const RECTA = () => Kit.piezas.recta, EJES = () => Kit.piezas.ejes;
+  const inversa = (escala, lo, hi) => px => lo + (px - escala(lo)) * (hi - lo) / (escala(hi) - escala(lo));
   function azar(s) {
     let q = (s * 2654435761 + 12345) >>> 0;
     const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
@@ -101,7 +106,7 @@
     },
     regla: {
       texto: 'La población es todo el grupo que interesa; la muestra, la parte que se observa. La tabla cuenta f, divide h = f/n y acumula F.',
-      ecuacion: ['Σ', fr, ' = n   ·   ', h, ' = ', { frac: [fr, 'n'] }, '   ·   Σ', h, ' = 1'],
+      ecuacion: ['Σ', fr, ' = n', '   ·   ', h, ' = ', { llave: [{ frac: [fr, 'n'] }], nota: 'parte del total', color: 'c-i' }, '   ·   ', 'Σ', h, ' = 1'],
       condicion: 'la variable es cualitativa (colores) o cuantitativa: discreta (se cuenta) o continua (se mide). F pide valores ordenables.',
     },
     ahoraTu: {
@@ -155,7 +160,7 @@
     const n = suma(fs), top = Math.max(...fs);
     return {
       x: { min: 0, max: fs.length + 1, paso: 1, nombre: o.xnombre || 'categoría', decimales: 0, color: 'o' },
-      y: { min: 0, max: Math.ceil((top + 1) / 2) * 2, paso: 2, nombre: 'f', decimales: 0, color: 'i' },
+      y: { min: 0, max: o.ymax || Math.ceil((top + 1) / 2) * 2, paso: 2, nombre: 'f', decimales: 0, color: 'i' },
       areas: fs.map((fi, k) => ({ puntos: [[k + 0.65, fi], [k + 1.35, fi]], color: k === o.marca ? 'h' : 'i', rotulo: o.grados ? `${fm(360 * fi / n, 1)}°` : o.conF ? fm(fi) : undefined, desde: o.grados ? (o.desde || 0) : 0 })),
       alt: `Barras de ${nombres.map((t, k) => `${t}: ${fs[k]}`).join(', ')}`,
       compacto: true,
@@ -171,7 +176,14 @@
       consigna: 'Cómo llegan los alumnos: combi, a pie, bici o mototaxi (barras 1 a 4). Cambia cuántos van en combi y compara las barras.',
       voz: 'Cada barra empieza en 0: su altura es la frecuencia.',
       controles: [{ id: 'c', etiqueta: 'f de combi', color: 'c-i', min: 2, max: 12, paso: 2, inicio: 8, decimales: 0 }],
-      dibujo: v => ({ datos: barras([v.c, 5, 3, 4], NOMBRES, { conF: true, marca: 0 }), estado: {} }),
+      // El eje vertical queda fijo de 0 a 14: al subir la barra de combi, las demás no se achican.
+      dibujo: v => ({ datos: barras([v.c, 5, 3, 4], NOMBRES, { conF: true, marca: 0, ymax: 14 }), estado: {} }),
+      // Arrastra el techo de la barra de combi: su altura es la frecuencia.
+      arrastres: [
+        { id: 'combi', etiqueta: 'techo de la barra de combi', color: 'c-i',
+          donde: v => { const g = EJES().geometria(barras([v.c, 5, 3, 4], NOMBRES, { ymax: 14 })); return { x: g.X(1), y: g.Y(v.c) }; },
+          mover: (pt, v) => ({ c: inversa(EJES().geometria(barras([v.c, 5, 3, 4], NOMBRES, { ymax: 14 })).Y, 0, 14)(pt.y) }) },
+      ],
       lectura: v => [`combi: ${fm(v.c)} de ${fm(v.c + 12)} → `, h, ` = ${fm(v.c / (v.c + 12), 3)}`],
       minimo: 3,
     },
@@ -197,7 +209,7 @@
     },
     regla: {
       texto: 'Barras para categorías o valores contados, con el eje desde 0; histograma, barras pegadas para datos medidos en intervalos; sectores, partes de un todo.',
-      ecuacion: ['ángulo = ', h, ' · 360° = ', { frac: [fr, 'n'] }, ' · 360°'],
+      ecuacion: ['ángulo = ', h, ' · ', { llave: ['360°'], nota: 'todo el círculo' }, '   ·   ', h, ' = ', { frac: [fr, 'n'] }],
       condicion: 'un eje que no empieza en 0 exagera las diferencias. Los sectores solo sirven si las partes forman un todo.',
     },
     ahoraTu: {
@@ -241,6 +253,12 @@
       voz: 'Lleva el último dato hasta el extremo derecho.',
       controles: [{ id: 'u', etiqueta: 'Último dato', color: 'c-o', min: 1, max: 30, paso: 1, inicio: 6, decimales: 0 }],
       dibujo: v => ({ datos: rectaCentrales([2, 4, 4, 9, v.u], { max: 30 }), estado: {} }),
+      // Arrastra el último dato por la recta (si coincide con otro, se apila encima).
+      arrastres: [
+        { id: 'ultimo', etiqueta: 'último dato', color: 'c-o',
+          donde: v => { const d = rectaCentrales([2, 4, 4, 9, v.u], { max: 30 }), g = RECTA().geometria(d); return { x: g.x(v.u), y: g.filaY(d.elementos[4].fila) }; },
+          mover: pt => ({ u: inversa(RECTA().geometria(rectaCentrales([2, 4, 4, 9, 6], { max: 30 })).x, 0, 30)(pt.x) }) },
+      ],
       lectura: v => [xb, ` = ${fm(media([2, 4, 4, 9, v.u]))} · `, Me, ` = ${fm(mediana([2, 4, 4, 9, v.u]))} · moda 4`],
       minimo: 3,
     },
@@ -266,7 +284,7 @@
     },
     regla: {
       texto: 'La media es la suma entre n y se deja arrastrar por un dato extremo. La mediana es el dato central ordenado. La moda, el más frecuente.',
-      ecuacion: [xb, ' = ', { frac: [['Σ', x], 'n'] }, '   ·   ', Me, ': el central (o el promedio de los dos centrales)'],
+      ecuacion: [xb, ' = ', { llave: [{ frac: [['Σ', x], 'n'] }], nota: 'reparte la suma', color: 'c-d' }, '   ·   ', Me, ' = el dato central'],
       condicion: 'para la mediana primero se ordena; con n par, se promedian los dos del medio. Puede haber varias modas o ninguna.',
     },
     ahoraTu: {
@@ -323,6 +341,15 @@
         { id: 'b', etiqueta: 'Créditos del 18', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 2, decimales: 0 },
       ],
       dibujo: v => ({ datos: rectaNotas([12, 18], [v.a, v.b]), estado: {} }),
+      // Arrastra el promedio ponderado: salen los créditos del 12 que lo dejan ahí (con los del 18 fijos).
+      arrastres: [
+        { id: 'ponderado', etiqueta: 'promedio ponderado', color: 'c-i',
+          donde: v => { const g = RECTA().geometria(rectaNotas([12, 18], [v.a, v.b])); return { x: g.x((12 * v.a + 18 * v.b) / (v.a + v.b)), y: g.filaY(0) }; },
+          mover: (pt, v) => {
+            const m = Math.min(17.9, Math.max(12.1, inversa(RECTA().geometria(rectaNotas([12, 18], [v.a, v.b])).x, 8, 20)(pt.x)));
+            return { a: v.b * (18 - m) / (m - 12) };
+          } },
+      ],
       lectura: v => [`Ponderado ${fm((12 * v.a + 18 * v.b) / (v.a + v.b))}`],
       minimo: 3,
     },
@@ -348,7 +375,7 @@
     },
     regla: {
       texto: 'La media ponderada multiplica cada dato por su peso y divide entre la suma de pesos. La geométrica promedia factores; la armónica, rapideces con la misma distancia.',
-      ecuacion: [sub(xb, 'p'), ' = ', { frac: [['Σ', w, x], ['Σ', w]] }, '   ·   G = ', { raiz: [sub(x, '1'), '·…·', sub(x, 'n')], indice: 'n' }],
+      ecuacion: [sub(xb, 'p'), ' = ', { llave: [{ frac: [['Σ', w, x], ['Σ', w]] }], nota: 'pesa según w', color: 'c-i' }, '   ·   ', 'G = ', { raiz: [sub(x, '1'), '·…·', sub(x, 'n')], indice: 'n' }],
       condicion: 'los pesos son positivos y dicen cuánto cuenta cada dato. La geométrica pide datos positivos.',
     },
     ahoraTu: {
@@ -404,6 +431,15 @@
       voz: 'Cuenta cuántos datos quedan entre dos cuartiles.',
       controles: [{ id: 'n', etiqueta: 'n datos', color: 'c-o', min: 5, max: 11, paso: 1, inicio: 7, decimales: 0 }],
       dibujo: v => ({ datos: rectaCuartiles(BASE.slice(0, v.n)), estado: {} }),
+      // Arrastra el último dato tomado hacia la derecha para tomar más de la lista, o a la izquierda para tomar menos.
+      arrastres: [
+        { id: 'ultimo', etiqueta: 'último dato tomado', color: 'c-o',
+          donde: v => { const g = RECTA().geometria(rectaCuartiles(BASE.slice(0, v.n))); return { x: g.x(BASE[v.n - 1]), y: g.filaY(1) }; },
+          mover: (pt, v) => {
+            const val = inversa(RECTA().geometria(rectaCuartiles(BASE.slice(0, v.n))).x, 0, 26)(pt.x);
+            return { n: [5, 6, 7, 8, 9, 10, 11].reduce((a, k) => (Math.abs(BASE[k - 1] - val) < Math.abs(BASE[a - 1] - val) ? k : a)) };
+          } },
+      ],
       lectura: v => [`Posición de Q1: (n + 1)/4 = ${fm((v.n + 1) / 4)}`],
       minimo: 3,
     },
@@ -429,7 +465,7 @@
     },
     regla: {
       texto: 'Los cuartiles cortan los datos ordenados en cuatro partes con igual cantidad de datos. El percentil k deja debajo el k % de los datos.',
-      ecuacion: [sub('Q', 'k'), ' en ', { frac: [['k (n + 1)'], '4'] }, '   ·   ', sub('P', 'k'), ' en ', { frac: [['k (n + 1)'], '100'] }],
+      ecuacion: [sub('Q', 'k'), ' en ', { llave: [{ frac: [['k (n + 1)'], '4'] }], nota: 'posición, no valor', color: 'c-h' }, '   ·   ', sub('P', 'k'), ' en ', { frac: [['k (n + 1)'], '100'] }],
       condicion: 'hay varias convenciones; esta unidad usa (n + 1). Si la posición cae entre dos datos, se interpola entre ellos.',
     },
     ahoraTu: {
@@ -462,6 +498,7 @@
     if (o.distancias) xs.forEach((v, k) => { if (v !== m) el.push({ tipo: 'distancia', a: Math.min(v, m), b: Math.max(v, m), color: 'i', rotulo: fm(Math.abs(v - m)), fila: 2 + (k % 2), desde: 1 }); });
     return { min: Math.floor(Math.min(...xs, m) - 1), max: Math.ceil(Math.max(...xs, m) + 1), paso: 1, cada: 2, decimales: 2, filas: 3, variable: 'x', color: 'o', elementos: el };
   };
+  const rectaDisp = a => Object.assign(rectaDispersion([10 - a, 10 - a / 2, 10 + a / 2, 10 + a], { distancias: true }), { min: 0, max: 20 });
   const dispersion = {
     id: 'dispersion',
     titulo: 'Qué tan lejos de la media',
@@ -471,7 +508,13 @@
       consigna: 'Cuatro datos con media 10: 10 − a, 10 − a/2, 10 + a/2 y 10 + a. Abre o cierra la separación a.',
       voz: 'La media no se mueve. ¿Qué cambia?',
       controles: [{ id: 'a', etiqueta: 'a', color: 'c-o', min: 2, max: 8, paso: 2, inicio: 4, decimales: 0 }],
-      dibujo: v => ({ datos: Object.assign(rectaDispersion([10 - v.a, 10 - v.a / 2, 10 + v.a / 2, 10 + v.a], { distancias: true }), { min: 0, max: 20 }), estado: { corte: 1 } }),
+      dibujo: v => ({ datos: rectaDisp(v.a), estado: { corte: 1 } }),
+      // Arrastra el dato de la derecha: los cuatro se abren o se cierran juntos alrededor de 10.
+      arrastres: [
+        { id: 'extremo', etiqueta: 'dato más alejado, a la derecha', color: 'c-o',
+          donde: v => { const g = RECTA().geometria(rectaDisp(v.a)); return { x: g.x(10 + v.a), y: g.filaY(1) }; },
+          mover: (pt, v) => ({ a: inversa(RECTA().geometria(rectaDisp(v.a)).x, 0, 20)(pt.x) - 10 }) },
+      ],
       lectura: v => { const xs = [10 - v.a, 10 - v.a / 2, 10 + v.a / 2, 10 + v.a]; return [`σ² = ${fm(varianza(xs))} · σ = ${fm(Math.sqrt(varianza(xs)))}`]; },
       minimo: 3,
     },
@@ -490,15 +533,15 @@
     mira: {
       datos: rectaDispersion([2, 4, 9], { distancias: true }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'Distancias a la media 5: 3, 1 y 4.', ecuacion: ['2 − 5 = −3   ·   4 − 5 = −1   ·   9 − 5 = 4'] },
+        { estado: { corte: 1 }, texto: 'Distancias a la media 5: 3, 1 y 4.', ecuacion: ['2 − 5 = −3', '   ·   ', '4 − 5 = −1', '   ·   ', '9 − 5 = 4'] },
         { estado: { corte: 1 }, texto: 'Con signo suman 0; al cuadrado, no se anulan.', ecuacion: ['9 + 1 + 16 = 26'] },
         { estado: { corte: 1 }, texto: 'Varianza: el promedio de esos cuadrados.', ecuacion: ['σ² = ', { frac: ['26', '3'] }, ' ≈ 8,67'] },
-        { estado: { corte: 1 }, texto: 'Desviación estándar: la raíz, en las unidades de los datos.', ecuacion: ['σ = ', { raiz: '8,67' }, ' ≈ 2,94   ·   CV = ', { frac: ['2,94', '5'] }, ' ≈ 0,59'] },
+        { estado: { corte: 1 }, texto: 'Desviación estándar: la raíz, en las unidades de los datos.', ecuacion: ['σ = ', { raiz: '8,67' }, ' ≈ 2,94', '   ·   ', 'CV = ', { frac: ['2,94', '5'] }, ' ≈ 0,59'] },
       ],
     },
     regla: {
       texto: 'La varianza promedia los cuadrados de las distancias a la media; la desviación estándar es su raíz. El CV compara la dispersión con la media.',
-      ecuacion: ['σ² = ', { frac: [['Σ', { sup: [['(', x, ' − ', xb, ')'], '2'] }], 'N'] }, '   ·   σ = ', { raiz: 'σ²' }, '   ·   CV = ', { frac: ['σ', xb] }],
+      ecuacion: ['σ² = ', { llave: [{ frac: [['Σ', { sup: [['(', x, ' − ', xb, ')'], '2'] }], 'N'] }], nota: 'promedio de cuadrados', color: 'c-i' }, '   ·   ', 'σ = ', { raiz: 'σ²' }, '   ·   ', 'CV = ', { frac: ['σ', xb] }],
       condicion: 'para toda la población se divide entre N; para una muestra, entre n − 1. El CV pide media positiva.',
     },
     ahoraTu: {
@@ -534,11 +577,64 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Más rico que los juegos: cinco datos que se mueven todos (aparece y desaparece la moda); las cuatro barras a la vez,
+  // con sus ángulos de sector; y cuatro datos libres con la varianza de población y la de muestra lado a lado.
+  const CINCO = [1, 2, 3, 4, 5];
+  const modaDe = xs => {
+    const c = {}; xs.forEach(v => { c[v] = (c[v] || 0) + 1; });
+    const max = Math.max(...Object.values(c));
+    return max < 2 ? 'sin moda' : `moda ${Object.keys(c).filter(k => c[k] === max).join(' y ')}`;
+  };
+  const rectaCinco = v => rectaCentrales(CINCO.map(k => v[`x${k}`]), { max: 30 });
+  const barrasLab = v => barras([0, 1, 2, 3].map(k => v[`f${k}`]), NOMBRES, { conF: true, ymax: 14 });
+  const CUATRO = [1, 2, 3, 4];
+  const rectaCuatro = v => Object.assign(rectaDispersion(CUATRO.map(k => v[`x${k}`]), { distancias: true }), { min: 0, max: 20, filas: 5 });
+  const laboratorio = [
+    {
+      id: 'cinco-datos', titulo: 'Cinco datos que se mueven', pieza: 'recta',
+      consigna: 'Arrastra los cinco datos por la recta. Junta dos para que aparezca una moda y aleja uno para ver la media.',
+      controles: CINCO.map(k => ({ id: `x${k}`, etiqueta: `Dato ${k}`, color: 'c-o', min: 0, max: 30, paso: 1, inicio: [3, 5, 8, 12, 20][k - 1], decimales: 0 })),
+      dibujo: v => ({ datos: rectaCinco(v), estado: {} }),
+      lectura: v => { const xs = CINCO.map(k => v[`x${k}`]); return [xb, ` = ${fm(media(xs))} · `, Me, ` = ${fm(mediana(xs))} · ${modaDe(xs)}`]; },
+      arrastres: CINCO.map(k => ({
+        id: `dato-${k}`, etiqueta: `dato ${k}`, color: 'c-o',
+        donde: v => { const d = rectaCinco(v), g = RECTA().geometria(d); return { x: g.x(v[`x${k}`]), y: g.filaY(d.elementos[k - 1].fila) }; },
+        mover: (pt, v) => ({ [`x${k}`]: inversa(RECTA().geometria(rectaCinco(v)).x, 0, 30)(pt.x) }),
+      })),
+    },
+    {
+      id: 'cuatro-barras', titulo: 'Las cuatro barras y sus sectores', pieza: 'ejes',
+      consigna: 'Arrastra el techo de cada barra. La lectura da el ángulo que le toca a cada una en un gráfico de sectores.',
+      controles: [0, 1, 2, 3].map(k => ({ id: `f${k}`, etiqueta: `f de ${NOMBRES[k]}`, color: 'c-i', min: 1, max: 14, paso: 1, inicio: [8, 5, 3, 4][k], decimales: 0 })),
+      dibujo: v => ({ datos: barrasLab(v), estado: {} }),
+      lectura: v => { const fs = [0, 1, 2, 3].map(k => v[`f${k}`]), n = suma(fs); return [`n = ${n}: ${fs.map(fi => `${fm(360 * fi / n, 0)}°`).join(', ')}`]; },
+      arrastres: [0, 1, 2, 3].map(k => ({
+        id: `barra-${k}`, etiqueta: `techo de la barra de ${NOMBRES[k]}`, color: 'c-i',
+        donde: v => { const g = EJES().geometria(barrasLab(v)); return { x: g.X(k + 1), y: g.Y(v[`f${k}`]) }; },
+        mover: (pt, v) => ({ [`f${k}`]: inversa(EJES().geometria(barrasLab(v)).Y, 0, 14)(pt.y) }),
+      })),
+    },
+    {
+      id: 'poblacion-muestra', titulo: 'Varianza de población y de muestra', pieza: 'recta',
+      consigna: 'Arrastra cuatro datos. Compara la varianza que divide entre N con la que divide entre n − 1.',
+      controles: CUATRO.map(k => ({ id: `x${k}`, etiqueta: `Dato ${k}`, color: 'c-o', min: 0, max: 20, paso: 1, inicio: [6, 9, 11, 14][k - 1], decimales: 0 })),
+      dibujo: v => ({ datos: rectaCuatro(v), estado: { corte: 1 } }),
+      lectura: v => { const xs = CUATRO.map(k => v[`x${k}`]); return [xb, ` = ${fm(media(xs))} · σ² = ${fm(varianza(xs))} · s² = ${fm(varianza(xs, true))}`]; },
+      arrastres: CUATRO.map(k => ({
+        id: `dato-${k}`, etiqueta: `dato ${k}`, color: 'c-o',
+        donde: v => { const d = rectaCuatro(v), g = RECTA().geometria(d); return { x: g.x(v[`x${k}`]), y: g.filaY(d.elementos[k - 1].fila) }; },
+        mover: (pt, v) => ({ [`x${k}`]: inversa(RECTA().geometria(rectaCuatro(v)).x, 0, 20)(pt.x) }),
+      })),
+    },
+  ];
+
   return {
     unidad: 'aritmetica.estadistica',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/recta.js'],
+    laboratorio,
     historia: {
       texto: 'Londres ya anotaba nacimientos y entierros cuando John Graunt los estudió en 1662. Convirtió listas administrativas en preguntas sobre una población: cuántos morían de cada causa, si nacían más varones. Lo que se podía concluir dependía de cómo se habían anotado los datos, como hoy. Esta unidad sigue esa pregunta: qué resumen elegir y qué se pierde al reducir muchos datos a un número.',
       pregunta: '¿Qué se pierde cuando todo un salón se resume en un promedio?',
