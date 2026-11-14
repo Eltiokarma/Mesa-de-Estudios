@@ -69,16 +69,23 @@
     alcance: { A: { x0: 0, v0: 6 }, B: { x0: 10, v0: 2 } },
     nunca:   { A: { x0: 0, v0: 2 }, B: { x0: 10, v0: 4 } },
   };
+  // Juego libre de la parte 1b (antes de cualquier pregunta): A elige su rapidez y B, una de estas salidas.
+  const SALIDAS_B = [{ x0: 10, v0: 2 }, { x0: 10, v0: 4 }, { x0: 30, v0: -2 }, { x0: 30, v0: -4 }];
   function dosCarritos(caso) {
     const c = CASOS[caso];
     if (!c) throw new Error(`caso desconocido: ${caso}`);
+    return { caso, ...dosCarritosCon(c.A, c.B) };
+  }
+  // Dos carritos cualesquiera (A y B como { x0, v0 }): lo usa el juego libre y los tres casos.
+  function dosCarritosCon(oA, oB) {
+    const c = { A: { x0: oA.x0, v0: oA.v0 }, B: { x0: oB.x0, v0: oB.v0 } };
     const A = M.movil(c.A), B = M.movil(c.B);
     // La corrida dura hasta que uno sale de la pista o TMAX.
     const sale = o => (o.v0 > 0 ? (LARGO - o.x0) / o.v0 : o.v0 < 0 ? o.x0 / -o.v0 : Infinity);
     const dur = Math.min(TMAX, sale(c.A), sale(c.B));
     const t = M.cruces(c.A, c.B, dur).filter(x => x > 1e-9)[0];
     const encuentro = t === undefined ? null : { t: redondo(t), x: redondo(A.x(t)), vA: A.v(t), vB: B.v(t) };
-    return { caso, dur, A: c.A, B: c.B, marcasA: marcas(A, dur), marcasB: marcas(B, dur),
+    return { dur, A: c.A, B: c.B, marcasA: marcas(A, dur), marcasB: marcas(B, dur),
       xA: tt => A.x(Math.min(tt, dur)), xB: tt => B.x(Math.min(tt, dur)), encuentro,
       rapidezAcercamiento: Math.abs(c.A.v0 - c.B.v0) };
   }
@@ -289,7 +296,7 @@
     return { ...p, movil: m, fin, vmax: redondo(vmax), partes, total, opciones };
   }
 
-  return { LARGO, TMAX, RAPIDECES, BOTONES, VENTANA, PEDAL, CASOS, PREDICCIONES,
+  return { LARGO, TMAX, RAPIDECES, BOTONES, VENTANA, PEDAL, CASOS, SALIDAS_B, PREDICCIONES, dosCarritosCon,
     CORRIDA_DEFECTO, CUADRITO, areas, pintado, ALTO, LANZAMIENTOS, lanzar, soltarDos, PROBLEMAS, problema,
     rapidezDedo, ajustarRapidez, marcas, corridaMRU, dosCarritos, leerBandera, tramosDe, corridaPedal, responder };
 });

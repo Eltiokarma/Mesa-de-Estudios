@@ -128,3 +128,15 @@ test('sesión 3: problemas de transferencia, áreas a mano y alternativas distin
     assert.ok(p.texto.split(/\s+/).length <= 40, 'enunciado de 40 palabras como máximo');
   }
 });
+
+test('juego libre de dos carritos: A a 6 m/s contra B que sale de 30 m a −4 m/s (calculado a mano)', () => {
+  // 6t = 30 − 4t → t = 3 s, x = 18 m. Con B a +4 desde 10 m y A a 2, nunca.
+  const d = L.dosCarritosCon({ x0: 0, v0: 6 }, L.SALIDAS_B[3]);
+  assert.equal(d.encuentro.t, 3); assert.equal(d.encuentro.x, 18);
+  assert.equal(L.dosCarritosCon({ x0: 0, v0: 2 }, L.SALIDAS_B[1]).encuentro, null);
+  for (const v of L.RAPIDECES) for (const b of L.SALIDAS_B) {
+    const r = L.dosCarritosCon({ x0: 0, v0: v }, b);
+    assert.ok(r.dur > 0 && r.dur <= 5);
+  }
+  assert.equal(L.dosCarritos('alcance').caso, 'alcance');
+});
