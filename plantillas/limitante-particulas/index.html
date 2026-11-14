@@ -117,6 +117,11 @@ canvas.sin-scroll{touch-action:none}
 .fb{font-weight:700; margin:0}
 .fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
+.juego{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.juego[hidden]{display:none}
+.juego .seg{border-radius:16px}
+.juego .seg button{min-height:44px}
+.juego .seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
 .ctrls{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap:12px; align-items:end}
 .slider{display:grid; gap:4px}
 .slider label{font-weight:700; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
@@ -183,6 +188,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <section class="bench" aria-label="Caja con moléculas, receta y contadores">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="Una caja con moléculas de los reactivos; al lado, la receta de la ecuación y cuántas moléculas hay de cada sustancia"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="juego" id="juego1"></div>
       <div class="legend" id="leyenda1"></div>
     </section>
     <section class="guide">
@@ -204,6 +210,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <section class="bench" aria-label="Experimentos con reacciones">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="juego" id="juego2"></div>
       <div class="legend" id="leyenda2"></div>
     </section>
     <section class="guide">
@@ -230,6 +237,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'limitante-particulas', unidad: 'quimica.estequiometria', version: '0.1.0' };
@@ -486,6 +494,41 @@ const REAC = {
   agua: M.reaccion({ reactivos:[[2, 'H2'], [1, 'O2']], productos:[[2, 'H2O']] }),
   cloruro: M.reaccion({ reactivos:[[2, 'Al'], [3, 'Cl2']], productos:[[2, 'AlCl3']] }),
 };
+// Regla 3 (decisión 20): antes de cualquier pregunta se juega con la caja: tocarla pone una molécula de CO o de O₂ donde
+// se toca, tocar una molécula la saca, y los botones hacen lo mismo sin tocar el dibujo. La caja no reacciona: todas las
+// predicciones preguntan qué pasa al reaccionar (qué se acaba, qué queda, cuánto se forma), y eso el juego no lo muestra.
+// El CO no aparece en ninguna pregunta.
+const JUEGO = M.reaccion({ reactivos:[[2, 'CO'], [1, 'O2']], productos:[[2, 'CO2']] }), JUEGO_MAX = 16;
+function juegoCaja(cv, caja, o){
+  const J = { on:true, f:'CO' }, rnd = azar(13);
+  const pintar = () => {
+    const n = o.lista().length;
+    caja.querySelectorAll('[data-f]').forEach(b => { b.disabled = n >= JUEGO_MAX; b.setAttribute('aria-pressed', String(b.dataset.f === J.f)); });
+    caja.querySelector('[data-sacar]').disabled = n === 0;
+  };
+  const poner = (f, x, y) => {
+    const l = o.lista(); if (!J.on || l.length >= JUEGO_MAX) return;
+    J.f = f; l.push({ f, x: x === undefined ? 0.08 + rnd()*0.84 : x, y: y === undefined ? 0.08 + rnd()*0.84 : y, alpha:1 });
+    o.dibujar(); pintar();
+  };
+  const sacar = k => { const l = o.lista(); if (!J.on || !l.length) return; l.splice(k === undefined ? l.length - 1 : k, 1); o.dibujar(); pintar(); };
+  caja.innerHTML = `<div class="seg" role="group" aria-label="Poner moléculas"><button type="button" data-f="CO">Poner CO</button><button type="button" data-f="O2">Poner O₂</button><button type="button" data-sacar>Sacar una</button></div>`;
+  caja.querySelectorAll('[data-f]').forEach(b => b.onclick = () => poner(b.dataset.f));
+  caja.querySelector('[data-sacar]').onclick = () => sacar();
+  cv.addEventListener('click', e => {
+    if (!J.on) return;
+    const r = cv.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top, b = o.caja();
+    if (!b || px < b.x || px > b.x + b.w || py < b.y || py > b.y + b.h) return;
+    const l = o.lista(), pos = m => [b.x + 14 + m.x*(b.w - 28), b.y + 14 + m.y*(b.h - 28)];
+    let k = -1, dMin = 22;
+    l.forEach((m, i) => { const [x, y] = pos(m), d = Math.hypot(x - px, y - py); if (d < dMin){ dMin = d; k = i; } });
+    if (k >= 0) sacar(k);
+    else poner(J.f, clamp((px - b.x - 14)/(b.w - 28), 0.03, 0.97), clamp((py - b.y - 14)/(b.h - 28), 0.03, 0.97));
+  });
+  J.terminar = () => { J.on = false; caja.hidden = true; caja.innerHTML = ''; };
+  pintar();
+  return J;
+}
 </script>
 <script>
 /* ================= MODO 1: paso a paso =================
@@ -708,6 +751,11 @@ $('prev').addEventListener('click', () => go(S.step - 1));
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
 L.resize(); go(0);
+S.r = JUEGO; S.lista = llenar({ CO:3, O2:2 }, 4); leyenda('leyenda1', JUEGO); draw();
+const juego = juegoCaja(cv, $('juego1'), { lista:() => S.lista, caja:() => zonas(L.W, L.H).caja, dibujar:draw });
+JugarPrimero.montar({ escena: cv.closest('.bench'), preguntas: [...document.querySelector('#m1 .guide').children], minimo: 2,
+  consigna: 'Toca la caja para poner moléculas; toca una para sacarla.',
+  alListo: () => { juego.terminar(); go(0); } });
 })();
 </script>
 <script>
@@ -913,6 +961,12 @@ function ir(k){
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
 L.resize(); ir(0);
+S.vez = (S.vez || 0) + 1; Object.assign(E, { tipo:'caja', r:JUEGO, lista:llenar({ CO:3, O2:2 }, 4), ver:false }); leyenda('leyenda2', JUEGO); draw();
+const juego = juegoCaja(cv, $('juego2'), { lista:() => E.lista, dibujar:draw,
+  caja:() => L.W >= 560 ? { x:6, y:22, w:L.W*0.6 - 12, h:L.H - 30 } : { x:6, y:22, w:L.W - 12, h:L.H*0.55 } });
+JugarPrimero.montar({ escena: cv.closest('.bench'), preguntas: [...document.querySelector('#m2 .guide').children], minimo: 2,
+  consigna: 'Toca la caja para poner moléculas; toca una para sacarla.',
+  alListo: () => { juego.terminar(); ir(0); } });
 })();
 </script>
 
