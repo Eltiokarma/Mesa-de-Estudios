@@ -3614,7 +3614,14 @@
       "cuadricula-piezas",
       "rutas-espacio",
       "papel-doblado"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/trazos-y-perimetros.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-matematico.ordenamiento-de-informacion",
