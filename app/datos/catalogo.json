@@ -1626,7 +1626,16 @@
       "cuadrado-crece",
       "division-polinomios",
       "ecuaciones-polinomiales"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/factorizacion.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/alg-baldosas.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.ecuaciones-polinomiales",
