@@ -3578,7 +3578,15 @@
       "orden-informacion",
       "rm-deduccion",
       "rm-parentesco"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/razonamiento-deductivo.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-matematico.trazos-y-perimetros",
