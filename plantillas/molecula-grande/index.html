@@ -75,8 +75,8 @@ h1{margin:2px 0 0; font-size:clamp(1.65rem, 4.4vw, 2.1rem); line-height:1.1; let
 canvas{display:block; width:100%; touch-action:pan-y pinch-zoom; -webkit-user-select:none; user-select:none}
 canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .zoom{position:absolute; right:6px; bottom:6px; display:flex; gap:4px}
-.zoom button{width:36px; height:36px; border-radius:50%; border:1.5px solid var(--line); background:var(--card); color:var(--ink); font:800 1.05rem var(--font); cursor:pointer; padding:0}
-.zoom button.ancho{width:auto; padding:0 10px; border-radius:18px; font-size:.8rem}
+.zoom button{width:44px; height:44px; border-radius:50%; border:1.5px solid var(--line); background:var(--card); color:var(--ink); font:800 1.05rem var(--font); cursor:pointer; padding:0}
+.zoom button.ancho{width:auto; padding:0 12px; border-radius:22px; font-size:.8rem}
 .legend{display:flex; flex-wrap:wrap; gap:4px 14px; padding:2px 8px 4px; font-size:.82rem; color:var(--muted)}
 .legend span{display:inline-flex; align-items:center; gap:6px}
 .legend i{width:12px; height:12px; border-radius:50%; display:inline-block}
@@ -136,8 +136,11 @@ canvas:focus-visible{outline:3px solid var(--ink); outline-offset:-3px}
 .btn:disabled{opacity:.45; cursor:not-allowed}
 button:focus-visible, a:focus-visible, select:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
 .hint{font-size:.88rem; color:var(--muted)}
+.juego{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+.juego[hidden]{display:none}
+.juego .lect{margin:0; flex:1 1 100%; font-weight:700; min-height:1.4em}
 .fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
-label.sel{display:grid; gap:4px; font-weight:700; font-size:.9rem}
+label.sel{display:grid; grid-template-columns:minmax(0, 1fr); min-width:0; gap:4px; font-weight:700; font-size:.9rem}
 select{font:600 1rem var(--font); padding:10px 12px; border-radius:14px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); max-width:100%}
 .ficha{display:grid; gap:4px; padding:12px 14px; border-radius:16px; background:var(--paper); border:1px solid var(--line); font-size:.95rem}
 .ficha b{font-weight:800}
@@ -174,6 +177,7 @@ select{font:600 1rem var(--font); padding:10px 12px; border-radius:14px; border:
     <section class="bench" aria-label="La molécula">
       <div class="lienzo"><canvas id="cv1" role="img" aria-label="Dibujo de la molécula del paso"></canvas>
         <div class="zoom" data-zoom="cv1"></div></div>
+      <div class="juego" id="juego1" role="group" aria-label="Elegir un átomo"><p class="lect" aria-live="polite"></p><button type="button" class="btn" data-d="-1">Átomo anterior</button><button type="button" class="btn" data-d="1">Átomo siguiente</button></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
       <div class="legend" id="ley1"></div>
     </section>
@@ -195,6 +199,7 @@ select{font:600 1rem var(--font); padding:10px 12px; border-radius:14px; border:
     <section class="bench" aria-label="La molécula elegida">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo de la molécula elegida"></canvas>
         <div class="zoom" data-zoom="cv2"></div></div>
+      <div class="juego" id="juego2" role="group" aria-label="Elegir un átomo"><p class="lect" aria-live="polite"></p><button type="button" class="btn" data-d="-1">Átomo anterior</button><button type="button" class="btn" data-d="1">Átomo siguiente</button></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="legend" id="ley2"></div>
     </section>
@@ -216,6 +221,7 @@ select{font:600 1rem var(--font); padding:10px 12px; border-radius:14px; border:
     <section class="bench" aria-label="El experimento">
       <div class="lienzo"><canvas id="cv3" role="img" aria-label="Dibujo del experimento"></canvas>
         <div class="zoom" data-zoom="cv3"></div></div>
+      <div class="juego" id="juego3" role="group" aria-label="Elegir un átomo"><p class="lect" aria-live="polite"></p><button type="button" class="btn" data-d="-1">Átomo anterior</button><button type="button" class="btn" data-d="1">Átomo siguiente</button></div>
       <p class="sr" id="desc3" aria-live="polite"></p>
       <div class="legend" id="ley3"></div>
     </section>
@@ -244,6 +250,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
 <script src="../../nucleo/convencion.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'molecula-grande', unidad: 'quimica.biomoleculas-y-productos-naturales', version: '0.1.0' };
@@ -315,7 +322,7 @@ function alpha(hex, a){ const h = hex.replace('#',''); const n = parseInt(h.leng
 
 function crearLienzo(cvId, descId, modoId, leyId){
   const cv = $(cvId), ctx = cv.getContext('2d');
-  const E = { cv, vista:null, z:1, px:0, py:0, W:0, H:0, compacto:false };
+  const E = { cv, vista:null, z:1, px:0, py:0, W:0, H:0, compacto:false, juego:false, sel:null, P:null };
   E.resize = () => {
     const w = cv.parentElement.clientWidth || 360;
     const h = Celular.alto(innerWidth < 900 ? 330 : 480, E.compacto, { tope: 250 });
@@ -324,7 +331,7 @@ function crearLienzo(cvId, descId, modoId, leyId){
     ctx.setTransform(d, 0, 0, d, 0, 0);
   };
   E.compactar = on => { E.compacto = Celular.compactar($(modoId), on); E.resize(); E.dibujar(); };
-  E.poner = v => { E.vista = v; E.z = 1; E.px = E.py = 0; E.dibujar(); E.leyenda(); E.describir(); };
+  E.poner = v => { E.vista = v; E.z = 1; E.px = E.py = 0; E.sel = null; if (E.alPoner) E.alPoner(); E.dibujar(); E.leyenda(); E.describir(); };
   E.marcar = (marca, texto) => { E.vista.marca = marca; E.vista.modo = 'lupa'; if (texto) E.vista.texto = texto; E.dibujar(); E.leyenda(); E.describir(); };
   E.describir = () => { const v = E.vista; if (!v) return; $(descId).textContent = `${v.nombre}${v.texto ? '. ' + v.texto : ''}`; cv.setAttribute('aria-label', `Dibujo de ${v.nombre}`); };
   E.leyenda = () => {
@@ -366,7 +373,7 @@ function crearLienzo(cvId, descId, modoId, leyId){
     const v = E.vista, c = colores(), A = ajuste(), s = A.s; E.ajusteS = s;
     const conNumeros = s >= 22;   // con menos de ~22 px por enlace las píldoras se enciman: queda el resaltado
     const m = v.m, coords = v.coords, n = m.atomos.length;
-    const P = coords.map(([x, y]) => ({ X: A.cx + (x - A.mx)*s, Y: A.cy - (y - A.my)*s }));
+    const P = coords.map(([x, y]) => ({ X: A.cx + (x - A.mx)*s, Y: A.cy - (y - A.my)*s })); E.P = P;
     const vec = m.atomos.map(() => []); m.enlaces.forEach(e => { vec[e.a].push(e.b); vec[e.b].push(e.a); });
     ctx.clearRect(0, 0, E.W, E.H); ctx.fillStyle = c.paper; ctx.fillRect(0, 0, E.W, E.H);
     const lw = clamp(s*0.055, 1.3, 3), fs = clamp(s*0.44, 11, 20);
@@ -448,6 +455,8 @@ function crearLienzo(cvId, descId, modoId, leyId){
       for (const [t, co] of partes){ ctx.fillStyle = co; ctx.fillText(t, x, P[i].Y); x += ctx.measureText(t).width; }
       if (L.carga){ ctx.font = `800 ${fs*0.72}px ${c.font}`; ctx.fillStyle = marca && marca.tipo === 'cargas' ? col : c.ink; ctx.fillText(L.carga > 0 ? '+' : '−', L.izq ? P[i].X + w0/2 + 1 : x + 1, P[i].Y - fs*0.45); }
     });
+    // El átomo elegido en el juego (regla 3): un anillo de tinta.
+    if (E.juego && E.sel !== null && P[E.sel]){ ctx.strokeStyle = c.ink; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(P[E.sel].X, P[E.sel].Y, Math.max(12, s*0.42), 0, 7); ctx.stroke(); }
     // 4. Números y marcas encima.
     if (!marca) return;
     if (!conNumeros && !['nox', 'cargas', 'pares', 'grupos', 'electrones'].includes(marca.tipo)) return;
@@ -497,6 +506,7 @@ function crearLienzo(cvId, descId, modoId, leyId){
   cv.addEventListener('keydown', e => {
     const k = e.key, d = 30;
     if (k === '+' || k === '=') E.zoom(1.25); else if (k === '-') E.zoom(0.8);
+    else if (E.juego && E.alTocar && (k === 'ArrowLeft' || k === 'ArrowRight') && E.z <= 1) E.alTocar(E.sel === null ? 0 : E.sel + (k === 'ArrowRight' ? 1 : -1));
     else if (k.startsWith('Arrow') && E.z > 1){ if (k === 'ArrowLeft') E.px += d; if (k === 'ArrowRight') E.px -= d; if (k === 'ArrowUp') E.py += d; if (k === 'ArrowDown') E.py -= d; E.limitar(); E.dibujar(); }
     else return;
     e.preventDefault();
@@ -511,6 +521,14 @@ function crearLienzo(cvId, descId, modoId, leyId){
   cv.addEventListener('pointermove', e => { if (!arr) return; E.px = arr.px + e.clientX - arr.x; E.py = arr.py + e.clientY - arr.y; E.limitar(); E.dibujar(); });
   const soltar = () => { arr = null; cv.style.cursor = ''; };
   cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  // Toque en un átomo, solo mientras se juega.
+  cv.addEventListener('click', e => {
+    if (!E.juego || !E.alTocar || !E.P) return;
+    const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    let i = -1, d = Math.max(18, (E.ajusteS || 20)*0.55);
+    E.P.forEach((q, k) => { const dk = Math.hypot(q.X - x, q.Y - y); if (dk < d){ d = dk; i = k; } });
+    if (i >= 0) E.alTocar(i);
+  });
   cv.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); E.zoom(e.deltaY < 0 ? 1.15 : 1/1.15); }, { passive: false });
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => E.dibujar());
   new MutationObserver(() => E.dibujar()).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
@@ -519,6 +537,26 @@ function crearLienzo(cvId, descId, modoId, leyId){
   E.resize();
   return E;
 }
+// Regla 3 (decisión 20): antes de cualquier pregunta se juega con la molécula: se toca un átomo (o se elige con los
+// botones o las flechas) y se lee qué elemento es, para aprender a leer el esqueleto (las puntas y los vértices sin
+// letra son carbonos); con + y − se acerca y se aleja. El juego no enciende ninguna lupa: no cuenta híbridos, enlaces
+// π, pares libres, anillos, quirales ni grupos, que es lo que se pregunta. Se juega con la capsaicina (la del ají), que
+// no sale en «Paso a paso» ni en «¿Qué pasa si…?»; en «Explorar», con la molécula que se elija.
+const NOMBRE_EL = { H:'hidrógeno', C:'carbono', N:'nitrógeno', O:'oxígeno', S:'azufre', I:'yodo', P:'fósforo' };
+function jugarConLaMolecula(E, idJuego, o){
+  const caja = $(idJuego), lect = caja.querySelector('.lect');
+  E.juego = true;
+  E.alPoner = () => { lect.textContent = ''; };
+  E.alTocar = i => {
+    const at = E.vista.m.atomos, n = at.length; E.sel = ((i % n) + n) % n; E.dibujar();
+    const a = at[E.sel]; lect.textContent = `Átomo ${E.sel + 1} de ${n}: ${NOMBRE_EL[a.el] || a.el}${a.el === 'C' ? ' (un vértice o una punta sin letra)' : ''}.`;
+  };
+  caja.querySelectorAll('button').forEach(b => b.onclick = () => E.alTocar(E.sel === null ? 0 : E.sel + +b.dataset.d));
+  return JugarPrimero.montar({ escena: o.escena || E.cv.closest('.bench'), preguntas: o.preguntas, minimo: 2,
+    consigna: 'Toca átomos de la molécula y acércate con el +.',
+    alListo: () => { E.juego = false; E.sel = null; E.alTocar = null; E.alPoner = null; caja.hidden = true; o.alListo(); } });
+}
+const vistaJuego = () => vista('capsaicina', { modo:'color' });
 // Vista de una molécula: id de la biblioteca (sus coordenadas) y, si cambió, la molécula nueva con los mismos átomos.
 function vista(id, o){
   o = o || {};
@@ -713,6 +751,8 @@ function prediccion(s){
 $('next').addEventListener('click', () => { const s = steps[S.step]; if (!S.pred[s.id]) return; go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+E.poner(vistaJuego()); E.compactar(false);
+jugarConLaMolecula(E, 'juego1', { preguntas: [...document.querySelectorAll('#m1 .guide > *')], alListo: () => go(0) });
 })();
 </script>
 
@@ -784,6 +824,8 @@ function pintar(){
 $('molSel').onchange = () => { S.id = $('molSel').value; if (S.lupa !== 'ninguna' && !MG.lupaDisponible(S.id, S.lupa)) S.lupa = 'ninguna'; pintar(); };
 let listo = false;
 addEventListener('modo', () => { if (!listo && !$('m2').hidden){ listo = true; pintar(); } });
+// Se juega con la molécula que se elija (la lista queda libre); las lupas y sus preguntas, veladas hasta jugar.
+jugarConLaMolecula(E, 'juego2', { preguntas: [$('lupas').parentElement, $('body2'), $('m2').querySelector('details')], alListo: () => pintar() });
 })();
 </script>
 
@@ -869,8 +911,9 @@ function ir(k){
   E.compactar(!S.pred[x.id]);
   pintar();
 }
-let listo = false;
-addEventListener('modo', () => { if (!listo && !$('m3').hidden){ listo = true; ir(0); } });
+let listo = false, jugado = false;
+addEventListener('modo', () => { if (!listo && !$('m3').hidden){ listo = true; if (jugado) ir(0); else { botones(); E.poner(vistaJuego()); E.compactar(false); } } });
+jugarConLaMolecula(E, 'juego3', { preguntas: [...document.querySelectorAll('#m3 .guide > *')], alListo: () => { jugado = true; if (listo) ir(0); } });
 })();
 </script>
 
