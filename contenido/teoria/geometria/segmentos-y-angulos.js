@@ -36,6 +36,11 @@
     r.de = l => l[Math.floor(r() * l.length)];
     return r;
   }
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura; aPlano la vuelve coordenadas del
+  // problema y el lector ajusta cada valor al paso y al rango de su control.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const alPlano = (datos, pt) => G.aPlano(datos, pt);
+  const giro360 = (c, q) => { const g = U.grados(Math.atan2(q[1] - c[1], q[0] - c[0])); return g < -1e-9 ? g + 360 : g; };
   function opciones(correcta, distractores, fmt, n = 4) {
     const vistos = new Set([fmt(correcta)]);
     const ops = [{ id: 'c', texto: fmt(correcta), correcta: true }];
@@ -80,7 +85,11 @@
       voz: 'Mueve B y compara las tres medidas, no solo el dibujo.',
       controles: [{ id: 'bx', etiqueta: 'B', min: -2, max: 12, paso: 1, inicio: 4, unidad: 'cm', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: tramos(v.bx), estado: {} }),
-      lectura: v => [AB, ' + ', BC, ` = ${f(Math.abs(v.bx) + Math.abs(10 - v.bx))} cm · `, AC, ' = 10 cm'],
+      // Se agarra el punto B: corre por la recta, también fuera del tramo AC.
+      arrastres: [{ id: 'punto-b', etiqueta: 'punto B', color: 'c-o',
+        donde: v => enPantalla(tramos(v.bx), [v.bx, 0]),
+        mover: (pt, v) => ({ bx: alPlano(tramos(v.bx), pt)[0] }) }],
+      lectura: v => [AB, ' + ', BC, ` = ${f(Math.abs(v.bx) + Math.abs(10 - v.bx))} cm   ·   `, AC, ' = 10 cm'],
       minimo: 3,
     },
     predice: {
@@ -96,6 +105,8 @@
       revelar: { datos: Object.assign(tramos(BX, BY), { segmentos: tramos(BX, BY).segmentos.map(s => s.de === 'A' && s.a === 'B' ? Object.assign({}, s, { texto: `${f(dAB)} cm` }) : s.de === 'B' ? Object.assign({}, s, { texto: `${f(dBC)} cm` }) : s) }), estado: {} },
       coincide: ['Coincide: 5 + 6,7 ≈ 11,7 cm. El rodeo por B es más largo que ', AC, '.'],
     },
+    // Hallazgo 9: «Mira» no parte del dibujo del juego (B en la recta) sino del de la predicción (B fuera), a propósito:
+    // explica el caso que el alumno acaba de predecir; el juego ya mostró la suma exacta con B entre A y C.
     mira: {
       datos: {
         alt: 'B está 3 cm arriba de la recta AC: AB mide 5, BC mide 6,7 y la suma pasa de 10',
@@ -112,15 +123,15 @@
       },
       voz: 'Avanza paso a paso. Cada tramo tiene su propio triángulo.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'AB es la hipotenusa de un triángulo de catetos 4 y 3.', ecuacion: [AB, ' = ', { raiz: ['4² + 3²'] }, ' = 5 cm'] },
-        { estado: { corte: 2 }, texto: 'BC es la hipotenusa de un triángulo de catetos 6 y 3.', ecuacion: [BC, ' = ', { raiz: ['6² + 3²'] }, ` ≈ ${f(dBC)} cm`] },
+        { estado: { corte: 1 }, texto: 'AB es la hipotenusa de un triángulo de catetos 4 y 3.', ecuacion: [AB, ' = ', { raiz: [{ sup: ['4', '2'] }, ' + ', { sup: ['3', '2'] }] }, ' = 5 cm'] },
+        { estado: { corte: 2 }, texto: 'BC es la hipotenusa de un triángulo de catetos 6 y 3.', ecuacion: [BC, ' = ', { raiz: [{ sup: ['6', '2'] }, ' + ', { sup: ['3', '2'] }] }, ` ≈ ${f(dBC)} cm`] },
         { estado: { corte: 3 }, texto: 'El camino por B da un rodeo: la suma pasa de AC.', ecuacion: [AB, ' + ', BC, ` ≈ ${f(dAB + dBC)} > 10 = `, AC] },
         { estado: { corte: 3 }, texto: 'Solo con B sobre AC, entre A y C, desaparece el rodeo.', ecuacion: [AB, ' + ', BC, ' = ', AC] },
       ],
     },
     regla: {
       texto: 'Por dos puntos pasa una sola recta. Si B está en el segmento AC, las medidas se suman exacto; si no, AB + BC es mayor que AC.',
-      ecuacion: [AB, ' + ', BC, ' ≥ ', AC],
+      ecuacion: [{ llave: [AB, ' + ', BC], nota: 'camino por B', color: 'c-o' }, ' ≥ ', { llave: [AC], nota: 'directo', color: 'c-d' }],
       condicion: 'B está en la recta AC, entre A y C.',
       voz: 'El dibujo sugiere; la condición «entre A y C» lo garantiza.',
     },
@@ -197,7 +208,11 @@
       voz: 'Gira OB y fíjate en el nombre que toma cada medida.',
       controles: [{ id: 'g', etiqueta: '∠AOB', min: 0, max: 330, paso: 15, inicio: 45, unidad: '°', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: abertura(v.g), estado: {} }),
-      lectura: v => [{ v: 'c-o', t: '∠AOB' }, ` = ${v.g}° · ${clase(v.g)}`],
+      // Se agarra la punta B del lado OB: gira alrededor de O (de 0° a 330°, contra el reloj desde OA).
+      arrastres: [{ id: 'punta-b', etiqueta: 'punta B del lado OB', color: 'c-o',
+        donde: v => enPantalla(abertura(v.g), U.polar([0, 0], 3, v.g)),
+        mover: (pt, v) => { const g = giro360([0, 0], alPlano(abertura(v.g), pt)); return { g: g > 345 ? 0 : g }; } }],
+      lectura: v => [{ v: 'c-o', t: '∠AOB' }, ` = ${v.g}°   ·   ${clase(v.g)}`],
       minimo: 4,
     },
     predice: {
@@ -212,11 +227,13 @@
       revelar: { datos: dosAngulos(0.5, 0.5), estado: { corte: 1 } },
       coincide: 'Coincide: Q mide 65° y P, 40°. El largo de los lados no entra en la medida.',
     },
+    // Hallazgo 9: «Mira» usa los dos ángulos de la predicción, no el de la bisagra del juego: la duda que resuelve
+    // (¿cuenta el largo de los lados?) solo aparece al comparar dos ángulos.
     mira: {
       datos: dosAngulos(1, 2),
       voz: 'Compara aberturas. El largo de los lados queda fuera.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Cada ángulo se mide con el arco entre sus dos lados.', ecuacion: ['∠P = 40° · ', { v: 'c-o', t: '∠Q' }, ' = 65°'] },
+        { estado: { corte: 1 }, texto: 'Cada ángulo se mide con el arco entre sus dos lados.', ecuacion: ['∠P = 40°', '   ·   ', { v: 'c-o', t: '∠Q' }, ' = 65°'] },
         { estado: { corte: 2 }, texto: 'Prolonga los lados de Q: la abertura no cambia.', ecuacion: [{ v: 'c-o', t: '∠Q' }, ' sigue en 65°'] },
         { estado: { corte: 2 }, texto: 'Los dos son agudos: miden más de 0° y menos de 90°.', ecuacion: ['0° < 40° < 65° < 90°'] },
       ],
@@ -290,7 +307,11 @@
       voz: 'Mueve α y sigue a β: cambian juntos.',
       controles: [{ id: 'a', etiqueta: 'α', min: 20, max: 160, paso: 10, inicio: 60, unidad: '°', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: par(v.a, false), estado: {} }),
-      lectura: v => [al, ` = ${v.a}° · `, be, ` = ${180 - v.a}° · `, al, ' + ', be, ' = 180°'],
+      // Se agarra la punta B del lado común OB: al girarla, α crece y β se achica.
+      arrastres: [{ id: 'punta-b', etiqueta: 'punta B del lado común', color: 'c-o',
+        donde: v => enPantalla(par(v.a, false), U.polar([0, 0], 3, v.a)),
+        mover: (pt, v) => { const q = alPlano(par(v.a, false), pt); return { a: U.grados(Math.atan2(Math.max(q[1], 0), q[0])) }; } }],
+      lectura: v => [al, ` = ${v.a}°   ·   `, be, ` = ${180 - v.a}°   ·   `, al, ' + ', be, ' = 180°'],
       minimo: 3,
     },
     predice: {
@@ -317,7 +338,7 @@
     },
     regla: {
       texto: 'La bisectriz divide un ángulo en dos iguales. Dos ángulos complementarios suman 90°; dos suplementarios, 180°. Las bisectrices de dos suplementarios adyacentes forman 90°.',
-      ecuacion: ['C(', x, ') = 90° − ', x, '   ·   S(', x, ') = 180° − ', x],
+      ecuacion: [{ llave: ['C(', x, ')'], nota: 'complemento', color: 'c-o' }, ' = 90° − ', x, '   ·   ', { llave: ['S(', x, ')'], nota: 'suplemento', color: 'c-o' }, ' = 180° − ', x],
       condicion: 'el complemento existe si x < 90° y el suplemento si x < 180°; el resultado de 90° pide ángulos adyacentes.',
       voz: 'Deshaz las operaciones desde afuera hacia adentro.',
     },
@@ -391,6 +412,10 @@
       angulos: angs,
     };
   };
+  // La secante pasa por el punto medio (0; 1,2) de PQ para todo θ: su punta Qu está a θ de ese centro.
+  const arrastreSecante = dib => ({ id: 'secante', etiqueta: 'punta de la secante', color: 'c-o',
+    donde: v => { const t = v.t, Q = [1.2 / Math.tan(U.rad(t)), 2.4]; return enPantalla(dib(t, v), U.polar(Q, 1.6, t)); },
+    mover: (pt, v) => { const q = alPlano(dib(v.t, v), pt); return { t: U.grados(Math.atan2(Math.max(q[1] - 1.2, 0.01), q[0])) }; } });
   const paralelas = {
     id: 'paralelas',
     titulo: 'Paralelas: ángulos iguales y suplementarios',
@@ -401,7 +426,9 @@
       voz: 'Inclina la secante. Comprueba qué pares permanecen iguales.',
       controles: [{ id: 't', etiqueta: 'θ', min: 30, max: 150, paso: 10, inicio: 60, unidad: '°', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: secante(v.t), estado: {} }),
-      lectura: v => ['naranjas: ', `${v.t}°`, ' · turquesa: ', `${180 - v.t}°`],
+      // Se agarra la punta de arriba de la secante: gira alrededor del punto medio de PQ, que no se mueve.
+      arrastres: [arrastreSecante(t => secante(t))],
+      lectura: v => ['naranjas: ', `${v.t}°`, '   ·   turquesa: ', `${180 - v.t}°`],
       minimo: 3,
     },
     predice: {
@@ -428,7 +455,7 @@
     },
     regla: {
       texto: 'Si dos rectas paralelas son cortadas por una secante, los correspondientes y los alternos internos son iguales, y los conjugados internos suman 180°.',
-      ecuacion: [th, ' (correspondiente) = ', th, ' (alterno)   ·   ', th, ' + ', { v: 'c-i', t: 'β' }, ' = 180°'],
+      ecuacion: [{ llave: [th], nota: 'correspondiente', color: 'c-o' }, ' = ', { llave: [th], nota: 'alterno', color: 'c-o' }, '   ·   ', th, ' + ', { llave: [{ v: 'c-i', t: 'β' }], nota: 'conjugado', color: 'c-i' }, ' = 180°'],
       condicion: 'las rectas son paralelas. Al revés también vale: si dos correspondientes son iguales, las rectas son paralelas.',
       voz: 'Primero la condición de paralelas; después las igualdades.',
     },
@@ -485,6 +512,16 @@
         { en: 'V', de: 'T', a: 'B', color: 'h', radio: 44, texto: o.x ? `x = ${a + b}°` : 'x', desde: o.pasos ? 4 : 0 }],
     };
   };
+  // T está en y = 3 y B en y = 0, los dos a 1,5 de la altura de V (3,4; 1,5): el ángulo sale de atan2(1,5; 3,4 − x).
+  const angTramo = x => U.grados(Math.atan2(1.5, 3.4 - x));
+  const arrastresQuiebre = dib => [
+    { id: 'punto-t', etiqueta: 'punto T en la paralela de arriba', color: 'c-o',
+      donde: v => enPantalla(dib(v.a, v.b, v), U.polar([3.4, 1.5], 1.5 / Math.sin(U.rad(v.a)), 180 - v.a)),
+      mover: (pt, v) => ({ a: angTramo(alPlano(dib(v.a, v.b, v), pt)[0]) }) },
+    { id: 'punto-b', etiqueta: 'punto B en la paralela de abajo', color: 'c-i',
+      donde: v => enPantalla(dib(v.a, v.b, v), U.polar([3.4, 1.5], 1.5 / Math.sin(U.rad(v.b)), 180 + v.b)),
+      mover: (pt, v) => ({ b: angTramo(alPlano(dib(v.a, v.b, v), pt)[0]) }) },
+  ];
   const quiebreIdea = {
     id: 'quiebre',
     titulo: 'El quiebre entre paralelas',
@@ -498,7 +535,9 @@
         { id: 'b', etiqueta: 'b', min: 20, max: 70, paso: 5, inicio: 30, unidad: '°', decimales: 0, color: 'c-i' },
       ],
       dibujo: v => ({ datos: quiebre(v.a, v.b, { x: true }), estado: {} }),
-      lectura: v => [cx, ` = ${v.a + v.b}° · `, ca, ' + ', cb, ` = ${v.a + v.b}°`],
+      // Se agarran T y B, que corren por su paralela: V queda fijo y cada tramo se inclina.
+      arrastres: arrastresQuiebre((a, b) => quiebre(a, b, { x: true })),
+      lectura: v => [cx, ` = ${v.a + v.b}°   ·   `, ca, ' + ', cb, ` = ${v.a + v.b}°`],
       minimo: 3,
     },
     predice: {
@@ -525,7 +564,7 @@
     },
     regla: {
       texto: 'Si una línea se quiebra entre dos paralelas, el ángulo del quiebre es la suma de los ángulos que cada tramo forma con su paralela.',
-      ecuacion: [cx, ' = ', ca, ' + ', cb],
+      ecuacion: [{ llave: [cx], nota: 'quiebre', color: 'c-h' }, ' = ', { llave: [ca], nota: 'arriba', color: 'c-o' }, ' + ', { llave: [cb], nota: 'abajo', color: 'c-i' }],
       condicion: 'las rectas son paralelas y a y b se miden del lado donde está el vértice del quiebre.',
       voz: 'Una paralela auxiliar convierte el quiebre en dos alternos.',
     },
@@ -556,9 +595,52 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 4: además de inclinar la secante, se gira la recta de arriba. Deja probar lo que la
+  // idea reserva para la predicción: qué pasa con los correspondientes y los conjugados cuando las rectas no son paralelas.
+  const mesaSecante = {
+    id: 'secante-y-giro', titulo: 'Paralelas o casi paralelas', pieza: 'geo-figura',
+    consigna: 'Inclina la secante y gira la recta de arriba. Busca cuándo los dos naranjas vuelven a ser iguales.',
+    controles: [
+      { id: 't', etiqueta: 'θ', min: 40, max: 140, paso: 5, inicio: 60, unidad: '°', decimales: 0, color: 'c-o' },
+      { id: 'g', etiqueta: 'Giro de arriba', min: -20, max: 20, paso: 2, inicio: 10, unidad: '°', decimales: 0, color: 'c-h' },
+    ],
+    dibujo: v => ({ datos: secante(v.t, { giro: v.g }), estado: {} }),
+    arrastres: [
+      arrastreSecante((t, v) => secante(t, { giro: v.g })),
+      // Se agarra el extremo derecho de la recta de arriba: gira alrededor de Q.
+      { id: 'recta-arriba', etiqueta: 'extremo de la recta de arriba', color: 'c-h',
+        donde: v => { const Q = [1.2 / Math.tan(U.rad(v.t)), 2.4]; return enPantalla(secante(v.t, { giro: v.g }), U.polar(Q, 3, v.g)); },
+        mover: (pt, v) => {
+          const Q = [1.2 / Math.tan(U.rad(v.t)), 2.4], q = alPlano(secante(v.t, { giro: v.g }), pt);
+          return { g: U.grados(Math.atan(Math.max(-1e3, Math.min(1e3, (q[1] - Q[1]) / Math.max(q[0] - Q[0], 0.05))))) };
+        } },
+    ],
+    lectura: v => ['naranjas ', `${v.t}° y ${v.t - v.g}°   ·   conjugados ${180 + v.g}°${v.g === 0 ? ': paralelas' : ''}`],
+  };
+  // Mesa 2: B libre en el plano, no solo en la recta. La idea 1 deja a B fuera de la recta solo en la predicción.
+  const tramosLibre = (bx, by) => Object.assign(tramos(bx, by), { vista: { x: [-3, 13], y: [-1.4, 4.2] } });
+  const mesaPunto = {
+    id: 'punto-libre', titulo: 'B fuera de la recta', pieza: 'geo-figura',
+    consigna: 'Arrastra B por todo el plano. Mira cuánto más largo es el camino por B que el directo de A a C.',
+    controles: [
+      { id: 'bx', etiqueta: 'B a lo ancho', min: -2, max: 12, paso: 0.5, inicio: 4, unidad: 'cm', decimales: 1, color: 'c-o' },
+      { id: 'by', etiqueta: 'B a lo alto', min: 0, max: 3.5, paso: 0.5, inicio: 3, unidad: 'cm', decimales: 1, color: 'c-o' },
+    ],
+    dibujo: v => ({ datos: tramosLibre(v.bx, v.by), estado: {} }),
+    // Se agarra B: se mueve en las dos direcciones.
+    arrastres: [{ id: 'punto-b', etiqueta: 'punto B', color: 'c-o',
+      donde: v => enPantalla(tramosLibre(v.bx, v.by), [v.bx, v.by]),
+      mover: (pt, v) => { const q = alPlano(tramosLibre(v.bx, v.by), pt); return { bx: q[0], by: q[1] }; } }],
+    lectura: v => {
+      const s = Math.hypot(v.bx, v.by) + Math.hypot(10 - v.bx, v.by);
+      return [AB, ' + ', BC, ` ≈ ${f(s)} cm   ·   rodeo ${f(s - 10)} cm`];
+    },
+  };
+
   return {
     unidad: 'geometria.segmentos-y-angulos',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -566,6 +648,9 @@
       pregunta: '¿Basta que dos líneas parezcan paralelas?',
       fuente: { titulo: 'Euclides, Elementos, libro I (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookI/bookI.html' },
     },
+    // Laboratorio: la secante con la recta que gira y B libre en el plano son más ricas que sus ideas; la tercera mesa es
+    // el quiebre con sus dos manijas.
+    laboratorio: [mesaSecante, mesaPunto, Object.assign({ id: 'quiebre', titulo: 'El quiebre entre paralelas', pieza: 'geo-figura' }, quiebreIdea.juega)],
     ideas: [fuera, aberturaIdea, bisectriz, paralelas, quiebreIdea],
   };
 });
