@@ -17,11 +17,23 @@
  * otro rasgo); RVL1–RVL4 son hipótesis nuevas (ver el reporte).
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): la figura trae un banco de palabras; el alumno arrastra el marcador a la
+  // palabra que quiere probar y esa entra al hueco. La manija va al centro de la palabra (rv-texto.ancla) y salta a la
+  // más cercana al dedo (rv-texto.cercana); los botones del control son la alternativa sin arrastre.
+  const RV = () => Kit.piezas['rv-texto'];
+  const banco = (ws, titulo = 'Prueba con') => ({ id: 'banco', titulo, modo: 'parrafo', fragmentos: ws.map(w => ({ id: `p-${w}`, t: w })) });
+  const conBanco = (datos, ws, titulo) => ({ secciones: datos.secciones.concat([banco(ws, titulo)]) });
+  // Manija sobre el banco: mueve el control `id` (sus valores son las palabras del banco).
+  const tomaPalabra = (id, datosDe, ws, etiqueta) => ({
+    id: 'palabra', etiqueta, color: 'c-o',
+    donde: val => RV().ancla(datosDe(val), `p-${val[id]}`),
+    mover: (pt, val) => ({ [id]: RV().cercana(datosDe(val), pt, ws.map(w => `p-${w}`)).slice(2) }),
+  });
   // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
@@ -59,6 +71,8 @@
   };
   const REEMPLAZOS = ['helada', 'distante', 'serena'];
   const figFria = k => oracion(FRIA[k].partes, 'distante');
+  // El juego y «Mira» usan la misma figura: la oración y, debajo, el banco con los tres reemplazos (hallazgo 9).
+  const figFriaB = k => conBanco(figFria(k), REEMPLAZOS);
   const estFria = (k, r, extra = {}) => {
     const d = figFria(k), ok = FRIA[k].ok === r;
     return Object.assign({ huecos: { w: r }, marcas: Object.assign(marcar(d, pistas(d)), { w: ok ? 'o' : 'h' }), sellos: { o: ok ? { t: 'Encaja', c: 'i' } : { t: 'Cambia el sentido', c: 'h' } } }, extra);
@@ -75,9 +89,11 @@
         { id: 'o', etiqueta: 'Oración', opciones: [{ valor: 'agua', texto: 'el lago' }, { valor: 'trato', texto: 'la respuesta' }, { valor: 'calma', texto: 'el examen' }] },
         { id: 'r', etiqueta: 'Reemplazo', opciones: REEMPLAZOS.map(r => ({ valor: r, texto: r })) },
       ],
-      dibujo: val => ({ datos: figFria(val.o), estado: estFria(val.o, val.r) }),
+      dibujo: val => ({ datos: figFriaB(val.o), estado: estFria(val.o, val.r, { marcas: Object.assign(estFria(val.o, val.r).marcas, { [`p-${val.r}`]: 'o' }) }) }),
       lectura: val => (FRIA[val.o].ok === val.r ? [corto(palabra, val.r), ': encaja, habla de ', corto(rasgo, FRIA[val.o].sentido)] : [corto(mal, val.r), ': aquí «fría» habla de ', corto(rasgo, FRIA[val.o].sentido)]),
       minimo: 4,
+      // Arrastra el marcador por el banco: la palabra que sueltas entra al hueco.
+      arrastres: [tomaPalabra('r', val => figFriaB(val.o), REEMPLAZOS, 'palabra que se prueba en el hueco')],
     },
     predice: {
       pregunta: 'En «su respuesta fue fría y cortante», ¿qué palabra significa lo contrario de «fría»?',
@@ -92,7 +108,7 @@
       coincide: 'Coincide: una respuesta cálida es afectuosa; se opone a fría en el trato.',
     },
     mira: {
-      datos: figFria('trato'),
+      datos: figFriaB('trato'),
       voz: 'Primero la pista, después la palabra.',
       pasos: [
         { estado: { huecos: { w: 'fría' }, marcas: { w: 'o' } }, texto: '«Fría» tiene varias acepciones: temperatura, trato, calma.', ecuacion: [palabra('fría'), ' → ', rasgo('¿qué acepción?')] },
@@ -103,7 +119,7 @@
     },
     regla: {
       texto: 'Un sinónimo o un antónimo en contexto se elige por la acepción que pide la oración, no por la primera que se recuerda. Las pistas de la oración deciden.',
-      ecuacion: [pista('pista'), ' → ', rasgo('acepción'), ' → ', palabra('reemplazo')],
+      ecuacion: [pista('pista'), ' → ', { llave: [rasgo('acepción')], nota: 'sentido que usa', color: 'c-d' }, ' → ', palabra('reemplazo')],
       condicion: 'el reemplazo, puesto en el lugar de la palabra, conserva el sentido y el tono de la oración.',
     },
     ahoraTu: {
@@ -143,6 +159,8 @@
     { id: 'den', titulo: 'Lo que dice (denotación)', modo: 'parrafo', fragmentos: [{ id: 'd1', t: 'tiene poco peso para su altura' }] },
     { id: 'con', titulo: 'Cómo lo valora (connotación)', modo: 'parrafo', fragmentos: [{ id: 'c1', hueco: true, caja: false, reserva: 'algo despectiva' }] },
   ] });
+  const PALABRAS_PESO = Object.keys(PESO);
+  const figPesoB = () => conBanco(figPeso(), PALABRAS_PESO, 'De elogio a crítica');
   const estPeso = (w, extra = {}) => Object.assign({ huecos: { w, c1: PESO[w].val }, marcas: { w: 'o', d1: 'i', c1: PESO[w].c }, sellos: { den: { t: 'No cambia', c: 'i' }, con: { t: 'Cambia', c: 'd' } } }, extra);
   const denotaConnota = {
     id: 'denota-connota',
@@ -153,9 +171,11 @@
       consigna: 'Describe a Rosa con distintas palabras. Mira qué se mantiene y qué cambia en cada caso.',
       voz: 'Compara las dos tarjetas de abajo.',
       controles: [{ id: 'w', etiqueta: 'Palabra', opciones: Object.keys(PESO).map(w => ({ valor: w, texto: w })) }],
-      dibujo: val => ({ datos: figPeso(), estado: estPeso(val.w) }),
+      dibujo: val => ({ datos: figPesoB(), estado: estPeso(val.w, { marcas: Object.assign(estPeso(val.w).marcas, { [`p-${val.w}`]: 'o' }) }) }),
       lectura: val => ['Dice lo mismo; la valoración es ', corto(rasgo, PESO[val.w].val)],
       minimo: 3,
+      // Corre el marcador por la fila de palabras, del elogio a la crítica: lo que dice no se mueve.
+      arrastres: [tomaPalabra('w', () => figPesoB(), PALABRAS_PESO, 'palabra para describir a Rosa')],
     },
     predice: {
       pregunta: 'En «Pedro es terco: insiste aunque le digan que no», ¿qué cambia si «terco» se reemplaza por «perseverante»?',
@@ -173,7 +193,7 @@
       coincide: 'Coincide: la conducta es la misma; cambia si la palabra la aprueba o la reprueba.',
     },
     mira: {
-      datos: figPeso(),
+      datos: figPesoB(),
       pasos: [
         { estado: { huecos: { w: 'delgada', c1: PESO.delgada.val }, marcas: { w: 'o', d1: 'i' }, tapar: ['c1'], nuevo: ['d1'] }, texto: 'La denotación es lo que la palabra describe: poco peso.', ecuacion: [palabra('delgada'), ' → ', pista('poco peso')] },
         { estado: estPeso('esbelta', { nuevo: ['c1', 'w'] }), texto: '«Esbelta» describe lo mismo y además lo elogia.', ecuacion: [palabra('esbelta'), ' = ', pista('poco peso'), ' + ', rasgo('elogio')] },
@@ -182,7 +202,7 @@
     },
     regla: {
       texto: 'La denotación es lo que una palabra describe; la connotación es la valoración o asociación que le suma. Dos palabras pueden denotar lo mismo y connotar lo contrario.',
-      ecuacion: [palabra('palabra'), ' = ', pista('denotación'), ' + ', rasgo('connotación')],
+      ecuacion: [palabra('palabra'), ' = ', { llave: [pista('denotación')], nota: 'lo que describe', color: 'c-i' }, ' + ', { llave: [rasgo('connotación')], nota: 'cómo lo valora', color: 'c-d' }],
       condicion: 'se compara en la misma oración; un sinónimo que cambia la valoración no conserva el tono.',
     },
     ahoraTu: {
@@ -217,6 +237,7 @@
   };
   const VERBOS = ['hizo', 'redactó', 'construyó', 'formuló'];
   const figPrec = k => ({ secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'El ingeniero' }, { id: 'w', hueco: true, reserva: 'construyó' }, { id: 'b', t: `${OBJ[k].t}.` }] }] });
+  const figPrecB = k => conBanco(figPrec(k), VERBOS);
   const juicio = (k, v) => (v === 'hizo' ? 'vago' : OBJ[k].ok === v ? 'preciso' : 'no encaja');
   const estPrec = (k, v, extra = {}) => { const j = juicio(k, v); return Object.assign({ huecos: { w: v }, marcas: { b: 'i', w: j === 'preciso' ? 'o' : j === 'vago' ? 'd' : 'h' }, sellos: { o: { t: j === 'preciso' ? 'Preciso' : j === 'vago' ? 'Vago' : 'No encaja', c: j === 'preciso' ? 'i' : j === 'vago' ? 'd' : 'h' } } }, extra); };
   const precision = {
@@ -231,7 +252,9 @@
         { id: 'k', etiqueta: 'Objeto', opciones: Object.keys(OBJ).map(k => ({ valor: k, texto: k })) },
         { id: 'v', etiqueta: 'Verbo', opciones: VERBOS.map(v => ({ valor: v, texto: v })) },
       ],
-      dibujo: val => ({ datos: figPrec(val.k), estado: estPrec(val.k, val.v) }),
+      dibujo: val => ({ datos: figPrecB(val.k), estado: estPrec(val.k, val.v, { marcas: Object.assign(estPrec(val.k, val.v).marcas, { [`p-${val.v}`]: 'o' }) }) }),
+      // Arrastra el marcador por los verbos: el que sueltas entra al hueco.
+      arrastres: [tomaPalabra('v', val => figPrecB(val.k), VERBOS, 'verbo que se prueba')],
       lectura: val => { const j = juicio(val.k, val.v); return [j === 'preciso' ? corto(palabra, val.v) : j === 'vago' ? corto(rasgo, val.v) : corto(mal, val.v), j === 'vago' ? ': sirve para todo, no precisa' : j === 'preciso' ? ': nombra esta acción' : ': no encaja con el objeto']; },
       minimo: 4,
     },
@@ -247,7 +270,7 @@
       coincide: 'Coincide: «con cuidado antes de aprobarlo» pide revisar a fondo: examinar.',
     },
     mira: {
-      datos: figPrec('informe'),
+      datos: figPrecB('informe'),
       pasos: [
         { estado: estPrec('informe', 'hizo'), texto: '«Hizo» encaja con informe, casa y pregunta: por eso no precisa.', ecuacion: [rasgo('hizo'), ' sirve para todo'] },
         { estado: estPrec('informe', 'construyó', { nuevo: ['w'] }), texto: '«Construyó» es preciso, pero para otra cosa: no encaja.', ecuacion: [mal('construyó'), ' + informe'] },
@@ -256,7 +279,7 @@
     },
     regla: {
       texto: 'La palabra precisa nombra justo lo que dice la oración y encaja con todas sus partes. Un comodín como hacer, ver o cosa encaja en todo: informa poco.',
-      ecuacion: [palabra('verbo preciso'), ' = encaja con ', pista('el objeto'), ' + dice más'],
+      ecuacion: [{ llave: [palabra('verbo preciso')], nota: 'no es comodín', color: 'c-o' }, ' = encaja con ', pista('el objeto'), ' + dice más'],
       condicion: 'la palabra no choca con ninguna otra parte de la oración (los complementos, los conectores, el tiempo).',
     },
     ahoraTu: {
@@ -288,7 +311,8 @@
   const INOCUO = [
     { id: 'a', t: 'El jarabe es' }, { id: 'w', t: 'inocuo:' }, { id: 'b', t: 'aunque un niño lo tome por error,' }, { id: 'c', t: 'no le hará ningún daño.' }, { id: 'd', t: 'Viene en un frasco azul.' },
   ];
-  const QUE_DICE = { b: 'plantea un caso de riesgo', c: 'dice qué significa: no daña', d: 'es un detalle: no ayuda' };
+  // La cabeza en color es corta (≤ 14 letras): así cabe también en la miniatura de un caso guardado.
+  const QUE_DICE = { b: ['Plantea', ' un caso de riesgo'], c: ['Dice qué es', ': no hace daño'], d: ['Es un detalle', ': no ayuda'] };
   const figIno = () => ({ secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: INOCUO }] });
   const inferencia = {
     id: 'inferir-significado',
@@ -300,8 +324,12 @@
       voz: 'No todas las frases cercanas ayudan igual.',
       controles: [{ id: 'p', etiqueta: 'Marca', opciones: [{ valor: 'b', texto: 'aunque un niño…' }, { valor: 'c', texto: 'no le hará…' }, { valor: 'd', texto: 'Viene en…' }] }],
       dibujo: val => ({ datos: figIno(), estado: { marcas: { w: 'o', [val.p]: val.p === 'c' ? 'i' : val.p === 'b' ? 'd' : 'h' } } }),
-      lectura: val => ['Esta parte ', val.p === 'c' ? corto(pista, QUE_DICE[val.p]) : val.p === 'b' ? corto(rasgo, QUE_DICE[val.p]) : corto(mal, QUE_DICE[val.p])],
+      lectura: val => [(val.p === 'c' ? pista : val.p === 'b' ? rasgo : mal)(QUE_DICE[val.p][0]), QUE_DICE[val.p][1]],
       minimo: 3,
+      // Arrastra el marcador por el texto: se marca la parte donde lo sueltas.
+      arrastres: [{ id: 'frase', etiqueta: 'marcador de la parte del texto', color: 'c-i',
+        donde: val => RV().ancla(figIno(), val.p),
+        mover: pt => ({ p: RV().cercana(figIno(), pt, ['b', 'c', 'd']) }) }],
     },
     predice: {
       pregunta: '«La fama del cantante fue efímera: en un mes, ya nadie recordaba su nombre.» ¿Qué significa «efímera»?',
@@ -325,7 +353,7 @@
     },
     regla: {
       texto: 'El significado de una palabra nueva se deduce de las pistas de su oración: una explicación, un ejemplo, un contraste o una consecuencia. La respuesta debe encajar en su lugar.',
-      ecuacion: [pista('pista'), ' + ', palabra('lugar de la palabra'), ' → significado'],
+      ecuacion: [{ llave: [pista('pista')], nota: 'explica o contrasta', color: 'c-i' }, ' + ', palabra('lugar de la palabra'), ' → significado'],
       condicion: 'la pista está en el texto y habla de la palabra; una asociación propia o un detalle cercano no bastan.',
     },
     ahoraTu: {
@@ -349,9 +377,74 @@
     },
   };
 
+  // ---------- Laboratorio: dos palabras, tres oraciones cada una ----------
+  // Más que el juego de la idea 1: se cambia también la palabra polisémica («fría» o «dura»), así se ve que el truco no
+  // es propio de una palabra. La lectura dice qué acepción pide la oración, para que el caso guardado se entienda solo.
+  const DURA = {
+    piedra: { partes: [['La piedra del muro era'], null, ['y no se'], ['rompió con el martillo.', 'pista']], ok: 'sólida', sentido: 'material' },
+    critica: { partes: [['La crítica fue'], null, [':'], ['señaló cada error', 'pista'], ['sin reconocer ningún'], ['acierto.', 'pista']], ok: 'severa', sentido: 'trato' },
+    semana: { partes: [['Fue una semana'], null, [':'], ['trabajamos de día y de noche.', 'pista']], ok: 'agotadora', sentido: 'esfuerzo' },
+  };
+  const POLI = {
+    fria: { w: 'fría', casos: FRIA, orden: ['agua', 'trato', 'calma'], ws: REEMPLAZOS },
+    dura: { w: 'dura', casos: DURA, orden: ['piedra', 'critica', 'semana'], ws: ['sólida', 'severa', 'agotadora'] },
+  };
+  const figPoli = val => { const P = POLI[val.w]; return conBanco(oracion(P.casos[P.orden[val.o]].partes, 'agotadora'), P.ws); };
+  const mesaPoli = {
+    id: 'dos-palabras', titulo: 'Fría y dura', pieza: 'rv-texto',
+    consigna: 'Elige la palabra que falta y la oración. Arrastra un reemplazo al hueco y compara qué acepción pide cada oración.',
+    voz: 'La misma palabra, tres sentidos.',
+    controles: [
+      { id: 'w', etiqueta: 'Palabra', opciones: [{ valor: 'fria', texto: 'fría' }, { valor: 'dura', texto: 'dura' }] },
+      { id: 'o', etiqueta: 'Oración', opciones: [{ valor: 0, texto: '1' }, { valor: 1, texto: '2' }, { valor: 2, texto: '3' }] },
+      { id: 'r', etiqueta: 'Reemplazo', opciones: [0, 1, 2].map(k => ({ valor: k, texto: `${k + 1}` })) },
+    ],
+    dibujo: val => {
+      const P = POLI[val.w], c = P.casos[P.orden[val.o]], r = P.ws[val.r], ok = c.ok === r, d = figPoli(val);
+      return { datos: d, estado: { huecos: { w: r }, marcas: Object.assign(marcar(d, pistas(d)), { w: ok ? 'o' : 'h', [`p-${r}`]: 'o' }), sellos: { o: ok ? { t: 'Encaja', c: 'i' } : { t: 'Cambia el sentido', c: 'h' } } } };
+    },
+    lectura: val => {
+      const P = POLI[val.w], c = P.casos[P.orden[val.o]], r = P.ws[val.r];
+      return [c.ok === r ? palabra(r) : mal(r), ` por «${P.w}»: pide `, rasgo(c.sentido)];
+    },
+    arrastres: [{
+      id: 'palabra', etiqueta: 'reemplazo que entra al hueco', color: 'c-o',
+      donde: val => RV().ancla(figPoli(val), `p-${POLI[val.w].ws[val.r]}`),
+      mover: (pt, val) => { const ws = POLI[val.w].ws, id = RV().cercana(figPoli(val), pt, ws.map(w => `p-${w}`)); return { r: ws.indexOf(id.slice(2)) }; },
+    }],
+  };
+  // Escala de valoración: tres conductas, cuatro palabras cada una, del elogio a la crítica.
+  const ESCALA = {
+    peso: { o: ['Rosa es', 'y pesa poco para su altura.'], den: 'tiene poco peso', ws: ['esbelta', 'delgada', 'flaca', 'esquelética'] },
+    insiste: { o: ['Pedro es', ': insiste aunque le digan que no.'], den: 'insiste mucho', ws: ['perseverante', 'tenaz', 'porfiado', 'terco'] },
+    gasta: { o: ['El vecino es', ': gasta muy poco.'], den: 'gasta poco dinero', ws: ['ahorrativo', 'austero', 'agarrado', 'tacaño'] },
+  };
+  const VALOR = [['la elogia', 'i'], ['casi neutra', 'd'], ['algo despectiva', 'o'], ['la critica', 'h']];
+  const figEscala = k => { const E = ESCALA[k]; return { secciones: [
+    { id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: E.o[0] }, { id: 'w', hueco: true, reserva: 'perseverante' }, { id: 'b', t: E.o[1] }] },
+    { id: 'den', titulo: 'Lo que dice', modo: 'parrafo', fragmentos: [{ id: 'd1', t: E.den }] },
+    banco(E.ws, 'De elogio a crítica'),
+  ] }; };
+  const mesaEscala = {
+    id: 'escala', titulo: 'Del elogio a la crítica', pieza: 'rv-texto',
+    consigna: 'Elige a quién describes y corre el marcador por la fila de palabras. Mira qué se queda igual y qué cambia.',
+    controles: [
+      { id: 'k', etiqueta: 'Conducta', opciones: [{ valor: 'peso', texto: 'Rosa' }, { valor: 'insiste', texto: 'Pedro' }, { valor: 'gasta', texto: 'el vecino' }] },
+      { id: 'n', etiqueta: 'Palabra', opciones: [0, 1, 2, 3].map(k => ({ valor: k, texto: `${k + 1}` })) },
+    ],
+    dibujo: val => { const E = ESCALA[val.k], w = E.ws[val.n], v = VALOR[val.n];
+      return { datos: figEscala(val.k), estado: { huecos: { w }, marcas: { w: 'o', d1: 'i', [`p-${w}`]: v[1] }, sellos: { den: { t: 'No cambia', c: 'i' }, banco: { t: v[0], c: v[1] } } } }; },
+    lectura: val => { const E = ESCALA[val.k], v = VALOR[val.n]; return [palabra(E.ws[val.n]), ': ', pista(E.den), ', y ', rasgo(v[0])]; },
+    arrastres: [{
+      id: 'palabra', etiqueta: 'palabra de la fila', color: 'c-o',
+      donde: val => RV().ancla(figEscala(val.k), `p-${ESCALA[val.k].ws[val.n]}`),
+      mover: (pt, val) => { const ws = ESCALA[val.k].ws; return { n: ws.indexOf(RV().cercana(figEscala(val.k), pt, ws.map(w => `p-${w}`)).slice(2)) }; },
+    }],
+  };
+
   return {
     unidad: 'razonamiento-verbal.sentido-contextual',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -359,6 +452,11 @@
       pregunta: '¿Por qué un diccionario no basta para entender una oración?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Diccionario de autoridades)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/contextodiscursivo.htm' },
     },
+    laboratorio: [
+      mesaPoli,
+      mesaEscala,
+      Object.assign({ id: 'pistas', titulo: 'Las pistas de «inocuo»', pieza: 'rv-texto' }, inferencia.juega),
+    ],
     ideas: [acepcion, denotaConnota, precision, inferencia],
   };
 });
