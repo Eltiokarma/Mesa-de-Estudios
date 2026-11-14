@@ -45,6 +45,9 @@
     }
     return ops.slice(0, 4);
   }
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de ejes o de fis-cuentas con los mismos datos
+  // que dibuja el juego; el lector ajusta cada valor al paso y al rango de su control.
+  const EJES = () => Kit.piezas.ejes, BARRAS = () => Kit.piezas['fis-cuentas'];
   const conSigno = (n, u = 'J') => `${n > 0 ? '+' : n < 0 ? '−' : ''}${f(Math.abs(n), 0)} ${u}`;
   // Barras de la primera ley: lo que entra como calor, lo que sale como trabajo (−W) y el resultado ΔU = Q − W.
   const cuentas = (q, w, max = 600, extra = {}) => ({
@@ -59,12 +62,17 @@
   // ---------- Idea 1: PV = nRT con la temperatura absoluta ----------
   // Cambia: T y V del gas · Permanece: n = 1 mol y la curva de cada temperatura · Progresa: la presión del punto ·
   // Se reserva: el calentamiento a volumen fijo, que se pregunta con °C · Debe verse: P se duplica cuando T (en K) se duplica.
+  // Se manipula: el punto del gas. De lado cambia V (sigue su curva); de arriba abajo salta a otra curva (cambia T).
   const R_ATM = 0.082;
   const presion = (t, v) => R_ATM * t / v;
   const isoterma = t => Array.from({ length: 33 }, (_, k) => { const v = 2 + k * 0.25; return [v, presion(t, v)]; });
   const EJE_PV = (pmax = 30) => ({
     x: { min: 0, max: 10, paso: 2, nombre: 'V', unidad: 'L', decimales: 0, color: 'i' },
     y: { min: 0, max: pmax, paso: 10, nombre: 'P', unidad: 'atm', decimales: 0, color: 'o' },
+  });
+  const datosGas = val => Object.assign(EJE_PV(), {
+    curvas: [{ puntos: isoterma(val.t), color: 'h', rotulo: `${f(val.t, 0)} K` }],
+    puntos: [{ x: val.v, y: presion(val.t, val.v), color: 'o', rotulo: `${f(presion(val.t, val.v), 1)} atm`, guias: true }],
   });
   const gas = {
     id: 'gas-ideal',
@@ -78,12 +86,15 @@
         { id: 't', etiqueta: 'T', color: 'c-h', min: 200, max: 600, paso: 100, inicio: 300, unidad: 'K', decimales: 0 },
         { id: 'v', etiqueta: 'V', color: 'c-i', min: 2, max: 10, paso: 2, inicio: 4, unidad: 'L', decimales: 0 },
       ],
-      dibujo: val => ({ datos: Object.assign(EJE_PV(), {
-        curvas: [{ puntos: isoterma(val.t), color: 'h', rotulo: `${f(val.t, 0)} K` }],
-        puntos: [{ x: val.v, y: presion(val.t, val.v), color: 'o', rotulo: `${f(presion(val.t, val.v), 1)} atm`, guias: true }],
-      }), estado: {} }),
+      dibujo: val => ({ datos: datosGas(val), estado: {} }),
       lectura: val => [P, ` = ${f(presion(val.t, val.v), 2)} atm · `, 'PV/T = 0,082 siempre'],
       minimo: 3,
+      arrastres: [{
+        id: 'estado', etiqueta: 'estado del gas (volumen y temperatura)', color: 'c-i',
+        donde: val => { const g = EJES().geometria(datosGas(val)); return { x: g.X(val.v), y: g.Y(presion(val.t, val.v)) }; },
+        // El volumen sale de la x; la temperatura, de la presión que marca el dedo a ese volumen: T = PV/(nR).
+        mover: (pt, val) => { const g = EJES().geometria(datosGas(val)), v = g.Xi(pt.x); return { v, t: g.Yi(pt.y) * Math.max(0.5, v) / R_ATM }; },
+      }],
     },
     predice: {
       pregunta: ['Un gas en un tanque rígido está a 27 °C. Lo calientas hasta 327 °C sin que escape nada. ¿Qué pasa con su presión?'],
@@ -118,7 +129,7 @@
     },
     regla: {
       texto: 'En un gas ideal, presión por volumen es proporcional a la temperatura absoluta. Su energía interna depende solo de T.',
-      ecuacion: [P, V, ' = n R ', T],
+      ecuacion: [P, V, ' = n R ', { llave: [T], nota: 'en kelvin', color: 'c-h' }],
       condicion: 'T en kelvin, gas a presión baja y lejos de condensarse. R = 0,082 atm·L/(mol·K) = 8,31 J/(mol·K).',
     },
     ahoraTu: {
@@ -167,6 +178,7 @@
   // Cambia: el calor que entra y el trabajo que el gas hace · Permanece: el cero común y el orden Q, −W, ΔU ·
   // Progresa: el largo de la barra ΔU · Se reserva: el caso en que el gas recibe calor y aun así se enfría ·
   // Debe verse: ΔU es la suma de las dos barras de la izquierda.
+  // Se manipula: el extremo de la barra Q y el de la barra −W, que se estiran hacia arriba o hacia abajo.
   const primera = {
     id: 'primera-ley',
     titulo: 'Entra calor, sale trabajo',
@@ -182,6 +194,14 @@
       dibujo: val => ({ datos: cuentas(val.q, val.w), estado: {} }),
       lectura: val => [dU, ` = ${conSigno(val.q - val.w)}`, val.q - val.w > 0 ? ' · el gas se calienta' : val.q - val.w < 0 ? ' · el gas se enfría' : ' · T no cambia'],
       minimo: 3,
+      arrastres: [
+        { id: 'calor', etiqueta: 'barra del calor Q',
+          donde: val => { const g = BARRAS().geometria(cuentas(val.q, val.w)); return { x: g.x(0), y: g.Y(val.q) }; },
+          mover: (pt, val) => ({ q: BARRAS().geometria(cuentas(val.q, val.w)).Yi(pt.y) }) },
+        { id: 'trabajo', etiqueta: 'barra del trabajo, −W',
+          donde: val => { const g = BARRAS().geometria(cuentas(val.q, val.w)); return { x: g.x(1), y: g.Y(-val.w) }; },
+          mover: (pt, val) => ({ w: -BARRAS().geometria(cuentas(val.q, val.w)).Yi(pt.y) }) },
+      ],
     },
     predice: {
       pregunta: 'Un gas recibe 200 J de calor y, al expandirse, hace 500 J de trabajo sobre el pistón. ¿Cuánto cambia su energía interna?',
@@ -206,7 +226,7 @@
     },
     regla: {
       texto: 'La energía interna cambia en el calor que recibe el gas menos el trabajo que el gas hace.',
-      ecuacion: [dU, ' = Q − W'],
+      ecuacion: [dU, ' = ', { llave: ['Q'], nota: 'entra' }, ' − ', { llave: ['W'], nota: 'sale' }],
       condicion: 'Q > 0 si el gas recibe calor; W > 0 si el gas se expande y empuja. Otra convención cambia los signos.',
     },
     ahoraTu: {
@@ -242,6 +262,8 @@
   // ---------- Idea 3: el trabajo es un área del diagrama P–V ----------
   // Cambia: el camino entre dos estados · Permanece: los estados 1 y 2 · Progresa: el área bajo cada camino ·
   // Se reserva: la vuelta completa, cuya área encerrada no es cero · Debe verse: W depende del camino; U no.
+  // Sin arrastre en el juego: el camino es una de tres opciones. En el laboratorio («Camino libre») se arrastra la
+  // esquina del camino a cualquier punto.
   const E1 = [2, 100], E2 = [6, 300];
   const EJE_KPA = () => ({
     x: { min: 0, max: 8, paso: 2, nombre: 'V', unidad: 'L', decimales: 0, color: 'i' },
@@ -271,6 +293,16 @@
     ] : [],
     puntos: [{ x: 2, y: 100, color: 'o', rotulo: '1' }, { x: 6, y: 300, color: 'o', rotulo: '2' }],
   });
+  // Camino libre: de 1 a una esquina K y de K a 2; V nunca retrocede, así que el área bajo el camino es el trabajo.
+  // La recta de 1 a 2 queda a trazos como referencia.
+  const caminoLibre = val => {
+    const pts = [E1, [val.vk, val.pk], E2];
+    return Object.assign(EJE_KPA(), {
+      curvas: [{ puntos: [E1, E2], color: 'o', discontinua: true }, { puntos: pts, color: 'o' }],
+      areas: [{ puntos: pts, color: 'i', rotulo: `W = ${f(areaBajo(pts), 0)} J` }],
+      puntos: [{ x: E1[0], y: E1[1], color: 'o', rotulo: '1' }, { x: E2[0], y: E2[1], color: 'o', rotulo: '2' }],
+    });
+  };
   const area = {
     id: 'trabajo-area',
     titulo: 'El trabajo es un área',
@@ -307,7 +339,7 @@
     },
     regla: {
       texto: 'El trabajo del gas es el área bajo su camino en P–V: positiva al expandirse y negativa al comprimirse. En un ciclo, el área encerrada.',
-      ecuacion: ['W = área bajo P–V   ·   isobárico: W = ', P, dV],
+      ecuacion: ['W = área bajo P–V', '   ·   ', 'isobárico: W = ', P, dV],
       condicion: 'el proceso es lento (cuasiestático): el gas tiene una presión definida en cada punto del camino. 1 kPa·L = 1 J.',
     },
     ahoraTu: {
@@ -333,6 +365,7 @@
   // Cambia: el proceso (qué se mantiene fijo) · Permanece: el gas (helio) y las tres barras Q, −W, ΔU ·
   // Progresa: qué barra queda en cero · Se reserva: el isotérmico, donde entra calor y T no sube ·
   // Debe verse: «isotérmico» no es «sin calor» y «adiabático» no es «a temperatura fija».
+  // Sin arrastre: el proceso es una opción; las barras salen de él y no hay nada que estirar sin romper la restricción.
   const NR = 10;              // n·R del gas, en J/K (n ≈ 1,2 mol de helio); ΔT = 20 K donde la temperatura cambia
   const NRT_ISO = 577;        // n·R·T del isotérmico (J): el volumen se duplica y W = nRT ln 2 ≈ 400 J
   const PROC = {
@@ -414,7 +447,7 @@
             { id: 'mitad', valor: x / 2, error: 'T6', siFuera: 'No hay reparto: el pistón no se mueve.' },
             { id: 'neg', valor: -x, error: 'T-SIGNO', siFuera: 'Nada empuja ni es empujado: V no cambia.' },
           ], n => conSigno(n)),
-          solucion: { texto: 'Sin cambio de volumen no hay trabajo: todo el calor sube U.', ecuacion: ['W = 0  ·  ', dU, ` = Q = ${f(x)} J`] },
+          solucion: { texto: 'Sin cambio de volumen no hay trabajo: todo el calor sube U.', ecuacion: ['W = 0', '   ·   ', dU, ` = Q = ${f(x)} J`] },
         };
       },
     },
@@ -424,6 +457,7 @@
   // Cambia: si el gas se calienta a volumen fijo o a presión fija · Permanece: n, ΔT y la barra ΔU ·
   // Progresa: la barra de trabajo, que solo aparece a presión fija · Se reserva: la diferencia cp − cv = R ·
   // Debe verse: para el mismo ΔT, a presión fija hace falta más calor.
+  // Se manipula: el extremo de la barra Q (cuánto calor se da); el ΔT que resulta se ajusta al paso de su control.
   const R = 8.31;
   const calentar = (modo, n, dt, mono = true) => {
     const du = (mono ? 1.5 : 2.5) * n * R * dt, w = modo === 'P' ? n * R * dt : 0;
@@ -452,6 +486,11 @@
       dibujo: val => ({ datos: barrasCal('V', val.n, val.dt), estado: {} }),
       lectura: val => [`Q = ${f(calentar('V', val.n, val.dt).q, 0)} J · Q/(n`, dT, `) = ${f(calentar('V', val.n, val.dt).q / (val.n * val.dt), 2)} J/(mol·K)`],
       minimo: 3,
+      arrastres: [{
+        id: 'calor', etiqueta: 'barra del calor Q', color: 'c-h',
+        donde: val => { const g = BARRAS().geometria(barrasCal('V', val.n, val.dt)); return { x: g.x(0), y: g.Y(calentar('V', val.n, val.dt).q) }; },
+        mover: (pt, val) => ({ dt: BARRAS().geometria(barrasCal('V', val.n, val.dt)).Yi(pt.y) / (1.5 * val.n * R) }),
+      }],
     },
     predice: {
       pregunta: 'Calientas 1 mol de helio 20 K: una vez a volumen fijo y otra a presión fija. ¿En cuál necesitas más calor?',
@@ -475,7 +514,7 @@
     },
     regla: {
       texto: 'Para el mismo ΔT, a presión fija se necesita más calor que a volumen fijo, porque el gas además hace trabajo.',
-      ecuacion: ['Q = n ', { sub: ['c', 'v'] }, dT, '  ·  Q = n ', { sub: ['c', 'p'] }, dT, '  ·  ', { sub: ['c', 'p'] }, ' − ', { sub: ['c', 'v'] }, ' = R'],
+      ecuacion: ['Q = n ', { llave: [{ sub: ['c', 'v'] }], nota: 'V fijo' }, dT, '   ·   ', 'Q = n ', { llave: [{ sub: ['c', 'p'] }], nota: 'P fija' }, dT, '   ·   ', { sub: ['c', 'p'] }, ' − ', { sub: ['c', 'v'] }, ' = R'],
       condicion: 'gas ideal. Monoatómico (He, Ar): cv = 3R/2. Diatómico a temperatura ambiente (N₂, O₂): cv = 5R/2.',
     },
     ahoraTu: {
@@ -500,6 +539,7 @@
   // Cambia: la temperatura del foco caliente y del frío · Permanece: el calor que entra (1000 J) ·
   // Progresa: el trabajo máximo y el calor que se echa al frío · Se reserva: el motor que promete más que Carnot ·
   // Debe verse: siempre sale calor al foco frío; el máximo lo fijan las dos temperaturas.
+  // Sin arrastre: las temperaturas no se dibujan en las barras; estirar una barra fijaría una temperatura de rebote.
   const QC = 1000;
   const motor = (tc, tf, fantasma, oculto) => {
     const eta = 1 - tf / tc, w = QC * eta;
@@ -547,7 +587,7 @@
     },
     regla: {
       texto: 'Un motor térmico siempre echa calor al foco frío. Su rendimiento no supera el de Carnot, que depende solo de las dos temperaturas.',
-      ecuacion: ['η = ', { frac: ['W', { sub: ['Q', 'cal'] }] }, ' ≤ 1 − ', { frac: [{ sub: [T, 'f'] }, { sub: [T, 'c'] }] }],
+      ecuacion: ['η = ', { frac: ['W', { sub: ['Q', 'cal'] }] }, ' ≤ ', { llave: ['1 − ', { frac: [{ sub: [T, 'f'] }, { sub: [T, 'c'] }] }], nota: 'techo de Carnot' }],
       condicion: 'temperaturas en kelvin. El máximo lo alcanza solo una máquina reversible; las reales rinden menos.',
     },
     ahoraTu: {
@@ -582,6 +622,26 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-cuentas.js'],
+    laboratorio: [
+      {
+        // Lo que la idea 3 no deja probar: cualquier camino de 1 a 2 por una esquina que se arrastra.
+        id: 'camino-libre', titulo: 'Camino libre de 1 a 2', pieza: 'ejes',
+        consigna: 'Arrastra la esquina del camino entre los estados 1 y 2. Busca el camino de más trabajo y el de menos.',
+        controles: [
+          { id: 'vk', etiqueta: 'V de la esquina', color: 'c-i', min: 2, max: 6, paso: 0.5, inicio: 4, unidad: 'L', decimales: 1 },
+          { id: 'pk', etiqueta: 'P de la esquina en kPa', color: 'c-o', min: 0, max: 400, paso: 25, inicio: 350, decimales: 0 },
+        ],
+        dibujo: val => ({ datos: caminoLibre(val), estado: {} }),
+        lectura: val => [`Esquina en ${f(val.vk, 1)}\u00a0L y ${f(val.pk, 0)}\u00a0kPa: W = ${f(areaBajo([E1, [val.vk, val.pk], E2]), 0).replace(/\s/g, '\u00a0')}\u00a0J`],
+        arrastres: [{
+          id: 'esquina', etiqueta: 'esquina del camino', color: 'c-o',
+          donde: val => { const g = EJES().geometria(caminoLibre(val)); return { x: g.X(val.vk), y: g.Y(val.pk) }; },
+          mover: (pt, val) => { const g = EJES().geometria(caminoLibre(val)); return { vk: g.Xi(pt.x), pk: g.Yi(pt.y) }; },
+        }],
+      },
+      Object.assign({ id: 'primera-ley', titulo: 'Barras de la primera ley', pieza: 'fis-cuentas' }, primera.juega),
+      Object.assign({ id: 'gas-ideal', titulo: 'El punto del gas', pieza: 'ejes' }, gas.juega),
+    ],
     historia: {
       texto: 'Las máquinas de vapor ya movían minas antes de que alguien supiera su límite. En 1824, Sadi Carnot se preguntó cuánto trabajo puede dar el calor que pasa de un cuerpo caliente a uno frío, con una máquina ideal. Décadas después, las mediciones de Joule y el trabajo de Clausius y Kelvin separaron dos ideas: la energía se conserva, y no todo el calor puede volverse trabajo.',
       pregunta: '¿Por qué un motor necesita también un lugar frío?',

@@ -19,6 +19,7 @@
  *   fantasma: null | { indice, valor, rotulo }    // el error con nombre: una barra a trazos en esa columna
  * }
  * Todo número que se ve lo trae quien llama (texto). El dibujo es una función pura de (datos, estado).
+ * geometria(datos) → { x(k), Y(valor), Yi(px), CERO, MEDIA }: para poner manijas en el extremo de una barra.
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -82,5 +83,13 @@
     return `Barras sobre un mismo cero (arriba positivo, abajo negativo): ${bs.join('; ') || 'sin barras'}.`;
   }
 
-  return { id: 'fis-cuentas', dibujar, alt, constantes: { W, CERO, MEDIA, ALTO } };
+  // Geometría para el gesto directo (docs/teoria.md §4b): la x de cada columna, la y del extremo de una barra de
+  // valor v (Y) y su inversa (Yi), con la misma escala que el dibujo. Y recorta como el dibujo (de −1 a 1,08 de max).
+  function geometria(d) {
+    d = d || {};
+    const xs = columnas(d);
+    return { x: k => xs[k], Y: v => CERO - largo(d, v), Yi: py => (CERO - py) / MEDIA * tope(d), CERO, MEDIA };
+  }
+
+  return { id: 'fis-cuentas', dibujar, alt, geometria, constantes: { W, CERO, MEDIA, ALTO } };
 });

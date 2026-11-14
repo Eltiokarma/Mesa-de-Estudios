@@ -39,3 +39,12 @@ test('sin NaN ni colores fijos; texto de 14 o más; alto fijo; pura; fantasma a 
   assert.match(P.dibujar(D, { fantasma: { indice: 2, valor: 700, rotulo: 'x' } }), /stroke-dasharray/);
   assert.match(P.alt(D), /Q \+500 J/);
 });
+
+test('geometría: Y cae en el extremo de cada barra, x en su columna, e Yi es la inversa', () => {
+  const g = P.geometria(D), r = rects(P.dibujar(D, {}));
+  assert.ok(Math.abs(g.Y(500) - r[0].y) <= 1, 'extremo de la barra positiva');
+  assert.ok(Math.abs(g.Y(-200) - (r[1].y + r[1].h)) <= 1, 'extremo de la barra negativa');
+  for (const v of [-450, -200, 0, 300, 500]) assert.ok(Math.abs(g.Yi(g.Y(v)) - v) < 1e-9);
+  const xs = [...P.dibujar(D, {}).matchAll(/<rect x="([\d.]+)" y="[\d.]+" width="([\d.]+)"/g)].map(m => +m[1] + +m[2] / 2);
+  xs.forEach((x, k) => assert.ok(Math.abs(x - g.x(k)) <= 1, `columna ${k}`));
+});
