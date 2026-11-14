@@ -4369,7 +4369,15 @@
       "orden-informacion",
       "rm-deduccion",
       "rm-parentesco"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/razonamiento-deductivo.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-matematico.trazos-y-perimetros",
@@ -4397,7 +4405,14 @@
       "cuadricula-piezas",
       "rutas-espacio",
       "papel-doblado"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/trazos-y-perimetros.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-matematico.ordenamiento-de-informacion",
@@ -4419,7 +4434,15 @@
      "plantillas": [
       "orden-informacion",
       "rm-parentesco"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/ordenamiento-de-informacion.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-tablero.js",
+       "/nucleo/kit/piezas/rm-plano.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.verdades-y-mentiras",
@@ -4440,7 +4463,14 @@
      "grado": 3,
      "plantillas": [
       "orden-informacion"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/verdades-y-mentiras.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.traslados-y-puntos-cardinales",
@@ -4464,7 +4494,15 @@
       "rm-trasvases",
       "rm-movimientos",
       "rm-rumbos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/traslados-y-puntos-cardinales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/nucleo/kit/piezas/rm-fichas.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.arreglos-numericos",
@@ -4486,7 +4524,16 @@
      "plantillas": [
       "arreglos-giros",
       "rm-arreglos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/arreglos-numericos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-tablero.js",
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/nucleo/kit/piezas/rm-fichas.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.razonamiento-inductivo",
@@ -4509,7 +4556,15 @@
       "sucesiones",
       "rm-ciclos",
       "rm-fichas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/razonamiento-inductivo.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.juegos-recreativos",
@@ -4534,7 +4589,15 @@
       "dados-domino",
       "rm-trasvases",
       "rm-movimientos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/juegos-recreativos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-fichas.js",
+       "/nucleo/kit/piezas/rm-plano.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.cronometria-y-calendarios",
@@ -4560,7 +4623,16 @@
      "plantillas": [
       "relojes-calendarios",
       "rm-relojes"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/cronometria-y-calendarios.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-reloj.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "razonamiento-matematico.certezas",
@@ -4583,7 +4655,15 @@
       "orden-informacion",
       "rm-deduccion",
       "rm-certezas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/certezas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-fichas.js",
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.frecuencia-de-sucesos",
@@ -4605,7 +4685,15 @@
      "plantillas": [
       "traslados-sucesos",
       "rm-ciclos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/frecuencia-de-sucesos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.ruedas-poleas-engranajes",
@@ -4628,7 +4716,14 @@
      "plantillas": [
       "regla-de-tres",
       "poleas-giros"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/ruedas-poleas-engranajes.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.maximos-y-minimos",
@@ -4653,7 +4748,16 @@
       "rm-planteo",
       "rm-diofanticas",
       "rm-fichas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/maximos-y-minimos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-fichas.js",
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/rm-plano.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-matematico.cortes-y-pesadas",
@@ -4678,7 +4782,16 @@
       "cortes-pesadas",
       "rm-cortes",
       "rm-balanzas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/cortes-y-pesadas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/nucleo/kit/piezas/balanza.js",
+       "/nucleo/kit/piezas/rm-fichas.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-matematico.planteo-de-ecuaciones",
@@ -4702,7 +4815,15 @@
       "traductor-enunciados",
       "rm-planteo",
       "rm-diofanticas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/planteo-de-ecuaciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/nucleo/kit/piezas/rm-fichas.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-matematico.transformaciones-de-figuras",
@@ -4733,7 +4854,14 @@
       "papel-doblado",
       "rodamientos",
       "rm-fichas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/transformaciones-de-figuras.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-matematico.rutas-y-visualizacion-espacial",
@@ -4762,7 +4890,15 @@
       "rutas-espacio",
       "cubitos-pintados",
       "rm-lectura-palabras"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/rutas-y-visualizacion-espacial.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-tablero.js",
+       "/nucleo/kit/piezas/rm-plano.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.tablas-graficos-y-suficiencia",
@@ -4784,7 +4920,15 @@
      "plantillas": [
       "tablas-graficos",
       "rm-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/tablas-graficos-y-suficiencia.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.diagramas-de-flujo",
@@ -4805,7 +4949,14 @@
      "grado": 3,
      "plantillas": [
       "rm-diagramas-flujo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/diagramas-de-flujo.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 3
+     }
     }
    ]
   },
