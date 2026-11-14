@@ -54,6 +54,27 @@
     return Object.assign({ universo: 'U', conjuntos: [{ nombre: 'A', color: 'o' }, { nombre: 'B', color: 'i' }], regiones, colorResalta: 'd' }, extra);
   }
 
+  // Gesto directo (docs/teoria.md §4b). En el Venn se arrastra una sonda de zona en zona (la pieza dice en qué zona
+  // cae un punto); en las tablas se arrastra el borde: el de abajo agrega filas, el de la derecha agrega columnas.
+  // Los aros no se arrastran: no codifican cantidades (fidelidad de arit-venn), así que el conteo va con − y +.
+  const VENN = () => Kit.piezas['arit-venn'], TABLA = () => Kit.piezas['arit-tabla'];
+  // Sonda: un punto de cada zona, debajo del rótulo de sus elementos para no taparlo.
+  function sondaEn(datos, z) {
+    const geo = VENN().geometria(datos);
+    if (z === '' || !geo.centro[z]) return { x: 296, y: 44 };
+    const c = geo.centro[z];
+    return { x: c[0], y: c[1] + (geo.n === 3 ? 18 : 28) };
+  }
+  const zonaEn = (datos, pt) => VENN().geometria(datos).zona(pt.x, pt.y);
+  // Borde más cercano: filas (de 1 a hasta) por el borde de abajo; columnas por el borde derecho.
+  const filasEn = (datos, y, hasta) => { const g = TABLA().geometria(datos); return Math.max(1, Math.min(hasta, Math.round((y - g.filaY(0)) / g.altoFila))); };
+  const colsEn = (datos, x, desde, hasta) => {
+    const g = TABLA().geometria(datos);
+    let mejor = desde;
+    for (let j = desde; j <= hasta; j++) if (Math.abs(g.xs[j + 1] - x) < Math.abs(g.xs[mejor + 1] - x)) mejor = j;
+    return mejor;
+  };
+
   // ---------- Idea 1: un conjunto por su criterio; ∈ para elementos, ⊂ para conjuntos ----------
   // Cambia: el criterio de A. Permanece: U = {1, …, 9} y B = múltiplos de 4. Progresa: los elementos de A por zona.
   // Se reserva: un conjunto de un solo elemento, {2}, frente al elemento 2. Debe verse: B ⊂ A cuando B queda dentro.
@@ -94,7 +115,7 @@
     },
     regla: {
       texto: 'Un elemento pertenece (∈) a un conjunto; un conjunto está incluido (⊂) en otro si todos sus elementos están en él. Extensión y comprensión describen el mismo conjunto.',
-      ecuacion: ['x ∈ ', A, '   ·   ', Bv, ' ⊂ ', A, ' ⟺ todo x ∈ ', Bv, ' está en ', A],
+      ecuacion: [{ llave: ['x ∈ ', A], nota: 'un elemento' }, '   ·   ', { llave: [Bv, ' ⊂ ', A], nota: 'un conjunto' }, ' ⟺ todo x ∈ ', Bv, ' está en ', A],
       condicion: '∅ no tiene elementos y está incluido en todo conjunto; {∅} sí tiene uno. U es el universo del problema.',
     },
     ahoraTu: {
@@ -156,6 +177,11 @@
     return { columnas: ['', { t: 'B', color: 'i' }, { t: 'no B', color: 'i' }], cabeza: true, filasMax: 2,
       filas: [[{ t: 'A', color: 'o' }, c(true, true), c(true, false)], [{ t: 'no A', color: 'o' }, c(false, true), c(false, false)]] };
   };
+  // La sonda recorre las cuatro zonas de dos conjuntos: [valor del control, zona de la pieza, nombre].
+  const ZONAS2 = [['a', 'A', 'solo A'], ['ab', 'AB', 'ambos'], ['b', 'B', 'solo B'], ['u', '', 'fuera']];
+  const zonaDe = v => (ZONAS2.find(z => z[0] === v) || ZONAS2[0])[1];
+  const deZona = z => (ZONAS2.find(x => x[1] === z) || ZONAS2[0])[0];
+  const nombreZ = v => (ZONAS2.find(z => z[0] === v) || ZONAS2[0])[2];
   const operaciones = {
     id: 'operaciones',
     titulo: 'Cada operación es una zona',
@@ -164,10 +190,17 @@
     juega: {
       consigna: 'A, B y U ya tienen sus elementos. Elige una operación y mira qué zonas se puntean.',
       voz: 'Lee cada operación como una condición: está en A, y no en B…',
-      controles: [{ id: 'o', etiqueta: 'Operación', opciones: ['A ∪ B', 'A ∩ B', 'A − B', 'B − A', 'A′', 'A Δ B'].map(t => ({ valor: t, texto: t })), inicio: 'A ∪ B' }],
-      dibujo: v => ({ datos: venn(AA, BB, UU), estado: { resalta: OPS[v.o] } }),
-      lectura: v => [`${v.o} = ${llaves(elementos(AA, BB, UU, OPS[v.o]))}`],
+      controles: [
+        { id: 'o', etiqueta: 'Operación', opciones: ['A ∪ B', 'A ∩ B', 'A − B', 'B − A', 'A′', 'A Δ B'].map(t => ({ valor: t, texto: t })), inicio: 'A ∪ B' },
+        { id: 'z', etiqueta: 'Sonda en', opciones: ZONAS2.map(([valor, , texto]) => ({ valor, texto })), inicio: 'a' },
+      ],
+      // La sonda (anillos huecos) marca la zona que se prueba; los puntos llenos, la operación.
+      dibujo: v => ({ datos: venn(AA, BB, UU), estado: { resalta: OPS[v.o], fantasma: { resalta: [zonaDe(v.z)] } } }),
+      lectura: v => [`${v.o} = ${llaves(elementos(AA, BB, UU, OPS[v.o]))} · ${nombreZ(v.z)}: ${OPS[v.o].includes(zonaDe(v.z)) ? 'sí' : 'no'}`],
       minimo: 4,
+      arrastres: [{ id: 'sonda', etiqueta: 'sonda: zona del diagrama que se prueba',
+        donde: v => sondaEn(venn(AA, BB, UU), zonaDe(v.z)),
+        mover: pt => ({ z: deZona(zonaEn(venn(AA, BB, UU), pt)) }) }],
     },
     predice: {
       pregunta: ['Con estos ', A, ' y ', Bv, ', ¿qué es ', A, ' ∩ ', Bv, '′ (en A y no en B)?'],
@@ -181,6 +214,8 @@
       revelar: { datos: venn(AA, BB, UU), estado: { resalta: ['A'] } },
       coincide: 'Coincide: A ∩ B′ es la misma zona que A − B.',
     },
+    // Hallazgo 9 (auditoría): aquí son dos representaciones a propósito. El juego usa el Venn y «Mira» la tabla de
+    // Carroll con los mismos A, B y U; su primer paso dice que son las mismas cuatro zonas.
     mira: {
       pieza: 'arit-tabla',
       datos: carroll(AA, BB, UU),
@@ -257,7 +292,7 @@
     },
     regla: {
       texto: 'Al sumar n(A) y n(B), los de la intersección se cuentan dos veces; por eso se restan una vez.',
-      ecuacion: [n([A, ' ∪ ', Bv]), ' = ', n(A), ' + ', n(Bv), ' − ', n([A, ' ∩ ', Bv])],
+      ecuacion: [n([A, ' ∪ ', Bv]), ' = ', n(A), ' + ', n(Bv), ' − ', { llave: [n([A, ' ∩ ', Bv])], nota: 'contados dos veces', color: 'c-d' }],
       condicion: 'A y B son finitos. Los que no están en ninguno se obtienen restando del total de U.',
     },
     ahoraTu: {
@@ -280,7 +315,7 @@
     },
   };
 
-  // ---------- Idea 4: el conjunto potencia tiene 2^n elementos ----------
+  // ---------- Idea 4: el conjunto potencia tiene 2ⁿ elementos ----------
   // Cambia: cuántos elementos tiene A. Permanece: una columna por elemento (está o no está). Progresa: las filas se duplican.
   // Se reserva: n = 5, que el juego no muestra. Debe verse: cada elemento nuevo copia todas las filas, con y sin él.
   const LETRAS = ['a', 'b', 'c'];
@@ -305,6 +340,10 @@
       dibujo: v => ({ datos: potencia(v.k), estado: {} }),
       lectura: v => [`n(P(A)) = ${2 ** v.k}`],
       minimo: 3,
+      // Se tira del borde de abajo de la tabla: solo se queda en 1, 2, 4 u 8 filas (el más cercano), nunca en 3 o 5.
+      arrastres: [{ id: 'borde', etiqueta: 'borde de abajo de la tabla (cuántos elementos tiene A)',
+        donde: v => { const g = TABLA().geometria(potencia(v.k)); return { x: 300, y: g.filaY(2 ** v.k) }; },
+        mover: (pt, v) => ({ k: Math.round(Math.log2(filasEn(potencia(v.k), pt.y, 8))) }) }],
     },
     predice: {
       pregunta: ['Si ', A, ' tiene 5 elementos, ¿cuántos subconjuntos tiene?'],
@@ -329,7 +368,7 @@
     },
     regla: {
       texto: 'El conjunto potencia P(A) reúne todos los subconjuntos de A. Cada elemento está o no está, así que el número se duplica con cada uno.',
-      ecuacion: ['n(P(', A, ')) = ', { sup: ['2', ['n(', A, ')']] }],
+      ecuacion: [{ llave: ['n(P(', A, '))'], nota: 'cuántos subconjuntos', color: 'c-d' }, ' = ', { sup: ['2', ['n(', A, ')']] }],
       condicion: 'cuenta al vacío y a A misma. Los subconjuntos propios son todos menos A: 2ⁿ − 1.',
     },
     ahoraTu: {
@@ -353,10 +392,20 @@
   // Cambia: cuántos elementos tienen A y B. Permanece: una fila por elemento de A y una columna por elemento de B.
   // Progresa: el rectángulo de pares crece. Se reserva: el par al revés, (x, 1). Debe verse: en A × B, el primero es de A.
   const LB = ['x', 'y', 'z', 'w'];
-  const prod = (na, nb, extra = {}) => Object.assign({
-    columnas: ['×', ...LB.slice(0, nb).map(t => ({ t, color: 'i' }))], cabeza: true, filasMax: 4,
-    filas: Array.from({ length: na }, (_, i) => [{ t: String(i + 1), color: 'o' }, ...LB.slice(0, nb).map(b => `(${i + 1}, ${b})`)]),
+  // reservar: las 4 columnas de B siempre (vacías las que sobran), para que el borde derecho se pueda arrastrar.
+  const prod = (na, nb, extra = {}, reservar = false) => Object.assign({
+    columnas: ['×', ...LB.slice(0, reservar ? 4 : nb).map((t, j) => (j < nb ? { t, color: 'i' } : ''))], cabeza: true, filasMax: 4,
+    filas: Array.from({ length: na }, (_, i) => [{ t: String(i + 1), color: 'o' }, ...LB.slice(0, reservar ? 4 : nb).map((b, j) => (j < nb ? `(${i + 1}, ${b})` : ''))]),
   }, extra);
+  // Dos manijas: el borde de abajo (filas: elementos de A) y el borde derecho (columnas: elementos de B).
+  const arrastresProd = (na, nb) => [
+    { id: 'filas', etiqueta: 'borde de abajo: elementos de A', color: 'c-o',
+      donde: v => { const g = TABLA().geometria(prod(v[na], v[nb], {}, true)); return { x: g.xs[1], y: g.filaY(v[na]) }; },
+      mover: (pt, v) => ({ [na]: filasEn(prod(v[na], v[nb], {}, true), pt.y, 4) }) },
+    { id: 'columnas', etiqueta: 'borde derecho: elementos de B', color: 'c-i',
+      donde: v => { const g = TABLA().geometria(prod(v[na], v[nb], {}, true)); return { x: g.xs[v[nb] + 1], y: g.filaY(4) }; },
+      mover: (pt, v) => ({ [nb]: colsEn(prod(v[na], v[nb], {}, true), pt.x, 1, 4) }) },
+  ];
   const cartesiano = {
     id: 'cartesiano',
     titulo: 'Pares con orden',
@@ -369,9 +418,10 @@
         { id: 'a', etiqueta: 'n(A)', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 },
         { id: 'b', etiqueta: 'n(B)', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 3, decimales: 0 },
       ],
-      dibujo: v => ({ datos: prod(v.a, v.b), estado: {} }),
+      dibujo: v => ({ datos: prod(v.a, v.b, {}, true), estado: {} }),
       lectura: v => [`n(A × B) = ${v.a} · ${v.b} = ${v.a * v.b}`],
       minimo: 3,
+      arrastres: arrastresProd('a', 'b'),
     },
     predice: {
       pregunta: ['Si ', A, ' = {1, 2, 3} y ', Bv, ' = {x, y}, ¿el par (x, 1) está en ', A, ' × ', Bv, '?'],
@@ -394,7 +444,7 @@
     },
     regla: {
       texto: 'A × B es el conjunto de pares ordenados (a, b) con a de A y b de B. Hay tantos como filas por columnas.',
-      ecuacion: ['n(', A, ' × ', Bv, ') = n(', A, ') · n(', Bv, ')'],
+      ecuacion: ['n(', A, ' × ', Bv, ') = ', { llave: ['n(', A, ') · n(', Bv, ')'], nota: 'filas por columnas' }],
       condicion: 'el orden importa: (a, b) = (c, d) solo si a = c y b = d. Si A ≠ B, A × B ≠ B × A.',
     },
     ahoraTu: {
@@ -422,11 +472,90 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  const U12 = Array.from({ length: 12 }, (_, k) => k + 1);
+  const EN3 = { A: x => x % 2 === 0, B: x => x % 3 === 0, C: x => x < 7 };
+  const zona3 = x => ['A', 'B', 'C'].filter(c => EN3[c](x)).join('');
+  const ZONAS3 = ['A', 'AB', 'B', 'AC', 'ABC', 'BC', 'C', ''];
+  // Cada operación es una condición sobre las letras de la zona (lo calcula el código).
+  const OPS3 = {
+    '(A ∪ B) − C': z => (z.includes('A') || z.includes('B')) && !z.includes('C'),
+    'A ∩ B ∩ C': z => z === 'ABC',
+    'A ∪ B ∪ C': z => z !== '',
+    'A ∩ (B ∪ C)': z => z.includes('A') && (z.includes('B') || z.includes('C')),
+    '(A ∩ B) ∪ C': z => (z.includes('A') && z.includes('B')) || z.includes('C'),
+    'C − (A ∪ B)': z => z === 'C',
+  };
+  const zonas3 = op => ZONAS3.filter(OPS3[op]);
+  const elementos3 = op => U12.filter(x => OPS3[op](zona3(x)));
+  function venn3() {
+    const regiones = {};
+    for (const z of ZONAS3) { const xs = U12.filter(x => zona3(x) === z); if (xs.length) regiones[z] = sinLlaves(xs); }
+    return { universo: 'U', conjuntos: [{ nombre: 'A', color: 'o' }, { nombre: 'B', color: 'i' }, { nombre: 'C', color: 'h' }], regiones, colorResalta: 'd' };
+  }
+  // Conteo con universo: los que están en los dos no pueden ser más que A ni que B, y A ∪ B no puede pasar de U.
+  function cuentas(v) {
+    const x = Math.min(v.x, v.a, v.b), union = v.a + v.b - x;
+    if (union > v.u) return { ok: false, motivo: `A ∪ B tendría ${union}: más que los ${v.u} de U` };
+    return { ok: true, x, sa: v.a - x, sb: v.b - x, ni: v.u - union };
+  }
+  // Producto en los dos órdenes: en B × A, el primer lugar del par es de B (las filas siguen siendo los números de A).
+  const prodOrden = (na, nb, orden) => {
+    const d = prod(na, nb, {}, true);
+    if (orden === 'AB') return d;
+    return Object.assign({}, d, { filas: d.filas.map((f, i) => [f[0], ...LB.slice(0, 4).map((b, j) => (j < nb ? `(${b}, ${i + 1})` : ''))]) });
+  };
+
   return {
     unidad: 'aritmetica.conjuntos',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-venn.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    // Laboratorio: juego libre, sin preguntas. «Tres conjuntos» pasa a tres aros y operaciones combinadas (el juego
+    // de la idea 2 solo tiene dos); «Conteo con universo» agrega a los que no están en ninguno y rangos amplios;
+    // «Pares en los dos órdenes» compara A × B con B × A.
+    laboratorio: [
+      {
+        id: 'tres-conjuntos', titulo: 'Tres conjuntos', pieza: 'arit-venn',
+        consigna: 'U = {1, …, 12}. A: pares; B: múltiplos de 3; C: menores que 7. Elige una operación y arrastra la sonda por las zonas.',
+        controles: [
+          { id: 'o', etiqueta: 'Operación', opciones: Object.keys(OPS3).map(t => ({ valor: t, texto: t })), inicio: '(A ∪ B) − C' },
+          { id: 'z', etiqueta: 'Sonda en', opciones: ZONAS3.map(z => ({ valor: z || 'u', texto: z || 'fuera' })), inicio: 'A' },
+        ],
+        dibujo: v => ({ datos: venn3(), estado: { resalta: zonas3(v.o), fantasma: { resalta: [v.z === 'u' ? '' : v.z] } } }),
+        lectura: v => [`${v.o}: ${elementos3(v.o).length} elementos · ${v.z === 'u' ? 'fuera' : v.z}: ${zonas3(v.o).includes(v.z === 'u' ? '' : v.z) ? 'sí' : 'no'}`],
+        arrastres: [{ id: 'sonda', etiqueta: 'sonda: zona del diagrama que se prueba',
+          donde: v => sondaEn(venn3(), v.z === 'u' ? '' : v.z),
+          mover: pt => ({ z: zonaEn(venn3(), pt) || 'u' }) }],
+      },
+      {
+        id: 'conteo-universo', titulo: 'Conteo con universo', pieza: 'arit-venn',
+        consigna: 'Elige el total del aula, cuántos juegan fútbol (A), vóley (B) y los dos. Mira cuántos no juegan ninguno.',
+        controles: [
+          { id: 'u', etiqueta: 'n(U)', min: 10, max: 60, paso: 1, inicio: 40, decimales: 0 },
+          { id: 'a', etiqueta: 'n(A)', color: 'c-o', min: 0, max: 40, paso: 1, inicio: 22, decimales: 0 },
+          { id: 'b', etiqueta: 'n(B)', color: 'c-i', min: 0, max: 40, paso: 1, inicio: 15, decimales: 0 },
+          { id: 'x', etiqueta: 'Los dos', color: 'c-d', min: 0, max: 40, paso: 1, inicio: 6, decimales: 0 },
+        ],
+        dibujo: v => {
+          const c = cuentas(v);
+          return { datos: venn([], [], [], { regiones: c.ok ? { A: String(c.sa), AB: String(c.x), B: String(c.sb), '': String(c.ni) } : {} }), estado: { resalta: c.ok ? [''] : [] } };
+        },
+        lectura: v => { const c = cuentas(v); return c.ok ? [`ninguno: ${v.u} − (${v.a} + ${v.b} − ${c.x}) = ${c.ni}`] : [c.motivo]; },
+      },
+      {
+        id: 'pares-orden', titulo: 'Pares en los dos órdenes', pieza: 'arit-tabla',
+        consigna: 'Tira de los bordes para cambiar cuántos elementos tienen A y B. Cambia el orden y compara los pares.',
+        controles: [
+          { id: 'a', etiqueta: 'n(A)', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 3, decimales: 0 },
+          { id: 'b', etiqueta: 'n(B)', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 },
+          { id: 'orden', etiqueta: 'Orden', opciones: [{ valor: 'AB', texto: 'A × B' }, { valor: 'BA', texto: 'B × A' }], inicio: 'AB' },
+        ],
+        dibujo: v => ({ datos: prodOrden(v.a, v.b, v.orden), estado: {} }),
+        lectura: v => [`${v.orden === 'AB' ? 'A × B' : 'B × A'}: ${v.a} · ${v.b} = ${v.a * v.b} pares, primero de ${v.orden === 'AB' ? 'A' : 'B'}`],
+        arrastres: arrastresProd('a', 'b'),
+      },
+    ],
     historia: {
       texto: 'Los conjuntos no nacieron como dibujos escolares. En el siglo XIX, Georg Cantor estudiaba series trigonométricas y terminó comparando colecciones infinitas por correspondencias: así distinguió tamaños de infinito. Las operaciones de esta unidad preparan ese lenguaje: pertenecer, incluir y combinar no significan lo mismo. Los aros que usamos son una ayuda para ver relaciones, no una demostración.',
       pregunta: '¿Cómo compararías dos colecciones sin contarlas?',
