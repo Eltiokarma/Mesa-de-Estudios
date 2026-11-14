@@ -11,6 +11,9 @@
  * Orden de atención · 1.º la flecha z · 2.º la flecha que resulta · acción: «Comprobar» · fondo: Nox.
  * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué multiplicar gira y estira, y por qué una raíz cúbica de 8 no es solo 2.
+ * Gesto (ronda 2) · se arrastra la punta de la flecha z (ideas 1 a 4), la raíz vecina que se acerca o se aleja de la
+ *   primera (idea 5, cambia n) y el borde de la región (idea 6). Laboratorio: dos flechas con cuatro operaciones, la
+ *   espiral de las potencias (el caso |z| ≠ 1 que las ideas no muestran) y un disco con centro, radio y punto libres.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -52,12 +55,35 @@
   // caja = [x0, y0, x1, y1] ajusta la ventana a lo que hay que mostrar (la escala es la misma en los dos ejes).
   const plano = (L, flechas, extra = {}, caja = [-L, -L, L, L]) => Object.assign({ ejes: true, flechas: [...flechas, { de: [caja[0], caja[1]], a: [caja[0], caja[1]] }, { de: [caja[2], caja[3]], a: [caja[2], caja[3]] }] }, extra);
   const fl = (p, color, rotulo, o = {}) => Object.assign({ de: [0, 0], a: p, color, rotulo }, o);
+  const SUPS = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'], supTxt = n => String(n).split('').map(c => SUPS[+c]).join('');
+
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la pieza. Cada juego fija la ventana del
+  // plano (dos flechas de largo 0 en las esquinas), así que la escala no cambia mientras se arrastra: la geometría se
+  // calcula con los mismos datos que dibuja el juego y el punto del dedo se pasa a número complejo con su inversa.
+  const FL = () => Kit.piezas.flechas, EJES = () => Kit.piezas.ejes;
+  const aPx = (datos, p) => { const g = FL().geometria(datos); return { x: g.X(p[0]), y: g.Y(p[1]) }; };
+  const deltaPx = (datos, pt) => { const g = FL().geometria(datos); return [(pt.x - g.X(0)) / g.s, (g.Y(0) - pt.y) / g.s]; };
+  // Ángulo de un punto en grados: los de abajo a la izquierda pasan a (180°, 270°) para que el arrastre no salte de 0 a 120.
+  const angulo = ([px, py], corte = -90) => { const g = Math.atan2(py, px) / RAD; return g < corte ? g + 360 : g; };
+  const puntaZ = (dibujo, cx, cy) => ({
+    id: 'punta-z', etiqueta: 'punta de la flecha z', color: 'c-o',
+    donde: val => aPx(dibujo(val).datos, [val[cx], val[cy]]),
+    mover: (pt, val) => { const [px, py] = deltaPx(dibujo(val).datos, pt); return { [cx]: px, [cy]: py }; },
+  });
 
   // ---------- Idea 1: multiplicar por i gira 90° ----------
   // Cambia: la flecha z y cuántas veces se multiplica por i · Permanece: el largo de la flecha · Progresa: el giro
   // de 90° en 90° · Se reserva: el cuarto giro, que vuelve a z · Debe verse: i² = −1 es media vuelta.
+  // Se agarra: la punta de z (a y b a la vez); la flecha verde gira con ella.
   const POT = ['1', 'i', '−1', '−i'];
   const supI = k => (k === 1 ? [I] : [{ sup: [I, String(k)] }]);
+  const dibujoGiro = val => {
+    let p = [val.a, val.b];
+    for (let k = 0; k < val.k; k++) p = porI(p);
+    const ang = Math.atan2(val.b, val.a) / RAD;
+    const arcos = val.k > 0 && val.k < 4 && (val.a || val.b) ? [{ en: [0, 0], de: red(ang), a: red(ang + 90 * val.k), texto: `${90 * val.k}°`, color: 'd', radio: 22 }] : [];
+    return { datos: plano(3.3, [fl([val.a, val.b], 'o', 'z'), ...(val.k ? [fl(p, 'd', val.k === 1 ? 'z·i' : `z·i${supTxt(val.k)}`)] : [])], { angulos: arcos }), estado: {} };
+  };
   const giro = {
     id: 'por-i-gira',
     titulo: 'Multiplicar por i gira 90°',
@@ -71,15 +97,12 @@
         { id: 'b', etiqueta: 'b', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-o' },
         { id: 'k', etiqueta: 'Veces por i', min: 0, max: 4, paso: 1, inicio: 1, decimales: 0 },
       ],
-      dibujo: val => {
-        let p = [val.a, val.b];
-        for (let k = 0; k < val.k; k++) p = porI(p);
-        const ang = Math.atan2(val.b, val.a) / RAD;
-        const arcos = val.k > 0 && val.k < 4 && (val.a || val.b) ? [{ en: [0, 0], de: red(ang), a: red(ang + 90 * val.k), texto: `${90 * val.k}°`, color: 'd', radio: 22 }] : [];
-        return { datos: plano(3.3, [fl([val.a, val.b], 'o', 'z'), ...(val.k ? [fl(p, 'd', val.k === 1 ? 'z·i' : `z·i^${val.k}`)] : [])], { angulos: arcos }), estado: {} };
-      },
+      dibujo: dibujoGiro,
       lectura: val => { let p = [val.a, val.b]; for (let k = 0; k < val.k; k++) p = porI(p); return [z, ' · ', ...(val.k ? supI(val.k) : ['1']), ` = ${fc(...p)}`]; },
       minimo: 4,
+      // Se arrastra la punta de z; la flecha verde la sigue girada. Las veces por i quedan en − y +: la flecha
+      // verde con k = 0 y k = 4 cae encima de z, y una segunda manija ahí no se distinguiría de la primera.
+      arrastres: [puntaZ(dibujoGiro, 'a', 'b')],
     },
     predice: (() => {
       const n = 50, r = n % 4;
@@ -92,7 +115,7 @@
           { id: 'menos-i', texto: POT[3], error: 'CX4', siFuera: `−i sale con resto 3; ${n} entre 4 deja resto ${r}.` },
         ],
         dibujo: { datos: plano(1.6, [fl([1, 0], 'o', '1')]), estado: {} },
-        revelar: { datos: plano(1.6, [fl([1, 0], 'o', '1'), fl(cis(1, 90 * r), 'd', `i^${n}`)], { puntos: [{ x: 0, y: 1, rotulo: 'i' }, { x: -1, y: 0, rotulo: '−1' }, { x: 0, y: -1, rotulo: '−i' }] }), estado: {} },
+        revelar: { datos: plano(1.6, [fl([1, 0], 'o', '1'), fl(cis(1, 90 * r), 'd', `i${supTxt(n)}`)], { puntos: [{ x: 0, y: 1, rotulo: 'i' }, { x: -1, y: 0, rotulo: '−1' }, { x: 0, y: -1, rotulo: '−i' }] }), estado: {} },
         coincide: `Coincide: ${n} = 4 · ${Math.floor(n / 4)} + ${r}; los grupos de cuatro giros vuelven al inicio.`,
       };
     })(),
@@ -115,7 +138,7 @@
     })(),
     regla: {
       texto: 'i² = −1. Multiplicar por i gira la flecha 90° en sentido antihorario sin cambiar su largo. Cuatro giros vuelven al inicio: iⁿ depende del resto de n entre 4.',
-      ecuacion: ['(a + b', I, ')·', I, ' = −b + a', I, '   ·   ', { sup: [I, '4'] }, ' = 1'],
+      ecuacion: ['(a + b', I, ')·', I, ' = ', { llave: ['−b + a', I], nota: 'girada 90°', color: 'c-d' }, '   ·   ', { sup: [I, '4'] }, ' = 1'],
       condicion: 'a y b son reales; el eje real va a la derecha y el imaginario hacia arriba.',
     },
     ahoraTu: {
@@ -151,7 +174,13 @@
   // ---------- Idea 2: sumar componentes, multiplicar distribuyendo ----------
   // Cambia: z y la operación · Permanece: w = 1 + i · Progresa: la flecha resultado · Se reserva: el término i·i que
   // cambia de signo · Debe verse: la suma es el paralelogramo; el producto no es «parte con parte».
+  // Se agarra: la punta de z; w queda fija para que el cambio de la flecha verde se deba solo a z.
   const W2 = [1, 1];
+  const dibujoBin = val => {
+    const p = [val.a, val.b], res = val.op === 'suma' ? [val.a + 1, val.b + 1] : mul(p, W2);
+    const guias = val.op === 'suma' ? [{ de: p, a: res }, { de: W2, a: res }] : [];
+    return { datos: plano(4.2, [fl(p, 'o', 'z'), fl(W2, 'i', 'w'), fl(res, 'd', val.op === 'suma' ? 'z + w' : 'z·w')], { guias }), estado: {} };
+  };
   const binomica = {
     id: 'forma-binomica',
     titulo: 'Sumar partes, multiplicar distribuyendo',
@@ -165,11 +194,8 @@
         { id: 'b', etiqueta: 'b', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0, color: 'c-o' },
         { id: 'op', etiqueta: 'Operación', opciones: [{ valor: 'suma', texto: 'z + w' }, { valor: 'producto', texto: 'z · w' }] },
       ],
-      dibujo: val => {
-        const p = [val.a, val.b], res = val.op === 'suma' ? [val.a + 1, val.b + 1] : mul(p, W2);
-        const guias = val.op === 'suma' ? [{ de: p, a: res }, { de: W2, a: res }] : [];
-        return { datos: plano(4.2, [fl(p, 'o', 'z'), fl(W2, 'i', 'w'), fl(res, 'd', val.op === 'suma' ? 'z + w' : 'z·w')], { guias }), estado: {} };
-      },
+      dibujo: dibujoBin,
+      arrastres: [puntaZ(dibujoBin, 'a', 'b')],
       lectura: val => { const res = val.op === 'suma' ? [val.a + 1, val.b + 1] : mul([val.a, val.b], W2); return [z, val.op === 'suma' ? ' + ' : ' · ', w, ` = ${fc(...res)}`]; },
       minimo: 4,
     },
@@ -203,7 +229,7 @@
     })(),
     regla: {
       texto: 'La suma junta las partes reales y las imaginarias por separado. El producto distribuye término a término y cambia i² por −1.',
-      ecuacion: ['(a + bi)(c + di) = (ac − bd) + (ad + bc)i'],
+      ecuacion: ['(a + bi)(c + di) = ', { llave: ['(ac − bd)'], nota: 'parte real', color: 'c-d' }, ' + ', { llave: ['(ad + bc)i'], nota: 'parte imaginaria', color: 'c-d' }],
       condicion: 'a, b, c y d son reales; la parte imaginaria de a + bi es b, sin la i.',
     },
     ahoraTu: {
@@ -240,6 +266,8 @@
   // ---------- Idea 3: el conjugado es el reflejo; el módulo, el largo ----------
   // Cambia: a y b · Permanece: el eje real como espejo · Progresa: catetos, módulo y producto z·z̄ · Se reserva: el
   // denominador que queda real al dividir · Debe verse: z·z̄ cae sobre el eje real y vale |z|².
+  // Se agarra: la punta de z; el reflejo rojo la sigue del otro lado del eje real.
+  const dibujoConj = val => ({ datos: plano(4.5, [fl([val.a, val.b], 'o', 'z'), ...(val.b ? [fl([val.a, -val.b], 'h', 'z̄')] : [])], { guias: [{ de: [0, 0], a: [val.a, 0] }, { de: [val.a, 0], a: [val.a, val.b] }] }), estado: {} });
   const conj = {
     id: 'conjugado-modulo',
     titulo: 'Reflejo y largo de la flecha',
@@ -252,9 +280,10 @@
         { id: 'a', etiqueta: 'a', min: -4, max: 4, paso: 1, inicio: 3, decimales: 0, color: 'c-o' },
         { id: 'b', etiqueta: 'b', min: -4, max: 4, paso: 1, inicio: 4, decimales: 0, color: 'c-o' },
       ],
-      dibujo: val => ({ datos: plano(4.5, [fl([val.a, val.b], 'o', 'z'), ...(val.b ? [fl([val.a, -val.b], 'h', 'z̄')] : [])], { guias: [{ de: [0, 0], a: [val.a, 0] }, { de: [val.a, 0], a: [val.a, val.b] }] }), estado: {} }),
-      lectura: val => [{ abs: [z] }, ` = ${raizTxt(val.a ** 2 + val.b ** 2)} · `, z, '·z̄', ` = ${val.a ** 2 + val.b ** 2}`],
+      dibujo: dibujoConj,
+      lectura: val => [{ abs: [z] }, ` = ${raizTxt(val.a ** 2 + val.b ** 2)}   ·   `, z, '·z̄', ` = ${val.a ** 2 + val.b ** 2}`],
       minimo: 3,
+      arrastres: [puntaZ(dibujoConj, 'a', 'b')],
     },
     predice: (() => {
       const A = [2, 1], C = [2, -1], P = mul(A, C);
@@ -278,7 +307,7 @@
         pasos: [
           { estado: { paso: 1 }, texto: 'z = 3 + 4i.', ecuacion: [z, ' = 3 + 4i'] },
           { estado: { paso: 2 }, texto: 'El conjugado cambia el signo de b: se refleja en el eje real.', ecuacion: ['z̄ = 3 − 4i'] },
-          { estado: { paso: 3 }, texto: 'El módulo es la hipotenusa de los catetos 3 y 4.', ecuacion: [{ abs: [z] }, ' = ', { raiz: ['3² + 4²'] }, ' = 5'] },
+          { estado: { paso: 3 }, texto: 'El módulo es la hipotenusa de los catetos 3 y 4.', ecuacion: [{ abs: [z] }, ' = ', { llave: [{ raiz: ['3² + 4²'] }], nota: 'hipotenusa', color: 'c-o' }, ' = 5'] },
           { estado: { paso: 3 }, texto: 'z por su conjugado da un número real: el módulo al cuadrado.', ecuacion: [z, '·z̄ = 9 + 16 = 25 = ', { sup: [{ abs: [z] }, '2'] }] },
           { estado: { paso: 3 }, texto: 'Para dividir, se multiplica arriba y abajo por el conjugado del divisor.', ecuacion: [{ frac: ['3 + 4i', '1 + 2i'] }, ' = ', { frac: ['(3 + 4i)(1 − 2i)', '1 + 4'] }, ' = ', { frac: [fc(...num), '5'] }] },
         ],
@@ -286,7 +315,7 @@
     })(),
     regla: {
       texto: 'El conjugado de a + bi es a − bi, su reflejo en el eje real. El módulo es el largo de la flecha; z por su conjugado da su cuadrado.',
-      ecuacion: [{ abs: [z] }, ' = ', { raiz: ['a² + b²'] }, '   ·   ', z, '·z̄ = ', { sup: [{ abs: [z] }, '2'] }],
+      ecuacion: [{ abs: [z] }, ' = ', { llave: [{ raiz: ['a² + b²'] }], nota: 'largo', color: 'c-o' }, '   ·   ', z, '·', { llave: ['z̄'], nota: 'reflejo', color: 'c-h' }, ' = ', { sup: [{ abs: [z] }, '2'] }],
       condicion: 'para dividir entre w se multiplica arriba y abajo por w̄, y w tiene que ser distinto de 0.',
     },
     ahoraTu: {
@@ -341,6 +370,17 @@
   // Cambia: el módulo y el argumento de z · Permanece: w = 1,5 con 60° · Progresa: el ángulo que se suma y el largo
   // que se multiplica · Se reserva: la potencia (De Moivre) · Debe verse: los ángulos se suman, los módulos se multiplican.
   const POLAR = (r, g) => `${f(r)}(cos ${f(red(g), 0)}° + i sen ${f(red(g), 0)}°)`;
+  // Se agarra: la punta de z, que fija a la vez su largo r y su ángulo θ; w queda quieta como referencia.
+  const dibujoPolar = val => {
+    const P = cis(val.r * 1.5, val.t + 60);
+    return { datos: plano(0, [fl(cis(val.r, val.t), 'o', 'z'), fl(cis(1.5, 60), 'i', 'w'), fl(P, 'd', 'z·w')], { angulos: [{ en: [0, 0], de: 0, a: val.t + 60, texto: `${val.t + 60}°`, color: 'd', radio: 30 }] }, [-3.9, -0.4, 3.9, 3.9]), estado: {} };
+  };
+  // corte: desde qué ángulo negativo se suma una vuelta (−90° si el control llega a 120°; −7,5° si llega a 345°).
+  const puntaPolar = (dibujo, cr, ct, id = 'punta-z', color = 'c-o', nombre = 'z', corte = -90) => ({
+    id, etiqueta: `punta de la flecha ${nombre}: largo y ángulo`, color,
+    donde: val => aPx(dibujo(val).datos, cis(val[cr], val[ct])),
+    mover: (pt, val) => { const q = deltaPx(dibujo(val).datos, pt); return { [cr]: Math.hypot(q[0], q[1]), [ct]: angulo(q, corte) }; },
+  });
   const polar = {
     id: 'polar',
     titulo: 'Multiplicar estira y gira',
@@ -353,10 +393,8 @@
         { id: 'r', etiqueta: 'r', min: 1.5, max: 2.5, paso: 0.5, inicio: 2, decimales: 1, color: 'c-o' },
         { id: 't', etiqueta: 'θ', min: 0, max: 120, paso: 15, inicio: 30, unidad: '°', decimales: 0, color: 'c-o' },
       ],
-      dibujo: val => {
-        const P = cis(val.r * 1.5, val.t + 60);
-        return { datos: plano(0, [fl(cis(val.r, val.t), 'o', 'z'), fl(cis(1.5, 60), 'i', 'w'), fl(P, 'd', 'z·w')], { angulos: [{ en: [0, 0], de: 0, a: val.t + 60, texto: `${val.t + 60}°`, color: 'd', radio: 30 }] }, [-3.9, -0.4, 3.9, 3.9]), estado: {} };
-      },
+      dibujo: dibujoPolar,
+      arrastres: [puntaPolar(dibujoPolar, 'r', 't')],
       lectura: val => [z, '·', w, `: módulo ${f(val.r * 1.5)}, argumento ${f(val.t + 60, 0)}°`],
       minimo: 4,
     },
@@ -386,8 +424,8 @@
       ],
     },
     regla: {
-      texto: 'Forma polar: z = r(cos θ + i sen θ) = r·e^(iθ). Al multiplicar, los módulos se multiplican y los argumentos se suman: zⁿ tiene módulo rⁿ y ángulo nθ.',
-      ecuacion: [{ sup: [z, 'n'] }, ' = ', { sup: ['r', 'n'] }, '(cos nθ + i sen nθ)'],
+      texto: 'Forma polar: z = r(cos θ + i sen θ) = r·eⁱᶿ. Al multiplicar, los módulos se multiplican y los argumentos se suman: zⁿ tiene módulo rⁿ y ángulo nθ.',
+      ecuacion: [{ sup: [z, 'n'] }, ' = ', { llave: [{ sup: ['r', 'n'] }], nota: 'largo', color: 'c-o' }, { llave: ['(cos nθ + i sen nθ)'], nota: 'gira nθ', color: 'c-d' }],
       condicion: 'r = |z| > 0; el argumento vale salvo vueltas de 360°, y z = 0 no tiene argumento.',
     },
     ahoraTu: {
@@ -415,7 +453,12 @@
   // Cambia: n y el argumento de w · Permanece: el módulo de las raíces (2) · Progresa: los vértices del polígono ·
   // Se reserva: las raíces que no están en el eje real · Debe verse: separación 360°/n, siempre n raíces.
   const raicesDe = (m, phi, n) => Array.from({ length: n }, (_, k) => cis(m, (phi + 360 * k) / n));
-  const ARGW = { 0: '8', 90: 'en el eje imaginario', 180: 'en el eje real negativo' };
+  // Se agarra: la segunda raíz (k = 1). Su ángulo es (φ + 360°)/n: acercarla a la primera obliga a que quepan más
+  // raíces en la vuelta, así que el arrastre cambia n y el polígono se rehace entero.
+  const dibujoRaices = val => {
+    const R = raicesDe(2, val.phi, val.n);
+    return { datos: plano(2.4, R.map((p, k) => fl(p, 'd', k === 0 ? `${f((val.phi) / val.n, 1)}°` : '')), { contorno: R }), estado: {} };
+  };
   const raices = {
     id: 'raices',
     titulo: 'n raíces en un polígono',
@@ -428,12 +471,14 @@
         { id: 'n', etiqueta: 'n', min: 2, max: 6, paso: 1, inicio: 3, decimales: 0, color: 'c-d' },
         { id: 'phi', etiqueta: 'w apunta', opciones: [{ valor: 0, texto: 'a 0°' }, { valor: 90, texto: 'a 90°' }, { valor: 180, texto: 'a 180°' }] },
       ],
-      dibujo: val => {
-        const R = raicesDe(2, val.phi, val.n);
-        return { datos: plano(2.4, R.map((p, k) => fl(p, 'd', k === 0 ? `${f((val.phi) / val.n, 1)}°` : '')), { contorno: R }), estado: {} };
-      },
+      dibujo: dibujoRaices,
       lectura: val => [`${val.n} raíces de módulo 2, separadas ${f(360 / val.n, 0)}°`],
       minimo: 3,
+      arrastres: [{
+        id: 'raiz-vecina', etiqueta: 'segunda raíz: acércala a la primera', color: 'c-d',
+        donde: val => aPx(dibujoRaices(val).datos, cis(2, (val.phi + 360) / val.n)),
+        mover: (pt, val) => { const q = deltaPx(dibujoRaices(val).datos, pt), g = angulo(q, 0.5); return { n: (val.phi + 360) / g }; },
+      }],
     },
     predice: (() => {
       const cubo = x => x ** 3;
@@ -467,7 +512,7 @@
     })(),
     regla: {
       texto: 'Un complejo w distinto de 0 tiene exactamente n raíces n-ésimas. Todas tienen el mismo módulo y se separan 360°/n: son los vértices de un polígono regular.',
-      ecuacion: [{ sub: [z, 'k'] }, ' = ', { raiz: ['r'], indice: 'n' }, '·(cos ', { frac: ['φ + 360°k', 'n'] }, ' + i sen ', { frac: ['φ + 360°k', 'n'] }, ')'],
+      ecuacion: [{ sub: [z, 'k'] }, ' = ', { llave: [{ raiz: ['r'], indice: 'n' }], nota: 'mismo largo', color: 'c-d' }, '·(cos ', { frac: ['φ + 360°k', 'n'] }, ' + i sen ', { frac: ['φ + 360°k', 'n'] }, ')'],
       condicion: 'w = r(cos φ + i sen φ) y k = 0, 1, …, n − 1; con k = n se repite la primera raíz.',
     },
     ahoraTu: {
@@ -495,6 +540,8 @@
   // ---------- Idea 6: |z − z₀| es una distancia ----------
   // Cambia: el tipo de región y su medida · Permanece: el plano con Re e Im · Progresa: la región sombreada ·
   // Se reserva: el punto que queda fuera por poco · Debe verse: el módulo de una resta es una distancia.
+  // Se agarra: el borde de la región. Juego y «Mira» usan el mismo plano de ejes (misma escala en los dos ejes).
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
   const circulo = (cx, cy, rr, n = 48) => Array.from({ length: n + 1 }, (_, k) => [cx + rr * Math.cos(2 * Math.PI * k / n), cy + rr * Math.sin(2 * Math.PI * k / n)]);
   // Misma escala en los dos ejes (254 px para 12 unidades en x, 170 px para 8 en y): el disco se ve redondo.
   const EJE = (y0 = -4) => ({ x: { min: -6, max: 6, paso: 1, nombre: 'Re', decimales: 0 }, y: { min: y0, max: y0 + 8, paso: 1, nombre: 'Im', decimales: 0 } });
@@ -518,6 +565,15 @@
         { id: 'v', etiqueta: 'Medida', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-d' },
       ],
       dibujo: val => ({ datos: region(val), estado: {} }),
+      // Se agarra el borde: en el disco, su punto de la derecha (el radio); en los semiplanos, la recta borde.
+      arrastres: [{
+        id: 'borde', etiqueta: 'borde de la región', color: 'c-d',
+        donde: val => { const g = EJES().geometria(region(val)); return val.tipo === 'disco' ? { x: g.X(1 + val.v), y: g.Y(1) } : val.tipo === 're' ? { x: g.X(val.v - 2), y: g.Y(2.5) } : { x: g.X(4), y: g.Y(val.v - 2) }; },
+        mover: (pt, val) => {
+          const g = EJES().geometria(region(val)), re = inversa(g.X, -6, 6)(pt.x), im = inversa(g.Y, -4, 4)(pt.y);
+          return { v: val.tipo === 'disco' ? re - 1 : val.tipo === 're' ? re + 2 : im + 2 };
+        },
+      }],
       lectura: val => [val.tipo === 'disco' ? `Disco de centro 1 + i y radio ${val.v}` : val.tipo === 're' ? `Re(z) ≥ ${f(val.v - 2)}: a la derecha, con borde` : `Im(z) < ${f(val.v - 2)}: abajo, sin borde`],
       minimo: 4,
     },
@@ -552,7 +608,7 @@
     })(),
     regla: {
       texto: '|z − z₀| es la distancia entre z y z₀: |z − z₀| ≤ r es un disco de centro z₀ y radio r. Re(z) ≥ k e Im(z) < k son semiplanos.',
-      ecuacion: [{ abs: [z, ' − ', { sub: [z, '0'] }] }, ' ≤ r'],
+      ecuacion: [{ llave: [{ abs: [z, ' − ', { sub: [z, '0'] }] }], nota: 'distancia a z₀', color: 'c-o' }, ' ≤ ', { llave: ['r'], nota: 'radio', color: 'c-d' }],
       condicion: '≤ incluye el borde y < lo deja fuera; el centro es z₀, con el signo contrario al que se ve sumado.',
     },
     ahoraTu: {
@@ -592,9 +648,100 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: dos flechas libres (largo y ángulo) y cuatro operaciones. Más rica que las ideas 2 y 4: w también se
+  // mueve, y la resta y el cociente, que las ideas no juegan, se ven como flechas.
+  const OPS = { suma: ' + ', resta: ' − ', producto: '·', cociente: ' ÷ ' };
+  const opera = (op, p, q) => (op === 'suma' ? [p[0] + q[0], p[1] + q[1]] : op === 'resta' ? [p[0] - q[0], p[1] - q[1]]
+    : op === 'producto' ? mul(p, q) : (d => [(p[0] * q[0] + p[1] * q[1]) / d, (p[1] * q[0] - p[0] * q[1]) / d])(q[0] * q[0] + q[1] * q[1]));
+  const dibujoDos = val => {
+    const p = cis(val.rz, val.tz), q = cis(val.rw, val.tw), res = opera(val.op, p, q);
+    const guias = val.op === 'suma' ? [{ de: p, a: res }, { de: q, a: res }] : val.op === 'resta' ? [{ de: q, a: p }] : [];
+    // Ventana fija de ±3: con largos de 0,5 a 1,5 el resultado más largo (cociente 1,5 ÷ 0,5) mide 3.
+    return { datos: plano(3, [fl(p, 'o', 'z'), fl(q, 'i', 'w'), fl(res, 'd', `z${OPS[val.op].trim()}w`)], { guias }), estado: {} };
+  };
+  const lecturaDos = val => {
+    const res = opera(val.op, cis(val.rz, val.tz), cis(val.rw, val.tw));
+    if (val.op === 'producto') { const g = val.tz + val.tw; return [z, '·', w, `: módulo ${f(val.rz)} · ${f(val.rw)} = ${f(val.rz * val.rw)}, ángulo ${g}°${g >= 360 ? ` = ${g - 360}°` : ''}`]; }
+    if (val.op === 'cociente') return [z, ' ÷ ', w, `: módulo ${f(val.rz)} ÷ ${f(val.rw)} = ${f(val.rz / val.rw)}, ángulo ${val.tz - val.tw}°`];
+    return [z, OPS[val.op], w, ` = ${fc(res[0], res[1])}, módulo ${f(Math.hypot(...res))}`];
+  };
+  // Mesa 2: las potencias z, z², …, zⁿ encadenadas. El caso que las ideas no dejan probar: |z| ≠ 1, la espiral que
+  // se abre o se cierra; con |z| = 1 las puntas quedan en una circunferencia.
+  const potencias = (r, t, n) => Array.from({ length: n }, (_, k) => cis(r ** (k + 1), t * (k + 1)));
+  const dibujoEspiral = val => {
+    const P = potencias(val.r, val.t, val.n);
+    // Ventana fija de ±1,8 (1,1⁶ ≈ 1,77) y la circunferencia de radio 1 como referencia tenue.
+    return { datos: plano(1.8, P.map((p, k) => fl(p, k ? 'd' : 'o', k ? (k === val.n - 1 ? `z${supTxt(k + 1)}` : '') : 'z')), { guias: P.slice(1).map((p, k) => ({ de: P[k], a: p })), contorno: circulo(0, 0, 1) }), estado: {} };
+  };
+  // Mesa 3: un disco |z − z₀| ≤ r con centro, radio y un punto que se arrastran: la distancia del punto al centro decide.
+  const dibujoDisco = val => {
+    const D = disco(val.cx, val.cy, val.r, { rotulo: fc(val.cx, val.cy) });
+    const dd = Math.hypot(val.px - val.cx, val.py - val.cy);
+    return { datos: Object.assign(EJE(), D, {
+      curvas: [...D.curvas, { puntos: [[val.cx, val.cy], [val.px, val.py]], color: 'h' }],
+      puntos: [...D.puntos, { x: val.px, y: val.py, color: 'o', rotulo: fc(val.px, val.py) }],
+      alt: `Disco de centro ${fc(val.cx, val.cy)} y radio ${val.r}; el punto ${fc(val.px, val.py)} está a distancia ${f(dd)}`,
+    }), estado: {} };
+  };
+  const ejeInv = (datos, pt) => { const g = EJES().geometria(datos); return [inversa(g.X, -6, 6)(pt.x), inversa(g.Y, -4, 4)(pt.y)]; };
+  const laboratorio = [
+    {
+      id: 'dos-flechas', titulo: 'Dos flechas, cuatro operaciones', pieza: 'flechas',
+      consigna: 'Arrastra las puntas de z y de w y elige la operación. Compara cómo cambian largo y ángulo de la flecha verde.',
+      controles: [
+        { id: 'rz', etiqueta: '|z|', min: 0.5, max: 1.5, paso: 0.25, inicio: 1.5, decimales: 2, color: 'c-o' },
+        { id: 'tz', etiqueta: 'ángulo de z', min: 0, max: 345, paso: 15, inicio: 30, unidad: '°', decimales: 0, color: 'c-o' },
+        { id: 'rw', etiqueta: '|w|', min: 0.5, max: 1.5, paso: 0.25, inicio: 1.25, decimales: 2, color: 'c-i' },
+        { id: 'tw', etiqueta: 'ángulo de w', min: 0, max: 345, paso: 15, inicio: 120, unidad: '°', decimales: 0, color: 'c-i' },
+        { id: 'op', etiqueta: 'Operación', opciones: [{ valor: 'suma', texto: 'z + w' }, { valor: 'resta', texto: 'z − w' }, { valor: 'producto', texto: 'z · w' }, { valor: 'cociente', texto: 'z ÷ w' }] },
+      ],
+      dibujo: dibujoDos,
+      lectura: lecturaDos,
+      arrastres: [puntaPolar(dibujoDos, 'rz', 'tz', 'punta-z', 'c-o', 'z', -7.5), puntaPolar(dibujoDos, 'rw', 'tw', 'punta-w', 'c-i', 'w', -7.5)],
+    },
+    {
+      id: 'espiral', titulo: 'Potencias que giran en espiral', pieza: 'flechas',
+      consigna: 'Arrastra la punta de z y elige hasta qué potencia llegas. Si |z| no es 1, las puntas dejan la circunferencia de radio 1.',
+      controles: [
+        { id: 'r', etiqueta: '|z|', min: 0.9, max: 1.1, paso: 0.05, inicio: 1.05, decimales: 2, color: 'c-o' },
+        { id: 't', etiqueta: 'ángulo de z', min: 0, max: 120, paso: 5, inicio: 40, unidad: '°', decimales: 0, color: 'c-o' },
+        { id: 'n', etiqueta: 'hasta la potencia', min: 1, max: 6, paso: 1, inicio: 6, decimales: 0, color: 'c-d' },
+      ],
+      dibujo: dibujoEspiral,
+      lectura: val => [`|z| = ${f(val.r)}, ${val.t}°: `, { sup: [z, String(val.n)] }, ` mide ${f(val.r ** val.n)} y gira ${val.t * val.n}°`],
+      arrastres: [puntaPolar(dibujoEspiral, 'r', 't')],
+    },
+    {
+      id: 'disco-libre', titulo: 'Un disco y un punto', pieza: 'ejes',
+      consigna: 'Arrastra el centro, el borde del disco y el punto z. La línea roja es la distancia del punto al centro.',
+      controles: [
+        { id: 'cx', etiqueta: 'Re del centro', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
+        { id: 'cy', etiqueta: 'Im del centro', min: -1, max: 1, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
+        { id: 'r', etiqueta: 'r', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-d' },
+        { id: 'px', etiqueta: 'Re de z', min: -6, max: 6, paso: 1, inicio: -1, decimales: 0, color: 'c-o' },
+        { id: 'py', etiqueta: 'Im de z', min: -3, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-o' },
+      ],
+      dibujo: dibujoDisco,
+      lectura: val => { const d2 = (val.px - val.cx) ** 2 + (val.py - val.cy) ** 2; return [{ abs: [z, ` − (${fc(val.cx, val.cy)})`] }, ` = ${raizTxt(d2)}: ${d2 <= val.r * val.r ? 'dentro' : 'fuera'}, radio ${val.r}`]; },
+      arrastres: [
+        { id: 'centro', etiqueta: 'centro del disco', color: 'c-i',
+          donde: val => { const g = EJES().geometria(dibujoDisco(val).datos); return { x: g.X(val.cx), y: g.Y(val.cy) }; },
+          mover: (pt, val) => { const [re, im] = ejeInv(dibujoDisco(val).datos, pt); return { cx: re, cy: im }; } },
+        { id: 'radio', etiqueta: 'borde del disco', color: 'c-d',
+          donde: val => { const g = EJES().geometria(dibujoDisco(val).datos); return { x: g.X(val.cx), y: g.Y(val.cy - val.r) }; },
+          mover: (pt, val) => { const [, im] = ejeInv(dibujoDisco(val).datos, pt); return { r: val.cy - im }; } },
+        { id: 'punto', etiqueta: 'punto z', color: 'c-o',
+          donde: val => { const g = EJES().geometria(dibujoDisco(val).datos); return { x: g.X(val.px), y: g.Y(val.py) }; },
+          mover: (pt, val) => { const [re, im] = ejeInv(dibujoDisco(val).datos, pt); return { px: re, py: im }; } },
+      ],
+    },
+  ];
+
   return {
     unidad: 'algebra.numeros-complejos',
-    version: '0.1.0',
+    version: '0.2.0',
+    laboratorio,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/flechas.js', '/nucleo/kit/piezas/ejes.js'],
     historia: {
