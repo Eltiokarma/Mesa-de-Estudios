@@ -55,6 +55,22 @@
   // Seno y coseno de los ángulos de academia: 37° y 53° son los del triángulo 3-4-5 (como en la pieza triangulo).
   const SEN = { 30: 0.5, 37: 0.6, 45: Math.SQRT1_2, 53: 0.8, 60: Math.sqrt(3) / 2 };
   const COS = { 30: Math.sqrt(3) / 2, 37: 0.8, 45: Math.SQRT1_2, 53: 0.6, 60: 0.5 };
+  const cuad = n => ({ sup: [n, '2'] });
+
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la figura (ejes.geometria o
+  // fis-lienzo.geometria, con los mismos datos que dibuja la idea). Cuando una manija mueve dos controles a la vez
+  // (la cima de la parábola), mover elige la pareja de valores cuya manija queda más cerca del dedo.
+  const EJ = datos => Kit.piezas.ejes.geometria(datos);
+  const LZ = datos => Kit.piezas['fis-lienzo'].geometria(datos);
+  const pasos = c => c.opciones ? c.opciones.map(o => o.valor) : Array.from({ length: Math.round((c.max - c.min) / c.paso) + 1 }, (_, k) => c.min + k * c.paso);
+  function masCerca(c1, c2, donde, pt) {
+    let mejor = null, dist = Infinity;
+    for (const a1 of pasos(c1)) for (const a2 of pasos(c2)) {
+      const q = donde(a1, a2), dd = Math.hypot(q.x - pt.x, q.y - pt.y);
+      if (dd < dist - 1e-9) { dist = dd; mejor = { [c1.id]: a1, [c2.id]: a2 }; }
+    }
+    return mejor;
+  }
 
   // ---------- Idea 1: un reloj, dos movimientos (tiro parabólico) ----------
   // Cambia: v₀ y el ángulo de salida · Permanece: g hacia abajo y el reloj común (marcas cada 0,5 s) ·
@@ -77,6 +93,7 @@
     }
     return Object.assign(EJE_TIRO(o.xmax, o.ymax), { curvas: [{ puntos: curva, color: 'i', desde: o.curva || 0 }], puntos }, extra);
   }
+  const cimaTiro = (vi, ang) => { const g_ = EJ(tiro(vi, ang)), ux = vi * COS[ang], uy = vi * SEN[ang]; return { x: g_.X(ux * uy / G), y: g_.Y(uy * uy / (2 * G)) }; };
   const tiroIdea = {
     id: 'un-reloj-dos-ejes',
     titulo: 'Un reloj, dos movimientos',
@@ -92,6 +109,10 @@
       dibujo: val => ({ datos: tiro(val.v0, val.ang), estado: {} }),
       lectura: val => [vx, ` = ${f(val.v0 * COS[val.ang], 1)} m/s siempre · vuelo ${f(2 * val.v0 * SEN[val.ang] / G, 2)} s`],
       minimo: 3,
+      // Arrastra la cima de la parábola: más alta o más lejos elige la rapidez y el ángulo que la ponen ahí.
+      arrastres: [{ id: 'cima', etiqueta: 'cima de la parábola (rapidez y ángulo)', color: 'c-o',
+        donde: val => cimaTiro(val.v0, val.ang),
+        mover: (pt, val) => masCerca(tiroIdea.juega.controles[0], tiroIdea.juega.controles[1], cimaTiro, pt) }],
     },
     predice: {
       pregunta: 'Desde 20 m de altura, a la vez, una pelota se suelta y otra sale horizontal a 10 m/s. Sin aire, ¿cuál llega primero al piso?',
@@ -120,7 +141,7 @@
         ],
       }, { curva: 1 }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'La velocidad de salida se parte en dos: de lado y hacia arriba.', ecuacion: [vx, ' = 25 · 0,6 = 15 m/s   ·   ', { sub: [v, 'y0'] }, ' = 25 · 0,8 = 20 m/s'] },
+        { estado: { corte: 1 }, texto: 'La velocidad de salida se parte en dos: de lado y hacia arriba.', ecuacion: [vx, ' = 25 · 0,6 = 15 m/s', '   ·   ', { sub: [v, 'y0'] }, ' = 25 · 0,8 = 20 m/s'] },
         { estado: { corte: 2 }, texto: 'De lado no hay aceleración: avanza 15 m cada segundo.', ecuacion: [x, ' = 15 ', t] },
         { estado: { corte: 3 }, texto: 'Hacia arriba es caída libre: vy llega a 0 a los 2 s.', ecuacion: [{ sub: [y, 'máx'] }, ' = ½ · 20 · 2 = 20 m'] },
         { estado: { corte: 4 }, texto: 'Baja otros 2 s. En 4 s, de lado avanzó 15 · 4.', ecuacion: ['R = ', vx, ' · ', t, ' = 15 · 4 = 60 m'] },
@@ -128,7 +149,7 @@
     },
     regla: {
       texto: 'El tiro se separa en dos movimientos con el mismo reloj: de lado, velocidad constante; hacia arriba, caída libre.',
-      ecuacion: [x, ' = ', vx, t, '   ·   ', y, ' = ', { sub: [v, 'y0'] }, t, ' − ½ ', g, { sup: [t, '2'] }],
+      ecuacion: [x, ' = ', { llave: [vx], nota: 'no cambia', color: 'c-o' }, t, '   ·   ', y, ' = ', { sub: [v, 'y0'] }, t, ' − ', { llave: ['½ ', g, { sup: [t, '2'] }], nota: 'lo que cae', color: 'c-d' }],
       condicion: 'sin aire y con g constante (aquí 10 m/s²). Igual alcance a 30° y 60° pide igual rapidez y altura.',
     },
     ahoraTu: {
@@ -156,7 +177,7 @@
             { id: 'v0', valor: vi * vi / (2 * G), error: 'TP-V0', siFuera: 'Esa sería la altura lanzando hacia arriba con toda v₀.' },
             { id: 'vx', valor: ux * ux / (2 * G), error: 'TP-V0', siFuera: 'Eso usa la parte horizontal; la altura la decide la vertical.' },
           ], n => `${f(n, 2)} m`),
-          solucion: { texto: `Es caída libre hacia arriba con vy = ${f(uy, 1)} m/s.`, ecuacion: [{ sub: [y, 'máx'] }, ` = ${f(uy, 1)}² / 20 = ${f(H, 2)} m`], dibujo: sol },
+          solucion: { texto: `Es caída libre hacia arriba con vy = ${f(uy, 1)} m/s.`, ecuacion: [{ sub: [y, 'máx'] }, ' = ', cuad(f(uy, 1)), ` / 20 = ${f(H, 2)} m`], dibujo: sol },
         };
         return {
           pregunta: [...pre, '¿a qué distancia del punto de salida cae?'], dibujo: dib,
@@ -202,6 +223,17 @@
       dibujo: val => ({ datos: arcoRueda(val.r, val.deg), estado: {} }),
       lectura: val => [`θ = ${f(rad(val.deg), 2)} rad · `, s_, ` = ${f(val.r * rad(val.deg), 2)} m`],
       minimo: 3,
+      // Arrastra el punto del borde: alrededor del centro cambia cuánto gira; hacia afuera, el radio. El arco responde.
+      arrastres: [{ id: 'punto', etiqueta: 'punto del borde (giro y radio)',
+        donde: val => { const g_ = LZ(arcoRueda(val.r, val.deg)), q = enCirculo(val.r, val.deg); return { x: g_.X(q[0]), y: g_.Y(q[1]) }; },
+        mover: (pt, val) => {
+          const g_ = LZ(arcoRueda(val.r, val.deg)), X = g_.Xi(pt.x), Y = g_.Yi(pt.y);
+          let th = Math.atan2(Y, X) * 180 / Math.PI;
+          if (th < 0) th += 360;
+          if (val.deg - th > 180) th += 360;    // pasar por 0° sigue contando: 360° no salta a 0°
+          if (th < 15) th = 360;                 // 0° es lo mismo que una vuelta completa
+          return { deg: th, r: Math.hypot(X, Y) };
+        } }],
     },
     predice: {
       pregunta: 'Otra rueda tiene radio 3 m y gira 60°. ¿Cuánto recorre un punto de su borde?',
@@ -235,7 +267,7 @@
     },
     regla: {
       texto: 'Un ángulo en radianes es el arco dividido entre el radio. Por eso el arco y la rapidez crecen con el radio.',
-      ecuacion: [s_, ' = θ r   ·   ω = ', { frac: ['Δθ', ['Δ', t]] }, '   ·   ', v, ' = ω r'],
+      ecuacion: [s_, ' = ', { llave: ['θ r'], nota: 'θ en radianes', color: 'c-i' }, '   ·   ', 'ω = ', { frac: ['Δθ', ['Δ', t]] }, '   ·   ', v, ' = ω r'],
       condicion: 'θ va en radianes (180° = π rad). En un disco rígido, todos los puntos tienen la misma ω.',
     },
     ahoraTu: {
@@ -276,6 +308,7 @@
       ],
     };
   }
+  const cuerpoMCU = (vv, rr) => { const g_ = LZ(mcu(vv, rr)), q = enCirculo(rr, 60); return { x: g_.X(q[0]), y: g_.Y(q[1]) }; };
   const mcuIdea = {
     id: 'rapidez-constante-acelera',
     titulo: 'Rapidez constante, velocidad que gira',
@@ -291,6 +324,15 @@
       dibujo: val => ({ datos: mcu(val.v, val.r), estado: {} }),
       lectura: val => [v, ` = ${f(val.v)} m/s fija · `, ac, ` = ${f(val.v * val.v / val.r, 2)} m/s²`],
       minimo: 3,
+      // Arrastra la punta de v a lo largo de la tangente (rapidez) o el cuerpo hacia afuera (radio). La flecha verde responde.
+      arrastres: [
+        { id: 'rapidez', etiqueta: 'rapidez (punta de v)', color: 'c-o',
+          donde: val => { const q = cuerpoMCU(val.v, val.r); return { x: q.x - Math.sin(rad(60)) * val.v * KV, y: q.y - Math.cos(rad(60)) * val.v * KV }; },
+          mover: (pt, val) => { const q = cuerpoMCU(val.v, val.r); return { v: ((pt.x - q.x) * -Math.sin(rad(60)) + (pt.y - q.y) * -Math.cos(rad(60))) / KV }; } },
+        { id: 'radio', etiqueta: 'radio del giro (el cuerpo)',
+          donde: val => cuerpoMCU(val.v, val.r),
+          mover: (pt, val) => { const g_ = LZ(mcu(val.v, val.r)); return { r: g_.Xi(pt.x) * Math.cos(rad(60)) + g_.Yi(pt.y) * Math.sin(rad(60)) }; } },
+      ],
     },
     predice: {
       pregunta: 'Un carrito da vueltas en una pista circular, siempre a 4 m/s. ¿Tiene aceleración?',
@@ -327,7 +369,7 @@
     },
     regla: {
       texto: 'En el MCU la rapidez no cambia, pero la dirección de la velocidad sí: hay una aceleración que apunta al centro.',
-      ecuacion: [ac, ' = ', { frac: [{ sup: [v, '2'] }, 'r'] }, ' = ', { sup: ['ω', '2'] }, 'r'],
+      ecuacion: [{ llave: [ac], nota: 'al centro', color: 'c-d' }, ' = ', { frac: [{ sup: [v, '2'] }, 'r'] }, ' = ', { sup: ['ω', '2'] }, 'r'],
       condicion: 'rapidez constante. Si además la rapidez cambia, se suma una aceleración tangencial.',
     },
     ahoraTu: {
@@ -343,7 +385,7 @@
               { id: 'w2-r', valor: w * w / rr, error: 'MC-V2R', siFuera: 'Eso divide ω² entre r; con ω es ω² por r.' },
               { id: 'cero', valor: 0, error: 'MC-A0', siFuera: 'ω constante no quita la aceleración: la velocidad cambia de dirección.' },
             ], n => `${f(n, 2)} m/s²`),
-            solucion: { texto: 'Con ω, la aceleración centrípeta es ω² por r.', ecuacion: [ac, ` = ${f(w)}² · ${f(rr, 1)} = ${f(acc, 2)} m/s²`] },
+            solucion: { texto: 'Con ω, la aceleración centrípeta es ω² por r.', ecuacion: [ac, ' = ', cuad(f(w)), ` · ${f(rr, 1)} = ${f(acc, 2)} m/s²`] },
           };
         }
         const vv = r.de([2, 3, 4, 5, 6]), rr = r.de([2, 3, 4]), acc = vv * vv / rr; // la figura dibuja v a escala, sin a
@@ -355,7 +397,7 @@
             { id: 'v-r', valor: vv / rr, error: 'MC-VR', siFuera: 'Eso es v/r, que es ω. Falta multiplicar otra vez por v.' },
             { id: 'v2r', valor: vv * vv * rr, error: 'MC-V2R', siFuera: 'Eso multiplica por r; un giro más cerrado acelera más.' },
           ], n => `${f(n, 2)} m/s²`),
-          solucion: { texto: 'Apunta al centro y vale v² entre r.', ecuacion: [ac, ` = ${f(vv)}² / ${f(rr)} = ${f(acc, 2)} m/s²`] },
+          solucion: { texto: 'Apunta al centro y vale v² entre r.', ecuacion: [ac, ' = ', cuad(f(vv)), ` / ${f(rr)} = ${f(acc, 2)} m/s²`] },
         };
       },
     },
@@ -398,6 +440,8 @@
       dibujo: val => ({ datos: mcuv(val.at, val.t), estado: {} }),
       lectura: val => [v, ` = ${f(val.at * val.t, 1)} m/s · `, ac, ` = ${f((val.at * val.t) ** 2 / RR, 2)} m/s²`],
       minimo: 3,
+      // Sin manija: las flechas de aceleración miden 10 a 20 px a la escala fija de la unidad y la manija las tapaba;
+      // el reloj (t) es tiempo, no un objeto que se agarra. Se juega con − y +.
     },
     predice: {
       pregunta: 'Una rueda arranca y gira cada vez más rápido, con aceleración angular α constante. ¿La aceleración total de un punto del borde es constante?',
@@ -414,14 +458,14 @@
     mira: {
       datos: mcuv(2, 1.5, { p1: 1, p2: 2, p3: 3 }), // a_c = 4,5 m/s²: cabe a la escala fija
       pasos: [
-        { estado: { paso: 1 }, texto: 'A 1,5 s, la parte tangencial sigue igual: 2 m/s².', ecuacion: [aT, ' = α r = 2 m/s²   ·   ', v, ' = 2 · 1,5 = 3 m/s'] },
+        { estado: { paso: 1 }, texto: 'A 1,5 s, la parte tangencial sigue igual: 2 m/s².', ecuacion: [aT, ' = α r = 2 m/s²', '   ·   ', v, ' = 2 · 1,5 = 3 m/s'] },
         { estado: { paso: 2 }, texto: 'La parte hacia el centro sale de la rapidez de ese instante.', ecuacion: [ac, ' = ', { frac: [{ sup: [v, '2'] }, 'r'] }, ' = ', { frac: ['9', '2'] }, ' = 4,5 m/s²'] },
-        { estado: { paso: 3 }, texto: 'Son perpendiculares: la total es la diagonal del rectángulo.', ecuacion: [a, ' = √(2² + 4,5²) = ', f(Math.hypot(2, 4.5), 2), ' m/s²'] },
+        { estado: { paso: 3 }, texto: 'Son perpendiculares: la total es la diagonal del rectángulo.', ecuacion: [a, ' = ', { raiz: [cuad('2'), ' + ', cuad('4,5')] }, ` = ${f(Math.hypot(2, 4.5), 2)} m/s²`] },
       ],
     },
     regla: {
       texto: 'En el MCUV la aceleración tangencial no cambia, pero la centrípeta crece con la rapidez. La total suma ambas como vectores perpendiculares.',
-      ecuacion: [aT, ' = α r   ·   ', ac, ' = ', { frac: [{ sup: [v, '2'] }, 'r'] }, '   ·   ', a, ' = √(', { sup: [aT, '2'] }, ' + ', { sup: [ac, '2'] }, ')'],
+      ecuacion: [{ llave: [aT, ' = α r'], nota: 'cambia la rapidez', color: 'c-d' }, '   ·   ', ac, ' = ', { frac: [{ sup: [v, '2'] }, 'r'] }, '   ·   ', a, ' = ', { raiz: [{ sup: [aT, '2'] }, ' + ', { sup: [ac, '2'] }] }],
       condicion: 'α constante; ω = ω₀ + α t, como v = v₀ + a t en una recta.',
     },
     ahoraTu: {
@@ -437,17 +481,51 @@
             { id: 'solo-ac', valor: acc, error: 'MC-SOLO-AC', siFuera: 'Esa es solo la parte hacia el centro; falta la tangencial.' },
             { id: 'solo-at', valor: at, error: 'MC-SOLO-AT', siFuera: 'Esa es solo la tangencial; con rapidez también hay ac.' },
           ], n => `${f(n, 2)} m/s²`),
-          solucion: { texto: `ac = ${f(vv)}²/${f(rr)} = ${f(acc)} m/s², perpendicular a aT.`, ecuacion: [a, ` = √(${f(at)}² + ${f(acc)}²) = ${f(tot, 2)} m/s²`] },
+          solucion: { texto: `ac = ${f(vv)}²/${f(rr)} = ${f(acc)} m/s², perpendicular a aT.`, ecuacion: [a, ' = ', { raiz: [cuad(f(at)), ' + ', cuad(f(acc))] }, ` = ${f(tot, 2)} m/s²`] },
         };
       },
     },
   };
 
+  // Laboratorio: el tiro con ángulos de 15° en 15° y rapidez de 5 a 30 m/s (seno y coseno exactos de Math), en
+  // ejes fijos para que dos casos guardados se comparen a la misma escala.
+  const TIRO_LIBRE = [
+    { id: 'v0', etiqueta: 'v₀', color: 'c-o', min: 5, max: 30, paso: 5, inicio: 20, unidad: 'm/s', decimales: 0 },
+    { id: 'ang', etiqueta: 'Ángulo', min: 15, max: 75, paso: 15, inicio: 30, unidad: '°', decimales: 0 },
+  ];
+  function tiroLibre(vi, ang) {
+    const ux = vi * Math.cos(rad(ang)), uy = vi * Math.sin(rad(ang)), T = 2 * uy / G;
+    const curva = Array.from({ length: 41 }, (_, k) => { const tt = T * k / 40; return [ux * tt, uy * tt - G * tt * tt / 2]; });
+    const puntos = [];
+    for (let k = 0; k * 0.5 <= T + 1e-9; k++) { const tt = k * 0.5; puntos.push({ x: ux * tt, y: uy * tt - G * tt * tt / 2, color: 'i' }, { x: ux * tt, y: 0, color: 'i', abierto: true }); }
+    return Object.assign(EJE_TIRO(95, 50), { curvas: [{ puntos: curva, color: 'i' }], puntos });
+  }
+  const cimaLibre = (vi, ang) => { const g_ = EJ(tiroLibre(vi, ang)), ux = vi * Math.cos(rad(ang)), uy = vi * Math.sin(rad(ang)); return { x: g_.X(ux * uy / G), y: g_.Y(uy * uy / (2 * G)) }; };
+
   return {
     unidad: 'fisica.movimiento-parabolico-y-circular',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-lienzo.js'],
+    // Laboratorio: juego libre, sin preguntas. El tiro libre abre el rango (5 a 30 m/s, 15° a 75°) para probar el caso
+    // raro: ángulos que suman 90° llegan igual de lejos. La rueda y el MCU son los juegos de las ideas 2 y 3.
+    laboratorio: [
+      {
+        id: 'tiro-libre', titulo: 'Tiro con cualquier ángulo', pieza: 'ejes',
+        consigna: 'Arrastra la cima o usa − y +. Guarda un tiro a 30° y otro a 60° con la misma rapidez.',
+        controles: TIRO_LIBRE,
+        dibujo: val => ({ datos: tiroLibre(val.v0, val.ang), estado: {} }),
+        lectura: val => {
+          const uy = val.v0 * Math.sin(rad(val.ang)), T = 2 * uy / G, R = val.v0 * Math.cos(rad(val.ang)) * T;
+          return [`${f(val.v0, 0)} m/s a ${f(val.ang, 0)}°: cae a ${f(R, 1)} m, sube ${f(uy * uy / (2 * G), 1)} m`];
+        },
+        arrastres: [{ id: 'cima', etiqueta: 'cima de la parábola (rapidez y ángulo)', color: 'c-o',
+          donde: val => cimaLibre(val.v0, val.ang),
+          mover: (pt, val) => masCerca(TIRO_LIBRE[0], TIRO_LIBRE[1], cimaLibre, pt) }],
+      },
+      Object.assign({ id: 'rueda', titulo: 'El arco de la rueda', pieza: 'fis-lienzo' }, angulares.juega),
+      Object.assign({ id: 'giro', titulo: 'Rapidez fija, flecha que gira', pieza: 'fis-lienzo' }, mcuIdea.juega),
+    ],
     historia: {
       texto: 'Un proyectil avanza y cae a la vez. En 1638, Galileo explicó su camino como la suma de un avance parejo y una caída acelerada, sin aire. Después, Huygens estudió el giro: algo puede mantener su rapidez y, aun así, cambiar de dirección todo el tiempo.',
       pregunta: '¿Se puede acelerar sin ir más rápido?',
