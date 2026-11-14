@@ -231,6 +231,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 // Cada predicción se guarda con la unidad del catálogo que mide.
@@ -1139,6 +1140,9 @@ function explorar(){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de cualquier pregunta se juega con la perilla k del paso 1 (ya se mueve y se arrastra).
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Mueve la perilla k o arrastra el círculo y mira la curva.', minimo:2 });
 })();
 </script>
 <script>
@@ -1278,8 +1282,9 @@ function ir(k){
   if (k > primeraLibre()) return;
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k];
-  x.antes(!!S.pred[x.id]);
-  E.compactar(!S.pred[x.id]);
+  if (jugado) { x.antes(!!S.pred[x.id]); E.compactar(!S.pred[x.id]); }
+  else E.config({ f:{ base:'cuadratica', k:2 }, caja:{ x0:-4.5, x1:4.5, y0:-1.5, y1:7.5 }, perillas:['k'], bloqueaH:true, x0:1,
+    ver:{ gemelo:true }, arrastra:{ ancla:true, gemelo:true }, lect:['k','gem'] });
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -1305,7 +1310,12 @@ function ir(k){
   });
   pintar();
 }
+// Regla 3: antes del primer experimento, juego libre con y = x² + k (la perilla que sube y baja la curva).
+let jugado = false;
 ir(0);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Mueve la perilla k o arrastra el círculo y mira la curva.', minimo:2,
+  alListo:() => { jugado = true; ir(S.k); } });
 })();
 </script>
 
