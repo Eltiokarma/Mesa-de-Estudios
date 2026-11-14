@@ -208,6 +208,16 @@ Por qué no vale como presupuesto: el Chromium sin pantalla dibuja el canvas por
     - las que no tienen dos errores del motor dentro de 1/20 a 20 veces la correcta, como C(8, 5), la suma de coeficientes de (3x − 2)⁵ y el COP de Carnot.
 
     Ojo: un valor de texto no pasa por la regla de escala. En binomio-newton, las respuestas que son números van por `num`, para que sí pasen.
+  - **Tanda C hecha (14 nov):** 98 preguntas en sus 10 escenas, cada escena revisada a ciegas antes de su commit (o justo después, con los arreglos subidos en seguida). Por escena: cinta-radio 10, circunferencia-trig 9, geometria-analitica 8, transformaciones-trig 9, conicas 19, trazos-rutas 10, cuadricula-piezas 8, rutas-espacio 9, papel-doblado 9 y orden-informacion 7. Casi todos los errores salen de los campos `errores` que ya traían los motores; el único cambio de motor es `exTexto` de transformaciones-trig, que ahora escribe −(1 + √3) con paréntesis (caso nuevo en `casos.json`). Respaldos casi todos hipótesis; los TR, GE, G2 y AR18 que se parecen a uno documentado van como parcial. Quedaron fuera:
+    - cinta-radio p2, p4, p5 y los radianes de p1: «grados como radianes» da unas 57 veces la correcta, fuera de escala, y no queda un segundo error honesto;
+    - circunferencia-trig p4, p6 (sumas de razones sin una sola llamada), p8 (lista de ángulos), p10 y cos 135° de p5 (sus errores se escriben igual);
+    - geometria-analitica p2 y p7 (el motor no saca B ni k), el radio de p10 y las ecuaciones de p5 y p6;
+    - transformaciones-trig p6 (`simplificar` no trae errores); p3 y p7 preguntan una parte (2 sen 105° cos 15° y el k);
+    - conicas: directriz, vértices de p8, tipo de p10 y la excentricidad de p6;
+    - trazos-rutas p1 (respuesta de sí o no); cuadricula-piezas p2 (los errores los calcula el index.html), p5 (12 + 10π) y los trozos de p3;
+    - rutas-espacio p8; papel-doblado p3 (una forma), p6, p7 y p9; orden-informacion p2, p3, p6 y p8.
+
+    Ojo: en rutas-espacio p10 las coordenadas de los nodos dan una arista lateral de √24 y no de 5 (el cálculo usa los pesos, así que la respuesta no cambia); si algún dibujo sale de esas coordenadas, no cuadra con el enunciado. conicas y geometria-analitica tienen las respuestas en texto («(±5; 0)», «√5»), así que no pasan por la regla de escala.
 - **Revisar las dos tablas de `nucleo/repaso-tipos.js`**, que las clasificó un modelo.
 - **La pregunta de seguridad (versión S).** Va después de la versión A de MRU y necesita diseño aprobado. No se empezó.
 - **Una unidad entra a la cola por los eventos que registran las escenas.** Si una escena de varias unidades anota siempre su unidad principal, las demás unidades no entran por esa escena.
