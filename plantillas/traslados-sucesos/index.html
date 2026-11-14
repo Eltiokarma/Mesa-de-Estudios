@@ -1010,15 +1010,29 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
-// Regla 3: antes de la primera pregunta, juego libre: una fila de 4 monedas que se arrastran por la mesa
-// (con teclado: Tab al dibujo, flechas y Enter). Sin cuenta de jugadas: no adelanta las diez monedas del paso 6.
+// Regla 3: antes de la primera pregunta, juego libre con la misma línea de tiempo de las pastillas: el alumno cambia
+// cada cuántas horas y cuántos días, y mira cómo se reparten las tomas. Para que el juego deje mirar sin dar la
+// respuesta del paso 1 (cada 6 h durante 2 días), solo ofrece 4, 8 o 12 h y 1 o 3 días, y no cuenta las tomas.
 E.compactar(false);
-E.config({ modo:'monedas', tocar:true, mon:{ filas:3, pos:[[0, 0], [1, 0], [2, 0], [3, 0]], puntos:true },
-  lect:[L('ink', 'Monedas', '4')],
-  desc:'Una fila de 4 monedas sobre la mesa. Arrástralas a otros puntos, o entra al dibujo con Tab y usa las flechas y Enter.' });
+const J1 = { k:8, d:1 };
+function lineaJuego(){
+  const t = 24*J1.d, R = MT.tomas({ k:J1.k, t, final:true });
+  const marcas = Array.from({ length:J1.d + 1 }, (_, j) => ({ h:24*j, texto:['lun', 'mar', 'mié', 'jue'][j] + ' 8:00' }));
+  E.config({ modo:'linea', lin:{ k:J1.k, t, final:true, ver:R.tomas, marcas, intervalos:false },
+    lect:[L('k', 'Cada k', `${J1.k} h`), L('t', 'Durante t', `${t} h`)],
+    ley:[['n', 'n · cada toma', 'pt'], ['k', 'k · entre dos tomas']],
+    desc:`Una pastilla cada ${J1.k} horas durante ${J1.d} ${J1.d === 1 ? 'día' : 'días'}, también al terminar.` });
+}
+const cajaJ1 = document.createElement('div'); cajaJ1.className = 'controles juego';
+cajaJ1.innerHTML = `<p class="rotulo-chico">Una pastilla cada…</p>${segHTML('kj', 'Cada cuántas horas', [[4, '4 h'], [8, '8 h'], [12, '12 h']], J1.k)}
+  <p class="rotulo-chico">Durante…</p>${segHTML('dj', 'Cuántos días', [[1, '1 día'], [3, '3 días']], J1.d)}`;
+$('cv').closest('.lienzo').after(cajaJ1);
+[['kj', v => { J1.k = +v; }], ['dj', v => { J1.d = +v; }]].forEach(([id, fn]) => $(id).querySelectorAll('button').forEach(b => b.onclick = () => {
+  fn(b.dataset.v); $(id).querySelectorAll('button').forEach(q => q.setAttribute('aria-pressed', String(q === b))); lineaJuego(); }));
+lineaJuego();
 JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
-  consigna:'Arrastra las monedas a otros puntos de la mesa y arma una figura.', minimo:2,
-  alListo:() => go(S.step) });
+  consigna:'Cambia la receta y mira cómo se reparten las pastillas.', minimo:2,
+  alListo:() => { cajaJ1.remove(); go(S.step); } });
 })();
 </script>
 <script>
