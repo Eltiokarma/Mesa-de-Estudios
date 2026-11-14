@@ -225,6 +225,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'cuadrado-crece', unidad: 'algebra.exponentes-y-productos-notables', version: '0.1.0' };
@@ -1257,6 +1258,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de cualquier pregunta se juega con el segmento a + b del paso 1 (ya se arrastra).
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra los dos puntos y cambia las partes a y b.', minimo:2 });
 })();
 </script>
 <script>
@@ -1369,8 +1373,8 @@ function ir(k){
   if (k > primeraLibre()) return;
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k];
-  x.antes(!!S.pred[x.id]);
-  E.compactar(!S.pred[x.id]);
+  if (jugado) { x.antes(!!S.pred[x.id]); E.compactar(!S.pred[x.id]); }
+  else E.config({ modo:'cuadrado', a:3, b:2, prog:{ crece:0 }, ver:{ total:true }, arrastrable:true, cajaFija:{ x0:0, x1:12, y0:0, y1:2.4 }, lect:['a', 'b', 'lado'] });
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -1396,7 +1400,12 @@ function ir(k){
   });
   pintar();
 }
+// Regla 3: antes del primer experimento, juego libre con el segmento a + b (sin cuadrado ni áreas).
+let jugado = false;
 ir(0);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra los dos puntos y cambia las partes a y b.', minimo:2,
+  alListo:() => { jugado = true; ir(S.k); } });
 })();
 </script>
 
