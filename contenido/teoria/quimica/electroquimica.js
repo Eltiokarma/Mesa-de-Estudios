@@ -116,7 +116,7 @@
     },
     regla: {
       texto: 'Oxidación en el ánodo, reducción en el cátodo. Los electrones van por el alambre del ánodo al cátodo; en las disoluciones y el puente se mueven iones.',
-      ecuacion: [{ sub: [E0, 'celda'] }, ' = ', { sub: [E0, 'cátodo'] }, ' − ', { sub: [E0, 'ánodo'] }],
+      ecuacion: [{ sub: [E0, 'celda'] }, ' = ', { llave: [{ sub: [E0, 'cátodo'] }], nota: 'se reduce', color: 'c-d' }, ' − ', { llave: [{ sub: [E0, 'ánodo'] }], nota: 'se oxida', color: 'c-d' }],
       condicion: 'a 1 M, 1 atm y 25 °C. Si se multiplica una semirreacción por 2, su potencial no cambia.',
       voz: 'Primero el papel de cada electrodo; la fem sale después.',
     },
@@ -151,6 +151,16 @@
     elementos: [...(resto ? PARES_ESC.map((x, i) => ({ tipo: 'punto', x: MET[x].e0, rotulo: `${MET[x].ion}/${x}`, fila: [1, 2, 3][i % 3], abierto: true })) : []), ...extra],
     alt: 'Escala de potenciales estándar de reducción: Mg −2,37; Zn −0,76; Fe −0,45; Pb −0,13; Cu +0,34; Ag +0,80 V.',
   });
+  // Gesto directo: la flecha va del metal al ion sobre la escala. Su punta se arrastra hacia otro ion y su cola hacia otro
+  // metal (controles de opciones: cae en el par más cercano).
+  const RX = (datos = ESCALA()) => Kit.piezas.recta.geometria(datos);
+  const masCerca = (lista, px) => { const g = RX(), e = -2.5 + (px - g.x(-2.5)) * 3.5 / (g.x(1) - g.x(-2.5)); return lista.reduce((a, b) => (Math.abs(MET[b].e0 - e) < Math.abs(MET[a].e0 - e) ? b : a)); };
+  const flechaEsc = (metales, iones, datos = () => ESCALA()) => [
+    { id: 'ion', etiqueta: 'punta de la flecha: el ion que se reduce', color: 'c-d',
+      donde: val => ({ x: RX(datos(val)).x(MET[val.ion].e0), y: RX(datos(val)).filaY(0) }), mover: pt => ({ ion: masCerca(iones, pt.x) }) },
+    { id: 'metal', etiqueta: 'cola de la flecha: el metal que se oxida', color: 'c-d',
+      donde: val => ({ x: RX(datos(val)).x(MET[val.met].e0), y: RX(datos(val)).filaY(0) }), mover: pt => ({ met: masCerca(metales, pt.x) }) },
+  ];
   const espont = {
     id: 'espontaneidad',
     titulo: 'Espontánea si E es positivo',
@@ -166,6 +176,7 @@
       dibujo: val => ({ datos: ESCALA([{ tipo: 'salto', a: MET[val.met].e0, b: MET[val.ion].e0, color: 'd', rotulo: fv(MET[val.ion].e0 - MET[val.met].e0), fila: 0 }]), estado: {} }),
       lectura: val => { const e = MET[val.ion].e0 - MET[val.met].e0; return [E0, ` = ${fv(e)}: ${e > 0 ? `el ${val.met} se disuelve; aparece ${val.ion}` : 'no hay reacción'}.`]; },
       minimo: 3,
+      arrastres: flechaEsc(['Mg', 'Zn', 'Fe'], ['Pb', 'Cu', 'Ag']),
     },
     predice: {
       pregunta: 'Ahora metes una cuchara de cobre en una disolución de Zn²⁺. ¿Se cubre la cuchara de zinc?',
@@ -195,7 +206,7 @@
     },
     regla: {
       texto: 'Una redox es espontánea si su E° es positivo: se reduce la especie de potencial más alto y se oxida la de potencial más bajo.',
-      ecuacion: ['Δ', { sup: ['G', '°'] }, ' = −n F ', E0, '   ·   ', E0, ' > 0 → espontánea'],
+      ecuacion: ['Δ', { sup: ['G', '°'] }, ' = −', { llave: ['n'], nota: 'mol de e⁻' }, ' ', { llave: ['F'], nota: 'de Faraday' }, ' ', E0, '   ·   ', E0, ' > 0 →\u00a0espontánea'],
       condicion: 'en condiciones estándar; con otras concentraciones el potencial cambia (ecuación de Nernst) y puede invertir el sentido.',
       voz: 'Ubica, resta y mira el signo.',
     },
@@ -242,6 +253,16 @@
       dibujo: val => ({ datos: ejesM({ curvas: [{ puntos: [[0, 0], [60, mDep('Cu', val.i, 60)]], color: 'i', rotulo: `Cu, ${val.i} A` }], puntos: [{ x: val.t, y: mDep('Cu', val.i, val.t), color: 'i', rotulo: `${f(mDep('Cu', val.i, val.t))} g`, guias: true }] }), estado: {} }),
       lectura: val => ['Q = ', I, `·t = ${f(val.i * val.t * 60, 0)} C · `, m, ` = ${f(mDep('Cu', val.i, val.t))} g`],
       minimo: 3,
+      // Dos manijas: el punto se corre por la recta (elige t) y el extremo de la recta sube o baja (elige I: más corriente,
+      // más pendiente). La masa responde en la lectura.
+      arrastres: [
+        { id: 'tiempo', etiqueta: 'tiempo sobre la recta', color: 'c-i',
+          donde: val => { const g = Kit.piezas.ejes.geometria(ejesM()); return { x: g.X(val.t), y: g.Y(mDep('Cu', val.i, val.t)) }; },
+          mover: pt => { const g = Kit.piezas.ejes.geometria(ejesM()); return { t: (pt.x - g.X(0)) * 60 / (g.X(60) - g.X(0)) }; } },
+        { id: 'corriente', etiqueta: 'extremo de la recta: más arriba, más corriente', color: 'c-o',
+          donde: val => { const g = Kit.piezas.ejes.geometria(ejesM()); return { x: g.X(60), y: g.Y(mDep('Cu', val.i, 60)) }; },
+          mover: pt => { const g = Kit.piezas.ejes.geometria(ejesM()), mm = (pt.y - g.Y(0)) * 8 / (g.Y(8) - g.Y(0)); return { i: mm / mDep('Cu', 1, 60) }; } },
+      ],
     },
     predice: {
       pregunta: 'Con la misma corriente y el mismo tiempo depositas plata (Ag⁺ + e⁻ → Ag) en vez de cobre (Cu²⁺ + 2e⁻ → Cu). ¿Qué masa de plata sale?',
@@ -257,6 +278,9 @@
       coincide: 'Coincide: el doble de átomos y cada uno más pesado.',
       noCoincide: 'Con un electrón por átomo se depositan el doble de átomos, y cada uno pesa más.',
     },
+    // Hallazgo 9: son dos representaciones a propósito. La gráfica m–t del juego dice cuánto se deposita; la celda de
+    // «Mira» dice por dónde va la carga y dónde ocurre cada proceso, que es lo que el paso a paso explica antes de contar.
+    // La recta del juego vuelve en el revelado de la predicción.
     mira: {
       pieza: 'quim-celda',
       datos: { tipo: 'electrolitica', izq: { electrodo: 'C', rol: 'ánodo', proceso: 'oxidación', color: 'h' }, der: { electrodo: 'C', rol: 'cátodo', proceso: 'reducción', color: 'i', disolucion: 'CuSO₄(ac)' },
@@ -266,13 +290,13 @@
         { estado: { corte: 1 }, texto: 'La fuente empuja electrones hacia un electrodo: la reacción no ocurriría sola.' },
         { estado: { corte: 2 }, texto: 'En el cátodo el Cu²⁺ toma dos electrones y se deposita.', ecuacion: ['Cu²⁺ + 2e⁻ → Cu'] },
         { estado: { corte: 3 }, texto: 'En el líquido, los iones llevan la carga de un electrodo al otro.' },
-        { estado: { corte: 4 }, texto: 'En 30 min con 2 A pasan 3 600 C.', ecuacion: ['Q = ', I, '·t = 2 · 1 800 = 3 600 C'] },
-        { estado: { corte: 4 }, texto: 'Cada mol de cobre necesita 2 mol de electrones.', ecuacion: [m, ' = ', { frac: [['63,55 · 3 600'], ['2 · 96 485']] }, ` = ${f(mDep('Cu', 2, 30))} g`] },
+        { estado: { corte: 4 }, texto: 'En 30 min con 2 A pasan 3\u00a0600 C.', ecuacion: ['Q = ', I, '·t = 2 · 1\u00a0800 = 3\u00a0600 C'] },
+        { estado: { corte: 4 }, texto: 'Cada mol de cobre necesita 2 mol de electrones.', ecuacion: [m, ' = ', { frac: [['63,55 · 3\u00a0600'], ['2 · 96\u00a0485']] }, ` = ${f(mDep('Cu', 2, 30))} g`] },
       ],
     },
     regla: {
       texto: 'En la electrólisis una fuente fuerza una redox que no ocurre sola. La masa depositada es proporcional a la carga que pasa e inversa a los electrones por ion.',
-      ecuacion: [m, ' = ', { frac: [['M ', I, ' t'], 'z F'] }, '   ·   F = 96 485 C/mol'],
+      ecuacion: [m, ' = ', { frac: [['M ', I, ' t'], [{ llave: ['z'], nota: 'e⁻ por ion' }, ' F']] }, '   ·   ', 'F = 96\u00a0485\u00a0C/mol'],
       condicion: 't en segundos y eficiencia del 100 %; en agua pueden competir otras reacciones, como formar H₂ en vez del metal.',
       voz: 'Carga primero; después, cuántos electrones pide cada ion.',
     },
@@ -287,7 +311,7 @@
             { id: 'min', valor: mm / 60, error: 'QM-T-MIN', siFuera: 'Eso usa el tiempo en minutos. La carga en coulomb pide segundos.' },
             { id: 'por-z', valor: mm * X.z * X.z, error: 'QM-FARADAY-Z', siFuera: 'Eso multiplica por los electrones en vez de dividir.' },
           ], n => `${f(n)} g`),
-          solucion: { texto: `Q = I·t con t en segundos; cada ion toma ${X.z} electrón${X.z > 1 ? 'es' : ''}.`, ecuacion: [m, ` = ${f(X.M)} · ${f(i, 0)} · ${f(t * 60, 0)} / (${X.z} · 96 485) = ${f(mm)} g`] },
+          solucion: { texto: `Q = I·t con t en segundos; cada ion toma ${X.z} electrón${X.z > 1 ? 'es' : ''}.`, ecuacion: [m, ` = ${f(X.M)} · ${f(i, 0)} · ${f(t * 60, 0)} / (${X.z} · 96\u00a0485) = ${f(mm)} g`] },
         };
       },
     },
@@ -319,6 +343,10 @@
       dibujo: val => ({ datos: ejesP({ puntos: [{ x: val.p, y: val.e, color: 'd', rotulo: `(${f(val.p, 0)}; ${f(val.e)} V)` }] }), estado: {} }),
       lectura: val => [`pH ${f(val.p, 0)}, `, E, ` = ${f(val.e)} V: ${zona(val.p, val.e)}.`],
       minimo: 4,
+      // El punto se arrastra en las dos direcciones: hacia los lados cambia el pH y hacia arriba el potencial.
+      arrastres: [{ id: 'punto', etiqueta: 'punto (pH, potencial)', color: 'c-d',
+        donde: val => { const g = Kit.piezas.ejes.geometria(ejesP()); return { x: g.X(val.p), y: g.Y(val.e) }; },
+        mover: pt => { const g = Kit.piezas.ejes.geometria(ejesP()); return { p: (pt.x - g.X(0)) * 14 / (g.X(14) - g.X(0)), e: -1 + (pt.y - g.Y(-1)) * 2.5 / (g.Y(1.5) - g.Y(-1)) }; } }],
     },
     predice: {
       pregunta: ['A pH 7, ¿por debajo de qué potencial ', E, ' el agua empieza a reducirse a H₂?'],
@@ -349,7 +377,7 @@
     },
     regla: {
       texto: 'Un diagrama de Pourbaix marca, para cada pH y potencial, qué especie es estable. Para el agua, entre sus dos líneas el agua no se oxida ni se reduce.',
-      ecuacion: [E, ' = 1,23 − 0,0592 pH   ·   ', E, ' = −0,0592 pH'],
+      ecuacion: [E, ' = 1,23\u00a0−\u00a00,0592\u00a0pH', '   ·   ', E, ' = −0,0592\u00a0pH'],
       condicion: 'a 25 °C y gases a 1 atm. Es termodinámica: no dice la rapidez de un proceso, por ejemplo de la corrosión.',
       voz: 'Ubica el punto y lee la zona.',
     },
@@ -372,6 +400,27 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  const TODOS = ['Mg', 'Zn', 'Fe', 'Ni', 'Pb', 'Cu', 'Ag'];
+  const FILA_LAB = { Mg: 2, Zn: 1, Fe: 2, Ni: 3, Pb: 4, Cu: 1, Ag: 3 };
+  // Los siete pares (con Ni, que la escala de la idea no trae), repartidos en tres filas para que no choquen los rótulos.
+  const escalaLab = val => Object.assign(ESCALA([...TODOS.map((x, i) => ({ tipo: 'punto', x: MET[x].e0, rotulo: `${MET[x].ion}/${x}`, fila: FILA_LAB[x], abierto: true })), { tipo: 'salto', a: MET[val.met].e0, b: MET[val.ion].e0, color: 'd', rotulo: val.met === val.ion ? '0 V' : fv(MET[val.ion].e0 - MET[val.met].e0), fila: 0 }], false),
+    { filas: 4, alt: `Escala de potenciales con una flecha del par ${MET[val.met].ion}/${val.met} al par ${MET[val.ion].ion}/${val.ion}: E° = ${fv(MET[val.ion].e0 - MET[val.met].e0)}.` });
+  const depLab = val => ejesM({
+    x: { min: 0, max: 120, paso: 20, nombre: 't', unidad: 'min', decimales: 0 },
+    y: { min: 0, max: 50, paso: 10, nombre: 'm', unidad: 'g', decimales: 0, color: 'i' },
+    curvas: [{ puntos: [[0, 0], [120, mDep('Cu', val.i, 120)]], color: 'i', discontinua: val.x !== 'Cu', rotulo: val.x === 'Cu' ? `Cu, ${f(val.i, 1)} A` : 'Cu' }]
+      .concat(val.x === 'Cu' ? [] : [{ puntos: [[0, 0], [120, mDep(val.x, val.i, 120)]], color: 'i', rotulo: `${val.x}, ${f(val.i, 1)} A` }]),
+    puntos: [{ x: val.t, y: mDep(val.x, val.i, val.t), color: 'i', rotulo: `${f(mDep(val.x, val.i, val.t))} g`, guias: true }],
+    alt: `Masa de ${val.x} depositada contra tiempo con ${f(val.i, 1)} A: ${f(mDep(val.x, val.i, val.t))} g a los ${f(val.t, 0)} min. La recta punteada es la del cobre.`,
+  });
+  const zonaCorta = (p, e) => (e > eO2(p) ? 'se oxida' : e < eH2(p) ? 'se reduce' : 'estable');
+  const mapaLab = val => ejesP({
+    curvas: ejesP().curvas.concat([{ puntos: [[0, MET[val.x].e0], [14, MET[val.x].e0]], color: 'h', discontinua: true, rotulo: `${MET[val.x].ion} / ${val.x}`, en: [2, MET[val.x].e0 + 0.12] }]),
+    puntos: [{ x: val.p, y: val.e, color: 'd', rotulo: `(${f(val.p, 0)}; ${f(val.e)} V)` }],
+    alt: `Diagrama potencial-pH del agua con la línea horizontal del par ${MET[val.x].ion}/${val.x} en ${fv(MET[val.x].e0)}; el punto está en pH ${f(val.p, 0)} y ${f(val.e)} V.`,
+  });
+
   return {
     unidad: 'quimica.electroquimica',
     version: '0.1.0',
@@ -382,6 +431,56 @@
       pregunta: '¿Cómo medirías cuánta materia transforma una corriente?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §17.2 y §17.7', url: 'https://openstax.org/books/chemistry-2e/pages/17-7-electrolysis' },
     },
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera abre la escala a los siete pares, en los dos
+    // sentidos (la idea 2 solo deja metales activos contra iones nobles). La segunda deposita cinco metales con más
+    // corriente y más tiempo, con la recta del cobre de fondo. La tercera pone un metal sobre el mapa del agua: se ve que
+    // su línea no depende del pH. Las lecturas dicen entradas y resultado, para que el caso guardado se lea solo.
+    laboratorio: [
+      {
+        id: 'escala-completa', titulo: 'Cualquier metal, cualquier ion', pieza: 'recta',
+        consigna: 'Arrastra la cola de la flecha a un metal y la punta a un ion. Busca qué pares reaccionan solos.',
+        controles: [
+          { id: 'met', etiqueta: 'Metal', opciones: TODOS.map(x => ({ valor: x, texto: x })) },
+          { id: 'ion', etiqueta: 'Disolución', opciones: TODOS.slice().reverse().map(x => ({ valor: x, texto: MET[x].ion })) },
+        ],
+        dibujo: val => ({ datos: escalaLab(val), estado: {} }),
+        lectura: val => { const e = MET[val.ion].e0 - MET[val.met].e0; return [`${val.met} en ${MET[val.ion].ion} → `, E0, ` = ${fv(e)}: ${e > 0 ? 'ocurre' : 'no ocurre'}`]; },
+        arrastres: flechaEsc(TODOS, TODOS, escalaLab),
+      },
+      {
+        id: 'deposito-libre', titulo: 'Deposita cualquier metal', pieza: 'ejes',
+        consigna: 'Elige el metal, la corriente y el tiempo. Compara su recta con la del cobre, punteada.',
+        controles: [
+          { id: 'x', etiqueta: 'Metal', opciones: ['Cu', 'Ag', 'Zn', 'Ni', 'Pb'].map(x => ({ valor: x, texto: `${x} (${MET[x].ion})` })) },
+          { id: 'i', etiqueta: 'I', color: 'c-o', min: 0.5, max: 5, paso: 0.5, inicio: 2, unidad: 'A', decimales: 1 },
+          { id: 't', etiqueta: 't', min: 5, max: 120, paso: 5, inicio: 60, unidad: 'min', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: depLab(val), estado: {} }),
+        lectura: val => [`${val.x}: ${f(val.i, 1)} A · ${f(val.t, 0)} min → `, m, ` = ${f(mDep(val.x, val.i, val.t))} g`],
+        arrastres: [
+          { id: 'tiempo', etiqueta: 'tiempo sobre la recta', color: 'c-i',
+            donde: val => { const g = Kit.piezas.ejes.geometria(depLab(val)); return { x: g.X(val.t), y: g.Y(mDep(val.x, val.i, val.t)) }; },
+            mover: (pt, val) => { const g = Kit.piezas.ejes.geometria(depLab(val)); return { t: (pt.x - g.X(0)) * 120 / (g.X(120) - g.X(0)) }; } },
+          { id: 'corriente', etiqueta: 'extremo de la recta: más arriba, más corriente', color: 'c-o',
+            donde: val => { const g = Kit.piezas.ejes.geometria(depLab(val)); return { x: g.X(120), y: g.Y(mDep(val.x, val.i, 120)) }; },
+            mover: (pt, val) => { const g = Kit.piezas.ejes.geometria(depLab(val)), mm = (pt.y - g.Y(0)) * 50 / (g.Y(50) - g.Y(0)); return { i: mm / mDep(val.x, 1, 120) }; } },
+        ],
+      },
+      {
+        id: 'metal-en-el-mapa', titulo: 'Un metal en el mapa', pieza: 'ejes',
+        consigna: 'Elige un metal: su línea es horizontal. Mueve el punto y lee qué le pasa al agua y al metal.',
+        controles: [
+          { id: 'x', etiqueta: 'Metal', opciones: ['Zn', 'Fe', 'Cu', 'Ag'].map(x => ({ valor: x, texto: x })) },
+          { id: 'p', etiqueta: 'pH', min: 0, max: 14, paso: 1, inicio: 7, decimales: 0 },
+          { id: 'e', etiqueta: 'E', color: 'c-d', min: -1, max: 1.5, paso: 0.05, inicio: 0, unidad: 'V', decimales: 2 },
+        ],
+        dibujo: val => ({ datos: mapaLab(val), estado: {} }),
+        lectura: val => [`pH ${f(val.p, 0)} · ${f(val.e)} V → agua ${zonaCorta(val.p, val.e)} · ${val.x} ${val.e > MET[val.x].e0 ? 'se oxida' : 'estable'}`],
+        arrastres: [{ id: 'punto', etiqueta: 'punto (pH, potencial)', color: 'c-d',
+          donde: val => { const g = Kit.piezas.ejes.geometria(ejesP()); return { x: g.X(val.p), y: g.Y(val.e) }; },
+          mover: pt => { const g = Kit.piezas.ejes.geometria(ejesP()); return { p: (pt.x - g.X(0)) * 14 / (g.X(14) - g.X(0)), e: -1 + (pt.y - g.Y(-1)) * 2.5 / (g.Y(1.5) - g.Y(-1)) }; } }],
+      },
+    ],
     ideas: [celda, espont, faraday, pourbaix],
   };
 });
