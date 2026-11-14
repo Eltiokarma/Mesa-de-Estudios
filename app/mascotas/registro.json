@@ -10,7 +10,8 @@
     "bruna",
     "neri",
     "mara",
-    "faro"
+    "faro",
+    "iris"
   ],
   "cursos": {
     "fisica": "tilo",
@@ -20,6 +21,6 @@
     "geometria": "neri",
     "trigonometria": "mara",
     "razonamiento-matematico": "faro",
-    "razonamiento-verbal": "gato"
+    "razonamiento-verbal": "iris"
   }
 }
