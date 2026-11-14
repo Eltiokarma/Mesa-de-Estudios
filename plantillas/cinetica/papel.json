@@ -62,6 +62,35 @@
             "exponenteM": -2
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "La reacción 2 NO(g) + O₂(g) → 2 NO₂(g) tiene la ley de velocidad v = k·[NO]²·[O₂]. La concentración de NO se duplica y la de O₂ se reduce a la mitad.",
+          "pregunta": "¿Por cuánto se multiplica la velocidad?",
+          "decimales": 2,
+          "correcta": { "fn": "factor", "args": [{ "NO": 2, "O2": 1 }, { "NO": 2, "O2": 0.5 }], "campo": "valor", "valor": 2 },
+          "errores": [
+            {
+              "id": "CI-sin-exponentes",
+              "respaldo": "hipotesis",
+              "explicacion": "Olvidaste los exponentes: 2 · 1/2 = 1. El NO va al cuadrado: su factor es 2² = 4, y 4 · 1/2 = 2.",
+              "fn": "factor",
+              "args": [{ "NO": 2, "O2": 1 }, { "NO": 2, "O2": 0.5 }],
+              "campo": "sinExponentes",
+              "valor": 1
+            },
+            {
+              "id": "CI-olvida-un-reactivo",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste solo el NO. El O₂ también está en la ley y baja a la mitad: 4 · 1/2 = 2.",
+              "fn": "factor",
+              "args": [{ "NO": 2 }, { "NO": 2 }],
+              "campo": "valor",
+              "valor": 4
+            }
+          ]
+        }
       ]
     },
     {
@@ -240,6 +269,36 @@
           "espera": {
             "valor": 69.31471805599453
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Una sustancia se descompone con cinética de primer orden y su vida media es de 5 minutos. Al inicio hay 80 g.",
+          "pregunta": "¿Cuántos gramos quedan a los 20 minutos?",
+          "unidad": "g",
+          "decimales": 2,
+          "correcta": { "fn": "primerOrdenQueda", "args": [80, 5, 20], "campo": "valor", "valor": 5 },
+          "errores": [
+            {
+              "id": "CI-queda-entre-2n",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste entre 2 · 4. En cada vida media queda la mitad de lo que había: 80 → 40 → 20 → 10 → 5.",
+              "fn": "primerOrdenQueda",
+              "args": [80, 5, 20],
+              "campo": "errores.dividiendo",
+              "valor": 10
+            },
+            {
+              "id": "CI-ley-de-segundo-orden",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste la ley de segundo orden, 1/[A] = 1/80 + k·t con k = 1/400. Es de primer orden: queda la mitad cada 5 minutos.",
+              "fn": "primerOrdenQueda",
+              "args": [80, 5, 20],
+              "campo": "errores.vidaMediaCrece",
+              "valor": 16
+            }
+          ]
         }
       ]
     },
@@ -576,6 +635,36 @@
             "valor": 0.15,
             "errores.restando": 0
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p10b",
+          "enunciado": "Una sustancia A se descompone con cinética de primer orden. En un frasco, [A] baja de 0,6 M a 0,3 M en 15 minutos.",
+          "pregunta": "¿Cuánto queda a los 45 minutos?",
+          "unidad": "M",
+          "decimales": 3,
+          "correcta": { "fn": "primerOrdenQueda", "args": [0.6, 15, 45], "campo": "valor", "valor": 0.075 },
+          "errores": [
+            {
+              "id": "CI-queda-entre-2n",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste entre 2 · 3. En cada vida media queda la mitad de lo que había: 0,6 → 0,3 → 0,15 → 0,075.",
+              "fn": "primerOrdenQueda",
+              "args": [0.6, 15, 45],
+              "campo": "errores.dividiendo",
+              "valor": 0.1
+            },
+            {
+              "id": "CI-vida-media-crece",
+              "respaldo": "hipotesis",
+              "explicacion": "Hiciste durar cada vida media más que la anterior, como en segundo orden. En primer orden todas duran 15 minutos.",
+              "fn": "primerOrdenQueda",
+              "args": [0.6, 15, 45],
+              "campo": "errores.vidaMediaCrece",
+              "valor": 0.15
+            }
+          ]
         }
       ]
     },
@@ -1056,6 +1145,39 @@
         }
       ],
       "preguntas": [
+        {
+          "id": "p13a",
+          "enunciado": "Un colorante se decolora en un tanque. Su concentración, en mg/mL, se midió a los 0, 5, 10, 15 y 20 minutos: 0,50; 0,38; 0,29; 0,22 y 0,17.",
+          "pregunta": "¿Cuál es la velocidad media con que se gasta el colorante entre los 5 y los 15 minutos, en kg/(m³·min)?",
+          "unidad": "kg/(m³·min)",
+          "decimales": 3,
+          "correcta": {
+            "fn": "velocidadMedia",
+            "args": [[[0, 0.5], [5, 0.38], [10, 0.29], [15, 0.22], [20, 0.17]], 5, 15, { "de": "mg/mL", "a": "kg/m3", "tiempo": "min" }],
+            "campo": "rapidez",
+            "valor": 0.016
+          },
+          "errores": [
+            {
+              "id": "CI-signo-de-la-velocidad",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es Δc/Δt, negativo porque el colorante se gasta. La velocidad con que se gasta es −Δc/Δt, positiva.",
+              "fn": "velocidadMedia",
+              "args": [[[0, 0.5], [5, 0.38], [10, 0.29], [15, 0.22], [20, 0.17]], 5, 15, { "de": "mg/mL", "a": "kg/m3", "tiempo": "min" }],
+              "campo": "valor",
+              "valor": -0.016
+            },
+            {
+              "id": "QU1-mg-sin-convertir",
+              "respaldo": "hipotesis",
+              "explicacion": "Pasaste los mL a L y dejaste los mg: 16 mg/L. Falta pasar los mg a kg; 1 mg/mL = 1 kg/m³.",
+              "fn": "velocidadMedia",
+              "args": [[[0, 0.5], [5, 0.38], [10, 0.29], [15, 0.22], [20, 0.17]], 5, 15, { "de": "mg/mL", "a": "mg/L", "tiempo": "min" }],
+              "campo": "rapidez",
+              "valor": 16
+            }
+          ]
+        },
         {
           "id": "p13b",
           "enunciado": "Un colorante se decolora en un tanque. Su concentración, en mg/mL, se midió a los 0, 5, 10, 15 y 20 minutos: 0,50; 0,38; 0,29; 0,22 y 0,17. Entre los 5 y los 15 minutos se gasta a 0,016 kg/(m³·min).",
