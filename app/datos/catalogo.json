@@ -4376,7 +4376,15 @@
      "grado": 3,
      "plantillas": [
       "textos-discontinuos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/textos-discontinuos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js",
+       "/nucleo/kit/piezas/rv-barras.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.inferencias",
