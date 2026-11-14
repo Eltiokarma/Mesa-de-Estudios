@@ -51,6 +51,14 @@
   const cr = { v: 'c-o', t: 'r' }, cR = { v: 'c-o', t: 'R' };
   const sector = (c, r, de, a, n = 32) => [c, ...U.arco(c, r, de, a, n)];
   const anillo = (c, R, r, de, a) => [...U.arco(c, R, de, a, 40), ...U.arco(c, r, a, de, 40)];
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura; aPlano la vuelve coordenadas del
+  // problema y el lector ajusta cada valor al paso y al rango de su control.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const alPlano = (datos, q) => G.aPlano(datos, q);
+  // Dirección de un punto vista desde el origen, en grados de «corte» a «corte» + 360.
+  const rumbo = (q, corte = 0) => { let g = U.grados(Math.atan2(q[1], q[0])); while (g < corte) g += 360; while (g >= corte + 360) g -= 360; return g; };
+  const sep = '   ·   ';
+  const cuad = x => ({ sup: [`${x}`, '2'] });
 
   // ---------- Idea 1: π y la longitud de la circunferencia ----------
   // Cambia: el número de lados de los polígonos · Permanece: el diámetro 1 · Progresa: el intervalo que encierra a π ·
@@ -87,6 +95,11 @@
       voz: 'Sube los lados. Mira cómo se estrecha el intervalo.',
       controles: [{ id: 'n', etiqueta: 'lados', min: 4, max: 24, paso: 2, inicio: 6, unidad: '', decimales: 0, color: 'c-i' }],
       dibujo: v => ({ datos: arqui(v.n), estado: {} }),
+      // Se agarra el segundo vértice del polígono inscrito: el primero está fijo arriba (90°), así que el arco entre los
+      // dos es 360°/n. Acercarlo al primero sube los lados.
+      arrastres: [{ id: 'vertice', etiqueta: 'vértice del polígono inscrito', color: 'c-i',
+        donde: v => enPantalla(arqui(v.n), U.polar([0, 0], 3, 90 + 360 / v.n)),
+        mover: (q, v) => { const g = rumbo(alPlano(arqui(v.n), q), 90) - 90; return { n: g > 1 ? 360 / g : 24 }; } }],
       lectura: v => [`${f(v.n * Math.sin(Math.PI / v.n), 4)} < C/d < ${f(v.n * Math.tan(Math.PI / v.n), 4)}`],
       minimo: 4,
     },
@@ -103,18 +116,20 @@
       revelar: { datos: rueda(), estado: {} },
       coincide: 'Coincide: π metros por vuelta, 10π en total.',
     },
+    // Hallazgo 9: dos representaciones a propósito. El juego encierra π entre polígonos; la predicción y «Mira» usan la
+    // rueda, que convierte la misma razón C/d en distancia recorrida.
     mira: {
       datos: rueda({ pasos: { v: 1 } }),
       voz: 'Desenrolla el borde: una vuelta es un perímetro.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'Para toda circunferencia, C ÷ d da el mismo número: π.', ecuacion: ['π = ', frac('C', 'd'), ' ≈ 3,1416'] },
+        { estado: { corte: 0 }, texto: 'Para toda circunferencia, C ÷ d da el mismo número: π.', ecuacion: ['π = ', { llave: [frac('C', 'd')], nota: 'borde entre diámetro', color: 'c-d' }, ' ≈ 3,1416'] },
         { estado: { corte: 1 }, texto: 'En una vuelta la rueda deja en el piso su borde.', ecuacion: ['C = π · 1 = π m'] },
         { estado: { corte: 1 }, texto: 'Diez vueltas, diez bordes.', ecuacion: ['10 · π ≈ 31,4 m'] },
       ],
     },
     regla: {
       texto: 'π es la razón entre la longitud de cualquier circunferencia y su diámetro. Por eso la longitud es C = 2πr = πd.',
-      ecuacion: ['C = 2π', cr, ' = π d   ·   ', frac('223', '71'), ' < π < ', frac('22', '7')],
+      ecuacion: ['C = 2π', cr, ' = π', { llave: ['d'], nota: 'diámetro', color: 'c-o' }, '   ·   ', { llave: [frac('223', '71'), ' < π < ', frac('22', '7')], nota: 'cotas de Arquímedes', color: 'c-i' }],
       condicion: 'r es el radio y d = 2r. 22/7 y 3,14 son aproximaciones; π no es una fracción exacta.',
       voz: 'Borde con 2πr; región con πr². No los mezcles.',
     },
@@ -179,7 +194,9 @@
       voz: 'Corta más fino. Mira a qué figura se parece.',
       controles: [{ id: 'n', etiqueta: 'sectores', min: 4, max: 24, paso: 2, inicio: 8, unidad: '', decimales: 0, color: 'c-i' }],
       dibujo: v => ({ datos: recorte(v.n), estado: {} }),
-      lectura: v => [`${v.n} sectores · base ≈ πr · altura ≈ r`],
+      // Sin arrastre: lo que cambia es cuántos sectores hay (un número entero), y la fila mide siempre πr de base; no hay
+      // un punto de la figura cuya posición diga n.
+      lectura: v => [`${v.n} sectores${sep}base ≈ πr${sep}altura ≈ r`],
       minimo: 4,
     },
     predice: {
@@ -206,7 +223,7 @@
     },
     regla: {
       texto: 'El área del círculo es π por el radio al cuadrado. Si el radio se multiplica por k, el área se multiplica por k².',
-      ecuacion: ['S = π', { sup: [cr, '2'] }, ' = ', frac('π d²', '4')],
+      ecuacion: ['S = π', { llave: [{ sup: [cr, '2'] }], nota: 'r dos veces', color: 'c-o' }, ' = ', frac(['π', { sup: ['d', '2'] }], '4')],
       condicion: 'r es el radio. Con el diámetro, r = d/2. El área mide la región; la longitud, el borde.',
       voz: 'r aparece dos veces en el área: por eso k².',
     },
@@ -221,7 +238,7 @@
             { id: 'diam', valor: diam ? x * x : 4 * x * x, error: 'GE19', siFuera: diam ? 'Eso eleva el diámetro; el área usa el radio: d/2.' : 'Eso usa el diámetro como radio.' },
             { id: 'sin-cuad', valor: diam ? x / 2 : 2 * x, error: 'GE19', siFuera: 'Falta elevar el radio al cuadrado.' },
           ], k => `${pi(k)} cm²`),
-          solucion: { texto: diam ? `Radio = ${x}/2 = ${rr}.` : `Radio = ${rr}.`, ecuacion: [`S = π · ${rr}² = ${pi(rr * rr)} cm²`] },
+          solucion: { texto: diam ? `Radio = ${x}/2 = ${rr}.` : `Radio = ${rr}.`, ecuacion: ['S = π · ', cuad(rr), ` = ${pi(rr * rr)} cm²`] },
         };
       },
     },
@@ -231,10 +248,10 @@
   // Cambia: el ángulo central y el radio · Permanece: la fracción del círculo · Progresa: arco y sector a la vez ·
   // Se reserva: un caso numérico con 60° · Debe verse: los dos son la fracción α/360 de su total.
   const sectorFig = (al, r, o = {}) => {
-    const k = o.pasos || {};
+    const k = o.pasos || {}, m = o.marco || r;   // marco fijo en el juego: la escala no cambia al mover r
     return {
       alt: `Sector de ${al}° en un círculo de radio ${f(r)}: arco de ${pi(r * al / 180)} y área de ${pi(r * r * al / 360)}`,
-      vista: { x: [-r - 0.6, r + 0.6], y: [-r - 0.6, r + 0.6] },
+      vista: { x: [-m - 0.6, m + 0.6], y: [-m - 0.6, m + 0.6] },
       puntos: [pt('O', [0, 0], { rotulo: 'O', lado: 225 }), pt('A', U.polar([0, 0], r, 0), { sinPunto: true }), pt('B', U.polar([0, 0], r, al), { sinPunto: true })],
       circulos: [{ centro: 'O', r, grosor: 'fino', discontinua: true }],
       regiones: [{ puntos: sector([0, 0], r, 0, al), color: 'i', opacidad: 0.25, desde: k.s || 0 }],
@@ -255,8 +272,17 @@
         { id: 'al', etiqueta: 'α', min: 30, max: 330, paso: 30, inicio: 90, unidad: '°', decimales: 0, color: 'c-h' },
         { id: 'r', etiqueta: 'r', min: 1, max: 3, paso: 1, inicio: 2, unidad: '', decimales: 0, color: 'c-o' },
       ],
-      dibujo: v => ({ datos: sectorFig(v.al, v.r, { r: 'r' }), estado: {} }),
-      lectura: v => [`fracción ${v.al}/360 · arco ${pi(v.r * v.al / 180)} · sector ${pi(v.r * v.r * v.al / 360)}`],
+      dibujo: v => ({ datos: sectorFig(v.al, v.r, { r: 'r', marco: 3 }), estado: {} }),
+      // Se agarran el extremo B del arco (abre α) y el extremo A del radio sobre el eje (cambia r).
+      arrastres: [
+        { id: 'extremo-b', etiqueta: 'extremo B del arco', color: 'c-h',
+          donde: v => enPantalla(sectorFig(v.al, v.r, { marco: 3 }), U.polar([0, 0], v.r, v.al)),
+          mover: (q, v) => ({ al: rumbo(alPlano(sectorFig(v.al, v.r, { marco: 3 }), q)) }) },
+        { id: 'radio', etiqueta: 'extremo A del radio', color: 'c-o',
+          donde: v => enPantalla(sectorFig(v.al, v.r, { marco: 3 }), [v.r, 0]),
+          mover: (q, v) => ({ r: alPlano(sectorFig(v.al, v.r, { marco: 3 }), q)[0] }) },
+      ],
+      lectura: v => [`${v.al}/360${sep}arco ${pi(v.r * v.al / 180)}${sep}sector ${pi(v.r * v.r * v.al / 360)}`],
       minimo: 4,
     },
     predice: {
@@ -278,12 +304,12 @@
       pasos: [
         { estado: { corte: 0 }, texto: '60° es la sexta parte de 360°.', ecuacion: [frac('60', '360'), ' = ', frac('1', '6')] },
         { estado: { corte: 1 }, texto: 'El arco es un sexto de la circunferencia.', ecuacion: ['s = ', frac('1', '6'), ' · 2π · 6 = 2π'] },
-        { estado: { corte: 2 }, texto: 'El sector es un sexto del círculo.', ecuacion: ['S = ', frac('1', '6'), ' · π · 6² = 6π'] },
+        { estado: { corte: 2 }, texto: 'El sector es un sexto del círculo.', ecuacion: ['S = ', frac('1', '6'), ' · π · ', cuad(6), ' = 6π'] },
       ],
     },
     regla: {
       texto: 'Un arco y su sector son la fracción α/360 de la circunferencia y del círculo. Con θ en radianes: arco rθ y sector r²θ/2.',
-      ecuacion: ['s = ', frac('α', '360°'), ' · 2π', cr, ' = ', cr, 'θ   ·   S = ', frac('α', '360°'), ' · π', { sup: [cr, '2'] }, ' = ', frac([{ sup: [cr, '2'] }, 'θ'], '2')],
+      ecuacion: ['s = ', { llave: [frac('α', '360°')], nota: 'qué fracción', color: 'c-h' }, ' · 2π', cr, ' = ', cr, { llave: ['θ'], nota: 'en radianes', color: 'c-h' }, '   ·   S = ', frac('α', '360°'), ' · π', { sup: [cr, '2'] }, ' = ', frac([{ sup: [cr, '2'] }, 'θ'], '2')],
       condicion: 'α en grados va con 360°; θ en radianes va solo. No se mezclan las dos medidas en la misma fórmula.',
       voz: 'Primero la fracción; después el total que corresponde.',
     },
@@ -299,7 +325,7 @@
             { id: 'todo', valor: pideS ? rr * rr : 2 * rr, error: 'GE19', siFuera: 'Ese es el total; falta la fracción α/360.' },
             { id: 'diam', valor: pideS ? 4 * S : 2 * arco, error: 'GE19', siFuera: 'Eso usa el diámetro donde va el radio.' },
           ], k => pi(k)),
-          solucion: { texto: `Fracción ${al}/360.`, ecuacion: [pideS ? `${al}/360 · π · ${rr}² = ${pi(S)}` : `${al}/360 · 2π · ${rr} = ${pi(arco)}`] },
+          solucion: { texto: `Fracción ${al}/360.`, ecuacion: pideS ? [`${al}/360 · π · `, cuad(rr), ` = ${pi(S)}`] : [`${al}/360 · 2π · ${rr} = ${pi(arco)}`] },
         };
       },
     },
@@ -309,10 +335,10 @@
   // Cambia: los dos radios de la corona · Permanece: el centro común · Progresa: R² − r² ·
   // Se reserva: la trampa (R − r)² · Debe verse: la corona es el círculo grande menos el chico.
   const corona = (R, r, o = {}) => {
-    const k = o.pasos || {}, c = Math.sqrt(R * R - r * r);
+    const k = o.pasos || {}, c = Math.sqrt(R * R - r * r), m = o.marco || R;   // marco fijo en el juego
     return {
       alt: o.alt || `Corona entre círculos de radios ${R} y ${r}: área π(${R}² − ${r}²) = ${pi(R * R - r * r)}`,
-      vista: { x: [-R - 0.6, R + 0.6], y: [-R - 0.6, R + 0.6] },
+      vista: { x: [-m - 0.6, m + 0.6], y: [-m - 0.6, m + 0.6] },
       puntos: [pt('O', [0, 0], { sinPunto: false }), pt('A', [R, 0], { sinPunto: true }), pt('Bq', U.polar([0, 0], r, 135), { sinPunto: true }),
         pt('T', [0, -r], { sinPunto: true }), pt('P', [-c, -r], { sinPunto: true }), pt('Q', [c, -r], { sinPunto: true })],
       regiones: [{ puntos: anillo([0, 0], R, r, 0, 359.9), color: 'i', opacidad: 0.3, desde: k.a || 0 }],
@@ -334,8 +360,17 @@
         { id: 'R', etiqueta: 'R', min: 5, max: 8, paso: 1, inicio: 5, unidad: '', decimales: 0, color: 'c-o' },
         { id: 'r', etiqueta: 'r', min: 1, max: 4, paso: 1, inicio: 2, unidad: '', decimales: 0, color: 'c-o' },
       ],
-      dibujo: v => ({ datos: corona(v.R, v.r), estado: {} }),
-      lectura: v => [`corona = π(${v.R}² − ${f(v.r)}²) = ${pi(v.R * v.R - v.r * v.r)}`],
+      dibujo: v => ({ datos: corona(v.R, v.r, { marco: 8 }), estado: {} }),
+      // Se agarran el extremo de R (sobre el eje) y el de r (a 135°): cada uno estira su circunferencia.
+      arrastres: [
+        { id: 'radio-grande', etiqueta: 'extremo del radio R', color: 'c-o',
+          donde: v => enPantalla(corona(v.R, v.r, { marco: 8 }), [v.R, 0]),
+          mover: (q, v) => ({ R: U.dist([0, 0], alPlano(corona(v.R, v.r, { marco: 8 }), q)) }) },
+        { id: 'radio-chico', etiqueta: 'extremo del radio r', color: 'c-o',
+          donde: v => enPantalla(corona(v.R, v.r, { marco: 8 }), U.polar([0, 0], v.r, 135)),
+          mover: (q, v) => ({ r: U.dist([0, 0], alPlano(corona(v.R, v.r, { marco: 8 }), q)) }) },
+      ],
+      lectura: v => ['corona = π(', cuad(v.R), ' − ', cuad(f(v.r)), `) = ${pi(v.R * v.R - v.r * v.r)}`],
       minimo: 3,
     },
     predice: {
@@ -355,14 +390,14 @@
       datos: corona(5, 3, { cuerda: '2 · 4', pasos: { c: 2 }, alt: 'Corona de radios 5 y 3; la cuerda del círculo grande tangente al chico mide 8' }),
       voz: 'Resta regiones completas, no radios.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'Círculo grande menos círculo chico.', ecuacion: ['π · 5² − π · 3² = 25π − 9π'] },
-        { estado: { corte: 1 }, texto: 'Queda la corona.', ecuacion: ['π(R² − r²) = 16π'] },
-        { estado: { corte: 2 }, texto: 'Dato útil: la cuerda tangente al chico mide 2√(R² − r²).', ecuacion: ['(cuerda/2)² = R² − r² = 16'] },
+        { estado: { corte: 0 }, texto: 'Círculo grande menos círculo chico.', ecuacion: ['π · ', cuad(5), ' − π · ', cuad(3), ' = 25π − 9π'] },
+        { estado: { corte: 1 }, texto: 'Queda la corona.', ecuacion: ['π(', { sup: [cR, '2'] }, ' − ', { sup: [cr, '2'] }, ') = 16π'] },
+        { estado: { corte: 2 }, texto: 'Dato útil: la cuerda tangente al chico mide 2√(R² − r²).', ecuacion: [{ sup: [{ par: [frac('cuerda', '2')] }, '2'] }, ' = ', { sup: [cR, '2'] }, ' − ', { sup: [cr, '2'] }, ' = 16'] },
       ],
     },
     regla: {
       texto: 'Corona: el círculo grande menos el chico. Segmento circular: el sector menos el triángulo de sus dos radios y la cuerda.',
-      ecuacion: ['corona = π(', { sup: [cR, '2'] }, ' − ', { sup: [cr, '2'] }, ')   ·   segmento = ', frac([{ sup: [cr, '2'] }, '(θ − sen θ)'], '2')],
+      ecuacion: ['corona = π(', { llave: [{ sup: [cR, '2'] }, ' − ', { sup: [cr, '2'] }], nota: 'grande menos chico', color: 'c-o' }, ')   ·   segmento = ', frac([{ sup: [cr, '2'] }, '(θ − sen θ)'], '2')],
       condicion: 'los círculos de la corona son concéntricos. En el segmento, θ es el ángulo central en radianes.',
       voz: 'Primero eleva cada radio; después resta.',
     },
@@ -380,7 +415,7 @@
               { id: 'suma', valor: R * R + rr * rr, error: 'GE-CIR3', siFuera: 'La corona resta el círculo chico; no lo suma.' },
               { id: 'long', valor: 2 * (R - rr), error: 'GE19', siFuera: 'Esa es una diferencia de longitudes.' },
             ], k => pi(k)),
-            solucion: { texto: 'Grande menos chico.', ecuacion: [`π(${R}² − ${rr}²) = ${pi(R * R - rr * rr)}`] },
+            solucion: { texto: 'Grande menos chico.', ecuacion: ['π(', cuad(R), ' − ', cuad(rr), `) = ${pi(R * R - rr * rr)}`] },
           };
         }
         const rr = r.ent(2, 10), th = r.de([90, 60, 180]);
@@ -414,11 +449,11 @@
     };
   };
   const lunulas = (o = {}) => {
-    const A = [0, 0], B = [6, 0], C = [0, 8], k = o.pasos || {};
+    const a = o.a || 6, b = o.b || 8, A = [0, 0], B = [a, 0], C = [0, b], k = o.pasos || {};
     const semi = (P, Q, fuera) => { const M = U.medio(P, Q), rr = U.dist(P, Q) / 2, ang = U.grados(Math.atan2(Q[1] - P[1], Q[0] - P[0])); return fuera ? U.arco(M, rr, ang, ang - 180, 40) : U.arco(M, rr, ang, ang + 180, 40); };
     return {
       alt: o.alt || 'Triángulo rectángulo de catetos 6 y 8 con semicírculos sobre sus tres lados: las dos lúnulas suman el área del triángulo',
-      vista: { x: [-4.8, 9.2], y: [-3.8, 9.6] },
+      vista: o.vista || { x: [-4.8, 9.2], y: [-3.8, 9.6] },
       puntos: [pt('A', A, { rotulo: 'A', lado: 225 }), pt('B', B, { rotulo: 'B', lado: -45 }), pt('C', C, { rotulo: 'C', lado: 135 })],
       regiones: [
         { puntos: [...semi(A, B, true)], color: 'o', opacidad: 0.25, sinBorde: false, desde: k.s || 0 },
@@ -426,7 +461,7 @@
         { puntos: ['A', 'B', 'C'], color: 'd', opacidad: 0.2, sinBorde: false, desde: k.t || 0 },
         { puntos: [...semi(B, C, false)], color: o.blanco ? 'h' : 'i', opacidad: o.blanco ? 0.12 : 0.0001, discontinua: true, desde: k.h || 0 },
       ],
-      segmentos: [{ de: 'A', a: 'B', texto: '6' }, { de: 'A', a: 'C', texto: '8' }, { de: 'B', a: 'C', texto: '10' }],
+      segmentos: [{ de: 'A', a: 'B', texto: f(a), color: o.a ? 'o' : undefined }, { de: 'A', a: 'C', texto: f(b), color: o.b ? 'i' : undefined }, { de: 'B', a: 'C', texto: f(Math.hypot(a, b)) }],
       angulos: [{ en: 'A', de: 'B', a: 'C' }],
     };
   };
@@ -440,6 +475,10 @@
       voz: 'Abre el ángulo. Es la misma fracción que en el sector.',
       controles: [{ id: 'al', etiqueta: 'ángulo', min: 30, max: 270, paso: 30, inicio: 90, unidad: '°', decimales: 0, color: 'c-h' }],
       dibujo: v => ({ datos: trapCirc(v.al), estado: {} }),
+      // Se agarra el extremo B del arco grande: abre el trapecio alrededor de O.
+      arrastres: [{ id: 'extremo-b', etiqueta: 'extremo B del trapecio', color: 'c-h',
+        donde: v => enPantalla(trapCirc(v.al), U.polar([0, 0], 5, v.al)),
+        mover: (q, v) => ({ al: rumbo(alPlano(trapCirc(v.al), q)) }) }],
       lectura: v => [`${v.al}/360 · π(25 − 9) = ${pi(16 * v.al / 360)}`],
       minimo: 3,
     },
@@ -456,18 +495,20 @@
       revelar: { datos: lunulas({ blanco: true }), estado: {} },
       coincide: 'Coincide: las lúnulas suman exactamente el área del triángulo, 24.',
     },
+    // Hallazgo 9: dos representaciones a propósito. El juego mide una fracción de corona; la predicción y «Mira» pasan
+    // a las lúnulas, otra región compuesta que se resuelve con la misma regla: sumar y restar sin contar dos veces.
     mira: {
       datos: lunulas({ blanco: true, pasos: { s: 1, t: 2, h: 3 } }),
       voz: 'Suma lo que agregas; resta lo que tapas. Sin contar dos veces.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Semicírculos sobre los catetos: 4,5π + 8π.', ecuacion: ['½π · 3² + ½π · 4² = 12,5π'] },
+        { estado: { corte: 1 }, texto: 'Semicírculos sobre los catetos: 4,5π + 8π.', ecuacion: ['½π · ', cuad(3), ' + ½π · ', cuad(4), ' = 12,5π'] },
         { estado: { corte: 2 }, texto: 'Sumamos el triángulo.', ecuacion: ['12,5π + 24'] },
         { estado: { corte: 3 }, texto: 'Restamos el semicírculo de la hipotenusa: también 12,5π, por Pitágoras.', ecuacion: ['12,5π + 24 − 12,5π = 24'] },
       ],
     },
     regla: {
       texto: 'El trapecio circular es la fracción α/360 de una corona. Las regiones compuestas se calculan sumando y restando regiones conocidas, sin contar dos veces lo que se superpone.',
-      ecuacion: ['trapecio circular = ', frac('α', '360°'), ' · π(', { sup: [cR, '2'] }, ' − ', { sup: [cr, '2'] }, ')'],
+      ecuacion: ['trapecio circular = ', { llave: [frac('α', '360°')], nota: 'fracción de corona', color: 'c-h' }, ' · π(', { sup: [cR, '2'] }, ' − ', { sup: [cr, '2'] }, ')'],
       condicion: 'las lúnulas salen de semicírculos sobre los lados de un triángulo rectángulo: entonces suman su área.',
       voz: 'Antes de sumar, marca qué región se superpone.',
     },
@@ -485,7 +526,7 @@
               { id: 'todo', valor: R * R - rr * rr, error: 'GE19', siFuera: 'Esa es la corona completa; falta la fracción.' },
               { id: 'sector', valor: R * R * al / 360, error: 'GE-CIR4', siFuera: 'Ese es el sector grande; falta restar el chico.' },
             ], k => pi(k)),
-            solucion: { texto: `Fracción ${al}/360 de la corona.`, ecuacion: [`${al}/360 · π(${R}² − ${rr}²) = ${pi(S)}`] },
+            solucion: { texto: `Fracción ${al}/360 de la corona.`, ecuacion: [`${al}/360 · π(`, cuad(R), ' − ', cuad(rr), `) = ${pi(S)}`] },
           };
         }
         const [a, b] = r.de([[3, 4], [6, 8], [5, 12], [8, 15], [9, 12], [12, 16]]);
@@ -502,9 +543,117 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 3: α llega de 10° a 350° y r es continuo, y además se ve el segmento circular
+  // (sector menos triángulo), que la idea solo da en fórmula. Para α > 180° el segmento es el mayor.
+  const segLibre = (al, r, ver) => {
+    const O = [0, 0], A = [r, 0], B = U.polar(O, r, al);
+    const sec = ver === 'sector', seg = ver === 'segmento';
+    return {
+      alt: `Círculo de radio ${f(r)} con ángulo central de ${al}°: arco ${f(r * U.rad(al))}, sector ${f(r * r * U.rad(al) / 2)}, segmento ${f(r * r * (U.rad(al) - Math.sin(U.rad(al))) / 2)}`,
+      vista: { x: [-4.6, 4.6], y: [-4.6, 4.6] },
+      puntos: [pt('O', O, { rotulo: 'O', lado: 225 }), pt('A', A, { sinPunto: true }), pt('B', B, { sinPunto: true })],
+      circulos: [{ centro: 'O', r, grosor: 'fino', discontinua: true }],
+      regiones: [
+        ...(sec ? [{ puntos: sector(O, r, 0, al, 40), color: 'i', opacidad: 0.25 }] : []),
+        ...(seg ? [{ puntos: U.arco(O, r, 0, al, 48), color: 'i', opacidad: 0.3 }, { puntos: ['O', 'A', 'B'], color: 'd', opacidad: 0.12, discontinua: true }] : []),
+      ],
+      arcos: [{ centro: O, r, de: 0, a: al, color: 'd', grosor: 'variable' }],
+      segmentos: [{ de: 'O', a: 'A', color: 'o', texto: 'r' }, { de: 'O', a: 'B', color: 'o' }, ...(seg ? [{ de: 'A', a: 'B', color: 'h', grosor: 'variable' }] : [])],
+      angulos: [{ en: 'O', de: 'A', a: 'B', color: 'h', texto: `${al}°`, radio: 16, mayor: al > 180 }],
+    };
+  };
+  const mesaSector = {
+    id: 'sector-y-segmento', titulo: 'Sector y segmento libres', pieza: 'geo-figura',
+    consigna: 'Arrastra B para abrir α y A para cambiar r. Cambia a «segmento» y pasa α de 180°.',
+    controles: [
+      { id: 'al', etiqueta: 'α', min: 10, max: 350, paso: 10, inicio: 120, unidad: '°', decimales: 0, color: 'c-h' },
+      { id: 'r', etiqueta: 'r', min: 1, max: 4, paso: 0.5, inicio: 3, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'ver', etiqueta: 'Región', opciones: [{ valor: 'sector', texto: 'sector' }, { valor: 'segmento', texto: 'segmento' }] },
+    ],
+    dibujo: v => ({ datos: segLibre(v.al, v.r, v.ver), estado: {} }),
+    arrastres: [
+      { id: 'extremo-b', etiqueta: 'extremo B del arco', color: 'c-h',
+        donde: v => enPantalla(segLibre(v.al, v.r, v.ver), U.polar([0, 0], v.r, v.al)),
+        mover: (q, v) => ({ al: rumbo(alPlano(segLibre(v.al, v.r, v.ver), q)) }) },
+      { id: 'radio', etiqueta: 'extremo A del radio', color: 'c-o',
+        donde: v => enPantalla(segLibre(v.al, v.r, v.ver), [v.r, 0]),
+        mover: (q, v) => ({ r: alPlano(segLibre(v.al, v.r, v.ver), q)[0] }) },
+    ],
+    lectura: v => {
+      const t = U.rad(v.al), sc = v.r * v.r * t / 2, tr = v.r * v.r * Math.sin(t) / 2;
+      return v.ver === 'sector' ? [`arco ≈ ${f(v.r * t)}${sep}sector ≈ ${f(sc)}`]
+        : [`sector ${f(sc)} − triángulo ${f(tr)} = ${f(sc - tr)}`];
+    },
+  };
+
+  // Mesa 2, más rica que las ideas 4 y 5: corona y trapecio circular juntos, con los dos radios y el ángulo libres.
+  // Deja probar r ≥ R (no hay corona) y ver que la trampa (R − r)² se queda corta.
+  const trapLibre = (R, r, al) => {
+    const ok = r < R;
+    return {
+      alt: ok ? `Trapecio circular de ${al}° entre radios ${f(R)} y ${f(r)}: área ${pi((R * R - r * r) * al / 360)}` : `Con r = ${f(r)} y R = ${f(R)} no queda corona: el chico no cabe dentro del grande`,
+      vista: { x: [-6.6, 6.6], y: [-6.6, 6.6] },
+      puntos: [pt('O', [0, 0], {}), pt('A', [R, 0], { sinPunto: true }), pt('B', U.polar([0, 0], R, al), { sinPunto: true }), pt('Q', [0, -r], { sinPunto: true })],
+      circulos: [{ centro: 'O', r: R, color: 'o', grosor: 'fino' }, { centro: 'O', r, color: 'o', grosor: 'fino', discontinua: true }],
+      regiones: ok ? [{ puntos: anillo([0, 0], R, r, 0, 359.9), color: 'i', opacidad: 0.08 }, { puntos: anillo([0, 0], R, r, 0, al), color: 'i', opacidad: 0.35, sinBorde: false }] : [],
+      segmentos: [{ de: 'O', a: 'A', color: 'o', texto: 'R', lado: -1 }, { de: 'O', a: 'B', color: 'o' }, { de: 'O', a: 'Q', color: 'o', texto: 'r' }],
+      angulos: [{ en: 'O', de: 'A', a: 'B', color: 'h', texto: `${al}°`, radio: 16, mayor: al > 180 }],
+    };
+  };
+  const mesaTrapecio = {
+    id: 'corona-y-trapecio', titulo: 'Corona y trapecio libres', pieza: 'geo-figura',
+    consigna: 'Arrastra los extremos de R, de r y el borde B. Compara el trapecio con la corona entera y con la trampa (R − r)².',
+    controles: [
+      { id: 'R', etiqueta: 'R', min: 2, max: 6, paso: 0.5, inicio: 5, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'r', etiqueta: 'r', min: 0.5, max: 6, paso: 0.5, inicio: 3, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'al', etiqueta: 'α', min: 30, max: 330, paso: 30, inicio: 90, unidad: '°', decimales: 0, color: 'c-h' },
+    ],
+    dibujo: v => ({ datos: trapLibre(v.R, v.r, v.al), estado: {} }),
+    arrastres: [
+      { id: 'radio-grande', etiqueta: 'extremo del radio R', color: 'c-o',
+        donde: v => enPantalla(trapLibre(v.R, v.r, v.al), [v.R, 0]),
+        mover: (q, v) => ({ R: U.dist([0, 0], alPlano(trapLibre(v.R, v.r, v.al), q)) }) },
+      { id: 'radio-chico', etiqueta: 'extremo del radio r', color: 'c-o',
+        donde: v => enPantalla(trapLibre(v.R, v.r, v.al), [0, -v.r]),
+        mover: (q, v) => ({ r: U.dist([0, 0], alPlano(trapLibre(v.R, v.r, v.al), q)) }) },
+      { id: 'extremo-b', etiqueta: 'borde B del trapecio', color: 'c-h',
+        donde: v => enPantalla(trapLibre(v.R, v.r, v.al), U.polar([0, 0], v.R, v.al)),
+        mover: (q, v) => ({ al: rumbo(alPlano(trapLibre(v.R, v.r, v.al), q)) }) },
+    ],
+    lectura: v => (v.r >= v.R ? [`r ≥ R: no hay corona`]
+      : [`trapecio ${pi((v.R * v.R - v.r * v.r) * v.al / 360)}${sep}corona ${pi(v.R * v.R - v.r * v.r)}${sep}trampa ${pi((v.R - v.r) ** 2)}`]),
+  };
+
+  // Mesa 3, el caso que la idea 5 no deja probar: catetos libres. Las lúnulas suman el triángulo en todo rectángulo.
+  const VL = { x: [-4.6, 8.8], y: [-4.6, 8.8] };
+  const lunLibre = (a, b) => lunulas({ a, b, blanco: true, vista: VL, alt: `Triángulo rectángulo de catetos ${f(a)} y ${f(b)}: las lúnulas suman ${f(a * b / 2)}, igual que el triángulo` });
+  const mesaLunulas = {
+    id: 'lunulas-libres', titulo: 'Lúnulas con catetos libres', pieza: 'geo-figura',
+    consigna: 'Arrastra B y C para cambiar los catetos. Compara las lúnulas con el triángulo en cada caso.',
+    controles: [
+      { id: 'a', etiqueta: 'cateto AB', min: 2, max: 8, paso: 0.5, inicio: 6, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'b', etiqueta: 'cateto AC', min: 2, max: 8, paso: 0.5, inicio: 8, unidad: '', decimales: 1, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: lunLibre(v.a, v.b), estado: {} }),
+    arrastres: [
+      { id: 'vertice-b', etiqueta: 'vértice B', color: 'c-o',
+        donde: v => enPantalla(lunLibre(v.a, v.b), [v.a, 0]),
+        mover: (q, v) => ({ a: alPlano(lunLibre(v.a, v.b), q)[0] }) },
+      { id: 'vertice-c', etiqueta: 'vértice C', color: 'c-i',
+        donde: v => enPantalla(lunLibre(v.a, v.b), [0, v.b]),
+        mover: (q, v) => ({ b: alPlano(lunLibre(v.a, v.b), q)[1] }) },
+    ],
+    lectura: v => {
+      // Se calcula por piezas (semicírculos de los catetos + triángulo − semicírculo de la hipotenusa), no con la regla.
+      const semi = d => Math.PI * d * d / 8, lun = semi(v.a) + semi(v.b) + v.a * v.b / 2 - semi(Math.hypot(v.a, v.b));
+      return [`lúnulas ≈ ${f(lun)}${sep}triángulo = ${f(v.a * v.b / 2)}`];
+    },
+  };
+
   return {
     unidad: 'geometria.longitud-y-areas-circulares',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -512,6 +661,9 @@
       pregunta: '¿Cómo se mide algo curvo con piezas rectas?',
       fuente: { titulo: 'Euclides, Elementos XII.2 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookXII/propXII2.html' },
     },
+    // Laboratorio: sector con segmento, corona con trapecio y lúnulas con catetos libres; las tres abren rangos o casos
+    // que las ideas no dejan probar (α > 180°, r ≥ R, cualquier triángulo rectángulo).
+    laboratorio: [mesaSector, mesaTrapecio, mesaLunulas],
     ideas: [piIdea, areaCirc, sectorIdea, coronaIdea, lunIdea],
   };
 });
