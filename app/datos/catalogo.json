@@ -1594,7 +1594,8 @@
       "requiere": [
        "/nucleo/kit/piezas/recta.js",
        "/nucleo/kit/piezas/quim-cadena.js",
-       "/nucleo/kit/piezas/quim-particulas.js"
+       "/nucleo/kit/piezas/quim-particulas.js",
+       "/nucleo/kit/piezas/quim-composicion.js"
       ],
       "ideas": 4
      }
