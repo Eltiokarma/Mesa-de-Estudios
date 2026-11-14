@@ -18,17 +18,21 @@
  * RVM1 (mapa como lista de palabras) y RVM2 (enlace invertido) son hipótesis nuevas. Los conteos se calculan (regla 1).
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): el marcador se arrastra por las oraciones y se suelta en una (rv-texto.ancla
+  // pone la manija sobre el número de la oración; rv-texto.cercana elige la más cercana al dedo).
+  const RV = () => Kit.piezas['rv-texto'];
   const corto = (fn, t) => {
-    if (t.length <= 26) return fn(t);
+    // El trozo de color no se parte: con 14 letras o menos cabe en la miniatura de un caso guardado del laboratorio.
+    if (t.length <= 14) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
-    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    if (k && k <= 14) return [fn(t.slice(0, k)), t.slice(k)];
     const ps = t.split(' '); let n = 1;
-    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 14) n++;
     return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
   };
   const cubre = t => ({ v: 'c-i', t }), prop = t => ({ v: 'c-o', t }), tema = t => ({ v: 'c-d', t }), fuera = t => ({ v: 'c-h', t });
@@ -43,7 +47,8 @@
   function cobertura(n, lista, extra = {}) {
     const marcas = { p1: 'o' };
     for (let k = 1; k <= n; k++) marcas[`o${k}`] = lista.includes(k) ? 'i' : 'h';
-    return Object.assign({ marcas, sellos: { o: { t: `Cubre ${lista.length} de ${n}`, c: lista.length === n ? 'i' : 'h' } } }, extra);
+    // El sello va en la tarjeta de la propuesta: arriba a la derecha lo taparía el botón de la lupa.
+    return Object.assign({ marcas, sellos: { p: { t: `Cubre ${lista.length} de ${n}`, c: lista.length === n ? 'i' : 'h' } } }, extra);
   }
 
   // ---------- Idea 1: tema no es idea principal ----------
@@ -87,12 +92,12 @@
       pasos: [
         { estado: { marcas: { o1: 'd', o2: 'd', o3: 'd', o4: 'd' }, tapar: ['p1'] }, texto: 'Todas hablan de la biblioteca: ese es el tema.', ecuacion: [tema('tema'), ' = de qué trata'] },
         { estado: { marcas: { o1: 'i', o2: 'i', o3: 'o', o4: 'o' }, tapar: ['p1'], nuevo: ['o3', 'o4'] }, texto: 'Las dos primeras dicen qué cambió; las otras, qué produjo.', ecuacion: [cubre('cambios'), ' → ', prop('más estudiantes')] },
-        { estado: cobertura(4, [1, 2, 3, 4], { nuevo: ['p1'] }), texto: 'La idea principal une las dos partes y cubre las cuatro.', ecuacion: [tema('tema'), ' + ', prop('lo que se afirma'), ' = idea principal'] },
+        { estado: cobertura(4, [1, 2, 3, 4], { nuevo: ['p1'] }), texto: 'La idea principal une las dos partes y cubre las cuatro.', ecuacion: [tema('tema'), ' + ', prop('lo que afirma')] },
       ],
     },
     regla: {
       texto: 'El tema nombra de qué trata el texto; la idea principal afirma lo más importante sobre él y cubre todo el texto. Las secundarias la explican, ejemplifican o sostienen.',
-      ecuacion: [prop('idea principal'), ' = ', tema('tema'), ' + ', cubre('lo que se afirma de él')],
+      ecuacion: [{ llave: [tema('tema')], nota: 'de qué trata', color: 'c-d' }, ' + ', { llave: [cubre('afirmación')], nota: 'qué dice de él', color: 'c-i' }],
       condicion: 'cubre todas las partes sin agregar algo que el texto no dice; puede no estar escrita en una sola oración.',
     },
     ahoraTu: {
@@ -120,7 +125,9 @@
   // razón, ejemplo, dato). Se reserva: qué subrayar en un texto nuevo (predicción). Debe verse: que solo una es la principal.
   const QUI = ['La quinua es uno de los alimentos más completos.', 'Tiene proteínas con todos los aminoácidos que necesitamos.', 'Además, aporta hierro y fibra.', 'Por ejemplo, un plato de quinua da más proteína que uno de arroz.', 'En el altiplano se cultiva hace miles de años.'];
   const PAPEL = { 1: ['Principal: lo demás la sostiene', 'd'], 2: ['Secundaria: una razón', 'i'], 3: ['Secundaria: otra razón', 'i'], 4: ['Secundaria: un ejemplo', 'i'], 5: ['Dato aparte: no la sostiene', 'h'] };
-  const figQui = () => ({ secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: QUI.map((t, k) => ({ id: `o${k + 1}`, t })) }] });
+  // Debajo del texto, una tarjeta para el sello del papel (arriba lo taparía la lupa).
+  const PAPEL_T = { id: 'r', titulo: 'Papel', modo: 'tarjeta', fragmentos: [] };
+  const figQui = () => ({ secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: QUI.map((t, k) => ({ id: `o${k + 1}`, t })) }, PAPEL_T] });
   const jerarquia = {
     id: 'jerarquia',
     titulo: 'Principal, secundarias y subrayado',
@@ -130,9 +137,13 @@
       consigna: 'Subraya una oración a la vez. Mira qué papel cumple: idea principal, razón, ejemplo o dato aparte.',
       voz: 'Subrayar es elegir: no todo pesa igual.',
       controles: [{ id: 'k', etiqueta: 'Subrayar', opciones: [1, 2, 3, 4, 5].map(k => ({ valor: k, texto: `${k}` })) }],
-      dibujo: val => ({ datos: figQui(), estado: { marcas: { [`o${val.k}`]: PAPEL[val.k][1] }, sellos: { o: { t: PAPEL[val.k][0].split(':')[0], c: PAPEL[val.k][1] === 'h' ? 'h' : PAPEL[val.k][1] === 'd' ? 'd' : 'i' } } } }),
+      dibujo: val => ({ datos: figQui(), estado: { marcas: { [`o${val.k}`]: PAPEL[val.k][1] }, sellos: { r: { t: PAPEL[val.k][0].split(':')[0], c: PAPEL[val.k][1] === 'h' ? 'h' : PAPEL[val.k][1] === 'd' ? 'd' : 'i' } } } }),
       lectura: val => [corto(PAPEL[val.k][1] === 'h' ? fuera : PAPEL[val.k][1] === 'd' ? tema : cubre, PAPEL[val.k][0])],
       minimo: 3,
+      // Arrastra el resaltador de oración en oración.
+      arrastres: [{ id: 'subrayado', etiqueta: 'resaltador', color: 'c-i',
+        donde: val => RV().ancla(figQui(), `o${val.k}`),
+        mover: pt => ({ k: +RV().cercana(figQui(), pt, QUI.map((t, k) => `o${k + 1}`)).slice(1) }) }],
     },
     predice: {
       pregunta: 'Para estudiar este texto sobre el cóndor, ¿qué conviene subrayar?',
@@ -141,8 +152,8 @@
         ['Solo la primera oración', 'RV4', 'Aquí la primera es un dato; la principal llega después.'],
         ['Las cifras, porque son lo más difícil', 'RV1', 'Las cifras ayudan, pero aquí sostienen la idea; no son la idea.'],
       ]),
-      dibujo: { datos: { secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: [{ id: 'o1', t: 'El cóndor pesa hasta quince kilos.' }, { id: 'o2', t: 'Aun así, es un gran planeador que casi no aletea.' }, { id: 'o3', t: 'Aprovecha corrientes de aire caliente que suben.' }, { id: 'o4', t: 'Así recorre hasta trescientos kilómetros en un día.' }] }] }, estado: {} },
-      revelar: { datos: { secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: [{ id: 'o1', t: 'El cóndor pesa hasta quince kilos.' }, { id: 'o2', t: 'Aun así, es un gran planeador que casi no aletea.' }, { id: 'o3', t: 'Aprovecha corrientes de aire caliente que suben.' }, { id: 'o4', t: 'Así recorre hasta trescientos kilómetros en un día.' }] }] }, estado: { marcas: { o2: 'd', o3: 'i' }, sellos: { o: { t: 'Principal: la 2', c: 'd' } } } },
+      dibujo: { datos: { secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: [{ id: 'o1', t: 'El cóndor pesa hasta quince kilos.' }, { id: 'o2', t: 'Aun así, es un gran planeador que casi no aletea.' }, { id: 'o3', t: 'Aprovecha corrientes de aire caliente que suben.' }, { id: 'o4', t: 'Así recorre hasta trescientos kilómetros en un día.' }] }, PAPEL_T] }, estado: {} },
+      revelar: { datos: { secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: [{ id: 'o1', t: 'El cóndor pesa hasta quince kilos.' }, { id: 'o2', t: 'Aun así, es un gran planeador que casi no aletea.' }, { id: 'o3', t: 'Aprovecha corrientes de aire caliente que suben.' }, { id: 'o4', t: 'Así recorre hasta trescientos kilómetros en un día.' }] }, PAPEL_T] }, estado: { marcas: { o2: 'd', o3: 'i' }, sellos: { r: { t: 'Principal: la 2', c: 'd' } } } },
       coincide: 'Coincide: la 2 es la idea; la 3 explica cómo lo logra; lo demás la apoya.',
     },
     mira: {
@@ -156,7 +167,7 @@
     },
     regla: {
       texto: 'Un texto tiene jerarquía: una idea principal y secundarias que la explican, la sostienen o la ejemplifican. Subrayar bien es marcar la principal y lo esencial de sus apoyos.',
-      ecuacion: [tema('principal'), ' ← ', cubre('razones'), ' + ', cubre('ejemplos')],
+      ecuacion: [tema('principal'), ' ← ', { llave: [cubre('apoyos')], nota: 'razones y ejemplos', color: 'c-i' }],
       condicion: 'se pregunta de cada oración qué hace con las otras; si todo se subraya, no se ve la jerarquía.',
     },
     ahoraTu: {
@@ -230,7 +241,7 @@
     },
     regla: {
       texto: 'Un mapa conceptual representa las ideas de un texto como conceptos unidos por enlaces (verbos o frases). Concepto, enlace y concepto forman una proposición fiel al texto.',
-      ecuacion: [cubre('concepto'), ' → ', prop('enlace'), ' → ', cubre('concepto'), ' = proposición'],
+      ecuacion: [cubre('A'), ' → ', { llave: [prop('enlace')], nota: 'el verbo', color: 'c-o' }, ' → ', cubre('B')],
       condicion: 'el enlace dice la relación que el texto afirma, en su dirección; palabras sueltas sin enlace no son un mapa.',
     },
     ahoraTu: {
@@ -253,9 +264,54 @@
     },
   };
 
+  // ---------- Laboratorio: probar propuestas en tres textos ----------
+  // Más rica que la idea 1: tres textos, uno con la idea principal repartida (ninguna oración la dice sola), las cuatro
+  // clases de propuesta y el marcador que recorre las oraciones. El veredicto y el conteo los calcula el código con la
+  // lista de oraciones que cubre cada propuesta.
+  const TEXTOS = {
+    biblioteca: { nombre: 'biblioteca', o: BIBLIO, p: { tema: { t: PROP.tema.t, c: [1, 2, 3, 4], afirma: false }, detalle: { t: PROP.detalle.t, c: [1] }, principal: { t: PROP.principal.t, c: [1, 2, 3, 4] }, amplia: { t: PROP.amplia.t, c: [] } } },
+    chuno: { nombre: 'chuño', o: ['En las noches de junio, la papa se deja helar en la pampa.', 'De día, el sol la descongela y se pisa para sacarle el agua.', 'Seca, se puede guardar varios años sin que se pudra.'],
+      p: { tema: { t: 'El chuño.', c: [1, 2, 3], afirma: false }, detalle: { t: 'La papa se pisa para sacarle el agua.', c: [2] }, principal: { t: 'El hielo y el sol secan la papa para guardarla años.', c: [1, 2, 3] }, amplia: { t: 'En los Andes hay muchas comidas.', c: [] } } },
+    paneles: { nombre: 'paneles', o: ['El colegio de Ccota instaló paneles solares.', 'Ahora tiene luz para las clases de la tarde.', 'Además, ya no paga la cuenta de electricidad.'],
+      p: { tema: { t: 'Los paneles solares del colegio.', c: [1, 2, 3], afirma: false }, detalle: { t: 'Hay clases en la tarde.', c: [2] }, principal: { t: 'Los paneles solares dieron luz y ahorro al colegio.', c: [1, 2, 3] }, amplia: { t: 'La energía solar es el futuro.', c: [] } } },
+  };
+  function veredicto(tx, k) {
+    const P = TEXTOS[tx].p[k], n = TEXTOS[tx].o.length;
+    if (P.afirma === false) return ['Solo nombra el tema', 'd'];
+    if (P.c.length === n) return ['Idea principal', 'i'];
+    if (!P.c.length) return ['Habla de otro texto', 'h'];
+    return ['Cubre una parte', 'h'];
+  }
+  const figLab = (tx, k) => figura('Texto', TEXTOS[tx].o, TEXTOS[tx].p[k].t);
+  const idsDe = tx => TEXTOS[tx].o.map((t, k) => `o${k + 1}`);
+  const mesaPropuestas = {
+    id: 'propuestas', titulo: 'Propuestas en tres textos', pieza: 'rv-texto',
+    consigna: 'Elige un texto y una propuesta. Arrastra el marcador por las oraciones para ver cuáles cubre.',
+    voz: 'En el chuño, ninguna oración lo dice sola.',
+    controles: [
+      { id: 'tx', etiqueta: 'Texto', opciones: Object.entries(TEXTOS).map(([valor, x]) => ({ valor, texto: x.nombre })) },
+      { id: 'k', etiqueta: 'Propuesta', opciones: [{ valor: 'tema', texto: 'tema' }, { valor: 'detalle', texto: 'detalle' }, { valor: 'principal', texto: 'principal' }, { valor: 'amplia', texto: 'amplia' }] },
+      { id: 'f', etiqueta: 'Oración', opciones: [1, 2, 3, 4].map(k => ({ valor: k, texto: `${k}` })) },
+    ],
+    dibujo: val => {
+      const T = TEXTOS[val.tx], P = T.p[val.k], v = veredicto(val.tx, val.k), n = T.o.length;
+      const est = cobertura(n, P.c);
+      if (P.afirma === false) est.marcas.p1 = 'd';
+      est.sellos = { p: { t: v[0], c: v[1] } };   // el conteo va en la lectura: junto al título no cabe
+      return { datos: figLab(val.tx, val.k), estado: est };
+    },
+    lectura: val => {
+      const T = TEXTOS[val.tx], P = T.p[val.k], f = Math.min(val.f, T.o.length), dentro = P.c.includes(f);
+      return [(dentro ? cubre : fuera)(`La ${f}: ${dentro ? 'cubierta' : 'fuera'}`), ` · cubre ${P.c.length} de ${T.o.length}`];
+    },
+    arrastres: [{ id: 'oracion', etiqueta: 'marcador de la oración', color: 'c-o',
+      donde: val => RV().ancla(figLab(val.tx, val.k), `o${Math.min(val.f, TEXTOS[val.tx].o.length)}`),
+      mover: (pt, val) => ({ f: +RV().cercana(figLab(val.tx, val.k), pt, idsDe(val.tx)).slice(1) }) }],
+  };
+
   return {
     unidad: 'razonamiento-verbal.tema-e-idea-principal',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -263,6 +319,11 @@
       pregunta: '¿Dónde está la idea principal si ninguna oración la dice?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (macroestructura)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/macroestructuratextual.htm' },
     },
+    laboratorio: [
+      mesaPropuestas,
+      Object.assign({ id: 'jerarquia', titulo: 'Principal y secundarias', pieza: 'rv-texto' }, jerarquia.juega),
+      Object.assign({ id: 'mapa-conceptual', titulo: 'El enlace del mapa', pieza: 'rv-texto' }, mapa.juega),
+    ],
     ideas: [temaIdea, jerarquia, mapa],
   };
 });

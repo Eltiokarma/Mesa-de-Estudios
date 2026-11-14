@@ -18,24 +18,35 @@
  * Códigos: RV1–RV4, RV10, RV11, RV36, RV43, RV54 (falso amigo), RV55 (tiempo o modo). Sin códigos nuevos.
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): un marcador que se arrastra por el texto inglés y se suelta en una palabra u
+  // oración; la manija va sobre ella (rv-texto.ancla) y salta a la más cercana al dedo (rv-texto.cercana). El control
+  // con botones es la alternativa sin arrastre.
+  const RV = () => Kit.piezas['rv-texto'];
+  const marcador = (datosDe, ids, control, etiqueta) => ({
+    id: 'frase', etiqueta, color: 'c-o',
+    donde: val => RV().ancla(datosDe(val), val[control]),
+    mover: (pt, val) => ({ [control]: RV().cercana(datosDe(val), pt, ids) }),
+  });
+  const oraciones = n => Array.from({ length: n }, (_, k) => ({ valor: `o${k + 1}`, texto: `${k + 1}` }));
   const corto = (fn, t) => {
-    if (t.length <= 26) return fn(t);
+    // El trozo de color no se parte: con 14 letras o menos cabe en la miniatura de un caso guardado del laboratorio.
+    if (t.length <= 14) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
-    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    if (k && k <= 14) return [fn(t.slice(0, k)), t.slice(k)];
     const ps = t.split(' '); let n = 1;
-    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 14) n++;
     return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
   };
   const sost = t => ({ v: 'c-i', t }), prueba = t => ({ v: 'c-o', t }), nodice = t => ({ v: 'c-d', t }), engana = t => ({ v: 'c-h', t });
   const opciones = (c, malas) => [{ id: 'c', texto: c, correcta: true }, ...malas.map(([texto, error, siFuera], k) => ({ id: `e${k}`, texto, error, siFuera }))];
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
-  const tarjeta = (titulo, frs) => ({ secciones: [{ id: 'o', titulo, modo: 'tarjeta', fragmentos: frs.map(([id, t]) => ({ id, t })) }] });
-  const lista = (titulo, ors) => ({ secciones: [{ id: 'o', titulo, modo: 'lista', fragmentos: ors.map((t, k) => ({ id: `o${k + 1}`, t })) }] });
+  const tarjeta = (titulo, frs) => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo, modo: 'tarjeta', fragmentos: frs.map(([id, t]) => ({ id, t })) }] });
+  const lista = (titulo, ors) => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo, modo: 'lista', fragmentos: ors.map((t, k) => ({ id: `o${k + 1}`, t })) }] });
 
   // ---------- Idea 1: palabras que engañan ----------
   // Cambia: la palabra que se mira. Permanece: el texto de la biblioteca. Progresa: falso amigo, tiempo y
@@ -53,12 +64,13 @@
     temas: ['Inglés básico'],
     pieza: 'rv-texto',
     juega: {
-      consigna: 'Marca palabras del texto en inglés. Mira cuáles se parecen al español y significan otra cosa, o cambian el tiempo.',
+      consigna: 'Arrastra el marcador por el texto en inglés. Mira qué palabras se parecen al español y significan otra cosa.',
       voz: 'Que se parezca al español no garantiza que signifique lo mismo.',
       controles: [{ id: 'k', etiqueta: 'Palabra', opciones: [{ valor: 'a', texto: 'Actually' }, { valor: 'b', texto: 'library' }, { valor: 'c', texto: 'used to' }, { valor: 'f', texto: 'few' }] }],
       dibujo: val => ({ datos: tarjeta('Text', LIB), estado: { marcas: { [val.k]: 'o' }, sellos: { o: { t: 'Revisa el sentido', c: 'h' } } } }),
       lectura: val => { const [w, sentido] = PAL[val.k].glosa.split(' = '); return [prueba(w), ` = ${sentido}`]; },
       minimo: 3,
+      arrastres: [marcador(() => tarjeta('Text', LIB), ['a', 'b', 'c', 'f'], 'k', 'marcador de la palabra')],
     },
     predice: {
       pregunta: '«Some students walk to school.» What does the sentence say?',
@@ -75,14 +87,14 @@
     mira: {
       datos: tarjeta('Text', LIB),
       pasos: [
-        { estado: { marcas: { a: 'h', b: 'h' } }, texto: '«Actually» y «library» se parecen al español, pero son falsos amigos.', ecuacion: [engana('actually'), ' = en realidad · ', engana('library'), ' = biblioteca'] },
+        { estado: { marcas: { a: 'h', b: 'h' } }, texto: '«Actually» y «library» se parecen al español, pero son falsos amigos.', ecuacion: [engana('actually'), ' = en realidad', '   ·   ', engana('library'), ' = biblioteca'] },
         { estado: { marcas: { c: 'o', d: 'i', e: 'i' }, nuevo: ['c', 'e'] }, texto: '«Used to open» dice que antes abría; «now it is closed» lo confirma.', ecuacion: [prueba('used to'), ' = antes, ya no'] },
         { estado: { marcas: { f: 'o', g: 'i' }, nuevo: ['f'] }, texto: '«Few people» son pocas personas: casi nadie lo sabe.', ecuacion: [prueba('few'), ' = pocos'] },
       ],
     },
     regla: {
       texto: 'Al leer en inglés, revisa los falsos amigos (actually, library, assist), el tiempo del verbo (used to, will, would) y los cuantificadores y negaciones (some, few, all, no).',
-      ecuacion: [engana('falso amigo'), ' · ', prueba('tiempo'), ' · ', prueba('cuantificador')],
+      ecuacion: [{ llave: [engana('falso amigo')], nota: 'parece y no es', color: 'c-h' }, '   ·   ', prueba('tiempo'), '   ·   ', { llave: [prueba('cuantificador')], nota: 'some, few, all', color: 'c-o' }],
       condicion: 'se lee la palabra en su oración; si el sentido del español no encaja con el resto, quizá es un falso amigo.',
     },
     ahoraTu: {
@@ -116,19 +128,26 @@
     general: { t: 'Food is important for people.', cubre: [], dice: 'Demasiado general: otro texto', ok: false },
     primera: { t: 'Quinoa grows in the Andes.', cubre: [1], dice: 'Es la primera oración: deja fuera el resto', ok: false },
   };
-  const figQ = k => ({ secciones: [lista('Text', QUI).secciones[0], { id: 'p', titulo: 'Main idea?', modo: 'tarjeta', fragmentos: [{ id: 'p1', t: PROP[k].t }] }] });
+  const figQ = k => ({ esquinaLibre: true, secciones: [lista('Text', QUI).secciones[0], { id: 'p', titulo: 'Main idea?', modo: 'tarjeta', fragmentos: [{ id: 'p1', t: PROP[k].t }] }] });
   const mainIdea = {
     id: 'main-idea',
     titulo: 'Main idea y summary',
     temas: ['Idea principal (main idea)', 'Resumen (summary)'],
     pieza: 'rv-texto',
     juega: {
-      consigna: 'Prueba cuatro propuestas de main idea para el texto sobre la quinua. Mira qué oraciones cubre cada una.',
+      consigna: 'Prueba cuatro propuestas de main idea sobre la quinua. Pasa el marcador por cada oración: ¿la propuesta la cubre?',
       voz: 'La main idea cubre todo el texto, igual que en español.',
-      controles: [{ id: 'k', etiqueta: 'Propuesta', opciones: [{ valor: 'main', texto: 'A' }, { valor: 'detalle', texto: 'B' }, { valor: 'general', texto: 'C' }, { valor: 'primera', texto: 'D' }] }],
+      controles: [
+        { id: 'k', etiqueta: 'Propuesta', opciones: [{ valor: 'main', texto: 'A' }, { valor: 'detalle', texto: 'B' }, { valor: 'general', texto: 'C' }, { valor: 'primera', texto: 'D' }] },
+        { id: 'f', etiqueta: 'Oración', opciones: oraciones(3) },
+      ],
       dibujo: val => { const p = PROP[val.k], marcas = { p1: p.ok ? 'o' : 'h' }; [1, 2, 3].forEach(n => { marcas[`o${n}`] = p.cubre.includes(n) ? 'i' : 'h'; }); return { datos: figQ(val.k), estado: { marcas, sellos: { p: { t: `Cubre ${p.cubre.length} de 3`, c: p.ok ? 'i' : 'h' } } } }; },
-      lectura: val => [corto(PROP[val.k].ok ? sost : engana, PROP[val.k].dice)],
+      lectura: val => {
+        const p = PROP[val.k], n = +val.f.slice(1), si = p.cubre.includes(n);
+        return [(si ? sost : engana)(`La ${n}: ${si ? 'cubierta' : 'fuera'}`), '   ·   ', corto(p.ok ? sost : engana, p.dice)];
+      },
       minimo: 3,
+      arrastres: [marcador(val => figQ(val.k), ['o1', 'o2', 'o3'], 'f', 'marcador de la oración')],
     },
     predice: {
       pregunta: 'Which is the best summary of the text about the vicuña?',
@@ -151,7 +170,7 @@
     },
     regla: {
       texto: 'La main idea afirma lo más importante y cubre todo el texto; el summary lo dice en pocas palabras, sin listar detalles ni cambiar quién hace qué ni cuántos.',
-      ecuacion: [prueba('main idea'), ' = ', sost('todo el texto'), ' en una oración'],
+      ecuacion: [{ llave: [prueba('main idea')], nota: 'una oración', color: 'c-o' }, ' = ', { llave: [sost('todo el texto')], nota: 'sin detalles', color: 'c-i' }],
       condicion: 'se comprueba oración por oración que la propuesta las cubre, sin agregar algo que el texto no dice.',
     },
     ahoraTu: {
@@ -183,19 +202,32 @@
     false: { t: 'Ana lives in Lima.', marcas: { o1: 'h' }, sello: ['False: lo contradice', 'h'], dice: 'La 1 dice Puno: lo contradice' },
     notstated: { t: 'Ana has two brothers.', marcas: {}, sello: ['Not stated', 'd'], dice: 'No lo dice ni lo niega' },
   };
-  const figAna = k => ({ secciones: [lista('Text', ANA).secciones[0], { id: 'a', titulo: 'Statement', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: AF[k].t }] }] });
+  const figAna = k => ({ esquinaLibre: true, secciones: [lista('Text', ANA).secciones[0], { id: 'a', titulo: 'Statement', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: AF[k].t }] }] });
   const dice = {
     id: 'stated-or-not',
     titulo: 'Dicho, contradicho o no dicho',
     temas: ['Lo que el texto dice y lo que no'],
     pieza: 'rv-texto',
     juega: {
-      consigna: 'Prueba tres afirmaciones sobre Ana. Mira si el texto las dice, las contradice o no dice nada.',
+      consigna: 'Prueba tres afirmaciones sobre Ana. Arrastra el marcador a la oración que las decide, si hay alguna.',
       voz: 'Que el texto no lo diga no lo vuelve falso.',
-      controles: [{ id: 'k', etiqueta: 'Statement', opciones: [{ valor: 'stated', texto: 'A' }, { valor: 'false', texto: 'B' }, { valor: 'notstated', texto: 'C' }] }],
-      dibujo: val => ({ datos: figAna(val.k), estado: { marcas: Object.assign({ a1: AF[val.k].sello[1] === 'h' ? 'h' : 'o' }, AF[val.k].marcas), sellos: { a: { t: AF[val.k].sello[0], c: AF[val.k].sello[1] } } } }),
-      lectura: val => [corto(AF[val.k].sello[1] === 'h' ? engana : AF[val.k].sello[1] === 'd' ? nodice : sost, AF[val.k].dice)],
+      controles: [
+        { id: 'k', etiqueta: 'Statement', opciones: [{ valor: 'stated', texto: 'A' }, { valor: 'false', texto: 'B' }, { valor: 'notstated', texto: 'C' }] },
+        { id: 'f', etiqueta: 'Oración', opciones: oraciones(3), inicio: 'o3' },
+      ],
+      // Si la oración marcada es la que decide, aparece el sello; si no, queda punteada (no habla de lo mismo).
+      dibujo: val => {
+        const a = AF[val.k], decide = a.marcas[val.f], selloSi = decide || a.sello[1] === 'd';
+        return { datos: figAna(val.k), estado: Object.assign({ marcas: Object.assign({ a1: a.sello[1] === 'h' ? 'h' : 'o' }, decide ? a.marcas : { [val.f]: 'd' }) }, selloSi ? { sellos: { a: { t: a.sello[0], c: a.sello[1] } }, nuevo: ['a'] } : {}) };
+      },
+      lectura: val => {
+        const a = AF[val.k], n = val.f.slice(1);
+        if (a.sello[1] === 'd') return [nodice(`La ${n} no lo decide`), ' · ninguna lo decide'];
+        if (!a.marcas[val.f]) return [nodice(`La ${n} no habla de esto`), ' · busca otra'];
+        return [corto(a.sello[1] === 'h' ? engana : sost, a.dice)];
+      },
       minimo: 3,
+      arrastres: [marcador(val => figAna(val.k), ['o1', 'o2', 'o3'], 'f', 'marcador de la oración')],
     },
     predice: {
       pregunta: 'According to the text, «Ana never helps her grandmother» is…',
@@ -204,8 +236,8 @@
         ['False', 'RV36', 'Para ser falso, el texto tendría que decir que sí la ayuda.'],
         ['True, because «never» is in the text', 'RV5', '«Never» no aparece en el texto.'],
       ]),
-      dibujo: { datos: { secciones: [lista('Text', ANA).secciones[0], { id: 'a', titulo: 'Statement', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: 'Ana never helps her grandmother.' }] }] }, estado: { marcas: { a1: 'o' } } },
-      revelar: { datos: { secciones: [lista('Text', ANA).secciones[0], { id: 'a', titulo: 'Statement', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: 'Ana never helps her grandmother.' }] }] }, estado: { marcas: { a1: 'o', o1: 'd' }, sellos: { a: { t: 'Not stated', c: 'd' } } } },
+      dibujo: { datos: { esquinaLibre: true, secciones: [lista('Text', ANA).secciones[0], { id: 'a', titulo: 'Statement', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: 'Ana never helps her grandmother.' }] }] }, estado: { marcas: { a1: 'o' } } },
+      revelar: { datos: { esquinaLibre: true, secciones: [lista('Text', ANA).secciones[0], { id: 'a', titulo: 'Statement', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: 'Ana never helps her grandmother.' }] }] }, estado: { marcas: { a1: 'o', o1: 'd' }, sellos: { a: { t: 'Not stated', c: 'd' } } } },
       coincide: 'Coincide: el texto nombra a la abuela, pero no dice nada sobre ayudarla.',
     },
     mira: {
@@ -218,7 +250,7 @@
     },
     regla: {
       texto: 'Una afirmación es true si el texto la dice, false si la contradice y not stated si el texto no la decide. Se justifica con la frase inglesa exacta.',
-      ecuacion: [sost('true'), ' · ', engana('false'), ' · ', nodice('not stated')],
+      ecuacion: [sost('true'), '   ·   ', engana('false'), '   ·   ', { llave: [nodice('not stated')], nota: 'no lo decide', color: 'c-d' }],
       condicion: 'se compara quién, qué, cuándo y cuántos; lo que no se menciona no es falso.',
     },
     ahoraTu: {
@@ -233,7 +265,7 @@
         const b = B[s % B.length];
         return {
           pregunta: 'According to the text, the statement is…',
-          dibujo: { datos: { secciones: [lista('Text', b.o).secciones[0], { id: 'a', titulo: 'Statement', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: b.a }] }] }, estado: { marcas: { a1: 'o' } } },
+          dibujo: { datos: { esquinaLibre: true, secciones: [lista('Text', b.o).secciones[0], { id: 'a', titulo: 'Statement', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: b.a }] }] }, estado: { marcas: { a1: 'o' } } },
           opciones: opciones(b.ok, voltear(b.m, s)),
           solucion: { texto: 'Se busca la frase inglesa que habla de lo mismo y se compara.', ecuacion: [prueba('statement'), ' frente a ', sost('the text')] },
         };
@@ -241,9 +273,52 @@
     },
   };
 
+  // ---------- Laboratorio: all, some, not all, no ----------
+  // Los cuantificadores en inglés, todos contra todos. La casilla la calcula el código recorriendo los tres mundos
+  // posibles (caminan todos, caminan algunos, no camina ninguno): la afirmación es true si vale en todos los mundos
+  // donde vale el texto, false si no vale en ninguno y not stated si en unos sí y en otros no. Se supone que hay
+  // estudiantes (si no, «all» y «no» serían verdad a la vez).
+  const CUANT = [
+    { valor: 'all', texto: 'All', frase: 'All the students walk to school.', mundos: ['todos'] },
+    { valor: 'some', texto: 'Some', frase: 'Some students walk to school.', mundos: ['todos', 'parte'] },
+    { valor: 'notall', texto: 'Not all', frase: 'Not all the students walk to school.', mundos: ['parte', 'ninguno'] },
+    { valor: 'no', texto: 'No', frase: 'No students walk to school.', mundos: ['ninguno'] },
+  ];
+  const MUNDOS = ['todos', 'parte', 'ninguno'];
+  const CASILLA = { stated: ['True: stated', 'i'], follows: ['True: it follows', 'i'], false: ['False', 'h'], notstated: ['Not stated', 'd'] };
+  function casillaCuant(tv, av) {
+    const T = CUANT.find(q => q.valor === tv), A = CUANT.find(q => q.valor === av);
+    const posibles = MUNDOS.filter(m => T.mundos.includes(m)), si = posibles.filter(m => A.mundos.includes(m)).length;
+    if (tv === av) return 'stated';
+    if (si === posibles.length) return 'follows';
+    return si === 0 ? 'false' : 'notstated';
+  }
+  const figCuant = av => ({ esquinaLibre: true, secciones: [
+    { id: 't', titulo: 'The text says one of these', modo: 'lista', fragmentos: CUANT.map(q => ({ id: q.valor, t: q.frase })) },
+    { id: 'a', titulo: 'Statement', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: CUANT.find(q => q.valor === av).frase }] },
+  ] });
+  const mesaCuant = {
+    id: 'cuantificadores', titulo: 'All, some, not all, no', pieza: 'rv-texto',
+    consigna: 'Arrastra el marcador a lo que dice el texto y elige el statement. Mira en qué casilla cae cada par.',
+    voz: '«Some» deja abierto si son todos.',
+    controles: [
+      { id: 't', etiqueta: 'Text', opciones: CUANT.map(q => ({ valor: q.valor, texto: q.texto })) },
+      { id: 'a', etiqueta: 'Statement', opciones: CUANT.map(q => ({ valor: q.valor, texto: q.texto })), inicio: 'all' },
+    ],
+    dibujo: val => {
+      const c = CASILLA[casillaCuant(val.t, val.a)];
+      return { datos: figCuant(val.a), estado: { marcas: { [val.t]: 'i', a1: c[1] === 'i' ? 'o' : c[1] }, sellos: { a: { t: c[0], c: c[1] } } } };
+    },
+    lectura: val => {
+      const k = casillaCuant(val.t, val.a), fn = k === 'false' ? engana : k === 'notstated' ? nodice : sost;
+      return [sost(CUANT.find(q => q.valor === val.t).texto), ' → ', prueba(CUANT.find(q => q.valor === val.a).texto), ': ', fn(CASILLA[k][0])];
+    },
+    arrastres: [marcador(val => figCuant(val.a), CUANT.map(q => q.valor), 't', 'lo que dice el texto')],
+  };
+
   return {
     unidad: 'razonamiento-verbal.lectura-en-ingles',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -251,6 +326,11 @@
       pregunta: '¿Entender cada palabra es entender el texto?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (MCER 2001 y 2020)', url: 'https://learnenglish.britishcouncil.org/free-resources/reading' },
     },
+    laboratorio: [
+      mesaCuant,
+      Object.assign({ id: 'palabras', titulo: 'Palabras que engañan', pieza: 'rv-texto' }, basico.juega),
+      Object.assign({ id: 'stated', titulo: 'Stated or not stated', pieza: 'rv-texto' }, dice.juega),
+    ],
     ideas: [basico, mainIdea, dice],
   };
 });

@@ -93,5 +93,16 @@
     return `Gráfico de barras «${d.titulo || ''}». ${d.texto ? `Texto: ${d.texto} ` : ''}Datos: ${bs}. La escala va de ${fmt(Number.isFinite(d.min) ? d.min : 0)} a ${fmt(d.max)}${d.min > 0 ? ', no empieza en cero' : ''}.`;
   }
 
-  return { id: 'rv-barras', dibujar, alt, disponer, escala, constantes: { W, PAD } };
+  // Gesto directo (docs/teoria.md §4b): el extremo de una barra (la manija va en su punta, a media altura) y la inversa
+  // de la escala (qué valor queda bajo una x). Sin recorte: el que llama ajusta al rango de su control.
+  function extremo(d, id) {
+    const L = disponer(d), b = L.barras.find(x => x.b.id === id);
+    return b ? { x: escala(d, L, b.b.valor), y: b.y + BAR / 2 } : null;
+  }
+  function valorEn(d, x) {
+    const L = disponer(d), min = Number.isFinite(d.min) ? d.min : 0, max = d.max > min ? d.max : min + 1;
+    return min + (x - L.x0) * (max - min) / (L.x1 - L.x0);
+  }
+
+  return { id: 'rv-barras', dibujar, alt, disponer, escala, extremo, valorEn, constantes: { W, PAD, BAR } };
 });

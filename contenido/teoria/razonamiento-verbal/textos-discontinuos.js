@@ -24,11 +24,12 @@
 })(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
   const corto = (fn, t) => {
-    if (t.length <= 26) return fn(t);
+    // El trozo de color no se parte: con 14 letras o menos cabe en la miniatura de un caso guardado del laboratorio.
+    if (t.length <= 14) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
-    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    if (k && k <= 14) return [fn(t.slice(0, k)), t.slice(k)];
     const ps = t.split(' '); let n = 1;
-    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 14) n++;
     return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
   };
   const dato = t => ({ v: 'c-i', t }), prueba = t => ({ v: 'c-o', t }), total = t => ({ v: 'c-d', t }), engana = t => ({ v: 'c-h', t });
@@ -48,12 +49,31 @@
     return out;
   }
 
+  // Gesto directo (docs/teoria.md §4b). En la tabla, el marcador se arrastra de fila en fila (rv-texto.ancla y
+  // cercana). En el gráfico, se agarra la punta de una barra: rv-barras.extremo da dónde está y valorEn, la inversa
+  // de la escala, convierte la x del dedo en el valor que quedaría ahí.
+  const RV = () => Kit.piezas['rv-texto'], RB = () => Kit.piezas['rv-barras'];
+  // Si la barra de valor v debe terminar en x (los datos fijos), el eje tiene que empezar en m: v − m = r (max − m),
+  // con r la fracción del ancho que ocupa; se despeja m = (v − r·max) / (1 − r).
+  const minPara = (d, v, x) => {
+    const L = RB().disponer(d), r = (x - L.x0) / (L.x1 - L.x0);
+    return r >= 0.999 ? d.max : (v - r * d.max) / (1 - r);
+  };
+  // La manija va 10 px dentro de la punta, para no tapar la cifra escrita al lado; mover lo compensa.
+  const DENTRO = 10;
+  const punta = (d, id) => { const p = RB().extremo(d, id); return { x: p.x - DENTRO, y: p.y }; };
+  const masCercano = (lista, v) => lista.reduce((a, b) => (Math.abs(b - v) < Math.abs(a - v) ? b : a));
+
   // ---------- Idea 1: la tabla, su fila y su total ----------
   // Cambia: la fila que se mira y si se mira la cantidad o la proporción. Permanece: la tabla de tres colegios.
   // Progresa: el porcentaje calculado de cada fila. Se reserva: «¿cuál aprobó mejor?» (predicción).
   // Debe verse: que B tiene más aprobados y C la mayor proporción.
   const COLE = [{ id: 'A', ap: 20, tot: 40 }, { id: 'B', ap: 30, tot: 100 }, { id: 'C', ap: 18, tot: 30 }];
-  const tabla = (filas, titulo = 'Aprobados por colegio') => ({ secciones: [{ id: 't', titulo, modo: 'lista', fragmentos: filas.map(c => ({ id: c.id, t: `Colegio ${c.id}: ${f(c.ap)} aprobados de ${f(c.tot)} alumnos` })) }] });
+  // El sello va en una tarjeta debajo de la tabla: en la cabecera lo taparía el botón de la lupa.
+  const tabla = (filas, titulo = 'Aprobados por colegio') => ({ secciones: [
+    { id: 't', titulo, modo: 'lista', fragmentos: filas.map(c => ({ id: c.id, t: `Colegio ${c.id}: ${f(c.ap)} aprobados de ${f(c.tot)} alumnos` })) },
+    { id: 'r', titulo: 'Lo que miras', modo: 'tarjeta', fragmentos: [] },
+  ] });
   const mejor = filas => filas.reduce((m, c) => (pct(c.ap, c.tot) > pct(m.ap, m.tot) ? c : m));
   const masAprob = filas => filas.reduce((m, c) => (c.ap > m.ap ? c : m));
   const tablaIdea = {
@@ -68,9 +88,11 @@
         { id: 'c', etiqueta: 'Colegio', opciones: COLE.map(c => ({ valor: c.id, texto: c.id })) },
         { id: 'm', etiqueta: 'Mirar', opciones: [{ valor: 'n', texto: 'cantidad' }, { valor: 'p', texto: 'proporción' }] },
       ],
-      dibujo: val => { const c = COLE.find(x => x.id === val.c); return { datos: tabla(COLE), estado: { marcas: { [c.id]: val.m === 'p' ? 'd' : 'i' }, sellos: { t: { t: val.m === 'p' ? `${f(pct(c.ap, c.tot))} %` : `${f(c.ap)} aprobados`, c: val.m === 'p' ? 'd' : 'i' } } } }; },
+      dibujo: val => { const c = COLE.find(x => x.id === val.c); return { datos: tabla(COLE), estado: { marcas: { [c.id]: val.m === 'p' ? 'd' : 'i' }, sellos: { r: { t: val.m === 'p' ? `${f(pct(c.ap, c.tot))} %` : `${f(c.ap)} aprobados`, c: val.m === 'p' ? 'd' : 'i' } } } }; },
       lectura: val => { const c = COLE.find(x => x.id === val.c); return val.m === 'p' ? [dato(`${f(c.ap)}`), ' de ', total(`${f(c.tot)}`), ` = ${f(pct(c.ap, c.tot))} %`] : [dato(`${f(c.ap)} aprobados`), ' (sin el total)']; },
       minimo: 4,
+      // Arrastra el marcador por las filas de la tabla.
+      arrastres: [{ id: 'fila', etiqueta: 'fila de la tabla', color: 'c-i', donde: val => RV().ancla(tabla(COLE), val.c), mover: (pt) => ({ c: RV().cercana(tabla(COLE), pt, COLE.map(c => c.id)) }) }],
     },
     predice: {
       pregunta: 'Según la tabla, ¿qué colegio tuvo la mayor proporción de aprobados?',
@@ -81,20 +103,20 @@
         ['No se puede saber', 'RV34', 'Se puede: cada fila trae los aprobados y su total.'],
       ]),
       dibujo: { datos: tabla(COLE), estado: {} },
-      revelar: { datos: tabla(COLE), estado: { marcas: Object.fromEntries(COLE.map(c => [c.id, c === mejor(COLE) ? 'i' : 'd'])), sellos: { t: { t: COLE.map(c => `${c.id} ${f(pct(c.ap, c.tot))} %`).join(' · '), c: 'i' } } } },
+      revelar: { datos: tabla(COLE), estado: { marcas: Object.fromEntries(COLE.map(c => [c.id, c === mejor(COLE) ? 'i' : 'd'])), sellos: { r: { t: COLE.map(c => `${c.id} ${f(pct(c.ap, c.tot))} %`).join(' · '), c: 'i' } } } },
       coincide: `Coincide: ${mejor(COLE).id} aprobó el ${f(pct(mejor(COLE).ap, mejor(COLE).tot))} % de sus alumnos.`,
     },
     mira: {
       datos: tabla(COLE),
       pasos: [
-        { estado: { marcas: { B: 'h' }, sellos: { t: { t: 'B: 30 aprobados', c: 'h' } } }, texto: 'B tiene más aprobados: 30. Pero tiene 100 alumnos.', ecuacion: [engana('30'), ' es más, pero de ', total('100')] },
-        { estado: { marcas: { A: 'd', B: 'd', C: 'd' }, sellos: { t: { t: 'A 50 % · B 30 % · C 60 %', c: 'd' } }, nuevo: ['A', 'B', 'C'] }, texto: 'Cada fila se divide entre su propio total.', ecuacion: [{ frac: [dato('aprobados'), total('total')] }, ' × 100'] },
-        { estado: { marcas: { C: 'i' }, sellos: { t: { t: `C: ${f(pct(18, 30))} %`, c: 'i' } }, nuevo: ['C'] }, texto: `C aprobó 18 de 30: el ${f(pct(18, 30))} %, la mayor proporción.`, ecuacion: [{ frac: [dato('18'), total('30')] }, ` = ${f(pct(18, 30))} %`] },
+        { estado: { marcas: { B: 'h' }, sellos: { r: { t: 'B: 30 aprobados', c: 'h' } } }, texto: 'B tiene más aprobados: 30. Pero tiene 100 alumnos.', ecuacion: [engana('30'), ' es más, pero de ', total('100')] },
+        { estado: { marcas: { A: 'd', B: 'd', C: 'd' }, sellos: { r: { t: 'A 50 % · B 30 % · C 60 %', c: 'd' } }, nuevo: ['A', 'B', 'C'] }, texto: 'Cada fila se divide entre su propio total.', ecuacion: [{ frac: [dato('aprobados'), total('total')] }, ' × 100'] },
+        { estado: { marcas: { C: 'i' }, sellos: { r: { t: `C: ${f(pct(18, 30))} %`, c: 'i' } }, nuevo: ['C'] }, texto: `C aprobó 18 de 30: el ${f(pct(18, 30))} %, la mayor proporción.`, ecuacion: [{ frac: [dato('18'), total('30')] }, ` = ${f(pct(18, 30))} %`] },
       ],
     },
     regla: {
       texto: 'En una tabla, cada dato es el cruce de una fila y una columna. Para comparar grupos de distinto tamaño, se compara la proporción: cada cantidad entre su propio total.',
-      ecuacion: ['proporción = ', { frac: [dato('parte'), total('total de su fila')] }],
+      ecuacion: ['proporción = ', { frac: [{ llave: [dato('parte')], nota: 'lo que cuentas', color: 'c-i', arriba: true }, { llave: [total('total de su fila')], nota: 'su propio total', color: 'c-d' }] }],
       condicion: 'los totales son distintos; si fueran iguales, comparar cantidades daría lo mismo.',
     },
     ahoraTu: {
@@ -116,7 +138,7 @@
             [`Grupo ${otro.id}`, 'RV45', `Su proporción es ${f(pct(otro.ap, otro.tot))} %: no es la mayor.`],
             ['No se puede saber', 'RV34', 'Se puede: cada fila trae su total.'],
           ]),
-          solucion: { texto: `Se divide cada fila entre su total: ${m.id} tiene ${f(pct(m.ap, m.tot))} %.`, ecuacion: [{ frac: [dato(f(m.ap)), total(f(m.tot))] }, ` = ${f(pct(m.ap, m.tot))} %`], dibujo: { datos: tabla(filas, 'Aprobados por grupo'), estado: { marcas: { [m.id]: 'i' }, sellos: { t: { t: filas.map(c => `${c.id} ${f(pct(c.ap, c.tot))} %`).join(' · '), c: 'i' } } } } },
+          solucion: { texto: `Se divide cada fila entre su total: ${m.id} tiene ${f(pct(m.ap, m.tot))} %.`, ecuacion: [{ frac: [dato(f(m.ap)), total(f(m.tot))] }, ` = ${f(pct(m.ap, m.tot))} %`], dibujo: { datos: tabla(filas, 'Aprobados por grupo'), estado: { marcas: { [m.id]: 'i' }, sellos: { r: { t: filas.map(c => `${c.id} ${f(pct(c.ap, c.tot))} %`).join(' · '), c: 'i' } } } } },
         };
       },
     },
@@ -140,6 +162,11 @@
       dibujo: val => ({ datos: grafico(val.min), estado: { marcas: { j: 'o' } } }),
       lectura: val => ['Se ve ', engana(`${f(seVe(82, 88, val.min), 1)} veces`), ' · es ', dato(`${f(pct(88 - 82, 82), 1)} %`), ' más'],
       minimo: 3,
+      // Estira la barra de Juliaca: los datos no cambian, así que para que se vea más larga el eje tiene que empezar
+      // más arriba. Suelta en el inicio de eje más cercano de los tres.
+      arrastres: [{ id: 'juliaca', etiqueta: 'punta de la barra de Juliaca', color: 'c-o',
+        donde: val => punta(grafico(val.min), 'j'),
+        mover: (pt, val) => ({ min: masCercano([0, 60, 80], minPara(grafico(val.min), 88, pt.x + DENTRO)) }) }],
     },
     predice: {
       pregunta: 'En este gráfico, ¿cuánto más vendió la feria B que la feria A?',
@@ -163,7 +190,7 @@
     },
     regla: {
       texto: 'En un gráfico de barras, el largo es fiel al dato solo si el eje empieza en cero. Si no, se comparan los valores escritos, no los largos.',
-      ecuacion: ['cuánto más = ', { frac: [[prueba('B'), ' − ', dato('A')], dato('A')] }, ' × 100'],
+      ecuacion: [{ frac: [[prueba('B'), ' − ', dato('A')], { llave: [dato('A')], nota: 'la base', color: 'c-i' }] }, ' × 100'],
       condicion: 'se mira primero el número donde empieza el eje; un corte en el eje avisa que no es cero.',
     },
     ahoraTu: {
@@ -228,13 +255,13 @@
       pasos: [
         { estado: { titulo: 'd' }, texto: 'El título dice qué y cuándo: ferias de quinua, dos años.', ecuacion: [total('título'), ' = qué + cuándo'] },
         { estado: { titulo: 'd', texto: 'i' }, texto: 'El texto da hechos sin cifras: subió el precio y crecieron las ventas.', ecuacion: [dato('texto'), ' = hechos'] },
-        { estado: { marcas: { p24: 'd', p25: 'i', j24: 'd', j25: 'i' } }, texto: 'El gráfico da las cifras: Puno +12 t y Juliaca +13 t.', ecuacion: [dato('82 − 70'), ' · ', dato('88 − 75')] },
+        { estado: { marcas: { p24: 'd', p25: 'i', j24: 'd', j25: 'i' } }, texto: 'El gráfico da las cifras: Puno +12 t y Juliaca +13 t.', ecuacion: [dato('82 − 70'), '   ·   ', dato('88 − 75')] },
         { estado: { texto: 'h' }, texto: 'Precio y ventas suben juntos, pero nada dice que uno cause lo otro.', ecuacion: [engana('juntos'), ' ≠ ', engana('causa')] },
       ],
     },
     regla: {
       texto: 'En un texto mixto o una infografía, texto, título y gráfico se completan: cada afirmación se respalda con la parte que la dice o con ambas.',
-      ecuacion: [total('título'), ' + ', dato('texto'), ' + ', dato('gráfico'), ' → respaldo'],
+      ecuacion: [{ llave: [total('título')], nota: 'qué y cuándo', color: 'c-d' }, ' + ', { llave: [dato('datos')], nota: 'texto y gráfico', color: 'c-i' }],
       condicion: 'se responde con los datos y no solo con el título; dos datos que suben juntos no prueban una causa.',
     },
     ahoraTu: {
@@ -258,9 +285,34 @@
     },
   };
 
+  // ---------- Laboratorio: el eje libre ----------
+  // Más rica que la idea 2: el eje empieza donde quieras (de 0 a 80, de 2 en 2) y también cambia lo que vendió
+  // Juliaca. Se agarran las dos puntas: la de Puno (82 t, fija) mueve el inicio del eje; la de Juliaca, su valor.
+  // La lectura escribe el inicio del eje, cuánto más se ve y cuánto más es: un caso guardado se lee solo.
+  const libre = (min, j) => ({ titulo: 'Venta de quinua en 2025', barras: [{ id: 'p', nombre: 'Puno', valor: 82 }, { id: 'j', nombre: 'Juliaca', valor: j }], min, max: 100, unidad: ' t', fuente: 'Datos inventados' });
+  const mesaEje = {
+    id: 'eje-libre', titulo: 'El eje libre', pieza: 'rv-barras',
+    consigna: 'La punta de Puno mueve el inicio del eje; la de Juliaca, su venta. Compara lo que se ve con lo que es.',
+    voz: 'Mira el número donde empieza el eje.',
+    controles: [
+      { id: 'min', etiqueta: 'Eje desde', color: 'c-h', min: 0, max: 80, paso: 2, inicio: 0, unidad: 't', decimales: 0 },
+      { id: 'j', etiqueta: 'Juliaca', color: 'c-o', min: 82, max: 100, paso: 1, inicio: 88, unidad: 't', decimales: 0 },
+    ],
+    dibujo: val => ({ datos: libre(val.min, val.j), estado: { marcas: { j: 'o', p: 'i' } } }),
+    lectura: val => ['Eje desde ', engana(`${f(val.min)} t`), ' · se ve ', engana(`${f(seVe(82, val.j, val.min), 1)} veces`), ' · es ', dato(`${f(pct(val.j - 82, 82), 1)} %`), ' más'],
+    arrastres: [
+      { id: 'puno', etiqueta: 'punta de la barra de Puno (mueve el inicio del eje)', color: 'c-h',
+        donde: val => punta(libre(val.min, val.j), 'p'),
+        mover: (pt, val) => ({ min: minPara(libre(val.min, val.j), 82, pt.x + DENTRO) }) },
+      { id: 'juliaca', etiqueta: 'punta de la barra de Juliaca', color: 'c-o',
+        donde: val => punta(libre(val.min, val.j), 'j'),
+        mover: (pt, val) => ({ j: RB().valorEn(libre(val.min, val.j), pt.x + DENTRO) }) },
+    ],
+  };
+
   return {
     unidad: 'razonamiento-verbal.textos-discontinuos',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js', '/nucleo/kit/piezas/rv-barras.js'],
     historia: {
@@ -268,6 +320,11 @@
       pregunta: '¿Qué miras primero en un gráfico?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Nightingale y Martineau, 1859)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/comprensionlectora.htm' },
     },
+    laboratorio: [
+      mesaEje,
+      Object.assign({ id: 'tabla', titulo: 'La tabla y sus totales', pieza: 'rv-texto' }, tablaIdea.juega),
+      Object.assign({ id: 'texto-y-grafico', titulo: 'Texto y gráfico juntos', pieza: 'rv-barras' }, mixtos.juega),
+    ],
     ideas: [tablaIdea, escala, mixtos],
   };
 });

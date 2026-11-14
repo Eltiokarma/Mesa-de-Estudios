@@ -79,3 +79,35 @@ test('en una lista, «junto» sigue en el mismo renglón y no lleva número', ()
   const y = id => tr.find(t => t.id === id).y;
   assert.equal(y('c'), y('b')); assert.equal(y('d'), y('b')); assert.ok(y('b') > y('a'));
 });
+
+test('ancla y cercana: la manija de cada fragmento cae en el lienzo y la frase más cercana a su manija es ella misma', () => {
+  const L = P.disponer(datos);
+  const ids = ['a', 'b', 'd', 'e', 'f', 'g'];
+  for (const id of ids) {
+    const p = P.ancla(datos, id);
+    assert.ok(p && p.x >= 0 && p.x <= P.constantes.W && p.y >= 0 && p.y <= L.alto, `${id} fuera`);
+    assert.equal(P.cercana(datos, p, ids), id);
+  }
+  // En una lista, la manija va sobre el número de la oración (no tapa sus palabras).
+  const num = L.secciones[1].trozos.find(t => t.num && t.texto === '1');
+  assert.ok(Math.abs(P.ancla(datos, 'e').x - num.x - 5) < 0.01);
+  assert.equal(P.ancla(datos, 'nada'), null);
+  // Lejos de todo, igual elige una de las pedidas.
+  assert.ok(['e', 'f'].includes(P.cercana(datos, { x: 0, y: 1000 }, ['e', 'f'])));
+});
+
+test('esquinaLibre: la primera sección lleva su sello en renglón propio, lejos de la esquina; sin el dato, nada cambia', () => {
+  const sin = P.dibujar(datos, { sellos: { s1: { t: 'Lo dice', c: 'i' } } });
+  const con = Object.assign({ esquinaLibre: true }, datos);
+  const svg = P.dibujar(con, { sellos: { s1: { t: 'Lo dice', c: 'i' } } });
+  const alto = s => +s.match(/viewBox="0 0 320 ([\d.]+)"/)[1];
+  assert.equal(alto(svg), alto(sin) + P.constantes.LH);
+  assert.equal(alto(svg), alto(P.dibujar(con, {})), 'el alto no depende del sello');
+  const r = svg.match(/class="rv-sello"><rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)"/);
+  assert.ok(+r[1] + +r[3] < 320 - 56, 'el sello deja libre la esquina de la lupa');
+  assert.ok(+r[2] > 20, 'el sello va bajo la cabecera');
+  // Ancla y cercana siguen coincidiendo con el texto desplazado.
+  for (const id of ['a', 'e', 'g']) assert.equal(P.cercana(con, P.ancla(con, id), ['a', 'e', 'g']), id);
+  const L0 = P.disponer(datos), L1 = P.disponer(con);
+  assert.equal(L1.secciones[0].trozos[0].y, L0.secciones[0].trozos[0].y + P.constantes.LH);
+});
