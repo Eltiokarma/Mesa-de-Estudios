@@ -52,6 +52,11 @@
     }
     return ops.slice(0, 4);
   }
+  // Potencias de 10 en las ecuaciones: '4π×10⁻⁷ · 2' → ['4π × ', { sup: ['10', '−7'] }, ' · 2'] (tipografía, §4b).
+  const DIG = { '⁻': '−', '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9' };
+  const pot = txt => txt.split(/\s?×\s?10([⁻⁰¹²³⁴⁵⁶⁷⁸⁹]+)/).map((t, k) => (k % 2 ? [' × ', { sup: ['10', t.split('').map(c => DIG[c]).join('')] }] : t)).flat().filter(t => t !== '');
+  // Gesto directo (docs/teoria.md §4b): las manijas viven en las coordenadas de fis-lienzo (vistas en cm).
+  const LIENZO = () => Kit.piezas['fis-lienzo'];
   // Un cable visto desde arriba: ⊙ si la corriente sale de la pantalla, ⊗ si entra.
   const cable = (x, y, sale, paso) => ({ c: [x, y], r: 0.45, color: 'h', relleno: 0.15, rotulo: sale ? '•' : '×', paso });
   // Campo que entra en la pantalla: una grilla de × en el color de B.
@@ -65,6 +70,7 @@
   // Cambia: la corriente y la distancia de la brújula · Permanece: el campo de la Tierra hacia el norte ·
   // Progresa: el giro de la aguja · Se reserva: invertir la corriente ·
   // Debe verse: el campo del cable es circular; la aguja suma ese campo y el de la Tierra.
+  // Se manipula: la brújula, que se arrastra hacia abajo para alejarla del cable (la distancia).
   const BT = 25;                                  // μT, componente horizontal aproximada en el Perú
   const bHilo = (i, rc) => MU * i / (2 * Math.PI * rc / 100) * 1e6;   // μT
   // px por cm de una vista de fis-lienzo (la misma cuenta que hace la pieza): para dibujar en cm con flechas.
@@ -111,6 +117,11 @@
       ],
       dibujo: val => ({ datos: oersted(val.i, val.r), estado: {} }),
       lectura: val => [B, ` del cable = ${f(bHilo(val.i, val.r), 0)} μT · la aguja gira ${f(giro(val.i, val.r), 0)}°`],
+      arrastres: [{
+        id: 'brujula', etiqueta: 'brújula (distancia al cable)',
+        donde: val => { const g = LIENZO().geometria(oersted(val.i, val.r)); return { x: g.X(0), y: g.Y(-val.r) }; },
+        mover: (pt, val) => ({ r: -LIENZO().geometria(oersted(val.i, val.r)).Yi(pt.y) }),
+      }],
       minimo: 3,
     },
     predice: {
@@ -136,7 +147,7 @@
     },
     regla: {
       texto: 'Una corriente crea un campo magnético en círculos alrededor del cable. Su sentido lo da la mano derecha y su valor baja con la distancia.',
-      ecuacion: [B, ' = ', { frac: [['μ₀', I], '2π r'] }, '   ·   μ₀ = 4π × 10⁻⁷ T·m/A'],
+      ecuacion: [B, ' = ', { frac: [['μ₀', I], ['2π ', { llave: ['r'], nota: 'distancia al cable' }]] }, '   ·   ', 'μ₀ = 4π × ', { sup: ['10', '−7'] }, ' T·m/A'],
       condicion: 'cable recto y largo comparado con la distancia r, medida desde el centro del cable.',
     },
     ahoraTu: {
@@ -151,7 +162,7 @@
               { id: 'r2', valor: MU * i / (2 * Math.PI * (rc / 100) ** 2) * 1e6 / 100, error: 'MG-R2', siFuera: 'Esa cuenta divide entre r²: así cae el campo de una carga, no el de un hilo.' },
               { id: 'sin-pi', valor: MU * i / (rc / 100) * 1e6, error: 'MG-UNID', siFuera: 'Esa cuenta olvida el 2π.' },
             ], n => `${f(n, 1)} μT`),
-            solucion: { texto: 'μ₀ I entre 2πr, con r en metros.', ecuacion: [B, ` = 2×10⁻⁷ · ${f(i)} / ${f(rc / 100)} = ${f(b, 1)} μT`] },
+            solucion: { texto: 'μ₀ I entre 2πr, con r en metros.', ecuacion: [B, ...pot(` = 2×10⁻⁷ · ${f(i)} / ${f(rc / 100)} = ${f(b, 1)} μT`)] },
           };
         }
         const b0 = x.de([20, 40, 60, 100]), k = x.de([2, 3, 4]), lejos = s % 4 === 0;
@@ -173,6 +184,7 @@
   // Cambia: cuántas vueltas tiene el solenoide y su largo · Permanece: la corriente (2 A) y su grosor ·
   // Progresa: las flechas de B adentro, iguales en todo el interior · Se reserva: un solenoide más grueso ·
   // Debe verse: B adentro depende de vueltas por metro y de I, no del radio.
+  // Se manipula: el extremo derecho del solenoide, que se estira o se encoge (el largo; las vueltas son las mismas).
   const IS = 2;
   const bSol = (n, Lc, i = IS) => MU * n * i / (Lc / 100) * 1000;    // mT
   const VISTA2 = { x0: -0.5, x1: 21.5, y0: -7.2, y1: 6.6 };
@@ -206,6 +218,11 @@
       ],
       dibujo: val => ({ datos: solenoide(val.n, val.L), estado: {} }),
       lectura: val => [B, ` adentro = ${f(bSol(val.n, val.L), 2)} mT · ${f(val.n / (val.L / 100), 0)} vueltas por metro`],
+      arrastres: [{
+        id: 'extremo', etiqueta: 'extremo derecho del solenoide (largo)',
+        donde: val => { const g = LIENZO().geometria(solenoide(val.n, val.L)); return { x: g.X(1 + val.L), y: g.Y(2.5) }; },
+        mover: (pt, val) => ({ L: LIENZO().geometria(solenoide(val.n, val.L)).Xi(pt.x) - 1 }),
+      }],
       minimo: 3,
     },
     predice: {
@@ -223,14 +240,14 @@
       datos: solenoide(20, 10, 2.5, { b: 2 }),
       pasos: [
         { estado: { paso: 0 }, texto: 'Una sola espira hace un campo que en su centro vale:', ecuacion: [B, ' = ', { frac: [['μ₀', I], '2R'] }] },
-        { estado: { paso: 1 }, texto: 'Muchas vueltas juntas suman sus campos: adentro queda casi uniforme.', ecuacion: ['n = ', { frac: ['N', 'L'] }, ' = ', { frac: ['20', '0,1'] }, ' = 200 vueltas/m'] },
-        { estado: { paso: 2 }, texto: 'El campo de adentro sale de las vueltas por metro y la corriente.', ecuacion: [B, ` = μ₀ n `, I, ` = 4π×10⁻⁷ · 200 · 2 = ${f(bSol(20, 10), 2)} mT`] },
+        { estado: { paso: 1 }, texto: 'Muchas vueltas juntas suman sus campos: adentro queda casi uniforme.', ecuacion: [{ llave: ['n'], nota: 'vueltas por metro' }, ' = ', { frac: ['N', 'L'] }, ' = ', { frac: ['20', '0,1'] }, ' = 200 vueltas/m'] },
+        { estado: { paso: 2 }, texto: 'El campo de adentro sale de las vueltas por metro y la corriente.', ecuacion: [B, ` = μ₀ n `, I, ...pot(` = 4π×10⁻⁷ · 200 · 2 = ${f(bSol(20, 10), 2)} mT`)] },
         { estado: { paso: 2 }, texto: 'En la fórmula del solenoide no aparece el radio.', ecuacion: [B, ' = μ₀ ', { frac: ['N', 'L'] }, ' ', I] },
       ],
     },
     regla: {
       texto: 'Una espira concentra el campo en su centro. Un solenoide largo lo hace uniforme adentro, según sus vueltas por metro y su corriente.',
-      ecuacion: ['espira: ', B, ' = ', { frac: [['μ₀', I], '2R'] }, '   ·   solenoide: ', B, ' = μ₀ ', { frac: ['N', 'L'] }, ' ', I],
+      ecuacion: ['espira: ', B, ' = ', { frac: [['μ₀', I], '2R'] }, '   ·   ', 'solenoide: ', B, ' = μ₀ ', { frac: ['N', 'L'] }, ' ', I],
       condicion: 'el solenoide es mucho más largo que grueso, y B se mide lejos de sus extremos.',
     },
     ahoraTu: {
@@ -245,7 +262,7 @@
               { id: 'sin-n', valor: b / n, error: 'MG-RADIO', siFuera: 'Esa sería con una sola vuelta por largo: faltan las N vueltas.' },
               { id: 'hilo', valor: MU * i / (2 * Math.PI * Lc / 100) * 1000, error: 'MG-RADIO', siFuera: 'Esa es la fórmula del hilo recto, no la del solenoide.' },
             ], v1 => `${f(v1, 3)} mT`),
-            solucion: { texto: 'Vueltas por metro por la corriente, por μ₀.', ecuacion: [B, ` = 4π×10⁻⁷ · ${f(n / (Lc / 100))} · ${f(i)} = ${f(b, 3)} mT`] },
+            solucion: { texto: 'Vueltas por metro por la corriente, por μ₀.', ecuacion: [B, ...pot(` = 4π×10⁻⁷ · ${f(n / (Lc / 100))} · ${f(i)} = ${f(b, 3)} mT`)] },
           };
         }
         const i = x.de([1, 2, 5, 10]), Rc = x.de([2, 5, 10]), b = MU * i / (2 * Rc / 100) * 1e6;
@@ -256,7 +273,7 @@
             { id: 'cm', valor: b / 100, error: 'MG-UNID', siFuera: 'Esa cuenta deja el radio en centímetros.' },
             { id: 'diam', valor: b / 2, error: 'MG-RADIO', siFuera: 'Esa cuenta usa el diámetro donde va el radio.' },
           ], v1 => `${f(v1, 1)} μT`),
-          solucion: { texto: 'μ₀ I entre el doble del radio.', ecuacion: [B, ` = 4π×10⁻⁷ · ${f(i)} / (2 · ${f(Rc / 100)}) = ${f(b, 1)} μT`] },
+          solucion: { texto: 'μ₀ I entre el doble del radio.', ecuacion: [B, ...pot(` = 4π×10⁻⁷ · ${f(i)} / (2 · ${f(Rc / 100)}) = ${f(b, 1)} μT`)] },
         };
       },
     },
@@ -266,6 +283,7 @@
   // Cambia: la rapidez del protón y el campo · Permanece: el campo entrando a la pantalla ·
   // Progresa: el radio de la circunferencia que describe · Se reserva: una carga quieta ·
   // Debe verse: F es perpendicular a v; no cambia la rapidez, solo la dirección.
+  // Se manipula: la punta de la flecha v, que se estira (la rapidez del protón).
   const MP = 1.67e-27, QE = 1.6e-19;
   const radio = (v5, bt) => MP * v5 * 1e5 / (QE * bt) * 100;   // cm
   const VISTA3 = { x0: -6, x1: 6, y0: -5.6, y1: 5.2 };
@@ -297,11 +315,17 @@
       consigna: 'Un protón entra a un campo magnético que apunta hacia adentro de la pantalla. Cambia su rapidez y el campo, y mira su camino.',
       voz: 'Fíjate en el ángulo entre la flecha de v y la de F.',
       controles: [
-        { id: 'v', etiqueta: 'v', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 2, unidad: '×10⁵ m/s', decimales: 0 },
+        { id: 'v', etiqueta: 'v, en 10⁵ m/s', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 },
         { id: 'b', etiqueta: 'B', color: 'c-i', min: 0.1, max: 0.2, paso: 0.05, inicio: 0.15, unidad: 'T', decimales: 2 },
       ],
       dibujo: val => ({ datos: proton(val.v, val.b), estado: {} }),
       lectura: val => [F, ` = ${cien(fCarga(val.v, val.b) * 1e-14, 1)} N · radio ${f(radio(val.v, val.b), 1)} cm`],
+      // La flecha v sale de x = 0,5 cm y mide PXV px por cada 10⁵ m/s (fis-lienzo dibuja d · escala px).
+      arrastres: [{
+        id: 'rapidez', etiqueta: 'punta de la flecha de velocidad', color: 'c-o',
+        donde: val => { const g = LIENZO().geometria(proton(val.v, val.b)); return { x: g.X(0.5) + val.v * PXV, y: g.Y(Y0) }; },
+        mover: (pt, val) => ({ v: (pt.x - LIENZO().geometria(proton(val.v, val.b)).X(0.5)) / PXV }),
+      }],
       minimo: 3,
     },
     predice: {
@@ -326,7 +350,7 @@
     },
     regla: {
       texto: 'Un campo magnético empuja una carga solo si se mueve. La fuerza es perpendicular a v y a B, así que cambia la dirección sin cambiar la rapidez.',
-      ecuacion: [F, ' = |q| ', v, B, ' sen θ   ·   r = ', { frac: [['m', v], ['|q|', B]] }],
+      ecuacion: [F, ' = |q| ', v, B, ' ', { llave: ['sen θ'], nota: 'ángulo con B' }, '   ·   ', 'r = ', { frac: [['m', v], ['|q|', B]] }],
       condicion: 'θ es el ángulo entre v y B. Hay circunferencia si v es perpendicular a B uniforme. Carga negativa: F al revés.',
     },
     ahoraTu: {
@@ -349,7 +373,7 @@
             { id: 'sin-sen', valor: th === 90 ? QE * v5 * 1e5 * bt / 2 : QE * v5 * 1e5 * bt, error: 'MG3', siFuera: th === 90 ? 'Esa cuenta divide entre 2 sin razón.' : 'Esa sería con v perpendicular a B.' },
             { id: 'sin-v', valor: QE * bt, error: 'MG1', siFuera: 'Esa cuenta olvida la rapidez: sin v no hay fuerza.' },
           ], n => `${cien(n, 1)} N`),
-          solucion: { texto: 'F = qvB sen θ.', ecuacion: [F, ` = 1,6×10⁻¹⁹ · ${f(v5)}×10⁵ · ${f(bt, 1)} · sen ${f(th)}° = ${cien(fz, 1)} N`] },
+          solucion: { texto: 'F = qvB sen θ.', ecuacion: [F, ...pot(` = 1,6×10⁻¹⁹ · ${f(v5)}×10⁵ · ${f(bt, 1)} · sen ${f(th)}° = ${cien(fz, 1)} N`)] },
         };
       },
     },
@@ -359,6 +383,8 @@
   // Cambia: la corriente y el ángulo entre el cable y B · Permanece: B = 0,2 T hacia la derecha y L = 0,5 m ·
   // Progresa: el tamaño de la fuerza, que sale de la pantalla · Se reserva: el cable paralelo a B ·
   // Debe verse: solo cuenta la parte de la corriente perpendicular a B.
+  // Sin arrastre en el juego: el ángulo es una de tres opciones. En el laboratorio («El cable que gira») se gira el
+  // cable con el dedo, de 0° a 180°.
   const BC = 0.2, LC = 0.5;
   const VISTA4 = { x0: -4.5, x1: 4.5, y0: -3.5, y1: 3.6 };
   const fCable = (i, th) => i * LC * BC * Math.sin(th * Math.PI / 180);
@@ -407,14 +433,14 @@
     mira: {
       datos: cableEnB(6, 30, { ang: 1, f: 2 }),
       pasos: [
-        { estado: { paso: 0 }, texto: 'Cable de 0,5 m con 6 A dentro de un campo de 0,2 T.', ecuacion: [I, ' = 6 A · ', B, ' = 0,2 T'] },
+        { estado: { paso: 0 }, texto: 'Cable de 0,5 m con 6 A dentro de un campo de 0,2 T.', ecuacion: [I, ' = 6 A', '   ·   ', B, ' = 0,2 T'] },
         { estado: { paso: 1 }, texto: 'Lo que importa es el ángulo entre la corriente y el campo.', ecuacion: ['θ = 30° → sen θ = 0,5'] },
         { estado: { paso: 2 }, texto: 'La fuerza sale de la pantalla: perpendicular al cable y al campo.', ecuacion: [F, ' = ', I, 'L', B, ` sen θ = 6 · 0,5 · 0,2 · 0,5 = ${f(fCable(6, 30), 2)} N`] },
       ],
     },
     regla: {
       texto: 'Un campo magnético empuja un cable con corriente con una fuerza perpendicular al cable y al campo. Es máxima a 90° y nula si son paralelos.',
-      ecuacion: [F, ' = ', I, ' L ', B, ' sen θ'],
+      ecuacion: [F, ' = ', I, ' L ', B, ' ', { llave: ['sen θ'], nota: 'ángulo con B' }],
       condicion: 'tramo recto de largo L dentro de un campo uniforme; θ es el ángulo entre la corriente y B.',
     },
     ahoraTu: {
@@ -438,6 +464,7 @@
   // Cambia: la corriente (igual en los dos), su sentido y la separación · Permanece: el largo considerado (1 m) ·
   // Progresa: las flechas de fuerza, hacia adentro o hacia afuera · Se reserva: corrientes distintas ·
   // Debe verse: la fuerza es la misma sobre los dos cables, aunque uno lleve más corriente.
+  // Se manipula: el cable de la derecha, que se arrastra de lado (la separación; los dos se separan desde el centro).
   const VISTA5 = { x0: -6.5, x1: 6.5, y0: -3.2, y1: 3.2 };
   const PXF5 = 0.12;                                       // px por μN/m
   const fPar = (i1, i2, dc) => 2e-7 * i1 * i2 / (dc / 100) * 1e6;   // μN por metro
@@ -457,6 +484,12 @@
       alt: `Dos cables paralelos a ${f(dc, 0)} cm con ${f(i1, 0)} A y ${f(i2, 0)} A en ${mismo ? 'el mismo sentido: se atraen' : 'sentidos opuestos: se repelen'}, con fuerzas iguales de ${f(fz, 0)} μN por metro.`,
     };
   }
+  // El cable de la derecha está en x = d/2 (cm): arrastrarlo cambia la separación d.
+  const arrastreSeparacion = datosDe => ({
+    id: 'separacion', etiqueta: 'cable de la derecha (separación)',
+    donde: val => { const g = LIENZO().geometria(datosDe(val)); return { x: g.X(val.d / 2), y: g.Y(0) }; },
+    mover: (pt, val) => ({ d: 2 * LIENZO().geometria(datosDe(val)).Xi(pt.x) }),
+  });
   const paralelosIdea = {
     id: 'cables-paralelos',
     titulo: 'Mismo sentido, se atraen',
@@ -472,6 +505,7 @@
       ],
       dibujo: val => ({ datos: paralelos(val.i, val.i, val.d, val.m === 1), estado: {} }),
       lectura: val => [F, ` = ${f(fPar(val.i, val.i, val.d), 0)} μN por metro · ${val.m === 1 ? 'se atraen' : 'se repelen'}`],
+      arrastres: [arrastreSeparacion(val => paralelos(val.i, val.i, val.d, val.m === 1))],
       minimo: 4,
     },
     predice: {
@@ -488,7 +522,7 @@
     mira: {
       datos: paralelos(8, 2, 4, true, { campo: 1, f: 2 }),
       pasos: [
-        { estado: { paso: 0 }, texto: 'Dos cables con corriente en el mismo sentido.', ecuacion: [{ sub: [I, '1'] }, ' = 8 A · ', { sub: [I, '2'] }, ' = 2 A · d = 4 cm'] },
+        { estado: { paso: 0 }, texto: 'Dos cables con corriente en el mismo sentido.', ecuacion: [{ sub: [I, '1'] }, ' = 8 A', '   ·   ', { sub: [I, '2'] }, ' = 2 A', '   ·   ', 'd = 4 cm'] },
         { estado: { paso: 1 }, texto: 'El campo del primero llega al segundo:', ecuacion: [{ sub: [B, '1'] }, ' = ', { frac: [['μ₀', { sub: [I, '1'] }], '2π d'] }, ` = ${f(bHilo(8, 4), 0)} μT`] },
         { estado: { paso: 2 }, texto: 'El segundo cable, en ese campo, recibe por metro:', ecuacion: [{ frac: [F, 'L'] }, ' = ', { sub: [I, '2'] }, { sub: [B, '1'] }, ` = 2 · ${f(bHilo(8, 4), 0)} μT = ${f(fPar(8, 2, 4), 0)} μN/m`] },
         { estado: { paso: 2 }, texto: 'Al revés da lo mismo: la fórmula tiene el producto I₁I₂.', ecuacion: [{ frac: [F, 'L'] }, ' = ', { frac: [['μ₀', { sub: [I, '1'] }, { sub: [I, '2'] }], '2π d'] }] },
@@ -496,7 +530,7 @@
     },
     regla: {
       texto: 'Dos cables paralelos se atraen si sus corrientes van en el mismo sentido y se repelen si van opuestas, con fuerzas iguales sobre los dos.',
-      ecuacion: [{ frac: [F, 'L'] }, ' = ', { frac: [['μ₀', { sub: [I, '1'] }, { sub: [I, '2'] }], '2π d'] }],
+      ecuacion: [{ frac: [F, 'L'] }, ' = ', { frac: [['μ₀', { sub: [I, '1'] }, { sub: [I, '2'] }], ['2π ', { llave: ['d'], nota: 'separación' }]] }],
       condicion: 'cables rectos, largos y paralelos, separados una distancia d en metros.',
     },
     ahoraTu: {
@@ -518,7 +552,7 @@
             { id: 'suma', valor: 2e-7 * (i1 + i2) / (dc / 100) * 1e6, error: 'MG6', siFuera: 'Esa cuenta suma las corrientes; van multiplicadas.' },
             { id: 'd2', valor: fz / (dc / 100), error: 'MG-R2', siFuera: 'Esa cuenta divide entre d²; aquí es entre d.' },
           ], n => `${f(n, 1)} μN/m`),
-          solucion: { texto: '2 × 10⁻⁷ por el producto de corrientes, entre d en metros.', ecuacion: [{ frac: [F, 'L'] }, ` = 2×10⁻⁷ · ${f(i1)} · ${f(i2)} / ${f(dc / 100)} = ${f(fz, 1)} μN/m`] },
+          solucion: { texto: '2 × 10⁻⁷ por el producto de corrientes, entre d en metros.', ecuacion: [{ frac: [F, 'L'] }, ...pot(` = 2×10⁻⁷ · ${f(i1)} · ${f(i2)} / ${f(dc / 100)} = ${f(fz, 1)} μN/m`)] },
         };
       },
     },
@@ -529,6 +563,45 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-lienzo.js'],
+    laboratorio: [
+      {
+        // Lo que la idea 4 no deja probar: cualquier ángulo de 0° a 180°, también el cable paralelo a B (F = 0).
+        id: 'cable-que-gira', titulo: 'El cable que gira', pieza: 'fis-lienzo',
+        consigna: 'Gira el cable con el dedo, de 0° a 180°, y cambia la corriente. ¿Cuándo la fuerza es máxima?',
+        controles: [
+          { id: 'i', etiqueta: 'I', color: 'c-h', min: 2, max: 10, paso: 2, inicio: 6, unidad: 'A', decimales: 0 },
+          { id: 't', etiqueta: 'Ángulo con B', min: 0, max: 180, paso: 15, inicio: 45, unidad: '°', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: cableEnB(val.i, val.t), estado: {} }),
+        lectura: val => [I, ` = ${f(val.i)}\u00a0A a ${f(val.t)}° de `, B, ': ', F, ` = ${f(fCable(val.i, val.t), 2)}\u00a0N`],
+        // La punta del cable está a 2,6 cm del centro, en el ángulo θ. Bajo el eje, el ángulo se lee como 0° o 180°.
+        arrastres: [{
+          id: 'giro', etiqueta: 'punta del cable (ángulo con B)', color: 'c-h',
+          donde: val => { const g = LIENZO().geometria(cableEnB(val.i, val.t)), a = val.t * Math.PI / 180; return { x: g.X(2.6 * Math.cos(a)), y: g.Y(2.6 * Math.sin(a)) }; },
+          mover: (pt, val) => {
+            const g = LIENZO().geometria(cableEnB(val.i, val.t)), x = g.Xi(pt.x), y = g.Yi(pt.y);
+            let a = Math.atan2(y, x) * 180 / Math.PI;
+            if (a < 0) a = a < -90 ? 180 : 0;
+            return { t: a };
+          },
+        }],
+      },
+      {
+        // Lo que la idea 5 reserva: corrientes distintas. La fuerza sigue siendo igual sobre los dos cables.
+        id: 'cables-distintos', titulo: 'Dos corrientes distintas', pieza: 'fis-lienzo',
+        consigna: 'Pon corrientes distintas en los dos cables y arrastra el de la derecha. Compara las dos flechas.',
+        controles: [
+          { id: 'i1', etiqueta: 'I₁', color: 'c-h', min: 2, max: 10, paso: 2, inicio: 8, unidad: 'A', decimales: 0 },
+          { id: 'i2', etiqueta: 'I₂', color: 'c-h', min: 2, max: 10, paso: 2, inicio: 2, unidad: 'A', decimales: 0 },
+          { id: 'm', etiqueta: 'Segundo cable', opciones: [{ valor: 1, texto: 'Mismo sentido' }, { valor: 0, texto: 'Opuesto' }], inicio: 1 },
+          { id: 'd', etiqueta: 'Separación', min: 4, max: 10, paso: 1, inicio: 4, unidad: 'cm', decimales: 0 },
+        ],
+        dibujo: val => ({ datos: paralelos(val.i1, val.i2, val.d, val.m === 1), estado: {} }),
+        lectura: val => [F, ` = ${f(fPar(val.i1, val.i2, val.d), 0)}\u00a0μN/m sobre cada cable · ${val.m === 1 ? 'se atraen' : 'se repelen'}`],
+        arrastres: [arrastreSeparacion(val => paralelos(val.i1, val.i2, val.d, val.m === 1))],
+      },
+      Object.assign({ id: 'brujula', titulo: 'La brújula junto al cable', pieza: 'fis-lienzo' }, oerstedIdea.juega),
+    ],
     historia: {
       texto: 'La brújula se usaba desde hacía siglos, pero nadie la relacionaba con la electricidad. En 1820, Hans Christian Ørsted notó que una corriente desviaba una aguja imantada cercana, y que el giro no apuntaba hacia el alambre sino alrededor de él. La noticia corrió por Europa: en semanas, Ampère medía fuerzas entre cables con corriente.',
       pregunta: '¿Por qué la aguja no apunta hacia el cable?',
