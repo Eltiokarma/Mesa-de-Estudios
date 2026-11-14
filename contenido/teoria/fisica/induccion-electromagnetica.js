@@ -47,6 +47,8 @@
   // cos de los ángulos de la convención de academia (37° y 53° con 3-4-5).
   const COS = { 0: 1, 37: 0.8, 53: 0.6, 60: 0.5, 90: 0 };
   const cosG = g => (COS[g] !== undefined ? COS[g] : Math.cos(g * Math.PI / 180));
+  // Gesto directo: cada manija usa la geometría que exporta su pieza, con los mismos datos que se dibujan.
+  const FLE = () => Kit.piezas.flechas, EJ = () => Kit.piezas.ejes, ESP = () => Kit.piezas['fis-espira'];
 
   // ---------- Idea 1: el flujo cuenta las líneas que cruzan ----------
   // Cambia: el ángulo de la espira y la intensidad de B · Permanece: el área de la espira (0,5 m²) ·
@@ -78,8 +80,17 @@
         { id: 'th', etiqueta: 'θ', min: 0, max: 90, paso: 15, inicio: 30, unidad: '°', decimales: 0 },
       ],
       dibujo: val => ({ datos: flujoDib(val.B, val.th), estado: { paso: 0 } }),
-      lectura: val => [Phi, ` = ${f(val.B * AREA * Math.cos(val.th * Math.PI / 180), 3)} Wb`],
+      lectura: val => [Phi, ` = ${f(val.B * AREA * Math.cos(val.th * Math.PI / 180), 3)}\u00a0Wb`],
       minimo: 3,
+      // Gira la espira tomando la punta de su normal; estira las flechas de B tomando la de la derecha.
+      arrastres: [
+        { id: 'normal', etiqueta: 'punta de la normal n (ángulo θ)',
+          donde: val => { const g = FLE().geometria(flujoDib(val.B, val.th)), r = val.th * Math.PI / 180; return { x: g.X(-2.2 * Math.sin(r)), y: g.Y(2.2 * Math.cos(r)) }; },
+          mover: (pt, val) => { const g = FLE().geometria(flujoDib(val.B, val.th)); return { th: Math.atan2(-g.Xi(pt.x), g.Yi(pt.y)) * 180 / Math.PI }; } },
+        { id: 'campo', etiqueta: 'punta de una flecha de B', color: 'c-i',
+          donde: val => { const g = FLE().geometria(flujoDib(val.B, val.th)); return { x: g.X(-3.2), y: g.Y(0.4 + 2.2 * val.B) }; },
+          mover: (pt, val) => { const g = FLE().geometria(flujoDib(val.B, val.th)); return { B: (g.Yi(pt.y) - 0.4) / 2.2 }; } },
+      ],
     },
     predice: {
       pregunta: ['Una espira de 0,5 m² está en un campo ', B, ' = 0,8 T, con su plano paralelo a las líneas (θ = 90° con la normal). ¿Cuánto vale el flujo?'],
@@ -99,7 +110,7 @@
         angulos: [{ en: [0, 0], de: 90, a: 150, texto: 'θ = 60°', paso: 1 }],
       }),
       pasos: [
-        { estado: { paso: 0 }, texto: 'Campo de 0,8 T; espira de 0,5 m².', ecuacion: [B, ' = 0,8 T   ·   A = 0,5 m²'] },
+        { estado: { paso: 0 }, texto: 'Campo de 0,8 T; espira de 0,5 m².', ecuacion: [B, ' = 0,8 T', '   ·   ', 'A = 0,5 m²'] },
         { estado: { paso: 1 }, texto: 'θ se mide entre B y la normal n de la espira.', ecuacion: ['θ = 60°'] },
         { estado: { paso: 2 }, texto: 'B solo atraviesa la sombra de la espira: A cos θ.', ecuacion: ['A cos θ = 0,5 · 0,5 = 0,25 m²'] },
         { estado: { paso: 2 }, texto: 'El flujo es B por esa sombra.', ecuacion: [Phi, ' = 0,8 · 0,25 = 0,2 Wb'] },
@@ -107,7 +118,7 @@
     },
     regla: {
       texto: 'El flujo magnético mide cuánto campo atraviesa una superficie: B por el área que queda de frente al campo.',
-      ecuacion: [Phi, ' = ', B, ' A cos θ'],
+      ecuacion: [Phi, ' = ', B, ' ', { llave: ['A cos θ'], nota: 'la sombra', color: 'c-d' }],
       condicion: 'B es uniforme sobre la espira y θ es el ángulo entre B y la normal, no entre B y el plano.',
     },
     ahoraTu: {
@@ -165,8 +176,12 @@
         { id: 'ts', etiqueta: 'Sube en', min: 0.2, max: 0.6, paso: 0.2, inicio: 0.4, unidad: 's', decimales: 1 },
       ],
       dibujo: val => ({ datos: faradayDib(val.F1, val.ts), estado: {} }),
-      lectura: val => [eps, ` al subir = 50 · ${f(val.F1, 1)} / ${f(val.ts, 1)} = ${f(NV * val.F1 / val.ts, 1)} V`],
+      lectura: val => [eps, ` al subir = 50 · ${f(val.F1, 1)} / ${f(val.ts, 1)} = ${f(NV * val.F1 / val.ts, 1)}\u00a0V`],
       minimo: 3,
+      // Arrastra la esquina donde el flujo deja de subir: arriba-abajo cambia Φ final; a los lados, cuánto tarda.
+      arrastres: [{ id: 'esquina', etiqueta: 'esquina del tramo que sube', color: 'c-d',
+        donde: val => { const g = EJ().geometria(faradayDib(val.F1, val.ts)); return { x: g.X(val.ts), y: g.Y(val.F1) }; },
+        mover: (pt, val) => { const g = EJ().geometria(faradayDib(val.F1, val.ts)); return { F1: g.Yi(pt.y), ts: g.Xi(pt.x) }; } }],
     },
     predice: {
       pregunta: ['Un imán quieto deja un flujo de ', Phi, ' = 0,8 Wb dentro de una bobina de 50 vueltas, durante 10 s. ¿Qué fem marca el voltímetro?'],
@@ -190,7 +205,7 @@
     },
     regla: {
       texto: 'La fem inducida en una bobina es proporcional a la rapidez con que cambia el flujo, multiplicada por sus vueltas.',
-      ecuacion: [eps, ' = −N ', { frac: [dPhi, 'Δt'] }],
+      ecuacion: [eps, ' = −N ', { llave: [{ frac: [dPhi, 'Δt'] }], nota: 'el ritmo', color: 'c-d' }],
       condicion: 'Φ es el flujo por una vuelta; el cociente da la fem media en ese intervalo. El signo menos lo explica Lenz.',
     },
     ahoraTu: {
@@ -262,12 +277,12 @@
         { estado: { paso: 1 }, texto: 'El N se acerca: más líneas de B cruzan la espira, hacia la derecha.', ecuacion: [Phi, ' aumenta'] },
         { estado: { paso: 2 }, texto: 'La espira crea un campo hacia la izquierda: frena el aumento.', ecuacion: ['B ind. contra el cambio de ', Phi] },
         { estado: { paso: 3 }, texto: 'Ese campo pide corriente: ⊗ arriba y ⊙ abajo.', ecuacion: ['regla de la mano derecha'] },
-        { estado: { paso: 3 }, texto: 'Su cara izquierda es un N frente al N: lo repele.', ecuacion: ['acercar → repele · alejar → atrae'] },
+        { estado: { paso: 3 }, texto: 'Su cara izquierda es un N frente al N: lo repele.', ecuacion: ['acercar → repele', '   ·   ', 'alejar → atrae'] },
       ],
     },
     regla: {
       texto: 'La corriente inducida circula de modo que su propio campo se opone al cambio del flujo que la produce.',
-      ecuacion: ['si ', Phi, ' sube, B ind. va contra B · si ', Phi, ' baja, B ind. va con B'],
+      ecuacion: ['si ', Phi, ' sube, B ind. va contra B', '   ·   ', 'si ', Phi, ' baja, B ind. va con B'],
       condicion: 'se compara con el cambio del flujo, no con el campo: al alejar el imán, el campo inducido acompaña a B.',
     },
     ahoraTu: {
@@ -311,10 +326,14 @@
   // Cambia: la rapidez de la barra y el campo · Permanece: el largo ℓ = 0,5 m y el foco de 2 Ω ·
   // Progresa: el área sombreada que crece cada segundo · Se reserva: la barra detenida dentro del campo ·
   // Debe verse: la fem sale del área que se barre por segundo, ℓ·v, no del campo solo.
-  const ELE = 0.5, RES = 2;
+  // Hallazgo 9: el juego es la barra sobre los rieles y «Mira» pasa a la recta Φ–t a propósito: el área que la barra
+  // barre cada segundo se vuelve la pendiente de esa recta, y la pendiente es la fem (lo que pide Faraday, idea 2).
+  // La flecha de v mide 14 px por m/s (escalaV) para que se pueda estirar con el dedo; en el juego la barra está en
+  // x = 4 m para que la flecha más larga no llegue a la lupa.
+  const ELE = 0.5, RES = 2, EV = 14;
   const barraDib = (Bv, vv, x = 6, rot = true) => {
     const e = Bv * ELE * vv, P = e * e / RES;
-    return { datos: { modo: 'barra', colores: COL, barra: { largo: 10, x, l: ELE, sentido: 'entra', v: vv, corriente: vv ? 'arriba' : null, brillo: Math.min(1, P / 1.25) }, rotulo: rot ? `ε = ${f(e, 2)} V` : undefined }, estado: {} };
+    return { datos: { modo: 'barra', colores: COL, barra: { largo: 10, x, l: ELE, sentido: 'entra', v: vv, escalaV: EV, corriente: vv ? 'arriba' : null, brillo: Math.min(1, P / 1.25) }, rotulo: rot ? `ε = ${f(e, 2)} V` : undefined }, estado: {} };
   };
   const barraIdea = {
     id: 'barra-movil',
@@ -328,9 +347,13 @@
         { id: 'v', etiqueta: 'v', color: 'c-o', min: 1, max: 5, paso: 1, inicio: 2, unidad: 'm/s', decimales: 0 },
         { id: 'B', etiqueta: 'B', color: 'c-i', min: 0.2, max: 1, paso: 0.2, inicio: 0.6, unidad: 'T', decimales: 1 },
       ],
-      dibujo: val => barraDib(val.B, val.v),
-      lectura: val => [eps, ` = ${f(val.B, 1)} · 0,5 · ${f(val.v, 0)} = ${f(val.B * ELE * val.v, 2)} V`],
+      dibujo: val => barraDib(val.B, val.v, 4),
+      lectura: val => [eps, ` = ${f(val.B, 1)} · 0,5 · ${f(val.v, 0)} = ${f(val.B * ELE * val.v, 2)}\u00a0V`],
       minimo: 3,
+      // Estira la flecha de v: más rápida, más área barrida por segundo.
+      arrastres: [{ id: 'rapidez', etiqueta: 'punta de la flecha de v', color: 'c-o',
+        donde: val => ESP().geometria(barraDib(val.B, val.v, 4).datos).puntaV(val.v),
+        mover: (pt, val) => ({ v: ESP().geometria(barraDib(val.B, val.v, 4).datos).vDe(pt) }) }],
     },
     predice: {
       pregunta: ['La barra frena y se queda quieta en el medio del campo, con ', B, ' = 1 T. ¿Qué pasa con el foco?'],
@@ -360,7 +383,7 @@
     },
     regla: {
       texto: 'Una barra que se mueve en un campo barre área: la fem es B por el largo por la rapidez.',
-      ecuacion: [eps, ' = ', B, ' ℓ ', v, '   ·   I = ', { frac: [eps, 'R'] }],
+      ecuacion: [eps, ' = ', B, ' ', { llave: ['ℓ ', v], nota: 'área barrida', color: 'c-o' }, '   ·   ', 'I = ', { frac: [eps, 'R'] }],
       condicion: 'B, la barra y su velocidad son perpendiculares entre sí, y el circuito está cerrado para que haya corriente.',
     },
     ahoraTu: {
@@ -382,7 +405,7 @@
             { id: 'por', valor: e * R, error: 'FA-POR', siFuera: 'Eso multiplica por R; la corriente es ε / R.' },
             { id: 'div', valor: Bv * l / vv / R, error: 'FA-POR', siFuera: 'Eso divide entre v; más rapidez barre más área.' },
           ], fmt),
-          solucion: { texto: pide === 'e' ? 'B por el largo por la rapidez.' : 'Primero la fem; después entre la resistencia.', ecuacion: pide === 'e' ? [eps, ` = ${f(Bv)} · ${f(l)} · ${f(vv, 0)} = ${f(e, 2)} V`] : [eps, ` = ${f(e, 2)} V · I = ${f(e, 2)} / ${f(R, 0)} = ${f(I, 2)} A`] },
+          solucion: { texto: pide === 'e' ? 'B por el largo por la rapidez.' : 'Primero la fem; después entre la resistencia.', ecuacion: pide === 'e' ? [eps, ` = ${f(Bv)} · ${f(l)} · ${f(vv, 0)} = ${f(e, 2)} V`] : [eps, ` = ${f(e, 2)} V`, '   ·   ', `I = ${f(e, 2)} / ${f(R, 0)} = ${f(I, 2)} A`] },
         };
       },
     },
@@ -411,12 +434,16 @@
       consigna: 'Una espira gira en un campo y su fem sube y baja. Elige el pico y cuántas vueltas da por segundo.',
       voz: 'La línea punteada no cambia de forma cuando cambias las vueltas.',
       controles: [
-        { id: 'Vm', etiqueta: 'ε pico', color: 'c-h', min: 100, max: 340, paso: 60, inicio: 220, unidad: 'V', decimales: 0 },
+        { id: 'Vm', etiqueta: 'ε pico', color: 'c-h', min: 100, max: 340, paso: 20, inicio: 220, unidad: 'V', decimales: 0 },
         { id: 'fr', etiqueta: 'Vueltas por segundo', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'Hz', decimales: 0 },
       ],
       dibujo: val => ({ datos: sen(val.Vm, val.fr), estado: {} }),
-      lectura: val => [`Eficaz: ${f(val.Vm, 0)} / √2 = ${f(val.Vm / Math.SQRT2, 1)} V`],
+      lectura: val => [`Eficaz: ${f(val.Vm, 0)} / √2 = ${f(val.Vm / Math.SQRT2, 1)}\u00a0V`],
       minimo: 3,
+      // Toma la primera cresta: arriba-abajo cambia el pico; a los lados, cuántas vueltas por segundo.
+      arrastres: [{ id: 'cresta', etiqueta: 'primera cresta de la fem', color: 'c-h',
+        donde: val => { const g = EJ().geometria(sen(val.Vm, val.fr)); return { x: g.X(1 / (4 * val.fr)), y: g.Y(val.Vm) }; },
+        mover: (pt, val) => { const g = EJ().geometria(sen(val.Vm, val.fr)); return { Vm: g.Yi(pt.y), fr: 1 / (4 * Math.max(0.01, g.Xi(pt.x))) }; } }],
     },
     predice: {
       pregunta: ['La fem de una toma sube hasta un pico de 311 V y baja hasta −311 V. ¿Cuál es su valor eficaz?'],
@@ -446,7 +473,7 @@
     },
     regla: {
       texto: 'Una espira que gira con rapidez constante da una fem senoidal. Su valor eficaz es el pico entre √2.',
-      ecuacion: [{ sub: [eps, 'ef'] }, ' = ', { frac: [{ sub: [eps, 'máx'] }, { raiz: '2' }] }, '   ·   ', { sub: ['I', 'ef'] }, ' = ', { frac: [{ sub: ['I', 'máx'] }, { raiz: '2' }] }],
+      ecuacion: [{ sub: [eps, 'ef'] }, ' = ', { llave: [{ frac: [{ sub: [eps, 'máx'] }, { raiz: '2' }] }], nota: 'pico entre √2', color: 'c-h' }, '   ·   ', { sub: ['I', 'ef'] }, ' = ', { frac: [{ sub: ['I', 'máx'] }, { raiz: '2' }] }],
       condicion: 'la señal es senoidal. El eficaz es el valor continuo que daría la misma potencia en una resistencia.',
     },
     ahoraTu: {
@@ -488,7 +515,7 @@
         { id: 'ns', etiqueta: 'Ns', min: 100, max: 1000, paso: 100, inicio: 400, unidad: '', decimales: 0 },
       ],
       dibujo: val => trafoDib(val.np, val.ns),
-      lectura: val => [`Vs = 220 · ${f(val.ns, 0)} / ${f(val.np, 0)} = ${f(VP * val.ns / val.np, 1)} V`],
+      lectura: val => [`Vs = 220 · ${f(val.ns, 0)} / ${f(val.np, 0)} = ${f(VP * val.ns / val.np, 1)}\u00a0V`],
       minimo: 3,
     },
     predice: {
@@ -514,7 +541,7 @@
     },
     regla: {
       texto: 'En un transformador ideal el voltaje de cada bobina es proporcional a sus vueltas, y la potencia que entra es la que sale.',
-      ecuacion: [{ frac: [{ sub: ['V', 's'] }, { sub: ['V', 'p'] }] }, ' = ', { frac: [{ sub: ['N', 's'] }, { sub: ['N', 'p'] }] }, '   ·   ', { sub: ['V', 'p'] }, { sub: ['I', 'p'] }, ' = ', { sub: ['V', 's'] }, { sub: ['I', 's'] }],
+      ecuacion: [{ frac: [{ sub: ['V', 's'] }, { sub: ['V', 'p'] }] }, ' = ', { llave: [{ frac: [{ sub: ['N', 's'] }, { sub: ['N', 'p'] }] }], nota: 'las vueltas' }, '   ·   ', { sub: ['V', 'p'] }, { sub: ['I', 'p'] }, ' = ', { sub: ['V', 's'] }, { sub: ['I', 's'] }],
       condicion: 'la corriente del primario es alterna (el flujo cambia) y no hay pérdidas en el núcleo ni en los cables.',
     },
     ahoraTu: {
@@ -546,11 +573,43 @@
     },
   };
 
+  // Mesa «rieles con todo suelto»: con B que entra y v hacia la derecha, la corriente sube por la barra; cambiar el
+  // sentido de v o de B la invierte (la fuerza sobre las cargas es q v × B).
+  const sentidoI = val => (val.v === 0 ? null : (val.v > 0) === (val.s === 'entra') ? 'arriba' : 'abajo');
+  const barraLibre = val => {
+    const e = val.B * val.l * val.v, P = e * e / RES;
+    return { datos: { modo: 'barra', colores: COL, barra: { largo: 10, x: 4, l: val.l, sentido: val.s, v: val.v, escalaV: EV, corriente: sentidoI(val), brillo: Math.min(1, P / 6.25) }, rotulo: `ε = ${f(Math.abs(e), 2)} V` }, estado: {} };
+  };
+
   return {
     unidad: 'fisica.induccion-electromagnetica',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/flechas.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-espira.js'],
+    // Laboratorio: la barra con todo suelto (también hacia atrás y con el campo al revés: el caso que la idea 4 no deja
+    // probar, donde la corriente cambia de sentido), la espira que gira en B y la gráfica Φ–t de Faraday.
+    laboratorio: [
+      {
+        id: 'barra-libre', titulo: 'Rieles con todo suelto', pieza: 'fis-espira',
+        consigna: 'Estira la flecha de v hacia adelante o hacia atrás. Cambia B, su sentido y el largo de la barra. Mira hacia dónde va I.',
+        controles: [
+          { id: 'v', etiqueta: 'v', color: 'c-o', min: -5, max: 5, paso: 1, inicio: 3, unidad: 'm/s', decimales: 0 },
+          { id: 'B', etiqueta: 'B', color: 'c-i', min: 0.2, max: 1, paso: 0.2, inicio: 0.6, unidad: 'T', decimales: 1 },
+          { id: 'l', etiqueta: 'ℓ', min: 0.2, max: 1, paso: 0.2, inicio: 0.6, unidad: 'm', decimales: 1 },
+          { id: 's', etiqueta: 'B', opciones: [{ valor: 'entra', texto: 'entra (⊗)' }, { valor: 'sale', texto: 'sale (⊙)' }] },
+        ],
+        dibujo: val => barraLibre(val),
+        lectura: val => {
+          const e = val.B * val.l * val.v, sube = sentidoI(val);
+          return [eps, ` = ${f(Math.abs(e), 2)}\u00a0V · I = ${f(Math.abs(e) / RES, 2)}\u00a0A`, sube ? (sube === 'arriba' ? ' que sube' : ' que baja') : ''];
+        },
+        arrastres: [{ id: 'rapidez', etiqueta: 'punta de la flecha de v', color: 'c-o',
+          donde: val => ESP().geometria(barraLibre(val).datos).puntaV(val.v === 0 ? 1e-9 : val.v),
+          mover: (pt, val) => ({ v: ESP().geometria(barraLibre(val).datos).vDe(pt) }) }],
+      },
+      Object.assign({ id: 'espira-gira', titulo: 'La espira que gira', pieza: 'flechas' }, flujo.juega),
+      Object.assign({ id: 'flujo-tiempo', titulo: 'Subidas de flujo', pieza: 'ejes' }, faraday.juega),
+    ],
     historia: {
       texto: 'Ya se sabía que una corriente mueve una brújula. En 1831, Faraday probó lo inverso con dos bobinas en un anillo de hierro: la aguja se movía solo al conectar o desconectar, nunca mientras la corriente seguía igual. Lo que induce no es el magnetismo, sino su cambio.',
       pregunta: '¿Por qué la aguja quedaba quieta con la corriente encendida?',

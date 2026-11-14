@@ -40,3 +40,20 @@ test('horario visto desde el imán: ⊙ arriba y ⊗ abajo; antihorario al revé
   assert.deepEqual(punto(P.dibujar(IMAN('horario'))), [48]);
   assert.deepEqual(punto(P.dibujar(IMAN('antihorario'))), [152]);
 });
+
+test('barra con escalaV: la flecha de v crece con la rapidez y geometria la ubica', () => {
+  const Pz = require('./fis-espira.js');
+  const d = v => ({ modo: 'barra', barra: { largo: 10, x: 6, l: 0.5, v, escalaV: 18 } });
+  const punta = v => +Pz.dibujar(d(v)).match(/<path d="M([\d.]+) 24L/)[1];
+  for (const v of [2, 5, -3]) {
+    const g = Pz.geometria(d(v)), p = g.puntaV(v);
+    assert.ok(Math.abs(g.vDe(p) - v) < 1e-9, 'vDe(puntaV(v)) = v');
+    assert.ok(p.x > 0 && p.x < 320);
+  }
+  assert.ok(Pz.geometria(d(5)).puntaV(5).x > Pz.geometria(d(2)).puntaV(2).x);
+  // Sin escalaV la flecha no cambia (dato opcional).
+  const sin = { modo: 'barra', barra: { largo: 10, x: 6, l: 0.5, v: 2 } };
+  assert.equal(Pz.dibujar(sin), Pz.dibujar(JSON.parse(JSON.stringify(sin))));
+  assert.match(Pz.dibujar(sin), /<path d="M240.4 24L/, 'sin escalaV, la flecha mide 30 px como antes');
+  assert.equal(punta(5), Pz.geometria(d(5)).puntaV(5).x, 'la punta dibujada es la de geometria');
+});

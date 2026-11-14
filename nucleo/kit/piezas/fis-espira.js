@@ -8,7 +8,8 @@
  * a ese cambio.
  *
  * Fidelidad: en 'barra' la regla de los rieles va en metros (una sola escala); la barra cae sobre su metro y el área
- * sombreada es la del circuito. El largo de las flechas de v solo dice el sentido. En 'iman', la cantidad de líneas
+ * sombreada es la del circuito. El largo de las flechas de v solo dice el sentido, salvo con barra.escalaV: entonces
+ * la flecha mide escalaV px por cada m/s (afirmación: más rápida, flecha más larga). En 'iman', la cantidad de líneas
  * de campo que atraviesan la espira crece al acercar el imán (cualitativo, se declara en el alt).
  *
  * datos = {
@@ -19,7 +20,8 @@
  *   corriente: 'horario' | 'antihorario' | null,   // vista desde el imán (horario: ⊙ arriba, ⊗ abajo)
  *   inducido: 'izq' | 'der' | null,                // sentido del campo de la espira sobre el eje
  *   // barra
- *   barra: { largo: 10, x: 4, l: 0.5, sentido: 'entra'|'sale', v: 2, corriente: 'arriba'|'abajo'|null, brillo: 0..1 },
+ *   barra: { largo: 10, x: 4, l: 0.5, sentido: 'entra'|'sale', v: 2, corriente: 'arriba'|'abajo'|null, brillo: 0..1,
+ *            escalaV: 18 },   // opcional: px por m/s; con él, el largo de la flecha de v sigue a la rapidez
  *   // transformador
  *   bobinas: { np: 100, ns: 400, vp: '220 V', vs: '880 V', ac: true },
  *   rotulo: 'ε = 0,6 V'                             // texto opcional bajo la figura (lo calcula quien llama)
@@ -111,9 +113,9 @@
     // Barra, su flecha de v y la corriente que la recorre.
     s += `<rect x="${T.n(xb - 4)}" y="${ARR - 8}" width="8" height="${ABA - ARR + 16}" rx="3" fill="currentColor"/>`;
     if (Number.isFinite(b.v) && b.v !== 0) {
-      const sg = Math.sign(b.v);
-      s += T.flecha(xb + sg * 8, ARR - 22, xb + sg * 38, ARR - 22, { grosor: T.GROSOR.variable, color: C.v });
-      s += T.rotulo(xb + sg * 44, ARR - 17, 'v', { color: C.v, peso: 700, ancla: sg > 0 ? 'start' : 'end' });
+      const sg = Math.sign(b.v), largo = b.escalaV > 0 ? b.escalaV * Math.abs(b.v) : 30;
+      s += T.flecha(xb + sg * 8, ARR - 22, xb + sg * (8 + largo), ARR - 22, { grosor: T.GROSOR.variable, color: C.v });
+      s += T.rotulo(xb + sg * (14 + largo), ARR - 17, 'v', { color: C.v, peso: 700, ancla: sg > 0 ? 'start' : 'end' });
     }
     if (b.corriente === 'arriba' || b.corriente === 'abajo') {
       const sg = b.corriente === 'arriba' ? -1 : 1, xm = xb + 14;
@@ -171,5 +173,17 @@
     return `Imán con su polo ${m.polo === 'S' ? 'S' : 'N'} hacia una espira; el imán ${m.mueve === 'acerca' ? 'se acerca' : m.mueve === 'aleja' ? 'se aleja' : 'está quieto'}; más líneas de campo cruzan la espira cuanto más cerca está${d.corriente ? `; corriente inducida en sentido ${d.corriente} visto desde el imán` : '; sin corriente inducida'}${d.inducido ? `; el campo de la espira apunta hacia la ${d.inducido === 'izq' ? 'izquierda' : 'derecha'}` : ''}.`;
   }
 
-  return { id: 'fis-espira', dibujar, alt, constantes: { W, ALTO } };
+  // Geometría para el gesto directo (modo barra): xb es la barra, yV la altura de la flecha de v y puntaV(v) su
+  // punta (con escalaV); vDe(punto) es la inversa. Las mismas cuentas que barra().
+  function geometria(d) {
+    const b = d.barra || {}, L = b.largo > 0 ? b.largo : 10, X0 = 56, X1 = 300, ARR = 46;
+    const X = x => X0 + (X1 - X0) * x / L, xb = X(Math.min(L, Math.max(0, b.x || 0))), k = b.escalaV > 0 ? b.escalaV : 0;
+    return {
+      X, xb, yV: ARR - 22,
+      puntaV: v => ({ x: xb + Math.sign(v) * (8 + k * Math.abs(v)), y: ARR - 22 }),
+      vDe: pt => { const dx = pt.x - xb; return k ? Math.sign(dx) * Math.max(0, Math.abs(dx) - 8) / k : 0; },
+    };
+  }
+
+  return { id: 'fis-espira', dibujar, alt, geometria, constantes: { W, ALTO } };
 });
