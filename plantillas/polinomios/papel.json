@@ -14,7 +14,117 @@
       ],
       "verificar": [ { "fn": "pDeCero", "args": [{ "coefs": [4, -1, 2, -9] }], "espera": { "valor": -9 } },
                      { "fn": "pDeUno", "args": [{ "coefs": [4, -1, 2, -9] }], "espera": { "valor": -4 } },
-                     { "fn": "evaluar", "args": [{ "coefs": [4, -1, 2, -9], "x": -1 }], "espera": { "valor": -16 } } ]
+                     { "fn": "evaluar", "args": [{ "coefs": [4, -1, 2, -9], "x": -1 }], "espera": { "valor": -16 } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Sea P(x) = 4x³ − x² + 2x − 9.",
+          "pregunta": "¿Cuánto vale P(0)?",
+          "decimales": 2,
+          "correcta": { "fn": "pDeCero", "args": [{ "coefs": [4, -1, 2, -9] }], "campo": "texto", "valor": "−9" },
+          "errores": [
+            {
+              "id": "PO7-suma-de-coeficientes",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste los coeficientes: eso es P(1). Con x = 0 todos los términos con x se anulan y queda el término independiente.",
+              "fn": "pDeCero",
+              "args": [{ "coefs": [4, -1, 2, -9] }],
+              "campo": "errores.sumaCoef.texto",
+              "valor": "−4"
+            },
+            {
+              "id": "PO19-coeficiente-principal",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el coeficiente principal. Con x = 0 se anula todo lo que lleva x: queda el término independiente, −9.",
+              "fn": "pDeCero",
+              "args": [{ "coefs": [4, -1, 2, -9] }],
+              "campo": "errores.principal.texto",
+              "valor": "4"
+            },
+            {
+              "id": "PO34-cero",
+              "respaldo": "hipotesis",
+              "explicacion": "P(0) no siempre es 0: el término independiente no lleva x, así que no se anula. Aquí queda −9.",
+              "fn": "pDeCero",
+              "args": [{ "coefs": [4, -1, 2, -9] }],
+              "campo": "errores.cero.texto",
+              "valor": "0"
+            }
+          ]
+        },
+        {
+          "id": "p1b",
+          "enunciado": "Sea P(x) = 4x³ − x² + 2x − 9.",
+          "pregunta": "¿Cuánto vale P(1)?",
+          "decimales": 2,
+          "correcta": { "fn": "pDeUno", "args": [{ "coefs": [4, -1, 2, -9] }], "campo": "texto", "valor": "−4" },
+          "errores": [
+            {
+              "id": "PO12-termino-independiente",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es P(0). Con x = 1 cada potencia vale 1: queda la suma de los coeficientes, 4 − 1 + 2 − 9.",
+              "fn": "pDeUno",
+              "args": [{ "coefs": [4, -1, 2, -9] }],
+              "campo": "errores.independiente.texto",
+              "valor": "−9"
+            },
+            {
+              "id": "PO20-coeficiente-principal",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el coeficiente principal. Con x = 1 cada término vale su coeficiente: se suman todos, 4 − 1 + 2 − 9.",
+              "fn": "pDeUno",
+              "args": [{ "coefs": [4, -1, 2, -9] }],
+              "campo": "errores.principal.texto",
+              "valor": "4"
+            },
+            {
+              "id": "PO21-sin-signos",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste los coeficientes sin sus signos. Cada uno va con el suyo: 4 − 1 + 2 − 9.",
+              "fn": "pDeUno",
+              "args": [{ "coefs": [4, -1, 2, -9] }],
+              "campo": "errores.sinSignos.texto",
+              "valor": "16"
+            }
+          ]
+        },
+        {
+          "id": "p1c",
+          "enunciado": "Sea P(x) = 4x³ − x² + 2x − 9.",
+          "pregunta": "¿Cuánto vale P(−1)?",
+          "decimales": 2,
+          "correcta": { "fn": "teoremaResto", "args": [{ "coefs": [4, -1, 2, -9], "divisor": [1, 1] }], "campo": "texto", "valor": "−16" },
+          "errores": [
+            {
+              "id": "PO8-signo-cambiado",
+              "respaldo": "hipotesis",
+              "explicacion": "Evaluaste en x = 1. Aquí x vale −1: (−1)³ = −1 y (−1)² = 1.",
+              "fn": "teoremaResto",
+              "args": [{ "coefs": [4, -1, 2, -9], "divisor": [1, 1] }],
+              "campo": "errores.signo.texto",
+              "valor": "−4"
+            },
+            {
+              "id": "PO15-par-negativo",
+              "respaldo": "hipotesis",
+              "explicacion": "La potencia par de un negativo es positiva: (−1)² = 1, así que −x² vale −1, no +1.",
+              "fn": "teoremaResto",
+              "args": [{ "coefs": [4, -1, 2, -9], "divisor": [1, 1] }],
+              "campo": "errores.parNegativo.texto",
+              "valor": "−14"
+            },
+            {
+              "id": "PO27-termino-independiente",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es P(0). Con x = −1 los términos con x no se anulan: 4(−1)³ − (−1)² + 2(−1) − 9.",
+              "fn": "teoremaResto",
+              "args": [{ "coefs": [4, -1, 2, -9], "divisor": [1, 1] }],
+              "campo": "errores.independiente.texto",
+              "valor": "−9"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -26,7 +136,50 @@
         "El grado absoluto es el mayor de esos: 7. No es la suma de todos los exponentes (18) ni la suma de los relativos (9).",
         "Grado relativo a x: el mayor exponente de x, 4. Relativo a y: el mayor exponente de y, 5."
       ],
-      "verificar": [ { "fn": "grado", "args": [{ "terminos": [{ "c": 6, "x": 4, "y": 1 }, { "c": -2, "x": 2, "y": 5 }, { "c": 1, "x": 3, "y": 3 }] }], "espera": { "valor": 7, "GR.x": 4, "GR.y": 5 } } ]
+      "verificar": [ { "fn": "grado", "args": [{ "terminos": [{ "c": 6, "x": 4, "y": 1 }, { "c": -2, "x": 2, "y": 5 }, { "c": 1, "x": 3, "y": 3 }] }], "espera": { "valor": 7, "GR.x": 4, "GR.y": 5 } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Sea N(x; y) = 6x⁴y − 2x²y⁵ + x³y³.",
+          "pregunta": "¿Cuál es su grado absoluto?",
+          "decimales": 2,
+          "correcta": {
+            "fn": "grado",
+            "args": [{ "terminos": [{ "c": 6, "x": 4, "y": 1 }, { "c": -2, "x": 2, "y": 5 }, { "c": 1, "x": 3, "y": 3 }] }],
+            "campo": "texto",
+            "valor": "7"
+          },
+          "errores": [
+            {
+              "id": "PO10-mayor-relativo",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el mayor grado relativo (el de y). El absoluto es el mayor grado de un término, sumando sus exponentes: 2 + 5 = 7.",
+              "fn": "grado",
+              "args": [{ "terminos": [{ "c": 6, "x": 4, "y": 1 }, { "c": -2, "x": 2, "y": 5 }, { "c": 1, "x": 3, "y": 3 }] }],
+              "campo": "errores.relativo.texto",
+              "valor": "5"
+            },
+            {
+              "id": "PO11-suma-de-todos",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste todos los exponentes. El grado absoluto es el del término de mayor grado: −2x²y⁵ tiene 2 + 5 = 7.",
+              "fn": "grado",
+              "args": [{ "terminos": [{ "c": 6, "x": 4, "y": 1 }, { "c": -2, "x": 2, "y": 5 }, { "c": 1, "x": 3, "y": 3 }] }],
+              "campo": "errores.sumaTodos.texto",
+              "valor": "18"
+            },
+            {
+              "id": "PO28-suma-de-relativos",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste los grados relativos, 4 + 5. Esos exponentes vienen de términos distintos: el mayor grado de un término es 7.",
+              "fn": "grado",
+              "args": [{ "terminos": [{ "c": 6, "x": 4, "y": 1 }, { "c": -2, "x": 2, "y": 5 }, { "c": 1, "x": 3, "y": 3 }] }],
+              "campo": "errores.sumaRelativos.texto",
+              "valor": "9"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -40,7 +193,108 @@
       ],
       "verificar": [ { "fn": "gradoProducto", "args": [{ "m": 4, "n": 6 }], "espera": { "valor": 10 } },
                      { "fn": "gradoSuma", "args": [{ "m": 4, "n": 6 }], "espera": { "valor": 6 } },
-                     { "fn": "gradoPotencia", "args": [{ "m": 4, "k": 3 }], "espera": { "valor": 12 } } ]
+                     { "fn": "gradoPotencia", "args": [{ "m": 4, "k": 3 }], "espera": { "valor": 12 } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "P(x) es de grado 4 y Q(x) es de grado 6.",
+          "pregunta": "¿De qué grado es P · Q?",
+          "decimales": 2,
+          "correcta": { "fn": "gradoProducto", "args": [{ "m": 4, "n": 6 }], "campo": "texto", "valor": "10" },
+          "errores": [
+            {
+              "id": "PO5-multiplica-grados",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste los grados. Al multiplicar, x⁴ · x⁶ = x¹⁰: los exponentes se suman.",
+              "fn": "gradoProducto",
+              "args": [{ "m": 4, "n": 6 }],
+              "campo": "errores.producto.texto",
+              "valor": "24"
+            },
+            {
+              "id": "PO23-el-mayor",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el grado de la suma. En el producto, x⁴ · x⁶ = x¹⁰: los grados se suman.",
+              "fn": "gradoProducto",
+              "args": [{ "m": 4, "n": 6 }],
+              "campo": "errores.mayor.texto",
+              "valor": "6"
+            }
+          ]
+        },
+        {
+          "id": "p3b",
+          "enunciado": "P(x) es de grado 4 y Q(x) es de grado 6.",
+          "pregunta": "¿De qué grado es P + Q?",
+          "decimales": 2,
+          "correcta": { "fn": "gradoSuma", "args": [{ "m": 4, "n": 6 }], "campo": "texto", "valor": "6" },
+          "errores": [
+            {
+              "id": "PO6-suma-grados",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste los grados, como en el producto. Al sumar no se multiplica nada: manda el término x⁶ de Q.",
+              "fn": "gradoSuma",
+              "args": [{ "m": 4, "n": 6 }],
+              "campo": "errores.suma.texto",
+              "valor": "10"
+            },
+            {
+              "id": "PO5-multiplica-grados",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste los grados. Al sumar polinomios no se multiplica nada: el grado es el del término mayor, el x⁶ de Q.",
+              "fn": "gradoSuma",
+              "args": [{ "m": 4, "n": 6 }],
+              "campo": "errores.producto.texto",
+              "valor": "24"
+            },
+            {
+              "id": "PO22-el-menor",
+              "respaldo": "hipotesis",
+              "explicacion": "El x⁶ de Q no tiene con quién anularse: la suma tiene grado 6, el mayor.",
+              "fn": "gradoSuma",
+              "args": [{ "m": 4, "n": 6 }],
+              "campo": "errores.menor.texto",
+              "valor": "4"
+            }
+          ]
+        },
+        {
+          "id": "p3c",
+          "enunciado": "P(x) es de grado 4 y Q(x) es de grado 6.",
+          "pregunta": "¿De qué grado es [P(x)]³?",
+          "decimales": 2,
+          "correcta": { "fn": "gradoPotencia", "args": [{ "m": 4, "k": 3 }], "campo": "texto", "valor": "12" },
+          "errores": [
+            {
+              "id": "PO13-suma-exponente",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste 4 + 3. [P]³ = P · P · P: los grados se suman tres veces, 4 + 4 + 4.",
+              "fn": "gradoPotencia",
+              "args": [{ "m": 4, "k": 3 }],
+              "campo": "errores.suma.texto",
+              "valor": "7"
+            },
+            {
+              "id": "PO14-potencia-del-grado",
+              "respaldo": "hipotesis",
+              "explicacion": "Elevaste el grado al cubo. [P]³ = P · P · P: el grado se multiplica por 3, no se eleva.",
+              "fn": "gradoPotencia",
+              "args": [{ "m": 4, "k": 3 }],
+              "campo": "errores.potencia.texto",
+              "valor": "64"
+            },
+            {
+              "id": "PO30-mismo-grado",
+              "respaldo": "hipotesis",
+              "explicacion": "Elevar al cubo sí sube el grado: (x⁴)³ = x¹².",
+              "fn": "gradoPotencia",
+              "args": [{ "m": 4, "k": 3 }],
+              "campo": "errores.igual.texto",
+              "valor": "4"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -53,7 +307,36 @@
         "Al revés, con 21 términos los exponentes van del 20 al 0: grado 20."
       ],
       "verificar": [ { "fn": "completo", "args": [{ "grado": 9 }], "espera": { "valor": 10 } },
-                     { "fn": "gradoDeCompleto", "args": [{ "terminos": 21 }], "espera": { "valor": 20 } } ]
+                     { "fn": "gradoDeCompleto", "args": [{ "terminos": 21 }], "espera": { "valor": 20 } } ],
+      "preguntas": [
+        {
+          "id": "p4b",
+          "enunciado": "Un polinomio completo y ordenado tiene 21 términos.",
+          "pregunta": "¿De qué grado es?",
+          "decimales": 2,
+          "correcta": { "fn": "gradoDeCompleto", "args": [{ "terminos": 21 }], "campo": "texto", "valor": "20" },
+          "errores": [
+            {
+              "id": "PO9-igual-a-terminos",
+              "respaldo": "hipotesis",
+              "explicacion": "El término independiente también cuenta: los exponentes van del grado hasta 0, uno más que el grado.",
+              "fn": "gradoDeCompleto",
+              "args": [{ "terminos": 21 }],
+              "campo": "errores.igual.texto",
+              "valor": "21"
+            },
+            {
+              "id": "PO29-uno-mas",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste 1 en vez de restarlo. Con 21 términos los exponentes van del 20 al 0.",
+              "fn": "gradoDeCompleto",
+              "args": [{ "terminos": 21 }],
+              "campo": "errores.masUno.texto",
+              "valor": "22"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p5",
@@ -66,7 +349,81 @@
         "Se baja el 3; 3 · (−1) = −3 y 0 − 3 = −3; (−3)(−1) = 3 y −5 + 3 = −2; (−2)(−1) = 2 y 2 + 2 = 4; 4 · (−1) = −4 y −1 − 4 = −5.",
         "Cociente de grado 3: 3x³ − 3x² − 2x + 4. Resto −5. Control: P(−1) = 3 − 5 − 2 − 1 = −5."
       ],
-      "verificar": [ { "fn": "ruffini", "args": [{ "coefs": [3, 0, -5, 2, -1], "divisor": [1, 1] }], "espera": { "texto": "3x³ − 3x² − 2x + 4", "resto": -5 } } ]
+      "verificar": [ { "fn": "ruffini", "args": [{ "coefs": [3, 0, -5, 2, -1], "divisor": [1, 1] }], "espera": { "texto": "3x³ − 3x² − 2x + 4", "resto": -5 } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Se divide 3x⁴ − 5x² + 2x − 1 entre x + 1 por Ruffini.",
+          "pregunta": "¿Cuál es el cociente?",
+          "decimales": 2,
+          "correcta": { "fn": "ruffini", "args": [{ "coefs": [3, 0, -5, 2, -1], "divisor": [1, 1] }], "campo": "texto", "valor": "3x³ − 3x² − 2x + 4" },
+          "errores": [
+            {
+              "id": "PO1-sin-cero",
+              "respaldo": "hipotesis",
+              "explicacion": "Faltó el 0 del x³. Cada grado tiene su casilla: 3, 0, −5, 2, −1.",
+              "fn": "ruffini",
+              "args": [{ "coefs": [3, 0, -5, 2, -1], "divisor": [1, 1] }],
+              "campo": "errores.sinCero.texto",
+              "valor": "3x² − 8x + 10"
+            },
+            {
+              "id": "PO2-signo-de-la-raiz",
+              "respaldo": "hipotesis",
+              "explicacion": "Bajaste +1. Se usa la raíz que anula el divisor: x + 1 = 0 da x = −1.",
+              "fn": "ruffini",
+              "args": [{ "coefs": [3, 0, -5, 2, -1], "divisor": [1, 1] }],
+              "campo": "errores.signo.texto",
+              "valor": "3x³ + 3x² − 2x"
+            },
+            {
+              "id": "PO18-toda-la-fila",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste toda la última fila. El último número es el resto: el cociente es un grado menor, 3x³ − 3x² − 2x + 4.",
+              "fn": "ruffini",
+              "args": [{ "coefs": [3, 0, -5, 2, -1], "divisor": [1, 1] }],
+              "campo": "errores.todaLaFila.texto",
+              "valor": "3x⁴ − 3x³ − 2x² + 4x − 5"
+            }
+          ]
+        },
+        {
+          "id": "p5b",
+          "enunciado": "Se divide 3x⁴ − 5x² + 2x − 1 entre x + 1 por Ruffini.",
+          "pregunta": "¿Cuál es el resto?",
+          "decimales": 2,
+          "correcta": { "fn": "ruffini", "args": [{ "coefs": [3, 0, -5, 2, -1], "divisor": [1, 1] }], "campo": "restoTexto", "valor": "−5" },
+          "errores": [
+            {
+              "id": "PO1-sin-cero",
+              "respaldo": "hipotesis",
+              "explicacion": "Faltó el 0 del x³. Cada grado tiene su casilla: 3, 0, −5, 2, −1.",
+              "fn": "ruffini",
+              "args": [{ "coefs": [3, 0, -5, 2, -1], "divisor": [1, 1] }],
+              "campo": "errores.sinCero.restoTexto",
+              "valor": "−11"
+            },
+            {
+              "id": "PO2-signo-de-la-raiz",
+              "respaldo": "hipotesis",
+              "explicacion": "Bajaste +1. Se usa la raíz que anula el divisor: x + 1 = 0 da x = −1.",
+              "fn": "ruffini",
+              "args": [{ "coefs": [3, 0, -5, 2, -1], "divisor": [1, 1] }],
+              "campo": "errores.signo.restoTexto",
+              "valor": "−1"
+            },
+            {
+              "id": "PO18-toda-la-fila",
+              "respaldo": "hipotesis",
+              "explicacion": "El último número de la fila no es parte del cociente: es el resto, −5.",
+              "fn": "ruffini",
+              "args": [{ "coefs": [3, 0, -5, 2, -1], "divisor": [1, 1] }],
+              "campo": "errores.todaLaFila.restoTexto",
+              "valor": "0"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -78,7 +435,72 @@
         "La fila 6, 3, −3 es el cociente de dividir entre x − 1/3. Como 3x − 1 = 3(x − 1/3), el cociente se divide entre 3: 2x² + x − 1.",
         "El resto no se divide: queda 4. Control: (3x − 1)(2x² + x − 1) + 4 = 6x³ + x² − 4x + 5."
       ],
-      "verificar": [ { "fn": "ruffini", "args": [{ "coefs": [6, 1, -4, 5], "divisor": [3, -1] }], "espera": { "texto": "2x² + x − 1", "resto": 4 } } ]
+      "verificar": [ { "fn": "ruffini", "args": [{ "coefs": [6, 1, -4, 5], "divisor": [3, -1] }], "espera": { "texto": "2x² + x − 1", "resto": 4 } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Se divide 6x³ + x² − 4x + 5 entre 3x − 1.",
+          "pregunta": "¿Cuál es el cociente?",
+          "decimales": 2,
+          "correcta": { "fn": "ruffini", "args": [{ "coefs": [6, 1, -4, 5], "divisor": [3, -1] }], "campo": "texto", "valor": "2x² + x − 1" },
+          "errores": [
+            {
+              "id": "PO3-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "Esa fila es el cociente entre x − 1/3. Como 3x − 1 = 3(x − 1/3), hay que dividir el cociente entre 3.",
+              "fn": "ruffini",
+              "args": [{ "coefs": [6, 1, -4, 5], "divisor": [3, -1] }],
+              "campo": "errores.sinDividir.texto",
+              "valor": "6x² + 3x − 3"
+            },
+            {
+              "id": "PO2-signo-de-la-raiz",
+              "respaldo": "hipotesis",
+              "explicacion": "Bajaste −1/3. Se usa la raíz que anula el divisor: 3x − 1 = 0 da x = 1/3.",
+              "fn": "ruffini",
+              "args": [{ "coefs": [6, 1, -4, 5], "divisor": [3, -1] }],
+              "campo": "errores.signo.texto",
+              "valor": "2x² − (1/3)x − 11/9"
+            },
+            {
+              "id": "PO18-toda-la-fila",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste toda la última fila. El último número es el resto: el cociente es de grado 2.",
+              "fn": "ruffini",
+              "args": [{ "coefs": [6, 1, -4, 5], "divisor": [3, -1] }],
+              "campo": "errores.todaLaFila.texto",
+              "valor": "2x³ + x² − x + 4/3"
+            }
+          ]
+        },
+        {
+          "id": "p6b",
+          "enunciado": "Se divide 6x³ + x² − 4x + 5 entre 3x − 1.",
+          "pregunta": "¿Cuál es el resto?",
+          "decimales": 2,
+          "correcta": { "fn": "ruffini", "args": [{ "coefs": [6, 1, -4, 5], "divisor": [3, -1] }], "campo": "restoTexto", "valor": "4" },
+          "errores": [
+            {
+              "id": "PO4-resto-dividido",
+              "respaldo": "hipotesis",
+              "explicacion": "El resto no se divide entre 3: solo el cociente. Control: (3x − 1)(2x² + x − 1) + 4 da el dividendo.",
+              "fn": "ruffini",
+              "args": [{ "coefs": [6, 1, -4, 5], "divisor": [3, -1] }],
+              "campo": "errores.restoDividido.restoTexto",
+              "valor": "4/3"
+            },
+            {
+              "id": "PO2-signo-de-la-raiz",
+              "respaldo": "hipotesis",
+              "explicacion": "Bajaste −1/3. Se usa la raíz que anula el divisor: 3x − 1 = 0 da x = 1/3.",
+              "fn": "ruffini",
+              "args": [{ "coefs": [6, 1, -4, 5], "divisor": [3, -1] }],
+              "campo": "errores.signo.restoTexto",
+              "valor": "56/9"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -91,7 +513,45 @@
         "Resto: 8x − 2x + 3x − 4 = 9x − 4. Es de primer grado, menor que el grado del divisor, como debe ser."
       ],
       "verificar": [ { "fn": "restoSustitucion", "args": [{ "dividendo": [2, 0, -1, 0, 3, -4], "k": -2 }], "espera": { "texto": "9x − 4" } },
-                     { "fn": "dividir", "args": [{ "dividendo": [2, 0, -1, 0, 3, -4], "divisor": [1, 0, -2] }], "espera": { "restoTexto": "9x − 4" } } ]
+                     { "fn": "dividir", "args": [{ "dividendo": [2, 0, -1, 0, 3, -4], "divisor": [1, 0, -2] }], "espera": { "restoTexto": "9x − 4" } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Se divide 2x⁵ − x³ + 3x − 4 entre x² − 2, sin hacer la división.",
+          "pregunta": "¿Cuál es el resto?",
+          "decimales": 2,
+          "correcta": { "fn": "restoSustitucion", "args": [{ "dividendo": [2, 0, -1, 0, 3, -4], "k": -2 }], "campo": "texto", "valor": "9x − 4" },
+          "errores": [
+            {
+              "id": "PO16-signo",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiaste x² por −2. Si x² − 2 = 0, entonces x² = 2.",
+              "fn": "restoSustitucion",
+              "args": [{ "dividendo": [2, 0, -1, 0, 3, -4], "k": -2 }],
+              "campo": "errores.signo.texto",
+              "valor": "13x − 4"
+            },
+            {
+              "id": "PO31-una-vez",
+              "respaldo": "hipotesis",
+              "explicacion": "En x⁵ = (x²)² · x hay dos x²: cada uno se cambia por 2, así que 2x⁵ = 2 · 4x = 8x.",
+              "fn": "restoSustitucion",
+              "args": [{ "dividendo": [2, 0, -1, 0, 3, -4], "k": -2 }],
+              "campo": "errores.unaVez.texto",
+              "valor": "5x − 4"
+            },
+            {
+              "id": "PO32-pierde-la-x",
+              "respaldo": "hipotesis",
+              "explicacion": "Se perdió la x que sobra: x⁵ = (x²)² · x = 4x y x³ = x² · x = 2x.",
+              "fn": "restoSustitucion",
+              "args": [{ "dividendo": [2, 0, -1, 0, 3, -4], "k": -2 }],
+              "campo": "errores.pierdeX.texto",
+              "valor": "3x + 2"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -103,7 +563,36 @@
         "P(−1) = 2(−1) + k(1) − 5(−1) + 1 = −2 + k + 5 + 1 = k + 4.",
         "k + 4 = 0 da k = −4. Control: 2x³ − 4x² − 5x + 1 = (x + 1)(2x² − 6x + 1)."
       ],
-      "verificar": [ { "fn": "factorK", "args": [{ "coefs": [2, "k", -5, 1], "raiz": -1 }], "espera": { "valor": -4, "cociente": [2, -6, 1] } } ]
+      "verificar": [ { "fn": "factorK", "args": [{ "coefs": [2, "k", -5, 1], "raiz": -1 }], "espera": { "valor": -4, "cociente": [2, -6, 1] } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "El binomio x + 1 es factor de 2x³ + kx² − 5x + 1.",
+          "pregunta": "¿Cuánto vale k?",
+          "decimales": 2,
+          "correcta": { "fn": "factorK", "args": [{ "coefs": [2, "k", -5, 1], "raiz": -1 }], "campo": "texto", "valor": "k = −4" },
+          "errores": [
+            {
+              "id": "PO17-signo-de-la-raiz",
+              "respaldo": "hipotesis",
+              "explicacion": "Evaluaste en x = 1. x + 1 se anula en x = −1: es P(−1) el que debe dar 0.",
+              "fn": "factorK",
+              "args": [{ "coefs": [2, "k", -5, 1], "raiz": -1 }],
+              "campo": "errores.signo.texto",
+              "valor": "k = 2"
+            },
+            {
+              "id": "AL16-despeje",
+              "respaldo": "hipotesis",
+              "explicacion": "Al despejar se perdió el signo: P(−1) = k + 4 = 0 da k = −4.",
+              "fn": "factorK",
+              "args": [{ "coefs": [2, "k", -5, 1], "raiz": -1 }],
+              "campo": "errores.despeje.texto",
+              "valor": "k = 4"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
