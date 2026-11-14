@@ -54,6 +54,8 @@
  * División entera
  *   division(D, d)                     por defecto (D = d·q + r) y por exceso (D = d·(q + 1) − rₑ), con r + rₑ = d,
  *                                      y los errores sobre el residuo por exceso
+ *   dividendoPorExceso(d, q, rₑ)       el dividendo a partir del cociente por defecto q y el residuo por exceso rₑ:
+ *                                      r = d − rₑ y D = d·q + r, y los errores al armar D
  *   residuoMaximo(d)                   d − 1, y los errores
  *   residuosIguales(d)                 ¿cuándo r = rₑ? (d par y r = d/2), y los errores
  * Cantidad de cifras
@@ -507,6 +509,18 @@
     }, num(re));
     return out;
   }
+  // D a partir del cociente por defecto q y del residuo por exceso rₑ: r = d − rₑ, así que D = d·q + d − rₑ.
+  function dividendoPorExceso(d, q, re) {
+    const dv = positivo(d, 'd'), qv = natural(q, 'q'), rv = positivo(re, 'rₑ');
+    if (rv >= dv) throw new Error('el residuo por exceso debe ser menor que el divisor');
+    const r = dv - rv, D = dv * qv + r;
+    return { d: num(dv), q: num(qv), rExceso: num(rv), r: num(r), qExceso: num(qv + 1n), D: num(D),
+      errores: limpiar({
+        usaElExceso: num(dv * qv + rv),                                   // toma rₑ como si fuera el residuo por defecto
+        restaConElDefecto: dv * qv - rv > 0n ? num(dv * qv - rv) : undefined, // D = d·q − rₑ con el cociente por defecto, no q + 1
+        sumaConElExceso: num(dv * (qv + 1n) + rv),                        // D = d·(q + 1) + rₑ: suma lo que falta en vez de restarlo
+      }, num(D)) };
+  }
   function residuoMaximo(d) {
     const dv = num(positivo(d, 'd'));
     if (dv < 2) throw new Error('d debe ser mayor o igual que 2');
@@ -580,6 +594,6 @@
   }
 
   return { aMano, abrirMano, juntarMano, estadoMano, sumaColumnas, multiplicaPorCifra, cuadroColumnas, restaColumnas, cuadroResta, complemento, diferenciaInvertida,
-    conSuReverso, cifrasFaltantes, cripto, invertidos, sumaAritmetica, sumatoria, division, residuoMaximo, residuosIguales,
+    conSuReverso, cifrasFaltantes, cripto, invertidos, sumaAritmetica, sumatoria, division, dividendoPorExceso, residuoMaximo, residuosIguales,
     cifrasProducto, leer, texto, conBase, sub, SIMBOLOS };
 });

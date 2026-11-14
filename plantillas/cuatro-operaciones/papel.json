@@ -12,7 +12,35 @@
         "Decenas: 8 + 3 + 1 = 12. Se escribe 2 y sube 1. Centenas: 6 + 7 + 1 = 14. Se escribe 4 y sube 1.",
         "Millares: 5 + 2 + 1 = 8. El resultado es 8423."
       ],
-      "verificar": [ { "fn": "sumaColumnas", "args": [["5684", "2739"], 10], "espera": { "texto": "8423", "llevadas": 3 } } ]
+      "verificar": [ { "fn": "sumaColumnas", "args": [["5684", "2739"], 10], "espera": { "texto": "8423", "llevadas": 3 } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Suma en columnas: 5684 + 2739.",
+          "pregunta": "¿Cuánto da la suma?",
+          "correcta": { "fn": "sumaColumnas", "args": [["5684", "2739"], 10], "campo": "texto", "valor": "8423" },
+          "errores": [
+            {
+              "id": "AR-suma-sin-llevar",
+              "respaldo": "hipotesis",
+              "explicacion": "Escribiste cada columna sin subir la llevada. 4 + 9 = 13: queda 3 y sube 1 a las decenas.",
+              "fn": "sumaColumnas",
+              "args": [["5684", "2739"], 10],
+              "campo": "errores.sinLlevar",
+              "valor": "7313"
+            },
+            {
+              "id": "AR-suma-escribe-todo",
+              "respaldo": "hipotesis",
+              "explicacion": "Escribiste la suma entera de cada columna, en el orden de la cuenta: 7, 13, 11 y 13. De cada una solo queda una cifra; la otra sube como llevada.",
+              "fn": "sumaColumnas",
+              "args": [["5684", "2739"], 10],
+              "campo": "errores.escribeTodo",
+              "valor": "7131113"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -24,7 +52,53 @@
         "El 0 final se queda. La última cifra que no es 0 es el 5: le falta 10 − 5 = 5. A las demás les falta hasta 9: 9 − 7 = 2 y 9 − 3 = 6.",
         "Se lee 2650. Control: 7350 + 2650 = 10 000."
       ],
-      "verificar": [ { "fn": "complemento", "args": ["7350", 10], "espera": { "texto": "2650", "relleno.texto": "10000" } } ]
+      "verificar": [ { "fn": "complemento", "args": ["7350", 10], "espera": { "texto": "2650", "relleno.texto": "10000" } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "El complemento aritmético de un número es lo que le falta para llegar a 1 seguido de tantos ceros como cifras tiene el número.",
+          "pregunta": "¿Cuál es el complemento aritmético de 7350?",
+          "correcta": { "fn": "complemento", "args": ["7350", 10], "campo": "texto", "valor": "2650" },
+          "errores": [
+            {
+              "id": "AR-complemento-todas-a-nueve",
+              "respaldo": "hipotesis",
+              "explicacion": "Llevaste todas las cifras a 9: eso llega a 9999. Falta 1 para 10 000: la última cifra que no es 0 va a 10.",
+              "fn": "complemento",
+              "args": ["7350", 10],
+              "campo": "errores.todasANueve",
+              "valor": "2649"
+            },
+            {
+              "id": "AR-complemento-a-diez-la-ultima",
+              "respaldo": "hipotesis",
+              "explicacion": "Aplicaste «a 10» al 0 final y llevaste el 5 a 9. El 0 se queda; va a 10 la última cifra no nula: 10 − 5 = 5.",
+              "fn": "complemento",
+              "args": ["7350", 10],
+              "campo": "errores.aBUltima",
+              "valor": "2640"
+            },
+            {
+              "id": "AR-complemento-quita-los-ceros",
+              "respaldo": "hipotesis",
+              "explicacion": "Sacaste el complemento de 735 y no repusiste el 0 del final. Control: 7350 + 265 no llega a 10 000.",
+              "fn": "complemento",
+              "args": ["7350", 10],
+              "campo": "errores.quitaLosCeros",
+              "valor": "265"
+            },
+            {
+              "id": "AR-complemento-potencia-de-mas",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste de 100 000. 7350 tiene cuatro cifras: su complemento se mide hasta 10 000.",
+              "fn": "complemento",
+              "args": ["7350", 10],
+              "campo": "errores.potenciaDeMas",
+              "valor": "92650"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -36,7 +110,44 @@
         "Unidades: 12 − 6 = 6. Decenas: 9 − 8 = 1. Centenas: 9 − 5 = 4. Millares: 6 − 3 = 3.",
         "El resultado es 3416. Control: 3416 + 3586 = 7002."
       ],
-      "verificar": [ { "fn": "restaColumnas", "args": ["7002", "3586", 10], "espera": { "texto": "3416", "tras": [12, 9, 9, 6] } } ]
+      "verificar": [ { "fn": "restaColumnas", "args": ["7002", "3586", 10], "espera": { "texto": "3416", "tras": [12, 9, 9, 6] } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Resta en columnas: 7002 − 3586.",
+          "pregunta": "¿Cuánto da la resta?",
+          "correcta": { "fn": "restaColumnas", "args": ["7002", "3586", 10], "campo": "texto", "valor": "3416" },
+          "errores": [
+            {
+              "id": "AR-resta-el-menor-del-mayor",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste en cada columna el menor del mayor. Arriba hay 2 y hay que quitar 6: se pide prestado a la izquierda.",
+              "fn": "restaColumnas",
+              "args": ["7002", "3586", 10],
+              "campo": "errores.menorDelMayor",
+              "valor": "4584"
+            },
+            {
+              "id": "AR-presta-sin-descontar",
+              "respaldo": "hipotesis",
+              "explicacion": "Pediste 10 en cada columna que no alcanzaba, pero no descontaste lo prestado: el 7 queda en 6 y los ceros en 9.",
+              "fn": "restaColumnas",
+              "args": ["7002", "3586", 10],
+              "campo": "errores.sinDescontar",
+              "valor": "4526"
+            },
+            {
+              "id": "AR-ceros-que-prestan-quedan-en-10",
+              "respaldo": "hipotesis",
+              "explicacion": "Dejaste los ceros en 10. Los ceros que dejan pasar el préstamo reciben 10 y entregan 1: quedan en 9.",
+              "fn": "restaColumnas",
+              "args": ["7002", "3586", 10],
+              "campo": "errores.cerosComoB",
+              "valor": "3526"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -48,7 +159,35 @@
         "Segunda columna: 4 + 5 + 1 = 10 = 6 + 4. Se escribe 4 y sube 1. Tercera columna: 3 + 2 + 1 = 6 = 6 + 0. Se escribe 0 y sube 1.",
         "El 1 que sube es la cuarta cifra: 1043₍₆₎. Control en base 10: 137 + 106 = 243 = 1 · 216 + 0 · 36 + 4 · 6 + 3."
       ],
-      "verificar": [ { "fn": "sumaColumnas", "args": [["345", "254"], 6], "espera": { "texto": "1043", "valor": 243, "valores": [137, 106] } } ]
+      "verificar": [ { "fn": "sumaColumnas", "args": [["345", "254"], 6], "espera": { "texto": "1043", "valor": 243, "valores": [137, 106] } } ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Suma en base 6: 345₍₆₎ + 254₍₆₎.",
+          "pregunta": "¿Cuánto da la suma, escrita en base 6?",
+          "correcta": { "fn": "sumaColumnas", "args": [["345", "254"], 6], "campo": "texto", "valor": "1043" },
+          "errores": [
+            {
+              "id": "AR-suma-sin-llevar-en-base",
+              "respaldo": "hipotesis",
+              "explicacion": "Escribiste cada columna sin llevar. En base 6, 5 + 4 = 9 = 6 + 3: queda 3 y sube 1.",
+              "fn": "sumaColumnas",
+              "args": [["345", "254"], 6],
+              "campo": "errores.sinLlevar",
+              "valor": "533"
+            },
+            {
+              "id": "AR-suma-como-en-base-10",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste como en base 10. En base 6 cada 6 piezas forman una de la columna siguiente, y la cifra 9 no existe.",
+              "fn": "sumaColumnas",
+              "args": [["345", "254"], 10],
+              "campo": "texto",
+              "valor": "599"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p5",
@@ -60,7 +199,44 @@
         "Decenas: ☐ + 7 + 1 termina en 3, así que la cifra es 5 (5 + 7 + 1 = 13) y sube 1. Centenas: 4 + ☐ + 1 = 10, así que la cifra es 5.",
         "La suma es 456 + 576 = 1032, y las cifras que faltan suman 5 + 5 + 6 = 16."
       ],
-      "verificar": [ { "fn": "cifrasFaltantes", "args": [["4?6", "?7?"], "1032", 10], "espera": { "unica": true, "faltan": [5, 5, 6], "suma": 16 } } ]
+      "verificar": [ { "fn": "cifrasFaltantes", "args": [["4?6", "?7?"], "1032", 10], "espera": { "unica": true, "faltan": [5, 5, 6], "suma": 16 } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "En la suma 4☐6 + ☐7☐ = 1032 faltan tres cifras.",
+          "pregunta": "¿Cuánto suman las cifras que faltan?",
+          "correcta": { "fn": "cifrasFaltantes", "args": [["4?6", "?7?"], "1032", 10], "campo": "suma", "valor": 16 },
+          "errores": [
+            {
+              "id": "AR-deduce-sin-llevadas",
+              "respaldo": "hipotesis",
+              "explicacion": "Dedujiste cada columna sin las llevadas. 6 + 6 = 12 sube 1 a las decenas: ahí ☐ + 7 + 1 termina en 3.",
+              "fn": "cifrasFaltantes",
+              "args": [["4?6", "?7?"], "1032", 10],
+              "campo": "errores.sinLlevadas",
+              "valor": 18
+            },
+            {
+              "id": "AR-olvida-la-segunda-llevada",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste la llevada de las unidades, pero las decenas también suben 1: en las centenas, 4 + ☐ + 1 = 10.",
+              "fn": "cifrasFaltantes",
+              "args": [["4?6", "?7?"], "1032", 10],
+              "campo": "errores.soloLaPrimera",
+              "valor": 17
+            },
+            {
+              "id": "AR-suma-la-llevada-al-deducir",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste la llevada en vez de restarla. La llevada ya entra en la columna: ☐ + 7 + 1 tiene que terminar en 3.",
+              "fn": "cifrasFaltantes",
+              "args": [["4?6", "?7?"], "1032", 10],
+              "campo": "errores.sumaLaLlevada",
+              "valor": 20
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -72,7 +248,44 @@
         "El primero más el último dan 1 + 79 = 80, y hay 40 términos: la suma es 80 · 40 ÷ 2 = 1600.",
         "Otra forma: la suma de los primeros 40 impares es 40² = 1600."
       ],
-      "verificar": [ { "fn": "sumaAritmetica", "args": [1, 79, 2], "espera": { "n": 40, "S": 1600 } }, { "fn": "sumatoria", "args": ["impares", 40], "espera": { "S": 1600 } } ]
+      "verificar": [ { "fn": "sumaAritmetica", "args": [1, 79, 2], "espera": { "n": 40, "S": 1600 } }, { "fn": "sumatoria", "args": ["impares", 40], "espera": { "S": 1600 } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Calcula 1 + 3 + 5 + … + 79, la suma de los números impares del 1 al 79.",
+          "pregunta": "¿Cuánto da la suma?",
+          "correcta": { "fn": "sumaAritmetica", "args": [1, 79, 2], "campo": "S", "valor": 1600 },
+          "errores": [
+            {
+              "id": "AR-usa-el-ultimo-como-n",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste del 1 al 79 con todos los números. Aquí solo van los impares: son 40 términos, no 79.",
+              "fn": "sumaAritmetica",
+              "args": [1, 79, 2],
+              "campo": "errores.ultimoComoN",
+              "valor": 3160
+            },
+            {
+              "id": "AR-terminos-sin-el-mas-uno",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste (79 − 1) ÷ 2 = 39 términos. Falta el + 1: del 1 al 79 de dos en dos hay 40 números.",
+              "fn": "sumaAritmetica",
+              "args": [1, 79, 2],
+              "campo": "errores.sinMasUno",
+              "valor": 1560
+            },
+            {
+              "id": "AR-gauss-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste 80 · 40 y no dividiste entre 2. Esa cuenta suma la lista dos veces: la de ida y la de vuelta.",
+              "fn": "sumaAritmetica",
+              "args": [1, 79, 2],
+              "campo": "errores.sinDividir",
+              "valor": 3200
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -84,7 +297,44 @@
         "El primero más el último dan 100 + 999 = 1099.",
         "La suma es 1099 · 900 ÷ 2 = 494 550. Si se suma del 1 al 999 (499 500), sobran los números del 1 al 99, que suman 4950."
       ],
-      "verificar": [ { "fn": "sumaAritmetica", "args": [100, 999, 1], "espera": { "n": 900, "S": 494550, "errores.ultimoComoN": 499500 } } ]
+      "verificar": [ { "fn": "sumaAritmetica", "args": [100, 999, 1], "espera": { "n": 900, "S": 494550, "errores.ultimoComoN": 499500 } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Se suman todos los números de tres cifras.",
+          "pregunta": "¿Cuánto suman todos los números de tres cifras?",
+          "correcta": { "fn": "sumaAritmetica", "args": [100, 999, 1], "campo": "S", "valor": 494550 },
+          "errores": [
+            {
+              "id": "AR-usa-el-ultimo-como-n",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste del 1 al 999. Los números del 1 al 99 no tienen tres cifras: hay que quitarlos.",
+              "fn": "sumaAritmetica",
+              "args": [100, 999, 1],
+              "campo": "errores.ultimoComoN",
+              "valor": 499500
+            },
+            {
+              "id": "AR-gauss-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste 1099 · 900 y no dividiste entre 2. Esa cuenta suma la lista dos veces: la de ida y la de vuelta.",
+              "fn": "sumaAritmetica",
+              "args": [100, 999, 1],
+              "campo": "errores.sinDividir",
+              "valor": 989100
+            },
+            {
+              "id": "AR-resta-tambien-el-primero",
+              "respaldo": "hipotesis",
+              "explicacion": "Quitaste del 1 al 100, y el 100 sí tiene tres cifras. Se quitan solo los números del 1 al 99.",
+              "fn": "sumaAritmetica",
+              "args": [100, 999, 1],
+              "campo": "errores.restaElPrimero",
+              "valor": 494450
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -96,7 +346,44 @@
         "Por defecto, D = d · q + r = 23 · 15 + 14 = 345 + 14 = 359.",
         "Control por exceso: 23 · 16 − 9 = 368 − 9 = 359."
       ],
-      "verificar": [ { "fn": "division", "args": [359, 23], "espera": { "q": 15, "r": 14, "rExceso": 9 } } ]
+      "verificar": [ { "fn": "division", "args": [359, 23], "espera": { "q": 15, "r": 14, "rExceso": 9 } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "Al dividir un número entre 23, el cociente por defecto es 15 y el residuo por exceso es 9.",
+          "pregunta": "¿Cuál es el número?",
+          "correcta": { "fn": "dividendoPorExceso", "args": [23, 15, 9], "campo": "D", "valor": 359 },
+          "errores": [
+            {
+              "id": "AR-exceso-como-defecto",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 9 como residuo por defecto. Los dos residuos suman el divisor: el residuo por defecto es 23 − 9 = 14.",
+              "fn": "dividendoPorExceso",
+              "args": [23, 15, 9],
+              "campo": "errores.usaElExceso",
+              "valor": 354
+            },
+            {
+              "id": "AR-exceso-con-el-cociente-por-defecto",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste 9 a 23 · 15. El residuo por exceso va con el cociente por exceso, 16: 23 · 16 − 9.",
+              "fn": "dividendoPorExceso",
+              "args": [23, 15, 9],
+              "campo": "errores.restaConElDefecto",
+              "valor": 336
+            },
+            {
+              "id": "AR-exceso-sumado",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste 9 a 23 · 16. Por exceso el cociente se pasa: hay que restar lo que falta, 23 · 16 − 9.",
+              "fn": "dividendoPorExceso",
+              "args": [23, 15, 9],
+              "campo": "errores.sumaConElExceso",
+              "valor": 377
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
@@ -120,7 +407,44 @@
         "Segunda columna: 4 · 4 + 2 = 18 = 3 · 5 + 3. Se escribe 3 y suben 3. Tercera columna: 2 · 4 + 3 = 11 = 2 · 5 + 1. Se escribe 1 y suben 2.",
         "Los 2 que suben son la cuarta cifra: 2132₍₅₎. Control en base 10: 73 · 4 = 292 = 2 · 125 + 1 · 25 + 3 · 5 + 2."
       ],
-      "verificar": [ { "fn": "multiplicaPorCifra", "args": ["243", 4, 5], "espera": { "texto": "2132", "valor": 292, "antes": 73 } } ]
+      "verificar": [ { "fn": "multiplicaPorCifra", "args": ["243", 4, 5], "espera": { "texto": "2132", "valor": 292, "antes": 73 } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Multiplica en base 5: 243₍₅₎ · 4.",
+          "pregunta": "¿Cuánto da el producto, escrito en base 5?",
+          "correcta": { "fn": "multiplicaPorCifra", "args": ["243", 4, 5], "campo": "texto", "valor": "2132" },
+          "errores": [
+            {
+              "id": "AR-producto-sin-llevar",
+              "respaldo": "hipotesis",
+              "explicacion": "Escribiste cada producto sin llevar. 3 · 4 = 12 = 2 · 5 + 2: queda 2 y suben 2.",
+              "fn": "multiplicaPorCifra",
+              "args": ["243", 4, 5],
+              "campo": "errores.sinLlevar",
+              "valor": "312"
+            },
+            {
+              "id": "AR-llevada-sin-sumar",
+              "respaldo": "hipotesis",
+              "explicacion": "Calculaste cada llevada pero no la sumaste a la columna siguiente: 4 · 4 + 2 = 18, no 16.",
+              "fn": "multiplicaPorCifra",
+              "args": ["243", 4, 5],
+              "campo": "errores.olvidaSumar",
+              "valor": "1312"
+            },
+            {
+              "id": "AR-producto-como-en-base-10",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste como en base 10. En base 5 cada 5 piezas forman una de la columna siguiente: 3 · 4 = 12 = 2 · 5 + 2.",
+              "fn": "multiplicaPorCifra",
+              "args": ["243", 4, 10],
+              "campo": "texto",
+              "valor": "972"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
