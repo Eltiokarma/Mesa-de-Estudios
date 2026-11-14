@@ -28,6 +28,8 @@ TANDA, CADA, ESPERA_MIN, ESPERA_MAX = 500, 30, 2, 300
 class Medidas:
     def __init__(self):
         self.lat = defaultdict(list)       # ruta -> [segundos] de las respuestas 2xx
+        self.lat_estable = defaultdict(list)  # lo mismo, solo después del pico de ingreso
+        self.estable_desde = float("inf")
         self.res = defaultdict(lambda: defaultdict(int))  # ruta -> resultado -> n
         self.alumnos = {}                  # seudónimo -> {generados, confirmados, pendientes}
         self.login_fallido = 0
@@ -39,6 +41,8 @@ class Medidas:
         self.res[ruta][resultado] += 1
         if isinstance(resultado, int) and resultado < 400:
             self.lat[ruta].append(seg)
+            if time.monotonic() >= self.estable_desde:
+                self.lat_estable[ruta].append(seg)
 
 
 class ErrorRed(Exception):
@@ -218,6 +222,7 @@ async def principal(cfg):
     tiempo = aiohttp.ClientTimeout(total=cfg.timeout)
     t_ini = time.monotonic()
     fin = t_ini + cfg.rampa + 60 + cfg.duracion
+    m.estable_desde = t_ini + cfg.rampa + 90  # terminó de entrar la última aula
     tareas, quedan = [], cfg.alumnos
     async with aiohttp.ClientSession(connector=con, timeout=tiempo) as http:
         for a in aulas:
@@ -237,7 +242,10 @@ async def principal(cfg):
                        "p50_ms": round(1000 * pct(lat, 50), 1) if lat else None,
                        "p95_ms": round(1000 * pct(lat, 95), 1) if lat else None,
                        "p99_ms": round(1000 * pct(lat, 99), 1) if lat else None,
-                       "max_ms": round(1000 * max(lat), 1) if lat else None}
+                       "max_ms": round(1000 * max(lat), 1) if lat else None,
+                       "estable_p50_ms": round(1000 * pct(m.lat_estable[ruta], 50), 1) if m.lat_estable[ruta] else None,
+                       "estable_p95_ms": round(1000 * pct(m.lat_estable[ruta], 95), 1) if m.lat_estable[ruta] else None,
+                       "estable_p99_ms": round(1000 * pct(m.lat_estable[ruta], 99), 1) if m.lat_estable[ruta] else None}
     out = {"alumnos": cfg.alumnos, "duracion_s": round(total), "rutas": rutas, "login_fallido": m.login_fallido,
            "login_espera_p50_s": round(pct(m.login_seg, 50), 2) if m.login_seg else None,
            "login_espera_p95_s": round(pct(m.login_seg, 95), 2) if m.login_seg else None,
