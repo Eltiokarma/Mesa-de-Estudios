@@ -3733,7 +3733,16 @@
      "plantillas": [
       "arreglos-giros",
       "rm-arreglos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/arreglos-numericos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-tablero.js",
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/nucleo/kit/piezas/rm-fichas.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.razonamiento-inductivo",
