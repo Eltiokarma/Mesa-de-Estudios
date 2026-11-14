@@ -4,7 +4,7 @@
 // Ej.: node rutinas/teoria2-razonamiento-verbal/pw.js compatibilidad cuatro-casillas frase 0 50
 const { chromium } = require('playwright');
 const [uc, idea, arr, dx = '0', dy = '40', sal = '/tmp/claude-0/rv-capturas'] = process.argv.slice(2);
-const U = `razonamiento-verbal.${uc}`, BASE = 'http://localhost:4173/app/';
+const U = `razonamiento-verbal.${uc}`, BASE = `http://localhost:${process.env.PORT || 4173}/app/`;
 const fs = require('fs'); fs.mkdirSync(sal, { recursive: true });
 (async () => {
   const b = await chromium.launch();
