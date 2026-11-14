@@ -7,6 +7,9 @@
  * TAL-* nuevos (hipótesis de diseño, rutinas/teoria-algebra.md).
  * Colores (regla 4): x exponente naranja (c-o), y salida turquesa (c-i), la recta y = c o el logaritmo rojo (c-h),
  * la base b verde (c-d). Intervalos: [a; b] cerrado, ⟨a; b⟩ abierto.
+ * Ronda 2 (14 nov 2026): gesto directo en cuatro de las seis ideas (el punto (x; bˣ) y el punto (1; b) que elige la
+ * base, el punto (b; 1) del logaritmo, la recta y = c y el punto de corte de la inecuación), llaves en las reglas y un
+ * laboratorio de tres mesas (base continua con b = 1, carrera bˣ contra xᵏ, inecuación con base menor que 1).
  *
  * Ficha de tarea (diseno-y-animacion):
  * Promesa · ver el crecimiento por factor constante y usar el logaritmo como el exponente que lo deshace.
@@ -56,10 +59,23 @@
   }, extra);
   const SUP = n => String(n).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
   const BASES = { '1/2': 0.5, '2': 2, '3': 3 };
+  // Gesto directo (docs/teoria.md §4b): manijas en coordenadas de la pieza «ejes», con la inversa lineal de su escala.
+  // Los juegos con arrastre usan ejes de rango fijo, para que la manija no se escape.
+  const invLineal = (escala, p, q) => px => p + (px - escala(p)) * (q - p) / (escala(q) - escala(p));
+  const EJES = () => Kit.piezas.ejes;
+  const lienzoDe = datos => { const g = EJES().geometria(datos); return { X: g.X, Y: g.Y, aX: invLineal(g.X, datos.x.min, datos.x.max), aY: invLineal(g.Y, datos.y.min, datos.y.max) }; };
+  const lienzo = (xm, xM, ym, yM) => lienzoDe(ejesBase(xm, xM, ym, yM));
+  // Altura de una manija que solo mueve x: sobre la curva si se ve; si la curva sale del plano, sobre el eje x.
+  const enPlano = (v, lo, hi) => (v >= lo && v <= hi ? v : 0);
+  // La base de opciones más cercana a una altura (o a una abscisa): el punto (1; b) elige la base.
+  const baseCercana = v => Object.keys(BASES).reduce((m, k) => (Math.abs(BASES[k] - v) < Math.abs(BASES[m] - v) ? k : m));
 
   // ---------- Idea 1: multiplicar por b en cada paso ----------
   // Cambia: la base b y la entrada x · Permanece: el corte (0; 1) · Progresa: el punto (x; bˣ) y los escalones ×b
   // · Se reserva: la carrera de 2ˣ contra x² · Debe verse: sumar 1 a x multiplica la salida por b.
+  // Gesto: el punto (x; bˣ) a lo ancho y el punto (1; b) a lo alto, que elige la base.
+  // Dos representaciones a propósito (hallazgo 9): el juego es la curva; predecir y «Mira» usan una tabla porque la
+  // carrera llega a 2¹⁰ = 1024, que no cabe en un plano legible a 360 px junto con los primeros valores.
   const exponencial = {
     id: 'exponencial',
     titulo: 'Cada paso multiplica por b',
@@ -70,18 +86,27 @@
       voz: 'Creo que no suma lo mismo cada vez. Compruébalo.',
       controles: [
         { id: 'b', etiqueta: 'b', opciones: Object.keys(BASES).map(t => ({ valor: t, texto: t })), inicio: '2' },
-        { id: 'x', etiqueta: 'x', color: 'c-o', min: -2, max: 3, paso: 1, inicio: 1, decimales: 0 },
+        { id: 'x', etiqueta: 'x', color: 'c-o', min: -2, max: 3, paso: 1, inicio: 2, decimales: 0 },
       ],
       dibujo: v => {
         const B = BASES[v.b], g = u => B ** u;
         return { datos: ejesBase(-3, 3, -1, 9, {
           curvas: [{ puntos: muestra(g, -3, 3, -1, 9), color: 'i' }],
-          puntos: [{ x: 0, y: 1, color: 'd' }, ...(g(v.x) <= 9 ? [{ x: v.x, y: g(v.x), color: 'o', rotulo: `(${f(v.x)}; ${f(g(v.x))})`, guias: true }] : [])],
+          puntos: [{ x: 0, y: 1, color: 'd' }, { x: 1, y: B, color: 'd', rotulo: `(1; ${v.b})` }, ...(g(v.x) <= 9 ? [{ x: v.x, y: g(v.x), color: 'o', rotulo: `(${f(v.x)}; ${f(g(v.x))})`, guias: true }] : [])],
           alt: `Gráfica de y = ${v.b} elevado a x, con el punto de x = ${f(v.x)}`,
         }), estado: {} };
       },
       lectura: v => { const B = BASES[v.b]; return [y, ` = ${v.b}`, { sup: ['', x] }, ` = ${f(B ** v.x)} · al sumar 1: × ${v.b}`]; },
       minimo: 4,
+      // Dos manijas: el punto (x; bˣ) se arrastra a lo ancho (mueve x); el punto (1; b), a lo alto, elige la base.
+      arrastres: [
+        { id: 'entrada', etiqueta: 'punto de la entrada x', color: 'c-o',
+          donde: v => { const g = lienzo(-3, 3, -1, 9); return { x: g.X(v.x), y: g.Y(enPlano(BASES[v.b] ** v.x, -1, 9)) }; },
+          mover: pt => ({ x: lienzo(-3, 3, -1, 9).aX(pt.x) }) },
+        { id: 'base', etiqueta: 'punto (1; b): la base', color: 'c-d',
+          donde: v => { const g = lienzo(-3, 3, -1, 9); return { x: g.X(1), y: g.Y(BASES[v.b]) }; },
+          mover: pt => ({ b: baseCercana(lienzo(-3, 3, -1, 9).aY(pt.y)) }) },
+      ],
     },
     predice: {
       pregunta: ['En ', x, ' = 3, ', x, '² = 9 le gana a ', { sup: ['2', x] }, ' = 8. En ', x, ' = 10, ¿cuál vale más?'],
@@ -106,13 +131,13 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'En x = 3, x² va adelante: 9 contra 8.', ecuacion: ['9 > 8'] },
         { estado: { corte: 2 }, texto: 'En x = 4 empatan: 16 y 16.', ecuacion: ['4² = ', { sup: ['2', '4'] }, ' = 16'] },
-        { estado: { corte: 4 }, texto: 'Desde ahí, 2ˣ se duplica en cada paso y x² se queda atrás.', ecuacion: ['32 > 25   ·   64 > 36'] },
+        { estado: { corte: 4 }, texto: 'Desde ahí, 2ˣ se duplica en cada paso y x² se queda atrás.', ecuacion: ['32 > 25', '   ·   ', '64 > 36'] },
         { estado: { corte: 5 }, texto: `En x = 10: ${f(2 ** 10)} contra 100.`, ecuacion: [{ sup: ['2', '10'] }, ` = ${f(2 ** 10)}`] },
       ],
     },
     regla: {
       texto: 'En y = bˣ, cada vez que x sube 1, la salida se multiplica por b. Crece si b > 1 y decrece si 0 < b < 1, y siempre es positiva.',
-      ecuacion: [{ sup: [bb, [x, ' + 1']] }, ' = ', bb, ' · ', { sup: [bb, x] }],
+      ecuacion: [{ sup: [bb, [x, ' + 1']] }, ' = ', { llave: [bb], nota: 'un factor más', color: 'c-d' }, ' · ', { sup: [bb, x] }],
       condicion: 'b > 0 y b ≠ 1. El crecimiento es por un factor constante, no por una cantidad constante.',
     },
     ahoraTu: {
@@ -140,6 +165,7 @@
   // ---------- Idea 2: el logaritmo es un exponente ----------
   // Cambia: los exponentes m y n de M = 2ᵐ y N = 2ⁿ · Permanece: la base 2 · Progresa: la fila del producto · Se reserva:
   // el logaritmo de una suma · Debe verse: multiplicar potencias suma exponentes; sumar números no.
+  // Sin arrastre: la tabla no tiene nada que agarrar (m y n son exponentes, no lugares de la figura).
   const logaritmo = {
     id: 'logaritmo',
     titulo: 'El logaritmo es un exponente',
@@ -187,7 +213,9 @@
     },
     regla: {
       texto: 'El logaritmo en base b de N es el exponente que lleva b para dar N. El de un producto es una suma de logaritmos; el de una suma, no.',
-      ecuacion: [...log(bb, '(MN)'), ' = ', ...log(bb, ' M'), ' + ', ...log(bb, ' N')],
+      // A 360 px no cabe en una línea: los espacios sin corte (U+00A0) hacen que se parta solo después del «=», nunca
+      // dentro de la suma.
+      ecuacion: [...log(bb, '(MN)'), ' = ', ...log(bb, '\u00A0M'), '\u00A0+\u00A0', ...log(bb, '\u00A0N')],
       condicion: 'b > 0, b ≠ 1 y M, N > 0. El log de M/N resta; el de Mᵏ es k · log M.',
     },
     ahoraTu: {
@@ -250,6 +278,7 @@
   // ---------- Idea 3: el número e ----------
   // Cambia: cuántas veces al año se capitaliza · Permanece: el 100 % anual · Progresa: el factor (1 + 1/n)ⁿ · Se
   // reserva: lo que pasa con n enorme · Debe verse: el factor crece cada vez menos y se acerca a 2,718…
+  // Sin arrastre: n es una elección entre cinco frecuencias de capitalización; la tabla no tiene qué agarrar.
   const N_OPC = [1, 2, 4, 12, 365];
   const factor = n => (1 + 1 / n) ** n;
   const NOMBRE = { 1: 'anual', 2: 'semestral', 4: 'trimestral', 12: 'mensual', 365: 'diaria' };
@@ -292,12 +321,12 @@
         { estado: { corte: 1 }, texto: 'Con n = 1, el 100 % se suma una vez: S/ 2.', ecuacion: ['(1 + 1)¹ = 2'] },
         { estado: { corte: 3 }, texto: `Con n = 10 y n = 100 sube: ${f(factor(10), 3)} y ${f(factor(100), 3)}.`, ecuacion: ['(1 + 1/100)', { sup: ['', '100'] }, ` = ${f(factor(100), 5)}`] },
         { estado: { corte: 5 }, texto: 'Cada vez gana menos: el factor se estabiliza.', ecuacion: [`${f(factor(1e6), 5)}`] },
-        { estado: { corte: 5 }, texto: 'Ese límite se llama e. Su logaritmo natural se escribe ln.', ecuacion: ['e ≈ 2,71828   ·   ln e = 1'] },
+        { estado: { corte: 5 }, texto: 'Ese límite se llama e. Su logaritmo natural se escribe ln.', ecuacion: ['e ≈ 2,71828', '   ·   ', 'ln e = 1'] },
       ],
     },
     regla: {
       texto: 'Con 100 % de interés en n partes, el capital se multiplica por (1 + 1/n)ⁿ. Al crecer n, ese factor se acerca a e ≈ 2,71828: no crece sin límite.',
-      ecuacion: ['e = lím (1 + ', { frac: ['1', 'n'] }, ')', { sup: ['', 'n'] }, ' ≈ 2,71828'],
+      ecuacion: ['e = lím ', { llave: ['(1 + ', { frac: ['1', 'n'] }, ')', { sup: ['', 'n'] }], nota: 'factor del año', color: 'c-i' }, '   ·   ', 'e ≈ 2,71828'],
       condicion: 'n crece sin límite. ln es el logaritmo de base e y cumple las mismas propiedades que los demás logaritmos.',
     },
     ahoraTu: {
@@ -346,6 +375,7 @@
   // ---------- Idea 4: la función logarítmica ----------
   // Cambia: la base · Permanece: la recta y = x · Progresa: bˣ y su reflejo log_b x · Se reserva: el borde del dominio
   // de log₂(x − 3) · Debe verse: log solo acepta argumentos positivos; en el borde hay una asíntota, no un punto.
+  // Gesto: el punto (b; 1) del logaritmo se arrastra a lo ancho y elige la base.
   const logaritmica = {
     id: 'logaritmica',
     titulo: 'El logaritmo pide positivos',
@@ -359,12 +389,16 @@
         const B = BASES[v.b];
         return { datos: ejesBase(-3, 6, -3, 6, {
           curvas: [{ puntos: [[-3, -3], [6, 6]], color: 'o', discontinua: true }, { puntos: muestra(u => B ** u, -3, 6, -3, 6), color: 'd' }, { puntos: muestra(u => (u > 0 ? Math.log(u) / Math.log(B) : NaN), 0.01, 6, -3, 6, 300), color: 'h' }],
-          puntos: [{ x: 1, y: 0, color: 'h', rotulo: '(1; 0)' }, { x: 0, y: 1, color: 'd' }],
+          puntos: [{ x: 1, y: 0, color: 'h', rotulo: '(1; 0)' }, { x: 0, y: 1, color: 'd' }, { x: B, y: 1, color: 'h', rotulo: `(${v.b}; 1)` }, { x: 1, y: B, color: 'd' }],
           alt: `y = ${v.b} elevado a x y su reflejo, el logaritmo de base ${v.b}`,
         }), estado: {} };
       },
       lectura: v => [...log(v.b, ' x'), ': solo x > 0 · vale 0 en x = 1'],
       minimo: 3,
+      // Arrastra el punto (b; 1) del logaritmo a lo ancho: elige la base, y su reflejo (1; b) sube o baja en bˣ.
+      arrastres: [{ id: 'base', etiqueta: 'punto (b; 1) del logaritmo', color: 'c-d',
+        donde: v => { const g = lienzo(-3, 6, -3, 6); return { x: g.X(BASES[v.b]), y: g.Y(1) }; },
+        mover: pt => ({ b: baseCercana(lienzo(-3, 6, -3, 6).aX(pt.x)) }) }],
     },
     predice: {
       pregunta: ['¿Cuál es el dominio de ', y, ' = ', ...log('2', '('), x, ' − 3)?'],
@@ -387,14 +421,14 @@
         puntos: [{ x: 4, y: 0, color: 'i', rotulo: '(4; 0)', desde: 1 }, { x: 5, y: 1, color: 'i', desde: 1 }, { x: 7, y: 2, color: 'i', rotulo: '(7; 2)', desde: 1 }],
       }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'Con x = 4, 5 y 7 el argumento vale 1, 2 y 4.', ecuacion: [...log('2', ' 1'), ' = 0 · ', ...log('2', ' 2'), ' = 1 · ', ...log('2', ' 4'), ' = 2'] },
+        { estado: { corte: 1 }, texto: 'Con x = 4, 5 y 7 el argumento vale 1, 2 y 4.', ecuacion: [...log('2', ' 1'), ' = 0', '   ·   ', ...log('2', ' 2'), ' = 1', '   ·   ', ...log('2', ' 4'), ' = 2'] },
         { estado: { corte: 2 }, texto: 'Cerca de x = 3, el argumento tiende a 0: la curva baja sin fin.', ecuacion: [x, ' → 3  ⇒  ', y, ' → −∞'] },
         { estado: { corte: 3 }, texto: 'x = 3 es una asíntota: la curva nunca la toca.', ecuacion: [x, ' − 3 > 0  ⇒  ', x, ' > 3'] },
       ],
     },
     regla: {
       texto: 'El logaritmo en base b es la inversa de bˣ: su gráfica es su reflejo en y = x. Solo acepta x > 0 y vale 0 en x = 1.',
-      ecuacion: [y, ' = ', ...log(bb, ' '), x, '  ⇔  ', { sup: [bb, y] }, ' = ', x],
+      ecuacion: [y, ' = ', ...log(bb, ' '), { llave: [x], nota: 'positivo', color: 'c-o' }, '  ⇔  ', { sup: [bb, y] }, ' = ', x],
       condicion: 'b > 0 y b ≠ 1. El argumento es siempre positivo, aunque el resultado pueda ser negativo o no entero.',
     },
     ahoraTu: {
@@ -433,6 +467,8 @@
   // ---------- Idea 5: resolver y revisar el argumento ----------
   // Cambia: la altura c en 2ˣ = c · Permanece: la curva y = 2ˣ · Progresa: el corte y su x = log₂ c · Se reserva: la
   // raíz que el dominio descarta · Debe verse: toda solución se prueba en los argumentos originales.
+  // Gesto: la recta y = c se arrastra a lo alto. Dos representaciones a propósito (hallazgo 9): el juego resuelve
+  // 2ˣ = c en la gráfica; predecir y «Mira» revisan candidatos en una tabla, porque descartar es una lista de pruebas.
   const ecuaciones = {
     id: 'ecuaciones',
     titulo: 'Resolver y revisar el argumento',
@@ -451,6 +487,10 @@
       },
       lectura: v => [{ sup: ['2', x] }, ` = ${f(v.c)}  ⇒  `, x, ' = ', ...log('2', ` ${f(v.c)}`), ` ≈ ${f(Math.log2(v.c))}`],
       minimo: 4,
+      // Arrastra la recta y = c desde su extremo izquierdo: a lo alto mueve c, y el corte se mueve solo.
+      arrastres: [{ id: 'recta', etiqueta: 'recta horizontal y = c', color: 'c-h',
+        donde: v => { const g = lienzo(-2, 4, -1, 13); return { x: g.X(-1.5), y: g.Y(v.c) }; },
+        mover: pt => ({ c: lienzo(-2, 4, -1, 13).aY(pt.y) }) }],
     },
     predice: {
       pregunta: ['¿Qué valores de ', x, ' cumplen ', ...log('2', '('), x, ' − 1) + ', ...log('2', '('), x, ' + 1) = 3?'],
@@ -487,7 +527,7 @@
     },
     regla: {
       texto: 'Con bases iguales se igualan los exponentes; si no, se aplica logaritmo. Toda solución se revisa en la ecuación original: sus argumentos deben ser positivos.',
-      ecuacion: [...log(bb, ' u'), ' = k  ⇒  u = ', { sup: [bb, 'k'] }],
+      ecuacion: [...log(bb, ' '), { llave: ['u'], nota: 'positivo', color: 'c-o' }, ' = k  ⇒  u = ', { sup: [bb, 'k'] }],
       condicion: 'b > 0 y b ≠ 1. Juntar logaritmos puede agregar candidatos que la ecuación original no acepta.',
     },
     ahoraTu: {
@@ -528,7 +568,8 @@
 
   // ---------- Idea 6: con base menor que 1, el orden se invierte ----------
   // Cambia: la base (mayor que 1) y el umbral · Permanece: la recta y = bᶜ · Progresa: el tramo de x que cumple ·
-  // Se reserva: la base 1/2 · Debe verse: si la curva baja, «mayor salida» queda a la izquierda.
+  // Se reserva: la base 1/2 (va al laboratorio) · Debe verse: si la curva baja, «mayor salida» queda a la izquierda.
+  // Gesto: el punto de corte (c; bᶜ) se arrastra por la curva.
   // El tramo de x que cumple se dibuja justo debajo del eje (no encima, para no confundirse con él).
   const tramoX = (desde, hasta, yy = -0.6) => ({ puntos: [[desde, yy], [hasta, yy]], color: 'd' });
   const inecuaciones = {
@@ -550,6 +591,10 @@
       }), estado: {} }),
       lectura: v => [{ sup: [String(v.b), x] }, ' > ', { sup: [String(v.b), String(v.c)] }, '  ⇔  ', x, ` > ${f(v.c)}`],
       minimo: 3,
+      // Arrastra el punto de corte por la curva: a lo ancho mueve c, y el tramo verde lo sigue.
+      arrastres: [{ id: 'corte', etiqueta: 'punto de corte (c; bᶜ)', color: 'c-o',
+        donde: v => { const g = lienzo(-3, 3, -1, 10); return { x: g.X(v.c), y: g.Y(v.b ** v.c) }; },
+        mover: pt => ({ c: lienzo(-3, 3, -1, 10).aX(pt.x) }) }],
     },
     predice: {
       pregunta: ['¿Qué valores de ', x, ' cumplen (1/2)', { sup: ['', x] }, ' > 4?'],
@@ -579,7 +624,7 @@
     },
     regla: {
       texto: 'Con base mayor que 1, bᵘ < bᵛ equivale a u < v. Con base entre 0 y 1 el orden se invierte. En logaritmos, además, el argumento debe ser positivo.',
-      ecuacion: ['0 < ', bb, ' < 1:   ', { sup: [bb, 'u'] }, ' > ', { sup: [bb, 'v'] }, '  ⇔  u < v'],
+      ecuacion: [{ llave: ['0 < ', bb, ' < 1'], nota: 'la curva baja', color: 'c-d' }, '   ·   ', { sup: [bb, 'u'] }, ' > ', { sup: [bb, 'v'] }, '  ⇔  ', { llave: ['u < v'], nota: 'se invierte' }],
       condicion: 'b > 0 y b ≠ 1. En una inecuación con logaritmo se pide además que el argumento sea positivo.',
     },
     ahoraTu: {
@@ -615,11 +660,100 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: la base continua, de 0,2 a 4, con su reflejo. Deja probar b = 1, el caso raro: recta horizontal sin logaritmo.
+  const mesaBase = {
+    id: 'base-libre', titulo: 'La base que se arrastra', pieza: 'ejes',
+    consigna: 'Arrastra el punto (1; b) para cambiar la base y el punto naranja para cambiar x. Prueba b = 1 y bases menores que 1.',
+    controles: [
+      { id: 'b', etiqueta: 'b', color: 'c-d', min: 0.2, max: 4, paso: 0.1, inicio: 1.5, decimales: 1 },
+      { id: 'x', etiqueta: 'x', color: 'c-o', min: -3, max: 3, paso: 0.5, inicio: 2, decimales: 1 },
+    ],
+    dibujo: v => {
+      const B = v.b, uno = Math.abs(B - 1) < 1e-9, yx = B ** v.x;
+      return { datos: ejesBase(-3, 8, -3, 8, {
+        curvas: [
+          { puntos: [[-3, -3], [8, 8]], color: 'o', discontinua: true },
+          { puntos: muestra(u => B ** u, -3, 8, -3, 8), color: 'd' },
+          uno ? { puntos: [[1, -3], [1, 8]], color: 'h', discontinua: true } : { puntos: muestra(u => (u > 0 ? Math.log(u) / Math.log(B) : NaN), 0.01, 8, -3, 8, 300), color: 'h' },
+        ],
+        puntos: [{ x: 0, y: 1, color: 'd' }, { x: 1, y: B, color: 'd' }, ...(yx <= 8 ? [{ x: v.x, y: yx, color: 'o', guias: true }] : [])],
+        alt: `y = ${f(B, 1)} elevado a x y su reflejo en y = x`,
+      }, 1), estado: {} };
+    },
+    lectura: v => {
+      const B = v.b, uno = Math.abs(B - 1) < 1e-9;
+      return [{ sup: [f(B, 1), f(v.x, 1)] }, ` = ${f(B ** v.x)} · ${uno ? 'b = 1: no hay logaritmo' : B > 1 ? 'crece' : 'decrece'}`];
+    },
+    arrastres: [
+      { id: 'base', etiqueta: 'punto (1; b): la base', color: 'c-d',
+        donde: v => { const g = lienzo(-3, 8, -3, 8); return { x: g.X(1), y: g.Y(v.b) }; },
+        mover: pt => ({ b: lienzo(-3, 8, -3, 8).aY(pt.y) }) },
+      { id: 'entrada', etiqueta: 'punto de la entrada x', color: 'c-o',
+        donde: v => { const g = lienzo(-3, 8, -3, 8); return { x: g.X(v.x), y: g.Y(enPlano(v.b ** v.x, -3, 8)) }; },
+        mover: pt => ({ x: lienzo(-3, 8, -3, 8).aX(pt.x) }) },
+    ],
+  };
+  // Mesa 2: la carrera entre bˣ y xᵏ (la idea 1 solo la pregunta con 2ˣ y x²).
+  const EJE_CARRERA = { x: { min: 0, max: 8, paso: 1, nombre: 'x', color: 'o', decimales: 0 }, y: { min: 0, max: 100, paso: 20, nombre: 'y', color: 'i', decimales: 0 } };
+  const mesaCarrera = {
+    id: 'carrera', titulo: 'Carrera: potencia contra exponencial', pieza: 'ejes',
+    consigna: 'Elige la base de bˣ y el exponente de xᵏ. Arrastra x y mira quién va adelante. ¿Cuántas veces se cruzan?',
+    controles: [
+      { id: 'b', etiqueta: 'b', opciones: [{ valor: 1.5, texto: '1,5' }, { valor: 2, texto: '2' }, { valor: 3, texto: '3' }], inicio: 2 },
+      { id: 'k', etiqueta: 'k', opciones: [{ valor: 2, texto: '2' }, { valor: 3, texto: '3' }] },
+      { id: 'x', etiqueta: 'x', color: 'c-o', min: 0, max: 8, paso: 0.5, inicio: 3, decimales: 1 },
+    ],
+    dibujo: v => {
+      const E = u => v.b ** u, P = u => u ** v.k;
+      return { datos: Object.assign({}, EJE_CARRERA, {
+        curvas: [{ puntos: muestra(E, 0, 8, 0, 100), color: 'd', rotulo: `${f(v.b, 1)}ˣ` }, { puntos: muestra(P, 0, 8, 0, 100), color: 'i', rotulo: `x${SUP(v.k)}` }],
+        puntos: [...(E(v.x) <= 100 ? [{ x: v.x, y: E(v.x), color: 'd' }] : []), ...(P(v.x) <= 100 ? [{ x: v.x, y: P(v.x), color: 'i' }] : [])],
+        alt: `${f(v.b, 1)} elevado a x contra x elevado a ${v.k}; en x = ${f(v.x, 1)} van ${f(E(v.x))} y ${f(P(v.x))}`,
+      }), estado: {} };
+    },
+    lectura: v => {
+      const E = v.b ** v.x, P = v.x ** v.k;
+      return [`En x = ${f(v.x, 1)}: ${f(v.b, 1)}ˣ = ${f(E, 1)}, x${SUP(v.k)} = ${f(P, 1)}${Math.abs(E - P) < 1e-9 ? ', empatan' : ''}`];
+    },
+    arrastres: [{ id: 'entrada', etiqueta: 'entrada x', color: 'c-o',
+      donde: v => { const g = lienzoDe(EJE_CARRERA); return { x: g.X(v.x), y: g.Y(enPlano(Math.min(v.b ** v.x, v.x ** v.k), 0, 100)) }; },
+      mover: pt => ({ x: lienzoDe(EJE_CARRERA).aX(pt.x) }) }],
+  };
+  // Mesa 3: la inecuación con cualquier base, también menor que 1 (la que la idea 6 reserva para predecir).
+  const BASES_INEC = { '1/3': 1 / 3, '1/2': 0.5, '2': 2, '3': 3 };
+  const mesaInecuacion = {
+    id: 'inecuacion', titulo: 'Desigualdad con cualquier base', pieza: 'ejes',
+    consigna: 'Elige la base, el sentido y arrastra el corte. El tramo verde marca las x que cumplen. ¿Cuándo queda a la izquierda?',
+    controles: [
+      { id: 'b', etiqueta: 'b', opciones: Object.keys(BASES_INEC).map(t => ({ valor: t, texto: t })), inicio: '1/2' },
+      { id: 'sentido', etiqueta: 'Pide', opciones: [{ valor: '>', texto: 'mayor' }, { valor: '<', texto: 'menor' }] },
+      { id: 'c', etiqueta: 'c', color: 'c-o', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0 },
+    ],
+    dibujo: v => {
+      const B = BASES_INEC[v.b], h = B ** v.c, derecha = (B > 1) === (v.sentido === '>');
+      return { datos: ejesBase(-3, 3, -1, 10, {
+        curvas: [{ puntos: muestra(u => B ** u, -3, 3, -1, 10), color: 'i' }, { puntos: [[-3, h], [3, h]], color: 'h', discontinua: true }, derecha ? tramoX(v.c, 3) : tramoX(-3, v.c)],
+        puntos: [{ x: v.c, y: h, color: 'o', guias: true }, { x: v.c, y: -0.6, color: 'd', abierto: true }],
+        alt: `${v.b} elevado a x ${v.sentido} ${v.b} elevado a ${v.c}: x ${derecha ? '>' : '<'} ${v.c}`,
+      }), estado: {} };
+    },
+    lectura: v => {
+      const B = BASES_INEC[v.b], derecha = (B > 1) === (v.sentido === '>');
+      return [`(${v.b})`, { sup: ['', x] }, ` ${v.sentido} (${v.b})`, { sup: ['', f(v.c)] }, '  ⇔  ', x, ` ${derecha ? '>' : '<'} ${f(v.c)}`];
+    },
+    arrastres: [{ id: 'corte', etiqueta: 'punto de corte', color: 'c-o',
+      donde: v => { const g = lienzo(-3, 3, -1, 10); return { x: g.X(v.c), y: g.Y(BASES_INEC[v.b] ** v.c) }; },
+      mover: pt => ({ c: lienzo(-3, 3, -1, 10).aX(pt.x) }) }],
+  };
+
   return {
     unidad: 'algebra.exponenciales-y-logaritmos',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-tabla.js'],
+    // Laboratorio: tres mesas propias con gesto directo, más amplias que los juegos (base continua, carrera, base < 1).
+    laboratorio: [mesaBase, mesaCarrera, mesaInecuacion],
     historia: {
       texto: 'En 1614, John Napier publicó sus logaritmos para aliviar multiplicaciones, divisiones y raíces largas, donde un error era fácil. Su escala no es la escolar de hoy; las conversaciones con Briggs llevaron a formas más cómodas para calcular. La idea que perdura es convertir productos en sumas. La definición moderna, como inversa de la exponencial, llegó después y trae sus condiciones.',
       pregunta: '¿Cómo convertirías una multiplicación larga en una suma?',
