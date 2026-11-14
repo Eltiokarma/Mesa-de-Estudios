@@ -37,6 +37,14 @@
   }
   const COL = { R: { color: 'h', t: 'R', nombre: ['roja', 'rojas'] }, A: { color: 'i', t: 'A', nombre: ['azul', 'azules'] }, V: { color: 'd', t: 'V', nombre: ['verde', 'verdes'] } };
   const ficha = (c, extra = {}) => Object.assign({ color: COL[c].color, t: COL[c].t }, extra);
+  const f0 = n => Kit.formatear(n, 0);
+  const pl = (n, uno, varios) => `${f0(n)} ${n === 1 ? uno : varios}`;
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría que exportan rm-fichas y rm-tablero.
+  const FICHAS = () => Kit.piezas['rm-fichas'], TAB = () => Kit.piezas['rm-tablero'];
+  // Manija sobre la última ficha de una fila: arrastrarla a lo largo de la fila cambia cuántas hay.
+  // fila: índice de la fila en la figura; n: cuántas hay en ella; base: lo que vale n con una sola ficha.
+  const ultimaDeFila = (datos, fila, n) => { const g = FICHAS().geometria(datos), fl = g.filas[fila]; const q = fl.fichas[n - 1]; return { x: q.cx, y: q.cy }; };
+  const contarEnFila = (datos, fila, x) => { const g = FICHAS().geometria(datos), fl = g.filas[fila]; return 1 + (x - fl.fichas[0].cx) / fl.paso; };
 
   // ---------- Idea 1: el peor caso ----------
   // Cambia: cuántas fichas se sacan · Permanece: la urna (5 rojas, 4 azules, 3 verdes) · Progresa: la secuencia más
@@ -69,6 +77,10 @@
       dibujo: val => ({ datos: urna(URNA, PEOR2.slice(0, val.n), { ultima: val.n === 4 }), estado: {} }),
       lectura: val => [hayPar(PEOR2.slice(0, val.n)) ? `Con ${val.n}: ya hay dos iguales, pase lo que pase` : `Con ${val.n}: todavía pueden ser todas distintas`],
       minimo: 4,
+      // Arrastra la última ficha sacada hacia la derecha: la peor suerte saca una más.
+      arrastres: [{ id: 'sacadas', etiqueta: 'cuántas fichas se sacan', color: 'c-o',
+        donde: val => ultimaDeFila(urna(URNA, PEOR2.slice(0, val.n)), 1, val.n),
+        mover: (pt, val) => ({ n: contarEnFila(urna(URNA, PEOR2.slice(0, val.n)), 1, pt.x) }) }],
     },
     predice: {
       pregunta: 'En la misma urna (5 rojas, 4 azules, 3 verdes), ¿cuántas fichas hay que sacar, como mínimo, para tener con certeza 3 rojas?',
@@ -92,7 +104,7 @@
     },
     regla: {
       texto: 'Para tener certeza se imagina la peor extracción: se saca todo lo que se pueda sin cumplir la meta. Una ficha más obliga a cumplirla.',
-      ecuacion: [Nn, ' = (lo máximo sin cumplir) + 1'],
+      ecuacion: [Nn, ' = ', { llave: ['peor caso'], nota: 'sin cumplir', color: 'c-h' }, ' + ', { llave: ['1'], nota: 'la que obliga', color: 'c-o' }],
       condicion: 'se saca sin mirar y sin devolver, y la urna tiene suficientes fichas para que la meta sea posible.',
     },
     ahoraTu: {
@@ -137,6 +149,23 @@
     for (let i = 0; i < N; i++) filas[i % cas].fichas.push({ color: 'o', t: '', forma: 'circulo', resalto: extra.ultima && i === N - 1 ? 'd' : undefined });
     return { filas: filas.slice(0, 5), tam: 22, pie: extra.pie || `Alguno tiene al menos ${Math.ceil(N / cas)}` };
   }
+  // Manija del palomar: el último objeto repartido (casillero (N − 1) mod k, capa ⌊(N − 1)/k⌋). Al moverla, la fila
+  // más cercana y la capa dan el nuevo N.
+  function manijaPalomar(datosDe, kDe, id) {
+    const kk = val => (typeof kDe === 'number' ? kDe : val[kDe]);
+    return {
+      donde: val => {
+        const N = val[id], k0 = kk(val), g = FICHAS().geometria(datosDe(N, val)), f0_ = g.filas[0].fichas[0];
+        return { x: f0_.cx + Math.floor((N - 1) / k0) * g.filas[0].paso, y: g.filas[(N - 1) % k0].y + g.lado / 2 };
+      },
+      mover: (pt, val) => {
+        const k0 = kk(val), g = FICHAS().geometria(datosDe(val[id], val)), f0_ = g.filas[0].fichas[0];
+        const capa = Math.max(0, Math.round((pt.x - f0_.cx) / g.filas[0].paso));
+        const dist = g.filas.slice(0, k0).map((fl, i) => [Math.abs(fl.y + g.lado / 2 - pt.y), i]).sort((a, b) => a[0] - b[0]);
+        return { [id]: capa * k0 + dist[0][1] + 1 };
+      },
+    };
+  }
   const palo = {
     id: 'palomar',
     titulo: 'Más objetos que casilleros',
@@ -149,6 +178,8 @@
       dibujo: val => ({ datos: palomar(val.N, 4), estado: {} }),
       lectura: val => [Nn, ` = ${val.N}: alguno tiene al menos ${Math.ceil(val.N / 4)}`],
       minimo: 4,
+      // Arrastra el último objeto repartido: a la derecha o abajo, entra uno más.
+      arrastres: [Object.assign({ id: 'objetos', etiqueta: 'cuántos objetos se reparten', color: 'c-o' }, manijaPalomar(N => palomar(N, 4), 4, 'N'))],
     },
     predice: {
       pregunta: '¿Cuántas personas hacen falta, como mínimo, para asegurar que 3 cumplan años en el mismo mes?',
@@ -172,7 +203,7 @@
     },
     regla: {
       texto: 'Si N objetos se reparten en k casilleros, alguno recibe al menos N/k redondeado hacia arriba. Para obligar a m en uno, se necesitan k(m − 1) + 1.',
-      ecuacion: [Nn, ' = ', k, '(m − 1) + 1'],
+      ecuacion: [Nn, ' = ', { llave: [k], nota: 'casilleros', color: 'c-d' }, { llave: ['(m − 1)'], nota: 'meta menos uno', color: 'c-o' }, ' + 1'],
       condicion: 'cada objeto va a un solo casillero y no importa en cuál; se habla de algún casillero, no de uno elegido.',
     },
     ahoraTu: {
@@ -207,6 +238,13 @@
       notas: [{ t: extra.nota || `Pruebas: ${n * (n - 1) / 2}` }],
     };
   }
+  // La manija es la última casilla de la diagonal (la llave que no se prueba); bajar una fila agrega una llave.
+  function manijaLlaves(datosDe, id) {
+    return {
+      donde: val => TAB().geometria(datosDe(val[id], val)).centro(val[id] - 1, val[id] - 1),
+      mover: (pt, val) => { const g = TAB().geometria(datosDe(val[id], val)); return { [id]: (pt.y - g.y0) / g.altoFila + 0.5 }; },
+    };
+  }
   const ident = {
     id: 'llaves',
     titulo: 'Identificar llaves en el peor caso',
@@ -219,6 +257,8 @@
       dibujo: val => ({ datos: llaves(val.n), estado: {} }),
       lectura: val => [`Pruebas = ${Array.from({ length: val.n - 1 }, (_, i) => val.n - 1 - i).join(' + ')} = ${val.n * (val.n - 1) / 2}`],
       minimo: 3,
+      // Arrastra la esquina de la tabla hacia abajo: una llave y un candado más.
+      arrastres: [Object.assign({ id: 'llaves', etiqueta: 'cuántas llaves y candados', color: 'c-o' }, manijaLlaves(n => llaves(n), 'n'))],
     },
     predice: {
       pregunta: 'Con 10 llaves y 10 candados, ¿cuántas pruebas aseguran saber qué llave abre cada candado?',
@@ -242,7 +282,7 @@
     },
     regla: {
       texto: 'Para identificar n llaves con n candados, en el peor caso cada llave falla en todos los candados libres menos uno, que se deduce.',
-      ecuacion: ['(n − 1) + (n − 2) + … + 1 = ', { frac: ['n(n − 1)', '2'] }],
+      ecuacion: [{ llave: ['(n − 1) + … + 1'], nota: 'fallas posibles', color: 'c-h' }, ' = ', { frac: ['n(n − 1)', '2'] }],
       condicion: 'cada llave abre exactamente un candado y un candado identificado ya no se vuelve a probar.',
     },
     ahoraTu: {
@@ -264,11 +304,109 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: la urna libre. El alumno arma la urna (cuántas de cada color) y elige la meta; la figura saca la peor
+  // secuencia para esa meta. Es más rica que la idea 1: cuatro metas, urnas de 1 a 6 por color y el caso raro de la
+  // meta imposible (pedir 3 rojas con 2 en la urna).
+  const METAS = [
+    { valor: 'par', texto: '2 del mismo color' }, { valor: 'trio', texto: '3 del mismo color' },
+    { valor: 'rojas', texto: '3 rojas' }, { valor: 'cada', texto: 'una de cada color' },
+  ];
+  const cumple = (meta, xs) => {
+    const c = { R: 0, A: 0, V: 0 }; for (const x of xs) c[x]++;
+    if (meta === 'par') return Math.max(c.R, c.A, c.V) >= 2;
+    if (meta === 'trio') return Math.max(c.R, c.A, c.V) >= 3;
+    if (meta === 'rojas') return c.R >= 3;
+    return c.R > 0 && c.A > 0 && c.V > 0;
+  };
+  // La peor secuencia: primero todo lo que se puede sacar sin cumplir (en ronda, para que se vea parejo), después el resto.
+  function peorSecuencia(cu, meta) {
+    const resto = Object.assign({}, cu), seq = [];
+    const ronda = (tope) => { let hubo = true; while (hubo) { hubo = false; for (const c of ['R', 'A', 'V']) if (resto[c] > 0 && tope(c)) { seq.push(c); resto[c]--; hubo = true; } } };
+    const cuenta = c => seq.filter(x => x === c).length;
+    if (meta === 'par' || meta === 'trio') { const kk = meta === 'par' ? 2 : 3; ronda(c => cuenta(c) < kk - 1); }
+    else if (meta === 'rojas') { ronda(c => c !== 'R'); ronda(c => c === 'R' && cuenta('R') < 2); }
+    else { const menor = ['R', 'A', 'V'].sort((x, y) => cu[x] - cu[y])[0]; ronda(c => c !== menor); }
+    ronda(() => true);
+    return seq;
+  }
+  const certeza = (cu, meta) => { const q = peorSecuencia(cu, meta); for (let i = 1; i <= q.length; i++) if (cumple(meta, q.slice(0, i))) return i; return null; };
+  const POR_FILA = 9;
+  function urnaLibre(val) {
+    const cu = { R: val.R, A: val.A, V: val.V }, q = peorSecuencia(cu, val.meta), n = Math.min(val.n, q.length), sac = q.slice(0, n);
+    const resto = Object.assign({}, cu); for (const c of sac) resto[c]--;
+    const uno = sac.slice(0, POR_FILA), dos = sac.slice(POR_FILA);
+    const marca = (xs, desde) => xs.map((c, i) => ficha(c, { resalto: desde + i === n - 1 ? 'o' : undefined }));
+    return {
+      tam: 22,
+      filas: [
+        ...['R', 'A', 'V'].map(c => ({ rotulo: `Quedan ${COL[c].nombre[1]}: ${f0(resto[c])}`, fichas: Array.from({ length: resto[c] }, () => ficha(c)) })),
+        { rotulo: `Sacadas: ${f0(n)}`, fichas: marca(uno, 0) },
+        { rotulo: dos.length ? 'Siguen' : '', fichas: marca(dos, POR_FILA) },
+      ],
+      pie: cumple(val.meta, sac) ? 'Meta cumplida aun con la peor suerte' : 'La peor suerte todavía la evita',
+    };
+  }
+  const mesaUrna = {
+    id: 'urna-libre', titulo: 'Arma tu urna', pieza: 'rm-fichas',
+    consigna: 'Elige cuántas fichas de cada color hay y la meta. Arrastra la última sacada: la urna saca siempre la peor.',
+    controles: [
+      { id: 'meta', etiqueta: 'Meta', opciones: METAS },
+      { id: 'R', etiqueta: 'Rojas', color: 'c-h', min: 1, max: 6, paso: 1, inicio: 5, decimales: 0 },
+      { id: 'A', etiqueta: 'Azules', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 4, decimales: 0 },
+      { id: 'V', etiqueta: 'Verdes', color: 'c-d', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0 },
+      { id: 'n', etiqueta: 'Sacadas', color: 'c-o', min: 1, max: 18, paso: 1, inicio: 3, decimales: 0 },
+    ],
+    dibujo: val => ({ datos: urnaLibre(val), estado: {} }),
+    lectura: val => {
+      const N = certeza({ R: val.R, A: val.A, V: val.V }, val.meta);
+      const q = peorSecuencia({ R: val.R, A: val.A, V: val.V }, val.meta), n = Math.min(val.n, q.length);
+      if (N === null) return [`Con ${f0(n)} sacadas: meta imposible con esta urna`];
+      return [`Con ${f0(n)}: `, cumple(val.meta, q.slice(0, n)) ? 'segura' : 'puede fallar', ' · certeza con ', Nn, ` = ${f0(N)}`];
+    },
+    arrastres: [{ id: 'sacadas', etiqueta: 'cuántas fichas se sacan', color: 'c-o',
+      donde: val => {
+        const d = urnaLibre(val), n = Math.min(val.n, d.filas[3].fichas.length + d.filas[4].fichas.length);
+        return n > POR_FILA ? ultimaDeFila(d, 4, n - POR_FILA) : ultimaDeFila(d, 3, n);
+      },
+      mover: (pt, val) => {
+        const d = urnaLibre(val), g = FICHAS().geometria(d), total = d.filas[3].fichas.length + d.filas[4].fichas.length;
+        const abajo = Math.abs(pt.y - (g.filas[4].y + g.lado / 2)) < Math.abs(pt.y - (g.filas[3].y + g.lado / 2));
+        const x0 = g.filas[3].fichas[0].cx, paso = g.filas[3].paso;
+        const n = (abajo ? POR_FILA : 0) + 1 + (pt.x - x0) / paso;
+        // Si ya se sacó todo, el control queda más allá: la manija sigue en la última ficha y no lo baja sin querer.
+        return { n: val.n > total && Math.round(n) >= total ? val.n : n };
+      } }],
+  };
+  // Mesa 2: el palomar con casilleros variables (2 a 5) y hasta 20 objetos.
+  const mesaPalomar = {
+    id: 'palomar-libre', titulo: 'Casilleros a elección', pieza: 'rm-fichas',
+    consigna: 'Elige cuántos casilleros hay y reparte objetos lo más parejo posible. ¿Cuándo obliga a 3 en uno?',
+    controles: [
+      { id: 'k', etiqueta: 'Casilleros', color: 'c-d', min: 2, max: 5, paso: 1, inicio: 3, decimales: 0 },
+      { id: 'N', etiqueta: 'Objetos', color: 'c-o', min: 1, max: 20, paso: 1, inicio: 5, decimales: 0 },
+    ],
+    dibujo: val => ({ datos: palomar(val.N, val.k), estado: {} }),
+    lectura: val => [Nn, ` = ${f0(val.N)}, `, k, ` = ${f0(val.k)}: alguno tiene ${f0(Math.ceil(val.N / val.k))} o más`],
+    arrastres: [Object.assign({ id: 'objetos', etiqueta: 'cuántos objetos se reparten', color: 'c-o' }, manijaPalomar((N, val) => palomar(N, val.k), 'k', 'N'))],
+  };
+  // Mesa 3: las llaves, hasta 7, con la cuenta escrita.
+  const mesaLlaves = {
+    id: 'llaves-libre', titulo: 'Más llaves', pieza: 'rm-tablero',
+    consigna: 'Agrega llaves y candados hasta 7. Mira cómo crece el triángulo de pruebas del peor caso.',
+    controles: [{ id: 'n', etiqueta: 'Llaves', color: 'c-o', min: 2, max: 7, paso: 1, inicio: 3, decimales: 0 }],
+    dibujo: val => ({ datos: llaves(val.n), estado: {} }),
+    lectura: val => [`${pl(val.n, 'llave', 'llaves')}: ${pl(val.n * (val.n - 1) / 2, 'prueba', 'pruebas')} en el peor caso`],
+    arrastres: [Object.assign({ id: 'llaves', etiqueta: 'cuántas llaves y candados', color: 'c-o' }, manijaLlaves(n => llaves(n), 'n'))],
+  };
+
   return {
     unidad: 'razonamiento-matematico.certezas',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-fichas.js', '/nucleo/kit/piezas/rm-tablero.js'],
+    // Laboratorio: la urna que arma el alumno con cuatro metas, el palomar con casilleros variables y más llaves.
+    laboratorio: [mesaUrna, mesaPalomar, mesaLlaves],
     historia: {
       texto: 'El principio del palomar se asocia con Dirichlet: si hay más objetos que casillas, alguna casilla recibe al menos dos. Sirve para demostrar una certeza sin conocer el reparto concreto. Garantizar algo no es lo mismo que estimar su probabilidad: hay que vencer incluso a la peor suerte.',
       pregunta: '¿Qué es estar seguro aunque la suerte juegue en contra?',
