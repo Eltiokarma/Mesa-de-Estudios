@@ -21,7 +21,7 @@
           "enunciado": "Sea P(x) = 4x³ − x² + 2x − 9.",
           "pregunta": "¿Cuánto vale P(0)?",
           "decimales": 2,
-          "correcta": { "fn": "pDeCero", "args": [{ "coefs": [4, -1, 2, -9] }], "campo": "texto", "valor": "−9" },
+          "correcta": { "fn": "pDeCero", "args": [{ "coefs": [4, -1, 2, -9] }], "campo": "valor", "valor": -9 },
           "errores": [
             {
               "id": "PO7-suma-de-coeficientes",
@@ -29,8 +29,8 @@
               "explicacion": "Sumaste los coeficientes: eso es P(1). Con x = 0 todos los términos con x se anulan y queda el término independiente.",
               "fn": "pDeCero",
               "args": [{ "coefs": [4, -1, 2, -9] }],
-              "campo": "errores.sumaCoef.texto",
-              "valor": "−4"
+              "campo": "errores.sumaCoef.valor",
+              "valor": -4
             },
             {
               "id": "PO19-coeficiente-principal",
@@ -38,8 +38,8 @@
               "explicacion": "Ese es el coeficiente principal. Con x = 0 se anula todo lo que lleva x: queda el término independiente, −9.",
               "fn": "pDeCero",
               "args": [{ "coefs": [4, -1, 2, -9] }],
-              "campo": "errores.principal.texto",
-              "valor": "4"
+              "campo": "errores.principal.valor",
+              "valor": 4
             }
           ]
         },
@@ -48,7 +48,7 @@
           "enunciado": "Sea P(x) = 4x³ − x² + 2x − 9.",
           "pregunta": "¿Cuánto vale P(1)?",
           "decimales": 2,
-          "correcta": { "fn": "pDeUno", "args": [{ "coefs": [4, -1, 2, -9] }], "campo": "texto", "valor": "−4" },
+          "correcta": { "fn": "pDeUno", "args": [{ "coefs": [4, -1, 2, -9] }], "campo": "valor", "valor": -4 },
           "errores": [
             {
               "id": "PO12-termino-independiente",
@@ -56,8 +56,8 @@
               "explicacion": "Ese es P(0). Con x = 1 cada potencia vale 1: queda la suma de los coeficientes, 4 − 1 + 2 − 9.",
               "fn": "pDeUno",
               "args": [{ "coefs": [4, -1, 2, -9] }],
-              "campo": "errores.independiente.texto",
-              "valor": "−9"
+              "campo": "errores.independiente.valor",
+              "valor": -9
             },
             {
               "id": "PO20-coeficiente-principal",
@@ -65,8 +65,8 @@
               "explicacion": "Ese es el coeficiente principal. Con x = 1 cada término vale su coeficiente: se suman todos, 4 − 1 + 2 − 9.",
               "fn": "pDeUno",
               "args": [{ "coefs": [4, -1, 2, -9] }],
-              "campo": "errores.principal.texto",
-              "valor": "4"
+              "campo": "errores.principal.valor",
+              "valor": 4
             },
             {
               "id": "PO21-sin-signos",
@@ -74,8 +74,8 @@
               "explicacion": "Sumaste los coeficientes sin sus signos. Cada uno va con el suyo: 4 − 1 + 2 − 9.",
               "fn": "pDeUno",
               "args": [{ "coefs": [4, -1, 2, -9] }],
-              "campo": "errores.sinSignos.texto",
-              "valor": "16"
+              "campo": "errores.sinSignos.valor",
+              "valor": 16
             }
           ]
         },
@@ -84,7 +84,7 @@
           "enunciado": "Sea P(x) = 4x³ − x² + 2x − 9.",
           "pregunta": "¿Cuánto vale P(−1)?",
           "decimales": 2,
-          "correcta": { "fn": "teoremaResto", "args": [{ "coefs": [4, -1, 2, -9], "divisor": [1, 1] }], "campo": "texto", "valor": "−16" },
+          "correcta": { "fn": "teoremaResto", "args": [{ "coefs": [4, -1, 2, -9], "divisor": [1, 1] }], "campo": "valor", "valor": -16 },
           "errores": [
             {
               "id": "PO8-signo-cambiado",
@@ -92,8 +92,8 @@
               "explicacion": "Evaluaste en x = 1. Aquí x vale −1: (−1)³ = −1 y (−1)² = 1.",
               "fn": "teoremaResto",
               "args": [{ "coefs": [4, -1, 2, -9], "divisor": [1, 1] }],
-              "campo": "errores.signo.texto",
-              "valor": "−4"
+              "campo": "errores.signo.valor",
+              "valor": -4
             },
             {
               "id": "PO15-par-negativo",
@@ -101,8 +101,8 @@
               "explicacion": "La potencia par de un negativo es positiva: (−1)² = 1, así que −x² vale −1, no +1.",
               "fn": "teoremaResto",
               "args": [{ "coefs": [4, -1, 2, -9], "divisor": [1, 1] }],
-              "campo": "errores.parNegativo.texto",
-              "valor": "−14"
+              "campo": "errores.parNegativo.valor",
+              "valor": -14
             },
             {
               "id": "PO27-termino-independiente",
@@ -110,8 +110,8 @@
               "explicacion": "Ese es P(0). Con x = −1 los términos con x no se anulan: 4(−1)³ − (−1)² + 2(−1) − 9.",
               "fn": "teoremaResto",
               "args": [{ "coefs": [4, -1, 2, -9], "divisor": [1, 1] }],
-              "campo": "errores.independiente.texto",
-              "valor": "−9"
+              "campo": "errores.independiente.valor",
+              "valor": -9
             }
           ]
         }
@@ -137,8 +137,8 @@
           "correcta": {
             "fn": "grado",
             "args": [{ "terminos": [{ "c": 6, "x": 4, "y": 1 }, { "c": -2, "x": 2, "y": 5 }, { "c": 1, "x": 3, "y": 3 }] }],
-            "campo": "texto",
-            "valor": "7"
+            "campo": "valor",
+            "valor": 7
           },
           "errores": [
             {
@@ -147,8 +147,8 @@
               "explicacion": "Ese es el mayor grado relativo (el de y). El absoluto es el mayor grado de un término, sumando sus exponentes: 2 + 5 = 7.",
               "fn": "grado",
               "args": [{ "terminos": [{ "c": 6, "x": 4, "y": 1 }, { "c": -2, "x": 2, "y": 5 }, { "c": 1, "x": 3, "y": 3 }] }],
-              "campo": "errores.relativo.texto",
-              "valor": "5"
+              "campo": "errores.relativo.valor",
+              "valor": 5
             },
             {
               "id": "PO11-suma-de-todos",
@@ -156,8 +156,8 @@
               "explicacion": "Sumaste todos los exponentes. El grado absoluto es el del término de mayor grado: −2x²y⁵ tiene 2 + 5 = 7.",
               "fn": "grado",
               "args": [{ "terminos": [{ "c": 6, "x": 4, "y": 1 }, { "c": -2, "x": 2, "y": 5 }, { "c": 1, "x": 3, "y": 3 }] }],
-              "campo": "errores.sumaTodos.texto",
-              "valor": "18"
+              "campo": "errores.sumaTodos.valor",
+              "valor": 18
             },
             {
               "id": "PO28-suma-de-relativos",
@@ -165,8 +165,8 @@
               "explicacion": "Sumaste los grados relativos, 4 + 5. Esos exponentes vienen de términos distintos: el mayor grado de un término es 7.",
               "fn": "grado",
               "args": [{ "terminos": [{ "c": 6, "x": 4, "y": 1 }, { "c": -2, "x": 2, "y": 5 }, { "c": 1, "x": 3, "y": 3 }] }],
-              "campo": "errores.sumaRelativos.texto",
-              "valor": "9"
+              "campo": "errores.sumaRelativos.valor",
+              "valor": 9
             }
           ]
         }
@@ -191,7 +191,7 @@
           "enunciado": "P(x) es de grado 4 y Q(x) es de grado 6.",
           "pregunta": "¿De qué grado es P · Q?",
           "decimales": 2,
-          "correcta": { "fn": "gradoProducto", "args": [{ "m": 4, "n": 6 }], "campo": "texto", "valor": "10" },
+          "correcta": { "fn": "gradoProducto", "args": [{ "m": 4, "n": 6 }], "campo": "valor", "valor": 10 },
           "errores": [
             {
               "id": "PO5-multiplica-grados",
@@ -199,8 +199,8 @@
               "explicacion": "Multiplicaste los grados. Al multiplicar, x⁴ · x⁶ = x¹⁰: los exponentes se suman.",
               "fn": "gradoProducto",
               "args": [{ "m": 4, "n": 6 }],
-              "campo": "errores.producto.texto",
-              "valor": "24"
+              "campo": "errores.producto.valor",
+              "valor": 24
             },
             {
               "id": "PO23-el-mayor",
@@ -208,8 +208,8 @@
               "explicacion": "Ese es el grado de la suma. En el producto, x⁴ · x⁶ = x¹⁰: los grados se suman.",
               "fn": "gradoProducto",
               "args": [{ "m": 4, "n": 6 }],
-              "campo": "errores.mayor.texto",
-              "valor": "6"
+              "campo": "errores.mayor.valor",
+              "valor": 6
             }
           ]
         },
@@ -218,7 +218,7 @@
           "enunciado": "P(x) es de grado 4 y Q(x) es de grado 6.",
           "pregunta": "¿De qué grado es P + Q?",
           "decimales": 2,
-          "correcta": { "fn": "gradoSuma", "args": [{ "m": 4, "n": 6 }], "campo": "texto", "valor": "6" },
+          "correcta": { "fn": "gradoSuma", "args": [{ "m": 4, "n": 6 }], "campo": "valor", "valor": 6 },
           "errores": [
             {
               "id": "PO6-suma-grados",
@@ -226,8 +226,8 @@
               "explicacion": "Sumaste los grados, como en el producto. Al sumar no se multiplica nada: manda el término x⁶ de Q.",
               "fn": "gradoSuma",
               "args": [{ "m": 4, "n": 6 }],
-              "campo": "errores.suma.texto",
-              "valor": "10"
+              "campo": "errores.suma.valor",
+              "valor": 10
             },
             {
               "id": "PO5-multiplica-grados",
@@ -235,8 +235,8 @@
               "explicacion": "Multiplicaste los grados. Al sumar polinomios no se multiplica nada: el grado es el del término mayor, el x⁶ de Q.",
               "fn": "gradoSuma",
               "args": [{ "m": 4, "n": 6 }],
-              "campo": "errores.producto.texto",
-              "valor": "24"
+              "campo": "errores.producto.valor",
+              "valor": 24
             },
             {
               "id": "PO22-el-menor",
@@ -244,8 +244,8 @@
               "explicacion": "El x⁶ de Q no tiene con quién anularse: la suma tiene grado 6, el mayor.",
               "fn": "gradoSuma",
               "args": [{ "m": 4, "n": 6 }],
-              "campo": "errores.menor.texto",
-              "valor": "4"
+              "campo": "errores.menor.valor",
+              "valor": 4
             }
           ]
         },
@@ -254,7 +254,7 @@
           "enunciado": "P(x) es de grado 4 y Q(x) es de grado 6.",
           "pregunta": "¿De qué grado es [P(x)]³?",
           "decimales": 2,
-          "correcta": { "fn": "gradoPotencia", "args": [{ "m": 4, "k": 3 }], "campo": "texto", "valor": "12" },
+          "correcta": { "fn": "gradoPotencia", "args": [{ "m": 4, "k": 3 }], "campo": "valor", "valor": 12 },
           "errores": [
             {
               "id": "PO13-suma-exponente",
@@ -262,8 +262,8 @@
               "explicacion": "Sumaste 4 + 3. [P]³ = P · P · P: los grados se suman tres veces, 4 + 4 + 4.",
               "fn": "gradoPotencia",
               "args": [{ "m": 4, "k": 3 }],
-              "campo": "errores.suma.texto",
-              "valor": "7"
+              "campo": "errores.suma.valor",
+              "valor": 7
             },
             {
               "id": "PO14-potencia-del-grado",
@@ -271,8 +271,8 @@
               "explicacion": "Elevaste el grado al cubo. [P]³ = P · P · P: el grado se multiplica por 3, no se eleva.",
               "fn": "gradoPotencia",
               "args": [{ "m": 4, "k": 3 }],
-              "campo": "errores.potencia.texto",
-              "valor": "64"
+              "campo": "errores.potencia.valor",
+              "valor": 64
             },
             {
               "id": "PO30-mismo-grado",
@@ -280,8 +280,8 @@
               "explicacion": "Elevar al cubo sí sube el grado: (x⁴)³ = x¹².",
               "fn": "gradoPotencia",
               "args": [{ "m": 4, "k": 3 }],
-              "campo": "errores.igual.texto",
-              "valor": "4"
+              "campo": "errores.igual.valor",
+              "valor": 4
             }
           ]
         }
@@ -305,7 +305,7 @@
           "enunciado": "Un polinomio completo y ordenado tiene 21 términos.",
           "pregunta": "¿De qué grado es?",
           "decimales": 2,
-          "correcta": { "fn": "gradoDeCompleto", "args": [{ "terminos": 21 }], "campo": "texto", "valor": "20" },
+          "correcta": { "fn": "gradoDeCompleto", "args": [{ "terminos": 21 }], "campo": "valor", "valor": 20 },
           "errores": [
             {
               "id": "PO9-igual-a-terminos",
@@ -313,8 +313,8 @@
               "explicacion": "El término independiente también cuenta: los exponentes van del grado hasta 0, uno más que el grado.",
               "fn": "gradoDeCompleto",
               "args": [{ "terminos": 21 }],
-              "campo": "errores.igual.texto",
-              "valor": "21"
+              "campo": "errores.igual.valor",
+              "valor": 21
             },
             {
               "id": "PO29-uno-mas",
@@ -322,8 +322,8 @@
               "explicacion": "Sumaste 1 en vez de restarlo. Con 21 términos los exponentes van del 20 al 0.",
               "fn": "gradoDeCompleto",
               "args": [{ "terminos": 21 }],
-              "campo": "errores.masUno.texto",
-              "valor": "22"
+              "campo": "errores.masUno.valor",
+              "valor": 22
             }
           ]
         }
