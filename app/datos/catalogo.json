@@ -5079,7 +5079,8 @@
      "teoria": {
       "archivo": "/contenido/teoria/razonamiento-matematico/diagramas-de-flujo.js",
       "requiere": [
-       "/nucleo/kit/piezas/rm-tablero.js"
+       "/nucleo/kit/piezas/rm-tablero.js",
+       "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 3
      }

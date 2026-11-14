@@ -38,6 +38,15 @@
     return ops;
   }
 
+  const plural = (n, uno, varios) => `${f(n, 0)} ${n === 1 ? uno : varios}`;
+  // Gesto directo (docs/teoria.md §4b): las manijas viven en la geometría que exportan las piezas.
+  const TAB = () => Kit.piezas['rm-tablero'], RECTA = () => Kit.piezas.recta;
+  // La manija va junto a la última fila de la tabla de estados: bajarla agrega una vuelta, subirla la quita. vueltasAN(v) da el n que
+  // deja v vueltas; si el dedo no cambia de fila, no cambia nada.
+  const manijaVueltas = (datosDe, filasDe, vueltasAN) => ({ id: 'vueltas', etiqueta: 'última vuelta del bucle', color: 'c-d',
+    donde: val => { const g = TAB().geometria(datosDe(val)); return { x: g.x0 - 20, y: g.y0 + (0.5 + filasDe(val)) * g.altoFila }; },
+    mover: (pt, val) => { const g = TAB().geometria(datosDe(val)), v = Math.round((pt.y - g.y0) / g.altoFila - 0.5); return v === filasDe(val) ? {} : { n: vueltasAN(Math.max(1, v), val) }; } });
+
   // ---------- Idea 1: seguir un bucle ----------
   // Cambia: hasta qué valor corre el bucle · Permanece: «S ← S + i; i ← i + 1, mientras i ≤ n» · Progresa: las filas de
   // la tabla · Se reserva: invertir el orden de las dos instrucciones · Debe verse: cada fila usa el valor de i de esa vuelta.
@@ -72,6 +81,8 @@
       dibujo: val => ({ datos: traza(correr(val.n)), estado: {} }),
       lectura: val => [`Sale `, S, ` = ${correr(val.n).slice(-1)[0][1]} con `, i, ` = ${val.n + 1}`],
       minimo: 3,
+      // Se arrastra la última fila de la tabla hacia abajo o arriba: cada fila más es una vuelta más (n sube en 1).
+      arrastres: [manijaVueltas(val => traza(correr(val.n)), val => correr(val.n).length, v => v)],
     },
     predice: {
       pregunta: 'Mismo inicio y n = 3, pero ahora el orden se invierte: primero i ← i + 1 y luego S ← S + i. ¿Qué valor de S sale?',
@@ -134,6 +145,8 @@
     return { columnas: ['x', 'Cumple', 'C', 'S'], filas: null, ancho: 70, celdas, notas: [{ t: extra.nota || `Condición: ${CONDS[cond].t} · C = ${c}, S = ${ss}` }] };
   }
   const resumen = (lista, cond) => { const xs = lista.filter(CONDS[cond].ok); return { c: xs.length, s: xs.reduce((m, x) => m + x, 0) }; };
+  // Sin arrastre: la condición es una regla escrita (par, mayor que 5…), no una cantidad que se desliza. En el
+  // laboratorio, la condición «mayor que k» sí se arrastra sobre una recta.
   const contadores = {
     id: 'contador-y-acumulador',
     titulo: 'Contar no es sumar',
@@ -164,12 +177,12 @@
       pasos: [
         { estado: { corte: 0 }, texto: '4 es par: C pasa a 1 y S a 4.' },
         { estado: { corte: 0 }, texto: '7 no cumple: C y S se quedan igual.' },
-        { estado: { corte: 0 }, texto: 'Al final, C cuenta los pares y S los suma.', ecuacion: [C, ' = 3 · ', S, ' = 4 + 10 + 8 = 22'] },
+        { estado: { corte: 0 }, texto: 'Al final, C cuenta los pares y S los suma.', ecuacion: [C, ' = 3', '   ·   ', S, ' = 4 + 10 + 8 = 22'] },
       ],
     },
     regla: {
       texto: 'Un contador empieza en 0 y suma 1 cada vez que pasa algo. Un acumulador empieza en 0 y suma el valor de lo que pasa.',
-      ecuacion: [C, ' ← ', C, ' + 1   ·   ', S, ' ← ', S, ' + x'],
+      ecuacion: [C, ' ← ', C, ' + ', { llave: ['1'], nota: 'uno por vez', color: 'c-i' }, '   ·   ', S, ' ← ', S, ' + ', { llave: ['x'], nota: 'el número', color: 'c-o' }],
       condicion: 'los dos se ponen en 0 antes del bucle y solo cambian cuando se cumple la condición.',
     },
     ahoraTu: {
@@ -204,6 +217,7 @@
       notas: [{ t: extra.nota || 'Definición: a ∗ b = 2a + b' }],
     };
   }
+  // Sin arrastre: a y b son datos sueltos de la definición; la tabla no tiene un objeto que los represente.
   const operadores = {
     id: 'operadores',
     titulo: 'El operador manda su regla',
@@ -217,7 +231,7 @@
         { id: 'b', etiqueta: 'b', min: 1, max: 6, paso: 1, inicio: 5, decimales: 0, color: 'c-i' },
       ],
       dibujo: val => ({ datos: tablaOp(val.a, val.b), estado: {} }),
-      lectura: val => [`${val.a} ∗ ${val.b} = ${op(val.a, val.b)} · ${val.b} ∗ ${val.a} = ${op(val.b, val.a)}`],
+      lectura: val => [`${val.a} ∗ ${val.b} = ${op(val.a, val.b)}`, '   ·   ', `${val.b} ∗ ${val.a} = ${op(val.b, val.a)}`],
       minimo: 3,
     },
     predice: {
@@ -242,7 +256,7 @@
     },
     regla: {
       texto: 'Un operador definido se calcula reemplazando cada letra de la definición por su valor. Primero lo de adentro de los paréntesis; el orden de los datos importa.',
-      ecuacion: ['a ∗ b = 2a + b  ⇒  (x ∗ y) ∗ z = 2(2x + y) + z'],
+      ecuacion: ['a ∗ b = 2a + b', '   ·   ', '(x∗y)∗z = 2', { llave: ['(2x + y)'], nota: 'la nueva a', color: 'c-o' }, ' + z'],
       condicion: 'el símbolo no significa lo de siempre: vale solo la definición dada, sin suponer que se puede cambiar el orden.',
     },
     ahoraTu: {
@@ -271,11 +285,76 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: el bucle con inicio, salto y orden elegibles; el borde de la tabla se arrastra.
+  const corrida = val => correr(val.n, val.orden === 'suma', val.i0, val.inc);
+  const datosBucle = val => traza(corrida(val), { i0: val.i0 });
+  const mesaBucle = {
+    id: 'bucle-libre', titulo: 'Bucle a tu medida', pieza: 'rm-tablero',
+    consigna: 'Elige el inicio de i, cuánto sube y el orden. Arrastra la última fila de la tabla para dar más vueltas.',
+    controles: [
+      { id: 'i0', etiqueta: 'i empieza en', min: 0, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
+      { id: 'inc', etiqueta: 'i sube', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
+      { id: 'n', etiqueta: 'Mientras i ≤', min: 1, max: 12, paso: 1, inicio: 3, decimales: 0, color: 'c-d' },
+      { id: 'orden', etiqueta: 'Orden', opciones: [{ valor: 'suma', texto: 'Suma, luego sube' }, { valor: 'sube', texto: 'Sube, luego suma' }] },
+    ],
+    dibujo: val => ({ datos: datosBucle(val), estado: {} }),
+    lectura: val => { const c = corrida(val); return [plural(c.length, 'vuelta', 'vueltas'), ': sale ', S, ` = ${c.length ? c[c.length - 1][1] : 0}`]; },
+    // Las vueltas se cuentan con la tabla visible (hasta 6 filas); n queda en el último i que entra.
+    arrastres: [manijaVueltas(datosBucle, val => Math.min(6, corrida(val).length), (v, val) => val.i0 + (v - 1) * val.inc)],
+  };
+  // Mesa 2: contar y sumar los que pasan un umbral, sobre una recta: el umbral k se arrastra.
+  const LISTA_L = [2, 4, 7, 10, 13, 15, 18];
+  const datosUmbral = val => ({
+    min: 0, max: 20, paso: 1, cada: 5, decimales: 0, variable: 'x', color: 'h', filas: 1,
+    elementos: [{ tipo: 'intervalo', a: val.k, b: null, ca: false, color: 'd', rotulo: `x > ${val.k}`, fila: 1 }]
+      .concat(LISTA_L.map(x => ({ tipo: 'punto', x, color: x > val.k ? 'd' : 'h' }))),
+  });
+  const mesaUmbral = {
+    id: 'umbral', titulo: 'Contar y sumar con un umbral', pieza: 'recta',
+    consigna: 'Lista: 2, 4, 7, 10, 13, 15, 18. Cuentan los mayores que k. Arrastra k y mira cómo cambian C y S.',
+    controles: [{ id: 'k', etiqueta: 'k', min: 0, max: 19, paso: 1, inicio: 8, decimales: 0, color: 'c-d' }],
+    dibujo: val => ({ datos: datosUmbral(val), estado: {} }),
+    lectura: val => { const xs = LISTA_L.filter(x => x > val.k); return [`x > ${val.k}: `, C, ` = ${xs.length}`, '   ·   ', S, ` = ${xs.reduce((m, x) => m + x, 0)}`]; },
+    arrastres: [{ id: 'k', etiqueta: 'umbral k', color: 'c-d',
+      donde: val => { const g = RECTA().geometria(datosUmbral(val)); return { x: g.x(val.k), y: g.filaY(1) }; },
+      mover: (pt, val) => { const g = RECTA().geometria(datosUmbral(val)); return { k: 20 * (pt.x - g.x(0)) / (g.x(20) - g.x(0)) }; } }],
+  };
+  // Mesa 3: cinco operadores definidos; se comparan a ∗ b, b ∗ a y (a ∗ b) ∗ b. Sin arrastre: los datos son números sueltos.
+  const DEFS = [
+    { t: 'a ∗ b = 2a + b', c: (a, b) => `2·${a} + ${b}`, g: (a, b) => 2 * a + b },
+    { t: 'a ∗ b = a² − b', c: (a, b) => `${a}² − ${b}`, g: (a, b) => a * a - b },
+    { t: 'a ∗ b = ab + a', c: (a, b) => `${a}·${b} + ${a}`, g: (a, b) => a * b + a },
+    { t: 'a ∗ b = a + b + ab', c: (a, b) => `${a} + ${b} + ${a}·${b}`, g: (a, b) => a + b + a * b },
+  ];
+  const datosOp = val => {
+    const D = DEFS[val.d], ab = D.g(val.a, val.b), ba = D.g(val.b, val.a);
+    return {
+      columnas: ['', 'Cuenta', 'Valor'], filas: null, ancho: 104,
+      celdas: [[{ t: `${val.a} ∗ ${val.b}` }, { t: D.c(val.a, val.b) }, { t: String(ab), color: 'o' }], [{ t: `${val.b} ∗ ${val.a}` }, { t: D.c(val.b, val.a) }, { t: String(ba), color: 'i' }]],
+      notas: [{ t: `${D.t}: ${ab === ba ? 'aquí da lo mismo' : 'el orden importa'}` }],
+    };
+  };
+  const mesaOp = {
+    id: 'operadores-libres', titulo: 'Operadores a elegir', pieza: 'rm-tablero',
+    consigna: 'Elige una definición y prueba varios a y b. Busca un operador donde el orden no importe nunca.',
+    controles: [
+      { id: 'd', etiqueta: 'Definición', opciones: DEFS.map((D, k) => ({ valor: k, texto: D.t })) },
+      { id: 'a', etiqueta: 'a', min: 0, max: 6, paso: 1, inicio: 2, decimales: 0, color: 'c-o' },
+      { id: 'b', etiqueta: 'b', min: 0, max: 6, paso: 1, inicio: 5, decimales: 0, color: 'c-i' },
+    ],
+    dibujo: val => ({ datos: datosOp(val), estado: {} }),
+    lectura: val => { const D = DEFS[val.d]; return [`${val.a} ∗ ${val.b} = ${D.g(val.a, val.b)}`, '   ·   ', `${val.b} ∗ ${val.a} = ${D.g(val.b, val.a)}`]; },
+  };
+
   return {
     unidad: 'razonamiento-matematico.diagramas-de-flujo',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/rm-tablero.js'],
+    requiere: ['/nucleo/kit/piezas/rm-tablero.js', '/nucleo/kit/piezas/recta.js'],
+    // Laboratorio: el bucle con inicio, salto y orden a elegir; el umbral que se arrastra sobre la recta; y cuatro
+    // operadores para comparar a ∗ b con b ∗ a.
+    laboratorio: [mesaBucle, mesaUmbral, mesaOp],
     historia: {
       texto: 'En 1947, Herman Goldstine y John von Neumann describieron con diagramas los procedimientos para las primeras computadoras electrónicas. Los algoritmos son mucho más antiguos, pero esos informes hicieron visibles las decisiones, las repeticiones y los cambios de estado. Un diagrama se entiende ejecutándolo con un dato concreto.',
       pregunta: '¿Qué cambia si dos instrucciones se cambian de lugar?',
