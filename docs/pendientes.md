@@ -145,6 +145,17 @@ Por qué no vale como presupuesto: el Chromium sin pantalla dibuja el canvas por
   - tanda A (física, química y álgebra): termodinamica, ondas-electromagneticas, mol-composicion, cinetica, polinomios, numeros-complejos, sucesiones, binomio-newton, conjuntos y logica;
   - tanda B (aritmética y geometría): regla-de-tres, interes, cuatro-operaciones, razonamiento-numerico, segmentos-angulos, congruencia, simetria, geometria-espacio, solidos y razonamiento-figuras;
   - tanda C (trigonometría y razonamiento matemático): cinta-radio, circunferencia-trig, geometria-analitica, transformaciones-trig, conicas, trazos-rutas, cuadricula-piezas, rutas-espacio, papel-doblado y orden-informacion.
+  - **Tanda B hecha (14 nov):** 121 preguntas en sus 10 escenas, cada escena revisada a ciegas antes de su commit. Por escena: regla-de-tres 15, interes 15, cuatro-operaciones 9, razonamiento-numerico 10, segmentos-angulos 12, congruencia 10, simetria 11, geometria-espacio 8, solidos 20 y razonamiento-figuras 11. Ocho motores recibieron funciones o campos de error chicos, con su caso verificado aparte en Python. Quedaron fuera, porque el motor no calcula dos errores honestos:
+    - interes p10 (vencimiento común);
+    - cuatro-operaciones p9 (X + Y + Z);
+    - razonamiento-numerico p9 (suma de esquinas);
+    - congruencia p3 (escalera) y p4 (correspondencia, sin coordenadas en el enunciado);
+    - simetria p8 (dos reflexiones), la distancia de p4 y «qué polígono tiene centro» de p7;
+    - geometria-espacio p9 (el triedro, que es un sí o un no), el ángulo de p1 y la diagonal de p3;
+    - solidos p9 (Euler), además de algunas magnitudes de p5, p6, p7 y p10;
+    - regla-de-tres p2b y el sentido de giro de p10.
+
+    Congruencia p7 y p10 preguntan solo una parte del problema: la base media de 9 en lugar del perímetro, y el caso b. Los respaldos casi todos son hipótesis. Los códigos de geometría-espacio y razonamiento-numérico no tienen número en sus informes.
 - **Revisar las dos tablas de `nucleo/repaso-tipos.js`**, que las clasificó un modelo.
 - **La pregunta de seguridad (versión S).** Va después de la versión A de MRU y necesita diseño aprobado. No se empezó.
 - **Una unidad entra a la cola por los eventos que registran las escenas.** Si una escena de varias unidades anota siempre su unidad principal, las demás unidades no entran por esa escena.
