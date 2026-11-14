@@ -11,8 +11,13 @@
  * Persona y condiciones · 4.º de secundaria, celular de gama baja a 360 px, sin audio, en el aula o en casa.
  * Resultado observable · resuelve con dominio, separa casos y descarta candidatos extraños sustituyendo en la original.
  * Orden de atención · 1.º la recta o las dos gráficas · 2.º los puntos de corte y los candidatos · acción: «Comprobar» · fondo: Nox.
- * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
+ * Estados · juego sin tocar · arrastrando una manija · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué √(x + 6) = x da solo x = 3 aunque al cuadrar aparezca también −2.
+ *
+ * Ronda 2 (14 nov 2026): gesto directo en las cuatro ideas (el centro a y el punto a + r, la recta y = x + c por su
+ * corte con el eje y, el valor de prueba sobre y = x y el nivel y = k), llaves en las reglas y laboratorio con tres
+ * mesas: centro, distancia y las cinco relaciones; la V contra una recta con pendiente e intercepto; y la raíz bajo
+ * un nivel. Hallazgo 9: el juego y «Mira» usan la misma pieza en las cuatro ideas.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -41,10 +46,18 @@
   const fr = z => (z.q === 1 ? f(z.p) : `${z.p < 0 ? '−' : ''}${Math.abs(z.p)}/${z.q}`);
   const llaves = l => (l.length ? `{${l.slice().sort((u, v) => val(u) - val(v)).map(fr).join('; ')}}` : '∅');
   const iv = (lo, clo, hi, chi) => `${lo === null ? '(−∞' : (clo ? '[' : '(') + f(lo)}, ${hi === null ? '+∞)' : f(hi) + (chi ? ']' : ')')}`;
+  // Gesto directo (docs/teoria.md §4b): la manija vive en coordenadas de la figura; la pieza da la escala y su inversa.
+  const RECTA = () => Kit.piezas.recta, EJES = () => Kit.piezas.ejes;
+  const enRecta = (datos, valor, fila) => { const g = RECTA().geometria(datos); return { x: g.x(valor), y: g.filaY(fila) }; };
+  const deRecta = (datos, px) => RECTA().geometria(datos).v(px);
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+  const enPlano = (datos, u, w) => { const g = EJES().geometria(datos); return { x: g.X(u), y: g.Y(w) }; };
+  const deX = (datos, px) => inversa(EJES().geometria(datos).X, datos.x.min, datos.x.max)(px);
+  const deY = (datos, py) => inversa(EJES().geometria(datos).Y, datos.y.min, datos.y.max)(py);
   const rectaBase = (min, max, filas, elementos, alt) => ({ min, max, paso: 1, decimales: 0, variable: 'x', color: 'o', filas, elementos, alt });
 
   // ---------- Idea 1: valor absoluto es distancia ----------
-  // Cambia: el centro a y el radio r · Permanece: la recta · Progresa: los dos puntos a distancia r
+  // Cambia: el centro a y el radio r (se arrastran el centro y el punto a + r) · Permanece: la recta · Progresa: los dos puntos a distancia r
   // · Se reserva: el «≤», que llena el tramo entre ellos · Debe verse: ≤ es el tramo central y ≥, lo de afuera.
   const conjuntoAbs = (c, rad, rel) => {
     if (rad < 0) return rel === '=' || rel === '≤' || rel === '<' ? '∅' : 'ℝ';
@@ -55,6 +68,11 @@
     return `${iv(null, false, lo, rel === '≥')} ∪ ${iv(hi, rel === '≥', null, false)}`;
   };
   const absX = c => [{ abs: [x, c === 0 ? '' : ` ${c > 0 ? '−' : '+'} ${f(Math.abs(c))}`] }];
+  const rectaDist = val => rectaBase(-8, 8, 3, [
+    { tipo: 'punto', x: val.a, color: 'o', rotulo: 'a', fila: 0 },
+    ...(val.r ? [{ tipo: 'distancia', a: val.a - val.r, b: val.a, color: 'i', rotulo: 'r', fila: 1 }, { tipo: 'distancia', a: val.a, b: val.a + val.r, color: 'i', rotulo: 'r', fila: 1 }] : []),
+    { tipo: 'punto', x: val.a - val.r, color: 'd', fila: 2 }, { tipo: 'punto', x: val.a + val.r, color: 'd', fila: 2 },
+  ], `Centro ${val.a}; a distancia ${val.r} están ${conjuntoAbs(val.a, val.r, '=')}`);
   const distancia = {
     id: 'distancia',
     titulo: 'Valor absoluto es distancia',
@@ -67,13 +85,14 @@
         { id: 'a', etiqueta: 'a', color: 'c-o', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0 },
         { id: 'r', etiqueta: 'r', color: 'c-i', min: 0, max: 4, paso: 1, inicio: 2, decimales: 0 },
       ],
-      dibujo: val => ({ datos: rectaBase(-8, 8, 2, [
-        { tipo: 'punto', x: val.a, color: 'o', rotulo: 'a', fila: 0 },
-        ...(val.r ? [{ tipo: 'distancia', a: val.a - val.r, b: val.a, color: 'i', rotulo: 'r', fila: 1 }, { tipo: 'distancia', a: val.a, b: val.a + val.r, color: 'i', rotulo: 'r', fila: 1 }] : []),
-        { tipo: 'punto', x: val.a - val.r, color: 'd', fila: 2 }, { tipo: 'punto', x: val.a + val.r, color: 'd', fila: 2 },
-      ], `Centro ${val.a}; a distancia ${val.r} están ${conjuntoAbs(val.a, val.r, '=')}`), estado: {} }),
+      dibujo: val => ({ datos: rectaDist(val), estado: {} }),
       lectura: val => [...absX(val.a), ` = ${f(val.r)} → `, x, ` ∈ ${conjuntoAbs(val.a, val.r, '=')}`],
       minimo: 3,
+      // Arrastra el centro (a) o el punto de la derecha (a + r): la distancia r es lo que lo separa del centro.
+      arrastres: [
+        { id: 'centro', etiqueta: 'centro a', color: 'c-o', donde: val => enRecta(rectaDist(val), val.a, 0), mover: (pt, val) => ({ a: deRecta(rectaDist(val), pt.x) }) },
+        { id: 'radio', etiqueta: 'punto a + r: cambia la distancia r', color: 'c-i', donde: val => enRecta(rectaDist(val), val.a + val.r, 2), mover: (pt, val) => ({ r: deRecta(rectaDist(val), pt.x) - val.a }) },
+      ],
     },
     predice: {
       pregunta: ['¿Qué valores de ', x, ' cumplen ', ...absX(1), ' ≤ 3?'],
@@ -101,14 +120,14 @@
       voz: 'Creo que conviene leer la barra como distancia. Comprobemos.',
       pasos: [
         { estado: { corte: 1 }, texto: '|x − 1| es la distancia de x al 1: el centro es 1.', ecuacion: [...absX(1), ' = distancia de ', x, ' a 1'] },
-        { estado: { corte: 2 }, texto: 'A distancia 3 del centro hay dos puntos.', ecuacion: ['1 − 3 = −2   ·   1 + 3 = 4'] },
+        { estado: { corte: 2 }, texto: 'A distancia 3 del centro hay dos puntos.', ecuacion: ['1 − 3 = −2', '   ·   ', '1 + 3 = 4'] },
         { estado: { corte: 3 }, texto: 'A distancia 3 o menos: todo el tramo entre ellos.', ecuacion: [...absX(1), ' ≤ 3  ⇔  −2 ≤ ', x, ' ≤ 4'] },
         { estado: { corte: 4 }, texto: 'A distancia 3 o más: lo de afuera, en dos tramos.', ecuacion: [...absX(1), ' ≥ 3  ⇔  ', x, ' ≤ −2 o ', x, ' ≥ 4'] },
       ],
     },
     regla: {
       texto: '|x − a| es la distancia de x a a. «= r» da a − r y a + r; «≤ r», el tramo entre ellos; «≥ r», lo de afuera.',
-      ecuacion: [{ abs: [x, ' − ', a] }, ' ≤ ', r, '  ⇔  ', a, ' − ', r, ' ≤ ', x, ' ≤ ', a, ' + ', r],
+      ecuacion: [{ llave: [{ abs: [x, ' − ', a] }], nota: 'distancia al centro', color: 'c-i' }, ' ≤ ', r, '   ·   ', '⇔  ', a, ' − ', r, ' ≤ ', x, ' ≤ ', a, ' + ', r],
       condicion: 'r ≥ 0. Si r < 0, «= r» y «≤ r» no tienen solución, y «≥ r» vale para todo x.',
     },
     ahoraTu: {
@@ -136,7 +155,7 @@
   };
 
   // ---------- Idea 2: cada candidato se comprueba (|A| = B) ----------
-  // Cambia: la recta y = x + c · Permanece: la V de y = |2x − 1| · Progresa: los candidatos de cada caso
+  // Cambia: la recta y = x + c (se arrastra por su corte con el eje y) · Permanece: la V de y = |2x − 1| · Progresa: los candidatos de cada caso
   // · Se reserva: el caso en que los dos candidatos caen bajo el eje · Debe verse: B negativo descarta al candidato.
   const V = v => Math.abs(2 * v - 1);
   const cortes = c => {
@@ -167,8 +186,11 @@
       voz: 'Busca un c con dos cortes y otro sin ninguno.',
       controles: [{ id: 'c', etiqueta: 'c', color: 'c-o', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0 }],
       dibujo: val => ({ datos: ejesV(val.c), estado: {} }),
-      lectura: val => [`La recta corta a la V en ${cortes(val.c).filter(k => k.ok).length} puntos`],
+      lectura: val => [`${lineaTxt(1, val.c)}: corta a la V en ${cortes(val.c).filter(k => k.ok).length} puntos`],
       minimo: 3,
+      // Arrastra la recta hacia arriba o abajo por su punto en x = 0 (allí y = c).
+      arrastres: [{ id: 'recta-c', etiqueta: 'corte de la recta con el eje y', color: 'c-o',
+        donde: val => enPlano(ejesV(val.c), 0, val.c), mover: (pt, val) => ({ c: deY(ejesV(val.c), pt.y) }) }],
     },
     predice: {
       pregunta: ['Al resolver ', { abs: ['2', x, ' − 1'] }, ' = ', x, ' − 4 por casos salen ', x, ' = −3 y ', x, ' = 5/3. ¿Cuál es el conjunto solución?'],
@@ -194,7 +216,7 @@
     },
     regla: {
       texto: 'Para |A| = B, se resuelven A = B y A = −B. Cada candidato se comprueba en la original: el lado B tiene que ser mayor o igual que 0.',
-      ecuacion: [{ abs: ['A'] }, ' = B  ⇔  B ≥ 0 y (A = B o A = −B)'],
+      ecuacion: [{ abs: ['A'] }, ' = B  ⇔  ', { llave: ['B ≥ 0'], nota: 'se comprueba', color: 'c-d' }, '   ·   ', 'A = B  o  A = −B'],
       condicion: 'si B depende de x, los casos dan candidatos, no soluciones: solo quedan los que hacen B ≥ 0.',
       voz: 'Yo había comprimido ese paso. Abrámoslo: B no puede ser negativo.',
     },
@@ -236,7 +258,7 @@
   };
 
   // ---------- Idea 3: cuadrar trae candidatos de más ----------
-  // Cambia: el valor de prueba x · Permanece: las curvas y = √(x + 2) e y = x · Progresa: la comparación de los dos
+  // Cambia: el valor de prueba x (se arrastra sobre y = x) · Permanece: las curvas y = √(x + 2) e y = x · Progresa: la comparación de los dos
   // lados, antes y después de cuadrar · Se reserva: la rama fantasma y = −√(x + 6) · Debe verse: el extraño vive en la rama negativa.
   const raizCurvas = (k, o = {}) => {
     const pos = [], neg = [];
@@ -250,6 +272,7 @@
       alt: o.alt || `Las curvas y = √(x + ${k}) e y = x`,
     };
   };
+  const curvasPrueba = val => raizCurvas(2, { puntos: [{ x: val.x, y: Math.sqrt(val.x + 2), color: 'i', guias: true }, { x: val.x, y: val.x, color: 'o' }], alt: `En x = ${val.x}: √(x + 2) = ${f(Math.sqrt(val.x + 2))} e x = ${val.x}` });
   const rext = {
     id: 'radical-ecuacion',
     titulo: 'Cuadrar trae candidatos de más',
@@ -259,9 +282,12 @@
       consigna: 'Para √(x + 2) = x, prueba valores de x. Compara los dos lados y luego sus cuadrados.',
       voz: 'Busca un x con cuadrados iguales y lados distintos.',
       controles: [{ id: 'x', etiqueta: 'x', color: 'c-o', min: -2, max: 3, paso: 1, inicio: 0, decimales: 0 }],
-      dibujo: val => ({ datos: raizCurvas(2, { puntos: [{ x: val.x, y: Math.sqrt(val.x + 2), color: 'i', guias: true }, { x: val.x, y: val.x, color: 'o' }], alt: `En x = ${val.x}: √(x + 2) = ${f(Math.sqrt(val.x + 2))} e x = ${val.x}` }), estado: {} }),
+      dibujo: val => ({ datos: curvasPrueba(val), estado: {} }),
       lectura: val => { const L = Math.sqrt(val.x + 2); return [{ raiz: [x, ' + 2'] }, ` = ${f(L)} · `, x, ` = ${f(val.x)} · al cuadrado: ${f(L * L)} y ${f(val.x * val.x)}`]; },
       minimo: 4,
+      // Arrastra el punto de la recta y = x: el de la curva lo sigue en la misma vertical.
+      arrastres: [{ id: 'prueba-x', etiqueta: 'valor de prueba x', color: 'c-o',
+        donde: val => enPlano(curvasPrueba(val), val.x, val.x), mover: (pt, val) => ({ x: deX(curvasPrueba(val), pt.x) }) }],
     },
     predice: {
       pregunta: ['Al elevar al cuadrado ', { raiz: [x, ' + 6'] }, ' = ', x, ' salen ', x, ' = 3 y ', x, ' = −2. ¿Cuál es el conjunto solución?'],
@@ -279,15 +305,15 @@
       datos: raizCurvas(6, { fantasma: true, fantasmaDesde: 3, rotuloFantasma: '−√(x + 6)', puntos: [{ x: 3, y: 3, color: 'd', rotulo: '3 ✓', desde: 4 }, { x: -2, y: -2, color: 'h', abierto: true, rotulo: '−2 ✗', desde: 3 }], alt: '√(x + 6) = x: al cuadrar se suma la rama −√(x + 6); solo x = 3 cumple la original' }),
       voz: 'Las formas cambiaron; la igualdad debe conservarse en cada paso.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Dominio: x + 6 ≥ 0. Y como √ no es negativa, x ≥ 0.', ecuacion: [x, ' ≥ −6   ·   ', x, ' ≥ 0'] },
+        { estado: { corte: 1 }, texto: 'Dominio: x + 6 ≥ 0. Y como √ no es negativa, x ≥ 0.', ecuacion: [x, ' ≥ −6', '   ·   ', x, ' ≥ 0'] },
         { estado: { corte: 2 }, texto: 'Elevamos al cuadrado y ordenamos.', ecuacion: [x, ' + 6 = ', { sup: [x, '2'] }, '  ⇒  (', x, ' − 3)(', x, ' + 2) = 0'] },
         { estado: { corte: 3 }, texto: 'El cuadrado no ve el signo: también resuelve −√(x + 6) = x.', ecuacion: ['−', { raiz: ['−2 + 6'] }, ' = −2'] },
-        { estado: { corte: 4 }, texto: 'Se comprueba en la original: solo x = 3.', ecuacion: [{ raiz: ['3 + 6'] }, ' = 3   ·   S = {3}'] },
+        { estado: { corte: 4 }, texto: 'Se comprueba en la original: solo x = 3.', ecuacion: [{ raiz: ['3 + 6'] }, ' = 3', '   ·   ', 'S = {3}'] },
       ],
     },
     regla: {
       texto: 'Elevar al cuadrado no es reversible: junta √u = v con −√u = v. Cada candidato se comprueba en la ecuación original.',
-      ecuacion: [{ raiz: ['u'] }, ' = v  ⇔  u = ', { sup: ['v', '2'] }, ' y v ≥ 0'],
+      ecuacion: [{ raiz: ['u'] }, ' = v  ⇔  u = ', { sup: ['v', '2'] }, '   ·   ', 'y  ', { llave: ['v ≥ 0'], nota: 'descarta extraños', color: 'c-h' }],
       condicion: 'u ≥ 0 y v ≥ 0 en la original. Además √(x²) = |x|, no x.',
     },
     ahoraTu: {
@@ -321,7 +347,7 @@
   };
 
   // ---------- Idea 4: primero el dominio, después cuadrar ----------
-  // Cambia: el número k del lado derecho · Permanece: la curva y = √(x − 1) · Progresa: el tramo del eje x que cumple
+  // Cambia: el número k del lado derecho (se arrastra la recta y = k) · Permanece: la curva y = √(x − 1) · Progresa: el tramo del eje x que cumple
   // · Se reserva: k negativo, donde no se cuadra · Debe verse: la solución empieza donde empieza el dominio.
   const ejesRaiz1 = (k, rel, o = {}) => {
     const pts = []; for (let i = 0; i <= 44; i++) { const v = 1 + i * 11 / 44; pts.push([v, Math.sqrt(v - 1)]); }
@@ -349,6 +375,9 @@
       dibujo: val => ({ datos: ejesRaiz1(val.k, '<'), estado: {} }),
       lectura: val => [{ raiz: [x, ' − 1'] }, ` < ${f(val.k)} → ${val.k > 0 ? iv(1, true, 1 + val.k * val.k, false) : '∅'}`],
       minimo: 3,
+      // Arrastra la recta horizontal y = k hacia arriba o abajo.
+      arrastres: [{ id: 'nivel-k', etiqueta: 'nivel k de la recta', color: 'c-h',
+        donde: val => enPlano(ejesRaiz1(val.k, '<'), 7, val.k), mover: (pt, val) => ({ k: deY(ejesRaiz1(val.k, '<'), pt.y) }) }],
     },
     predice: {
       pregunta: ['¿Qué valores de ', x, ' cumplen ', { raiz: [x, ' − 1'] }, ' ≥ −2?'],
@@ -367,12 +396,12 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Dominio: lo de adentro no puede ser negativo.', ecuacion: [x, ' − 1 ≥ 0  ⇒  ', x, ' ≥ 1'] },
         { estado: { corte: 2 }, texto: 'Los dos lados son 0 o más: cuadrar conserva el sentido.', ecuacion: [x, ' − 1 < 9  ⇒  ', x, ' < 10'] },
-        { estado: { corte: 3 }, texto: 'Se juntan las dos condiciones.', ecuacion: ['1 ≤ ', x, ' < 10   ·   [1, 10)'] },
+        { estado: { corte: 3 }, texto: 'Se juntan las dos condiciones.', ecuacion: ['1 ≤ ', x, ' < 10', '   ·   ', '[1, 10)'] },
       ],
     },
     regla: {
       texto: 'Primero el dominio: lo de adentro de la raíz es 0 o más. Si los dos lados son no negativos, cuadrar conserva la desigualdad.',
-      ecuacion: [{ raiz: ['u'] }, ' < k  ⇔  0 ≤ u < ', { sup: ['k', '2'] }],
+      ecuacion: [{ raiz: ['u'] }, ' < k  ⇔  ', { llave: ['0 ≤ u'], nota: 'dominio', color: 'c-o' }, ' < ', { sup: ['k', '2'] }],
       condicion: 'k ≥ 0. Con lado derecho negativo no se cuadra: √u < negativo no tiene solución; √u ≥ negativo vale en todo el dominio.',
     },
     ahoraTu: {
@@ -408,11 +437,87 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 1: centro, distancia y las cinco relaciones (=, <, ≤, >, ≥), con r = 0 incluido.
+  const conjDist = val => {
+    const c = val.a, rad = val.r, lo = c - rad, hi = c + rad, rel = val.rel;
+    if (rel === '=') return rad ? [{ tipo: 'punto', x: lo }, { tipo: 'punto', x: hi }] : [{ tipo: 'punto', x: c }];
+    if (rel === '<' || rel === '≤') return rad ? [{ tipo: 'intervalo', a: lo, b: hi, ca: rel === '≤', cb: rel === '≤' }] : rel === '≤' ? [{ tipo: 'punto', x: c }] : [];
+    return [{ tipo: 'intervalo', a: null, b: lo, cb: rel === '≥' }, { tipo: 'intervalo', a: hi, b: null, ca: rel === '≥' }];
+  };
+  const rectaRel = val => rectaBase(-10, 10, 3, [
+    { tipo: 'punto', x: val.a, color: 'o', rotulo: 'a', fila: 0 },
+    ...(val.r ? [{ tipo: 'distancia', a: val.a - val.r, b: val.a, color: 'i', rotulo: 'r', fila: 1 }, { tipo: 'distancia', a: val.a, b: val.a + val.r, color: 'i', rotulo: 'r', fila: 1 }] : []),
+    ...conjDist(val).map((e, k) => Object.assign(e, { color: 'd', fila: 2, rotulo: k ? '' : 'cumplen' })),
+  ], `Centro ${val.a}, distancia ${val.r}: |x − a| ${val.rel} r da ${conjuntoAbs(val.a, val.r, val.rel)}`);
+  // Mesa 2: la V y = |2x − 1| contra una recta y = m x + c con pendiente e intercepto. Con m = ±2 la recta es
+  // paralela a un brazo: puede quedar un corte, ninguno o infinitos (el caso que la idea 2 no deja probar).
+  const cortesMC = (m, c) => {
+    if ((m === 2 && c === -1) || (m === -2 && c === 1)) return null;     // la recta coincide con un brazo
+    const cand = [];
+    if (m !== 2) cand.push(Q(c + 1, 2 - m));
+    if (m !== -2) cand.push(Q(1 - c, 2 + m));
+    const ok = cand.filter(z => m * val(z) + c >= -1e-12);
+    return ok.filter((z, i) => ok.findIndex(w => fr(w) === fr(z)) === i);
+  };
+  const recortar = (m, c, lo, hi) => {      // tramo de y = m x + c dentro de y ∈ [lo, hi] y x ∈ [−4, 4]
+    let a = -4, b = 4;
+    if (m) { const u = (lo - c) / m, w = (hi - c) / m; a = Math.max(a, Math.min(u, w)); b = Math.min(b, Math.max(u, w)); }
+    return [[a, m * a + c], [b, m * b + c]];
+  };
+  const lineaTxt = (m, c) => `y = ${m === 0 ? '' : m === 1 ? 'x' : m === -1 ? '−x' : `${f(m)}x`}${c ? `${m ? (c > 0 ? ' + ' : ' − ') : c < 0 ? '−' : ''}${f(Math.abs(c))}` : m ? '' : '0'}`;
+  const ejesVM = vs => {
+    const vpts = [];
+    for (let k = 0; k <= 40; k++) { const v = -4 + k * 8 / 40; vpts.push(V(v) <= 9 ? [v, V(v)] : null); }
+    const sol = cortesMC(vs.m, vs.c), seg = recortar(vs.m, vs.c, -8, 9);
+    const fin = seg[1][0] > 2.5 ? seg[1] : seg[0];
+    return {
+      x: { min: -4, max: 4, paso: 1, nombre: 'x', decimales: 0, color: 'o' },
+      y: { min: -8, max: 9, paso: 2, cada: 2, nombre: 'y', decimales: 0 },
+      curvas: [{ puntos: vpts, color: 'i', rotulo: 'y = |2x − 1|', en: [-3.3, 7.6] }, { puntos: seg, color: 'o', rotulo: lineaTxt(vs.m, vs.c), en: [fin[0], Math.max(-7, Math.min(7.5, fin[1]))] }],
+      puntos: (sol || []).map(z => ({ x: val(z), y: vs.m * val(z) + vs.c, color: 'd', rotulo: fr(z) })),
+      alt: `La V y = |2x − 1| y la recta ${lineaTxt(vs.m, vs.c)}: ${sol ? `${sol.length} cortes` : 'coinciden en un brazo'}`,
+    };
+  };
+  const LABORATORIO = [
+    {
+      id: 'distancia-libre', titulo: 'Centro, distancia y relación', pieza: 'recta',
+      consigna: 'Arrastra el centro a y el punto a + r, y elige la relación. En verde, los x que cumplen |x − a| con r.',
+      controles: [
+        { id: 'a', etiqueta: 'a', color: 'c-o', min: -5, max: 5, paso: 1, inicio: 1, decimales: 0 },
+        { id: 'r', etiqueta: 'r', color: 'c-i', min: 0, max: 5, paso: 1, inicio: 3, decimales: 0 },
+        { id: 'rel', etiqueta: 'Relación', opciones: ['≤', '<', '=', '≥', '>'].map(t => ({ valor: t, texto: `${t} r` })) },
+      ],
+      dibujo: val => ({ datos: rectaRel(val), estado: {} }),
+      lectura: val => [...absX(val.a), ` ${val.rel} ${f(val.r)} → ${conjuntoAbs(val.a, val.r, val.rel)}`],
+      arrastres: [
+        { id: 'centro', etiqueta: 'centro a', color: 'c-o', donde: val => enRecta(rectaRel(val), val.a, 0), mover: (pt, val) => ({ a: deRecta(rectaRel(val), pt.x) }) },
+        { id: 'radio', etiqueta: 'punto a + r: cambia la distancia r', color: 'c-i', donde: val => enRecta(rectaRel(val), val.a + val.r, 1), mover: (pt, val) => ({ r: deRecta(rectaRel(val), pt.x) - val.a }) },
+      ],
+    },
+    {
+      id: 'v-y-recta', titulo: 'La V contra cualquier recta', pieza: 'ejes',
+      consigna: 'Sube la recta por su corte con el eje y o inclínala por su punto en x = 2. Cada corte resuelve |2x − 1| = mx + c.',
+      controles: [
+        { id: 'm', etiqueta: 'm', color: 'c-o', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0 },
+        { id: 'c', etiqueta: 'c', color: 'c-o', min: -4, max: 4, paso: 1, inicio: 1, decimales: 0 },
+      ],
+      dibujo: val => ({ datos: ejesVM(val), estado: {} }),
+      lectura: val => { const s = cortesMC(val.m, val.c); return [`${lineaTxt(val.m, val.c)}: ${s ? `S = ${llaves(s)}` : 'infinitas soluciones'}`]; },
+      arrastres: [
+        { id: 'intercepto', etiqueta: 'corte con el eje y: cambia c', color: 'c-o', donde: val => enPlano(ejesVM(val), 0, val.c), mover: (pt, val) => ({ c: deY(ejesVM(val), pt.y) }) },
+        { id: 'pendiente', etiqueta: 'punto en x = 2: cambia la pendiente m', color: 'c-o', donde: val => enPlano(ejesVM(val), 2, 2 * val.m + val.c), mover: (pt, val) => ({ m: (deY(ejesVM(val), pt.y) - val.c) / 2 }) },
+      ],
+    },
+    Object.assign({ id: 'raiz-nivel', titulo: 'La raíz bajo un nivel', pieza: 'ejes' }, rinec.juega),
+  ];
+
   return {
     unidad: 'algebra.valor-absoluto-y-radicales',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/ejes.js'],
+    laboratorio: LABORATORIO,
     historia: {
       texto: 'Rafael Bombelli publicó en 1572 su Álgebra, pensada como una exposición más clara y cuidadosa de las reglas de su tiempo. Trabajar con radicales y con cantidades entonces dudosas lo obligaba a revisar cada operación. El valor absoluto moderno no es suyo, pero la necesidad sigue: elevar al cuadrado puede dejar candidatos que la ecuación original no acepta.',
       pregunta: '¿Toda operación se puede deshacer sin perder nada?',
