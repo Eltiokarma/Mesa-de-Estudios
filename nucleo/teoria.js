@@ -95,6 +95,99 @@
       else tope('historia', 'historia', def.historia.texto);
       if (def.historia.pregunta) tope('historia', 'voz', def.historia.pregunta);
     }
+    // Dibuja con la pieza dada (o la de la idea) y revisa que el SVG sea sano y la pieza pura.
+    function dibujaCon(donde, dib, id) {
+      const P = id && Kit.piezas[id];
+      if (!id) { mal(donde, 'sin pieza'); return null; }
+      if (!P) { mal(donde, `pieza «${id}» no registrada (¿falta en requiere?)`); return null; }
+      if (!dib) { mal(donde, 'sin dibujo'); return null; }
+      try {
+        const svg = P.dibujar(dib.datos, dib.estado || {});
+        if (typeof svg !== 'string' || !svg.includes('<svg')) { mal(donde, 'la pieza no devolvió un SVG'); return null; }
+        if (/NaN|undefined|Infinity/.test(svg)) mal(donde, 'el SVG muestra NaN, undefined o Infinity');
+        if (svg !== P.dibujar(dib.datos, dib.estado || {})) mal(donde, 'la pieza no es pura: el mismo estado dio otro SVG');
+        const alt = P.alt(dib.datos);
+        if (!alt || alt.length < 15) mal(donde, 'texto alternativo vacío o muy corto');
+        return svg;
+      } catch (err) { mal(donde, `la pieza falló: ${err.message}`); return null; }
+    }
+    // Juego (de una idea o una mesa del laboratorio): controles, dibujo en el inicio y los extremos, lectura y arrastres.
+    function revisarJuego(d, j, piezaPorDefecto, conMinimo) {
+      if (!j.consigna) mal(d, 'sin consigna'); else tope(d, 'consigna', j.consigna);
+      if (j.voz) tope(d, 'voz', j.voz);
+      const ctr = j.controles || [];
+      if (!ctr.length && typeof j.montar !== 'function') mal(d, 'sin controles');
+      for (const c of ctr) {
+        if (!c.id || !c.etiqueta) mal(d, 'control sin id o etiqueta');
+        if (c.opciones) { if (!(c.opciones.length >= 2)) mal(d, `control ${c.id}: opciones de 2 o más`); continue; }
+        if (!(c.max > c.min) || !(c.paso > 0)) mal(d, `control ${c.id}: min, max y paso`);
+        else if (c.inicio < c.min || c.inicio > c.max) mal(d, `control ${c.id}: inicio fuera de rango`);
+        if (c.color && !Ecuacion.COLORES.includes(c.color)) mal(d, `control ${c.id}: color ${c.color}`);
+      }
+      if (typeof j.dibujo !== 'function') { mal(d, 'dibujo(valores) debe ser una función'); return; }
+      const base = inicio(j);
+      const casos = [base];
+      for (const c of ctr) {
+        if (c.opciones) for (const op of c.opciones) casos.push(Object.assign({}, base, { [c.id]: op.valor }));
+        else casos.push(Object.assign({}, base, { [c.id]: c.min }), Object.assign({}, base, { [c.id]: c.max }));
+      }
+      for (const v of casos) {
+        dibujaCon(`${d} ${JSON.stringify(v)}`, j.dibujo(v), j.pieza || piezaPorDefecto);
+        if (typeof j.lectura === 'function') {
+          const l = j.lectura(v);
+          ecuacion(`${d} lectura`, l);
+          tope(d, 'lectura', l);
+          if (/NaN|undefined|Infinity/.test(Ecuacion.texto(l))) mal(`${d} lectura`, 'muestra NaN o undefined');
+        }
+      }
+      // Arrastres: la manija cae dentro de la figura y moverla da valores de controles que existen.
+      for (const ar of j.arrastres || []) {
+        const da = `${d} arrastre ${ar && ar.id}`;
+        if (!ar || !/^[a-z0-9-]+$/i.test(ar.id || '') || typeof ar.donde !== 'function' || typeof ar.mover !== 'function') { mal(da, 'necesita id, donde(valores) y mover(punto, valores)'); continue; }
+        if (!ar.etiqueta) mal(da, 'sin etiqueta (la lee el lector de pantalla)');
+        if (ar.color && !Ecuacion.COLORES.includes(ar.color)) mal(da, `color ${ar.color}`);
+        for (const v of casos) {
+          const svg = dibujaCon(`${da} ${JSON.stringify(v)}`, j.dibujo(v), j.pieza || piezaPorDefecto);
+          const caja = svg && /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(svg);
+          let pt;
+          try { pt = ar.donde(v); } catch (err) { mal(da, `donde falló: ${err.message}`); break; }
+          if (!pt || !Number.isFinite(pt.x) || !Number.isFinite(pt.y)) { mal(da, `donde(${JSON.stringify(v)}) no da { x, y } finitos`); break; }
+          if (caja && (pt.x < -1 || pt.y < -1 || pt.x > +caja[1] + 1 || pt.y > +caja[2] + 1)) mal(da, `la manija cae fuera de la figura en ${JSON.stringify(v)}`);
+          for (const [dx, dy] of [[0, 0], [24, 0], [-24, 0], [0, 24], [0, -24]]) {
+            let cambio;
+            try { cambio = ar.mover({ x: pt.x + dx, y: pt.y + dy }, Object.assign({}, v)); } catch (err) { mal(da, `mover falló: ${err.message}`); break; }
+            if (!cambio || typeof cambio !== 'object') { mal(da, 'mover debe devolver un objeto { control: valor }'); break; }
+            for (const [k, val] of Object.entries(cambio)) {
+              const c = ctr.find(x => x.id === k);
+              if (!c) mal(da, `mover cambia «${k}», que no es un control (todo arrastre necesita su alternativa con − y +)`);
+              else if (!c.opciones && !Number.isFinite(val)) mal(da, `mover da ${k} = ${val}`);
+            }
+          }
+          // Si la manija no cae en su sitio, el dedo la «suelta»: mover sobre su propio punto no debe cambiar nada.
+          const quieto = ar.mover({ x: pt.x, y: pt.y }, Object.assign({}, v)) || {};
+          for (const [k, val] of Object.entries(quieto)) {
+            const c = ctr.find(x => x.id === k);
+            if (c && !c.opciones && Math.abs(ajustar(c, val) - v[k]) > 1e-9) mal(da, `en ${JSON.stringify(v)} la manija no está donde dice su valor (${k}: ${v[k]} → ${ajustar(c, val)})`);
+          }
+        }
+      }
+      if (conMinimo && !(j.minimo >= 1)) mal(d, 'minimo: cuántos casos distintos prueba el alumno antes de seguir (1 o más)');
+    }
+
+    // Laboratorio: mesas de juego libre, sin preguntas. Si la unidad no trae, el lector usa el juego de cada idea.
+    if (def.laboratorio !== undefined) {
+      if (!Array.isArray(def.laboratorio) || !def.laboratorio.length || def.laboratorio.length > 4) mal(def.unidad, 'laboratorio: de 1 a 4 mesas');
+      const mids = new Set();
+      for (const [k, mesa] of (Array.isArray(def.laboratorio) ? def.laboratorio : []).entries()) {
+        const dm = `laboratorio ${k + 1} (${mesa && mesa.id})`;
+        if (!mesa || !/^[a-z0-9-]+$/.test(mesa.id || '') || mids.has(mesa.id)) { mal(dm, 'id inválido o repetido'); continue; }
+        mids.add(mesa.id);
+        if (!mesa.titulo) mal(dm, 'sin título'); else tope(dm, 'titulo', mesa.titulo);
+        if (!mesa.pieza) mal(dm, 'sin pieza');
+        revisarJuego(dm, mesa, mesa.pieza, false);
+      }
+    }
+
     const ids = new Set();
     for (const [k, idea] of def.ideas.entries()) {
       const d = `idea ${k + 1} (${idea && idea.id})`;
@@ -141,41 +234,8 @@
       };
 
       // 1. Juega
-      const j = idea.juega;
-      if (!j) mal(d, 'sin juega (regla 3: se juega antes de cualquier pregunta)');
-      else {
-        if (!j.consigna) mal(d, 'juega sin consigna'); else tope(`${d} juega`, 'consigna', j.consigna);
-        if (j.voz) tope(`${d} juega`, 'voz', j.voz);
-        const ctr = j.controles || [];
-        if (!ctr.length && typeof j.montar !== 'function') mal(d, 'juega sin controles');
-        for (const c of ctr) {
-          if (!c.id || !c.etiqueta) mal(`${d} juega`, 'control sin id o etiqueta');
-          if (c.opciones) { if (!(c.opciones.length >= 2)) mal(`${d} juega`, `control ${c.id}: opciones de 2 o más`); continue; }
-          if (!(c.max > c.min) || !(c.paso > 0)) mal(`${d} juega`, `control ${c.id}: min, max y paso`);
-          else if (c.inicio < c.min || c.inicio > c.max) mal(`${d} juega`, `control ${c.id}: inicio fuera de rango`);
-          if (c.color && !Ecuacion.COLORES.includes(c.color)) mal(`${d} juega`, `control ${c.id}: color ${c.color}`);
-        }
-        if (typeof j.dibujo !== 'function') mal(d, 'juega.dibujo(valores) debe ser una función');
-        else {
-          // Se dibujan el inicio y los extremos de cada control.
-          const base = inicio(j);
-          const casos = [base];
-          for (const c of ctr) {
-            if (c.opciones) for (const op of c.opciones) casos.push(Object.assign({}, base, { [c.id]: op.valor }));
-            else casos.push(Object.assign({}, base, { [c.id]: c.min }), Object.assign({}, base, { [c.id]: c.max }));
-          }
-          for (const v of casos) {
-            dibuja(`${d} juega ${JSON.stringify(v)}`, j.dibujo(v), j.pieza);
-            if (typeof j.lectura === 'function') {
-              const l = j.lectura(v);
-              ecuacion(`${d} lectura`, l);
-              tope(`${d} juega`, 'lectura', l);
-              if (/NaN|undefined|Infinity/.test(Ecuacion.texto(l))) mal(`${d} lectura`, 'muestra NaN o undefined');
-            }
-          }
-        }
-        if (!(j.minimo >= 1)) mal(d, 'juega.minimo: cuántos casos distintos prueba el alumno antes de seguir (1 o más)');
-      }
+      if (!idea.juega) mal(d, 'sin juega (regla 3: se juega antes de cualquier pregunta)');
+      else revisarJuego(`${d} juega`, idea.juega, idea.pieza, true);
 
       // 2. Predice
       const p = idea.predice;
