@@ -10,6 +10,10 @@
  * Errores: TR9 (elige mal la razón) es de docs/investigacion/trigonometria-ideas-erroneas.md. Hipótesis de
  * distractor (sin medir): RES-MULTIPLICA, RES-COMPLEMENTO, DEP-VERTICAL, ELEV-OJO (el error objetivo de la matriz: olvidar la altura del instrumento), OBS-CRECE, OBS-CONSTANTE, OBS-45,
  * OBS-SOLO-ARRIBA, OBS-SUMA, OBS-RESTA-ALTURAS.
+ * Ronda 2 (14 nov, noche): manijas en las tres ideas (vértice B, pie y punta de la torre, pie del poste), con un
+ * «marco» invisible que fija la escala de la pieza triangulo; llaves en las reglas, separadores entre relaciones y
+ * laboratorio de tres mesas (instrumento con la altura del ojo, faro con depresión libre y letrero de cerca).
+ * La idea 2 juega con elevación y «Mira» con depresión: ver su comentario (hallazgo 9 de docs/auditoria-teoria.md).
  *
  * Ficha de tarea (diseno-y-animacion):
  *   Promesa: con un ángulo agudo y un lado se resuelve el triángulo; elevación, depresión y observación se miden desde la horizontal.
@@ -68,6 +72,17 @@
     return f(x);
   }
 
+  // Gesto directo (docs/teoria.md §4b). La pieza «triangulo» ajusta la escala a sus puntos; para que la manija siga
+  // al dedo, los juegos agregan un «marco»: un punto que no se ve (paso 99) y fija la caja de la figura. La pieza no
+  // trae inversa: se invierte aquí, con su X e Y, que son lineales.
+  const TRI = () => Kit.piezas.triangulo;
+  const enPx = (dd, x, y) => { const g = TRI().geometria(dd); return { x: g.X(x), y: g.Y(y) }; };
+  const delPx = (dd, pt) => {
+    const g = TRI().geometria(dd), x0 = g.X(0), y0 = g.Y(0);
+    return { x: (pt.x - x0) / (g.X(1) - x0), y: (pt.y - y0) / (g.Y(1) - y0) };
+  };
+  const conMarco = (dd, x, y) => Object.assign({}, dd, { puntos: dd.puntos.concat([{ id: 'marco', x, y, paso: 99 }]) });
+
   // Triángulo rectángulo con θ en A y el recto en C (como en la unidad de razones).
   const tri = (co, ca, o = {}) => ({
     puntos: [{ id: 'A', x: 0, y: 0 }, { id: 'C', x: ca, y: 0 }, { id: 'B', x: ca, y: co }],
@@ -83,6 +98,7 @@
   // Cambia: el ángulo θ y la hipotenusa. · Permanece: el ángulo recto y los nombres de los lados desde θ.
   // Progresa: los dos catetos que salen de H·sen θ y H·cos θ. · Se reserva: conocer un cateto y buscar la
   // hipotenusa, que obliga a dividir (la predicción). · Debe verse: la razón que une el lado dado con el buscado.
+  const unJ = v => conMarco(tri(v.H * Math.sin(v.g * RAD), v.H * Math.cos(v.g * RAD), { ang: `${v.g}°`, h: `${v.H}` }), 10, 10);
   const unLado = {
     id: 'un-lado-un-angulo',
     titulo: 'Un lado y un ángulo bastan',
@@ -95,9 +111,13 @@
         { id: 'g', etiqueta: 'θ', color: 'c-o', min: 10, max: 80, paso: 10, inicio: 30, unidad: '°', decimales: 0 },
         { id: 'H', etiqueta: 'H', color: 'c-d', min: 2, max: 10, paso: 2, inicio: 6, unidad: '', decimales: 0 },
       ],
-      dibujo: v => ({ datos: tri(v.H * Math.sin(v.g * RAD), v.H * Math.cos(v.g * RAD), { ang: `${v.g}°`, h: `${v.H}` }), estado: {} }),
-      lectura: v => [CO, ` = ${v.H} sen ${v.g}° ≈ ${f(v.H * Math.sin(v.g * RAD))};  `, CA, ` ≈ ${f(v.H * Math.cos(v.g * RAD))}`],
+      dibujo: v => ({ datos: unJ(v), estado: {} }),
+      lectura: v => [CO, ` = ${v.H} sen ${v.g}° ≈ ${f(v.H * Math.sin(v.g * RAD))} · `, CA, ` ≈ ${f(v.H * Math.cos(v.g * RAD))}`],
       minimo: 3,
+      // Se arrastra el vértice B: su dirección desde A es θ y su distancia a A, la hipotenusa H.
+      arrastres: [{ id: 'vertice-b', etiqueta: 'vértice B: θ y H', color: 'c-d',
+        donde: v => enPx(unJ(v), v.H * Math.cos(v.g * RAD), v.H * Math.sin(v.g * RAD)),
+        mover: (pt, v) => { const q = delPx(unJ(v), pt); return { g: Math.atan2(q.y, q.x) * GRA, H: Math.hypot(q.x, q.y) }; } }],
     },
     predice: {
       pregunta: 'En un triángulo rectángulo, el cateto adyacente a 60° mide 5. ¿Cuánto mide la hipotenusa?',
@@ -125,7 +145,7 @@
     },
     regla: {
       texto: 'Con un ángulo agudo y un lado se halla cualquier otro: se elige la razón que une el lado conocido con el buscado y se despeja.',
-      ecuacion: [CO, ' = ', H, ' sen ', th, ';   ', CA, ' = ', H, ' cos ', th, ';   ', CO, ' = ', CA, ' tan ', th],
+      ecuacion: [{ llave: [CO], nota: 'opuesto a θ', color: 'c-h' }, ' = ', H, ' sen ', th, '   ·   ', { llave: [CA], nota: 'junto a θ', color: 'c-i' }, ' = ', H, ' cos ', th, '   ·   ', CO, ' = ', CA, ' tan ', th],
       condicion: 'θ agudo en un triángulo rectángulo y los lados nombrados desde θ. Si el dato es un cateto, a veces se divide.',
       voz: 'Escribe la razón con los dos lados; después despeja.',
     },
@@ -189,6 +209,8 @@
       { en: 'L', de: 'P', a: 'F', texto: '37°', color: 'o', paso: 2 }, { en: 'P', de: 'L', a: 'F' },
     ],
   };
+  // El marco depende solo de θ: al mover el pie (d), la escala no cambia y la torre crece de verdad.
+  const torreJ = v => conMarco(torre(v.d, v.g), 30, 30 * Math.tan(v.g * RAD));
   const elevacion = {
     id: 'elevacion-depresion',
     titulo: 'Desde la horizontal del ojo',
@@ -201,9 +223,18 @@
         { id: 'd', etiqueta: 'd', color: 'c-i', min: 10, max: 30, paso: 5, inicio: 20, unidad: 'm', decimales: 0 },
         { id: 'g', etiqueta: 'θ', color: 'c-o', min: 15, max: 60, paso: 5, inicio: 30, unidad: '°', decimales: 0 },
       ],
-      dibujo: v => ({ datos: torre(v.d, v.g), estado: {} }),
+      dibujo: v => ({ datos: torreJ(v), estado: {} }),
       lectura: v => [h, ' = ', d, ` · tan ${v.g}° ≈ ${f(v.d * Math.tan(v.g * RAD), 1)} m`],
       minimo: 3,
+      // Se arrastran el pie de la torre (cambia d) y su punta (cambia θ: la visual sube o baja desde el ojo).
+      arrastres: [
+        { id: 'pie', etiqueta: 'pie de la torre: cambia d', color: 'c-i',
+          donde: v => enPx(torreJ(v), v.d, 0),
+          mover: (pt, v) => ({ d: delPx(torreJ(v), pt).x }) },
+        { id: 'punta', etiqueta: 'punta de la torre: cambia θ', color: 'c-o',
+          donde: v => enPx(torreJ(v), v.d, v.d * Math.tan(v.g * RAD)),
+          mover: (pt, v) => { const q = delPx(torreJ(v), pt); return { g: Math.atan2(q.y, q.x) * GRA }; } },
+      ],
     },
     predice: {
       pregunta: 'Desde lo alto de un faro de 30 m se ve una lancha con un ángulo de depresión de 37° (convención 3-4-5). ¿A qué distancia del pie del faro está?',
@@ -219,6 +250,9 @@
       coincide: 'Coincide: la depresión desde arriba es la elevación desde la lancha.',
       noCoincide: 'Revisemos: los dos ángulos de 37° se miden desde horizontales.',
     },
+    // Hallazgo 9: «Juega» mide la elevación desde el suelo y «Mira» la depresión desde el faro. Es a propósito: «Mira»
+    // resuelve el caso reservado de la predicción, y muestra que es el mismo triángulo visto desde el otro extremo de
+    // la visual. La mesa «faro» del laboratorio deja jugar con la depresión.
     mira: {
       pieza: 'triangulo',
       datos: FARO,
@@ -231,7 +265,7 @@
     },
     regla: {
       texto: 'Elevación y depresión se miden desde la horizontal del ojo, hacia arriba o hacia abajo. Entre dos puntos, la depresión de uno es la elevación del otro.',
-      ecuacion: [h, ' = ', d, ' · tan ', th],
+      ecuacion: [h, ' = ', d, ' · tan ', { llave: [th], nota: 'elevación', color: 'c-o' }],
       condicion: 'θ medido desde la horizontal. Si el problema da la altura de los ojos, se suma a h.',
       voz: 'Primero la horizontal; después el ángulo.',
     },
@@ -302,6 +336,7 @@
       { en: 'O', de: 'A', a: 'B', texto: o.beta || 'β', color: 'o', paso: o.pBeta, radio: 46 },
     ].concat(o.alfas ? [{ en: 'O', de: 'P', a: 'A', texto: o.alfas[0], paso: o.pA, radio: 24 }] : []),
   });
+  const letJ = v => conMarco(letrero(v.d), 12, H2);
   const observacion = {
     id: 'angulo-observacion',
     titulo: 'Lo que abarca la mirada',
@@ -311,9 +346,13 @@
       consigna: 'Un letrero va de 2 m a 6 m de altura. Elige tu distancia d al poste y mira el ángulo β entre las visuales.',
       voz: 'Compara las dos visuales: la de arriba y la de abajo.',
       controles: [{ id: 'd', etiqueta: 'd', color: 'c-i', min: 6, max: 12, paso: 1, inicio: 10, unidad: 'm', decimales: 0 }],
-      dibujo: v => ({ datos: letrero(v.d), estado: {} }),
+      dibujo: v => ({ datos: letJ(v), estado: {} }),
       lectura: v => [be, ` ≈ ${f(beta(v.d), 1)}°  a  `, d, ` = ${v.d} m`],
       minimo: 3,
+      // Se arrastra el pie del poste: acerca o aleja el letrero del ojo.
+      arrastres: [{ id: 'pie', etiqueta: 'pie del poste: cambia d', color: 'c-i',
+        donde: v => enPx(letJ(v), v.d, 0),
+        mover: (pt, v) => ({ d: delPx(letJ(v), pt).x }) }],
     },
     predice: {
       pregunta: 'En el juego, acercarse agranda β. Si sigues acercándote hasta quedar junto al poste, ¿qué le pasa a β?',
@@ -337,12 +376,12 @@
         { estado: { paso: 1 }, texto: 'La visual al borde de abajo sube un ángulo α₁.', ecuacion: ['tan ', sub(al, '1'), ' = ', { frac: ['2', d] }] },
         { estado: { paso: 2 }, texto: 'La visual al borde de arriba sube α₂, más empinada.', ecuacion: ['tan ', sub(al, '2'), ' = ', { frac: ['6', d] }] },
         { estado: { paso: 3 }, texto: 'β es lo que una visual le saca a la otra.', ecuacion: [be, ' = ', sub(al, '2'), ' − ', sub(al, '1')] },
-        { estado: { paso: 3 }, texto: 'A d = 2√3 m queda 60° − 30° = 30°: ahí β es máximo.', ecuacion: ['tan ', sub(al, '2'), ' = √3;  tan ', sub(al, '1'), ' = ', { frac: ['1', '√3'] }, ';  ', be, ' = 30°'] },
+        { estado: { paso: 3 }, texto: 'A d = 2√3 m queda 60° − 30° = 30°: ahí β es máximo.', ecuacion: ['tan ', sub(al, '2'), ' = √3', '   ·   ', 'tan ', sub(al, '1'), ' = ', { frac: ['1', '√3'] }, '   ·   ', be, ' = 30°'] },
       ],
     },
     regla: {
       texto: 'El ángulo de observación de un objeto es la diferencia entre las elevaciones de su borde alto y de su borde bajo. No sale de la altura del objeto sola.',
-      ecuacion: [be, ' = ', sub(al, '2'), ' − ', sub(al, '1'), ';   tan ', al, ' = ', { frac: [h, d] }],
+      ecuacion: [be, ' = ', { llave: [sub(al, '2')], nota: 'borde alto', color: 'c-o' }, ' − ', { llave: [sub(al, '1')], nota: 'borde bajo', color: 'c-o' }, '   ·   ', 'tan ', al, ' = ', { frac: [h, d] }],
       condicion: 'las dos elevaciones se miden desde el mismo ojo y la misma horizontal.',
       voz: 'Resta ángulos, no alturas.',
     },
@@ -371,6 +410,54 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Ojo a la altura a sobre el suelo: la visual sube θ desde la horizontal del ojo; la torre suma a.
+  // El ojo no lleva rótulo: lo marca su manija, y el rótulo «a = …» queda libre a su izquierda.
+  function instr(v) {
+    const t = v.d * Math.tan(v.g * RAD), Q = { id: 'Q', x: v.d, y: v.a };
+    const lados = [
+      { de: 'O', a: 'Q', color: 'i', texto: `d = ${f(v.d)} m`, horizontal: v.a > 0, grosor: 'variable' },
+      { de: 'Q', a: 'T', color: 'h', texto: `${f(t, 1)} m`, grosor: 'variable' },
+      { de: 'O', a: 'T', color: 'd', visual: true },
+    ].concat(v.a > 0 ? [{ de: 'S', a: 'O', color: 'h', texto: `a = ${f(v.a)}`, grosor: 'contorno' }, { de: 'P', a: 'Q', texto: `${f(v.a)}`, grosor: 'contorno' }] : []);
+    return {
+      suelo: true,
+      puntos: [{ id: 'S', x: 0, y: 0 }, { id: 'O', x: 0, y: v.a }, { id: 'P', x: v.d, y: 0 }, Q, { id: 'T', x: v.d, y: v.a + t },
+        { id: 'marco', x: 12, y: 12 * Math.tan(v.g * RAD) + 2, paso: 99 }, { id: 'margen', x: -2.5, y: 0, paso: 99 }],
+      lados,
+      angulos: [{ en: 'O', de: 'Q', a: 'T', texto: `${v.g}°`, color: 'o' }],
+    };
+  }
+  // Faro con el pie en el origen y la lancha a la izquierda; marco fijo para que la lancha siga al dedo.
+  function faroL(v) {
+    const x = v.H / Math.tan(v.g * RAD);
+    return {
+      suelo: true,
+      puntos: [{ id: 'L', x: -x, y: 0, rotulo: 'lancha' }, { id: 'P', x: 0, y: 0, rotulo: 'faro' }, { id: 'F', x: 0, y: v.H }, { id: 'X', x: -x, y: v.H },
+        { id: 'marco', x: -30 / Math.tan(30 * RAD), y: 30, paso: 99 }],
+      lados: [
+        { de: 'P', a: 'F', color: 'h', texto: `${f(v.H)} m`, grosor: 'variable' },
+        { de: 'F', a: 'X', horizontal: true },
+        { de: 'F', a: 'L', color: 'd', visual: true },
+        { de: 'L', a: 'P', color: 'i', texto: `${f(x, 1)} m`, grosor: 'variable' },
+      ],
+      angulos: [{ en: 'F', de: 'X', a: 'L', texto: `${v.g}°`, color: 'o' }, { en: 'L', de: 'P', a: 'F', texto: `${v.g}°`, color: 'o' }, { en: 'P', de: 'L', a: 'F' }],
+    };
+  }
+  const betaL = v => (Math.atan((v.a + v.L) / v.d) - Math.atan(v.a / v.d)) * GRA;
+  const letL = v => ({
+    suelo: true,
+    puntos: [{ id: 'O', x: 0, y: 0, rotulo: 'ojo' }, { id: 'P', x: v.d, y: 0 }, { id: 'A', x: v.d, y: v.a }, { id: 'B', x: v.d, y: v.a + v.L },
+      { id: 'marco', x: 12, y: 10, paso: 99 }],
+    lados: [
+      { de: 'O', a: 'P', color: 'i', texto: `d = ${f(v.d)} m`, grosor: 'variable' },
+      { de: 'P', a: 'A', texto: `${f(v.a)} m` },
+      { de: 'A', a: 'B', color: 'h', texto: `${f(v.L)} m`, grosor: 'variable' },
+      { de: 'O', a: 'A', color: 'd', visual: true }, { de: 'O', a: 'B', color: 'd', visual: true },
+    ],
+    angulos: [{ en: 'O', de: 'A', a: 'B', texto: 'β', color: 'o', radio: 46 }],
+  });
+
   return {
     unidad: 'trigonometria.triangulos-rectangulos',
     version: '0.1.0',
@@ -382,5 +469,76 @@
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Abu Rayhan al-Biruni», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Al-Biruni/' },
     },
     ideas: [unLado, elevacion, observacion],
+    // Laboratorio (docs/teoria.md §4b). «instrumento»: la altura del ojo se suma a la torre, el error ELEV-OJO que la
+    // idea 2 solo pregunta; tres manijas. «faro»: la depresión desde lo alto, con altura y ángulo libres (la idea 2 la
+    // deja en «Mira»). «letrero-cerca»: el letrero con sus dos bordes libres y el ojo hasta medio metro del poste,
+    // donde β vuelve a bajar; la lectura dice dónde está el máximo.
+    laboratorio: [
+      {
+        id: 'instrumento', titulo: 'El ojo, sobre el suelo', pieza: 'triangulo',
+        consigna: 'El ojo está a una altura a. Arrastra el ojo, el pie y la punta. La torre suma el tramo bajo el ojo.',
+        controles: [
+          { id: 'a', etiqueta: 'a', color: 'c-h', min: 0, max: 2, paso: 0.5, inicio: 1.5, unidad: 'm', decimales: 1 },
+          { id: 'd', etiqueta: 'd', color: 'c-i', min: 2, max: 12, paso: 1, inicio: 6, unidad: 'm', decimales: 0 },
+          { id: 'g', etiqueta: 'θ', color: 'c-o', min: 10, max: 60, paso: 1, inicio: 30, unidad: '°', decimales: 0 },
+        ],
+        dibujo: v => ({ datos: instr(v), estado: {} }),
+        lectura: v => [h, ` = ${f(v.d)} · tan ${v.g}° + ${f(v.a)} ≈ ${f(v.d * Math.tan(v.g * RAD) + v.a)} m`],
+        // El ojo sube o baja (a); el pie de la torre cambia d; la punta, vista desde el ojo, cambia θ.
+        arrastres: [
+          { id: 'ojo', etiqueta: 'ojo: cambia su altura a', color: 'c-h',
+            donde: v => enPx(instr(v), 0, v.a),
+            mover: (pt, v) => ({ a: delPx(instr(v), pt).y }) },
+          { id: 'pie', etiqueta: 'pie de la torre: cambia d', color: 'c-i',
+            donde: v => enPx(instr(v), v.d, 0),
+            mover: (pt, v) => ({ d: delPx(instr(v), pt).x }) },
+          { id: 'punta', etiqueta: 'punta de la torre: cambia θ', color: 'c-o',
+            donde: v => enPx(instr(v), v.d, v.a + v.d * Math.tan(v.g * RAD)),
+            mover: (pt, v) => { const q = delPx(instr(v), pt); return { g: Math.atan2(q.y - v.a, q.x) * GRA }; } },
+        ],
+      },
+      {
+        id: 'faro', titulo: 'Depresión desde el faro', pieza: 'triangulo',
+        consigna: 'Desde lo alto del faro miras la lancha. Arrastra la lancha y la punta del faro: compara la depresión con la elevación.',
+        controles: [
+          { id: 'H', etiqueta: 'altura', color: 'c-h', min: 10, max: 30, paso: 2, inicio: 20, unidad: 'm', decimales: 0 },
+          { id: 'g', etiqueta: 'θ', color: 'c-o', min: 30, max: 75, paso: 1, inicio: 37, unidad: '°', decimales: 0 },
+        ],
+        dibujo: v => ({ datos: faroL(v), estado: {} }),
+        lectura: v => [`depresión = elevación = ${v.g}° · `, d, ` = ${v.H} ÷ tan ${v.g}° ≈ ${f(v.H / Math.tan(v.g * RAD))} m`],
+        // La lancha corre por el agua: cambia el ángulo; la punta del faro cambia su altura.
+        arrastres: [
+          { id: 'lancha', etiqueta: 'lancha: cambia el ángulo', color: 'c-o',
+            donde: v => enPx(faroL(v), -v.H / Math.tan(v.g * RAD), 0),
+            mover: (pt, v) => ({ g: Math.atan2(v.H, Math.max(-delPx(faroL(v), pt).x, 1e-6)) * GRA }) },
+          { id: 'punta', etiqueta: 'punta del faro: cambia su altura', color: 'c-h',
+            donde: v => enPx(faroL(v), 0, v.H),
+            mover: (pt, v) => ({ H: delPx(faroL(v), pt).y }) },
+        ],
+      },
+      {
+        id: 'letrero-cerca', titulo: 'El letrero, de cerca', pieza: 'triangulo',
+        consigna: 'Arrastra el pie del poste y los dos bordes del letrero. Acércate hasta medio metro y busca dónde β es mayor.',
+        controles: [
+          { id: 'd', etiqueta: 'd', color: 'c-i', min: 0.5, max: 12, paso: 0.5, inicio: 6, unidad: 'm', decimales: 1 },
+          { id: 'a', etiqueta: 'borde bajo', color: 'c-h', min: 1, max: 4, paso: 0.5, inicio: 2, unidad: 'm', decimales: 1 },
+          { id: 'L', etiqueta: 'letrero', color: 'c-h', min: 1, max: 6, paso: 0.5, inicio: 4, unidad: 'm', decimales: 1 },
+        ],
+        dibujo: v => ({ datos: letL(v), estado: {} }),
+        lectura: v => [be, ` ≈ ${f(betaL(v), 1)}° a `, d, ` = ${f(v.d)} m · el mayor, a ${f(Math.sqrt(v.a * (v.a + v.L)), 1)} m`],
+        // El pie del poste cambia d; el borde bajo sube el letrero entero; el borde alto lo estira.
+        arrastres: [
+          { id: 'pie', etiqueta: 'pie del poste: cambia d', color: 'c-i',
+            donde: v => enPx(letL(v), v.d, 0),
+            mover: (pt, v) => ({ d: delPx(letL(v), pt).x }) },
+          { id: 'bajo', etiqueta: 'borde bajo del letrero', color: 'c-h',
+            donde: v => enPx(letL(v), v.d, v.a),
+            mover: (pt, v) => ({ a: delPx(letL(v), pt).y }) },
+          { id: 'alto', etiqueta: 'borde alto del letrero: cambia su largo', color: 'c-h',
+            donde: v => enPx(letL(v), v.d, v.a + v.L),
+            mover: (pt, v) => ({ L: delPx(letL(v), pt).y - v.a }) },
+        ],
+      },
+    ],
   };
 });
