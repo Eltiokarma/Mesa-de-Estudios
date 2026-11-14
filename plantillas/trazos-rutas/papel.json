@@ -26,7 +26,171 @@
         "Cada trazo abierto empieza y termina en un impar, así que cubre a lo más dos de ellos.",
         "Con 8 impares hacen falta 8 ÷ 2 = 4 trazos."
       ],
-      "verificar": [ { "fn": "unTrazo", "args": [{ "nodos": [[0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [1, 1], [2, 1], [3, 1], [0, 2], [1, 2], [2, 2], [3, 2], [0, 3], [1, 3], [2, 3], [3, 3]], "tramos": [[0, 1], [1, 2], [2, 3], [4, 5], [5, 6], [6, 7], [8, 9], [9, 10], [10, 11], [12, 13], [13, 14], [14, 15], [0, 4], [4, 8], [8, 12], [1, 5], [5, 9], [9, 13], [2, 6], [6, 10], [10, 14], [3, 7], [7, 11], [11, 15]] }], "espera": { "numImpares": 8, "trazos": 4, "tramos": 24, "sePuede": false } } ]
+      "verificar": [ { "fn": "unTrazo", "args": [{ "nodos": [[0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [1, 1], [2, 1], [3, 1], [0, 2], [1, 2], [2, 2], [3, 2], [0, 3], [1, 3], [2, 3], [3, 3]], "tramos": [[0, 1], [1, 2], [2, 3], [4, 5], [5, 6], [6, 7], [8, 9], [9, 10], [10, 11], [12, 13], [13, 14], [14, 15], [0, 4], [4, 8], [8, 12], [1, 5], [5, 9], [9, 13], [2, 6], [6, 10], [10, 14], [3, 7], [7, 11], [11, 15]] }], "espera": { "numImpares": 8, "trazos": 4, "tramos": 24, "sePuede": false } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Una ventana tiene 9 vidrios cuadrados iguales, en 3 filas y 3 columnas, separados por un marco de líneas rectas.",
+          "pregunta": "¿Cuántos trazos, como mínimo, hacen falta para dibujar todo el marco sin pasar dos veces por la misma línea?",
+          "unidad": "trazos",
+          "decimales": 0,
+          "correcta": {
+            "fn": "unTrazo",
+            "args": [
+              {
+                "nodos": [[0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [1, 1], [2, 1], [3, 1], [0, 2], [1, 2], [2, 2], [3, 2], [0, 3], [1, 3], [2, 3], [3, 3]],
+                "tramos": [
+                  [0, 1],
+                  [1, 2],
+                  [2, 3],
+                  [4, 5],
+                  [5, 6],
+                  [6, 7],
+                  [8, 9],
+                  [9, 10],
+                  [10, 11],
+                  [12, 13],
+                  [13, 14],
+                  [14, 15],
+                  [0, 4],
+                  [4, 8],
+                  [8, 12],
+                  [1, 5],
+                  [5, 9],
+                  [9, 13],
+                  [2, 6],
+                  [6, 10],
+                  [10, 14],
+                  [3, 7],
+                  [7, 11],
+                  [11, 15]
+                ]
+              }
+            ],
+            "campo": "trazos",
+            "valor": 4
+          },
+          "errores": [
+            {
+              "id": "trazos-uno-por-impar",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste un trazo por cada punto impar. Cada trazo empieza en un impar y termina en otro: 8 impares piden 8 ÷ 2 = 4.",
+              "fn": "unTrazo",
+              "args": [
+                {
+                  "nodos": [[0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [1, 1], [2, 1], [3, 1], [0, 2], [1, 2], [2, 2], [3, 2], [0, 3], [1, 3], [2, 3], [3, 3]],
+                  "tramos": [
+                    [0, 1],
+                    [1, 2],
+                    [2, 3],
+                    [4, 5],
+                    [5, 6],
+                    [6, 7],
+                    [8, 9],
+                    [9, 10],
+                    [10, 11],
+                    [12, 13],
+                    [13, 14],
+                    [14, 15],
+                    [0, 4],
+                    [4, 8],
+                    [8, 12],
+                    [1, 5],
+                    [5, 9],
+                    [9, 13],
+                    [2, 6],
+                    [6, 10],
+                    [10, 14],
+                    [3, 7],
+                    [7, 11],
+                    [11, 15]
+                  ]
+                }
+              ],
+              "campo": "errores.unoPorImpar",
+              "valor": 8
+            },
+            {
+              "id": "trazo-todas-si-se-empieza-bien",
+              "respaldo": "hipotesis",
+              "explicacion": "Con más de dos puntos impares no sale de un solo trazo, empieces donde empieces. Aquí hay 8.",
+              "fn": "unTrazo",
+              "args": [
+                {
+                  "nodos": [[0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [1, 1], [2, 1], [3, 1], [0, 2], [1, 2], [2, 2], [3, 2], [0, 3], [1, 3], [2, 3], [3, 3]],
+                  "tramos": [
+                    [0, 1],
+                    [1, 2],
+                    [2, 3],
+                    [4, 5],
+                    [5, 6],
+                    [6, 7],
+                    [8, 9],
+                    [9, 10],
+                    [10, 11],
+                    [12, 13],
+                    [13, 14],
+                    [14, 15],
+                    [0, 4],
+                    [4, 8],
+                    [8, 12],
+                    [1, 5],
+                    [5, 9],
+                    [9, 13],
+                    [2, 6],
+                    [6, 10],
+                    [10, 14],
+                    [3, 7],
+                    [7, 11],
+                    [11, 15]
+                  ]
+                }
+              ],
+              "campo": "errores.unSoloTrazo",
+              "valor": 1
+            },
+            {
+              "id": "trazos-dos-siempre",
+              "respaldo": "hipotesis",
+              "explicacion": "Dos trazos alcanzan para cuatro impares. Aquí hay 8 puntos donde llegan 3 líneas: hacen falta 4.",
+              "fn": "unTrazo",
+              "args": [
+                {
+                  "nodos": [[0, 0], [1, 0], [2, 0], [3, 0], [0, 1], [1, 1], [2, 1], [3, 1], [0, 2], [1, 2], [2, 2], [3, 2], [0, 3], [1, 3], [2, 3], [3, 3]],
+                  "tramos": [
+                    [0, 1],
+                    [1, 2],
+                    [2, 3],
+                    [4, 5],
+                    [5, 6],
+                    [6, 7],
+                    [8, 9],
+                    [9, 10],
+                    [10, 11],
+                    [12, 13],
+                    [13, 14],
+                    [14, 15],
+                    [0, 4],
+                    [4, 8],
+                    [8, 12],
+                    [1, 5],
+                    [5, 9],
+                    [9, 13],
+                    [2, 6],
+                    [6, 10],
+                    [10, 14],
+                    [3, 7],
+                    [7, 11],
+                    [11, 15]
+                  ]
+                }
+              ],
+              "campo": "errores.dosSiempre",
+              "valor": 2
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -40,7 +204,84 @@
         "Para volver al inicio no puede quedar ningún impar: hay que repetir el camino más corto entre ellos, la cerca del medio de 4 m. Total: 24 + 4 = 28 m."
       ],
       "verificar": [ { "fn": "cartero", "args": [{ "nodos": [[0, 0], [3, 0], [6, 0], [6, 4], [3, 4], [0, 4]], "tramos": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0], [1, 4]] }], "espera": { "suma": 24, "minimo": 24, "errores.cerrar": 28 } },
-                     { "fn": "cartero", "args": [{ "nodos": [[0, 0], [3, 0], [6, 0], [6, 4], [3, 4], [0, 4]], "tramos": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0], [1, 4]] }, { "volver": true }], "espera": { "minimo": 28, "repetido": 4 } } ]
+                     { "fn": "cartero", "args": [{ "nodos": [[0, 0], [3, 0], [6, 0], [6, 4], [3, 4], [0, 4]], "tramos": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0], [1, 4]] }, { "volver": true }], "espera": { "minimo": 28, "repetido": 4 } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Un terreno rectangular de 6 m por 4 m, cercado en todo su borde, está dividido en dos partes iguales por una cerca que une los puntos medios de los lados de 6 m. Un vigilante quiere caminar por todas las cercas y puede terminar donde quiera.",
+          "pregunta": "¿Cuántos metros camina como mínimo?",
+          "unidad": "m",
+          "decimales": 0,
+          "correcta": {
+            "fn": "cartero",
+            "args": [{ "nodos": [[0, 0], [3, 0], [6, 0], [6, 4], [3, 4], [0, 4]], "tramos": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0], [1, 4]] }],
+            "campo": "minimo",
+            "valor": 24
+          },
+          "errores": [
+            {
+              "id": "cartero-vuelve-al-inicio",
+              "respaldo": "hipotesis",
+              "explicacion": "Repetiste la cerca del medio, como si tuviera que volver al inicio. Con solo dos impares, empieza en uno y termina en el otro: 24 m.",
+              "fn": "cartero",
+              "args": [{ "nodos": [[0, 0], [3, 0], [6, 0], [6, 4], [3, 4], [0, 4]], "tramos": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0], [1, 4]] }],
+              "campo": "errores.cerrar",
+              "valor": 28
+            },
+            {
+              "id": "cartero-todo-doble",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste cada cerca de ida y de vuelta. No hace falta: con dos impares se recorre todo sin repetir.",
+              "fn": "cartero",
+              "args": [{ "nodos": [[0, 0], [3, 0], [6, 0], [6, 4], [3, 4], [0, 4]], "tramos": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0], [1, 4]] }],
+              "campo": "errores.todoDoble",
+              "valor": 48
+            }
+          ]
+        },
+        {
+          "id": "p3b",
+          "enunciado": "Un terreno rectangular de 6 m por 4 m, cercado en todo su borde, está dividido en dos partes iguales por una cerca que une los puntos medios de los lados de 6 m. Un vigilante quiere caminar por todas las cercas y volver al punto de partida.",
+          "pregunta": "¿Cuántos metros camina como mínimo?",
+          "unidad": "m",
+          "decimales": 0,
+          "correcta": {
+            "fn": "cartero",
+            "args": [
+              { "nodos": [[0, 0], [3, 0], [6, 0], [6, 4], [3, 4], [0, 4]], "tramos": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0], [1, 4]] },
+              { "volver": true }
+            ],
+            "campo": "minimo",
+            "valor": 28
+          },
+          "errores": [
+            {
+              "id": "cartero-sin-repetir",
+              "respaldo": "hipotesis",
+              "explicacion": "Eso es lo que suman las cercas. Para volver al inicio no puede quedar ningún impar: hay que repetir la cerca del medio, 4 m.",
+              "fn": "cartero",
+              "args": [
+                { "nodos": [[0, 0], [3, 0], [6, 0], [6, 4], [3, 4], [0, 4]], "tramos": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0], [1, 4]] },
+                { "volver": true }
+              ],
+              "campo": "errores.sinRepetir",
+              "valor": 24
+            },
+            {
+              "id": "cartero-todo-doble",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste cada cerca dos veces. Basta repetir el camino más corto entre los dos impares, la cerca de 4 m.",
+              "fn": "cartero",
+              "args": [
+                { "nodos": [[0, 0], [3, 0], [6, 0], [6, 4], [3, 4], [0, 4]], "tramos": [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0], [1, 4]] },
+                { "volver": true }
+              ],
+              "campo": "errores.todoDoble",
+              "valor": 48
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -54,7 +295,71 @@
         "Dos puntos medios vecinos están a 2 + 2 = 4 m (por el centro o por la esquina). Total: 24 + 4 = 28 m.",
         "Si tuviera que volver al inicio, emparejaría los cuatro: 24 + 4 + 4 = 32 m."
       ],
-      "verificar": [ { "fn": "cartero", "args": [{ "nodos": [[0, 0], [2, 0], [4, 0], [0, 2], [2, 2], [4, 2], [0, 4], [2, 4], [4, 4]], "tramos": [[0, 1], [1, 2], [3, 4], [4, 5], [6, 7], [7, 8], [0, 3], [3, 6], [1, 4], [4, 7], [2, 5], [5, 8]] }], "espera": { "suma": 24, "minimo": 28, "errores.cerrar": 32 } } ]
+      "verificar": [ { "fn": "cartero", "args": [{ "nodos": [[0, 0], [2, 0], [4, 0], [0, 2], [2, 2], [4, 2], [0, 4], [2, 4], [4, 4]], "tramos": [[0, 1], [1, 2], [3, 4], [4, 5], [6, 7], [7, 8], [0, 3], [3, 6], [1, 4], [4, 7], [2, 5], [5, 8]] }], "espera": { "suma": 24, "minimo": 28, "errores.cerrar": 32 } } ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Un parque cuadrado de 4 m de lado tiene dos senderos interiores que unen los puntos medios de los lados opuestos y se cruzan en el centro. Un jardinero debe pasar por todos los senderos y por todo el borde, y puede terminar donde quiera.",
+          "pregunta": "¿Cuántos metros camina como mínimo?",
+          "unidad": "m",
+          "decimales": 0,
+          "correcta": {
+            "fn": "cartero",
+            "args": [
+              {
+                "nodos": [[0, 0], [2, 0], [4, 0], [0, 2], [2, 2], [4, 2], [0, 4], [2, 4], [4, 4]],
+                "tramos": [[0, 1], [1, 2], [3, 4], [4, 5], [6, 7], [7, 8], [0, 3], [3, 6], [1, 4], [4, 7], [2, 5], [5, 8]]
+              }
+            ],
+            "campo": "minimo",
+            "valor": 28
+          },
+          "errores": [
+            {
+              "id": "cartero-sin-repetir",
+              "respaldo": "hipotesis",
+              "explicacion": "Eso es lo que suman los senderos. Hay cuatro puntos impares: dos quedan de inicio y fin, y los otros dos piden repetir 4 m.",
+              "fn": "cartero",
+              "args": [
+                {
+                  "nodos": [[0, 0], [2, 0], [4, 0], [0, 2], [2, 2], [4, 2], [0, 4], [2, 4], [4, 4]],
+                  "tramos": [[0, 1], [1, 2], [3, 4], [4, 5], [6, 7], [7, 8], [0, 3], [3, 6], [1, 4], [4, 7], [2, 5], [5, 8]]
+                }
+              ],
+              "campo": "errores.sinRepetir",
+              "valor": 24
+            },
+            {
+              "id": "cartero-empareja-todos",
+              "respaldo": "hipotesis",
+              "explicacion": "Emparejaste los cuatro impares, como si tuviera que volver al inicio. Dos pueden quedar de inicio y fin: basta repetir 4 m.",
+              "fn": "cartero",
+              "args": [
+                {
+                  "nodos": [[0, 0], [2, 0], [4, 0], [0, 2], [2, 2], [4, 2], [0, 4], [2, 4], [4, 4]],
+                  "tramos": [[0, 1], [1, 2], [3, 4], [4, 5], [6, 7], [7, 8], [0, 3], [3, 6], [1, 4], [4, 7], [2, 5], [5, 8]]
+                }
+              ],
+              "campo": "errores.cerrar",
+              "valor": 32
+            },
+            {
+              "id": "cartero-todo-doble",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste cada sendero de ida y de vuelta. Solo hay que repetir el camino más corto entre dos impares.",
+              "fn": "cartero",
+              "args": [
+                {
+                  "nodos": [[0, 0], [2, 0], [4, 0], [0, 2], [2, 2], [4, 2], [0, 4], [2, 4], [4, 4]],
+                  "tramos": [[0, 1], [1, 2], [3, 4], [4, 5], [6, 7], [7, 8], [0, 3], [3, 6], [1, 4], [4, 7], [2, 5], [5, 8]]
+                }
+              ],
+              "campo": "errores.todoDoble",
+              "valor": 48
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p5",
@@ -67,7 +372,51 @@
         "El perímetro es el del rectángulo de 10 × 7 que la encierra: 2(10 + 7) = 34 m.",
         "No importa cuántos escalones tenga ni cuánto mida cada uno."
       ],
-      "verificar": [ { "fn": "perimetro", "args": [{ "vertices": [[0, 0], [10, 0], [10, 1], [8, 1], [8, 3], [6, 3], [6, 4], [4, 4], [4, 6], [2, 6], [2, 7], [0, 7]] }], "espera": { "perimetro": 34, "caja": 34, "sinEntrantes": true } } ]
+      "verificar": [ { "fn": "perimetro", "args": [{ "vertices": [[0, 0], [10, 0], [10, 1], [8, 1], [8, 3], [6, 3], [6, 4], [4, 4], [4, 6], [2, 6], [2, 7], [0, 7]] }], "espera": { "perimetro": 34, "caja": 34, "sinEntrantes": true } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Una figura tiene forma de escalera con 5 escalones. Su base mide 10 m y su lado vertical más alto, 7 m. Todos los ángulos son rectos y no tiene entrantes.",
+          "pregunta": "¿Cuál es su perímetro?",
+          "unidad": "m",
+          "decimales": 2,
+          "correcta": {
+            "fn": "perimetro",
+            "args": [{ "vertices": [[0, 0], [10, 0], [10, 1], [8, 1], [8, 3], [6, 3], [6, 4], [4, 4], [4, 6], [2, 6], [2, 7], [0, 7]] }],
+            "campo": "perimetro",
+            "valor": 34
+          },
+          "errores": [
+            {
+              "id": "perimetro-solo-lados-con-numero",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste solo los dos lados que tienen medida. Los escalones también cuentan: juntos miden otros 10 m y 7 m.",
+              "fn": "perimetro",
+              "args": [{ "vertices": [[0, 0], [10, 0], [10, 1], [8, 1], [8, 3], [6, 3], [6, 4], [4, 4], [4, 6], [2, 6], [2, 7], [0, 7]] }],
+              "campo": "errores.soloConNumero",
+              "valor": 17
+            },
+            {
+              "id": "perimetro-escalera-como-diagonal",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste los escalones como una recta inclinada, √(10² + 7²) ≈ 12,21. Van en tramos horizontales y verticales: suman 10 + 7.",
+              "fn": "perimetro",
+              "args": [{ "vertices": [[0, 0], [10, 0], [10, 1], [8, 1], [8, 3], [6, 3], [6, 4], [4, 4], [4, 6], [2, 6], [2, 7], [0, 7]] }],
+              "campo": "errores.diagonal",
+              "valor": 29.2065556157
+            },
+            {
+              "id": "GE4-area-por-perimetro",
+              "respaldo": "parcial",
+              "explicacion": "Multiplicaste 10 · 7: eso es un área. El perímetro es el largo del borde: 2(10 + 7) = 34 m.",
+              "fn": "perimetro",
+              "args": [{ "vertices": [[0, 0], [10, 0], [10, 7], [0, 7]] }],
+              "campo": "area",
+              "valor": 70
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -80,7 +429,51 @@
         "Pero aparecen dos paredes verticales de 3 cm cada una, que antes no estaban.",
         "Perímetro: 34 + 3 + 3 = 40 cm. Con un entrante, la regla del rectángulo que encierra ya no basta."
       ],
-      "verificar": [ { "fn": "perimetro", "args": [{ "vertices": [[0, 0], [12, 0], [12, 5], [8, 5], [8, 2], [4, 2], [4, 5], [0, 5]] }], "espera": { "perimetro": 40, "caja": 34, "exceso": 6, "sinEntrantes": false } } ]
+      "verificar": [ { "fn": "perimetro", "args": [{ "vertices": [[0, 0], [12, 0], [12, 5], [8, 5], [8, 2], [4, 2], [4, 5], [0, 5]] }], "espera": { "perimetro": 40, "caja": 34, "exceso": 6, "sinEntrantes": false } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "A una plancha rectangular de 12 cm por 5 cm se le corta, en el borde de arriba, un entrante rectangular de 4 cm de ancho y 3 cm de hondo.",
+          "pregunta": "¿Cuál es el perímetro de la plancha que queda?",
+          "unidad": "cm",
+          "decimales": 0,
+          "correcta": {
+            "fn": "perimetro",
+            "args": [{ "vertices": [[0, 0], [12, 0], [12, 5], [8, 5], [8, 2], [4, 2], [4, 5], [0, 5]] }],
+            "campo": "perimetro",
+            "valor": 40
+          },
+          "errores": [
+            {
+              "id": "perimetro-entrante-como-rectangulo",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el perímetro del rectángulo entero. El entrante agrega dos paredes de 3 cm que antes no estaban.",
+              "fn": "perimetro",
+              "args": [{ "vertices": [[0, 0], [12, 0], [12, 5], [8, 5], [8, 2], [4, 2], [4, 5], [0, 5]] }],
+              "campo": "errores.comoRectangulo",
+              "valor": 34
+            },
+            {
+              "id": "perimetro-solo-lados-con-numero",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste solo los dos lados que tienen medida. El perímetro da toda la vuelta a la plancha.",
+              "fn": "perimetro",
+              "args": [{ "vertices": [[0, 0], [12, 0], [12, 5], [8, 5], [8, 2], [4, 2], [4, 5], [0, 5]] }],
+              "campo": "errores.soloConNumero",
+              "valor": 17
+            },
+            {
+              "id": "GE4-area-por-perimetro",
+              "respaldo": "parcial",
+              "explicacion": "Ese número es el área de la plancha. El perímetro es el largo del borde.",
+              "fn": "perimetro",
+              "args": [{ "vertices": [[0, 0], [12, 0], [12, 5], [8, 5], [8, 2], [4, 2], [4, 5], [0, 5]] }],
+              "campo": "errores.area",
+              "valor": 48
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -93,7 +486,46 @@
         "Los chicos miden lo mismo que el grande: al partir el diámetro en más pedazos, la suma de los arcos no cambia.",
         "Perímetro de la figura: 10π + 10π = 20π cm."
       ],
-      "verificar": [ { "fn": "semicirculos", "args": [{ "diametro": 20, "partes": 4 }], "espera": { "grande": 31.41592653589793, "chicos": 31.41592653589793, "exacto": "10π" } } ]
+      "verificar": [ { "fn": "semicirculos", "args": [{ "diametro": 20, "partes": 4 }], "espera": { "grande": 31.41592653589793, "chicos": 31.41592653589793, "exacto": "10π" } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Sobre un segmento de 20 cm se dibujan, hacia abajo, 4 semicírculos iguales, uno al lado del otro, que cubren todo el segmento.",
+          "pregunta": "¿Cuánto miden juntos los arcos de los 4 semicírculos?",
+          "unidad": "cm",
+          "decimales": 2,
+          "correcta": { "fn": "semicirculos", "args": [{ "diametro": 20, "partes": 4 }], "campo": "chicos", "valor": 31.4159265359 },
+          "errores": [
+            {
+              "id": "semicirculos-cada-uno-como-el-grande",
+              "respaldo": "hipotesis",
+              "explicacion": "Diste a cada semicírculo chico el largo del grande. Cada uno tiene diámetro 5: mide π · 5 ÷ 2.",
+              "fn": "semicirculos",
+              "args": [{ "diametro": 20, "partes": 4 }],
+              "campo": "errores.cadaUnoComoElGrande",
+              "valor": 125.663706144
+            },
+            {
+              "id": "semicirculos-como-el-area",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es un solo arco chico. Son cuatro: juntos miden 4 · 2,5π = 10π, lo mismo que el semicírculo grande.",
+              "fn": "semicirculos",
+              "args": [{ "diametro": 20, "partes": 4 }],
+              "campo": "errores.comoElArea",
+              "valor": 7.85398163397
+            },
+            {
+              "id": "semicirculos-como-la-recta",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el segmento recto. Cada arco es más largo que su diámetro: juntos miden 10π.",
+              "fn": "semicirculos",
+              "args": [{ "diametro": 20, "partes": 4 }],
+              "campo": "errores.comoLaRecta",
+              "valor": 20
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -106,7 +538,55 @@
         "La tercera fila queda 1, 3, 6, 10, 15, 21.",
         "Otra forma: cada camino tiene 7 cuadras, de las que 2 van al norte. Elegir esas 2 entre 7 se puede de 7 · 6 ÷ 2 = 21 maneras."
       ],
-      "verificar": [ { "fn": "caminos", "args": [{ "m": 5, "n": 2 }], "espera": { "caminos": 21, "combinatorio": 21 } } ]
+      "verificar": [ { "fn": "caminos", "args": [{ "m": 5, "n": 2 }], "espera": { "caminos": 21, "combinatorio": 21 } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "Para ir de su casa al colegio, Rosa camina 5 cuadras hacia el este y 2 cuadras hacia el norte por un plano de calles en cuadrícula, sin retroceder nunca.",
+          "pregunta": "¿Cuántos caminos distintos de la menor longitud puede seguir?",
+          "unidad": "caminos",
+          "decimales": 0,
+          "correcta": { "fn": "caminos", "args": [{ "m": 5, "n": 2 }], "campo": "caminos", "valor": 21 },
+          "errores": [
+            {
+              "id": "caminos-producto",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste las cuadras de un lado por las del otro. Cada camino elige cuáles 2 de sus 7 cuadras van al norte: 7 · 6 ÷ 2.",
+              "fn": "caminos",
+              "args": [{ "m": 5, "n": 2 }],
+              "campo": "errores.producto",
+              "valor": 10
+            },
+            {
+              "id": "caminos-suma",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el largo de cada camino, 7 cuadras. Lo que se cuenta es de cuántas maneras se ordenan.",
+              "fn": "caminos",
+              "args": [{ "m": 5, "n": 2 }],
+              "campo": "errores.suma",
+              "valor": 7
+            },
+            {
+              "id": "caminos-dos-a-la-n",
+              "respaldo": "hipotesis",
+              "explicacion": "No hay 2 opciones libres en cada cuadra: siempre son 5 al este y 2 al norte. Llena la cuadrícula sumando.",
+              "fn": "caminos",
+              "args": [{ "m": 5, "n": 2 }],
+              "campo": "errores.potencia",
+              "valor": 128
+            },
+            {
+              "id": "AR18-enumeracion-sin-sistema",
+              "respaldo": "documentado",
+              "explicacion": "Al dibujarlos uno por uno se escapan algunos. Llena cada cruce con la suma del de la izquierda y el de abajo.",
+              "fn": "caminos",
+              "args": [{ "m": 5, "n": 2 }],
+              "campo": "errores.aMano",
+              "valor": 15
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
@@ -119,7 +599,46 @@
         "Pasan por el cruce 3 · 3 = 9 caminos, y todos se pierden.",
         "Quedan 15 − 9 = 6. Compruébalo llenando la cuadrícula con un 0 en el cruce cerrado."
       ],
-      "verificar": [ { "fn": "cerrarCruce", "args": [{ "m": 4, "n": 2, "x": 2, "y": 1 }], "espera": { "total": 15, "porElCruce": 9, "quedan": 6 } } ]
+      "verificar": [ { "fn": "cerrarCruce", "args": [{ "m": 4, "n": 2, "x": 2, "y": 1 }], "espera": { "total": 15, "porElCruce": 9, "quedan": 6 } } ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "En un plano de 4 cuadras hacia el este y 2 hacia el norte se cierra por obras el cruce que está a 2 cuadras al este y 1 al norte de la salida.",
+          "pregunta": "¿Cuántos caminos de la menor longitud quedan para ir de una esquina a la opuesta?",
+          "unidad": "caminos",
+          "decimales": 0,
+          "correcta": { "fn": "cerrarCruce", "args": [{ "m": 4, "n": 2, "x": 2, "y": 1 }], "campo": "quedan", "valor": 6 },
+          "errores": [
+            {
+              "id": "caminos-cruce-sin-cambio",
+              "respaldo": "hipotesis",
+              "explicacion": "Esos son todos los caminos sin obras. Hay que quitar los que pasan por el cruce cerrado: 3 · 3 = 9.",
+              "fn": "cerrarCruce",
+              "args": [{ "m": 4, "n": 2, "x": 2, "y": 1 }],
+              "campo": "errores.sinCambio",
+              "valor": 15
+            },
+            {
+              "id": "caminos-cruce-restar-uno",
+              "respaldo": "hipotesis",
+              "explicacion": "Quitaste un solo camino. Por el cruce pasan muchos: 3 maneras de llegar por 3 de salir, 9.",
+              "fn": "cerrarCruce",
+              "args": [{ "m": 4, "n": 2, "x": 2, "y": 1 }],
+              "campo": "errores.restarUno",
+              "valor": 14
+            },
+            {
+              "id": "caminos-cruce-restar-hasta",
+              "respaldo": "hipotesis",
+              "explicacion": "Quitaste solo las 3 maneras de llegar al cruce. Cada una sigue de 3 maneras: se pierden 3 · 3 = 9.",
+              "fn": "cerrarCruce",
+              "args": [{ "m": 4, "n": 2, "x": 2, "y": 1 }],
+              "campo": "errores.restarHasta",
+              "valor": 12
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p10",
@@ -132,7 +651,55 @@
         "Prueba los otros desarrollos: √(16² + 5²) = √281 y √(17² + 4²) = √305, los dos más largos.",
         "La diagonal por dentro de la caja, √185, es más corta, pero la hormiga no puede atravesar la caja."
       ],
-      "verificar": [ { "fn": "hormiga", "args": [{ "x": 12, "y": 5, "z": 4 }], "espera": { "minimo": 15, "exacto": "15", "desarrollos.1.exacto": "√305", "desarrollos.2.exacto": "√281", "diagonalExacta": "√185" } } ]
+      "verificar": [ { "fn": "hormiga", "args": [{ "x": 12, "y": 5, "z": 4 }], "espera": { "minimo": 15, "exacto": "15", "desarrollos.1.exacto": "√305", "desarrollos.2.exacto": "√281", "diagonalExacta": "√185" } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Una caja cerrada mide 12 cm de largo, 5 cm de ancho y 4 cm de alto. Una hormiga está en una esquina de abajo y quiere llegar a la esquina de arriba más alejada caminando por la superficie.",
+          "pregunta": "¿Cuál es la menor distancia que recorre?",
+          "unidad": "cm",
+          "decimales": 2,
+          "correcta": { "fn": "hormiga", "args": [{ "x": 12, "y": 5, "z": 4 }], "campo": "minimo", "valor": 15 },
+          "errores": [
+            {
+              "id": "hormiga-diagonal-interior",
+              "respaldo": "hipotesis",
+              "explicacion": "Esa es la diagonal por dentro de la caja. La hormiga camina por fuera: abre la caja y traza la recta en el plano.",
+              "fn": "hormiga",
+              "args": [{ "x": 12, "y": 5, "z": 4 }],
+              "campo": "errores.diagonalInterior",
+              "valor": 13.6014705087
+            },
+            {
+              "id": "hormiga-por-aristas",
+              "respaldo": "hipotesis",
+              "explicacion": "Fuiste por las aristas, 12 + 5 + 4. Cortando en diagonal por dos caras se ahorra camino.",
+              "fn": "hormiga",
+              "args": [{ "x": 12, "y": 5, "z": 4 }],
+              "campo": "errores.porAristas",
+              "valor": 21
+            },
+            {
+              "id": "hormiga-cara-y-arista",
+              "respaldo": "hipotesis",
+              "explicacion": "Fuiste por una diagonal y una arista. Abre dos caras juntas: una sola diagonal de 12 por 9 es más corta.",
+              "fn": "hormiga",
+              "args": [{ "x": 12, "y": 5, "z": 4 }],
+              "campo": "errores.caraYArista",
+              "valor": 17
+            },
+            {
+              "id": "hormiga-otro-desarrollo",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese desarrollo, √(16² + 5²) ≈ 16,76, funciona, pero no es el más corto. Prueba las tres maneras de abrir la caja y quédate con la menor.",
+              "fn": "hormiga",
+              "args": [{ "x": 12, "y": 5, "z": 4 }],
+              "campo": "errores.otroDesarrollo",
+              "valor": 16.7630546142
+            }
+          ]
+        }
+      ]
     }
   ]
 }
