@@ -1566,7 +1566,15 @@
      "grado": 3,
      "plantillas": [
       "polinomios"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/polinomios.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.division-de-polinomios",
