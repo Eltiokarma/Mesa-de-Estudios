@@ -20,7 +20,7 @@
 })(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
-  const sol = n => `S/ ${f(n)}`;
+  const sol = n => `S/ ${f(n)}`;   // espacio duro: «S/» no se separa de su número
   const x = { v: 'c-o', t: 'x' }, y = { v: 'c-i', t: 'y' }, k = { v: 'c-d', t: 'k' }, T = { v: 'c-d', t: 'T' };
   const wi = { sub: ['w', 'i'] };
   function azar(s) {
@@ -42,6 +42,12 @@
     return ops.slice(0, 4);
   }
   const COL = ['o', 'i', 'h'];
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza (ejes.X/Y, arit-tiras.x/deX).
+  const EJES = () => Kit.piezas.ejes, TIRAS = () => Kit.piezas['arit-tiras'];
+  const inversa = (escala, p, q) => px => p + (px - escala(p)) * (q - p) / (escala(q) - escala(p));
+  // Manija en el borde de abajo de la tira k, en el valor dado (no tapa el rótulo final, que va a media altura).
+  const enTira = (datos, k, valor) => { const g = TIRAS().geometria(datos); return { x: g.x(valor), y: g.tiraY(k) + g.altoTira }; };
+  const valorEn = (datos, px) => TIRAS().geometria(datos).deX(px);
 
   // ---------- Idea 1: directa conserva el cociente; inversa, el producto ----------
   // Cambia: x, y el tipo de relación. Permanece: k = 24 (cociente 4 o producto 24) y los ejes.
@@ -85,6 +91,12 @@
       dibujo: v => ({ datos: planoJuego(v.tipo, v.x), estado: {} }),
       lectura: v => (v.tipo === 'directa' ? [y, ' ÷ ', x, ` = ${f(4 * v.x)} ÷ ${f(v.x)} = 4`] : [x, ' · ', y, ` = ${f(v.x)} · ${f(24 / v.x)} = 24`]),
       minimo: 3,
+      // Se arrastra el punto por su gráfica: el dedo elige x y la gráfica da y.
+      arrastres: [
+        { id: 'punto', etiqueta: 'el punto sobre la gráfica', color: 'c-o',
+          donde: v => { const g = EJES().geometria(planoJuego(v.tipo, v.x)); return { x: g.X(v.x), y: g.Y(v.tipo === 'directa' ? 4 * v.x : 24 / v.x) }; },
+          mover: (pt, v) => ({ x: inversa(EJES().geometria(planoJuego(v.tipo, v.x)).X, 0, 6)(pt.x) }) },
+      ],
     },
     predice: {
       pregunta: '12 obreros terminan una obra en 15 días. Si todos trabajan al mismo ritmo, ¿en cuántos días la terminan 20 obreros?',
@@ -98,6 +110,7 @@
       revelar: { datos: obreros(), estado: {} },
       coincide: 'Coincide: la obra son 180 días-obrero, y 180 ÷ 20 = 9.',
     },
+    // Hallazgo 9: «Mira» usa el mismo plano del juego (ejes): la curva de x · y = k con su rectángulo, ahora con obreros y días.
     mira: {
       datos: obreros({ curva: 3, a1: 1, a2: 2 }),
       pasos: [
@@ -108,7 +121,7 @@
     },
     regla: {
       texto: 'Son directamente proporcionales si su cociente es constante: la gráfica es una recta que pasa por el origen. Son inversamente proporcionales si su producto es constante.',
-      ecuacion: ['directa: ', { frac: [y, x] }, ' = ', k, '   ·   inversa: ', x, ' · ', y, ' = ', k],
+      ecuacion: ['directa: ', { llave: [{ frac: [y, x] }], nota: 'cociente' }, ' = ', k, '   ·   ', 'inversa: ', { llave: [x, ' · ', y], nota: 'producto' }, ' = ', k],
       condicion: 'crecer juntas no basta: y = 2x + 3 crece y no es proporcional. En la inversa, x no puede ser 0.',
     },
     ahoraTu: {
@@ -173,8 +186,14 @@
         { id: 'h', etiqueta: 'Horas al día', color: 'c-i', min: 2, max: 10, paso: 2, inicio: 4, decimales: 0 },
       ],
       dibujo: v => ({ datos: obraDatos(120, v.o * v.h), estado: {} }),
-      lectura: v => [`${f(v.o)} · ${f(v.h)} = ${f(v.o * v.h)} por día → ${f(120 / (v.o * v.h))} días`],
+      lectura: v => [`${f(v.o)} · ${f(v.h)} = ${f(v.o * v.h)} por día → ${f(120 / (v.o * v.h))} días`],
       minimo: 3,
+      // Se arrastra el fin del primer día: alargarlo es trabajar más horas al día (con los mismos obreros).
+      arrastres: [
+        { id: 'fin-dia-1', etiqueta: 'fin del primer día: horas al día', color: 'c-i',
+          donde: v => enTira(obraDatos(120, v.o * v.h), 1, v.o * v.h),
+          mover: (pt, v) => ({ h: valorEn(obraDatos(120, v.o * v.h), pt.x) / v.o }) },
+      ],
     },
     predice: {
       pregunta: '8 obreros trabajando 6 horas al día hacen una obra en 10 días. ¿En cuántos días harían la misma obra 12 obreros trabajando 5 horas al día?',
@@ -184,12 +203,12 @@
         { id: 'todo-directo', texto: '18 días', error: 'AR8', siFuera: 'Eso trata a los obreros como directos: más obreros tardarían más.' },
         { id: 'solo-obreros', texto: '6,67 días', error: 'AT-OLVIDA', siFuera: 'Eso usa solo a los obreros; las horas también cambiaron.' },
       ],
-      dibujo: { datos: obraDatos(480, 60, { paso: 9, rotObra: 'obra: 8 · 6 · 10 horas-obrero', rotDias: 'un día = 12 · 5 horas-obrero' }), estado: {} },
-      revelar: { datos: obraDatos(480, 60, { rotObra: 'obra: 8 · 6 · 10 = 480 horas-obrero', rotDias: 'un día = 12 · 5 = 60 horas-obrero' }), estado: {} },
+      dibujo: { datos: obraDatos(480, 60, { paso: 9, rotObra: 'obra: 8 · 6 · 10', rotDias: 'un día: 12 · 5' }), estado: {} },
+      revelar: { datos: obraDatos(480, 60, { rotObra: 'obra: 8 · 6 · 10 = 480', rotDias: 'un día: 12 · 5 = 60' }), estado: {} },
       coincide: 'Coincide: 480 horas-obrero se cortan en 8 días de 60.',
     },
     mira: {
-      datos: obraDatos(480, 60, { paso: 2, rotObra: 'obra: 8 · 6 · 10 = 480 horas-obrero', rotDias: 'un día = 12 · 5 = 60 horas-obrero' }),
+      datos: obraDatos(480, 60, { paso: 2, rotObra: 'obra: 8 · 6 · 10 = 480', rotDias: 'un día: 12 · 5 = 60' }),
       pasos: [
         { estado: { paso: 1 }, texto: 'La obra no cambia: obreros por horas por días.', ecuacion: ['8 · 6 · 10 = 480'] },
         { estado: { paso: 2 }, texto: 'Un día nuevo avanza 12 obreros por 5 horas.', ecuacion: ['12 · 5 = 60'] },
@@ -198,7 +217,7 @@
     },
     regla: {
       texto: 'Si la obra es la misma, obreros por horas diarias por días da siempre lo mismo. Cada magnitud que trabaja es inversa a los días.',
-      ecuacion: [{ sub: ['o', '1'] }, { sub: ['h', '1'] }, { sub: ['d', '1'] }, ' = ', { sub: ['o', '2'] }, { sub: ['h', '2'] }, { sub: ['d', '2'] }],
+      ecuacion: [{ llave: [{ sub: ['o', '1'] }, { sub: ['h', '1'] }, { sub: ['d', '1'] }], nota: 'la obra' }, ' = ', { llave: [{ sub: ['o', '2'] }, { sub: ['h', '2'] }, { sub: ['d', '2'] }], nota: 'la misma obra' }],
       condicion: 'todos rinden igual y la obra no cambia. Si la obra se duplica, los días se duplican: obra y días son directas.',
     },
     ahoraTu: {
@@ -208,7 +227,7 @@
         const res = o1 * h1 * d1 / (o2 * h2);
         return {
           pregunta: `${o1} obreros, a ${h1} horas diarias, hacen una obra en ${d1} días. ¿En cuántos días la harían ${o2} obreros a ${h2} horas diarias?`,
-          dibujo: { datos: obraDatos(o1 * h1 * d1, o2 * h2, { paso: 9, rotObra: `obra: ${o1} · ${h1} · ${d1} horas-obrero`, rotDias: `un día = ${o2} · ${h2} horas-obrero` }), estado: {} },
+          dibujo: { datos: obraDatos(o1 * h1 * d1, o2 * h2, { paso: 9, rotObra: `obra: ${o1} · ${h1} · ${d1}`, rotDias: `un día: ${o2} · ${h2}` }), estado: {} },
           opciones: opciones(res, [
             { id: 'horas-directa', valor: d1 * o1 / o2 * h2 / h1, error: 'AR9', siFuera: 'Eso trata las horas diarias como directas a los días.' },
             { id: 'obreros-directa', valor: d1 * o2 / o1 * h1 / h2, error: 'AR8', siFuera: 'Eso trata a los obreros como directos a los días.' },
@@ -225,7 +244,7 @@
   };
 
   // ---------- Idea 3: repartir según pesos (directo o inverso) ----------
-  // Cambia: los pesos y el modo. Permanece: el total de S/ 240 a la misma escala.
+  // Cambia: los pesos y el modo. Permanece: el total de S/ 240 a la misma escala.
   // Progresa: pesos → partes iguales → montos. Se reserva: el inverso, donde el peso menor recibe más.
   // Debe verse: en el inverso, la parte del 2 es más larga que la del 3.
   const repartoDatos = (total, pesos, inverso, o = {}) => {
@@ -239,13 +258,21 @@
       ],
     };
   };
+  // Lo que recibe la parte 1 y, al revés, el peso 1 que da un corte b del total (con los demás pesos fijos).
+  const parte1 = (total, pesos, inverso) => { const w = inverso ? pesos.map(p => 1 / p) : pesos; return total * w[0] / w.reduce((u, z) => u + z, 0); };
+  function pesoDesdeCorte(b, total, otros, inverso) {
+    const r = Math.min(total - 0.5, Math.max(0.5, b)) / total;      // fracción del total; nunca 0 ni 1
+    const resto = [].concat(otros).reduce((u, z) => u + (inverso ? 1 / z : z), 0);
+    const w = resto * r / (1 - r);                                   // peso efectivo de la parte 1
+    return inverso ? 1 / w : w;
+  }
   const reparto = {
     id: 'reparto',
     titulo: 'Repartir según pesos',
     temas: ['Reparto proporcional'],
     pieza: 'arit-tiras',
     juega: {
-      consigna: 'Reparte S/ 240 entre dos personas según sus pesos. Cambia los pesos y el modo: directo o inverso.',
+      consigna: 'Reparte S/ 240 entre dos personas según sus pesos. Cambia los pesos y el modo: directo o inverso.',
       voz: 'En el inverso, mira quién recibe la parte más grande.',
       controles: [
         { id: 'modo', etiqueta: 'Reparto', opciones: [{ valor: 'directo', texto: 'Directo' }, { valor: 'inverso', texto: 'Inverso' }] },
@@ -255,14 +282,20 @@
       dibujo: v => ({ datos: repartoDatos(240, [v.p, v.q], v.modo === 'inverso'), estado: {} }),
       lectura: v => { const w = v.modo === 'inverso' ? [1 / v.p, 1 / v.q] : [v.p, v.q], sw = w[0] + w[1]; return [`Recibe ${sol(240 * w[0] / sw)} y ${sol(240 * w[1] / sw)}`]; },
       minimo: 3,
+      // Se arrastra el corte entre las dos partes: el dedo fija la parte 1 y de ahí sale el peso 1 (con el peso 2 fijo).
+      arrastres: [
+        { id: 'corte', etiqueta: 'el corte entre las dos partes: peso 1', color: 'c-o',
+          donde: v => enTira(repartoDatos(240, [v.p, v.q], v.modo === 'inverso'), 1, parte1(240, [v.p, v.q], v.modo === 'inverso')),
+          mover: (pt, v) => ({ p: pesoDesdeCorte(valorEn(repartoDatos(240, [v.p, v.q], v.modo === 'inverso'), pt.x), 240, v.q, v.modo === 'inverso') }) },
+      ],
     },
     predice: {
-      pregunta: 'Se reparten S/ 240 en forma inversamente proporcional a 2 y 3. ¿Cuánto recibe la parte que corresponde al 2?',
+      pregunta: 'Se reparten S/ 240 en forma inversamente proporcional a 2 y 3. ¿Cuánto recibe la parte que corresponde al 2?',
       opciones: [
-        { id: 'c', texto: 'S/ 144', correcta: true },
-        { id: 'directo', texto: 'S/ 96', error: 'AR10', siFuera: '96 sería cierto en un reparto directo. Al revés, al número menor le toca más.' },
-        { id: 'igual', texto: 'S/ 120', error: 'AT-REPARTE-IGUAL', siFuera: 'Eso reparte en partes iguales, sin usar los pesos.' },
-        { id: 'mitad', texto: 'S/ 80', error: 'AT-PARTES', siFuera: 'Eso divide 240 entre 3; los pesos inversos son 1/2 y 1/3.' },
+        { id: 'c', texto: 'S/ 144', correcta: true },
+        { id: 'directo', texto: 'S/ 96', error: 'AR10', siFuera: '96 sería cierto en un reparto directo. Al revés, al número menor le toca más.' },
+        { id: 'igual', texto: 'S/ 120', error: 'AT-REPARTE-IGUAL', siFuera: 'Eso reparte en partes iguales, sin usar los pesos.' },
+        { id: 'mitad', texto: 'S/ 80', error: 'AT-PARTES', siFuera: 'Eso divide 240 entre 3; los pesos inversos son 1/2 y 1/3.' },
       ],
       dibujo: { datos: repartoDatos(240, [2, 3], true, { paso: 9 }), estado: {} },
       revelar: { datos: repartoDatos(240, [2, 3], true), estado: {} },
@@ -272,13 +305,13 @@
       datos: repartoDatos(240, [2, 3], true, { paso: 3 }),
       pasos: [
         { estado: { paso: 1 }, texto: 'Inverso a 2 y 3: los pesos son 1/2 y 1/3.', ecuacion: [{ frac: ['1', '2'] }, ' : ', { frac: ['1', '3'] }] },
-        { estado: { paso: 2 }, texto: 'Multiplicando por 6 quedan pesos enteros: 3 y 2.', ecuacion: ['6 · ', { frac: ['1', '2'] }, ' = 3   ·   6 · ', { frac: ['1', '3'] }, ' = 2'] },
+        { estado: { paso: 2 }, texto: 'Multiplicando por 6 quedan pesos enteros: 3 y 2.', ecuacion: ['6 · ', { frac: ['1', '2'] }, ' = 3', '   ·   ', '6 · ', { frac: ['1', '3'] }, ' = 2'] },
         { estado: { paso: 3 }, texto: 'Son 5 partes de 48: 3 partes y 2 partes.', ecuacion: ['240 ÷ 5 = 48 → 144 y 96'] },
       ],
     },
     regla: {
       texto: 'Repartir un total en forma directa a unos pesos da a cada uno su peso entre la suma de pesos. El reparto inverso usa como pesos los inversos.',
-      ecuacion: [{ sub: ['x', 'i'] }, ' = ', T, ' · ', { frac: [wi, ['Σ', 'w']] }, '   ·   inverso: ', wi, ' → ', { frac: ['1', wi] }],
+      ecuacion: [{ sub: ['x', 'i'] }, ' = ', { llave: [T], nota: 'total', color: 'c-d' }, ' · ', { llave: [{ frac: [wi, ['Σ', 'w']] }], nota: 'su fracción' }, '   ·   ', 'inverso: ', wi, ' → ', { frac: ['1', wi] }],
       condicion: 'los pesos son positivos. Multiplicar todos los pesos por el mismo número no cambia el reparto.',
     },
     ahoraTu: {
@@ -292,7 +325,7 @@
         const i = 0, parte = T2 * w[i] / sw;
         const wo = inverso ? pesos : pesos.map(p => 1 / p), swo = wo.reduce((a, b) => a + b, 0);
         return {
-          pregunta: `Se reparten S/ ${f(T2)} en forma ${inverso ? 'inversamente' : 'directamente'} proporcional a ${pesos.join(', ').replace(/, ([^,]*)$/, ' y $1')}. ¿Cuánto le toca a la parte del ${pesos[i]}?`,
+          pregunta: `Se reparten S/ ${f(T2)} en forma ${inverso ? 'inversamente' : 'directamente'} proporcional a ${pesos.join(', ').replace(/, ([^,]*)$/, ' y $1')}. ¿Cuánto le toca a la parte del ${pesos[i]}?`,
           dibujo: { datos: repartoDatos(T2, pesos, inverso, { sinMontos: true }), estado: { paso: 9 } },
           opciones: opciones(parte, [
             { id: 'otro-modo', valor: T2 * wo[i] / swo, error: inverso ? 'AR10' : 'AT-INVERSA', siFuera: inverso ? 'Eso reparte en forma directa; aquí al número menor le toca más.' : 'Eso reparte en forma inversa.' },
@@ -310,7 +343,7 @@
   };
 
   // ---------- Idea 4: regla de compañía: el peso es capital por tiempo ----------
-  // Cambia: el capital y los meses del socio A. Permanece: el socio B (S/ 3000, 12 meses) y la ganancia.
+  // Cambia: el capital y los meses del socio A. Permanece: el socio B (S/ 3000, 12 meses) y la ganancia.
   // Progresa: capital → capital × meses → parte. Se reserva: el caso donde más capital no es más ganancia.
   // Debe verse: la tira de cada socio mide capital × meses.
   const compDatos = (ca, ta, cb, tb, G, o = {}) => {
@@ -329,7 +362,7 @@
     temas: ['Regla de compañía'],
     pieza: 'arit-tiras',
     juega: {
-      consigna: 'Dos socios reparten S/ 6000 de ganancia. B puso 3 mil soles durante 12 meses. Cambia el capital y los meses de A.',
+      consigna: 'Dos socios reparten S/ 6000 de ganancia. B puso 3 mil soles durante 12 meses. Cambia el capital y los meses de A.',
       voz: 'Busca un caso donde A pone más y recibe menos.',
       controles: [
         { id: 'c', etiqueta: 'Capital de A', color: 'c-o', min: 1, max: 8, paso: 1, inicio: 4, unidad: 'mil', decimales: 0 },
@@ -338,14 +371,20 @@
       dibujo: v => ({ datos: compDatos(v.c, v.t, 3, 12, 6000), estado: {} }),
       lectura: v => [`A recibe ${sol(6000 * v.c * v.t / (v.c * v.t + 36))}`],
       minimo: 3,
+      // Se arrastra el fin de la parte de A: el dedo fija lo que recibe y de ahí sale el capital (con sus meses fijos).
+      arrastres: [
+        { id: 'parte-a', etiqueta: 'fin de la parte de A: capital', color: 'c-o',
+          donde: v => enTira(compDatos(v.c, v.t, 3, 12, 6000), 0, 6000 * v.c * v.t / (v.c * v.t + 36)),
+          mover: (pt, v) => ({ c: pesoDesdeCorte(valorEn(compDatos(v.c, v.t, 3, 12, 6000), pt.x), 6000, 36, false) / v.t }) },
+      ],
     },
     predice: {
-      pregunta: 'A puso S/ 4000 durante 6 meses y B puso S/ 3000 durante 12 meses. Ganaron S/ 5000. ¿Cuánto le toca a A?',
+      pregunta: 'A puso S/ 4000 durante 6 meses y B puso S/ 3000 durante 12 meses. Ganaron S/ 5000. ¿Cuánto le toca a A?',
       opciones: [
-        { id: 'c', texto: 'S/ 2000', correcta: true },
-        { id: 'capital', texto: 'S/ 2857,14', error: 'AT-SOLO-CAPITAL', siFuera: 'Sería cierto si los dos estuvieran el mismo tiempo. B estuvo el doble.' },
-        { id: 'igual', texto: 'S/ 2500', error: 'AT-REPARTE-IGUAL', siFuera: 'Eso reparte a medias, sin pesos.' },
-        { id: 'tiempo', texto: 'S/ 1666,67', error: 'AT-SOLO-TIEMPO', siFuera: 'Eso usa solo los meses; también cuenta el capital.' },
+        { id: 'c', texto: 'S/ 2000', correcta: true },
+        { id: 'capital', texto: 'S/ 2857,14', error: 'AT-SOLO-CAPITAL', siFuera: 'Sería cierto si los dos estuvieran el mismo tiempo. B estuvo el doble.' },
+        { id: 'igual', texto: 'S/ 2500', error: 'AT-REPARTE-IGUAL', siFuera: 'Eso reparte a medias, sin pesos.' },
+        { id: 'tiempo', texto: 'S/ 1666,67', error: 'AT-SOLO-TIEMPO', siFuera: 'Eso usa solo los meses; también cuenta el capital.' },
       ],
       dibujo: { datos: compDatos(4, 6, 3, 12, 5000, { sin: true }), estado: {} },
       revelar: { datos: compDatos(4, 6, 3, 12, 5000), estado: {} },
@@ -354,14 +393,14 @@
     mira: {
       datos: compDatos(4, 6, 3, 12, 5000),
       pasos: [
-        { estado: {}, texto: 'El peso de cada socio es capital por meses.', ecuacion: ['A: 4 · 6 = 24   ·   B: 3 · 12 = 36'] },
+        { estado: {}, texto: 'El peso de cada socio es capital por meses.', ecuacion: ['A: 4 · 6 = 24', '   ·   ', 'B: 3 · 12 = 36'] },
         { estado: {}, texto: 'Los pesos 24 y 36 son como 2 y 3: cinco partes.', ecuacion: ['24 : 36 = 2 : 3'] },
-        { estado: {}, texto: 'Cada parte vale S/ 1000: A recibe dos.', ecuacion: ['5000 ÷ 5 = 1000 → A = 2000'] },
+        { estado: {}, texto: 'Cada parte vale S/ 1000: A recibe dos.', ecuacion: ['5000 ÷ 5 = 1000 → A = 2000'] },
       ],
     },
     regla: {
       texto: 'En la regla de compañía la ganancia se reparte en forma directa al producto de capital por tiempo de cada socio.',
-      ecuacion: [{ sub: ['G', 'A'] }, ' = G · ', { frac: [{ sub: ['C', 'A'] }, ['Σ C · t']] }, ' · ', { sub: ['t', 'A'] }],
+      ecuacion: [{ sub: ['G', 'A'] }, ' = G · ', { llave: [{ frac: [[{ sub: ['C', 'A'] }, ' · ', { sub: ['t', 'A'] }], 'Σ C · t'] }], nota: 'peso de A' }],
       condicion: 'vale si así lo acordaron y los tiempos se miden en la misma unidad. Si el tiempo es igual, basta el capital.',
     },
     ahoraTu: {
@@ -371,7 +410,7 @@
         const wa = ca * ta, wb = cb * tb, G = (wa + wb) * r.de([50, 100, 150, 200]);
         const res = G * wa / (wa + wb);
         return {
-          pregunta: `A puso S/ ${f(ca * 1000)} durante ${ta} meses y B, S/ ${f(cb * 1000)} durante ${tb} meses. Ganaron S/ ${f(G)}. ¿Cuánto le toca a A?`,
+          pregunta: `A puso S/ ${f(ca * 1000)} durante ${ta} meses y B, S/ ${f(cb * 1000)} durante ${tb} meses. Ganaron S/ ${f(G)}. ¿Cuánto le toca a A?`,
           opciones: opciones(res, [
             { id: 'capital', valor: G * ca / (ca + cb), error: 'AT-SOLO-CAPITAL', siFuera: 'Eso usa solo el capital; también cuenta el tiempo.' },
             { id: 'tiempo', valor: G * ta / (ta + tb), error: 'AT-SOLO-TIEMPO', siFuera: 'Eso usa solo los meses; también cuenta el capital.' },
@@ -387,11 +426,86 @@
     },
   };
 
+  // Mesa «tres relaciones»: y = kx, xy = 6k o y = kx + 6 (crece con x, pero no es proporcional).
+  const NOMBRE = { directa: 'Directa', inversa: 'Inversa', afin: 'Ninguna' };
+  const yLibre = (tipo, kk, xv) => (tipo === 'directa' ? kk * xv : tipo === 'inversa' ? 6 * kk / xv : kk * xv + 6);
+  const planoLibre = v => {
+    const yv = yLibre(v.tipo, v.k, v.x);
+    return {
+      x: { min: 0, max: 6, paso: 1, nombre: 'x', decimales: 0, color: 'o' },
+      y: { min: 0, max: 42, paso: 6, cada: 2, nombre: 'y', decimales: 0, color: 'i' },
+      curvas: [{ puntos: v.tipo === 'inversa' ? curvaInversa(6 * v.k, v.k / 7, 6) : [[0, yLibre(v.tipo, v.k, 0)], [6, yLibre(v.tipo, v.k, 6)]], color: 'i' }],
+      areas: v.tipo === 'inversa' ? [{ puntos: [[0, yv], [v.x, yv]], color: 'd' }] : [],
+      puntos: [{ x: v.x, y: yv, color: 'i', rotulo: `(${f(v.x)}; ${f(yv)})`, guias: true }],
+    };
+  };
+
   return {
     unidad: 'aritmetica.magnitudes-proporcionales',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/arit-tiras.js'],
+    // Laboratorio: juego libre, sin preguntas. «Tres relaciones» suma el caso que crece sin ser proporcional (y = kx + 6)
+    // y deja elegir la constante; «Reparto entre tres» corta un total en tres partes; la obra es el juego de la idea 2.
+    laboratorio: [
+      {
+        id: 'tres-relaciones', titulo: 'Directa, inversa o ninguna', pieza: 'ejes',
+        consigna: 'Elige la relación y la constante k. Arrastra el punto y mira si el cociente o el producto se quedan quietos.',
+        controles: [
+          { id: 'tipo', etiqueta: 'Relación', opciones: [{ valor: 'directa', texto: 'y = kx' }, { valor: 'inversa', texto: 'xy = 6k' }, { valor: 'afin', texto: 'y = kx + 6' }] },
+          { id: 'k', etiqueta: 'k', color: 'c-d', min: 1, max: 6, paso: 1, inicio: 2, decimales: 0 },
+          { id: 'x', etiqueta: 'x', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: planoLibre(v), estado: {} }),
+        lectura: v => {
+          const yv = yLibre(v.tipo, v.k, v.x);
+          return [`${NOMBRE[v.tipo]}, k = ${f(v.k)}:`, ' ', y, ' ÷ ', x, ` = ${f(yv / v.x)}`, '   ·   ', x, ' · ', y, ` = ${f(v.x * yv)}`];
+        },
+        arrastres: [
+          { id: 'punto', etiqueta: 'el punto sobre la gráfica', color: 'c-o',
+            donde: v => { const g = EJES().geometria(planoLibre(v)); return { x: g.X(v.x), y: g.Y(yLibre(v.tipo, v.k, v.x)) }; },
+            mover: (pt, v) => ({ x: inversa(EJES().geometria(planoLibre(v)).X, 0, 6)(pt.x) }) },
+          { id: 'altura', etiqueta: 'la gráfica en x = 6: cambia k', color: 'c-d',
+            donde: v => { const g = EJES().geometria(planoLibre(v)); return { x: g.X(6), y: g.Y(yLibre(v.tipo, v.k, 6)) }; },
+            mover: (pt, v) => {
+              const yv = inversa(EJES().geometria(planoLibre(v)).Y, 0, 42)(pt.y);
+              return { k: v.tipo === 'directa' ? yv / 6 : v.tipo === 'inversa' ? yv : (yv - 6) / 6 };
+            } },
+        ],
+      },
+      {
+        id: 'reparto-tres', titulo: 'Reparto entre tres', pieza: 'arit-tiras',
+        consigna: 'Reparte S/ 600 entre tres según sus pesos. Arrastra los dos cortes o cambia los pesos. Prueba directo e inverso con los mismos pesos.',
+        controles: [
+          { id: 'modo', etiqueta: 'Reparto', opciones: [{ valor: 'directo', texto: 'Directo' }, { valor: 'inverso', texto: 'Inverso' }] },
+          { id: 'p', etiqueta: 'Peso 1', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 1, decimales: 0 },
+          { id: 'q', etiqueta: 'Peso 2', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 2, decimales: 0 },
+          { id: 'r', etiqueta: 'Peso 3', color: 'c-h', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: repartoDatos(600, [v.p, v.q, v.r], v.modo === 'inverso'), estado: {} }),
+        lectura: v => {
+          const inv = v.modo === 'inverso', w = [v.p, v.q, v.r].map(z => (inv ? 1 / z : z)), sw = w[0] + w[1] + w[2];
+          return [`${inv ? 'Inverso' : 'Directo'} a ${v.p}, ${v.q}, ${v.r}: ${w.map(z => f(600 * z / sw)).join('; ')}`];
+        },
+        arrastres: [
+          { id: 'corte-1', etiqueta: 'primer corte: peso 1', color: 'c-o',
+            donde: v => enTira(repartoDatos(600, [v.p, v.q, v.r], v.modo === 'inverso'), 1, parte1(600, [v.p, v.q, v.r], v.modo === 'inverso')),
+            mover: (pt, v) => ({ p: pesoDesdeCorte(valorEn(repartoDatos(600, [v.p, v.q, v.r], v.modo === 'inverso'), pt.x), 600, [v.q, v.r], v.modo === 'inverso') }) },
+          { id: 'corte-2', etiqueta: 'segundo corte: peso 2', color: 'c-i',
+            donde: v => enTira(repartoDatos(600, [v.p, v.q, v.r], v.modo === 'inverso'), 1, 600 - parte1(600, [v.r, v.p, v.q], v.modo === 'inverso')),
+            mover: (pt, v) => {
+              // Lo que queda a la derecha del corte es la parte 3: de ahí sale el peso conjunto de 1 y 2, y el de 2.
+              const inv = v.modo === 'inverso';
+              const b3 = 600 - valorEn(repartoDatos(600, [v.p, v.q, v.r], inv), pt.x);
+              const w3 = inv ? 1 / v.r : v.r;
+              const r3 = Math.min(599.5, Math.max(0.5, b3)) / 600;
+              const w12 = w3 * (1 - r3) / r3, w2 = w12 - (inv ? 1 / v.p : v.p);
+              return { q: w2 > 0 ? (inv ? 1 / w2 : w2) : (inv ? 6 : 1) };
+            } },
+        ],
+      },
+      Object.assign({ id: 'obra', titulo: 'La obra se corta en días', pieza: 'arit-tiras' }, compuesta.juega),
+    ],
     historia: {
       texto: 'El Liber abaci de Fibonacci, de 1202, circuló por el Mediterráneo con métodos que su autor aprendió en el norte de África y en sus viajes. Mostró la utilidad del cálculo para problemas concretos de comercio, sin inventar la proporcionalidad. Repartir un total con criterios explícitos es una necesidad antigua; escribirla con pesos y una suma es la forma moderna.',
       pregunta: '¿Cómo repartirías una ganancia entre socios que pusieron distinto?',
