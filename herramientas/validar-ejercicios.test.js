@@ -61,15 +61,38 @@ test('esquema: campos según el estado', () => {
   assert.deepEqual(errores(h), []);
 });
 
-test('regla 5: un ejercicio de academia nunca se publica ni es instancia fija', () => {
+test('regla 5: un ejercicio de academia (sin cita) nunca se publica ni es instancia fija', () => {
   const a = academia(); a.estado = 'publicado'; a.respuesta = { valor: 12 };
   a.verificacion = { por: 'generador', coincide: true, resultado: 12 };
-  assert.ok(tiene(errores(a), 'no es ninguno de oficial, propio'));
+  assert.ok(tiene(errores(a), 'no es ninguno de oficial, libro, propio'));
   const b = academia(); b.mapeo = { via: 'instancia', pieza: 'balanza' };
   assert.ok(tiene(errores(b), 'instancia fija no puede ser de academia'));
   // El presupuesto de texto no se le aplica: no se publica.
   const c = academia(); c.enunciado = larga(80);
   assert.deepEqual(V.presupuestoEjercicio(c), []);
+});
+
+test('regla 5: un ejercicio de libro entra con cita y banco, y puede publicarse', () => {
+  const libro = () => ({
+    id: 'cz-libro-problema-0001', estado: 'crudo',
+    origen: { tipo: 'libro', fuente: 'id-del-pdf', libro: 'Álgebra', autor: 'Autor', editorial: 'Cuzcano', problema: { tipo: 'problema', numero: 1 }, pagina: 47, cita: 'Autor, Álgebra (Cuzcano), problema 1, p. 47.' },
+    banco: { uid: 'id-del-pdf:problema:1', ficha: { enunciado: 'Algo.' } },
+    enunciado: larga(80),
+  });
+  assert.deepEqual(errores(libro()), []);
+  // Sin cita o sin banco, no entra.
+  const a = libro(); delete a.origen.cita;
+  assert.ok(tiene(errores(a), 'falta «cita»'));
+  const b = libro(); delete b.banco;
+  assert.ok(tiene(errores(b), 'falta «banco»'));
+  // Va tal cual: el enunciado no paga presupuesto, pero los pasos propios sí.
+  assert.deepEqual(V.presupuestoEjercicio(libro()), []);
+  const c = libro(); c.pasos = [{ estado: {}, texto: larga(20) }];
+  assert.equal(V.presupuestoEjercicio(c).length, 1);
+  // Se puede publicar.
+  const d = libro(); d.estado = 'publicado'; d.curso = 'algebra'; d.unidad = 'algebra.polinomios'; d.tipo = 'polinomios/grados';
+  d.mapeo = { via: 'nuevo' }; d.respuesta = { valor: 2 }; d.verificacion = { por: 'calculo-independiente', coincide: true, resultado: 2 };
+  assert.ok(!tiene(errores(d), 'no es ninguno de'));
 });
 
 test('regla 1: el resultado del código debe ser la respuesta', () => {
@@ -84,8 +107,13 @@ test('regla 1: el resultado del código debe ser la respuesta', () => {
 test('catálogo, tipos, mapeo y piezas', () => {
   const a = propio(); a.unidad = 'aritmetica.no-existe';
   assert.ok(tiene(errores(a), 'no está en catalogo'));
-  const b = propio(); b.unidad = 'fisica.movimiento-rectilineo';
-  assert.ok(tiene(errores(b), 'es de fisica'));
+  // Una unidad de otro curso vale: el curso es el del libro y la unidad, donde se estudia.
+  const b = propio(); b.unidad = 'fisica.movimiento-rectilineo'; delete b.tipo;
+  assert.ok(!errores(b).some(e => e.startsWith('unidad:')));
+  const b2 = propio(); b2.unidades_tambien = ['razonamiento-matematico.planteo-de-ecuaciones', 'aritmetica.no-existe', b2.unidad];
+  assert.ok(tiene(errores(b2), '«aritmetica.no-existe» no está en catalogo'));
+  assert.ok(tiene(errores(b2), 'repite la unidad principal'));
+  assert.ok(!tiene(errores(b2), 'planteo-de-ecuaciones'));
   const c = propio(); c.tipo = 'mezclas/otra-cosa';
   assert.ok(tiene(errores(c), 'debe empezar por «porcentajes/»'));
   const d = academia(); d.tipo = 'cortes-y-pesadas/sin-registro';

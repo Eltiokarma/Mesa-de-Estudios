@@ -147,7 +147,8 @@ function esHuerfano(ej, ctx) {
 function presupuestoEjercicio(ej) {
   const mal = [];
   if (ej.origen && ej.origen.tipo === 'academia') return mal; // no se publica: no paga presupuesto
-  if (!(ej.origen && ej.origen.tipo === 'oficial')) {
+  // Oficiales y de libro van tal cual, con su cita (regla 5): el enunciado no paga presupuesto; lo que escribimos nosotros, sí.
+  if (!(ej.origen && (ej.origen.tipo === 'oficial' || ej.origen.tipo === 'libro'))) {
     const n = palabras(ej.enunciado) + palabras(ej.pregunta);
     if (n > PRESUPUESTO.enunciado) mal.push(`enunciado de ${n} palabras (máximo ${PRESUPUESTO.enunciado} sin los datos con color)`);
   }
@@ -171,8 +172,13 @@ function validarEjercicio(ej, ctx) {
   // Unidad y curso, contra el catálogo.
   if (ej.unidad) {
     const u = ctx.unidades.get(ej.unidad);
+    // La unidad puede ser de otro curso que la ficha (decisión de Gerson, 13 nov 2026): `curso` es el del libro
+    // y `unidad`, donde se estudia. Un libro de razonamiento matemático trae probabilidades, que viven en aritmética.
     if (!u) errores.push(`unidad: «${ej.unidad}» no está en catalogo/cursos/`);
-    else if (ej.curso && u.curso !== ej.curso) errores.push(`unidad: «${ej.unidad}» es de ${u.curso}, no de ${ej.curso}`);
+    for (const t of ej.unidades_tambien || []) {
+      if (!ctx.unidades.has(t)) errores.push(`unidades_tambien: «${t}» no está en catalogo/cursos/`);
+      else if (t === ej.unidad) errores.push(`unidades_tambien: «${t}» repite la unidad principal`);
+    }
     if (ej.tipo && ej.tipo.split('/')[0] !== ej.unidad.split('.')[1]) errores.push(`tipo: «${ej.tipo}» debe empezar por «${ej.unidad.split('.')[1]}/»`);
   }
   // Mapeo: el propio o el del registro.
@@ -246,7 +252,7 @@ function leerCarpeta(dir) {
     for (const f of fs.readdirSync(d).sort()) {
       const p = path.join(d, f);
       if (fs.statSync(p).isDirectory()) { recorrer(p); continue; }
-      if (f === 'esquema.json' || f === 'tipos.json') continue;
+      if (f === 'esquema.json' || f === 'tipos.json' || f === 'temas.json' || f === 'subtemas.json' || f === 'revision-unidades.json') continue;
       const rel = path.relative(RAIZ, p);
       try {
         if (f.endsWith('.jsonl')) {
