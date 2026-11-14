@@ -3643,7 +3643,15 @@
      "plantillas": [
       "orden-informacion",
       "rm-parentesco"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/ordenamiento-de-informacion.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-tablero.js",
+       "/nucleo/kit/piezas/rm-plano.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.verdades-y-mentiras",
