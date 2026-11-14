@@ -112,6 +112,23 @@
       "tambien": [ { "fn": "reglaSerrucho", "args": [{ "derecha": [30, 40, 35], "izquierda": [60], "incognita": "izquierda", "vecinos": [40, 35] }],
                      "espera": { "x": 45, "sumaDerecha": 105, "sumaIzquierda": 105, "errores.suma180": 15, "errores.olvidaUno": 105, "errores.soloVecinos": 75 } } ] },
 
+    { "nombre": "Papel p1 (alternativas): AC = 17, BD = 21 y AD = 30 → BC = 8; restar los dos segmentos que se pisan da BD − AC = 4 (verificado aparte con coordenadas A = 0, B = 9, C = 17, D = 30)",
+      "fn": "solapados", "args": [{ "AC": 17, "BD": 21, "AD": 30 }],
+      "espera": { "BC": 8, "errores.restaSegmentos": 4 } },
+
+    { "nombre": "Papel p3 (alternativas): AD = 26 y BC = 8 → MN = 17; olvidar BC da AB/2 + CD/2 = (AD − BC)/2 = 9 (verificado aparte con A = 0, B = 10, C = 18, D = 26)",
+      "fn": "puntosMedios", "args": [{ "AD": 26, "BC": 8 }],
+      "espera": { "MN": 17, "errores.olvidaBC": 9 } },
+
+    { "nombre": "Papel p9 (alternativas): a la derecha 25 + 55 + 40 = 120, repartido entre P1 y P3 = 2·P1 → 40 y 80; sin el ángulo en B (80) → 26,67 y 53,33 (verificado aparte)",
+      "fn": "reglaSerrucho", "args": [{ "derecha": [25, 55, 40], "izquierda": [], "incognita": "izquierda", "razones": [1, 2] }],
+      "espera": { "x": 120, "partes": [40, 80] },
+      "tambien": [ { "args": [{ "derecha": [25, 55], "izquierda": [], "incognita": "izquierda", "razones": [1, 2] }], "espera": { "x": 80, "partes": [26.666666666666668, 53.333333333333336] } } ] },
+
+    { "nombre": "Papel p10 (alternativas): bisectrices a 52° y a − b = 24 → a = 64 y b = 40; con a + b = 52 (sin duplicar) a = 38 (verificado aparte midiendo rayos)",
+      "fn": "bisectricesDatos", "args": [{ "entre": 52, "diferencia": 24 }],
+      "espera": { "a": 64, "b": 40, "total": 104, "errores.sinMitad": 38 } },
+
     { "nombre": "Dos rectas que se cortan con 100° entre ellas (experimento 1): los opuestos por el vértice 2 y 3 miden 100°; 1 y 4, 80°",
       "fn": "cruce", "args": [0, 100],
       "espera": { "angulos": [80, 100, 100, 80] } }

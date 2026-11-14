@@ -13,7 +13,46 @@
         "17 + 21 = 30 + BC, así que BC = 38 − 30 = 8 cm.",
         "Comprobación: AB = AD − BD = 9 y CD = AD − AC = 13; 9 + 8 + 13 = 30."
       ],
-      "verificar": [ { "fn": "solapados", "args": [{ "AC": 17, "BD": 21, "AD": 30 }], "espera": { "BC": 8, "AB": 9, "CD": 13 } } ]
+      "verificar": [ { "fn": "solapados", "args": [{ "AC": 17, "BD": 21, "AD": 30 }], "espera": { "BC": 8, "AB": 9, "CD": 13 } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Sobre una recta se ubican, en ese orden, los puntos A, B, C y D. AC = 17 cm, BD = 21 cm y AD = 30 cm.",
+          "pregunta": "¿Cuánto mide BC?",
+          "unidad": "cm",
+          "decimales": 1,
+          "correcta": { "fn": "solapados", "args": [{ "AC": 17, "BD": 21, "AD": 30 }], "campo": "BC", "valor": 8 },
+          "errores": [
+            {
+              "id": "GE-resta-segmentos-solapados",
+              "respaldo": "hipotesis",
+              "explicacion": "Restar BD − AC no da ningún tramo. AC y BD se pisan en BC: AC + BD = AD + BC, y BC = 38 − 30.",
+              "fn": "solapados",
+              "args": [{ "AC": 17, "BD": 21, "AD": 30 }],
+              "campo": "errores.restaSegmentos",
+              "valor": 4
+            },
+            {
+              "id": "GE-resta-da-otro-segmento",
+              "respaldo": "hipotesis",
+              "explicacion": "AD − AC es CD, lo que le falta a AC para llegar a D. BC es el tramo que AC y BD comparten.",
+              "fn": "solapados",
+              "args": [{ "AC": 17, "BD": 21, "AD": 30 }],
+              "campo": "errores.restaConAD",
+              "valor": 13
+            },
+            {
+              "id": "GE-promedia-los-datos",
+              "respaldo": "hipotesis",
+              "explicacion": "El promedio de AC y BD no es ningún tramo del dibujo. Usa AC + BD = AD + BC.",
+              "fn": "solapados",
+              "args": [{ "AC": 17, "BD": 21, "AD": 30 }],
+              "campo": "errores.promedio",
+              "valor": 19
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -26,7 +65,37 @@
         "BM = 12/2 = 6 cm. No hace falta saber cuánto miden AB y BC por separado."
       ],
       "verificar": [ { "fn": "medioYDiferencia", "args": [{ "diferencia": 12 }], "espera": { "BM": 6 } },
-                     { "fn": "medioYDiferencia", "args": [{ "AB": 20, "BC": 8 }], "espera": { "BM": 6, "mEnLado": "AB" } } ]
+                     { "fn": "medioYDiferencia", "args": [{ "AB": 20, "BC": 8 }], "espera": { "BM": 6, "mEnLado": "AB" } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "En una recta están, en ese orden, los puntos A, B y C, y M es el punto medio de AC. AB − BC = 12 cm.",
+          "pregunta": "¿Cuánto mide BM?",
+          "unidad": "cm",
+          "decimales": 1,
+          "correcta": { "fn": "medioYDiferencia", "args": [{ "diferencia": 12 }], "campo": "BM", "valor": 6 },
+          "errores": [
+            {
+              "id": "GE-medios-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "BM = AB − AM = AB − (AB + BC)/2 = (AB − BC)/2: falta dividir 12 entre 2.",
+              "fn": "medioYDiferencia",
+              "args": [{ "diferencia": 12 }],
+              "campo": "errores.sinMitad",
+              "valor": 12
+            },
+            {
+              "id": "GE-medios-divide-entre-4",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste dos veces. BM = (AB − BC)/2: basta sacar una mitad de 12.",
+              "fn": "medioYDiferencia",
+              "args": [{ "diferencia": 12 }],
+              "campo": "errores.cuarto",
+              "valor": 3
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -39,7 +108,37 @@
         "MN = 9 + 8 = 17 cm. Dicho de otro modo: MN = (AD + BC)/2 = 34/2 = 17."
       ],
       "verificar": [ { "fn": "puntosMedios", "args": [{ "AD": 26, "BC": 8 }], "espera": { "MN": 17 } },
-                     { "fn": "mediosEnRecta", "args": [{ "A": 0, "B": 10, "C": 18, "D": 26 }], "espera": { "MN": 17 } } ]
+                     { "fn": "mediosEnRecta", "args": [{ "A": 0, "B": 10, "C": 18, "D": 26 }], "espera": { "MN": 17 } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Los puntos A, B, C y D están en una recta, en ese orden. M es el punto medio de AB y N, el de CD. AD = 26 cm y BC = 8 cm.",
+          "pregunta": "¿Cuánto mide MN?",
+          "unidad": "cm",
+          "decimales": 1,
+          "correcta": { "fn": "puntosMedios", "args": [{ "AD": 26, "BC": 8 }], "campo": "MN", "valor": 17 },
+          "errores": [
+            {
+              "id": "GE-medios-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "AD + BC tiene a BC dos veces y a AB y CD enteros. MN es justo la mitad: (26 + 8)/2.",
+              "fn": "puntosMedios",
+              "args": [{ "AD": 26, "BC": 8 }],
+              "campo": "errores.sinMitad",
+              "valor": 34
+            },
+            {
+              "id": "GE-medios-olvida-BC",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste las mitades de AB y CD, que dan 9. Entre M y N también está BC entero: MN = 9 + 8.",
+              "fn": "puntosMedios",
+              "args": [{ "AD": 26, "BC": 8 }],
+              "campo": "errores.olvidaBC",
+              "valor": 9
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -52,7 +151,37 @@
         "90 + x = 3x, así que 90 = 2x y x = 45°.",
         "Comprobación: el complemento de 45° es 45° y su suplemento, 135°, que es el triple de 45°."
       ],
-      "verificar": [ { "fn": "resolverAngulo", "args": [[{ "ops": ["suplemento", "complemento"] }], [{ "k": 3, "ops": [] }]], "espera": { "x": 45, "izquierda": 135 } } ]
+      "verificar": [ { "fn": "resolverAngulo", "args": [[{ "ops": ["suplemento", "complemento"] }], [{ "k": 3, "ops": [] }]], "espera": { "x": 45, "izquierda": 135 } } ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "El suplemento del complemento de un ángulo es igual al triple del ángulo.",
+          "pregunta": "¿Cuánto mide el ángulo?",
+          "unidad": "°",
+          "decimales": 1,
+          "correcta": { "fn": "resolverAngulo", "args": [[{ "ops": ["suplemento", "complemento"] }], [{ "k": 3, "ops": [] }]], "campo": "x", "valor": 45 },
+          "errores": [
+            {
+              "id": "GE-da-el-otro-lado",
+              "respaldo": "hipotesis",
+              "explicacion": "135° es el suplemento del complemento, que vale el triple. La pregunta es el ángulo: 90 + x = 3x da x = 45°.",
+              "fn": "resolverAngulo",
+              "args": [[{ "ops": ["suplemento", "complemento"] }], [{ "k": 3, "ops": [] }]],
+              "campo": "izquierda",
+              "valor": 135
+            },
+            {
+              "id": "GE-hace-solo-una-operacion",
+              "respaldo": "hipotesis",
+              "explicacion": "Te quedaste en el complemento, 90 − x. Falta sacarle el suplemento: 180 − (90 − x) = 90 + x.",
+              "fn": "resolverAngulo",
+              "args": [[{ "ops": ["complemento"] }], [{ "k": 3, "ops": [] }]],
+              "campo": "x",
+              "valor": 22.5
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p5",
@@ -64,7 +193,37 @@
         "(90 − x) + (180 − x) = 210, o sea 270 − 2x = 210.",
         "Entonces 2x = 60 y x = 30°. Comprobación: 60° + 150° = 210°."
       ],
-      "verificar": [ { "fn": "resolverAngulo", "args": [[{ "ops": ["complemento"] }, { "ops": ["suplemento"] }], [{ "valor": 210 }]], "espera": { "x": 30 } } ]
+      "verificar": [ { "fn": "resolverAngulo", "args": [[{ "ops": ["complemento"] }, { "ops": ["suplemento"] }], [{ "valor": 210 }]], "espera": { "x": 30 } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "La suma del complemento y el suplemento de un ángulo es 210°.",
+          "pregunta": "¿Cuánto mide el ángulo?",
+          "unidad": "°",
+          "decimales": 1,
+          "correcta": { "fn": "resolverAngulo", "args": [[{ "ops": ["complemento"] }, { "ops": ["suplemento"] }], [{ "valor": 210 }]], "campo": "x", "valor": 30 },
+          "errores": [
+            {
+              "id": "GE-junta-las-x",
+              "respaldo": "hipotesis",
+              "explicacion": "Hay dos x restando: (90 − x) + (180 − x) = 270 − 2x. Con 270 − x = 210 se pierde una.",
+              "fn": "resolverAngulo",
+              "args": [[{ "valor": 90 }, { "valor": 180 }, { "k": -1, "ops": [] }], [{ "valor": 210 }]],
+              "campo": "x",
+              "valor": 60
+            },
+            {
+              "id": "GE-complemento-con-180",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 180 también para el complemento. El complemento es lo que falta para 90°: 90 − x.",
+              "fn": "resolverAngulo",
+              "args": [[{ "ops": ["suplemento"] }, { "ops": ["suplemento"] }], [{ "valor": 210 }]],
+              "campo": "x",
+              "valor": 75
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -77,7 +236,73 @@
         "Cada ángulo: 4·30 − 20 = 100° y 2·30 + 40 = 100°.",
         "Ojo: si los sumas a 180° sale x = 80/3 y los ángulos (86,7° y 93,3°) no son iguales; los alternos externos deben ser iguales."
       ],
-      "verificar": [ { "fn": "ecuacionPar", "args": ["alternos externos", [4, -20], [2, 40]], "espera": { "x": 30, "angulos": [100, 100] } } ]
+      "verificar": [ { "fn": "ecuacionPar", "args": ["alternos externos", [4, -20], [2, 40]], "espera": { "x": 30, "angulos": [100, 100] } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "L₁ ∥ L₂ y una secante las corta. Dos ángulos alternos externos miden 4x − 20 y 2x + 40.",
+          "pregunta": "¿Cuánto vale x?",
+          "decimales": 2,
+          "correcta": { "fn": "ecuacionPar", "args": ["alternos externos", [4, -20], [2, 40]], "campo": "x", "valor": 30 },
+          "errores": [
+            {
+              "id": "GE17-suplementa-alternos",
+              "respaldo": "hipotesis",
+              "explicacion": "Los sumaste a 180°, como si fueran conjugados. Los alternos externos, entre paralelas, son iguales: 4x − 20 = 2x + 40.",
+              "fn": "ecuacionPar",
+              "args": ["alternos externos", [4, -20], [2, 40]],
+              "campo": "errores.otraRelacion.x",
+              "valor": 26.6666666667
+            },
+            {
+              "id": "GE-despeje-signo",
+              "respaldo": "hipotesis",
+              "explicacion": "El −20 pasó al otro lado sin cambiar de signo. Debe pasar como +20: 2x = 40 + 20 = 60, no 20.",
+              "fn": "ecuacionPar",
+              "args": ["alternos externos", [4, -20], [2, 40]],
+              "campo": "errores.despejeSigno",
+              "valor": 10
+            },
+            {
+              "id": "GE-da-el-angulo-y-no-x",
+              "respaldo": "hipotesis",
+              "explicacion": "100° es lo que mide cada ángulo. La pregunta es x: 4x − 20 = 100 da x = 30.",
+              "fn": "ecuacionPar",
+              "args": ["alternos externos", [4, -20], [2, 40]],
+              "campo": "errores.xEsElAngulo",
+              "valor": 100
+            }
+          ]
+        },
+        {
+          "id": "p6b",
+          "enunciado": "L₁ ∥ L₂ y una secante las corta. Dos ángulos alternos externos miden 4x − 20 y 2x + 40.",
+          "pregunta": "¿Cuánto mide cada uno de esos ángulos?",
+          "unidad": "°",
+          "decimales": 1,
+          "correcta": { "fn": "ecuacionPar", "args": ["alternos externos", [4, -20], [2, 40]], "campo": "angulos.0", "valor": 100 },
+          "errores": [
+            {
+              "id": "GE17-suplementa-alternos",
+              "respaldo": "hipotesis",
+              "explicacion": "Los sumaste a 180° y no salen iguales. Entre paralelas, los alternos externos son iguales: x = 30 y cada uno mide 100°.",
+              "fn": "ecuacionPar",
+              "args": ["alternos externos", [4, -20], [2, 40]],
+              "campo": "errores.otraRelacion.angulos.0",
+              "valor": 86.6666666667
+            },
+            {
+              "id": "GE-da-x-y-no-el-angulo",
+              "respaldo": "hipotesis",
+              "explicacion": "30 es x. Falta reemplazar: 4 · 30 − 20 = 100°.",
+              "fn": "ecuacionPar",
+              "args": ["alternos externos", [4, -20], [2, 40]],
+              "campo": "x",
+              "valor": 30
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -89,7 +314,46 @@
         "(2x + 30) + (3x + 50) = 180, o sea 5x + 80 = 180, y x = 20.",
         "Los ángulos miden 2·20 + 30 = 70° y 3·20 + 50 = 110°. El menor mide 70°."
       ],
-      "verificar": [ { "fn": "ecuacionPar", "args": ["conjugados externos", [2, 30], [3, 50]], "espera": { "x": 20, "angulos": [70, 110] } } ]
+      "verificar": [ { "fn": "ecuacionPar", "args": ["conjugados externos", [2, 30], [3, 50]], "espera": { "x": 20, "angulos": [70, 110] } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "L₁ ∥ L₂. Una secante forma con ellas dos ángulos conjugados externos que miden 2x + 30 y 3x + 50.",
+          "pregunta": "¿Cuánto mide el menor de los dos?",
+          "unidad": "°",
+          "decimales": 1,
+          "correcta": { "fn": "ecuacionPar", "args": ["conjugados externos", [2, 30], [3, 50]], "campo": "angulos.0", "valor": 70 },
+          "errores": [
+            {
+              "id": "GE-da-el-mayor",
+              "respaldo": "hipotesis",
+              "explicacion": "110° es el mayor. Con x = 20, los ángulos miden 70° y 110°: el menor es 70°.",
+              "fn": "ecuacionPar",
+              "args": ["conjugados externos", [2, 30], [3, 50]],
+              "campo": "angulos.1",
+              "valor": 110
+            },
+            {
+              "id": "GE-da-x-y-no-el-angulo",
+              "respaldo": "hipotesis",
+              "explicacion": "20 es x. Falta reemplazar: 2 · 20 + 30 = 70°.",
+              "fn": "ecuacionPar",
+              "args": ["conjugados externos", [2, 30], [3, 50]],
+              "campo": "x",
+              "valor": 20
+            },
+            {
+              "id": "GE-conjugados-suman-90",
+              "respaldo": "hipotesis",
+              "explicacion": "Los sumaste a 90°. Los conjugados externos, entre paralelas, suman 180°: 5x + 80 = 180.",
+              "fn": "ecuacionPar",
+              "args": ["conjugados externos", [2, 30], [3, 50]],
+              "campo": "errores.complementarios.angulos.0",
+              "valor": 34
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -102,7 +366,82 @@
         "2x = 46 y x = 23. El ángulo en B mide 69° y m∠APB = 48 + 69 = 117°."
       ],
       "verificar": [ { "fn": "resolverLineal", "args": [5, 2, 3, 48], "espera": { "valor": 23 } },
-                     { "fn": "quiebre", "args": [48, 69], "espera": { "angulo": 117 } } ]
+                     { "fn": "quiebre", "args": [48, 69], "espera": { "angulo": 117 } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "L₁ ∥ L₂. Un camino baja de un punto A de L₁ a un punto B de L₂ con un solo quiebre en P, cuya punta mira hacia la derecha (el ángulo APB abre hacia la izquierda). En A forma 48° con L₁, en B forma 3x con L₂ y m∠APB = 5x + 2.",
+          "pregunta": "¿Cuánto vale x?",
+          "decimales": 2,
+          "correcta": { "fn": "resolverLineal", "args": [5, 2, 3, 48], "campo": "valor", "valor": 23 },
+          "errores": [
+            {
+              "id": "GE-despeje-signo",
+              "respaldo": "hipotesis",
+              "explicacion": "El +2 pasó al otro lado sin cambiar de signo. De 5x + 2 = 48 + 3x sale 2x = 46.",
+              "fn": "resolverLineal",
+              "args": [5, -2, 3, 48],
+              "campo": "valor",
+              "valor": 25
+            },
+            {
+              "id": "GE-quiebre-suplementa",
+              "respaldo": "hipotesis",
+              "explicacion": "El quiebre no es lo que falta para 180°. Una paralela por P lo parte en 48° y 3x, que se suman: 5x + 2 = 48 + 3x.",
+              "fn": "resolverAngulo",
+              "args": [[{ "k": 5, "ops": [] }, { "valor": 2 }], [{ "valor": 180 }, { "valor": -48 }, { "k": -3, "ops": [] }]],
+              "campo": "x",
+              "valor": 16.25
+            },
+            {
+              "id": "GE-da-el-angulo-y-no-x",
+              "respaldo": "hipotesis",
+              "explicacion": "117° es lo que mide el ángulo APB. La pregunta es x: de 5x + 2 = 48 + 3x sale x = 23.",
+              "fn": "quiebre",
+              "args": [48, 69],
+              "campo": "angulo",
+              "valor": 117
+            }
+          ]
+        },
+        {
+          "id": "p8b",
+          "enunciado": "L₁ ∥ L₂. Un camino baja de un punto A de L₁ a un punto B de L₂ con un solo quiebre en P, cuya punta mira hacia la derecha. En A forma 48° con L₁ y en B forma 69° con L₂.",
+          "pregunta": "¿Cuánto mide el ángulo APB?",
+          "unidad": "°",
+          "decimales": 1,
+          "correcta": { "fn": "quiebre", "args": [48, 69], "campo": "angulo", "valor": 117 },
+          "errores": [
+            {
+              "id": "GE-quiebre-suplementa",
+              "respaldo": "hipotesis",
+              "explicacion": "Lo que falta para 180° no es el quiebre. Una paralela por P lo parte en 48° y 69°, que se suman.",
+              "fn": "quiebre",
+              "args": [48, 69],
+              "campo": "errores.suplementa",
+              "valor": 63
+            },
+            {
+              "id": "GE-quiebre-resta",
+              "respaldo": "hipotesis",
+              "explicacion": "Restar no sale del dibujo. Una paralela por P parte el quiebre en 48° y 69°, que se suman: 117°.",
+              "fn": "quiebre",
+              "args": [48, 69],
+              "campo": "errores.resta",
+              "valor": 21
+            },
+            {
+              "id": "GE-quiebre-promedia",
+              "respaldo": "hipotesis",
+              "explicacion": "El promedio no aparece en el dibujo: dentro del ángulo APB caben enteros 48° y 69°.",
+              "fn": "quiebre",
+              "args": [48, 69],
+              "campo": "errores.promedio",
+              "valor": 58.5
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
@@ -116,7 +455,51 @@
         "La regla sale de trazar una paralela por cada quiebre: cada ángulo se parte en dos alternos internos."
       ],
       "verificar": [ { "fn": "reglaSerrucho", "args": [{ "derecha": [25, 55, 40], "izquierda": [], "incognita": "izquierda" }], "espera": { "x": 120 } },
-                     { "fn": "resolverLineal", "args": [3, 0, 0, 120], "espera": { "valor": 40 } } ]
+                     { "fn": "resolverLineal", "args": [3, 0, 0, 120], "espera": { "valor": 40 } } ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "L₁ ∥ L₂. Entre ellas baja un serrucho de A (en L₁) a B (en L₂) con tres quiebres P1, P2 y P3. Los ángulos que abren hacia la derecha miden 25° (en A), 55° (en P2) y 40° (en B). Los que abren hacia la izquierda son los de P1 y P3, y el de P3 es el doble del de P1.",
+          "pregunta": "¿Cuánto mide el ángulo en P3?",
+          "unidad": "°",
+          "decimales": 1,
+          "correcta": {
+            "fn": "reglaSerrucho",
+            "args": [{ "derecha": [25, 55, 40], "izquierda": [], "incognita": "izquierda", "razones": [1, 2] }],
+            "campo": "partes.1",
+            "valor": 80
+          },
+          "errores": [
+            {
+              "id": "GE-da-el-otro-angulo",
+              "respaldo": "hipotesis",
+              "explicacion": "40° es el ángulo en P1. El de P3 es el doble: 80°.",
+              "fn": "reglaSerrucho",
+              "args": [{ "derecha": [25, 55, 40], "izquierda": [], "incognita": "izquierda", "razones": [1, 2] }],
+              "campo": "partes.0",
+              "valor": 40
+            },
+            {
+              "id": "GE-no-reparte-la-suma",
+              "respaldo": "hipotesis",
+              "explicacion": "120° es lo que suman P1 y P3 juntos. Falta repartirlo: x + 2x = 120.",
+              "fn": "reglaSerrucho",
+              "args": [{ "derecha": [25, 55, 40], "izquierda": [], "incognita": "izquierda", "razones": [1, 2] }],
+              "campo": "x",
+              "valor": 120
+            },
+            {
+              "id": "GE-olvida-el-de-B",
+              "respaldo": "hipotesis",
+              "explicacion": "El ángulo en B también abre a la derecha. A la derecha suman 25 + 55 + 40 = 120.",
+              "fn": "reglaSerrucho",
+              "args": [{ "derecha": [25, 55], "izquierda": [], "incognita": "izquierda", "razones": [1, 2] }],
+              "campo": "partes.1",
+              "valor": 53.3333333333
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p10",
@@ -129,7 +512,37 @@
         "Sumando: 2a = 128, de donde a = 64° y b = 40°.",
         "Comprobación: 32° + 20° = 52°."
       ],
-      "verificar": [ { "fn": "bisectrices", "args": [64, 40], "espera": { "entre": 52, "mitades": [32, 20] } } ]
+      "verificar": [ { "fn": "bisectrices", "args": [64, 40], "espera": { "entre": 52, "mitades": [32, 20] } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Los ángulos AOB y BOC son consecutivos (comparten el lado OB). Sus bisectrices forman un ángulo de 52°, y m∠AOB excede en 24° a m∠BOC.",
+          "pregunta": "¿Cuánto mide el ángulo AOB?",
+          "unidad": "°",
+          "decimales": 1,
+          "correcta": { "fn": "bisectricesDatos", "args": [{ "entre": 52, "diferencia": 24 }], "campo": "a", "valor": 64 },
+          "errores": [
+            {
+              "id": "GE-bisectrices-sin-mitad",
+              "respaldo": "hipotesis",
+              "explicacion": "Entre las bisectrices quedan solo las mitades: a/2 + b/2 = 52, así que a + b = 104, no 52.",
+              "fn": "bisectricesDatos",
+              "args": [{ "entre": 52, "diferencia": 24 }],
+              "campo": "errores.sinMitad",
+              "valor": 38
+            },
+            {
+              "id": "GE-da-el-otro-angulo",
+              "respaldo": "hipotesis",
+              "explicacion": "40° es m∠BOC, el menor. El ángulo AOB lo excede en 24°: 64°.",
+              "fn": "bisectricesDatos",
+              "args": [{ "entre": 52, "diferencia": 24 }],
+              "campo": "b",
+              "valor": 40
+            }
+          ]
+        }
+      ]
     }
   ]
 }

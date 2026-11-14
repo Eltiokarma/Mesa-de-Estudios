@@ -33,7 +33,8 @@
  *   ecuacionPar(tipo, [a1, b1], [a2, b2])  ángulos a1·x + b1 y a2·x + b2 que forman ese par: x y los ángulos
  *   noParalelas(a1, a2, d)        alternos internos distintos: las rectas se cortan; dónde y con qué ángulo
  *   quiebre(alfa, beta)           el ángulo del quiebre entre paralelas es alfa + beta
- *   reglaSerrucho({ derecha, izquierda, incognita })  la regla del serrucho con números
+ *   reglaSerrucho({ derecha, izquierda, incognita, razones })  la regla del serrucho con números (razones reparte x)
+ *   bisectricesDatos({ entre, diferencia })  ángulos consecutivos a y b desde el ángulo entre sus bisectrices y a − b
  *   serrucho(puntos, o)           una quebrada entre dos paralelas horizontales: ángulos, hacia dónde abre
  *                                 cada uno y las dos sumas (la regla del serrucho)
  *                                 vueltas = (suma de los que abren a la derecha − suma de los que abren a la
@@ -106,19 +107,22 @@
       errores: {
         sumaSolapados: limpio(AC + BD),        // suma los dos segmentos como si no se pisaran
         promedio: limpio((AC + BD) / 2),       // promedia los datos
-        restaConAD: CD                         // AD − AC, que es CD y no BC
+        restaConAD: CD,                        // AD − AC, que es CD y no BC
+        restaSegmentos: limpio(Math.abs(BD - AC)) // resta los dos segmentos que se pisan
       }
     };
   }
 
   // M medio de AB y N medio de CD (A, B, C, D consecutivos): MN = AB/2 + BC + CD/2 = (AC + BD)/2 = (AD + BC)/2.
   function puntosMedios(o) {
-    let s;
+    let s, olvidaBC;
     if (o.AC !== undefined || o.BD !== undefined) s = num(o.AC, 'AC') + num(o.BD, 'BD');
-    else if (o.AD !== undefined || o.BC !== undefined) s = num(o.AD, 'AD') + num(o.BC, 'BC');
+    else if (o.AD !== undefined || o.BC !== undefined) { s = num(o.AD, 'AD') + num(o.BC, 'BC'); olvidaBC = limpio((o.AD - o.BC) / 2); }
     else throw new Error('se necesita AC y BD, o AD y BC');
     if (!(s > 0)) throw new Error('las medidas deben ser positivas');
-    return { MN: limpio(s / 2), suma: limpio(s), errores: { sinMitad: limpio(s), cuarto: limpio(s / 4) } };
+    const errores = { sinMitad: limpio(s), cuarto: limpio(s / 4) };
+    if (olvidaBC !== undefined) errores.olvidaBC = olvidaBC;   // (AD − BC)/2: suma las mitades de AB y CD y se olvida de BC
+    return { MN: limpio(s / 2), suma: limpio(s), errores };
   }
   // Lo mismo con coordenadas, como cálculo independiente: M y N, MN, AC, BD, AD, BC.
   function mediosEnRecta(puntos) {
@@ -248,6 +252,15 @@
     };
   }
 
+  // Al revés: se conocen el ángulo entre las bisectrices de AOB y BOC y la diferencia a − b.
+  // a + b = 2·entre y a − b = diferencia. errores.sinMitad: a si se toma a + b = entre (sin duplicar).
+  function bisectricesDatos(o) {
+    const e = num(o.entre, 'el ángulo entre las bisectrices'), d = num(o.diferencia, 'la diferencia');
+    const a = limpio(e + d / 2), b = limpio(e - d / 2);
+    if (!(a > 0 && b > 0)) throw new Error('con esos datos los ángulos no salen positivos');
+    return { a, b, total: limpio(2 * e), errores: { sinMitad: limpio((e + d) / 2) } };
+  }
+
   // ================= Paralelas y una secante =================
   // En cada cruce, la recta (hacia la derecha: dirección dL) y la secante (hacia arriba: dS) forman cuatro ángulos:
   // 1 arriba a la izquierda, 2 arriba a la derecha, 3 abajo a la izquierda, 4 abajo a la derecha (5 a 8 en L2).
@@ -350,7 +363,10 @@
     if (!(x > 0 && x < 180)) throw new Error('con esos datos el ángulo no sale entre 0° y 180°');
     const errores = { suma180: limpio(180 - sD - sI), olvidaUno: limpio(o.incognita === 'derecha' ? sI : sD) };
     if (o.vecinos) errores.soloVecinos = limpio(o.vecinos.reduce((s, v) => s + num(v, 'vecino'), 0));
-    return { x, sumaDerecha: limpio(sD + (o.incognita === 'derecha' ? x : 0)), sumaIzquierda: limpio(sI + (o.incognita === 'derecha' ? 0 : x)), errores };
+    // razones: si la incógnita son varios ángulos en esa razón (P3 = 2·P1 es [1, 2]), partes reparte x entre ellos.
+    let partes;
+    if (o.razones) { const r = o.razones.map(v => num(v, 'razón')), t = r.reduce((s, v) => s + v, 0); if (!(t > 0)) throw new Error('las razones deben sumar más que 0'); partes = r.map(v => limpio(x * v / t)); }
+    return { x, partes, sumaDerecha: limpio(sD + (o.incognita === 'derecha' ? x : 0)), sumaIzquierda: limpio(sI + (o.incognita === 'derecha' ? 0 : x)), errores };
   }
 
   // Quebrada A = P0, P1, …, Pk, B = Pk+1 entre L1 (y = o.arriba) y L2 (y = o.abajo), con A en L1 y B en L2; cada tramo baja.
@@ -419,5 +435,5 @@
 
   return { recta, moverEnRecta, solapados, puntosMedios, mediosEnRecta, medioYDiferencia,
     clase, angulo, cadena, lineal, resolverLineal, resolverAngulo, direccion, entreRayos, bisectrices,
-    cruce, ochoAngulos, par, paralelas, ecuacionPar, noParalelas, quiebre, reglaSerrucho, serrucho, construirQuebrada, construirQuiebre, n360, azar };
+    cruce, ochoAngulos, par, paralelas, ecuacionPar, noParalelas, quiebre, reglaSerrucho, bisectricesDatos, serrucho, construirQuebrada, construirQuiebre, n360, azar };
 });
