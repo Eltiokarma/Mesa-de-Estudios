@@ -253,6 +253,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'poligonos', unidad: 'geometria.poligonos-y-cuadrilateros', version: '0.1.0' };
@@ -1060,6 +1061,23 @@ function explorar(){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de cualquier pregunta se juega con el polígono del paso 1. Mientras se juega, la perilla de lados
+// está junto al dibujo (la guía queda velada); al seguir, vuelve a su lugar en el paso 1.
+(function(){
+  const caja = document.createElement('div'); caja.className = 'perilla-juego';
+  caja.innerHTML = `<div class="perilla"><label for="n0">Lados ${n_('n')}</label>
+  <button type="button" class="btn" data-dn0="-1" aria-label="Un lado menos">−</button>
+  <input type="range" id="n0" min="3" max="12" step="1" value="${S.n}">
+  <button type="button" class="btn" data-dn0="1" aria-label="Un lado más">+</button><output id="n0-o">${S.n}</output></div>`;
+  $('cv').closest('.lienzo').after(caja);
+  const r = $('n0'), o = $('n0-o');
+  const poner = n => { n = clamp(n, 3, 12); r.value = n; o.textContent = n; S.n = n; if (E.reg) { E.reg.n = n; E.dibujar(); E.avisar(); } };
+  r.addEventListener('input', () => poner(+r.value));
+  caja.querySelectorAll('[data-dn0]').forEach(b => b.onclick = () => poner(S.n + +b.dataset.dn0));
+  JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+    consigna:'Cambia los lados con la perilla y mira cómo se abre el polígono.', minimo:2,
+    alListo:() => { caja.remove(); go(0); } });
+})();
 })();
 </script>
 
@@ -1166,11 +1184,16 @@ function botones(){
     : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
   $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
 }
+// Regla 3: antes del primer experimento, juego libre con un cuadrilátero de vértices que se arrastran (sin ángulos
+// ni nombres, que es lo que se pregunta después).
+let jugado = false;
+const juegoLibre = () => E.config({ modo:'cuad', q:{ V:[[0, 0], [5, 0], [4, 3], [1, 4]], drag:true, marcas:true }, caja:{ x0:-1.5, x1:7.5, y0:-1.5, y1:5.5 }, rejilla:true,
+  desc:'Cuadrilátero ABCD con vértices que se arrastran.', lect:[], ley:[[null, '| lados iguales'], [null, '⌐ ángulo recto'], [null, '› lados paralelos']] });
 function ir(k){
   if (k < 0 || k >= EXPS.length || !abierto(k)) return;
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k], ya = !!S.pred[x.id];
-  x.antes(ya);
+  if (jugado) x.antes(ya); else juegoLibre();
   E.compactar(!ya);
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
@@ -1198,6 +1221,9 @@ function ir(k){
   pintar();
 }
 ir(0);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra los vértices del cuadrilátero y mira sus marcas.', minimo:2,
+  alListo:() => { jugado = true; ir(S.k); } });
 })();
 </script>
 
