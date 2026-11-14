@@ -46,6 +46,12 @@
     return ops.slice(0, n);
   }
   const perim = pts => pts.reduce((s, p, i) => s + U.dist(p, pts[(i + 1) % pts.length]), 0);
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura; aPlano (o sobreRecta, en 3D) la
+  // vuelve coordenadas del problema y el lector ajusta cada valor al paso y al rango de su control.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const alPlano = (datos, pt) => G.aPlano(datos, pt);
+  const SEP = '   ·   ';
+  const sq = (b, e) => ({ sup: [b, e] });
 
   // ---------- Idea 1: perímetro ----------
   // Cambia: los escalones de la esquina · Permanece: el rectángulo que la encierra · Progresa: el área baja, el perímetro no ·
@@ -94,7 +100,9 @@
       voz: 'Agrega escalones. Comprueba qué medida permanece y cuál cambia.',
       controles: [{ id: 'n', etiqueta: 'escalones', min: 0, max: 6, paso: 1, inicio: 2, unidad: '', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: figEsc(v.n), estado: {} }),
-      lectura: v => [`perímetro = ${f(perim(escalera(v.n)))} · área = ${f(Math.abs(U.area(escalera(v.n))))}`],
+      // Sin arrastre: el control cuenta escalones; ningún punto de la figura guarda ese número (todos los escalones se
+      // rehacen al cambiarlo). La mesa «Muesca libre» del laboratorio sí se arrastra por sus esquinas.
+      lectura: v => [`perímetro = ${f(perim(escalera(v.n)))}`, SEP, `área = ${f(Math.abs(U.area(escalera(v.n))))}`],
       minimo: 4,
     },
     predice: {
@@ -110,6 +118,8 @@
       revelar: { datos: figMuesca({ paredes: true, alt: 'La muesca agrega dos paredes de 1: perímetro 22' }), estado: {} },
       coincide: 'Coincide: 20 del rectángulo más dos paredes de 1.',
     },
+    // Hallazgo 9: dos representaciones a propósito. El juego muestra los escalones (el perímetro no cambia); «Mira»
+    // resuelve la muesca de la predicción (el perímetro sube). La mesa «Muesca libre» junta los dos casos.
     mira: {
       datos: figMuesca({ paredes: true, pasos: { h: 1, v: 2, p: 3 }, alt: 'Tramos horizontales: suman 6 arriba y 6 abajo; verticales: 4 y 4; la muesca agrega 1 y 1' }),
       voz: 'Agrupa los tramos: horizontales, verticales y paredes nuevas.',
@@ -121,7 +131,7 @@
     },
     regla: {
       texto: 'El perímetro suma solo el borde. Los escalones hacia afuera se proyectan sobre los lados del rectángulo que los encierra; cada muesca hacia adentro agrega sus dos paredes.',
-      ecuacion: ['perímetro = 2(base + altura) + 2 · (fondo de cada muesca)'],
+      ecuacion: ['perímetro = ', { llave: ['2(base + altura)'], nota: 'el rectángulo', color: 'c-i' }, ' + ', { llave: ['2 · fondo'], nota: 'cada muesca', color: 'c-h' }],
       condicion: 'los tramos son horizontales y verticales. Las líneas interiores no cuentan: no son borde.',
       voz: 'Perímetro y área se miden por separado. Uno no arrastra al otro.',
     },
@@ -183,6 +193,8 @@
         { id: 'm', etiqueta: 'puntos', min: 1, max: 2, paso: 1, inicio: 1, unidad: 'más', decimales: 0, color: 'c-i' },
       ],
       dibujo: v => ({ datos: serie(v.g, v.m, 1, [1, 2, 3, 4]), estado: {} }),
+      // Sin arrastre: los controles son reglas (cuánto gira, cuántos puntos suma), no objetos con posición en la figura.
+      // Hallazgo 9: «Mira» usa la misma serie (serie()) con la regla de la predicción.
       lectura: v => [`gira ${v.g}° y suma ${v.m} punto${v.m > 1 ? 's' : ''} por término`],
       minimo: 3,
     },
@@ -227,7 +239,7 @@
           pregunta: [`Una flecha empieza apuntando arriba con ${base} punto${base > 1 ? 's' : ''}. En cada término gira ${d0} y gana ${mas} punto${mas > 1 ? 's' : ''}. ¿Cómo es el término ${n}.º?`],
           dibujo: { datos: serie(giro, mas, base, [1, 2, 3]), estado: {} },
           opciones: ops,
-          solucion: { texto: `Del 1.º al ${n}.º hay ${n - 1} pasos.`, ecuacion: [`giro ${n - 1} · ${giro}° = ${giro * (n - 1)}° · puntos ${base} + ${n - 1} · ${mas} = ${pts}`] },
+          solucion: { texto: `Del 1.º al ${n}.º hay ${n - 1} pasos.`, ecuacion: [`giro ${n - 1} · ${giro}° = ${giro * (n - 1)}°`, SEP, `puntos ${base} + ${n - 1} · ${mas} = ${pts}`] },
         };
       },
     },
@@ -269,6 +281,8 @@
       voz: 'Prueba cada regla en las dos figuras, no solo en una.',
       controles: [{ id: 'R', etiqueta: 'regla', opciones: [{ valor: 'mult', texto: '(a + b) · c' }, { valor: 'prod', texto: 'a · b − c' }, { valor: 'suma1', texto: 'a + b + c + 1' }] }],
       dibujo: v => ({ datos: figDist([[F1, 0, 0, { marca: cumple(v.R, F1) ? '✓ cumple' : `✗ da ${REGLAS[v.R].f(...F1.slice(0, 3))}` }], [F2, 3, 0, { marca: cumple(v.R, F2) ? '✓ cumple' : `✗ da ${REGLAS[v.R].f(...F2.slice(0, 3))}` }]], { alt: `La regla ${REGLAS[v.R].texto} cumple en ${[F1, F2].filter(F => cumple(v.R, F)).length} de las 2 figuras` }), estado: {} }),
+      // Sin arrastre: el control elige una regla (opciones); los números de los triángulos son datos fijos.
+      // Hallazgo 9: «Mira» usa los mismos triángulos (figDist) y agrega la figura que decide.
       lectura: v => [`${REGLAS[v.R].texto}: cumple en ${[F1, F2].filter(F => cumple(v.R, F)).length} de 2 figuras`],
       minimo: 3,
     },
@@ -288,8 +302,8 @@
       datos: figDist([[F1, 0, 2.7], [F2, 3, 2.7], [F4, 0, -1.3, { desde: 2, marca: '✓ solo a · b − c', marcaDesde: 2 }], [[...F3, 16], 3, -1.3, { desde: 3, color: 'd' }]], { vista: { x: [-1.6, 5.4], y: [-3.4, 4.4] }, alt: 'Una tercera figura con 4, 4 y 3 tiene 13 al centro: solo cumple a · b − c, así que el triángulo de 6, 3 y 2 lleva 16' }),
       voz: 'Una figura más decide entre las dos reglas.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Las dos reglas cumplen en las figuras de arriba.', ecuacion: ['3·4 − 2 = 10 · 3 + 4 + 2 + 1 = 10'] },
-        { estado: { corte: 2 }, texto: 'Otra figura del examen: 4, 4 y 3 con 13 al centro.', ecuacion: ['4·4 − 3 = 13 ✓ · 4 + 4 + 3 + 1 = 12 ✗'] },
+        { estado: { corte: 1 }, texto: 'Las dos reglas cumplen en las figuras de arriba.', ecuacion: [`3·4 − 2 = ${REGLAS.prod.f(...F1)}`, SEP, `3 + 4 + 2 + 1 = ${REGLAS.suma1.f(...F1)}`] },
+        { estado: { corte: 2 }, texto: 'Otra figura del examen: 4, 4 y 3 con 13 al centro.', ecuacion: [`4·4 − 3 = ${REGLAS.prod.f(...F4)} ✓`, SEP, `4 + 4 + 3 + 1 = ${REGLAS.suma1.f(...F4)} ✗`] },
         { estado: { corte: 3 }, texto: 'Solo queda a · b − c: el centro es 16.', ecuacion: ['6 · 3 − 2 = 16'] },
       ],
     },
@@ -346,6 +360,8 @@
       voz: 'Cuenta por tamaños: de 1 espacio, de 2, de 3…',
       controles: [{ id: 'n', etiqueta: 'n', min: 1, max: 6, paso: 1, inicio: 3, unidad: 'espacios', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: abanico(v.n, 1, { marcar: [[0, 0, 1, 0, 'o']] }), estado: {} }),
+      // Sin arrastre: n cuenta espacios y al cambiarlo todos los rayos se reparten de nuevo; ningún punto guarda n.
+      // Hallazgo 9: «Mira» usa el mismo abanico (abanico()) con la segunda transversal de la predicción.
       lectura: v => [Array.from({ length: v.n }, (_, k) => v.n - k).join(' + ') + ` = ${v.n * (v.n + 1) / 2} triángulos`],
       minimo: 3,
     },
@@ -374,7 +390,7 @@
     },
     regla: {
       texto: 'Un abanico de n espacios forma n + (n − 1) + … + 1 triángulos con cada transversal: tantos como pares de rayos. Con k transversales, k veces eso.',
-      ecuacion: ['triángulos = k · ', { frac: ['n(n + 1)', '2'] }],
+      ecuacion: ['triángulos = k · ', { llave: [{ frac: ['n(n + 1)', '2'] }], nota: 'por transversal', color: 'c-o' }],
       condicion: 'todos los rayos salen del mismo vértice y cada transversal los corta a todos.',
       voz: 'Clasificar por tamaño evita omitir y repetir.',
     },
@@ -434,10 +450,15 @@
       consigna: 'Vas de A a B solo hacia la derecha o hacia arriba. Cada esquina muestra cuántas rutas llegan a ella. Cambia el tamaño.',
       voz: 'Mira una esquina: compárala con sus vecinas de la izquierda y de abajo.',
       controles: [
-        { id: 'm', etiqueta: 'cuadras a lo ancho', min: 1, max: 4, paso: 1, inicio: 3, unidad: '', decimales: 0 },
-        { id: 'n', etiqueta: 'cuadras a lo alto', min: 1, max: 3, paso: 1, inicio: 2, unidad: '', decimales: 0 },
+        { id: 'm', etiqueta: 'cuadras a lo ancho', min: 1, max: 4, paso: 1, inicio: 3, unidad: '', decimales: 0, color: 'c-h' },
+        { id: 'n', etiqueta: 'cuadras a lo alto', min: 1, max: 3, paso: 1, inicio: 2, unidad: '', decimales: 0, color: 'c-h' },
       ],
       dibujo: v => ({ datos: cuadricula(v.m, v.n), estado: {} }),
+      // Se agarra la esquina B y se lleva por la cuadrícula: la cuadrícula crece o se achica con ella (la vista es fija).
+      // Hallazgo 9: «Mira» usa la misma cuadrícula (cuadricula()) con la cuadra cerrada de la predicción.
+      arrastres: [{ id: 'esquina-b', etiqueta: 'esquina B', color: 'c-h',
+        donde: v => enPantalla(cuadricula(v.m, v.n), [v.m, v.n]),
+        mover: (pt, v) => { const q = alPlano(cuadricula(v.m, v.n), pt); return { m: q[0], n: q[1] }; } }],
       lectura: v => [`rutas de A a B: ${rutasDP(v.m, v.n)[v.m][v.n]}`],
       minimo: 4,
     },
@@ -536,6 +557,10 @@
       voz: 'Cuenta por pisos, también lo que queda debajo.',
       controles: [{ id: 'n', etiqueta: 'pisos', min: 1, max: 4, paso: 1, inicio: 2, unidad: '', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: figPir(v.n), estado: {} }),
+      // En 3D: se agarra la cima de la pila y se sube o baja por la vertical (sobreRecta); cada piso agregado va abajo.
+      arrastres: [{ id: 'cima', etiqueta: 'cima de la pila', color: 'c-o',
+        donde: v => enPantalla(figPir(v.n), [0.5, v.n, 0.5]),
+        mover: (pt, v) => ({ n: G.sobreRecta(figPir(v.n), [0.5, 0, 0.5], [0.5, 1, 0.5], pt) }) }],
       lectura: v => [Array.from({ length: v.n }, (_, k) => `${(v.n - k) ** 2}`).join(' + ') + ` = ${piramide(v.n).length} cubitos`],
       minimo: 3,
     },
@@ -552,18 +577,20 @@
       revelar: { datos: cubo3({ capas: true }), estado: { corte: 2 } },
       coincide: 'Coincide: solo el cubito central del piso del medio queda sin pintar.',
     },
+    // Hallazgo 9: dos representaciones a propósito. El juego cuenta una pila por pisos; «Mira» resuelve el cubo pintado
+    // de la predicción con el mismo método (separar en pisos). La mesa «Cubo pintado por clases» muestra los ocultos.
     mira: {
       datos: cubo3({ capas: true }),
       voz: 'Separa el cubo en pisos y revisa cada uno.',
       pasos: [
         { estado: { corte: 1 }, texto: 'Los pisos de arriba y de abajo tocan el exterior: 18 pintados.', ecuacion: ['9 + 9 = 18'] },
         { estado: { corte: 2 }, texto: 'En el piso del medio, 8 tocan los costados; el centro no.', ecuacion: ['9 − 8 = 1'] },
-        { estado: { corte: 2 }, texto: 'En general, sin pintar quedan los de un cubo interior de lado n − 2.', ecuacion: ['(n − 2)³ = 1³ = 1'] },
+        { estado: { corte: 2 }, texto: 'En general, sin pintar quedan los de un cubo interior de lado n − 2.', ecuacion: [{ llave: [sq('(n − 2)', '3')], nota: 'cubo interior', color: 'c-h' }, ' = ', sq('1', '3'), ' = 1'] },
       ],
     },
     regla: {
       texto: 'Cuenta los cubitos por capas: los ocultos también están. En un cubo pintado de lado n hay cuatro clases: esquinas, aristas, centros de cara e interior.',
-      ecuacion: ['3 caras: 8 · 2 caras: 12(n − 2) · 1 cara: 6', { sup: ['(n − 2)', '2'] }, ' · 0: ', { sup: ['(n − 2)', '3'] }],
+      ecuacion: ['3 caras: 8', SEP, '2 caras: 12', { llave: ['(n − 2)'], nota: 'sin esquinas', color: 'c-o' }, SEP, '1 cara: 6', sq('(n − 2)', '2'), SEP, '0: ', sq('(n − 2)', '3')],
       condicion: 'el sólido está completo por dentro (no hay huecos) y n ≥ 2.',
       voz: 'Lo que no se ve también se cuenta.',
     },
@@ -581,15 +608,134 @@
             { id: 'sup', valor: cl === 3 ? 0 : 6 * n * n, error: 'GE13', siFuera: cl === 3 ? 'Desde afuera no se ven, pero los cubitos interiores existen.' : '6n² cuenta caras visibles, no cubitos.' },
             { id: 'n', valor: cl === 1 ? 12 * n : cl === 2 ? 6 * n * n : n ** 3 - 6 * n * n, error: 'GE-CUB1', siFuera: 'Revisa: a cada arista o cara se le quitan las esquinas, n − 2.' },
           ], x => f(x, 0)),
-          solucion: { texto: ['Esquinas: 8.', 'Aristas: 12 de n − 2.', 'Caras: 6 de (n − 2)².', 'Interior: cubo de lado n − 2.'][cl], ecuacion: [[`8`, `12 · ${n - 2} = ${val[1]}`, `6 · ${n - 2}² = ${val[2]}`, `${n - 2}³ = ${val[3]}`][cl]] },
+          solucion: { texto: ['Esquinas: 8.', 'Aristas: 12 de n − 2.', 'Caras: 6 de (n − 2)².', 'Interior: cubo de lado n − 2.'][cl], ecuacion: [[`${val[0]}`], [`12 · ${n - 2} = ${val[1]}`], ['6 · ', sq(`${n - 2}`, '2'), ` = ${val[2]}`], [sq(`${n - 2}`, '3'), ` = ${val[3]}`]][cl] },
         };
       },
     },
   };
 
+
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 1: una muesca en el lado de arriba del rectángulo de 6 por 4, con sus dos esquinas
+  // libres. Hacia adentro o hacia afuera (fondo negativo), en el medio o pegada a una esquina: pegada a la esquina, la
+  // muesca hacia adentro no cambia el perímetro (son los escalones de la idea 1) y de lado a lado lo baja.
+  const muesca = (xa, xb, d) => {
+    const a = Math.min(xa, xb), b = Math.max(xa, xb);
+    let pts = [[0, 0], [6, 0], [6, 4], [0, 4]];
+    if (a < b && d !== 0) {
+      pts = [[0, 0], [6, 0]];
+      if (b < 6) pts.push([6, 4], [b, 4]);
+      pts.push([b, 4 - d], [a, 4 - d]);
+      if (a > 0) pts.push([a, 4], [0, 4]);
+    }
+    return pts;
+  };
+  const figLibre = (xa, xb, d) => {
+    const pts = muesca(xa, xb, d), a = Math.min(xa, xb), b = Math.max(xa, xb), hay = a < b && d !== 0;
+    return {
+      alt: `Rectángulo de 6 por 4 con una muesca ${d > 0 ? 'hacia adentro' : 'hacia afuera'} de ${f(b - a, 0)} de ancho y ${f(Math.abs(d), 0)} de fondo: perímetro ${f(perim(pts), 0)}, área ${f(Math.abs(U.area(pts)), 0)}`,
+      vista: { x: [-1, 7.4], y: [-1, 6.6] }, cuadricula: { paso: 1 },
+      puntos: [{ id: 'wa0', x: a, y: 4, sinPunto: true }, { id: 'wa1', x: a, y: 4 - d, sinPunto: true }, { id: 'wb0', x: b, y: 4, sinPunto: true }, { id: 'wb1', x: b, y: 4 - d, sinPunto: true }],
+      regiones: [{ puntos: [[0, 0], [6, 0], [6, 4], [0, 4]], color: 'i', opacidad: 0.0001, discontinua: true }, { puntos: pts, color: 'o', opacidad: 0.18, sinBorde: false }],
+      segmentos: hay ? [...(a > 0 || d < 0 ? [{ de: 'wa0', a: 'wa1', color: 'h', grosor: 'variable' }] : []), ...(b < 6 || d < 0 ? [{ de: 'wb0', a: 'wb1', color: 'h', grosor: 'variable' }] : [])] : [],
+      rotulos: [{ x: 3, y: -0.6, texto: '6' }, { x: -0.5, y: 2, texto: '4' }],
+    };
+  };
+  const mesaMuesca = {
+    id: 'muesca-libre', titulo: 'Muesca libre', pieza: 'geo-figura',
+    consigna: 'Arrastra las esquinas de la muesca: en el medio, pegada a una esquina, de lado a lado o hacia afuera.',
+    controles: [
+      { id: 'xa', etiqueta: 'esquina izquierda', min: 0, max: 6, paso: 1, inicio: 2, unidad: '', decimales: 0, color: 'c-o' },
+      { id: 'xb', etiqueta: 'esquina derecha', min: 0, max: 6, paso: 1, inicio: 4, unidad: '', decimales: 0, color: 'c-o' },
+      { id: 'd', etiqueta: 'fondo (− es afuera)', min: -2, max: 3, paso: 1, inicio: 1, unidad: '', decimales: 0, color: 'c-h' },
+    ],
+    dibujo: v => ({ datos: figLibre(v.xa, v.xb, v.d), estado: {} }),
+    // Se agarran las dos esquinas de abajo de la muesca: cada una mueve su lado y, las dos, el fondo.
+    arrastres: [['esquina-a', 'esquina izquierda de la muesca', 'xa'], ['esquina-b', 'esquina derecha de la muesca', 'xb']].map(([id, etiqueta, cx]) => ({
+      id, etiqueta, color: 'c-o',
+      donde: v => enPantalla(figLibre(v.xa, v.xb, v.d), [v[cx], 4 - v.d]),
+      mover: (pt, v) => { const q = alPlano(figLibre(v.xa, v.xb, v.d), pt); return { [cx]: q[0], d: 4 - q[1] }; },
+    })),
+    lectura: v => { const pts = muesca(v.xa, v.xb, v.d); return [`perímetro ${f(perim(pts), 0)} (sin muesca, 20)`, SEP, `área ${f(Math.abs(U.area(pts)), 0)}`]; },
+  };
+
+  // Mesa 2, más rica que la idea 5: cuadrícula más grande (hasta 5 por 4) y la cuadra cerrada se arrastra a cualquier
+  // calle, horizontal o vertical. La lectura dice cuántas rutas pasaban por esa calle.
+  const VR = { x: [-0.8, 6.3], y: [-0.8, 4.9] };
+  const cerradaEn = v => [v.ci, v.cj, v.ori];
+  const dentro = v => (v.ori === 'h' ? v.ci < v.m && v.cj <= v.n : v.ci <= v.m && v.cj < v.n);
+  const figRutas = v => Object.assign(cuadricula(v.m, v.n, { cerrada: cerradaEn(v) }), { vista: VR });
+  const mesaRutas = {
+    id: 'rutas-con-cierre', titulo: 'Rutas con una calle cerrada', pieza: 'geo-figura',
+    consigna: 'Arrastra B para cambiar la cuadrícula y la × para cerrar otra calle. Busca la calle por donde pasan más rutas.',
+    controles: [
+      { id: 'm', etiqueta: 'cuadras a lo ancho', min: 1, max: 5, paso: 1, inicio: 4, unidad: '', decimales: 0, color: 'c-h' },
+      { id: 'n', etiqueta: 'cuadras a lo alto', min: 1, max: 4, paso: 1, inicio: 3, unidad: '', decimales: 0, color: 'c-h' },
+      { id: 'ori', etiqueta: 'calle cerrada', opciones: [{ valor: 'h', texto: 'horizontal' }, { valor: 'v', texto: 'vertical' }] },
+      { id: 'ci', etiqueta: '× a lo ancho', min: 0, max: 5, paso: 1, inicio: 1, unidad: '', decimales: 0 },
+      { id: 'cj', etiqueta: '× a lo alto', min: 0, max: 4, paso: 1, inicio: 1, unidad: '', decimales: 0 },
+    ],
+    dibujo: v => ({ datos: figRutas(v), estado: {} }),
+    arrastres: [
+      // Se agarra B, como en la idea 5.
+      { id: 'esquina-b', etiqueta: 'esquina B', color: 'c-h',
+        donde: v => enPantalla(figRutas(v), [v.m, v.n]),
+        mover: (pt, v) => { const q = alPlano(figRutas(v), pt); return { m: q[0], n: q[1] }; } },
+      // Se agarra la × y se suelta en el medio de otra calle.
+      { id: 'cierre', etiqueta: 'calle cerrada', color: 'c-h',
+        donde: v => enPantalla(figRutas(v), v.ori === 'h' ? [v.ci + 0.5, v.cj] : [v.ci, v.cj + 0.5]),
+        mover: (pt, v) => { const q = alPlano(figRutas(v), pt); return v.ori === 'h' ? { ci: q[0] - 0.5, cj: q[1] } : { ci: q[0], cj: q[1] - 0.5 }; } },
+    ],
+    lectura: v => {
+      const sin = rutasDP(v.m, v.n)[v.m][v.n], con = rutasDP(v.m, v.n, cerradaEn(v))[v.m][v.n];
+      return dentro(v) ? [`rutas ${con} de ${sin}`, SEP, `por la × pasaban ${sin - con}`] : [`rutas ${sin}`, SEP, 'la × está fuera'];
+    },
+  };
+
+  // Mesa 3: el cubo pintado de lado n, separado por clases. La idea 6 solo deja ver el interior de un cubo de 3 con los
+  // pisos abiertos; aquí n va de 2 a 5 y se puede dejar a la vista una sola clase: el interior aparece flotando.
+  const CLASE = { 3: { texto: 'esquinas', color: 'h' }, 2: { texto: 'aristas', color: 'o' }, 1: { texto: 'caras', color: 'i' }, 0: { texto: 'interior', color: 'd' } };
+  const pintadas = (c, n) => c.filter(x => x === 0 || x === n - 1).length;
+  const ESQ = [[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0], [0, 0, 1], [1, 0, 1], [1, 1, 1], [0, 1, 1]];
+  const ARISTAS = [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7]];
+  const g5 = G.geometria({ tresD: TRES, puntos: ESQ.map(([x, y, z], i) => ({ id: 'q' + i, x: 5 * x, y: 5 * y, z: 5 * z })) });
+  const VC = { x: [g5.x0 - 0.4, g5.x1 + 0.4], y: [g5.y0 - 0.4, g5.y1 + 0.4] };
+  const figPintado = (n, ver) => {
+    const todos = [];
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) for (let k = 0; k < n; k++) todos.push([i, j, k]);
+    const vistos = ver === 'todas' ? todos : todos.filter(c => pintadas(c, n) === +ver);
+    return {
+      alt: `Cubo de lado ${n} pintado por fuera${ver === 'todas' ? '' : `: se ven solo los ${vistos.length} cubitos de la clase ${CLASE[ver].texto}`}`,
+      tresD: TRES, vista: VC,
+      puntos: ESQ.map(([x, y, z], i) => ({ id: 'q' + i, x: n * x, y: n * y, z: n * z, sinPunto: true })),
+      segmentos: ver === 'todas' ? [] : ARISTAS.map(([a, b]) => ({ de: 'q' + a, a: 'q' + b, grosor: 'fino', discontinua: true })),
+      regiones: caras(vistos, { color: c => CLASE[pintadas(c, n)].color }),
+    };
+  };
+  const mesaPintado = {
+    id: 'cubo-pintado', titulo: 'Cubo pintado por clases', pieza: 'geo-figura',
+    consigna: 'Arrastra la esquina para cambiar el lado. Deja a la vista una sola clase de cubitos y cuéntalos.',
+    controles: [
+      // Sin color: los cuatro colores ya nombran las cuatro clases de cubitos (regla 4).
+      { id: 'n', etiqueta: 'lado del cubo', min: 2, max: 5, paso: 1, inicio: 3, unidad: '', decimales: 0 },
+      { id: 'ver', etiqueta: 'A la vista', opciones: [{ valor: 'todas', texto: 'todo' }, { valor: '3', texto: '3 caras' }, { valor: '2', texto: '2 caras' }, { valor: '1', texto: '1 cara' }, { valor: '0', texto: 'ninguna' }] },
+    ],
+    dibujo: v => ({ datos: figPintado(v.n, v.ver), estado: {} }),
+    // En 3D: se agarra la esquina de abajo al frente y se jala por la diagonal del piso (sobreRecta): mueve el lado n.
+    arrastres: [{ id: 'esquina', etiqueta: 'esquina del cubo',
+      donde: v => enPantalla(figPintado(v.n, v.ver), [v.n, 0, v.n]),
+      mover: (pt, v) => ({ n: G.sobreRecta(figPintado(v.n, v.ver), [0, 0, 0], [1, 0, 1], pt) }) }],
+    lectura: v => {
+      const cuenta = [0, 1, 2, 3].map(k => [8, 12 * (v.n - 2), 6 * (v.n - 2) ** 2, (v.n - 2) ** 3][3 - k]);
+      // En «todo», cada sumando lleva el color de su clase: esquinas, aristas, caras e interior.
+      return v.ver === 'todas' ? [`${v.n ** 3} = `, ...[3, 2, 1, 0].flatMap((k, i) => [...(i ? [' + '] : []), { v: `c-${CLASE[k].color}`, t: `${cuenta[k]}` }])]
+        : [`${CLASE[v.ver].texto}: ${cuenta[+v.ver]}`, SEP, `de ${v.n ** 3} cubitos`];
+    },
+  };
+
   return {
     unidad: 'geometria.razonamiento-con-figuras',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -597,6 +743,9 @@
       pregunta: '¿Qué detalles de una figura puedes ignorar sin cambiar la respuesta?',
       fuente: { titulo: 'MacTutor: The Königsberg bridges', url: 'https://mathshistory.st-andrews.ac.uk/Extras/Konigsberg/' },
     },
+    // Laboratorio: las tres mesas son más ricas que sus ideas (muesca con esquinas libres, rutas con la calle cerrada
+    // que se arrastra, cubo pintado de lado 2 a 5 por clases).
+    laboratorio: [mesaMuesca, mesaRutas, mesaPintado],
     ideas: [perimetro, series, distribucion, conteo, rutas, cubos],
   };
 });
