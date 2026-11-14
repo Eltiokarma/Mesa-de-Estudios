@@ -48,6 +48,11 @@
   }
   const pt = (id, p, o = {}) => Object.assign({ id, x: p[0], y: p[1] }, o);
   const frac = (a, b) => ({ frac: [a, b] });
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura; aPlano la vuelve coordenadas del
+  // problema, sobreRecta da la fracción de un lado y el lector ajusta cada valor al paso y al rango de su control.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const alPlano = (datos, pt) => G.aPlano(datos, pt);
+  const sobre = (datos, A, B, pt) => G.sobreRecta(datos, A, B, pt);
 
   // ---------- Idea 1: Thales ----------
   // Cambia: la altura del corte paralelo · Permanece: el triángulo · Progresa: AD/DB y AE/EC, siempre iguales ·
@@ -80,7 +85,11 @@
       voz: 'Mueve el corte. Comprueba las dos razones cada vez.',
       controles: [{ id: 't', etiqueta: 'D desde A', min: 0.2, max: 0.8, paso: 0.1, inicio: 0.4, unidad: 'de AB', decimales: 1 }],
       dibujo: v => ({ datos: thales(v.t), estado: {} }),
-      lectura: v => [frac({ v: 'c-o', t: 'AD' }, { v: 'c-i', t: 'DB' }), ` = ${f(v.t / (1 - v.t))} · `, frac({ v: 'c-o', t: 'AE' }, { v: 'c-i', t: 'EC' }), ` = ${f(v.t / (1 - v.t))}`],
+      // Se agarra D, que corre por AB; E lo acompaña en AC porque DE sigue paralela a BC.
+      arrastres: [{ id: 'punto-d', etiqueta: 'punto D en AB', color: 'c-o',
+        donde: v => enPantalla(thales(v.t), U.mezcla(TA, TB, v.t)),
+        mover: (p, v) => ({ t: sobre(thales(v.t), TA, TB, p) }) }],
+      lectura: v => [frac({ v: 'c-o', t: 'AD' }, { v: 'c-i', t: 'DB' }), ` = ${f(v.t / (1 - v.t))}   ·   `, frac({ v: 'c-o', t: 'AE' }, { v: 'c-i', t: 'EC' }), ` = ${f(v.t / (1 - v.t))}`],
       minimo: 3,
     },
     predice: {
@@ -107,7 +116,7 @@
     },
     regla: {
       texto: 'Una paralela a un lado del triángulo corta a los otros dos en partes proporcionales. Y al revés: si las razones son iguales, la recta es paralela.',
-      ecuacion: ['DE ∥ BC  ⇔  ', frac({ v: 'c-o', t: 'AD' }, { v: 'c-i', t: 'DB' }), ' = ', frac({ v: 'c-o', t: 'AE' }, { v: 'c-i', t: 'EC' })],
+      ecuacion: ['DE ∥ BC  ⇔  ', { llave: [frac({ v: 'c-o', t: 'AD' }, { v: 'c-i', t: 'DB' })], nota: 'en AB', color: 'c-o' }, ' = ', { llave: [frac({ v: 'c-o', t: 'AE' }, { v: 'c-i', t: 'EC' })], nota: 'en AC', color: 'c-i' }],
       condicion: 'se comparan tramos que se corresponden en el mismo orden. Vale igual para tres paralelas cortadas por dos secantes.',
       voz: 'Primero la paralela; después la proporción.',
     },
@@ -172,7 +181,16 @@
         { id: 'b', etiqueta: 'AC', min: 2, max: 6, paso: 1, inicio: 6, unidad: '', decimales: 0, color: 'c-i' },
       ],
       dibujo: v => ({ datos: bisec(v.c, v.b), estado: {} }),
-      lectura: v => [frac({ v: 'c-o', t: 'AB' }, { v: 'c-i', t: 'AC' }), ` = ${f(v.c / v.b)} · `, frac({ v: 'c-o', t: 'BD' }, { v: 'c-i', t: 'DC' }), ` = ${f(v.c / v.b)}`],
+      // Se agarran B y C, que corren por sus lados: el ángulo A y su bisectriz no se mueven.
+      arrastres: [
+        { id: 'vertice-b', etiqueta: 'vértice B', color: 'c-o',
+          donde: v => enPantalla(bisec(v.c, v.b), U.polar([0, 0], v.c, 235)),
+          mover: (p, v) => ({ c: sobre(bisec(v.c, v.b), [0, 0], U.polar([0, 0], 1, 235), p) }) },
+        { id: 'vertice-c', etiqueta: 'vértice C', color: 'c-i',
+          donde: v => enPantalla(bisec(v.c, v.b), U.polar([0, 0], v.b, 305)),
+          mover: (p, v) => ({ b: sobre(bisec(v.c, v.b), [0, 0], U.polar([0, 0], 1, 305), p) }) },
+      ],
+      lectura: v => [frac({ v: 'c-o', t: 'AB' }, { v: 'c-i', t: 'AC' }), ` = ${f(v.c / v.b)}   ·   `, frac({ v: 'c-o', t: 'BD' }, { v: 'c-i', t: 'DC' }), ` = ${f(v.c / v.b)}`],
       minimo: 3,
     },
     predice: {
@@ -188,6 +206,8 @@
       revelar: { datos: recto({ num: true }), estado: {} },
       coincide: 'Coincide: 10 en razón 6 : 8 da 30/7 y 40/7.',
     },
+    // Hallazgo 9: «Mira» prueba el caso de la predicción (el rectángulo 6-8-10), no el triángulo del juego: la prueba con
+    // la paralela EC necesita un ángulo A concreto (90°) para leer los 45°.
     mira: {
       datos: recto({ E: true, num: true, pasos: { e: 1, ec: 2 }, alt: 'Se prolonga BA hasta E con AE = AC = 8; EC resulta paralela a AD y Thales da BD/DC = 6/8' }),
       voz: 'Una paralela convierte la bisectriz en Thales.',
@@ -199,7 +219,7 @@
     },
     regla: {
       texto: 'La bisectriz interior de A parte el lado BC en la razón de los lados vecinos. En el incentro I, la bisectriz queda partida en razón (AB + AC) : BC.',
-      ecuacion: [frac({ v: 'c-o', t: 'BD' }, { v: 'c-i', t: 'DC' }), ' = ', frac({ v: 'c-o', t: 'AB' }, { v: 'c-i', t: 'AC' }), '   ·   ', frac('AI', 'ID'), ' = ', frac('AB + AC', 'BC')],
+      ecuacion: [{ llave: [frac({ v: 'c-o', t: 'BD' }, { v: 'c-i', t: 'DC' })], nota: 'tramos de BC', color: 'c-h' }, ' = ', { llave: [frac({ v: 'c-o', t: 'AB' }, { v: 'c-i', t: 'AC' })], nota: 'lados vecinos', color: 'c-o' }, '   ·   ', frac('AI', 'ID'), ' = ', frac('AB + AC', 'BC')],
       condicion: 'AD es la bisectriz interior del ángulo A y D está en BC; I es el corte de las bisectrices.',
       voz: 'Cada tramo copia al lado que lo toca.',
     },
@@ -261,7 +281,7 @@
         regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', opacidad: 0.05 }],
         segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }, { de: 'C', a: 'E', discontinua: true }, { de: 'F', a: 'E', color: 'h', grosor: 'variable' },
           ...(o.G ? [{ de: 'C', a: 'G', color: 'd', paralela: 1, desde: k.g || 0 }, { de: 'A', a: 'B', paralela: 1, desde: k.g || 0 }] : [])],
-        rotulos: o.num ? [{ x: 9.3, y: 4.6, texto: `${f(r1)} · ${f(r2)} · ${f(r3)} = 1`, color: 'h' }] : [] },
+        rotulos: o.num ? [{ x: 11.8, y: 3.4, ancla: 'end', texto: `${f(r1)} · ${f(r2)} · ${f(r3)} = 1`, color: 'h' }] : [] },
       r: [r1, r2, r3],
     };
   };
@@ -278,6 +298,15 @@
         { id: 'e', etiqueta: 'E en CA', min: 0.2, max: 0.8, paso: 0.1, inicio: 0.4, unidad: '', decimales: 1, color: 'c-i' },
       ],
       dibujo: v => ({ datos: ceva(v.d, v.e).d, estado: {} }),
+      // Se agarran D (corre por BC) y E (corre por CA); F se acomoda solo.
+      arrastres: [
+        { id: 'punto-d', etiqueta: 'punto D en BC', color: 'c-o',
+          donde: v => enPantalla(ceva(v.d, v.e).d, U.mezcla(MB, MC, v.d)),
+          mover: (p, v) => ({ d: sobre(ceva(v.d, v.e).d, MB, MC, p) }) },
+        { id: 'punto-e', etiqueta: 'punto E en CA', color: 'c-i',
+          donde: v => enPantalla(ceva(v.d, v.e).d, U.mezcla(MC, MA, v.e)),
+          mover: (p, v) => ({ e: sobre(ceva(v.d, v.e).d, MC, MA, p) }) },
+      ],
       lectura: v => { const [a, b, c] = ceva(v.d, v.e).r; return [`${f(a)} · ${f(b)} · ${f(c)} = ${f(a * b * c)}`]; },
       minimo: 4,
     },
@@ -294,6 +323,8 @@
       revelar: { datos: mene({ num: true }).d, estado: {} },
       coincide: 'Coincide: es el teorema de Menelao. El producto, con largos, también es 1.',
     },
+    // Hallazgo 9: «Mira» prueba Menelao, el caso de la predicción, no las cevianas del juego: son dos teoremas con el
+    // mismo producto, y la paralela por C solo tiene sentido con la recta que corta los tres lados.
     mira: {
       datos: mene({ G: true, num: true, pasos: { g: 1 }, alt: 'Por C se traza una paralela a AB que corta la recta en G: dos pares de triángulos semejantes dan el producto 1' }).d,
       voz: 'Una paralela por C da dos semejanzas.',
@@ -334,6 +365,9 @@
   // Cambia: la escala y el giro de la copia · Permanece: los ángulos · Progresa: los lados ×k ·
   // Se reserva: la antiparalela (correspondencia cruzada) · Debe verse: se emparejan los lados opuestos a ángulos iguales.
   const base = [[0, 0], [4, 0], [1.2, 2.6]];
+  // Centro de la copia y posición de B′: la copia gira y se escala alrededor de (8; 1).
+  const G0s = [(0 + 4 + 1.2) / 3, 2.6 / 3];
+  const vertB2 = (k, giro) => { const v = [4 - G0s[0], -G0s[1]], q = U.polar([0, 0], Math.hypot(...v) * k, U.grados(Math.atan2(v[1], v[0])) + giro); return [q[0] + 8, q[1] + 1]; };
   const copia = (k, giro) => {
     const G0 = [(0 + 4 + 1.2) / 3, 2.6 / 3];
     const c = base.map(p => { const v = [p[0] - G0[0], p[1] - G0[1]], q = U.polar([0, 0], Math.hypot(...v) * k, U.grados(Math.atan2(v[1], v[0])) + giro); return [q[0] + 8, q[1] + 1]; });
@@ -373,7 +407,16 @@
         { id: 'g', etiqueta: 'giro', min: 0, max: 180, paso: 45, inicio: 45, unidad: '°', decimales: 0 },
       ],
       dibujo: v => ({ datos: copia(v.k, v.g), estado: {} }),
-      lectura: v => ["A'B'/AB = ", `${f(v.k)} · mismos ángulos`],
+      // Se agarra B′ de la copia: alejarlo del centro la agranda (k) y rodearlo la gira.
+      arrastres: [{ id: 'vertice-b2', etiqueta: 'vértice B′ de la copia', color: 'c-o',
+        donde: v => enPantalla(copia(v.k, v.g), vertB2(v.k, v.g)),
+        mover: (p, v) => {
+          const q = alPlano(copia(v.k, v.g), p), w = [q[0] - 8, q[1] - 1], b = [4 - G0s[0], -G0s[1]];
+          let g = U.grados(Math.atan2(w[1], w[0]) - Math.atan2(b[1], b[0]));
+          g = ((g % 360) + 360) % 360; if (g > 270) g -= 360;
+          return { k: Math.hypot(...w) / Math.hypot(...b), g };
+        } }],
+      lectura: v => ["A'B'/AB = ", `${f(v.k)}   ·   mismos ángulos`],
       minimo: 4,
     },
     predice: {
@@ -394,13 +437,13 @@
       voz: 'Escribe la correspondencia antes de la razón.',
       pasos: [
         { estado: { corte: 1 }, texto: 'El ángulo A es común a los dos triángulos.', ecuacion: ['∠A = ∠A'] },
-        { estado: { corte: 2 }, texto: '∠ADE = ∠ACB. Por AA, ADE ∼ ACB: D va con C.', ecuacion: ['A↔A · D↔C · E↔B'] },
+        { estado: { corte: 2 }, texto: '∠ADE = ∠ACB. Por AA, ADE ∼ ACB: D va con C.', ecuacion: ['A↔A', '   ·   ', 'D↔C', '   ·   ', 'E↔B'] },
         { estado: { corte: 2 }, texto: 'Lados frente a ángulos iguales: AD con AC, AE con AB.', ecuacion: [frac({ v: 'c-h', t: 'AD' }, 'AC'), ' = ', frac({ v: 'c-i', t: 'AE' }, 'AB'), ' → ', { v: 'c-h', t: 'AD' }, ' = ', frac('6 · 3', '9'), ' = 2'] },
       ],
     },
     regla: {
       texto: 'Dos triángulos son semejantes con dos ángulos iguales (AA), con un ángulo igual entre lados proporcionales (LAL) o con los tres lados proporcionales (LLL).',
-      ecuacion: [frac("A'B'", 'AB'), ' = ', frac("B'C'", 'BC'), ' = ', frac("C'A'", 'CA'), ' = k'],
+      ecuacion: [frac("A'B'", 'AB'), ' = ', frac("B'C'", 'BC'), ' = ', frac("C'A'", 'CA'), ' = ', { llave: ['k'], nota: 'escala', color: 'c-o' }],
       condicion: 'los lados se emparejan por los ángulos opuestos iguales, no por su posición en el dibujo.',
       voz: 'Escribe primero qué vértice va con cuál.',
     },
@@ -453,7 +496,11 @@
       voz: 'Cambia k. Sigue los dos lados a la vez.',
       controles: [{ id: 'k', etiqueta: 'k', min: 0.5, max: 3, paso: 0.5, inicio: 1.5, unidad: '', decimales: 1, color: 'c-o' }],
       dibujo: v => ({ datos: ampl(v.k), estado: {} }),
-      lectura: v => [`lados ${f(3 * v.k)} y ${f(2 * v.k)} · perímetro 10 → ${f(10 * v.k)}`],
+      // Se agarra la esquina de arriba a la derecha de la ampliada: corre por la diagonal, así los dos lados crecen juntos.
+      arrastres: [{ id: 'esquina', etiqueta: 'esquina de la ampliada', color: 'c-o',
+        donde: v => enPantalla(ampl(v.k), [4.4 + 3 * v.k, 2 * v.k]),
+        mover: (p, v) => ({ k: sobre(ampl(v.k), [4.4, 0], [7.4, 2], p) }) }],
+      lectura: v => [`lados ${f(3 * v.k)} y ${f(2 * v.k)}   ·   perímetro 10 → ${f(10 * v.k)}`],
       minimo: 3,
     },
     predice: {
@@ -473,14 +520,14 @@
       datos: ampl(3, { copias: 'paso', cuadricula: true, alt: 'Con escala 3, el rectángulo de 9 por 6 contiene 9 copias del original de 3 por 2' }),
       voz: 'Cuenta copias completas. Así la regla sale sola.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'Con k = 3, la ampliada mide 9 por 6.', ecuacion: ['3 · 3 = 9 · 2 · 3 = 6'] },
+        { estado: { corte: 0 }, texto: 'Con k = 3, la ampliada mide 9 por 6.', ecuacion: ['3 · 3 = 9', '   ·   ', '2 · 3 = 6'] },
         { estado: { corte: 1 }, texto: 'Caben 3 copias a lo ancho y 3 a lo alto: 9.', ecuacion: ['3 · 3 = 9 copias'] },
         { estado: { corte: 1 }, texto: 'Cada lado aporta su k: el área se multiplica por k · k.', ecuacion: ["A' = (k b)(k h) = ", { sup: ['k', '2'] }, ' A = 9 · 6 = 54'] },
       ],
     },
     regla: {
       texto: 'En figuras semejantes de razón k, las longitudes y el perímetro se multiplican por k, las áreas por k² y los volúmenes por k³.',
-      ecuacion: ["P' = k P   ·   A' = ", { sup: ['k', '2'] }, ' A   ·   ', "V' = ", { sup: ['k', '3'] }, ' V'],
+      ecuacion: ["P' = k P", '   ·   ', "A' = ", { sup: ['k', '2'] }, ' A', '   ·   ', "V' = ", { sup: ['k', '3'] }, ' V'],
       condicion: 'todas las longitudes se multiplican por el mismo k > 0. Si cambia solo un lado, ya no son semejantes.',
       voz: 'La escala actúa en cada dimensión: dos en el área.',
     },
@@ -504,15 +551,104 @@
             { id: 'cubo', valor: A * k ** 3, error: 'GE2', siFuera: 'k³ es para volúmenes; el área tiene dos dimensiones.' },
             { id: 'doble', valor: A * 2 * k, error: 'GE1', siFuera: 'El factor no es 2k: es k por k.' },
           ], n => f(n)),
-          solucion: { texto: 'Base y altura se multiplican por k: el área por k².', ecuacion: [`${A} · ${f(k)}² = ${f(A * k * k)}`] },
+          solucion: { texto: 'Base y altura se multiplican por k: el área por k².', ecuacion: [`${A} · `, { sup: [f(k), '2'] }, ` = ${f(A * k * k)}`] },
         };
       },
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 1: D y E se mueven cada uno por su lado. La idea mantiene DE paralela; aquí el alumno
+  // la inclina (el caso de la predicción) y busca a mano cuándo las dos razones vuelven a coincidir.
+  const thalesLibre = (t, te) => thales(t, Math.abs(t - te) < 1e-9 ? {} : { E: U.mezcla(TA, TC, te) });
+  const mesaThales = {
+    id: 'corte-libre', titulo: 'Corte paralelo o inclinado', pieza: 'geo-figura',
+    consigna: 'Arrastra D y E por separado. Compara las dos razones y busca cuándo DE queda paralela a BC.',
+    controles: [
+      { id: 't', etiqueta: 'D desde A', min: 0.1, max: 0.9, paso: 0.1, inicio: 0.4, unidad: 'de AB', decimales: 1, color: 'c-o' },
+      { id: 'te', etiqueta: 'E desde A', min: 0.1, max: 0.9, paso: 0.1, inicio: 0.6, unidad: 'de AC', decimales: 1, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: thalesLibre(v.t, v.te), estado: {} }),
+    arrastres: [
+      { id: 'punto-d', etiqueta: 'punto D en AB', color: 'c-o',
+        donde: v => enPantalla(thalesLibre(v.t, v.te), U.mezcla(TA, TB, v.t)),
+        mover: (p, v) => ({ t: sobre(thalesLibre(v.t, v.te), TA, TB, p) }) },
+      { id: 'punto-e', etiqueta: 'punto E en AC', color: 'c-i',
+        donde: v => enPantalla(thalesLibre(v.t, v.te), U.mezcla(TA, TC, v.te)),
+        mover: (p, v) => ({ te: sobre(thalesLibre(v.t, v.te), TA, TC, p) }) },
+    ],
+    lectura: v => [frac({ v: 'c-o', t: 'AD' }, { v: 'c-i', t: 'DB' }), ` = ${f(v.t / (1 - v.t))}   ·   `, frac({ v: 'c-o', t: 'AE' }, { v: 'c-i', t: 'EC' }),
+      ` = ${f(v.te / (1 - v.te))}${Math.abs(v.t - v.te) < 1e-9 ? ': paralela' : ''}`],
+  };
+  // Mesa 2, más rica que la idea 2: además de los lados, se abre el ángulo A. Deja ver que la razón BD/DC no depende
+  // del ángulo, solo de AB y AC.
+  const bisecLibre = (c, b, ang) => {
+    const A = [0, 0], B = U.polar(A, c, 270 - ang / 2), C = U.polar(A, b, 270 + ang / 2);
+    const D = [(b * B[0] + c * C[0]) / (b + c), (b * B[1] + c * C[1]) / (b + c)];
+    return {
+      alt: `AB = ${f(c)}, AC = ${f(b)} y ángulo A de ${ang}°: la bisectriz corta BC en D con BD/DC = ${f(c / b)}`,
+      vista: { x: [-7.4, 7.4], y: [-7.4, 0.9] },
+      puntos: [pt('A', A, { rotulo: 'A', lado: 90 }), pt('B', B, { rotulo: 'B', lado: 180 }), pt('C', C, { rotulo: 'C', lado: 0 }), pt('D', D, { rotulo: 'D', color: 'h', lado: -90 })],
+      regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', opacidad: 0.06 }],
+      segmentos: [{ de: 'A', a: 'B', color: 'o', grosor: 'variable', texto: f(c) }, { de: 'A', a: 'C', color: 'i', grosor: 'variable', texto: f(b) },
+        { de: 'B', a: 'D', color: 'o', texto: f(U.dist(B, D)) }, { de: 'D', a: 'C', color: 'i', texto: f(U.dist(D, C)) }, { de: 'A', a: 'D', color: 'h', discontinua: true }],
+      angulos: [{ en: 'A', de: 'B', a: 'D', color: 'h', rayita: 1, radio: 26 }, { en: 'A', de: 'D', a: 'C', color: 'h', rayita: 1, radio: 26 }],
+    };
+  };
+  const dirB = g => (g > 90 ? g - 360 : g);
+  const mesaBisectriz = {
+    id: 'bisectriz-libre', titulo: 'Bisectriz con ángulo libre', pieza: 'geo-figura',
+    consigna: 'Arrastra B y C: cambian los lados y la abertura de A. Mira si la razón BD/DC depende del ángulo.',
+    controles: [
+      { id: 'c', etiqueta: 'AB', min: 1, max: 7, paso: 0.5, inicio: 3, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'b', etiqueta: 'AC', min: 1, max: 7, paso: 0.5, inicio: 6, unidad: '', decimales: 1, color: 'c-i' },
+      { id: 'ang', etiqueta: '∠A', min: 50, max: 150, paso: 10, inicio: 70, unidad: '°', decimales: 0, color: 'c-h' },
+    ],
+    dibujo: v => ({ datos: bisecLibre(v.c, v.b, v.ang), estado: {} }),
+    arrastres: [
+      // Se agarra B: su distancia a A es AB y su dirección abre o cierra el ángulo (simétrico respecto a la bisectriz).
+      { id: 'vertice-b', etiqueta: 'vértice B', color: 'c-o',
+        donde: v => enPantalla(bisecLibre(v.c, v.b, v.ang), U.polar([0, 0], v.c, 270 - v.ang / 2)),
+        mover: (p, v) => { const q = alPlano(bisecLibre(v.c, v.b, v.ang), p); return { c: Math.hypot(...q), ang: 2 * (-90 - dirB(U.grados(Math.atan2(q[1], q[0])))) }; } },
+      { id: 'vertice-c', etiqueta: 'vértice C', color: 'c-i',
+        donde: v => enPantalla(bisecLibre(v.c, v.b, v.ang), U.polar([0, 0], v.b, 270 + v.ang / 2)),
+        mover: (p, v) => { const q = alPlano(bisecLibre(v.c, v.b, v.ang), p); return { b: Math.hypot(...q), ang: 2 * (90 + U.grados(Math.atan2(q[1], q[0]))) }; } },
+    ],
+    lectura: v => [{ v: 'c-h', t: '∠A' }, ` ${v.ang}°   ·   `, frac({ v: 'c-o', t: 'BD' }, { v: 'c-i', t: 'DC' }), ' = ', frac({ v: 'c-o', t: 'AB' }, { v: 'c-i', t: 'AC' }), ` = ${f(v.c / v.b)}`],
+  };
+  // Mesa 3, más rica que la idea 5: ancho y alto con escalas distintas. Con kx ≠ ky la figura ya no es semejante y el
+  // área se multiplica por kx · ky; solo con kx = ky aparece k².
+  const ampl2 = (kx, ky) => {
+    const x0 = 4.4;
+    return {
+      alt: `Rectángulo de 3 por 2 estirado ${f(kx)} veces a lo ancho y ${f(ky)} a lo alto: ${f(3 * kx)} por ${f(2 * ky)}, área ${f(6 * kx * ky)}`,
+      vista: { x: [-0.6, x0 + 9.4], y: [-0.9, 6.6] },
+      cuadricula: { paso: 1 },
+      puntos: [pt('a', [0, 0], { sinPunto: true }), pt('b', [3, 0], { sinPunto: true }), pt('c', [0, 2], { sinPunto: true }), pt('A', [x0, 0], { sinPunto: true }), pt('B', [x0 + 3 * kx, 0], { sinPunto: true }), pt('C', [x0, 2 * ky], { sinPunto: true })],
+      regiones: [{ puntos: [[0, 0], [3, 0], [3, 2], [0, 2]], color: 'i', opacidad: 0.25 },
+        { puntos: [[x0, 0], [x0 + 3 * kx, 0], [x0 + 3 * kx, 2 * ky], [x0, 2 * ky]], color: kx === ky ? 'o' : 'h', opacidad: 0.14 }],
+      segmentos: [{ de: 'a', a: 'b', color: 'i', texto: '3' }, { de: 'a', a: 'c', color: 'i', texto: '2' },
+        { de: 'A', a: 'B', color: 'o', grosor: 'variable', texto: f(3 * kx), lado: -1 }, { de: 'A', a: 'C', color: 'o', grosor: 'variable', texto: f(2 * ky), lado: -1 }],
+    };
+  };
+  const mesaEstirar = {
+    id: 'estirar', titulo: 'Ampliar o estirar', pieza: 'geo-figura',
+    consigna: 'Arrastra la esquina a cualquier lugar. Compara el factor del área con k² cuando las dos escalas coinciden.',
+    controles: [
+      { id: 'kx', etiqueta: 'k a lo ancho', min: 0.5, max: 3, paso: 0.5, inicio: 2, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'ky', etiqueta: 'k a lo alto', min: 0.5, max: 3, paso: 0.5, inicio: 1, unidad: '', decimales: 1, color: 'c-o' },
+    ],
+    dibujo: v => ({ datos: ampl2(v.kx, v.ky), estado: {} }),
+    // Se agarra la esquina libre: su x da el ancho y su y, el alto.
+    arrastres: [{ id: 'esquina', etiqueta: 'esquina de la figura nueva', color: 'c-o',
+      donde: v => enPantalla(ampl2(v.kx, v.ky), [4.4 + 3 * v.kx, 2 * v.ky]),
+      mover: (p, v) => { const q = alPlano(ampl2(v.kx, v.ky), p); return { kx: (q[0] - 4.4) / 3, ky: q[1] / 2 }; } }],
+    lectura: v => [`área × ${f(v.kx * v.ky)}   ·   ${v.kx === v.ky ? 'semejante' : 'no semejante'}`],
+  };
+
   return {
     unidad: 'geometria.proporcionalidad-y-semejanza',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -520,6 +656,9 @@
       pregunta: '¿Qué tienen que ver las áreas con las proporciones?',
       fuente: { titulo: 'Euclides, Elementos VI.2 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookVI/propVI2.html' },
     },
+    // Laboratorio: las tres mesas son más ricas que sus ideas: D y E libres (corte inclinado), la bisectriz con el ángulo
+    // A libre y el rectángulo estirado con dos escalas.
+    laboratorio: [mesaThales, mesaBisectriz, mesaEstirar],
     ideas: [thalesIdea, bisectriz, cevaIdea, semejanza, areaEscala],
   };
 });
