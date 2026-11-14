@@ -13,7 +13,53 @@
         "cos 120° = −1/2 (segundo cuadrante) y cos 45° = √2/2: E = 2 · (−1/2) · (√2/2) = −√2/2.",
         "Control: cos 165° ≈ −0,966 y cos 75° ≈ 0,259; su suma ≈ −0,707. No es cos 240° = −1/2: la suma de cosenos no es el coseno de la suma."
       ],
-      "verificar": [ { "fn": "sumaAProducto", "args": [{ "fn": "cos", "op": "+", "A": 165, "B": 75 }], "espera": { "texto": "−√2/2", "expresion": "2 cos 120° cos 45°", "errores.lineal.texto": "−1/2" } } ]
+      "verificar": [ { "fn": "sumaAProducto", "args": [{ "fn": "cos", "op": "+", "A": 165, "B": 75 }], "espera": { "texto": "−√2/2", "expresion": "2 cos 120° cos 45°", "errores.lineal.texto": "−1/2" } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Calcula E = cos 165° + cos 75°.",
+          "pregunta": "¿Cuánto vale E?",
+          "correcta": { "fn": "sumaAProducto", "args": [{ "fn": "cos", "op": "+", "A": 165, "B": 75 }], "campo": "texto", "valor": "−√2/2" },
+          "errores": [
+            {
+              "id": "TR16-lineal",
+              "respaldo": "parcial",
+              "explicacion": "Calculaste cos 240°, el coseno de la suma. La suma de cosenos no es el coseno de la suma: E = 2 cos 120° cos 45°.",
+              "fn": "sumaAProducto",
+              "args": [{ "fn": "cos", "op": "+", "A": 165, "B": 75 }],
+              "campo": "errores.lineal.texto",
+              "valor": "−1/2"
+            },
+            {
+              "id": "TT1-sin-dos",
+              "respaldo": "hipotesis",
+              "explicacion": "Olvidaste el 2 de la fórmula: cos A + cos B = 2 cos((A + B)/2) cos((A − B)/2).",
+              "fn": "sumaAProducto",
+              "args": [{ "fn": "cos", "op": "+", "A": 165, "B": 75 }],
+              "campo": "errores.sinDos.texto",
+              "valor": "−√2/4"
+            },
+            {
+              "id": "TT3-cambia-funcion",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste seno donde va coseno. En cos A + cos B los dos factores son cosenos: 2 cos 120° cos 45°.",
+              "fn": "sumaAProducto",
+              "args": [{ "fn": "cos", "op": "+", "A": 165, "B": 75 }],
+              "campo": "errores.funcion.texto",
+              "valor": "√6/2"
+            },
+            {
+              "id": "TT4-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 240° y 90° sin dividir entre 2. Van la semisuma, 120°, y la semidiferencia, 45°.",
+              "fn": "sumaAProducto",
+              "args": [{ "fn": "cos", "op": "+", "A": 165, "B": 75 }],
+              "campo": "errores.sinDividir.texto",
+              "valor": "0"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -26,7 +72,53 @@
         "sen(−30°) = −1/2, así que F = −2 · (√2/2) · (−1/2) = √2/2: los dos signos menos se cancelan.",
         "Control: el ángulo menor tiene el coseno mayor (cos 15° ≈ 0,966 y cos 75° ≈ 0,259), así que la resta tiene que ser positiva."
       ],
-      "verificar": [ { "fn": "sumaAProducto", "args": [{ "fn": "cos", "op": "−", "A": 15, "B": 75 }], "espera": { "texto": "√2/2", "expresion": "−2 sen 45° sen(−30°)", "errores.signo.texto": "−√2/2" } } ]
+      "verificar": [ { "fn": "sumaAProducto", "args": [{ "fn": "cos", "op": "−", "A": 15, "B": 75 }], "espera": { "texto": "√2/2", "expresion": "−2 sen 45° sen(−30°)", "errores.signo.texto": "−√2/2" } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Calcula F = cos 15° − cos 75°.",
+          "pregunta": "¿Cuánto vale F?",
+          "correcta": { "fn": "sumaAProducto", "args": [{ "fn": "cos", "op": "−", "A": 15, "B": 75 }], "campo": "texto", "valor": "√2/2" },
+          "errores": [
+            {
+              "id": "TT5-signo",
+              "respaldo": "hipotesis",
+              "explicacion": "Olvidaste el signo menos de la fórmula: cos A − cos B = −2 sen M sen D. Además, cos 15° es mayor que cos 75°: F es positivo.",
+              "fn": "sumaAProducto",
+              "args": [{ "fn": "cos", "op": "−", "A": 15, "B": 75 }],
+              "campo": "errores.signo.texto",
+              "valor": "−√2/2"
+            },
+            {
+              "id": "TR16-lineal",
+              "respaldo": "parcial",
+              "explicacion": "Calculaste cos(15° − 75°). La resta de cosenos no es el coseno de la resta: se usa la fórmula de producto.",
+              "fn": "sumaAProducto",
+              "args": [{ "fn": "cos", "op": "−", "A": 15, "B": 75 }],
+              "campo": "errores.lineal.texto",
+              "valor": "1/2"
+            },
+            {
+              "id": "TT1-sin-dos",
+              "respaldo": "hipotesis",
+              "explicacion": "Olvidaste el 2 de la fórmula: cos A − cos B = −2 sen((A + B)/2) sen((A − B)/2).",
+              "fn": "sumaAProducto",
+              "args": [{ "fn": "cos", "op": "−", "A": 15, "B": 75 }],
+              "campo": "errores.sinDos.texto",
+              "valor": "√2/4"
+            },
+            {
+              "id": "TT4-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 90° y −60° sin dividir entre 2. Van la semisuma, 45°, y la semidiferencia, −30°.",
+              "fn": "sumaAProducto",
+              "args": [{ "fn": "cos", "op": "−", "A": 15, "B": 75 }],
+              "campo": "errores.sinDividir.texto",
+              "valor": "√3"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -39,7 +131,53 @@
         "G es la mitad de eso: G = (2 + √3)/4.",
         "Control: sen 105° ≈ 0,966 y cos 15° ≈ 0,966; su producto ≈ 0,933, y (2 + √3)/4 ≈ 0,933."
       ],
-      "verificar": [ { "fn": "productoASuma", "args": [{ "tipo": "sencos", "x": 105, "y": 15 }], "espera": { "texto": "(2 + √3)/2", "expresion": "sen 120° + sen 90°" } } ]
+      "verificar": [ { "fn": "productoASuma", "args": [{ "tipo": "sencos", "x": 105, "y": 15 }], "espera": { "texto": "(2 + √3)/2", "expresion": "sen 120° + sen 90°" } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Para calcular G = sen 105° · cos 15° sin tablas, primero se pasa 2 sen 105° cos 15° a una suma.",
+          "pregunta": "¿Cuánto vale 2 sen 105° cos 15°?",
+          "correcta": { "fn": "productoASuma", "args": [{ "tipo": "sencos", "x": 105, "y": 15 }], "campo": "texto", "valor": "(2 + √3)/2" },
+          "errores": [
+            {
+              "id": "TT6-un-termino",
+              "respaldo": "hipotesis",
+              "explicacion": "Te quedaste con un solo término, sen 120°. Son dos: sen(x + y) + sen(x − y) = sen 120° + sen 90°.",
+              "fn": "productoASuma",
+              "args": [{ "tipo": "sencos", "x": 105, "y": 15 }],
+              "campo": "errores.unTermino.texto",
+              "valor": "√3/2"
+            },
+            {
+              "id": "TT7-otra-formula",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste la fórmula de otro producto, con cosenos. Para 2 sen x cos y salen senos: sen 120° + sen 90°.",
+              "fn": "productoASuma",
+              "args": [{ "tipo": "sencos", "x": 105, "y": 15 }],
+              "campo": "errores.funcion.texto",
+              "valor": "−1/2"
+            },
+            {
+              "id": "TT5-signo",
+              "respaldo": "hipotesis",
+              "explicacion": "Te salió negativo. Los dos senos, sen 120° y sen 90°, son positivos, y se suman.",
+              "fn": "productoASuma",
+              "args": [{ "tipo": "sencos", "x": 105, "y": 15 }],
+              "campo": "errores.signo.texto",
+              "valor": "−(2 + √3)/2"
+            },
+            {
+              "id": "TT13-dos-de-mas",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste el 2 dos veces. El 2 de 2 sen x cos y ya está dentro de sen(x + y) + sen(x − y).",
+              "fn": "productoASuma",
+              "args": [{ "tipo": "sencos", "x": 105, "y": 15 }],
+              "campo": "errores.dobla.texto",
+              "valor": "2 + √3"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -52,7 +190,44 @@
         "Se cancelan el 2 y cos 3x: H = sen 6x / cos 6x = tan 6x.",
         "Control: no es tan 12x (eso sale si no se divide entre 2) ni tan 3x (eso sale si se cambia la semisuma por la semidiferencia)."
       ],
-      "verificar": [ { "fn": "cociente", "args": [{ "p": 9, "q": 3 }], "espera": { "texto": "tan 6x", "errores.sinDividir.texto": "tan 12x", "errores.intercambia.texto": "tan 3x" } } ]
+      "verificar": [ { "fn": "cociente", "args": [{ "p": 9, "q": 3 }], "espera": { "texto": "tan 6x", "errores.sinDividir.texto": "tan 12x", "errores.intercambia.texto": "tan 3x" } } ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Simplifica H = (sen 9x + sen 3x) / (cos 9x + cos 3x).",
+          "pregunta": "¿A qué es igual H?",
+          "correcta": { "fn": "cociente", "args": [{ "p": 9, "q": 3 }], "campo": "texto", "valor": "tan 6x" },
+          "errores": [
+            {
+              "id": "TT2-intercambia",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiaste la semisuma por la semidiferencia. Lo que queda es la semisuma: (9x + 3x)/2 = 6x.",
+              "fn": "cociente",
+              "args": [{ "p": 9, "q": 3 }],
+              "campo": "errores.intercambia.texto",
+              "valor": "tan 3x"
+            },
+            {
+              "id": "TT4-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "No dividiste entre 2: 9x + 3x = 12x. La semisuma es 6x.",
+              "fn": "cociente",
+              "args": [{ "p": 9, "q": 3 }],
+              "campo": "errores.sinDividir.texto",
+              "valor": "tan 12x"
+            },
+            {
+              "id": "TT3-cambia-funcion",
+              "respaldo": "hipotesis",
+              "explicacion": "Lo pusiste al revés. Arriba queda sen 6x y abajo cos 6x: sen entre cos es la tangente.",
+              "fn": "cociente",
+              "args": [{ "p": 9, "q": 3 }],
+              "campo": "errores.funcion.texto",
+              "valor": "cot 6x"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p5",
@@ -65,7 +240,44 @@
         "Se cancelan el 2 y cos 5x: J = sen 3x / cos 3x = tan 3x.",
         "Control con x = 15°: (sen 120° − sen 30°)/(cos 120° + cos 30°) = ((√3 − 1)/2)/((√3 − 1)/2) = 1 = tan 45°."
       ],
-      "verificar": [ { "fn": "cociente", "args": [{ "p": 8, "q": 2, "num": "−", "den": "+" }], "espera": { "texto": "tan 3x" } } ]
+      "verificar": [ { "fn": "cociente", "args": [{ "p": 8, "q": 2, "num": "−", "den": "+" }], "espera": { "texto": "tan 3x" } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Simplifica J = (sen 8x − sen 2x) / (cos 8x + cos 2x).",
+          "pregunta": "¿A qué es igual J?",
+          "correcta": { "fn": "cociente", "args": [{ "p": 8, "q": 2, "num": "−", "den": "+" }], "campo": "texto", "valor": "tan 3x" },
+          "errores": [
+            {
+              "id": "TT2-intercambia",
+              "respaldo": "hipotesis",
+              "explicacion": "Te quedaste con la semisuma. Arriba sale 2 cos 5x sen 3x: se cancela cos 5x y queda la semidiferencia, 3x.",
+              "fn": "cociente",
+              "args": [{ "p": 8, "q": 2, "num": "−", "den": "+" }],
+              "campo": "errores.intercambia.texto",
+              "valor": "tan 5x"
+            },
+            {
+              "id": "TT4-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "No dividiste entre 2: 8x − 2x = 6x. La semidiferencia es 3x.",
+              "fn": "cociente",
+              "args": [{ "p": 8, "q": 2, "num": "−", "den": "+" }],
+              "campo": "errores.sinDividir.texto",
+              "valor": "tan 6x"
+            },
+            {
+              "id": "TT3-cambia-funcion",
+              "respaldo": "hipotesis",
+              "explicacion": "Lo pusiste al revés. Queda sen 3x arriba y cos 3x abajo: eso es la tangente.",
+              "fn": "cociente",
+              "args": [{ "p": 8, "q": 2, "num": "−", "den": "+" }],
+              "campo": "errores.funcion.texto",
+              "valor": "cot 3x"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -92,7 +304,44 @@
         "Control con la circunferencia: los ángulos 10°, 130° y 250° están separados por 120° (sus flechas forman un triángulo equilátero y suman cero), y cos 250° = cos 110°."
       ],
       "verificar": [ { "fn": "agrupar", "args": [{ "solo": 10, "par": [110, 130] }], "espera": { "texto": "0", "kPar.texto": "−1", "errores.sinDos.texto": "1/2" } },
-                     { "fn": "serie", "args": [{ "fn": "cos", "a": 10, "r": 120, "n": 3 }], "espera": { "texto": "0" } } ]
+                     { "fn": "serie", "args": [{ "fn": "cos", "a": 10, "r": 120, "n": 3 }], "espera": { "texto": "0" } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Una suma es L = cos 10° + cos 110° + cos 130°.",
+          "pregunta": "Si escribes L como k · cos 10°, ¿cuánto vale k?",
+          "correcta": { "fn": "agrupar", "args": [{ "solo": 10, "par": [110, 130] }], "campo": "texto", "valor": "0" },
+          "errores": [
+            {
+              "id": "TT1-sin-dos",
+              "respaldo": "hipotesis",
+              "explicacion": "Olvidaste el 2: cos 110° + cos 130° = 2 cos 120° cos 10° = −cos 10°, que anula al primero.",
+              "fn": "agrupar",
+              "args": [{ "solo": 10, "par": [110, 130] }],
+              "campo": "errores.sinDos.texto",
+              "valor": "1/2"
+            },
+            {
+              "id": "TR12-signo",
+              "respaldo": "parcial",
+              "explicacion": "Tomaste cos 120° como +1/2. 120° está en el segundo cuadrante: cos 120° = −1/2.",
+              "fn": "agrupar",
+              "args": [{ "solo": 10, "par": [110, 130] }],
+              "campo": "errores.signo.texto",
+              "valor": "2"
+            },
+            {
+              "id": "TT8-solo-el-par",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es solo el par: −cos 10°. Falta sumar el cos 10° que quedó afuera.",
+              "fn": "agrupar",
+              "args": [{ "solo": 10, "par": [110, 130] }],
+              "campo": "errores.elPar.texto",
+              "valor": "−1"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -105,7 +354,44 @@
         "Con x = 15°: 2 sen 60° + 2 sen 30° = 1 + √3.",
         "Control: 4 sen 45° cos 15° ≈ 4 · 0,707 · 0,966 ≈ 2,732, y 1 + √3 ≈ 2,732."
       ],
-      "verificar": [ { "fn": "productoASuma", "args": [{ "tipo": "sencos", "x": 45, "y": 15, "veces": 2 }], "espera": { "texto": "1 + √3", "expresion": "2 sen 60° + 2 sen 30°" } } ]
+      "verificar": [ { "fn": "productoASuma", "args": [{ "tipo": "sencos", "x": 45, "y": 15, "veces": 2 }], "espera": { "texto": "1 + √3", "expresion": "2 sen 60° + 2 sen 30°" } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "Se escribe 4 sen 3x cos x como una suma de senos.",
+          "pregunta": "¿Cuánto vale con x = 15°?",
+          "correcta": { "fn": "productoASuma", "args": [{ "tipo": "sencos", "x": 45, "y": 15, "veces": 2 }], "campo": "texto", "valor": "1 + √3" },
+          "errores": [
+            {
+              "id": "TT6-un-termino",
+              "respaldo": "hipotesis",
+              "explicacion": "Te quedaste con un solo término. Son dos: 2 sen 4x + 2 sen 2x = 2 sen 60° + 2 sen 30°.",
+              "fn": "productoASuma",
+              "args": [{ "tipo": "sencos", "x": 45, "y": 15, "veces": 2 }],
+              "campo": "errores.unTermino.texto",
+              "valor": "√3"
+            },
+            {
+              "id": "TT5-signo",
+              "respaldo": "hipotesis",
+              "explicacion": "Te salió negativo. Los dos senos, sen 60° y sen 30°, son positivos y se suman: 2 sen 60° + 2 sen 30° = 1 + √3.",
+              "fn": "productoASuma",
+              "args": [{ "tipo": "sencos", "x": 45, "y": 15, "veces": 2 }],
+              "campo": "errores.signo.texto",
+              "valor": "−(1 + √3)"
+            },
+            {
+              "id": "TT13-dos-de-mas",
+              "respaldo": "hipotesis",
+              "explicacion": "Duplicaste de más. 4 sen 3x cos x = 2 · (2 sen 3x cos x) = 2 sen 4x + 2 sen 2x.",
+              "fn": "productoASuma",
+              "args": [{ "tipo": "sencos", "x": 45, "y": 15, "veces": 2 }],
+              "campo": "errores.dobla.texto",
+              "valor": "2 + 2√3"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
@@ -118,7 +404,35 @@
         "Con la fórmula de la serie (senos y cosenos de ángulos en progresión aritmética; aquí tres ángulos que avanzan de 30° en 30°): N = [sen 45° / sen 15°] · cos 45°, que da lo mismo.",
         "Control: no es 3 cos 45° ≈ 2,12 (tres veces el del centro); N ≈ 0,966 + 0,707 + 0,259 ≈ 1,932."
       ],
-      "verificar": [ { "fn": "serie", "args": [{ "fn": "cos", "a": 15, "r": 30, "n": 3 }], "espera": { "texto": "(√6 + √2)/2", "errores.nVeces.texto": "3√2/2" } } ]
+      "verificar": [ { "fn": "serie", "args": [{ "fn": "cos", "a": 15, "r": 30, "n": 3 }], "espera": { "texto": "(√6 + √2)/2", "errores.nVeces.texto": "3√2/2" } } ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "Calcula N = cos 15° + cos 45° + cos 75°.",
+          "pregunta": "¿Cuánto vale N?",
+          "correcta": { "fn": "serie", "args": [{ "fn": "cos", "a": 15, "r": 30, "n": 3 }], "campo": "texto", "valor": "(√6 + √2)/2" },
+          "errores": [
+            {
+              "id": "TT9-n-veces",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste tres veces el del centro, 3 cos 45°. Los extremos no valen lo mismo: cos 15° + cos 75° = √6/2.",
+              "fn": "serie",
+              "args": [{ "fn": "cos", "a": 15, "r": 30, "n": 3 }],
+              "campo": "errores.nVeces.texto",
+              "valor": "3√2/2"
+            },
+            {
+              "id": "TR16-lineal",
+              "respaldo": "parcial",
+              "explicacion": "Calculaste cos 135°, el coseno de la suma de los ángulos. Se agrupan los extremos con la fórmula de producto.",
+              "fn": "serie",
+              "args": [{ "fn": "cos", "a": 15, "r": 30, "n": 3 }],
+              "campo": "errores.lineal.texto",
+              "valor": "−√2/2"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p10",
@@ -131,7 +445,44 @@
         "Eso da t = 45°, 135°, 225° y 315°: 4 veces.",
         "Control: no son 20: esos son los ceros de cos 10t, que sale de usar la semisuma (la de la onda rápida) en lugar de la semidiferencia."
       ],
-      "verificar": [ { "fn": "pulsos", "args": [{ "p": 12, "q": 8, "n": 2 }], "espera": { "valor": 4, "ceros": [45, 135, 225, 315], "errores.intercambia.texto": "20" } } ]
+      "verificar": [ { "fn": "pulsos", "args": [{ "p": 12, "q": 8, "n": 2 }], "espera": { "valor": 4, "ceros": [45, 135, 225, 315], "errores.intercambia.texto": "20" } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Dos sonidos se describen con y = sen 12t e y = sen 8t (t en grados). Su suma es una onda rápida dentro de una envolvente.",
+          "pregunta": "¿Cuántas veces se anula la envolvente entre t = 0° y t = 360°?",
+          "correcta": { "fn": "pulsos", "args": [{ "p": 12, "q": 8, "n": 2 }], "campo": "texto", "valor": "4" },
+          "errores": [
+            {
+              "id": "TT2-intercambia",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste los ceros de cos 10t, que viene de la semisuma: es la onda rápida. La envolvente es 2 cos 2t.",
+              "fn": "pulsos",
+              "args": [{ "p": 12, "q": 8, "n": 2 }],
+              "campo": "errores.intercambia.texto",
+              "valor": "20"
+            },
+            {
+              "id": "TT4-sin-dividir",
+              "respaldo": "hipotesis",
+              "explicacion": "No dividiste entre 2: usaste cos 4t. La semidiferencia es (12t − 8t)/2 = 2t.",
+              "fn": "pulsos",
+              "args": [{ "p": 12, "q": 8, "n": 2 }],
+              "campo": "errores.sinDividir.texto",
+              "valor": "8"
+            },
+            {
+              "id": "TT12-nunca",
+              "respaldo": "hipotesis",
+              "explicacion": "Dos ondas que se suman sí pueden apagarse: la envolvente 2 cos 2t vale 0 en 45°, 135°, 225° y 315°.",
+              "fn": "pulsos",
+              "args": [{ "p": 12, "q": 8, "n": 2 }],
+              "campo": "errores.nunca.texto",
+              "valor": "0"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

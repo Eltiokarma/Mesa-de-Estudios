@@ -160,7 +160,10 @@
       const t = A[0], s = t.n < 0 ? '−' : '';
       return s + (t.d === 1 ? raiz(Math.abs(t.n), t.r) : `${raiz(Math.abs(t.n), t.r)}/${t.d}`);
     }
-    if (A.every(t => t.n < 0)) return '−' + exTexto(exNeg(A));   // −(1 + √3)/2
+    if (A.every(t => t.n < 0)) {   // −(2 + √3)/2 y −(1 + √3): con paréntesis, para que no se lea −1 + √3
+      const s = exTexto(exNeg(A));
+      return s.startsWith('(') ? '−' + s : `−(${s})`;
+    }
     const L = A.reduce((l, t) => l * t.d / mcd(l, t.d), 1);
     // primero los positivos (el entero delante: 2 + √3, 1 + √3), después los negativos: 2 − √3, √3 − 1, √6 + √2
     const ent = A.filter(t => t.r === 1), rad = A.filter(t => t.r !== 1);
