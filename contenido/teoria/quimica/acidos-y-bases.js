@@ -138,7 +138,7 @@
     },
     regla: {
       texto: 'Brønsted-Lowry: el ácido da un H⁺ y la base lo recibe; cada uno queda como su conjugado. Arrhenius mira H⁺ y OH⁻ en agua; Lewis, pares de electrones.',
-      ecuacion: ['ácido + base ⇌ base conjugada + ácido conjugado'],
+      ecuacion: [{ llave: ['HA + B'], nota: 'ácido y base' }, ' ⇌ ', { llave: ['A⁻ + HB⁺'], nota: 'sus conjugados' }],
       condicion: 'el papel depende de la reacción: el agua es base frente al HCl y ácido frente al NH₃.',
       voz: 'Primero ubica el protón; el nombre de cada papel sale solo.',
     },
@@ -227,8 +227,8 @@
     },
     regla: {
       texto: 'Un ácido fuerte se ioniza casi por completo; uno débil, solo en parte, según su Ka. La fuerza no es la concentración. En un par conjugado, Ka·Kb = Kw.',
-      ecuacion: [Ka, ' = ', { frac: ['[H₃O⁺][A⁻]', '[HA]'] }, '   ·   ', Ka, Kb, ' = ', Kw, ' = 1,0 × 10⁻¹⁴'],
-      condicion: 'a 25 °C y en disolución diluida; Ka y Kw cambian con la temperatura.',
+      ecuacion: [{ llave: [Ka], nota: 'de acidez', color: 'c-d' }, ' = ', { frac: ['[H₃O⁺][A⁻]', '[HA]'] }, '   ·   ', Ka, Kb, ' = ', { llave: [Kw], nota: 'del agua', color: 'c-d' }],
+      condicion: 'a 25 °C (Kw = 1,0 × 10⁻¹⁴) y en disolución diluida; Ka y Kw cambian con la temperatura.',
       voz: 'Dos preguntas distintas: qué tanto se ioniza y cuánto hay.',
     },
     ahoraTu: {
@@ -267,6 +267,7 @@
   // del ácido fuerte sube de uno en uno · Se reserva: el último paso, que se frena antes de 7 · Debe verse: que nunca cruza a básico.
   const ESC = (elementos, extra = {}) => Object.assign({ min: 0, max: 14, paso: 1, cada: 2, variable: 'pH', color: 'h', decimales: 2, filas: 2, elementos: [{ tipo: 'punto', x: 7, rotulo: 'neutro', fila: 0, abierto: true }, ...elementos] }, extra);
   const DILUIDOS = { hcl: { texto: 'HCl (fuerte)', ka: Infinity }, acetico: { texto: 'CH₃COOH (débil)', ka: KA.acetico } };
+  const phDil = (k, i) => pHde(hAcido(0.1 / 10 ** i, DILUIDOS[k].ka));
   const escala = {
     id: 'ph-al-diluir',
     titulo: 'El pH al diluir',
@@ -288,6 +289,16 @@
       },
       lectura: val => [C, ` = ${cien(0.1 / 10 ** val.n, 0)} M · `, pH, ` = ${fp(pHde(hAcido(0.1 / 10 ** val.n, DILUIDOS[val.k].ka)))}`],
       minimo: 4,
+      // El punto del pH final se corre por la recta: al soltarlo cae en el número de diluciones cuyo pH está más cerca.
+      // Se ve que hacia el 7 el punto ya no avanza aunque se diluya más.
+      arrastres: [{ id: 'ph-final', etiqueta: 'pH después de diluir', color: 'c-h',
+        donde: val => { const g = Kit.piezas.recta.geometria(ESC([])); return { x: g.x(phDil(val.k, val.n)), y: g.filaY(2) }; },
+        mover: (pt, val) => {
+          const g = Kit.piezas.recta.geometria(ESC([])), x = (pt.x - g.x(0)) * 14 / (g.x(14) - g.x(0));
+          let mejor = 0;
+          for (let i = 0; i <= 8; i++) if (Math.abs(phDil(val.k, i) - x) < Math.abs(phDil(val.k, mejor) - x)) mejor = i;
+          return { n: mejor };
+        } }],
     },
     predice: {
       pregunta: `Diluyes 10 veces HCl 0,1 M (pH 1,00) y también CH₃COOH 0,1 M (pH ${fp(pHde(hAcido(0.1, KA.acetico)))}). ¿Ambos suben exactamente una unidad de pH?`,
@@ -322,7 +333,7 @@
     },
     regla: {
       texto: 'pH = −log[H₃O⁺] y pH + pOH = 14. Diluir 10 veces un ácido fuerte sube 1 el pH solo lejos de 7; un débil sube menos. Nunca se vuelve básico.',
-      ecuacion: [pH, ' = −log[H₃O⁺]   ·   ', pH, ' + pOH = 14'],
+      ecuacion: [pH, ' = −log', { llave: ['[H₃O⁺]'], nota: 'en mol/L' }, '   ·   ', pH, ' + pOH = 14'],
       condicion: 'a 25 °C y en disolución diluida; −log de la concentración es una aproximación de la actividad.',
       voz: 'Antes de sumar 1, pregunta si es fuerte y si estás lejos de 7.',
     },
@@ -351,8 +362,11 @@
   // sube despacio, salta en la equivalencia y se aplana · Se reserva: la equivalencia del ácido débil, sobre 7 ·
   // Debe verse: dónde está la equivalencia y qué pH tiene.
   const VA = 25, CA = 0.1, CB = 0.1;
-  const pHtit = (vb, ka) => { const v = VA + vb; return pHde(hAcido(CA * VA / v, ka, CB * vb / v)); };
-  const curva = ka => Array.from({ length: 101 }, (_, i) => [i / 2, pHtit(i / 2, ka)]);
+  const pHtit = (vb, ka, ca = CA) => { const v = VA + vb; return pHde(hAcido(ca * VA / v, ka, CB * vb / v)); };
+  const curva = (ka, ca = CA) => Array.from({ length: 101 }, (_, i) => [i / 2, pHtit(i / 2, ka, ca)]);
+  // El punto de la curva se agarra y se corre: su abscisa es el volumen de NaOH (la inversa de X de la pieza ejes).
+  const vEn = pt => { const g = Kit.piezas.ejes.geometria(ejesTit()); return (pt.x - g.X(0)) * 50 / (g.X(50) - g.X(0)); };
+  const puntoTit = (v, ka, ca = CA) => { const g = Kit.piezas.ejes.geometria(ejesTit()); return { x: g.X(v), y: g.Y(pHtit(v, ka, ca)) }; };
   const ejesTit = (extra = {}) => Object.assign({
     x: { min: 0, max: 50, paso: 10, nombre: 'V NaOH', unidad: 'mL', decimales: 0, color: 'o' },
     y: { min: 0, max: 14, paso: 2, nombre: 'pH', decimales: 0, color: 'h' },
@@ -370,6 +384,10 @@
       dibujo: val => ({ datos: ejesTit({ curvas: [{ puntos: curva(Infinity), color: 'h' }], puntos: [{ x: val.v, y: pHtit(val.v, Infinity), color: 'o', rotulo: fp(pHtit(val.v, Infinity)), guias: true }] }), estado: {} }),
       lectura: val => [V, ` = ${f(val.v, 1)} mL · `, pH, ` = ${fp(pHtit(val.v, Infinity))}`],
       minimo: 4,
+      // El punto naranja se arrastra a lo largo de la curva: el dedo elige el volumen de base y el pH responde.
+      arrastres: [{ id: 'base-agregada', etiqueta: 'volumen de NaOH sobre la curva', color: 'c-o',
+        donde: val => puntoTit(val.v, Infinity),
+        mover: pt => ({ v: vEn(pt) }) }],
     },
     predice: {
       pregunta: 'Ahora titulas 25 mL de CH₃COOH 0,1 M (débil) con el mismo NaOH. En el punto de equivalencia, con 25 mL agregados, ¿qué pH hay?',
@@ -384,6 +402,8 @@
       coincide: 'Coincide: en la equivalencia queda acetato, y el acetato es básico.',
       noCoincide: `En la equivalencia queda acetato, una base: pH ${fp(pHtit(25, KA.acetico))}.`,
     },
+    // Hallazgo 9: el juego y «Mira» usan la misma figura (la curva de titulación); «Mira» cambia al ácido débil porque es el
+    // caso que la predicción acaba de abrir, y la curva del HCl que el alumno recorrió ya quedó dibujada en el revelado.
     mira: {
       datos: ejesTit({
         curvas: [{ puntos: curva(KA.acetico), color: 'h' }],
@@ -405,7 +425,7 @@
     },
     regla: {
       texto: 'Primero la estequiometría: en la equivalencia, los moles de base igualan a los de ácido. Después el equilibrio: el pH ahí es 7 solo con ácido y base fuertes.',
-      ecuacion: [{ sub: [C, 'a'] }, { sub: [V, 'a'] }, ' = ', { sub: [C, 'b'] }, { sub: [V, 'b'] }],
+      ecuacion: [{ llave: [{ sub: [C, 'a'] }, { sub: [V, 'a'] }], nota: 'moles de ácido' }, ' = ', { llave: [{ sub: [C, 'b'] }, { sub: [V, 'b'] }], nota: 'moles de base' }],
       condicion: 'ácido monoprótico con base fuerte a 25 °C; el indicador marca el punto final, que debe caer cerca de la equivalencia.',
       voz: 'Cuenta moles primero; el pH viene después.',
     },
@@ -427,6 +447,28 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Vaso: 12 moléculas-modelo de ácido; el nivel es V/1 L. La fracción ionizada sale del balance de cargas con C = m/V.
+  const PZ = () => Kit.piezas['quim-particulas'];
+  const labC = val => { const c = val.m / val.v; return c >= 0.01 ? f(c, 3) : cien(c, 1); };
+  const labVaso = val => {
+    const ka = ACIDOS[val.k].ka, ion = Math.round(12 * alfa(val.m / val.v, ka));
+    return { datos: { atomos: ATOMOS, especies: ESPECIES, alto: 170, separacion: 18,
+      cajas: [{ titulo: `${ACIDOS[val.k].texto}, ${f(val.m, 4)} mol`, forma: 'vaso', nivel: val.v, rotulo: `${f(val.v, 2)} L`,
+        particulas: [{ e: 'HA', n: 12 - ion }, { e: 'H3O', n: ion }, { e: 'Am', n: ion }] }],
+      alt: `Lupa (modelo; el agua no se dibuja): ${ACIDOS[val.k].texto} en ${f(val.v, 2)} L, ${12 - ion} moléculas enteras y ${ion} pares de iones de 12.` }, estado: {} };
+  };
+  // La superficie del líquido está en r.y − 4 (quim-particulas: region); el nivel es la fracción del alto útil.
+  const nivelVaso = dib => { const g = PZ().geometria(dib.datos), r = PZ().region(dib.datos.cajas[0], g, 0); return { x: g.x(0) + g.ancho / 2, y: r.y - 4 }; };
+  const volumenEn = (dib, y) => { const g = PZ().geometria(dib.datos); return (g.y1 - y) / (g.alto - 8); };
+  const labTit = val => {
+    const ka = ACIDOS[val.k].ka, ve = val.c * VA / CB;
+    return { datos: ejesTit({
+      curvas: [{ puntos: curva(Infinity, val.c), color: 'h', discontinua: ka !== Infinity }].concat(ka === Infinity ? [] : [{ puntos: curva(ka, val.c), color: 'h' }]),
+      puntos: [{ x: val.v, y: pHtit(val.v, ka, val.c), color: 'o', rotulo: fp(pHtit(val.v, ka, val.c)), guias: true }],
+      alt: `Curva de titulación de 25 mL de ${ACIDOS[val.k].texto} ${f(val.c)} M con NaOH 0,1 M; equivalencia en ${f(ve, 1)} mL. La curva punteada es la del HCl.` }), estado: {} };
+  };
+
   return {
     unidad: 'quimica.acidos-y-bases',
     version: '0.1.0',
@@ -437,6 +479,41 @@
       pregunta: '¿Cómo compararías dos números que difieren un millón de veces?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §14.2; IUPAC Gold Book, pH', url: 'https://openstax.org/books/chemistry-2e/pages/14-2-ph-and-poh' },
     },
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera junta fuerza y concentración en un solo vaso: se
+    // agrega agua arrastrando el nivel y se ve que el débil se ioniza más al diluirse (lo que la idea 2 no deja probar).
+    // La segunda titula cualquiera de los tres ácidos a tres concentraciones, con la curva del HCl de fondo para comparar.
+    // Las lecturas dicen ácido, cantidades y resultado, para que un caso guardado se lea solo.
+    laboratorio: [
+      {
+        id: 'vaso-que-se-diluye', titulo: 'El ácido que se diluye', pieza: 'quim-particulas',
+        consigna: 'Elige el ácido y cuántos moles hay. Sube el nivel del vaso para agregar agua y cuenta los iones en la lupa.',
+        controles: [
+          { id: 'k', etiqueta: 'Ácido', opciones: Object.keys(ACIDOS).map(k => ({ valor: k, texto: ACIDOS[k].texto })) },
+          { id: 'm', etiqueta: 'Cantidad', opciones: [{ valor: 0.1, texto: '0,1 mol' }, { valor: 0.01, texto: '0,01 mol' }, { valor: 0.001, texto: '0,001 mol' }, { valor: 0.0001, texto: '0,0001 mol' }] },
+          { id: 'v', etiqueta: 'V', color: 'c-o', min: 0.5, max: 1, paso: 0.05, inicio: 0.5, unidad: 'L', decimales: 2 },
+        ],
+        dibujo: val => labVaso(val),
+        lectura: val => [`${ACIDOS[val.k].texto.split(' ')[0]} `, C, ` = ${labC(val)} M → ${f(100 * alfa(val.m / val.v, ACIDOS[val.k].ka), 0)} % · `, pH, ` = ${fp(pHde(hAcido(val.m / val.v, ACIDOS[val.k].ka)))}`],
+        // La superficie del líquido se agarra: subirla es agregar agua (V); la fracción ionizada responde en la lupa.
+        arrastres: [{ id: 'nivel', etiqueta: 'nivel del vaso: más arriba, más agua', color: 'c-o',
+          donde: val => nivelVaso(labVaso(val)),
+          mover: (pt, val) => ({ v: volumenEn(labVaso(val), pt.y) }) }],
+      },
+      {
+        id: 'titula-cualquiera', titulo: 'Titula cualquier ácido', pieza: 'ejes',
+        consigna: 'Elige el ácido y su concentración. Arrastra el punto por la curva y compara con la del HCl punteada.',
+        controles: [
+          { id: 'k', etiqueta: 'Ácido', opciones: Object.keys(ACIDOS).map(k => ({ valor: k, texto: ACIDOS[k].texto })) },
+          { id: 'c', etiqueta: 'C', color: 'c-i', opciones: [{ valor: 0.05, texto: '0,05 M' }, { valor: 0.1, texto: '0,1 M' }, { valor: 0.15, texto: '0,15 M' }] },
+          { id: 'v', etiqueta: 'V', color: 'c-o', min: 0, max: 50, paso: 1, inicio: 10, unidad: 'mL', decimales: 0 },
+        ],
+        dibujo: val => labTit(val),
+        lectura: val => [`25 mL ${ACIDOS[val.k].texto.split(' ')[0]} ${f(val.c)} M + ${f(val.v, 0)} mL → `, pH, ` = ${fp(pHtit(val.v, ACIDOS[val.k].ka, val.c))}`],
+        arrastres: [{ id: 'base-agregada', etiqueta: 'volumen de NaOH sobre la curva', color: 'c-o',
+          donde: val => puntoTit(val.v, ACIDOS[val.k].ka, val.c),
+          mover: pt => ({ v: vEn(pt) }) }],
+      },
+    ],
     ideas: [proton, fuerza, escala, titulacion],
   };
 });
