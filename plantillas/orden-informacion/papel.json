@@ -115,6 +115,96 @@
             ]
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Ana, Beto, Caro, Dani y Eva se sientan en una fila de 5 butacas, numeradas del 1 al 5 de izquierda a derecha. Caro está inmediatamente a la derecha de Ana; Dani se sienta en un extremo, pero no en la butaca 1; Beto está a la izquierda de Ana; y Eva no se sienta junto a Caro.",
+          "pregunta": "¿Quién ocupa la butaca 3?",
+          "correcta": {
+            "fn": "quien",
+            "args": [
+              {
+                "forma": "lineal",
+                "personas": [
+                  "Ana",
+                  "Beto",
+                  "Caro",
+                  "Dani",
+                  "Eva"
+                ],
+                "pistas": [
+                  { "tipo": "inmDerecha", "a": "Caro", "b": "Ana" },
+                  { "tipo": "extremo", "a": "Dani" },
+                  { "tipo": "izquierda", "a": "Beto", "b": "Ana" },
+                  { "tipo": "noJuntos", "a": "Eva", "b": "Caro" },
+                  { "tipo": "noLugar", "a": "Dani", "k": 1 }
+                ]
+              },
+              { "tipo": "lugar", "k": 3 }
+            ],
+            "campo": "respuesta",
+            "valor": "Ana"
+          },
+          "errores": [
+            {
+              "id": "RM-olvida-pista-negativa",
+              "respaldo": "hipotesis",
+              "explicacion": "Te saltaste las pistas con «no». «Dani no va en la 1» y «Eva no va junto a Caro» también quitan lugares.",
+              "fn": "quien",
+              "args": [
+                {
+                  "forma": "lineal",
+                  "personas": [
+                    "Ana",
+                    "Beto",
+                    "Caro",
+                    "Dani",
+                    "Eva"
+                  ],
+                  "pistas": [
+                    { "tipo": "inmDerecha", "a": "Caro", "b": "Ana" },
+                    { "tipo": "extremo", "a": "Dani" },
+                    { "tipo": "izquierda", "a": "Beto", "b": "Ana" },
+                    { "tipo": "noJuntos", "a": "Eva", "b": "Caro" },
+                    { "tipo": "noLugar", "a": "Dani", "k": 1 }
+                  ]
+                },
+                { "tipo": "lugar", "k": 3 }
+              ],
+              "campo": "errores.olvidaNegativa",
+              "valor": "Caro"
+            },
+            {
+              "id": "RM-izquierda-derecha-al-reves",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiaste izquierda por derecha. La butaca 1 está a la izquierda: Caro va en la butaca siguiente a la de Ana.",
+              "fn": "quien",
+              "args": [
+                {
+                  "forma": "lineal",
+                  "personas": [
+                    "Ana",
+                    "Beto",
+                    "Caro",
+                    "Dani",
+                    "Eva"
+                  ],
+                  "pistas": [
+                    { "tipo": "inmDerecha", "a": "Caro", "b": "Ana" },
+                    { "tipo": "extremo", "a": "Dani" },
+                    { "tipo": "izquierda", "a": "Beto", "b": "Ana" },
+                    { "tipo": "noJuntos", "a": "Eva", "b": "Caro" },
+                    { "tipo": "noLugar", "a": "Dani", "k": 1 }
+                  ]
+                },
+                { "tipo": "lugar", "k": 3 }
+              ],
+              "campo": "errores.sentidoInvertido",
+              "valor": "Beto"
+            }
+          ]
+        }
       ]
     },
     {
@@ -305,6 +395,124 @@
             "soluciones": 1
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Ana, Beto, Caro, Dani, Eva y Fito se sientan alrededor de una mesa redonda con 6 sillas distribuidas simétricamente, mirando al centro. Ana se sienta frente a Beto; Ana no se sienta junto a Caro; Dani está inmediatamente a la izquierda de Caro; y Eva está inmediatamente a la izquierda de Fito.",
+          "pregunta": "¿Quién se sienta inmediatamente a la izquierda de Ana?",
+          "correcta": {
+            "fn": "quien",
+            "args": [
+              {
+                "forma": "circular",
+                "personas": [
+                  "Ana",
+                  "Beto",
+                  "Caro",
+                  "Dani",
+                  "Eva",
+                  "Fito"
+                ],
+                "pistas": [
+                  { "tipo": "frente", "a": "Ana", "b": "Beto" },
+                  { "tipo": "noJuntos", "a": "Ana", "b": "Caro" },
+                  { "tipo": "inmIzquierda", "a": "Dani", "b": "Caro" },
+                  { "tipo": "inmIzquierda", "a": "Eva", "b": "Fito" }
+                ]
+              },
+              { "tipo": "izquierdaDe", "de": "Ana" }
+            ],
+            "campo": "respuesta",
+            "valor": "Fito"
+          },
+          "errores": [
+            {
+              "id": "RM-olvida-pista-negativa",
+              "respaldo": "hipotesis",
+              "explicacion": "Te saltaste «Ana no se sienta junto a Caro». Esa pista es la que decide dónde van Dani y Caro.",
+              "fn": "quien",
+              "args": [
+                {
+                  "forma": "circular",
+                  "personas": [
+                    "Ana",
+                    "Beto",
+                    "Caro",
+                    "Dani",
+                    "Eva",
+                    "Fito"
+                  ],
+                  "pistas": [
+                    { "tipo": "frente", "a": "Ana", "b": "Beto" },
+                    { "tipo": "noJuntos", "a": "Ana", "b": "Caro" },
+                    { "tipo": "inmIzquierda", "a": "Dani", "b": "Caro" },
+                    { "tipo": "inmIzquierda", "a": "Eva", "b": "Fito" }
+                  ]
+                },
+                { "tipo": "izquierdaDe", "de": "Ana" }
+              ],
+              "campo": "errores.olvidaNegativa",
+              "valor": "Caro"
+            },
+            {
+              "id": "RM-izquierda-derecha-al-reves",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiaste izquierda por derecha. En la mesa cada uno mira al centro: su izquierda es la de la persona sentada.",
+              "fn": "quien",
+              "args": [
+                {
+                  "forma": "circular",
+                  "personas": [
+                    "Ana",
+                    "Beto",
+                    "Caro",
+                    "Dani",
+                    "Eva",
+                    "Fito"
+                  ],
+                  "pistas": [
+                    { "tipo": "frente", "a": "Ana", "b": "Beto" },
+                    { "tipo": "noJuntos", "a": "Ana", "b": "Caro" },
+                    { "tipo": "inmIzquierda", "a": "Dani", "b": "Caro" },
+                    { "tipo": "inmIzquierda", "a": "Eva", "b": "Fito" }
+                  ]
+                },
+                { "tipo": "izquierdaDe", "de": "Ana" }
+              ],
+              "campo": "errores.sentidoInvertido",
+              "valor": "Dani"
+            },
+            {
+              "id": "RM-sin-direccion",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste a cada pareja junta, pero sin mirar quién va a la izquierda de quién. «Inmediatamente a la izquierda» fija el orden.",
+              "fn": "quien",
+              "args": [
+                {
+                  "forma": "circular",
+                  "personas": [
+                    "Ana",
+                    "Beto",
+                    "Caro",
+                    "Dani",
+                    "Eva",
+                    "Fito"
+                  ],
+                  "pistas": [
+                    { "tipo": "frente", "a": "Ana", "b": "Beto" },
+                    { "tipo": "noJuntos", "a": "Ana", "b": "Caro" },
+                    { "tipo": "inmIzquierda", "a": "Dani", "b": "Caro" },
+                    { "tipo": "inmIzquierda", "a": "Eva", "b": "Fito" }
+                  ]
+                },
+                { "tipo": "izquierdaDe", "de": "Ana" }
+              ],
+              "campo": "errores.sinDireccion",
+              "valor": "Eva"
+            }
+          ]
+        }
       ]
     },
     {
@@ -413,6 +621,96 @@
               "Fito"
             ]
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Seis amigos (Ana, Beto, Caro, Dani, Eva y Fito) se sientan alrededor de una mesa redonda con 6 sillas distribuidas simétricamente, mirando al centro. Ana se sienta frente a Dani; Beto está inmediatamente a la derecha de Ana; Eva se sienta junto a Dani; y Eva no se sienta frente a Beto.",
+          "pregunta": "¿Quién está inmediatamente a la derecha de Beto?",
+          "correcta": {
+            "fn": "quien",
+            "args": [
+              {
+                "forma": "circular",
+                "personas": [
+                  "Ana",
+                  "Beto",
+                  "Caro",
+                  "Dani",
+                  "Eva",
+                  "Fito"
+                ],
+                "pistas": [
+                  { "tipo": "frente", "a": "Ana", "b": "Dani" },
+                  { "tipo": "inmDerecha", "a": "Beto", "b": "Ana" },
+                  { "tipo": "juntos", "a": "Eva", "b": "Dani" },
+                  { "tipo": "noFrente", "a": "Eva", "b": "Beto" }
+                ]
+              },
+              { "tipo": "derechaDe", "de": "Beto" }
+            ],
+            "campo": "respuesta",
+            "valor": "Eva"
+          },
+          "errores": [
+            {
+              "id": "RM-olvida-pista-negativa",
+              "respaldo": "hipotesis",
+              "explicacion": "Te saltaste «Eva no se sienta frente a Beto». Esa pista decide a qué lado de Dani va Eva.",
+              "fn": "quien",
+              "args": [
+                {
+                  "forma": "circular",
+                  "personas": [
+                    "Ana",
+                    "Beto",
+                    "Caro",
+                    "Dani",
+                    "Eva",
+                    "Fito"
+                  ],
+                  "pistas": [
+                    { "tipo": "frente", "a": "Ana", "b": "Dani" },
+                    { "tipo": "inmDerecha", "a": "Beto", "b": "Ana" },
+                    { "tipo": "juntos", "a": "Eva", "b": "Dani" },
+                    { "tipo": "noFrente", "a": "Eva", "b": "Beto" }
+                  ]
+                },
+                { "tipo": "derechaDe", "de": "Beto" }
+              ],
+              "campo": "errores.olvidaNegativa",
+              "valor": "Caro"
+            },
+            {
+              "id": "RM-izquierda-derecha-al-reves",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiaste izquierda por derecha: así Ana quedaría a la derecha de Beto. Es al revés: Beto está a la derecha de Ana.",
+              "fn": "quien",
+              "args": [
+                {
+                  "forma": "circular",
+                  "personas": [
+                    "Ana",
+                    "Beto",
+                    "Caro",
+                    "Dani",
+                    "Eva",
+                    "Fito"
+                  ],
+                  "pistas": [
+                    { "tipo": "frente", "a": "Ana", "b": "Dani" },
+                    { "tipo": "inmDerecha", "a": "Beto", "b": "Ana" },
+                    { "tipo": "juntos", "a": "Eva", "b": "Dani" },
+                    { "tipo": "noFrente", "a": "Eva", "b": "Beto" }
+                  ]
+                },
+                { "tipo": "derechaDe", "de": "Beto" }
+              ],
+              "campo": "errores.sentidoInvertido",
+              "valor": "Ana"
+            }
+          ]
         }
       ]
     },
@@ -618,6 +916,87 @@
             ]
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Alguien se comió el último chocolate de la caja. Ana dice: «Fue Beto». Beto dice: «Fue Dani». Caro dice: «Yo no fui». Dani dice: «Beto miente». Solo uno de los cuatro dice la verdad.",
+          "pregunta": "¿Quién se comió el chocolate?",
+          "correcta": {
+            "fn": "verdades",
+            "args": [
+              {
+                "personas": [
+                  "Ana",
+                  "Beto",
+                  "Caro",
+                  "Dani"
+                ],
+                "frases": [
+                  { "de": "Ana", "dice": { "tipo": "culpable", "x": "Beto" } },
+                  { "de": "Beto", "dice": { "tipo": "culpable", "x": "Dani" } },
+                  { "de": "Caro", "dice": { "tipo": "noCulpable", "x": "Caro" } },
+                  { "de": "Dani", "dice": { "tipo": "miente", "x": "Beto" } }
+                ],
+                "mienten": { "exactamente": 3 }
+              }
+            ],
+            "campo": "culpable",
+            "valor": "Caro"
+          },
+          "errores": [
+            {
+              "id": "RM-mentiroso-como-culpable",
+              "respaldo": "hipotesis",
+              "explicacion": "Mentir no te vuelve culpable: aquí mienten Ana, Beto y Caro, y una sola persona se comió el chocolate. Busca quién fue según lo que dicen.",
+              "fn": "verdades",
+              "args": [
+                {
+                  "personas": [
+                    "Ana",
+                    "Beto",
+                    "Caro",
+                    "Dani"
+                  ],
+                  "frases": [
+                    { "de": "Ana", "dice": { "tipo": "culpable", "x": "Beto" } },
+                    { "de": "Beto", "dice": { "tipo": "culpable", "x": "Dani" } },
+                    { "de": "Caro", "dice": { "tipo": "noCulpable", "x": "Caro" } },
+                    { "de": "Dani", "dice": { "tipo": "miente", "x": "Beto" } }
+                  ],
+                  "mienten": { "exactamente": 3 }
+                }
+              ],
+              "campo": "erroresCulpable.mentirosoEsCulpable",
+              "valor": "Ana"
+            },
+            {
+              "id": "RM-cree-al-mentiroso",
+              "respaldo": "hipotesis",
+              "explicacion": "Le creíste a quien miente. Beto y Dani se contradicen, así que uno de ellos es el único sincero: Ana y Caro mienten.",
+              "fn": "verdades",
+              "args": [
+                {
+                  "personas": [
+                    "Ana",
+                    "Beto",
+                    "Caro",
+                    "Dani"
+                  ],
+                  "frases": [
+                    { "de": "Ana", "dice": { "tipo": "culpable", "x": "Beto" } },
+                    { "de": "Beto", "dice": { "tipo": "culpable", "x": "Dani" } },
+                    { "de": "Caro", "dice": { "tipo": "noCulpable", "x": "Caro" } },
+                    { "de": "Dani", "dice": { "tipo": "miente", "x": "Beto" } }
+                  ],
+                  "mienten": { "exactamente": 3 }
+                }
+              ],
+              "campo": "erroresCulpable.creeAlMentiroso",
+              "valor": "Beto"
+            }
+          ]
+        }
       ]
     },
     {
@@ -727,6 +1106,92 @@
             "errores.sinMasUno": 11
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "En un cajón oscuro hay 10 medias negras y 6 medias blancas, sueltas.",
+          "pregunta": "¿Cuántas hay que sacar, sin ver, para tener con seguridad dos medias del mismo color?",
+          "unidad": "medias",
+          "decimales": 0,
+          "correcta": {
+            "fn": "certeza",
+            "args": [{ "urna": { "negra": 10, "blanca": 6 }, "objetivo": { "tipo": "mismoColor", "k": 2 } }],
+            "campo": "n",
+            "valor": 3
+          },
+          "errores": [
+            {
+              "id": "RM6-mejor-caso",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el caso con suerte. Para estar seguro, piensa en la peor: con 2 pueden salir una negra y una blanca.",
+              "fn": "certeza",
+              "args": [{ "urna": { "negra": 10, "blanca": 6 }, "objetivo": { "tipo": "mismoColor", "k": 2 } }],
+              "campo": "errores.mejorCaso",
+              "valor": 2
+            },
+            {
+              "id": "RM6-k-de-cada-color",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste 2 por los 2 colores. No hace falta un par de cada color: con 3 medias, dos ya son del mismo color.",
+              "fn": "certeza",
+              "args": [{ "urna": { "negra": 10, "blanca": 6 }, "objetivo": { "tipo": "mismoColor", "k": 2 } }],
+              "campo": "errores.porColores",
+              "valor": 4
+            },
+            {
+              "id": "RM6-mas-abundante",
+              "respaldo": "hipotesis",
+              "explicacion": "Sacaste primero las 10 negras: así se asegura una blanca. Aquí el color no importa: con 3 medias, dos se repiten.",
+              "fn": "certeza",
+              "args": [{ "urna": { "negra": 10, "blanca": 6 }, "objetivo": { "tipo": "mismoColor", "k": 2 } }],
+              "campo": "errores.masAbundante",
+              "valor": 11
+            }
+          ]
+        },
+        {
+          "id": "p9b",
+          "enunciado": "En un cajón oscuro hay 10 medias negras y 6 medias blancas, sueltas.",
+          "pregunta": "¿Cuántas hay que sacar, sin ver, para tener con seguridad dos medias blancas?",
+          "unidad": "medias",
+          "decimales": 0,
+          "correcta": {
+            "fn": "certeza",
+            "args": [{ "urna": { "negra": 10, "blanca": 6 }, "objetivo": { "tipo": "deColor", "color": "blanca", "k": 2 } }],
+            "campo": "n",
+            "valor": 12
+          },
+          "errores": [
+            {
+              "id": "RM6-mejor-caso",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el caso con suerte. Para estar seguro, piensa en la peor: primero salen las 10 negras.",
+              "fn": "certeza",
+              "args": [{ "urna": { "negra": 10, "blanca": 6 }, "objetivo": { "tipo": "deColor", "color": "blanca", "k": 2 } }],
+              "campo": "errores.mejorCaso",
+              "valor": 2
+            },
+            {
+              "id": "RM6-sin-la-ultima",
+              "respaldo": "hipotesis",
+              "explicacion": "Te faltó una. Tras las 10 negras, hacen falta 2 blancas: 10 + 2 = 12.",
+              "fn": "certeza",
+              "args": [{ "urna": { "negra": 10, "blanca": 6 }, "objetivo": { "tipo": "deColor", "color": "blanca", "k": 2 } }],
+              "campo": "errores.sinMasUno",
+              "valor": 11
+            },
+            {
+              "id": "RM6-confunde-mismo-color",
+              "respaldo": "hipotesis",
+              "explicacion": "Esa es la cuenta de dos del mismo color. Aquí tienen que ser blancas, y la peor suerte saca antes las 10 negras.",
+              "fn": "certeza",
+              "args": [{ "urna": { "negra": 10, "blanca": 6 }, "objetivo": { "tipo": "deColor", "color": "blanca", "k": 2 } }],
+              "campo": "errores.confundeMismoColor",
+              "valor": 3
+            }
+          ]
+        }
       ]
     },
     {
@@ -755,6 +1220,45 @@
             ],
             "errores.sinDescontar": 20
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Hay 5 candados y 5 llaves mezcladas; cada llave abre un solo candado.",
+          "pregunta": "¿Cuántos intentos hacen falta, en el peor de los casos, para saber con seguridad qué llave abre cada candado?",
+          "unidad": "intentos",
+          "decimales": 0,
+          "correcta": { "fn": "llaves", "args": [5], "campo": "intentos", "valor": 10 },
+          "errores": [
+            {
+              "id": "RM6-sin-descontar",
+              "respaldo": "hipotesis",
+              "explicacion": "Probaste 4 llaves en cada candado. Cada llave que ya abrió uno sale del montón: 4 + 3 + 2 + 1.",
+              "fn": "llaves",
+              "args": [5],
+              "campo": "errores.sinDescontar",
+              "valor": 20
+            },
+            {
+              "id": "RM6-n-cuadrado",
+              "respaldo": "hipotesis",
+              "explicacion": "Probaste las 5 llaves en los 5 candados. Las llaves usadas se descartan, y la última de cada vez no se prueba.",
+              "fn": "llaves",
+              "args": [5],
+              "campo": "errores.nCuadrado",
+              "valor": 25
+            },
+            {
+              "id": "RM6-hasta-n",
+              "respaldo": "hipotesis",
+              "explicacion": "Probaste también la última llave. Si las otras 4 no abrieron, la quinta es la buena sin probarla.",
+              "fn": "llaves",
+              "args": [5],
+              "campo": "errores.hastaN",
+              "valor": 15
+            }
+          ]
         }
       ]
     }
