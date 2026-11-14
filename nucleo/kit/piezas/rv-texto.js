@@ -91,8 +91,9 @@
       if (tarjeta) y += PAD_T;
       let cab = null;
       if (sec.titulo) { cab = { x: x0, y: y + 17, texto: sec.titulo }; y += LH; }
-      const c = componer(sec, x0, ancho, y + 18, d.numerar, sec.modo === 'lista' || d.numerar ? k : 0);
-      if (d.numerar || sec.modo === 'lista') k = c.k;
+      // Cada lista numera desde 1; con numerar, los (1), (2)… del párrafo siguen de una sección a otra.
+      const c = componer(sec, x0, ancho, y + 18, d.numerar, d.numerar && sec.modo !== 'lista' ? k : 0);
+      if (d.numerar && sec.modo !== 'lista') k = c.k;
       y += c.alto;
       if (tarjeta) y += PAD_T - 4;
       out.push({ sec, top, bottom: y, cab, trozos: c.trozos, tarjeta });
