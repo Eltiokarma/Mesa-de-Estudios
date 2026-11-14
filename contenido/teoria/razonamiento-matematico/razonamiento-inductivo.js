@@ -36,13 +36,24 @@
     return ops;
   }
 
+  // Gesto directo (docs/teoria.md §4b): las manijas viven en el lienzo de rm-plano o en la rejilla de rm-tablero.
+  const PLANO = () => Kit.piezas['rm-plano'], TAB = () => Kit.piezas['rm-tablero'];
+  const enPx = (datos, ux, uy) => { const g = PLANO().geometria(datos); return { x: g.X(ux), y: g.Y(uy) }; };
+  const aU = (datos, pt) => { const g = PLANO().geometria(datos); return { x: (pt.x - g.X(0)) / g.k, y: (pt.y - g.Y(0)) / g.k }; };
+  // Punta derecha de la fila de palitos (el palito más a la derecha) y su inversa: el k cuya punta queda más cerca.
+  const punta = d => ({ x: Math.max(...d.lineas.map(l => Math.max(l.de[0], l.a[0]))), y: (Math.min(...d.lineas.map(l => Math.min(l.de[1], l.a[1]))) + Math.max(...d.lineas.map(l => Math.max(l.de[1], l.a[1])))) / 2 });
+  const kMasCerca = (hacer, kmin, kmax, px) => { let mejor = kmin; for (let k = kmin; k <= kmax; k++) if (Math.abs(punta(hacer(k)).x - px) < Math.abs(punta(hacer(mejor)).x - px)) mejor = k; return mejor; };
+  const manijaFila = (id, etiqueta, hacer, kmin, kmax, ctl) => ({ id, etiqueta, color: 'c-d',
+    donde: val => { const d = hacer(val[ctl], val), q = punta(d); return enPx(d, q.x, q.y); },
+    mover: (pt, val) => ({ [ctl]: kMasCerca(k => hacer(k, val), kmin, kmax, aU(hacer(val[ctl], val), pt).x) }) });
+
   // ---------- Idea 1: figuras que crecen (palitos) ----------
   // Cambia: cuántos cuadrados · Permanece: el primer cuadrado de 4 palitos · Progresa: los 3 palitos que agrega cada
   // cuadrado · Se reserva: la figura 20, que no se dibuja · Debe verse: el lado compartido no se cuenta dos veces.
   function palitos(k, forma = 'cuadrado', extra = {}) {
     const lineas = [];
-    const L = Math.min(2, 8.6 / Math.max(k, 1));
-    const x0 = 5 - (k * L) / 2;
+    const L = extra.lado || Math.min(2, 8.6 / Math.max(k, 1));
+    const x0 = extra.x0 !== undefined ? extra.x0 : 5 - (k * L) / 2;
     const y0 = forma === 'doble' ? 1.6 : 2.4;
     for (let i = 0; i < k; i++) {
       const a = x0 + i * L, b = a + L, nuevo = i > 0 ? 'o' : 'i';
@@ -89,9 +100,11 @@
       consigna: 'Una fila de cuadrados hecha con palitos. Agrega cuadrados y cuenta: el primero va en turquesa; lo que agrega cada uno nuevo, en naranja.',
       voz: 'Cuenta solo los palitos naranjas que trae cada cuadrado.',
       controles: [{ id: 'k', etiqueta: 'Cuadrados', min: 1, max: 6, paso: 1, inicio: 1, decimales: 0, color: 'c-d' }],
-      dibujo: val => ({ datos: palitos(val.k), estado: {} }),
+      dibujo: val => ({ datos: palitos(val.k, 'cuadrado', { lado: 1.4 }), estado: {} }),
       lectura: val => [P, ` = 4 + 3 · ${val.k - 1} = ${cuenta('cuadrado', val.k)} palitos`],
       minimo: 4,
+      // Tira del último palito hacia la derecha: cada tramo que se gana es un cuadrado nuevo de 3 palitos.
+      arrastres: [manijaFila('fin-fila', 'fin de la fila de cuadrados', k => palitos(k, 'cuadrado', { lado: 1.4 }), 1, 6, 'k')],
     },
     predice: {
       pregunta: '¿Cuántos palitos tiene la fila de 20 cuadrados?',
@@ -115,7 +128,7 @@
     },
     regla: {
       texto: 'Una fórmula vale para todas las figuras cuando sale de cómo se construyen: lo que pone la primera más lo que agrega cada paso.',
-      ecuacion: [P, ' = (primera) + (lo que agrega) · (', n, ' − 1)'],
+      ecuacion: [P, ' = (primera) + (lo que agrega) · ', { llave: ['(', n, ' − 1)'], nota: 'pasos dados', color: 'c-d' }],
       condicion: 'cada figura se arma desde la anterior siempre de la misma manera; ver tres casos no basta sin conocer la construcción.',
     },
     ahoraTu: {
@@ -143,9 +156,9 @@
   // Cambia: cuántos puntos en la circunferencia · Permanece: se unen todos con todos · Progresa: las regiones 1, 2, 4, 8, 16 ·
   // Se reserva: 6 puntos, donde la duplicación falla · Debe verse: un patrón visto es una hipótesis.
   const regiones = k => { const C = (a, b) => (b < 0 || b > a ? 0 : [...Array(b)].reduce((m, _, i) => m * (a - i) / (i + 1), 1)); return C(k, 4) + C(k, 2) + 1; };
+  const ANG = [0, 1.15, 2.05, 3.3, 4.2, 5.25];
   function cuerdas(k, extra = {}) {
     // Ángulos irregulares para que no se crucen tres cuerdas en un punto (así sale el máximo de regiones).
-    const ANG = [0, 1.15, 2.05, 3.3, 4.2, 5.25];
     const pts = Array.from({ length: k }, (_, i) => [5 + 2.6 * Math.sin(ANG[i]), 3 - 2.6 * Math.cos(ANG[i])]);
     const lineas = [];
     for (let i = 0; i < k; i++) for (let j = i + 1; j < k; j++) lineas.push({ de: pts[i], a: pts[j], color: 'o', grosor: 'contorno' });
@@ -157,6 +170,15 @@
       pie: extra.pie,
     };
   }
+  // El último punto puesto; al arrastrarlo por la circunferencia, el ángulo dice cuántos puntos hay.
+  const manijaCirculo = kmax => ({ id: 'ultimo-punto', etiqueta: 'último punto de la circunferencia', color: 'c-d',
+    donde: val => enPx(cuerdas(val.k), 5 + 2.6 * Math.sin(ANG[val.k - 1]), 3 - 2.6 * Math.cos(ANG[val.k - 1])),
+    mover: (pt, val) => {
+      const u = aU(cuerdas(val.k), pt), a = (Math.atan2(u.x - 5, -(u.y - 3)) + 2 * Math.PI) % (2 * Math.PI);
+      let k = 1;
+      for (let i = 0; i < kmax; i++) if (Math.abs(ANG[i] - a) < Math.abs(ANG[k - 1] - a)) k = i + 1;
+      return { k };
+    } });
   const tresCasos = {
     id: 'tres-casos-no-prueban',
     titulo: 'Tres casos no prueban',
@@ -167,8 +189,10 @@
       voz: 'Escribe con palabras qué parece pasar con cada punto nuevo.',
       controles: [{ id: 'k', etiqueta: 'Puntos', min: 1, max: 5, paso: 1, inicio: 1, decimales: 0, color: 'c-d' }],
       dibujo: val => ({ datos: cuerdas(val.k), estado: {} }),
-      lectura: val => [`${val.k} puntos: ${regiones(val.k)} regiones`],
+      lectura: val => [`${val.k} ${val.k === 1 ? 'punto' : 'puntos'}: ${regiones(val.k)} ${regiones(val.k) === 1 ? 'región' : 'regiones'}`],
       minimo: 4,
+      // Lleva el último punto por la circunferencia, en sentido horario: deja caer puntos nuevos en su camino.
+      arrastres: [manijaCirculo(5)],
     },
     predice: {
       pregunta: 'Con 1, 2, 3, 4 y 5 puntos salen 1, 2, 4, 8 y 16 regiones. ¿Cuántas salen con 6 puntos?',
@@ -191,7 +215,7 @@
     },
     regla: {
       texto: 'Lo que se ve en algunos casos es una hipótesis. Se acepta como regla solo si se explica por qué vale siempre; si un caso la contradice, se descarta.',
-      ecuacion: ['casos que cumplen ⇏ regla · un caso que no cumple ⇒ no hay regla'],
+      ecuacion: ['casos que cumplen ⇏ regla', '   ·   ', { llave: ['un caso que no cumple'], nota: 'contraejemplo', color: 'c-h' }, ' ⇒ no hay regla'],
       condicion: 'para afirmar la regla hace falta un argumento, por ejemplo cómo se construye cada caso desde el anterior.',
     },
     ahoraTu: {
@@ -241,6 +265,10 @@
       notas: [{ t: extra.nota || (k === 1 ? '1 = 1 × 1' : `1 + … + ${2 * k - 1} = ${k} × ${k} = ${k * k}`) }],
     };
   }
+  // Esquina inferior derecha del cuadrado de L (la rejilla se centra sola; la altura no cambia de origen).
+  const manijaEsquina = hacer => ({ id: 'esquina', etiqueta: 'esquina del cuadrado', color: 'c-d',
+    donde: val => { const g = TAB().geometria(hacer(val.k, val)), q = g.centro(val.k - 1, val.k - 1); return { x: q.x + g.cw / 2, y: q.y + g.altoFila / 2 }; },
+    mover: (pt, val) => { const g = TAB().geometria(hacer(val.k, val)); return { k: (pt.y - g.y0) / g.altoFila }; } });
   const impares = {
     id: 'impares-y-cuadrados',
     titulo: 'Impares que arman cuadrados',
@@ -251,8 +279,10 @@
       voz: 'Cuenta las casillas de cada lado del cuadrado.',
       controles: [{ id: 'k', etiqueta: 'Impares', min: 1, max: 6, paso: 1, inicio: 1, decimales: 0, color: 'c-d' }],
       dibujo: val => ({ datos: lCuadrado(val.k), estado: {} }),
-      lectura: val => [`Suma de ${val.k} impares = ${val.k} × ${val.k} = ${val.k * val.k}`],
+      lectura: val => [`Suma de ${val.k} ${val.k === 1 ? 'impar' : 'impares'} = ${val.k} × ${val.k} = ${val.k * val.k}`],
       minimo: 4,
+      // Arrastra la esquina de abajo a la derecha: cada fila que baja agrega una L y el cuadrado crece.
+      arrastres: [manijaEsquina(k => lCuadrado(k))],
     },
     predice: {
       pregunta: '¿Cuánto suman los primeros 20 números impares: 1 + 3 + 5 + … + 39?',
@@ -276,7 +306,7 @@
     },
     regla: {
       texto: 'La suma de los primeros n impares es n²: cada impar es la L que convierte un cuadrado en el siguiente. El dibujo explica por qué vale para todo n.',
-      ecuacion: ['1 + 3 + … + (2', n, ' − 1) = ', { sup: [n, '2'] }],
+      ecuacion: ['1 + 3 + … + ', { llave: ['(2', n, ' − 1)'], nota: 'el impar n', color: 'c-d' }, ' = ', { sup: [n, '2'] }],
       condicion: 'se suman impares seguidos desde 1; si se empieza en otro impar, se resta el cuadrado que falta.',
     },
     ahoraTu: {
@@ -293,15 +323,66 @@
             { id: 'pares', valor: k * (k + 1), error: 'RMT-IND-9', siFuera: 'Esa es la suma de los primeros pares.' },
             { id: 'mitad', valor: Math.round(k * k / 2), error: 'RMT-IND-8', siFuera: 'Las L forman el cuadrado entero.' },
           ]),
-          solucion: { texto: tipo ? `Hay (${ultimo} + 1) / 2 = ${k} impares.` : `Los primeros ${k} impares forman un cuadrado de ${k} × ${k}.`, ecuacion: [`${k}² = ${k * k}`] },
+          solucion: { texto: tipo ? `Hay (${ultimo} + 1) / 2 = ${k} impares.` : `Los primeros ${k} impares forman un cuadrado de ${k} × ${k}.`, ecuacion: [{ sup: [String(k), '2'] }, ` = ${k * k}`] },
         };
       },
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: tres formas de palitos y hasta 8 figuras, anclada a la izquierda para que la punta siempre avance.
+  const filaLab = (k, val) => palitos(k, val.forma, { lado: 1.05, x0: 0.6, pie: `${FORMAS[val.forma].primero} + ${FORMAS[val.forma].agrega} · ${k - 1} = ${cuenta(val.forma, k)} palitos` });
+  const mesaPalitos = {
+    id: 'palitos-libres', titulo: 'Tres formas de crecer', pieza: 'rm-plano',
+    consigna: 'Elige la forma y tira del último palito. Compara lo que agrega cada forma en cada paso.',
+    controles: [
+      { id: 'forma', etiqueta: 'Forma', opciones: [{ valor: 'cuadrado', texto: 'Cuadrados' }, { valor: 'triangulo', texto: 'Triángulos' }, { valor: 'doble', texto: 'Dos pisos' }] },
+      { id: 'k', etiqueta: 'Figuras', min: 1, max: 8, paso: 1, inicio: 3, decimales: 0, color: 'c-d' },
+    ],
+    dibujo: val => ({ datos: filaLab(val.k, val), estado: {} }),
+    lectura: val => [`${val.k} ${FORMAS[val.forma].nombre.split(' ')[0]}: `, P, ` = ${cuenta(val.forma, val.k)}`, '   ·   ', `agrega ${FORMAS[val.forma].agrega} por paso`],
+    arrastres: [manijaFila('fin-fila', 'fin de la fila de palitos', filaLab, 1, 8, 'k')],
+  };
+  // Mesa 2: llega a 6 puntos, el caso que la idea no deja jugar, con la cuenta de cuerdas y cruces.
+  const cuerdasLab = k => cuerdas(k, { pie: `Duplicar daría ${Math.pow(2, k - 1)}` });
+  const mesaCuerdas = {
+    id: 'seis-puntos', titulo: 'Hasta 6 puntos', pieza: 'rm-plano',
+    consigna: 'Lleva el último punto por la circunferencia hasta tener 6. Compara las regiones con lo que daría duplicar.',
+    controles: [{ id: 'k', etiqueta: 'Puntos', min: 1, max: 6, paso: 1, inicio: 4, decimales: 0, color: 'c-d' }],
+    dibujo: val => ({ datos: cuerdasLab(val.k), estado: {} }),
+    lectura: val => { const c = val.k * (val.k - 1) / 2, x = regiones(val.k) - 1 - c; const pl = (m, uno, varios) => `${m} ${m === 1 ? uno : varios}`; return [`1 + ${pl(c, 'cuerda', 'cuerdas')} + ${pl(x, 'cruce', 'cruces')} = ${pl(regiones(val.k), 'región', 'regiones')}`]; },
+    arrastres: [manijaCirculo(6)],
+  };
+  // Mesa 3: impares que no empiezan en 1: se quitan las primeras L y se ve el cuadrado que falta.
+  const lDesde = (k, val) => {
+    const d = lCuadrado(k), j = Math.min(val.j, k);
+    d.celdas = d.celdas.map((fila, f2) => fila.map((c, c2) => (Math.max(f2, c2) < j ? { t: c.t, tenue: true } : c)));
+    const suma = k * k - j * j;
+    d.notas = [{ t: j === 0 ? `${k} × ${k} = ${suma}` : `${k} × ${k} − ${j} × ${j} = ${suma}` }];
+    return d;
+  };
+  const mesaImpares = {
+    id: 'impares-desde', titulo: 'Impares desde otro lugar', pieza: 'rm-tablero',
+    consigna: 'Agranda el cuadrado y apaga las primeras L. La suma de las L encendidas es un cuadrado menos otro.',
+    controles: [
+      { id: 'k', etiqueta: 'Hasta la L', min: 1, max: 7, paso: 1, inicio: 5, decimales: 0, color: 'c-d' },
+      { id: 'j', etiqueta: 'Se apagan', min: 0, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-h' },
+    ],
+    dibujo: val => ({ datos: lDesde(val.k, val), estado: {} }),
+    lectura: val => {
+      const j = Math.min(val.j, val.k);
+      if (j >= val.k) return ['No queda ninguna L encendida'];
+      const lista = val.k - j === 1 ? `${2 * j + 1}` : val.k - j === 2 ? `${2 * j + 1} + ${2 * j + 3}` : `${2 * j + 1} + … + ${2 * val.k - 1}`;
+      return [`${lista} = ${val.k * val.k - j * j}`];
+    },
+    arrastres: [manijaEsquina(lDesde)],
+  };
+
   return {
     unidad: 'razonamiento-matematico.razonamiento-inductivo',
-    version: '0.1.0',
+    // Laboratorio: tres formas de palitos hasta 8 figuras, el círculo hasta 6 puntos y los impares que no empiezan en 1.
+    laboratorio: [mesaPalitos, mesaCuerdas, mesaImpares],
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/rm-tablero.js'],
     historia: {
