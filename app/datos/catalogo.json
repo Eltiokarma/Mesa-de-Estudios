@@ -3703,7 +3703,15 @@
       "rm-trasvases",
       "rm-movimientos",
       "rm-rumbos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/traslados-y-puntos-cardinales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/nucleo/kit/piezas/rm-fichas.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.arreglos-numericos",
