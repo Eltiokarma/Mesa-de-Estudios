@@ -207,6 +207,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'polinomios', unidad: 'algebra.polinomios', version: '0.1.0' };
@@ -635,6 +636,16 @@ function crearEscena(cv, idDesc, idLect, idLey){
   });
   return E;
 }
+// Regla 3: juego libre antes de la primera pregunta de cada modo. La curva de x³ − 2x² − 5x + 6 (la del paso 1)
+// con el número a que se arrastra y su altura P(a); sin fichas, Ruffini ni grados, que es lo que se pregunta
+// después, y con un polinomio que ninguna pregunta usa para calcular.
+function configJuego(E){
+  const coefs = [1, -2, -5, 6];
+  E.config({ graf:{ coefs, xr:[-3, 4], yr:[-14, 14], a:-1, altura:true, alturaNombre:'altura P(a)', arrastre:true, paso:.5, min:-3, max:4, nombre:'y = x³ − 2x² − 5x + 6' },
+    lect:[() => ['a', 'a', fq(E.graf.a)], () => ['r', 'P(a)', fq(ME.evaluar({ coefs, x:E.graf.a }).valor)]],
+    desc:'La curva y = x³ − 2x² − 5x + 6 con el número a sobre el eje x y la altura P(a).' });
+  E.compactar(false);
+}
 // Botones + y − con su lectura
 function control(id, nombre, valor, k){ return `<span class="paso">${V(k, nombre)} <button type="button" data-c="${id}" data-d="-1" aria-label="Disminuir ${nombre}">−</button><output id="o-${id}" aria-live="off">${valor}</output><button type="button" data-c="${id}" data-d="1" aria-label="Aumentar ${nombre}">+</button></span>`; }
 // Ruffini de P entre x − a, para la máquina que se mueve con a
@@ -924,6 +935,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+configJuego(E);
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el triángulo naranja y mira la altura de la curva.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 <script>
@@ -1067,6 +1081,9 @@ function ir(k){
 }
 addEventListener('modo', () => { if (!document.getElementById('m2').hidden) E.rehacer(); });
 ir(0);
+configJuego(E);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el triángulo naranja por el eje antes de empezar.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 <script>
