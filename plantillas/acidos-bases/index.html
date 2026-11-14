@@ -120,6 +120,10 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
 .seg button:disabled{opacity:.45; cursor:not-allowed}
 .exps{border-radius:20px}
+.juego{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.juego[hidden]{display:none}
+.juego .seg{border-radius:16px}
+.juego .seg button{min-height:44px}
 .control{display:grid; gap:6px}
 .control > p{margin:0}
 input[type=range]{width:100%; max-width:420px; margin:0; accent-color:var(--c-V); min-height:32px}
@@ -177,6 +181,9 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <section class="bench" aria-label="Lupas con las partículas de la solución y escala de pH">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="Una o más lupas circulares con las partículas disueltas que se mueven, y abajo una escala de pH de 0 a 14 con la posición de cada solución"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="juego" id="juego1">
+        <div class="seg" role="group" aria-label="Echar al agua"><button type="button" data-echar="hcl">Echar HCl</button><button type="button" data-echar="sal">Echar sal</button><button type="button" data-echar="vaciar">Vaciar</button></div>
+      </div>
       <div class="legend" id="leyenda1"></div>
     </section>
     <section class="guide">
@@ -198,6 +205,9 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <section class="bench" aria-label="Experimentos con ácidos y bases">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="Lupas del experimento elegido y escala de pH"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="juego" id="juego2">
+        <div class="seg" role="group" aria-label="Echar al agua"><button type="button" data-echar="hcl">Echar HCl</button><button type="button" data-echar="sal">Echar sal</button><button type="button" data-echar="vaciar">Vaciar</button></div>
+      </div>
       <div class="legend" id="leyenda2"></div>
     </section>
     <section class="guide">
@@ -224,6 +234,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'acidos-bases', unidad: 'quimica.acidos-y-bases', version: '0.1.0' };
@@ -638,6 +649,39 @@ function crearEscena(cv, idDesc, idLey){
   return E;
 }
 const MA_TIPOS = ['H', 'OH', 'A', 'HA', 'M', 'B', 'BH', 'N'];
+
+/* Regla 3 (decisión 20): antes de cualquier pregunta se juega con una lupa de agua: se echa HCl (entra entero y se
+   rompe en H⁺ y Cl⁻) o sal (Na⁺ y Cl⁻), tocando la lupa, con los botones o con las flechas. La escala de pH queda
+   escondida: lo que después se pregunta es cuánto cambia el pH al diluir, comparar o neutralizar, y eso el juego no
+   lo muestra. */
+function jugarAgua(E, idJuego, preguntas, volver){
+  const cv = E.L.cv, caja = document.getElementById(idJuego), J = { hcl:0, sal:0, on:true }, TOPE = 40;
+  const sol = (entero) => ({ especies:{ HA:entero ? 1 : 0, H:J.hcl - (entero ? 1 : 0), A:J.hcl - (entero ? 1 : 0) + J.sal, M:J.sal } });
+  const ley = '<span><i class="par"></i>HCl · molécula entera</span><span><i class="pt" style="background:var(--c-H)"></i>H⁺</span>'
+    + '<span><i class="gr" style="background:var(--c-A)"></i>Cl⁻</span><span><i class="cuad" style="background:var(--muted)"></i>Na⁺</span>';
+  E.config({ lupas:[{ id:'j', titulo:'Agua', nota:'volumen muy pequeño', sol:sol(false), escala:1, nombres:{ A:'Cl⁻', HA:'HCl', M:'Na⁺' }, sem:5 }],
+    marcas:[], sinEscala:true, leyenda:ley });
+  E.L.compactar(false);   // mientras se juega no hay predicción pendiente: la lupa a su tamaño y con leyenda
+  function echar(que){
+    if (!J.on) return;
+    if (que === 'vaciar'){ J.hcl = 0; J.sal = 0; E.lupaA('j', sol(false)); return; }
+    if (que === 'sal'){ if (J.sal >= TOPE) return; J.sal++; E.lupaA('j', sol(false)); return; }
+    if (J.hcl >= TOPE) return;
+    J.hcl++; E.lupaA('j', sol(true));            // la molécula entra entera…
+    esperar(500, () => { if (J.on) E.lupaA('j', sol(false)); });   // …y se rompe toda
+  }
+  caja.querySelectorAll('[data-echar]').forEach(b => b.addEventListener('click', () => echar(b.dataset.echar)));
+  cv.tabIndex = 0;
+  cv.addEventListener('click', () => echar('hcl'));
+  cv.addEventListener('keydown', e => {
+    if (!J.on) return;
+    const q = { ArrowRight:'hcl', ArrowUp:'hcl', Enter:'hcl', ArrowLeft:'sal', ArrowDown:'sal' }[e.key];
+    if (q){ e.preventDefault(); echar(q); }
+  });
+  return JugarPrimero.montar({ escena: cv.closest('.bench'), preguntas, minimo: 2,
+    consigna: 'Toca la lupa o echa HCl y sal: mira qué partículas aparecen.',
+    alListo: () => { J.on = false; caja.hidden = true; cv.removeAttribute('tabindex'); volver(); } });
+}
 </script>
 <script>
 /* ================= MODO 1: paso a paso =================
@@ -911,6 +955,7 @@ function explorar(){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+jugarAgua(E, 'juego1', [...document.querySelectorAll('#m1 .guide > *')], () => go(0));
 })();
 </script>
 <script>
@@ -1105,6 +1150,7 @@ function ir(k){
   pintar(); E.dibujar();
 }
 ir(0);
+jugarAgua(E, 'juego2', [...document.querySelectorAll('#m2 .guide > *')], () => ir(0));
 })();
 </script>
 
