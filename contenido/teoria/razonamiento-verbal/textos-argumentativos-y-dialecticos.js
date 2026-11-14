@@ -17,11 +17,15 @@
  * (desacuerdo donde coinciden); RVD5 (exigir síntesis a todo debate) es hipótesis nueva.
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): un marcador que se arrastra por el texto y se suelta en una oración; la manija
+  // va sobre su número (rv-texto.ancla) y salta a la más cercana al dedo (rv-texto.cercana). Los botones son la
+  // alternativa sin arrastre. Cada idea traduce la oración elegida al valor de su control.
+  const RV = () => Kit.piezas['rv-texto'];
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
@@ -46,12 +50,17 @@
     temas: ['Tesis y argumentos'],
     pieza: 'rv-texto',
     juega: {
-      consigna: 'Marca cada oración del texto y mira qué papel cumple: tesis, razón, conclusión u objeción que el autor responde.',
+      consigna: 'Arrastra el marcador por las oraciones y mira qué papel cumple cada una: tesis, razón, conclusión u objeción.',
       voz: 'No todo lo que aparece en el texto lo defiende el autor.',
       controles: [{ id: 'k', etiqueta: 'Marca', opciones: [1, 2, 3, 4, 5].map(k => ({ valor: k, texto: `${k}` })) }],
       dibujo: val => ({ datos: { secciones: [lista('Texto', CEL)] }, estado: { marcas: { [`o${val.k}`]: ROL[val.k][1] }, sellos: { o: { t: ROL[val.k][0].split(':')[0], c: ROL[val.k][1] } } } }),
       lectura: val => [corto(ROL[val.k][1] === 'h' ? objecion : ROL[val.k][1] === 'o' ? tesis : razon, ROL[val.k][0])],
       minimo: 3,
+      arrastres: [{
+        id: 'frase', etiqueta: 'marcador de la oración', color: 'c-o',
+        donde: val => RV().ancla({ secciones: [lista('Texto', CEL)] }, `o${val.k}`),
+        mover: pt => ({ k: +RV().cercana({ secciones: [lista('Texto', CEL)] }, pt, CEL.map((_, j) => `o${j + 1}`)).slice(1) }),
+      }],
     },
     predice: {
       pregunta: '¿Cuál es la tesis del autor en este texto sobre los uniformes?',
@@ -76,7 +85,7 @@
     },
     regla: {
       texto: 'Un texto argumentativo defiende una tesis con razones. Puede citar una objeción para responderla: esa objeción no es la postura del autor.',
-      ecuacion: [razon('razones'), ' → ', tesis('tesis'), ' ← responde a ', objecion('objeción')],
+      ecuacion: [razon('razones'), ' → ', { llave: [tesis('tesis')], nota: 'lo que defiende', color: 'c-o' }, ' ← responde a ', { llave: [objecion('objeción')], nota: 'lo de otros', color: 'c-h' }],
       condicion: 'marcas como «algunos dicen», «se cree» presentan a otros; «sin embargo», «pero» suelen abrir la postura del autor.',
     },
     ahoraTu: {
@@ -118,12 +127,19 @@
     temas: ['La cuestión disputada', 'Puntos de vista en un debate'],
     pieza: 'rv-texto',
     juega: {
-      consigna: 'Mira el debate entre A y B por partes: la cuestión que discuten, la postura de cada uno y el punto en que coinciden.',
+      consigna: 'Arrastra el marcador por las oraciones de A y B: la postura de cada uno y el punto común. La cuestión, en su botón.',
       voz: 'Dos autores pueden coincidir en el dato y no en la propuesta.',
       controles: [{ id: 'k', etiqueta: 'Mirar', opciones: [{ valor: 'cuestion', texto: 'la cuestión' }, { valor: 'a', texto: 'A' }, { valor: 'b', texto: 'B' }, { valor: 'comun', texto: 'lo común' }] }],
       dibujo: val => ({ datos: figAB(), estado: { marcas: MIRA[val.k].marcas, sellos: MIRA[val.k].sellos } }),
       lectura: val => [corto(val.k === 'comun' ? razon : val.k === 'cuestion' ? cuestion : tesis, MIRA[val.k].dice)],
       minimo: 4,
+      // La cuestión no está escrita en ninguna oración: es la pregunta detrás de a2 y b2. Con ella elegida, la manija
+      // descansa en la propuesta de A; al moverla, se elige la oración bajo el dedo.
+      arrastres: [{
+        id: 'frase', etiqueta: 'marcador de la oración de A o de B', color: 'c-o',
+        donde: val => RV().ancla(figAB(), { cuestion: 'a2', a: 'a2', b: 'b2', comun: 'b1' }[val.k]),
+        mover: pt => ({ k: { a1: 'comun', b1: 'comun', a2: 'a', b2: 'b' }[RV().cercana(figAB(), pt, ['a1', 'a2', 'b1', 'b2'])] }),
+      }],
     },
     predice: {
       pregunta: '¿Cuál es la cuestión que discuten los textos A y B sobre el huerto escolar?',
@@ -146,7 +162,7 @@
     },
     regla: {
       texto: 'La cuestión disputada es la pregunta que los autores responden distinto. Cada postura va con su autor; pueden coincidir en los datos y no en la propuesta.',
-      ecuacion: [cuestion('cuestión'), ' → ', tesis('postura A'), ' ≠ ', tesis('postura B')],
+      ecuacion: [{ llave: [cuestion('cuestión')], nota: 'la pregunta', color: 'c-d' }, ' → ', tesis('postura A'), ' ≠ ', tesis('postura B')],
       condicion: 'la cuestión se formula como pregunta neutral, sin tomar partido; la tesis de uno no es la cuestión.',
     },
     ahoraTu: {
@@ -163,7 +179,7 @@
           pregunta: `En este debate entre A y B, ¿cuál es ${b.pide === 'cuestión' ? 'la cuestión que discuten' : b.pide === 'punto común' ? 'el punto en que coinciden' : `la ${b.pide}`}?`,
           dibujo: { datos: { secciones: [lista('Texto A', b.a, 'A', 'a'), lista('Texto B', b.b, 'B', 'b')] }, estado: {} },
           opciones: opciones(b.ok, voltear(b.m, s)),
-          solucion: { texto: 'Se separa lo que comparten, lo que cada uno propone y la pregunta de fondo.', ecuacion: [cuestion('cuestión'), ' · ', tesis('A'), ' · ', tesis('B')] },
+          solucion: { texto: 'Se separa lo que comparten, lo que cada uno propone y la pregunta de fondo.', ecuacion: [cuestion('cuestión'), '   ·   ', tesis('A'), '   ·   ', tesis('B')] },
         };
       },
     },
@@ -190,6 +206,7 @@
     juega: {
       consigna: 'Una tesis y su antítesis sobre el celular. Prueba tres cierres y mira cuál toma algo válido de cada lado.',
       voz: 'Sintetizar no es elegir un ganador ni pegar las dos.',
+      // Sin arrastre: lo que cambia es la tarjeta de síntesis entera; no hay una parte del texto que agarrar.
       controles: [{ id: 'k', etiqueta: 'Cierre', opciones: [{ valor: 'integra', texto: 'A' }, { valor: 'repite', texto: 'B' }, { valor: 'junta', texto: 'C' }] }],
       dibujo: val => ({ datos: figTAS(val.k), estado: { marcas: CIERRE[val.k].marcas, sellos: { s: { t: CIERRE[val.k].sello[0], c: CIERRE[val.k].sello[1] } } } }),
       lectura: val => [corto(CIERRE[val.k].sello[1] === 'h' ? objecion : CIERRE[val.k].sello[1] === 'd' ? cuestion : razon, CIERRE[val.k].dice)],
@@ -216,7 +233,7 @@
     },
     regla: {
       texto: 'En la secuencia tesis, antítesis y síntesis, la síntesis integra lo válido de cada postura en una nueva. No repite una ni las pega; y no todo debate termina así.',
-      ecuacion: [tesis('tesis'), ' + ', tesis('antítesis'), ' → ', razon('síntesis')],
+      ecuacion: [tesis('tesis'), ' + ', tesis('antítesis'), ' → ', { llave: [razon('síntesis')], nota: 'integra ambas', color: 'c-i' }],
       condicion: 'la síntesis responde a las razones de ambos lados; si no hay cómo integrarlas, el desacuerdo razonado también es un cierre.',
     },
     ahoraTu: {
@@ -239,9 +256,47 @@
     },
   };
 
+  // ---------- Laboratorio: el debate que se arma ----------
+  // Lo que la idea 2 deja fijo: qué dice B. Aquí B acepta o niega el dato y propone lo mismo que A u otra cosa.
+  // El código decide qué se discute: si difieren en el dato, hay cuestión de hecho; si difieren en la propuesta,
+  // cuestión de qué hacer; si en nada, no hay debate. El marcador elige la fila (dato o propuesta) y el sello de B
+  // dice si en esa fila coinciden o se oponen.
+  const B_DATO = { acepta: 'Es cierto: el tráfico del centro creció.', niega: 'No es cierto: el tráfico del centro no creció.' };
+  const B_PROP = { prohibir: 'Igual que A, propongo prohibir los autos los domingos.', buses: 'Propongo otra cosa: más buses, sin prohibir autos.' };
+  const figDeb = val => ({ secciones: [lista('Texto A', A, 'A', 'a'), lista('Texto B', [B_DATO[val.dato], B_PROP[val.prop]], 'B', 'b')] });
+  const difiere = val => ({ 1: val.dato === 'niega', 2: val.prop === 'buses' });
+  const tipoDebate = val => {
+    const d = difiere(val);
+    if (d[1] && d[2]) return 'Discuten el dato y qué hacer';
+    if (d[1]) return 'Discuten el dato, no qué hacer';
+    if (d[2]) return 'Discuten qué hacer, no el dato';
+    return 'No hay debate: coinciden';
+  };
+  const mesaDebate = {
+    id: 'debate-armado', titulo: 'Arma el debate', pieza: 'rv-texto',
+    consigna: 'Decide si B acepta el dato de A y qué propone. Arrastra el marcador a una fila: ¿coinciden o se oponen?',
+    voz: 'La cuestión está donde las posturas se separan.',
+    controles: [
+      { id: 'dato', etiqueta: 'B y el dato', opciones: [{ valor: 'acepta', texto: 'lo acepta' }, { valor: 'niega', texto: 'lo niega' }] },
+      { id: 'prop', etiqueta: 'B propone', opciones: [{ valor: 'buses', texto: 'otra cosa' }, { valor: 'prohibir', texto: 'lo mismo' }] },
+      { id: 'f', etiqueta: 'Fila', opciones: [{ valor: '1', texto: 'dato' }, { valor: '2', texto: 'propuesta' }] },
+    ],
+    dibujo: val => {
+      const d = difiere(val), m = {};
+      [1, 2].forEach(n => { const c = d[n] ? 'o' : 'i'; m[`a${n}`] = c; m[`b${n}`] = c; });
+      return { datos: figDeb(val), estado: { marcas: m, sellos: { B: d[val.f] ? { t: 'Se oponen aquí', c: 'o' } : { t: 'Coinciden aquí', c: 'i' } }, nuevo: [`a${val.f}`, `b${val.f}`] } };
+    },
+    lectura: val => { const t = tipoDebate(val); return [corto(t.startsWith('No hay') ? razon : cuestion, t)]; },
+    arrastres: [{
+      id: 'fila', etiqueta: 'marcador de la fila', color: 'c-o',
+      donde: val => RV().ancla(figDeb(val), `b${val.f}`),
+      mover: (pt, val) => ({ f: RV().cercana(figDeb(val), pt, ['a1', 'a2', 'b1', 'b2']).slice(1) }),
+    }],
+  };
+
   return {
     unidad: 'razonamiento-verbal.textos-argumentativos-y-dialecticos',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -249,6 +304,11 @@
       pregunta: '¿Convencer es lo mismo que tener buenas razones?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Aristóteles, Retórica)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/txtargumentativo.htm' },
     },
+    laboratorio: [
+      mesaDebate,
+      Object.assign({ id: 'tesis-razones', titulo: 'El texto del celular', pieza: 'rv-texto' }, tesisRazones.juega),
+      Object.assign({ id: 'cuestion', titulo: 'El debate del tráfico', pieza: 'rv-texto' }, debate.juega),
+    ],
     ideas: [tesisRazones, debate, dialectica],
   };
 });
