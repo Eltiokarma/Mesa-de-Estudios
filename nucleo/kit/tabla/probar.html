@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Probar la tabla viva · Laboratorio de Admisión</title>
+<!-- Página de prueba de la tabla viva, paso 1 (no está enlazada desde la app). ?tema=oscuro|claro fuerza el tema. -->
+<link rel="stylesheet" href="../../../app/estilos.css">
+<link rel="stylesheet" href="tabla.css">
+<style>
+  main{max-width:760px;margin:0 auto;padding:16px 8px 32px}
+  h1{font-size:20px;line-height:1.2;margin:4px 8px 12px}
+</style>
+<script>
+  (function () {
+    const t = new URLSearchParams(location.search).get('tema');
+    if (t === 'oscuro') document.documentElement.dataset.theme = 'dark';
+    if (t === 'claro') document.documentElement.dataset.theme = 'light';
+  })();
+</script>
+</head>
+<body>
+<main>
+  <h1>Tabla periódica</h1>
+  <div id="tabla"></div>
+</main>
+<script src="datos.js"></script>
+<script src="arreglos.js"></script>
+<script src="tabla.js"></script>
+<script>
+  const q = new URLSearchParams(location.search);
+  window.tabla = Kit.Tabla.montar(document.getElementById('tabla'), { arreglo: q.get('arreglo') || 'tabla', fuentes: true });
+</script>
+</body>
+</html>
