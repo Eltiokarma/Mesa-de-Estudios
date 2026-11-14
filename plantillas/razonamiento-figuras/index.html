@@ -136,7 +136,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
 .volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
   font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
 .tabla{overflow-x:auto; max-width:100%}
-#piezas9 .btn[aria-pressed="true"]{background:color-mix(in srgb, var(--c-S) 18%, var(--paper)); border-color:var(--c-S)}
+#piezas9 .btn[aria-pressed="true"], .juego-piezas .btn[aria-pressed="true"]{background:color-mix(in srgb, var(--c-S) 18%, var(--paper)); border-color:var(--c-S)}
 table.tam{border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:.92rem}
 table.tam th, table.tam td{padding:4px 10px; border-bottom:1px solid var(--line); text-align:center}
 table.tam th{color:var(--muted); font-weight:700}
@@ -216,6 +216,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'razonamiento-figuras', unidad: 'geometria.razonamiento-con-figuras', version: '0.1.0' };
@@ -449,6 +450,37 @@ function tablaTamanos(r, tipo){
     <tr><th scope="row">Figuras</th>${ks.map(k => `<td>${fmt(r.porTamano[k])}</td>`).join('')}<td class="tot">${fmt(r.total)}</td></tr></table></div>`;
 }
 const fr = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+
+/* ---------- Regla 3: juego libre antes de la primera pregunta ----------
+   El cuadrado partido en piezas (el mismo de «Arma tú»): se tocan piezas en el dibujo o en sus botones y el
+   motor dice si juntas forman un triángulo. No cuenta nada ni recorre figuras: eso es lo que se pregunta. */
+const FJ = M.armar(M.cuadradoCompleto(4));
+function juegoPiezas(cv, poner){
+  const sel = new Set(); let luz = null, V = null;
+  const caja = document.createElement('div'); caja.className = 'juego-piezas';
+  caja.innerHTML = `<div class="chips" role="group" aria-label="Piezas">${FJ.caras.map((_, k) => `<button type="button" class="btn" data-pj="${k}" aria-pressed="false" aria-label="Pieza ${k + 1}">${k + 1}</button>`).join('')}</div>
+    <div class="ctl"><button type="button" class="btn" data-pj="ok">¿Forman un triángulo?</button></div><p class="fb" aria-live="polite"></p>`;
+  cv.closest('.lienzo').after(caja);
+  const msg = caja.querySelector('.fb');
+  const pintar = () => {
+    caja.querySelectorAll('[data-pj]').forEach(b => { if (b.dataset.pj !== 'ok') b.setAttribute('aria-pressed', String(sel.has(+b.dataset.pj))); });
+    V = { tipo:'plano', G:FJ, numeros:true, relleno:[...sel], sinPuntos:true }; if (luz) V.luz = luz;
+    poner(V);
+  };
+  const tocar = k => { if (sel.has(k)) sel.delete(k); else sel.add(k); luz = null; msg.textContent = ''; msg.className = 'fb'; pintar(); };
+  caja.querySelectorAll('[data-pj]').forEach(b => b.onclick = () => {
+    if (b.dataset.pj !== 'ok') return tocar(+b.dataset.pj);
+    if (!sel.size){ msg.textContent = 'Primero toca una o más piezas.'; msg.className = 'fb mal'; return; }
+    const r = M.union(FJ, [...sel], 'triangulos');
+    msg.textContent = r.es ? 'Sí: juntas forman un triángulo.' : 'No: juntas no forman un triángulo.'; msg.className = 'fb ' + (r.es ? 'ok' : 'mal');
+    luz = r.es ? luzDe(r.figura, 'triangulos') : null; if (r.es) sel.clear(); pintar();
+  });
+  const alClic = e => { if (!V || !V._de) return; const rc = cv.getBoundingClientRect(), q = V._de(e.clientX - rc.left, e.clientY - rc.top);
+    const k = FJ.caras.findIndex(c => M.puntoEnPoligono(q, c.map(j => FJ.puntos[j]))); if (k >= 0) tocar(k); };
+  cv.addEventListener('click', alClic); cv.style.cursor = 'pointer';
+  pintar();
+  return { quitar(){ cv.removeEventListener('click', alClic); cv.style.cursor = ''; caja.remove(); } };
+}
 </script>
 <script>
 /* ================= MODO 1: paso a paso ================= */
@@ -877,6 +909,13 @@ document.addEventListener('focusout', e => { if (e.target.closest && e.target.cl
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
 L.resize(); go(0);
+// Regla 3: antes de la primera pregunta, juego libre con las piezas del cuadrado; al seguir, vuelve al paso 1.
+const juego = juegoPiezas(cv, V => { S.vista = V; draw(); });
+L.compactar(false); ponerLeyendaJuego();
+function ponerLeyendaJuego(){ leyenda($('leg1'), ['S', 'C'], { S:'las piezas que tocaste', C:'el triángulo que forman' }); $('desc1').textContent = 'Un cuadrado con sus diagonales y sus medianas, partido en piezas numeradas que se pueden tocar.'; }
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Toca piezas del cuadrado y comprueba si juntas forman un triángulo.', minimo:2,
+  alListo:() => { juego.quitar(); go(0); } });
 })();
 </script>
 <script>
@@ -1049,6 +1088,14 @@ function ir(k){
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
 L.resize(); ir(0);
+// Regla 3: antes del primer experimento, juego libre con las piezas del cuadrado.
+const juego = juegoPiezas(cv, V => { S.vista = V; draw(); });
+L.compactar(false);
+leyenda($('leg2'), ['S', 'C'], { S:'las piezas que tocaste', C:'el triángulo que forman' });
+$('desc2').textContent = 'Un cuadrado con sus diagonales y sus medianas, partido en piezas numeradas que se pueden tocar.';
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Toca piezas del cuadrado y comprueba si juntas forman un triángulo.', minimo:2,
+  alListo:() => { juego.quitar(); ir(S.k); } });
 })();
 </script>
 
