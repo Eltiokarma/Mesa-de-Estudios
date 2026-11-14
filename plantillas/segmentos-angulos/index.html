@@ -213,6 +213,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'segmentos-angulos', unidad: 'geometria.segmentos-y-angulos', version: '0.1.0' };
@@ -759,17 +760,22 @@ steps.forEach((s, n) => {
   b.type = 'button'; b.textContent = n + 1; b.setAttribute('aria-label', `Ir al ${s.k.toLowerCase()}: ${s.t}`);
   b.addEventListener('click', () => go(n)); li.appendChild(b); dots.appendChild(li);
 });
-function describir(){ const s = steps[S.step]; $('desc1').textContent = s.desc ? s.desc() : ''; }
+// Regla 3: antes de la primera pregunta se juega con una recta de puntos que se arrastran, sin llaves ni medidas
+// (lo que se pregunta después).
+let jugado = false;
+const DESC_JUEGO = 'Una recta con los puntos A, B, C y D. B, C y D se pueden arrastrar.';
+const juegoLibre = () => ({ tipo:'recta', puntos:Object.assign({}, P_REC), rango:[-1, 25], arrastrables:['B', 'C', 'D'], regla:true });
+function describir(){ const s = steps[S.step]; $('desc1').textContent = !jugado ? DESC_JUEGO : s.desc ? s.desc() : ''; }
 // La leyenda dice solo lo que el dibujo pinta: antes de responder, sin los colores que aún no aparecen.
 function ponerLeyenda(){ const s = steps[S.step], antes = s.gate && !S.pred[s.gate.id]; leyenda($('leg1'), antes ? (s.legAntes || []) : s.leg, s.paralelas ? LEY_PARALELAS : null); }
 function vivo(){ const s = steps[S.step], el = $('vivo'); if (el && s.vivo) el.innerHTML = s.vivo(); describir(); }
 function armarVista(){
   const s = steps[S.step];
   const tipoAntes = S.vista && S.vista.tipo;
-  S.vista = s.vista();
+  S.vista = jugado ? s.vista() : juegoLibre();
   if (s.final && s.gate && S.pred[s.gate.id]) s.final(S.vista);
   cv.tabIndex = manijasPosibles() ? 0 : -1;
-  cv.setAttribute('aria-label', s.desc ? s.desc() : 'Dibujo del paso');
+  cv.setAttribute('aria-label', !jugado ? DESC_JUEGO : s.desc ? s.desc() : 'Dibujo del paso');
   if (S.vista.tipo !== tipoAntes) L.resize(); else draw();
 }
 function manijasPosibles(){ const v = S.vista; return !!(v && ((v.arrastrables && v.arrastrables.length) || (v.rayos || []).some(r => r.mango) || v.mango !== undefined && v.mango !== false)); }
@@ -829,7 +835,7 @@ function prediccion(P){
   }));
   pintar();
 }
-conectarArrastre(L, () => S.vista, (id, p, tecla) => { if (moverManija(S.vista, id, p, tecla)){ const s = steps[S.step]; if (S.vista.tipo === 'recta'){ if (S.step === 1) llaves1(S.vista, true); else vista3(S.vista, true); } vivo(); draw(); } }, draw);
+conectarArrastre(L, () => S.vista, (id, p, tecla) => { if (moverManija(S.vista, id, p, tecla)){ const s = steps[S.step]; if (S.vista.tipo === 'recta' && jugado){ if (S.step === 1) llaves1(S.vista, true); else vista3(S.vista, true); } vivo(); draw(); } }, draw);
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 function marcar(k){
@@ -844,6 +850,9 @@ document.addEventListener('focusout', e => { if (e.target.closest && e.target.cl
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
 L.resize(); go(0);
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra los puntos B, C y D sobre la recta.', minimo:2,
+  alListo:() => { jugado = true; go(0); } });
 })();
 </script>
 <script>
@@ -965,14 +974,19 @@ function ponerVista(v){
   cv.tabIndex = v.mango !== undefined && v.mango !== false || (v.rayos || []).some(r => r.mango) ? 0 : -1;
   if (v.tipo !== antes) L.resize(); else draw();
 }
-function describir(){ const x = EXPS[S.k]; if (S.vista) { const t = x.desc(S.vista); $('desc2').textContent = t; cv.setAttribute('aria-label', t); } }
+// Regla 3: antes del primer experimento, juego libre con dos paralelas y una secante que gira, sin colores ni
+// medidas (lo que se pregunta después).
+let jugado = false;
+const juegoLibre = () => ({ tipo:'paralelas', phi:70, mango:true, libre:true });
+function describir(){ if (!jugado) { const t = 'Dos rectas paralelas y una secante con una manija para girarla.'; $('desc2').textContent = t; cv.setAttribute('aria-label', t); return; }
+  const x = EXPS[S.k]; if (S.vista) { const t = x.desc(S.vista); $('desc2').textContent = t; cv.setAttribute('aria-label', t); } }
 function vivo(){ const x = EXPS[S.k], el = $('vivo2'); if (el && x.vivo) el.innerHTML = x.vivo(S.vista); describir(); }
 function ir(k){
   if (k > primeraLibre()) return;
   cancelAnimationFrame(anim);
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k], hecho = !!S.pred[x.id];
-  ponerVista(hecho ? x.despues() : x.antes());
+  ponerVista(!jugado ? juegoLibre() : hecho ? x.despues() : x.antes());
   L.compactar(!hecho);
   botones();
   leyenda($('leg2'), hecho ? x.leg : [], x.leyTextos || (x.paralelas ? LEY_PARALELAS : null));
@@ -1005,6 +1019,9 @@ conectarArrastre(L, () => S.vista, (id, p, tecla) => { if (moverManija(S.vista, 
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
 L.resize(); ir(0);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Gira la secante con su manija y mira los cruces.', minimo:2,
+  alListo:() => { jugado = true; ir(S.k); } });
 })();
 </script>
 
