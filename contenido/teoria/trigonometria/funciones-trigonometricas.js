@@ -8,10 +8,16 @@
  * Compañera: Mara (coneja), cercana y rigurosa: el periodo se mide sobre el eje, no se supone.
  * Colores (regla 4): la variable x en naranja (c-o); la función y su altura, y la amplitud A, en rojo (c-h); el
  * coeficiente B de x en turquesa (c-i); el periodo T en verde (c-d). Las curvas de referencia van en tinta, discontinuas.
+ * En el laboratorio, la altura media D va en morado (c-f).
  * Errores (hipótesis de distractor: docs/investigacion/trigonometria-ideas-erroneas.md no los mide; códigos nuevos
  * de esta unidad): FUN-DOMINIO (x pasa de 2π y «no existe»), FUN-LINEAL, FUN-SIGNO, FUN-CRUCE, PER-FIJO (todo periodo
  * es 2π), PER-MULT (2π · B), PER-AMPLITUD, PER-TAN (tan con 2π/B), TAN-RANGO, TAN-VENTANA, TAN-ASINTOTA,
  * SEC-CONFUNDE, SEC-INVERSO, SEC-ASINTOTA, SEC-RANGO-SENO, SEC-TODO, SEC-SIN-D, PER-MENOR, PER-SUMA.
+ * Ronda 2 (14 nov, noche): manijas en cuatro de las cinco ideas (el punto que recorre la onda, la cresta que fija A
+ * y el extremo de la llave del periodo que fija B, la marca de x sobre el eje en tangente y cotangente, y el extremo
+ * de la llave en el periodo general). Secante y cosecante eligen una función de una lista y no tienen qué agarrar;
+ * su mesa del laboratorio sí. Llaves en las cinco reglas, separadores «   ·   » y laboratorio de tres mesas. «Juega» y
+ * «Mira» usan la misma pieza trig-onda en las cinco ideas (hallazgo 9); «Mira» solo abre la ventana del eje x.
  *
  * Ficha de tarea (diseno-y-animacion):
  *   Promesa: cada función trigonométrica se reconoce por su rango, sus asíntotas y su periodo, medido sobre el eje x.
@@ -82,6 +88,11 @@
   // Progresa: la curva roja, que se dibuja hasta x. · Se reserva: un x de la segunda vuelta (la predicción).
   // · Debe verse: que la curva no sale de [−1, 1] y que después de 2π vuelve a empezar.
   const FN = { sen: Math.sin, cos: Math.cos };
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de trig-onda (X, Y y sus inversas xDe, yDe).
+  const TO = () => Kit.piezas['trig-onda'];
+  const G = d => TO().geometria(d);
+  const aGrados = r => r * 180 / PI;
+  const lim = (v, a, b) => Math.min(b, Math.max(a, v));
   const onda1 = (fn, g, extra = {}) => {
     const x = g * PI / 180, F = FN[fn];
     return Object.assign({
@@ -106,8 +117,12 @@
         { id: 'fn', etiqueta: 'Función', opciones: [{ valor: 'sen', texto: 'sen x' }, { valor: 'cos', texto: 'cos x' }], inicio: 'sen' },
       ],
       dibujo: val => ({ datos: onda1(val.fn, val.g), estado: {} }),
-      lectura: val => [x_, ` = ${f(val.g)}° = ${piQ(val.g, 180)}; ${val.fn} `, x_, ` = ${f(FN[val.fn](val.g * PI / 180))}`],
+      lectura: val => [x_, ` = ${f(val.g)}° = ${piQ(val.g, 180)}`, '   ·   ', `${val.fn} `, x_, ` = ${f(FN[val.fn](val.g * PI / 180))}`],
       minimo: 3,
+      // Se arrastra el punto rojo a lo largo del eje: su posición es x, y la curva se dibuja hasta él.
+      arrastres: [{ id: 'punto', etiqueta: 'punto de la curva: cambia x', color: 'c-o',
+        donde: val => { const d = onda1(val.fn, val.g), x = val.g * PI / 180; return { x: G(d).X(x), y: G(d).Y(FN[val.fn](x)) }; },
+        mover: (pt, val) => ({ g: aGrados(G(onda1(val.fn, val.g)).xDe(pt.x)) }) }],
     },
     predice: {
       pregunta: ['El juego llegó hasta 2π. ¿Cuánto vale sen(13π/6)?'],
@@ -124,6 +139,7 @@
         periodos: [{ de: PI / 6, a: 13 * PI / 6, y: -1.7, color: 'd', rotulo: '2π' }] }), estado: {} },
       coincide: 'Coincide: después de 2π la curva repite exactamente lo mismo.',
     },
+    // «Mira» es la misma onda del juego, con el eje x abierto de −π a 3π para ver la repetición y el coseno.
     mira: {
       datos: {
         x: { min: -PI, max: 3 * PI, cada: 2 }, y: { min: -1.9, max: 1.5, paso: 0.5, decimales: 1 },
@@ -139,12 +155,12 @@
         { estado: { corte: 2 }, texto: 'La altura de un punto del círculo va de −1 a 1.', ecuacion: ['Ran = [−1, 1]'] },
         { estado: { corte: 3 }, texto: 'Una vuelta más deja todo igual: se repite cada 2π.', ecuacion: ['sen(', x_, ' + 2π) = sen ', x_] },
         { estado: { corte: 4 }, texto: 'El coseno es la misma onda, adelantada π/2.', ecuacion: ['cos ', x_, ' = sen(', x_, ' + π/2)'] },
-        { estado: { corte: 4 }, texto: 'El seno es impar y el coseno es par.', ecuacion: ['sen(−', x_, ') = −sen ', x_, ';   cos(−', x_, ') = cos ', x_] },
+        { estado: { corte: 4 }, texto: 'El seno es impar y el coseno es par.', ecuacion: ['sen(−', x_, ') = −sen ', x_, '   ·   ', 'cos(−', x_, ') = cos ', x_] },
       ],
     },
     regla: {
       texto: 'Seno y coseno están definidas para todo x real, toman valores de −1 a 1 y se repiten cada 2π.',
-      ecuacion: ['Dom = ℝ;   Ran = [−1, 1];   ', T_, ' = 2π;   cos ', x_, ' = sen(', x_, ' + π/2)'],
+      ecuacion: ['Dom = ℝ', '   ·   ', 'Ran = [−1, 1]', '   ·   ', { llave: [T_, ' = 2π'], nota: 'periodo', color: 'c-d' }, '   ·   ', 'cos ', x_, ' = ', { llave: ['sen(', x_, ' + π/2)'], nota: 'seno adelantado', color: 'c-h' }],
       condicion: 'x en radianes; con grados, el periodo es 360°.',
       voz: 'Primero el dominio, después el rango, al final el periodo.',
     },
@@ -195,8 +211,17 @@
         { id: 'B', etiqueta: 'B', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
       ],
       dibujo: val => ({ datos: onda2(val.A, val.B), estado: {} }),
-      lectura: val => ['amplitud ', A_, ` = ${f(val.A)}; periodo `, T_, ` = ${perTxt(val.B)}`],
+      lectura: val => ['amplitud ', A_, ` = ${f(val.A)}`, '   ·   ', 'periodo ', T_, ` = ${perTxt(val.B)}`],
       minimo: 3,
+      // Se arrastra la cresta hacia arriba o abajo (su alto es A) y el extremo de la llave verde (su largo 2π/B fija B).
+      arrastres: [
+        { id: 'cresta', etiqueta: 'cresta de la onda: alto A', color: 'c-h',
+          donde: val => { const g = G(onda2(val.A, val.B)); return { x: g.X(PI / (2 * val.B)), y: g.Y(val.A) }; },
+          mover: (pt, val) => ({ A: G(onda2(val.A, val.B)).yDe(pt.y) }) },
+        { id: 'llave', etiqueta: 'fin de la llave del periodo: cambia B', color: 'c-i',
+          donde: val => { const g = G(onda2(val.A, val.B)); return { x: g.X(2 * PI / val.B), y: g.Y(-4 + 0.45) }; },
+          mover: (pt, val) => ({ B: 2 * PI / Math.max(0.2, G(onda2(val.A, val.B)).xDe(pt.x)) }) },
+      ],
     },
     predice: {
       pregunta: ['¿Cuál es el periodo de y = 2 sen(x/2), con ', B_, ' = 1/2?'],
@@ -231,7 +256,7 @@
     },
     regla: {
       texto: 'En y = A sen(Bx) o A cos(Bx), la amplitud es |A|, el periodo es 2π/|B| y la frecuencia es su inversa.',
-      ecuacion: ['amplitud = |', A_, '|;   ', T_, ' = ', { frac: ['2π', ['|', B_, '|']] }, ';   f = ', { frac: ['1', T_] }],
+      ecuacion: ['amplitud = |', A_, '|', '   ·   ', { llave: [T_], nota: 'periodo', color: 'c-d' }, ' = ', { frac: ['2π', ['|', B_, '|']] }, '   ·   ', { llave: ['f'], nota: 'frecuencia', color: 'c-d' }, ' = ', { frac: ['1', T_] }],
       condicion: 'A ≠ 0 y B ≠ 0, con x en radianes.',
       voz: 'Alto por un lado, ancho por el otro.',
     },
@@ -283,6 +308,12 @@
       alt: `Gráfica de ${fn} x con asíntotas en ${ASI[fn].map(a => piQ(Math.round(a / PI * 2), 2)).join(', ')}; ramas que toman todos los reales`,
     }, extra);
   };
+  // En el juego, un trazo naranja une la marca de x en el eje con el punto de la rama.
+  const tanJuego = (fn, xg) => {
+    const d = ondaTan(fn, xg), x = xg * PI / 180, F = fn === 'tan' ? tanF : cotF;
+    const ok = Math.abs(fn === 'tan' ? Math.cos(x) : Math.sin(x)) > 1e-9;
+    return ok ? Object.assign(d, { curvas: [...d.curvas, { puntos: [[x, 0], [x, lim(F(x), -3, 3)]], color: 'o' }] }) : d;
+  };
   const tanIdea = {
     id: 'tangente-ramas',
     titulo: 'Ramas entre asíntotas',
@@ -295,12 +326,16 @@
         { id: 'g', etiqueta: 'x', color: 'c-o', min: -60, max: 330, paso: 30, inicio: 30, unidad: '°', decimales: 0 },
         { id: 'fn', etiqueta: 'Función', opciones: [{ valor: 'tan', texto: 'tan x' }, { valor: 'cot', texto: 'cot x' }], inicio: 'tan' },
       ],
-      dibujo: val => ({ datos: ondaTan(val.fn, val.g), estado: {} }),
+      dibujo: val => ({ datos: tanJuego(val.fn, val.g), estado: {} }),
       lectura: val => {
         const x = val.g * PI / 180, ok = Math.abs(val.fn === 'tan' ? Math.cos(x) : Math.sin(x)) > 1e-9;
         return [`${val.fn}(${piQ(val.g, 180)}) ${ok ? '= ' + f(val.fn === 'tan' ? Math.tan(x) : 1 / Math.tan(x)) : 'no existe: asíntota'}`];
       },
       minimo: 3,
+      // Se arrastra la marca de x sobre el eje (en una asíntota no hay punto que agarrar, pero la marca sigue ahí).
+      arrastres: [{ id: 'marca-x', etiqueta: 'marca de x sobre el eje', color: 'c-o',
+        donde: val => { const g = G(tanJuego(val.fn, val.g)); return { x: g.X(val.g * PI / 180), y: g.Y(0) }; },
+        mover: (pt, val) => ({ g: aGrados(G(tanJuego(val.fn, val.g)).xDe(pt.x)) }) }],
     },
     predice: {
       pregunta: '¿Hay algún x para el que tan x = 1000?',
@@ -329,13 +364,13 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'tan x = sen x / cos x: falla donde cos x = 0.', ecuacion: [x_, ' ≠ π/2 + kπ'] },
         { estado: { corte: 2 }, texto: 'Cerca de esos x el cociente crece sin tope: toma todos los reales.', ecuacion: ['Ran(tan) = ℝ'] },
-        { estado: { corte: 3 }, texto: 'Tras π, seno y coseno cambian ambos de signo: el cociente se repite.', ecuacion: ['tan(', x_, ' + π) = tan ', x_, ';   ', T_, ' = π'] },
-        { estado: { corte: 4 }, texto: 'cot x = cos x / sen x: asíntotas donde sen x = 0, y baja.', ecuacion: [x_, ' ≠ kπ;   ', T_, ' = π'] },
+        { estado: { corte: 3 }, texto: 'Tras π, seno y coseno cambian ambos de signo: el cociente se repite.', ecuacion: ['tan(', x_, ' + π) = tan ', x_, '   ·   ', T_, ' = π'] },
+        { estado: { corte: 4 }, texto: 'cot x = cos x / sen x: asíntotas donde sen x = 0, y baja.', ecuacion: [x_, ' ≠ kπ', '   ·   ', T_, ' = π'] },
       ],
     },
     regla: {
       texto: 'Tangente y cotangente toman todos los reales, se repiten cada π y no existen donde su denominador es 0.',
-      ecuacion: ['tan: ', x_, ' ≠ π/2 + kπ;   cot: ', x_, ' ≠ kπ;   Ran = ℝ;   ', T_, ' = π'],
+      ecuacion: ['tan: ', x_, ' ≠ ', { llave: ['π/2 + kπ'], nota: 'asíntotas', color: 'c-o' }, '   ·   ', 'cot: ', x_, ' ≠ kπ', '   ·   ', { llave: ['Ran = ℝ'], nota: 'cualquier real', color: 'c-h' }, '   ·   ', T_, ' = π'],
       condicion: 'k entero; x en radianes. La tangente crece en cada rama y la cotangente decrece.',
       voz: 'Una rama por intervalo; entre ramas, una asíntota.',
     },
@@ -387,7 +422,10 @@
       voz: 'Compara cada copa con la onda de su base.',
       controles: [{ id: 'fn', etiqueta: 'Función', opciones: [{ valor: 'sec', texto: 'sec x' }, { valor: 'csc', texto: 'csc x' }, { valor: 'cos', texto: 'cos x' }, { valor: 'sen', texto: 'sen x' }], inicio: 'sec' }],
       dibujo: val => ({ datos: ['sec', 'csc'].includes(val.fn) ? ondaSec(val.fn) : ondaSec(val.fn === 'cos' ? 'sec' : 'csc', { curvas: ondaSec(val.fn === 'cos' ? 'sec' : 'csc').curvas.slice(0, 1).map(c => Object.assign({}, c, { color: 'h', discontinua: false })), asintotas: [] }), estado: {} }),
-      lectura: val => [{ sec: 'sec x: |y| ≥ 1; asíntotas donde cos x = 0', csc: 'csc x: |y| ≥ 1; asíntotas donde sen x = 0', cos: 'cos x: entre −1 y 1', sen: 'sen x: entre −1 y 1' }[val.fn]],
+      // La función se elige de una lista: no hay un objeto que agarrar (la mesa «cuatro funciones» del laboratorio sí lo tiene).
+      lectura: val => (['sec', 'csc'].includes(val.fn)
+        ? [`${val.fn} `, x_, ': |', y_, '| ≥ 1', '   ·   ', `asíntotas donde ${val.fn === 'sec' ? 'cos' : 'sen'} `, x_, ' = 0']
+        : [`${val.fn} `, x_, ': entre −1 y 1']),
       minimo: 3,
     },
     predice: {
@@ -420,7 +458,7 @@
     },
     regla: {
       texto: 'sec x = 1/cos x y csc x = 1/sen x nunca toman valores entre −1 y 1, tienen asíntotas donde su base es 0 y se repiten cada 2π.',
-      ecuacion: ['Ran = ⟨−∞, −1] ∪ [1, +∞⟩;   ', T_, ' = 2π;   sec: ', x_, ' ≠ π/2 + kπ;   csc: ', x_, ' ≠ kπ'],
+      ecuacion: ['Ran = ', { llave: ['⟨−∞, −1] ∪ [1, +∞⟩'], nota: 'sin la franja', color: 'c-h' }, '   ·   ', T_, ' = 2π', '   ·   ', 'sec: ', x_, ' ≠ π/2 + kπ', '   ·   ', 'csc: ', x_, ' ≠ kπ'],
       condicion: 'k entero; x en radianes.',
       voz: 'La franja entre −1 y 1 queda vacía.',
     },
@@ -439,7 +477,7 @@
             { id: 'sinD', valor: D ? R(-A, A) : null, error: 'SEC-SIN-D', siFuera: `La forma está bien; falta mover todo ${Math.abs(D)} hacia ${D > 0 ? 'arriba' : 'abajo'}.` },
             { id: 'sinA', valor: A !== 1 ? R(D - 1, D + 1) : null, error: 'SEC-SIN-D', siFuera: `Las copas empiezan en ±${A}, no en ±1: A estira la gráfica.` },
           ]),
-          solucion: { texto: `Las copas empiezan en ±${A} y se suben ${D}.`, ecuacion: [`${D} − ${A} = ${qt(D - A)};   ${D} + ${A} = ${qt(D + A)}`] },
+          solucion: { texto: `Las copas empiezan en ±${A} y se suben ${D}.`, ecuacion: [`${D} − ${A} = ${qt(D - A)}`, '   ·   ', `${D} + ${A} = ${qt(D + A)}`] },
         };
       },
     },
@@ -480,6 +518,10 @@
       dibujo: val => ({ datos: ondaGen(val.forma, val.B), estado: {} }),
       lectura: val => [`${FORMAS[val.forma].txt(val.B)}: periodo `, T_, ` = ${piQ(FORMAS[val.forma].T, val.B)}`],
       minimo: 3,
+      // Se arrastra el extremo de la llave verde: su largo es el periodo, y de él sale B.
+      arrastres: [{ id: 'llave', etiqueta: 'fin de la llave del periodo: cambia B', color: 'c-i',
+        donde: val => { const g = G(ondaGen(val.forma, val.B)); return { x: g.X(FORMAS[val.forma].T * PI / val.B), y: g.Y(-2.1) }; },
+        mover: (pt, val) => ({ B: FORMAS[val.forma].T * PI / Math.max(0.2, G(ondaGen(val.forma, val.B)).xDe(pt.x)) }) }],
     },
     predice: {
       pregunta: '¿Cuál es el periodo de y = sen 2x + sen 3x?',
@@ -513,7 +555,8 @@
     },
     regla: {
       texto: 'El periodo depende de la función y de su transformación: seno y coseno, 2π/|B|; tangente y cotangente, π/|B|. Una suma, el menor múltiplo común.',
-      ecuacion: ['A sen(', B_, x_, ' + C) + D:  ', T_, ' = ', { frac: ['2π', ['|', B_, '|']] }, ';   A tan(', B_, x_, ' + C) + D:  ', T_, ' = ', { frac: ['π', ['|', B_, '|']] }],
+      // Las dos formas completas van en el texto; aquí, solo qué familia, para que cada relación quepa en una línea a 360 px.
+      ecuacion: ['sen, cos:  ', T_, ' = ', { llave: [{ frac: ['2π', ['|', B_, '|']] }], nota: 'solo B cuenta', color: 'c-d' }, '   ·   ', 'tan, cot:  ', T_, ' = ', { frac: ['π', ['|', B_, '|']] }],
       condicion: 'A ≠ 0 y B ≠ 0; C y D no cambian el periodo. Sin múltiplo común, la suma no es periódica.',
       voz: 'Ni la altura ni el corrimiento cambian el periodo.',
     },
@@ -552,11 +595,112 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: la onda completa y = A sen(Bx) + D, con A negativa, B fraccionaria y D, en una ventana de 0 a 4π.
+  const D_ = { v: 'c-f', t: 'D' };
+  const perB = B => piQ(4, Math.round(2 * B));   // 2π/B con B múltiplo de 1/2
+  const YL = 6, LLY = -YL + 0.5;
+  const ondaLab = (A, B, D) => ({
+    x: { min: 0, max: 4 * PI, cada: 1 }, y: { min: -YL, max: YL, paso: 1 },
+    rectas: [{ y: D, color: 'f' }],
+    curvas: [{ puntos: muestra(Math.sin, 0, 4 * PI), color: null, discontinua: true },
+      { puntos: muestra(x => A * Math.sin(B * x) + D, 0, 4 * PI, 320), color: 'h' }],
+    periodos: [{ de: 0, a: 2 * PI / B, y: LLY, color: 'd', rotulo: `T = ${perB(B)}` }],
+    puntos: [{ x: PI / (2 * B), y: A + D, color: 'h' }],
+    alt: `Onda ${f(A)} sen(${f(B)}x) + ${f(D)}: va de ${f(D - Math.abs(A))} a ${f(D + Math.abs(A))} y se repite cada ${perB(B)}`,
+  });
+  // Mesa 2: las cuatro funciones con asíntotas y sus bases, con un x que se arrastra de 5° en 5°.
+  const CUATRO = {
+    tan: { F: tanF, base: 'sen/cos', den: Math.cos, asi: [-PI / 2, PI / 2, 3 * PI / 2] },
+    cot: { F: cotF, base: 'cos/sen', den: Math.sin, asi: [0, PI, 2 * PI] },
+    sec: { F: secF, base: '1/cos', den: Math.cos, asi: [-PI / 2, PI / 2, 3 * PI / 2] },
+    csc: { F: cscF, base: '1/sen', den: Math.sin, asi: [0, PI, 2 * PI] },
+  };
+  const YC = 4;
+  const ondaCuatro = (fn, xg) => {
+    const C = CUATRO[fn], x = xg * PI / 180, ok = Math.abs(C.den(x)) > 1e-9, v = ok ? C.F(x) : null;
+    return {
+      x: { min: -PI / 2, max: 2 * PI, cada: 4 }, y: { min: -YC, max: YC, paso: 1 },
+      rectas: fn === 'sec' || fn === 'csc' ? [{ y: 1, color: 'h' }, { y: -1, color: 'h' }] : [],
+      asintotas: C.asi.map(a => ({ x: a })),
+      curvas: [{ puntos: ramas(C.F, -PI / 2, 2 * PI, C.asi), color: 'h' },
+        ...(ok ? [{ puntos: [[x, 0], [x, lim(v, -YC, YC)]], color: 'o' }] : [])],
+      puntos: ok && Math.abs(v) <= YC ? [{ x, y: v, color: 'o' }] : [],
+      alt: `Gráfica de ${fn} x con el punto x = ${f(xg)}°: ${ok ? `vale ${f(v)}` : 'asíntota'}`,
+    };
+  };
+  // Mesa 3: la suma de dos senos y su periodo común (sin manija: m y n son enteros, se eligen con − y +).
+  const ondaSuma = (m, n) => {
+    const g = mcd(m, n);
+    return {
+      x: { min: 0, max: 2 * PI, cada: 2 }, y: { min: -2.5, max: 2.5, paso: 1 },
+      curvas: [{ puntos: muestra(x => Math.sin(m * x), 0, 2 * PI, 240), color: 'i', discontinua: true },
+        { puntos: muestra(x => Math.sin(n * x), 0, 2 * PI, 240), color: null, discontinua: true },
+        { puntos: muestra(x => Math.sin(m * x) + Math.sin(n * x), 0, 2 * PI, 360), color: 'h' }],
+      periodos: [{ de: 0, a: 2 * PI / g, y: -2.2, color: 'd', rotulo: `T = ${piQ(2, g)}` }],
+      alt: `Suma de sen ${m}x y sen ${n}x: se repite cada ${piQ(2, g)}`,
+    };
+  };
+  const laboratorio = [
+    {
+      id: 'onda-completa', titulo: 'La onda con tres perillas', pieza: 'trig-onda',
+      consigna: 'Arrastra la cresta (alto A), el fin de la llave (periodo) y la línea morada (altura media D). Prueba A negativa y B = 1/2.',
+      controles: [
+        { id: 'A', etiqueta: 'A', color: 'c-h', min: -3, max: 3, paso: 0.5, inicio: 2, decimales: 1 },
+        { id: 'B', etiqueta: 'B', color: 'c-i', min: 0.5, max: 4, paso: 0.5, inicio: 1, decimales: 1 },
+        { id: 'D', etiqueta: 'D', color: 'c-f', min: -2, max: 2, paso: 0.5, inicio: 0, decimales: 1 },
+      ],
+      dibujo: val => ({ datos: ondaLab(val.A, val.B, val.D), estado: {} }),
+      lectura: val => [`amplitud ${f(Math.abs(val.A))}`, '   ·   ', T_, ` = ${perB(val.B)}`, '   ·   ', `de ${f(val.D - Math.abs(val.A))} a ${f(val.D + Math.abs(val.A))}`],
+      arrastres: [
+        { id: 'cresta', etiqueta: 'punto a un cuarto de onda: alto A', color: 'c-h',
+          donde: val => { const g = G(ondaLab(val.A, val.B, val.D)); return { x: g.X(PI / (2 * val.B)), y: g.Y(val.A + val.D) }; },
+          mover: (pt, val) => ({ A: G(ondaLab(val.A, val.B, val.D)).yDe(pt.y) - val.D }) },
+        { id: 'llave', etiqueta: 'fin de la llave del periodo: cambia B', color: 'c-i',
+          donde: val => { const g = G(ondaLab(val.A, val.B, val.D)); return { x: g.X(2 * PI / val.B), y: g.Y(LLY) }; },
+          mover: (pt, val) => ({ B: 2 * PI / Math.max(0.2, G(ondaLab(val.A, val.B, val.D)).xDe(pt.x)) }) },
+        { id: 'media', etiqueta: 'línea media: cambia D', color: 'c-f',
+          donde: val => { const g = G(ondaLab(val.A, val.B, val.D)); return { x: g.X(3.8 * PI), y: g.Y(val.D) }; },
+          mover: (pt, val) => ({ D: G(ondaLab(val.A, val.B, val.D)).yDe(pt.y) }) },
+      ],
+    },
+    {
+      id: 'cuatro-funciones', titulo: 'Tangente, cotangente, secante, cosecante', pieza: 'trig-onda',
+      consigna: 'Elige la función y arrastra la marca de x por el eje, de 5° en 5°. Acércate a una asíntota y mira el valor.',
+      controles: [
+        { id: 'fn', etiqueta: 'Función', opciones: [{ valor: 'tan', texto: 'tan x' }, { valor: 'cot', texto: 'cot x' }, { valor: 'sec', texto: 'sec x' }, { valor: 'csc', texto: 'csc x' }], inicio: 'sec' },
+        { id: 'g', etiqueta: 'x', color: 'c-o', min: -90, max: 360, paso: 5, inicio: 60, unidad: '°', decimales: 0 },
+      ],
+      dibujo: val => ({ datos: ondaCuatro(val.fn, val.g), estado: {} }),
+      lectura: val => {
+        const C = CUATRO[val.fn], x = val.g * PI / 180, ok = Math.abs(C.den(x)) > 1e-9;
+        return [`${val.fn}(${piQ(val.g, 180)}) ${ok ? `= ${f(C.F(x))}` : 'no existe: asíntota'}`, '   ·   ', `es ${C.base}`];
+      },
+      arrastres: [{ id: 'marca-x', etiqueta: 'marca de x sobre el eje', color: 'c-o',
+        donde: val => { const g = G(ondaCuatro(val.fn, val.g)); return { x: g.X(val.g * PI / 180), y: g.Y(0) }; },
+        mover: (pt, val) => ({ g: aGrados(G(ondaCuatro(val.fn, val.g)).xDe(pt.x)) }) }],
+    },
+    {
+      id: 'suma-de-ondas', titulo: 'Dos ondas que se suman', pieza: 'trig-onda',
+      consigna: 'Elige m y n. La roja es sen mx + sen nx. La llave verde marca cuándo las dos discontinuas vuelven a empezar juntas.',
+      controles: [
+        { id: 'm', etiqueta: 'm', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 2, decimales: 0 },
+        { id: 'n', etiqueta: 'n', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0 },
+      ],
+      dibujo: val => ({ datos: ondaSuma(val.m, val.n), estado: {} }),
+      lectura: val => [`sen ${val.m}x + sen ${val.n}x: `, T_, ` = ${piQ(2, mcd(val.m, val.n))}`],
+    },
+  ];
+
   return {
     unidad: 'trigonometria.funciones-trigonometricas',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-onda.js'],
+    // Laboratorio (docs/teoria.md §4b), sin preguntas: «onda-completa» junta A (también negativa), B fraccionaria y el
+    // corrimiento D que las ideas no dejan mover; «cuatro-funciones» da a secante y cosecante la marca que su idea no
+    // tiene, de 5° en 5° para acercarse a las asíntotas; «suma-de-ondas» prueba el periodo común con cualquier m y n.
+    laboratorio,
     historia: {
       texto: 'En 1748, Euler publicó la Introductio in analysin infinitorum, que puso a las funciones en el centro del análisis. Seno y coseno dejaron de ser solo valores de una tabla para resolver triángulos: pasaron a ser funciones que cambian sin fin mientras el ángulo gira, con preguntas nuevas sobre su altura, su repetición y su desplazamiento.',
       pregunta: '¿Qué cambia si piensas el seno como algo que se mueve?',
