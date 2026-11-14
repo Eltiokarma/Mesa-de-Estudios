@@ -139,6 +139,15 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
 .fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
 .pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
 .pie a{color:var(--ink); font-weight:700}
+/* Juego libre antes de las preguntas (regla 3; nucleo/jugar.js) */
+.juego{display:grid; gap:8px; padding:4px 2px}
+.juego[hidden]{display:none}
+.paso-ctrl{display:grid; grid-template-columns:minmax(0, 1fr) 44px minmax(56px, auto) 44px; align-items:center; gap:8px}
+.paso-ctrl > span{font-weight:700}
+.paso-ctrl output{font-family:var(--mono); text-align:center}
+.paso-ctrl .btn{padding:8px 0; width:44px}
+.jugar-barra{color:var(--ink)}
+.jugar-seguir{background:var(--ink); color:var(--card); border:0}
 .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
 .volver-app{display:inline-block; margin:12px 16px 0; background:var(--card); color:var(--ink); box-shadow:var(--shadow);
   font:700 14px var(--font); padding:8px 16px; border-radius:999px; text-decoration:none}
@@ -174,6 +183,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <div class="lecturas" id="lect1" aria-hidden="true"></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
       <div class="legend" id="ley1"></div>
+      <div class="juego" id="juego1"></div>
     </section>
     <section class="guide">
       <ol class="dots" id="dots"></ol>
@@ -196,9 +206,10 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
       <div class="lecturas" id="lect2" aria-hidden="true"></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="legend" id="ley2"></div>
+      <div class="juego" id="juego2"></div>
     </section>
     <section class="guide">
-      <div class="seg" id="exps" role="group" aria-label="Experimentos"></div>
+      <div class="seg exps" id="exps" role="group" aria-label="Experimentos"></div>
       <div aria-live="polite">
         <p class="step-k" id="k2"></p>
         <h2 class="step-t" id="t2"></h2>
@@ -221,6 +232,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'estatica', unidad: 'fisica.estatica', version: '0.1.0' };
@@ -371,6 +383,90 @@ function animarValor(dur, paso, listo){
   const tick = now => { const f = Math.min(1, (now - ini)/dur); paso(f); if (f < 1) id = requestAnimationFrame(tick); else listo && listo(); };
   id = requestAnimationFrame(tick);
   return () => cancelAnimationFrame(id);
+}
+/* ---------- Jugar antes de preguntar (regla 3, decisión 20) ----------
+   Antes de la primera pregunta de cada modo, la barra queda libre: se mueven el apoyo y el bloque (arrastrando sus
+   asas, con ← y → o con las flechas del teclado) y se cambia el peso del bloque. Cada cambio la deja horizontal y la
+   suelta: si los giros no se igualan, se va hacia un lado. El juego no muestra lo que después se pregunta: ni fuerzas,
+   ni brazos, ni giros, ni la reacción del apoyo, y nunca deja la barra inclinada en equilibrio. Basta jugar en un modo. */
+const JG = { s:3, c:0.5, W:100 };
+const JUEGOS = [];
+function montarJuego(o){
+  const j = JugarPrimero.montar({ escena:o.escena, preguntas:o.preguntas, minimo:2,
+    consigna:'Mueve el apoyo y el bloque, cambia el peso. Mira hacia dónde se va.',
+    alListo:() => { JUEGOS.forEach(x => { if (x !== j) x.saltar(); }); o.alListo(); } });
+  JUEGOS.push(j); return j;
+}
+function crearJuegoBarra(L, cv, panel, redibujar){
+  const J = { on:true, phi:0, sobre:null, arrastra:null, teclado:'apoyo', parar:() => {} };
+  const fila = (k, et) => `<div class="paso-ctrl"><span>${et}</span>
+      <button type="button" class="btn" data-k="${k}" data-d="-1" aria-label="${k === 'W' ? 'Bajar el peso del bloque' : 'Mover ' + et.toLowerCase() + ' a la izquierda'}">${k === 'W' ? '−' : '←'}</button>
+      <output data-o="${k}"></output>
+      <button type="button" class="btn" data-k="${k}" data-d="1" aria-label="${k === 'W' ? 'Subir el peso del bloque' : 'Mover ' + et.toLowerCase() + ' a la derecha'}">${k === 'W' ? '+' : '→'}</button></div>`;
+  panel.innerHTML = fila('s', 'El apoyo') + fila('c', 'El bloque') + fila('W', 'Peso del bloque');
+  const PASO = { s:0.5, c:0.5, W:50 }, LIM = { s:[0, 6], c:[0, 6], W:[0, 600] };
+  const pintar = () => {
+    panel.querySelector('[data-o="s"]').textContent = `${N2(JG.s)} m`;
+    panel.querySelector('[data-o="c"]').textContent = `${N2(JG.c)} m`;
+    panel.querySelector('[data-o="W"]').textContent = `${N1(JG.W)} N`;
+  };
+  const barra = () => M.barra({ L:6, m:30, apoyos:[{ x:JG.s, nombre:'apoyo' }], cargas:[{ x:JG.c, F:JG.W, nombre:'cuerda' }] });
+  // Se deja horizontal y se suelta: si no hay equilibrio, se va hasta 10° hacia el lado que gana.
+  function soltar(){
+    J.parar(); const b = barra(), meta = b.equilibrio ? 0 : b.gira === 'horario' ? -10 : 10;
+    J.phi = 0; pintar(); redibujar();
+    if (meta) J.parar = animarValor(500, f => { J.phi = meta*f*f; redibujar(); });
+  }
+  panel.querySelectorAll('[data-d]').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.k; JG[k] = clamp(JG[k] + PASO[k]*b.dataset.d, LIM[k][0], LIM[k][1]);
+    if (k !== 'W') J.teclado = k === 's' ? 'apoyo' : 'carga';
+    soltar();
+  }));
+  J.vista = () => ({ tipo:'barra', L:6, s:JG.s, phi:J.phi, barra:barra(), regla:true, k:Math.min(L.W, L.H)*0.34/450,
+    cargas:[{ x:JG.c, F:JG.W }], asas:J.phi ? [] : ['apoyo', 'carga'], sobre:J.sobre, teclado:J.teclado });
+  J.dibujar = c => {
+    vistaBarra(L, c, J.vista());
+    const b = barra();
+    return `Juego libre: apoyo a ${N2(JG.s)} metros de A y bloque de ${N1(JG.W)} newtons a ${N2(JG.c)} metros de A. ` + (b.equilibrio ? 'La barra se queda horizontal.' : `La barra baja por el lado ${b.gira === 'horario' ? 'de B' : 'de A'}.`);
+  };
+  const local = e => { const r = cv.getBoundingClientRect(); return { x:e.clientX - r.left, y:e.clientY - r.top }; };
+  const cerca = (p, rad) => { if (J.phi) return null; let mejor = null, dm = rad;
+    for (const a of ['apoyo', 'carga']){ const q = asaEn(L.W, L.H, J.vista(), a), d = Math.hypot(p.x - q.x, p.y - q.y); if (d < dm){ dm = d; mejor = a; } }
+    return mejor; };
+  cv.addEventListener('touchstart', e => {
+    if (!J.on || J.phi || e.touches.length !== 1) return;
+    const r = cv.getBoundingClientRect(), t = e.touches[0];
+    if (cerca({ x:t.clientX - r.left, y:t.clientY - r.top }, 40)) e.preventDefault();
+  }, { passive:false });
+  cv.addEventListener('pointerdown', e => {
+    if (!J.on) return;
+    // Tocar la barra inclinada la vuelve a poner horizontal (como sostenerla con la mano) para volver a mover.
+    if (J.phi){ J.parar(); J.phi = 0; redibujar(); }
+    const a = cerca(local(e), e.pointerType === 'mouse' ? 26 : 40); if (!a) return;
+    J.arrastra = a; J.sobre = a; J.teclado = a; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); redibujar();
+  }, { passive:false });
+  cv.addEventListener('pointermove', e => {
+    if (!J.on) return;
+    const p = local(e);
+    if (J.arrastra){
+      const g = geoBarra(L.W, L.H, J.vista()), xm = clamp(Math.round(((p.x - g.mx)/g.kx)*4)/4, 0, 6);
+      if (J.arrastra === 'apoyo' && xm !== JG.s){ JG.s = xm; pintar(); redibujar(); }
+      if (J.arrastra === 'carga' && xm !== JG.c){ JG.c = xm; pintar(); redibujar(); }
+      return;
+    }
+    const a = cerca(p, 26); if (a !== J.sobre){ J.sobre = a; cv.style.cursor = a ? 'grab' : ''; redibujar(); }
+  });
+  const fin = () => { if (J.on && J.arrastra){ J.arrastra = null; soltar(); } };
+  cv.addEventListener('pointerup', fin); cv.addEventListener('pointercancel', fin);
+  cv.addEventListener('keydown', e => {
+    if (!J.on) return;
+    const d = { ArrowRight:0.25, ArrowUp:0.25, ArrowLeft:-0.25, ArrowDown:-0.25 }[e.key]; if (!d) return;
+    e.preventDefault(); const k = J.teclado === 'apoyo' ? 's' : 'c'; JG[k] = clamp(JG[k] + d, 0, 6); soltar();
+  });
+  J.encender = () => { cv.tabIndex = 0; cv.setAttribute('aria-label', 'Juego libre: barra sobre un apoyo con un bloque colgado. Con las flechas del teclado mueves el apoyo o el bloque, el último que tocaste.'); };
+  J.apagar = () => { J.on = false; J.parar(); J.phi = 0; panel.hidden = true; cv.style.cursor = ''; };
+  pintar(); J.encender();
+  return J;
 }
 const opcionesHTML = (opts, idfb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idfb}" tabindex="-1"></p>`;
 
@@ -577,6 +673,7 @@ const S = { step:0, max:0, pred:{}, hl:null, crece:1, ocupado:false, O:0, corte:
   ex:{ s:2, c:0, W:150 }, teclado:'apoyo', arrastra:null, sobre:null };
 let parar = () => {};
 const L = crearLienzo(cv, altoLienzo, draw);
+let J1 = null; // juego libre antes de preguntar (ver el final)
 
 const P1 = { id:'estatica-peso-en-A', ok:'b',
   opts:[['a','100 N','E1-mismo-peso-a-cada-lado','parcial'], ['b','150 N',null,''],
@@ -713,6 +810,7 @@ const vistaDe = s => Object.assign({ L:6, s:2, phi:0, barra:guia, N:guia.R, k:Ma
 function verActual(){ return vistaDe(steps[S.step]); }
 function draw(){
   if (!L.W) return;
+  if (J1 && J1.on){ lecturas($('lect1'), []); decir($('desc1'), J1.dibujar(colores(L.W))); return; }
   const c = colores(L.W), s = steps[S.step], v = verActual();
   v.crece = S.crece; v.hl = S.hl; v.sobre = S.sobre; v.teclado = s.explora ? S.teclado : null;
   if (v.tipo === 'barra') vistaBarra(L, c, v);
@@ -895,7 +993,11 @@ document.addEventListener('focusin', e => { const t = e.target.closest && e.targ
 document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
 alRedibujarTema(draw);
 addEventListener('modo', () => { if ($('m1').hidden) parar(); else L.resize(); });
-L.resize(); go(0);
+// Jugar antes de preguntar: la barra abre en juego libre; la guía queda velada hasta «Ya jugué: seguir».
+J1 = crearJuegoBarra(L, cv, $('juego1'), draw);
+montarJuego({ escena: cv.closest('.bench'), preguntas: [cv.closest('.mode').querySelector('.guide')],
+  alListo: () => { J1.apagar(); go(S.step); } });
+L.resize(); go(0); J1.encender();
 })();
 </script>
 <script>
@@ -908,6 +1010,7 @@ const cv = $('cv2');
 const L = crearLienzo(cv, altoLienzo, draw);
 let parar = () => {};
 const E = {};
+let J2 = null; // juego libre antes de preguntar (ver el final)
 const fuente = t => `<p class="fuente">${t}</p>`;
 
 /* ---------- Nudo con dos cuerdas ---------- */
@@ -1124,6 +1227,7 @@ function girar(){
   parar = animarValor(T*1000, f => { E.ang = r.angulo(T*f); draw(); });
 }
 function draw(){
+  if (L.W && J2 && J2.on){ lecturas($('lect2'), []); decir($('desc2'), J2.dibujar(colores(L.W))); return; }
   if (!L.W || !E.tipo) return;
   const c = colores(L.W), x = EXPS[S.k], ya = !!S.pred[x.id];
   if (E.tipo === 'nudo'){
@@ -1210,7 +1314,12 @@ function ir(k){
 }
 alRedibujarTema(draw);
 addEventListener('modo', () => { if ($('m2').hidden) parar(); else L.resize(); });
+// Jugar antes de preguntar: si se entra directo aquí, la barra libre va primero (la botonera queda libre).
+J2 = crearJuegoBarra(L, cv, $('juego2'), draw);
+montarJuego({ escena: cv.closest('.bench'), preguntas: [$('t2').parentNode, $('body2')],
+  alListo: () => { J2.apagar(); cv.tabIndex = -1; ir(S.k); } });
 L.resize(); ir(0);
+L.compactar(false); // mientras se juega, el dibujo no se pega arriba (taparía la consigna)
 })();
 </script>
 
