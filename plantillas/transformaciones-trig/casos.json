@@ -141,6 +141,7 @@
                    { "fn": "serie", "args": [{ "fn": "sen", "a": 15, "r": 30, "n": 6 }], "espera": { "valor": 3.863703305156273, "texto": "√6 + √2" } },
                    { "fn": "serie", "args": [{ "fn": "cos", "a": 15, "r": 30, "n": 4 }], "espera": { "valor": 1.6730326074756159, "texto": "(√6 + 3√2)/4" } },
                    { "fn": "serie", "args": [{ "fn": "cos", "a": 0, "r": 60, "n": 6 }], "espera": { "valor": 0, "texto": "0" } },
-                   { "fn": "serie", "args": [{ "fn": "sen", "a": 30, "r": 60, "n": 4 }], "espera": { "valor": 1.5, "texto": "3/2" } } ] }
+                   { "fn": "serie", "args": [{ "fn": "sen", "a": 30, "r": 60, "n": 4 }], "espera": { "valor": 1.5, "texto": "3/2" } },
+                   { "fn": "productoASuma", "args": [{ "tipo": "sencos", "x": 45, "y": 15, "veces": 2 }], "espera": { "errores.signo.texto": "−(1 + √3)", "errores.signo.valor": -2.732050807568877 } } ] }
   ]
 }
