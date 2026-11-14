@@ -34,17 +34,18 @@
   });
   // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
   const corto = (fn, t) => {
-    if (t.length <= 26) return fn(t);
+    // El trozo de color no se parte: con 14 letras o menos cabe en la miniatura de un caso guardado del laboratorio.
+    if (t.length <= 14) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
-    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    if (k && k <= 14) return [fn(t.slice(0, k)), t.slice(k)];
     const ps = t.split(' '); let n = 1;
-    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 14) n++;
     return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
   };
   const queda = t => ({ v: 'c-i', t }), prueba = t => ({ v: 'c-o', t }), tema = t => ({ v: 'c-d', t }), sobra = t => ({ v: 'c-h', t });
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
   // Texto: el tema como título y las oraciones numeradas, una por renglón.
-  const lista = (titulo, oraciones) => ({ secciones: [{ id: 'o', titulo, modo: 'lista', fragmentos: oraciones.map((t, k) => ({ id: `o${k + 1}`, t })) }] });
+  const lista = (titulo, oraciones) => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo, modo: 'lista', fragmentos: oraciones.map((t, k) => ({ id: `o${k + 1}`, t })) }] });
   // Estado al tapar la oración k: tapada; si se puede eliminar, sello «Sin pérdida»; si no, se marca lo que la necesita.
   const tapar = (k, sinPerdida, marcas = {}, extra = {}) => Object.assign({ tapar: [`o${k}`], marcas, sellos: { o: sinPerdida ? { t: 'Sin pérdida', c: 'i' } : { t: 'Se pierde algo', c: 'h' } } }, extra);
   // Ahora tú: un texto corto y la pregunta «¿qué oración se elimina?»; las opciones son los números.
@@ -260,7 +261,7 @@
     'La carga de un camión pasa las diez toneladas.',
     'Por eso, los arrieros la eligen para cruzar la puna.',
   ];
-  const figLlama = () => ({ secciones: [
+  const figLlama = () => ({ esquinaLibre: true, secciones: [
     lista('Tema: la llama', LLAMA).secciones[0],
     { id: 'bandeja', titulo: 'Cintas', modo: 'parrafo', fragmentos: [1, 2, 3].map(c => ({ id: `c${c}`, t: `cinta ${c}` })) },
   ] });

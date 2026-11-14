@@ -43,28 +43,29 @@
     mover: (pt, val) => ({ [control]: RV().cercana(datosDe(val), pt, ids) }),
   });
   // La bandeja va arriba: así el sello de la tarjeta del texto no queda bajo el botón de la lupa.
-  const conBandeja = (datos, titulo, items) => ({ secciones: [{ id: 'bandeja', titulo, modo: 'lista', fragmentos: items }].concat(datos.secciones) });
+  const conBandeja = (datos, titulo, items) => ({ esquinaLibre: true, secciones: [{ id: 'bandeja', titulo, modo: 'lista', fragmentos: items }].concat(datos.secciones) });
   const conFicha = (estado, id) => Object.assign({}, estado, { marcas: Object.assign({}, estado.marcas, { [id]: 'o' }) });
   // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
   const corto = (fn, t) => {
-    if (t.length <= 26) return fn(t);
+    // El trozo de color no se parte: con 14 letras o menos cabe en la miniatura de un caso guardado del laboratorio.
+    if (t.length <= 14) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
-    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    if (k && k <= 14) return [fn(t.slice(0, k)), t.slice(k)];
     const ps = t.split(' '); let n = 1;
-    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 14) n++;
     return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
   };
   const idea = t => ({ v: 'c-i', t }), con = t => ({ v: 'c-o', t }), rel = t => ({ v: 'c-d', t }), mal = t => ({ v: 'c-h', t });
   const opciones = (c, malas) => [{ id: 'c', texto: c, correcta: true }, ...malas.map(([texto, error, siFuera], k) => ({ id: `e${k}`, texto, error, siFuera }))];
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
   // Dos ideas con el hueco del conector en medio, y debajo la tarjeta de la relación.
-  const dosIdeas = (a, b, reserva = 'sin embargo,', relTitulo = 'Lo que se espera') => ({ secciones: [
+  const dosIdeas = (a, b, reserva = 'sin embargo,', relTitulo = 'Lo que se espera') => ({ esquinaLibre: true, secciones: [
     { id: 'o', titulo: 'Las dos ideas', modo: 'tarjeta', fragmentos: [{ id: 'a', t: a }, { id: 'w', hueco: true, reserva }, { id: 'b', t: b }] },
     { id: 'r', titulo: relTitulo, modo: 'parrafo', fragmentos: [{ id: 'r1', hueco: true, caja: false, reserva: 'que apruebe: no se cumple, se rompe' }] },
   ] });
   const ejercicio = (frase, reserva = 'sin embargo,') => {
     const [a, b] = frase.split('___');
-    return { datos: { secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [...(a.trim() ? [{ id: 'a', t: a.trim() }] : []), { id: 'w', hueco: true, reserva }, { id: 'b', t: b.trim() }] }] }, estado: { marcas: { a: 'i', b: 'i' } } };
+    return { datos: { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [...(a.trim() ? [{ id: 'a', t: a.trim() }] : []), { id: 'w', hueco: true, reserva }, { id: 'b', t: b.trim() }] }] }, estado: { marcas: { a: 'i', b: 'i' } } };
   };
 
   // ---------- Idea 1: la relación decide el conector ----------
@@ -157,7 +158,7 @@
     { id: 'h2', hueco: true, reserva: 'en conclusión,' }, { id: 'c', t: 'tiene mucha proteína.' }, { id: 'h3', hueco: true, reserva: 'en conclusión,' }, { id: 'd', t: 'es un cultivo valioso para el altiplano.' },
   ];
   const HUECOS = { h1: { ok: 'por ejemplo', clase: 'ejemplo: un caso de lo anterior', lados: ['a', 'b'] }, h2: { ok: 'además', clase: 'adición: suma otra idea', lados: ['b', 'c'] }, h3: { ok: 'en conclusión', clase: 'cierre: resume lo dicho', lados: ['c', 'd'] } };
-  const figQ = () => ({ secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: QUINUA }] });
+  const figQ = () => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: QUINUA }] });
   const CONQ = ['por ejemplo', 'además', 'en conclusión'], idQ = c => c.replace(/ /g, '-');
   const figQB = () => conBandeja(figQ(), 'Conectores', CONQ.map(c => ({ id: idQ(c), t: c })));
   const estQ = (h, c, extra = {}) => {
@@ -237,7 +238,7 @@
   // conector simple. Se reserva: «aun cuando» (predicción). Debe verse: la equivalencia (si bien = aunque).
   const PASAJE = { siguen: { t: 'los vecinos siguen usando el tren.', ok: 'si bien' }, dejaron: { t: 'muchos vecinos dejaron de usar el tren.', ok: 'dado que' } };
   const LOC = { 'si bien': 'aunque (concesión)', 'dado que': 'porque (causa)', 'de modo que': 'por eso (consecuencia)' };
-  const figLoc = k => ({ secciones: [
+  const figLoc = k => ({ esquinaLibre: true, secciones: [
     { id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'w', hueco: true, reserva: 'de modo que' }, { id: 'a', t: 'el pasaje subió,' }, { id: 'b', t: PASAJE[k].t }] },
     { id: 'r', titulo: 'Equivale a', modo: 'parrafo', fragmentos: [{ id: 'r1', hueco: true, caja: false, reserva: 'por eso (consecuencia)' }] },
   ] });

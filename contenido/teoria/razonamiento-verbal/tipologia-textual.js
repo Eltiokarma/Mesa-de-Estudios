@@ -39,11 +39,12 @@
   // Cita corta de un trozo para la lectura en vivo (cabe en 12 palabras con lo demás).
   const cita = t => { const ps = t.replace(/[.,:;]+$/, '').split(' '); return `«${ps.slice(0, 3).join(' ')}${ps.length > 3 ? '…' : ''}»`; };
   const corto = (fn, t) => {
-    if (t.length <= 26) return fn(t);
+    // El trozo de color no se parte: con 14 letras o menos cabe en la miniatura de un caso guardado del laboratorio.
+    if (t.length <= 14) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
-    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    if (k && k <= 14) return [fn(t.slice(0, k)), t.slice(k)];
     const ps = t.split(' '); let n = 1;
-    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 14) n++;
     return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
   };
   const ev = t => ({ v: 'c-i', t }), op = t => ({ v: 'c-o', t }), prop = t => ({ v: 'c-d', t }), mal = t => ({ v: 'c-h', t });
@@ -52,7 +53,7 @@
   // Texto con trozos marcables: [['texto'], ['evidencia', 'e'], …]; los trozos con 'e' reciben ids e0, e1…
   function texto(titulo, partes) {
     let k = 0, n = 0;
-    return { secciones: [{ id: 'o', titulo, modo: 'tarjeta', fragmentos: partes.map(([t, e]) => (e ? { id: `e${k++}`, t } : { id: `t${n++}`, t })) }] };
+    return { esquinaLibre: true, secciones: [{ id: 'o', titulo, modo: 'tarjeta', fragmentos: partes.map(([t, e]) => (e ? { id: `e${k++}`, t } : { id: `t${n++}`, t })) }] };
   }
   const evid = d => Object.fromEntries(d.secciones[0].fragmentos.filter(f => /^e/.test(f.id)).map(f => [f.id, 'i']));
 
@@ -310,7 +311,7 @@
     dibujo: val => {
       const dom = dominante(val), ts = [val.s1, val.s2, val.s3];
       return {
-        datos: { secciones: [{ id: 'o', titulo: 'Tema: la helada', modo: 'lista', fragmentos: ts.map((t, k) => ({ id: `o${k + 1}`, t: SEC[t].f[k] })) }] },
+        datos: { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Tema: la helada', modo: 'lista', fragmentos: ts.map((t, k) => ({ id: `o${k + 1}`, t: SEC[t].f[k] })) }] },
         estado: { marcas: Object.fromEntries(ts.map((t, k) => [`o${k + 1}`, t === dom ? 'i' : 'd'])), sellos: { o: { t: SEC[dom].n, c: 'i' } } },
       };
     },

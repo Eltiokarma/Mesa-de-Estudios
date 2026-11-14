@@ -35,17 +35,18 @@
     mover: pt => ({ k: +RV().cercana(datos, pt, datos.secciones[0].fragmentos.map(f => f.id)).slice(1) }),
   });
   const corto = (fn, t) => {
-    if (t.length <= 26) return fn(t);
+    // El trozo de color no se parte: con 14 letras o menos cabe en la miniatura de un caso guardado del laboratorio.
+    if (t.length <= 14) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
-    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    if (k && k <= 14) return [fn(t.slice(0, k)), t.slice(k)];
     const ps = t.split(' '); let n = 1;
-    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 14) n++;
     return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
   };
   const dato = t => ({ v: 'c-i', t }), concl = t => ({ v: 'c-o', t }), marco = t => ({ v: 'c-d', t }), excede = t => ({ v: 'c-h', t });
   const opciones = (c, malas) => [{ id: 'c', texto: c, correcta: true }, ...malas.map(([texto, error, siFuera], k) => ({ id: `e${k}`, texto, error, siFuera }))];
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
-  const lista = (titulo, ors) => ({ secciones: [{ id: 'o', titulo, modo: 'lista', fragmentos: ors.map((t, k) => ({ id: `o${k + 1}`, t })) }] });
+  const lista = (titulo, ors) => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo, modo: 'lista', fragmentos: ors.map((t, k) => ({ id: `o${k + 1}`, t })) }] });
 
   // ---------- Idea 1: dato, método, explicación y límite ----------
   // Cambia: la parte marcada. Permanece: el texto del estudio de los huertos. Progresa: de lo observado a lo explicado

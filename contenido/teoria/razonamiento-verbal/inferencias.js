@@ -32,17 +32,18 @@
     mover: (pt, val) => ({ [id]: vuelta(RV().cercana(datosDe(val), pt, ids)) }),
   });
   const corto = (fn, t) => {
-    if (t.length <= 26) return fn(t);
+    // El trozo de color no se parte: con 14 letras o menos cabe en la miniatura de un caso guardado del laboratorio.
+    if (t.length <= 14) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
-    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    if (k && k <= 14) return [fn(t.slice(0, k)), t.slice(k)];
     const ps = t.split(' '); let n = 1;
-    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 14) n++;
     return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
   };
   const ev = t => ({ v: 'c-i', t }), concl = t => ({ v: 'c-o', t }), impl = t => ({ v: 'c-d', t }), sin = t => ({ v: 'c-h', t });
   const opciones = (c, malas) => [{ id: 'c', texto: c, correcta: true }, ...malas.map(([texto, error, siFuera], k) => ({ id: `e${k}`, texto, error, siFuera }))];
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
-  const texto = (frs, extra = []) => ({ secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: frs.map(([id, t]) => ({ id, t })) }, ...extra] });
+  const texto = (frs, extra = []) => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: frs.map(([id, t]) => ({ id, t })) }, ...extra] });
   const conclusion = t => ({ id: 'c', titulo: 'Conclusión', modo: 'tarjeta', fragmentos: [{ id: 'c1', t }] });
 
   // ---------- Idea 1: necesaria o probable ----------

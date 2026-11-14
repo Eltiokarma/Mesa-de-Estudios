@@ -43,21 +43,22 @@
   });
   // Bandeja de fichas bajo el texto (una por opción del control); la elegida va marcada.
   // Va arriba del texto: así el sello del texto no queda bajo el botón de la lupa (esquina superior derecha).
-  const conBandeja = (datos, titulo, items) => ({ secciones: [{ id: 'bandeja', titulo, modo: 'lista', fragmentos: items }].concat(datos.secciones) });
+  const conBandeja = (datos, titulo, items) => ({ esquinaLibre: true, secciones: [{ id: 'bandeja', titulo, modo: 'lista', fragmentos: items }].concat(datos.secciones) });
   const conFicha = (estado, id) => Object.assign({}, estado, { marcas: Object.assign({}, estado.marcas, { [id]: 'o' }) });
   // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
   const corto = (fn, t) => {
-    if (t.length <= 26) return fn(t);
+    // El trozo de color no se parte: con 14 letras o menos cabe en la miniatura de un caso guardado del laboratorio.
+    if (t.length <= 14) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
-    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    if (k && k <= 14) return [fn(t.slice(0, k)), t.slice(k)];
     const ps = t.split(' '); let n = 1;
-    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 14) n++;
     return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
   };
   const ref = t => ({ v: 'c-i', t }), remite = t => ({ v: 'c-o', t }), nuevo = t => ({ v: 'c-d', t }), mal = t => ({ v: 'c-h', t });
   const opciones = (c, malas) => [{ id: 'c', texto: c, correcta: true }, ...malas.map(([texto, error, siFuera], k) => ({ id: `e${k}`, texto, error, siFuera }))];
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
-  const tarjeta = (titulo, frs) => ({ secciones: [{ id: 'o', titulo, modo: 'tarjeta', fragmentos: frs.map(([id, t]) => ({ id, t })) }] });
+  const tarjeta = (titulo, frs) => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo, modo: 'tarjeta', fragmentos: frs.map(([id, t]) => ({ id, t })) }] });
   // Texto partido por los trozos marcados: «[[Marta]] le regaló…» → fragmentos; los [[…]] reciben id m0, m1…
   function partir(texto) {
     const frs = []; let k = 0, n = 0;
@@ -68,7 +69,7 @@
     }
     return frs;
   }
-  const texto = (titulo, t) => ({ secciones: [{ id: 'o', titulo, modo: 'tarjeta', fragmentos: partir(t) }] });
+  const texto = (titulo, t) => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo, modo: 'tarjeta', fragmentos: partir(t) }] });
 
   // ---------- Idea 1: a quién se refiere (anáfora y catáfora) ----------
   // Cambia: el pronombre que se mira y el referente que se le une. Permanece: el texto de Marta.
@@ -155,7 +156,7 @@
     sus: { t: 'Este animal', nombre: 'Sustitución: otra expresión' },
     eli: { t: '( — )', nombre: 'Elipsis: se calla, se entiende' },
   };
-  const VICU = { secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'La vicuña vive en la puna, sobre los cuatro mil metros.' }, { id: 'w', hueco: true, reserva: 'Este animal' }, { id: 'b', t: 'tiene la fibra más fina del mundo.' }] }] };
+  const VICU = { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'La vicuña vive en la puna, sobre los cuatro mil metros.' }, { id: 'w', hueco: true, reserva: 'Este animal' }, { id: 'b', t: 'tiene la fibra más fina del mundo.' }] }] };
   const VICU_B = conBandeja(VICU, 'Formas de nombrarla', Object.entries(RECURSO).map(([id, r]) => ({ id, t: r.t })));
   const estVicu = (r, extra = {}) => Object.assign({ huecos: { w: RECURSO[r].t }, marcas: { a: 'i', w: 'o' }, sellos: { o: { t: r === 'rep' ? 'Repetición' : r === 'sus' ? 'Sustitución' : 'Elipsis', c: 'd' } } }, extra);
   const recursos = {
@@ -181,7 +182,7 @@
         ['Ninguna: no falta nada', 'RVC1', 'La coma marca un hueco: sin verbo, «Ana, queso» no dice qué hizo.'],
       ]),
       dibujo: { datos: tarjeta('Oración', [['a', 'Pedro'], ['v', 'compró'], ['b', 'pan y Ana,'], ['c', 'queso.']]), estado: { marcas: { b: 'o' } } },
-      revelar: { datos: { secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'Pedro' }, { id: 'v', t: 'compró' }, { id: 'b', t: 'pan y Ana' }, { id: 'w', hueco: true, reserva: '(compró)' }, { id: 'c', t: 'queso.' }] }] }, estado: { huecos: { w: '(compró)' }, marcas: { v: 'i', w: 'o' }, sellos: { o: { t: 'Elipsis del verbo', c: 'd' } } } },
+      revelar: { datos: { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'Pedro' }, { id: 'v', t: 'compró' }, { id: 'b', t: 'pan y Ana' }, { id: 'w', hueco: true, reserva: '(compró)' }, { id: 'c', t: 'queso.' }] }] }, estado: { huecos: { w: '(compró)' }, marcas: { v: 'i', w: 'o' }, sellos: { o: { t: 'Elipsis del verbo', c: 'd' } } } },
       coincide: 'Coincide: el verbo ya se dijo; callarlo evita repetirlo.',
     },
     mira: {
@@ -229,7 +230,7 @@
     c: { t: 'Hoy muchos tramos están bajo la carretera.', ok: false, dice: 'Retoma los caminos, pero la 4 no sabe quiénes son los chasquis' },
   };
   // La oración 3 cambia de texto según la candidata: va en datos (una oración larga no cabe en un hueco).
-  const figCam = c => ({ secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: CAMINO.map((t, k) => ({ id: `o${k + 1}`, t: t || CANDIDATAS[c].t })) }] });
+  const figCam = c => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: CAMINO.map((t, k) => ({ id: `o${k + 1}`, t: t || CANDIDATAS[c].t })) }] });
   // El juego agrega, sobre el texto, las tres candidatas como fichas; «Mira» usa el texto solo, con la candidata A ya
   // puesta (hallazgo 9: es el mismo texto que el alumno armó, sin la bandeja).
   const figCamB = c => conBandeja(figCam(c), 'Candidatas', Object.entries(CANDIDATAS).map(([id, x]) => ({ id, t: x.t })));
@@ -256,8 +257,8 @@
         ['Los rebaños comen todo el día.', 'RV28', 'Adelanta los rebaños, pero no dice qué tiene que ver la puna.'],
         ['La puna está sobre los cuatro mil metros.', 'RV28', 'Es un dato de la puna; el «por eso» necesita una razón para llevar rebaños.'],
       ]),
-      dibujo: { datos: { secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: [{ id: 'o1', t: 'El ichu crece en la puna.' }, { id: 'o2', hueco: true, reserva: '¿?' }, { id: 'o3', t: 'Por eso, los criadores llevan allí a sus rebaños.' }] }] }, estado: {} },
-      revelar: { datos: { secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: [{ id: 'o1', t: 'El ichu crece en la puna.' }, { id: 'o2', t: 'Es el principal alimento de llamas y alpacas.' }, { id: 'o3', t: 'Por eso, los criadores llevan allí a sus rebaños.' }] }] }, estado: { marcas: { o1: 'i', o2: 'o', o3: 'i' }, sellos: { o: { t: 'El hilo sigue', c: 'i' } } } },
+      dibujo: { datos: { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: [{ id: 'o1', t: 'El ichu crece en la puna.' }, { id: 'o2', hueco: true, reserva: '¿?' }, { id: 'o3', t: 'Por eso, los criadores llevan allí a sus rebaños.' }] }] }, estado: {} },
+      revelar: { datos: { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: [{ id: 'o1', t: 'El ichu crece en la puna.' }, { id: 'o2', t: 'Es el principal alimento de llamas y alpacas.' }, { id: 'o3', t: 'Por eso, los criadores llevan allí a sus rebaños.' }] }] }, estado: { marcas: { o1: 'i', o2: 'o', o3: 'i' }, sellos: { o: { t: 'El hilo sigue', c: 'i' } } } },
       coincide: 'Coincide: retoma el ichu y da la razón que el «por eso» necesita.',
     },
     mira: {
@@ -284,7 +285,7 @@
           { o: ['En 1911, Hiram Bingham llegó a Machu Picchu.', null, 'Desde entonces, el lugar se volvió famoso en el mundo.'], ok: 'Publicó fotos que mostraron la ciudadela al mundo.', m: [['Machu Picchu está en Cusco.', 'RV28', 'Es un dato del lugar, pero no explica el «desde entonces».'], ['Hoy llegan miles de turistas.', 'RV28', 'Adelanta el efecto antes de su causa.'], ['Bingham era profesor.', 'RV28', 'Habla de Bingham, pero no de lo que lo hizo famoso.']] },
         ];
         const b = B[s % B.length];
-        const datos = { secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: b.o.map((t, k) => (t ? { id: `o${k + 1}`, t } : { id: `o${k + 1}`, hueco: true, reserva: '¿?' })) }] };
+        const datos = { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: b.o.map((t, k) => (t ? { id: `o${k + 1}`, t } : { id: `o${k + 1}`, hueco: true, reserva: '¿?' })) }] };
         return {
           pregunta: `¿Qué oración debe ir en el espacio para que el texto mantenga su hilo?`,
           dibujo: { datos, estado: {} },
@@ -300,7 +301,7 @@
   // Progresa: de contradicción a texto coherente. Se reserva: el texto con conectores y sin sentido (predicción).
   // Debe verse: que con «todos» las dos oraciones no pueden ser verdad a la vez.
   const CUANT = { todos: { t: 'Todos los alumnos aprobaron el examen.', ok: false }, mayoria: { t: 'La mayoría de los alumnos aprobaron el examen.', ok: true }, casi: { t: 'Casi todos los alumnos aprobaron el examen.', ok: true } };
-  const figExa = k => ({ secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: [{ id: 'a', t: CUANT[k].t }, { id: 'b', t: 'Sin embargo, tres alumnos lo desaprobaron.' }] }] });
+  const figExa = k => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: [{ id: 'a', t: CUANT[k].t }, { id: 'b', t: 'Sin embargo, tres alumnos lo desaprobaron.' }] }] });
   const figExaB = k => conBandeja(figExa(k), 'Cantidad', [['todos', 'Todos'], ['mayoria', 'La mayoría'], ['casi', 'Casi todos']].map(([id, t]) => ({ id, t })));
   const estExa = (k, extra = {}) => Object.assign({ marcas: { a: CUANT[k].ok ? 'i' : 'h', b: CUANT[k].ok ? 'i' : 'h' }, sellos: { o: CUANT[k].ok ? { t: 'Coherente', c: 'i' } : { t: 'Se contradice', c: 'h' } } }, extra);
   const noContradiccion = {
@@ -331,7 +332,7 @@
     },
     mira: {
       // Las dos versiones, una sobre otra: la línea de tiempo compara sin cambiar de figura.
-      datos: { secciones: [
+      datos: { esquinaLibre: true, secciones: [
         { id: 'v1', titulo: 'Con «todos»', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: CUANT.todos.t }, { id: 'c1', t: 'Sin embargo,' }, { id: 'b1', t: 'tres alumnos lo desaprobaron.' }] },
         { id: 'v2', titulo: 'Con «la mayoría»', modo: 'tarjeta', fragmentos: [{ id: 'a2', t: CUANT.mayoria.t }, { id: 'c2', t: 'Sin embargo,' }, { id: 'b2', t: 'tres alumnos lo desaprobaron.' }] },
       ] },

@@ -36,17 +36,18 @@
   const mover = (orden, j, r) => { const x = orden.filter(i => i !== j); x.splice(r, 0, j); return x; };
   // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
   const corto = (fn, t) => {
-    if (t.length <= 26) return fn(t);
+    // El trozo de color no se parte: con 14 letras o menos cabe en la miniatura de un caso guardado del laboratorio.
+    if (t.length <= 14) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
-    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    if (k && k <= 14) return [fn(t.slice(0, k)), t.slice(k)];
     const ps = t.split(' '); let n = 1;
-    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 14) n++;
     return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
   };
   const bien = t => ({ v: 'c-i', t }), pide = t => ({ v: 'c-o', t }), marca = t => ({ v: 'c-d', t }), roto = t => ({ v: 'c-h', t });
   // Oraciones con lo que necesitan antes: { t, necesita: [índices] }. Un orden es una lista de índices.
   const rotos = (ors, orden) => orden.filter((j, k) => (ors[j].necesita || []).some(n => !orden.slice(0, k).includes(n)));
-  const figura = (titulo, ors, orden) => ({ secciones: [{ id: 'o', titulo, modo: 'lista', fragmentos: orden.map(j => ({ id: `s${j}`, t: ors[j].t })) }] });
+  const figura = (titulo, ors, orden) => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo, modo: 'lista', fragmentos: orden.map(j => ({ id: `s${j}`, t: ors[j].t })) }] });
   const estado = (ors, orden, extra = {}) => {
     const r = rotos(ors, orden), marcas = {};
     orden.forEach(j => { marcas[`s${j}`] = r.includes(j) ? 'h' : 'i'; });

@@ -16,6 +16,8 @@
  *                                     // caja: false lo deja sin recuadro y en letra normal (texto que cambia, no hueco)
  *   }],
  *   numerar: false,                   // en párrafo, antepone (1), (2)… a cada fragmento
+ *   esquinaLibre: false,              // la primera sección pone su sello en un renglón propio, a la izquierda, y deja
+ *                                     // libre la esquina de arriba a la derecha (el botón de lupa de la teoría)
  * }
  * estado = {
  *   marcas:  { f1: 'i' },             // subrayado de 3 px y fondo tenue. Trazo distinto por color (no solo color):
@@ -84,19 +86,24 @@
   function disponer(d) {
     const out = [];
     let y = PAD + 4, k = 0;
-    for (const sec of d.secciones || []) {
+    for (const [si, sec] of (d.secciones || []).entries()) {
       const tarjeta = sec.modo === 'tarjeta';
       const x0 = PAD + (tarjeta ? PAD_T : 0), ancho = W - 2 * PAD - (tarjeta ? 2 * PAD_T : 0);
       const top = y;
       if (tarjeta) y += PAD_T;
       let cab = null;
       if (sec.titulo) { cab = { x: x0, y: y + 17, texto: sec.titulo }; y += LH; }
+      // Con esquinaLibre, la primera sección deja la esquina de arriba a la derecha (ahí va el botón de lupa del
+      // lector) y su sello va en un renglón propio bajo la cabecera, a la izquierda. El renglón se reserva siempre,
+      // con o sin sello, para que el alto siga dependiendo solo de los datos.
+      let selloY = null;
+      if (d.esquinaLibre && si === 0) { selloY = y + 2; y += LH; }
       // Cada lista numera desde 1; con numerar, los (1), (2)… del párrafo siguen de una sección a otra.
       const c = componer(sec, x0, ancho, y + 18, d.numerar, d.numerar && sec.modo !== 'lista' ? k : 0);
       if (d.numerar && sec.modo !== 'lista') k = c.k;
       y += c.alto;
       if (tarjeta) y += PAD_T - 4;
-      out.push({ sec, top, bottom: y, cab, trozos: c.trozos, tarjeta });
+      out.push({ sec, top, bottom: y, cab, trozos: c.trozos, tarjeta, selloY, x0 });
       y += SEP;
     }
     return { secciones: out, alto: Math.max(60, y - SEP + PAD) };
@@ -113,7 +120,7 @@
       const sello = sellos[s.sec.id];
       if (sello) {
         const c = COLORES.includes(sello.c) ? sello.c : null, w = T.ancho(sello.t, 14, 700) + 16;
-        const x = W - PAD - (s.tarjeta ? 6 : 0) - w, y = s.top + (s.tarjeta ? 6 : 0);
+        const x = s.selloY !== null ? s.x0 : W - PAD - (s.tarjeta ? 6 : 0) - w, y = s.selloY !== null ? s.selloY : s.top + (s.tarjeta ? 6 : 0);
         encima += `<g class="rv-sello${nuevo.has(s.sec.id) ? ' kit-nuevo kit-aparece' : ''}"><rect x="${T.n(x)}" y="${T.n(y)}" width="${T.n(w)}" height="22" rx="11" fill="var(--card)" stroke="${T.color(c)}" stroke-width="${T.GROSOR.contorno}"/>`
           + `<text x="${T.n(x + w / 2)}" y="${T.n(y + 16)}" fill="${T.color(c)}" font-size="14" font-weight="700" text-anchor="middle">${T.esc(sello.t)}</text></g>`;
       }

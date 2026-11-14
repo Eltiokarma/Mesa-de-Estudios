@@ -28,7 +28,7 @@
   // sobre el número del par (rv-texto.ancla) y salta al más cercano al dedo (rv-texto.cercana). Los botones del
   // control «p» son la alternativa sin arrastre.
   const RV = () => Kit.piezas['rv-texto'];
-  const conBandeja = (datos, items, titulo = 'Pares para probar') => ({ secciones: datos.secciones.concat([{ id: 'bandeja', titulo, modo: 'lista', fragmentos: items }]) });
+  const conBandeja = (datos, items, titulo = 'Pares para probar') => ({ esquinaLibre: true, secciones: datos.secciones.concat([{ id: 'bandeja', titulo, modo: 'lista', fragmentos: items }]) });
   const ficha = (datosDe, ids, etiqueta = 'ficha del par que se prueba') => ({
     id: 'ficha', etiqueta, color: 'c-o',
     donde: val => RV().ancla(datosDe(val), val.p),
@@ -38,11 +38,12 @@
   const conFicha = (estado, id) => Object.assign({}, estado, { marcas: Object.assign({}, estado.marcas, { [id]: 'o' }) });
   // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
   const corto = (fn, t) => {
-    if (t.length <= 26) return fn(t);
+    // El trozo de color no se parte: con 14 letras o menos cabe en la miniatura de un caso guardado del laboratorio.
+    if (t.length <= 14) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
-    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    if (k && k <= 14) return [fn(t.slice(0, k)), t.slice(k)];
     const ps = t.split(' '); let n = 1;
-    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 14) n++;
     return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
   };
   const base = t => ({ v: 'c-i', t }), prueba = t => ({ v: 'c-o', t }), rel = t => ({ v: 'c-d', t }), mal = t => ({ v: 'c-h', t });
@@ -52,7 +53,7 @@
   // Figura: el par base arriba y, debajo, la oración puente con el par que se prueba en los huecos.
   //   puente(a, b) → [antes, entre, después]: «Un {a} trabaja con un {b} como herramienta.»
   function figura(par, partes, reserva) {
-    return {
+    return { esquinaLibre: true,
       secciones: [
         { id: 'base', titulo: 'Par base', modo: 'tarjeta', fragmentos: [{ id: 'pb', t: `${par[0]} : ${par[1]}` }] },
         { id: 'puente', titulo: 'Oración puente', modo: 'parrafo', fragmentos: [
@@ -137,7 +138,7 @@
         const b = B[s % B.length];
         return {
           pregunta: '¿Qué par guarda la misma relación que el par base, en el mismo orden?',
-          dibujo: { datos: { secciones: [{ id: 'base', titulo: 'Par base', modo: 'tarjeta', fragmentos: [{ id: 'pb', t: b.base }] }] }, estado: { marcas: { pb: 'i' } } },
+          dibujo: { datos: { esquinaLibre: true, secciones: [{ id: 'base', titulo: 'Par base', modo: 'tarjeta', fragmentos: [{ id: 'pb', t: b.base }] }] }, estado: { marcas: { pb: 'i' } } },
           opciones: opciones(b.ok, voltear(b.m, s)),
           solucion: { texto: 'La misma oración puente vale para los dos pares, en el mismo orden.', ecuacion: [base(b.base), ' :: ', prueba(b.ok)] },
         };
@@ -161,11 +162,11 @@
     const fr = pre => [
       { id: `${pre}0`, hueco: true, caja: false, reserva: 'Todo' }, { id: `${pre}a`, hueco: true, reserva: 'mamífero' },
       { id: `${pre}1`, hueco: true, caja: false, reserva: 'producen el' }, { id: `${pre}b`, hueco: true, reserva: 'mamífero' }];
-    return { secciones: [{ id: 'ida', titulo: 'En este orden', modo: 'tarjeta', fragmentos: fr('i') }, { id: 'vuelta', titulo: 'Al revés', modo: 'tarjeta', fragmentos: fr('v') }] };
+    return { esquinaLibre: true, secciones: [{ id: 'ida', titulo: 'En este orden', modo: 'tarjeta', fragmentos: fr('i') }, { id: 'vuelta', titulo: 'Al revés', modo: 'tarjeta', fragmentos: fr('v') }] };
   }
   // La bandeja va arriba: así el sello de la primera tarjeta no queda bajo el botón de la lupa. «Mira» usa esta misma
   // figura (hallazgo 9): el alumno ve el dibujo que movió.
-  const figDosB = () => ({ secciones: [{ id: 'bandeja', titulo: 'Pares base', modo: 'lista', fragmentos: Object.entries(PARES).map(([id, p]) => ({ id, t: `${p.par[0]} : ${p.par[1]}` })) }].concat(figDos().secciones) });
+  const figDosB = () => ({ esquinaLibre: true, secciones: [{ id: 'bandeja', titulo: 'Pares base', modo: 'lista', fragmentos: Object.entries(PARES).map(([id, p]) => ({ id, t: `${p.par[0]} : ${p.par[1]}` })) }].concat(figDos().secciones) });
   const estadoDos = (p, extra = {}) => Object.assign({
     huecos: { i0: p.partes[0], ia: p.ida[0], i1: p.partes[1], ib: p.ida[1], v0: (p.partesV || p.partes)[0], va: p.vuelta[0], v1: (p.partesV || p.partes)[1], vb: p.vuelta[1] },
     marcas: { ia: 'i', ib: 'i', i0: 'd', i1: 'd', va: 'h', vb: 'h' },
@@ -226,7 +227,7 @@
         const b = B[s % B.length];
         return {
           pregunta: '¿Qué par guarda la misma relación que el par base, en el mismo orden?',
-          dibujo: { datos: { secciones: [{ id: 'base', titulo: 'Par base', modo: 'tarjeta', fragmentos: [{ id: 'pb', t: b.base }] }] }, estado: { marcas: { pb: 'i' } } },
+          dibujo: { datos: { esquinaLibre: true, secciones: [{ id: 'base', titulo: 'Par base', modo: 'tarjeta', fragmentos: [{ id: 'pb', t: b.base }] }] }, estado: { marcas: { pb: 'i' } } },
           opciones: opciones(b.ok, voltear(b.m, s)),
           solucion: { texto: 'Misma relación y mismo orden: la oración puente vale para los dos.', ecuacion: [base(b.base), ' :: ', prueba(b.ok)] },
         };
@@ -299,7 +300,7 @@
         const b = B[s % B.length];
         return {
           pregunta: '¿Qué par guarda la misma relación que el par base?',
-          dibujo: { datos: { secciones: [{ id: 'base', titulo: 'Par base', modo: 'tarjeta', fragmentos: [{ id: 'pb', t: b.base }] }] }, estado: { marcas: { pb: 'i' } } },
+          dibujo: { datos: { esquinaLibre: true, secciones: [{ id: 'base', titulo: 'Par base', modo: 'tarjeta', fragmentos: [{ id: 'pb', t: b.base }] }] }, estado: { marcas: { pb: 'i' } } },
           opciones: opciones(b.ok, voltear(b.m, s)),
           solucion: { texto: 'Se nombra el rasgo y se mira si comparten o se oponen en él.', ecuacion: [base(b.base), ' :: ', prueba(b.ok)] },
         };
@@ -331,7 +332,7 @@
   };
   const veredicto = (r, k) => { const f = FICHAS[k]; return f.rel !== r ? 'no' : f.alReves ? 'reves' : 'si'; };
   // Las fichas van arriba y la oración debajo: el sello de la oración no choca con el botón de la lupa.
-  const figTaller = r => ({ secciones: [
+  const figTaller = r => ({ esquinaLibre: true, secciones: [
     { id: 'bandeja', titulo: 'Fichas', modo: 'lista', fragmentos: Object.entries(FICHAS).map(([id, f]) => ({ id, t: `${f.a} : ${f.b}` })) },
     { id: 'puente', titulo: 'Oración puente', modo: 'tarjeta', fragmentos: [
       { id: 'a', hueco: true, reserva: 'cirujano' }, { id: 'p1', t: RELS[r].partes[1] }, { id: 'b', hueco: true, reserva: 'incendio' }] },

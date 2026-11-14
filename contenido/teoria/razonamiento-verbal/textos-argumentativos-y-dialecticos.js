@@ -27,11 +27,12 @@
   // alternativa sin arrastre. Cada idea traduce la oración elegida al valor de su control.
   const RV = () => Kit.piezas['rv-texto'];
   const corto = (fn, t) => {
-    if (t.length <= 26) return fn(t);
+    // El trozo de color no se parte: con 14 letras o menos cabe en la miniatura de un caso guardado del laboratorio.
+    if (t.length <= 14) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
-    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    if (k && k <= 14) return [fn(t.slice(0, k)), t.slice(k)];
     const ps = t.split(' '); let n = 1;
-    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 14) n++;
     return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
   };
   const razon = t => ({ v: 'c-i', t }), tesis = t => ({ v: 'c-o', t }), cuestion = t => ({ v: 'c-d', t }), objecion = t => ({ v: 'c-h', t });
@@ -53,13 +54,13 @@
       consigna: 'Arrastra el marcador por las oraciones y mira qué papel cumple cada una: tesis, razón, conclusión u objeción.',
       voz: 'No todo lo que aparece en el texto lo defiende el autor.',
       controles: [{ id: 'k', etiqueta: 'Marca', opciones: [1, 2, 3, 4, 5].map(k => ({ valor: k, texto: `${k}` })) }],
-      dibujo: val => ({ datos: { secciones: [lista('Texto', CEL)] }, estado: { marcas: { [`o${val.k}`]: ROL[val.k][1] }, sellos: { o: { t: ROL[val.k][0].split(':')[0], c: ROL[val.k][1] } } } }),
+      dibujo: val => ({ datos: { esquinaLibre: true, secciones: [lista('Texto', CEL)] }, estado: { marcas: { [`o${val.k}`]: ROL[val.k][1] }, sellos: { o: { t: ROL[val.k][0].split(':')[0], c: ROL[val.k][1] } } } }),
       lectura: val => [corto(ROL[val.k][1] === 'h' ? objecion : ROL[val.k][1] === 'o' ? tesis : razon, ROL[val.k][0])],
       minimo: 3,
       arrastres: [{
         id: 'frase', etiqueta: 'marcador de la oración', color: 'c-o',
-        donde: val => RV().ancla({ secciones: [lista('Texto', CEL)] }, `o${val.k}`),
-        mover: pt => ({ k: +RV().cercana({ secciones: [lista('Texto', CEL)] }, pt, CEL.map((_, j) => `o${j + 1}`)).slice(1) }),
+        donde: val => RV().ancla({ esquinaLibre: true, secciones: [lista('Texto', CEL)] }, `o${val.k}`),
+        mover: pt => ({ k: +RV().cercana({ esquinaLibre: true, secciones: [lista('Texto', CEL)] }, pt, CEL.map((_, j) => `o${j + 1}`)).slice(1) }),
       }],
     },
     predice: {
@@ -70,12 +71,12 @@
         ['Algunos padres lo encuentran caro', 'RV42', 'Es un detalle que el autor reconoce, no su tesis.'],
         ['Los alumnos deben opinar', 'RV7', 'El texto no lo dice.'],
       ]),
-      dibujo: { datos: { secciones: [lista('Texto', ['Se dice que el uniforme quita libertad a los alumnos.', 'Es cierto que algunos padres lo encuentran caro.', 'Pero el uniforme ayuda a que nadie se sienta menos por su ropa.', 'Por eso, conviene mantenerlo.'])] }, estado: {} },
-      revelar: { datos: { secciones: [lista('Texto', ['Se dice que el uniforme quita libertad a los alumnos.', 'Es cierto que algunos padres lo encuentran caro.', 'Pero el uniforme ayuda a que nadie se sienta menos por su ropa.', 'Por eso, conviene mantenerlo.'])] }, estado: { marcas: { o1: 'h', o2: 'i', o3: 'o', o4: 'o' }, sellos: { o: { t: 'Tesis: la 3', c: 'o' } } } },
+      dibujo: { datos: { esquinaLibre: true, secciones: [lista('Texto', ['Se dice que el uniforme quita libertad a los alumnos.', 'Es cierto que algunos padres lo encuentran caro.', 'Pero el uniforme ayuda a que nadie se sienta menos por su ropa.', 'Por eso, conviene mantenerlo.'])] }, estado: {} },
+      revelar: { datos: { esquinaLibre: true, secciones: [lista('Texto', ['Se dice que el uniforme quita libertad a los alumnos.', 'Es cierto que algunos padres lo encuentran caro.', 'Pero el uniforme ayuda a que nadie se sienta menos por su ropa.', 'Por eso, conviene mantenerlo.'])] }, estado: { marcas: { o1: 'h', o2: 'i', o3: 'o', o4: 'o' }, sellos: { o: { t: 'Tesis: la 3', c: 'o' } } } },
       coincide: 'Coincide: «pero» marca la postura del autor frente a lo que se dice.',
     },
     mira: {
-      datos: { secciones: [lista('Texto', CEL)] },
+      datos: { esquinaLibre: true, secciones: [lista('Texto', CEL)] },
       pasos: [
         { estado: { marcas: { o1: 'h' } }, texto: '«Algunos dicen» cita una postura ajena: es una objeción.', ecuacion: [objecion('algunos dicen'), ' = otros'] },
         { estado: { marcas: { o1: 'h', o2: 'o' }, nuevo: ['o2'] }, texto: '«Sin embargo» abre la postura del autor: la tesis.', ecuacion: [tesis('sin embargo'), ' → tesis'] },
@@ -100,7 +101,7 @@
         const b = B[s % B.length];
         return {
           pregunta: '¿Cuál es la tesis del autor?',
-          dibujo: { datos: { secciones: [lista('Texto', b.o)] }, estado: {} },
+          dibujo: { datos: { esquinaLibre: true, secciones: [lista('Texto', b.o)] }, estado: {} },
           opciones: opciones(b.ok, voltear(b.m, s)),
           solucion: { texto: 'Se separa lo que el autor cita de lo que sostiene.', ecuacion: [objecion('lo citado'), ' ≠ ', tesis('tesis')] },
         };
@@ -114,7 +115,7 @@
   // Debe verse: que comparten un dato y se oponen en la propuesta.
   const A = ['El tráfico del centro creció mucho este año.', 'Hay que prohibir los autos los domingos.'];
   const Bt = ['Es cierto: el tráfico del centro creció.', 'Pero prohibir autos dañaría a los comerciantes; mejor más buses.'];
-  const figAB = () => ({ secciones: [lista('Texto A', A, 'A', 'a'), lista('Texto B', Bt, 'B', 'b')] });
+  const figAB = () => ({ esquinaLibre: true, secciones: [lista('Texto A', A, 'A', 'a'), lista('Texto B', Bt, 'B', 'b')] });
   const MIRA = {
     cuestion: { marcas: { a2: 'd', b2: 'd' }, sellos: { A: { t: '¿Qué hacer?', c: 'd' } }, dice: 'Cuestión: qué hacer con el tráfico' },
     a: { marcas: { a2: 'o' }, sellos: { A: { t: 'Postura de A', c: 'o' } }, dice: 'A: prohibir autos los domingos' },
@@ -148,8 +149,8 @@
         ['Que los alumnos deben comer sano', 'RV61', 'En eso coinciden; la discusión está en otra parte.'],
         ['Que el huerto quita horas de clase', 'RV60', 'Es el argumento de B, no la cuestión.'],
       ]),
-      dibujo: { datos: { secciones: [lista('Texto A', ['Los alumnos deben comer sano.', 'Un huerto en el colegio enseña ciencias y da verduras.'], 'A', 'a'), lista('Texto B', ['Comer sano es importante, sin duda.', 'Pero el huerto quita horas de clase; mejor un convenio con la feria.'], 'B', 'b')] }, estado: {} },
-      revelar: { datos: { secciones: [lista('Texto A', ['Los alumnos deben comer sano.', 'Un huerto en el colegio enseña ciencias y da verduras.'], 'A', 'a'), lista('Texto B', ['Comer sano es importante, sin duda.', 'Pero el huerto quita horas de clase; mejor un convenio con la feria.'], 'B', 'b')] }, estado: { marcas: { a1: 'i', b1: 'i', a2: 'o', b2: 'o' }, sellos: { A: { t: 'Sí al huerto', c: 'o' }, B: { t: 'No al huerto', c: 'o' } } } },
+      dibujo: { datos: { esquinaLibre: true, secciones: [lista('Texto A', ['Los alumnos deben comer sano.', 'Un huerto en el colegio enseña ciencias y da verduras.'], 'A', 'a'), lista('Texto B', ['Comer sano es importante, sin duda.', 'Pero el huerto quita horas de clase; mejor un convenio con la feria.'], 'B', 'b')] }, estado: {} },
+      revelar: { datos: { esquinaLibre: true, secciones: [lista('Texto A', ['Los alumnos deben comer sano.', 'Un huerto en el colegio enseña ciencias y da verduras.'], 'A', 'a'), lista('Texto B', ['Comer sano es importante, sin duda.', 'Pero el huerto quita horas de clase; mejor un convenio con la feria.'], 'B', 'b')] }, estado: { marcas: { a1: 'i', b1: 'i', a2: 'o', b2: 'o' }, sellos: { A: { t: 'Sí al huerto', c: 'o' }, B: { t: 'No al huerto', c: 'o' } } } },
       coincide: 'Coincide: los dos quieren que coman sano; discuten si el huerto es el camino.',
     },
     mira: {
@@ -177,7 +178,7 @@
         const b = B[s % B.length];
         return {
           pregunta: `En este debate entre A y B, ¿cuál es ${b.pide === 'cuestión' ? 'la cuestión que discuten' : b.pide === 'punto común' ? 'el punto en que coinciden' : `la ${b.pide}`}?`,
-          dibujo: { datos: { secciones: [lista('Texto A', b.a, 'A', 'a'), lista('Texto B', b.b, 'B', 'b')] }, estado: {} },
+          dibujo: { datos: { esquinaLibre: true, secciones: [lista('Texto A', b.a, 'A', 'a'), lista('Texto B', b.b, 'B', 'b')] }, estado: {} },
           opciones: opciones(b.ok, voltear(b.m, s)),
           solucion: { texto: 'Se separa lo que comparten, lo que cada uno propone y la pregunta de fondo.', ecuacion: [cuestion('cuestión'), '   ·   ', tesis('A'), '   ·   ', tesis('B')] },
         };
@@ -188,7 +189,7 @@
   // ---------- Idea 3: tesis, antítesis y síntesis ----------
   // Cambia: la propuesta de cierre. Permanece: la tesis y la antítesis. Progresa: qué cierre integra, cuál repite y
   // cuál inventa un acuerdo. Se reserva: el debate que no necesita síntesis (predicción). Debe verse: qué toma de cada lado.
-  const TAS = { secciones: [
+  const TAS = { esquinaLibre: true, secciones: [
     { id: 't', titulo: 'Tesis', modo: 'tarjeta', fragmentos: [{ id: 't1', t: 'El celular debe prohibirse en clase: distrae.' }] },
     { id: 'a', titulo: 'Antítesis', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: 'El celular debe permitirse: es una herramienta.' }] },
   ] };
@@ -197,7 +198,7 @@
     repite: { t: 'El celular debe prohibirse en clase.', marcas: { t1: 'i', a1: 'h', s1: 'h' }, sello: ['Repite la tesis', 'h'], dice: 'Repite la tesis: borra la antítesis' },
     junta: { t: 'El celular distrae y es una herramienta.', marcas: { t1: 'd', a1: 'd', s1: 'd' }, sello: ['Solo las junta', 'd'], dice: 'Junta las dos sin resolver nada' },
   };
-  const figTAS = k => ({ secciones: [...TAS.secciones, { id: 's', titulo: 'Síntesis', modo: 'tarjeta', fragmentos: [{ id: 's1', t: CIERRE[k].t }] }] });
+  const figTAS = k => ({ esquinaLibre: true, secciones: [...TAS.secciones, { id: 's', titulo: 'Síntesis', modo: 'tarjeta', fragmentos: [{ id: 's1', t: CIERRE[k].t }] }] });
   const dialectica = {
     id: 'tesis-antitesis-sintesis',
     titulo: 'Tesis, antítesis y síntesis',
@@ -219,8 +220,8 @@
         ['Sí: si no, el texto está incompleto', 'RVD5', 'Un texto dialéctico puede presentar posturas sin conciliarlas.'],
         ['No: gana el que habla último', 'RV33', 'El orden no decide quién tiene razón.'],
       ]),
-      dibujo: { datos: { secciones: [{ id: 't', titulo: 'Autor A', modo: 'tarjeta', fragmentos: [{ id: 't1', t: 'La represa dará agua para riego todo el año.' }] }, { id: 'a', titulo: 'Autor B', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: 'La represa inundará tierras de cultivo.' }] }] }, estado: {} },
-      revelar: { datos: { secciones: [{ id: 't', titulo: 'Autor A', modo: 'tarjeta', fragmentos: [{ id: 't1', t: 'La represa dará agua para riego todo el año.' }] }, { id: 'a', titulo: 'Autor B', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: 'La represa inundará tierras de cultivo.' }] }] }, estado: { marcas: { t1: 'o', a1: 'o' }, sellos: { t: { t: 'Razonable', c: 'i' }, a: { t: 'Razonable', c: 'i' } } } },
+      dibujo: { datos: { esquinaLibre: true, secciones: [{ id: 't', titulo: 'Autor A', modo: 'tarjeta', fragmentos: [{ id: 't1', t: 'La represa dará agua para riego todo el año.' }] }, { id: 'a', titulo: 'Autor B', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: 'La represa inundará tierras de cultivo.' }] }] }, estado: {} },
+      revelar: { datos: { esquinaLibre: true, secciones: [{ id: 't', titulo: 'Autor A', modo: 'tarjeta', fragmentos: [{ id: 't1', t: 'La represa dará agua para riego todo el año.' }] }, { id: 'a', titulo: 'Autor B', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: 'La represa inundará tierras de cultivo.' }] }] }, estado: { marcas: { t1: 'o', a1: 'o' }, sellos: { t: { t: 'Razonable', c: 'i' }, a: { t: 'Razonable', c: 'i' } } } },
       coincide: 'Coincide: un debate puede quedar abierto si ambas posturas tienen razones.',
     },
     mira: {
@@ -248,7 +249,7 @@
         const b = B[s % B.length];
         return {
           pregunta: '¿Qué propuesta funciona como síntesis de la tesis y la antítesis?',
-          dibujo: { datos: { secciones: [{ id: 't', titulo: 'Tesis', modo: 'tarjeta', fragmentos: [{ id: 't1', t: b.t }] }, { id: 'a', titulo: 'Antítesis', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: b.a }] }] }, estado: {} },
+          dibujo: { datos: { esquinaLibre: true, secciones: [{ id: 't', titulo: 'Tesis', modo: 'tarjeta', fragmentos: [{ id: 't1', t: b.t }] }, { id: 'a', titulo: 'Antítesis', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: b.a }] }] }, estado: {} },
           opciones: opciones(b.ok, voltear(b.m, s)),
           solucion: { texto: 'Toma una razón válida de cada lado en una propuesta nueva.', ecuacion: [tesis('tesis'), ' + ', tesis('antítesis'), ' → ', razon('síntesis')] },
         };
@@ -263,7 +264,7 @@
   // dice si en esa fila coinciden o se oponen.
   const B_DATO = { acepta: 'Es cierto: el tráfico del centro creció.', niega: 'No es cierto: el tráfico del centro no creció.' };
   const B_PROP = { prohibir: 'Igual que A, propongo prohibir los autos los domingos.', buses: 'Propongo otra cosa: más buses, sin prohibir autos.' };
-  const figDeb = val => ({ secciones: [lista('Texto A', A, 'A', 'a'), lista('Texto B', [B_DATO[val.dato], B_PROP[val.prop]], 'B', 'b')] });
+  const figDeb = val => ({ esquinaLibre: true, secciones: [lista('Texto A', A, 'A', 'a'), lista('Texto B', [B_DATO[val.dato], B_PROP[val.prop]], 'B', 'b')] });
   const difiere = val => ({ 1: val.dato === 'niega', 2: val.prop === 'buses' });
   const tipoDebate = val => {
     const d = difiere(val);

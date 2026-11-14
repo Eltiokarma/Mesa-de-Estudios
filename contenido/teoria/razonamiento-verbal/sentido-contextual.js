@@ -27,7 +27,7 @@
   // más cercana al dedo (rv-texto.cercana); los botones del control son la alternativa sin arrastre.
   const RV = () => Kit.piezas['rv-texto'];
   const banco = (ws, titulo = 'Prueba con') => ({ id: 'banco', titulo, modo: 'parrafo', fragmentos: ws.map(w => ({ id: `p-${w}`, t: w })) });
-  const conBanco = (datos, ws, titulo) => ({ secciones: datos.secciones.concat([banco(ws, titulo)]) });
+  const conBanco = (datos, ws, titulo) => ({ esquinaLibre: true, secciones: datos.secciones.concat([banco(ws, titulo)]) });
   // Manija sobre el banco: mueve el control `id` (sus valores son las palabras del banco).
   const tomaPalabra = (id, datosDe, ws, etiqueta) => ({
     id: 'palabra', etiqueta, color: 'c-o',
@@ -36,11 +36,12 @@
   });
   // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
   const corto = (fn, t) => {
-    if (t.length <= 26) return fn(t);
+    // El trozo de color no se parte: con 14 letras o menos cabe en la miniatura de un caso guardado del laboratorio.
+    if (t.length <= 14) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
-    if (k && k <= 24) return [fn(t.slice(0, k)), t.slice(k)];
+    if (k && k <= 14) return [fn(t.slice(0, k)), t.slice(k)];
     const ps = t.split(' '); let n = 1;
-    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 18) n++;
+    while (n < ps.length && ps.slice(0, n + 1).join(' ').length <= 14) n++;
     return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
   };
   const pista = t => ({ v: 'c-i', t }), palabra = t => ({ v: 'c-o', t }), rasgo = t => ({ v: 'c-d', t }), mal = t => ({ v: 'c-h', t });
@@ -50,14 +51,14 @@
   //   oracion([['El agua del'], ['lago', 'pista'], ['estaba'], null, ['.']], 'distante')
   function oracion(partes, reserva, titulo = 'Oración') {
     let k = 0;
-    return { secciones: [{ id: 'o', titulo, modo: 'tarjeta', fragmentos: partes.map(p => (p === null ? { id: 'w', hueco: true, reserva } : { id: `t${k++}`, t: p[0], pista: p[1] === 'pista' })) }] };
+    return { esquinaLibre: true, secciones: [{ id: 'o', titulo, modo: 'tarjeta', fragmentos: partes.map(p => (p === null ? { id: 'w', hueco: true, reserva } : { id: `t${k++}`, t: p[0], pista: p[1] === 'pista' })) }] };
   }
   const pistas = datos => datos.secciones[0].fragmentos.filter(f => f.pista).map(f => f.id);
   const marcar = (datos, ids, color = 'i') => Object.fromEntries(ids.map(id => [id, color]));
   // Ahora tú: oración con la palabra subrayada (sin hueco) y las pistas sin marcar: el alumno las busca.
   function tarjeta(texto, palabraClave) {
     const [antes, despues] = texto.split(palabraClave);
-    return { datos: { secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: antes.trim() }, { id: 'w', t: palabraClave }, ...(despues.trim() ? [{ id: 'b', t: despues.trim() }] : [])] }] }, estado: { marcas: { w: 'o' } } };
+    return { datos: { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: antes.trim() }, { id: 'w', t: palabraClave }, ...(despues.trim() ? [{ id: 'b', t: despues.trim() }] : [])] }] }, estado: { marcas: { w: 'o' } } };
   }
 
   // ---------- Idea 1: la oración elige la acepción ----------
@@ -154,7 +155,7 @@
     flaca: { val: 'algo despectiva', c: 'o' },
     esquelética: { val: 'la critica', c: 'h' },
   };
-  const figPeso = () => ({ secciones: [
+  const figPeso = () => ({ esquinaLibre: true, secciones: [
     { id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'Rosa es' }, { id: 'w', hueco: true, reserva: 'esquelética' }, { id: 'b', t: 'y mide un metro setenta.' }] },
     { id: 'den', titulo: 'Lo que dice (denotación)', modo: 'parrafo', fragmentos: [{ id: 'd1', t: 'tiene poco peso para su altura' }] },
     { id: 'con', titulo: 'Cómo lo valora (connotación)', modo: 'parrafo', fragmentos: [{ id: 'c1', hueco: true, caja: false, reserva: 'algo despectiva' }] },
@@ -185,7 +186,7 @@
         ['Se vuelve una oración sin opinión', 'RVL1', 'Perseverante también opina: elogia la insistencia.'],
       ]),
       dibujo: { datos: figPeso(), estado: { huecos: { w: 'esbelta' }, tapar: ['d1', 'c1'], marcas: { w: 'o' } } },
-      revelar: { datos: { secciones: [
+      revelar: { datos: { esquinaLibre: true, secciones: [
         { id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'Pedro es' }, { id: 'w', hueco: true, reserva: 'perseverante' }, { id: 'b', t: ': insiste aunque le digan que no.' }] },
         { id: 'den', titulo: 'Lo que dice (denotación)', modo: 'parrafo', fragmentos: [{ id: 'd1', t: 'insiste en lo que quiere' }] },
         { id: 'con', titulo: 'Cómo lo valora (connotación)', modo: 'parrafo', fragmentos: [{ id: 'c1', t: 'terco lo critica; perseverante lo elogia' }] },
@@ -236,7 +237,7 @@
     pregunta: { t: 'una pregunta sobre el examen', ok: 'formuló' },
   };
   const VERBOS = ['hizo', 'redactó', 'construyó', 'formuló'];
-  const figPrec = k => ({ secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'El ingeniero' }, { id: 'w', hueco: true, reserva: 'construyó' }, { id: 'b', t: `${OBJ[k].t}.` }] }] });
+  const figPrec = k => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'El ingeniero' }, { id: 'w', hueco: true, reserva: 'construyó' }, { id: 'b', t: `${OBJ[k].t}.` }] }] });
   const figPrecB = k => conBanco(figPrec(k), VERBOS);
   const juicio = (k, v) => (v === 'hizo' ? 'vago' : OBJ[k].ok === v ? 'preciso' : 'no encaja');
   const estPrec = (k, v, extra = {}) => { const j = juicio(k, v); return Object.assign({ huecos: { w: v }, marcas: { b: 'i', w: j === 'preciso' ? 'o' : j === 'vago' ? 'd' : 'h' }, sellos: { o: { t: j === 'preciso' ? 'Preciso' : j === 'vago' ? 'Vago' : 'No encaja', c: j === 'preciso' ? 'i' : j === 'vago' ? 'd' : 'h' } } }, extra); };
@@ -265,8 +266,8 @@
         ['aprobó', 'RV23', 'Encaja con «reglamento», pero choca con «antes de aprobarlo».'],
         ['escribió', 'RV19', 'Es del mismo campo, pero la comisión lo aprueba: no dice que lo escribiera.'],
       ]),
-      dibujo: { datos: { secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'La comisión' }, { id: 'w', hueco: true, reserva: 'examinó' }, { id: 'b', t: 'el reglamento' }, { id: 'c', t: 'con cuidado antes de aprobarlo.' }] }] }, estado: {} },
-      revelar: { datos: { secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'La comisión' }, { id: 'w', hueco: true, reserva: 'examinó' }, { id: 'b', t: 'el reglamento' }, { id: 'c', t: 'con cuidado antes de aprobarlo.' }] }] }, estado: { huecos: { w: 'examinó' }, marcas: { w: 'o', c: 'i' }, sellos: { o: { t: 'Preciso', c: 'i' } } } },
+      dibujo: { datos: { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'La comisión' }, { id: 'w', hueco: true, reserva: 'examinó' }, { id: 'b', t: 'el reglamento' }, { id: 'c', t: 'con cuidado antes de aprobarlo.' }] }] }, estado: {} },
+      revelar: { datos: { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'La comisión' }, { id: 'w', hueco: true, reserva: 'examinó' }, { id: 'b', t: 'el reglamento' }, { id: 'c', t: 'con cuidado antes de aprobarlo.' }] }] }, estado: { huecos: { w: 'examinó' }, marcas: { w: 'o', c: 'i' }, sellos: { o: { t: 'Preciso', c: 'i' } } } },
       coincide: 'Coincide: «con cuidado antes de aprobarlo» pide revisar a fondo: examinar.',
     },
     mira: {
@@ -296,7 +297,7 @@
         const [antes, despues] = b.o.split('___');
         return {
           pregunta: '¿Qué palabra completa la oración con más precisión?',
-          dibujo: { datos: { secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: antes.trim() }, { id: 'w', hueco: true, reserva: 'construyó' }, { id: 'b', t: despues.trim() }] }] }, estado: {} },
+          dibujo: { datos: { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: antes.trim() }, { id: 'w', hueco: true, reserva: 'construyó' }, { id: 'b', t: despues.trim() }] }] }, estado: {} },
           opciones: opciones(b.ok, voltear(b.m, s)),
           solucion: { texto: `«${b.ok}» encaja con todas las partes de la oración y dice más.`, ecuacion: [palabra(b.ok)] },
         };
@@ -313,7 +314,7 @@
   ];
   // La cabeza en color es corta (≤ 14 letras): así cabe también en la miniatura de un caso guardado.
   const QUE_DICE = { b: ['Plantea', ' un caso de riesgo'], c: ['Dice qué es', ': no hace daño'], d: ['Es un detalle', ': no ayuda'] };
-  const figIno = () => ({ secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: INOCUO }] });
+  const figIno = () => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: INOCUO }] });
   const inferencia = {
     id: 'inferir-significado',
     titulo: 'El significado sale de las pistas',
@@ -338,8 +339,8 @@
         ['Que es falsa', 'RV7', 'El texto no dice que no fuera real; dice que se olvidó pronto.'],
         ['Que es merecida', 'RVL4', 'Nada en la oración la juzga; solo dice cuánto duró.'],
       ]),
-      dibujo: { datos: { secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'La fama del cantante fue' }, { id: 'w', t: 'efímera:' }, { id: 'b', t: 'en un mes, ya nadie recordaba su nombre.' }] }] }, estado: { marcas: { w: 'o' } } },
-      revelar: { datos: { secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'La fama del cantante fue' }, { id: 'w', t: 'efímera:' }, { id: 'b', t: 'en un mes, ya nadie recordaba su nombre.' }] }] }, estado: { marcas: { w: 'o', b: 'i' }, sellos: { o: { t: 'Pista: en un mes', c: 'i' } } } },
+      dibujo: { datos: { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'La fama del cantante fue' }, { id: 'w', t: 'efímera:' }, { id: 'b', t: 'en un mes, ya nadie recordaba su nombre.' }] }] }, estado: { marcas: { w: 'o' } } },
+      revelar: { datos: { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'La fama del cantante fue' }, { id: 'w', t: 'efímera:' }, { id: 'b', t: 'en un mes, ya nadie recordaba su nombre.' }] }] }, estado: { marcas: { w: 'o', b: 'i' }, sellos: { o: { t: 'Pista: en un mes', c: 'i' } } } },
       coincide: 'Coincide: «en un mes, ya nadie» dice que duró poco.',
     },
     mira: {
@@ -420,7 +421,7 @@
     gasta: { o: ['El vecino es', ': gasta muy poco.'], den: 'gasta poco dinero', ws: ['ahorrativo', 'austero', 'agarrado', 'tacaño'] },
   };
   const VALOR = [['la elogia', 'i'], ['casi neutra', 'd'], ['algo despectiva', 'o'], ['la critica', 'h']];
-  const figEscala = k => { const E = ESCALA[k]; return { secciones: [
+  const figEscala = k => { const E = ESCALA[k]; return { esquinaLibre: true, secciones: [
     { id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: E.o[0] }, { id: 'w', hueco: true, reserva: 'perseverante' }, { id: 'b', t: E.o[1] }] },
     { id: 'den', titulo: 'Lo que dice', modo: 'parrafo', fragmentos: [{ id: 'd1', t: E.den }] },
     banco(E.ws, 'De elogio a crítica'),
