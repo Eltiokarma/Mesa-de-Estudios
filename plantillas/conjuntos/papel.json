@@ -26,7 +26,36 @@
         "Solo Álgebra: 23 − 10 = 13. Solo Aritmética: 19 − 10 = 9.",
         "Solo uno: 13 + 9 = 22."
       ],
-      "verificar": [ { "fn": "regiones", "args": [{ "U": 40, "A": 23, "B": 19, "ninguno": 8 }], "espera": { "regiones.AB": 10, "cardinales.exactamenteUno": 22 } } ]
+      "verificar": [ { "fn": "regiones", "args": [{ "U": 40, "A": 23, "B": 19, "ninguno": 8 }], "espera": { "regiones.AB": 10, "cardinales.exactamenteUno": 22 } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "De 40 alumnos, 23 aprobaron Álgebra, 19 aprobaron Aritmética y 8 no aprobaron ninguno de los dos cursos.",
+          "pregunta": "¿Cuántos aprobaron solo uno de los dos cursos?",
+          "decimales": 0,
+          "correcta": { "fn": "regiones", "args": [{ "U": 40, "A": 23, "B": 19, "ninguno": 8 }], "campo": "cardinales.exactamenteUno", "valor": 22 },
+          "errores": [
+            {
+              "id": "CJ-olvida-los-de-afuera",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste a los 40 como si todos aprobaran algo. Sin los 8 de afuera, al menos uno son 32, y los dos cursos, 10.",
+              "fn": "regiones",
+              "args": [{ "U": 40, "A": 23, "B": 19, "ninguno": 0 }],
+              "campo": "cardinales.exactamenteUno",
+              "valor": 38
+            },
+            {
+              "id": "CJ-da-la-union",
+              "respaldo": "hipotesis",
+              "explicacion": "Esos son los que aprobaron al menos uno. Faltó quitar a los 10 que aprobaron los dos: 13 + 9.",
+              "fn": "regiones",
+              "args": [{ "U": 40, "A": 23, "B": 19, "ninguno": 8 }],
+              "campo": "cardinales.union",
+              "valor": 32
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -51,7 +80,50 @@
         "Ninguno: 80 − 74 = 6.",
         "Control por regiones: los tres 8; Machu Picchu y Valle sin Moray 12; Machu Picchu y Moray sin Valle 7; Valle y Moray sin Machu Picchu 4; solo Machu Picchu 18; solo Valle 14; solo Moray 11. Suman 74."
       ],
-      "verificar": [ { "fn": "regiones", "args": [{ "U": 80, "A": 45, "B": 38, "C": 30, "AB": 20, "AC": 15, "BC": 12, "ABC": 8 }], "espera": { "cardinales.ninguno": 6, "cardinales.union": 74, "regiones.A": 18, "regiones.AC": 7 } } ]
+      "verificar": [ { "fn": "regiones", "args": [{ "U": 80, "A": 45, "B": 38, "C": 30, "AB": 20, "AC": 15, "BC": 12, "ABC": 8 }], "espera": { "cardinales.ninguno": 6, "cardinales.union": 74, "regiones.A": 18, "regiones.AC": 7 } } ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Un grupo de 80 turistas visitó Cusco: 45 fueron a Machu Picchu, 38 al Valle Sagrado y 30 a Moray; 20 fueron a Machu Picchu y al Valle, 15 a Machu Picchu y a Moray, 12 al Valle y a Moray (en cada uno de estos números se cuentan también los que fueron a los tres lugares), y 8 fueron a los tres.",
+          "pregunta": "¿Cuántos no fueron a ninguno de los tres lugares?",
+          "decimales": 0,
+          "correcta": {
+            "fn": "ningunoTres",
+            "args": [{ "U": 80, "A": 45, "B": 38, "C": 30, "AB": 20, "AC": 15, "BC": 12, "ABC": 8 }],
+            "campo": "respuesta",
+            "valor": 6
+          },
+          "errores": [
+            {
+              "id": "CJ-olvida-devolver-el-centro",
+              "respaldo": "hipotesis",
+              "explicacion": "Los 8 de los tres lugares se suman tres veces y se restan tres veces: hay que volver a sumarlos una vez. Al menos uno: 74.",
+              "fn": "ningunoTres",
+              "args": [{ "U": 80, "A": 45, "B": 38, "C": 30, "AB": 20, "AC": 15, "BC": 12, "ABC": 8 }],
+              "campo": "errores.olvidaDevolverElCentro",
+              "valor": 14
+            },
+            {
+              "id": "CJ-resta-el-centro",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste los 8 de los tres lugares. Se suman: 45 + 38 + 30 − 20 − 15 − 12 + 8 = 74.",
+              "fn": "ningunoTres",
+              "args": [{ "U": 80, "A": 45, "B": 38, "C": 30, "AB": 20, "AC": 15, "BC": 12, "ABC": 8 }],
+              "campo": "errores.restaElCentro",
+              "valor": 22
+            },
+            {
+              "id": "CJ-da-la-union",
+              "respaldo": "hipotesis",
+              "explicacion": "Esos son los que fueron al menos a un lugar. Los que no fueron a ninguno son 80 − 74.",
+              "fn": "ningunoTres",
+              "args": [{ "U": 80, "A": 45, "B": 38, "C": 30, "AB": 20, "AC": 15, "BC": 12, "ABC": 8 }],
+              "campo": "errores.daLaUnion",
+              "valor": 74
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p5",
@@ -64,7 +136,36 @@
         "Exactamente dos: las tres regiones de dos idiomas sin el tercero, 5 + 3 + 2 = 10 (los 4 de los tres no entran)."
       ],
       "verificar": [ { "fn": "contar", "args": [{ "A": 14, "B": 9, "C": 6, "AB": 5, "AC": 3, "BC": 2, "ABC": 4 }, "A"], "espera": { "valor": 26 } },
-                     { "fn": "contar", "args": [{ "A": 14, "B": 9, "C": 6, "AB": 5, "AC": 3, "BC": 2, "ABC": 4 }, "exactamenteDos"], "espera": { "valor": 10 } } ]
+                     { "fn": "contar", "args": [{ "A": 14, "B": 9, "C": 6, "AB": 5, "AC": 3, "BC": 2, "ABC": 4 }, "exactamenteDos"], "espera": { "valor": 10 } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "En una academia de idiomas: 14 estudian solo inglés, 9 solo quechua, 6 solo portugués; 5 estudian inglés y quechua pero no portugués; 3 inglés y portugués pero no quechua; 2 quechua y portugués pero no inglés, y 4 estudian los tres idiomas.",
+          "pregunta": "¿Cuántos estudian inglés?",
+          "decimales": 0,
+          "correcta": { "fn": "contar", "args": [{ "A": 14, "B": 9, "C": 6, "AB": 5, "AC": 3, "BC": 2, "ABC": 4 }, "A"], "campo": "valor", "valor": 26 },
+          "errores": [
+            {
+              "id": "CJ-solo-una-region",
+              "respaldo": "hipotesis",
+              "explicacion": "Esos estudian solo inglés. También estudian inglés los que llevan otro idioma más: 14 + 5 + 3 + 4.",
+              "fn": "contar",
+              "args": [{ "A": 14, "B": 9, "C": 6, "AB": 5, "AC": 3, "BC": 2, "ABC": 4 }, "soloA"],
+              "campo": "valor",
+              "valor": 14
+            },
+            {
+              "id": "CJ-olvida-el-centro",
+              "respaldo": "hipotesis",
+              "explicacion": "Faltaron los 4 que estudian los tres idiomas: también están en el aro del inglés.",
+              "fn": "contar",
+              "args": [{ "A": 14, "B": 9, "C": 6, "AB": 5, "AC": 3, "BC": 2, "ABC": 0 }, "A"],
+              "campo": "valor",
+              "valor": 22
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -77,7 +178,90 @@
         "Propios: todos menos M, 32 − 1 = 31."
       ],
       "verificar": [ { "fn": "potenciaCantidad", "args": [5], "espera": { "cantidad": 32, "propios": 31 } },
-                     { "fn": "potencia", "args": [["p", "q", "r", "s", "t"]], "espera": { "cantidad": 32 } } ]
+                     { "fn": "potencia", "args": [["p", "q", "r", "s", "t"]], "espera": { "cantidad": 32 } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Un conjunto M tiene 5 elementos.",
+          "pregunta": "¿Cuántos subconjuntos tiene?",
+          "decimales": 0,
+          "correcta": { "fn": "cuantosSubconjuntos", "args": [5], "campo": "subconjuntos", "valor": 32 },
+          "errores": [
+            {
+              "id": "CJ-dos-por-elemento",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste 2 · 5. Cada elemento entra o no entra, y eso se decide 5 veces: 2 × 2 × 2 × 2 × 2.",
+              "fn": "cuantosSubconjuntos",
+              "args": [5],
+              "campo": "errores.dosPorElemento.0",
+              "valor": 10
+            },
+            {
+              "id": "CJ-sin-el-vacio",
+              "respaldo": "hipotesis",
+              "explicacion": "Faltó un subconjunto: 31 son los que quedan sin el vacío o sin M. Los dos cuentan: 2⁵ = 32.",
+              "fn": "cuantosSubconjuntos",
+              "args": [5],
+              "campo": "errores.sinElVacio.0",
+              "valor": 31
+            },
+            {
+              "id": "CJ-permutaciones",
+              "respaldo": "hipotesis",
+              "explicacion": "Calculaste 5!, que ordena los elementos. Un subconjunto no tiene orden: cada elemento entra o no entra, 2⁵.",
+              "fn": "cuantosSubconjuntos",
+              "args": [5],
+              "campo": "errores.permutaciones.0",
+              "valor": 120
+            },
+            {
+              "id": "CJ-al-cuadrado",
+              "respaldo": "hipotesis",
+              "explicacion": "Elevaste 5 al cuadrado. Son 2⁵: cada uno de los 5 elementos entra o no entra.",
+              "fn": "cuantosSubconjuntos",
+              "args": [5],
+              "campo": "errores.alCuadrado.0",
+              "valor": 25
+            }
+          ]
+        },
+        {
+          "id": "p6b",
+          "enunciado": "Un conjunto M tiene 5 elementos.",
+          "pregunta": "¿Cuántos subconjuntos propios (distintos de M) tiene?",
+          "decimales": 0,
+          "correcta": { "fn": "cuantosSubconjuntos", "args": [5], "campo": "propios", "valor": 31 },
+          "errores": [
+            {
+              "id": "CJ-dos-por-elemento",
+              "respaldo": "hipotesis",
+              "explicacion": "Partiste de 2 · 5. Los subconjuntos son 2⁵ = 32; los propios, todos menos M: 32 − 1.",
+              "fn": "cuantosSubconjuntos",
+              "args": [5],
+              "campo": "errores.dosPorElemento.1",
+              "valor": 9
+            },
+            {
+              "id": "CJ-sin-el-vacio",
+              "respaldo": "hipotesis",
+              "explicacion": "Quitaste también el vacío. El vacío sí es subconjunto propio: solo se quita M, 32 − 1.",
+              "fn": "cuantosSubconjuntos",
+              "args": [5],
+              "campo": "errores.sinElVacio.1",
+              "valor": 30
+            },
+            {
+              "id": "CJ-todos",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es el total de subconjuntos. Los propios son todos menos M mismo: 32 − 1.",
+              "fn": "cuantosSubconjuntos",
+              "args": [5],
+              "campo": "subconjuntos",
+              "valor": 32
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -106,7 +290,36 @@
       "verificar": [ { "fn": "extension", "args": [{ "desde": 1, "hasta": 4, "forma": { "a": 2, "b": 1 } }], "espera": { "valor": [3, 5, 7, 9] } },
                      { "fn": "extension", "args": [{ "desde": 1, "hasta": 6, "condicion": { "divisorDe": 6 } }], "espera": { "valor": [1, 2, 3, 6] } },
                      { "fn": "interseccion", "args": [[3, 5, 7, 9], [1, 2, 3, 6]], "espera": { "valor": [3] } },
-                     { "fn": "cartesiano", "args": [[3, 5, 7, 9], [1, 2, 3, 6]], "espera": { "n": 16 } } ]
+                     { "fn": "cartesiano", "args": [[3, 5, 7, 9], [1, 2, 3, 6]], "espera": { "n": 16 } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "A = {2x + 1 / x es entero, 1 ≤ x ≤ 4} = {3, 5, 7, 9} y B = {x / x es entero positivo y divisor de 6} = {1, 2, 3, 6}.",
+          "pregunta": "¿Cuántos elementos tiene A × B?",
+          "decimales": 0,
+          "correcta": { "fn": "cuantosPares", "args": [[3, 5, 7, 9], [1, 2, 3, 6]], "campo": "respuesta", "valor": 16 },
+          "errores": [
+            {
+              "id": "CJ-suma",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste 4 + 4. A × B tiene un par por cada elección de un elemento de A y uno de B: 4 × 4.",
+              "fn": "cuantosPares",
+              "args": [[3, 5, 7, 9], [1, 2, 3, 6]],
+              "campo": "errores.suma",
+              "valor": 8
+            },
+            {
+              "id": "CJ-cuenta-los-numeros",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste los números distintos de A y B juntos. A × B cuenta pares (a; b): 4 × 4.",
+              "fn": "cuantosPares",
+              "args": [[3, 5, 7, 9], [1, 2, 3, 6]],
+              "campo": "errores.cuentaLosNumeros",
+              "valor": 7
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
@@ -142,7 +355,54 @@
                      { "fn": "afirmar", "args": [[1, 3], "⊂", [1, [2], 3]], "espera": { "valor": true } },
                      { "fn": "afirmar", "args": [[2], "⊂", [1, [2], 3]], "espera": { "valor": false } },
                      { "fn": "afirmar", "args": [[], "⊂", [1, [2], 3]], "espera": { "valor": true } },
-                     { "fn": "potencia", "args": [[1, [2], 3]], "espera": { "cantidad": 8 } } ]
+                     { "fn": "potencia", "args": [[1, [2], 3]], "espera": { "cantidad": 8 } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Sea A = {1, {2}, 3}.",
+          "pregunta": "¿Cuántos subconjuntos tiene A?",
+          "decimales": 0,
+          "correcta": { "fn": "cuantosSubconjuntos", "args": [3], "campo": "subconjuntos", "valor": 8 },
+          "errores": [
+            {
+              "id": "CJ-cuenta-el-de-adentro",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste el {2} y también el 2 de adentro. {2} es un solo elemento: A tiene tres.",
+              "fn": "cuantosSubconjuntos",
+              "args": [4],
+              "campo": "subconjuntos",
+              "valor": 16
+            },
+            {
+              "id": "CJ-dos-por-elemento",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste 2 · 3. Cada uno de los 3 elementos entra o no entra: 2 × 2 × 2.",
+              "fn": "cuantosSubconjuntos",
+              "args": [3],
+              "campo": "errores.dosPorElemento.0",
+              "valor": 6
+            },
+            {
+              "id": "CJ-sin-el-vacio",
+              "respaldo": "hipotesis",
+              "explicacion": "Faltó el vacío. También es subconjunto de A.",
+              "fn": "cuantosSubconjuntos",
+              "args": [3],
+              "campo": "errores.sinElVacio.0",
+              "valor": 7
+            },
+            {
+              "id": "CJ-al-cuadrado",
+              "respaldo": "hipotesis",
+              "explicacion": "Elevaste 3 al cuadrado. Son 2³: cada elemento entra o no entra.",
+              "fn": "cuantosSubconjuntos",
+              "args": [3],
+              "campo": "errores.alCuadrado.0",
+              "valor": 9
+            }
+          ]
+        }
+      ]
     }
   ]
 }
