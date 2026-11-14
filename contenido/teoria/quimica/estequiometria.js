@@ -99,6 +99,8 @@
       coincide: 'Coincide: 1 mol de N₂ pide 3 mol de H₂, que pesan 6 g.',
       noCoincide: '1 mol de N₂ pide 3 mol de H₂; esos 3 mol pesan 6 g.',
     },
+    // Hallazgo 9 de la auditoría: son dos representaciones a propósito. La lupa cuenta moles como bolitas, pero no
+    // pesa; la cadena ordena el camino masa → moles → receta → masa, que es lo que la lupa no puede mostrar.
     mira: {
       pieza: 'quim-cadena',
       datos: { columnas: [{ titulo: 'Masa → masa', color: 'o', nodos: [
@@ -123,7 +125,7 @@
     },
     regla: {
       texto: 'Los coeficientes relacionan moles, no gramos. Para ir de una masa a otra: masa → moles → receta → moles → masa.',
-      ecuacion: [{ sub: [n, 'B'] }, ' = ', { sub: [n, 'A'] }, ' · ', { frac: [{ sub: ['ν', 'B'] }, { sub: ['ν', 'A'] }] }, '   ·   ', n, ' = ', { frac: [m, 'M'] }],
+      ecuacion: [{ sub: [n, 'B'] }, ' = ', { sub: [n, 'A'] }, ' · ', { llave: [{ frac: [{ sub: ['ν', 'B'] }, { sub: ['ν', 'A'] }] }], nota: 'coeficientes' }, '   ·   ', n, ' = ', { frac: [m, { llave: ['M'], nota: 'masa molar' }] }],
       condicion: 'entre gases, los volúmenes siguen la misma razón que los moles solo si se miden a igual presión y temperatura.',
       voz: 'Primero a moles. La receta no lee gramos.',
     },
@@ -200,8 +202,8 @@
       ]).datos,
       voz: 'Dividamos cada cantidad entre su coeficiente.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Hay 3 mol de N₂ y 6 mol de H₂.', ecuacion: [{ sub: [n, 'N₂'] }, ' = 3   ·   ', { sub: [n, 'H₂'] }, ' = 6'] },
-        { estado: { corte: 2 }, texto: 'Cada uno entre su coeficiente: ¿para cuántas recetas alcanza?', ecuacion: [{ frac: ['3', '1'] }, ' = 3   ·   ', { frac: ['6', '3'] }, ' = 2'] },
+        { estado: { corte: 1 }, texto: 'Hay 3 mol de N₂ y 6 mol de H₂.', ecuacion: [{ sub: [n, 'N₂'] }, ' = 3', '   ·   ', { sub: [n, 'H₂'] }, ' = 6'] },
+        { estado: { corte: 2 }, texto: 'Cada uno entre su coeficiente: ¿para cuántas recetas alcanza?', ecuacion: [{ frac: ['3', '1'] }, ' = 3', '   ·   ', { frac: ['6', '3'] }, ' = 2'] },
         { estado: { corte: 3 }, texto: 'El menor, 2, manda: se hacen 2 recetas y salen 4 mol de NH₃.', ecuacion: ['2 · 2 = 4 mol NH₃'] },
         { estado: { corte: 4 }, texto: 'El N₂ usado es 2 mol; sobra 1 mol. Está en exceso.', ecuacion: ['3 − 2 · 1 = 1 mol N₂'] },
       ],
@@ -243,6 +245,17 @@
     tramos: [{ tipo: 'descuento', pct: 100 - pur, color: 'h' }, { tipo: 'descuento', pct: 100 - ren, color: 'h' }].filter(t => t.pct > 0),
     marca: 'queda',
   }, extra);
+  // Geometría de barra-porcentaje para el gesto (la pieza no exporta geometria, solo valores): la barra va de x = 10 a
+  // 310 con el total a 310, su centro está en y = 60 y la fila del primer pedazo, en y = 103. Pedido al molde: exportarla.
+  // Como x es fracción del total, la manija no depende de los gramos: la parte pura está en p/100 y el final en p·η.
+  const arrastresBarra = () => [
+    { id: 'pureza', etiqueta: 'borde de la parte pura', color: 'c-h',
+      donde: val => ({ x: 10 + 3 * val.p, y: 103 }),
+      mover: pt => ({ p: (pt.x - 10) / 3 }) },
+    { id: 'rendimiento', etiqueta: 'final de la barra: lo que se obtiene', color: 'c-h',
+      donde: val => ({ x: 10 + 300 * val.p * val.e / 1e4, y: 60 }),
+      mover: (pt, val) => ({ e: 1e4 * (pt.x - 10) / (300 * Math.max(1, val.p)) }) },
+  ];
   const pureza = {
     id: 'pureza-rendimiento',
     titulo: 'Pureza y rendimiento recortan',
@@ -258,6 +271,9 @@
       dibujo: val => ({ datos: barra(56, val.p, val.e), estado: { corte: 2 } }),
       lectura: val => ['Se obtienen ', m, ` = ${f(56 * val.p / 100 * val.e / 100, 1)} g de CaO`],
       minimo: 3,
+      // Dos manijas: el borde izquierdo del pedazo de impureza (fila 1) es la parte pura, y el extremo de la barra es lo
+      // que el horno entrega. Mover la pureza corre también el final: el rendimiento muerde lo que quedó.
+      arrastres: arrastresBarra(),
     },
     predice: {
       pregunta: ['200 g de caliza con 80 % de CaCO₃ se calientan; el rendimiento es 75 %. ¿Qué ', m, ' de CaO se obtiene? (CaCO₃ 100 g/mol, CaO 56 g/mol)'],
@@ -285,7 +301,7 @@
     },
     regla: {
       texto: 'La pureza recorta la masa que reacciona; el rendimiento recorta el producto teórico. Se aplican uno sobre el resultado del otro: se multiplican.',
-      ecuacion: [{ sub: [m, 'real'] }, ' = ', { sub: [m, 'teórica'] }, ' · ', P, ' · ', eta, '   ·   ', eta, ' = ', { frac: [{ sub: [m, 'real'] }, { sub: [m, 'teórica'] }] }],
+      ecuacion: [{ sub: [m, 'real'] }, ' = ', { sub: [m, 'teórica'] }, ' · ', { llave: [P, ' · ', eta], nota: 'pureza y rendimiento', color: 'c-h' }, '   ·   ', eta, ' = ', { frac: [{ sub: [m, 'real'] }, { sub: [m, 'teórica'] }] }],
       condicion: 'la masa teórica sale de la parte pura del reactivo limitante; el rendimiento no cambia la ecuación balanceada.',
       voz: 'Cada porcentaje tiene su lugar. No los juntes.',
     },
@@ -330,7 +346,7 @@
       voz: 'Cuenta las fichas que se intercambian; las demás se quedan.',
       controles: [{ id: 'k', etiqueta: 'Sustancia', opciones: Object.keys(ACIDOS).map(k => ({ valor: k, texto: ACIDOS[k].texto })) }],
       dibujo: val => fichas(val.k),
-      lectura: val => { const A = ACIDOS[val.k]; return [`θ = ${A.th} ${A.que} · masa equivalente = ${f(A.M, 1)}/${A.th} = ${f(A.M / A.th, 2)} g`]; },
+      lectura: val => { const A = ACIDOS[val.k]; return [`θ = ${A.th} ${A.que}`, '   ·   ', `masa equivalente = ${f(A.M, 1)}/${A.th} = ${f(A.M / A.th, 2)} g`]; },
       minimo: 3,
     },
     predice: {
@@ -359,7 +375,7 @@
     },
     regla: {
       texto: 'La masa equivalente es la masa molar entre θ: los H⁺, OH⁻ o electrones que intercambia la sustancia en esa reacción. Reaccionan equivalente con equivalente.',
-      ecuacion: [{ sub: ['M', 'eq'] }, ' = ', { frac: ['M', 'θ'] }, '   ·   #eq = ', { frac: [m, { sub: ['M', 'eq'] }] }],
+      ecuacion: [{ sub: ['M', 'eq'] }, ' = ', { frac: ['M', { llave: ['θ'], nota: 'lo intercambiado' }] }, '   ·   ', '#eq = ', { frac: [m, { sub: ['M', 'eq'] }] }],
       condicion: 'θ lo fija la reacción, no la fórmula sola: el H₂SO₄ tiene θ = 2 o θ = 1 según cuántos H⁺ cede.',
       voz: 'Antes de dividir, pregunta qué se intercambia aquí.',
     },
@@ -385,6 +401,23 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: dos recetas con la misma lupa; cada bolita es 1 mol. Lo que sobra queda con aro.
+  const RECETAS = {
+    nh3: { ec: 'N₂ + 3 H₂ → 2 NH₃', a: ['N2', 'N₂', 1], b: ['H2', 'H₂', 3], c: ['NH3', 'NH₃', 2] },
+    h2o: { ec: '2 H₂ + O₂ → 2 H₂O', a: ['H2', 'H₂', 2], b: ['O2', 'O₂', 1], c: ['H2O', 'H₂O', 2] },
+  };
+  const libre = v => {
+    const R = RECETAS[v.r], [ea, , ca] = R.a, [eb, , cb] = R.b, [ec, , cc] = R.c;
+    const rec = Math.floor(Math.min(v.x / ca, v.y / cb)), sa = v.x - rec * ca, sb = v.y - rec * cb;
+    return { rec, sa, sb, dib: lupa([
+      { titulo: 'Antes', forma: 'caja', particulas: [{ e: ea, n: v.x }, { e: eb, n: v.y }], cuenta: [{ e: ea, texto: `${v.x}` }, { e: eb, texto: `${v.y}` }] },
+      { titulo: 'Después', forma: 'caja', particulas: [{ e: ec, n: rec * cc }, { e: ea, n: sa, resalta: true }, { e: eb, n: sb, resalta: true }], cuenta: [{ e: ec, texto: `${rec * cc}` }] },
+    ], { separacion: 20, alt: `${R.ec}: con ${v.x} y ${v.y} mol salen ${rec * cc} mol de producto; sobran ${sa} y ${sb} mol.` }) };
+  };
+  // Mesa 2: la caliza entera, con su masa, pureza y rendimiento en rangos amplios. Se cuenta en g de CaO.
+  const caliza = v => ({ datos: barra(v.mm * 0.56, v.p, v.e), estado: { corte: 2 } });
+
   return {
     unidad: 'quimica.estequiometria',
     version: '0.1.0',
@@ -395,6 +428,34 @@
       pregunta: '¿Cuántos panes salen si te falta harina pero sobra azúcar?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §4.3', url: 'https://openstax.org/books/chemistry-2e/pages/4-3-reaction-stoichiometry' },
     },
+    // Laboratorio (docs/teoria.md §4b), sin preguntas. La primera mesa deja elegir la receta (la idea 2 solo trae la
+    // del agua) y llegar a 12 mol; la segunda suma la masa de la muestra y rangos de 10 % a 100 %. Los rótulos y la
+    // lectura dicen las entradas, para que la miniatura guardada se lea sola.
+    laboratorio: [
+      {
+        id: 'limitante-libre', titulo: 'Dos recetas, un limitante', pieza: 'quim-particulas',
+        consigna: 'Elige la receta y cuántos moles pones de cada reactivo. Cada bolita es 1 mol. Busca una mezcla en la que no sobre nada.',
+        controles: [
+          { id: 'r', etiqueta: 'Receta', opciones: Object.keys(RECETAS).map(k => ({ valor: k, texto: RECETAS[k].ec })) },
+          { id: 'x', etiqueta: 'primer reactivo', color: 'c-i', min: 0, max: 8, paso: 1, inicio: 3, unidad: 'mol', decimales: 0 },
+          { id: 'y', etiqueta: 'segundo reactivo', color: 'c-i', min: 0, max: 12, paso: 1, inicio: 6, unidad: 'mol', decimales: 0 },
+        ],
+        dibujo: v => libre(v).dib,
+        lectura: v => { const R = RECETAS[v.r], L = libre(v); return [`${v.x} ${R.a[1]} + ${v.y} ${R.b[1]} → ${L.rec * R.c[2]} ${R.c[1]}`, L.sa + L.sb ? ` · sobra ${L.sa ? `${L.sa} ${R.a[1]}` : `${L.sb} ${R.b[1]}`}` : ' · no sobra nada']; },
+      },
+      {
+        id: 'caliza', titulo: 'La caliza de verdad', pieza: 'barra-porcentaje',
+        consigna: 'Cambia cuánta caliza entra, su pureza y el rendimiento del horno. Arrastra el borde de la parte pura y el final de la barra.',
+        controles: [
+          { id: 'mm', etiqueta: 'Caliza', color: 'c-o', min: 50, max: 400, paso: 50, inicio: 200, unidad: 'g', decimales: 0 },
+          { id: 'p', etiqueta: 'Pureza', color: 'c-h', min: 10, max: 100, paso: 5, inicio: 80, unidad: '%', decimales: 0 },
+          { id: 'e', etiqueta: 'Rendimiento', color: 'c-h', min: 10, max: 100, paso: 5, inicio: 75, unidad: '%', decimales: 0 },
+        ],
+        dibujo: v => caliza(v),
+        lectura: v => [`${v.mm} g · ${v.p} % · ${v.e} % → `, m, ` = ${f(v.mm * 0.56 * v.p / 100 * v.e / 100, 1)} g de CaO`],
+        arrastres: arrastresBarra(),
+      },
+    ],
     ideas: [relaciones, limita, pureza, equivalente],
   };
 });
