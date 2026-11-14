@@ -126,7 +126,7 @@
           dibujo: { datos: dados(), estado: {} },
           opciones: opciones(fr(k, 36), [
             { id: 'once', texto: fr(1, 11), error: 'AR20', siFuera: 'Las 11 sumas no son igual de probables; se cuentan las 36 casillas.' },
-            { id: 'mitad', texto: fr(k, 18), error: 'AT-ORDEN', siFuera: 'Eso cuenta (a, b) y (b, a) como uno solo.' },
+            { id: 'mitad', texto: fr(k, 18), error: 'AT-PAR-ORDEN', siFuera: 'Eso cuenta (a, b) y (b, a) como uno solo.' },
             { id: 'seis', texto: fr(Math.min(k, 6), 6), error: 'AT-UNIVERSO', siFuera: 'Con dos dados hay 36 resultados, no 6.' },
             { id: 'comp', texto: fr(36 - k, 36), error: 'AT-COMPLEMENTO', siFuera: 'Esa es la probabilidad de que no ocurra.' },
           ]),

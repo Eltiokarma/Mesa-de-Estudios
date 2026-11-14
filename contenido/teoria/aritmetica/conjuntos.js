@@ -106,9 +106,9 @@
           return {
             pregunta: `¿Cuántos elementos tiene {x ∈ ℕ : ${a} ≤ x < ${b}, x múltiplo de ${k}}?`,
             opciones: opciones(xs.length, [
-              { id: 'todos', valor: b - a, error: 'AT-CRITERIO', siFuera: 'Eso cuenta todos los x del tramo, sin el criterio de ser múltiplo.' },
+              { id: 'todos', valor: b - a, error: 'AT-COMPRENSION', siFuera: 'Eso cuenta todos los x del tramo, sin el criterio de ser múltiplo.' },
               { id: 'uno-mas', valor: xs.length + 1, error: 'AT-EXTREMO', siFuera: `x < ${b} deja fuera al ${b}.` },
-              { id: 'div', valor: Math.floor(b / k), error: 'AT-CRITERIO', siFuera: `Eso cuenta múltiplos desde 1, no desde ${a}.` },
+              { id: 'div', valor: Math.floor(b / k), error: 'AT-COMPRENSION', siFuera: `Eso cuenta múltiplos desde 1, no desde ${a}.` },
             ], x => String(x)),
             solucion: { texto: 'Se escribe por extensión y se cuenta.', ecuacion: [`${llaves(xs)} → ${xs.length} elementos`] },
           };
@@ -377,8 +377,8 @@
       pregunta: ['Si ', A, ' = {1, 2, 3} y ', Bv, ' = {x, y}, ¿el par (x, 1) está en ', A, ' × ', Bv, '?'],
       opciones: [
         { id: 'c', texto: 'No: en A × B el primero es de A', correcta: true },
-        { id: 'si', texto: 'Sí: tiene un 1 y una x', error: 'AT-ORDEN', siFuera: 'Sería cierto si los pares no tuvieran orden. (x, 1) y (1, x) son distintos.' },
-        { id: 'conmuta', texto: 'Sí, porque A × B = B × A', error: 'AT-ORDEN', siFuera: 'Tienen la misma cantidad de pares, pero no los mismos pares.' },
+        { id: 'si', texto: 'Sí: tiene un 1 y una x', error: 'AT-PAR-ORDEN', siFuera: 'Sería cierto si los pares no tuvieran orden. (x, 1) y (1, x) son distintos.' },
+        { id: 'conmuta', texto: 'Sí, porque A × B = B × A', error: 'AT-PAR-ORDEN', siFuera: 'Tienen la misma cantidad de pares, pero no los mismos pares.' },
       ],
       dibujo: { datos: prod(3, 2), estado: {} },
       revelar: { datos: prod(3, 2), estado: { columna: 0 } },
@@ -404,8 +404,8 @@
           pregunta: ['Si ', A, ' = {1, 2} y ', Bv, ' = {3, 4, 5}, ¿cuál par está en ', Bv, ' × ', A, '?'],
           opciones: [
             { id: 'c', texto: `(${r.de([3, 4, 5])}, ${r.de([1, 2])})`, correcta: true },
-            { id: 'orden', texto: `(${r.de([1, 2])}, ${r.de([3, 4, 5])})`, error: 'AT-ORDEN', siFuera: 'Ese par está en A × B: en B × A el primero es de B.' },
-            { id: 'mismo', texto: '(1, 2)', error: 'AT-ORDEN', siFuera: 'Los dos son de A; en B × A el primero debe ser de B.' },
+            { id: 'orden', texto: `(${r.de([1, 2])}, ${r.de([3, 4, 5])})`, error: 'AT-PAR-ORDEN', siFuera: 'Ese par está en A × B: en B × A el primero es de B.' },
+            { id: 'mismo', texto: '(1, 2)', error: 'AT-PAR-ORDEN', siFuera: 'Los dos son de A; en B × A el primero debe ser de B.' },
           ],
           solucion: { texto: 'Primero un elemento de B, después uno de A.', ecuacion: ['B × A = {(b, a) : b ∈ B, a ∈ A}'] },
         };
