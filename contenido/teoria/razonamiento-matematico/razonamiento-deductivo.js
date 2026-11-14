@@ -40,6 +40,12 @@
   // ---------- Idea 1: conclusión necesaria con círculos de Venn-Euler ----------
   // Cambia: dónde cae C · Permanece: A dentro de B, las dos premisas · Progresa: los dibujos posibles se acumulan ·
   // Se reserva: el dibujo donde ningún A es C · Debe verse: que la premisa no obliga a A y C a tocarse.
+  // Gesto directo (docs/teoria.md §4b): las manijas viven en el lienzo de rm-plano (geometria exportada).
+  const PLANO = () => Kit.piezas['rm-plano'];
+  const enPx = (datos, ux, uy) => { const g = PLANO().geometria(datos); return { x: g.X(ux), y: g.Y(uy) }; };
+  const aU = (datos, pt) => { const g = PLANO().geometria(datos); return { x: (pt.x - g.X(0)) / g.k, y: (pt.y - g.Y(0)) / g.k }; };
+  const cercano = (pares, p) => pares.reduce((m, q) => (Math.hypot(q[1] - p.x, q[2] - p.y) < Math.hypot(m[1] - p.x, m[2] - p.y) ? q : m))[0];
+
   const VB = { x: 4, y: 3, r: 2.7 }, VA = { x: 3, y: 3, r: 1.2 };
   const POS_C = { lejos: { x: 7.2, y: 3, r: 1.5 }, cruza: { x: 4.7, y: 3, r: 1.3 }, cubre: { x: 3.1, y: 3, r: 1.7 } };
   const tocan = (p, q) => Math.hypot(p.x - q.x, p.y - q.y) < p.r + q.r - 1e-9;
@@ -64,6 +70,10 @@
       dibujo: val => ({ datos: venn(POS_C[val.c]), estado: {} }),
       lectura: val => [`En este dibujo algún `, A, tocan(VA, POS_C[val.c]) ? ' es ' : ' no es ', C],
       minimo: 3,
+      // Arrastra el borde derecho de C hacia A o lejos de él: cae en el lugar posible más cercano.
+      arrastres: [{ id: 'circulo-c', etiqueta: 'lugar del círculo C', color: 'c-d',
+        donde: val => enPx(venn(POS_C[val.c]), POS_C[val.c].x + POS_C[val.c].r, POS_C[val.c].y),
+        mover: (pt, val) => ({ c: cercano(Object.entries(POS_C).map(([k, c]) => [k, c.x + c.r, c.y]), aU(venn(POS_C[val.c]), pt)) }) }],
     },
     predice: {
       pregunta: ['Con esas premisas, ¿se puede asegurar que algún ', A, ' es ', C, '?'],
@@ -168,6 +178,7 @@
     titulo: 'Si llueve, la pista se moja',
     temas: ['Deductivo directo e indirecto'],
     pieza: 'rm-tablero',
+    // Sin arrastre: lo que se elige es un dato (una frase), no un lugar de la tabla; las filas son lo que resulta.
     juega: {
       consigna: 'La regla tacha el caso «llueve y la pista sigue seca». Elige qué se sabe y mira qué casos quedan.',
       voz: 'Lo que quede en pie es todo lo que puede pasar.',
@@ -199,7 +210,7 @@
     },
     regla: {
       texto: 'De «si p, entonces q» se concluye q cuando ocurre p (directo) y «no p» cuando no ocurre q (indirecto). Saber q o «no p» no basta.',
-      ecuacion: ['(p ⇒ q) y p ⇒ q   ·   (p ⇒ q) y no q ⇒ no p'],
+      ecuacion: [{ llave: ['(p ⇒ q)'], nota: 'la regla', color: 'c-i' }, ' y p ⇒ q', '   ·   ', '(p ⇒ q) y ', { llave: ['no q'], nota: 'el dato', color: 'c-o' }, ' ⇒ no p'],
       condicion: 'la regla se cumple siempre, sin excepciones, y p y q significan lo mismo en todo el razonamiento.',
     },
     ahoraTu: {
@@ -259,6 +270,7 @@
     titulo: 'El cuadro que descarta',
     temas: ['Cuadros de doble entrada'],
     pieza: 'rm-tablero',
+    // Sin arrastre: lo que cambia es cuántas pistas (frases) se usan; las ✗ y ✓ son su consecuencia, no se agarran.
     juega: {
       consigna: 'Cada uno juega un deporte distinto. Agrega las pistas una a una: ✗ es imposible y ✓ es seguro.',
       voz: 'Una ✓ sale cuando todos los repartos que quedan coinciden.',
@@ -350,6 +362,8 @@
     tio: { pasos: [['ana', 'pedro'], ['pedro', 'raul'], ['raul', 'tomas']], nombre: 'su tío, Tomás' },
     primo: { pasos: [['ana', 'pedro'], ['pedro', 'raul'], ['raul', 'tomas'], ['tomas', 'ivan']], nombre: 'su primo, Iván' },
   };
+  const NODO = Object.fromEntries(ARBOL_N.map(n => [n.id, n]));
+  const FIN = { padre: 'pedro', abuelo: 'raul', tio: 'tomas', primo: 'ivan' };
   function arbol(camino, extra = {}) {
     const on = new Set((camino ? CAMINOS[camino].pasos : []).map(p => p.join('-')));
     const marca = camino ? CAMINOS[camino].pasos[CAMINOS[camino].pasos.length - 1][1] : null;
@@ -373,6 +387,10 @@
       dibujo: val => ({ datos: arbol(val.c), estado: {} }),
       lectura: val => [`Para Ana, es ${CAMINOS[val.c].nombre}`],
       minimo: 3,
+      // Lleva la manija desde el pariente marcado a otro: el camino desde Ana se redibuja hasta él.
+      arrastres: [{ id: 'pariente', etiqueta: 'pariente de Ana', color: 'c-o',
+        donde: val => { const n = NODO[FIN[val.c]]; return enPx(arbol(val.c), n.x + 0.55, n.y + 0.3); },
+        mover: (pt, val) => ({ c: cercano(Object.entries(FIN).map(([k, id]) => [k, NODO[id].x + 0.55, NODO[id].y + 0.3]), aU(arbol(val.c), pt)) }) }],
     },
     predice: {
       pregunta: 'Dos padres y dos hijos fueron a pescar. ¿Cuántas personas son, como mínimo?',
@@ -401,7 +419,7 @@
     },
     regla: {
       texto: 'Cada línea del árbol es una relación padre-hijo. Un parentesco es un camino: subir a los padres y bajar a los hijos. Una persona puede tener varios papeles.',
-      ecuacion: ['tío = hermano del padre   ·   primo = hijo del tío'],
+      ecuacion: ['tío = hermano del padre', '   ·   ', 'primo = hijo del tío'],
       condicion: 'no se supone matrimonio, sexo ni que alguien sea hijo único si el enunciado no lo dice.',
     },
     ahoraTu: {
@@ -439,9 +457,81 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: C se mueve y crece libre (no solo tres lugares): se ve cuándo cumple «algunos B son C» y si toca a A.
+  const cLibre = val => ({ x: val.cx, y: 3, r: val.cr });
+  const vennLibre = val => venn(cLibre(val), { pie: tocan(VB, cLibre(val)) ? 'Cumple: algún B es C' : 'No cumple: C no toca a B', cDisc: !tocan(VB, cLibre(val)) });
+  const mesaVenn = {
+    id: 'venn-libre', titulo: 'C donde quieras', pieza: 'rm-plano',
+    consigna: 'Todos los A son B. Mueve y agranda C. Busca dibujos que cumplan «algunos B son C» con A dentro y fuera.',
+    controles: [
+      { id: 'cx', etiqueta: 'Centro de C', min: 1, max: 8, paso: 0.1, inicio: 7.2, decimales: 1, color: 'c-d' },
+      { id: 'cr', etiqueta: 'Radio de C', min: 0.5, max: 2, paso: 0.1, inicio: 1.5, decimales: 1, color: 'c-d' },
+    ],
+    dibujo: val => ({ datos: vennLibre(val), estado: {} }),
+    lectura: val => !tocan(VB, cLibre(val)) ? ['C fuera de B: no vale como dibujo'] : ['Dibujo válido: algún ', A, tocan(VA, cLibre(val)) ? ' es ' : ' no es ', C],
+    arrastres: [
+      { id: 'centro-c', etiqueta: 'centro del círculo C', color: 'c-d',
+        donde: val => enPx(vennLibre(val), val.cx, 3), mover: (pt, val) => ({ cx: aU(vennLibre(val), pt).x }) },
+      { id: 'borde-c', etiqueta: 'tamaño del círculo C', color: 'c-d',
+        donde: val => enPx(vennLibre(val), val.cx, 3 + val.cr), mover: (pt, val) => ({ cr: aU(vennLibre(val), pt).y - 3 }) },
+    ],
+  };
+  // Mesa 2: las cuatro pistas del reparto, cada una prendida o apagada: el orden no importa, importa cuáles.
+  const SINO = [{ valor: 1, texto: 'Sí' }, { valor: 0, texto: 'No' }];
+  const activas = val => PISTAS.filter((_, k) => val['p' + k]);
+  const mesaCuadro = {
+    id: 'pistas-a-eleccion', titulo: 'Pistas a elección', pieza: 'rm-tablero',
+    consigna: 'Prende y apaga cada pista. Busca el grupo más chico de pistas que deja un solo reparto.',
+    controles: TXT.map((t, k) => ({ id: 'p' + k, etiqueta: t, opciones: SINO, inicio: k < 3 ? 1 : 0 })),
+    dibujo: val => ({ datos: cuadro(P3, D3, activas(val)), estado: {} }),
+    lectura: val => { const n = compatibles(activas(val)).length, k = activas(val).length; return [`${k} ${k === 1 ? 'pista' : 'pistas'}: ${n} ${n === 1 ? 'reparto posible' : 'repartos posibles'}`]; },
+  };
+  // Mesa 3: el parentesco entre dos personas cualesquiera del árbol, con el camino que sube y baja.
+  const PADRE = { pedro: 'raul', tomas: 'raul', ana: 'pedro', luis: 'pedro', ivan: 'tomas' };
+  const subir = id => { const xs = [id]; while (PADRE[xs[xs.length - 1]]) xs.push(PADRE[xs[xs.length - 1]]); return xs; };
+  function camino(de, a) {
+    const sa = subir(de), sb = subir(a), comun = sa.find(x => sb.includes(x));
+    const u = sa.indexOf(comun), d = sb.indexOf(comun);
+    const arriba = sa.slice(0, u + 1), abajo = sb.slice(0, d).reverse();
+    const nodos = arriba.concat(abajo), pasos = nodos.slice(1).map((n, k) => [nodos[k], n]);
+    return { u, d, pasos };
+  }
+  const NOMBRES = { '1,0': ['padre', 'madre'], '2,0': ['abuelo', 'abuela'], '0,1': ['hijo', 'hija'], '0,2': ['nieto', 'nieta'], '1,1': ['hermano', 'hermana'], '2,1': ['tío', 'tía'], '1,2': ['sobrino', 'sobrina'], '2,2': ['primo', 'prima'] };
+  const PERSONAS = ARBOL_N.map(n => ({ valor: n.id, texto: n.etiqueta }));
+  const arbolPar = val => {
+    const c = camino(val.de, val.a), on = new Set(c.pasos.map(p => [...p].sort().join('-')));
+    return {
+      ancho: 10, alto: 6.4,
+      nodos: ARBOL_N.map(n => Object.assign({}, n, n.id === val.de ? { color: 'i' } : n.id === val.a ? { color: 'o' } : {})),
+      aristas: ARBOL_A.map(([x, y]) => { const e = on.has([x, y].sort().join('-')); return { de: x, a: y, color: e ? 'o' : undefined, grosor: e ? 'variable' : 'contorno' }; }),
+    };
+  };
+  const mesaFamilia = {
+    id: 'cualquier-pariente', titulo: 'Dos personas cualesquiera', pieza: 'rm-plano',
+    consigna: 'Arrastra los dos círculos a dos personas del árbol. El camino dice el parentesco: cuántas líneas sube y cuántas baja.',
+    controles: [{ id: 'de', etiqueta: 'Para', opciones: PERSONAS, inicio: 'ivan' }, { id: 'a', etiqueta: 'Es su', opciones: PERSONAS, inicio: 'ana' }],
+    dibujo: val => ({ datos: arbolPar(val), estado: {} }),
+    lectura: val => {
+      if (val.de === val.a) return ['Es la misma persona'];
+      const c = camino(val.de, val.a), nom = NOMBRES[`${c.u},${c.d}`][val.a === 'ana' ? 1 : 0];
+      return [`Para ${NODO[val.de].etiqueta}, ${NODO[val.a].etiqueta} es su ${nom}: sube ${c.u}, baja ${c.d}`];
+    },
+    arrastres: [
+      { id: 'desde', etiqueta: 'persona desde la que se mira', color: 'c-i',
+        donde: val => enPx(arbolPar(val), NODO[val.de].x - 0.55, NODO[val.de].y + 0.3),
+        mover: (pt, val) => ({ de: cercano(ARBOL_N.map(n => [n.id, n.x - 0.55, n.y + 0.3]), aU(arbolPar(val), pt)) }) },
+      { id: 'hasta', etiqueta: 'pariente que se busca', color: 'c-o',
+        donde: val => enPx(arbolPar(val), NODO[val.a].x + 0.55, NODO[val.a].y + 0.3),
+        mover: (pt, val) => ({ a: cercano(ARBOL_N.map(n => [n.id, n.x + 0.55, n.y + 0.3]), aU(arbolPar(val), pt)) }) },
+    ],
+  };
+
   return {
     unidad: 'razonamiento-matematico.razonamiento-deductivo',
-    version: '0.1.0',
+    // Laboratorio: C libre en el Venn, las cuatro pistas a elección y el parentesco entre dos personas cualesquiera.
+    laboratorio: [mesaVenn, mesaFamilia, mesaCuadro],
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/rm-tablero.js'],
     historia: {
