@@ -154,7 +154,11 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.15fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
+/* Regla 3: el botón para lanzar mientras se juega, pegado al dibujo */
+.juego{display:flex; justify-content:center; margin-top:8px}
+.juego-lienzo{cursor:pointer}
 </style>
 <link rel="stylesheet" href="../../nucleo/pegatina.css">
 </head>
@@ -228,6 +232,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'probabilidad-dados', unidad: 'aritmetica.probabilidades', version: '0.1.0' };
@@ -691,6 +696,18 @@ const PE = ev => MD.probabilidad(CFG2, ev);
 const EV = { suma:s => ({ tipo:'suma', valor:s }), cincoSeis:{ tipo:'valores', valores:[5, 6] }, dosSeis:{ tipo:'valores', valores:[6, 6] }, alMenos6:{ tipo:'alMenosUno', valor:6 },
   dobles:{ tipo:'iguales' }, pares:{ tipo:'todos', op:'par' }, prodPar:{ tipo:'producto', op:'par' }, suma10:{ tipo:'suma', op:'>=', valor:10 } };
 const DIST2 = MD.distribucionSuma({ dados:2 }), SUMAS = Array.from({ length:11 }, (_, i) => i + 2);
+// Regla 3 (jugar antes de preguntar): lanzar los dos dados tocando el dibujo o con el botón pegado a él.
+// alLanzar(v) recibe los valores; devuelve una función que quita el botón y el toque.
+function juegoDados(E, cv, prefijo, alLanzar){
+  const div = document.createElement('div'); div.className = 'juego';
+  div.innerHTML = '<button type="button" class="btn primary">Lanzar los dados</button>';
+  cv.closest('.lienzo').after(div);
+  let k = 0;
+  const lanzar = () => { if (E.anim) return; E.lanzar(`${prefijo}-${++k}`, 2, alLanzar); };
+  div.querySelector('button').onclick = lanzar;
+  cv.addEventListener('click', lanzar); cv.classList.add('juego-lienzo');
+  return () => { div.remove(); cv.removeEventListener('click', lanzar); cv.classList.remove('juego-lienzo'); };
+}
 </script>
 
 <script>
@@ -1061,6 +1078,10 @@ function explorar(){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta se lanzan los dados (tocando el dibujo o con el botón).
+const quitarJuego1 = juegoDados(E, $('cv'), 'juego1', () => { S.lanz++; E.lect = [LD.rojo, LD.azul, LD.suma, LD.lanz]; E.avisar(); });
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Toca los dados para lanzarlos y mira qué sale.', minimo:2, alListo:() => { quitarJuego1(); go(S.step); } });
 })();
 </script>
 
@@ -1240,6 +1261,12 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con dos dados (no se cuentan sumas ni casos: no adelanta respuestas).
+E.compactar(false);
+E.config({ modo:'dados', dados:{ vals:[3, 5] }, lect:[], base:'Un dado rojo y un dado azul.' });
+const quitarJuego2 = juegoDados(E, $('cv2'), 'juego2', () => { E.lect = [x => ['R', 'Dado rojo', String(x.dados.vals[0])], x => ['B', 'Dado azul', String(x.dados.vals[1])]]; E.avisar(); });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Toca los dados para lanzarlos varias veces antes de los experimentos.', minimo:2, alListo:() => { quitarJuego2(); ir(S.k); } });
 })();
 </script>
 

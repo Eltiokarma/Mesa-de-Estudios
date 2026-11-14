@@ -156,6 +156,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 /* Mover sin arrastrar: botones grandes para el dedo y el teclado */
 .mover{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
@@ -236,6 +237,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'razonamiento-numerico', unidad: 'aritmetica.razonamiento-numerico', version: '0.1.0' };
@@ -1008,6 +1010,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: el paso 1 ya es el corral que se explora (arrastrar animales, o flechas y Enter en el dibujo); antes se juega con él.
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra animales de una mitad a la otra y mira las patas.', minimo:2 });
 })();
 </script>
 <script>
@@ -1176,6 +1181,13 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con el triángulo vacío y las fichas del 1 al 6 (no adelanta ninguna respuesta).
+const libre = { tipo:'triangulo3', col:Array(6).fill(null), nums:[1, 2, 3, 4, 5, 6], mover:true, sumas:true, marcar:M.tablero('triangulo3').compartidas };
+E.compactar(false);
+E.config({ modo:'tablero', st:libre, ley:[['s', 'suma del lado'], ['ink', 'borde grueso: esquinas, están en dos lados']],
+  lect:[() => ['ink', 'fichas puestas', `${M.comprobar('triangulo3', libre.col).puestas} de 6`]], desc:() => textoTablero('triangulo3', libre.col) });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra fichas a las casillas del triángulo y mira cuánto suma cada lado.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 
