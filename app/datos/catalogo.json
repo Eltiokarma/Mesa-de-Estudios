@@ -3672,7 +3672,14 @@
      "grado": 3,
      "plantillas": [
       "orden-informacion"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/verdades-y-mentiras.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.traslados-y-puntos-cardinales",
