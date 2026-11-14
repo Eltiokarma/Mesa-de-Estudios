@@ -18,11 +18,19 @@
  * literal), RV58; RVI1 (probable tomado por necesario) es hipótesis nueva.
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): un marcador que se arrastra por el texto y cae en la frase más cercana al dedo
+  // (rv-texto.ancla y rv-texto.cercana). Mueve un control de opciones, que también tiene sus botones.
+  const RV = () => Kit.piezas['rv-texto'];
+  const marcador = (id, datosDe, ids, etiqueta, color = 'c-i', ida = v => v, vuelta = v => v) => ({
+    id: 'marcador', etiqueta, color,
+    donde: val => RV().ancla(datosDe(val), ida(val[id])),
+    mover: (pt, val) => ({ [id]: vuelta(RV().cercana(datosDe(val), pt, ids)) }),
+  });
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
@@ -47,6 +55,21 @@
     prob: { t: 'Este año, el examen será de mañana.', marcas: { d: 'i' }, sello: ['Probable', 'd'], dice: 'Probable: el patrón podría cambiar' },
     sin: { t: 'Ana aprobará el examen.', marcas: {}, sello: ['Sin respaldo', 'h'], dice: 'Sin respaldo: nada habla de aprobar' },
   };
+  // La frase que el alumno revisa: si sostiene la conclusión, se marcan todas las que la sostienen y aparece el sello;
+  // si no, queda punteada. Una conclusión sin respaldo muestra su sello con cualquier frase: ninguna la sostiene.
+  const usa = (k, f) => Object.prototype.hasOwnProperty.call(CON[k].marcas, f);
+  const conSello = k => ({ marcas: Object.assign({ c1: CON[k].sello[1] === 'h' ? 'h' : 'o' }, CON[k].marcas), sellos: { c: { t: CON[k].sello[0], c: CON[k].sello[1] } }, nuevo: ['c'] });
+  function sostiene(k, f) {
+    if (usa(k, f)) return conSello(k);
+    const e = { marcas: { c1: 'o', [f]: 'd' } };
+    return k === 'sin' ? Object.assign(conSello(k), { marcas: { c1: 'h', [f]: 'd' } }) : e;
+  }
+  function leeSostiene(k, f) {
+    const n = { a: 1, b: 2, d: 3 }[f], otras = Object.keys(CON[k].marcas).filter(x => x !== f).map(x => ({ a: 1, b: 2, d: 3 }[x]));
+    if (k === 'sin') return [sin(`La ${n} no la sostiene`), ' · ninguna la sostiene'];
+    if (!usa(k, f)) return [impl(`La ${n} no la sostiene`), ' · busca otra'];
+    return [corto(CON[k].sello[1] === 'd' ? impl : ev, CON[k].dice), otras.length ? ` · con la ${otras.join(' y la ')}` : ''];
+  }
   const deduccion = {
     id: 'necesaria-probable',
     titulo: 'Necesaria, probable o sin respaldo',
@@ -55,10 +78,15 @@
     juega: {
       consigna: 'Prueba tres conclusiones con el texto. Mira qué frases usa cada una y qué tan segura es.',
       voz: 'Señala qué frase permite sostenerla.',
-      controles: [{ id: 'k', etiqueta: 'Conclusión', opciones: [{ valor: 'nec', texto: 'el código' }, { valor: 'prob', texto: 'la hora' }, { valor: 'sin', texto: 'aprobar' }] }],
-      dibujo: val => ({ datos: texto(INS, [conclusion(CON[val.k].t)]), estado: { marcas: Object.assign({ c1: CON[val.k].sello[1] === 'h' ? 'h' : 'o' }, CON[val.k].marcas), sellos: { c: { t: CON[val.k].sello[0], c: CON[val.k].sello[1] } } } }),
-      lectura: val => [corto(CON[val.k].sello[1] === 'h' ? sin : CON[val.k].sello[1] === 'd' ? impl : ev, CON[val.k].dice)],
+      controles: [
+        { id: 'k', etiqueta: 'Conclusión', opciones: [{ valor: 'nec', texto: 'el código' }, { valor: 'prob', texto: 'la hora' }, { valor: 'sin', texto: 'aprobar' }] },
+        { id: 'f', etiqueta: 'Frase', opciones: [{ valor: 'a', texto: '1' }, { valor: 'b', texto: '2' }, { valor: 'd', texto: '3' }], inicio: 'd' },
+      ],
+      dibujo: val => ({ datos: texto(INS, [conclusion(CON[val.k].t)]), estado: sostiene(val.k, val.f) }),
+      lectura: val => leeSostiene(val.k, val.f),
       minimo: 3,
+      // Arrastra el marcador por el texto: el sello de la conclusión aparece cuando lo sueltas en una frase que la sostiene.
+      arrastres: [marcador('f', val => texto(INS, [conclusion(CON[val.k].t)]), ['a', 'b', 'd'], 'marcador de la evidencia')],
     },
     predice: {
       pregunta: 'Según el texto de la laguna, ¿qué conclusión se puede sacar?',
@@ -82,7 +110,7 @@
     },
     regla: {
       texto: 'Una inferencia deductiva es necesaria: si las premisas son verdad, la conclusión también. Una inductiva generaliza un patrón: es probable, no segura. Sin evidencia, no hay inferencia.',
-      ecuacion: [ev('premisas'), ' ⇒ ', concl('necesaria'), '   ·   ', ev('casos'), ' → ', impl('probable')],
+      ecuacion: [{ llave: [ev('premisas'), ' ⇒ ', concl('necesaria')], nota: 'deducción', color: 'c-o' }, '   ·   ', { llave: [ev('casos'), ' → ', impl('probable')], nota: 'inducción', color: 'c-d' }],
       condicion: 'se señala qué frase la sostiene; que algo pudiera ser cierto no basta.',
     },
     ahoraTu: {
@@ -115,6 +143,9 @@
     volvio: { frs: [['a', 'Hoy, Juan'], ['w', 'volvió a'], ['b', 'llegar tarde.']], marcas: { w: 'd' }, dice: 'Implícito: ya llegó tarde antes', implicito: 'ya llegó tarde antes' },
     siempre: { frs: [['a', 'Hoy, Juan llegó tarde,'], ['w', 'como siempre.']], marcas: { w: 'd' }, dice: 'Implícito: suele llegar tarde', implicito: 'suele llegar tarde' },
   };
+  // El juego y «Mira» usan la misma figura: la oración y, debajo, el banco de palabras (hallazgo 9).
+  const BANCO = [['nada', 'sin palabra'], ['volvio', 'volvió a'], ['siempre', 'como siempre']];
+  const figVari = k => texto(VARI[k].frs, [{ id: 'banco', titulo: 'Prueba con', modo: 'parrafo', fragmentos: BANCO.map(([v, t]) => ({ id: `p-${v}`, t })) }]);
   const implicito = {
     id: 'implicito',
     titulo: 'Lo que se dice sin decir',
@@ -124,9 +155,11 @@
       consigna: 'Cambia una palabra de la oración. Mira qué da por supuesto el texto aunque no lo diga.',
       voz: 'Una sola palabra puede cargar información.',
       controles: [{ id: 'k', etiqueta: 'Oración', opciones: [{ valor: 'nada', texto: 'llegó tarde' }, { valor: 'volvio', texto: 'volvió a llegar' }, { valor: 'siempre', texto: 'como siempre' }] }],
-      dibujo: val => ({ datos: texto(VARI[val.k].frs), estado: { marcas: VARI[val.k].marcas, sellos: { o: { t: val.k === 'nada' ? 'Nada implícito' : 'Hay algo implícito', c: val.k === 'nada' ? 'o' : 'd' } } } }),
+      dibujo: val => ({ datos: figVari(val.k), estado: { marcas: Object.assign({ [`p-${val.k}`]: 'o' }, VARI[val.k].marcas), sellos: { o: { t: val.k === 'nada' ? 'Nada implícito' : 'Hay algo implícito', c: val.k === 'nada' ? 'o' : 'd' } } } }),
       lectura: val => [corto(impl, VARI[val.k].dice)],
       minimo: 3,
+      // Arrastra el marcador por el banco: la palabra que sueltas entra en la oración.
+      arrastres: [marcador('k', val => figVari(val.k), BANCO.map(([v]) => `p-${v}`), 'palabra que entra en la oración', 'c-o', v => `p-${v}`, id => id.slice(2))],
     },
     predice: {
       pregunta: '¿Qué da por supuesto la oración de doña Elena?',
@@ -140,7 +173,7 @@
       coincide: 'Coincide: «ya no» supone un antes distinto; eso es información implícita.',
     },
     mira: {
-      datos: texto(VARI.volvio.frs),
+      datos: figVari('volvio'),
       pasos: [
         { estado: { marcas: { b: 'i' } }, texto: 'Lo explícito: hoy Juan llegó tarde.', ecuacion: [ev('explícito'), ': hoy, tarde'] },
         { estado: { marcas: { b: 'i', w: 'd' }, nuevo: ['w'] }, texto: '«Volvió a» supone que ya había pasado antes.', ecuacion: [impl('volvió a'), ' → antes también'] },
@@ -149,7 +182,7 @@
     },
     regla: {
       texto: 'La información implícita no está escrita, pero el texto la da por supuesta: palabras como «volvió a», «ya no» o «también» la cargan. Se infiere sin agregar más.',
-      ecuacion: [ev('lo escrito'), ' + ', impl('lo supuesto'), ' = lo que comunica'],
+      ecuacion: [ev('lo escrito'), ' + ', { llave: [impl('lo supuesto')], nota: 'no está escrito', color: 'c-d' }, ' = lo que comunica'],
       condicion: 'lo implícito sale de una palabra o frase concreta del texto; si no hay de dónde sacarlo, no está.',
     },
     ahoraTu: {
@@ -191,6 +224,7 @@
       dibujo: val => ({ datos: texto(AVI), estado: { marcas: { [val.k]: val.k === 'p3' ? 'd' : 'i' } } }),
       lectura: val => [corto(val.k === 'p3' ? impl : ev, PARTE[val.k])],
       minimo: 3,
+      arrastres: [marcador('k', () => texto(AVI), ['p1', 'p2', 'p3'], 'marcador de la parte del aviso')],
     },
     predice: {
       pregunta: 'Este texto de una vecina, leído completo, ¿qué busca?',
@@ -213,7 +247,7 @@
     },
     regla: {
       texto: 'La intención de un texto es lo que busca lograr en quien lo lee (informar, convencer, pedir, convocar). Se infiere integrando todas sus partes, no de una frase suelta.',
-      ecuacion: [ev('partes'), ' integradas → ', impl('intención')],
+      ecuacion: [ev('partes'), ' integradas → ', { llave: [impl('intención')], nota: 'lo que busca', color: 'c-d' }],
       condicion: 'se apoya en señales del texto (a quién habla, qué pide, cómo cierra); sin ellas, es una suposición.',
     },
     ahoraTu: {
@@ -236,9 +270,35 @@
     },
   };
 
+  // ---------- Laboratorio: tapa una premisa ----------
+  // Más que el juego de la idea 1: una cinta tapa una frase del texto y se recalcula la fuerza de cada conclusión. El
+  // caso que la idea no deja ver: a una deducción le basta perder una premisa para quedarse sin respaldo. La fuerza
+  // sale de qué frases necesita cada conclusión (CON[k].marcas): si falta alguna, queda sin respaldo.
+  const figTapa = k => texto(INS, [conclusion(CON[k].t), { id: 'bandeja', titulo: 'Cinta', modo: 'parrafo', fragmentos: [{ id: 'cinta', t: 'sin usar' }] }]);
+  const fuerza = (k, t) => (Object.keys(CON[k].marcas).length && !Object.keys(CON[k].marcas).includes(t) ? CON[k].sello : ['Sin respaldo', 'h']);
+  const mesaTapa = {
+    id: 'tapa-premisa', titulo: 'Tapa una premisa', pieza: 'rv-texto',
+    consigna: 'Elige una conclusión y arrastra la cinta para tapar una frase del texto. Mira qué conclusión resiste sin ella.',
+    voz: 'Una deducción necesita todas sus premisas.',
+    controles: [
+      { id: 'k', etiqueta: 'Conclusión', opciones: [{ valor: 'nec', texto: 'el código' }, { valor: 'prob', texto: 'la hora' }, { valor: 'sin', texto: 'aprobar' }] },
+      { id: 't', etiqueta: 'Tapar', opciones: [{ valor: 'no', texto: 'nada' }, { valor: 'a', texto: '1' }, { valor: 'b', texto: '2' }, { valor: 'd', texto: '3' }] },
+    ],
+    dibujo: val => {
+      const s = fuerza(val.k, val.t), marcas = { c1: s[1] === 'h' ? 'h' : 'o' };
+      for (const f of Object.keys(CON[val.k].marcas)) if (f !== val.t) marcas[f] = s[1] === 'h' ? 'd' : 'i';
+      return { datos: figTapa(val.k), estado: { tapar: val.t === 'no' ? [] : [val.t, 'cinta'], marcas, sellos: { c: { t: s[0], c: s[1] } } } };
+    },
+    lectura: val => {
+      const s = fuerza(val.k, val.t), quita = val.t === 'no' ? 'Sin tapar' : `Sin la ${{ a: 1, b: 2, d: 3 }[val.t]}`;
+      return [quita, ': ', (s[1] === 'h' ? sin : s[1] === 'd' ? impl : ev)(s[0].toLowerCase())];
+    },
+    arrastres: [marcador('t', val => figTapa(val.k), ['a', 'b', 'd', 'cinta'], 'cinta que tapa una frase', 'c-h', v => (v === 'no' ? 'cinta' : v), id => (id === 'cinta' ? 'no' : id))],
+  };
+
   return {
     unidad: 'razonamiento-verbal.inferencias',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -246,6 +306,11 @@
       pregunta: '¿Qué te permite decir el texto, aunque no lo escriba?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Grice; Sperber y Wilson)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/inferencia.htm' },
     },
+    laboratorio: [
+      mesaTapa,
+      Object.assign({ id: 'implicito', titulo: 'Lo que se dice sin decir', pieza: 'rv-texto' }, implicito.juega),
+      Object.assign({ id: 'intencion', titulo: 'La intención del aviso', pieza: 'rv-texto' }, intencion.juega),
+    ],
     ideas: [deduccion, implicito, intencion],
   };
 });
