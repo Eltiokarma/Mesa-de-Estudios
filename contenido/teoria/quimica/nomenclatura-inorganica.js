@@ -63,6 +63,13 @@
     const e = ESPECIES[k];
     return fichas([{ t: `${e.x} ${sg(wx)}`, carga: wx, n: 1, color: 'd' }, ...e.fijos.map(grupo)], { neta: 'suma de estados' });
   }
+  // Gesto sobre quim-fichas: el átomo que falta va primero, así que sus |ω|·n cargas son los primeros cuadritos de su
+  // fila (arriba si ω > 0, abajo si ω < 0). La manija va en el último; con ω = 0, entre las dos filas (x = 30).
+  // Inversa: k = (x − 47)/17 + 1 cuadritos, ω = ±k/n según la fila (frontera en y = 127).
+  const PF = () => Kit.piezas['quim-fichas'];
+  const arrastreVerde = (dib, nAt, id) => ({ id: 'estado', etiqueta: 'final de las cargas del átomo verde', color: 'c-d',
+    donde: val => { const k = val[id] * nAt(val), g = PF().geometria(dib(val).datos); return k === 0 ? { x: 30, y: 127 } : g.cuadrito(Math.abs(k) - 1, k > 0 ? '+' : '−'); },
+    mover: (pt, val) => { const k = (pt.x - 47) / 17 + 1; return { [id]: (pt.y < 127 ? k : -k) / nAt(val) }; } });
   const oxidacion = {
     id: 'estados-oxidacion',
     titulo: 'La suma da la carga',
@@ -78,9 +85,12 @@
       dibujo: val => oxDib(val.k, val.w),
       lectura: val => {
         const e = ESPECIES[val.k], suma = val.w + e.fijos.reduce((a, [, c, n]) => a + c * n, 0);
-        return [`Suma ${sg(suma)} · carga de ${e.t}: `, z, ` = ${sg(e.z)}${suma === e.z ? ' ✓' : ''}`];
+        return [`suma ${sg(suma)}`, '   ·   ', `carga de ${e.t}: `, z, ` = ${sg(e.z)}${suma === e.z ? ' ✓' : ''}`];
       },
       minimo: 4,
+      // Se agarra el final de los cuadritos verdes (las cargas del átomo que falta) y se estira o se encoge; si se
+      // lleva a la fila de abajo, el estado pasa a negativo. La carga sin pareja responde.
+      arrastres: [arrastreVerde(val => oxDib(val.k, val.w), () => 1, 'w')],
     },
     predice: {
       pregunta: ['En el agua oxigenada, H₂O₂, cada H vale +1 y la molécula es neutra. ¿Qué estado de oxidación ', w, ' tiene cada O?'],
@@ -107,7 +117,7 @@
     },
     regla: {
       texto: 'Asigna los valores conocidos: O −2, H +1 con no metales, grupo 1 +1, grupo 2 +2. El valor que falta sale de que la suma iguale la carga.',
-      ecuacion: ['Σ n · ', w, ' = ', z],
+      ecuacion: ['Σ n · ', { llave: [w], nota: 'cada estado', color: 'c-d' }, ' = ', { llave: [z], nota: 'carga', color: 'c-h' }],
       condicion: 'es una cuenta formal, no la carga real. En peróxidos el O vale −1; en hidruros metálicos, el H vale −1.',
       voz: 'Primero los conocidos; el que falta cierra la cuenta.',
     },
@@ -182,12 +192,12 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Sistemática: cuenta átomos con prefijos. 2 Fe y 3 O.', ecuacion: ['Fe₂O₃ → tri-óxido de di-hierro'] },
         { estado: { corte: 2 }, texto: 'Stock: el estado del hierro, en romanos.', ecuacion: ['2', w, ' + 3 · (−2) = 0 → ', w, ' = +3 → (III)'] },
-        { estado: { corte: 3 }, texto: 'Tradicional: el hierro tiene +2 y +3; el mayor lleva -ico.', ecuacion: ['+3 → férrico   ·   +2 → ferroso'] },
+        { estado: { corte: 3 }, texto: 'Tradicional: el hierro tiene +2 y +3; el mayor lleva -ico.', ecuacion: ['+3 → férrico', '   ·   ', '+2 → ferroso'] },
       ],
     },
     regla: {
       texto: 'Sistemática: prefijos que cuentan átomos. Stock: el estado de oxidación en romanos. Tradicional: -oso para el estado menor e -ico para el mayor.',
-      ecuacion: ['Fe₂O₃: trióxido de dihierro = óxido de hierro(III) = óxido férrico'],
+      ecuacion: ['Fe₂O₃: trióxido de dihierro = óxido de hierro', { llave: ['(III)'], nota: 'estado +3' }, ' = óxido férrico'],
       condicion: 'el romano es el estado de oxidación, no un conteo de átomos; se omite si hay un solo estado (óxido de sodio).',
       voz: 'Antes de nombrar, decide qué sistema te piden.',
     },
@@ -246,7 +256,7 @@
       voz: 'Compara un metal con un no metal en el mismo camino.',
       controles: [{ id: 'k', etiqueta: 'Elemento', opciones: Object.keys(ELEM).map(k => ({ valor: k, texto: ELEM[k].nom })) }],
       dibujo: val => arbol(val.k),
-      lectura: val => { const e = ELEM[val.k]; return [`${e.nom}: ${e.metal ? 'metal, da hidróxido' : 'no metal, da oxácido'} · `, w, ` = +${e.w}`]; },
+      lectura: val => { const e = ELEM[val.k]; return [`${e.nom}: ${e.metal ? 'metal, da hidróxido' : 'no metal, da oxácido'}`, '   ·   ', w, ` = +${e.w}`]; },
       minimo: 4,
     },
     predice: {
@@ -268,7 +278,7 @@
       voz: 'Sumemos átomos enteros en cada paso.',
       pasos: [
         { estado: { corte: 1 }, texto: 'Azufre con estado +6 y oxígeno.', ecuacion: ['2 S + 3 O₂'] },
-        { estado: { corte: 2 }, texto: 'El óxido: S₂O₆ se simplifica a SO₃ (óxido ácido).', ecuacion: ['S: +6 · O: 3 · (−2) = −6'] },
+        { estado: { corte: 2 }, texto: 'El óxido: S₂O₆ se simplifica a SO₃ (óxido ácido).', ecuacion: ['S: +6', '   ·   ', 'O: 3 · (−2) = −6'] },
         { estado: { corte: 3 }, texto: 'Con agua se suman sus átomos: ácido sulfúrico.', ecuacion: ['SO₃ + H₂O → H₂SO₄'] },
         { estado: { corte: 4 }, texto: 'Un metal da óxido básico: CaO.', ecuacion: ['2 Ca + O₂ → 2 CaO'] },
         { estado: { corte: 5 }, texto: 'Con agua, un hidróxido: el ion OH⁻ va entero.', ecuacion: ['CaO + H₂O → Ca(OH)₂'] },
@@ -276,7 +286,7 @@
     },
     regla: {
       texto: 'Metal con oxígeno: óxido básico; con agua, hidróxido. No metal con oxígeno: óxido ácido; con agua, oxácido. Con hidrógeno: hidruros, e hidrácidos en agua.',
-      ecuacion: ['SO₃ + H₂O → H₂SO₄   ·   CaO + H₂O → Ca(OH)₂'],
+      ecuacion: ['SO₃ + H₂O → H₂SO₄', '   ·   ', 'CaO + H₂O → Ca(OH)₂'],
       condicion: 'el peróxido (O₂²⁻, O a −1) no se simplifica: Na₂O₂ no es NaO. HCl y H₂S son ácidos disueltos en agua.',
       voz: 'Cada paso suma átomos enteros; el estado no cambia.',
     },
@@ -368,7 +378,7 @@
     },
     regla: {
       texto: 'Una sal junta el catión de una base con el anión de un ácido. Se usan las cantidades mínimas que dejan la suma de cargas en cero.',
-      ecuacion: ['Σ n · ', z, ' = 0   →   Al₂(SO₄)₃'],
+      ecuacion: ['Σ n · ', z, ' = 0   →   Al₂', { llave: ['(SO₄)₃'], nota: 'ion entero' }],
       condicion: 'el ion poliatómico no se rompe: va entre paréntesis si se repite. Haloidea: anión sin oxígeno (cloruro); oxisal: con oxígeno.',
       voz: 'Primero los iones y sus cargas; después la proporción.',
     },
@@ -445,7 +455,7 @@
     },
     regla: {
       texto: 'Sal ácida: el anión conserva H (HCO₃⁻). Sal básica: lleva OH⁻ además del anión. Sal hidratada: moléculas de agua enteras en el cristal (·5H₂O).',
-      ecuacion: ['NaHCO₃ · Mg(OH)Cl · CuSO₄·5H₂O'],
+      ecuacion: [{ llave: ['NaHCO₃'], nota: 'ácida' }, '   ·   ', { llave: ['Mg(OH)Cl'], nota: 'básica' }, '   ·   ', { llave: ['CuSO₄·5H₂O'], nota: 'hidratada' }],
       condicion: 'el agua de cristalización no tiene carga ni se mezcla con los OH de un hidróxido; se nombra con prefijos: pentahidrato.',
       voz: 'Una ficha distinta decide la clase.',
     },
@@ -466,6 +476,23 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: la sal armada a mano. El alumno pone cuántas fichas de cada ion; la cuenta dice si quedó neutra.
+  // La fila de + es del catión y la de − del anión: estirar el final de cada fila agrega fichas enteras.
+  const CATL = ['Na', 'Ca', 'Al', 'NH4'], ANL = ['Cl', 'S', 'CO3', 'SO4', 'PO4'];  // sin NO₃⁻: «NaNO₃» dispara el aviso de NaN del validador
+  const salMano = v => { const C = CAT[v.c], A = AN[v.a]; return fichas([{ t: C[0], carga: C[2], n: v.nc, color: 'o' }, { t: A[0], carga: -A[2], n: v.na, color: 'i' }],
+    { neta: 'carga neta', alt: `${v.nc} ${C[0]} y ${v.na} ${A[0]}: carga neta ${sg(v.nc * C[2] - v.na * A[2])}.` }); };
+  const filaFin = (q, n, signo) => PF().geometria({ fichas: [] }).cuadrito(q * n - 1, signo);
+  // Mesa 2: estados de oxidación con los casos raros: peróxido (O −1), hidruro (H −1) y dos átomos que comparten.
+  const RAROS = {
+    h2o2: { t: 'H₂O₂', z: 0, x: 'O', nx: 2, fijos: [['H', 1, 2]] },
+    nah: { t: 'NaH', z: 0, x: 'H', nx: 1, fijos: [['Na', 1, 1]] },
+    s2o3: { t: 'S₂O₃²⁻', z: -2, x: 'S', nx: 2, fijos: [['O', -2, 3]] },
+    hno3: { t: 'HNO₃', z: 0, x: 'N', nx: 1, fijos: [['H', 1, 1], ['O', -2, 3]] },
+  };
+  const raroDib = v => { const e = RAROS[v.k]; return fichas([{ t: `${e.x}${sub(e.nx)} ${e.nx > 1 ? `${e.nx}·(${sg(v.w)})` : sg(v.w)}`, carga: v.w * e.nx, n: 1, color: 'd' }, ...e.fijos.map(grupo)],
+    { neta: 'suma de estados', alt: `${e.t} con ${e.x} a ${sg(v.w)}: suma ${sg(v.w * e.nx + e.fijos.reduce((a, [, c, n]) => a + c * n, 0))}, carga ${sg(e.z)}.` }); };
+
   return {
     unidad: 'quimica.nomenclatura-inorganica',
     version: '0.1.0',
@@ -476,6 +503,44 @@
       pregunta: '¿Qué tendría que decir un nombre para reconstruir la fórmula?',
       fuente: { titulo: 'IUPAC, Brief Guide to Inorganic Nomenclature', url: 'https://iupac.org/what-we-do/nomenclature/brief-guides/' },
     },
+    // Laboratorio (docs/teoria.md §4b), sin preguntas. La primera mesa suelta el número de fichas (la idea 4 lo pone
+    // sola): el alumno puede dejar la sal cargada y ver por qué no vale. La segunda trae los casos raros que la idea 1
+    // deja para la predicción: peróxido, hidruro y dos átomos del mismo elemento.
+    laboratorio: [
+      {
+        id: 'sal-a-mano', titulo: 'La sal armada a mano', pieza: 'quim-fichas',
+        consigna: 'Elige un catión y un anión, y pon tú las fichas. Estira cada fila de cuadritos hasta que no quede carga sin pareja.',
+        controles: [
+          { id: 'c', etiqueta: 'Catión', opciones: CATL.map(k => ({ valor: k, texto: CAT[k][0] })) },
+          { id: 'a', etiqueta: 'Anión', opciones: ANL.map(k => ({ valor: k, texto: AN[k][0] })) },
+          { id: 'nc', etiqueta: 'fichas de catión', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
+          { id: 'na', etiqueta: 'fichas de anión', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
+        ],
+        dibujo: v => salMano(v),
+        lectura: v => {
+          const C = CAT[v.c], A = AN[v.a], q = v.nc * C[2] - v.na * A[2], x = sal(v.c, v.a);
+          return [q !== 0 ? `${v.nc} ${C[0]} + ${v.na} ${A[0]}: carga ${sg(q)}, no es neutra` : v.nc === x.nc ? `${x.fo}: ${x.nombre} ✓` : `neutra, pero se simplifica a ${x.fo}`];
+        },
+        // El final de cada fila: arriba, las cargas del catión (q por ficha); abajo, las del anión.
+        arrastres: [
+          { id: 'cation', etiqueta: 'final de las cargas del catión', color: 'c-o',
+            donde: v => filaFin(CAT[v.c][2], v.nc, '+'), mover: (pt, v) => ({ nc: ((pt.x - 47) / 17 + 1) / CAT[v.c][2] }) },
+          { id: 'anion', etiqueta: 'final de las cargas del anión', color: 'c-i',
+            donde: v => filaFin(AN[v.a][2], v.na, '−'), mover: (pt, v) => ({ na: ((pt.x - 47) / 17 + 1) / AN[v.a][2] }) },
+        ],
+      },
+      {
+        id: 'estados-raros', titulo: 'Peróxidos, hidruros y pares', pieza: 'quim-fichas',
+        consigna: 'Ajusta el estado del átomo verde hasta que la suma iguale la carga. Aquí el oxígeno o el hidrógeno no valen lo de siempre.',
+        controles: [
+          { id: 'k', etiqueta: 'Especie', opciones: Object.keys(RAROS).map(k => ({ valor: k, texto: RAROS[k].t })) },
+          { id: 'w', etiqueta: 'ω', color: 'c-d', min: -3, max: 7, paso: 1, inicio: 0, decimales: 0 },
+        ],
+        dibujo: v => raroDib(v),
+        lectura: v => { const e = RAROS[v.k], suma = v.w * e.nx + e.fijos.reduce((a, [, c, n]) => a + c * n, 0); return [`${e.x} ${sg(v.w)} en ${e.t}: suma ${sg(suma)}, carga ${sg(e.z)}${suma === e.z ? ' ✓' : ''}`]; },
+        arrastres: [arrastreVerde(raroDib, v => RAROS[v.k].nx, 'w')],
+      },
+    ],
     ideas: [oxidacion, tipos, funciones, sales, especiales],
   };
 });

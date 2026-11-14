@@ -50,6 +50,11 @@
 
   const ATOMOS = { N: { estilo: 'punto', r: 5.5 }, O: { color: 'h', estilo: 'lleno', r: 5.5 }, He: { color: 'd', estilo: 'hueco', r: 5 }, H: { color: 'i', estilo: 'hueco', r: 4.5 } };
   const ESPECIES = { N2: [['N', -5, 0], ['N', 5, 0]], O2: [['O', -5, 0], ['O', 5, 0]], He: [['He', 0, 0]], H2: [['H', -4, 0], ['H', 4, 0]] };
+  // Gesto directo (docs/teoria.md §4b): la manija del émbolo va en el centro de su placa, con la geometría de la pieza.
+  // La placa ocupa de r.y − 10 a r.y − 2 (quim-particulas: yp = r.y − 4); nivel es la fracción de la caja bajo ella.
+  const PZ = () => Kit.piezas['quim-particulas'];
+  const embolo = dib => { const g = PZ().geometria(dib.datos), r = PZ().region(dib.datos.cajas[0], g, 0); return { x: g.x(0) + g.ancho / 2, y: r.y - 6 }; };
+  const nivelEn = (dib, y) => { const g = PZ().geometria(dib.datos); return (g.y1 - (y + 2)) / (g.alto - 8); };
   const lupa = (cajas, extra = {}) => ({ datos: Object.assign({ atomos: ATOMOS, especies: ESPECIES, alto: 150, separacion: 22, cajas }, extra), estado: {} });
 
   // ---------- Idea 1: una sola condición a la vez (Boyle, Charles, Gay-Lussac) ----------
@@ -73,6 +78,10 @@
       dibujo: val => piston(val.v),
       lectura: val => [P, ` = ${f(N_MOL * R * val.t / val.v, 2)} atm · `, P, V, ` = ${f(N_MOL * R * val.t, 2)} atm·L`],
       minimo: 3,
+      // El émbolo se agarra y se empuja: el volumen es la variable del fenómeno; la presión responde en la lectura.
+      arrastres: [{ id: 'embolo', etiqueta: 'émbolo del cilindro', color: 'c-i',
+        donde: val => embolo(piston(val.v)),
+        mover: (pt, val) => ({ v: nivelEn(piston(val.v), pt.y) * 4 }) }],
     },
     predice: {
       pregunta: ['Con la temperatura fija, el émbolo baja de ', V, ' = 4 L a 2 L. Si la presión era 0,6 atm, ¿cuánto vale ahora ', P, '?'],
@@ -88,6 +97,8 @@
       coincide: 'Coincide: la mitad de volumen, el doble de presión.',
       noCoincide: 'Con T fija, P·V se mantiene: 0,6 · 4 = 1,2 · 2.',
     },
+    // Hallazgo 9 de la auditoría: son dos representaciones a propósito. El émbolo da un estado a la vez; la curva P–V
+    // junta los estados que el alumno probó en una sola figura, con el mismo color de V y P que el cilindro.
     mira: {
       pieza: 'ejes',
       datos: {
@@ -111,7 +122,7 @@
     },
     regla: {
       texto: 'Con n y T fijos, P·V no cambia (Boyle). Con n y P fijos, V/T no cambia (Charles). Con n y V fijos, P/T tampoco (Gay-Lussac).',
-      ecuacion: [{ sub: [P, '1'] }, { sub: [V, '1'] }, ' = ', { sub: [P, '2'] }, { sub: [V, '2'] }, '   ·   ', { frac: [{ sub: [V, '1'] }, { sub: [T, '1'] }] }, ' = ', { frac: [{ sub: [V, '2'] }, { sub: [T, '2'] }] }, '   ·   ', { frac: [{ sub: [P, '1'] }, { sub: [T, '1'] }] }, ' = ', { frac: [{ sub: [P, '2'] }, { sub: [T, '2'] }] }],
+      ecuacion: [{ llave: [{ sub: [P, '1'] }, { sub: [V, '1'] }], nota: 'antes' }, ' = ', { llave: [{ sub: [P, '2'] }, { sub: [V, '2'] }], nota: 'después' }, '   ·   ', { frac: [{ sub: [V, '1'] }, { sub: [T, '1'] }] }, ' = ', { frac: [{ sub: [V, '2'] }, { sub: [T, '2'] }] }, '   ·   ', { frac: [{ sub: [P, '1'] }, { sub: [T, '1'] }] }, ' = ', { frac: [{ sub: [P, '2'] }, { sub: [T, '2'] }] }],
       condicion: 'T en kelvin (T = t + 273) y P absoluta; cada ley vale solo si las otras dos variables no cambian.',
       voz: 'Primero anota qué queda fijo. Después elige la ley.',
     },
@@ -167,6 +178,10 @@
       dibujo: val => unMol(val.p, val.t),
       lectura: val => [V, ` = ${f(R * val.t / val.p, 1)} L por mol`],
       minimo: 3,
+      // Empujar el émbolo es subir la presión: la manija mueve P (V = RT/P), y el volumen que se lee es el que dejó.
+      arrastres: [{ id: 'embolo-p', etiqueta: 'émbolo: más abajo, más presión', color: 'c-o',
+        donde: val => embolo(unMol(val.p, val.t)),
+        mover: (pt, val) => { const v = Math.max(1, nivelEn(unMol(val.p, val.t), pt.y) * VMAX); return { p: R * val.t / v }; } }],
     },
     predice: {
       pregunta: ['En Juliaca la presión es unos 0,62 atm y una mañana T = 283 K. ¿Cuánto ', V, ' ocupa 1 mol de gas?'],
@@ -207,7 +222,7 @@
     },
     regla: {
       texto: 'PV = nRT une presión, volumen, moles y temperatura. Un mol ocupa RT/P: 22,4 L solo a 273 K y 1 atm. Despejando, la densidad es ρ = PM/RT.',
-      ecuacion: [P, V, ' = ', n, 'R', T, '   ·   ρ = ', { frac: [[P, 'M'], ['R', T]] }],
+      ecuacion: [{ llave: [P], nota: 'absoluta', color: 'c-o' }, V, ' = ', n, 'R', { llave: [T], nota: 'en kelvin', color: 'c-h' }, '   ·   ', 'ρ = ', { frac: [[P, 'M'], ['R', T]] }],
       condicion: 'gas ideal (presión baja, lejos de condensar), T en kelvin, P absoluta y R = 0,082 atm·L/(mol·K).',
       voz: 'El 22,4 trae sus condiciones pegadas. Revísalas.',
     },
@@ -300,7 +315,7 @@
     },
     regla: {
       texto: 'En una mezcla de gases ideales, cada gas empuja como si estuviera solo en todo el recipiente. La presión total es la suma de las parciales.',
-      ecuacion: [{ sub: [P, 'total'] }, ' = Σ', { sub: [P, 'i'] }, '   ·   ', { sub: [P, 'i'] }, ' = ', { sub: ['y', 'i'] }, ' · ', { sub: [P, 'total'] }, '   ·   ', { sub: ['y', 'i'] }, ' = ', { frac: [{ sub: [n, 'i'] }, { sub: [n, 'total'] }] }],
+      ecuacion: [{ sub: [P, 'total'] }, ' = Σ', { sub: [P, 'i'] }, '   ·   ', { sub: [P, 'i'] }, ' = ', { sub: ['y', 'i'] }, ' · ', { sub: [P, 'total'] }, '   ·   ', { llave: [{ sub: ['y', 'i'] }], nota: 'fracción molar' }, ' = ', { frac: [{ sub: [n, 'i'] }, { sub: [n, 'total'] }] }],
       condicion: 'gases ideales que no reaccionan, a la misma T y en el mismo volumen. Amagat suma volúmenes a igual P y T.',
       voz: 'Cada gas se cuenta por separado y después se suma.',
     },
@@ -345,6 +360,14 @@
       dibujo: val => { const [nom, M] = GASES[val.g]; return { datos: ejesGraham({ puntos: [{ x: M, y: Math.sqrt(32 / M), color: 'd', rotulo: `${nom}: ${f(Math.sqrt(32 / M), 2)}`, guias: true }] }), estado: {} }; },
       lectura: val => { const [nom, M] = GASES[val.g]; return [val.g === 'O2' ? 'El O₂ es la referencia: rapidez 1' : `${nom} sale ${f(Math.sqrt(32 / M), 2)} veces lo que el O₂`]; },
       minimo: 3,
+      // El punto se desliza por la curva: al soltarlo cae en el gas de masa molar más cercana (el control es de opciones).
+      arrastres: [{ id: 'gas', etiqueta: 'gas sobre la curva', color: 'c-d',
+        donde: val => { const g = Kit.piezas.ejes.geometria(ejesGraham({})), M = GASES[val.g][1]; return { x: g.X(M), y: g.Y(Math.sqrt(32 / M)) }; },
+        mover: pt => {
+          const g = Kit.piezas.ejes.geometria(ejesGraham({}));
+          const M = 0 + (pt.x - g.X(0)) * 50 / (g.X(50) - g.X(0));
+          return { g: Object.keys(GASES).reduce((a, b) => (Math.abs(GASES[b][1] - M) < Math.abs(GASES[a][1] - M) ? b : a)) };
+        } }],
     },
     predice: {
       pregunta: ['El He (4 g/mol) y el CH₄ (16 g/mol) escapan por el mismo agujero, a igual P y T. ¿Cuántas veces más rápido sale el He?'],
@@ -375,7 +398,7 @@
     },
     regla: {
       texto: 'A igual presión y temperatura, la rapidez de efusión es inversa a la raíz de la masa molar: el gas más liviano sale antes.',
-      ecuacion: [{ frac: [{ sub: ['v', '1'] }, { sub: ['v', '2'] }] }, ' = ', { raiz: { frac: [{ sub: ['M', '2'] }, { sub: ['M', '1'] }] } }, '   ·   ', { frac: [{ sub: ['t', '1'] }, { sub: ['t', '2'] }] }, ' = ', { raiz: { frac: [{ sub: ['M', '1'] }, { sub: ['M', '2'] }] } }],
+      ecuacion: [{ llave: [{ frac: [{ sub: ['v', '1'] }, { sub: ['v', '2'] }] }], nota: 'rapideces' }, ' = ', { llave: [{ raiz: { frac: [{ sub: ['M', '2'] }, { sub: ['M', '1'] }] } }], nota: 'masas molares' }, '   ·   ', { frac: [{ sub: ['t', '1'] }, { sub: ['t', '2'] }] }, ' = ', { raiz: { frac: [{ sub: ['M', '1'] }, { sub: ['M', '2'] }] } }],
       condicion: 'efusión por un orificio pequeño, a la misma P y T; la difusión real también depende de choques y corrientes.',
       voz: 'La raíz no se olvida: masa cuatro veces, rapidez dos.',
     },
@@ -452,7 +475,7 @@
     },
     regla: {
       texto: 'Con gases, la receta da los moles del gas; el volumen se calcula después con PV = nRT en las condiciones en que se mide.',
-      ecuacion: [{ sub: [n, 'gas'] }, ' = ', { sub: [n, 'A'] }, ' · ', { frac: [{ sub: ['ν', 'gas'] }, { sub: ['ν', 'A'] }] }, '   ·   ', V, ' = ', { frac: [[n, 'R', T], P] }],
+      ecuacion: [{ sub: [n, 'gas'] }, ' = ', { sub: [n, 'A'] }, ' · ', { llave: [{ frac: [{ sub: ['ν', 'gas'] }, { sub: ['ν', 'A'] }] }], nota: 'coeficientes' }, '   ·   ', V, ' = ', { frac: [[n, 'R', T], P] }],
       condicion: '22,4 L/mol solo si el gas se mide a 273 K y 1 atm; si no, la ecuación de estado.',
       voz: 'Separa la cantidad que se forma del espacio que ocupa.',
     },
@@ -476,6 +499,16 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Cilindro de 6 L como máximo; una bolita cada 0,05 mol (hasta 12). La presión va en el rótulo de la caja.
+  const labCilindro = val => lupa([{ titulo: `${f(val.n, 2)} mol a ${f(val.t, 0)} K`, forma: 'cilindro', nivel: val.v / 6,
+    particulas: [{ e: 'N2', n: Math.round(val.n / 0.05) }], rotulo: `${f(val.v, 1)} L · ${f(val.n * R * val.t / val.v, 2)} atm` }]);
+  // Mezcla: cada partícula es 0,01 mol a 300 K, así que aporta 0,246 atm·L; la presión parcial es eso entre V.
+  const KP = 0.01 * R * 300;
+  const labMezcla = val => lupa([{ titulo: `Mezcla en ${f(val.v, 1)} L`, forma: 'cilindro', nivel: val.v / 4,
+    particulas: [{ e: 'N2', n: val.a }, { e: 'O2', n: val.b }, { e: 'He', n: val.c }],
+    cuenta: [['N2', val.a], ['O2', val.b], ['He', val.c]].filter(([, k]) => k > 0).map(([e, k]) => ({ e, texto: `${f(k * KP / val.v, 2)} atm` })) }], { alto: 170 });
+
   return {
     unidad: 'quimica.gases',
     version: '0.1.0',
@@ -486,6 +519,40 @@
       pregunta: '¿Qué tendrías que dejar fijo para comparar dos medidas?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §9.2', url: 'https://openstax.org/books/chemistry-2e/pages/9-2-relating-pressure-volume-amount-and-temperature-the-ideal-gas-law' },
     },
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera junta n, V y T con rangos más amplios que las
+    // ideas (llega a presiones altas y a 100 K); la segunda junta Dalton con el émbolo: tres gases y un volumen que cambia.
+    // El título y el rótulo de cada caja dicen sus condiciones, para que una miniatura guardada se lea sola.
+    laboratorio: [
+      {
+        id: 'cilindro-completo', titulo: 'El cilindro con todo', pieza: 'quim-particulas',
+        consigna: 'Cambia la cantidad de gas, el volumen y la temperatura. Empuja el émbolo y busca la presión más alta y la más baja.',
+        controles: [
+          { id: 'n', etiqueta: 'n', color: 'c-d', min: 0.05, max: 0.6, paso: 0.05, inicio: 0.2, unidad: 'mol', decimales: 2 },
+          { id: 'v', etiqueta: 'V', color: 'c-i', min: 0.5, max: 6, paso: 0.5, inicio: 4, unidad: 'L', decimales: 1 },
+          { id: 't', etiqueta: 'T', color: 'c-h', min: 100, max: 600, paso: 50, inicio: 300, unidad: 'K', decimales: 0 },
+        ],
+        dibujo: val => labCilindro(val),
+        lectura: val => [`${f(val.n, 2)} mol · ${f(val.v, 1)} L · ${f(val.t, 0)} K → `, P, ` = ${f(val.n * R * val.t / val.v, 2)} atm`],
+        arrastres: [{ id: 'embolo', etiqueta: 'émbolo del cilindro', color: 'c-i',
+          donde: val => embolo(labCilindro(val)),
+          mover: (pt, val) => ({ v: nivelEn(labCilindro(val), pt.y) * 6 }) }],
+      },
+      {
+        id: 'mezcla-embolo', titulo: 'Tres gases bajo el émbolo', pieza: 'quim-particulas',
+        consigna: 'A 300 K, cada partícula es 0,01 mol. Agrega N₂, O₂ y He y mueve el émbolo: mira la presión de cada gas.',
+        controles: [
+          { id: 'a', etiqueta: 'N₂', min: 0, max: 10, paso: 1, inicio: 6, unidad: '', decimales: 0 },
+          { id: 'b', etiqueta: 'O₂', min: 0, max: 6, paso: 1, inicio: 2, unidad: '', decimales: 0 },
+          { id: 'c', etiqueta: 'He', min: 0, max: 6, paso: 1, inicio: 0, unidad: '', decimales: 0 },
+          { id: 'v', etiqueta: 'V', color: 'c-i', min: 1, max: 4, paso: 0.5, inicio: 2, unidad: 'L', decimales: 1 },
+        ],
+        dibujo: val => labMezcla(val),
+        lectura: val => [`${val.a} N₂ + ${val.b} O₂ + ${val.c} He en ${f(val.v, 1)} L → `, { sub: [P, 'total'] }, ` = ${f((val.a + val.b + val.c) * KP / val.v, 2)} atm`],
+        arrastres: [{ id: 'embolo', etiqueta: 'émbolo del cilindro', color: 'c-i',
+          donde: val => embolo(labMezcla(val)),
+          mover: (pt, val) => ({ v: nivelEn(labMezcla(val), pt.y) * 4 }) }],
+      },
+    ],
     ideas: [leyes, estado, dalton, graham, reaccion],
   };
 });

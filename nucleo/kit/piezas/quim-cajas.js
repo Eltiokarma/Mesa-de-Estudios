@@ -72,6 +72,15 @@
 
   function alto(d) { return TOP + (d.filas || []).length * FILA + (d.rotulo ? 30 : 6); }
 
+  // Geometría para el gesto directo (docs/teoria.md §4b): dónde cae cada caja y cada flecha, en px del viewBox.
+  // caja(i, k): fila i (de arriba abajo), caja k; flecha(i, k, j): j = 0 la de arriba (↑), 1 la de abajo (↓).
+  function geometria(d) {
+    const lado = ladoCaja(d);
+    const caja = (i, k) => { const x = X0 + k * lado, y = TOP + i * FILA; return { x, y, w: lado, h: lado, cx: x + lado / 2, cy: y + lado / 2 }; };
+    const flecha = (i, k, j) => ({ x: X0 + k * lado + Math.round(lado * (j ? 0.66 : 0.34)), y: TOP + i * FILA + lado / 2 });
+    return { lado, x0: X0, top: TOP, fila: FILA, alto: alto(d), caja, flecha };
+  }
+
   function dibujar(d, estado = {}) {
     const corte = Math.max(0, estado.corte || 0);
     CAJA = ladoCaja(d);
@@ -87,5 +96,5 @@
     return `Diagrama de orbitales: ${fs.join('; ')}${d.rotulo ? `. ${d.rotulo}` : ''}.`;
   }
 
-  return { id: 'quim-cajas', dibujar, alt, llenar };
+  return { id: 'quim-cajas', dibujar, alt, llenar, geometria };
 });

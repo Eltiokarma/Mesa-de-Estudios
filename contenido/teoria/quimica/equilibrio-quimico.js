@@ -80,8 +80,13 @@
       voz: 'Mira las dos rapideces, no solo las curvas.',
       controles: [{ id: 't', etiqueta: 't', color: 'c-i', min: 0, max: 10, paso: 1, inicio: 0, unidad: 'min', decimales: 0 }],
       dibujo: val => ({ datos: ejesEq({ puntos: [{ x: val.t, y: cA(val.t), color: 'o', guias: true }, { x: val.t, y: cB(val.t) }] }), estado: {} }),
-      lectura: val => [r, ` directa ${f(KD * cA(val.t), 3)} · inversa ${f(KI * cB(val.t), 3)} mol/(L·min)`],
+      lectura: val => [r, ` directa ${f(KD * cA(val.t), 3)} · inversa ${f(KI * cB(val.t), 3)}\u00a0mol/(L·min)`],
       minimo: 3,
+      // El punto de A se arrastra por su curva: el dedo elige el instante t (la inversa de X de la pieza ejes) y las dos
+      // rapideces responden en la lectura.
+      arrastres: [{ id: 'instante', etiqueta: 'instante sobre la curva de A', color: 'c-i',
+        donde: val => { const g = Kit.piezas.ejes.geometria(ejesEq()); return { x: g.X(val.t), y: g.Y(cA(val.t)) }; },
+        mover: pt => { const g = Kit.piezas.ejes.geometria(ejesEq()); return { t: (pt.x - g.X(0)) * 10 / (g.X(10) - g.X(0)) }; } }],
     },
     predice: {
       pregunta: 'A los 10 minutos las dos rapideces ya son iguales. ¿Cómo son en ese momento las concentraciones de A y de B?',
@@ -109,7 +114,7 @@
     },
     regla: {
       texto: 'En equilibrio, la reacción directa y la inversa siguen ocurriendo con la misma rapidez. Por eso las concentraciones no cambian, aunque no sean iguales.',
-      ecuacion: [{ sub: [r, 'directa'] }, ' = ', { sub: [r, 'inversa'] }],
+      ecuacion: [{ llave: [{ sub: [r, 'directa'] }], nota: 'A → B', color: 'c-h' }, ' = ', { llave: [{ sub: [r, 'inversa'] }], nota: 'B → A', color: 'c-h' }],
       condicion: 'en un sistema cerrado y a temperatura constante; se llega igual empezando desde los reactivos o desde los productos.',
       voz: 'Quieto por fuera, en movimiento por dentro.',
     },
@@ -182,7 +187,7 @@
     },
     regla: {
       texto: 'K es el cociente de las concentraciones de equilibrio, productos sobre reactivos, cada una elevada a su coeficiente. Sólidos y líquidos puros no entran.',
-      ecuacion: [Kp, ' = ', Kc, ' · ', { sup: ['(RT)', 'Δn'] }],
+      ecuacion: [{ llave: [Kp], nota: 'presiones', color: 'c-d' }, ' = ', { llave: [Kc], nota: 'en mol/L', color: 'c-d' }, ' · ', { sup: ['(RT)', 'Δn'] }],
       condicion: 'Δn: moles de gas de productos menos reactivos; R = 0,082 atm·L/(mol·K), T en kelvin. K solo cambia con T.',
       voz: 'Coeficientes como exponentes; sólidos fuera.',
     },
@@ -223,7 +228,7 @@
             { id: 'igual', valor: kcv, error: 'QM-KP', siFuera: 'Serían iguales solo con Δn = 0.' },
             { id: 'signo', valor: kcv * (0.082 * T) ** -dn[0], error: 'QM-DN', siFuera: 'Ese es el signo de Δn al revés: productos menos reactivos.' },
           ], x => (x >= 0.01 ? f(x, 3) : cien(x))),
-          solucion: { texto: `Δn = ${f(dn[0], 0)} (moles de gas de productos menos reactivos).`, ecuacion: [Kp, ` = ${f(kcv, 0)} · (0,082 · ${f(T, 0)})^(${f(dn[0], 0)})`] },
+          solucion: { texto: `Δn = ${f(dn[0], 0)} (moles de gas de productos menos reactivos).`, ecuacion: [Kp, ` = ${f(kcv, 0)} · `, { sup: [`(0,082 · ${f(T, 0)})`, f(dn[0], 0)] }, ` = ${kp >= 0.01 ? f(kp, 3) : cien(kp)}`] },
         };
       },
     },
@@ -263,13 +268,15 @@
       coincide: 'Coincide: 0,5 + 0,5 + 0,5 = 1,5 mol.',
       noCoincide: 'Quedan 0,5 de PCl₅ y se forman 0,5 de PCl₃ y 0,5 de Cl₂: 1,5 mol.',
     },
+    // Hallazgo 9: juego y «Mira» usan la misma lupa de inicio y equilibrio; «Mira» pasa al PCl₅ porque es la reacción que
+    // la predicción acaba de abrir, y arma con ella la tabla inicio–cambio–equilibrio con letras.
     mira: {
       datos: lupa([{ titulo: 'Inicio', forma: 'caja', particulas: [{ e: 'PCl5', n: 6, desde: 1 }] }, { titulo: 'Equilibrio', forma: 'caja', particulas: [{ e: 'PCl5', n: 3, desde: 2 }, { e: 'PCl3', n: 3, desde: 3 }, { e: 'Cl2', n: 3, desde: 3 }] }], { flechas: true }).datos,
       voz: 'Tres filas: inicio, cambio y equilibrio.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'Inicio: c mol/L de PCl₅ y nada de productos.', ecuacion: ['PCl₅: c   ·   PCl₃: 0   ·   Cl₂: 0'] },
+        { estado: { corte: 1 }, texto: 'Inicio: c mol/L de PCl₅ y nada de productos.', ecuacion: ['PCl₅: c', '   ·   ', 'PCl₃: 0', '   ·   ', 'Cl₂: 0'] },
         { estado: { corte: 2 }, texto: 'Se disocia la fracción α: el PCl₅ pierde cα.', ecuacion: ['PCl₅: c(1 − α)'] },
-        { estado: { corte: 3 }, texto: 'Cada uno que se rompe da un PCl₃ y un Cl₂.', ecuacion: ['PCl₃: cα   ·   Cl₂: cα'] },
+        { estado: { corte: 3 }, texto: 'Cada uno que se rompe da un PCl₃ y un Cl₂.', ecuacion: ['PCl₃: cα', '   ·   ', 'Cl₂: cα'] },
         { estado: { corte: 3 }, texto: 'Con c = 1 mol/L y α = 0,5 sale la constante.', ecuacion: [Kc, ' = ', { frac: ['cα · cα', 'c(1 − α)'] }, ` = ${f(1 * 0.25 / 0.5, 1)}`] },
       ],
     },
@@ -382,7 +389,7 @@
     },
     regla: {
       texto: 'Tras un cambio, compara Q con K. Si Q < K, avanza hacia productos; si Q > K, hacia reactivos; si Q = K, no se desplaza. Solo la temperatura cambia K.',
-      ecuacion: [Q, ' < ', K, ' → productos   ·   ', Q, ' > ', K, ' → reactivos'],
+      ecuacion: [{ llave: [Q], nota: 'ahora' }, ' < ', { llave: [K], nota: 'equilibrio' }, ' →\u00a0productos', '   ·   ', Q, ' > ', K, ' →\u00a0reactivos'],
       condicion: 'un gas inerte a volumen fijo no cambia Q; el catalizador acelera la llegada al equilibrio sin cambiar K.',
       voz: 'El sistema no decide nada: lo dice la comparación.',
     },
@@ -411,6 +418,19 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  const labRecta = (q, k) => rectaQK(q, k, { max: 50, cada: 2, paso: 5,
+    alt: `Recta numérica de 0 a 50 con K = ${f(k, 1)} y Q = ${f(q, 1)}: ${hacia(q, k)}.` });
+  // A ⇌ B con [A] + [B] = 1 mol/L: [A](t) = Aeq + (A0 − Aeq)·e^(−(kd + ki)t), Aeq = ki/(kd + ki).
+  const labA = (val, x) => { const aeq = val.ki / (val.kd + val.ki); return aeq + (val.a0 - aeq) * Math.exp(-(val.kd + val.ki) * x); };
+  const labCurvas = val => {
+    const A = x => labA(val, x), aeq = val.ki / (val.kd + val.ki);
+    return { datos: ejesEq({
+      curvas: [{ puntos: muestra(A, 0, 10), color: 'o', rotulo: 'A', en: [7, A(7)] }, { puntos: muestra(x => 1 - A(x), 0, 10), rotulo: 'B', en: [7, 1 - A(7)] }],
+      puntos: [{ x: val.t, y: A(val.t), color: 'o', guias: true }, { x: val.t, y: 1 - A(val.t) }],
+      alt: `A ⇌ B con k de ida ${f(val.kd, 2)} y de vuelta ${f(val.ki, 2)} por minuto, empezando con ${f(val.a0, 1)} mol/L de A: se aplanan en ${f(aeq, 2)} de A y ${f(1 - aeq, 2)} de B.` }), estado: {} };
+  };
+
   return {
     unidad: 'quimica.equilibrio-quimico',
     version: '0.1.0',
@@ -421,6 +441,44 @@
       pregunta: '¿Cómo puede algo estar quieto si por dentro sigue cambiando?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §13.2 y §13.3', url: 'https://openstax.org/books/chemistry-2e/pages/13-3-shifting-equilibria-le-chateliers-principle' },
     },
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera deja armar cualquier mezcla de NO₂ y N₂O₄ (y
+    // calentar): el punto Q se arrastra por la recta y se ve hacia dónde tendría que ir. La segunda cambia las dos
+    // constantes de rapidez y el punto de partida (solo A, solo B o mitad): se llega al mismo equilibrio desde cualquier
+    // lado, que la idea 1 solo enuncia. Las lecturas dicen entradas y resultado, para que el caso guardado se lea solo.
+    laboratorio: [
+      {
+        id: 'mezcla-libre', titulo: 'Arma la mezcla y compara', pieza: 'recta',
+        consigna: 'Elige [NO₂], [N₂O₄] y la temperatura. Arrastra Q por la recta y lee hacia dónde avanza 2 NO₂ ⇌ N₂O₄.',
+        controles: [
+          { id: 'a', etiqueta: '[NO₂]', color: 'c-o', min: 0.2, max: 0.6, paso: 0.05, inicio: 0.3, unidad: 'mol/L', decimales: 2 },
+          { id: 'b', etiqueta: '[N₂O₄]', color: 'c-o', min: 0.1, max: 2, paso: 0.1, inicio: 0.9, unidad: 'mol/L', decimales: 1 },
+          { id: 'T', etiqueta: 'T', opciones: [{ valor: 10, texto: 'Frío (K = 10)' }, { valor: 4, texto: 'Caliente (K = 4)' }] },
+        ],
+        dibujo: val => ({ datos: labRecta(qDe(val.a, val.b), val.T), estado: {} }),
+        lectura: val => [`${f(val.a, 2)} y ${f(val.b, 1)} mol/L → `, Q, ` = ${f(qDe(val.a, val.b), 1)}: ${hacia(qDe(val.a, val.b), val.T).split(' (')[0]}`],
+        // Q se agarra y se corre: con [NO₂] fijo, mover Q es cambiar [N₂O₄] = Q·[NO₂]² (la inversa exacta de donde).
+        arrastres: [{ id: 'q', etiqueta: 'Q de la mezcla: mueve el N₂O₄', color: 'c-o',
+          donde: val => { const g = Kit.piezas.recta.geometria(labRecta(qDe(val.a, val.b), val.T)), q = qDe(val.a, val.b);
+            return { x: g.x(q), y: g.filaY(Math.abs(q - val.T) > 1e-9 ? 1 : 2) }; },
+          mover: (pt, val) => { const g = Kit.piezas.recta.geometria(labRecta(qDe(val.a, val.b), val.T)), q = (pt.x - g.x(0)) * 50 / (g.x(50) - g.x(0));
+            return { b: q * val.a * val.a }; } }],
+      },
+      {
+        id: 'desde-cualquier-lado', titulo: 'Desde cualquier lado', pieza: 'ejes',
+        consigna: 'Cambia las rapideces de ida y de vuelta y desde dónde empieza A ⇌ B. Arrastra el instante y mira dónde se aplanan.',
+        controles: [
+          { id: 'kd', etiqueta: 'k ida', color: 'c-h', min: 0.1, max: 0.5, paso: 0.05, inicio: 0.3, unidad: '/min', decimales: 2 },
+          { id: 'ki', etiqueta: 'k vuelta', color: 'c-h', min: 0.1, max: 0.5, paso: 0.05, inicio: 0.15, unidad: '/min', decimales: 2 },
+          { id: 'a0', etiqueta: 'Empieza', opciones: [{ valor: 1, texto: 'Solo A' }, { valor: 0, texto: 'Solo B' }, { valor: 0.5, texto: 'Mitad y mitad' }] },
+          { id: 't', etiqueta: 't', color: 'c-i', min: 0, max: 10, paso: 1, inicio: 2, unidad: 'min', decimales: 0 },
+        ],
+        dibujo: val => labCurvas(val),
+        lectura: val => { const A = labA(val, val.t); return [K, ` = ${f(val.kd / val.ki, 2)} · a los ${val.t} min: A ${f(A, 2)}, B ${f(1 - A, 2)}`]; },
+        arrastres: [{ id: 'instante', etiqueta: 'instante sobre la curva de A', color: 'c-i',
+          donde: val => { const g = Kit.piezas.ejes.geometria(labCurvas(val).datos); return { x: g.X(val.t), y: g.Y(labA(val, val.t)) }; },
+          mover: (pt, val) => { const g = Kit.piezas.ejes.geometria(labCurvas(val).datos); return { t: (pt.x - g.X(0)) * 10 / (g.X(10) - g.X(0)) }; } }],
+      },
+    ],
     ideas: [dinamico, kc, grado, chatelier],
   };
 });

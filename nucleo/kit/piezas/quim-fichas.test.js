@@ -27,3 +27,11 @@ test('comunes: sana, pura y alto fijo', () => {
   const s0 = P.dibujar(D, { corte: 0 }), s1 = P.dibujar(D, { corte: 1 });
   sana(s0); sana(s1); assert.equal(alto(s0), alto(s1)); assert.equal(s0, P.dibujar(D, { corte: 0 }));
 });
+test('geometría: una caja por copia, en orden y dentro de la figura', () => {
+  const g = P.geometria(D);
+  assert.equal(g.cajas.length, 4);
+  for (let i = 1; i < g.cajas.length; i++) assert.ok(g.cajas[i].x > g.cajas[i - 1].x + g.cajas[i - 1].w - 1e-9);
+  assert.ok(g.cajas[0].x >= 0 && g.cajas[3].x + g.cajas[3].w <= 320);
+  const s = P.dibujar(D, { corte: 1 }), q = g.cuadrito(0, '+');
+  assert.ok(s.includes(`<rect x="${q.x - 7}" y="${q.y - 7}"`));
+});

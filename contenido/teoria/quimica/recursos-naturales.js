@@ -64,6 +64,9 @@
     elementos: [...FRAC.map((x, i) => ({ tipo: 'intervalo', a: x.a, b: x.b, ca: x.ca, cb: x.cb, color: i % 2 ? 'i' : 'o', rotulo: rot ? x.n : undefined, fila: i + 1 })), ...extra],
     alt: 'Intervalos de ebullición aproximados de las fracciones del petróleo: gases hasta 30 °C, gasolina 30 a 200, queroseno 150 a 275, diésel 250 a 350 y residuo sobre 350 °C. Se traslapan: cada fracción es una mezcla.',
   });
+  // Geometría de la recta de la torre (min 0, max 400): x(T) y su inversa, para el gesto directo.
+  const GR = () => Kit.piezas.recta.geometria(torre());
+  const tDeX = x => { const g = GR(); return 400 * (x - g.x(0)) / (g.x(400) - g.x(0)); };
   const hierven = t => FRAC.filter(x => (x.a === null || t >= x.a) && (x.b === null || t <= x.b)).map(x => x.n);
   const destilar = {
     id: 'destilar-separa',
@@ -77,6 +80,10 @@
       dibujo: val => ({ datos: torre([{ tipo: 'punto', x: val.t, color: 'h', rotulo: `${f(val.t, 0)} °C`, fila: 0 }]), estado: {} }),
       lectura: val => [`A ${f(val.t, 0)} °C hierven: ${hierven(val.t).join(' y ') || 'ninguna'}.`],
       minimo: 3,
+      // Se agarra el punto del plato y se corre por el eje de temperatura: las fracciones que hierven responden.
+      arrastres: [{ id: 'plato', etiqueta: 'temperatura del plato', color: 'c-h',
+        donde: val => ({ x: GR().x(val.t), y: GR().filaY(0) }),
+        mover: pt => ({ t: tDeX(pt.x) }) }],
     },
     predice: {
       pieza: 'quim-cadena',
@@ -92,6 +99,9 @@
       coincide: 'Coincide: la destilación separa por volatilidad; las moléculas no cambian.',
       noCoincide: 'La destilación solo separa: cada fracción trae moléculas que ya estaban.',
     },
+    // Hallazgo 9 de la auditoría: son dos representaciones a propósito. La recta muestra los intervalos de un plato a
+    // la vez; la cadena pone lado a lado separar y craquear, que la recta no puede mostrar (no hay temperatura que
+    // fabrique moléculas nuevas).
     mira: {
       pieza: 'quim-cadena',
       datos: { columnas: [
@@ -109,7 +119,7 @@
     },
     regla: {
       texto: 'La destilación fraccionada separa el crudo en fracciones que hierven en intervalos; no cambia moléculas. El craqueo y el reformado sí las transforman.',
-      ecuacion: ['separar ≠ transformar   ·   C₁₀H₂₂ → C₈H₁₈ + C₂H₄'],
+      ecuacion: ['separar ≠ transformar', '   ·   ', { llave: ['C₁₀H₂₂ → C₈H₁₈ + C₂H₄'], nota: 'craqueo' }],
       condicion: 'cada fracción es una mezcla de muchos hidrocarburos; sus intervalos dependen del crudo y se traslapan.',
       voz: 'Pregunta siempre: ¿cambió alguna molécula?',
     },
@@ -191,7 +201,7 @@
     },
     regla: {
       texto: 'El octanaje compara la resistencia a detonar de una gasolina con mezclas de isooctano (100) y heptano (0). Un octanaje de 90 detona como 90 % de isooctano.',
-      ecuacion: ['octanaje = % de isooctano en la mezcla patrón que detona igual'],
+      ecuacion: ['octanaje = % de isooctano en la ', { llave: ['mezcla patrón'], nota: 'isooctano + heptano' }, ' que detona igual'],
       condicion: 'se mide con un método normalizado de motor; no es el porcentaje de octano de la gasolina ni su energía por litro.',
       voz: 'Es una comparación, no una receta.',
     },
@@ -277,7 +287,7 @@
     },
     regla: {
       texto: 'En la combustión completa, el carbono termina en CO₂ y el hidrógeno en H₂O. Con poco oxígeno es incompleta: aparecen CO y hollín.',
-      ecuacion: ['CH₄ + 2 O₂ → CO₂ + 2 H₂O   ·   C + O₂ → CO₂'],
+      ecuacion: ['CH₄ + 2 O₂ → CO₂ + 2 H₂O', '   ·   ', 'C + O₂ → CO₂'],
       condicion: 'el gas natural es sobre todo metano y el carbón, sobre todo carbono; ambos tienen impurezas que dan otros productos.',
       voz: 'Reparte el oxígeno átomo por átomo.',
     },
@@ -358,7 +368,7 @@
     },
     regla: {
       texto: 'Mineral, mena, ley y metal no son lo mismo. La ley es la fracción de metal en la mena; de ese metal se recupera una parte.',
-      ecuacion: [{ sub: [m, 'metal'] }, ' = ', { sub: [m, 'mena'] }, ' · ', w, ' · ', r],
+      ecuacion: [{ sub: [m, 'metal'] }, ' = ', { sub: [m, 'mena'] }, ' · ', { llave: [w, ' · ', r], nota: 'ley · recuperación' }],
       condicion: 'w y r como fracciones; la ruta (fundición, lixiviación o electrólisis) depende del mineral y del metal.',
       voz: 'La ley habla de la roca; la pureza, del metal.',
     },
@@ -380,16 +390,81 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: dos platos de la torre; entre ellos se recoge lo que hierve en ese tramo.
+  const recoge = v => { const a = Math.min(v.a, v.b), b = Math.max(v.a, v.b); return FRAC.filter(x => (x.b === null || x.b >= a) && (x.a === null || x.a <= b)).map(x => x.n); };
+  const dosPlatos = v => ({ datos: Object.assign(torre([
+    { tipo: 'intervalo', a: Math.min(v.a, v.b), b: Math.max(v.a, v.b), ca: true, cb: true, color: 'h', fila: 0 },
+    { tipo: 'punto', x: v.a, color: 'h', fila: 0 }, { tipo: 'punto', x: v.b, color: 'h', fila: 0 }]),
+    { alt: `Tramo de la torre entre ${f(Math.min(v.a, v.b), 0)} y ${f(Math.max(v.a, v.b), 0)} °C: se recogen ${recoge(v).join(', ') || 'ninguna fracción'}.` }), estado: {} });
+  // Mesa 2: la mena como dos barras de 100 %: arriba, el metal dentro de la roca (ley); abajo, cuánto de ese metal se
+  // recupera. Los bordes se arrastran. Rangos más amplios que la idea 4 (ley hasta 20 %, recuperación desde 40 %).
+  const PC = () => Kit.piezas['quim-composicion'];
+  const menaBarras = v => { const kg = 10 * v.ley, sale = kg * v.rec / 100, n = METAL[v.met].nombre; return { filas: [
+    { titulo: `en 1 000 kg: ${f(kg, 1)} kg de ${n}`, tramos: [{ valor: v.ley, texto: `${f(v.ley, 1)} %`, color: 'o' }, { valor: 100 - v.ley, texto: 'roca' }] },
+    { titulo: `de ese ${n} se recuperan ${f(sale, 1)} kg`, tramos: [{ valor: v.rec, texto: `${f(v.rec, 0)} %`, color: 'd' }, { valor: 100 - v.rec, texto: 'se pierde' }] },
+  ], alt: `Mena de ${n} con ley ${f(v.ley, 1)} % y recuperación ${f(v.rec, 0)} %: de 1 000 kg salen ${f(sale, 1)} kg.` }; };
+  // Mesa 3: la combustión con el oxígeno que el alumno quiera, de muy poco (hollín) a mucho (sobra O₂).
+  const leerPocos = (k, o) => { const p = quemar(k, 2, o); return [`${f(2 * o, 0)} O₂ → `, [[p.co2, 'CO₂'], [p.co, 'CO'], [p.hollin, 'C (hollín)'], [p.h2o, 'H₂O'], [p.sobraO2, 'O₂']].filter(([x]) => x > 0).map(([x, t]) => `${f(x, 0)} ${t}`).join(' + ')]; };
+
   return {
     unidad: 'quimica.recursos-naturales',
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/quim-cadena.js', '/nucleo/kit/piezas/quim-particulas.js'],
+    requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/quim-cadena.js', '/nucleo/kit/piezas/quim-particulas.js', '/nucleo/kit/piezas/quim-composicion.js'],
     historia: {
       texto: 'Cuando creció la demanda de gasolina, la pregunta fue si bastaba separar lo que el petróleo ya traía o si había que transformar sus moléculas. En 1937 empezó a operar a gran escala el craqueo catalítico de Houdry, fruto de un trabajo industrial colectivo. Desde entonces una refinería separa y transforma; son operaciones distintas.',
       pregunta: '¿Alcanzaría la gasolina si solo se separara del crudo?',
       fuente: { titulo: 'EIA, The refining process', url: 'https://www.eia.gov/energyexplained/oil-and-petroleum-products/refining-crude-oil-the-refining-process.php' },
     },
+    // Laboratorio (docs/teoria.md §4b), sin preguntas. La torre con dos platos (un tramo, no un punto); la mena como
+    // dos barras con los bordes arrastrables y rangos más amplios; y la combustión con el oxígeno libre, donde aparece
+    // el hollín que la idea 3 no deja ver. Títulos y lecturas dicen las entradas, para que el caso guardado se lea solo.
+    laboratorio: [
+      {
+        id: 'dos-platos', titulo: 'Dos platos de la torre', pieza: 'recta',
+        consigna: 'Corre los dos platos. Entre ellos se recoge lo que hierve en ese tramo. Busca un tramo que junte dos fracciones.',
+        controles: [
+          { id: 'a', etiqueta: 'plato 1', color: 'c-h', min: 0, max: 400, paso: 25, inicio: 150, unidad: '°C', decimales: 0 },
+          { id: 'b', etiqueta: 'plato 2', color: 'c-h', min: 0, max: 400, paso: 25, inicio: 250, unidad: '°C', decimales: 0 },
+        ],
+        dibujo: v => dosPlatos(v),
+        lectura: v => [`${f(Math.min(v.a, v.b), 0)} a ${f(Math.max(v.a, v.b), 0)} °C: ${recoge(v).join(', ') || 'nada'}`],
+        arrastres: [
+          { id: 'plato-1', etiqueta: 'primer plato', color: 'c-h', donde: v => ({ x: GR().x(v.a), y: GR().filaY(0) }), mover: pt => ({ a: tDeX(pt.x) }) },
+          { id: 'plato-2', etiqueta: 'segundo plato', color: 'c-h', donde: v => ({ x: GR().x(v.b), y: GR().filaY(0) }), mover: pt => ({ b: tDeX(pt.x) }) },
+        ],
+      },
+      {
+        id: 'mena-barras', titulo: 'La mena en dos barras', pieza: 'quim-composicion',
+        consigna: 'Arrastra el borde de arriba para cambiar la ley y el de abajo para la recuperación. Mira cuántos kilos de metal salen.',
+        controles: [
+          { id: 'met', etiqueta: 'Metal', opciones: Object.keys(METAL).map(k => ({ valor: k, texto: METAL[k].nombre })) },
+          { id: 'ley', etiqueta: 'w', color: 'c-o', min: 0.5, max: 20, paso: 0.5, inicio: 2, unidad: '%', decimales: 1 },
+          { id: 'rec', etiqueta: 'r', color: 'c-d', min: 40, max: 100, paso: 5, inicio: 90, unidad: '%', decimales: 0 },
+        ],
+        dibujo: v => ({ datos: menaBarras(v), estado: {} }),
+        lectura: v => [w, ` = ${f(v.ley, 1)} % · `, r, ` = ${f(v.rec, 0)} % → ${f(10 * v.ley * v.rec / 100, 1)} kg de ${METAL[v.met].nombre}`],
+        arrastres: [
+          { id: 'ley', etiqueta: 'borde del metal en la mena', color: 'c-o',
+            donde: v => { const g = PC().geometria(menaBarras(v)); return { x: g.xDe(0, v.ley), y: g.y(0) + g.hb / 2 }; },
+            mover: (pt, v) => ({ ley: PC().geometria(menaBarras(v)).valorEn(0, pt.x) }) },
+          { id: 'rec', etiqueta: 'borde de lo recuperado', color: 'c-d',
+            donde: v => { const g = PC().geometria(menaBarras(v)); return { x: g.xDe(1, v.rec), y: g.y(1) + g.hb / 2 }; },
+            mover: (pt, v) => ({ rec: PC().geometria(menaBarras(v)).valorEn(1, pt.x) }) },
+        ],
+      },
+      {
+        id: 'oxigeno-libre', titulo: 'Oxígeno a gusto', pieza: 'quim-particulas',
+        consigna: 'Dos moléculas de combustible y el oxígeno que quieras. Baja el oxígeno hasta que aparezca hollín y súbelo hasta que sobre.',
+        controles: [
+          { id: 'k', etiqueta: 'Combustible', opciones: Object.keys(COMB).map(k => ({ valor: k, texto: COMB[k].texto })) },
+          { id: 'o', etiqueta: 'O₂ por molécula', color: 'c-h', min: 0.5, max: 3, paso: 0.5, inicio: 2, decimales: 1 },
+        ],
+        dibujo: v => combustion(v.k, v.o),
+        lectura: v => leerPocos(v.k, v.o),
+      },
+    ],
     ideas: [destilar, octanaje, combustionIdea, mena],
   };
 });

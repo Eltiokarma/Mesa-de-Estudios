@@ -59,6 +59,10 @@
   const ESPECIES = { Na: [['Na', 0, 0]], Cl: [['Cl', 0, 0]], X: [['X', 0, 0]], H2O: [['O', 0, -1], ['H', -6, 4], ['H', 6, 4]], aire: [['A', -4, 0], ['A', 4, 0]] };
   const lupa = (cajas, extra = {}) => ({ datos: Object.assign({ atomos: ATOMOS, especies: ESPECIES, alto: 150, separacion: 24, cajas }, extra), estado: {} });
   const fijo = (e, x, y, extra = {}) => Object.assign({ e, n: 1, x, y }, extra);
+  // Gesto directo (docs/teoria.md §4b): en las ideas con ejes, la manija es el punto del gráfico. Se ubica con
+  // ejes.geometria y se lee con su inversa lineal (como en fisica/movimiento-rectilineo.js).
+  const EJES = () => Kit.piezas.ejes;
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
 
   // ---------- Idea 1: orden y libertad de las partículas ----------
   // Cambia: el estado de la muestra · Permanece: la caja y la escala · Progresa: de partículas fijas y ordenadas a fijas
@@ -73,6 +77,7 @@
     gas: { texto: 'Gas', caja: { forma: 'cilindro', nivel: 1, particulas: [{ e: 'H2O', n: 5 }] }, lee: 'Separadas y libres: llena todo el recipiente.' },
   };
   const muestra = k => lupa([Object.assign({ titulo: ESTADOS[k].texto }, ESTADOS[k].caja)]);
+  // Sin arrastre: el control elige entre estados y sólidos distintos; no hay una magnitud que agarrar en la lupa.
   const estados = {
     id: 'orden-y-libertad',
     titulo: 'Orden y libertad de las partículas',
@@ -116,7 +121,7 @@
     },
     regla: {
       texto: 'Sólido: partículas fijas (cristalino si su orden se repite, amorfo si no). Líquido: juntas pero se deslizan. Gas: separadas y libres, llenan el recipiente.',
-      ecuacion: ['cristalino: funde a una temperatura fija   ·   amorfo: se ablanda poco a poco'],
+      ecuacion: ['cristalino: funde a T fija', '   ·   ', 'amorfo: se ablanda'],
       condicion: 'es un modelo de partículas: las distancias no están a escala y las partículas del sólido también vibran.',
       voz: 'Lugar fijo, orden y espacio libre: tres preguntas, tres respuestas.',
     },
@@ -154,6 +159,7 @@
     curvas: [{ puntos: curvaH('agua'), color: 'i', rotulo: 'agua' }],
     alt: 'Altura que sube un líquido en un tubo delgado contra el radio del tubo: la curva baja como 1 entre r. El agua sube 14,9 mm en un tubo de 1 mm y 29,7 mm en uno de 0,5 mm; el etanol sube menos.',
   }, extra);
+  const dibCap = val => ({ datos: ejesCap({ curvas: [{ puntos: curvaH(val.l), color: 'i', rotulo: LIQ[val.l][0].toLowerCase() }], puntos: [{ x: val.r, y: kJ(val.l) / val.r, color: 'i', rotulo: `${f(kJ(val.l) / val.r, 1)} mm`, guias: true }] }), estado: {} });
   const capilar = {
     id: 'capilaridad',
     titulo: 'La superficie que jala',
@@ -166,9 +172,13 @@
         { id: 'r', etiqueta: 'r', color: 'c-d', min: 0.25, max: 2, paso: 0.25, inicio: 1, unidad: 'mm', decimales: 2 },
         { id: 'l', etiqueta: 'Líquido', opciones: Object.keys(LIQ).map(k => ({ valor: k, texto: LIQ[k][0] })) },
       ],
-      dibujo: val => ({ datos: ejesCap({ curvas: [{ puntos: curvaH(val.l), color: 'i', rotulo: LIQ[val.l][0].toLowerCase() }], puntos: [{ x: val.r, y: kJ(val.l) / val.r, color: 'i', rotulo: `${f(kJ(val.l) / val.r, 1)} mm`, guias: true }] }), estado: {} }),
+      dibujo: val => dibCap(val),
       lectura: val => [`${LIQ[val.l][0]}: `, h, ` = ${f(kJ(val.l) / val.r, 1)} mm en un tubo de ${f(val.r, 2)} mm`],
       minimo: 3,
+      // Se agarra el punto y se lo corre por la curva: la manija mueve el radio y la altura responde en el eje vertical.
+      arrastres: [{ id: 'radio', etiqueta: 'punto sobre la curva: radio del tubo', color: 'c-d',
+        donde: val => { const g = EJES().geometria(dibCap(val).datos); return { x: g.X(val.r), y: g.Y(kJ(val.l) / val.r) }; },
+        mover: (pt, val) => ({ r: inversa(EJES().geometria(dibCap(val).datos).X, 0, 2)(pt.x) }) }],
     },
     predice: {
       pregunta: ['En un tubo de ', r, ' = 1 mm el agua sube 14,9 mm. ¿Cuánto sube en un tubo de 0,5 mm?'],
@@ -199,7 +209,7 @@
     },
     regla: {
       texto: 'La tensión superficial y la viscosidad crecen con las fuerzas entre moléculas. En un tubo delgado, un líquido que moja sube más cuanto más angosto es el tubo.',
-      ecuacion: [h, ' = ', { frac: ['2γ', ['ρg', r]] }],
+      ecuacion: [{ llave: [h], nota: 'lo que sube', color: 'c-i' }, ' = ', { frac: ['2γ', ['ρg', r]] }],
       condicion: 'vale para un líquido que moja el vidrio (ángulo de contacto cercano a 0); el mercurio no lo moja y baja.',
       voz: 'Tubo más angosto, subida mayor. Comprueba con la curva.',
     },
@@ -234,6 +244,7 @@
     alt: 'Presión de vapor del agua contra la temperatura: sube cada vez más rápido. Corta los 101 kPa a 100 °C, los 63 kPa (Juliaca) a 87 °C y los 200 kPa a 120 °C.',
   }, extra);
   const linea = (pk, extra = {}) => Object.assign({ puntos: [[0, pk], [120, pk]], color: 'o', discontinua: true }, extra);
+  const dibPv = val => ({ datos: ejesPv({ curvas: [{ puntos: curvaPv, color: 'o' }, linea(val.p)], puntos: [{ x: ebulle(val.p), y: val.p, color: 'h', rotulo: `${f(ebulle(val.p), 0)} °C`, guias: true }] }), estado: {} });
   const vapor = {
     id: 'presion-vapor',
     titulo: 'Hervir es igualar la presión',
@@ -243,9 +254,13 @@
       consigna: 'La curva es la presión del vapor del agua a cada temperatura. Cambia la presión de afuera y mira dónde la corta.',
       voz: 'Busca la temperatura de ebullición en Juliaca.',
       controles: [{ id: 'p', etiqueta: 'P externa', color: 'c-o', min: 40, max: 200, paso: 10, inicio: 100, unidad: 'kPa', decimales: 0 }],
-      dibujo: val => ({ datos: ejesPv({ curvas: [{ puntos: curvaPv, color: 'o' }, linea(val.p)], puntos: [{ x: ebulle(val.p), y: val.p, color: 'h', rotulo: `${f(ebulle(val.p), 0)} °C`, guias: true }] }), estado: {} }),
+      dibujo: val => dibPv(val),
       lectura: val => [`Con ${f(val.p, 0)} kPa afuera, hierve a `, T, ` = ${f(ebulle(val.p), 1)} °C`],
       minimo: 3,
+      // Se agarra la línea de la presión de afuera (en su corte con la curva) y se la sube o baja: responde T de ebullición.
+      arrastres: [{ id: 'presion', etiqueta: 'línea de la presión de afuera', color: 'c-o',
+        donde: val => { const g = EJES().geometria(dibPv(val).datos); return { x: g.X(ebulle(val.p)), y: g.Y(val.p) }; },
+        mover: (pt, val) => ({ p: inversa(EJES().geometria(dibPv(val).datos).Y, 0, 210)(pt.y) }) }],
     },
     predice: {
       pregunta: ['En una olla a presión, el agua soporta ', P, ' = 200 kPa por encima. ¿A qué temperatura hierve?'],
@@ -279,7 +294,7 @@
     },
     regla: {
       texto: 'Un líquido hierve cuando su presión de vapor iguala a la presión de afuera. A menor presión externa, hierve a menor temperatura.',
-      ecuacion: [{ sub: [P, 'vapor'] }, '(', { sub: [T, 'eb'] }, ') = ', { sub: [P, 'externa'] }],
+      ecuacion: [{ llave: [{ sub: [P, 'vapor'] }, '(', { sub: [T, 'eb'] }, ')'], nota: 'del líquido', color: 'c-o' }, ' = ', { llave: [{ sub: [P, 'externa'] }], nota: 'de afuera', color: 'c-o' }],
       condicion: 'sustancia pura; la presión de vapor depende de la temperatura, no de cuánto líquido hay ni del tamaño del frasco.',
       voz: 'Antes de hervir ya hay vapor. Hervir es otra cosa.',
     },
@@ -327,6 +342,10 @@
     curvas: CURVAS_CO2,
     alt: 'Diagrama de fases del CO₂: sólido a la izquierda arriba, líquido en el centro arriba y gas abajo. Punto triple a −56,6 °C y 5,1 atm; punto crítico a 31 °C y 72,9 atm.',
   }, extra);
+  const dibFase = val => ({ datos: ejesFase({ puntos: [{ x: val.t, y: val.p, color: 'o', rotulo: fase(val.t, val.p) }] }), estado: {} });
+  const arrastreFase = { id: 'punto', etiqueta: 'punto del mapa: temperatura y presión', color: 'c-o',
+    donde: val => { const g = EJES().geometria(dibFase(val).datos); return { x: g.X(val.t), y: g.Y(val.p) }; },
+    mover: (pt, val) => { const g = EJES().geometria(dibFase(val).datos); return { t: inversa(g.X, -100, 40)(pt.x), p: inversa(g.Y, 0, 100)(pt.y) }; } };
   const diagrama = {
     id: 'diagrama-fases',
     titulo: 'El mapa de las fases',
@@ -337,11 +356,13 @@
       voz: 'Busca dónde está el CO₂ líquido.',
       controles: [
         { id: 't', etiqueta: 'T', color: 'c-h', min: -90, max: 40, paso: 10, inicio: -90, unidad: '°C', decimales: 0 },
-        { id: 'p', etiqueta: 'P', color: 'c-o', min: 1, max: 76, paso: 5, inicio: 1, unidad: 'atm', decimales: 0 },
+        { id: 'p', etiqueta: 'P', color: 'c-o', min: 1, max: 76, paso: 1, inicio: 1, unidad: 'atm', decimales: 0 },
       ],
-      dibujo: val => ({ datos: ejesFase({ puntos: [{ x: val.t, y: val.p, color: 'o', rotulo: fase(val.t, val.p) }] }), estado: {} }),
+      dibujo: val => dibFase(val),
       lectura: val => [`A ${f(val.t, 0)} °C y ${f(val.p, 0)} atm: ${fase(val.t, val.p)}`],
       minimo: 4,
+      // Se agarra el punto y se lo pasea por el mapa: x es la temperatura, y la presión; la fase se lee en el rótulo.
+      arrastres: [arrastreFase],
     },
     predice: {
       pregunta: ['A 1 atm calientas hielo seco (CO₂ sólido) desde −90 °C. ¿Qué le pasa al llegar a unos −78 °C?'],
@@ -372,7 +393,7 @@
     },
     regla: {
       texto: 'Cada región del diagrama es una fase estable; sobre una curva conviven dos fases y en el punto triple, tres. Un cambio a presión fija se lee como recta horizontal.',
-      ecuacion: ['curva: 2 fases   ·   punto triple: 3 fases'],
+      ecuacion: ['curva: 2 fases', '   ·   ', 'punto triple: 3 fases'],
       condicion: 'es el equilibrio de una sustancia pura: no dice cuánto tarda el cambio. Cada sustancia tiene su propio diagrama.',
       voz: 'Ubica el punto y lee la región. El mapa no corre solo.',
     },
@@ -407,6 +428,8 @@
     const H = humedo(nv, t);
     return Object.assign({ titulo: `${t} °C`, forma: 'caja', particulas: [{ e: 'aire', n: 5 }, { e: 'H2O', n: H.gas }, ...Array.from({ length: H.gotas }, (_, i) => fijo('H2O', 0.15 + 0.14 * i, 0.92, { resalta: true }))], rotulo: H.gotas ? 'rocío' : `HR ${f(H.hr, 0)} %` }, extra);
   };
+  // Sin arrastre: agregar moléculas de vapor no tiene una manija natural en la caja, y la temperatura es de opciones
+  // sin lugar en la figura. Queda con − y +.
   const humedad = {
     id: 'gas-humedo',
     titulo: 'Aire húmedo y rocío',
@@ -448,7 +471,7 @@
     },
     regla: {
       texto: 'La humedad relativa compara el vapor que hay con el que cabe a esa temperatura. En un gas húmedo, el gas seco tiene la presión total menos la del vapor.',
-      ecuacion: ['HR = 100 · ', { frac: [{ sub: [P, 'vapor'] }, { sub: [P, 'sat'] }] }, ' %   ·   ', { sub: [P, 'seco'] }, ' = ', { sub: [P, 'total'] }, ' − ', { sub: [P, 'vapor'] }],
+      ecuacion: ['HR = 100 · ', { frac: [{ sub: [P, 'vapor'] }, { sub: [P, 'sat'] }] }, ' %', '   ·   ', { sub: [P, 'seco'] }, ' = ', { sub: [P, 'total'] }, ' − ', { llave: [{ sub: [P, 'vapor'] }], nota: 'del agua', color: 'c-o' }],
       condicion: 'gas ideal; la presión de saturación es la del agua a la misma temperatura del aire.',
       voz: 'Primero cuánto cabe; después cuánto hay.',
     },
@@ -482,6 +505,22 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: agua y etanol bajo la misma presión de afuera. Etanol: Antoine (mmHg, °C) A = 8,20417, B = 1642,89,
+  // C = 230,3, válido de −57 a 80 °C; por eso la presión llega hasta 101 kPa (el etanol hierve a 78 °C).
+  const antoineE = t => 10 ** (8.20417 - 1642.89 / (230.3 + t)) * 0.133322;
+  const ebulleE = pk => 1642.89 / (8.20417 - Math.log10(pk / 0.133322)) - 230.3;
+  const curvaE = Array.from({ length: 17 }, (_, i) => { const t = 5 * i; return [t, antoineE(t)]; });
+  const dibDos = val => ({ datos: ejesPv({
+    x: { min: 0, max: 110, paso: 20, nombre: 'T', unidad: '°C', decimales: 0, color: 'h' },
+    y: { min: 0, max: 110, paso: 20, nombre: 'P', unidad: 'kPa', decimales: 0, color: 'o' },
+    curvas: [{ puntos: curvaPv.filter(([t]) => t <= 105), color: 'o', rotulo: 'agua', en: [88, 30] }, { puntos: curvaE, color: 'd', rotulo: 'etanol', en: [30, 30] }, linea(val.p, { puntos: [[0, val.p], [110, val.p]] })],
+    puntos: [{ x: ebulle(val.p), y: val.p, color: 'h', rotulo: `${f(ebulle(val.p), 0)} °C`, guias: true }, { x: ebulleE(val.p), y: val.p, color: 'd', rotulo: `${f(ebulleE(val.p), 0)} °C`, guias: true }],
+    alt: `Presión de vapor del agua y del etanol contra la temperatura. Con ${f(val.p, 0)} kPa afuera, el agua hierve a ${f(ebulle(val.p), 0)} °C y el etanol a ${f(ebulleE(val.p), 0)} °C.`,
+  }), estado: {} });
+  // Mesa 2: el mapa del CO₂ con pasos finos y más presión que la idea 4 (pasa el punto crítico con holgura).
+  const dibFase2 = val => ({ datos: ejesFase({ puntos: [{ x: val.t, y: val.p, color: 'o', rotulo: fase(val.t, val.p) }, { x: TP[0], y: TP[1], color: 'h', rotulo: 'triple' }, { x: TC[0], y: TC[1], color: 'h', rotulo: 'crítico' }] }), estado: {} });
+
   return {
     unidad: 'quimica.liquidos-y-solidos',
     version: '0.1.0',
@@ -492,6 +531,34 @@
       pregunta: '¿Por qué en Juliaca el agua hierve antes que en Lima?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §10.4', url: 'https://openstax.org/books/chemistry-2e/pages/10-4-phase-diagrams' },
     },
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera pone dos líquidos bajo la misma presión (la
+    // idea 3 solo tiene agua); la segunda recorre el mapa del CO₂ con pasos finos, de 0 a 100 atm. Las lecturas dicen
+    // las condiciones y el resultado, para que un caso guardado se lea solo.
+    laboratorio: [
+      {
+        id: 'dos-liquidos', titulo: 'Agua y etanol, misma presión', pieza: 'ejes',
+        consigna: 'Sube o baja la presión de afuera, como si cambiaras de altura. Compara dónde hierve cada líquido.',
+        controles: [{ id: 'p', etiqueta: 'P externa', color: 'c-o', min: 20, max: 101, paso: 1, inicio: 63, unidad: 'kPa', decimales: 0 }],
+        dibujo: val => dibDos(val),
+        lectura: val => [`${f(val.p, 0)} kPa → agua ${f(ebulle(val.p), 0)} °C · etanol ${f(ebulleE(val.p), 0)} °C`],
+        arrastres: [{ id: 'presion', etiqueta: 'línea de la presión de afuera', color: 'c-o',
+          donde: val => { const g = EJES().geometria(dibDos(val).datos); return { x: g.X(ebulle(val.p)), y: g.Y(val.p) }; },
+          mover: (pt, val) => ({ p: inversa(EJES().geometria(dibDos(val).datos).Y, 0, 110)(pt.y) }) }],
+      },
+      {
+        id: 'mapa-co2', titulo: 'El mapa completo del CO₂', pieza: 'ejes',
+        consigna: 'Pasea el punto por todo el mapa. Busca el hielo seco que sublima, el CO₂ líquido y el fluido supercrítico.',
+        controles: [
+          { id: 't', etiqueta: 'T', color: 'c-h', min: -100, max: 40, paso: 2, inicio: -78, unidad: '°C', decimales: 0 },
+          { id: 'p', etiqueta: 'P', color: 'c-o', min: 1, max: 100, paso: 1, inicio: 1, unidad: 'atm', decimales: 0 },
+        ],
+        dibujo: val => dibFase2(val),
+        lectura: val => [`${f(val.t, 0)} °C y ${f(val.p, 0)} atm → ${fase(val.t, val.p)}`],
+        arrastres: [{ id: 'punto', etiqueta: 'punto del mapa: temperatura y presión', color: 'c-o',
+          donde: val => { const g = EJES().geometria(dibFase2(val).datos); return { x: g.X(val.t), y: g.Y(val.p) }; },
+          mover: (pt, val) => { const g = EJES().geometria(dibFase2(val).datos); return { t: inversa(g.X, -100, 40)(pt.x), p: inversa(g.Y, 0, 100)(pt.y) }; } }],
+      },
+    ],
     ideas: [estados, capilar, vapor, diagrama, humedad],
   };
 });

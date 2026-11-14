@@ -34,3 +34,14 @@ test('comunes: sana, pura y alto fijo', () => {
   const s0 = P.dibujar(d, { corte: 0 }), s1 = P.dibujar(d, { corte: 1 });
   sana(s0); sana(s1); assert.equal(alto(s0), alto(s1)); assert.notEqual(s0, s1);
 });
+test('geometría: casilla, celda y zDe se corresponden con el dibujo', () => {
+  const s = P.dibujar({ periodos: 4, simbolos: SIM });
+  for (const Z of [1, 2, 3, 11, 17, 19, 35, 36]) {
+    const c = P.casilla(Z);
+    assert.ok(s.includes(`<rect x="${c.x + 1}" y="${c.y + 1}"`), `casilla de ${Z}`);
+    const l = P.celda({ x: c.cx, y: c.cy });
+    assert.equal(P.zDe(l.col, l.per), Z);
+  }
+  assert.equal(P.zDe(P.casilla(26).col, 4), null);   // Fe vive en la casilla «d»
+  assert.equal(P.celda({ x: 0, y: 0 }), null);
+});

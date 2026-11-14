@@ -29,17 +29,33 @@
   const W = 320, ALTO = 196, YF = 22, HF = 40, YP = 104, YN = 136, Q = 14;
   const sg = n => (n > 0 ? `+${Kit.formatear(n, 0)}` : n < 0 ? `−${Kit.formatear(-n, 0)}` : '0');
 
-  function dibujar(d, estado = {}) {
-    const corte = Math.max(0, estado.corte || 0);
-    const ve = x => (x.desde || 0) <= corte && !(x.hasta < corte);
-    const nuevo = x => ((x.desde || 0) === corte && corte > 0 ? ' kit-nuevo kit-aparece' : '');
-    // Fichas en una fila (todas las copias, también las que aparecerán: el encuadre no salta).
+  // La fila de fichas: todas las copias (también las que aparecerán), su ancho y la escala para caber en 320.
+  function fila(d) {
     const copias = [];
     for (const f of d.fichas || []) for (let k = 0; k < (f.n === undefined ? 1 : f.n); k++) copias.push(f);
     const anchos = copias.map(f => Math.max(40, T.ancho(f.t, 16, 700) + 14));
     const total = anchos.reduce((a, b) => a + b, 0) + 6 * Math.max(0, copias.length - 1);
     const esc = Math.min(1, (W - 16) / Math.max(1, total));
-    let x = (W - total * esc) / 2, s = '';
+    return { copias, anchos, esc, x: (W - total * esc) / 2 };
+  }
+
+  // Geometría para el gesto directo (docs/teoria.md §4b): la caja de cada copia (en orden), y dónde van los
+  // cuadritos de carga (k-ésimo cuadrito de la fila + en cuadrito(k, '+'), de la fila − en cuadrito(k, '−')).
+  function geometria(d) {
+    const { copias, anchos, esc, x } = fila(d);
+    let xx = x;
+    const cajas = copias.map((f, i) => { const w = anchos[i] * esc, c = { x: xx, y: YF, w, h: HF, cx: xx + w / 2, cy: YF + HF / 2, ficha: f }; xx += w + 6 * esc; return c; });
+    const cuadrito = (k, signo) => ({ x: 40 + k * (Q + 3) + Q / 2, y: (signo === '−' ? YN : YP) + Q / 2 });
+    return { alto: ALTO, cajas, cuadrito };
+  }
+
+  function dibujar(d, estado = {}) {
+    const corte = Math.max(0, estado.corte || 0);
+    const ve = x => (x.desde || 0) <= corte && !(x.hasta < corte);
+    const nuevo = x => ((x.desde || 0) === corte && corte > 0 ? ' kit-nuevo kit-aparece' : '');
+    // Fichas en una fila (todas las copias, también las que aparecerán: el encuadre no salta).
+    const { copias, anchos, esc, x: x00 } = fila(d);
+    let x = x00, s = '';
     const visibles = [];
     copias.forEach((f, i) => {
       const w = anchos[i] * esc;
@@ -77,5 +93,5 @@
     return `Fichas: ${fs.join(', ')}. ${d.neta || 'Carga neta'}: ${sg(neta)}.`;
   }
 
-  return { id: 'quim-fichas', dibujar, alt };
+  return { id: 'quim-fichas', dibujar, alt, geometria };
 });

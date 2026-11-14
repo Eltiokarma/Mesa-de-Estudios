@@ -45,6 +45,10 @@
     }
     return ops.slice(0, 4);
   }
+  // Gesto directo: inversas de X e Y de la pieza ejes (la manija se ubica con la geometría de la propia figura).
+  const G = datos => Kit.piezas.ejes.geometria(datos);
+  const xEn = (datos, px) => { const g = G(datos); return datos.x.min + (px - g.X(datos.x.min)) * (datos.x.max - datos.x.min) / (g.X(datos.x.max) - g.X(datos.x.min)); };
+  const yEn = (datos, py) => { const g = G(datos); return datos.y.min + (py - g.Y(datos.y.min)) * (datos.y.max - datos.y.min) / (g.Y(datos.y.max) - g.Y(datos.y.min)); };
   const muestra = (fn, a, b, k = 40) => Array.from({ length: k + 1 }, (_, i) => { const x = a + (b - a) * i / k; return [x, fn(x)]; });
 
   // ---------- Idea 1: la rapidez es una pendiente, y baja ----------
@@ -68,8 +72,12 @@
       voz: 'Mira qué tan inclinada queda la recta roja.',
       controles: [{ id: 'a', etiqueta: 'Desde', color: 'c-i', min: 0, max: 8, paso: 1, inicio: 0, unidad: 'min', decimales: 0 }],
       dibujo: val => ({ datos: ejesVel({ curvas: [{ puntos: muestra(conc, 0, 10), color: 'o' }, cuerda(val.a, val.a + 2)], puntos: [{ x: val.a, y: conc(val.a), color: 'o' }, { x: val.a + 2, y: conc(val.a + 2), color: 'o' }] }), estado: {} }),
-      lectura: val => [r, ` media = ${f((conc(val.a) - conc(val.a + 2)) / 2, 3)} mol/(L·min)`],
+      lectura: val => [r, ` media = ${f((conc(val.a) - conc(val.a + 2)) / 2, 3)}\u00a0mol/(L·min)`],
       minimo: 3,
+      // Se agarra el primer punto de la cuerda y se corre por la curva: elige desde qué minuto se mide; la cuerda se aplana.
+      arrastres: [{ id: 'desde', etiqueta: 'inicio del intervalo sobre la curva', color: 'c-i',
+        donde: val => { const g = G(ejesVel()); return { x: g.X(val.a), y: g.Y(conc(val.a)) }; },
+        mover: pt => ({ a: xEn(ejesVel(), pt.x) }) }],
     },
     predice: {
       pregunta: 'En 2 N₂O₅ → 4 NO₂ + O₂, el NO₂ aparece a 0,40 mol/(L·min). ¿A qué ritmo desaparece el N₂O₅?',
@@ -97,7 +105,7 @@
     },
     regla: {
       texto: 'La rapidez de reacción es cuánto cambia una concentración por unidad de tiempo, dividido entre su coeficiente. Suele ser mayor al inicio y va bajando.',
-      ecuacion: [r, ' = −', { frac: ['1', 'a'] }, ' ', { frac: [dA, dt] }],
+      ecuacion: [r, ' = −', { llave: [{ frac: ['1', 'a'] }], nota: 'coeficiente' }, ' ', { llave: [{ frac: [dA, dt] }], nota: 'pendiente' }],
       condicion: 'es una rapidez media en un intervalo; no es la cantidad de producto final ni dice si la reacción es espontánea.',
       voz: 'Una rapidez siempre lleva su intervalo.',
     },
@@ -150,8 +158,17 @@
         { id: 'dh', etiqueta: 'ΔH', min: -60, max: 60, paso: 20, inicio: -40, unidad: 'kJ/mol', decimales: 0 },
       ],
       dibujo: val => ({ datos: perfil(val.ea, val.dh, { curvas: [perfil(val.ea, val.dh).curvas[0], flechaEa(val.ea)] }), estado: {} }),
-      lectura: val => [Ea, ` = ${f(val.ea, 0)} · ΔH = ${f(val.dh, 0)} kJ/mol: ${val.dh < 0 ? 'exotérmica' : val.dh > 0 ? 'endotérmica' : 'sin calor neto'}`],
+      lectura: val => [Ea, ` = ${f(val.ea, 0)} · ΔH = ${f(val.dh, 0)}\u00a0kJ/mol: ${val.dh < 0 ? 'exotérmica' : val.dh > 0 ? 'endotérmica' : 'sin calor neto'}`],
       minimo: 3,
+      // Dos manijas: la cima se sube o se baja (Eₐ) y el nivel de los productos también (ΔH). Se ve que una no arrastra a la otra.
+      arrastres: [
+        { id: 'cima', etiqueta: 'cima del perfil (energía de activación)', color: 'c-d',
+          donde: val => { const g = G(perfil(val.ea, val.dh)); return { x: g.X(5), y: g.Y(R0 + val.ea) }; },
+          mover: (pt, val) => ({ ea: yEn(perfil(val.ea, val.dh), pt.y) - R0 }) },
+        { id: 'productos', etiqueta: 'nivel de los productos (calor de reacción)',
+          donde: val => { const g = G(perfil(val.ea, val.dh)); return { x: g.X(8.8), y: g.Y(R0 + val.dh) }; },
+          mover: (pt, val) => ({ dh: yEn(perfil(val.ea, val.dh), pt.y) - R0 }) },
+      ],
     },
     predice: {
       pregunta: ['Una reacción tiene ', Ea, ' = 50 kJ/mol y ΔH = −30 kJ/mol. ¿Cuánto vale la energía de activación de la reacción inversa?'],
@@ -183,7 +200,7 @@
     },
     regla: {
       texto: 'Para reaccionar, las partículas deben chocar con energía y orientación suficientes. La cima es el complejo activado: Eₐ se mide desde los reactivos y ΔH, de reactivos a productos.',
-      ecuacion: [Ea, '(inversa) = ', Ea, ' − ΔH'],
+      ecuacion: [Ea, '(inversa) = ', { llave: [Ea], nota: 'de ida', color: 'c-d' }, ' − ΔH'],
       condicion: 'Eₐ y ΔH son independientes; el complejo activado no es un producto que se pueda guardar en un frasco.',
       voz: 'Dos medidas distintas: la barrera y el desnivel.',
     },
@@ -262,6 +279,11 @@
       dibujo: val => ({ datos: energias(TEMP[val.T], CAT[val.cat]), estado: {} }),
       lectura: val => [`Pueden reaccionar: ${f(100 * fracc(CAT[val.cat], TEMP[val.T]), 1)} % de los choques`],
       minimo: 3,
+      // La línea de Eₐ se agarra por arriba y se corre: hacia la izquierda es poner el catalizador (control de opciones:
+      // cae en la Eₐ más cercana). El área sombreada responde.
+      arrastres: [{ id: 'barrera', etiqueta: 'línea de Eₐ: a la izquierda, con catalizador', color: 'c-d',
+        donde: val => { const g = G(energias(TEMP[val.T], CAT[val.cat])); return { x: g.X(CAT[val.cat]), y: g.Y(0.3) }; },
+        mover: (pt, val) => { const e = xEn(energias(TEMP[val.T], CAT[val.cat]), pt.x); return { cat: Math.abs(e - CAT.si) < Math.abs(e - CAT.no) ? 'si' : 'no' }; } }],
     },
     predice: {
       pieza: 'quim-particulas',
@@ -299,7 +321,7 @@
     },
     regla: {
       texto: 'Una reacción va más rápido si hay más choques por segundo (concentración, superficie, mezcla) o si más choques superan Eₐ (temperatura, catalizador).',
-      ecuacion: ['rapidez ∝ (choques por segundo) × (fracción con E ≥ ', Ea, ')'],
+      ecuacion: [r, ' ∝ ', { llave: ['Z'], nota: 'choques por segundo' }, ' · ', { llave: ['f'], nota: 'superan la barrera', color: 'c-d' }],
       condicion: 'moler o agitar ayuda cuando la reacción ocurre en una superficie o la frena la mezcla; el catalizador no cambia ΔH.',
       voz: 'Pregunta siempre cuál de las dos cosas cambió.',
     },
@@ -335,7 +357,7 @@
     x: { min: 0, max: 1, paso: 0.2, nombre: '[A]', unidad: 'mol/L', decimales: 1, color: 'o' },
     y: { min: 0, max: 0.5, paso: 0.1, nombre: 'r', unidad: 'mol/(L·s)', decimales: 1, color: 'h' },
     curvas: [{ puntos: muestra(x => K * x ** mm, 0, 1), color: 'h' }],
-    alt: `Rapidez contra concentración para orden ${mm}: r = ${f(K, 1)}·[A]${mm === 1 ? '' : '^' + mm}.`,
+    alt: `Rapidez contra concentración para orden ${mm}: r = ${f(K, 1)}·[A]${['⁰', '', '²'][mm]}.`,
   }, extra);
   const ORDEN = { 0: 'cero', 1: 'uno', 2: 'dos' };
   const orden = {
@@ -351,8 +373,12 @@
         { id: 'a', etiqueta: '[A]', color: 'c-o', min: 0.2, max: 0.5, paso: 0.1, inicio: 0.3, unidad: 'mol/L', decimales: 1 },
       ],
       dibujo: val => ({ datos: ejesOrden(val.m, { puntos: [{ x: val.a, y: K * val.a ** val.m, color: 'h', guias: true }, { x: 2 * val.a, y: K * (2 * val.a) ** val.m, color: 'h', guias: true }] }), estado: {} }),
-      lectura: val => ['Al duplicar ', A, ', ', r, ` se multiplica por ${f(2 ** val.m, 0)}`],
+      lectura: val => [A, ` ${f(val.a, 1)} → ${f(2 * val.a, 1)}: `, r, ` se multiplica por ${f(2 ** val.m, 0)}`],
       minimo: 3,
+      // El primer punto se corre por la curva: el dedo elige [A]; el segundo, en 2[A], lo sigue y se compara su altura.
+      arrastres: [{ id: 'concentracion', etiqueta: 'concentración sobre la curva', color: 'c-o',
+        donde: val => { const g = G(ejesOrden(val.m)); return { x: g.X(val.a), y: g.Y(K * val.a ** val.m) }; },
+        mover: (pt, val) => ({ a: xEn(ejesOrden(val.m), pt.x) }) }],
     },
     predice: {
       pregunta: ['Para 2 A → B se mide que, al duplicar ', A, ', la rapidez inicial se duplica. ¿Cuál es el orden respecto a A?'],
@@ -384,7 +410,7 @@
     },
     regla: {
       texto: 'La ley de velocidad se obtiene con experimentos: si [A] se multiplica por x y r por y, el orden m cumple xᵐ = y.',
-      ecuacion: [r, ' = k', { sup: [A, 'm'] }, { sup: ['[B]', 'n'] }],
+      ecuacion: [r, ' = ', { llave: ['k'], nota: 'constante' }, { sup: [A, 'm'] }, { sup: ['[B]', 'n'] }, '   ·   ', { llave: ['m + n'], nota: 'orden total' }],
       condicion: 'los órdenes no se copian de los coeficientes de la ecuación global; las unidades de k dependen del orden total.',
       voz: 'El exponente lo dicen los datos.',
     },
@@ -449,8 +475,12 @@
         const v = vida(val.a0, val.o);
         return { datos: ejesVida({ curvas: [{ puntos: muestra(v.cf, 0, 12), color: 'o' }], puntos: v.marcas.map(([x, y]) => ({ x, y, color: 'i', guias: true })) }), estado: {} };
       },
-      lectura: val => { const v = vida(val.a0, val.o); return ['Mitades a los ', t, ` = ${v.marcas.map(m => f(m[0], 1)).join('; ')} min`]; },
+      lectura: val => { const v = vida(val.a0, val.o); return [{ sub: [A, '0'] }, ` = ${f(val.a0, 1)}: mitades a los `, t, ` = ${v.marcas.map(m => f(m[0], 1)).join('; ')}\u00a0min`]; },
       minimo: 3,
+      // El inicio de la curva se sube o se baja: el dedo elige [A]₀ y las marcas de cada mitad se reacomodan (o no, en primer orden).
+      arrastres: [{ id: 'inicio', etiqueta: 'concentración inicial', color: 'c-o',
+        donde: val => { const g = G(ejesVida()); return { x: g.X(0), y: g.Y(val.a0) }; },
+        mover: pt => ({ a0: yEn(ejesVida(), pt.y) }) }],
     },
     predice: {
       pregunta: 'Una sustancia se descompone con primer orden y su vida media es 10 min. Empiezas con 80 g. ¿Cuánto queda a los 30 min?',
@@ -481,7 +511,7 @@
     },
     regla: {
       texto: 'En una reacción de primer orden, la concentración baja a la mitad en tiempos iguales, sin importar cuánto había al inicio.',
-      ecuacion: [{ sub: [t, '½'] }, ' = ', { frac: ['ln 2', 'k'] }],
+      ecuacion: [{ llave: [{ sub: [t, '½'] }], nota: 'vida media' }, ' = ', { frac: ['ln 2', 'k'] }],
       condicion: 'solo para primer orden; en segundo orden cada vida media dura más que la anterior.',
       voz: 'Mitad, mitad, mitad: cuenta los pasos.',
     },
@@ -514,6 +544,23 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Perfil: el camino con catalizador es otra cima (Eₐ a la mitad) sobre los mismos reactivos y productos.
+  const labEaCat = val => Math.max(val.ea / 2, val.dh, 0);
+  const labPerfil = val => {
+    const base = perfil(val.ea, val.dh), curvas = [base.curvas[0], flechaEa(val.ea), flechaDH(val.dh)];
+    if (val.cat === 'si') curvas.push(Object.assign({}, perfil(labEaCat(val), val.dh).curvas[0], { color: 'd', discontinua: true, rotulo: 'con catalizador', en: [5, R0 + labEaCat(val)] }));
+    return Object.assign(base, { curvas,
+      alt: `Perfil de energía con reactivos a 100, cima a ${f(R0 + val.ea, 0)} y productos a ${f(R0 + val.dh, 0)} kJ/mol${val.cat === 'si' ? `; con catalizador, la cima baja a ${f(R0 + labEaCat(val), 0)} y los productos no cambian` : ''}.` });
+  };
+  // Orden 0: [A] = [A]₀ − kt (hasta 0); orden 1: [A]₀·e^(−kt); orden 2: [A]₀ / (1 + k[A]₀t).
+  const labConc = (val, x) => (val.o === 0 ? Math.max(0, val.a0 - val.k * x) : val.o === 1 ? val.a0 * Math.exp(-val.k * x) : val.a0 / (1 + val.k * val.a0 * x));
+  const labCurva = val => ejesVida({
+    curvas: [{ puntos: muestra(x => labConc(val, x), 0, 12, 48), color: 'o' }],
+    puntos: [{ x: 0, y: val.a0, color: 'o' }, { x: val.t, y: labConc(val, val.t), color: 'i', rotulo: f(labConc(val, val.t), 2), guias: true }],
+    alt: `Concentración contra tiempo, orden ${ORDEN[val.o]}, k = ${f(val.k, 2)}: de ${f(val.a0, 1)} mol/L a ${f(labConc(val, val.t), 2)} mol/L a los ${f(val.t, 1)} min.`,
+  });
+
   return {
     unidad: 'quimica.cinetica-quimica',
     version: '0.1.0',
@@ -524,6 +571,45 @@
       pregunta: '¿Cómo medirías algo que cambia mientras lo mides?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §12.3 y §12.4', url: 'https://openstax.org/books/chemistry-2e/pages/12-3-rate-laws' },
     },
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera es el perfil con catalizador: el camino nuevo,
+    // punteado, baja la cima sin mover reactivos ni productos (la idea 2 no tiene catalizador). La segunda junta orden
+    // 0, 1 y 2 con k y [A]₀ libres, y un instante que se arrastra por la curva. Las lecturas dicen entradas y resultado.
+    laboratorio: [
+      {
+        id: 'perfil-catalizador', titulo: 'El perfil con catalizador', pieza: 'ejes',
+        consigna: 'Arrastra la cima y los productos. Pon el catalizador y compara las dos cimas: ¿cambia ΔH?',
+        controles: [
+          { id: 'ea', etiqueta: 'Eₐ', color: 'c-d', min: 20, max: 100, paso: 10, inicio: 60, unidad: 'kJ/mol', decimales: 0 },
+          { id: 'dh', etiqueta: 'ΔH', min: -80, max: 20, paso: 10, inicio: -40, unidad: 'kJ/mol', decimales: 0 },
+          { id: 'cat', etiqueta: 'Catalizador', opciones: [{ valor: 'no', texto: 'Sin' }, { valor: 'si', texto: 'Con (Eₐ a la mitad)' }] },
+        ],
+        dibujo: val => ({ datos: labPerfil(val), estado: {} }),
+        lectura: val => { const e = val.cat === 'si' ? labEaCat(val) : val.ea; return [val.cat === 'si' ? 'Con catalizador: ' : 'Sin catalizador: ', Ea, ` = ${f(e, 0)} · ΔH = ${f(val.dh, 0)} → inversa ${f(e - val.dh, 0)}\u00a0kJ/mol`]; },
+        arrastres: [
+          { id: 'cima', etiqueta: 'cima sin catalizador (energía de activación)', color: 'c-d',
+            donde: val => { const g = G(labPerfil(val)); return { x: g.X(5), y: g.Y(R0 + val.ea) }; },
+            mover: (pt, val) => ({ ea: yEn(labPerfil(val), pt.y) - R0 }) },
+          { id: 'productos', etiqueta: 'nivel de los productos (calor de reacción)',
+            donde: val => { const g = G(labPerfil(val)); return { x: g.X(8.8), y: g.Y(R0 + val.dh) }; },
+            mover: (pt, val) => ({ dh: yEn(labPerfil(val), pt.y) - R0 }) },
+        ],
+      },
+      {
+        id: 'curva-con-todo', titulo: 'La curva con todo', pieza: 'ejes',
+        consigna: 'Elige el orden, k y cuánto reactivo hay. Arrastra el instante por la curva y lee cuánto queda.',
+        controles: [
+          { id: 'o', etiqueta: 'Orden', opciones: [1, 2, 0].map(k => ({ valor: k, texto: ORDEN[k] })) },
+          { id: 'k', etiqueta: 'k', min: 0.05, max: 0.5, paso: 0.05, inicio: 0.2, decimales: 2 },
+          { id: 'a0', etiqueta: '[A]₀', color: 'c-o', min: 0.2, max: 1, paso: 0.1, inicio: 0.8, unidad: 'mol/L', decimales: 1 },
+          { id: 't', etiqueta: 't', color: 'c-i', min: 0, max: 12, paso: 0.5, inicio: 5, unidad: 'min', decimales: 1 },
+        ],
+        dibujo: val => ({ datos: labCurva(val), estado: {} }),
+        lectura: val => [`Orden ${ORDEN[val.o]} · k ${f(val.k, 2)} · ${f(val.t, 1)} min: de ${f(val.a0, 1)} a ${f(labConc(val, val.t), 2)}\u00a0mol/L`],
+        arrastres: [{ id: 'instante', etiqueta: 'instante sobre la curva', color: 'c-i',
+          donde: val => { const g = G(labCurva(val)); return { x: g.X(val.t), y: g.Y(labConc(val, val.t)) }; },
+          mover: (pt, val) => ({ t: xEn(labCurva(val), pt.x) }) }],
+      },
+    ],
     ideas: [velocidad, perfilEnergia, factores, orden, vidaMedia],
   };
 });

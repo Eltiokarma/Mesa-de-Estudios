@@ -52,6 +52,23 @@
   const sb = n => String(n).split('').map(d => SUB[d]).join('');
   const formula = (c, h) => `C${c > 1 ? sb(c) : ''}H${h > 1 ? sb(h) : ''}`;
 
+  // Gesto directo (docs/teoria.md §4b). La pieza recentra la figura con todo lo que trae, así que cada punto se
+  // calcula con el encuadre del dibujo del valor actual. Con un control de opciones, la manija elige la opción cuya
+  // manija (dibujada en su propio encuadre) queda más cerca del dedo: sobre su propio punto, devuelve la misma.
+  const QM = () => Kit.piezas['quim-molecula'];
+  // La manija va 22 px hacia afuera del átomo (lejos del centro de la figura) para no tapar su rótulo.
+  const enFigura = (dib, id) => {
+    const d = dib.datos, g = QM().encuadre(d), a = d.atomos.find(x => x.id === id);
+    const x = g.X(a.x), y = g.Y(a.y), vx = x - 160, vy = y - g.alto / 2, L = Math.hypot(vx, vy);
+    return L < 1 ? { x, y: y + 22 } : { x: x + 22 * vx / L, y: y + 22 * vy / L };
+  };
+  const cercana = (valores, donde, pt, val, id, medida) => {
+    const dist = medida || ((p, q) => Math.hypot(p.x - q.x, p.y - q.y));
+    let mejor = valores[0], dm = Infinity;
+    for (const o of valores) { const dd = dist(donde(Object.assign({}, val, { [id]: o })), pt); if (dd < dm - 1e-9) { dm = dd; mejor = o; } }
+    return mejor;
+  };
+
   // ---------- Estructuras: nodos [id, texto, x, y, color] y enlaces [a, b, orden, color] ----------
   // Coordenadas en unidades de la pieza quim-molecula (y hacia abajo). `mover` las traslada y les da prefijo y paso.
   function mover(est, dx, dy, pref, extra = {}) {
@@ -86,6 +103,9 @@
     if (tipo === 'etino') ex.textos = [{ x: 0.65, y: 0.75, t: '180°', color: 'd' }];
     return figura([p], ex);
   }
+  // La manija del enlace C–C: sobre el punto medio del enlace, más arriba cuantas más líneas tiene.
+  const ORDEN_C2 = { etano: 1, eteno: 2, etino: 3 };
+  const manijaC2 = val => { const g = QM().encuadre(vistaC2(val.t).datos); return { x: g.X(0.65), y: g.Y(0) - 14 - 18 * (ORDEN_C2[val.t] - 1) }; };
 
   // ---------- Idea 1: cuatro enlaces por carbono; la forma sale de los enlaces múltiples ----------
   // Cambia: el enlace entre los dos carbonos · Permanece: dos carbonos y la regla de cuatro enlaces · Progresa: simple,
@@ -116,6 +136,11 @@
       dibujo: val => vistaC2(val.t),
       lectura: val => [C2[val.t].lee],
       minimo: 3,
+      // Se agarra el enlace C–C y se tira hacia arriba: cada tramo suma una línea al enlace (simple, doble, triple).
+      // Responden los H, que bajan de 6 a 4 y a 2, y el ángulo, que se abre de 109,5° a 120° y a 180°.
+      arrastres: [{ id: 'enlace', etiqueta: 'enlace C–C: tira hacia arriba para sumar líneas', color: 'c-h',
+        donde: manijaC2,
+        mover: (pt, val) => ({ t: cercana(Object.keys(C2), manijaC2, pt, val, 't') }) }],
     },
     predice: {
       pregunta: 'En el propeno, CH₂=CH–CH₃, un carbono tiene enlace doble y el del CH₃ solo simples. ¿Qué ángulo hay alrededor del carbono del CH₃?',
@@ -149,7 +174,11 @@
     },
     regla: {
       texto: 'Cada carbono forma cuatro enlaces. Con solo simples queda sp³ (109,5°); con un doble, sp² (120°); con un triple, sp (180°). Cada enlace extra quita dos H.',
-      ecuacion: ['alcano CₙH₂ₙ₊₂ · alqueno CₙH₂ₙ · alquino CₙH₂ₙ₋₂'],
+      ecuacion: [
+        { llave: ['C', { sub: ['', [nC]] }, 'H', { sub: ['', ['2', nC, ' + 2']] }], nota: 'alcano: simples' }, '   ·   ',
+        { llave: ['C', { sub: ['', [nC]] }, 'H', { sub: ['', ['2', nC]] }], nota: 'alqueno: un doble', color: 'c-h' }, '   ·   ',
+        { llave: ['C', { sub: ['', [nC]] }, 'H', { sub: ['', ['2', nC, ' − 2']] }], nota: 'alquino: un triple', color: 'c-h' },
+      ],
       condicion: 'las fórmulas generales valen para cadenas abiertas con un solo doble o triple. La hibridación se decide carbono por carbono.',
       voz: 'Primero los enlaces de cada carbono; la forma viene sola.',
     },
@@ -206,6 +235,9 @@
     ramificada: { n: [['k0', 'CH₃', 0, 0], ['k1', 'CH', 1.15, 0], ['k2', 'CH₃', 2.3, 0], ['k3', 'CH₃', 1.15, 1.1]], e: [['k0', 'k1'], ['k1', 'k2'], ['k1', 'k3']] },
     ciclica: anillo(['CH₂', 'CH₂', 'CH₂', 'CH₂'], 1.35),
   };
+  const vistaCadena = val => figura([mover(val.f === 'des' ? desarrollada(val.c) : SEMI[val.c], 0, 0, '')], { escala: val.f === 'des' ? 40 : 44, alto: 200 });
+  // El carbono que se mueve en cada estructura: el extremo de la cadena, la rama o el que cierra el anillo.
+  const EXTREMO = { semi: { lineal: 'k3', ramificada: 'k3', ciclica: 'r3' }, des: { lineal: 'c3', ramificada: 'b', ciclica: 'c3' } };
   const CADENA = { lineal: ['C₄H₁₀', 'cadena lineal'], ramificada: ['C₄H₁₀', 'cadena ramificada'], ciclica: ['C₄H₈', 'cadena cerrada (anillo)'] };
   const formulas = {
     id: 'formulas-cadenas',
@@ -219,9 +251,14 @@
         { id: 'c', etiqueta: 'Cadena', opciones: [{ valor: 'lineal', texto: 'Lineal' }, { valor: 'ramificada', texto: 'Ramificada' }, { valor: 'ciclica', texto: 'Anillo' }] },
         { id: 'f', etiqueta: 'Fórmula', opciones: [{ valor: 'semi', texto: 'Semidesarrollada' }, { valor: 'des', texto: 'Desarrollada' }] },
       ],
-      dibujo: val => figura([mover(val.f === 'des' ? desarrollada(val.c) : SEMI[val.c], 0, 0, '')], { escala: val.f === 'des' ? 40 : 44, alto: 200 }),
+      dibujo: vistaCadena,
       lectura: val => [`${CADENA[val.c][0]} · ${CADENA[val.c][1]}`],
       minimo: 4,
+      // Se agarra el último carbono: a la derecha deja la cadena lineal, bajo el del medio la vuelve rama y junto
+      // al primero cierra el anillo. Responde la fórmula de la lectura: el anillo pierde dos H.
+      arrastres: [{ id: 'extremo', etiqueta: 'último carbono: estíralo, cuélgalo o ciérralo', color: 'c-i',
+        donde: val => enFigura(vistaCadena(val), EXTREMO[val.f][val.c]),
+        mover: (pt, val) => ({ c: cercana(['lineal', 'ramificada', 'ciclica'], v => enFigura(vistaCadena(v), EXTREMO[v.f][v.c]), pt, val, 'c') }) }],
     },
     predice: {
       pregunta: 'Unes los dos extremos del pentano (CH₃–CH₂–CH₂–CH₂–CH₃, C₅H₁₂) y formas un anillo con solo enlaces simples, el ciclopentano. ¿Cuál es su fórmula molecular?',
@@ -259,7 +296,7 @@
     },
     regla: {
       texto: 'La fórmula molecular cuenta átomos; la semidesarrollada y la desarrollada muestran las uniones. Cerrar una cadena en anillo quita dos H: un cicloalcano es CₙH₂ₙ.',
-      ecuacion: ['CₙH₂ₙ₊₂ (abierta) → CₙH₂ₙ (un anillo)'],
+      ecuacion: [{ llave: ['C', { sub: ['', [nC]] }, 'H', { sub: ['', ['2', nC, ' + 2']] }], nota: 'cadena abierta' }, ' → ', { llave: ['C', { sub: ['', [nC]] }, 'H', { sub: ['', ['2', nC]] }], nota: 'un anillo' }],
       condicion: 'anillos con solo enlaces simples. La fórmula molecular sola no distingue un anillo de un doble enlace: C₄H₈ puede ser ambos.',
       voz: 'Cuenta los H de cada carbono y súmalos.',
     },
@@ -310,6 +347,8 @@
       dibujo: val => vistaAnillo(val.k),
       lectura: val => [ANILLOS[val.k].lee],
       minimo: 3,
+      // Sin arrastre, a propósito: lo natural sería deslizar un doble por el anillo, y eso actúa justo la idea
+      // errónea EN6 («los dobles saltan de lugar»). Las cinco opciones son moléculas distintas: se eligen.
     },
     predice: {
       pregunta: 'El benceno se dibuja con tres enlaces dobles y tres simples. Si se miden los seis enlaces C–C de la molécula real, ¿qué se encuentra?',
@@ -340,7 +379,7 @@
     },
     regla: {
       texto: 'En el benceno, los electrones de los tres dobles se reparten por todo el anillo: las dos fórmulas describen una sola molécula, con seis enlaces iguales.',
-      ecuacion: ['C₆H₆: enlace C–C de 140 pm, entre simple y doble'],
+      ecuacion: [{ llave: ['154'], nota: 'simple' }, ' > ', { llave: ['140'], nota: 'benceno', color: 'c-h' }, ' > ', { llave: ['134'], nota: 'doble' }, '\u00a0pm'],
       condicion: 'aromático exige un anillo plano con dobles alternados en todo el ciclo. No significa «con olor» ni vale para cualquier anillo.',
       voz: 'Un anillo no basta: mira si los dobles alternan en toda la vuelta.',
     },
@@ -382,10 +421,11 @@
     'metilbutano-espejo': { n: [['k0', 'CH₃', 3.45, 0], ['k1', 'CH', 2.3, 0.6], ['k2', 'CH₂', 1.15, 0], ['k3', 'CH₃', 0, 0.6], ['m', 'CH₃', 2.3, 1.75]], e: [['k0', 'k1'], ['k1', 'k2'], ['k2', 'k3'], ['k1', 'm']] },
   };
   const C5 = {
-    pentano: { lee: 'C₅H₁₂: los cinco carbonos en una sola fila.', fila: ['k0', 'k1', 'k2', 'k3', 'k4'] },
-    metilbutano: { lee: 'C₅H₁₂: cuatro en fila y una rama de un carbono.', fila: ['k0', 'k1', 'k2', 'k3'] },
-    dimetilpropano: { lee: 'C₅H₁₂: tres en fila y dos ramas en el centro.', fila: ['k0', 'k1', 'k2'] },
+    pentano: { lee: 'C₅H₁₂: los cinco carbonos en una sola fila.', fila: ['k0', 'k1', 'k2', 'k3', 'k4'], mueve: 'k4' },
+    metilbutano: { lee: 'C₅H₁₂: cuatro en fila y una rama de un carbono.', fila: ['k0', 'k1', 'k2', 'k3'], mueve: 'm' },
+    dimetilpropano: { lee: 'C₅H₁₂: tres en fila y dos ramas en el centro.', fila: ['k0', 'k1', 'k2'], mueve: 'm1' },
   };
+  const vistaC5 = val => figura([mover(EST[val.k], 0, 0, '')], { escala: 44, alto: 190, resaltos: [{ atomos: C5[val.k].fila, color: 'i' }] });
   const isomeros = {
     id: 'isomeros-estructurales',
     titulo: 'Mismos átomos, otras uniones',
@@ -395,9 +435,14 @@
       consigna: 'Las tres estructuras tienen cinco carbonos y doce hidrógenos. Elige una y busca su fila de carbonos más larga.',
       voz: 'Sigue las uniones con el dedo, carbono por carbono.',
       controles: [{ id: 'k', etiqueta: 'Estructura', opciones: [{ valor: 'pentano', texto: 'Pentano' }, { valor: 'metilbutano', texto: '2-metilbutano' }, { valor: 'dimetilpropano', texto: '2,2-dimetilpropano' }] }],
-      dibujo: val => figura([mover(EST[val.k], 0, 0, '')], { escala: 44, alto: 190, resaltos: [{ atomos: C5[val.k].fila, color: 'i' }] }),
+      dibujo: vistaC5,
       lectura: val => [C5[val.k].lee],
       minimo: 3,
+      // Se agarra un carbono y se cambia de vecino: al final de la fila es pentano, colgado abajo del carbono 2 es
+      // 2-metilbutano, arriba de él es 2,2-dimetilpropano. Responde la fila resaltada, que se acorta: 5, 4, 3.
+      arrastres: [{ id: 'carbono', etiqueta: 'carbono que cambia de vecino', color: 'c-i',
+        donde: val => enFigura(vistaC5(val), C5[val.k].mueve),
+        mover: (pt, val) => ({ k: cercana(Object.keys(C5), v => enFigura(vistaC5(v), C5[v.k].mueve), pt, val, 'k') }) }],
     },
     predice: {
       pregunta: 'Esta figura es el pentano dibujado con la cadena doblada. Comparada con el pentano en fila, ¿qué es?',
@@ -427,7 +472,7 @@
     },
     regla: {
       texto: 'Isómeros estructurales: misma fórmula molecular y distintas uniones entre átomos. Girar o doblar el dibujo no cambia ninguna unión: es la misma molécula.',
-      ecuacion: ['pentano, 2-metilbutano y 2,2-dimetilpropano: C₅H₁₂'],
+      ecuacion: [{ llave: ['C₅H₁₂'], nota: 'misma fórmula' }, ' → ', { llave: ['3 estructuras'], nota: 'otras uniones', color: 'c-i' }],
       condicion: 'se comparan uniones, no la forma del dibujo. Para nombrar, la cadena principal sigue reglas IUPAC, no solo su largo.',
       voz: 'Si las uniones coinciden, es la misma molécula.',
     },
@@ -492,6 +537,8 @@
       dibujo: val => figura([mover(alqueno(ALQ[val.k].g), 0, 0, '')], { escala: 48, alto: 170 }),
       lectura: val => [ALQ[val.k].lee],
       minimo: 3,
+      // Sin arrastre, a propósito: pasar un CH₃ de arriba abajo con el dedo actúa el giro alrededor del doble enlace,
+      // que la predicción enseña que no ocurre (QM-GIRO-DOBLE). Cis y trans se eligen como moléculas distintas.
     },
     predice: {
       pregunta: 'A temperatura ambiente, ¿puede el cis-but-2-eno volverse trans solo con girar sus carbonos alrededor del doble enlace?',
@@ -526,7 +573,7 @@
     },
     regla: {
       texto: 'Hay cis y trans si cada carbono del doble enlace lleva dos grupos distintos. Un carbono con cuatro grupos distintos suele dar dos isómeros ópticos, uno espejo del otro.',
-      ecuacion: ['cis: mismo lado   ·   trans: lados opuestos'],
+      ecuacion: ['cis: mismo lado', '   ·   ', 'trans: lados opuestos'],
       condicion: '«cuatro grupos distintos» es una guía, no un criterio universal: decide que la molécula y su espejo no se superpongan.',
       voz: 'Revisa los dos grupos de cada carbono antes de decidir.',
     },
@@ -612,6 +659,8 @@
       dibujo: val => reaccion(val.k),
       lectura: val => [REAC[val.k].lee],
       minimo: 3,
+      // Sin arrastre: las cuatro opciones son reacciones distintas, con otros reactivos; no hay una variable continua
+      // ni un átomo que, al moverlo, lleve de una a otra.
     },
     predice: {
       pregunta: 'El eteno reacciona con agua (CH₂=CH₂ + H₂O) y se forma etanol. ¿Sale alguna molécula pequeña en esta unión?',
@@ -651,7 +700,7 @@
     },
     regla: {
       texto: 'Adición: un doble o triple se abre y todo queda en una molécula. Sustitución: un átomo sale y otro toma su lugar. Eliminación: salen átomos vecinos; queda un doble.',
-      ecuacion: ['CH₂=CH₂ + H₂ → CH₃–CH₃'],
+      ecuacion: [{ llave: ['CH₂=CH₂'], nota: 'doble enlace', color: 'c-h' }, ' + H₂ → ', { llave: ['CH₃–CH₃'], nota: 'una molécula' }],
       condicion: 'la ecuación da el balance global, no el camino; necesita condiciones (calor, luz o catalizador). La combustión es una oxidación completa.',
       voz: 'Mira qué entra, qué sale y qué enlace cambia.',
     },
@@ -689,6 +738,73 @@
     },
   };
 
+
+  // ---------- Laboratorio ----------
+  // Mesa 1: una cadena de 1 a 8 carbonos que se alarga arrastrando su extremo, con simple, doble o triple en el
+  // primer enlace, abierta o cerrada en anillo. Los H de cada carbono los calcula el código (4 menos sus enlaces)
+  // y también los casos raros: sin enlace C–C no hay doble; un anillo pide 3 carbonos; un triple en anillo, 8.
+  const GRUPO = h => (h ? `CH${h > 1 ? sb(h) : ''}` : 'C');
+  const NOM_E = { 1: 'simples', 2: 'un doble', 3: 'un triple' };
+  const FAM = { abierta: { 1: 'alcano', 2: 'alqueno', 3: 'alquino' }, anillo: { 1: 'cicloalcano', 2: 'cicloalqueno', 3: 'cicloalquino' } };
+  function cadenaLab(val) {
+    const n = val.n, o = +val.e, quiereAnillo = val.forma === 'anillo';
+    const anillo = quiereAnillo && n >= 3, noCabe = anillo && o === 3 && n < 8, orden = n === 1 || noCabe ? 1 : o;
+    const enl = [];
+    for (let i = 0; i + 1 < n; i++) enl.push([i, i + 1, i === 0 ? orden : 1]);
+    if (anillo) enl.push([n - 1, 0, 1]);
+    const usa = Array(n).fill(0);
+    enl.forEach(([a, b, k]) => { usa[a] += k; usa[b] += k; });
+    const h = usa.map(u => 4 - u), H = h.reduce((a, b) => a + b, 0);
+    let pos;
+    if (anillo) {
+      const R = 1.25 / (2 * Math.sin(Math.PI / n)), g0 = -90 + (n % 2 ? 0 : 180 / n);
+      pos = h.map((_, i) => ang(g0 + 360 * i / n, R));
+    } else {
+      pos = h.map((_, i) => [i * 1.15, i % 2 ? 0.6 : 0]);
+      if (orden === 3 && n >= 3) pos[0] = [2 * pos[1][0] - pos[2][0], 2 * pos[1][1] - pos[2][1]];   // el triple va en línea: 180°
+    }
+    const est = { n: h.map((hh, i) => [`k${i}`, n === 1 ? 'CH₄' : GRUPO(hh), pos[i][0], pos[i][1]]), e: enl.map(([a, b, k]) => [`k${a}`, `k${b}`, k, k > 1 ? 'h' : null]) };
+    const aviso = n === 1 && o > 1 ? `sin enlace C–C no hay ${o === 2 ? 'doble' : 'triple'}`
+      : quiereAnillo && n < 3 ? 'un anillo pide 3 carbonos'
+      : noCabe ? 'el triple pide 180°: no cabe' : '';
+    const ymax = Math.max(...pos.map(q => q[1]));
+    const xs = pos.map(q => q[0]), xm = (Math.min(...xs) + Math.max(...xs)) / 2;
+    const dib = figura([mover(est, 0, 0, '')], { escala: 34, alto: 230, textos: aviso ? [{ x: xm, y: ymax + 1.1, t: aviso, color: 'h' }] : [] });
+    return { dib, n, H, orden, anillo, aviso, fam: FAM[anillo ? 'anillo' : 'abierta'][orden] };
+  }
+  const lecturaCadena = val => {
+    const c = cadenaLab(val), o = +val.e;
+    if (c.n === 1 && o > 1) return [nC, ` = 1 · ${NOM_E[o]} → sin enlace C–C: CH₄, metano`];
+    if (val.forma === 'anillo' && c.n < 3) return [nC, ` = ${c.n} · anillo → pide 3 carbonos; queda ${formula(c.n, c.H)}`];
+    if (c.anillo && o === 3 && c.n < 8) return [nC, ` = ${c.n} · un triple · anillo → no cabe: pide 180°`];
+    return [nC, ` = ${c.n} · ${c.n === 1 ? 'sin enlace C–C' : NOM_E[c.orden]} · ${c.anillo ? 'anillo' : 'abierta'} → ${formula(c.n, c.H)}, ${c.n === 1 ? 'metano' : c.fam}`];
+  };
+  const extremoLab = val => enFigura(cadenaLab(val).dib, `k${val.n - 1}`);
+  // Mesa 2: dos estructuras lado a lado. La fórmula se cuenta de los grupos y la relación la decide el código
+  // comparando uniones (todas las formas de emparejar átomos de A con los de B), no la forma del dibujo.
+  const LADO = ['butano', 'butano-doblado', 'isobutano', 'pentano', 'pentano-doblado', 'metilbutano', 'metilbutano-espejo', 'dimetilpropano'];
+  const NOM_LADO = { butano: 'Butano', 'butano-doblado': 'Butano doblado', isobutano: 'Metilpropano', pentano: 'Pentano', 'pentano-doblado': 'Pentano doblado', metilbutano: '2-metilbutano', 'metilbutano-espejo': '2-metilbutano volteado', dimetilpropano: '2,2-dimetilpropano' };
+  const DIG = s => [...String(s)].reduce((a, ch) => a * 10 + SUB.indexOf(ch), 0);
+  const cuenta = est => est.n.reduce((acc, [, t]) => { const m = /^C(H([₀-₉]*))?$/.exec(t); acc.c += 1; acc.h += m && m[1] ? (m[2] ? DIG(m[2]) : 1) : 0; return acc; }, { c: 0, h: 0 });
+  function permutaciones(k) {
+    if (k <= 1) return [[0]];
+    const out = [];
+    for (const p of permutaciones(k - 1)) for (let i = 0; i <= p.length; i++) out.push([...p.slice(0, i), k - 1, ...p.slice(i)]);
+    return out;
+  }
+  function mismasUniones(A, B) {
+    if (A.n.length !== B.n.length || A.e.length !== B.e.length) return false;
+    const ia = A.n.map(x => x[0]), ib = B.n.map(x => x[0]);
+    const ea = new Set(A.e.map(([a, b]) => [ia.indexOf(a), ia.indexOf(b)].sort().join()));
+    return permutaciones(A.n.length).some(p => A.n.every((x, i) => x[1] === B.n[p[i]][1])
+      && B.e.every(([a, b]) => { const x = p.indexOf(ib.indexOf(a)), y = p.indexOf(ib.indexOf(b)); return ea.has([x, y].sort().join()); }));
+  }
+  function relacion(a, b) {
+    const ca = cuenta(EST[a]), cb = cuenta(EST[b]);
+    const rel = ca.c !== cb.c || ca.h !== cb.h ? 'otro compuesto' : mismasUniones(EST[a], EST[b]) ? 'la misma molécula' : 'isómeros';
+    return { fa: formula(ca.c, ca.h), fb: formula(cb.c, cb.h), rel };
+  }
+
   return {
     unidad: 'quimica.hidrocarburos',
     version: '0.1.0',
@@ -699,6 +815,43 @@
       pregunta: '¿Cómo pueden dos sustancias tener la misma fórmula y ser distintas?',
       fuente: { titulo: 'OpenStax, Organic Chemistry, §3.4 y §5.2', url: 'https://openstax.org/books/organic-chemistry/pages/3-4-naming-alkanes' },
     },
+    // Laboratorio (docs/teoria.md §4b): sin preguntas. La primera mesa es más rica que los juegos: junta fórmula
+    // general, familias y anillos, con n de 1 a 8 y los casos que la idea no deja probar. La segunda compara dos
+    // estructuras cualesquiera. La lectura dice entradas y resultado, para que un caso guardado se lea solo.
+    laboratorio: [
+      {
+        id: 'cadena-que-crece', titulo: 'La cadena que crece', pieza: 'quim-molecula',
+        consigna: 'Arrastra el último carbono para alargar la cadena. Cambia el primer enlace y ciérrala en anillo. Busca qué no se puede armar.',
+        controles: [
+          { id: 'n', etiqueta: 'Carbonos', color: 'c-i', min: 1, max: 8, paso: 1, inicio: 4, unidad: '', decimales: 0 },
+          { id: 'e', etiqueta: 'Primer enlace', opciones: [{ valor: '1', texto: 'Simple' }, { valor: '2', texto: 'Doble' }, { valor: '3', texto: 'Triple' }] },
+          { id: 'forma', etiqueta: 'Cadena', opciones: [{ valor: 'abierta', texto: 'Abierta' }, { valor: 'anillo', texto: 'Anillo' }] },
+        ],
+        dibujo: val => cadenaLab(val).dib,
+        lectura: lecturaCadena,
+        // Se agarra el último carbono: en la cadena abierta, más a la derecha es más largo; en el anillo, más lejos del
+        // centro es un anillo más grande. Responden los H de cada grupo y la fórmula de la lectura.
+        arrastres: [{ id: 'extremo', etiqueta: 'último carbono: arrástralo para alargar', color: 'c-i',
+          donde: extremoLab,
+          mover: (pt, val) => {
+            // La pieza centra la figura en (160, alto/2): en el anillo cuenta la distancia del dedo a ese centro.
+            const radio = q => Math.hypot(q.x - 160, q.y - 115);
+            if (val.forma === 'anillo' && val.n >= 3) return { n: cercana([3, 4, 5, 6, 7, 8], extremoLab, pt, val, 'n', (q, p) => Math.abs(radio(q) - radio(p))) };
+            return { n: cercana([1, 2, 3, 4, 5, 6, 7, 8], extremoLab, pt, val, 'n') };
+          } }],
+      },
+      {
+        id: 'a-contra-b', titulo: 'Dos estructuras lado a lado', pieza: 'quim-molecula',
+        consigna: 'Elige A y B. Cuenta sus átomos y sigue sus uniones: ¿la misma molécula, isómeros u otro compuesto?',
+        controles: [
+          { id: 'a', etiqueta: 'A', opciones: LADO.map(k => ({ valor: k, texto: NOM_LADO[k] })) },
+          { id: 'b', etiqueta: 'B', opciones: LADO.map(k => ({ valor: k, texto: NOM_LADO[k] })) },
+        ],
+        dibujo: val => figura([mover(EST[val.a], 0, 0, 'a'), mover(EST[val.b], 0, 2.7, 'b')], { escala: 40, alto: 280, textos: [{ x: -1.0, y: 0.3, t: 'A', peso: 700 }, { x: -1.0, y: 3.0, t: 'B', peso: 700 }] }),
+        lectura: val => { const r = relacion(val.a, val.b); return [`A: ${r.fa} · B: ${r.fb} → ${r.rel}`]; },
+        // Sin arrastre: A y B son estructuras de una lista; elegirlas no tiene una variable que agarrar.
+      },
+    ],
     ideas: [carbono, formulas, aromatico, isomeros, geometrica, reacciones],
   };
 });

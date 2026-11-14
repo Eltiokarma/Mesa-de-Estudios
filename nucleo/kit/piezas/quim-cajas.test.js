@@ -30,3 +30,11 @@ test('comunes: sana, pura, alto fijo y alt', () => {
   const s0 = P.dibujar(O, { corte: 0 }), s1 = P.dibujar(O, { corte: 1 });
   sana(s0); sana(s1); assert.equal(alto(s0), alto(s1)); assert.match(P.alt(O), /2p: 4 electrones/);
 });
+test('geometría: la caja y la flecha que exporta están donde las dibuja', () => {
+  const s = P.dibujar(O, { corte: 1 }), g = P.geometria(O);
+  const c = g.caja(2, 1);
+  assert.ok(s.includes(`<rect x="${c.x}" y="${c.y}" width="${c.w}" height="${c.h}"`));
+  const fl = g.flecha(2, 0, 1);
+  assert.ok(s.includes(`<line x1="${fl.x}"`));
+  assert.ok(fl.y > c.y && fl.y < c.y + c.h);
+});

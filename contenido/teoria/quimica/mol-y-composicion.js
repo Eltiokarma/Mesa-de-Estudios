@@ -119,7 +119,7 @@
     },
     regla: {
       texto: 'La masa atómica de la tabla es el promedio de las masas de los isótopos, cada una multiplicada por su abundancia. Se mide en u.',
-      ecuacion: ['masa promedio = Σ (masa del isótopo × fracción)'],
+      ecuacion: ['masa promedio = Σ (masa del isótopo × ', { llave: ['fracción'], nota: 'abundancia ÷ 100' }, ')'],
       condicion: 'las abundancias son las naturales y suman 100 %; ningún átomo concreto pesa el promedio.',
       voz: 'Promedio pesado: cuenta más el isótopo más abundante.',
     },
@@ -188,7 +188,7 @@
     },
     regla: {
       texto: 'Un mol tiene 6,022 × 10²³ entidades (átomos, moléculas o iones). La masa molar M dice cuántos gramos pesa un mol de esa sustancia.',
-      ecuacion: [N_, ' = ', n_, ' · ', NA, '   ·   ', m_, ' = ', n_, ' · ', M_],
+      ecuacion: [N_, ' = ', n_, ' · ', { llave: [NA], nota: 'entidades por mol' }, '   ·   ', m_, ' = ', n_, ' · ', { llave: [M_], nota: 'gramos por mol', color: 'c-d' }],
       condicion: 'se dice qué entidad se cuenta; M sale de sumar las masas atómicas de la fórmula, en g/mol.',
       voz: 'Contar y pesar son dos cosas: el mol las une.',
     },
@@ -275,14 +275,14 @@
       voz: 'Contemos los átomos de dos moléculas de ácido sulfúrico.',
       pasos: [
         { estado: { corte: 1 }, texto: 'Una molécula de H₂SO₄ tiene 2 H, 1 S y 4 O.', ecuacion: ['H₂SO₄ → 2 : 1 : 4'] },
-        { estado: { corte: 2 }, texto: 'Dos moléculas tienen el doble de H y de S.', ecuacion: ['H: 2 · 2 = 4   ·   S: 2 · 1 = 2'] },
+        { estado: { corte: 2 }, texto: 'Dos moléculas tienen el doble de H y de S.', ecuacion: ['H: 2 · 2 = 4', '   ·   ', 'S: 2 · 1 = 2'] },
         { estado: { corte: 3 }, texto: 'Y el doble de O.', ecuacion: ['O: 2 · 4 = 8'] },
         { estado: { corte: 3 }, texto: 'Con moles pasa lo mismo: 2 mol de H₂SO₄ tienen 8 mol de O.', ecuacion: [n_, '(O) = 2 · 4 = 8 mol'] },
       ],
     },
     regla: {
       texto: 'Los subíndices dicen cuántos átomos de cada elemento hay en una unidad, y también la razón entre sus moles. Un subíndice fuera del paréntesis multiplica todo lo de adentro.',
-      ecuacion: [n_, '(elemento) = ', n_, '(compuesto) × átomos por unidad'],
+      ecuacion: [n_, '(elemento) = ', n_, '(compuesto) × ', { llave: ['átomos por unidad'], nota: 'el subíndice' }],
       condicion: 'se cuenta la entidad pedida; en un compuesto iónico no hay moléculas, hay unidades fórmula.',
       voz: 'Primero los átomos de una unidad, después por los moles.',
     },
@@ -349,14 +349,14 @@
       voz: 'Sigamos la receta con un azúcar de 180 g/mol.',
       pasos: [
         { estado: { corte: 1 }, texto: 'En 100 g, los porcentajes se leen como gramos.', ecuacion: ['C 40 g · H 6,7 g · O 53,3 g'] },
-        { estado: { corte: 2 }, texto: 'Cada masa se divide entre su masa atómica: moles.', ecuacion: [`40/12 = ${f(40 / 12)} · 6,7/1 = 6,7 · 53,3/16 = ${f(53.3 / 16)}`] },
+        { estado: { corte: 2 }, texto: 'Cada masa se divide entre su masa atómica: moles.', ecuacion: [`40/12 = ${f(40 / 12)}`, '   ·   ', '6,7/1 = 6,7', '   ·   ', `53,3/16 = ${f(53.3 / 16)}`] },
         { estado: { corte: 3 }, texto: 'Se divide entre el menor: la razón entera es 1 : 2 : 1.', ecuacion: ['fórmula empírica: CH₂O (30 g/mol)'] },
         { estado: { corte: 3 }, texto: 'Con 180 g/mol, la fórmula molecular es 6 veces la empírica.', ecuacion: ['180 / 30 = 6 → C₆H₁₂O₆'] },
       ],
     },
     regla: {
       texto: 'El porcentaje de un elemento es su masa en la fórmula entre la masa molar. La fórmula empírica sale de pasar gramos a moles y dividir entre el menor.',
-      ecuacion: ['% = 100 · (átomos × masa atómica) / masa molar   ·   molecular = k × empírica'],
+      ecuacion: ['% = 100 · ', { frac: ['átomos × masa atómica', 'masa molar'] }, '   ·   ', 'molecular = ', { llave: ['k'], nota: 'un entero' }, ' × empírica'],
       condicion: 'para hallar la molecular hace falta la masa molar; k es un entero.',
       voz: 'Gramos, luego moles, luego la razón entera.',
     },
@@ -396,6 +396,8 @@
   // Cambia: la masa de agua que se forma · Permanece: la barra de masas a una sola escala · Progresa: de 9 g a 36 g,
   // con la razón O/H fija · Se reserva: CO y CO₂, dos compuestos de los mismos elementos · Debe verse: que la masa
   // de antes es la de después y que la razón no cambia.
+  const PC = () => Kit.piezas['quim-composicion'];
+  const muestras = g => ({ escala: 'comun', filas: [Object.assign(agua(36), { titulo: '36 g de agua (para comparar)' }), agua(g)] });
   const agua = g => ({ titulo: `${g} g de agua`, tramos: [{ valor: g / 9, texto: `H ${f(g / 9, 0)} g`, color: 'i' }, { valor: 8 * g / 9, texto: `O ${f(8 * g / 9, 0)} g`, color: 'h' }] });
   const leyes = {
     id: 'leyes-ponderales',
@@ -405,10 +407,15 @@
     juega: {
       consigna: 'Elige cuánta agua se forma. Las barras están a la misma escala. Compara el hidrógeno y el oxígeno de cada muestra.',
       voz: 'Divide el oxígeno entre el hidrógeno en cada caso.',
-      controles: [{ id: 'g', etiqueta: 'Agua', min: 9, max: 36, paso: 9, inicio: 9, unidad: 'g', decimales: 0 }],
-      dibujo: v => ({ datos: { escala: 'comun', filas: [agua(36), agua(v.g)].map((x, i) => Object.assign(x, { titulo: i ? x.titulo : '36 g de agua (para comparar)' })) }, estado: {} }),
+      controles: [{ id: 'g', etiqueta: 'Agua', color: 'c-i', min: 9, max: 36, paso: 9, inicio: 9, unidad: 'g', decimales: 0 }],
+      dibujo: v => ({ datos: muestras(v.g), estado: {} }),
       lectura: v => [`O : H = ${f(8 * v.g / 9, 0)} : ${f(v.g / 9, 0)} = 8 : 1`],
       minimo: 3,
+      // Se agarra el extremo de la barra de abajo y se estira: la masa de agua crece y los dos tramos crecen juntos,
+      // así que la razón O : H de la lectura no cambia. La barra de 36 g fija la escala común.
+      arrastres: [{ id: 'muestra', etiqueta: 'extremo de la barra de agua', color: 'c-i',
+        donde: v => { const g = PC().geometria(muestras(v.g)); return { x: g.xDe(1, v.g), y: g.y(1) + g.hb / 2 }; },
+        mover: pt => ({ g: PC().geometria(muestras(9)).valorEn(1, pt.x) }) }],
     },
     predice: {
       pregunta: 'Con 12 g de carbono, el CO lleva 16 g de oxígeno. En el CO₂, ¿cuánto oxígeno se une a los mismos 12 g de carbono?',
@@ -440,7 +447,7 @@
     },
     regla: {
       texto: 'En una reacción la masa total se conserva. Un compuesto tiene siempre la misma razón de masas. Si dos elementos forman varios compuestos, esas masas guardan razones de enteros pequeños.',
-      ecuacion: ['masa antes = masa después   ·   agua: O : H = 8 : 1'],
+      ecuacion: [{ llave: ['masa antes'], nota: 'reactivos' }, ' = ', { llave: ['masa después'], nota: 'productos' }, '   ·   ', 'agua: O : H = 8 : 1'],
       condicion: 'en un sistema cerrado y para sustancias puras; una mezcla puede tener cualquier proporción.',
       voz: 'Antes de calcular, revisa que la masa cuadre.',
     },
@@ -487,6 +494,24 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: dos isótopos cualesquiera en una barra de 100 %; el borde entre los tramos es la abundancia del liviano.
+  const isoBarra = v => ({ filas: [{ titulo: `masa promedio: ${f(promIso(v), 2)} u`, tramos: [
+    { valor: v.p, texto: `${v.a} u: ${v.p} %`, color: 'h' }, { valor: 100 - v.p, texto: `${v.a + v.d} u: ${100 - v.p} %`, color: 'i' }] }],
+    alt: `Barra de 100 %: ${v.p} % del isótopo de ${v.a} u y ${100 - v.p} % del de ${v.a + v.d} u; promedio ${f(promIso(v), 2)} u.` });
+  const promIso = v => (v.p * v.a + (100 - v.p) * (v.a + v.d)) / 100;
+  // Mesa 2: una molécula CₓHᵧO_z armada a mano. Arriba, los átomos (no es masa); abajo, la masa. Las dos barras
+  // ocupan el ancho entero (escala propia), para comparar el % de átomos con el % de masa (el error ES19).
+  const formula = v => [['C', v.c], ['H', v.h], ['O', v.o]].filter(([, k]) => k > 0).map(([el, k]) => el + sub(k)).join('');
+  const masaDe = v => 12 * v.c + v.h + 16 * v.o;
+  const dosBarras = v => {
+    const els = [['C', v.c, 12], ['H', v.h, 1], ['O', v.o, 16]];
+    return { filas: [
+      { titulo: `átomos de ${formula(v)} (no es masa)`, tramos: els.map(([el, k]) => ({ valor: k, texto: k ? `${k} ${el}` : '', color: COLOR_EL[el] })) },
+      { titulo: `masa: ${f(masaDe(v), 0)} g/mol`, tramos: els.map(([el, k, ma]) => ({ valor: k * ma, texto: k ? `${el} ${f(100 * k * ma / masaDe(v), 1)} %` : '', color: COLOR_EL[el] })) },
+    ], alt: `Dos barras de ${formula(v)}: arriba, ${v.c} C, ${v.h} H y ${v.o} O; abajo, la masa: ${els.filter(e => e[1]).map(([el, k, ma]) => `${el} ${f(100 * k * ma / masaDe(v), 1)} %`).join(', ')}.` };
+  };
+
   return {
     unidad: 'quimica.mol-y-composicion',
     version: '0.1.0',
@@ -497,6 +522,43 @@
       pregunta: '¿Cómo cuentas granos de arroz sin contarlos uno por uno?',
       fuente: { titulo: 'BIPM, unidad base mol', url: 'https://www.bipm.org/en/si-base-units/mole' },
     },
+    // Laboratorio (docs/teoria.md §4b), sin preguntas. La primera mesa saca el promedio de la lupa del cloro a
+    // cualquier par de isótopos (más controles, el caso de 0 % y 100 %); la segunda pone lado a lado el % de átomos
+    // y el % de masa de una molécula que el alumno arma, el caso del CH₄ de la idea 4 hecho mesa.
+    // El título de cada barra y la lectura dicen las entradas, para que la miniatura guardada se lea sola.
+    laboratorio: [
+      {
+        id: 'isotopos', titulo: 'Dos isótopos en una barra', pieza: 'quim-composicion',
+        consigna: 'Elige la masa del isótopo liviano y cuánto más pesa el otro. Arrastra el borde entre los tramos: es la abundancia.',
+        controles: [
+          { id: 'a', etiqueta: 'isótopo liviano', min: 6, max: 80, paso: 1, inicio: 35, unidad: 'u', decimales: 0 },
+          { id: 'd', etiqueta: 'el otro pesa más', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'u', decimales: 0 },
+          { id: 'p', etiqueta: '% del liviano', color: 'c-h', min: 0, max: 100, paso: 1, inicio: 76, unidad: '%', decimales: 0 },
+        ],
+        dibujo: v => ({ datos: isoBarra(v), estado: {} }),
+        lectura: v => [`${v.p} % de ${v.a} u · ${100 - v.p} % de ${v.a + v.d} u → ${f(promIso(v), 2)} u`],
+        // El borde entre los dos tramos es la abundancia del liviano: correrlo a la derecha acerca el promedio a su masa.
+        arrastres: [{ id: 'borde', etiqueta: 'borde entre los dos isótopos', color: 'c-h',
+          donde: v => { const g = PC().geometria(isoBarra(v)); return { x: g.xDe(0, v.p), y: g.y(0) + g.hb / 2 }; },
+          mover: (pt, v) => ({ p: PC().geometria(isoBarra(v)).valorEn(0, pt.x) }) }],
+      },
+      {
+        id: 'atomos-o-masa', titulo: 'Átomos contra masa', pieza: 'quim-composicion',
+        consigna: 'Arma una molécula con carbono, hidrógeno y oxígeno. Arrastra el borde del carbono arriba y mira cuánto cambia abajo, en masa.',
+        controles: [
+          { id: 'c', etiqueta: 'C', min: 1, max: 6, paso: 1, inicio: 1, decimales: 0 },
+          { id: 'h', etiqueta: 'H', color: 'c-i', min: 0, max: 14, paso: 1, inicio: 4, decimales: 0 },
+          { id: 'o', etiqueta: 'O', color: 'c-h', min: 0, max: 6, paso: 1, inicio: 0, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: dosBarras(v), estado: {} }),
+        lectura: v => [`${formula(v)}: `, [['C', v.c, 12], ['H', v.h, 1], ['O', v.o, 16]].filter(e => e[1]).map(([el, k, ma]) => `${el} ${f(100 * k * ma / masaDe(v), 1)} %`).join(' · '), ' de la masa'],
+        // El borde del tramo del carbono en la barra de átomos: correrlo pone más átomos de C (con H y O fijos);
+        // la barra de masa responde mucho más, porque cada C pesa 12 veces un H. Fracción f → C = f·(H + O)/(1 − f).
+        arrastres: [{ id: 'carbono', etiqueta: 'borde de los átomos de carbono',
+          donde: v => { const g = PC().geometria(dosBarras(v)); return { x: g.xDe(0, v.c), y: g.y(0) + g.hb / 2 }; },
+          mover: (pt, v) => { const g = PC().geometria(dosBarras(v)), fr = Math.max(0, Math.min(0.95, (pt.x - g.x0) / g.largo(0))); return { c: fr * (v.h + v.o) / (1 - fr) }; } }],
+      },
+    ],
     ideas: [masaProm, mol, relaciones, composicion, leyes],
   };
 });
