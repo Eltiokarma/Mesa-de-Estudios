@@ -14,6 +14,10 @@
  * Orden de atención · 1.º la figura (triángulo, tabla de elecciones, gráfica) · 2.º la fila o término marcado · acción: «Comprobar» · fondo: Nox.
  * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué el término de lugar k + 1 lleva bᵏ y cuándo un desarrollo deja de ser finito.
+ * Gesto (ronda 2) · se arrastra la fila de abajo del triángulo (cambia n), la fila marcada de la tabla de términos
+ *   (cambia k) y el punto de la curva exacta (cambia x). La idea 4 queda con controles: es una tabla de números sin
+ *   objeto que agarrar. Laboratorio: el triángulo hasta la fila 8 con pares e impares coloreados, el término general de
+ *   (xᵖ + c/x^q)⁶ con p, q y c libres, y la serie con α natural, fraccionario o negativo.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -42,6 +46,11 @@
   const fila = n => Array.from({ length: n + 1 }, (_, j) => C(n, j));
   const pot = (v, e) => (e === 0 ? '' : e === 1 ? v : `${v}${sup(e)}`);
   const lugar = j => `${j}.º`;
+  // Gesto directo (docs/teoria.md §4b): en «alg-tabla» la fila f está en geometria(d).cy(f), y la fila 0 no se mueve
+  // al agregar filas (y0 fijo), así que arrastrar en vertical elige la fila: f = (y − cy(0)) / alto de fila.
+  const TABLA = () => Kit.piezas['alg-tabla'], EJES = () => Kit.piezas.ejes;
+  const filaDe = (datos, y) => { const g = TABLA().geometria(datos); return (y - g.cy(0)) / (g.cy(1) - g.cy(0)); };
+  const inversa = (escala, a0, b0) => px => a0 + (px - escala(a0)) * (b0 - a0) / (escala(b0) - escala(a0));
   // Fracciones exactas para los coeficientes generalizados.
   const mcd = (x, y) => { x = Math.abs(x); y = Math.abs(y); while (y) [x, y] = [y, x % y]; return x || 1; };
   const fr = (n, d) => { if (d < 0) { n = -n; d = -d; } const g = mcd(n, d); return [n / g, d / g]; };
@@ -57,12 +66,22 @@
   // ---------- Idea 1: cada coeficiente cuenta elecciones ----------
   // Cambia: el exponente n · Permanece: el triángulo, fila por fila · Progresa: la fila nueva, suma de la de arriba
   // · Se reserva: la fila 7, que el juego no muestra · Debe verse: el coeficiente cuenta en cuántos órdenes sale bᵏ.
+  // Se agarra: la fila verde, por su borde derecho; bajarla agrega filas. «Mira» pasa a la tabla de elecciones de
+  // (a + b)³: es otra representación a propósito (de dónde sale cada número), y termina en la fila 3 que se jugó.
   const triangulo = (n, extra = {}) => ({
     triangular: true,
     filas: Array.from({ length: n + 1 }, (_, i) => fila(i).map(c => ({ t: f(c, 0), color: i === n ? 'd' : null, fuerte: i === n }))),
     alt: `Triángulo de Pascal hasta la fila ${n}: ${fila(n).join(', ')}`,
     ...extra,
   });
+  // Manija al final de la fila f de un triángulo: arrastrarla en vertical cambia el control que fija la fila.
+  function filaManija(datosDe, id, etiqueta, color) {
+    return {
+      id: `fila-${id}`, etiqueta, color,
+      donde: v => { const d = datosDe(v[id]), g = TABLA().geometria(d); return { x: Math.min(306, g.cx(v[id], v[id]) + g.paso * 0.75), y: g.cy(v[id]) }; },
+      mover: (pt, v) => ({ [id]: filaDe(datosDe(v[id]), pt.y) }),
+    };
+  }
   const pascal = {
     id: 'pascal-elecciones',
     titulo: 'Cada coeficiente cuenta elecciones',
@@ -75,6 +94,7 @@
       dibujo: v => ({ datos: triangulo(v.n), estado: {} }),
       lectura: v => [`(a + b)${sup(v.n)}: ${fila(v.n).join(', ')}; suman ${2 ** v.n}`],
       minimo: 3,
+      arrastres: [filaManija(triangulo, 'n', 'fila n: bájala para agregar filas', 'c-d')],
     },
     predice: {
       pregunta: ['En (', a, ' + ', b, ')⁷, ¿qué coeficiente acompaña a ', a, '⁵', b, '²?'],
@@ -115,7 +135,7 @@
     },
     regla: {
       texto: 'Cada término elige a o b en cada paréntesis. El coeficiente de aⁿ⁻ᵏbᵏ cuenta de cuántas maneras se eligen los k paréntesis que dan b.',
-      ecuacion: ['(', a, ' + ', b, ')ⁿ = Σ C(n, ', k, ') ', { sup: [a, ['n − ', k]] }, ' ', { sup: [b, k] }],
+      ecuacion: ['(', a, ' + ', b, ')ⁿ = Σ ', { llave: ['C(n, ', k, ')'], nota: 'formas de elegir', color: 'c-d' }, ' ', { sup: [a, ['n − ', k]] }, ' ', { sup: [b, k] }],
       condicion: 'n es entero no negativo; hay n + 1 términos y los coeficientes de la fila n suman 2ⁿ.',
     },
     ahoraTu: {
@@ -149,6 +169,7 @@
   // ---------- Idea 2: el término k + 1 lleva bᵏ ----------
   // Cambia: k · Permanece: el binomio (x + 2)⁶ y su tabla de términos · Progresa: la fila marcada · Se reserva:
   // el exponente de x que se anula · Debe verse: el lugar es k + 1, no k.
+  // Se agarra: la fila marcada, por su borde derecho; subirla o bajarla cambia k y el lugar a la vez.
   const tablaTerminos = (kk, desde = {}) => ({
     columnas: ['lugar', 'k', 'C(6, k)', 'xⁿ⁻ᵏ', '2ᵏ', 'coeficiente'], colorCol: [null, 'i', null, 'o', 'i', 'd'],
     filas: [0, 1, 2, 3, 4, 5, 6].map(j => [lugar(j + 1), String(j), f(C(6, j), 0), pot('x', 6 - j) || '1', f(2 ** j, 0), { t: f(C(6, j) * 2 ** j, 0), color: 'd', fuerte: j === kk }]),
@@ -166,6 +187,11 @@
       voz: 'Compara el lugar con k.',
       controles: [{ id: 'k', etiqueta: 'k', min: 0, max: 6, paso: 1, inicio: 2, decimales: 0, color: 'c-i' }],
       dibujo: v => ({ datos: tablaTerminos(v.k), estado: {} }),
+      arrastres: [{
+        id: 'fila-k', etiqueta: 'fila marcada: súbela o bájala', color: 'c-i',
+        donde: v => { const g = TABLA().geometria(tablaTerminos(v.k)); return { x: g.xs[g.nc] - 4, y: g.cy(v.k) }; },
+        mover: (pt, v) => ({ k: filaDe(tablaTerminos(v.k), pt.y) }),
+      }],
       lectura: v => [`k = ${v.k}: lugar ${lugar(v.k + 1)}, ${f(C(6, v.k) * 2 ** v.k, 0)}${pot('x', 6 - v.k)}`],
       minimo: 3,
     },
@@ -198,7 +224,7 @@
     },
     regla: {
       texto: 'El término de lugar k + 1 lleva b elevado a k. Para el término independiente se iguala a cero el exponente total de x.',
-      ecuacion: ['T', { sub: ['', [k, ' + 1']] }, ' = C(n, ', k, ') ', { sup: [a, ['n − ', k]] }, ' ', { sup: [b, k] }],
+      ecuacion: [{ llave: ['T', { sub: ['', [k, ' + 1']] }], nota: 'lugar k + 1', color: 'c-i' }, ' = C(n, ', k, ') ', { sup: [a, ['n − ', k]] }, ' ', { llave: [{ sup: [b, k] }], nota: 'k veces b', color: 'c-i' }],
       condicion: 'k es entero entre 0 y n; si la ecuación del exponente no da un k así, no hay término independiente.',
     },
     ahoraTu: {
@@ -237,6 +263,9 @@
   // ---------- Idea 3: con exponente no natural, la suma no termina ----------
   // Cambia: x y cuántos términos se suman · Permanece: la curva exacta √(1 + x) · Progresa: la curva aproximada que se
   // pega a la exacta · Se reserva: x fuera de |x| < 1 · Debe verse: cerca de 0 se pega; lejos, se separa.
+  // Se agarra: el punto verde de la curva exacta, que corre en x. Dos representaciones a propósito: la gráfica muestra
+  // dónde se pega la suma para todos los x a la vez; «Predice» y «Mira» usan la tabla de sumas parciales, que da las
+  // cifras de un solo x (0,2) que la gráfica no deja leer.
   const ALFA = [1, 2];                               // α = 1/2
   const coefs = j => coefGen(ALFA[0], ALFA[1], j);
   const parcial = (x, m) => { let s2 = 0; for (let j = 0; j < m; j++) { const [n2, d] = coefs(j); s2 += n2 / d * x ** j; } return s2; };
@@ -256,7 +285,7 @@
     temas: ['Binomio con exponente no natural'],
     pieza: 'ejes',
     juega: {
-      consigna: '√(1 + x) = (1 + x)^½ se escribe como una suma infinita. Elige x y cuántos términos sumas; compara la curva roja con la exacta.',
+      consigna: '√(1 + x), es decir (1 + x) elevado a 1/2, se escribe como una suma infinita. Elige x y cuántos términos sumas; compara las curvas.',
       voz: 'Prueba x cerca de 0 y lejos de 0.',
       controles: [
         { id: 'x', etiqueta: 'x', min: -0.8, max: 1.6, paso: 0.2, inicio: 0.2, decimales: 1, color: 'c-o' },
@@ -265,6 +294,11 @@
       dibujo: v => ({ datos: ejesSerie(v.m, v.x, { puntos: [{ x: v.x, y: Math.sqrt(1 + v.x), color: 'd' }, { x: v.x, y: Math.max(-0.5, Math.min(2.5, parcial(v.x, v.m))), color: 'h', abierto: true }] }), estado: {} }),
       lectura: v => [`suma ${f(parcial(v.x, v.m), 4)} · exacto ${f(Math.sqrt(1 + v.x), 4)}`],
       minimo: 4,
+      arrastres: [{
+        id: 'punto-x', etiqueta: 'punto de la curva exacta: córrelo en x', color: 'c-o',
+        donde: v => { const g = EJES().geometria(ejesSerie(v.m, v.x)); return { x: g.X(v.x), y: g.Y(Math.sqrt(1 + v.x)) }; },
+        mover: (pt, v) => ({ x: inversa(EJES().geometria(ejesSerie(v.m, v.x)).X, -1, 1.6)(pt.x) }),
+      }],
     },
     predice: (() => {
       const sumas = [1, 2, 3, 4, 5, 6].map(m => parcial(3, m));
@@ -300,7 +334,7 @@
     })(),
     regla: {
       texto: 'Si α no es natural, (1 + x) elevado a α es una serie infinita. Converge si |x| < 1, y cortarla da una aproximación, no una igualdad.',
-      ecuacion: ['(1 + x)', { sup: ['', 'α'] }, ' = 1 + αx + ', { frac: ['α(α − 1)', '2!'] }, 'x² + …'],
+      ecuacion: ['(1 + x)', { sup: ['', 'α'] }, ' = 1 + αx + ', { llave: [{ frac: ['α(α − 1)', '2!'] }], nota: 'baja de uno', color: 'c-d' }, 'x² + …'],
       condicion: 'α es real y |x| < 1; en |x| = 1 hace falta otro análisis. Con α natural, la suma termina.',
     },
     ahoraTu: {
@@ -326,6 +360,7 @@
   // ---------- Idea 4: la potencia de un trinomio también cuenta órdenes ----------
   // Cambia: los exponentes de a y de b · Permanece: n = 4 y las tres letras · Progresa: el exponente de c que
   // completa n · Se reserva: el término abc de (a + b + c)³ · Debe verse: n! entre los factoriales de cada exponente.
+  // Sin arrastre: la figura es una tabla de factoriales sin objeto que agarrar; los exponentes quedan en − y +.
   const tablaMulti = (n, i, j) => {
     const kk = n - i - j, ok = kk >= 0;
     return {
@@ -378,7 +413,7 @@
     },
     regla: {
       texto: 'En (a + b + c)ⁿ, el coeficiente de aⁱbʲcᵏ cuenta los órdenes de las letras: n! entre el factorial de cada exponente.',
-      ecuacion: [{ frac: ['n!', 'i! · j! · k!'] }, ',   con  i + j + k = n'],
+      ecuacion: [{ llave: [{ frac: ['n!', 'i! · j! · k!'] }], nota: 'órdenes distintos', color: 'c-d' }, '   ·   i + j + k = n'],
       condicion: 'i, j y k son enteros no negativos que suman n. Si una letra lleva un número delante, también se eleva.',
     },
     ahoraTu: {
@@ -402,9 +437,97 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: el triángulo hasta la fila 8, con los pares o los múltiplos de 3 marcados. El caso que la idea 1 no muestra:
+  // el dibujo que forman (triángulos vacíos dentro del triángulo).
+  const trianguloMarcado = (n, m) => ({
+    triangular: true,
+    filas: Array.from({ length: n + 1 }, (_, i) => fila(i).map(c => ({ t: f(c, 0), color: m > 1 && c % m === 0 ? 'h' : i === n ? 'd' : null, fuerte: i === n || (m > 1 && c % m === 0) }))),
+    alt: `Triángulo de Pascal hasta la fila ${n}${m > 1 ? `, con los múltiplos de ${m} en rojo` : ''}`,
+  });
+  // Mesa 2: el término general de (xᵖ + c/x^q)⁶ con p, q y c libres: el exponente de x es p(6 − k) − qk.
+  const N2 = 6;
+  const tablaGeneral = v => ({
+    columnas: ['lugar', 'k', 'exp. de x', 'coef.'], colorCol: [null, 'i', 'o', 'd'],
+    filas: Array.from({ length: N2 + 1 }, (_, j) => {
+      const e = v.p * (N2 - j) - v.q * j;
+      return [lugar(j + 1), String(j), { t: f(e, 0), color: e === 0 ? 'd' : null, fuerte: e === 0 }, { t: f(C(N2, j) * v.c ** j, 0), color: 'd', fuerte: j === v.k }];
+    }),
+    resaltes: [{ f: v.k, c: 0, ancho: 4, color: 'i' }],
+    alt: `Los siete términos de (x elevado a ${v.p} + ${v.c}/x elevado a ${v.q}) a la 6`,
+  });
+  const titulo2 = v => `(${pot('x', v.p)} ${v.c < 0 ? '−' : '+'} ${Math.abs(v.c)}/${pot('x', v.q)})⁶`;
+  // Mesa 3: la serie de (1 + x) elevado a α, con α natural, fraccionario o negativo. Con α = 2 la suma termina: desde
+  // 3 términos es exacta en todo x; con α = −1 es la serie geométrica.
+  const ALFAS = { '1/2': [1, 2], '-1/2': [-1, 2], '-1': [-1, 1], '2': [2, 1] };
+  const EJ3 = { x: { min: -0.8, max: 1.4, paso: 0.2, cada: 2, nombre: 'x', decimales: 1, color: 'o' }, y: { min: -1, max: 4, paso: 1, nombre: 'y', decimales: 0 } };
+  const exacta = (al, xx) => (1 + xx) ** (ALFAS[al][0] / ALFAS[al][1]);
+  const parcialA = (al, xx, m) => { let s2 = 0; for (let j = 0; j < m; j++) { const [n2, d] = coefGen(ALFAS[al][0], ALFAS[al][1], j); s2 += n2 / d * xx ** j; } return s2; };
+  // Curva muestreada que se corta (null) donde sale de la ventana, sin aplastarla contra el borde.
+  const tramo = fn => { const out = []; for (let i = 0; i <= 88; i++) { const xx = -0.8 + 2.2 * i / 88, yy = fn(xx); out.push(yy >= -1 && yy <= 4 ? [xx, yy] : null); } return out; };
+  const serieLibre = v => {
+    const ye = exacta(v.al, v.x), ys = parcialA(v.al, v.x, v.m), dentro = yy => Math.max(-1, Math.min(4, yy));
+    return Object.assign({}, EJ3, {
+      curvas: [{ puntos: tramo(xx => exacta(v.al, xx)), color: 'd' }, { puntos: tramo(xx => parcialA(v.al, xx, v.m)), color: 'h', discontinua: true }],
+      puntos: [{ x: v.x, y: dentro(ye), color: 'd' }, { x: v.x, y: dentro(ys), color: 'h', abierto: true }],
+      alt: `Curva exacta de (1 + x) elevado a ${v.al} y la suma de ${v.m} términos de su serie`,
+    });
+  };
+  const laboratorio = [
+    {
+      id: 'pascal-colores', titulo: 'El triángulo hasta la fila 8', pieza: 'alg-tabla',
+      consigna: 'Arrastra la fila verde hacia abajo y marca los pares o los múltiplos de 3. Mira el dibujo que forman los rojos.',
+      controles: [
+        { id: 'n', etiqueta: 'n', min: 0, max: 8, paso: 1, inicio: 6, decimales: 0, color: 'c-d' },
+        { id: 'm', etiqueta: 'Marcar', opciones: [{ valor: 1, texto: 'nada' }, { valor: 2, texto: 'pares' }, { valor: 3, texto: 'múltiplos de 3' }] },
+      ],
+      dibujo: v => ({ datos: trianguloMarcado(v.n, v.m), estado: {} }),
+      lectura: v => { const fl = fila(v.n), r = v.m > 1 ? fl.filter(c => c % v.m === 0).length : 0; return [`Fila ${v.n}: suma ${2 ** v.n}`, v.m > 1 ? `; ${r} de ${fl.length} son múltiplos de ${v.m}` : '']; },
+      arrastres: [{
+        id: 'fila-n', etiqueta: 'fila n: bájala para agregar filas', color: 'c-d',
+        donde: v => { const d = trianguloMarcado(v.n, v.m), g = TABLA().geometria(d); return { x: Math.min(306, g.cx(v.n, v.n) + g.paso * 0.75), y: g.cy(v.n) }; },
+        mover: (pt, v) => ({ n: filaDe(trianguloMarcado(v.n, v.m), pt.y) }),
+      }],
+    },
+    {
+      id: 'termino-libre', titulo: 'Término general a medida', pieza: 'alg-tabla',
+      consigna: 'Elige los exponentes p y q y el número c del binomio, y arrastra la fila marcada. Busca el término sin x: exponente 0.',
+      controles: [
+        { id: 'p', etiqueta: 'p', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-o' },
+        { id: 'q', etiqueta: 'q', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
+        { id: 'c', etiqueta: 'c', opciones: [{ valor: 1, texto: '1' }, { valor: 2, texto: '2' }, { valor: -1, texto: '−1' }] },
+        { id: 'k', etiqueta: 'k', min: 0, max: N2, paso: 1, inicio: 2, decimales: 0, color: 'c-i' },
+      ],
+      dibujo: v => ({ datos: tablaGeneral(v), estado: {} }),
+      lectura: v => { const e = v.p * (N2 - v.k) - v.q * v.k; return [`${titulo2(v)}, k = ${v.k}: ${f(C(N2, v.k) * v.c ** v.k, 0)}`, e === 0 ? ', sin x' : pot('x', e)]; },
+      arrastres: [{
+        id: 'fila-k', etiqueta: 'fila marcada: súbela o bájala', color: 'c-i',
+        donde: v => { const g = TABLA().geometria(tablaGeneral(v)); return { x: g.xs[g.nc] - 4, y: g.cy(v.k) }; },
+        mover: (pt, v) => ({ k: filaDe(tablaGeneral(v), pt.y) }),
+      }],
+    },
+    {
+      id: 'serie-alfa', titulo: 'La serie con otro exponente', pieza: 'ejes',
+      consigna: 'Elige α, cuántos términos sumas y arrastra el punto en x. Con α natural, la suma termina; con los demás, no.',
+      controles: [
+        { id: 'al', etiqueta: 'α', opciones: [{ valor: '1/2', texto: '1/2' }, { valor: '-1/2', texto: '−1/2' }, { valor: '-1', texto: '−1' }, { valor: '2', texto: '2' }] },
+        { id: 'x', etiqueta: 'x', min: -0.8, max: 1.4, paso: 0.2, inicio: 0.4, decimales: 1, color: 'c-o' },
+        { id: 'm', etiqueta: 'Términos', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0, color: 'c-h' },
+      ],
+      dibujo: v => ({ datos: serieLibre(v), estado: {} }),
+      lectura: v => [`α = ${v.al.replace('-', '−')}, ${v.m} términos: suma ${f(parcialA(v.al, v.x, v.m), 4)} · exacto ${f(exacta(v.al, v.x), 4)}`],
+      arrastres: [{
+        id: 'punto-x', etiqueta: 'punto de la curva exacta: córrelo en x', color: 'c-o',
+        donde: v => { const g = EJES().geometria(EJ3); return { x: g.X(v.x), y: g.Y(Math.max(-1, Math.min(4, exacta(v.al, v.x)))) }; },
+        mover: pt => ({ x: inversa(EJES().geometria(EJ3).X, -0.8, 1.4)(pt.x) }),
+      }],
+    },
+  ];
+
   return {
     unidad: 'algebra.binomio-de-newton',
-    version: '0.1.0',
+    version: '0.2.0',
+    laboratorio,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/ejes.js'],
     historia: {
