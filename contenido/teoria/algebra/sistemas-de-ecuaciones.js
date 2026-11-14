@@ -15,6 +15,10 @@
  * Orden de atención · 1.º la figura (rectas, tabla de filas) · 2.º lo que cambia · acción: «Comprobar» · fondo: Nox.
  * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué una fila de ceros no es «la solución» y cuándo no se puede usar Cramer.
+ * Ronda 2 (14 nov 2026): gesto directo en las ideas 1 y 5 (la recta roja se agarra por su corte con el eje y y por
+ * su punto de x = 1, que la inclina); las ideas 2 a 4 se quedan con − y + porque su figura es una tabla de
+ * coeficientes: un número de fila no tiene lugar en el plano que agarrar. Llaves en las reglas y laboratorio de
+ * tres mesas: dos rectas libres con Δ y el cruce, parábola y recta por dos puntos, y los rangos.
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -70,6 +74,9 @@
   }
   const VENT = { x: { min: -2, max: 6, paso: 1, nombre: 'x', decimales: 0, color: 'o' }, y: { min: -2, max: 6, paso: 1, nombre: 'y', decimales: 0, color: 'i' } };
   const rectaE = (a, b, c, color, extra = {}) => Object.assign({ puntos: recta(a, b, c, -2, 6, -2, 6), color }, extra);
+  // Gesto directo (docs/teoria.md §4b): inversa lineal de la escala de la pieza; el lector ajusta al paso y al rango.
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+  const EJES = () => Kit.piezas.ejes;
 
   // ---------- Idea 1: dos rectas, tres destinos ----------
   // Cambia: la segunda recta · Permanece: x + y = 4 · Progresa: el cruce que se mueve, desaparece o se vuelve toda
@@ -80,6 +87,16 @@
     const Dx = c1 * b2 - c2 * b1, Dy = a1 * c2 - a2 * c1;
     return { tipo: Dx === 0 && Dy === 0 ? 'infinitas' : 'ninguna' };
   }
+  // Dos manijas para una recta y = n − m·x (escrita mx + y = n): el corte (0; n) y el punto de x = 1, (1; n − m).
+  function manijasRecta(ejes, nombre, m, n, color) {
+    const g = () => EJES().geometria(ejes), Yi = () => inversa(g().Y, ejes.y.min, ejes.y.max);
+    return [
+      { id: 'corte', etiqueta: `corte de ${nombre} con el eje y`, color,
+        donde: v => ({ x: g().X(0), y: g().Y(v[n]) }), mover: pt => ({ [n]: Yi()(pt.y) }) },
+      { id: 'inclina', etiqueta: `punto de x = 1 de ${nombre}: la inclina`, color,
+        donde: v => ({ x: g().X(1), y: g().Y(v[n] - v[m]) }), mover: (pt, v) => ({ [m]: v[n] - Yi()(pt.y) }) },
+    ];
+  }
   const TXT = { una: 'una solución', ninguna: 'ninguna solución', infinitas: 'infinitas soluciones' };
   const dosRectas = {
     id: 'dos-rectas',
@@ -87,11 +104,11 @@
     temas: ['Sistemas lineales 2x2 e interpretación gráfica'],
     pieza: 'ejes',
     juega: {
-      consigna: 'La recta verde es x + y = 4. Mueve a y c en la roja, ax + y = c, y mira dónde se cruzan.',
+      consigna: 'La recta verde es x + y = 4. Arrastra la roja, ax + y = c, por su corte o por el punto que la inclina.',
       voz: 'Busca a = 1. ¿Qué pasa con el cruce?',
       controles: [
-        { id: 'a', etiqueta: 'a', min: -2, max: 2, paso: 1, inicio: -1, decimales: 0 },
-        { id: 'c', etiqueta: 'c', min: -2, max: 6, paso: 1, inicio: 2, decimales: 0 },
+        { id: 'a', etiqueta: 'a', color: 'c-h', min: -2, max: 2, paso: 1, inicio: -1, decimales: 0 },
+        { id: 'c', etiqueta: 'c', color: 'c-h', min: -2, max: 6, paso: 1, inicio: 2, decimales: 0 },
       ],
       dibujo: v => {
         const k = clasificar2(1, 1, 4, v.a, 1, v.c);
@@ -99,6 +116,8 @@
       },
       lectura: v => { const k = clasificar2(1, 1, 4, v.a, 1, v.c); return [TXT[k.tipo], k.tipo === 'una' ? `: ${par(k.x, k.y)}` : '']; },
       minimo: 4,
+      // La recta roja y = c − ax: su corte con el eje y es (0; c) y su punto de x = 1 es (1; c − a). Rango fijo.
+      arrastres: manijasRecta(VENT, 'la recta roja', 'a', 'c', 'c-h'),
     },
     predice: {
       pregunta: ['¿Cuántas soluciones tiene el sistema ', ...lineal(1, 1, 3), ' y ', ...lineal(2, 2, 7), '?'],
@@ -128,7 +147,7 @@
     },
     regla: {
       texto: 'Cada ecuación lineal es una recta. Si se cortan, hay una solución; si son paralelas distintas, ninguna; si son la misma recta, infinitas.',
-      ecuacion: [{ frac: [{ sub: ['a', '1'] }, { sub: ['a', '2'] }] }, ' = ', { frac: [{ sub: ['b', '1'] }, { sub: ['b', '2'] }] }, ' ≠ ', { frac: [{ sub: ['c', '1'] }, { sub: ['c', '2'] }] }, '  ⇒  paralelas'],
+      ecuacion: [{ llave: [{ frac: [{ sub: ['a', '1'] }, { sub: ['a', '2'] }] }, ' = ', { frac: [{ sub: ['b', '1'] }, { sub: ['b', '2'] }] }], nota: 'misma inclinación' }, ' ≠ ', { llave: [{ frac: [{ sub: ['c', '1'] }, { sub: ['c', '2'] }] }], nota: 'otro corte' }, '  ⇒  paralelas'],
       condicion: 'una solución es un par (x; y) que cumple las dos ecuaciones a la vez, no solo una de ellas.',
     },
     ahoraTu: {
@@ -154,7 +173,7 @@
               { id: 'una-ec', texto: par(...solo1), error: 'AL17', siFuera: `${par(...solo1)} cumple la primera ecuación, pero no la segunda.` },
               { id: 'signo', texto: par(-x0, y0), error: 'TAL-SIGNO', siFuera: `Con x = ${f(-x0)} la primera da ${f(-a1 * x0 + b1 * y0)}, no ${f(c1)}.` },
             ]),
-            solucion: { texto: 'El par cumple las dos ecuaciones: es el cruce.', ecuacion: [...lineal(a1, b1, c1), ' ✓;   ', ...lineal(a2, b2, c2), ' ✓   con ', par(x0, y0)], dibujo: dib },
+            solucion: { texto: 'El par cumple las dos ecuaciones: es el cruce.', ecuacion: [...lineal(a1, b1, c1), ' ✓', '   ·   ', ...lineal(a2, b2, c2), ' ✓'], dibujo: dib },
           };
         }
         const OP = { una: 'Una', ninguna: 'Ninguna', infinitas: 'Infinitas' };
@@ -187,6 +206,7 @@
       dibujo: v => ({ datos: { columnas: ['x', 'y', '='], colorCol: ['o', 'i'], rotulosFila: ['F1', 'F2', `F2 − ${f(v.l)}F1`], separador: { columna: 2 }, filas: [fila(1, 1, 5), fila(2, 3, 13), fila(2 - v.l, 3 - v.l, 13 - 5 * v.l)], resaltes: [{ f: 2, c: 0, ancho: 3, color: v.l === 2 ? 'd' : null }] }, estado: {} }),
       lectura: v => [v.l === 2 ? 'Sin x: ' : 'Nueva fila: ', ...lineal(2 - v.l, 3 - v.l, 13 - 5 * v.l)],
       minimo: 3,
+      // Sin arrastre: la figura es una tabla de coeficientes; λ no tiene un lugar en ella que agarrar.
     },
     predice: {
       pregunta: ['En la matriz ampliada de ', ...lineal(1, 2, 4), ' y ', ...lineal(3, 1, 7), ', se hace F2 − 3F1. ¿Cómo queda la fila 2?'],
@@ -226,7 +246,7 @@
     },
     regla: {
       texto: 'Restar a una fila un múltiplo de otra no cambia las soluciones, si se opera la fila entera. Se escalona el sistema y se despeja de abajo hacia arriba.',
-      ecuacion: [{ sub: ['F', '2'] }, ' ← ', { sub: ['F', '2'] }, ' − λ', { sub: ['F', '1'] }],
+      ecuacion: [{ sub: ['F', '2'] }, ' ← ', { sub: ['F', '2'] }, ' − ', { llave: ['λ', { sub: ['F', '1'] }], nota: 'la fila entera' }],
       condicion: 'la operación incluye el término independiente; λ es cualquier número real y la fila 1 no cambia.',
     },
     ahoraTu: {
@@ -246,7 +266,7 @@
               { id: 'signo', texto: fmt(b2 + l * b, 2 * a2, c2 + l * c), error: 'TAL-SIGNO', siFuera: 'Eso suma λF1; para eliminar x se resta.' },
               { id: 'solo-x', texto: fmt(b2, 0, c2), error: 'AL18', siFuera: 'Solo se anuló la x; la y y el término independiente también cambian.' },
             ]),
-            solucion: { texto: 'Cada número de F2 menos λ veces el de F1, en la misma columna.', ecuacion: [`${f(b2)} − (${f(l)})(${f(b)}) = ${f(nb)}  ·  ${f(c2)} − (${f(l)})(${f(c)}) = ${f(nc)}`] },
+            solucion: { texto: 'Cada número de F2 menos λ veces el de F1, en la misma columna.', ecuacion: [`${f(b2)} − (${f(l)})(${f(b)}) = ${f(nb)}`, '   ·   ', `${f(c2)} − (${f(l)})(${f(c)}) = ${f(nc)}`] },
           };
         }
         // Sistema 3 × 3 ya escalonado: se despeja de abajo hacia arriba.
@@ -289,6 +309,7 @@
       },
       lectura: v => { const D = det(2, 1, 1, v.k); return [D ? `Δ = ${f(D)}: solución única` : 'Δ = 0: Cramer no se aplica']; },
       minimo: 4,
+      // Sin arrastre: tabla de determinantes. El gesto con las dos rectas está en el laboratorio («Dos rectas libres»).
     },
     predice: {
       pregunta: ['¿Qué da la regla de Cramer en ', ...lineal(1, 2, 3), ' y ', ...lineal(2, 4, 5), '?'],
@@ -317,7 +338,7 @@
     },
     regla: {
       texto: 'En un sistema cuadrado con Δ ≠ 0, x = Δx/Δ e y = Δy/Δ, donde Δx cambia la columna de x por los términos independientes.',
-      ecuacion: [x, ' = ', { frac: [['Δ', x], 'Δ'] }, '   ·   ', y, ' = ', { frac: [['Δ', y], 'Δ'] }],
+      ecuacion: [x, ' = ', { frac: [['Δ', x], 'Δ'] }, '   ·   ', y, ' = ', { frac: [['Δ', y], 'Δ'] }, '   ·   ', { llave: ['Δ ≠ 0'], nota: 'si no, rangos' }],
       condicion: 'tantas ecuaciones como incógnitas y Δ ≠ 0. Si Δ = 0, Cramer no decide: se analiza con rangos.',
     },
     ahoraTu: {
@@ -377,6 +398,7 @@
       dibujo: v => { const R = rangos(v.k, v.m); return { datos: { columnas: ['x', 'y', '='], colorCol: ['o', 'i'], separador: { columna: 2 }, rotulosFila: ['F1', 'F2 − 2F1'], filas: [fila(1, 2, 3), fila(0, v.k - 4, v.m - 6)], pie: `rango A = ${R.rA}; rango (A|b) = ${R.rAb}` }, estado: {} }; },
       lectura: v => [`Solución: ${rangos(v.k, v.m).tipo}`],
       minimo: 4,
+      // Sin arrastre: tabla de filas y rangos, sin lugar que agarrar.
     },
     predice: {
       pregunta: ['Con k = 4 y m = 6, el sistema ', ...lineal(1, 2, 3), ' y ', ...lineal(2, 4, 6), ' deja la fila 0 0 | 0. ¿Cuántas soluciones tiene?'],
@@ -408,7 +430,7 @@
     },
     regla: {
       texto: 'Un sistema tiene solución si rango A = rango (A|b). Si ese rango es igual al número de incógnitas, la solución es única; si es menor, hay infinitas.',
-      ecuacion: ['r(A) = r(A|b)  ⇔  hay solución'],
+      ecuacion: [{ llave: ['r(A)'], nota: 'sin los términos' }, ' = ', { llave: ['r(A|b)'], nota: 'con los términos' }, '  ⇔  hay solución'],
       condicion: 'una fila 0 … 0 | 0 no es una solución: es una ecuación que se cumple siempre.',
     },
     ahoraTu: {
@@ -445,15 +467,24 @@
     temas: ['Sistemas no lineales'],
     pieza: 'ejes',
     juega: {
-      consigna: 'La curva verde es y = x². Mueve m y n en la recta roja y = mx + n y cuenta los puntos comunes.',
+      consigna: 'La curva verde es y = x². Arrastra la recta roja y = mx + n por sus dos manijas y cuenta los puntos comunes.',
       voz: 'Busca una recta que solo toque la curva.',
       controles: [
-        { id: 'm', etiqueta: 'm', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0 },
-        { id: 'n', etiqueta: 'n', min: -2, max: 4, paso: 1, inicio: 2, decimales: 0 },
+        { id: 'm', etiqueta: 'm', color: 'c-h', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0 },
+        { id: 'n', etiqueta: 'n', color: 'c-h', min: -2, max: 4, paso: 1, inicio: 2, decimales: 0 },
       ],
       dibujo: v => ({ datos: Object.assign({}, VNL, { curvas: [{ puntos: curvaY(z => z * z, -4, 4), color: 'd' }, { puntos: curvaY(z => v.m * z + v.n, -4, 4), color: 'h' }], puntos: cortesPL(v.m, v.n).map(z => ({ x: z, y: z * z, color: 'o', rotulo: Number.isInteger(z) && cortesPL(v.m, v.n).length < 2 ? par(z, z * z) : undefined })), alt: `y = x² y y = ${v.m}x + ${v.n}: ${cortesPL(v.m, v.n).length} puntos comunes` }), estado: {} }),
-      lectura: v => [`Puntos comunes: ${cortesPL(v.m, v.n).length}`],
+      lectura: v => [`Puntos comunes: ${cortesPL(v.m, v.n).length} · Δ = ${f(v.m * v.m + 4 * v.n)}`],
       minimo: 4,
+      // Corte (0; n) y punto de x = 1, (1; m + n): aquí la pendiente sube con m, así que se invierte el signo.
+      arrastres: [
+        { id: 'corte', etiqueta: 'corte de la recta roja con el eje y', color: 'c-h',
+          donde: v => { const g = EJES().geometria(VNL); return { x: g.X(0), y: g.Y(v.n) }; },
+          mover: pt => ({ n: inversa(EJES().geometria(VNL).Y, -2, 8)(pt.y) }) },
+        { id: 'inclina', etiqueta: 'punto de x = 1 de la recta roja: la inclina', color: 'c-h',
+          donde: v => { const g = EJES().geometria(VNL); return { x: g.X(1), y: g.Y(v.m + v.n) }; },
+          mover: (pt, v) => ({ m: inversa(EJES().geometria(VNL).Y, -2, 8)(pt.y) - v.n }) },
+      ],
     },
     predice: {
       pregunta: ['¿Qué soluciones tiene el sistema ', x, '² + ', y, '² = 25 y ', ...lineal(1, 1, 7), '?'],
@@ -504,9 +535,75 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1, más rica que las ideas 1 y 3: las dos rectas se mueven, y la lectura junta lo gráfico con Cramer (Δ y el
+  // cruce). Las dos se escriben ax + y = c; cada una con su corte y su punto de x = 1.
+  const VL = { x: { min: -4, max: 6, paso: 1, cada: 2, nombre: 'x', decimales: 0, color: 'o' }, y: { min: -4, max: 8, paso: 2, nombre: 'y', decimales: 0, color: 'i' } };
+  const rectasLibres = {
+    id: 'rectas-libres', titulo: 'Dos rectas libres', pieza: 'ejes',
+    consigna: 'Las dos rectas se arrastran. Mira cómo cambia Δ cuando se cruzan, cuando son paralelas y cuando se encima una sobre otra.',
+    controles: [
+      { id: 'a1', etiqueta: 'a (verde)', color: 'c-d', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'c1', etiqueta: 'c (verde)', color: 'c-d', min: -3, max: 6, paso: 1, inicio: 4, decimales: 0 },
+      { id: 'a2', etiqueta: 'a (roja)', color: 'c-h', min: -2, max: 2, paso: 1, inicio: -1, decimales: 0 },
+      { id: 'c2', etiqueta: 'c (roja)', color: 'c-h', min: -3, max: 6, paso: 1, inicio: 0, decimales: 0 },
+    ],
+    dibujo: v => {
+      const k = clasificar2(v.a1, 1, v.c1, v.a2, 1, v.c2);
+      const r = (a, c, color, extra) => Object.assign({ puntos: recta(a, 1, c, -4, 6, -4, 8), color }, extra);
+      return { datos: Object.assign({}, VL, {
+        curvas: [r(v.a1, v.c1, 'd'), r(v.a2, v.c2, 'h', { discontinua: k.tipo === 'infinitas' })],
+        puntos: k.tipo === 'una' && k.x >= -4 && k.x <= 6 && k.y >= -4 && k.y <= 8 ? [{ x: k.x, y: k.y, color: 'o', guias: true }] : [],
+        alt: `${v.a1}x + y = ${v.c1} y ${v.a2}x + y = ${v.c2}: ${TXT[k.tipo]}`,
+      }), estado: {} };
+    },
+    lectura: v => {
+      const k = clasificar2(v.a1, 1, v.c1, v.a2, 1, v.c2);
+      return [`Δ = ${f(v.a1 - v.a2)} · `, TXT[k.tipo], k.tipo === 'una' ? `: ${par(k.x, k.y)}` : ''];
+    },
+    arrastres: [
+      ...manijasRecta(VL, 'la recta verde', 'a1', 'c1', 'c-d').map(m => Object.assign(m, { id: `${m.id}-verde` })),
+      ...manijasRecta(VL, 'la recta roja', 'a2', 'c2', 'c-h').map(m => Object.assign(m, { id: `${m.id}-roja` })),
+    ],
+  };
+  // Mesa 2: la parábola también sube y baja (y = x² + k) y la recta se agarra por dos puntos (x = −1 y x = 1):
+  // con las dos cosas moviéndose, el alumno busca la tangente y ve que Δ = 0 la delata.
+  const VP = { x: { min: -4, max: 4, paso: 1, nombre: 'x', decimales: 0, color: 'o' }, y: { min: -4, max: 8, paso: 2, nombre: 'y', decimales: 0, color: 'i' } };
+  const parabolaRecta = {
+    id: 'parabola-recta', titulo: 'Parábola y recta', pieza: 'ejes',
+    consigna: 'Sube o baja la parábola y = x² + k por su vértice. La recta roja se arrastra por dos puntos. Busca un solo punto común.',
+    controles: [
+      { id: 'k', etiqueta: 'k', color: 'c-d', min: -3, max: 3, paso: 1, inicio: 0, decimales: 0 },
+      { id: 'm', etiqueta: 'm', color: 'c-h', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'n', etiqueta: 'n', color: 'c-h', min: -3, max: 5, paso: 1, inicio: 2, decimales: 0 },
+    ],
+    dibujo: v => {
+      const xs = cortesPL(v.m, v.n - v.k);
+      const cv = fn => { const out = []; for (let i = 0; i <= 120; i++) { const xx = -4 + 8 * i / 120, yy = fn(xx); out.push(yy >= -4 && yy <= 8 ? [xx, yy] : null); } return out; };
+      return { datos: Object.assign({}, VP, {
+        curvas: [{ puntos: cv(z => z * z + v.k), color: 'd' }, { puntos: cv(z => v.m * z + v.n), color: 'h' }],
+        puntos: xs.filter(z => z * z + v.k <= 8).map(z => ({ x: z, y: z * z + v.k, color: 'o' })),
+        alt: `y = x² + ${v.k} y y = ${v.m}x + ${v.n}: ${xs.length} puntos comunes`,
+      }), estado: {} };
+    },
+    lectura: v => [`Puntos comunes: ${cortesPL(v.m, v.n - v.k).length} · Δ = ${f(v.m * v.m + 4 * (v.n - v.k))}`],
+    arrastres: [
+      { id: 'vertice', etiqueta: 'vértice de la parábola', color: 'c-d',
+        donde: v => { const g = EJES().geometria(VP); return { x: g.X(0), y: g.Y(v.k) }; },
+        mover: pt => ({ k: inversa(EJES().geometria(VP).Y, -4, 8)(pt.y) }) },
+      // Dos puntos de la recta: el de x = −1 vale n − m y el de x = 1, n + m. Al mover uno, el otro se queda.
+      ...[-1, 1].map(xm => ({ id: `punto${xm < 0 ? '-izq' : '-der'}`, etiqueta: `punto de x = ${xm} de la recta roja`, color: 'c-h',
+        donde: v => { const g = EJES().geometria(VP); return { x: g.X(xm), y: g.Y(v.n + xm * v.m) }; },
+        mover: (pt, v) => {
+          const yv = inversa(EJES().geometria(VP).Y, -4, 8)(pt.y), otro = v.n - xm * v.m;   // el punto de −xm no se mueve
+          return { n: (yv + otro) / 2, m: xm * (yv - otro) / 2 };
+        } })),
+    ],
+  };
+
   return {
     unidad: 'algebra.sistemas-de-ecuaciones',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-tabla.js'],
     historia: {
@@ -514,6 +611,7 @@
       pregunta: '¿Qué cambio de una ecuación no cambia sus soluciones?',
       fuente: { titulo: 'O’Connor y Robertson, Matrices and determinants — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Matrices_and_determinants/' },
     },
+    laboratorio: [rectasLibres, parabolaRecta, Object.assign({ id: 'rangos', titulo: 'Rangos que deciden', pieza: 'alg-tabla' }, rouche.juega, { minimo: undefined })],
     ideas: [dosRectas, gauss, cramer, rouche, noLineal],
   };
 });
