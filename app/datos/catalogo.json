@@ -3832,7 +3832,16 @@
      "plantillas": [
       "relojes-calendarios",
       "rm-relojes"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/cronometria-y-calendarios.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-reloj.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "razonamiento-matematico.certezas",
