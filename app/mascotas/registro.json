@@ -4,13 +4,14 @@
   "porDefecto": "gato",
   "mascotas": [
     "gato",
-    "luma"
+    "luma",
+    "nox"
   ],
   "cursos": {
     "fisica": "gato",
     "quimica": "gato",
     "aritmetica": "luma",
-    "algebra": "gato",
+    "algebra": "nox",
     "geometria": "gato",
     "trigonometria": "gato",
     "razonamiento-matematico": "gato",
