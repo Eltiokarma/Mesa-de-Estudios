@@ -2755,7 +2755,14 @@
       "triangulo-estira",
       "geo-circunferencia-metrica",
       "geo-relaciones-metricas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/relaciones-metricas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "geometria.poligonos-regulares",
