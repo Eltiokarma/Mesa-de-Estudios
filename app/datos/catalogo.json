@@ -4167,7 +4167,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/eliminacion-de-oraciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.plan-de-redaccion",
