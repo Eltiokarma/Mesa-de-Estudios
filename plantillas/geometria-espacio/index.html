@@ -259,6 +259,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'geometria-espacio', unidad: 'geometria.geometria-del-espacio', version: '0.1.0' };
@@ -924,6 +925,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de cualquier pregunta, se gira el cubo del paso 1.
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el dibujo a los lados: gira el cubo y míralo.', minimo:2 });
 })();
 </script>
 
@@ -1125,13 +1129,21 @@ function botones(){
     : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
   $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
 }
+// Regla 3: antes del primer experimento, juego libre: el cubo solo sobre el piso, para girarlo.
+let jugado = false;
+const juegoLibre = () => E.config({ desc:'Un cubo ABCD-EFGH de arista 6 sobre un piso cuadriculado, el plano P.',
+  dibujo:L => { L.texto(UT.lerp(X.A, X.B, .5), 'a = 6', 'ink', { dy:16 }); },
+  ley:[['ink', 'cubo ABCD-EFGH, arista a = 6', 'linea'], ['muted', 'plano P (el piso)']] });
 function ir(k){
   if (k > primeraLibre() || E.ocupado) return;
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k];
-  E.compacto = !S.pred[x.id]; Celular.compactar($('m2'), E.compacto);
-  x.antes(!!S.pred[x.id]);
-  E.compactar(!S.pred[x.id]);
+  if (!jugado){ E.compacto = false; Celular.compactar($('m2'), false); juegoLibre(); E.compactar(false); }
+  else {
+    E.compacto = !S.pred[x.id]; Celular.compactar($('m2'), E.compacto);
+    x.antes(!!S.pred[x.id]);
+    E.compactar(!S.pred[x.id]);
+  }
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -1163,6 +1175,9 @@ function botonesOcupado(on){
   const sig = $('sig2'); if (sig) sig.disabled = on;
 }
 ir(0);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el dibujo a los lados: gira el cubo y míralo.', minimo:2,
+  alListo:() => { jugado = true; ir(S.k); } });
 })();
 </script>
 
