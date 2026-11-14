@@ -2644,7 +2644,14 @@
      "plantillas": [
       "angulo-inscrito",
       "geo-circunferencia-metrica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/circunferencia.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "geometria.proporcionalidad-y-semejanza",
