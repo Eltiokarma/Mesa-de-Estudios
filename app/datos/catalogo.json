@@ -2034,7 +2034,14 @@
      "plantillas": [
       "porcentajes-sucesivos",
       "porcentajes-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/porcentajes.js",
+      "requiere": [
+       "/nucleo/kit/piezas/barra-porcentaje.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.interes-y-descuento",
