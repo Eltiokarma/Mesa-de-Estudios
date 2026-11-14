@@ -30,6 +30,8 @@
   'use strict';
   const U = G.util;
   const f = (n, d = 2) => Kit.formatear(n, d);
+  const SEP = '   ·   ';   // separa dos relaciones en una lectura o ecuación
+  const nb = t => t.replace(/ /g, '\u00a0');   // una relación de la lectura no se parte entre dos líneas
   function azar(s) {
     let q = (s * 2654435761 + 12345) >>> 0;
     const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
@@ -71,6 +73,15 @@
     return { puntos: Array.from({ length: n + 1 }, (_, k) => p(k / n)), rotulo: sum(V, por(a, (r + 0.42) * Math.cos(t / 2)), por(w, (r + 0.42) * Math.sin(t / 2))) };
   };
   const TD = { giro: -32, alza: 24 };
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura. En 3D aPlano no sirve; para un
+  // punto que se mueve en un plano del espacio (O + u·e1 + w·e2), enPlano invierte la proyección y da (u, w).
+  // El lector ajusta cada valor al paso y al rango de su control.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const enPlano = (datos, O, e1, e2, p) => {
+    const g = G.geometria(datos), a = g.S(O), b = g.S(sum(O, e1)), c = g.S(sum(O, e2));
+    const m = [b[0] - a[0], b[1] - a[1], c[0] - a[0], c[1] - a[1]], x = p.x - a[0], y = p.y - a[1], det = m[0] * m[3] - m[2] * m[1];
+    return [(x * m[3] - m[2] * y) / det, (m[0] * y - x * m[1]) / det];
+  };
   const plano = (x = 3.6, z0 = -2.6, z1 = 2.6, o = {}) => Object.assign({ puntos: [[-x, 0, z0], [x, 0, z0], [x, 0, z1], [-x, 0, z1]], opacidad: 0.07, sinBorde: false }, o);
 
   // ---------- Idea 1: recta perpendicular a un plano ----------
@@ -103,7 +114,11 @@
       voz: 'Inclina la varilla. ¿Con cuál recta sigue a 90°?',
       controles: [{ id: 'fi', etiqueta: 'inclinación', min: 0, max: 60, paso: 15, inicio: 30, unidad: '°', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: varilla(v.fi), estado: {} }),
-      lectura: v => [`con a: ${90 - v.fi}° · con b: 90°`, v.fi === 0 ? 'L es perpendicular al piso' : 'L no es perpendicular al piso'],
+      // Se agarra la punta L de la varilla: gira alrededor de O en el plano vertical que contiene a la recta a.
+      arrastres: [{ id: 'punta-l', etiqueta: 'punta de la varilla L', color: 'c-o',
+        donde: v => enPantalla(varilla(v.fi), [3 * Math.sin(U.rad(v.fi)), 3 * Math.cos(U.rad(v.fi)), 0]),
+        mover: (p, v) => { const [u, w] = enPlano(varilla(v.fi), [0, 0, 0], [1, 0, 0], [0, 1, 0], p); return { fi: U.grados(Math.atan2(u, w)) }; } }],
+      lectura: v => [nb(`con a: ${90 - v.fi}°`), SEP, nb('con b: 90°'), SEP, v.fi === 0 ? 'L ⊥ piso' : 'L no es ⊥ al piso'],
       minimo: 3,
     },
     predice: {
@@ -164,19 +179,21 @@
   // ---------- Idea 2: proyección ortogonal y ángulo recta-plano ----------
   // Cambia: el ángulo real y el giro de la cámara · Permanece: AB · Progresa: la proyección AB′ ·
   // Se reserva: el caso 10 y 30° · Debe verse: el ángulo dibujado cambia al girar; el real, no.
-  const DIR = uni([1, 0, 0.35]);
+  const DIR = uni([1, 0, 0.35]), A2 = [-2.6, 0, -0.4];
+  const puntaB = (th, L = 4.4) => sum(A2, por(DIR, L * Math.cos(U.rad(th))), [0, L * Math.sin(U.rad(th)), 0]);
+  // o.L cambia el largo dibujado (laboratorio); con 0° o 90° no hay arco ni escuadra que dibujar sin dividir entre 0.
   const proyFig = (th, giro, o = {}) => {
-    const k = o.pasos || {}, L = 4.4, A = [-2.6, 0, -0.4], c = Math.cos(U.rad(th)), s = Math.sin(U.rad(th));
-    const B = sum(A, por(DIR, L * c), [0, L * s, 0]), Bp = sum(A, por(DIR, L * c)), ar = arco3(A, DIR, res(B, A), 1.25);
+    const k = o.pasos || {}, L = o.L || 4.4, A = A2, c = Math.cos(U.rad(th));
+    const B = puntaB(th, L), Bp = sum(A, por(DIR, L * c)), ar = th > 0 ? arco3(A, DIR, res(B, A), Math.min(1.25, 0.6 * L)) : null;
     return {
       alt: o.alt || `Segmento AB que forma ${th}° con el plano; su proyección AB′ mide AB · cos ${th}°`,
-      tresD: { giro, alza: 24 }, vista: { x: [-3.7, 3.7], y: [-2.1, 3.4] },
+      tresD: { giro, alza: 24 }, vista: { x: [-3.7, 3.7], y: [-2.1, 4.6] },
       puntos: [pt('A', A, { rotulo: 'A', lado: 200 }), pt('B', B, { rotulo: 'B', lado: 60, color: 'o' }), pt('Bp', Bp, { rotulo: "B'", lado: -30, color: 'd', desde: k.p || 0 })],
-      regiones: [plano(), escuadra(Bp, [0, 1, 0], res(A, Bp), 0.3, { color: 'i', desde: k.p || 0 })],
+      regiones: [plano(), ...(th > 0 ? [escuadra(Bp, [0, 1, 0], th < 90 ? res(A, Bp) : por(DIR, -1), 0.3, { color: 'i', desde: k.p || 0 })] : [])],
       segmentos: [{ de: 'A', a: 'B', color: 'o', grosor: 'variable', texto: o.AB }, { de: 'B', a: 'Bp', color: 'i', discontinua: true, texto: o.BB, desde: k.p || 0 },
         { de: 'A', a: 'Bp', color: 'd', grosor: 'variable', texto: o.ABp, lado: 1, desde: k.p || 0 }],
-      curvas: [{ puntos: ar.puntos, color: 'h', desde: k.a || 0 }],
-      rotulos: [{ x: ar.rotulo[0], y: ar.rotulo[1], z: ar.rotulo[2], texto: `${th}°`, color: 'h', desde: k.a || 0 }],
+      curvas: ar ? [{ puntos: ar.puntos, color: 'h', desde: k.a || 0 }] : [],
+      rotulos: ar ? [{ x: ar.rotulo[0], y: ar.rotulo[1], z: ar.rotulo[2], texto: `${th}°`, color: 'h', desde: k.a || 0 }] : [],
     };
   };
   const proyIdea = {
@@ -192,7 +209,11 @@
         { id: 'giro', etiqueta: 'cámara', min: -60, max: 60, paso: 30, inicio: -30, unidad: '°', decimales: 0, color: 'c-i' },
       ],
       dibujo: v => ({ datos: proyFig(v.th, v.giro), estado: {} }),
-      lectura: v => [`ángulo real ${v.th}° · AB′ = ${f(Math.cos(U.rad(v.th)), 3)} · AB`],
+      // Se agarra B: sube y baja por su arco en el plano vertical de AB′ (el ángulo real). La cámara queda en − y +.
+      arrastres: [{ id: 'punta-b', etiqueta: 'punta B del segmento', color: 'c-h',
+        donde: v => enPantalla(proyFig(v.th, v.giro), puntaB(v.th)),
+        mover: (p, v) => { const [u, w] = enPlano(proyFig(v.th, v.giro), A2, DIR, [0, 1, 0], p); return { th: U.grados(Math.atan2(w, u)) }; } }],
+      lectura: v => [nb(`ángulo real ${v.th}°`), SEP, nb(`AB′ = ${f(Math.cos(U.rad(v.th)), 3)} · AB`)],
       minimo: 4,
     },
     predice: {
@@ -215,12 +236,12 @@
         { estado: { corte: 0 }, texto: 'AB llega al plano en A.', ecuacion: ['AB = 10'] },
         { estado: { corte: 1 }, texto: 'Desde B, la perpendicular al plano cae en B′. AB′ es la proyección.', ecuacion: ["BB′ ⊥ plano"] },
         { estado: { corte: 2 }, texto: 'El ángulo con el plano es el de AB con AB′.', ecuacion: ['ángulo = 30°'] },
-        { estado: { corte: 2 }, texto: 'En el triángulo rectángulo ABB′:', ecuacion: ["AB′ = 10 · cos 30° = 5√3   ·   BB′ = 10 · sen 30° = 5"] },
+        { estado: { corte: 2 }, texto: 'En el triángulo rectángulo ABB′:', ecuacion: ["AB′ = 10 · cos 30° = 5√3", '   ·   ', "BB′ = 10 · sen 30° = 5"] },
       ],
     },
     regla: {
       texto: 'La proyección ortogonal de un segmento une los pies de las perpendiculares al plano. El ángulo entre una recta y un plano es el que forma con su proyección.',
-      ecuacion: [{ v: 'c-d', t: "AB′" }, ' = ', { v: 'c-o', t: 'AB' }, ' · cos ', { v: 'c-h', t: 'θ' }, '   ·   ', { v: 'c-i', t: "BB′" }, ' = ', { v: 'c-o', t: 'AB' }, ' · sen ', { v: 'c-h', t: 'θ' }],
+      ecuacion: [{ llave: [{ v: 'c-d', t: "AB′" }], nota: 'la sombra', color: 'c-d' }, ' = ', { v: 'c-o', t: 'AB' }, ' · cos ', { v: 'c-h', t: 'θ' }, '   ·   ', { llave: [{ v: 'c-i', t: "BB′" }], nota: 'la altura', color: 'c-i' }, ' = ', { v: 'c-o', t: 'AB' }, ' · sen ', { v: 'c-h', t: 'θ' }],
       condicion: 'θ va de 0° a 90°. Se mide con la proyección, no con el dibujo ni con otra recta del plano.',
       voz: 'Primero la perpendicular; después el triángulo rectángulo.',
     },
@@ -258,6 +279,15 @@
         { de: 'A', a: 'B', color: 'd', grosor: 'variable', texto: o.AB ?? `${d}`, lado: -1, desde: k.b || 0 }, { de: 'P', a: 'B', color: 'h', grosor: 'variable', texto: o.PB, desde: k.p || 0 }],
     };
   };
+  const E3 = 0.7, XL = 2;
+  const tresArrastres = fig => [
+    { id: 'punto-p', etiqueta: 'punto P', color: 'c-i',
+      donde: v => enPantalla(fig(v), [XL - v.d * E3, v.h * E3, 0.3]),
+      mover: (p, v) => ({ h: G.sobreRecta(fig(v), [XL - v.d * E3, 0, 0.3], [XL - v.d * E3, E3, 0.3], p) }) },
+    { id: 'pie-a', etiqueta: 'pie A en el piso', color: 'c-d',
+      donde: v => enPantalla(fig(v), [XL - v.d * E3, 0, 0.3]),
+      mover: (p, v) => ({ d: G.sobreRecta(fig(v), [XL, 0, 0.3], [XL - E3, 0, 0.3], p) }) },
+  ];
   const tresIdea = {
     id: 'tres-perpendiculares',
     titulo: 'Tres perpendiculares',
@@ -271,7 +301,9 @@
         { id: 'd', etiqueta: 'AB', min: 1, max: 4, paso: 1, inicio: 2, unidad: '', decimales: 0, color: 'c-d' },
       ],
       dibujo: v => ({ datos: tresFig(v.h, v.d, { PB: f(Math.hypot(v.h, v.d)) }), estado: {} }),
-      lectura: v => [`PB = √(${v.h}² + ${v.d}²) = ${f(Math.hypot(v.h, v.d))} · PB ⊥ l`],
+      // Se agarran P (sube y baja por la perpendicular PA) y A (se acerca o se aleja de l, por el piso).
+      arrastres: tresArrastres(v => tresFig(v.h, v.d, { PB: f(Math.hypot(v.h, v.d)) })),
+      lectura: v => [nb(`PB = √(${v.h}² + ${v.d}²) = ${f(Math.hypot(v.h, v.d))}`), SEP, nb('PB ⊥ l')],
       minimo: 4,
     },
     predice: {
@@ -299,7 +331,7 @@
     },
     regla: {
       texto: 'Si PA es perpendicular a un plano y AB es perpendicular a una recta l del plano, entonces PB también es perpendicular a l.',
-      ecuacion: [{ v: 'c-i', t: 'PA' }, ' ⊥ plano,  ', { v: 'c-d', t: 'AB' }, ' ⊥ l  ⇒  ', { v: 'c-h', t: 'PB' }, ' ⊥ l   ·   ', { sup: [{ v: 'c-h', t: 'PB' }, '2'] }, ' = ', { sup: [{ v: 'c-i', t: 'PA' }, '2'] }, ' + ', { sup: [{ v: 'c-d', t: 'AB' }, '2'] }],
+      ecuacion: [{ v: 'c-i', t: 'PA' }, ' ⊥ plano,  ', { v: 'c-d', t: 'AB' }, ' ⊥ l  ⇒  ', { v: 'c-h', t: 'PB' }, ' ⊥ l', '   ·   ', { llave: [{ sup: [{ v: 'c-h', t: 'PB' }, '2'] }], nota: 'distancia a l', color: 'c-h' }, ' = ', { sup: [{ v: 'c-i', t: 'PA' }, '2'] }, ' + ', { sup: [{ v: 'c-d', t: 'AB' }, '2'] }],
       condicion: 'A y B están en el plano; B es el pie de la perpendicular desde A a l.',
       voz: 'Primero al plano, luego a la recta. La tercera sale sola.',
     },
@@ -334,15 +366,17 @@
   // Cambia: la abertura del diedro · Permanece: la distancia de P a la arista · Progresa: la altura de P sobre la otra cara ·
   // Se reserva: el caso 60° · Debe verse: el diedro se mide con dos perpendiculares a la arista.
   const diedroFig = (al, o = {}) => {
-    const k = o.pasos || {}, c = Math.cos(U.rad(al)), sn = Math.sin(U.rad(al)), u2 = [c, sn, 0], O = [0, 0, 0.6], P = sum(O, por(u2, 2.6)), H = [2.6 * c, 0, 0.6];
+    // o.r: largo dibujado de OP; o.vista: marco del laboratorio. Con diedro obtuso, H cae en la prolongación del piso.
+    const k = o.pasos || {}, c = Math.cos(U.rad(al)), sn = Math.sin(U.rad(al)), u2 = [c, sn, 0], O = [0, 0, 0.6], rP = o.r || 2.6, P = sum(O, por(u2, rP)), H = [rP * c, 0, 0.6];
     const ar = arco3(O, [1, 0, 0], u2, 0.85), cara = (u, w) => [[0, 0, -1.8], [0, 0, 1.8], sum([0, 0, 1.8], por(u, w)), sum([0, 0, -1.8], por(u, w))];
     return {
       alt: o.alt || `Diedro de ${al}°: P está en una cara a ${o.d || 'd'} de la arista; su distancia a la otra cara es ${o.d || 'd'} · sen ${al}°`,
-      tresD: { giro: -50, alza: 25 }, vista: { x: [-2.1, 2.9], y: [-1.7, 3.1] },
+      tresD: { giro: -50, alza: 25 }, vista: o.vista || { x: [-2.1, 2.9], y: [-1.7, 3.1] },
       puntos: [pt('O', O, { rotulo: 'O', lado: 200 }), pt('P', P, { rotulo: 'P', lado: 120, color: 'o' }), pt('Q', [3.1, 0, 0.6], { sinPunto: true }), pt('H', H, { rotulo: 'H', lado: -60, color: 'h', desde: k.h || 0 }),
         pt('e0', [0, 0, -1.8], { sinPunto: true }), pt('e1', [0, 0, 1.8], { sinPunto: true, rotulo: 'arista', lado: 200 })],
       regiones: [{ puntos: cara([1, 0, 0], 3.4), opacidad: 0.08, sinBorde: false }, { puntos: cara(u2, 3.4), color: 'o', opacidad: 0.08, sinBorde: false },
-        escuadra(O, [1, 0, 0], [0, 0, -1], 0.3, { desde: k.a || 0 }), escuadra(O, u2, [0, 0, -1], 0.3, { desde: k.a || 0 }), escuadra(H, [0, 1, 0], [-1, 0, 0], 0.26, { color: 'h', desde: k.h || 0 })],
+        ...(al > 90 ? [{ puntos: cara([-1, 0, 0], 2.8), opacidad: 0.03, discontinua: true }] : []),
+        escuadra(O, [1, 0, 0], [0, 0, -1], 0.3, { desde: k.a || 0 }), escuadra(O, u2, [0, 0, -1], 0.3, { desde: k.a || 0 }), escuadra(H, [0, 1, 0], [c >= 0 ? -1 : 1, 0, 0], 0.26, { color: 'h', desde: k.h || 0 })],
       segmentos: [{ de: 'e0', a: 'e1', grosor: 'contorno' }, { de: 'O', a: 'Q', color: 'i', grosor: 'variable', desde: k.a || 0 }, { de: 'O', a: 'P', color: 'o', grosor: 'variable', texto: o.d },
         { de: 'P', a: 'H', color: 'h', grosor: 'variable', discontinua: true, texto: o.PH, lado: 1, desde: k.h || 0 }],
       curvas: [{ puntos: ar.puntos, color: 'i', desde: k.a || 0 }],
@@ -359,7 +393,11 @@
       voz: 'Abre la puerta. Mira cuánto sube P sobre el piso.',
       controles: [{ id: 'al', etiqueta: 'diedro', min: 15, max: 90, paso: 15, inicio: 45, unidad: '°', decimales: 0, color: 'c-i' }],
       dibujo: v => ({ datos: diedroFig(v.al, { d: '4', PH: f(4 * Math.sin(U.rad(v.al))) }), estado: {} }),
-      lectura: v => [`OP = 4 · PH = 4 · sen ${v.al}° = ${f(4 * Math.sin(U.rad(v.al)))}`],
+      // Se agarra P y se abre la puerta: P gira alrededor de O en el plano perpendicular a la arista.
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P de la puerta', color: 'c-i',
+        donde: v => enPantalla(diedroFig(v.al), sum([0, 0, 0.6], por([Math.cos(U.rad(v.al)), Math.sin(U.rad(v.al)), 0], 2.6))),
+        mover: (p, v) => { const [u, w] = enPlano(diedroFig(v.al), [0, 0, 0.6], [1, 0, 0], [0, 1, 0], p); return { al: U.grados(Math.atan2(w, u)) }; } }],
+      lectura: v => [nb('OP = 4'), SEP, nb(`PH = 4 · sen ${v.al}° = ${f(4 * Math.sin(U.rad(v.al)))}`)],
       minimo: 3,
     },
     predice: {
@@ -386,7 +424,7 @@
     },
     regla: {
       texto: 'Un diedro se mide con su ángulo plano: dos perpendiculares a la arista, una en cada cara, desde el mismo punto.',
-      ecuacion: ['distancia de P a la otra cara = ', { v: 'c-o', t: 'OP' }, ' · sen ', { v: 'c-i', t: 'α' }],
+      ecuacion: ['distancia de P a la otra cara = ', { llave: [{ v: 'c-o', t: 'OP' }], nota: 'a la arista', color: 'c-o' }, ' · sen ', { llave: [{ v: 'c-i', t: 'α' }], nota: 'ángulo plano', color: 'c-i' }],
       condicion: 'OP es perpendicular a la arista y α es el ángulo plano del diedro, hasta 90°.',
       voz: 'Corta el diedro con un plano perpendicular a la arista.',
     },
@@ -471,7 +509,7 @@
     },
     regla: {
       texto: 'Dos rectas cruzadas no se cortan ni son paralelas. Su distancia es la longitud del único segmento perpendicular a las dos.',
-      ecuacion: ['d = ', { v: 'c-h', t: 'MN' }, ',  con  ', { v: 'c-h', t: 'MN' }, ' ⊥ ', { v: 'c-o', t: 'L₁' }, '  y  ', { v: 'c-h', t: 'MN' }, ' ⊥ ', { v: 'c-d', t: 'L₂' }],
+      ecuacion: ['d = ', { llave: [{ v: 'c-h', t: 'MN' }], nota: 'perpendicular común', color: 'c-h' }, ',  con  ', { v: 'c-h', t: 'MN' }, ' ⊥ ', { v: 'c-o', t: 'L₁' }, '  y  ', { v: 'c-h', t: 'MN' }, ' ⊥ ', { v: 'c-d', t: 'L₂' }],
       condicion: 'las rectas no se cortan ni son paralelas; cualquier otro segmento entre ellas es más largo que MN.',
       voz: 'Busca el segmento que hace 90° con las dos.',
     },
@@ -509,6 +547,19 @@
       rotulos: [0, 1, 2].map(i => { const m = U.polar(O, R * 0.62, -90 + (cortes[i] + cortes[i + 1]) / 2); return { x: m[0], y: m[1], texto: `${[a, b, c][i]}°`, color: colores[i] }; }),
     };
   };
+  // Borde i: está a −90° + (suma de las caras hasta la i). El ángulo desde el borde anterior es la cara i;
+  // pasado de largo hacia atrás (más de 265°) cuenta como negativo y el lector lo deja en el mínimo.
+  const CARA = ['a', 'b', 'c'], COLCARA = ['c-o', 'c-i', 'c-d'];
+  const triArrastres = CARA.map((id, i) => ({
+    id: `borde-${i + 1}`, etiqueta: `borde final de la cara ${i + 1}`, color: COLCARA[i],
+    donde: v => enPantalla(triedroFig(v.a, v.b, v.c), U.polar([0, 0], 2.6, -90 + CARA.slice(0, i + 1).reduce((s, k) => s + v[k], 0))),
+    mover: (p, v) => {
+      const q = G.aPlano(triedroFig(v.a, v.b, v.c), p), prev = -90 + CARA.slice(0, i).reduce((s, k) => s + v[k], 0);
+      let d = ((U.grados(Math.atan2(q[1], q[0])) - prev) % 360 + 360) % 360;
+      if (d > 265) d -= 360;
+      return { [id]: d };
+    },
+  }));
   function cierra(a, b, c) { const m = Math.max(a, b, c); return a + b + c < 360 && m < a + b + c - m; }
   const trIdea = {
     id: 'triedro',
@@ -524,9 +575,11 @@
         { id: 'c', etiqueta: 'cara 3', min: 20, max: 170, paso: 10, inicio: 120, unidad: '°', decimales: 0, color: 'c-d' },
       ],
       dibujo: v => ({ datos: triedroFig(v.a, v.b, v.c), estado: {} }),
+      // Se agarra el borde final de cada cara: abrirlo agranda esa cara y corre las siguientes.
+      arrastres: triArrastres,
       lectura: v => {
         const m = Math.max(v.a, v.b, v.c), resto = v.a + v.b + v.c - m;
-        return [`suma ${v.a + v.b + v.c}° ${v.a + v.b + v.c < 360 ? '<' : '≥'} 360° · mayor ${m}° ${m < resto ? '<' : '≥'} ${resto}°`, cierra(v.a, v.b, v.c) ? 'cierra en punta' : 'no cierra'];
+        return [nb(`suma ${v.a + v.b + v.c}° ${v.a + v.b + v.c < 360 ? '<' : '≥'} 360°`), SEP, nb(`mayor ${m}° ${m < resto ? '<' : '≥'} ${resto}°`), SEP, cierra(v.a, v.b, v.c) ? 'cierra' : nb('no cierra')];
       },
       minimo: 4,
     },
@@ -575,7 +628,7 @@
           return {
             pregunta: [`¿Pueden ${a}°, ${b}° y ${c}° ser las tres caras de un triedro?`],
             opciones: ops,
-            solucion: { texto: `Suma ${suma}°; la mayor, ${m}°, contra ${suma - m}°.`, ecuacion: [`${suma}° ${suma < 360 ? '<' : '≥'} 360° · ${m}° ${m < suma - m ? '<' : '≥'} ${suma - m}°`] },
+            solucion: { texto: `Suma ${suma}°; la mayor, ${m}°, contra ${suma - m}°.`, ecuacion: [`${suma}° ${suma < 360 ? '<' : '≥'} 360°`, SEP, `${m}° ${m < suma - m ? '<' : '≥'} ${suma - m}°`] },
           };
         }
         const a = 10 * r.ent(5, 13), b = 10 * r.ent(4, 9), lo = Math.abs(a - b), hi = Math.min(a + b, 360 - a - b);
@@ -592,9 +645,63 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 2: también cambia el largo de AB, y el ángulo llega a 0° (AB acostado: la sombra es
+  // el segmento entero) y a 90° (AB de pie: la sombra es un punto). Se arrastra B en su plano vertical: ángulo y largo.
+  const ESC = 0.9;
+  const sombra = v => proyFig(v.th, v.giro, { L: ESC * v.ab, AB: f(v.ab), ABp: f(v.ab * Math.cos(U.rad(v.th))), BB: v.th > 0 ? f(v.ab * Math.sin(U.rad(v.th))) : '',
+    alt: `Segmento AB de ${f(v.ab)} a ${v.th}° del plano: su sombra AB′ mide ${f(v.ab * Math.cos(U.rad(v.th)))} y la altura BB′, ${f(v.ab * Math.sin(U.rad(v.th)))}` });
+  const mesaSombra = {
+    id: 'sombra-libre', titulo: 'Sombra de cualquier segmento', pieza: 'geo-figura',
+    consigna: 'Arrastra B: cambia el ángulo y el largo de AB. Prueba 0° y 90°. Gira la cámara y compara la sombra.',
+    controles: [
+      { id: 'th', etiqueta: 'ángulo real', min: 0, max: 90, paso: 5, inicio: 30, unidad: '°', decimales: 0, color: 'c-h' },
+      { id: 'ab', etiqueta: 'AB', min: 1, max: 4, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'giro', etiqueta: 'cámara', min: -60, max: 60, paso: 10, inicio: -30, unidad: '°', decimales: 0, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: sombra(v), estado: {} }),
+    arrastres: [{ id: 'punta-b', etiqueta: 'punta B del segmento', color: 'c-h',
+      donde: v => enPantalla(sombra(v), puntaB(v.th, ESC * v.ab)),
+      mover: (p, v) => { const [u, w] = enPlano(sombra(v), A2, DIR, [0, 1, 0], p); return { th: U.grados(Math.atan2(w, u)), ab: Math.hypot(u, w) / ESC }; } }],
+    lectura: v => [nb(`θ = ${v.th}°`), SEP, nb(`AB = ${f(v.ab)}`), SEP, nb(`AB′ = ${f(v.ab * Math.cos(U.rad(v.th)))}`), SEP, nb(`BB′ = ${f(v.ab * Math.sin(U.rad(v.th)))}`)],
+  };
+  // Mesa 2, más rica que la idea 3: A puede caer sobre la recta l (AB = 0, entonces PB = PA) y las medidas van de
+  // medio en medio. Se arrastran P y A, como en la idea.
+  const tresLibre = v => tresFig(v.h, v.d, { PA: f(v.h), AB: v.d > 0 ? f(v.d) : '', PB: f(Math.hypot(v.h, v.d)),
+    alt: `PA de ${f(v.h)} perpendicular al plano y A a ${f(v.d)} de la recta l: PB mide ${f(Math.hypot(v.h, v.d))} y es perpendicular a l` });
+  const mesaTres = {
+    id: 'tres-perpendiculares-libre', titulo: 'Tres perpendiculares sin límites', pieza: 'geo-figura',
+    consigna: 'Arrastra P y A. Lleva A hasta la recta l: ¿qué pasa con PB? Compara PB con PA y AB.',
+    controles: [
+      { id: 'h', etiqueta: 'PA', min: 0.5, max: 4, paso: 0.5, inicio: 3, unidad: '', decimales: 1, color: 'c-i' },
+      { id: 'd', etiqueta: 'AB', min: 0, max: 4, paso: 0.5, inicio: 2, unidad: '', decimales: 1, color: 'c-d' },
+    ],
+    dibujo: v => ({ datos: tresLibre(v), estado: {} }),
+    arrastres: tresArrastres(tresLibre),
+    lectura: v => [nb(`PA = ${f(v.h)}`), SEP, nb(`AB = ${f(v.d)}`), SEP, nb(`PB = ${f(Math.hypot(v.h, v.d))}`)],
+  };
+  // Mesa 3, más rica que la idea 4: el diedro pasa de 90° (obtuso: H cae en la prolongación de la otra cara) y OP
+  // cambia. Se arrastra P: el ángulo y la distancia a la arista a la vez.
+  const RD = 0.65, VD = { x: [-3.4, 2.9], y: [-1.9, 3.1] };
+  const diedroLibre = v => diedroFig(v.al, { r: RD * v.d, vista: VD, d: f(v.d), PH: f(v.d * Math.sin(U.rad(v.al))),
+    alt: `Diedro de ${v.al}°: P a ${f(v.d)} de la arista está a ${f(v.d * Math.sin(U.rad(v.al)))} de la otra cara${v.al > 90 ? '; H cae en la prolongación de esa cara' : ''}` });
+  const mesaDiedro = {
+    id: 'diedro-abierto', titulo: 'Diedro hasta obtuso', pieza: 'geo-figura',
+    consigna: 'Arrastra P: abre la puerta más allá de 90° y aléjala de la arista. Mira dónde cae H.',
+    controles: [
+      { id: 'al', etiqueta: 'diedro', min: 15, max: 165, paso: 15, inicio: 120, unidad: '°', decimales: 0, color: 'c-i' },
+      { id: 'd', etiqueta: 'OP', min: 1, max: 4, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-o' },
+    ],
+    dibujo: v => ({ datos: diedroLibre(v), estado: {} }),
+    arrastres: [{ id: 'punto-p', etiqueta: 'punto P de la puerta', color: 'c-i',
+      donde: v => enPantalla(diedroLibre(v), sum([0, 0, 0.6], por([Math.cos(U.rad(v.al)), Math.sin(U.rad(v.al)), 0], RD * v.d))),
+      mover: (p, v) => { const [u, w] = enPlano(diedroLibre(v), [0, 0, 0.6], [1, 0, 0], [0, 1, 0], p); return { al: U.grados(Math.atan2(w, u)), d: Math.hypot(u, w) / RD }; } }],
+    lectura: v => [nb(`α = ${v.al}°`), SEP, nb(`OP = ${f(v.d)}`), SEP, nb(`PH = ${f(v.d * Math.sin(U.rad(v.al)))}${v.al > 90 ? ', H fuera' : ''}`)],
+  };
+
   return {
     unidad: 'geometria.geometria-del-espacio',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -602,6 +709,8 @@
       pregunta: '¿Por qué el ángulo que ves dibujado no siempre es el real?',
       fuente: { titulo: 'Euclides, Elementos XI (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookXI/bookXI.html' },
     },
+    // Laboratorio: las tres mesas son más ricas que sus ideas (rango completo, caso límite y un control más).
+    laboratorio: [mesaSombra, mesaTres, mesaDiedro],
     ideas: [perpIdea, proyIdea, tresIdea, diedroIdea, cruzIdea, trIdea],
   };
 });
