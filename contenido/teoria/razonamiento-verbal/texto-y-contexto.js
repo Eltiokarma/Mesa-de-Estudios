@@ -18,11 +18,19 @@
  * (destinatario por el tema); RVK1 (momento de lectura tomado por momento del enunciado) es hipótesis nueva.
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): el alumno arrastra el marcador por las palabras del mensaje y lo suelta en la
+  // que quiere resolver (rv-texto.ancla pone la manija; rv-texto.cercana elige la palabra más cercana al dedo).
+  const RV = () => Kit.piezas['rv-texto'];
+  const marcador = (datosDe, ids, ctrl, etiqueta) => ({
+    id: 'palabra', etiqueta, color: 'c-o',
+    donde: val => RV().ancla(datosDe(val), val[ctrl]),
+    mover: (pt, val) => ({ [ctrl]: RV().cercana(datosDe(val), pt, ids) }),
+  });
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
@@ -39,6 +47,7 @@
   // El día siguiente a (d, m), calculado (año no bisiesto).
   const siguiente = (d, m) => (d < DIAS[m] ? [d + 1, m] : [1, (m + 1) % 12]);
   const fecha = (d, m) => `${d} de ${MESES[m]}`;
+  // Los sellos van en la sección de abajo (c): arriba a la derecha los taparía el botón de la lupa.
   const figura = (msg, contexto, tituloC = 'Contexto') => ({ secciones: [
     { id: 'm', titulo: 'Mensaje', modo: 'tarjeta', fragmentos: msg.map(([id, t]) => ({ id, t })) },
     { id: 'c', titulo: tituloC, modo: 'lista', fragmentos: contexto.map(([id, t]) => ({ id, t })) },
@@ -56,7 +65,16 @@
   };
   const filas = k => { const c = CTX[k]; return [['q1', `Escribe: ${c.quien}`], ['q2', c.d ? `Fecha del mensaje: ${fecha(c.d, c.mes)}` : 'Fecha: no se sabe'], ['q3', `Lugar: ${c.donde}`]]; };
   const manana = k => { const c = CTX[k]; if (!c.d) return null; const [d, m] = siguiente(c.d, c.mes); return fecha(d, m); };
-  const estDeic = k => ({ marcas: { n: 'o', m: 'o', q: 'o', q1: CTX[k].d ? 'i' : 'h', q2: CTX[k].d ? 'i' : 'h', q3: CTX[k].d ? 'i' : 'h' }, sellos: { m: CTX[k].d ? { t: `mañana = ${manana(k)}`, c: 'd' } : { t: 'Sin contexto', c: 'h' } } });
+  const estDeic = k => ({ marcas: { n: 'o', m: 'o', q: 'o', q1: CTX[k].d ? 'i' : 'h', q2: CTX[k].d ? 'i' : 'h', q3: CTX[k].d ? 'i' : 'h' }, sellos: { c: CTX[k].d ? { t: `mañana = ${manana(k)}`, c: 'd' } : { t: 'Sin contexto', c: 'h' } } });
+  // La palabra que el alumno señala (n, m o q) y el dato del contexto que la resuelve (q1, q2 o q3).
+  // `de` da el referente completo (lectura); `breve`, el que cabe en el sello de la tarjeta.
+  const BREVE = { a: { n: 'el grupo 3', q: 'la dirección' }, b: { n: 'la brigada', q: 'el municipio' } };
+  const PALABRA = { n: { t: 'nosotros', fila: 'q1', de: k => CTX[k].quien, breve: k => BREVE[k].n }, m: { t: 'mañana', fila: 'q2', de: k => manana(k), breve: k => manana(k) }, q: { t: 'esta oficina', fila: 'q3', de: k => CTX[k].donde, breve: k => BREVE[k].q } };
+  const resuelta = (k, w) => (CTX[k].d ? PALABRA[w].de(k) : null);
+  function estPalabra(k, w) {
+    const P = PALABRA[w], r = resuelta(k, w);
+    return { marcas: { [w]: 'o', [P.fila]: r ? 'i' : 'h' }, sellos: { c: { t: r ? `${P.t} = ${P.breve(k)}` : 'Sin contexto', c: r ? 'd' : 'h' } }, nuevo: ['c'] };
+  }
   const deicticos = {
     id: 'deicticos',
     titulo: 'Aquí, mañana y nosotros',
@@ -65,10 +83,15 @@
     juega: {
       consigna: 'El mensaje no cambia. Cambia la tarjeta de contexto y mira qué significan «nosotros», «mañana» y «esta oficina».',
       voz: 'Estas palabras se llenan con la situación.',
-      controles: [{ id: 'k', etiqueta: 'Contexto', opciones: [{ valor: 'a', texto: 'A' }, { valor: 'b', texto: 'B' }, { valor: 'c', texto: 'sin datos' }] }],
-      dibujo: val => ({ datos: figura(MSG, filas(val.k)), estado: estDeic(val.k) }),
-      lectura: val => (CTX[val.k].d ? [deic('mañana'), ' = ', res(manana(val.k))] : [inv('Sin contexto'), ': no se sabe']),
+      controles: [
+        { id: 'k', etiqueta: 'Contexto', opciones: [{ valor: 'a', texto: 'A' }, { valor: 'b', texto: 'B' }, { valor: 'c', texto: 'sin datos' }] },
+        { id: 'w', etiqueta: 'Palabra', opciones: [{ valor: 'n', texto: 'nosotros' }, { valor: 'm', texto: 'mañana' }, { valor: 'q', texto: 'esta oficina' }], inicio: 'm' },
+      ],
+      dibujo: val => ({ datos: figura(MSG, filas(val.k)), estado: estPalabra(val.k, val.w) }),
+      lectura: val => { const r = resuelta(val.k, val.w); return r ? [deic(PALABRA[val.w].t), ' = ', corto(res, r)] : [inv('Sin contexto'), ': no se sabe']; },
       minimo: 3,
+      // Arrastra el marcador por el mensaje: cada palabra señala el dato del contexto que la resuelve.
+      arrastres: [marcador(val => figura(MSG, filas(val.k)), ['n', 'm', 'q'], 'w', 'palabra del mensaje')],
     },
     predice: {
       pregunta: 'Lees hoy, 20 de mayo, este aviso. ¿Qué día no hubo clases?',
@@ -79,20 +102,20 @@
         ['No se puede saber', 'RV34', 'Se puede: el aviso trae su fecha.'],
       ]),
       dibujo: { datos: figura([['a', 'Aviso:'], ['m', 'mañana'], ['b', 'no hay clases.']], [['q2', 'Fecha del aviso: 14 de mayo'], ['q3', 'Lo lees el 20 de mayo']]), estado: { marcas: { m: 'o' } } },
-      revelar: { datos: figura([['a', 'Aviso:'], ['m', 'mañana'], ['b', 'no hay clases.']], [['q2', 'Fecha del aviso: 14 de mayo'], ['q3', 'Lo lees el 20 de mayo']]), estado: { marcas: { m: 'o', q2: 'i', q3: 'h' }, sellos: { m: { t: `mañana = ${fecha(...siguiente(14, 4))}`, c: 'd' } } } },
+      revelar: { datos: figura([['a', 'Aviso:'], ['m', 'mañana'], ['b', 'no hay clases.']], [['q2', 'Fecha del aviso: 14 de mayo'], ['q3', 'Lo lees el 20 de mayo']]), estado: { marcas: { m: 'o', q2: 'i', q3: 'h' }, sellos: { c: { t: `mañana = ${fecha(...siguiente(14, 4))}`, c: 'd' } } } },
       coincide: `Coincide: «mañana» se cuenta desde el aviso: el ${fecha(...siguiente(14, 4))}.`,
     },
     mira: {
       datos: figura(MSG, filas('a')),
       pasos: [
-        { estado: { marcas: { n: 'o', m: 'o', q: 'o' } }, texto: 'Tres palabras dependen de quién, cuándo y dónde se escribió.', ecuacion: [deic('nosotros'), ' · ', deic('mañana'), ' · ', deic('esta oficina')] },
+        { estado: { marcas: { n: 'o', m: 'o', q: 'o' } }, texto: 'Tres palabras dependen de quién, cuándo y dónde se escribió.', ecuacion: [deic('nosotros'), '   ·   ', deic('mañana'), '   ·   ', deic('esta oficina')] },
         { estado: { marcas: { n: 'o', q1: 'i' }, nuevo: ['q1'] }, texto: '«Nosotros» es quien escribe: el grupo 3.', ecuacion: [deic('nosotros'), ' = ', res('grupo 3')] },
         { estado: estDeic('a'), texto: `La fecha del mensaje fija «mañana»: ${manana('a')}.`, ecuacion: [ctx(fecha(14, 4)), ' + 1 día = ', res(manana('a'))] },
       ],
     },
     regla: {
       texto: 'Palabras como aquí, hoy, mañana, este o nosotros se resuelven con la situación en que se escribió el mensaje: quién, a quién, cuándo y dónde. Sin esos datos, quedan indeterminadas.',
-      ecuacion: [deic('deíctico'), ' + ', ctx('situación'), ' → ', res('referente')],
+      ecuacion: [{ llave: [deic('deíctico'), ' + ', ctx('situación')], nota: 'dan el referente', color: 'c-d' }],
       condicion: 'se usa el momento y el lugar en que se emitió el mensaje, no el momento en que se lee.',
     },
     ahoraTu: {
@@ -129,6 +152,13 @@
     amiga: { frs: [['s', '¡Hola, Caro!'], ['p', '¿Me ayudas a pedir que'], ['x', 'cambien la fecha de nuestra exposición?'], ['f', 'Lu.']], marcas: { s: 'i', p: 'i', f: 'i' }, rel: 'Informal: trato de tú, cercano' },
     grupo: { frs: [['s', 'Chicos del grupo:'], ['p', 'propongo que pidamos'], ['x', 'cambiar la fecha de nuestra exposición.'], ['f', 'Lucía']], marcas: { s: 'i', p: 'i' }, rel: 'Entre iguales: «pidamos», nosotros' },
   };
+  // Lo que dice cada parte del mensaje que el alumno señala (s saludo, p pedido, x contenido, f despedida).
+  const PARTE = {
+    directora: { s: ['Saludo', ': distancia formal'], p: ['«Le pido»', ': trato de usted'], f: ['Despedida', ' formal'] },
+    amiga: { s: ['Saludo', ' cercano, con su nombre'], p: ['«¿Me ayudas?»', ': trato de tú'], f: ['Firma', ' con apodo'] },
+    grupo: { s: ['Saludo', ' a varios'], p: ['«Pidamos»', ': nosotros'], f: ['Firma', ' solo con el nombre'] },
+  };
+  const figDest = k => ({ secciones: [{ id: 'm', titulo: 'Mensaje', modo: 'tarjeta', fragmentos: VERS[k].frs.map(([id, t]) => ({ id, t })) }, { id: 'c', titulo: 'Trato', modo: 'tarjeta', fragmentos: [] }] });
   const emisorDest = {
     id: 'emisor-destinatario',
     titulo: 'Quién habla y a quién',
@@ -137,10 +167,15 @@
     juega: {
       consigna: 'Lucía pide lo mismo a tres personas distintas. Cambia el destinatario y mira qué marcas cambian en el mensaje.',
       voz: 'Lo que pide es igual; cambia cómo se dirige.',
-      controles: [{ id: 'k', etiqueta: 'Destinatario', opciones: [{ valor: 'directora', texto: 'directora' }, { valor: 'amiga', texto: 'amiga' }, { valor: 'grupo', texto: 'su grupo' }] }],
-      dibujo: val => ({ datos: { secciones: [{ id: 'm', titulo: 'Mensaje', modo: 'tarjeta', fragmentos: VERS[val.k].frs.map(([id, t]) => ({ id, t })) }] }, estado: { marcas: Object.assign({ x: 'd' }, VERS[val.k].marcas), sellos: { m: { t: val.k === 'directora' ? 'Formal' : val.k === 'amiga' ? 'Cercano' : 'Entre iguales', c: 'o' } } } }),
-      lectura: val => [corto(ctx, VERS[val.k].rel)],
+      controles: [
+        { id: 'k', etiqueta: 'Destinatario', opciones: [{ valor: 'directora', texto: 'directora' }, { valor: 'amiga', texto: 'amiga' }, { valor: 'grupo', texto: 'su grupo' }] },
+        { id: 'p', etiqueta: 'Parte', opciones: [{ valor: 's', texto: 'saludo' }, { valor: 'p', texto: 'pedido' }, { valor: 'x', texto: 'contenido' }, { valor: 'f', texto: 'firma' }] },
+      ],
+      dibujo: val => ({ datos: figDest(val.k), estado: { marcas: { [val.p]: val.p === 'x' ? 'd' : 'i' }, sellos: { c: { t: val.k === 'directora' ? 'Formal' : val.k === 'amiga' ? 'Cercano' : 'Entre iguales', c: 'o' } } } }),
+      lectura: val => (val.p === 'x' ? [res('El pedido'), ': igual en las tres'] : [ctx(PARTE[val.k][val.p][0]), PARTE[val.k][val.p][1]]),
       minimo: 3,
+      // Pasa el marcador por el mensaje: cada parte dice algo del trato, menos el pedido, que no cambia.
+      arrastres: [marcador(val => figDest(val.k), ['s', 'p', 'x', 'f'], 'p', 'parte del mensaje')],
     },
     predice: {
       pregunta: '¿A quién va dirigido este mensaje?',
@@ -150,21 +185,21 @@
         ['A los niños que juegan', 'RV50', 'Se menciona a los niños, pero no se les habla a ellos.'],
         ['A todo el barrio', 'RV51', 'El saludo nombra a una persona y la trata de usted.'],
       ]),
-      dibujo: { datos: { secciones: [{ id: 'm', titulo: 'Mensaje', modo: 'tarjeta', fragmentos: [{ id: 's', t: 'Señora Rosa:' }, { id: 'p', t: 'usted que conoce al alcalde,' }, { id: 'x', t: '¿podría contarle que los niños juegan en la pista sin luz?' }] }] }, estado: {} },
-      revelar: { datos: { secciones: [{ id: 'm', titulo: 'Mensaje', modo: 'tarjeta', fragmentos: [{ id: 's', t: 'Señora Rosa:' }, { id: 'p', t: 'usted que conoce al alcalde,' }, { id: 'x', t: '¿podría contarle que los niños juegan en la pista sin luz?' }] }] }, estado: { marcas: { s: 'i', p: 'i', x: 'h' }, sellos: { m: { t: 'Para: la vecina', c: 'i' } } } },
+      dibujo: { datos: { secciones: [{ id: 'm', titulo: 'Mensaje', modo: 'tarjeta', fragmentos: [{ id: 's', t: 'Señora Rosa:' }, { id: 'p', t: 'usted que conoce al alcalde,' }, { id: 'x', t: '¿podría contarle que los niños juegan en la pista sin luz?' }] }, { id: 'c', titulo: 'Para', modo: 'tarjeta', fragmentos: [] }] }, estado: {} },
+      revelar: { datos: { secciones: [{ id: 'm', titulo: 'Mensaje', modo: 'tarjeta', fragmentos: [{ id: 's', t: 'Señora Rosa:' }, { id: 'p', t: 'usted que conoce al alcalde,' }, { id: 'x', t: '¿podría contarle que los niños juegan en la pista sin luz?' }] }, { id: 'c', titulo: 'Para', modo: 'tarjeta', fragmentos: [] }] }, estado: { marcas: { s: 'i', p: 'i', x: 'h' }, sellos: { c: { t: 'La vecina', c: 'i' } } } },
       coincide: 'Coincide: el saludo y el «usted» señalan a la vecina; alcalde y niños solo se mencionan.',
     },
     mira: {
-      datos: { secciones: [{ id: 'm', titulo: 'Mensaje', modo: 'tarjeta', fragmentos: VERS.directora.frs.map(([id, t]) => ({ id, t })) }] },
+      datos: figDest('directora'),
       pasos: [
         { estado: { marcas: { x: 'd' } }, texto: 'El contenido es el pedido: cambiar la fecha. No depende de a quién.', ecuacion: [res('pedido')] },
         { estado: { marcas: { x: 'd', s: 'i' }, nuevo: ['s'] }, texto: '«Estimada directora» dice a quién se habla y con qué distancia.', ecuacion: [ctx('saludo'), ' → destinatario'] },
-        { estado: { marcas: { x: 'd', s: 'i', p: 'i', f: 'i' }, sellos: { m: { t: 'Formal', c: 'o' } }, nuevo: ['p', 'f'] }, texto: '«Le pido» y «atentamente» confirman el trato formal.', ecuacion: [ctx('usted'), ' + ', ctx('atentamente'), ' → formal'] },
+        { estado: { marcas: { x: 'd', s: 'i', p: 'i', f: 'i' }, sellos: { c: { t: 'Formal', c: 'o' } }, nuevo: ['p', 'f'] }, texto: '«Le pido» y «atentamente» confirman el trato formal.', ecuacion: [ctx('usted'), ' + ', ctx('atentamente'), ' → formal'] },
       ],
     },
     regla: {
       texto: 'La relación entre emisor y destinatario se lee en las marcas del mensaje: saludo, trato de usted o de tú, registro y despedida. No basta el tema.',
-      ecuacion: [ctx('marcas de trato'), ' → ', res('quién habla a quién')],
+      ecuacion: [{ llave: [ctx('trato')], nota: 'usted o tú', color: 'c-i' }, ' → ', res('a quién')],
       condicion: 'se distingue a quien se le habla de a quien solo se nombra; el contenido puede ser el mismo.',
     },
     ahoraTu: {
@@ -205,7 +240,7 @@
       consigna: 'La frase es siempre «Hace frío aquí». Cambia la situación y mira qué hace la frase en cada una.',
       voz: 'Una frase también es una acción: pedir, avisar, informar.',
       controles: [{ id: 'k', etiqueta: 'Situación', opciones: [{ valor: 'clase', texto: 'en clase' }, { valor: 'llamada', texto: 'por teléfono' }, { valor: 'viaje', texto: 'antes de salir' }] }],
-      dibujo: val => ({ datos: figFrio(val.k), estado: { marcas: { f: 'o', q1: 'i', q2: 'i' }, sellos: { m: { t: FRIO[val.k].accion.split(' ')[0], c: 'd' } } } }),
+      dibujo: val => ({ datos: figFrio(val.k), estado: { marcas: { f: 'o', q1: 'i', q2: 'i' }, sellos: { c: { t: FRIO[val.k].accion.split(' ')[0], c: 'd' } } } }),
       lectura: val => [corto(res, FRIO[val.k].accion)],
       minimo: 3,
     },
@@ -217,7 +252,7 @@
         ['Informa que le gusta la sal', 'RV49', 'No informa nada: pide.'],
       ]),
       dibujo: { datos: figura([['f', '¿Tiene sal?']], [['q1', 'Lo dice un cliente al mozo'], ['q2', 'en un restaurante, con su plato servido']], 'Situación'), estado: { marcas: { f: 'o' } } },
-      revelar: { datos: figura([['f', '¿Tiene sal?']], [['q1', 'Lo dice un cliente al mozo'], ['q2', 'en un restaurante, con su plato servido']], 'Situación'), estado: { marcas: { f: 'o', q1: 'i', q2: 'i' }, sellos: { m: { t: 'Pedido', c: 'd' } } } },
+      revelar: { datos: figura([['f', '¿Tiene sal?']], [['q1', 'Lo dice un cliente al mozo'], ['q2', 'en un restaurante, con su plato servido']], 'Situación'), estado: { marcas: { f: 'o', q1: 'i', q2: 'i' }, sellos: { c: { t: 'Pedido', c: 'd' } } } },
       coincide: 'Coincide: con el plato servido y el mozo enfrente, la pregunta funciona como pedido.',
     },
     mira: {
@@ -225,12 +260,12 @@
       pasos: [
         { estado: { marcas: { f: 'o' } }, texto: 'Literalmente, la frase solo describe el clima.', ecuacion: [deic('hace frío'), ' = describe'] },
         { estado: { marcas: { f: 'o', q1: 'i', q2: 'i' }, nuevo: ['q1', 'q2'] }, texto: 'La profesora, ante la ventana abierta: la frase apunta a la ventana.', ecuacion: [ctx('quién'), ' + ', ctx('qué mira')] },
-        { estado: { marcas: { f: 'o', q1: 'i', q2: 'i' }, sellos: { m: { t: 'Pide', c: 'd' } }, nuevo: ['m'] }, texto: 'En esa situación, la frase pide cerrar la ventana.', ecuacion: [deic('frase'), ' + ', ctx('situación'), ' → ', res('pedido')] },
+        { estado: { marcas: { f: 'o', q1: 'i', q2: 'i' }, sellos: { c: { t: 'Pide', c: 'd' } }, nuevo: ['c'] }, texto: 'En esa situación, la frase pide cerrar la ventana.', ecuacion: [deic('frase'), ' + ', ctx('situación'), ' → ', res('pedido')] },
       ],
     },
     regla: {
       texto: 'Una misma frase puede cumplir acciones distintas (pedir, informar, advertir) según la situación. Para saber qué hace, se mira quién la dice, a quién, dónde y ante qué.',
-      ecuacion: [deic('frase'), ' + ', ctx('situación'), ' → ', res('acción')],
+      ecuacion: [{ llave: [deic('frase'), ' + ', ctx('situación')], nota: 'dan la acción', color: 'c-d' }],
       condicion: 'la acción se apoya en datos de la situación dada; sin ellos, no se le atribuye una intención.',
     },
     ahoraTu: {
@@ -253,9 +288,38 @@
     },
   };
 
+  // ---------- Laboratorio: el calendario del mensaje ----------
+  // Más rica que la idea 1: cuatro palabras de tiempo (ayer, hoy, mañana, pasado mañana) y la fecha del mensaje libre,
+  // con los fines de mes y de año que la idea no deja probar. Cada fecha la calcula el código (año no bisiesto).
+  const antes = (d, m) => (d > 1 ? [d - 1, m] : [DIAS[(m + 11) % 12], (m + 11) % 12]);
+  const MESES_LAB = [1, 3, 6, 11];   // febrero, abril, julio y diciembre: fines de mes de 28, 30 y 31 días y fin de año
+  const TIEMPO = { ay: { t: 'Ayer', mover: (d, m) => antes(d, m) }, hoy: { t: 'hoy', mover: (d, m) => [d, m] }, man: { t: 'mañana', mover: (d, m) => siguiente(d, m) }, pas: { t: 'pasado mañana', mover: (d, m) => siguiente(...siguiente(d, m)) } };
+  const MSG_LAB = [['ay', 'Ayer'], ['a1', 'llegó el pedido;'], ['hoy', 'hoy'], ['a2', 'lo revisamos y'], ['man', 'mañana'], ['a3', 'lo entregamos. Cerramos'], ['pas', 'pasado mañana.']];
+  const diaReal = (d, m) => Math.min(d, DIAS[m]);
+  const figLab = (d, m) => figura(MSG_LAB, [['q2', `Fecha del mensaje: ${fecha(diaReal(d, m), m)}`]]);
+  const mesaCalendario = {
+    id: 'calendario', titulo: 'El calendario del mensaje', pieza: 'rv-texto',
+    consigna: 'Elige la fecha del mensaje y arrastra el marcador a una palabra de tiempo. Prueba fines de mes y de año.',
+    voz: 'Se cuenta desde el día en que se escribió.',
+    controles: [
+      { id: 'd', etiqueta: 'Día', color: 'c-i', min: 1, max: 31, paso: 1, inicio: 28, decimales: 0 },
+      { id: 'mes', etiqueta: 'Mes', opciones: MESES_LAB.map(m => ({ valor: m, texto: MESES[m] })) },
+      { id: 'w', etiqueta: 'Palabra', opciones: Object.entries(TIEMPO).map(([valor, x]) => ({ valor, texto: x.t.toLowerCase() })), inicio: 'man' },
+    ],
+    dibujo: val => {
+      const r = TIEMPO[val.w].mover(diaReal(val.d, val.mes), val.mes);
+      return { datos: figLab(val.d, val.mes), estado: { marcas: { [val.w]: 'o', q2: 'i' }, sellos: { c: { t: `${TIEMPO[val.w].t.toLowerCase()} = ${fecha(...r)}`, c: 'd' } } } };
+    },
+    lectura: val => {
+      const d = diaReal(val.d, val.mes), r = TIEMPO[val.w].mover(d, val.mes);
+      return [ctx(fecha(d, val.mes)), ' → ', deic(TIEMPO[val.w].t.toLowerCase()), ' = ', res(fecha(...r))];
+    },
+    arrastres: [marcador(val => figLab(val.d, val.mes), Object.keys(TIEMPO), 'w', 'palabra de tiempo')],
+  };
+
   return {
     unidad: 'razonamiento-verbal.texto-y-contexto',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -263,6 +327,11 @@
       pregunta: '¿Qué día es «mañana» en un mensaje viejo?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (contexto discursivo)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/contextodiscursivo.htm' },
     },
+    laboratorio: [
+      mesaCalendario,
+      Object.assign({ id: 'deicticos', titulo: 'Aquí, mañana y nosotros', pieza: 'rv-texto' }, deicticos.juega),
+      Object.assign({ id: 'emisor-destinatario', titulo: 'Quién habla y a quién', pieza: 'rv-texto' }, emisorDest.juega),
+    ],
     ideas: [deicticos, emisorDest, accion],
   };
 });
