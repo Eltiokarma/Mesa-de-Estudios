@@ -4606,7 +4606,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-ingles"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/lectura-en-ingles.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     }
    ]
   }
