@@ -152,7 +152,11 @@ Sesión de **planificación**: no se construyó nada de la app. Lo que sigue se 
 
 **Lo que sigue, en orden** (detalle en la sección 9 de la auditoría).
 1. **Estrés de Rive:** una página de prueba en el celular de 4 GB para fijar el presupuesto real.
-2. **Versión A:** MRU y MRUV con los cinco tiempos y el gesto de soltar, sin Rive (sección 7.5). Es el molde para las demás.
+2. **Versión A:** MRU y MRUV con los cinco tiempos y el gesto de soltar, sin Rive (sección 7.5). Es el molde para las demás. **Construida el 14 nov, en `main`, sin probar con alumnos ni en un celular físico:** `plantillas/mruv/v2.html` (aparte de la escena publicada; `?sesion=2` y `?sesion=3` abren las otras sesiones), la lógica en `plantillas/mruv/leccion.js` y dos piezas nuevas del kit, `pista` y `torre`, con prueba de fidelidad (1 px). La pieza `ejes` suma la opción `compacto`.
+   - Sesión 1: empujar (gesto de soltar, rapidez ajustada a 2, 4 o 6 m/s, con botones), dos carritos (alcance, cruce y nunca, con bandera y K1) y pisar (acelerador y freno mantenidos, K3).
+   - Sesión 2: pintar con el dedo el área bajo v-t de la corrida propia (guardada en el celular al cerrar la sesión 1; si no está, una de ejemplo).
+   - Sesión 3: la torre (lanzar, C1; dos masas, C2), un problema resuelto en la línea de tiempo con un paso por elegir y uno solo con alternativas del motor (G4, sin-mitad, solo-constante). Los tres problemas son propios.
+   - Falta: el carrito de Gerson (encargo, sección 9), la prueba con cinco alumnos y el guion de la sección 9, medir en el celular de 4 GB, el umbral del empujón (hipótesis), enlazarla desde la app y, con su visto bueno, reemplazar la escena de hoy. Del banco: la trampa K1 directa casi no aparece (2 de 241 fichas); la escena la trabaja igual. En pantallas de 640 px de alto el aviso queda bajo la barra y hay que desplazarse.
 3. **Versión B:** la misma unidad con utilería de Rive, para comparar.
 4. **En paralelo, sin depender de lo anterior:**
    - ~~la cola de repaso~~ (hecha el 13 nov: ver «Cola de repaso (versión R)» arriba);
