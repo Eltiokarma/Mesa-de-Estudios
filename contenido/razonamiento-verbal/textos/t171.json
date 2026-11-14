@@ -1,6 +1,6 @@
 {
   "id": "t171",
-  "version": 1,
+  "version": 2,
   "titulo": "A New App for the Bus",
   "tema": "Lectura en inglés · reseña de una aplicación inventada que muestra dónde están los buses de Lima",
   "grado": 4,
@@ -146,9 +146,9 @@
           "no-se-sabe": "RV34",
           "lo-contradice": "RV9"
         },
-        "explicacion": "El autor presenta como debilidad que solo cubre algunas avenidas (oración 7) y cuenta que espera las rutas nuevas que prometen los creadores sin haberlas visto aún (oración 8). De ahí se deduce que quiere más cobertura, aunque no lo escribe así.",
+        "explicacion": "Se deduce: el autor llama debilidad a la poca cobertura (oración 7) y espera las rutas nuevas (oración 8).",
         "explicaciones": {
-          "lo-dice": "El texto no escribe «me gustaría que cubriera más»: describe un defecto, y de ahí se deduce el deseo.",
+          "lo-dice": "Bien visto: el autor señala la poca cobertura como defecto. El deseo de que cubra más lo agrega el lector.",
           "no-se-sabe": "Se puede saber: quien llama debilidad a una cobertura limitada y espera las rutas nuevas (oraciones 7 y 8) quiere más cobertura.",
           "lo-contradice": "Nada en el texto afirma que le guste la cobertura actual; la señala como debilidad."
         }
@@ -264,6 +264,6 @@
     "por": "subagente (revisor a ciegas, rutina verbal-mas)",
     "fecha": "2026-11-12",
     "veredicto": "aprobado",
-    "notas": "A ciegas coincidieron 6 de 6 ítems. Cambios: p4 reemplaza el distractor «gratis» (no se sabe) por una afirmación compatible con la oración 3; el previo de p3 queda en «se-deduce» apoyado en las oraciones 7 y 8 (debilidad y espera de rutas nuevas), con la explicación reescrita. Hechos: app inventada, de memoria."
+    "notas": "A ciegas coincidieron 6 de 6 ítems. Cambios: p4 reemplaza el distractor «gratis» (no se sabe) por una afirmación compatible con la oración 3; el previo de p3 queda en «se-deduce» apoyado en las oraciones 7 y 8 (debilidad y espera de rutas nuevas), con la explicación reescrita. Hechos: app inventada, de memoria. 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 2 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }
