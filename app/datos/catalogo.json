@@ -697,7 +697,15 @@
       "configuracion-ubicacion",
       "quimica-conceptos",
       "conversiones-quimica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/materia-y-energia.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-particulas.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "quimica.estructura-atomica",

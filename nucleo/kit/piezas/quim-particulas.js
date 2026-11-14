@@ -41,7 +41,11 @@
   const W = 320, M = 8, GAP_FLECHA = 30, GAP = 12, TOP = 30;
 
   // Hash entero (determinístico) para mezclar casillas y dar un pequeño desorden a cada partícula.
-  const hash = (a, b) => { let h = (a * 374761393 + b * 668265263) >>> 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+  const hash = (a, b) => {
+    let h = (Math.imul(a + 0x9E3779B9, 0x85EBCA6B) ^ Math.imul(b + 0x7F4A7C15, 0xC2B2AE35)) >>> 0;
+    h ^= h >>> 16; h = Math.imul(h, 0x7FEB352D); h ^= h >>> 15; h = Math.imul(h, 0x846CA68B); h ^= h >>> 16;
+    return (h >>> 0) / 4294967296;
+  };
 
   function geometria(d) {
     const cajas = d.cajas || [];
