@@ -218,6 +218,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'gravitacion', unidad: 'fisica.gravitacion', version: '0.1.0' };
@@ -484,7 +485,11 @@ const cuarto = M.alturaParaG({ fraccion:0.25 });
 const o1 = M.orbita({ h:RT, m:1000 }), k3m = M.kepler3({ r1:2*RT, r2:2*RT, m1:1000, m2:2000 });
 const oRas = M.orbita({ r:RT }), k3 = M.kepler3({ r1:RT, r2:4*RT, T1:oRas.T }), o4 = M.orbita({ r:4*RT });
 const geo = M.geoestacionario();
-const S = { step:0, max:0, pred:{}, hl:null, t:0, ex:{ h:H_EE, m:1000, th:Math.PI/2 }, arrastra:false };
+const S = { step:0, max:0, pred:{}, hl:null, t:0, ex:{ h:RT, m:1000, th:Math.PI/2 }, arrastra:false, jugando:true };
+// Regla 3: el paso 1 abre en juego libre: el satélite se arrastra más cerca o más lejos y gira solo,
+// sin flechas de fuerza ni de rapidez, sin gráfica y sin cifras (todo eso se pregunta después).
+const enJuego = () => S.step === 0 && S.jugando;
+const arrastrable = () => !!steps[S.step].explora || enJuego();
 let parar = () => {};
 const pct = x => `${fmt(x*100, 0)} %`;
 const horas = s => `${fmt(s/3600, 1)} h`;
@@ -549,10 +554,11 @@ const base = s => Object.assign({ graf:null }, s);
 const grafG = (curva, extra) => Object.assign({ x0:0, x1:7, yMax:10, f:x => 10/(x*x), lineal:null, curva, xLab:'r (en radios R)', yLab:'g (m/s²)', colY:css('--c-g'), suelo:1 }, extra || {});
 const steps = [
  { k:'Paso 1', t:'El problema', ley:['F','h','orbita'],
-   vista:() => base({ orb: vEE(false) }),
+   vista:() => enJuego() ? base({ orb:{ rMax:4.2*RT, planeta:{ R:RT, nombre:'Tierra' }, orbitas:[RT + S.ex.h], sats:[{ r:RT + S.ex.h, th:S.ex.th, nom:'satélite' }] } })
+     : base({ orb: vEE(false) }),
    body:() => `<p class="problem">Una astronauta de ${V('m','60 kg')} flota dentro de una estación espacial que gira alrededor de la Tierra a una altura de ${V('h','400 km')}. El radio de la Tierra es ${V('R','6400 km')} y en el suelo la gravedad es ${V('g','g = 10 m/s²')}. ¿Con qué ${V('F','fuerza')} la atrae la Tierra allá arriba, comparada con la del suelo? ¿Por qué flota?</p>
    <p>A la izquierda (o arriba, en el celular) están la Tierra y la estación. El dibujo está a escala: los 400 km de altura son apenas el espacio entre el suelo y la estación. La fuerza todavía no se muestra. Toca o pasa el puntero sobre un dato para ver dónde está.</p>`,
-   lect:() => [], desc:() => 'La Tierra y una estación espacial a 400 kilómetros de altura, dibujadas a escala. La fuerza sobre la estación todavía no se muestra.' },
+   lect:() => [], desc:() => enJuego() ? `Un satélite gira alrededor de la Tierra, a ${fmt((RT + S.ex.h)/RT, 1)} radios del centro.` : 'La Tierra y una estación espacial a 400 kilómetros de altura, dibujadas a escala. La fuerza sobre la estación todavía no se muestra.' },
  { k:'Paso 2', t:'Antes de calcular, predice', gate:P1, ley:['F','h','orbita'],
    vista:() => base({ orb: vEE(!!S.pred[P1.id], null, null, true) }),
    body:() => `<p>La astronauta de ${V('m','60 kg')} pesa 600 N en el suelo. Allá arriba, a ${V('h','400 km')}, ¿cuánto vale la ${V('F','fuerza')} con que la atrae la Tierra?</p>${opcionesHTML(P1.opts, 'fb')}<div id="res" class="body"></div>`,
@@ -660,11 +666,11 @@ function correr(){
   if (RM){ S.t = steps[S.step].gate === P5 ? o4.T/(oRas.T/1.2) : 2.5; draw(); return; }
   parar = reloj(dt => {
     S.t += dt;
-    if (s.explora && !S.arrastra){ S.ex.th += M.orbita({ h:S.ex.h }).w*dt*oRas.T/6; }   // la órbita rasante se ve en 6 s
+    if ((s.explora || enJuego()) && !S.arrastra){ S.ex.th += M.orbita({ h:S.ex.h }).w*dt*oRas.T/6; }   // la órbita rasante se ve en 6 s
     draw();
   });
 }
-const anima = s => s.anima || s.explora || (s.gate && S.pred[s.gate.id]);
+const anima = s => s.anima || s.explora || (s === steps[0] && enJuego()) || (s.gate && S.pred[s.gate.id]);
 
 const dots = $('dots');
 steps.forEach((s, n) => {
@@ -676,8 +682,8 @@ function go(n){
   if (n < 0 || n >= steps.length || n > S.max) return;
   parar();
   const s = steps[n]; S.step = n; S.hl = null; S.t = 0; S.arrastra = false;
-  cv.tabIndex = s.explora ? 0 : -1;
-  cv.setAttribute('aria-label', s.explora ? 'Satélite del explorador: con las flechas del teclado lo subes o lo bajas' : 'La Tierra y un satélite en órbita, con sus fuerzas');
+  cv.tabIndex = arrastrable() ? 0 : -1;
+  cv.setAttribute('aria-label', arrastrable() ? 'Satélite: arrástralo más cerca o más lejos; con las flechas del teclado lo subes o lo bajas' : 'La Tierra y un satélite en órbita, con sus fuerzas');
   $('stepK').textContent = `${s.k} de ${steps.length}`;
   $('stepT').textContent = s.t;
   $('stepBody').innerHTML = s.body();
@@ -688,7 +694,7 @@ function go(n){
   nav(); L.resize();
   if (anima(s)) correr();
 }
-function ponerLeyenda(){ const s = steps[S.step]; leyenda($('ley1'), s.gate && S.pred[s.gate.id] && s.leyDespues ? s.leyDespues : s.ley); }
+function ponerLeyenda(){ const s = steps[S.step]; leyenda($('ley1'), enJuego() ? ['orbita'] : s.gate && S.pred[s.gate.id] && s.leyDespues ? s.leyDespues : s.ley); }
 function nav(){
   const s = steps[S.step];
   $('prev').disabled = S.step === 0;
@@ -750,16 +756,16 @@ function explorar(){
 // En el explorador las ecuaciones se rehacen a cada movimiento: sus datos no son paradas del tabulador.
 function sinParadaLive(){ $('live').querySelectorAll('.v').forEach(e => { e.removeAttribute('tabindex'); e.style.cursor = 'default'; }); }
 const H_MAX = 6*RT;
-function ponerH(h){ S.ex.h = clamp(Math.round(h/1e5)*1e5, 0, H_MAX); if (S.pintarEx) S.pintarEx(); draw(); }
+function ponerH(h){ S.ex.h = clamp(Math.round(h/1e5)*1e5, 0, enJuego() ? 3*RT : H_MAX); if (S.pintarEx && steps[S.step].explora) S.pintarEx(); draw(); }
 Celular.arrastre(cv, {
-  activo: () => steps[S.step].explora,
+  activo: arrastrable,
   cerca: (p, r) => { if (!geoUltima || !geoUltima.sats[0]) return false; const q = geoUltima.sats[0]; return Math.hypot(p.x - q.x, p.y - q.y) < r; },
   empezar: () => { S.arrastra = true; },
   mover: p => { const g = geoUltima; if (!g) return; const d = Math.hypot(p.x - g.cx, p.y - g.cy); S.ex.th = Math.atan2(g.cy - p.y, p.x - g.cx); ponerH(d/g.s - RT); },
   soltar: () => { S.arrastra = false; },
 });
 cv.addEventListener('keydown', e => {
-  if (!steps[S.step].explora) return;
+  if (!arrastrable()) return;
   const d = { ArrowUp:1, ArrowRight:1, ArrowDown:-1, ArrowLeft:-1 }[e.key]; if (!d) return;
   e.preventDefault(); ponerH(S.ex.h + d*(e.shiftKey ? 1e6 : 1e5));
 });
@@ -782,6 +788,9 @@ addEventListener('modo', () => {
   else { L.resize(); if (anima(steps[S.step])) correr(); }
 });
 L.resize(); go(0);
+JugarPrimero.montar({ escena: $('m1').querySelector('.bench'), preguntas: [$('m1').querySelector('.guide')],
+  consigna: 'Arrastra el satélite más cerca o más lejos de la Tierra y mira cómo gira.', minimo: 2,
+  alListo: () => { S.jugando = false; S.ex.h = H_EE; S.ex.th = Math.PI/2; if (S.step === 0) go(0); } });
 })();
 </script>
 <script>
@@ -1037,7 +1046,32 @@ const EXPS = [
 ];
 // En este modo los datos de color no resaltan nada en el dibujo: no son paradas del tabulador.
 const sinParada = el => el.querySelectorAll('.v').forEach(e => { e.removeAttribute('tabindex'); e.style.cursor = 'default'; });
+// Regla 3: antes del primer experimento se juega con un satélite que se arrastra más cerca o más lejos de la
+// Tierra (o ↑ ↓ con el dibujo enfocado) y gira solo; sin flechas ni cifras.
+const J = { activo:true, h:RT, th:Math.PI/2, arrastra:false, geo:null };
+const TRAS = M.orbita({ r:RT }).T;
+function ponerJ(h){ J.h = clamp(Math.round(h/1e5)*1e5, 0, 3*RT); draw(); }
+function arrancarJ(){ parar(); parar = reloj(dt => { if (!J.arrastra) J.th += M.orbita({ h:J.h }).w*dt*TRAS/6; draw(); }); }
+Celular.arrastre(cv, {
+  activo: () => J.activo,
+  cerca: (p, r) => { const g = J.geo; if (!g || !g.sats[0]) return false; return Math.hypot(p.x - g.sats[0].x, p.y - g.sats[0].y) < r; },
+  empezar: () => { J.arrastra = true; },
+  mover: p => { const g = J.geo; if (!g) return; J.th = Math.atan2(g.cy - p.y, p.x - g.cx); ponerJ(Math.hypot(p.x - g.cx, p.y - g.cy)/g.s - RT); },
+  soltar: () => { J.arrastra = false; },
+});
+cv.addEventListener('keydown', e => {
+  if (!J.activo) return;
+  const d = { ArrowUp:1, ArrowRight:1, ArrowDown:-1, ArrowLeft:-1 }[e.key]; if (!d) return;
+  e.preventDefault(); ponerJ(J.h + d*(e.shiftKey ? 1e6 : 1e5));
+});
 function draw(){
+  if (J.activo && L.W){
+    const c = colores(L.W, L.H); L.ctx.clearRect(0, 0, L.W, L.H);
+    J.geo = vistaOrbita(L.ctx, c, { x:6, y:4, w:L.W - 12, h:L.H - 8 }, { rMax:4.2*RT, planeta:{ R:RT, nombre:'Tierra' }, orbitas:[RT + J.h], sats:[{ r:RT + J.h, th:J.th, nom:'satélite' }] });
+    lecturas($('lect2'), []); leyenda($('ley2'), ['orbita']);
+    decir($('desc2'), `Un satélite gira alrededor de la Tierra, a ${fmt((RT + J.h)/RT, 1)} radios del centro.`);
+    return;
+  }
   if (!L.W || !E.dib) return;
   const x = EXPS[S.k], ya = !!S.pred[x.id], c = colores(L.W, L.H);
   L.ctx.clearRect(0, 0, L.W, L.H);
@@ -1109,11 +1143,16 @@ function ir(k){
     Celular.alResponder(L.cv, () => correr(), () => S.k === k && !$('m2').hidden);
   });
   pintar(); draw();
+  if (J.activo){ L.compactar(false); cv.tabIndex = 0; cv.setAttribute('aria-label', 'Satélite: arrástralo más cerca o más lejos; con las flechas del teclado lo subes o lo bajas'); arrancarJ(); return; }
   if (ya) correr();
 }
 alRedibujarTema(draw);
-addEventListener('modo', () => { if ($('m2').hidden) parar(); else { L.resize(); if (E.dib && S.pred[EXPS[S.k].id]) correr(); } });
+addEventListener('modo', () => { if ($('m2').hidden) parar(); else { L.resize(); if (J.activo) arrancarJ(); else if (E.dib && S.pred[EXPS[S.k].id]) correr(); } });
 L.resize(); ir(0);
+// La botonera también queda velada: el satélite libre es el juego común y va antes del primer experimento.
+JugarPrimero.montar({ escena: $('m2').querySelector('.bench'), preguntas: [$('m2').querySelector('.guide')],
+  consigna: 'Arrastra el satélite más cerca o más lejos de la Tierra y mira cómo gira.', minimo: 2,
+  alListo: () => { J.activo = false; parar(); cv.tabIndex = -1; cv.setAttribute('aria-label', 'Dibujo del experimento elegido'); ir(S.k); } });
 })();
 </script>
 
