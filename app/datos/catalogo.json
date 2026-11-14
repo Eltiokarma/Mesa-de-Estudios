@@ -2164,7 +2164,16 @@
      "plantillas": [
       "fracciones",
       "estadistica-datos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/estadistica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "aritmetica.analisis-combinatorio",
