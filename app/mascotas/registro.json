@@ -5,10 +5,11 @@
   "mascotas": [
     "gato",
     "luma",
-    "nox"
+    "nox",
+    "tilo"
   ],
   "cursos": {
-    "fisica": "gato",
+    "fisica": "tilo",
     "quimica": "gato",
     "aritmetica": "luma",
     "algebra": "nox",
