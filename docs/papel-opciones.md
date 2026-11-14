@@ -25,13 +25,13 @@ Cada problema puede traer `"preguntas"`, una por cada magnitud que pide:
 ```
 
 - **`id`** es único en el archivo: la letra del problema más a, b, c (`p6a`, `p6b`).
-- **`enunciado`** es el texto del problema **sin las preguntas**, porque la pregunta va aparte. Si el problema pide varias cosas, cada pregunta repite solo los datos que necesita, y puede dar como dato lo que otra pregunta calculó (gases `p6b` da «La presión total es de 9 atm»).
+- **`enunciado`** es **obligatorio**: el texto del problema **sin las preguntas**, porque la pregunta va aparte. Si el problema pide varias cosas, cada pregunta repite solo los datos que necesita, y puede dar como dato lo que otra pregunta calculó (gases `p6b` da «La presión total es de 9 atm»).
 - **`pregunta`** pide una sola magnitud.
 - **`unidad` y `decimales`** dicen cómo se escribe el número. Se escribe con coma decimal, con `Predicciones.formatear`.
 - **`correcta` y cada error** son una llamada al motor de la plantilla: `fn`, `args` y `campo`. El campo puede ser `"P"`, `"gases.He.P"` o `"valor"` (el resultado mismo). **Regla 1:** el número lo da el motor, nunca un modelo. `valor` es ese resultado ya calculado, con 12 cifras significativas, para que el repaso no cargue el motor.
 - **Un error** es la misma llamada con el argumento que cambia la equivocación típica, la que ya cuentan los pasos del problema. Por ejemplo: 16 g/mol en lugar de 32, °C en lugar de K, la presión manométrica en lugar de la absoluta, el coeficiente olvidado.
 - **Si el motor no calcula una equivocación,** no se inventa el número: o se agrega al motor una función pequeña, con su caso en `casos.json` verificado aparte, o ese error no entra.
-- **Un valor puede ser texto,** si el motor devuelve texto («tautología»).
+- **Un valor puede ser texto,** si el motor devuelve texto («tautología») o una fila de cifras («7131113»). Los textos no pasan por la regla de escala: si la respuesta es un número, mejor que sea número.
 
 ## Las reglas que revisa la prueba
 
@@ -39,6 +39,7 @@ Cada problema puede traer `"preguntas"`, una por cada magnitud que pide:
 
 - un `valor` no es el que da el motor con sus `args`;
 - hay menos de **dos errores** que se vean distintos de la correcta y entre sí, ya escritos con su unidad;
+- una pregunta no trae su `enunciado`;
 - un error está fuera de escala (de 1/20 a 20 veces la correcta; las trampas de unidades U1–U8, QU, AU y RU pueden llegar a 1000, como en los generadores);
 - falta el código, el respaldo (`documentado`, `parcial` o `hipotesis`) o la explicación, o la explicación pasa de 30 palabras.
 

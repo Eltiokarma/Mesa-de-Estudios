@@ -70,6 +70,8 @@
       const q = `${problema.id}/${pq.id}`;
       if (!pq.id || ids.has(pq.id)) mal.push(`${q}: id vacío o repetido`); ids.add(pq.id);
       if (!pq.pregunta || /<[a-z]/i.test(pq.pregunta + (pq.enunciado || ''))) mal.push(`${q}: falta la pregunta o trae HTML`);
+      // Sin enunciado propio se ve el del problema entero, con la pregunta repetida (aviso de la tanda A).
+      if (!pq.enunciado) mal.push(`${q}: falta el enunciado sin las preguntas`);
       if (!pq.correcta || !Array.isArray(pq.errores)) { mal.push(`${q}: falta correcta o errores`); continue; }
       const todos = [{ ...pq.correcta, id: 'correcta' }, ...pq.errores];
       for (const c of todos) {
@@ -83,6 +85,8 @@
       for (const e of pq.errores) {
         if (!e.id || !RESPALDOS.includes(e.respaldo) || !e.explicacion) mal.push(`${q} ${e.id}: falta código, respaldo o explicación`);
         if (e.explicacion && e.explicacion.split(/\s+/).length > MAX_PALABRAS_ERROR) mal.push(`${q} ${e.id}: la explicación pasa de ${MAX_PALABRAS_ERROR} palabras`);
+        // Solo los números pasan por la escala. Un texto de cifras («7131113») puede ser justo el error (escribir todo
+        // sin llevar): ahí la distancia a la correcta no dice si engaña. Quien use texto para un número, que lo piense.
         if (typeof e.valor === 'number' && typeof pq.correcta.valor === 'number' && !P.enEscala(e.valor, pq.correcta.valor, e.id)) mal.push(`${q} ${e.id}: fuera de escala`);
         const t = texto(P, pq, e.valor);
         if (!vistos.has(t)) { vistos.add(t); distintos++; } else mal.push(`${q} ${e.id}: se ve igual que otra alternativa (${t})`);
