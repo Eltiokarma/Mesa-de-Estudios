@@ -2497,7 +2497,16 @@
      "plantillas": [
       "fracciones",
       "fracciones-problemas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/numeros-racionales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tiras.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/arit-tabla.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.potenciacion-y-radicacion",
