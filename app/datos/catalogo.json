@@ -1735,7 +1735,16 @@
      "plantillas": [
       "grafica-perillas",
       "funciones-dominio-rango"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/funciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/alg-tabla.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "algebra.tipos-de-funciones-e-inversa",
