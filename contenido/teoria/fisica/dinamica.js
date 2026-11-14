@@ -52,6 +52,16 @@
   const caja = (cx, y0, w, h) => ({ puntos: [[cx - w / 2, y0], [cx + w / 2, y0], [cx + w / 2, y0 + h], [cx - w / 2, y0 + h]], cerrado: true });
   const piso = (x0, x1) => ({ puntos: [[x0, 0], [x1, 0]], rayado: true });
 
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas del lienzo (fis-lienzo.geometria, con los
+  // mismos datos que dibuja la idea). Si la relación no es lineal (el ángulo del plano), mover elige el valor del
+  // control cuya manija queda más cerca del dedo.
+  const LZ = datos => Kit.piezas['fis-lienzo'].geometria(datos);
+  const cercano = (c, donde, pt) => {
+    let mejor = null, dist = Infinity;
+    for (const v of c.opciones.map(o => o.valor)) { const q = donde(v), dd = Math.hypot(q.x - pt.x, q.y - pt.y); if (dd < dist - 1e-9) { dist = dd; mejor = v; } }
+    return mejor;
+  };
+
   // ---------- Idea 1: la aceleración sigue a la fuerza neta ----------
   // Cambia: F y m · Permanece: el carrito y su piso sin roce · Progresa: la flecha de a, que crece con F y se achica
   // con m · Se reserva: un carrito que avanza mientras F lo frena · Debe verse: a apunta como ΣF, no como v.
@@ -86,6 +96,10 @@
       dibujo: val => ({ datos: carrito(val.F, val.m), estado: {} }),
       lectura: val => [a, ` = ${f(val.F / val.m, 2)} m/s² hacia la derecha`],
       minimo: 3,
+      // Arrastra la mano (la cola de F) hacia la izquierda: más fuerza. La flecha roja responde.
+      arrastres: [{ id: 'empuje', etiqueta: 'fuerza de la mano', color: 'c-o',
+        donde: val => { const g = LZ(carrito(val.F, val.m)); return { x: g.X(-0.45) - val.F * KF1, y: g.Y(0.3) }; },
+        mover: (pt, val) => ({ F: (LZ(carrito(val.F, val.m)).X(-0.45) - pt.x) / KF1 }) }],
     },
     predice: {
       pregunta: 'Un carrito avanza hacia la derecha. Una fuerza constante de 6 N lo empuja hacia la izquierda. ¿Hacia dónde apunta su aceleración ahora?',
@@ -98,6 +112,8 @@
       revelar: { datos: carrito(-6, 3, { v: 6 }), estado: {} },
       coincide: 'Coincide: la aceleración va con la fuerza neta, aunque el carrito siga avanzando.',
     },
+    // Hallazgo 9: «Mira» pasa del carrito a la gráfica v–t a propósito: el caso de la predicción (avanza mientras la
+    // fuerza lo frena) solo se entiende siguiendo v en el tiempo, y la pendiente de esa recta es la flecha roja del juego.
     mira: {
       pieza: 'ejes',
       datos: {
@@ -109,12 +125,12 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Carrito de 3 kg a 6 m/s; 6 N lo frenan.', ecuacion: [a, ' = ', { frac: [SF, 'm'] }, ' = ', { frac: ['−6', '3'] }, ' = −2 m/s²'] },
         { estado: { corte: 2 }, texto: 'La velocidad baja 2 m/s cada segundo: la pendiente es a.', ecuacion: ['v = 6 − 2t'] },
-        { estado: { corte: 3 }, texto: 'A los 3 s se detiene, pero la fuerza sigue: empieza a volver.', ecuacion: ['v(3) = 0   ·   ', a, ' = −2 m/s²'] },
+        { estado: { corte: 3 }, texto: 'A los 3 s se detiene, pero la fuerza sigue: empieza a volver.', ecuacion: ['v(3) = 0', '   ·   ', a, ' = −2 m/s²'] },
       ],
     },
     regla: {
       texto: 'La fuerza neta no dice hacia dónde va el cuerpo: dice cómo cambia su velocidad. La aceleración apunta como la fuerza neta.',
-      ecuacion: [SF, ' = m ', a],
+      ecuacion: [{ llave: [SF], nota: 'fuerza neta', color: 'c-o' }, ' = m ', a],
       condicion: 'masa constante y medida desde un marco inercial (el piso). ΣF suma todas las fuerzas sobre el cuerpo, con signo.',
     },
     ahoraTu: {
@@ -169,6 +185,10 @@
       dibujo: val => ({ datos: persona(val.m, val.g), estado: {} }),
       lectura: val => [P, ` = ${f(val.m * val.g, 0)} N · m = ${f(val.m, 0)} kg en todo lugar`],
       minimo: 3,
+      // Arrastra la punta del peso: cambias la masa (manija en tinta, como m). El lugar se elige con los botones.
+      arrastres: [{ id: 'masa', etiqueta: 'masa (punta del peso)',
+        donde: val => ({ x: LZ(persona(val.m, val.g)).X(0.1), y: LZ(persona(val.m, val.g)).Y(0.5) + val.m * val.g * KP2 }),
+        mover: (pt, val) => ({ m: (pt.y - LZ(persona(val.m, val.g)).Y(0.5)) / (val.g * KP2) }) }],
     },
     predice: {
       pregunta: 'Un astronauta de 70 kg flota quieto junto a su nave en la Luna, sin rozamiento. Lo empujas 140 N horizontalmente. ¿Cuánto acelera, comparado con la Tierra?',
@@ -198,7 +218,7 @@
     },
     regla: {
       texto: 'La masa mide cuánto cuesta cambiar la velocidad de un cuerpo y no depende del lugar. El peso es la fuerza con que lo atrae el astro.',
-      ecuacion: [P, ' = m g'],
+      ecuacion: [P, ' = m ', { llave: ['g'], nota: 'según el lugar', color: 'c-d' }],
       condicion: 'g depende del lugar (Tierra ≈ 10, Marte ≈ 3,7, Luna ≈ 1,6 m/s²). En ΣF = ma va la masa, en kg.',
     },
     ahoraTu: {
@@ -248,6 +268,10 @@
       dibujo: val => ({ datos: bloque(val.F, val.mu), estado: {} }),
       lectura: val => { const fk = val.mu * 50; return [`f = ${f(fk, 0)} N · `, a, ` = ${f(Math.max(0, val.F - fk) / 5, 2)} m/s²`]; },
       minimo: 4,
+      // Arrastra la mano (la cola de F) hacia la izquierda: más fuerza. μk se elige con los botones.
+      arrastres: [{ id: 'jalon', etiqueta: 'fuerza de la mano', color: 'c-o',
+        donde: val => { const g = LZ(bloque(val.F, val.mu)); return { x: g.X(-0.45 - val.F * KF3 / S3), y: g.Y(0.4) }; },
+        mover: (pt, val) => ({ F: (-0.45 - LZ(bloque(val.F, val.mu)).Xi(pt.x)) * S3 / KF3 }) }],
     },
     predice: {
       pregunta: 'Un bloque de 5 kg se jala con 20 N y desliza con velocidad constante. ¿Cuánto vale el rozamiento?',
@@ -272,7 +296,7 @@
     },
     regla: {
       texto: 'Al deslizar, el rozamiento cinético se resta de la fuerza que jala. Solo lo que sobra acelera al bloque.',
-      ecuacion: [F, ' − ', { sub: ['μ', 'k'] }, N, ' = m ', a],
+      ecuacion: [F, ' − ', { llave: [{ sub: ['μ', 'k'] }, N], nota: 'rozamiento', color: 'c-i' }, ' = m ', a],
       condicion: 'el bloque ya desliza sobre piso horizontal; f apunta contra el deslizamiento.',
     },
     ahoraTu: {
@@ -333,6 +357,7 @@
       ],
     };
   }
+  const cimaPlano = (m, ang) => { const g = LZ(plano(m, ang)); return { x: g.X(3 * Math.cos(rad(ang))), y: g.Y(3 * Math.sin(rad(ang))) }; };
   const planoIdea = {
     id: 'plano-y-polea',
     titulo: 'Planos y poleas',
@@ -348,6 +373,15 @@
       dibujo: val => ({ datos: plano(val.m, val.ang), estado: {} }),
       lectura: val => [a, ` = ${f(G * ({ 30: 0.5, 37: 0.6, 53: 0.8 })[val.ang], 2)} m/s² · `, P, ` = ${val.m * G} N`],
       minimo: 4,
+      // Arrastra la cima del plano hacia arriba o abajo (cuenta solo la altura: el ángulo más cercano) o la punta del peso (la masa, en tinta como m).
+      arrastres: [
+        { id: 'cima', etiqueta: 'cima del plano (ángulo)',
+          donde: val => cimaPlano(val.m, val.ang),
+          mover: (pt, val) => ({ ang: cercano(planoIdea.juega.controles[0], ang => ({ x: pt.x, y: cimaPlano(val.m, ang).y }), pt) }) },
+        { id: 'masa', etiqueta: 'masa del bloque (punta del peso)',
+          donde: val => { const d = plano(val.m, val.ang), g = LZ(d), C = d.flechas[0].de; return { x: g.X(C[0]), y: g.Y(C[1]) + val.m * G * KP4 }; },
+          mover: (pt, val) => { const d = plano(val.m, val.ang), g = LZ(d), C = d.flechas[0].de; return { m: (pt.y - g.Y(C[1])) / (G * KP4) }; } },
+      ],
     },
     predice: {
       pregunta: 'En un plano sin rozamiento se sueltan un bloque de 2 kg y otro de 6 kg. ¿Cuál baja con más aceleración?',
@@ -360,6 +394,9 @@
       revelar: { datos: plano(6, 30), estado: {} },
       coincide: 'Coincide: con el triple de masa, la fuerza también se triplica. a = g sen θ.',
     },
+    // Hallazgo 9: «Mira» cambia del plano a la mesa con polea a propósito: la idea cubre los dos temas del catálogo y
+    // la mesa lleva la misma regla (fuerza neta externa entre masa total) a dos cuerpos unidos. El plano ya se resolvió
+    // en la predicción, con su revelado.
     mira: {
       datos: mesaPolea(3, 2, { p1: 1, p2: 2, p3: 3, p4: 4 }),
       pasos: [
@@ -371,7 +408,7 @@
     },
     regla: {
       texto: 'En un plano sin roce, el bloque baja con la parte del peso a lo largo del plano. Cuerpos unidos aceleran con la fuerza neta externa entre la masa total.',
-      ecuacion: [a, ' = g sen θ   ·   ', a, ' = ', { frac: [['Σ', { sub: [F, 'ext'] }], 'Σm'] }],
+      ecuacion: [a, ' = g sen θ', '   ·   ', a, ' = ', { frac: [['Σ', { sub: [F, 'ext'] }], { llave: ['Σm'], nota: 'masa total', color: 'c-i' }] }],
       condicion: 'sin rozamiento, cuerdas que no se estiran y poleas sin masa. θ se mide desde la horizontal.',
     },
     ahoraTu: {
@@ -402,7 +439,7 @@
   // ---------- Idea 5: la centrípeta es una resultante ----------
   // Cambia: la rapidez del auto en lo alto de la loma · Permanece: el peso y el radio · Progresa: N, que baja al ir
   // más rápido · Se reserva: la rapidez con la que N llega a cero · Debe verse: P − N = mv²/r; no hay fuerza extra.
-  const M5 = 1000, R5 = 10, KF5 = 0.008, KA5 = 8;
+  const M5 = 1000, R5 = 10, KF5 = 0.008, KA5 = 8, KV5 = 5;
   function loma(vv, o = {}) {
     const acv = vv * vv / R5, Nv = Math.max(0, M5 * (G - acv)), top = [0, R5 + 0.55];
     return {
@@ -416,6 +453,8 @@
         { de: [-0.3, top[1]], d: [0, -M5 * G], color: 'd', rotulo: '10 000 N', lado: -1, paso: o.pP || 0 },
         ...(o.sinN ? [] : [{ de: [0.3, top[1]], d: [0, Nv], color: 'i', rotulo: `N = ${f(Nv, 0)} N`, lado: -1, paso: o.pN || 0 }]),
         ...(o.sinA || acv === 0 ? [] : [{ de: [3, 13.2], d: [0, -acv], escala: KA5, color: 'h', rotulo: `${f(acv, 2)} m/s²`, paso: o.pA || 0 }]),
+        // La flecha de v (tinta, escala propia) solo en el juego: es la que se arrastra.
+        ...(o.conV ? [{ de: [0.9, R5 + 0.3], d: [vv, 0], escala: KV5, rotulo: 'v' }] : []),
       ],
     };
   }
@@ -428,9 +467,13 @@
       consigna: 'Un auto de 1000 kg pasa por lo alto de una loma de 10 m de radio. Elige su rapidez y mira la normal.',
       voz: 'Sube la rapidez de a poco. ¿Qué flecha se achica?',
       controles: [{ id: 'v', etiqueta: 'v', min: 0, max: 10, paso: 2.5, inicio: 5, unidad: 'm/s', decimales: 1 }],
-      dibujo: val => ({ datos: loma(val.v), estado: {} }),
+      dibujo: val => ({ datos: loma(val.v, { conV: true }), estado: {} }),
       lectura: val => [N, ` = ${f(Math.max(0, M5 * (G - val.v * val.v / R5)), 0)} N · `, P, ' = 10 000 N'],
       minimo: 3,
+      // Arrastra la punta de la flecha v hacia la derecha: más rápido. La normal (turquesa) responde.
+      arrastres: [{ id: 'rapidez', etiqueta: 'rapidez del auto (punta de v)',
+        donde: val => { const g = LZ(loma(val.v, { conV: true })); return { x: g.X(0.9) + val.v * KV5, y: g.Y(R5 + 0.3) }; },
+        mover: (pt, val) => ({ v: (pt.x - LZ(loma(val.v, { conV: true })).X(0.9)) / KV5 }) }],
     },
     predice: {
       pregunta: 'En lo alto de una loma de radio 10 m, un auto de 1000 kg va a 5 m/s. ¿Cómo es la normal comparada con su peso?',
@@ -447,13 +490,13 @@
       datos: loma(5, { pP: 1, pA: 2, pN: 3 }),
       pasos: [
         { estado: { paso: 1 }, texto: 'Sobre el auto actúan el peso, hacia abajo…', ecuacion: [P, ' = 1000 · 10 = 10 000 N'] },
-        { estado: { paso: 2 }, texto: 'Para curvar su camino, necesita una aceleración hacia el centro.', ecuacion: [{ sub: [a, 'c'] }, ' = ', { frac: ['5²', '10'] }, ' = 2,5 m/s²'] },
+        { estado: { paso: 2 }, texto: 'Para curvar su camino, necesita una aceleración hacia el centro.', ecuacion: [{ sub: [a, 'c'] }, ' = ', { frac: [{ sup: ['5', '2'] }, '10'] }, ' = 2,5 m/s²'] },
         { estado: { paso: 3 }, texto: '…y la normal: la resultante de las dos da esa aceleración.', ecuacion: [P, ' − ', N, ' = m ', { sub: [a, 'c'] }, '   →   ', N, ' = 7500 N'] },
       ],
     },
     regla: {
       texto: 'En un giro, la suma de las fuerzas hacia el centro vale m v²/r. «Centrípeta» es el nombre de esa resultante, no una fuerza nueva.',
-      ecuacion: ['Σ', { sub: [F, 'radial'] }, ' = m ', { frac: [{ sup: ['v', '2'] }, 'r'] }],
+      ecuacion: ['Σ', { sub: [F, 'radial'] }, ' = m ', { llave: [{ frac: [{ sup: ['v', '2'] }, 'r'] }], nota: 'hacia el centro', color: 'c-h' }],
       condicion: 'se toma positivo hacia el centro. Si N llegara a ser negativa, el auto ya se despegó del piso.',
     },
     ahoraTu: {
@@ -505,6 +548,10 @@
       dibujo: val => ({ datos: ascensor(val.a), estado: {} }),
       lectura: val => [`La balanza marca `, N, ` = ${f(M6 * (G + val.a), 0)} N`],
       minimo: 3,
+      // Arrastra la punta de la flecha roja: arriba, el ascensor acelera hacia arriba; abajo, hacia abajo.
+      arrastres: [{ id: 'aceleracion', etiqueta: 'aceleración del ascensor', color: 'c-h',
+        donde: val => { const g = LZ(ascensor(val.a)); return { x: g.X(1.6), y: g.Y(1.5) - val.a * KA6 }; },
+        mover: (pt, val) => ({ a: (LZ(ascensor(val.a)).Y(1.5) - pt.y) / KA6 }) }],
     },
     predice: {
       pregunta: 'El ascensor sube a velocidad constante de 3 m/s. ¿Qué marca la balanza de la persona de 60 kg?',
@@ -528,7 +575,7 @@
     },
     regla: {
       texto: 'Las leyes de Newton valen igual en todo marco que se mueve con velocidad constante. Si el ascensor acelera, la balanza ya no marca el peso.',
-      ecuacion: [N, ' − m g = m ', a, '   →   ', N, ' = m (g + ', a, ')'],
+      ecuacion: [{ llave: [N], nota: 'lo que marca', color: 'c-i' }, ' − m g = m ', a, '   ·   ', N, ' = m (g + ', a, ')'],
       condicion: 'a positiva hacia arriba, medida desde el piso del edificio (marco inercial). La balanza mide N, no el peso.',
     },
     ahoraTu: {
@@ -551,9 +598,38 @@
 
   return {
     unidad: 'fisica.dinamica',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-lienzo.js'],
+    // Laboratorio: juego libre, sin preguntas. El bloque libre junta fuerza, masa y rozamiento (en la idea, la masa
+    // está fija); el ascensor llega hasta a = −10 m/s², el cable cortado; la loma es el juego de la idea 5.
+    laboratorio: [
+      {
+        id: 'bloque-libre', titulo: 'Fuerza, masa y rozamiento', pieza: 'fis-lienzo',
+        consigna: 'Jala un bloque que ya desliza. Cambia la fuerza, la masa y μk, y mira cuánto sobra para acelerar.',
+        controles: [
+          { id: 'F', etiqueta: 'F', color: 'c-o', min: 0, max: 35, paso: 5, inicio: 25, unidad: 'N', decimales: 0 },
+          { id: 'm', etiqueta: 'm', min: 5, max: 8, paso: 1, inicio: 5, unidad: 'kg', decimales: 0 },
+          { id: 'mu', etiqueta: 'μk', opciones: [{ valor: 0, texto: '0' }, { valor: 0.2, texto: '0,2' }, { valor: 0.4, texto: '0,4' }], inicio: 0.2 },
+        ],
+        dibujo: val => ({ datos: bloque(val.F, val.mu, { m: val.m }), estado: {} }),
+        lectura: val => {
+          const fk = val.mu * val.m * G;
+          return [F, ` = ${f(val.F, 0)} N, f = ${f(fk, 0)} N: `, a, ` = ${f(Math.max(0, val.F - fk) / val.m, 2)} m/s²`];
+        },
+        arrastres: [{ id: 'jalon', etiqueta: 'fuerza de la mano', color: 'c-o',
+          donde: val => { const g = LZ(bloque(val.F, val.mu, { m: val.m })); return { x: g.X(-0.45 - val.F * KF3 / S3), y: g.Y(0.4) }; },
+          mover: (pt, val) => ({ F: (-0.45 - LZ(bloque(val.F, val.mu, { m: val.m })).Xi(pt.x)) * S3 / KF3 }) }],
+      },
+      Object.assign({}, ascensorIdea.juega, {
+        id: 'ascensor-libre', titulo: 'Ascensor hasta la caída libre', pieza: 'fis-lienzo',
+        consigna: 'Lleva la aceleración del ascensor de +6 a −10 m/s². ¿Qué marca la balanza si el cable se corta?',
+        controles: [{ id: 'a', etiqueta: 'a', color: 'c-h', min: -10, max: 6, paso: 2, inicio: 2, unidad: 'm/s²', decimales: 0 }],
+        lectura: val => [a, ` = ${f(val.a, 0)} m/s²: la balanza marca `, N, ` = ${f(M6 * (G + val.a), 0)} N`],
+        minimo: undefined, voz: undefined,
+      }),
+      Object.assign({ id: 'loma', titulo: 'El auto en la loma', pieza: 'fis-lienzo' }, circular.juega),
+    ],
     historia: {
       texto: 'En el siglo XVII, explicar el movimiento obligó a conectar choques, caídas y órbitas. Las conversaciones entre Halley, Hooke, Wren y Newton sobre órbitas forman parte del origen de los Principia, de 1687. Newton escribió allí sus leyes del movimiento, aunque no con la fórmula escolar F = ma: esa forma llegó después.',
       pregunta: '¿Qué dice una fuerza: hacia dónde vas o cómo cambias?',
