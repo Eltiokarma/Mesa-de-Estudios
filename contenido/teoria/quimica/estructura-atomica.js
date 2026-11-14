@@ -80,6 +80,14 @@
     return { simbolo: `${SIMB[z]}${carga(q)}`, Z: z, N: n, capas: capas(el), titulo: `${SIMB[z]}${carga(q)}`, rotulo: `A = ${z + n} · carga ${signo(q)}`,
       sale: q > 0 ? { n: Math.min(q, z) } : undefined, llega: q < 0 ? { n: -q } : undefined };
   }
+  // Gesto directo (docs/teoria.md §4b): la manija de la carga va a la derecha del átomo, a la altura del núcleo.
+  // A la derecha salen electrones (carga +), a la izquierda llegan (carga −); 18 px por electrón, con la geometría
+  // de quim-atomo (cx del átomo k). Es una función de la carga sola, así que mover es su inversa exacta.
+  const GA = () => Kit.piezas['quim-atomo'];
+  const PASO_Q = 18;
+  const manijaCarga = (dib, q, k = 0) => { const a = GA().geometria(dib.datos).atomo(k); return { x: a.cx + 90 + PASO_Q * q, y: a.cy }; };
+  const cargaEn = (dib, pt, k = 0) => (pt.x - GA().geometria(dib.datos).atomo(k).cx - 90) / PASO_Q;
+  const atomoDe = v => ({ datos: { atomos: [especie(v.z, v.n, v.q)] }, estado: {} });
   const nucleo = {
     id: 'nucleo-identidad',
     titulo: 'El núcleo decide el elemento',
@@ -93,9 +101,13 @@
         { id: 'n', etiqueta: 'Neutrones', color: 'c-d', min: 0, max: 14, paso: 1, inicio: 6, decimales: 0 },
         { id: 'q', etiqueta: 'Carga', min: -2, max: 2, paso: 1, inicio: 0, decimales: 0 },
       ],
-      dibujo: v => ({ datos: { atomos: [especie(v.z, v.n, v.q)] }, estado: {} }),
+      dibujo: v => atomoDe(v),
       lectura: v => (v.q > v.z ? [`${NOMBRE[v.z]}: no tiene ${v.q} electrones que perder`] : [Z, ` = ${v.z}: ${NOMBRE[v.z]} · `, A, ` = ${v.z + v.n} · carga ${signo(v.q)}`]),
       minimo: 4,
+      // Se agarra un electrón y se lo saca del átomo (o se lo trae): responde la carga, y el nombre no cambia.
+      arrastres: [{ id: 'carga', etiqueta: 'carga: a la derecha salen electrones', color: 'c-i',
+        donde: v => manijaCarga(atomoDe(v), v.q),
+        mover: (pt, v) => ({ q: cargaEn(atomoDe(v), pt) }) }],
     },
     predice: {
       pregunta: 'Un átomo de sodio tiene 11 protones, 12 neutrones y 11 electrones. Si pierde un electrón, ¿qué es ahora?',
@@ -123,7 +135,7 @@
     },
     regla: {
       texto: 'Z cuenta los protones y decide el elemento. A = Z + N cuenta protones y neutrones. La carga es protones menos electrones.',
-      ecuacion: [A, ' = ', Z, ' + ', N, '   ·   carga = ', Z, ' − ', e],
+      ecuacion: [A, ' = ', { llave: [Z], nota: 'protones', color: 'c-h' }, ' + ', { llave: [N], nota: 'neutrones', color: 'c-d' }, '   ·   ', 'carga = ', Z, ' − ', { llave: [e], nota: 'electrones', color: 'c-i' }],
       condicion: 'isótopos: mismo Z y distinto N. Iones: mismo Z y distinto número de electrones; el elemento no cambia.',
       voz: 'Primero el núcleo, después los electrones.',
     },
@@ -169,6 +181,7 @@
     actual: { titulo: 'Modelo actual, 1926', nodos: ['El electrón se comporta como onda', 'Orbitales: regiones donde es probable hallarlo', 'Es el modelo que se usa hoy'] },
   };
   const cadenaModelo = k => ({ datos: { columnas: [{ titulo: MODELOS[k].titulo, nodos: MODELOS[k].nodos.map((t, i) => ({ texto: t, color: ['d', 'o', undefined][i] })) }] }, estado: {} });
+  // Sin arrastre: el control elige entre cuatro modelos históricos; no hay una magnitud que agarrar en la cadena.
   const modelos = {
     id: 'modelos-atomicos',
     titulo: 'Cada modelo respondió a una evidencia',
@@ -247,6 +260,10 @@
   // flechas tiene cada nivel.
   const LETRA = 'spdf';
   const nivel = (n, sel, lleno = true) => ({ filas: Array.from({ length: n }, (_, l) => ({ nombre: `${n}${LETRA[l]}`, e: lleno ? 2 * (2 * l + 1) : 0, cajas: 2 * l + 1, color: l === sel ? 'o' : undefined })) });
+  // Gesto directo: la manija va bajo la última fila; jalarla hacia abajo agrega un subnivel, es decir, sube n.
+  // Con quim-cajas: y = top + n · fila − 4 (entre la última caja y la siguiente), inversa exacta en mover.
+  const GC = () => Kit.piezas['quim-cajas'];
+  const dibNivel = v => ({ datos: Object.assign(nivel(v.n, v.l), { rotulo: `nivel ${v.n}: ${2 * v.n * v.n} e⁻ como máximo` }), estado: {} });
   const cuanticos = {
     id: 'numeros-cuanticos',
     titulo: 'Niveles, subniveles y orbitales',
@@ -259,9 +276,13 @@
         { id: 'n', etiqueta: 'n', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0 },
         { id: 'l', etiqueta: 'l', min: 0, max: 2, paso: 1, inicio: 1, decimales: 0 },
       ],
-      dibujo: v => ({ datos: Object.assign(nivel(v.n, v.l), { rotulo: `nivel ${v.n}: ${2 * v.n * v.n} e⁻ como máximo` }), estado: {} }),
+      dibujo: v => dibNivel(v),
       lectura: v => (v.l >= v.n ? [`l = ${v.l} no existe con n = ${v.n}: l es menor que n`] : [`${v.n}${LETRA[v.l]}: ${2 * v.l + 1} orbitales, ${2 * (2 * v.l + 1)} electrones como máximo`]),
       minimo: 4,
+      // Se jala el borde de abajo del nivel: aparece (o se va) un subnivel, y la lectura cuenta las cajas.
+      arrastres: [{ id: 'nivel', etiqueta: 'borde del nivel: abajo, n mayor',
+        donde: v => { const g = GC().geometria(dibNivel(v).datos); return { x: 26, y: g.top + v.n * g.fila - 4 }; },
+        mover: (pt, v) => { const g = GC().geometria(dibNivel(v).datos); return { n: (pt.y + 4 - g.top) / g.fila }; } }],
     },
     predice: {
       pregunta: '¿Cuántos electrones caben, como máximo, en el nivel n = 4?',
@@ -292,7 +313,7 @@
     },
     regla: {
       texto: 'n da el nivel; l, de 0 a n − 1, da el subnivel (s, p, d, f); mₗ, de −l a +l, da una caja por orbital; mₛ = ±½.',
-      ecuacion: ['orbitales por subnivel = 2l + 1   ·   electrones por nivel = 2', { sup: ['n', '2'] }],
+      ecuacion: ['orbitales = 2', { llave: ['l'], nota: 'subnivel' }, ' + 1', '   ·   ', 'electrones = 2', { llave: [{ sup: ['n', '2'] }], nota: 'nivel' }],
       condicion: 'cada orbital admite dos electrones de espín opuesto (Pauli); un orbital es una región de probabilidad, no una órbita.',
       voz: 'Cuenta cajas y después flechas.',
     },
@@ -339,6 +360,14 @@
   // Cambia: el número de electrones · Permanece: el orden de llenado 1s 2s 2p 3s 3p 4s · Progresa: de llenar un
   // átomo a ganar electrones (anión) y a perderlos (catión) · Se reserva: el 4s que sale antes que el 3d · Debe verse:
   // qué subnivel recibe o pierde cada electrón.
+  // Gesto directo: se agarra la última flecha y se la lleva a otra caja. Cada flecha posible (1s↑, 1s↓, 2s↑…) tiene
+  // un sitio fijo en quim-cajas (fila del subnivel, caja por Hund, ↑ o ↓); mover elige el sitio más cercano y su
+  // número de orden es la cantidad de electrones.
+  function sitioFlecha(e) {
+    const c = config(e), i = c.length - 1, [nom, k] = c[i], cajas = cajasDe(nom), m = k - 1;
+    return GC().geometria({ filas: [{ cajas: 1 }] }).flecha(i, m < cajas ? m : m - cajas, m < cajas ? 0 : 1);
+  }
+  const masCercana = (pt, max) => { let mejor = 1, dm = Infinity; for (let e = 1; e <= max; e++) { const s = sitioFlecha(e), d = (s.x - pt.x) ** 2 + (s.y - pt.y) ** 2; if (d < dm) { dm = d; mejor = e; } } return mejor; };
   const configuracion = {
     id: 'configuracion-electronica',
     titulo: 'Dónde va cada electrón',
@@ -351,6 +380,10 @@
       dibujo: v => ({ datos: { filas: filasConfig(config(v.z)) }, estado: {} }),
       lectura: v => [Z, ` = ${v.z} (${SIMB[v.z]}): ${textoConfig(config(v.z))}`],
       minimo: 4,
+      // Se agarra el último electrón y se lo pone en otra caja: Z sigue a la flecha, y la configuración se reescribe.
+      arrastres: [{ id: 'ultimo', etiqueta: 'último electrón: llévalo a otra caja', color: 'c-h',
+        donde: v => sitioFlecha(v.z),
+        mover: pt => ({ z: masCercana(pt, 20) }) }],
     },
     predice: {
       pregunta: 'El hierro es [Ar] 4s² 3d⁶. Al formar el ion Fe²⁺ pierde dos electrones. ¿De qué subnivel salen?',
@@ -381,7 +414,7 @@
     },
     regla: {
       texto: 'Los subniveles se llenan en orden de energía: 1s 2s 2p 3s 3p 4s 3d 4p. Un anión suma electrones; un catión pierde primero los del n más alto.',
-      ecuacion: [e, ' = ', Z, ' − carga'],
+      ecuacion: [e, ' = ', Z, ' − ', { llave: ['carga'], nota: 'positiva: perdió' }],
       condicion: 'en estado fundamental. Hay excepciones verificadas: el Cr y el Cu pasan un electrón del 4s al 3d.',
       voz: 'Cuenta los electrones antes de escribir la configuración.',
     },
@@ -426,6 +459,10 @@
     alt: `Radios iónicos (Shannon, en pm) de especies con 10 electrones: ${lista.map(([s, z, r]) => `${s} con ${z} protones, ${f(r, 1)} pm`).join('; ')}.`,
   });
   const ISO_PRED = ISO10.slice(0, 4);
+  // Sin arrastre en el juego: el control elige entre especies distintas; no hay una magnitud que agarrar.
+  // Hallazgo 9 de la auditoría: son dos representaciones a propósito. Las cajas cuentan los desapareados de una
+  // especie; la recta de «Mira» compara el tamaño de varias isoelectrónicas, que en cajas se verían idénticas
+  // (lo dice el último paso).
   const desapareados = {
     id: 'desapareados-isoelectronicos',
     titulo: 'Electrones solos e isoelectrónicos',
@@ -506,6 +543,16 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: cualquier átomo o ion hasta el calcio, con más neutrones y cargas de −3 a +3 que la idea 1.
+  const SIMB_Q = (z, q) => `${SIMB[z]}${carga(q)}`;
+  // Mesa 2: el ion y sus cajas a la vez (ideas 4 y 5 juntas): Z y carga deciden los electrones; se marcan los solos.
+  const solos = c => c.reduce((a, [nom, k]) => { const cj = cajasDe(nom); return a + (k <= cj ? k : 2 * cj - k); }, 0);
+  const dibIon = v => {
+    const el = v.z - v.q, c = el > 0 ? config(el) : [];
+    return { datos: { filas: filasConfig(c), desapareados: true, rotulo: el > 0 ? `${SIMB_Q(v.z, v.q)}: ${solos(c)} desapareados` : el === 0 ? `${SIMB_Q(v.z, v.q)}: sin electrones` : `${SIMB[v.z]} no tiene tantos electrones` }, estado: {} };
+  };
+
   return {
     unidad: 'quimica.estructura-atomica',
     version: '0.1.0',
@@ -516,6 +563,40 @@
       pregunta: '¿Cómo sabes qué hay dentro de algo que no puedes ver?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §2.3', url: 'https://openstax.org/books/chemistry-2e/pages/2-3-atomic-structure-and-symbolism' },
     },
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera abre los rangos de la idea 1 (hasta Z = 20 y
+    // cargas de ±3); la segunda junta la configuración de un ion con sus desapareados. La lectura dice la especie y
+    // lo que resulta, para que un caso guardado se lea solo.
+    laboratorio: [
+      {
+        id: 'arma-ion', titulo: 'Arma cualquier átomo o ion', pieza: 'quim-atomo',
+        consigna: 'Elige protones, neutrones y carga hasta el calcio. Saca o trae electrones con la manija y mira qué no cambia.',
+        controles: [
+          { id: 'z', etiqueta: 'Protones', color: 'c-h', min: 1, max: 20, paso: 1, inicio: 11, decimales: 0 },
+          { id: 'n', etiqueta: 'Neutrones', color: 'c-d', min: 0, max: 24, paso: 1, inicio: 12, decimales: 0 },
+          { id: 'q', etiqueta: 'Carga', min: -3, max: 3, paso: 1, inicio: 0, decimales: 0 },
+        ],
+        dibujo: v => atomoDe(v),
+        lectura: v => (v.q > v.z ? [`${NOMBRE[v.z]}: no tiene ${v.q} electrones que perder`]
+          : [`${v.z} p · ${v.n} n · ${v.z - v.q} `, e, `⁻ → ${SIMB_Q(v.z, v.q)}, `, A, ` = ${v.z + v.n}`]),
+        arrastres: [{ id: 'carga', etiqueta: 'carga: a la derecha salen electrones', color: 'c-i',
+          donde: v => manijaCarga(atomoDe(v), v.q),
+          mover: (pt, v) => ({ q: cargaEn(atomoDe(v), pt) }) }],
+      },
+      {
+        id: 'cajas-ion', titulo: 'Las cajas de un ion', pieza: 'quim-cajas',
+        consigna: 'Elige el elemento y su carga. Lleva la última flecha a otra caja: la carga cambia y se marcan los electrones solos.',
+        controles: [
+          { id: 'z', etiqueta: 'Z', color: 'c-h', min: 1, max: 20, paso: 1, inicio: 17, decimales: 0 },
+          { id: 'q', etiqueta: 'Carga', min: -3, max: 3, paso: 1, inicio: 0, decimales: 0 },
+        ],
+        dibujo: v => dibIon(v),
+        lectura: v => (v.z - v.q < 0 ? [`${NOMBRE[v.z]}: no tiene ${v.q} electrones que perder`] : v.z === v.q ? [`${SIMB_Q(v.z, v.q)}: sin electrones, no hay cajas que llenar`]
+          : [`${SIMB_Q(v.z, v.q)} · ${v.z - v.q} `, e, `⁻ → ${textoConfig(config(v.z - v.q))}`]),
+        arrastres: [{ id: 'ultimo', etiqueta: 'último electrón: llévalo a otra caja', color: 'c-i',
+          donde: v => sitioFlecha(Math.max(1, v.z - v.q)),
+          mover: (pt, v) => ({ q: v.z - masCercana(pt, 23) }) }],
+      },
+    ],
     ideas: [nucleo, modelos, cuanticos, configuracion, desapareados],
   };
 });
