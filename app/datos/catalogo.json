@@ -1974,7 +1974,15 @@
      "plantillas": [
       "regla-de-tres",
       "porcentajes-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/razones-y-proporciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tiras.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "aritmetica.magnitudes-proporcionales",
