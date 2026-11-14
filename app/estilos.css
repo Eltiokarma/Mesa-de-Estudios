@@ -860,3 +860,14 @@ body.con-lupa{overflow:hidden}
 .tag.nivel-3,.tag.nivel-4{background:color-mix(in srgb,var(--ok) 18%,var(--card));color:var(--ink)}
 .niveles-resumen{list-style:none;display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;margin:12px 0 0;padding:0;font-size:14px;color:var(--muted)}
 .niveles-resumen b{color:var(--ink)}
+
+/* ---------- Prueba de entrada del tema (Teoria.entrada) y calibración ---------- */
+.te-entrada{display:flex;flex-direction:column;gap:12px}
+.te-entrada h2{margin:0}
+.te-entrada .te-fig svg{width:100%;height:auto}
+.te-calib{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.te-calib li{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-weight:600}
+.te-calib li.si span[aria-hidden]{color:var(--ok)}
+.te-calib .sub{font-weight:400;margin:0}
+.te-chip.sabida .te-num{border-color:var(--ok);color:var(--ok)}
+.te-calibra{margin:0;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--ok) 10%,var(--card));display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:15px}

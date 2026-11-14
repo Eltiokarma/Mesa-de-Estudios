@@ -45,7 +45,7 @@ function tarjeta(ctx, curso) {
   const boton = (fase, texto, clase) => `<a class="btn ${clase}" href="#/prueba/${esc(curso)}/${fase}">${texto}</a>`;
   if (st.enCurso) return `<div class="card prueba-tarjeta"><div class="etq-p">${NOMBRE_FASE[st.enCurso.fase]}</div>
     <p>Te quedaste en la pregunta ${st.enCurso.respuestas.length + 1} de ${n}.</p>${boton(st.enCurso.fase, 'Continuar ›', 'morado')}</div>`;
-  if (!st.entrada) return `<div class="card prueba-tarjeta"><div class="etq-p">Prueba de entrada pendiente</div>
+  if (!st.entrada) return `<div class="card prueba-tarjeta"><div class="etq-p">Prueba de entrada del curso (opcional)</div>
     <p>${n} preguntas, unos ${b.minutos} minutos. No es nota: sirve para ver de dónde partes.</p>${boton('entrada', 'Hacer la prueba de entrada ›', 'morado')}</div>`;
   if (!st.salida) {
     if (habilitada(est, curso) && mismoDia(st.entrada.fecha)) return `<div class="card prueba-tarjeta"><div class="etq-p">Prueba de salida</div>

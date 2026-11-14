@@ -132,15 +132,17 @@
     const st = estadoUnidad(ctx, u.id);
     const per = T.PERSONAJES[c.id] || { nombre: 'Tu compañero' };
     const ideas = def.ideas;
-    const primeraPendiente = ideas.find(i => !hecha(st, i.id)) || ideas[ideas.length - 1];
+    // Calibración (prueba de entrada del tema, Teoria.entrada): las ideas acertadas ahí empiezan por la regla.
+    const sabidas = new Set((((ctx.est.temas || {})[u.id] || {}).entrada || {}).sabidas || []);
+    const primeraPendiente = ideas.find(i => !hecha(st, i.id) && !sabidas.has(i.id)) || ideas.find(i => !hecha(st, i.id)) || ideas[ideas.length - 1];
     const ficha = sub === 'ficha', lab = sub === 'laboratorio';
     const idea = ficha || lab ? null : ideas.find(i => i.id === sub) || primeraPendiente;
     const n = ideas.filter(i => hecha(st, i.id)).length;
 
     const chip = (i, k) => {
       const on = idea && i.id === idea.id;
-      return `<a class="te-chip${on ? ' on' : ''}${hecha(st, i.id) ? ' hecha' : ''}" href="#/unidad/${esc(u.id)}/teoria/${esc(i.id)}"${on ? ' aria-current="step"' : ''}>
-        <span class="te-num" aria-hidden="true">${hecha(st, i.id) ? '✓' : k + 1}</span><span>${esc(i.titulo)}</span>${hecha(st, i.id) ? '<span class="lector"> (terminada)</span>' : ''}</a>`;
+      return `<a class="te-chip${on ? ' on' : ''}${hecha(st, i.id) ? ' hecha' : sabidas.has(i.id) ? ' sabida' : ''}" href="#/unidad/${esc(u.id)}/teoria/${esc(i.id)}"${on ? ' aria-current="step"' : ''}>
+        <span class="te-num" aria-hidden="true">${hecha(st, i.id) ? '✓' : k + 1}</span><span>${esc(i.titulo)}</span>${hecha(st, i.id) ? '<span class="lector"> (terminada)</span>' : sabidas.has(i.id) ? '<span class="lector"> (la acertaste en la prueba de entrada)</span>' : ''}</a>`;
     };
     const cab = `${ctx.cab('Teoría')}
       <nav class="te-ideas" aria-label="Ideas de esta unidad">${ideas.map(chip).join('')}
@@ -148,7 +150,7 @@
         <span class="te-num" aria-hidden="true">⚗</span><span>Laboratorio</span></a>
         <a class="te-chip te-ficha${ficha ? ' on' : ''}" href="#/unidad/${esc(u.id)}/teoria/ficha"${ficha ? ' aria-current="page"' : ''}>
         <span class="te-num" aria-hidden="true">≡</span><span>Ficha de repaso</span></a></nav>
-      <p class="sub te-avance">${n} de ${ideas.length} ideas terminadas</p>`;
+      <p class="sub te-avance">${n} de ${ideas.length} ideas terminadas${sabidas.size ? ` · en la prueba de entrada acertaste ${sabidas.size}` : ''}</p>`;
 
     const figuraHTML = `<div class="te-figcaja"><figure class="te-fig kit-figura" aria-describedby="te-alt"></figure>
         <div class="te-figbarra"><button type="button" class="te-zoom" aria-label="Ampliar la figura">${ICONO_LUPA}</button></div></div>
@@ -364,7 +366,16 @@
 
     // Arranque: el momento guardado (si ya predijo, no vuelve a predecir desde cero).
     actuar('llegada', idea.juega.voz || idea.juega.consigna);
-    ir(si.hecha ? 'regla' : si.momento || 'juega');
+    // Idea acertada en la prueba de entrada y sin empezar: va directo a la regla, con la opción de jugar igual.
+    const yaSabia = sabidas.has(idea.id) && !si.hecha && !si.prediccion && (si.momento || 'juega') === 'juega';
+    if (yaSabia) {
+      const aviso = document.createElement('p');
+      aviso.className = 'te-calibra';
+      aviso.innerHTML = 'En la prueba de entrada acertaste esta idea: ve a la regla y a «Ahora tú». <button type="button" class="btn borde">Jugar desde el inicio</button>';
+      raiz.insertBefore(aviso, raiz.querySelector('.te-momentos').nextSibling);
+      aviso.querySelector('button').onclick = () => { aviso.remove(); ir('juega'); };
+    }
+    ir(si.hecha || yaSabia ? 'regla' : si.momento || 'juega');
 
     // ---------- Piezas compartidas por las ideas y el laboratorio ----------
     function reglaHTML(r, foco) {
@@ -561,5 +572,104 @@
     function conectarLupas(el) { conectarLupa(el); }
   }
 
-  window.Teoria = Object.assign(window.Teoria || {}, { vista });
+
+  /*
+   * Prueba de entrada del tema (decisión de Gerson, 14 nov): obligatoria antes de la teoría, los ejercicios y el
+   * simulacro de cada unidad; el laboratorio queda libre. Una pregunta por idea, sacada de su «Ahora tú» con una semilla
+   * propia (500 + k), sin retroalimentación y con «No sé». El resultado calibra la teoría: las ideas acertadas empiezan
+   * por la regla. Se puede salir y volver: queda en est.temas[unidad].enCurso. Eventos: «tema-item» y «tema».
+   */
+  function entrada(ctx, u) {
+    const { $app, esc } = ctx;
+    const c = ctx.cat.cursos.find(x => x.unidades.some(y => y.id === u.id));
+    $app.innerHTML = `<div class="card te-cargando" role="status">Preparando la prueba del tema…</div>`;
+    const h = location.hash;
+    cargarUnidad(u).then(def => { if (location.hash === h) pintarEntrada(ctx, c, u, def); },
+      () => { if (location.hash === h) $app.innerHTML = `<div class="card"><h2>No se pudo abrir la prueba</h2><p>Revisa tu conexión y vuelve a intentarlo.</p><a class="btn morado" href="#/unidad/${esc(u.id)}">Volver a la unidad</a></div>`; });
+  }
+
+  function pintarEntrada(ctx, c, u, def) {
+    const { $app, esc, est } = ctx;
+    const T = window.Teoria, E = window.Ecuacion;
+    est.temas = est.temas || {};
+    const tm = est.temas[u.id] = est.temas[u.id] || {};
+    const destino = sessionStorage.getItem('tema-destino-' + u.id) || `#/unidad/${u.id}/teoria`;
+    const per = T.PERSONAJES[c.id] || { nombre: 'Tu compañero' };
+    // Las preguntas salen siempre iguales para este alumno y esta unidad (semilla fija): retomar no las cambia.
+    const preguntas = def.ideas.map((idea, k) => {
+      const caso = idea.ahoraTu.generar(500 + k);
+      return { idea, caso, ops: T.barajar(caso.opciones, 900 + k) };
+    });
+    if (tm.entrada) { location.hash = destino; return; }
+    const en = tm.enCurso = tm.enCurso || { i: 0, resp: preguntas.map(() => null) };
+    const t0 = Date.now();
+    let tP = Date.now();
+    const cab = ctx.cab('Prueba del tema');
+
+    function intro() {
+      $app.innerHTML = `${cab}<section class="card te-entrada">
+        <span class="etq-p">Antes de estudiar ${esc(u.nombre)}</span>
+        <h2>${preguntas.length} preguntas cortas, una por idea</h2>
+        <ul class="temas-l"><li>No es nota: sirve para ajustar el tema a lo que ya sabes.</li>
+          <li>Lo que aciertes empieza directo en la regla; lo demás, jugando.</li>
+          <li>Si no sabes, marca «No sé»: ayuda más que adivinar.</li>
+          <li>Puedes salir y volver: se guarda donde quedaste.</li></ul>
+        <p class="sub">El laboratorio de la unidad está libre: puedes jugar ahí antes, si quieres.</p>
+        <div class="te-voz"><div class="mascota" data-mascota data-curso="${esc(c.id)}" aria-hidden="true"></div>
+          <p class="te-dice"><b>${esc(per.nombre)}</b> <span>${esc((per.voces && per.voces.prediccion) || '')}</span></p></div>
+        <div class="acciones-prueba"><button type="button" class="btn morado" id="te-empezar">${en.i || en.resp.some(Boolean) ? `Seguir en la pregunta ${en.i + 1}` : 'Empezar'}</button>
+          <a class="btn borde" href="#/unidad/${esc(u.id)}/teoria/laboratorio">Ir al laboratorio</a></div></section>`;
+      $app.querySelector('#te-empezar').onclick = () => { tP = Date.now(); pregunta(); };
+    }
+    function pregunta() {
+      const q = preguntas[en.i], ultima = en.i === preguntas.length - 1;
+      $app.innerHTML = `${cab}<section class="card te-entrada">
+        <div class="ex-puntos" aria-hidden="true">${preguntas.map((_, k) => `<span class="${k === en.i ? 'aqui' : ''}${en.resp[k] ? ' resp' : ''}"></span>`).join('')}</div>
+        <div class="etq-p">Pregunta ${en.i + 1} de ${preguntas.length} · ${esc(q.idea.titulo)}</div>
+        ${q.caso.dibujo ? `<figure class="te-fig kit-figura">${window.Kit.piezas[q.idea.ahoraTu.pieza || q.idea.pieza].dibujar(q.caso.dibujo.datos, q.caso.dibujo.estado || {})}</figure>` : ''}
+        <h3 class="te-preg">${E.html(q.caso.pregunta)}</h3>
+        <div class="alts" role="radiogroup" aria-label="Opciones">${q.ops.map((o, k) => `<button type="button" class="alt${en.resp[en.i] === o.id ? ' on' : ''}" role="radio" aria-checked="${en.resp[en.i] === o.id}" data-op="${esc(o.id)}"><span class="letra">${'ABCDE'[k]}</span><span>${E.html(o.texto)}</span></button>`).join('')}
+          <button type="button" class="alt nose${en.resp[en.i] === 'nose' ? ' on' : ''}" data-op="nose">No sé</button></div>
+        <p class="te-aviso" role="alert"></p>
+        <div class="ex-nav"><button type="button" class="btn borde" id="te-ant"${en.i ? '' : ' style="visibility:hidden"'}>‹ Anterior</button>
+          <button type="button" class="btn morado" id="te-sig">${ultima ? 'Terminar' : 'Siguiente ›'}</button></div></section>`;
+      $app.querySelector('.alts').onclick = e => {
+        const b = e.target.closest('.alt'); if (!b) return;
+        en.resp[en.i] = b.dataset.op; ctx.guardar();
+        $app.querySelectorAll('.alt').forEach(x => { const on = x === b; x.classList.toggle('on', on); if (x.getAttribute('role') === 'radio') x.setAttribute('aria-checked', String(on)); });
+        $app.querySelector('.te-aviso').textContent = '';
+      };
+      $app.querySelector('#te-ant').onclick = () => { en.i--; ctx.guardar(); window.scrollTo(0, 0); pregunta(); };
+      $app.querySelector('#te-sig').onclick = () => {
+        if (!en.resp[en.i]) { $app.querySelector('.te-aviso').textContent = 'Elige una opción o «No sé».'; return; }
+        if (ultima) return terminar();
+        en.i++; ctx.guardar(); window.scrollTo(0, 0); pregunta();
+      };
+    }
+    function terminar() {
+      const sabidas = [], filas = [];
+      let aciertos = 0, nose = 0;
+      preguntas.forEach((q, k) => {
+        const r = en.resp[k], o = q.ops.find(x => x.id === r), bien = !!(o && o.correcta);
+        if (bien) { aciertos++; sabidas.push(q.idea.id); }
+        if (r === 'nose') nose++;
+        filas.push({ idea: q.idea.id, opcion: r, correcta: bien, error: (o && !bien && o.error) || null });
+      });
+      // Primero se guarda el resultado y después se registran los eventos: si se corta entre los dos, no se duplica.
+      const expuesto = !!((est.vistas || {})[u.id] || ((est.teoria || {})[u.id] || {}).lab);
+      tm.entrada = { fecha: new Date().toLocaleDateString('en-CA'), aciertos, total: preguntas.length, nose, sabidas, expuesto };
+      delete tm.enCurso; ctx.guardar();
+      filas.forEach(f => ctx.registrar(Object.assign({ tipo: 'tema-item', fase: 'entrada', unidad: u.id }, f)));
+      ctx.registrar({ tipo: 'tema', fase: 'entrada', unidad: u.id, aciertos, total: preguntas.length, nose, expuesto, ms: Date.now() - t0 });
+      $app.innerHTML = `${cab}<section class="card te-entrada">
+        <span class="etq-p">Prueba del tema lista</span>
+        <h2>${aciertos} de ${preguntas.length} ideas ya las tienes</h2>
+        <ul class="te-calib">${def.ideas.map(i => `<li class="${sabidas.includes(i.id) ? 'si' : 'no'}"><span aria-hidden="true">${sabidas.includes(i.id) ? '✓' : '○'}</span> ${esc(i.titulo)} <span class="sub">${sabidas.includes(i.id) ? 'empiezas por la regla' : 'empiezas jugando'}</span></li>`).join('')}</ul>
+        <a class="btn morado" href="${esc(destino)}">Seguir</a></section>`;
+      sessionStorage.removeItem('tema-destino-' + u.id);
+    }
+    intro();
+  }
+
+  window.Teoria = Object.assign(window.Teoria || {}, { vista, entrada });
 })();

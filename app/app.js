@@ -273,7 +273,12 @@ function vCursos() {
 // La primera vez que entra a un curso (o a una de sus unidades) con banco de pruebas, va primero la prueba de
 // entrada. Curso de lectura: la entrada es el primer texto del módulo, una vez por sesión, para que el botón de volver
 // deje ver el curso (al abrir cualquier ejercicio, la entrada vuelve a ir primero). Devuelve true si redirigió.
+// Decisión de Gerson (14 nov): la prueba de entrada del CURSO es opcional (se ofrece en la página del curso, nunca se
+// impone); la del TEMA es obligatoria antes de su teoría, ejercicios y simulacro (temaPendiente). Se deja la función
+// por si vuelve a hacer falta, pero no redirige.
 function llevarAEntrada(c) {
+  return false;
+  // eslint-disable-next-line no-unreachable
   const PC = window.PruebaCurso;
   if (PC && PC.pideEntrada(ctxPrueba(), c.id) && !(est.pruebas[c.id] || {}).enCurso) { sessionStorage.setItem('prueba-auto-' + c.id, '1'); ir(`#/prueba/${c.id}/entrada`); return true; }
   const lec = lecturaConPrueba(c);
@@ -378,6 +383,7 @@ const generadoresDe = u => modulosDe(u).filter(p => p.formato === 'predicciones'
 
 // Lo que dice la puerta de la teoría: cuántas ideas tiene y cuántas terminó el alumno.
 function textoTeoria(u) {
+  if (temaPendiente(u)) return `Primero, la prueba del tema (${u.teoria.ideas || 0} preguntas)`;
   const st = (est.teoria || {})[u.id], n = u.teoria.ideas || 0;
   const h = st ? Object.values(st.ideas || {}).filter(i => i.hecha).length : 0;
   return h ? `${h} de ${n} ideas terminadas` : `${n} ${n === 1 ? 'idea' : 'ideas'} para jugar y entender`;
@@ -387,6 +393,13 @@ function vUnidad(id, sub) {
   if (!u) return ir('#/cursos');
   if (llevarAEntrada(c)) return;
   sessionStorage.setItem('ultima-unidad', id);
+  if (sub === 'entrada') return vEntradaTema(c, u);
+  // La prueba del tema va antes de la teoría, los ejercicios y el simulacro; el laboratorio queda libre.
+  const libre = sub === 'teoria' && ['laboratorio'].includes(location.hash.split('/')[4]);
+  if (['teoria', 'ejercicios', 'examen'].includes(sub) && !libre && temaPendiente(u)) {
+    sessionStorage.setItem('tema-destino-' + u.id, location.hash);
+    return ir(`#/unidad/${u.id}/entrada`);
+  }
   if (sub === 'teoria') return vTeoria(c, u);
   if (sub === 'ejercicios') return vEjercicios(c, u);
   if (sub === 'examen') return vExamen(c, u);
@@ -400,6 +413,7 @@ function vUnidad(id, sub) {
       <div class="uh-cuerpo"><span class="lamina">${dibujo(c, u)}</span>
         <div><p class="sub">${esc(c.nombre)} · ${u.grado}.º de secundaria</p><h1>${esc(u.nombre)}</h1></div></div>
       <p class="sub temas">${esc(u.temas.join(' · '))}</p>
+      ${(est.temas || {})[id] && est.temas[id].entrada ? `<p class="sub">Prueba del tema: ${est.temas[id].entrada.aciertos} de ${est.temas[id].entrada.total} ideas acertadas</p>` : ''}
       <div class="nivel-u"><span class="tag nivel-${nv.nivel}">${esc(nv.nivel >= 0 ? nv.nombre : 'Sin empezar')}</span>${nv.falta ? `<span class="sub">${esc(nv.falta)}</span>` : ''}</div>
       <button type="button" class="marca-vista${marcada ? ' on' : ''}" data-ver aria-pressed="${marcada}"><span class="caja-v" aria-hidden="true">${marcada ? '✓' : ''}</span>${marcada ? 'La marqué como estudiada' : 'Ya la estudié por mi cuenta'}</button>
     </header>
@@ -421,6 +435,13 @@ function vUnidad(id, sub) {
 const cabUnidad = (c, u, titulo) => `<header class="unidad-cab tinte" style="${Ilus.tinte(c.id)}">
     <a class="volver" href="#/unidad/${esc(u.id)}" aria-label="Volver a ${esc(u.nombre)}">‹</a>
     <span class="lamina">${dibujo(c, u)}</span><div><p class="sub">${esc(c.nombre)} · ${esc(u.nombre)}</p><h1>${esc(titulo)}</h1></div></header>`;
+
+// Prueba de entrada del tema (app/teoria.js, Teoria.entrada): pendiente si la unidad tiene teoría y aún no la hizo.
+const temaPendiente = u => !!u.teoria && !(((est.temas || {})[u.id] || {}).entrada);
+function vEntradaTema(c, u) {
+  if (!u.teoria) return ir(`#/unidad/${u.id}`);
+  cuandoListo(modulo('teoria'), () => Teoria.entrada({ $app, cat, est, esc, guardar, registrar, marcarDia, cab: t => cabUnidad(c, u, t) }, u));
+}
 
 // Teoría (docs/teoria.md): si la unidad del catálogo trae `teoria` ({ archivo, requiere }, lo pone construir-catalogo.js
 // cuando existe contenido/teoria/<curso>/<unidad>.js), app/teoria.js la muestra. Si no, esta pantalla dice qué vendrá
@@ -1148,24 +1169,13 @@ function render() {
 // Abrir una escena cuenta como día activo y marca la unidad como estudiada.
 document.addEventListener('click', e => {
   const a = e.target.closest('[data-abrir]'); if (!a) return;
-  // Si el curso de esa unidad tiene la prueba de entrada pendiente, va primero la prueba (así la entrada es en frío).
-  const c = cursoDeUnidad(a.dataset.abrir);
-  // Toque antes de que llegue el banco de pruebas: se espera para no saltarse la entrada.
-  if (c && !window.PruebaCurso) {
+  // Abrir un ejercicio de una unidad cuya prueba del tema falta: primero la prueba (decisión de Gerson, 14 nov).
+  // La del curso ya no se impone. Abrir cuenta como visita, nunca como unidad estudiada (nucleo/avance.js).
+  const c = cursoDeUnidad(a.dataset.abrir), u = c && c.unidades.find(x => x.id === a.dataset.abrir);
+  if (u && temaPendiente(u)) {
     e.preventDefault();
-    const href = a.href, h = location.hash;
-    cargarBanco().then(() => {
-      if (location.hash !== h) return;
-      if (window.PruebaCurso && PruebaCurso.pideEntrada(ctxPrueba(), c.id)) { a.click(); return; }
-      est.vistas[a.dataset.abrir] = est.vistas[a.dataset.abrir] || hoy(); marcarDia(); guardar();
-      location.href = href;
-    });
-    return;
-  }
-  if (c && window.PruebaCurso && PruebaCurso.pideEntrada(ctxPrueba(), c.id)) {
-    e.preventDefault(); sessionStorage.setItem('prueba-auto-' + c.id, '1');
-    if (!(est.pruebas[c.id] || {}).enCurso) return ir(`#/prueba/${c.id}/entrada`);
-    return ir(`#/prueba/${c.id}/${est.pruebas[c.id].enCurso.fase}`);
+    sessionStorage.setItem('tema-destino-' + u.id, a.getAttribute('href').startsWith('#') ? a.getAttribute('href') : `#/unidad/${u.id}/ejercicios`);
+    return ir(`#/unidad/${u.id}/entrada`);
   }
   est.vistas[a.dataset.abrir] = est.vistas[a.dataset.abrir] || hoy(); marcarDia(); guardar();
 });
