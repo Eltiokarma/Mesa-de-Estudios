@@ -114,5 +114,16 @@
     return `Tablero de ${nf} filas y ${nc} columnas${d.filas ? ` (filas: ${d.filas.join(', ')})` : ''}${d.columnas ? ` (columnas: ${d.columnas.join(', ')})` : ''}. ${llenas.join('; ') || 'Casillas vacías'}.`;
   }
 
-  return { id: 'rm-tablero', dibujar, alt, constantes: { W, ALTO_F, ALTO_C } };
+  // geometria(datos) → { nf, nc, cw, x0, y0, alto, centro(f, c) }: dónde cae cada casilla en el viewBox (para las manijas
+  // del gesto directo) y su inversa casilla(x, y) → { f, c } (la más cercana, dentro de la rejilla).
+  function geometriaPublica(d) {
+    const g = geometria(d);
+    return Object.assign({}, g, {
+      altoFila: ALTO_F,
+      centro: (f, c) => ({ x: g.x0 + (c + 0.5) * g.cw, y: g.y0 + (f + 0.5) * ALTO_F }),
+      casilla: (x, y) => ({ f: Math.max(0, Math.min(g.nf - 1, Math.floor((y - g.y0) / ALTO_F))), c: Math.max(0, Math.min(g.nc - 1, Math.floor((x - g.x0) / g.cw))) }),
+    });
+  }
+
+  return { id: 'rm-tablero', dibujar, alt, geometria: geometriaPublica, constantes: { W, ALTO_F, ALTO_C } };
 });

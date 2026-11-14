@@ -38,6 +38,14 @@
     return ops;
   }
 
+  const f0 = x => Kit.formatear(x, 0);
+  const pl = (x, uno, varios) => `${f0(x)} ${x === 1 ? uno : varios}`;
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría que exportan rm-plano y rm-fichas. La pieza
+  // común «balanza» no exporta geometría ni se edita aquí: sus ideas quedan con − y + (ver el reporte).
+  const PLANO = () => Kit.piezas['rm-plano'], FICHAS = () => Kit.piezas['rm-fichas'];
+  const enPlano = (d, q) => { const g = PLANO().geometria(d); return { x: g.X(q[0]), y: g.Y(q[1]) }; };
+  const masCercano = (cands, pos, pt) => cands.map(c0 => [Math.hypot(pos(c0).x - pt.x, pos(c0).y - pt.y), c0]).sort((a, b) => a[0] - b[0])[0][1];
+
   // ---------- Idea 1: cortes rectos ----------
   // Cambia: cuántos cortes y si es listón o aro · Permanece: el objeto · Progresa: los trozos · Se reserva: la varilla de
   // 60 cm en trozos de 12 · Debe verse: en un listón, trozos = cortes + 1; en un aro, trozos = cortes.
@@ -49,6 +57,12 @@
     const lineas = Array.from({ length: cortes }, (_, i) => { const x = 0.6 + 8.8 * (i + 1) / (cortes + 1); return { de: [x, 2], a: [x, 4], color: 'h', grosor: 'variable' }; });
     return { ancho: 10, alto: 6, poligonos: [{ puntos: [[0.6, 2.6], [9.4, 2.6], [9.4, 3.4], [0.6, 3.4]], color: 'i', relleno: 0.2 }], lineas, pie: extra.pie };
   }
+  // Dónde queda la manija del primer corte: el extremo de arriba de la raya en el listón, o el de afuera del corte
+  // número 1 en el aro (con un solo corte, el de arriba).
+  const primerCorte = (n, tipo) => {
+    if (tipo === 'aro') { const a = n === 1 ? 0 : 2 * Math.PI / n; return [5 + 2.8 * Math.sin(a), 3 - 2.8 * Math.cos(a)]; }
+    return [0.6 + 8.8 / (n + 1), 2];
+  };
   const cortes = {
     id: 'cortes',
     titulo: 'Cortes y trozos no coinciden',
@@ -64,6 +78,10 @@
       dibujo: val => ({ datos: objeto(val.n, val.t), estado: {} }),
       lectura: val => [c, ` = ${val.n} · `, tz, ` = ${val.t === 'aro' ? val.n : val.n + 1}`],
       minimo: 4,
+      // Arrastra el primer corte: en el listón, hacia el borde caben más cortes; en el aro, se gira hacia arriba.
+      arrastres: [{ id: 'primer-corte', etiqueta: 'dónde va el primer corte', color: 'c-h',
+        donde: val => enPlano(objeto(val.n, val.t), primerCorte(val.n, val.t)),
+        mover: (pt, val) => ({ n: masCercano([1, 2, 3, 4, 5, 6], m => enPlano(objeto(val.n, val.t), primerCorte(m, val.t)), pt) }) }],
     },
     predice: {
       pregunta: 'Una varilla de 60 cm se corta en trozos de 12 cm. Cada corte toma 3 minutos. ¿Cuántos minutos se tarda?',
@@ -86,7 +104,7 @@
     },
     regla: {
       texto: 'En un listón abierto, los trozos son uno más que los cortes. En un aro cerrado, son tantos como los cortes.',
-      ecuacion: ['listón: ', tz, ' = ', c, ' + 1  ·  aro: ', tz, ' = ', c],
+      ecuacion: ['listón: ', tz, ' = ', c, ' + ', { llave: ['1'], nota: 'el último trozo', color: 'c-i' }, '   ·   ', 'aro: ', tz, ' = ', c],
       condicion: 'los cortes son rectos, uno por vez y sin doblar ni apilar las piezas.',
     },
     ahoraTu: {
@@ -153,7 +171,7 @@
     },
     regla: {
       texto: 'Una balanza en equilibrio sigue en equilibrio si se cambia una figura por otras que pesan lo mismo, o si se multiplican los dos lados por igual.',
-      ecuacion: ['2 ● = 3 ▲ y ▲ = 2 ■  ⇒  ● = 3 ■'],
+      ecuacion: ['2 ● = 3 ▲', '   ·   ', '▲ = 2 ■', '  ⇒  ', '● = 3 ■'],
       condicion: 'las figuras iguales pesan lo mismo y las balanzas del enunciado están en equilibrio.',
     },
     ahoraTu: {
@@ -226,7 +244,7 @@
     },
     regla: {
       texto: 'Si las pesas pueden ir en los dos platillos, cada una suma, resta o no se usa. Con 1, 3, 9, 27… se mide todo peso entero hasta su suma.',
-      ecuacion: ['1 + 3 + … + ', { sup: ['3', [k, ' − 1']] }, ' = ', { frac: [[{ sup: ['3', k] }, ' − 1'], '2'] }],
+      ecuacion: ['1 + 3 + … + ', { llave: [{ sup: ['3', [k, ' − 1']] }], nota: 'la pesa mayor', color: 'c-o' }, ' = ', { frac: [[{ sup: ['3', k] }, ' − 1'], '2'] }],
       condicion: 'hay una pesa de cada valor y se miden pesos enteros; con pesas en un solo platillo, conviene 1, 2, 4, 8.',
     },
     ahoraTu: {
@@ -259,6 +277,8 @@
       tam: 22, pie: extra.pie || `${n} monedas → quedan ${g} candidatas`,
     };
   }
+  // Centro de la ficha número q (1, 2, …) de la fila: aunque todavía no esté dibujada, con el paso de la pieza.
+  const finDeGrupo = (d, fila, q) => { const g = FICHAS().geometria(d), fl = g.filas[fila]; return { x: g.filas[0].fichas[0].cx + (q - 1) * fl.paso, y: fl.y + g.lado / 2 }; };
   const pesadas = n => { let k2 = 0, m = 1; while (m < n) { m *= 3; k2++; } return k2; };
   const minimo = {
     id: 'minimo-de-pesadas',
@@ -270,8 +290,12 @@
       voz: 'Si la balanza queda pareja, la pesada está afuera.',
       controles: [{ id: 'n', etiqueta: 'Monedas', opciones: [3, 9, 27].map(v => ({ valor: v, texto: String(v) })) }],
       dibujo: val => ({ datos: monedas(val.n), estado: {} }),
-      lectura: val => [k, ` = ${pesadas(val.n)} pesadas para ${val.n} monedas`],
+      lectura: val => [k, ` = ${pl(pesadas(val.n), 'pesada', 'pesadas')} para ${val.n} monedas`],
       minimo: 3,
+      // Arrastra la última moneda del platillo izquierdo: los grupos crecen de 1 a 3 y a 9.
+      arrastres: [{ id: 'grupo', etiqueta: 'cuántas monedas hay', color: 'c-o',
+        donde: val => finDeGrupo(monedas(val.n), 0, Math.ceil(val.n / 3)),
+        mover: (pt, val) => ({ n: masCercano([3, 9, 27], m => finDeGrupo(monedas(val.n), 0, Math.ceil(m / 3)), pt) }) }],
     },
     predice: {
       pregunta: 'Entre 10 monedas iguales, una pesa más. ¿Cuántas pesadas aseguran encontrarla?',
@@ -294,7 +318,7 @@
     },
     regla: {
       texto: 'Si se sabe que la moneda distinta pesa más, cada pesada deja un tercio de las candidatas. El mínimo k es el menor que cumple 3 a la k ≥ n.',
-      ecuacion: ['n ≤ ', { sup: ['3', k] }],
+      ecuacion: [{ llave: ['n'], nota: 'monedas', color: 'c-o' }, ' ≤ ', { llave: [{ sup: ['3', k] }], nota: 'casos distinguibles', color: 'c-h' }],
       condicion: 'se sabe si la moneda distinta pesa más o menos; si no se sabe, hacen falta más pesadas.',
     },
     ahoraTu: {
@@ -316,11 +340,103 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: el largo y el trozo a elección, en listón o aro. El caso raro: un trozo que no divide al largo deja un
+  // pedazo más corto, y los cortes no cambian por eso.
+  function cortesDe(L, t, tipo) {
+    const marcas = [];
+    for (let x = tipo === 'aro' ? 0 : t; x < L - 1e-9; x += t) marcas.push(x);
+    const sobra = L - Math.floor(L / t + 1e-9) * t;
+    return { marcas, cortes: marcas.length, trozos: tipo === 'aro' ? marcas.length : marcas.length + 1, sobra: sobra > 1e-9 ? sobra : 0 };
+  }
+  function objetoLibre(val) {
+    const q = cortesDe(val.L, val.t, val.tipo);
+    if (val.tipo === 'aro') {
+      const lineas = q.marcas.map(x => { const a = 2 * Math.PI * x / val.L; return { de: [5 + 1.6 * Math.sin(a), 3 - 1.6 * Math.cos(a)], a: [5 + 2.8 * Math.sin(a), 3 - 2.8 * Math.cos(a)], color: 'h', grosor: 'variable' }; });
+      return { ancho: 10, alto: 6, circulos: [{ x: 5, y: 3, r: 2.2, color: 'i', relleno: 0, grosor: 'variable' }], lineas, pie: `${val.L} cm` };
+    }
+    const lineas = q.marcas.map(x => ({ de: [0.6 + 8.8 * x / val.L, 2], a: [0.6 + 8.8 * x / val.L, 4], color: 'h', grosor: 'variable' }));
+    return { ancho: 10, alto: 6, poligonos: [{ puntos: [[0.6, 2.6], [9.4, 2.6], [9.4, 3.4], [0.6, 3.4]], color: 'i', relleno: 0.2 }], lineas, pie: `${val.L} cm` };
+  }
+  // La manija es la marca del primer trozo: su distancia al inicio es el largo del trozo.
+  const marcaTrozo = val => (val.tipo === 'aro'
+    ? (a => [5 + 2.8 * Math.sin(a), 3 - 2.8 * Math.cos(a)])(2 * Math.PI * Math.min(val.t, val.L) / val.L)
+    : [0.6 + 8.8 * Math.min(val.t, val.L) / val.L, 2]);
+  const mesaCortes = {
+    id: 'cortes-libre', titulo: 'Largo y trozo a elección', pieza: 'rm-plano',
+    consigna: 'Elige el largo, el trozo y el objeto. Arrastra la primera marca. ¿Qué pasa si el trozo no cabe justo?',
+    controles: [
+      { id: 'tipo', etiqueta: 'Objeto', opciones: [{ valor: 'liston', texto: 'Listón' }, { valor: 'aro', texto: 'Aro' }] },
+      { id: 'L', etiqueta: 'Largo', color: 'c-i', min: 30, max: 120, paso: 10, inicio: 60, unidad: 'cm', decimales: 0 },
+      { id: 't', etiqueta: 'Trozo', color: 'c-h', min: 5, max: 30, paso: 1, inicio: 12, unidad: 'cm', decimales: 0 },
+    ],
+    dibujo: val => ({ datos: objetoLibre(val), estado: {} }),
+    lectura: val => {
+      const q = cortesDe(val.L, val.t, val.tipo);
+      return [`${pl(q.cortes, 'corte', 'cortes')} y ${pl(q.trozos, 'trozo', 'trozos')}`, q.sobra ? ` · uno de ${f0(q.sobra)} cm` : ' iguales'];
+    },
+    arrastres: [{ id: 'trozo', etiqueta: 'largo del primer trozo', color: 'c-h',
+      donde: val => enPlano(objetoLibre(val), marcaTrozo(val)),
+      mover: (pt, val) => {
+        const d = objetoLibre(val), g = PLANO().geometria(d), x = (pt.x - g.X(0)) / g.k, y = (pt.y - g.Y(0)) / g.k;
+        if (val.tipo === 'aro') { const a = (Math.atan2(x - 5, -(y - 3)) + 2 * Math.PI) % (2 * Math.PI); return { t: val.t >= val.L && a < 0.05 ? val.t : a / (2 * Math.PI) * val.L }; }
+        return { t: val.t >= val.L && x >= 9.4 ? val.t : (x - 0.6) / 8.8 * val.L };
+      } }],
+  };
+  // Mesa 2: el alumno reparte las monedas en la balanza. El peor caso deja el grupo más grande de candidatas: los
+  // tercios son el reparto que menos deja.
+  function reparto(val) {
+    const mon = (q, col) => Array.from({ length: q }, () => ({ color: col, forma: 'circulo', t: '' }));
+    return {
+      filas: [{ rotulo: `Platillo izquierdo: ${val.g}`, fichas: mon(val.g, 'o') }, { rotulo: `Platillo derecho: ${val.g}`, fichas: mon(val.g, 'i') }, { rotulo: `Afuera: ${val.a}`, fichas: mon(val.a, 'd') }],
+      tam: 22, pie: `${2 * val.g + val.a} monedas; en el peor caso quedan ${Math.max(val.g, val.a)}`,
+    };
+  }
+  // Centro del lugar número q (0, 1, …) de la fila, medido desde la primera moneda del platillo izquierdo (siempre hay una).
+  const lugar = (d, fila, q) => { const g = FICHAS().geometria(d); return { x: g.filas[0].fichas[0].cx + q * g.filas[0].paso, y: g.filas[fila].y + g.lado / 2 }; };
+  const mesaReparto = {
+    id: 'reparte-monedas', titulo: 'Reparte tú las monedas', pieza: 'rm-fichas',
+    consigna: 'Arrastra el final de cada grupo. Una moneda pesa más. ¿Qué reparto deja menos candidatas en el peor caso?',
+    controles: [
+      { id: 'g', etiqueta: 'En cada platillo', color: 'c-o', min: 1, max: 9, paso: 1, inicio: 4, decimales: 0 },
+      { id: 'a', etiqueta: 'Afuera', color: 'c-d', min: 0, max: 9, paso: 1, inicio: 1, decimales: 0 },
+    ],
+    dibujo: val => ({ datos: reparto(val), estado: {} }),
+    lectura: val => [`${2 * val.g + val.a} monedas: si baja un lado quedan ${val.g}; si no, ${val.a}`],
+    arrastres: [
+      { id: 'platillo', etiqueta: 'monedas en cada platillo', color: 'c-o',
+        donde: val => lugar(reparto(val), 0, val.g - 1),
+        mover: (pt, val) => { const g = FICHAS().geometria(reparto(val)); return { g: 1 + (pt.x - g.filas[0].fichas[0].cx) / g.filas[0].paso }; } },
+      { id: 'afuera', etiqueta: 'monedas afuera', color: 'c-d',
+        donde: val => lugar(reparto(val), 2, val.a),
+        mover: (pt, val) => { const g = FICHAS().geometria(reparto(val)); return { a: (pt.x - g.filas[0].fichas[0].cx) / g.filas[0].paso }; } },
+    ],
+  };
+  // Mesa 3: las pesas en uno o en los dos platillos, hasta 40 kg (la pieza común balanza, sin arrastre).
+  function pesasLibre(val) {
+    if (val.modo === 'dos') return pesas(val.w);
+    const bin = [1, 2, 4, 8, 16, 32].filter(p => val.w & p);
+    return { unidad: 'kg', colores: COL, balanzas: [{ izq: { saco: val.w }, der: { pesas: bin.map(p => [p, 1]) }, estado: 'equilibrio' }], trabajo: [] };
+  }
+  const mesaPesas = {
+    id: 'pesas-libre', titulo: 'Uno o dos platillos', pieza: 'balanza',
+    consigna: 'Compara las pesas 1, 2, 4, 8, 16 y 32 en un platillo con 1, 3, 9 y 27 en los dos.',
+    controles: [
+      { id: 'modo', etiqueta: 'Pesas', opciones: [{ valor: 'dos', texto: '1, 3, 9, 27' }, { valor: 'uno', texto: '1, 2, 4, 8…' }] },
+      { id: 'w', etiqueta: 'Saco', color: 'c-o', min: 1, max: 40, paso: 1, inicio: 7, unidad: 'kg', decimales: 0 },
+    ],
+    dibujo: val => ({ datos: pesasLibre(val), estado: {} }),
+    lectura: val => [`${val.w} kg = ${val.modo === 'dos' ? expresion(val.w) : [1, 2, 4, 8, 16, 32].filter(p => val.w & p).reverse().join(' + ')}`],
+  };
+
   return {
     unidad: 'razonamiento-matematico.cortes-y-pesadas',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/balanza.js', '/nucleo/kit/piezas/rm-fichas.js'],
+    // Laboratorio: largo y trozo a elección (con el trozo que no cabe justo), el reparto de monedas que arma el alumno
+    // y las pesas en uno o en dos platillos.
+    laboratorio: [mesaCortes, mesaReparto, mesaPesas],
     historia: {
       texto: 'A mediados del siglo XX, revistas como The Mathematical Gazette discutieron el problema de la moneda falsa: encontrarla con el menor número de pesadas. La balanza se vuelve un instrumento de información, no solo de medida: cada resultado decide la pesada siguiente. Los cortes son otra pregunta: cuántas piezas deja cada corte.',
       pregunta: '¿Cuánta información da una sola pesada?',

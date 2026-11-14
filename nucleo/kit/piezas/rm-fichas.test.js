@@ -32,3 +32,15 @@ test('fantasma, alto fijo y limpio', () => {
   assert.match(P.dibujar(d, { corte: 1, fantasma: { fila: 0, fichas: [{ color: 'o', t: 'R' }], rotulo: 'Una más' } }), /kit-fantasma/);
   assert.match(P.alt(d), /dominó 2-5/);
 });
+
+test('geometria: cada ficha visible cae donde se dibuja, también si la fila se junta', () => {
+  const df = { filas: [{ rotulo: 'A', fichas: [{ t: '1' }, { t: '2', desde: 1 }] }, { fichas: Array.from({ length: 14 }, (_, i) => ({ t: String(i) })) }] };
+  for (const corte of [0, 1]) {
+    const g = P.geometria(df, corte), s = P.dibujar(df, { corte });
+    assert.equal(g.filas[0].fichas.length, corte ? 2 : 1);
+    for (const fl of g.filas) for (const q of fl.fichas) assert.ok(s.includes(`cx="${+q.cx.toFixed(2)}" cy="${+q.cy.toFixed(2)}"`), `${q.cx},${q.cy}`);
+    assert.equal(+s.match(/viewBox="0 0 320 ([\d.]+)"/)[1], g.alto);
+  }
+  const g = P.geometria(df);
+  assert.ok(g.filas[1].fichas[13].x + g.lado <= 320);
+});

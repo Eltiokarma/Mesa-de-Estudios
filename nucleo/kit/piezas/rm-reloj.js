@@ -72,5 +72,16 @@
     return `${rs.join('; ') || 'Reloj sin agujas'}.`;
   }
 
-  return { id: 'rm-reloj', dibujar, alt, angulos: { minutero: angM, horario: angH } };
+  // geometria(datos) → { relojes: [{ cx, cy, R }], punta(k, angulo, fraccion) }: dónde está cada esfera en el viewBox y
+  // el punto a una fracción del radio en un ángulo (0° arriba, horario), para las manijas del gesto directo; angulo(k, x, y)
+  // es la inversa: el ángulo (0 a 360) del punto visto desde el centro del reloj k.
+  function geometria(d) {
+    const rs = (d.relojes || []).slice(0, 2);
+    const relojes = rs.length === 1 ? [{ cx: W / 2, cy: 8 + R1, R: R1 }] : rs.map((r, k) => ({ cx: k ? W - 12 - R2 : 12 + R2, cy: 30 + R2, R: R2 }));
+    const punta = (k, a, fr = 1) => { const q = relojes[k]; const [x, y] = P(q.cx, q.cy, q.R * fr, a); return { x, y }; };
+    const angulo = (k, x, y) => { const q = relojes[k]; return ((Math.atan2(x - q.cx, -(y - q.cy)) * 180 / Math.PI) + 360) % 360; };
+    return { relojes, punta, angulo, alto: ALTO, minutero: 0.82, horario: 0.52 };
+  }
+
+  return { id: 'rm-reloj', dibujar, alt, geometria, angulos: { minutero: angM, horario: angH } };
 });

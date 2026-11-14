@@ -36,6 +36,14 @@
     return ops;
   }
 
+  const f0 = x => Kit.formatear(x, 0);
+  const pl = (x, uno, varios) => `${f0(x)} ${x === 1 ? uno : varios}`;
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría que exportan rm-fichas y rm-plano.
+  const FICHAS = () => Kit.piezas['rm-fichas'], PLANO = () => Kit.piezas['rm-plano'];
+  // El valor entero de una lista de candidatos cuya manija queda más cerca del punto.
+  const masCercano = (cands, pos, pt) => cands.map(c => [Math.hypot(pos(c).x - pt.x, pos(c).y - pt.y), c]).sort((a, b) => a[0] - b[0])[0][1];
+  const unoA = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+
   // ---------- Idea 1: el dominó doble n ----------
   // Cambia: hasta qué número llega el juego · Permanece: una ficha por cada par sin orden · Progresa: las fichas y los
   // dobles · Se reserva: la suma de todos los puntos · Debe verse: 2–5 y 5–2 son la misma ficha.
@@ -47,6 +55,23 @@
     while (filas.length < 5) filas.push({ fichas: [] });
     return { filas: filas.slice(0, 5), tam: 22, pie: extra.pie || `${xs.length} fichas, ${n + 1} dobles` };
   }
+  // Dónde cae la ficha número i (0, 1, …) del dominó: 6 por fila, con el paso que deja la pieza.
+  function lugarFicha(d, i) {
+    const g = FICHAS().geometria(d), fl0 = g.filas[0].fichas, paso = fl0[1].cx - fl0[0].cx;
+    return { x: fl0[0].cx + (i % 6) * paso, y: g.filas[Math.floor(i / 6)].y + g.lado / 2 };
+  }
+  // La manija es la última ficha (el doble n): se arrastra hasta donde terminaría el juego de otro n.
+  const manijaDomino = (datosDe, id = 'n') => ({
+    donde: val => lugarFicha(datosDe(val), total(val[id]) - 1),
+    // Se lee la casilla de la rejilla de 6 por fila bajo el dedo y se elige el n cuyo último doble cae más cerca en ese orden.
+    mover: (pt, val) => {
+      const d = datosDe(val), g = FICHAS().geometria(d), fl0 = g.filas[0].fichas, paso = fl0[1].cx - fl0[0].cx;
+      const col = Math.max(0, Math.min(5, Math.round((pt.x - fl0[0].cx) / paso)));
+      const fila = Math.max(0, Math.min(4, Math.round((pt.y - g.filas[0].y - g.lado / 2) / (g.filas[1].y - g.filas[0].y))));
+      const i = fila * 6 + col;
+      return { [id]: unoA(1, 6).map(m => [Math.abs(total(m) - 1 - i), m]).sort((x, y) => x[0] - y[0])[0][1] };
+    },
+  });
   const dom = {
     id: 'domino',
     titulo: 'Un par sin orden por ficha',
@@ -59,6 +84,8 @@
       dibujo: val => ({ datos: domino(val.n), estado: {} }),
       lectura: val => [`Fichas = (`, nn, ` + 1)(`, nn, ` + 2) / 2 = ${total(val.n)}`],
       minimo: 3,
+      // Arrastra el último doble: el juego crece o se achica hasta el doble que dejes.
+      arrastres: [Object.assign({ id: 'doble', etiqueta: 'hasta qué doble llega el juego', color: 'c-o' }, manijaDomino(val => domino(val.n)))],
     },
     predice: {
       pregunta: 'En el dominó doble seis, ¿cuántos puntos hay en total, sumando todas las fichas?',
@@ -82,7 +109,7 @@
     },
     regla: {
       texto: 'Un dominó doble n tiene una ficha por cada par sin orden de números de 0 a n, dobles incluidos. Cada número aparece n + 2 veces al sumar puntos.',
-      ecuacion: ['fichas = ', { frac: [['(', nn, ' + 1)(', nn, ' + 2)'], '2'] }, ' · puntos = ', { frac: [[nn, '(', nn, ' + 1)(', nn, ' + 2)'], '2'] }],
+      ecuacion: ['fichas = ', { frac: [['(', nn, ' + 1)(', nn, ' + 2)'], '2'] }, '   ·   ', 'puntos = ', { frac: [[nn, '(', nn, ' + 1)(', nn, ' + 2)'], '2'] }],
       condicion: 'el juego está completo y tiene una sola copia de cada ficha.',
     },
     ahoraTu: {
@@ -155,6 +182,8 @@
       revelar: { datos: dado(2, { pie: 'Cualquiera de las cuatro puede ir al frente' }), estado: {} },
       coincide: 'Coincide: con una sola cara, el dado aún puede girar sobre sí mismo.',
     },
+    // Hallazgo 9: el juego muestra un dado solo y Mira una pila de tres. Es a propósito: la regla del dado suelto
+    // (opuestas suman 7) se aplica a la pila, que es como lo pregunta el examen; la pila sigue en el laboratorio.
     mira: {
       datos: pila(3, 5),
       pasos: [
@@ -165,7 +194,7 @@
     },
     regla: {
       texto: 'En un dado común, cada cara y su opuesta suman 7. Una sola cara fija su opuesta; las otras cuatro pueden girar alrededor.',
-      ecuacion: ['arriba + abajo = 7 ;  k dados apilados: ocultas = 7k − ', t],
+      ecuacion: ['arriba + abajo = 7', '   ·   ', 'ocultas = 7', { llave: ['k'], nota: 'dados apilados', color: 'c-d' }, ' − ', { llave: [t], nota: 'la de arriba', color: 'c-i' }],
       condicion: 'el dado está numerado de la forma común; un cubo con otros números no cumple la regla.',
     },
     ahoraTu: {
@@ -210,6 +239,9 @@
     };
   }
   const cerillas = n => 2 * n * (n + 1);
+  // La esquina de abajo a la derecha de la cuadrícula de n × n (mismas cuentas que malla()).
+  const esquina = n => { const L = Math.min(1.6, 5.4 / n), x0 = 5 - n * L / 2; return [x0 + n * L, 0.4 + n * L]; };
+  const enPlano = (d, q) => { const g = PLANO().geometria(d); return { x: g.X(q[0]), y: g.Y(q[1]) }; };
   const cuadrados = n => n * (n + 1) * (2 * n + 1) / 6;
   const fichas = {
     id: 'cerillas',
@@ -221,8 +253,12 @@
       voz: 'No olvides los cuadrados grandes que encierran a varios chicos.',
       controles: [{ id: 'n', etiqueta: 'n', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0, color: 'c-d' }],
       dibujo: val => ({ datos: malla(val.n), estado: {} }),
-      lectura: val => [`${cerillas(val.n)} cerillas · `, N, ` = ${cuadrados(val.n)} cuadrados`],
+      lectura: val => [`${cerillas(val.n)} cerillas · `, N, ` = ${pl(cuadrados(val.n), 'cuadrado', 'cuadrados')}`],
       minimo: 3,
+      // Arrastra la esquina de la cuadrícula: hacia afuera crece, hacia adentro se achica.
+      arrastres: [{ id: 'esquina', etiqueta: 'tamaño de la cuadrícula', color: 'c-d',
+        donde: val => enPlano(malla(val.n), esquina(val.n)),
+        mover: (pt, val) => ({ n: masCercano(unoA(1, 4), m => enPlano(malla(val.n), esquina(m)), pt) }) }],
     },
     predice: {
       pregunta: 'En la cuadrícula de 2 × 2 (12 cerillas) se quita una cerilla del borde de arriba. ¿Cuántos cuadrados quedan?',
@@ -243,15 +279,15 @@
         { puntos: [[2.6, 0.4], [7.4, 0.4], [7.4, 5.2], [2.6, 5.2]], color: 'd', relleno: 0.08, desde: 3 },
       ] }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'Cuadrados de 1 × 1: 9.', ecuacion: ['3² = 9'] },
-        { estado: { corte: 2 }, texto: 'De 2 × 2: caben 4.', ecuacion: ['2² = 4'] },
+        { estado: { corte: 1 }, texto: 'Cuadrados de 1 × 1: 9.', ecuacion: [{ sup: ['3', '2'] }, ' = 9'] },
+        { estado: { corte: 2 }, texto: 'De 2 × 2: caben 4.', ecuacion: [{ sup: ['2', '2'] }, ' = 4'] },
         { estado: { corte: 3 }, texto: 'De 3 × 3: 1. En total, 14 cuadrados.', ecuacion: [N, ' = 9 + 4 + 1 = 14'] },
         { estado: { corte: 3 }, texto: 'Cerillas: 4 filas de 3 y 4 columnas de 3.', ecuacion: ['2 · 3 · 4 = 24'] },
       ],
     },
     regla: {
       texto: 'Una cuadrícula de n × n usa 2n(n + 1) cerillas y tiene cuadrados de todos los tamaños: n² chicos, (n − 1)² de 2 × 2, y así hasta uno grande.',
-      ecuacion: [N, ' = 1² + 2² + … + ', { sup: [nn, '2'] }, ' = ', { frac: [[nn, '(', nn, ' + 1)(2', nn, ' + 1)'], '6'] }],
+      ecuacion: [N, ' = ', { llave: [{ sup: ['1', '2'] }], nota: 'el grande', color: 'c-d' }, ' + … + ', { llave: [{ sup: [nn, '2'] }], nota: 'los chicos', color: 'c-o' }, ' = ', { frac: [[nn, '(', nn, ' + 1)(2', nn, ' + 1)'], '6'] }],
       condicion: 'la cuadrícula está completa; si se quita una cerilla, se rompen todos los cuadrados que la usan.',
     },
     ahoraTu: {
@@ -274,17 +310,86 @@
           ]),
           solucion: pide === 'cerillas'
             ? { texto: `${n + 1} filas de ${n} y ${n + 1} columnas de ${n}.`, ecuacion: [`2 · ${n} · ${n + 1} = ${bien}`] }
-            : { texto: 'Se suman los cuadrados de cada tamaño.', ecuacion: [`${Array.from({ length: n }, (_, k) => `${n - k}²`).join(' + ')} = ${bien}`] },
+            : { texto: 'Se suman los cuadrados de cada tamaño.', ecuacion: [...Array.from({ length: n }, (_, k) => [k ? ' + ' : '', { sup: [String(n - k), '2'] }]).flat().filter(x => x !== ''), ` = ${bien}`] },
         };
       },
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: el dominó con un número marcado: se ve en cuántas fichas aparece k y cuántas veces suma sus puntos.
+  function dominoK(n, kk) {
+    const d = domino(n);
+    for (const fl of d.filas) for (const fi of fl.fichas) if (fi.valor.includes(kk)) fi.resalto = 'i';
+    const veces = n + 2;   // n fichas con otro número, más las dos mitades de su doble
+    d.pie = kk > n ? `El ${kk} no está en el doble ${n}` : `El ${kk} sale ${veces} veces en ${n + 1} fichas`;
+    return d;
+  }
+  const mesaDomino = {
+    id: 'domino-marcado', titulo: 'Busca un número en el dominó', pieza: 'rm-fichas',
+    consigna: 'Elige el doble y un número. Se marcan las fichas que lo tienen: cuenta cuántas veces sale.',
+    controles: [
+      { id: 'n', etiqueta: 'Doble', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 4, decimales: 0 },
+      { id: 'k', etiqueta: 'Número', color: 'c-i', min: 0, max: 6, paso: 1, inicio: 2, decimales: 0 },
+    ],
+    dibujo: val => ({ datos: dominoK(val.n, val.k), estado: {} }),
+    lectura: val => (val.k > val.n ? [`Doble ${val.n}: el ${val.k} no está`]
+      : [`Doble ${val.n}: ${pl(total(val.n), 'ficha', 'fichas')} · el ${val.k} sale ${val.n + 2} veces`]),
+    arrastres: [Object.assign({ id: 'doble', etiqueta: 'hasta qué doble llega el juego', color: 'c-o' }, manijaDomino(val => dominoK(val.n, val.k)))],
+  };
+  // Mesa 2: la pila de dados que crece: se arrastra el dado de abajo para agregar o quitar dados.
+  const lugarDado = (a, i) => { const g = FICHAS().geometria(pila(5, a)); return { x: g.filas[i].fichas[0].cx, y: g.filas[i].fichas[0].cy }; };
+  const mesaPila = {
+    id: 'pila-dados', titulo: 'La pila de dados', pieza: 'rm-fichas',
+    consigna: 'Elige la cara de arriba y arrastra el dado de abajo para apilar más. Suma las caras tapadas.',
+    controles: [
+      { id: 'a', etiqueta: 'Arriba', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 5, decimales: 0 },
+      { id: 'k', etiqueta: 'Dados', color: 'c-d', min: 1, max: 5, paso: 1, inicio: 2, decimales: 0 },
+    ],
+    dibujo: val => ({ datos: pila(val.k, val.a), estado: {} }),
+    lectura: val => [`${pl(val.k, 'dado', 'dados')}: ocultas = 7 · ${val.k} − ${val.a} = ${7 * val.k - val.a}`],
+    arrastres: [{ id: 'abajo', etiqueta: 'cuántos dados hay en la pila', color: 'c-d',
+      donde: val => lugarDado(val.a, val.k - 1),
+      mover: (pt, val) => ({ k: masCercano(unoA(1, 5), m => lugarDado(val.a, m - 1), pt) }) }],
+  };
+  // Mesa 3: la cuadrícula rectangular m × n (la idea solo deja cuadradas): se arrastran el borde derecho y el de abajo.
+  const ladoRect = (m, n) => Math.min(1.6, 9.4 / m, 5.4 / n);
+  function mallaRect(m, n) {
+    const L = ladoRect(m, n), x0 = 5 - m * L / 2, y0 = 0.4, lineas = [];
+    for (let i = 0; i <= n; i++) for (let j = 0; j < m; j++) lineas.push({ de: [x0 + j * L, y0 + i * L], a: [x0 + (j + 1) * L, y0 + i * L], color: 'h', grosor: 'variable' });
+    for (let j = 0; j <= m; j++) for (let i = 0; i < n; i++) lineas.push({ de: [x0 + j * L, y0 + i * L], a: [x0 + j * L, y0 + (i + 1) * L], color: 'h', grosor: 'variable' });
+    return { ancho: 10, alto: 6.2, lineas };
+  }
+  const cerillasRect = (m, n) => m * (n + 1) + n * (m + 1);
+  const cuadradosRect = (m, n) => unoA(1, Math.min(m, n)).reduce((t2, q) => t2 + (m - q + 1) * (n - q + 1), 0);
+  const bordeDer = (m, n) => { const L = ladoRect(m, n); return [5 + m * L / 2, 0.4 + n * L / 2]; };
+  const bordeAbajo = (m, n) => { const L = ladoRect(m, n); return [5, 0.4 + n * L]; };
+  const mesaRect = {
+    id: 'rectangulo-cerillas', titulo: 'Cuadrícula rectangular', pieza: 'rm-plano',
+    consigna: 'Arrastra el borde derecho y el de abajo. En un rectángulo, ¿cuántos cuadrados de cada tamaño caben?',
+    controles: [
+      { id: 'm', etiqueta: 'Columnas', color: 'c-d', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0 },
+      { id: 'n', etiqueta: 'Filas', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 },
+    ],
+    dibujo: val => ({ datos: mallaRect(val.m, val.n), estado: {} }),
+    lectura: val => [`${val.m} × ${val.n}: ${cerillasRect(val.m, val.n)} cerillas · `, N, ` = ${pl(cuadradosRect(val.m, val.n), 'cuadrado', 'cuadrados')}`],
+    arrastres: [
+      { id: 'derecha', etiqueta: 'columnas de la cuadrícula', color: 'c-d',
+        donde: val => enPlano(mallaRect(val.m, val.n), bordeDer(val.m, val.n)),
+        mover: (pt, val) => ({ m: masCercano(unoA(1, 6), q => enPlano(mallaRect(val.m, val.n), bordeDer(q, val.n)), pt) }) },
+      { id: 'abajo', etiqueta: 'filas de la cuadrícula', color: 'c-o',
+        donde: val => enPlano(mallaRect(val.m, val.n), bordeAbajo(val.m, val.n)),
+        mover: (pt, val) => ({ n: masCercano(unoA(1, 4), q => enPlano(mallaRect(val.m, val.n), bordeAbajo(val.m, q)), pt) }) },
+    ],
+  };
+
   return {
     unidad: 'razonamiento-matematico.juegos-recreativos',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-fichas.js', '/nucleo/kit/piezas/rm-plano.js'],
+    // Laboratorio: el dominó con un número marcado, la pila de dados que crece y la cuadrícula rectangular.
+    laboratorio: [mesaDomino, mesaPila, mesaRect],
     historia: {
       texto: 'Henry Dudeney publicó colecciones de acertijos como The Canterbury Puzzles (1907) y Amusements in Mathematics (1917). No inventó todos los juegos de cerillas o dominó, pero mostró algo útil: antes de calcular, hay que precisar las reglas. Qué se mueve, qué se cuenta y qué vale como solución.',
       pregunta: '¿Qué reglas cambian un mismo acertijo?',

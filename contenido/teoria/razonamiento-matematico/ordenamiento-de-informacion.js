@@ -40,7 +40,20 @@
     return xs.flatMap((x, i) => permutaciones(xs.slice(0, i).concat(xs.slice(i + 1))).map(p => [x].concat(p)));
   }
 
+  const plural = (n, uno, varios) => `${f(n, 0)} ${n === 1 ? uno : varios}`;
+  // Gesto directo (docs/teoria.md §4b): las manijas viven en la geometría que exporta rm-plano.
+  const PLANO = () => Kit.piezas['rm-plano'];
+  // La silla (de los nodos de la figura) más cercana al dedo.
+  const sillaCercana = (datos, pt) => {
+    const g = PLANO().geometria(datos);
+    let mejor = 0, dm = Infinity;
+    datos.nodos.forEach((n, k) => { const d = Math.hypot(g.X(n.x) - pt.x, g.Y(n.y) - pt.y); if (d < dm) { dm = d; mejor = k; } });
+    return mejor;
+  };
+  const enSilla = (datos, k) => { const g = PLANO().geometria(datos), n = datos.nodos[k]; return { x: g.X(n.x), y: g.Y(n.y) }; };
+
   // ---------- Idea 1: ordenamiento lineal ----------
+  // Sin arrastre: lo que cambia son las pistas, que son frases; el molde todavía no tiene el gesto «tocar la frase».
   // Cambia: las pistas usadas · Permanece: los cuatro puestos de izquierda a derecha · Progresa: las filas de órdenes que
   // se descartan · Se reserva: el orden donde Ana y Beto quedan separados · Debe verse: «a la izquierda» no es «junto».
   const GENTE = ['Ana', 'Beto', 'Ciro', 'Dina'];
@@ -101,7 +114,7 @@
     },
     regla: {
       texto: 'Se escriben todos los órdenes que cumplen las pistas. «A la izquierda de» solo ordena; «junto a» o «inmediatamente» obliga a estar pegados. Se concluye lo común a todos.',
-      ecuacion: ['a < b y b < c  ⇒  a < c'],
+      ecuacion: [{ llave: ['a < b'], nota: 'a la izquierda', color: 'c-o' }, ' y b < c  ⇒  a < c'],
       condicion: 'izquierda y derecha se miran desde el mismo lado de la fila y cada asiento es para una sola persona.',
     },
     ahoraTu: {
@@ -162,6 +175,10 @@
     };
   }
   const NOM5 = ['Ana', 'Beto', 'Ciro', 'Dina', 'Eva'];
+  const datosGiro = val => {
+    const nombres = Array.from({ length: 5 }, (_, k) => NOM5[((k - val.g) % 5 + 5) % 5]);
+    return mesa(5, nombres, { colores: { [val.g % 5]: 'i', [(val.g + 1) % 5]: 'o' } });
+  };
   const circular = {
     id: 'orden-circular',
     titulo: 'En la mesa redonda, una referencia',
@@ -171,12 +188,12 @@
       consigna: 'Cinco amigos en una mesa redonda, mirando al centro. Gira a todos juntos y mira quién queda a la derecha de Ana.',
       voz: 'Girar la mesa entera no cambia quién está junto a quién.',
       controles: [{ id: 'g', etiqueta: 'Giro', min: 0, max: 4, paso: 1, inicio: 0, unidad: 'sillas', decimales: 0 }],
-      dibujo: val => {
-        const nombres = Array.from({ length: 5 }, (_, k) => NOM5[((k - val.g) % 5 + 5) % 5]);
-        return { datos: mesa(5, nombres, { colores: { [val.g % 5]: 'i', [(val.g + 1) % 5]: 'o' } }), estado: {} };
-      },
+      dibujo: val => ({ datos: datosGiro(val), estado: {} }),
       lectura: () => ['A la derecha de Ana: Beto, en todos los giros'],
       minimo: 3,
+      // Se arrastra a Ana alrededor de la mesa: todos giran con ella.
+      arrastres: [{ id: 'ana', etiqueta: 'silla de Ana (gira la mesa)', color: 'c-i',
+        donde: val => enSilla(datosGiro(val), val.g % 5), mover: (pt, val) => ({ g: sillaCercana(datosGiro(val), pt) }) }],
     },
     predice: {
       pregunta: '¿De cuántas maneras distintas se pueden sentar 4 personas en una mesa redonda, si solo importa quién está junto a quién y en qué sentido?',
@@ -195,12 +212,12 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'Se sienta a Ana abajo: es la referencia.' },
         { estado: { corte: 0 }, texto: 'Mirando al centro, su derecha va en sentido contrario al reloj.' },
-        { estado: { corte: 0 }, texto: 'Ubicada Ana, el resto se ordena como en una fila.', ecuacion: ['órdenes en la mesa = (n − 1)!'] },
+        { estado: { corte: 0 }, texto: 'Ubicada Ana, el resto se ordena como en una fila.', ecuacion: ['órdenes en la mesa = ', { llave: ['(n − 1)!'], nota: 'sin la referencia', color: 'c-i' }] },
       ],
     },
     regla: {
       texto: 'En una mesa redonda no hay primer asiento: se fija a una persona como referencia y los demás se ubican respecto de ella. Girar a todos no cambia el orden.',
-      ecuacion: ['n personas en círculo: (n − 1)! órdenes'],
+      ecuacion: ['n personas en círculo: ', { llave: ['(n − 1)!'], nota: 'una queda fija', color: 'c-i' }, ' órdenes'],
       condicion: 'todos miran al centro; así, la derecha de cada uno va en sentido antihorario visto desde arriba.',
     },
     ahoraTu: {
@@ -264,6 +281,13 @@
     };
   }
   const OPU = i => (i + 4) % 8;
+  const idx8 = k => ((4 - (k - 1)) % 8 + 8) % 8;   // silla número k → posición en el círculo
+  const datosOcho = val => {
+    const nombres = Array.from({ length: 8 }, (_, k) => String(((4 - k) % 8 + 8) % 8 + 1));
+    return Object.assign(mesa(8, Array(8).fill('')), { nodos: mesa(8, Array(8).fill('')).nodos.map((n, p) => Object.assign(n, { t: nombres[p], etiqueta: '', color: p === idx8(val.s) ? 'i' : p === idx8(OPU(val.s - 1) + 1) ? 'o' : undefined })) });
+  };
+  // Hallazgo 9: el juego usa la mesa redonda y Mira, la cuadrada. Es a propósito: la idea es el contraste entre las
+  // dos (en la redonda, frente es media vuelta; en la cuadrada, cruzar al lado opuesto). La predicción hace el salto.
   const poligonal = {
     id: 'mesa-cuadrada',
     titulo: 'Frente a frente, mesa cuadrada',
@@ -273,13 +297,12 @@
       consigna: 'Mesa redonda de 8 sillas numeradas en orden. Elige la silla de Ana y mira quién queda frente a ella.',
       voz: 'En la redonda, frente es la silla que está a mitad de vuelta.',
       controles: [{ id: 's', etiqueta: 'Silla de Ana', min: 1, max: 8, paso: 1, inicio: 1, decimales: 0 }],
-      dibujo: val => {
-        const nombres = Array.from({ length: 8 }, (_, k) => String(((4 - k) % 8 + 8) % 8 + 1));
-        const idx = k => ((4 - (k - 1)) % 8 + 8) % 8;   // silla número k → posición en el círculo
-        return { datos: Object.assign(mesa(8, Array(8).fill('')), { nodos: mesa(8, Array(8).fill('')).nodos.map((n, p) => Object.assign(n, { t: nombres[p], etiqueta: '', color: p === idx(val.s) ? 'i' : p === idx(OPU(val.s - 1) + 1) ? 'o' : undefined })) }), estado: {} };
-      },
+      dibujo: val => ({ datos: datosOcho(val), estado: {} }),
       lectura: val => [`Frente a la silla ${val.s}: la silla ${OPU(val.s - 1) + 1}`],
       minimo: 3,
+      // Se arrastra a Ana a otra silla de la mesa.
+      arrastres: [{ id: 'ana', etiqueta: 'silla de Ana', color: 'c-i',
+        donde: val => enSilla(datosOcho(val), idx8(val.s)), mover: (pt, val) => ({ s: ((4 - sillaCercana(datosOcho(val), pt)) % 8 + 8) % 8 + 1 }) }],
     },
     predice: {
       pregunta: 'Ahora la mesa es cuadrada, con dos sillas por lado, numeradas del 1 al 8 en orden. ¿Qué silla queda frente a la 1?',
@@ -307,7 +330,7 @@
     },
     regla: {
       texto: 'En una mesa con lados, «frente a» y «a su lado» dependen de qué borde ocupa cada silla. Antes de ubicar, se dibuja la mesa y se numeran las sillas.',
-      ecuacion: ['redonda: frente = n/2 sillas más allá   ·   cuadrada: cruzar al lado opuesto'],
+      ecuacion: ['redonda: ', { llave: ['n/2'], nota: 'media vuelta', color: 'c-o' }, ' sillas más allá', '   ·   ', 'cuadrada: el lado opuesto'],
       condicion: 'se sabe cuántas sillas hay por lado y que todas miran hacia la mesa.',
     },
     ahoraTu: {
@@ -333,11 +356,83 @@
   };
   void f;
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: la mesa redonda de 4 a 8, con Ana que se arrastra; se marcan su derecha (naranja) y quien está enfrente (verde).
+  const NOM8 = ['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito', 'Gina', 'Hugo'];
+  const ronda = val => {
+    const n = val.n, g = val.g % n;
+    const nombres = Array.from({ length: n }, (_, k) => NOM8[((k - g) % n + n) % n]);
+    const col = { [g]: 'i', [(g + 1) % n]: 'o' };
+    if (n % 2 === 0) col[(g + n / 2) % n] = 'd';
+    return mesa(n, nombres, { colores: col });
+  };
+  const mesaRonda = {
+    id: 'mesa-redonda', titulo: 'Mesa redonda libre', pieza: 'rm-plano',
+    consigna: 'Elige cuántos se sientan y arrastra a Ana. Mira quién queda a su derecha y quién enfrente.',
+    controles: [
+      { id: 'n', etiqueta: 'Personas', min: 4, max: 8, paso: 1, inicio: 6, decimales: 0 },
+      { id: 'g', etiqueta: 'Silla de Ana', min: 0, max: 7, paso: 1, inicio: 0, decimales: 0, color: 'c-i' },
+    ],
+    dibujo: val => ({ datos: ronda(val), estado: {} }),
+    lectura: val => [`Derecha de Ana: ${NOM8[1]} · enfrente: `, val.n % 2 ? 'nadie (son impares)' : NOM8[val.n / 2]],
+    arrastres: [{ id: 'ana', etiqueta: 'silla de Ana', color: 'c-i',
+      donde: val => enSilla(ronda(val), val.g % val.n),
+      mover: (pt, val) => { const k = sillaCercana(ronda(val), pt); return k === val.g % val.n ? {} : { g: k }; } }],
+  };
+  // Mesa 2: la mesa cuadrada con 1, 2 o 3 sillas por lado; Ana se arrastra y se marcan frente y vecinos de lado.
+  function cuadradaK(k, ana) {
+    const N = 4 * k, x0 = 2.8, x1 = 7.2, y0 = 1.5, y1 = 4.7;
+    const t = j => (j + 0.5) / k;
+    const pos = i => {
+      const lado = Math.floor(i / k), j = i % k;
+      if (lado === 0) return [x0 + (x1 - x0) * t(j), 0.5];
+      if (lado === 1) return [8.4, y0 + (y1 - y0) * t(j)];
+      if (lado === 2) return [x1 - (x1 - x0) * t(j), 5.7];
+      return [1.6, y1 - (y1 - y0) * t(j)];
+    };
+    const lado = i => Math.floor(i / k), j = i => i % k;
+    const fr = ((lado(ana) + 2) % 4) * k + (k - 1 - j(ana));
+    const nodos = Array.from({ length: N }, (_, i) => {
+      const [x, y] = pos(i);
+      return { id: 'q' + i, x, y, r: 15, t: String(i + 1), color: i === ana ? 'i' : i === fr ? 'o' : lado(i) === lado(ana) ? 'd' : undefined };
+    });
+    return { ancho: 10, alto: 6.2, poligonos: [{ puntos: [[x0, y0], [x1, y0], [x1, y1], [x0, y1]], relleno: 0.06, grosor: 'contorno' }], nodos,
+      aristas: [{ de: 'q' + ana, a: 'q' + fr, color: 'o', grosor: 'variable' }], frente: fr };
+  }
+  const datosCuad = val => { const d = cuadradaK(val.k, (val.s - 1) % (4 * val.k)); delete d.frente; return d; };
+  const mesaCuad = {
+    id: 'mesa-cuadrada-libre', titulo: 'Mesa cuadrada libre', pieza: 'rm-plano',
+    consigna: 'Elige cuántas sillas hay por lado y arrastra a Ana. En naranja, quien está enfrente; en verde, quien comparte su lado.',
+    controles: [
+      { id: 'k', etiqueta: 'Sillas por lado', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0 },
+      { id: 's', etiqueta: 'Silla de Ana', min: 1, max: 12, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
+    ],
+    dibujo: val => ({ datos: datosCuad(val), estado: {} }),
+    lectura: val => { const a = (val.s - 1) % (4 * val.k); return [`Silla ${a + 1}: enfrente la ${cuadradaK(val.k, a).frente + 1}`, val.k > 1 ? ` · su lado: ${plural(val.k - 1, 'silla', 'sillas')} más` : ' · sola en su lado']; },
+    arrastres: [{ id: 'ana', etiqueta: 'silla de Ana', color: 'c-i',
+      donde: val => enSilla(datosCuad(val), (val.s - 1) % (4 * val.k)),
+      mover: (pt, val) => { const k = sillaCercana(datosCuad(val), pt); return k === (val.s - 1) % (4 * val.k) ? {} : { s: k + 1 }; } }],
+  };
+  // Mesa 3: las cuatro pistas de la fila, cada una se pone o se quita: ¿cuántos órdenes deja cada combinación?
+  // Sin arrastre: las pistas son frases.
+  const SINO = [{ valor: 1, texto: 'Sí' }, { valor: 0, texto: 'No' }];
+  const ordenesSel = val => permutaciones(GENTE).filter(p => PISTAS_L.every((c, k) => !val['p' + k] || c.ok(p)));
+  const mesaPistas = {
+    id: 'pistas-a-elegir', titulo: 'Pistas a elegir', pieza: 'rm-tablero',
+    consigna: 'Pon o quita cada pista de la fila de cuatro. ¿Qué pistas sobran y cuáles hacen falta?',
+    controles: PISTAS_L.map((c, k) => ({ id: 'p' + k, etiqueta: c.t, opciones: SINO })),
+    dibujo: val => ({ datos: filaOrdenes(ordenesSel(val)), estado: {} }),
+    lectura: val => { const n = PISTAS_L.filter((_, k) => val['p' + k]).length, o = ordenesSel(val).length; return [`${plural(n, 'pista', 'pistas')}: `, plural(o, 'orden posible', 'órdenes posibles')]; },
+  };
+
   return {
     unidad: 'razonamiento-matematico.ordenamiento-de-informacion',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-tablero.js', '/nucleo/kit/piezas/rm-plano.js'],
+    // Laboratorio: la mesa redonda de 4 a 8 con derecha y frente, la cuadrada con 1 a 3 sillas por lado y las pistas
+    // de la fila puestas o quitadas una a una.
+    laboratorio: [mesaRonda, mesaCuad, mesaPistas],
     historia: {
       texto: 'En 1854, George Boole publicó Las leyes del pensamiento, donde trató el razonamiento como un cálculo con clases. No inventó los acertijos de asientos, pero ayudó a escribir con precisión cómo una frase reduce las posibilidades. Ordenar es eso: ver qué opciones deja en pie cada pista.',
       pregunta: '¿Cuántos órdenes deja vivos una sola pista?',

@@ -36,6 +36,9 @@
     return ops;
   }
   const fact = n => (n <= 1 ? 1 : n * fact(n - 1));
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría que exportan rm-tablero y rm-plano.
+  const TAB = () => Kit.piezas['rm-tablero'], PLANO = () => Kit.piezas['rm-plano'];
+  const plural = (n, uno, varios) => `${f(n)} ${n === 1 ? uno : varios}`;
 
   // ---------- Idea 1: rutas en el plano ----------
   // Cambia: el tamaño de la cuadrícula · Permanece: solo se avanza a la derecha o hacia arriba · Progresa: el número de
@@ -44,7 +47,8 @@
     // T[i][j]: rutas hasta el cruce de i pasos a la derecha y j hacia arriba.
     const T = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
     for (let i = 0; i <= m; i++) for (let j = 0; j <= n; j++) {
-      if (cerrado && cerrado[0] === i && cerrado[1] === j) { T[i][j] = 0; continue; }
+      const cierres = cerrado && Array.isArray(cerrado[0]) ? cerrado : cerrado ? [cerrado] : [];
+      if (cierres.some(q => q[0] === i && q[1] === j)) { T[i][j] = 0; continue; }
       T[i][j] = i === 0 && j === 0 ? 1 : (i ? T[i - 1][j] : 0) + (j ? T[i][j - 1] : 0);
     }
     return T;
@@ -56,7 +60,8 @@
       celdas: Array.from({ length: n + 1 }, (_, fila) => {
         const j = n - fila;   // la fila de arriba es j = n
         return Array.from({ length: m + 1 }, (_, i) => {
-          const esCerrado = extra.cerrado && extra.cerrado[0] === i && extra.cerrado[1] === j;
+          const cierres = extra.cerrado && Array.isArray(extra.cerrado[0]) ? extra.cerrado : extra.cerrado ? [extra.cerrado] : [];
+          const esCerrado = cierres.some(q => q[0] === i && q[1] === j);
           if (esCerrado) return { marca: 'no', color: 'h' };
           if (extra.vacio && !(i === 0 && j === 0)) return '';
           const fin = i === m && j === n;
@@ -81,6 +86,16 @@
       dibujo: val => ({ datos: cuadricula(val.m, val.n), estado: {} }),
       lectura: val => [`${rutas(val.m, val.n)[val.m][val.n]} rutas de ${val.m + val.n} pasos`],
       minimo: 4,
+      // Se estira la cuadrícula: el borde derecho de la fila de salida da los pasos a la derecha; el borde de abajo de la
+      // columna de salida, los pasos hacia arriba (la cuadrícula crece hacia abajo, desde arriba fija).
+      arrastres: [
+        { id: 'derecha', etiqueta: 'pasos a la derecha', color: 'c-o',
+          donde: val => { const g = TAB().geometria(cuadricula(val.m, val.n)); return { x: g.x0 + g.cw * g.nc, y: g.centro(val.n, 0).y }; },
+          mover: (pt, val) => { const g = TAB().geometria(cuadricula(val.m, val.n)); return { m: 2 * (pt.x - (g.x0 + g.cw * g.nc / 2)) / g.cw - 1 }; } },
+        { id: 'arriba', etiqueta: 'pasos hacia arriba', color: 'c-o',
+          donde: val => { const g = TAB().geometria(cuadricula(val.m, val.n)); return { x: g.centro(0, 0).x, y: g.y0 + (val.n + 1) * g.altoFila }; },
+          mover: (pt, val) => { const g = TAB().geometria(cuadricula(val.m, val.n)); return { n: (pt.y - g.y0) / g.altoFila - 1 }; } },
+      ],
     },
     predice: {
       pregunta: 'En una cuadrícula de 3 pasos a la derecha y 3 hacia arriba, el cruce del centro (1 a la derecha, 1 arriba) está cerrado. ¿Cuántas rutas quedan?',
@@ -104,7 +119,7 @@
     },
     regla: {
       texto: 'Las rutas que llegan a un cruce son la suma de las que llegan a los cruces desde donde se puede entrar. Un cruce cerrado vale 0.',
-      ecuacion: ['sin cierres: ', { frac: ['(m + n)!', 'm! · n!'] }],
+      ecuacion: ['sin cierres: ', { frac: ['(m + n)!', [{ llave: ['m!'], nota: 'a la derecha', color: 'c-o' }, ' · ', { llave: ['n!'], nota: 'hacia arriba', color: 'c-o' }]] }],
       condicion: 'solo se avanza en dos sentidos (derecha y arriba), sin volver; con otros movimientos, cambian los cruces de entrada.',
     },
     ahoraTu: {
@@ -148,6 +163,28 @@
     return { ancho: 10, alto: 6, lineas, nodos: [{ id: 'A', x: A[0], y: A[1], t: 'A', r: 12, color: 'i' }, { id: 'B', x: B[0], y: B[1], t: 'B', r: 12, color: 'o' }], pie: extra.pie };
   }
   const ORDENES = ['xyz', 'xzy', 'yxz', 'yzx', 'zxy', 'zyx'];
+  // Vértice tras h pasos de la ruta k en el cubo (e = 3), en coordenadas de la figura.
+  const verticeRuta = (orden, h) => { const q = [0, 0, 0]; for (const d of orden.slice(0, h)) q['xyz'.indexOf(d)] = 1; return q; };
+  const aFigura = (val, q) => { const g = PLANO().geometria(caja(1, 1, 1, ORDENES[val.k - 1], { e: 3 })), [x, y] = PROY(q, 3); return { x: g.X(x), y: g.Y(y) }; };
+  const puntoCubo = (val, h) => aFigura(val, verticeRuta(ORDENES[val.k - 1], h));
+  // El dedo elige el vértice más cercano con h pasos dados; la ruta nueva conserva lo que pueda de la anterior.
+  function ordenPorVertice(pt, val, h) {
+    const antes = ORDENES[val.k - 1];
+    // Para cada vértice posible, la ruta que pasa por él y cambia lo menos posible: h = 1 fija el primer paso y deja
+    // los otros dos en su orden; h = 2 fija cuál paso queda al final y deja primero el que ya iba primero, si se puede.
+    const preferida = o => {
+      if (h === 1) return o[0] + antes.replace(o[0], '');
+      const ultimo = o[2], dos = antes.replace(ultimo, '');
+      return dos + ultimo;
+    };
+    let mejor = antes, dmin = Infinity;
+    for (const o of ORDENES) {
+      const r = preferida(o), p = puntoCubo({ k: ORDENES.indexOf(r) + 1 }, h), d = Math.hypot(p.x - pt.x, p.y - pt.y);
+      if (d < dmin - 1e-9) { dmin = d; mejor = r; }
+    }
+    return ORDENES.indexOf(mejor) + 1;
+  }
+
   const espacio = {
     id: 'rutas-en-el-espacio',
     titulo: 'Rutas por las aristas',
@@ -160,6 +197,13 @@
       dibujo: val => ({ datos: caja(1, 1, 1, ORDENES[val.k - 1], { e: 3 }), estado: {} }),
       lectura: val => [`Ruta ${val.k} de 6: orden ${ORDENES[val.k - 1].split('').join(', ')}`],
       minimo: 4,
+      // La hormiga se lleva por los vértices: el primero elige el primer paso; el segundo, cuál paso queda para el final.
+      arrastres: [
+        { id: 'primer-paso', etiqueta: 'primer vértice de la ruta', color: 'c-o',
+          donde: val => puntoCubo(val, 1), mover: (pt, val) => ({ k: ordenPorVertice(pt, val, 1) }) },
+        { id: 'segundo-paso', etiqueta: 'segundo vértice de la ruta', color: 'c-o',
+          donde: val => puntoCubo(val, 2), mover: (pt, val) => ({ k: ordenPorVertice(pt, val, 2) }) },
+      ],
     },
     predice: {
       pregunta: 'Ahora es una caja de 2 × 1 × 1 cubitos. ¿Cuántas rutas mínimas por las aristas van de A a B?',
@@ -183,7 +227,7 @@
     },
     regla: {
       texto: 'En una caja de a × b × c cubitos, una ruta mínima de esquina a esquina es un orden de a pasos en x, b en y y c en z.',
-      ecuacion: ['rutas = ', { frac: ['(a + b + c)!', 'a! · b! · c!'] }],
+      ecuacion: ['rutas = ', { frac: ['(a + b + c)!', [{ llave: ['a!'], nota: 'pasos en x', color: 'c-o' }, ' · ', { llave: ['b!'], nota: 'en y', color: 'c-o' }, ' · ', { llave: ['c!'], nota: 'en z', color: 'c-o' }]] }],
       condicion: 'se va por las aristas, siempre acercándose a B; si se permite retroceder, ya no son rutas mínimas.',
     },
     ahoraTu: {
@@ -262,7 +306,7 @@
     },
     regla: {
       texto: 'La vista de frente da la altura mayor de cada columna; la de lado, la de cada fila. Muchas pilas comparten esas vistas; el máximo usa el menor límite.',
-      ecuacion: ['máximo = Σ mín(frente, lado)'],
+      ecuacion: ['máximo = Σ ', { llave: ['mín(frente, lado)'], nota: 'en cada casilla', color: 'c-o' }],
       condicion: 'las vistas muestran alturas, sin transparencias; con la vista de planta se sabe además qué casillas están ocupadas.',
     },
     ahoraTu: {
@@ -287,11 +331,93 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: la cuadrícula grande con dos cruces cerrados que se arrastran (la idea solo deja uno, y fijo). Casos raros:
+  // cerrar la salida o la llegada, o cerrar los dos únicos pasos de un borde.
+  const LM = 5, LN = 4;
+  const cierresDe = val => [[val.i1, val.j1], [val.i2, val.j2]];
+  const datosCierres = val => {
+    const T = rutas(LM, LN, cierresDe(val)), todas = rutas(LM, LN)[LM][LN];
+    return cuadricula(LM, LN, { cerrado: cierresDe(val), nota: `Rutas: ${f(T[LM][LN])} de ${f(todas)}` });
+  };
+  const manijaCierre = (k, ci, cj) => ({ id: `cierre-${k}`, etiqueta: `cruce cerrado ${k}`, color: 'c-h',
+    donde: val => { const g = TAB().geometria(datosCierres(val)), p = g.centro(LN - val[cj], val[ci]); return { x: p.x + 12, y: p.y + 10 }; },
+    mover: (pt, val) => { const g = TAB().geometria(datosCierres(val)), q = g.casilla(pt.x - 12, pt.y - 10); return { [ci]: q.c, [cj]: LN - q.f }; } });
+  const mesaCierres = {
+    id: 'dos-cierres', titulo: 'Dos cruces cerrados', pieza: 'rm-tablero',
+    consigna: 'Cuadrícula de 5 a la derecha y 4 hacia arriba. Arrastra las dos ✗ y mira cuántas rutas sobreviven.',
+    controles: [
+      { id: 'i1', etiqueta: 'Cierre 1 →', min: 0, max: LM, paso: 1, inicio: 1, decimales: 0, color: 'c-h' },
+      { id: 'j1', etiqueta: 'Cierre 1 ↑', min: 0, max: LN, paso: 1, inicio: 1, decimales: 0, color: 'c-h' },
+      { id: 'i2', etiqueta: 'Cierre 2 →', min: 0, max: LM, paso: 1, inicio: 3, decimales: 0, color: 'c-h' },
+      { id: 'j2', etiqueta: 'Cierre 2 ↑', min: 0, max: LN, paso: 1, inicio: 2, decimales: 0, color: 'c-h' },
+    ],
+    dibujo: val => ({ datos: datosCierres(val), estado: {} }),
+    lectura: val => [`Cierres en (${val.i1}; ${val.j1}) y (${val.i2}; ${val.j2}): `, plural(rutas(LM, LN, cierresDe(val))[LM][LN], 'ruta', 'rutas')],
+    arrastres: [manijaCierre(1, 'i1', 'j1'), manijaCierre(2, 'i2', 'j2')],
+  };
+  // Mesa 2: la caja que se estira en sus tres direcciones; el pie trae la cuenta con los números de la caja.
+  const PL = ([x, y, z]) => [1.2 + 1.8 * x + 1.2 * z, 6.4 - 1.8 * y - 1.0 * z];
+  function cajaLab(a, b, c) {
+    const lineas = [];
+    const ar = (p, q) => lineas.push({ de: PL(p), a: PL(q), grosor: 'cuadricula' });
+    for (let x = 0; x <= a; x++) for (let y = 0; y <= b; y++) for (let z = 0; z <= c; z++) {
+      if (x < a) ar([x, y, z], [x + 1, y, z]);
+      if (y < b) ar([x, y, z], [x, y + 1, z]);
+      if (z < c) ar([x, y, z], [x, y, z + 1]);
+    }
+    const A = PL([0, 0, 0]), B = PL([a, b, c]), n = fact(a + b + c) / (fact(a) * fact(b) * fact(c));
+    return { ancho: 10, alto: 7, lineas, nodos: [{ id: 'A', x: A[0], y: A[1], t: 'A', r: 12, color: 'i' }, { id: 'B', x: B[0], y: B[1], t: 'B', r: 12, color: 'o' }],
+      pie: `${a + b + c}! / (${a}! · ${b}! · ${c}!) = ${f(n)}` };
+  }
+  const datosCaja = val => cajaLab(val.a, val.b, val.c);
+  const mesaCaja = {
+    id: 'caja-que-crece', titulo: 'La caja que se estira', pieza: 'rm-plano',
+    consigna: 'Arrastra B para cambiar el ancho y el alto; la esquina del fondo, para la profundidad. Compara las rutas mínimas.',
+    controles: [
+      { id: 'a', etiqueta: 'Ancho (x)', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0, color: 'c-o' },
+      { id: 'b', etiqueta: 'Alto (y)', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-o' },
+      { id: 'c', etiqueta: 'Fondo (z)', min: 1, max: 2, paso: 1, inicio: 1, decimales: 0, color: 'c-o' },
+    ],
+    dibujo: val => ({ datos: datosCaja(val), estado: {} }),
+    lectura: val => [`Caja ${val.a} × ${val.b} × ${val.c}: `, plural(fact(val.a + val.b + val.c) / (fact(val.a) * fact(val.b) * fact(val.c)), 'ruta mínima', 'rutas mínimas')],
+    arrastres: [
+      { id: 'esquina-b', etiqueta: 'esquina B: ancho y alto', color: 'c-o',
+        donde: val => { const g = PLANO().geometria(datosCaja(val)), [x, y] = PL([val.a, val.b, val.c]); return { x: g.X(x), y: g.Y(y) }; },
+        mover: (pt, val) => { const g = PLANO().geometria(datosCaja(val)), x = (pt.x - g.X(0)) / g.k, y = (pt.y - g.Y(0)) / g.k;
+          return { a: (x - 1.2 - 1.2 * val.c) / 1.8, b: (6.4 - 1.0 * val.c - y) / 1.8 }; } },
+      { id: 'fondo', etiqueta: 'profundidad de la caja', color: 'c-o',
+        donde: val => { const g = PLANO().geometria(datosCaja(val)), [x, y] = PL([0, 0, val.c]); return { x: g.X(x), y: g.Y(y) }; },
+        mover: (pt, val) => { const g = PLANO().geometria(datosCaja(val)), x = (pt.x - g.X(0)) / g.k, y = (pt.y - g.Y(0)) / g.k;
+          // Proyección sobre la diagonal del fondo, (1,2; −1,0) por paso.
+          return { c: ((x - 1.2) * 1.2 - (y - 6.4) * 1.0) / (1.2 * 1.2 + 1.0 * 1.0) }; } },
+    ],
+  };
+  // Mesa 3: armar la pila casilla por casilla; las vistas se calculan solas. Casos raros: una casilla vacía que no
+  // cambia ninguna vista, o una torre escondida detrás de otra más alta.
+  const CASILLAS = [0, 1, 2].flatMap(i => [0, 1, 2].map(c => [i, c]));
+  const pilaDe = val => [0, 1, 2].map(i => [0, 1, 2].map(c => val[`h${i}${c}`]));
+  const datosPila = val => { const M = pilaDe(val), v = vistaDe(M); return planta(M, v.fr, v.la); };
+  const mesaPila = {
+    id: 'arma-la-pila', titulo: 'Arma la pila', pieza: 'rm-tablero',
+    consigna: 'Sube o baja cada casilla de la planta. Abajo y a la derecha salen solas las vistas de frente y de lado.',
+    controles: CASILLAS.map(([i, c]) => ({ id: `h${i}${c}`, etiqueta: `${['Fondo', 'Medio', 'Adelante'][i]} ${c + 1}`, min: 0, max: 3, paso: 1, inicio: PILAS[0][i][c], decimales: 0, color: 'c-o' })),
+    dibujo: val => ({ datos: datosPila(val), estado: {} }),
+    lectura: val => { const M = pilaDe(val), v = vistaDe(M); return [`${plural(suma(M), 'cubito', 'cubitos')} · frente ${v.fr.join(' ')} · lado ${v.la.join(' ')}`]; },
+    // Cada casilla tiene su manija a la derecha del número: arriba es 3 cubitos; abajo, ninguno.
+    arrastres: CASILLAS.map(([i, c]) => ({ id: `casilla-${i}-${c}`, etiqueta: `altura de ${['fondo', 'medio', 'adelante'][i]} ${c + 1}`, color: 'c-o',
+      donde: val => { const g = TAB().geometria(datosPila(val)), p = g.centro(i, c); return { x: p.x + 15, y: p.y + 13 - 26 * val[`h${i}${c}`] / 3 }; },
+      mover: (pt, val) => { const g = TAB().geometria(datosPila(val)), p = g.centro(i, c); return { [`h${i}${c}`]: (p.y + 13 - pt.y) * 3 / 26 }; } })),
+  };
+
   return {
     unidad: 'razonamiento-matematico.rutas-y-visualizacion-espacial',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-tablero.js', '/nucleo/kit/piezas/rm-plano.js'],
+    // Laboratorio: dos cruces cerrados que se arrastran, la caja que se estira en tres direcciones y la pila que se
+    // arma casilla por casilla con sus vistas calculadas.
+    laboratorio: [mesaCierres, mesaCaja, mesaPila],
     historia: {
       texto: 'En 1857, William Hamilton presentó el juego icosiano: recorrer las aristas de un dodecaedro visitando cada vértice una vez y volver al inicio. Es otra pregunta que la de Euler, que pide pasar una vez por cada arista. Leer qué prohíbe repetir una consigna cambia el problema.',
       pregunta: '¿Qué no se puede repetir: puntos o caminos?',

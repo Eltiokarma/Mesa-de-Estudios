@@ -36,6 +36,15 @@
     return ops;
   }
   const mcd = (a, b) => (b ? mcd(b, a % b) : a), mcm = (a, b) => a * b / mcd(a, b);
+  const plural = (n, uno, varios) => `${f(n, 0)} ${n === 1 ? uno : varios}`;
+
+  // Gesto directo (docs/teoria.md §4b): las manijas viven en la geometría que exportan las piezas.
+  const RECTA = () => Kit.piezas.recta, TAB = () => Kit.piezas['rm-tablero'];
+  // Manija sobre la recta en el valor val[id] (fila k); al moverla, el valor bajo el dedo.
+  const manijaRecta = (datosDe, id, fila, extra) => Object.assign({
+    donde: val => { const g = RECTA().geometria(datosDe(val)); return { x: g.x(val[id]), y: g.filaY(fila) }; },
+    mover: (pt, val) => { const d = datosDe(val), g = RECTA().geometria(d); return { [id]: d.min + (pt.x - g.x(d.min)) * (d.max - d.min) / (g.x(d.max) - g.x(d.min)) }; },
+  }, extra);
 
   // ---------- Idea 1: tomas cada T horas ----------
   // Cambia: cada cuántas horas · Permanece: un periodo de 24 h que empieza con una toma · Progresa: las marcas ·
@@ -59,6 +68,8 @@
       dibujo: val => ({ datos: tomas(val.T, 24), estado: {} }),
       lectura: val => [`24 / ${val.T} = ${24 / val.T} espacios · `, Nn, ` = ${24 / val.T + 1} tomas`],
       minimo: 3,
+      // Se arrastra la segunda toma: dónde cae fija cada cuántas horas se toma.
+      arrastres: [manijaRecta(() => tomas(8, 24), 'T', 0, { id: 'segunda', etiqueta: 'segunda toma', color: 'c-o' })],
     },
     predice: {
       pregunta: 'Una toma al empezar y luego una cada 8 horas, durante 3 días completos. ¿Cuántas tomas hay, contando la primera y la de la hora 72?',
@@ -80,7 +91,7 @@
     },
     regla: {
       texto: 'Si hay toma al empezar y al terminar, las tomas son una más que los espacios de T horas que caben en el periodo.',
-      ecuacion: [Nn, ' = ', { frac: [D, T] }, ' + 1'],
+      ecuacion: [Nn, ' = ', { llave: [{ frac: [D, T] }], nota: 'espacios', color: 'c-o' }, ' + ', { llave: ['1'], nota: 'la primera', color: 'c-d' }],
       condicion: 'hay toma en el instante inicial y D es múltiplo de T; si no se toma al final, se resta 1.',
     },
     ahoraTu: {
@@ -122,9 +133,12 @@
       consigna: 'A descansa cada 4 días y B cada cierto número de días; hoy descansan juntos. Cambia el ritmo de B y mira cuándo coinciden.',
       voz: 'Busca la primera marca verde después del día 0.',
       controles: [{ id: 'b', etiqueta: 'B cada', min: 2, max: 10, paso: 1, inicio: 6, unidad: 'días', decimales: 0, color: 'c-i' }],
-      dibujo: val => ({ datos: turnos(4, val.b, Math.max(24, mcm(4, val.b))), estado: {} }),
+      // La recta mide siempre 36 días (el mayor MCM del juego), así la manija no salta al cambiar la escala.
+      dibujo: val => ({ datos: turnos(4, val.b, 36), estado: {} }),
       lectura: val => [`Vuelven a coincidir el día ${mcm(4, val.b)}`],
       minimo: 3,
+      // Se arrastra el primer descanso de B: ese día fija su ritmo.
+      arrastres: [manijaRecta(val => turnos(4, val.b, 36), 'b', 1, { id: 'ritmo-b', etiqueta: 'primer descanso de B', color: 'c-i' })],
     },
     predice: {
       pregunta: 'Ana descansa cada 6 días y Beto cada 8. Hoy descansaron juntos. ¿Dentro de cuántos días vuelven a descansar juntos?',
@@ -147,7 +161,7 @@
     },
     regla: {
       texto: 'Dos sucesos que empiezan juntos y se repiten cada a y cada b días vuelven a coincidir cada MCM(a, b) días.',
-      ecuacion: ['coinciden cada MCM(a, b)'],
+      ecuacion: ['coinciden cada ', { llave: ['MCM(a, b)'], nota: 'menor múltiplo común', color: 'c-d' }],
       condicion: 'los dos empiezan el mismo día; si empiezan en días distintos, el MCM solo no basta.',
     },
     ahoraTu: {
@@ -186,6 +200,11 @@
       notas: [{ t: extra.nota || `Hasta las ${h}:00: ${h * (h + 1) / 2} campanadas` }],
     };
   }
+  // La hora k está en la fila «Toca» 1 (de 1 a 6) o 3 (de 7 a 12); soltar en una casilla da su hora.
+  const lugarHora = k => (k <= 6 ? [1, k - 1] : [3, k - 7]);
+  const manijaHora = (id, etiqueta, datosDe) => ({ id, etiqueta, color: 'c-h',
+    donde: val => { const [fi, co] = lugarHora(val[id]); return TAB().geometria(datosDe(val)).centro(fi, co); },
+    mover: (pt, val) => { const c = TAB().geometria(datosDe(val)).casilla(pt.x, pt.y); return { [id]: c.c + (c.f <= 1 ? 1 : 7) }; } });
   const total = {
     id: 'campanadas-del-dia',
     titulo: 'Sumar las campanadas del día',
@@ -198,6 +217,8 @@
       dibujo: val => ({ datos: campanas(val.h), estado: {} }),
       lectura: val => [`1 + 2 + … + ${val.h} = ${val.h * (val.h + 1) / 2}`],
       minimo: 3,
+      // Se arrastra la última hora que suena por la fila «Toca».
+      arrastres: [manijaHora('h', 'hasta qué hora se cuenta', val => campanas(val.h))],
     },
     predice: {
       pregunta: 'Ese reloj suena también una vez en cada media hora. ¿Cuántas campanadas da en un día completo, de 24 horas?',
@@ -221,7 +242,7 @@
     },
     regla: {
       texto: 'Si el reloj da tantas campanadas como la hora, de la 1 a la n suenan 1 + 2 + … + n. Se agregan aparte las campanadas de las medias horas.',
-      ecuacion: ['1 + 2 + … + n = ', { frac: ['n(n + 1)', '2'] }],
+      ecuacion: ['1 + 2 + … + ', { llave: ['n'], nota: 'última hora', color: 'c-h' }, ' = ', { frac: ['n(n + 1)', '2'] }],
       condicion: 'el reloj marca de 1 a 12 y repite; se aclara si se cuentan las horas de inicio y fin del periodo.',
     },
     ahoraTu: {
@@ -245,11 +266,80 @@
   };
   void f;
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: cualquier ritmo de 1 a 12 h, de 1 a 3 días, y el caso raro: si T no divide al periodo, no hay toma al final.
+  const tomasLibre = val => tomas(val.T, 24 * val.dias);
+  const mesaTomas = {
+    id: 'receta-libre', titulo: 'Receta libre', pieza: 'recta',
+    consigna: 'Arrastra la segunda toma y elige cuántos días dura la receta. Prueba ritmos que no dividen a 24.',
+    controles: [
+      { id: 'T', etiqueta: 'Cada', min: 1, max: 12, paso: 1, inicio: 5, unidad: 'h', decimales: 0, color: 'c-o' },
+      { id: 'dias', etiqueta: 'Días', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-h' },
+    ],
+    dibujo: val => ({ datos: tomasLibre(val), estado: {} }),
+    lectura: val => {
+      const Dp = 24 * val.dias, n = Math.floor(Dp / val.T) + 1, ult = (n - 1) * val.T;
+      return [Nn, ` = ${n} tomas · la última a las ${ult}\u00a0h`, ult < Dp ? ' (antes del final)' : ''];
+    },
+    arrastres: [manijaRecta(tomasLibre, 'T', 0, { id: 'segunda', etiqueta: 'segunda toma', color: 'c-o' })],
+  };
+  // Mesa 2: tres ritmos a la vez, cada uno de 2 a 12 días, en una recta fija de 60 días.
+  const L3 = 60;
+  const tresTurnos = val => {
+    const m = mcm(mcm(val.a, val.b), val.c);
+    return {
+      min: 0, max: L3, paso: 1, cada: 5, decimales: 0, variable: 'día', color: 'h', filas: 3,
+      elementos: [
+        { tipo: 'enteros', a: 0, b: L3, cada: val.a, color: 'o', rotulo: `A cada ${val.a}`, fila: 0 },
+        { tipo: 'enteros', a: 0, b: L3, cada: val.b, color: 'i', rotulo: `B cada ${val.b}`, fila: 1 },
+        { tipo: 'enteros', a: 0, b: L3, cada: val.c, color: 'h', rotulo: `C cada ${val.c}`, fila: 2 },
+        { tipo: 'enteros', a: 0, b: L3, cada: m, color: 'd', rotulo: m <= L3 ? 'los tres' : `los tres: día ${m}`, fila: 3 },
+      ],
+    };
+  };
+  const mesaTres = {
+    id: 'tres-ritmos', titulo: 'Tres ritmos a la vez', pieza: 'recta',
+    consigna: 'Hoy descansan juntos A, B y C. Arrastra el primer descanso de cada uno y busca cuándo vuelven a coincidir los tres.',
+    controles: [
+      { id: 'a', etiqueta: 'A cada', min: 2, max: 12, paso: 1, inicio: 4, unidad: 'días', decimales: 0, color: 'c-o' },
+      { id: 'b', etiqueta: 'B cada', min: 2, max: 12, paso: 1, inicio: 6, unidad: 'días', decimales: 0, color: 'c-i' },
+      { id: 'c', etiqueta: 'C cada', min: 2, max: 12, paso: 1, inicio: 10, unidad: 'días', decimales: 0, color: 'c-h' },
+    ],
+    dibujo: val => ({ datos: tresTurnos(val), estado: {} }),
+    lectura: val => [`MCM(${val.a}, ${val.b}, ${val.c}) = ${mcm(mcm(val.a, val.b), val.c)}: los tres juntos ese día`],
+    arrastres: [['a', 0, 'A', 'c-o'], ['b', 1, 'B', 'c-i'], ['c', 2, 'C', 'c-h']].map(([id, fila, n, color]) =>
+      manijaRecta(tresTurnos, id, fila, { id: `ritmo-${id}`, etiqueta: `primer descanso de ${n}`, color })),
+  };
+  // Mesa 3: un tramo cualquiera del día, con o sin las medias horas; se arrastran el inicio y el fin.
+  const datosTramo = val => {
+    const d = campanas(val.hasta, { desde: Math.min(val.desde, val.hasta) });
+    d.notas = [{ t: `${tramoHoras(val)} en punto${val.medias ? ` + ${Math.max(0, val.hasta - val.desde)} medias` : ''}` }];
+    return d;
+  };
+  const tramoHoras = val => { const a = Math.min(val.desde, val.hasta), b = val.hasta; return (b * (b + 1) - (a - 1) * a) / 2; };
+  const mesaTramo = {
+    id: 'tramo-del-dia', titulo: 'Un tramo del día', pieza: 'rm-tablero',
+    consigna: 'Arrastra la primera y la última hora del tramo, las dos incluidas. Agrega o quita las medias horas.',
+    controles: [
+      { id: 'desde', etiqueta: 'Desde las', min: 1, max: 12, paso: 1, inicio: 3, decimales: 0, color: 'c-h' },
+      { id: 'hasta', etiqueta: 'Hasta las', min: 1, max: 12, paso: 1, inicio: 9, decimales: 0, color: 'c-h' },
+      { id: 'medias', etiqueta: 'Medias horas', opciones: [{ valor: 0, texto: 'No suenan' }, { valor: 1, texto: 'Una campanada' }] },
+    ],
+    dibujo: val => ({ datos: datosTramo(val), estado: {} }),
+    lectura: val => {
+      const a = Math.min(val.desde, val.hasta), m = val.medias ? val.hasta - a : 0;
+      return [`De ${a}:00 a ${val.hasta}:00: `, plural(tramoHoras(val) + m, 'campanada', 'campanadas')];
+    },
+    arrastres: [manijaHora('desde', 'primera hora del tramo', datosTramo), manijaHora('hasta', 'última hora del tramo', datosTramo)],
+  };
+
   return {
     unidad: 'razonamiento-matematico.frecuencia-de-sucesos',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/rm-tablero.js'],
+    // Laboratorio: la receta con ritmos que no dividen al periodo, tres ritmos a la vez y un tramo cualquiera del día.
+    laboratorio: [mesaTomas, mesaTres, mesaTramo],
     historia: {
       texto: 'Medir el tiempo exigió procesos que se repiten y formas de contarlos. La historia de los relojes que reúne el NIST muestra una búsqueda de ritmos cada vez más estables. El ejercicio de campanadas guarda una pregunta sencilla: cuántos intervalos separan cierto número de golpes.',
       pregunta: '¿Se cuentan los golpes o los espacios entre ellos?',

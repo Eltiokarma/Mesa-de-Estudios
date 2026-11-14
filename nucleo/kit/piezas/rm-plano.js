@@ -189,5 +189,7 @@
     return `Plano a escala con ${partes.join('; ') || 'nada dibujado'}${d.pie ? `. ${d.pie}` : ''}.`;
   }
 
-  return { id: 'rm-plano', dibujar, alt, constantes: { W, PAD } };
+  // geometria(datos) → { k, X, Y, alto, base }: X(x) e Y(y) pasan unidades del problema a coordenadas del viewBox
+  // (para las manijas del gesto directo); k es cuántos px mide una unidad.
+  return { id: 'rm-plano', dibujar, alt, geometria, constantes: { W, PAD } };
 });

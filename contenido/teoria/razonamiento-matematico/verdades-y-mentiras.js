@@ -34,15 +34,25 @@
     for (const d of distractores) { if (vistos.has(d.texto) || ops.length >= 4) continue; vistos.add(d.texto); ops.push(d); }
     return ops;
   }
+  const f0 = n => Kit.formatear(n, 0);
+  const falsas = n => `${f0(n)} ${n === 1 ? 'falsa' : 'falsas'}`;
   const palabras = t => (t.match(/[\p{L}\p{N}]+/gu) || []).length;
   const asignaciones = n => Array.from({ length: 2 ** n }, (_, m) => Array.from({ length: n }, (_, i) => !((m >> (n - 1 - i)) & 1)));
   // Una suposición es coherente si cada veraz dice algo verdadero y cada mentiroso, algo falso.
   const coherente = (frases, v) => frases.every((fr, i) => fr.valor(v) === v[i]);
 
+  // Gesto directo (docs/teoria.md §4b): las manijas viven en la rejilla del tablero (rm-tablero exporta geometria).
+  const TAB = () => Kit.piezas['rm-tablero'];
+  // Interruptor dentro de la casilla «Es»: a la izquierda, veraz; a la derecha, miente. Se desliza como una ficha.
+  const interruptor = (datosDe, fila, id) => ({
+    donde: val => { const g = TAB().geometria(datosDe(val)), p = g.centro(fila, 0); return { x: p.x + (val[id] === 'V' ? -0.38 : 0.38) * g.cw, y: p.y + 11 }; },
+    mover: (pt, val) => { const g = TAB().geometria(datosDe(val)); return { [id]: pt.x < g.centro(fila, 0).x ? 'V' : 'M' }; },
+  });
+
   // Tabla de suposiciones: una fila por persona: quién es (V/M), su frase vale (V/F) y si encaja.
   function tablaSup(nombres, frases, v, extra = {}) {
     return {
-      columnas: ['Es', 'Su frase', 'Encaja'], filas: nombres, ancho: 82,
+      columnas: ['Es', 'Su frase', 'Encaja'], filas: nombres, ancho: 88,
       celdas: nombres.map((_, i) => {
         const val = frases[i].valor(v), ok = val === v[i];
         return [{ t: v[i] ? 'Veraz' : 'Miente', color: v[i] ? 'd' : 'h' }, { t: val ? 'cierta' : 'falsa', color: 'i' }, { marca: ok ? 'si' : 'no', color: ok ? 'd' : 'o' }];
@@ -74,6 +84,11 @@
       dibujo: val => ({ datos: tablaSup(DOS, FR2, [val.a === 'V', val.b === 'V']), estado: {} }),
       lectura: val => [coherente(FR2, [val.a === 'V', val.b === 'V']) ? 'Coherente: esta suposición se queda' : 'Choca: esta suposición se descarta'],
       minimo: 4,
+      // Desliza la casilla «Es» de cada persona: izquierda veraz, derecha miente.
+      arrastres: [
+        Object.assign({ id: 'ana', etiqueta: 'Ana: veraz o miente', color: 'c-d' }, interruptor(val => tablaSup(DOS, FR2, [val.a === 'V', val.b === 'V']), 0, 'a')),
+        Object.assign({ id: 'beto', etiqueta: 'Beto: veraz o miente', color: 'c-d' }, interruptor(val => tablaSup(DOS, FR2, [val.a === 'V', val.b === 'V']), 1, 'b')),
+      ],
     },
     predice: {
       pregunta: 'Otro grupo. Ana: «Beto miente». Beto: «Ciro miente». Ciro: «Ana y Beto mienten». ¿Quién dice la verdad?',
@@ -87,6 +102,9 @@
       revelar: { datos: tablaSup(TRES, FR3, SOL3[0], { nota: 'Única suposición coherente' }), estado: {} },
       coincide: 'Coincide: de las ocho suposiciones, solo esta encaja en las tres filas.',
     },
+    // Hallazgo 9: el juego usa la tabla «una fila por persona»; Mira usa la cadena «supón → sale». Son dos
+    // representaciones a propósito: la primera comprueba una suposición entera, la segunda muestra cómo una sola
+    // suposición obliga a las demás, que es lo que la tabla del juego no deja ver.
     mira: {
       datos: {
         columnas: ['Ana', 'Beto', 'Ciro'], filas: ['Supón', 'Sale', 'Sale'], ancho: 70,
@@ -107,7 +125,7 @@
     },
     regla: {
       texto: 'Se supone quién es veraz y se sigue lo que obliga cada frase. Si aparece un choque, la suposición se descarta. Vale la que encaja en todas las filas.',
-      ecuacion: ['veraz  ⇔  su frase es cierta'],
+      ecuacion: [{ llave: ['veraz'], nota: 'quién habla', color: 'c-d' }, '  ⇔  ', { llave: ['su frase es cierta'], nota: 'lo que dice', color: 'c-i' }],
       condicion: 'cada persona miente siempre o dice siempre la verdad, en todas sus frases.',
     },
     ahoraTu: {
@@ -159,7 +177,7 @@
       columnas: ['Dice', 'Es'], filas: sosp, ancho: 120,
       celdas: decl.map(d => [{ t: d.t, color: 'i' }, c === null ? '' : { t: d.valor(c) ? 'cierta' : 'falsa', color: d.valor(c) ? 'd' : 'h' }]),
       marcos: extra.marcos || [],
-      notas: [{ t: c === null ? (extra.nota || 'Supón un culpable') : extra.nota || `Si fue ${sosp[c]}: ${ciertas} ciertas y ${decl.length - ciertas} falsas` }],
+      notas: [{ t: c === null ? (extra.nota || 'Supón un culpable') : extra.nota || `Si fue ${sosp[c]}: ${ciertas} ${ciertas === 1 ? 'cierta' : 'ciertas'} y ${falsas(decl.length - ciertas)}` }],
     };
   }
   const contradictorias = {
@@ -172,8 +190,12 @@
       voz: 'Busca el culpable que deja exactamente una frase falsa.',
       controles: [{ id: 'c', etiqueta: 'Supón que fue', opciones: SOSP.map((n, k) => ({ valor: k, texto: n })) }],
       dibujo: val => ({ datos: tablaCulpa(val.c), estado: {} }),
-      lectura: val => { const fal = DECL.filter(d => !d.valor(val.c)).length; return [`${fal} falsas: `, fal === 1 ? 'encaja con «solo uno miente»' : 'no encaja']; },
+      lectura: val => { const fal = DECL.filter(d => !d.valor(val.c)).length; return [`${falsas(fal)}: `, fal === 1 ? 'encaja con «solo uno miente»' : 'no encaja']; },
       minimo: 4,
+      // Señala al sospechoso: la manija sube o baja por las filas del tablero.
+      arrastres: [{ id: 'culpable', etiqueta: 'sospechoso que se supone culpable', color: 'c-o',
+        donde: val => { const g = TAB().geometria(tablaCulpa(val.c)), p = g.centro(val.c, 1); return { x: p.x + g.cw / 2 - 14, y: p.y }; },
+        mover: (pt, val) => ({ c: TAB().geometria(tablaCulpa(val.c)).casilla(pt.x, pt.y).f }) }],
     },
     predice: {
       pregunta: 'Sin saber quién fue, mira solo a Beto («Fue Dina») y a Dina («Beto miente»). ¿Qué se sabe de esas dos frases?',
@@ -200,7 +222,7 @@
     },
     regla: {
       texto: 'Si una frase dice exactamente lo contrario de otra, una es cierta y la otra falsa. Si solo hay un mentiroso, está en ese par: los demás dicen la verdad.',
-      ecuacion: ['p y no p: exactamente una es cierta'],
+      ecuacion: [{ llave: ['p'], nota: 'una frase', color: 'c-i' }, ' y ', { llave: ['no p'], nota: 'su contraria', color: 'c-o' }, ': exactamente una es cierta'],
       condicion: 'las dos frases hablan de lo mismo y una es la negación completa de la otra, no solo una frase distinta.',
     },
     ahoraTu: {
@@ -261,6 +283,10 @@
       dibujo: val => ({ datos: tablaNota(ALUM.map((_, k) => k < val.n)), estado: {} }),
       lectura: val => [val.n === 4 ? '«Todos» es cierta' : val.n === 0 ? '«Ninguno» es cierta' : 'Las dos frases son falsas'],
       minimo: 3,
+      // La manija es el borde entre los que aprobaron (arriba) y los que no: se baja o se sube por la columna.
+      arrastres: [{ id: 'aprobaron', etiqueta: 'cuántos aprobaron', color: 'c-d',
+        donde: val => { const g = TAB().geometria(tablaNota(ALUM.map((_, k) => k < val.n))); return { x: g.x0 + g.cw, y: g.y0 + val.n * g.altoFila }; },
+        mover: (pt, val) => { const g = TAB().geometria(tablaNota(ALUM.map((_, k) => k < val.n))); return { n: (pt.y - g.y0) / g.altoFila }; } }],
     },
     predice: {
       pregunta: 'Un mentiroso dice: «Todos aprobaron». ¿Qué se sabe con certeza?',
@@ -288,7 +314,7 @@
     },
     regla: {
       texto: 'Negar «todos cumplen» es decir «al menos uno no cumple». Negar «ninguno cumple» es «al menos uno cumple». Negar «p y q» es «no p o no q».',
-      ecuacion: ['no (p y q) = no p o no q   ·   no (p o q) = no p y no q'],
+      ecuacion: ['no (p y q) = ', { llave: ['no p o no q'], nota: 'basta una', color: 'c-o' }, '   ·   ', 'no (p o q) = ', { llave: ['no p y no q'], nota: 'fallan las dos', color: 'c-h' }],
       condicion: 'la negación tiene que fallar exactamente cuando la frase original se cumple, en todos los casos.',
     },
     ahoraTu: {
@@ -308,18 +334,91 @@
         return {
           pregunta: `Alguien que siempre miente dice: «${casos.dice}». ¿Qué es seguro?`,
           opciones: opcionesTexto(casos.ok, casos.mal.map((t, k) => ({ id: 'm' + k, texto: t, error: k === 0 ? 'RMT-VYM-6' : 'RMT-VYM-7', siFuera: 'Es un caso posible, pero la frase también falla en otros casos.' }))),
-          solucion: { texto: 'La frase dicha es falsa; se escribe lo que falla exactamente cuando ella se cumple.', ecuacion: [tipo < 2 ? 'no (todos) = alguno no · no (ninguno) = alguno sí' : tipo === 2 ? 'no (p y q) = no p o no q' : 'no (p o q) = no p y no q'] },
+          solucion: { texto: 'La frase dicha es falsa; se escribe lo que falla exactamente cuando ella se cumple.', ecuacion: tipo < 2 ? ['no (todos) = alguno no', '   ·   ', 'no (ninguno) = alguno sí'] : [tipo === 2 ? 'no (p y q) = no p o no q' : 'no (p o q) = no p y no q'] },
         };
       },
     },
   };
   void V; void M;
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: el acertijo de tres que la idea 1 no deja jugar, con la frase de Ciro cambiable: hay frases con una,
+  // ninguna o varias suposiciones coherentes (el caso raro: la información no decide).
+  const FRASES_CIRO = [
+    { valor: 0, texto: 'Ana y Beto mienten', f: v => !v[0] && !v[1] },
+    { valor: 1, texto: 'Ana miente', f: v => !v[0] },
+    { valor: 2, texto: 'Beto dice la verdad', f: v => v[1] },
+  ];
+  const fr3 = k => [FR3[0], FR3[1], { t: `Ciro: «${FRASES_CIRO[k].texto}»`, valor: FRASES_CIRO[k].f }];
+  const v3 = val => [val.a === 'V', val.b === 'V', val.c === 'V'];
+  const datos3 = val => tablaSup(TRES, fr3(val.fc), v3(val));
+  const VM = [{ valor: 'V', texto: 'Veraz' }, { valor: 'M', texto: 'Miente' }];
+  const mesaTres = {
+    id: 'tres-que-hablan', titulo: 'Tres que hablan', pieza: 'rm-tablero',
+    consigna: 'Ana: «Beto miente». Beto: «Ciro miente». Cambia lo que dice Ciro y busca cuántas suposiciones encajan.',
+    controles: [
+      { id: 'fc', etiqueta: 'Ciro dice', opciones: FRASES_CIRO.map(o => ({ valor: o.valor, texto: o.texto })) },
+      { id: 'a', etiqueta: 'Ana', opciones: VM }, { id: 'b', etiqueta: 'Beto', opciones: VM }, { id: 'c', etiqueta: 'Ciro', opciones: VM },
+    ],
+    dibujo: val => ({ datos: datos3(val), estado: {} }),
+    lectura: val => {
+      const n = asignaciones(3).filter(x => coherente(fr3(val.fc), x)).length;
+      return [coherente(fr3(val.fc), v3(val)) ? 'Encaja' : 'Choca', ` · ${n} de 8 suposiciones encajan`];
+    },
+    arrastres: [['ana', 0, 'a'], ['beto', 1, 'b'], ['ciro', 2, 'c']].map(([id, fila, c]) =>
+      Object.assign({ id, etiqueta: `${TRES[fila]}: veraz o miente`, color: 'c-d' }, interruptor(datos3, fila, c))),
+  };
+  // Mesa 2: el culpable con las dos condiciones del examen, «solo uno miente» o «solo uno dice la verdad».
+  const datosCulpa = val => {
+    const fal = DECL.filter(d => !d.valor(val.c)).length, pide = val.cond === 'miente' ? 1 : 3;
+    return Object.assign(tablaCulpa(val.c), { notas: [{ t: `Fue ${SOSP[val.c]}: ${falsas(fal)}; se piden ${pide}` }] });
+  };
+  const mesaCulpa = {
+    id: 'quien-fue', titulo: '¿Quién rompió el vaso?', pieza: 'rm-tablero',
+    consigna: 'Señala al sospechoso y cambia la condición. Cuenta las frases falsas que deja cada culpable.',
+    controles: [
+      { id: 'cond', etiqueta: 'Condición', opciones: [{ valor: 'miente', texto: 'Solo uno miente' }, { valor: 'veraz', texto: 'Solo uno dice la verdad' }] },
+      { id: 'c', etiqueta: 'Supón que fue', opciones: SOSP.map((n, k) => ({ valor: k, texto: n })) },
+    ],
+    dibujo: val => ({ datos: datosCulpa(val), estado: {} }),
+    lectura: val => {
+      const fal = DECL.filter(d => !d.valor(val.c)).length, pide = val.cond === 'miente' ? 1 : 3;
+      return [`${SOSP[val.c]}: ${falsas(fal)} · `, fal === pide ? 'encaja' : 'no encaja'];
+    },
+    arrastres: [{ id: 'culpable', etiqueta: 'sospechoso que se supone culpable', color: 'c-o',
+      donde: val => { const g = TAB().geometria(datosCulpa(val)), p = g.centro(val.c, 1); return { x: p.x + g.cw / 2 - 14, y: p.y }; },
+      mover: (pt, val) => ({ c: TAB().geometria(datosCulpa(val)).casilla(pt.x, pt.y).f }) }],
+  };
+  // Mesa 3: seis alumnos y las cuatro frases, cada una al lado de su negación: siempre valen lo contrario.
+  const SEIS = ['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito'];
+  const vf = b => (b ? 'cierta' : 'falsa');
+  const datosSeis = val => {
+    const ap = SEIS.map((_, k) => k < val.n), todos = ap.every(Boolean), ninguno = !ap.some(Boolean);
+    return {
+      columnas: ['Aprobó'], filas: SEIS, ancho: 70,
+      celdas: ap.map(x => [{ marca: x ? 'si' : 'no', color: x ? 'd' : 'h' }]),
+      notas: [{ t: `Todos: ${vf(todos)} · Alguno no: ${vf(!todos)}` }, { t: `Ninguno: ${vf(ninguno)} · Alguno sí: ${vf(!ninguno)}` }],
+    };
+  };
+  const mesaSeis = {
+    id: 'seis-alumnos', titulo: 'Cada frase y su contraria', pieza: 'rm-tablero',
+    consigna: 'Baja o sube el borde de los que aprobaron. Cada frase está junto a su negación: compara cómo cambian.',
+    controles: [{ id: 'n', etiqueta: 'Aprobaron', min: 0, max: 6, paso: 1, inicio: 6, decimales: 0 }],
+    dibujo: val => ({ datos: datosSeis(val), estado: {} }),
+    lectura: val => [`${f0(val.n)} de 6 aprobaron · `, val.n === 6 ? '«todos» se cumple' : val.n === 0 ? '«ninguno» se cumple' : 'ni «todos» ni «ninguno»'],
+    arrastres: [{ id: 'aprobaron', etiqueta: 'cuántos aprobaron', color: 'c-d',
+      donde: val => { const g = TAB().geometria(datosSeis(val)); return { x: g.x0 + g.cw, y: g.y0 + val.n * g.altoFila }; },
+      mover: (pt, val) => { const g = TAB().geometria(datosSeis(val)); return { n: (pt.y - g.y0) / g.altoFila }; } }],
+  };
+
   return {
     unidad: 'razonamiento-matematico.verdades-y-mentiras',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-tablero.js'],
+    // Laboratorio: el acertijo de tres con la frase de Ciro cambiable, el culpable con las dos condiciones y las
+    // cuatro frases de «todos/ninguno» junto a su negación.
+    laboratorio: [mesaTres, mesaCulpa, mesaSeis],
     historia: {
       texto: 'En 1847 y 1854, George Boole propuso tratar las frases lógicas con un álgebra: cada una es verdadera o falsa, y se combinan con reglas. Las tablas de verdad que usamos hoy llegaron después. Los acertijos de veraces y mentirosos juntan dos capas: lo que dice la frase y quién la dice.',
       pregunta: '¿Se puede atrapar a un mentiroso solo con lógica?',

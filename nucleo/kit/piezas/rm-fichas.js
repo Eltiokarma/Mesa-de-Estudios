@@ -102,5 +102,24 @@
     return `Fichas. ${fs.join('; ')}${d.pie ? `. ${d.pie}` : ''}.`;
   }
 
-  return { id: 'rm-fichas', dibujar, alt };
+  // geometria(datos, corte) → { lado, filas: [{ y, fichas: [{ x, y, ancho, cx, cy }] }], alto }: dónde cae cada ficha
+  // visible en el viewBox (las mismas cuentas de fila()), para las manijas del gesto directo.
+  function geometria(d, corte = 0) {
+    const t = tamDe(d), filas = (d.filas || []).slice(0, 5);
+    return {
+      lado: t,
+      alto: M + filas.length * filasAlto(d) + PIE,
+      filas: filas.map((fl, k) => {
+        const y = M + k * filasAlto(d) + ALTO_ROT;
+        const vis = (fl.fichas || []).filter(f => ve(f, corte));
+        const total = vis.reduce((m, f) => m + ancho(f, t) + SEP, 0);
+        const k2 = total > W - 2 * M ? (W - 2 * M) / total : 1;
+        let x = M;
+        const fichas = vis.map(f => { const o = { x, y, ancho: ancho(f, t), cx: x + ancho(f, t) / 2, cy: y + t / 2 }; x += (ancho(f, t) + SEP) * k2; return o; });
+        return { y, fichas, paso: (t + SEP) * k2 };
+      }),
+    };
+  }
+
+  return { id: 'rm-fichas', dibujar, alt, geometria };
 });

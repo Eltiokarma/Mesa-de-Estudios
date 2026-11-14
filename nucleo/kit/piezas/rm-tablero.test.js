@@ -39,3 +39,16 @@ test('el fantasma va discontinuo y el texto alternativo nombra filas y columnas'
   assert.match(s, /kit-fantasma/); assert.match(s, /stroke-dasharray/);
   assert.match(P.alt(d), /Ana y 1: sí/);
 });
+
+test('geometria: centro y casilla son inversas, y el centro cae en la casilla dibujada', () => {
+  const dt = { columnas: ['1', '2', '3'], filas: ['Ana', 'Beto'], celdas: [['a', 'b', 'c'], ['d', 'e', 'f']] };
+  const g = P.geometria(dt), s = P.dibujar(dt);
+  for (let f = 0; f < 2; f++) for (let c = 0; c < 3; c++) {
+    const p = g.centro(f, c);
+    assert.deepEqual(g.casilla(p.x, p.y), { f, c });
+    const x = +(g.x0 + c * g.cw).toFixed(2);
+    assert.ok(s.includes(`x="${x}"`) || s.includes(`x="${Math.round(x * 100) / 100}"`));
+  }
+  assert.deepEqual(g.casilla(-50, 999), { f: 1, c: 0 });
+  assert.equal(+s.match(/viewBox="0 0 320 ([\d.]+)"/)[1], g.alto);
+});

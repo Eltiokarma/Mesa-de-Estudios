@@ -37,6 +37,14 @@
     return ops;
   }
 
+  const f0 = x => Kit.formatear(x, 0);
+  const pl = (x, uno, varios) => `${f0(x)} ${x === 1 ? uno : varios}`;
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría que exportan rm-fichas, ejes y rm-plano.
+  const FICHAS = () => Kit.piezas['rm-fichas'], EJES = () => Kit.piezas.ejes, PLANO = () => Kit.piezas['rm-plano'];
+  const enPlano = (d, q) => { const g = PLANO().geometria(d); return { x: g.X(q[0]), y: g.Y(q[1]) }; };
+  const dePlano = (d, pt) => { const g = PLANO().geometria(d); return [(pt.x - g.X(0)) / g.k, (pt.y - g.Y(0)) / g.k]; };
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+
   // ---------- Idea 1: cantidad mínima de personas ----------
   // Cambia: cuántas personas tienen los dos papeles · Permanece: 3 docentes y 4 músicos · Progresa: el total que baja ·
   // Se reserva: tres papeles · Debe verse: una persona con dos etiquetas cuenta una vez.
@@ -48,6 +56,9 @@
     ];
     return { filas, tam: 30, pie: extra.pie || `Personas: ${a + b - ambos}` };
   }
+  // El final de la fila de los que tienen los dos papeles, medido con la fila llena (3 fichas): medio paso después de
+  // la última ficha, o al borde izquierdo si está vacía.
+  const finFila = c0 => { const g = FICHAS().geometria(gente(3, 4, 3)), fl = g.filas[0]; return { x: fl.fichas[0].cx + (c0 - 0.5) * fl.paso, y: fl.y + g.lado / 2 }; };
   const personas = {
     id: 'minimo-personas',
     titulo: 'Menos personas, más papeles',
@@ -60,6 +71,10 @@
       dibujo: val => ({ datos: gente(3, 4, val.c), estado: {} }),
       lectura: val => [`3 + 4 − ${val.c} = ${7 - val.c} personas`],
       minimo: 3,
+      // Arrastra el final de la fila «Docente y músico»: cada lugar que ganas junta un docente con un músico.
+      arrastres: [{ id: 'ambos', etiqueta: 'cuántos son docente y músico', color: 'c-d',
+        donde: val => finFila(val.c),
+        mover: (pt, val) => { const g = FICHAS().geometria(gente(3, 4, 3)), fl = g.filas[0]; return { c: (pt.x - fl.fichas[0].cx) / fl.paso + 0.5 }; } }],
     },
     predice: {
       pregunta: 'En un taller, 5 personas cantan, 4 bailan y 3 actúan. Cada persona puede hacer varias cosas. ¿Cuántas personas hay, como mínimo?',
@@ -83,7 +98,7 @@
     },
     regla: {
       texto: 'Para el mínimo de personas, se superponen los papeles todo lo permitido. El mínimo se demuestra con una cota (no puede haber menos) y un caso que la alcanza.',
-      ecuacion: ['|A ∪ B| = |A| + |B| − |A ∩ B|'],
+      ecuacion: ['|A ∪ B| = |A| + |B| − ', { llave: ['|A ∩ B|'], nota: 'con dos papeles', color: 'c-d' }],
       condicion: 'el enunciado permite que una persona tenga varios papeles; si no, se suman.',
     },
     ahoraTu: {
@@ -146,6 +161,10 @@
       dibujo: val => ({ datos: curva(80, 2, val.p), estado: {} }),
       lectura: val => [R, ` = ${val.p} · ${80 - 2 * val.p} = S/ ${recauda(80, 2)(val.p)}`],
       minimo: 4,
+      // Arrastra el punto sobre la curva a lo largo del eje del precio.
+      arrastres: [{ id: 'precio', etiqueta: 'precio de la entrada', color: 'c-i',
+        donde: val => { const g = EJES().geometria(curva(80, 2, val.p)); return { x: g.X(val.p), y: g.Y(recauda(80, 2)(val.p)) }; },
+        mover: (pt, val) => { const g = EJES().geometria(curva(80, 2, val.p)); return { p: inversa(g.X, 0, 40)(pt.x) }; } }],
     },
     predice: {
       pregunta: 'En otra función, si la entrada cuesta p soles se venden 90 − 2p entradas. ¿Qué precio da la mayor recaudación?',
@@ -164,12 +183,12 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Se recauda cero con precio 0 o si nadie compra (p = 45).', ecuacion: [R, ' = ', p, '(90 − 2', p, ')'] },
         { estado: { corte: 2 }, texto: 'La curva es simétrica: el máximo está en el medio.', ecuacion: [p, ' = (0 + 45) / 2 = 22,5'] },
-        { estado: { corte: 2 }, texto: 'Completando el cuadrado se ve que nada supera ese valor.', ecuacion: [R, ' = 1012,5 − 2(', p, ' − 22,5)² ≤ 1012,5'] },
+        { estado: { corte: 2 }, texto: 'Completando el cuadrado se ve que nada supera ese valor.', ecuacion: [R, ' = 1012,5 − 2', { sup: [['(', p, ' − 22,5)'], '2'] }, ' ≤ 1012,5'] },
       ],
     },
     regla: {
       texto: 'Si se vende q = a − bp a precio p, la recaudación R = p(a − bp) es máxima en el punto medio entre sus dos ceros.',
-      ecuacion: [p, ' = ', { frac: ['a', '2b'] }, '  ·  ', R, ' máx = ', { frac: ['a²', '4b'] }],
+      ecuacion: [p, ' = ', { frac: ['a', '2b'] }, '   ·   ', R, ' máx = ', { frac: [{ sup: ['a', '2'] }, '4b'] }],
       condicion: 'el modelo de ventas es exacto en ese rango de precios; si solo se permiten ciertos precios, se comparan esos.',
     },
     ahoraTu: {
@@ -191,7 +210,7 @@
             { id: 'a2', texto: `S/ ${f(a / 2)}`, error: 'RMT-MAX-11', siFuera: 'Falta dividir entre b.' },
             { id: 'cerca', texto: `S/ ${f(pm + 5)}`, error: 'RMT-MAX-8', siFuera: 'Ese precio recauda menos que el del medio.' },
           ]),
-          solucion: { texto: `Recauda 0 en p = 0 y en p = ${f(a / b)}; el máximo está en el medio.`, ecuacion: [p, ` = ${f(pm)} · `, R, ` = ${f(pm)} · ${f(a - b * pm)} = ${f(Rm)}`], dibujo: { datos: curva(a, b, pm, { vertice: 0 }), estado: {} } },
+          solucion: { texto: `Recauda 0 en p = 0 y en p = ${f(a / b)}; el máximo está en el medio.`, ecuacion: [p, ` = ${f(pm)}`, '   ·   ', R, ` = ${f(pm)} · ${f(a - b * pm)} = ${f(Rm)}`], dibujo: { datos: curva(a, b, pm, { vertice: 0 }), estado: {} } },
         };
       },
     },
@@ -246,7 +265,7 @@
     },
     regla: {
       texto: 'Si ninguna recta es paralela a otra y no pasan tres por un punto, la recta número n agrega n regiones. Así se alcanza el máximo.',
-      ecuacion: ['regiones = 1 + 1 + 2 + … + ', n, ' = 1 + ', { frac: [[n, '(', n, ' + 1)'], '2'] }],
+      ecuacion: ['regiones = 1 + ', { frac: [[n, '(', n, ' + 1)'], '2'] }, '   ·   ', { llave: ['1 + 2 + … + ', n], nota: 'lo que agregan', color: 'c-i' }, ' = ', { frac: [[n, '(', n, ' + 1)'], '2'] }],
       condicion: 'son rectas completas en el plano; con paralelas o rectas que pasan por un mismo punto, hay menos regiones.',
     },
     ahoraTu: {
@@ -301,6 +320,10 @@
       dibujo: val => ({ datos: rio(xs[val.k]), estado: {} }),
       lectura: val => [L, ` = ${f(largo(xs[val.k]), 2)} (en cuadros)`],
       minimo: 4,
+      // Arrastra el punto donde se toca el río.
+      arrastres: [{ id: 'orilla', etiqueta: 'punto donde se toca el río', color: 'c-o',
+        donde: val => enPlano(rio(xs[val.k]), [xs[val.k], RIO]),
+        mover: (pt, val) => { const x = dePlano(rio(xs[val.k]), pt)[0]; return { k: xs.map((v, i) => [Math.abs(v - x), i]).sort((a, b) => a[0] - b[0])[0][1] }; } }],
     },
     predice: {
       pregunta: '¿Dónde conviene tocar el río para que el camino de A al río y luego a B sea el más corto?',
@@ -322,8 +345,8 @@
       ],
     },
     regla: {
-      texto: 'Para ir de A a B tocando una recta, se refleja B en esa recta. El camino más corto mide lo mismo que el segmento de A al reflejo B′.',
-      ecuacion: [L, ' mín = AB′ = ', { raiz: '(distancia horizontal)² + (suma de alturas)²' }],
+      texto: 'Para ir de A a B tocando una recta, se refleja B. El camino más corto mide AB′: d es la distancia horizontal; a y b, las alturas.',
+      ecuacion: [L, ' mín = AB′ = ', { raiz: [{ sup: ['d', '2'] }, ' + ', { sup: ['(a + b)', '2'] }] }],
       condicion: 'A y B están del mismo lado de la recta y se puede tocar cualquier punto de ella.',
     },
     ahoraTu: {
@@ -339,17 +362,140 @@
             { id: 'suma', texto: `${f(a + b + d)} km`, error: 'RMT-MAX-15', siFuera: 'Eso va en ángulos rectos; la recta diagonal es más corta.' },
             { id: 'medio', texto: `${f(Math.hypot(d / 2, a) + Math.hypot(d / 2, b), 2)} km`, error: 'RMT-MAX-14', siFuera: 'Eso toca el río en el medio, que no es el mejor punto.' },
           ]),
-          solucion: { texto: 'Se refleja B: la recta de A a B′ tiene catetos d y a + b.', ecuacion: [L, ` = `, { raiz: `${d}² + ${h}²` }, ` = ${f(bien)} km`] },
+          solucion: { texto: 'Se refleja B: la recta de A a B′ tiene catetos d y a + b.', ecuacion: [L, ` = `, { raiz: [{ sup: [String(d), '2'] }, ' + ', { sup: [String(h), '2'] }] }, ` = ${f(bien)} km`] },
         };
       },
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: tres rectas fijas y una cuarta que el alumno mueve y gira. Es el caso raro que la idea 3 no deja probar:
+  // con una paralela o con tres rectas por un punto, las regiones bajan del máximo (11).
+  const CAJA = [0.2, 0.2, 9.8, 6];
+  const FIJAS = [{ p: [0, 1.5], d: [1, 0] }, { p: [7, 0], d: [0, 1] }, { p: [2, 0.5], d: [1, 1] }];
+  const dirDe = th => [Math.cos(th * Math.PI / 180), Math.sin(th * Math.PI / 180)];
+  // Recorta la recta (punto y dirección) a la caja: Liang-Barsky.
+  function recorte(r) {
+    let t0 = -1e9, t1 = 1e9;
+    const [px, py] = r.p, [dx, dy] = r.d;
+    for (const [q, d0, lo, hi] of [[px, dx, CAJA[0], CAJA[2]], [py, dy, CAJA[1], CAJA[3]]]) {
+      if (Math.abs(d0) < 1e-12) { if (q < lo || q > hi) return null; continue; }
+      const a0 = (lo - q) / d0, a1 = (hi - q) / d0;
+      t0 = Math.max(t0, Math.min(a0, a1)); t1 = Math.min(t1, Math.max(a0, a1));
+    }
+    return t1 > t0 ? [[px + t0 * dx, py + t0 * dy], [px + t1 * dx, py + t1 * dy]] : null;
+  }
+  // Regiones de todo el plano (las rectas son infinitas): 1 + rectas + Σ (rectas por el punto − 1) en cada cruce.
+  // Se avisa si algún cruce cae fuera del dibujo, para que no se cuente a ojo solo lo que se ve.
+  function contarRegiones(rs) {
+    const ps = [];
+    let paralelas = false, fuera = false;
+    for (let i = 0; i < rs.length; i++) for (let j = i + 1; j < rs.length; j++) {
+      const [a, b] = [rs[i], rs[j]], det = a.d[0] * b.d[1] - a.d[1] * b.d[0];
+      if (Math.abs(det) < 1e-9) { paralelas = true; continue; }
+      const t = ((b.p[0] - a.p[0]) * b.d[1] - (b.p[1] - a.p[1]) * b.d[0]) / det;
+      const x = a.p[0] + t * a.d[0], y = a.p[1] + t * a.d[1];
+      if (x <= CAJA[0] || x >= CAJA[2] || y <= CAJA[1] || y >= CAJA[3]) fuera = true;
+      const q = ps.find(o => Math.hypot(o.x - x, o.y - y) < 1e-6);
+      if (q) q.r.add(i).add(j); else ps.push({ x, y, r: new Set([i, j]) });
+    }
+    const regiones = 1 + rs.length + ps.reduce((m, o) => m + o.r.size - 1, 0);
+    return { regiones, paralelas, fuera, triple: ps.some(o => o.r.size >= 3) };
+  }
+  const cuarta = val => ({ p: [val.px, val.py], d: dirDe(val.th) });
+  function mesaRectasDatos(val) {
+    const rs = FIJAS.concat([cuarta(val)]);
+    return {
+      ancho: 10, alto: 6.2,
+      poligonos: [{ puntos: [[CAJA[0], CAJA[1]], [CAJA[2], CAJA[1]], [CAJA[2], CAJA[3]], [CAJA[0], CAJA[3]]], relleno: 0, grosor: 'cuadricula' }],
+      lineas: rs.map((r, i) => { const q = recorte(r); return q && { de: q[0], a: q[1], color: i === 3 ? 'o' : 'i', grosor: i === 3 ? 'variable' : 'contorno' }; }).filter(Boolean),
+    };
+  }
+  // La manija de giro va a 1,6 cuadros del pivote, hacia el lado que queda dentro de la caja.
+  const brazo = val => { const d = dirDe(val.th), sg = val.px + 1.6 * d[0] > 9.6 || val.py + 1.6 * d[1] > 5.9 || val.py + 1.6 * d[1] < 0.3 ? -1 : 1; return [val.px + sg * 1.6 * d[0], val.py + sg * 1.6 * d[1]]; };
+  const mesaRectas = {
+    id: 'cuarta-recta', titulo: 'Mueve la cuarta recta', pieza: 'rm-plano',
+    consigna: 'Arrastra el punto naranja y gira la recta. ¿Cuándo se pierden regiones? Prueba paralelas y tres por un punto.',
+    controles: [
+      { id: 'px', etiqueta: 'Pasa por x', color: 'c-o', min: 0.5, max: 9.5, paso: 0.5, inicio: 5, decimales: 1 },
+      { id: 'py', etiqueta: 'Pasa por y', color: 'c-o', min: 0.5, max: 5.5, paso: 0.5, inicio: 3, decimales: 1 },
+      { id: 'th', etiqueta: 'Giro', color: 'c-o', min: 0, max: 165, paso: 15, inicio: 135, unidad: '°', decimales: 0 },
+    ],
+    dibujo: val => ({ datos: Object.assign(mesaRectasDatos(val), { nodos: [{ id: 'p', x: val.px, y: val.py, r: 6, relleno: 1, color: 'o' }] }), estado: {} }),
+    lectura: val => {
+      const q = contarRegiones(FIJAS.concat([cuarta(val)]));
+      return [`4 rectas: ${q.regiones} regiones`, q.paralelas ? ' · hay paralelas' : q.triple ? ' · tres por un punto' : q.fuera ? ' · un cruce fuera del dibujo' : ' · el máximo'];
+    },
+    arrastres: [
+      { id: 'pivote', etiqueta: 'punto por donde pasa la recta', color: 'c-o',
+        donde: val => enPlano(mesaRectasDatos(val), [val.px, val.py]),
+        mover: (pt, val) => { const [x, y] = dePlano(mesaRectasDatos(val), pt); return { px: x, py: y }; } },
+      { id: 'giro', etiqueta: 'giro de la recta', color: 'c-o',
+        donde: val => enPlano(mesaRectasDatos(val), brazo(val)),
+        mover: (pt, val) => { const [x, y] = dePlano(mesaRectasDatos(val), pt); return { th: ((Math.atan2(y - val.py, x - val.px) * 180 / Math.PI) % 180 + 180) % 180 }; } },
+    ],
+  };
+  // Mesa 2: el río con A fija y B que se mueve: el punto del río es libre y se compara con el mínimo.
+  function rioLibre(val) {
+    const B = [val.bx, val.by], B2l = [val.bx, 2 * RIO - val.by];
+    return {
+      ancho: 10, alto: 6.2,
+      lineas: [{ de: [0, RIO], a: [10, RIO], color: 'i', grosor: 'contorno' }, { de: PA, a: [val.x, RIO], color: 'o' }, { de: [val.x, RIO], a: B, color: 'o' },
+        { de: [val.x, RIO], a: B2l, color: 'd', discontinua: true }, { de: B, a: B2l, grosor: 'cuadricula', discontinua: true }],
+      nodos: [{ id: 'a', x: PA[0], y: PA[1], t: 'A', r: 13 }, { id: 'b', x: B[0], y: B[1], t: 'B', r: 13 }, { id: 'b2', x: B2l[0], y: B2l[1], t: 'B′', r: 13, color: 'd' }],
+      textos: [{ x: 0.6, y: RIO + 0.45, t: 'río', color: 'i' }],
+    };
+  }
+  const largoLibre = val => Math.hypot(val.x - PA[0], RIO - PA[1]) + Math.hypot(val.bx - val.x, RIO - val.by);
+  const minLibre = val => Math.hypot(val.bx - PA[0], (2 * RIO - val.by) - PA[1]);
+  const mesaRio = {
+    id: 'rio-libre', titulo: 'El río con B móvil', pieza: 'rm-plano',
+    consigna: 'Mueve B y el punto del río. ¿El camino más corto pasa siempre por donde la recta de A a B′ corta el río?',
+    controles: [
+      { id: 'x', etiqueta: 'Toca el río en', color: 'c-o', min: 0, max: 10, paso: 0.1, inicio: 5, decimales: 1 },
+      { id: 'bx', etiqueta: 'B a lo ancho', color: 'c-d', min: 2, max: 9.5, paso: 0.5, inicio: 8, decimales: 1 },
+      { id: 'by', etiqueta: 'B a lo alto', color: 'c-d', min: 0.5, max: 2, paso: 0.5, inicio: 0.5, decimales: 1 },
+    ],
+    dibujo: val => ({ datos: rioLibre(val), estado: {} }),
+    lectura: val => [L, ` = ${f(largoLibre(val), 2)} · el mínimo es ${f(minLibre(val), 2)}`],
+    arrastres: [
+      { id: 'orilla', etiqueta: 'punto donde se toca el río', color: 'c-o',
+        donde: val => enPlano(rioLibre(val), [val.x, RIO]),
+        mover: (pt, val) => ({ x: dePlano(rioLibre(val), pt)[0] }) },
+      { id: 'b', etiqueta: 'posición de B', color: 'c-d',
+        donde: val => enPlano(rioLibre(val), [val.bx, val.by]),
+        mover: (pt, val) => { const [x, y] = dePlano(rioLibre(val), pt); return { bx: x, by: y }; } },
+    ],
+  };
+  // Mesa 3: el modelo de ventas a elección (q = a − bp): el mejor precio se corre con a y con b.
+  const pLibre = val => Math.min(val.p, val.a / val.b);
+  const mesaPrecio = {
+    id: 'precio-libre', titulo: 'Tu propio modelo de ventas', pieza: 'ejes',
+    consigna: 'Elige cuántas entradas se venden a precio 0 (a) y cuántas se pierden por sol (b). Busca el mejor precio.',
+    controles: [
+      { id: 'a', etiqueta: 'a', color: 'c-o', min: 40, max: 120, paso: 10, inicio: 90, decimales: 0 },
+      { id: 'b', etiqueta: 'b', color: 'c-d', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 },
+      { id: 'p', etiqueta: 'Precio', color: 'c-i', min: 0, max: 60, paso: 0.5, inicio: 15, unidad: 'S/', decimales: 1 },
+    ],
+    dibujo: val => ({ datos: curva(val.a, val.b, pLibre(val)), estado: {} }),
+    lectura: val => [p, ` = ${f(pLibre(val), 1)}: `, R, ` = S/ ${f(recauda(val.a, val.b)(pLibre(val)), 1)} · mejor `, p, ` = ${f(val.a / (2 * val.b), 2)}`],
+    arrastres: [{ id: 'precio', etiqueta: 'precio de la entrada', color: 'c-i',
+      donde: val => { const g = EJES().geometria(curva(val.a, val.b, pLibre(val))); return { x: g.X(pLibre(val)), y: g.Y(recauda(val.a, val.b)(pLibre(val))) }; },
+      mover: (pt, val) => {
+        const g = EJES().geometria(curva(val.a, val.b, pLibre(val))), pm = val.a / val.b, x = inversa(g.X, 0, pm)(pt.x);
+        // Si el control está más allá del último precio que vende, la manija queda al final y no lo baja sin querer.
+        return { p: val.p > pm && x >= pm - 0.25 ? val.p : x };
+      } }],
+  };
+
   return {
     unidad: 'razonamiento-matematico.maximos-y-minimos',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-fichas.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/rm-plano.js'],
+    // Laboratorio: la cuarta recta que se mueve y gira (paralelas y tres por un punto), el río con B móvil y el modelo
+    // de ventas a elección.
+    laboratorio: [mesaRectas, mesaRio, mesaPrecio],
     historia: {
       texto: 'Desde 1947, George Dantzig trabajó en organizar decisiones con restricciones: así nació la programación lineal. No todos los problemas de mínimos del examen son de ese tipo, pero comparten algo: decir qué se optimiza, qué está permitido y por qué no hay una opción mejor.',
       pregunta: '¿Cómo se demuestra que no hay nada mejor?',

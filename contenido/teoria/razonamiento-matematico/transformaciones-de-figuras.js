@@ -30,6 +30,12 @@
     r.elegir = xs => xs[Math.floor(r() * xs.length)];
     return r;
   }
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de rm-plano (X, Y en unidades del problema).
+  const PLANO = () => Kit.piezas['rm-plano'];
+  const aFig = (datos, x, y) => { const g = PLANO().geometria(datos); return { x: g.X(x), y: g.Y(y) }; };
+  const aUnid = (datos, pt) => { const g = PLANO().geometria(datos); return [(pt.x - g.X(0)) / g.k, (pt.y - g.Y(0)) / g.k]; };
+  // Ángulo en grados, en sentido antihorario desde el eje x, del punto (x, y) visto desde O (y hacia abajo).
+  const angulo = (O, x, y) => ((Math.atan2(-(y - O[1]), x - O[0]) * 180 / Math.PI) + 360) % 360;
   function opcionesTexto(correcta, distractores) {
     const vistos = new Set([correcta]);
     const ops = [{ id: 'c', texto: correcta, correcta: true }];
@@ -74,8 +80,17 @@
       voz: 'Compara la pieza girada con la reflejada.',
       controles: [{ id: 'm', etiqueta: 'Movimiento', opciones: Object.keys(MOV).map(m => ({ valor: m, texto: NOMBRE[m] })) }],
       dibujo: val => ({ datos: mover(val.m), estado: {} }),
-      lectura: val => [`5 cuadritos en las dos · ${val.m === 'refleja' ? 'orientación invertida' : 'misma orientación'}`],
+      lectura: val => [`5 cuadritos · ${val.m === 'refleja' ? 'orientación invertida' : 'misma orientación'}`],
       minimo: 4,
+      // Lleva el cuadrito rojo de la imagen a otro lugar: queda el movimiento que lo pone más cerca.
+      arrastres: [{ id: 'cuadrito-rojo', etiqueta: 'cuadrito rojo de la imagen', color: 'c-h',
+        donde: val => { const c = norm(PIEZA.map(MOV[val.m]))[0]; return aFig(mover(val.m), 6 + c[0] + 0.5, 1 + c[1] + 0.5); },
+        mover: (pt, val) => {
+          const [x, y] = aUnid(mover(val.m), pt);
+          let mejor = val.m, dmin = Infinity;
+          for (const m of Object.keys(MOV)) { const c = norm(PIEZA.map(MOV[m]))[0], d = Math.hypot(6 + c[0] + 0.5 - x, 1 + c[1] + 0.5 - y); if (d < dmin) { dmin = d; mejor = m; } }
+          return { m: mejor };
+        } }],
     },
     predice: {
       pregunta: 'Con solo giros y traslaciones sobre la mesa, sin levantar la pieza, ¿se puede llevar la pieza a su reflejo?',
@@ -98,7 +113,7 @@
     },
     regla: {
       texto: 'Trasladar, girar y reflejar no cambian distancias, ángulos ni áreas: dan figuras congruentes. Girar y trasladar conservan la orientación; reflejar la invierte.',
-      ecuacion: ['isometría: |T(P) − T(Q)| = |P − Q|'],
+      ecuacion: [{ llave: ['|T(P) − T(Q)|'], nota: 'entre imágenes', color: 'c-o' }, ' = ', { llave: ['|P − Q|'], nota: 'entre originales', color: 'c-i' }],
       condicion: 'la figura no se estira ni se corta; para pasar de una a su reflejo en el plano hace falta voltearla.',
     },
     ahoraTu: {
@@ -144,8 +159,12 @@
       voz: 'Cada cuadrito se vuelve un cuadrado de k por k.',
       controles: [{ id: 'k', etiqueta: 'k', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-o' }],
       dibujo: val => ({ datos: ampliar(val.k), estado: {} }),
-      lectura: val => [k, ` = ${val.k} · área = 3 · ${val.k}² = ${3 * val.k * val.k}`],
+      lectura: val => [k, ` = ${val.k}`, '   ·   ', 'área = 3 · ', { sup: [String(val.k), '2'] }, ` = ${3 * val.k * val.k}`],
       minimo: 3,
+      // Se estira la copia desde su esquina de arriba a la derecha: la diagonal crece con k.
+      arrastres: [{ id: 'esquina', etiqueta: 'esquina de la copia', color: 'c-o',
+        donde: val => aFig(ampliar(val.k), 3.4 + 2 * val.k, 0.5),
+        mover: (pt, val) => ({ k: (aUnid(ampliar(val.k), pt)[0] - 3.4) / 2 }) }],
     },
     predice: {
       pregunta: 'Un terreno de 12 cm² en el plano se dibuja de nuevo con todas sus medidas al doble. ¿Cuánto mide el área del nuevo dibujo?',
@@ -204,8 +223,10 @@
   // ---------- Idea 3: rodamiento ----------
   // Cambia: cuántas vueltas da la rueda · Permanece: el radio · Progresa: lo que avanza el centro · Se reserva: la moneda
   // que rueda alrededor de otra · Debe verse: el centro avanza 2πR por vuelta; en un camino curvo cuenta el camino del centro.
+  const RUEDA = 0.6;
   function rueda(n, extra = {}) {
-    const Rr = 0.9, pasos = Math.max(1, Math.round(n * 4)), d = 2 * Math.PI * Rr * n, x0 = 1, escala = Math.min(1, 7.6 / Math.max(d, 0.01));
+    // Radio 0,6: dos vueltas (7,54) caben a escala real, así la rueda y su avance se miden con la misma regla.
+    const Rr = RUEDA, pasos = Math.max(1, Math.round(n * 4)), d = 2 * Math.PI * Rr * n, x0 = 1, escala = Math.min(1, 7.6 / Math.max(d, 0.01));
     const ruedas = [{ x: x0, y: 2.6, r: Rr, color: 'i', relleno: 0.08, discontinua: true, marca: 180 }];
     ruedas.push({ x: x0 + d * escala, y: 2.6, r: Rr, color: 'i', marca: (180 + 360 * n) % 360 });
     return {
@@ -234,8 +255,12 @@
       voz: 'Sigue el radio marcado: da una vuelta por cada 2πR.',
       controles: [{ id: 'n', etiqueta: 'Vueltas', min: 0.5, max: 2, paso: 0.5, inicio: 0.5, decimales: 1, color: 'c-h' }],
       dibujo: val => ({ datos: rueda(val.n), estado: {} }),
-      lectura: val => [`${f(val.n, 1)} vueltas → el centro avanza ${f(2 * val.n, 2)}π`, R],
+      lectura: val => [`${f(val.n, 1)} ${val.n === 1 ? 'vuelta' : 'vueltas'} → el centro avanza ${f(2 * val.n, 2)}π`, R],
       minimo: 3,
+      // Se empuja la rueda por su centro: cada 2πR de avance es una vuelta.
+      arrastres: [{ id: 'centro', etiqueta: 'centro de la rueda', color: 'c-o',
+        donde: val => aFig(rueda(val.n), 1 + 2 * Math.PI * RUEDA * val.n, 2.6),
+        mover: (pt, val) => ({ n: (aUnid(rueda(val.n), pt)[0] - 1) / (2 * Math.PI * RUEDA) }) }],
     },
     predice: {
       pregunta: 'Una moneda rueda sin resbalar alrededor de otra moneda igual, que está fija, hasta volver a su lugar. ¿Cuántas vueltas sobre sí misma da?',
@@ -248,6 +273,9 @@
       revelar: { datos: monedas({ camino: 0.0001, pie: 'El centro recorre 2π · 2R: 2 vueltas' }), estado: {} },
       coincide: 'Coincide: el centro recorre una circunferencia de radio 2R, el doble de largo.',
     },
+    // Hallazgo 9: el juego rueda en línea recta y Mira usa las dos monedas de la predicción. Son dos representaciones a
+    // propósito: la recta enseña «una vuelta por cada 2πR del centro»; las monedas muestran que en un camino curvo manda
+    // el camino del centro, no el borde. El primer paso de Mira repite la regla de la recta antes de pasar a la curva.
     mira: {
       datos: monedas({ camino: 1 }),
       pasos: [
@@ -258,7 +286,7 @@
     },
     regla: {
       texto: 'Una rueda que rueda sin resbalar da tantas vueltas como el camino de su centro dividido entre su perímetro. Un punto del borde hace otro camino.',
-      ecuacion: ['vueltas = ', { frac: ['camino del centro', ['2π', R]] }],
+      ecuacion: ['vueltas = ', { frac: ['camino del centro', [{ llave: ['2π', R], nota: 'una vuelta', color: 'c-i' }]] }],
       condicion: 'la rueda no resbala; alrededor de un círculo fijo de radio r, el centro recorre 2π(r + R).',
     },
     ahoraTu: {
@@ -323,6 +351,10 @@
       dibujo: val => ({ datos: sector(L0, val.a, 'extremo'), estado: {} }),
       lectura: val => [Ar, ` = ${f(val.a / 360, 3)} · π`, { sup: ['L', '2'] }],
       minimo: 3,
+      // Se gira el segmento por su extremo libre; casi una vuelta completa se lee como 360°.
+      arrastres: [{ id: 'extremo-libre', etiqueta: 'extremo que gira', color: 'c-h',
+        donde: val => { const a = val.a * Math.PI / 180; return aFig(sector(L0, val.a, 'extremo'), 5 + L0 * Math.cos(a), 3 - L0 * Math.sin(a)); },
+        mover: (pt, val) => { const [x, y] = aUnid(sector(L0, val.a, 'extremo'), pt); let a = angulo([5, 3], x, y); if (a < 22.5) a += 360; return { a }; } }],
     },
     predice: {
       pregunta: 'Un segmento de 6 cm gira 180° alrededor de su punto medio. ¿Qué área barre?',
@@ -340,13 +372,13 @@
       datos: sector(L0, 180, 'medio'),
       pasos: [
         { estado: { corte: 0 }, texto: 'El punto fijo es el medio: cada mitad mide 3 cm.', ecuacion: ['radio = 3 cm'] },
-        { estado: { corte: 0 }, texto: 'Cada mitad barre medio círculo de radio 3.', ecuacion: [{ frac: ['π · 3²', '2'] }, ' = 4,5π'] },
+        { estado: { corte: 0 }, texto: 'Cada mitad barre medio círculo de radio 3.', ecuacion: [{ frac: [['π · ', { sup: ['3', '2'] }], '2'] }, ' = 4,5π'] },
         { estado: { corte: 0 }, texto: 'Las dos mitades: un círculo completo.', ecuacion: [Ar, ' = 9π cm²'] },
       ],
     },
     regla: {
       texto: 'Un segmento que gira un ángulo θ alrededor de un punto barre sectores cuyo radio es la distancia de cada extremo al punto fijo.',
-      ecuacion: [Ar, ' = ', { frac: [th, '360°'] }, ' · π · ', { sup: ['r', '2'] }],
+      ecuacion: [Ar, ' = ', { frac: [th, '360°'] }, ' · π · ', { llave: [{ sup: ['r', '2'] }], nota: 'r: radio', color: 'c-i' }],
       condicion: 'el punto fijo está en el segmento y el giro no pasa de una vuelta; lo pisado cuenta una vez.',
     },
     ahoraTu: {
@@ -370,11 +402,109 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: dos movimientos seguidos (la idea 1 deja uno). Casos raros: dos reflejos devuelven la orientación; un giro
+  // y un reflejo dan otro reflejo.
+  const CORTO = { traslada: 'Traslación', gira90: 'Giro 90°', gira180: 'Giro 180°', refleja: 'Reflejo' };
+  const OPS_MOV = Object.keys(MOV).map(m => ({ valor: m, texto: CORTO[m] }));
+  const POS = [0.3, 3.6, 6.9];
+  const etapas = val => { const a = norm(PIEZA.map(MOV[val.m1])), b = norm(a.map(MOV[val.m2])); return [PIEZA, a, b]; };
+  const datosDos = val => {
+    const [p0, p1, p2] = etapas(val), inv = (val.m1 === 'refleja') !== (val.m2 === 'refleja');
+    return { ancho: 10, alto: 5.2, cuadricula: 0,
+      poligonos: celdas(p0, POS[0], 0.6, 'i', true).concat(celdas(p1, POS[1], 0.6, 'o', true), celdas(p2, POS[2], 0.6, 'd', true)),
+      textos: [{ x: 1.3, y: 4.4, t: 'original', color: 'i' }, { x: 4.9, y: 4.4, t: CORTO[val.m1], color: 'o' }, { x: 8.2, y: 4.4, t: CORTO[val.m2], color: 'd' }],
+      pie: inv ? 'Al final: orientación invertida' : 'Al final: misma orientación' };
+  };
+  const manijaMov = (id, k, ctl) => ({ id, etiqueta: `cuadrito rojo tras el ${k === 1 ? 'primer' : 'segundo'} movimiento`, color: 'c-h',
+    donde: val => { const c = etapas(val)[k][0]; return aFig(datosDos(val), POS[k] + c[0] + 0.5, 0.6 + c[1] + 0.5); },
+    mover: (pt, val) => {
+      const [x, y] = aUnid(datosDos(val), pt);
+      let mejor = val[ctl], dmin = Infinity;
+      for (const m of Object.keys(MOV)) {
+        const c = etapas(Object.assign({}, val, { [ctl]: m }))[k][0], d = Math.hypot(POS[k] + c[0] + 0.5 - x, 0.6 + c[1] + 0.5 - y) - (m === val[ctl] ? 1e-6 : 0);
+        if (d < dmin) { dmin = d; mejor = m; }
+      }
+      return { [ctl]: mejor };
+    } });
+  const mesaDos = {
+    id: 'dos-movimientos', titulo: 'Dos movimientos seguidos', pieza: 'rm-plano',
+    consigna: 'Aplica un movimiento y después otro. Lleva cada cuadrito rojo a su sitio y mira cómo queda la orientación.',
+    controles: [{ id: 'm1', etiqueta: 'Primero', opciones: OPS_MOV }, { id: 'm2', etiqueta: 'Después', opciones: OPS_MOV }],
+    dibujo: val => ({ datos: datosDos(val), estado: {} }),
+    lectura: val => [`${CORTO[val.m1]} y luego ${CORTO[val.m2].toLowerCase()}: `, (val.m1 === 'refleja') !== (val.m2 === 'refleja') ? 'invertida' : 'igual'],
+    arrastres: [manijaMov('primero', 1, 'm1'), manijaMov('despues', 2, 'm2')],
+  };
+  // Mesa 2: la moneda que rueda alrededor de un disco más grande, con cuánto del recorrido se lleva a mano.
+  // El radio de la moneda se ajusta para que el camino del centro, de radio (q + 1)·R, llene la figura.
+  const RMq = q => 2.8 / (q + 1), OM = [5, 3.1];
+  const datosDisco = val => {
+    const RM = RMq(val.q), rf = val.q * RM, D = rf + RM, a = val.a * Math.PI / 180, cx = OM[0] + D * Math.sin(a), cy = OM[1] - D * Math.cos(a);
+    const vueltas = val.a / 360 * (val.q + 1);
+    return { ancho: 10, alto: 6.2,
+      circulos: [{ x: OM[0], y: OM[1], r: rf, color: 'i', relleno: 0.2 }, { x: OM[0], y: OM[1], r: D, color: 'o', relleno: 0, discontinua: true, grosor: 'contorno' },
+        { x: cx, y: cy, r: RM, color: 'o', relleno: 0.12, marca: (180 + val.a * (val.q + 1)) % 360 }],
+      pie: `Vueltas propias: ${f(vueltas, 2)}` };
+  };
+  const mesaDisco = {
+    id: 'moneda-y-disco', titulo: 'La moneda y el disco', pieza: 'rm-plano',
+    consigna: 'Lleva la moneda alrededor del disco fijo y cambia el tamaño del disco. Sigue el radio marcado de la moneda.',
+    controles: [
+      { id: 'q', etiqueta: 'Disco (radios de moneda)', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
+      { id: 'a', etiqueta: 'Recorrido', min: 0, max: 360, paso: 30, inicio: 90, unidad: '°', decimales: 0, color: 'c-o' },
+    ],
+    dibujo: val => ({ datos: datosDisco(val), estado: {} }),
+    lectura: val => { const v = val.a / 360 * (val.q + 1); return [`Disco de radio ${val.q === 1 ? '' : val.q}R · ${val.a}°: `, `${f(v, 2)} ${v === 1 ? 'vuelta propia' : 'vueltas propias'}`]; },
+    arrastres: [{ id: 'moneda', etiqueta: 'moneda que rueda', color: 'c-o',
+      donde: val => { const D = 2.8, a = val.a * Math.PI / 180; return aFig(datosDisco(val), OM[0] + D * Math.sin(a), OM[1] - D * Math.cos(a)); },
+      mover: (pt, val) => {
+        const [x, y] = aUnid(datosDisco(val), pt);
+        let a = ((Math.atan2(x - OM[0], -(y - OM[1])) * 180 / Math.PI) + 360) % 360;   // 0° arriba, sentido horario
+        if (val.a > 270 && a < 15) a = 360;
+        return { a };
+      } }],
+  };
+  // Mesa 3: el punto fijo se corre por el segmento (de un extremo al medio) y el giro llega hasta media vuelta.
+  const LS = 4, OS = [5, 4.3];
+  const datosBarre = val => {
+    const a = val.t * Math.PI / 180, b = LS - val.p, n = 24;
+    const arco = (r, a0) => [OS].concat(Array.from({ length: n + 1 }, (_, i) => { const u = a0 + a * i / n; return [OS[0] + r * Math.cos(u), OS[1] - r * Math.sin(u)]; }));
+    const pol = [{ puntos: arco(b, 0), color: 'd', relleno: 0.3 }];
+    if (val.p > 0) pol.push({ puntos: arco(val.p, Math.PI), color: 'd', relleno: 0.3 });
+    return { ancho: 10, alto: 6.6, poligonos: pol,
+      lineas: [{ de: [OS[0] - val.p, OS[1]], a: [OS[0] + b, OS[1]], color: 'i', grosor: 'variable', discontinua: true },
+        { de: [OS[0] - val.p * Math.cos(a), OS[1] + val.p * Math.sin(a)], a: [OS[0] + b * Math.cos(a), OS[1] - b * Math.sin(a)], color: 'i', grosor: 'variable' }],
+      nodos: [{ id: 'o', x: OS[0], y: OS[1], r: 5, relleno: 1, color: 'h' }],
+      pie: `Radios ${f(val.p, 1)} y ${f(b, 1)} cm` };
+  };
+  const areaBarre = val => val.t / 360 * (val.p * val.p + (LS - val.p) ** 2);
+  const mesaBarre = {
+    id: 'punto-fijo-movil', titulo: 'El punto fijo se corre', pieza: 'rm-plano',
+    consigna: 'Un segmento de 4 cm gira alrededor del punto rojo. Corre el punto fijo y gira el extremo: compara las áreas.',
+    controles: [
+      { id: 'p', etiqueta: 'Punto fijo, desde el extremo', min: 0, max: 2, paso: 0.5, inicio: 1, unidad: 'cm', decimales: 1, color: 'c-h' },
+      { id: 't', etiqueta: 'Giro', min: 30, max: 180, paso: 15, inicio: 90, unidad: '°', decimales: 0, color: 'c-h' },
+    ],
+    dibujo: val => ({ datos: datosBarre(val), estado: {} }),
+    lectura: val => [`Fijo a ${f(val.p, 1)} cm · ${val.t}°: `, Ar, ` = ${f(areaBarre(val), 2)}π cm²`],
+    arrastres: [
+      { id: 'extremo-izquierdo', etiqueta: 'dónde está el punto fijo', color: 'c-h',
+        donde: val => aFig(datosBarre(val), OS[0] - val.p, OS[1]),
+        mover: (pt, val) => ({ p: OS[0] - aUnid(datosBarre(val), pt)[0] }) },
+      { id: 'extremo-que-gira', etiqueta: 'extremo que gira', color: 'c-h',
+        donde: val => { const a = val.t * Math.PI / 180, b = LS - val.p; return aFig(datosBarre(val), OS[0] + b * Math.cos(a), OS[1] - b * Math.sin(a)); },
+        mover: (pt, val) => { const [x, y] = aUnid(datosBarre(val), pt); let a = angulo(OS, x, y); if (a > 270) a = 0; return { t: a }; } },
+    ],
+  };
+
   return {
     unidad: 'razonamiento-matematico.transformaciones-de-figuras',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-plano.js'],
+    // Laboratorio: dos movimientos seguidos, la moneda alrededor de discos de varios tamaños y el segmento con el punto
+    // fijo que se corre.
+    laboratorio: [mesaDos, mesaDisco, mesaBarre],
     historia: {
       texto: 'En 1905, Henry Dudeney mostró una disección articulada: cuatro piezas que forman un triángulo equilátero o un cuadrado. Cambiar la disposición conservaba el área. Eso no significa que todo movimiento conserve también el perímetro o la orientación: hay que mirar qué transformación se aplicó.',
       pregunta: '¿Qué se conserva cuando una figura se mueve?',

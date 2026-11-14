@@ -40,6 +40,11 @@
     return ops;
   }
 
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de rm-plano (X, Y en unidades del problema).
+  const PLANO = () => Kit.piezas['rm-plano'];
+  const aFig = (datos, x, y) => { const g = PLANO().geometria(datos); return { x: g.X(x), y: g.Y(y) }; };
+  const aUnid = (datos, pt) => { const g = PLANO().geometria(datos); return [(pt.x - g.X(0)) / g.k, (pt.y - g.Y(0)) / g.k]; };
+
   // ---------- Grafos: grados, conexión y veredicto ----------
   function analizar(nodos, aristas) {
     const g = Object.fromEntries(nodos.map(n => [n.id, 0]));
@@ -120,7 +125,7 @@
     },
     regla: {
       texto: 'Una figura unida sale de un trazo si tiene 0 puntos impares (y vuelve al inicio) o 2 (va de uno al otro). Con 4 o más, no sale.',
-      ecuacion: [I, ' ∈ {0, 2}'],
+      ecuacion: [{ llave: [I], nota: 'puntos impares', color: 'c-h' }, ' ∈ {0, 2}'],
       condicion: 'la figura está en una sola pieza y solo cuentan los puntos donde se unen líneas, no los cruces.',
     },
     ahoraTu: {
@@ -242,9 +247,10 @@
   // ---------- Idea 3: perímetro de una escalera y del entrante ----------
   // Cambia: cuántos escalones · Permanece: el ancho y el alto de la figura · Progresa: los lados que se deslizan al
   // borde · Se reserva: el entrante, que sí agrega · Debe verse: los escalones suman lo mismo que dos lados.
+  // Escala de la escalera: X(u), Y(v) pasan centímetros de la figura a unidades del plano (las usan las manijas).
+  const ESC = (W, H) => { const k = Math.min(7.4 / W, 4.8 / H), x0 = 5.6 - W * k / 2, y0 = 0.6; return { k, x0, y0, X: u => x0 + u * k, Y: v => y0 + v * k }; };
   const escalera = (W, H, n, entrante = 0, extra = {}) => {
-    const k = Math.min(7.4 / W, 4.8 / H), x0 = 5.6 - W * k / 2, y0 = 0.6;
-    const X = u => x0 + u * k, Y = v => y0 + v * k;
+    const { X, Y } = ESC(W, H);
     const pts = [[X(0), Y(H)], [X(0), Y(0)]];
     if (entrante) { const a = W * 0.2; pts.push([X(a), Y(0)], [X(a), Y(entrante)], [X(a + W * 0.15), Y(entrante)], [X(a + W * 0.15), Y(0)]); }
     // Escalones que bajan desde (W·0.4, 0) hasta (W, H).
@@ -272,8 +278,12 @@
       voz: 'Cada escalón tiene un trozo horizontal y uno vertical.',
       controles: [{ id: 'n', etiqueta: 'Escalones', min: 1, max: 6, paso: 1, inicio: 2, decimales: 0 }],
       dibujo: val => ({ datos: escalera(10, 6, val.n), estado: {} }),
-      lectura: val => [P, ` = 2 · (10 + 6) = ${f(32)} cm con ${val.n} escalones`],
+      lectura: val => [P, ` = 2 · (10 + 6) = ${f(32)} cm con ${val.n} ${val.n === 1 ? 'escalón' : 'escalones'}`],
       minimo: 3,
+      // Se corre la punta del primer escalón: más cerca de la pared, escalones más chicos y más numerosos.
+      arrastres: [{ id: 'primer-escalon', etiqueta: 'punta del primer escalón', color: 'c-i',
+        donde: val => { const E = ESC(10, 6); return aFig(escalera(10, 6, val.n), E.X(4 + 6 / val.n), E.Y(0)); },
+        mover: (pt, val) => { const E = ESC(10, 6), u = (aUnid(escalera(10, 6, val.n), pt)[0] - E.x0) / E.k; return { n: 6 / Math.max(0.5, u - 4) }; } }],
     },
     predice: {
       pregunta: 'A la misma figura se le corta arriba un entrante de 2 cm de profundidad. ¿Cuánto mide ahora su perímetro?',
@@ -297,7 +307,7 @@
     },
     regla: {
       texto: 'Si los lados se pueden deslizar hasta el borde del rectángulo que la encierra, el perímetro es el del rectángulo. Cada entrante agrega dos veces su profundidad.',
-      ecuacion: [P, ' = 2 · (ancho + alto) + 2 · entrantes'],
+      ecuacion: [P, ' = ', { llave: ['2 · (ancho + alto)'], nota: 'el rectángulo', color: 'c-i' }, ' + ', { llave: ['2 · entrantes'], nota: 'paredes de adentro', color: 'c-o' }],
       condicion: 'todos los lados son horizontales o verticales y los escalones van siempre en el mismo sentido.',
     },
     ahoraTu: {
@@ -353,6 +363,10 @@
       dibujo: val => ({ datos: semis(val.n), estado: {} }),
       lectura: val => [`${val.n} × π · ${f(D0 / val.n)} / 2 = ${f(D0 / 2)}π cm`],
       minimo: 3,
+      // Se corre el fin del primer semicírculo por el segmento: más corto, caben más.
+      arrastres: [{ id: 'fin-primer-arco', etiqueta: 'fin del primer semicírculo', color: 'c-i',
+        donde: val => aFig(semis(val.n), 1 + 8 / val.n, 3.2),
+        mover: (pt, val) => ({ n: 8 / Math.max(0.5, aUnid(semis(val.n), pt)[0] - 1) }) }],
     },
     predice: {
       pregunta: 'Arriba del mismo segmento va un semicírculo de 12 cm de diámetro, y abajo, tres semicírculos de 4 cm. ¿Cuál es el perímetro de la figura?',
@@ -376,7 +390,7 @@
     },
     regla: {
       texto: 'Una semicircunferencia mide π por el diámetro entre dos. Si varios semicírculos se reparten un mismo diámetro, sus arcos suman lo mismo que el semicírculo grande.',
-      ecuacion: [{ frac: ['π · D', '2'] }, ' = ', { frac: ['π · d₁', '2'] }, ' + … + ', { frac: ['π · dₙ', '2'] }],
+      ecuacion: [{ llave: [{ frac: ['π · D', '2'] }], nota: 'arco grande', color: 'c-o' }, ' = ', { llave: [{ frac: [['π · ', { sub: ['d', '1'] }], '2'] }, ' + … + ', { frac: [['π · ', { sub: ['d', 'n'] }], '2'] }], nota: 'arcos chicos', color: 'c-i' }],
       condicion: 'los diámetros chicos están sobre el diámetro grande y lo cubren sin sobrar ni faltar.',
     },
     ahoraTu: {
@@ -400,11 +414,98 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: la casa con dos líneas sueltas cuyas puntas se llevan a cualquier punto. Cada punta cambia la paridad de
+  // dos puntos; casos raros: una línea repetida, o dos líneas que dejan 0 impares.
+  const NOMBRES = { a: 'A', b: 'B', c: 'C', d: 'D', e: 'E' };
+  const OPS_P = CASA.n.map(n => ({ valor: n.id, texto: NOMBRES[n.id] }));
+  const extras = val => [[val.a1, val.b1], [val.a2, val.b2]].filter(([a, b]) => a !== b);
+  const datosSueltas = val => {
+    const A = analizar(CASA.n, CASA.a.concat(extras(val))), base = dibujoGrafo(CASA.n, CASA.a, true);
+    base.nodos = CASA.n.map(n => ({ id: n.id, x: n.x, y: n.y, r: 13, t: String(A.g[n.id]), color: A.g[n.id] % 2 ? 'h' : 'd', etiqueta: NOMBRES[n.id], lado: n.id === 'e' ? 'arriba' : n.x < 5 ? 'izq' : 'der' }));
+    base.aristas = base.aristas.concat(extras(val).map(([a, b], k) => ({ de: a, a: b, color: 'o', grosor: 'variable', curva: 14 + 10 * k })));
+    base.pie = `Impares: ${A.impares} · ${VERED[A.veredicto]}`;
+    return base;
+  };
+  const posNodo = id => CASA.n.find(n => n.id === id);
+  // La manija va un poco hacia adentro del punto, en dirección a la otra punta, para no tapar el número.
+  const manijaPunta = (k, ctl, otra) => ({ id: `punta-${ctl}`, etiqueta: `punta ${k} de la línea suelta`, color: 'c-o',
+    donde: val => { const p = posNodo(val[ctl]), q = posNodo(val[otra]), dx = q.x - p.x, dy = q.y - p.y, L = Math.hypot(dx, dy) || 1, s = val[ctl] === val[otra] ? 0 : 0.75;
+      return aFig(datosSueltas(val), p.x + dx / L * s + (s ? 0 : 0.6), p.y + dy / L * s); },
+    mover: (pt, val) => {
+      const [x, y] = aUnid(datosSueltas(val), pt);
+      let mejor = val[ctl], dmin = Infinity;
+      for (const n of CASA.n) {
+        const prueba = Object.assign({}, val, { [ctl]: n.id }), p = aUnid(datosSueltas(val), manijaPunta(k, ctl, otra).donde(prueba)), dd = Math.hypot(p[0] - x, p[1] - y) - (n.id === val[ctl] ? 1e-6 : 0);
+        if (dd < dmin) { dmin = dd; mejor = n.id; }
+      }
+      return { [ctl]: mejor };
+    } });
+  const mesaSueltas = {
+    id: 'lineas-sueltas', titulo: 'Dos líneas sueltas', pieza: 'rm-plano',
+    consigna: 'A la casa se le agregan dos líneas naranjas. Lleva sus puntas a otros puntos y mira cómo cambian los impares.',
+    controles: [
+      { id: 'a1', etiqueta: 'Línea 1 desde', opciones: OPS_P, inicio: 'd' }, { id: 'b1', etiqueta: 'Línea 1 hasta', opciones: OPS_P, inicio: 'e' },
+      { id: 'a2', etiqueta: 'Línea 2 desde', opciones: OPS_P, inicio: 'a' }, { id: 'b2', etiqueta: 'Línea 2 hasta', opciones: OPS_P, inicio: 'a' },
+    ],
+    dibujo: val => ({ datos: datosSueltas(val), estado: {} }),
+    lectura: val => { const A = analizar(CASA.n, CASA.a.concat(extras(val))); return [I, ` = ${A.impares}`, '   ·   ', VERED[A.veredicto]]; },
+    arrastres: [manijaPunta(1, 'a1', 'b1'), manijaPunta(2, 'b1', 'a1'), manijaPunta(3, 'a2', 'b2'), manijaPunta(4, 'b2', 'a2')],
+  };
+  // Mesa 2: la escalera con entrante; se mueven la punta del primer escalón y el fondo del entrante.
+  const datosEnt = val => escalera(10, 6, val.n, val.e, { pie: `${val.n} ${val.n === 1 ? 'escalón' : 'escalones'} · entrante de ${f(val.e)} cm` });
+  const mesaEntrante = {
+    id: 'escalera-con-entrante', titulo: 'Escalera con entrante', pieza: 'rm-plano',
+    consigna: 'Una figura de 10 × 6 cm. Corre la punta del primer escalón y hunde el entrante. ¿Cuál de los dos cambia el perímetro?',
+    controles: [
+      { id: 'n', etiqueta: 'Escalones', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0, color: 'c-i' },
+      { id: 'e', etiqueta: 'Entrante', min: 0, max: 4, paso: 1, inicio: 2, unidad: 'cm', decimales: 0, color: 'c-o' },
+    ],
+    dibujo: val => ({ datos: datosEnt(val), estado: {} }),
+    lectura: val => [P, ` = 32 + 2 · ${f(val.e)} = ${f(32 + 2 * val.e)} cm`],
+    arrastres: [
+      { id: 'primer-escalon', etiqueta: 'punta del primer escalón', color: 'c-i',
+        donde: val => { const E = ESC(10, 6); return aFig(datosEnt(val), E.X(4 + 6 / val.n), E.Y(0)); },
+        mover: (pt, val) => { const E = ESC(10, 6), u = (aUnid(datosEnt(val), pt)[0] - E.x0) / E.k; return { n: 6 / Math.max(0.5, u - 4) }; } },
+      { id: 'fondo-entrante', etiqueta: 'fondo del entrante', color: 'c-o',
+        donde: val => { const E = ESC(10, 6); return aFig(datosEnt(val), E.X(2.75), E.Y(val.e)); },
+        mover: (pt, val) => { const E = ESC(10, 6); return { e: (aUnid(datosEnt(val), pt)[1] - E.y0) / E.k }; } },
+    ],
+  };
+  // Mesa 3: arcos arriba y abajo del mismo segmento, cada lado con su número de semicírculos. El borde no cambia.
+  function arcos2(nA, nB) {
+    const R = 4, x0 = 1, y0 = 3.2, pol = [];
+    for (let i = 0; i < nA; i++) { const r0 = R / nA; pol.push({ puntos: arco(x0 + r0 * (2 * i + 1), y0, r0, true), abierto: true, color: 'o', grosor: 'variable' }); }
+    for (let i = 0; i < nB; i++) { const r0 = R / nB; pol.push({ puntos: arco(x0 + r0 * (2 * i + 1), y0, r0, false), abierto: true, color: 'i', grosor: 'variable' }); }
+    return { ancho: 10, alto: 6.4, poligonos: pol, lineas: [{ de: [x0, y0], a: [x0 + 2 * R, y0], grosor: 'cuadricula', discontinua: true }], pie: `Arriba ${nA}, abajo ${nB}: borde de ${f(D0)}π cm` };
+  }
+  const datosArcos = val => arcos2(val.na, val.nb);
+  const mesaArcos = {
+    id: 'arcos-arriba-y-abajo', titulo: 'Arcos arriba y abajo', pieza: 'rm-plano',
+    consigna: 'Sobre un segmento de 12 cm hay arcos arriba y abajo. Cambia cuántos hay en cada lado y compara el borde.',
+    controles: [
+      { id: 'na', etiqueta: 'Arriba', min: 1, max: 6, paso: 1, inicio: 1, decimales: 0, color: 'c-o' },
+      { id: 'nb', etiqueta: 'Abajo', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0, color: 'c-i' },
+    ],
+    dibujo: val => ({ datos: datosArcos(val), estado: {} }),
+    lectura: val => [`Arriba ${val.na}, abajo ${val.nb}: `, P, ` = 6π + 6π = 12π cm`],
+    arrastres: [
+      { id: 'fin-arco-arriba', etiqueta: 'fin del primer arco de arriba', color: 'c-o',
+        donde: val => aFig(datosArcos(val), 1 + 8 / val.na, 3.2 - 0.25),
+        mover: (pt, val) => ({ na: 8 / Math.max(0.5, aUnid(datosArcos(val), pt)[0] - 1) }) },
+      { id: 'fin-arco-abajo', etiqueta: 'fin del primer arco de abajo', color: 'c-i',
+        donde: val => aFig(datosArcos(val), 1 + 8 / val.nb, 3.2 + 0.25),
+        mover: (pt, val) => ({ nb: 8 / Math.max(0.5, aUnid(datosArcos(val), pt)[0] - 1) }) },
+    ],
+  };
+
   return {
     unidad: 'razonamiento-matematico.trazos-y-perimetros',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-plano.js'],
+    // Laboratorio: la casa con dos líneas sueltas, la escalera con entrante y los arcos arriba y abajo.
+    laboratorio: [mesaSueltas, mesaEntrante, mesaArcos],
     historia: {
       texto: 'En la década de 1730, Euler estudió si se podían cruzar los siete puentes de Königsberg una sola vez cada uno. Cambió las orillas por puntos y los puentes por líneas, y dejó de lado las distancias: importaba cómo se conectaban. Medir un borde es otra pregunta.',
       pregunta: '¿Qué importa más: el largo o las conexiones?',

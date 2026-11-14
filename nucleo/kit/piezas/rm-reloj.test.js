@@ -29,3 +29,15 @@ test('limpio y alto fijo', () => {
   assert.equal(altos.size, 1);
   assert.match(P.alt({ relojes: [{ h: 3, m: 30 }] }), /horario en 105°/);
 });
+
+test('geometria: la punta del minutero cae donde se dibuja y angulo es su inversa', () => {
+  const dr = { relojes: [{ h: 3, m: 20 }] };
+  const g = P.geometria(dr), s = P.dibujar(dr);
+  const p = g.punta(0, P.angulos.minutero(20), g.minutero);
+  const [, x2, y2] = s.match(/<line x1="160" y1="100" x2="([\d.]+)" y2="([\d.]+)"[^>]*stroke-width="3"/) || [];
+  assert.ok(Math.abs(+x2 - p.x) < 0.02 && Math.abs(+y2 - p.y) < 0.02, `${x2},${y2} vs ${p.x},${p.y}`);
+  assert.ok(Math.abs(g.angulo(0, p.x, p.y) - 120) < 1e-9);
+  const g2 = P.geometria({ relojes: [{ h: 1, m: 0 }, { h: 2, m: 0 }] });
+  assert.equal(g2.relojes.length, 2);
+  assert.ok(g2.relojes[1].cx > g2.relojes[0].cx);
+});

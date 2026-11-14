@@ -36,6 +36,9 @@
     return ops;
   }
   const suma = xs => xs.reduce((m, x) => m + x, 0);
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría que exporta rm-fichas. El cuadrado mágico y el
+  // triángulo eligen conjuntos de números (no hay nada continuo que arrastrar): quedan con − y + y opciones.
+  const FICHAS = () => Kit.piezas['rm-fichas'];
   function permutaciones(xs) {
     if (xs.length <= 1) return [xs.slice()];
     return xs.flatMap((x, i) => permutaciones(xs.slice(0, i).concat(xs.slice(i + 1))).map(p => [x].concat(p)));
@@ -97,7 +100,7 @@
     },
     regla: {
       texto: 'En un cuadrado mágico, cada fila se lleva la misma parte del total: se divide la suma de todos los números entre el número de filas.',
-      ecuacion: [S, ' = ', { frac: [Tt, 'n'] }, ' ;  con 1 a n²:  ', S, ' = ', { frac: ['n(n² + 1)', '2'] }],
+      ecuacion: [{ llave: [S], nota: 'cada fila', color: 'c-o' }, ' = ', { frac: [Tt, 'n'] }, '   ·   ', 'de 1 a ', { sup: ['n', '2'] }, ': ', S, ' = ', { frac: [['n(', { sup: ['n', '2'] }, ' + 1)'], '2'] }],
       condicion: 'cada número se usa una vez. «Centro = S / 3» vale solo en el 3 × 3, donde cuatro líneas pasan por el centro.',
     },
     ahoraTu: {
@@ -116,7 +119,7 @@
             { id: 'mayor', texto: String(nums[8]), error: 'RMT-ARR-1', siFuera: 'El mayor no tiene por qué ir al centro.' },
             { id: 'medio', texto: String(pide === 'suma' ? nums[8] + nums[0] : nums[0] + nums[8]), error: 'RMT-ARR-4', siFuera: 'Sumar extremos no reparte el total.' },
           ]),
-          solucion: { texto: pide === 'suma' ? 'El total entre tres filas.' : 'El centro es la tercera parte de la suma de una fila.', ecuacion: [S, ` = ${T} / 3 = ${Sm}`, ...(pide === 'centro' ? [' · ', c, ` = ${Sm} / 3 = ${cen}`] : [])] },
+          solucion: { texto: pide === 'suma' ? 'El total entre tres filas.' : 'El centro es la tercera parte de la suma de una fila.', ecuacion: [S, ` = ${T} / 3 = ${Sm}`, ...(pide === 'centro' ? ['   ·   ', c, ` = ${Sm} / 3 = ${cen}`] : [])] },
         };
       },
     },
@@ -195,7 +198,7 @@
     },
     regla: {
       texto: 'Al sumar todos los lados de un polígono, los números de las esquinas aparecen dos veces. Eso fija la suma por lado y cuáles son posibles.',
-      ecuacion: ['lados · ', S, ' = ', Tt, ' + ', Vv],
+      ecuacion: ['lados · ', S, ' = ', { llave: [Tt], nota: 'total', color: 'c-d' }, ' + ', { llave: [Vv], nota: 'esquinas', color: 'c-h' }],
       condicion: 'cada número se usa una vez, cada esquina está en dos lados y la suma por lado tiene que ser entera.',
     },
     ahoraTu: {
@@ -244,6 +247,17 @@
     };
   }
   const hasta = n => Array.from({ length: n }, (_, k) => k + 1);
+  // El juego agrega una fila de arriba con los lugares de 1 a tope: los que entran van llenos y los demás, huecos.
+  // Así la manija (el final de los que entran) tiene siempre el mismo lugar para cada n.
+  function gruposConFila(nums, tope, extra) {
+    const d = grupos(nums, extra);
+    const fila = { rotulo: `Números: ${nums.length}`, fichas: Array.from({ length: tope }, (_, k) => k < nums.length ? { t: String(nums[k]), forma: 'cuadrado' } : { t: '', forma: 'cuadrado', hueca: true }) };
+    return Object.assign(d, { filas: [fila].concat(d.filas), tam: Math.min(28, d.tam) });
+  }
+  // La manija va entre el último número que entra y el primer lugar hueco (o al final de la fila llena), en el borde
+  // de abajo para no tapar las cifras.
+  const finDeFila = (d, n) => { const g = FICHAS().geometria(d), fl = g.filas[0]; return { x: fl.fichas[0].cx + (n - 0.5) * fl.paso, y: fl.y + g.lado - 2 }; };
+  const nDeFila = (d, pt) => { const g = FICHAS().geometria(d), fl = g.filas[0]; return (pt.x - fl.fichas[0].cx) / fl.paso + 0.5; };
   const reparto = {
     id: 'reparto-parejo',
     titulo: 'Repartir en dos sumas iguales',
@@ -253,9 +267,13 @@
       consigna: 'Se reparten los números del 1 al n en dos grupos que sumen lo mismo. Cambia n y mira cuándo se puede.',
       voz: 'Mira si el total es par o impar.',
       controles: [{ id: 'n', etiqueta: 'n', min: 3, max: 8, paso: 1, inicio: 3, decimales: 0 }],
-      dibujo: val => ({ datos: grupos(hasta(val.n)), estado: {} }),
+      dibujo: val => ({ datos: gruposConFila(hasta(val.n), 8), estado: {} }),
       lectura: val => { const T = suma(hasta(val.n)); return [Tt, ` = ${T}: `, T % 2 ? 'impar, no se puede' : `par, cada grupo ${T / 2}`]; },
       minimo: 4,
+      // Arrastra el final de la fila de números: entran o salen números al reparto.
+      arrastres: [{ id: 'hasta', etiqueta: 'hasta qué número se reparte', color: 'c-d',
+        donde: val => finDeFila(gruposConFila(hasta(val.n), 8), val.n),
+        mover: (pt, val) => ({ n: nDeFila(gruposConFila(hasta(val.n), 8), pt) }) }],
     },
     predice: {
       pregunta: 'Los números 2, 4, 6, 8 y 10 suman 30, que es par. ¿Se pueden repartir en dos grupos de igual suma?',
@@ -303,11 +321,62 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: el reparto con números seguidos desde a hasta a + n − 1 (la idea solo empieza en 1): hasta 10 números.
+  const seguidos = (a, n) => Array.from({ length: n }, (_, k) => a + k);
+  const mesaReparto = {
+    id: 'reparto-libre', titulo: 'Reparte números seguidos', pieza: 'rm-fichas',
+    consigna: 'Elige desde qué número empiezas y arrastra el final de la fila. ¿Cuándo salen dos grupos de igual suma?',
+    controles: [
+      { id: 'a', etiqueta: 'Desde', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 2, decimales: 0 },
+      { id: 'n', etiqueta: 'Cuántos', color: 'c-d', min: 2, max: 10, paso: 1, inicio: 4, decimales: 0 },
+    ],
+    dibujo: val => ({ datos: Object.assign(gruposConFila(seguidos(val.a, val.n), 10), { tam: 22 }), estado: {} }),
+    lectura: val => {
+      const ns = seguidos(val.a, val.n), T = suma(ns);
+      return [`Del ${val.a} al ${val.a + val.n - 1}: `, Tt, ` = ${T}`, T % 2 ? ', impar' : particion(ns) ? `, grupos de ${T / 2}` : ', par pero no sale'];
+    },
+    arrastres: [{ id: 'hasta', etiqueta: 'cuántos números se reparten', color: 'c-d',
+      donde: val => finDeFila(Object.assign(gruposConFila(seguidos(val.a, val.n), 10), { tam: 22 }), val.n),
+      mover: (pt, val) => ({ n: nDeFila(Object.assign(gruposConFila(seguidos(val.a, val.n), 10), { tam: 22 }), pt) }) }],
+  };
+  // Mesa 2: el cuadrado mágico 3 × 3 con números en progresión (a, a + d, …): el centro y la suma se mueven juntos.
+  const LO_SHU = [[2, 7, 6], [9, 5, 1], [4, 3, 8]];
+  const mesaMagico = {
+    id: 'magico-libre', titulo: 'Cuadrado mágico con otros números', pieza: 'rm-tablero',
+    consigna: 'Cambia el primer número y el salto entre números. Mira cómo cambian la suma por fila y el centro.',
+    controles: [
+      { id: 'a', etiqueta: 'Primer número', color: 'c-i', min: 1, max: 10, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'd', etiqueta: 'Salto', color: 'c-o', min: 1, max: 5, paso: 1, inicio: 1, decimales: 0 },
+    ],
+    dibujo: val => ({ datos: cuadrado(LO_SHU.map(f => f.map(x => val.a + (x - 1) * val.d)), { centro: true, sumas: 0 }), estado: {} }),
+    lectura: val => { const T = suma(LO_SHU.flat().map(x => val.a + (x - 1) * val.d)); return [S, ` = ${T / 3} · `, c, ` = ${T / 9}`]; },
+  };
+  // Mesa 3: el triángulo con esquinas libres: aparecen esquinas sin arreglo posible (el caso raro).
+  const mesaTri = {
+    id: 'triangulo-libre', titulo: 'Esquinas a elección', pieza: 'rm-plano',
+    consigna: 'Elige tres esquinas distintas del 1 al 6. A veces la suma da entera y aun así no hay arreglo.',
+    controles: ['Esquina 1', 'Esquina 2', 'Esquina 3'].map((e, k) => ({ id: 'e' + k, etiqueta: e, color: 'c-h', min: 1, max: 6, paso: 1, inicio: [1, 3, 5][k], decimales: 0 })),
+    dibujo: val => {
+      const V = [val.e0, val.e1, val.e2], ok = new Set(V).size === 3, A = ok ? arregloTri(V) : null;
+      return { datos: dibujoTri(A || { v: V, m: ['', '', ''], S: 0 }, { pie: !ok ? 'Las esquinas se repiten' : A ? `Cada lado suma ${A.S}` : 'No hay arreglo con esas esquinas' }), estado: {} };
+    },
+    lectura: val => {
+      const V = [val.e0, val.e1, val.e2];
+      if (new Set(V).size < 3) return ['Elige tres esquinas distintas'];
+      const Sv = (21 + suma(V)) / 3;
+      return [Vv, ` = ${suma(V)} · `, S, ` = ${Number.isInteger(Sv) ? Sv : `${21 + suma(V)}/3`}`, arregloTri(V) ? '' : ' · sin arreglo'];
+    },
+  };
+
   return {
     unidad: 'razonamiento-matematico.arreglos-numericos',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-tablero.js', '/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/rm-fichas.js'],
+    // Laboratorio: el reparto de números seguidos con arrastre, el cuadrado mágico en progresión y el triángulo con
+    // esquinas libres (donde aparecen esquinas sin arreglo).
+    laboratorio: [mesaReparto, mesaMagico, mesaTri],
     historia: {
       texto: 'Los cuadrados mágicos circularon por muchas culturas, con usos recreativos, simbólicos y matemáticos; en la Europa del siglo XVII se renovó el interés por construirlos. No tienen un único inventor. La pregunta útil es qué se mantiene cuando se mueven los números: la suma de cada fila se conoce antes de llenar el tablero.',
       pregunta: '¿Qué no cambia aunque cambies los números de lugar?',

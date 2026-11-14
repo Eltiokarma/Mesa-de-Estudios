@@ -51,9 +51,21 @@
     return { ancho: 10, alto: 0.6 + lista.length * 1.5, poligonos, textos, pie: extra.pie };
   }
 
+  // Gesto directo (docs/teoria.md §4b): las manijas viven en el lienzo de rm-plano o en la fila de rm-fichas, que
+  // exportan su geometria. ux/uy pasan un punto del viewBox a unidades del lienzo.
+  const PLANO = () => Kit.piezas['rm-plano'], FICHAS = () => Kit.piezas['rm-fichas'];
+  const enPx = (datos, ux, uy) => { const g = PLANO().geometria(datos); return { x: g.X(ux), y: g.Y(uy) }; };
+  const ux = (datos, px) => { const g = PLANO().geometria(datos); return (px - g.X(0)) / g.k; };
+  const uy = (datos, py) => { const g = PLANO().geometria(datos); return (py - g.Y(0)) / g.k; };
+  const BX0 = 3.1, BK = max => 6.4 / max;   // las mismas cuentas que barras()
+  // Fin de la fila k de rm-fichas con n fichas (en el hueco tras la última) y su inversa.
+  const finFila = (datos, k, n) => { const g = FICHAS().geometria(datos), fl = g.filas[k]; return { x: 6 + n * fl.paso + 6, y: fl.y + g.lado / 2 }; };
+  const nFila = (datos, k, px) => { const fl = FICHAS().geometria(datos).filas[k]; return (px - 12) / fl.paso; };
+
   // ---------- Idea 1: del enunciado a la ecuación ----------
   // Cambia: cuántos profesores · Permanece: «por cada profesor hay 6 alumnos» · Progresa: la barra de alumnos ·
   // Se reserva: la traducción palabra por palabra · Debe verse: el grupo más grande lleva el número que multiplica al chico.
+  const aula = p => barras([{ valor: p, color: 'i', rotulo: 'Prof.', partes: p, texto: String(p) }, { valor: 6 * p, color: 'o', rotulo: 'Alumnos', partes: p, texto: String(6 * p) }], { max: 24 });
   const traducir = {
     id: 'traducir',
     titulo: 'Quién es más grande',
@@ -63,9 +75,15 @@
       consigna: 'En un aula hay 6 alumnos por cada profesor. Cambia el número de profesores y compara las dos barras.',
       voz: 'Mira cuál barra es la más larga.',
       controles: [{ id: 'p', etiqueta: 'Profesores', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0, color: 'c-i' }],
-      dibujo: val => ({ datos: barras([{ valor: val.p, color: 'i', rotulo: 'Prof.', partes: val.p, texto: String(val.p) }, { valor: 6 * val.p, color: 'o', rotulo: 'Alumnos', partes: val.p, texto: String(6 * val.p) }], { max: 24 }), estado: {} }),
+      dibujo: val => ({ datos: aula(val.p), estado: {} }),
       lectura: val => [A, ` = 6 · `, Pp, ` = 6 · ${val.p} = ${6 * val.p}`],
       minimo: 3,
+      // Estira la barra de alumnos: solo crece de a 6, porque cada profesor trae 6 (la de profesores es muy corta para agarrarla).
+      arrastres: [
+        { id: 'alumnos', etiqueta: 'largo de la barra de alumnos', color: 'c-o',
+          donde: val => enPx(aula(val.p), BX0 + 6 * val.p * BK(24), 2.5),
+          mover: (pt, val) => ({ p: (ux(aula(val.p), pt.x) - BX0) / BK(24) / 6 }) },
+      ],
     },
     predice: {
       pregunta: 'En un club hay 4 veces tantos socios como entrenadores. Con S socios y E entrenadores, ¿qué ecuación lo dice?',
@@ -88,7 +106,7 @@
     },
     regla: {
       texto: 'Antes de escribir, se decide qué cantidad es mayor. El número que multiplica va con la cantidad menor. Se comprueba con valores de prueba.',
-      ecuacion: ['«a es k veces b»:  a = k · b'],
+      ecuacion: [{ llave: ['a'], nota: 'el mayor', color: 'c-o' }, ' = ', { llave: ['k'], nota: 'veces' }, ' · ', { llave: ['b'], nota: 'el menor', color: 'c-i' }],
       condicion: 'las dos letras representan cantidades, no las palabras «socio» o «entrenador»; y k es «veces», no «más que».',
     },
     ahoraTu: {
@@ -129,8 +147,12 @@
       voz: 'La parte verde se agrega a las dos barras.',
       controles: [{ id: 't', etiqueta: 'Pasan', min: 0, max: 18, paso: 3, inicio: 0, unidad: 'años', decimales: 0, color: 'c-d' }],
       dibujo: val => ({ datos: edades(30, 6, val.t), estado: {} }),
-      lectura: val => [`${30 + val.t} − ${6 + val.t} = 24 · razón ${f((30 + val.t) / (6 + val.t), 2)}`],
+      lectura: val => [`${30 + val.t} − ${6 + val.t} = 24`, '   ·   ', `razón ${f((30 + val.t) / (6 + val.t), 2)}`],
       minimo: 4,
+      // Arrastra el borde de la parte verde del hijo: los años que pasan se agregan a las dos barras.
+      arrastres: [{ id: 'anios', etiqueta: 'años que pasan', color: 'c-d',
+        donde: val => enPx(edades(30, 6, val.t), BX0 + (6 + val.t) * BK(60), 2.5),
+        mover: (pt, val) => ({ t: (ux(edades(30, 6, val.t), pt.x) - BX0) / BK(60) - 6 }) }],
     },
     predice: {
       pregunta: 'Una madre tiene 34 años y su hija 8. ¿Dentro de cuántos años la madre tendrá el triple de la edad de la hija?',
@@ -154,7 +176,7 @@
     },
     regla: {
       texto: 'Con edades, los años que pasan se suman a todos; la diferencia de edades no cambia. Se plantea la condición en el momento pedido y se comprueba.',
-      ecuacion: ['(A + ', x, ') = k · (B + ', x, ')'],
+      ecuacion: ['(A + ', { llave: [x], nota: 'años', color: 'c-d' }, ') = ', { llave: ['k'], nota: 'razón', color: 'c-o' }, ' · (B + ', x, ')'],
       condicion: 'la respuesta tiene que ser un número de años con sentido (no negativo si se pregunta por el futuro).',
     },
     ahoraTu: {
@@ -179,8 +201,9 @@
   // ---------- Idea 3: cuadrática con contexto ----------
   // Cambia: un número entero · Permanece: el rectángulo de lados n y n + 1 · Progresa: el área · Se reserva: la raíz
   // negativa · Debe verse: las dos raíces cumplen la ecuación, pero solo una tiene sentido.
+  const RK = 5 / 11;
   const rect = (nn, extra = {}) => {
-    const k = 5 / 11;
+    const k = RK;
     return {
       ancho: 10, alto: 6,
       poligonos: [{ puntos: [[1, 0.5], [1 + (nn + 1) * k, 0.5], [1 + (nn + 1) * k, 0.5 + nn * k], [1, 0.5 + nn * k]], color: 'i', relleno: 0.2 }],
@@ -200,6 +223,10 @@
       dibujo: val => ({ datos: rect(val.n), estado: {} }),
       lectura: val => [x, `(`, x, ` + 1) = ${val.n} · ${val.n + 1} = ${val.n * (val.n + 1)}`],
       minimo: 3,
+      // Arrastra la esquina del rectángulo en diagonal: alto n y largo n + 1 crecen juntos.
+      arrastres: [{ id: 'esquina', etiqueta: 'esquina del rectángulo', color: 'c-i',
+        donde: val => enPx(rect(val.n), 1 + (val.n + 1) * RK, 0.5 + val.n * RK),
+        mover: (pt, val) => ({ n: ((ux(rect(val.n), pt.x) - 1) / RK - 1 + (uy(rect(val.n), pt.y) - 0.5) / RK) / 2 }) }],
     },
     predice: {
       pregunta: 'Las edades de dos hermanos son números seguidos y su producto es 132. ¿Cuántos años tiene el mayor?',
@@ -218,12 +245,12 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'El menor tiene x años; el mayor, x + 1.', ecuacion: [x, '(', x, ' + 1) = 132'] },
         { estado: { corte: 0 }, texto: 'Se pasa todo a un lado y se factoriza.', ecuacion: ['(', x, ' − 11)(', x, ' + 12) = 0'] },
-        { estado: { corte: 0 }, texto: 'x = 11 o x = −12; una edad no es negativa.', ecuacion: [x, ' = 11 · mayor = 12'] },
+        { estado: { corte: 0 }, texto: 'x = 11 o x = −12; una edad no es negativa.', ecuacion: [x, ' = 11', '   ·   ', 'mayor = 12'] },
       ],
     },
     regla: {
       texto: 'Una ecuación cuadrática puede tener dos raíces. Las dos cumplen la ecuación, pero solo se acepta la que tiene sentido en el problema.',
-      ecuacion: [x, '(', x, ' + 1) = N  ⇒  dos raíces; se descarta la que no cabe en el contexto'],
+      ecuacion: [{ llave: [x], nota: 'el menor', color: 'c-i' }, '(', { llave: [x, ' + 1'], nota: 'el mayor', color: 'c-o' }, ') = N'],
       condicion: 'se revisa el dominio: edades y longitudes no son negativas; cantidades de objetos son enteras.',
     },
     ahoraTu: {
@@ -267,6 +294,10 @@
       dibujo: val => ({ datos: granja(val.c, 10 - val.c), estado: {} }),
       lectura: val => [`Patas = 20 + 2 · `, cc, ` = ${20 + 2 * val.c}`],
       minimo: 4,
+      // Arrastra el fin de la fila de conejos: cada conejo que entra es una gallina que sale.
+      arrastres: [{ id: 'conejos', etiqueta: 'cuántos son conejos', color: 'c-i',
+        donde: val => finFila(granja(val.c, 10 - val.c), 0, val.c),
+        mover: (pt, val) => ({ c: nFila(granja(val.c, 10 - val.c), 0, pt.x) }) }],
     },
     predice: {
       pregunta: 'En otro corral hay 15 cabezas y 46 patas, entre conejos y gallinas. ¿Cuántos conejos hay?',
@@ -285,12 +316,12 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'Si los 15 fueran gallinas: 30 patas.', ecuacion: ['15 · 2 = 30'] },
         { estado: { corte: 0 }, texto: 'Sobran 16 patas; cada conejo trae 2 más que una gallina.', ecuacion: [cc, ' = 16 / 2 = 8'] },
-        { estado: { corte: 0 }, texto: 'Con letras es un sistema: el mismo resultado.', ecuacion: [cc, ' + ', gg, ' = 15 · 4', cc, ' + 2', gg, ' = 46'] },
+        { estado: { corte: 0 }, texto: 'Con letras es un sistema: el mismo resultado.', ecuacion: [cc, ' + ', gg, ' = 15', '   ·   ', '4', cc, ' + 2', gg, ' = 46'] },
       ],
     },
     regla: {
       texto: 'Dos datos distintos sobre las mismas cantidades forman un sistema. Se puede suponer todo de un tipo y repartir la diferencia, o resolver con dos ecuaciones.',
-      ecuacion: [cc, ' + ', gg, ' = cabezas  ·  4', cc, ' + 2', gg, ' = patas'],
+      ecuacion: [cc, ' + ', gg, ' = cabezas', '   ·   ', { llave: ['4', cc], nota: 'conejos', color: 'c-i' }, ' + ', { llave: ['2', gg], nota: 'gallinas', color: 'c-o' }, ' = patas'],
       condicion: 'las dos ecuaciones son independientes y la solución tiene sentido: animales enteros y no negativos.',
     },
     ahoraTu: {
@@ -313,9 +344,76 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: «k veces» contra «k más que», con k y la cantidad menor libres: el caso que la idea 1 no deja comparar.
+  const datosVeces = val => {
+    const mayor = val.rel === 'veces' ? val.k * val.b : val.b + val.k;
+    return barras([{ valor: val.b, color: 'i', rotulo: 'b', texto: String(val.b) }, { valor: mayor, color: 'o', rotulo: 'a', texto: String(mayor) }],
+      { max: 48, pie: val.rel === 'veces' ? `a = ${val.k} · b` : `a = b + ${val.k}` });
+  };
+  const mesaVeces = {
+    id: 'veces-o-mas', titulo: '«Veces» o «más que»', pieza: 'rm-plano',
+    consigna: 'Elige si a es k veces b o k más que b. Estira la barra a y mira de a cuánto salta.',
+    controles: [
+      { id: 'rel', etiqueta: 'a es', opciones: [{ valor: 'veces', texto: 'k veces b' }, { valor: 'mas', texto: 'k más que b' }] },
+      { id: 'k', etiqueta: 'k', min: 2, max: 8, paso: 1, inicio: 3, decimales: 0, color: 'c-o' },
+      { id: 'b', etiqueta: 'b', min: 1, max: 6, paso: 1, inicio: 2, decimales: 0, color: 'c-i' },
+    ],
+    dibujo: val => ({ datos: datosVeces(val), estado: {} }),
+    lectura: val => [val.rel === 'veces' ? `k = ${val.k}: a = ${val.k} · ${val.b} = ${val.k * val.b}` : `k = ${val.k}: a = ${val.b} + ${val.k} = ${val.b + val.k}`],
+    // La manija va en la punta de la barra a (la larga): al estirarla, b se ajusta según la relación elegida.
+    arrastres: [{ id: 'barra-a', etiqueta: 'largo de la barra a', color: 'c-o',
+      donde: val => enPx(datosVeces(val), BX0 + (val.rel === 'veces' ? val.k * val.b : val.b + val.k) * BK(48), 2.5),
+      mover: (pt, val) => { const a = (ux(datosVeces(val), pt.x) - BX0) / BK(48); return { b: val.rel === 'veces' ? a / val.k : a - val.k }; } }],
+  };
+  // Mesa 2: edades libres; el padre, el hijo y los años, cada uno con su manija. La razón sale en la lectura.
+  const datosEdades = val => barras([
+    { valor: val.P, color: 'o', rotulo: 'Padre', texto: String(val.P + val.t), extra: val.t ? { valor: val.t, color: 'd' } : null },
+    { valor: val.h, color: 'i', rotulo: 'Hijo', texto: String(val.h + val.t), extra: val.t ? { valor: val.t, color: 'd' } : null },
+  ], { max: 80, pie: `Diferencia: ${val.P - val.h} años` });
+  const mesaEdades = {
+    id: 'edades-libres', titulo: 'Edades a tu gusto', pieza: 'rm-plano',
+    consigna: 'Elige las dos edades de hoy y haz pasar los años. Busca cuándo la razón llega a 2 o a 3.',
+    controles: [
+      { id: 'P', etiqueta: 'Padre hoy', min: 20, max: 60, paso: 1, inicio: 34, unidad: 'años', decimales: 0, color: 'c-o' },
+      { id: 'h', etiqueta: 'Hijo hoy', min: 1, max: 19, paso: 1, inicio: 8, unidad: 'años', decimales: 0, color: 'c-i' },
+      { id: 't', etiqueta: 'Pasan', min: 0, max: 30, paso: 1, inicio: 0, unidad: 'años', decimales: 0, color: 'c-d' },
+    ],
+    dibujo: val => ({ datos: datosEdades(val), estado: {} }),
+    lectura: val => [`En ${val.t} ${val.t === 1 ? 'año' : 'años'}: ${val.P + val.t} y ${val.h + val.t}`, '   ·   ', `razón ${f((val.P + val.t) / (val.h + val.t), 2)}`],
+    arrastres: [
+      { id: 'padre', etiqueta: 'edad del padre hoy', color: 'c-o',
+        donde: val => enPx(datosEdades(val), BX0 + val.P * BK(80), 0.5),
+        mover: (pt, val) => ({ P: (ux(datosEdades(val), pt.x) - BX0) / BK(80) }) },
+      { id: 'hijo', etiqueta: 'edad del hijo hoy', color: 'c-i',
+        donde: val => enPx(datosEdades(val), BX0 + val.h * BK(80), 2),
+        mover: (pt, val) => ({ h: (ux(datosEdades(val), pt.x) - BX0) / BK(80) }) },
+      { id: 'anios', etiqueta: 'años que pasan', color: 'c-d',
+        donde: val => enPx(datosEdades(val), BX0 + (val.h + val.t) * BK(80), 3),
+        mover: (pt, val) => ({ t: (ux(datosEdades(val), pt.x) - BX0) / BK(80) - val.h }) },
+    ],
+  };
+  // Mesa 3: el corral con cabezas libres: conejos y gallinas por separado, hasta 12 de cada uno.
+  const mesaCorral = {
+    id: 'corral', titulo: 'El corral libre', pieza: 'rm-fichas',
+    consigna: 'Arrastra el fin de cada fila. Busca dos corrales distintos con las mismas patas.',
+    controles: [
+      { id: 'c', etiqueta: 'Conejos', min: 0, max: 12, paso: 1, inicio: 3, decimales: 0, color: 'c-i' },
+      { id: 'g', etiqueta: 'Gallinas', min: 0, max: 12, paso: 1, inicio: 5, decimales: 0, color: 'c-o' },
+    ],
+    dibujo: val => ({ datos: granja(val.c, val.g), estado: {} }),
+    lectura: val => [`${val.c + val.g} cabezas`, '   ·   ', `${4 * val.c + 2 * val.g} patas`],
+    arrastres: [
+      { id: 'conejos', etiqueta: 'cuántos conejos', color: 'c-i', donde: val => finFila(granja(val.c, val.g), 0, val.c), mover: (pt, val) => ({ c: nFila(granja(val.c, val.g), 0, pt.x) }) },
+      { id: 'gallinas', etiqueta: 'cuántas gallinas', color: 'c-o', donde: val => finFila(granja(val.c, val.g), 1, val.g), mover: (pt, val) => ({ g: nFila(granja(val.c, val.g), 1, pt.x) }) },
+    ],
+  };
+
   return {
     unidad: 'razonamiento-matematico.planteo-de-ecuaciones',
-    version: '0.1.0',
+    // Laboratorio: «veces» contra «más que», edades libres con tres manijas y el corral con cabezas libres.
+    laboratorio: [mesaVeces, mesaEdades, mesaCorral],
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/rm-fichas.js'],
     historia: {

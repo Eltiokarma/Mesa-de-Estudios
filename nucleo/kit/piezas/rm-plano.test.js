@@ -40,3 +40,9 @@ test('corte, fantasma y alto fijo', () => {
   assert.match(P.dibujar(d, { corte: 1, fantasma: { lineas: [{ de: [0, 0], a: [5, 5] }], rotulo: 'Así no' } }), /kit-fantasma[^]*stroke-dasharray/);
   assert.match(P.alt(d), /A→B 3/);
 });
+
+test('geometria: el nodo dibujado cae en X(x), Y(y)', () => {
+  const g = P.geometria(d), s = P.dibujar(d, { corte: 1 });
+  assert.match(s, new RegExp(`<circle cx="${+g.X(10).toFixed(2)}" cy="${+g.Y(5).toFixed(2)}" r="15"`));
+  assert.equal(+s.match(/viewBox="0 0 320 ([\d.]+)"/)[1], g.alto);
+});

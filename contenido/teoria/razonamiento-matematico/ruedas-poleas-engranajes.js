@@ -35,6 +35,15 @@
     for (const x of distractores) { if (!x.texto || vistos.has(x.texto) || ops.length >= 4) continue; vistos.add(x.texto); ops.push(x); }
     return ops;
   }
+  const nC = { sub: [{ v: 'c-d', t: 'n' }, 'C'] };
+  // Gesto directo (docs/teoria.md §4b): las manijas van arriba de cada rueda (el centro no se mueve en vertical), en el
+  // lienzo de rm-plano; el radio se lee como la distancia del dedo al eje de la rueda.
+  const PLANO = () => Kit.piezas['rm-plano'];
+  const enPx = (datos, ux, uy) => { const g = PLANO().geometria(datos); return { x: g.X(ux), y: g.Y(uy) }; };
+  const aU = (datos, pt) => { const g = PLANO().geometria(datos); return { x: (pt.x - g.X(0)) / g.k, y: (pt.y - g.Y(0)) / g.k }; };
+  const manijaRueda = (id, etiqueta, color, hacer, i, ctl, aValor) => ({ id, etiqueta, color,
+    donde: val => { const d = hacer(val), c = d.circulos[i]; return enPx(d, c.x, c.y - c.r); },
+    mover: (pt, val) => { const d = hacer(val), c = d.circulos[i]; return { [ctl]: aValor(c.y - aU(d, pt).y, val) }; } });
   const v = x => `${f(x, 2)} ${Math.abs(x - 1) < 1e-9 ? 'vuelta' : 'vueltas'}`;
   const sentido = s => (s > 0 ? 'horario' : 'antihorario');
 
@@ -44,7 +53,7 @@
   const K = 20;   // dientes por unidad de radio
   function engranajes(lista, extra = {}) {
     // lista: [{ z, n, color, nombre }], en contacto de izquierda a derecha, centrados.
-    const rs = lista.map(g => g.z / K), gap = 0.22;
+    const rs = lista.map(g => g.z / (extra.K || K)), gap = 0.22;
     const ancho = rs.reduce((m, r, i) => m + 2 * r + (i ? gap : 0), 0);
     let x = 5 - ancho / 2;
     const circulos = lista.map((g, i) => {
@@ -54,10 +63,12 @@
     });
     return {
       ancho: 10, alto: 6.2, circulos,
-      textos: lista.map((g, i) => ({ x: circulos[i].x, y: i % 2 ? 6.05 : 5.3, t: `${g.z} d · ${g.n === null ? '?' : f(g.n, 2)} v`, color: g.color })),
+      textos: lista.map((g, i) => ({ x: circulos[i].x, y: extra.escalonado ? 4.75 + 0.65 * i : i % 2 ? 6.05 : 5.3, t: `${g.z} d · ${g.n === null ? '?' : f(g.n, 2)} v`, color: g.color })),
       pie: extra.pie,
     };
   }
+  // En el juego, escala más grande (13 dientes por unidad): B de 10 dientes se puede agarrar.
+  const dosEngranajes = val => engranajes([{ z: 20, n: 6, color: 'o', nombre: 'A' }, { z: val.z, n: 120 / val.z, color: 'i', nombre: 'B' }], { K: 13 });
   const contacto = {
     id: 'engranajes',
     titulo: 'Engranajes: pasan los mismos dientes',
@@ -67,9 +78,11 @@
       consigna: 'El engranaje A tiene 20 dientes y da 6 vueltas. Cambia los dientes de B y mira cuántas vueltas da y hacia dónde.',
       voz: 'Por el punto de contacto pasan los mismos dientes de A que de B.',
       controles: [{ id: 'z', etiqueta: 'Dientes de B', min: 10, max: 40, paso: 10, inicio: 10, decimales: 0, color: 'c-i' }],
-      dibujo: val => ({ datos: engranajes([{ z: 20, n: 6, color: 'o', nombre: 'A' }, { z: val.z, n: 120 / val.z, color: 'i', nombre: 'B' }]), estado: {} }),
+      dibujo: val => ({ datos: dosEngranajes(val), estado: {} }),
       lectura: val => [nB, ` = 20 · 6 / ${val.z} = ${f(120 / val.z, 2)} vueltas, al revés`],
       minimo: 3,
+      // Agranda B desde su borde de arriba: más dientes, menos vueltas.
+      arrastres: [manijaRueda('borde-b', 'tamaño del engranaje B', 'c-i', dosEngranajes, 1, 'z', r => r * 13)],
     },
     predice: {
       pregunta: 'Tres engranajes en fila: A (20 dientes) da 6 vueltas en sentido horario, B tiene 10 dientes y C tiene 40. ¿Cuántas vueltas da C y hacia dónde?',
@@ -93,7 +106,7 @@
     },
     regla: {
       texto: 'En dos engranajes en contacto pasan los mismos dientes: dientes por vueltas es igual en ambos. Cada contacto invierte el sentido de giro.',
-      ecuacion: [zA, ' · ', nA, ' = ', zB, ' · ', nB],
+      ecuacion: [{ llave: [zA, ' · ', nA], nota: 'dientes que pasan', color: 'c-o' }, ' = ', { llave: [zB, ' · ', nB], nota: 'los mismos', color: 'c-i' }],
       condicion: 'los dientes encajan sin resbalar y los engranajes se tocan por fuera; en contacto interior no se invierte el sentido.',
     },
     ahoraTu: {
@@ -124,7 +137,7 @@
   // Cambia: el radio de B y el tipo de faja · Permanece: A de radio 3 cm con 4 vueltas · Progresa: las vueltas de B ·
   // Se reserva: la faja cruzada, que invierte · Debe verse: la faja lleva el mismo largo de borde en las dos ruedas.
   function faja(ra, rb, cruzada, extra = {}) {
-    const k = 2.1 / Math.max(ra, rb), xa = 2.6, xb = 7.4, y = 2.6, RA = ra * k, RB = rb * k;
+    const k = extra.escala || 2.1 / Math.max(ra, rb), xa = 2.6, xb = 7.4, y = 2.6, RA = ra * k, RB = rb * k;
     const lineas = cruzada
       ? [{ de: [xa, y - RA], a: [xb, y + RB], color: 'h', grosor: 'variable' }, { de: [xa, y + RA], a: [xb, y - RB], color: 'h', grosor: 'variable' }]
       : [{ de: [xa, y - RA], a: [xb, y - RB], color: 'h', grosor: 'variable' }, { de: [xa, y + RA], a: [xb, y + RB], color: 'h', grosor: 'variable' }];
@@ -136,6 +149,7 @@
       pie: extra.pie,
     };
   }
+  const fajaJuego = val => faja(3, val.rb, val.c === 'cruzada', { escala: 0.35 });
   const fajas = {
     id: 'faja',
     titulo: 'La faja lleva el mismo borde',
@@ -148,9 +162,11 @@
         { id: 'rb', etiqueta: 'Radio de B', min: 2, max: 6, paso: 1, inicio: 6, unidad: 'cm', decimales: 0, color: 'c-i' },
         { id: 'c', etiqueta: 'Faja', opciones: [{ valor: 'abierta', texto: 'Abierta' }, { valor: 'cruzada', texto: 'Cruzada' }] },
       ],
-      dibujo: val => ({ datos: faja(3, val.rb, val.c === 'cruzada'), estado: {} }),
+      dibujo: val => ({ datos: fajaJuego(val), estado: {} }),
       lectura: val => [nB, ` = 3 · 4 / ${val.rb} = ${f(12 / val.rb, 2)} v, ${val.c === 'cruzada' ? 'al revés' : 'igual que A'}`],
       minimo: 3,
+      // Agranda o achica B desde su borde de arriba (a escala fija, para que A no cambie de tamaño).
+      arrastres: [manijaRueda('borde-b', 'radio de la rueda B', 'c-i', fajaJuego, 1, 'rb', r => r / 0.35)],
     },
     predice: {
       pregunta: 'Dos ruedas unidas por una faja abierta: A tiene 10 cm de radio y B, 4 cm. A da 2 vueltas. ¿Cuántas vueltas da B?',
@@ -173,7 +189,7 @@
     },
     regla: {
       texto: 'Con una faja, los bordes de las dos ruedas avanzan el mismo largo: radio por vueltas es igual. La faja abierta conserva el sentido; la cruzada lo invierte.',
-      ecuacion: [rA, ' · ', nA, ' = ', rB, ' · ', nB],
+      ecuacion: [{ llave: [rA, ' · ', nA], nota: 'borde que avanza', color: 'c-o' }, ' = ', { llave: [rB, ' · ', nB], nota: 'el mismo', color: 'c-i' }],
       condicion: 'la faja no resbala ni se estira; con dientes, se usa el número de dientes en lugar del radio.',
     },
     ahoraTu: {
@@ -200,8 +216,8 @@
   // Cambia: el radio de la rueda pegada a B · Permanece: A, B y la faja · Progresa: el largo que avanza el borde de C ·
   // Se reserva: un sistema de tres ruedas · Debe verse: en el mismo eje se comparten vueltas, no largos de borde.
   function sistema(rc, extra = {}) {
-    const d = faja(3, 6, false);
-    d.circulos.push({ x: 7.4, y: 2.6, r: rc * d.k, color: 'd', relleno: 0.25, rotulo: 'C', en: [7.4, 2.6 + 0.15] });
+    const d = faja(3, 6, false, { escala: 0.35 });
+    d.circulos.push({ x: 7.4, y: 2.6, r: rc * d.k, color: 'd', relleno: 0.25, rotulo: 'C', en: [7.4 - rc * d.k - 0.3, 2.6 + 0.15] });
     d.circulos[1].rotulo = 'B'; d.circulos[1].en = [7.4 + 1.5, 2.6 - 1.5];
     d.textos.push({ x: 7.4, y: 5.95, t: `C: ${f(rc)} cm, eje de B`, color: 'd' });
     d.pie = extra.pie;
@@ -217,8 +233,10 @@
       voz: 'C y B giran juntas: compara sus vueltas y sus bordes.',
       controles: [{ id: 'rc', etiqueta: 'Radio de C', min: 1, max: 5, paso: 1, inicio: 1, unidad: 'cm', decimales: 0, color: 'c-d' }],
       dibujo: val => ({ datos: sistema(val.rc), estado: {} }),
-      lectura: val => [`B y C: 2 vueltas · borde de C: ${f(2 * 2 * val.rc)}π cm`],
+      lectura: val => [`B y C: 2 vueltas`, '   ·   ', `borde de C: ${f(2 * 2 * val.rc)}π cm`],
       minimo: 3,
+      // Agranda C desde su borde de arriba: B no cambia, las vueltas tampoco; solo el borde de C.
+      arrastres: [manijaRueda('borde-c', 'radio de la rueda C', 'c-d', val => sistema(val.rc), 2, 'rc', r => r / 0.35)],
     },
     predice: {
       pregunta: 'En ese sistema, C tiene 5 cm de radio y una cuerda enrollada en su borde. ¿Cuántos centímetros de cuerda enrolla mientras A da 4 vueltas?',
@@ -235,13 +253,13 @@
       datos: sistema(5),
       pasos: [
         { estado: { corte: 0 }, texto: 'Faja: 3 · 4 = 6 · nB, así que B da 2 vueltas.', ecuacion: [nB, ' = 2'] },
-        { estado: { corte: 0 }, texto: 'C está en el mismo eje: también da 2 vueltas.', ecuacion: ['n_C = ', nB, ' = 2'] },
+        { estado: { corte: 0 }, texto: 'C está en el mismo eje: también da 2 vueltas.', ecuacion: [nC, ' = ', nB, ' = 2'] },
         { estado: { corte: 0 }, texto: 'Su borde avanza 2 vueltas de 2π · 5 cm.', ecuacion: ['2 · 2π · 5 = 20π cm'] },
       ],
     },
     regla: {
       texto: 'Las ruedas fijas en un mismo eje dan las mismas vueltas. El largo que avanza el borde de cada una depende de su radio.',
-      ecuacion: ['mismo eje: ', { sub: ['n', 'B'] }, ' = ', { sub: ['n', 'C'] }, ' · largo = 2π · r · n'],
+      ecuacion: ['mismo eje: ', nB, ' = ', nC, '   ·   ', 'largo = ', { llave: ['2π · r'], nota: 'una vuelta', color: 'c-d' }, ' · n'],
       condicion: 'las ruedas están pegadas al eje y giran juntas; si una gira suelta sobre el eje, no se aplica.',
     },
     ahoraTu: {
@@ -262,9 +280,51 @@
     },
   };
   
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1: tren de tres engranajes con los tres tamaños libres: el del medio cambia sus vueltas, pero no las de C.
+  const KL = 22;
+  const tren = val => {
+    const D = val.za * 6;
+    return engranajes([{ z: val.za, n: 6, color: 'o', nombre: 'A' }, { z: val.zb, n: D / val.zb, color: 'i', nombre: 'B' }, { z: val.zc, n: D / val.zc, color: 'd', nombre: 'C' }], { K: KL, escalonado: true, pie: `Pasan ${D} dientes por cada contacto` });
+  };
+  const mesaTren = {
+    id: 'tren-de-engranajes', titulo: 'Tren de tres engranajes', pieza: 'rm-plano',
+    consigna: 'A da 6 vueltas. Agranda o achica cada engranaje desde arriba. Mira qué cambia en C cuando solo tocas B.',
+    controles: [
+      { id: 'za', etiqueta: 'Dientes de A', min: 10, max: 35, paso: 5, inicio: 20, decimales: 0, color: 'c-o' },
+      { id: 'zb', etiqueta: 'Dientes de B', min: 10, max: 35, paso: 5, inicio: 10, decimales: 0, color: 'c-i' },
+      { id: 'zc', etiqueta: 'Dientes de C', min: 10, max: 35, paso: 5, inicio: 30, decimales: 0, color: 'c-d' },
+    ],
+    dibujo: val => ({ datos: tren(val), estado: {} }),
+    lectura: val => [nB, ` = ${f(val.za * 6 / val.zb, 2)}`, '   ·   ', nC, ` = ${f(val.za * 6 / val.zc, 2)}, igual que A`],
+    arrastres: [['a', 'za', 'c-o', 0], ['b', 'zb', 'c-i', 1], ['c', 'zc', 'c-d', 2]].map(([id, ctl, color, i]) =>
+      manijaRueda('borde-' + id, `tamaño del engranaje ${id.toUpperCase()}`, color, tren, i, ctl, r => r * KL)),
+  };
+  // Mesa 2: faja libre: los dos radios, las vueltas de A y el tipo de faja.
+  const EF = 0.3;
+  const fajaLibre = val => faja(val.ra, val.rb, val.c === 'cruzada', { escala: EF });
+  const mesaFaja = {
+    id: 'faja-libre', titulo: 'Faja a tu gusto', pieza: 'rm-plano',
+    consigna: 'Cambia los dos radios desde arriba, las vueltas de A y la faja. Busca dos ruedas que den las mismas vueltas.',
+    controles: [
+      { id: 'ra', etiqueta: 'Radio de A', min: 1, max: 7, paso: 1, inicio: 6, unidad: 'cm', decimales: 0, color: 'c-o' },
+      { id: 'rb', etiqueta: 'Radio de B', min: 1, max: 7, paso: 1, inicio: 2, unidad: 'cm', decimales: 0, color: 'c-i' },
+      { id: 'na', etiqueta: 'Vueltas de A', min: 1, max: 6, paso: 1, inicio: 2, decimales: 0, color: 'c-o' },
+      { id: 'c', etiqueta: 'Faja', opciones: [{ valor: 'abierta', texto: 'Abierta' }, { valor: 'cruzada', texto: 'Cruzada' }] },
+    ],
+    dibujo: val => ({ datos: fajaLibre(val), estado: {} }),
+    lectura: val => [`A: ${v(val.na)}`, '   ·   ', `B: ${v(val.ra * val.na / val.rb)}, ${val.c === 'cruzada' ? 'al revés' : 'igual que A'}`],
+    arrastres: [
+      manijaRueda('borde-a', 'radio de la rueda A', 'c-o', fajaLibre, 0, 'ra', r => r / EF),
+      manijaRueda('borde-b', 'radio de la rueda B', 'c-i', fajaLibre, 1, 'rb', r => r / EF),
+    ],
+  };
+
   return {
     unidad: 'razonamiento-matematico.ruedas-poleas-engranajes',
-    version: '0.1.0',
+    // Laboratorio: tren de tres engranajes con los tres tamaños libres y la faja con los dos radios libres.
+    laboratorio: [mesaTren, mesaFaja],
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-plano.js'],
     historia: {
