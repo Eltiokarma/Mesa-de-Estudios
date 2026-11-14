@@ -220,6 +220,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'ampliadora', unidad: 'geometria.proporcionalidad-y-semejanza', version: '0.1.0' };
@@ -989,6 +990,9 @@ function explorar(cual){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de cualquier pregunta, se juega con la manija del paso 1.
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra la manija naranja y mira cómo crece el cuadrado.', minimo:2 });
 })();
 </script>
 
@@ -1067,11 +1071,17 @@ function botones(){
     : `<button type="button" aria-pressed="${k === S.k}" data-k="${k}">${k+1}. ${x.corto}</button>`).join('');
   $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
 }
+// Regla 3: antes del primer experimento, juego libre con la manija sobre un triángulo (ninguno de los
+// experimentos usa el triángulo).
+let jugado = false, kLibre = 1;
+const juegoLibre = () => E.set({ modo:'plano', tipo:'triangulo', k:kLibre, manija:true,
+  descr:() => `Triángulo de lado ${fmt(BASE*kLibre, 0)} cm, razón k = ${frac(kLibre)}.` });
+E.alManija = k => { if (jugado) return; kLibre = k; juegoLibre(); };
 function ir(k){
   if (k > primeraLibre()) return;
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k];
-  x.antes(!!S.pred[x.id]);
+  if (jugado) x.antes(!!S.pred[x.id]); else juegoLibre();
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -1098,6 +1108,9 @@ function ir(k){
   pintar(); E.dibujar();
 }
 ir(0);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra la manija naranja: amplía y achica el triángulo.', minimo:2,
+  alListo:() => { jugado = true; ir(S.k); } });
 })();
 </script>
 
