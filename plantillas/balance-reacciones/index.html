@@ -138,6 +138,7 @@ select{font:700 .95rem var(--font); padding:9px 12px; border-radius:12px; border
 .coef .nom{font-weight:800; font-size:1.05rem; white-space:nowrap}
 .coef button{width:44px; height:44px; border-radius:50%; border:1.5px solid var(--line); background:var(--card); color:var(--ink); font:800 1.2rem var(--font); cursor:pointer}
 .coef button:disabled{opacity:.4; cursor:not-allowed}
+.juego[hidden]{display:none}
 .estado{font-weight:700}
 
 .nav{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
@@ -182,6 +183,7 @@ button:focus-visible, .v:focus-visible, select:focus-visible, a:focus-visible{ou
     <section class="bench" aria-label="Tablero de la reacción">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="Arriba, la ecuación; al centro, las moléculas de los reactivos y de los productos; abajo, cuántos átomos de cada elemento hay a cada lado"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="coefs juego" id="juego1" role="group" aria-label="Moléculas del tablero"></div>
       <div class="legend" id="ley1"></div>
     </section>
     <section class="guide">
@@ -203,6 +205,7 @@ button:focus-visible, .v:focus-visible, select:focus-visible, a:focus-visible{ou
     <section class="bench" aria-label="Experimentos con el tablero">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="El tablero de la reacción o los frascos sobre las balanzas, según el experimento"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="coefs juego" id="juego2" role="group" aria-label="Moléculas del tablero"></div>
       <div class="legend" id="ley2"></div>
     </section>
     <section class="guide">
@@ -229,6 +232,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'balance-reacciones', unidad: 'quimica.reacciones-y-balance', version: '0.1.0' };
@@ -679,7 +683,36 @@ function crearEscena(cv, idDesc, modoId, idLey){
     }
     const el = document.getElementById(idDesc); if (el.textContent !== t) el.textContent = t;
   };
+  // Qué columna del tablero (una sustancia) hay bajo un punto del lienzo, en px CSS; -1 si ninguna.
+  E.columnaEn = (px, py) => {
+    const v = E.vista; if (v.tipo !== 'tablero' || !L) return -1;
+    const x = (px - (W - W*esc)/2)/esc, y = py/esc, G = columnas(v);
+    const q = G.cols.find(q => x >= q.x0 && x <= q.x0 + q.cw && y >= q.yCaja && y <= q.yCaja + L.hCaja);
+    return q ? q.k : -1;
+  };
   return E;
+}
+// Regla 3 (decisión 20): antes de cualquier pregunta se juega con el tablero de la combustión del metano: tocar una
+// sustancia pone una molécula más, y los botones − y + hacen lo mismo sin tocar el dibujo. El metano no se pregunta en
+// ningún modo (las predicciones son el agua, el propano, el zinc, el permanganato, el amoniaco y el dicromato), y el
+// juego no dice si quedó balanceada ni la suma: solo muestra la cuenta de átomos.
+const JUEGO_EC = 'CH4 + O2 -> CO2 + H2O', JUEGO_MAX = 8;
+function juegoLibre(E, cv, caja){
+  const J = { on:true, coefs:[1, 1, 1, 1] }, fs = MB.ecuacion(JUEGO_EC).reactivos.concat(MB.ecuacion(JUEGO_EC).productos).map(t => t.f);
+  const ver = () => { if (!J.on) return; E.vista = tablero(JUEGO_EC, J.coefs.slice()); E.dibujar(); E.describir(); pintar(); };
+  const cambiar = (k, d) => { if (!J.on) return; J.coefs[k] = clamp(J.coefs[k] + d, 1, JUEGO_MAX); ver(); };
+  function pintar(){
+    caja.innerHTML = fs.map((f, k) => `<div class="coef"><button type="button" data-d="-1" data-k="${k}" aria-label="Una molécula menos de ${txt(f)}"${J.coefs[k] <= 1 ? ' disabled' : ''}>−</button><span class="nom">${C_(J.coefs[k])} ${Fh(f)}</span><button type="button" data-d="1" data-k="${k}" aria-label="Una molécula más de ${txt(f)}"${J.coefs[k] >= JUEGO_MAX ? ' disabled' : ''}>+</button></div>`).join('');
+    caja.querySelectorAll('button').forEach(b => b.onclick = () => cambiar(+b.dataset.k, +b.dataset.d));
+  }
+  cv.addEventListener('click', e => {
+    if (!J.on) return;
+    const r = cv.getBoundingClientRect(), k = E.columnaEn(e.clientX - r.left, e.clientY - r.top);
+    if (k >= 0) cambiar(k, J.coefs[k] >= JUEGO_MAX ? 1 - JUEGO_MAX : 1);
+  });
+  J.terminar = () => { J.on = false; caja.hidden = true; caja.innerHTML = ''; };
+  J.ver = ver;
+  return J;
 }
 function elementosVistos(v){
   const s = new Set(), agregar = f => { for (const e of Object.keys(MB.especie(f).atomos)) s.add(e); };
@@ -939,6 +972,10 @@ $('prev').addEventListener('click', () => go(S.step - 1));
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
 go(0);
+const juego = juegoLibre(E, $('cv'), $('juego1')); juego.ver();
+JugarPrimero.montar({ escena: $('cv').closest('.bench'), preguntas: [...document.querySelector('#m1 .guide').children], minimo: 2,
+  consigna: 'Toca las moléculas o usa − y +: mira la cuenta de átomos.',
+  alListo: () => { juego.terminar(); go(0); } });
 })();
 </script>
 
@@ -1122,6 +1159,10 @@ function ir(k){
 alRedibujarTema(() => E.dibujar());
 addEventListener('modo', () => { E.resize(); E.dibujar(); pedir(); });
 ir(0);
+const juego = juegoLibre(E, $('cv2'), $('juego2')); juego.ver();
+JugarPrimero.montar({ escena: $('cv2').closest('.bench'), preguntas: [...document.querySelector('#m2 .guide').children], minimo: 2,
+  consigna: 'Toca las moléculas o usa − y +: mira la cuenta de átomos.',
+  alListo: () => { juego.terminar(); ir(0); } });
 })();
 </script>
 
