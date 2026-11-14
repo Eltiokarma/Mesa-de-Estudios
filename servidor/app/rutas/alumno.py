@@ -98,6 +98,16 @@ def subir_eventos(datos: PostEventos, s: Session = Depends(db), u: Usuario = Dep
         if len(json.dumps(ev)) > MAX_EVENTO_BYTES:
             continue
         validos.setdefault(ev["t"], limpiar(ev, al.seudonimo))  # repetidos dentro del lote: el primero
+    if s.bind.dialect.name == "postgresql" and validos:
+        # Una sola sentencia: INSERT … ON CONFLICT DO NOTHING. Es idempotente por alumno + t aunque lleguen dos
+        # envíos del mismo lote a la vez, y cuenta solo las filas que entraron.
+        from sqlalchemy.dialects.postgresql import insert as pg_insert
+        filas = [{"alumno": al.seudonimo, "colegio_id": al.colegio_id, "t": t, "datos": d, "recibido": ahora()}
+                 for t, d in validos.items()]
+        q = pg_insert(Evento).values(filas).on_conflict_do_nothing(index_elements=["alumno", "t"]).returning(Evento.id)
+        n = len(s.execute(q).all())
+        s.commit()
+        return {"recibidos": len(datos.eventos), "nuevos": n}
     ya = set(s.scalars(select(Evento.t).where(Evento.alumno == al.seudonimo, Evento.t.in_(list(validos))))) if validos else set()
     nuevos = [Evento(alumno=al.seudonimo, colegio_id=al.colegio_id, t=t, datos=d) for t, d in validos.items() if t not in ya]
     s.add_all(nuevos)
