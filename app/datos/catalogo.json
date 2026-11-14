@@ -2220,7 +2220,15 @@
      "plantillas": [
       "probabilidad-dados",
       "probabilidad-conteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/analisis-combinatorio.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/arit-fichas.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.probabilidades",
