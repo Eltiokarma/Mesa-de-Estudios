@@ -18,11 +18,22 @@
  * (autoría cruzada), RV61; RVR1 (síntesis que borra un desacuerdo) es hipótesis nueva.
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): el marcador se arrastra por las frases y se suelta en la que se quiere comparar
+  // (rv-texto.ancla pone la manija; rv-texto.cercana elige la frase más cercana al dedo). Comparar parte por parte es
+  // lo que pide la ruta C: la lectura dice qué hizo la versión con esa frase.
+  const RV = () => Kit.piezas['rv-texto'];
+  const marcador = (datosDe, ids, ctrl, etiqueta) => ({
+    id: 'frase', etiqueta, color: 'c-i',
+    donde: val => RV().ancla(datosDe(val), val[ctrl]),
+    mover: (pt, val) => ({ [ctrl]: RV().cercana(datosDe(val), pt, ids) }),
+  });
+  // [lo que pasó, color]: i conserva, d se omite sin daño (un detalle), h cambia, inventa o borra.
+  const lee = ([t, c]) => { const k = t.indexOf(': '); const fn = c === 'i' ? dice : c === 'd' ? rel : cambia; return k > 0 ? [fn(t.slice(0, k)), t.slice(k)] : [fn(t)]; };
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
@@ -51,6 +62,14 @@
     causa: { frs: [['r1', 'El taller hizo que los alumnos'], ['r2', 'leyeran en casa todos los días.']], marcas: { d: 'h', r1: 'h', r2: 'h' }, dice: 'Inventa una causa que el texto no da', ok: false },
   };
   const figTaller = k => figura(TALLER, RES[k].frs);
+  // Qué hace cada resumen con cada frase del original.
+  const TRATO = {
+    literal: { a: ['Conserva: el taller', 'i'], b: ['Conserva: «algunos»', 'i'], c: ['Conserva: mejoraron', 'i'], d: ['Conserva: la relación', 'i'], e: ['Lo omite: se entiende', 'd'] },
+    todos: { a: ['Conserva: el taller', 'i'], b: ['Lo cambia: «todos»', 'h'], c: ['Conserva: mejoraron', 'i'], d: ['Lo pierde: la relación', 'h'], e: ['Lo contradice', 'h'] },
+    lista: { a: ['Palabra suelta', 'h'], b: ['Palabra suelta', 'h'], c: ['Lo pierde: mejoraron', 'h'], d: ['Solo «veinte minutos»', 'h'], e: ['Lo pierde', 'h'] },
+    causa: { a: ['Conserva: el taller', 'i'], b: ['Lo pierde: «algunos»', 'h'], c: ['Lo pierde: mejoraron', 'h'], d: ['Lo invierte: es causa', 'h'], e: ['Lo pierde', 'h'] },
+  };
+  const IDS_T = TALLER.map(([id]) => id);
   const alcance = {
     id: 'alcance',
     titulo: 'Resumir sin cambiar el alcance',
@@ -59,10 +78,19 @@
     juega: {
       consigna: 'Compara cuatro resúmenes del texto del taller. Mira qué conserva cada uno y qué cambia sin que el texto lo diga.',
       voz: 'Fíjate en palabras como «algunos» o «todos».',
-      controles: [{ id: 'k', etiqueta: 'Resumen', opciones: [{ valor: 'literal', texto: 'A' }, { valor: 'todos', texto: 'B' }, { valor: 'lista', texto: 'C' }, { valor: 'causa', texto: 'D' }] }],
-      dibujo: val => ({ datos: figTaller(val.k), estado: { marcas: RES[val.k].marcas, sellos: { v: RES[val.k].ok ? { t: 'Fiel', c: 'i' } : { t: 'Cambia el texto', c: 'h' } } } }),
-      lectura: val => [corto(RES[val.k].ok ? dice : cambia, RES[val.k].dice)],
+      controles: [
+        { id: 'k', etiqueta: 'Resumen', opciones: [{ valor: 'literal', texto: 'A' }, { valor: 'todos', texto: 'B' }, { valor: 'lista', texto: 'C' }, { valor: 'causa', texto: 'D' }] },
+        { id: 'f', etiqueta: 'Frase', opciones: IDS_T.map((id, k) => ({ valor: id, texto: `${k + 1}` })), inicio: 'b' },
+      ],
+      dibujo: val => {
+        const marcas = Object.fromEntries(Object.entries(RES[val.k].marcas).filter(([id]) => id[0] === 'r'));
+        marcas[val.f] = TRATO[val.k][val.f][1];
+        return { datos: figTaller(val.k), estado: { marcas, sellos: { v: RES[val.k].ok ? { t: 'Fiel', c: 'i' } : { t: 'Cambia el texto', c: 'h' } } } };
+      },
+      lectura: val => lee(TRATO[val.k][val.f]),
       minimo: 3,
+      // Pasa el marcador por el original: frase por frase, qué conservó el resumen y qué cambió.
+      arrastres: [marcador(val => figTaller(val.k), IDS_T, 'f', 'frase del original')],
     },
     predice: {
       pregunta: 'Un resumen interpretativo usa palabras propias. ¿Cuál resume este texto sobre la helada sin inventar nada?',
@@ -80,13 +108,13 @@
       datos: figTaller('literal'),
       pasos: [
         { estado: { marcas: { b: 'i', c: 'i' }, tapar: ['r1', 'r2'] }, texto: 'Lo esencial: algunos mejoraron. «Algunos» es parte de lo que se dice.', ecuacion: [dice('algunos'), ' mejoraron'] },
-        { estado: { marcas: { b: 'i', c: 'i', d: 'd' }, tapar: ['r1', 'r2'], nuevo: ['d'] }, texto: 'Lo que avanzaron más tenían algo en común: leer a diario.', ecuacion: [rel('relación'), ': leer a diario → más avance'] },
-        { estado: { marcas: RES.literal.marcas, sellos: { v: { t: 'Fiel', c: 'i' } }, nuevo: ['r1', 'r2'] }, texto: 'El resumen conserva el alcance y la relación; quita lo accesorio.', ecuacion: [version('resumen'), ' = ', dice('lo esencial'), ' + ', rel('sus relaciones')] },
+        { estado: { marcas: { b: 'i', c: 'i', d: 'd' }, tapar: ['r1', 'r2'], nuevo: ['d'] }, texto: 'Lo que avanzaron más tenían algo en común: leer a diario.', ecuacion: [rel('leer a diario'), ' → más avance'] },
+        { estado: { marcas: RES.literal.marcas, sellos: { v: { t: 'Fiel', c: 'i' } }, nuevo: ['r1', 'r2'] }, texto: 'El resumen conserva el alcance y la relación; quita lo accesorio.', ecuacion: [dice('lo esencial'), ' + ', rel('sus relaciones')] },
       ],
     },
     regla: {
       texto: 'Resumir es quitar detalles y conservar lo esencial con sus relaciones y su alcance. El literal usa frases del texto; el interpretativo, palabras propias, sin agregar hechos ni exagerar.',
-      ecuacion: [version('resumen'), ' = ', dice('lo esencial'), ' + ', rel('relaciones'), ' + ', dice('alcance')],
+      ecuacion: [{ llave: [rel('relaciones')], nota: 'qué une', color: 'c-d' }, ' + ', { llave: [dice('alcance')], nota: 'cuántos', color: 'c-i' }],
       condicion: 'se mantienen cuantificadores (algunos, todos), negaciones y causas tal como el texto los dice.',
     },
     ahoraTu: {
@@ -119,6 +147,15 @@
     cambia: { frs: [['p1', 'Rosa fue al colegio'], ['p2', 'aunque tenía fiebre.']], marcas: { a: 'h', p1: 'h', p2: 'o' }, dice: 'Cambia lo que pasó: dice lo contrario', ok: false },
     corta: { frs: [['p1', 'Rosa no fue al colegio.']], marcas: { a: 'i', b: 'h', p1: 'o' }, dice: 'Pierde la causa: dice menos', ok: false },
   };
+  // Qué hace cada parte de la versión con el original (la versión corta tiene una sola parte).
+  const PARTES = {
+    fiel: { p1: ['Lo mismo: la causa', 'i'], p2: ['Lo mismo: faltó', 'i'] },
+    infiere: { p1: ['Lo mismo: faltó por fiebre', 'i'], p2: ['Agrega: el texto no lo dice', 'h'] },
+    cambia: { p1: ['Lo contrario: «fue»', 'h'], p2: ['«Aunque» cambia la relación', 'h'] },
+    corta: { p1: ['Lo mismo, sin la causa', 'h'], p2: ['Falta: «porque tenía fiebre»', 'h'] },
+  };
+  const parteDe = (k, f) => (PAR[k].frs.length > 1 ? f : 'p1');
+  const figPar = k => figura(ORI, PAR[k].frs, 'Versión');
   const parafrasis = {
     id: 'parafrasis',
     titulo: 'Parafrasear no es inferir',
@@ -127,10 +164,21 @@
     juega: {
       consigna: 'Compara versiones de la oración de Rosa. Mira cuál dice lo mismo con otras palabras y cuál dice más o menos.',
       voz: 'Una paráfrasis no suma ni quita información.',
-      controles: [{ id: 'k', etiqueta: 'Versión', opciones: [{ valor: 'fiel', texto: 'A' }, { valor: 'infiere', texto: 'B' }, { valor: 'cambia', texto: 'C' }, { valor: 'corta', texto: 'D' }] }],
-      dibujo: val => ({ datos: figura(ORI, PAR[val.k].frs, 'Versión'), estado: { marcas: PAR[val.k].marcas, sellos: { v: PAR[val.k].ok ? { t: 'Paráfrasis', c: 'i' } : { t: 'No es paráfrasis', c: 'h' } } } }),
-      lectura: val => [corto(PAR[val.k].ok ? dice : cambia, PAR[val.k].dice)],
+      controles: [
+        { id: 'k', etiqueta: 'Versión', opciones: [{ valor: 'fiel', texto: 'A' }, { valor: 'infiere', texto: 'B' }, { valor: 'cambia', texto: 'C' }, { valor: 'corta', texto: 'D' }] },
+        { id: 'f', etiqueta: 'Parte', opciones: [{ valor: 'p1', texto: '1' }, { valor: 'p2', texto: '2' }] },
+      ],
+      dibujo: val => {
+        const marcas = Object.fromEntries(Object.entries(PAR[val.k].marcas).filter(([id]) => id[0] !== 'p'));
+        marcas[parteDe(val.k, val.f)] = PARTES[val.k][val.f][1] === 'i' ? 'o' : 'h';
+        return { datos: figPar(val.k), estado: { marcas, sellos: { v: PAR[val.k].ok ? { t: 'Paráfrasis', c: 'i' } : { t: 'No es paráfrasis', c: 'h' } } } };
+      },
+      lectura: val => lee(PARTES[val.k][val.f]),
       minimo: 3,
+      // Pasa el marcador por la versión: parte por parte, si dice lo mismo, agrega, quita o cambia.
+      arrastres: [{ id: 'parte', etiqueta: 'parte de la versión', color: 'c-o',
+        donde: val => RV().ancla(figPar(val.k), parteDe(val.k, val.f)),
+        mover: (pt, val) => ({ f: RV().cercana(figPar(val.k), pt, PAR[val.k].frs.map(([id]) => id)) }) }],
     },
     predice: {
       pregunta: 'Para la oración del puente, ¿cuál de estas versiones es una inferencia y no una paráfrasis?',
@@ -147,13 +195,13 @@
       datos: figura(ORI, PAR.infiere.frs, 'Versión'),
       pasos: [
         { estado: { marcas: { a: 'i', b: 'i' }, tapar: ['p1', 'p2'] }, texto: 'El original dice dos cosas: que faltó y por qué.', ecuacion: [dice('faltó'), ' + ', dice('fiebre')] },
-        { estado: { marcas: { a: 'i', b: 'i', p1: 'o' }, tapar: ['p2'], nuevo: ['p1'] }, texto: '«Faltó por fiebre» dice lo mismo con otras palabras.', ecuacion: [version('faltó por fiebre'), ' = ', dice('original')] },
+        { estado: { marcas: { a: 'i', b: 'i', p1: 'o' }, tapar: ['p2'], nuevo: ['p1'] }, texto: '«Faltó por fiebre» dice lo mismo con otras palabras.', ecuacion: [version('faltó por fiebre'), ' = ', dice('lo mismo')] },
         { estado: { marcas: { a: 'i', b: 'i', p1: 'o', p2: 'h' }, sellos: { v: { t: 'No es paráfrasis', c: 'h' } }, nuevo: ['p2'] }, texto: '«Se perdió el examen» puede ser cierto, pero el texto no lo dice.', ecuacion: [cambia('+ el examen'), ': inferencia'] },
       ],
     },
     regla: {
       texto: 'Una paráfrasis dice lo mismo que el original con otras palabras: no agrega, no quita y no cambia. Si suma una consecuencia o una causa nueva, ya es una inferencia.',
-      ecuacion: [version('paráfrasis'), ' = ', dice('original'), '   ·   ', version('inferencia'), ' = ', dice('original'), ' + ', cambia('algo nuevo')],
+      ecuacion: [version('paráfrasis'), ' = ', dice('original'), '   ·   ', { llave: [dice('original'), ' + ', cambia('algo')], nota: 'ya es inferencia', color: 'c-h' }],
       condicion: 'se compara parte por parte: quién, qué, cuándo, por qué y cuánto deben quedar igual.',
     },
     ahoraTu: {
@@ -192,6 +240,14 @@
     cruzada: { t: 'A propone mejorar los buses y B, prohibir los autos.', marcas: { a2: 'h', b2: 'h', s1: 'h' }, dice: 'Cruza los autores', ok: false },
     una: { t: 'Hay que prohibir los autos en el centro los domingos.', marcas: { a2: 'i', s1: 'h' }, dice: 'Solo resume A: borra a B', ok: false },
   };
+  // Qué hace cada síntesis con cada frase de A y de B: así se rastrea cada parte hasta su fuente.
+  const RASTRO = {
+    fiel: { a1: ['La recoge: problema común', 'i'], b1: ['La recoge: problema común', 'i'], a2: ['La recoge: solución de A', 'i'], b2: ['La recoge: solución de B', 'i'] },
+    acuerdo: { a1: ['La recoge', 'i'], b1: ['La recoge', 'i'], a2: ['La recoge', 'i'], b2: ['La contradice: B no prohíbe', 'h'] },
+    cruzada: { a1: ['La omite', 'h'], b1: ['La omite', 'h'], a2: ['Se la atribuye a B', 'h'], b2: ['Se la atribuye a A', 'h'] },
+    una: { a1: ['La omite', 'h'], b1: ['La omite', 'h'], a2: ['La recoge', 'i'], b2: ['La borra', 'h'] },
+  };
+  const IDS_AB = ['a1', 'a2', 'b1', 'b2'];
   const sintesis = {
     id: 'sintesis',
     titulo: 'Sintetizar sin borrar diferencias',
@@ -200,10 +256,15 @@
     juega: {
       consigna: 'Dos textos opinan sobre el tráfico. Prueba cuatro síntesis y mira cuál conserva lo que comparten, en qué difieren y quién dice qué.',
       voz: 'Sintetizar no es poner de acuerdo a los autores.',
-      controles: [{ id: 'k', etiqueta: 'Síntesis', opciones: [{ valor: 'fiel', texto: 'A' }, { valor: 'acuerdo', texto: 'B' }, { valor: 'cruzada', texto: 'C' }, { valor: 'una', texto: 'D' }] }],
-      dibujo: val => ({ datos: figSin(SIN[val.k].t), estado: { marcas: SIN[val.k].marcas, sellos: { v: SIN[val.k].ok ? { t: 'Fiel', c: 'i' } : { t: 'No es fiel', c: 'h' } } } }),
-      lectura: val => [corto(SIN[val.k].ok ? dice : cambia, SIN[val.k].dice)],
+      controles: [
+        { id: 'k', etiqueta: 'Síntesis', opciones: [{ valor: 'fiel', texto: 'A' }, { valor: 'acuerdo', texto: 'B' }, { valor: 'cruzada', texto: 'C' }, { valor: 'una', texto: 'D' }] },
+        { id: 'f', etiqueta: 'Frase', opciones: [{ valor: 'a1', texto: 'A1' }, { valor: 'a2', texto: 'A2' }, { valor: 'b1', texto: 'B1' }, { valor: 'b2', texto: 'B2' }], inicio: 'b2' },
+      ],
+      dibujo: val => ({ datos: figSin(SIN[val.k].t), estado: { marcas: { s1: SIN[val.k].ok ? 'o' : 'h', [val.f]: RASTRO[val.k][val.f][1] }, sellos: { v: SIN[val.k].ok ? { t: 'Fiel', c: 'i' } : { t: 'No es fiel', c: 'h' } } } }),
+      lectura: val => lee(RASTRO[val.k][val.f]),
       minimo: 3,
+      // Pasa el marcador por A y B: qué hizo la síntesis con cada frase de cada fuente.
+      arrastres: [marcador(val => figSin(SIN[val.k].t), IDS_AB, 'f', 'frase de las fuentes')],
     },
     predice: {
       pregunta: '¿Qué síntesis de los textos A y B sobre el huerto escolar es fiel?',
@@ -213,7 +274,7 @@
         ['El huerto enseña ciencias', 'RV3', 'Es verdad según A, pero deja fuera lo que dice B.'],
       ]),
       dibujo: { datos: { secciones: [{ id: 'A', titulo: 'Texto A', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: 'El huerto escolar enseña ciencias.' }] }, { id: 'B', titulo: 'Texto B', modo: 'tarjeta', fragmentos: [{ id: 'b1', t: 'El huerto quita horas de matemática.' }] }] }, estado: {} },
-      revelar: { datos: { secciones: [{ id: 'A', titulo: 'Texto A', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: 'El huerto escolar enseña ciencias.' }] }, { id: 'B', titulo: 'Texto B', modo: 'tarjeta', fragmentos: [{ id: 'b1', t: 'El huerto quita horas de matemática.' }] }] }, estado: { marcas: { a1: 'd', b1: 'd' }, sellos: { A: { t: 'beneficio', c: 'd' }, B: { t: 'costo', c: 'd' } } } },
+      revelar: { datos: { secciones: [{ id: 'A', titulo: 'Texto A', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: 'El huerto escolar enseña ciencias.' }] }, { id: 'B', titulo: 'Texto B', modo: 'tarjeta', fragmentos: [{ id: 'b1', t: 'El huerto quita horas de matemática.' }] }] }, estado: { marcas: { a1: 'i', b1: 'd' }, sellos: { B: { t: 'A: beneficio · B: costo', c: 'd' } } } },
       coincide: 'Coincide: la síntesis junta las dos miradas sin cambiar quién dice qué.',
     },
     mira: {
@@ -221,12 +282,12 @@
       pasos: [
         { estado: { marcas: { a1: 'i', b1: 'i' }, tapar: ['s1'] }, texto: 'A y B coinciden en el diagnóstico: hay mucho tráfico.', ecuacion: [dice('acuerdo'), ': tráfico'] },
         { estado: { marcas: { a1: 'i', b1: 'i', a2: 'd', b2: 'd' }, tapar: ['s1'], nuevo: ['a2', 'b2'] }, texto: 'Difieren en la solución: prohibir autos o mejorar buses.', ecuacion: [rel('A: prohibir'), ' ≠ ', rel('B: buses')] },
-        { estado: { marcas: SIN.fiel.marcas, sellos: { v: { t: 'Fiel', c: 'i' } }, nuevo: ['s1'] }, texto: 'La síntesis conserva las dos cosas, y quién dice cada una.', ecuacion: [version('síntesis'), ' = ', dice('acuerdo'), ' + ', rel('diferencia')] },
+        { estado: { marcas: SIN.fiel.marcas, sellos: { v: { t: 'Fiel', c: 'i' } }, nuevo: ['s1'] }, texto: 'La síntesis conserva las dos cosas, y quién dice cada una.', ecuacion: [dice('acuerdo'), ' + ', rel('diferencia')] },
       ],
     },
     regla: {
       texto: 'Una síntesis reúne varias fuentes en una sola idea: conserva lo que comparten, en qué difieren y quién dice qué. No inventa un acuerdo que no existe.',
-      ecuacion: [version('síntesis'), ' = ', dice('acuerdos'), ' + ', rel('diferencias'), ' + autoría'],
+      ecuacion: [{ llave: [dice('acuerdo')], nota: 'lo común', color: 'c-i' }, ' + ', { llave: [rel('diferencia')], nota: 'quién dice qué', color: 'c-d' }],
       condicion: 'cada afirmación de la síntesis se puede rastrear hasta la fuente que la dice.',
     },
     ahoraTu: {
@@ -249,9 +310,43 @@
     },
   };
 
+  // ---------- Laboratorio: arma tu resumen ----------
+  // Más rica que la idea 1: el alumno arma el resumen con dos piezas (cuántos mejoraron y qué relación pone) y recorre
+  // el original con el marcador. Qué pasa con cada frase y cuántas quedan fieles lo calcula el código con estas reglas:
+  // «algunos» conserva el alcance y otro cuantificador lo cambia; la relación se conserva, se pierde o se invierte;
+  // «todos» contradice la última frase.
+  const CUANT = { algunos: { t: 'Algunos', b: ['Conserva: «algunos»', 'i'] }, muchos: { t: 'Muchos', b: ['Lo cambia: «muchos»', 'h'] }, todos: { t: 'Todos los', b: ['Lo cambia: «todos»', 'h'] } };
+  const RELA = {
+    relacion: { t: 'avanzaron más los que leían a diario.', d: ['Conserva: la relación', 'i'] },
+    nada: { t: '', d: ['Lo pierde: la relación', 'h'] },
+    causa: { t: 'el taller los hizo leer a diario.', d: ['Lo invierte: es causa', 'h'] },
+  };
+  const tratoLab = (q, r) => ({ a: ['Conserva: el taller', 'i'], b: CUANT[q].b, c: ['Conserva: mejoraron', 'i'], d: RELA[r].d, e: q === 'todos' ? ['Lo contradice', 'h'] : ['Lo omite: se entiende', 'd'] });
+  const figArma = (q, r) => figura(TALLER, [['r1', `${CUANT[q].t} alumnos del taller mejoraron su comprensión${RELA[r].t ? ';' : '.'}`]].concat(RELA[r].t ? [['r2', RELA[r].t]] : []), 'Tu resumen');
+  const mesaArma = {
+    id: 'arma-resumen', titulo: 'Arma tu resumen', pieza: 'rv-texto',
+    consigna: 'Arma el resumen con sus dos piezas y pasa el marcador por el original: mira qué conserva y qué cambia.',
+    voz: 'Una palabra de cantidad cambia todo el resumen.',
+    controles: [
+      { id: 'q', etiqueta: 'Cuántos', opciones: Object.entries(CUANT).map(([valor, x]) => ({ valor, texto: x.t.toLowerCase() })) },
+      { id: 'r', etiqueta: 'Relación', opciones: [{ valor: 'relacion', texto: 'la del texto' }, { valor: 'nada', texto: 'ninguna' }, { valor: 'causa', texto: 'otra causa' }] },
+      { id: 'f', etiqueta: 'Frase', opciones: IDS_T.map((id, k) => ({ valor: id, texto: `${k + 1}` })), inicio: 'b' },
+    ],
+    dibujo: val => {
+      const T = tratoLab(val.q, val.r), fieles = IDS_T.filter(id => T[id][1] !== 'h').length;
+      const marcas = { r1: val.q === 'algunos' ? 'o' : 'h', r2: val.r === 'relacion' ? 'o' : 'h', [val.f]: T[val.f][1] };
+      return { datos: figArma(val.q, val.r), estado: { marcas, sellos: { v: fieles === IDS_T.length ? { t: 'Fiel', c: 'i' } : { t: `Cambia ${IDS_T.length - fieles} de ${IDS_T.length}`, c: 'h' } } } };
+    },
+    lectura: val => {
+      const T = tratoLab(val.q, val.r), fieles = IDS_T.filter(id => T[id][1] !== 'h').length;
+      return lee(T[val.f]).concat([` · fiel en ${fieles} de ${IDS_T.length}`]);
+    },
+    arrastres: [marcador(val => figArma(val.q, val.r), IDS_T, 'f', 'frase del original')],
+  };
+
   return {
     unidad: 'razonamiento-verbal.resumen-y-sintesis',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -259,6 +354,11 @@
       pregunta: '¿Qué no se puede quitar al resumir?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (macrorreglas)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/macrorreglastextuales.htm' },
     },
+    laboratorio: [
+      mesaArma,
+      Object.assign({ id: 'parafrasis', titulo: 'Paráfrasis o inferencia', pieza: 'rv-texto' }, parafrasis.juega),
+      Object.assign({ id: 'sintesis', titulo: 'Síntesis de dos fuentes', pieza: 'rv-texto' }, sintesis.juega),
+    ],
     ideas: [alcance, parafrasis, sintesis],
   };
 });
