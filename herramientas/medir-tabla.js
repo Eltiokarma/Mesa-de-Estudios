@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 /*
- * Mide la tabla viva, paso 1 (nucleo/kit/tabla/probar.html) con Playwright, a 360 × 740:
+ * Mide la tabla viva (nucleo/kit/tabla/probar.html) con Playwright, a 360 × 740:
  *   - lectura: tamaño en pantalla del símbolo y del Z, tamaño de la casilla y contraste WCAG (claro y oscuro);
- *   - cuadros por segundo al reordenar y al abrir el pliegue, con la CPU frenada (CDP Emulation.setCPUThrottlingRate);
- *   - saltos: los controles y la línea de estado no se mueven al cambiar de arreglo;
- *   - interrupción: cambiar de arreglo a media carrera no deja cartas fuera de su sitio;
+ *   - cuadros por segundo al pasar de la tabla a la mesa, al mezclar 118 cartas, al cambiar de lente, al abrir el
+ *     pliegue y al arrastrar una carta con el dedo, con la CPU frenada (CDP Emulation.setCPUThrottlingRate);
+ *   - saltos: los controles no se mueven al cambiar de vista;
+ *   - interrupción: cambiar de vista a media carrera no deja cartas fuera de su sitio;
  *   - movimiento reducido: ninguna carta pasa por posiciones intermedias.
  *
  *   npm run dev   (en otra terminal)
@@ -64,7 +65,7 @@ async function cuadros(pagina, accion, ms) {
 }
 
 async function cajas(pagina) {
-  return pagina.evaluate(() => ['.tv-barra', '.tv-fila-pliega', '.tv-cuerpo'].map(s => {
+  return pagina.evaluate(() => ['.tv-barra', '.tv-lentes', '.tv-fila-opc', '.tv-cuerpo'].map(s => {
     const r = document.querySelector(s).getBoundingClientRect(); return [s, Math.round(r.top), Math.round(r.left)];
   }));
 }
@@ -86,26 +87,40 @@ async function cajas(pagina) {
   }
 
   // Cuadros por segundo con la CPU frenada.
-  const p = await navegador.newPage({ viewport: { width: 360, height: 740 } });
+  const p = await navegador.newPage({ viewport: { width: 360, height: 740 }, hasTouch: true });
   const cdp = await p.context().newCDPSession(p);
-  await p.goto(PAGINA);
+  await p.goto(`${PAGINA}?semilla=7`);
   await p.waitForTimeout(300);
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: FRENO });
-  const boton = n => p.getByRole('button', { name: n, exact: true });
   const antes = await cajas(p);
   const fps = {};
   const api = f => () => p.evaluate(f);
   for (let vuelta = 1; vuelta <= 3; vuelta++) {
-    fps[`tabla → masa (${vuelta})`] = await cuadros(p, api(() => { window.tabla.poner('filaMasa'); }), 1300);
-    fps[`masa → Z (${vuelta})`] = await cuadros(p, api(() => { window.tabla.poner('filaZ'); }), 1300);
-    fps[`Z → tabla (${vuelta})`] = await cuadros(p, api(() => { window.tabla.poner('tabla'); }), 1300);
+    fps[`tabla → mesa de 118 (${vuelta})`] = await cuadros(p, api(() => { window.tabla.cartas('118'); window.tabla.poner('mesa'); }), 1300);
+    fps[`mezclar 118 (${vuelta})`] = await cuadros(p, api(() => { window.tabla.mezclar(); }), 1300);
+    fps[`mesa → tabla (${vuelta})`] = await cuadros(p, api(() => { window.tabla.poner('tabla'); }), 1300);
+    fps[`lente ionización (${vuelta})`] = await cuadros(p, api(() => { window.tabla.lente('ei'); }), 500);
+    fps[`lente radio (${vuelta})`] = await cuadros(p, api(() => { window.tabla.lente('radio'); }), 500);
     fps[`abrir pliegue (${vuelta})`] = await cuadros(p, api(() => { window.tabla.abrir(true); }), 900);
     fps[`plegar (${vuelta})`] = await cuadros(p, api(() => { window.tabla.abrir(false); }), 700);
   }
-  await boton('Fila por peso atómico').click();
-  await p.waitForTimeout(1300);
-  await boton('Tabla periódica').click();
-  await p.waitForTimeout(1300);
+  // Arrastre con el dedo en la mesa de 118: mantener, llevar la carta 12 celdas y soltar (las demás se corren).
+  await p.evaluate(() => { window.tabla.lente('masa'); window.tabla.poner('mesa'); window.scrollTo(0, 0); });
+  await p.waitForTimeout(1500);
+  const centro = z => p.evaluate(z => { const r = document.querySelector(`.tv-carta[data-z="${z}"]`).getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2]; }, z);
+  const primera = await p.evaluate(() => window.tabla.estado().mesa.celdas[16]);
+  const destino = await p.evaluate(() => window.tabla.estado().mesa.celdas[1]);
+  const [x0, y0] = await centro(primera), [x1, y1] = await centro(destino);
+  const toque = (tipo, x, y) => cdp.send('Input.dispatchTouchEvent', { type: tipo, touchPoints: tipo === 'touchEnd' ? [] : [{ x, y }] });
+  fps['arrastrar (dedo)'] = await cuadros(p, async () => {
+    await toque('touchStart', x0, y0);
+    await p.waitForTimeout(300);
+    for (let k = 1; k <= 30; k++) { await toque('touchMove', x0 + (x1 - x0) * k / 30, y0 + (y1 - y0) * k / 30); }
+    await toque('touchEnd');
+  }, 600);
+  informe.arrastre = { carta: primera, quedoEnCelda: await p.evaluate(z => window.tabla.estado().mesa.celdas.indexOf(z), primera), esperada: 1 };
+  await p.evaluate(() => window.tabla.poner('tabla'));
+  await p.waitForTimeout(1500);
   const despues = await cajas(p);
   informe[`cuadros con la CPU ×${FRENO}`] = fps;
   const v = Object.values(fps);
@@ -115,32 +130,31 @@ async function cajas(pagina) {
     movimientoMayoresDe50: v.reduce((a, x) => a + x.mayoresDe50, 0) };
   informe.saltos = antes.map((a, i) => ({ caja: a[0], dy: despues[i][1] - a[1], dx: despues[i][2] - a[2] }));
 
-  // Interrupción: a 300 ms de empezar, otro arreglo. Al final, cada carta donde dice su transform.
-  await boton('Fila por peso atómico').click();
+  // Interrupción: a 300 ms de ir a la mesa, volver a la tabla. Al final, cada carta donde dice su transform.
+  await p.evaluate(() => window.tabla.poner('mesa'));
   await p.waitForTimeout(300);
-  await boton('Tabla periódica').click();
+  await p.evaluate(() => window.tabla.poner('tabla'));
   await p.waitForTimeout(1500);
   informe.interrupcion = await p.evaluate(() => {
-    const est = window.tabla.estado();
     const malas = [...document.querySelectorAll('.tv-carta')].filter(c => {
       const m = new DOMMatrix(getComputedStyle(c).transform);
       const obj = new DOMMatrix(c.style.transform);
       return Math.abs(m.e - obj.e) > 0.5 || Math.abs(m.f - obj.f) > 0.5;
     }).length;
-    return { arreglo: est.arreglo, cartasFueraDeSitio: malas };
+    return { vista: window.tabla.estado().vista, cartasFueraDeSitio: malas };
   });
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
   await p.close();
 
   // Movimiento reducido: una carta muestreada cada 16 ms solo toma la posición de partida o la de llegada.
   const r = await navegador.newPage({ viewport: { width: 360, height: 740 }, reducedMotion: 'reduce' });
-  await r.goto(PAGINA);
+  await r.goto(`${PAGINA}?semilla=7`);
   await r.waitForTimeout(200);
   const muestras = await r.evaluate(async () => {
     const c = document.querySelector('.tv-carta[data-z="11"]');
     const pos = () => { const m = new DOMMatrix(getComputedStyle(c).transform); return Math.round(m.e) + ',' + Math.round(m.f); };
     const vistas = new Set([pos()]);
-    document.querySelector('.tv-opcion[aria-label="Fila por peso atómico"]').click();
+    window.tabla.poner('mesa');
     const fin = performance.now() + 700;
     while (performance.now() < fin) { vistas.add(pos()); await new Promise(res => setTimeout(res, 16)); }
     return [...vistas];
