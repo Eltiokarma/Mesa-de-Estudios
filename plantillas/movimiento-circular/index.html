@@ -143,6 +143,8 @@ input.r-v{accent-color:var(--c-v)} input.r-a{accent-color:var(--c-a)} input.r-t{
 .btn:disabled{opacity:.45; cursor:not-allowed}
 button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{outline:3px solid var(--ink); outline-offset:2px}
 .hint{font-size:.88rem; color:var(--muted)}
+.juego-panel{display:grid; gap:8px; margin-top:4px}
+.juego-acc{display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin:0}
 .fuente{font-size:.86rem; color:var(--muted); border-top:1px dashed var(--line); padding-top:10px}
 .pie{margin:4px 0 0; text-align:center; color:var(--muted); font-size:.95rem}
 .pie a{color:var(--ink); font-weight:700}
@@ -307,6 +309,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'movimiento-circular', unidad: 'fisica.movimiento-parabolico-y-circular', version: '0.2.0' };
@@ -472,6 +475,42 @@ function leyenda(el, claves){
   el.innerHTML = claves.map(k => `<span><i style="background:var(${LEY[k][0]})"></i>${LEY[k][1]}</span>`).join('');
 }
 
+/* ================= Jugar primero (regla 3, decisión 20 de Gerson, 14 nov 2026) =================
+   Antes de la primera pregunta de cada pestaña, el disco libre ocupa el lienzo: se gira con el dedo (o con las flechas)
+   o se pone a girar a la rapidez del deslizador. No dibuja flechas ni gráficas: lo que se pregunta después no aparece.
+   nucleo/jugar.js vela la guía hasta «Ya jugué: seguir». */
+function juegoDisco(pfx){
+  const J = { activo:true, th:0, w:2, girando:false, raf:0, sobre:false, cual:false, draw:() => {} };
+  const zona = L => ({ cx:L.W/2, cy:L.H/2, R:Math.min(L.W, L.H)*0.34 });
+  J.dibujar = (L, c) => { const z = zona(L); disco(L.ctx, c, z.cx, z.cy, z.R, J.th, { fase:PI/2, etiqueta:'P', llanta:true });
+    rotulo(L.ctx, c, L.W/2, L.H - 14, `ω = ${fmt(J.w, 1)} rad/s · ${J.girando ? 'girando' : 'quieto'}`, c.w, 'center', 800, L.W); };
+  J.desc = () => `Un disco con un punto P en el borde, ${J.girando ? `girando a ${fmt(J.w, 1)} radianes por segundo` : 'quieto'}. P está a ${fmt(((J.th*180/PI) % 360 + 360) % 360, 0)} grados de su lugar de partida.`;
+  const detener = () => { J.girando = false; cancelAnimationFrame(J.raf); J.sync(); };
+  J.cerca = (p, r, L) => { const z = zona(L), q = enDisco(z.cx, z.cy, z.R, J.th + PI/2); return Math.hypot(p.x - q[0], p.y - q[1]) < r + 8; };
+  J.mover = (p, L) => { if (J.girando) detener(); const z = zona(L), a = Math.atan2(z.cy - p.y, p.x - z.cx) - PI/2;
+    let d = a - J.th; d -= TAU*Math.round(d/TAU); J.th += d; J.draw(); };   // sigue al dedo y lleva la cuenta de las vueltas
+  J.tecla = e => { const d = { ArrowUp:1, ArrowLeft:1, ArrowDown:-1, ArrowRight:-1 }[e.key]; if (!d) return; e.preventDefault(); if (J.girando) detener(); J.th += d*PI/12; J.draw(); };
+  J.panel = `<div class="ctrls">${perilla(pfx + '-w', 'Rapidez de giro ω', 'r-w', 0.5, 6, 0.5, J.w)}</div>
+    <p class="juego-acc"><button type="button" class="btn" id="${pfx}-girar" aria-pressed="false">Hacer girar</button> <span class="hint">También puedes arrastrar el punto P.</span></p>`;
+  J.enlazar = draw => {
+    const $ = id => document.getElementById(id);
+    J.draw = draw;
+    J.sync = () => { $(pfx + '-w-o').textContent = `${fmt(J.w, 1)} rad/s`; const b = $(pfx + '-girar');
+      b.textContent = J.girando ? 'Parar' : RM ? 'Girar 1 s' : 'Hacer girar'; b.setAttribute('aria-pressed', String(J.girando)); };
+    $(pfx + '-w').addEventListener('input', e => { J.w = +e.target.value; J.sync(); draw(); });
+    $(pfx + '-girar').addEventListener('click', () => {
+      // Con movimiento reducido no hay giro continuo: cada toque gira lo que el disco recorre en 1 s.
+      if (RM){ J.th += J.w; draw(); return; }
+      if (J.girando){ detener(); draw(); return; }
+      J.girando = true; J.sync(); let antes = performance.now();
+      const paso = now => { if (!J.girando) return; J.th += Math.min(0.05, (now - antes)/1000)*J.w; antes = now; draw(); J.raf = requestAnimationFrame(paso); };
+      J.raf = requestAnimationFrame(paso);
+    });
+    J.sync();
+  };
+  J.parar = () => { detener(); J.activo = false; };
+  return J;
+}
 /* ================= Motor de pasos (el mismo en las cinco pestañas) =================
    Cada paso: { id, t (título), corto, ley:[...], antes(E), q() (enunciado y pregunta), opts:[[letra, texto, código, respaldo]],
    ok, fb:{ letra: texto }, despues(E, A) (lo que se mueve al responder), exp() (explicación), ctrl() y enlazar(E, A)
@@ -483,15 +522,17 @@ function montar(cfg){
   const pasos = cfg.pasos, cv = $('cv'), lista = $('lista'), cuerpo = $('body'), nombre = cfg.pastillas ? 'Experimento' : 'Paso';
   const S = { n:0, pred:{}, t0:0, visto:{} };
   let E = {}, anim = null, inmediato = false;
-  const L = crearLienzo(cv, cfg.alto || altoLienzo, draw);
+  const J = juegoDisco('j' + cfg.n), jugando = () => J.activo;   // juego libre antes de la primera pregunta (regla 3)
+  const L = crearLienzo(cv, W => (jugando() ? altoLienzo : cfg.alto || altoLienzo)(W), draw);
   const resp = p => (p.opts ? S.pred[p.id] : true);
   function draw(){
     if (!L.W) return;
     const p = pasos[S.n], c = colores(L.W);
     L.ctx.clearRect(0, 0, L.W, L.H);
+    if (jugando()){ J.dibujar(L, c); decir(); return; }
     p.dibujar(L, c, E, !!resp(p));
   }
-  function decir(){ const p = pasos[S.n]; $('desc').textContent = p.desc ? p.desc(E, !!resp(p)) : ''; }
+  function decir(){ const p = pasos[S.n]; $('desc').textContent = jugando() ? J.desc() : p.desc ? p.desc(E, !!resp(p)) : ''; }
   // Animación con la fracción acotada por los dos lados (algunos celulares dan un primer cuadro anterior a t0).
   function animar(dur, paso, fin){
     cancelAnimationFrame(anim);
@@ -531,7 +572,7 @@ function montar(cfg){
     E = {}; if (p.antes) p.antes(E);
     $('k').textContent = `${nombre} ${n + 1} de ${pasos.length}`;
     $('t').textContent = p.t;
-    leyenda($('ley'), typeof p.ley === 'function' ? p.ley(!!resp(p)) : p.ley || []);
+    leyenda($('ley'), jugando() ? ['w'] : typeof p.ley === 'function' ? p.ley(!!resp(p)) : p.ley || []);
     cuerpo.innerHTML = `<div class="problem">${p.q(E)}</div>` + (p.opts ? `<div class="opts">${p.opts.map(([l, t]) => `<button class="opt" type="button" data-k="${l}"><span class="l">${l.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" role="status"></p>` : '') + `<div class="res body"></div>`;
     const btns = [...cuerpo.querySelectorAll('.opt')];
     const pintar = () => {
@@ -555,7 +596,7 @@ function montar(cfg){
     });
     pintar();
     if (resp(p)){ inmediato = true; if (p.opts) resultado(p); if (p.despues) p.despues(E, A); inmediato = false; }
-    L.compactar(!resp(p));
+    L.compactar(!resp(p) && !jugando());
     pintarLista(); nav(); decir(); draw();
   }
   $('next').addEventListener('click', () => go(S.n + 1));
@@ -567,6 +608,24 @@ function montar(cfg){
   A.raiz.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('[data-var]')) marcar(null); });
   alRedibujarTema(draw);
   addEventListener('modo', () => { if (!A.raiz.hidden) L.resize(); else cancelAnimationFrame(anim); });
+  // Jugar primero: el disco se gira con el dedo, con las flechas o con «Hacer girar»; la guía entera queda velada.
+  Celular.arrastre(cv, {
+    activo: jugando,
+    cerca: (p, r) => J.cerca(p, r, L),
+    empezar: () => { J.cual = true; draw(); },
+    mover: p => J.mover(p, L),
+    soltar: () => { J.cual = false; draw(); },
+    sobre: s => { J.sobre = s; draw(); }
+  });
+  cv.addEventListener('keydown', e => { if (jugando()) J.tecla(e); });
+  const etiqueta = cv.getAttribute('aria-label');
+  cv.tabIndex = 0; cv.setAttribute('aria-label', 'Disco libre: con las flechas del teclado lo giras');
+  const bench = A.raiz.querySelector('.bench'), lz = bench.querySelector('.lienzo'), panel = document.createElement('div');
+  panel.className = 'juego-panel'; panel.innerHTML = J.panel; lz.parentNode.insertBefore(panel, lz.nextSibling);
+  J.enlazar(draw);
+  JugarPrimero.montar({ escena: bench, preguntas: [A.raiz.querySelector('.guide')], minimo: 2,
+    consigna: 'Gira el disco con el dedo y cambia su rapidez de giro.',
+    alListo: () => { J.parar(); panel.remove(); cv.tabIndex = -1; cv.setAttribute('aria-label', etiqueta); go(S.n); } });
   L.resize(); go(0);
   return { go, S, A, L };
 }
