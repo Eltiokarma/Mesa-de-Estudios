@@ -478,15 +478,15 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "descriptivo, porque muestra cómo es el trabajo de los técnicos de barrio."
-            },
-            {
-              "letra": "B",
               "t": "argumentativo, porque defiende una postura con razones y responde a una objeción."
             },
             {
-              "letra": "C",
+              "letra": "B",
               "t": "narrativo, porque cuenta lo que ocurre cuando falla una licuadora o un celular."
+            },
+            {
+              "letra": "C",
+              "t": "descriptivo, porque muestra cómo es el trabajo de los técnicos de barrio."
             },
             {
               "letra": "D",
@@ -500,11 +500,11 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "Muestra que el autor cambia de postura y abandona la tesis del inicio."
+              "t": "Da un ejemplo que ilustra el segundo argumento, el del trabajo en los barrios."
             },
             {
               "letra": "B",
-              "t": "Da un ejemplo que ilustra el segundo argumento, el del trabajo en los barrios."
+              "t": "Expone una objeción a la tesis y la responde."
             },
             {
               "letra": "C",
@@ -512,7 +512,7 @@
             },
             {
               "letra": "D",
-              "t": "Expone una objeción a la tesis y la responde."
+              "t": "Muestra que el autor cambia de postura y abandona la tesis del inicio."
             }
           ]
         },
@@ -531,15 +531,15 @@
             },
             {
               "letra": "C",
-              "t": "Hay que cuidar el ambiente y producir menos basura."
-            },
-            {
-              "letra": "D",
               "t": "En 2022 el mundo generó 62 millones de toneladas de basura electrónica, y se recicló poca."
             },
             {
-              "letra": "E",
+              "letra": "D",
               "t": "Debería exigirse a los fabricantes que sus aparatos puedan repararse."
+            },
+            {
+              "letra": "E",
+              "t": "Hay que cuidar el ambiente y producir menos basura."
             }
           ]
         },
@@ -550,32 +550,32 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "es la idea que el autor defiende a lo largo del texto."
-            },
-            {
-              "letra": "B",
               "t": "es falsa en todos los casos, sin excepción alguna."
             },
             {
+              "letra": "B",
+              "t": "es la idea que el autor defiende a lo largo del texto."
+            },
+            {
               "letra": "C",
-              "t": "la repiten sobre todo los técnicos que arreglan aparatos en los barrios."
+              "t": "mira solo el gasto del momento y deja fuera lo que se pierde al botar."
             },
             {
               "letra": "D",
-              "t": "mira solo el gasto del momento y deja fuera lo que se pierde al botar."
+              "t": "la repiten sobre todo los técnicos que arreglan aparatos en los barrios."
             }
           ]
         }
       ],
-      "respuesta": "Clave: 1: B · 2: D · 3: E · 4: D.",
+      "respuesta": "Clave: 1: A · 2: B · 3: D · 4: C.",
       "pasos": [
         "Pregunta 1. Antes de las alternativas: Convencer. El autor dice qué sostiene («Sostengo lo contrario…», oración 2), da dos razones, responde a una objeción y cierra con su postura: busca convencer.",
-        "Pregunta 1. Clave B. La oración 2 dice la tesis; el segundo y el tercer párrafo dan dos razones; el cuarto responde a una objeción, y el último vuelve a la tesis.",
-        "Pregunta 2. Clave D. La oración 9 presenta lo que podría decir alguien en contra («Se dirá que…»), y las oraciones 10 y 11 le responden («Pero…», «Además…»).",
+        "Pregunta 1. Clave A. La oración 2 dice la tesis; el segundo y el tercer párrafo dan dos razones; el cuarto responde a una objeción, y el último vuelve a la tesis.",
+        "Pregunta 2. Clave B. La oración 9 presenta lo que podría decir alguien en contra («Se dirá que…»), y las oraciones 10 y 11 le responden («Pero…», «Además…»).",
         "Pregunta 3. Antes de las alternativas: la oración 2 o la oración 12. La oración 2 enuncia la tesis (los fabricantes deberían vender aparatos reparables) y la 12 la retoma al cierre (arreglar debería ser un derecho). Las demás son razones, pruebas o la objeción.",
-        "Pregunta 3. Clave E. Es lo que dice la oración 2 y lo que retoma la 12. Todo lo demás sirve para sostenerlo.",
-        "Pregunta 4. Antes de las alternativas: Se deduce del texto. El texto no lo dice con esas palabras, pero se deduce: el autor defiende la reparación porque «da trabajo cerca de casa» (oración 6) y lamenta que el oficio de los técnicos «se vuelve imposible» cuando no hay repuestos (oración 7).",
-        "Pregunta 4. Clave D. El autor la rechaza y responde con lo que esa cuenta no incluye: la basura que se acumula (oración 3) y el dinero y el trabajo que salen del barrio (oración 8)."
+        "Pregunta 3. Clave D. Es lo que dice la oración 2 y lo que retoma la 12. Todo lo demás sirve para sostenerlo.",
+        "Pregunta 4. Antes de las alternativas: Se deduce del texto. Se deduce: el autor usa el trabajo de los técnicos como razón (oraciones 6 y 7), sin expresar su preocupación.",
+        "Pregunta 4. Clave C. El autor la rechaza y responde con lo que esa cuenta no incluye: la basura que se acumula (oración 3) y el dinero y el trabajo que salen del barrio (oración 8)."
       ]
     },
     {
@@ -655,23 +655,23 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "argumentativo, porque se vale de un episodio histórico para defender una idea sobre los ingresos que no nacen del trabajo productivo del país."
-            },
-            {
-              "letra": "B",
-              "t": "argumentativo, porque sostiene que la bonanza del guano se perdió por el despilfarro y la corrupción."
-            },
-            {
-              "letra": "C",
               "t": "expositivo, porque explica las causas de la quiebra de 1876 sin tomar partido entre las distintas explicaciones."
             },
             {
-              "letra": "D",
+              "letra": "B",
               "t": "narrativo, porque relata en orden, con fechas que van de 1840 a 1876, cómo el Perú pasó de la bonanza del guano a dejar de pagar su deuda externa."
             },
             {
-              "letra": "E",
+              "letra": "C",
               "t": "descriptivo, porque presenta cómo se formaron los depósitos de guano en las islas de Chincha."
+            },
+            {
+              "letra": "D",
+              "t": "argumentativo, porque se vale de un episodio histórico para defender una idea sobre los ingresos que no nacen del trabajo productivo del país."
+            },
+            {
+              "letra": "E",
+              "t": "argumentativo, porque sostiene que la bonanza del guano se perdió por el despilfarro y la corrupción."
             }
           ]
         },
@@ -681,23 +681,23 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "Presentan el caso histórico del que el autor saca su tesis en los párrafos siguientes."
-            },
-            {
-              "letra": "B",
               "t": "Describen las islas de Chincha y sus aves, que son el tema central de todo el texto."
             },
             {
-              "letra": "C",
+              "letra": "B",
               "t": "Inician el relato de la era del guano, que el texto sigue contando hasta el final."
             },
             {
+              "letra": "C",
+              "t": "Presentan el caso histórico del que el autor saca su tesis en los párrafos siguientes."
+            },
+            {
               "letra": "D",
-              "t": "Exponen la tesis del autor, que los dos últimos párrafos ilustran con ejemplos."
+              "t": "Prueban que todo el dinero del guano se gastó en obras inútiles para el país."
             },
             {
               "letra": "E",
-              "t": "Prueban que todo el dinero del guano se gastó en obras inútiles para el país."
+              "t": "Exponen la tesis del autor, que los dos últimos párrafos ilustran con ejemplos."
             }
           ]
         },
@@ -707,7 +707,7 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "El Estado peruano llegó a depender tanto del guano que, cuando se agotaron las islas de Chincha, dejó de pagar su deuda externa."
+              "t": "La riqueza de un país depende de sus recursos naturales y de cómo sus gobiernos los administran."
             },
             {
               "letra": "B",
@@ -715,15 +715,15 @@
             },
             {
               "letra": "C",
-              "t": "En 1854 el Estado usó el dinero del guano para liberar a los esclavos y suprimir el tributo de los indígenas."
-            },
-            {
-              "letra": "D",
               "t": "Un ingreso que no depende de lo que el país produce vuelve frágil al Estado y no sustituye el desarrollo de una economía productiva."
             },
             {
+              "letra": "D",
+              "t": "En 1854 el Estado usó el dinero del guano para liberar a los esclavos y suprimir el tributo de los indígenas."
+            },
+            {
               "letra": "E",
-              "t": "La riqueza de un país depende de sus recursos naturales y de cómo sus gobiernos los administran."
+              "t": "El Estado peruano llegó a depender tanto del guano que, cuando se agotaron las islas de Chincha, dejó de pagar su deuda externa."
             }
           ]
         },
@@ -734,35 +734,35 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "contribuyó a que el Estado dependiera aún más del guano."
-            },
-            {
-              "letra": "B",
-              "t": "fue la causa principal de que el país dejara de pagar su deuda en 1876."
-            },
-            {
-              "letra": "C",
               "t": "dejó al Estado sin ningún otro ingreso que el que le daba el guano."
             },
             {
-              "letra": "D",
+              "letra": "B",
               "t": "fue una medida injusta que el autor lamenta y que el Estado debió evitar."
             },
             {
-              "letra": "E",
+              "letra": "C",
+              "t": "fue la causa principal de que el país dejara de pagar su deuda en 1876."
+            },
+            {
+              "letra": "D",
               "t": "ocurrió el mismo año en que el Estado declaró libres a los esclavos."
+            },
+            {
+              "letra": "E",
+              "t": "contribuyó a que el Estado dependiera aún más del guano."
             }
           ]
         }
       ],
-      "respuesta": "Clave: 1: A · 2: A · 3: D · 4: A.",
+      "respuesta": "Clave: 1: D · 2: C · 3: C · 4: E.",
       "pasos": [
         "Pregunta 1. Antes de las alternativas: Convencer. El autor quiere que el lector acepte una lectura de la historia del guano: una riqueza que no exige producir vuelve frágil al Estado (oraciones 11 y 13). Para eso rebate la explicación más común (oraciones 8 y 9) y da una razón (oración 10).",
-        "Pregunta 1. Clave A. Los dos primeros párrafos dan el caso; el tercero rebate la explicación común y da una razón, y el último saca la lección. Lo que organiza todo es convencer.",
-        "Pregunta 2. Clave A. La oración 8 retoma lo contado («esta historia») para discutirlo, y las oraciones 11 y 13 sacan de ese caso la tesis del autor.",
-        "Pregunta 3. Clave D. Junta la conclusión sobre el Estado (oración 11) con la lección general del último párrafo (oración 13).",
+        "Pregunta 1. Clave D. Los dos primeros párrafos dan el caso; el tercero rebate la explicación común y da una razón, y el último saca la lección. Lo que organiza todo es convencer.",
+        "Pregunta 2. Clave C. La oración 8 retoma lo contado («esta historia») para discutirlo, y las oraciones 11 y 13 sacan de ese caso la tesis del autor.",
+        "Pregunta 3. Clave C. Junta la conclusión sobre el Estado (oración 11) con la lección general del último párrafo (oración 13).",
         "Pregunta 4. Antes de las alternativas: Se deduce del texto. Se deduce: la oración 9 dice que no habría bastado con gastar honradamente, y las oraciones 10 y 11 explican por qué: el Estado vivía de las islas y no de lo que producía el país.",
-        "Pregunta 4. Clave A. La oración 5 cuenta que se suprimió el tributo, y la oración 10 dice que, como el dinero llegaba de las islas, el Estado ya no necesitaba cobrarle a la población: vivía del guano, que daba la mayor parte de sus ingresos."
+        "Pregunta 4. Clave E. La oración 5 cuenta que se suprimió el tributo, y la oración 10 dice que, como el dinero llegaba de las islas, el Estado ya no necesitaba cobrarle a la población: vivía del guano, que daba la mayor parte de sus ingresos."
       ]
     }
   ]

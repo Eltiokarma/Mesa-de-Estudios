@@ -1,6 +1,6 @@
 {
   "id": "t034",
-  "version": 1,
+  "version": 2,
   "titulo": "Arreglar antes que botar",
   "tema": "Sociedad · el derecho a reparar",
   "grado": 5,
@@ -245,7 +245,7 @@
           "no-se-sabe": "RV34",
           "lo-contradice": null
         },
-        "explicacion": "El texto no lo dice con esas palabras, pero se deduce: el autor defiende la reparación porque «da trabajo cerca de casa» (oración 6) y lamenta que el oficio de los técnicos «se vuelve imposible» cuando no hay repuestos (oración 7).",
+        "explicacion": "Se deduce: el autor usa el trabajo de los técnicos como razón (oraciones 6 y 7), sin expresar su preocupación.",
         "explicaciones": {
           "lo-dice": "La afirmación repite «técnicos» y «barrios», como la oración 7, pero ninguna oración dice que al autor le preocupe su trabajo: eso se deduce de que lo use como razón (oraciones 6 y 7).",
           "no-se-sabe": "Sí se puede deducir: el segundo argumento del autor es justamente el trabajo que da reparar, y la oración 7 lamenta que ese oficio se vuelva imposible.",
@@ -301,6 +301,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "Coincidió a ciegas en todas las claves. Cambios: dificultad 3 → 2; oración 5 reescrita; el distractor «descriptivo» pasa a RV57; en el previo de p4, «lo dice» pasa de RV6 a RV5 (eco de la sonda). Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
+    "notas": "Coincidió a ciegas en todas las claves. Cambios: dificultad 3 → 2; oración 5 reescrita; el distractor «descriptivo» pasa a RV57; en el previo de p4, «lo dice» pasa de RV6 a RV5 (eco de la sonda). Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null). 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 1 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }

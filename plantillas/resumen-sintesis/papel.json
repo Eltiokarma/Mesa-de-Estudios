@@ -660,15 +660,15 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "La pesca excesiva y El Niño son dos amenazas distintas que, sumadas, explican por qué la anchoveta escasea cada cierto tiempo."
+              "t": "El Niño cubre la costa de agua cálida y pobre en nutrientes, y por eso la anchoveta se dispersa y su pesca cae con fuerza."
             },
             {
               "letra": "B",
-              "t": "En años normales sube agua fría con nutrientes; con El Niño llega agua cálida y la anchoveta se dispersa; en 1972 la pesquería se desplomó y después de 1998 la especie se recuperó en pocos años."
+              "t": "El clima del mar peruano decide la riqueza de su pesca."
             },
             {
               "letra": "C",
-              "t": "El Niño cubre la costa de agua cálida y pobre en nutrientes, y por eso la anchoveta se dispersa y su pesca cae con fuerza."
+              "t": "La pesca excesiva y El Niño son dos amenazas distintas que, sumadas, explican por qué la anchoveta escasea cada cierto tiempo."
             },
             {
               "letra": "D",
@@ -676,7 +676,7 @@
             },
             {
               "letra": "E",
-              "t": "El clima del mar peruano decide la riqueza de su pesca."
+              "t": "En años normales sube agua fría con nutrientes; con El Niño llega agua cálida y la anchoveta se dispersa; en 1972 la pesquería se desplomó y después de 1998 la especie se recuperó en pocos años."
             }
           ]
         },
@@ -686,11 +686,11 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "El Niño golpea; la pesca decide"
+              "t": "Lo que El Niño hace con el mar de la costa peruana"
             },
             {
               "letra": "B",
-              "t": "Lo que El Niño hace con el mar de la costa peruana"
+              "t": "El desplome de la pesquería peruana en 1972"
             },
             {
               "letra": "C",
@@ -698,11 +698,11 @@
             },
             {
               "letra": "D",
-              "t": "El mar caliente que se lleva a la anchoveta"
+              "t": "El Niño golpea; la pesca decide"
             },
             {
               "letra": "E",
-              "t": "El desplome de la pesquería peruana en 1972"
+              "t": "El mar caliente que se lleva a la anchoveta"
             }
           ]
         },
@@ -712,7 +712,7 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "Para mostrar que un calor mayor no basta para llevar al colapso a una población que no estaba mermada."
+              "t": "Para confirmar la frase de la oración 1: que el mar caliente es lo que se lleva a la anchoveta."
             },
             {
               "letra": "B",
@@ -720,15 +720,15 @@
             },
             {
               "letra": "C",
-              "t": "Para probar que, desde 1998, El Niño ya no puede llevar al colapso a la anchoveta."
+              "t": "Para narrar la historia de la pesca de anchoveta en el Perú desde la década de 1960 hasta fines del siglo XX."
             },
             {
               "letra": "D",
-              "t": "Para confirmar la frase de la oración 1: que el mar caliente es lo que se lleva a la anchoveta."
+              "t": "Para mostrar que un calor mayor no basta para llevar al colapso a una población que no estaba mermada."
             },
             {
               "letra": "E",
-              "t": "Para narrar la historia de la pesca de anchoveta en el Perú desde la década de 1960 hasta fines del siglo XX."
+              "t": "Para probar que, desde 1998, El Niño ya no puede llevar al colapso a la anchoveta."
             }
           ]
         },
@@ -738,19 +738,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "la fuerza con que se produce un golpe."
-            },
-            {
-              "letra": "B",
               "t": "la unión que hay entre dos hechos."
             },
             {
-              "letra": "C",
+              "letra": "B",
               "t": "el resultado al que lleva algo."
             },
             {
-              "letra": "D",
+              "letra": "C",
               "t": "la parte final de una novela o de una película."
+            },
+            {
+              "letra": "D",
+              "t": "la fuerza con que se produce un golpe."
             }
           ]
         },
@@ -765,11 +765,11 @@
             },
             {
               "letra": "B",
-              "t": "la anchoveta nunca colapsará mientras se pesque menos de diez millones de toneladas al año."
+              "t": "en años normales, desde el fondo del mar sube agua fría cargada de nutrientes."
             },
             {
               "letra": "C",
-              "t": "la mayor parte de la anchoveta que se pesca en el Perú se convierte en harina de pescado."
+              "t": "la anchoveta nunca colapsará mientras se pesque menos de diez millones de toneladas al año."
             },
             {
               "letra": "D",
@@ -777,18 +777,18 @@
             },
             {
               "letra": "E",
-              "t": "en años normales, desde el fondo del mar sube agua fría cargada de nutrientes."
+              "t": "la mayor parte de la anchoveta que se pesca en el Perú se convierte en harina de pescado."
             }
           ]
         }
       ],
-      "respuesta": "Clave: 1: D · 2: A · 3: A · 4: C · 5: A.",
+      "respuesta": "Clave: 1: D · 2: D · 3: D · 4: B · 5: A.",
       "pasos": [
         "Pregunta 1. Antes de las alternativas: la oración 9 o la oración 10. La oración 9 da la tesis: lo que separa los dos casos no parece ser la fuerza del calor, sino el estado en que encontró a la población; la 10 la vuelve general: la anchoveta se repone de El Niño siempre que el calor no la sorprenda ya debilitada. También vale «Ninguna la dice completa», porque ninguna oración junta esa idea con el golpe del calor que reconoce la oración 4 y con la consecuencia práctica de la 11.",
         "Pregunta 1. Clave D. Junta las tres partes con la relación que plantea el texto: el calor golpea siempre (oración 4), el colapso depende de cómo encuentra a la población (oraciones 9 y 10) y, por eso, importa la pesca previa (oración 11).",
-        "Pregunta 2. Clave A. Recoge las dos mitades de la idea: el calor golpea siempre a la anchoveta, pero el desenlace depende de cuánto se pescó antes.",
-        "Pregunta 3. Clave A. El Niño de 1997-1998 fue más intenso y aun así la especie se recuperó (oraciones 7 y 8); de ahí saca el autor que lo decisivo fue el estado de la población (oración 9).",
-        "Pregunta 4. Clave C. El golpe del calor puede terminar de dos maneras, en colapso o en recuperación, y la oración 9 llama así a esos dos resultados.",
+        "Pregunta 2. Clave D. Recoge las dos mitades de la idea: el calor golpea siempre a la anchoveta, pero el desenlace depende de cuánto se pescó antes.",
+        "Pregunta 3. Clave D. El Niño de 1997-1998 fue más intenso y aun así la especie se recuperó (oraciones 7 y 8); de ahí saca el autor que lo decisivo fue el estado de la población (oración 9).",
+        "Pregunta 4. Clave B. El golpe del calor puede terminar de dos maneras, en colapso o en recuperación, y la oración 9 llama así a esos dos resultados.",
         "Pregunta 5. Antes de las alternativas: Se deduce del texto. Se deduce: la oración 10 dice que la especie se repone si el calor no la encuentra debilitada, y la 9 dice que lo que la debilitó en 1972 fue la pesca excesiva. Si se pesca con moderación, quedan los adultos que la reponen.",
         "Pregunta 5. Clave A. El Niño de 1997-1998 fue más intenso y aun así la especie se recuperó (oraciones 7 y 8); lo que faltó en 1972 fueron los adultos que debían reponerla (oración 9)."
       ]

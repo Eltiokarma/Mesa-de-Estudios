@@ -1,6 +1,6 @@
 {
   "id": "t046",
-  "version": 1,
+  "version": 2,
   "titulo": "Lo que queda en el puesto",
   "tema": "Selva · nota entre compañeros que cuidan nidos de taricaya",
   "grado": 5,
@@ -164,7 +164,7 @@
           "se-deduce": "RV7",
           "no-se-sabe": "RV9"
         },
-        "explicacion": "La nota lo contradice sin decirlo con esas palabras: «Cuando leas esto, yo ya estaré río abajo, así que te dejo todo por escrito» (oración 2).",
+        "explicacion": "Lo contradice: Wílmer escribe que, cuando Teo lea la nota, él ya estará río abajo (oración 2).",
         "explicaciones": {
           "lo-dice": "Ninguna oración dice que se encuentren; al contrario, Wílmer ya se habrá ido cuando Teo lea.",
           "se-deduce": "Que se conozcan bien no permite concluir que se vean ese día; la oración 2 dice que Wílmer ya se habrá ido.",
@@ -278,6 +278,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: acertó 20 de 20 (los cuatro textos de la unidad). Cambios: oraciones 6 y 12 más claras (más taricayas este año; «vuelvo en veinte días»), con sus explicaciones; tipo de texto expositivo y dificultad 2, porque p4 y p5 salen casi literales; el previo de p3 cita la oración 2 completa."
+    "notas": "A ciegas: acertó 20 de 20 (los cuatro textos de la unidad). Cambios: oraciones 6 y 12 más claras (más taricayas este año; «vuelvo en veinte días»), con sus explicaciones; tipo de texto expositivo y dificultad 2, porque p4 y p5 salen casi literales; el previo de p3 cita la oración 2 completa. 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 1 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }

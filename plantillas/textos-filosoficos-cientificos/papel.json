@@ -254,19 +254,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "Para repartir una torta entre dos, conviene que uno la corte y que el otro elija su pedazo."
-            },
-            {
-              "letra": "B",
-              "t": "Una regla es justa cuando la aprueba la mayoría de quienes tienen que cumplirla."
-            },
-            {
-              "letra": "C",
               "t": "Toda comunidad necesita reglas para que sus miembros puedan convivir en paz."
             },
             {
-              "letra": "D",
+              "letra": "B",
               "t": "En un salón de quinto se votó que la última fila barra el aula todos los viernes, y la regla ganó por veintiocho votos contra seis."
+            },
+            {
+              "letra": "C",
+              "t": "Para repartir una torta entre dos, conviene que uno la corte y que el otro elija su pedazo."
+            },
+            {
+              "letra": "D",
+              "t": "Una regla es justa cuando la aprueba la mayoría de quienes tienen que cumplirla."
             },
             {
               "letra": "E",
@@ -281,7 +281,7 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "en el salón habría que dejar de votar las reglas y que el profesor sea quien las decida."
+              "t": "decidir quién gana no es lo mismo que decidir qué es justo."
             },
             {
               "letra": "B",
@@ -289,7 +289,7 @@
             },
             {
               "letra": "C",
-              "t": "decidir quién gana no es lo mismo que decidir qué es justo."
+              "t": "en el salón habría que dejar de votar las reglas y que el profesor sea quien las decida."
             },
             {
               "letra": "D",
@@ -307,15 +307,15 @@
             },
             {
               "letra": "B",
-              "t": "la regla volvería a ganar por veintiocho votos contra seis, como en la primera votación."
+              "t": "la regla sería justa de todos modos, siempre que la apruebe la mayoría del salón."
             },
             {
               "letra": "C",
-              "t": "probablemente no ganaría la regla de que esa fila barra siempre."
+              "t": "la regla volvería a ganar por veintiocho votos contra seis, como en la primera votación."
             },
             {
               "letra": "D",
-              "t": "la regla sería justa de todos modos, siempre que la apruebe la mayoría del salón."
+              "t": "probablemente no ganaría la regla de que esa fila barra siempre."
             }
           ]
         },
@@ -325,19 +325,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "cualquier regla aprobada por una mayoría es injusta para los alumnos que perdieron la votación."
-            },
-            {
-              "letra": "B",
               "t": "para el autor, votar no es una buena manera de tomar decisiones en un grupo como un salón."
             },
             {
+              "letra": "B",
+              "t": "cualquier regla aprobada por una mayoría es injusta para los alumnos que perdieron la votación."
+            },
+            {
               "letra": "C",
-              "t": "una regla queda justificada cuando gana la votación por un margen muy amplio."
+              "t": "una regla de turnos en la que cada fila barre una semana podría pasar la prueba del autor."
             },
             {
               "letra": "D",
-              "t": "una regla de turnos en la que cada fila barre una semana podría pasar la prueba del autor."
+              "t": "una regla queda justificada cuando gana la votación por un margen muy amplio."
             }
           ]
         },
@@ -347,11 +347,11 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "No saber qué lugar ocupará uno cuando se apliquen las reglas que elige."
+              "t": "La falta de estudios o de información que tiene una persona sobre algún tema."
             },
             {
               "letra": "B",
-              "t": "El secreto con que cada uno marca su voto en una elección."
+              "t": "No saber qué lugar ocupará uno cuando se apliquen las reglas que elige."
             },
             {
               "letra": "C",
@@ -359,20 +359,20 @@
             },
             {
               "letra": "D",
-              "t": "La falta de estudios o de información que tiene una persona sobre algún tema."
+              "t": "El secreto con que cada uno marca su voto en una elección."
             }
           ]
         }
       ],
-      "respuesta": "Clave: 1: E · 2: B · 3: C · 4: D · 5: A.",
+      "respuesta": "Clave: 1: E · 2: B · 3: D · 4: C · 5: B.",
       "pasos": [
         "Pregunta 1. Antes de las alternativas: la oración 7 o la oración 11. La oración 7 propone la prueba de la justicia, y la 11 junta las dos mitades: una regla es justa si pasa esa prueba, y ganar una votación no basta para volverla justa.",
         "Pregunta 1. Clave E. Junta la prueba que propone el autor (oración 7) con su conclusión sobre la mayoría (oración 11).",
         "Pregunta 2. Antes de las alternativas: Se deduce del texto. Se deduce: la regla no pasa la prueba de la oración 7, porque nadie que ignorara dónde se iba a sentar votaría por ella (oración 10), y la oración 6 muestra que, si bastara con contar votos, nadie podría reclamar contra un abuso.",
         "Pregunta 2. Clave B. El problema no está en cómo se cuenta: decidir quién gana no es decidir qué es justo (oraciones 5 y 11).",
-        "Pregunta 3. Clave C. Es la prueba del autor aplicada al salón: sin saber dónde le tocará sentarse, nadie votaría por esa regla (oración 10).",
-        "Pregunta 4. Clave D. Uno podría aceptar los turnos sin saber dónde se sentará, porque a todos les toca igual: es lo que pide la oración 7.",
-        "Pregunta 5. Clave A. La oración 9 lo explica: elegir las reglas sin saber si uno será rico o pobre, fuerte o débil."
+        "Pregunta 3. Clave D. Es la prueba del autor aplicada al salón: sin saber dónde le tocará sentarse, nadie votaría por esa regla (oración 10).",
+        "Pregunta 4. Clave C. Uno podría aceptar los turnos sin saber dónde se sentará, porque a todos les toca igual: es lo que pide la oración 7.",
+        "Pregunta 5. Clave B. La oración 9 lo explica: elegir las reglas sin saber si uno será rico o pobre, fuerte o débil."
       ]
     },
     {

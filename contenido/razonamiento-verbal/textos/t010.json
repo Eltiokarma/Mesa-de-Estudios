@@ -1,6 +1,6 @@
 {
   "id": "t010",
-  "version": 2,
+  "version": 3,
   "titulo": "La balanza de la feria",
   "tema": "Relato · confianza y verdad",
   "grado": 3,
@@ -150,7 +150,7 @@
         },
         "explicacion": "El relato no lo dice, pero se deduce: la abuela no discutió y puso a prueba la balanza delante de todos (oraciones 5 y 6). Nadie hace eso si duda de su balanza.",
         "explicaciones": {
-          "lo-dice": "El relato nunca dice \"la abuela estaba segura\"; eso se saca de lo que hace.",
+          "lo-dice": "Bien visto: el relato cuenta que probó la balanza en público. Que estaba segura lo agrega el lector.",
           "no-se-sabe": "No hace falta que el relato lo diga: probar la balanza delante de todos muestra que estaba segura.",
           "lo-contradice": "Nada en el relato muestra que la abuela dudara; al contrario, se arriesga a probar la balanza en público."
         }
@@ -269,6 +269,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-06",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 7 de 7. Cambios: la correcta de p2 incluye que el paquete era de la señora (el distractor RV6 era defendible y se reemplazó por uno que choca con el relato, RV9); \"idea central\" en vez de \"tema\"; previo de propósito con RV33 en \"convencer\". Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null). 8 nov 2026 (rutina no-se): una incorrecta tomó la forma de la correcta (justificación o dos puntos) para que la forma no delate la clave; mismo código y mismo sentido."
+    "notas": "A ciegas: 7 de 7. Cambios: la correcta de p2 incluye que el paquete era de la señora (el distractor RV6 era defendible y se reemplazó por uno que choca con el relato, RV9); \"idea central\" en vez de \"tema\"; previo de propósito con RV33 en \"convencer\". Una segunda verificación de los ítems cambiados confirmó claves únicas; se ajustaron cuatro explicaciones y un enunciado. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null). 8 nov 2026 (rutina no-se): una incorrecta tomó la forma de la correcta (justificación o dos puntos) para que la forma no delate la clave; mismo código y mismo sentido. 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 1 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }

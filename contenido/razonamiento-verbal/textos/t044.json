@@ -1,6 +1,6 @@
 {
   "id": "t044",
-  "version": 1,
+  "version": 2,
   "titulo": "Un mensaje para el tío Julián",
   "tema": "Sociedad · mensaje familiar entre Puerto Maldonado y Arequipa",
   "grado": 3,
@@ -94,9 +94,9 @@
           "no-se-sabe": "RV34",
           "lo-contradice": null
         },
-        "explicacion": "El mensaje no lo dice con esas palabras, pero se deduce: Milagros lo llama «tío», le manda saludos de su mamá, le dice que lo quiere y lo espera en julio (oraciones 1, 3 y 12).",
+        "explicacion": "Se deduce: lo sostiene el trato («tío», los saludos, la visita de julio), aunque el mensaje no lo afirma.",
         "explicaciones": {
-          "lo-dice": "Ninguna oración dice «nos conocemos»; eso se saca del trato y de los saludos.",
+          "lo-dice": "Bien visto: el trato es de confianza. Pero el mensaje no afirma que se conozcan: eso lo agrega el lector.",
           "no-se-sabe": "No hace falta que lo diga: nadie le escribe «tío, te quiero mucho» ni lo invita a pasear a alguien que no conoce.",
           "lo-contradice": "Nada en el mensaje muestra que sean desconocidos; al contrario, se tratan con mucha confianza."
         }
@@ -252,6 +252,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: acertó 20 de 20 (los cuatro textos de la unidad). Cambios: tipo de texto expositivo; la oración 9 dice que el centro le queda cerca al tío, y la 11 pasa a «para el lunes». Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
+    "notas": "A ciegas: acertó 20 de 20 (los cuatro textos de la unidad). Cambios: tipo de texto expositivo; la oración 9 dice que el centro le queda cerca al tío, y la 11 pasa a «para el lunes». Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null). 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 2 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }

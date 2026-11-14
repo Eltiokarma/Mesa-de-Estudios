@@ -1,6 +1,6 @@
 {
   "id": "t055",
-  "version": 1,
+  "version": 2,
   "titulo": "La riqueza que llegaba en barcos",
   "tema": "Historia del Perú · la época del guano",
   "grado": 5,
@@ -234,8 +234,8 @@
         },
         "explicacion": "Se deduce: la oración 9 dice que no habría bastado con gastar honradamente, y las oraciones 10 y 11 explican por qué: el Estado vivía de las islas y no de lo que producía el país.",
         "explicaciones": {
-          "lo-dice": "El texto no lo dice con esas palabras; se llega a eso juntando las oraciones 9, 10 y 11.",
-          "no-se-sabe": "No está escrito así, pero se deduce: si «habría bastado con gastar honradamente» es lo que el autor rechaza (oración 9), es porque el problema seguía aunque no se robara.",
+          "lo-dice": "Bien visto: las oraciones 9 a 11 llevan ahí. Pero ese caso hipotético no está expresado: lo arma el lector.",
+          "no-se-sabe": "Es prudente no agregar nada, pero la oración 9 rechaza que bastara con gastar honradamente: de ahí sale.",
           "lo-contradice": "Eso sería creer que la honradez lo resolvía todo, que es la explicación común que el autor rebate en las oraciones 8 y 9."
         }
       },
@@ -308,6 +308,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 4 de 4 preguntas y 2 de 2 previos. Cambios: o10 dice que el Estado ya no necesitaba cobrarle a la población, y p4 se apoya en o5 y o10 (explicación de RV33 sin atribuir intención al autor); correctas de p1 y p3 reescritas para no repetir la frase de o13, con el distractor RV3 de p3 alargado; o5 separa la libertad del pago posterior a los dueños (bonos de manumisión desde 1855); o12 nombra la época del guano y la fuente de Basadre es el tomo IV; en p2 el relato que sigue pasa a RV42 y la tesis al inicio a RV4. Segunda verificación a ciegas de los ítems cambiados: coincidió en todo, sin cambios."
+    "notas": "A ciegas: 4 de 4 preguntas y 2 de 2 previos. Cambios: o10 dice que el Estado ya no necesitaba cobrarle a la población, y p4 se apoya en o5 y o10 (explicación de RV33 sin atribuir intención al autor); correctas de p1 y p3 reescritas para no repetir la frase de o13, con el distractor RV3 de p3 alargado; o5 separa la libertad del pago posterior a los dueños (bonos de manumisión desde 1855); o12 nombra la época del guano y la fuente de Basadre es el tomo IV; en p2 el relato que sigue pasa a RV42 y la tesis al inicio a RV4. Segunda verificación a ciegas de los ítems cambiados: coincidió en todo, sin cambios. 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 2 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }

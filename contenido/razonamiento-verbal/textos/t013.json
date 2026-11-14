@@ -1,6 +1,6 @@
 {
   "id": "t013",
-  "version": 1,
+  "version": 2,
   "titulo": "La ciudad sin murallas",
   "tema": "Historia antigua · Caral",
   "grado": 4,
@@ -135,9 +135,9 @@
           "no-se-sabe": "RV34",
           "lo-contradice": null
         },
-        "explicacion": "El texto no lo dice así, pero se deduce: entre los restos de la ciudad hay anchovetas y conchas (oración 4), y se intercambiaba pescado (oración 5).",
+        "explicacion": "Se deduce: el texto da los restos de anchovetas y conchas (oración 4); que se comían lo agrega el lector.",
         "explicaciones": {
-          "lo-dice": "El texto nunca dice \"comían productos del mar\"; dice que se encontraron anchovetas y conchas, y de ahí se saca.",
+          "lo-dice": "Bien visto: el texto habla de anchovetas y conchas entre los restos. Que se las comían lo agrega el lector.",
           "no-se-sabe": "No hace falta que el texto lo diga: si entre los restos de la ciudad hay anchovetas y conchas, se deduce que se comían.",
           "lo-contradice": "Nada en el texto va en contra de esa idea; al contrario, los restos de pescado la apoyan."
         }
@@ -251,6 +251,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 6 de 6. Cambios: o9 redactada sin la frase que sonaba contradictoria (\"lo que sabemos depende de lo que falta descubrir\"); distractor de compatibilidad endurecido («dan por probado»). Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
+    "notas": "A ciegas: 6 de 6. Cambios: o9 redactada sin la frase que sonaba contradictoria (\"lo que sabemos depende de lo que falta descubrir\"); distractor de compatibilidad endurecido («dan por probado»). Una segunda verificación de los cambios confirmó claves únicas y ajustó seis detalles. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null). 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 2 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }

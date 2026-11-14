@@ -1,6 +1,6 @@
 {
   "id": "t022",
-  "version": 1,
+  "version": 2,
   "titulo": "Medir dos veces",
   "tema": "Relato · el error que enseña",
   "grado": 3,
@@ -136,9 +136,9 @@
           "no-se-sabe": "RV34",
           "lo-contradice": null
         },
-        "explicacion": "El relato no lo dice con esas palabras, pero se deduce: Lucía no se burla y arregla las paredes con cuidado (oración 6).",
+        "explicacion": "Se deduce: el relato cuenta lo que hace Lucía (oración 6); la intención de ayudar la agrega el lector.",
         "explicaciones": {
-          "lo-dice": "El relato nunca dice \"quería ayudar\"; eso se saca de lo que Lucía hace.",
+          "lo-dice": "Bien visto: el relato cuenta que Lucía arregla las paredes. La intención de ayudar no está expresada: se deduce.",
           "no-se-sabe": "No hace falta que el relato lo diga: arreglar las paredes con cuidado, sin burlarse, muestra que quería ayudar.",
           "lo-contradice": "Nada en el relato muestra lo contrario; Lucía ayuda desde el principio."
         }
@@ -215,6 +215,6 @@
     "por": "subagente (resolución a ciegas y verificación de hechos con búsqueda web), más una segunda verificación de los cambios",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 5 de 5. Cambio menor en o3 (las paredes no medían todas lo mismo). Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
+    "notas": "A ciegas: 5 de 5. Cambio menor en o3 (las paredes no medían todas lo mismo). Una segunda verificación de los cambios corrigió la concordancia de t023 p2 y cuatro detalles. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null). 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 2 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }

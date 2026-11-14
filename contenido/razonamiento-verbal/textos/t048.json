@@ -1,6 +1,6 @@
 {
   "id": "t048",
-  "version": 1,
+  "version": 2,
   "titulo": "¿Justa porque la votamos?",
   "tema": "Filosofía · la justicia de las reglas",
   "grado": 5,
@@ -152,7 +152,7 @@
         },
         "explicacion": "Se deduce: la regla no pasa la prueba de la oración 7, porque nadie que ignorara dónde se iba a sentar votaría por ella (oración 10), y la oración 6 muestra que, si bastara con contar votos, nadie podría reclamar contra un abuso.",
         "explicaciones": {
-          "lo-dice": "El texto nunca dice con esas palabras que los seis tengan razón; se llega a eso juntando las oraciones 6, 7 y 10.",
+          "lo-dice": "Bien visto: las oraciones 6, 7 y 10 llevan ahí. El juicio de que tienen razón lo agrega el lector.",
           "no-se-sabe": "No está dicho, pero se deduce: la regla no pasa la prueba de la oración 7 (oración 10), y la oración 6 dice que si bastara con contar votos nadie podría reclamar contra un abuso.",
           "lo-contradice": "Eso sería pensar que la votación cerró el asunto, que es la opinión de la oración 4, la que el autor rebate."
         }
@@ -304,6 +304,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 5 de 5 preguntas; dudó en el previo de idea principal. Cambios: la oración 11 junta la prueba y la conclusión sobre la mayoría (explicaciones del previo rehechas); sonda nueva en el previo de inferencia (se deduce); distractor RV11 cambiado por uno RV7 sobre la unanimidad; Rawls elige «los principios de justicia de una sociedad»; correcta de inferencia acortada. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
+    "notas": "A ciegas: 5 de 5 preguntas; dudó en el previo de idea principal. Cambios: la oración 11 junta la prueba y la conclusión sobre la mayoría (explicaciones del previo rehechas); sonda nueva en el previo de inferencia (se deduce); distractor RV11 cambiado por uno RV7 sobre la unanimidad; Rawls elige «los principios de justicia de una sociedad»; correcta de inferencia acortada. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null). 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 1 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }

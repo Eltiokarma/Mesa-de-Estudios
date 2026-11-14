@@ -350,19 +350,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "se cortan porque los postes y los cables se vienen abajo."
-            },
-            {
-              "letra": "B",
               "t": "pueden congestionarse porque mucha gente llama a la vez."
             },
             {
+              "letra": "B",
+              "t": "se cortan porque los postes y los cables se vienen abajo."
+            },
+            {
               "letra": "C",
-              "t": "dejan de funcionar siempre, en todas las ciudades del país."
+              "t": "deben quedar libres solo para las llamadas de los bomberos."
             },
             {
               "letra": "D",
-              "t": "deben quedar libres solo para las llamadas de los bomberos."
+              "t": "dejan de funcionar siempre, en todas las ciudades del país."
             }
           ]
         },
@@ -381,11 +381,11 @@
             },
             {
               "letra": "C",
-              "t": "practicar la salida en un simulacro ayuda a reaccionar mejor en un sismo real."
+              "t": "en el Perú los temblores ocurren muy de vez en cuando, por eso hay que prepararse."
             },
             {
               "letra": "D",
-              "t": "en el Perú los temblores ocurren muy de vez en cuando, por eso hay que prepararse."
+              "t": "practicar la salida en un simulacro ayuda a reaccionar mejor en un sismo real."
             }
           ]
         },
@@ -395,29 +395,29 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "tardaran más en encontrar y recorrer el camino de salida."
+              "t": "se hicieran daño todos, sin excepción, al tratar de salir del aula."
             },
             {
               "letra": "B",
-              "t": "No se puede saber, porque la infografía no habla de colegios sin simulacros."
+              "t": "tardaran más en encontrar y recorrer el camino de salida."
             },
             {
               "letra": "C",
-              "t": "saldrían igual de rápido, porque el camino de salida es siempre el mismo."
+              "t": "No se puede saber, porque la infografía no habla de colegios sin simulacros."
             },
             {
               "letra": "D",
-              "t": "se hicieran daño todos, sin excepción, al tratar de salir del aula."
+              "t": "saldrían igual de rápido, porque el camino de salida es siempre el mismo."
             }
           ]
         }
       ],
-      "respuesta": "Clave: 1: B · 2: C · 3: A.",
+      "respuesta": "Clave: 1: A · 2: D · 3: B.",
       "pasos": [
-        "Pregunta 1. Clave B. El recuadro «Después» pide mandar un mensaje en vez de llamar para no saturar las líneas: eso supone que, si muchos llaman a la vez, las líneas se llenan.",
-        "Pregunta 2. Antes de las alternativas: Se deduce del texto. La infografía no usa la palabra \"peligroso\", pero pide alejarse de las ventanas durante el sismo: si hay que alejarse, es porque cerca de ellas se corre más riesgo. Se deduce.",
-        "Pregunta 2. Clave C. El recuadro «En el colegio» dice que practicar el camino de salida hace que se recorra sin pensarlo cuando de verdad hace falta.",
-        "Pregunta 3. Clave A. La infografía dice que practicar la salida hace que se recorra sin pensarlo. Sin práctica, habría que pensarlo en el momento, y eso toma más tiempo."
+        "Pregunta 1. Clave A. El recuadro «Después» pide mandar un mensaje en vez de llamar para no saturar las líneas: eso supone que, si muchos llaman a la vez, las líneas se llenan.",
+        "Pregunta 2. Antes de las alternativas: Se deduce del texto. Se deduce: la infografía pide alejarse de las ventanas; la comparación de riesgo la agrega el lector.",
+        "Pregunta 2. Clave D. El recuadro «En el colegio» dice que practicar el camino de salida hace que se recorra sin pensarlo cuando de verdad hace falta.",
+        "Pregunta 3. Clave B. La infografía dice que practicar la salida hace que se recorra sin pensarlo. Sin práctica, habría que pensarlo en el momento, y eso toma más tiempo."
       ]
     },
     {

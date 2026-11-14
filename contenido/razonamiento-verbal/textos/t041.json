@@ -1,6 +1,6 @@
 {
   "id": "t041",
-  "version": 1,
+  "version": 2,
   "titulo": "Si la tierra tiembla",
   "tema": "Ciudad · prevención ante sismos",
   "grado": 3,
@@ -98,10 +98,10 @@
           "no-se-sabe": "RV34",
           "lo-contradice": null
         },
-        "explicacion": "La infografía no usa la palabra \"peligroso\", pero pide alejarse de las ventanas durante el sismo: si hay que alejarse, es porque cerca de ellas se corre más riesgo. Se deduce.",
+        "explicacion": "Se deduce: la infografía pide alejarse de las ventanas; la comparación de riesgo la agrega el lector.",
         "explicaciones": {
-          "lo-dice": "El recuadro «Durante» dice que hay que alejarse de las ventanas, pero no dice con esas palabras que estar cerca sea más peligroso: eso se saca del consejo.",
-          "no-se-sabe": "Aunque no lo diga con esas palabras, el consejo de alejarse de las ventanas solo tiene sentido si estar cerca es más riesgoso.",
+          "lo-dice": "Bien visto: el recuadro «Durante» pide alejarse de las ventanas. La comparación de riesgo no está expresada: se deduce.",
+          "no-se-sabe": "Es prudente no agregar nada, pero aquí el consejo de alejarse solo tiene sentido si cerca hay más riesgo.",
           "lo-contradice": "La infografía no dice que las ventanas sean seguras; al contrario, pide alejarse de ellas."
         }
       },
@@ -191,6 +191,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas coincidió en todos los ítems de este texto (17 de 18 en los cuatro textos). Cambios: el recuadro «Durante» usa solo lo confirmado en Indeci (no correr, no usar el ascensor, alejarse de ventanas); el distractor RV10 de p2 pasa al ascensor; el RV12 de p3 se cambió por uno RV7; fuente concreta para la subducción. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null)."
+    "notas": "A ciegas coincidió en todos los ítems de este texto (17 de 18 en los cuatro textos). Cambios: el recuadro «Durante» usa solo lo confirmado en Indeci (no correr, no usar el ascensor, alejarse de ventanas); el distractor RV10 de p2 pasa al ascensor; el RV12 de p3 se cambió por uno RV7; fuente concreta para la subducción. Rutina verbal C (7 nov 2026): en el previo clasificar, «lo dice» ante lo que se deduce pasó a RV58 (antes RV6, RV5 o null). 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 3 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }

@@ -247,19 +247,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "A un familiar que vive en Arequipa."
-            },
-            {
-              "letra": "B",
-              "t": "A un especialista en casas de sillar al que consulta para su tarea."
-            },
-            {
-              "letra": "C",
               "t": "A un turista que conoció en Puerto Maldonado."
             },
             {
-              "letra": "D",
+              "letra": "B",
+              "t": "A un familiar que vive en Arequipa."
+            },
+            {
+              "letra": "C",
               "t": "A la profesora Nélida, que dejó la tarea."
+            },
+            {
+              "letra": "D",
+              "t": "A un especialista en casas de sillar al que consulta para su tarea."
             }
           ]
         },
@@ -269,19 +269,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "la familia quiere mudarse a Arequipa por el clima."
-            },
-            {
-              "letra": "B",
               "t": "las cosas de la casa se están derritiendo con el sol."
             },
             {
-              "letra": "C",
+              "letra": "B",
               "t": "el ventilador de la casa se malogró esta semana."
             },
             {
-              "letra": "D",
+              "letra": "C",
               "t": "en Puerto Maldonado está haciendo mucho calor."
+            },
+            {
+              "letra": "D",
+              "t": "la familia quiere mudarse a Arequipa por el clima."
             }
           ]
         },
@@ -291,11 +291,11 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "Su mamá le pidió que salude al tío, que hace tiempo no llama."
+              "t": "Tiene que presentar una tarea el lunes y le faltan fotos de Arequipa."
             },
             {
               "letra": "B",
-              "t": "Está de visita en Arequipa y quiere fotografiar ella misma las casas del centro."
+              "t": "Su mamá le pidió que salude al tío, que hace tiempo no llama."
             },
             {
               "letra": "C",
@@ -303,7 +303,7 @@
             },
             {
               "letra": "D",
-              "t": "Tiene que presentar una tarea el lunes y le faltan fotos de Arequipa."
+              "t": "Está de visita en Arequipa y quiere fotografiar ella misma las casas del centro."
             }
           ]
         },
@@ -313,19 +313,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "prefiere vivir en Arequipa antes que en Puerto Maldonado."
-            },
-            {
-              "letra": "B",
               "t": "nunca ha salido de Puerto Maldonado en toda su vida."
             },
             {
-              "letra": "C",
+              "letra": "B",
               "t": "ha estado alguna vez en la casa de su abuela en Arequipa."
             },
             {
-              "letra": "D",
+              "letra": "C",
               "t": "sabe que el sillar es una piedra que sale de los volcanes."
+            },
+            {
+              "letra": "D",
+              "t": "prefiere vivir en Arequipa antes que en Puerto Maldonado."
             },
             {
               "letra": "E",
@@ -334,13 +334,13 @@
           ]
         }
       ],
-      "respuesta": "Clave: 1: A · 2: D · 3: D · 4: C.",
+      "respuesta": "Clave: 1: B · 2: C · 3: A · 4: B.",
       "pasos": [
-        "Pregunta 1. Antes de las alternativas: Se deduce del texto. El mensaje no lo dice con esas palabras, pero se deduce: Milagros lo llama «tío», le manda saludos de su mamá, le dice que lo quiere y lo espera en julio (oraciones 1, 3 y 12).",
-        "Pregunta 1. Clave A. Milagros le escribe a su tío y le pide fotos de casas de Arequipa, como la profesora pidió a «alguien que viva allá».",
-        "Pregunta 2. Clave D. La misma oración lo aclara: ni con el ventilador se puede dormir. Es una exageración para decir que hace mucho calor.",
-        "Pregunta 3. Clave D. Ella misma dice que escribe por una tarea (oración 4), pide fotos (oración 9) y dice que las necesita para el lunes (oración 11).",
-        "Pregunta 4. Clave C. Se acuerda de cómo era la casa por dentro: fresquita aunque afuera quemara el sol. Eso solo lo recuerda quien estuvo ahí."
+        "Pregunta 1. Antes de las alternativas: Se deduce del texto. Se deduce: lo sostiene el trato («tío», los saludos, la visita de julio), aunque el mensaje no lo afirma.",
+        "Pregunta 1. Clave B. Milagros le escribe a su tío y le pide fotos de casas de Arequipa, como la profesora pidió a «alguien que viva allá».",
+        "Pregunta 2. Clave C. La misma oración lo aclara: ni con el ventilador se puede dormir. Es una exageración para decir que hace mucho calor.",
+        "Pregunta 3. Clave A. Ella misma dice que escribe por una tarea (oración 4), pide fotos (oración 9) y dice que las necesita para el lunes (oración 11).",
+        "Pregunta 4. Clave B. Se acuerda de cómo era la casa por dentro: fresquita aunque afuera quemara el sol. Eso solo lo recuerda quien estuvo ahí."
       ]
     },
     {
@@ -590,11 +590,11 @@
             },
             {
               "letra": "B",
-              "t": "Alguien que vigila la playa por turnos y acaba de terminar el suyo."
+              "t": "El jefe de Teo, que le deja las órdenes desde la base."
             },
             {
               "letra": "C",
-              "t": "El jefe de Teo, que le deja las órdenes desde la base."
+              "t": "Alguien que vigila la playa por turnos y acaba de terminar el suyo."
             },
             {
               "letra": "D",
@@ -608,19 +608,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "Son compañeros que se turnan en el mismo trabajo y se tienen confianza."
-            },
-            {
-              "letra": "B",
-              "t": "Teo es el nuevo jefe del puesto y Wílmer le rinde cuentas."
-            },
-            {
-              "letra": "C",
               "t": "Son hermanos de sangre, hijos de la misma madre."
             },
             {
-              "letra": "D",
+              "letra": "B",
               "t": "Teo es un visitante de la reserva al que le explican, paso a paso, cómo cuidar los nidos."
+            },
+            {
+              "letra": "C",
+              "t": "Son compañeros que se turnan en el mismo trabajo y se tienen confianza."
+            },
+            {
+              "letra": "D",
+              "t": "Teo es el nuevo jefe del puesto y Wílmer le rinde cuentas."
             }
           ]
         },
@@ -631,19 +631,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "Wílmer deja el puesto y Teo lo reemplaza después, sin que se crucen."
-            },
-            {
-              "letra": "B",
               "t": "Wílmer se despide de Teo porque deja el trabajo para siempre."
             },
             {
+              "letra": "B",
+              "t": "Es temporada de turistas y la reserva espera recibir más visitas que de costumbre."
+            },
+            {
               "letra": "C",
-              "t": "Esta semana robaron huevos en la playa y la comunidad pidió ayuda."
+              "t": "Wílmer deja el puesto y Teo lo reemplaza después, sin que se crucen."
             },
             {
               "letra": "D",
-              "t": "Es temporada de turistas y la reserva espera recibir más visitas que de costumbre."
+              "t": "Esta semana robaron huevos en la playa y la comunidad pidió ayuda."
             }
           ]
         },
@@ -661,11 +661,11 @@
             },
             {
               "letra": "C",
-              "t": "el río ofrece a la comunidad un lugar para bañarse y pasear."
+              "t": "el río se secó del todo y ahora solo queda arena."
             },
             {
               "letra": "D",
-              "t": "el río se secó del todo y ahora solo queda arena."
+              "t": "el río ofrece a la comunidad un lugar para bañarse y pasear."
             }
           ]
         },
@@ -683,21 +683,21 @@
             },
             {
               "letra": "C",
-              "t": "hay que contar cuántas crías de taricaya nacen cada noche."
+              "t": "las taricayas ya salieron a la arena y hay que darles de comer."
             },
             {
               "letra": "D",
-              "t": "las taricayas ya salieron a la arena y hay que darles de comer."
+              "t": "hay que contar cuántas crías de taricaya nacen cada noche."
             }
           ]
         }
       ],
-      "respuesta": "Clave: 1: B · 2: A · 3: A · 4: B · 5: B.",
+      "respuesta": "Clave: 1: C · 2: C · 3: C · 4: B · 5: B.",
       "pasos": [
-        "Pregunta 1. Clave B. Se va «río abajo», deja a Teo la promesa de pasar por la playa cada noche, sabe cómo avisar a la base y volverá cuando le «toque subir otra vez»: es un turno de vigilancia.",
-        "Pregunta 2. Clave A. Wílmer le pasa a Teo su promesa y sus tareas, lo trata con cariño y volverá cuando le toque: se relevan en el mismo puesto.",
-        "Pregunta 3. Antes de las alternativas: Lo contradice. La nota lo contradice sin decirlo con esas palabras: «Cuando leas esto, yo ya estaré río abajo, así que te dejo todo por escrito» (oración 2).",
-        "Pregunta 3. Clave A. Wílmer ya se habrá ido cuando Teo lea (oración 2) y volverá en veinte días (oración 12): la nota reemplaza la conversación del relevo.",
+        "Pregunta 1. Clave C. Se va «río abajo», deja a Teo la promesa de pasar por la playa cada noche, sabe cómo avisar a la base y volverá cuando le «toque subir otra vez»: es un turno de vigilancia.",
+        "Pregunta 2. Clave C. Wílmer le pasa a Teo su promesa y sus tareas, lo trata con cariño y volverá cuando le toque: se relevan en el mismo puesto.",
+        "Pregunta 3. Antes de las alternativas: Lo contradice. Lo contradice: Wílmer escribe que, cuando Teo lea la nota, él ya estará río abajo (oración 2).",
+        "Pregunta 3. Clave C. Wílmer ya se habrá ido cuando Teo lea (oración 2) y volverá en veinte días (oración 12): la nota reemplaza la conversación del relevo.",
         "Pregunta 4. Clave B. La misma oración lo explica: frente a la quebrada «asomó la arena», donde las taricayas ponen sus huevos.",
         "Pregunta 5. Clave B. Don Arquímedes pide que no se los lleven como el año pasado, Wílmer le prometió vigilar y explica qué hacer si alguien escarba la arena."
       ]
@@ -780,19 +780,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "A los empleados de la ventanilla, que abren la atención a la hora que les parece."
-            },
-            {
-              "letra": "B",
-              "t": "Al vigilante de la puerta, que el jueves no quiso reconocerle la cita que ella había pedido por internet."
-            },
-            {
-              "letra": "C",
               "t": "Al reloj de la ventanilla 3, al que le agradece haberle enseñado a esperar."
             },
             {
-              "letra": "D",
+              "letra": "B",
               "t": "A los vecinos que hacen la cola cada madrugada frente a la oficina, para que no pierdan la paciencia."
+            },
+            {
+              "letra": "C",
+              "t": "Al vigilante de la puerta, que el jueves no quiso reconocerle la cita que ella había pedido por internet."
+            },
+            {
+              "letra": "D",
+              "t": "A los empleados de la ventanilla, que abren la atención a la hora que les parece."
             },
             {
               "letra": "E",
@@ -806,7 +806,7 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "En su casa, después de que la atendieran en la ventanilla, para agradecer por escrito al personal de la oficina."
+              "t": "De pie frente al reloj de la ventanilla, mientras espera en la cola a que abran la atención."
             },
             {
               "letra": "B",
@@ -814,15 +814,15 @@
             },
             {
               "letra": "C",
-              "t": "En su casa, tras varias mañanas de cola sin lograr el trámite, para la columna que publica en el periódico."
+              "t": "Como gerente de Atención al Vecino, para responder en el periódico a las quejas por las colas."
             },
             {
               "letra": "D",
-              "t": "De pie frente al reloj de la ventanilla, mientras espera en la cola a que abran la atención."
+              "t": "En su casa, tras varias mañanas de cola sin lograr el trámite, para la columna que publica en el periódico."
             },
             {
               "letra": "E",
-              "t": "Como gerente de Atención al Vecino, para responder en el periódico a las quejas por las colas."
+              "t": "En su casa, después de que la atendieran en la ventanilla, para agradecer por escrito al personal de la oficina."
             }
           ]
         },
@@ -832,19 +832,19 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "la admiración de la autora por la puntualidad con que el reloj marca las horas."
-            },
-            {
-              "letra": "B",
-              "t": "una gratitud sincera, porque la semana de cola le enseñó a esperar con calma."
-            },
-            {
-              "letra": "C",
               "t": "que en la cola recibió consejos o clases sobre cómo tener paciencia."
             },
             {
-              "letra": "D",
+              "letra": "B",
               "t": "un reproche por las largas esperas, dicho como si fuera un elogio."
+            },
+            {
+              "letra": "C",
+              "t": "la admiración de la autora por la puntualidad con que el reloj marca las horas."
+            },
+            {
+              "letra": "D",
+              "t": "una gratitud sincera, porque la semana de cola le enseñó a esperar con calma."
             },
             {
               "letra": "E",
@@ -859,23 +859,23 @@
           "alternativas": [
             {
               "letra": "A",
-              "t": "Exigir, con ironía, que la atención prometida en la radio se cumpla en la oficina."
-            },
-            {
-              "letra": "B",
-              "t": "Agradecer al reloj de la ventanilla la paciencia que le enseñó durante una semana entera de espera."
-            },
-            {
-              "letra": "C",
-              "t": "Informar a los vecinos de cómo funciona el nuevo sistema de citas en línea y por qué a veces se cae."
-            },
-            {
-              "letra": "D",
               "t": "Contar, día por día, las madrugadas que pasó en la cola de la ventanilla 3 durante aquella semana."
             },
             {
-              "letra": "E",
+              "letra": "B",
               "t": "Convencer a los vecinos de que dejen las citas por internet y vuelvan a hacer cola desde temprano."
+            },
+            {
+              "letra": "C",
+              "t": "Exigir, con ironía, que la atención prometida en la radio se cumpla en la oficina."
+            },
+            {
+              "letra": "D",
+              "t": "Informar a los vecinos de cómo funciona el nuevo sistema de citas en línea y por qué a veces se cae."
+            },
+            {
+              "letra": "E",
+              "t": "Agradecer al reloj de la ventanilla la paciencia que le enseñó durante una semana entera de espera."
             }
           ]
         },
@@ -890,32 +890,32 @@
             },
             {
               "letra": "B",
-              "t": "el gerente sabía que el sistema de citas no funcionaba cuando hizo su anuncio en la radio."
-            },
-            {
-              "letra": "C",
-              "t": "la oficina no atiende por las citas que la misma municipalidad entrega por internet."
-            },
-            {
-              "letra": "D",
               "t": "ningún vecino ha logrado jamás hacer un trámite en la ventanilla 3 de esa oficina."
             },
             {
-              "letra": "E",
+              "letra": "C",
+              "t": "el gerente sabía que el sistema de citas no funcionaba cuando hizo su anuncio en la radio."
+            },
+            {
+              "letra": "D",
               "t": "la autora pidió su cita por internet la misma noche en que escuchó el anuncio del gerente."
+            },
+            {
+              "letra": "E",
+              "t": "la oficina no atiende por las citas que la misma municipalidad entrega por internet."
             }
           ]
         }
       ],
-      "respuesta": "Clave: 1: E · 2: C · 3: D · 4: A · 5: C.",
+      "respuesta": "Clave: 1: E · 2: D · 3: B · 4: C · 5: E.",
       "pasos": [
         "Pregunta 1. Clave E. La carta se dirige al reloj, pero la autora dice que la deja donde la lean «quienes sí» tienen oídos, recuerda que en la Gerencia del segundo piso también se lee el periódico del domingo y pide que «alguien, allá arriba», cumpla la promesa.",
-        "Pregunta 2. Clave C. Escribe «desde la mesa de mi cocina», con el certificado «todavía sin sacar» después de la semana de cola, y deja la carta «en mi columna del domingo».",
-        "Pregunta 3. Clave D. Después de cuatro madrugadas y una cita que no sirvió, «agradecer» la paciencia es una ironía: dice lo contrario de lo que quiere decir y señala lo mucho que la hicieron esperar.",
+        "Pregunta 2. Clave D. Escribe «desde la mesa de mi cocina», con el certificado «todavía sin sacar» después de la semana de cola, y deja la carta «en mi columna del domingo».",
+        "Pregunta 3. Clave B. Después de cuatro madrugadas y una cita que no sirvió, «agradecer» la paciencia es una ironía: dice lo contrario de lo que quiere decir y señala lo mucho que la hicieron esperar.",
         "Pregunta 4. Antes de las alternativas: Convencer. Cuenta lo que le pasó, pero para reclamar: quiere que en la Gerencia alguien decida cumplir la promesa de los quince minutos (oraciones 11 a 13).",
-        "Pregunta 4. Clave A. La carta junta el anuncio del gerente con lo que de verdad pasó, y termina pidiendo que los quince minutos sean una promesa cumplida y no solo una frase.",
+        "Pregunta 4. Clave C. La carta junta el anuncio del gerente con lo que de verdad pasó, y termina pidiendo que los quince minutos sean una promesa cumplida y no solo una frase.",
         "Pregunta 5. Antes de las alternativas: Se deduce del texto. Se deduce: el gerente prometió que nadie esperaría más de quince minutos (oración 5), pero la autora hizo cola desde las seis hasta las once y no la atendieron (oraciones 3 y 8). La oración 10 lo deja entrever: la radio y la puerta «cuentan dos historias distintas».",
-        "Pregunta 5. Clave C. La página le dio una cita, pero el vigilante le dijo que eso «aquí no lo ven» y la mandó a la cola: la oficina no respeta las citas de su propio sistema."
+        "Pregunta 5. Clave E. La página le dio una cita, pero el vigilante le dijo que eso «aquí no lo ven» y la mandó a la cola: la oficina no respeta las citas de su propio sistema."
       ]
     }
   ]

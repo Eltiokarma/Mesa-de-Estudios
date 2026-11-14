@@ -1,6 +1,6 @@
 {
   "id": "t056",
-  "version": 1,
+  "version": 2,
   "titulo": "Lo que el mar caliente no explica",
   "tema": "Costa · El Niño y la anchoveta",
   "grado": 5,
@@ -263,8 +263,8 @@
         },
         "explicacion": "Se deduce: la oración 10 dice que la especie se repone si el calor no la encuentra debilitada, y la 9 dice que lo que la debilitó en 1972 fue la pesca excesiva. Si se pesca con moderación, quedan los adultos que la reponen.",
         "explicaciones": {
-          "lo-dice": "El texto no habla de pescar con moderación ni dice esa frase; se llega a ella juntando las oraciones 9, 10 y 11.",
-          "no-se-sabe": "No está dicho con esas palabras, pero se deduce: si la pesca excesiva fue lo que llevó a la población al colapso en 1972 (oración 9), pescar con moderación deja a la especie en condiciones de reponerse (oración 10).",
+          "lo-dice": "Bien visto: el texto culpa a la pesca excesiva (oración 9). El efecto de pescar poco lo agrega el lector.",
+          "no-se-sabe": "Es prudente no agregar nada, pero si la pesca excesiva la debilitó (oración 9), pescar menos la deja reponerse.",
           "lo-contradice": "Eso sería creer que solo el calor decide, que es la frase de la oración 1, la que el autor corrige."
         }
       },
@@ -342,6 +342,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 5 de 5 preguntas y 2 de 2 previos (en p1 marcó «ninguna»). Cambios: o9 matizada («no parece ser… sobre todo») y nota en hechos sobre el cambio de régimen decenal y las vedas; «hunde» cambiado por «lleva al colapso» donde significa colapso; o9 pasa a principal y o11 a apoyo (aceptadas o9 y o10, «ninguna» sigue correcta); capturas de o5 fechadas a fines de los sesenta y 1970; p3 rehecha como pregunta de estructura (para qué compara los dos Niños), con RV42, RV53, RV13 y RV7. Segunda verificación a ciegas de los ítems cambiados: coincidió en todo, sin cambios."
+    "notas": "A ciegas: 5 de 5 preguntas y 2 de 2 previos (en p1 marcó «ninguna»). Cambios: o9 matizada («no parece ser… sobre todo») y nota en hechos sobre el cambio de régimen decenal y las vedas; «hunde» cambiado por «lleva al colapso» donde significa colapso; o9 pasa a principal y o11 a apoyo (aceptadas o9 y o10, «ninguna» sigue correcta); capturas de o5 fechadas a fines de los sesenta y 1970; p3 rehecha como pregunta de estructura (para qué compara los dos Niños), con RV42, RV53, RV13 y RV7. Segunda verificación a ciegas de los ítems cambiados: coincidió en todo, sin cambios. 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 2 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }

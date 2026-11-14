@@ -1,6 +1,6 @@
 {
   "id": "t057",
-  "version": 1,
+  "version": 2,
   "titulo": "Carta al reloj de la ventanilla 3",
   "tema": "Sociedad · columna irónica sobre las colas en una oficina municipal (oficina inventada)",
   "grado": 5,
@@ -278,7 +278,7 @@
         },
         "explicacion": "Se deduce: el gerente prometió que nadie esperaría más de quince minutos (oración 5), pero la autora hizo cola desde las seis hasta las once y no la atendieron (oraciones 3 y 8). La oración 10 lo deja entrever: la radio y la puerta «cuentan dos historias distintas».",
         "explicaciones": {
-          "lo-dice": "La carta no lo dice con esas palabras; se llega a eso comparando la promesa de la oración 5 con lo que pasó en las oraciones 3, 7 y 8.",
+          "lo-dice": "Bien visto: la oración 10 lo insinúa con «dos historias distintas». Pero es figurado: la conclusión la saca el lector.",
           "no-se-sabe": "No está dicho, pero se deduce: el gerente prometió quince minutos de espera y la autora esperó cinco horas sin que la atendieran.",
           "lo-contradice": "Eso sería tomar como cierto lo que dijo el gerente en la radio. La autora lo cita para mostrar que la oficina cuenta otra historia."
         }
@@ -332,6 +332,6 @@
     "por": "subagente (verificador a ciegas y revisor de contenido)",
     "fecha": "2026-11-07",
     "veredicto": "aprobado",
-    "notas": "A ciegas: 5 de 5 preguntas y 2 de 2 previos. Cambios: «de la municipalidad» en o5; días de lunes a jueves (o3, o6, o7, cuatro madrugadas en p3); o12 menos directa (el periódico del domingo también se lee en el segundo piso); enunciado de p5 con «aunque no lo diga con esas palabras»; en p1, explicación de RV5 sin «despachan»; en p2, la asamblea (RV7) cambiada por agradecer al personal (RV49), y el distractor «frente al reloj» pasa a RV5 (eco de «frente a usted»). Segunda verificación a ciegas (9 de 9 en los ítems cambiados de t055 a t057): la sonda del previo de p5 repetía la correcta y se cambió por otra deducción."
+    "notas": "A ciegas: 5 de 5 preguntas y 2 de 2 previos. Cambios: «de la municipalidad» en o5; días de lunes a jueves (o3, o6, o7, cuatro madrugadas en p3); o12 menos directa (el periódico del domingo también se lee en el segundo piso); enunciado de p5 con «aunque no lo diga con esas palabras»; en p1, explicación de RV5 sin «despachan»; en p2, la asamblea (RV7) cambiada por agradecer al personal (RV49), y el distractor «frente al reloj» pasa a RV5 (eco de «frente a usted»). Segunda verificación a ciegas (9 de 9 en los ítems cambiados de t055 a t057): la sonda del previo de p5 repetía la correcta y se cambió por otra deducción. 14 nov 2026 (revisión de sondas de clasificar con la regla del 13 nov, por modelo, por revisar por una persona): la clase de la sonda no cambia (tres subagentes a ciegas coincidieron); 1 explicación(es) reescrita(s) para nombrar lo que la sonda agrega, no las palabras; revisión a ciegas de lo corregido por otro subagente. Detalle en docs/investigacion/revision-sondas-clasificar.md."
   }
 }
