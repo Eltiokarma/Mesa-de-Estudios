@@ -34,3 +34,19 @@ test('alto fijo por datos, puro, sin NaN ni colores fijos, texto de 14 o más, p
   assert.equal(altos.size, 1);
   assert.match(P.alt(datos(80)), /no empieza en cero/);
 });
+
+test('extremo y valorEn: la manija cae en la punta de su barra y la inversa devuelve su valor', () => {
+  for (const min of [0, 60, 80]) {
+    const d = datos(min), svg = P.dibujar(d, {}), alto = +svg.match(/viewBox="0 0 320 ([\d.]+)"/)[1];
+    for (const b of d.barras) {
+      const p = P.extremo(d, b.id);
+      assert.ok(p.x > 0 && p.x <= 320 && p.y > 0 && p.y < alto);
+      assert.ok(Math.abs(P.valorEn(d, p.x) - b.valor) < 1e-9);
+    }
+    // La punta coincide con el ancho del rect de la barra.
+    const L = P.disponer(d), r = svg.match(/class="rv-barra" x="([\d.]+)" y="[\d.]+" width="([\d.]+)"/);
+    assert.ok(Math.abs(+r[1] + +r[2] - P.extremo(d, 'a').x) < 0.02);
+    assert.ok(L.barras.length === 2);
+  }
+  assert.equal(P.extremo(datos(), 'nada'), null);
+});
