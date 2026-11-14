@@ -1521,7 +1521,15 @@
       "grafica-perillas",
       "sistemas-ecuaciones",
       "inecuaciones-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/valor-absoluto-y-radicales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "algebra.polinomios",
