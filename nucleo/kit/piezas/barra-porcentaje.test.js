@@ -88,7 +88,15 @@ test('alt cuenta la relación, no la coreografía', () => {
 test('geometria (agregada para el gesto directo): x y deX son inversas y la barra no cambia de lugar', () => {
   const g = B.geometria(D);
   for (const v of [0, 100, 255, 300]) assert.ok(Math.abs(g.deX(g.x(v)) - v) < 1e-9);
-  assert.ok(g.barraY > 0 && g.barraH > 0);
+  assert.ok(g.barraY > 0 && g.barraH > 0 && g.piezaH > 0);
   assert.equal(g.filaY(1), 96);
   assert.match(B.dibujar(D, {}), new RegExp(`y="${g.barraY}"`));
+});
+
+test('escala opcional: sin ella el dibujo no cambia; con ella la barra se mide con esa regla', () => {
+  assert.equal(B.dibujar(Object.assign({}, D, { escala: 0 }), { corte: 2 }), B.dibujar(D, { corte: 2 }));
+  const g = B.geometria(Object.assign({}, D, { escala: 600 }));
+  assert.equal(g.escala, 600);
+  assert.equal(g.x(300), 160);
+  assert.equal(B.geometria(Object.assign({}, D, { escala: 100 })).escala, 300);
 });

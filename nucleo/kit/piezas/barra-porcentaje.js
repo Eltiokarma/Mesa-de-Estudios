@@ -10,7 +10,8 @@
  *   decimales: 2,
  *   color: 'o',                       // color de la variable del total (regla 4)
  *   tramos: [{ tipo: 'descuento'|'aumento', pct: 15, color: 'i' }, …],  // en orden
- *   marca: 'queda' | 'quita'          // qué mide la marca del alumno: lo que queda o lo que se quitó del total
+ *   marca: 'queda' | 'quita',         // qué mide la marca del alumno: lo que queda o lo que se quitó del total
+ *   escala: 1000                      // opcional: el valor que ocupa todo el ancho (si no, el mayor de la barra)
  * }
  * estado = {
  *   corte: 0..n,                      // cuántos tramos ya se aplicaron (lo aplicado se queda dibujado)
@@ -40,13 +41,15 @@
   }
   // Geometría fija para todos los estados: barra arriba, una fila por tramo, la fila de la marca y la del fantasma.
   function geometria(d) {
-    const v = valores(d), escala = Math.max(...v);
+    // escala opcional (agregada para el laboratorio): fija el valor que ocupa todo el ancho, para que arrastrar un
+    // pedazo no cambie la regla bajo el dedo. Si algún valor la pasa, manda el mayor, como sin ella.
+    const v = valores(d), escala = Math.max(...v, d.escala > 0 ? d.escala : 0);
     const n = d.tramos.length;
     const manijaY = FILA0 + FILA * n + 14;
     const fantasmaY = manijaY + 28;
     return { v, escala, n, manijaY, fantasmaY, alto: fantasmaY + 14, x: val => X0 + (X1 - X0) * Math.max(0, val) / escala,
       // Agregado para el gesto directo (docs/teoria.md §4b): la barra, la fila de cada tramo y la inversa de x.
-      barraY: BARRA_Y, barraH: BARRA_H, filaY, deX: px => (px - X0) / (X1 - X0) * escala };
+      barraY: BARRA_Y, barraH: BARRA_H, piezaH: PIEZA_H, filaY, deX: px => (px - X0) / (X1 - X0) * escala };
   }
   const filaY = i => FILA0 + FILA * (i - 1);
   const fmt = (d, x) => `${d.prefijo || ''}${Kit.formatear(x, d.decimales === undefined ? 2 : d.decimales)}${d.sufijo || ''}`;
