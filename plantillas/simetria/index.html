@@ -208,6 +208,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'simetria', unidad: 'geometria.simetria', version: '0.1.0' };
@@ -768,14 +769,26 @@ steps.forEach((s, k) => {
   b.type = 'button'; b.textContent = k + 1;
   b.addEventListener('click', () => go(k)); li.appendChild(b); dots.appendChild(li);
 });
-function describir(){ const s = steps[S.step]; const t = s.desc ? s.desc() : ''; $('desc1').textContent = t; cv.setAttribute('aria-label', t || 'Dibujo del paso'); }
+// Regla 3: antes de la primera pregunta se juega con un espejo que se corre y se gira, y un punto P con su
+// reflejo. No hay letra F: cómo se ve su imagen es lo que se pregunta en el paso 1.
+let jugado = false;
+const PJ = { x:3, y:3 };
+function vistaJuego(V){
+  const q = M.reflejar(PJ, rectaDe(V.espejos[0]));
+  V.segs = [{ P:PJ, Q:q.P, k:'H', dash:[5, 4] }];
+  V.puntos = [{ P:PJ, k:'F', t:'P', dx:12, dy:-12 }, { P:q.P, k:'I', t:'P′', dx:-12, dy:-12 }];
+  return V;
+}
+const juegoLibre = () => vistaJuego({ tipo:'plano', ventana:[-6.5, 6.5, -1, 5.5], espejos:[{ id:'L', punto:{ x:0, y:2 }, angulo:90, k:'E', nombre:'L', mover:true, girar:true }] });
+const DESC_JUEGO = 'Una cuadrícula con un espejo L que se corre y se gira, un punto P y su reflejo P′.';
+function describir(){ const s = steps[S.step]; const t = !jugado ? DESC_JUEGO : s.desc ? s.desc() : ''; $('desc1').textContent = t; cv.setAttribute('aria-label', t || 'Dibujo del paso'); }
 // La leyenda dice solo lo que el dibujo pinta: antes de responder, sin los colores que aún no aparecen.
-function ponerLeyenda(){ const s = steps[S.step], antes = s.gate && !S.pred[s.gate.id]; leyenda($('leg1'), antes ? (s.legAntes || []) : s.leg, s.leyTextos); }
+function ponerLeyenda(){ if (!jugado) return leyenda($('leg1'), ['F','I','E'], { F:'el punto P', I:'su reflejo P′' }); const s = steps[S.step], antes = s.gate && !S.pred[s.gate.id]; leyenda($('leg1'), antes ? (s.legAntes || []) : s.leg, s.leyTextos); }
 function vivo(){ const s = steps[S.step], el = $('vivo'); if (el && s.vivo) el.innerHTML = s.vivo(); describir(); }
 function armarVista(){
   const s = steps[S.step];
   const tipoAntes = S.vista && S.vista.tipo;
-  S.vista = s.vista();
+  S.vista = jugado ? s.vista() : juegoLibre();
   cv.tabIndex = manijas(S.vista).length || (S.vista.espejos || []).some(e => e.mover || e.girar) ? 0 : -1;
   if (S.vista.tipo !== tipoAntes) L.resize(); else draw();
 }
@@ -841,7 +854,8 @@ function prediccion(P){
 conectarArrastre(L, () => S.vista, (id, p, tecla) => {
   if (!moverEspejo(S.vista, id, p, tecla)) return;
   parar();
-  if (S.step === 1) vista2(S.vista);
+  if (!jugado) vistaJuego(S.vista);
+  else if (S.step === 1) vista2(S.vista);
   else if (S.step === 4){ const a = S.vista.espejos[0].angulo; S.vista = Object.assign(vista5(true, a), { activo:S.vista.activo }); }
   else if (S.step === 6) vista7(S.vista);
   vivo(); draw();
@@ -860,6 +874,9 @@ document.addEventListener('focusout', e => { if (e.target.closest && e.target.cl
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
 L.resize(); go(0);
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Corre y gira el espejo L; mira dónde cae el reflejo de P.', minimo:2,
+  alListo:() => { jugado = true; go(0); } });
 })();
 </script>
 <script>
@@ -1016,17 +1033,28 @@ function ponerVista(v){
   cv.tabIndex = (v.espejos || []).some(e => e.mover || e.girar) ? 0 : -1;
   if (v.tipo !== antes) L.resize(); else draw();
 }
-function describir(){ const x = EXPS[S.k]; if (S.vista) { const t = x.desc(S.vista); $('desc2').textContent = t; cv.setAttribute('aria-label', t); } }
+// Regla 3: antes del primer experimento, juego libre con un espejo que se corre y se gira frente a un triángulo
+// escaleno (ninguna de las figuras ni de los espejos que se preguntan después).
+let jugado = false;
+const TRI = M.figura('escaleno').vertices;
+function vistaJuego(V){
+  V.figuras = [{ pts:TRI, cerrada:true, k:'F', relleno:true }, { pts:M.reflejarFigura(TRI, rectaDe(V.espejos[0])), cerrada:true, k:'I', dash:[7, 5], ancho:2.2 }];
+  return V;
+}
+const juegoLibre = () => vistaJuego({ tipo:'plano', ventana:[-3, 9, -4.5, 4], espejos:[{ id:'L', punto:{ x:4, y:-0.5 }, angulo:0, k:'E', nombre:'L', mover:true, girar:true }] });
+function describir(){ if (!jugado) { const t = 'Un triángulo y un espejo L que se corre y se gira; el reflejo del triángulo va punteado.'; $('desc2').textContent = t; cv.setAttribute('aria-label', t); return; }
+  const x = EXPS[S.k]; if (S.vista) { const t = x.desc(S.vista); $('desc2').textContent = t; cv.setAttribute('aria-label', t); } }
 function vivo(){ const x = EXPS[S.k], el = $('vivo2'); if (el && x.vivo && !x.montar) el.innerHTML = x.vivo(S.vista); describir(); }
 function ir(k){
   if (k > primeraLibre()) return;
   cancelAnimationFrame(anim);
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k], hecho = !!S.pred[x.id];
-  ponerVista(hecho ? x.despues() : x.antes());
+  ponerVista(!jugado ? juegoLibre() : hecho ? x.despues() : x.antes());
   L.compactar(!hecho);
   botones();
-  leyenda($('leg2'), hecho ? x.leg : x.legAntes, x.leyTextos);
+  if (!jugado) leyenda($('leg2'), ['F','I','E'], { F:'el triángulo', I:'su reflejo', E:'el espejo L' });
+  else leyenda($('leg2'), hecho ? x.leg : x.legAntes, x.leyTextos);
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
   $('body2').innerHTML = `<p>${x.q}</p>
@@ -1058,13 +1086,17 @@ conectarArrastre(L, () => S.vista, (id, p, tecla) => {
   if (!moverEspejo(S.vista, id, p, tecla)) return;
   cancelAnimationFrame(anim);
   const x = EXPS[S.k], v = S.vista;
-  if (x.id === 'espejos-en-angulo') S.vista = Object.assign(vistaE1(true, v.espejos[1].angulo), { activo:v.activo });
+  if (!jugado) vistaJuego(v);
+  else if (x.id === 'espejos-en-angulo') S.vista = Object.assign(vistaE1(true, v.espejos[1].angulo), { activo:v.activo });
   else if (x.id === 'romboide') S.vista = Object.assign(vistaE2(true, v.espejos[0].angulo, 1), { activo:v.activo });
   vivo(); draw();
 }, draw);
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
 L.resize(); ir(0);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Corre y gira el espejo; mira cómo cambia el reflejo del triángulo.', minimo:2,
+  alListo:() => { jugado = true; ir(S.k); } });
 })();
 </script>
 
