@@ -150,6 +150,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 .stepper{display:flex; flex-wrap:wrap; gap:8px}
 .stepper > div{display:inline-flex; align-items:center; gap:6px; background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:4px 6px 4px 12px}
@@ -232,6 +233,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'mezclas', unidad: 'aritmetica.mezclas-y-aleaciones', version: '0.1.0' };
@@ -913,6 +915,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: el paso 1 ya es un explorador; antes de leerlo, el alumno arrastra el apoyo de la balanza (o usa las flechas).
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el triángulo de apoyo y mira hacia dónde se inclina la barra.', minimo:2 });
 })();
 </script>
 <script>
@@ -1061,6 +1066,21 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con dos sacos que no salen en ninguna pregunta (15 kg en S/ 3
+// y 5 kg en S/ 7) y el apoyo que se arrastra; con teclado, las flechas.
+E.compactar(false);
+(() => {
+  const L = [{ cantidad:15, valor:3 }, { cantidad:5, valor:7 }], EST = { 'equilibrio':'derecha', 'casi':'casi derecha', 'baja-izquierda':'baja a la izquierda', 'baja-derecha':'baja a la derecha' };
+  let apoyo = 5;
+  const B = () => M.balanza(L, apoyo, 0.1);
+  const st = () => ({ unidad:'soles', desde:0, hasta:10, marcas:M.regla(0, 10, 1), cada:2, res:0.1, pesas:[pesa('A', 15, 3, 'kg'), pesa('B', 5, 7, 'kg')], cmax:40,
+    apoyo, apoyoQ:null, equilibrio:B().estado === 'equilibrio', manija:true, alMover:v => { if (E.anim) return; apoyo = v; Object.assign(E.st, st()); E.dibujar(); E.avisar(); } });
+  E.config({ modo:'balanza', st:st(), ley:[['A', 'saco A'], ['B', 'saco B'], ['ink', 'apoyo'], ['pm', 'apoyo con la barra derecha'], ['muted', 'regla: S/ por kilo']],
+    lect:[() => ['ink', 'apoyo', M.soles(apoyo)], () => [B().estado === 'equilibrio' ? 'pm' : 'ink', 'la barra', EST[B().estado]]],
+    desc:() => `Saco A: 15 kg en ${M.soles(3)}. Saco B: 5 kg en ${M.soles(7)}. Apoyo en ${M.soles(apoyo)}: la barra ${EST[B().estado]}.` });
+})();
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el triángulo de apoyo antes de empezar los experimentos.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 

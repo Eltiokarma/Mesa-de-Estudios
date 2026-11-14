@@ -154,6 +154,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 .stepper{display:flex; flex-wrap:wrap; gap:8px}
 .stepper > div{display:inline-flex; align-items:center; gap:6px; background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:4px 6px 4px 12px}
@@ -234,6 +235,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'potenciacion', unidad: 'aritmetica.potenciacion-y-radicacion', version: '0.1.0' };
@@ -981,6 +983,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: el paso 1 ya es un explorador; antes de leerlo, el alumno arrastra la esquina del cuadrado (o usa las flechas).
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra la esquina naranja y mira cuántas fichas sobran o faltan.', minimo:2 });
 })();
 </script>
 <script>
@@ -1146,6 +1151,20 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con 40 fichas y la esquina del cuadrado que se arrastra
+// (con teclado, las flechas). No arma filas de impares ni capas: no adelanta ninguna respuesta.
+E.compactar(false);
+const libre = (N => { const kmax = Math.ceil(Math.sqrt(N)) + 3, g = rejilla(N, kmax);
+  const lado = k => { const L = M.layoutCuadrado(N, k);
+    return { L, fichas:L.fichas.map(f => (f.tipo === 'sobra' ? Object.assign({}, f, { tipo:'sobraX' }) : f)), huecos:L.huecos.map(h => Object.assign({}, h, { tipo:'faltaX' })) }; };
+  const desc = L => `${N} fichas y un cuadrado de lado ${L.k}: ` + (L.faltan ? `faltan ${L.faltan}.` : L.sobran ? `sobran ${L.sobran}.` : 'no sobra ni falta ninguna.');
+  const mover = k => { k = clamp(Math.round(k), 1, kmax); if (k === E.st.k) return; Object.assign(E.st, lado(k), { k }); E.desc = desc(E.st.L); E.dibujar(); E.avisar(); };
+  E.config({ modo:'cuadrado', st:Object.assign({ k:3, cols:g.cols, rows:g.rows, manija:true, alMover:mover }, lado(3)),
+    ley:[['N', 'fichas'], ['k', 'lado k'], ['muted', 'sobran o faltan']], desc:desc(M.layoutCuadrado(N, 3)),
+    lect:[() => ['N', 'fichas N', String(N)], () => ['k', 'lado k', String(E.st.k)], () => ['muted', E.st.L.faltan ? 'faltan' : 'sobran', String(E.st.L.faltan || E.st.L.sobran)]] });
+})(40);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra la esquina naranja antes de empezar los experimentos.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 

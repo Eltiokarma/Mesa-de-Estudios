@@ -143,6 +143,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible, input:focus-visible{out
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 .llaves{display:flex; flex-wrap:wrap; gap:6px}
 .llaves button{font:800 1rem var(--mono); min-width:44px; height:44px; padding:0 10px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer}
@@ -221,6 +222,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 /* Para el análisis de la medición: casi todos los distractores miden una idea ingenua previa. Estos miden RETENCIÓN de lo
@@ -908,6 +910,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: el paso 1 ya es un explorador; antes de leerlo, el alumno mueve las palancas (o usa las teclas p y q).
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Toca o arrastra las palancas p y q, y mira el foco.', minimo:2 });
 })();
 </script>
 <script>
@@ -1057,6 +1062,15 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con p y q en serie, sin tabla (no adelanta ninguna respuesta:
+// los experimentos preguntan por filas, el condicional, la o exclusiva y «todos»).
+E.compactar(false);
+const libre = { p:true, q:false }, FL = 'p ∧ q';
+E.config({ st:{ circuitos:[armar(FL)], valores:libre, interactivo:true }, ley:[['p', 'interruptor p'], ['q', 'interruptor q'], ...LEY_FOCO],
+  lect:[() => ['p', 'interruptor p', M.VF(libre.p)], () => ['q', 'interruptor q', M.VF(libre.q)], () => ['res', 'foco', M.VF(M.evaluar(FL, libre))]],
+  desc:() => `Interruptor p en ${vfPalabra(libre.p)}, interruptor q en ${vfPalabra(libre.q)}. El foco de ${M.leer(FL)} está ${M.evaluar(FL, libre) ? 'encendido' : 'apagado'}.` });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Toca o arrastra las palancas antes de empezar los experimentos.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 
