@@ -138,6 +138,7 @@ b.v-I{color:var(--c-I)} b.v-V{color:var(--c-V)} b.v-R{color:var(--c-R)} b.v-P{co
 .slider output{font-family:var(--mono); color:var(--muted)}
 input[type=range]{width:100%; accent-color:var(--ink); min-height:28px}
 input.r-R{accent-color:var(--c-R)}
+input.r-V{accent-color:var(--c-V)}
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
 .seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
@@ -302,6 +303,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'circuitos-cc', unidad: 'fisica.corriente-y-circuitos', version: '0.2.0' };
@@ -912,6 +914,50 @@ LAY.pilas = modo => {
 };
 LAY.pilasDe = { una: LAY.pilas('una'), serie: LAY.pilas('serie'), oposicion: LAY.pilas('oposicion'), paralelo: LAY.pilas('paralelo') };
 
+/* ---------- Jugar antes de preguntar (regla 3, decisión 20 de Gerson, 14 nov 2026) ----------
+   Antes de la primera pregunta del paso a paso y del «¿qué pasa si…?», el alumno juega con una pila, una bombilla
+   y un interruptor: lo abre y lo cierra (tocándolo en el dibujo o con el botón) y cambia el voltaje de la pila.
+   No es ningún circuito que después se pregunte (ni el mixto de B1, B2 y B3, ni las pilas dobles, ni el corto). */
+LAY.juego = { w:8.6, h:6.2, ramas:{
+  P1:{ comp:'pila', path:[[1.5,5.3],[1.5,1.2]], et:'izq' },
+  B:{ comp:'bombilla', nombre:'B', path:[[1.5,1.2],[6.9,1.2]], et:'aba', etI:'arr' },
+  k:{ comp:'interruptor', nombre:'interruptor', path:[[6.9,1.2],[6.9,5.3],[1.5,5.3]], en:0, et:'izq', etI:false } } };
+function juegoPila(modo, esc, desc){
+  const J = { activo:true, fem:3, k:false };
+  const caja = document.createElement('div');
+  caja.className = 'ctrls'; caja.setAttribute('data-jugar', '');
+  caja.innerHTML = `<div class="toggles"><button type="button" class="tog" aria-pressed="false"><span class="sw" aria-hidden="true"></span>Interruptor cerrado</button></div>
+    <div class="slider"><label><span>${vr('V','Voltaje')} de la pila</span><output></output></label>
+    <input class="r-V" type="range" min="0" max="9" step="1.5" value="${J.fem}" aria-label="Voltaje de la pila"></div>`;
+  const bench = modo.querySelector('.bench');
+  bench.insertBefore(caja, bench.querySelector('.legend'));
+  const tog = caja.querySelector('.tog'), rango = caja.querySelector('input'), sal = caja.querySelector('output');
+  const pintar = () => {
+    const c = { tierra:'n', ramas:[{ id:'P1', tipo:'pila', a:'n', b:'p', fem:J.fem }, { id:'B', tipo:'resistencia', a:'p', b:'m', R:12 },
+      { id:'k', tipo:'interruptor', a:'m', b:'n', cerrado:J.k }] };
+    const sol = MotorCircuito.resolver(c);
+    esc.set([{ layout:LAY.juego, circuito:c, sol, encendido:true, mostrar:{ I:true, P:true }, Pref:3, iRef:0.5 }], 'plano');
+    tog.setAttribute('aria-pressed', String(J.k));
+    sal.textContent = `${fmt(J.fem, 1)} V`;
+    desc.textContent = `Pila de ${fmt(J.fem, 1)} V, una bombilla de 12 Ω y un interruptor ${J.k ? 'cerrado' : 'abierto'}: `
+      + (sol.ramas.B.I > 0 ? `pasan ${fmt(sol.ramas.B.I)} A y la bombilla da ${fmt(sol.ramas.B.P)} W.` : 'no pasa corriente y la bombilla está apagada.');
+  };
+  const alternar = () => { J.k = !J.k; pintar(); };
+  tog.onclick = alternar;
+  rango.oninput = () => { J.fem = +rango.value; pintar(); };
+  return {
+    activo: () => J.activo,
+    pintar,
+    tocable: id => J.activo && id === 'k',
+    tocar: id => { if (J.activo && id === 'k') alternar(); },
+    montar: alListo => JugarPrimero.montar({
+      escena: bench, preguntas: [modo.querySelector('.guide')], minimo: 2,
+      consigna: 'Abre y cierra el interruptor y cambia la pila: mira la bombilla.',
+      alListo: () => { J.activo = false; caja.remove(); alListo(); },
+    }),
+  };
+}
+
 // Texto para lectores de pantalla y para quien no ve bien el dibujo.
 function estadoTexto(sol, nombres, encendido){
   if (sol.corto) return 'Cortocircuito: la pila queda unida por un cable sin resistencia. Las bombillas no reciben corriente y la pila se calienta.';
@@ -933,11 +979,14 @@ const $ = id => document.getElementById(id);
 const S = { step:0, max:0, pred1:null, pred2:null, b:{ b1:true, b2:true, b3:true }, Rv:0, vista:'plano', encendido:false, conRv:false,
   mostrar:{ I:false, P:false, R:true, V:false }, t0:Date.now() };
 const esc = crearEscena($('cv'), {
-  alTocar: id => { if (steps[S.step].explora && /^B[123]$/.test(id)) alternar(id.toLowerCase()); },
-  puedeTocar: id => steps[S.step].explora && /^B[123]$/.test(id),
+  alTocar: id => { if (juego.activo()) return juego.tocar(id); if (steps[S.step].explora && /^B[123]$/.test(id)) alternar(id.toLowerCase()); },
+  puedeTocar: id => juego.activo() ? juego.tocable(id) : steps[S.step].explora && /^B[123]$/.test(id),
 });
+// Regla 3: primero se juega con una pila, una bombilla y un interruptor; recién después aparece el problema.
+const juego = juegoPila($('m1'), esc, $('desc1'));
 const circuito = () => MotorCircuito.mixto({ fem:6, R1:12, R2:12, R3:12, Rv:S.Rv, b1:S.b.b1, b2:S.b.b2, b3:S.b.b3 });
 function pintar(){
+  if (juego.activo()){ juego.pintar(); return MotorCircuito.resolver(circuito()); }
   const c = circuito(), sol = MotorCircuito.resolver(c);
   esc.set([{ layout: S.conRv ? LAY.mixto1 : LAY.mixto0, circuito:c, sol, encendido:S.encendido, mostrar:S.mostrar, Pref:3, iRef:1/3, vEscala:6 }], S.vista);
   c.ramas.forEach(r => { if (r.abierta) sol.ramas[r.id].abierta = true; });
@@ -1157,6 +1206,7 @@ document.addEventListener('focusin', e => { const t = e.target.closest && e.targ
 document.addEventListener('focusout', e => { if (e.target.closest && e.target.closest('#m1 [data-var]')) marcar(null); });
 
 go(0);
+juego.montar(() => go(0));
 })();
 </script>
 
@@ -1170,9 +1220,11 @@ const M = MotorCircuito;
 const E = {};      // estado del experimento en curso
 const S = { k:0, pred:{}, t0:Date.now() };
 const esc = crearEscena($('cv2'), {
-  alTocar: id => { const x = EXPS[S.k]; if (S.pred[x.id] && x.tocar) { x.tocar(id); actualizar(); } },
-  puedeTocar: id => { const x = EXPS[S.k]; return !!(S.pred[x.id] && x.tocar && x.tocable && x.tocable(id)); },
+  alTocar: id => { if (juego.activo()) return juego.tocar(id); const x = EXPS[S.k]; if (S.pred[x.id] && x.tocar) { x.tocar(id); actualizar(); } },
+  puedeTocar: id => { if (juego.activo()) return juego.tocable(id); const x = EXPS[S.k]; return !!(S.pred[x.id] && x.tocar && x.tocable && x.tocable(id)); },
 });
+// Regla 3: antes del primer experimento se juega con la pila, la bombilla y el interruptor (se pide una vez por modo).
+const juego = juegoPila($('m2'), esc, $('desc2'));
 const panel = (layout, circuito, extra) => Object.assign({ layout, circuito, sol: M.resolver(circuito), encendido:true, mostrar:{ I:true, P:true }, Pref:3, iRef:0.5 }, extra);
 
 const EXPS = [
@@ -1324,6 +1376,7 @@ function segModo(){
 function sincronizarTogs(){ document.querySelectorAll('#res2 [data-sw]').forEach(b => b.setAttribute('aria-pressed', String(!!E[b.dataset.sw]))); }
 
 function actualizar(){
+  if (juego.activo()) return juego.pintar();
   const x = EXPS[S.k], resp = S.pred[x.id];
   const ps = x.paneles(resp);
   esc.set(ps, 'plano');
@@ -1389,6 +1442,7 @@ function ir(k){
 }
 
 botones(); ir(0);
+juego.montar(() => actualizar());
 })();
 </script>
 
@@ -1914,7 +1968,7 @@ function conectar8(){
 }
 
 const steps = [
-  { k:'Paso 1', t:'Dos medidores', est:{ col:{} }, perm:{},
+  { k:'Paso 1', t:'Dos medidores', est:{ col:{} }, perm:{ V:['G-p', 'pila-p'] },
     body:() => `<p class="problem">El circuito del paso a paso: una pila ideal de ${w('V','ε = 6 V')}; la bombilla B1 en serie con B2 y B3, que están en paralelo; las tres de ${w('R','R = 12 Ω')}.</p>
       <p>Debajo del circuito hay dos medidores. El <b>amperímetro</b> (Ⓐ) mide ${w('I','corriente')}, en amperios. El <b>voltímetro</b> (Ⓥ) mide ${w('V','voltaje')}, en voltios. Hasta el paso 7 los dos son <b>ideales</b>.</p>
       <div class="tabla-wrap"><table class="tabla"><thead><tr><th>Sin medidores</th><th>I</th><th>V</th></tr></thead><tbody>
@@ -2031,6 +2085,10 @@ $('prev3').addEventListener('click', () => { go(S.step - 1); $('stepT3').focus({
 // Si se cambia de pestaña a mitad de un arrastre o de una animación, se termina: nada queda trabado.
 addEventListener('modo', () => { if ($('m3').hidden){ if (S.drag && S.drag.movido){ S.col[S.drag.id] = S.drag.origen; } S.drag = null; S.teclado = null; S.tomado = null; terminarTween(); botones(); } });
 go(0);
+// Regla 3: antes de la primera predicción se juega con el voltímetro sobre el circuito (paso 1: en paralelo con la pila
+// o con B2 y B3, puestos que ninguna predicción pregunta). Al seguir, el paso 1 vuelve a empezar sin medidores.
+JugarPrimero.montar({ escena: $('m3').querySelector('.bench'), preguntas: [$('m3').querySelector('.guide')], minimo: 2,
+  consigna: 'Arrastra el voltímetro sobre el circuito y mira qué marca.', alListo: () => go(0) });
 })();
 </script>
 
