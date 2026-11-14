@@ -3864,7 +3864,15 @@
       "orden-informacion",
       "rm-deduccion",
       "rm-certezas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/certezas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-fichas.js",
+       "/nucleo/kit/piezas/rm-tablero.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-matematico.frecuencia-de-sucesos",
