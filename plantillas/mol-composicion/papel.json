@@ -54,6 +54,36 @@
             "gramos": 88
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Se tienen 1,204 × 10²⁴ moléculas de dióxido de carbono (CO₂). Usa C = 12, O = 16 y Nₐ = 6,02 × 10²³.",
+          "pregunta": "¿Cuántos gramos pesan?",
+          "unidad": "g",
+          "decimales": 2,
+          "correcta": { "fn": "moles", "args": ["CO2", { "moleculas": 1.204e+24 }], "campo": "gramos", "valor": 88 },
+          "errores": [
+            {
+              "id": "ES18-sin-subindice",
+              "respaldo": "documentado",
+              "explicacion": "Sumaste un solo O: 12 + 16 = 28. El O lleva subíndice 2: 12 + 2 · 16 = 44 g/mol.",
+              "fn": "moles",
+              "args": [28, { "moleculas": 1.204e+24 }],
+              "campo": "gramos",
+              "valor": 56
+            },
+            {
+              "id": "ES7-formula-invertida",
+              "respaldo": "documentado",
+              "explicacion": "Dividiste la masa molar entre los moles. La masa es moles por masa molar: m = n · M = 2 · 44.",
+              "fn": "moles",
+              "args": ["CO2", { "moleculas": 1.204e+24 }],
+              "campo": "masaInvertida",
+              "valor": 22
+            }
+          ]
+        }
       ]
     },
     {
@@ -86,6 +116,36 @@
             "simple": 10.5
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "El boro natural tiene 20 % de boro-10 (masa 10 u) y 80 % de boro-11 (masa 11 u).",
+          "pregunta": "¿Cuál es su masa atómica promedio?",
+          "unidad": "u",
+          "decimales": 2,
+          "correcta": { "fn": "promedio", "args": [[{ "masa": 10, "abundancia": 20 }, { "masa": 11, "abundancia": 80 }]], "campo": "ponderado", "valor": 10.8 },
+          "errores": [
+            {
+              "id": "AT4-promedio-simple",
+              "respaldo": "parcial",
+              "explicacion": "Sacaste el promedio simple. Hay muchos más átomos de boro-11: cada masa se pesa con su abundancia, 10 · 0,2 + 11 · 0,8.",
+              "fn": "promedio",
+              "args": [[{ "masa": 10, "abundancia": 20 }, { "masa": 11, "abundancia": 80 }]],
+              "campo": "simple",
+              "valor": 10.5
+            },
+            {
+              "id": "AT4-abundancias-cruzadas",
+              "respaldo": "hipotesis",
+              "explicacion": "Cruzaste las abundancias. El 80 % es del boro-11: el promedio queda más cerca de 11.",
+              "fn": "promedio",
+              "args": [[{ "masa": 10, "abundancia": 80 }, { "masa": 11, "abundancia": 20 }]],
+              "campo": "ponderado",
+              "valor": 10.2
+            }
+          ]
+        }
       ]
     },
     {
@@ -108,6 +168,40 @@
             "M": 80,
             "porcentajes.N": 35
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "El nitrato de amonio tiene la fórmula NH₄NO₃. Usa N = 14, H = 1 y O = 16.",
+          "pregunta": "¿Qué porcentaje en masa de nitrógeno tiene?",
+          "unidad": "%",
+          "decimales": 2,
+          "correcta": { "fn": "composicion", "args": ["NH4NO3"], "campo": "porcentajes.N", "valor": 35 },
+          "errores": [
+            {
+              "id": "ES18-un-solo-N",
+              "respaldo": "parcial",
+              "explicacion": "Contaste un solo N arriba. La fórmula tiene dos, uno en NH₄ y otro en NO₃: 28/80.",
+              "fn": "composicion",
+              "args": [
+                "NH4NO3"
+              ],
+              "campo": "unAtomo.N",
+              "valor": 17.5
+            },
+            {
+              "id": "ES18-sin-subindices",
+              "respaldo": "documentado",
+              "explicacion": "Sumaste cada elemento una vez: 14 + 1 + 16 = 31. Cada masa va por su subíndice: la masa molar es 80 g/mol.",
+              "fn": "composicion",
+              "args": [
+                "NH4NO3"
+              ],
+              "campo": "sinSubindices.N",
+              "valor": 45.1612903226
+            }
+          ]
         }
       ]
     },
@@ -141,6 +235,36 @@
           "espera": {
             "porcentajes.Fe": 70
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Se tienen 80 g de óxido férrico (Fe₂O₃). Usa Fe = 56 y O = 16.",
+          "pregunta": "¿Cuántos gramos de hierro se pueden obtener?",
+          "unidad": "g",
+          "decimales": 2,
+          "correcta": { "fn": "masasElementos", "args": ["Fe2O3", 80], "campo": "Fe", "valor": 56 },
+          "errores": [
+            {
+              "id": "ES18-sin-subindices",
+              "respaldo": "documentado",
+              "explicacion": "Sumaste 56 + 16 = 72, sin subíndices. En Fe₂O₃ hay 112 g de Fe en 160 g: el hierro es el 70 %.",
+              "fn": "masasElementos",
+              "args": ["FeO", 80],
+              "campo": "Fe",
+              "valor": 62.2222222222
+            },
+            {
+              "id": "ES-otro-elemento",
+              "respaldo": "hipotesis",
+              "explicacion": "Esa es la masa del oxígeno. El hierro es 112 de cada 160 g: 0,7 · 80.",
+              "fn": "masasElementos",
+              "args": ["Fe2O3", 80],
+              "campo": "O",
+              "valor": 24
+            }
+          ]
         }
       ]
     },
@@ -179,6 +303,35 @@
             "formula": "C2H6",
             "k": 2
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Un hidrocarburo tiene 80 % de carbono y 20 % de hidrógeno en masa. Su masa molar es 30 g/mol. Usa C = 12 y H = 1.",
+          "pregunta": "¿Cuál es su fórmula empírica?",
+          "decimales": 2,
+          "correcta": { "fn": "empirica", "args": [{ "C": 80, "H": 20 }], "campo": "formula", "valor": "CH3" },
+          "errores": [
+            {
+              "id": "ES16-razon-de-masas",
+              "respaldo": "documentado",
+              "explicacion": "Comparaste gramos: 80 a 20 es 4 a 1. Un C pesa 12 veces más que un H; en moles, 6,67 a 20 es 1 a 3.",
+              "fn": "empirica",
+              "args": [{ "C": 80, "H": 20 }],
+              "campo": "porMasas",
+              "valor": "C4H"
+            },
+            {
+              "id": "ES-molecular-por-empirica",
+              "respaldo": "hipotesis",
+              "explicacion": "Esa es la fórmula molecular. La empírica es la proporción más simple de átomos: C₂H₆ se simplifica a CH₃.",
+              "fn": "molecular",
+              "args": ["CH3", 30],
+              "campo": "formula",
+              "valor": "C2H6"
+            }
+          ]
         }
       ]
     },
@@ -233,6 +386,35 @@
             "redondeando": "FeO"
           }
         }
+      ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "Un óxido de hierro tiene 72,4 % de hierro y 27,6 % de oxígeno en masa. Usa Fe = 56 y O = 16.",
+          "pregunta": "¿Cuál es su fórmula empírica?",
+          "decimales": 2,
+          "correcta": { "fn": "empirica", "args": [{ "Fe": 72.4, "O": 27.6 }], "campo": "formula", "valor": "Fe3O4" },
+          "errores": [
+            {
+              "id": "ES16-redondear-sin-multiplicar",
+              "respaldo": "parcial",
+              "explicacion": "Redondeaste 1,33 a 1. Si sale 1,33, multiplica todo por 3: Fe = 3 y O = 4.",
+              "fn": "empirica",
+              "args": [{ "Fe": 72.4, "O": 27.6 }],
+              "campo": "redondeando",
+              "valor": "FeO"
+            },
+            {
+              "id": "ES16-razon-de-masas",
+              "respaldo": "documentado",
+              "explicacion": "Comparaste gramos: 72,4/27,6 ≈ 2,6, y lo redondeaste a 3. Primero pasa cada masa a moles: 1,293 de Fe y 1,725 de O.",
+              "fn": "empirica",
+              "args": [{ "Fe": 72.4, "O": 27.6 }],
+              "campo": "porMasas",
+              "valor": "Fe3O"
+            }
+          ]
+        }
       ]
     },
     {
@@ -266,6 +448,35 @@
           "espera": {
             "valor": 208
           }
+        }
+      ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "Se calientan 2,44 g de cloruro de bario hidratado (BaCl₂·xH₂O) hasta que pierde toda el agua. Quedan 2,08 g de BaCl₂ anhidro. Usa Ba = 137, Cl = 35,5, H = 1 y O = 16.",
+          "pregunta": "¿Cuánto vale x?",
+          "decimales": 2,
+          "correcta": { "fn": "hidrato", "args": ["BaCl2", 2.08, 0.36], "campo": "x", "valor": 2 },
+          "errores": [
+            {
+              "id": "ES16-razon-de-masas",
+              "respaldo": "documentado",
+              "explicacion": "Dividiste gramos: 0,36/2,08. x cuenta moléculas: compara moles, 0,02 de agua por 0,01 de BaCl₂.",
+              "fn": "hidrato",
+              "args": ["BaCl2", 2.08, 0.36],
+              "campo": "porMasas",
+              "valor": 0.173076923077
+            },
+            {
+              "id": "ES18-sin-subindice",
+              "respaldo": "documentado",
+              "explicacion": "Sumaste un solo Cl: 137 + 35,5. El BaCl₂ tiene dos: 208 g/mol, y hay 0,01 mol.",
+              "fn": "hidrato",
+              "args": [172.5, 2.08, 0.36],
+              "campo": "x",
+              "valor": 1.65865384615
+            }
+          ]
         }
       ]
     },

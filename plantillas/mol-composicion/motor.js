@@ -69,7 +69,7 @@
   const M = f => (typeof f === 'number' ? positivo(f, 'masa molar') : masaMolar(f).valor);
 
   // Moles desde gramos (o desde moléculas, o desde litros de gas en condiciones normales). Devuelve moles,
-  // moléculas, átomos y gramos, y el error de invertir la fórmula (M/m en vez de m/M, ES7).
+  // moléculas, átomos y gramos, y el error de invertir la fórmula (M/m en vez de m/M, ES7; y m = M/n en masaInvertida).
   function moles(formula, o) {
     const Mm = M(formula);
     let n;
@@ -80,7 +80,7 @@
     else throw new Error('da gramos, moléculas, litrosCN o moles');
     const at = typeof formula === 'number' ? null : totalAtomos(formula);
     return { n, gramos: n * Mm, moleculas: n * NA, atomos: at === null ? null : n * NA * at, atomosPorMolecula: at,
-      invertido: o.gramos !== undefined ? Mm / o.gramos : null, M: Mm };
+      invertido: o.gramos !== undefined ? Mm / o.gramos : null, masaInvertida: Mm / n, M: Mm };
   }
   // Volumen de una muestra. Gas en condiciones normales: n·22,4 L. Líquido o sólido: masa/densidad (g/mL), que no
   // tiene nada que ver con 22,4 L. Devuelve también el error de usar 22,4 L/mol para todo (ES5).
@@ -106,16 +106,20 @@
     if (!Array.isArray(isotopos) || !isotopos.length) throw new Error('hace falta al menos un isótopo');
     const suma = isotopos.reduce((s, x) => s + positivo(x.abundancia, 'abundancia'), 0);
     if (Math.abs(suma - 100) > 1e-9) throw new Error(`las abundancias suman ${suma} %, no 100 %`);
-    return { valor: isotopos.reduce((s, x) => s + positivo(x.masa, 'masa') * x.abundancia / 100, 0),
-      simple: isotopos.reduce((s, x) => s + x.masa, 0) / isotopos.length };
+    const valor = isotopos.reduce((s, x) => s + positivo(x.masa, 'masa') * x.abundancia / 100, 0);
+    // «ponderado» repite «valor» con otro nombre: nucleo/papel-opciones.js lee el campo «valor» como el resultado entero.
+    return { valor, ponderado: valor, simple: isotopos.reduce((s, x) => s + x.masa, 0) / isotopos.length };
   }
 
   // Composición centesimal: % de cada elemento = masa del elemento en la fórmula / M · 100.
-  // Error: porcentajes con las masas atómicas sin subíndices (ES18).
+  // Errores: porcentajes con las masas atómicas sin subíndices (ES18), y unAtomo: un solo átomo del elemento arriba con
+  // la masa molar bien hecha abajo (en NH₄NO₃, 14/80 en vez de 28/80).
   function composicion(formula) {
-    const r = masaMolar(formula), pct = {}, sinSub = {};
-    for (const [e, n] of Object.entries(r.atomos)) { pct[e] = MASAS[e] * n / r.valor * 100; sinSub[e] = MASAS[e] / r.sinSubindices * 100; }
-    return { M: r.valor, porcentajes: pct, sinSubindices: sinSub };
+    const r = masaMolar(formula), pct = {}, sinSub = {}, unAtomo = {};
+    for (const [e, n] of Object.entries(r.atomos)) {
+      pct[e] = MASAS[e] * n / r.valor * 100; sinSub[e] = MASAS[e] / r.sinSubindices * 100; unAtomo[e] = MASAS[e] / r.valor * 100;
+    }
+    return { M: r.valor, porcentajes: pct, sinSubindices: sinSub, unAtomo };
   }
   // Ley de Proust: en m gramos del compuesto, cuántos gramos hay de cada elemento (siempre en la misma proporción).
   function masasElementos(formula, gramos) {

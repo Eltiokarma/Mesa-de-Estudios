@@ -3,7 +3,7 @@
   "unidades": "g, mol, g/mol, u, %, L, mL",
   "constantes": "Masas atómicas de academia: H = 1, C = 12, N = 14, O = 16, Na = 23, Mg = 24, Al = 27, S = 32, Cl = 35,5, K = 39, Ca = 40, Fe = 56, Cu = 63,5, Ba = 137. Nₐ = 6,02 × 10²³. 22,4 L/mol para gases en condiciones normales.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (porcentajes.O); un número suelto, como 'valor'. Las fórmulas se comparan como texto.",
-  "verificacion": "Recalculados el 6 de noviembre de 2026 por un subagente que no leyó el motor ni este archivo, en Python con fractions.Fraction y las masas atómicas como fracciones exactas (Cl = 71/2, Cu = 127/2): la composición como masa de cada elemento en 100 g y cada fórmula empírica comprobada de vuelta contra sus porcentajes. Son los 'Casos de prueba propuestos' de mol y composición de docs/investigacion/estequiometria-ideas-erroneas.md, más hidratos, paréntesis, volumen y moléculas. El caso del volumen del agua líquida (densidad 1 g/mL) lo agregó la plantilla.",
+  "verificacion": "Recalculados el 6 de noviembre de 2026 por un subagente que no leyó el motor ni este archivo, en Python con fractions.Fraction y las masas atómicas como fracciones exactas (Cl = 71/2, Cu = 127/2): la composición como masa de cada elemento en 100 g y cada fórmula empírica comprobada de vuelta contra sus porcentajes. Son los 'Casos de prueba propuestos' de mol y composición de docs/investigacion/estequiometria-ideas-erroneas.md, más hidratos, paréntesis, volumen y moléculas. El caso del volumen del agua líquida (densidad 1 g/mL) lo agregó la plantilla. Los cuatro últimos (masaInvertida, unAtomo y ponderado, errores de las alternativas del papel) se agregaron el 14 de noviembre de 2026 y los recalculó a mano un subagente que no leyó el motor.",
   "tolerancia": 1e-09,
   "casos": [
     {
@@ -298,6 +298,85 @@
           ],
           "espera": {
             "litros": 22.4
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "2 mol de CO₂ pesan 88 g; m = M/n (invertida) da 44/2 = 22 g (ES7)",
+      "fn": "moles",
+      "args": [
+        "CO2",
+        {
+          "moleculas": 1.204e+24
+        }
+      ],
+      "espera": {
+        "n": 2,
+        "gramos": 88,
+        "masaInvertida": 22
+      }
+    },
+    {
+      "nombre": "NH₄NO₃: 35 % de N con los dos N; con un solo N arriba, 14/80 = 17,5 %; sin subíndices, 14/31 ≈ 45,16 %",
+      "fn": "composicion",
+      "args": [
+        "NH4NO3"
+      ],
+      "espera": {
+        "M": 80,
+        "porcentajes.N": 35,
+        "unAtomo.N": 17.5,
+        "sinSubindices.N": 45.16129032258065
+      }
+    },
+    {
+      "nombre": "Fe₂O₃: un solo Fe arriba con M = 160 da 35 %; con los dos, 70 %",
+      "fn": "composicion",
+      "args": [
+        "Fe2O3"
+      ],
+      "espera": {
+        "porcentajes.Fe": 70,
+        "unAtomo.Fe": 35,
+        "unAtomo.O": 10
+      }
+    },
+    {
+      "nombre": "Boro: 20 % de B-10 y 80 % de B-11 dan 10,8 u (ponderado); el promedio simple da 10,5; con las abundancias cruzadas, 10,2",
+      "fn": "promedio",
+      "args": [
+        [
+          {
+            "masa": 10,
+            "abundancia": 20
+          },
+          {
+            "masa": 11,
+            "abundancia": 80
+          }
+        ]
+      ],
+      "espera": {
+        "ponderado": 10.8,
+        "simple": 10.5
+      },
+      "tambien": [
+        {
+          "args": [
+            [
+              {
+                "masa": 10,
+                "abundancia": 80
+              },
+              {
+                "masa": 11,
+                "abundancia": 20
+              }
+            ]
+          ],
+          "espera": {
+            "ponderado": 10.2
           }
         }
       ]
