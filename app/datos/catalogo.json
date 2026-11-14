@@ -1461,7 +1461,17 @@
      "plantillas": [
       "traductor-enunciados",
       "sistemas-ecuaciones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/ecuaciones-lineales-y-cuadraticas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/balanza.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/alg-tabla.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.inecuaciones",
