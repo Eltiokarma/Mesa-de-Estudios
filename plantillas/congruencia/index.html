@@ -219,6 +219,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'congruencia', unidad: 'geometria.congruencia', version: '0.1.0' };
@@ -918,6 +919,11 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if ($('next').disabled) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: el paso 1 ya pregunta. Antes, juego libre con el armador ALA (dos cuñas y el lado entre ellas),
+// sin la lectura de cuántos triángulos salen; las tres varillas del paso 1 no aparecen.
+configArmador(KITS2, 'ALA', 'juego'); E.lect = E.lect.filter((_, i) => i !== 1); E.alCambiar = null; E.compactar(false); E.avisar();
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Mueve la punta libre: busca dónde cierra el triángulo.', minimo:2, alListo:() => go(0) });
 })();
 </script>
 
@@ -1110,14 +1116,25 @@ function final(x){
   E.config({ vista:x.vista, pintar: x.dibFinal || (D => x.dib(D, 1)), ley:x.ley, mano: x.mano ? x.mano() : null, lect:x.lect || [],
     desc: x.descFin || `${x.corto}: el dibujo ya muestra la respuesta.` });
 }
+// Regla 3: antes del primer experimento, juego libre con el armador ALA (dos cuñas y el lado entre ellas).
+let jugado = false;
+const KJ = { A:60, c:8, B:45 }, RJ = MC.armador(KJ);
+let pJ = RJ.puntoInicio;
+const juegoLibre = () => E.config({ vista:{ x0:-1, x1:9, y0:-1, y1:9 },
+  mano:{ pos:() => MC.mover(KJ, pJ).punto, poner:P => { pJ = MC.mover(KJ, P).punto; }, teclado:sg => { pJ = MC.avanzar(KJ, pJ, sg); } },
+  pintar:D => { RJ.cierres.forEach(Q => D.anillo(Q, D.c.ink)); pintarArmador(D, KJ, MC.mover(KJ, pJ), { ladoRot:{ c:-1 } }); },
+  ley:[['ink', 'triángulo cerrado']],
+  lect:[() => ['ink', 'cierra', MC.mover(KJ, pJ).cierra ? 'sí' : 'no']],
+  desc:() => `Armador con dos cuñas y el lado entre ellas. ${MC.mover(KJ, pJ).cierra ? 'El triángulo está cerrado.' : 'Todavía no cierra.'}` });
 function ir(k){
   if (k < 0 || k >= EXPS.length || !abierto(k)) return;
   E.parar();
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k], ya = !!S.pred[x.id];
-  if (ya) final(x);
+  if (!jugado) juegoLibre();
+  else if (ya) final(x);
   else E.config({ vista:x.vista, pintar:D => x.dib(D, 0), ley:x.ley0 || x.ley, desc:x.desc });
-  E.compactar(!ya);
+  E.compactar(jugado && !ya);
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -1146,6 +1163,9 @@ function ir(k){
   pintar();
 }
 ir(0);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Mueve la punta libre: busca dónde cierra el triángulo.', minimo:2,
+  alListo:() => { jugado = true; ir(S.k); } });
 })();
 </script>
 
