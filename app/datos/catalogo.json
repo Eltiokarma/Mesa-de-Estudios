@@ -2123,7 +2123,15 @@
      "plantillas": [
       "mezclas",
       "porcentajes-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/mezclas-y-aleaciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/arit-tiras.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "aritmetica.estadistica",
