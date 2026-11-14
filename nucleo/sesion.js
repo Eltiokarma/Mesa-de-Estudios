@@ -159,8 +159,18 @@
         if (typeof FormData !== 'undefined' && cuerpo instanceof FormData) body = cuerpo;
         else { h['Content-Type'] = 'application/json'; body = JSON.stringify(cuerpo); }
       }
-      try { return await pedirRed(base + ruta, { method: metodo, headers: h, body }); } catch { throw new ErrorApi('sin-conexion', MENSAJES['sin-conexion']); }
+      try { return await pedirRed(base + ruta, { method: metodo, headers: h, body }); } catch {
+        // Un fallo de red en el primer intento suele ser una conexión que el servidor cerró justo antes de reusarla
+        // (keep-alive vencido con el celular lento o dormido). Se repite una vez, ya con una conexión nueva, pero
+        // solo donde repetir no hace daño: los eventos (el servidor no duplica alumno + t) y leer o guardar el estado.
+        // Login y renovación no se repiten: la renovación rota el token y repetirla puede cerrar la sesión.
+        if (repetible(metodo, ruta)) {
+          try { return await pedirRed(base + ruta, { method: metodo, headers: h, body }); } catch { /* sigue abajo */ }
+        }
+        throw new ErrorApi('sin-conexion', MENSAJES['sin-conexion']);
+      }
     }
+    const repetible = (metodo, ruta) => (metodo === 'POST' && ruta === '/api/eventos') || ruta === '/api/estado' || metodo === 'GET';
     async function errorDe(r) {
       let d = {}; try { d = await r.json(); } catch { /* sin cuerpo */ }
       const codigo = d.error || (r.status >= 500 ? 'servidor' : 'error-' + r.status);

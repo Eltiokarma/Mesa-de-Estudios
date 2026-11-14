@@ -31,6 +31,8 @@ async function montar({ ttlAcceso } = {}) {
   const alm = new Almacen();
   const red = { caida: false, cortarTras: Infinity, n: 0 };
   const fetchX = async (u, o) => {
+    // red.fallarUna(u, o): un solo fallo de red puntual (la conexión que el servidor cerró justo antes de reusarla).
+    if (red.fallarUna && red.fallarUna(u, o)) { red.fallarUna = null; red.fallos = (red.fallos || 0) + 1; throw new TypeError('Failed to fetch'); }
     if (red.caida) throw new TypeError('Failed to fetch');
     if (red.n++ >= red.cortarTras) { red.caida = true; throw new TypeError('Failed to fetch'); }
     return fetch(u, o);
@@ -342,4 +344,43 @@ test('unirEst: la cola de repaso se une por unidad (más hechos, después el úl
   const Repaso = require('./repaso.js');
   assert.deepEqual(u.repaso, Repaso.unir(s.repaso, c.repaso)); // la misma regla en los dos archivos
   assert.equal(Sesion.unirEst({}, {}).repaso, undefined);
+});
+
+test('un fallo de red puntual al subir eventos se repite una vez y no duplica (14 nov 2026)', async () => {
+  const m = await montar();
+  try {
+    await m.s.login('lmamani26', 'xyz789');
+    registrar(m.alm, 30);
+    m.red.fallarUna = u => u.endsWith('/api/eventos');
+    const r = await m.s.sincronizar();
+    assert.equal(m.red.fallos, 1, 'hubo un fallo de red');
+    assert.equal(r.ok, true); assert.equal(m.s.info().estado, 'guardado');
+    assert.equal(m.f.eventosDe('lmamani26').length, 30);
+    assert.equal(m.f.datos.pedidos.filter(p => p.ruta === '/api/eventos').length, 1, 'el primer intento no llegó; llegó solo el segundo');
+    // Lo mismo al guardar el estado.
+    m.red.fallarUna = (u, o) => u.endsWith('/api/estado') && o.method === 'PUT';
+    m.alm.setItem('lab-v1', JSON.stringify({ ...est(m.alm), vistas: { 'fisica.movimiento-rectilineo': '2026-12-01' } }));
+    const r2 = await m.s.sincronizar();
+    assert.equal(r2.ok, true);
+  } finally { await m.cerrar(); }
+});
+
+test('la renovación del token no se repite tras un fallo de red: rotarlo dos veces puede cerrar la sesión', async () => {
+  const m = await montar({ ttlAcceso: 1000 });
+  try {
+    await m.s.login('lmamani26', 'xyz789');
+    m.reloj.t += 60 * 1000;   // el token de acceso venció: el próximo pedido renueva antes
+    registrar(m.alm, 3);
+    const renov = () => m.f.datos.pedidos.filter(p => p.ruta === '/api/renovar').length;
+    const antes = renov();   // con un token de 1 s, el login ya renovó una vez
+    m.red.fallarUna = u => u.endsWith('/api/renovar');
+    const r = await m.s.sincronizar();
+    assert.equal(m.red.fallos, 1, 'hubo un fallo de red en la renovación');
+    assert.equal(r.ok, false); assert.equal(m.s.info().estado, 'sin-conexion');
+    assert.equal(renov(), antes, 'no se reintentó la renovación');
+    // El reintento programado sí renueva y sube todo.
+    await m.timers.timeouts.at(-1).fn();
+    await m.s.sincronizar();
+    assert.equal(m.f.eventosDe('lmamani26').length, 3);
+  } finally { await m.cerrar(); }
 });
