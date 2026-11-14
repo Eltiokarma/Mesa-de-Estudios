@@ -4986,7 +4986,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/definiciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 2
+     }
     },
     {
      "id": "razonamiento-verbal.analogias",
@@ -5009,7 +5016,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/analogias.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.sentido-contextual",
@@ -5039,7 +5053,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/sentido-contextual.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-verbal.conectores",
@@ -5060,7 +5081,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/conectores.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.eliminacion-de-oraciones",
@@ -5081,7 +5109,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/eliminacion-de-oraciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.plan-de-redaccion",
@@ -5103,7 +5138,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/plan-de-redaccion.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.cohesion-y-coherencia",
@@ -5133,7 +5175,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/cohesion-y-coherencia.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-verbal.tipologia-textual",
@@ -5163,7 +5212,14 @@
      "grado": 3,
      "plantillas": [
       "tipologia-textual"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/tipologia-textual.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.tema-e-idea-principal",
@@ -5192,7 +5248,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/tema-e-idea-principal.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.resumen-y-sintesis",
@@ -5219,7 +5282,14 @@
      "grado": 3,
      "plantillas": [
       "resumen-sintesis"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/resumen-y-sintesis.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.textos-discontinuos",
@@ -5248,7 +5318,15 @@
      "grado": 3,
      "plantillas": [
       "textos-discontinuos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/textos-discontinuos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js",
+       "/nucleo/kit/piezas/rv-barras.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.inferencias",
@@ -5276,7 +5354,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/inferencias.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.compatibilidad",
@@ -5302,7 +5387,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/compatibilidad.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 2
+     }
     },
     {
      "id": "razonamiento-verbal.extrapolacion",
@@ -5328,7 +5420,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/extrapolacion.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.textos-argumentativos-y-dialecticos",
@@ -5358,7 +5457,14 @@
      "plantillas": [
       "lectura-verbal",
       "textos-dialecticos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/textos-argumentativos-y-dialecticos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.texto-y-contexto",
@@ -5384,7 +5490,14 @@
      "grado": 3,
      "plantillas": [
       "texto-contexto"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/texto-y-contexto.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "razonamiento-verbal.textos-filosoficos-y-cientificos",
@@ -5404,7 +5517,14 @@
      "grado": 3,
      "plantillas": [
       "textos-filosoficos-cientificos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/textos-filosoficos-y-cientificos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 2
+     }
     },
     {
      "id": "razonamiento-verbal.lectura-en-ingles",
@@ -5428,7 +5548,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-ingles"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/lectura-en-ingles.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 3
+     }
     }
    ]
   }
