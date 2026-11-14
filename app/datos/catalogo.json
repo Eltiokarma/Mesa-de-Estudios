@@ -2250,7 +2250,15 @@
      "grado": 3,
      "plantillas": [
       "logica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/logica-proposicional.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.conjuntos",
@@ -2277,7 +2285,15 @@
      "plantillas": [
       "conjuntos",
       "porcentajes-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/conjuntos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-venn.js",
+       "/nucleo/kit/piezas/arit-tabla.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.razones-y-proporciones",
@@ -2306,7 +2322,15 @@
      "plantillas": [
       "regla-de-tres",
       "porcentajes-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/razones-y-proporciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tiras.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "aritmetica.magnitudes-proporcionales",
@@ -2336,7 +2360,15 @@
      "plantillas": [
       "regla-de-tres",
       "porcentajes-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/magnitudes-proporcionales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/arit-tiras.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "aritmetica.porcentajes",
@@ -2366,7 +2398,14 @@
      "plantillas": [
       "porcentajes-sucesivos",
       "porcentajes-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/porcentajes.js",
+      "requiere": [
+       "/nucleo/kit/piezas/barra-porcentaje.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.interes-y-descuento",
@@ -2396,7 +2435,15 @@
      "grado": 4,
      "plantillas": [
       "interes"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/interes-y-descuento.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tiras.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.mezclas-y-aleaciones",
@@ -2424,7 +2471,15 @@
      "plantillas": [
       "mezclas",
       "porcentajes-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/mezclas-y-aleaciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/arit-tiras.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "aritmetica.estadistica",
@@ -2457,7 +2512,16 @@
      "plantillas": [
       "fracciones",
       "estadistica-datos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/estadistica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "aritmetica.analisis-combinatorio",
@@ -2488,7 +2552,15 @@
      "plantillas": [
       "probabilidad-dados",
       "probabilidad-conteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/analisis-combinatorio.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/arit-fichas.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.probabilidades",
@@ -2520,7 +2592,15 @@
      "plantillas": [
       "probabilidad-dados",
       "probabilidad-conteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/probabilidades.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/arit-tiras.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.numeracion",
@@ -2549,7 +2629,15 @@
      "plantillas": [
       "numeracion",
       "numeros-sucesiones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/numeracion.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-fichas.js",
+       "/nucleo/kit/piezas/arit-tabla.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "aritmetica.cuatro-operaciones",
@@ -2581,7 +2669,17 @@
      "grado": 3,
      "plantillas": [
       "cuatro-operaciones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/cuatro-operaciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-fichas.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/arit-tiras.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "aritmetica.divisibilidad",
@@ -2611,7 +2709,15 @@
      "plantillas": [
       "divisores",
       "numeros-sucesiones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/divisibilidad.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-fichas.js",
+       "/nucleo/kit/piezas/arit-tabla.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.numeros-primos-y-divisores",
@@ -2643,7 +2749,15 @@
      "plantillas": [
       "divisores",
       "numeros-sucesiones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/numeros-primos-y-divisores.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-fichas.js",
+       "/nucleo/kit/piezas/arit-tabla.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "aritmetica.mcd-y-mcm",
@@ -2673,7 +2787,16 @@
      "plantillas": [
       "fracciones",
       "fracciones-problemas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/mcd-y-mcm.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tiras.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/arit-tabla.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.numeros-racionales",
@@ -2706,7 +2829,16 @@
      "plantillas": [
       "fracciones",
       "fracciones-problemas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/numeros-racionales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tiras.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/arit-tabla.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.potenciacion-y-radicacion",
@@ -2734,7 +2866,16 @@
      "plantillas": [
       "potenciacion",
       "numeros-sucesiones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/potenciacion-y-radicacion.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/arit-fichas.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "aritmetica.sucesiones-y-series",
@@ -2764,7 +2905,17 @@
       "sucesiones",
       "estadistica-datos",
       "numeros-sucesiones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/sucesiones-y-series.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-fichas.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/arit-tiras.js",
+       "/nucleo/kit/piezas/arit-tabla.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.razonamiento-numerico",
@@ -2789,7 +2940,16 @@
      "grado": 4,
      "plantillas": [
       "razonamiento-numerico"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/razonamiento-numerico.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-tiras.js",
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 6
+     }
     }
    ]
   },
