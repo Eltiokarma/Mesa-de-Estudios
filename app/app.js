@@ -1052,7 +1052,7 @@ const MODULOS = {
   // Exámenes de una unidad: lo que necesitan los generadores (después se carga el de cada práctica de la unidad).
   examen: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/convencion.js'],
   // Repaso de hoy: lo mismo que el examen más su pantalla (nucleo/repaso.js ya viene con el inicio).
-  repaso: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/convencion.js', '/nucleo/lectura.js', '/app/lectura.js', '/app/repaso.js'],
+  repaso: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/convencion.js', '/nucleo/lectura.js', '/nucleo/papel-opciones.js', '/app/lectura.js', '/app/repaso.js'],
 };
 const scripts = {};
 // async = false: se bajan en paralelo pero corren en el orden en que se insertan (azar antes que pruebas, etc.).

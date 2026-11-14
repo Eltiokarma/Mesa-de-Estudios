@@ -7,6 +7,8 @@
 //   papel      si la unidad no tiene generador: un problema de lápiz y papel de su escena (papel.json), distinto en
 //              cada visita. No trae alternativas: el alumno lo resuelve, ve la respuesta y marca «Me salió», «No me
 //              salió» o «No sé». Se guarda como autoevaluación, aparte del acierto medido (nucleo/medicion.js).
+//              Si el problema trae «preguntas» (nucleo/papel-opciones.js), cada magnitud es una entrada con
+//              alternativas calculadas por el motor: deja de ser autoevaluación y se mide el acierto.
 //   ejercicio  razonamiento verbal: un ejercicio suelto de la unidad (contenido/razonamiento-verbal/ejercicios/, con
 //              alternativas), distinto en cada visita. Sin el paso previo de la práctica: el repaso es corto.
 //   lectura    las 12 unidades verbales de lectura: un texto con una pregunta de esa unidad que el alumno no haya leído
@@ -86,11 +88,23 @@ async function vista(ctx) {
       let d = null;
       try { d = await cargarPapel(pl.papel); } catch { d = null; }
       if (!d || !Array.isArray(d.problemas)) continue;
-      for (const q of d.problemas) if (RepasoTipos.unidadesPapel(pl, q.id).includes(id)) pool.push({ pl, q, indicacion: d.indicacion || '' });
+      for (const q of d.problemas) {
+        if (!RepasoTipos.unidadesPapel(pl, q.id).includes(id)) continue;
+        // Con preguntas (paso 4, nucleo/papel-opciones.js): una entrada por magnitud, con alternativas.
+        if (window.PapelOpciones && PapelOpciones.tienePreguntas(q)) for (const pq of q.preguntas) pool.push({ pl, q, pq, indicacion: d.indicacion || '' });
+        else pool.push({ pl, q, indicacion: d.indicacion || '' });
+      }
     }
     if (!pool.length) return null;
-    const { pl, q, indicacion } = pool[(Number(ficha.hechos) || 0) % pool.length];
-    return { fuente: 'papel', plantilla: pl.id, problema: `${pl.id}/${q.id}`, indicacion,
+    const { pl, q, pq, indicacion } = pool[(Number(ficha.hechos) || 0) % pool.length];
+    if (pq) {
+      const alts = PapelOpciones.alternativas(pq, Azar.crear(`${R.semilla(est.alumno, id, ficha)}-${pq.id}`), Predicciones);
+      return { fuente: 'papel', plantilla: pl.id, problema: `${pl.id}/${q.id}/${pq.id}`, indicacion,
+        enunHTML: `<p class="enun">${esc(pq.enunciado || q.enunciado)}</p>`, preguntaHTML: esc(pq.pregunta),
+        alts: alts.map(a => ({ letra: a.letra, texto: a.texto, correcta: !!a.correcta, explicacion: a.error ? a.error.explicacion : '', error: a.error ? a.error.id : '', respaldo: a.error ? a.error.respaldo : '' })),
+        solucionHTML: `<p><b>Respuesta del problema completo:</b> ${esc(q.respuesta)}</p><ol class="sol">${(q.pasos || []).map(x => `<li>${esc(x)}</li>`).join('')}</ol>` };
+    }
+    return { fuente: 'papel', autoevaluacion: true, plantilla: pl.id, problema: `${pl.id}/${q.id}`, indicacion,
       enunHTML: `<p class="enun">${esc(q.enunciado)}</p>`,
       respuesta: q.respuesta, solucionHTML: `<ol class="sol">${(q.pasos || []).map(x => `<li>${esc(x)}</li>`).join('')}</ol>` };
   }
@@ -199,7 +213,7 @@ async function vista(ctx) {
         if (x.dataset.tipo === q.id) x.classList.add('ok'); else if (x === b) x.classList.add('mal');
       });
       $app.querySelector('#tipo').insertAdjacentHTML('beforeend', `<p class="rp-tipo-dice">${tipoBien ? 'Sí, es de' : 'Es de'} <b>${esc(q.u.nombre)}</b> (${esc(q.c.nombre)}).</p>`);
-      (q.fuente === 'papel' ? resolverPapel : resolver)();
+      (q.autoevaluacion ? resolverPapel : resolver)();
       $app.querySelector('#resolver').scrollIntoView({ behavior: suave(), block: 'nearest' });
     });
 
@@ -232,7 +246,7 @@ async function vista(ctx) {
           <b>${bien ? `¡Bien! Es la ${ok.letra}. Lo recuerdas.` : `La respuesta es la ${ok.letra}: ${esc(ok.texto)}${/[.!?…]$/.test(ok.texto) ? '' : '.'}`}</b>
           ${!bien && a && a.explicacion ? `<p>${esc(a.explicacion)}</p>` : ''}
           ${bien ? '' : '<p>Te lo vamos a preguntar otra vez en dos días.</p>'}</div>`;
-        $app.querySelector('#sol').innerHTML = `${!bien && q.solucionHTML ? `<details open><summary>${q.fuente === 'generador' ? 'Solución paso a paso' : 'Por qué'}</summary>${q.solucionHTML}</details>` : ''}
+        $app.querySelector('#sol').innerHTML = `${!bien && q.solucionHTML ? `<details open><summary>${q.fuente === 'generador' || q.fuente === 'papel' ? 'Solución paso a paso' : 'Por qué'}</summary>${q.solucionHTML}</details>` : ''}
           ${bien ? '' : volverUnidad}${botonSeguir}`;
         conectarSeguir();
         $app.querySelector('#retro').scrollIntoView({ behavior: suave(), block: 'start' });

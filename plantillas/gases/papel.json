@@ -17,6 +17,45 @@
         { "fn": "dalton", "args": [[{ "gas": "O2", "masa": 320 }], 1], "espera": { "nTotal": 10 } },
         { "fn": "kelvin", "args": [27], "espera": { "valor": 300 } },
         { "fn": "estado", "args": [{ "V": 41, "n": 10, "T": 300 }], "espera": { "P": 6 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "Un tanque de 41 L contiene 320 g de oxígeno (O₂) a 27 °C.",
+          "pregunta": "¿Qué presión tiene el gas dentro del tanque?",
+          "unidad": "atm",
+          "decimales": 2,
+          "correcta": { "fn": "estado", "args": [{ "V": 41, "n": 10, "T": 300 }], "campo": "P", "valor": 6 },
+          "errores": [
+            {
+              "id": "GQ13-masa-atomica",
+              "respaldo": "parcial",
+              "explicacion": "Usaste 16 g/mol, la masa de un átomo. El O₂ tiene dos: 32 g/mol, y salen 10 mol, no 20.",
+              "fn": "estado",
+              "args": [{ "V": 41, "n": 20, "T": 300 }],
+              "campo": "P",
+              "valor": 12
+            },
+            {
+              "id": "QU3-celsius",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 27 °C. En PV = nRT la temperatura va en kelvin: 27 + 273 = 300 K.",
+              "fn": "estado",
+              "args": [{ "V": 41, "n": 10, "T": 27 }],
+              "campo": "P",
+              "valor": 0.54
+            },
+            {
+              "id": "QU3-celsius-y-masa-atomica",
+              "respaldo": "hipotesis",
+              "explicacion": "Dos tropiezos: 16 g/mol en lugar de 32 y la temperatura en °C en lugar de kelvin.",
+              "fn": "estado",
+              "args": [{ "V": 41, "n": 20, "T": 27 }],
+              "campo": "P",
+              "valor": 1.08
+            }
+          ]
+        }
       ]
     },
     {
@@ -32,6 +71,36 @@
       ],
       "verificar": [
         { "fn": "cambio", "args": [{ "P": 1, "V": 6.3 }, { "P": 0.63 }, "V"], "espera": { "V": 10 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "En Lima, a nivel del mar (1 atm), se cierra un globo con 6,3 L de helio. Se lleva a Puno, donde la presión atmosférica es de 0,63 atm. La temperatura del gas es la misma en las dos ciudades.",
+          "pregunta": "¿Qué volumen tendría el globo en Puno?",
+          "unidad": "L",
+          "decimales": 2,
+          "correcta": { "fn": "cambio", "args": [{ "P": 1, "V": 6.3 }, { "P": 0.63 }, "V"], "campo": "V", "valor": 10 },
+          "errores": [
+            {
+              "id": "GQ-boyle-al-reves",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste por la razón de presiones al revés. Afuera hay menos presión: el globo crece, no se achica.",
+              "fn": "cambio",
+              "args": [{ "P": 0.63, "V": 6.3 }, { "P": 1 }, "V"],
+              "campo": "V",
+              "valor": 3.969
+            },
+            {
+              "id": "GQ-volumen-fijo",
+              "respaldo": "hipotesis",
+              "explicacion": "El globo no guarda su volumen: con menos presión afuera, el gas se expande hasta igualarla (Boyle).",
+              "fn": "cambio",
+              "args": [{ "P": 1, "V": 6.3 }, { "P": 1 }, "V"],
+              "campo": "V",
+              "valor": 6.3
+            }
+          ]
+        }
       ]
     },
     {
@@ -48,6 +117,36 @@
       "verificar": [
         { "fn": "kelvin", "args": [177], "espera": { "valor": 450 } },
         { "fn": "cambio", "args": [{ "P": 1, "V": 4, "T": 300 }, { "T": 450 }, "V"], "espera": { "V": 6, "P": 1 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Un cilindro con un émbolo que se mueve libremente contiene 4 L de aire a 27 °C. Se calienta el cilindro hasta 177 °C.",
+          "pregunta": "¿Cuál es el volumen final del aire?",
+          "unidad": "L",
+          "decimales": 2,
+          "correcta": { "fn": "cambio", "args": [{ "P": 1, "V": 4, "T": 300 }, { "T": 450 }, "V"], "campo": "V", "valor": 6 },
+          "errores": [
+            {
+              "id": "QU3-celsius",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste °C: 4 · 177/27. Con kelvin, la temperatura solo sube de 300 a 450 K.",
+              "fn": "cambio",
+              "args": [{ "P": 1, "V": 4, "T": 27 }, { "T": 177 }, "V"],
+              "campo": "V",
+              "valor": 26.2222222222
+            },
+            {
+              "id": "GQ20-sube-la-presion",
+              "respaldo": "parcial",
+              "explicacion": "Con el émbolo libre la presión no cambia: lo que cambia es el volumen (Charles).",
+              "fn": "cambio",
+              "args": [{ "P": 1, "V": 4, "T": 300 }, { "T": 300 }, "V"],
+              "campo": "V",
+              "valor": 4
+            }
+          ]
+        }
       ]
     },
     {
@@ -65,6 +164,45 @@
       "verificar": [
         { "fn": "tanque", "args": [{ "Pman1": 1.37, "Patm": 0.63, "T1C": 7, "T2C": 35 }],
           "espera": { "P1abs": 2, "P2abs": 2.2, "Pman2": 1.57, "conManometrica": 1.507, "conCelsiusAbs": 10 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "En Juliaca, donde la presión atmosférica es de 0,63 atm, un taxista revisa una llanta en la mañana, a 7 °C, y el manómetro marca 1,37 atm. Al mediodía, después de rodar, el aire de la llanta está a 35 °C. El volumen de la llanta no cambia.",
+          "pregunta": "¿Qué marca ahora el manómetro?",
+          "unidad": "atm",
+          "decimales": 2,
+          "correcta": { "fn": "tanque", "args": [{ "Pman1": 1.37, "Patm": 0.63, "T1C": 7, "T2C": 35 }], "campo": "Pman2", "valor": 1.57 },
+          "errores": [
+            {
+              "id": "GQ8-manometrica-en-la-ley",
+              "respaldo": "parcial",
+              "explicacion": "Usaste la presión manométrica en la ley de los gases. Va la absoluta: 1,37 + 0,63 = 2 atm.",
+              "fn": "tanque",
+              "args": [{ "Pman1": 1.37, "Patm": 0.63, "T1C": 7, "T2C": 35 }],
+              "campo": "conManometrica",
+              "valor": 1.507
+            },
+            {
+              "id": "QU3-celsius",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste °C: 2 · 35/7. La temperatura va en kelvin: 280 K y 308 K.",
+              "fn": "tanque",
+              "args": [{ "Pman1": 1.37, "Patm": 0.63, "T1C": 7, "T2C": 35 }],
+              "campo": "conCelsiusAbs",
+              "valor": 10
+            },
+            {
+              "id": "GQ8-absoluta-como-manometrica",
+              "respaldo": "parcial",
+              "explicacion": "2,2 atm es la presión absoluta. El manómetro marca lo que supera a la de afuera: 2,2 − 0,63.",
+              "fn": "tanque",
+              "args": [{ "Pman1": 1.37, "Patm": 0.63, "T1C": 7, "T2C": 35 }],
+              "campo": "P2abs",
+              "valor": 2.2
+            }
+          ]
+        }
       ]
     },
     {
@@ -82,6 +220,66 @@
       "verificar": [
         { "fn": "densidad", "args": [{ "P": 2.46, "M": "CO2", "T": 300 }], "espera": { "valor": 4.4 } },
         { "fn": "masaMolarDesdeDensidad", "args": [3.2, 2.46, 300], "espera": { "valor": 32 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Un recipiente tiene dióxido de carbono (CO₂, 44 g/mol) a 2,46 atm y 27 °C.",
+          "pregunta": "¿Cuál es la densidad del gas?",
+          "unidad": "g/L",
+          "decimales": 2,
+          "correcta": { "fn": "densidad", "args": [{ "P": 2.46, "M": "CO2", "T": 300 }], "campo": "valor", "valor": 4.4 },
+          "errores": [
+            {
+              "id": "QU3-celsius",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 27 °C. En d = PM/(RT) la temperatura va en kelvin: 300 K.",
+              "fn": "densidad",
+              "args": [{ "P": 2.46, "M": "CO2", "T": 27 }],
+              "campo": "valor",
+              "valor": 48.8888888889
+            },
+            {
+              "id": "GQ-22,4-fuera-de-cn",
+              "respaldo": "hipotesis",
+              "explicacion": "44/22,4 solo vale en condiciones normales. Aquí el gas está a 2,46 atm y 27 °C: usa d = PM/(RT).",
+              "fn": "densidadCN",
+              "args": [
+                "CO2"
+              ],
+              "campo": "valor",
+              "valor": 1.96428571429
+            }
+          ]
+        },
+        {
+          "id": "p5b",
+          "enunciado": "A 2,46 atm y 27 °C, un gas desconocido tiene una densidad de 3,2 g/L.",
+          "pregunta": "¿Cuál es su masa molar?",
+          "unidad": "g/mol",
+          "decimales": 2,
+          "correcta": { "fn": "masaMolarDesdeDensidad", "args": [3.2, 2.46, 300], "campo": "valor", "valor": 32 },
+          "errores": [
+            {
+              "id": "GQ-22,4-fuera-de-cn",
+              "respaldo": "hipotesis",
+              "explicacion": "M = d · 22,4 solo vale en condiciones normales. Aquí despeja M = dRT/P.",
+              "fn": "masaMolarCN",
+              "args": [3.2],
+              "campo": "valor",
+              "valor": 71.68
+            },
+            {
+              "id": "QU3-celsius",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 27 °C. La temperatura va en kelvin: 27 + 273 = 300 K.",
+              "fn": "masaMolarDesdeDensidad",
+              "args": [3.2, 2.46, 27],
+              "campo": "valor",
+              "valor": 2.88
+            }
+          ]
+        }
       ]
     },
     {
@@ -100,6 +298,92 @@
         { "fn": "estado", "args": [{ "V": 8.2, "n": 3, "T": 300 }], "espera": { "P": 9 } },
         { "fn": "dalton", "args": [[{ "gas": "He", "masa": 8 }, { "gas": "O2", "masa": 32 }], 9],
           "espera": { "nTotal": 3, "gases.He.n": 2, "gases.O2.n": 1, "gases.He.P": 6, "gases.O2.P": 3 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Para una prueba de buceo se prepara en un balón de 8,2 L una mezcla de 8 g de helio y 32 g de oxígeno, a 27 °C.",
+          "pregunta": "¿Cuál es la presión total?",
+          "unidad": "atm",
+          "decimales": 2,
+          "correcta": { "fn": "estado", "args": [{ "V": 8.2, "n": 3, "T": 300 }], "campo": "P", "valor": 9 },
+          "errores": [
+            {
+              "id": "GQ13-masa-atomica",
+              "respaldo": "parcial",
+              "explicacion": "Usaste 16 g/mol para el oxígeno. El O₂ pesa 32 g/mol: es 1 mol, no 2.",
+              "fn": "estado",
+              "args": [{ "V": 8.2, "n": 4, "T": 300 }],
+              "campo": "P",
+              "valor": 12
+            },
+            {
+              "id": "QU3-celsius",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 27 °C. En PV = nRT la temperatura va en kelvin: 300 K.",
+              "fn": "estado",
+              "args": [{ "V": 8.2, "n": 3, "T": 27 }],
+              "campo": "P",
+              "valor": 0.81
+            }
+          ]
+        },
+        {
+          "id": "p6b",
+          "enunciado": "Para una prueba de buceo se prepara en un balón de 8,2 L una mezcla de 8 g de helio y 32 g de oxígeno, a 27 °C. La presión total es de 9 atm.",
+          "pregunta": "¿Cuál es la presión parcial del helio?",
+          "unidad": "atm",
+          "decimales": 2,
+          "correcta": { "fn": "dalton", "args": [[{ "gas": "He", "masa": 8 }, { "gas": "O2", "masa": 32 }], 9], "campo": "gases.He.P", "valor": 6 },
+          "errores": [
+            {
+              "id": "GQ10-por-masa",
+              "respaldo": "parcial",
+              "explicacion": "Repartiste la presión por gramos. Se reparte por moles: hay 2 mol de helio y 1 de oxígeno.",
+              "fn": "dalton",
+              "args": [[{ "gas": "He", "n": 8 }, { "gas": "O2", "n": 32 }], 9],
+              "campo": "gases.He.P",
+              "valor": 1.8
+            },
+            {
+              "id": "GQ-mitad-y-mitad",
+              "respaldo": "hipotesis",
+              "explicacion": "Partiste la presión en dos mitades. Cada gas aporta según sus moles: el helio tiene el doble.",
+              "fn": "dalton",
+              "args": [[{ "gas": "He", "n": 1 }, { "gas": "O2", "n": 1 }], 9],
+              "campo": "gases.He.P",
+              "valor": 4.5
+            }
+          ]
+        },
+        {
+          "id": "p6c",
+          "enunciado": "Para una prueba de buceo se prepara en un balón de 8,2 L una mezcla de 8 g de helio y 32 g de oxígeno, a 27 °C. La presión total es de 9 atm.",
+          "pregunta": "¿Cuál es la presión parcial del oxígeno?",
+          "unidad": "atm",
+          "decimales": 2,
+          "correcta": { "fn": "dalton", "args": [[{ "gas": "He", "masa": 8 }, { "gas": "O2", "masa": 32 }], 9], "campo": "gases.O2.P", "valor": 3 },
+          "errores": [
+            {
+              "id": "GQ10-por-masa",
+              "respaldo": "parcial",
+              "explicacion": "Repartiste la presión por gramos. Se reparte por moles: el oxígeno es 1 de los 3 mol.",
+              "fn": "dalton",
+              "args": [[{ "gas": "He", "n": 8 }, { "gas": "O2", "n": 32 }], 9],
+              "campo": "gases.O2.P",
+              "valor": 7.2
+            },
+            {
+              "id": "GQ13-masa-atomica",
+              "respaldo": "parcial",
+              "explicacion": "Usaste 16 g/mol para el oxígeno. El O₂ pesa 32 g/mol: es 1 mol, no 2.",
+              "fn": "dalton",
+              "args": [[{ "gas": "He", "masa": 8 }, { "gas": "O2", "M": 16, "masa": 32 }], 9],
+              "campo": "gases.O2.P",
+              "valor": 4.5
+            }
+          ]
+        }
       ]
     },
     {
@@ -116,6 +400,36 @@
       "verificar": [
         { "fn": "graham", "args": ["CH4", "SO2"], "espera": { "valor": 2 } },
         { "fn": "encuentro", "args": [60, "CH4", "SO2"], "espera": { "razon": 2, "desde1": 40, "desde2": 20, "invertido": 20, "sinRaiz": 48 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Un tubo de vidrio de 60 cm está lleno de aire. Al mismo tiempo, por un extremo se deja entrar metano (CH₄) y por el otro, dióxido de azufre (SO₂), a la misma temperatura.",
+          "pregunta": "¿A cuántos centímetros del extremo del metano se encuentran los dos gases?",
+          "unidad": "cm",
+          "decimales": 2,
+          "correcta": { "fn": "encuentro", "args": [60, "CH4", "SO2"], "campo": "desde1", "valor": 40 },
+          "errores": [
+            {
+              "id": "GQ11-graham-invertido",
+              "respaldo": "documentado",
+              "explicacion": "El gas más pesado no va más rápido: el metano, más liviano, avanza el doble que el SO₂.",
+              "fn": "encuentro",
+              "args": [60, "CH4", "SO2"],
+              "campo": "invertido",
+              "valor": 20
+            },
+            {
+              "id": "GQ11-sin-raiz",
+              "respaldo": "parcial",
+              "explicacion": "Olvidaste la raíz: la rapidez va con √(M₂/M₁) = √4 = 2, no con 64/16 = 4.",
+              "fn": "encuentro",
+              "args": [60, "CH4", "SO2"],
+              "campo": "sinRaiz",
+              "valor": 48
+            }
+          ]
+        }
       ]
     },
     {
@@ -136,6 +450,92 @@
         { "fn": "volumenCN", "args": [2.5], "espera": { "valor": 56 } },
         { "fn": "volumenCN", "args": [1.5], "espera": { "valor": 33.6 } },
         { "fn": "estado", "args": [{ "P": 0.82, "n": 1.5, "T": 300 }], "espera": { "V": 45 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "En una cocina se queman 22 g de propano según C₃H₈ + 5O₂ → 3CO₂ + 4H₂O.",
+          "pregunta": "¿Qué volumen de O₂, medido en condiciones normales, se necesita?",
+          "unidad": "L",
+          "decimales": 2,
+          "correcta": { "fn": "volumenCN", "args": [2.5], "campo": "valor", "valor": 56 },
+          "errores": [
+            {
+              "id": "GQ-sin-coeficientes",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste los moles de propano. La ecuación pide 5 mol de O₂ por cada mol de propano: 2,5 mol.",
+              "fn": "volumenCN",
+              "args": [0.5],
+              "campo": "valor",
+              "valor": 11.2
+            },
+            {
+              "id": "GQ-coeficiente-como-moles",
+              "respaldo": "hipotesis",
+              "explicacion": "El 5 es por cada mol de propano, y aquí hay 0,5 mol: se gastan 2,5 mol de O₂, no 5.",
+              "fn": "volumenCN",
+              "args": [5],
+              "campo": "valor",
+              "valor": 112
+            }
+          ]
+        },
+        {
+          "id": "p8b",
+          "enunciado": "En una cocina se queman 22 g de propano según C₃H₈ + 5O₂ → 3CO₂ + 4H₂O.",
+          "pregunta": "¿Qué volumen ocupa el CO₂ formado, en condiciones normales?",
+          "unidad": "L",
+          "decimales": 2,
+          "correcta": { "fn": "volumenCN", "args": [1.5], "campo": "valor", "valor": 33.6 },
+          "errores": [
+            {
+              "id": "GQ-sin-coeficientes",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste los moles de propano. Se forman 3 mol de CO₂ por cada mol de propano: 1,5 mol.",
+              "fn": "volumenCN",
+              "args": [0.5],
+              "campo": "valor",
+              "valor": 11.2
+            },
+            {
+              "id": "GQ-coeficiente-como-moles",
+              "respaldo": "hipotesis",
+              "explicacion": "El 3 es por cada mol de propano, y aquí hay 0,5 mol: se forman 1,5 mol de CO₂, no 3.",
+              "fn": "volumenCN",
+              "args": [3],
+              "campo": "valor",
+              "valor": 67.2
+            }
+          ]
+        },
+        {
+          "id": "p8c",
+          "enunciado": "Al quemar 22 g de propano (C₃H₈ + 5O₂ → 3CO₂ + 4H₂O) se forman 1,5 mol de CO₂.",
+          "pregunta": "¿Qué volumen ocupa ese CO₂ a 27 °C y 0,82 atm?",
+          "unidad": "L",
+          "decimales": 2,
+          "correcta": { "fn": "estado", "args": [{ "P": 0.82, "n": 1.5, "T": 300 }], "campo": "V", "valor": 45 },
+          "errores": [
+            {
+              "id": "GQ-22,4-fuera-de-cn",
+              "respaldo": "hipotesis",
+              "explicacion": "22,4 L/mol solo vale en condiciones normales. A 27 °C y 0,82 atm usa PV = nRT.",
+              "fn": "volumenCN",
+              "args": [1.5],
+              "campo": "valor",
+              "valor": 33.6
+            },
+            {
+              "id": "QU3-celsius",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 27 °C. En PV = nRT la temperatura va en kelvin: 300 K.",
+              "fn": "estado",
+              "args": [{ "P": 0.82, "n": 1.5, "T": 27 }],
+              "campo": "V",
+              "valor": 4.05
+            }
+          ]
+        }
       ]
     },
     {
@@ -155,6 +555,64 @@
         { "fn": "estado", "args": [{ "V": 4.1, "n": 0.25, "T": 400 }], "espera": { "P": 2 } },
         { "fn": "manometrica", "args": [2, 0.63], "espera": { "valor": 1.37 } },
         { "fn": "manometrica", "args": [2, 1], "espera": { "valor": 1 } }
+      ],
+      "preguntas": [
+        {
+          "id": "p9b",
+          "enunciado": "Se colocan 7 g de nitrógeno (N₂, 28 g/mol) en un recipiente rígido de 4,1 L y se calientan a 127 °C.",
+          "pregunta": "¿Qué presión absoluta tiene el gas?",
+          "unidad": "atm",
+          "decimales": 2,
+          "correcta": { "fn": "estado", "args": [{ "V": 4.1, "n": 0.25, "T": 400 }], "campo": "P", "valor": 2 },
+          "errores": [
+            {
+              "id": "QU3-celsius",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 127 °C. En PV = nRT la temperatura va en kelvin: 400 K.",
+              "fn": "estado",
+              "args": [{ "V": 4.1, "n": 0.25, "T": 127 }],
+              "campo": "P",
+              "valor": 0.635
+            },
+            {
+              "id": "GQ-temperatura-de-cn",
+              "respaldo": "hipotesis",
+              "explicacion": "Dejaste los 273 K de las condiciones normales. El gas ya se calentó a 127 °C: 400 K.",
+              "fn": "estado",
+              "args": [{ "V": 4.1, "n": 0.25, "T": 273 }],
+              "campo": "P",
+              "valor": 1.365
+            }
+          ]
+        },
+        {
+          "id": "p9c",
+          "enunciado": "Un gas en un recipiente rígido tiene una presión absoluta de 2 atm. El recipiente está en Puno, donde la presión atmosférica es de 0,63 atm.",
+          "pregunta": "¿Qué marca un manómetro conectado al recipiente?",
+          "unidad": "atm",
+          "decimales": 2,
+          "correcta": { "fn": "manometrica", "args": [2, 0.63], "campo": "valor", "valor": 1.37 },
+          "errores": [
+            {
+              "id": "GQ8-presion-de-lima",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste 1 atm, la presión a nivel del mar. En Puno la atmosférica es 0,63 atm.",
+              "fn": "manometrica",
+              "args": [2, 1],
+              "campo": "valor",
+              "valor": 1
+            },
+            {
+              "id": "GQ8-suma-en-vez-de-resta",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste la atmosférica. El manómetro marca cuánto supera la presión de adentro a la de afuera: se resta.",
+              "fn": "absoluta",
+              "args": [2, 0.63],
+              "campo": "valor",
+              "valor": 2.63
+            }
+          ]
+        }
       ]
     }
   ]
