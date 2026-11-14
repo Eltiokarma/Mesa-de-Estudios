@@ -14,7 +14,44 @@
         "En el segundo caso el ángulo C de 37° está frente a AB = 9, el menor de los dos lados dados. La distancia de B a la recta CA es 12 · 3/5 = 7,2, menor que AB = 9, y 9 < 12: con centro en B, el compás de 9 corta dos veces la recta CA delante de C. Hay dos triángulos."
       ],
       "verificar": [ { "fn": "construir", "args": [{ "c": 9, "a": 12, "B": 70 }], "espera": { "criterio": "LAL", "cuantos": "uno" } },
-                     { "fn": "construir", "args": [{ "C": 37, "a": 12, "c": 9 }], "espera": { "criterio": "LLA", "cuantos": "dos", "altura": 7.2 } } ]
+                     { "fn": "construir", "args": [{ "C": 37, "a": 12, "c": 9 }], "espera": { "criterio": "LLA", "cuantos": "dos", "altura": 7.2 } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "En un triángulo ABC se sabe que AB = 9, BC = 12 y que el ángulo C mide 37°.",
+          "pregunta": "¿Cuántos triángulos distintos se pueden armar con esos datos?",
+          "correcta": { "fn": "construir", "args": [{ "C": 37, "a": 12, "c": 9 }], "campo": "cuantos", "valor": "dos" },
+          "errores": [
+            {
+              "id": "GE-LLA-como-criterio",
+              "respaldo": "hipotesis",
+              "explicacion": "Dos lados y un ángulo no comprendido no siempre bastan. Con centro en B, el compás de 9 corta dos veces la recta CA.",
+              "fn": "construir",
+              "args": [{ "C": 37, "a": 12, "c": 9 }],
+              "campo": "errores.comoCriterio",
+              "valor": "uno"
+            },
+            {
+              "id": "GE-LLA-lado-corto-no-cierra",
+              "respaldo": "hipotesis",
+              "explicacion": "AB = 9 sí alcanza: la distancia de B a la recta CA es 7,2, menor que 9. Corta dos veces.",
+              "fn": "construir",
+              "args": [{ "C": 37, "a": 12, "c": 9 }],
+              "campo": "errores.ladoCortoNoCierra",
+              "valor": "ninguno"
+            },
+            {
+              "id": "GE-LLA-infinitos",
+              "respaldo": "hipotesis",
+              "explicacion": "El tercer lado no queda libre: solo sirven los dos puntos donde el compás de 9 corta la recta CA.",
+              "fn": "construir",
+              "args": [{ "C": 37, "a": 12, "c": 9 }],
+              "campo": "errores.baseLibre",
+              "valor": "infinitos"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -27,7 +64,44 @@
         "Cada corte está a √(10² − 9²) = √19 del pie de la altura: AB = 12 − √19 o AB = 12 + √19.",
         "Los dos triángulos tienen los mismos tres datos y no son congruentes: LLA no es un criterio."
       ],
-      "verificar": [ { "fn": "construir", "args": [{ "A": 37, "b": 15, "a": 10 }], "espera": { "cuantos": "dos", "altura": 9, "terceros": [7.641101056459327, 16.358898943540673] } } ]
+      "verificar": [ { "fn": "construir", "args": [{ "A": 37, "b": 15, "a": 10 }], "espera": { "cuantos": "dos", "altura": 9, "terceros": [7.641101056459327, 16.358898943540673] } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Con un ángulo A de 37°, un lado AC de 15 cm y un lado BC de 10 cm se quiere construir un triángulo ABC.",
+          "pregunta": "¿Cuántos triángulos distintos se pueden construir?",
+          "correcta": { "fn": "construir", "args": [{ "A": 37, "b": 15, "a": 10 }], "campo": "cuantos", "valor": "dos" },
+          "errores": [
+            {
+              "id": "GE-LLA-como-criterio",
+              "respaldo": "hipotesis",
+              "explicacion": "Es LLA: el ángulo A no está entre AC y BC. BC = 10 es mayor que la altura 9 y menor que AC = 15: corta dos veces.",
+              "fn": "construir",
+              "args": [{ "A": 37, "b": 15, "a": 10 }],
+              "campo": "errores.comoCriterio",
+              "valor": "uno"
+            },
+            {
+              "id": "GE-LLA-lado-corto-no-cierra",
+              "respaldo": "hipotesis",
+              "explicacion": "BC = 10 sí alcanza el otro lado: la altura desde C mide 9, menos que 10.",
+              "fn": "construir",
+              "args": [{ "A": 37, "b": 15, "a": 10 }],
+              "campo": "errores.ladoCortoNoCierra",
+              "valor": "ninguno"
+            },
+            {
+              "id": "GE-LLA-infinitos",
+              "respaldo": "hipotesis",
+              "explicacion": "AB no puede medir cualquier cosa: B tiene que estar a 10 de C, y eso pasa solo en dos puntos.",
+              "fn": "construir",
+              "args": [{ "A": 37, "b": 15, "a": 10 }],
+              "campo": "errores.baseLibre",
+              "valor": "infinitos"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -64,7 +138,37 @@
         "Los triángulos PMA y PMB son congruentes (LAL: PM común, MA = MB = 8 y ángulos rectos en M).",
         "En el triángulo rectángulo PMA: PM² = 17² − 8² = 289 − 64 = 225, así que PM = 15 m."
       ],
-      "verificar": [ { "fn": "mediatriz", "args": [{ "A": [-8, 0], "B": [8, 0], "t": 15 }], "espera": { "PA": 17, "PB": 17, "PM": 15 } } ]
+      "verificar": [ { "fn": "mediatriz", "args": [{ "A": [-8, 0], "B": [8, 0], "t": 15 }], "espera": { "PA": 17, "PB": 17, "PM": 15 } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Dos postes A y B están a 16 m. Se quiere poner una lámpara P que esté a la misma distancia de los dos postes y a 17 m de cada uno.",
+          "pregunta": "¿A qué distancia del segmento AB queda la lámpara?",
+          "unidad": "m",
+          "decimales": 2,
+          "correcta": { "fn": "construir", "args": [{ "A": 90, "b": 8, "a": 17 }], "campo": "terceros.0", "valor": 15 },
+          "errores": [
+            {
+              "id": "GE11-suma-con-cateto",
+              "respaldo": "parcial",
+              "explicacion": "Sumaste los cuadrados. 17 es la hipotenusa y PM es un cateto: PM² = 17² − 8².",
+              "fn": "construir",
+              "args": [{ "A": 90, "b": 8, "a": 17 }],
+              "campo": "errores.pitagorasSuma",
+              "valor": 18.7882942281
+            },
+            {
+              "id": "GE-usa-AB-entero",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste los 16 m enteros. La lámpara está sobre la mediatriz: el pie M está a 8 m de cada poste.",
+              "fn": "construir",
+              "args": [{ "A": 90, "b": 16, "a": 17 }],
+              "campo": "terceros.0",
+              "valor": 5.74456264654
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -76,7 +180,65 @@
         "Desde P se bajan las perpendiculares PH a OA y PK a OB. Los triángulos OHP y OKP son rectángulos, comparten la hipotenusa OP y tienen un ángulo de 53° en O: son congruentes (LAA). Por eso PH = PK.",
         "En el triángulo de 37° y 53° con hipotenusa 15 = 5k, k = 3: el cateto opuesto a 53° es 4k = 12 (la distancia PH) y el opuesto a 37° es 3k = 9 (OH)."
       ],
-      "verificar": [ { "fn": "bisectriz", "args": [{ "angulo": 106, "d": 15 }], "espera": { "distancias": [12, 12], "OH": 9, "OK": 9 } } ]
+      "verificar": [ { "fn": "bisectriz", "args": [{ "angulo": 106, "d": 15 }], "espera": { "distancias": [12, 12], "OH": 9, "OK": 9 } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Un ángulo AOB mide 106°. El punto P está sobre su bisectriz, a 15 cm del vértice O.",
+          "pregunta": "¿A qué distancia está P de cada lado del ángulo?",
+          "unidad": "cm",
+          "decimales": 1,
+          "correcta": { "fn": "bisectriz", "args": [{ "angulo": 106, "d": 15 }], "campo": "distancias.0", "valor": 12 },
+          "errores": [
+            {
+              "id": "GE-pie-como-distancia",
+              "respaldo": "hipotesis",
+              "explicacion": "9 es lo que hay de O al pie de la perpendicular. La distancia de P al lado es el cateto opuesto a 53°: 12.",
+              "fn": "bisectriz",
+              "args": [{ "angulo": 106, "d": 15 }],
+              "campo": "errores.pieComoDistancia.0",
+              "valor": 9
+            },
+            {
+              "id": "GE-mitad-de-OP",
+              "respaldo": "hipotesis",
+              "explicacion": "La mitad de OP saldría si cada mitad del ángulo midiera 30°. Aquí mide 53°: 4k con 5k = 15.",
+              "fn": "bisectriz",
+              "args": [{ "angulo": 106, "d": 15 }],
+              "campo": "errores.mitadDeOP.0",
+              "valor": 7.5
+            }
+          ]
+        },
+        {
+          "id": "p6b",
+          "enunciado": "Un ángulo AOB mide 106°. El punto P está sobre su bisectriz, a 15 cm del vértice O. Desde P se bajan perpendiculares a los dos lados.",
+          "pregunta": "¿A qué distancia de O están los pies de esas perpendiculares?",
+          "unidad": "cm",
+          "decimales": 1,
+          "correcta": { "fn": "bisectriz", "args": [{ "angulo": 106, "d": 15 }], "campo": "OH", "valor": 9 },
+          "errores": [
+            {
+              "id": "GE-pie-como-distancia",
+              "respaldo": "hipotesis",
+              "explicacion": "12 es la distancia de P a cada lado. OH es el cateto junto a O, frente al ángulo de 37°: 3k = 9.",
+              "fn": "bisectriz",
+              "args": [{ "angulo": 106, "d": 15 }],
+              "campo": "distancias.0",
+              "valor": 12
+            },
+            {
+              "id": "GE-mitad-de-OP",
+              "respaldo": "hipotesis",
+              "explicacion": "Partir OP a la mitad no da el pie. En el triángulo de 37° y 53° con 5k = 15, OH = 3k.",
+              "fn": "bisectriz",
+              "args": [{ "angulo": 106, "d": 15 }],
+              "campo": "errores.mitadDeOP.0",
+              "valor": 7.5
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -89,7 +251,36 @@
         "Perímetro: 5 + 7 + 9 = 21, la mitad del perímetro del grande (42)."
       ],
       "verificar": [ { "fn": "baseMedia", "args": [{ "A": [6.333333333333333, 7.7387911774959335], "B": [0, 0], "C": [18, 0] }], "espera": { "MN": 9, "BC": 18, "paralela": true } },
-                     { "fn": "construir", "args": [{ "a": 18, "b": 14, "c": 10 }], "espera": { "cuantos": "uno" } } ]
+                     { "fn": "construir", "args": [{ "a": 18, "b": 14, "c": 10 }], "espera": { "cuantos": "uno" } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Los lados de un triángulo miden 10, 14 y 18. Se unen los puntos medios de sus lados y se forma un triángulo más pequeño.",
+          "pregunta": "¿Cuánto mide el lado del triángulo pequeño que es paralelo al lado de 18?",
+          "decimales": 1,
+          "correcta": { "fn": "baseMedia", "args": [{ "A": [6.333333333333333, 7.7387911774959335], "B": [0, 0], "C": [18, 0] }], "campo": "MN", "valor": 9 },
+          "errores": [
+            {
+              "id": "GE-base-media-lado-entero",
+              "respaldo": "hipotesis",
+              "explicacion": "La base media es paralela al lado de 18, pero mide su mitad: 9.",
+              "fn": "baseMedia",
+              "args": [{ "A": [6.333333333333333, 7.7387911774959335], "B": [0, 0], "C": [18, 0] }],
+              "campo": "errores.ladoEntero",
+              "valor": 18
+            },
+            {
+              "id": "GE-base-media-cuarto",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste dos veces. La base media mide la mitad del lado paralelo: 18/2.",
+              "fn": "baseMedia",
+              "args": [{ "A": [6.333333333333333, 7.7387911774959335], "B": [0, 0], "C": [18, 0] }],
+              "campo": "errores.cuarto",
+              "valor": 4.5
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -101,7 +292,45 @@
         "La mediana relativa a la hipotenusa mide la mitad de ella: 15/2 = 7,5. El punto medio de la hipotenusa está a la misma distancia de los tres vértices.",
         "No es la altura relativa a la hipotenusa (9 · 12/15 = 7,2) ni el promedio de los catetos (10,5)."
       ],
-      "verificar": [ { "fn": "medianaHipotenusa", "args": [{ "catetos": [9, 12] }], "espera": { "hipotenusa": 15, "mediana": 7.5, "altura": 7.2 } } ]
+      "verificar": [ { "fn": "medianaHipotenusa", "args": [{ "catetos": [9, 12] }], "espera": { "hipotenusa": 15, "mediana": 7.5, "altura": 7.2 } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "En un triángulo rectángulo los catetos miden 9 y 12.",
+          "pregunta": "¿Cuánto mide la mediana relativa a la hipotenusa?",
+          "decimales": 1,
+          "correcta": { "fn": "medianaHipotenusa", "args": [{ "catetos": [9, 12] }], "campo": "mediana", "valor": 7.5 },
+          "errores": [
+            {
+              "id": "GE8-mediana-como-altura",
+              "respaldo": "parcial",
+              "explicacion": "7,2 es la altura a la hipotenusa: 9 · 12/15. La mediana va al punto medio y mide la mitad de 15.",
+              "fn": "medianaHipotenusa",
+              "args": [{ "catetos": [9, 12] }],
+              "campo": "errores.altura",
+              "valor": 7.2
+            },
+            {
+              "id": "GE-mediana-promedio-catetos",
+              "respaldo": "hipotesis",
+              "explicacion": "El promedio de los catetos no es la mediana. Primero la hipotenusa, 15, y la mediana es su mitad.",
+              "fn": "medianaHipotenusa",
+              "args": [{ "catetos": [9, 12] }],
+              "campo": "errores.promedioCatetos",
+              "valor": 10.5
+            },
+            {
+              "id": "GE-mediana-hipotenusa-entera",
+              "respaldo": "hipotesis",
+              "explicacion": "15 es toda la hipotenusa. La mediana llega a su punto medio y mide la mitad: 7,5.",
+              "fn": "medianaHipotenusa",
+              "args": [{ "catetos": [9, 12] }],
+              "campo": "errores.hipotenusaEntera",
+              "valor": 15
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
@@ -113,7 +342,63 @@
         "k√3 = 6√3, así que k = 6.",
         "Cateto menor: 6. Hipotenusa: 2k = 12. Es la mitad de un triángulo equilátero de lado 12, partido por su altura."
       ],
-      "verificar": [ { "fn": "notable", "args": [{ "tipo": "30-60", "mayor": 10.392304845413264 }], "espera": { "k": 6, "menor": 6, "hipotenusa": 12 } } ]
+      "verificar": [ { "fn": "notable", "args": [{ "tipo": "30-60", "mayor": 10.392304845413264 }], "espera": { "k": 6, "menor": 6, "hipotenusa": 12 } } ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "En un triángulo rectángulo de 30° y 60°, el cateto opuesto a 60° mide 6√3.",
+          "pregunta": "¿Cuánto mide el otro cateto?",
+          "decimales": 2,
+          "correcta": { "fn": "notable", "args": [{ "tipo": "30-60", "mayor": 10.392304845413264 }], "campo": "menor", "valor": 6 },
+          "errores": [
+            {
+              "id": "GE-notable-catetos-cambiados",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste 6√3 como el cateto menor y lo multiplicaste por √3. Está frente a 60°: es k√3, y el otro es k = 6.",
+              "fn": "notable",
+              "args": [{ "tipo": "30-60", "menor": 10.392304845413264 }],
+              "campo": "mayor",
+              "valor": 18
+            },
+            {
+              "id": "GE-notable-equivocado-45",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste el de 45°, donde los catetos son iguales. En 30°-60° van como k y k√3: k = 6.",
+              "fn": "notable",
+              "args": [{ "tipo": "45-45", "cateto": 10.392304845413264 }],
+              "campo": "mayor",
+              "valor": 10.3923048454
+            }
+          ]
+        },
+        {
+          "id": "p9b",
+          "enunciado": "En un triángulo rectángulo de 30° y 60°, el cateto opuesto a 60° mide 6√3.",
+          "pregunta": "¿Cuánto mide la hipotenusa?",
+          "decimales": 2,
+          "correcta": { "fn": "notable", "args": [{ "tipo": "30-60", "mayor": 10.392304845413264 }], "campo": "hipotenusa", "valor": 12 },
+          "errores": [
+            {
+              "id": "GE-notable-catetos-cambiados",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste 6√3 como el cateto menor. Está frente a 60°: es k√3, así que k = 6 y la hipotenusa 2k = 12.",
+              "fn": "notable",
+              "args": [{ "tipo": "30-60", "menor": 10.392304845413264 }],
+              "campo": "hipotenusa",
+              "valor": 20.7846096908
+            },
+            {
+              "id": "GE-notable-equivocado-45",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste el notable de 45°, con la hipotenusa igual al cateto por √2. Aquí es 30°-60°: k, k√3 y 2k.",
+              "fn": "notable",
+              "args": [{ "tipo": "45-45", "cateto": 10.392304845413264 }],
+              "campo": "hipotenusa",
+              "valor": 14.6969384567
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p10",
@@ -127,7 +412,35 @@
       ],
       "verificar": [ { "fn": "construir", "args": [{ "A": 50, "B": 60, "a": 9 }], "espera": { "criterio": "LAA", "cuantos": "uno", "anguloQueFalta": 70 } },
                      { "fn": "construir", "args": [{ "A": 50, "B": 60, "C": 70 }], "espera": { "cuantos": "infinitos" } },
-                     { "fn": "construir", "args": [{ "a": 4, "b": 5, "c": 10 }], "espera": { "cuantos": "ninguno" } } ]
+                     { "fn": "construir", "args": [{ "a": 4, "b": 5, "c": 10 }], "espera": { "cuantos": "ninguno" } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "De un triángulo ABC solo se sabe que sus ángulos miden A = 50°, B = 60° y C = 70°.",
+          "pregunta": "¿Cuántos triángulos distintos cumplen esos datos?",
+          "correcta": { "fn": "construir", "args": [{ "A": 50, "B": 60, "C": 70 }], "campo": "cuantos", "valor": "infinitos" },
+          "errores": [
+            {
+              "id": "GE-AAA-como-criterio",
+              "respaldo": "hipotesis",
+              "explicacion": "Tres ángulos fijan la forma, no el tamaño. Hay triángulos de cualquier tamaño con esos ángulos: semejantes, no congruentes.",
+              "fn": "construir",
+              "args": [{ "A": 50, "B": 60, "C": 70 }],
+              "campo": "errores.comoCriterio",
+              "valor": "uno"
+            },
+            {
+              "id": "GE-AAA-sin-triangulo",
+              "respaldo": "hipotesis",
+              "explicacion": "Sí hay triángulos: los ángulos suman 180°. Lo que falta es un lado para fijar el tamaño.",
+              "fn": "construir",
+              "args": [{ "A": 50, "B": 60, "C": 70 }],
+              "campo": "errores.sinTriangulo",
+              "valor": "ninguno"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
