@@ -79,6 +79,7 @@
     covalente: { nombre: 'Covalente', si: 'Sería covalente si solo hubiera no metales compartiendo pares de electrones.', porque: 'Solo no metales: comparten pares de electrones.' },
     metalico: { nombre: 'Metálico', si: 'Sería metálico si fuera un metal solo: cationes en un mar de electrones.', porque: 'Un metal solo: cationes en un mar de electrones móviles.' },
   };
+  // Sin arrastre: el control elige entre tres sólidos distintos; no hay una magnitud que agarrar en la lupa.
   const tres = {
     id: 'tres-enlaces',
     titulo: 'Tres maneras de unirse',
@@ -122,7 +123,7 @@
     },
     regla: {
       texto: 'Iónico: red de cationes y aniones que se atraen. Metálico: cationes en un mar de electrones móviles. Covalente: átomos que comparten pares de electrones.',
-      ecuacion: ['metal + no metal → iónico   ·   no metal + no metal → covalente'],
+      ecuacion: ['metal + no metal: iónico', '   ·   ', 'solo no metales: covalente'],
       condicion: 'metal con no metal es una guía, no una ley: hay casos intermedios, y no todo sólido está hecho de moléculas.',
       voz: 'Mira qué elementos hay antes de decidir.',
     },
@@ -166,6 +167,7 @@
     BF3: { t: 'BF₃', l: () => lewis([A('b', 'B', 0, 0), A('f1', 'F', 0, -1.2), A('f2', 'F', -1.04, 0.6), A('f3', 'F', 1.04, 0.6)], [B('b', 'f1'), B('b', 'f2'), B('b', 'f3')], [...P('f1', -90, 180, 0), ...P('f2', 150, 60, 240), ...P('f3', 30, 120, -60)]) },
   };
   const LEE = { H2O: 'O con 8 y cada H con 2.', NH3: 'N con 8: tres enlaces y un par.', CH4: 'C con 8: cuatro enlaces.', CO2: 'Dos dobles enlaces: todos con 8.', N2: 'Triple enlace: cada N con 8.', BF3: 'El boro se queda con 6: excepción.' };
+  // Sin arrastre: el control elige entre moléculas distintas; los enlaces y pares son la respuesta, no una perilla.
   const lewisSolo = {
     id: 'lewis-octeto',
     titulo: 'Primero contar, después dibujar',
@@ -202,13 +204,13 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'CO₂: el carbono aporta 4 y cada oxígeno 6.', ecuacion: [Nv, ' = 4 + 6 + 6 = 16'] },
         { estado: { corte: 2 }, texto: 'Un enlace simple con cada O usa 4 electrones.', ecuacion: ['16 − 4 = 12 por repartir'] },
-        { estado: { corte: 3 }, texto: 'Los 12 van como pares en los O; el C queda con 4.', ecuacion: ['O: 8 · C: 4'] },
+        { estado: { corte: 3 }, texto: 'Los 12 van como pares en los O; el C queda con 4.', ecuacion: ['O: 8', '   ·   ', 'C: 4'] },
         { estado: { corte: 4 }, texto: 'Cada O comparte un par más: dos dobles enlaces, todos con 8.', ecuacion: ['O=C=O: 4 · 2 + 4 · 2 = 16'] },
       ],
     },
     regla: {
       texto: 'Suma los electrones de valencia y resta la carga del ion. Repártelos en enlaces y pares libres buscando 8 alrededor de cada átomo (2 en el hidrógeno).',
-      ecuacion: [Nv, ' = Σ (valencia de cada átomo) − ', z],
+      ecuacion: [{ llave: [Nv], nota: 'a repartir', color: 'c-i' }, ' = Σ valencias − ', { llave: [z], nota: 'carga', color: 'c-h' }],
       condicion: 'el octeto es una regularidad útil, no una ley: el boro del BF₃ queda con 6; el azufre del SF₆, con 12.',
       voz: 'Cuenta, reparte y revisa cada átomo.',
     },
@@ -251,6 +253,15 @@
     l.datos.cargas = cargas;
     return l;
   }
+  // Gesto directo: se agarra el doble enlace (la manija va a la mitad del enlace X=O) y se lo lleva a otro oxígeno.
+  // Con quim-molecula.encuadre de los datos del dibujo actual; al soltar, gana el enlace más cercano. Con la opción
+  // «híbrido» (solo en el laboratorio) la manija va al centro, sobre el átomo central.
+  const QM = () => Kit.piezas['quim-molecula'];
+  const mitad = (dib, k) => { const g = QM().encuadre(dib.datos); return k === 3 ? { x: g.X(0), y: g.Y(0) } : { x: g.X(PUNTAS[k][0] / 2), y: g.Y(PUNTAS[k][1] / 2) }; };
+  const dobleCerca = (dib, pt, conHibrido) => [0, 1, 2, ...(conHibrido ? [3] : [])].reduce((a, b) => {
+    const pa = mitad(dib, a), pb = mitad(dib, b);
+    return (pb.x - pt.x) ** 2 + (pb.y - pt.y) ** 2 < (pa.x - pt.x) ** 2 + (pa.y - pt.y) ** 2 ? b : a;
+  });
   const res = {
     id: 'resonancia',
     titulo: 'Un dibujo no alcanza',
@@ -263,6 +274,10 @@
       dibujo: val => triangular('N', val.k, -1),
       lectura: val => [`Doble enlace ${['arriba', 'a la izquierda', 'a la derecha'][val.k]}: `, Nv, ' = 24 e⁻ igual'],
       minimo: 3,
+      // Se agarra el doble enlace y se lo lleva a otro O: los átomos no se mueven y la cuenta de 24 no cambia.
+      arrastres: [{ id: 'doble', etiqueta: 'doble enlace: llévalo a otro oxígeno', color: 'c-i',
+        donde: val => mitad(triangular('N', val.k, -1), val.k),
+        mover: (pt, val) => ({ k: dobleCerca(triangular('N', val.k, -1), pt, false) }) }],
     },
     predice: {
       pregunta: 'Los tres dibujos del nitrato son válidos. En el ion real se miden los tres enlaces N–O. ¿Cómo son?',
@@ -356,6 +371,8 @@
     if (GEOM[k].dipA) d.datos.enlaces = d.datos.enlaces.map(e => Object.assign(e, { dipolo: 'a' }));
     return d;
   }
+  // Sin arrastre en el juego: el control elige entre moléculas distintas. El ángulo que se agarra está en el
+  // laboratorio («Dos dipolos que giran»), donde se ve cómo la suma de dipolos depende de la forma.
   const geo = {
     id: 'forma-polaridad',
     titulo: 'La forma decide la polaridad',
@@ -411,7 +428,7 @@
     },
     regla: {
       texto: 'La forma sale de las regiones de electrones del átomo central, pares libres incluidos. Una molécula es polar si los dipolos de sus enlaces no se anulan.',
-      ecuacion: ['2 regiones: lineal, sp · 3: trigonal, sp² · 4: tetraédrica, sp³'],
+      ecuacion: ['2 regiones: lineal, sp', '   ·   ', '3: trigonal, sp²', '   ·   ', '4: tetraédrica, sp³'],
       condicion: 'los pares libres cuentan para la forma electrónica, pero la forma molecular se nombra solo por los átomos: el agua es angular.',
       voz: 'Primero la forma, después la suma de flechas.',
     },
@@ -468,6 +485,9 @@
     void tipo;
     return { datos: { atomos: at, enlaces: en, textos, escala: 48, alto: 130 }, estado: {} };
   }
+  // Sin arrastre: el control elige entre tres sustancias; la atracción entre vecinas no tiene una perilla natural.
+  // Hallazgo 9 de la auditoría: son dos representaciones a propósito. El juego muestra la atracción entre dos
+  // moléculas vecinas; «Mira» pasa a los ejes de ebullición, donde el agua se sale de la tendencia de su grupo.
   const fuerzas = {
     id: 'fuerzas-intermoleculares',
     titulo: 'Lo que une a las moléculas',
@@ -541,6 +561,30 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: dos enlaces iguales unidos a un átomo central (como el O del agua). El dipolo total es la suma de las dos
+  // flechas: μ = 2 · μ_enlace · cos(θ/2). Los textos fijos arriba y abajo dejan el encuadre quieto al cambiar θ.
+  const ESC_MU = 0.45;                             // unidades de dibujo por debye de la flecha total
+  const dosDipolos = val => {
+    const h = val.th / 2 * Math.PI / 180, L = 1.15, mt = 2 * val.mb * Math.cos(h);
+    const datos = {
+      atomos: [A('o', 'O', 0, 0), A('h1', 'H', -L * Math.sin(h), L * Math.cos(h)), A('h2', 'H', L * Math.sin(h), L * Math.cos(h))],
+      enlaces: [B('o', 'h1', 1, { dipolo: 'a' }), B('o', 'h2', 1, { dipolo: 'a' })],
+      angulos: [{ en: 'o', de: 'h1', a: 'h2', texto: `${f(val.th, 0)}°`, color: 'd' }],
+      textos: [{ x: 0, y: -2.25, t: mt > 0.005 ? `μ total = ${f(mt)} D` : 'μ total = 0: se anulan', color: 'o', peso: 700 }, { x: 0, y: 1.65, t: `cada enlace: ${f(val.mb, 1)} D`, color: 'o' }],
+      escala: 60, alto: 260,
+      alt: `Dos enlaces de ${f(val.mb, 1)} D separados ${f(val.th, 0)}°; su suma da un dipolo total de ${f(mt)} D, hacia arriba.`,
+    };
+    if (mt > 0.005) datos.flechas = [{ de: [0, -0.5], a: [0, -0.5 - ESC_MU * mt], dipolo: true, color: 'o' }];
+    return { datos, estado: {} };
+  };
+  // Manija en el H de la derecha: el ángulo entre los enlaces es el doble de su ángulo con la vertical.
+  const manijaH = val => { const g = QM().encuadre(dosDipolos(val).datos), h = val.th / 2 * Math.PI / 180; return { x: g.X(1.15 * Math.sin(h)), y: g.Y(1.15 * Math.cos(h)) }; };
+  const anguloEn = (pt, val) => { const g = QM().encuadre(dosDipolos(val).datos); return 2 * Math.atan2(pt.x - g.X(0), pt.y - g.Y(0)) * 180 / Math.PI; };
+  // Mesa 2: resonancia con dos iones y el híbrido como cuarta posición (la idea 3 solo deja los tres dibujos).
+  const IONES = { NO3: { t: 'NO₃⁻', c: 'N', q: -1 }, CO3: { t: 'CO₃²⁻', c: 'C', q: -2 } };
+  const resDib = val => triangular(IONES[val.ion].c, val.k === 3 ? null : val.k, IONES[val.ion].q);
+
   return {
     unidad: 'quimica.enlace-quimico',
     version: '0.1.0',
@@ -551,6 +595,38 @@
       pregunta: '¿Por qué el agua es H₂O y no H₃O?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §7.6', url: 'https://openstax.org/books/chemistry-2e/pages/7-6-molecular-structure-and-polarity' },
     },
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera deja girar los dos enlaces de una molécula
+    // angular y cambiar su polaridad, de 60° a 180° (el caso lineal, que anula todo). La segunda junta dos iones y el
+    // híbrido. Las lecturas dicen ángulo, dipolo de enlace y resultado, o el ion y dónde quedó el par.
+    laboratorio: [
+      {
+        id: 'dos-dipolos', titulo: 'Dos dipolos que giran', pieza: 'quim-molecula',
+        consigna: 'Agarra el hidrógeno de la derecha y abre o cierra el ángulo. Cambia también la polaridad de cada enlace. ¿Cuándo se anulan?',
+        controles: [
+          { id: 'th', etiqueta: 'θ', color: 'c-d', min: 60, max: 180, paso: 5, inicio: 105, unidad: '°', decimales: 0 },
+          { id: 'mb', etiqueta: 'Dipolo de enlace', color: 'c-o', min: 0.5, max: 2, paso: 0.1, inicio: 1.5, unidad: 'D', decimales: 1 },
+        ],
+        dibujo: val => dosDipolos(val),
+        lectura: val => [`θ = ${f(val.th, 0)}° · enlace ${f(val.mb, 1)} D → `, mu, ` = ${f(2 * val.mb * Math.cos(val.th / 2 * Math.PI / 180))} D`],
+        arrastres: [{ id: 'hidrogeno', etiqueta: 'hidrógeno: abre o cierra el ángulo', color: 'c-d',
+          donde: val => manijaH(val),
+          mover: (pt, val) => ({ th: anguloEn(pt, val) }) }],
+      },
+      {
+        id: 'resonancia-libre', titulo: 'El par que se reparte', pieza: 'quim-molecula',
+        consigna: 'Elige el ion. Lleva el doble enlace a cada oxígeno y después al centro: ahí está el híbrido, el ion real.',
+        controles: [
+          { id: 'ion', etiqueta: 'Ion', opciones: Object.keys(IONES).map(k => ({ valor: k, texto: IONES[k].t })) },
+          { id: 'k', etiqueta: 'Doble enlace', opciones: [{ valor: 0, texto: 'Arriba' }, { valor: 1, texto: 'Izquierda' }, { valor: 2, texto: 'Derecha' }, { valor: 3, texto: 'Híbrido' }] },
+        ],
+        dibujo: val => resDib(val),
+        lectura: val => (val.k === 3 ? [`${IONES[val.ion].t}, híbrido: tres enlaces de orden 1⅓`]
+          : [`${IONES[val.ion].t}, doble ${['arriba', 'a la izquierda', 'a la derecha'][val.k]}: `, Nv, ` = ${f(resDib(val).nval, 0)} e⁻`]),
+        arrastres: [{ id: 'doble', etiqueta: 'doble enlace: llévalo a un oxígeno o al centro', color: 'c-i',
+          donde: val => mitad(resDib(val), val.k),
+          mover: (pt, val) => ({ k: dobleCerca(resDib(val), pt, true) }) }],
+      },
+    ],
     ideas: [tres, lewisSolo, res, geo, fuerzas],
   };
 });
