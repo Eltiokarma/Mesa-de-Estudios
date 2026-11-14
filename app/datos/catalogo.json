@@ -1937,7 +1937,15 @@
      "grado": 5,
      "plantillas": [
       "binomio-newton"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/binomio-de-newton.js",
+      "requiere": [
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     }
    ]
   },
