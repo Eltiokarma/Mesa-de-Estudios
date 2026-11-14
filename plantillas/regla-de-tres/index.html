@@ -154,6 +154,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 .tabla{border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:.95rem; background:var(--paper); border-radius:12px; overflow:hidden}
 .tabla th,.tabla td{padding:5px 12px; border-bottom:1px solid var(--line); text-align:right}
@@ -231,6 +232,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'regla-de-tres', unidad: 'aritmetica.magnitudes-proporcionales', version: '0.1.0' };
@@ -995,6 +997,12 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, el alumno estira al Sr. Alto (dedo o flechas ↑ ↓). Se mide solo en
+// botones: los clips quedan con «?», que es lo que pregunta el paso 1.
+E.compactar(false);
+cfgTira({ tira:{ altoB:6, pregunta:true, drag:true, maxB:8 }, lect:['bajoB','bajoC','altoB'] });
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra la cabeza del Sr. Alto para hacerlo más alto o más bajo.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 <script>
@@ -1133,6 +1141,12 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con el taller (36 obrero-días, dedo o flechas ← →). No
+// adelanta ninguna respuesta: los experimentos cambian la obra, las horas o usan ruedas y edades.
+E.compactar(false);
+E.config({ modo:'taller', taller:{ O:4, Y:9, Omax:12, Ymax:12, Omin:3, drag:true, rotObra:'obra' }, lect:['O','D'] });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el lado derecho del rectángulo para cambiar los obreros.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 

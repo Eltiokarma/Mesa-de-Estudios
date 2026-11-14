@@ -151,6 +151,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 .tabla{border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:.92rem; background:var(--paper); border-radius:12px; overflow:hidden}
 .tabla th,.tabla td{padding:4px 8px; border-bottom:1px solid var(--line); text-align:center; min-width:2.3em}
@@ -230,6 +231,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'sucesiones', unidad: 'razonamiento-matematico.razonamiento-inductivo', version: '0.1.0' };
@@ -1064,6 +1066,12 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, juego libre con la fila de triángulos (dedo o flechas). Ningún paso
+// pregunta por esta figura.
+E.compactar(false);
+cfgFig({ tipo:'triangulos', n:2, nmax:8, drag:true, color:false }, { lect:[LF.n, LF.t] });
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el círculo n para alargar o acortar la fila de triángulos.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 <script>
@@ -1206,6 +1214,12 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con las fichas en cuadrado (dedo o flechas). Ningún
+// experimento pregunta por esta figura.
+E.compactar(false);
+E.config({ modo:'figura', fig:{ tipo:'cuadrado-fichas', n:2, nmax:8, drag:true, color:true }, lect:[LF.n, LF.t] });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el círculo n para agrandar o achicar el cuadrado de fichas.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 

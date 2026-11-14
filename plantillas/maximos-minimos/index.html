@@ -163,6 +163,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 </style>
 <link rel="stylesheet" href="../../nucleo/pegatina.css">
@@ -233,6 +234,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'maximos-minimos', unidad: 'razonamiento-matematico.maximos-y-minimos', version: '0.1.0' };
@@ -1097,6 +1099,12 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, el alumno estira el corral de 24 m (dedo o flechas). El área queda
+// con «?», que es lo que pregunta el paso 1.
+E.compactar(false);
+E.config(Object.assign(corral1(false), { drag:true, desc:'Corral de 24 m de cordel: arrastra la esquina.' }));
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra la esquina del corral para cambiar su forma.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 <script>
@@ -1256,6 +1264,15 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con el corral de 24 m (dedo o flechas), el mismo que la
+// pregunta 1 ya presenta resuelto. No adelanta el cordel doble, la malla mínima, el río, el precio ni la plaza.
+E.compactar(false);
+E.config({ modo:'corral', drag:true, cor:{ tipo:'perimetro', valor:24, x:8, xmin:.5, xmax:11.5, verS:true },
+  lect:[E0 => ['x', 'Ancho x', m(E0.cor.x)], E0 => ['y', 'Largo y', m(MM.rectangulo({ perimetro:24, ancho:E0.cor.x }).largo)],
+    E0 => ['S', 'Área S', m2(MM.rectangulo({ perimetro:24, ancho:E0.cor.x }).area)]],
+  desc:'Corral de 24 m de cordel: arrastra la esquina.' });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra la esquina del corral y mira cómo cambia el área.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 
