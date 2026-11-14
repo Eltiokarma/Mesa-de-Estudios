@@ -15,6 +15,10 @@
  * Orden de atención · 1.º la figura (gráfica, tabla, recta, plano) · 2.º las raíces marcadas · acción: «Comprobar» · fondo: Nox.
  * Estados · juego sin tocar · casos probados · predicción elegida · revelado · paso a paso · caso nuevo · «No sé».
  * Duda que resuelve · por qué la gráfica no muestra todas las raíces y cuándo una raíz «trae» a su pareja.
+ * Gesto (ronda 2) · se arrastra la curva por su corte con el eje y (idea 1), las tres raíces sobre el eje (idea 2), la
+ *   candidata por el eje (idea 3), la raíz que choca con su pareja y sale del eje (idea 4), los valores de u (idea 5) y
+ *   la raíz vecina que cambia n (idea 6). Laboratorio: cúbica con raíces y a libres, grados 3, 4 y 5 que suben y bajan,
+ *   y zⁿ = w con w libre en el plano (el caso de w no real que las ideas no muestran).
  */
 (function (root, fabrica) {
   const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
@@ -77,6 +81,10 @@
     }
     return pts;
   }
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la pieza («ejes», «recta», «flechas»);
+  // los juegos tienen rangos fijos, así que la inversa lineal de la escala pasa del dedo al valor del control.
+  const inversa = (escala, a0, b0) => px => a0 + (px - escala(a0)) * (b0 - a0) / (escala(b0) - escala(a0));
+  const EJES = () => Kit.piezas.ejes, RECTA = () => Kit.piezas.recta, FL = () => Kit.piezas.flechas;
   function biseccion(fn, a, b) {
     let fa = fn(a);
     for (let i = 0; i < 60; i++) { const m = (a + b) / 2, fm = fn(m); if ((fm < 0) === (fa < 0)) { a = m; fa = fm; } else b = m; }
@@ -86,6 +94,7 @@
   // ---------- Idea 1: tantas raíces como el grado ----------
   // Cambia: c en x³ − 3x + c · Permanece: el grado 3 · Progresa: cortes reales que se vuelven pares no reales
   // · Se reserva: el grado 5 que solo corta tres veces · Debe verse: reales + no reales = grado.
+  // Se agarra: el corte de la curva con el eje y, que vale c; subirlo sube toda la curva.
   const EJES1 = { x: { min: -3, max: 3, paso: 1, nombre: 'x', decimales: 0, color: 'o' }, y: { min: -8, max: 8, paso: 4, nombre: 'y', decimales: 0 } };
   function cubica(c) {
     const p = v => v * v * v - 3 * v + c;
@@ -106,6 +115,11 @@
       consigna: 'Mueve c en y = x³ − 3x + c. Los puntos verdes son raíces reales; una raíz doble solo toca el eje.',
       voz: 'Cuenta los cortes al subir y bajar la curva.',
       controles: [{ id: 'c', etiqueta: 'c', color: 'c-h', min: -4, max: 4, paso: 1, inicio: 0, decimales: 0 }],
+      arrastres: [{
+        id: 'corte-y', etiqueta: 'corte con el eje y: sube o baja la curva', color: 'c-h',
+        donde: v => { const g = EJES().geometria(EJES1); return { x: g.X(0), y: g.Y(v.c) }; },
+        mover: pt => ({ c: inversa(EJES().geometria(EJES1).Y, -8, 8)(pt.y) }),
+      }],
       dibujo: v => {
         const q = cubica(v.c);
         return { datos: Object.assign({}, EJES1, { curvas: [{ puntos: curva(q.p, -3, 3, -8, 8), color: 'i' }], puntos: q.reales.map(([r, m]) => ({ x: r, y: 0, color: 'd', rotulo: m === 2 ? 'doble' : undefined })), alt: `Cúbica x³ − 3x + ${v.c}: ${q.reales.length} raíces reales distintas` }), estado: {} };
@@ -143,7 +157,7 @@
     },
     regla: {
       texto: 'Un polinomio de grado n ≥ 1 tiene exactamente n raíces complejas, si cada una se cuenta tantas veces como se repite. La gráfica solo muestra las reales.',
-      ecuacion: ['P(', z, ') = a(', z, ' − ', { sub: ['r', '1'] }, ')(', z, ' − ', { sub: ['r', '2'] }, ')…(', z, ' − ', { sub: ['r', 'n'] }, ')'],
+      ecuacion: ['P(', z, ') = a', { llave: ['(', z, ' − ', { sub: ['r', '1'] }, ')(', z, ' − ', { sub: ['r', '2'] }, ')…(', z, ' − ', { sub: ['r', 'n'] }, ')'], nota: 'n factores', color: 'c-d' }],
       condicion: 'grado n ≥ 1 y coeficiente principal a ≠ 0; una raíz doble cuenta dos veces.',
     },
     ahoraTu: {
@@ -196,24 +210,43 @@
     const [p, q, w] = rs;
     return { S1: p + q + w, S2: p * q + p * w + q * w, S3: p * q * w };
   };
+  // Se agarran las tres raíces sobre el eje x. Dos representaciones a propósito: el juego usa la gráfica (las raíces
+  // son lugares que se mueven) y la lectura en vivo da suma, productos de a dos y producto junto al polinomio
+  // desarrollado, rotulado sobre la curva; «Predice», «Mira» y «Ahora tú» pasan a la tabla, que alinea cada cuenta con
+  // su coeficiente. El primer paso de «Mira» parte de las mismas raíces escritas como factores.
+  const EJES2 = { x: { min: -4, max: 4, paso: 1, nombre: 'x', decimales: 0, color: 'o' }, y: { min: -12, max: 12, paso: 4, nombre: 'y', decimales: 0 } };
+  const graficaRaices = (rs, a = 1) => {
+    const c = desdeRaices(rs, a), p = v => valor(c, v);
+    return Object.assign({}, EJES2, {
+      // El polinomio va en la esquina que la cúbica deja libre: abajo a la derecha si a > 0, arriba si a < 0.
+      curvas: [{ puntos: curva(p, -4, 4, -12, 12), color: 'i', rotulo: poliTxt(c), en: a > 0 ? [3.95, -10] : [3.95, 11.5] }],
+      puntos: rs.map(r => ({ x: r, y: 0, color: 'd' })),
+      alt: `Gráfica de ${poliTxt(c)}, que corta el eje x en ${rs.map(r => f(r)).join(', ')}`,
+    });
+  };
+  const RAICES_ID = ['r1', 'r2', 'r3'], RAICES_TXT = ['r₁', 'r₂', 'r₃'];
+  const manijasRaices = (datosDe, ids = RAICES_ID) => ids.map((id, i) => ({
+    id: `raiz-${i + 1}`, etiqueta: `raíz ${RAICES_TXT[i]} sobre el eje x`, color: 'c-d',
+    donde: v => { const g = EJES().geometria(datosDe(v)); return { x: g.X(v[id]), y: g.Y(0) }; },
+    mover: (pt, v) => ({ [id]: inversa(EJES().geometria(datosDe(v)).X, -4, 4)(pt.x) }),
+  }));
   const vieta = {
     id: 'viete',
     titulo: 'Los coeficientes delatan las raíces',
     temas: ['Relaciones entre raíces y coeficientes'],
     pieza: 'alg-tabla',
     juega: {
-      consigna: 'Elige tres raíces. La tabla compara sus sumas y productos con los coeficientes de (x − r₁)(x − r₂)(x − r₃) desarrollado.',
-      voz: 'Mira los signos de cada columna.',
+      consigna: 'Arrastra las tres raíces por el eje. Sobre la curva va (x − r₁)(x − r₂)(x − r₃) desarrollado; compáralo con sus sumas y productos.',
+      voz: 'Mira los signos de cada coeficiente.',
+      pieza: 'ejes',
       controles: [
         { id: 'r1', etiqueta: 'r₁', color: 'c-d', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0 },
         { id: 'r2', etiqueta: 'r₂', color: 'c-d', min: -3, max: 3, paso: 1, inicio: 2, decimales: 0 },
         { id: 'r3', etiqueta: 'r₃', color: 'c-d', min: -3, max: 3, paso: 1, inicio: -1, decimales: 0 },
       ],
-      dibujo: v => {
-        const c = desdeRaices([v.r1, v.r2, v.r3]), V = vieteFila([v.r1, v.r2, v.r3]);
-        return { datos: { columnas: ['suma', 'de a dos', 'producto'], colorCol: ['d', 'd', 'd'], rotulosFila: ['raíces', 'coef.'], filas: [[f(V.S1), f(V.S2), f(V.S3)], [`−b = ${f(-c[1])}`, `c = ${f(c[2])}`, `−d = ${f(-c[3])}`]], pie: poliTxt(c), alt: `Raíces ${v.r1}, ${v.r2}, ${v.r3}: suma ${V.S1}, productos de a dos ${V.S2}, producto ${V.S3}` }, estado: {} };
-      },
-      lectura: v => ['P(', x, ') = ', ...poli(desdeRaices([v.r1, v.r2, v.r3]))],
+      dibujo: v => ({ datos: graficaRaices([v.r1, v.r2, v.r3]), estado: {} }),
+      lectura: v => { const V = vieteFila([v.r1, v.r2, v.r3]); return [`suma ${f(V.S1)}   ·   de a dos ${f(V.S2)}   ·   producto ${f(V.S3)}`]; },
+      arrastres: manijasRaices(v => graficaRaices([v.r1, v.r2, v.r3])),
       minimo: 3,
     },
     predice: {
@@ -248,7 +281,7 @@
     },
     regla: {
       texto: 'En ax³ + bx² + cx + d = 0, la suma de las raíces es −b/a, la de sus productos de a dos, c/a, y su producto, −d/a.',
-      ecuacion: [{ sub: ['r', '1'] }, ' + ', { sub: ['r', '2'] }, ' + ', { sub: ['r', '3'] }, ' = ', { frac: ['−b', 'a'] }],
+      ecuacion: [{ llave: [{ sub: ['r', '1'] }, ' + ', { sub: ['r', '2'] }, ' + ', { sub: ['r', '3'] }], nota: 'suma de raíces', color: 'c-d' }, ' = ', { frac: ['−b', 'a'] }],
       condicion: 'primero se divide entre a; un término que falta tiene coeficiente 0. Los signos alternan: −, +, −.',
     },
     ahoraTu: {
@@ -287,19 +320,38 @@
   // aparecen · Se reserva: 3/2 en un polinomio que empieza en 3 · Debe verse: p divide a d y q divide a a.
   const P3 = [2, -3, -3, 2];
   const CANDS = [[1, 1], [-1, 1], [2, 1], [-2, 1], [1, 2], [-1, 2]];
+  // Se agarra la candidata sobre el eje x: salta a la candidata más cercana y la curva muestra la altura P(p/q).
+  // Dos representaciones a propósito: en el juego, «es raíz» se ve como «la curva pasa por el eje»; «Predice», «Mira» y
+  // «Ahora tú» usan la tabla de candidatas, que es como se trabaja en papel. «Mira» repite las mismas seis candidatas.
+  const EJES3 = { x: { min: -2.5, max: 2.5, paso: 0.5, cada: 2, nombre: 'x', decimales: 1, color: 'o' }, y: { min: -20, max: 8, paso: 4, nombre: 'y', decimales: 0 } };
+  const graficaCandidata = k => {
+    const [p, q] = CANDS[k], val = valorFrac(P3, p, q), yv = val / q ** 3;
+    return Object.assign({}, EJES3, {
+      curvas: [{ puntos: curva(v => valor(P3, v), -2.5, 2.5, -20, 8), color: 'i' }],
+      puntos: [{ x: p / q, y: yv, color: val === 0 ? 'd' : 'h', rotulo: `P = ${fr(val, q ** 3)}`, guias: val !== 0 }],
+      alt: `Gráfica de 2x³ − 3x² − 3x + 2; en x = ${fr(p, q)} vale ${fr(val, q ** 3)}`,
+    });
+  };
   const racionales = {
     id: 'raices-racionales',
     titulo: 'Candidatas racionales: p entre q',
     temas: ['Raíces racionales'],
     pieza: 'alg-tabla',
     juega: {
-      consigna: 'P(x) = 2x³ − 3x² − 3x + 2. Prueba candidatas: la tabla calcula P en cada una. Una raíz da cero.',
+      consigna: 'P(x) = 2x³ − 3x² − 3x + 2. Arrastra la candidata por el eje: el punto marca P en ella. Una raíz da cero.',
       voz: 'Busca las tres que dan cero.',
+      pieza: 'ejes',
       controles: [{ id: 'k', etiqueta: 'Candidata', opciones: CANDS.map(([p, q], i) => ({ valor: i, texto: fr(p, q) })) }],
-      dibujo: v => {
-        const [p, q] = CANDS[v.k], val = valorFrac(P3, p, q);
-        return { datos: { columnas: ['candidata', 'P(candidata)', '¿raíz?'], filas: [[{ t: fr(p, q), color: 'o', fuerte: true }, fr(val, q ** 3), { t: val === 0 ? 'sí' : 'no', color: val === 0 ? 'd' : 'h', fuerte: true }]] }, estado: {} };
-      },
+      dibujo: v => ({ datos: graficaCandidata(v.k), estado: {} }),
+      arrastres: [{
+        id: 'candidata', etiqueta: 'candidata sobre el eje x', color: 'c-o',
+        donde: v => { const g = EJES().geometria(EJES3), [p, q] = CANDS[v.k]; return { x: g.X(p / q), y: g.Y(0) }; },
+        mover: pt => {
+          const xv = inversa(EJES().geometria(EJES3).X, -2.5, 2.5)(pt.x);
+          let k = 0; CANDS.forEach(([p, q], i) => { if (Math.abs(p / q - xv) < Math.abs(CANDS[k][0] / CANDS[k][1] - xv)) k = i; });
+          return { k };
+        },
+      }],
       lectura: v => { const [p, q] = CANDS[v.k], val = valorFrac(P3, p, q); return [`P(${fr(p, q)}) = ${fr(val, q ** 3)}`, val === 0 ? ': es raíz' : '']; },
       minimo: 4,
     },
@@ -333,7 +385,7 @@
     },
     regla: {
       texto: 'Si p/q, reducida, es raíz de un polinomio de coeficientes enteros, p divide al término independiente y q divide al coeficiente principal.',
-      ecuacion: [{ frac: ['p', 'q'] }, ':  p | ', { sub: ['a', '0'] }, '   ·   q | ', { sub: ['a', 'n'] }],
+      ecuacion: [{ frac: ['p', 'q'] }, ':  p | ', { llave: [{ sub: ['a', '0'] }], nota: 'el independiente' }, '   ·   q | ', { llave: [{ sub: ['a', 'n'] }], nota: 'el principal' }],
       condicion: 'coeficientes enteros. La lista da candidatas, no raíces: cada una se comprueba en el polinomio.',
     },
     ahoraTu: {
@@ -374,7 +426,11 @@
   // ---------- Idea 4: la pareja conjugada ----------
   // Cambia: b y c de x² + bx + c · Permanece: el plano (parte real, parte imaginaria) · Progresa: dos raíces reales
   // que chocan y se abren hacia arriba y abajo · Se reserva: la hipótesis «coeficientes reales» · Debe verse: espejo en el eje real.
-  const PLANO = { x: { min: -4, max: 4, paso: 1, nombre: 'real', decimales: 0, color: 'o' }, y: { min: -4, max: 4, paso: 1, nombre: 'imaginaria', decimales: 0 } };
+  // Se agarra: la raíz de la derecha (o la de arriba). Llevarla hacia la otra sube c; cuando chocan, sigue hacia arriba
+  // y su pareja baja en espejo. Con b fijo, c = b²/4 − (x + b/2)² + y² vale en el eje y fuera de él: el gesto es continuo.
+  // b queda en − y +: moverlo corre a las dos raíces a la vez, y una segunda manija sobre la otra raíz se leería como
+  // si cada raíz se moviera sola.
+  const PLANO = { x: { min: -5, max: 5, paso: 1, nombre: 'real', decimales: 0, color: 'o' }, y: { min: -4, max: 4, paso: 1, nombre: 'imaginaria', decimales: 0 } };
   const imag = (re, im) => (im === 0 ? f(re) : `${re ? f(re) + ' ' : ''}${im < 0 ? '−' : re ? '+' : ''}${re ? ' ' : ''}${Math.abs(im) === 1 ? '' : f(Math.abs(im), 2)}i`);
   const raicesCuad = (bb, cc) => {
     const d = bb * bb - 4 * cc;
@@ -395,9 +451,17 @@
       ],
       dibujo: v => {
         const rs = raicesCuad(v.b, v.c);
-        return { datos: Object.assign({}, PLANO, { puntos: rs.map(([re, im]) => ({ x: Math.max(-4, Math.min(4, re)), y: Math.max(-4, Math.min(4, im)), color: 'd', rotulo: imag(re, im) })), alt: `Raíces de x² + ${v.b}x + ${v.c}: ${rs.map(([re, im]) => imag(re, im)).join(' y ')}` }), estado: {} };
+        return { datos: Object.assign({}, PLANO, { puntos: rs.map(([re, im]) => ({ x: re, y: im, color: 'd', rotulo: imag(re, im) })), alt: `Raíces de x² + ${v.b}x + ${v.c}: ${rs.map(([re, im]) => imag(re, im)).join(' y ')}` }), estado: {} };
       },
-      lectura: v => { const d = v.b * v.b - 4 * v.c; return [d < 0 ? 'Dos raíces no reales, en espejo' : d === 0 ? 'Una raíz doble, real' : 'Dos raíces reales']; },
+      arrastres: [{
+        id: 'raiz', etiqueta: 'raíz de la derecha o de arriba', color: 'c-h',
+        donde: v => { const g = EJES().geometria(PLANO), [re, im] = raicesCuad(v.b, v.c)[1]; return { x: g.X(re), y: g.Y(Math.abs(im)) }; },
+        mover: (pt, v) => {
+          const g = EJES().geometria(PLANO), re = inversa(g.X, -5, 5)(pt.x), im = Math.max(0, inversa(g.Y, -4, 4)(pt.y));
+          return { c: v.b * v.b / 4 - (re + v.b / 2) ** 2 + im * im };
+        },
+      }],
+      lectura: v => { const d = v.b * v.b - 4 * v.c, rs = raicesCuad(v.b, v.c); return [d === 0 ? `${imag(...rs[0])}: raíz doble, real` : `${imag(...rs[0])} y ${imag(...rs[1])}: ${d < 0 ? 'no reales, en espejo' : 'reales'}`]; },
       minimo: 4,
     },
     predice: {
@@ -427,7 +491,7 @@
     },
     regla: {
       texto: 'Con coeficientes reales, si a + bi es raíz también lo es a − bi. Con coeficientes racionales, si a + b√d es raíz, también a − b√d.',
-      ecuacion: ['a + bi  →  a − bi'],
+      ecuacion: ['a + bi  →  ', { llave: ['a − bi'], nota: 'su conjugada', color: 'c-d' }],
       condicion: 'las hipótesis importan: √d irracional y a, b, d racionales. Con coeficientes irracionales, la pareja no está garantizada.',
     },
     ahoraTu: {
@@ -478,6 +542,7 @@
   // ---------- Idea 5: un cambio de variable ----------
   // Cambia: las dos raíces en u · Permanece: x⁴ − Sx² + P y la recta · Progresa: cada u positiva que se abre en ±√u
   // · Se reserva: u negativa, que no da x reales · Debe verse: dos filas, u arriba y x abajo.
+  // Se agarran: los dos valores de u en la fila de arriba; los x de abajo se abren o desaparecen al cruzar el 0.
   const RECTA5 = (elementos, extra = {}) => Object.assign({ min: -4, max: 6, paso: 1, decimales: 0, variable: 'x', color: 'o', filas: 2, elementos }, extra);
   const xDeU = uu => (uu > 0 ? [-Math.sqrt(uu), Math.sqrt(uu)] : uu === 0 ? [0] : []);
   const cambio = {
@@ -492,6 +557,11 @@
         { id: 'u1', etiqueta: 'u₁', color: 'c-i', min: -4, max: 4, paso: 1, inicio: 1, decimales: 0 },
         { id: 'u2', etiqueta: 'u₂', color: 'c-i', min: -4, max: 4, paso: 1, inicio: 4, decimales: 0 },
       ],
+      arrastres: ['u1', 'u2'].map((id, i) => ({
+        id: `valor-${id}`, etiqueta: `valor de ${['u₁', 'u₂'][i]}`, color: 'c-i',
+        donde: v => { const g = RECTA().geometria(RECTA5([])); return { x: g.x(v[id]), y: g.filaY(1) }; },
+        mover: pt => ({ [id]: inversa(RECTA().geometria(RECTA5([])).x, -4, 6)(pt.x) }),
+      })),
       dibujo: v => {
         const els = [v.u1, v.u2].flatMap((uu, i) => [{ tipo: 'punto', x: uu, color: 'i', abierto: uu < 0, rotulo: v.u1 === v.u2 ? (i ? undefined : 'u₁ = u₂') : ['u₁', 'u₂'][i], fila: 1 }, ...xDeU(uu).map(xx => ({ tipo: 'punto', x: xx, color: 'd' }))]);
         return { datos: RECTA5(els, { alt: `u = ${v.u1} y ${v.u2}: x reales ${[v.u1, v.u2].flatMap(xDeU).map(xx => f(xx)).join(', ') || 'ninguno'}` }), estado: {} };
@@ -530,7 +600,7 @@
     },
     regla: {
       texto: 'Con solo x⁴ y x², u = x² da una cuadrática; cada u > 0 da x = ±√u. Con coeficientes simétricos, se divide entre x² y se usa t = x + 1/x.',
-      ecuacion: [x, '² + ', { frac: ['1', [x, '²']] }, ' = ', t, '² − 2'],
+      ecuacion: [x, '² + ', { frac: ['1', [x, '²']] }, ' = ', { llave: [t], nota: 'x + 1/x', color: 'c-i' }, '² − 2'],
       condicion: 'u < 0 no da x reales; u = 0 da x = 0. En la recíproca se divide porque x = 0 no es raíz.',
     },
     ahoraTu: {
@@ -572,6 +642,8 @@
   // ---------- Idea 6: zⁿ = w, un polígono regular ----------
   // Cambia: n y w · Permanece: la circunferencia de radio ⁿ√|w| · Progresa: las n flechas separadas 360°/n
   // · Se reserva: z³ = 8 con dos raíces no reales · Debe verse: n raíces, todas a la misma distancia del origen.
+  // Se agarra: la segunda raíz (k = 1). Su ángulo es (θ + 360°)/n: acercarla a la primera mete más raíces en la vuelta.
+  // La manija solo usa el ángulo del dedo respecto del origen, así que no importa que la escala cambie con |w| y n.
   const CIRC = rr => Array.from({ length: 48 }, (_, i) => [rr * Math.cos(i * Math.PI / 24), rr * Math.sin(i * Math.PI / 24)]);
   const raicesBin = (n, w) => { const m = Math.abs(w) ** (1 / n), th = w < 0 ? 180 : 0; return Array.from({ length: n }, (_, k) => { const g = (th + 360 * k) / n; return { g, p: [m * Math.cos(g * Math.PI / 180), m * Math.sin(g * Math.PI / 180)] }; }); };
   const planoBin = (n, w, conFlechas = true, extra = {}) => {
@@ -592,10 +664,20 @@
       consigna: 'Elige n y w en zⁿ = w. Cada flecha verde es una solución: mira su largo y el ángulo entre flechas vecinas.',
       voz: 'Cuenta las flechas para cada n.',
       controles: [
-        { id: 'n', etiqueta: 'n', min: 2, max: 6, paso: 1, inicio: 3, decimales: 0 },
+        { id: 'n', etiqueta: 'n', min: 2, max: 6, paso: 1, inicio: 3, decimales: 0, color: 'c-d' },
         { id: 'w', etiqueta: 'w', opciones: [{ valor: 1, texto: '1' }, { valor: -1, texto: '−1' }, { valor: 16, texto: '16' }] },
       ],
       dibujo: v => ({ datos: planoBin(v.n, v.w), estado: {} }),
+      arrastres: [{
+        id: 'raiz-vecina', etiqueta: 'segunda raíz: acércala a la primera', color: 'c-d',
+        donde: v => { const g = FL().geometria(planoBin(v.n, v.w)), q = raicesBin(v.n, v.w)[1].p; return { x: g.X(q[0]), y: g.Y(q[1]) }; },
+        mover: (pt, v) => {
+          const g = FL().geometria(planoBin(v.n, v.w)), th = v.w < 0 ? 180 : 0;
+          let ang = Math.atan2(g.Y(0) - pt.y, pt.x - g.X(0)) * 180 / Math.PI;
+          if (ang < 0.5) ang += 360;
+          return { n: (th + 360) / ang };
+        },
+      }],
       lectura: v => [`${v.n} soluciones · módulo ${f(Math.abs(v.w) ** (1 / v.n))} · cada ${f(360 / v.n, 1)}°`],
       minimo: 4,
     },
@@ -622,7 +704,7 @@
     },
     regla: {
       texto: 'zⁿ = w, con w ≠ 0, tiene n soluciones: todas con módulo ⁿ√|w|, separadas 360°/n. Son los vértices de un polígono regular centrado en el origen.',
-      ecuacion: [{ sub: ['θ', 'k'] }, ' = ', { frac: ['θ + 360° · k', 'n'] }],
+      ecuacion: [{ llave: [{ sub: ['θ', 'k'] }], nota: 'ángulo de zₖ', color: 'c-d' }, ' = ', { frac: ['θ + 360° · k', 'n'] }],
       condicion: 'w ≠ 0; θ es el ángulo de w y k = 0, 1, …, n − 1. Solo una o dos soluciones pueden ser reales.',
     },
     ahoraTu: {
@@ -664,9 +746,91 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: la cúbica con sus tres raíces y el coeficiente principal a libres. Más rica que la idea 2: con a = 2 o
+  // a = −1 los coeficientes cambian y las cuentas de las raíces no; la lectura las da como −b/a, c/a y −d/a.
+  const cubicaLibre = v => graficaRaices([v.r1, v.r2, v.r3], v.a);
+  // Mesa 2: grado 3, 4 o 5 que sube y baja. Raíces reales contadas con su repetición: los cambios de signo en una
+  // malla fina (que no pasa por los puntos de tangencia) dan las simples; un mínimo o máximo que toca el eje, una doble.
+  const FAMILIAS = { 3: [1, 0, -3, 0], 4: [1, 0, -4, 0, 0], 5: [1, 0, -5, 0, 4, 0] };
+  const conC = (g, c) => { const k = FAMILIAS[g].slice(); k[k.length - 1] += c; return k; };
+  function realesConRepeticion(coefs) {
+    const p = v => valor(coefs, v), n = coefs.length - 1;
+    const d = coefs.slice(0, -1).map((a, i) => a * (n - i)), dp = v => valor(d, v);
+    let cuenta = 0;
+    const N = 4000, a0 = -3.0001, h = 6 / N;
+    for (let i = 0; i < N; i++) { const xa = a0 + i * h, xb = xa + h; if ((p(xa) < 0) !== (p(xb) < 0)) cuenta++; if ((dp(xa) < 0) !== (dp(xb) < 0)) { const xc = biseccion(dp, xa, xb); if (Math.abs(p(xc)) < 1e-6) cuenta += 2; } }
+    return cuenta;
+  }
+  const subeBaja = v => {
+    const k = conC(v.g, v.c);
+    return { datos: Object.assign({}, EJES1, { curvas: [{ puntos: curva(xx => valor(k, xx), -3, 3, -8, 8), color: 'i', rotulo: poliTxt(k), en: [-2.95, 7.5] }], alt: `Gráfica de ${poliTxt(k)}` }), estado: {} };
+  };
+  // Mesa 3: zⁿ = w con w libre en el plano (largo y ángulo), no solo 1, −1 o 16 como en la idea 6.
+  const L3 = 1.6;   // ventana fija: |w| hasta 1,5 y raíces de módulo hasta √1,5 ≈ 1,22
+  const binLibre = v => {
+    const m = v.rw ** (1 / v.n), R = Array.from({ length: v.n }, (_, k) => { const g = (v.tw + 360 * k) / v.n * Math.PI / 180; return [m * Math.cos(g), m * Math.sin(g)]; });
+    return { datos: {
+      guias: [{ de: [-L3, 0], a: [L3, 0] }, { de: [0, -L3], a: [0, L3] }],
+      contorno: v.n > 2 ? R : undefined,
+      flechas: [{ de: [0, 0], a: [v.rw * Math.cos(v.tw * Math.PI / 180), v.rw * Math.sin(v.tw * Math.PI / 180)], color: 'h', rotulo: 'w', discontinua: true }, ...R.map(q => ({ de: [0, 0], a: q, color: 'd' }))],
+    }, estado: {} };
+  };
+  const ANG = (pt, g, corte) => { let a = Math.atan2(g.Y(0) - pt.y, pt.x - g.X(0)) * 180 / Math.PI; if (a < corte) a += 360; return a; };
+  const laboratorio = [
+    {
+      id: 'cubica-libre', titulo: 'Cúbica con raíces y a libres', pieza: 'ejes',
+      consigna: 'Arrastra las tres raíces y elige a. Sobre la curva va el polinomio; abajo, la suma, los productos de a dos y el producto.',
+      controles: [
+        { id: 'r1', etiqueta: 'r₁', color: 'c-d', min: -3, max: 3, paso: 1, inicio: -2, decimales: 0 },
+        { id: 'r2', etiqueta: 'r₂', color: 'c-d', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0 },
+        { id: 'r3', etiqueta: 'r₃', color: 'c-d', min: -3, max: 3, paso: 1, inicio: 3, decimales: 0 },
+        { id: 'a', etiqueta: 'a', opciones: [{ valor: 1, texto: '1' }, { valor: 2, texto: '2' }, { valor: -1, texto: '−1' }] },
+      ],
+      dibujo: v => ({ datos: cubicaLibre(v), estado: {} }),
+      lectura: v => { const c = desdeRaices([v.r1, v.r2, v.r3], v.a); return [{ frac: ['−b', 'a'] }, ` = ${f(-c[1] / v.a)}   ·   `, { frac: ['c', 'a'] }, ` = ${f(c[2] / v.a)}   ·   `, { frac: ['−d', 'a'] }, ` = ${f(-c[3] / v.a)}`]; },
+      arrastres: manijasRaices(cubicaLibre),
+    },
+    {
+      id: 'sube-baja', titulo: 'Tres grados que suben y bajan', pieza: 'ejes',
+      consigna: 'Elige el grado y arrastra el corte con el eje y. Cuenta los cortes: una curva que solo toca el eje da una raíz doble.',
+      controles: [
+        { id: 'g', etiqueta: 'Grado', opciones: [{ valor: 3, texto: '3' }, { valor: 4, texto: '4' }, { valor: 5, texto: '5' }] },
+        { id: 'c', etiqueta: 'c', color: 'c-h', min: -6, max: 6, paso: 1, inicio: 0, decimales: 0 },
+      ],
+      dibujo: subeBaja,
+      lectura: v => { const m = realesConRepeticion(conC(v.g, v.c)); return [`Grado ${v.g}: ${m} ${m === 1 ? 'real' : 'reales'} y ${v.g - m} no ${v.g - m === 1 ? 'real' : 'reales'}`]; },
+      arrastres: [{
+        id: 'corte-y', etiqueta: 'corte con el eje y: sube o baja la curva', color: 'c-h',
+        donde: v => { const g = EJES().geometria(EJES1); return { x: g.X(0), y: g.Y(valor(conC(v.g, v.c), 0)) }; },
+        mover: pt => ({ c: inversa(EJES().geometria(EJES1).Y, -8, 8)(pt.y) }),
+      }],
+    },
+    {
+      id: 'w-libre', titulo: 'zⁿ = w con w libre', pieza: 'flechas',
+      consigna: 'Arrastra la punta de w (punteada) y la segunda raíz. Las raíces siguen a w: su ángulo se divide entre n.',
+      controles: [
+        { id: 'rw', etiqueta: '|w|', min: 0.5, max: 1.5, paso: 0.25, inicio: 1.5, decimales: 2, color: 'c-h' },
+        { id: 'tw', etiqueta: 'ángulo de w', min: 0, max: 345, paso: 15, inicio: 90, unidad: '°', decimales: 0, color: 'c-h' },
+        { id: 'n', etiqueta: 'n', min: 2, max: 6, paso: 1, inicio: 3, decimales: 0, color: 'c-d' },
+      ],
+      dibujo: binLibre,
+      lectura: v => [`|w| = ${f(v.rw)}, ${v.tw}°: ${v.n} raíces de módulo ${f(v.rw ** (1 / v.n))}, cada ${f(360 / v.n, 1)}°`],
+      arrastres: [
+        { id: 'punta-w', etiqueta: 'punta de w: largo y ángulo', color: 'c-h',
+          donde: v => { const g = FL().geometria(binLibre(v).datos), a = v.tw * Math.PI / 180; return { x: g.X(v.rw * Math.cos(a)), y: g.Y(v.rw * Math.sin(a)) }; },
+          mover: (pt, v) => { const g = FL().geometria(binLibre(v).datos); return { rw: Math.hypot(pt.x - g.X(0), pt.y - g.Y(0)) / g.s, tw: ANG(pt, g, -7.5) }; } },
+        { id: 'raiz-vecina', etiqueta: 'segunda raíz: acércala a la primera', color: 'c-d',
+          donde: v => { const g = FL().geometria(binLibre(v).datos), q = binLibre(v).datos.flechas[2].a; return { x: g.X(q[0]), y: g.Y(q[1]) }; },
+          mover: (pt, v) => ({ n: (v.tw + 360) / ANG(pt, FL().geometria(binLibre(v).datos), 0.5) }) },
+      ],
+    },
+  ];
+
   return {
     unidad: 'algebra.ecuaciones-polinomiales',
-    version: '0.1.0',
+    version: '0.2.0',
+    laboratorio,
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/flechas.js'],
     historia: {
