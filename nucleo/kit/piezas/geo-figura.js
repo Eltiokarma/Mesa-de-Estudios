@@ -17,7 +17,7 @@
  *   tresD: { giro: 30, alza: 20 },                 // si está, los puntos llevan z y se proyectan (ortogonal)
  *   cuadricula: { paso: 1 },  ejes: true,          // cuadrícula de 1 px y ejes x, y con punta
  *   puntos:    [{ id, x, y, z, rotulo, color, lado: grados, sinPunto, hueco, desde, hasta }],
- *   regiones:  [{ puntos: [id | [x, y(, z)]], color, opacidad, discontinua, sinBorde, desde, hasta }],
+ *   regiones:  [{ puntos: [id | [x, y(, z)]], color, opacidad, discontinua, sinBorde, fondo, desde, hasta }],  // fondo: tapa lo de atrás
  *   solidos:   [{ caras: [[id, …], …], color, desde, hasta }],   // caras en sentido antihorario vistas desde fuera:
  *                                                                // las aristas que solo tocan caras de atrás van discontinuas
  *   segmentos: [{ de, a, color, grosor: 'variable'|'contorno'|'fino', discontinua, recta, flecha, texto, lado: 1|-1,
@@ -252,7 +252,8 @@
       s += T.flecha(g.X(g.x0), g.Y(0), g.X(g.x1) + 8, g.Y(0), { grosor: 1 }) + T.flecha(g.X(0), g.Y(g.y0), g.X(0), g.Y(g.y1) - 8, { grosor: 1 });
       s += T.rotulo(g.X(g.x1) + 2, g.Y(0) - 8, 'x', { ancla: 'end' }) + T.rotulo(g.X(0) + 8, g.Y(g.y1) + 2, 'y');
     }
-    s += capa(d.regiones, r => trazo(camino(r.puntos.map(g.S).filter(Boolean), true), { color: r.color, relleno: true, opacidad: r.opacidad, discontinua: r.discontinua, sinBorde: r.sinBorde !== false && !r.discontinua }));
+    // fondo: la cara se pinta primero con el color de la tarjeta, así tapa lo que queda detrás (cubos apilados).
+    s += capa(d.regiones, r => { const dd = camino(r.puntos.map(g.S).filter(Boolean), true); return (r.fondo ? `<path d="${dd}" fill="var(--card)" stroke="none"/>` : '') + trazo(dd, { color: r.color, relleno: true, opacidad: r.opacidad, discontinua: r.discontinua, sinBorde: r.sinBorde !== false && !r.discontinua }); });
     s += capa(d.solidos, so => solido(g, so));
     s += capa(d.circulos, c => { const k = g.S(c.centro); return k ? `<circle cx="${T.n(k[0])}" cy="${T.n(k[1])}" r="${T.n(c.r * g.s)}" fill="${c.relleno ? T.color(c.color) : 'none'}"${c.relleno ? ' fill-opacity="0.14"' : ''} stroke="${T.color(c.color)}" stroke-width="${GROSOR[c.grosor] || GROSOR.contorno}"${c.discontinua ? ' stroke-dasharray="5 5"' : ''}/>` : ''; });
     s += capa(d.curvas, c => curva(g, c));

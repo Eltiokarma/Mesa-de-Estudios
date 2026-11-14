@@ -11,7 +11,7 @@ const TRI = {
   alt: 'Triángulo ABC con su altura desde C',
   vista: { x: [0, 8], y: [0, 5] },
   puntos: [{ id: 'A', x: 0, y: 0, rotulo: 'A' }, { id: 'B', x: 8, y: 0, rotulo: 'B' }, { id: 'C', x: 3, y: 4, rotulo: 'C' }, { id: 'H', x: 3, y: 0, rotulo: 'H', desde: 1 }],
-  regiones: [{ puntos: ['A', 'B', 'C'], color: 'i' }],
+  regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', fondo: true, sinBorde: false }],
   segmentos: [{ de: 'A', a: 'B', texto: '8' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A', marcas: 2 }, { de: 'C', a: 'H', color: 'h', grosor: 'variable', desde: 1, texto: 'h = 4' }],
   angulos: [{ en: 'H', de: 'B', a: 'C', color: 'h', desde: 1 }, { en: 'A', de: 'B', a: 'C', texto: '53°', color: 'o' }],
   circulos: [{ centro: 'C', r: 1, color: 'd', desde: 2 }],
@@ -35,7 +35,7 @@ test('pura, sin NaN, solo colores de variable o tinta, texto de 14 o más', () =
     const s = G.dibujar(d, { corte: c });
     assert.equal(s, G.dibujar(d, { corte: c }));
     assert.ok(!/NaN|undefined|Infinity/.test(s));
-    for (const m of s.matchAll(/(?:fill|stroke)="([^"]+)"/g)) assert.match(m[1], /^(none|currentColor|var\(--c-[oihdf]\))$/);
+    for (const m of s.matchAll(/(?:fill|stroke)="([^"]+)"/g)) assert.match(m[1], /^(none|currentColor|var\(--c-[oihdf]\)|var\(--card\))$/);
     for (const m of s.matchAll(/font-size="(\d+)"/g)) assert.ok(+m[1] >= 14);
   }
 });
