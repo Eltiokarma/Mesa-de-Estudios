@@ -47,6 +47,15 @@
     return ops.slice(0, 4);
   }
 
+  // Gesto directo (docs/teoria.md §4b). Las manijas leen posiciones con escalas que no cambian mientras se arrastra:
+  // fichas de tamaño fijo, rectas con tramo fijo y tiras con la misma escala. Si la escala cambiara con el valor, la
+  // manija saltaría bajo el dedo y se dispararía hasta el extremo.
+  const FICHAS = () => Kit.piezas['arit-fichas'], RECTA = () => Kit.piezas.recta, TIRAS = () => Kit.piezas['arit-tiras'];
+  const inversa = (escala, a0, b0) => px => a0 + (px - escala(a0)) * (b0 - a0) / (escala(b0) - escala(a0));
+  // Bloques centrados con fichas de tamaño fijo: el borde derecho del último bloque está en centro + ancho total / 2.
+  const bordeDerecho = datos => { const g = FICHAS().geometria(datos), k = g.xs.length - 1, c = g.caja(k); return { x: c.x + c.ancho, y: g.piso - g.paso / 2 }; };
+  const anchoTotalEn = (datos, x) => { const g = FICHAS().geometria(datos); return 2 * (x - (g.caja(0).x + (bordeDerecho(datos).x - g.caja(0).x) / 2)); };
+
   // ---------- Idea 1: dos escaleras forman un rectángulo (adición y sumatorias) ----------
   // Cambia: n, el largo de la escalera. Permanece: el tamaño de cada ficha.
   // Progresa: escalera → su copia girada → rectángulo n × (n + 1) → la mitad. Se reserva: dividir entre 2.
@@ -57,8 +66,10 @@
     return { bloques: [
       { filas, color: 'i', rotulo: `1 + … + ${k}` },
       { n: k * (k + 1), columnas: k + 1, color: 'i', tramos, rotulo: `${k} × ${k + 1}`, paso: con >= 1 ? 0 : 99 },
-    ], altoMax: 150, ficha: 26, alt: `Escalera de 1 a ${k} fichas; al lado, dos escaleras iguales forman un rectángulo de ${k} por ${k + 1}` };
+    ], altoMax: 150, ficha: 15, alt: `Escalera de 1 a ${k} fichas; al lado, dos escaleras iguales forman un rectángulo de ${k} por ${k + 1}` };
   };
+  // Ficha fija de 15 (con n = 9 caben 19 columnas): el ancho total es (2n + 1) · 15 + 18, y de ahí sale n.
+  const nDeAncho = ancho => (ancho - 18 - 15) / 30;
   const sumatorias = {
     id: 'sumatorias',
     titulo: 'Dos escaleras, un rectángulo',
@@ -71,6 +82,10 @@
       dibujo: v => ({ datos: escaleras(v.n), estado: {} }),
       lectura: v => [`1 + … + ${v.n} = `, { v: 'c-d', t: String(v.n * (v.n + 1) / 2) }, ` · rectángulo ${v.n} × ${v.n + 1}`],
       minimo: 3,
+      // Se tira del borde derecho del rectángulo: agrega una columna y, con ella, un escalón.
+      arrastres: [{ id: 'borde', etiqueta: 'borde derecho del rectángulo (n)', color: 'c-o',
+        donde: v => bordeDerecho(escaleras(v.n)),
+        mover: (pt, v) => ({ n: nDeAncho(anchoTotalEn(escaleras(v.n), pt.x)) }) }],
     },
     predice: {
       pregunta: '¿Cuánto es 1 + 2 + 3 + … + 20?',
@@ -98,7 +113,7 @@
     },
     regla: {
       texto: 'La suma de 1 a n es la mitad de un rectángulo de n por n + 1. Para consecutivos de a hasta z: primero más último, por cuántos, entre 2.',
-      ecuacion: ['1 + 2 + … + ', n_, ' = ', { frac: [[n_, '(', n_, ' + 1)'], '2'] }, '   ·   a + … + z = ', { frac: ['(a + z)(z − a + 1)', '2'] }],
+      ecuacion: ['1 + 2 + … + ', n_, ' = ', { llave: [{ frac: [[n_, '(', n_, ' + 1)'], '2'] }], nota: 'medio rectángulo', color: 'c-o' }, '   ·   ', 'a + … + z = ', { frac: ['(a + z)(z − a + 1)', '2'] }],
       condicion: 'los sumandos son consecutivos (suben de 1 en 1). Con pares 2 + 4 + … + 2n, la suma es n(n + 1).',
     },
     ahoraTu: {
@@ -146,12 +161,15 @@
   // Cambia: N. Permanece: la recta de 0 a 10ᵏ, con k = cantidad de cifras de N.
   // Progresa: N → lo que falta hasta 10ᵏ → el atajo cifra por cifra. Se reserva: «de 10 la última no nula».
   // Debe verse: el complemento es una distancia en la recta.
-  const rectaCA = (Nv, final = true) => {
+  // fija: recta de 0 a 1 000 siempre (el juego): la meta salta de 100 a 1 000 cuando N gana una cifra, y la manija
+  // no cambia de escala bajo el dedo. Sin fija, la recta llega justo a la potencia (predicción, mira, ahora tú).
+  const rectaCA = (Nv, final = true, fija = false) => {
     const k = cifras(Nv), P = 10 ** k;
     return {
-      min: 0, max: P, paso: P / 10, decimales: 0, variable: 'N', color: 'o', filas: 1,
+      min: 0, max: fija ? 1000 : P, paso: (fija ? 1000 : P) / 10, decimales: 0, variable: 'N', color: 'o', filas: 1,
       elementos: [
-        { tipo: 'punto', x: Nv, color: 'o', rotulo: f(Nv), fila: 0 },
+        // Con la recta fija, N cerca de la meta pierde su rótulo (chocaría con el de la meta; la lectura lo dice).
+        { tipo: 'punto', x: Nv, color: 'o', rotulo: fija && P - Nv < 160 ? undefined : f(Nv), fila: 0 },
         { tipo: 'punto', x: P, color: 'i', rotulo: f(P), fila: 0 },
         { tipo: 'distancia', a: Nv, b: P, color: 'd', rotulo: `CA = ${f(P - Nv)}`, fila: 1, desde: final ? 0 : 1 },
       ],
@@ -166,10 +184,13 @@
     juega: {
       consigna: 'Elige N. Su complemento aritmético es lo que le falta para llegar a 10, 100 o 1 000, según sus cifras.',
       voz: 'Mira dónde termina la recta cuando N gana una cifra.',
-      controles: [{ id: 'N', etiqueta: 'N', color: 'c-o', min: 10, max: 990, paso: 20, inicio: 70, decimales: 0 }],
-      dibujo: v => ({ datos: rectaCA(v.N), estado: {} }),
+      controles: [{ id: 'N', etiqueta: 'N', color: 'c-o', min: 20, max: 980, paso: 20, inicio: 80, decimales: 0 }],
+      dibujo: v => ({ datos: rectaCA(v.N, true, true), estado: {} }),
       lectura: v => ['CA(', N, `) = ${f(10 ** cifras(v.N))} − ${f(v.N)} = `, { v: 'c-d', t: f(ca(v.N)) }],
       minimo: 3,
+      arrastres: [{ id: 'n', etiqueta: 'el número N en la recta', color: 'c-o',
+        donde: v => { const g = RECTA().geometria(rectaCA(v.N, true, true)); return { x: g.x(v.N), y: g.filaY(0) }; },
+        mover: pt => ({ N: inversa(RECTA().geometria(rectaCA(10, true, true)).x, 0, 1000)(pt.x) }) }],
     },
     predice: {
       pregunta: ['¿Cuál es el complemento aritmético de ', { v: 'c-o', t: '3 400' }, '?'],
@@ -193,7 +214,7 @@
     },
     regla: {
       texto: 'El complemento aritmético de N es lo que le falta para la potencia de 10 con tantos ceros como cifras tiene N.',
-      ecuacion: ['CA(', N, ') = ', { sup: ['10', 'k'] }, ' − ', N, '   ·   ', N, ' tiene k cifras'],
+      ecuacion: ['CA(', N, ') = ', { llave: [{ sup: ['10', 'k'] }], nota: 'la meta' }, ' − ', N, '   ·   ', N, ' tiene k cifras'],
       condicion: 'k son las cifras de N. En base b la potencia es bᵏ: se resta de b − 1 y de b.',
     },
     ahoraTu: {
@@ -220,9 +241,10 @@
   // Cambia: el dividendo y el divisor. Permanece: la recta de múltiplos del divisor.
   // Progresa: el múltiplo de abajo (defecto) → el de arriba (exceso). Se reserva: r + rₑ = d.
   // Debe verse: a está entre dos múltiplos consecutivos; cada resto es una distancia distinta.
-  const rectaDiv = (av, dv, final = true) => {
+  // tramo: [desde, hasta] fijo (el juego y el laboratorio): la recta no se corre cuando a pasa un múltiplo.
+  const rectaDiv = (av, dv, final = true, tramo = null) => {
     const qv = Math.floor(av / dv), rv = av - qv * dv;
-    const lo = dv * Math.max(0, qv - 1), hi = dv * (qv + 2);
+    const lo = tramo ? tramo[0] : dv * Math.max(0, qv - 1), hi = tramo ? tramo[1] : dv * (qv + 2);
     return {
       min: lo, max: hi, paso: dv, decimales: 0, variable: 'múltiplos de ' + dv, color: 'i', filas: 3,
       elementos: [
@@ -234,6 +256,10 @@
       ],
     };
   };
+  const TRAMO = [15, 70];   // a de 20 a 60 y d hasta 9: los dos múltiplos vecinos caben siempre
+  const aEnRecta = tramo => ({ id: 'a', etiqueta: 'el dividendo a en la recta', color: 'c-o',
+    donde: v => { const g = RECTA().geometria(rectaDiv(v.a, v.d, true, tramo)); return { x: g.x(v.a), y: g.filaY(1) }; },
+    mover: (pt, v) => ({ a: inversa(RECTA().geometria(rectaDiv(v.a, v.d, true, tramo)).x, tramo[0], tramo[1])(pt.x) }) });
   const division = {
     id: 'defecto-exceso',
     titulo: 'Resto por defecto y por exceso',
@@ -246,9 +272,10 @@
         { id: 'a', etiqueta: 'a', color: 'c-o', min: 20, max: 60, paso: 1, inicio: 26, decimales: 0 },
         { id: 'd', etiqueta: 'd', color: 'c-i', min: 3, max: 9, paso: 1, inicio: 4, decimales: 0 },
       ],
-      dibujo: v => ({ datos: rectaDiv(v.a, v.d), estado: { corte: 1 } }),
+      dibujo: v => ({ datos: rectaDiv(v.a, v.d, true, TRAMO), estado: { corte: 1 } }),
       lectura: v => { const qv = Math.floor(v.a / v.d), rv = v.a % v.d; return [`${v.a} = ${v.d}·${qv} + ${rv} = ${v.d}·${qv + 1} − ${rv ? v.d - rv : 0}`]; },
       minimo: 3,
+      arrastres: [aEnRecta(TRAMO)],
     },
     predice: {
       pregunta: ['Al dividir ', { v: 'c-o', t: '47' }, ' entre ', { v: 'c-i', t: '6' }, ' por defecto, el cociente es 7 y el resto 5. ¿Cuál es el resto por exceso?'],
@@ -272,7 +299,7 @@
     },
     regla: {
       texto: 'Por defecto, a = dq + r. Por exceso, el cociente sube uno y se resta lo que falta. Los dos restos suman el divisor.',
-      ecuacion: [a, ' = ', dd, q, ' + ', r, ' = ', dd, '(', q, ' + 1) − ', re, '   ·   ', r, ' + ', re, ' = ', dd],
+      ecuacion: [a, ' = ', dd, q, ' + ', { llave: [r], nota: 'lo que pasa', color: 'c-h' }, '   ·   ', a, ' = ', dd, '(', q, ' + 1) − ', { llave: [re], nota: 'lo que falta', color: 'c-h' }, '   ·   ', r, ' + ', re, ' = ', dd],
       condicion: 'd > 0 y 0 < r < d. Si la división es exacta, el resto es 0 y hay un solo cociente.',
     },
     ahoraTu: {
@@ -352,7 +379,7 @@
     },
     regla: {
       texto: 'En base b se opera columna por columna como en base 10, pero cada b unidades de una columna se llevan como 1 a la siguiente.',
-      ecuacion: ['suma de la columna = ', bb, ' · lleva + escribe'],
+      ecuacion: ['suma de la columna = ', { llave: [bb, ' · lleva'], nota: 'a la siguiente', color: 'c-i' }, ' + escribe'],
       condicion: 'todas las cifras son menores que b. Al restar, cada préstamo trae b unidades, no 10.',
     },
     ahoraTu: {
@@ -413,6 +440,10 @@
       dibujo: v => ({ datos: tirasProd(v.a, v.b), estado: {} }),
       lectura: v => { const dc = Math.floor(v.a / 10) * 10; return [`${v.a} · ${v.b} = ${dc * v.b} + ${(v.a - dc) * v.b} = `, { v: 'c-d', t: String(v.a * v.b) }]; },
       minimo: 3,
+      // Se tira del final de la tira: cada grupo de b que se agrega sube a en 1 (la escala es fija: 360).
+      arrastres: [{ id: 'fin', etiqueta: 'final de la tira (el factor a)', color: 'c-o',
+        donde: v => { const g = TIRAS().geometria(tirasProd(v.a, v.b)); return { x: g.x(v.a * v.b), y: g.tiraY(0) }; },
+        mover: (pt, v) => ({ a: TIRAS().geometria(tirasProd(v.a, v.b)).deX(pt.x) / v.b }) }],
     },
     predice: {
       pregunta: ['En ', { v: 'c-o', t: '24' }, ' × ', { v: 'c-i', t: '7' }, ', el primer factor aumenta en 3. ¿En cuánto aumenta el producto?'],
@@ -436,7 +467,7 @@
     },
     regla: {
       texto: 'Multiplicar reparte sobre la suma. Si un factor aumenta k, el producto aumenta k veces el otro factor.',
-      ecuacion: ['(m + n) · ', bb, ' = m · ', bb, ' + n · ', bb, '   ·   (a + k) · ', bb, ' = a · ', bb, ' + k · ', bb],
+      ecuacion: ['(m + n) · ', bb, ' = m · ', bb, ' + n · ', bb, '   ·   ', '(a + k) · ', bb, ' = a · ', bb, ' + ', { llave: ['k · ', bb], nota: 'lo que sube', color: 'c-h' }],
       condicion: 'el otro factor no cambia. Si los dos cambian, se suman los dos aportes y el de k por el otro cambio.',
     },
     ahoraTu: {
@@ -517,7 +548,7 @@
     },
     regla: {
       texto: 'Si A tiene m cifras y B tiene n, A · B tiene m + n − 1 o m + n. El cociente entero A ÷ B tiene m − n o m − n + 1.',
-      ecuacion: ['m + n − 1 ≤ cifras(A·B) ≤ m + n'],
+      ecuacion: ['m + n − 1 ≤ c ≤ m + n', '   ·   ', 'c: cifras de A·B'],
       condicion: 'A y B son enteros positivos y, en el cociente, A ≥ B. Para decidir entre los dos, se miran las primeras cifras.',
     },
     ahoraTu: {
@@ -545,11 +576,105 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Escalera de a hasta z y su copia girada: un rectángulo de (z − a + 1) filas por (a + z) columnas. Ficha fija de 11.
+  function escalerasAZ(a0, z0) {
+    const k = z0 - a0 + 1, c = a0 + z0;
+    const filas = Array.from({ length: k }, (_, i) => a0 + i);
+    const tramos = filas.map((x, i) => ({ de: i * c + x, a: i * c + c - 1, color: 'h' }));
+    return { bloques: [
+      { filas, color: 'i', rotulo: `${a0} + … + ${z0}` },
+      { n: k * c, columnas: c, color: 'i', tramos, rotulo: `${k} × ${c}` },
+    ], altoMax: 150, ficha: 11, alt: `Escalera de ${a0} a ${z0}; al lado, dos escaleras iguales forman un rectángulo de ${k} por ${c}` };
+  }
+  // Recta de 0 a 112 (fija) con los dos múltiplos vecinos; si la división es exacta, a cae sobre el múltiplo.
+  function rectaLab(av, dv) {
+    const qv = Math.floor(av / dv), rv = av - qv * dv;
+    return {
+      min: 0, max: 112, paso: dv, decimales: 0, variable: 'múltiplos de ' + dv, color: 'i', filas: 3,
+      elementos: [
+        { tipo: 'punto', x: qv * dv, color: 'i', fila: 0 },
+        { tipo: 'punto', x: (qv + 1) * dv, color: 'i', fila: 0 },
+        { tipo: 'punto', x: av, color: 'o', rotulo: `a = ${f(av)}`, fila: 1 },
+        ...(rv ? [
+          { tipo: 'distancia', a: qv * dv, b: av, color: 'h', rotulo: `r = ${rv}`, fila: 2 },
+          { tipo: 'distancia', a: av, b: (qv + 1) * dv, color: 'h', rotulo: `rₑ = ${dv - rv}`, fila: 3 },
+        ] : []),
+      ],
+    };
+  }
+  // Dos tiras a la misma escala (0 a 432 = 48 · 9): a · b arriba y (a + k) · b abajo, con el pedazo k · b en rojo.
+  function dosProductos(av, bv, k) {
+    const base = Math.min(av, av + k), extra = Math.abs(k) * bv;
+    const abajo = [{ valor: base * bv, color: 'o', texto: `${base}·${bv}` }];
+    if (k > 0) abajo.push({ valor: extra, color: 'h', texto: `+${k}·${bv}` });
+    const arriba = [{ valor: base * bv, color: 'o', texto: `${base}·${bv}` }];
+    if (k < 0) arriba.push({ valor: extra, color: 'h', hueco: true });
+    return { max: 432, filas: 2, alt: `Tira de ${av} por ${bv} y tira de ${av + k} por ${bv}: difieren en ${Math.abs(k)} por ${bv}`, tiras: [
+      { rotulo: `${av} × ${bv}`, color: 'o', fin: f(av * bv), tramos: arriba },
+      { rotulo: `${av + k} × ${bv}`, color: 'o', fin: f((av + k) * bv), tramos: abajo },
+    ] };
+  }
+
   return {
     unidad: 'aritmetica.cuatro-operaciones',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-tiras.js'],
+    // Laboratorio: juego libre, sin preguntas. «Escaleras que no empiezan en 1» generaliza la idea 1 (de a hasta z);
+    // «Restos con números grandes» abre a hasta 100 y d hasta 12, con divisiones exactas; «Dos productos» pone a · b
+    // y (a + k) · b en la misma escala, con k negativo también.
+    laboratorio: [
+      {
+        id: 'escaleras-a-z', titulo: 'Escaleras que no empiezan en 1', pieza: 'arit-fichas',
+        consigna: 'La escalera va de a hasta z. Dos escaleras iguales forman un rectángulo. Tira de su borde para cambiar z.',
+        controles: [
+          { id: 'a', etiqueta: 'a', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 3, decimales: 0 },
+          { id: 'z', etiqueta: 'z', color: 'c-i', min: 5, max: 10, paso: 1, inicio: 7, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: escalerasAZ(v.a, v.z), estado: {} }),
+        lectura: v => { const k = v.z - v.a + 1; return [`${v.a} + … + ${v.z} = ${k} · ${v.a + v.z} / 2 = `, { v: 'c-d', t: String(k * (v.a + v.z) / 2) }]; },
+        arrastres: [{ id: 'borde', etiqueta: 'borde derecho del rectángulo (z)', color: 'c-i',
+          donde: v => bordeDerecho(escalerasAZ(v.a, v.z)),
+          // Ancho total: (z + (a + z)) · 11 + 18, de ahí z.
+          mover: (pt, v) => ({ z: ((anchoTotalEn(escalerasAZ(v.a, v.z), pt.x) - 18) / 11 - v.a) / 2 }) }],
+      },
+      {
+        id: 'restos-grandes', titulo: 'Restos con números grandes', pieza: 'recta',
+        consigna: 'a de 0 a 100 y d de 2 a 12. Arrastra a: cuando cae en un múltiplo, la división es exacta.',
+        controles: [
+          { id: 'a', etiqueta: 'a', color: 'c-o', min: 0, max: 100, paso: 1, inicio: 47, decimales: 0 },
+          { id: 'd', etiqueta: 'd', color: 'c-i', min: 2, max: 12, paso: 1, inicio: 6, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: rectaLab(v.a, v.d), estado: { corte: 1 } }),
+        lectura: v => {
+          const qv = Math.floor(v.a / v.d), rv = v.a % v.d;
+          return rv ? [`${v.a} ÷ ${v.d}: r = ${rv}, `, re, ` = ${v.d - rv} (suman ${v.d})`] : [`${v.a} ÷ ${v.d} es exacta: ${v.a} = ${v.d} · ${qv}`];
+        },
+        arrastres: [{ id: 'a', etiqueta: 'el dividendo a en la recta', color: 'c-o',
+          donde: v => { const g = RECTA().geometria(rectaLab(v.a, v.d)); return { x: g.x(v.a), y: g.filaY(1) }; },
+          mover: (pt, v) => ({ a: inversa(RECTA().geometria(rectaLab(v.a, v.d)).x, 0, 112)(pt.x) }) }],
+      },
+      {
+        id: 'dos-productos', titulo: 'Dos productos', pieza: 'arit-tiras',
+        consigna: 'Arriba a · b; abajo (a + k) · b, con la misma escala. Arrastra el final de cada tira.',
+        controles: [
+          { id: 'a', etiqueta: 'a', color: 'c-o', min: 10, max: 39, paso: 1, inicio: 24, decimales: 0 },
+          { id: 'b', etiqueta: 'b', color: 'c-i', min: 2, max: 9, paso: 1, inicio: 7, decimales: 0 },
+          { id: 'k', etiqueta: 'k', color: 'c-h', min: -9, max: 9, paso: 1, inicio: 3, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: dosProductos(v.a, v.b, v.k), estado: {} }),
+        lectura: v => [`${v.a + v.k} · ${v.b} − ${v.a} · ${v.b} = ${v.k} · ${v.b} = `, { v: 'c-h', t: f(v.k * v.b) }],
+        arrastres: [
+          { id: 'fin-a', etiqueta: 'final de la tira de arriba (a)', color: 'c-o',
+            donde: v => { const g = TIRAS().geometria(dosProductos(v.a, v.b, v.k)); return { x: g.x(v.a * v.b), y: g.tiraY(0) }; },
+            mover: (pt, v) => ({ a: TIRAS().geometria(dosProductos(v.a, v.b, v.k)).deX(pt.x) / v.b }) },
+          { id: 'fin-k', etiqueta: 'final de la tira de abajo (k)', color: 'c-h',
+            donde: v => { const g = TIRAS().geometria(dosProductos(v.a, v.b, v.k)); return { x: g.x((v.a + v.k) * v.b), y: g.tiraY(1) }; },
+            mover: (pt, v) => ({ k: TIRAS().geometria(dosProductos(v.a, v.b, v.k)).deX(pt.x) / v.b - v.a }) },
+        ],
+      },
+    ],
     historia: {
       texto: 'Los papiros matemáticos egipcios multiplican sin nuestra tabla: duplican y suman algunos duplicados. Para 13 × 7 bastaba sumar 8 × 7, 4 × 7 y 1 × 7. Dividir era buscar qué múltiplos formaban una cantidad. Muestra que una operación y su procedimiento no son lo mismo: lo que se conserva es la propiedad de repartir.',
       pregunta: '¿Cómo multiplicarías solo duplicando y sumando?',

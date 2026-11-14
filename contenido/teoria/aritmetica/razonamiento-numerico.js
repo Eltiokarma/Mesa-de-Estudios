@@ -42,6 +42,12 @@
     return ops.slice(0, 4);
   }
 
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza (arit-tiras: x y deX; recta: x y
+  // filaY con la inversa lineal); el lector ajusta cada valor al paso y al rango de su control.
+  const TIRAS = () => Kit.piezas['arit-tiras'], RECTA = () => Kit.piezas.recta;
+  const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+  const NB = '\u00a0';   // espacio duro: «S/ 8» no se parte
+
   // ---------- Idea 1: falsa suposición = cambio constante por canje ----------
   // Cambia: cuántas entradas son caras. Permanece: 12 entradas y la meta de S/ 81. Progresa: todas baratas → cada canje suma 3.
   // Se reserva: dividir lo que falta entre la diferencia de precios. Debe verse: cada canje agrega el mismo pedazo.
@@ -62,8 +68,12 @@
       voz: 'Mira cuánto crece la tira con cada entrada que cambias.',
       controles: [{ id: 'k', etiqueta: 'Entradas de S/ 8', color: 'c-i', min: 0, max: 12, paso: 1, inicio: 0, unidad: '', decimales: 0 }],
       dibujo: v => ({ datos: tirasCanje(12, 5, 8, v.k, 81), estado: {} }),
-      lectura: v => [T, ` = 60 + 3 · ${v.k} = ${60 + 3 * v.k} soles`],
+      lectura: v => [T, ` = 60 + 3 · ${v.k} = ${60 + 3 * v.k}${NB}soles`],
       minimo: 3,
+      // Se estira la tira del pago hasta la meta: cada entrada que se cambia la alarga 3.
+      arrastres: [{ id: 'pago', etiqueta: 'fin de la tira del pago', color: 'c-i',
+        donde: v => { const g = TIRAS().geometria(tirasCanje(12, 5, 8, v.k, 81)); return { x: g.x(60 + 3 * v.k), y: g.centroY(0) }; },
+        mover: pt => ({ k: (TIRAS().geometria(tirasCanje(12, 5, 8, 0, 81)).deX(pt.x) - 60) / 3 }) }],
     },
     predice: {
       pregunta: '20 animales, entre gallinas (2 patas) y conejos (4 patas), suman 56 patas. ¿Cuántos conejos hay?',
@@ -91,7 +101,7 @@
     },
     regla: {
       texto: 'Se supone que todos son del tipo más barato. Lo que falta para el total, dividido entre lo que agrega cada canje, da cuántos son del otro tipo.',
-      ecuacion: [{ sub: ['n', 'b'] }, ' = ', { frac: [[T, ' − n · a'], 'b − a'] }],
+      ecuacion: [{ sub: ['n', 'b'] }, ' = ', { frac: [[{ llave: [T, ' − n · a'], nota: 'lo que falta', color: 'c-d' }], [{ llave: ['b − a'], nota: 'cada canje', color: 'c-i' }]] }],
       condicion: 'cada canje cambia el total en la misma cantidad b − a; es una ecuación lineal escrita de otra forma.',
     },
     ahoraTu: {
@@ -160,7 +170,7 @@
     },
     regla: {
       texto: 'Para hallar el inicio se parte del final y se aplica la operación inversa de cada paso, en orden contrario. Siempre se comprueba de ida.',
-      ecuacion: ['× ↔ ÷;   + ↔ −;   último paso → primero que se deshace'],
+      ecuacion: ['× ↔ ÷', '   ·   ', '+ ↔ −', '   ·   ', 'último → primero'],
       condicion: 'cada operación es invertible en el dominio: no se multiplica por 0 y las divisiones quedan dentro de los números permitidos.',
     },
     ahoraTu: {
@@ -204,8 +214,12 @@
       voz: 'Mira el pedazo turquesa mientras cambias los años.',
       controles: [{ id: 'a', etiqueta: 'Años que pasan', color: 'c-h', min: -8, max: 30, paso: 2, inicio: 0, unidad: 'años', decimales: 0 }],
       dibujo: v => ({ datos: tirasEdad(40, 10, v.a), estado: {} }),
-      lectura: v => [`Diferencia 30; el padre tiene ${f((40 + v.a) / (10 + v.a))} veces la edad`],
+      lectura: v => [`Diferencia 30 · el padre tiene ${f((40 + v.a) / (10 + v.a))} veces la edad`],
       minimo: 3,
+      // Se agarra el fin de la tira del hijo: moverlo es hacer pasar los años (las dos tiras crecen lo mismo).
+      arrastres: [{ id: 'hijo', etiqueta: 'edad del hijo', color: 'c-h',
+        donde: v => { const g = TIRAS().geometria(tirasEdad(40, 10, v.a)); return { x: g.x(10 + v.a), y: g.centroY(0) }; },
+        mover: (pt, v) => ({ a: TIRAS().geometria(tirasEdad(40, 10, v.a)).deX(pt.x) - 10 }) }],
     },
     predice: {
       pregunta: 'Hoy el padre tiene 40 años y su hijo 10: cuatro veces su edad. ¿Dentro de cuántos años tendrá el doble?',
@@ -230,7 +244,7 @@
     },
     regla: {
       texto: 'Con el tiempo, todas las edades aumentan lo mismo: la diferencia queda fija y la razón entre las edades cambia.',
-      ecuacion: ['(P + ', t, ') − (H + ', t, ') = P − H'],
+      ecuacion: ['(P + ', t, ') − (H + ', t, ') = ', { llave: ['P − H'], nota: 'diferencia fija', color: 'c-i' }],
       condicion: 'los años que pasan son los mismos para todos; hacia el pasado t es negativo y ninguna edad baja de cero.',
     },
     ahoraTu: {
@@ -257,7 +271,7 @@
             { id: 'edad', valor: objetivo, error: 'AT-PREGUNTA', siFuera: 'Esa es la edad que tendrá Luis, no los años que pasan.' },
             { id: 'rm3', valor: Math.round((h + dif) / k - h), error: 'RM3', siFuera: 'Eso divide la edad de hoy del padre; él también envejece.' },
           ], z => `${z} años`),
-          solucion: { texto: `La diferencia ${dif} queda fija: Luis debe tener ${objetivo}.`, ecuacion: [`hijo + ${dif} = ${k} · hijo   ⇒   hijo = ${objetivo};   ${objetivo} − ${h} = ${a}`] },
+          solucion: { texto: `La diferencia ${dif} queda fija: Luis debe tener ${objetivo}.`, ecuacion: [`hijo + ${dif} = ${k} · hijo   ⇒   hijo = ${objetivo}`, '   ·   ', `${objetivo} − ${h} = ${a}`] },
         };
       },
     },
@@ -266,7 +280,7 @@
   // ---------- Idea 4: móviles, la distancia cambia a la rapidez relativa ----------
   // Cambia: las rapideces y si van al encuentro o uno persigue al otro. Permanece: la distancia inicial y el instante 0.
   // Progresa: cada hora la separación cambia en vA + vB (encuentro) o vA − vB (alcance). Debe verse: dónde se juntan.
-  const rectaMov = (dd, vA, vB, modo, conFin = true) => {
+  const rectaMov = (dd, vA, vB, modo, conFin = true, fijo = 0) => {
     const enc = modo === 'encuentro', rel = enc ? vA + vB : vA - vB, tt = rel > 0 ? dd / rel : NaN;
     const xA = conFin && Number.isFinite(tt) ? vA * tt : null;
     const els = [
@@ -278,9 +292,13 @@
       els.push({ tipo: 'salto', a: dd, b: xA, color: 'i', fila: 3 });
       els.push({ tipo: 'punto', x: xA, color: 'h', fila: 0, rotulo: `t = ${f(tt)} h` });
     }
-    const max = xA !== null ? Math.max(dd, xA) * 1.05 : dd * 1.05;
+    const max = fijo || (xA !== null ? Math.max(dd, xA) * 1.05 : dd * 1.05);
     return { min: 0, max: Math.ceil(max / 50) * 50, paso: 50, cada: 2, decimales: 0, variable: 'km', filas: 3, elementos: els };
   };
+  // En el juego la escala es fija en cada modo (B va a 30 km/h o menos, así A siempre alcanza): al arrastrar el punto
+  // de encuentro, la recta no cambia de tamaño bajo el dedo.
+  const cruce = v => 300 * v.vA / (v.modo === 'encuentro' ? v.vA + v.vB : v.vA - v.vB);
+  const rectaJuego = v => rectaMov(300, v.vA, v.vB, v.modo, true, v.modo === 'encuentro' ? 330 : 1250);
   const moviles = {
     id: 'moviles',
     titulo: 'Encuentro y alcance',
@@ -292,11 +310,20 @@
       controles: [
         { id: 'modo', etiqueta: 'Van', opciones: [{ valor: 'encuentro', texto: 'al encuentro' }, { valor: 'alcance', texto: 'A persigue a B' }] },
         { id: 'vA', etiqueta: 'A', color: 'c-o', min: 40, max: 100, paso: 10, inicio: 60, unidad: 'km/h', decimales: 0 },
-        { id: 'vB', etiqueta: 'B', color: 'c-i', min: 10, max: 50, paso: 10, inicio: 40, unidad: 'km/h', decimales: 0 },
+        { id: 'vB', etiqueta: 'B', color: 'c-i', min: 10, max: 30, paso: 10, inicio: 30, unidad: 'km/h', decimales: 0 },
       ],
-      dibujo: v => ({ datos: v.modo === 'encuentro' ? rectaMov(300, v.vA, v.vB, 'encuentro') : rectaMov(300, v.vA, v.vB, 'alcance'), estado: {} }),
-      lectura: v => { const rel = v.modo === 'encuentro' ? v.vA + v.vB : v.vA - v.vB; return [`Se acercan ${rel} km cada hora → `, t, ` = ${f(300 / rel)} h`]; },
+      dibujo: v => ({ datos: rectaJuego(v), estado: {} }),
+      lectura: v => { const rel = v.modo === 'encuentro' ? v.vA + v.vB : v.vA - v.vB; return [`Se acercan ${rel}${NB}km cada hora → `, t, `${NB}=${NB}${f(300 / rel)}${NB}h`]; },
       minimo: 4,
+      // Se arrastra el punto donde se juntan: para llevarlo ahí, A tiene que ir a cierta rapidez (con B fija).
+      // Al encuentro, x = 300·vA/(vA + vB); en el alcance, x = 300·vA/(vA − vB).
+      arrastres: [{ id: 'cruce', etiqueta: 'punto donde se juntan', color: 'c-o',
+        donde: v => { const g = RECTA().geometria(rectaJuego(v)); return { x: g.x(cruce(v)), y: g.filaY(0) }; },
+        mover: (pt, v) => {
+          const datos = rectaJuego(v), g = RECTA().geometria(datos), xv = inversa(g.x, datos.min, datos.max)(pt.x);
+          if (v.modo === 'encuentro') return { vA: xv >= 300 ? 1000 : v.vB * xv / (300 - xv) };
+          return { vA: xv <= 300 ? 1000 : v.vB * xv / (xv - 300) };
+        } }],
     },
     predice: {
       pregunta: 'Dos autos separados 300 km avanzan uno hacia el otro, a 60 y 40 km/h. ¿En cuántas horas se encuentran?',
@@ -320,7 +347,7 @@
     },
     regla: {
       texto: 'Si salen a la vez, al encuentro la distancia baja a la suma de rapideces; en un alcance, a la diferencia.',
-      ecuacion: [{ sub: [t, 'e'] }, ' = ', { frac: [D, [{ sub: ['v', 'A'] }, ' + ', { sub: ['v', 'B'] }]] }, ';   ', { sub: [t, 'a'] }, ' = ', { frac: [D, [{ sub: ['v', 'A'] }, ' − ', { sub: ['v', 'B'] }]] }],
+      ecuacion: [{ sub: [t, 'e'] }, ' = ', { frac: [D, [{ llave: [{ sub: ['v', 'A'] }, ' + ', { sub: ['v', 'B'] }], nota: 'al encuentro' }]] }, '   ·   ', { sub: [t, 'a'] }, ' = ', { frac: [D, [{ llave: [{ sub: ['v', 'A'] }, ' − ', { sub: ['v', 'B'] }], nota: 'en el alcance' }]] }],
       condicion: 'rapideces constantes, mismo instante de salida y, en el alcance, el que persigue va más rápido.',
     },
     ahoraTu: {
@@ -389,7 +416,7 @@
     },
     regla: {
       texto: 'En criptoaritmética cada letra es una cifra, letras distintas son cifras distintas y la primera cifra no es 0. Cada número se escribe por su valor posicional.',
-      ecuacion: ['AB = 10A + B;   ABC = 100A + 10B + C'],
+      ecuacion: ['AB = ', { llave: ['10A'], nota: 'decenas', color: 'c-o' }, ' + ', { llave: ['B'], nota: 'unidades', color: 'c-i' }, '   ·   ', 'ABC = 100A + 10B + C'],
       condicion: 'la asignación es la misma en toda la operación y se respetan las llevadas.',
     },
     ahoraTu: {
@@ -466,13 +493,13 @@
       datos: tablaDist(Object.keys(DIST), '1-2-3'),
       pasos: [
         { estado: {}, texto: 'Al sumar los tres lados, los vértices se cuentan dos veces.', ecuacion: ['3S = (1 + 2 + … + 6) + vértices = 21 + vértices'] },
-        { estado: { fila: [0, 1] }, texto: 'Vértices 1, 2, 3 dan S = 9; vértices 4, 5, 6 dan S = 12.', ecuacion: ['3S = 27 → 9;   3S = 36 → 12'] },
+        { estado: { fila: [0, 1] }, texto: 'Vértices 1, 2, 3 dan S = 9; vértices 4, 5, 6 dan S = 12.', ecuacion: ['3S = 27 → 9', '   ·   ', '3S = 36 → 12'] },
         { estado: { fila: 0 }, texto: 'Dos casos válidos con S distintas prueban que el dato no basta.', ecuacion: ['dato extra «vértices 1, 2, 3»   ⇒   S = 9'] },
       ],
     },
     regla: {
       texto: 'Un dato es suficiente si deja una sola respuesta para lo que se pide. Para mostrar que no basta, sirven dos casos que lo cumplen con respuestas distintas.',
-      ecuacion: ['3S = 21 + (suma de vértices)'],
+      ecuacion: ['3S = 21 + ', { llave: ['V'], nota: 'suma de vértices', color: 'c-o' }],
       condicion: 'se pregunta por lo que se pide, no por todas las incógnitas. Un patrón observado no prueba que la respuesta sea única.',
     },
     ahoraTu: {
@@ -510,11 +537,65 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Canje libre: los dos precios se eligen, también iguales o al revés (b ≤ a), donde la falsa suposición ya no sirve.
+  const tiraCanjeLab = v => {
+    const total = (12 - v.k) * v.a + v.k * v.b;
+    return { max: 12 * Math.max(v.a, v.b) * 1.05, filas: 1, tiras: [{ rotulo: `${12 - v.k} de S/${NB}${v.a} y ${v.k} de S/${NB}${v.b}`, color: 'd', fin: `S/${NB}${total}`,
+      tramos: [{ valor: (12 - v.k) * v.a, partes: 12 - v.k, color: 'o' }, ...(v.k ? [{ valor: v.k * v.b, partes: v.k, color: 'i' }] : [])] }] };
+  };
+  // Persecución en el tiempo: una sola escala (0 a 650 km) para los dos modos; se arrastra a A y el reloj avanza.
+  const posiciones = v => ({ A: v.vA * v.t, B: v.modo === 'encuentro' ? 300 - v.vB * v.t : 300 + v.vB * v.t });
+  const rectaReloj = v => {
+    const p = posiciones(v);
+    return { min: 0, max: 650, paso: 50, cada: 2, decimales: 0, variable: 'km', filas: 3, elementos: [
+      { tipo: 'salto', a: 0, b: p.A, color: 'o', fila: 2 },
+      { tipo: 'salto', a: 300, b: p.B, color: 'i', fila: 3 },
+      { tipo: 'punto', x: p.A, color: 'o', fila: 1, rotulo: 'A' },
+      { tipo: 'punto', x: p.B, color: 'i', fila: 1, rotulo: 'B' },
+    ] };
+  };
+
   return {
     unidad: 'aritmetica.razonamiento-numerico',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/recta.js'],
+    // Laboratorio: juego libre, sin preguntas. El canje libre deja probar precios iguales o al revés; la persecución pone
+    // el tiempo en la mano (también B más rápido que A, que la idea no deja); la tercera es el juego de las edades.
+    laboratorio: [
+      {
+        id: 'canje-libre', titulo: 'Canje con otros precios', pieza: 'arit-tiras',
+        consigna: 'Doce entradas de dos precios. Elige los precios, también iguales, y cuántas son del segundo. ¿Cuánto suma cada canje?',
+        controles: [
+          { id: 'a', etiqueta: 'Precio 1', color: 'c-o', min: 1, max: 10, paso: 1, inicio: 5, unidad: 'soles', decimales: 0 },
+          { id: 'b', etiqueta: 'Precio 2', color: 'c-i', min: 1, max: 10, paso: 1, inicio: 8, unidad: 'soles', decimales: 0 },
+          { id: 'k', etiqueta: 'Del precio 2', color: 'c-i', min: 0, max: 12, paso: 1, inicio: 4, unidad: '', decimales: 0 },
+        ],
+        dibujo: v => ({ datos: tiraCanjeLab(v), estado: {} }),
+        lectura: v => [`${12 - v.k} × ${v.a} + ${v.k} × ${v.b} = S/${NB}${(12 - v.k) * v.a + v.k * v.b} · canje: ${v.b - v.a >= 0 ? '+' : '−'}${Math.abs(v.b - v.a)}`],
+        // El borde entre los dos colores, como pestaña bajo la tira (no tapa el total): a su derecha, las del precio 2.
+        arrastres: [{ id: 'borde', etiqueta: 'borde entre los dos precios', color: 'c-i',
+          donde: v => { const g = TIRAS().geometria(tiraCanjeLab(v)); return { x: g.x((12 - v.k) * v.a), y: g.tiraY(0) + g.altoTira + 10 }; },
+          mover: (pt, v) => ({ k: 12 - TIRAS().geometria(tiraCanjeLab(v)).deX(pt.x) / v.a }) }],
+      },
+      {
+        id: 'persecucion', titulo: 'Persecución con reloj', pieza: 'recta',
+        consigna: 'Arrastra a A por la recta: el reloj avanza y B se mueve a su rapidez. Prueba también B más rápido que A.',
+        controles: [
+          { id: 'modo', etiqueta: 'Van', opciones: [{ valor: 'encuentro', texto: 'al encuentro' }, { valor: 'alcance', texto: 'A persigue a B' }] },
+          { id: 'vA', etiqueta: 'A', color: 'c-o', min: 20, max: 100, paso: 10, inicio: 60, unidad: 'km/h', decimales: 0 },
+          { id: 'vB', etiqueta: 'B', color: 'c-i', min: 10, max: 100, paso: 10, inicio: 40, unidad: 'km/h', decimales: 0 },
+          { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 6, paso: 0.5, inicio: 1, unidad: 'h', decimales: 1 },
+        ],
+        dibujo: v => ({ datos: rectaReloj(v), estado: {} }),
+        lectura: v => { const p = posiciones(v); return [v.modo === 'encuentro' ? 'al encuentro' : 'A persigue', `, ${v.vA} y ${v.vB}${NB}km/h, `, t, `${NB}=${NB}${f(v.t, 1)}${NB}h: ${f(Math.abs(p.B - p.A), 0)}${NB}km`]; },
+        arrastres: [{ id: 'auto-a', etiqueta: 'posición de A', color: 'c-h',
+          donde: v => { const g = RECTA().geometria(rectaReloj(v)); return { x: g.x(v.vA * v.t), y: g.filaY(1) }; },
+          mover: (pt, v) => ({ t: inversa(RECTA().geometria(rectaReloj(v)).x, 0, 650)(pt.x) / v.vA }) }],
+      },
+      Object.assign({ id: 'edades-libre', titulo: 'Las dos tiras de edad', pieza: 'arit-tiras' }, edades.juega),
+    ],
     historia: {
       texto: 'En el papiro Rhind, de Egipto, algunos problemas se resuelven partiendo de un valor cómodo y corrigiéndolo según el resultado. Esa estrategia se llamó después falsa posición. No es adivinar: funciona porque la relación es proporcional, y eso permite escalar el ensayo. Esta unidad recupera esa lógica: modelar, probar y comprobar.',
       pregunta: '¿Cuándo un buen intento se puede corregir con una regla?',

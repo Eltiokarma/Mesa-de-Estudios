@@ -45,9 +45,20 @@
   const terminos = (p, q, k, geo = false) => Array.from({ length: k }, (_, i) => (geo ? p * q ** i : p + q * i));
   const lista = xs => xs.map(x => f(x, 0)).join(', ');
 
+  // Gesto directo (docs/teoria.md §4b): las manijas viven en las coordenadas de la pieza (geometria de arit-fichas y
+  // arit-tiras); mover convierte el punto del dedo en valores y el lector los ajusta al paso y al rango del control.
+  const FICHAS = () => Kit.piezas['arit-fichas'], TIRAS = () => Kit.piezas['arit-tiras'];
+  // Fichas desde el borde izquierdo del bloque 0 hasta el punto x (la ficha bajo el dedo cuenta entera).
+  const largoEn = (datos, px) => { const g = FICHAS().geometria(datos); return (px - g.xs[0] - g.paso / 2) / g.paso + 1; };
+  // Centro de la última ficha naranja de la fila i (en escalera o dentro del rectángulo de ancho L).
+  const finFila = (datos, t, i, L) => FICHAS().geometria(datos).ficha(0, (L ? i * L : t.slice(0, i).reduce((u, z) => u + z, 0)) + t[i] - 1);
+
   // ---------- Idea 1: progresión aritmética y cantidad de términos ----------
   // Cambia: a₁, d y cuántas filas. Permanece: el tamaño de las fichas. Progresa: cada fila tiene d fichas más que la anterior.
   // Se reserva: contar saltos y no términos (n − 1). Debe verse: entre el primero y el último hay un salto menos que filas.
+  // Dos representaciones a propósito (auditoría, hallazgo 9): la escalera hace ver d como fichas que se agregan; la recta
+  // hace contar los saltos, que es donde está el n − 1. «Mira» empieza diciendo que cada fila es ahora un punto.
+  const escalera = (p, q, k) => ({ altoMax: 150, bloques: [{ filas: terminos(p, q, k), color: 'o', rotulo: lista(terminos(p, q, k)) }] });
   const pa = {
     id: 'progresion-aritmetica',
     titulo: 'Cada fila agrega lo mismo',
@@ -61,9 +72,18 @@
         { id: 'd', etiqueta: 'd', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 3, unidad: '', decimales: 0 },
         { id: 'n', etiqueta: 'n', color: 'c-h', min: 2, max: 7, paso: 1, inicio: 4, unidad: 'filas', decimales: 0 },
       ],
-      dibujo: v => ({ datos: { altoMax: 150, bloques: [{ filas: terminos(v.a, v.d, v.n), color: 'o', rotulo: lista(terminos(v.a, v.d, v.n)) }] }, estado: {} }),
+      dibujo: v => ({ datos: escalera(v.a, v.d, v.n), estado: {} }),
       lectura: v => [an, ` = ${v.a} + (${v.n} − 1) · ${v.d} = ${v.a + (v.n - 1) * v.d}`],
       minimo: 3,
+      // Se agarra la escalera: el fin de la primera fila es a₁; el fin de la última fila, cuánto creció (d).
+      arrastres: [
+        { id: 'primera-fila', etiqueta: 'largo de la primera fila', color: 'c-o',
+          donde: v => finFila(escalera(v.a, v.d, v.n), terminos(v.a, v.d, v.n), 0),
+          mover: (pt, v) => ({ a: largoEn(escalera(v.a, v.d, v.n), pt.x) }) },
+        { id: 'ultima-fila', etiqueta: 'largo de la última fila', color: 'c-i',
+          donde: v => finFila(escalera(v.a, v.d, v.n), terminos(v.a, v.d, v.n), v.n - 1),
+          mover: (pt, v) => ({ d: (largoEn(escalera(v.a, v.d, v.n), pt.x) - v.a) / (v.n - 1) }) },
+      ],
     },
     predice: {
       pregunta: '¿Cuántos términos tiene la progresión 3, 7, 11, …, 39?',
@@ -86,14 +106,14 @@
         ...terminos(3, 4, 9).map((x, i) => ({ tipo: 'salto', a: x, b: x + 4, color: 'i', fila: 1, desde: 2 })),
       ] },
       pasos: [
-        { estado: { corte: 0 }, texto: 'Los términos van de 3 a 39, de 4 en 4.', ecuacion: [a1, ' = 3;   ', d, ' = 4;   ', an, ' = 39'] },
+        { estado: { corte: 0 }, texto: 'Cada fila es un punto: van de 3 a 39, de 4 en 4.', ecuacion: [a1, ' = 3', '   ·   ', d, ' = 4', '   ·   ', an, ' = 39'] },
         { estado: { corte: 1 }, texto: 'Del primero al último hay 36 de distancia.', ecuacion: ['39 − 3 = 36'] },
-        { estado: { corte: 2 }, texto: 'Son 36 ÷ 4 = 9 saltos, y 9 saltos unen 10 términos.', ecuacion: [n, ' = ', { frac: ['36', '4'] }, ' + 1 = 10'] },
+        { estado: { corte: 2 }, texto: 'Son 36 ÷ 4 = 9 saltos, y 9 saltos unen 10 términos.', ecuacion: [n, ' = ', { llave: [{ frac: ['36', '4'] }], nota: 'saltos', color: 'c-h' }, ' + 1 = 10'] },
       ],
     },
     regla: {
       texto: 'En una progresión aritmética cada término suma d al anterior. Del primero al término n hay n − 1 saltos.',
-      ecuacion: [an, ' = ', a1, ' + (', n, ' − 1) ', d, ';   ', n, ' = ', { frac: [[an, ' − ', a1], d] }, ' + 1'],
+      ecuacion: [an, ' = ', a1, ' + ', { llave: ['(', n, ' − 1)'], nota: 'saltos', color: 'c-h' }, ' ', d, '   ·   ', n, ' = ', { frac: [[an, ' − ', a1], d] }, ' + 1'],
       condicion: 'la diferencia d es la misma entre todos los términos consecutivos y no es cero.',
     },
     ahoraTu: {
@@ -140,6 +160,13 @@
       dibujo: v => ({ datos: rectangulo(1, 1, v.n), estado: {} }),
       lectura: v => [`1 + … + ${v.n} = ${v.n} · ${v.n + 1} ÷ 2 = ${v.n * (v.n + 1) / 2}`],
       minimo: 3,
+      // La esquina de arriba a la derecha estira el rectángulo en diagonal: una fila y una columna más por cada n.
+      arrastres: [{ id: 'esquina', etiqueta: 'esquina del rectángulo', color: 'c-h',
+        donde: v => FICHAS().geometria(rectangulo(1, 1, v.n)).ficha(0, v.n),
+        mover: (pt, v) => {
+          const datos = rectangulo(1, 1, v.n), g = FICHAS().geometria(datos);
+          return { n: ((largoEn(datos, pt.x) - 1) + ((g.piso - pt.y) / g.paso + 0.5)) / 2 };
+        } }],
     },
     predice: {
       pregunta: '¿Cuánto es 3 + 7 + 11 + 15 + 19?',
@@ -160,12 +187,12 @@
         { estado: {}, texto: 'Turquesa: la misma suma al revés, de 19 a 3.', ecuacion: ['19 + 15 + 11 + 7 + 3'] },
         { estado: {}, texto: 'Cada fila junta un término y su pareja: siempre 22.', ecuacion: ['3 + 19 = 7 + 15 = … = 22'] },
         { estado: {}, texto: '5 filas de 22 son 110; la suma es la mitad.', ecuacion: [{ sub: ['S', '5'] }, ' = ', { frac: ['5 · 22', '2'] }, ' = 55'] },
-        { estado: {}, texto: 'Otras sumas notables: los primeros impares y los cuadrados.', ecuacion: ['1 + 3 + … + (2', n, ' − 1) = ', { sup: [n, '2'] }, ';   ', { sup: ['1', '2'] }, ' + … + ', { sup: [n, '2'] }, ' = ', { frac: [[n, '(', n, ' + 1)(2', n, ' + 1)'], '6'] }] },
+        { estado: {}, texto: 'Otras sumas notables: los primeros impares y los cuadrados.', ecuacion: ['1 + 3 + … + (2', n, ' − 1) = ', { sup: [n, '2'] }, '   ·   ', { sup: ['1', '2'] }, ' + … + ', { sup: [n, '2'] }, ' = ', { frac: [[n, '(', n, ' + 1)(2', n, ' + 1)'], '6'] }] },
       ],
     },
     regla: {
       texto: 'En una progresión aritmética, la suma es el número de términos por el promedio del primero y el último. Con 1 + 2 + … + n, cada fila mide n + 1.',
-      ecuacion: [Sn, ' = ', { frac: [[n, ' (', a1, ' + ', an, ')'], '2'] }, ';   1 + 2 + … + ', n, ' = ', { frac: [[n, ' (', n, ' + 1)'], '2'] }],
+      ecuacion: [Sn, ' = ', { frac: [[{ llave: [n], nota: 'filas', color: 'c-h' }, ' ', { llave: ['(', a1, ' + ', an, ')'], nota: 'una fila', color: 'c-o' }], '2'] }, '   ·   ', '1 + 2 + … + ', n, ' = ', { frac: [[n, ' (', n, ' + 1)'], '2'] }],
       condicion: 'la diferencia es constante. Las sumas de impares y de cuadrados del último paso no salen del rectángulo: se comprueban.',
     },
     ahoraTu: {
@@ -199,7 +226,7 @@
             { id: 'nat', valor: (2 * k - 1) * 2 * k / 2, error: 'AT-IMPARES', siFuera: 'Esa es la suma de todos los números hasta ese, no solo los impares.' },
             { id: 'n1', valor: (k - 1) ** 2, error: 'AT-NMENOS1', siFuera: `Hay ${k} impares hasta ${2 * k - 1}, no ${k - 1}.` },
           ], z => f(z, 0)),
-          solucion: { texto: `Hay ${k} impares; su suma es ${k} al cuadrado.`, ecuacion: [`(${2 * k - 1} + 1) ÷ 2 = ${k};   ${k}² = ${k * k}`] },
+          solucion: { texto: `Hay ${k} impares; su suma es ${k} al cuadrado.`, ecuacion: [`(${2 * k - 1} + 1) ÷ 2 = ${k}`, '   ·   ', `${k}² = ${k * k}`] },
         };
         const m = x.ent(4, 15);
         return {
@@ -218,10 +245,13 @@
   // ---------- Idea 3: progresión geométrica ----------
   // Cambia: a₁, r y cuántos términos. Permanece: la escala común de las tiras. Progresa: cada tira es r veces la anterior.
   // Se reserva: el exponente n − 1. Debe verse: la diferencia entre tiras crece; lo que se repite es el cociente.
-  const tirasGeo = (p, q, k, paso = false) => {
+  const tirasGeo = (p, q, k, paso = false, filas = k, max = 0) => {
     const t = terminos(p, q, k, true);
-    return { max: t[k - 1] * 1.25, filas: k, tiras: t.map((x, i) => ({ rotulo: i ? `× ${q}` : `${p}`, color: 'o', fin: f(x, 0), paso: paso ? i : 0, tramos: [{ valor: x, color: i ? 'i' : 'o' }] })) };
+    return { max: max || t[k - 1] * 1.25, filas, tiras: t.map((x, i) => ({ rotulo: i ? `× ${q}` : `${p}`, color: 'o', fin: f(x, 0), paso: paso ? i : 0, tramos: [{ valor: x, color: i ? 'i' : 'o' }] })) };
   };
+  // En el juego la escala no depende de r (cabe la tira más larga posible, con r = 3) y se reservan las 4 filas:
+  // al estirar la última tira nada más cambia de tamaño, y con r = 1 se ven todas iguales.
+  const tirasJuego = v => tirasGeo(v.a, v.r, v.n, false, 4, 1.25 * v.a * 3 ** (v.n - 1));
   const pg = {
     id: 'progresion-geometrica',
     titulo: 'Cada término multiplica por r',
@@ -229,15 +259,19 @@
     pieza: 'arit-tiras',
     juega: {
       consigna: 'Elige el primer término, la razón y cuántos términos. Cada tira es la anterior multiplicada por r.',
-      voz: 'Compara cuánto crece cada tira respecto de la anterior.',
+      voz: 'Compara cuánto crece cada tira respecto de la anterior. Prueba también r = 1.',
       controles: [
         { id: 'a', etiqueta: 'a₁', color: 'c-o', min: 1, max: 3, paso: 1, inicio: 1, unidad: '', decimales: 0 },
-        { id: 'r', etiqueta: 'r', color: 'c-i', min: 2, max: 3, paso: 1, inicio: 2, unidad: '', decimales: 0 },
-        { id: 'n', etiqueta: 'n', color: 'c-h', min: 2, max: 4, paso: 1, inicio: 4, unidad: '', decimales: 0 },
+        { id: 'r', etiqueta: 'r', color: 'c-i', min: 1, max: 3, paso: 1, inicio: 2, unidad: '', decimales: 0 },
+        { id: 'n', etiqueta: 'n', color: 'c-h', min: 2, max: 4, paso: 1, inicio: 3, unidad: '', decimales: 0 },
       ],
-      dibujo: v => ({ datos: tirasGeo(v.a, v.r, v.n), estado: {} }),
-      lectura: v => { const t = terminos(v.a, v.r, v.n, true); return [an, ` = ${lista(t.slice(-1))};  `, Sn, ` = ${f(t.reduce((u, z) => u + z, 0), 0)}`]; },
+      dibujo: v => ({ datos: tirasJuego(v), estado: {} }),
+      lectura: v => { const t = terminos(v.a, v.r, v.n, true); return [an, ` = ${lista(t.slice(-1))} · `, Sn, ` = ${f(t.reduce((u, z) => u + z, 0), 0)}`]; },
       minimo: 3,
+      // Se estira la última tira: es a₁ · rⁿ⁻¹, así que su largo decide r, y las tiras de en medio responden.
+      arrastres: [{ id: 'ultima-tira', etiqueta: 'fin de la última tira', color: 'c-i',
+        donde: v => { const g = TIRAS().geometria(tirasJuego(v)); return { x: g.x(v.a * v.r ** (v.n - 1)), y: g.centroY(v.n - 1) }; },
+        mover: (pt, v) => ({ r: Math.pow(TIRAS().geometria(tirasJuego(v)).deX(pt.x) / v.a, 1 / (v.n - 1)) }) }],
     },
     predice: {
       pregunta: 'En la progresión 2, 6, 18, …, ¿cuál es el término de lugar 6?',
@@ -262,7 +296,7 @@
     },
     regla: {
       texto: 'En una progresión geométrica cada término es el anterior por r. Hasta el lugar n se multiplica n − 1 veces.',
-      ecuacion: [an, ' = ', a1, ' · ', { sup: [r, [n, ' − 1']] }, ';   ', Sn, ' = ', a1, ' · ', { frac: [[{ sup: [r, n] }, ' − 1'], [r, ' − 1']] }],
+      ecuacion: [an, ' = ', a1, ' · ', { llave: [{ sup: [r, [n, ' − 1']] }], nota: 'n − 1 factores', color: 'c-i' }, '   ·   ', Sn, ' = ', a1, ' · ', { frac: [[{ sup: [r, n] }, ' − 1'], [r, ' − 1']] }],
       condicion: 'r es la misma entre términos consecutivos. Si r = 1, todos son iguales y la suma es n · a₁.',
     },
     ahoraTu: {
@@ -343,12 +377,12 @@
         { estado: { fila: 0 }, texto: 'Términos: 2, 5, 10, 17, 26.', ecuacion: ['2, 5, 10, 17, 26, …'] },
         { estado: { fila: 1 }, texto: 'Primeras diferencias: 3, 5, 7, 9. No son iguales.', ecuacion: ['Δ: 3, 5, 7, 9'] },
         { estado: { fila: 2 }, texto: 'Segundas diferencias: siempre 2. Modelo de orden 2.', ecuacion: ['Δ²: 2, 2, 2'] },
-        { estado: { columna: 6 }, texto: 'De abajo hacia arriba: Δ sigue en 11, y 26 + 11 = 37.', ecuacion: ['9 + 2 = 11;   26 + 11 = 37'] },
+        { estado: { columna: 6 }, texto: 'De abajo hacia arriba: Δ sigue en 11, y 26 + 11 = 37.', ecuacion: ['9 + 2 = 11', '   ·   ', '26 + 11 = 37'] },
       ],
     },
     regla: {
       texto: 'Si las diferencias de orden k son constantes, la sucesión se modela con un polinomio de grado k. El modelo se declara: pocos términos no fijan una sola regla.',
-      ecuacion: ['Δ² constante   ⇒   ', { sub: ['t', n] }, ' = a', { sup: [n, '2'] }, ' + b', n, ' + c'],
+      ecuacion: [{ sub: ['t', n] }, ' = a', { sup: [n, '2'] }, ' + b', n, ' + c', '   ·   ', 'Δ² = 2a'],
       condicion: 'se supone que el patrón de diferencias sigue igual; la lista finita por sí sola no lo garantiza.',
     },
     ahoraTu: {
@@ -377,6 +411,16 @@
     return { max: lim * 1.08, filas: 1, tiras: [{ rotulo: `límite ${f(lim)}`, color: 'd', fin: '', tramos: [...t.map((x, i) => ({ valor: x, color: i % 2 ? 'i' : 'o', texto: i < 3 ? f(x, 3) : '' })), { valor: Math.max(0, lim - s), hueco: true }] }] };
   };
   const RAZONES = { '1/2': 0.5, '1/3': 1 / 3, '2/3': 2 / 3 };
+  // Cuántos términos de 1 + r + r² + … hacen falta para llegar a la suma s (inversa de (1 − rᵏ)/(1 − r)).
+  // Pasado el límite, ningún k alcanza: se devuelve un número grande y el lector lo deja en el máximo del control.
+  const terminosHasta = (q, s) => { const z = 1 - s * (1 - q); return z <= 0 ? 99 : Math.log(z) / Math.log(q); };
+  const sumaHueco = (q, k) => (1 - q ** k) / (1 - q);
+  // La manija va al final de lo ya sumado; arrastrarla a la derecha agrega términos.
+  const manijaSuma = (datosDe, qDe) => ({
+    id: 'suma', etiqueta: 'fin de lo ya sumado', color: 'c-h',
+    donde: v => { const g = TIRAS().geometria(datosDe(v)); return { x: g.x(sumaHueco(qDe(v), v.k)), y: g.centroY(0) }; },
+    mover: (pt, v) => ({ k: terminosHasta(qDe(v), TIRAS().geometria(datosDe(v)).deX(pt.x)) }),
+  });
   const infinita = {
     id: 'suma-infinita',
     titulo: 'Sumar sin fin sin pasarse',
@@ -390,8 +434,9 @@
         { id: 'k', etiqueta: 'términos', color: 'c-h', min: 1, max: 8, paso: 1, inicio: 3, unidad: '', decimales: 0 },
       ],
       dibujo: v => ({ datos: tiraInf(RAZONES[v.r], v.k), estado: {} }),
-      lectura: v => { const q = RAZONES[v.r], s = (1 - q ** v.k) / (1 - q); return [Sn, ` = ${f(s, 4)};  falta ${f(1 / (1 - q) - s, 4)}`]; },
+      lectura: v => { const q = RAZONES[v.r], s = (1 - q ** v.k) / (1 - q); return [Sn, ` = ${f(s, 4)} · falta ${f(1 / (1 - q) - s, 4)}`]; },
       minimo: 4,
+      arrastres: [manijaSuma(v => tiraInf(RAZONES[v.r], v.k), v => RAZONES[v.r])],
     },
     predice: {
       pregunta: 'Si se suma 1 + 1/2 + 1/4 + 1/8 + … sin terminar nunca, ¿a qué valor se acerca la suma?',
@@ -438,11 +483,64 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  const anchoCopia = v => (v.copia === 'si' ? 2 * v.a + (v.n - 1) * v.d : 0);
+  const mesaEscalera = v => {
+    const t = terminos(v.a, v.d, v.n), L = anchoCopia(v);
+    if (!L) return escalera(v.a, v.d, v.n);
+    return { altoMax: 150, bloques: [{ n: v.n * L, columnas: L, color: 'o', rotulo: `${v.n} filas de ${L}`, tramos: t.map((x, i) => ({ de: i * L + x, a: i * L + L - 1, color: 'i' })) }] };
+  };
+  // Una sola escala para todas las razones (llega a 5, el límite de r = 4/5): así dos casos guardados se comparan.
+  const RAZONES_LAB = { '1/3': 1 / 3, '1/2': 0.5, '2/3': 2 / 3, '3/4': 0.75, '4/5': 0.8 };
+  const tiraLab = (q, k) => {
+    const lim = 1 / (1 - q), t = terminos(1, q, k, true), s = t.reduce((u, z) => u + z, 0);
+    return { max: 5.4, filas: 1, regla: { paso: 1, cada: 1 }, tiras: [{ rotulo: `límite ${f(lim)}`, color: 'd', tramos: [...t.map((x, i) => ({ valor: x, color: i % 2 ? 'i' : 'o' })), { valor: Math.max(0, lim - s), hueco: true }] }] };
+  };
+
   return {
     unidad: 'aritmetica.sucesiones-y-series',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    // Laboratorio: juego libre, sin preguntas. La escalera con su copia junta las ideas 1 y 2 para cualquier progresión
+    // (también d = 0); la suma sin fin usa una sola escala para comparar razones; la tercera es el juego de la idea 3.
+    laboratorio: [
+      {
+        id: 'escalera-suma', titulo: 'Escalera y su copia', pieza: 'arit-fichas',
+        consigna: 'Arma cualquier progresión aritmética, también con d = 0. Pon la copia al revés y cuenta el rectángulo.',
+        controles: [
+          { id: 'a', etiqueta: 'a₁', color: 'c-o', min: 1, max: 5, paso: 1, inicio: 2, unidad: '', decimales: 0 },
+          { id: 'd', etiqueta: 'd', color: 'c-i', min: 0, max: 4, paso: 1, inicio: 2, unidad: '', decimales: 0 },
+          { id: 'n', etiqueta: 'n', color: 'c-h', min: 2, max: 6, paso: 1, inicio: 4, unidad: 'filas', decimales: 0 },
+          { id: 'copia', etiqueta: 'Copia al revés', opciones: [{ valor: 'no', texto: 'sin copia' }, { valor: 'si', texto: 'con copia' }] },
+        ],
+        dibujo: v => ({ datos: mesaEscalera(v), estado: {} }),
+        lectura: v => {
+          const t = terminos(v.a, v.d, v.n), S = t.reduce((u, z) => u + z, 0);
+          return [`${lista(t)}: `, Sn, v.copia === 'si' ? ` = ${v.n} · ${t[0] + t[v.n - 1]} ÷ 2 = ${S}` : ` = ${S}`];
+        },
+        arrastres: [
+          { id: 'primera-fila', etiqueta: 'largo de la primera fila', color: 'c-o',
+            donde: v => finFila(mesaEscalera(v), terminos(v.a, v.d, v.n), 0, anchoCopia(v)),
+            mover: (pt, v) => ({ a: largoEn(mesaEscalera(v), pt.x) }) },
+          { id: 'ultima-fila', etiqueta: 'largo de la última fila', color: 'c-i',
+            donde: v => finFila(mesaEscalera(v), terminos(v.a, v.d, v.n), v.n - 1, anchoCopia(v)),
+            mover: (pt, v) => ({ d: (largoEn(mesaEscalera(v), pt.x) - v.a) / (v.n - 1) }) },
+        ],
+      },
+      {
+        id: 'suma-sin-fin', titulo: 'Suma sin fin, misma regla', pieza: 'arit-tiras',
+        consigna: 'Todas las razones se miden con la misma regla. Compara qué tan rápido se cierra el hueco y dónde está el límite.',
+        controles: [
+          { id: 'r', etiqueta: 'r', opciones: Object.keys(RAZONES_LAB).map(k => ({ valor: k, texto: k })) },
+          { id: 'k', etiqueta: 'términos', color: 'c-h', min: 1, max: 12, paso: 1, inicio: 3, unidad: '', decimales: 0 },
+        ],
+        dibujo: v => ({ datos: tiraLab(RAZONES_LAB[v.r], v.k), estado: {} }),
+        lectura: v => { const q = RAZONES_LAB[v.r]; const lim = 1 / (1 - q); return [`r = ${v.r}, ${v.k} términos: falta ${f(lim - sumaHueco(q, v.k), 6)} para ${f(lim)}`]; },
+        arrastres: [manijaSuma(v => tiraLab(RAZONES_LAB[v.r], v.k), v => RAZONES_LAB[v.r])],
+      },
+      Object.assign({ id: 'tiras-geometricas', titulo: 'Tiras que se multiplican', pieza: 'arit-tiras' }, pg.juega),
+    ],
     historia: {
       texto: 'En el prefacio de la Cuadratura de la parábola, Arquímedes cuenta que el segmento de parábola mide cuatro tercios de un triángulo adecuado, y separa cómo lo exploró de cómo lo demostró. Esa idea de juntar aportes cada vez más chicos que se acercan a un valor es la de las sumas infinitas. La notación de términos y sumatorias es muy posterior.',
       pregunta: '¿Puede una suma sin fin dar un número?',

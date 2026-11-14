@@ -41,3 +41,11 @@ test('las columnas llenan el ancho sin salirse', () => {
 });
 
 test('alt dice columnas y filas', () => assert.equal(P.alt(D), 'Tabla con columnas p, q, p → q y 4 filas'));
+
+test('geometria.celda da el centro de la celda donde va su texto (gesto directo)', () => {
+  const d = { columnas: [{ t: 'p' }, { t: 'q' }], filas: [['V', 'F'], ['F', 'V']] };
+  const g = P.geometria(d);
+  const c = g.celda(1, 1);
+  assert.ok(c.x > g.xs[1] && c.x < g.xs[2]);
+  assert.ok(c.y > g.filaY(1) && c.y < g.filaY(2));
+});

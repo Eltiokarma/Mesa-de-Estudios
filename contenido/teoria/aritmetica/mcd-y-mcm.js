@@ -59,6 +59,17 @@
     return out;
   }
 
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de las piezas (arit-tiras.x/deX, recta.x/filaY).
+  const TIRAS = () => Kit.piezas['arit-tiras'], RECTA = () => Kit.piezas.recta;
+  const inversa = (escala, p, q) => px => p + (px - escala(p)) * (q - p) / (escala(q) - escala(p));
+  // Manija en el borde de abajo de la tira k, en el valor dado (no tapa los rótulos, que van adentro o a media altura).
+  const enTira = (datos, k, valor) => { const g = TIRAS().geometria(datos); return { x: g.x(valor), y: g.tiraY(k) + g.altoTira }; };
+  const valorEn = (datos, px) => TIRAS().geometria(datos).deX(px);
+  const enRecta = (datos, fila, valor) => { const g = RECTA().geometria(datos); return { x: g.x(valor), y: g.filaY(fila) }; };
+  const deRecta = (datos, px) => inversa(RECTA().geometria(datos).x, datos.min, datos.max)(px);
+  // Varias relaciones en una ecuación: se separan con el separador del molde, no con «;».
+  const juntas = xs => xs.reduce((acc, x, i) => (i ? acc.concat(['   ·   ', x]) : [x]), []);
+
   // ---------- Idea 1: el MCD es el trozo más largo que mide a las dos ----------
   // Cambia: el largo del trozo t. Permanece: las dos cintas a la misma escala (40 cm de ancho).
   // Progresa: trozos que dejan sobrante → trozos que miden exacto a las dos → el mayor de ellos.
@@ -87,6 +98,10 @@
       dibujo: v => { const [a, b] = PARES[v.par]; return { datos: tirasCorte(a, b, v.t), estado: {} }; },
       lectura: v => { const [a, b] = PARES[v.par]; return [`Trozo de ${v.t} cm: sobran ${a % v.t} y ${b % v.t} cm`]; },
       minimo: 4,
+      // Se arrastra el fin del primer trozo de la cinta a: alargarlo o acortarlo cambia el trozo en las dos cintas.
+      arrastres: [{ id: 'trozo', etiqueta: 'fin del primer trozo', color: 'c-d',
+        donde: v => { const [a, b] = PARES[v.par]; return enTira(tirasCorte(a, b, v.t), 0, v.t); },
+        mover: (pt, v) => { const [a, b] = PARES[v.par]; return { t: valorEn(tirasCorte(a, b, v.t), pt.x) }; } }],
     },
     predice: {
       pregunta: ['Dos cintas miden ', { v: 'c-o', t: '24 cm' }, ' y ', { v: 'c-i', t: '36 cm' }, '. Se cortan en trozos iguales, lo más largos posible, sin que sobre. ¿Cuánto mide cada trozo?'],
@@ -109,14 +124,14 @@
         ],
       },
       pasos: [
-        { estado: { paso: 1 }, texto: 'Un trozo de 6 cm mide las dos cintas: es un divisor común.', ecuacion: ['24 = 4 · 6;   36 = 6 · 6'] },
-        { estado: { paso: 2 }, texto: 'Un trozo de 12 cm también, y es más largo.', ecuacion: ['24 = 2 · 12;   36 = 3 · 12'] },
-        { estado: { paso: 2 }, texto: 'Con factores primos: se toman los comunes con su menor exponente.', ecuacion: ['24 = ', { sup: ['2', '3'] }, ' · 3;   36 = ', { sup: ['2', '2'] }, ' · ', { sup: ['3', '2'] }, '   →   ', MCD, ' = ', { sup: ['2', '2'] }, ' · 3 = 12'] },
+        { estado: { paso: 1 }, texto: 'Un trozo de 6 cm mide las dos cintas: es un divisor común.', ecuacion: ['24 = 4 · 6', '   ·   ', '36 = 6 · 6'] },
+        { estado: { paso: 2 }, texto: 'Un trozo de 12 cm también, y es más largo.', ecuacion: ['24 = 2 · 12', '   ·   ', '36 = 3 · 12'] },
+        { estado: { paso: 2 }, texto: 'Con factores primos: se toman los comunes con su menor exponente.', ecuacion: ['24 = ', { sup: ['2', '3'] }, ' · 3', '   ·   ', '36 = ', { sup: ['2', '2'] }, ' · ', { sup: ['3', '2'] }, '   ·   ', MCD, ' = ', { sup: ['2', '2'] }, ' · 3 = 12'] },
       ],
     },
     regla: {
       texto: 'El MCD es el mayor número que divide a los dos. Responde a «cortar en partes iguales lo más grandes posible».',
-      ecuacion: [mcdab, ' = producto de los primos comunes con su menor exponente'],
+      ecuacion: [{ llave: [mcdab], nota: 'trozo más largo', color: 'c-d' }, ' = producto de los primos comunes con su menor exponente'],
       condicion: 'a y b son enteros positivos. Si no tienen primos comunes, el MCD es 1.',
     },
     ahoraTu: {
@@ -178,6 +193,14 @@
       dibujo: v => ({ datos: rectaBuses(v.a, v.b, 90), estado: {} }),
       lectura: v => [`Salen juntas cada ${mcm(v.a, v.b)} minutos`],
       minimo: 3,
+      // Se arrastra la quinta salida de cada combi: estirarla separa todas sus salidas. (La primera queda muy cerca del
+      // 0 en una recta de 90 minutos: con la quinta, un minuto más son 15 px de dedo.)
+      arrastres: [
+        { id: 'salida-a', etiqueta: 'quinta salida de la combi a', color: 'c-o',
+          donde: v => enRecta(rectaBuses(v.a, v.b, 90), 2, 5 * v.a), mover: (pt, v) => ({ a: deRecta(rectaBuses(v.a, v.b, 90), pt.x) / 5 }) },
+        { id: 'salida-b', etiqueta: 'quinta salida de la combi b', color: 'c-i',
+          donde: v => enRecta(rectaBuses(v.a, v.b, 90), 1, 5 * v.b), mover: (pt, v) => ({ b: deRecta(rectaBuses(v.a, v.b, 90), pt.x) / 5 }) },
+      ],
     },
     predice: {
       pregunta: ['Dos alarmas suenan juntas a las 8:00. Una suena cada ', { v: 'c-o', t: '12 min' }, ' y la otra cada ', { v: 'c-i', t: '18 min' }, '. ¿Cuántos minutos después vuelven a sonar juntas?'],
@@ -194,14 +217,14 @@
     mira: {
       datos: rectaBuses(12, 18, 80, true, { desdeMcm: 2 }),
       pasos: [
-        { estado: { corte: 0 }, texto: 'Arriba, los múltiplos de 18; abajo, los de 12.', ecuacion: ['12, 24, 36, 48, …;   18, 36, 54, …'] },
+        { estado: { corte: 0 }, texto: 'Arriba, los múltiplos de 18; abajo, los de 12.', ecuacion: ['12, 24, 36, 48, …', '   ·   ', '18, 36, 54, …'] },
         { estado: { corte: 2 }, texto: 'El primer múltiplo común es 36: ahí suenan juntas.', ecuacion: [MCM, '(12, 18) = 36'] },
-        { estado: { corte: 2 }, texto: 'Con factores primos: todos los primos, con su mayor exponente.', ecuacion: ['12 = ', { sup: ['2', '2'] }, ' · 3;   18 = 2 · ', { sup: ['3', '2'] }, '   →   ', { sup: ['2', '2'] }, ' · ', { sup: ['3', '2'] }, ' = 36'] },
+        { estado: { corte: 2 }, texto: 'Con factores primos: todos los primos, con su mayor exponente.', ecuacion: ['12 = ', { sup: ['2', '2'] }, ' · 3', '   ·   ', '18 = 2 · ', { sup: ['3', '2'] }, '   ·   ', MCM, ' = ', { sup: ['2', '2'] }, ' · ', { sup: ['3', '2'] }, ' = 36'] },
       ],
     },
     regla: {
       texto: 'El MCM es el menor múltiplo positivo de los dos. Responde a «¿cuándo vuelven a coincidir?» o «la menor cantidad que se arma con ambas medidas».',
-      ecuacion: [mcmab, ' = producto de todos los primos con su mayor exponente'],
+      ecuacion: [{ llave: [mcmab], nota: 'primer encuentro', color: 'c-h' }, ' = producto de todos los primos con su mayor exponente'],
       condicion: 'a y b son enteros positivos y los dos sucesos parten juntos del instante 0.',
     },
     ahoraTu: {
@@ -251,8 +274,12 @@
         { id: 'b', etiqueta: 'b', color: 'c-i', min: 10, max: 28, paso: 2, inicio: 24, unidad: '', decimales: 0 },
       ],
       dibujo: v => ({ datos: tirasEuclides(v.a, v.b), estado: { paso: 4 } }),
-      lectura: v => [MCD, `(${v.a}, ${v.b}) = ${mcd(v.a, v.b)}, en ${euclides(v.a, v.b).length} divisiones`],
+      lectura: v => { const n = euclides(v.a, v.b).length; return [MCD, `(${v.a}, ${v.b}) = ${mcd(v.a, v.b)}, en ${n} ${n === 1 ? 'división' : 'divisiones'}`]; },
       minimo: 3,
+      // Se arrastra la medida b en la primera fila (el fin de su primer tramo): la tira a fija la escala.
+      arrastres: [{ id: 'medida-b', etiqueta: 'la medida b en la primera fila', color: 'c-i',
+        donde: v => enTira(tirasEuclides(v.a, v.b), 0, v.b),
+        mover: (pt, v) => ({ b: valorEn(tirasEuclides(v.a, v.b), pt.x) }) }],
     },
     predice: {
       pregunta: ['Al dividir ', { v: 'c-o', t: '91' }, ' entre ', { v: 'c-i', t: '35' }, ' el cociente es 2 y sobran 21. Sin factorizar, ¿qué par tiene el mismo MCD que (91, 35)?'],
@@ -272,12 +299,12 @@
         { estado: { paso: 0 }, texto: '35 cabe 2 veces en 91 y sobran 21.', ecuacion: ['91 = 2 · 35 + 21'] },
         { estado: { paso: 1 }, texto: 'Ahora se mide 35 con 21: cabe 1 vez y sobran 14.', ecuacion: ['35 = 1 · 21 + 14'] },
         { estado: { paso: 2 }, texto: '21 con 14: cabe 1 vez y sobran 7.', ecuacion: ['21 = 1 · 14 + 7'] },
-        { estado: { paso: 3 }, texto: '7 mide a 14 exacto: el último divisor es el MCD.', ecuacion: ['14 = 2 · 7   →   ', MCD, '(91, 35) = 7'] },
+        { estado: { paso: 3 }, texto: '7 mide a 14 exacto: el último divisor es el MCD.', ecuacion: ['14 = 2 · 7', '   ·   ', MCD, '(91, 35) = 7'] },
       ],
     },
     regla: {
       texto: 'Si a = q · b + r, los divisores comunes de a y b son los mismos que los de b y r. Se repite hasta que el resto sea 0.',
-      ecuacion: [mcdab, ' = ', MCD, '(', Bv, ', r)   con   ', A, ' = q · ', Bv, ' + r'],
+      ecuacion: [mcdab, ' = ', MCD, '(', Bv, ', ', 'r', ')', '   ·   ', A, ' = ', { llave: ['q'], nota: 'cociente' }, ' · ', Bv, ' + ', { llave: ['r'], nota: 'resto' }],
       condicion: 'a y b enteros positivos y 0 ≤ r < b. El MCD es el último divisor, el que da resto 0.',
     },
     ahoraTu: {
@@ -293,7 +320,7 @@
             { id: 'cociente', valor: ps[0].q, error: 'AT-COCIENTE', siFuera: 'El cociente no es una medida común; lo es el último divisor.' },
             { id: 'mcm', valor: mcm(a, b), error: 'AR13', siFuera: 'Ese es el MCM, el menor múltiplo común.' },
           ], String),
-          solucion: { texto: 'El último divisor, el que deja resto 0.', ecuacion: [ps.map(p => `${p.a} = ${p.q} · ${p.b} + ${p.r}`).join(';   ')], dibujo: { datos: tirasEuclides(a, b), estado: { paso: 4 } } },
+          solucion: { texto: 'El último divisor, el que deja resto 0.', ecuacion: juntas(ps.map(p => `${p.a} = ${p.q} · ${p.b} + ${p.r}`)), dibujo: { datos: tirasEuclides(a, b), estado: { paso: 4 } } },
         };
         return {
           pregunta: ['Al dividir ', { v: 'c-o', t: String(a) }, ' entre ', { v: 'c-i', t: String(b) }, ` el cociente es ${ps[0].q} y el resto ${ps[0].r}. ¿Qué par tiene el mismo MCD y es menor?`],
@@ -341,6 +368,7 @@
       dibujo: v => ({ datos: tablaDos(v.a, v.b), estado: { paso: 2 } }),
       lectura: v => [MCD, ' · ', MCM, ` = ${mcd(v.a, v.b)} · ${mcm(v.a, v.b)} = ${mcd(v.a, v.b) * mcm(v.a, v.b)} = ${v.a} · ${v.b}`],
       minimo: 3,
+      // Sin arrastre: a y b se eligen de una lista y la tabla es una consecuencia; no hay medida que agarrar.
     },
     predice: {
       pregunta: 'Para 4, 6 y 10, el MCD es 2 y el MCM es 60. ¿El producto MCD · MCM es igual a 4 · 6 · 10?',
@@ -356,14 +384,14 @@
     mira: {
       datos: tablaDos(12, 18, 1),
       pasos: [
-        { estado: { paso: 0 }, texto: '12 = 2² · 3 y 18 = 2 · 3²: sus exponentes en la tabla.', ecuacion: ['12 = ', { sup: ['2', '2'] }, ' · 3;   18 = 2 · ', { sup: ['3', '2'] }] },
-        { estado: { paso: 1, columna: 3 }, texto: 'En cada fila, el MCD toma el menor y el MCM, el mayor.', ecuacion: [MCD, ' = 2 · 3 = 6;   ', MCM, ' = ', { sup: ['2', '2'] }, ' · ', { sup: ['3', '2'] }, ' = 36'] },
+        { estado: { paso: 0 }, texto: '12 = 2² · 3 y 18 = 2 · 3²: sus exponentes en la tabla.', ecuacion: ['12 = ', { sup: ['2', '2'] }, ' · 3', '   ·   ', '18 = 2 · ', { sup: ['3', '2'] }] },
+        { estado: { paso: 1, columna: 3 }, texto: 'En cada fila, el MCD toma el menor y el MCM, el mayor.', ecuacion: [MCD, ' = 2 · 3 = 6', '   ·   ', MCM, ' = ', { sup: ['2', '2'] }, ' · ', { sup: ['3', '2'] }, ' = 36'] },
         { estado: { paso: 2 }, texto: 'Menor más mayor son los dos exponentes: no se pierde ninguno.', ecuacion: ['6 · 36 = 216 = 12 · 18'] },
       ],
     },
     regla: {
       texto: 'Para dos números, el MCD y el MCM se reparten los exponentes de cada primo sin perder ninguno. Por eso su producto es a · b.',
-      ecuacion: [mcdab, ' · ', mcmab, ' = ', A, ' · ', Bv],
+      ecuacion: [{ llave: [mcdab], nota: 'los menores', color: 'c-d' }, ' · ', { llave: [mcmab], nota: 'los mayores', color: 'c-h' }, ' = ', A, ' · ', Bv],
       condicion: 'vale solo con dos enteros positivos. Con tres o más, el producto de todos no es MCD · MCM.',
     },
     ahoraTu: {
@@ -427,6 +455,8 @@
       dibujo: v => ({ datos: tablaFC(v.a, v.b), estado: { paso: 6 } }),
       lectura: v => { const qs = euclides(v.a, v.b).map(p => p.q); return [`${v.a}/${v.b} = [${qs[0]}${qs.length > 1 ? '; ' + qs.slice(1).join(', ') : ''}]`]; },
       minimo: 3,
+      // Sin arrastre: la tabla es el registro de las divisiones; a y b son datos, no medidas de la figura. (El gesto de
+      // medir con el resto vive en la idea 3, con las tiras.)
     },
     predice: {
       pregunta: '30/18 = 1 + 1/(1 + 1/2), que se escribe [1; 1, 2]. Si se corta en [1; 1], es decir 1 + 1/1, ¿qué número da?',
@@ -443,7 +473,7 @@
     mira: {
       datos: tablaFC(30, 18, 1),
       pasos: [
-        { estado: { paso: 0 }, texto: 'Euclides con 30 y 18 da los cocientes 1, 1 y 2.', ecuacion: ['30 = 1 · 18 + 12;   18 = 1 · 12 + 6;   12 = 2 · 6'] },
+        { estado: { paso: 0 }, texto: 'Euclides con 30 y 18 da los cocientes 1, 1 y 2.', ecuacion: juntas(['30 = 1 · 18 + 12', '18 = 1 · 12 + 6', '12 = 2 · 6']) },
         { estado: { paso: 1 }, texto: 'Primer corte: solo la parte entera.', ecuacion: ['[1] = 1'] },
         { estado: { paso: 2 }, texto: 'Segundo corte: 1 + 1/1.', ecuacion: ['[1; 1] = 1 + ', { frac: ['1', '1'] }, ' = 2'] },
         { estado: { paso: 3 }, texto: 'Con todos los cocientes sale el valor exacto.', ecuacion: ['[1; 1, 2] = 1 + ', { frac: ['1', ['1 + ', { frac: ['1', '2'] }]] }, ' = ', { frac: ['5', '3'] }, ' = ', { frac: ['30', '18'] }] },
@@ -468,7 +498,7 @@
             { id: 'invertido', valor: lista(qs.slice().reverse()), error: 'AT-CONVERGENTE', siFuera: 'Los cocientes van en el orden en que salen.' },
             { id: 'corto', valor: lista(qs.slice(0, -1)), error: 'AT-CONVERGENTE', siFuera: 'Falta el último cociente, el de resto 0.' },
           ], String),
-          solucion: { texto: 'Los cocientes de las divisiones sucesivas, en orden.', ecuacion: [ps.map(p => `${p.a} = ${p.q} · ${p.b} + ${p.r}`).join(';   ')], dibujo: { datos: tablaFC(a, b), estado: { paso: 6 } } },
+          solucion: { texto: 'Los cocientes de las divisiones sucesivas, en orden.', ecuacion: juntas(ps.map(p => `${p.a} = ${p.q} · ${p.b} + ${p.r}`)), dibujo: { datos: tablaFC(a, b), estado: { paso: 6 } } },
         };
         const corte = cv[cv.length - 2];
         return {
@@ -484,11 +514,70 @@
     },
   };
 
+  // Mesa «tres combis»: tres filas de salidas en 0 a 120 minutos y el primer encuentro de las tres, si cae en la recta. La
+  // tercera combi va en tinta: el verde es del MCD y el rojo del MCM (regla 4).
+  const rectaTres = (a, b, c) => {
+    const m = mcm(mcm(a, b), c);
+    return {
+      min: 0, max: 120, paso: 5, cada: 4, decimales: 0, variable: 'minutos', filas: 4,
+      elementos: [
+        { tipo: 'enteros', a, b: 120, cada: a, color: 'o', fila: 3, rotulo: `cada ${a}` },
+        { tipo: 'enteros', a: b, b: 120, cada: b, color: 'i', fila: 2, rotulo: `cada ${b}` },
+        { tipo: 'enteros', a: c, b: 120, cada: c, fila: 1, rotulo: `cada ${c}` },
+        ...(m <= 120 ? [{ tipo: 'punto', x: m, color: 'h', fila: 4, rotulo: `las tres: ${m}` }] : []),
+      ],
+    };
+  };
+
   return {
     unidad: 'aritmetica.mcd-y-mcm',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    // Laboratorio: juego libre, sin preguntas. «Cintas libres» deja elegir los largos (también dos que solo comparten el
+    // 1); «Tres combis» agrega una tercera y el caso en que el encuentro cae fuera de la recta; Euclides es el juego de la idea 3.
+    laboratorio: [
+      {
+        id: 'cintas-libres', titulo: 'Cintas de cualquier largo', pieza: 'arit-tiras',
+        consigna: 'Arrastra el fin de cada cinta y el fin del primer trozo. Busca el trozo más largo que no deje sobrante.',
+        controles: [
+          { id: 'a', etiqueta: 'a', color: 'c-o', min: 6, max: 40, paso: 1, inicio: 24, unidad: 'cm', decimales: 0 },
+          { id: 'b', etiqueta: 'b', color: 'c-i', min: 6, max: 40, paso: 1, inicio: 36, unidad: 'cm', decimales: 0 },
+          { id: 't', etiqueta: 'Trozo', color: 'c-d', min: 1, max: 20, paso: 1, inicio: 5, unidad: 'cm', decimales: 0 },
+        ],
+        dibujo: v => ({ datos: tirasCorte(v.a, v.b, v.t), estado: {} }),
+        lectura: v => [`${v.a} y ${v.b} cm, trozo de ${v.t}: sobran ${v.a % v.t} y ${v.b % v.t}`],
+        arrastres: [
+          { id: 'fin-a', etiqueta: 'fin de la cinta a', color: 'c-o',
+            donde: v => enTira(tirasCorte(v.a, v.b, v.t), 0, v.a), mover: (pt, v) => ({ a: valorEn(tirasCorte(v.a, v.b, v.t), pt.x) }) },
+          { id: 'fin-b', etiqueta: 'fin de la cinta b', color: 'c-i',
+            donde: v => enTira(tirasCorte(v.a, v.b, v.t), 1, v.b), mover: (pt, v) => ({ b: valorEn(tirasCorte(v.a, v.b, v.t), pt.x) }) },
+          { id: 'trozo', etiqueta: 'fin del primer trozo', color: 'c-d',
+            donde: v => ({ x: enTira(tirasCorte(v.a, v.b, v.t), 0, v.t).x, y: TIRAS().geometria(tirasCorte(v.a, v.b, v.t)).tiraY(0) }),
+            mover: (pt, v) => ({ t: valorEn(tirasCorte(v.a, v.b, v.t), pt.x) }) },
+        ],
+      },
+      {
+        id: 'tres-combis', titulo: 'Tres combis en el paradero', pieza: 'recta',
+        consigna: 'Tres combis salen juntas, cada a, b y c minutos. Arrastra la quinta salida de cada una. ¿Cuándo vuelven a coincidir las tres?',
+        controles: [
+          { id: 'a', etiqueta: 'a', color: 'c-o', min: 2, max: 8, paso: 1, inicio: 4, unidad: 'min', decimales: 0 },
+          { id: 'b', etiqueta: 'b', color: 'c-i', min: 2, max: 8, paso: 1, inicio: 6, unidad: 'min', decimales: 0 },
+          { id: 'c', etiqueta: 'c', min: 2, max: 8, paso: 1, inicio: 5, unidad: 'min', decimales: 0 },
+        ],
+        dibujo: v => ({ datos: rectaTres(v.a, v.b, v.c), estado: {} }),
+        lectura: v => {
+          const m = mcm(mcm(v.a, v.b), v.c);
+          return [`Cada ${v.a}, ${v.b} y ${v.c} min: juntas a los ${m} min${m > 120 ? ', fuera de la recta' : ''}`];
+        },
+        arrastres: ['a', 'b', 'c'].map((k, i) => ({
+          id: `salida-${k}`, etiqueta: `quinta salida de la combi ${k}`, color: ['c-o', 'c-i', undefined][i],
+          donde: v => enRecta(rectaTres(v.a, v.b, v.c), 3 - i, 5 * v[k]),
+          mover: (pt, v) => ({ [k]: deRecta(rectaTres(v.a, v.b, v.c), pt.x) / 5 }),
+        })),
+      },
+      Object.assign({ id: 'euclides', titulo: 'Euclides: medir con el resto', pieza: 'arit-tiras' }, euclidesIdea.juega),
+    ],
     historia: {
       texto: 'En el libro VII de los Elementos, el máximo común divisor aparece como la mayor medida común de dos números. Euclides lo busca quitando de una cantidad lo que cabe de la otra, con segmentos y restas. La división con resto de hoy comprime esas restas repetidas. El mínimo común múltiplo responde a la pregunta contraria: la primera cantidad que se arma entera con ambas medidas.',
       pregunta: '¿Qué medida cabe exacta en dos cintas distintas?',

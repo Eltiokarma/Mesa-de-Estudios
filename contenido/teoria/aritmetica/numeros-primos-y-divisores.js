@@ -49,7 +49,18 @@
     return ops.slice(0, 4);
   }
 
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de las piezas (arit-tabla.celda, arit-fichas.caja).
+  // En las tablas, mover elige la celda más cercana al dedo entre las que dan un valor del control.
+  const TABLA = () => Kit.piezas['arit-tabla'], FICHAS = () => Kit.piezas['arit-fichas'];
+  const masCerca = (pt, candidatos) => candidatos.reduce((m, c) => (Math.hypot(c.x - pt.x, c.y - pt.y) < Math.hypot(m.x - pt.x, m.y - pt.y) ? c : m));
+  const celdaDe = (datos, i, j) => TABLA().geometria(datos).celda(i, j);
+  // En una grilla de `ancho` columnas, el número x vive en la fila ⌊(x − 1)/ancho⌋ y la columna (x − 1) mód ancho.
+  // La manija va en el borde de abajo de la celda, para no tapar el número.
+  const celdaNum = (datos, x, ancho) => { const c = celdaDe(datos, Math.floor((x - 1) / ancho), (x - 1) % ancho); return { x: c.x, y: c.y + TABLA().geometria(datos).altoFila / 2 }; };
+
   // ---------- Idea 1: primo, un solo rectángulo (primos y compuestos) ----------
+  // Sin arrastre en el juego: al cambiar n se rearman todos los rectángulos, y no queda un objeto estable que agarrar.
+  // El gesto vive en la mesa «Filas de c» del laboratorio: se estira el ancho de las filas hasta que no sobre nada.
   // Cambia: n. Permanece: el tamaño de cada ficha.
   // Progresa: todos los rectángulos de n fichas, de 1 fila hacia el cuadrado. Se reserva: el 1, que no arma dos.
   // Debe verse: un primo solo se acomoda en una fila.
@@ -96,7 +107,7 @@
     },
     regla: {
       texto: 'Un primo es un entero mayor que 1 con exactamente dos divisores positivos: 1 y él mismo. Si tiene más, es compuesto.',
-      ecuacion: [p, ' primo  ⇔  ', p, ' > 1 y sus divisores son {1, ', p, '}'],
+      ecuacion: [p, ' primo  ⇔  ', p, ' > 1 y sus divisores son ', { llave: ['{1, ', p, '}'], nota: 'solo dos' }],
       condicion: 'el 1 no es primo ni compuesto. Para descartar un primo, basta probar divisores hasta su raíz cuadrada.',
     },
     ahoraTu: {
@@ -156,6 +167,10 @@
       dibujo: v => ({ datos: grilla(60, v.p), estado: {} }),
       lectura: v => { let c = 0; for (let x = 2; x <= 60; x++) if (factores(x)[0][0] > v.p || esPrimo(x)) c++; return [`Sin tachar: ${c} números de 60`]; },
       minimo: 3,
+      // El marcador está en el último primo que tacha; se lleva a otro primo de la primera fila.
+      arrastres: [{ id: 'primo', etiqueta: 'último primo que tacha', color: 'c-i',
+        donde: v => celdaNum(grilla(60, v.p), v.p, 10),
+        mover: (pt, v) => ({ p: masCerca(pt, [2, 3, 5, 7].map(x => Object.assign({ valor: x }, celdaNum(grilla(60, v.p), x, 10)))).valor }) }],
     },
     predice: {
       pregunta: 'Para hallar todos los primos hasta 100 con la criba, ¿hasta qué primo basta tachar múltiplos?',
@@ -169,6 +184,8 @@
       revelar: { datos: criba100.datos, estado: { paso: criba100.pasos } },
       coincide: 'Coincide: 7² = 49 está en la lista; 11² = 121 ya no.',
     },
+    // Hallazgo 9: el juego tacha en la grilla de 1 a 60; «Mira» resume la criba hasta 100 en una tabla por primo, porque
+    // la grilla de 100 no cabe legible a 360 px. Las dos son arit-tabla y comparten el color del primo (turquesa).
     mira: {
       datos: criba100.datos,
       pasos: [
@@ -180,7 +197,7 @@
     },
     regla: {
       texto: 'La criba tacha los múltiplos de cada primo empezando en su cuadrado. Basta usar los primos hasta la raíz cuadrada del límite.',
-      ecuacion: [p, ' tacha desde ', { sup: [p, '2'] }, '   ·   se usan los ', p, ' ≤ √N'],
+      ecuacion: [p, ' tacha desde ', { sup: [p, '2'] }, '   ·   ', 'se usan los ', p, ' ≤ ', { llave: ['√N'], nota: 'raíz del límite' }],
       condicion: 'los menores que p² ya fueron tachados por un primo más chico. Lo que queda sin tachar, menos el 1, son primos.',
     },
     ahoraTu: {
@@ -226,6 +243,7 @@
       dibujo: v => ({ datos: tablaFact(v.n), estado: {} }),
       lectura: v => [{ v: 'c-o', t: String(v.n) }, ' = ', { v: 'c-i', t: escribir(factores(v.n)) }],
       minimo: 3,
+      // Sin arrastre: la tabla es un procedimiento (cada fila sale de la anterior); n es un dato, no una medida de la figura.
     },
     predice: {
       pregunta: ['¿Son ', { v: 'c-o', t: '8' }, ' y ', { v: 'c-o', t: '15' }, ' primos entre sí (PESI)?'],
@@ -248,7 +266,7 @@
     },
     regla: {
       texto: 'Todo entero mayor que 1 es un producto de primos, de una sola manera salvo el orden. Dos números son PESI si no comparten ningún primo.',
-      ecuacion: [n_, ' = ', { sup: [p, ea] }, ' · ', { sup: [q, eb] }, ' · …   ·   PESI ⇔ mcd = 1'],
+      ecuacion: [n_, ' = ', { llave: [{ sup: [p, ea] }], nota: 'potencia' }, ' · ', { sup: [q, eb] }, ' · …', '   ·   ', 'PESI ⇔ mcd = 1'],
       condicion: 'PESI es una propiedad de la pareja: dos compuestos pueden serlo, y dos números iguales mayores que 1 nunca lo son.',
     },
     ahoraTu: {
@@ -291,6 +309,21 @@
     filas: Array.from({ length: b + 1 }, (_, j) => [{ t: `3${sup(j)}`, color: 'h' }, ...Array.from({ length: a + 1 }, (_, i) => ({ t: String(2 ** i * 3 ** j), color: 'd', paso: con ? 0 : 1 }))]),
     filasMax: 4, cabeza: true, alt: `Divisores de 2 a la ${a} por 3 a la ${b}: una tabla de ${a + 1} columnas por ${b + 1} filas`,
   });
+  // Manija en la última celda de una tabla de exponentes: a lo ancho elige a (0..aMax) y a lo alto b (0..bMax). Cada
+  // posible esquina se ubica con la geometría de la tabla que tendría; mover elige la más cercana al dedo.
+  // La manija va en el borde de abajo de la última celda, no en su centro: así no tapa el último divisor. (El borde
+  // derecho no sirve: las columnas se reparten todo el ancho y la tabla siempre termina en el mismo x.)
+  const vertice = (datos, b, a) => { const g = TABLA().geometria(datos); return { x: g.celda(b, a + 1).x, y: g.filaY(b) + g.altoFila }; };
+  const esquina = (id, datosDe, aMax, bMax, armar) => ({
+    id, etiqueta: 'esquina de la tabla: exponentes a y b', color: 'c-h',
+    donde: v => vertice(datosDe(v), v.b, v.a),
+    mover: (pt, v) => {
+      const cs = [];
+      for (let a = 0; a <= aMax; a++) for (let b = 0; b <= bMax; b++) cs.push(Object.assign({ a, b }, vertice(armar(a, b, v), b, a)));
+      const m = masCerca(pt, cs);
+      return { a: m.a, b: m.b };
+    },
+  });
   const cantidad = {
     id: 'divisores',
     titulo: 'Elegir exponentes cuenta divisores',
@@ -306,6 +339,8 @@
       dibujo: v => ({ datos: tablaDiv(v.a, v.b), estado: {} }),
       lectura: v => [`n = ${2 ** v.a * 3 ** v.b} tiene ${v.a + 1} · ${v.b + 1} = `, { v: 'c-d', t: String((v.a + 1) * (v.b + 1)) }, ' divisores'],
       minimo: 3,
+      // Se estira la tabla desde su esquina: a lo ancho cambia a; a lo alto, b.
+      arrastres: [esquina('esquina', v => tablaDiv(v.a, v.b), 4, 3, tablaDiv)],
     },
     predice: {
       pregunta: ['¿Cuántos divisores positivos tiene 72 = 2³ · 3²?'],
@@ -330,7 +365,7 @@
     },
     regla: {
       texto: 'Si n = pᵃ · qᵇ, cada divisor elige un exponente de 0 a a y otro de 0 a b. La suma multiplica las sumas de potencias.',
-      ecuacion: ['d(', n_, ') = (', ea, ' + 1)(', eb, ' + 1)   ·   σ(', n_, ') = (1 + … + ', { sup: [p, ea] }, ')(1 + … + ', { sup: [q, eb] }, ')'],
+      ecuacion: [{ llave: ['d(', n_, ')'], nota: 'cantidad' }, ' = (', ea, ' + 1)(', eb, ' + 1)', '   ·   ', { llave: ['σ(', n_, ')'], nota: 'suma' }, ' = (1 + … + ', { sup: [p, ea] }, ') · (1 + … + ', { sup: [q, eb] }, ')'],
       condicion: 'p y q son primos distintos. El producto de todos los divisores es n elevado a d(n)/2.',
     },
     ahoraTu: {
@@ -387,6 +422,10 @@
       dibujo: v => ({ datos: grillaPhi(v.n), estado: {} }),
       lectura: v => ['φ(', { v: 'c-o', t: String(v.n) }, ') = ', { v: 'c-d', t: String(phi(v.n)) }],
       minimo: 3,
+      // Se arrastra el final de la lista: la celda de n. Llevarla a otra celda (de 13 a 30) cambia n.
+      arrastres: [{ id: 'fin', etiqueta: 'final de la lista: n', color: 'c-o',
+        donde: v => celdaNum(grillaPhi(v.n), v.n, 6),
+        mover: (pt, v) => ({ n: masCerca(pt, Array.from({ length: 18 }, (_, i) => Object.assign({ valor: 13 + i }, celdaNum(grillaPhi(v.n), 13 + i, 6)))).valor }) }],
     },
     predice: {
       pregunta: ['¿Cuánto vale φ(', { v: 'c-o', t: '12' }, '), la cantidad de números de 1 a 12 que no comparten ningún factor primo con 12?'],
@@ -410,7 +449,7 @@
     },
     regla: {
       texto: 'φ(n) cuenta los enteros de 1 a n que no comparten ningún primo con n. Cada primo de n deja la fracción 1 − 1/p.',
-      ecuacion: ['φ(', n_, ') = ', n_, ' · (1 − ', { frac: ['1', { sub: [p, '1'] }] }, ') · (1 − ', { frac: ['1', { sub: [p, '2'] }] }, ') · …'],
+      ecuacion: [{ llave: ['φ(', n_, ')'], nota: 'coprimos' }, ' = ', n_, ' · (1 − ', { frac: ['1', { sub: [p, '1'] }] }, ') · (1 − ', { frac: ['1', { sub: [p, '2'] }] }, ') · …'],
       condicion: 'se usan los primos distintos de n, cada uno una vez. Si n es primo, φ(n) = n − 1.',
     },
     ahoraTu: {
@@ -456,6 +495,7 @@
       dibujo: v => ({ datos: tablaFW(v.p), estado: {} }),
       lectura: v => [`(${v.p} − 1)! deja resto `, { v: 'c-h', t: String(v.p - 1) }, ` = −1`],
       minimo: 3,
+      // Sin arrastre: p se elige de una lista de primos y las filas son consecuencias; no hay medida que agarrar.
     },
     predice: {
       pregunta: ['¿Qué resto deja ', { sup: [{ v: 'c-o', t: '3' }, '100'] }, ' al dividirlo entre ', { v: 'c-i', t: '101' }, ', que es primo?'],
@@ -479,7 +519,7 @@
     },
     regla: {
       texto: 'Si p es primo y no divide a a, aᵖ⁻¹ deja resto 1 (Fermat). Además, (p − 1)! deja p − 1 (Wilson).',
-      ecuacion: [{ sup: [ea, [p, ' − 1']] }, ' ≡ 1   ·   (', p, ' − 1)! ≡ −1   (mód ', p, ')'],
+      ecuacion: [{ llave: [{ sup: [ea, [p, ' − 1']] }, ' ≡ 1'], nota: 'Fermat' }, '  (mód ', p, ')', '   ·   ', { llave: ['(', p, ' − 1)! ≡ −1'], nota: 'Wilson' }, '  (mód ', p, ')'],
       condicion: 'Wilson vale solo si p es primo. Euler generaliza Fermat: a elevado a φ(n) ≡ 1 si mcd(a, n) = 1.',
     },
     ahoraTu: {
@@ -508,11 +548,74 @@
     },
   };
 
+  // Mesa «filas de c»: n fichas en filas de c; las sobrantes en rojo. Ficha de 14 y alto de 140 para que la ficha mida
+  // lo mismo con cualquier c de 3 a 12 (a lo más 10 filas): así el borde derecho se mueve parejo con el dedo. Si n < c,
+  // la fila se completa con huecos punteados: el ancho elegido se ve aunque no alcance ni una fila.
+  const filasDe = (nv, c) => {
+    const q = Math.floor(nv / c), r = nv % c;
+    return { bloques: [{ n: nv, columnas: c, color: r ? 'o' : 'i', marcoFilas: true, rotulo: r ? `${q} ${q === 1 ? 'fila' : 'filas'} y ${r} ${r === 1 ? 'suelta' : 'sueltas'}` : `${q} × ${c}`, tramos: r ? [{ de: q * c, a: nv - 1, color: 'h' }] : [], huecos: Math.max(0, c - nv) }], ficha: 14, altoMax: 140 };
+  };
+  // Mesa «otro primo»: la tabla de exponentes con q en lugar de 3.
+  const tablaDivQ = (a, b, qq) => ({
+    columnas: [{ t: '' }, ...Array.from({ length: a + 1 }, (_, i) => ({ t: `2${sup(i)}`, color: 'h' }))],
+    filas: Array.from({ length: b + 1 }, (_, j) => [{ t: `${qq}${sup(j)}`, color: 'h' }, ...Array.from({ length: a + 1 }, (_, i) => ({ t: String(2 ** i * qq ** j), color: 'd' }))]),
+    filasMax: 4, cabeza: true, alt: `Divisores de 2 a la ${a} por ${qq} a la ${b}: una tabla de ${a + 1} columnas por ${b + 1} filas`,
+  });
+
   return {
     unidad: 'aritmetica.numeros-primos-y-divisores',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    // Laboratorio: juego libre, sin preguntas. «Filas de c» prueba un ancho a la vez y deja ver el sobrante (el gesto de
+    // la idea 1); «Divisores con otro primo» cambia el 3 por 5 o 7; la criba hasta 100 deja probar el 11, que no tacha nada.
+    laboratorio: [
+      {
+        id: 'filas-de-c', titulo: 'Filas de c fichas', pieza: 'arit-fichas',
+        consigna: 'Acomoda n fichas en filas de c. Estira el ancho de las filas hasta que no sobre ninguna ficha.',
+        controles: [
+          { id: 'n', etiqueta: 'n', color: 'c-o', min: 2, max: 30, paso: 1, inicio: 12, decimales: 0 },
+          { id: 'c', etiqueta: 'Filas de', color: 'c-i', min: 3, max: 12, paso: 1, inicio: 5, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: filasDe(v.n, v.c), estado: {} }),
+        lectura: v => {
+          const q = Math.floor(v.n / v.c), r = v.n % v.c;
+          return r ? [`${v.n} en filas de ${v.c}: ${q} ${q === 1 ? 'fila' : 'filas'}, ${r === 1 ? 'sobra 1' : `sobran ${r}`}`] : [`${v.n} = ${q} × ${v.c}: no sobra ninguna`];
+        },
+        arrastres: [{ id: 'ancho', etiqueta: 'borde derecho de las filas: c', color: 'c-i',
+          donde: v => { const g = FICHAS().geometria(filasDe(v.n, v.c)); const cj = g.caja(0); return { x: cj.x + cj.ancho, y: cj.y + g.paso / 2 }; },
+          mover: (pt, v) => {
+            // Borde derecho para cada ancho posible (la ficha mide lo mismo en todos: ver filasDe); el más cercano al dedo.
+            const cs = Array.from({ length: 10 }, (_, i) => { const c = i + 3, cj = FICHAS().geometria(filasDe(v.n, c)).caja(0); return { valor: c, x: cj.x + cj.ancho, y: pt.y }; });
+            return { c: masCerca(pt, cs).valor };
+          } }],
+      },
+      {
+        id: 'otro-primo', titulo: 'Divisores con otro primo', pieza: 'arit-tabla',
+        consigna: 'n = 2ᵃ · qᵇ. Elige el primo q y estira la tabla desde su esquina. Compara cantidad y suma de divisores.',
+        controles: [
+          { id: 'q', etiqueta: 'q', color: 'c-i', opciones: [{ valor: 3, texto: '3' }, { valor: 5, texto: '5' }, { valor: 7, texto: '7' }] },
+          { id: 'a', etiqueta: 'a', color: 'c-h', min: 0, max: 4, paso: 1, inicio: 2, decimales: 0 },
+          { id: 'b', etiqueta: 'b', color: 'c-h', min: 0, max: 3, paso: 1, inicio: 1, decimales: 0 },
+        ],
+        dibujo: v => ({ datos: tablaDivQ(v.a, v.b, v.q), estado: {} }),
+        lectura: v => {
+          const nv = 2 ** v.a * v.q ** v.b, ds = divisores(nv);
+          return [`n = ${nv}: `, { v: 'c-d', t: String(ds.length) }, ` divisores, suman ${f(ds.reduce((u, z) => u + z, 0))}`];
+        },
+        arrastres: [esquina('esquina', v => tablaDivQ(v.a, v.b, v.q), 4, 3, (a, b, v) => tablaDivQ(a, b, v.q))],
+      },
+      {
+        id: 'criba-100', titulo: 'La criba hasta 100', pieza: 'arit-tabla',
+        consigna: 'La lista llega a 100. Lleva el marcador al último primo que tacha. ¿El 11 tacha algo nuevo?',
+        controles: [{ id: 'p', etiqueta: 'tachar hasta', color: 'c-i', opciones: [2, 3, 5, 7, 11].map(x => ({ valor: x, texto: String(x) })) }],
+        dibujo: v => ({ datos: grilla(100, v.p), estado: {} }),
+        lectura: v => { let c = 0; for (let x = 2; x <= 100; x++) if (factores(x)[0][0] > v.p || esPrimo(x)) c++; return [`Hasta ${v.p}: quedan ${c} sin tachar de 100`]; },
+        arrastres: [{ id: 'primo', etiqueta: 'último primo que tacha', color: 'c-i',
+          donde: v => celdaNum(grilla(100, v.p), v.p, 10),
+          mover: (pt, v) => ({ p: masCerca(pt, [2, 3, 5, 7, 11].map(x => Object.assign({ valor: x }, celdaNum(grilla(100, v.p), x, 10)))).valor }) }],
+      },
+    ],
     historia: {
       texto: 'En los Elementos, Euclides prueba que ninguna lista finita contiene todos los primos. Toma los primos de la lista, los multiplica y suma 1. Ese número no es múltiplo de ninguno de ellos, así que tiene un divisor primo que faltaba. La prueba no dice que el resultado sea primo: dice que la lista estaba incompleta.',
       pregunta: '¿Se acabarán alguna vez los primos?',

@@ -46,3 +46,27 @@ test('sin NaN ni colores fijos; texto de 14 o más; alto fijo; puro', () => {
 });
 
 test('alt cuenta filas y sobrante', () => assert.match(P.alt(D), /23 fichas en filas de 5: 4 filas llenas y 3 sueltas/));
+
+test('geometria.ficha cae en el centro del círculo dibujado (manijas del gesto directo)', () => {
+  const d = { bloques: [{ n: 7, columnas: 3, color: 'o' }, { filas: [1, 2, 3], color: 'i' }] };
+  const s = P.dibujar(d), g = P.geometria(d);
+  const centros = [...s.matchAll(/<circle[^>]*cx="([\d.]+)" cy="([\d.]+)"/g)].map(m => [+m[1], +m[2]]);
+  for (const [k, n] of [[0, 7], [1, 6]]) for (let i = 0; i < n; i++) {
+    const p = g.ficha(k, i);
+    assert.ok(centros.some(([x, y]) => Math.abs(x - p.x) < 0.01 && Math.abs(y - p.y) < 0.01), `ficha ${k}.${i}`);
+  }
+  const c = g.caja(0);
+  assert.ok(c.ancho > 0 && c.alto > 0 && Math.abs(c.y + c.alto - g.piso) < 1e-9);
+});
+
+test('arriba: los bloques cuelgan de arriba y la ficha k no se mueve al crecer n; sin arriba, el dibujo no cambia', () => {
+  const base = { bloques: [{ n: 7, columnas: 3, color: 'o' }], ficha: 20, altoMax: 120 };
+  const a7 = Object.assign({}, base, { arriba: true }), a10 = { bloques: [{ n: 10, columnas: 3, color: 'o' }], ficha: 20, altoMax: 120, arriba: true };
+  const g7 = P.geometria(a7), g10 = P.geometria(a10);
+  for (let i = 0; i < 7; i++) assert.deepEqual(g7.ficha(0, i), g10.ficha(0, i));
+  const s = P.dibujar(a7);
+  const centros = [...s.matchAll(/<circle[^>]*cx="([\d.]+)" cy="([\d.]+)"/g)].map(m => [+m[1], +m[2]]);
+  for (let i = 0; i < 7; i++) { const p = g7.ficha(0, i); assert.ok(centros.some(([x, y]) => Math.abs(x - p.x) < 0.01 && Math.abs(y - p.y) < 0.01), `ficha ${i}`); }
+  assert.equal(g7.caja(0).y, P.geometria(base).caja(0).y - (120 - 3 * 20) + 0);
+  assert.equal(P.dibujar(base), P.dibujar(Object.assign({}, base, { arriba: false })));
+});

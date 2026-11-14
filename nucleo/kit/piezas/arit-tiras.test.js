@@ -47,3 +47,11 @@ test('sin NaN, undefined ni colores fijos; texto de 14 o más; alto fijo; puro',
 });
 
 test('alt cuenta las tiras', () => assert.equal(P.alt(D), 'Tiras a la misma escala: A (12): 4, 8; B (6): 6'));
+
+test('geometria: centroY está en medio de la tira y deX invierte a x (gesto directo)', () => {
+  const d = { max: 12, tiras: [{ rotulo: 'a', color: 'o', tramos: [{ valor: 5, color: 'o' }] }] };
+  const g = P.geometria(d), s = P.dibujar(d);
+  const m = /<rect[^>]*y="([\d.]+)"[^>]*height="([\d.]+)"/.exec(s);
+  assert.ok(Math.abs(+m[1] + +m[2] / 2 - g.centroY(0)) < 0.01);
+  for (const v of [0, 3, 7.5, 12]) assert.ok(Math.abs(g.deX(g.x(v)) - v) < 1e-9);
+});
