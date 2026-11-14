@@ -4044,7 +4044,14 @@
      "grado": 3,
      "plantillas": [
       "lectura-verbal"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-verbal/definiciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rv-texto.js"
+      ],
+      "ideas": 2
+     }
     },
     {
      "id": "razonamiento-verbal.analogias",
