@@ -2264,7 +2264,17 @@
      "grado": 3,
      "plantillas": [
       "cuatro-operaciones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/cuatro-operaciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-fichas.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/nucleo/kit/piezas/arit-tiras.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "aritmetica.divisibilidad",
