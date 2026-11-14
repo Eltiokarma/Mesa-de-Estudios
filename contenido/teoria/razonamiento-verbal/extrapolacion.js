@@ -18,11 +18,20 @@
  * de su alcance) y RVX2 (negar el antecedente) son hipótesis nuevas.
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): un marcador que se arrastra por el texto y se suelta en una frase; la manija va
+  // sobre ella (rv-texto.ancla) y salta a la más cercana al dedo (rv-texto.cercana). El control con botones es la
+  // alternativa sin arrastre.
+  const RV = () => Kit.piezas['rv-texto'];
+  const marcador = (datosDe, ids, control, etiqueta) => ({
+    id: 'frase', etiqueta, color: 'c-i',
+    donde: val => RV().ancla(datosDe(val), val[control]),
+    mover: (pt, val) => ({ [control]: RV().cercana(datosDe(val), pt, ids) }),
+  });
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
     const k = [t.indexOf(': '), t.indexOf(', ')].filter(i => i > 0).sort((a, b) => a - b)[0];
@@ -42,10 +51,11 @@
   // Debe verse: las dos condiciones del texto marcadas y cuál falla en cada caso.
   const TOT = tarjeta('o', 'Texto', [['a', 'En el lago, la totora crece donde el agua es'], ['p', 'poco profunda'], ['b', 'y'], ['q', 'tranquila.']]);
   const CASOS = {
-    laguna: { t: 'una laguna tranquila y poco profunda', p: true, q: true },
-    rio: { t: 'un río poco profundo y correntoso', p: true, q: false },
-    hondo: { t: 'una laguna tranquila y muy honda', p: false, q: true },
+    laguna: { t: 'una laguna tranquila y poco profunda', p: true, q: true, dp: 'poco profunda', dq: 'tranquila' },
+    rio: { t: 'un río poco profundo y correntoso', p: true, q: false, dp: 'poco profundo', dq: 'correntoso' },
+    hondo: { t: 'una laguna tranquila y muy honda', p: false, q: true, dp: 'muy honda', dq: 'tranquila' },
   };
+  const NOMBRE_COND = { p: 'Poco profunda', q: 'Tranquila' };
   const figCaso = k => ({ secciones: [TOT, tarjeta('n', 'Caso nuevo', [['c', CASOS[k].t]])] });
   const estCaso = (k, extra = {}) => { const c = CASOS[k], ok = c.p && c.q; return Object.assign({ marcas: { p: c.p ? 'i' : 'h', q: c.q ? 'i' : 'h', c: 'o' }, sellos: { n: ok ? { t: 'Se puede esperar', c: 'i' } : { t: 'No se puede llevar', c: 'h' } } }, extra); };
   const llevar = {
@@ -54,12 +64,19 @@
     temas: ['Extrapolación cognitiva y referencial'],
     pieza: 'rv-texto',
     juega: {
-      consigna: 'Lleva lo que dice el texto a otros lugares. Mira si el caso nuevo cumple las dos condiciones que el texto pone.',
+      consigna: 'Lleva lo que dice el texto a otros lugares. Arrastra el marcador a cada condición y mira si el caso la cumple.',
       voz: 'Una relación viaja con sus condiciones.',
-      controles: [{ id: 'k', etiqueta: 'Caso', opciones: [{ valor: 'laguna', texto: 'otra laguna' }, { valor: 'rio', texto: 'un río' }, { valor: 'hondo', texto: 'una laguna honda' }] }],
-      dibujo: val => ({ datos: figCaso(val.k), estado: estCaso(val.k) }),
-      lectura: val => { const c = CASOS[val.k]; return c.p && c.q ? [sigue('Cumple las dos condiciones')] : [cae('Falla'), `: ${c.p ? 'no es tranquila' : 'no es poco profunda'}`]; },
+      controles: [
+        { id: 'k', etiqueta: 'Caso', opciones: [{ valor: 'laguna', texto: 'otra laguna' }, { valor: 'rio', texto: 'un río' }, { valor: 'hondo', texto: 'una laguna honda' }] },
+        { id: 'f', etiqueta: 'Condición', opciones: [{ valor: 'p', texto: 'poco profunda' }, { valor: 'q', texto: 'tranquila' }] },
+      ],
+      dibujo: val => ({ datos: figCaso(val.k), estado: estCaso(val.k, { nuevo: [val.f] }) }),
+      lectura: val => {
+        const c = CASOS[val.k], ok = c[val.f];
+        return [(ok ? sigue : cae)(NOMBRE_COND[val.f]), `: el caso es ${c[`d${val.f}`]}`, ok ? ' · cumple' : ' · falla'];
+      },
       minimo: 3,
+      arrastres: [marcador(() => figCaso('laguna'), ['p', 'q'], 'f', 'marcador de la condición')],
     },
     predice: {
       pregunta: 'Un estudio con escolares de Puno dice que leer veinte minutos diarios mejoró su comprensión. ¿Qué se puede decir de los adultos de Lima?',
@@ -83,7 +100,7 @@
     },
     regla: {
       texto: 'Extrapolar es llevar una relación del texto a un caso nuevo (otro lugar, tiempo o grupo). Vale si el caso cumple las condiciones del texto; si no, no está garantizada.',
-      ecuacion: [sigue('relación'), ' + ', cond('caso nuevo'), ' con sus condiciones → extrapolación'],
+      ecuacion: [{ llave: [sigue('relación')], nota: 'lo que dice', color: 'c-i' }, ' + ', { llave: [cond('caso nuevo')], nota: 'sus condiciones', color: 'c-o' }, ' → extrapolación'],
       condicion: 'se nombran las condiciones y el alcance que el texto declara (a quiénes, dónde, cuándo).',
     },
     ahoraTu: {
@@ -112,10 +129,13 @@
   // condicional en subjuntivo de un texto (predicción). Debe verse: que negar la condición no niega el resultado.
   const REGLA = tarjeta('o', 'Texto', [['si', 'Si'], ['a', 'el río crece,'], ['b', 'cierran el puente.']]);
   const SUP = {
-    crece: { t: 'El río creció anoche.', concl: 'Cierran el puente: es seguro', c: 'i', marcas: { a: 'i', b: 'i' } },
-    nocrece: { t: 'El río no creció.', concl: 'No se sabe si cierran el puente', c: 'd', marcas: { a: 'h', b: 'd' } },
-    cerrado: { t: 'El puente está cerrado.', concl: 'No se sabe si el río creció', c: 'd', marcas: { a: 'd', b: 'i' } },
+    crece: { t: 'El río creció anoche.', concl: 'Seguro: cierran el puente', c: 'i', marcas: { a: 'i', b: 'i' } },
+    nocrece: { t: 'El río no creció.', concl: 'No se sabe: ¿cierran el puente?', c: 'd', marcas: { a: 'h', b: 'd' } },
+    cerrado: { t: 'El puente está cerrado.', concl: 'No se sabe: ¿creció el río?', c: 'd', marcas: { a: 'd', b: 'i' } },
+    // El caso que la idea no mostraba: negar el resultado sí decide (contrarrecíproco).
+    abierto: { t: 'El puente está abierto.', concl: 'Seguro: el río no creció', c: 'i', marcas: { a: 'h', b: 'h' } },
   };
+  const SUPUESTO = { a: { si: 'crece', no: 'nocrece' }, b: { si: 'cerrado', no: 'abierto' } };
   const figSup = k => ({ secciones: [REGLA, tarjeta('n', 'Supón que', [['c', SUP[k].t]])] });
   const condicional = {
     id: 'condicional',
@@ -123,12 +143,16 @@
     temas: ['Condicional subjuntivo'],
     pieza: 'rv-texto',
     juega: {
-      consigna: 'La regla dice: si el río crece, cierran el puente. Supón distintas cosas y mira qué se puede concluir con seguridad.',
+      consigna: 'La regla dice: si el río crece, cierran el puente. Arrastra el marcador a la parte que supones y elige si ocurre o no.',
       voz: 'El puente podría cerrarse por otra razón.',
-      controles: [{ id: 'k', etiqueta: 'Supón', opciones: [{ valor: 'crece', texto: 'creció' }, { valor: 'nocrece', texto: 'no creció' }, { valor: 'cerrado', texto: 'puente cerrado' }] }],
-      dibujo: val => ({ datos: figSup(val.k), estado: { marcas: Object.assign({ c: 'o' }, SUP[val.k].marcas), sellos: { n: { t: SUP[val.k].c === 'i' ? 'Seguro' : 'No se sabe', c: SUP[val.k].c } } } }),
-      lectura: val => [corto(SUP[val.k].c === 'i' ? sigue : duda, SUP[val.k].concl)],
+      controles: [
+        { id: 'parte', etiqueta: 'Supón sobre', opciones: [{ valor: 'a', texto: 'el río' }, { valor: 'b', texto: 'el puente' }] },
+        { id: 'ocurre', etiqueta: '¿Ocurre?', opciones: [{ valor: 'si', texto: 'sí' }, { valor: 'no', texto: 'no' }] },
+      ],
+      dibujo: val => { const k = SUPUESTO[val.parte][val.ocurre]; return { datos: figSup(k), estado: { marcas: Object.assign({ c: 'o' }, SUP[k].marcas), sellos: { n: { t: SUP[k].c === 'i' ? 'Seguro' : 'No se sabe', c: SUP[k].c } } } }; },
+      lectura: val => { const k = SUPUESTO[val.parte][val.ocurre]; return [corto(SUP[k].c === 'i' ? sigue : duda, SUP[k].concl)]; },
       minimo: 3,
+      arrastres: [marcador(() => figSup('crece'), ['a', 'b'], 'parte', 'marcador de la parte de la regla')],
     },
     predice: {
       pregunta: 'Según el texto, si los incas no hubieran tenido chasquis, ¿qué habría pasado con los mensajes?',
@@ -152,7 +176,7 @@
     },
     regla: {
       texto: 'De «si A, entonces B» se concluye B cuando ocurre A; si A no ocurre, B queda sin decidir. El condicional en subjuntivo cambia una condición y sigue su cadena.',
-      ecuacion: [cond('A'), ' → ', sigue('B'), '   pero   ', cae('no A'), ' ↛ ', cae('no B')],
+      ecuacion: [{ llave: [cond('A')], nota: 'condición', color: 'c-o' }, ' → ', { llave: [sigue('B')], nota: 'resultado', color: 'c-i' }, '   ·   ', cae('no A'), ' ↛ ', cae('no B')],
       condicion: 'el texto no dice que A sea la única causa de B; si dijera «solo si», sí se daría vuelta.',
     },
     ahoraTu: {
@@ -185,6 +209,11 @@
     bus: { t: 'Hubiera un bus escolar.', marcas: { o1: 'i', o2: 'h', o3: 'd', o4: 'i' }, dice: 'Cae la caminata; el cansancio queda en duda' },
     cerca: { t: 'La escuela quedara a una cuadra.', marcas: { o1: 'h', o2: 'h', o3: 'd', o4: 'i' }, dice: 'Caen la distancia y la caminata' },
   };
+  const ESTADO_TXT = { i: 'sigue en pie', d: 'queda en duda', h: 'se cae' };
+  const CORTO_TXT = { i: 'sigue', d: 'en duda', h: 'se cae' };   // para el sello, que comparte renglón con el título
+  const FN_ESTADO = { i: sigue, d: duda, h: cae };
+  // Por qué cada oración queda como queda (lo lee la lectura en vivo al soltar el marcador).
+  const POR = { i: 'no depende del cambio', d: 'su causa se fue', h: 'el cambio la niega' };
   const figMundo = k => ({ secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: ESC.map((t, j) => ({ id: `o${j + 1}`, t })) }, tarjeta('n', 'Mundo posible: si…', [['c', MUNDO[k].t]])] });
   const mundos = {
     id: 'mundos-posibles',
@@ -192,12 +221,16 @@
     temas: ['Mundos posibles'],
     pieza: 'rv-texto',
     juega: {
-      consigna: 'Imagina un mundo donde cambia una sola cosa. Mira qué oraciones siguen en pie, cuáles quedan en duda y cuáles se caen.',
+      consigna: 'Imagina un mundo donde cambia una sola cosa. Pasa el marcador por cada oración: ¿sigue, queda en duda o se cae?',
       voz: 'Cambia una cosa y revisa cada oración.',
-      controles: [{ id: 'k', etiqueta: 'Mundo', opciones: [{ valor: 'real', texto: 'el de hoy' }, { valor: 'bus', texto: 'con bus' }, { valor: 'cerca', texto: 'escuela cerca' }] }],
-      dibujo: val => ({ datos: figMundo(val.k), estado: { marcas: Object.assign({ c: 'o' }, MUNDO[val.k].marcas) } }),
-      lectura: val => [corto(val.k === 'real' ? sigue : duda, MUNDO[val.k].dice)],
+      controles: [
+        { id: 'k', etiqueta: 'Mundo', opciones: [{ valor: 'real', texto: 'el de hoy' }, { valor: 'bus', texto: 'con bus' }, { valor: 'cerca', texto: 'escuela cerca' }] },
+        { id: 'f', etiqueta: 'Oración', opciones: ['o1', 'o2', 'o3', 'o4'].map((v, j) => ({ valor: v, texto: `${j + 1}` })), inicio: 'o2' },
+      ],
+      dibujo: val => ({ datos: figMundo(val.k), estado: { marcas: Object.assign({ c: 'o' }, MUNDO[val.k].marcas), nuevo: [val.f] } }),
+      lectura: val => { const e = MUNDO[val.k].marcas[val.f]; return [FN_ESTADO[e](`La ${val.f.slice(1)} ${ESTADO_TXT[e]}`), `: ${POR[e]}`]; },
       minimo: 3,
+      arrastres: [marcador(val => figMundo(val.k), ['o1', 'o2', 'o3', 'o4'], 'f', 'marcador de la oración')],
     },
     predice: {
       pregunta: 'En el texto de la feria, si no hubiera subido el precio del pasaje, ¿qué pasaría con la última oración?',
@@ -213,14 +246,14 @@
     mira: {
       datos: figMundo('bus'),
       pasos: [
-        { estado: { marcas: { c: 'o', o1: 'i', o4: 'i' } }, texto: 'Con bus, la distancia y el desayuno no cambian: siguen.', ecuacion: [sigue('5 km'), ' · ', sigue('desayuno')] },
+        { estado: { marcas: { c: 'o', o1: 'i', o4: 'i' } }, texto: 'Con bus, la distancia y el desayuno no cambian: siguen.', ecuacion: [sigue('5 km'), '   ·   ', sigue('desayuno')] },
         { estado: { marcas: { c: 'o', o1: 'i', o4: 'i', o2: 'h' }, nuevo: ['o2'] }, texto: 'La caminata de una hora se cae: irían en bus.', ecuacion: [cae('caminan una hora')] },
         { estado: { marcas: MUNDO.bus.marcas, nuevo: ['o3'] }, texto: 'El cansancio queda en duda: su causa se fue, pero podría haber otra.', ecuacion: [duda('llegan cansados'), ' = no se sabe'] },
       ],
     },
     regla: {
       texto: 'En un mundo posible se cambia una condición y se revisa cada afirmación: unas siguen en pie, otras se caen y otras quedan sin respaldo, sin volverse falsas.',
-      ecuacion: [cond('cambio'), ' → ', sigue('sigue'), ' | ', duda('en duda'), ' | ', cae('se cae')],
+      ecuacion: [{ llave: [cond('cambio')], nota: 'una sola cosa', color: 'c-o' }, ' → ', sigue('sigue'), ' | ', duda('en duda'), ' | ', cae('se cae')],
       condicion: 'se cambia solo lo que dice el supuesto; lo que no depende de él queda igual.',
     },
     ahoraTu: {
@@ -243,9 +276,51 @@
     },
   };
 
+  // ---------- Laboratorio: varios cambios a la vez sobre el texto de la escuela ----------
+  // Lo que la idea 3 no deja: juntar cambios. Cada oración depende de algo; el código decide su casilla:
+  //   se cae si un cambio la niega; queda en duda si se cae la oración que era su causa; si no, sigue en pie.
+  const ESC2 = [
+    { t: 'La escuela queda a cinco kilómetros.', niega: v => v.cerca === 'si' },
+    { t: 'Los alumnos caminan una hora para llegar.', niega: v => v.cerca === 'si' || v.bus === 'si' },
+    { t: 'Por eso, llegan cansados a la primera clase.', causa: 1 },
+    { t: 'El comedor les da desayuno.', niega: v => v.comedor === 'no' },
+  ];
+  const casillaEsc = v => {
+    const out = [];
+    ESC2.forEach((o, j) => { out[j] = o.niega && o.niega(v) ? 'h' : o.causa !== undefined && out[o.causa] === 'h' ? 'd' : 'i'; });
+    return out;
+  };
+  const cambiosEsc = v => [v.bus === 'si' && 'con bus', v.cerca === 'si' && 'escuela cerca', v.comedor === 'no' && 'sin comedor'].filter(Boolean);
+  const figEsc = v => ({ secciones: [
+    { id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: ESC2.map((o, j) => ({ id: `o${j + 1}`, t: o.t })) },
+    tarjeta('n', 'Mundo posible: si…', [['c', cambiosEsc(v).length ? cambiosEsc(v).join(', ') : 'nada cambiara']]),
+  ] });
+  const SINO = [{ valor: 'no', texto: 'no' }, { valor: 'si', texto: 'sí' }];
+  const mesaMundos = {
+    id: 'varios-cambios', titulo: 'Varios cambios a la vez', pieza: 'rv-texto',
+    consigna: 'Junta cambios: bus, escuela cerca, sin comedor. Pasa el marcador por cada oración y mira qué queda en pie.',
+    voz: 'Cada oración depende de algo distinto.',
+    controles: [
+      { id: 'bus', etiqueta: 'Bus escolar', opciones: SINO },
+      { id: 'cerca', etiqueta: 'Escuela cerca', opciones: SINO },
+      { id: 'comedor', etiqueta: 'Comedor', opciones: SINO, inicio: 'si' },
+      { id: 'f', etiqueta: 'Oración', opciones: ['o1', 'o2', 'o3', 'o4'].map((v, j) => ({ valor: v, texto: `${j + 1}` })) },
+    ],
+    // El sello del mundo dice qué pasa con la oración marcada: así el caso guardado se entiende solo.
+    dibujo: val => {
+      const c = casillaEsc(val), e = c[+val.f.slice(1) - 1];
+      return { datos: figEsc(val), estado: { marcas: Object.assign({ c: 'o' }, Object.fromEntries(c.map((x, j) => [`o${j + 1}`, x]))), sellos: { n: { t: `La ${val.f.slice(1)} ${CORTO_TXT[e]}`, c: e } }, nuevo: [val.f] } };
+    },
+    lectura: val => {
+      const c = casillaEsc(val), n = e => c.filter(x => x === e).length, pl = (k, uno, varios) => `${k} ${k === 1 ? uno : varios}`;
+      return [sigue(pl(n('i'), 'sigue', 'siguen')), '   ·   ', duda(`${n('d')} en duda`), '   ·   ', cae(pl(n('h'), 'se cae', 'se caen'))];
+    },
+    arrastres: [marcador(val => figEsc(val), ['o1', 'o2', 'o3', 'o4'], 'f', 'marcador de la oración')],
+  };
+
   return {
     unidad: 'razonamiento-verbal.extrapolacion',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -253,6 +328,11 @@
       pregunta: '¿Lo que pasó cien veces pasará la vez ciento uno?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Hume, 1748)', url: 'https://openstax.org/books/contemporary-mathematics/pages/2-7-logical-arguments' },
     },
+    laboratorio: [
+      mesaMundos,
+      Object.assign({ id: 'condicional', titulo: 'Si el río crece', pieza: 'rv-texto' }, condicional.juega),
+      Object.assign({ id: 'caso-nuevo', titulo: 'Totora en otro lugar', pieza: 'rv-texto' }, llevar.juega),
+    ],
     ideas: [llevar, condicional, mundos],
   };
 });
