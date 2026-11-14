@@ -3957,7 +3957,16 @@
       "rm-planteo",
       "rm-diofanticas",
       "rm-fichas"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/razonamiento-matematico/maximos-y-minimos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/rm-fichas.js",
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/rm-plano.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "razonamiento-matematico.cortes-y-pesadas",
