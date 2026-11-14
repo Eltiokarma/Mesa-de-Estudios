@@ -239,6 +239,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'programacion-lineal', unidad: 'algebra.programacion-lineal', version: '0.1.0' };
@@ -472,6 +473,35 @@ function crearPlano(cv, idDesc, idLect, idLey){
   return E;
 }
 const opcionesHTML = (opts, idFb) => `<div class="opts">${opts.map(([k, t]) => `<button class="opt" type="button" data-k="${k}"><span class="l">${k.toUpperCase()}</span><span>${t}</span></button>`).join('')}</div><p class="fb" id="${idFb}"></p>`;
+// Regla 3: juego libre antes de la primera pregunta de cada modo. Un plan del taller es un punto (x; y) que se
+// arrastra por el plano (o se mueve con las flechas); sin restricciones, región, horas ni ganancia, que es lo que
+// se pregunta después. Devuelve fin(), que apaga el control al terminar de jugar.
+function configJuego(E, cv){
+  const J = { x:4, y:5, activo:true, arr:false, D:null };
+  E.config({ vista:{ x0:-2, x1:12, y0:-2, y1:13 },
+    pintar:D => { J.D = D; ejes(D, 'chompas', 'chalinas');
+      D.linea([J.x, 0], [J.x, J.y], D.c.x, 2.5, [5, 4]); D.linea([0, J.y], [J.x, J.y], D.c.y, 2.5, [5, 4]);
+      D.pt([J.x, J.y], `(${J.x}; ${J.y})`, D.c.ink, { r:7, anillo:D.c.ink, ra:J.arr ? 16 : 13 }); },
+    lect:[() => ['x', 'chompas x', String(J.x)], () => ['y', 'chalinas y', String(J.y)]],
+    ley:[['x', 'x: chompas'], ['y', 'y: chalinas']],
+    desc:() => `Un plan del taller: el punto (${J.x}; ${J.y}), con ${J.x} chompas y ${J.y} chalinas. Arrástralo, o toca el dibujo y usa las flechas.` });
+  E.compactar(false);
+  cv.tabIndex = 0;
+  const poner = (x, y) => { x = clamp(Math.round(x), 0, 11); y = clamp(Math.round(y), 0, 12); if (x === J.x && y === J.y) return; J.x = x; J.y = y; E.dibujar(); E.avisar(); };
+  const local = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  const cerca = (p, r) => J.activo && J.D && Math.hypot(p[0] - J.D.X(J.x), p[1] - J.D.Y(J.y)) < r;
+  const aMundo = p => [(p[0] - J.D.X(0))/J.D.s, (J.D.Y(0) - p[1])/J.D.s];
+  cv.addEventListener('touchstart', e => { if (e.touches.length === 1 && cerca(local(e.touches[0]), 40)) e.preventDefault(); }, { passive:false });
+  cv.addEventListener('pointerdown', e => { if (!cerca(local(e), e.pointerType === 'mouse' ? 32 : 40)) return;
+    J.arr = true; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.focus({ preventScroll:true }); E.dibujar(); });
+  cv.addEventListener('pointermove', e => { if (J.activo && J.arr) poner(...aMundo(local(e))); });
+  const soltar = () => { if (J.arr){ J.arr = false; E.dibujar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  cv.addEventListener('keydown', e => { if (!J.activo) return;
+    const d = { ArrowRight:[1, 0], ArrowLeft:[-1, 0], ArrowUp:[0, 1], ArrowDown:[0, -1] }[e.key];
+    if (d){ e.preventDefault(); poner(J.x + d[0], J.y + d[1]); } });
+  return { fin:() => { J.activo = false; J.arr = false; } };
+}
 // Nombres de los ejes y rótulos de x ≥ 0 (sobre el eje y) e y ≥ 0 (sobre el eje x), cada uno en su color.
 // El nombre de x va debajo de los números del eje, lejos de la letra x; «x ≥ 0» abajo, a la derecha del eje y.
 function ejes(D, nx, ny, rx, ry){
@@ -874,6 +904,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if ($('next').disabled) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+const juego1 = configJuego(E, $('cv'));
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el punto: cada lugar es un plan de chompas y chalinas.', minimo:2, alListo:() => { juego1.fin(); go(S.step); } });
 })();
 </script>
 <script>
@@ -1060,6 +1093,9 @@ function ir(k){
   pintar();
 }
 ir(0);
+const juego2 = configJuego(E, $('cv2'));
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el punto por el plano antes de empezar.', minimo:2, alListo:() => { juego2.fin(); ir(S.k); } });
 })();
 </script>
 
