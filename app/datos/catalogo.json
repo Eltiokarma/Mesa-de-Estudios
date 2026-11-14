@@ -853,7 +853,15 @@
       "configuracion-ubicacion",
       "quimica-conceptos",
       "conversiones-quimica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/materia-y-energia.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-particulas.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "quimica.estructura-atomica",
@@ -889,7 +897,17 @@
       "configuracion-ubicacion",
       "quimica-conceptos",
       "conversiones-quimica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/estructura-atomica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-atomo.js",
+       "/nucleo/kit/piezas/quim-cadena.js",
+       "/nucleo/kit/piezas/quim-cajas.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "quimica.tabla-periodica",
@@ -922,7 +940,15 @@
       "atomo-y-tabla",
       "configuracion-ubicacion",
       "quimica-conceptos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/tabla-periodica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-tabla.js",
+       "/nucleo/kit/piezas/quim-molecula.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "quimica.enlace-quimico",
@@ -955,7 +981,16 @@
      "plantillas": [
       "enlace",
       "quimica-conceptos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/enlace-quimico.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-particulas.js",
+       "/nucleo/kit/piezas/quim-molecula.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "quimica.nomenclatura-inorganica",
@@ -988,7 +1023,15 @@
      "plantillas": [
       "nomenclatura-inorganica",
       "quimica-conceptos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/nomenclatura-inorganica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-fichas.js",
+       "/nucleo/kit/piezas/quim-cadena.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "quimica.mol-y-composicion",
@@ -1020,7 +1063,17 @@
      "grado": 4,
      "plantillas": [
       "mol-composicion"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/mol-y-composicion.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-particulas.js",
+       "/nucleo/kit/piezas/balanza.js",
+       "/nucleo/kit/piezas/quim-fichas.js",
+       "/nucleo/kit/piezas/quim-composicion.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "quimica.reacciones-y-balance",
@@ -1050,7 +1103,17 @@
      "plantillas": [
       "balance-reacciones",
       "clasificar-reacciones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/reacciones-y-balance.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-particulas.js",
+       "/nucleo/kit/piezas/quim-cadena.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/quim-fichas.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "quimica.estequiometria",
@@ -1082,7 +1145,17 @@
       "rendimiento-pureza",
       "soluciones-meq-ppm",
       "estequiometria-admision"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/estequiometria.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-particulas.js",
+       "/nucleo/kit/piezas/quim-cadena.js",
+       "/nucleo/kit/piezas/barra-porcentaje.js",
+       "/nucleo/kit/piezas/quim-fichas.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "quimica.gases",
@@ -1114,7 +1187,16 @@
      "grado": 4,
      "plantillas": [
       "gases"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/gases.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-particulas.js",
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/quim-cadena.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "quimica.liquidos-y-solidos",
@@ -1146,7 +1228,15 @@
       "liquidos-y-solidos",
       "quimica-conceptos",
       "conversiones-quimica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/liquidos-y-solidos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-particulas.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "quimica.soluciones",
@@ -1176,7 +1266,15 @@
       "soluciones",
       "soluciones-meq-ppm",
       "quimica-conceptos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/soluciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-particulas.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "quimica.cinetica-quimica",
@@ -1205,7 +1303,15 @@
      "grado": 5,
      "plantillas": [
       "cinetica"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/cinetica-quimica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/quim-particulas.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "quimica.equilibrio-quimico",
@@ -1233,7 +1339,16 @@
      "plantillas": [
       "equilibrio-quimico",
       "quimica-conceptos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/equilibrio-quimico.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/quim-particulas.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "quimica.acidos-y-bases",
@@ -1262,7 +1377,17 @@
      "plantillas": [
       "acidos-bases",
       "quimica-conceptos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/acidos-y-bases.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-molecula.js",
+       "/nucleo/kit/piezas/quim-particulas.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "quimica.electroquimica",
@@ -1294,7 +1419,16 @@
       "quimica-conceptos",
       "clasificar-reacciones",
       "estequiometria-admision"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/electroquimica.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-celda.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "quimica.hidrocarburos",
@@ -1329,7 +1463,14 @@
       "molecula-grande",
       "quimica-conceptos",
       "nombre-polifuncional"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/hidrocarburos.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-molecula.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "quimica.funciones-organicas",
@@ -1364,7 +1505,14 @@
       "molecula-grande",
       "quimica-conceptos",
       "nombre-polifuncional"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/funciones-organicas.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-molecula.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "quimica.biomoleculas-y-productos-naturales",
@@ -1400,7 +1548,16 @@
       "estequiometria-admision",
       "molecula-grande",
       "nombre-polifuncional"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/biomoleculas-y-productos-naturales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-molecula.js",
+       "/nucleo/kit/piezas/quim-cadena.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "quimica.recursos-naturales",
@@ -1431,7 +1588,16 @@
       "quimica-ambiente",
       "quimica-conceptos",
       "estequiometria-admision"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/recursos-naturales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/quim-cadena.js",
+       "/nucleo/kit/piezas/quim-particulas.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "quimica.ambiente-y-quimica-aplicada",
@@ -1465,7 +1631,17 @@
      "plantillas": [
       "quimica-ambiente",
       "quimica-conceptos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/quimica/ambiente-y-quimica-aplicada.js",
+      "requiere": [
+       "/nucleo/kit/piezas/quim-cadena.js",
+       "/nucleo/kit/piezas/barra-porcentaje.js",
+       "/nucleo/kit/piezas/quim-molecula.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 6
+     }
     }
    ]
   },
