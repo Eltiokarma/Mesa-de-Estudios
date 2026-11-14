@@ -1,0 +1,14 @@
+{
+  "id": "bruna",
+  "nombre": "Bruna",
+  "animal": "castora",
+  "nota": "Bruna (castora, compañero de quimica). Respaldo SVG PROVISIONAL, hecho por código (herramientas/personajes.js) para ocupar el hueco mientras no exista el .riv. El arte final es de Gerson (MCP e IA generativa, luego Rive): cuando llegue, se copia el .riv en esta carpeta y se pone su nombre en riv. Hoja de modelo en docs/personajes.md.",
+  "provisional": true,
+  "riv": null,
+  "maquina": "Mesa",
+  "entradas": {
+    "pose": "pose",
+    "reducido": "reducido"
+  },
+  "respaldo": "respaldo.svg"
+}

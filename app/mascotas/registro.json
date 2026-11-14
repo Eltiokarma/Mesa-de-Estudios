@@ -2,15 +2,25 @@
   "version": 1,
   "nota": "Qué mascota usa cada curso. Cada id es una carpeta app/mascotas/<id>/ con su mascota.json. Un curso que no está aquí usa porDefecto. Ver docs/encargo-vectores.md.",
   "porDefecto": "gato",
-  "mascotas": ["gato"],
+  "mascotas": [
+    "gato",
+    "luma",
+    "nox",
+    "tilo",
+    "bruna",
+    "neri",
+    "mara",
+    "faro",
+    "iris"
+  ],
   "cursos": {
-    "fisica": "gato",
-    "quimica": "gato",
-    "aritmetica": "gato",
-    "algebra": "gato",
-    "geometria": "gato",
-    "trigonometria": "gato",
-    "razonamiento-matematico": "gato",
-    "razonamiento-verbal": "gato"
+    "fisica": "tilo",
+    "quimica": "bruna",
+    "aritmetica": "luma",
+    "algebra": "nox",
+    "geometria": "neri",
+    "trigonometria": "mara",
+    "razonamiento-matematico": "faro",
+    "razonamiento-verbal": "iris"
   }
 }
