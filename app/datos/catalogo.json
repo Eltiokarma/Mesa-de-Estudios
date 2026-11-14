@@ -1906,7 +1906,15 @@
       "traductor-enunciados",
       "matrices",
       "sistemas-ecuaciones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/sistemas-de-ecuaciones.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js",
+       "/nucleo/kit/piezas/alg-tabla.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "algebra.programacion-lineal",
