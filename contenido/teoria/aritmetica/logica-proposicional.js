@@ -128,7 +128,7 @@
     },
     regla: {
       texto: 'Una proposición compuesta une simples con conectivos, y su valor sale de la tabla del conectivo: ∧ pide las dos; ∨ pide al menos una.',
-      ecuacion: [P, ' ∧ ', Q, ' = V solo en V-V   ·   ', P, ' ∨ ', Q, ' = F solo en F-F'],
+      ecuacion: [P, ' ∧ ', Q, ' = V solo en V-V', '   ·   ', P, ' ∨ ', Q, ' = F solo en F-F'],
       condicion: 'cada parte tiene valor de verdad. Una pregunta o «x + 2 = 5» sin fijar x no son proposiciones.',
     },
     ahoraTu: {
@@ -270,7 +270,7 @@
     },
     regla: {
       texto: 'Una tautología es V en todas las filas; una contradicción, en ninguna; una contingencia, solo en algunas. Para saberlo se revisan todas.',
-      ecuacion: ['n variables → ', { llave: [{ sup: ['2', 'n'] }], nota: 'filas por revisar' }],
+      ecuacion: ['n variables → ', { llave: [{ sup: ['2', 'n'] }], nota: 'filas' }],
       condicion: 'se revisan todas las combinaciones de valores. Que salga V en las primeras filas no basta.',
     },
     ahoraTu: {

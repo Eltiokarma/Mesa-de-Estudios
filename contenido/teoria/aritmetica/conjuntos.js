@@ -115,7 +115,7 @@
     },
     regla: {
       texto: 'Un elemento pertenece (∈) a un conjunto; un conjunto está incluido (⊂) en otro si todos sus elementos están en él. Extensión y comprensión describen el mismo conjunto.',
-      ecuacion: [{ llave: ['x ∈ ', A], nota: 'un elemento' }, '   ·   ', { llave: [Bv, ' ⊂ ', A], nota: 'un conjunto' }, ' ⟺ todo x ∈ ', Bv, ' está en ', A],
+      ecuacion: [{ llave: ['x ∈ ', A], nota: 'un elemento' }, '   ·   ', { llave: [Bv, ' ⊂ ', A], nota: 'un conjunto' }],
       condicion: '∅ no tiene elementos y está incluido en todo conjunto; {∅} sí tiene uno. U es el universo del problema.',
     },
     ahoraTu: {
@@ -227,7 +227,7 @@
     },
     regla: {
       texto: 'Cada operación es una condición de pertenencia: ∪ pide estar en uno, ∩ en los dos, − en el primero y no en el segundo, y A′ no estar en A.',
-      ecuacion: [A, ' − ', Bv, ' = ', A, ' ∩ ', Bv, '′   ·   ', A, ' Δ ', Bv, ' = (', A, ' − ', Bv, ') ∪ (', Bv, ' − ', A, ')'],
+      ecuacion: [A, ' − ', Bv, ' = ', A, ' ∩ ', Bv, '′', '   ·   ', A, ' Δ ', Bv, ' =', '   ·   ', '(', A, ' − ', Bv, ') ∪ (', Bv, ' − ', A, ')'],
       condicion: 'el complemento depende del universo U: con otro U, A′ cambia. Venn y Carroll muestran criterios, no tamaños.',
     },
     ahoraTu: {
@@ -292,7 +292,8 @@
     },
     regla: {
       texto: 'Al sumar n(A) y n(B), los de la intersección se cuentan dos veces; por eso se restan una vez.',
-      ecuacion: [n([A, ' ∪ ', Bv]), ' = ', n(A), ' + ', n(Bv), ' − ', { llave: [n([A, ' ∩ ', Bv])], nota: 'contados dos veces', color: 'c-d' }],
+      // A 360 px no cabe en una línea: el separador la parte en el «=» (sin él se partía antes de la llave).
+      ecuacion: [n([A, ' ∪ ', Bv]), ' =', '   ·   ', n(A), ' + ', n(Bv), ' − ', { llave: [n([A, ' ∩ ', Bv])], nota: 'contados dos veces', color: 'c-d' }],
       condicion: 'A y B son finitos. Los que no están en ninguno se obtienen restando del total de U.',
     },
     ahoraTu: {
