@@ -21,5 +21,7 @@ MON=$!
 wait $GEN || true
 kill $MON; wait $MON || true
 .venv/bin/python -m carga.verificar "$OUT/r-$N.json" "$DB" > "$OUT/v-$N.json"
-kill $SRV; wait $SRV 2>/dev/null || true
+# Un servidor trabado no termina con SIGTERM (espera las peticiones colgadas): a los 15 s, SIGKILL.
+kill $SRV; for i in $(seq 30); do kill -0 $SRV 2>/dev/null || break; sleep 0.5; done
+kill -9 $SRV 2>/dev/null || true; pkill -9 -f "uvicorn app.main:app --host 127.0.0.1 --port 8000" 2>/dev/null || true
 .venv/bin/python -m carga.resumir "$OUT" "$N"
