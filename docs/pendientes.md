@@ -1,6 +1,6 @@
 # Pendientes y traspaso
 
-Actualizado el 14 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Para la próxima sesión: la teoría interactiva» y después «Estado al 13 nov, tarde». Justo antes van lo recién hecho: la prueba de estrés de Rive (versión 0, a la espera de la cifra del celular de Gerson) y la cola de repaso.
+Actualizado el 14 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Teoría interactiva: molde hecho» y después «Estado al 13 nov, tarde». Justo antes van lo recién hecho: la prueba de estrés de Rive (versión 0, a la espera de la cifra del celular de Gerson) y la cola de repaso.
 
 ## Cómo arrancar una sesión nueva
 
@@ -27,7 +27,25 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 - **Si el servidor local muere:** se reinicia con `node herramientas/servidor.js`. También hay que reiniciarlo después de cambiar `herramientas/construir-catalogo.js`, porque guarda el módulo en memoria.
 - **Para verificar a mano:** Playwright y Chromium ya vienen instalados en el entorno en la nube (`require('playwright')`). Las capturas *fullPage* pierden la emulación táctil, así que lo que depende de `hover` se revisa con capturas normales.
 
-## Para la próxima sesión (Gerson, 14 nov): la teoría interactiva — empieza aquí
+## Teoría interactiva: molde hecho y ocho cursos en paralelo (14 nov, noche)
+
+**Qué hay.** El contrato está en `docs/teoria.md`; manda sobre toda teoría nueva. Las fuentes que investigó Gerson están en `docs/teoria/`:
+- la matriz por curso;
+- el expediente HTML;
+- los PDF de historia y ecuaciones;
+- la guía de los ocho personajes.
+
+Las piezas del molde:
+- `app/teoria.js`: el lector de la puerta «Teoría». Lleva los cinco momentos (juega, predice, mira, regla y ahora tú), la ficha de repaso y el compañero del curso.
+- `nucleo/teoria.js`: el formato, la validación, los topes, los personajes y la actuación E0–E9 → pose.
+- `nucleo/ecuacion.js`: ecuaciones con el hilo de color, sin biblioteca.
+- `contenido/teoria/teoria.test.js`: valida cada unidad.
+- `construir-catalogo.js` descubre la teoría y `sw.js` la guarda sin conexión.
+- Unidad de referencia: `contenido/teoria/fisica/movimiento-rectilineo.js`, en borrador, con 3 ideas: MRU, desplazamiento contra distancia, y pendiente y aceleración. Le faltan caída libre y encuentros con velocidad relativa.
+
+**Decisión de Gerson (14 nov):** primero el molde y después una sesión por curso en paralelo, más una de personajes. Las ramas y el estado de cada una van en `docs/teoria.md`, sección 9; al integrarlas se regenera el catálogo.
+
+## Para la próxima sesión (Gerson, 14 nov): la teoría interactiva — resuelto arriba
 
 **Pedido de Gerson:** hacer la teoría. Si hay teoría, los alumnos llegan con más conocimiento a los ejercicios. **La teoría tiene que ser interactiva**, no una página para leer. Se dejó para esta sesión porque la del 14 nov ya estaba llena.
 
