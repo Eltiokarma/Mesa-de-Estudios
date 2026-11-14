@@ -2573,7 +2573,17 @@
       "sucesiones",
       "estadistica-datos",
       "numeros-sucesiones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/sucesiones-y-series.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-fichas.js",
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/arit-tiras.js",
+       "/nucleo/kit/piezas/arit-tabla.js"
+      ],
+      "ideas": 5
+     }
     },
     {
      "id": "aritmetica.razonamiento-numerico",
