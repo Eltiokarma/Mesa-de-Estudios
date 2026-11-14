@@ -5,7 +5,11 @@
  * Forma: contenido/teoria/trigonometria/angulo-trigonometrico.js.
  * Compañera: Mara (coneja), cercana y rigurosa: los signos salen de las coordenadas, no de una tabla.
  * Colores (regla 4): el ángulo θ en naranja (c-o), la abscisa x en turquesa (c-i), la ordenada y en rojo (c-h)
- * y el radio vector r en verde (c-d). Los mismos en controles, figura, lectura y ecuaciones.
+ * y el radio vector r en verde (c-d). Los mismos en controles, figura, lectura y ecuaciones. En el laboratorio,
+ * el factor k que aleja o voltea el segundo punto Q va en morado (c-f).
+ * Ronda 2 (14 nov, noche): manijas en las cuatro ideas (el punto P, el punto del lado final en la circunferencia,
+ * el punto del eje y el punto P que da vueltas), llaves en las reglas, separadores «   ·   » entre relaciones y
+ * laboratorio de tres mesas. «Juega» y «Mira» usan la misma pieza; ver el comentario de cada mira (hallazgo 9).
  * Errores: TR7 (la razón es una longitud), TR8 (depende del tamaño), TR11 (cruza x e y), TR12 (distancia sin signo)
  * y TR15 (el signo de −θ) de docs/investigacion/trigonometria-ideas-erroneas.md; hipótesis de distractor nuevas:
  * TRPN-INVERSA (usa la recíproca), TRPN-TODO-NEG (en el tercer cuadrante todo es negativo), TRPN-COPIA-SEN (la
@@ -40,6 +44,9 @@
   }
   const cuadrante = g => { const m = mod360(g); return m === 0 || m === 90 || m === 180 || m === 270 ? 0 : m < 90 ? 1 : m < 180 ? 2 : m < 270 ? 3 : 4; };
   const ROM = ['sobre un eje', 'I', 'II', 'III', 'IV'];
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza.
+  const TP = () => Kit.piezas['trig-plano'];
+  const enUno = (d, g) => TP().enPx(d, Math.cos(rad(g)), Math.sin(rad(g)));   // punto de la circunferencia de radio 1
   // Azar con semilla para «Ahora tú» (el de la unidad de referencia).
   function azar(sem) {
     let q = (sem * 2654435761 + 12345) >>> 0;
@@ -96,6 +103,7 @@
   // Cambia: el punto P(x, y) en la cuadrícula. · Permanece: el origen, el lado inicial sobre +x y la escala.
   // Progresa: el radio vector r y los cocientes y/r, x/r. · Se reserva: el mismo lado final con P más lejos (la
   // predicción). · Debe verse: que la razón es un cociente con signo, no una longitud, y que no depende de r.
+  const punto1 = val => punto(val.x, val.y, { rTxt: rTxt(val.x, val.y) });
   const razones = {
     id: 'razones-coordenadas',
     titulo: 'Las razones salen de P',
@@ -108,13 +116,17 @@
         { id: 'x', etiqueta: 'x', color: 'c-i', min: -4, max: 4, paso: 1, inicio: 2, decimales: 0 },
         { id: 'y', etiqueta: 'y', color: 'c-h', min: -4, max: 4, paso: 1, inicio: 3, decimales: 0 },
       ],
-      dibujo: val => ({ datos: punto(val.x, val.y, { rTxt: rTxt(val.x, val.y) }), estado: {} }),
+      dibujo: val => ({ datos: punto1(val), estado: {} }),
       lectura: val => {
         if (!val.x && !val.y) return ['P está en el origen: no hay lado final'];
         const r = Math.hypot(val.x, val.y);
         return [R, ` = ${rTxt(val.x, val.y)} · sen `, th, ` = ${f(val.y / r)} · cos `, th, ` = ${f(val.x / r)}`];
       },
       minimo: 3,
+      // Se arrastra el punto P por la cuadrícula: x, y, r y el giro θ lo siguen.
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P del lado final',
+        donde: val => TP().enPx(punto1(val), val.x, val.y),
+        mover: (pt, val) => { const q = TP().delPx(punto1(val), pt); return { x: q.x, y: q.y }; } }],
     },
     predice: {
       pregunta: 'Para P(−3, 4), cos θ = −0,6. Ahora P se aleja al doble sobre el mismo lado final: P(−6, 8). ¿Cuánto vale cos θ?',
@@ -130,6 +142,7 @@
       coincide: 'Coincide: x y r crecen juntos, y su cociente no cambia.',
       noCoincide: 'Revisemos: los dos puntos están en el mismo lado final.',
     },
+    // Hallazgo 9: «Mira» es la figura del juego (P, sus proyecciones x e y, r y θ) con el P(−3, 4) de la predicción.
     mira: {
       datos: {
         ventana: { x: [-6, 6], y: [-6, 6] },
@@ -147,15 +160,15 @@
       voz: 'Primero las coordenadas; después, los cocientes.',
       pasos: [
         { estado: { corte: 1 }, texto: 'Vértice en el origen, lado inicial sobre +x y P en el lado final.', ecuacion: ['P(−3, 4)'] },
-        { estado: { corte: 2 }, texto: 'Las coordenadas de P llevan signo: x es negativa, y positiva.', ecuacion: [X, ' = −3;  ', Y, ' = 4'] },
+        { estado: { corte: 2 }, texto: 'Las coordenadas de P llevan signo: x es negativa, y positiva.', ecuacion: [X, ' = −3', '   ·   ', Y, ' = 4'] },
         { estado: { corte: 3 }, texto: 'El radio vector es una distancia: siempre positivo.', ecuacion: [R, ' = ', { raiz: ['(−3)² + 4²'] }, ' = 5'] },
-        { estado: { corte: 4 }, texto: 'Seno y coseno dividen cada coordenada entre r.', ecuacion: ['sen ', th, ' = ', { frac: [Y, R] }, ' = ', { frac: ['4', '5'] }, ';  cos ', th, ' = ', { frac: [X, R] }, ' = −', { frac: ['3', '5'] }] },
+        { estado: { corte: 4 }, texto: 'Seno y coseno dividen cada coordenada entre r.', ecuacion: ['sen ', th, ' = ', { frac: [Y, R] }, ' = ', { frac: ['4', '5'] }, '   ·   ', 'cos ', th, ' = ', { frac: [X, R] }, ' = −', { frac: ['3', '5'] }] },
         { estado: { corte: 5 }, texto: 'La tangente divide y entre x.', ecuacion: ['tan ', th, ' = ', { frac: [Y, X] }, ' = −', { frac: ['4', '3'] }] },
       ],
     },
     regla: {
       texto: 'Con P(x, y) en el lado final y r su distancia al origen, cada razón es un cociente de dos de esos números. Las otras tres son las recíprocas.',
-      ecuacion: ['sen ', th, ' = ', { frac: [Y, R] }, ';  cos ', th, ' = ', { frac: [X, R] }, ';  tan ', th, ' = ', { frac: [Y, X] }, ';  ', R, ' = ', { raiz: [{ sup: [X, '2'] }, ' + ', { sup: [Y, '2'] }] }],
+      ecuacion: ['sen ', th, ' = ', { frac: [Y, R] }, '   ·   ', 'cos ', th, ' = ', { frac: [X, R] }, '   ·   ', 'tan ', th, ' = ', { frac: [Y, X] }, '   ·   ', { llave: [R], nota: 'siempre positivo', color: 'c-d' }, ' = ', { raiz: [{ sup: [X, '2'] }, ' + ', { sup: [Y, '2'] }] }],
       condicion: 'P distinto del origen y r > 0. cot = x/y, sec = r/x y csc = r/y. Ningún denominador puede valer 0.',
       voz: 'El signo viaja con x e y; r nunca es negativo.',
     },
@@ -219,6 +232,10 @@
       voz: 'Antes de cruzar un eje, anticipa qué coordenada cambia de signo.',
       controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: 0, max: 360, paso: 30, inicio: 30, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: unidad1(val.g), estado: {} }),
+      // Se arrastra el punto del lado final sobre la circunferencia (de 30° en 30°; 360° no salta a 0°).
+      arrastres: [{ id: 'lado-final', etiqueta: 'punto del lado final θ', color: 'c-o',
+        donde: val => enUno(unidad1(val.g), val.g),
+        mover: (pt, val) => ({ g: TP().anguloDe(unidad1(val.g), pt, { cerca: val.g }) }) }],
       lectura: val => {
         const q = cuadrante(val.g);
         return [th, ` = ${f(val.g)}° · ${q ? 'cuadrante ' + ROM[q] : ROM[0]} · sen `, th, ` ${sg(Math.sin(rad(val.g)))} · cos `, th, ` ${sg(Math.cos(rad(val.g)))}`];
@@ -239,6 +256,8 @@
       coincide: 'Coincide: dos signos negativos en un cociente dan positivo.',
       noCoincide: 'Revisemos los dos signos: los dos tramos apuntan al lado negativo.',
     },
+    // Hallazgo 9: el juego gira un solo punto; «Mira» deja un punto en cada cuadrante, en la misma circunferencia,
+    // para leer la tabla de signos completa. Son el mismo dibujo repetido cuatro veces.
     mira: {
       datos: {
         circulos: [{ r: 1 }],
@@ -257,15 +276,15 @@
       },
       voz: 'Un cuadrante a la vez; los signos de x e y deciden.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'En el I, x e y son positivas: las seis razones son positivas.', ecuacion: [X, ' > 0;  ', Y, ' > 0'] },
-        { estado: { corte: 2 }, texto: 'En el II, x es negativa: solo seno y cosecante quedan positivas.', ecuacion: [X, ' < 0;  ', Y, ' > 0'] },
+        { estado: { corte: 1 }, texto: 'En el I, x e y son positivas: las seis razones son positivas.', ecuacion: [X, ' > 0', '   ·   ', Y, ' > 0'] },
+        { estado: { corte: 2 }, texto: 'En el II, x es negativa: solo seno y cosecante quedan positivas.', ecuacion: [X, ' < 0', '   ·   ', Y, ' > 0'] },
         { estado: { corte: 3 }, texto: 'En el III, las dos son negativas: y/x y x/y son positivas.', ecuacion: [{ frac: [Y, X] }, ' = ', { frac: ['−', '−'] }, ' > 0'] },
-        { estado: { corte: 4 }, texto: 'En el IV, y es negativa: solo coseno y secante quedan positivas.', ecuacion: [X, ' > 0;  ', Y, ' < 0'] },
+        { estado: { corte: 4 }, texto: 'En el IV, y es negativa: solo coseno y secante quedan positivas.', ecuacion: [X, ' > 0', '   ·   ', Y, ' < 0'] },
       ],
     },
     regla: {
       texto: 'Como r siempre es positivo, el seno tiene el signo de y y el coseno el de x. La tangente es positiva cuando x e y tienen el mismo signo.',
-      ecuacion: ['signo de sen ', th, ' = signo de ', Y, ';  signo de cos ', th, ' = signo de ', X],
+      ecuacion: ['sen ', th, ': signo de ', { llave: [Y], nota: 'ordenada', color: 'c-h' }, '   ·   ', 'cos ', th, ': signo de ', { llave: [X], nota: 'abscisa', color: 'c-i' }],
       condicion: 'θ en posición normal y P fuera de los ejes. Cada recíproca tiene el mismo signo que su razón.',
       voz: 'La tabla de signos se reconstruye con x e y.',
     },
@@ -288,7 +307,7 @@
           })), v => v),
           solucion: {
             texto: `${f(g)}° está en el cuadrante ${ROM[q]}, donde x ${sgTxt(sx)} e y ${sgTxt(sy)}.`,
-            ecuacion: [X, ` ${sx > 0 ? '> 0' : '< 0'};  `, Y, ` ${sy > 0 ? '> 0' : '< 0'}`],
+            ecuacion: [X, ` ${sx > 0 ? '> 0' : '< 0'}`, '   ·   ', Y, ` ${sy > 0 ? '> 0' : '< 0'}`],
             dibujo: { datos: unidad1(g), estado: {} },
           },
         };
@@ -326,6 +345,10 @@
       voz: 'Fíjate qué coordenada se vuelve cero en cada eje.',
       controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: -360, max: 450, paso: 90, inicio: 0, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: cuad(val.g), estado: {} }),
+      // Se arrastra el punto sobre la circunferencia: salta de eje en eje y sigue sumando vueltas.
+      arrastres: [{ id: 'punto-eje', etiqueta: 'punto del lado final θ', color: 'c-o',
+        donde: val => enUno(cuad(val.g), val.g),
+        mover: (pt, val) => ({ g: TP().anguloDe(cuad(val.g), pt, { cerca: val.g }) }) }],
       lectura: val => [th, ` = ${f(val.g)}° · sen `, th, ` = ${valor('sen', val.g)} · cos `, th, ` = ${valor('cos', val.g)}`],
       minimo: 3,
     },
@@ -343,6 +366,7 @@
       coincide: 'Coincide: entre 0 no se puede dividir.',
       noCoincide: 'Revisemos dónde está el 0 en el cociente y/x.',
     },
+    // Hallazgo 9: «Mira» es la figura del juego en 90°, el caso de la predicción.
     mira: {
       datos: cuad(90, {
         segmentos: [{ de: [0, 0], a: [0, 1], color: 'h', rotulo: 'y = 1', desde: 1 }],
@@ -353,12 +377,12 @@
         { estado: { corte: 1 }, texto: 'En 90° el punto está sobre el eje y: x vale 0.', ecuacion: ['(', X, ', ', Y, ') = (0, 1)'] },
         { estado: { corte: 2 }, texto: 'La tangente pide dividir entre x = 0: no está definida.', ecuacion: ['tan 90° = ', { frac: ['1', '0'] }, ' → no está definida'] },
         { estado: { corte: 3 }, texto: 'La cotangente tiene el 0 arriba: vale 0.', ecuacion: ['cot 90° = ', { frac: ['0', '1'] }, ' = 0'] },
-        { estado: { corte: 4 }, texto: 'La secante tampoco existe; la cosecante vale 1.', ecuacion: ['sec 90° = ', { frac: ['1', '0'] }, ';  csc 90° = ', { frac: ['1', '1'] }, ' = 1'] },
+        { estado: { corte: 4 }, texto: 'La secante tampoco existe; la cosecante vale 1.', ecuacion: ['sec 90° = ', { frac: ['1', '0'] }, '   ·   ', 'csc 90° = ', { frac: ['1', '1'] }, ' = 1'] },
       ],
     },
     regla: {
       texto: 'En un ángulo cuadrantal una coordenada vale 0. La razón que la tiene arriba vale 0; la que la tiene abajo no está definida.',
-      ecuacion: [{ frac: ['0', 'a'] }, ' = 0;   ', { frac: ['a', '0'] }, ' no está definido'],
+      ecuacion: [{ llave: [{ frac: ['0', 'a'] }], nota: 'cero arriba' }, ' = 0', '   ·   ', { llave: [{ frac: ['a', '0'] }], nota: 'cero abajo' }, ' no está definido'],
       condicion: 'a ≠ 0. tan y sec no existen cuando x = 0 (90°, 270°); cot y csc, cuando y = 0 (0°, 180°).',
       voz: 'Cero es un valor; «no definida» es que no hay valor.',
     },
@@ -427,6 +451,14 @@
         { id: 'n', etiqueta: 'n', min: -2, max: 2, paso: 1, inicio: 0, unidad: ' vueltas', decimales: 0 },
       ],
       dibujo: val => ({ datos: vueltas(val.g + 360 * val.n), estado: {} }),
+      // Se arrastra el punto P: al pasar por 0° suma o quita una vuelta (n), y θ queda entre 0° y 315°.
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P: cambia θ y las vueltas', color: 'c-o',
+        donde: val => enUno(vueltas(val.g + 360 * val.n), val.g),
+        mover: (pt, val) => {
+          const T = 45 * Math.round(TP().anguloDe(vueltas(val.g + 360 * val.n), pt, { cerca: val.g + 360 * val.n }) / 45);
+          const n = Math.floor(T / 360);
+          return { g: T - 360 * n, n };
+        } }],
       lectura: val => [th, ` + 360°·n = ${f(val.g + 360 * val.n)}° · sen = ${f(Math.sin(rad(val.g)))} · cos = ${f(Math.cos(rad(val.g)))}`],
       minimo: 3,
     },
@@ -444,6 +476,8 @@
       coincide: 'Coincide: −30° es el reflejo de 30° en el eje x.',
       noCoincide: 'Revisemos: el giro horario deja a P debajo del eje x.',
     },
+    // Hallazgo 9: el juego da vueltas a un solo punto; «Mira» pone, en la misma circunferencia, el giro y su
+    // reflejo (la predicción) y termina con la vuelta que lleva −30° a 330°, que es lo que se movió al jugar.
     mira: {
       datos: {
         circulos: [{ r: 1 }],
@@ -465,7 +499,7 @@
     },
     regla: {
       texto: 'Los coterminales comparten lado final y razones. Un giro negativo refleja P en el eje x: el seno cambia de signo y el coseno no.',
-      ecuacion: ['sen(', th, ' + 360°·n) = sen ', th, ';  sen(−', th, ') = −sen ', th, ';  cos(−', th, ') = cos ', th],
+      ecuacion: ['sen(', th, ' + 360°n) = sen ', th, '   ·   ', 'sen(−', th, ') = −sen ', th, '   ·   ', 'cos(−', th, ') = cos ', th],
       condicion: 'n es un entero y los ángulos se miden desde el mismo lado inicial. También tan(−θ) = −tan θ, donde exista.',
       voz: 'Las vueltas no cambian el punto; el sentido lo refleja.',
     },
@@ -495,11 +529,101 @@
     },
   };
 
+  // ---------- Laboratorio ----------
+  // Mesa 1: P libre en una cuadrícula más grande y las seis razones a elegir, con sus ceros y sus «no definida».
+  const FN = ['sen', 'cos', 'tan', 'cot', 'sec', 'csc'];
+  const seis = val => punto(val.x, val.y, { L: 7, rTxt: rTxt(val.x, val.y) });
+  // Mesa 2: P y un segundo punto Q = k·P sobre la misma recta: k > 0 deja las razones; k < 0 voltea seno y coseno.
+  function dosPuntos(val) {
+    const qx = val.k * val.x, qy = val.k * val.y, L = 6.5;
+    const d = punto(val.x, val.y, { L, sinRotulos: true });
+    const lejos = Math.hypot(val.x, val.y) > 0 ? L * 1.45 / Math.hypot(val.x, val.y) : 0;
+    d.segmentos = d.segmentos.concat(lejos ? [{ de: [-val.x * lejos, -val.y * lejos], a: [val.x * lejos, val.y * lejos], grosor: 'contorno', discontinua: true }] : [],
+      Math.hypot(qx, qy) > 0 ? [{ de: [0, 0], a: [qx, 0], color: 'f', discontinua: true }, { de: [qx, 0], a: [qx, qy], color: 'f', discontinua: true }] : []);
+    d.puntos = d.puntos.concat([{ x: qx, y: qy, color: 'f', rotulo: 'Q', lado: qy >= 0 ? (qx >= 0 ? 'ne' : 'no') : (qx >= 0 ? 'se' : 'so') }]);
+    d.alt = `P(${f(val.x)}, ${f(val.y)}) y Q = ${f(val.k)} veces P, en (${f(qx)}, ${f(qy)})`;
+    return d;
+  }
+  // Mesa 3: un giro cualquiera y su opuesto −θ, de 15° en 15° y hasta dos vueltas: reflejo en el eje x.
+  function opuestos(g) {
+    const x = Math.cos(rad(g)), y = Math.sin(rad(g));
+    return {
+      circulos: [{ r: 1 }],
+      rayos: [{ ang: 0, largo: 1, grosor: 'contorno' }, { ang: g, color: 'd' }, { ang: -g, color: 'd', discontinua: true }],
+      segmentos: [{ de: [0, 0], a: [x, 0], color: 'i' }, { de: [x, 0], a: [x, y], color: 'h' }, { de: [x, 0], a: [x, -y], color: 'h', discontinua: true }],
+      arcos: g ? [{ de: 0, a: g, r: 0.22, espiral: 8, color: 'o', rotulo: `${f(g)}°` }, { de: 0, a: -g, r: 0.42, espiral: 8, color: 'o', rotulo: `${f(-g)}°` }] : [],
+      puntos: [{ x, y, rotulo: 'P', lado: y >= 0 ? 'ne' : 'se' }, { x, y: -y, rotulo: 'P′', lado: y >= 0 ? 'se' : 'ne' }],
+      alt: `Giros de ${f(g)} y ${f(-g)} grados: sus puntos son reflejos en el eje x`,
+    };
+  }
+  const coord = (id, etiqueta, color, inicio, tope = 6) => ({ id, etiqueta, color, min: -tope, max: tope, paso: 1, inicio, decimales: 0 });
+  const manijaP = dib => ({ id: 'punto-p', etiqueta: 'punto P',
+    donde: val => TP().enPx(dib(val), val.x, val.y),
+    mover: (pt, val) => { const q = TP().delPx(dib(val), pt); return { x: q.x, y: q.y }; } });
+  const laboratorio = [
+    {
+      id: 'seis-razones', titulo: 'Las seis razones de P', pieza: 'trig-plano',
+      consigna: 'Arrastra P a cualquier punto, también sobre un eje, y elige la razón. Busca cuándo vale 0 y cuándo no está definida.',
+      controles: [
+        coord('x', 'x', 'c-i', -3), coord('y', 'y', 'c-h', 4),
+        { id: 'fn', etiqueta: 'razón', opciones: FN.map(v => ({ valor: v, texto: v })) },
+      ],
+      dibujo: val => ({ datos: seis(val), estado: {} }),
+      lectura: val => {
+        if (!val.x && !val.y) return ['P en el origen: no hay lado final'];
+        const r = Math.hypot(val.x, val.y), r2 = val.x * val.x + val.y * val.y, exacta = Number.isInteger(r);
+        const [num, den] = DEF[val.fn], vale = { x: val.x, y: val.y, r };
+        const p = vale[num.t], q = vale[den.t];
+        const txt = q === 0 ? ': no definida' : exacta ? ` = ${fr(p, q)}` : ` ≈ ${f(p / q)}`;
+        return [`P(${f(val.x)}, ${f(val.y)}) · `, R, ` = ${exacta ? f(r) : '√' + r2} · ${val.fn} `, th, ` = ${num.t}/${den.t}${txt}`];
+      },
+      arrastres: [manijaP(seis)],
+    },
+    {
+      id: 'mismo-lado', titulo: 'Más lejos o al revés', pieza: 'trig-plano',
+      consigna: 'Q está en la recta de P, a k veces su distancia. Con k positivo comparten lado final; con k negativo, mira qué razón cambia.',
+      controles: [
+        coord('x', 'x de P', 'c-i', 3, 3), coord('y', 'y de P', 'c-h', 2, 3),     // con |k| ≤ 2, Q no sale de la ventana
+        { id: 'k', etiqueta: 'k', color: 'c-f', min: -2, max: 2, paso: 0.5, inicio: -1, decimales: 1 },
+      ],
+      dibujo: val => ({ datos: dosPuntos(val), estado: {} }),
+      lectura: val => {
+        const r = Math.hypot(val.x, val.y);
+        if (!r) return ['P en el origen: no hay lado final'];
+        if (!val.k) return [{ v: 'c-f', t: 'k' }, ' = 0: Q cae en el origen'];
+        const s1 = val.y / r, s2 = Math.sign(val.k) * val.y / r, t = val.y / val.x;
+        return [{ v: 'c-f', t: 'k' }, ` = ${f(val.k)} · sen: ${f(s1)} → ${f(s2)} · tan: ${val.x ? f(t) + ' en los dos' : 'no definida'}`];
+      },
+      arrastres: [
+        manijaP(dosPuntos),
+        { id: 'punto-q', etiqueta: 'punto Q: cambia k', color: 'c-f',
+          donde: val => TP().enPx(dosPuntos(val), val.k * val.x, val.k * val.y),
+          mover: (pt, val) => {
+            const q = TP().delPx(dosPuntos(val), pt), n2 = val.x * val.x + val.y * val.y;
+            return n2 ? { k: (q.x * val.x + q.y * val.y) / n2 } : {};
+          } },
+      ],
+    },
+    {
+      id: 'giro-y-opuesto', titulo: 'Un giro y su opuesto', pieza: 'trig-plano',
+      consigna: 'Gira P hasta dos vueltas en cualquier sentido. P′ es el punto de −θ: compara sus senos y sus cosenos.',
+      controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: -720, max: 720, paso: 15, inicio: 135, unidad: '°', decimales: 0 }],
+      dibujo: val => ({ datos: opuestos(val.g), estado: {} }),
+      lectura: val => ['sen ', th, ` = ${f(Math.sin(rad(val.g)))} · sen(−`, th, `) = ${f(-Math.sin(rad(val.g)))} · cos igual: ${f(Math.cos(rad(val.g)))}`],
+      arrastres: [{ id: 'punta', etiqueta: 'punto P del giro θ', color: 'c-o',
+        donde: val => enUno(opuestos(val.g), val.g),
+        mover: (pt, val) => ({ g: TP().anguloDe(opuestos(val.g), pt, { cerca: val.g }) }) }],
+    },
+  ];
+
   return {
     unidad: 'trigonometria.angulos-en-posicion-normal',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js'],
+    // Laboratorio: P libre con las seis razones (también sobre los ejes), dos puntos de una misma recta (k > 0
+    // conserva las razones, k < 0 voltea seno y coseno pero no la tangente) y un giro de hasta dos vueltas con su opuesto.
+    laboratorio,
     historia: {
       texto: 'Las primeras tablas de cuerdas y senos servían a la astronomía y miraban ángulos de triángulos. Tradiciones griegas, indias y de lengua árabe las fueron transformando hasta hablar de funciones. Al salir del triángulo, el ángulo puede girar más de una vuelta o hacia atrás, y entonces importan los signos. La posición normal es una organización moderna: pone el giro sobre coordenadas.',
       pregunta: '¿Qué gana un ángulo cuando deja de vivir dentro de un triángulo?',
