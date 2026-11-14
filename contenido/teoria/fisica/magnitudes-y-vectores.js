@@ -34,6 +34,17 @@
   const rad = g => g * Math.PI / 180;
   const cosG = g => (g % 180 === 90 ? 0 : Math.cos(rad(g)));
   const senG = g => (g % 180 === 0 ? 0 : Math.sin(rad(g)));
+  // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la figura (flechas.geometria) y su
+  // inversa (Xi, Yi) da las unidades del problema; el lector ajusta cada valor al paso y al rango de su control.
+  const FL = () => Kit.piezas.flechas;
+  // Ángulo de un punto visto desde un origen, entre 0° y 180° (lo que queda bajo el eje se pega al eje más cercano).
+  const anguloDe = (o, q) => {
+    const dx = q[0] - o[0], dy = q[1] - o[1];
+    if (dy < 0) return dx >= 0 ? 0 : 180;
+    return Math.atan2(dy, dx) * 180 / Math.PI;
+  };
+  // Una guía con paso 99 no se dibuja, pero cuenta para la escala: así la figura no se encoge mientras se arrastra.
+  const marco = (de, a) => ({ de, a, paso: 99 });
   function azar(s) {
     let q = (s * 2654435761 + 12345) >>> 0;
     const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
@@ -96,6 +107,8 @@
       revelar: { datos: rectaV(5, true), estado: {} },
       coincide: `Coincide: 72 000 m repartidos en 3600 s dan ${f(V_MS, 0)} m cada segundo.`,
     },
+    // Hallazgo 9: el juego mide el lápiz y «Mira» mide la combi de la predicción. Es la misma regla graduada (pieza
+    // recta) con otro objeto: lo que se repite es la idea de cambiar el número sin cambiar la magnitud.
     mira: {
       datos: rectaV(5, true, true),
       pasos: [
@@ -107,7 +120,7 @@
     },
     regla: {
       texto: 'Una magnitud no cambia al cambiar de unidad: cambia el número. Se multiplica por factores que valen 1. Las del SI derivadas salen de las siete fundamentales.',
-      ecuacion: ['72 ', { frac: ['km', 'h'] }, ' · ', { frac: ['1000 m', '1 km'] }, ' · ', { frac: ['1 h', '3600 s'] }, ' = 20 ', { frac: ['m', 's'] }],
+      ecuacion: ['72 ', { frac: ['km', 'h'] }, ' · ', { llave: [{ frac: ['1000 m', '1 km'] }], nota: 'vale 1', color: 'c-o' }, ' · ', { llave: [{ frac: ['1 h', '3600 s'] }], nota: 'vale 1', color: 'c-o' }, ' = 20 ', { frac: ['m', 's'] }],
       condicion: 'cada factor tiene arriba y abajo lo mismo medido en dos unidades; si la unidad está al cuadrado, el factor también.',
     },
     ahoraTu: {
@@ -223,14 +236,14 @@
       datos: dimEj(3).datos,
       pasos: [
         { estado: { corte: 1, resalta: [0] }, texto: 'A la izquierda, x es una longitud: una ficha de L.', ecuacion: ['[x] = L'] },
-        { estado: { corte: 2, resalta: [2] }, texto: 't² pone dos fichas de tiempo.', ecuacion: ['[t²] = T²'] },
-        { estado: { corte: 3, resalta: [1] }, texto: 'k debe dar la L y quitar T²: dos fichas huecas.', ecuacion: ['[', k, '] = ', { frac: ['L', 'T²'] }, ' = L T⁻²'] },
-        { estado: { corte: 4, resalta: [0, 3] }, texto: 'Producto completo: la misma fila que x. La ecuación es homogénea.', ecuacion: ['[', k, ' · t²] = L T⁻² · T² = L'] },
+        { estado: { corte: 2, resalta: [2] }, texto: 't² pone dos fichas de tiempo.', ecuacion: ['[', { sup: ['t', '2'] }, '] = ', { sup: ['T', '2'] }] },
+        { estado: { corte: 3, resalta: [1] }, texto: 'k debe dar la L y quitar T²: dos fichas huecas.', ecuacion: ['[', k, '] = ', { frac: ['L', { sup: ['T', '2'] }] }, ' = L ', { sup: ['T', '−2'] }] },
+        { estado: { corte: 4, resalta: [0, 3] }, texto: 'Producto completo: la misma fila que x. La ecuación es homogénea.', ecuacion: ['[', k, ' · ', { sup: ['t', '2'] }, '] = L ', { sup: ['T', '−2'] }, ' · ', { sup: ['T', '2'] }, ' = L'] },
       ],
     },
     regla: {
       texto: 'En una ecuación física, cada término tiene la misma dimensión. Las derivadas se arman con las fundamentales: masa, longitud y tiempo, entre otras.',
-      ecuacion: ['[F] = M L T⁻²   ·   [E] = M L² T⁻²   ·   [', k, ' · Q] = [', k, '] · [Q]'],
+      ecuacion: ['[F] = M L ', { sup: ['T', '−2'] }, '   ·   ', '[E] = M ', { sup: ['L', '2'] }, ' ', { sup: ['T', '−2'] }, '   ·   ', '[', k, ' · Q] = ', { llave: ['[', k, '] · [Q]'], nota: 'se multiplican', color: 'c-h' }],
       condicion: 'solo se suman o igualan términos de la misma dimensión. Que cuadre no prueba que la ecuación sea correcta.',
     },
     ahoraTu: {
@@ -286,13 +299,16 @@
           { de: [a, 0], a: tip, color: 'i', rotulo: 'B', valor: o.valores === false ? undefined : `${f(b, 0)}`, paso: o.pasoB || 0 },
         ],
         angulos: g > 0 && g < 180 ? [{ en: [a, 0], de: 0, a: g, texto: `${f(g, 0)}°`, color: 'h', paso: o.pasoB || 0 }] : [],
-        guias: [{ de: [a, 0], a: [a + b + 0.5, 0], color: 'h', paso: o.pasoB || 0 }],
+        guias: [{ de: [a, 0], a: [a + b + 0.5, 0], color: 'h', paso: o.pasoB || 0 }, ...(o.marco ? [marco(...o.marco)] : [])],
         resultante: { de: [0, 0], a: tip, color: 'd', rotulo: 'R', valor: o.sinR ? undefined : `${f(r, 2)}`, paso: o.pasoR === undefined ? 0 : o.pasoR },
       },
       estado: { paso: o.paso === undefined ? 9 : o.paso },
       r,
     };
   };
+  // El juego fija la escala con el B más largo (6): así la punta de B sigue al dedo sin que la figura se encoja.
+  const MARCO_R = [[0, 0], [12.5, 6]];
+  const juegoR = val => colaPunta(6, val.b, val.g, { valores: false, marco: MARCO_R });
   const resultante = {
     id: 'resultante',
     titulo: 'La resultante depende del ángulo',
@@ -305,9 +321,18 @@
         { id: 'g', etiqueta: 'θ', color: 'c-h', min: 0, max: 180, paso: 30, inicio: 60, unidad: '°', decimales: 0 },
         { id: 'b', etiqueta: 'B', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 4, decimales: 0 },
       ],
-      dibujo: val => { const c = colaPunta(6, val.b, val.g, { valores: false }); return { datos: c.datos, estado: c.estado }; },
+      dibujo: val => { const c = juegoR(val); return { datos: c.datos, estado: c.estado }; },
       lectura: val => [R, ` = ${f(colaPunta(6, val.b, val.g).r, 2)}  (A + B = ${f(6 + val.b, 0)})`],
       minimo: 4,
+      // Arrastra la punta de B: su giro es θ y su distancia a la punta de A es el largo de B.
+      arrastres: [
+        { id: 'punta-b', etiqueta: 'punta de B', color: 'c-i',
+          donde: val => { const g = FL().geometria(juegoR(val).datos), tip = [6 + val.b * cosG(val.g), val.b * senG(val.g)]; return { x: g.X(tip[0]), y: g.Y(tip[1]) }; },
+          mover: (pt, val) => {
+            const g = FL().geometria(juegoR(val).datos), q = [g.Xi(pt.x), g.Yi(pt.y)];
+            return { g: anguloDe([6, 0], q), b: Math.hypot(q[0] - 6, Math.max(0, q[1])) };
+          } },
+      ],
     },
     predice: {
       pregunta: ['Dos fuerzas de ', A, ' = 3 N y ', B, ' = 4 N forman un ángulo ', th, ' = 90°. ¿Cuánto mide la resultante?'],
@@ -332,7 +357,7 @@
     },
     regla: {
       texto: 'Los vectores se suman poniéndolos uno a continuación del otro. El módulo de R depende del ángulo, y queda entre A − B y A + B.',
-      ecuacion: [{ sup: [R, '2'] }, ' = ', { sup: [A, '2'] }, ' + ', { sup: [B, '2'] }, ' + 2', A, B, ' cos ', th],
+      ecuacion: [{ sup: [R, '2'] }, ' = ', { sup: [A, '2'] }, ' + ', { sup: [B, '2'] }, ' + ', { llave: ['2', A, B, ' cos ', th], nota: 'lo que pone θ', color: 'c-h' }],
       condicion: 'θ es el ángulo entre A y B puestos con el mismo origen; con θ = 90° queda Pitágoras.',
     },
     ahoraTu: {
@@ -394,6 +419,12 @@
         return m ? ['|', A, `| = ${f(m, 2)} · `, u, ` = (${f(val.ax / m, 2)}; ${f(val.ay / m, 2)})`] : [A, ' = 0: no apunta a ningún lado; no tiene ', u];
       },
       minimo: 3,
+      // Arrastra la punta de A: su sombra en x es Aₓ y su sombra en y es Aᵧ (los ejes de −4 a 4 fijan la escala).
+      arrastres: [
+        { id: 'punta-a', etiqueta: 'punta de A', color: 'c-o',
+          donde: val => { const g = FL().geometria(compA(val.ax, val.ay, { unitario: true }).datos); return { x: g.X(val.ax), y: g.Y(val.ay) }; },
+          mover: (pt, val) => { const g = FL().geometria(compA(val.ax, val.ay, { unitario: true }).datos); return { ax: g.Xi(pt.x), ay: g.Yi(pt.y) }; } },
+      ],
     },
     predice: {
       pregunta: ['El vector ', vA, ' = 6î + 8ĵ. ¿Cuál es su vector unitario ', u, '?'],
@@ -412,13 +443,13 @@
       pasos: [
         { estado: { paso: 0 }, texto: 'A va del origen al punto (3; 4).', ecuacion: [vA, ' = 3î + 4ĵ'] },
         { estado: { paso: 1 }, texto: 'Sus componentes son lo que avanza en cada eje.', ecuacion: [{ sub: [A, 'x'] }, ' = 3,   ', { sub: [A, 'y'] }, ' = 4'] },
-        { estado: { paso: 2 }, texto: 'Su módulo sale de Pitágoras con las componentes.', ecuacion: ['|', A, '| = ', { raiz: ['3² + 4²'] }, ' = 5'] },
+        { estado: { paso: 2 }, texto: 'Su módulo sale de Pitágoras con las componentes.', ecuacion: ['|', A, '| = ', { raiz: [[{ sup: ['3', '2'] }, ' + ', { sup: ['4', '2'] }]] }, ' = 5'] },
         { estado: { paso: 3 }, texto: 'El unitario divide cada componente entre 5: mide 1.', ecuacion: [u, ' = ', { frac: [vA, ['|', A, '|']] }, ' = 0,6î + 0,8ĵ'] },
       ],
     },
     regla: {
       texto: 'Un vector se escribe con sus componentes sobre î y ĵ. Su módulo sale de Pitágoras, y el unitario es el vector dividido entre su módulo.',
-      ecuacion: [vA, ' = ', { sub: [A, 'x'] }, 'î + ', { sub: [A, 'y'] }, 'ĵ   ·   |', A, '| = ', { raiz: [[{ sup: [{ sub: [A, 'x'] }, '2'] }, ' + ', { sup: [{ sub: [A, 'y'] }, '2'] }]] }, '   ·   ', u, ' = ', { frac: [vA, ['|', A, '|']] }],
+      ecuacion: [vA, ' = ', { sub: [A, 'x'] }, 'î + ', { sub: [A, 'y'] }, 'ĵ', '   ·   ', '|', A, '| = ', { llave: [{ raiz: [[{ sup: [{ sub: [A, 'x'] }, '2'] }, ' + ', { sup: [{ sub: [A, 'y'] }, '2'] }]] }], nota: 'el módulo', color: 'c-o' }, '   ·   ', u, ' = ', { llave: [{ frac: [vA, ['|', A, '|']] }], nota: 'mide 1', color: 'c-d' }],
       condicion: 'los ejes x e y son perpendiculares; el vector nulo no tiene unitario.',
     },
     ahoraTu: {
@@ -469,10 +500,13 @@
       flechas: [{ de: [0, 0], a: [a, 0], color: 'o', rotulo: 'A' }, { de: [0, 0], a: tip, color: 'i', rotulo: 'B' }],
       angulos: g > 0 && g < 180 ? [{ en: [0, 0], de: 0, a: g, texto: `${f(g, 0)}°`, color: 'h' }] : [],
       guias: [{ de: tip, a: [sombra, yS], color: 'i', paso: o.pasoS || 0 },
-        { de: [a, 0], a: [a + tip[0], tip[1]], color: 'd', paso: o.pasoP || 0 }, { de: tip, a: [a + tip[0], tip[1]], color: 'd', paso: o.pasoP || 0 }],
+        { de: [a, 0], a: [a + tip[0], tip[1]], color: 'd', paso: o.pasoP || 0 }, { de: tip, a: [a + tip[0], tip[1]], color: 'd', paso: o.pasoP || 0 },
+        ...(o.marco ? [marco(...o.marco)] : [])],
       segmentos: Math.abs(sombra) > 1e-9 ? [{ de: [0, yS], a: [sombra, yS], color: 'i', texto: `B cos θ = ${f(sombra, 2)}`, paso: o.pasoS || 0 }] : [],
     }, estado: { paso: o.paso === undefined ? 9 : o.paso } };
   };
+  // El juego fija la escala con todo lo que puede ocupar la figura en la media vuelta (sombra y paralelogramo).
+  const MARCO_P = [[-3, -0.7], [7, 3]];
   const productos = {
     id: 'productos',
     titulo: 'Producto escalar y vectorial',
@@ -482,9 +516,15 @@
       consigna: 'A = 4 y B = 3. Gira B. La sombra de B sobre A da el producto escalar; el paralelogramo, el vectorial.',
       voz: 'Busca dónde la sombra desaparece y dónde el área es mayor.',
       controles: [{ id: 'g', etiqueta: 'θ', color: 'c-h', min: 0, max: 180, paso: 30, inicio: 60, unidad: '°', decimales: 0 }],
-      dibujo: val => prod(4, 3, val.g),
+      dibujo: val => prod(4, 3, val.g, { marco: MARCO_P }),
       lectura: val => [vA, '·', vB, ` = ${f(12 * cosG(val.g), 2)} · |`, vA, '×', vB, `| = ${f(12 * senG(val.g), 2)}`],
       minimo: 3,
+      // Arrastra la punta de B por su media vuelta: su giro es θ (el largo de B queda en 3).
+      arrastres: [
+        { id: 'giro-b', etiqueta: 'punta de B', color: 'c-h',
+          donde: val => { const g = FL().geometria(prod(4, 3, val.g, { marco: MARCO_P }).datos); return { x: g.X(3 * cosG(val.g)), y: g.Y(3 * senG(val.g)) }; },
+          mover: (pt, val) => { const g = FL().geometria(prod(4, 3, val.g, { marco: MARCO_P }).datos); return { g: anguloDe([0, 0], [g.Xi(pt.x), g.Yi(pt.y)]) }; } },
+      ],
     },
     predice: {
       pregunta: ['Dos vectores de ', A, ' = 4 y ', B, ' = 5 forman ', th, ' = 90°. ¿Cuánto vale el producto escalar ', vA, ' · ', vB, '?'],
@@ -510,7 +550,7 @@
     },
     regla: {
       texto: 'El producto escalar es un número: A por la sombra de B. El vectorial es un vector perpendicular a ambos, de módulo igual al área del paralelogramo.',
-      ecuacion: [vA, ' · ', vB, ' = ', A, B, ' cos ', th, '   ·   |', vA, ' × ', vB, '| = ', A, B, ' sen ', th],
+      ecuacion: [vA, ' · ', vB, ' = ', A, { llave: [B, ' cos ', th], nota: 'sombra de B', color: 'c-i' }, '   ·   ', '|', vA, ' × ', vB, '| = ', { llave: [A, B, ' sen ', th], nota: 'área', color: 'c-d' }],
       condicion: 'θ es el ángulo entre A y B con el mismo origen. B × A = −(A × B): el orden importa.',
     },
     ahoraTu: {
@@ -547,11 +587,64 @@
     },
   };
 
+  // Mesas del laboratorio: la escala se fija con los largos máximos, para que las puntas sigan al dedo.
+  const sumaLibre = val => colaPunta(val.a, val.b, val.g, { marco: [[-4, 0], [12.5, 6]] });
+  const prodLibre = val => prod(val.a, val.b, val.g, { marco: [[-5, -0.7], [10, 5]] });
+
   return {
     unidad: 'fisica.magnitudes-y-vectores',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/fis-dimensiones.js', '/nucleo/kit/piezas/flechas.js'],
+    // Laboratorio: juego libre, sin preguntas. Las dos mesas nuevas sueltan los dos largos y el ángulo a la vez (en
+    // los juegos, A queda fijo); la del medio es el juego de las componentes, con su punta arrastrable.
+    laboratorio: [
+      {
+        id: 'suma-libre', titulo: 'Dos flechas sin amarras', pieza: 'flechas',
+        consigna: 'Arrastra la punta de A o la de B, o usa los botones. Busca dos casos con el mismo R y otro ángulo.',
+        controles: [
+          { id: 'a', etiqueta: 'A', color: 'c-o', min: 2, max: 6, paso: 1, inicio: 5, decimales: 0 },
+          { id: 'b', etiqueta: 'B', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0 },
+          { id: 'g', etiqueta: 'θ', color: 'c-h', min: 0, max: 180, paso: 15, inicio: 90, unidad: '°', decimales: 0 },
+        ],
+        dibujo: val => { const c = sumaLibre(val); return { datos: c.datos, estado: c.estado }; },
+        lectura: val => [A, ` = ${f(val.a, 0)} · `, B, ` = ${f(val.b, 0)} · `, th, ` = ${f(val.g, 0)}° → `, R, ` = ${f(sumaLibre(val).r, 2)}`],
+        arrastres: [
+          { id: 'punta-a', etiqueta: 'punta de A', color: 'c-o',
+            donde: val => { const g = FL().geometria(sumaLibre(val).datos); return { x: g.X(val.a), y: g.Y(0) }; },
+            mover: (pt, val) => ({ a: FL().geometria(sumaLibre(val).datos).Xi(pt.x) }) },
+          { id: 'punta-b', etiqueta: 'punta de B', color: 'c-i',
+            donde: val => { const g = FL().geometria(sumaLibre(val).datos); return { x: g.X(val.a + val.b * cosG(val.g)), y: g.Y(val.b * senG(val.g)) }; },
+            mover: (pt, val) => {
+              const g = FL().geometria(sumaLibre(val).datos), q = [g.Xi(pt.x), g.Yi(pt.y)];
+              return { g: anguloDe([val.a, 0], q), b: Math.hypot(q[0] - val.a, Math.max(0, q[1])) };
+            } },
+        ],
+      },
+      Object.assign({ id: 'componentes', titulo: 'Componentes y unitario', pieza: 'flechas' }, componentes.juega),
+      {
+        id: 'productos-libre', titulo: 'Sombra y área a la vez', pieza: 'flechas',
+        consigna: 'Cambia los dos largos y el ángulo. Compara la sombra de B sobre A con el área del paralelogramo.',
+        controles: [
+          { id: 'a', etiqueta: 'A', color: 'c-o', min: 1, max: 5, paso: 1, inicio: 4, decimales: 0 },
+          { id: 'b', etiqueta: 'B', color: 'c-i', min: 1, max: 5, paso: 1, inicio: 3, decimales: 0 },
+          { id: 'g', etiqueta: 'θ', color: 'c-h', min: 0, max: 180, paso: 15, inicio: 45, unidad: '°', decimales: 0 },
+        ],
+        dibujo: val => prodLibre(val),
+        lectura: val => [`${f(val.a, 0)} y ${f(val.b, 0)} a ${f(val.g, 0)}°: escalar ${f(val.a * val.b * cosG(val.g), 2)} · área ${f(Math.abs(val.a * val.b * senG(val.g)), 2)}`],
+        arrastres: [
+          { id: 'punta-a', etiqueta: 'punta de A', color: 'c-o',
+            donde: val => { const g = FL().geometria(prodLibre(val).datos); return { x: g.X(val.a), y: g.Y(0) }; },
+            mover: (pt, val) => ({ a: FL().geometria(prodLibre(val).datos).Xi(pt.x) }) },
+          { id: 'punta-b', etiqueta: 'punta de B', color: 'c-i',
+            donde: val => { const g = FL().geometria(prodLibre(val).datos); return { x: g.X(val.b * cosG(val.g)), y: g.Y(val.b * senG(val.g)) }; },
+            mover: (pt, val) => {
+              const g = FL().geometria(prodLibre(val).datos), q = [g.Xi(pt.x), g.Yi(pt.y)];
+              return { g: anguloDe([0, 0], q), b: Math.hypot(q[0], Math.max(0, q[1])) };
+            } },
+        ],
+      },
+    ],
     historia: {
       texto: 'Durante siglos, cada pueblo medía con sus propios patrones. El sistema métrico buscó medidas que cualquiera pudiera reproducir, y desde 2019 el SI se define con constantes de la naturaleza. En el siglo XIX, Hamilton, Grassmann y Gibbs inventaron formas de operar con magnitudes que tienen dirección. Las flechas que usamos son una convención: el desplazamiento no cambia si cambiamos de unidad.',
       pregunta: '¿Qué cambia cuando mides lo mismo en otra unidad?',
