@@ -205,6 +205,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
   <div id="m1" class="mode">
     <section class="bench" aria-label="Vaso con hielo y agua, y gráfica de temperatura contra calor">
       <div class="lienzo"><canvas id="cv" tabindex="-1" role="img" aria-label="A un lado, un vaso con cubos de hielo y agua, con un termómetro para cada uno. Al otro, la gráfica de la temperatura de cada uno contra el calor que pasa del agua al hielo"></canvas></div>
+      <div class="slider jugar-ctrl" id="j1"><label for="j1-r"><span>Calor que recibe el hielo (<span class="v v-Q" data-var="Q">Q</span>)</span><output id="j1-o"></output></label><input id="j1-r" class="r-Q" type="range" min="0" max="4250" step="50" value="0"></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
       <div class="legend">
         <span><i style="background:var(--c-T)"></i>T · temperatura</span>
@@ -233,6 +234,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
   <div id="m2" class="mode" hidden>
     <section class="bench" aria-label="Experimentos con calor">
       <div class="lienzo"><canvas id="cv2" tabindex="-1" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
+      <div class="slider jugar-ctrl" id="j2" hidden><label for="j2-r"><span id="j2-et"></span><output id="j2-o"></output></label><input id="j2-r" type="range"></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
       <div class="legend" id="ley2"></div>
     </section>
@@ -250,6 +252,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
   <div id="m3" class="mode" hidden>
     <section class="bench" aria-label="Dibujo de la dilatación">
       <div class="lienzo"><canvas id="cv3" tabindex="-1" role="img" aria-label="Dibujo del paso"></canvas></div>
+      <div class="slider jugar-ctrl" id="j3" hidden><label for="j3-r"><span id="j3-et"></span><output id="j3-o"></output></label><input id="j3-r" type="range"></div>
       <p class="sr" id="desc3" aria-live="polite"></p>
       <div class="legend">
         <span><i style="background:var(--c-T)"></i>T · temperatura</span>
@@ -277,6 +280,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
   <div id="m4" class="mode" hidden>
     <section class="bench" aria-label="Dibujo de la transferencia de calor">
       <div class="lienzo"><canvas id="cv4" tabindex="-1" role="img" aria-label="Dibujo del paso"></canvas></div>
+      <div class="slider jugar-ctrl" id="j4" hidden><label for="j4-r"><span id="j4-et"></span><output id="j4-o"></output></label><input id="j4-r" type="range"></div>
       <p class="sr" id="desc4" aria-live="polite"></p>
       <div class="legend">
         <span><i style="background:var(--c-T)"></i>T · temperatura</span>
@@ -314,6 +318,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'calorimetria', unidad: 'fisica.temperatura-y-calor', version: '0.2.0' };
@@ -658,12 +663,16 @@ const sinParada = el => el.querySelectorAll('.v').forEach(e => { e.removeAttribu
    o = { modo, suf, pasos, E, alto(W), dibujar(L, c, X) }. Cada paso: { k, t, uni?, gate?:{ id, opts:[[letra, texto,
    código, respaldo]], ok, fb:{ letra: texto } }, body(), antes(E), despues?(E, X) (al responder o, si no hay
    predicción, al entrar), exp?() (html tras responder), montar?(X), decir?(E, respondido), lienzo?:{ cerca(p, r),
-   mover(p), tecla(e), aria } }. */
+   mover(p), tecla(e), aria } }.
+   o.juego (regla 3): { et, min, max, step, val, f(v), aplicar(E, v), consigna }: antes de la primera pregunta, el paso 1
+   se juega con un control del banco (#j<suf>); aplicar cambia solo lo que se ve. Al pulsar «Ya jugué», el paso vuelve
+   a sus datos. */
 function montarPasos(o){
   const $ = id => document.getElementById(id), suf = o.suf, modo = $(o.modo), cv = $('cv' + suf);
   const E = o.E, P = o.pasos, S = { step:0, max:0, pred:{} };
   const L = crearLienzo(cv, o.alto, draw), A = crearAnimador(cv);
   const X = { E, S, A, L, cv, draw, modo, decir: () => describir() };
+  const J = o.juego; let jugando = !!J, jv = J ? J.val : 0;
   function draw(){ if (!L.W || !E.tipo) return; o.dibujar(L, colores(), X); }
   const dots = $('dots' + suf);
   P.forEach((s, n) => {
@@ -696,6 +705,8 @@ function montarPasos(o){
     const s = P[n]; S.step = n;
     for (const q of Object.keys(E)) delete E[q];
     s.antes(E);
+    if (jugando && n === 0) J.aplicar(E, jv);
+    if (J) $('j' + suf).hidden = !(jugando && n === 0);
     const g = s.gate, resp = g && S.pred[g.id];
     $('k' + suf).innerHTML = `${s.k} de ${P.length}${s.uni ? ' <span class="uni">Para la UNI</span>' : ''}`;
     $('t' + suf).textContent = s.t;
@@ -752,6 +763,13 @@ function montarPasos(o){
   addEventListener('modo', () => { if (modo.hidden){ A.terminar(); describir(); } else { L.resize(); A.despertar(); } });
   X.go = go;
   L.resize(); go(0);
+  if (J){
+    const r = $('j' + suf + '-r'), poner = () => { $('j' + suf + '-o').textContent = J.f(jv); };
+    $('j' + suf + '-et').textContent = J.et; r.min = J.min; r.max = J.max; r.step = J.step; r.value = jv; poner();
+    r.addEventListener('input', () => { jv = +r.value; poner(); if (S.step === 0){ J.aplicar(E, jv); draw(); describir(); } });
+    JugarPrimero.montar({ escena: modo.querySelector('.bench'), preguntas: [modo.querySelector('.guide')], consigna: J.consigna, minimo: 2,
+      alListo: () => { jugando = false; go(S.step); } });
+  }
   return X;
 }
 </script>
@@ -874,6 +892,9 @@ function go(n, foco){
   const s = steps[n]; S.step = n; S.hl = null; S.explora = !!s.explora;
   if (!s.explora) Object.assign(S, INI);
   Object.assign(S, { q:0, h:null, a:null, cruce:false, completo:false, fantasma:false }, s.est || {});
+  // Juego del paso 1 (regla 3): el hielo recibe calor hasta derretirse entero; el agua caliente no se dibuja.
+  if (n === 0 && jugando){ S.q = S.jq; S.h = S.jq; }
+  $('j1').hidden = !(n === 0 && jugando);
   $('stepK').textContent = `${s.k} de ${steps.length}`;
   $('stepT').textContent = s.t;
   $('stepBody').innerHTML = s.body();
@@ -895,8 +916,12 @@ function go(n, foco){
 function estadoFinal(){ const { hielo, agua } = cuerpos(); return M.equilibrio([hielo, agua]); }
 function describir(){
   const { hielo } = cuerpos(), sol = estadoFinal();
-  $('desc1').textContent = S.cruce ? describirMezcla(sol, hielo) : '';
+  $('desc1').textContent = S.cruce ? describirMezcla(sol, hielo) : (S.step === 0 && jugando ? `El hielo recibió ${fmt(S.jq, 0)} calorías.` : '');
 }
+let jugando = true;
+S.jq = 0;
+$('j1-r').addEventListener('input', e => { S.jq = +e.target.value; $('j1-o').textContent = `${fmt(S.jq, 0)} cal`; if (S.step === 0){ S.q = S.h = S.jq; draw(); describir(); } });
+$('j1-o').textContent = '0 cal';
 function nav(){
   const s = steps[S.step];
   $('prev').disabled = S.step === 0;
@@ -989,6 +1014,10 @@ alRedibujarTema(draw);
 // Al cambiar de pestaña, la animación salta a su final (nada queda corriendo escondido).
 addEventListener('modo', () => { if ($('m1').hidden) A1.terminar(); else L.resize(); });
 L.resize(); go(0);
+// Regla 3: antes de la primera pregunta, se juega a darle calor al hielo.
+JugarPrimero.montar({ escena: document.querySelector('#m1 .bench'), preguntas: [document.querySelector('#m1 .guide')],
+  consigna: 'Dale calor al hielo con el control y mira su termómetro y su curva.', minimo: 2,
+  alListo: () => { jugando = false; go(S.step); } });
 })();
 </script>
 <script>
@@ -1008,7 +1037,7 @@ const TAZAS = { T1:90, T2:50, Tamb:20, tau:10, tmax:40 };
 const TZ = M.enfriamiento({ T0:TAZAS.T1, Tamb:TAZAS.Tamb, tau:TAZAS.tau, t:0, otra:TAZAS.T2 });
 const fuente = t => `<p class="fuente">${t}</p>`;
 const EXPS = [
-  { id:'meseta', corto:'Sigo calentando',
+  { id:'meseta', juego:{ et:'Tiempo en la hornilla', min:0, max:5, step:0.5, val:0, f:v => `${fmt(v, 1)} s`, aplicar:(E, v) => { E.ver = true; E.t = v; }, c:'Deja la olla en la hornilla y mira el termómetro.' }, corto:'Sigo calentando',
     q:'Una olla con 100 g de hielo a −20 °C está sobre una hornilla que le da calor parejo, 200 cal cada segundo. Cuando el hielo ya está a 0 °C y empieza a derretirse, ¿qué hace el termómetro mientras queda hielo?',
     opts:[['a','Sigue subiendo, despacio','Q7-calor-siempre-sube-T','documentado'],
           ['b','Se queda en 0 °C',null],
@@ -1025,7 +1054,7 @@ const EXPS = [
     exp:`<p>Hay dos mesetas. En 0 °C, durante 40 s, entra calor y el termómetro no se mueve: ese calor derrite el hielo. En 100 °C pasa lo mismo mientras el agua hierve, y esa meseta es mucho más larga: convertir 1 g de agua en vapor cuesta 540 cal, casi siete veces lo que cuesta derretirlo.</p>
       <p>Las rampas tienen distinta pendiente: el hielo y el vapor se calientan el doble de rápido que el agua líquida, porque su calor específico es la mitad.</p>
       ${fuente('En Sídney, entre cerca de un tercio y la mitad de los universitarios de primer año cree que agregar energía siempre sube la temperatura (Georgiou y Sharma, 2010, 858 estudiantes). En México, ninguno de 113 escolares mencionó que la temperatura se mantiene al hervir o al congelarse (Jara Guerrero, 1991). Que el termómetro siga subiendo después de hervir lo cree entre el 19 % y el 25 % (Georgiou y Sharma, 2010). Que el hielo que se derrite enfríe la olla es hipótesis nuestra.')}` },
-  { id:'juliaca', corto:'Hiervo en Juliaca',
+  { id:'juliaca', juego:{ et:'Altitud', min:0, max:5200, step:25, val:150, f:v => `${fmt(v, 0)} m`, aplicar:(E, v) => { E.alt = v; }, c:'Lleva la olla a distintas altitudes.' }, corto:'Hiervo en Juliaca',
     q:'En Lima, el agua de una olla destapada hierve a unos 100 °C. Si pones la misma olla a hervir en Juliaca, a 3825 m de altura, ¿a qué temperatura hierve?',
     opts:[['a','A 100 °C','Q9-siempre-hierve-a-100','documentado'],
           ['b','A menos de 100 °C',null],
@@ -1042,7 +1071,7 @@ const EXPS = [
     exp:`<p>El agua hierve cuando su vapor empuja tan fuerte como el aire que tiene encima. En la altura hay menos aire encima, así que le basta con menos temperatura: en Juliaca hierve a unos 87 °C.</p>
       <p>Por eso en la sierra la papa y los frejoles tardan más: el agua hirviendo está más fría. Subir el fuego no ayuda, porque mientras hierve la temperatura no sube. La olla a presión sí ayuda: sube la presión y el agua hierve a más de 100 °C.</p>
       ${fuente('Que el agua siempre hierve a la misma temperatura lo cree el 44 % y el 34 % de dos grupos de primer año en Sídney (Georgiou y Sharma, 2010). Que hierva a más de 100 °C en la altura es hipótesis nuestra. La curva sale de un modelo aproximado (atmósfera estándar y ecuación de Antoine para el agua); en Juliaca da 87 °C, cerca de lo que se mide.')}` },
-  { id:'cantidad', corto:'Más agua en la olla',
+  { id:'cantidad', juego:{ et:'Tiempo en la hornilla', min:0, max:5, step:0.1, val:0, f:v => `${fmt(v, 1)} min`, aplicar:(E, v) => { E.ver = true; E.t = v; }, c:'Calienta las dos ollas un rato y compara sus termómetros.' }, corto:'Más agua en la olla',
     q:'Dos ollas iguales, una con 1 litro de agua y otra con 2 litros, se ponen en dos hornillas iguales a nivel del mar. Un rato después, las dos ya están hirviendo. ¿Cuál marca más en el termómetro?',
     opts:[['a','La de 2 litros','Q4-mas-cantidad-mas-T','documentado'],
           ['b','Las dos marcan lo mismo',null],
@@ -1061,7 +1090,7 @@ const EXPS = [
     exp:`<p>Las dos llegan a 100 °C y ahí se quedan. La cantidad no cambia a qué temperatura hierve el agua; cambia <b>cuánto calor</b> hace falta para llegar: la de 2 litros necesita el doble, así que con la misma hornilla tarda el doble.</p>
       <p>La temperatura dice qué tan caliente está algo; el calor es la energía que pasa. Un vaso y una olla de agua hirviendo están a la misma temperatura, aunque la olla guarde mucha más energía.</p>
       ${fuente('En Panamá, ante dos ollas hirviendo, una con el doble de agua, solo el 26 % de 241 futuros profesores dijo que marcan igual; el 34 % dijo que marca más la de más agua y el 26 %, que marca menos (Rodríguez y Díaz-Higson, 2012).')}` },
-  { id:'mas-hielo', corto:'Echo más hielo',
+  { id:'mas-hielo', juego:{ et:'Calor que recibe el hielo', min:0, max:800, step:20, val:0, f:v => `${fmt(v, 0)} cal`, aplicar:(E, v) => { E.q = v; E.verJ = true; }, c:'Dale calor al hielo con el control y mira su curva.' }, corto:'Echo más hielo',
     q:'En el problema del paso a paso, 50 g de hielo a −10 °C en 200 g de agua a 50 °C daban 23 °C. Si en lugar de 50 g echas 160 g de hielo (también a −10 °C), ¿cómo queda la mezcla?',
     opts:[['a',`A ${fmt(PMH.errores['Q8-no-revisa-si-alcanza'])} °C, todo líquido`,'Q8-no-revisa-si-alcanza','hipotesis'],
           ['b',`A ${fmt(PMH.T)} °C, con hielo y agua`,null],
@@ -1079,7 +1108,7 @@ const EXPS = [
     exp:`<p>El agua solo puede dar 10 000 cal hasta llegar a 0 °C. Para derretir 160 g de hielo hacen falta 800 + 12 800 = 13 600 cal: no alcanza. El agua baja a 0 °C y ahí se detiene, con 45 g de hielo flotando.</p>
       <p>La ecuación de siempre (calor ganado = calor cedido, con todo líquido al final) da −10 °C: imposible, porque supone que el hielo se derritió entero y que el agua quedó bajo cero. Antes de plantearla, compara lo que pide el hielo con lo que puede dar el agua.</p>
       ${fuente('No revisar si alcanza el calor es un error que suponemos: no hay un estudio con porcentaje; las tres opciones incorrectas son hipótesis nuestras. Se apoyan en otra idea medida: que el agua líquida no puede estar a 0 °C (entre el 25 % y el 32 % en primer año; Georgiou y Sharma, 2010).')}` },
-  { id:'tocar', corto:'Toco el metal',
+  { id:'tocar', juego:{ et:'Temperatura del aula', min:0, max:45, step:1, val:20, f:v => `${fmt(v, 0)} °C`, aplicar:(E, v) => { E.Ta = v; E.verJ = true; }, c:'Cambia la temperatura del aula donde pasaron la noche.' }, corto:'Toco el metal',
     q:'Una placa de aluminio, una tabla de madera y una chompa de lana pasaron toda la noche en la misma aula, a 20 °C. Les pegas un termómetro a cada una. ¿Qué marcan?',
     opts:[['a','El aluminio, menos de 20 °C; la lana, más de 20 °C','Q1-cada-material-su-T','documentado'],
           ['b','Los tres, 20 °C',null],
@@ -1097,7 +1126,7 @@ const EXPS = [
     exp:`<p>Después de horas en la misma aula, todo está a la misma temperatura: equilibrio térmico. Lo que cambia es qué tan rápido cada material saca calor de tu mano, que está a unos 34 °C. El aluminio conduce muy bien: se lleva el calor de la piel y la piel se enfría, por eso lo sientes frío. La lana casi no se lo lleva.</p>
       <p>Sube el aula a 43 °C: ahora el aluminio se siente el más caliente, porque es el que más calor le pasa a la mano. Tu mano mide cuánto calor entra o sale, no la temperatura.</p>
       ${fuente('Con placas de madera y aluminio en la misma aula, solo el 5 % de 241 futuros profesores dijo que marcan igual; el 77 % dijo que marcan distinto, una cifra que junta a quienes piensan como en la A y como en la C (Rodríguez y Díaz-Higson, 2012). En Sídney, entre el 41 % y el 44 % de primer año dijo que las mayólicas del baño están más frías que el tapete (Georgiou y Sharma, 2010). La C es una forma de esa misma idea, sin cifra propia; la D sale de otra pregunta: el 15 % dijo que dos cubitos del congelador, uno el doble del otro, están a distinta temperatura (Rodríguez y Díaz-Higson, 2012). Lo que "siente" la mano sale de un modelo aproximado (temperatura de contacto con la efusividad de cada material).')}` },
-  { id:'tazas', corto:'Dos tazas',
+  { id:'tazas', juego:{ et:'Temperatura inicial de la segunda taza', min:25, max:95, step:1, val:TAZAS.T2, f:v => `${fmt(v, 0)} °C`, aplicar:(E, v) => { E.T2 = v; }, c:'Cambia la temperatura de la segunda taza y compáralas.' }, corto:'Dos tazas',
     q:`Dos tazas iguales con la misma cantidad de té, una a ${TAZAS.T1} °C y otra a ${TAZAS.T2} °C, en un aula a ${TAZAS.Tamb} °C. Justo al empezar, ¿cuál se enfría más rápido, en grados por minuto?`,
     opts:[['a',`La de ${TAZAS.T1} °C, porque está más lejos de la temperatura del aula`,null],
           ['b','Las dos al mismo ritmo, porque las tazas son iguales','Q10-mismo-ritmo','parcial'],
@@ -1146,15 +1175,36 @@ function zonas(W, H){
   if (W >= 560){ const wv = Math.round(W*0.36); return { izq:{ x:4, y:4, w:wv - 4, h:H - 8 }, graf:{ x:wv + 40, y:16, w:W - wv - 52, h:H - 52 } }; }
   return { izq:{ x:4, y:4, w:W - 8, h:180 }, graf:{ x:42, y:202, w:W - 54, h:H - 202 - 36 } };
 }
+// Juego antes de cada pregunta (regla 3): el control del banco (#j2) cambia una copia de lo que se ve;
+// la meseta, el hervor, el equilibrio y los termómetros de lo que se pregunta quedan fuera de su rango.
 function draw(){
   if (!L.W) return;
+  if (E.jv === undefined) return dibujar();
+  const x = EXPS[S.k];
+  if (S.pred[x.id]) return dibujar();
+  const copia = Object.assign({}, E);
+  x.juego.aplicar(E, E.jv); delete E.jv; dibujar();
+  for (const q of Object.keys(E)) delete E[q]; Object.assign(E, copia);
+}
+let juego = null;
+function jugarAntes(x){
+  if (juego){ const j = juego; juego = null; j.saltar(); }
+  const ya = !!S.pred[x.id], J = x.juego, r = $('j2-r');
+  $('j2').hidden = ya;
+  if (ya) return;
+  $('j2-et').textContent = J.et; r.min = J.min; r.max = J.max; r.step = J.step; r.value = J.val; E.jv = J.val;
+  const poner = () => { $('j2-o').textContent = J.f(E.jv); };
+  r.oninput = () => { E.jv = +r.value; poner(); draw(); }; poner();
+  juego = JugarPrimero.montar({ escena: document.querySelector('#m2 .bench'), preguntas: [$('body2')], consigna: J.c, minimo: 2 });
+}
+function dibujar(){
   const c = colores();
   if (E.tipo === 'mezcla'){
     const [hielo, agua] = cuerposMezcla(), s = M.equilibrio([hielo, agua]);
     const pide = M.calorNecesario(hielo, 0, 'liquido');
     dibujarMezcla(L, c, { hielo, agua, xmax: Math.max(16000, Math.ceil(Math.max(pide, s.intercambiado)*1.2/2000)*2000), y0:-15, y1:55, q:E.q,
-      verH: E.ver ? 1e9 : null, verA: E.ver ? 1e9 : null, cruce: E.ver && E.q >= s.intercambiado - 1e-6, marcas:true });
-    decir($('desc2'), E.ver ? describirMezcla(s, hielo) : '160 g de hielo a −10 °C se echan en 200 g de agua a 50 °C.');
+      verH: E.ver ? 1e9 : (E.verJ ? E.q : null), verA: E.ver ? 1e9 : null, cruce: E.ver && E.q >= s.intercambiado - 1e-6, marcas:true });
+    decir($('desc2'), E.ver ? describirMezcla(s, hielo) : E.verJ ? `160 g de hielo a −10 °C reciben ${fmt(E.q, 0)} calorías.` : '160 g de hielo a −10 °C se echan en 200 g de agua a 50 °C.');
     return;
   }
   const { ctx, W, H } = L, z = zonas(W, H);
@@ -1234,6 +1284,7 @@ function drawTocar(ctx, c){
     ctx.fillText(nombre, cx, oy + oh + 8);
     // Termómetro pegado al objeto
     termometro(ctx, c, ox + ow - 8, oy - 58, 66, E.ver ? E.Ta : NaN, { min:0, max:50 }, '', false);
+    if (E.verJ && j === 1) rotulo(ctx, c, cx, 18, `aula a ${fmt(E.Ta, 0)} °C`, c.T, 'center', 800);
     if (!E.ver) return;
     // Dedo que toca y flecha de calor
     const fx = cx - ow*0.18, fw = 22, top = 20, punta = oy - 2;
@@ -1355,6 +1406,7 @@ function ir(k, foco){
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
   $('body2').innerHTML = `<p>${x.q}</p>${opcionesHTML(x.opts, 'fb2')}<div id="res2" class="body"></div>`;
+  jugarAntes(x);
   const btns = [...$('body2').querySelectorAll('.opt')];
   const pintar = () => {
     const p = S.pred[x.id]; if (!p) return;
@@ -1369,7 +1421,7 @@ function ir(k, foco){
   btns.forEach(b => b.onclick = () => {
     if (S.pred[x.id]) return;
     const o = x.opts.find(q => q[0] === b.dataset.k);
-    S.pred[x.id] = o[0]; botones(); leyenda(); pintar(); L.compactar(false);
+    S.pred[x.id] = o[0]; delete E.jv; $('j2').hidden = true; botones(); leyenda(); pintar(); L.compactar(false);
     registrarPrediccion('que-pasa-si-' + x.id, o[0], o[0] === x.ok, o[2] || '', o[3] || '', S.t0);
     // El botón elegido queda desactivado: el foco pasa a la respuesta para no perderse.
     const fb = $('fb2'); fb.tabIndex = -1; fb.focus({ preventScroll:true });
@@ -1791,7 +1843,9 @@ function dExplora(ctx, c, W, H){
   rotulo(ctx, c, W - 8, H - 12, `${MATS.find(m => m[0] === E.mat)[1]} · exagerado × ${X}`, c.muted, 'right', 600);
 }
 
-montarPasos({ modo:'m3', suf:'3', pasos, E, alto: W => W >= 560 ? clamp(W*0.56, 300, 440) : 400, dibujar });
+montarPasos({ modo:'m3', suf:'3', pasos, E, alto: W => W >= 560 ? clamp(W*0.56, 300, 440) : 400, dibujar,
+  juego:{ et:'Temperatura del riel', min:0, max:50, step:1, val:10, f:v => `${fmt(v, 0)} °C`, aplicar:(E, v) => { E.T = v; },
+    consigna:'Calienta y enfría el riel y mira la junta.' } });
 })();
 </script>
 <script>
@@ -1987,7 +2041,7 @@ function dHielo(ctx, c, W, H){
     const cx = W*(j ? 0.74 : 0.26), pw = Math.min(W*0.4, 230), py = H*0.6, hs = HS[m];
     rr(ctx, cx - pw/2, py, pw, 16, 3); ctx.fillStyle = colMat(c, m); ctx.fill(); ctx.strokeStyle = c.olla; ctx.lineWidth = 1.2; ctx.stroke();
     ctx.font = `700 12px ${c.font}`; ctx.fillStyle = c.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(nombre, cx, py + 22);
-    termometro(ctx, c, cx + pw/2 - 12, py - 62, 64, 20, { min:0, max:40 }, '', false);
+    termometro(ctx, c, cx + pw/2 - 12, py - 62, 64, E.Ta === undefined ? 20 : E.Ta, { min:0, max:40 }, '', false);
     const fr = E.ver ? clamp(E.t/hs.tiempoRelativo, 0, 1) : 0, s0 = Math.min(pw*0.36, 58), s = s0*Math.cbrt(1 - fr);
     if (fr > 0){ ctx.fillStyle = c.agua; ctx.beginPath(); ctx.ellipse(cx - 8, py - 1, s0*0.3 + s0*0.7*fr, 4, 0, 0, Math.PI*2); ctx.fill(); }
     if (s > 1){ rr(ctx, cx - 8 - s/2, py - s, s, s, Math.max(2, s*0.15)); ctx.fillStyle = c.hielo; ctx.fill(); ctx.strokeStyle = c.hieloB; ctx.lineWidth = 1.5; ctx.stroke(); }
@@ -2165,7 +2219,9 @@ function dStefan(ctx, c, W, H){
     rotulo(ctx, c, W*0.63, 23, 'Q/t = e·σ·A·T⁴ (T en kelvin)', c.ink, 'center', 800); }
 }
 
-montarPasos({ modo:'m4', suf:'4', pasos, E, alto: W => W >= 560 ? clamp(W*0.56, 300, 440) : 400, dibujar });
+montarPasos({ modo:'m4', suf:'4', pasos, E, alto: W => W >= 560 ? clamp(W*0.56, 300, 440) : 400, dibujar,
+  juego:{ et:'Temperatura del aula', min:0, max:40, step:1, val:20, f:v => `${fmt(v, 0)} °C`, aplicar:(E, v) => { E.Ta = v; },
+    consigna:'Cambia la temperatura del aula y mira los termómetros de las placas.' } });
 })();
 </script>
 
