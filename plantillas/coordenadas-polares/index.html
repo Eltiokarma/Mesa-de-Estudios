@@ -216,6 +216,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'coordenadas-polares', unidad: 'trigonometria.coordenadas-polares-y-complejos', version: '0.1.0' };
@@ -924,6 +925,19 @@ $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step +
 $('prev').addEventListener('click', () => go(S.step - 1));
 addEventListener('modo', () => { if (!$('m1').hidden) E.redimensionar(); });
 go(0);
+// Regla 3: antes de la primera pregunta se juega en el radar con un barco que se arrastra (sin cuadrantes rotulados).
+function juegoLibre1(){
+  E.compactar(false);
+  E.config({ L:Object.assign({ caja:BOXR(4), estado:{ g:60, r:2 },
+    rehacer:L => { const s = L.estado; L.radar = radar(4, 1, { etiquetas:30 }); L.ejes = { polar:true };
+      puntoPolar(L, s.r, s.g, { ta:tG(s.g), dy:16 }); L.manijas = [{ id:'p', p:P_(s.r, s.g), color:'r' }]; } }, arrastreRadar(4)),
+    lect:[E => ['r', 'r', ex(E.L.estado.r)], E => ['th', 'θ', tG(E.L.estado.g)]],
+    ley:[['r', 'la distancia r al polo'], ['th', 'el ángulo θ'], ['muted', 'anillos cada 1 y rayos cada 30°', 'trazos']],
+    desc:'El radar con un barco que se arrastra: anillos cada 1 y rayos cada 30°. Con teclado, las flechas lo mueven.' });
+}
+juegoLibre1();
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el barco por el radar y mira cómo cambian r y θ.', minimo:2, alListo:() => go(0) });
 })();
 </script>
 <script>
@@ -1086,13 +1100,26 @@ function botones(){
     : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
   $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
 }
+// Regla 3: antes del primer experimento, juego libre con un punto que se arrastra por el radar (sin curvas,
+// que es lo que se pregunta después).
+let jugado = false;
+function juegoLibre2(){
+  E.compactar(false);
+  E.config({ L:{ caja:BOXR(4), estado:{ g:120, r:3 },
+    rehacer:L => { const s = L.estado; L.radar = radar(4, 1, { etiquetas:30 }); L.ejes = { polar:true };
+      puntoPolar(L, s.r, s.g, { ta:tG(s.g), dy:16 }); L.manijas = [{ id:'p', p:P_(s.r, s.g), color:'r' }]; },
+    mover:(id, q, L) => { const s = L.estado; s.r = clamp(Math.round(Math.hypot(q.x, q.y)*2)/2, .5, 4); s.g = Math.round(MP.normal(Math.atan2(q.y, q.x)/GR)/15)*15 % 360; },
+    tecla:(id, dx, dy, L) => { const s = L.estado; if (dx) s.g = MP.normal(s.g + 15*dx); if (dy) s.r = clamp(s.r + dy*.5, .5, 4); } },
+    lect:[E => ['r', 'r', ex(E.L.estado.r)], E => ['th', 'θ', tG(E.L.estado.g)]],
+    ley:[['r', 'la distancia r al polo'], ['th', 'el ángulo θ']],
+    desc:'El radar con un punto que se arrastra. Con teclado, las flechas lo mueven.' });
+}
 function ir(k){
   if (k < 0 || k >= EXPS.length || !abierto(k)) return;
   E.parar();
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k], ya = !!S.pred[x.id];
-  x.antes(ya);
-  E.compactar(!ya);
+  if (jugado){ x.antes(ya); E.compactar(!ya); } else juegoLibre2();
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -1122,6 +1149,9 @@ function ir(k){
 }
 addEventListener('modo', () => { if (!$('m2').hidden) E.redimensionar(); });
 ir(0);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el punto por el radar y mira r y θ.', minimo:2,
+  alListo:() => { jugado = true; ir(S.k); } });
 })();
 </script>
 <script>
