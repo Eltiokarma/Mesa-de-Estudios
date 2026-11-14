@@ -28,6 +28,7 @@
  * }
  * estado = { corte }   // puntos y cotas con desde ≤ corte
  * El dibujo es una función pura de (datos, estado): sin ids, sin azar, sin reloj. Alto fijo.
+ * geometria(datos) → { Y, Yi, cx(k), bordes(k, y), rama(k, lado), prensa(r), tubo(r) }: para poner manijas (gesto directo).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -122,9 +123,13 @@
     return s;
   }
 
+  // Dónde van los émbolos y las flechas de la prensa (la usan el dibujo y la geometría que se exporta).
+  function geoPrensa(d, r) {
+    const tot = (r.a1 || 1) + (r.a2 || 1), util = 200, yn = Y(d, r.nivel || altoU(d) * 0.6);
+    return { x1: 60, x2: 210, w1: util * r.a1 / tot, w2: util * r.a2 / tot, yn, pieF: yn - 12 };
+  }
   function prensa(d, r) {
-    const tot = (r.a1 || 1) + (r.a2 || 1), util = 200, w1 = util * r.a1 / tot, w2 = util * r.a2 / tot;
-    const x1 = 60, x2 = 210, yb = Y(d, 0), yn = Y(d, r.nivel || altoU(d) * 0.6), yt = Y(d, altoU(d));
+    const { x1, x2, w1, w2, yn } = geoPrensa(d, r), yb = Y(d, 0), yt = Y(d, altoU(d));
     let s = liq([[x1 - w1 / 2, yn], [x1 + w1 / 2, yn], [x1 + w1 / 2, yb - 16], [x2 - w2 / 2, yb - 16], [x2 - w2 / 2, yn], [x2 + w2 / 2, yn], [x2 + w2 / 2, yb + 6], [x1 - w1 / 2, yb + 6]], 1);
     s += contorno([[x1 - w1 / 2, yt], [x1 - w1 / 2, yb + 6], [x2 + w2 / 2, yb + 6], [x2 + w2 / 2, yt]]);
     s += contorno([[x1 + w1 / 2, yt], [x1 + w1 / 2, yb - 16], [x2 - w2 / 2, yb - 16], [x2 - w2 / 2, yt]]);
@@ -142,8 +147,13 @@
     return s;
   }
 
+  // Alturas de los tramos del tubo (px): ym es el eje; H1 y H2, lo que mide cada tramo.
+  function geoTubo(r) {
+    const tot = Math.max(r.a1 || 1, r.a2 || 1);
+    return { ym: 186, H1: 70 * (r.a1 || 1) / tot, H2: 70 * (r.a2 || 1) / tot, xAncho: 65, xAngosto: 160 };
+  }
   function tubo(d, r) {
-    const tot = Math.max(r.a1 || 1, r.a2 || 1), H1 = 70 * (r.a1 || 1) / tot, H2 = 70 * (r.a2 || 1) / tot, ym = 186;
+    const { ym, H1, H2 } = geoTubo(r);
     const xa = 14, xb = 116, xc = 204, xd = 306, xs = [65, 255];
     const top = [[xa, ym - H1 / 2], [xb - 20, ym - H1 / 2], [xb + 10, ym - H2 / 2], [xc - 10, ym - H2 / 2], [xc + 20, ym - H1 / 2], [xd, ym - H1 / 2]];
     const bot = top.map(([x, y]) => [x, 2 * ym - y]);
@@ -218,5 +228,20 @@
     return `${rs.join('; ') || 'Sin recipientes'}${ps.length ? `. Puntos: ${ps.join(', ')}` : ''}.`;
   }
 
-  return { id: 'fis-vasos', dibujar, alt, escala: Y, constantes: { W, ALTO, BASE, TECHO } };
+  // Geometría para el gesto directo (docs/teoria.md §4b): la altura en px y su inversa, el centro de cada ranura,
+  // los bordes de cada recipiente a una altura, la x de cada rama del tubo en U, la prensa y el tubo.
+  function geometria(d) {
+    d = d || {};
+    return {
+      Y: y => Y(d, y),
+      Yi: py => (BASE - py) * altoU(d) / (BASE - TECHO),
+      cx: k => ranura(d, k).cx,
+      bordes: (k, y) => bordes(d, k, y),
+      rama: (k, lado) => { const { cx, sw } = ranura(d, k); return lado === 'izq' ? cx - sw * 0.3 : cx + sw * 0.3; },
+      prensa: r => geoPrensa(d, r),
+      tubo: r => geoTubo(r),
+    };
+  }
+
+  return { id: 'fis-vasos', dibujar, alt, escala: Y, geometria, constantes: { W, ALTO, BASE, TECHO } };
 });

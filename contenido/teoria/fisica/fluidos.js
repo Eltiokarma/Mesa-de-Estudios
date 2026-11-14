@@ -48,10 +48,17 @@
     return ops.slice(0, 4);
   }
 
+  // Gesto directo (docs/teoria.md §4b): las manijas viven en las coordenadas de fis-vasos o de ejes; mover las
+  // convierte en valores con la inversa de su escala, y el lector ajusta cada valor al paso y al rango de su control.
+  const VASOS = () => Kit.piezas['fis-vasos'], EJES = () => Kit.piezas.ejes;
+
   // ---------- Idea 1: igual profundidad, igual presión ----------
   // Cambia: la profundidad del punto y el líquido · Permanece: los tres vasos de formas distintas, llenos al mismo nivel ·
   // Progresa: la cota h, que crece hacia abajo desde la superficie · Se reserva: el fondo de los tres vasos ·
   // Debe verse: la misma presión en los tres puntos, aunque haya distinta cantidad de líquido encima.
+  // Se manipula: el punto del vaso del medio, que se arrastra hacia abajo (h).
+  // Hallazgo 9: «Mira» se queda con un solo vaso recto a propósito: ya se vio que la forma no cuenta, y con un vaso
+  // la columna de agua que pesa sobre cada m² se lee mejor. Es la misma pieza y el mismo punto con su cota h.
   const NIV = 0.8;
   const LIQ = { 800: 'aceite', 1000: 'agua', 1200: 'salmuera', 13600: 'mercurio' };
   const tonoDe = rho => (rho >= 13600 ? 3 : rho >= 1100 ? 2 : 1);
@@ -60,6 +67,12 @@
     recipientes: ['embudo', 'recto', 'botella'].map((forma, k) => ({ tipo: 'vaso', forma, nivel: NIV, tono: tonoDe(rho), rotulo: 'ABC'[k] })),
     puntos: [0, 1, 2].map(k => ({ k, y: NIV - hh, color: 'i', rotulo: conRot ? `${f(rho * G * hh / 1000, 1)} kPa` : undefined, desde: o.desdeP || 0 })),
     cotas: [{ k: 0, y1: NIV - hh, y2: NIV, texto: 'h', color: 'd', desde: o.desdeC || 0 }],
+  });
+  // La manija va sobre el punto del vaso k; arrastrarla hacia abajo aumenta h (la cota se mide desde la superficie).
+  const arrastreProfundidad = (datosDe, k = 1) => ({
+    id: 'punto', etiqueta: 'punto dentro del líquido', color: 'c-d',
+    donde: val => { const g = VASOS().geometria(datosDe(val)); return { x: g.cx(k), y: g.Y(NIV - val.h) }; },
+    mover: (pt, val) => ({ h: NIV - VASOS().geometria(datosDe(val)).Yi(pt.y) }),
   });
   const hidrostatica = {
     id: 'presion-profundidad',
@@ -76,6 +89,8 @@
       dibujo: val => ({ datos: tresVasos(val.h, val.rho), estado: {} }),
       lectura: val => [p, ` = ${f(val.rho * G * val.h / 1000, 1)} kPa en los tres, más la del aire`],
       minimo: 3,
+      // Arrastra el punto del vaso del medio hacia abajo: es la profundidad h.
+      arrastres: [arrastreProfundidad(val => tresVasos(val.h, val.rho))],
     },
     predice: {
       pregunta: 'Los tres vasos tienen agua hasta 0,8 m. El de la izquierda tiene mucha más agua. ¿En cuál es mayor la presión del agua en el fondo?',
@@ -101,7 +116,7 @@
     },
     regla: {
       texto: 'En un líquido en reposo, la presión crece con la profundidad: p = p₀ + ρgh. Puntos a la misma profundidad tienen la misma presión, sea cual sea la forma del recipiente.',
-      ecuacion: [p, ' = ', p0, ' + ρ g ', h, '   ·   ', p, ' = ', { frac: [F, 'A'] }, '   ·   ρ = ', { frac: ['m', 'V'] }],
+      ecuacion: [p, ' = ', { llave: [p0], nota: 'la del aire', color: 'c-i' }, ' + ', { llave: ['ρ g ', h], nota: 'la del líquido', color: 'c-d' }, '   ·   ', p, ' = ', { frac: [F, 'A'] }, '   ·   ', 'ρ = ', { frac: ['m', 'V'] }],
       condicion: 'líquido homogéneo y quieto; h, en vertical desde la superficie. p₀ es la del aire: unos 100 kPa en Lima.',
     },
     ahoraTu: {
@@ -132,6 +147,7 @@
   // Cambia: la columna de aceite y la ciudad del barómetro · Permanece: el agua del tubo en U y el mercurio ·
   // Progresa: el desnivel del agua y la altura de la columna de mercurio · Se reserva: la comparación del aceite con el agua ·
   // Debe verse: dos puntos a la misma altura en el mismo líquido conectado tienen la misma presión.
+  // Se manipula: la superficie del aceite, que se arrastra hacia arriba (cuánto aceite se echa).
   const RHO_AC = 800, H0 = 0.45;
   const CIUDAD = { 1: { n: 'Lima', p: 101 }, 2: { n: 'Arequipa', p: 77 }, 3: { n: 'Juliaca', p: 64 } };
   const tuboU = (ha, rhoA = RHO_AC, o = {}) => {
@@ -161,12 +177,18 @@
       consigna: 'A la izquierda, un tubo en U con agua: echa aceite en una rama. A la derecha, un barómetro de mercurio: cámbialo de ciudad.',
       voz: 'Mira cuánto sube el agua del otro lado y cuánto mide el mercurio.',
       controles: [
-        { id: 'ha', etiqueta: 'aceite', min: 0.1, max: 0.4, paso: 0.05, inicio: 0.2, unidad: 'm', decimales: 2 },
+        { id: 'ha', etiqueta: 'aceite', color: 'c-d', min: 0.1, max: 0.4, paso: 0.05, inicio: 0.2, unidad: 'm', decimales: 2 },
         { id: 'c', etiqueta: 'Ciudad', opciones: [{ valor: 1, texto: 'Lima' }, { valor: 2, texto: 'Arequipa' }, { valor: 3, texto: 'Juliaca' }], inicio: 1 },
       ],
       dibujo: val => ({ datos: figuraU(val.ha, val.c), estado: {} }),
       lectura: val => [`Desnivel del agua: ${f(val.ha * RHO_AC / RHO_W * 100)} cm · mercurio: ${f(columnaHg(CIUDAD[val.c].p) * 100, 0)} cm`],
       minimo: 3,
+      // Arrastra la superficie del aceite: su tope está en hL + ha = H0 + ha·(1 − ρa/2ρw).
+      arrastres: [{
+        id: 'aceite', etiqueta: 'superficie del aceite', color: 'c-d',
+        donde: val => { const g = VASOS().geometria(figuraU(val.ha, val.c)); return { x: g.rama(0, 'izq'), y: g.Y(tuboU(val.ha).hL + val.ha) }; },
+        mover: (pt, val) => ({ ha: (VASOS().geometria(figuraU(val.ha, val.c)).Yi(pt.y) - H0) / (1 - RHO_AC / RHO_W / 2) }),
+      }],
     },
     predice: {
       pregunta: 'En un tubo en U con agua se echan 10 cm de aceite (ρ = 800 kg/m³) en una rama. ¿Cuánto más alta queda la superficie del aceite que la del agua en la otra rama?',
@@ -192,7 +214,7 @@
     },
     regla: {
       texto: 'En un líquido quieto y conectado, los puntos a la misma altura tienen la misma presión. Por eso las columnas se equilibran: la más densa queda más baja.',
-      ecuacion: [{ sub: ['ρ', '1'] }, { sub: [h, '1'] }, ' = ', { sub: ['ρ', '2'] }, { sub: [h, '2'] }, '   ·   ', p0, ' = ', { sub: ['ρ', 'Hg'] }, ' g ', h],
+      ecuacion: [{ sub: ['ρ', '1'] }, { sub: [h, '1'] }, ' = ', { sub: ['ρ', '2'] }, { sub: [h, '2'] }, '   ·   ', p0, ' = ', { llave: [{ sub: ['ρ', 'Hg'] }, ' g ', h], nota: 'columna de mercurio', color: 'c-d' }],
       condicion: 'los dos puntos están en el mismo líquido, sin otro líquido entre ellos, y las ramas están abiertas al mismo aire.',
     },
     ahoraTu: {
@@ -232,9 +254,17 @@
   // Cambia: la razón de áreas y la fuerza en el émbolo chico · Permanece: el líquido encerrado ·
   // Progresa: la flecha de F₂, que crece con A₂ · Se reserva: cuánto baja el émbolo chico ·
   // Debe verse: la presión se transmite igual; la fuerza se multiplica, el recorrido se divide.
+  // Se manipula: la cola de la flecha F₁ sobre el émbolo chico, que se estira hacia arriba (cuánto se empuja).
+  // Las flechas van a 0,6 px por newton; F₁ no baja de 8 px para que su punta no se pierda.
+  const ESC_F = 0.6;
   const prensa = (F1, k, o = {}) => ({
     alto: 1, unidad: 'm',
-    recipientes: [{ tipo: 'prensa', a1: 1, a2: k, nivel: 0.55, F1: { texto: o.sin1 ? '' : `${f(F1)} N`, largo: Math.max(14, F1 * 0.6) }, F2: o.sin2 ? undefined : { texto: `${f(F1 * k)} N`, largo: Math.min(120, Math.max(14, F1 * k * 0.6)) } }],
+    recipientes: [{ tipo: 'prensa', a1: 1, a2: k, nivel: 0.55, F1: { texto: o.sin1 ? '' : `${f(F1)} N`, largo: Math.max(8, F1 * ESC_F) }, F2: o.sin2 ? undefined : { texto: `${f(F1 * k)} N`, largo: Math.min(120, Math.max(14, F1 * k * ESC_F)) } }],
+  });
+  const arrastreF1 = datosDe => ({
+    id: 'empuje-chico', etiqueta: 'fuerza sobre el émbolo chico', color: 'c-h',
+    donde: val => { const d = datosDe(val), g = VASOS().geometria(d).prensa(d.recipientes[0]); return { x: g.x1, y: g.pieF - d.recipientes[0].F1.largo }; },
+    mover: (pt, val) => { const d = datosDe(val), g = VASOS().geometria(d).prensa(d.recipientes[0]); return { F1: (g.pieF - pt.y) / ESC_F }; },
   });
   const pascal = {
     id: 'prensa-hidraulica',
@@ -251,6 +281,8 @@
       dibujo: val => ({ datos: prensa(val.F1, val.k), estado: {} }),
       lectura: val => [{ sub: [F, '2'] }, ` = ${f(val.F1)} · ${f(val.k)} = ${f(val.F1 * val.k)} N`],
       minimo: 3,
+      // Arrastra la cola de la flecha F₁ hacia arriba: más largo es empujar más fuerte.
+      arrastres: [arrastreF1(val => prensa(val.F1, val.k))],
     },
     predice: {
       pregunta: 'En una prensa, el émbolo grande tiene 5 veces el área del chico. Para que el grande suba 1 cm, ¿cuánto tiene que bajar el émbolo chico?',
@@ -276,7 +308,7 @@
     },
     regla: {
       texto: 'Un cambio de presión en un líquido encerrado llega igual a todos sus puntos. En la prensa, la fuerza crece con el área y el recorrido baja igual.',
-      ecuacion: [{ frac: [{ sub: [F, '1'] }, { sub: ['A', '1'] }] }, ' = ', { frac: [{ sub: [F, '2'] }, { sub: ['A', '2'] }] }, '   ·   ', { sub: ['A', '1'] }, { sub: ['d', '1'] }, ' = ', { sub: ['A', '2'] }, { sub: ['d', '2'] }],
+      ecuacion: [{ frac: [{ sub: [F, '1'] }, { sub: ['A', '1'] }] }, ' = ', { frac: [{ sub: [F, '2'] }, { sub: ['A', '2'] }] }, '   ·   ', { llave: [{ sub: ['A', '1'] }, { sub: ['d', '1'] }], nota: 'volumen que baja' }, ' = ', { llave: [{ sub: ['A', '2'] }, { sub: ['d', '2'] }], nota: 'volumen que sube' }],
       condicion: 'líquido encerrado que no se comprime, émbolos a la misma altura y sin rozamiento.',
     },
     ahoraTu: {
@@ -313,14 +345,16 @@
   // Cambia: el material del bloque y el líquido · Permanece: el bloque, siempre de 1 litro ·
   // Progresa: la parte sumergida y la flecha de empuje · Se reserva: dos bloques de igual tamaño bajo el agua ·
   // Debe verse: el empuje es el peso del líquido desalojado; no depende de cuánto pesa el bloque.
-  const VB = 0.001, LADO = 0.2;   // 1 litro: en la figura, un bloque de 0,2 de alto
+  // Sin arrastre en el juego: material y líquido son opciones. El bloque se arrastra en el laboratorio («Bloque de
+  // densidad libre»), donde su densidad es continua.
+  const VB = 0.001, LADO = 0.2, NIV_B = 0.62;   // 1 litro: en la figura, un bloque de 0,2 de alto
   const MAT = { 250: 'corcho', 600: 'madera', 900: 'hielo', 2700: 'aluminio' };
   const flota = (rb, rl) => {
     const frac = Math.min(1, rb / rl), Wn = rb * VB * G, En = rl * G * VB * frac;
     return { frac, Wn, En, hunde: rb > rl };
   };
   const vasoBloque = (rb, rl, o = {}) => {
-    const q = flota(rb, rl), niv = 0.62;
+    const q = flota(rb, rl), niv = NIV_B;
     const base = q.hunde ? 0 : niv - LADO * q.frac;
     const esc = 2.2;   // px por N en las dos flechas
     return {
@@ -368,7 +402,7 @@
     },
     regla: {
       texto: 'Un líquido empuja hacia arriba a lo que tiene dentro con una fuerza igual al peso del líquido desalojado. Si el cuerpo flota, el empuje iguala su peso.',
-      ecuacion: [E, ' = ', { sub: ['ρ', 'líquido'] }, ' g ', { sub: ['V', 'sumergido'] }, '   ·   flota: ', E, ' = W'],
+      ecuacion: [E, ' = ', { sub: ['ρ', 'líquido'] }, ' g ', { llave: [{ sub: ['V', 'sumergido'] }], nota: 'solo lo hundido' }, '   ·   ', 'flota: ', E, ' = W'],
       condicion: 'V es solo el volumen bajo la superficie. Flota si su densidad media es menor que la del líquido.',
     },
     ahoraTu: {
@@ -396,7 +430,7 @@
             { id: 'empuje', valor: En, error: 'AR-TOTAL', siFuera: 'Ese es el empuje solo; el dinamómetro marca peso menos empuje.' },
             { id: 'suma', valor: m * G + En, error: 'F15', siFuera: 'El empuje va hacia arriba: se resta, no se suma.' },
           ], n => `${f(n, 1)} N`),
-          solucion: { texto: 'Su volumen sale de m/ρ; el empuje es el peso de ese volumen de agua.', ecuacion: [E, ` = 1000 · 10 · ${f(V, 4)} = ${f(En, 1)} N   ·   ${f(m * G)} − ${f(En, 1)} = ${f(Ap, 1)} N`] },
+          solucion: { texto: 'Su volumen sale de m/ρ; el empuje es el peso de ese volumen de agua.', ecuacion: [E, ` = 1000 · 10 · ${f(V, 4)} = ${f(En, 1)} N`, '   ·   ', `${f(m * G)} − ${f(En, 1)} = ${f(Ap, 1)} N`] },
         };
       },
     },
@@ -405,12 +439,14 @@
   // ---------- Idea 5: tensión superficial ----------
   // Cambia: el largo del alambre y el líquido · Permanece: el marco con una película de dos caras ·
   // Progresa: la recta F–L · Se reserva: el clip que no se hunde · Debe verse: la superficie tira en proporción al largo del borde.
+  // Se manipula: el punto de la recta F–L, que se arrastra a lo largo (L).
   const GAMMA = { 73: 'agua', 25: 'agua jabonosa' };
   const ejeTS = (lineas, extra = {}) => Object.assign({
     x: { min: 0, max: 10, paso: 2, nombre: 'L', unidad: 'cm', decimales: 0 },
     y: { min: 0, max: 16, paso: 4, nombre: 'F', unidad: 'mN', decimales: 0, color: 'h' },
     curvas: lineas.map(([g, rot, caras]) => ({ puntos: [[0, 0], [10, caras * g * 0.1]], color: 'h', rotulo: rot, discontinua: caras === 1 })),
   }, extra);
+  const ejeAlambre = val => ejeTS([[val.g, GAMMA[val.g], 2]], { puntos: [{ x: val.L, y: 2 * val.g * val.L / 100, color: 'h', rotulo: `${f(2 * val.g * val.L / 100, 2)} mN`, guias: true }] });
   const tension = {
     id: 'tension-superficial',
     titulo: 'La superficie tira como una piel',
@@ -423,9 +459,15 @@
         { id: 'L', etiqueta: 'L', min: 2, max: 10, paso: 2, inicio: 4, unidad: 'cm', decimales: 0 },
         { id: 'g', etiqueta: 'Líquido', opciones: [{ valor: 73, texto: 'agua' }, { valor: 25, texto: 'jabonosa' }], inicio: 25 },
       ],
-      dibujo: val => ({ datos: ejeTS([[val.g, GAMMA[val.g], 2]], { puntos: [{ x: val.L, y: 2 * val.g * val.L / 100, color: 'h', rotulo: `${f(2 * val.g * val.L / 100, 2)} mN`, guias: true }] }), estado: {} }),
+      dibujo: val => ({ datos: ejeAlambre(val), estado: {} }),
       lectura: val => [F, ` = 2γL = ${f(2 * val.g * val.L / 100, 2)} mN`],
       minimo: 3,
+      // Arrastra el punto por la recta: hacia la derecha, alambre más largo.
+      arrastres: [{
+        id: 'largo', etiqueta: 'largo del alambre',
+        donde: val => { const g = EJES().geometria(ejeAlambre(val)); return { x: g.X(val.L), y: g.Y(2 * val.g * val.L / 100) }; },
+        mover: (pt, val) => ({ L: EJES().geometria(ejeAlambre(val)).Xi(pt.x) }),
+      }],
     },
     predice: {
       pregunta: 'Un clip de acero, más denso que el agua, puede quedar quieto sobre la superficie si se coloca con cuidado. ¿Qué lo sostiene?',
@@ -451,7 +493,7 @@
     },
     regla: {
       texto: 'La superficie de un líquido tira de su borde con una fuerza proporcional al largo del borde. Ese cociente es la tensión superficial γ.',
-      ecuacion: ['γ = ', { frac: [F, 'L'] }, '   ·   película de dos caras: ', F, ' = 2γL'],
+      ecuacion: ['γ = ', { frac: [F, 'L'] }, '   ·   ', F, ' = ', { llave: ['2'], nota: 'dos caras' }, 'γL'],
       condicion: 'L es el largo del borde mojado; γ depende del líquido y de la temperatura (el jabón la baja).',
     },
     ahoraTu: {
@@ -477,6 +519,7 @@
   // Cambia: cuánto se angosta el tubo y la rapidez de entrada · Permanece: el caudal que entra y el que sale ·
   // Progresa: la flecha de v en el tramo angosto y el desnivel de los tubitos · Se reserva: la presión en lo angosto ·
   // Debe verse: donde el agua va más rápido, la presión es menor.
+  // Se manipula: la pared de abajo del tramo angosto, que se sube para apretar el tubo (A₁ / A₂).
   const tuboB = (v1, k, o = {}) => {
     const v2 = v1 * k, dp = 0.5 * RHO_W * (v2 * v2 - v1 * v1), h1 = 0.5, h2 = h1 - dp / (RHO_W * G);
     return { datos: { alto: 0.6, unidad: 'm', colores: { v: 'o' }, recipientes: [{ tipo: 'tubo', a1: k, a2: 1, v1: { texto: `${f(v1)} m/s`, largo: v1 * 20 }, v2: { texto: o.sinV2 ? '?' : `${f(v2)} m/s`, largo: v2 * 20 }, h1, h2: o.sinH2 ? h1 : h2 }] }, v2, dp, h2 };
@@ -496,6 +539,12 @@
       dibujo: val => ({ datos: tuboB(val.v1, val.k).datos, estado: {} }),
       lectura: val => { const b = tuboB(val.v1, val.k); return [{ sub: [v, '2'] }, ` = ${f(b.v2)} m/s · Δp = ${f(b.dp / 1000, 2)} kPa`]; },
       minimo: 3,
+      // Arrastra la pared de abajo del tramo angosto hacia arriba: el tramo mide H1/k, con H1 la altura del ancho.
+      arrastres: [{
+        id: 'angosto', etiqueta: 'pared del tramo angosto',
+        donde: val => { const d = tuboB(val.v1, val.k).datos, g = VASOS().geometria(d).tubo(d.recipientes[0]); return { x: g.xAngosto, y: g.ym + g.H2 / 2 }; },
+        mover: (pt, val) => { const d = tuboB(val.v1, val.k).datos, g = VASOS().geometria(d).tubo(d.recipientes[0]); return { k: g.H1 / 2 / Math.max(1, pt.y - g.ym) }; },
+      }],
     },
     predice: {
       pregunta: 'Agua que fluye pasa de un tramo ancho a uno de la mitad del área. En el tramo angosto, ¿la presión del agua es mayor, igual o menor?',
@@ -514,13 +563,13 @@
       pasos: [
         { estado: {}, texto: 'El agua no se acumula: el caudal que entra es el que pasa.', ecuacion: ['Q = ', { sub: ['A', '1'] }, { sub: [v, '1'] }, ' = ', { sub: ['A', '2'] }, { sub: [v, '2'] }] },
         { estado: {}, texto: 'Con la mitad del área, va al doble de rapidez.', ecuacion: [{ sub: [v, '2'] }, ' = 2 · 1 = 2 m/s'] },
-        { estado: {}, texto: 'Ganar rapidez cuesta presión: Bernoulli.', ecuacion: [{ sub: [p, '1'] }, ' − ', { sub: [p, '2'] }, ' = ½ · 1000 · (2² − 1²) = 1500 Pa'] },
+        { estado: {}, texto: 'Ganar rapidez cuesta presión: Bernoulli.', ecuacion: [{ sub: [p, '1'] }, ' − ', { sub: [p, '2'] }, ' = ½ · 1000 · (', { sup: ['2', '2'] }, ' − ', { sup: ['1', '2'] }, ') = 1500 Pa'] },
         { estado: {}, texto: 'Por eso el tubito del tramo angosto baja 15 cm.', ecuacion: [{ frac: ['1500', '1000 · 10'] }, ' = 0,15 m'] },
       ],
     },
     regla: {
       texto: 'El caudal se conserva: donde el tubo es angosto, el líquido va más rápido. Y a lo largo de la corriente, donde va más rápido, la presión es menor.',
-      ecuacion: [{ sub: ['A', '1'] }, { sub: [v, '1'] }, ' = ', { sub: ['A', '2'] }, { sub: [v, '2'] }, '   ·   ', p, ' + ½ρ', { sup: [v, '2'] }, ' + ρg', h, ' = constante'],
+      ecuacion: [{ llave: [{ sub: ['A', '1'] }, { sub: [v, '1'] }], nota: 'el caudal' }, ' = ', { sub: ['A', '2'] }, { sub: [v, '2'] }, '   ·   ', p, ' + ', { llave: ['½ρ', { sup: [v, '2'] }], nota: 'por ir rápido', color: 'c-o' }, ' + ρg', h, ' = constante'],
       condicion: 'flujo estacionario, incompresible y sin viscosidad, siguiendo una misma línea de corriente. g = 10 m/s².',
     },
     ahoraTu: {
@@ -535,7 +584,7 @@
               { id: 'inv', valor: v1 * (d2 / d1) ** 2, error: 'BE-INV', siFuera: 'Eso la hace más lenta; en lo angosto va más rápido.' },
               { id: 'igual', valor: v1, error: 'BE-IGUAL', siFuera: 'La misma rapidez valdría si el tubo no se angostara.' },
             ], n => `${f(n)} m/s`),
-            solucion: { texto: 'El caudal es igual; el área va con el diámetro al cuadrado.', ecuacion: [{ sub: [v, '2'] }, ` = ${f(v1)} · (${f(d1)}/${f(d2)})² = ${f(v2)} m/s`] },
+            solucion: { texto: 'El caudal es igual; el área va con el diámetro al cuadrado.', ecuacion: [{ sub: [v, '2'] }, ` = ${f(v1)} · `, { sup: [`(${f(d1)}/${f(d2)})`, '2'] }, ` = ${f(v2)} m/s`] },
           };
         }
         const k = r.de([2, 3]), v2 = v1 * k, dp = 0.5 * RHO_W * (v2 * v2 - v1 * v1);
@@ -546,7 +595,7 @@
             { id: 'sin-medio', valor: RHO_W * (v2 * v2 - v1 * v1) / 1000, error: 'BE-INV', siFuera: 'Eso olvida el ½ de la energía cinética por volumen.' },
             { id: 'solo2', valor: 0.5 * RHO_W * v2 * v2 / 1000, error: 'BE-IGUAL', siFuera: 'Eso olvida que en el tramo ancho el agua ya se movía.' },
           ], n => `${f(n, 2)} kPa`),
-          solucion: { texto: 'A la misma altura, lo que gana en ½ρv² lo pierde en presión.', ecuacion: [{ sub: [p, '1'] }, ' − ', { sub: [p, '2'] }, ` = ½ · 1000 · (${f(v2)}² − ${f(v1)}²) = ${f(dp)} Pa`] },
+          solucion: { texto: 'A la misma altura, lo que gana en ½ρv² lo pierde en presión.', ecuacion: [{ sub: [p, '1'] }, ' − ', { sub: [p, '2'] }, ' = ½ · 1000 · (', { sup: [f(v2), '2'] }, ' − ', { sup: [f(v1), '2'] }, `) = ${f(dp)} Pa`] },
         };
       },
     },
@@ -557,6 +606,44 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-vasos.js', '/nucleo/kit/piezas/ejes.js'],
+    laboratorio: [
+      {
+        // Más rica que la idea 1: suma la presión del aire de la ciudad y deja probar el mercurio.
+        id: 'presion-total', titulo: 'Presión total en tres vasos', pieza: 'fis-vasos',
+        consigna: 'Baja el punto, cambia el líquido y la ciudad. Compara la presión del líquido con la del aire.',
+        controles: [
+          { id: 'h', etiqueta: 'h', color: 'c-d', min: 0.1, max: 0.8, paso: 0.1, inicio: 0.5, unidad: 'm', decimales: 1 },
+          { id: 'rho', etiqueta: 'Líquido', opciones: [{ valor: 800, texto: 'aceite' }, { valor: 1000, texto: 'agua' }, { valor: 1200, texto: 'salmuera' }, { valor: 13600, texto: 'mercurio' }], inicio: 1000 },
+          { id: 'c', etiqueta: 'Ciudad', opciones: [{ valor: 1, texto: 'Lima' }, { valor: 2, texto: 'Arequipa' }, { valor: 3, texto: 'Juliaca' }], inicio: 1 },
+        ],
+        dibujo: val => ({ datos: tresVasos(val.h, val.rho), estado: {} }),
+        lectura: val => [`${LIQ[val.rho]}, `, h, ` = ${f(val.h, 1)}\u00a0m en ${CIUDAD[val.c].n}: `, p, ` = ${f(CIUDAD[val.c].p + val.rho * G * val.h / 1000, 1)}\u00a0kPa`],
+        arrastres: [arrastreProfundidad(val => tresVasos(val.h, val.rho))],
+      },
+      {
+        // El caso que la idea 4 no deja probar: cualquier densidad, y un metal que flota en mercurio.
+        id: 'bloque-libre', titulo: 'Bloque de densidad libre', pieza: 'fis-vasos',
+        consigna: 'Arrastra el bloque hacia abajo o usa − y +: cambias su densidad. Prueba también en mercurio.',
+        controles: [
+          { id: 'rb', etiqueta: 'ρ del bloque en kg/m³', min: 100, max: 2700, paso: 100, inicio: 600, decimales: 0 },
+          { id: 'rl', etiqueta: 'Líquido', opciones: [{ valor: 800, texto: 'aceite' }, { valor: 1000, texto: 'agua' }, { valor: 1200, texto: 'salmuera' }, { valor: 13600, texto: 'mercurio' }], inicio: 1000 },
+        ],
+        dibujo: val => ({ datos: vasoBloque(val.rb, val.rl, { rot: `${f(val.rb)}` }), estado: {} }),
+        lectura: val => { const q = flota(val.rb, val.rl); return [`${f(val.rb)}\u00a0kg/m³ en ${LIQ[val.rl]}: `, q.hunde ? 'se hunde' : `flota, ${f(q.frac * 100, 0)}\u00a0% hundido`]; },
+        // Flotando, la cara de arriba del bloque está en NIVEL − LADO·ρb/ρl + LADO: bajarla es hacerlo más denso.
+        // Hundido, la manija queda en el fondo y se sube con −.
+        arrastres: [{
+          id: 'bloque', etiqueta: 'cara de arriba del bloque',
+          donde: val => { const q = flota(val.rb, val.rl), g = VASOS().geometria(vasoBloque(val.rb, val.rl)); return { x: g.cx(0), y: g.Y((q.hunde ? 0 : NIV_B - LADO * q.frac) + LADO) }; },
+          mover: (pt, val) => {
+            const yv = VASOS().geometria(vasoBloque(val.rb, val.rl)).Yi(pt.y), frac = (NIV_B + LADO - yv) / LADO;
+            if (frac > 1.5) return flota(val.rb, val.rl).hunde ? {} : { rb: val.rl };
+            return { rb: Math.min(1, frac) * val.rl };
+          },
+        }],
+      },
+      Object.assign({ id: 'prensa', titulo: 'La prensa hidráulica', pieza: 'fis-vasos' }, pascal.juega),
+    ],
     historia: {
       texto: 'En 1644, Torricelli describió una columna de mercurio sostenida en un tubo invertido y la explicó por el peso del aire de afuera. En 1648, Pascal hizo comparar un barómetro al pie y en la cima de una montaña: arriba, la columna era más baja. La presión del aire se volvió algo que se mide.',
       pregunta: '¿Qué altura tendría la columna en Juliaca?',

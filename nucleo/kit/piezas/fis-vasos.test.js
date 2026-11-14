@@ -47,3 +47,22 @@ test('sin NaN ni colores fijos, alto fijo, puros, y puntos que esperan su paso',
   assert.equal(altos.size, 1);
   assert.equal((P.dibujar(VASOS, { corte: 0 }).match(/r="5"/g) || []).length, 1);
 });
+
+test('geometría: Y e Yi son inversas y caen donde el dibujo pone puntos, ramas, émbolos y tramos', () => {
+  const g = P.geometria(VASOS);
+  for (const y of [0, 0.2, 0.55, 1]) { assert.ok(Math.abs(g.Y(y) - P.escala(VASOS, y)) < 1e-9); assert.ok(Math.abs(g.Yi(g.Y(y)) - y) < 1e-9); }
+  const s = P.dibujar(VASOS, { corte: 0 });
+  const c = s.match(/<circle cx="([\d.]+)" cy="([\d.]+)" r="5"/);
+  assert.ok(Math.abs(+c[1] - g.cx(0)) < 0.6 && Math.abs(+c[2] - g.Y(0.2)) < 0.6);
+  const U = OTROS[0], gu = P.geometria(U);
+  const cu = P.dibujar(U).match(/<circle cx="([\d.]+)"/);
+  assert.ok(Math.abs(+cu[1] - gu.rama(0, 'izq')) < 0.6, 'el punto de la rama izquierda');
+  const pr = { tipo: 'prensa', a1: 1, a2: 4, nivel: 0.55, F1: { texto: '', largo: 20 } }, gp = P.geometria({ alto: 1 }).prensa(pr);
+  const sp = P.dibujar({ alto: 1, recipientes: [pr] });
+  assert.ok(sp.includes(`<line x1="${gp.x1}" y1="${(gp.pieF - 20).toFixed(1).replace(/\.0$/, '')}"`) || sp.includes(`x1="${gp.x1}"`), 'la flecha F₁ sale sobre el émbolo chico');
+  const rect = [...sp.matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="10"/g)].map(m => [+m[1], +m[2], +m[3]]);
+  assert.ok(Math.abs(rect[0][0] + rect[0][2] / 2 - gp.x1) < 0.6 && Math.abs(rect[0][1] + 10 - gp.yn) < 0.6);
+  assert.ok(Math.abs(rect[1][2] + 4 - gp.w2) < 0.6);
+  const gt = P.geometria({}).tubo({ a1: 3, a2: 1 });
+  assert.ok(Math.abs(gt.H2 * 3 - gt.H1) < 1e-9 && gt.ym > 0);
+});
