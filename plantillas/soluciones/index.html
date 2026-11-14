@@ -108,6 +108,10 @@ canvas{display:block; width:100%; touch-action:pan-y; -webkit-user-select:none; 
 .fb{font-weight:700; margin:0}
 .fb.ok{color:var(--ok)} .fb.mal{color:inherit}
 
+.juego{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+.juego[hidden]{display:none}
+.juego .seg{border-radius:16px}
+.juego .seg button{min-height:44px}
 .seg{display:inline-flex; flex-wrap:wrap; gap:4px; padding:4px; border-radius:999px; background:var(--paper); border:1px solid var(--line); justify-self:start; max-width:100%}
 .seg button{font:700 .9rem var(--font); padding:8px 14px; border-radius:999px; border:0; background:transparent; color:var(--muted); cursor:pointer; min-height:36px}
 .seg button[aria-pressed="true"]{background:var(--ink); color:var(--card)}
@@ -163,6 +167,9 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <section class="bench" aria-label="Recipiente con la solución dibujada en cuadros y puntos, y lupas">
       <div class="lienzo"><canvas id="cv" role="img" aria-label="Un recipiente graduado con la solución dividida en cuadros; los puntos son el soluto. Al lado, una lupa circular que muestra un volumen muy pequeño"></canvas></div>
       <p class="sr" id="desc1" aria-live="polite"></p>
+      <div class="juego" id="juego1">
+        <div class="seg" role="group" aria-label="Sal"><button type="button" data-echar="sal">Echar sal</button><button type="button" data-echar="vaciar">Vaciar el vaso</button></div>
+      </div>
       <div class="legend" id="leyenda1"></div>
     </section>
     <section class="guide">
@@ -184,6 +191,9 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
     <section class="bench" aria-label="Experimentos con soluciones">
       <div class="lienzo"><canvas id="cv2" role="img" aria-label="Dibujo del experimento elegido"></canvas></div>
       <p class="sr" id="desc2" aria-live="polite"></p>
+      <div class="juego" id="juego2">
+        <div class="seg" role="group" aria-label="Sal"><button type="button" data-echar="sal">Echar sal</button><button type="button" data-echar="vaciar">Vaciar el vaso</button></div>
+      </div>
       <div class="legend" id="leyenda2"></div>
     </section>
     <section class="guide">
@@ -210,6 +220,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'soluciones', unidad: 'quimica.soluciones', version: '0.1.0' };
@@ -563,6 +574,33 @@ function crearEscena(cv, idDesc, idLey){
   addEventListener('modo', () => L.resize());
   return E;
 }
+
+/* Regla 3 (decisión 20): antes de cualquier pregunta se juega con un vaso de 200 mL de agua al que se le echa sal
+   (tocando el vaso, con el botón o con las flechas): caen puntos y la lupa los cuenta. El volumen queda fijo: lo que
+   después se pregunta es qué pasa al agregar agua, sacar una parte, mezclar o calentar, y eso el juego no lo muestra. */
+function jugarSal(E, idJuego, preguntas, volver){
+  const cv = E.L.cv, caja = document.getElementById(idJuego), ESC = { mLporCuadro:50, MporPunto:0.5 }, ML = 200;
+  const J = { n:0, on:true, ocupado:false, k:0 };
+  const M = () => J.n/(ML/1000);
+  const armar = () => E.config({ esc:ESC, vasos:[{ id:'j', cap:3, n:J.n, mL:ML, etiqueta:'Agua con sal', sem:5 }],
+    lupas:[{ id:'l', vaso:'j', cuenta:MS.lupa(M(), ESC), sub:fM(M()) }] });
+  armar(); E.L.compactar(false);   // mientras se juega no hay predicción pendiente: el dibujo a su tamaño y con leyenda
+  function echar(que){
+    if (!J.on || J.ocupado) return;
+    if (que === 'vaciar'){ J.n = 0; armar(); return; }
+    if (J.n >= 0.8 - 1e-9) return;   // hasta 4 M
+    J.ocupado = true; J.n = Math.round((J.n + 0.1)*10)/10; J.k++;
+    const vs = E.vaso('j'); vs.n = J.n; E.agregar('j', 4);
+    esperar(500, () => { if (!J.on || !E.vaso('j')) return; E.reubicar('j', 30 + J.k, () => { E.lupaA('l', MS.lupa(M(), ESC)); E.lupa('l').sub = fM(M()); J.ocupado = false; }); });
+  }
+  caja.querySelectorAll('[data-echar]').forEach(b => b.addEventListener('click', () => echar(b.dataset.echar)));
+  cv.tabIndex = 0;
+  cv.addEventListener('click', () => echar('sal'));
+  cv.addEventListener('keydown', e => { if (J.on && /^(ArrowUp|ArrowRight|Enter)$/.test(e.key)){ e.preventDefault(); echar('sal'); } });
+  return JugarPrimero.montar({ escena: cv.closest('.bench'), preguntas, minimo: 2,
+    consigna: 'Toca el vaso para echar sal: mira los puntos y la lupa.',
+    alListo: () => { J.on = false; caja.hidden = true; cv.removeAttribute('tabindex'); volver(); } });
+}
 </script>
 <script>
 /* ================= MODO 1: paso a paso =================
@@ -883,6 +921,7 @@ function cambiar(a){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+jugarSal(E, 'juego1', [...document.querySelectorAll('#m1 .guide > *')], () => go(0));
 })();
 </script>
 <script>
@@ -1395,6 +1434,7 @@ function ir(k){
   pintar(); E.dibujar();
 }
 ir(0);
+jugarSal(E, 'juego2', [...document.querySelectorAll('#m2 .guide > *')], () => ir(0));
 })();
 </script>
 
