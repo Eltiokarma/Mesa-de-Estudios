@@ -3036,7 +3036,15 @@
      "grado": 3,
      "plantillas": [
       "cinta-radio"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/trigonometria/angulo-trigonometrico.js",
+      "requiere": [
+       "/nucleo/kit/piezas/trig-plano.js",
+       "/nucleo/kit/piezas/recta.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "trigonometria.longitud-de-arco-y-sector",
