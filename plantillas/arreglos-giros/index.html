@@ -168,7 +168,10 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
+/* Regla 3: juego libre en el dibujo antes de la primera pregunta (alternativa de teclado a arrastrar) */
+.juego{display:grid; gap:6px}
 
 .fichas{display:flex; flex-wrap:wrap; gap:6px}
 .fichas button{min-width:42px; min-height:42px; border-radius:50%; border:1.5px solid var(--line); background:var(--paper); color:var(--ink);
@@ -250,6 +253,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'arreglos-giros', unidad: 'razonamiento-matematico.arreglos-numericos', version: '0.1.0' };
@@ -1141,6 +1145,21 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, juego libre en el tablero de 3 × 3. Sin sumas ni centro marcado: no adelanta el paso 1.
+const juego1 = document.createElement('div'); juego1.className = 'juego';
+juego1.innerHTML = '<p class="rotulo-chico">Fichas</p><div class="fichas" id="fichasJ1" role="group" aria-label="Fichas"></div>'
+  + '<p class="rotulo-chico">Casillas</p><div class="casillas" id="casillasJ1" role="group" aria-label="Casillas del tablero"></div>';
+document.querySelector('#m1 .bench').appendChild(juego1);
+const libre1 = vacio(9);
+E.compactar(false);
+E.config({ modo:'cuadrado', tocar:true, cua:{ numeros:N9, casillas:libre1, sumas:false },
+  lect:[() => ['ink', 'Fichas puestas', `${libre1.filter(v => v !== null).length} de 9`]],
+  alColocar:() => pintarPanel(E, 'fichasJ1', 'casillasJ1', NOM_CUADRO),
+  desc:'Un tablero de 3 por 3 y nueve fichas del 1 al 9: ponlas donde quieras.' });
+pintarPanel(E, 'fichasJ1', 'casillasJ1', NOM_CUADRO);
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra las fichas al tablero y acomódalas como quieras.', minimo:2,
+  alListo:() => { juego1.remove(); go(S.step); } });
 })();
 </script>
 <script>
@@ -1297,6 +1316,21 @@ function ir(k){
 }
 void piTxt;
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con el triángulo de nueve lugares. Sin sumas por lado: no adelanta ninguna respuesta.
+const juego2 = document.createElement('div'); juego2.className = 'juego';
+juego2.innerHTML = '<p class="rotulo-chico">Fichas</p><div class="fichas" id="fichasJ2" role="group" aria-label="Fichas"></div>'
+  + '<p class="rotulo-chico">Lugares</p><div class="casillas fila6" id="casillasJ2" role="group" aria-label="Lugares del triángulo"></div>';
+document.querySelector('#m2 .bench').appendChild(juego2);
+const libre2 = vacio(9), NOM9 = libre2.map((_, k) => k % 3 === 0 ? `Vértice ${k/3 + 1}` : `Lado ${Math.floor(k/3) + 1}, lugar ${k % 3}`);
+E.compactar(false);
+E.config({ modo:'triangulo', tocar:true, tri:{ porLado:4, numeros:N9, casillas:libre2, sumas:false, vertices:false },
+  lect:[() => ['ink', 'Fichas puestas', `${libre2.filter(v => v !== null).length} de 9`]],
+  alColocar:() => pintarPanel(E, 'fichasJ2', 'casillasJ2', NOM9),
+  desc:'Un triángulo con nueve lugares y nueve fichas del 1 al 9: ponlas donde quieras.' });
+pintarPanel(E, 'fichasJ2', 'casillasJ2', NOM9);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra las fichas a los lugares del triángulo, como quieras.', minimo:2,
+  alListo:() => { juego2.remove(); ir(S.k); } });
 })();
 </script>
 

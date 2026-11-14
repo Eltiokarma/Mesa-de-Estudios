@@ -160,7 +160,10 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
+/* Regla 3: juego libre en el dibujo antes de la primera pregunta (alternativa de teclado a tocar) */
+.juego{display:grid; gap:6px}
 </style>
 <link rel="stylesheet" href="../../nucleo/pegatina.css">
 </head>
@@ -230,6 +233,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'cortes-pesadas', unidad: 'razonamiento-matematico.cortes-y-pesadas', version: '0.1.0' };
@@ -1024,6 +1028,24 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, juego libre: cortar un tronco de 10 m donde se quiera.
+// Sin cuentas de cortes, piezas ni tiempo: no adelanta el paso 1 (la varilla de 12 m).
+const juego1 = document.createElement('div'); juego1.className = 'juego';
+juego1.innerHTML = '<div class="objs" role="group" aria-label="Cortes del tronco"></div>';
+document.querySelector('#m1 .bench').appendChild(juego1);
+const cortes1 = [], cont1 = juego1.firstChild;
+const tocar1 = m => { const i = cortes1.indexOf(m); if (i >= 0) cortes1.splice(i, 1); else cortes1.push(m); E.dibujar(); E.avisar(); botones1(); };
+function botones1(){
+  cont1.innerHTML = Array.from({ length:9 }, (_, k) => k + 1).map(m => `<button type="button" class="btn chico" data-m="${m}" aria-pressed="${cortes1.includes(m)}" aria-label="Corte a ${m} m">${m} m</button>`).join('');
+  cont1.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { tocar1(+b.dataset.m); const f = cont1.querySelector(`[data-m="${b.dataset.m}"]`); if (f) f.focus({ preventScroll:true }); });
+}
+E.compactar(false);
+E.config({ modo:'barras', tocar:true, barras:{ muestra:null, lista:[{ largo:10, tipo:'madera', titulo:'tronco de 10 m', cortes:cortes1 }] },
+  lect:[L('L', 'Largo', '10 m')], ley:[['c', 'c · cortes'], ['L', 'L · largo total']], alTocar:tocar1, desc:'Un tronco de 10 m sobre una regla: toca el tronco para poner o quitar un corte.' });
+botones1();
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Toca el tronco para cortarlo donde quieras; toca otra vez para quitar.', minimo:2,
+  alListo:() => { juego1.remove(); go(S.step); } });
 })();
 </script>
 <script>
@@ -1179,6 +1201,23 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre con la balanza: un saco de 7 kg y pesas de 1, 3 y 9 kg.
+// No adelanta ninguna respuesta (el experimento de la balanza pregunta por la pesa de 27 kg).
+const juego2 = document.createElement('div'); juego2.className = 'juego';
+document.querySelector('#m2 .bench').appendChild(juego2);
+const B2 = { pesas:[1, 3, 9], lugar:['fuera', 'fuera', 'fuera'], masa:7 };
+const plat2 = () => MC.equilibrio({ pesas:B2.pesas, masa:B2.masa, junto:B2.pesas.filter((_, i) => B2.lugar[i] === 'junto'), otro:B2.pesas.filter((_, i) => B2.lugar[i] === 'otro') });
+let poner2 = null;
+const cambio2 = () => { E.bal.lugar = B2.lugar; E.inclinar(); E.avisar(); };
+E.compactar(false);
+E.config({ modo:'balanza', tocar:true, bal:B2,
+  lect:[L('M', 'Saco de papa', '7 kg'), () => ['ink', 'Platillo de la papa', `${plat2().izquierdo} kg`], () => ['ink', 'Platillo de enfrente', `${plat2().derecho} kg`]],
+  alTocar:i => { B2.lugar[i] = LUGARES[(LUGARES.indexOf(B2.lugar[i]) + 1) % 3]; cambio2(); if (poner2) poner2(); },
+  desc:'Una balanza con un saco de papa de 7 kg: toca una pesa para cambiarla de lugar.' });
+poner2 = controlesPesas(juego2, B2, cambio2);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Toca las pesas para cambiarlas de platillo y mira cómo se inclina.', minimo:2,
+  alListo:() => { juego2.remove(); ir(S.k); } });
 })();
 </script>
 
