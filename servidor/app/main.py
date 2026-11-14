@@ -1,12 +1,37 @@
 """Servidor de Mesa de Estudios (fase C1 de docs/cuentas.md). Arranque: uvicorn app.main:app"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.datastructures import MutableHeaders
 
 from . import errores
 from .config import Config, desde_entorno
 from .db import Base, crear_motor, crear_sesiones, crear_tablas
 from .rutas import alumno, colegio, general, profesor, sesion
 from .seguridad import Cofre
+
+
+class Cabeceras:
+    """Cabeceras de seguridad en cada respuesta. ASGI puro: el @app.middleware("http") de Starlette
+    (BaseHTTPMiddleware) cuesta bastante más por petición, y con miles de alumnos se nota (docs/carga.md)."""
+
+    def __init__(self, app, hsts: bool = False):
+        self.app, self.hsts = app, hsts
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            return await self.app(scope, receive, send)
+
+        async def enviar(msg):
+            if msg["type"] == "http.response.start":
+                h = MutableHeaders(scope=msg)
+                h.setdefault("Cache-Control", "no-store")
+                h["X-Content-Type-Options"] = "nosniff"
+                h["Referrer-Policy"] = "no-referrer"
+                if self.hsts:
+                    h["Strict-Transport-Security"] = "max-age=31536000"
+            await send(msg)
+
+        await self.app(scope, receive, enviar)
 
 
 def crear_app(cfg: Config | None = None) -> FastAPI:
@@ -22,15 +47,7 @@ def crear_app(cfg: Config | None = None) -> FastAPI:
                        allow_methods=["GET", "POST", "PUT"], allow_headers=["Authorization", "Content-Type"],
                        max_age=600)
 
-    @app.middleware("http")
-    async def cabeceras(request, llamar):
-        resp = await llamar(request)
-        resp.headers.setdefault("Cache-Control", "no-store")
-        resp.headers["X-Content-Type-Options"] = "nosniff"
-        resp.headers["Referrer-Policy"] = "no-referrer"
-        if cfg.produccion:
-            resp.headers["Strict-Transport-Security"] = "max-age=31536000"
-        return resp
+    app.add_middleware(Cabeceras, hsts=cfg.produccion)
 
     errores.instalar(app)
     for m in (sesion, alumno, profesor, colegio, general):

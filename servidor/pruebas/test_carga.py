@@ -21,3 +21,11 @@ def test_usuario_actual_devuelve_la_conexion(e):
         assert u.rol == "admin" and u.alumno is None  # cargados, sin volver a la base
     finally:
         s.close()
+
+
+def test_cabeceras_de_seguridad(e):
+    for r in (e.c.get("/api/salud"), e.c.get("/api/estado")):  # también en una respuesta de error
+        assert r.headers["cache-control"] == "no-store"
+        assert r.headers["x-content-type-options"] == "nosniff"
+        assert r.headers["referrer-policy"] == "no-referrer"
+        assert "strict-transport-security" not in r.headers
