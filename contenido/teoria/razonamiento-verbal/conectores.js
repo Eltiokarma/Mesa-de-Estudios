@@ -18,11 +18,33 @@
  * (otra clase por descarte). Sin códigos nuevos.
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): sobre el texto hay una bandeja con los conectores; el alumno arrastra la ficha
+  // al conector que quiere poner en el hueco. En la idea 2 también arrastra la marca de un hueco a otro. La manija va
+  // sobre el número de la ficha o al inicio del hueco y salta al más cercano al dedo (rv-texto.cercana). Los botones
+  // de cada control son la alternativa sin arrastre.
+  const RV = () => Kit.piezas['rv-texto'];
+  function anclaP(datos, id) {
+    // En un párrafo, al inicio del hueco (al centro taparía su texto); en una lista, sobre el número (rv-texto.ancla).
+    for (const s of RV().disponer(datos).secciones) {
+      if (s.sec.modo === 'lista') continue;
+      const tr = s.trozos.find(t => !t.num && t.id === id);
+      if (tr) return { x: tr.x, y: tr.y + 5 };
+    }
+    return RV().ancla(datos, id);
+  }
+  const manija = (id, control, datosDe, ids, etiqueta, color = 'c-o') => ({
+    id, etiqueta, color,
+    donde: val => anclaP(datosDe(val), val[control]),
+    mover: (pt, val) => ({ [control]: RV().cercana(datosDe(val), pt, ids) }),
+  });
+  // La bandeja va arriba: así el sello de la tarjeta del texto no queda bajo el botón de la lupa.
+  const conBandeja = (datos, titulo, items) => ({ secciones: [{ id: 'bandeja', titulo, modo: 'lista', fragmentos: items }].concat(datos.secciones) });
+  const conFicha = (estado, id) => Object.assign({}, estado, { marcas: Object.assign({}, estado.marcas, { [id]: 'o' }) });
   // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
@@ -53,6 +75,7 @@
   const CON = { ademas: { t: 'además,', clase: 'adición' }, sinembargo: { t: 'sin embargo,', clase: 'contraste' }, poreso: { t: 'por eso', clase: 'consecuencia' } };
   const encaja = (r, c) => (RES[r].cumple ? c === 'poreso' : c === 'sinembargo');
   const figRel = r => dosIdeas('Estudió toda la semana;', RES[r].t);
+  const figRelB = r => conBandeja(figRel(r), 'Conectores', Object.entries(CON).map(([id, c]) => ({ id, t: c.t.replace(',', '') })));
   const estRel = (r, c, extra = {}) => Object.assign({
     huecos: { w: CON[c].t, r1: RES[r].cumple ? 'que apruebe: se cumple' : 'que apruebe: se rompe' },
     marcas: { a: 'i', b: 'i', w: encaja(r, c) ? 'o' : 'h', r1: 'd' },
@@ -70,7 +93,9 @@
         { id: 'r', etiqueta: 'Resultado', opciones: [{ valor: 'aprobo', texto: 'aprobó' }, { valor: 'desaprobo', texto: 'desaprobó' }] },
         { id: 'c', etiqueta: 'Conector', opciones: Object.entries(CON).map(([valor, c]) => ({ valor, texto: c.t.replace(',', '') })) },
       ],
-      dibujo: val => ({ datos: figRel(val.r), estado: estRel(val.r, val.c) }),
+      dibujo: val => ({ datos: figRelB(val.r), estado: conFicha(estRel(val.r, val.c), val.c) }),
+      // Arrastra la ficha a un conector de la bandeja: entra en el hueco entre las dos ideas.
+      arrastres: [manija('ficha', 'c', val => figRelB(val.r), Object.keys(CON), 'ficha del conector')],
       lectura: val => (encaja(val.r, val.c) ? [corto(con, CON[val.c].t.replace(',', '')), ' marca ', corto(rel, CON[val.c].clase)] : [corto(mal, CON[val.c].t.replace(',', '')), ' no marca esta relación']),
       minimo: 4,
     },
@@ -98,7 +123,7 @@
     },
     regla: {
       texto: 'Antes de elegir el conector, nombra la relación: suma otra idea (adición), contradice lo esperado (contraste), da la razón (causa) o da el resultado (consecuencia).',
-      ecuacion: [idea('idea A'), ' + ', rel('relación'), ' + ', idea('idea B'), ' → ', con('conector')],
+      ecuacion: [idea('idea A'), ' + ', { llave: [rel('relación')], nota: 'qué las une', color: 'c-d' }, ' + ', idea('idea B'), ' → ', { llave: [con('conector')], nota: 'su forma', color: 'c-o' }],
       condicion: 'se lee qué hace esperar la primera idea; si la segunda lo cumple o lo rompe, cambia el conector.',
     },
     ahoraTu: {
@@ -133,6 +158,8 @@
   ];
   const HUECOS = { h1: { ok: 'por ejemplo', clase: 'ejemplo: un caso de lo anterior', lados: ['a', 'b'] }, h2: { ok: 'además', clase: 'adición: suma otra idea', lados: ['b', 'c'] }, h3: { ok: 'en conclusión', clase: 'cierre: resume lo dicho', lados: ['c', 'd'] } };
   const figQ = () => ({ secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: QUINUA }] });
+  const CONQ = ['por ejemplo', 'además', 'en conclusión'], idQ = c => c.replace(/ /g, '-');
+  const figQB = () => conBandeja(figQ(), 'Conectores', CONQ.map(c => ({ id: idQ(c), t: c })));
   const estQ = (h, c, extra = {}) => {
     const H = HUECOS[h], ok = H.ok === c;
     return Object.assign({ huecos: { [h]: `${c},` }, marcas: { [H.lados[0]]: 'i', [H.lados[1]]: 'i', [h]: ok ? 'o' : 'h' }, sellos: { o: ok ? { t: H.clase.split(':')[0], c: 'i' } : { t: 'No encaja', c: 'h' } } }, extra);
@@ -149,7 +176,14 @@
         { id: 'h', etiqueta: 'Hueco', opciones: [{ valor: 'h1', texto: '1' }, { valor: 'h2', texto: '2' }, { valor: 'h3', texto: '3' }] },
         { id: 'c', etiqueta: 'Conector', opciones: ['por ejemplo', 'además', 'en conclusión'].map(c => ({ valor: c, texto: c })) },
       ],
-      dibujo: val => ({ datos: figQ(), estado: estQ(val.h, val.c) }),
+      dibujo: val => ({ datos: figQB(), estado: conFicha(estQ(val.h, val.c), idQ(val.c)) }),
+      // Dos manijas: la marca del hueco (se arrastra de un hueco a otro) y la ficha del conector en la bandeja.
+      arrastres: [
+        manija('hueco', 'h', figQB, Object.keys(HUECOS), 'hueco que se mira', 'c-d'),
+        { id: 'ficha', etiqueta: 'ficha del conector', color: 'c-o',
+          donde: val => anclaP(figQB(), idQ(val.c)),
+          mover: (pt, val) => { const id = RV().cercana(figQB(), pt, CONQ.map(idQ)); return { c: CONQ.find(c => idQ(c) === id) }; } },
+      ],
       lectura: val => ['Este hueco pide ', corto(rel, HUECOS[val.h].clase.split(':')[0])],
       minimo: 4,
     },
@@ -207,6 +241,8 @@
     { id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'w', hueco: true, reserva: 'de modo que' }, { id: 'a', t: 'el pasaje subió,' }, { id: 'b', t: PASAJE[k].t }] },
     { id: 'r', titulo: 'Equivale a', modo: 'parrafo', fragmentos: [{ id: 'r1', hueco: true, caja: false, reserva: 'por eso (consecuencia)' }] },
   ] });
+  const idL = l => l.replace(/ /g, '-');
+  const figLocB = k => conBandeja(figLoc(k), 'Locuciones', Object.keys(LOC).map(l => ({ id: idL(l), t: l })));
   const estLoc = (k, l, extra = {}) => { const ok = PASAJE[k].ok === l; return Object.assign({ huecos: { w: l[0].toUpperCase() + l.slice(1), r1: LOC[l] }, marcas: { a: 'i', b: 'i', w: ok ? 'o' : 'h', r1: 'd' }, sellos: { o: ok ? { t: 'Encaja', c: 'i' } : { t: 'No encaja', c: 'h' } } }, extra); };
   const locuciones = {
     id: 'locuciones',
@@ -220,7 +256,11 @@
         { id: 'k', etiqueta: 'Final', opciones: [{ valor: 'siguen', texto: 'siguen usándolo' }, { valor: 'dejaron', texto: 'dejaron de usarlo' }] },
         { id: 'l', etiqueta: 'Locución', opciones: Object.keys(LOC).map(l => ({ valor: l, texto: l })) },
       ],
-      dibujo: val => ({ datos: figLoc(val.k), estado: estLoc(val.k, val.l) }),
+      dibujo: val => ({ datos: figLocB(val.k), estado: conFicha(estLoc(val.k, val.l), idL(val.l)) }),
+      // Arrastra la ficha a una locución: entra al inicio de la oración y abajo aparece su equivalente.
+      arrastres: [{ id: 'ficha', etiqueta: 'ficha de la locución', color: 'c-o',
+        donde: val => anclaP(figLocB(val.k), idL(val.l)),
+        mover: (pt, val) => { const id = RV().cercana(figLocB(val.k), pt, Object.keys(LOC).map(idL)); return { l: Object.keys(LOC).find(l => idL(l) === id) }; } }],
       lectura: val => [PASAJE[val.k].ok === val.l ? corto(con, val.l) : corto(mal, val.l), ' = ', corto(rel, LOC[val.l])],
       minimo: 4,
     },
@@ -245,7 +285,7 @@
     },
     regla: {
       texto: 'Una locución conjuntiva es un grupo de palabras que funciona como un solo conector. Se clasifica igual: por la relación que marca entre las dos ideas.',
-      ecuacion: [con('si bien'), ', ', con('aun cuando'), ' = ', rel('aunque'), ' · ', con('dado que'), ' = ', rel('porque'), ' · ', con('de modo que'), ' = ', rel('por eso')],
+      ecuacion: [con('si bien'), ' = ', { llave: [rel('aunque')], nota: 'concesión', color: 'c-d' }, '   ·   ', con('dado que'), ' = ', { llave: [rel('porque')], nota: 'causa', color: 'c-d' }, '   ·   ', con('de modo que'), ' = ', { llave: [rel('por eso')], nota: 'consecuencia', color: 'c-d' }],
       condicion: 'se reemplaza la locución por el conector simple; si la oración conserva el sentido, la relación es esa.',
     },
     ahoraTu: {
@@ -269,9 +309,43 @@
     },
   };
 
+  // ---------- Laboratorio: el tablero de los conectores ----------
+  // Más rico que la idea 2: el mismo texto de la quinua con ocho conectores de seis clases (ejemplo, adición,
+  // reformulación, contraste, consecuencia, cierre). El código decide si encaja comparando la clase del conector con la que pide el
+  // hueco (regla 1) y cuenta cuántos de los ocho encajan en ese hueco: hay más de uno por hueco.
+  const CLASE = { ejemplo: 'ejemplo', adicion: 'adición', reformulacion: 'reformulación', contraste: 'contraste', consecuencia: 'consecuencia', cierre: 'cierre' };
+  const TABLERO = [
+    ['por ejemplo', 'ejemplo'], ['por eso', 'consecuencia'], ['además', 'adicion'], ['también', 'adicion'],
+    ['es decir', 'reformulacion'], ['sin embargo', 'contraste'], ['en conclusión', 'cierre'], ['en suma', 'cierre'],
+  ].map(([t, clase]) => ({ id: t.replace(/ /g, '-').replace('í', 'i').replace('ó', 'o').replace('á', 'a'), t, clase }));
+  const PIDE = { h1: 'ejemplo', h2: 'adicion', h3: 'cierre' };
+  const figTab = () => conBandeja(figQ(), 'Conectores', TABLERO.map(x => ({ id: x.id, t: x.t })));
+  const conTab = id => TABLERO.find(x => x.id === id);
+  const mesaTablero = {
+    id: 'tablero', titulo: 'El tablero de los conectores', pieza: 'rv-texto',
+    consigna: 'Arrastra la marca a un hueco y la ficha a un conector. Mira cuántos conectores encajan en cada hueco.',
+    voz: 'Dos conectores de la misma clase se pueden cambiar.',
+    controles: [
+      { id: 'h', etiqueta: 'Hueco', opciones: [{ valor: 'h1', texto: '1' }, { valor: 'h2', texto: '2' }, { valor: 'h3', texto: '3' }] },
+      { id: 'c', etiqueta: 'Conector', opciones: TABLERO.map(x => ({ valor: x.id, texto: x.t })) },
+    ],
+    dibujo: val => {
+      const x = conTab(val.c), H = HUECOS[val.h], ok = x.clase === PIDE[val.h];
+      return { datos: figTab(), estado: { huecos: { [val.h]: `${x.t},` }, marcas: { [H.lados[0]]: 'i', [H.lados[1]]: 'i', [val.h]: ok ? 'o' : 'h', [val.c]: 'o' }, sellos: { o: ok ? { t: CLASE[x.clase], c: 'i' } : { t: 'No encaja', c: 'h' } } } };
+    },
+    lectura: val => {
+      const x = conTab(val.c), ok = x.clase === PIDE[val.h], n = TABLERO.filter(y => y.clase === PIDE[val.h]).length;
+      return [`Hueco ${val.h.slice(1)} pide `, rel(CLASE[PIDE[val.h]]), ' · ', ok ? con(x.t) : mal(x.t), ` · encajan ${n} de 8`];
+    },
+    arrastres: [
+      manija('hueco', 'h', figTab, Object.keys(PIDE), 'hueco que se mira', 'c-d'),
+      manija('ficha', 'c', figTab, TABLERO.map(x => x.id), 'ficha del conector'),
+    ],
+  };
+
   return {
     unidad: 'razonamiento-verbal.conectores',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -279,6 +353,11 @@
       pregunta: '¿Qué te dice «sin embargo» antes de leer lo que sigue?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (marcadores del discurso)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/marcadoresdiscurso.htm' },
     },
+    laboratorio: [
+      mesaTablero,
+      Object.assign({ id: 'relacion', titulo: 'Se cumple o se rompe', pieza: 'rv-texto' }, relacion.juega),
+      Object.assign({ id: 'locuciones', titulo: 'Locuciones', pieza: 'rv-texto' }, locuciones.juega),
+    ],
     ideas: [relacion, clases, locuciones],
   };
 });
