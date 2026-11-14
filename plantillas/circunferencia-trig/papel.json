@@ -12,7 +12,96 @@
         "sen θ = opuesto/hipotenusa = 5/13 y cos θ = adyacente/hipotenusa = 12/13.",
         "tan θ = opuesto/adyacente = 5/12. Ojo: sen θ no es 5; es el cociente 5/13, un número sin unidades y menor que 1."
       ],
-      "verificar": [ { "fn": "razones", "args": [{ "opuesto": 5, "adyacente": 12 }], "espera": { "hipotenusa": 13, "textos.sen": "5/13", "textos.cos": "12/13", "textos.tan": "5/12" } } ]
+      "verificar": [ { "fn": "razones", "args": [{ "opuesto": 5, "adyacente": 12 }], "espera": { "hipotenusa": 13, "textos.sen": "5/13", "textos.cos": "12/13", "textos.tan": "5/12" } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "En un triángulo rectángulo, los catetos miden 5 cm y 12 cm. θ es el ángulo agudo opuesto al cateto de 5 cm.",
+          "pregunta": "¿Cuánto vale sen θ?",
+          "correcta": { "fn": "razones", "args": [{ "opuesto": 5, "adyacente": 12 }], "campo": "textos.sen", "valor": "5/13" },
+          "errores": [
+            {
+              "id": "TR11-coseno-por-seno",
+              "respaldo": "parcial",
+              "explicacion": "Ese es el coseno: adyacente entre hipotenusa. El seno usa el cateto opuesto, 5, sobre la hipotenusa, 13.",
+              "fn": "razones",
+              "args": [{ "opuesto": 5, "adyacente": 12 }],
+              "campo": "textos.cos",
+              "valor": "12/13"
+            },
+            {
+              "id": "TR-seno-invertido",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste la división al revés: hipotenusa entre opuesto es la cosecante. El seno es 5/13, menor que 1.",
+              "fn": "razones",
+              "args": [{ "opuesto": 5, "adyacente": 12 }],
+              "campo": "textos.csc",
+              "valor": "13/5"
+            },
+            {
+              "id": "TR9-tangente-por-seno",
+              "respaldo": "parcial",
+              "explicacion": "Dividiste entre el otro cateto: eso es la tangente. El seno divide entre la hipotenusa, que sale con Pitágoras: 13.",
+              "fn": "razones",
+              "args": [{ "opuesto": 5, "adyacente": 12 }],
+              "campo": "textos.tan",
+              "valor": "5/12"
+            }
+          ]
+        },
+        {
+          "id": "p1b",
+          "enunciado": "En un triángulo rectángulo, los catetos miden 5 cm y 12 cm. θ es el ángulo agudo opuesto al cateto de 5 cm.",
+          "pregunta": "¿Cuánto vale cos θ?",
+          "correcta": { "fn": "razones", "args": [{ "opuesto": 5, "adyacente": 12 }], "campo": "textos.cos", "valor": "12/13" },
+          "errores": [
+            {
+              "id": "TR11-seno-por-coseno",
+              "respaldo": "parcial",
+              "explicacion": "Ese es el seno. El coseno usa el cateto adyacente a θ, 12, sobre la hipotenusa, 13.",
+              "fn": "razones",
+              "args": [{ "opuesto": 5, "adyacente": 12 }],
+              "campo": "textos.sen",
+              "valor": "5/13"
+            },
+            {
+              "id": "TR-coseno-invertido",
+              "respaldo": "hipotesis",
+              "explicacion": "Pusiste la división al revés: hipotenusa entre adyacente es la secante. El coseno es 12/13, menor que 1.",
+              "fn": "razones",
+              "args": [{ "opuesto": 5, "adyacente": 12 }],
+              "campo": "textos.sec",
+              "valor": "13/12"
+            }
+          ]
+        },
+        {
+          "id": "p1c",
+          "enunciado": "En un triángulo rectángulo, los catetos miden 5 cm y 12 cm. θ es el ángulo agudo opuesto al cateto de 5 cm.",
+          "pregunta": "¿Cuánto vale tan θ?",
+          "correcta": { "fn": "razones", "args": [{ "opuesto": 5, "adyacente": 12 }], "campo": "textos.tan", "valor": "5/12" },
+          "errores": [
+            {
+              "id": "TR9-tangente-invertida",
+              "respaldo": "parcial",
+              "explicacion": "Pusiste adyacente entre opuesto: eso es la cotangente. La tangente es opuesto entre adyacente: 5/12.",
+              "fn": "razones",
+              "args": [{ "opuesto": 5, "adyacente": 12 }],
+              "campo": "textos.cot",
+              "valor": "12/5"
+            },
+            {
+              "id": "TR9-seno-por-tangente",
+              "respaldo": "parcial",
+              "explicacion": "Ese es el seno, que divide entre la hipotenusa. La tangente divide los dos catetos: 5/12.",
+              "fn": "razones",
+              "args": [{ "opuesto": 5, "adyacente": 12 }],
+              "campo": "textos.sen",
+              "valor": "5/13"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -24,7 +113,36 @@
         "En el grande, los lados son 24, 45 y 51: el seno es 24/51 = 8/17.",
         "El cateto y la hipotenusa crecen juntos, por 3, así que su cociente no cambia. No se triplica: un seno de 24/17 sería mayor que 1, imposible."
       ],
-      "verificar": [ { "fn": "escalar", "args": [{ "opuesto": 8, "adyacente": 15 }, 3], "espera": { "senAntes": 0.47058823529411764, "senDespues": 0.47058823529411764, "despues.hipotenusa": 51, "errores.senoPorK": 1.411764705882353 } } ]
+      "verificar": [ { "fn": "escalar", "args": [{ "opuesto": 8, "adyacente": 15 }, 3], "espera": { "senAntes": 0.47058823529411764, "senDespues": 0.47058823529411764, "despues.hipotenusa": 51, "errores.senoPorK": 1.411764705882353 } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Un triángulo rectángulo tiene catetos de 8 cm y 15 cm. Se dibuja otro con los mismos ángulos, pero con todos sus lados multiplicados por 3.",
+          "pregunta": "¿Cuánto vale el seno del ángulo opuesto al cateto menor en el triángulo grande?",
+          "decimales": 2,
+          "correcta": { "fn": "escalar", "args": [{ "opuesto": 8, "adyacente": 15 }, 3], "campo": "senDespues", "valor": 0.470588235294 },
+          "errores": [
+            {
+              "id": "TR8-seno-por-k",
+              "respaldo": "parcial",
+              "explicacion": "Triplicaste el seno. El cateto y la hipotenusa crecen juntos, así que el cociente no cambia. Un seno mayor que 1 no existe.",
+              "fn": "escalar",
+              "args": [{ "opuesto": 8, "adyacente": 15 }, 3],
+              "campo": "errores.senoPorK",
+              "valor": 1.41176470588
+            },
+            {
+              "id": "TR8-seno-entre-k",
+              "respaldo": "hipotesis",
+              "explicacion": "Dividiste el seno entre 3. El ángulo es el mismo y la razón también: 24/51 = 8/17.",
+              "fn": "escalar",
+              "args": [{ "opuesto": 8, "adyacente": 15 }, 3],
+              "campo": "errores.senoEntreK",
+              "valor": 0.156862745098
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -36,7 +154,46 @@
         "tan 37° = 3/4, así que altura = 32 · 3/4 = 24 m.",
         "Con el seno saldría 32 · 3/5 ≈ 19,2 m: el error de elegir mal la razón. La distancia de 32 m no es la hipotenusa."
       ],
-      "verificar": [ { "fn": "resolverRectangulo", "args": [{ "angulo": 37, "lado": 32, "cual": "adyacente" }], "espera": { "opuesto": 24, "hipotenusa": 40, "errores.opuestoConSeno": 19.2 } } ]
+      "verificar": [ { "fn": "resolverRectangulo", "args": [{ "angulo": 37, "lado": 32, "cual": "adyacente" }], "espera": { "opuesto": 24, "hipotenusa": 40, "errores.opuestoConSeno": 19.2 } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Desde un punto del suelo, a 32 m de la base de un edificio, se ve la azotea con un ángulo de elevación de 37°. Usa la convención del triángulo de 37° y 53°.",
+          "pregunta": "¿Qué altura tiene el edificio?",
+          "unidad": "m",
+          "decimales": 2,
+          "correcta": { "fn": "resolverRectangulo", "args": [{ "angulo": 37, "lado": 32, "cual": "adyacente" }], "campo": "opuesto", "valor": 24 },
+          "errores": [
+            {
+              "id": "TR9-seno",
+              "respaldo": "parcial",
+              "explicacion": "Usaste el seno, como si 32 m fuera la hipotenusa. Es el cateto adyacente: la razón que une los catetos es la tangente.",
+              "fn": "resolverRectangulo",
+              "args": [{ "angulo": 37, "lado": 32, "cual": "adyacente" }],
+              "campo": "errores.opuestoConSeno",
+              "valor": 19.2
+            },
+            {
+              "id": "TR9-coseno",
+              "respaldo": "parcial",
+              "explicacion": "Usaste el coseno: 32 · 4/5 = 25,6. La altura y los 32 m son los dos catetos: la razón que los une es la tangente, 3/4.",
+              "fn": "resolverRectangulo",
+              "args": [{ "angulo": 37, "lado": 32, "cual": "adyacente" }],
+              "campo": "errores.opuestoConCoseno",
+              "valor": 25.6
+            },
+            {
+              "id": "TR9-cotangente",
+              "respaldo": "parcial",
+              "explicacion": "Dividiste entre la tangente en vez de multiplicar. Altura = 32 · tan 37° = 32 · 3/4.",
+              "fn": "resolverRectangulo",
+              "args": [{ "angulo": 37, "lado": 32, "cual": "adyacente" }],
+              "campo": "errores.opuestoConCotangente",
+              "valor": 42.6666666667
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -63,7 +220,70 @@
         "Con 180° y 360° la razón no cambia; solo se decide el signo mirando el cuadrante."
       ],
       "verificar": [ { "fn": "reducir", "args": ["sen", 240], "espera": { "texto": "−√3/2", "cuadrante": 3 } }, { "fn": "reducir", "args": ["cos", 135], "espera": { "texto": "−√2/2" } },
-                     { "fn": "reducir", "args": ["tan", 330], "espera": { "texto": "−√3/3" } } ]
+                     { "fn": "reducir", "args": ["tan", 330], "espera": { "texto": "−√3/3" } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Reduce al primer cuadrante.",
+          "pregunta": "¿Cuánto vale sen 240°?",
+          "correcta": { "fn": "reducir", "args": ["sen", 240], "campo": "texto", "valor": "−√3/2" },
+          "errores": [
+            {
+              "id": "TR12-sin-signo",
+              "respaldo": "parcial",
+              "explicacion": "Olvidaste el signo. 240° está en el tercer cuadrante, donde el seno es negativo: −sen 60°.",
+              "fn": "reducir",
+              "args": ["sen", 240],
+              "campo": "erroresTexto.sinSigno",
+              "valor": "√3/2"
+            },
+            {
+              "id": "TR14-cambia-razon",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiaste a coseno. Con 180° la razón se queda igual; solo con 90° o 270° pasa a su co-razón.",
+              "fn": "reducir",
+              "args": ["sen", 240],
+              "campo": "erroresTexto.cambiaRazon180",
+              "valor": "−1/2"
+            },
+            {
+              "id": "TR11-TR12-abscisa-sin-signo",
+              "respaldo": "parcial",
+              "explicacion": "Tomaste la abscisa y sin signo. El seno es la altura del punto, y en el tercer cuadrante está abajo: −√3/2.",
+              "fn": "reducir",
+              "args": ["sen", 240],
+              "campo": "erroresTexto.otraCoordenadaSinSigno",
+              "valor": "1/2"
+            }
+          ]
+        },
+        {
+          "id": "p5c",
+          "enunciado": "Reduce al primer cuadrante.",
+          "pregunta": "¿Cuánto vale tan 330°?",
+          "correcta": { "fn": "reducir", "args": ["tan", 330], "campo": "texto", "valor": "−√3/3" },
+          "errores": [
+            {
+              "id": "TR12-sin-signo",
+              "respaldo": "parcial",
+              "explicacion": "Olvidaste el signo. 330° está en el cuarto cuadrante, donde la tangente es negativa: −tan 30°.",
+              "fn": "reducir",
+              "args": ["tan", 330],
+              "campo": "erroresTexto.sinSigno",
+              "valor": "√3/3"
+            },
+            {
+              "id": "TR14-cambia-razon",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiaste a cotangente. Con 360° la razón se queda igual: tan 330° = −tan 30° = −√3/3.",
+              "fn": "reducir",
+              "args": ["tan", 330],
+              "campo": "erroresTexto.cambiaRazon180",
+              "valor": "−√3"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -89,7 +309,46 @@
         "El periodo es 2π dividido entre el número que acompaña a x: 2π/3. Caben 3 ondas completas en cada 2π.",
         "El seno va de −1 a 1, así que 4 sen 3x va de −4 a 4 y, al sumar 1, y va de −3 a 5."
       ],
-      "verificar": [ { "fn": "senoidal", "args": [{ "fn": "sen", "A": 4, "B": 3, "D": 1 }], "espera": { "amplitud": 4, "periodoTexto": "2π/3", "maximo": 5, "minimo": -3 } } ]
+      "verificar": [ { "fn": "senoidal", "args": [{ "fn": "sen", "A": 4, "B": 3, "D": 1 }], "espera": { "amplitud": 4, "periodoTexto": "2π/3", "maximo": 5, "minimo": -3 } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Una función es y = 4 sen 3x + 1, con x en radianes.",
+          "pregunta": "¿Cuál es su periodo?",
+          "unidad": "rad",
+          "decimales": 2,
+          "correcta": { "fn": "senoidal", "args": [{ "fn": "sen", "A": 4, "B": 3, "D": 1 }], "campo": "periodo", "valor": 2.09439510239 },
+          "errores": [
+            {
+              "id": "TR18-por-b",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste 2π por 3. El 3 comprime la onda: caben 3 ondas en 2π, así que el periodo es 2π/3.",
+              "fn": "senoidal",
+              "args": [{ "fn": "sen", "A": 4, "B": 3, "D": 1 }],
+              "campo": "errores.periodoPorB",
+              "valor": 18.8495559215
+            },
+            {
+              "id": "TR18-igual-b",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste el 3 como periodo. El periodo es 2π dividido entre el número que acompaña a x.",
+              "fn": "senoidal",
+              "args": [{ "fn": "sen", "A": 4, "B": 3, "D": 1 }],
+              "campo": "errores.periodoIgualB",
+              "valor": 3
+            },
+            {
+              "id": "TR-periodo-con-amplitud",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste 2π por 4, que es la amplitud: sale 8π. El periodo lo decide el número que acompaña a x: 2π/3.",
+              "fn": "senoidal",
+              "args": [{ "fn": "sen", "A": 4, "B": 3, "D": 1 }],
+              "campo": "errores.periodoConAmplitud",
+              "valor": 25.1327412287
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -115,7 +374,42 @@
         "Son cuatro soluciones. Si se hubiera dividido entre sen x, solo quedarían π/3 y 5π/3."
       ],
       "verificar": [ { "fn": "ecuacionFactorizada", "args": [[{ "fn": "sen", "k": 0 }, { "fn": "cos", "k": 0.5 }], 0, 6.283185307179586, "rad"],
-                       "espera": { "cantidad": 4, "enPi": [0, 0.3333333333333333, 1, 1.6666666666666667], "errores.cantidadDividiendo": 2 } } ]
+                       "espera": { "cantidad": 4, "enPi": [0, 0.3333333333333333, 1, 1.6666666666666667], "errores.cantidadDividiendo": 2 } } ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "Resuelve 2 sen x cos x = sen x para x en [0, 2π⟩.",
+          "pregunta": "¿Cuántas soluciones tiene?",
+          "unidad": "soluciones",
+          "decimales": 0,
+          "correcta": {
+            "fn": "ecuacionFactorizada",
+            "args": [[{ "fn": "sen", "k": 0 }, { "fn": "cos", "k": 0.5 }], 0, 6.283185307179586, "rad"],
+            "campo": "cantidad",
+            "valor": 4
+          },
+          "errores": [
+            {
+              "id": "TR21-divide",
+              "respaldo": "parcial",
+              "explicacion": "Dividiste entre sen x y se perdieron x = 0 y x = π. Se factoriza: sen x · (2 cos x − 1) = 0.",
+              "fn": "ecuacionFactorizada",
+              "args": [[{ "fn": "sen", "k": 0 }, { "fn": "cos", "k": 0.5 }], 0, 6.283185307179586, "rad"],
+              "campo": "errores.cantidadDividiendo",
+              "valor": 2
+            },
+            {
+              "id": "TR21-TR22-divide-y-una",
+              "respaldo": "parcial",
+              "explicacion": "Dividiste entre sen x y además te quedaste con π/3. Faltan 5π/3 y los ceros del seno: 0 y π.",
+              "fn": "ecuacion",
+              "args": [{ "fn": "cos", "k": 0.5, "unidad": "rad", "desde": 0, "hasta": 6.283185307179586 }],
+              "campo": "errores.cantidadSoloPrincipal",
+              "valor": 1
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p10",
