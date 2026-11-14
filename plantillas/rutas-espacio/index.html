@@ -169,6 +169,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible, select:focus-visible{ou
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 </style>
 <link rel="stylesheet" href="../../nucleo/pegatina.css">
@@ -241,6 +242,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'rutas-espacio', unidad: 'razonamiento-matematico.rutas-y-visualizacion-espacial', version: '0.1.0' };
@@ -1122,6 +1124,11 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (s.gate && !S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, el alumno gira la L de alambre del paso 1 (manija, botones o flechas).
+// Sin números ni rutas dibujadas: el juego no muestra la respuesta.
+E.compactar(false);
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra la manija o usa los botones para girar la estructura.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 
@@ -1284,6 +1291,13 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre: girar un escalón de alambre que no sale en ningún experimento.
+E.compactar(false);
+E.config({ modo:'alambre', girar:true, rot:ROT, al:{ est:EST.escalon, tripode:true, tinte:true },
+  ley:[['x', 'x · a la derecha'], ['y', 'y · al fondo'], ['z', 'z · hacia arriba']],
+  desc:'Un escalón de cubitos de alambre para girarlo y mirarlo desde varios lados.' });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Gira el escalón de alambre con la manija o los botones.', minimo:2, alListo:() => ir(S.k) });
 })();
 </script>
 

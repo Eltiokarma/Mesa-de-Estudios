@@ -152,6 +152,7 @@ button:focus-visible, .v:focus-visible, a:focus-visible{outline:3px solid var(--
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.2fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 </style>
 <link rel="stylesheet" href="../../nucleo/pegatina.css">
@@ -224,6 +225,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'dados-domino', unidad: 'razonamiento-matematico.juegos-recreativos', version: '0.1.0' };
@@ -921,6 +923,11 @@ function prediccion(s){
 $('next').addEventListener('click', () => { if (S.ocupado) return; const s = steps[S.step]; if (!S.pred[s.gate.id]) return; desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: antes de la primera pregunta, el alumno gira la mesa del paso 1 (dedo, flechas o botones).
+// Las caras que no se ven siguen en blanco: el juego no muestra la respuesta.
+E.compactar(false);
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el dibujo para girar la mesa y mira el dado.', minimo:2, alListo:() => go(S.step) });
 })();
 </script>
 <script>
@@ -1081,6 +1088,30 @@ function ir(k){
   pintar();
 }
 ir(0);
+// Regla 3: antes del primer experimento, juego libre: un dado que rueda por un tablero de 4 × 4.
+// Sale con otras caras que el experimento 3 y no sigue ningún camino de los experimentos.
+const juego = document.createElement('div');
+juego.className = 'mandos'; juego.setAttribute('role', 'group'); juego.setAttribute('aria-label', 'Hacer rodar el dado');
+const LADOS_J = [['izquierda', '← Rodar'], ['atras', '↑ Rodar'], ['frente', '↓ Rodar'], ['derecha', 'Rodar →']];
+const NOM_J = { izquierda:'a la izquierda', atras:'al fondo', frente:'al frente', derecha:'a la derecha' };
+juego.innerHTML = LADOS_J.map(([l, t]) => `<button type="button" class="btn chico" data-l="${l}" aria-label="Rodar el dado ${NOM_J[l]}">${t}</button>`).join('');
+$('mandos2').after(juego);
+const TJ = { w:4, h:4 };
+const lectJ = () => { E.lect = [LT('a', 'Arriba', String(E.dados[0].d.arriba))]; E.avisar(); };
+const botonesJ = () => juego.querySelectorAll('button').forEach(b => {
+  const p = E.dados[0].p, d = DIR[b.dataset.l], x = p[0] + d[0], y = p[1] + d[1];
+  b.disabled = E.anim || x < 0 || y < 0 || x >= TJ.w || y >= TJ.h;
+});
+juego.addEventListener('click', ev => {
+  const b = ev.target.closest('button'); if (!b || b.disabled || E.anim) return;
+  E.volcar(0, b.dataset.l, 420, () => { lectJ(); botonesJ(); }); botonesJ();
+});
+E.compactar(false);
+E.config({ dados:[{ p:[1, 1, 0], d:MD.dado({ arriba:1, frente:2 }), marca:{ arriba:'a' } }], cam:{ yaw:-.45, pitch:.8 }, tablero:TJ,
+  ley:[['a', 'a · cara de arriba', 'pt']], desc:'Un dado sobre un tablero de 4 por 4 casillas, para hacerlo rodar.' });
+lectJ(); botonesJ();
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Haz rodar el dado con los botones y gira la mesa arrastrando.', minimo:2, alListo:() => { juego.remove(); ir(S.k); } });
 })();
 </script>
 
