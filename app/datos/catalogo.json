@@ -91,7 +91,15 @@
       "mruv",
       "cinematica-medias",
       "velocidad-relativa"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/movimiento-rectilineo.js",
+      "requiere": [
+       "/nucleo/kit/piezas/pista.js",
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "fisica.movimiento-parabolico-y-circular",
