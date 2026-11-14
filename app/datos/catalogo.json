@@ -1916,7 +1916,14 @@
      "plantillas": [
       "programacion-lineal",
       "inecuaciones-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/programacion-lineal.js",
+      "requiere": [
+       "/nucleo/kit/piezas/ejes.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "algebra.sucesiones-y-series",
