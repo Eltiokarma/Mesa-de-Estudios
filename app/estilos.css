@@ -706,3 +706,74 @@ input[type=file]{font:inherit;max-width:100%}
 .rp-titulo{font-size:18px;margin:4px 0 8px}
 .rp-texto{font-size:16px;line-height:1.55}
 .rp-texto .lec-par{margin:0 0 10px}
+
+/* ---------- Teoría interactiva (app/teoria.js, docs/teoria.md) ----------
+   Una idea por tarjeta: figura del kit arriba, la zona del momento debajo, el compañero del curso en un lugar fijo y
+   la acción principal siempre en el mismo sitio. Los colores de la figura y de las ecuaciones son los de las variables. */
+.te-ideas{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 8px;margin:0 -2px;scrollbar-width:none}
+.te-ideas::-webkit-scrollbar{display:none}
+.te-chip{flex:none;scroll-snap-align:start;display:flex;align-items:center;gap:8px;min-height:44px;max-width:220px;padding:6px 14px 6px 6px;border:2px solid var(--line);border-radius:999px;background:var(--card);text-decoration:none;font-size:14px;font-weight:600;line-height:1.2}
+.te-chip.on{border-color:var(--brand);background:var(--brand-soft)}
+.te-num{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--line);background:var(--bg);font-size:14px;font-weight:700}
+.te-chip.hecha .te-num{background:var(--ok);border-color:var(--ok);color:#fff}
+.te-avance{margin:0 0 12px}
+.te-historia summary{font-weight:700;min-height:44px;display:flex;align-items:center;cursor:pointer}
+.te-historia p{margin:8px 0 0}
+.te-hpreg{font-weight:600}
+.te-idea{display:flex;flex-direction:column;gap:12px}
+.te-idea h2{margin:0;font-size:20px}
+.te-momentos{list-style:none;display:flex;gap:4px;margin:0;padding:0;font-size:12px;font-weight:600;color:var(--muted)}
+.te-momentos li{flex:1;text-align:center;padding-top:8px;border-top:4px solid var(--line);border-radius:2px}
+.te-momentos li.pasado{border-top-color:var(--brand-2)}
+.te-momentos li.on{border-top-color:var(--brand);color:var(--ink)}
+.te-fig{margin:0;min-height:200px;display:grid;place-items:center}
+/* En el celular la figura se queda a la vista mientras se mueven los controles o se leen los pasos (contigüidad). */
+@media (max-width:899px) and (min-height:600px){.te-fig{position:sticky;top:0;z-index:1;background:var(--card);padding-top:6px;box-shadow:0 8px 8px -8px rgba(45,35,64,.18)}}
+.te-fig svg{width:100%;height:auto;max-width:480px}
+.te-lectura{min-height:24px;font-variant-numeric:tabular-nums;font-weight:600;text-align:center}
+.te-zona{display:flex;flex-direction:column;gap:10px;min-height:120px}
+.te-zona h3{margin:0;font-size:17px;line-height:1.4}
+.te-consigna{margin:0}
+.te-controles{display:flex;flex-direction:column;gap:10px}
+.te-control{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;grid-template-areas:"etq etq val" "menos barra mas";align-items:center;gap:2px 8px}
+.te-control .te-etq{grid-area:etq}.te-control output{grid-area:val;font-variant-numeric:tabular-nums;font-weight:700;text-align:right;white-space:nowrap}
+.te-control [data-paso="-1"]{grid-area:menos}.te-control [data-paso="1"]{grid-area:mas}.te-control input{grid-area:barra}
+.te-control input[type=range]{width:100%;accent-color:var(--brand);min-height:44px}
+.te-etq{font-weight:700;font-size:15px}
+.te-mm{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--card);font-size:22px;font-weight:700;line-height:1}
+.te-opc{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.te-ficha-op{min-height:44px;padding:8px 14px;border-radius:999px;border:2px solid var(--line);background:var(--card);font-weight:600}
+.te-ficha-op[aria-pressed=true]{border-color:var(--brand);background:var(--brand-soft)}
+.te-casos{margin:0;min-height:20px}
+.te-fb{min-height:24px}
+.te-fb p{margin:0 0 8px}
+.te-sol{font-weight:600}
+.te-ec{font-size:18px;margin:4px 0;font-variant-numeric:tabular-nums;overflow-x:auto}
+.te-ec-grande{font-size:22px;text-align:center;padding:10px;background:var(--bg);border-radius:var(--radius-s)}
+.te-paso{min-height:96px}
+.te-paso p{margin:0 0 4px}
+.te-regla{display:flex;flex-direction:column;gap:8px}
+.te-rtx{margin:0;font-size:17px;font-weight:600}
+.te-cond{margin:0;color:var(--muted)}
+.te-cond b{color:var(--ink)}
+.te-voz{display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;align-items:center;min-height:72px}
+.te-dice{margin:0;padding:10px 14px;border-radius:16px;background:var(--bg);border:2px solid var(--line);font-size:15px;min-height:44px}
+.te-aviso{margin:0;min-height:20px;font-size:14px;font-weight:600}
+.te-aviso:empty{min-height:0}
+.te-accion{position:sticky;bottom:calc(76px + env(safe-area-inset-bottom));z-index:2}
+.te-fichas{display:flex;flex-direction:column;gap:14px}
+.te-fic h2{margin:0 0 8px;font-size:18px}
+.te-fig-chica{margin:0 0 8px}
+.te-fig-chica svg{width:100%;height:auto;max-width:360px}
+.te-fic.pendiente{opacity:.92}
+.te-cargando{text-align:center}
+/* Ecuaciones (nucleo/ecuacion.js) */
+.ec-frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;font-size:.92em}
+.ec-num{border-bottom:2px solid currentColor;padding:0 3px}
+.ec-den{padding:0 3px}
+.ec-sup,.ec-sub{font-size:.7em}
+.ec-raiz{white-space:nowrap}.ec-bajo{border-top:2px solid currentColor;padding:0 2px}
+.ec-vec{display:inline-block;position:relative}.ec-vec::before{content:'→';position:absolute;left:0;right:0;top:-.85em;font-size:.7em;text-align:center}
+.ec-v{border-radius:4px;padding:0 2px}
+@media (min-width:900px){.te-idea{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:12px 24px}
+  .te-idea>h2,.te-idea>.te-momentos{grid-column:1/-1}.te-fig{grid-row:3/7}.te-accion{position:static}}

@@ -16,6 +16,19 @@ const SALIDA = path.join(RAIZ, 'app', 'datos', 'catalogo.json');
 const SALIDA_PRUEBAS = path.join(RAIZ, 'app', 'datos', 'pruebas.json');
 const ORDEN_AREAS = ['ciencias', 'matematica', 'razonamiento', 'letras'];
 
+// Teoría interactiva (docs/teoria.md): si existe contenido/teoria/<curso>/<unidad>.js, la unidad trae
+// teoria: { archivo, requiere, ideas }. requiere son las piezas del kit que pide el archivo (las lee en Node, sin DOM),
+// para que el service worker las guarde y la teoría abra sin conexión.
+function teoriaDe(u) {
+  const [curso, slug] = u.id.split('.');
+  const rel = `contenido/teoria/${curso}/${slug}.js`;
+  const abs = path.join(RAIZ, rel);
+  if (!fs.existsSync(abs)) return {};
+  delete require.cache[require.resolve(abs)];
+  const def = require(abs);
+  return { teoria: { archivo: `/${rel}`, requiere: def.requiere || [], ideas: (def.ideas || []).length } };
+}
+
 function construir() {
   const leer = p => JSON.parse(fs.readFileSync(p, 'utf8'));
   const universidades = leer(path.join(RAIZ, 'catalogo', 'universidades.json'));
@@ -25,10 +38,10 @@ function construir() {
     .sort((a, b) => ORDEN_AREAS.indexOf(a.area) - ORDEN_AREAS.indexOf(b.area) || a.nombre.localeCompare(b.nombre, 'es'))
     .map(c => ({
       id: c.id, nombre: c.nombre, area: c.area, formato_principal: c.formato_principal,
-      unidades: c.unidades.map(u => ({
+      unidades: c.unidades.map(u => Object.assign({
         id: u.id, nombre: u.nombre, temas: u.temas, universidades: u.universidades,
         potencial_visual: u.potencial_visual, grado: u.grado, plantillas: u.plantillas,
-      })),
+      }, teoriaDe(u))),
     }));
   const dirPl = path.join(RAIZ, 'plantillas');
   const plantillas = {};

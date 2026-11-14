@@ -368,6 +368,12 @@ const SUB_UNIDAD = { teoria: 'Teoría', ejercicios: 'Ejercicios', examen: 'Exám
 const N_EXAMEN = 5;
 const generadoresDe = u => modulosDe(u).filter(p => p.formato === 'predicciones');
 
+// Lo que dice la puerta de la teoría: cuántas ideas tiene y cuántas terminó el alumno.
+function textoTeoria(u) {
+  const st = (est.teoria || {})[u.id], n = u.teoria.ideas || 0;
+  const h = st ? Object.values(st.ideas || {}).filter(i => i.hecha).length : 0;
+  return h ? `${h} de ${n} ideas terminadas` : `${n} ${n === 1 ? 'idea' : 'ideas'} para jugar y entender`;
+}
 function vUnidad(id, sub) {
   const c = cursoDeUnidad(id), u = c && c.unidades.find(x => x.id === id);
   if (!u) return ir('#/cursos');
@@ -387,7 +393,7 @@ function vUnidad(id, sub) {
       <button type="button" class="marca-vista${visto(id) ? ' on' : ''}" data-ver aria-pressed="${visto(id)}"><span class="caja-v" aria-hidden="true">${visto(id) ? '✓' : ''}</span>${visto(id) ? 'Ya la estudié' : 'Marcar como estudiada'}</button>
     </header>
     <nav class="puertas aparece" aria-label="Qué hacer en esta unidad">
-      ${puerta('teoria', 'En preparación')}
+      ${puerta('teoria', u.teoria ? textoTeoria(u) : 'En preparación', false)}
       ${puerta('ejercicios', textoEjercicios(n), n > 0)}
       ${puerta('examen', gens ? (ex ? `Último: ${ex.ultimo.aciertos} de ${ex.ultimo.total}` : `${N_EXAMEN} preguntas tipo examen`) : 'En preparación')}
       ${puerta('pregunta', 'Para tu profesor')}
@@ -403,11 +409,11 @@ const cabUnidad = (c, u, titulo) => `<header class="unidad-cab tinte" style="${I
     <a class="volver" href="#/unidad/${esc(u.id)}" aria-label="Volver a ${esc(u.nombre)}">‹</a>
     <span class="lamina">${dibujo(c, u)}</span><div><p class="sub">${esc(c.nombre)} · ${esc(u.nombre)}</p><h1>${esc(titulo)}</h1></div></header>`;
 
-// Teoría: todavía no hay micro-lecciones. Contrato para enchufarlas: la unidad del catálogo trae `teoria` (ruta a
-// contenido/teoria/<id-unidad>.json) y app/teoria.js define window.Teoria.vista(ctx, unidad); los dos van en MODULOS y
-// en la CASCARA de sw.js. Mientras no existan, esta pantalla dice qué vendrá y manda a lo que sí hay.
+// Teoría (docs/teoria.md): si la unidad del catálogo trae `teoria` ({ archivo, requiere }, lo pone construir-catalogo.js
+// cuando existe contenido/teoria/<curso>/<unidad>.js), app/teoria.js la muestra. Si no, esta pantalla dice qué vendrá
+// y manda a lo que sí hay.
 function vTeoria(c, u) {
-  if (u.teoria && window.Teoria) return Teoria.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, u);
+  if (u.teoria) return cuandoListo(modulo('teoria'), () => Teoria.vista({ $app, cat, est, esc, guardar, registrar, marcarDia, cab: t => cabUnidad(c, u, t) }, u));
   const n = modulosDe(u).length;
   $app.innerHTML = `${cabUnidad(c, u, 'Teoría')}
     <div class="card prep-teoria">${Ilus.gatoDormido('class="prep-gato" width="120"')}
@@ -1052,6 +1058,8 @@ const MODULOS = {
   // Exámenes de una unidad: lo que necesitan los generadores (después se carga el de cada práctica de la unidad).
   examen: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/convencion.js'],
   // Repaso de hoy: lo mismo que el examen más su pantalla (nucleo/repaso.js ya viene con el inicio).
+  // Teoría interactiva: el lector; él mismo carga el kit, nucleo/teoria.js, las piezas y el archivo de la unidad.
+  teoria: ['/app/teoria.js'],
   repaso: ['/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/convencion.js', '/nucleo/lectura.js', '/nucleo/papel-opciones.js', '/app/lectura.js', '/app/repaso.js'],
 };
 const scripts = {};

@@ -15,10 +15,10 @@
 //   3. Solo se bajan los archivos de plantilla que no estaban (plantillas o archivos nuevos).
 //   Al activarse se borran las cachés anteriores. Los archivos copiados se siguen renovando por stale-while-revalidate.
 // Antes cada VERSION nueva volvía a bajar todo (218 archivos, 8 MB sin comprimir); ahora, la cáscara y lo nuevo.
-const VERSION = 'v177';
+const VERSION = 'v178';
 const CACHE = `lab-${VERSION}`;
 const CASCARA = ['/app/', '/app/index.html', '/app/estilos.css', '/app/config.js', '/app/app.js', '/app/manifest.webmanifest',
-  '/app/practica.js', '/app/repaso.js', '/app/prueba.js', '/app/lectura.js', '/app/ilustraciones.js', '/app/dibujos/comun.js', '/app/dibujos/trigonometria.js', '/app/dibujos/aritmetica.js', '/app/dibujos/geometria.js', '/app/dibujos/razonamiento-matematico.js', '/app/dibujos/razonamiento-verbal.js', '/app/dibujos/fisica.js', '/app/dibujos/quimica.js', '/app/dibujos/algebra.js', '/app/datos/catalogo.json', '/app/datos/pruebas.json',
+  '/app/practica.js', '/app/repaso.js', '/app/prueba.js', '/app/lectura.js', '/app/teoria.js', '/nucleo/ecuacion.js', '/nucleo/teoria.js', '/app/ilustraciones.js', '/app/dibujos/comun.js', '/app/dibujos/trigonometria.js', '/app/dibujos/aritmetica.js', '/app/dibujos/geometria.js', '/app/dibujos/razonamiento-matematico.js', '/app/dibujos/razonamiento-verbal.js', '/app/dibujos/fisica.js', '/app/dibujos/quimica.js', '/app/dibujos/algebra.js', '/app/datos/catalogo.json', '/app/datos/pruebas.json',
   '/nucleo/azar.js', '/nucleo/predicciones.js', '/nucleo/medicion.js', '/nucleo/repaso.js', '/nucleo/repaso-tipos.js', '/nucleo/papel-opciones.js', '/nucleo/sesion.js', '/nucleo/pruebas.js', '/nucleo/lectura.js', '/nucleo/celular.js', '/nucleo/jugar.js', '/nucleo/elementos.js', '/nucleo/pegatina.css', '/nucleo/convencion.js', '/nucleo/mascota.js', '/nucleo/mascota.css', '/app/mascotas/registro.json', '/app/mascotas/gato/mascota.json', '/app/mascotas/gato/respaldo.svg', '/nucleo/kit/kit.js', '/nucleo/kit/trazo.js', '/nucleo/kit/linea-tiempo.js', '/nucleo/kit/kit.css', '/nucleo/kit/piezas/barra-porcentaje.js', '/nucleo/kit/piezas/flechas.js', '/nucleo/kit/piezas/triangulo.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/balanza.js', '/app/iconos/icono.svg', '/app/iconos/icono-192.png', '/app/iconos/icono-512.png'];
 
 // Clave de la caché: la dirección sin «?…» (las respuestas se buscan con ignoreSearch).
@@ -41,7 +41,8 @@ self.addEventListener('install', e => {
     // Las escenas salen del catálogo: así una plantilla nueva queda disponible sin tocar este archivo.
     try {
       const cat = await (await fetch('/app/datos/catalogo.json', { cache: 'no-store' })).json();
-      const archivos = [...new Set(Object.values(cat.plantillas).flatMap(p => p.archivos))].filter(u => !CASCARA.includes(u));
+      const teoria = (cat.cursos || []).flatMap(c => c.unidades).filter(u => u.teoria).flatMap(u => [u.teoria.archivo, ...u.teoria.requiere]);
+      const archivos = [...new Set([...Object.values(cat.plantillas).flatMap(p => p.archivos), ...teoria])].filter(u => !CASCARA.includes(u));
       await Promise.all(archivos.map(async u => {
         const r = await anterior(viejas, u);
         if (r) return c.put(clave(u), r);
