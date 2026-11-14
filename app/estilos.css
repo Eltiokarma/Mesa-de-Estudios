@@ -729,8 +729,9 @@ input[type=file]{font:inherit;max-width:100%}
 .te-momentos li.on{border-top-color:var(--brand);color:var(--ink)}
 .te-fig{margin:0;min-height:200px;display:grid;place-items:center}
 .te-fig:empty{display:none}
-/* En el celular la figura se queda a la vista mientras se mueven los controles o se leen los pasos (contigüidad). */
-@media (max-width:899px) and (min-height:600px){.te-fig{position:sticky;top:0;z-index:1;background:var(--card);padding-top:6px;box-shadow:0 8px 8px -8px rgba(45,35,64,.18)}}
+/* En el celular la figura se queda a la vista mientras se mueven los controles o se leen los pasos (contigüidad).
+   Al predecir y en «Ahora tú» no: ahí se lee la pregunta y las opciones, y la figura fija las taparía. */
+@media (max-width:899px) and (min-height:600px){.te-idea:is([data-m=juega],[data-m=mira]) .te-fig{position:sticky;top:0;z-index:1;background:var(--card);padding-top:6px;box-shadow:0 8px 8px -8px rgba(45,35,64,.18)}}
 .te-fig svg{width:100%;height:auto;max-width:480px}
 .te-lectura{min-height:24px;font-variant-numeric:tabular-nums;font-weight:600;text-align:center}
 .te-zona{display:flex;flex-direction:column;gap:10px;min-height:120px}
@@ -747,7 +748,12 @@ input[type=file]{font:inherit;max-width:100%}
 .te-ficha-op{min-height:44px;padding:8px 14px;border-radius:999px;border:2px solid var(--line);background:var(--card);font-weight:600}
 .te-ficha-op[aria-pressed=true]{border-color:var(--brand);background:var(--brand-soft)}
 .te-casos{margin:0;min-height:20px}
-.te-fb{min-height:24px}
+.te-fb{min-height:24px;scroll-margin-bottom:calc(168px + env(safe-area-inset-bottom))}
+.te-ec-grande .ec-sep{display:block;height:6px;overflow:hidden;color:transparent}
+.te-ec-grande .ec-frac,.te-ec-grande .ec-raiz{white-space:nowrap}
+/* Revelar: la figura cambia a lo que pasa de verdad; un fundido corto marca dónde mirar (oficio: atención). */
+@media (prefers-reduced-motion:no-preference){.te-fig.te-revela svg{animation:te-revela 320ms cubic-bezier(0,0,.2,1)}}
+@keyframes te-revela{from{opacity:.25}to{opacity:1}}
 .te-fb p{margin:0 0 8px}
 .te-sol{font-weight:600}
 .te-ec{font-size:18px;margin:4px 0;font-variant-numeric:tabular-nums;overflow-x:auto}

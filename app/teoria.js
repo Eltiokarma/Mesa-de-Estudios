@@ -121,6 +121,10 @@
       if (texto !== undefined) dice.textContent = texto;
     };
     const decir = t => { aviso.textContent = t || ''; };
+    // Lo que dice el compañero cuando la unidad no trae su propia línea (su voz de la guía, nucleo/teoria.js).
+    const voz = k => (per.voces && per.voces[k]) || '';
+    // La respuesta a lo que el alumno hizo tiene que quedar a la vista, no debajo de la barra fija de la acción.
+    const mostrar = el => requestAnimationFrame(() => el.scrollIntoView({ block: 'nearest', behavior: reducido() ? 'auto' : 'smooth' }));
     const marcarMomento = m => {
       raiz.querySelectorAll('.te-momentos li').forEach(li => {
         const k = T.MOMENTOS.indexOf(li.dataset.m), j = T.MOMENTOS.indexOf(m);
@@ -129,7 +133,7 @@
       });
     };
     const ir = m => {
-      si.momento = m; ctx.guardar(); decir(''); lectura.textContent = '';
+      si.momento = m; ctx.guardar(); decir(''); lectura.textContent = ''; raiz.dataset.m = m;
       if (lt) { lt.destruir(); lt = null; }
       marcarMomento(m);
       ({ juega, predice, mira, regla, 'ahora-tu': ahoraTu })[m]();
@@ -221,7 +225,7 @@
     // 2. Predice: una pregunta neutra; al comprobar, la figura muestra lo que pasa de verdad.
     function predice() {
       const p = idea.predice;
-      actuar('prediccion', p.voz || 'Antes de mirar, ¿qué crees que pasa?');
+      actuar('prediccion', p.voz || voz('prediccion'));
       dibujar(p.dibujo, p.pieza);
       const ya = si.prediccion;
       zona.innerHTML = `<h3 class="te-preg" tabindex="-1">${E.html(p.pregunta)}</h3>${opcionesHTML(p.opciones)}<p class="te-fb" aria-live="polite"></p>`;
@@ -230,9 +234,11 @@
         const o = p.opciones.find(x => x.id === elegida);
         marcar(p.opciones, elegida);
         dibujar(p.revelar, p.pieza);
+        if (!ya) { fig.classList.remove('te-revela'); void fig.offsetWidth; fig.classList.add('te-revela'); }
         const fb = zona.querySelector('.te-fb');
-        if (o.correcta) { fb.innerHTML = E.html(p.coincide || 'Coincide con lo que pasa.'); actuar('coincide', 'Tu predicción coincide. Veamos por qué.'); }
-        else { fb.innerHTML = `${E.html(o.siFuera)}`; actuar('no-coincide', p.noCoincide || 'No coincide. Miremos qué cambió.'); }
+        if (o.correcta) { fb.innerHTML = E.html(p.coincide || 'Coincide con lo que pasa.'); actuar('coincide', voz('coincide')); }
+        else { fb.innerHTML = `${E.html(o.siFuera)}`; actuar('no-coincide', p.noCoincide || voz('noCoincide')); }
+        mostrar(fb);
         sig.textContent = 'Ver por qué';
         sig.onclick = () => ir('mira');
       };
@@ -251,7 +257,7 @@
     // 3. Mira: la explicación es una línea de tiempo de la figura (la del kit, la misma de la práctica).
     function mira() {
       const m = idea.mira;
-      actuar('mira', m.voz || 'Avanza paso a paso. Puedes volver atrás.');
+      actuar('mira', m.voz || voz('mira'));
       zona.innerHTML = `<h3 class="lector" tabindex="-1">Mira</h3><div class="te-tiempo"></div><div class="te-paso" aria-live="polite"></div>`;
       const P = pieza(m.pieza);
       $('#te-alt').textContent = P.alt(m.datos);
@@ -266,7 +272,7 @@
     // 4. La regla: texto corto, ecuación con el hilo de color y la condición que la hace verdadera.
     function regla() {
       const r = idea.regla, m = idea.mira;
-      actuar('regla', r.voz || 'Esta es la regla. Fíjate cuándo vale.');
+      actuar('regla', r.voz || voz('regla'));
       const P = pieza(m.pieza);
       fig.innerHTML = P.dibujar(m.datos, Object.assign({}, m.base || {}, m.pasos[m.pasos.length - 1].estado || {}));
       $('#te-alt').textContent = P.alt(m.datos);
@@ -282,7 +288,7 @@
       const nuevo = () => {
         caso = a.generar(semilla);
         const ops = T.barajar(caso.opciones, semilla + 7);
-        actuar('ahora-tu', a.voz || 'Un caso nuevo, sin el juego.');
+        actuar('ahora-tu', a.voz || voz('ahora'));
         if (caso.dibujo) dibujar(caso.dibujo, a.pieza); else { fig.innerHTML = ''; $('#te-alt').textContent = ''; }
         zona.innerHTML = `<h3 class="te-preg" tabindex="-1">${E.html(caso.pregunta)}</h3>${opcionesHTML(ops, true)}<div class="te-fb" aria-live="polite"></div>`;
         const cual = elegir();
@@ -295,19 +301,20 @@
           if (caso.solucion.dibujo) dibujar(caso.solucion.dibujo, a.pieza);
           const fb = zona.querySelector('.te-fb');
           fb.innerHTML = `${o && !bien ? `<p>${E.html(o.siFuera)}</p>` : ''}<p class="te-sol">${E.html(caso.solucion.texto)}</p>${caso.solucion.ecuacion ? `<p class="te-ec">${E.html(caso.solucion.ecuacion)}</p>` : ''}
-            <button type="button" class="btn borde te-otro">Otro caso</button>`;
-          actuar(e === 'nose' ? 'ayuda' : bien ? 'acierto' : 'error', bien ? 'Bien resuelto.' : e === 'nose' ? 'Así se resuelve. Prueba otro caso.' : 'Revisa la solución y prueba otro caso.');
+            ${si.hecha || bien ? '<button type="button" class="btn borde te-otro">Otro caso</button>' : ''}`;
+          actuar(e === 'nose' ? 'ayuda' : bien ? 'acierto' : 'error', voz(e === 'nose' ? 'nose' : bien ? 'acierto' : 'error'));
+          mostrar(fb);
           evento('ahora-tu', { opcion: e, correcta: bien, error: (o && o.error) || null, nose: e === 'nose', semilla });
           si.semilla = ++semilla;
           if (bien) si.aciertos = (si.aciertos || 0) + 1;
           if (bien && !si.hecha) { si.hecha = true; ctx.marcarDia(); }
           ctx.guardar();
-          fb.querySelector('.te-otro').onclick = nuevo;
+          if (fb.querySelector('.te-otro')) fb.querySelector('.te-otro').onclick = nuevo;
           const k = ideas.indexOf(idea), siguiente = ideas[k + 1];
           if (si.hecha) {
             sig.textContent = siguiente ? 'Siguiente idea' : 'Ver la ficha de repaso';
             sig.onclick = () => { location.hash = `#/unidad/${u.id}/teoria/${siguiente ? siguiente.id : 'ficha'}`; };
-            if (!siguiente && ideas.every(i => hecha(st, i.id))) { actuar('fin', 'Terminaste las ideas de esta unidad.'); evento('fin', {}); }
+            if (!siguiente && ideas.every(i => hecha(st, i.id))) { actuar('fin', voz('fin')); evento('fin', {}); }
           } else { sig.textContent = 'Otro caso'; sig.onclick = nuevo; }
         };
       };

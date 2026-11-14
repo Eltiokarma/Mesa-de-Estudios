@@ -38,3 +38,13 @@ test('el catálogo construido lleva la teoría de cada unidad que la tiene', () 
   const conTeoria = cat.cursos.flatMap(c => c.unidades).filter(u => u.teoria).map(u => u.id).sort();
   assert.deepEqual(conTeoria, archivos.map(([c, f]) => `${c}.${f.replace(/\.js$/, '')}`).sort(), 'corre npm run catalogo');
 });
+
+test('cada compañero tiene sus líneas por defecto, dentro del tope de la voz', () => {
+  const claves = ['prediccion', 'coincide', 'noCoincide', 'mira', 'regla', 'ahora', 'acierto', 'error', 'nose', 'fin'];
+  for (const [curso, p] of Object.entries(Teoria.PERSONAJES)) {
+    for (const k of claves) {
+      assert.ok(p.voces && p.voces[k], `${curso}: falta la voz «${k}»`);
+      assert.ok(Teoria.palabras(p.voces[k]) <= Teoria.PRESUPUESTO.voz, `${curso}.${k}: ${p.voces[k]}`);
+    }
+  }
+});

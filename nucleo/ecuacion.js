@@ -49,6 +49,8 @@
 
   function html(partes) {
     return lista(partes).map(p => {
+      // Un separador suelto con espacios a los dos lados ('   ·   ') junta dos relaciones: en la regla grande, cada una va en su línea.
+      if (typeof p === 'string' && /^\s{2,}[·;]\s{2,}$/.test(p)) return '<span class="ec-sep"> · </span>';
       if (typeof p === 'string' || typeof p === 'number') return esc(menos(p));
       if (Array.isArray(p)) return html(p);
       if ('v' in p) return `<span class="var ${esc(p.v)} ec-v${p.largo ? ' largo' : ''}">${esc(p.t)}</span>`;
