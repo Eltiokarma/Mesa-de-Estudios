@@ -48,6 +48,11 @@
     return ops.slice(0, n);
   }
   const LETRAS = 'ABCDEFGHIJ';
+  // Gesto directo (docs/teoria.md §4b): la manija vive en el viewBox de geo-figura; aPlano la vuelve coordenadas del
+  // problema y el lector ajusta cada valor al paso y al rango de su control.
+  const enPantalla = (datos, p) => G.aPantalla(datos, p);
+  const alPlano = (datos, q) => G.aPlano(datos, q);
+  const sep = '   ·   ';
   // Polígono convexo de n lados, irregular a propósito (no prototípico), siempre igual para el mismo n.
   const vertices = n => Array.from({ length: n }, (_, k) => U.polar([0, 0], 3 + 0.3 * Math.cos(k * 1.7 + n), 100 + 360 * k / n + 6 * Math.sin(k * 2.3 + n)));
   const poli = (n, o = {}) => {
@@ -81,6 +86,7 @@
   // ---------- Idea 1: suma de ángulos interiores y exteriores ----------
   // Cambia: el número de lados n · Permanece: la triangulación desde A · Progresa: los triángulos (n − 2) ·
   // Se reserva: el giro completo de los exteriores · Debe verse: cada triángulo aporta 180°; los exteriores, una vuelta.
+  // Sin arrastre: n cuenta lados, y no hay un objeto de la figura que al moverse agregue un lado; queda con − y +.
   const sumaIdea = {
     id: 'suma-de-angulos',
     titulo: 'Triángulos dentro del polígono',
@@ -91,7 +97,7 @@
       voz: 'Cambia n y cuenta triángulos. Compara con n.',
       controles: [{ id: 'n', etiqueta: 'n', min: 3, max: 10, paso: 1, inicio: 5, unidad: 'lados', decimales: 0, color: 'c-o' }],
       dibujo: v => ({ datos: poli(v.n, { triangulos: true }), estado: {} }),
-      lectura: v => [`${v.n - 2} triángulos · suma interior = ${(v.n - 2) * 180}°`],
+      lectura: v => [`${v.n - 2} triángulos`, sep, `suma interior = ${(v.n - 2) * 180}°`],
       minimo: 4,
     },
     predice: {
@@ -119,7 +125,7 @@
     },
     regla: {
       texto: 'Un polígono de n lados se parte en n − 2 triángulos: sus ángulos interiores suman (n − 2) · 180°. Un exterior por vértice suma siempre 360°.',
-      ecuacion: [{ sub: ['S', 'i'] }, ' = (', n_, ' − 2) · 180°   ·   ', { sub: ['S', 'e'] }, ' = 360°'],
+      ecuacion: [{ sub: ['S', 'i'] }, ' = ', { llave: ['(', n_, ' − 2)'], nota: 'triángulos', color: 'c-o' }, ' · 180°', sep, { sub: ['S', 'e'] }, ' = 360°'],
       condicion: 'el polígono es convexo y se toma un solo ángulo exterior en cada vértice.',
       voz: 'Los triángulos explican el número; no hace falta memorizarlo.',
     },
@@ -181,6 +187,10 @@
         { id: 'v', etiqueta: 'Vértice', min: 0, max: 3, paso: 1, inicio: 0, unidad: '', decimales: 0 },
       ],
       dibujo: v => ({ datos: poli(v.n, { diagDe: v.v }), estado: {} }),
+      // Se agarra el vértice de partida y se lleva a otro (A, B, C o D): la manija salta al vértice más cercano.
+      arrastres: [{ id: 'vertice-partida', etiqueta: 'vértice de partida', color: 'c-o',
+        donde: v => enPantalla(poli(v.n, { diagDe: v.v }), vertices(v.n)[v.v]),
+        mover: (q, v) => { const z = alPlano(poli(v.n, { diagDe: v.v }), q), V = vertices(v.n).slice(0, 4); let k = 0; V.forEach((p, i) => { if (U.dist(p, z) < U.dist(V[k], z)) k = i; }); return { v: k }; } }],
       lectura: v => [`Desde ${LETRAS[v.v]}: ${v.n - 3} diagonales`],
       minimo: 4,
     },
@@ -208,7 +218,7 @@
     },
     regla: {
       texto: 'De cada vértice salen n − 3 diagonales. Como cada diagonal tiene dos extremos, el total es n(n − 3)/2.',
-      ecuacion: ['D = ', { frac: [[n_, '(', n_, ' − 3)'], '2'] }],
+      ecuacion: ['D = ', { frac: [{ llave: [n_, '(', n_, ' − 3)'], nota: 'desde cada vértice', color: 'c-o', arriba: true }, '2'] }],
       condicion: 'se excluyen el propio vértice y sus dos vecinos, porque esos segmentos son lados.',
       voz: 'Dos extremos por diagonal: por eso se divide entre 2.',
     },
@@ -241,6 +251,12 @@
   // ---------- Idea 3: la familia de los paralelogramos ----------
   // Cambia: el ángulo y el lado b · Permanece: lados opuestos paralelos · Progresa: el nombre que se gana con cada condición ·
   // Se reserva: el cuadrado girado · Debe verse: un cuadrado cumple la definición de rectángulo y la de rombo.
+  // D a partir del punto de la pantalla en para(t, b) sin giro: D − (2,5; b/2) = b(cos t, sen t − 1/2). Con w = z + (2,5; 0),
+  // b sale de (3/4)b² − w_y·b − |w|² = 0 y t, de atan2. Así la manija cae exacta donde dicen t y b.
+  const desdeD = z => {
+    const w = [z[0] + 2.5, z[1]], b = (w[1] + Math.sqrt(w[1] * w[1] + 3 * (w[0] * w[0] + w[1] * w[1]))) / 1.5;
+    return { b, t: U.grados(Math.atan2(w[1] + b / 2, w[0])) };
+  };
   const nombrePar = (t, b) => (t === 90 && b === 5 ? 'cuadrado' : t === 90 ? 'rectángulo' : b === 5 ? 'rombo' : 'paralelogramo');
   const para = (t, b, o = {}) => {
     const A = [0, 0], B = [5, 0], D = U.polar(A, b, t), C = [B[0] + D[0], D[1]];
@@ -277,7 +293,11 @@
         { id: 'b', etiqueta: 'b', min: 3, max: 6, paso: 1, inicio: 3, unidad: '', decimales: 0, color: 'c-i' },
       ],
       dibujo: v => ({ datos: para(v.t, v.b, { lados: v.b === 5, rectos: v.t === 90 }), estado: {} }),
-      lectura: v => [`lados 5 y `, { v: 'c-i', t: `${v.b}` }, ` · ${nombrePar(v.t, v.b)}`],
+      // Se agarra el vértice D: girarlo cambia el ángulo A y alejarlo cambia el lado b (la figura queda centrada).
+      arrastres: [{ id: 'vertice-d', etiqueta: 'vértice D', color: 'c-i',
+        donde: v => { const D = U.polar([0, 0], v.b, v.t); return enPantalla(para(v.t, v.b), [D[0] - 2.5, D[1] - v.b / 2]); },
+        mover: (q, v) => desdeD(alPlano(para(v.t, v.b), q)) }],
+      lectura: v => [`lados 5 y `, { v: 'c-i', t: `${v.b}` }, sep, nombrePar(v.t, v.b)],
       minimo: 4,
     },
     predice: {
@@ -296,8 +316,8 @@
       datos: para(90, 5, { giro: 20, lados: true, rectos: true, diagIguales: true, perp: true, pasos: { diag: 1, rect: 2, perp: 3 }, alt: 'Cuadrado: paralelogramo con ángulos rectos y lados iguales; sus diagonales son iguales y perpendiculares' }),
       voz: 'Cada condición agrega una propiedad. Ninguna quita las anteriores.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'Paralelogramo: dos pares de lados paralelos.', ecuacion: ['AB ∥ DC · AD ∥ BC'] },
-        { estado: { corte: 1 }, texto: 'En todo paralelogramo, las diagonales se cortan en su punto medio.', ecuacion: ['AO = OC · BO = OD'] },
+        { estado: { corte: 0 }, texto: 'Paralelogramo: dos pares de lados paralelos.', ecuacion: ['AB ∥ DC', sep, 'AD ∥ BC'] },
+        { estado: { corte: 1 }, texto: 'En todo paralelogramo, las diagonales se cortan en su punto medio.', ecuacion: ['AO = OC', sep, 'BO = OD'] },
         { estado: { corte: 2 }, texto: 'Con cuatro ángulos rectos es rectángulo: diagonales iguales.', ecuacion: ['AC = BD'] },
         { estado: { corte: 3 }, texto: 'Con cuatro lados iguales es rombo: diagonales perpendiculares.', ecuacion: ['AC ⟂ BD'] },
         { estado: { corte: 3 }, texto: 'Con las dos condiciones a la vez, es cuadrado.', ecuacion: ['cuadrado = rectángulo y rombo'] },
@@ -376,7 +396,12 @@
         { id: 'd', etiqueta: 'b corrida', min: 0, max: 2, paso: 1, inicio: 1, unidad: '', decimales: 0 },
       ],
       dibujo: v => ({ datos: trap(v.b, v.d * (10 - v.b) / 2), estado: {} }),
-      lectura: v => [{ v: 'c-o', t: 'MN' }, ` = ${f((10 + v.b) / 2)} · `, { frac: [['10 + ', { v: 'c-i', t: `${v.b}` }], '2'] }, ` = ${f((10 + v.b) / 2)}`],
+      // Se agarra el centro de la base menor y se corre (izquierda, centro, derecha). Su largo b queda con − y +: una
+      // segunda manija en un extremo se encimaba con esta cuando b = 2. La mesa «trapecio-libre» estira los dos extremos.
+      arrastres: [{ id: 'base-menor', etiqueta: 'base menor', color: 'c-i',
+        donde: v => enPantalla(trap(v.b, v.d * (10 - v.b) / 2), [v.d * (10 - v.b) / 2 + v.b / 2, 4]),
+        mover: (q, v) => ({ d: (alPlano(trap(v.b, v.d * (10 - v.b) / 2), q)[0] - v.b / 2) / ((10 - v.b) / 2) }) }],
+      lectura: v => [{ v: 'c-o', t: 'MN' }, ' = ', { frac: [['10 + ', { v: 'c-i', t: `${v.b}` }], '2'] }, ` = ${f((10 + v.b) / 2)}`],
       minimo: 4,
     },
     predice: {
@@ -404,7 +429,7 @@
     },
     regla: {
       texto: 'La mediana de un trapecio es paralela a las bases y mide su semisuma. El tramo entre los puntos medios de las diagonales mide su semidiferencia.',
-      ecuacion: [{ v: 'c-o', t: 'MN' }, ' = ', { frac: [[{ v: 'c-d', t: 'B' }, ' + ', { v: 'c-i', t: 'b' }], '2'] }, '   ·   ', { v: 'c-h', t: 'PQ' }, ' = ', { frac: [[{ v: 'c-d', t: 'B' }, ' − ', { v: 'c-i', t: 'b' }], '2'] }],
+      ecuacion: [{ v: 'c-o', t: 'MN' }, ' = ', { llave: [{ frac: [[{ v: 'c-d', t: 'B' }, ' + ', { v: 'c-i', t: 'b' }], '2'] }], nota: 'semisuma', color: 'c-o' }, sep, { v: 'c-h', t: 'PQ' }, ' = ', { llave: [{ frac: [[{ v: 'c-d', t: 'B' }, ' − ', { v: 'c-i', t: 'b' }], '2'] }], nota: 'semidiferencia', color: 'c-h' }],
       condicion: 'el trapecio tiene exactamente un par de lados paralelos (las bases) y M, N son puntos medios de los otros dos.',
       voz: 'Todo sale de la base media del triángulo.',
     },
@@ -448,6 +473,7 @@
   // ---------- Idea 5: trapezoides y el paralelogramo de los puntos medios ----------
   // Cambia: el vértice D del cuadrilátero · Permanece: A, B y C · Progresa: el cuadrilátero de puntos medios ·
   // Se reserva: su perímetro = suma de diagonales · Debe verse: cada lado es base media de un triángulo de diagonal.
+  const medios = (...V) => V.map((p, k) => U.medio(p, V[(k + 1) % 4]));
   const varig = (dx, dy, o = {}) => {
     const A = [0, 0], B = [8, -0.6], C = [7, 4.6], D = [dx, dy];
     const M = [A, B, C, D].map((p, k, l) => U.medio(p, l[(k + 1) % 4]));
@@ -477,8 +503,12 @@
         { id: 'dx', etiqueta: 'D a lo ancho', min: 0, max: 4, paso: 1, inicio: 1, unidad: '', decimales: 0, color: 'c-o' },
         { id: 'dy', etiqueta: 'D a lo alto', min: 3, max: 6, paso: 1, inicio: 5, unidad: '', decimales: 0, color: 'c-o' },
       ],
-      dibujo: v => ({ datos: varig(v.dx, v.dy), estado: {} }),
-      lectura: v => ['adentro: un paralelogramo · ángulos de ABCD: 360°'],
+      dibujo: v => ({ datos: varig(v.dx, v.dy, { letras: true }), estado: {} }),
+      // Se agarra el vértice D y se deforma el cuadrilátero: A, B y C quedan quietos.
+      arrastres: [{ id: 'vertice-d', etiqueta: 'vértice D', color: 'c-o',
+        donde: v => enPantalla(varig(v.dx, v.dy, { letras: true }), [v.dx, v.dy]),
+        mover: (q, v) => { const z = alPlano(varig(v.dx, v.dy, { letras: true }), q); return { dx: z[0], dy: z[1] }; } }],
+      lectura: v => { const M = medios([0, 0], [8, -0.6], [7, 4.6], [v.dx, v.dy]); return [`MN = PQ = ${f(U.dist(M[0], M[1]), 2)}`, sep, `NP = QM = ${f(U.dist(M[1], M[2]), 2)}`]; },
       minimo: 4,
     },
     predice: {
@@ -499,14 +529,14 @@
       voz: 'Cada diagonal parte el cuadrilátero en dos triángulos.',
       pasos: [
         { estado: { corte: 1 }, texto: 'En el triángulo ABC, MN es base media: paralela a AC y mitad.', ecuacion: ['MN = ', { frac: ['AC', '2'] }] },
-        { estado: { corte: 2 }, texto: 'En el triángulo ACD, PQ también es base media de AC.', ecuacion: ['PQ = ', { frac: ['AC', '2'] }, ' · PQ ∥ MN'] },
+        { estado: { corte: 2 }, texto: 'En el triángulo ACD, PQ también es base media de AC.', ecuacion: ['PQ = ', { frac: ['AC', '2'] }, sep, 'PQ ∥ MN'] },
         { estado: { corte: 3 }, texto: 'Con la diagonal BD pasa lo mismo: NP = QM = BD/2.', ecuacion: ['NP = QM = ', { frac: ['BD', '2'] }] },
-        { estado: { corte: 3 }, texto: 'Lados opuestos paralelos: paralelogramo. Su perímetro, AC + BD.', ecuacion: ['perímetro = AC + BD'] },
+        { estado: { corte: 3 }, texto: 'Lados opuestos paralelos: paralelogramo. Su perímetro, AC + BD.', ecuacion: ['perímetro = ', { llave: ['AC + BD'], nota: 'las diagonales', color: 'c-d' }] },
       ],
     },
     regla: {
       texto: 'En cualquier cuadrilátero, los puntos medios de los lados forman un paralelogramo cuyo perímetro es la suma de las diagonales. Sus ángulos interiores suman 360°.',
-      ecuacion: ['perímetro = AC + BD   ·   A + B + C + D = 360°'],
+      ecuacion: ['perímetro = ', { llave: ['AC + BD'], nota: 'las diagonales', color: 'c-d' }, sep, 'A + B + C + D = 360°'],
       condicion: 'el cuadrilátero es trapezoide, trapecio o paralelogramo: solo se usa la base media de los triángulos de cada diagonal.',
       voz: 'Una diagonal convierte el problema en dos triángulos conocidos.',
     },
@@ -541,9 +571,137 @@
     },
   };
 
+  // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Mesa 1, más rica que la idea 5: se mueven C y D por todo el plano, así ABCD puede ser cóncavo o cruzado (lo que la
+  // idea no deja probar), y el cuadrilátero de puntos medios sigue siendo paralelogramo.
+  const tipoCuad = V => {
+    const cruz = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+    const corta = (p, q, r2, t) => cruz(p, q, r2) * cruz(p, q, t) < 0 && cruz(r2, t, p) * cruz(r2, t, q) < 0;
+    if (corta(V[0], V[1], V[2], V[3]) || corta(V[1], V[2], V[3], V[0])) return 'cruzado';
+    const sg = V.map((p, k) => Math.sign(cruz(p, V[(k + 1) % 4], V[(k + 2) % 4])));
+    return sg.every(x => x === sg[0]) ? 'convexo' : 'cóncavo';
+  };
+  const cuadLibre = (cx, cy, dx, dy) => {
+    const V = [[0, 0], [8, 0], [cx, cy], [dx, dy]], M = medios(...V);
+    return {
+      alt: `Cuadrilátero ${tipoCuad(V)} ABCD: sus puntos medios forman un paralelogramo de lados ${f(U.dist(M[0], M[1]), 2)} y ${f(U.dist(M[1], M[2]), 2)}`,
+      vista: { x: [-2.6, 10.6], y: [-1.4, 7.4] },
+      puntos: [...V.map((p, k) => ({ id: 'ABCD'[k], x: p[0], y: p[1], rotulo: 'ABCD'[k], lado: [-135, -45, 45, 135][k] })),
+        ...M.map((p, k) => ({ id: 'M' + k, x: p[0], y: p[1], rotulo: 'MNPQ'[k], color: 'o', lado: [-90, 0, 90, 180][k] }))],
+      regiones: [{ puntos: ['M0', 'M1', 'M2', 'M3'], color: 'o', opacidad: 0.16 }],
+      segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'D' }, { de: 'D', a: 'A' },
+        { de: 'A', a: 'C', color: 'd', grosor: 'fino', discontinua: true }, { de: 'B', a: 'D', color: 'i', grosor: 'fino', discontinua: true },
+        { de: 'M0', a: 'M1', color: 'd', paralela: 1 }, { de: 'M2', a: 'M3', color: 'd', paralela: 1 }, { de: 'M1', a: 'M2', color: 'i', paralela: 2 }, { de: 'M3', a: 'M0', color: 'i', paralela: 2 }],
+    };
+  };
+  const mesaCuad = {
+    id: 'cuadrilatero-libre', titulo: 'Cóncavo, cruzado o convexo', pieza: 'geo-figura',
+    consigna: 'Arrastra C y D a cualquier lado: hasta un cuadrilátero cóncavo o cruzado. Mira si adentro sigue el paralelogramo.',
+    controles: [
+      { id: 'cx', etiqueta: 'C a lo ancho', min: -2, max: 10, paso: 0.5, inicio: 7, unidad: '', decimales: 1 },
+      { id: 'cy', etiqueta: 'C a lo alto', min: 0.5, max: 7, paso: 0.5, inicio: 5, unidad: '', decimales: 1 },
+      { id: 'dx', etiqueta: 'D a lo ancho', min: -2, max: 10, paso: 0.5, inicio: 1, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'dy', etiqueta: 'D a lo alto', min: 0.5, max: 7, paso: 0.5, inicio: 5.5, unidad: '', decimales: 1, color: 'c-o' },
+    ],
+    dibujo: v => ({ datos: cuadLibre(v.cx, v.cy, v.dx, v.dy), estado: {} }),
+    arrastres: [
+      { id: 'vertice-c', etiqueta: 'vértice C', color: 'c-i',
+        donde: v => enPantalla(cuadLibre(v.cx, v.cy, v.dx, v.dy), [v.cx, v.cy]),
+        mover: (q, v) => { const z = alPlano(cuadLibre(v.cx, v.cy, v.dx, v.dy), q); return { cx: z[0], cy: z[1] }; } },
+      { id: 'vertice-d', etiqueta: 'vértice D', color: 'c-o',
+        donde: v => enPantalla(cuadLibre(v.cx, v.cy, v.dx, v.dy), [v.dx, v.dy]),
+        mover: (q, v) => { const z = alPlano(cuadLibre(v.cx, v.cy, v.dx, v.dy), q); return { dx: z[0], dy: z[1] }; } },
+    ],
+    lectura: v => {
+      const V = [[0, 0], [8, 0], [v.cx, v.cy], [v.dx, v.dy]], M = medios(...V);
+      return [`${tipoCuad(V)}`, sep, `MN = PQ = ${f(U.dist(M[0], M[1]), 2)}`, sep, `NP = QM = ${f(U.dist(M[1], M[2]), 2)}`];
+    },
+  };
+
+  // Mesa 2, más rica que la idea 3: el ángulo va de 5° en 5° y los dos lados se cambian; se dibujan las diagonales con
+  // su largo y el ángulo entre ellas, para ver cuándo son iguales (rectángulo) y cuándo perpendiculares (rombo).
+  const nombreLibre = (t, a, b) => (t === 90 && a === b ? 'cuadrado' : t === 90 ? 'rectángulo' : a === b ? 'rombo' : 'paralelogramo');
+  const diagonalesDe = (t, a, b) => {
+    const D = U.polar([0, 0], b, t), C = [a + D[0], D[1]], O = U.medio([0, 0], C);
+    return { D, C, O, ac: Math.hypot(...C), bd: U.dist([a, 0], D), cruce: U.angulo(O, [0, 0], D) };
+  };
+  const paraLibre = (t, a, b) => {
+    const { D, C, O, ac, bd, cruce } = diagonalesDe(t, a, b);
+    return {
+      alt: `${nombreLibre(t, a, b)} de lados ${f(a)} y ${f(b)} con ángulo de ${t}°: diagonales de ${f(ac, 2)} y ${f(bd, 2)} que se cruzan a ${f(cruce, 0)}°`,
+      vista: { x: [-4.2, 9.2], y: [-0.9, 5.6] },
+      puntos: [{ id: 'A', x: 0, y: 0, rotulo: 'A', lado: -135 }, { id: 'B', x: a, y: 0, rotulo: 'B', lado: -45 }, { id: 'C', x: C[0], y: C[1], rotulo: 'C', lado: 45 }, { id: 'D', x: D[0], y: D[1], rotulo: 'D', lado: 135 },
+        { id: 'O', x: O[0], y: O[1], sinPunto: true }],
+      regiones: [{ puntos: ['A', 'B', 'C', 'D'], color: 'i', opacidad: 0.08 }],
+      segmentos: [{ de: 'A', a: 'B', color: 'o', grosor: 'variable', paralela: 1 }, { de: 'D', a: 'C', color: 'o', grosor: 'variable', paralela: 1 },
+        { de: 'A', a: 'D', color: 'i', grosor: 'variable', paralela: 2 }, { de: 'B', a: 'C', color: 'i', grosor: 'variable', paralela: 2 },
+        { de: 'A', a: 'C', color: 'h', grosor: 'fino' }, { de: 'B', a: 'D', color: 'h', grosor: 'fino' }],
+      angulos: [{ en: 'A', de: 'B', a: 'D', color: 'd', texto: `${t}°` }, { en: 'O', de: 'C', a: 'D', color: 'h', radio: 16, texto: `${f(180 - cruce, 0)}°` }],
+    };
+  };
+  const mesaPara = {
+    id: 'paralelogramo-libre', titulo: 'Diagonales del paralelogramo', pieza: 'geo-figura',
+    consigna: 'Arrastra D y B. Busca diagonales iguales, luego un cruce de 90°, luego las dos cosas. Lee el nombre que gana.',
+    controles: [
+      { id: 't', etiqueta: '∠A', min: 45, max: 135, paso: 5, inicio: 60, unidad: '°', decimales: 0, color: 'c-d' },
+      { id: 'a', etiqueta: 'Lado AB', min: 2, max: 5, paso: 0.5, inicio: 4.5, unidad: '', decimales: 1, color: 'c-o' },
+      { id: 'b', etiqueta: 'Lado AD', min: 2, max: 5, paso: 0.5, inicio: 3, unidad: '', decimales: 1, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: paraLibre(v.t, v.a, v.b), estado: {} }),
+    arrastres: [
+      { id: 'vertice-d', etiqueta: 'vértice D', color: 'c-i',
+        donde: v => enPantalla(paraLibre(v.t, v.a, v.b), U.polar([0, 0], v.b, v.t)),
+        mover: (q, v) => { const z = alPlano(paraLibre(v.t, v.a, v.b), q); return { t: U.grados(Math.atan2(Math.max(z[1], 0), z[0])), b: Math.hypot(z[0], z[1]) }; } },
+      { id: 'vertice-b', etiqueta: 'vértice B', color: 'c-o',
+        donde: v => enPantalla(paraLibre(v.t, v.a, v.b), [v.a, 0]),
+        mover: (q, v) => ({ a: alPlano(paraLibre(v.t, v.a, v.b), q)[0] }) },
+    ],
+    lectura: v => {
+      const { ac, bd } = diagonalesDe(v.t, v.a, v.b);
+      // AC − BD = 0 dice «diagonales iguales» sin comparar dos números; el cruce va escrito en la figura, en O.
+      return [nombreLibre(v.t, v.a, v.b), sep, `AC − BD = ${f(Math.abs(ac - bd) < 1e-9 ? 0 : ac - bd, 2)}`];
+    },
+  };
+
+  // Mesa 3, más rica que la idea 4: D se mueve libre (posición y altura) y C estira la base menor, que puede salirse
+  // por encima de B. La lectura da la mediana y el tramo central a la vez.
+  const trapLibre = (dx, h, b) => {
+    const A = [0, 0], Bb = [10, 0], D = [dx, h], C = [dx + b, h];
+    const M = U.medio(A, D), N = U.medio(Bb, C), P = U.medio(A, C), Q = U.medio(Bb, D);
+    return {
+      alt: `Trapecio de bases 10 y ${f(b)} y altura ${f(h)}: la mediana mide ${f((10 + b) / 2)} y el tramo entre las diagonales, ${f((10 - b) / 2)}`,
+      vista: { x: [-3.6, 14.6], y: [-0.8, 6.6] },
+      puntos: [{ id: 'A', x: 0, y: 0, rotulo: 'A', lado: -120 }, { id: 'B', x: 10, y: 0, rotulo: 'B', lado: -60 }, { id: 'C', x: C[0], y: h, rotulo: 'C', lado: 60 }, { id: 'D', x: dx, y: h, rotulo: 'D', lado: 120 },
+        { id: 'M', x: M[0], y: M[1], rotulo: 'M', lado: 180 }, { id: 'N', x: N[0], y: N[1], rotulo: 'N', lado: 0 }, { id: 'P', x: P[0], y: P[1], color: 'h' }, { id: 'Q', x: Q[0], y: Q[1], color: 'h' }],
+      regiones: [{ puntos: ['A', 'B', 'C', 'D'], color: 'i', opacidad: 0.08 }],
+      segmentos: [{ de: 'A', a: 'B', color: 'd', grosor: 'variable', texto: 'B = 10', paralela: 1 }, { de: 'D', a: 'C', color: 'i', grosor: 'variable', paralela: 1 },
+        { de: 'B', a: 'C' }, { de: 'A', a: 'D' }, { de: 'A', a: 'C', grosor: 'fino', discontinua: true }, { de: 'B', a: 'D', grosor: 'fino', discontinua: true },
+        { de: 'M', a: 'N', color: 'o', grosor: 'fino' }, { de: 'P', a: 'Q', color: 'h', grosor: 'variable' }],
+    };
+  };
+  const mesaTrap = {
+    id: 'trapecio-libre', titulo: 'Trapecio estirable', pieza: 'geo-figura',
+    consigna: 'Arrastra D para correr y subir la base menor; arrastra C para estirarla. Mira la mediana y el tramo rojo.',
+    controles: [
+      { id: 'dx', etiqueta: 'D a lo ancho', min: -3, max: 6, paso: 0.5, inicio: 2, unidad: '', decimales: 1 },
+      { id: 'h', etiqueta: 'altura', min: 1, max: 6, paso: 0.5, inicio: 4, unidad: '', decimales: 1 },
+      { id: 'b', etiqueta: 'b', min: 1, max: 8, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-i' },
+    ],
+    dibujo: v => ({ datos: trapLibre(v.dx, v.h, v.b), estado: {} }),
+    arrastres: [
+      { id: 'vertice-d', etiqueta: 'vértice D', color: 'c-i',
+        donde: v => enPantalla(trapLibre(v.dx, v.h, v.b), [v.dx, v.h]),
+        mover: (q, v) => { const z = alPlano(trapLibre(v.dx, v.h, v.b), q); return { dx: z[0], h: z[1] }; } },
+      { id: 'vertice-c', etiqueta: 'vértice C', color: 'c-i',
+        donde: v => enPantalla(trapLibre(v.dx, v.h, v.b), [v.dx + v.b, v.h]),
+        mover: (q, v) => ({ b: alPlano(trapLibre(v.dx, v.h, v.b), q)[0] - v.dx }) },
+    ],
+    lectura: v => [{ v: 'c-o', t: 'MN' }, ` = ${f((10 + v.b) / 2, 2)}`, sep, { v: 'c-h', t: 'PQ' }, ` = ${f((10 - v.b) / 2, 2)}`],
+  };
+
   return {
     unidad: 'geometria.poligonos-y-cuadrilateros',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/geo-figura.js'],
     historia: {
@@ -551,6 +709,9 @@
       pregunta: '¿Qué línea convierte una figura nueva en triángulos conocidos?',
       fuente: { titulo: 'Euclides, Elementos I.34 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookI/propI34.html' },
     },
+    // Laboratorio: las tres mesas son más ricas que sus ideas (cuadrilátero cóncavo y cruzado, paralelogramo con las
+    // diagonales medidas y trapecio con los dos extremos de la base menor libres).
+    laboratorio: [mesaCuad, mesaPara, mesaTrap],
     ideas: [sumaIdea, diagonales, paralelogramos, trapecios, trapezoides],
   };
 });
