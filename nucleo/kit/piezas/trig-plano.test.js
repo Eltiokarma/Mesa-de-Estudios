@@ -72,3 +72,21 @@ test('sin NaN, undefined ni colores fijos; texto de 14 o más; puro; alto fijo p
   for (const corte of [0, 1, 5]) altos.add(P.dibujar(todo, { corte }).match(/viewBox="0 0 320 ([\d.]+)"/)[1]);
   assert.equal(altos.size, 1);
 });
+
+test('manijas: enPx y delPx son inversas, y anguloDe elige el coterminal cercano', () => {
+  const d = { ventana: { x: [-3, 2], y: [-1, 4] } };
+  const g = P.geometria(d);
+  for (const [x, y] of [[0, 0], [-3, 4], [1.5, -0.5]]) {
+    const px = P.enPx(d, x, y);
+    assert.ok(Math.abs(px.x - g.X(x)) < 1e-9 && Math.abs(px.y - g.Y(y)) < 1e-9);
+    const q = P.delPx(d, px);
+    assert.ok(Math.abs(q.x - x) < 1e-9 && Math.abs(q.y - y) < 1e-9);
+  }
+  const u = {};
+  const en = a => P.enPx(u, Math.cos(a * Math.PI / 180), Math.sin(a * Math.PI / 180));
+  assert.ok(Math.abs(P.anguloDe(u, en(120)) - 120) < 1e-9);
+  assert.ok(Math.abs(P.anguloDe(u, en(-90)) - 270) < 1e-9);
+  assert.ok(Math.abs(P.anguloDe(u, en(700), { cerca: 690 }) - 700) < 1e-9);
+  assert.ok(Math.abs(P.anguloDe(u, en(-200), { cerca: -180 }) + 200) < 1e-9);
+  assert.ok(Math.abs(P.anguloDe(u, P.enPx(u, 1, 1), { cx: 1, cy: 0 }) - 90) < 1e-9);
+});

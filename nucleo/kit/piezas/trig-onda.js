@@ -43,7 +43,10 @@
     const PY1 = PY0 + ALTO;
     const X = v => PX0 + (PX1 - PX0) * (v - x.min) / ((x.max - x.min) || 1);
     const Y = v => PY1 - (PY1 - PY0) * (v - y.min) / ((y.max - y.min) || 1);
-    return { x, y, X, Y, PY1, alto: PY1 + ABAJO };
+    // Inversas (gesto directo, docs/teoria.md §4b): del píxel del dedo a la coordenada del problema.
+    const xDe = px => x.min + (px - PX0) * ((x.max - x.min) || 1) / (PX1 - PX0);
+    const yDe = py => y.min + (PY1 - py) * ((y.max - y.min) || 1) / (PY1 - PY0);
+    return { x, y, X, Y, xDe, yDe, PY1, alto: PY1 + ABAJO };
   }
 
   const mcd = (a, b) => (b ? mcd(b, a % b) : Math.abs(a));
