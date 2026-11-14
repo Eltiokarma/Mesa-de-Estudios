@@ -2344,7 +2344,15 @@
      "plantillas": [
       "divisores",
       "numeros-sucesiones"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/aritmetica/numeros-primos-y-divisores.js",
+      "requiere": [
+       "/nucleo/kit/piezas/arit-fichas.js",
+       "/nucleo/kit/piezas/arit-tabla.js"
+      ],
+      "ideas": 6
+     }
     },
     {
      "id": "aritmetica.mcd-y-mcm",
