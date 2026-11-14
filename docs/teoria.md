@@ -110,6 +110,66 @@ Se copia la forma de `contenido/teoria/fisica/movimiento-rectilineo.js`: es la u
 
   Esto último todavía no está soportado: se anota en pendientes y se pide.
 
+## 4b. Segunda tanda del molde (14 nov, noche): gesto directo, llaves, lupa, tipografía y laboratorio
+
+**Pedido de Gerson.** Pidió cinco cosas:
+- arrastrar la figura en el juego;
+- tipografía cuidada y legible;
+- llaves «}» giradas bajo las ecuaciones, para explicar los símbolos (con color solamente, se pierden);
+- zoom en los gráficos;
+- más laboratorio para juguetear.
+
+**Gesto directo (`juega.arrastres`, también en las mesas del laboratorio).** Cada arrastre es una manija sobre la figura:
+
+```js
+arrastres: [{
+  id: 'marca-5', etiqueta: 'marca de los 5 segundos',   // la etiqueta la lee el lector de pantalla
+  color: 'c-o',                                          // el de la variable que mueve (regla 4)
+  donde: valores => ({ x, y }),                          // dónde va la manija, en coordenadas del viewBox de la pieza
+  mover: (punto, valores) => ({ v: … }),                 // el punto {x, y} del dedo → valores de controles
+}]
+```
+
+- **Coordenadas.** `donde` y `mover` usan la geometría que exporta la pieza: `ejes.geometria(datos).X/Y` o `pista.escala(datos, x)`. Si la pieza no la exporta, se agrega a la pieza, con su prueba.
+- **Paso y rango.** El lector ajusta cada valor al paso y al rango de su control: no hace falta redondear en `mover`.
+- **Siempre con control.** Todo arrastre mueve controles que existen, con − y +; nunca solo arrastre. El validador lo exige y comprueba que la manija caiga en la figura y esté donde dice su valor.
+- **Qué se arrastra.** Lo que el fenómeno pide (pogil-v2-rive §5.2): el vértice del triángulo, la marca de la pista, el tramo de la gráfica, el punto de la recta o la frase del texto.
+  - Un deslizador rotulado no es el gesto. Queda como alternativa accesible.
+- **Cómo se ve.** La manija es un anillo de 18 px con halo del color y una zona de toque de 44 px. Mientras se arrastra, la página no se desplaza; los casos se cuentan al soltar.
+- **Unidad de referencia:** `fisica/movimiento-rectilineo.js`, ideas 1 a 3. Ahí se arrastran la salida y la marca de los 5 s, el tramo de retroceso y su fin, y el punto de partida y la inclinación de la recta v–t.
+
+**Llaves (`{ llave, nota, color }` en `nucleo/ecuacion.js`).**
+- Es una «}» horizontal bajo un trozo de la ecuación, con una nota corta de 3 palabras o menos: «dónde empezó», «lo que avanzó», «sobre el eje».
+- Va en las reglas y en los pasos de «Mira» donde un símbolo necesita nombre. El color es el de la variable, pero la nota dice lo que es: así no depende solo del color.
+- Con `arriba: true`, la llave va encima.
+- Dos llaves seguidas tienen que caber a 360 px. Si no caben, se acortan las notas o se parte la ecuación con `'   ·   '`.
+
+**Lupa.**
+- Toda figura de la teoría (ideas, ficha y laboratorio) trae el botón de lupa.
+- Abre la figura a pantalla completa, de 100 % a 400 %, con − y +, pellizco de dos dedos y Ctrl + rueda.
+- No hace falta nada en el archivo de la unidad.
+
+**Tipografía.**
+- **Ecuaciones:** van en la serif del sistema (Cambria o Noto Serif), con las letras sueltas en cursiva, como en los libros. Así x no se confunde con × ni l con 1.
+- **Números:** cifras tabulares.
+- **Texto corriente:** en la fuente de la app.
+- **Tamaños mínimos en la teoría:** lectura 18, ecuación 20, regla 24, consigna 16, etiquetas de momento 13.
+- **Figuras:** llegan al borde de la tarjeta, para que el texto del SVG se vea a unos 14 px y no a 12,6.
+- **Reglas para los autores:**
+  - no usar mayúsculas sostenidas;
+  - no partir números de su unidad;
+  - escribir los exponentes con `{ sup }`, nunca «^».
+
+**Laboratorio (`def.laboratorio`, de 1 a 4 mesas).**
+- **La ruta:** `#/unidad/<id>/teoria/laboratorio`. Hay una puerta propia en la página de la unidad («Juega libre, sin preguntas») y un chip junto a la ficha.
+- **Las mesas:** cada una tiene la forma de un juego (`id`, `titulo`, `pieza`, `consigna`, `controles`, `dibujo`, `lectura`, `arrastres`), sin mínimo ni preguntas.
+- **Guardar casos:** «Guardar este caso» deja hasta 4 miniaturas, lado a lado, para comparar.
+- **Si la unidad no trae laboratorio,** se usan los juegos de sus ideas. Pero la idea es que cada unidad traiga al menos una mesa más rica que sus juegos:
+  - más controles;
+  - rangos más amplios;
+  - el caso raro que la idea no deja probar.
+- **Ejemplo:** en física, la «pista con acelerador» junta MRU y MRUV en una sola mesa.
+
 ## 5. Topes de texto (los vigila `contenido/teoria/teoria.test.js`)
 
 | Campo | Palabras |
