@@ -2,7 +2,7 @@
   "plantilla": "razonamiento-figuras",
   "unidades": "Coordenadas sin unidades, con el eje y hacia arriba; puntos como { x, y }. Una figura es { lineas: [[P, Q], …], puntos }. Los cubos son de arista 1; alturas[i][j] es la altura de la columna x = j, y = i.",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.soloPiezas, porTamano.2). Un argumento { fig: [nombre, …] } es la figura motor[nombre](…) (constructores de la cabecera: recta, abanico, cuadricula, cuadradoDiagonales, dosCevianas, tresMedianas, cuadradoCompleto). En contar, 'piezas' son las figuras del tipo pedido que no tienen nada dibujado adentro (tamaño 1); los cuadriláteros cuentan solo si son convexos; los cuadrados también son rectángulos. En las pilas, un cubo se ve si tiene expuesta una de sus caras +x, +y o +z.",
-  "verificacion": "Verificador independiente (subagente, sin leer motor ni casos), 7 nov 2026, dos pasadas: los 170 valores se recalcularon con fuerza bruta propia en fracciones exactas (cruces, piezas por recorrido de la figura, ternas y cuaternas con lados dibujados y prueba de convexidad, unión de piezas como el polígono que encierra exactamente las elegidas) y con las fórmulas de academia (C(n, 2), k·n(n + 1)/2, Σk², C(m + 1, 2)·C(n + 1, 2), m·C(n + 1, 2)); los cubos visibles, con trazado de rayos hacia (1, 1, 1). Coinciden los 170 y los 10 problemas de papel.json.",
+  "verificacion": "Verificador independiente (subagente, sin leer motor ni casos), 7 nov 2026, dos pasadas: los 170 valores se recalcularon con fuerza bruta propia en fracciones exactas (cruces, piezas por recorrido de la figura, ternas y cuaternas con lados dibujados y prueba de convexidad, unión de piezas como el polígono que encierra exactamente las elegidas) y con las fórmulas de academia (C(n, 2), k·n(n + 1)/2, Σk², C(m + 1, 2)·C(n + 1, 2), m·C(n + 1, 2)); los cubos visibles, con trazado de rayos hacia (1, 1, 1). Coinciden los 170 y los 10 problemas de papel.json. 14 nov 2026: errores.quitaSoloCasillas (rectángulos 2 × 3, 3 × 3 y 3 × 4) y errores.ocultosCajaLlena (pirámides de 3, 4 y 5 capas) recalculados aparte en Python, con rectángulos contados por pares de rectas y cubos visibles por caras +x, +y, +z expuestas.",
   "tolerancia": 1e-9,
   "casos": [
     { "nombre": "Predicción 1 (paso 1): 6 puntos en una recta → C(6, 2) = 15 segmentos (errores: solo los 5 tramos; tramos y el total, 6; AB y BA aparte, 30)",
@@ -59,11 +59,12 @@
 
     { "nombre": "Predicción 6 (paso 6): rectángulos en la cuadrícula 2 × 3 → C(3, 2)·C(4, 2) = 3·6 = 18, de los que 8 son cuadrados (errores: 6 piezas; solo los de una fila, 2·6 = 12; 3 + 6 = 9; sin los cuadrados, 10). Cuadrícula de 1 × 4: 10 rectángulos y 4 cuadrados",
       "fn": "rectangulosCuadricula", "args": [2, 3],
-      "espera": { "total": 18, "bruta": 18, "cuadrados": 8, "noCuadrados": 10, "errores.soloPiezas": 6, "errores.sinCuadrados": 10, "errores.suma": 9, "errores.soloFilas": 12 },
+      "espera": { "total": 18, "bruta": 18, "cuadrados": 8, "noCuadrados": 10, "errores.soloPiezas": 6, "errores.sinCuadrados": 10, "errores.suma": 9, "errores.soloFilas": 12, "errores.quitaSoloCasillas": 12 },
       "tambien": [ { "args": [1, 4], "espera": { "total": 10, "bruta": 10, "cuadrados": 4 } } ] },
 
     { "nombre": "Rectángulos en la cuadrícula 3 × 4 → 6·10 = 60, de los que 12 + 6 + 2 = 20 son cuadrados",
-      "fn": "rectangulosCuadricula", "args": [3, 4], "espera": { "total": 60, "bruta": 60, "cuadrados": 20, "noCuadrados": 40, "errores.suma": 16 } },
+      "fn": "rectangulosCuadricula", "args": [3, 4], "espera": { "total": 60, "bruta": 60, "cuadrados": 20, "noCuadrados": 40, "errores.suma": 16, "errores.quitaSoloCasillas": 48 },
+      "tambien": [ { "args": [3, 3], "espera": { "total": 36, "noCuadrados": 22, "errores.quitaSoloCasillas": 27 } } ] },
 
     { "nombre": "Segmentos de la cuadrícula 2 × 2: 3 horizontales y 3 verticales, cada una con 3 puntos → 6·3 = 18",
       "fn": "contar", "args": [{ "fig": ["cuadricula", 2, 2] }, "segmentos"], "espera": { "total": 18, "piezas": 12 } },
@@ -89,10 +90,11 @@
     { "nombre": "Predicción 7 (paso 7): pirámide de 3 capas en la esquina → 9 + 4 + 1 = 14 cubos; se ven 9 y hay 5 ocultos (errores: solo los que se ven, 9; las caras que se ven, 21; la caja de 3 × 3 × 3, 27)",
       "fn": "piramideEsquina", "args": [3],
       "espera": { "total": 14, "formula": 14, "visibles": 9, "ocultos": 5, "caras": 21, "caja": 27,
-                  "errores.soloVisibles": 9, "errores.carasVisibles": 21, "errores.caja": 27 } },
+                  "errores.soloVisibles": 9, "errores.carasVisibles": 21, "errores.caja": 27, "errores.ocultosCajaLlena": 18 } },
 
     { "nombre": "Pirámide de 4 capas en la esquina → 30 cubos; se ven 16 (uno por columna), ocultos 14, caras 16 + 20 = 36, caja 64",
-      "fn": "piramideEsquina", "args": [4], "espera": { "total": 30, "visibles": 16, "ocultos": 14, "caras": 36, "caja": 64 } },
+      "fn": "piramideEsquina", "args": [4], "espera": { "total": 30, "visibles": 16, "ocultos": 14, "caras": 36, "caja": 64, "errores.ocultosCajaLlena": 48 },
+      "tambien": [ { "args": [5], "espera": { "total": 55, "visibles": 25, "ocultos": 30, "errores.ocultosCajaLlena": 100 } } ] },
 
     { "nombre": "Experimento 4: escalera de columnas 4, 3, 2, 1 con 2 de fondo → 20 cubos; se ven 14, ocultos 6, caras 8 + 10 + 8 = 26, caja 4 × 2 × 4 = 32",
       "fn": "escaleraCubos", "args": [[4, 3, 2, 1], 2],

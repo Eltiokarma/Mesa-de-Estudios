@@ -77,7 +77,8 @@
  *                             comoCuadrada Σk² hasta mín(m, n); ladoLargo Σk² hasta máx(m, n).
  *   rectangulosCuadricula(m, n)  C(m + 1, 2)·C(n + 1, 2) (dos de las m + 1 horizontales por dos de las n + 1 verticales).
  *                             errores: soloPiezas m·n; sinCuadrados total − cuadrados; suma C(m + 1, 2) + C(n + 1, 2);
- *                             soloFilas m·C(n + 1, 2) (solo los rectángulos de una sola fila de alto).
+ *                             soloFilas m·C(n + 1, 2) (solo los rectángulos de una sola fila de alto);
+ *                             quitaSoloCasillas total − m·n (para los que no son cuadrados, quita solo las casillas).
  *   triangulosCuadradoDiagonales()  8 (por fuerza bruta). errores: soloPiezas 4; unaDiagonal 6 (las 4 piezas y las
  *                             2 mitades de una sola diagonal); compuestasDosVeces 12.
  *   triangulosDosCevianas()   por fuerza bruta (8). errores: soloPiezas, piezasYTotal, dobleCuenta.
@@ -91,7 +92,8 @@
  *                    Un cubo SE VE si tiene expuesta al menos una de sus caras +x, +y, +z (no tiene un cubo pegado
  *                    en esa cara). Devuelve { total, visibles, ocultos, caras (número de caras +x, +y, +z expuestas),
  *                    caja (largo · ancho · alto de la caja que envuelve la pila), cubos:[{ x, y, z, visible, caras:[…] }],
- *                    errores:{ soloVisibles = visibles, carasVisibles = caras, caja } }.
+ *                    errores:{ soloVisibles = visibles, carasVisibles = caras, caja,
+ *                    ocultosCajaLlena = caja − visibles (los ocultos como la caja llena menos los que se ven) } }.
  *                    El cubo { x, y, z } ocupa [x, x + 1] × [y, y + 1] × [z, z + 1].
  *   piramideEsquina(n)  alturas[i][j] = n − máx(i, j) para i, j < n: capas de n × n, (n − 1) × (n − 1), …, 1 × 1,
  *                    apoyadas en la esquina. Total Σk² hasta n. Devuelve lo mismo que pila.
@@ -384,7 +386,8 @@
     entero(m, 'm', 1); entero(n, 'n', 1);
     const total = C2(m + 1) * C2(n + 1), cuad = cuadradosCuadricula(m, n).total;
     return { total, cuadrados: cuad, noCuadrados: total - cuad, bruta: contar(cuadricula(m, n), 'rectangulos').total,
-      errores: { soloPiezas: m * n, sinCuadrados: total - cuad, suma: C2(m + 1) + C2(n + 1), soloFilas: m * C2(n + 1) } };
+      errores: { soloPiezas: m * n, sinCuadrados: total - cuad, suma: C2(m + 1) + C2(n + 1), soloFilas: m * C2(n + 1),
+        quitaSoloCasillas: total - m * n } };
   }
   function triangulosCuadradoDiagonales() {
     const r = contar(cuadradoDiagonales(2), 'triangulos'), una = contar(cuadradoUnaDiagonal(2), 'triangulos');
@@ -422,7 +425,7 @@
     cubos.sort((a, b) => a.x + a.y + a.z - (b.x + b.y + b.z) || a.z - b.z || a.x - b.x);
     const visibles = cubos.filter(c => c.visible).length, caja = largo * ancho * alto;
     return { total: cubos.length, visibles, ocultos: cubos.length - visibles, caras, caja, dims: { largo, ancho, alto }, cubos,
-      errores: { soloVisibles: visibles, carasVisibles: caras, caja } };
+      errores: { soloVisibles: visibles, carasVisibles: caras, caja, ocultosCajaLlena: caja - visibles } };
   }
   function piramideEsquina(n) {
     entero(n, 'n (las capas)', 1);

@@ -12,7 +12,46 @@
         "Por tamaños: 6 de un tramo, 5 de dos tramos, 4 de tres, 3 de cuatro, 2 de cinco y 1 de seis.",
         "6 + 5 + 4 + 3 + 2 + 1 = 21. Con la fórmula: C(7, 2) = 7 · 6 / 2 = 21."
       ],
-      "verificar": [ { "fn": "segmentosRecta", "args": [7], "espera": { "total": 21 } } ]
+      "verificar": [ { "fn": "segmentosRecta", "args": [7], "espera": { "total": 21 } } ],
+      "preguntas": [
+        {
+          "id": "p1a",
+          "enunciado": "En una recta se marcan 7 puntos.",
+          "pregunta": "¿Cuántos segmentos tienen sus dos extremos entre esos puntos?",
+          "unidad": "segmentos",
+          "decimales": 0,
+          "correcta": { "fn": "segmentosRecta", "args": [7], "campo": "total", "valor": 21 },
+          "errores": [
+            {
+              "id": "AR18-solo-piezas-simples",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo los tramos cortos, entre puntos vecinos. También cuentan los de dos, tres o más tramos: 6 + 5 + 4 + 3 + 2 + 1.",
+              "fn": "segmentosRecta",
+              "args": [7],
+              "campo": "errores.soloPiezas",
+              "valor": 6
+            },
+            {
+              "id": "AR18-piezas-y-el-total",
+              "respaldo": "parcial",
+              "explicacion": "Contaste los tramos cortos y el segmento de punta a punta, pero faltan los de tamaño intermedio: 6 + 5 + 4 + 3 + 2 + 1.",
+              "fn": "segmentosRecta",
+              "args": [7],
+              "campo": "errores.piezasYTotal",
+              "valor": 7
+            },
+            {
+              "id": "AR17-cuenta-con-orden",
+              "respaldo": "parcial",
+              "explicacion": "Contaste AB y BA por separado. Son el mismo segmento: 7 · 6 se divide entre 2.",
+              "fn": "segmentosRecta",
+              "args": [7],
+              "campo": "errores.conOrden",
+              "valor": 42
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -24,7 +63,46 @@
         "En la base hay 7 puntos: cada par de puntos da un triángulo, como cada par da un segmento.",
         "Con n = 6 piezas: n(n + 1)/2 = 6 · 7 / 2 = 21."
       ],
-      "verificar": [ { "fn": "triangulosAbanico", "args": [6], "espera": { "total": 21, "bruta": 21 } } ]
+      "verificar": [ { "fn": "triangulosAbanico", "args": [6], "espera": { "total": 21, "bruta": 21 } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Desde el vértice de un triángulo salen rayos que parten la base en 6 piezas (en total hay 7 rayos, contando los dos lados).",
+          "pregunta": "¿Cuántos triángulos hay en la figura?",
+          "unidad": "triángulos",
+          "decimales": 0,
+          "correcta": { "fn": "triangulosAbanico", "args": [6], "campo": "total", "valor": 21 },
+          "errores": [
+            {
+              "id": "AR18-solo-piezas-simples",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo las 6 piezas. También son triángulos los que juntan piezas vecinas: cada par de los 7 puntos de la base da uno.",
+              "fn": "triangulosAbanico",
+              "args": [6],
+              "campo": "errores.soloPiezas",
+              "valor": 6
+            },
+            {
+              "id": "AR18-piezas-y-el-total",
+              "respaldo": "parcial",
+              "explicacion": "Contaste las piezas y el triángulo grande, pero faltan los de 2, 3, 4 y 5 piezas: 6 · 7 / 2.",
+              "fn": "triangulosAbanico",
+              "args": [6],
+              "campo": "errores.piezasYTotal",
+              "valor": 7
+            },
+            {
+              "id": "AR17-cuenta-con-orden",
+              "respaldo": "parcial",
+              "explicacion": "Contaste cada triángulo dos veces, de ida y de vuelta. Cada par de puntos de la base da uno solo: 6 · 7 / 2.",
+              "fn": "triangulosAbanico",
+              "args": [6],
+              "campo": "errores.dobleCuenta",
+              "valor": 42
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -36,7 +114,46 @@
         "En cada abanico hay 5 · 6 / 2 = 15 triángulos, todos con el vértice de arriba.",
         "Son 3 líneas horizontales: 3 · 15 = 45."
       ],
-      "verificar": [ { "fn": "triangulosAbanico", "args": [5, 3], "espera": { "total": 45, "bruta": 45 } } ]
+      "verificar": [ { "fn": "triangulosAbanico", "args": [5, 3], "espera": { "total": 45, "bruta": 45 } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Un abanico tiene 5 piezas en la base y lo cruzan 2 cuerdas paralelas a la base, de un borde al otro.",
+          "pregunta": "¿Cuántos triángulos hay?",
+          "unidad": "triángulos",
+          "decimales": 0,
+          "correcta": { "fn": "triangulosAbanico", "args": [5, 3], "campo": "total", "valor": 45 },
+          "errores": [
+            {
+              "id": "AR18-un-solo-nivel",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo los triángulos que llegan a la base. Cada cuerda forma su propio abanico de 15: son 3 líneas horizontales.",
+              "fn": "triangulosAbanico",
+              "args": [5, 3],
+              "campo": "errores.unNivel",
+              "valor": 15
+            },
+            {
+              "id": "AR18-un-nivel-y-piezas",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste los 15 que llegan a la base y los 5 triangulitos de arriba. Cada cuerda arma su propio abanico de 15: 3 · 15.",
+              "fn": "triangulosAbanico",
+              "args": [5, 3],
+              "campo": "errores.unNivelYPiezas",
+              "valor": 20
+            },
+            {
+              "id": "AR17-cuenta-con-orden",
+              "respaldo": "parcial",
+              "explicacion": "Contaste cada par de rayos dos veces, de ida y de vuelta. Cada triángulo queda fijo por una línea horizontal y dos rayos: 3 · 15.",
+              "fn": "triangulosAbanico",
+              "args": [5, 3],
+              "campo": "errores.dobleCuenta",
+              "valor": 90
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -48,7 +165,46 @@
         "Elegir los dos rayos es elegir dos de los 6 puntos de la base: C(6, 2) = 15.",
         "Con una sola cuerda hay un solo par de líneas horizontales; el total es 1 · 15 = 15."
       ],
-      "verificar": [ { "fn": "cuadrilaterosAbanico", "args": [5, 2], "espera": { "total": 15, "bruta": 15 } } ]
+      "verificar": [ { "fn": "cuadrilaterosAbanico", "args": [5, 2], "espera": { "total": 15, "bruta": 15 } } ],
+      "preguntas": [
+        {
+          "id": "p4a",
+          "enunciado": "Un abanico tiene 5 piezas en la base y lo cruza una sola cuerda paralela a la base.",
+          "pregunta": "¿Cuántos cuadriláteros hay?",
+          "unidad": "cuadriláteros",
+          "decimales": 0,
+          "correcta": { "fn": "cuadrilaterosAbanico", "args": [5, 2], "campo": "total", "valor": 15 },
+          "errores": [
+            {
+              "id": "AR18-solo-piezas-simples",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo las 5 piezas entre la cuerda y la base. Dos rayos cualesquiera arman un trapecio: C(6, 2).",
+              "fn": "cuadrilaterosAbanico",
+              "args": [5, 2],
+              "campo": "errores.soloPiezas",
+              "valor": 5
+            },
+            {
+              "id": "AR18-piezas-y-el-total",
+              "respaldo": "parcial",
+              "explicacion": "Contaste las piezas y el trapecio grande, pero faltan los de 2, 3 y 4 piezas: C(6, 2) = 15.",
+              "fn": "cuadrilaterosAbanico",
+              "args": [5, 2],
+              "campo": "errores.piezasYTotal",
+              "valor": 6
+            },
+            {
+              "id": "AR18-trapecios-como-triangulos",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste los triángulos de las dos líneas horizontales. Un trapecio necesita las dos a la vez: hay un solo par, 1 · 15.",
+              "fn": "cuadrilaterosAbanico",
+              "args": [5, 2],
+              "campo": "errores.comoTriangulos",
+              "valor": 30
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p5",
@@ -60,7 +216,46 @@
         "25 + 16 + 9 + 4 + 1 = 55.",
         "Es la suma de cuadrados: 1² + 2² + … + n² = n(n + 1)(2n + 1)/6 = 5 · 6 · 11 / 6 = 55."
       ],
-      "verificar": [ { "fn": "cuadradosCuadricula", "args": [5, 5], "espera": { "total": 55, "bruta": 55 } } ]
+      "verificar": [ { "fn": "cuadradosCuadricula", "args": [5, 5], "espera": { "total": 55, "bruta": 55 } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Un tablero de 5 × 5 casillas.",
+          "pregunta": "¿Cuántos cuadrados tiene en total?",
+          "unidad": "cuadrados",
+          "decimales": 0,
+          "correcta": { "fn": "cuadradosCuadricula", "args": [5, 5], "campo": "total", "valor": 55 },
+          "errores": [
+            {
+              "id": "AR18-solo-piezas-simples",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo las casillas. También hay cuadrados de 2 × 2, 3 × 3, 4 × 4 y 5 × 5: 25 + 16 + 9 + 4 + 1.",
+              "fn": "cuadradosCuadricula",
+              "args": [5, 5],
+              "campo": "errores.soloPiezas",
+              "valor": 25
+            },
+            {
+              "id": "AR18-piezas-y-el-total",
+              "respaldo": "parcial",
+              "explicacion": "Contaste las casillas y el tablero entero, pero faltan los de 2 × 2, 3 × 3 y 4 × 4.",
+              "fn": "cuadradosCuadricula",
+              "args": [5, 5],
+              "campo": "errores.piezasYGrande",
+              "valor": 26
+            },
+            {
+              "id": "AR18-compuestas-incompletas",
+              "respaldo": "parcial",
+              "explicacion": "Contaste los grandes solo a lo largo de una diagonal. Un cuadrado de lado k cabe en (6 − k)² posiciones.",
+              "fn": "cuadradosCuadricula",
+              "args": [5, 5],
+              "campo": "errores.soloDiagonal",
+              "valor": 35
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -72,7 +267,46 @@
         "k = 1: 4 · 6 = 24; k = 2: 3 · 5 = 15; k = 3: 2 · 4 = 8; k = 4: 1 · 3 = 3. De lado 5 no cabe ninguno.",
         "24 + 15 + 8 + 3 = 50."
       ],
-      "verificar": [ { "fn": "cuadradosCuadricula", "args": [4, 6], "espera": { "total": 50, "bruta": 50 } } ]
+      "verificar": [ { "fn": "cuadradosCuadricula", "args": [4, 6], "espera": { "total": 50, "bruta": 50 } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Una cuadrícula tiene 4 filas y 6 columnas de cuadritos.",
+          "pregunta": "¿Cuántos cuadrados hay?",
+          "unidad": "cuadrados",
+          "decimales": 0,
+          "correcta": { "fn": "cuadradosCuadricula", "args": [4, 6], "campo": "total", "valor": 50 },
+          "errores": [
+            {
+              "id": "AR18-solo-piezas-simples",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo los cuadritos. También hay de lado 2, 3 y 4: 24 + 15 + 8 + 3.",
+              "fn": "cuadradosCuadricula",
+              "args": [4, 6],
+              "campo": "errores.soloPiezas",
+              "valor": 24
+            },
+            {
+              "id": "AR-como-cuadricula-cuadrada",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste la fórmula de la cuadrícula cuadrada de 4 × 4. Aquí sobran columnas: cada tamaño cabe en más posiciones a lo ancho.",
+              "fn": "cuadradosCuadricula",
+              "args": [4, 6],
+              "campo": "errores.comoCuadrada",
+              "valor": 30
+            },
+            {
+              "id": "AR-lado-largo",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste 1² + … + 6², como si fuera de 6 × 6. Con 4 filas no caben cuadrados de lado 5 ni 6.",
+              "fn": "cuadradosCuadricula",
+              "args": [4, 6],
+              "campo": "errores.ladoLargo",
+              "valor": 91
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -84,7 +318,37 @@
         "Los cuadrados también son rectángulos: hay 9 + 4 + 1 = 14.",
         "Los que no son cuadrados: 36 − 14 = 22."
       ],
-      "verificar": [ { "fn": "rectangulosCuadricula", "args": [3, 3], "espera": { "total": 36, "cuadrados": 14, "noCuadrados": 22 } } ]
+      "verificar": [ { "fn": "rectangulosCuadricula", "args": [3, 3], "espera": { "total": 36, "cuadrados": 14, "noCuadrados": 22 } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Una cuadrícula de 3 × 3.",
+          "pregunta": "¿Cuántos rectángulos hay que NO sean cuadrados?",
+          "unidad": "rectángulos",
+          "decimales": 0,
+          "correcta": { "fn": "rectangulosCuadricula", "args": [3, 3], "campo": "noCuadrados", "valor": 22 },
+          "errores": [
+            {
+              "id": "AR-no-quita-cuadrados",
+              "respaldo": "hipotesis",
+              "explicacion": "Esos son todos los rectángulos. Los cuadrados también son rectángulos, y aquí se piden los que no lo son: 36 − 14.",
+              "fn": "rectangulosCuadricula",
+              "args": [3, 3],
+              "campo": "total",
+              "valor": 36
+            },
+            {
+              "id": "AR-quita-solo-casillas",
+              "respaldo": "hipotesis",
+              "explicacion": "Quitaste solo las 9 casillas. Los cuadrados de 2 × 2 y 3 × 3 también son cuadrados: 36 − 14.",
+              "fn": "rectangulosCuadricula",
+              "args": [3, 3],
+              "campo": "errores.quitaSoloCasillas",
+              "valor": 27
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -96,7 +360,46 @@
         "Rectas verticales: 6; se eligen 2: C(6, 2) = 15.",
         "Cada elección de las dos horizontales se combina con cada elección de las dos verticales: 3 · 15 = 45 (se multiplica, no se suma)."
       ],
-      "verificar": [ { "fn": "rectangulosCuadricula", "args": [2, 5], "espera": { "total": 45, "bruta": 45 } } ]
+      "verificar": [ { "fn": "rectangulosCuadricula", "args": [2, 5], "espera": { "total": 45, "bruta": 45 } } ],
+      "preguntas": [
+        {
+          "id": "p8a",
+          "enunciado": "Una tira de cuadritos tiene 2 filas y 5 columnas.",
+          "pregunta": "¿Cuántos rectángulos hay en total?",
+          "unidad": "rectángulos",
+          "decimales": 0,
+          "correcta": { "fn": "rectangulosCuadricula", "args": [2, 5], "campo": "total", "valor": 45 },
+          "errores": [
+            {
+              "id": "AR-suma-en-vez-de-producto",
+              "respaldo": "hipotesis",
+              "explicacion": "Sumaste C(3, 2) + C(6, 2). Cada par de horizontales se combina con cada par de verticales: se multiplica, 3 · 15.",
+              "fn": "rectangulosCuadricula",
+              "args": [2, 5],
+              "campo": "errores.suma",
+              "valor": 18
+            },
+            {
+              "id": "AR18-solo-piezas-simples",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo los cuadritos. Un rectángulo puede juntar varios: se eligen 2 horizontales y 2 verticales.",
+              "fn": "rectangulosCuadricula",
+              "args": [2, 5],
+              "campo": "errores.soloPiezas",
+              "valor": 10
+            },
+            {
+              "id": "AR18-solo-una-fila",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo los rectángulos de una fila de alto. También están los que ocupan las dos filas.",
+              "fn": "rectangulosCuadricula",
+              "args": [2, 5],
+              "campo": "errores.soloFilas",
+              "valor": 30
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p9",
@@ -108,7 +411,65 @@
         "Desde esa vista se ve un solo cubito por columna, el de arriba: hay 5 · 5 = 25 columnas.",
         "Los demás están tapados por arriba y por los costados: 55 − 25 = 30."
       ],
-      "verificar": [ { "fn": "piramideEsquina", "args": [5], "espera": { "total": 55, "visibles": 25, "ocultos": 30 } } ]
+      "verificar": [ { "fn": "piramideEsquina", "args": [5], "espera": { "total": 55, "visibles": 25, "ocultos": 30 } } ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "Una pirámide escalonada de cubitos está apoyada en la esquina de un cuarto: la capa de abajo es de 5 × 5, la siguiente de 4 × 4, y así hasta un solo cubito arriba.",
+          "pregunta": "¿Cuántos cubitos tiene?",
+          "unidad": "cubitos",
+          "decimales": 0,
+          "correcta": { "fn": "piramideEsquina", "args": [5], "campo": "total", "valor": 55 },
+          "errores": [
+            {
+              "id": "GE13-solo-cubos-visibles",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo los cubitos que se ven. Debajo hay más, tapados: capa por capa son 25 + 16 + 9 + 4 + 1.",
+              "fn": "piramideEsquina",
+              "args": [5],
+              "campo": "errores.soloVisibles",
+              "valor": 25
+            },
+            {
+              "id": "GE-cuenta-la-caja-entera",
+              "respaldo": "hipotesis",
+              "explicacion": "Contaste la caja de 5 × 5 × 5. La pirámide es escalonada: cada capa es más chica, 25 + 16 + 9 + 4 + 1.",
+              "fn": "piramideEsquina",
+              "args": [5],
+              "campo": "errores.caja",
+              "valor": 125
+            }
+          ]
+        },
+        {
+          "id": "p9b",
+          "enunciado": "Una pirámide escalonada de cubitos está apoyada en la esquina de un cuarto: la capa de abajo es de 5 × 5, la siguiente de 4 × 4, y así hasta un solo cubito arriba. Tiene 55 cubitos.",
+          "pregunta": "¿Cuántos cubitos no se ven desde el frente, la derecha y arriba?",
+          "unidad": "cubitos",
+          "decimales": 0,
+          "correcta": { "fn": "piramideEsquina", "args": [5], "campo": "ocultos", "valor": 30 },
+          "errores": [
+            {
+              "id": "GE-ocultos-como-visibles",
+              "respaldo": "hipotesis",
+              "explicacion": "Esos son los que se ven: uno por columna, 5 · 5. Los que no se ven son el resto: 55 − 25.",
+              "fn": "piramideEsquina",
+              "args": [5],
+              "campo": "visibles",
+              "valor": 25
+            },
+            {
+              "id": "GE-ocultos-caja-llena",
+              "respaldo": "hipotesis",
+              "explicacion": "Restaste los que se ven a la caja llena de 5 × 5 × 5. La pirámide es escalonada: tiene 55 cubitos, no 125, y quedan 55 − 25.",
+              "fn": "piramideEsquina",
+              "args": [5],
+              "campo": "errores.ocultosCajaLlena",
+              "valor": 100
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p10",
@@ -120,7 +481,78 @@
         "De 2 piezas: hay 3 (cada uno tiene un lado del triángulo y el vértice G). De 3 piezas: 6 (cada mediana parte al triángulo en dos mitades).",
         "Con la figura entera: 6 + 3 + 6 + 1 = 16."
       ],
-      "verificar": [ { "fn": "contar", "args": [{ "fig": ["tresMedianas"] }, "triangulos"], "espera": { "total": 16, "piezas": 6, "porTamano.2": 3, "porTamano.3": 6 } } ]
+      "verificar": [ { "fn": "contar", "args": [{ "fig": ["tresMedianas"] }, "triangulos"], "espera": { "total": 16, "piezas": 6, "porTamano.2": 3, "porTamano.3": 6 } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "En un triángulo se trazan sus tres medianas.",
+          "pregunta": "¿Cuántos triángulos hay en la figura?",
+          "unidad": "triángulos",
+          "decimales": 0,
+          "correcta": {
+            "fn": "contar",
+            "args": [
+              {
+                "lineas": [
+                  [{ "x": 0, "y": 0 }, { "x": 6, "y": 0 }],
+                  [{ "x": 6, "y": 0 }, { "x": 2, "y": 6 }],
+                  [{ "x": 2, "y": 6 }, { "x": 0, "y": 0 }],
+                  [{ "x": 0, "y": 0 }, { "x": 4, "y": 3 }],
+                  [{ "x": 6, "y": 0 }, { "x": 1, "y": 3 }],
+                  [{ "x": 2, "y": 6 }, { "x": 3, "y": 0 }]
+                ]
+              },
+              "triangulos"
+            ],
+            "campo": "total",
+            "valor": 16
+          },
+          "errores": [
+            {
+              "id": "AR18-solo-piezas-simples",
+              "respaldo": "parcial",
+              "explicacion": "Contaste solo las 6 piezas. También hay triángulos de 2 piezas, de 3 y el grande: 6 + 3 + 6 + 1.",
+              "fn": "contar",
+              "args": [
+                {
+                  "lineas": [
+                    [{ "x": 0, "y": 0 }, { "x": 6, "y": 0 }],
+                    [{ "x": 6, "y": 0 }, { "x": 2, "y": 6 }],
+                    [{ "x": 2, "y": 6 }, { "x": 0, "y": 0 }],
+                    [{ "x": 0, "y": 0 }, { "x": 4, "y": 3 }],
+                    [{ "x": 6, "y": 0 }, { "x": 1, "y": 3 }],
+                    [{ "x": 2, "y": 6 }, { "x": 3, "y": 0 }]
+                  ]
+                },
+                "triangulos"
+              ],
+              "campo": "errores.soloPiezas",
+              "valor": 6
+            },
+            {
+              "id": "AR18-piezas-y-el-total",
+              "respaldo": "parcial",
+              "explicacion": "Contaste las piezas y el triángulo grande, pero faltan los de 2 y 3 piezas: 6 + 3 + 6 + 1.",
+              "fn": "contar",
+              "args": [
+                {
+                  "lineas": [
+                    [{ "x": 0, "y": 0 }, { "x": 6, "y": 0 }],
+                    [{ "x": 6, "y": 0 }, { "x": 2, "y": 6 }],
+                    [{ "x": 2, "y": 6 }, { "x": 0, "y": 0 }],
+                    [{ "x": 0, "y": 0 }, { "x": 4, "y": 3 }],
+                    [{ "x": 6, "y": 0 }, { "x": 1, "y": 3 }],
+                    [{ "x": 2, "y": 6 }, { "x": 3, "y": 0 }]
+                  ]
+                },
+                "triangulos"
+              ],
+              "campo": "errores.piezasYTotal",
+              "valor": 7
+            }
+          ]
+        }
+      ]
     }
   ]
 }
