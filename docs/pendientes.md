@@ -156,11 +156,10 @@ Por qué no vale como presupuesto: el Chromium sin pantalla dibuja el canvas por
     - regla-de-tres p2b y el sentido de giro de p10.
 
     Congruencia p7 y p10 preguntan solo una parte del problema: la base media de 9 en lugar del perímetro, y el caso b. Los respaldos casi todos son hipótesis. Los códigos de geometría-espacio y razonamiento-numérico no tienen número en sus informes.
-  - **Tanda A hecha (14 nov):** 88 preguntas en sus 10 escenas, cada escena revisada a ciegas antes de su commit. Por escena: termodinamica 14, ondas-electromagneticas 5, mol-composicion 7, cinetica 9, polinomios 14, numeros-complejos 11, sucesiones 8, binomio-newton 8, conjuntos 7 y logica 5. Dos motores recibieron campos chicos, con su caso recalculado a mano por un subagente que no leyó el motor: mol-composicion (`masaInvertida`, `unAtomo` y `ponderado`) y cinetica (`regla10` con el tiempo de partida). Quedaron fuera:
+  - **Tanda A hecha (14 nov):** 92 preguntas en sus 10 escenas, cada escena revisada a ciegas antes de su commit. Por escena: termodinamica 14, ondas-electromagneticas 5, mol-composicion 7, cinetica 13, polinomios 14, numeros-complejos 11, sucesiones 8, binomio-newton 8, conjuntos 7 y logica 5. Dos motores recibieron campos chicos, con su caso recalculado a mano por un subagente que no leyó el motor: mol-composicion (`masaInvertida`, `unAtomo` y `ponderado`) y cinetica (`regla10` con el tiempo de partida). Quedaron fuera:
     - las magnitudes que valen 0 (W isocórico, Q adiabático, ΔU isotérmico), porque no tienen escala;
     - las que no se leen sin notación científica: frecuencias, campos y energías en J de ondas-electromagneticas, y átomos y moléculas de mol-composicion;
-    - las que no tienen dos errores del motor dentro de 1/20 a 20 veces la correcta, como C(8, 5), la suma de coeficientes de (3x − 2)⁵ y el COP de Carnot;
-    - en cinetica, p1a, p4a, p10b y p13a. Sus funciones devuelven `{ valor, … }`, y `campo: "valor"` lee el objeto entero (`nucleo/papel-opciones.js`, línea 32). Se avisó a la coordinadora con el arreglo de una línea.
+    - las que no tienen dos errores del motor dentro de 1/20 a 20 veces la correcta, como C(8, 5), la suma de coeficientes de (3x − 2)⁵ y el COP de Carnot.
 
     Ojo: un valor de texto no pasa por la regla de escala. En binomio-newton, las respuestas que son números van por `num`, para que sí pasen.
 - **Revisar las dos tablas de `nucleo/repaso-tipos.js`**, que las clasificó un modelo.
