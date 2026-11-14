@@ -1384,7 +1384,15 @@
      "plantillas": [
       "numeros-reales",
       "inecuaciones-planteo"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/algebra/numeros-reales.js",
+      "requiere": [
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/alg-tabla.js"
+      ],
+      "ideas": 4
+     }
     },
     {
      "id": "algebra.exponentes-y-productos-notables",
