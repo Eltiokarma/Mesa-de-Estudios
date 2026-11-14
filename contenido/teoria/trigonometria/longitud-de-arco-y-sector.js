@@ -11,6 +11,10 @@
  * SEC-ANGULO, SEC-ARCO, SEC-MITAD, TRAP-RESTA, TRAP-GRANDE, TRAP-MITAD, VUEL-CONTACTO, VUEL-TRASLADA, VUEL-DIAMETRO,
  * VUEL-RADIO, VUEL-SIN-PI, VUEL-DENTRO, VUEL-FUERA, POL-FAJA-EJE, POL-PROPORCIONAL, POL-SENTIDO, POL-IGUAL,
  * POL-INVERSA. POL-IGUAL es el error objetivo de la matriz («la misma velocidad angular a ruedas de radios distintos»).
+ * Ronda 2 (14 nov, noche): manijas en las cinco ideas (fin del arco y punta del radio, borde del sector, los dos
+ * radios de la banda, el centro de la rueda y el borde de la rueda B), llaves en las reglas, separador entre las
+ * dos relaciones de la faja y laboratorio de tres mesas (sector completo, rueda que rodea a otra y faja con giro libre).
+ * Juega y «Mira» usan la misma figura salvo en la rueda: ver su comentario (hallazgo 9 de docs/auditoria-teoria.md).
  *
  * Ficha de tarea (diseno-y-animacion):
  *   Promesa: con θ en radianes, el radio entra una vez en el arco y dos veces en el área; una rueda gira lo que avanza su centro.
@@ -40,6 +44,11 @@
     return `${sg}${a === 1 ? '' : a}π${den === 1 ? '' : '/' + den}`;
   }
   const RAD = Math.PI / 180, GRA = 180 / Math.PI;
+  // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza trig-plano.
+  const TP = () => Kit.piezas['trig-plano'];
+  const enPx = (dd, x, y) => TP().enPx(dd, x, y);
+  const lejos = (dd, pt, cx = 0, cy = 0) => { const q = TP().delPx(dd, pt); return Math.hypot(q.x - cx, q.y - cy); };
+  const polar = (dd, rv, g, cx = 0, cy = 0) => enPx(dd, cx + rv * Math.cos(g * RAD), cy + rv * Math.sin(g * RAD));
   function azar(sem) {
     let q = (sem * 2654435761 + 12345) >>> 0;
     const rr = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
@@ -79,6 +88,7 @@
   // Cambia: el ángulo θ y el radio r. · Permanece: el centro, el lado inicial y la escala del plano.
   // Progresa: el arco turquesa, que crece con los dos. · Se reserva: un ángulo dado en grados con un radio que el
   // juego no alcanza (la predicción). · Debe verse: que el arco se compara con la vuelta entera, 2π r.
+  const arcoJ = v => sector(v.g, v.r, { ventana: { x: [-4.9, 4.9], y: [-4.9, 4.9] } });
   const arco = {
     id: 'arco',
     titulo: 'El arco cuenta radios',
@@ -91,9 +101,18 @@
         { id: 'g', etiqueta: 'θ', color: 'c-o', min: 30, max: 300, paso: 30, inicio: 90, unidad: '°', decimales: 0 },
         { id: 'r', etiqueta: 'r', color: 'c-d', min: 1, max: 4, paso: 0.5, inicio: 2, unidad: 'cm', decimales: 1 },
       ],
-      dibujo: v => ({ datos: sector(v.g, v.r, { ventana: { x: [-4.9, 4.9], y: [-4.9, 4.9] } }), estado: {} }),
-      lectura: v => [th, ` = ${f(v.g)}° = ${piTxt(v.g)} rad;  `, s, ` = ${f(v.g * RAD * v.r)} cm`],
+      dibujo: v => ({ datos: arcoJ(v), estado: {} }),
+      lectura: v => [th, ` = ${f(v.g)}° = ${piTxt(v.g)} rad · `, s, ` = ${f(v.g * RAD * v.r)} cm`],
       minimo: 3,
+      // Se arrastran el fin del arco (cambia θ) y la punta del radio verde (cambia r).
+      arrastres: [
+        { id: 'fin-arco', etiqueta: 'fin del arco: cambia θ', color: 'c-o',
+          donde: v => polar(arcoJ(v), v.r, v.g),
+          mover: (pt, v) => ({ g: TP().anguloDe(arcoJ(v), pt, { cerca: v.g }) }) },
+        { id: 'radio', etiqueta: 'punta del radio r', color: 'c-d',
+          donde: v => enPx(arcoJ(v), v.r, 0),
+          mover: (pt, v) => ({ r: lejos(arcoJ(v), pt) }) },
+      ],
     },
     predice: {
       pregunta: ['En un círculo de radio ', r, ' = 6 cm, el ángulo central mide ', th, ' = 60°. ¿Cuánto mide su arco?'],
@@ -130,7 +149,7 @@
     },
     regla: {
       texto: 'El arco mide tantos radios como radianes tiene su ángulo central. Por eso el radio aparece una sola vez.',
-      ecuacion: [s, ' = ', th, ' · ', r],
+      ecuacion: [s, ' = ', { llave: [th], nota: 'en radianes', color: 'c-o' }, ' · ', { llave: [r], nota: 'la unidad', color: 'c-d' }],
       condicion: 'θ en radianes y no negativo; s y r en la misma unidad de longitud.',
       voz: 'Radianes por radio: un largo, en la unidad del radio.',
     },
@@ -175,6 +194,7 @@
     for (let i = 1; i < k; i++) out.push({ ang: g * i / k, largo: rv, grosor: 'cuadricula', punta: false, desde, hasta: desde });
     return out;
   };
+  const secJ = v => sector(v.g, SEC_R, { area: true, ventana: { x: [-4.4, 4.4], y: [-4.4, 4.4] } });
   const area = {
     id: 'sector',
     titulo: 'El área lleva dos radios',
@@ -184,9 +204,13 @@
       consigna: 'Elige el ángulo θ del sector; el radio queda en 3 cm. La lectura da su arco s y su área A.',
       voz: 'Mira cómo crecen juntos el arco y el área cuando abres el ángulo.',
       controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: 30, max: 330, paso: 30, inicio: 90, unidad: '°', decimales: 0 }],
-      dibujo: v => ({ datos: sector(v.g, SEC_R, { area: true, ventana: { x: [-4.4, 4.4], y: [-4.4, 4.4] } }), estado: {} }),
-      lectura: v => [s, ` = ${f(v.g * RAD * SEC_R)} cm;  `, A, ` = ${f(v.g * RAD * SEC_R * SEC_R / 2)} cm²`],
+      dibujo: v => ({ datos: secJ(v), estado: {} }),
+      lectura: v => [s, ` = ${f(v.g * RAD * SEC_R)} cm · `, A, ` = ${f(v.g * RAD * SEC_R * SEC_R / 2)} cm²`],
       minimo: 3,
+      // Se arrastra el borde del sector: abre o cierra θ.
+      arrastres: [{ id: 'borde', etiqueta: 'borde del sector θ', color: 'c-o',
+        donde: v => polar(secJ(v), SEC_R, v.g),
+        mover: (pt, v) => ({ g: TP().anguloDe(secJ(v), pt, { cerca: v.g }) }) }],
     },
     predice: {
       pregunta: 'El ángulo queda igual y el radio pasa de 2 cm a 4 cm. ¿Qué les pasa al arco y al área del sector?',
@@ -235,7 +259,7 @@
     },
     regla: {
       texto: 'El área del sector es medio arco por radio. Como el arco ya trae un radio, el área lleva el radio al cuadrado.',
-      ecuacion: [A, ' = ', { frac: [[s, ' · ', r], '2'] }, ' = ', { frac: [[th, ' · ', cuad(r)], '2'] }],
+      ecuacion: [A, ' = ', { frac: [[{ llave: [s], nota: 'base', color: 'c-i' }, ' · ', { llave: [r], nota: 'altura', color: 'c-d' }], '2'] }, ' = ', { frac: [[th, ' · ', { llave: [cuad(r)], nota: 'dos radios', color: 'c-d' }], '2'] }],
       condicion: 'θ en radianes, entre 0 y 2π; el área queda en unidades al cuadrado.',
       voz: 'Un radio para el largo y otro para el ancho.',
     },
@@ -304,8 +328,17 @@
         { id: 'h', etiqueta: 'h', color: 'c-d', min: 0.5, max: 2, paso: 0.5, inicio: 1.5, unidad: 'cm', decimales: 1 },
       ],
       dibujo: v => ({ datos: banda(90, v.ri, v.ri + v.h), estado: {} }),
-      lectura: v => [R, ` = ${f(v.ri + v.h)} cm;  `, A, ` = ${f(Math.PI / 4 * ((v.ri + v.h) ** 2 - v.ri ** 2))} cm²`],
+      lectura: v => [R, ` = ${f(v.ri + v.h)} cm · `, A, ` = ${f(Math.PI / 4 * ((v.ri + v.h) ** 2 - v.ri ** 2))} cm²`],
       minimo: 3,
+      // Se arrastran el arco de adentro (cambia r; la banda se corre entera) y el borde de afuera (cambia el ancho h).
+      arrastres: [
+        { id: 'adentro', etiqueta: 'arco interior: cambia r', color: 'c-d',
+          donde: v => enPx(banda(90, v.ri, v.ri + v.h), 0, v.ri),
+          mover: (pt, v) => ({ ri: lejos(banda(90, v.ri, v.ri + v.h), pt) }) },
+        { id: 'afuera', etiqueta: 'borde exterior: cambia h', color: 'c-d',
+          donde: v => enPx(banda(90, v.ri, v.ri + v.h), v.ri + v.h, 0),
+          mover: (pt, v) => ({ h: lejos(banda(90, v.ri, v.ri + v.h), pt) - v.ri }) },
+      ],
     },
     predice: {
       pregunta: ['Un trapecio circular de 60° va desde ', r, ' = 2 cm hasta ', R, ' = 4 cm. ¿Cuánto mide su área?'],
@@ -333,7 +366,7 @@
     },
     regla: {
       texto: 'El trapecio circular es un sector grande menos uno chico. También se calcula como un trapecio: semisuma de los arcos por el ancho.',
-      ecuacion: [A, ' = ', { frac: [[th, ' (', cuad(R), ' − ', cuad(r), ')'], '2'] }, ' = ', { frac: [['(', L, ' + ', l, ') ', h], '2'] }],
+      ecuacion: [A, ' = ', { frac: [[th, ' ', { llave: ['(', cuad(R), ' − ', cuad(r), ')'], nota: 'se restan', color: 'c-d' }], '2'] }, ' = ', { frac: [['(', L, ' + ', l, ') ', { llave: [h], nota: 'ancho', color: 'c-d' }], '2'] }],
       condicion: 'θ en radianes; los dos arcos tienen el mismo ángulo central y h = R − r.',
       voz: 'Restar cuadrados no es lo mismo que restar radios.',
     },
@@ -412,6 +445,11 @@
       dibujo: v => ({ datos: rueda(v.r, v.d), estado: {} }),
       lectura: v => [n, ' = ', d, ' ÷ 2π', r, ` = ${f(v.d / (2 * Math.PI * v.r))} vueltas`],
       minimo: 3,
+      // Se arrastra el centro de la rueda: de lado cambia lo que avanza (d); hacia arriba, el radio (la rueda sigue
+      // apoyada en el suelo, así que la altura del centro es r).
+      arrastres: [{ id: 'centro', etiqueta: 'centro de la rueda: d de lado, r hacia arriba', color: 'c-i',
+        donde: v => enPx(rueda(v.r, v.d), v.d, v.r),
+        mover: (pt, v) => { const q = TP().delPx(rueda(v.r, v.d), pt); return { d: q.x, r: q.y }; } }],
     },
     predice: {
       pregunta: 'Una moneda rueda sin deslizar alrededor de otra igual, que está fija, hasta volver a su lugar. ¿Cuántas vueltas da sobre sí misma?',
@@ -427,6 +465,9 @@
       coincide: 'Coincide: en media vuelta del camino, la marca ya giró una vez.',
       noCoincide: 'Revisemos la marca naranja: a la mitad del camino ya dio una vuelta.',
     },
+    // Hallazgo 9: «Juega» rueda por una recta y «Mira» rodea una moneda. Son dos representaciones a propósito: la
+    // recta enseña la regla (paso 1, con su ecuación) y la moneda es el caso reservado de la predicción, que se resuelve
+    // con la misma regla cambiando solo el camino del centro. La mesa «rodea» del laboratorio junta las dos.
     mira: {
       datos: monedas({ camino: 2, vueltas: 3 }),
       voz: 'La pregunta es cuánto camina el centro.',
@@ -439,7 +480,7 @@
     },
     regla: {
       texto: 'Sin deslizar, la rueda da tantas vueltas como veces cabe su borde en el camino de su centro.',
-      ecuacion: [n, ' = ', { frac: [d, ['2π', r]] }],
+      ecuacion: [n, ' = ', { frac: [{ llave: [d], nota: 'camino del centro', color: 'c-i' }, { llave: ['2π', r], nota: 'una vuelta', color: 'c-d' }] }],
       condicion: 'd es lo que recorre el centro. Por fuera de una rueda R, d = 2π(R + r); por dentro, 2π(R − r).',
       voz: 'Cuenta el camino del centro; el borde lo acompaña.',
     },
@@ -490,7 +531,10 @@
   // Progresa: los arcos turquesa del borde, que miden lo mismo en las dos ruedas. · Se reserva: dos ruedas soldadas
   // en el mismo eje (la predicción). · Debe verse: mismo largo de borde (faja) frente a mismo ángulo (eje común).
   const RA = 1, GA = 120;
-  function poleas(rB, union, o = {}) {
+  const centroB = (ra, rB, union) => -1.6 + ra + rB + (union === 'faja' ? 0.9 : 0.14);
+  const poleas = (rB, union, o = {}) => poleasG(RA, GA, rB, union, o);
+  // A, de radio RA, gira GA grados y mueve a B (de radio rB) con faja o engranaje. El laboratorio cambia RA y GA.
+  function poleasG(RA, GA, rB, union, o = {}) {
     const gap = union === 'faja' ? 0.9 : 0.14, D = RA + rB + gap, xa = -1.6, xb = xa + D;
     const gB = GA * RA / rB, sB = union === 'faja' ? 1 : -1;
     const datos = {
@@ -549,6 +593,11 @@
       dibujo: v => ({ datos: poleas(v.rb, v.u), estado: {} }),
       lectura: v => [sub(th, 'B'), ` = ${f(GA * RA / v.rb)}° · ${v.u === 'faja' ? 'mismo sentido' : 'sentido contrario'}`],
       minimo: 3,
+      // Se arrastra lo alto de la rueda B: su altura sobre el eje es su radio. La unión (faja o engranaje) es una
+      // opción discreta y queda con sus botones.
+      arrastres: [{ id: 'borde-b', etiqueta: 'borde de la rueda B: cambia su radio', color: 'c-d',
+        donde: v => enPx(poleas(v.rb, v.u), centroB(RA, v.rb, v.u), v.rb),
+        mover: (pt, v) => ({ rb: TP().delPx(poleas(v.rb, v.u), pt).y }) }],
     },
     predice: {
       pregunta: 'Dos ruedas de radios 1 cm y 3 cm están soldadas en el mismo eje. Si la chica gira 90°, ¿cuánto gira la grande?',
@@ -587,7 +636,7 @@
     },
     regla: {
       texto: 'Con faja o engranaje, los bordes recorren el mismo largo: la rueda chica gira más. En un mismo eje, las ruedas giran el mismo ángulo.',
-      ecuacion: [sub(th, 'A'), ' · ', sub(r, 'A'), ' = ', sub(th, 'B'), ' · ', sub(r, 'B'), ';   mismo eje: ', sub(th, 'B'), ' = ', sub(th, 'C')],
+      ecuacion: [{ llave: [sub(th, 'A'), ' · ', sub(r, 'A')], nota: 'largo del borde', color: 'c-i' }, ' = ', sub(th, 'B'), ' · ', sub(r, 'B'), '   ·   ', sub(th, 'B'), ' = ', { llave: [sub(th, 'C')], nota: 'mismo eje', color: 'c-o' }],
       condicion: 'sin deslizar. Vale igual para vueltas o para giros por segundo; los engranajes que se tocan giran en sentidos opuestos.',
       voz: 'Faja: mismo largo de borde. Eje común: mismo ángulo.',
     },
@@ -625,10 +674,36 @@
             { id: 'igual', valor: na, error: 'POL-IGUAL', siFuera: 'Las mismas vueltas valen entre B y C, que comparten eje; entre A y B hay faja.' },
             { id: 'inversa', valor: na * 2, error: 'POL-INVERSA', siFuera: 'Usar la razón de radios está bien; B es más grande y gira menos.' },
           ], x => `${f(x)} vueltas`),
-          solucion: { texto: `La faja da ${nb} vueltas a B, y C gira con B.`, ecuacion: [sub(n, 'B'), ` = ${na} · ${ra}/${rb} = ${nb};  `, sub(n, 'C'), ' = ', sub(n, 'B'), ` = ${nb}`] },
+          solucion: { texto: `La faja da ${nb} vueltas a B, y C gira con B.`, ecuacion: [sub(n, 'B'), ` = ${na} · ${ra}/${rb} = ${nb}`, '   ·   ', sub(n, 'C'), ' = ', sub(n, 'B'), ` = ${nb}`] },
         };
       },
     },
+  };
+
+  // ---------- Laboratorio ----------
+  const secL = v => sector(v.g, v.r, { area: true, ventana: { x: [-4.9, 4.9], y: [-4.9, 4.9] } });
+  // Rueda de radio r que rueda por fuera (o por dentro) de una fija de radio R; su centro recorre p grados alrededor.
+  // Sin deslizar, la marca gira p·(R + r)/r por fuera y −p·(R − r)/r por dentro (vista desde afuera).
+  const caminoR = v => (v.lado === 'fuera' ? v.R + v.r : v.R - v.r);
+  const vueltasRodea = v => v.p / 360 * caminoR(v) / v.r;
+  function rodea(v) {
+    const rc = caminoR(v), cx = rc * Math.cos(v.p * RAD), cy = rc * Math.sin(v.p * RAD);
+    const marca = (v.lado === 'fuera' ? 1 : -1) * v.p * rc / v.r;
+    return {
+      ventana: { x: [-6.3, 6.3], y: [-6.3, 6.3] }, ejes: false,
+      circulos: [{ r: v.R }, { r: rc, color: 'i', discontinua: true }, { cx: rc, cy: 0, r: v.r, discontinua: true }, { cx, cy, r: v.r }],
+      arcos: v.p ? [{ de: 0, a: v.p, r: rc, espiral: 0, color: 'i' }] : [],
+      rayos: [{ cx, cy, ang: marca, largo: v.r, color: 'o', punta: false }],
+      puntos: [{ x: cx + v.r * Math.cos(marca * RAD), y: cy + v.r * Math.sin(marca * RAD), color: 'o' }],
+      rotulos: [{ x: 0, y: 0, texto: 'fija' }],
+      alt: `Rueda de radio ${f(v.r)} que rueda por ${v.lado} de una fija de radio ${f(v.R)}: su centro avanza ${f(v.p)} grados y ella da ${f(vueltasRodea(v))} vueltas`,
+    };
+  }
+  // Ventana fija (no salta al arrastrar); los rótulos bajan bajo la rueda mayor para no quedar bajo la manija de A.
+  const fajaL = v => {
+    const dd = poleasG(v.ra, v.ga, v.rb, v.u, { ventana: { x: [-3.4, 3.4], y: [-2.75, 1.9] } });
+    for (const t of dd.rotulos) t.y = -Math.max(v.ra, v.rb) - 0.85;
+    return dd;
   };
 
   return {
@@ -642,5 +717,71 @@
       fuente: { titulo: 'Arquímedes, Medida del círculo, proposición 1; traducción y discusión del seminario de Harvard (2009)', url: 'https://people.math.harvard.edu/archive/archimedes09/pdf/Measurement.of.the.Circle.pdf' },
     },
     ideas: [arco, area, trapecio, vueltas, poleasIdea],
+    // Laboratorio (docs/teoria.md §4b). «sector-completo»: θ hasta la vuelta entera y el radio libre, con arco y área a
+    // la vez (los juegos los separan). «rodea»: la rueda que rueda por fuera o por dentro de otra, el caso que la idea 4
+    // solo pregunta. «faja-libre»: los dos radios y el giro de A, con faja o engranaje (la idea fija A).
+    laboratorio: [
+      {
+        id: 'sector-completo', titulo: 'Arco y área a la vez', pieza: 'trig-plano',
+        consigna: 'Abre el sector hasta la vuelta entera y cambia su radio. Compara cómo crecen el arco y el área.',
+        controles: [
+          { id: 'g', etiqueta: 'θ', color: 'c-o', min: 10, max: 360, paso: 10, inicio: 120, unidad: '°', decimales: 0 },
+          { id: 'r', etiqueta: 'r', color: 'c-d', min: 0.5, max: 4, paso: 0.5, inicio: 2, unidad: 'cm', decimales: 1 },
+        ],
+        dibujo: v => ({ datos: secL(v), estado: {} }),
+        lectura: v => [th, ` = ${piTxt(v.g)} rad · `, s, ` = ${f(v.g * RAD * v.r)} cm · `, A, ` = ${f(v.g * RAD * v.r * v.r / 2)} cm²`],
+        // El borde del sector cambia θ; el punto del círculo opuesto al borde cambia r (así nunca se tapan).
+        arrastres: [
+          { id: 'borde', etiqueta: 'borde del sector θ', color: 'c-o',
+            donde: v => polar(secL(v), v.r, v.g),
+            mover: (pt, v) => ({ g: TP().anguloDe(secL(v), pt, { cerca: v.g }) }) },
+          { id: 'radio', etiqueta: 'borde del círculo: cambia r', color: 'c-d',
+            donde: v => polar(secL(v), v.r, v.g + 180),
+            mover: (pt, v) => ({ r: lejos(secL(v), pt) }) },
+        ],
+      },
+      {
+        id: 'rodea', titulo: 'Rodar alrededor de otra', pieza: 'trig-plano',
+        consigna: 'Una rueda rueda sin deslizar por fuera o por dentro de otra fija. Lleva su centro alrededor y cuenta las vueltas de la marca.',
+        controles: [
+          { id: 'lado', etiqueta: 'Por', opciones: [{ valor: 'fuera', texto: 'Fuera' }, { valor: 'dentro', texto: 'Dentro' }], inicio: 'fuera' },
+          { id: 'R', etiqueta: 'R fija', color: 'c-d', min: 1.5, max: 4, paso: 0.5, inicio: 2, unidad: 'cm', decimales: 1 },
+          { id: 'r', etiqueta: 'r', color: 'c-d', min: 0.5, max: 1, paso: 0.25, inicio: 1, unidad: 'cm', decimales: 2 },
+          { id: 'p', etiqueta: 'camino', color: 'c-i', min: 0, max: 720, paso: 15, inicio: 180, unidad: '°', decimales: 0 },
+        ],
+        dibujo: v => ({ datos: rodea(v), estado: {} }),
+        lectura: v => [n, ` = ${f(vueltasRodea(v))} vueltas · `, R, ' = ', `${f(v.R / v.r)} `, r, ` · por ${v.lado} · ${f(v.p)}°`],
+        // El centro de la rueda la lleva alrededor (camino); el punto de la rueda fija opuesto cambia R.
+        arrastres: [
+          { id: 'centro', etiqueta: 'centro de la rueda que rueda', color: 'c-i',
+            donde: v => polar(rodea(v), caminoR(v), v.p),
+            mover: (pt, v) => ({ p: TP().anguloDe(rodea(v), pt, { cerca: v.p }) }) },
+          { id: 'fija', etiqueta: 'borde de la rueda fija: cambia R', color: 'c-d',
+            donde: v => polar(rodea(v), v.R, v.p + 180),
+            mover: (pt, v) => ({ R: lejos(rodea(v), pt) }) },
+        ],
+      },
+      {
+        id: 'faja-libre', titulo: 'Faja o engranaje, libre', pieza: 'trig-plano',
+        consigna: 'Gira la rueda A desde la punta de su rayo y cambia los radios. La lectura da el giro de B y el borde recorrido.',
+        controles: [
+          { id: 'u', etiqueta: 'Unión', opciones: [{ valor: 'faja', texto: 'Faja' }, { valor: 'engranaje', texto: 'Engranaje' }], inicio: 'faja' },
+          { id: 'ga', etiqueta: 'θ de A', color: 'c-o', min: 30, max: 360, paso: 30, inicio: 180, unidad: '°', decimales: 0 },
+          { id: 'ra', etiqueta: 'r de A', color: 'c-d', min: 0.5, max: 1.5, paso: 0.25, inicio: 1, unidad: 'cm', decimales: 2 },
+          { id: 'rb', etiqueta: 'r de B', color: 'c-d', min: 0.5, max: 1.5, paso: 0.25, inicio: 1.5, unidad: 'cm', decimales: 2 },
+        ],
+        dibujo: v => ({ datos: fajaL(v), estado: {} }),
+        lectura: v => [sub(th, 'B'), ` = ${f(v.ga * v.ra / v.rb)}° · ${v.u === 'faja' ? 'mismo sentido' : 'sentido contrario'} · `, s, ` = ${f(v.ga * RAD * v.ra)} cm`],
+        // La punta del rayo de A cambia su giro; lo alto de cada rueda cambia su radio.
+        arrastres: [
+          { id: 'giro-a', etiqueta: 'punta del rayo de A: cambia su giro', color: 'c-o',
+            donde: v => polar(fajaL(v), v.ra, 90 + v.ga, -1.6, 0),
+            mover: (pt, v) => ({ ga: TP().anguloDe(fajaL(v), pt, { cx: -1.6, cerca: 90 + v.ga }) - 90 }) },
+          { id: 'borde-b', etiqueta: 'lo alto de B: cambia su radio', color: 'c-d',
+            donde: v => enPx(fajaL(v), centroB(v.ra, v.rb, v.u), v.rb),
+            mover: (pt, v) => ({ rb: TP().delPx(fajaL(v), pt).y }) },
+        ],
+      },
+    ],
   };
 });
