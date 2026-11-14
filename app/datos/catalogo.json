@@ -2971,7 +2971,14 @@
      "grado": 5,
      "plantillas": [
       "solidos"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/poliedros.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 3
+     }
     },
     {
      "id": "geometria.prisma-y-piramide",
