@@ -14,7 +14,36 @@
       ],
       "verificar": [ { "fn": "factorial", "args": [{ "n": 6 }], "espera": { "texto": "720" } },
                      { "fn": "combinatorio", "args": [{ "n": 8, "k": 3 }], "espera": { "texto": "56" } },
-                     { "fn": "combinatorio", "args": [{ "n": 8, "k": 5 }], "espera": { "texto": "56" } } ]
+                     { "fn": "combinatorio", "args": [{ "n": 8, "k": 5 }], "espera": { "texto": "56" } } ],
+      "preguntas": [
+        {
+          "id": "p1b",
+          "enunciado": "C(n, k) = n!/(k! · (n − k)!).",
+          "pregunta": "¿Cuánto vale C(8, 3)?",
+          "decimales": 2,
+          "correcta": { "fn": "combinatorio", "args": [{ "n": 8, "k": 3 }], "campo": "num", "valor": 56 },
+          "errores": [
+            {
+              "id": "BN12-variacion",
+              "respaldo": "parcial",
+              "explicacion": "Esa cuenta tiene en cuenta el orden: 8 · 7 · 6. En la combinación el orden no importa, así que se divide entre 3! = 6.",
+              "fn": "combinatorio",
+              "args": [{ "n": 8, "k": 3 }],
+              "campo": "errores.variacion.num",
+              "valor": 336
+            },
+            {
+              "id": "BN14-todas",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es 2⁸ = 256, todos los subconjuntos de 8 elementos. C(8, 3) cuenta solo los de 3.",
+              "fn": "combinatorio",
+              "args": [{ "n": 8, "k": 3 }],
+              "campo": "errores.todas.num",
+              "valor": 256
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p2",
@@ -26,7 +55,45 @@
         "Cada número de una fila se reparte entre los dos de abajo, así que cada fila suma el doble que la anterior: 1, 2, 4, 8, 16, 32.",
         "La suma de la fila n es 2ⁿ: hay 2⁵ = 32 palabras de 5 letras con a y b."
       ],
-      "verificar": [ { "fn": "fila", "args": [{ "n": 5 }], "espera": { "fila": ["1", "5", "10", "10", "5", "1"], "texto": "32" } } ]
+      "verificar": [ { "fn": "fila", "args": [{ "n": 5 }], "espera": { "fila": ["1", "5", "10", "10", "5", "1"], "texto": "32" } } ],
+      "preguntas": [
+        {
+          "id": "p2a",
+          "enunciado": "Se toma la fila 5 del triángulo de Pascal, la de (a + b)⁵.",
+          "pregunta": "¿Cuánto suma, sin sumar uno por uno?",
+          "decimales": 2,
+          "correcta": { "fn": "fila", "args": [{ "n": 5 }], "campo": "num", "valor": 32 },
+          "errores": [
+            {
+              "id": "BN5-suma-n",
+              "respaldo": "hipotesis",
+              "explicacion": "Cada fila suma el doble que la anterior: 1, 2, 4, 8, 16, 32. La fila n suma 2ⁿ, no n.",
+              "fn": "fila",
+              "args": [{ "n": 5 }],
+              "campo": "errores.sumaN.num",
+              "valor": 5
+            },
+            {
+              "id": "BN6-doble",
+              "respaldo": "hipotesis",
+              "explicacion": "Multiplicaste 2 · 5. Cada fila suma el doble que la anterior, así que se multiplica por 2 cinco veces: 2⁵.",
+              "fn": "fila",
+              "args": [{ "n": 5 }],
+              "campo": "errores.doble.num",
+              "valor": 10
+            },
+            {
+              "id": "BN18-cuadrado",
+              "respaldo": "hipotesis",
+              "explicacion": "Elevaste 5 al cuadrado. La suma de la fila n es 2ⁿ: 2⁵.",
+              "fn": "fila",
+              "args": [{ "n": 5 }],
+              "campo": "errores.cuadrado.num",
+              "valor": 25
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p3",
@@ -38,7 +105,36 @@
         "Con n = 9 y k = 4: C(9, 4) + C(9, 5) = C(10, 5).",
         "C(10, 5) = (10 · 9 · 8 · 7 · 6)/(5 · 4 · 3 · 2 · 1) = 30240/120 = 252. Comprobación: C(9, 4) = C(9, 5) = 126, y 126 + 126 = 252."
       ],
-      "verificar": [ { "fn": "pascal", "args": [{ "n": 9, "k": 4 }], "espera": { "texto": "252", "sumandos": ["126", "126"] } } ]
+      "verificar": [ { "fn": "pascal", "args": [{ "n": 9, "k": 4 }], "espera": { "texto": "252", "sumandos": ["126", "126"] } } ],
+      "preguntas": [
+        {
+          "id": "p3a",
+          "enunciado": "Sin calcular factoriales grandes, se quiere juntar C(9, 4) + C(9, 5) en un solo número combinatorio.",
+          "pregunta": "¿Cuánto vale C(9, 4) + C(9, 5)?",
+          "decimales": 2,
+          "correcta": { "fn": "pascal", "args": [{ "n": 9, "k": 4 }], "campo": "num", "valor": 252 },
+          "errores": [
+            {
+              "id": "BN2-desfase",
+              "respaldo": "hipotesis",
+              "explicacion": "Bajaste a C(10, 4). Dos vecinos suman el número que está debajo y entre ellos: C(9, 4) + C(9, 5) = C(10, 5).",
+              "fn": "pascal",
+              "args": [{ "n": 9, "k": 4 }],
+              "campo": "errores.desfase.num",
+              "valor": 210
+            },
+            {
+              "id": "BN16-solo-uno",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es uno solo de los sumandos, C(9, 4) = 126. Falta sumar C(9, 5), que también vale 126.",
+              "fn": "pascal",
+              "args": [{ "n": 9, "k": 4 }],
+              "campo": "errores.soloUno.num",
+              "valor": 126
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p4",
@@ -63,7 +159,59 @@
         "C(6, 2) = 15 y (3a)⁴ = 3⁴a⁴ = 81a⁴: el 3 también se eleva a la cuarta.",
         "t₃ = 15 · 81a⁴ · b² = 1215a⁴b²."
       ],
-      "verificar": [ { "fn": "termino", "args": [{ "A": { "c": 3, "v": { "a": 1 } }, "B": { "c": 1, "v": { "b": 1 } }, "n": 6, "lugar": 3 }], "espera": { "texto": "1215a⁴b²" } } ]
+      "verificar": [ { "fn": "termino", "args": [{ "A": { "c": 3, "v": { "a": 1 } }, "B": { "c": 1, "v": { "b": 1 } }, "n": 6, "lugar": 3 }], "espera": { "texto": "1215a⁴b²" } } ],
+      "preguntas": [
+        {
+          "id": "p5a",
+          "enunciado": "Se desarrolla (3a + b)⁶.",
+          "pregunta": "¿Cuál es el tercer término?",
+          "decimales": 2,
+          "correcta": {
+            "fn": "termino",
+            "args": [{ "A": { "c": 3, "v": { "a": 1 } }, "B": { "c": 1, "v": { "b": 1 } }, "n": 6, "lugar": 3 }],
+            "campo": "texto",
+            "valor": "1215a⁴b²"
+          },
+          "errores": [
+            {
+              "id": "BN4-sin-elevar",
+              "respaldo": "hipotesis",
+              "explicacion": "Faltó elevar el 3: (3a)⁴ = 81a⁴, no 3a⁴.",
+              "fn": "termino",
+              "args": [{ "A": { "c": 3, "v": { "a": 1 } }, "B": { "c": 1, "v": { "b": 1 } }, "n": 6, "lugar": 3 }],
+              "campo": "errores.sinElevar.texto",
+              "valor": "45a⁴b²"
+            },
+            {
+              "id": "BN10-k-es-el-lugar",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste k = 3. El tercer término es t₃ = tₖ₊₁ con k = 2: C(6, 2) · (3a)⁴ · b².",
+              "fn": "termino",
+              "args": [{ "A": { "c": 3, "v": { "a": 1 } }, "B": { "c": 1, "v": { "b": 1 } }, "n": 6, "lugar": 3 }],
+              "campo": "errores.kCompleto.texto",
+              "valor": "540a³b³"
+            },
+            {
+              "id": "BN3-sin-combinatorio",
+              "respaldo": "hipotesis",
+              "explicacion": "Faltó el número combinatorio: t₃ = C(6, 2) · (3a)⁴ · b², y C(6, 2) = 15.",
+              "fn": "termino",
+              "args": [{ "A": { "c": 3, "v": { "a": 1 } }, "B": { "c": 1, "v": { "b": 1 } }, "n": 6, "lugar": 3 }],
+              "campo": "errores.sinCoef.texto",
+              "valor": "81a⁴b²"
+            },
+            {
+              "id": "BN11-al-reves",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiaste los exponentes de lugar. En tₖ₊₁ el primer término va a la n − k y el segundo a la k: (3a)⁴ · b².",
+              "fn": "termino",
+              "args": [{ "A": { "c": 3, "v": { "a": 1 } }, "B": { "c": 1, "v": { "b": 1 } }, "n": 6, "lugar": 3 }],
+              "campo": "errores.alReves.texto",
+              "valor": "135a²b⁴"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p6",
@@ -75,7 +223,59 @@
         "C(7, 4) = 35 y (−3)⁴ = 81, positivo porque el exponente es par.",
         "t₅ = 35 · 81 · x³ = 2835x³. En (a − b)ⁿ los signos se alternan: los términos con k par son positivos y los de k impar, negativos."
       ],
-      "verificar": [ { "fn": "termino", "args": [{ "A": { "c": 1, "v": { "x": 1 } }, "B": { "c": -3 }, "n": 7, "lugar": 5 }], "espera": { "texto": "2835x³" } } ]
+      "verificar": [ { "fn": "termino", "args": [{ "A": { "c": 1, "v": { "x": 1 } }, "B": { "c": -3 }, "n": 7, "lugar": 5 }], "espera": { "texto": "2835x³" } } ],
+      "preguntas": [
+        {
+          "id": "p6a",
+          "enunciado": "Se desarrolla (x − 3)⁷.",
+          "pregunta": "¿Cuál es el quinto término?",
+          "decimales": 2,
+          "correcta": {
+            "fn": "termino",
+            "args": [{ "A": { "c": 1, "v": { "x": 1 } }, "B": { "c": -3 }, "n": 7, "lugar": 5 }],
+            "campo": "texto",
+            "valor": "2835x³"
+          },
+          "errores": [
+            {
+              "id": "BN4-sin-elevar",
+              "respaldo": "hipotesis",
+              "explicacion": "Faltó elevar el −3: (−3)⁴ = 81, positivo porque el exponente es par.",
+              "fn": "termino",
+              "args": [{ "A": { "c": 1, "v": { "x": 1 } }, "B": { "c": -3 }, "n": 7, "lugar": 5 }],
+              "campo": "errores.sinElevar.texto",
+              "valor": "−105x³"
+            },
+            {
+              "id": "BN10-k-es-el-lugar",
+              "respaldo": "hipotesis",
+              "explicacion": "Tomaste k = 5. El quinto término es t₅ = tₖ₊₁ con k = 4: C(7, 4) · x³ · (−3)⁴.",
+              "fn": "termino",
+              "args": [{ "A": { "c": 1, "v": { "x": 1 } }, "B": { "c": -3 }, "n": 7, "lugar": 5 }],
+              "campo": "errores.kCompleto.texto",
+              "valor": "−5103x²"
+            },
+            {
+              "id": "BN11-al-reves",
+              "respaldo": "hipotesis",
+              "explicacion": "Cambiaste los exponentes de lugar. En tₖ₊₁ la x va a la n − k = 3 y el −3 a la k = 4.",
+              "fn": "termino",
+              "args": [{ "A": { "c": 1, "v": { "x": 1 } }, "B": { "c": -3 }, "n": 7, "lugar": 5 }],
+              "campo": "errores.alReves.texto",
+              "valor": "−945x⁴"
+            },
+            {
+              "id": "BN2-desfase",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste C(7, 5). El combinatorio lleva el mismo k que el exponente del segundo término: C(7, 4) = 35.",
+              "fn": "termino",
+              "args": [{ "A": { "c": 1, "v": { "x": 1 } }, "B": { "c": -3 }, "n": 7, "lugar": 5 }],
+              "campo": "errores.desfase.texto",
+              "valor": "1701x³"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p7",
@@ -87,7 +287,41 @@
         "El exponente de x es 14 − 3k (el 1/x resta k). Se pide 14 − 3k = 5, así que k = 3.",
         "Coeficiente: C(7, 3) · (−2)³ = 35 · (−8) = −280."
       ],
-      "verificar": [ { "fn": "coeficiente", "args": [{ "A": { "c": 1, "v": { "x": 2 } }, "B": { "c": -2, "v": { "x": -1 } }, "n": 7, "m": 5 }], "espera": { "texto": "−280", "lugar": 4, "termino": "−280x⁵" } } ]
+      "verificar": [ { "fn": "coeficiente", "args": [{ "A": { "c": 1, "v": { "x": 2 } }, "B": { "c": -2, "v": { "x": -1 } }, "n": 7, "m": 5 }], "espera": { "texto": "−280", "lugar": 4, "termino": "−280x⁵" } } ],
+      "preguntas": [
+        {
+          "id": "p7a",
+          "enunciado": "Se desarrolla (x² − 2/x)⁷.",
+          "pregunta": "¿Cuál es el coeficiente de x⁵?",
+          "decimales": 2,
+          "correcta": {
+            "fn": "coeficiente",
+            "args": [{ "A": { "c": 1, "v": { "x": 2 } }, "B": { "c": -2, "v": { "x": -1 } }, "n": 7, "m": 5 }],
+            "campo": "num",
+            "valor": -280
+          },
+          "errores": [
+            {
+              "id": "BN4-sin-elevar",
+              "respaldo": "hipotesis",
+              "explicacion": "Faltó elevar el −2 al cubo: (−2)³ = −8, y C(7, 3) · (−8) = −280.",
+              "fn": "coeficiente",
+              "args": [{ "A": { "c": 1, "v": { "x": 2 } }, "B": { "c": -2, "v": { "x": -1 } }, "n": 7, "m": 5 }],
+              "campo": "errores.sinElevar.num",
+              "valor": -70
+            },
+            {
+              "id": "BN8-sin-signo",
+              "respaldo": "hipotesis",
+              "explicacion": "Se perdió el signo: (−2)³ = −8, negativo porque el exponente es impar.",
+              "fn": "coeficiente",
+              "args": [{ "A": { "c": 1, "v": { "x": 2 } }, "B": { "c": -2, "v": { "x": -1 } }, "n": 7, "m": 5 }],
+              "campo": "errores.sinSigno.num",
+              "valor": 280
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p8",
@@ -111,7 +345,50 @@
         "t₅ = C(8, 4) · (2x)⁴ · (−y)⁴ = 70 · 16x⁴ · y⁴.",
         "t₅ = 1120x⁴y⁴ (positivo, porque (−y)⁴ tiene exponente par)."
       ],
-      "verificar": [ { "fn": "central", "args": [{ "A": { "c": 2, "v": { "x": 1 } }, "B": { "c": -1, "v": { "y": 1 } }, "n": 8 }], "espera": { "texto": "1120x⁴y⁴", "lugar": "t₅" } } ]
+      "verificar": [ { "fn": "central", "args": [{ "A": { "c": 2, "v": { "x": 1 } }, "B": { "c": -1, "v": { "y": 1 } }, "n": 8 }], "espera": { "texto": "1120x⁴y⁴", "lugar": "t₅" } } ],
+      "preguntas": [
+        {
+          "id": "p9a",
+          "enunciado": "Se desarrolla (2x − y)⁸.",
+          "pregunta": "¿Cuál es el término central?",
+          "decimales": 2,
+          "correcta": {
+            "fn": "central",
+            "args": [{ "A": { "c": 2, "v": { "x": 1 } }, "B": { "c": -1, "v": { "y": 1 } }, "n": 8 }],
+            "campo": "texto",
+            "valor": "1120x⁴y⁴"
+          },
+          "errores": [
+            {
+              "id": "BN7-uno-mas",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es t₆. Con n = 8 hay 9 términos; el del medio es t₅, con cuatro antes y cuatro después.",
+              "fn": "central",
+              "args": [{ "A": { "c": 2, "v": { "x": 1 } }, "B": { "c": -1, "v": { "y": 1 } }, "n": 8 }],
+              "campo": "errores.masUno.texto",
+              "valor": "−448x³y⁵"
+            },
+            {
+              "id": "BN23-antes",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es t₄. Con n = 8 hay 9 términos; el del medio es t₅, con k = 4.",
+              "fn": "central",
+              "args": [{ "A": { "c": 2, "v": { "x": 1 } }, "B": { "c": -1, "v": { "y": 1 } }, "n": 8 }],
+              "campo": "errores.antes.texto",
+              "valor": "−1792x⁵y³"
+            },
+            {
+              "id": "BN2-desfase",
+              "respaldo": "hipotesis",
+              "explicacion": "Usaste C(8, 5). El término central tiene k = 4: C(8, 4) · (2x)⁴ · (−y)⁴ = 70 · 16x⁴y⁴.",
+              "fn": "central",
+              "args": [{ "A": { "c": 2, "v": { "x": 1 } }, "B": { "c": -1, "v": { "y": 1 } }, "n": 8 }],
+              "campo": "errores.desfase.texto",
+              "valor": "896x⁴y⁴"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "p10",
@@ -124,7 +401,45 @@
         "Suman 1. No es 2⁵ = 32: eso pasa cuando los coeficientes del binomio suman 2, como en (x + 1)⁵."
       ],
       "verificar": [ { "fn": "terminos", "args": [{ "n": 5 }], "espera": { "texto": "6" } },
-                     { "fn": "sumaCoeficientes", "args": [{ "A": { "c": 3, "v": { "x": 1 } }, "B": { "c": -2 }, "n": 5 }], "espera": { "texto": "1" } } ]
+                     { "fn": "sumaCoeficientes", "args": [{ "A": { "c": 3, "v": { "x": 1 } }, "B": { "c": -2 }, "n": 5 }], "espera": { "texto": "1" } } ],
+      "preguntas": [
+        {
+          "id": "p10a",
+          "enunciado": "Se desarrolla (3x − 2)⁵.",
+          "pregunta": "¿Cuántos términos tiene el desarrollo?",
+          "decimales": 2,
+          "correcta": { "fn": "terminos", "args": [{ "n": 5 }], "campo": "num", "valor": 6 },
+          "errores": [
+            {
+              "id": "BN1-n-terminos",
+              "respaldo": "hipotesis",
+              "explicacion": "Un binomio a la n tiene n + 1 términos: el exponente de x baja de 5 hasta 0.",
+              "fn": "terminos",
+              "args": [{ "n": 5 }],
+              "campo": "errores.nTerminos.num",
+              "valor": 5
+            },
+            {
+              "id": "AL11-reparte",
+              "respaldo": "hipotesis",
+              "explicacion": "El exponente no se reparte: (3x − 2)⁵ no es (3x)⁵ − 2⁵. Tiene 5 + 1 términos.",
+              "fn": "terminos",
+              "args": [{ "n": 5 }],
+              "campo": "errores.reparte.num",
+              "valor": 2
+            },
+            {
+              "id": "BN17-sin-juntar",
+              "respaldo": "hipotesis",
+              "explicacion": "Ese es 2⁵: no juntaste los términos semejantes. Quedan 5 + 1.",
+              "fn": "terminos",
+              "args": [{ "n": 5 }],
+              "campo": "errores.sinJuntar.num",
+              "valor": 32
+            }
+          ]
+        }
+      ]
     }
   ]
 }
