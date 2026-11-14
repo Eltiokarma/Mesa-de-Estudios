@@ -17,11 +17,34 @@
  * Códigos: RV27 (último sustantivo), RV28 (información vieja y nueva), RV9; RVC1–RVC3 son hipótesis nuevas.
  */
 (function (root, fabrica) {
-  const def = fabrica();
+  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
   if (typeof module === 'object' && module.exports) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function () {
+})(typeof self !== 'undefined' ? self : this, function (Kit) {
   'use strict';
+  // Gesto directo (docs/teoria.md §4b): la manija va sobre una palabra o una ficha de la figura (rv-texto.ancla) y,
+  // al arrastrarla, salta a la más cercana al dedo (rv-texto.cercana). Mueve un control de opciones, que conserva sus
+  // botones como alternativa sin arrastre.
+  const RV = () => Kit.piezas['rv-texto'];
+  // En un párrafo, rv-texto.ancla pone la manija al centro del subrayado y tapa palabras cortas («lo», «ellos»): aquí va
+  // al inicio del subrayado, como una viñeta; en una lista se queda sobre el número.
+  function anclaP(datos, id) {
+    for (const s of RV().disponer(datos).secciones) {
+      if (s.sec.modo === 'lista') continue;
+      const tr = s.trozos.find(t => !t.num && t.id === id);
+      if (tr) return { x: tr.x, y: tr.y + 5 };
+    }
+    return RV().ancla(datos, id);
+  }
+  const manija = (id, control, datosDe, ids, etiqueta, color = 'c-o') => ({
+    id, etiqueta, color,
+    donde: val => anclaP(datosDe(val), val[control]),
+    mover: (pt, val) => ({ [control]: RV().cercana(datosDe(val), pt, ids) }),
+  });
+  // Bandeja de fichas bajo el texto (una por opción del control); la elegida va marcada.
+  // Va arriba del texto: así el sello del texto no queda bajo el botón de la lupa (esquina superior derecha).
+  const conBandeja = (datos, titulo, items) => ({ secciones: [{ id: 'bandeja', titulo, modo: 'lista', fragmentos: items }].concat(datos.secciones) });
+  const conFicha = (estado, id) => Object.assign({}, estado, { marcas: Object.assign({}, estado.marcas, { [id]: 'o' }) });
   // Una lectura en vivo no parte línea dentro de un color (.var): si el texto es largo, solo va en color su cabeza.
   const corto = (fn, t) => {
     if (t.length <= 26) return fn(t);
@@ -74,6 +97,8 @@
       dibujo: val => ({ datos: MARTA, estado: estMarta(val.p, val.r) }),
       lectura: val => [OK[val.p] === val.r ? corto(ref, POR[`${val.p}-${val.r}`]) : corto(mal, POR[`${val.p}-${val.r}`])],
       minimo: 4,
+      // Arrastra el referente por la primera oración: el pronombre elegido se une a la palabra donde lo sueltas.
+      arrastres: [manija('referente', 'r', () => MARTA, Object.keys(CAND), 'referente del pronombre', 'c-i')],
     },
     predice: {
       pregunta: 'En este texto, ¿a qué se refiere «Lo»?',
@@ -97,7 +122,7 @@
     },
     regla: {
       texto: 'Una anáfora retoma algo ya dicho; una catáfora anuncia algo que viene después. El referente es el que concuerda y además da sentido, no siempre el más cercano.',
-      ecuacion: [ref('referente'), ' ← ', remite('anáfora'), '   ·   ', remite('catáfora'), ' → ', ref('referente')],
+      ecuacion: [ref('referente'), ' ← ', { llave: [remite('anáfora')], nota: 'mira atrás', color: 'c-o' }, '   ·   ', { llave: [remite('catáfora')], nota: 'mira adelante', color: 'c-o' }, ' → ', ref('referente')],
       condicion: 'se reemplaza la palabra por su referente: si la oración se lee bien y tiene sentido, es ese.',
     },
     ahoraTu: {
@@ -131,6 +156,7 @@
     eli: { t: '( — )', nombre: 'Elipsis: se calla, se entiende' },
   };
   const VICU = { secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: [{ id: 'a', t: 'La vicuña vive en la puna, sobre los cuatro mil metros.' }, { id: 'w', hueco: true, reserva: 'Este animal' }, { id: 'b', t: 'tiene la fibra más fina del mundo.' }] }] };
+  const VICU_B = conBandeja(VICU, 'Formas de nombrarla', Object.entries(RECURSO).map(([id, r]) => ({ id, t: r.t })));
   const estVicu = (r, extra = {}) => Object.assign({ huecos: { w: RECURSO[r].t }, marcas: { a: 'i', w: 'o' }, sellos: { o: { t: r === 'rep' ? 'Repetición' : r === 'sus' ? 'Sustitución' : 'Elipsis', c: 'd' } } }, extra);
   const recursos = {
     id: 'repetir-sustituir-callar',
@@ -141,9 +167,11 @@
       consigna: 'Elige cómo nombrar de nuevo a la vicuña en la segunda oración. Mira qué recurso usa el texto en cada caso.',
       voz: 'Los tres caminos llevan al mismo referente.',
       controles: [{ id: 'r', etiqueta: 'Recurso', opciones: Object.entries(RECURSO).map(([valor, r]) => ({ valor, texto: r.t })) }],
-      dibujo: val => ({ datos: VICU, estado: estVicu(val.r) }),
+      dibujo: val => ({ datos: VICU_B, estado: conFicha(estVicu(val.r), val.r) }),
       lectura: val => [corto(nuevo, RECURSO[val.r].nombre)],
       minimo: 3,
+      // Arrastra la ficha a una forma de nombrar: entra en el hueco de la segunda oración.
+      arrastres: [manija('ficha', 'r', () => VICU_B, Object.keys(RECURSO), 'ficha de la forma de nombrar')],
     },
     predice: {
       pregunta: 'En «Pedro compró pan y Ana, queso», ¿qué palabra se calló después de «Ana»?',
@@ -166,7 +194,7 @@
     },
     regla: {
       texto: 'Para volver a nombrar algo, un texto puede repetirlo, sustituirlo por otra expresión o pronombre, o callarlo (elipsis) cuando se entiende. Los tres mantienen el hilo.',
-      ecuacion: [ref('referente'), ' → ', remite('repetición'), ' | ', remite('sustitución'), ' | ', remite('elipsis')],
+      ecuacion: [ref('referente'), ' → ', remite('repetición'), '   ·   ', remite('sustitución'), '   ·   ', remite('elipsis')],
       condicion: 'el lector puede recuperar el referente sin dudar; si dos candidatos encajan, conviene repetir.',
     },
     ahoraTu: {
@@ -202,6 +230,9 @@
   };
   // La oración 3 cambia de texto según la candidata: va en datos (una oración larga no cabe en un hueco).
   const figCam = c => ({ secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: CAMINO.map((t, k) => ({ id: `o${k + 1}`, t: t || CANDIDATAS[c].t })) }] });
+  // El juego agrega, sobre el texto, las tres candidatas como fichas; «Mira» usa el texto solo, con la candidata A ya
+  // puesta (hallazgo 9: es el mismo texto que el alumno armó, sin la bandeja).
+  const figCamB = c => conBandeja(figCam(c), 'Candidatas', Object.entries(CANDIDATAS).map(([id, x]) => ({ id, t: x.t })));
   const estCam = (c, extra = {}) => Object.assign({ marcas: { o3: CANDIDATAS[c].ok ? 'o' : 'h', o2: 'i', o4: CANDIDATAS[c].ok ? 'i' : 'h' }, sellos: { o: CANDIDATAS[c].ok ? { t: 'El hilo sigue', c: 'i' } : { t: 'Se corta el hilo', c: 'h' } } }, extra);
   const progresion = {
     id: 'conocido-y-nuevo',
@@ -212,9 +243,11 @@
       consigna: 'Falta la oración 3. Prueba cada candidata y mira si la 4 encuentra lo que necesita.',
       voz: 'Cada oración parte de algo ya dicho y agrega algo.',
       controles: [{ id: 'c', etiqueta: 'Oración 3', opciones: Object.keys(CANDIDATAS).map(c => ({ valor: c, texto: `Candidata ${c.toUpperCase()}` })) }],
-      dibujo: val => ({ datos: figCam(val.c), estado: estCam(val.c) }),
+      dibujo: val => ({ datos: figCamB(val.c), estado: Object.assign(estCam(val.c), { marcas: Object.assign(estCam(val.c).marcas, { [val.c]: 'o' }) }) }),
       lectura: val => [CANDIDATAS[val.c].ok ? corto(ref, CANDIDATAS[val.c].dice) : corto(mal, CANDIDATAS[val.c].dice)],
       minimo: 3,
+      // Arrastra la ficha a una candidata: esa oración pasa al lugar 3 del texto.
+      arrastres: [manija('ficha', 'c', val => figCamB(val.c), Object.keys(CANDIDATAS), 'ficha de la oración candidata')],
     },
     predice: {
       pregunta: 'En este texto sobre el ichu falta la oración 2. ¿Cuál mantiene el hilo?',
@@ -238,7 +271,7 @@
     },
     regla: {
       texto: 'Cada oración parte de algo conocido (tópico) y agrega algo nuevo (comento); lo nuevo de una pasa a ser lo conocido de la siguiente. Lo incluido sigue ese hilo.',
-      ecuacion: [ref('tópico'), ' + ', nuevo('comento'), ' → ', ref('tópico siguiente')],
+      ecuacion: [{ llave: [ref('tópico')], nota: 'lo conocido', color: 'c-i' }, ' + ', { llave: [nuevo('comento')], nota: 'lo nuevo', color: 'c-d' }, ' → ', ref('tópico siguiente')],
       condicion: 'la oración que se incluye retoma lo anterior y deja lo que la siguiente necesita (un nombre, una razón).',
     },
     ahoraTu: {
@@ -268,6 +301,7 @@
   // Debe verse: que con «todos» las dos oraciones no pueden ser verdad a la vez.
   const CUANT = { todos: { t: 'Todos los alumnos aprobaron el examen.', ok: false }, mayoria: { t: 'La mayoría de los alumnos aprobaron el examen.', ok: true }, casi: { t: 'Casi todos los alumnos aprobaron el examen.', ok: true } };
   const figExa = k => ({ secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: [{ id: 'a', t: CUANT[k].t }, { id: 'b', t: 'Sin embargo, tres alumnos lo desaprobaron.' }] }] });
+  const figExaB = k => conBandeja(figExa(k), 'Cantidad', [['todos', 'Todos'], ['mayoria', 'La mayoría'], ['casi', 'Casi todos']].map(([id, t]) => ({ id, t })));
   const estExa = (k, extra = {}) => Object.assign({ marcas: { a: CUANT[k].ok ? 'i' : 'h', b: CUANT[k].ok ? 'i' : 'h' }, sellos: { o: CUANT[k].ok ? { t: 'Coherente', c: 'i' } : { t: 'Se contradice', c: 'h' } } }, extra);
   const noContradiccion = {
     id: 'no-contradiccion',
@@ -278,7 +312,9 @@
       consigna: 'Cambia la cantidad en la primera oración. Mira cuándo las dos oraciones pueden ser verdad al mismo tiempo.',
       voz: 'El «sin embargo» está bien puesto; mira lo que dicen.',
       controles: [{ id: 'k', etiqueta: 'Cantidad', opciones: [{ valor: 'todos', texto: 'Todos' }, { valor: 'mayoria', texto: 'La mayoría' }, { valor: 'casi', texto: 'Casi todos' }] }],
-      dibujo: val => ({ datos: figExa(val.k), estado: estExa(val.k) }),
+      dibujo: val => ({ datos: figExaB(val.k), estado: conFicha(estExa(val.k), val.k) }),
+      // Arrastra la ficha a otra cantidad: cambia la primera oración; la segunda queda igual.
+      arrastres: [manija('ficha', 'k', val => figExaB(val.k), Object.keys(CUANT), 'ficha de la cantidad')],
       lectura: val => [CUANT[val.k].ok ? corto(ref, 'Pueden ser verdad a la vez') : corto(mal, 'No pueden ser verdad a la vez')],
       minimo: 3,
     },
@@ -307,7 +343,7 @@
     },
     regla: {
       texto: 'Un texto coherente no afirma y niega lo mismo, sobre lo mismo y al mismo tiempo. La cohesión (conectores, pronombres) une la forma; no garantiza que el sentido se sostenga.',
-      ecuacion: [ref('A'), ' y ', mal('no A'), ' no pueden ser verdad a la vez'],
+      ecuacion: [ref('A'), ' y ', { llave: [mal('no A')], nota: 'lo niega', color: 'c-h' }, ' no pueden ser verdad a la vez'],
       condicion: 'se comparan las afirmaciones con su cantidad (todos, algunos), su tiempo y su lugar: si cambian, quizá no chocan.',
     },
     ahoraTu: {
@@ -330,9 +366,44 @@
     },
   };
 
+  // ---------- Laboratorio: concordar no basta ----------
+  // Más rico que la idea 1: tres pronombres y cuatro candidatos, con dos manijas (el pronombre y su referente). El
+  // código decide la concordancia con el género y el número de cada palabra (regla 1); el sentido es un dato del texto
+  // (qué se puede sembrar o guardar vacío). El sello solo dice «tiene sentido» si se cumplen las dos cosas.
+  const PALABRAS = {
+    m0: { t: 'Los vecinos', g: 'm', n: 'pl' }, m1: { t: 'unas semillas', g: 'f', n: 'pl' },
+    m2: { t: 'un costal', g: 'm', n: 'sg' }, m3: { t: 'un burro', g: 'm', n: 'sg' },
+    m4: { t: 'ellos', g: 'm', n: 'pl', sentido: 'm0' }, m5: { t: 'las', g: 'f', n: 'pl', sentido: 'm1' }, m6: { t: 'lo', g: 'm', n: 'sg', sentido: 'm2' },
+  };
+  const CANDS = ['m0', 'm1', 'm2', 'm3'], PRONS = ['m4', 'm5', 'm6'];
+  const RASGO = w => `${w.g === 'm' ? 'masculino' : 'femenino'} ${w.n === 'sg' ? 'singular' : 'plural'}`;
+  const VECINOS = texto('Texto', '[[Los vecinos]] compraron [[unas semillas]], [[un costal]] y [[un burro]]. Después, [[ellos]] [[las]] sembraron y [[lo]] guardaron vacío en el corral.');
+  const concuerda = (p, r) => PALABRAS[p].g === PALABRAS[r].g && PALABRAS[p].n === PALABRAS[r].n;
+  const mesaConcuerda = {
+    id: 'concordar-no-basta', titulo: 'Concordar no basta', pieza: 'rv-texto',
+    consigna: 'Arrastra un pronombre y su referente. Mira si concuerdan en género y número, y si además tiene sentido.',
+    voz: 'Prueba «lo» con el costal y con el burro.',
+    controles: [
+      { id: 'p', etiqueta: 'Pronombre', opciones: PRONS.map(valor => ({ valor, texto: PALABRAS[valor].t })) },
+      { id: 'r', etiqueta: 'Referente', opciones: CANDS.map(valor => ({ valor, texto: PALABRAS[valor].t })) },
+    ],
+    dibujo: val => {
+      const c = concuerda(val.p, val.r), ok = c && PALABRAS[val.p].sentido === val.r;
+      return { datos: VECINOS, estado: { marcas: { [val.p]: 'o', [val.r]: ok ? 'i' : 'h' }, sellos: { o: ok ? { t: 'Tiene sentido', c: 'i' } : c ? { t: 'Concuerda, sin sentido', c: 'h' } : { t: 'No concuerda', c: 'h' } } } };
+    },
+    lectura: val => {
+      const c = concuerda(val.p, val.r), ok = c && PALABRAS[val.p].sentido === val.r;
+      return [remite(PALABRAS[val.p].t), ` (${RASGO(PALABRAS[val.p])}) → `, ok ? ref(PALABRAS[val.r].t) : mal(PALABRAS[val.r].t), c ? (ok ? ' · concuerda y tiene sentido' : ' · concuerda, sin sentido') : ' · no concuerda'];
+    },
+    arrastres: [
+      manija('pronombre', 'p', () => VECINOS, PRONS, 'pronombre que se mira'),
+      manija('referente', 'r', () => VECINOS, CANDS, 'referente del pronombre', 'c-i'),
+    ],
+  };
+
   return {
     unidad: 'razonamiento-verbal.cohesion-y-coherencia',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js'],
     historia: {
@@ -340,6 +411,11 @@
       pregunta: '¿Basta un «por eso» para que un texto tenga sentido?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (lingüística textual)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/cohesion.htm' },
     },
+    laboratorio: [
+      mesaConcuerda,
+      Object.assign({ id: 'referente', titulo: 'El texto de Marta', pieza: 'rv-texto' }, referencia.juega),
+      Object.assign({ id: 'hilo', titulo: 'El hilo de los caminos', pieza: 'rv-texto' }, progresion.juega),
+    ],
     ideas: [referencia, recursos, progresion, noContradiccion],
   };
 });
