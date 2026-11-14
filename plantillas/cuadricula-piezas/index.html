@@ -140,6 +140,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.3fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 </style>
 <link rel="stylesheet" href="../../nucleo/pegatina.css">
@@ -210,6 +211,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'cuadricula-piezas', unidad: 'razonamiento-matematico.trazos-y-perimetros', version: '0.1.0' };
@@ -638,6 +640,15 @@ function crearEditor(cv, vista, alCambiar){
   E.deshacer = () => { if (E.historia.length){ E.cortes = E.historia.pop(); alCambiar(true); } };
   return E;
 }
+// Regla 3 (jugar antes de preguntar): un tablero de m × n que se corta libre con el editor. Las piezas se pintan,
+// pero no se dan perímetros, áreas ni congruencias: no adelanta ninguna respuesta.
+function vistaJuegoCortes(m, n, ed){
+  const V = { tipo:'tablero', m, n, maxEscala:64, cortes:ed.lista(), puntos:true, cursor: ed.cursor ? Object.assign({ lapiz:ed.lapiz }, ed.cursor) : null };
+  const r = M.piezas(m, n, V.cortes);
+  if (r.total >= 2) V.piezas = r.piezas.map((p, i) => ({ celdas:p.celdas, k: i === 0 ? 'A' : i === 1 ? 'B' : null, sinContorno:true }));
+  V.texto = `Un tablero de ${m} por ${n} casillas para cortar por las líneas: ${r.total === 1 ? 'todavía es una sola pieza' : r.total + ' piezas'}. Con teclado: flechas para moverte y Espacio para bajar o levantar el lápiz.`;
+  return V;
+}
 function htmlEditor(id){
   return `<div class="ctl" id="${id}" role="group" aria-label="Cortar el tablero">
     <button type="button" class="mini" data-e="cortar" aria-pressed="false">Cortar yo</button>
@@ -768,7 +779,7 @@ const P10 = { id:'cp-paso10-sombra', ok:'a',
 // ---- Vistas de cada paso ----
 const cuentaDe = (k) => (R.i >= 0 && R.lista.length ? { t:`${R.i + 1} de ${R.lista.length}`, k } : null);
 const ED = { m:4, n:4 };
-const E = crearEditor(cv, () => S.vista, fin => { const s = steps[S.step]; if (s.trasEditar) s.trasEditar(fin); });
+const E = crearEditor(cv, () => S.vista, fin => { if (S.jugando) return S.jugando(); const s = steps[S.step]; if (s.trasEditar) s.trasEditar(fin); });
 E.activo = false;
 function vista1(){
   const V = { tipo:'tablero', m:4, n:4, maxEscala:70 };
@@ -1092,6 +1103,14 @@ document.addEventListener('focusout', e => { if (e.target.closest && e.target.cl
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
 L.resize(); go(0);
+// Regla 3: antes de la primera pregunta, se corta libre un tablero de 3 × 5 (no el de 4 × 4 que se pregunta).
+L.compactar(false);
+E.cortes = new Map(); E.historia = []; E.cursor = null; E.lapiz = false; E.activo = true;
+S.jugando = () => { S.vista = vistaJuegoCortes(3, 5, E); draw(); $('desc1').textContent = S.vista.texto; cv.setAttribute('aria-label', S.vista.texto); };
+S.jugando(); leyenda($('leg1'), ['A', 'B'], { A:'una pieza', B:'otra pieza' });
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el dedo por las líneas para cortar el tablero en piezas.', minimo:2,
+  alListo:() => { S.jugando = null; E.activo = false; E.cortes = new Map(); E.historia = []; E.cursor = null; E.lapiz = false; go(S.step); } });
 })();
 </script>
 <script>
@@ -1115,7 +1134,7 @@ const E5 = M.partirDos(3, 6);
 const RECTAS_RED = [[0,2],[3,5],[6,8],[0,6],[1,7],[2,8],[0,8],[2,6]];
 function marco(g){ const o = [], esq = []; for (let f = 0; f < 7; f++) for (let c = 0; c < 9; c++){ const borde = f < g || c < g || f >= 7 - g || c >= 9 - g; if (!borde) continue; ((f < g || f >= 7 - g) && (c < g || c >= 9 - g) ? esq : o).push([f, c]); } return { lados:o, esquinas:esq }; }
 const MARCO = marco(2);
-const editor = crearEditor(cv, () => S.vista, fin => { const el = $('ed2-lec'); if (el) el.textContent = leerCortes(3, 6, editor.lista()).t; S.vista = EXPS[S.k].despues(); draw(); if (fin) describir(); });
+const editor = crearEditor(cv, () => S.vista, fin => { if (S.jugando) return S.jugando(); const el = $('ed2-lec'); if (el) el.textContent = leerCortes(3, 6, editor.lista()).t; S.vista = EXPS[S.k].despues(); draw(); if (fin) describir(); });
 
 const EXPS = [
   { id:'marco', corto:'El marco grueso', leg:['A','K'], legAntes:['L'], leyTextos:{ L:'el tablero', A:'casillas del marco', K:'esquinas: están en dos lados' },
@@ -1267,6 +1286,14 @@ function ir(k){
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
 L.resize(); ir(0);
+// Regla 3: antes del primer experimento, se corta libre un tablero de 4 × 5 (ninguno de los que se preguntan).
+L.compactar(false);
+editor.cortes = new Map(); editor.historia = []; editor.cursor = null; editor.lapiz = false; editor.activo = true;
+S.jugando = () => { S.vista = vistaJuegoCortes(4, 5, editor); draw(); $('desc2').textContent = S.vista.texto; cv.setAttribute('aria-label', S.vista.texto); };
+S.jugando(); leyenda($('leg2'), ['A', 'B'], { A:'una pieza', B:'otra pieza' });
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el dedo por las líneas para cortar el tablero en piezas.', minimo:2,
+  alListo:() => { S.jugando = null; editor.activo = false; editor.cortes = new Map(); editor.historia = []; editor.cursor = null; editor.lapiz = false; ir(S.k); } });
 })();
 </script>
 

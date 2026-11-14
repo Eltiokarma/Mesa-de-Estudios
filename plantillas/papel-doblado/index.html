@@ -136,6 +136,7 @@ button:focus-visible, .v:focus-visible, input:focus-visible, a:focus-visible{out
   .top{grid-template-columns:1fr auto; align-items:end}
   .mode{grid-template-columns:minmax(0, 1.25fr) minmax(360px, 1fr)}
   .bench{position:sticky; top:12px}
+  .mode > .jugar-barra{order:-1; grid-column:1 / -1}
 }
 </style>
 <link rel="stylesheet" href="../../nucleo/pegatina.css">
@@ -206,6 +207,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'papel-doblado', unidad: 'razonamiento-matematico.transformaciones-de-figuras', version: '0.1.0' };
@@ -274,6 +276,30 @@ function flecha(ctx, x1, y1, x2, y2, color, ancho, curva){
 }
 const suave = f => f < .5 ? 2*f*f : 1 - Math.pow(-2*f + 2, 2)/2;
 // Animación con la fracción acotada por los dos lados (en algunos celulares el primer cuadro llega antes que t0).
+// Regla 3 (jugar antes de preguntar): una hoja SIN cortes que se dobla y desdobla arrastrándola de lado, con la
+// barra que se pone bajo el dibujo o con las flechas. Sin cortes no adelanta ninguna respuesta. Devuelve la función
+// que quita el juego. o = { L, AN, draw, poner(vista), describir(texto), hoja, dobleces, nombre }.
+function juegoDoblar(o){
+  const { L, AN, draw, hoja, dobleces } = o, n = dobleces.length, cv = L.cv;
+  const R = M.desplegar(hoja, dobleces, []);
+  const v = { tipo:'hoja', hoja, dobleces, dib:R, prog:0, huecos:false, separar:0, zoom:0, ventana:ventanaHoja(hoja, R.caja) };
+  AN.parar(); o.poner(v); L.compactar(false);
+  const caja = document.createElement('div'); caja.className = 'ctl juego';
+  caja.innerHTML = `<label>Abierta <input type="range" min="0" max="${n*100}" step="1" value="0" aria-label="Cuánto está doblada ${o.nombre}"> Doblada</label>`;
+  cv.closest('.lienzo').after(caja);
+  const r = caja.querySelector('input');
+  let activo = true, x0 = null, p0 = 0;
+  const mover = p => { v.prog = clamp(p, 0, n); r.value = Math.round(v.prog*100); draw();
+    o.describir(v.prog <= 0 ? `${o.nombre[0].toUpperCase() + o.nombre.slice(1)} abierta, sin cortes.` : v.prog >= n ? `${o.nombre[0].toUpperCase() + o.nombre.slice(1)} doblada del todo.` : `${o.nombre[0].toUpperCase() + o.nombre.slice(1)} a medio doblar.`); };
+  r.addEventListener('input', () => mover(r.value/100));
+  const tab0 = cv.tabIndex; cv.tabIndex = 0;
+  // arrastrar a la izquierda dobla; a la derecha, abre (media lámina por doblez)
+  Celular.arrastre(cv, { activo:() => activo, cerca:() => true,
+    empezar:p => { x0 = p.x; p0 = v.prog; }, mover:p => { if (x0 !== null) mover(p0 + (x0 - p.x)/(L.W/2)); }, soltar:() => { x0 = null; } });
+  cv.addEventListener('keydown', e => { if (!activo || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return; e.preventDefault(); mover(v.prog + (e.key === 'ArrowLeft' ? .25 : -.25)); });
+  mover(0);
+  return () => { activo = false; caja.remove(); cv.tabIndex = tab0; };
+}
 function animador(dibujar){
   let raf = 0, timer = 0;
   const A = {
@@ -859,6 +885,12 @@ document.addEventListener('focusout', e => { if (e.target.closest && e.target.cl
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
 L.resize(); go(0);
+// Regla 3: antes de la primera pregunta, la hoja de 8 × 8 sin cortes se dobla y desdobla a mano.
+const quitarJuego = juegoDoblar({ L, AN, draw, hoja:H8, dobleces:D4, nombre:'la hoja',
+  poner:v => { S.vista = v; L.resize(); }, describir:t => { $('desc1').textContent = t; cv.setAttribute('aria-label', t); } });
+leyenda($('leg1'), ['F', 'D']);
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra la hoja de lado para doblarla y desdoblarla.', minimo:2, alListo:() => { quitarJuego(); go(S.step); } });
 })();
 </script>
 <script>
@@ -989,6 +1021,12 @@ function ir(k){
 alRedibujarTema(draw);
 addEventListener('modo', () => L.resize());
 L.resize(); ir(0);
+// Regla 3: antes del primer experimento, la tira de 6 × 2 sin cortes se dobla en acordeón y se desdobla a mano.
+const quitarJuego = juegoDoblar({ L, AN, draw, hoja:T, dobleces:DT, nombre:'la tira',
+  poner:ponerVista, describir:t => { $('desc2').textContent = t; cv.setAttribute('aria-label', t); } });
+leyenda($('leg2'), ['F', 'D']);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra la tira de lado para doblarla en acordeón y abrirla.', minimo:2, alListo:() => { quitarJuego(); ir(S.k); } });
 })();
 </script>
 
