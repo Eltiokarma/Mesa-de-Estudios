@@ -234,6 +234,7 @@ if (new URLSearchParams(location.search).get('desde') === 'app') addEventListene
 <script src="motor.js"></script>
 <script src="../../nucleo/medicion.js"></script>
 <script src="../../nucleo/celular.js"></script>
+<script src="../../nucleo/jugar.js"></script>
 <script>
 // Registro anónimo de predicciones (nucleo/medicion.js). Solo guarda si el alumno entró por la app.
 const PLANTILLA = { id: 'identidades-trig', unidad: 'trigonometria.identidades-fundamentales', version: '0.1.0' };
@@ -1054,6 +1055,9 @@ function prediccion(s){
 $('next').addEventListener('click', () => { desbloquear(S.step + 1); go(S.step + 1); });
 $('prev').addEventListener('click', () => go(S.step - 1));
 go(0);
+// Regla 3: el paso 1 ya es el triángulo de hipotenusa 1 que se arrastra; antes de cualquier pregunta se juega con él.
+JugarPrimero.montar({ escena:document.querySelector('#m1 .bench'), preguntas:[document.querySelector('#m1 .guide')],
+  consigna:'Arrastra el vértice de arriba y mira los dos cuadrados.', minimo:2 });
 })();
 </script>
 <script>
@@ -1272,13 +1276,22 @@ function botones(){
     : `<button type="button" aria-pressed="false" data-k="${k}" disabled aria-disabled="true" aria-label="Experimento ${k+1}, bloqueado">${k+1}</button>`).join('');
   $('exps').querySelectorAll('button').forEach(b => b.onclick = () => ir(+b.dataset.k));
 }
+// Regla 3: antes del primer experimento, juego libre con el triángulo de hipotenusa 1 (sin tangentes, sumas
+// ni ángulos dobles, que es lo que se pregunta después).
+let jugado = false;
+function juegoLibre(){
+  const g = 50, P = MI.cadena({ a:g, b:0 });
+  E.compactar(false);
+  E.config({ modo:'tri', tri:{ s:P.sena, c:P.cosa, g, arrastre:true, cuad:1, n:0, cuentas:true, ang:`x = ${g}°`, alMover:T => { T.ang = `x = ${T.g}°`; } },
+    lect:[() => ['x', 'x', `${E.tri.g}°`], () => ['sen', 'sen x', fmt(E.tri.s, 3)], () => ['cos', 'cos x', fmt(E.tri.c, 3)]],
+    desc:'Un triángulo rectángulo de hipotenusa 1 con un cuadrado sobre cada lado; el vértice de arriba se arrastra por un arco de radio 1.' });
+}
 function ir(k){
   if (k < 0 || k >= EXPS.length || !abierto(k)) return;
   E.parar();
   S.k = k; S.t0 = Date.now();
   const x = EXPS[k], ya = !!S.pred[x.id];
-  x.antes(ya);
-  E.compactar(!ya);
+  if (jugado){ x.antes(ya); E.compactar(!ya); } else juegoLibre();
   botones();
   $('k2').textContent = `¿Qué pasa si…? · ${k+1} de ${EXPS.length}`;
   $('t2').textContent = x.corto;
@@ -1306,6 +1319,9 @@ function ir(k){
   pintar();
 }
 ir(0);
+JugarPrimero.montar({ escena:document.querySelector('#m2 .bench'), preguntas:[document.querySelector('#m2 .guide')],
+  consigna:'Arrastra el vértice de arriba y mira cómo cambian sen x y cos x.', minimo:2,
+  alListo:() => { jugado = true; ir(S.k); } });
 })();
 </script>
 
