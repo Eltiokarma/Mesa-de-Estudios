@@ -3036,7 +3036,14 @@
      "grado": 3,
      "plantillas": [
       "razonamiento-figuras"
-     ]
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/geometria/razonamiento-con-figuras.js",
+      "requiere": [
+       "/nucleo/kit/piezas/geo-figura.js"
+      ],
+      "ideas": 6
+     }
     }
    ]
   },
