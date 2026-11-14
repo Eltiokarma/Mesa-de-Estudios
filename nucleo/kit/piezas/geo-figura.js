@@ -26,7 +26,7 @@
  *              // atras: en 3D, el tramo que queda detrás (profundidad < 0) va discontinuo
  *   circulos:  [{ centro: id | [x, y], r, color, grosor, discontinua, relleno, desde, hasta }],
  *   arcos:     [{ centro: id | [x, y], r, de: grados, a: grados, color, grosor, texto, desde, hasta }],  // antihorario
- *   angulos:   [{ en, de, a, texto, color, radio, marcas: 1..3, mayor, desde, hasta }],  // 90° → cuadradito
+ *   angulos:   [{ en, de, a, texto, color, radio, marcas: 1..3 (arcos), rayita: 1..3 (rayitas de igualdad), mayor, desde, hasta }],  // 90° → cuadradito
  *   rotulos:   [{ x, y(, z), texto, color, ancla, desde, hasta }],
  * }
  * estado = { corte: 0..n }: se ve lo que tiene desde ≤ corte (y hasta ≥ corte); lo de desde = corte se anima.
@@ -183,6 +183,11 @@
         const rr = r + k * 5, [ax, ay] = pt(t1, rr), [bx, by] = pt(t2, rr);
         s += `<path d="M${T.n(ax)} ${T.n(ay)}A${rr} ${rr} 0 ${Math.abs(dt) > Math.PI ? 1 : 0} ${dt > 0 ? 1 : 0} ${T.n(bx)} ${T.n(by)}" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round"/>`;
       }
+    }
+    // Rayitas cruzadas sobre el arco: la marca de «ángulos iguales» que separa dos ángulos vecinos del mismo radio.
+    for (let k = 0; k < (an.rayita || 0); k++) {
+      const t = t1 + dt / 2 + (k - (an.rayita - 1) / 2) * (7 / r), p = pt(t, r - 6), q = pt(t, r + 6);
+      s += `<path d="M${T.n(p[0])} ${T.n(p[1])}L${T.n(q[0])} ${T.n(q[1])}" stroke="${col}" stroke-width="2" stroke-linecap="round"/>`;
     }
     if (an.texto) {
       const mitad = Math.max(rad(8), Math.min(rad(90), Math.abs(dt) / 2));

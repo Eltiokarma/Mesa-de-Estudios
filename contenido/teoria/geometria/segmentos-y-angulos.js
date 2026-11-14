@@ -274,8 +274,8 @@
       segmentos: [{ de: 'A', a: 'C' }, { de: 'O', a: 'B' },
         ...(bis ? [{ de: 'O', a: 'M', color: 'd', discontinua: true, desde: Math.min(k, 1) }, { de: 'O', a: 'N', color: 'd', discontinua: true, desde: Math.min(k, 2) }] : [])],
       angulos: bis
-        ? [{ en: 'O', de: 'C', a: 'M', color: 'o', radio: 40, marcas: 1, texto: `${a / 2}°`, desde: Math.min(k, 1) }, { en: 'O', de: 'M', a: 'B', color: 'o', radio: 40, marcas: 1, desde: Math.min(k, 1) },
-          { en: 'O', de: 'B', a: 'N', color: 'i', radio: 40, marcas: 2, desde: Math.min(k, 2) }, { en: 'O', de: 'N', a: 'A', color: 'i', radio: 40, marcas: 2, texto: `${(180 - a) / 2}°`, desde: Math.min(k, 2) },
+        ? [{ en: 'O', de: 'C', a: 'M', color: 'o', radio: 40, rayita: 1, texto: `${a / 2}°`, desde: Math.min(k, 1) }, { en: 'O', de: 'M', a: 'B', color: 'o', radio: 40, rayita: 1, desde: Math.min(k, 1) },
+          { en: 'O', de: 'B', a: 'N', color: 'i', radio: 40, rayita: 2, desde: Math.min(k, 2) }, { en: 'O', de: 'N', a: 'A', color: 'i', radio: 40, rayita: 2, texto: `${(180 - a) / 2}°`, desde: Math.min(k, 2) },
           { en: 'O', de: 'M', a: 'N', color: 'h', texto: '90°', desde: Math.min(k, 3) }]
         : [{ en: 'O', de: 'C', a: 'B', color: 'o', texto: `${a}°`, radio: 30 }, { en: 'O', de: 'B', a: 'A', color: 'i', texto: `${180 - a}°`, radio: 24 }],
     };
