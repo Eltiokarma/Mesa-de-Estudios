@@ -362,6 +362,7 @@ const ICONO_PUERTA = {
   ejercicios: '<path d="M4 20l1-4L16 5l3 3L8 19zM14 7l3 3"/>',
   examen: '<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13l2 2 4-4"/>',
   pregunta: '<path d="M4 5h16v11H11l-5 4v-4H4zM10 9a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6 1V12M12 14.2v.1"/>',
+  laboratorio: '<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3M7.5 15h9"/>',
 };
 const iconoPuerta = k => `<svg class="ic-puerta" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">${ICONO_PUERTA[k]}</svg>`;
 const SUB_UNIDAD = { teoria: 'Teoría', ejercicios: 'Ejercicios', examen: 'Exámenes', pregunta: 'Dejar una pregunta' };
@@ -394,6 +395,7 @@ function vUnidad(id, sub) {
     </header>
     <nav class="puertas aparece" aria-label="Qué hacer en esta unidad">
       ${puerta('teoria', u.teoria ? textoTeoria(u) : 'En preparación', false)}
+      ${u.teoria ? `<a class="puerta" href="#/unidad/${esc(id)}/teoria/laboratorio">${iconoPuerta('laboratorio')}<span class="t">Laboratorio</span><span class="d">Juega libre, sin preguntas</span></a>` : ''}
       ${puerta('ejercicios', textoEjercicios(n), n > 0)}
       ${puerta('examen', gens ? (ex ? `Último: ${ex.ultimo.aciertos} de ${ex.ultimo.total}` : `${N_EXAMEN} preguntas tipo examen`) : 'En preparación')}
       ${puerta('pregunta', 'Para tu profesor')}

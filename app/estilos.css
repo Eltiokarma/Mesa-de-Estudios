@@ -723,16 +723,17 @@ input[type=file]{font:inherit;max-width:100%}
 .te-hpreg{font-weight:600}
 .te-idea{display:flex;flex-direction:column;gap:12px}
 .te-idea h2{margin:0;font-size:20px}
-.te-momentos{list-style:none;display:flex;gap:4px;margin:0;padding:0;font-size:12px;font-weight:600;color:var(--muted)}
+.te-momentos{list-style:none;display:flex;gap:4px;margin:0;padding:0;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.te-momentos li{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .te-momentos li{flex:1;text-align:center;padding-top:8px;border-top:4px solid var(--line);border-radius:2px}
 .te-momentos li.pasado{border-top-color:var(--brand-2)}
 .te-momentos li.on{border-top-color:var(--brand);color:var(--ink)}
 .te-fig{margin:0;min-height:200px;display:grid;place-items:center}
-.te-fig:empty{display:none}
+.te-figcaja:has(.te-fig:empty){display:none}
 /* En el celular la figura se queda a la vista mientras se mueven los controles o se leen los pasos (contigüidad).
    Al predecir y en «Ahora tú» no: ahí se lee la pregunta y las opciones, y la figura fija las taparía. */
-@media (max-width:899px) and (min-height:600px){.te-idea:is([data-m=juega],[data-m=mira]) .te-fig{position:sticky;top:0;z-index:1;background:var(--card);padding-top:6px;box-shadow:0 8px 8px -8px rgba(45,35,64,.18)}}
-.te-fig svg{width:100%;height:auto;max-width:480px}
+@media (max-width:899px) and (min-height:600px){.te-idea:is([data-m=juega],[data-m=mira]) .te-figcaja{position:sticky;top:0;z-index:1;background:var(--card);padding-top:6px;box-shadow:0 8px 8px -8px rgba(45,35,64,.18)}}
+.te-fig svg{width:100%;height:auto;max-width:520px}
 .te-lectura{min-height:24px;font-variant-numeric:tabular-nums;font-weight:600;text-align:center}
 .te-zona{display:flex;flex-direction:column;gap:10px;min-height:120px}
 .te-zona h3{margin:0;font-size:17px;line-height:1.4}
@@ -779,9 +780,65 @@ input[type=file]{font:inherit;max-width:100%}
 .ec-frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;font-size:.92em}
 .ec-num{border-bottom:2px solid currentColor;padding:0 3px}
 .ec-den{padding:0 3px}
-.ec-sup,.ec-sub{font-size:.7em}
+.ec-sup,.ec-sub{font-size:.75em;line-height:0}
 .ec-raiz{white-space:nowrap}.ec-bajo{border-top:2px solid currentColor;padding:0 2px}
 .ec-vec{display:inline-block;position:relative}.ec-vec::before{content:'→';position:absolute;left:0;right:0;top:-.85em;font-size:.7em;text-align:center}
 .ec-v{border-radius:4px;padding:0 2px}
 @media (min-width:900px){.te-idea{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:12px 24px}
   .te-idea>h2,.te-idea>.te-momentos{grid-column:1/-1}.te-fig{grid-row:3/7}.te-accion{position:static}}
+
+/* ---------- Teoría, segunda tanda (14 nov, pedido de Gerson): gesto directo, lupa, llaves, tipografía y laboratorio ---------- */
+/* La figura llega al borde de la tarjeta: a 360 px el texto del SVG (14 en un lienzo de 320) se ve a ~14 px, no a 12,6. */
+.te-figcaja{position:relative;margin:0 -14px}
+.te-zoom{position:absolute;top:4px;right:6px;z-index:2;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;opacity:.92}
+.te-zoom:focus-visible,.te-mm:focus-visible,.te-ficha-op:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+/* Manijas: anillo visible, halo del color de la variable y zona de toque de 44 px. Encima de la figura, nunca la tapan. */
+.te-fig.con-manijas .te-manija{cursor:grab;touch-action:none}
+.te-fig.arrastrando,.te-fig.arrastrando .te-manija{cursor:grabbing}
+.te-manija-toque{fill:transparent}
+.te-manija-halo{fill:color-mix(in srgb,var(--manija,var(--brand)) 18%,transparent)}
+.te-manija-anillo{fill:var(--card);stroke:var(--manija,var(--brand));stroke-width:3}
+.te-manija.activa .te-manija-halo{fill:color-mix(in srgb,var(--manija,var(--brand)) 32%,transparent)}
+@media (prefers-reduced-motion:no-preference){.te-manija-halo{transition:fill .12s linear}}
+.te-pista{margin:0;font-size:15px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.te-pista-m{flex:none;width:16px;height:16px;border-radius:50%;border:3px solid var(--brand);background:var(--card)}
+/* Lupa */
+body.con-lupa{overflow:hidden}
+.te-lupa{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column}
+.te-lupa-barra{display:flex;align-items:center;gap:8px;padding:max(10px,env(safe-area-inset-top)) 12px 10px;border-bottom:1px solid var(--line);background:var(--card)}
+.te-lupa-n{min-width:5ch;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.te-lupa-cerrar{margin-left:auto}
+.te-lupa-area{flex:1;overflow:auto;touch-action:pan-x pan-y;padding:8px;overscroll-behavior:contain}
+.te-lupa-lienzo{margin:0 auto}
+.te-lupa-lienzo svg{width:100%;height:auto;display:block}
+/* Llaves bajo las ecuaciones: «}» girada que dice qué es cada símbolo, sin depender solo del color. */
+.ec-llave{display:inline-flex;flex-direction:column;align-items:center;vertical-align:baseline;margin:0 3px;color:inherit}
+.ec-llave-cuerpo{display:inline-flex;flex-direction:column;align-items:stretch;min-width:22px}
+.ec-llave-sobre{text-align:center}
+.ec-llave-trazo{display:flex;align-items:flex-start;height:10px;margin:3px 0 0;color:var(--llave,var(--muted))}
+.ec-llave-trazo i{flex:1;height:3.5px;border:2px solid currentColor;border-top:0;min-width:6px}
+.ec-llave-trazo i:first-child{border-right:0;border-radius:0 0 0 7px}
+.ec-llave-trazo i:last-child{border-left:0;border-radius:0 0 7px 0}
+.ec-llave-trazo svg{flex:none;margin:0 -1px}
+.ec-llave-nota{font-family:var(--font);font-style:normal;font-size:max(13px,.56em);line-height:1.15;font-weight:600;color:var(--llave,var(--muted));text-align:center;margin-top:2px;width:max-content;max-width:11ch;min-width:100%;hyphens:none}
+.ec-llave.arriba{flex-direction:column-reverse}.ec-llave.arriba .ec-llave-cuerpo{flex-direction:column-reverse}.ec-llave.arriba .ec-llave-trazo{transform:scaleY(-1);margin:0 0 3px}
+/* Tipografía de las ecuaciones: serif del sistema, letras sueltas en cursiva (x no se confunde con ×, ni l con 1),
+   cifras tabulares y signos con aire. El texto corriente sigue en la fuente de la app. */
+.te-ec,.te-lectura,.te-zona .alt .ec-frac{font-family:"Cambria Math",Cambria,"Noto Serif","Source Serif Pro",Georgia,serif;font-variant-numeric:tabular-nums lining-nums}
+.ec-letra{font-style:italic}
+.te-ec{font-size:20px;line-height:1.6}
+.te-ec-grande{font-size:24px;line-height:1.5}
+.te-lectura{font-size:18px}
+.te-consigna,.te-zona h3,.te-rtx,.te-paso p{text-wrap:pretty}
+.te-zona h3{font-size:18px}
+.te-dice{font-size:16px;line-height:1.4}
+/* Laboratorio */
+.te-labo-sub{margin:-4px 0 0}
+.te-mesas{display:flex;flex-wrap:wrap;gap:8px}
+.te-registro:empty{display:none}
+.te-casos-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:6px}
+.te-caso{position:relative;margin:0;border:2px solid var(--line);border-radius:14px;padding:6px;background:var(--bg)}
+.te-caso svg{width:100%;height:auto;display:block}
+.te-caso figcaption{font-size:14px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums}
+.te-quitar{position:absolute;top:2px;right:2px;width:44px;height:44px;border:0;background:transparent;font-size:22px;color:var(--muted)}
+.te-guardar{align-self:flex-start}

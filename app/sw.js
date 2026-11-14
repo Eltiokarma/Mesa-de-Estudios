@@ -15,7 +15,7 @@
 //   3. Solo se bajan los archivos de plantilla que no estaban (plantillas o archivos nuevos).
 //   Al activarse se borran las cachés anteriores. Los archivos copiados se siguen renovando por stale-while-revalidate.
 // Antes cada VERSION nueva volvía a bajar todo (218 archivos, 8 MB sin comprimir); ahora, la cáscara y lo nuevo.
-const VERSION = 'v180';
+const VERSION = 'v181';
 const CACHE = `lab-${VERSION}`;
 const CASCARA = ['/app/', '/app/index.html', '/app/estilos.css', '/app/config.js', '/app/app.js', '/app/manifest.webmanifest',
   '/app/practica.js', '/app/repaso.js', '/app/prueba.js', '/app/lectura.js', '/app/teoria.js', '/nucleo/ecuacion.js', '/nucleo/teoria.js', '/app/ilustraciones.js', '/app/dibujos/comun.js', '/app/dibujos/trigonometria.js', '/app/dibujos/aritmetica.js', '/app/dibujos/geometria.js', '/app/dibujos/razonamiento-matematico.js', '/app/dibujos/razonamiento-verbal.js', '/app/dibujos/fisica.js', '/app/dibujos/quimica.js', '/app/dibujos/algebra.js', '/app/datos/catalogo.json', '/app/datos/pruebas.json',
