@@ -3840,7 +3840,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 4,
-      "terminos": 18
+      "terminos": 19
      }
     },
     {
@@ -3912,7 +3912,7 @@
        "/nucleo/kit/piezas/triangulo.js"
       ],
       "ideas": 4,
-      "terminos": 4
+      "terminos": 22
      }
     },
     {
@@ -3948,7 +3948,7 @@
        "/nucleo/kit/piezas/triangulo.js"
       ],
       "ideas": 3,
-      "terminos": 2
+      "terminos": 11
      }
     },
     {
@@ -3980,7 +3980,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 6,
-      "terminos": 3
+      "terminos": 8
      }
     },
     {
@@ -4016,7 +4016,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 4,
-      "terminos": 21
+      "terminos": 26
      }
     },
     {
@@ -4052,7 +4052,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 4,
-      "terminos": 15
+      "terminos": 20
      }
     },
     {
@@ -4092,7 +4092,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
-      "terminos": 27
+      "terminos": 32
      }
     },
     {
@@ -4130,7 +4130,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 25
+      "terminos": 35
      }
     },
     {
@@ -4168,7 +4168,7 @@
        "/nucleo/kit/piezas/triangulo.js"
       ],
       "ideas": 4,
-      "terminos": 14
+      "terminos": 18
      }
     },
     {
@@ -4206,7 +4206,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 16
+      "terminos": 19
      }
     },
     {
@@ -4243,7 +4243,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 8
+      "terminos": 10
      }
     },
     {
@@ -4283,7 +4283,7 @@
        "/nucleo/kit/piezas/trig-onda.js"
       ],
       "ideas": 5,
-      "terminos": 23
+      "terminos": 27
      }
     },
     {
@@ -4321,7 +4321,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
-      "terminos": 23
+      "terminos": 26
      }
     },
     {
@@ -4358,7 +4358,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 15
+      "terminos": 18
      }
     },
     {
@@ -4395,7 +4395,7 @@
        "/nucleo/kit/piezas/triangulo.js"
       ],
       "ideas": 5,
-      "terminos": 10
+      "terminos": 16
      }
     },
     {
@@ -4433,7 +4433,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
-      "terminos": 5
+      "terminos": 10
      }
     },
     {
@@ -4468,7 +4468,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
-      "terminos": 7
+      "terminos": 10
      }
     },
     {
@@ -4499,7 +4499,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
-      "terminos": 14
+      "terminos": 15
      }
     }
    ]
