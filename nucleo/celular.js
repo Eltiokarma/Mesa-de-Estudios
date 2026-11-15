@@ -156,5 +156,33 @@
     return { despertar, activo: () => !!raf };
   }
 
+  // Barra para volver (15 nov): si la escena se abrió desde la app (?desde=app), arriba queda «‹ Volver a la unidad»
+  // fijo, que lleva a la unidad de donde vino (&unidad=…) o, si no se sabe, a los cursos. Reemplaza al botón chico
+  // «‹ App» que cada escena ponía a mano.
+  if (typeof document !== 'undefined' && typeof location !== 'undefined') {
+    const q = new URLSearchParams(location.search);
+    if (q.get('desde') === 'app') {
+      const poner = () => {
+        document.querySelectorAll('.volver-app').forEach(x => x.remove());
+        if (document.querySelector('.volver-barra')) return;
+        const u = q.get('unidad');
+        const a = document.createElement('a');
+        a.className = 'volver-barra';
+        a.href = u ? `/app/#/unidad/${encodeURIComponent(u)}` : '/app/#/cursos';
+        a.textContent = u ? '‹ Volver a la unidad' : '‹ Volver a la app';
+        document.body.prepend(a);
+        if (!document.getElementById('volver-estilos')) {
+          const st = document.createElement('style'); st.id = 'volver-estilos';
+          st.textContent = '.volver-barra{position:sticky;top:0;z-index:30;display:flex;align-items:center;min-height:48px;padding:0 16px;'
+            + 'background:#2d2340;color:#fff;font-weight:700;text-decoration:none;font-size:16px}.volver-barra:focus-visible{outline:3px solid #ffd3e2;outline-offset:-3px}';
+          document.head.appendChild(st);
+        }
+      };
+      // Después de que cada escena ponga su «‹ App» (también en DOMContentLoaded), para reemplazarlo.
+      if (document.readyState === 'loading') addEventListener('DOMContentLoaded', () => setTimeout(poner, 0)); else setTimeout(poner, 0);
+    }
+  }
+
   return { ANCHO, ESPERA, ALTO_COMPACTO, RADIO_DEDO, RADIO_RATON, CSS, chico, alto, compactar, alResponder, arrastre, movimientoReducido, dpr, variable, bucle, aLaVista };
+
 });

@@ -80,8 +80,14 @@
     st.textContent = '.jugar-barra{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-height:56px;margin:8px 0;padding:8px 12px;border-radius:12px;border:2px dashed currentColor}'
       + '.jugar-consigna{margin:0;flex:1 1 200px;font-weight:700}'
       + '.jugar-seguir{min-height:44px;padding:8px 14px;border-radius:12px;font:inherit;font-weight:700;cursor:pointer}'
-      + '.jugar-velado{opacity:.35;filter:grayscale(1)}'
-      + '@media (prefers-reduced-motion:no-preference){.jugar-velado{transition:opacity .2s linear}}';
+      // Velado (15 nov): antes, la pregunta quedaba gris y parecía rota. Ahora se ve atenuada, con un aviso claro arriba
+      // de qué hacer para abrirla.
+      + '.jugar-velado{position:relative}'
+      + '.jugar-velado>*{opacity:.45}'
+      + '.jugar-velado::before{content:"↑ Primero juega con la figura: esta pregunta se abre después";display:block;margin:0 0 10px;padding:8px 12px;border-radius:12px;background:#fff3d6;color:#5b3a00;font-weight:700;font-size:15px;line-height:1.35;opacity:1}'
+      + '.jugar-barra{background:#fff3d6;color:#5b3a00;border-color:#d08a00}'
+      + '.jugar-seguir{background:#b85a06;color:#fff;border:0}'
+      + '@media (prefers-reduced-motion:no-preference){.jugar-velado>*{transition:opacity .2s linear}}';
     document.head.appendChild(st);
   }
 
