@@ -475,7 +475,51 @@
   };
   const expTotal = v => v.p * (N2 - v.k) - v.q * v.k;
   const errorSerie = v => Math.abs(parcialA(v.al, v.x, v.m) - exacta(v.al, v.x));
+
+  // ---------- Las piezas que se eligen (laboratorio 3D, 15 nov: exploración libre, sin predicciones) ----------
+  // El cubo de (a + b)³ abierto en ocho piezas, de la pieza alg-cubo-3d (piezasCubo de plantillas/cuadrado-crece/motor.js,
+  // regla 1). Cada pieza eligió a o b en el ancho, el fondo y el alto: las de k letras b son C(3, k).
+  const CUBO3 = () => Kit.piezas['alg-cubo-3d'];
+  const TIPOS3 = ['a3', 'a2b', 'ab2', 'b3'];
+  const tiposCubo = v => CUBO3().cuenta(v).tipos;
+  const nPiezas = (v, t) => tiposCubo(v)[t].n;
+  const mesaCubo = {
+    id: 'piezas-elegidas', titulo: 'Las piezas que se eligen', pieza: 'alg-cubo-3d',
+    consigna: 'Abre el cubo de (a + b)³ y gíralo. Deja a la vista un solo tipo de pieza y cuéntalas.',
+    controles: [
+      { id: 'a', etiqueta: 'a', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0, color: 'c-o' },
+      { id: 'b', etiqueta: 'b', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
+      { id: 'abrir', etiqueta: 'Abrir', min: 0, max: 1, paso: 0.25, inicio: 0.5, decimales: 2 },
+      { id: 'solo', etiqueta: 'A la vista', opciones: [{ valor: 'todas', texto: 'Todas' }, { valor: 'a3', texto: 'a³' }, { valor: 'a2b', texto: 'a²b' },
+        { valor: 'ab2', texto: 'ab²' }, { valor: 'b3', texto: 'b³' }] },
+    ],
+    dibujo: v => ({ datos: { a: v.a, b: v.b, abrir: v.abrir, solo: v.solo === 'todas' ? null : v.solo }, estado: {} }),
+    lectura: v => {
+      if (v.solo === 'todas') return ['Piezas: 1 + 3 + 3 + 1 = 8'];
+      const t = tiposCubo(v)[v.solo], k = TIPOS3.indexOf(v.solo);
+      return [{ v: CUBO3().COLOR[v.solo], t: `${t.n} ${t.n === 1 ? 'pieza' : 'piezas'} ${CUBO3().NOMBRE[v.solo]}` }, ` de volumen ${f(t.volumen)} · C(3, ${k}) = ${C(3, k)}`];
+    },
+    invitaciones: [
+      { texto: 'Deja a la vista solo las piezas con dos letras b, con el cubo abierto.',
+        logrado: v => v.solo === 'ab2' && v.abrir >= 0.5,
+        bien: 'Tres piezas ab²: la b va en dos de los tres lados. C(3, 2) = 3.',
+        pista: 'Elige ab² en «A la vista» y gira para contar.' },
+      { texto: 'Muestra el tipo de pieza que aparece una sola vez y es la más grande.',
+        logrado: v => (v.solo === 'a3' && v.a > v.b) || (v.solo === 'b3' && v.b > v.a),
+        bien: 'Solo hay una manera de elegir la misma letra en los tres lados.',
+        pista: 'a³ y b³ son únicas. ¿Cuál es más grande ahora?' },
+      { texto: 'Haz que las piezas a²b juntas sumen 36 y déjalas a la vista.',
+        logrado: v => v.solo === 'a2b' && nPiezas(v, 'a2b') * tiposCubo(v).a2b.volumen === 36,
+        bien: '3 · a²b = 36: con a = 2 y b = 3, cada una mide 12.',
+        pista: 'Creo que cada pieza debe medir 12. Prueba con a = 2.' },
+      { texto: 'Guarda dos tipos distintos que tengan el mismo número de piezas.',
+        logrado: (v, guardados) => guardados.some(x => guardados.some(y => x.solo !== 'todas' && y.solo !== 'todas' && x.solo !== y.solo
+          && nPiezas(x, x.solo) === nPiezas(y, y.solo))),
+        bien: '1, 3, 3, 1: la fila 3 de Pascal se lee igual en los dos sentidos.' },
+    ],
+  };
   const laboratorio = [
+    mesaCubo,
     {
       id: 'pascal-colores', titulo: 'El triángulo hasta la fila 8', pieza: 'alg-tabla',
       consigna: 'Arrastra la fila verde hacia abajo y marca los pares o los múltiplos de 3. Mira el dibujo que forman los rojos.',
@@ -590,7 +634,7 @@
       { termino: 'natural', formas: ['natural', 'naturales'], def: 'Número que sirve para contar: 0, 1, 2, 3 y así.', ejemplo: 'α = 2 lo es; α = 1/2 no.' },
     ],
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/ejes.js'],
+    requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/ejes.js', '/plantillas/cuadrado-crece/motor.js', '/nucleo/kit/piezas/alg-cubo-3d.js'],
     historia: {
       texto: 'Los coeficientes del binomio son anteriores a Newton: los textos de Yang Hui ya muestran el triángulo aritmético en la tradición china. Newton extendió la idea a exponentes no naturales y a series infinitas, trabajo que él mismo situó en 1665. Conviene separar el desarrollo finito escolar de esa extensión, que exige condiciones de convergencia.',
       pregunta: '¿Qué pasa con el desarrollo si el exponente no es natural?',

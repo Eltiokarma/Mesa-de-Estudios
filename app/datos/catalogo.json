@@ -2441,10 +2441,12 @@
       "archivo": "/contenido/teoria/algebra/binomio-de-newton.js",
       "requiere": [
        "/nucleo/kit/piezas/alg-tabla.js",
-       "/nucleo/kit/piezas/ejes.js"
+       "/nucleo/kit/piezas/ejes.js",
+       "/plantillas/cuadrado-crece/motor.js",
+       "/nucleo/kit/piezas/alg-cubo-3d.js"
       ],
       "ideas": 4,
-      "terminos": 23
+      "terminos": 24
      }
     }
    ]
