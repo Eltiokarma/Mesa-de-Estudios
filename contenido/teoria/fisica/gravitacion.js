@@ -20,10 +20,12 @@
  *   Duda que resuelve: ¿por qué flota un astronauta si la gravedad allá arriba casi no baja?
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // nucleo/fisica3d.js arma la mesa 3D «Órbitas en cualquier plano» con el motor de plantillas/gravitacion (regla 1).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../nucleo/fisica3d.js')) : fabrica(root.Kit, root.Fisica3D);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, F3) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const r_ = { v: 'c-i', t: 'r' }, a_ = { v: 'c-i', t: 'a' }, F = { v: 'c-o', t: 'F' }, g = { v: 'c-d', t: 'g' }, v = { v: 'c-h', t: 'v' };
@@ -435,11 +437,45 @@
   const cercaLejos = e => (1 + e) / (1 - e);              // cuántas veces más rápido cerca del Sol que lejos
   const fAtraccion = val => val.m * G0 / (val.r * val.r);  // N
 
+  // Órbitas en cualquier plano (laboratorio 3D de contexto, 15 nov: exploración libre, sin predicciones). El satélite
+  // avanza solo cuando el alumno arrastra t. Período, rapidez y g los calcula el motor de plantillas/gravitacion (orbita y
+  // geoestacionario) a través de nucleo/fisica3d.js. Lo que el 3D muestra: toda órbita rodea el centro de la Tierra.
+  const orb3 = val => F3.orbita(val);
+  const RADIOS3 = [{ valor: 1.1, texto: '1,1 R' }, { valor: 2, texto: '2 R' }, { valor: 4, texto: '4 R' }, { valor: 'dia', texto: '6,6 R' }];
+  const mesaPlano = {
+    id: 'orbita-plano-3d', titulo: 'Órbitas en cualquier plano', pieza: 'fis-espacio-3d',
+    consigna: 'Gira la Tierra con el dedo. Elige el radio, inclina el plano de la órbita y arrastra t para que el satélite avance.',
+    controles: [
+      { id: 'r', etiqueta: 'Radio de la órbita', color: 'c-i', opciones: RADIOS3, inicio: 2 },
+      { id: 'inc', etiqueta: 'Inclinación del plano', min: 0, max: 90, paso: 15, inicio: 30, unidad: '°', decimales: 0 },
+      { id: 't', etiqueta: 't', min: 0, max: 24, paso: 0.5, inicio: 0, unidad: 'h', decimales: 1 },
+    ],
+    dibujo: val => ({ datos: orb3(val).datos, estado: {} }),
+    lectura: val => { const o = orb3(val); return [`Vuelta en ${f(o.T, 1)} h · `, v, ` = ${f(o.v / 1000, 1)} km/s`]; },
+    invitaciones: [
+      { texto: 'Busca la órbita que da una vuelta en un día justo.',
+        logrado: val => Math.abs(orb3(val).T - 24) < 1e-9,
+        bien: 'A 6,6 radios del centro, tarda lo mismo que la Tierra en girar.',
+        pista: 'Más lejos, más lenta. Prueba la órbita más alta.' },
+      { texto: 'Haz que la órbita pase sobre los dos polos.',
+        logrado: val => val.inc === 90,
+        bien: 'Por los polos o por el ecuador: el plano siempre pasa por el centro.' },
+      { texto: 'Con la órbita más baja, deja que el satélite dé más de dos vueltas.',
+        logrado: (val, g, mesa) => val.r === mesa.controles[0].opciones[0].valor && orb3(val).vueltas > 2,
+        bien: 'Abajo va a casi 8 km/s: una vuelta en hora y media.',
+        pista: 'Elige 1,1 R y arrastra t más allá de 3,3 h.' },
+      { texto: 'Guarda dos órbitas del mismo radio y distinta inclinación.',
+        logrado: (val, guardados) => guardados.some(a => guardados.some(b => a.r === b.r && a.inc !== b.inc
+          && Math.abs(orb3(a).T - orb3(b).T) < 1e-9)),
+        bien: 'Inclinar el plano no cambia T ni v: solo cuenta r.' },
+    ],
+  };
+
   return {
     unidad: 'fisica.gravitacion',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/fis-lienzo.js'],
+    requiere: ['/nucleo/kit/piezas/fis-lienzo.js', '/plantillas/gravitacion/motor.js', '/nucleo/fisica3d.js', '/nucleo/kit/piezas/fis-espacio-3d.js'],
     // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. Período, MCU y
     // aceleración centrípeta vienen del movimiento circular; fuerza centrípeta, de dinámica.
     glosario: [
@@ -473,6 +509,7 @@
     // Laboratorio: juego libre, sin preguntas. Dos órbitas a la vez para comparar (la idea muestra una sola); la
     // elipse libre deja cualquier excentricidad de 0 a 0,75 y cuenta cuánto más lento va lejos del Sol.
     laboratorio: [
+      mesaPlano,
       {
         id: 'dos-orbitas', titulo: 'Dos satélites lado a lado', pieza: 'fis-lienzo',
         consigna: 'Arrastra los satélites A y B a órbitas distintas. Compara sus rapideces y cuánto tarda cada vuelta.',

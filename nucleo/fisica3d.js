@@ -9,6 +9,8 @@
  *   espira({ th, B, A })               espira cuadrada que gira en un campo vertical: Φ = B·A·cos θ y su sombra
  *   ondaEM({ lam, E0, t })             onda que avanza en x̂ con E vertical y B horizontal; t en ns
  *   tiro({ v0, ang, t })               pelota con sus dos sombras: en el suelo (MRU) y en la pared (MRUV)
+ *   orbita({ r, inc, t })              satélite en órbita circular de radio r (en radios terrestres, o 'dia' para la de
+ *                                      24 h) con el plano inclinado inc grados respecto del ecuador; t en horas
  * Cada una devuelve { datos, ... } con las medidas que usan la lectura y los retos.
  * Coordenadas de física: z hacia arriba (la pieza las pasa a three.js).
  */
@@ -17,8 +19,8 @@
   const motores = nodo ? () => ({
     V: require('../plantillas/vectores/motor.js'), M: require('../plantillas/magnetismo/motor.js'),
     I: require('../plantillas/induccion/motor.js'), O: require('../plantillas/ondas-electromagneticas/motor.js'),
-    T: require('../plantillas/tiro-parabolico/motor.js'),
-  }) : () => ({ V: root.MotorVectores, M: root.MotorMagnetismo, I: root.MotorInduccion, O: root.MotorOndasEM, T: root.MotorTiro });
+    T: require('../plantillas/tiro-parabolico/motor.js'), G: require('../plantillas/gravitacion/motor.js'),
+  }) : () => ({ V: root.MotorVectores, M: root.MotorMagnetismo, I: root.MotorInduccion, O: root.MotorOndasEM, T: root.MotorTiro, G: root.MotorGravitacion });
   const api = fabrica(motores);
   if (nodo) module.exports = api;
   else root.Fisica3D = api;
@@ -160,5 +162,36 @@
     return { datos, x: e.x, y: Math.max(0, e.y), t, tSubida: p.tSubida, tVuelo: p.tVuelo, alcance: p.alcance, H: p.H, enAire: t < p.tVuelo - 1e-9 };
   }
 
-  return { vectores, lorentz, espira, ondaEM, tiro, BNOMBRE, f };
+  // ---------- Órbita circular en un plano inclinado ----------
+  const RT = 0.42;                                   // radio de la Tierra en la escena
+  function orbita(v) {
+    const { G } = M(), R = G.R, r = v.r === 'dia' ? G.geoestacionario().r : v.r * R;
+    const o = G.orbita({ r }), e = o.estado(v.t * 3600), k = RT / R, i = rad(v.inc);
+    // Plano de la órbita: el ecuador (xy) girado inc grados alrededor del eje x. El motor da la posición en su plano.
+    const enPlano = (x, y) => [x * k, y * k * Math.cos(i), y * k * Math.sin(i)];
+    const datos = { escena: 'orbita', escala: 0.75, ejes: null, vista: { giro: 25, inclinacion: 22 }, flechas: [], trazos: [], bolas: [], rotulos: [] };
+    datos.bolas.push({ en: [0, 0, 0], r: RT, color: 'tinta' });
+    datos.trazos.push({ puntos: [[0, 0, -RT - 0.35], [0, 0, RT + 0.35]], color: 'tinta' });            // eje de los polos
+    const ecuador = [], camino = [];
+    for (let n = 0; n <= 64; n++) {
+      const a = 2 * Math.PI * n / 64;
+      ecuador.push([1.02 * RT * Math.cos(a), 1.02 * RT * Math.sin(a), 0]);
+      camino.push(enPlano(r * Math.cos(a), r * Math.sin(a)));
+    }
+    datos.trazos.push({ puntos: ecuador, color: 'tinta' }, { puntos: camino, color: 'c-i', punteado: true });
+    const S = enPlano(e.x, e.y), u = Math.hypot(e.vx, e.vy), LV = 0.9;
+    const V = enPlano(e.x + e.vx / u * LV / k, e.y + e.vy / u * LV / k);
+    datos.trazos.push({ puntos: [[0, 0, 0], S], color: 'c-i' });
+    // Las flechas v y g dicen hacia dónde (largo fijo): sus valores van en la lectura. r se rotula entre la Tierra y g.
+    const dS = Math.hypot(...S), LG = Math.min(0.35, 0.6 * (dS - RT) + 0.08);
+    datos.rotulos.push({ en: S.map(c => c * (RT + 0.4 * (dS - RT - LG)) / dS), texto: 'r', color: 'c-i' });
+    datos.flechas.push({ de: S, a: V, color: 'c-h', rotulo: 'v' }, { de: S, a: S.map(c => c * (1 - LG / dS)), color: 'c-d', rotulo: 'g' });
+    datos.bolas.push({ en: S, r: 0.11, color: 'tinta' });
+    const h = o.T / 3600;
+    datos.alt = `Satélite a ${f(r / R, 1)} radios del centro de la Tierra, en un plano inclinado ${f(v.inc, 0)}° del ecuador: `
+      + `da una vuelta cada ${f(h, 1)} h a ${f(o.v / 1000, 1)} km/s; la órbita siempre rodea el centro.`;
+    return { datos, rEnR: r / R, T: h, v: o.v, g: o.g, vueltas: v.t / h };
+  }
+
+  return { vectores, lorentz, espira, ondaEM, tiro, orbita, BNOMBRE, f };
 });

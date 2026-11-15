@@ -46,7 +46,7 @@ test('la proyección respeta la geometría: girar conserva largos y la flecha A 
 test('cada escena de física cabe en el presupuesto (60 mallas) y no tiene NaN', () => {
   const escenas = [F.vectores({ ax: -2, ay: 2, az: 2, b: 'xy', ver: 'cruz' }), F.vectores({ ax: 2, ay: -2, az: -2, b: 'x', ver: 'comp' }),
     F.lorentz({ th: 45, fi: 135, q: -1 }), F.espira({ th: 30, B: 1, A: 0.16 }), F.ondaEM({ lam: 1.5, E0: 6, t: 3 }),
-    F.tiro({ v0: 30, ang: 60, t: 6 })];
+    F.tiro({ v0: 30, ang: 60, t: 6 }), F.orbita({ r: 'dia', inc: 60, t: 5 })];
   for (const e of escenas) {
     assert.ok(P.mallas(e.datos) <= 60, `${e.datos.escena}: ${P.mallas(e.datos)} mallas`);
     assert.doesNotMatch(P.dibujar(e.datos), /NaN|undefined|Infinity/);

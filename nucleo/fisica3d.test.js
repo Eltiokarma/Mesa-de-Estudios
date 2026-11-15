@@ -73,3 +73,19 @@ test('tiro: x = v₀ cos θ · t, y = v₀ sen θ · t − 5t², y la pelota se 
   casi(tarde.t, 2); casi(tarde.y, 0, 1e-9); assert.equal(tarde.enAire, false);
   casi(F.tiro({ v0: 20, ang: 37, t: 0 }).alcance, F.tiro({ v0: 20, ang: 53, t: 0 }).alcance);
 });
+
+test('órbita: T = 2π √(r³/GM) con GM = g₀R², el satélite queda en su plano inclinado y g apunta al centro', () => {
+  const GM = 10 * 6.4e6 ** 2;
+  for (const [rr, inc, t] of [[1.1, 0, 0.5], [2, 30, 1], [4, 90, 3.5], ['dia', 45, 12]]) {
+    const o = F.orbita({ r: rr, inc, t }), r = rr === 'dia' ? Math.cbrt(GM * 86400 ** 2 / (4 * Math.PI ** 2)) : rr * 6.4e6;
+    casi(o.T, 2 * Math.PI * Math.sqrt(r ** 3 / GM) / 3600, 1e-9);
+    casi(o.v, Math.sqrt(GM / r), 1e-6);
+    const i = inc * Math.PI / 180, n = [0, -Math.sin(i), Math.cos(i)];
+    const S = o.datos.bolas[o.datos.bolas.length - 1].en;
+    casi(S[0] * n[0] + S[1] * n[1] + S[2] * n[2], 0, 1e-9);                   // en el plano de la órbita
+    casi(Math.hypot(...S), 0.42 * r / 6.4e6, 1e-9);                           // a r del centro
+    const gf = o.datos.flechas.find(x => x.rotulo === 'g'), d = gf.a.map((c, k) => c - gf.de[k]);
+    casi(Math.abs(d[0] * S[0] + d[1] * S[1] + d[2] * S[2]) / (Math.hypot(...d) * Math.hypot(...S)), 1, 1e-9);   // hacia el centro
+  }
+  casi(F.orbita({ r: 'dia', inc: 0, t: 0 }).T, 24, 1e-9);
+});

@@ -278,7 +278,10 @@
      "teoria": {
       "archivo": "/contenido/teoria/fisica/gravitacion.js",
       "requiere": [
-       "/nucleo/kit/piezas/fis-lienzo.js"
+       "/nucleo/kit/piezas/fis-lienzo.js",
+       "/plantillas/gravitacion/motor.js",
+       "/nucleo/fisica3d.js",
+       "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 4,
       "terminos": 21
