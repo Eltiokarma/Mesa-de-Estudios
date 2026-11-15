@@ -238,7 +238,7 @@
       ],
       dibujo: { datos: casos([[4, 6, true], [7, 3, true]], { nota: 'Dato I: x + y = 10 · Dato II: 2x + 2y = 20' }), estado: {} },
       revelar: { datos: casos([[4, 6, true], [7, 3, true]], { nota: 'Los dos casos cumplen I y II: x no se fija' }), estado: {} },
-      coincide: 'Coincide: (4, 6) y (7, 3) cumplen los dos datos y dan x distinto.',
+      coincide: 'Coincide: (4, 6) y (7, 3) cumplen los dos datos y dan x distinto. El dato II es redundante.',
     },
     mira: {
       datos: casos([[4, 6, false], [7, 3, false], [6, 4, true]], { columna: 'x − y = 2', nota: 'Los tres cumplen x + y = 10' }),
@@ -249,7 +249,7 @@
       ],
     },
     regla: {
-      texto: 'Los datos bastan si existe al menos un caso que los cumple y todos los casos que los cumplen dan el mismo valor de lo pedido.',
+      texto: 'En suficiencia de datos, los datos bastan si al menos un caso los cumple y todos los que los cumplen dan el mismo valor de lo pedido.',
       ecuacion: ['bastan  ⇔  ', { llave: ['casos ≠ ∅'], nota: 'hay alguno', color: 'c-d' }, ' y ', { llave: ['un solo valor'], nota: 'todos coinciden', color: 'c-i' }],
       condicion: 'se buscan todos los casos compatibles, no solo uno; y se compara solo la cantidad pedida, no todo el caso.',
     },
@@ -277,6 +277,18 @@
   // ---------- Laboratorio: juego libre, sin preguntas ----------
   // Mesa 1: dos barras y el piso del eje, todo arrastrable: el caso raro es un piso tan alto que una barra «crece» varias veces.
   const TOPE = 150;
+  // Cuántas veces es abril respecto de marzo: en las ventas y en las alturas dibujadas (desde el piso del eje).
+  const razonReal = val => val.c / val.a, razonDibujo = val => (val.c - val.b) / (val.a - val.b);
+  const casi = (p, q) => Math.abs(p - q) < 1e-9;
+  // El menor aumento real que el dibujo muestra como el doble o más, buscado con las mismas razones en toda la mesa.
+  let menorDoble = null;
+  const menorAumentoDoble = () => {
+    if (menorDoble !== null) return menorDoble;
+    menorDoble = Infinity;
+    for (let a = 85; a <= 150; a += 5) for (let c = a + 5; c <= 150; c += 5) for (let b = 0; b <= 80; b += 5)
+      if (razonDibujo({ a, b, c }) >= 2 - 1e-9) menorDoble = Math.min(menorDoble, razonReal({ a, b, c }));
+    return menorDoble;
+  };
   const datosEje = val => grafico([{ v: val.a, color: 'i', rotulo: 'Marzo' }, { v: val.c, color: 'o', rotulo: 'Abril' }], val.b, TOPE);
   const mesaEje = {
     id: 'eje-libre', titulo: 'Barras y eje a tu gusto', pieza: 'rm-plano',
@@ -287,7 +299,7 @@
       { id: 'b', etiqueta: 'El eje empieza en', min: 0, max: 80, paso: 5, inicio: 0, decimales: 0, color: 'c-h' },
     ],
     dibujo: val => ({ datos: datosEje(val), estado: {} }),
-    lectura: val => [`Real: ×${f(val.c / val.a, 2)} · dibujo: ×${f((val.c - val.b) / (val.a - val.b), 2)}`],
+    lectura: val => [`Real: ×${f(razonReal(val), 2)} · dibujo: ×${f(razonDibujo(val), 2)}`],
     arrastres: [
       { id: 'piso', etiqueta: 'dónde empieza el eje vertical', color: 'c-h',
         donde: val => { const g = PLANO().geometria(datosEje(val)); return { x: g.X(1.6), y: g.Y(Y0_G) }; },
@@ -297,10 +309,27 @@
         donde: val => { const g = PLANO().geometria(datosEje(val)); return { x: g.X(3.1 + 2.2 * k), y: g.Y(Y0_G - ALTO_G * (val[id] - val.b) / (TOPE - val.b) + 0.45) }; },
         mover: (pt, val) => { const g = PLANO().geometria(datosEje(val)); return { [id]: valorEn(datosEje(val), val.b, TOPE, pt.y - 0.45 * g.k) }; } })),
     ],
+    // Retos: las mismas dos razones que da la lectura (ventas contra alturas dibujadas).
+    invitaciones: [
+      { texto: 'Haz que la barra de abril se vea justo el triple de la de marzo.',
+        logrado: val => casi(razonDibujo(val), 3),
+        bien: 'El triple en el dibujo, pero mira cuánto subieron de verdad las ventas.' },
+      { texto: 'Busca el aumento real más chico que el dibujo muestre como el doble.',
+        logrado: val => val.c > val.a && razonDibujo(val) >= 2 - 1e-9 && casi(razonReal(val), menorAumentoDoble()),
+        bien: 'Un aumento pequeñito, dibujado como el doble: el piso alto lo infla.' },
+      { texto: 'Con el eje lejos de 0, logra que dibujo y ventas digan lo mismo.',
+        logrado: val => val.b >= 50 && casi(razonDibujo(val), razonReal(val)),
+        bien: 'Solo si nada cambió. Con el eje cortado, toda diferencia se agranda.' },
+      { texto: 'Guarda dos casos que suban las mismas cajas con distinto aumento real.',
+        logrado: (val, guardados) => guardados.some(p => guardados.some(q => p.c - p.a > 0 && p.c - p.a === q.c - q.a && !casi(razonReal(p), razonReal(q)))),
+        bien: 'Mismas cajas de más, distinto porcentaje: todo depende de dónde se parte.' },
+    ],
   };
   // Mesa 2: ligas de 3 a 8 equipos, a una o dos vueltas. Sin arrastre: la tabla son solo conteos.
+  const partidos = val => val.n * (val.n - 1) / 2 * val.v;
+  const puntos = val => 3 * partidos(val) - Math.min(val.e, partidos(val));
   const ligaLibre = val => {
-    const G = val.n * (val.n - 1) / 2 * val.v, e = Math.min(val.e, G);
+    const G = partidos(val), e = Math.min(val.e, G);
     return {
       columnas: ['Partidos', 'Empates', 'Puntos'], filas: [`${val.n} equipos`], ancho: 84,
       celdas: [[{ t: String(G) }, { t: String(e), color: 'h' }, { t: String(3 * G - e), color: 'd', resalto: 'd' }]],
@@ -316,7 +345,21 @@
       { id: 'e', etiqueta: 'Empates', min: 0, max: 20, paso: 1, inicio: 2, decimales: 0, color: 'c-h' },
     ],
     dibujo: val => ({ datos: ligaLibre(val), estado: {} }),
-    lectura: val => { const G = val.n * (val.n - 1) / 2 * val.v, e = Math.min(val.e, G); return [plural(G, 'partido', 'partidos'), ', ', plural(e, 'empate', 'empates'), ': ', Pn, ` = ${3 * G - e}`]; },
+    lectura: val => { const G = partidos(val), e = Math.min(val.e, G); return [plural(G, 'partido', 'partidos'), ', ', plural(e, 'empate', 'empates'), ': ', Pn, ` = ${puntos(val)}`]; },
+    invitaciones: [
+      { texto: 'Arma una liga que reparta exactamente 50 puntos.',
+        logrado: val => puntos(val) === 50,
+        bien: 'Hay más de una liga con 50. ¿Cuántos empates pide cada una?' },
+      { texto: 'Con 6 equipos a una vuelta, reparte la menor cantidad de puntos posible.',
+        logrado: val => val.n === 6 && val.v === 1 && puntos(val) === 2 * partidos(val),
+        bien: 'Todos empatados: 2 puntos por partido. Menos no se puede repartir.' },
+      { texto: 'Guarda la misma liga sin empates, a una vuelta y a ida y vuelta.',
+        logrado: (val, guardados) => guardados.some(p => guardados.some(q => p.n === q.n && p.v === 1 && q.v === 2 && p.e === 0 && q.e === 0)),
+        bien: 'Ida y vuelta duplica los partidos y, sin empates, también los puntos.' },
+      { texto: 'Guarda dos ligas con distinto número de equipos y los mismos puntos.',
+        logrado: (val, guardados) => guardados.some(p => guardados.some(q => p.n !== q.n && puntos(p) === puntos(q))),
+        bien: 'Equipos distintos, mismo total: el número de puntos no dice el tamaño.' },
+    ],
   };
   // Mesa 3: los casos como puntos del plano. El dato I es la recta x + y = 10; el dato II, otra recta o la misma.
   // Se arrastra el punto (x, y) y se cuentan los casos enteros que cumplen los dos.
@@ -326,6 +369,7 @@
     { valor: 2, texto: 'x − y = 2', ok: (a, b) => a - b === 2, de: [2, 0], a: [10, 8] },
     { valor: 3, texto: 'y = 3', ok: (a, b) => b === 3, de: [0, 3], a: [10, 3] },
   ];
+  const cumpleAmbos = val => val.x + val.y === 10 && DATO2[val.d2].ok(val.x, val.y);
   const casosDe = d2 => { const xs = []; for (let a = 0; a <= 10; a++) if (DATO2[d2].ok(a, 10 - a)) xs.push(a); return xs; };
   const datosPlano = val => {
     const d2 = DATO2[val.d2], P = (a, b) => [a, 10 - b];   // y matemática hacia arriba
@@ -356,6 +400,21 @@
     arrastres: [{ id: 'punto', etiqueta: 'el caso (x, y)', color: 'c-i',
       donde: val => { const g = PLANO().geometria(datosPlano(val)); return { x: g.X(val.x), y: g.Y(10 - val.y) }; },
       mover: (pt, val) => { const g = PLANO().geometria(datosPlano(val)); return { x: (pt.x - g.X(0)) / g.k, y: 10 - (pt.y - g.Y(0)) / g.k }; } }],
+    // Retos: los casos los cuenta casosDe, la misma función que pinta los puntos verdes.
+    invitaciones: [
+      { texto: 'Elige un dato II que deje un solo caso y pon el punto ahí.',
+        logrado: val => casosDe(val.d2).length === 1 && cumpleAmbos(val),
+        bien: 'Un solo caso compatible: con esos dos datos, x ya se sabe.' },
+      { texto: 'Elige un dato II que no quite ningún caso de la recta I.',
+        logrado: val => val.d2 !== 0 && casosDe(val.d2).length === casosDe(0).length,
+        bien: 'Ese dato es redundante: dice lo mismo que el dato I.' },
+      { texto: 'Pon el punto en un caso que cumpla el dato II, pero no el I.',
+        logrado: val => val.d2 !== 0 && val.x + val.y !== 10 && DATO2[val.d2].ok(val.x, val.y),
+        bien: 'Cumple uno solo: no es caso compatible. Tiene que cumplir los dos.' },
+      { texto: 'Guarda dos casos con el mismo dato II que cumplan los dos y den x distinto.',
+        logrado: (val, guardados) => guardados.some(p => guardados.some(q => p.d2 === q.d2 && p.x !== q.x && cumpleAmbos(p) && cumpleAmbos(q))),
+        bien: 'Dos casos, dos valores de x: con esos datos, x no se puede saber.' },
+    ],
   };
 
   return {
@@ -365,6 +424,41 @@
     requiere: ['/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/rm-tablero.js'],
     // Laboratorio: barras y piso del eje arrastrables, ligas de una o dos vueltas, y los casos de suficiencia como
     // puntos del plano.
+    // Glosario: los términos que esta unidad estrena en el curso (los demás vienen de unidades anteriores).
+    glosario: [
+      { termino: 'gráfico', formas: ['gráfico', 'gráficos'],
+        def: 'Dibujo que muestra datos con barras, líneas o sectores para compararlos de un vistazo.', ver: ['escala', 'eje vertical'] },
+      { termino: 'eje vertical',
+        def: 'Recta de pie, al costado de un dibujo de datos, donde se leen los valores. No siempre empieza en cero.',
+        ver: ['escala'] },
+      { termino: 'escala', formas: ['escala', 'escalas'],
+        def: 'Regla que dice qué valor corresponde a cada marca de un eje: dónde empieza y cuánto vale cada tramo.',
+        ejemplo: 'Eje desde 80: la barra de 90 mide 10 y la de 100 mide 20.', ver: ['eje vertical'] },
+      { termino: 'porcentaje', simbolo: '%', formas: ['porcentaje', 'porcentajes'],
+        def: 'Cuántas partes de cada 100: compara una cantidad con otra que se toma como el total.',
+        ejemplo: '30 de 50 es el 60 %, porque 30 / 50 = 0,6.', ver: ['crecimiento porcentual'] },
+      { termino: 'crecimiento porcentual', formas: ['crecimiento porcentual', 'crecimiento en porcentaje'],
+        def: 'Cuánto aumentó algo comparado con lo que había al inicio, contado de cada 100.',
+        ejemplo: 'De 50 a 80: sube 30 sobre 50, un 60 %.', ver: ['porcentaje'] },
+      { termino: 'todos contra todos',
+        def: 'Forma de jugar una liga en que cada equipo enfrenta una vez a cada uno de los demás.',
+        ejemplo: '4 equipos: 4 · 3 / 2 = 6 partidos.', ver: ['ida y vuelta'] },
+      { termino: 'ida y vuelta',
+        def: 'Cada pareja de equipos de la liga juega dos veces, una en la cancha de cada uno.',
+        ejemplo: '4 equipos: 2 · 6 = 12 partidos.', ver: ['todos contra todos'] },
+      { termino: 'empate', formas: ['empate', 'empates', 'empatar', 'empatados', 'empatan', 'empata'],
+        def: 'Partido que termina sin ganador; en el sistema de 3, 1 y 0 puntos, da 1 a cada equipo.',
+        ejemplo: 'Un partido así reparte 2 puntos; uno con ganador, 3.' },
+      { termino: 'suficiencia de datos',
+        def: 'Decidir si la información dada alcanza para hallar un solo valor de lo que se pide.',
+        ver: ['caso compatible', 'dato redundante'] },
+      { termino: 'caso compatible', formas: ['caso compatible', 'casos compatibles'],
+        def: 'Valores que cumplen todos los datos dados. Puede no haber ninguno, haber uno o haber muchos.',
+        ejemplo: 'Con x + y = 10, (4, 6) y (7, 3) lo son.', ver: ['suficiencia de datos'] },
+      { termino: 'dato redundante', formas: ['dato redundante', 'redundante'],
+        def: 'Información que no agrega nada nuevo, porque se deduce de otra que ya se tenía.',
+        ejemplo: '2x + 2y = 20 repite x + y = 10: basta dividir entre 2.', ver: ['suficiencia de datos'] },
+    ],
     laboratorio: [mesaEje, mesaLiga, mesaPlano],
     historia: {
       texto: 'En la década de 1850, Florence Nightingale usó tablas y diagramas para argumentar sobre la mortalidad y las condiciones sanitarias. El historiador Hugh Small mostró también cómo se corrigió la forma de representar esos datos. Un gráfico es una decisión: hay que leer su escala antes de creerle a la altura.',
