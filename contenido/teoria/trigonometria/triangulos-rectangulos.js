@@ -144,7 +144,7 @@
       ],
     },
     regla: {
-      texto: 'Con un ángulo agudo y un lado se halla cualquier otro: se elige la razón que une el lado conocido con el buscado y se despeja.',
+      texto: 'Resolver un triángulo rectángulo es hallar lo que falta: con un ángulo agudo y un lado, se elige la razón que une el conocido con el buscado y se despeja.',
       ecuacion: [{ llave: [CO], nota: 'opuesto a θ', color: 'c-h' }, ' = ', H, ' sen ', th, '   ·   ', { llave: [CA], nota: 'junto a θ', color: 'c-i' }, ' = ', H, ' cos ', th, '   ·   ', CO, ' = ', CA, ' tan ', th],
       condicion: 'θ agudo en un triángulo rectángulo y los lados nombrados desde θ. Si el dato es un cateto, a veces se divide.',
       voz: 'Escribe la razón con los dos lados; después despeja.',
@@ -413,8 +413,10 @@
   // ---------- Laboratorio ----------
   // Ojo a la altura a sobre el suelo: la visual sube θ desde la horizontal del ojo; la torre suma a.
   // El ojo no lleva rótulo: lo marca su manija, y el rótulo «a = …» queda libre a su izquierda.
+  // Tramo de la torre sobre el ojo y altura total (con el tramo a bajo el ojo): los usan el dibujo, la lectura y los retos.
+  const sobreOjo = v => v.d * Math.tan(v.g * RAD), altoTorre = v => sobreOjo(v) + v.a;
   function instr(v) {
-    const t = v.d * Math.tan(v.g * RAD), Q = { id: 'Q', x: v.d, y: v.a };
+    const t = sobreOjo(v), Q = { id: 'Q', x: v.d, y: v.a };
     const lados = [
       { de: 'O', a: 'Q', color: 'i', texto: `d = ${f(v.d)} m`, horizontal: v.a > 0, grosor: 'variable' },
       { de: 'Q', a: 'T', color: 'h', texto: `${f(t, 1)} m`, grosor: 'variable' },
@@ -429,8 +431,10 @@
     };
   }
   // Faro con el pie en el origen y la lancha a la izquierda; marco fijo para que la lancha siga al dedo.
+  // Distancia de la lancha al pie del faro: la usan el dibujo, la lectura y los retos.
+  const lejosFaro = v => v.H / Math.tan(v.g * RAD);
   function faroL(v) {
-    const x = v.H / Math.tan(v.g * RAD);
+    const x = lejosFaro(v);
     return {
       suelo: true,
       puntos: [{ id: 'L', x: -x, y: 0, rotulo: 'lancha' }, { id: 'P', x: 0, y: 0, rotulo: 'faro' }, { id: 'F', x: 0, y: v.H }, { id: 'X', x: -x, y: v.H },
@@ -444,6 +448,7 @@
       angulos: [{ en: 'F', de: 'X', a: 'L', texto: `${v.g}°`, color: 'o' }, { en: 'L', de: 'P', a: 'F', texto: `${v.g}°`, color: 'o' }, { en: 'P', de: 'L', a: 'F' }],
     };
   }
+  const casi = (x, y) => Math.abs(x - y) < 1e-9;
   const betaL = v => (Math.atan((v.a + v.L) / v.d) - Math.atan(v.a / v.d)) * GRA;
   const letL = v => ({
     suelo: true,
@@ -469,6 +474,28 @@
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Abu Rayhan al-Biruni», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Al-Biruni/' },
     },
     ideas: [unLado, elevacion, observacion],
+    // Glosario (docs/teoria.md §4d): las palabras que esta unidad estrena en el curso. Catetos, hipotenusa, seno y
+    // las demás razones vienen de «Razones trigonométricas de ángulos agudos».
+    glosario: [
+      { termino: 'resolver un triángulo', def: 'Hallar los lados y ángulos que faltan a partir de los que se conocen.',
+        formas: ['resolver un triángulo rectángulo', 'resolver un triángulo'], ejemplo: 'Adyacente a 60° igual a 5: H = 5 ÷ cos 60° = 10 y el opuesto, 5√3.', ver: ['despejar'] },
+      { termino: 'despejar', def: 'Dejar sola una letra a un lado del igual, haciendo la misma operación en los dos lados.',
+        formas: ['despejar', 'despeja', 'despejas', 'despejamos', 'despejando'], ejemplo: 'cos 60° = 5/H: H = 5 ÷ cos 60° = 5 ÷ 0,5 = 10.', ver: ['resolver un triángulo'] },
+      { termino: 'horizontal', def: 'Línea paralela al suelo plano, como la superficie del agua quieta. Desde ella se miden elevación y depresión.',
+        formas: ['horizontal', 'horizontales'], ver: ['vertical', 'ángulo de elevación'] },
+      { termino: 'vertical', def: 'Línea como la de una plomada: forma ángulo recto con el suelo plano.',
+        formas: ['vertical', 'verticales'], ver: ['horizontal'] },
+      { termino: 'línea visual', def: 'Recta que va del ojo de quien mira hasta el punto que mira.',
+        formas: ['línea visual', 'líneas visuales', 'visual', 'visuales'], ejemplo: 'A 40 m de un faro de 30 m, desde lo alto mide √(30² + 40²) = 50 m.', ver: ['ángulo de elevación', 'ángulo de depresión'] },
+      { termino: 'ángulo de elevación', def: 'Lo que sube la mirada, medido desde la horizontal del ojo, para ver algo más alto.',
+        formas: ['ángulo de elevación', 'ángulos de elevación', 'elevación', 'elevaciones'], ejemplo: 'A 6 m del pie, con 45°: la punta está 6 · tan 45° = 6 m sobre el ojo.', ver: ['ángulo de depresión', 'horizontal'] },
+      { termino: 'ángulo de depresión', def: 'Lo que baja la mirada, medido desde la horizontal del ojo, para ver algo más bajo.',
+        formas: ['ángulo de depresión', 'ángulos de depresión', 'depresión', 'depresiones'], ejemplo: 'Desde 30 m de alto, con 45°, la lancha está a 30 ÷ tan 45° = 30 m.', ver: ['ángulo de elevación', 'horizontal'] },
+      { termino: 'ángulo de observación', def: 'Ángulo entre las visuales a los dos bordes de un objeto: cuánto abarca la mirada.',
+        formas: ['ángulo de observación', 'ángulos de observación', 'observación'], ejemplo: 'Letrero de 2 m a 6 m, visto desde 2√3 m: 60° − 30° = 30°.', ver: ['línea visual', 'ángulo de elevación'] },
+      { termino: 'distancia', medida: 'm', def: 'Largo del camino más corto entre dos puntos, o de un punto a una recta. Nunca es negativa.',
+        formas: ['distancia', 'distancias'], ejemplo: 'Del ojo al pie de una torre, por el suelo: 6 m.', ver: ['horizontal'] },
+    ],
     // Laboratorio (docs/teoria.md §4b). «instrumento»: la altura del ojo se suma a la torre, el error ELEV-OJO que la
     // idea 2 solo pregunta; tres manijas. «faro»: la depresión desde lo alto, con altura y ángulo libres (la idea 2 la
     // deja en «Mira»). «letrero-cerca»: el letrero con sus dos bordes libres y el ojo hasta medio metro del poste,
@@ -483,7 +510,23 @@
           { id: 'g', etiqueta: 'θ', color: 'c-o', min: 10, max: 60, paso: 1, inicio: 30, unidad: '°', decimales: 0 },
         ],
         dibujo: v => ({ datos: instr(v), estado: {} }),
-        lectura: v => [h, ` = ${f(v.d)} · tan ${v.g}° + ${f(v.a)} ≈ ${f(v.d * Math.tan(v.g * RAD) + v.a)} m`],
+        lectura: v => [h, ` = ${f(v.d)} · tan ${v.g}° + ${f(v.a)} ≈ ${f(altoTorre(v))} m`],
+        // Retos: altoTorre y sobreOjo son las cuentas con que instr dibuja la torre.
+        invitaciones: [
+          { texto: 'Con el ojo a 1,5 m de altura, consigue una torre de 7,5 m.',
+            logrado: v => v.a === 1.5 && casi(altoTorre(v), 7.5),
+            bien: '6 m sobre el ojo y 1,5 m debajo: el tramo bajo el ojo también cuenta.' },
+          { texto: 'Pon el ojo en el suelo y haz que la torre mida lo mismo que d.',
+            logrado: v => v.a === 0 && casi(altoTorre(v), v.d),
+            bien: 'Sin altura del ojo, 45° da torre igual a distancia: tan 45° = 1.' },
+          { texto: 'Haz la torre más alta posible sin pasar de 45° de elevación.',
+            logrado: v => v.g <= 45 && casi(altoTorre(v), altoTorre({ a: 2, d: 12, g: 45 })),
+            bien: 'Lejos, alto y a 45°: 12 m sobre el ojo y 2 m debajo.' },
+          { texto: 'A 60°, busca la menor distancia que dé una torre de más de 10 m.',
+            // La más corta: con el ojo lo más alto (2 m), un metro menos ya no alcanza.
+            logrado: v => v.g === 60 && altoTorre(v) > 10 && altoTorre({ a: 2, d: v.d - 1, g: 60 }) <= 10,
+            bien: `A 5 m ya pasa: ${f(sobreOjo({ d: 5, g: 60 }))} m sobre el ojo, más lo de abajo.` },
+        ],
         // El ojo sube o baja (a); el pie de la torre cambia d; la punta, vista desde el ojo, cambia θ.
         arrastres: [
           { id: 'ojo', etiqueta: 'ojo: cambia su altura a', color: 'c-h',
@@ -505,7 +548,22 @@
           { id: 'g', etiqueta: 'θ', color: 'c-o', min: 30, max: 75, paso: 1, inicio: 37, unidad: '°', decimales: 0 },
         ],
         dibujo: v => ({ datos: faroL(v), estado: {} }),
-        lectura: v => [`depresión = elevación = ${v.g}° · `, d, ` = ${v.H} ÷ tan ${v.g}° ≈ ${f(v.H / Math.tan(v.g * RAD))} m`],
+        lectura: v => [`depresión = elevación = ${v.g}° · `, d, ` = ${v.H} ÷ tan ${v.g}° ≈ ${f(lejosFaro(v))} m`],
+        // Retos: lejosFaro es la distancia con que faroL dibuja la lancha.
+        invitaciones: [
+          { texto: 'Haz que la lancha quede tan lejos del pie como alto es el faro.',
+            logrado: v => casi(lejosFaro(v), v.H),
+            bien: 'Depresión de 45°: distancia igual a altura. Desde la lancha, la elevación también es 45°.' },
+          { texto: 'Guarda dos casos con el mismo ángulo y el faro al doble de alto.',
+            logrado: (v, gs) => gs.some(a => gs.some(b => a.g === b.g && b.H === 2 * a.H)),
+            bien: 'Faro al doble, lancha al doble de lejos: el ángulo fija la forma.' },
+          { texto: 'Lleva la lancha lo más lejos posible del faro.',
+            logrado: v => casi(lejosFaro(v), lejosFaro({ H: 30, g: 30 })),
+            bien: 'Lejos, la visual baja poco: la depresión se achica.' },
+          { texto: 'Acerca la lancha hasta quedar a menos de media altura del pie.',
+            logrado: v => lejosFaro(v) < v.H / 2,
+            bien: 'Pasa desde 64°: la visual casi cae vertical. ¿Qué pasaría cerca de 90°?' },
+        ],
         // La lancha corre por el agua: cambia el ángulo; la punta del faro cambia su altura.
         arrastres: [
           { id: 'lancha', etiqueta: 'lancha: cambia el ángulo', color: 'c-o',
@@ -526,6 +584,21 @@
         ],
         dibujo: v => ({ datos: letL(v), estado: {} }),
         lectura: v => [be, ` ≈ ${f(betaL(v), 1)}° a `, d, ` = ${f(v.d)} m · el mayor, a ${f(Math.sqrt(v.a * (v.a + v.L)), 1)} m`],
+        // Retos: betaL es el ángulo entre las dos visuales que dibuja letL.
+        invitaciones: [
+          { texto: 'Para tu letrero, busca la distancia donde β es mayor.',
+            logrado: v => betaL(v) >= betaL(Object.assign({}, v, { d: v.d - 0.5 })) && betaL(v) >= betaL(Object.assign({}, v, { d: v.d + 0.5 })),
+            bien: 'Ni lejos ni pegado: el mayor β está cerca de √(a · (a + L)).' },
+          { texto: 'Guarda dos distancias distintas, con el mismo letrero, que den el mismo β.',
+            logrado: (v, gs) => gs.some(p => gs.some(q => p.a === q.a && p.L === q.L && p.d !== q.d && casi(betaL(p), betaL(q)))),
+            bien: 'De cerca y de lejos se ve lo mismo cuando d₁ · d₂ = a(a + L).' },
+          { texto: 'Consigue que β mida justo 45°.',
+            logrado: v => casi(betaL(v), 45),
+            bien: 'Restar dos elevaciones dio un ángulo notable. ¿Hay otra distancia que lo dé?' },
+          { texto: 'Acércate a medio metro del poste y mira qué le pasa a β.',
+            logrado: v => v.d === 0.5 && betaL(v) < betaL(Object.assign({}, v, { d: 1 })),
+            bien: 'Muy cerca, las dos visuales casi verticales se juntan: β se achica.' },
+        ],
         // El pie del poste cambia d; el borde bajo sube el letrero entero; el borde alto lo estira.
         arrastres: [
           { id: 'pie', etiqueta: 'pie del poste: cambia d', color: 'c-i',
