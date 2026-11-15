@@ -127,3 +127,5 @@ Se construyó sobre la rama de teoría `claude/awesome-einstein-ch5g9a`, que ya 
 4. lograr otro reto solo;
 5. guardar dos moléculas;
 6. cerrar la app y volver otro día.
+
+**Decisión de Gerson (15 nov): three.js se baja con la app.** El archivo de three.js (unos 137 KB comprimido) se sigue guardando en la cáscara del service worker, al instalar. Así el 3D abre sin conexión desde el primer día, aunque el colegio no tenga buena señal cuando el profesor pida abrirlo. A cambio, también lo baja quien nunca usa el 3D. Se descartó bajarlo recién la primera vez que se abre el 3D.
