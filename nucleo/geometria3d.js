@@ -1,5 +1,5 @@
 /*
- * Geometría de la prueba 3D (app/prueba3d/): sin DOM ni three.js, para que las cuentas tengan pruebas (regla 1).
+ * Geometría 3D (antes en app/prueba3d/; la usan la prueba 3D y la pieza geo-corte-3d): sin DOM ni three.js, para que las cuentas tengan pruebas (regla 1).
  *   seccion(caja, normal, d) → polígono de corte de una caja con el plano n·p = d (puntos en orden) y su nombre
  *   normalDe(inclinacion, giro) → normal unitaria del plano a partir de dos ángulos en grados
  *   molecula(id) → átomos y enlaces con la geometría de repulsión de pares (ángulos de libro)
@@ -50,6 +50,8 @@
     pts.sort((p, q) => Math.atan2(punto(resta(p, c), w), punto(resta(p, c), u)) - Math.atan2(punto(resta(q, c), w), punto(resta(q, c), u)));
     let area = 0;
     for (let k = 0; k < pts.length; k++) area += punto(n, cruz(resta(pts[k], c), resta(pts[(k + 1) % pts.length], c))) / 2;
+    // Si el plano solo roza una arista o un vértice, los puntos quedan en línea y no hay sección (área 0).
+    if (Math.abs(area) < 1e-6) return { puntos: [], lados: 0, nombre: 'sin corte', area: 0 };
     const lados = pts.length;
     let nombre = NOMBRES[lados] || `${lados} lados`;
     if (lados === 4) {

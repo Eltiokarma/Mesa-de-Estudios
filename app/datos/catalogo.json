@@ -3763,10 +3763,11 @@
      "teoria": {
       "archivo": "/contenido/teoria/geometria/prisma-y-piramide.js",
       "requiere": [
-       "/nucleo/kit/piezas/geo-figura.js"
+       "/nucleo/kit/piezas/geo-figura.js",
+       "/nucleo/kit/piezas/geo-corte-3d.js"
       ],
       "ideas": 6,
-      "terminos": 46
+      "terminos": 48
      }
     },
     {

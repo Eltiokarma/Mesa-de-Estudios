@@ -772,11 +772,57 @@
     return Math.max(...pasos(ca).flatMap(a => pasos(cb).flatMap(b => pasos(ch).map(h => fallo({ a, b, h })))));
   })();
 
+
+  // ---------- El prisma que se corta (laboratorio 3D, 15 nov: exploración libre, sin predicciones) ----------
+  // La sección la calcula nucleo/geometria3d.js (seccion) a través de la pieza geo-corte-3d: los retos miden lo mismo
+  // que se dibuja (regla 1). El plano se orienta con su inclinación desde el piso y su giro, y se sube o se baja.
+  const CAJAS = { cubo: { a: 2, b: 2, c: 2 }, ladrillo: { a: 3, b: 1.6, c: 2 } };
+  const CORTE = () => Kit.piezas['geo-corte-3d'];
+  const datosCorte = v => {
+    const t = v.inc * Math.PI / 180, g = v.giro * Math.PI / 180;
+    return { caja: CAJAS[v.forma], normal: [Math.sin(t) * Math.sin(g), Math.cos(t), Math.sin(t) * Math.cos(g)], d: v.d };
+  };
+  const seccionDe = v => CORTE().corte(datosCorte(v));
+  const mesaCorte = {
+    id: 'prisma-corte', titulo: 'El prisma que se corta', pieza: 'geo-corte-3d',
+    consigna: 'Gira el prisma con el dedo. Inclina, gira y sube el plano: mira qué sección plana deja el corte.',
+    controles: [
+      { id: 'forma', etiqueta: 'Prisma', opciones: [{ valor: 'cubo', texto: 'Cubo' }, { valor: 'ladrillo', texto: 'Ladrillo' }] },
+      { id: 'inc', etiqueta: 'Inclinación', color: 'c-i', min: 0, max: 80, paso: 5, inicio: 0, unidad: '°', decimales: 0 },
+      { id: 'giro', etiqueta: 'Giro', color: 'c-d', min: 0, max: 90, paso: 5, inicio: 0, unidad: '°', decimales: 0 },
+      { id: 'd', etiqueta: 'Altura del plano', color: 'c-o', min: -1.8, max: 1.8, paso: 0.2, inicio: 0, decimales: 1 },
+    ],
+    dibujo: v => ({ datos: datosCorte(v), estado: { plano: true } }),
+    lectura: v => { const s = seccionDe(v); return [s.lados >= 3 ? `Sección: ${s.nombre} · área ${s.area < 0.005 ? 'casi 0' : f(s.area)}` : 'El plano no toca el prisma']; },
+    invitaciones: [
+      { texto: 'Consigue una sección triangular de área 0,5 o más.',
+        logrado: v => seccionDe(v).lados === 3 && seccionDe(v).area >= 0.5,
+        bien: 'El plano cortó solo tres caras: las de una esquina.',
+        pista: 'Inclina el plano y súbelo hasta que pase cerca de una esquina.' },
+      { texto: 'Saca un hexágono del cubo.',
+        logrado: v => v.forma === 'cubo' && seccionDe(v).lados === 6,
+        bien: 'Seis caras cortadas, seis lados. Ningún prisma de cuatro caras laterales da más.',
+        pista: 'Inclina unos 55°, gira 45° y deja la altura en 0.' },
+      { texto: 'Busca una sección de cinco lados.',
+        logrado: v => seccionDe(v).lados === 5,
+        bien: 'Cinco lados: el plano corta cinco de las seis caras.',
+        pista: 'Parte de un hexágono y sube un poco el plano.' },
+      { texto: 'En el ladrillo, logra una sección que no sea rectángulo ni triángulo.',
+        logrado: v => v.forma === 'ladrillo' && seccionDe(v).lados >= 4 && !['rectángulo', 'cuadrado'].includes(seccionDe(v).nombre),
+        bien: 'Inclinado en dos direcciones, el corte deja de ser rectángulo.',
+        pista: 'Usa inclinación y giro a la vez; con uno solo sale un rectángulo.' },
+      { texto: 'Guarda dos cortes del cubo con los mismos lados y distinta área.',
+        logrado: (v, guardados) => guardados.some(a => guardados.some(b => a.forma === 'cubo' && b.forma === 'cubo'
+          && seccionDe(a).lados >= 3 && seccionDe(a).lados === seccionDe(b).lados && Math.abs(seccionDe(a).area - seccionDe(b).area) > 0.01)),
+        bien: 'La forma se repite, pero el tamaño depende de dónde cortas.' },
+    ],
+  };
+
   return {
     unidad: 'geometria.prisma-y-piramide',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/geo-figura.js'],
+    requiere: ['/nucleo/kit/piezas/geo-figura.js', '/nucleo/kit/piezas/geo-corte-3d.js'],
     historia: {
       texto: 'El problema 14 del papiro de Moscú, escrito en Egipto hace más de 3800 años, calcula el volumen de un tronco de pirámide de bases cuadradas: lados 4 y 2, altura 6. El procedimiento da 56, igual que la fórmula exacta de hoy. El papiro no explica cómo se obtuvo la regla.',
       pregunta: '¿Por qué el volumen no es el promedio de las bases por la altura?',
@@ -785,6 +831,9 @@
     // Glosario por tema (docs/teoria.md §4d). «Prisma», «pirámide», «cara lateral» y «arista lateral» vienen de
     // Poliedros; «apotema», «volumen», «media geométrica» y «semiperímetro», de unidades anteriores.
     glosario: [
+      { termino: 'sección plana', formas: ['sección plana', 'secciones planas'],
+        def: 'La figura que deja un plano al pasar a través de un sólido: lo que se ve al cortarlo.',
+        ejemplo: 'Un cubo cortado por el medio, en horizontal, deja un cuadrado.', ver: ['plano'] },
       { termino: 'prisma recto', formas: ['prisma recto', 'prismas rectos'],
         def: 'El que tiene las aristas laterales a 90° de las bases: su altura mide lo mismo que ellas.', ver: ['prisma oblicuo'] },
       { termino: 'prisma oblicuo', formas: ['prisma oblicuo', 'prismas oblicuos'],
@@ -817,10 +866,10 @@
         def: 'Uno es copia a escala del otro: todas sus longitudes se multiplican por un mismo número k.',
         ejemplo: 'Con k = 1/2, el volumen queda en (1/2)³ = 1/8.', ver: ['semejanza'] },
     ],
-    // Laboratorio: la pirámide en su prisma y el tronco libre son más ricas que sus ideas; la tercera mesa es el corte
-    // de la idea 6 con su gesto.
+    // Laboratorio: primero el prisma que se corta, en 3D (exploración libre). La pirámide en su prisma y el tronco libre
+    // son más ricas que sus ideas; la última mesa es el corte de la idea 6 con su gesto.
     // La mesa de la escala trae sus retos en el primer objeto; los cuenta k³, la misma razón de la lectura.
-    laboratorio: [mesaEnPrisma, mesaTronco, Object.assign({ id: 'escala', titulo: 'Escala al cubo', pieza: 'geo-figura', invitaciones: [
+    laboratorio: [mesaCorte, mesaEnPrisma, mesaTronco, Object.assign({ id: 'escala', titulo: 'Escala al cubo', pieza: 'geo-figura', invitaciones: [
       { texto: 'Haz que la punta tenga justo 1/8 del volumen de la pirámide.',
         logrado: v => casi(v.t ** 3, 1 / 8),
         bien: 'k = 1/2: la mitad de alto deja solo un octavo del volumen.' },

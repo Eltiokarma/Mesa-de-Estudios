@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const G = require('./geometria.js');
+const G = require('./geometria3d.js');
 
 const CUBO = { a: 2, b: 2, c: 2 };
 test('corte horizontal de un cubo: un cuadrado de área 4', () => {
@@ -33,4 +33,11 @@ test('moléculas: ángulos de libro y pares libres', () => {
   assert.equal(G.molecula('NH3').pares.length, 1);
   assert.equal(G.molecula('H2O').pares.length, 2);
   assert.equal(G.molecula('H2O').atomos.length, 3);
+});
+
+test('un plano que solo roza una arista no deja sección', () => {
+  // n = (1, 1, 0)/√2 y d = √2: el plano x + y = 2 toca solo la arista x = 1, y = 1 del cubo de lado 2.
+  const s = G.seccion(CUBO, [1, 1, 0], Math.SQRT2);
+  assert.equal(s.lados, 0);
+  assert.equal(s.area, 0);
 });
