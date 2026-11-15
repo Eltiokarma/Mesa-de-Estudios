@@ -169,10 +169,12 @@ Se construyó sobre la rama de teoría `claude/awesome-einstein-ch5g9a`, que ya 
   - la pregunta que espera al juego ya no parece apagada: dice «↑ Primero juega con la figura».
 - **El título de la unidad** se parte con guion («proporcio-nes»), no a la mitad de la palabra.
 
-**Fase 2, siguiente:**
-- el momento «Lee», con tarjetas;
-- «Así se resuelve», el ejercicio resuelto paso a paso que calcula el motor;
-- el glosario en tarjetas deslizables;
-- la animación en la base 3D (el cañón), con pausa y que se duerme fuera de pantalla.
+**Fase 2, hecha (15 nov, noche)** (molde en `docs/teoria.md`, 4e):
+- **El glosario en tarjetas de colores:** buscador arriba, un mazo deslizable por idea, «Ver ejemplo», «Verla en la teoría», «Ya me la sé» y un repaso con tarjetas que se voltean. Vale para las 152 unidades sin tocar su contenido.
+- **El momento «Lee»:** de 2 a 4 tarjetas para leer antes de jugar. No pregunta ni bloquea, y no adelanta la respuesta de «Predice».
+- **«Así se resuelve»:** un ejercicio del mismo tipo que «Ahora tú», calculado por las mismas cuentas y revelado paso a paso: qué me piden, qué tengo, qué regla uso, las cuentas y si tiene sentido. Trae «Otro ejemplo».
+- Los dos momentos son opcionales por idea: las unidades que no los traen siguen igual.
+- **Probado en:** Razones y proporciones y Movimiento parabólico y circular (ideas 1 y 2 de cada una).
+- La animación de la base 3D (el cañón) se hizo antes, en la ronda 5 (`docs/3d.md`, sección 6).
 
-Se prueba en Razones y proporciones y en Movimiento parabólico.
+**Siguiente:** con el visto bueno de Gerson, la ronda 6 llena «Lee» y «Así se resuelve» en las 152 unidades.

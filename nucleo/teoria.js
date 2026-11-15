@@ -46,6 +46,8 @@
     mira: { expresion: 'E4', pose: 'reposo' },
     regla: { expresion: 'E6', pose: 'reposo' },
     'ahora-tu': { expresion: 'E1', pose: 'reposo' },
+    lee: { expresion: 'E4', pose: 'reposo' },
+    resuelve: { expresion: 'E4', pose: 'reposo' },
     acierto: { expresion: 'E7', pose: 'celebra' },
     error: { expresion: 'E8', pose: 'acompaña' },
     ayuda: { expresion: 'E8', pose: 'ayuda' },
@@ -57,8 +59,16 @@
   const PRESUPUESTO = {
     titulo: 6, consigna: 25, voz: 16, pregunta: 40, opcion: 14, siFuera: 20,
     paso: 14, regla: 30, condicion: 22, historia: 70, enunciado: 40, solucion: 20, lectura: 12,
+    // Fase 2 (decisión de Gerson, 15 nov): «Lee» (tarjetas para leer) y «Así se resuelve» (ejercicio resuelto paso a paso).
+    tarjeta: 45, resuelto: 30, respuesta: 14,
   };
-  const MOMENTOS = ['juega', 'predice', 'mira', 'regla', 'ahora-tu'];
+  // Los siete momentos posibles, en orden. «Lee» y «Así se resuelve» van solo si la idea los trae (momentosDe).
+  const MOMENTOS = ['lee', 'juega', 'predice', 'mira', 'regla', 'resuelve', 'ahora-tu'];
+  const momentosDe = idea => MOMENTOS.filter(m => (m !== 'lee' || (idea && idea.lee)) && (m !== 'resuelve' || (idea && idea.resuelve)));
+  // Los pasos de un ejercicio resuelto: cómo se ataca un problema, en este orden (docs/teoria.md, 4e).
+  const PASOS_RESUELTO = {
+    pide: '¿Qué me piden?', datos: '¿Qué tengo?', regla: '¿Qué regla uso?', cuentas: 'Las cuentas', sentido: '¿Tiene sentido?',
+  };
   // Texto plano de un texto con partes de ecuación (variables, subíndices, fracciones), para contar y revisar.
   const plano = x => Ecuacion.texto(x === undefined || x === null ? '' : x);
   const palabras = x => Kit.palabras(plano(x));
@@ -286,6 +296,20 @@
         }
       };
 
+      // 0. Lee (opcional): de 2 a 4 tarjetas cortas para leer antes de jugar. No pregunta nada y no bloquea.
+      if (idea.lee !== undefined) {
+        const L = idea.lee, ts = L && L.tarjetas;
+        if (!Array.isArray(ts) || ts.length < 2 || ts.length > 4) mal(d, 'lee: de 2 a 4 tarjetas');
+        else for (const [i, t] of ts.entries()) {
+          const dd = `${d} lee tarjeta ${i + 1}`;
+          if (!t || !t.texto) { mal(dd, 'sin texto'); continue; }
+          if (t.titulo) tope(dd, 'titulo', t.titulo);
+          tope(dd, 'tarjeta', t.texto);
+          if (t.ecuacion) ecuacion(dd, t.ecuacion);
+          if (t.dibujo) dibuja(dd, t.dibujo, t.pieza);
+        }
+      }
+
       // 1. Juega
       if (!idea.juega) mal(d, 'sin juega (regla 3: se juega antes de cualquier pregunta)');
       else revisarJuego(`${d} juega`, idea.juega, idea.pieza, true);
@@ -321,6 +345,40 @@
         tope(`${d} regla`, 'regla', r.texto);
         if (r.ecuacion) ecuacion(`${d} regla`, r.ecuacion);
         if (!r.condicion) mal(d, 'regla sin condición (cuándo vale)'); else tope(`${d} regla`, 'condicion', r.condicion);
+      }
+
+      // 4b. Así se resuelve (opcional): un ejercicio resuelto paso a paso, generado y calculado por el motor.
+      if (idea.resuelve !== undefined) {
+        const R = idea.resuelve;
+        if (!R || typeof R.generar !== 'function') mal(d, 'resuelve.generar(semilla) debe ser una función');
+        else {
+          const vistos = new Set();
+          for (let s = 0; s < 12; s++) {
+            const dd = `${d} resuelve semilla ${s}`;
+            let c;
+            try { c = R.generar(s); } catch (err) { mal(dd, `falló: ${err.message}`); continue; }
+            if (!c || !c.enunciado) { mal(dd, 'sin enunciado'); continue; }
+            tope(dd, 'enunciado', c.enunciado);
+            if (c.dibujo) dibuja(dd, c.dibujo, R.pieza);
+            if (!Array.isArray(c.pasos) || c.pasos.length < 3 || c.pasos.length > 6) { mal(dd, 'de 3 a 6 pasos'); continue; }
+            const tipos = c.pasos.map(x => x && x.tipo);
+            if (tipos[0] !== 'pide') mal(dd, 'el primer paso es «pide» (qué me piden)');
+            if (!tipos.includes('cuentas')) mal(dd, 'falta el paso «cuentas»');
+            if (!tipos.includes('regla')) mal(dd, 'falta el paso «regla» (qué regla uso)');
+            for (const [i, x] of c.pasos.entries()) {
+              const di = `${dd} paso ${i + 1}`;
+              if (!x || !PASOS_RESUELTO[x.tipo]) { mal(di, `tipo: ${Object.keys(PASOS_RESUELTO).join(', ')}`); continue; }
+              if (!x.texto) mal(di, 'sin texto'); else tope(di, 'resuelto', x.texto);
+              if (x.ecuacion) ecuacion(di, x.ecuacion);
+              if (x.dibujo) dibuja(di, x.dibujo, R.pieza);
+              if (/NaN|undefined|Infinity/.test(plano(x.texto) + plano(x.ecuacion || ''))) mal(di, 'muestra NaN o undefined');
+            }
+            if (!c.respuesta) mal(dd, 'sin respuesta'); else tope(dd, 'respuesta', c.respuesta);
+            if (/NaN|undefined|Infinity/.test(plano(c.enunciado) + plano(c.respuesta || ''))) mal(dd, 'el enunciado o la respuesta muestran NaN o undefined');
+            vistos.add(plano(c.enunciado));
+          }
+          if (vistos.size < 3) mal(d, `resuelve da solo ${vistos.size} enunciados distintos en 12 semillas (se necesitan 3 o más)`);
+        }
       }
 
       // 5. Ahora tú
@@ -395,5 +453,5 @@
     return x;
   }
 
-  return { unidad, unidades, problemas, plano, inicio, ajustar, grilla, barajar, PERSONAJES, ACTUACION, PRESUPUESTO, MOMENTOS, palabras };
+  return { unidad, unidades, problemas, plano, inicio, ajustar, grilla, barajar, PERSONAJES, ACTUACION, PRESUPUESTO, MOMENTOS, momentosDe, PASOS_RESUELTO, palabras };
 });

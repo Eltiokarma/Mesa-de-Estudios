@@ -37,7 +37,7 @@
   const cargarEstilo = () => estilo || (estilo = new Promise(ok => {
     const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = KIT_CSS; l.onload = ok; l.onerror = ok; document.head.appendChild(l);
   }));
-  const NOMBRE_MOMENTO = { juega: 'Juega', predice: 'Predice', mira: 'Mira', regla: 'La regla', 'ahora-tu': 'Ahora tú' };
+  const NOMBRE_MOMENTO = { lee: 'Lee', juega: 'Juega', predice: 'Predice', mira: 'Mira', regla: 'La regla', resuelve: 'Así se resuelve', 'ahora-tu': 'Ahora tú' };
   const reducido = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   const ICONO_LUPA = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 15l5 5M10.5 8v5M8 10.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   const MAX_CASOS = 4;
@@ -79,7 +79,7 @@
     est.teoria = est.teoria || {};
     return est.teoria[id] || (est.teoria[id] = { ideas: {} });
   }
-  const estadoIdea = (st, id) => st.ideas[id] || (st.ideas[id] = { momento: 'juega', casos: 0 });
+  const estadoIdea = (st, id) => st.ideas[id] || (st.ideas[id] = { casos: 0 });
   const hecha = (st, id) => !!(st.ideas[id] && st.ideas[id].hecha);
 
   // Mesas del laboratorio: las que trae la unidad o, si no trae, el juego de cada idea (sin mínimo ni preguntas).
@@ -312,7 +312,7 @@
         <p>${esc(def.historia.texto)}</p>${def.historia.pregunta ? `<p class="te-hpreg">${esc(def.historia.pregunta)}</p>` : ''}</details>` : ''}
       <section class="card te-idea" aria-labelledby="te-titulo">
         <h2 id="te-titulo">${esc(idea.titulo)}</h2>
-        <ol class="te-momentos" aria-label="Momentos de esta idea">${T.MOMENTOS.map(m => `<li data-m="${m}">${NOMBRE_MOMENTO[m]}</li>`).join('')}</ol>
+        <ol class="te-momentos${T.momentosDe(idea).length > 5 ? ' muchos' : ''}" aria-label="Momentos de esta idea">${T.momentosDe(idea).map(m => `<li data-m="${m}">${NOMBRE_MOMENTO[m]}</li>`).join('')}</ol>
         ${figuraHTML}
         <div class="te-lectura" aria-live="polite"></div>
         <div class="te-zona"></div>
@@ -350,18 +350,21 @@
     const mostrar = el => requestAnimationFrame(() => el.scrollIntoView({ block: 'nearest', behavior: reducido() ? 'auto' : 'smooth' }));
     const marcarMomento = m => {
       raiz.querySelectorAll('.te-momentos li').forEach(li => {
-        const k = T.MOMENTOS.indexOf(li.dataset.m), j = T.MOMENTOS.indexOf(m);
+        const k = MOM.indexOf(li.dataset.m), j = MOM.indexOf(m);
         li.classList.toggle('on', k === j); li.classList.toggle('pasado', k < j);
         if (k === j) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
       });
     };
     let juego = null;
+    // Los momentos de esta idea: «Lee» y «Así se resuelve» solo si los trae (nucleo/teoria.js, momentosDe).
+    const MOM = T.momentosDe(idea);
     const ir = m => {
+      if (!MOM.includes(m)) m = m === 'lee' ? 'juega' : m === 'resuelve' ? 'ahora-tu' : MOM[0];
       si.momento = m; ctx.guardar(); decir(''); lectura.textContent = ''; raiz.dataset.m = m;
       if (lt) { lt.destruir(); lt = null; }
       if (juego) { juego.destruir(); juego = null; }
       marcarMomento(m);
-      ({ juega, predice, mira, regla, 'ahora-tu': ahoraTu })[m]();
+      ({ lee, juega, predice, mira, regla, resuelve, 'ahora-tu': ahoraTu })[m]();
       const foco = zona.querySelector('h3,[data-foco]');
       if (foco && document.activeElement && document.activeElement !== document.body) foco.focus({ preventScroll: true });
     };
@@ -370,6 +373,77 @@
     vigilar(zona);
     vigilar(raiz.querySelector('.te-consigna-arriba'));
     vigilar($app.querySelector('.te-historia'));
+
+    // 0. Lee: de 2 a 4 tarjetas para leer antes de jugar (decisión de Gerson, 15 nov: leer también es lúdico). Se deslizan;
+    // no preguntan nada ni bloquean. No adelantan la respuesta de «Predice» (lo revisa quien escribe el contenido).
+    function lee() {
+      const L = idea.lee, ts = L.tarjetas;
+      actuar('lee', L.voz || 'Lee con calma. Después juegas con esto.');
+      const conDib = ts.find(t => t.dibujo);
+      if (conDib) dibujar(conDib.dibujo, conDib.pieza); else { fig.innerHTML = ''; $('#te-alt').textContent = ''; }
+      zona.innerHTML = `<h3 class="lector" tabindex="-1">Lee</h3>
+        <div class="te-lee" role="group" aria-roledescription="carrusel" aria-label="Para leer">${ts.map((t, k) => `<article class="te-lee-t" aria-label="Tarjeta ${k + 1} de ${ts.length}">
+            <span class="te-lee-n">${k + 1} / ${ts.length}</span>${t.titulo ? `<h4>${esc(t.titulo)}</h4>` : ''}<p>${E.html(t.texto)}</p>
+            ${t.ecuacion ? `<p class="te-ec">${E.html(t.ecuacion)}</p>` : ''}</article>`).join('')}</div>
+        <div class="te-lee-puntos" aria-hidden="true">${ts.map((_, k) => `<span${k ? '' : ' class="on"'}></span>`).join('')}</div>`;
+      const fila = zona.querySelector('.te-lee'), puntos = [...zona.querySelectorAll('.te-lee-puntos span')];
+      let vista = 0, maxVista = 0;
+      fila.addEventListener('scroll', () => {
+        const w = fila.firstElementChild.getBoundingClientRect().width || 1;
+        const k = Math.min(ts.length - 1, Math.round(fila.scrollLeft / (w + 12)));
+        if (k === vista) return;
+        vista = k; maxVista = Math.max(maxVista, k);
+        puntos.forEach((p, i) => p.classList.toggle('on', i === k));
+        const t = ts[k]; if (t.dibujo) dibujar(t.dibujo, t.pieza);
+      }, { passive: true });
+      const pasar = () => {
+        if (vista < ts.length - 1) {
+          const sigT = fila.children[vista + 1];
+          fila.scrollTo({ left: sigT.offsetLeft - fila.offsetLeft, behavior: reducido() ? 'auto' : 'smooth' });
+          return;
+        }
+        evento('lee', { tarjetas: ts.length, vistas: maxVista + 1 });
+        ir('juega');
+      };
+      // El botón grande pasa de tarjeta en tarjeta; el de abajo salta directo al juego (no se obliga a leer).
+      sig.textContent = 'Siguiente tarjeta ›';
+      sig.onclick = pasar;
+      fila.addEventListener('scroll', () => { sig.textContent = vista < ts.length - 1 ? 'Siguiente tarjeta ›' : 'Siguiente: Juega ›'; }, { passive: true });
+      zona.insertAdjacentHTML('beforeend', '<button type="button" class="te-lee-saltar">Ir directo a jugar</button>');
+      zona.querySelector('.te-lee-saltar').onclick = () => { evento('lee', { tarjetas: ts.length, vistas: maxVista + 1, salto: true }); ir('juega'); };
+    }
+
+    // 4b. Así se resuelve: un ejercicio resuelto por el motor, revelado paso a paso (qué me piden, qué tengo, qué regla
+    // uso, las cuentas, ¿tiene sentido?). Enseña por dónde empieza el análisis (Sweller: ejemplo resuelto). «Otro ejemplo».
+    function resuelve() {
+      const R = idea.resuelve, PASOS = T.PASOS_RESUELTO;
+      let sem = si.resuelve || 0, c = null, n = 1;
+      const dibujoActual = () => { for (let k = n - 1; k >= 0; k--) if (c.pasos[k].dibujo) return c.pasos[k].dibujo; return c.dibujo; };
+      const pintarR = () => {
+        const d = dibujoActual();
+        if (d) dibujar(d, R.pieza); else { fig.innerHTML = ''; $('#te-alt').textContent = ''; }
+        const fin = n >= c.pasos.length;
+        zona.innerHTML = `<div class="te-res-enun" tabindex="-1" data-foco><span class="te-res-et">Así se resuelve</span><p>${E.html(c.enunciado)}</p></div>
+          <ol class="te-res-pasos">${c.pasos.slice(0, n).map((x, i) => `<li class="te-res-paso" data-tipo="${esc(x.tipo)}"${i === n - 1 ? ' data-nuevo' : ''}>
+              <span class="te-res-tipo"><b>${i + 1}</b> ${esc(PASOS[x.tipo])}</span><p>${E.html(x.texto)}</p>${x.ecuacion ? `<p class="te-ec">${E.html(x.ecuacion)}</p>` : ''}</li>`).join('')}</ol>
+          ${fin ? `<p class="te-res-resp"><b>Respuesta:</b> ${E.html(c.respuesta)}</p>` : ''}
+          <div class="te-res-acc">${fin ? '<button type="button" class="btn borde te-res-otro">Otro ejemplo</button>' : '<button type="button" class="btn borde te-res-todo">Ver todos los pasos</button>'}</div>`;
+        const b = zona.querySelector('.te-res-otro, .te-res-todo');
+        b.onclick = fin ? () => { sem++; si.resuelve = sem; ctx.guardar(); nuevo(); } : () => { n = c.pasos.length; pintarR(); };
+        if (fin) { sig.textContent = 'Siguiente: Ahora tú ›'; sig.onclick = () => { evento('resuelve', { semilla: sem, pasos: c.pasos.length }); ir('ahora-tu'); }; }
+        else {
+          const prox = c.pasos[n];
+          sig.textContent = `Paso ${n + 1}: ${PASOS[prox.tipo]} ›`;
+          sig.onclick = () => { n++; pintarR(); const li = zona.querySelector('[data-nuevo]'); if (li) mostrar(li); };
+        }
+      };
+      const nuevo = () => {
+        c = R.generar(sem); n = 1;
+        actuar('resuelve', R.voz || 'Mira cómo se ataca, paso a paso. Primero: ¿qué me piden?');
+        pintarR();
+      };
+      nuevo();
+    }
 
     // 1. Juega: arrastrar sobre la figura o usar − y +; lectura en vivo y conteo de casos distintos.
     function juega() {
@@ -466,8 +540,9 @@
       fig.innerHTML = P.dibujar(m.datos, Object.assign({}, m.base || {}, m.pasos[m.pasos.length - 1].estado || {}));
       $('#te-alt').textContent = P.alt(m.datos);
       zona.innerHTML = reglaHTML(r, true);
-      sig.textContent = 'Siguiente: Ahora tú ›';
-      sig.onclick = () => ir('ahora-tu');
+      const res = MOM.includes('resuelve');
+      sig.textContent = res ? 'Siguiente: Así se resuelve ›' : 'Siguiente: Ahora tú ›';
+      sig.onclick = () => ir(res ? 'resuelve' : 'ahora-tu');
     }
 
     // 5. Ahora tú: un caso nuevo (semilla), sin la ayuda del juego. «Otro caso» da otro; se puede pedir ayuda con «No sé».
@@ -526,7 +601,7 @@
     // Arranque: el momento guardado (si ya predijo, no vuelve a predecir desde cero).
     actuar('llegada', idea.juega.voz || T.plano(idea.juega.consigna));
     // Idea acertada en la prueba de entrada y sin empezar: va directo a la regla, con la opción de jugar igual.
-    const yaSabia = sabidas.has(idea.id) && !si.hecha && !si.prediccion && (si.momento || 'juega') === 'juega';
+    const yaSabia = sabidas.has(idea.id) && !si.hecha && !si.prediccion && ['lee', 'juega'].includes(si.momento || MOM[0]);
     if (yaSabia) {
       const aviso = document.createElement('p');
       aviso.className = 'te-calibra';
@@ -534,7 +609,7 @@
       raiz.insertBefore(aviso, raiz.querySelector('.te-momentos').nextSibling);
       aviso.querySelector('button').onclick = () => { aviso.remove(); ir('juega'); };
     }
-    ir(si.hecha || yaSabia ? 'regla' : si.momento || 'juega');
+    ir(si.hecha || yaSabia ? 'regla' : si.momento || MOM[0]);
 
     // ---------- Piezas compartidas por las ideas y el laboratorio ----------
     function reglaHTML(r, foco) {

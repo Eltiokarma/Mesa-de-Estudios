@@ -124,6 +124,15 @@
     titulo: 'Un reloj, dos movimientos',
     temas: ['Movimiento en dos dimensiones', 'Tiro parabólico'],
     pieza: 'ejes',
+    // Lee (fase 2): contexto y vocabulario. No dice qué pasa con las dos pelotas de «Predice».
+    lee: {
+      tarjetas: [
+        { titulo: 'Una curva de todos los días', texto: 'Una pelota pateada, el chorro de una manguera, una piedra lanzada: todos dibujan la misma curva, la parábola. Galileo la explicó hace unos 400 años.' },
+        { titulo: 'Partir la velocidad', texto: ['La velocidad de salida ', v0, ' sale inclinada. Se puede partir en dos flechas: una de lado, ', vx, ', y otra hacia arriba, ', { sub: [v, 'y0'] }, '. Con 37° y 53°, salen del triángulo 3-4-5.'],
+          ecuacion: [vx, ' = ', v0, ' cos θ   ·   ', { sub: [v, 'y0'] }, ' = ', v0, ' sen θ'] },
+        { titulo: 'Qué mirar', texto: 'La pelota deja dos sombras: una en el piso y otra en el eje vertical. Cuando juegues, compara cómo avanzan las dos.' },
+      ],
+    },
     juega: {
       consigna: 'La pelota sale una y otra vez. Mira sus sombras: la del piso avanza pareja; la del eje y, no.',
       voz: 'Mira las sombras del piso: ¿cómo están separadas?',
@@ -178,6 +187,45 @@
       texto: 'El tiro parabólico se separa en dos movimientos con el mismo reloj: de lado, velocidad constante; hacia arriba, caída libre.',
       ecuacion: [x, ' = ', { llave: [vx], nota: 'no cambia', color: 'c-o' }, t, '   ·   ', y, ' = ', { sub: [v, 'y0'] }, t, ' − ', { llave: ['½ ', g, { sup: [t, '2'] }], nota: 'lo que cae', color: 'c-d' }],
       condicion: 'sin aire y con g constante (aquí 10 m/s²). Igual alcance a 30° y 60° pide igual rapidez y altura.',
+    },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con otras semillas, calculado igual (x = vx t, y con caída libre).
+    resuelve: {
+      generar(sm) {
+        const r = azar(sm + 900), vi = r.de([10, 15, 20, 25, 30]), ang = r.de([37, 53]), pide = ['alcance', 'altura', 'vuelo'][sm % 3];
+        const ux = vi * COS[ang], uy = vi * SEN[ang], T = 2 * uy / G, H = uy * uy / (2 * G), R = ux * T;
+        const xmax = Math.ceil(R / 10) * 10 + 10, ymax = Math.max(Math.ceil(H / 10) * 10 + 10, Math.round(xmax * 0.67 / 10) * 10);
+        const vy0 = { sub: [v, 'y0'] };
+        const que = { alcance: '¿a qué distancia del punto de salida cae?', altura: '¿qué altura máxima alcanza?', vuelo: '¿cuánto tiempo está en el aire?' }[pide];
+        const piden = { alcance: 'Piden el alcance R: cuánto avanza de lado hasta volver al piso.', altura: 'Piden la altura máxima: dónde la velocidad hacia arriba se acaba.', vuelo: 'Piden el tiempo de vuelo: desde que sale hasta que toca el piso.' }[pide];
+        const cuentas = {
+          alcance: { texto: ['Primero el vuelo: sube hasta que ', { sub: [v, 'y'] }, ' = 0 y baja lo mismo. Después, de lado: R = ', vx, ' · ', t, '.'],
+            ecuacion: [t, ` = 2 · ${f(uy, 1)} / 10 = ${f(T, 2)} s   →   R = ${f(ux, 1)} · ${f(T, 2)} = ${f(R, 2)} m`] },
+          altura: { texto: ['Hacia arriba es caída libre: sube hasta que ', { sub: [v, 'y'] }, ' = 0.'],
+            ecuacion: [{ sub: [y, 'máx'] }, ' = ', cuad(f(uy, 1)), ` / (2 · 10) = ${f(H, 2)} m`] },
+          vuelo: { texto: ['Hacia arriba pierde 10 m/s cada segundo: tarda ', vy0, ' / ', g, ' en subir y lo mismo en bajar.'],
+            ecuacion: [t, ` = 2 · ${f(uy, 1)} / 10 = ${f(T, 2)} s`] },
+        }[pide];
+        const sentido = {
+          alcance: `Las unidades: (m/s) · s da metros. Y cae más lejos de lo que sube: la altura máxima es solo ${f(H, 2)} m.`,
+          altura: `Las unidades: (m/s)² entre m/s² da metros. Y sube menos de lo que avanza: el alcance es ${f(R, 2)} m.`,
+          vuelo: `Las unidades: (m/s) entre m/s² da segundos. Tarda ${f(T / 2, 2)} s en subir y ${f(T / 2, 2)} s en bajar.`,
+        }[pide];
+        const resp = { alcance: ['R = ', `${f(R, 2)} m`], altura: [{ sub: [y, 'máx'] }, ` = ${f(H, 2)} m`], vuelo: [t, ` = ${f(T, 2)} s`] }[pide];
+        return {
+          enunciado: ['Se lanza una pelota desde el piso con ', v0, ` = ${f(vi)} m/s a ${ang}° sobre la horizontal. Sin aire y con g = 10 m/s², ${que}`],
+          dibujo: { datos: Object.assign(EJE_TIRO(xmax, ymax), { puntos: [{ x: 0, y: 0, color: 'o', rotulo: `${f(vi)} m/s, ${ang}°` }] }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: piden },
+            { tipo: 'datos', texto: [v0, ` = ${f(vi)} m/s a ${ang}°: la parto en dos flechas con el triángulo 3-4-5.`],
+              ecuacion: [vx, ` = ${f(vi)} · ${f(COS[ang], 1)} = ${f(ux, 1)} m/s   ·   `, vy0, ` = ${f(vi)} · ${f(SEN[ang], 1)} = ${f(uy, 1)} m/s`] },
+            { tipo: 'regla', texto: 'Dos movimientos con el mismo reloj: de lado, velocidad constante; hacia arriba, caída libre con g = 10 m/s².',
+              ecuacion: [x, ' = ', vx, t, '   ·   ', { sub: [v, 'y'] }, ' = ', vy0, ' − ', g, t] },
+            Object.assign({ tipo: 'cuentas', dibujo: { datos: tiro(vi, ang, {}, { xmax, ymax }), estado: {} } }, cuentas),
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: resp,
+        };
+      },
     },
     ahoraTu: {
       generar(sm) {
@@ -240,6 +288,13 @@
     titulo: 'El arco mide el ángulo',
     temas: ['Magnitudes angulares'],
     pieza: 'fis-lienzo',
+    lee: {
+      tarjetas: [
+        { titulo: 'Grados y radianes', texto: 'Un ángulo se mide en grados o en radianes. Una vuelta entera son 360° o 2π rad; media vuelta, 180° o π rad.', ecuacion: ['180° = π rad'] },
+        { titulo: 'De grados a radianes', texto: 'Multiplica por π y divide entre 180. Por ejemplo, 90° son 90π/180 = π/2 rad: un cuarto de vuelta.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, el punto del borde deja un arco de color. Mira qué le pasa al arco cuando el radio crece y el ángulo no cambia.' },
+      ],
+    },
     juega: {
       consigna: 'La rueda gira sola. Cambia el radio y mira el arco que recorre el punto del borde mientras crece el ángulo.',
       voz: 'Duplica el radio sin cambiar el ángulo. ¿Qué pasa con el arco?',
@@ -298,6 +353,29 @@
       texto: 'El desplazamiento angular θ, en radianes, es el arco dividido entre el radio. Por eso el arco y la rapidez crecen con el radio.',
       ecuacion: [s_, ' = ', { llave: ['θ r'], nota: 'θ en radianes', color: 'c-i' }, '   ·   ', 'ω = ', { frac: ['Δθ', ['Δ', t]] }, '   ·   ', v, ' = ω r'],
       condicion: 'θ va en radianes (180° = π rad). En un disco rígido, todos los puntos tienen la misma velocidad angular ω.',
+    },
+    resuelve: {
+      pieza: 'fis-lienzo',
+      generar(sm) {
+        const r = azar(sm + 900), deg = r.de([30, 45, 60, 90, 120, 135, 180, 270]), ra = r.de([2, 3, 4, 6]);
+        const mcd = (p, q) => (q ? mcd(q, p % q) : p), m = mcd(deg, 180), num = deg / m, den = 180 / m;
+        const pi = (n, d) => `${n === 1 ? '' : n}π${d === 1 ? '' : '/' + d}`;
+        const sn = ra * num, g2 = mcd(sn, den), sNum = sn / g2, sDen = den / g2, sVal = ra * deg * Math.PI / 180;
+        const dib = { datos: arcoRueda(Math.min(4, ra * 0.7), deg, false, `Rueda de radio ${f(ra)} m que gira ${deg}°.`, ra), estado: {} };
+        return {
+          enunciado: `Una rueda de radio ${f(ra)} m gira ${deg}°. ¿Qué arco recorre un punto de su borde?`,
+          dibujo: dib,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el arco ', s_, ': el camino que recorre el punto del borde.'] },
+            { tipo: 'datos', texto: `El radio es ${f(ra)} m y el ángulo girado, ${deg}°.` },
+            { tipo: 'regla', texto: 'El arco es el ángulo por el radio, pero con el ángulo en radianes.', ecuacion: [s_, ' = θ r   (θ en rad)'] },
+            { tipo: 'cuentas', texto: 'Primero paso los grados a radianes; después multiplico por el radio.',
+              ecuacion: [`θ = ${deg} · π/180 = ${pi(num, den)} rad   →   `, s_, ` = ${f(ra)} · ${pi(num, den)} = ${pi(sNum, sDen)} m ≈ ${f(sVal, 2)} m`] },
+            { tipo: 'sentido', texto: `Una vuelta entera sería 2π · ${f(ra)} ≈ ${f(2 * Math.PI * ra, 2)} m. ${deg}° es ${f(deg / 360 * 100, 1)} % de la vuelta, y el arco también.` },
+          ],
+          respuesta: [s_, ` = ${pi(sNum, sDen)} m ≈ ${f(sVal, 2)} m`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'fis-lienzo',

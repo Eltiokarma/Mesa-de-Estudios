@@ -67,6 +67,11 @@
       if (typeof g !== 'function') continue;
       for (const sem of [0, 1, 2, 3, 500, 501]) { try { ir(g(sem)); } catch (e) { /* el validador de la teoría ya lo reporta */ } }
     }
+    for (const idea of (def && def.ideas) || []) {
+      const g = idea && idea.resuelve && idea.resuelve.generar;
+      if (typeof g !== 'function') continue;
+      for (const sem of [0, 1, 2]) { try { ir(g(sem)); } catch (e) { /* idem */ } }
+    }
     return out.join('\n');
   }
 

@@ -257,10 +257,49 @@ glosario: [
   - al tocarlo se abre una hoja abajo con la definición, el símbolo, la medida, el ejemplo y «Ver también»;
   - no se marca en los títulos, las opciones, las ecuaciones ni la lectura en vivo;
   - no aparece en la prueba del tema ni en el simulacro;
-  - el chip «Glosario» de la teoría (`#/unidad/<id>/teoria/glosario`) muestra las palabras nuevas del tema, las que vienen de otros temas y una búsqueda en todo el curso. Queda libre, como el laboratorio: no pide la prueba del tema.
+  - el chip «Glosario» de la teoría (`#/unidad/<id>/teoria/glosario`) muestra las palabras en **tarjetas de colores** (fase 2, 15 nov): un buscador arriba, un mazo deslizable por idea con el color de la idea (cada término va en la primera idea donde aparece), un mazo «Más palabras del tema» y otro «Vienen de otros temas». Cada tarjeta trae «Ver ejemplo», «Verla en la teoría» y «Ya me la sé» (`est.glosario[unidad][término]`: `'sabe'` o `'repasa'`). «Repasar con tarjetas» las muestra una a una para voltearlas: primero las marcadas para repasar y después las que no se marcaron. Queda libre, como el laboratorio.
+  - Las marcas van a la medición como `glosario-marca` y `glosario-repaso`, con `{ termino, sabe }`.
   - Cada consulta va a la medición como `{ momento: 'glosario', termino }`. Las palabras más consultadas son las que el texto no está explicando bien.
 - **Archivos:** `npm run catalogo` arma `app/datos/glosario/<curso>.json`. El servidor local lo arma al vuelo y el service worker lo guarda para usarlo sin conexión.
 - **Unidad de referencia:** `fisica/movimiento-rectilineo.js`, con 12 términos y 4 retos comprobados.
+
+## 4e. «Lee» y «Así se resuelve» (fase 2, 15 nov)
+
+**Decisión de Gerson:** leer también es lúdico si la teoría se presta para ser digerible, y faltaban ejercicios resueltos paso a paso para que el alumno sepa por dónde empieza el análisis. Son dos momentos **opcionales por idea**: el lector los muestra solo si la idea los trae (`Teoria.momentosDe(idea)`), así que las unidades sin ellos siguen igual. Con los dos, la idea tiene siete momentos:
+
+> Lee → Juega → Predice → Mira → La regla → Así se resuelve → Ahora tú
+
+**«Lee»** (`idea.lee`), antes del juego:
+
+```js
+lee: { tarjetas: [   // de 2 a 4
+  { titulo: 'Dos nombres', texto: 'Comparar restando da una razón aritmética…', ecuacion: [...], dibujo: { datos, estado }, pieza },
+] }
+```
+
+- Tarjetas que se deslizan, con puntos de avance. El botón grande pasa de tarjeta en tarjeta y «Ir directo a jugar» salta. No pregunta nada ni bloquea.
+- **No adelanta la respuesta de «Predice»** (regla 3: se juega y se predice antes de ver). Lee da contexto, vocabulario y qué mirar al jugar; la relación central se descubre después. Quien escribe la unidad lo revisa.
+- La última tarjeta puede decir qué mirar en el juego («Mira qué le pasa al arco cuando el radio crece»).
+- Evento `{ momento: 'lee', tarjetas, vistas, salto? }`.
+
+**«Así se resuelve»** (`idea.resuelve`), después de la regla y antes de «Ahora tú»:
+
+```js
+resuelve: { pieza?, generar(semilla) → {
+  enunciado, dibujo?,
+  pasos: [ { tipo: 'pide' | 'datos' | 'regla' | 'cuentas' | 'sentido', texto, ecuacion?, dibujo? } ],   // de 3 a 6
+  respuesta,
+} }
+```
+
+- Es un problema **del mismo tipo que «Ahora tú»** (el efecto del ejemplo resuelto: estudiar uno resuelto y después resolver uno parecido; ver `docs/fundacional.md`), con otras semillas (`azar(semilla + 900)`) para no regalar el caso de «Ahora tú».
+- **Los números los calcula el mismo motor o las mismas cuentas** que «Ahora tú» (regla 1): nada escrito a mano.
+- Los pasos tienen nombre fijo y un color cada uno: **¿Qué me piden?** (`pide`, siempre el primero) · **¿Qué tengo?** (`datos`) · **¿Qué regla uso?** (`regla`, obligatorio) · **Las cuentas** (`cuentas`, obligatorio) · **¿Tiene sentido?** (`sentido`: unidades, orden de magnitud o comprobación).
+- El lector los revela uno por uno con el botón grande («Paso 2: ¿Qué tengo? ›»); «Ver todos los pasos» los muestra de golpe; al final, la respuesta y «Otro ejemplo». Si un paso trae `dibujo`, la figura cambia en ese paso.
+- Evento `{ momento: 'resuelve', semilla, pasos }`.
+- El validador revisa 12 semillas: pasos y tipos, topes, ecuaciones, sin NaN y al menos 3 enunciados distintos. El glosario cuenta su texto (semillas 0 a 2).
+
+**Unidades de referencia:** `aritmetica/razones-y-proporciones.js` (ideas 1 y 2) y `fisica/movimiento-parabolico-y-circular.js` (ideas 1 y 2).
 
 ## 5. Topes de texto (los vigila `contenido/teoria/teoria.test.js`)
 
@@ -278,6 +317,10 @@ glosario: [
 | Condición | 22 |
 | Historia | 70 |
 | Solución de «Ahora tú» | 20, más su ecuación |
+| Tarjeta de «Lee» | 45, más su ecuación |
+| Paso de «Así se resuelve» | 30, más su ecuación |
+| Enunciado de «Así se resuelve» | 40 |
+| Respuesta de «Así se resuelve» | 14 |
 
 Como en `escena-viva.md`: el tope no se cumple a costa de entender. Si no cabe con frases completas, la figura carga más o la idea se parte en dos. En razonamiento verbal, el texto de lectura es el objeto de estudio y no cuenta para el tope; sí cuentan la consigna, las preguntas y las opciones.
 

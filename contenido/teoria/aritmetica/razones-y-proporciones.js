@@ -65,6 +65,15 @@
     titulo: 'Restar o dividir: dos comparaciones',
     temas: ['Razón aritmética y geométrica'],
     pieza: 'arit-tiras',
+    // Lee (fase 2): vocabulario y contexto, sin adelantar qué comparación se conserva (eso lo descubre en Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Comparar dos cantidades', texto: 'Ana tiene 12 años y su hermano, 4. Puedes compararlos de dos maneras: «Ana le lleva 8 años» o «Ana tiene el triple de edad».' },
+        { titulo: 'Dos nombres', texto: 'Comparar restando da una razón aritmética: 12 − 4 = 8. Comparar dividiendo da una razón geométrica: 12 : 4 = 3. Si no se dice cuál, es la que divide.' },
+        { titulo: 'Cómo se lee', texto: ['La razón ', a, ' : ', b, ' se lee «', a, ' es a ', b, '». Si ', a, ' y ', b, ' están en razón 3 a 5, ', a, ' tiene 3 partes iguales y ', b, ', 5 de esas partes.'],
+          ecuacion: [a, ' = 3', k, '   ·   ', b, ' = 5', k] },
+      ],
+    },
     juega: {
       consigna: 'Las tiras a y b empiezan en 3 y 5. Estíralas multiplicando o agrégales lo mismo a las dos. Mira qué comparación se mantiene.',
       voz: 'Prueba solo multiplicar, y luego solo sumar.',
@@ -113,6 +122,27 @@
       ecuacion: [{ llave: [a, ' − ', b], nota: 'aritmética' }, '   ·   ', { llave: [{ frac: [a, b] }], nota: 'geométrica' }, ' = ', k],
       condicion: 'b no es cero. «a y b están en razón 3 a 5» quiere decir a = 3k y b = 5k.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de problema de «Ahora tú», con otras semillas, resuelto paso a paso.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), m = r.ent(1, 5), n = m + r.ent(1, 4), kk = r.ent(2, 9);
+        const x = m * kk, y = n * kk, suma = s % 2 === 0, dato = suma ? x + y : y - x, partes = suma ? m + n : n - m;
+        const tiras = conValor => ({ datos: { max: y, filas: 2, tiras: [tira('a', 'o', m, kk, conValor ? { texto: f(kk), fin: f(x) } : {}), tira('b', 'i', n, kk, conValor ? { texto: f(kk), fin: f(y) } : {})] }, estado: {} });
+        return {
+          enunciado: ['Dos números ', a, ' y ', b, ` están en razón ${m} a ${n}, y su ${suma ? 'suma' : 'diferencia'} es ${f(dato)}. ¿Cuánto vale `, b, '?'],
+          dibujo: tiras(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', b, `, el número que tiene ${n} partes.`] },
+            { tipo: 'datos', texto: ['La razón es ', `${m} a ${n}`, ` y la ${suma ? 'suma' : 'diferencia'} es ${f(dato)}.`], ecuacion: [a, ' : ', b, ` = ${m} : ${n}`] },
+            { tipo: 'regla', texto: [`Razón ${m} a ${n} quiere decir que `, a, ` tiene ${m} partes iguales y `, b, `, ${n}. Cada parte vale `, k, '.'], ecuacion: [a, ` = ${m}`, k, '   ·   ', b, ` = ${n}`, k] },
+            { tipo: 'cuentas', texto: [`La ${suma ? 'suma' : 'diferencia'} tiene ${partes} ${partes === 1 ? 'parte' : 'partes'}. Se halla `, k, ' y después ', b, '.'],
+              ecuacion: [k, ` = ${f(dato)} ÷ ${partes} = ${f(kk)}   →   `, b, ` = ${n} · ${f(kk)} = ${f(y)}`], dibujo: tiras(true) },
+            { tipo: 'sentido', texto: ['Comprueba: ', a, ` = ${m} · ${f(kk)} = ${f(x)}, y ${suma ? `${f(x)} + ${f(y)}` : `${f(y)} − ${f(x)}`} = ${f(dato)}. Cuadra.`] },
+          ],
+          respuesta: [b, ` = ${f(y)}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), m = r.ent(1, 5), n = m + r.ent(1, 4), kk = r.ent(2, 9);
@@ -147,6 +177,14 @@
   const proporcion = {
     id: 'proporcion',
     titulo: 'Proporción: los productos cruzados',
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos razones iguales', texto: '2 : 3 y 4 : 6 comparan igual: la segunda es la primera con números más grandes. Cuando dos razones son iguales, forman una proporción.',
+          ecuacion: [{ frac: ['2', '3'] }, ' = ', { frac: ['4', '6'] }] },
+        { titulo: 'Extremos y medios', texto: ['En ', a, ' : ', b, ' = ', c, ' : ', d, ', los de las puntas son los extremos: ', a, ' y ', d, '. Los del centro son los medios: ', b, ' y ', c, '.'] },
+        { titulo: 'Cuando se repite', texto: 'A veces el mismo número está en los dos medios, como en 2 : 4 = 4 : 8. Esa proporción se llama continua. Juega y mira qué tienen de especial.' },
+      ],
+    },
     temas: ['Proporciones discretas y continuas'],
     pieza: 'arit-tiras',
     juega: {
@@ -198,6 +236,26 @@
       texto: 'Una proporción iguala dos razones: sus productos cruzados son iguales. Es continua si los dos medios son el mismo número; si no, es discreta y d es la cuarta proporcional.',
       ecuacion: [{ frac: [a, b] }, ' = ', { frac: [c, d] }, ' ⇔ ', { llave: [a, ' · ', d], nota: 'extremos' }, ' = ', { llave: [b, ' · ', c], nota: 'medios' }, '   ·   ', 'continua: ', { sup: [b, '2'] }, ' = ', a, ' · ', d],
       condicion: 'b y d no son cero. En la continua a : b = b : d, b es media proporcional y d, tercera proporcional.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        let x = r.ent(2, 9), y = r.ent(2, 9); const kk = r.ent(2, 5);
+        if (x === y) y = x === 9 ? 2 : x + 1;
+        const cc = x * kk, dd = y * kk;
+        return {
+          enunciado: ['Halla la cuarta proporcional: ', { frac: [String(x), String(y)] }, ' = ', { frac: [String(cc), d] }, '. ¿Cuánto vale ', d, '?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', d, ', el cuarto término de la proporción.'] },
+            { tipo: 'datos', texto: `Conozco tres términos: ${x} y ${y} en la primera razón, y ${cc} arriba en la segunda.` },
+            { tipo: 'regla', texto: 'En una proporción, el producto de los extremos es igual al producto de los medios: se multiplica en cruz.',
+              ecuacion: [{ frac: [a, b] }, ' = ', { frac: [c, d] }, ' ⇔ ', a, ' · ', d, ' = ', b, ' · ', c] },
+            { tipo: 'cuentas', texto: ['Multiplico en cruz y despejo ', d, '.'], ecuacion: [`${x} · `, d, ` = ${y} · ${cc} = ${f(y * cc)}   →   `, d, ` = ${f(y * cc)} ÷ ${x} = ${f(dd)}`] },
+            { tipo: 'sentido', texto: `Comprueba con cocientes: ${cc} ÷ ${f(dd)} da lo mismo que ${x} ÷ ${y}. Las dos razones son iguales.` },
+          ],
+          respuesta: [d, ` = ${f(dd)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
