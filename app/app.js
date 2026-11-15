@@ -409,7 +409,7 @@ function armarFila(fila) {
 function tarjetaLectura(p, c) {
   const st = lecturaSt(p);
   if (!st.entrada) return `<div class="card prueba-tarjeta"><div class="etq-p">Prueba de entrada pendiente</div>
-    <p>Un texto corto con preguntas. No es nota: sirve para ver de dónde partes.</p><a class="btn morado" href="${esc(p.url)}">Hacer la prueba de entrada ›</a></div>`;
+    <p>Opcional. Un texto corto con preguntas. No es nota: sirve para ver de dónde partes.</p><a class="btn borde" href="${esc(p.url)}/entrada">Hacer la prueba de entrada ›</a></div>`;
   if (!st.salida) return salidaAbierta(c.id)
     ? `<div class="card prueba-tarjeta destacada"><div class="etq-p">Prueba de salida</div>
       <p>Tu profesor ya la abrió. Es un texto parecido al de la entrada, y al final ves cuánto avanzaste.</p><a class="btn morado" href="${esc(p.url)}/salida">Hacer la prueba de salida ›</a></div>`
@@ -1346,6 +1346,14 @@ window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); instal
 // ---------- Modo sin conexión ----------
 async function registrarSW() {
   if (!('serviceWorker' in navigator)) return;
+  // Actualización sin «recarga dos veces» (15 nov): cuando una versión nueva toma el control, la página se recarga sola
+  // una vez (el avance vive en localStorage, no se pierde). Al volver a la app se busca si hay versión nueva.
+  const habia = !!navigator.serviceWorker.controller;
+  let recargada = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (habia && !recargada) { recargada = true; location.reload(); } });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') navigator.serviceWorker.getRegistration().then(r => r && r.update()).catch(() => {});
+  });
   try {
     // Alcance "/" para cubrir también /plantillas/ (el servidor manda Service-Worker-Allowed).
     await navigator.serviceWorker.register('sw.js', { scope: '/' });

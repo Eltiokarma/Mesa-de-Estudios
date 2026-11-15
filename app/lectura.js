@@ -98,16 +98,12 @@ async function vista(ctx, id, unidad) {
   const { $app, cat, est, esc, guardar, registrar, marcarDia } = ctx;
   const pl = cat.plantillas[id];
   if (!pl || pl.formato !== 'lectura') { location.hash = '#/cursos'; return; }
-  // La entrada de razonamiento verbal vive en lectura-verbal: si el alumno abre otro módulo de lectura sin
-  // haberla hecho, va primero a esa entrada (si no, practicaría antes y la entrada ya no sería en frío).
-  const verbal = cat.plantillas['lectura-verbal'];
-  if (id !== 'lectura-verbal' && verbal && !((est.practica || {})['lectura-verbal'] || {}).entrada) {
-    location.hash = '#/lectura/lectura-verbal'; return;
-  }
+  // La prueba de entrada de razonamiento verbal ya no se impone (decisión de Gerson, 15 nov: ninguna prueba bloquea
+  // estudiar). Se hace desde la tarjeta de la página del curso, que abre #/lectura/lectura-verbal/entrada.
   document.body.style.overflow = '';
   actual = null;
   const ruta = location.hash;
-  const pideSalida = unidad === 'salida';
+  const pideSalida = unidad === 'salida', pideEntrada = unidad === 'entrada';
   // La unidad que abrió el alumno filtra los textos (cualquiera del catálogo: un ejercicio puede tocar otra).
   const unidadAbierta = cat.cursos.some(c => c.unidades.some(u => u.id === unidad)) ? unidad : '';
   const curso = cat.cursos.find(c => c.unidades.some(u => u.id === (unidadAbierta || pl.unidades[0])));
@@ -588,7 +584,7 @@ async function vista(ctx, id, unidad) {
     actual = { tipo: 'fin', seguir: () => document.getElementById('seguir').click() };
   }
 
-  if (b.indice.entrada && b.items[L().formaPrueba(b.indice, est.alumno, 'entrada', 'razonamiento-verbal').id] && !st.entrada) prueba('entrada');
+  if (pideEntrada && b.indice.entrada && b.items[L().formaPrueba(b.indice, est.alumno, 'entrada', 'razonamiento-verbal').id] && !st.entrada) prueba('entrada');
   else if (pideSalida && salidaAbierta()) prueba('salida');
   else if (pideSalida && !st.salida) {
     $app.innerHTML = `${volver}<p class="sub">${subCurso}</p><h1>Prueba de salida</h1><div class="card prueba-intro" style="margin-top:16px">
