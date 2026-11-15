@@ -303,7 +303,7 @@
       ],
     },
     regla: {
-      texto: 'Si a = q · b + r, los divisores comunes de a y b son los mismos que los de b y r. Se repite hasta que el resto sea 0.',
+      texto: 'Si a = q · b + r, los divisores comunes de a y b son los mismos que los de b y r. Repetirlo hasta resto 0 es el algoritmo de Euclides.',
       ecuacion: [mcdab, ' = ', MCD, '(', Bv, ', ', 'r', ')', '   ·   ', A, ' = ', { llave: ['q'], nota: 'cociente' }, ' · ', Bv, ' + ', { llave: ['r'], nota: 'resto' }],
       condicion: 'a y b enteros positivos y 0 ≤ r < b. El MCD es el último divisor, el que da resto 0.',
     },
@@ -482,7 +482,7 @@
     regla: {
       texto: 'Los cocientes de Euclides son los términos de la fracción continua de a/b. Cada corte da un convergente; solo el último es igual a a/b.',
       ecuacion: [{ frac: [A, Bv] }, ' = ', { sub: ['q', '0'] }, ' + ', { frac: ['1', [{ sub: ['q', '1'] }, ' + ', { frac: ['1', [{ sub: ['q', '2'] }, ' + …']] }]] }],
-      condicion: 'a/b es un racional positivo: la fracción continua es finita. Los cortes intermedios son aproximaciones.',
+      condicion: 'a y b son enteros positivos, así que la fracción continua es finita. Los cortes intermedios son aproximaciones.',
     },
     ahoraTu: {
       generar(s) {
@@ -516,8 +516,13 @@
 
   // Mesa «tres combis»: tres filas de salidas en 0 a 120 minutos y el primer encuentro de las tres, si cae en la recta. La
   // tercera combi va en tinta: el verde es del MCD y el rojo del MCM (regla 4).
+  const mcm3 = (a, b, c) => mcm(mcm(a, b), c);
+  // Para los retos: el primer encuentro más temprano con tres periodos distintos (2 a 8). Lo calcula el motor.
+  const TRES = []; for (let a = 2; a <= 8; a++) for (let b = a + 1; b <= 8; b++) for (let c = b + 1; c <= 8; c++) TRES.push(mcm3(a, b, c));
+  const MIN3 = Math.min(...TRES);
+  const mismo = (g, v, ks) => g.some(x => ks.every(k => x[k] === v[k]));
   const rectaTres = (a, b, c) => {
-    const m = mcm(mcm(a, b), c);
+    const m = mcm3(a, b, c);
     return {
       min: 0, max: 120, paso: 5, cada: 4, decimales: 0, variable: 'minutos', filas: 4,
       elementos: [
@@ -536,6 +541,32 @@
     requiere: ['/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tabla.js'],
     // Laboratorio: juego libre, sin preguntas. «Cintas libres» deja elegir los largos (también dos que solo comparten el
     // 1); «Tres combis» agrega una tercera y el caso en que el encuentro cae fuera de la recta; Euclides es el juego de la idea 3.
+    glosario: [
+      { termino: 'MCM', formas: ['MCM', 'mínimo común múltiplo'],
+        def: 'El menor número positivo que es múltiplo de todos los dados. Dice cuándo vuelven a coincidir dos ciclos.',
+        ejemplo: 'Alarmas cada 12 y 18 min: suenan juntas a los 36 min, porque MCM(12, 18) = 36.', ver: ['múltiplo común', 'máximo común divisor'] },
+      { termino: 'divisor común', formas: ['divisor común', 'divisores comunes'],
+        def: 'Número que divide exacto, sin resto, a dos o más números a la vez.',
+        ejemplo: '6 divide a 24 y a 36: 24 = 4 · 6 y 36 = 6 · 6.', ver: ['algoritmo de Euclides'] },
+      { termino: 'múltiplo común', formas: ['múltiplo común', 'múltiplos comunes'],
+        def: 'Número que es múltiplo de dos o más números a la vez: se arma entero con cualquiera de ellos.',
+        ejemplo: '72 es múltiplo de 12 y de 18; el menor de esa lista es 36.', ver: ['MCM'] },
+      { termino: 'algoritmo de Euclides', formas: ['algoritmo de Euclides'],
+        def: 'Divisiones sucesivas donde el resto pasa a ser divisor, hasta resto 0. El último divisor es el MCD.',
+        ejemplo: 'Con 91 y 35, los restos son 21, 14, 7 y 0: el MCD es 7.', ver: ['divisor común'] },
+      { termino: 'fracción continua', formas: ['fracción continua', 'fracciones continuas'],
+        def: 'Escritura de un número como entero más 1 sobre otro entero más 1 sobre…; sus términos son cocientes de Euclides.',
+        ejemplo: '30/18 = 1 + 1/(1 + 1/2), que se escribe [1; 1, 2].', ver: ['convergente'] },
+      { termino: 'convergente', formas: ['convergente', 'convergentes'],
+        def: 'Lo que vale una fracción continua cortada antes del final: una aproximación que se acerca al número.',
+        ejemplo: '[1; 1, 2] = 5/3; cortada en [1; 1] da 2.', ver: ['fracción continua'] },
+      { termino: 'término', formas: ['término', 'términos'],
+        def: 'Cada número de una lista ordenada o de una suma, con su lugar fijo: primero, segundo…',
+        ejemplo: '[1; 1, 2] tiene tres: 1, 1 y 2.', ver: ['fracción continua'] },
+      { termino: 'aproximación', formas: ['aproximación', 'aproximaciones'],
+        def: 'Valor cercano al exacto que se usa en su lugar; conviene saber cuánto se aleja de él.',
+        ejemplo: '1,41 aproxima √2: 1,41² = 1,9881, casi 2.', ver: ['convergente'] },
+    ],
     laboratorio: [
       {
         id: 'cintas-libres', titulo: 'Cintas de cualquier largo', pieza: 'arit-tiras',
@@ -547,6 +578,21 @@
         ],
         dibujo: v => ({ datos: tirasCorte(v.a, v.b, v.t), estado: {} }),
         lectura: v => [`${v.a} y ${v.b} cm, trozo de ${v.t}: sobran ${v.a % v.t} y ${v.b % v.t}`],
+        invitaciones: [
+          { texto: 'Con dos cintas distintas, busca el trozo más largo que no deje sobrante.',
+            logrado: v => v.a !== v.b && v.t === mcd(v.a, v.b),
+            bien: 'Ese trozo es el MCD: ninguno más largo mide las dos cintas.' },
+          { texto: 'Elige dos cintas que solo compartan el trozo de 1 cm, y córtalas con él.',
+            logrado: v => mcd(v.a, v.b) === 1 && v.t === 1,
+            bien: 'Solo el 1 las mide a las dos: no comparten ningún primo.' },
+          { texto: 'Haz que el trozo mida exacto una cinta y en la otra sobre algo.',
+            logrado: v => v.t > 1 && (v.a % v.t === 0) !== (v.b % v.t === 0),
+            bien: 'Medir una cinta no basta: el trozo común tiene que medir las dos.' },
+          { texto: 'Guarda dos pares de cintas distintos, sin sobrante, con el mismo trozo más largo.',
+            logrado: (v, g) => v.t === mcd(v.a, v.b) && mismo(g, v, ['a', 'b', 't'])
+              && g.some(x => (x.a !== v.a || x.b !== v.b) && x.t === mcd(x.a, x.b) && x.t === v.t),
+            bien: 'Cintas distintas, la misma medida común: deciden los primos que comparten.' },
+        ],
         arrastres: [
           { id: 'fin-a', etiqueta: 'fin de la cinta a', color: 'c-o',
             donde: v => enTira(tirasCorte(v.a, v.b, v.t), 0, v.a), mover: (pt, v) => ({ a: valorEn(tirasCorte(v.a, v.b, v.t), pt.x) }) },
@@ -566,8 +612,23 @@
           { id: 'c', etiqueta: 'c', min: 2, max: 8, paso: 1, inicio: 5, unidad: 'min', decimales: 0 },
         ],
         dibujo: v => ({ datos: rectaTres(v.a, v.b, v.c), estado: {} }),
+        invitaciones: [
+          { texto: 'Elige tres periodos distintos que vuelvan a coincidir lo antes posible.',
+            logrado: v => v.a !== v.b && v.b !== v.c && v.a !== v.c && mcm3(v.a, v.b, v.c) === MIN3,
+            bien: 'Un periodo es múltiplo de los otros dos: el encuentro llega con él.' },
+          { texto: 'Haz que las tres combis vuelvan a coincidir justo a los 24 minutos.',
+            logrado: v => mcm3(v.a, v.b, v.c) === 24,
+            bien: '24 = 2³ · 3: el MCM toma cada primo con su mayor exponente.' },
+          { texto: 'Consigue que el encuentro de las tres caiga fuera de la recta de 120 minutos.',
+            logrado: v => mcm3(v.a, v.b, v.c) > 120,
+            bien: 'Con pocos factores comunes, el MCM se acerca al producto y crece rápido.' },
+          { texto: 'Guarda dos casos con periodos distintos y el mismo encuentro de las tres.',
+            logrado: (v, g) => mismo(g, v, ['a', 'b', 'c']) && g.some(x => [x.a, x.b, x.c].sort().join() !== [v.a, v.b, v.c].sort().join()
+              && mcm3(x.a, x.b, x.c) === mcm3(v.a, v.b, v.c)),
+            bien: 'El encuentro solo depende de cada primo con su mayor exponente.' },
+        ],
         lectura: v => {
-          const m = mcm(mcm(v.a, v.b), v.c);
+          const m = mcm3(v.a, v.b, v.c);
           return [`Cada ${v.a}, ${v.b} y ${v.c} min: juntas a los ${m} min${m > 120 ? ', fuera de la recta' : ''}`];
         },
         arrastres: ['a', 'b', 'c'].map((k, i) => ({
@@ -576,7 +637,22 @@
           mover: (pt, v) => ({ [k]: deRecta(rectaTres(v.a, v.b, v.c), pt.x) / 5 }),
         })),
       },
-      Object.assign({ id: 'euclides', titulo: 'Euclides: medir con el resto', pieza: 'arit-tiras' }, euclidesIdea.juega),
+      Object.assign({ id: 'euclides', titulo: 'Euclides: medir con el resto', pieza: 'arit-tiras',
+        invitaciones: [
+          { texto: 'Busca un par que necesite cinco divisiones o más.',
+            // En esta mesa, 7 de los 110 pares; el más largo, (42, 26), pide 6.
+            logrado: v => euclides(v.a, v.b).length >= 5,
+            bien: 'Restos que bajan despacio alargan el camino. ¿Cuál es su MCD?' },
+          { texto: 'Haz que Euclides termine en una sola división.',
+            logrado: v => euclides(v.a, v.b).length === 1,
+            bien: 'Si b mide exacto a a, el MCD es b mismo.' },
+          { texto: 'Busca un par cuyo último divisor, el MCD, sea 2.',
+            logrado: v => mcd(v.a, v.b) === 2,
+            bien: 'Aquí a y b siempre son pares: el MCD nunca baja de 2.' },
+          { texto: 'Guarda dos pares con el mismo MCD y distinta cantidad de divisiones.',
+            logrado: (v, g) => mismo(g, v, ['a', 'b']) && g.some(x => mcd(x.a, x.b) === mcd(v.a, v.b) && euclides(x.a, x.b).length !== euclides(v.a, v.b).length),
+            bien: 'Caminos de distinto largo, mismo MCD: lo que cuenta es el último divisor.' },
+        ] }, euclidesIdea.juega),
     ],
     historia: {
       texto: 'En el libro VII de los Elementos, el máximo común divisor aparece como la mayor medida común de dos números. Euclides lo busca quitando de una cantidad lo que cabe de la otra, con segmentos y restas. La división con resto de hoy comprime esas restas repetidas. El mínimo común múltiplo responde a la pregunta contraria: la primera cantidad que se arma entera con ambas medidas.',
