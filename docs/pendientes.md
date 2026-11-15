@@ -39,7 +39,7 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 - `claude/awesome-einstein-ch5g9a` se prueba en una versión de prueba y en el Redmi antes de pasar a `main`.
 - **Una unidad completa antes de tres:** entrar, explorar, pedir ayuda, resolver un reto, guardar y regresar.
 
-**Falta que Gerson decida:** qué unidad va primero y si la exploración libre de la mesa queda fuera de la regla 3.
+**Decidido el 15 nov:** three.js entra al kit (60 fps en el Redmi 15C) y la primera unidad completa es la geometría molecular. **Falta que Gerson confirme** si la exploración libre de la mesa queda fuera de la regla 3.
 
 ## Recorrido satisfactorio (15 nov): que todos los alumnos se vayan contentos
 
@@ -194,7 +194,7 @@ No hubo tareas largas en ningún escenario. La memoria de JavaScript se quedó e
 | Redmi 15C, 4 GB | Mali-G52 MC2 | 60 (59,9) en los tres objetos | 0 | 17,1 ms |
 | Poco X7, 8 GB | Mali-G615 MC2 | 60,8 (60,6) | 1 | 32,8 ms |
 
-Sin tareas largas y con 9,5 MB de memoria JS. Chrome 157 en los dos. Falta que Gerson conteste las tres preguntas de abajo (si se entiende, si se siente pegado al dedo y qué dan ganas de repetir) y probar en las computadoras del colegio.
+Sin tareas largas y con 9,5 MB de memoria JS. Chrome 157 en los dos. **Gerson (15 nov):** se entiende cómo girar. La molécula le pareció la más bonita, pero le gustaron los tres. **three.js entra al kit.** El orden está en `docs/dos-entradas.md`. Gerson preguntará al colegio por WebGL 2 en sus computadoras, y queda como requisito en `docs/guia-profesores.md`.
 
 **Lo que costó que cargara (versiones 1 a 4):** la versión 1 se moría sin aviso, y no se sabe con certeza por qué. Lo más probable es el segundo contexto WebGL que se abría para probar, porque la versión 4 lo quitó y es la que anduvo. La versión 4 dice en pantalla en qué paso va y avisa a los 10 s si no terminó.
 

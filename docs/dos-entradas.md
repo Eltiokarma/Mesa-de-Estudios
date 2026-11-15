@@ -59,8 +59,23 @@ Una sola unidad que tenga entero el recorrido:
 
 Con esa unidad se comprueba si lo bonito del video también es agradable de usar.
 
+## Decidido después (15 nov)
+
+- **three.js entra al kit.** En el Redmi 15C corrió a 60 fps, sin cuadros perdidos, con los tres objetos girando sin parar (`docs/pendientes.md`, «Prueba 3D con three.js»).
+- **Orden de las unidades.** A Gerson le gustaron las tres y no tiene preferencia, así que Claude propuso este orden:
+  1. **La molécula que gira (geometría molecular)** va primero. Fue la que más le gustó a Gerson. Ya existe la escena `plantillas/enlace/` con su motor y sus casos, que se aprovechan. Y se juega libre fácil: girar la molécula y tocar átomos no exige preguntas.
+  2. El prisma que se corta (geometría del espacio).
+  3. Los cubitos (vistas en razonamiento matemático).
+- **WebGL 2 en el colegio.** Gerson lo pregunta, y además queda como requisito en `docs/guia-profesores.md`.
+
 ## Por decidir
 
-- **Qué unidad.** Las candidatas naturales son las tres de `app/prueba3d/`: el prisma que se corta (geometría del espacio), la molécula que gira (geometría molecular) y los cubitos (vistas en razonamiento matemático).
 - **La regla 3 en la exploración libre** (ver el punto 3).
-- **La mesa 3D del inicio** sigue esperando la medición de `app/prueba3d/` en el Redmi (ver `docs/pendientes.md` en esa rama).
+
+## Antes de que la primera unidad 3D se publique
+
+- **Respaldo para equipos sin WebGL 2:** el dibujo de siempre (Canvas o SVG), con la misma unidad completa.
+- **Control con teclado** para girar y elegir, para las computadoras del laboratorio y para accesibilidad.
+- **Versión con el service worker:** three.js y la pieza 3D van en la cáscara versionada (`VERSION` de `app/sw.js`). Un `?v=` en la dirección no basta, porque el service worker lo ignora.
+- **Modo ahorro** que el alumno elige: menos resolución y sin sombras ni animaciones de adorno.
+- **Mesa 3D del inicio:** después de la primera unidad completa, no antes.
