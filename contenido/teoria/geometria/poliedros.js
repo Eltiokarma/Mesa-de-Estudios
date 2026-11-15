@@ -162,7 +162,7 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'Cada base es un hexágono: 6 aristas arriba y 6 abajo.', ecuacion: ['6 + 6 = 12'] },
         { estado: { corte: 0 }, texto: 'Cada vértice de abajo sube por una arista lateral.', ecuacion: ['12 + 6 = 18 aristas'] },
-        { estado: { corte: 0 }, texto: 'Vértices: 6 abajo y 6 arriba. Caras: 6 laterales y 2 bases.', ecuacion: ['V = 12', SEP, 'C = 8'] },
+        { estado: { corte: 0 }, texto: 'Vértices: 6 abajo y 6 arriba. Caras: 6 caras laterales y 2 bases.', ecuacion: ['V = 12', SEP, 'C = 8'] },
       ],
     },
     regla: {
@@ -228,7 +228,7 @@
       datos: solidoFig(SOLIDOS.dodecaedro(), 'Dodecaedro con sus 20 vértices marcados', { vertices: true }),
       voz: 'Despeja con cuidado: el 2 va con las aristas.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'Euler en poliedros convexos:', ecuacion: [cC, ' + ', cV, ' = ', cA, ' + 2'] },
+        { estado: { corte: 0 }, texto: 'Teorema de Euler en poliedros convexos:', ecuacion: [cC, ' + ', cV, ' = ', cA, ' + 2'] },
         { estado: { corte: 0 }, texto: 'Reemplaza lo que sabes.', ecuacion: ['12 + V = 30 + 2'] },
         { estado: { corte: 0 }, texto: 'Despeja.', ecuacion: ['V = 32 − 12 = 20'] },
         { estado: { corte: 0 }, texto: 'Comprobación con caras pentagonales: cada arista es lado de dos caras.', ecuacion: ['5 · 12 = 2 · 30'] },
@@ -377,6 +377,11 @@
   // Mesa 1, más rica que las ideas 1 y 2: tres familias (también la bipirámide) y bases de hasta 12 lados, con la
   // cuenta de Euler en vivo. Se gira con el vértice, como en las ideas.
   const FAM = { prisma: 'prisma', piramide: 'pirámide', bipiramide: 'bipirámide' };
+  // La cuenta de la mesa sale del casco convexo de los mismos puntos que se dibujan; se guarda por (familia, n)
+  // porque los retos la piden en toda la grilla. MAX_CARAS: la mayor de la mesa, buscada con esa misma cuenta.
+  const memo = new Map();
+  const cuentaFam = v => { const k = `${v.tipo},${v.n}`; if (!memo.has(k)) memo.set(k, casco(SOLIDOS[v.tipo](v.n))); return memo.get(k); };
+  const MAX_CARAS = Math.max(...Object.keys(FAM).flatMap(tipo => Array.from({ length: 10 }, (_, k) => cuentaFam({ tipo, n: k + 3 }).C)));
   const familiaFig = v => solidoFig(SOLIDOS[v.tipo](v.n), `${FAM[v.tipo]} ${nombreBase(v.n)} con sus vértices marcados`, { vertices: v.n <= 8, tresD: tdGiro(v.giro) });
   const mesaFamilias = {
     id: 'familias', titulo: 'Tres familias, hasta 12 lados', pieza: 'geo-figura',
@@ -388,10 +393,31 @@
     ],
     dibujo: v => ({ datos: familiaFig(v), estado: {} }),
     arrastres: [giraArrastre(v => SOLIDOS[v.tipo](v.n), familiaFig)],
-    lectura: v => { const h = casco(SOLIDOS[v.tipo](v.n)); return [nb(`C = ${h.C}, V = ${h.V}, A = ${h.A}`), SEP, nb(`C + V − A = ${h.C + h.V - h.A}`)]; },
+    lectura: v => { const h = cuentaFam(v); return [nb(`C = ${h.C}, V = ${h.V}, A = ${h.A}`), SEP, nb(`C + V − A = ${h.C + h.V - h.A}`)]; },
+    // Retos (docs/teoria.md §4d): cada logrado cuenta con el casco convexo, el mismo que arma el dibujo.
+    invitaciones: [
+      { texto: 'Arma un sólido con exactamente 20 aristas.',
+        logrado: v => cuentaFam(v).A === 20,
+        bien: 'Pirámide decagonal: 2 · 10 = 20. ¿Algún prisma llega justo a 20?' },
+      { texto: 'Busca el sólido con más caras de esta mesa.',
+        logrado: v => cuentaFam(v).C === MAX_CARAS,
+        bien: 'La bipirámide de 12 lados: 24 caras triangulares, y Euler sigue cumpliéndose.' },
+      { texto: 'Encuentra un sólido con tantas caras como vértices.',
+        logrado: v => cuentaFam(v).C === cuentaFam(v).V,
+        bien: 'En toda pirámide C = V = n + 1. ¿Pasa en otra familia?' },
+      { texto: 'Guarda dos sólidos de familias distintas con el mismo número de aristas.',
+        logrado: (v, guardados) => guardados.some(g => g.tipo !== v.tipo && cuentaFam(g).A === cuentaFam(v).A)
+          && guardados.some(g => g.tipo === v.tipo && g.n === v.n),
+        bien: 'Mismas aristas, otras caras y vértices; aun así C + V = A + 2.' },
+    ],
   };
   // Mesa 3: los cinco regulares armados (la idea 3 solo los deja imaginar desde el desarrollo), con p y q en vivo.
   const PLATON = { tetraedro: 'tetraedro', cubo: 'hexaedro', octaedro: 'octaedro', dodecaedro: 'dodecaedro', icosaedro: 'icosaedro' };
+  // El polígono de más lados que aún forma punta con el mínimo de caras por vértice (la misma suma que dibuja la idea 3).
+  const [ctrN, ctrQ] = regIdea.juega.controles;
+  const LADOS_MAX = Math.max(...ctrN.opciones.map(o => +o.valor).filter(n => ctrQ.min * INT(n) < 360));
+  const cuentaReg = v => { const k = `reg,${v.so}`; if (!memo.has(k)) memo.set(k, casco(SOLIDOS[v.so]())); return memo.get(k); };
+  const MAX_VERT = Math.max(...Object.keys(PLATON).map(so => cuentaReg({ so }).V));
   const platonFig = v => solidoFig(SOLIDOS[v.so](), `${PLATON[v.so]} regular con sus vértices marcados`, { vertices: true, tresD: tdGiro(v.giro) });
   const mesaPlaton = {
     id: 'cinco-regulares', titulo: 'Los cinco regulares', pieza: 'geo-figura',
@@ -399,7 +425,19 @@
     controles: [{ id: 'so', etiqueta: 'poliedro', opciones: Object.entries(PLATON).map(([valor, texto]) => ({ valor, texto })) }, camara],
     dibujo: v => ({ datos: platonFig(v), estado: {} }),
     arrastres: [giraArrastre(v => SOLIDOS[v.so](), platonFig)],
-    lectura: v => { const h = casco(SOLIDOS[v.so]()), p = 2 * h.A / h.C, q = 2 * h.A / h.V; return [`2A = ${2 * h.A} = ${p} · ${h.C} caras = ${q} · ${h.V} vértices`]; },
+    lectura: v => { const h = cuentaReg(v), p = 2 * h.A / h.C, q = 2 * h.A / h.V; return [`2A = ${2 * h.A} = ${p} · ${h.C} caras = ${q} · ${h.V} vértices`]; },
+    invitaciones: [
+      { texto: 'Encuentra el regular donde se juntan 4 caras en cada vértice.',
+        logrado: v => { const h = cuentaReg(v); return 2 * h.A / h.V === 4; },
+        bien: 'El octaedro: 4 triángulos por vértice suman 240°, menos de 360°.' },
+      { texto: 'Busca el regular con más vértices.',
+        logrado: v => cuentaReg(v).V === MAX_VERT,
+        bien: 'El dodecaedro: 12 pentágonos y 20 vértices. ¿Cuál tiene más caras?' },
+      { texto: 'Guarda dos regulares que intercambien sus números de caras y de vértices.',
+        logrado: (v, guardados) => guardados.some(g => g.so !== v.so && cuentaReg(g).C === cuentaReg(v).V && cuentaReg(g).V === cuentaReg(v).C)
+          && guardados.some(g => g.so === v.so),
+        bien: 'Caras y vértices cambiados, mismas aristas: son pares duales.' },
+    ],
   };
 
   return {
@@ -412,8 +450,53 @@
       pregunta: '¿Una regla que se cumple en muchos ejemplos vale para todos?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «A history of Topology», MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Topology_in_mathematics/' },
     },
+    // Glosario por tema (docs/teoria.md §4d). «Arista», «cara», «cubo», «sólido», «vértice», «convexo» y «base» salen
+    // antes en el curso; el lector los marca con su definición de allá.
+    glosario: [
+      { termino: 'poliedro', def: 'Sólido cerrado limitado solo por caras planas que son polígonos, como una caja o un dado.',
+        ver: ['poliedro convexo', 'poliedro regular'] },
+      { termino: 'poliedro convexo', formas: ['poliedro convexo', 'poliedros convexos'],
+        def: 'Sólido de caras planas sin huecos ni entrantes: el segmento entre dos puntos suyos queda adentro.',
+        ejemplo: 'Un cubo lo es; un marco con un túnel, no.', ver: ['teorema de Euler'] },
+      { termino: 'teorema de Euler', simbolo: 'C + V = A + 2',
+        def: 'En todo poliedro convexo, caras más vértices es igual a aristas más dos.',
+        ejemplo: 'Cubo: 6 caras + 8 vértices = 12 aristas + 2.', ver: ['poliedro convexo'] },
+      { termino: 'prisma', def: 'Poliedro con dos bases iguales y paralelas, unidas por caras laterales que son paralelogramos.',
+        ejemplo: 'Prisma hexagonal: 12 vértices, 18 aristas y 8 caras.', ver: ['cara lateral', 'arista lateral'] },
+      { termino: 'pirámide', def: 'Poliedro con una base poligonal y caras triangulares que suben hasta un mismo punto: la punta.',
+        ejemplo: 'Pirámide hexagonal: 7 vértices, 12 aristas y 7 caras.', ver: ['cara lateral'] },
+      { termino: 'bipirámide', def: 'Dos pirámides iguales pegadas por su base, una hacia arriba y otra hacia abajo.',
+        ejemplo: 'Bipirámide pentagonal: 7 vértices, 15 aristas y 10 caras.', ver: ['pirámide'] },
+      { termino: 'cara lateral', formas: ['cara lateral', 'caras laterales'],
+        def: 'Cada cara de un prisma o de una pirámide que no es base.', ver: ['arista lateral'] },
+      { termino: 'arista lateral', formas: ['arista lateral', 'aristas laterales'],
+        def: 'La que une las dos bases de un prisma, o la base con la punta de una pirámide.', ver: ['cara lateral'] },
+      { termino: 'poliedro regular', formas: ['poliedro regular', 'poliedros regulares'],
+        def: 'Poliedro de caras iguales que son polígonos regulares, con el mismo número de caras en cada vértice.',
+        ejemplo: 'Solo hay cinco: tetraedro, hexaedro, octaedro, dodecaedro e icosaedro.' },
+      { termino: 'tetraedro', def: 'Poliedro regular de 4 caras triangulares; en cada vértice se juntan 3.', ver: ['poliedro regular'] },
+      { termino: 'hexaedro', def: 'Poliedro regular de 6 caras cuadradas, con 3 en cada vértice: el cubo.', ver: ['poliedro regular'] },
+      { termino: 'octaedro', def: 'Poliedro regular de 8 caras triangulares; en cada vértice se juntan 4.', ver: ['poliedro regular'] },
+      { termino: 'dodecaedro', def: 'Poliedro regular de 12 caras pentagonales; en cada vértice se juntan 3.', ver: ['poliedro regular'] },
+      { termino: 'icosaedro', def: 'Poliedro regular de 20 caras triangulares; en cada vértice se juntan 5.', ver: ['poliedro regular'] },
+    ],
     // Laboratorio: familias y regulares son más ricas que sus ideas; la del vértice es el juego de la idea 3.
-    laboratorio: [mesaFamilias, Object.assign({ id: 'vertice', titulo: 'Polígonos en un vértice', pieza: 'geo-figura' }, regIdea.juega), mesaPlaton],
+    // La mesa del vértice trae sus retos en el primer objeto; los cuenta la misma suma q · ángulo interior que dibuja.
+    laboratorio: [mesaFamilias, Object.assign({ id: 'vertice', titulo: 'Polígonos en un vértice', pieza: 'geo-figura', invitaciones: [
+      { texto: 'Junta polígonos que cubran justo los 360°, sin hueco.',
+        logrado: v => v.q * INT(+v.n) === 360,
+        bien: 'Sin hueco se embaldosa el piso: plano, sin punta. No hay poliedro.' },
+      { texto: 'Busca el polígono con más lados que todavía forme punta.',
+        logrado: v => v.q * INT(+v.n) < 360 && +v.n === LADOS_MAX,
+        bien: 'Pentágonos, tres por vértice: el dodecaedro. Con hexágonos ya no cabe.' },
+      { texto: 'Consigue una punta con el mayor número posible de triángulos.',
+        logrado: v => +v.n === 3 && v.q * INT(3) < 360 && (v.q + 1) * INT(3) >= 360,
+        bien: 'Cinco triángulos: el icosaedro. Con seis, ya suman 360°.' },
+      { texto: 'Guarda dos casos con el mismo polígono que formen punta.',
+        logrado: (v, guardados) => v.q * INT(+v.n) < 360 && guardados.some(g => +g.n === +v.n && g.q !== v.q && g.q * INT(+g.n) < 360)
+          && guardados.some(g => +g.n === +v.n && g.q === v.q),
+        bien: 'El triángulo arma tres regulares distintos: cambia cuántos van por vértice.' },
+    ] }, regIdea.juega), mesaPlaton],
     ideas: [elemIdea, eulerIdea, regIdea],
   };
 });
