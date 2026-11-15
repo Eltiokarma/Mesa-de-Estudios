@@ -78,17 +78,25 @@
     smog: { titulo: 'Smog fotoquímico', color: 'd', nodos: ['NOₓ y vapores orgánicos de los autos', 'la luz solar los hace reaccionar', 'forma O₃ junto al suelo', 'irrita ojos y pulmones'], lee: 'Especie clave: O₃ junto al suelo; efecto: irritación.' },
   };
   const col = (k, desde = 0) => ({ titulo: AIRE[k].titulo, color: AIRE[k].color, nodos: AIRE[k].nodos.map(t => ({ texto: t, desde })) });
+  // Animación (decisión de Gerson, 15 nov: química se mueve sola): la cadena se arma sola, un eslabón por segundo, y
+  // queda completa dos segundos antes de volver a empezar. Lo que aún no llega se ve tenue (la forma de la cadena no
+  // salta). El segundo es del dibujo, no del fenómeno: una cadena real tarda días o años.
+  const eslabon = (tt, nNodos) => Math.min(nNodos, Math.floor(tt) + 1);
+  const colHasta = (k, c) => ({ titulo: AIRE[k].titulo, color: AIRE[k].color, nodos: AIRE[k].nodos.map((t, i) => ({ texto: t, tenue: i >= c })) });
   const aire = {
     id: 'cadenas-del-aire',
     titulo: 'Cada problema, su cadena',
     temas: ['Ecosistemas y contaminantes', 'Efecto invernadero', 'Smog y lluvia ácida', 'Capa de ozono'],
     pieza: 'quim-cadena',
     juega: {
-      consigna: 'Elige un problema del aire. Lee su cadena de arriba abajo: de dónde sale, qué sustancia actúa, qué le pasa y qué efecto deja.',
+      consigna: 'La cadena se arma sola, un eslabón por segundo: de dónde sale, qué sustancia actúa, qué le pasa y qué efecto deja. Cambia de problema.',
       voz: 'Un contaminante se entiende por su cadena completa.',
-      controles: [{ id: 'k', etiqueta: 'Problema', opciones: Object.keys(AIRE).map(k => ({ valor: k, texto: AIRE[k].titulo })) }],
-      dibujo: val => cadena([col(val.k)]),
-      lectura: val => [AIRE[val.k].lee],
+      controles: [
+        { id: 'k', etiqueta: 'Problema', opciones: Object.keys(AIRE).map(k => ({ valor: k, texto: AIRE[k].titulo })) },
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 5, paso: 1, inicio: 0, unidad: 's', decimales: 0, auto: { velocidad: 1 } },
+      ],
+      dibujo: val => cadena([colHasta(val.k, eslabon(val.t, 4))]),
+      lectura: val => { const c = eslabon(val.t, 4); return [c < 4 ? `Eslabón ${c} de 4: ${AIRE[val.k].nodos[c - 1]}.` : AIRE[val.k].lee]; },
       // Sin arrastre: cada problema es otra cadena, con otras sustancias; no hay una variable que se deslice de una a
       // otra (y juntarlas con un gesto sugeriría que comparten eslabones, la idea errónea QA1).
       minimo: 3,
@@ -147,10 +155,13 @@
   // Se reserva: la desinfección, que no se ve · Debe verse: qué quita cada etapa.
   const ETAPAS = [
     { texto: 'agua de río: turbia y con microbios', quita: 'nada' },
-    { texto: 'coagular y flocular: las partículas se juntan', quita: 'aún no quita nada' },
+    { texto: 'coagular y flocular: las partículas se juntan', quita: 'nada aún' },
     { texto: 'sedimentar y filtrar: agua clara', quita: 'partículas; quedan microbios' },
     { texto: 'desinfectar con cloro: microbios inactivados', quita: 'microbios' },
   ];
+  // Animación: el agua avanza sola por la planta y vuelve (barrido de la etapa, unos 2 s por etapa). La etapa hecha es
+  // la más cercana al frente del agua; la manija sigue al frente sin saltos.
+  const etapaDe = e => Math.min(3, Math.max(1, Math.round(e)));
   const potab = (hasta, desde = false) => cadena([{ titulo: 'Potabilización', color: 'i', nodos: ETAPAS.map((e, i) => ({ texto: e.texto, desde: desde ? i : 0, tenue: !desde && i > hasta })) }]);
   const agua = {
     id: 'filtrar-no-desinfecta',
@@ -158,11 +169,11 @@
     temas: ['Contaminación y potabilización del agua'],
     pieza: 'quim-cadena',
     juega: {
-      consigna: 'Avanza el tratamiento del agua de un río etapa por etapa. Mira qué quita cada una.',
+      consigna: 'El agua de un río avanza sola por la planta, etapa por etapa. Mira qué quita cada una y qué sigue en el agua.',
       voz: 'Anota qué queda en el agua después de cada etapa.',
-      controles: [{ id: 'e', etiqueta: 'Hasta la etapa', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0 }],
-      dibujo: val => potab(val.e - 1),
-      lectura: val => [`Hasta aquí se quitan: ${ETAPAS[val.e - 1].quita}.`],
+      controles: [{ id: 'e', etiqueta: 'Hasta la etapa', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0, auto: { velocidad: 0.5, modo: 'rebota' } }],
+      dibujo: val => potab(etapaDe(val.e) - 1),
+      lectura: val => [`Etapa ${etapaDe(val.e)} · se quitan: ${ETAPAS[etapaDe(val.e) - 1].quita}.`],
       minimo: 3,
       // Se agarra la marca del borde de la última etapa hecha y se baja por la planta: cae en la etapa más cercana.
       // Responde la lectura con lo que ya se quitó. La desinfección (etapa 4) queda fuera: es la predicción.
@@ -223,17 +234,26 @@
   // oxígeno · Se reserva: el oxígeno disuelto, el eslabón que mata a los peces · Debe verse: que el color no es el daño.
   const EUTRO = ['nitratos y fosfatos de fertilizantes y desagües', 'las algas crecen de más', 'las algas mueren y se hunden', 'bacterias las descomponen y gastan O₂', 'falta O₂ disuelto: mueren peces'];
   const SANO = ['pocos nutrientes', 'algas en cantidad normal', 'O₂ disuelto suficiente', 'los peces viven'];
+  // Animación: como en el aire, la cadena del lago se arma sola, un eslabón por segundo (cámara rápida: en un lago real
+  // pasan semanas), y queda completa dos segundos.
+  const lago = (n, c) => ({ titulo: n === 'pocos' ? 'Lago sano' : 'Lago eutrofizado', color: n === 'pocos' ? 'd' : 'h', nodos: (n === 'pocos' ? SANO : EUTRO).map((t, i) => ({ texto: t, tenue: i >= c })) });
   const eutro = {
     id: 'eutrofizacion',
     titulo: 'Más nutrientes, menos oxígeno',
     temas: ['Eutrofización'],
     pieza: 'quim-cadena',
     juega: {
-      consigna: 'Elige cuántos nutrientes llegan a un lago y sigue la cadena hasta los peces.',
+      consigna: 'Elige cuántos nutrientes llegan a un lago. La cadena avanza sola, en cámara rápida, hasta los peces.',
       voz: 'Busca el eslabón que de verdad afecta a los peces.',
-      controles: [{ id: 'n', etiqueta: 'Nutrientes', opciones: [{ valor: 'pocos', texto: 'Pocos' }, { valor: 'muchos', texto: 'Muchos' }] }],
-      dibujo: val => cadena([{ titulo: val.n === 'pocos' ? 'Lago sano' : 'Lago eutrofizado', color: val.n === 'pocos' ? 'd' : 'h', nodos: (val.n === 'pocos' ? SANO : EUTRO).map(t => ({ texto: t })) }]),
-      lectura: val => [val.n === 'pocos' ? 'Hay oxígeno disuelto de sobra.' : 'El oxígeno disuelto se agota.'],
+      controles: [
+        { id: 'n', etiqueta: 'Nutrientes', opciones: [{ valor: 'pocos', texto: 'Pocos' }, { valor: 'muchos', texto: 'Muchos' }] },
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 6, paso: 1, inicio: 0, unidad: 's', decimales: 0, auto: { velocidad: 1 } },
+      ],
+      dibujo: val => { const N = (val.n === 'pocos' ? SANO : EUTRO).length; return cadena([lago(val.n, eslabon(val.t, N))]); },
+      lectura: val => {
+        const L = val.n === 'pocos' ? SANO : EUTRO, c = eslabon(val.t, L.length);
+        return [c < L.length ? `Eslabón ${c} de ${L.length}: ${L[c - 1]}.` : val.n === 'pocos' ? 'Hay oxígeno disuelto de sobra.' : 'El oxígeno disuelto se agota.'];
+      },
       // Sin arrastre: son dos estados del lago (pocos o muchos nutrientes) con cadenas distintas; la figura no tiene
       // una cantidad dibujada que se pueda deslizar.
       minimo: 2,
@@ -294,14 +314,15 @@
     temas: ['Reciclaje y tecnologías limpias'],
     pieza: 'barra-porcentaje',
     juega: {
-      consigna: 'De 100 kg de botellas usadas, elige qué parte se recolecta y qué parte de lo recolectado recupera la planta de reciclaje.',
+      consigna: 'De 100 kg de botellas, lo recolectado para reciclaje sube y baja solo. Mira cómo lo recuperado crece y se achica con él.',
       voz: 'Mira sobre qué se aplica el segundo porcentaje.',
       controles: [
-        { id: 'a', etiqueta: 'Recolectado', color: 'c-o', min: 30, max: 90, paso: 10, inicio: 50, unidad: '%', decimales: 0 },
+        { id: 'a', etiqueta: 'Recolectado', color: 'c-o', min: 30, max: 90, paso: 10, inicio: 50, unidad: '%', decimales: 0, auto: { velocidad: 15, modo: 'rebota' } },
         { id: 'b', etiqueta: 'Recuperado', color: 'c-d', min: 60, max: 90, paso: 10, inicio: 70, unidad: '%', decimales: 0 },
       ],
-      dibujo: val => barra(val.a, val.b),
-      lectura: val => [m, ` que vuelve = ${f(val.a * val.b / 100, 1)} kg de 100 kg`],
+      // Animación: lo recolectado barre de 30 a 90 %; se dibuja en por cientos enteros (los rótulos no muestran decimales).
+      dibujo: val => barra(Math.round(val.a), val.b),
+      lectura: val => [`${f(Math.round(val.a), 0)} % llega · `, m, ` que vuelve = ${f(Math.round(val.a) * val.b / 100, 1)} kg`],
       minimo: 3,
       // Se agarra el borde de cada pedazo: el del primero es lo recolectado (sobre 100 kg); el del segundo, lo
       // recuperado (sobre lo recolectado). Responde la barra, que se acorta, y los kilos que vuelven.
@@ -365,19 +386,33 @@
   // ---------- Idea 5: no toda unión suelta agua (polímeros) ----------
   // Cambia: cuántos etilenos se unen · Permanece: la cadena de carbonos y su masa · Progresa: la cadena crece de dos en
   // dos carbonos · Se reserva: la condensación, que sí suelta agua · Debe verse: que en la adición no sobra ningún átomo.
+  // Animación: n avanza solo de 2 a 4 y vuelve a empezar. La parte entera son los etilenos ya unidos; en la primera
+  // mitad de cada tramo llega desde abajo el etileno siguiente, con su doble enlace (CH₂=CH₂), y en la mitad se
+  // engancha: el doble enlace se abre y pasa a ser un enlace simple más de la cadena. Nada se suelta.
+  const sitio = i => { const fila = Math.floor(i / 4), k = i % 4, col = fila % 2 ? 3 - k : k; return { x: col * 1.5, y: fila * 1.3 }; };
+  const unidos = n => Math.min(4, Math.max(2, Math.round(n)));
+  const llegando = n => { const r = n - Math.floor(n); return unidos(n) < 4 && r > 1e-6 && r < 0.5; };
   function poli(n, corte = 0) {
-    const atomos = [], enlaces = [];
+    const atomos = [], enlaces = [], nu = unidos(n), llega = n - Math.floor(n);
     // En serpentina, cuatro por fila: la cadena es una sola fila de enlaces aunque se doble en el papel.
-    for (let i = 0; i < 2 * n; i++) {
-      const fila = Math.floor(i / 4), k = i % 4, col = fila % 2 ? 3 - k : k;
-      atomos.push({ id: `c${i}`, t: 'CH₂', x: col * 1.5, y: fila * 1.3, color: 'i' });
+    for (let i = 0; i < 2 * nu; i++) {
+      const p = sitio(i);
+      atomos.push({ id: `c${i}`, t: 'CH₂', x: p.x, y: p.y, color: 'i' });
       if (i) enlaces.push({ a: `c${i - 1}`, b: `c${i}` });
     }
-    return { datos: { escala: 40, alto: 170, atomos, enlaces, textos: [{ x: -0.95, y: 0, t: '–' }, { x: 2.25, y: 2.4, t: `${n} etilenos: ${2 * n} grupos CH₂, sin subproducto` }],
-      alt: `Cadena de polietileno formada por ${n} moléculas de etileno: ${2 * n} grupos CH₂ unidos en fila; no se libera ninguna molécula.` }, estado: { corte } };
+    // El etileno que se acerca: entre la parte entera y la mitad, sube 1,2 unidades hasta su sitio en la cadena.
+    if (llegando(n)) {
+      const dy = 1.2 * (1 - llega / 0.5);
+      [0, 1].forEach(j => { const p = sitio(2 * nu + j); atomos.push({ id: `l${j}`, t: 'CH₂', x: p.x, y: p.y + dy, color: 'h' }); });
+      enlaces.push({ a: 'l0', b: 'l1', orden: 2 });
+    }
+    // Textos invisibles en las esquinas (desde 99): fijan el encuadre, así la cadena no se corre mientras crece.
+    return { datos: { escala: 40, alto: 190, atomos, enlaces, textos: [{ x: -0.95, y: 0, t: '–' }, { x: 2.25, y: 3.2, t: `${nu} etilenos: ${2 * nu} grupos CH₂, sin subproducto` },
+      { x: -0.95, y: -0.3, t: '', desde: 99 }, { x: 4.5, y: 3.2, t: '', desde: 99 }],
+      alt: `Cadena de polietileno formada por ${nu} moléculas de etileno: ${2 * nu} grupos CH₂ unidos en fila; no se libera ninguna molécula.` }, estado: { corte } };
   }
   // La manija va 22 px debajo del último CH₂, con el encuadre de la cadena actual.
-  const finPoli = n => { const d = poli(n).datos, g = PZ('quim-molecula').encuadre(d), a = d.atomos[d.atomos.length - 1]; return { x: g.X(a.x), y: g.Y(a.y) + 22 }; };
+  const finPoli = n => { const d = poli(n).datos, g = PZ('quim-molecula').encuadre(d), a = d.atomos.find(x => x.id === `c${2 * unidos(n) - 1}`); return { x: g.X(a.x), y: g.Y(a.y) + 22 }; };
   const MIRA_POLI = {
     escala: 34, alto: 260,
     atomos: [
@@ -396,11 +431,11 @@
     temas: ['Nanotecnología, polímeros y corrosión (solo UNI)'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Une moléculas de etileno, CH₂=CH₂: cada doble enlace se abre y se engancha al siguiente. Cuenta los átomos de la cadena.',
+      consigna: 'Llegan solas moléculas de etileno, CH₂=CH₂: el doble enlace se abre y se engancha a la cadena. Cuenta si sobra algún átomo.',
       voz: 'Cuenta si sobra algún átomo al unir.',
-      controles: [{ id: 'n', etiqueta: 'Etilenos', min: 2, max: 4, paso: 1, inicio: 2, decimales: 0 }],
+      controles: [{ id: 'n', etiqueta: 'Etilenos', min: 2, max: 4, paso: 1, inicio: 2, decimales: 0, auto: { velocidad: 0.75 } }],
       dibujo: val => poli(val.n),
-      lectura: val => [m, ` de la cadena = ${f(val.n, 0)} · 28 = ${f(28 * val.n, 0)} g/mol`],
+      lectura: val => [m, ` = ${f(unidos(val.n), 0)} · 28 = ${f(28 * unidos(val.n), 0)} g/mol${llegando(val.n) ? ' · llega otro etileno' : ''}`],
       minimo: 3,
       // Se agarra el último CH₂ y se arrastra por la serpentina: cada etileno que se engancha suma dos CH₂. Responde
       // la masa de la lectura, que sube 28 por etileno sin restar nada.
@@ -478,22 +513,29 @@
     curvas: [{ puntos: [[1, 6], [10, 60]], color: 'o' }],
     alt: 'Área total de 1 cm³ de material cortado en k partes por arista: A = 6k cm², una recta que crece con k mientras el volumen sigue siendo 1 cm³.',
   }, extra);
+  // Animación: k barre de 1 a 10 y vuelve. Los cortes son enteros: k se redondea y el punto salta de corte en corte;
+  // la recta se dibuja firme hasta el punto y tenue después.
+  const cortes = k => Math.min(10, Math.max(1, Math.round(k)));
+  const nanoK = k => ejesA({
+    curvas: [{ puntos: [[1, 6], [10, 60]], color: 'o', discontinua: true }, ...(k > 1 ? [{ puntos: [[1, 6], [k, 6 * k]], color: 'o' }] : [])],
+    puntos: [{ x: k, y: 6 * k, color: 'o', rotulo: `${f(6 * k, 0)} cm²`, guias: true }],
+  });
   const nano = {
     id: 'superficie-nano-corrosion',
     titulo: 'Más pedazos, más superficie',
     temas: ['Nanotecnología, polímeros y corrosión (solo UNI)'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Corta un cubo de 1 cm³ en k partes por arista: salen k³ cubitos. Mira cómo cambia el área total expuesta.',
+      consigna: 'Un cubo de 1 cm³ se corta solo en k partes por arista: salen k³ cubitos. Mira qué crece y qué no.',
       voz: 'Fíjate en qué crece y qué se queda igual.',
-      controles: [{ id: 'k', etiqueta: 'k', min: 1, max: 10, paso: 1, inicio: 1, decimales: 0 }],
-      dibujo: val => ({ datos: ejesA({ puntos: [{ x: val.k, y: 6 * val.k, color: 'o', rotulo: `${f(6 * val.k, 0)} cm²`, guias: true }] }), estado: {} }),
-      lectura: val => [`${f(val.k ** 3, 0)} cubitos · volumen 1\u00a0cm³`, '   ·   ', A, ` = ${f(6 * val.k, 0)} cm²`],
+      controles: [{ id: 'k', etiqueta: 'k', min: 1, max: 10, paso: 1, inicio: 1, decimales: 0, auto: { velocidad: 2, modo: 'rebota' } }],
+      dibujo: val => ({ datos: nanoK(cortes(val.k)), estado: {} }),
+      lectura: val => { const k = cortes(val.k); return [`${f(k ** 3, 0)} cubitos · volumen 1\u00a0cm³`, '   ·   ', A, ` = ${f(6 * k, 0)} cm²`]; },
       minimo: 3,
       // Se agarra el punto y se desliza por la recta: más a la derecha, más cortes por arista. Responde el área, que
       // sube 6 cm² por corte, mientras el volumen de la lectura no cambia.
       arrastres: [{ id: 'cortes', etiqueta: 'punto sobre la recta: más cortes', color: 'c-o',
-        donde: val => { const g = PZ('ejes').geometria(ejesA()); return { x: g.X(val.k), y: g.Y(6 * val.k) }; },
+        donde: val => { const g = PZ('ejes').geometria(ejesA()); return { x: g.X(cortes(val.k)), y: g.Y(6 * cortes(val.k)) }; },
         mover: pt => { const g = PZ('ejes').geometria(ejesA()); return { k: (pt.x - g.X(0)) / (g.X(1) - g.X(0)) }; } }],
     },
     predice: {
@@ -548,9 +590,23 @@
   // ---------- Laboratorio ----------
   // Mesa 1: tres filtros sucesivos sobre 100 kg (recolectar, separar en la planta y recuperar), con rangos amplios y
   // una manija en el borde de cada pedazo. Cada porcentaje muerde lo que dejó el anterior.
-  const barra3 = val => ({ datos: { total: 100, sufijo: ' kg', decimales: 1, color: 'i', tramos: [
-    { tipo: 'descuento', pct: 100 - val.a, color: 'o' }, { tipo: 'descuento', pct: 100 - val.s, color: 'h' }, { tipo: 'descuento', pct: 100 - val.b, color: 'd' }] }, estado: { corte: 3 } });
   const queda3 = (val, i) => [100, val.a, val.a * val.s / 100, val.a * val.s * val.b / 1e4][i];
+  // Animación: los 100 kg pasan por los filtros uno por segundo. En el segundo j (0, 1, 2) el filtro j + 1 va
+  // reteniendo su parte: el pedazo crece en por cientos enteros de 0 a su tamaño; desde t = 3 s se ve el final (1 s)
+  // y vuelve a empezar. Sin t (o con t ≥ 3), los tres filtros completos. La lectura dice lo que pasa en ese momento.
+  const PCT = ['a', 's', 'b'];
+  const avance3 = val => (val.t === undefined ? 3 : Math.min(3, Math.max(0, val.t)));
+  const barra3 = val => {
+    const tt = avance3(val), j = Math.floor(tt), fr = tt - j;
+    const col = ['o', 'h', 'd'], tramos = [];
+    for (let i = 0; i < 3; i++) {
+      const pct = 100 - val[PCT[i]];
+      if (i < j) tramos.push({ tipo: 'descuento', pct, color: col[i] });
+      else if (i === j) tramos.push({ tipo: 'descuento', pct: Math.round(pct * fr), color: col[i] });
+    }
+    return { datos: { total: 100, sufijo: ' kg', decimales: 1, color: 'i', tramos }, estado: { corte: tramos.length } };
+  };
+  const pasan3 = val => { const d = barra3(val).datos; return PZ('barra-porcentaje').valores(d).pop(); };
   // Mesa 2: un cubo de arista a (1 a 4 cm) cortado en k partes por arista (1 a 20): A = 6a²k. La escala del eje sigue
   // a la arista, así la recta se ve entera; el punto gris es el cubo sin cortar.
   const areaCubo = v => 6 * v.a * v.a * v.k;   // área total de los k³ cubitos: la usan el dibujo, la lectura y los retos
@@ -567,7 +623,7 @@
 
   return {
     unidad: 'quimica.ambiente-y-quimica-aplicada',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/quim-cadena.js', '/nucleo/kit/piezas/barra-porcentaje.js', '/nucleo/kit/piezas/quim-molecula.js', '/nucleo/kit/piezas/ejes.js'],
     historia: {
@@ -612,14 +668,15 @@
     laboratorio: [
       {
         id: 'tres-filtros', titulo: 'Tres filtros sobre 100 kg', pieza: 'barra-porcentaje',
-        consigna: 'Arrastra el borde de cada pedazo: lo recolectado, lo que la planta separa bien y lo que recupera. Busca qué filtro pesa más.',
+        consigna: 'Los 100 kg pasan solos por los tres filtros, uno por segundo. Arrastra el borde de cada pedazo y busca qué filtro pesa más.',
         controles: [
           { id: 'a', etiqueta: 'Recolectado', color: 'c-o', min: 10, max: 100, paso: 5, inicio: 50, unidad: '%', decimales: 0 },
           { id: 's', etiqueta: 'Separado', color: 'c-h', min: 10, max: 100, paso: 5, inicio: 80, unidad: '%', decimales: 0 },
           { id: 'b', etiqueta: 'Recuperado', color: 'c-d', min: 10, max: 100, paso: 5, inicio: 70, unidad: '%', decimales: 0 },
+          { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 4, paso: 0.5, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } },
         ],
         dibujo: barra3,
-        lectura: val => [`${val.a} % · ${val.s} % · ${val.b} % → `, m, ` = ${f(queda3(val, 3), 1)} kg de 100 kg`],
+        lectura: val => [`Pasan ${f(pasan3(val), 1)} kg · al final `, m, ` = ${f(queda3(val, 3), 1)} kg`],
         // Cada manija es el borde izquierdo del pedazo que cae en su fila: lo que queda tras ese filtro.
         arrastres: [
           { id: 'recolectado', etiqueta: 'borde de lo recolectado', color: 'c-o',
@@ -642,6 +699,10 @@
           { texto: 'Pasa de 80 kg con la separación por debajo de 90 %.',
             logrado: val => queda3(val, 3) > 80 && val.s < 90,
             bien: 'Con los otros perfectos, el filtro flojo pone el techo.' },
+          { texto: 'Pausa justo cuando la carga ya cruzó los tres filtros.',
+            logrado: val => avance3(val) >= 3,
+            bien: 'Ahí la barra vale lo que de verdad vuelve.',
+            pista: 'Espera a que el tercer pedazo deje de crecer y pausa; ajusta t con − y +.' },
           { texto: 'Guarda dos casos con los mismos tres porcentajes en otro orden.',
             logrado: (val, guardados) => { const k = x => [x.a, x.s, x.b].sort((p, q) => p - q).join();
               return guardados.some(g => k(g) === k(val) && (g.a !== val.a || g.s !== val.s || g.b !== val.b) && Math.abs(queda3(g, 3) - queda3(val, 3)) < 1e-9); },
