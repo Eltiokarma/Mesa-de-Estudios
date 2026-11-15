@@ -263,7 +263,7 @@
     temas: ['Radio atómico e iónico'],
     pieza: 'quim-tabla',
     juega: {
-      consigna: 'Elige un grupo. El círculo de cada casilla es proporcional al radio del átomo. Mira cómo cambia de arriba abajo.',
+      consigna: 'Elige un grupo. El círculo de cada casilla es proporcional al radio atómico. Mira cómo cambia de arriba abajo.',
       voz: 'Compara cada círculo con el de arriba.',
       controles: [{ id: 'g', etiqueta: 'Grupo', opciones: Object.keys(GRUPOS).map(g => ({ valor: g, texto: `Grupo ${g}` })) }],
       // Se agarra la cabeza de la columna (sobre el número del grupo) y se la corre a otra: al soltar, cae en el grupo más cercano de los cuatro.
@@ -513,6 +513,10 @@
   const OP_PROPS = [{ valor: 'r', texto: 'Radio' }, { valor: 'ei', texto: 'Ionización' }, { valor: 'en', texto: 'Electronegatividad' }];
   const valorDe = (k, z) => { const P = PROPS[k], x = P.tabla[z]; return x === null ? 'sin dato' : `${P.dec ? f(x, P.dec) : x}${P.unidad ? ` ${P.unidad}` : ''}`; };
   const tablaProp = (k, marcadas) => { const P = PROPS[k]; return tabla({ propiedad: { valores: valores(P.tabla, TODOS), max: P.max, forma: P.forma, color: P.color, nombre: P.nombre }, marcadas }); };
+  // Extremos de las tablas de datos, para los retos del laboratorio (se calculan, no se escriben).
+  const conDato = t => TODOS.map(z => t[z]).filter(x => x !== null);
+  const MAYOR = { r: Math.max(...conDato(RADIO)), ei: Math.max(...conDato(EI)), dif: Math.max(...conDato(EN)) - Math.min(...conDato(EN)) };
+  const MENOR4 = Math.min(...TODOS.filter(z => lugar(z).periodo === 4).map(z => RADIO[z]));
   const SIMBV = z => (z >= 21 && z <= 30 ? `${SIMB[z]} (d)` : SIMB[z]);
 
   return {
@@ -525,6 +529,42 @@
       pregunta: '¿Cómo predices algo que todavía nadie ha visto?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §6.5', url: 'https://openstax.org/books/chemistry-2e/pages/6-5-periodic-variations-in-element-properties' },
     },
+    // Glosario (docs/teoria.md §4d): las palabras que la unidad estrena en el curso de química.
+    glosario: [
+      { termino: 'periodo', formas: ['periodo', 'periodos'], def: 'Fila de la tabla. Su número es el nivel más alto con electrones.',
+        ejemplo: 'El sodio, 1s² 2s² 2p⁶ 3s¹, está en el periodo 3.', ver: ['grupo'] },
+      { termino: 'grupo', formas: ['grupo', 'grupos'], def: 'Columna de la tabla: sus elementos tienen la misma cantidad de electrones de valencia y se parecen.',
+        ejemplo: 'Li, Na y K, grupo 1: un electrón de valencia cada uno.', ver: ['periodo', 'electrones de valencia'] },
+      { termino: 'bloque', formas: ['bloque', 'bloques'], def: 'Zona de la tabla según el subnivel donde entra el último electrón: s, p, d o f.',
+        ver: ['configuración electrónica'] },
+      { termino: 'electrones de valencia', formas: ['electrones de valencia', 'electrón de valencia', 'de valencia'],
+        def: 'Los electrones del último nivel: los que participan al formar enlaces.',
+        ejemplo: 'El cloro, 3s² 3p⁵, tiene 2 + 5 = 7.', ver: ['grupo', 'símbolo de Lewis'] },
+      { termino: 'símbolo de Lewis', formas: ['símbolo de Lewis', 'símbolos de Lewis'],
+        def: 'El símbolo del elemento rodeado de un punto por cada electrón del último nivel.',
+        ejemplo: 'El nitrógeno lleva 5 puntos: uno por cada electrón de valencia.', ver: ['electrones de valencia'] },
+      { termino: 'metal', formas: ['metal', 'metales'], def: 'Elemento brillante que conduce la corriente y el calor y tiende a perder electrones. Está a la izquierda.',
+        ver: ['no metal', 'semimetal'] },
+      { termino: 'no metal', formas: ['no metal', 'no metales'], def: 'Elemento que no conduce bien la corriente y tiende a ganar o compartir electrones. Está a la derecha.',
+        ver: ['metal'] },
+      { termino: 'semimetal', formas: ['semimetal', 'semimetales'], def: 'Elemento junto a la escalera de la tabla, con propiedades intermedias entre metal y no metal.',
+        ejemplo: 'Boro, silicio, germanio, arsénico.', ver: ['metal', 'no metal'] },
+      { termino: 'radio atómico', formas: ['radio atómico', 'radios atómicos'],
+        def: 'Tamaño de un átomo: la mitad de la distancia entre los núcleos de dos átomos iguales unidos.',
+        medida: 'pm', ejemplo: 'Na 190 pm y Cl 79 pm: en el periodo 3 el tamaño baja.', ver: ['carga nuclear'] },
+      { termino: 'carga nuclear', def: 'Carga positiva del núcleo, igual a su número de protones: es la que atrae a los electrones.',
+        ver: ['protón', 'radio atómico'] },
+      { termino: 'energía de ionización', simbolo: 'EI', medida: 'kJ/mol', formas: ['energía de ionización', 'energías de ionización', 'ionización'],
+        def: 'Energía para arrancar el electrón más externo de un átomo aislado, en estado gaseoso.',
+        ejemplo: 'Sodio: 496 kJ/mol; cloro: 1251 kJ/mol.', ver: ['afinidad electrónica'] },
+      { termino: 'afinidad electrónica', def: 'Energía en juego cuando un átomo aislado, en estado gaseoso, gana un electrón.',
+        ver: ['energía de ionización', 'electronegatividad'] },
+      { termino: 'electronegatividad', simbolo: 'EN', def: 'Cuánto atrae un átomo los electrones que comparte en un enlace. No tiene unidades.',
+        ejemplo: 'Flúor 3,98, el mayor; potasio 0,82.', ver: ['afinidad electrónica'] },
+      { termino: 'tendencia periódica', formas: ['tendencia periódica', 'tendencias periódicas', 'tendencia', 'tendencias'],
+        def: 'Cómo cambia una propiedad al recorrer la tabla por un grupo o un periodo. Tiene excepciones.',
+        ver: ['periodo', 'grupo'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera da las tres propiedades de un elemento a la
     // vez, del H al Kr (con los de transición, que las ideas no muestran); la segunda pone dos elementos lado a lado,
     // cada uno con su casilla arrastrable. La lectura dice los elementos y los valores, para que el caso se lea solo.
@@ -541,6 +581,21 @@
         arrastres: [{ id: 'casilla', etiqueta: 'casilla marcada: llévala a otro elemento', color: 'c-h',
           donde: v => enCasilla(v.z),
           mover: (pt, v) => ({ z: zBajo(pt, v.z) }) }],
+        // Retos comprobados (docs/teoria.md §4d): leen las mismas tablas de datos y el mismo lugar(z) que pinta la casilla.
+        invitaciones: [
+          { texto: 'Busca el átomo más grande de toda la tabla.',
+            logrado: v => RADIO[v.z] === MAYOR.r,
+            bien: 'Abajo y a la izquierda: muchos niveles y poca carga nuclear por electrón.' },
+          { texto: 'Con la ionización de fondo, ve al elemento al que más cuesta arrancarle un electrón.',
+            logrado: v => v.p === 'ei' && EI[v.z] === MAYOR.ei,
+            bien: 'Arriba a la derecha: el helio guarda sus dos electrones muy cerca del núcleo.' },
+          { texto: 'Busca el átomo más pequeño del periodo 4.',
+            logrado: v => lugar(v.z).periodo === 4 && RADIO[v.z] === MENOR4,
+            bien: 'Al final del periodo: mismo nivel, más protones jalando.' },
+          { texto: 'Guarda dos elementos del mismo grupo, en periodos distintos.',
+            logrado: (v, guardados) => guardados.some(a => guardados.some(b => lugar(a.z).grupo === lugar(b.z).grupo && lugar(a.z).periodo !== lugar(b.z).periodo)),
+            bien: 'Compara sus radios: ¿el de abajo siempre es más grande?' },
+        ],
       },
       {
         id: 'dos-elementos', titulo: 'Dos elementos lado a lado', pieza: 'quim-tabla',
@@ -555,6 +610,20 @@
         arrastres: [
           { id: 'primero', etiqueta: 'casilla del primer elemento', color: 'c-h', donde: v => enCasilla(v.a), mover: (pt, v) => ({ a: zBajo(pt, v.a) }) },
           { id: 'segundo', etiqueta: 'casilla del segundo elemento', color: 'c-i', donde: v => enCasilla(v.b), mover: (pt, v) => ({ b: zBajo(pt, v.b) }) },
+        ],
+        invitaciones: [
+          { texto: 'En el periodo 3, busca dos vecinos donde la ionización baje hacia la derecha.',
+            logrado: v => v.p === 'ei' && v.b === v.a + 1 && lugar(v.a).periodo === 3 && lugar(v.b).periodo === 3 && EI[v.b] < EI[v.a],
+            bien: 'La flecha falla aquí: mira qué subnivel estrena el segundo.' },
+          { texto: 'Con el radio de fondo, pon el segundo justo debajo del primero, en su grupo.',
+            logrado: v => v.p === 'r' && lugar(v.a).grupo === lugar(v.b).grupo && lugar(v.b).periodo === lugar(v.a).periodo + 1,
+            bien: 'Un nivel más abajo, un átomo más grande. ¿Pasa en todos los grupos?' },
+          { texto: 'Busca el par con la mayor diferencia de electronegatividad.',
+            logrado: v => v.p === 'en' && EN[v.a] !== null && EN[v.b] !== null && Math.abs(EN[v.a] - EN[v.b]) === MAYOR.dif,
+            bien: 'Tan distintos que uno se quedaría con los electrones del otro.' },
+          { texto: 'Encuentra dos elementos distintos con la misma electronegatividad.',
+            logrado: v => v.p === 'en' && v.a !== v.b && EN[v.a] !== null && EN[v.a] === EN[v.b],
+            bien: 'Jalan los electrones igual, aunque estén lejos en la tabla.' },
         ],
       },
     ],
