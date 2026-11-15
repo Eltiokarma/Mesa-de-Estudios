@@ -305,7 +305,28 @@
       manija('rasgo-1', 'a', figDos, Object.keys(PIEZAS), 'primera ficha de rasgo'),
       manija('rasgo-2', 'b', figDos, Object.keys(PIEZAS), 'segunda ficha de rasgo', 'c-d'),
     ],
+    // Invitaciones: cada una trae logrado(valores, guardados), que comprueba con clasificar y admite (las mismas
+    // funciones que marcan los casos), no con el texto.
+    invitaciones: [
+      { texto: 'Arma una definición que deje dentro las cuatro aves y fuera a los demás.',
+        logrado: val => clasificar(ANIMALES, rasgosDe(val)).errores === 0,
+        bien: 'Ningún caso en rojo. ¿Qué rasgo de tu par hizo el trabajo?' },
+      { texto: 'Haz que el pingüino quede fuera de la definición de «ave».',
+        logrado: val => !admite(ANIMALES[1], rasgosDe(val)),
+        bien: 'El pingüino es ave y no vuela: ese rasgo no es necesario.' },
+      { texto: 'Consigue que se cuelen todos los animales que no son aves.',
+        logrado: val => ANIMALES.every(c => c.es || admite(c, rasgosDe(val))),
+        bien: 'Sin rasgos que separen, la definición queda demasiado amplia.' },
+      { texto: 'Guarda dos definiciones distintas que clasifiquen bien a los siete animales.',
+        logrado: (val, guardados) => clasificar(ANIMALES, rasgosDe(val)).errores === 0
+          && guardados.some(g => textoDef(g) !== textoDef(val) && clasificar(ANIMALES, rasgosDe(g)).errores === 0),
+        bien: 'Las dos sirven: sumar un rasgo que todas las aves tienen no cambia nada.' },
+    ],
   };
+
+  // Ayudas de los retos de la silla: los mismos rasgos que usa dibujoSilla.
+  const errSilla = val => clasificar(SILLAS, [...GENEROS[val.g].rasgos, ...DIFS[val.d].rasgos]);
+  const dentroSilla = val => SILLAS.map(c => (admite(c, [...GENEROS[val.g].rasgos, ...DIFS[val.d].rasgos]) ? 1 : 0)).join('');
 
   return {
     unidad: 'razonamiento-verbal.definiciones',
@@ -317,10 +338,54 @@
       pregunta: '¿Cómo sabrías si una definición se queda corta?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Aristóteles, Tópicos)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/comprensionlectora.htm' },
     },
+    // Glosario: las palabras con que el curso habla de definiciones. Se definen aquí una vez; las demás unidades las heredan.
+    glosario: [
+      { termino: 'definición', def: 'Frase que dice qué es algo y lo separa de todo lo demás, sin dejar casos fuera.',
+        ejemplo: 'Silla: mueble para sentarse, con respaldo, para una persona.', ver: ['género próximo', 'diferencia específica'],
+        formas: ['definición', 'definiciones'] },
+      { termino: 'género próximo', def: 'La clase más cercana que contiene a lo que se define.',
+        ejemplo: 'Para «silla», el género próximo es «mueble para sentarse», no solo «mueble».', ver: ['diferencia específica'] },
+      { termino: 'diferencia específica', def: 'Los rasgos que separan a un concepto de los otros de su misma clase.',
+        ejemplo: '«Con respaldo, para una persona» separa la silla de la banca y del taburete.', ver: ['género próximo', 'rasgo'] },
+      { termino: 'rasgo', def: 'Característica que tiene algo y que sirve para reconocerlo o distinguirlo.',
+        ejemplo: '«Tiene plumas» es un rasgo de las aves.', ver: ['necesario', 'suficiente'] },
+      { termino: 'concepto', def: 'Idea general que reúne a todos los casos de una misma cosa.',
+        ejemplo: '«Ave» reúne al gorrión, al pingüino y al cóndor.', ver: ['definición'] },
+      { termino: 'necesario', def: 'Dicho de un rasgo: lo tienen todos los casos, sin excepción.',
+        ejemplo: 'Poner huevos es necesario en las aves: todas los ponen.', formas: ['necesario', 'necesarios', 'necesaria'], ver: ['suficiente'] },
+      { termino: 'suficiente', def: 'Dicho de los rasgos: juntos bastan para dejar fuera todo lo que no corresponde.',
+        ejemplo: '«Tiene plumas» basta para el ave: ningún otro animal tiene plumas.', ver: ['necesario'] },
+      { termino: 'especie', def: 'Grupo más pequeño dentro de una clase: tiene sus rasgos y suma otros propios.',
+        ejemplo: '«Silla» es una especie dentro de la clase «mueble».', ver: ['género próximo'] },
+    ],
     laboratorio: [
       mesaDos,
-      Object.assign({ id: 'silla', titulo: 'Arma la silla', pieza: 'rv-texto' }, generoDiferencia.juega),
-      Object.assign({ id: 'un-rasgo', titulo: 'Un solo rasgo', pieza: 'rv-texto' }, rasgoNecesario.juega),
+      Object.assign({ id: 'silla', titulo: 'Arma la silla', pieza: 'rv-texto',
+        // Retos de la silla: clasificar decide con los rasgos de la clase y del rasgo elegidos.
+        invitaciones: [
+          { texto: 'Deja dentro justo las tres sillas, sin ningún caso mal ubicado.',
+            logrado: val => errSilla(val).errores === 0,
+            bien: 'Con los dos rasgos no se cuela nadie. ¿Qué cambia si la clase es «mueble»?' },
+          { texto: 'Haz que la banca sea el único caso mal ubicado.',
+            logrado: val => { const r = errSilla(val); return r.errores === 1 && r.marcas.c1 === 'h'; },
+            bien: 'Falta un rasgo: la banca también tiene respaldo. ¿Cuál la separa?' },
+          { texto: 'Guarda dos definiciones con distinta clase que dejen dentro los mismos casos.',
+            logrado: (val, guardados) => guardados.some(g => g.g !== val.g && dentroSilla(g) === dentroSilla(val)),
+            bien: 'Aquí el rasgo ya sacaba la mesa, y la clase no cambió nada.' },
+        ] }, generoDiferencia.juega),
+      Object.assign({ id: 'un-rasgo', titulo: 'Un solo rasgo', pieza: 'rv-texto',
+        // Retos de un solo rasgo: cuentaAve cuenta aves fuera y animales colados con los rasgos de cada uno.
+        invitaciones: [
+          { texto: 'Elige el rasgo que deja dentro todas las aves y fuera a los demás.',
+            logrado: val => { const c = cuentaAve(val.r); return c.fuera === 0 && c.colados === 0; },
+            bien: 'Las plumas están en todas las aves y en ningún otro animal.' },
+          { texto: 'Busca un rasgo que no deje ningún ave fuera, aunque se cuele alguien.',
+            logrado: val => { const c = cuentaAve(val.r); return c.fuera === 0 && c.colados > 0; },
+            bien: 'Ese rasgo es necesario, pero no basta: la tortuga también lo tiene.' },
+          { texto: 'Guarda un rasgo que deje aves fuera y otro que no deje ninguna.',
+            logrado: (val, guardados) => guardados.some(g => cuentaAve(g.r).fuera > 0) && guardados.some(g => cuentaAve(g.r).fuera === 0),
+            bien: 'Compara los dos: uno es frecuente, el otro está en todas.' },
+        ] }, rasgoNecesario.juega),
     ],
     ideas: [generoDiferencia, rasgoNecesario],
   };
