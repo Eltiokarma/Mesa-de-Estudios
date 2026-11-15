@@ -129,7 +129,7 @@
       ],
     },
     regla: {
-      texto: 'La fuerza neta no dice hacia dónde va el cuerpo: dice cómo cambia su velocidad. La aceleración apunta como la fuerza neta.',
+      texto: 'Segunda ley de Newton: la fuerza neta no dice hacia dónde va el cuerpo, sino cómo cambia su velocidad. La aceleración apunta como la fuerza neta.',
       ecuacion: [{ llave: [SF], nota: 'fuerza neta', color: 'c-o' }, ' = m ', a],
       condicion: 'masa constante y medida desde un marco inercial (el piso). ΣF suma todas las fuerzas sobre el cuerpo, con signo.',
     },
@@ -364,7 +364,7 @@
     temas: ['Bloques, poleas y planos inclinados'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Un bloque baja por un plano sin rozamiento. Elige el ángulo y la masa del bloque.',
+      consigna: 'Un bloque baja por un plano inclinado sin rozamiento. Elige el ángulo y la masa del bloque.',
       voz: 'Cambia solo la masa. ¿Cambia la flecha roja?',
       controles: [
         { id: 'ang', etiqueta: 'Ángulo', opciones: [30, 37, 53].map(k => ({ valor: k, texto: `${k}°` })), inicio: 30 },
@@ -495,7 +495,7 @@
       ],
     },
     regla: {
-      texto: 'En un giro, la suma de las fuerzas hacia el centro vale m v²/r. «Centrípeta» es el nombre de esa resultante, no una fuerza nueva.',
+      texto: 'En un giro, la suma de las fuerzas hacia el centro vale m v²/r. «Fuerza centrípeta» es el nombre de esa resultante, no una fuerza nueva.',
       ecuacion: ['Σ', { sub: [F, 'radial'] }, ' = m ', { llave: [{ frac: [{ sup: ['v', '2'] }, 'r'] }], nota: 'hacia el centro', color: 'c-h' }],
       condicion: 'se toma positivo hacia el centro. Si N llegara a ser negativa, el auto ya se despegó del piso.',
     },
@@ -570,11 +570,11 @@
         { estado: { paso: 1 }, texto: 'Sobre la persona actúan su peso y la balanza, que empuja hacia arriba.', ecuacion: [P, ' = 600 N'] },
         { estado: { paso: 2 }, texto: 'El ascensor acelera hacia arriba: la persona acelera con él.', ecuacion: [a, ' = +2 m/s²'] },
         { estado: { paso: 3 }, texto: 'La balanza empuja más que el peso para darle esa aceleración.', ecuacion: [N, ' − 600 = 60 · 2   →   ', N, ' = 720 N'] },
-        { estado: { paso: 3 }, texto: 'Si el cable se cortara, a = −10 y la balanza marcaría 0.', ecuacion: [N, ' = 60 · (10 − 10) = 0'] },
+        { estado: { paso: 3 }, texto: 'Cable cortado: a = −10 y la balanza marca 0. Eso es ingravidez.', ecuacion: [N, ' = 60 · (10 − 10) = 0'] },
       ],
     },
     regla: {
-      texto: 'Las leyes de Newton valen igual en todo marco que se mueve con velocidad constante. Si el ascensor acelera, la balanza ya no marca el peso.',
+      texto: 'Las leyes de Newton valen igual en todo marco que se mueve con velocidad constante. Si el ascensor acelera, la balanza marca un peso aparente, distinto del peso.',
       ecuacion: [{ llave: [N], nota: 'lo que marca', color: 'c-i' }, ' − m g = m ', a, '   ·   ', N, ' = m (g + ', a, ')'],
       condicion: 'a positiva hacia arriba, medida desde el piso del edificio (marco inercial). La balanza mide N, no el peso.',
     },
@@ -596,27 +596,73 @@
     },
   };
 
+  // Lo que miden las mesas del laboratorio (las mismas cuentas de bloque, ascensor y loma); lo usan la lectura y los retos.
+  const BLOQUE_LIBRE = [
+    { id: 'F', etiqueta: 'F', color: 'c-o', min: 0, max: 35, paso: 5, inicio: 25, unidad: 'N', decimales: 0 },
+    { id: 'm', etiqueta: 'm', min: 5, max: 8, paso: 1, inicio: 5, unidad: 'kg', decimales: 0 },
+    { id: 'mu', etiqueta: 'μk', opciones: [{ valor: 0, texto: '0' }, { valor: 0.2, texto: '0,2' }, { valor: 0.4, texto: '0,4' }], inicio: 0.2 },
+  ];
+  const rocBloque = val => val.mu * val.m * G;
+  const netaBloque = val => Math.max(0, val.F - rocBloque(val));
+  const aBloque = val => netaBloque(val) / val.m;
+  // La mayor aceleración que dan los controles: se busca en su grilla (fuerza máxima, masa mínima, sin roce).
+  const A_MAX_BLOQUE = Math.max(...[0, 0.2, 0.4].flatMap(mu => [5, 6, 7, 8].map(m => aBloque({ F: BLOQUE_LIBRE[0].max, m, mu }))));
+  const balanzaDe = val => M6 * (G + val.a);
+  const normalLoma = val => Math.max(0, M5 * (G - val.v * val.v / R5));
+
   return {
     unidad: 'fisica.dinamica',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-lienzo.js'],
+    // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. Masa viene de
+    // magnitudes y vectores; fuerza, peso, normal y rozamiento, de estática; aceleración centrípeta, del movimiento circular.
+    glosario: [
+      { termino: 'segunda ley de Newton',
+        def: 'La aceleración de un cuerpo es la fuerza neta sobre él dividida entre su masa.',
+        ejemplo: '6 N sobre 3 kg: a = 2 m/s².', ver: ['fuerza neta', 'masa'] },
+      { termino: 'fuerza neta', simbolo: 'ΣF', medida: 'N', formas: ['fuerza neta', 'fuerzas netas'],
+        def: 'Suma, con dirección y signo, de todas las fuerzas que actúan sobre un cuerpo.',
+        ejemplo: '30 N hacia adelante y 20 N de rozamiento: ΣF = 10 N.', ver: ['segunda ley de Newton', 'resultante'] },
+      { termino: 'fuerza centrípeta', medida: 'N', def: 'Nombre de la suma de fuerzas que apunta al centro de un giro: vale m v² / r.',
+        ejemplo: 'Auto de 1000 kg a 5 m/s en una loma de 10 m: 2500 N.', ver: ['aceleración centrípeta'] },
+      { termino: 'sistema inercial', formas: ['sistema inercial', 'sistemas inerciales', 'marco inercial', 'marcos inerciales'],
+        def: 'Punto de vista que no acelera, como el piso; desde él valen las leyes de Newton.',
+        ejemplo: 'Un ascensor que sube a velocidad constante también lo es.', ver: ['segunda ley de Newton'] },
+      { termino: 'peso aparente', medida: 'N', def: 'Lo que marca una balanza: la fuerza con que te sostiene, que cambia si aceleras.',
+        ejemplo: '60 kg en un ascensor que acelera 2 m/s² hacia arriba: 720 N.', ver: ['peso', 'ingravidez'] },
+      { termino: 'plano inclinado', formas: ['plano inclinado', 'planos inclinados'],
+        def: 'Superficie plana que forma un ángulo con la horizontal; sin roce, se baja con a = g sen θ.',
+        ejemplo: 'A 30°, sin roce: a = 10 · 0,5 = 5 m/s².', ver: ['peso'] },
+      { termino: 'polea', def: 'Rueda por la que pasa una cuerda; cambia la dirección del jalón y, si es móvil, lo reparte.',
+        ejemplo: 'Polea móvil con 80 N colgados: la mano jala 40 N.', ver: ['tensión'] },
+      { termino: 'ingravidez', def: 'Estado en que nada te sostiene y caes con g: la balanza marca 0, aunque la masa no cambie.',
+        ejemplo: 'Ascensor con el cable cortado: a = −10 m/s² y N = 0.', ver: ['peso aparente', 'caída libre'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. El bloque libre junta fuerza, masa y rozamiento (en la idea, la masa
     // está fija); el ascensor llega hasta a = −10 m/s², el cable cortado; la loma es el juego de la idea 5.
     laboratorio: [
       {
         id: 'bloque-libre', titulo: 'Fuerza, masa y rozamiento', pieza: 'fis-lienzo',
         consigna: 'Jala un bloque que ya desliza. Cambia la fuerza, la masa y μk, y mira cuánto sobra para acelerar.',
-        controles: [
-          { id: 'F', etiqueta: 'F', color: 'c-o', min: 0, max: 35, paso: 5, inicio: 25, unidad: 'N', decimales: 0 },
-          { id: 'm', etiqueta: 'm', min: 5, max: 8, paso: 1, inicio: 5, unidad: 'kg', decimales: 0 },
-          { id: 'mu', etiqueta: 'μk', opciones: [{ valor: 0, texto: '0' }, { valor: 0.2, texto: '0,2' }, { valor: 0.4, texto: '0,4' }], inicio: 0.2 },
-        ],
+        controles: BLOQUE_LIBRE,
         dibujo: val => ({ datos: bloque(val.F, val.mu, { m: val.m }), estado: {} }),
-        lectura: val => {
-          const fk = val.mu * val.m * G;
-          return [F, ` = ${f(val.F, 0)} N, f = ${f(fk, 0)} N: `, a, ` = ${f(Math.max(0, val.F - fk) / val.m, 2)} m/s²`];
-        },
+        lectura: val => [F, ` = ${f(val.F, 0)} N, f = ${f(rocBloque(val), 0)} N: `, a, ` = ${f(aBloque(val), 2)} m/s²`],
+        invitaciones: [
+          { texto: 'Haz que el bloque deslice sin acelerar, aunque lo jales.',
+            logrado: val => val.F > 0 && Math.abs(val.F - rocBloque(val)) < 1e-9,
+            bien: 'Jalas y no acelera: el rozamiento lo cancela todo. Sigue a velocidad constante.' },
+          { texto: 'Consigue una aceleración de justo 2 m/s².',
+            logrado: val => Math.abs(aBloque(val) - 2) < 1e-9,
+            bien: 'Lo que sobra, entre la masa, da 2. ¿Hay otra manera?' },
+          { texto: 'Busca la mayor aceleración que permiten los controles.',
+            logrado: val => aBloque(val) >= A_MAX_BLOQUE - 1e-9,
+            bien: 'Fuerza máxima, masa mínima y nada de roce: sobra lo más posible.' },
+          { texto: 'Guarda dos casos con la misma fuerza neta y distinta aceleración.',
+            logrado: (val, guardados) => netaBloque(val) > 0 && guardados.some(x => Math.abs(netaBloque(x) - netaBloque(val)) < 1e-9 && Math.abs(aBloque(x) - aBloque(val)) > 1e-9)
+              && guardados.some(x => x.F === val.F && x.m === val.m && x.mu === val.mu),
+            bien: 'La misma fuerza neta acelera menos a la masa mayor.' },
+        ],
         arrastres: [{ id: 'jalon', etiqueta: 'fuerza de la mano', color: 'c-o',
           donde: val => { const g = LZ(bloque(val.F, val.mu, { m: val.m })); return { x: g.X(-0.45 - val.F * KF3 / S3), y: g.Y(0.4) }; },
           mover: (pt, val) => ({ F: (-0.45 - LZ(bloque(val.F, val.mu, { m: val.m })).Xi(pt.x)) * S3 / KF3 }) }],
@@ -625,10 +671,37 @@
         id: 'ascensor-libre', titulo: 'Ascensor hasta la caída libre', pieza: 'fis-lienzo',
         consigna: 'Lleva la aceleración del ascensor de +6 a −10 m/s². ¿Qué marca la balanza si el cable se corta?',
         controles: [{ id: 'a', etiqueta: 'a', color: 'c-h', min: -10, max: 6, paso: 2, inicio: 2, unidad: 'm/s²', decimales: 0 }],
-        lectura: val => [a, ` = ${f(val.a, 0)} m/s²: la balanza marca `, N, ` = ${f(M6 * (G + val.a), 0)} N`],
+        lectura: val => [a, ` = ${f(val.a, 0)} m/s²: la balanza marca `, N, ` = ${f(balanzaDe(val), 0)} N`],
         minimo: undefined, voz: undefined,
+        invitaciones: [
+          { texto: 'Haz que la balanza marque justo el peso de la persona.',
+            logrado: val => Math.abs(balanzaDe(val) - M6 * G) < 1e-9,
+            bien: 'Con a = 0 marca el peso, suba o baje. ¿Importa la velocidad?' },
+          { texto: 'Haz que la balanza marque más de 900 N.',
+            logrado: val => balanzaDe(val) > 900,
+            bien: 'Acelerar hacia arriba aprieta la balanza: el peso aparente crece.' },
+          { texto: 'Consigue que la balanza marque 0.',
+            logrado: val => Math.abs(balanzaDe(val)) < 1e-9,
+            bien: 'Persona y ascensor caen juntos: eso es ingravidez, con la misma masa.' },
+          { texto: 'Guarda dos casos: uno que marque más que el peso y otro menos.',
+            logrado: (val, guardados) => guardados.some(x => (balanzaDe(x) - M6 * G) * (balanzaDe(val) - M6 * G) < 0)
+              && guardados.some(x => x.a === val.a),
+            bien: 'El signo de a decide la balanza, no hacia dónde va el ascensor.' },
+        ],
       }),
-      Object.assign({ id: 'loma', titulo: 'El auto en la loma', pieza: 'fis-lienzo' }, circular.juega),
+      Object.assign({ id: 'loma', titulo: 'El auto en la loma', pieza: 'fis-lienzo',
+        invitaciones: [
+          { texto: 'Busca la rapidez con la que el auto casi se despega.',
+            logrado: val => normalLoma(val) < 1e-9,
+            bien: 'Con N = 0, el peso solo da la fuerza centrípeta. ¿Y más rápido?' },
+          { texto: 'Haz que la normal valga lo mismo que el peso.',
+            logrado: val => Math.abs(normalLoma(val) - M5 * G) < 1e-9,
+            bien: 'Sin rapidez no hay giro: la normal sostiene todo el peso.' },
+          { texto: 'Guarda dos casos con distinta rapidez y compara sus normales.',
+            logrado: (val, guardados) => guardados.some(x => x.v !== val.v && Math.abs(normalLoma(x) - normalLoma(val)) > 1e-9)
+              && guardados.some(x => x.v === val.v),
+            bien: 'Más rapidez, menos normal: hace falta más fuerza neta hacia el centro.' },
+        ] }, circular.juega),
     ],
     historia: {
       texto: 'En el siglo XVII, explicar el movimiento obligó a conectar choques, caídas y órbitas. Las conversaciones entre Halley, Hooke, Wren y Newton sobre órbitas forman parte del origen de los Principia, de 1687. Newton escribió allí sus leyes del movimiento, aunque no con la fórmula escolar F = ma: esa forma llegó después.',
