@@ -2827,7 +2827,9 @@
       "archivo": "/contenido/teoria/aritmetica/probabilidades.js",
       "requiere": [
        "/nucleo/kit/piezas/arit-tabla.js",
-       "/nucleo/kit/piezas/arit-tiras.js"
+       "/nucleo/kit/piezas/arit-tiras.js",
+       "/plantillas/probabilidad-dados/motor.js",
+       "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 5,
       "terminos": 24
