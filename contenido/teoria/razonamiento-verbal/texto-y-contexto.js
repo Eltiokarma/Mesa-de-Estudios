@@ -316,7 +316,25 @@
       return [ctx(fecha(d, val.mes)), ' → ', deic(TIEMPO[val.w].t.toLowerCase()), ' = ', res(fecha(...r))];
     },
     arrastres: [marcador(val => figLab(val.d, val.mes), Object.keys(TIEMPO), 'w', 'palabra de tiempo')],
+    // Invitaciones: cada logrado resuelve la fecha con TIEMPO[w].mover, la misma función que pone el sello.
+    invitaciones: [
+      { texto: 'Haz que la palabra de tiempo caiga en el año siguiente.',
+        logrado: val => { const r = fechaLab(val); return val.mes === 11 && r[1] === 0; },
+        bien: 'Diciembre se acaba y la fecha salta a enero. El mensaje fija el punto de partida.' },
+      { texto: 'Consigue que «ayer» caiga en el mes anterior al del mensaje.',
+        logrado: val => val.w === 'ay' && fechaLab(val)[1] !== val.mes,
+        bien: 'El día uno mira hacia atrás y cambia de mes. ¿Cuántos días tenía ese mes?' },
+      { texto: 'Busca el día más tardío de abril con «pasado mañana» todavía en abril.',
+        logrado: val => val.w === 'pas' && val.mes === 3 && fechaLab(val)[1] === 3
+          && TIEMPO.pas.mover(...siguiente(diaReal(val.d, 3), 3))[1] !== 3,
+        bien: 'Abril tiene 30 días: desde el 28, dos días más todavía son abril.' },
+      { texto: 'Guarda dos mensajes con palabras distintas que señalen el mismo día.',
+        logrado: (val, guardados) => guardados.some(g => g.w !== val.w && fecha(...fechaLab(g)) === fecha(...fechaLab(val))),
+        bien: 'Dos palabras distintas, un mismo día: lo decide la fecha de cada mensaje.' },
+    ],
   };
+  // La fecha que resuelve la palabra elegida, desde la fecha del mensaje (la misma cuenta que el sello).
+  function fechaLab(val) { return TIEMPO[val.w].mover(diaReal(val.d, val.mes), val.mes); }
 
   return {
     unidad: 'razonamiento-verbal.texto-y-contexto',
@@ -328,10 +346,53 @@
       pregunta: '¿Qué día es «mañana» en un mensaje viejo?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (contexto discursivo)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/contextodiscursivo.htm' },
     },
+    glosario: [
+      { termino: 'emisor', def: 'Quien produce el mensaje: la persona o institución que habla o escribe.',
+        ejemplo: 'En «Nosotros entregamos el trabajo», quien escribe es el grupo 3.', ver: ['destinatario', 'mensaje'] },
+      { termino: 'destinatario', def: 'La persona o el grupo a quien se dirige el mensaje. No siempre es quien aparece nombrado.',
+        formas: ['destinatario', 'destinatarios', 'destinataria'], ejemplo: '«Señora Rosa: usted que conoce al alcalde…» va a la vecina, no al alcalde.', ver: ['emisor', 'trato'] },
+      { termino: 'mensaje', def: 'Lo que el que habla comunica a otro con palabras, en una situación concreta.', ver: ['emisor', 'destinatario'] },
+      { termino: 'deíctico', def: 'Palabra cuyo significado depende de quién habla, cuándo y dónde: aquí, hoy, mañana, nosotros, este.',
+        ejemplo: '«Mañana», en un aviso del 14 de mayo, es el 15 de mayo.', ver: ['situación comunicativa', 'contexto'] },
+      { termino: 'situación comunicativa', def: 'Las circunstancias de un mensaje: quién lo emite, a quién, cuándo, dónde y para qué.',
+        formas: ['situación comunicativa', 'situación', 'situaciones'], ver: ['deíctico', 'contexto'] },
+      { termino: 'indeterminado', def: 'Que no se puede fijar con los datos disponibles: falta información para saber a qué se refiere.',
+        formas: ['indeterminado', 'indeterminada', 'indeterminados', 'indeterminadas'], ejemplo: '«Mañana» sin la fecha del mensaje: no se sabe qué día es.', ver: ['deíctico'] },
+      { termino: 'trato', def: 'Forma de dirigirse a alguien: de usted, con distancia, o de tú, con cercanía.',
+        ejemplo: '«Le pido» trata de usted; «¿me ayudas?», de tú.', ver: ['registro', 'destinatario'] },
+      { termino: 'registro', def: 'Grado de formalidad con que se habla o escribe según la situación: formal, informal o entre iguales.',
+        ejemplo: '«Estimada directora… Atentamente» es formal; «¡Hola, Caro!», informal.', ver: ['trato'] },
+      { termino: 'acto de habla', def: 'Lo que se hace al decir algo: pedir, informar, advertir, prometer o preguntar.',
+        formas: ['acto de habla', 'actos de habla'], ejemplo: '«¿Tiene sal?», dicho al mozo, es un pedido.', ver: ['situación comunicativa'] },
+    ],
     laboratorio: [
       mesaCalendario,
-      Object.assign({ id: 'deicticos', titulo: 'Aquí, mañana y nosotros', pieza: 'rv-texto' }, deicticos.juega),
-      Object.assign({ id: 'emisor-destinatario', titulo: 'Quién habla y a quién', pieza: 'rv-texto' }, emisorDest.juega),
+      // Invitaciones de las mesas que reusan un juego: resuelven con resuelta() y PARTE, lo mismo que dibuja la lectura.
+      Object.assign({ id: 'deicticos', titulo: 'Aquí, mañana y nosotros', pieza: 'rv-texto', invitaciones: [
+        { texto: 'Deja una palabra del mensaje sin poder resolverse.',
+          logrado: val => resuelta(val.k, val.w) === null,
+          bien: 'Sin quién, cuándo ni dónde, no podemos saberlo con este texto.' },
+        { texto: 'Haz que «mañana» caiga en otro mes.',
+          logrado: val => val.w === 'm' && !!CTX[val.k].d && siguiente(CTX[val.k].d, CTX[val.k].mes)[1] !== CTX[val.k].mes,
+          bien: 'El 30 de junio, «mañana» ya es julio. La fecha del mensaje lo decide.' },
+        { texto: 'Guarda dos casos donde la misma palabra signifique cosas distintas.',
+          logrado: (val, guardados) => { const r = resuelta(val.k, val.w); return !!r && guardados.some(g => g.w === val.w && g.k !== val.k && resuelta(g.k, g.w) && resuelta(g.k, g.w) !== r); },
+          bien: 'La palabra no cambió; cambió la situación. Ahí está su referente.' },
+      ] }, deicticos.juega),
+      Object.assign({ id: 'emisor-destinatario', titulo: 'Quién habla y a quién', pieza: 'rv-texto', invitaciones: [
+        { texto: 'Señala la parte del mensaje que no cambia con el destinatario.',
+          logrado: val => !PARTE[val.k][val.p],
+          bien: 'El pedido es el mismo en las tres. Lo que cambia es el trato.' },
+        { texto: 'Encuentra la versión y la parte que tratan de tú.',
+          logrado: val => !!PARTE[val.k][val.p] && PARTE[val.k][val.p].join('').includes('trato de tú'),
+          bien: '«¿Me ayudas?» habla a alguien cercano. ¿Qué marca lo muestra en la firma?' },
+        { texto: 'Busca el saludo que se dirige a varias personas.',
+          logrado: val => val.p === 's' && PARTE[val.k].s.join('').includes('a varios'),
+          bien: '«Chicos del grupo» habla a muchos, y «pidamos» incluye a quien escribe.' },
+        { texto: 'Guarda la misma parte con dos destinatarios distintos.',
+          logrado: (val, guardados) => !!PARTE[val.k][val.p] && guardados.some(g => g.p === val.p && g.k !== val.k),
+          bien: 'Misma parte, otra relación. Compara cuál marca más distancia.' },
+      ] }, emisorDest.juega),
     ],
     ideas: [deicticos, emisorDest, accion],
   };
