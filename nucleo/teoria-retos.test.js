@@ -25,9 +25,9 @@ test('un reto de dos casos que depende del último control se encuentra en toda 
 
 test('testigo: sirve para coincidencias raras y se comprueba', () => {
   const raro = { texto: 'Guarda dos casos con la misma última marca.', logrado: (v, g) => g.length >= 2 && g.some(x => x.a !== v.a && x.v0 * 5 + x.a * 12.5 === v.v0 * 5 + v.a * 12.5) };
-  assert.deepEqual(conRetos([Object.assign({ testigo: [{ v0: 5, a: 0 }, { v0: 0, a: 2 }] }, raro)]), []);
-  assert.match(conRetos([Object.assign({ testigo: [{ v0: 5, a: 0 }, { v0: 1, a: 2 }] }, raro)]).join('\n'), /el testigo no la cumple/);
-  assert.match(conRetos([Object.assign({ testigo: [{ v0: 5.5, a: 0 }] }, raro)]).join('\n'), /no es un caso de la grilla/);
+  assert.deepEqual(conRetos([Object.assign({ testigo: [{ v0: 5, a: 0, t: 0 }, { v0: 0, a: 2, t: 0 }] }, raro)]), []);
+  assert.match(conRetos([Object.assign({ testigo: [{ v0: 5, a: 0, t: 0 }, { v0: 1, a: 2, t: 0 }] }, raro)]).join('\n'), /el testigo no la cumple/);
+  assert.match(conRetos([Object.assign({ testigo: [{ v0: 5.5, a: 0, t: 0 }] }, raro)]).join('\n'), /no es un caso de la grilla/);
 });
 
 test('logrado recibe la mesa como tercer argumento', () => {

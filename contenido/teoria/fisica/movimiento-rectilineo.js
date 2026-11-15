@@ -56,20 +56,29 @@
     const ms = conMarcas ? marcasMRU(xi, vi) : [];
     return { datos: { largo: LARGO, cada: 10, carriles: [{ x: ms.length ? ms[ms.length - 1] : xi, marcas: ms }] }, estado: {} };
   };
+  // Animación (decisión de Gerson, 15 nov: física se mueve sola). El carrito avanza a velocidad real: x = x₀ + v·t, y
+  // deja la marca del segundo k cuando t llega a k. El reloj llega a 5 s, se queda medio segundo quieto y vuelve a 0.
+  const T_MRU = 5;
+  const xMRU = (xi, vi, tt) => xi + vi * Math.min(tt, T_MRU);
+  const pistaMRUt = (xi, vi, tt) => {
+    const tm = Math.min(tt, T_MRU), ms = marcasMRU(xi, vi).filter((_, k) => k <= tm + 1e-9);
+    return { datos: { largo: LARGO, cada: 10, carriles: [{ x: Math.min(LARGO, xMRU(xi, vi, tt)), marcas: ms }] }, estado: {} };
+  };
   const mru = {
     id: 'mru',
     titulo: 'Marcas iguales, rapidez constante',
     temas: ['MRU y velocidad relativa'],
     pieza: 'pista',
     juega: {
-      consigna: 'Elige la rapidez y el punto de salida. El carrito deja una marca cada segundo durante 5 s.',
+      consigna: 'El carrito avanza solo y deja una marca cada segundo durante 5 s. Cambia la rapidez y mira cómo se separan las marcas.',
       voz: 'Mira cómo se separan las marcas cuando cambias la rapidez.',
       controles: [
         { id: 'v', etiqueta: 'v', color: 'c-o', min: 1, max: 7, paso: 1, inicio: 2, unidad: 'm/s', decimales: 0 },
         { id: 'x0', etiqueta: 'Sale de', min: 0, max: 5, paso: 1, inicio: 0, unidad: 'm', decimales: 0 },
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: T_MRU + 0.5, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 1, modo: 'repite' } },
       ],
-      dibujo: val => pistaMRU(val.x0, val.v),
-      lectura: val => [v, ` = ${f(val.v)} m/s · marcas cada ${f(val.v)} m`],
+      dibujo: val => pistaMRUt(val.x0, val.v, val.t),
+      lectura: val => [t, ` = ${f(Math.min(val.t, T_MRU), 1)} s · `, x, ` = ${f(xMRU(val.x0, val.v, val.t), 1)} m · marcas cada ${f(val.v)} m`],
       minimo: 3,
       // Arrastra la primera marca (de dónde sale) o la de los 5 s (qué tan rápido va).
       arrastres: [
@@ -155,20 +164,36 @@
       ],
     });
   }
+  // Animación: el reloj recorre la ida y la vuelta a velocidad real. El punto naranja va sobre la gráfica y las dos
+  // áreas se llenan hasta t; Δx y d del momento salen de esas mismas áreas (regla 1). Al terminar se queda quieto.
+  const IDA_V = 4, IDA_T = 3;
+  const tramo = (v2, t2, tt) => {
+    const T = IDA_T + t2, tm = Math.max(0, Math.min(tt, T));
+    const a1 = IDA_V * Math.min(tm, IDA_T), a2 = v2 * Math.max(0, tm - IDA_T);
+    return { tm, a1, a2, vt: tm < IDA_T ? IDA_V : -v2 };
+  };
+  const idaVueltaT = (v2, t2, tt) => {
+    const d = idaVuelta(IDA_V, IDA_T, v2, t2, false), q = tramo(v2, t2, tt);
+    const ar = [];
+    if (q.tm > 0) ar.push({ puntos: [[0, IDA_V], [Math.min(q.tm, IDA_T), IDA_V]], color: 'i', rotulo: q.tm >= 0.8 ? `+${f(q.a1, 1)} m` : undefined });
+    if (q.tm > IDA_T) ar.push({ puntos: [[IDA_T, -v2], [q.tm, -v2]], color: 'i', rotulo: q.tm - IDA_T >= 0.8 ? `−${f(q.a2, 1)} m` : undefined });
+    return Object.assign(d, { areas: ar, puntos: [{ x: q.tm, y: q.vt, color: 'o', guias: true }] });
+  };
   const distancia = {
     id: 'desplazamiento-distancia',
     titulo: 'Desplazamiento no es distancia',
     temas: ['Posición, desplazamiento y distancia', 'Velocidad y rapidez media'],
     pieza: 'ejes',
     juega: {
-      consigna: 'El carrito avanza a 4 m/s durante 3 s y después retrocede. Elige cuánto y por cuánto tiempo.',
+      consigna: 'El carrito avanza a 4 m/s durante 3 s y después retrocede. Mira cómo se llenan las dos áreas mientras corre el reloj.',
       voz: 'La parte bajo el eje es cuando va hacia atrás.',
       controles: [
         { id: 'v2', etiqueta: 'Retrocede a', min: 1, max: 6, paso: 1, inicio: 2, unidad: 'm/s', decimales: 0 },
         { id: 't2', etiqueta: 'Durante', min: 1, max: 3, paso: 1, inicio: 2, unidad: 's', decimales: 0 },
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 7, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 1, modo: 'repite' } },
       ],
-      dibujo: val => ({ datos: idaVuelta(4, 3, val.v2, val.t2), estado: {} }),
-      lectura: val => [`Avanza 12 m · retrocede ${f(val.v2 * val.t2)} m`],
+      dibujo: val => ({ datos: idaVueltaT(val.v2, val.t2, val.t), estado: {} }),
+      lectura: val => { const q = tramo(val.v2, val.t2, val.t); return [t, ` = ${f(q.tm, 1)} s · `, dx, ` = ${f(q.a1 - q.a2, 1)} m · d = ${f(q.a1 + q.a2, 1)} m`]; },
       minimo: 3,
       // Arrastra el tramo de abajo hacia arriba o abajo (qué tan rápido retrocede) y su borde derecho (cuánto tiempo).
       arrastres: [
@@ -238,33 +263,52 @@
     y: { min: 0, max: 16, paso: 4, nombre: 'v', unidad: 'm/s', decimales: 0, color: 'o' },
     curvas: [{ puntos: [[0, vi], [tmax, vi + ai * tmax]], color: 'o' }],
   }, extra);
+  // Animación: el reloj corre de 0 a 4 s a velocidad real. La recta se pinta hasta t, el punto naranja la recorre y el
+  // área (lo que avanzó) se llena debajo. Si frena hasta v = 0, se queda ahí: no retrocede. El eje llega a 20 m/s para
+  // que v₀ = 12 con a = 2 no se salga de la figura.
+  const T_VT = 4;
+  const ejeVT = (vi, ai, extra = {}) => rectaVT(vi, ai, T_VT, Object.assign({ y: { min: 0, max: 20, paso: 4, nombre: 'v', unidad: 'm/s', decimales: 0, color: 'o' } }, extra));
+  const altoVT = val => (val.a < 0 ? Math.min(T_VT, val.v0 / -val.a) : T_VT);
+  const momentoVT = val => {
+    const tm = Math.max(0, Math.min(val.t, altoVT(val)));
+    return { tm, vt: val.v0 + val.a * tm, dx: val.v0 * tm + val.a * tm * tm / 2, quieto: val.a < 0 && val.t >= altoVT(val) };
+  };
+  const rectaVTt = val => {
+    const tf = altoVT(val), q = momentoVT(val), fin = [tf, val.v0 + val.a * tf];
+    return ejeVT(val.v0, val.a, {
+      curvas: [{ puntos: [[0, val.v0], fin], color: 'o', discontinua: true }, { puntos: [[0, val.v0], [q.tm, q.vt]], color: 'o' }],
+      areas: q.tm > 0 ? [{ puntos: [[0, val.v0], [q.tm, q.vt]], color: 'i', rotulo: q.tm >= 1 && q.dx >= 4 ? `${f(q.dx, 1)} m` : undefined }] : [],
+      puntos: [{ x: q.tm, y: q.vt, color: 'o', guias: true }],
+    });
+  };
   const mruv = {
     id: 'pendiente-aceleracion',
     titulo: 'La pendiente es la aceleración',
     temas: ['MRUV', 'Gráficas x-t, v-t y a-t', 'La recta y la parábola como gráficas'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Elige la velocidad inicial y cuánto cambia cada segundo. Mira cómo se inclina la recta.',
+      consigna: 'Elige la velocidad inicial y cuánto cambia cada segundo. Mira el punto: sube o baja lo mismo en cada segundo.',
       voz: 'Prueba también un cambio negativo.',
       controles: [
         { id: 'v0', etiqueta: 'v₀', color: 'c-o', min: 0, max: 12, paso: 2, inicio: 4, unidad: 'm/s', decimales: 0 },
         { id: 'a', etiqueta: 'a', color: 'c-d', min: -2, max: 2, paso: 1, inicio: 1, unidad: 'm/s²', decimales: 0 },
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: T_VT + 0.5, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 1, modo: 'repite' } },
       ],
       // La recta se corta donde v llegaría a 0: aquí el carrito frena hasta detenerse, no retrocede.
-      dibujo: val => {
-        const tf = val.a < 0 ? Math.min(4, val.v0 / -val.a) : 4;
-        return { datos: Object.assign(rectaVT(val.v0, val.a, 4), { curvas: [{ puntos: [[0, val.v0], [tf, val.v0 + val.a * tf]], color: 'o' }] }), estado: {} };
+      dibujo: val => ({ datos: rectaVTt(val), estado: {} }),
+      lectura: val => {
+        const q = momentoVT(val);
+        return q.quieto ? [t, ` = ${f(q.tm, 1)} s · `, v, ' = 0: se detuvo'] : [t, ` = ${f(q.tm, 1)} s · `, v, ` = ${f(q.vt, 1)} m/s · `, a, ` = ${f(val.a)} m/s²`];
       },
-      lectura: val => [v, ` cambia ${val.a > 0 ? '+' : val.a < 0 ? '−' : ''}${f(Math.abs(val.a))} m/s cada segundo`],
       minimo: 3,
       // Arrastra el punto de partida (v₀) o el punto de t = 1 s, que inclina la recta (a).
       arrastres: [
         { id: 'inicio', etiqueta: 'velocidad inicial', color: 'c-o',
-          donde: val => { const g = EJES().geometria(rectaVT(val.v0, val.a, 4)); return { x: g.X(0), y: g.Y(val.v0) }; },
-          mover: (pt, val) => { const g = EJES().geometria(rectaVT(val.v0, val.a, 4)); return { v0: inversa(g.Y, 0, 16)(pt.y) }; } },
+          donde: val => { const g = EJES().geometria(ejeVT(val.v0, val.a)); return { x: g.X(0), y: g.Y(val.v0) }; },
+          mover: (pt, val) => { const g = EJES().geometria(ejeVT(val.v0, val.a)); return { v0: g.Yi(pt.y) }; } },
         { id: 'pendiente', etiqueta: 'inclinación de la recta', color: 'c-d',
-          donde: val => { const g = EJES().geometria(rectaVT(val.v0, val.a, 4)); return { x: g.X(1), y: g.Y(val.v0 + val.a) }; },
-          mover: (pt, val) => { const g = EJES().geometria(rectaVT(val.v0, val.a, 4)); return { a: inversa(g.Y, 0, 16)(pt.y) - val.v0 }; } },
+          donde: val => { const g = EJES().geometria(ejeVT(val.v0, val.a)); return { x: g.X(1), y: g.Y(val.v0 + val.a) }; },
+          mover: (pt, val) => { const g = EJES().geometria(ejeVT(val.v0, val.a)); return { a: g.Yi(pt.y) - val.v0 }; } },
       ],
     },
     predice: {
@@ -335,11 +379,12 @@
     temas: ['Caída libre', 'Gráficas x-t, v-t y a-t'],
     pieza: 'torre',
     juega: {
-      consigna: 'Lanza la pelota hacia arriba y avanza el reloj. Cada medio segundo deja una marca.',
+      consigna: 'La pelota sube y baja sola, a velocidad real, y deja una marca cada medio segundo. Mira las dos flechas, también en la cima.',
       voz: 'Fíjate en las dos flechas: una cambia y la otra no.',
       controles: [
         { id: 'v0', etiqueta: 'v₀', color: 'c-o', min: 10, max: 20, paso: 5, inicio: 15, unidad: 'm/s', decimales: 0 },
-        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 4, paso: 0.5, inicio: 0.5, unidad: 's', decimales: 1 },
+        // Animación: el reloj corre solo a velocidad real; cada cuadro sale de y = v₀t − ½gt² (torreEn).
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 4, paso: 0.5, inicio: 0.5, unidad: 's', decimales: 1, auto: { velocidad: 1, modo: 'repite' } },
       ],
       dibujo: val => torreEn(val.v0, val.t),
       lectura: val => {
@@ -462,22 +507,47 @@
       }, estado: {},
     };
   };
+  // Animación: el reloj corre de 0 a 6 s a velocidad real. Cada carrito está en x = x₀ + v·t y deja la marca de cada
+  // segundo; la línea del encuentro aparece cuando t llega a tₑ. Fuera de la pista, el carrito se queda en el borde.
+  const T_ENC = 6;
+  const momentoEnc = (va, vb, tt) => {
+    const tm = Math.max(0, Math.min(tt, T_ENC)), xa = va * tm, xb = SEP + vb * tm;
+    return { tm, xa, xb, te: tEnc(va, vb) };
+  };
+  const pistaEncT = (va, vb, tt) => {
+    const q = momentoEnc(va, vb, tt), en = m => m >= 0 && m <= LARGO_E;
+    const ks = Array.from({ length: Math.floor(q.tm + 1e-9) + 1 }, (_, k) => k);
+    const llega = Number.isFinite(q.te) && q.te <= q.tm + 1e-9 && va * q.te <= LARGO_E;
+    return {
+      datos: {
+        largo: LARGO_E, cada: 6,
+        carriles: [
+          { x: Math.max(0, Math.min(LARGO_E, q.xa)), variante: 'a', marcas: ks.map(k => va * k).filter(en), rotulo: 'A' },
+          { x: Math.max(0, Math.min(LARGO_E, q.xb)), variante: 'b', marcas: ks.map(k => SEP + vb * k).filter(en), rotulo: 'B' },
+        ],
+        encuentro: llega ? { x: va * q.te, rotulo: `${f(q.te, 2)} s` } : null,
+      }, estado: {},
+    };
+  };
   const encuentro = {
     id: 'encuentro',
     titulo: 'Encontrarse es estar juntos',
     temas: ['MRU y velocidad relativa', 'Posición, desplazamiento y distancia'],
     pieza: 'pista',
     juega: {
-      consigna: 'A sale de 0 y B sale de 24 m al mismo tiempo. Elige sus velocidades: negativa es hacia la izquierda.',
+      consigna: 'A sale de 0 y B de 24 m a la vez. Elige sus velocidades (negativa: a la izquierda) y mira cerrarse la brecha.',
       voz: 'Mira cuánto se acorta la distancia entre ellos cada segundo.',
       controles: [
         { id: 'va', etiqueta: 'v de A', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 3, unidad: 'm/s', decimales: 0 },
         { id: 'vb', etiqueta: 'v de B', min: -4, max: 4, paso: 1, inicio: -1, unidad: 'm/s', decimales: 0 },
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: T_ENC + 0.5, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 1, modo: 'repite' } },
       ],
-      dibujo: val => pistaEnc(val.va, val.vb),
+      dibujo: val => pistaEncT(val.va, val.vb, val.t),
       lectura: val => {
-        const vr = val.va - val.vb;
-        return vr > 0 ? [`Se acercan ${f(vr)} m cada segundo`] : ['No se acercan: B no es alcanzado'];
+        const vr = val.va - val.vb, q = momentoEnc(val.va, val.vb, val.t), reloj = [t, ` = ${f(q.tm, 1)} s · `];
+        if (vr <= 0) return [...reloj, `brecha ${f(Math.abs(q.xb - q.xa), 1)} m: no se acercan`];
+        if (q.tm >= q.te) return [...reloj, `se cruzaron en ${f(q.te, 2)} s`];
+        return [...reloj, `brecha ${f(q.xb - q.xa, 1)} m · se acercan ${f(vr)} m/s`];
       },
       minimo: 3,
       // Arrastra la marca de 1 s de cada carrito: lo que avanzó en ese segundo es su velocidad.
@@ -554,6 +624,13 @@
   const marcasPista = val => { const alto = val.a < 0 ? val.v0 / -val.a : Infinity; return [0, 1, 2, 3, 4, 5].map(k => { const tk = Math.min(k, alto); return val.v0 * tk + val.a * tk * tk / 2; }); };
   const ultima = val => marcasPista(val)[5];
   const frenado = val => (val.a < 0 ? val.v0 * val.v0 / (-2 * val.a) : Infinity);
+  // Animación de la mesa: el carrito avanza a velocidad real con x = v₀t + ½at² (el mismo motor de las marcas) y deja la
+  // marca del segundo k cuando t llega a k. Si frena hasta v = 0, se queda ahí. A los 5 s espera medio segundo y repite.
+  const T_PISTA = 5;
+  const momentoPista = val => {
+    const alto = val.a < 0 ? val.v0 / -val.a : Infinity, tm = Math.max(0, Math.min(val.t, T_PISTA, alto));
+    return { x: val.v0 * tm + val.a * tm * tm / 2, v: val.v0 + val.a * tm, quieto: val.t >= alto };
+  };
 
   return {
     unidad: 'fisica.movimiento-rectilineo',
@@ -591,17 +668,18 @@
     laboratorio: [
       {
         id: 'pista-libre', titulo: 'Pista con acelerador', pieza: 'pista',
-        consigna: 'Elige la velocidad de salida y la aceleración. Mira cómo se abren o se cierran las marcas de cada segundo.',
+        consigna: 'El carrito corre solo y marca cada segundo. Elige la salida y la aceleración, y mira cómo se abren o se juntan las marcas.',
         controles: [
           { id: 'v0', etiqueta: 'v₀', color: 'c-o', min: 0, max: 6, paso: 1, inicio: 2, unidad: 'm/s', decimales: 0 },
           { id: 'a', etiqueta: 'a', color: 'c-d', min: -2, max: 2, paso: 1, inicio: 1, unidad: 'm/s²', decimales: 0 },
+          { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: T_PISTA + 0.5, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 1, modo: 'repite' } },
         ],
         dibujo: val => {
           // Frena hasta detenerse, sin retroceder: después de parar, las marcas se quedan en el mismo sitio.
-          const ms = marcasPista(val);
-          return { datos: { largo: 60, cada: 10, carriles: [{ x: ms[ms.length - 1], marcas: ms, flecha: val.a ? { a: val.a } : undefined }] }, estado: {} };
+          const q = momentoPista(val), ms = marcasPista(val).filter((_, k) => k <= Math.min(val.t, T_PISTA) + 1e-9);
+          return { datos: { largo: 60, cada: 10, carriles: [{ x: q.x, marcas: ms, flecha: val.a && !q.quieto ? { a: val.a } : undefined }] }, estado: {} };
         },
-        lectura: val => [v0, ` = ${f(val.v0)} m/s · `, a, ` = ${f(val.a)} m/s²`],
+        lectura: val => { const q = momentoPista(val); return [t, ` = ${f(Math.min(val.t, T_PISTA), 1)} s · `, v, ` = ${f(q.v, 1)} m/s · `, x, ` = ${f(q.x, 1)} m`]; },
         // Invitaciones: cada una trae logrado(valores, guardados), que comprueba el motor de la mesa (no el texto).
         invitaciones: [
           { texto: 'Haz que el carrito se detenga justo antes de la marca de 10 m.',
@@ -614,6 +692,10 @@
           { texto: 'Consigue marcas que se junten como un acordeón.',
             logrado: val => val.a < 0 && val.v0 > 0,
             bien: 'Las marcas se juntan porque cada segundo avanza menos.' },
+          { texto: 'Pausa el carrito justo sobre la marca de 20 m de la regla.',
+            logrado: val => Math.abs(momentoPista(val).x - 20) <= 0.3,
+            bien: 'Ahí está: x = 20 m en ese instante. ¿Cuánto marcaba el reloj?',
+            pista: 'Pausa cuando pase por 20 m; afina t con − y +.' },
           { texto: 'Guarda dos casos con la misma última marca y distinta aceleración.',
             logrado: (val, guardados) => guardados.some(g => g.a !== val.a && Math.abs(ultima(g) - ultima(val)) < 1e-9)
               && guardados.some(g => g.a === val.a && g.v0 === val.v0),
