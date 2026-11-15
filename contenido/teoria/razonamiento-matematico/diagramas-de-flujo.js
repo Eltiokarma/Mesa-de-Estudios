@@ -76,7 +76,7 @@
     pieza: 'rm-tablero',
     juega: {
       consigna: 'Empieza con i = 1 y S = 0. Mientras i ≤ n: primero S ← S + i, luego i ← i + 1. Cambia n y mira la tabla.',
-      voz: 'Cada fila es una vuelta del bucle.',
+      voz: 'Cada fila es una vuelta del bucle. Cada ← es una asignación.',
       controles: [{ id: 'n', etiqueta: 'n', min: 1, max: 5, paso: 1, inicio: 3, decimales: 0, color: 'c-d' }],
       dibujo: val => ({ datos: traza(correr(val.n)), estado: {} }),
       lectura: val => [`Sale `, S, ` = ${correr(val.n).slice(-1)[0][1]} con `, i, ` = ${val.n + 1}`],
@@ -104,7 +104,7 @@
       ],
     },
     regla: {
-      texto: 'Un diagrama se sigue con una tabla: una fila por vuelta y una columna por variable. Cada instrucción usa el valor que la variable tiene en ese momento.',
+      texto: 'Un diagrama de flujo se sigue con una tabla: una fila por vuelta y una columna por variable. Cada instrucción usa el valor que la variable tiene en ese momento.',
       ecuacion: ['estado siguiente = regla(estado actual)'],
       condicion: 'se respeta el orden de las instrucciones y se revisa la condición del bucle en el lugar donde está.',
     },
@@ -257,7 +257,7 @@
     regla: {
       texto: 'Un operador definido se calcula reemplazando cada letra de la definición por su valor. Primero lo de adentro de los paréntesis; el orden de los datos importa.',
       ecuacion: ['a ∗ b = 2a + b', '   ·   ', '(x∗y)∗z = 2', { llave: ['(2x + y)'], nota: 'la nueva a', color: 'c-o' }, ' + z'],
-      condicion: 'el símbolo no significa lo de siempre: vale solo la definición dada, sin suponer que se puede cambiar el orden.',
+      condicion: 'el símbolo no significa lo de siempre: vale solo la definición dada, sin suponer que el operador es conmutativo.',
     },
     ahoraTu: {
       voz: 'Reemplaza en la definición, de adentro hacia afuera.',
@@ -289,6 +289,10 @@
   // Mesa 1: el bucle con inicio, salto y orden elegibles; el borde de la tabla se arrastra.
   const corrida = val => correr(val.n, val.orden === 'suma', val.i0, val.inc);
   const datosBucle = val => traza(corrida(val), { i0: val.i0 });
+  const salida = val => { const c = corrida(val); return c.length ? c[c.length - 1][1] : 0; };
+  // Lo que sumó S en cada vuelta, leído de la misma tabla de estados.
+  const sumandos = val => corrida(val).map((fila, k, c) => fila[1] - (k ? c[k - 1][1] : 0));
+  const igualSalvoOrden = (p, q) => p.i0 === q.i0 && p.inc === q.inc && p.n === q.n && p.orden !== q.orden;
   const mesaBucle = {
     id: 'bucle-libre', titulo: 'Bucle a tu medida', pieza: 'rm-tablero',
     consigna: 'Elige el inicio de i, cuánto sube y el orden. Arrastra la última fila de la tabla para dar más vueltas.',
@@ -299,7 +303,21 @@
       { id: 'orden', etiqueta: 'Orden', opciones: [{ valor: 'suma', texto: 'Suma, luego sube' }, { valor: 'sube', texto: 'Sube, luego suma' }] },
     ],
     dibujo: val => ({ datos: datosBucle(val), estado: {} }),
-    lectura: val => { const c = corrida(val); return [plural(c.length, 'vuelta', 'vueltas'), ': sale ', S, ` = ${c.length ? c[c.length - 1][1] : 0}`]; },
+    lectura: val => { const c = corrida(val); return [plural(c.length, 'vuelta', 'vueltas'), ': sale ', S, ` = ${salida(val)}`]; },
+    invitaciones: [
+      { texto: 'Haz que salga exactamente S = 20.',
+        logrado: val => salida(val) === 20,
+        bien: 'Hay más de un bucle que da 20. ¿Cuál da menos vueltas?' },
+      { texto: 'Haz que el bucle no dé ninguna vuelta.',
+        logrado: val => corrida(val).length === 0,
+        bien: 'La condición falló de entrada: S se quedó en 0 sin sumar nada.' },
+      { texto: 'Haz que S sume solo números pares, en 4 vueltas.',
+        logrado: val => { const xs = sumandos(val); return xs.length === 4 && xs.every(x => x % 2 === 0); },
+        bien: 'i par y saltos pares: solo pares. ¿Qué pasa con saltos de 3?' },
+      { texto: 'Guarda dos casos que solo cambien en el orden y den S distinto.',
+        logrado: (val, guardados) => guardados.some(p => guardados.some(q => igualSalvoOrden(p, q) && salida(p) !== salida(q))),
+        bien: 'Mismas instrucciones en otro orden, otra salida: el orden es parte del diagrama.' },
+    ],
     // Las vueltas se cuentan con la tabla visible (hasta 6 filas); n queda en el último i que entra.
     arrastres: [manijaVueltas(datosBucle, val => Math.min(6, corrida(val).length), (v, val) => val.i0 + (v - 1) * val.inc)],
   };
@@ -310,12 +328,25 @@
     elementos: [{ tipo: 'intervalo', a: val.k, b: null, ca: false, color: 'd', rotulo: `x > ${val.k}`, fila: 1 }]
       .concat(LISTA_L.map(x => ({ tipo: 'punto', x, color: x > val.k ? 'd' : 'h' }))),
   });
+  const pasan = k => LISTA_L.filter(x => x > k);
+  const cuentaU = k => pasan(k).length, sumaU = k => pasan(k).reduce((m, x) => m + x, 0);
   const mesaUmbral = {
     id: 'umbral', titulo: 'Contar y sumar con un umbral', pieza: 'recta',
     consigna: 'Lista: 2, 4, 7, 10, 13, 15, 18. Cuentan los mayores que k. Arrastra k y mira cómo cambian C y S.',
     controles: [{ id: 'k', etiqueta: 'k', min: 0, max: 19, paso: 1, inicio: 8, decimales: 0, color: 'c-d' }],
     dibujo: val => ({ datos: datosUmbral(val), estado: {} }),
-    lectura: val => { const xs = LISTA_L.filter(x => x > val.k); return [`x > ${val.k}: `, C, ` = ${xs.length}`, '   ·   ', S, ` = ${xs.reduce((m, x) => m + x, 0)}`]; },
+    lectura: val => [`x > ${val.k}: `, C, ` = ${cuentaU(val.k)}`, '   ·   ', S, ` = ${sumaU(val.k)}`],
+    invitaciones: [
+      { texto: 'Haz que el acumulador S valga exactamente 46.',
+        logrado: val => sumaU(val.k) === 46,
+        bien: 'Varios k dan 46: S solo cambia cuando k cruza un número.' },
+      { texto: 'Busca el mayor k que todavía deje contar 3 números.',
+        logrado: val => cuentaU(val.k) === 3 && cuentaU(val.k + 1) !== 3,
+        bien: 'Un paso más y el 13 queda fuera: «mayor que» no incluye al igual.' },
+      { texto: 'Guarda dos umbrales distintos con el mismo contador C.',
+        logrado: (val, guardados) => guardados.some(p => guardados.some(q => p.k !== q.k && cuentaU(p.k) === cuentaU(q.k))),
+        bien: 'Entre dos números de la lista, mover k no cambia nada.' },
+    ],
     arrastres: [{ id: 'k', etiqueta: 'umbral k', color: 'c-d',
       donde: val => { const g = RECTA().geometria(datosUmbral(val)); return { x: g.x(val.k), y: g.filaY(1) }; },
       mover: (pt, val) => { const g = RECTA().geometria(datosUmbral(val)); return { k: 20 * (pt.x - g.x(0)) / (g.x(20) - g.x(0)) }; } }],
@@ -335,6 +366,15 @@
       notas: [{ t: `${D.t}: ${ab === ba ? 'aquí da lo mismo' : 'el orden importa'}` }],
     };
   };
+  const valorOp = val => DEFS[val.d].g(val.a, val.b);
+  // El resultado más negativo de la mesa, buscado con las mismas definiciones en todos los a y b.
+  let minOp = null;
+  const minimoOp = () => {
+    if (minOp !== null) return minOp;
+    minOp = Infinity;
+    for (let d = 0; d < DEFS.length; d++) for (let a = 0; a <= 6; a++) for (let b = 0; b <= 6; b++) minOp = Math.min(minOp, valorOp({ d, a, b }));
+    return minOp;
+  };
   const mesaOp = {
     id: 'operadores-libres', titulo: 'Operadores a elegir', pieza: 'rm-tablero',
     consigna: 'Elige una definición y prueba varios a y b. Busca un operador donde el orden no importe nunca.',
@@ -345,6 +385,20 @@
     ],
     dibujo: val => ({ datos: datosOp(val), estado: {} }),
     lectura: val => { const D = DEFS[val.d]; return [`${val.a} ∗ ${val.b} = ${D.g(val.a, val.b)}`, '   ·   ', `${val.b} ∗ ${val.a} = ${D.g(val.b, val.a)}`]; },
+    invitaciones: [
+      { texto: 'Con a distinto de b, logra que a ∗ b y b ∗ a den lo mismo.',
+        logrado: val => val.a !== val.b && valorOp(val) === valorOp({ d: val.d, a: val.b, b: val.a }),
+        bien: 'Ese operador es conmutativo: la regla trata igual a los dos datos.' },
+      { texto: 'Haz que a ∗ b valga exactamente 0.',
+        logrado: val => valorOp(val) === 0,
+        bien: 'Varias definiciones llegan a 0, cada una por su propio camino.' },
+      { texto: 'Busca el resultado más negativo que pueda dar a ∗ b.',
+        logrado: val => valorOp(val) === minimoOp(),
+        bien: 'a² − b baja cuando a es chico y b es grande.' },
+      { texto: 'Guarda dos casos con la misma definición, igual a ∗ b y distinta a.',
+        logrado: (val, guardados) => guardados.some(p => guardados.some(q => p.d === q.d && p.a !== q.a && valorOp(p) === valorOp(q))),
+        bien: 'Mismo resultado con datos distintos: saber a ∗ b no basta para saber a.' },
+    ],
   };
 
   return {
@@ -354,6 +408,45 @@
     requiere: ['/nucleo/kit/piezas/rm-tablero.js', '/nucleo/kit/piezas/recta.js'],
     // Laboratorio: el bucle con inicio, salto y orden a elegir; el umbral que se arrastra sobre la recta; y cuatro
     // operadores para comparar a ∗ b con b ∗ a.
+    // Glosario: los términos que esta unidad estrena en el curso (los demás vienen de unidades anteriores).
+    glosario: [
+      { termino: 'diagrama de flujo', formas: ['diagrama de flujo', 'diagramas de flujo'],
+        def: 'Dibujo de un procedimiento con cajas y flechas: qué hacer, en qué orden y qué preguntar para seguir.',
+        ver: ['instrucción', 'bucle'] },
+      { termino: 'algoritmo', formas: ['algoritmo', 'algoritmos'],
+        def: 'Lista ordenada de pasos precisos que, seguida al pie de la letra, resuelve un problema.',
+        ver: ['diagrama de flujo'] },
+      { termino: 'instrucción', formas: ['instrucción', 'instrucciones'],
+        def: 'Orden de un solo paso que se cumple tal como está escrita, como sumar o cambiar un valor.',
+        ejemplo: 'i ← i + 1: a i se le suma 1.', ver: ['asignación'] },
+      { termino: 'variable', formas: ['variable', 'variables'],
+        def: 'Nombre, como i o S, que guarda un número que puede cambiar mientras se sigue el procedimiento.',
+        ejemplo: 'i empieza en 1 y luego vale 2, 3 y 4.', ver: ['asignación', 'tabla de estados'] },
+      { termino: 'asignación', simbolo: '←',
+        def: 'Paso que guarda un valor nuevo en un nombre y borra el que tenía antes.',
+        ejemplo: 'Si S = 3 e i = 2, S ← S + i deja S = 5.', ver: ['variable'] },
+      { termino: 'bucle', formas: ['bucle', 'bucles'],
+        def: 'Grupo de pasos que se repite mientras se cumple una pregunta de control; cuando falla, se sale.',
+        ejemplo: 'Mientras i ≤ 3 con i desde 1: da 3 vueltas.', ver: ['tabla de estados'] },
+      { termino: 'tabla de estados', formas: ['tabla de estados', 'tablas de estados'],
+        def: 'Cuadro con una fila por vuelta y una columna por cada nombre que guarda un valor, para seguir un procedimiento.',
+        ver: ['variable', 'bucle'] },
+      { termino: 'contador', simbolo: 'C', formas: ['contador', 'contadores'],
+        def: 'Valor que empieza en 0 y sube de 1 en 1 cada vez que algo ocurre: sirve para contar.',
+        ejemplo: 'Cumplen 12, 9 y 11: termina en 3.', ver: ['acumulador'] },
+      { termino: 'acumulador', simbolo: 'S', formas: ['acumulador', 'acumuladores'],
+        def: 'Valor que empieza en 0 y suma, cada vez, el número que llega: sirve para obtener un total.',
+        ejemplo: 'Llegan 12, 9 y 11: termina en 32.', ver: ['contador'] },
+      { termino: 'umbral',
+        def: 'Valor límite que separa los casos que cuentan de los que no.',
+        ejemplo: 'Con k = 8, de 2, 4, 7, 10, 13, 15 y 18 pasan 4.' },
+      { termino: 'operador', formas: ['operador definido', 'operadores definidos', 'operador', 'operadores'],
+        def: 'Símbolo, como ∗, que pide una cuenta con la regla que da el problema, no con la de siempre.',
+        ejemplo: 'Si a ∗ b = 2a + b, entonces 2 ∗ 5 = 9.', ver: ['conmutativo'] },
+      { termino: 'conmutativo', formas: ['conmutativo', 'conmutativa', 'conmutativos'],
+        def: 'Que da lo mismo en cualquier orden: a ∗ b = b ∗ a para todos los valores.',
+        ejemplo: '2a + b no lo es: 2 ∗ 5 = 9, pero 5 ∗ 2 = 12.', ver: ['operador'] },
+    ],
     laboratorio: [mesaBucle, mesaUmbral, mesaOp],
     historia: {
       texto: 'En 1947, Herman Goldstine y John von Neumann describieron con diagramas los procedimientos para las primeras computadoras electrónicas. Los algoritmos son mucho más antiguos, pero esos informes hicieron visibles las decisiones, las repeticiones y los cambios de estado. Un diagrama se entiende ejecutándolo con un dato concreto.',
