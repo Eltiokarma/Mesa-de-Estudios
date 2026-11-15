@@ -1,0 +1,47 @@
+{
+  "prueba": "prueba-3d",
+  "version": 4,
+  "fecha": "2026-11-15T08:45:06.287Z",
+  "three": "0.187.0",
+  "nota": "Redmi 15C, 4 GB (anotado por Gerson al mandarlo; el JSON venía sin nota)",
+  "dispositivo": {
+    "agente": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Mobile Safari/537.36",
+    "nucleos": 8,
+    "memoriaGB": 4,
+    "pantalla": "360×800",
+    "ventana": "360×660",
+    "dpr": 2,
+    "lienzo": "656×656"
+  },
+  "gl": {
+    "webgl2": true,
+    "renderer": "ANGLE (ARM, Mali-G52 MC2, OpenGL ES 3.2)",
+    "maxTextura": 8192
+  },
+  "escenas": [
+    {
+      "id": "corte",
+      "fpsMedia": 60,
+      "fpsP5": 59.9,
+      "perdidos": 0,
+      "peorMs": 17.1
+    },
+    {
+      "id": "molecula",
+      "fpsMedia": 60,
+      "fpsP5": 59.9,
+      "perdidos": 0,
+      "peorMs": 16.8
+    },
+    {
+      "id": "cubitos",
+      "fpsMedia": 60,
+      "fpsP5": 59.9,
+      "perdidos": 0,
+      "peorMs": 16.8
+    }
+  ],
+  "tareasLargas": 0,
+  "memoriaMB": 9.5,
+  "completa": true
+}
