@@ -307,7 +307,7 @@
     invitaciones: [
       { texto: 'Busca un orden en que ninguna oración quede sin lo que necesita.',
         logrado: val => !rotos(TEXTOS[val.t][1], PERMS[val.n - 1]).length,
-        bien: 'Cada oración tiene antes lo que retoma. ¿Hay otro orden que también sirva?' },
+        bien: 'Cada oración tiene antes lo que retoma. ¿Qué pista te dio la primera?' },
       { texto: 'Abre con la oración de «por eso» y deja rota solo esa.',
         logrado: val => { const ors = TEXTOS[val.t][1], o = PERMS[val.n - 1], r = rotos(ors, o); return ors[o[0]].t.startsWith('Por eso') && r.length === 1 && r[0] === o[0]; },
         bien: 'Lo demás se sostiene; solo la conclusión queda sin su razón.' },
