@@ -501,11 +501,54 @@
       bien: 'H no se movió con la altura: P y P′ comparten su proyección.' },
   ];
 
+  // ---------- Planos que parten el sólido (laboratorio 3D, ronda 4: exploración libre, sin predicciones) ----------
+  // El reflejo y la prueba de simetría los calcula nucleo/solidos3d.js a través de la pieza geo-simetria-3d: los retos
+  // miden lo mismo que se dibuja (regla 1). El plano pasa siempre por el centro; se inclina desde el piso y se gira.
+  const S3 = () => (typeof module === 'object' && module.exports ? require('../../../nucleo/solidos3d.js') : self.Solidos3D);
+  const SOLIDOS = [['cubo', 'Cubo'], ['ortoedro', 'Ortoedro'], ['prisma-4', 'Prisma cuadrado'], ['prisma-3', 'Prisma triangular'],
+    ['prisma-6', 'Prisma hexagonal'], ['piramide-4', 'Pirámide cuadrada'], ['tetraedro', 'Tetraedro']];
+  const datosSim = v => ({ solido: v.solido, normal: S3().normalDe(v.inc, v.giro), todos: v.ver === 'todos' });
+  const esSim = v => S3().esPlanoSimetria(S3().poliedro(v.solido), S3().normalDe(v.inc, v.giro));
+  const cuantos = id => S3().planosSimetria(S3().poliedro(id)).length;
+  const mesaPlanos3d = {
+    id: 'planos-3d', titulo: 'Planos que parten el sólido', pieza: 'geo-simetria-3d',
+    consigna: 'Gira el sólido con el dedo. Inclina y gira el plano verde: es de simetría si el reflejo naranja cae justo encima.',
+    controles: [
+      { id: 'solido', etiqueta: 'Sólido', opciones: SOLIDOS.map(([valor, texto]) => ({ valor, texto })) },
+      { id: 'inc', etiqueta: 'Inclinación del plano', color: 'c-d', min: 0, max: 90, paso: 15, inicio: 0, unidad: '°', decimales: 0 },
+      { id: 'giro', etiqueta: 'Giro del plano', color: 'c-d', min: 0, max: 345, paso: 15, inicio: 0, unidad: '°', decimales: 0 },
+      { id: 'ver', etiqueta: 'A la vista', opciones: [{ valor: 'uno', texto: 'un plano' }, { valor: 'todos', texto: 'todos los de simetría' }] },
+    ],
+    dibujo: v => ({ datos: datosSim(v), estado: {} }),
+    lectura: v => (v.ver === 'todos' ? [{ v: 'c-d', t: `${cuantos(v.solido)} planos de simetría` }]
+      : esSim(v) ? ['El reflejo coincide: ', { v: 'c-d', t: 'plano de simetría' }] : ['El reflejo queda corrido: no es de simetría']),
+    invitaciones: [
+      { texto: 'En el cubo, halla un plano de simetría que no sea paralelo a ninguna cara.',
+        logrado: v => v.solido === 'cubo' && v.ver === 'uno' && esSim(v) && v.inc % 90 !== 0,
+        bien: 'Pasa por dos aristas opuestas. Lo vimos en uno; ¿cuántas parejas de aristas hay?',
+        pista: 'Inclina el plano 45° y prueba giros de 90° en 90°.' },
+      { texto: 'Encuentra un plano de simetría del tetraedro.',
+        logrado: v => v.solido === 'tetraedro' && v.ver === 'uno' && esSim(v),
+        bien: 'Contiene una arista y corta la opuesta por su mitad. Hay uno por arista: seis.',
+        pista: 'Con inclinación 45°, prueba giros de 180° y 270°.' },
+      { texto: 'En el prisma triangular, halla un plano de simetría vertical.',
+        logrado: v => v.solido === 'prisma-3' && v.ver === 'uno' && v.inc === 90 && esSim(v),
+        bien: 'Pasa por una arista lateral y por el medio de la cara de enfrente.',
+        pista: 'Deja la inclinación en 90° y gira el plano de 30° en 30°.' },
+      { texto: 'Muestra todos los planos y busca el sólido que tiene más.',
+        logrado: v => v.ver === 'todos' && SOLIDOS.every(([id]) => cuantos(id) <= cuantos(v.solido)),
+        bien: 'El cubo gana con 9. Que lo veamos aquí no basta: cuéntalos por clases.' },
+      { texto: 'Guarda el prisma cuadrado y la pirámide cuadrada con todos sus planos. Compara.',
+        logrado: (v, guardados) => ['prisma-4', 'piramide-4'].every(id => guardados.some(g => g.solido === id && g.ver === 'todos')),
+        bien: 'La pirámide pierde el plano horizontal: su punta no tiene pareja abajo.' },
+    ],
+  };
+
   return {
     unidad: 'geometria.simetria',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/geo-figura.js'],
+    requiere: ['/nucleo/kit/piezas/geo-figura.js', '/nucleo/solidos3d.js', '/nucleo/kit/piezas/geo-simetria-3d.js'],
     historia: {
       texto: 'La simetría aparece en muchas prácticas visuales y no tiene un único inventor. Un cambio bien documentado es el programa de Erlangen de Felix Klein, en 1872: organizar las geometrías según las transformaciones y lo que estas conservan. Así, una reflexión importa por lo que hace con puntos, distancias y orientación, no solo por verse bonita.',
       pregunta: '¿Qué conserva una reflexión y qué cambia?',
@@ -541,12 +584,14 @@
         formas: ['coordenada', 'coordenadas'], ver: ['origen'] },
       { termino: 'origen', def: 'El punto (0; 0), donde se cortan el eje x y el eje y.', ver: ['coordenadas'] },
       { termino: 'arista', def: 'Segmento donde se juntan dos caras de un sólido.', ejemplo: 'Un cubo tiene 12.' },
+      { termino: 'ortoedro', formas: ['ortoedro', 'ortoedros'], def: 'Caja de seis caras rectangulares, con largo, ancho y alto que pueden ser distintos.',
+        ejemplo: 'Un ladrillo; si las tres medidas son iguales, es un cubo.', ver: ['paralelepípedo'] },
       { termino: 'superponer', def: 'Poner una figura sobre otra de modo que coincidan punto por punto.',
         formas: ['superponer', 'superpone', 'superponen', 'superponerse'] },
     ],
-    // Laboratorio: el espejo que gira y los dos espejos son más ricos que sus ideas; la tercera mesa es el juego del
+    // Laboratorio: primero los planos que parten el sólido, en 3D (exploración libre); después, el espejo que gira y los dos espejos son más ricos que sus ideas; la tercera mesa es el juego del
     // reflejo en un plano, con sus dos manijas en 3D.
-    laboratorio: [mesaEspejo, mesaDos, Object.assign({ id: 'reflejo-plano', titulo: 'Reflejo en un plano', pieza: 'geo-figura', invitaciones: retosPlano }, planoIdea.juega)],
+    laboratorio: [mesaPlanos3d, mesaEspejo, mesaDos, Object.assign({ id: 'reflejo-plano', titulo: 'Reflejo en un plano', pieza: 'geo-figura', invitaciones: retosPlano }, planoIdea.juega)],
     ideas: [axialIdea, centralIdea, planoIdea],
   };
 });

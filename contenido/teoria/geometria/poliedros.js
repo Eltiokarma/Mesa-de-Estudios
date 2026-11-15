@@ -440,11 +440,49 @@
     ],
   };
 
+  // ---------- El desarrollo que se pliega (laboratorio 3D, ronda 4: exploración libre, sin predicciones) ----------
+  // El pliegue y el conteo los calcula nucleo/solidos3d.js (desarrollo, conteo) a través de la pieza geo-poliedro-3d:
+  // los retos cuentan lo mismo que se dibuja (regla 1). El pliegue es un control (t), no una animación.
+  const S3 = () => (typeof module === 'object' && module.exports ? require('../../../nucleo/solidos3d.js') : self.Solidos3D);
+  const SOL = [['cubo', 'Cubo'], ['tetraedro', 'Tetraedro'], ['octaedro', 'Octaedro'], ['dodecaedro', 'Dodecaedro'], ['icosaedro', 'Icosaedro'],
+    ['prisma-3', 'Prisma triangular'], ['prisma-6', 'Prisma hexagonal'], ['piramide-4', 'Pirámide cuadrada'], ['piramide-5', 'Pirámide pentagonal']];
+  const cuenta3 = id => S3().conteo(S3().poliedro(id));
+  const MAX_A = Math.max(...SOL.map(([id]) => cuenta3(id).A));
+  const mesaPliegue3d = {
+    id: 'desarrollo-3d', titulo: 'El desarrollo que se pliega', pieza: 'geo-poliedro-3d',
+    consigna: 'Elige un sólido y súbele el pliegue: el desarrollo plano se cierra. Gíralo con el dedo y cuenta.',
+    controles: [
+      { id: 'solido', etiqueta: 'Sólido', opciones: SOL.map(([valor, texto]) => ({ valor, texto })) },
+      { id: 't', etiqueta: 'pliegue', color: 'c-d', min: 0, max: 100, paso: 10, inicio: 0, unidad: '%', decimales: 0 },
+    ],
+    dibujo: v => ({ datos: { solido: v.solido, t: v.t / 100 }, estado: {} }),
+    lectura: v => { const { C, V, A } = cuenta3(v.solido); return [{ v: 'c-d', t: `${C} caras` }, ' + ', { v: 'c-o', t: `${V} vértices` }, ' = ', { v: 'c-i', t: `${A} aristas` }, ' + 2']; },
+    invitaciones: [
+      { texto: 'Pliega del todo el desarrollo del octaedro.',
+        logrado: v => v.solido === 'octaedro' && v.t === 100,
+        bien: 'Ocho triángulos cierran el sólido. Al plegar, los vértices sueltos se juntan de a cuatro.',
+        pista: 'Elige el octaedro y sube el pliegue hasta el final.' },
+      { texto: 'Busca un sólido con tantas caras como vértices.',
+        logrado: v => { const c = cuenta3(v.solido); return c.C === c.V; },
+        bien: 'Pasa en las pirámides: C = V = n + 1. Euler explica por qué.',
+        pista: 'Mira las que tienen punta.' },
+      { texto: 'Encuentra un sólido con la mayor cantidad de aristas.',
+        logrado: v => cuenta3(v.solido).A === MAX_A,
+        bien: 'Dodecaedro e icosaedro empatan con 30. ¿Ves que se intercambian C y V?' },
+      { texto: 'Abre del todo el dodecaedro y cuenta sus pentágonos.',
+        logrado: v => v.solido === 'dodecaedro' && v.t === 0,
+        bien: '12 pentágonos dan 60 lados; cada arista junta dos: 30 aristas.' },
+      { texto: 'Guarda dos sólidos con igual número de aristas y distinto de caras.',
+        logrado: (v, guardados) => guardados.some(g => cuenta3(g.solido).A === cuenta3(v.solido).A && cuenta3(g.solido).C !== cuenta3(v.solido).C),
+        bien: 'Cambian C y V, pero C + V sigue siendo A + 2.' },
+    ],
+  };
+
   return {
     unidad: 'geometria.poliedros',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/geo-figura.js'],
+    requiere: ['/nucleo/kit/piezas/geo-figura.js', '/nucleo/solidos3d.js', '/nucleo/kit/piezas/geo-poliedro-3d.js'],
     historia: {
       texto: 'En una carta de 1750, Leonhard Euler anotó una relación entre las caras, los vértices y las aristas de los sólidos que estudiaba. En 1813, Simon Lhuilier examinó sólidos con agujeros y mostró que allí la cuenta falla. La relación necesitaba condiciones: no bastaba comprobarla en unos cuantos ejemplos.',
       pregunta: '¿Una regla que se cumple en muchos ejemplos vale para todos?',
@@ -482,7 +520,7 @@
     ],
     // Laboratorio: familias y regulares son más ricas que sus ideas; la del vértice es el juego de la idea 3.
     // La mesa del vértice trae sus retos en el primer objeto; los cuenta la misma suma q · ángulo interior que dibuja.
-    laboratorio: [mesaFamilias, Object.assign({ id: 'vertice', titulo: 'Polígonos en un vértice', pieza: 'geo-figura', invitaciones: [
+    laboratorio: [mesaPliegue3d, mesaFamilias, Object.assign({ id: 'vertice', titulo: 'Polígonos en un vértice', pieza: 'geo-figura', invitaciones: [
       { texto: 'Junta polígonos que cubran justo los 360°, sin hueco.',
         logrado: v => v.q * INT(+v.n) === 360,
         bien: 'Sin hueco se embaldosa el piso: plano, sin punta. No hay poliedro.' },

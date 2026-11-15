@@ -818,11 +818,45 @@
     ],
   };
 
+  // ---------- Tres pirámides llenan la caja (laboratorio 3D, ronda 4: exploración libre, sin predicciones) ----------
+  // Vértices y volúmenes los calcula nucleo/solidos3d.js (tresPiramides, volumen) a través de la pieza geo-piramides-3d:
+  // los retos miden lo mismo que se dibuja (regla 1). Separar es un control, no una animación.
+  const S3 = () => (typeof module === 'object' && module.exports ? require('../../../nucleo/solidos3d.js') : self.Solidos3D);
+  const tres = v => { const c = CAJAS[v.forma]; return S3().tresPiramides(c.a, c.b, c.c); };
+  const mesaTres3d = {
+    id: 'tres-piramides-3d', titulo: 'Tres pirámides llenan la caja', pieza: 'geo-piramides-3d',
+    consigna: 'Gira la caja con el dedo y separa sus tres pirámides. Todas salen de la misma cúspide: compara sus volúmenes.',
+    controles: [
+      { id: 'forma', etiqueta: 'Caja', opciones: [{ valor: 'cubo', texto: 'Cubo' }, { valor: 'ladrillo', texto: 'Ladrillo' }] },
+      { id: 'separar', etiqueta: 'separar', min: 0, max: 100, paso: 25, inicio: 0, unidad: '%', decimales: 0 },
+      { id: 'ver', etiqueta: 'A la vista', opciones: [{ valor: 'todas', texto: 'las tres' }, { valor: '0', texto: 'naranja' }, { valor: '1', texto: 'turquesa' }, { valor: '2', texto: 'verde' }] },
+    ],
+    dibujo: v => ({ datos: { caja: CAJAS[v.forma], separar: v.separar / 100, ver: v.ver }, estado: {} }),
+    lectura: v => { const r = tres(v); return [`caja ${f(r.caja)}`, SEP, 'cada pirámide ', { v: 'c-h', t: f(r.piezas[0].volumen) }]; },
+    invitaciones: [
+      { texto: 'Separa del todo las tres pirámides del cubo.',
+        logrado: v => v.forma === 'cubo' && v.separar === 100 && v.ver === 'todas',
+        bien: 'Tres iguales y no sobra nada: cada una es un tercio del cubo.' },
+      { texto: 'En el ladrillo, deja a la vista una sola pirámide.',
+        logrado: v => v.forma === 'ladrillo' && v.ver !== 'todas',
+        bien: 'Ninguna es igual a otra, pero todas valen lo mismo: base por altura entre tres.' },
+      { texto: 'Guarda las tres pirámides del ladrillo, cada una sola.',
+        logrado: (v, guardados) => ['0', '1', '2'].every(k => guardados.some(g => g.forma === 'ladrillo' && g.ver === k)),
+        // Pide tres casos guardados y el validador prueba pares: el testigo muestra que se puede.
+        testigo: ['0', '1', '2'].map(ver => ({ forma: 'ladrillo', separar: 50, ver })),
+        bien: 'Tres formas, un volumen. Lo vimos en esta caja; la fórmula dice por qué vale siempre.' },
+      { texto: 'Guarda el cubo y el ladrillo con sus tres pirámides. Compara los tercios.',
+        logrado: (v, guardados) => ['cubo', 'ladrillo'].every(fm => guardados.some(g => g.forma === fm && g.ver === 'todas'))
+          && guardados.every(g => Math.abs(3 * tres(g).piezas[0].volumen - tres(g).caja) < 1e-9),
+        bien: 'Cambia la caja y cambia el volumen, pero cada pirámide sigue siendo un tercio.' },
+    ],
+  };
+
   return {
     unidad: 'geometria.prisma-y-piramide',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/geo-figura.js', '/nucleo/kit/piezas/geo-corte-3d.js'],
+    requiere: ['/nucleo/kit/piezas/geo-figura.js', '/nucleo/kit/piezas/geo-corte-3d.js', '/nucleo/solidos3d.js', '/nucleo/kit/piezas/geo-piramides-3d.js'],
     historia: {
       texto: 'El problema 14 del papiro de Moscú, escrito en Egipto hace más de 3800 años, calcula el volumen de un tronco de pirámide de bases cuadradas: lados 4 y 2, altura 6. El procedimiento da 56, igual que la fórmula exacta de hoy. El papiro no explica cómo se obtuvo la regla.',
       pregunta: '¿Por qué el volumen no es el promedio de las bases por la altura?',
@@ -869,7 +903,7 @@
     // Laboratorio: primero el prisma que se corta, en 3D (exploración libre). La pirámide en su prisma y el tronco libre
     // son más ricas que sus ideas; la última mesa es el corte de la idea 6 con su gesto.
     // La mesa de la escala trae sus retos en el primer objeto; los cuenta k³, la misma razón de la lectura.
-    laboratorio: [mesaCorte, mesaEnPrisma, mesaTronco, Object.assign({ id: 'escala', titulo: 'Escala al cubo', pieza: 'geo-figura', invitaciones: [
+    laboratorio: [mesaCorte, mesaTres3d, mesaEnPrisma, mesaTronco, Object.assign({ id: 'escala', titulo: 'Escala al cubo', pieza: 'geo-figura', invitaciones: [
       { texto: 'Haz que la punta tenga justo 1/8 del volumen de la pirámide.',
         logrado: v => casi(v.t ** 3, 1 / 8),
         bien: 'k = 1/2: la mitad de alto deja solo un octavo del volumen.' },
