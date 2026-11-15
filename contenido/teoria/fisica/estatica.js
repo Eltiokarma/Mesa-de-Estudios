@@ -90,7 +90,7 @@
     temas: ['Primera y tercera ley de Newton', 'Diagrama de cuerpo libre'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Un libro descansa en la mesa. Elige su masa y cuánto lo aprieta la mano hacia abajo. Mira la normal.',
+      consigna: 'Un libro descansa en la mesa. Elige su masa y cuánto lo aprieta la mano hacia abajo. Mira la fuerza normal.',
       voz: 'Aprieta sin cambiar la masa. ¿Qué flecha crece?',
       controles: [
         { id: 'm', etiqueta: 'm', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'kg', decimales: 0 },
@@ -127,9 +127,9 @@
       ],
     },
     regla: {
-      texto: 'Si un cuerpo está en reposo o en MRU, sus fuerzas suman cero. Cada fuerza tiene una pareja igual y opuesta, en el otro cuerpo.',
+      texto: 'Primera ley de Newton: en reposo o en MRU, las fuerzas suman cero. Tercera ley de Newton: cada fuerza tiene una pareja igual y opuesta, en el otro cuerpo.',
       ecuacion: ['Σ', F, ' = 0', '   ·   ', { sub: [F, 'A sobre B'] }, ' = −', { sub: [F, 'B sobre A'] }],
-      condicion: 'el DCL lleva solo las fuerzas sobre el cuerpo aislado; las parejas nunca se cancelan entre sí.',
+      condicion: 'el diagrama de cuerpo libre (DCL) lleva solo las fuerzas sobre el cuerpo aislado; las parejas nunca se cancelan entre sí.',
     },
     ahoraTu: {
       pieza: 'fis-lienzo',
@@ -308,9 +308,9 @@
       ],
     },
     regla: {
-      texto: 'Quieta, el rozamiento vale lo justo para cancelar, hasta un tope. Deslizando, vale un valor fijo menor.',
+      texto: 'Quieta, el rozamiento estático vale lo justo para cancelar, hasta un tope μs N. Deslizando, el rozamiento cinético vale μk N, fijo y menor.',
       ecuacion: [fs, ' ≤ ', { llave: [{ sub: ['μ', 's'] }, N], nota: 'tope estático', color: 'c-h' }, '   ·   ', fk, ' = ', { sub: ['μ', 'k'] }, N],
-      condicion: 'superficies secas; f se opone al deslizamiento (o a su tendencia). En general μk < μs.',
+      condicion: 'superficies secas; f se opone al deslizamiento (o a su tendencia). Los coeficientes de rozamiento cumplen, en general, μk < μs.',
     },
     ahoraTu: {
       generar(sm) {
@@ -358,7 +358,7 @@
     temas: ['Fuerza elástica'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Cuelga una masa del resorte y elige su rigidez k. La línea discontinua marca su largo sin carga.',
+      consigna: 'Cuelga una masa del resorte y elige su constante elástica k. La línea discontinua marca su largo sin carga.',
       voz: 'Duplica la masa con el mismo k. ¿Qué le pasa a x?',
       controles: [
         { id: 'k', etiqueta: 'k', min: 100, max: 400, paso: 100, inicio: 200, unidad: 'N/m', decimales: 0 },
@@ -647,12 +647,57 @@
     { id: 'm2', etiqueta: 'm der.', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'kg', decimales: 0 },
     { id: 'd2', etiqueta: 'd der.', color: 'c-i', min: 0.5, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2 },
   ];
+  // Lo que miden las mesas del laboratorio (las mismas cuentas de palanca, cajaRoce y lampara); lo usan la lectura y los retos.
+  const torquesDe = val => [val.m1 * G * val.d1, val.m2 * G * val.d2];
+  const horizontal = val => { const [t1, t2] = torquesDe(val); return Math.abs(t1 - t2) < 1e-9; };
+  const roceDe = val => { const Nv = val.m * G, desliza = val.F > MS * Nv + 1e-9; return { desliza, f: desliza ? MK * Nv : val.F }; };
+  const tensionDe = val => val.P / (2 * SEN[val.ang]);
 
   return {
     unidad: 'fisica.estatica',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-lienzo.js'],
+    // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. Masa y vector vienen de
+    // magnitudes y vectores; MRU y gravedad, de MRU, MRUV y caída libre; polea se define en dinámica.
+    glosario: [
+      { termino: 'fuerza', simbolo: 'F', medida: 'N', def: 'Empujón o jalón entre dos cuerpos; puede cambiar cómo se mueve algo o deformarlo.',
+        ejemplo: 'La mano aprieta el libro hacia abajo con F = 10 N.', ver: ['peso', 'tercera ley de Newton'] },
+      { termino: 'primera ley de Newton',
+        def: 'Si las fuerzas sobre un cuerpo suman cero, sigue quieto o en línea recta a velocidad constante.',
+        ejemplo: 'Un libro quieto en la mesa: sus fuerzas suman cero.', ver: ['equilibrio'] },
+      { termino: 'tercera ley de Newton',
+        def: 'Si A empuja a B, B empuja a A con igual valor y sentido opuesto.',
+        ejemplo: 'La Tierra jala al libro con 20 N; el libro jala a la Tierra con 20 N.', ver: ['diagrama de cuerpo libre'] },
+      { termino: 'diagrama de cuerpo libre', formas: ['diagrama de cuerpo libre', 'diagramas de cuerpo libre', 'DCL'],
+        def: 'Dibujo de un solo cuerpo, aislado, con todas las fuerzas que otros cuerpos hacen sobre él.',
+        ver: ['fuerza'] },
+      { termino: 'peso', simbolo: 'P', medida: 'N', def: 'Fuerza con que la Tierra atrae a un cuerpo, hacia abajo: masa por g.',
+        ejemplo: '2 kg con g = 10 m/s²: P = 20 N.', ver: ['masa', 'gravedad'] },
+      { termino: 'fuerza normal', simbolo: 'N', medida: 'N', formas: ['fuerza normal', 'fuerzas normales'],
+        def: 'Empuje de una superficie sobre lo que se apoya en ella, perpendicular a la superficie.',
+        ejemplo: 'Libro de 20 N apretado con 10 N: N = 30 N.', ver: ['peso'] },
+      { termino: 'tensión', simbolo: 'T', medida: 'N', def: 'Fuerza con que una cuerda tirante jala, siempre a lo largo de ella.',
+        ejemplo: 'Lámpara de 48 N con dos cuerdas a 37°: T = 40 N cada una.', ver: ['fuerza'] },
+      { termino: 'rozamiento estático', simbolo: 'fs', medida: 'N', def: 'Fuerza del piso que impide que algo empiece a deslizar; vale lo justo, hasta un tope μs N.',
+        ejemplo: 'Con N = 60 N, empujada con 12 N y quieta: fs = 12 N.', ver: ['rozamiento cinético', 'coeficiente de rozamiento'] },
+      { termino: 'rozamiento cinético', simbolo: 'fk', medida: 'N', def: 'Fuerza que frena algo que ya desliza; vale μk N y no depende del empuje.',
+        ejemplo: 'N = 40 N y μk = 0,3: fk = 12 N.', ver: ['rozamiento estático'] },
+      { termino: 'coeficiente de rozamiento', simbolo: 'μ', formas: ['coeficiente de rozamiento', 'coeficientes de rozamiento'],
+        def: 'Número sin unidad que dice qué tan áspero es el contacto entre dos superficies.',
+        ejemplo: 'μs = 0,5 con N = 40 N: el tope es 20 N.', ver: ['fuerza normal'] },
+      { termino: 'constante elástica', simbolo: 'k', medida: 'N/m', def: 'Qué tan rígido es un resorte: cuánta fuerza hace por cada metro que se deforma.',
+        ejemplo: '20 N lo estiran 0,04 m: k = 500 N/m.' },
+      { termino: 'equilibrio', def: 'Estado en que las fuerzas y los giros sobre un cuerpo se cancelan: queda quieto o en MRU.',
+        ver: ['primera ley de Newton', 'torque'] },
+      { termino: 'torque', simbolo: 'τ', medida: 'N·m', def: 'Cuánto hace girar una fuerza: su valor por la distancia perpendicular al eje.',
+        ejemplo: '50 N con brazo de 0,2 m: τ = 10 N·m.', ver: ['brazo de palanca', 'cuerpo rígido'] },
+      { termino: 'brazo de palanca', simbolo: 'd', medida: 'm', formas: ['brazo de palanca', 'brazo', 'brazos'],
+        def: 'Distancia perpendicular del eje de giro a la línea de acción de la fuerza.',
+        ejemplo: 'Llave de 0,4 m empujada a 30°: el brazo mide 0,2 m.', ver: ['torque'] },
+      { termino: 'cuerpo rígido', def: 'Cuerpo que no se deforma: sus puntos guardan siempre la misma distancia entre sí.',
+        ejemplo: 'Una barra de palanca: para equilibrarla, fuerzas y torques deben cancelarse.', ver: ['equilibrio'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. La palanca libre suelta los dos lados (en la idea, la izquierda está
     // fija); la caja con masa deja cambiar la normal y empujar hasta 36 N; el nudo es el juego de la idea 2.
     laboratorio: [
@@ -662,9 +707,24 @@
         controles: PALANCA_LIBRE,
         dibujo: val => ({ datos: palanca(val.m1, val.d1, val.m2, val.d2), estado: {} }),
         lectura: val => {
-          const t1 = val.m1 * G * val.d1, t2 = val.m2 * G * val.d2;
-          return [`τ: ${f(t1, 1)} N·m contra ${f(t2, 1)} N·m · ${Math.abs(t1 - t2) < 1e-9 ? 'horizontal' : `baja la ${t1 > t2 ? 'izquierda' : 'derecha'}`}`];
+          const [t1, t2] = torquesDe(val);
+          return [`τ: ${f(t1, 1)} N·m contra ${f(t2, 1)} N·m · ${horizontal(val) ? 'horizontal' : `baja la ${t1 > t2 ? 'izquierda' : 'derecha'}`}`];
         },
+        invitaciones: [
+          { texto: 'Deja la barra horizontal con masas distintas a cada lado.',
+            logrado: val => horizontal(val) && val.m1 !== val.m2,
+            bien: 'Más masa más cerca, menos masa más lejos: lo que se iguala es el torque.' },
+          { texto: 'Equilibra 4 kg de la izquierda con solo 1 kg a la derecha.',
+            logrado: val => val.m1 === 4 && val.m2 === 1 && horizontal(val),
+            bien: 'Un kilo equilibra cuatro si cuelga cuatro veces más lejos del apoyo.' },
+          { texto: 'Haz que cada lado haga justo 40 N·m de torque.',
+            logrado: val => torquesDe(val).every(t => Math.abs(t - 40) < 1e-9),
+            bien: '4 kg a 1 m o 2 kg a 2 m: el mismo giro.' },
+          { texto: 'Guarda dos casos horizontales con distinto torque.',
+            logrado: (val, guardados) => horizontal(val) && guardados.some(x => horizontal(x) && Math.abs(torquesDe(x)[0] - torquesDe(val)[0]) > 1e-9)
+              && guardados.some(x => x.m1 === val.m1 && x.d1 === val.d1 && x.m2 === val.m2 && x.d2 === val.d2),
+            bien: 'El equilibrio no pide un torque fijo: pide que los dos sean iguales.' },
+        ],
         arrastres: arrastresPalanca(val => [val.m1, val.d1, val.m2, val.d2], { m1: 0, d1: 1, m2: 2, d2: 3 }, () => PALANCA_LIBRE, 'izq der'),
       },
       {
@@ -676,14 +736,41 @@
         ],
         dibujo: val => ({ datos: cajaRoce(val.m, val.F), estado: {} }),
         lectura: val => {
-          const Nv = val.m * G, desl = val.F > MS * Nv + 1e-9, fv = desl ? MK * Nv : val.F;
-          return [`${f(val.m, 0)} kg, `, F, ` = ${f(val.F, 0)} N: `, fr, ` = ${f(fv, 0)} N, ${desl ? 'desliza' : 'quieta'}`];
+          const r = roceDe(val);
+          return [`${f(val.m, 0)} kg, `, F, ` = ${f(val.F, 0)} N: `, fr, ` = ${f(r.f, 0)} N, ${r.desliza ? 'desliza' : 'quieta'}`];
         },
+        invitaciones: [
+          { texto: 'Con 6 kg, busca el mayor empuje que todavía no la mueve.',
+            logrado: val => val.m === 6 && !roceDe(val).desliza && roceDe(Object.assign({}, val, { F: val.F + 2 })).desliza,
+            bien: 'Hasta ahí el rozamiento copia tu empuje. Un poco más y cede.' },
+          { texto: 'Haz que la caja de 2 kg deslice con el menor empuje.',
+            logrado: val => val.m === 2 && roceDe(val).desliza && !roceDe(Object.assign({}, val, { F: val.F - 2 })).desliza,
+            bien: 'Con 2 kg el tope es 10 N: la masa sube o baja el tope.' },
+          { texto: 'Haz que el rozamiento valga justo 12 N con la caja deslizando.',
+            logrado: val => roceDe(val).desliza && Math.abs(roceDe(val).f - 12) < 1e-9,
+            bien: 'Deslizando ya no copia a F: queda fijo en μk N.' },
+          { texto: 'Guarda dos casos de igual masa: más empuje y menos rozamiento.',
+            logrado: (val, guardados) => guardados.some(x => x.m === val.m && ((x.F > val.F && roceDe(x).f < roceDe(val).f - 1e-9) || (x.F < val.F && roceDe(x).f > roceDe(val).f + 1e-9)))
+              && guardados.some(x => x.m === val.m && x.F === val.F),
+            bien: 'Al empezar a deslizar, el rozamiento cae: el tope estático era mayor.' },
+        ],
         arrastres: [{ id: 'empuje', etiqueta: 'empuje de la mano', color: 'c-o',
           donde: val => ({ x: LZ(cajaRoce(val.m, val.F)).X(-0.55 - val.F * K3 / 82.35), y: LZ(cajaRoce(val.m, val.F)).Y(0.5) }),
           mover: (pt, val) => ({ F: (-0.55 - LZ(cajaRoce(val.m, val.F)).Xi(pt.x)) * 82.35 / K3 }) }],
       },
-      Object.assign({ id: 'nudo-libre', titulo: 'El nudo y sus cuerdas', pieza: 'fis-lienzo' }, nudo.juega),
+      Object.assign({ id: 'nudo-libre', titulo: 'El nudo y sus cuerdas', pieza: 'fis-lienzo',
+        invitaciones: [
+          { texto: 'Haz que cada cuerda tire con lo mismo que pesa la lámpara.',
+            logrado: val => Math.abs(tensionDe(val) - val.P) < 1e-9,
+            bien: 'A 30°, cada cuerda tira con todo el peso. ¿Y si fueran verticales?' },
+          { texto: 'Con 40 N, busca el ángulo que menos tensa las cuerdas.',
+            logrado: val => val.P === 40 && nudo.juega.controles[1].opciones.every(o => tensionDe(val) <= tensionDe({ P: 40, ang: o.valor }) + 1e-9),
+            bien: 'Cuerdas más paradas sostienen mejor: casi todo su jalón va hacia arriba.' },
+          { texto: 'Guarda dos casos con la misma tensión y distinto peso.',
+            logrado: (val, guardados) => guardados.some(x => x.P !== val.P && Math.abs(tensionDe(x) - tensionDe(val)) < 1e-9)
+              && guardados.some(x => x.P === val.P && x.ang === val.ang),
+            bien: 'Más peso con cuerdas más paradas puede tensar lo mismo. ¿Qué compensa a qué?' },
+        ] }, nudo.juega),
     ],
     historia: {
       texto: 'Equilibrar cargas fue un problema práctico mucho antes de la mecánica moderna. Arquímedes relacionó pesos y distancias en la palanca con argumentos geométricos. Siglos después, Stevin estudió cuerpos en planos inclinados. Hoy esas ideas se escriben como dos condiciones: que las fuerzas y los giros se cancelen.',
