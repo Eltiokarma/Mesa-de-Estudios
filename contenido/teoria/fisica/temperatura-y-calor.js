@@ -73,11 +73,12 @@
     temas: ['Escalas termométricas'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Elige una temperatura en grados Celsius y lee cuánto marca un termómetro Fahrenheit y la escala Kelvin.',
+      consigna: 'La temperatura sube y baja sola, de −40 °C a 100 °C. Mira cuánto marcan a la vez Fahrenheit y Kelvin.',
       voz: 'Mira cuánto sube la recta por cada grado Celsius.',
-      controles: [{ id: 'c', etiqueta: 'T', color: 'c-h', min: -40, max: 100, paso: 10, inicio: 20, unidad: '°C', decimales: 0 }],
-      dibujo: val => ({ datos: datosCF(val), estado: {} }),
-      lectura: val => [T, ` = ${f(val.c)} °C = ${f(aF(val.c))} °F = ${f(val.c + 273)} K`],
+      controles: [{ id: 'c', etiqueta: 'T', color: 'c-h', min: -40, max: 100, paso: 10, inicio: 20, unidad: '°C', decimales: 0, auto: { velocidad: 35, modo: 'rebota' } }],
+      // Mientras corre, la temperatura avanza de grado en grado (sin decimales que nadie eligió).
+      dibujo: val => ({ datos: datosCF({ c: Math.round(val.c) }), estado: {} }),
+      lectura: val => { const c = Math.round(val.c); return [T, ` = ${f(c)} °C = ${f(aF(c), 1)} °F = ${f(c + 273)} K`]; },
       minimo: 3,
       arrastres: [puntoEnX('lectura-c', 'temperatura en Celsius', 'c-h', val => datosCF(val), 'c', val => aF(val.c))],
     },
@@ -155,6 +156,10 @@
   // Sin arrastre en el juego: lo que se elige es una masa, y la masa no está en la gráfica T–t. En el laboratorio
   // («Mezcla libre») se arrastran los dos puntos de partida, que sí son temperaturas.
   const curvaHacia = (T0, Tf, tau, tmax = 10, n = 21) => Array.from({ length: n }, (_, i) => { const tt = tmax * i / (n - 1); return [tt, Tf + (T0 - Tf) * Math.exp(-tt / tau)]; });
+  // Las dos curvas comparten una sola constante de tiempo, τ = m₁m₂ / (50(m₁ + m₂)) min (1 min con 100 g y 100 g): así,
+  // en cada instante, el calor que pierde la caliente es el que gana la fría (m₁ΔT₁ = m₂ΔT₂), no solo al final.
+  const tauMezcla = (m1, m2) => m1 * m2 / (50 * (m1 + m2));
+  const tMezcla = (T0, Tf, tau, tt) => Tf + (T0 - Tf) * Math.exp(-tt / tau);
   // Temperatura final de la mezcla (mismo c): la usan la figura, la lectura y los retos del laboratorio.
   const tFinal = (m1, T1, m2, T2) => (m1 * T1 + m2 * T2) / (m1 + m2);
   const ejeTt = (m1, T1, m2, T2, extra = {}) => {
@@ -162,10 +167,22 @@
     return Object.assign({
       x: { min: 0, max: 10, paso: 2, nombre: 't', unidad: 'min', decimales: 0, color: 'd' },
       y: { min: 0, max: 100, paso: 20, nombre: 'T', unidad: '°C', decimales: 0, color: 'h' },
-      curvas: [{ puntos: curvaHacia(T1, Tf, 2 * m1 / (m1 + m2)), color: 'h', rotulo: `${f(m1)} g`, en: [0.4, T1] }, { puntos: curvaHacia(T2, Tf, 2 * m2 / (m1 + m2)), color: 'h', rotulo: `${f(m2)} g`, en: [0.4, T2 - 4], discontinua: true }],
+      curvas: [{ puntos: curvaHacia(T1, Tf, tauMezcla(m1, m2)), color: 'h', rotulo: `${f(m1)} g`, en: [0.4, T1] }, { puntos: curvaHacia(T2, Tf, tauMezcla(m1, m2)), color: 'h', rotulo: `${f(m2)} g`, en: [0.4, T2 - 4], discontinua: true }],
       puntos: [{ x: 10, y: Tf, color: 'h', rotulo: `${f(Tf, 1)} °C`, guias: true }],
     }, extra);
   };
+  // Animación (15 nov): el reloj t corre y las dos curvas se dibujan hasta t, con un punto en cada una. El calor que pasó
+  // hasta t sale de la fría: m₂ (T₂(t) − T₂), con c = 1 cal/(g·°C) (regla 1: la misma cuenta que dibuja).
+  const vivoTt = (m1, T1, m2, T2, tt) => {
+    const Tf = tFinal(m1, T1, m2, T2), tau = tauMezcla(m1, m2), n = Math.max(2, Math.round(tt / 0.25) + 1);
+    const hasta = T0 => Array.from({ length: n }, (_, i) => { const u = tt * i / (n - 1); return [u, tMezcla(T0, Tf, tau, u)]; });
+    const a = tMezcla(T1, Tf, tau, tt), b = tMezcla(T2, Tf, tau, tt);
+    return ejeTt(m1, T1, m2, T2, {
+      curvas: [{ puntos: hasta(T1), color: 'h', rotulo: `${f(m1)} g`, en: [0.4, T1] }, { puntos: hasta(T2), color: 'h', rotulo: `${f(m2)} g`, en: [0.4, T2 - 4], discontinua: true }],
+      puntos: [{ x: tt, y: a, color: 'h', rotulo: `${f(a, 0)} °C`, guias: true }, { x: tt, y: b, color: 'h', rotulo: a - b > 14 ? `${f(b, 0)} °C` : undefined }],   // cerca, un solo rótulo
+    });
+  };
+  const vivoQ = (m1, T1, m2, T2, tt) => m2 * (tMezcla(T2, tFinal(m1, T1, m2, T2), tauMezcla(m1, m2), tt) - T2);
   // Antes de mezclar: solo los dos puntos de partida (la curva delataría la respuesta).
   const inicioTt = (m1, T1, m2, T2) => Object.assign(ejeTt(m1, T1, m2, T2), { curvas: [], puntos: [{ x: 0, y: T1, color: 'h', rotulo: `${f(m1)} g a ${f(T1)} °C` }, { x: 0, y: T2, color: 'h', rotulo: `${f(m2)} g a ${f(T2)} °C` }] });
   const mezcla = {
@@ -174,11 +191,14 @@
     temas: ['Temperatura, equilibrio térmico y ley cero', 'Calorimetría'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Se juntan agua caliente a 80 °C y 100 g de agua fría a 20 °C en un vaso aislado. Elige cuánta agua caliente.',
+      consigna: 'Vaso aislado: agua a 80 °C y 100 g a 20 °C. El reloj corre: mira dónde se juntan. Cambia cuánta agua caliente hay.',
       voz: 'Mira dónde se juntan las dos curvas.',
-      controles: [{ id: 'm', etiqueta: 'agua caliente', min: 50, max: 300, paso: 50, inicio: 100, unidad: 'g', decimales: 0 }],
-      dibujo: val => ({ datos: ejeTt(val.m, 80, 100, 20), estado: {} }),
-      lectura: val => ['Final: ', { sub: [T, 'f'] }, ` = ${f((val.m * 80 + 2000) / (val.m + 100), 1)} °C · `, Q, ` = ${f(100 * ((val.m * 80 + 2000) / (val.m + 100) - 20), 0)} cal`],
+      controles: [
+        { id: 'm', etiqueta: 'agua caliente', min: 50, max: 300, paso: 50, inicio: 100, unidad: 'g', decimales: 0 },
+        { id: 't', etiqueta: 't', color: 'c-d', min: 0, max: 10, paso: 0.5, inicio: 0, unidad: 'min', decimales: 1, auto: { velocidad: 2 } },
+      ],
+      dibujo: val => ({ datos: vivoTt(val.m, 80, 100, 20, val.t), estado: {} }),
+      lectura: val => { const tau = tauMezcla(val.m, 100), Tf = tFinal(val.m, 80, 100, 20); return [{ sub: [T, '1'] }, ` = ${f(tMezcla(80, Tf, tau, val.t), 1)} °C · `, { sub: [T, '2'] }, ` = ${f(tMezcla(20, Tf, tau, val.t), 1)} °C · `, Q, ` = ${f(vivoQ(val.m, 80, 100, 20, val.t), 0)} cal`]; },
       minimo: 3,
     },
     predice: {
@@ -246,10 +266,10 @@
     temas: ['Calor específico y capacidad calorífica'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Calienta 100 g de un material que empieza a 20 °C. Elige el material y cuánto calor le das.',
+      consigna: 'El fuego le da a 100 g de un material, a 20 °C, cada vez más calor. Mira cuánto sube su temperatura. Cambia el material.',
       voz: 'Compara qué tan empinada es la recta de cada material.',
       controles: [
-        { id: 'q', etiqueta: 'Q', color: 'c-o', min: 0.1, max: 0.8, paso: 0.1, inicio: 0.4, unidad: 'kcal', decimales: 1 },
+        { id: 'q', etiqueta: 'Q', color: 'c-o', min: 0.1, max: 0.8, paso: 0.1, inicio: 0.4, unidad: 'kcal', decimales: 1, auto: { velocidad: 0.2 } },
         { id: 'c', etiqueta: 'Material', opciones: [{ valor: 1, texto: 'agua' }, { valor: 0.2, texto: 'arena' }, { valor: 0.11, texto: 'hierro' }], inicio: 1 },
       ],
       dibujo: val => ({ datos: datosTQ(val), estado: {} }),
@@ -328,9 +348,9 @@
     temas: ['Cambios de fase y calor latente'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Le das calor a 100 g de hielo que empieza a −20 °C, a nivel del mar. Avanza el calor y mira la temperatura.',
+      consigna: 'Un fuego parejo calienta 100 g de hielo a −20 °C, a nivel del mar. Mira dónde la temperatura se queda quieta.',
       voz: 'Hay tramos donde el calor entra y la temperatura no cambia.',
-      controles: [{ id: 'q', etiqueta: 'Q', color: 'c-o', min: 0, max: 24, paso: 1, inicio: 0, unidad: 'kcal', decimales: 0 }],
+      controles: [{ id: 'q', etiqueta: 'Q', color: 'c-o', min: 0, max: 24, paso: 1, inicio: 0, unidad: 'kcal', decimales: 0, auto: { velocidad: 2.4 } }],
       dibujo: val => ({ datos: datosFase(val), estado: {} }),
       lectura: val => { const e = estadoFase(val.q); return [T, ` = ${f(e.T, 0)} °C · ${e.que}`]; },
       minimo: 3,
@@ -397,11 +417,11 @@
     temas: ['Dilatación'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Calienta una varilla. Elige su material, su largo y cuánto sube su temperatura.',
+      consigna: 'Una varilla se calienta y se enfría sola. Mira cuánto se estira. Cambia su material y su largo.',
       voz: 'Compara cuánto se estira una varilla larga y una corta.',
       controles: [
         { id: 'L0', etiqueta: 'L₀', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'm', decimales: 0 },
-        { id: 'dt', etiqueta: 'ΔT', color: 'c-h', min: 20, max: 100, paso: 20, inicio: 60, unidad: '°C', decimales: 0 },
+        { id: 'dt', etiqueta: 'ΔT', color: 'c-h', min: 20, max: 100, paso: 20, inicio: 60, unidad: '°C', decimales: 0, auto: { velocidad: 30, modo: 'rebota' } },
         { id: 'a', etiqueta: 'Material', opciones: [{ valor: 12, texto: 'acero' }, { valor: 24, texto: 'aluminio' }], inicio: 12 },
       ],
       dibujo: val => ({ datos: datosDil(val), estado: {} }),
@@ -477,10 +497,10 @@
     temas: ['Conducción, convección y radiación'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Una pared de ladrillo de 10 m² separa un cuarto tibio del frío de afuera. Cambia su espesor y la diferencia de temperatura.',
+      consigna: 'Una pared de ladrillo de 10 m² separa un cuarto tibio del frío. Su espesor crece y se achica solo: mira cuánta energía cruza.',
       voz: 'Mira cuánta energía por segundo cruza la pared.',
       controles: [
-        { id: 'e', etiqueta: 'espesor', color: 'c-i', min: 10, max: 40, paso: 5, inicio: 20, unidad: 'cm', decimales: 0 },
+        { id: 'e', etiqueta: 'espesor', color: 'c-i', min: 10, max: 40, paso: 5, inicio: 20, unidad: 'cm', decimales: 0, auto: { velocidad: 10, modo: 'rebota' } },
         { id: 'dt', etiqueta: 'ΔT', color: 'c-h', min: 5, max: 20, paso: 5, inicio: 10, unidad: '°C', decimales: 0 },
       ],
       dibujo: val => ({ datos: datosPL(val), estado: {} }),
@@ -591,16 +611,17 @@
       {
         // Más rica que la idea 2: las dos masas y las dos temperaturas se eligen, y los puntos de partida se arrastran.
         id: 'mezcla-libre', titulo: 'Mezcla libre', pieza: 'ejes',
-        consigna: 'Arrastra los dos puntos de partida y cambia las masas. ¿Dónde se juntan las curvas?',
+        consigna: 'El reloj corre solo y las curvas se juntan. Arrastra los dos puntos de partida y cambia las masas.',
         controles: [
           { id: 'T1', etiqueta: 'caliente', color: 'c-h', min: 45, max: 100, paso: 5, inicio: 80, unidad: '°C', decimales: 0 },
           { id: 'm1', etiqueta: 'masa caliente', min: 50, max: 400, paso: 50, inicio: 100, unidad: 'g', decimales: 0 },
           { id: 'T2', etiqueta: 'fría', color: 'c-h', min: 0, max: 40, paso: 5, inicio: 20, unidad: '°C', decimales: 0 },
           { id: 'm2', etiqueta: 'masa fría', min: 50, max: 400, paso: 50, inicio: 300, unidad: 'g', decimales: 0 },
+          { id: 't', etiqueta: 't', color: 'c-d', min: 0, max: 10, paso: 1, inicio: 0, unidad: 'min', decimales: 1, auto: { velocidad: 2 } },
         ],
-        dibujo: val => ({ datos: ejeTt(val.m1, val.T1, val.m2, val.T2), estado: {} }),
+        dibujo: val => ({ datos: vivoTt(val.m1, val.T1, val.m2, val.T2, val.t), estado: {} }),
         // Las masas se leen en los rótulos de las curvas; la lectura dice las dos temperaturas y la final.
-        lectura: val => [`${f(val.T1)}\u00a0°C y ${f(val.T2)}\u00a0°C → `, { sub: [T, 'f'] }, ` = ${f(fin(val), 1)}\u00a0°C`],
+        lectura: val => { const tau = tauMezcla(val.m1, val.m2); return [{ sub: [T, '1'] }, ` = ${f(tMezcla(val.T1, fin(val), tau, val.t), 0)}\u00a0°C · `, { sub: [T, '2'] }, ` = ${f(tMezcla(val.T2, fin(val), tau, val.t), 0)}\u00a0°C → `, { sub: [T, 'f'] }, ` = ${f(fin(val), 1)}\u00a0°C`]; },
         arrastres: [['1', 'agua caliente'], ['2', 'agua fría']].map(([k, nom]) => ({
           id: 'inicio-' + k, etiqueta: `temperatura inicial del ${nom}`, color: 'c-h',
           donde: val => { const g = EJES().geometria(ejeTt(val.m1, val.T1, val.m2, val.T2)); return { x: g.X(0), y: g.Y(val['T' + k]) }; },

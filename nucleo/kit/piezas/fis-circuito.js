@@ -20,6 +20,11 @@
  *   serie: [elemento, …],          // 0 a 3, en el cable de arriba
  *   ramas: [elemento, …],          // 0 a 3 ramas en paralelo (un elemento por rama); sin ramas, un cable cierra
  *   abierto: false,                // el cable de abajo cortado (interruptor abierto: no circula corriente)
+ *   flujo: { fase, ramas: [fase…], color } | null,   // opcional (ronda 5, animación): puntos de carga cada 20 px
+ *                                  // que avanzan por los cables en el sentido de la corriente convencional (sale por
+ *                                  // el + de la fuente). `fase` (px) corre los del lazo principal (lado izquierdo, cable
+ *                                  // de arriba y de abajo); `ramas[k]`, los de la rama k. Quien llama hace fase = I·t·escala:
+ *                                  // con más corriente, los puntos corren más rápido. Van debajo de los símbolos.
  * }
  * estado = { corte: 0..n }        // se dibuja la lectura y la corriente de los elementos con desde ≤ corte
  * Alto: 200 para una malla simple; 262 con ramas o pila real. Todo número que se ve lo trae quien llama.
@@ -106,6 +111,35 @@
     return s;
   }
 
+  // Puntos de carga a lo largo de una poligonal, cada PASO_Q px, corridos `fase` px en el sentido del recorrido.
+  const PASO_Q = 20;
+  function puntosQ(tramos, fase, color) {
+    const largo = tramos.reduce((n, [x1, y1, x2, y2]) => n + Math.hypot(x2 - x1, y2 - y1), 0);
+    let s = '';
+    const f0 = ((fase % PASO_Q) + PASO_Q) % PASO_Q;
+    for (let u = f0; u < largo; u += PASO_Q) {
+      let r = u;
+      for (const [x1, y1, x2, y2] of tramos) {
+        const l = Math.hypot(x2 - x1, y2 - y1);
+        if (r <= l) { const k = l ? r / l : 0; s += `<circle class="kit-carga" cx="${T.n(x1 + k * (x2 - x1))}" cy="${T.n(y1 + k * (y2 - y1))}" r="3" fill="${T.color(color)}" fill-opacity="0.75"/>`; break; }
+        r -= l;
+      }
+    }
+    return s;
+  }
+  function flujoSVG(d, xRam, xFin) {
+    const fl = d.flujo, YB = YBde(d), ramas = (d.ramas || []).slice(0, 3);
+    if (!fl || d.abierto) return '';
+    const xDer = ramas.length ? xRam[0] : XR;
+    // Lazo principal: sube por la fuente, va por arriba, (baja por la derecha si no hay ramas) y vuelve por abajo.
+    const lazo = ramas.length
+      ? [[XL, YB, XL, YT], [XL, YT, xDer, YT], [xDer, YB, XL, YB]]
+      : [[XL, YB, XL, YT], [XL, YT, XR, YT], [XR, YT, XR, YB], [XR, YB, XL, YB]];
+    let s = puntosQ(lazo, fl.fase || 0, fl.color);
+    ramas.forEach((_, k) => { const f = (fl.ramas || [])[k]; if (typeof f === 'number') s += puntosQ([[xRam[k], YT, xRam[k], YB]], f, fl.color); });
+    return s;
+  }
+
   function dibujar(d, estado = {}) {
     const corte = estado.corte === undefined ? Infinity : estado.corte;
     const ve = e => (e.desde || 0) <= corte;
@@ -118,6 +152,7 @@
     // Cables: arriba de XL a XR (o hasta la última rama), abajo igual, lado izquierdo con la fuente.
     const xFin = ramas.length ? xRam[xRam.length - 1] : XR;
     const cable = (x1, y1, x2, y2) => T.linea(x1, y1, x2, y2, { grosor: G.contorno });
+    s += flujoSVG(d, xRam, xFin);
     // Fuente en el lado izquierdo, entre yA y yB; con resistencia interna, la caja punteada de la pila real.
     const f = d.fuente || {};
     const yF = 116, yR = 168;

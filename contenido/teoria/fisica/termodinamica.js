@@ -81,11 +81,11 @@
     temas: ['Leyes de los gases y ecuación de estado', 'Modelo cinético y energía interna'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Un mol de gas en un cilindro. Elige su temperatura y su volumen, y mira dónde cae su presión.',
+      consigna: 'Un mol de gas en un cilindro se comprime y se expande solo, a temperatura fija. Mira cómo cambia su presión. Cambia la temperatura.',
       voz: 'Cada curva es una temperatura. Prueba moverte sobre una y saltar a otra.',
       controles: [
         { id: 't', etiqueta: 'T', color: 'c-h', min: 200, max: 600, paso: 100, inicio: 300, unidad: 'K', decimales: 0 },
-        { id: 'v', etiqueta: 'V', color: 'c-i', min: 2, max: 10, paso: 2, inicio: 4, unidad: 'L', decimales: 0 },
+        { id: 'v', etiqueta: 'V', color: 'c-i', min: 2, max: 10, paso: 2, inicio: 4, unidad: 'L', decimales: 0, auto: { velocidad: 3, modo: 'rebota' } },
       ],
       dibujo: val => ({ datos: datosGas(val), estado: {} }),
       lectura: val => [P, ` = ${f(presion(val.t, val.v), 2)} atm · `, 'PV/T = 0,082 siempre'],
@@ -186,10 +186,10 @@
     temas: ['Primera ley'],
     pieza: 'fis-cuentas',
     juega: {
-      consigna: 'Elige el calor que recibe el gas y el trabajo que hace al empujar el pistón. Negativo es al revés.',
+      consigna: 'El calor que recibe el gas cambia solo; negativo es que sale. Mira la barra ΔU. Cambia el trabajo que hace el gas.',
       voz: 'Mira la tercera barra: es la suma de las otras dos.',
       controles: [
-        { id: 'q', etiqueta: 'Q', min: -400, max: 600, paso: 100, inicio: 300, unidad: 'J', decimales: 0 },
+        { id: 'q', etiqueta: 'Q', min: -400, max: 600, paso: 100, inicio: 300, unidad: 'J', decimales: 0, auto: { velocidad: 250, modo: 'rebota' } },
         { id: 'w', etiqueta: 'W', min: -300, max: 500, paso: 100, inicio: 100, unidad: 'J', decimales: 0 },
       ],
       dibujo: val => ({ datos: cuentas(val.q, val.w), estado: {} }),
@@ -304,17 +304,42 @@
       puntos: [{ x: E1[0], y: E1[1], color: 'o', rotulo: '1' }, { x: E2[0], y: E2[1], color: 'o', rotulo: '2' }],
     });
   };
+  // Animación (15 nov): el gas recorre el camino elegido de 1 a 2 y el área se pinta hasta donde llegó. `s` es la
+  // fracción del camino recorrida (medida en la figura, para que avance parejo); W es el área bajo lo recorrido (regla 1).
+  const cortarCamino = (pts, s) => {
+    const n = ([a, b]) => [a / 8, b / 400], lar = pts.slice(1).map((q, k) => Math.hypot(n(q)[0] - n(pts[k])[0], n(q)[1] - n(pts[k])[1]));
+    let resto = s * lar.reduce((x, y) => x + y, 0);
+    const out = [pts[0]];
+    for (let k = 0; k < lar.length; k++) {
+      if (resto >= lar[k] - 1e-12) { out.push(pts[k + 1]); resto -= lar[k]; continue; }
+      const u = lar[k] ? resto / lar[k] : 0;
+      out.push([pts[k][0] + u * (pts[k + 1][0] - pts[k][0]), pts[k][1] + u * (pts[k + 1][1] - pts[k][1])]);
+      break;
+    }
+    return out;
+  };
+  const caminoVivo = (c, s) => {
+    const hecho = cortarCamino(CAMINOS[c], s), fin = hecho[hecho.length - 1], w = areaBajo(hecho);
+    return { datos: Object.assign(EJE_KPA(), {
+      curvas: [{ puntos: CAMINOS[c], color: 'o', discontinua: true }, { puntos: hecho, color: 'o' }],
+      areas: w > 0.5 ? [{ puntos: hecho, color: 'i', rotulo: `W = ${f(w, 0)} J` }] : [],
+      puntos: [{ x: E1[0], y: E1[1], color: 'o', rotulo: '1' }, { x: E2[0], y: E2[1], color: 'o', rotulo: '2' }, { x: fin[0], y: fin[1], color: 'o', guias: true }],
+    }), estado: {} };
+  };
   const area = {
     id: 'trabajo-area',
     titulo: 'El trabajo es un área',
     temas: ['Procesos y diagrama P-V'],
     pieza: 'ejes',
     juega: {
-      consigna: 'El gas pasa del estado 1 al estado 2. Elige el camino y mira el área bajo él.',
+      consigna: 'El gas va solo del estado 1 al estado 2. Mira cómo crece el área bajo el camino. Elige otro camino.',
       voz: 'Los extremos no cambian. Fíjate en lo que sí cambia.',
-      controles: [{ id: 'c', etiqueta: 'Camino', opciones: Object.keys(CAMINOS).map(k => ({ valor: k, texto: NOMBRE_CAMINO[k] })) }],
-      dibujo: val => camino(val.c),
-      lectura: val => [`W = ${f(areaBajo(CAMINOS[val.c]), 0)} J · `, dU, ' es igual en los tres'],
+      controles: [
+        { id: 'c', etiqueta: 'Camino', opciones: Object.keys(CAMINOS).map(k => ({ valor: k, texto: NOMBRE_CAMINO[k] })) },
+        { id: 's', etiqueta: 'recorrido', min: 0, max: 1, paso: 0.25, inicio: 0, decimales: 2, auto: { velocidad: 0.25 } },
+      ],
+      dibujo: val => caminoVivo(val.c, val.s),
+      lectura: val => { const h = cortarCamino(CAMINOS[val.c], val.s), q = h[h.length - 1]; return [`V = ${f(q[0], 1)} L, P = ${f(q[1], 0)} kPa · W = ${f(areaBajo(h), 0)} J`]; },
       minimo: 3,
     },
     predice: {
@@ -380,17 +405,26 @@
     { rotulo: '−W', valor: -PROC[k].w, texto: conSigno(-PROC[k].w), desde: corte ? 2 : 0 },
     { rotulo: 'ΔU', valor: PROC[k].q - PROC[k].w, texto: conSigno(PROC[k].q - PROC[k].w), color: 'd', desde: corte ? 1 : 0 },
   ] });
+  const barrasProcVivo = (k, s) => ({ max: 600, igual: 2, barras: [
+    { rotulo: 'Q', valor: s * PROC[k].q, texto: conSigno(s * PROC[k].q) },
+    { rotulo: '−W', valor: -s * PROC[k].w, texto: conSigno(-s * PROC[k].w) },
+    { rotulo: 'ΔU', valor: s * (PROC[k].q - PROC[k].w), texto: conSigno(s * (PROC[k].q - PROC[k].w)), color: 'd' },
+  ] });
   const procesos = {
     id: 'cuatro-procesos',
     titulo: 'Qué fija cada proceso',
     temas: ['Procesos y diagrama P-V', 'Primera ley'],
     pieza: 'fis-cuentas',
     juega: {
-      consigna: 'El mismo gas se expande o se calienta de cuatro maneras. Elige el proceso y mira qué barra queda en cero.',
+      consigna: 'El mismo gas se expande o se calienta de cuatro maneras. Las barras crecen mientras ocurre: mira cuál queda en cero.',
       voz: 'En cada proceso hay algo que no cambia. Busca qué es.',
-      controles: [{ id: 'p', etiqueta: 'Proceso', opciones: Object.keys(PROC).map(k => ({ valor: k, texto: PROC[k].texto })) }],
-      dibujo: val => ({ datos: barrasProc(val.p), estado: {} }),
-      lectura: val => [`${PROC[val.p].fijo} · `, dT, ` ${PROC[val.p].q - PROC[val.p].w > 0.5 ? 'positivo' : PROC[val.p].q - PROC[val.p].w < -0.5 ? 'negativo' : '= 0'}`],
+      controles: [
+        { id: 'p', etiqueta: 'Proceso', opciones: Object.keys(PROC).map(k => ({ valor: k, texto: PROC[k].texto })) },
+        { id: 's', etiqueta: 'avance', min: 0, max: 100, paso: 25, inicio: 0, unidad: '%', decimales: 0, auto: { velocidad: 25 } },
+      ],
+      // Las barras crecen con el avance del proceso: Q, W y ΔU en la fracción s del total (energía intercambiada hasta ahí).
+      dibujo: val => ({ datos: barrasProcVivo(val.p, val.s / 100), estado: {} }),
+      lectura: val => [`${PROC[val.p].fijo} · Q = ${conSigno(val.s / 100 * PROC[val.p].q)} · `, dT, ` ${PROC[val.p].q - PROC[val.p].w > 0.5 ? 'positivo' : PROC[val.p].q - PROC[val.p].w < -0.5 ? 'negativo' : '= 0'}`],
       minimo: 4,
     },
     predice: {
@@ -478,11 +512,11 @@
     temas: ['cp y cv'],
     pieza: 'fis-cuentas',
     juega: {
-      consigna: 'Calientas helio con el pistón trabado: el volumen no cambia. Elige cuántos moles y cuánto sube la temperatura.',
+      consigna: 'Calientas helio con el pistón trabado: el volumen no cambia. La temperatura sube y baja sola: mira el calor. Cambia los moles.',
       voz: 'Mira qué barra queda en cero y cuánto calor pide cada mol.',
       controles: [
         { id: 'n', etiqueta: 'n', min: 1, max: 3, paso: 1, inicio: 1, unidad: 'mol', decimales: 0 },
-        { id: 'dt', etiqueta: 'ΔT', color: 'c-h', min: 10, max: 30, paso: 10, inicio: 20, unidad: 'K', decimales: 0 },
+        { id: 'dt', etiqueta: 'ΔT', color: 'c-h', min: 10, max: 30, paso: 10, inicio: 20, unidad: 'K', decimales: 0, auto: { velocidad: 8, modo: 'rebota' } },
       ],
       dibujo: val => ({ datos: barrasCal('V', val.n, val.dt), estado: {} }),
       lectura: val => [`Q = ${f(calentar('V', val.n, val.dt).q, 0)} J · Q/(n`, dT, `) = ${f(calentar('V', val.n, val.dt).q / (val.n * val.dt), 2)} J/(mol·K)`],
@@ -556,10 +590,10 @@
     temas: ['Máquinas térmicas y ciclo de Carnot', 'Segunda ley'],
     pieza: 'fis-cuentas',
     juega: {
-      consigna: 'Un motor ideal recibe 1000 J del foco caliente en cada ciclo. Elige las dos temperaturas y mira cuánto trabajo puede dar.',
+      consigna: 'Un motor ideal recibe 1000 J del foco caliente en cada ciclo. El foco caliente se calienta y se enfría: mira el trabajo.',
       voz: 'Busca un par de temperaturas que dé más trabajo.',
       controles: [
-        { id: 'tc', etiqueta: 'T caliente', color: 'c-h', min: 400, max: 800, paso: 100, inicio: 500, unidad: 'K', decimales: 0 },
+        { id: 'tc', etiqueta: 'T caliente', color: 'c-h', min: 400, max: 800, paso: 100, inicio: 500, unidad: 'K', decimales: 0, auto: { velocidad: 100, modo: 'rebota' } },
         { id: 'tf', etiqueta: 'T fría', color: 'c-h', min: 200, max: 350, paso: 50, inicio: 300, unidad: 'K', decimales: 0 },
       ],
       dibujo: val => motor(val.tc, val.tf),
@@ -687,8 +721,8 @@
       {
         // Lo que la idea 3 no deja probar: cualquier camino de 1 a 2 por una esquina que se arrastra.
         id: 'camino-libre', titulo: 'Camino libre de 1 a 2', pieza: 'ejes',
-        consigna: 'Arrastra la esquina del camino entre los estados 1 y 2. Busca el camino de más trabajo y el de menos.',
-        controles: CTL_LIBRE,
+        consigna: 'La esquina sube y baja sola, y el área cambia. Arrástrala: busca el camino de 1 a 2 de más trabajo y el de menos.',
+        controles: [CTL_LIBRE[0], Object.assign({}, CTL_LIBRE[1], { auto: { velocidad: 100, modo: 'rebota' } })],
         dibujo: val => ({ datos: caminoLibre(val), estado: {} }),
         lectura: val => [`Esquina en ${f(val.vk, 1)}\u00a0L y ${f(val.pk, 0)}\u00a0kPa: W = ${f(wLibre(val), 0).replace(/\s/g, '\u00a0')}\u00a0J`],
         // Retos comprobados: wLibre es el área que pinta la figura (areaBajo del mismo camino).

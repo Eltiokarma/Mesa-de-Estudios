@@ -64,6 +64,12 @@
   // Debe verse: el foco gasta energía, no corriente.
   const N_CU = 8.5e28, QE = 1.6e-19;
   const vDeriva = (i, amm2) => i / (N_CU * QE * amm2 * 1e-6) * 1000;   // mm/s
+  // Animación (15 nov): puntos de carga que avanzan por los cables (dato `flujo` de fis-circuito). Recorren 12 px por
+  // segundo por cada ampere: con el doble de corriente pasan el doble de rápido. Es una escala, no la rapidez real de
+  // los electrones (esa es de milímetros por segundo; la idea 1 lo pregunta). El reloj da vueltas de 20 s.
+  const VQ = 12;
+  const TQ = { id: 't', etiqueta: 't', color: 'c-d', min: 0, max: 20, paso: 0.5, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } };
+  const conFlujo = (fig, tt, it, ramas) => Object.assign({}, fig, { datos: Object.assign({}, fig.datos, { flujo: { fase: it * tt * VQ, ramas: (ramas || []).map(i => i * tt * VQ), color: 'h' } }) });
   const conAmperimetros = (eps, r, o = {}) => {
     const i = eps / r;
     return { datos: { fuente: pila(eps), serie: [A(o.leer === false ? '' : `${f(i, 2)} A`, o.desde), foco(`R = ${f(r)} Ω`, Math.min(1, eps * i / 72), { corriente: o.corriente }), A(o.leer === false ? '' : `${f(i, 2)} A`, o.desde)] }, estado: {} };
@@ -74,14 +80,15 @@
     temas: ['Intensidad y densidad de corriente', 'Modelo de Drude'],
     pieza: 'fis-circuito',
     juega: {
-      consigna: 'Un foco con un amperímetro antes y otro después. Cambia la pila y el foco, y compara lo que marcan los dos.',
+      consigna: 'Un foco entre dos amperímetros. Los puntos marcan la carga que pasa, no su rapidez real. Cambia la pila y el foco: compara los amperímetros.',
       voz: 'Si el foco se comiera corriente, el segundo marcaría menos.',
       controles: [
         { id: 'e', etiqueta: 'ε', color: 'c-o', min: 3, max: 12, paso: 3, inicio: 6, unidad: 'V', decimales: 0 },
         { id: 'r', etiqueta: 'R', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 3, unidad: 'Ω', decimales: 0 },
+        TQ,
       ],
-      dibujo: val => conAmperimetros(val.e, val.r),
-      lectura: val => [I, ` = ${f(val.e / val.r, 2)}\u00a0A antes y después del foco`],
+      dibujo: val => conFlujo(conAmperimetros(val.e, val.r), val.t, val.e / val.r),
+      lectura: val => [I, ` = ${f(val.e / val.r, 2)}\u00a0A antes y después · en ${f(val.t, 1)}\u00a0s pasaron ${f(val.e / val.r * val.t, 1)}\u00a0C`],
       minimo: 3,
     },
     predice: {
@@ -171,14 +178,16 @@
     temas: ['Resistencia, resistividad y ley de Ohm'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Un alambre metálico conectado a una fuente que puedes subir. Elige el material y su largo, y mira la recta V contra I.',
+      consigna: 'Un alambre metálico en una fuente que sube y baja sola. Mira el punto en la recta V contra I. Cambia material y largo.',
       voz: 'Más empinada quiere decir más voltaje para la misma corriente.',
       controles: [
         { id: 'm', etiqueta: 'Material', opciones: [{ valor: 'nicromo', texto: 'Nicromo' }, { valor: 'constantan', texto: 'Constantán' }] },
         { id: 'L', etiqueta: 'Largo', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'm', decimales: 0 },
+        { id: 'i', etiqueta: 'corriente', color: 'c-h', min: 0, max: 1, paso: 0.25, inicio: 0.25, unidad: '× máx', decimales: 2, auto: { velocidad: 0.3, modo: 'rebota' } },
       ],
-      dibujo: val => ({ datos: Object.assign(EJE_VI(), { curvas: [rectaVI(resistencia(val.m, val.L, 1), `R = ${f(resistencia(val.m, val.L, 1), 2)} Ω`)] }), estado: {} }),
-      lectura: val => [R, ` = ${f(resistencia(val.m, val.L, 1), 2)}\u00a0Ω con 1\u00a0mm² de sección`],
+      // El punto: la fuente sube y la corriente crece hasta donde cabe en la gráfica; V = R·I (regla 1).
+      dibujo: val => { const rr = resistencia(val.m, val.L, 1), ii = val.i * Math.min(4, 20 / rr); return { datos: Object.assign(EJE_VI(), { curvas: [rectaVI(rr, `R = ${f(rr, 2)} Ω`)], puntos: [{ x: ii, y: rr * ii, color: 'o', guias: true }] }), estado: {} }; },
+      lectura: val => { const rr = resistencia(val.m, val.L, 1), ii = val.i * Math.min(4, 20 / rr); return [V, ` = ${f(rr * ii, 1)}\u00a0V, `, I, ` = ${f(ii, 2)}\u00a0A → `, R, ` = ${f(rr, 2)}\u00a0Ω`]; },
       minimo: 3,
       // Arrastra la punta de la recta hacia arriba o abajo: más largo, más empinada (la pendiente es R).
       arrastres: [{ id: 'pendiente', etiqueta: 'punta de la recta V–I (largo del alambre)', color: 'c-i',
@@ -268,10 +277,11 @@
     temas: ['Fuerza electromotriz', 'Amperímetro y voltímetro'],
     pieza: 'fis-circuito',
     juega: {
-      consigna: 'Una pila real: 12 V de fem y 1 Ω adentro. El amperímetro va en serie y el voltímetro en sus bornes. Cambia R.',
+      consigna: 'Pila real: 12 V de fem y 1 Ω adentro. El cursor del reóstato se mueve solo: mira el amperímetro y el voltímetro.',
       voz: 'Mira qué pasa con el voltímetro cuando la corriente crece.',
-      controles: [{ id: 'r', etiqueta: 'R', color: 'c-i', min: 1, max: 11, paso: 1, inicio: 5, unidad: 'Ω', decimales: 0 }],
-      dibujo: val => pilaReal(val.r),
+      controles: [{ id: 'r', etiqueta: 'R', color: 'c-i', min: 1, max: 11, paso: 1, inicio: 5, unidad: 'Ω', decimales: 0, auto: { velocidad: 2.5, modo: 'rebota' } }],
+      // Mientras corre, R avanza de décima en décima de ohm (los rótulos no muestran más cifras).
+      dibujo: val => pilaReal(Math.round(val.r * 10) / 10),
       lectura: val => [I, ` = ${f(FEM / (val.r + RINT), 2)}\u00a0A · `, V, ` en bornes = ${f(FEM - FEM / (val.r + RINT) * RINT, 2)}\u00a0V`],
       minimo: 3,
       // Corre el cursor del reóstato: más alambre en el circuito, más R, menos corriente.
@@ -348,14 +358,15 @@
     temas: ['Resistencias en serie y en paralelo'],
     pieza: 'fis-circuito',
     juega: {
-      consigna: 'Focos iguales de 4 Ω, uno detrás de otro (en serie). Agrega focos y cambia la pila; mira el brillo de cada uno.',
+      consigna: 'Focos iguales de 4 Ω en serie, uno detrás de otro. Agrega focos y cambia la pila: mira el brillo y cuánta carga pasa.',
       voz: 'En serie, cada foco nuevo apaga un poco a los demás.',
       controles: [
         { id: 'n', etiqueta: 'Focos', min: 1, max: 3, paso: 1, inicio: 2, unidad: '', decimales: 0 },
         { id: 'e', etiqueta: 'ε', color: 'c-o', min: 6, max: 12, paso: 6, inicio: 12, unidad: 'V', decimales: 0 },
+        TQ,
       ],
-      dibujo: val => enSerie(val.n, val.e),
-      lectura: val => [R, ` total = ${f(val.n * RF)}\u00a0Ω · `, I, ` = ${f(val.e / (val.n * RF), 2)}\u00a0A`],
+      dibujo: val => conFlujo(enSerie(val.n, val.e), val.t, val.e / (val.n * RF)),
+      lectura: val => [R, ` total = ${f(val.n * RF)}\u00a0Ω · `, I, ` = ${f(val.e / (val.n * RF), 2)}\u00a0A · ${f(val.e / (val.n * RF) * val.t, 1)}\u00a0C en ${f(val.t, 1)}\u00a0s`],
       minimo: 3,
     },
     predice: {
@@ -432,11 +443,11 @@
     temas: ['Leyes de Kirchhoff'],
     pieza: 'fis-circuito',
     juega: {
-      consigna: 'R₁ en serie y después dos ramas en paralelo. Cambia R₃ y mira la corriente que entra al nudo y el voltaje de las ramas.',
+      consigna: 'R₁ en serie y después dos ramas en paralelo. Mira cómo la carga que llega al nudo se reparte. Cambia R₃.',
       voz: 'Las dos ramas comparten el mismo voltaje. Fíjate en eso.',
-      controles: [{ id: 'r3', etiqueta: 'R₃', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 6, unidad: 'Ω', decimales: 0 }],
-      dibujo: val => kirchhoff(val.r3),
-      lectura: val => { const rp = R2K * val.r3 / (R2K + val.r3), it = 12 / (R1 + rp); return [I, ` = ${f(it, 2)}\u00a0A · `, V, ` ramas = ${f(it * rp, 2)}\u00a0V`]; },
+      controles: [{ id: 'r3', etiqueta: 'R₃', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 6, unidad: 'Ω', decimales: 0 }, TQ],
+      dibujo: val => { const q = reparto(R2K, val.r3); return conFlujo(kirchhoff(val.r3), val.t, q.it, [q.i2, q.i3]); },
+      lectura: val => { const rp = R2K * val.r3 / (R2K + val.r3), it = 12 / (R1 + rp); return [I, ` = ${f(it, 2)}\u00a0A · `, V, ` ramas = ${f(it * rp, 2)}\u00a0V · ${f(it * val.t, 1)}\u00a0C en ${f(val.t, 1)}\u00a0s`]; },
       minimo: 3,
       arrastres: [{ id: 'cursor-r3', etiqueta: 'cursor del reóstato R₃', color: 'c-i',
         donde: val => cursor(kirchhoff(val.r3).datos, 'ramas', 1, RMAX5).donde(val.r3),
@@ -505,11 +516,12 @@
     temas: ['Potencia y efecto Joule'],
     pieza: 'fis-circuito',
     juega: {
-      consigna: 'Dos focos en paralelo con una pila de 12 V; el segundo tiene 6 Ω. Cambia la resistencia del primero y compara su brillo.',
+      consigna: 'Dos focos en paralelo con una pila de 12 V; el segundo tiene 6 Ω. Cambia la resistencia del primero: compara brillo y corriente.',
       voz: 'En paralelo, ¿brilla más el de menos o el de más resistencia?',
-      controles: [{ id: 'ra', etiqueta: 'R del primero', color: 'c-i', min: 2, max: 12, paso: 2, inicio: 2, unidad: 'Ω', decimales: 0 }],
-      dibujo: val => dosPar(val.ra),
-      lectura: val => [P, ` = ${f(144 / val.ra, 1)}\u00a0W y ${f(144 / RB, 1)}\u00a0W`],
+      controles: [{ id: 'ra', etiqueta: 'R del primero', color: 'c-i', min: 2, max: 12, paso: 2, inicio: 2, unidad: 'Ω', decimales: 0 }, TQ],
+      dibujo: val => conFlujo(dosPar(val.ra), val.t, 12 / val.ra + 12 / RB, [12 / val.ra, 12 / RB]),
+      // P = V²/R en cada foco; la energía que convierte cada uno en t es P·t (regla 1).
+      lectura: val => [P, ` = ${f(144 / val.ra, 1)}\u00a0W y ${f(144 / RB, 1)}\u00a0W · ${f(144 / val.ra * val.t, 0)}\u00a0J y ${f(144 / RB * val.t, 0)}\u00a0J`],
       minimo: 3,
     },
     predice: {
@@ -655,8 +667,8 @@
     laboratorio: [
       {
         id: 'pila-reostato', titulo: 'Pila real con reóstato', pieza: 'fis-circuito',
-        consigna: 'Elige la fem y la resistencia interna, y corre el cursor. ¿Con qué R recibe más potencia el reóstato? Prueba también R = 0.',
-        controles: CTL_PILA,
+        consigna: 'El cursor corre solo. Elige la fem y la resistencia interna. ¿Con qué R recibe más potencia el reóstato? Prueba también R = 0.',
+        controles: [CTL_PILA[0], CTL_PILA[1], Object.assign({}, CTL_PILA[2], { auto: { velocidad: 4, modo: 'rebota' } })],
         dibujo: val => labPila(val),
         lectura: val => { const c = cuentaPila(val); return [R, ` = ${f(val.r)}\u00a0Ω: `, I, ` = ${f(c.i, 2)}\u00a0A · `, V, ` = ${f(c.v, 2)}\u00a0V · `, P, ` = ${f(c.p, 1)}\u00a0W`]; },
         arrastres: [{ id: 'cursor', etiqueta: 'cursor del reóstato', color: 'c-i',

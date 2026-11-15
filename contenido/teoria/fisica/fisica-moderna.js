@@ -95,14 +95,15 @@
     temas: ['Efecto fotoeléctrico'],
     pieza: 'fis-fotones',
     juega: {
-      consigna: 'Una lámpara ilumina una placa de sodio. Cambia la frecuencia de la luz y su brillo, y mira los electrones que salen.',
+      consigna: 'Una lámpara ilumina una placa de sodio. La frecuencia de la luz sube y baja sola: mira cuándo salen electrones. Cambia el brillo.',
       voz: 'Fíjate qué control alarga las flechas y cuál suma electrones.',
       controles: [
-        { id: 'f', etiqueta: 'f (× 10¹⁴ Hz)', color: 'c-h', min: 6, max: 12, paso: 1, inicio: 8, unidad: '', decimales: 0 },
+        { id: 'f', etiqueta: 'f (× 10¹⁴ Hz)', color: 'c-h', min: 6, max: 12, paso: 1, inicio: 8, unidad: '', decimales: 1, auto: { velocidad: 1.5, modo: 'rebota' } },
         { id: 'b', etiqueta: 'Brillo', color: 'c-d', min: 1, max: 4, paso: 1, inicio: 2, unidad: '', decimales: 0 },
       ],
       dibujo: val => foto(val.f, val.b),
-      lectura: val => ['hf = ', f(eV(val.f), 2), ' eV · ', K, ` = ${f(eV(val.f) - PHI, 2)}\u00a0eV`],
+      // Bajo el umbral (hf < φ) no sale ningún electrón: la lectura no muestra una K negativa.
+      lectura: val => ['hf = ', f(eV(val.f), 2), ' eV · ', ...(eV(val.f) > PHI ? [K, ` = ${f(eV(val.f) - PHI, 2)}\u00a0eV`] : ['no salen electrones'])],
       minimo: 3,
     },
     predice: {
@@ -170,11 +171,16 @@
     temas: ['Fotones: potencia e intensidad'],
     pieza: 'fis-fotones',
     juega: {
-      consigna: 'Un láser verde de 532 nm apunta a un detector. Sube su potencia y mira cuántos paquetes de luz llegan.',
+      consigna: 'Un láser verde de 532 nm apunta a un detector; los paquetes corren en cámara lenta. Sube su potencia y mira cuántos llegan.',
       voz: 'El tamaño de cada paquete no cambia; mira cuántos hay.',
-      controles: [{ id: 'P', etiqueta: 'P', min: 1, max: 5, paso: 1, inicio: 2, unidad: 'mW', decimales: 0 }],
-      dibujo: val => haz(532, 2 * val.P, `verde: ${f(HC / 532, 2)} eV cada uno`),
-      lectura: val => [N, ` = ${cient(val.P * 1e-3 / fotJ(532))} fotones por segundo`],
+      controles: [
+        { id: 'P', etiqueta: 'P', min: 1, max: 5, paso: 1, inicio: 2, unidad: 'mW', decimales: 0 },
+        { id: 't', etiqueta: 't', min: 0, max: 1, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 0.25 } },
+      ],
+      // Animación (15 nov): el haz corre (dato avance de fis-fotones; 4 vueltas del haz por segundo del modelo, así no
+      // salta al volver a empezar) y la lectura cuenta los que llegaron: N·t, con N = P/(hf) (regla 1).
+      dibujo: val => { const d = haz(532, 2 * val.P, `verde: ${f(HC / 532, 2)} eV cada uno`); d.datos.avance = 512 * val.t; return d; },
+      lectura: val => [N, ` = ${cient(val.P * 1e-3 / fotJ(532))} por segundo · en ${f(val.t, 2)}\u00a0s: ${cient(val.P * 1e-3 / fotJ(532) * val.t)}`],
       minimo: 3,
     },
     predice: {
@@ -244,9 +250,9 @@
     temas: ['Radiación del cuerpo negro y Planck'],
     pieza: 'ejes',
     juega: {
-      consigna: 'La curva muestra cómo reparte su luz un cuerpo negro a cada temperatura, cada una relativa a su propio pico. Cambia la temperatura.',
+      consigna: 'La curva muestra cómo reparte su luz un cuerpo negro, relativa a su propio pico. Su temperatura sube y baja sola: mira el pico.',
       voz: 'Sigue al punto verde respecto de la franja visible.',
-      controles: [{ id: 'T', etiqueta: 'T', color: 'c-h', min: 3000, max: 7000, paso: 1000, inicio: 5000, unidad: 'K', decimales: 0 }],
+      controles: [{ id: 'T', etiqueta: 'T', color: 'c-h', min: 3000, max: 7000, paso: 1000, inicio: 5000, unidad: 'K', decimales: 0, auto: { velocidad: 1000, modo: 'rebota' } }],
       dibujo: val => ({ datos: negro([val.T]), estado: {} }),
       lectura: val => [lmax, ` = 2,9 × 10⁶ / ${f(val.T, 0)} = ${f(WIEN / val.T, 0)}\u00a0nm`],
       minimo: 3,
@@ -336,9 +342,9 @@
     temas: ['Rayos X', 'Láser'],
     pieza: 'ejes',
     juega: {
-      consigna: 'En un tubo de rayos X, electrones acelerados por un voltaje frenan contra un metal. Cambia el voltaje y mira dónde empieza el espectro.',
+      consigna: 'En un tubo de rayos X, electrones acelerados por un voltaje frenan contra un metal. El voltaje cambia solo: mira dónde empieza el espectro.',
       voz: 'Mira el borde izquierdo de la curva.',
-      controles: [{ id: 'V', etiqueta: 'V', color: 'c-i', min: 20, max: 60, paso: 10, inicio: 30, unidad: 'kV', decimales: 0 }],
+      controles: [{ id: 'V', etiqueta: 'V', color: 'c-i', min: 20, max: 60, paso: 10, inicio: 30, unidad: 'kV', decimales: 0, auto: { velocidad: 10, modo: 'rebota' } }],
       dibujo: val => ({ datos: espectroX(val.V), estado: {} }),
       lectura: val => [lmin, ' = 1240 / ', V, ` = ${f(HC / val.V, 1)}\u00a0pm`],
       minimo: 3,
@@ -425,9 +431,9 @@
     temas: ['Relatividad especial (solo San Marcos)'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Una nave pasa junto a la Tierra. Cambia su rapidez y lee cuánto dura, para la Tierra, un segundo del reloj de la nave.',
+      consigna: 'Una nave pasa junto a la Tierra y su rapidez cambia sola. Lee cuánto dura, para la Tierra, un segundo del reloj de la nave.',
       voz: 'Fíjate en lo poco que cambia γ hasta la mitad de c.',
-      controles: [{ id: 'b', etiqueta: 'v', color: 'c-h', min: 0, max: 0.9, paso: 0.1, inicio: 0.5, unidad: 'c', decimales: 1 }],
+      controles: [{ id: 'b', etiqueta: 'v', color: 'c-h', min: 0, max: 0.9, paso: 0.1, inicio: 0.5, unidad: 'c', decimales: 2, auto: { velocidad: 0.2, modo: 'rebota' } }],
       dibujo: val => ({ datos: curvaG([{ x: val.b, y: gam(val.b), color: 'o', rotulo: `γ = ${f(gam(val.b), 3)}`, guias: true }]), estado: {} }),
       lectura: val => ['1\u00a0s de la nave dura ', f(gam(val.b), 3), ' s para la Tierra'],
       minimo: 3,
@@ -512,9 +518,9 @@
     temas: ['Principio de incertidumbre'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Un electrón está encerrado en una región de ancho Δx. Achica esa región y lee la menor dispersión posible de su velocidad.',
+      consigna: 'Un electrón está encerrado en una región de ancho Δx, que se achica y se agranda sola. Lee la menor dispersión posible de su velocidad.',
       voz: 'Mira qué pasa con la curva cuando Δx se acerca a cero.',
-      controles: [{ id: 'x', etiqueta: 'Δx', color: 'c-i', min: 0.2, max: 2, paso: 0.2, inicio: 1, unidad: 'nm', decimales: 1 }],
+      controles: [{ id: 'x', etiqueta: 'Δx', color: 'c-i', min: 0.2, max: 2, paso: 0.2, inicio: 1, unidad: 'nm', decimales: 2, auto: { velocidad: 0.4, modo: 'rebota' } }],
       dibujo: val => ({ datos: curvaI([{ x: val.x, y: dvMin(val.x) / 1000, color: 'o', rotulo: `${f(dvMin(val.x) / 1000, 0)} km/s`, guias: true }]), estado: {} }),
       lectura: val => [dv, ` mín = ${f(dvMin(val.x) / 1000, 0)}\u00a0km/s`],
       minimo: 3,
@@ -630,11 +636,11 @@
     laboratorio: [
       {
         id: 'dos-metales', titulo: 'Dos metales, dos rectas', pieza: 'ejes',
-        consigna: 'Elige dos metales y corre la frecuencia con el punto. ¿De cuál salen electrones primero? Compara las pendientes.',
+        consigna: 'La frecuencia corre sola. Elige dos metales: ¿de cuál salen electrones primero? Compara las pendientes.',
         controles: [
           { id: 'a', etiqueta: 'Metal 1', inicio: 'cesio', opciones: METALES.map(([m]) => ({ valor: m, texto: m })) },
           { id: 'b', etiqueta: 'Metal 2', inicio: 'zinc', opciones: METALES.map(([m]) => ({ valor: m, texto: m })) },
-          { id: 'f', etiqueta: 'f (× 10¹⁴ Hz)', color: 'c-h', min: 2, max: 14, paso: 0.5, inicio: 8, unidad: '', decimales: 1 },
+          { id: 'f', etiqueta: 'f (× 10¹⁴ Hz)', color: 'c-h', min: 2, max: 14, paso: 0.5, inicio: 8, unidad: '', decimales: 1, auto: { velocidad: 2, modo: 'rebota' } },
         ],
         dibujo: val => ({ datos: dosRectas(val), estado: {} }),
         lectura: val => { const k = m => eV(val.f) - phiDe(m); return [`${val.a}: ${k(val.a) > 0 ? f(k(val.a), 2) + ' eV' : 'nada'} · ${val.b}: ${k(val.b) > 0 ? f(k(val.b), 2) + ' eV' : 'nada'}`]; },

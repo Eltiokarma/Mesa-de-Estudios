@@ -77,10 +77,10 @@
     temas: ['Reflexión y refracción'],
     pieza: 'fis-interfaz',
     juega: {
-      consigna: 'Un rayo pasa del aire a otro medio. Cambia su ángulo, medido desde la normal punteada, y el medio de abajo.',
+      consigna: 'Un rayo pasa del aire a otro medio. Su ángulo, medido desde la normal punteada, cambia solo: mira el que entra. Cambia el medio.',
       voz: 'Compara los dos ángulos cuando el medio es más denso.',
       controles: [
-        { id: 'a', etiqueta: 'θ₁', color: 'c-o', min: 0, max: 80, paso: 10, inicio: 40, unidad: '°', decimales: 0 },
+        { id: 'a', etiqueta: 'θ₁', color: 'c-o', min: 0, max: 80, paso: 10, inicio: 40, unidad: '°', decimales: 0, auto: { velocidad: 20, modo: 'rebota' } },
         { id: 'm', etiqueta: 'Medio', opciones: Object.keys(MEDIOS).map(k => ({ valor: k, texto: k })) },
       ],
       dibujo: val => interfaz(MEDIOS[val.m], val.m, val.a),
@@ -148,10 +148,10 @@
     temas: ['Reflexión total'],
     pieza: 'fis-interfaz',
     juega: {
-      consigna: 'Ahora la luz va de un material denso al aire. Sube el ángulo y mira qué le pasa al rayo que sale.',
+      consigna: 'Ahora la luz va de un material denso al aire. El ángulo sube y baja solo: mira qué le pasa al rayo que sale.',
       voz: 'Fíjate en la línea roja punteada: es el ángulo crítico.',
       controles: [
-        { id: 'a', etiqueta: 'θ₁', color: 'c-o', min: 0, max: 40, paso: 5, inicio: 20, unidad: '°', decimales: 0 },
+        { id: 'a', etiqueta: 'θ₁', color: 'c-o', min: 0, max: 40, paso: 5, inicio: 20, unidad: '°', decimales: 0, auto: { velocidad: 10, modo: 'rebota' } },
         { id: 'm', etiqueta: 'Material', opciones: [{ valor: 'vidrio', texto: 'vidrio' }, { valor: 'diamante', texto: 'diamante' }] },
       ],
       dibujo: val => total(val.m, MEDIOS[val.m], val.a),
@@ -228,11 +228,11 @@
     temas: ['Espejos planos'],
     pieza: 'fis-banco-optico',
     juega: {
-      consigna: 'Una vela está frente a un espejo plano. Muévela y mira dónde se cruzan las prolongaciones de los rayos que rebotan.',
+      consigna: 'Una vela se acerca y se aleja sola de un espejo plano. Mira dónde se cruzan las prolongaciones de los rayos que rebotan.',
       voz: 'Compara la distancia de la vela con la de su imagen.',
-      controles: [{ id: 'd', etiqueta: 'dₒ', color: 'c-h', min: 2, max: 10, paso: 2, inicio: 6, unidad: 'cm', decimales: 0 }],
+      controles: [{ id: 'd', etiqueta: 'dₒ', color: 'c-h', min: 2, max: 10, paso: 2, inicio: 6, unidad: 'cm', decimales: 0, auto: { velocidad: 2, modo: 'rebota' } }],
       dibujo: val => plano(val.d),
-      lectura: val => [dI, ` = ${f(val.d, 0)}\u00a0cm detrás · vela–imagen = ${f(2 * val.d, 0)}\u00a0cm`],
+      lectura: val => [dI, ` = ${f(val.d, 1)}\u00a0cm detrás · vela–imagen = ${f(2 * val.d, 1)}\u00a0cm`],
       minimo: 3,
       // Arrastra la vela (la punta del objeto) hacia el espejo o lejos de él.
       arrastres: [{ id: 'vela', etiqueta: 'la vela', color: 'c-h', donde: val => puntaObjeto(plano(val.d).datos), mover: (pt, val) => ({ d: dDe(plano(val.d).datos, pt) }) }],
@@ -322,9 +322,9 @@
     temas: ['Espejos esféricos'],
     pieza: 'fis-banco-optico',
     juega: {
-      consigna: 'Un objeto frente a un espejo cóncavo de f = 8 cm. Muévelo y mira dónde se cruzan los rayos que rebotan.',
+      consigna: 'Un objeto se acerca y se aleja solo de un espejo cóncavo de f = 8 cm. Mira dónde se cruzan los rayos que rebotan.',
       voz: 'Acércalo al foco y mira el tamaño de la imagen.',
-      controles: [{ id: 'd', etiqueta: 'dₒ', color: 'c-h', min: 12, max: 36, paso: 6, inicio: 24, unidad: 'cm', decimales: 0 }],
+      controles: [{ id: 'd', etiqueta: 'dₒ', color: 'c-h', min: 12, max: 36, paso: 6, inicio: 24, unidad: 'cm', decimales: 0, auto: { velocidad: 5, modo: 'rebota' } }],
       dibujo: val => espejo(FC, val.d),
       lectura: val => { const im = imgEsp(FC, val.d, 2); return [dI, ` = ${f(im.d, 1)}\u00a0cm · m = ${f(-im.d / val.d, 2)}`]; },
       minimo: 3,
@@ -394,9 +394,9 @@
     temas: ['Lentes delgadas'],
     pieza: 'fis-banco-optico',
     juega: {
-      consigna: 'Un objeto frente a una lente convergente de f = 10 cm. Muévelo y mira dónde se cruzan los rayos al otro lado.',
+      consigna: 'Un objeto se acerca y se aleja solo de una lente convergente de f = 10 cm. Mira dónde se cruzan los rayos al otro lado.',
       voz: 'Mira qué pasa con la imagen al acercar el objeto al foco.',
-      controles: [{ id: 'd', etiqueta: 'dₒ', color: 'c-h', min: 15, max: 40, paso: 5, inicio: 30, unidad: 'cm', decimales: 0 }],
+      controles: [{ id: 'd', etiqueta: 'dₒ', color: 'c-h', min: 15, max: 40, paso: 5, inicio: 30, unidad: 'cm', decimales: 0, auto: { velocidad: 5, modo: 'rebota' } }],
       dibujo: val => lente(FL, val.d),
       lectura: val => { const im = imgEsp(FL, val.d, 3); return [dI, ` = ${f(im.d, 1)}\u00a0cm · m = ${f(-im.d / val.d, 2)}`]; },
       minimo: 3,
@@ -474,10 +474,10 @@
     temas: ['Ecuación del fabricante y potencia de una lente'],
     pieza: 'fis-banco-optico',
     juega: {
-      consigna: 'Un haz paralelo atraviesa una lente biconvexa en el aire. Cambia el radio de sus caras y el índice del vidrio.',
+      consigna: 'Un haz paralelo atraviesa una lente biconvexa en el aire. El radio de sus caras cambia solo: mira el foco. Cambia el índice del vidrio.',
       voz: 'Mira dónde se juntan los rayos cuando la lente se curva más.',
       controles: [
-        { id: 'R', etiqueta: 'R', min: 10, max: 40, paso: 10, inicio: 20, unidad: 'cm', decimales: 0 },
+        { id: 'R', etiqueta: 'R', min: 10, max: 40, paso: 10, inicio: 20, unidad: 'cm', decimales: 0, auto: { velocidad: 8, modo: 'rebota' } },
         { id: 'n', etiqueta: 'n', min: 1.4, max: 1.8, paso: 0.1, inicio: 1.5, unidad: '', decimales: 1 },
       ],
       dibujo: val => haz(fFab(val.n, val.R), val.R, 45),
@@ -616,9 +616,9 @@
     laboratorio: [
       {
         id: 'frontera-libre', titulo: 'Dos medios a elección', pieza: 'fis-interfaz',
-        consigna: 'Elige el medio de arriba y el de abajo, y gira el rayo. ¿En qué casos queda atrapado?',
+        consigna: 'El rayo gira solo. Elige el medio de arriba y el de abajo. ¿En qué casos queda atrapado?',
         controles: [
-          { id: 'a', etiqueta: 'θ₁', color: 'c-o', min: 0, max: 85, paso: 1, inicio: 50, unidad: '°', decimales: 0 },
+          { id: 'a', etiqueta: 'θ₁', color: 'c-o', min: 0, max: 85, paso: 1, inicio: 50, unidad: '°', decimales: 0, auto: { velocidad: 15, modo: 'rebota' } },
           { id: 'm1', etiqueta: 'Arriba', inicio: 'vidrio', opciones: Object.keys(MEDIOS_LAB).map(k => ({ valor: k, texto: k })) },
           { id: 'm2', etiqueta: 'Abajo', opciones: Object.keys(MEDIOS_LAB).map(k => ({ valor: k, texto: k })) },
         ],

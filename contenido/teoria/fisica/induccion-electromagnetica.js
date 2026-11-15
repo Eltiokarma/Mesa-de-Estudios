@@ -76,11 +76,11 @@
     temas: ['Flujo magnético'],
     pieza: 'flechas',
     juega: {
-      consigna: 'El segmento es una espira de 0,5 m² vista de canto; n, su normal. Gírala y cambia B. La franja verde es su sombra.',
+      consigna: 'El segmento es una espira de 0,5 m² vista de canto; n, su normal. Gira sola: mira su sombra, la franja verde. Cambia B.',
       voz: 'Mira la sombra, no la espira.',
       controles: [
         { id: 'B', etiqueta: 'B', color: 'c-i', min: 0.2, max: 1, paso: 0.2, inicio: 0.6, unidad: 'T', decimales: 1 },
-        { id: 'th', etiqueta: 'θ', min: 0, max: 90, paso: 15, inicio: 30, unidad: '°', decimales: 0 },
+        { id: 'th', etiqueta: 'θ', min: 0, max: 90, paso: 15, inicio: 30, unidad: '°', decimales: 0, auto: { velocidad: 30, modo: 'rebota' } },
       ],
       dibujo: val => ({ datos: flujoDib(val.B, val.th), estado: { paso: 0 } }),
       lectura: val => [Phi, ` = ${f(flujoDe(val), 3)}\u00a0Wb`],
@@ -167,20 +167,26 @@
       ] : [],
     };
   }
+  // Animación (15 nov): el reloj recorre la gráfica Φ–t en cámara lenta; el punto dice el flujo y la fem del momento
+  // (ε = −N ΔΦ/Δt del tramo donde está: la pendiente, no la altura).
+  const PHI_T = (F1, ts, tt) => (tt <= ts ? F1 * tt / ts : tt <= 1.2 ? F1 : tt <= 1.6 ? F1 * (1.6 - tt) / 0.4 : 0);
+  const FEM_T = (F1, ts, tt) => (tt < ts ? femSube(F1, ts) : tt <= 1.2 ? 0 : tt < 1.6 ? -femBaja(F1) : 0);
+  const faradayVivo = (F1, ts, tt) => { const d = faradayDib(F1, ts); d.puntos = d.puntos.concat([{ x: tt, y: PHI_T(F1, ts, tt), color: 'd', guias: true }]); return d; };
   const faraday = {
     id: 'faraday',
     titulo: 'La fem nace del cambio',
     temas: ['Ley de Faraday'],
     pieza: 'ejes',
     juega: {
-      consigna: 'El flujo de una bobina de 50 vueltas sube, se queda quieto y cae a cero en 0,4 s. Elige cuánto sube y en cuánto.',
+      consigna: 'El flujo de una bobina de 50 vueltas sube, se queda quieto y cae a cero. En cámara lenta: mira la fem en cada tramo.',
       voz: 'Compara la fem del tramo que sube con la del tramo plano.',
       controles: [
         { id: 'F1', etiqueta: 'Φ final', color: 'c-d', min: 0.2, max: 1, paso: 0.2, inicio: 0.4, unidad: 'Wb', decimales: 1 },
         { id: 'ts', etiqueta: 'Sube en', min: 0.2, max: 0.6, paso: 0.2, inicio: 0.4, unidad: 's', decimales: 1 },
+        { id: 't', etiqueta: 't', min: 0, max: 2, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 0.5 } },
       ],
-      dibujo: val => ({ datos: faradayDib(val.F1, val.ts), estado: {} }),
-      lectura: val => [eps, ` al subir = 50 · ${f(val.F1, 1)} / ${f(val.ts, 1)} = ${f(femSube(val.F1, val.ts), 1)}\u00a0V`],
+      dibujo: val => ({ datos: faradayVivo(val.F1, val.ts, val.t), estado: {} }),
+      lectura: val => [`t = ${f(val.t, 2)}\u00a0s: `, Phi, ` = ${f(PHI_T(val.F1, val.ts, val.t), 2)}\u00a0Wb · `, eps, ` = ${f(FEM_T(val.F1, val.ts, val.t), 1)}\u00a0V`],
       minimo: 3,
       // Arrastra la esquina donde el flujo deja de subir: arriba-abajo cambia Φ final; a los lados, cuánto tarda.
       arrastres: [{ id: 'esquina', etiqueta: 'esquina del tramo que sube', color: 'c-d',
@@ -240,26 +246,30 @@
     const cara = inducido === 'izq' ? 'N' : inducido === 'der' ? 'S' : null; // la cara de la espira que mira al imán
     return { inducido, corriente, cara, repele: cara ? cara === polo : null };
   }
-  const lenzDib = (polo, mueve, conRespuesta = true) => {
+  // x: posición del imán (0 lejos, 1 junto a la espira). Por defecto, la de siempre según lo que hace el imán.
+  const lenzDib = (polo, mueve, conRespuesta = true, x) => {
     const L = lenz(polo, mueve);
-    return { datos: { modo: 'iman', colores: COL, iman: { x: mueve === 'acerca' ? 0.65 : mueve === 'aleja' ? 0.35 : 0.5, polo, mueve }, corriente: conRespuesta ? L.corriente : null, inducido: conRespuesta ? L.inducido : null }, estado: {} };
+    return { datos: { modo: 'iman', colores: COL, iman: { x: x !== undefined ? x : mueve === 'acerca' ? 0.65 : mueve === 'aleja' ? 0.35 : 0.5, polo, mueve }, corriente: conRespuesta ? L.corriente : null, inducido: conRespuesta ? L.inducido : null }, estado: {} };
   };
+  // Animación (15 nov): el imán se acerca o se aleja de verdad, a ritmo parejo, y vuelve a empezar cada 3 s.
+  const xIman = (mueve, tt) => (mueve === 'acerca' ? 0.15 + 0.8 * tt / 3 : mueve === 'aleja' ? 0.95 - 0.8 * tt / 3 : 0.5);
   const lenzIdea = {
     id: 'lenz',
     titulo: 'La espira se opone al cambio',
     temas: ['Ley de Lenz'],
     pieza: 'fis-espira',
     juega: {
-      consigna: 'Elige qué polo mira a la espira y qué hace el imán. ⊙ es corriente que sale de la pantalla; ⊗, que entra.',
+      consigna: 'Elige qué polo mira a la espira y qué hace el imán, y míralo moverse. ⊙ es corriente que sale de la pantalla; ⊗, que entra.',
       voz: 'Fíjate hacia dónde apunta el campo de la espira en cada caso.',
       controles: [
         { id: 'polo', etiqueta: 'Polo hacia la espira', opciones: [{ valor: 'N', texto: 'N' }, { valor: 'S', texto: 'S' }] },
         { id: 'mueve', etiqueta: 'El imán', opciones: [{ valor: 'acerca', texto: 'se acerca' }, { valor: 'aleja', texto: 'se aleja' }, { valor: 'quieto', texto: 'quieto' }] },
+        { id: 't', etiqueta: 't', min: 0, max: 3, paso: 0.5, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } },
       ],
-      dibujo: val => lenzDib(val.polo, val.mueve),
+      dibujo: val => lenzDib(val.polo, val.mueve, true, xIman(val.mueve, val.t)),
       lectura: val => {
-        const L = lenz(val.polo, val.mueve);
-        return L.cara ? [`La espira le muestra un ${L.cara}: ${L.repele ? 'lo repele' : 'lo atrae'}`] : ['Flujo constante: no hay corriente'];
+        const L = lenz(val.polo, val.mueve), d = `imán a ${f(20 * (1 - xIman(val.mueve, val.t)), 0)}\u00a0cm`;
+        return L.cara ? [`La espira le muestra un ${L.cara}: ${L.repele ? 'lo repele' : 'lo atrae'} · ${d}`] : [`Flujo constante: no hay corriente · ${d}`];
       },
       minimo: 3,
     },
@@ -339,25 +349,28 @@
     const e = Bv * ELE * vv, P = e * e / RES;
     return { datos: { modo: 'barra', colores: COL, barra: { largo: 10, x, l: ELE, sentido: 'entra', v: vv, escalaV: EV, corriente: vv ? 'arriba' : null, brillo: Math.min(1, P / 1.25) }, rotulo: rot ? `ε = ${f(e, 2)} V` : undefined }, estado: {} };
   };
+  // Animación (15 nov): la barra avanza x = 1 + v·t metros (en cámara lenta) y vuelve a salir al llegar a 9 m.
+  const xBarra = val => 1 + (val.v * val.t) % 8;
   const barraIdea = {
     id: 'barra-movil',
     titulo: 'La barra que barre área',
     temas: ['Fem en un conductor móvil'],
     pieza: 'fis-espira',
     juega: {
-      consigna: 'Una barra de 0,5 m corre sobre dos rieles unidos por un foco. Elige su rapidez y el campo.',
+      consigna: 'Una barra de 0,5 m corre sobre dos rieles unidos por un foco: mira cómo crece el área. Cambia su rapidez y el campo.',
       voz: 'El foco responde a cuánto área se barre cada segundo.',
       controles: [
         { id: 'v', etiqueta: 'v', color: 'c-o', min: 1, max: 5, paso: 1, inicio: 2, unidad: 'm/s', decimales: 0 },
         { id: 'B', etiqueta: 'B', color: 'c-i', min: 0.2, max: 1, paso: 0.2, inicio: 0.6, unidad: 'T', decimales: 1 },
+        { id: 't', etiqueta: 't', min: 0, max: 8, paso: 0.25, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 0.5 } },
       ],
-      dibujo: val => barraDib(val.B, val.v, 4),
-      lectura: val => [eps, ` = ${f(val.B, 1)} · 0,5 · ${f(val.v, 0)} = ${f(val.B * ELE * val.v, 2)}\u00a0V`],
+      dibujo: val => barraDib(val.B, val.v, xBarra(val)),
+      lectura: val => [Phi, ` = ${f(val.B * ELE * xBarra(val), 2)}\u00a0Wb · `, eps, ` = ${f(val.B, 1)} · 0,5 · ${f(val.v, 0)} = ${f(val.B * ELE * val.v, 2)}\u00a0V`],
       minimo: 3,
       // Estira la flecha de v: más rápida, más área barrida por segundo.
       arrastres: [{ id: 'rapidez', etiqueta: 'punta de la flecha de v', color: 'c-o',
-        donde: val => ESP().geometria(barraDib(val.B, val.v, 4).datos).puntaV(val.v),
-        mover: (pt, val) => ({ v: ESP().geometria(barraDib(val.B, val.v, 4).datos).vDe(pt) }) }],
+        donde: val => ESP().geometria(barraDib(val.B, val.v, xBarra(val)).datos).puntaV(val.v),
+        mover: (pt, val) => ({ v: ESP().geometria(barraDib(val.B, val.v, xBarra(val)).datos).vDe(pt) }) }],
     },
     predice: {
       pregunta: ['La barra frena y se queda quieta en el medio del campo, con ', B, ' = 1 T. ¿Qué pasa con el foco?'],
@@ -435,14 +448,16 @@
     temas: ['Generador de corriente alterna y valores eficaces'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Una espira gira en un campo y su fem sube y baja. Elige el pico y cuántas vueltas da por segundo.',
+      consigna: 'Una espira gira en un campo y su fem sube y baja, en cámara lenta. Cambia el pico y las vueltas por segundo.',
       voz: 'La línea punteada no cambia de forma cuando cambias las vueltas.',
       controles: [
         { id: 'Vm', etiqueta: 'ε pico', color: 'c-h', min: 100, max: 340, paso: 20, inicio: 220, unidad: 'V', decimales: 0 },
         { id: 'fr', etiqueta: 'Vueltas por segundo', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'Hz', decimales: 0 },
+        { id: 't', etiqueta: 't', min: 0, max: 1, paso: 0.01, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 0.2 } },
       ],
-      dibujo: val => ({ datos: sen(val.Vm, val.fr), estado: {} }),
-      lectura: val => [`Eficaz: ${f(val.Vm, 0)} / √2 = ${f(val.Vm / Math.SQRT2, 1)}\u00a0V`],
+      // El punto recorre la curva: ε(t) = ε pico · sen(2π f t) (regla 1: la misma función que la dibuja).
+      dibujo: val => ({ datos: sen(val.Vm, val.fr, true, { puntos: [{ x: val.t, y: val.Vm * Math.sin(2 * Math.PI * val.fr * val.t), color: 'h', guias: true }] }), estado: {} }),
+      lectura: val => [eps, ` = ${f(val.Vm * Math.sin(2 * Math.PI * val.fr * val.t), 0)}\u00a0V ahora · eficaz ${f(val.Vm / Math.SQRT2, 1)}\u00a0V`],
       minimo: 3,
       // Toma la primera cresta: arriba-abajo cambia el pico; a los lados, cuántas vueltas por segundo.
       arrastres: [{ id: 'cresta', etiqueta: 'primera cresta de la fem', color: 'c-h',
@@ -512,14 +527,15 @@
     temas: ['Transformador'],
     pieza: 'fis-espira',
     juega: {
-      consigna: 'Entran 220 V alternos por el primario. Elige las vueltas de cada bobina y lee el voltaje de salida.',
+      consigna: 'Entran 220 V alternos por el primario. Las vueltas del secundario cambian solas: lee el voltaje de salida. Cambia el primario.',
       voz: 'Prueba a duplicar las dos bobinas a la vez.',
       controles: [
         { id: 'np', etiqueta: 'Np', min: 100, max: 500, paso: 100, inicio: 200, unidad: '', decimales: 0 },
-        { id: 'ns', etiqueta: 'Ns', min: 100, max: 1000, paso: 100, inicio: 400, unidad: '', decimales: 0 },
+        { id: 'ns', etiqueta: 'Ns', min: 100, max: 1000, paso: 100, inicio: 400, unidad: '', decimales: 0, auto: { velocidad: 200, modo: 'rebota' } },
       ],
-      dibujo: val => trafoDib(val.np, val.ns),
-      lectura: val => [`Vs = 220 · ${f(val.ns, 0)} / ${f(val.np, 0)} = ${f(VP * val.ns / val.np, 1)}\u00a0V`],
+      // Mientras corre, Ns avanza de diez en diez vueltas (un número de vueltas es entero).
+      dibujo: val => trafoDib(val.np, Math.round(val.ns / 10) * 10),
+      lectura: val => { const ns = Math.round(val.ns / 10) * 10; return [`Vs = 220 · ${f(ns, 0)} / ${f(val.np, 0)} = ${f(VP * ns / val.np, 1)}\u00a0V`]; },
       minimo: 3,
     },
     predice: {
@@ -593,9 +609,9 @@
   const igual = (a, b) => Math.abs(a - b) < 1e-9;
   const mesaSombra = {
     id: 'espira-sombra-3d', titulo: 'La espira y su sombra', pieza: 'fis-espacio-3d',
-    consigna: 'Gira la escena con el dedo. Inclina la espira y mira su sombra verde en el piso: eso es lo que cruza el campo.',
+    consigna: 'La espira se inclina sola: mira su sombra verde en el piso, que es lo que cruza el campo. Gira la escena con el dedo.',
     controles: [
-      { id: 'th', etiqueta: 'Inclinación θ', min: 0, max: 180, paso: 15, inicio: 30, unidad: '°', decimales: 0 },
+      { id: 'th', etiqueta: 'Inclinación θ', min: 0, max: 180, paso: 15, inicio: 30, unidad: '°', decimales: 0, auto: { velocidad: 30, modo: 'rebota' } },
       { id: 'B', etiqueta: 'B', color: 'c-i', min: 0.2, max: 1, paso: 0.2, inicio: 0.6, unidad: 'T', decimales: 1 },
       { id: 'A', etiqueta: 'Área A', min: 0.04, max: 0.16, paso: 0.04, inicio: 0.08, unidad: 'm²', decimales: 2 },
     ],
