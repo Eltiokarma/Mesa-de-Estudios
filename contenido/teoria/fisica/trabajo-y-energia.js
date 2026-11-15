@@ -166,8 +166,10 @@
   // Cambia: la fuerza neta y la distancia · Permanece: el carrito de 2 kg que parte del reposo · Progresa: las dos
   // barras, W y K, siempre iguales · Se reserva: duplicar v, que pide cuatro veces el trabajo · Debe verse: W = ΔK.
   const KJ2 = 0.028; // 80 J (lo más que da el juego) caben en 2,2 m de figura
+  // Motor del empujón (lo mismo que dibuja): carrito de 2 kg desde el reposo, W = F d = K.
+  const salida = (Fv, dd) => { const W = Fv * dd; return { W, v: Math.sqrt(2 * W / 2) }; };
   function empujon(Fv, dd, o = {}) {
-    const W = Fv * dd, vv = Math.sqrt(2 * W / 2);
+    const { W, v: vv } = salida(Fv, dd);
     const b = barras([{ etq: 'W', val: W }, { etq: 'K', val: W, color: 'h' }], 0.6, 0.3, 0.6, KJ2);
     return {
       vista: { x0: -2.2, x1: 2.2, y0: -0.6, y1: 3 }, escalaF: 4,
@@ -192,7 +194,7 @@
         { id: 'd', etiqueta: 'd', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'm', decimales: 0 },
       ],
       dibujo: val => ({ datos: empujon(val.F, val.d), estado: {} }),
-      lectura: val => [`W = `, K, ` = ${f(val.F * val.d, 0)} J · v = ${f(Math.sqrt(val.F * val.d), 2)} m/s`],
+      lectura: val => [`W = `, K, ` = ${f(salida(val.F, val.d).W, 0)} J · v = ${f(salida(val.F, val.d).v, 2)} m/s`],
       minimo: 4,
       // Arrastra la punta de F (más fuerza) o el final de la cota turquesa (más distancia). Las barras responden.
       arrastres: [
@@ -263,7 +265,7 @@
     temas: ['Energía potencial gravitatoria y elástica'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Comprime un resorte de k = 200 N/m. La fuerza crece con x; el área sombreada es la energía guardada.',
+      consigna: 'Comprime un resorte de k = 200 N/m. La fuerza crece con x; el área sombreada es la energía potencial elástica.',
       voz: 'Duplica la compresión. ¿Cuántas veces crece el área?',
       controles: [{ id: 'x', etiqueta: 'x', color: 'c-i', min: 0.05, max: 0.4, paso: 0.05, inicio: 0.1, unidad: 'm', decimales: 2 }],
       dibujo: val => ({ datos: resorteEjes(val.x), estado: {} }),
@@ -297,7 +299,7 @@
         textos: [{ en: [1.4, 1.75], texto: 'desde el piso: 20 J', color: 'd', paso: 1 }, { en: [-1.1, 2.05], texto: 'desde la mesa: 0 J', color: 'd', paso: 2 }, { en: [0, -0.45], texto: 'al caer al piso pierde 20 J', color: 'd', paso: 3 }],
       },
       pasos: [
-        { estado: { paso: 1 }, texto: 'Libro de 2 kg sobre una mesa de 1 m, desde el piso.', ecuacion: [Ug, ' = m g ', h, ' = 2 · 10 · 1 = 20 J'] },
+        { estado: { paso: 1 }, texto: 'Energía potencial gravitatoria de un libro de 2 kg a 1 m del piso.', ecuacion: [Ug, ' = m g ', h, ' = 2 · 10 · 1 = 20 J'] },
         { estado: { paso: 2 }, texto: 'Si la referencia es la mesa, su altura es 0.', ecuacion: [Ug, ' = 0 J'] },
         { estado: { paso: 3 }, texto: 'Importa el cambio: al caer al piso pierde 20 J con ambas referencias.', ecuacion: ['Δ', Ug, ' = −20 J'] },
       ],
@@ -340,8 +342,14 @@
   // Cambia: la altura de salida y si hay rozamiento · Permanece: la suma K + U sin roce · Progresa: U que pasa a K
   // en la bajada · Se reserva: la rampa curva, que da la misma rapidez abajo · Debe verse: v = √(2gh) sin importar el camino.
   const KJ4 = 0.021; // 100 J caben en 2,1 m; la rampa va a 0,36 unidades por metro de altura (escala uniforme)
+  // Motor de la rampa (lo mismo que dibuja): 2 kg; la altura en el avance t es h(1 − t)², la misma curva del dibujo;
+  // con roce se pierde 25 % de la energía de salida a lo largo de la bajada.
+  function energias(h0, roce, frac) {
+    const m = 2, E = m * G * h0, perd = roce ? 0.25 * E * frac : 0, Uv = m * G * h0 * (1 - frac) * (1 - frac), Kv = E - Uv - perd;
+    return { m, E, perd, Uv, Kv, vv: Math.sqrt(2 * Kv / m) };
+  }
   function rampa(h0, roce, frac = 1, o = {}) {
-    const m = 2, E = m * G * h0, perd = roce ? 0.25 * E * frac : 0, Uv = m * G * h0 * (1 - frac), Kv = E - Uv - perd, vv = Math.sqrt(2 * Kv / m);
+    const { E, perd, Uv, Kv, vv } = energias(h0, roce, frac);
     const curva = Array.from({ length: 21 }, (_, i) => { const t = i / 20; return [-2 + 2.4 * t, h0 * 0.36 * (1 - t) * (1 - t)]; });
     const pos = curva[Math.round(frac * 20)];
     const b = barras([{ etq: 'U', val: Uv, color: 'd' }, { etq: 'K', val: Kv, color: 'h' }, { etq: 'calor', val: perd }], 0.9, 0.3, 0.38, KJ4);
@@ -369,7 +377,7 @@
         { id: 'frac', etiqueta: 'Avance', min: 0, max: 1, paso: 0.25, inicio: 0.5, unidad: '', decimales: 2 },
       ],
       dibujo: val => ({ datos: rampa(val.h, val.roce === 1, val.frac), estado: {} }),
-      lectura: val => { const E = 20 * val.h, perd = val.roce ? 0.25 * E * val.frac : 0; return [U, ' + ', K, ` = ${f(E - perd, 0)} J`]; },
+      lectura: val => { const e = energias(val.h, val.roce === 1, val.frac); return [U, ' + ', K, ` = ${f(e.Uv + e.Kv, 0)} J`]; },
       // Arrastra la bolita por la rampa: el avance sigue al dedo; las barras responden. La altura va con − y +.
       arrastres: [{ id: 'bolita', etiqueta: 'avance de la bolita en la rampa',
         donde: val => bolita(val.h, val.frac),
@@ -401,7 +409,7 @@
       ],
     },
     regla: {
-      texto: 'Sin rozamiento, la energía potencial que se pierde se gana como cinética: la suma no cambia. Con rozamiento, la diferencia se vuelve calor.',
+      texto: 'Sin rozamiento, la energía potencial que se pierde se gana como cinética: la energía mecánica, K + U, no cambia. Con rozamiento, la diferencia se vuelve calor.',
       ecuacion: [{ llave: [K0, ' + ', { sub: [U, '0'] }], nota: 'al salir', color: 'c-d' }, ' = ', K, ' + ', U, ' + calor', '   ·   ', 'v = ', { raiz: ['2 g ', h] }],
       condicion: 'v = √(2gh) supone partir del reposo, sin roce ni aire y un cuerpo que desliza, sin rodar.',
     },
@@ -514,11 +522,38 @@
     },
   };
 
+  // Motores de las mesas del laboratorio (los mismos que dibujan y leen). `guardado` dice si el caso actual ya se guardó.
+  const trabajoCuerda = val => val.F * 5 * Math.cos(rad(val.ang));
+  const guardado = (val, gs, claves) => gs.some(g => claves.every(c => g[c] === val[c]));
+
   return {
     unidad: 'fisica.trabajo-y-energia',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-lienzo.js'],
+    // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso.
+    glosario: [
+      { termino: 'trabajo', formas: ['trabajo'], simbolo: 'W', medida: 'J', def: 'Lo que aporta una fuerza al mover algo: su parte a lo largo del camino por la distancia.',
+        ejemplo: '20 N en el sentido del avance, a lo largo de 5 m: W = 100 J.', ver: ['energía', 'potencia'] },
+      { termino: 'trabajo neto', simbolo: 'Wneto', medida: 'J', def: 'Suma de lo que trabajan todas las fuerzas sobre un cuerpo; es igual al cambio de su energía cinética.',
+        ejemplo: 'Fuerza neta de 8 N a lo largo de 2 m: Wneto = 16 J.', ver: ['energía cinética'] },
+      { termino: 'energía', medida: 'J', def: 'Capacidad de hacer trabajo o dar calor; cambia de forma, pero no se crea ni se destruye.',
+        ver: ['trabajo', 'energía mecánica'] },
+      { termino: 'energía cinética', simbolo: 'K', medida: 'J', def: 'Energía de un cuerpo por moverse: crece con su masa y con el cuadrado de su rapidez.',
+        ejemplo: '2 kg a 3 m/s: K = ½ · 2 · 3² = 9 J.', ver: ['trabajo neto'] },
+      { termino: 'energía potencial', simbolo: 'U', medida: 'J', def: 'Energía guardada por la posición o la forma: la altura de un cuerpo, un resorte deformado, dos cargas cercanas.',
+        ver: ['energía potencial gravitatoria', 'energía potencial elástica'] },
+      { termino: 'energía potencial gravitatoria', simbolo: 'Ug', medida: 'J', def: 'Energía de un cuerpo por su altura sobre una referencia elegida: masa por g por altura.',
+        ejemplo: 'Libro de 2 kg a 1 m del piso: Ug = 2 · 10 · 1 = 20 J.', ver: ['gravedad'] },
+      { termino: 'energía potencial elástica', simbolo: 'Ue', medida: 'J', def: 'Energía guardada en un resorte estirado o comprimido; crece con el cuadrado de la deformación.',
+        ejemplo: 'k = 200 N/m comprimido 0,1 m: Ue = ½ · 200 · 0,1² = 1 J.' },
+      { termino: 'energía mecánica', medida: 'J', def: 'Suma de la energía cinética y la potencial de un cuerpo. Sin rozamiento, no cambia.',
+        ejemplo: '2 kg en reposo a 5 m: 100 J; abajo, sin roce, K = 100 J.', ver: ['energía cinética', 'energía potencial'] },
+      { termino: 'potencia', simbolo: 'P', medida: 'W', def: 'Rapidez para hacer trabajo: cuánto trabajo se hace en cada segundo.',
+        ejemplo: '5000 J en 10 s: P = 500 W.', ver: ['trabajo', 'eficiencia'] },
+      { termino: 'eficiencia', simbolo: 'η', medida: '%', def: 'Fracción de la energía que recibe una máquina que sale como útil. Nunca pasa de 100 %.',
+        ejemplo: 'Consume 625 W y entrega 500 W útiles: η = 0,8, es decir, 80 %.', ver: ['potencia'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. La cuerda libre mueve fuerza y ángulo con una sola manija (en la idea,
     // F está fija y el ángulo va de 30 en 30); la rampa y el empujón son los juegos de las ideas 4 y 2.
     laboratorio: [
@@ -530,13 +565,57 @@
           { id: 'ang', etiqueta: 'Ángulo', min: 0, max: 180, paso: 15, inicio: 45, unidad: '°', decimales: 0 },
         ],
         dibujo: val => ({ datos: jalar(val.ang, { F: val.F }), estado: {} }),
-        lectura: val => [`W = ${f(val.F, 0)} · 5 · cos ${val.ang}° = ${f(val.F * 5 * Math.cos(rad(val.ang)), 1)} J`],
+        lectura: val => [`W = ${f(val.F, 0)} · 5 · cos ${val.ang}° = ${f(trabajoCuerda(val), 1)} J`],
         arrastres: [{ id: 'cuerda', etiqueta: 'fuerza y ángulo de la cuerda (punta de F)', color: 'c-o',
           donde: val => puntaF(val.ang, val.F),
           mover: (pt, val) => { const q = anguloDe(pt, val.ang, val.F); return { ang: q.th, F: q.largo / KF1 }; } }],
+        invitaciones: [
+          { texto: 'Jala con 20 N y haz que la cuerda no haga ningún trabajo.',
+            logrado: val => val.F === 20 && Math.abs(trabajoCuerda(val)) < 1e-9,
+            bien: 'Toda la fuerza va de lado: nada acompaña al avance. ¿Y a 120°?' },
+          { texto: 'Consigue que la cuerda frene la caja con un trabajo de −50 J.',
+            logrado: val => Math.abs(trabajoCuerda(val) + 50) < 1e-9,
+            bien: 'Pasado 90°, la cuerda va contra el avance y su trabajo es negativo.' },
+          { texto: 'Busca el trabajo más negativo que puede hacer la cuerda.',
+            // El extremo de la grilla: la fuerza más grande, justo contra el avance.
+            logrado: val => trabajoCuerda(val) <= trabajoCuerda({ F: 20, ang: 180 }) + 1e-9,
+            bien: 'Toda la fuerza contra el avance: frena con −100 J.' },
+          { texto: 'Guarda dos casos con distinta fuerza que hagan el mismo trabajo, sin ser cero.',
+            logrado: (val, guardados) => Math.abs(trabajoCuerda(val)) > 1e-9 && guardado(val, guardados, ['F', 'ang'])
+              && guardados.some(g => g.F !== val.F && Math.abs(trabajoCuerda(g) - trabajoCuerda(val)) < 1e-9),
+            bien: 'Más fuerza, más inclinada: cuenta solo la parte que acompaña al camino.' },
+        ],
       },
-      Object.assign({ id: 'rampa', titulo: 'La rampa con y sin roce', pieza: 'fis-lienzo' }, conservacion.juega),
-      Object.assign({ id: 'empujon', titulo: 'El empujón y las barras', pieza: 'fis-lienzo' }, teorema.juega),
+      Object.assign({ id: 'rampa', titulo: 'La rampa con y sin roce', pieza: 'fis-lienzo',
+        invitaciones: [
+          { texto: 'Haz que el carrito llegue abajo con 60 J de energía cinética.',
+            logrado: val => val.frac === 1 && Math.abs(energias(val.h, val.roce === 1, val.frac).Kv - 60) < 1e-9,
+            bien: 'Hay dos maneras: 3 m sin roce o 4 m con roce. ¿Las hallaste?' },
+          { texto: 'Con rozamiento, consigue la mayor rapidez posible.',
+            logrado: val => val.roce === 1 && energias(val.h, true, val.frac).vv >= energias(5, true, 1).vv - 1e-9,
+            bien: 'Desde lo más alto y hasta abajo. Aun así, el roce se llevó un cuarto.' },
+          { texto: 'Guarda el mismo punto de la bajada con y sin roce.',
+            logrado: (val, guardados) => val.frac > 0 && guardado(val, guardados, ['h', 'roce', 'frac'])
+              && guardados.some(g => g.h === val.h && g.frac === val.frac && g.roce !== val.roce),
+            bien: 'Sin roce, U + K se queda igual; con roce, lo que falta es calor.' },
+          { texto: 'Pon el roce y haz que la barra de calor llegue a 25 J.',
+            logrado: val => val.roce === 1 && Math.abs(energias(val.h, true, val.frac).perd - 25) < 1e-9,
+            bien: 'Ese calor salió de los 100 J de arriba: la energía no desaparece.' },
+        ] }, conservacion.juega),
+      Object.assign({ id: 'empujon', titulo: 'El empujón y las barras', pieza: 'fis-lienzo',
+        invitaciones: [
+          { texto: 'Guarda dos empujones distintos que den la misma rapidez.',
+            logrado: (val, guardados) => guardado(val, guardados, ['F', 'd'])
+              && guardados.some(g => g.F !== val.F && Math.abs(salida(g.F, g.d).v - salida(val.F, val.d).v) < 1e-9),
+            bien: 'Mismo trabajo, misma rapidez: no importa si pusiste fuerza o distancia.' },
+          { texto: 'Consigue el triple de rapidez que da empujar con 5 N por 1 m.',
+            logrado: val => Math.abs(salida(val.F, val.d).v - 3 * salida(5, 1).v) < 1e-9,
+            bien: 'Triple de rapidez pidió nueve veces el trabajo: K va con v².' },
+          { texto: 'Busca la menor fuerza que lo haga salir a más de 5 m/s.',
+            // Con 5 N no alcanza ni en 4 m (√20 ≈ 4,47 m/s); con 10 N y 3 m, sí.
+            logrado: val => salida(val.F, val.d).v > 5 && !(salida(val.F - 5, 4).v > 5),
+            bien: 'Con menos fuerza no alcanza ni empujando los 4 m.' },
+        ] }, teorema.juega),
     ],
     historia: {
       texto: 'Comparar máquinas obligó a preguntar cuánto efecto útil daban y adónde iba lo que parecía perderse. En la década de 1840, Joule agitó agua con paletas movidas por pesas que bajaban y midió cómo subía su temperatura: el trabajo mecánico se volvía calor. Así se armó la idea de una energía que cambia de forma.',
