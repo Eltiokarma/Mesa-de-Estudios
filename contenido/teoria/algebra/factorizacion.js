@@ -612,7 +612,27 @@
         donde: v => { const g = BALD().geometria(aspaLab(v)); return { x: g.xs[1][1], y: g.ys[1][1] }; },
         mover: (pt, v) => { const g = BALD().geometria(aspaLab(v)); return { p: (pt.x - g.xs[1][0]) / g.esc, q: (pt.y - g.ys[1][0]) / g.esc }; } },
     ],
+    // Retos comprobados (docs/teoria.md §4d): miran el trinomio que arman las piezas, mn x² + (mq + np) x + pq.
+    invitaciones: [
+      { texto: 'Arma un trinomio con término central 9.',
+        logrado: v => trinomio(v)[1] === 9,
+        bien: 'Los productos en cruz, mq y np, sumaron 9.' },
+      { texto: 'Haz que el trinomio sea un cuadrado perfecto.',
+        logrado: v => { const [a, b, c] = trinomio(v); return b * b === 4 * a * c; },
+        bien: 'Las dos piezas verdes son iguales: es (mx + p)².' },
+      { texto: 'Consigue x² + 5x + 6 con el aspa.',
+        logrado: v => trinomio(v).join() === [1, 5, 6].join(),
+        bien: '2 · 3 = 6 y 2 + 3 = 5: (x + 2)(x + 3).' },
+      { texto: 'Guarda dos aspas con los mismos extremos y distinto término central.',
+        logrado: (v, guardados) => {
+          const t = trinomio(v);
+          return guardados.some(g => { const u = trinomio(g); return u[0] === t[0] && u[2] === t[2] && u[1] !== t[1]; })
+            && guardados.some(g => ['m', 'n', 'p', 'q'].every(k => g[k] === v[k]));
+        },
+        bien: 'Mismas puntas, distinto cruce: por eso se prueban particiones.' },
+    ],
   };
+  const trinomio = v => [v.m * v.n, v.m * v.q + v.n * v.p, v.p * v.q];
   // Mesa 2: el camino inverso del teorema del factor: se arrastran las tres raíces por el eje y aparece P.
   const YMAX = 20;
   const raicesLab = v => {
@@ -640,7 +660,24 @@
     dibujo: v => ({ datos: raicesLab(v), estado: {} }),
     lectura: v => [`${[v.r1, v.r2, v.r3].map(a => `(${fx(a)})`).join('')} = ${poli([v.r1, v.r2, v.r3].reduce((acc, a) => mult(acc, [1, -a]), [1]))}`],
     arrastres: [raiz('r1', 1), raiz('r2', 2), raiz('r3', 3)],
+    invitaciones: [
+      { texto: 'Junta dos raíces para que la curva toque el eje sin cruzarlo.',
+        logrado: v => new Set([v.r1, v.r2, v.r3]).size === 2,
+        bien: 'Raíz doble: ese factor sale al cuadrado.' },
+      { texto: 'Haz que P no tenga término en x².',
+        logrado: v => desarrollo(v)[1] === 0,
+        bien: 'El coeficiente de x² es −(r₁ + r₂ + r₃): las raíces suman 0.' },
+      { texto: 'Haz que el término independiente sea 0.',
+        logrado: v => desarrollo(v)[3] === 0,
+        bien: 'Una raíz en 0: x es factor común.' },
+      { texto: 'Busca el término independiente más grande.',
+        logrado: v => desarrollo(v)[3] === MAX_INDEP,
+        bien: 'Las tres raíces en −4: (x + 4)³ termina en 64.' },
+    ],
   };
+  const desarrollo = v => [v.r1, v.r2, v.r3].reduce((acc, a) => mult(acc, [1, -a]), [1]);
+  // El mayor término independiente de la mesa (raíces de −4 a 4): se calcula, no se escribe.
+  const MAX_INDEP = (() => { let m = -Infinity; for (let a = -4; a <= 4; a++) for (let b = -4; b <= 4; b++) for (let c = -4; c <= 4; c++) m = Math.max(m, desarrollo({ r1: a, r2: b, r3: c })[3]); return m; })();
   // Mesa 3: MCD y MCM con los seis exponentes libres; la lectura compara grados: MCD · MCM tiene el grado de P · Q.
   const mesaMCD = {
     id: 'mcd-mcm-libre', titulo: 'Seis exponentes para comparar', pieza: 'alg-tabla',
@@ -659,6 +696,26 @@
       const gMcd = ps.reduce((a, [i, j]) => a + Math.min(i, j), 0), gMcm = ps.reduce((a, [i, j]) => a + Math.max(i, j), 0), gPQ = ps.reduce((a, [i, j]) => a + i + j, 0);
       return [`grados: MCD ${gMcd}, MCM ${gMcm}, P · Q ${gPQ}`];
     },
+    invitaciones: [
+      { texto: 'Haz que P y Q no tengan ningún factor común.',
+        logrado: v => grados(v).mcd === 0,
+        bien: 'MCD = 1: son primos entre sí, y el MCM es P · Q.' },
+      { texto: 'Consigue el MCM de mayor grado.',
+        logrado: v => grados(v).mcm === 9,
+        bien: 'En cada factor, uno de los dos llegó al exponente 3.' },
+      { texto: 'Haz que P divida a Q, sin que sean iguales.',
+        logrado: v => { const g = grados(v); return g.mcd === g.p && g.p !== g.pq - g.p; },
+        bien: 'Si P divide a Q, el MCD es P y el MCM es Q.' },
+      { texto: 'Guarda dos casos con el mismo grado de P · Q y distinto grado del MCD.',
+        logrado: (v, guardados) => guardados.some(g => grados(g).pq === grados(v).pq && grados(g).mcd !== grados(v).mcd)
+          && guardados.some(g => ['i1', 'j1', 'i2', 'j2', 'i3', 'j3'].every(k => g[k] === v[k])),
+        bien: 'MCD · MCM siempre tiene el grado de P · Q: uno gana lo que el otro pierde.' },
+    ],
+  };
+  const grados = v => {
+    const ps = [[v.i1, v.j1], [v.i2, v.j2], [v.i3, v.j3]];
+    return { mcd: ps.reduce((a, [i, j]) => a + Math.min(i, j), 0), mcm: ps.reduce((a, [i, j]) => a + Math.max(i, j), 0),
+      pq: ps.reduce((a, [i, j]) => a + i + j, 0), p: ps.reduce((a, [i]) => a + i, 0) };
   };
 
   return {
@@ -667,6 +724,25 @@
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/alg-baldosas.js', '/nucleo/kit/piezas/ejes.js'],
     laboratorio: [mesaAspa, mesaRaices, mesaMCD],
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'factorizar', formas: ['factorizar', 'factoriza', 'factorizan', 'factorización'],
+        def: 'Escribir un polinomio como producto de otros, sin cambiar su valor.', ejemplo: 'x² − 9 = (x + 3)(x − 3).', ver: ['factor', 'expandir'] },
+      { termino: 'expandir', def: 'Multiplicar todos los factores y juntar términos semejantes: el camino inverso de factorizar.', ejemplo: '(x + 1)(x + 2) = x² + 3x + 2.' },
+      { termino: 'factor común', formas: ['factor común', 'factores comunes'], def: 'Lo que se repite en todos los términos y se puede sacar multiplicando afuera.',
+        ejemplo: '6x² + 9x = 3x(2x + 3).' },
+      { termino: 'trinomio', formas: ['trinomio', 'trinomios'], def: 'Polinomio de tres términos.', ejemplo: '2x² + 7x + 3.', ver: ['aspa'] },
+      { termino: 'cuadrado perfecto', formas: ['cuadrado perfecto', 'cuadrados perfectos'], def: 'Expresión que es el cuadrado de otra.',
+        ejemplo: 'x² + 6x + 9 = (x + 3)².' },
+      { termino: 'término central', def: 'En ax² + bx + c, el término bx: el que el aspa reproduce con los productos en cruz.' },
+      { termino: 'aspa', def: 'Método para factorizar ax² + bx + c: se parten a y c en productos, cruzados hasta sumar b.',
+        ejemplo: '2x² + 7x + 3: 2x · 3 + x · 1 = 7x.', ver: ['término central', 'aspa doble'] },
+      { termino: 'aspa doble', def: 'Aspa para polinomios de dos letras con seis términos: se revisan tres cruces, uno por cada par de columnas.' },
+      { termino: 'MCD', def: 'Máximo común divisor: el producto de los factores comunes, cada uno con su menor exponente.',
+        ejemplo: '(x − 1)²(x + 2) y (x − 1)(x + 2)³: (x − 1)(x + 2).', ver: ['MCM'] },
+      { termino: 'MCM', def: 'Mínimo común múltiplo: el producto de todos los factores, cada uno con su mayor exponente.',
+        ejemplo: '(x − 1)²(x + 2) y (x − 1)(x + 2)³: (x − 1)²(x + 2)³.', ver: ['MCD'] },
+    ],
     historia: {
       texto: 'La proposición II.4 de los Elementos de Euclides parte el cuadrado sobre un segmento en dos cuadrados y dos rectángulos. Euclides lo dice con geometría; leerlo como (a + b)² es una interpretación moderna. Leer esa relación en los dos sentidos lleva de expandir a factorizar, con un límite: las longitudes no son negativas, y la identidad algebraica vale más allá de la figura.',
       pregunta: '¿Qué cambia si lees la misma igualdad al revés?',

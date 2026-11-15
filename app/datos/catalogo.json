@@ -1825,7 +1825,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 5,
-      "terminos": 19
+      "terminos": 21
      }
     },
     {
@@ -1980,7 +1980,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 21
+      "terminos": 22
      }
     },
     {
@@ -2020,7 +2020,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 18
+      "terminos": 28
      }
     },
     {
@@ -2413,7 +2413,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 9
+      "terminos": 10
      }
     }
    ]
