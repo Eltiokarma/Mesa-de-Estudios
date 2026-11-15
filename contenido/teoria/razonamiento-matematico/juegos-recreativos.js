@@ -16,10 +16,13 @@
  *   Duda que resuelve: «¿la ficha 2–5 y la 5–2 son dos fichas?».
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El motor de plantillas/dados-caras orienta cada dado de la mesa «Los dados que se separan» y suma sus caras tapadas.
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/dados-caras/motor.js'))
+    : fabrica(root.Kit, root.MotorDados);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MD) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const nn = { v: 'c-o', t: 'n' }, N = { v: 'c-d', t: 'N' }, t = { v: 'c-i', t: 't' };
@@ -436,11 +439,63 @@
     ],
   };
 
+  // ---------- Los dados que se separan (laboratorio 3D, 15 nov: exploración libre, sin predicciones) ----------
+  // El motor de plantillas/dados-caras orienta cada dado (opuestas suman 7) y suma las caras tapadas cara por cara; la
+  // pieza rm-cubitos-3d dibuja esos mismos puntos (regla 1). Separar levanta los dados y deja ver lo que se tapaba.
+  // Colores (los de la idea 2): la cara de arriba turquesa (c-i), las tapadas rojo suave (c-h).
+  const pilaDe = val => MD.pila(val.k, val.a, val.giro);
+  const ocultas3d = val => pilaDe(val).ocultas;
+  const MENOR_CUATRO = Math.min(...unoA(1, 6).map(a => MD.pila(4, a).ocultas));
+  function datosDados(val) {
+    const p = pilaDe(val);
+    // Caras del motor (arriba, abajo, frente, atrás, izquierda, derecha) en el orden de la pieza (−x, +x, −y, +y, −z, +z).
+    const celdas = p.dados.map((d, i) => {
+      const o = d.caras, tapada = c => p.tapadas.some(x => x.dado === i + 1 && x.cara === c);
+      const cara = (v, nombre) => ({ tono: tapada(nombre) ? 'c-h' : i === 0 && nombre === 'arriba' ? 'c-i' : 'dado', puntos: v });
+      return { p: [0, 0, d.z], caras: [cara(o[4], 'izquierda'), cara(o[5], 'derecha'), cara(o[2], 'frente'), cara(o[3], 'atrás'), cara(o[1], 'abajo'), cara(o[0], 'arriba')] };
+    });
+    return {
+      celdas, separar: val.sep / 3, vista: { giro: -32, inclinacion: 20 },
+      alt: `Pila de ${pl(val.k, 'dado común', 'dados comunes')} con el ${val.a} arriba. Caras tapadas: ${p.tapadas.map(x => x.valor).join(', ')}; suman ${p.ocultas}.`,
+    };
+  }
+  const mesaDados3d = {
+    id: 'dados-que-se-separan', titulo: 'Los dados que se separan', pieza: 'rm-cubitos-3d',
+    consigna: 'Gira la pila con el dedo. Cambia los dados y la cara de arriba, y sepáralos para ver las caras tapadas.',
+    controles: [
+      { id: 'k', etiqueta: 'Dados', color: 'c-d', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 },
+      { id: 'a', etiqueta: 'Arriba', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 5, decimales: 0 },
+      { id: 'giro', etiqueta: 'Giro de los de abajo', min: 0, max: 3, paso: 1, inicio: 0, decimales: 0 },
+      { id: 'sep', etiqueta: 'Separar', min: 0, max: 2, paso: 1, inicio: 0, decimales: 0 },
+    ],
+    dibujo: val => ({ datos: datosDados(val), estado: {} }),
+    lectura: val => [`Tapadas: ${ocultas3d(val)} = 7 · ${val.k} − ${val.a}`],
+    // Retos comprobados con el mismo motor que orienta los dados (docs/teoria.md §4d).
+    invitaciones: [
+      { texto: 'Arma una pila de 3 dados y sepárala del todo: mira las caras tapadas.',
+        logrado: val => val.k === 3 && val.sep === 2,
+        bien: 'Cada dado esconde su arriba y su abajo: dos caras opuestas, 7.',
+        pista: 'Pon 3 dados y lleva «Separar» al máximo.' },
+      { texto: 'Haz que las caras tapadas sumen 20.',
+        logrado: val => ocultas3d(val) === 20,
+        bien: 'Tres pares de 7 son 21; el 1 de arriba se ve: quedan 20.',
+        pista: '20 es casi un múltiplo de 7. ¿Qué cara de arriba lo completa?' },
+      { texto: 'Con 4 dados, consigue la menor suma de caras tapadas.',
+        logrado: val => val.k === 4 && ocultas3d(val) === MENOR_CUATRO,
+        bien: 'El 6 arriba: lo que se ve resta lo más posible.',
+        pista: 'Lo que se ve arriba se resta. ¿Qué cara resta más?' },
+      { texto: 'Guarda dos pilas iguales con distinto giro de los dados de abajo.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => x.k >= 2 && x.k === y.k && x.a === y.a && x.giro !== y.giro && ocultas3d(x) === ocultas3d(y))),
+        bien: 'Cambian las caras de alrededor; las tapadas suman lo mismo.',
+        pista: 'Guarda una pila, mueve solo «Giro de los de abajo» y guarda otra.' },
+    ],
+  };
+
   return {
     unidad: 'razonamiento-matematico.juegos-recreativos',
-    version: '0.2.0',
+    version: '0.3.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/rm-fichas.js', '/nucleo/kit/piezas/rm-plano.js'],
+    requiere: ['/nucleo/kit/piezas/rm-fichas.js', '/nucleo/kit/piezas/rm-plano.js', '/plantillas/dados-caras/motor.js', '/nucleo/kit/piezas/rm-cubitos-3d.js'],
     // Glosario: las palabras que este tema estrena en el curso (docs/teoria.md, 4d).
     glosario: [
       { termino: 'dominó', def: 'Juego de fichas con dos mitades marcadas con puntos: una ficha por cada pareja de números.',
@@ -458,8 +513,9 @@
       { termino: 'cerilla', def: 'Palito de fósforo. En estos acertijos, cada uno es un lado igual de la figura.',
         ejemplo: 'Una cuadrícula de 2 × 2 usa 12.', ver: ['cuadrícula'] },
     ],
-    // Laboratorio: el dominó con un número marcado, la pila de dados que crece y la cuadrícula rectangular.
-    laboratorio: [mesaDomino, mesaPila, mesaRect],
+    // Laboratorio: los dados que se separan en 3D, el dominó con un número marcado, la pila de dados que crece y la
+    // cuadrícula rectangular.
+    laboratorio: [mesaDados3d, mesaDomino, mesaPila, mesaRect],
     historia: {
       texto: 'Henry Dudeney publicó colecciones de acertijos como The Canterbury Puzzles (1907) y Amusements in Mathematics (1917). No inventó todos los juegos de cerillas o dominó, pero mostró algo útil: antes de calcular, hay que precisar las reglas. Qué se mueve, qué se cuenta y qué vale como solución.',
       pregunta: '¿Qué reglas cambian un mismo acertijo?',

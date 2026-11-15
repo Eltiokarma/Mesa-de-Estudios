@@ -16,10 +16,13 @@
  *   Duda que resuelve: «¿cuántos caminos hay sin dibujarlos todos?».
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El motor de plantillas/cubitos-pintados arma los cubitos de la mesa «La pila que gira» desde sus alturas.
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/cubitos-pintados/motor.js'))
+    : fabrica(root.Kit, root.MotorCubitos);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MC) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   function azar(s) {
@@ -478,13 +481,130 @@
     ],
   };
 
+  // ---------- Laboratorio 3D (15 nov: exploración libre, sin predicciones) ----------
+  // Mesa 3D 1: la pila que gira, con sus vistas de frente y de lado en las paredes. Seis pilas con las mismas vistas
+  // (frente 2, 3, 1; lado 3, 2, 1): las cuatro de la idea, la más llena (cada casilla en el menor de sus dos límites) y
+  // una de tres torres. Los cubitos los arma el motor de plantillas/cubitos-pintados desde las alturas; las vistas, la
+  // misma vistaDe que pone los números de la idea 3 (regla 1).
+  const MINIMA = [[0, 3, 0], [2, 0, 0], [0, 0, 1]];
+  const PILAS3D = [PILAS[0], PILAS[1], MINIMA, PILAS[2], LA.map(h => FR.map(g => Math.min(h, g))), PILAS[3]];
+  const pila3d = val => PILAS3D['ABCDEF'.indexOf(val.p)];
+  // En la idea, la fila 0 es la del fondo; en los motores 3D, y = 0 es la del frente.
+  const alturas3d = M => M.slice().reverse();
+  function datosPila3d(val) {
+    const M = pila3d(val), v = vistaDe(M), celdas = MC.solido({ alturas: alturas3d(M) });
+    const filas = v.la.slice().reverse();                       // la vista de lado, del frente (y = 0) al fondo
+    const colum = (alts) => alts.flatMap((h, i) => Array.from({ length: h }, (_, z) => [i, z]));
+    return {
+      celdas: celdas.map(p => ({ p })), piso: [3, 3],
+      sombras: val.som === 1 ? { frente: colum(v.fr), lado: colum(filas) } : undefined,
+      alt: `Pila de ${plural(celdas.length, 'cubito', 'cubitos')} sobre una base de 3 × 3. Vista de frente: ${v.fr.join(', ')}; vista de lado: ${v.la.join(', ')}.`,
+    };
+  }
+  const cubitosPila = val => MC.solido({ alturas: alturas3d(pila3d(val)) }).length;
+  const MENOS = Math.min(...'ABCDEF'.split('').map(p => cubitosPila({ p })));
+  const MAS = Math.max(...'ABCDEF'.split('').map(p => cubitosPila({ p })));
+  const mesaPila3d = {
+    id: 'pila-que-gira', titulo: 'La pila que gira', pieza: 'rm-cubitos-3d',
+    consigna: 'Gira la pila con el dedo y mira detrás de las torres. Las seis pilas dejan las mismas vistas en las paredes.',
+    controles: [
+      { id: 'p', etiqueta: 'Pila', opciones: 'ABCDEF'.split('').map(x => ({ valor: x, texto: x })) },
+      { id: 'som', etiqueta: 'Vistas en las paredes', opciones: [{ valor: 1, texto: 'A la vista' }, { valor: 0, texto: 'Ocultas' }] },
+    ],
+    dibujo: val => ({ datos: datosPila3d(val), estado: {} }),
+    lectura: val => { const v = vistaDe(pila3d(val)); return [`${plural(cubitosPila(val), 'cubito', 'cubitos')} · frente ${v.fr.join(' ')} · lado ${v.la.join(' ')}`]; },
+    // Retos: los cubitos los cuenta el mismo motor que los dibuja; las vistas, vistaDe.
+    invitaciones: [
+      { texto: 'Busca la pila con menos cubitos que deja estas mismas vistas.',
+        logrado: val => cubitosPila(val) === MENOS,
+        bien: 'Tres torres bastan: cada una llena una columna y una fila a la vez.',
+        pista: 'Mira el número de cubitos de cada pila en la lectura.' },
+      { texto: 'Ahora la pila con más cubitos y las mismas vistas.',
+        logrado: val => cubitosPila(val) === MAS,
+        bien: `Cada casilla sube hasta el menor de sus dos límites: ${MAS} cubitos.`,
+        pista: 'Busca la pila sin huecos escondidos detrás de las torres.' },
+      { texto: 'Elige una pila con una casilla vacía en el piso.',
+        logrado: val => pila3d(val).flat().includes(0),
+        bien: 'Desde arriba se nota el hueco; de frente y de lado, no.',
+        pista: 'Gira la pila hasta mirarla desde arriba.' },
+      { texto: 'Guarda dos pilas con distinto número de cubitos.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => cubitosPila(x) !== cubitosPila(y))),
+        bien: 'Mismas vistas, otro sólido: dos vistas no siempre bastan.',
+        pista: 'Guarda una pila, cambia de letra y guarda otra.' },
+    ],
+  };
+  // Mesa 3D 2: la caja que gira, con una ruta mínima por las aristas. Las rutas se arman paso a paso (x a la derecha,
+  // y al fondo, z hacia arriba), todas las permutaciones del multiconjunto de pasos, en orden alfabético.
+  function rutasDe(a, b, c) {
+    const out = [], cuenta = { x: a, y: c, z: b };
+    const armar = pre => {
+      if (pre.length === a + b + c) { out.push(pre); return; }
+      for (const d of 'xyz') if (cuenta[d] > 0) { cuenta[d]--; armar(pre + d); cuenta[d]++; }
+    };
+    armar('');
+    return out;
+  }
+  const rutasLista = val => rutasDe(val.a, val.b, val.c);
+  // Con 12 rutas o menos, el control las recorre todas (y vuelve a empezar); con más, salta repartido por toda la lista.
+  const indiceRuta = val => { const N = rutasLista(val).length; return N <= 12 ? (val.k - 1) % N : Math.floor((val.k - 1) * N / 12); };
+  const rutaDe = val => rutasLista(val)[indiceRuta(val)];
+  const nRuta = val => indiceRuta(val) + 1;
+  const fact3 = (a, b, c) => { const F = n => (n <= 1 ? 1 : n * F(n - 1)); return F(a + b + c) / (F(a) * F(b) * F(c)); };
+  // La lista y la fórmula de la regla tienen que decir lo mismo en toda la mesa (si no, la mesa no se arma).
+  for (let a = 1; a <= 3; a++) for (let b = 1; b <= 2; b++) for (let c = 1; c <= 2; c++) {
+    if (rutasDe(a, b, c).length !== fact3(a, b, c)) throw new Error(`rutas de ${a} × ${b} × ${c}: la lista no da la fórmula`);
+  }
+  function datosCaja3d(val) {
+    const r = rutaDe(val), pts = [[0, 0, 0]];
+    for (const d of r) { const q = pts[pts.length - 1].slice(); q['xyz'.indexOf(d)]++; pts.push(q); }
+    const B = [val.a, val.c, val.b];
+    return {
+      malla: B, ruta: pts,
+      marcas: [{ p: [-0.18, -0.18, -0.18], texto: 'A', color: 'c-i' }, { p: B.map(x => x + 0.18), texto: 'B', color: 'c-o' }],
+      alt: `Caja de ${val.a} × ${val.b} × ${val.c} cubitos en alambre, con una ruta mínima de A a B: ${r.length} pasos (${val.a} a la derecha, ${val.b} hacia arriba y ${val.c} al fondo).`,
+    };
+  }
+  const NOMBRE_PASO = { x: 'derecha', y: 'fondo', z: 'arriba' };
+  const mesaCaja3d = {
+    id: 'caja-que-gira', titulo: 'La caja que gira', pieza: 'rm-cubitos-3d',
+    consigna: 'Gira la caja con el dedo y sigue la ruta de A a B. Cambia la ruta y las medidas de la caja.',
+    controles: [
+      { id: 'a', etiqueta: 'Ancho', color: 'c-o', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'b', etiqueta: 'Alto', color: 'c-o', min: 1, max: 2, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'c', etiqueta: 'Fondo', color: 'c-o', min: 1, max: 2, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'k', etiqueta: 'Ruta', color: 'c-o', min: 1, max: 12, paso: 1, inicio: 1, decimales: 0 },
+    ],
+    dibujo: val => ({ datos: datosCaja3d(val), estado: {} }),
+    lectura: val => [`Ruta ${nRuta(val)} de ${rutasLista(val).length}: ${rutaDe(val).split('').map(d => NOMBRE_PASO[d]).join(', ')}`].map(t => (Kit.palabras(t) <= 12 ? t : `Ruta ${nRuta(val)} de ${plural(rutasLista(val).length, 'ruta mínima', 'rutas mínimas')}`)),
+    // Retos: las rutas se cuentan en la misma lista que se dibuja (rutasDe), no con la fórmula.
+    invitaciones: [
+      { texto: 'En el cubo, busca la ruta: primero al fondo, luego arriba, al final a la derecha.',
+        logrado: val => val.a === 1 && val.b === 1 && val.c === 1 && rutaDe(val) === 'yzx',
+        bien: 'Tres pasos distintos se ordenan de 3! = 6 maneras: esta es una.',
+        pista: 'Caja 1 × 1 × 1: cambia la ruta hasta leer «fondo, arriba, derecha».' },
+      { texto: 'Arma una caja con exactamente 30 rutas mínimas.',
+        logrado: val => rutasLista(val).length === 30,
+        bien: 'Cinco pasos: 2 a la derecha, 2 arriba y 1 al fondo. 5! / (2! · 2!) = 30.',
+        pista: 'Prueba con dos medidas iguales a 2.' },
+      { texto: 'Busca una ruta que suba hasta arriba antes de dar otro paso.',
+        logrado: val => val.b === 2 && rutaDe(val).startsWith('zz'),
+        bien: 'Toda la subida primero: después solo queda moverse por el techo.',
+        pista: 'Pon el alto en 2 y recorre las rutas hasta ver dos «arriba» al inicio.' },
+      { texto: 'Guarda dos rutas distintas de la misma caja.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => x.a === y.a && x.b === y.b && x.c === y.c && rutaDe(x) !== rutaDe(y))),
+        bien: 'Los mismos pasos en otro orden: cada ruta es una permutación.',
+        pista: 'Guarda una, mueve solo «Ruta» y guarda otra.' },
+    ],
+  };
+
   return {
     unidad: 'razonamiento-matematico.rutas-y-visualizacion-espacial',
-    version: '0.2.0',
+    version: '0.3.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/rm-tablero.js', '/nucleo/kit/piezas/rm-plano.js'],
-    // Laboratorio: dos cruces cerrados que se arrastran, la caja que se estira en tres direcciones y la pila que se
-    // arma casilla por casilla con sus vistas calculadas.
+    requiere: ['/nucleo/kit/piezas/rm-tablero.js', '/nucleo/kit/piezas/rm-plano.js', '/plantillas/cubitos-pintados/motor.js', '/nucleo/kit/piezas/rm-cubitos-3d.js'],
+    // Laboratorio: dos mesas 3D (la pila que gira con sus vistas en las paredes y la caja que gira con una ruta), dos
+    // cruces cerrados que se arrastran, la caja que se estira en tres direcciones y la pila que se arma casilla por
+    // casilla con sus vistas calculadas.
     // Glosario: los términos que esta unidad estrena en el curso (los demás vienen de unidades anteriores).
     glosario: [
       { termino: 'ruta mínima', formas: ['ruta mínima', 'rutas mínimas'],
@@ -518,7 +638,7 @@
         def: 'Recorrido que pasa una sola vez por cada punto de una red y termina en el punto de partida.',
         ver: ['dodecaedro'] },
     ],
-    laboratorio: [mesaCierres, mesaCaja, mesaPila],
+    laboratorio: [mesaPila3d, mesaCaja3d, mesaCierres, mesaCaja, mesaPila],
     historia: {
       texto: 'En 1857, William Hamilton presentó el juego icosiano: recorrer las aristas de un dodecaedro visitando cada vértice una vez y volver al inicio: un ciclo hamiltoniano. Es otra pregunta que la de Euler, que pide pasar una vez por cada arista. Leer qué prohíbe repetir una consigna cambia el problema.',
       pregunta: '¿Qué no se puede repetir: puntos o caminos?',

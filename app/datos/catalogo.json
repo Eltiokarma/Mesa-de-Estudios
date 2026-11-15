@@ -4883,10 +4883,12 @@
       "archivo": "/contenido/teoria/razonamiento-matematico/razonamiento-inductivo.js",
       "requiere": [
        "/nucleo/kit/piezas/rm-plano.js",
-       "/nucleo/kit/piezas/rm-tablero.js"
+       "/nucleo/kit/piezas/rm-tablero.js",
+       "/plantillas/cubitos-pintados/motor.js",
+       "/nucleo/kit/piezas/rm-cubitos-3d.js"
       ],
       "ideas": 3,
-      "terminos": 14
+      "terminos": 17
      }
     },
     {
@@ -4917,10 +4919,12 @@
       "archivo": "/contenido/teoria/razonamiento-matematico/juegos-recreativos.js",
       "requiere": [
        "/nucleo/kit/piezas/rm-fichas.js",
-       "/nucleo/kit/piezas/rm-plano.js"
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/plantillas/dados-caras/motor.js",
+       "/nucleo/kit/piezas/rm-cubitos-3d.js"
       ],
       "ideas": 3,
-      "terminos": 10
+      "terminos": 12
      }
     },
     {
@@ -5227,10 +5231,12 @@
       "archivo": "/contenido/teoria/razonamiento-matematico/rutas-y-visualizacion-espacial.js",
       "requiere": [
        "/nucleo/kit/piezas/rm-tablero.js",
-       "/nucleo/kit/piezas/rm-plano.js"
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/plantillas/cubitos-pintados/motor.js",
+       "/nucleo/kit/piezas/rm-cubitos-3d.js"
       ],
       "ideas": 3,
-      "terminos": 13
+      "terminos": 14
      }
     },
     {
