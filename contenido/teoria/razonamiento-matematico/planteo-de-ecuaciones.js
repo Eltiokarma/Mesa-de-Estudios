@@ -59,6 +59,10 @@
   const uy = (datos, py) => { const g = PLANO().geometria(datos); return (py - g.Y(0)) / g.k; };
   const BX0 = 3.1, BK = max => 6.4 / max;   // las mismas cuentas que barras()
   // Fin de la fila k de rm-fichas con n fichas (en el hueco tras la última) y su inversa.
+  // Todos los casos de unos controles (para los retos que piden «el mayor» o «el menor» de la mesa).
+  const pasosDe = c0 => (c0.opciones ? c0.opciones.map(o => o.valor) : Array.from({ length: Math.round((c0.max - c0.min) / c0.paso) + 1 }, (_, i) => +(c0.min + i * c0.paso).toFixed(6)));
+  const casosDe = ctr => ctr.reduce((acc, c0) => acc.flatMap(v => pasosDe(c0).map(y => Object.assign({}, v, { [c0.id]: y }))), [{}]);
+  const una = calc => { let m; return () => (m === undefined ? (m = calc()) : m); };
   const finFila = (datos, k, n) => { const g = FICHAS().geometria(datos), fl = g.filas[k]; return { x: 6 + n * fl.paso + 6, y: fl.y + g.lado / 2 }; };
   const nFila = (datos, k, px) => { const fl = FICHAS().geometria(datos).filas[k]; return (px - 12) / fl.paso; };
 
@@ -316,11 +320,11 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'Si los 15 fueran gallinas: 30 patas.', ecuacion: ['15 · 2 = 30'] },
         { estado: { corte: 0 }, texto: 'Sobran 16 patas; cada conejo trae 2 más que una gallina.', ecuacion: [cc, ' = 16 / 2 = 8'] },
-        { estado: { corte: 0 }, texto: 'Con letras es un sistema: el mismo resultado.', ecuacion: [cc, ' + ', gg, ' = 15', '   ·   ', '4', cc, ' + 2', gg, ' = 46'] },
+        { estado: { corte: 0 }, texto: 'Con letras es un sistema de ecuaciones: el mismo resultado.', ecuacion: [cc, ' + ', gg, ' = 15', '   ·   ', '4', cc, ' + 2', gg, ' = 46'] },
       ],
     },
     regla: {
-      texto: 'Dos datos distintos sobre las mismas cantidades forman un sistema. Se puede suponer todo de un tipo y repartir la diferencia, o resolver con dos ecuaciones.',
+      texto: 'Dos datos distintos sobre las mismas cantidades forman un sistema de ecuaciones. Se puede suponer todo de un tipo y repartir la diferencia, o resolver con dos ecuaciones.',
       ecuacion: [cc, ' + ', gg, ' = cabezas', '   ·   ', { llave: ['4', cc], nota: 'conejos', color: 'c-i' }, ' + ', { llave: ['2', gg], nota: 'gallinas', color: 'c-o' }, ' = patas'],
       condicion: 'las dos ecuaciones son independientes y la solución tiene sentido: animales enteros y no negativos.',
     },
@@ -365,7 +369,24 @@
     arrastres: [{ id: 'barra-a', etiqueta: 'largo de la barra a', color: 'c-o',
       donde: val => enPx(datosVeces(val), BX0 + (val.rel === 'veces' ? val.k * val.b : val.b + val.k) * BK(48), 2.5),
       mover: (pt, val) => { const a = (ux(datosVeces(val), pt.x) - BX0) / BK(48); return { b: val.rel === 'veces' ? a / val.k : a - val.k }; } }],
+    // Retos: a sale de aDe, la misma cuenta que dibuja la barra larga.
+    invitaciones: [
+      { texto: 'Guarda un caso «veces» y uno «más que» con iguales k, b y a.',
+        logrado: (val, guardados) => guardados.some(g => g.rel === 'veces' && guardados.some(h => h.rel === 'mas' && h.k === g.k && h.b === g.b && aDe(h) === aDe(g))),
+        bien: 'Solo con k = 2 y b = 2: 2 · 2 = 2 + 2. Casi nunca coinciden.' },
+      { texto: 'Busca la barra a más larga que permite la mesa.',
+        logrado: val => aDe(val) === aMayor(),
+        bien: '«Veces» crece mucho más rápido que «más que».' },
+      { texto: 'Con «más que», haz que a sea justo el doble de b.',
+        logrado: val => val.rel === 'mas' && aDe(val) === 2 * val.b,
+        bien: 'Pasa solo si k es igual a b. Cambia b y deja de ser el doble.' },
+      { texto: 'Con «veces», guarda dos casos distintos que den a = 24.',
+        logrado: (val, guardados) => guardados.some(g => g.rel === 'veces' && aDe(g) === 24 && guardados.some(h => h.rel === 'veces' && aDe(h) === 24 && h.k !== g.k)),
+        bien: 'Varias parejas k y b dan 24: el valor de a solo no las distingue.' },
+    ],
   };
+  const aDe = val => (val.rel === 'veces' ? val.k * val.b : val.b + val.k);
+  const aMayor = una(() => Math.max(...casosDe(mesaVeces.controles).map(aDe)));
   // Mesa 2: edades libres; el padre, el hijo y los años, cada uno con su manija. La razón sale en la lectura.
   const datosEdades = val => barras([
     { valor: val.P, color: 'o', rotulo: 'Padre', texto: String(val.P + val.t), extra: val.t ? { valor: val.t, color: 'd' } : null },
@@ -392,7 +413,23 @@
         donde: val => enPx(datosEdades(val), BX0 + (val.h + val.t) * BK(80), 3),
         mover: (pt, val) => ({ t: (ux(datosEdades(val), pt.x) - BX0) / BK(80) - val.h }) },
     ],
+    // Retos: las edades dentro de t años son P + t y h + t, las mismas que rotulan las barras.
+    invitaciones: [
+      { texto: 'Haz pasar los años justo hasta que el padre tenga el triple del hijo.',
+        logrado: val => val.P + val.t === 3 * (val.h + val.t),
+        bien: 'La diferencia siguió igual; solo la razón bajó hasta 3.' },
+      { texto: 'Elige edades de hoy para que la razón sea 2 dentro de 10 años.',
+        logrado: val => val.t === 10 && val.P + val.t === 2 * (val.h + val.t),
+        bien: 'Planteaste P + 10 = 2(h + 10) sin escribirla. ¿Hay otra pareja?' },
+      { texto: 'Haz que el hijo llegue a la edad que el padre tiene hoy.',
+        logrado: val => val.h + val.t === val.P,
+        bien: 'Pasaron tantos años como la diferencia. Y el padre ya tiene otra edad.' },
+      { texto: 'Haz que la diferencia de edades sea la menor posible.',
+        logrado: val => val.P - val.h === menorDif(),
+        bien: 'Pasen los años que pasen, esa diferencia no se mueve. ¿Y la razón?' },
+    ],
   };
+  const menorDif = una(() => Math.min(...casosDe(mesaEdades.controles.slice(0, 2)).map(v => v.P - v.h)));
   // Mesa 3: el corral con cabezas libres: conejos y gallinas por separado, hasta 12 de cada uno.
   const mesaCorral = {
     id: 'corral', titulo: 'El corral libre', pieza: 'rm-fichas',
@@ -407,10 +444,53 @@
       { id: 'conejos', etiqueta: 'cuántos conejos', color: 'c-i', donde: val => finFila(granja(val.c, val.g), 0, val.c), mover: (pt, val) => ({ c: nFila(granja(val.c, val.g), 0, pt.x) }) },
       { id: 'gallinas', etiqueta: 'cuántas gallinas', color: 'c-o', donde: val => finFila(granja(val.c, val.g), 1, val.g), mover: (pt, val) => ({ g: nFila(granja(val.c, val.g), 1, pt.x) }) },
     ],
+    // Retos: cabezas y patas con las mismas cuentas del pie de la figura.
+    invitaciones: [
+      { texto: 'Guarda dos corrales distintos con las mismas patas.',
+        logrado: (val, guardados) => guardados.some(g => guardados.some(h => (h.c !== g.c || h.g !== g.g) && patas(h) === patas(g))),
+        bien: 'Las patas solas no deciden: falta el dato de las cabezas.' },
+      { texto: 'Arma el corral que tiene 12 cabezas y 32 patas.',
+        logrado: val => cabezas(val) === 12 && patas(val) === 32,
+        bien: 'Con 12 gallinas habría 24 patas; las 8 que sobran son 4 conejos.' },
+      { texto: 'Con 10 cabezas, busca el corral con más patas.',
+        logrado: val => cabezas(val) === 10 && patas(val) === masPatas(10),
+        bien: 'Todos conejos. Cada gallina que entra en su lugar resta 2 patas.' },
+      { texto: 'Haz que las patas sean justo el doble de las cabezas.',
+        logrado: val => cabezas(val) > 0 && patas(val) === 2 * cabezas(val),
+        bien: 'Solo pasa sin conejos: cada gallina pone dos patas por cabeza.' },
+    ],
   };
+  const cabezas = val => val.c + val.g, patas = val => 4 * val.c + 2 * val.g;
+  const masPatas = nn => Math.max(...casosDe(mesaCorral.controles).filter(v => cabezas(v) === nn).map(patas));
 
   return {
     unidad: 'razonamiento-matematico.planteo-de-ecuaciones',
+    // Glosario (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. «Ecuación» sale antes, en
+    // Arreglos numéricos; «diferencia», «producto» y «entero» vienen de otras unidades.
+    glosario: [
+      { termino: 'plantear', def: 'Traducir lo que dice un enunciado a una igualdad con letras que diga lo mismo.',
+        formas: ['plantear', 'plantea', 'planteaste', 'planteo'], ejemplo: '«4 veces tantos socios como entrenadores»: S = 4E.', ver: ['valor de prueba'] },
+      { termino: 'valor de prueba', def: 'Número inventado que cumple la frase; sirve para comprobar si una igualdad dice lo correcto.',
+        formas: ['valor de prueba', 'valores de prueba'], ejemplo: 'Con E = 2 hay 8 socios: S = 4E da 8 = 4 · 2.', ver: ['plantear'] },
+      { termino: 'razón', def: 'Cociente entre dos cantidades: cuántas veces cabe una en la otra.',
+        formas: ['razón', 'razones'], ejemplo: 'Padre de 30 e hijo de 6: razón 30 / 6 = 5.' },
+      { termino: 'raíz', def: 'Valor de la letra que hace cierta una igualdad.',
+        formas: ['raíz', 'raíces'], ejemplo: 'x(x + 1) = 132 tiene dos: 11 y −12.', ver: ['ecuación cuadrática', 'dominio'] },
+      { termino: 'ecuación cuadrática', def: 'Igualdad en la que la letra aparece elevada al cuadrado. Puede tener dos soluciones.',
+        formas: ['ecuación cuadrática', 'ecuaciones cuadráticas'], ejemplo: 'x² + x = 132.', ver: ['raíz', 'factorizar'] },
+      { termino: 'factorizar', def: 'Escribir una expresión como una multiplicación de partes más simples; ayuda a hallar las soluciones.',
+        formas: ['factorizar', 'factoriza'], ejemplo: 'x² + x − 132 = (x − 11)(x + 12).', ver: ['raíz'] },
+      { termino: 'dominio', def: 'Los valores que tienen sentido en el problema: edades no negativas, objetos enteros.',
+        ejemplo: 'Una edad de −12 cumple la cuenta, pero queda fuera.', ver: ['raíz'] },
+      { termino: 'consecutivo', def: 'El número entero que sigue a otro: el que viene justo después.',
+        formas: ['consecutivo', 'consecutivos'], ejemplo: 'El de 11 es 12; el de n es n + 1.' },
+      { termino: 'sistema de ecuaciones', def: 'Dos o más igualdades con las mismas letras, que tienen que cumplirse a la vez.',
+        formas: ['sistema de ecuaciones', 'sistemas de ecuaciones'], ejemplo: 'c + g = 15 y 4c + 2g = 46: c = 8, g = 7.', ver: ['independiente'] },
+      { termino: 'independiente', def: 'Se dice de igualdades que dan datos distintos: ninguna sale de otra multiplicando o sumando.',
+        formas: ['independiente', 'independientes'], ejemplo: 'c + g = 15 y 2c + 2g = 30 no lo son: dicen lo mismo.', ver: ['sistema de ecuaciones'] },
+      { termino: 'comprobación', def: 'Poner la respuesta en el enunciado para ver si todo se cumple.',
+        formas: ['comprobación', 'comprobaciones'], ejemplo: 'En 5 años: 39 y 13; 39 = 3 · 13, se cumple.' },
+    ],
     // Laboratorio: «veces» contra «más que», edades libres con tres manijas y el corral con cabezas libres.
     laboratorio: [mesaVeces, mesaEdades, mesaCorral],
     version: '0.2.0',

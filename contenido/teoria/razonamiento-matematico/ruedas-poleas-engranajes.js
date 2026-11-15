@@ -99,13 +99,13 @@
     mira: {
       datos: engranajes([{ z: 20, n: 6, color: 'o', nombre: 'A' }, { z: 10, n: 12, color: 'i', nombre: 'B' }, { z: 40, n: 3, color: 'd', nombre: 'C' }]),
       pasos: [
-        { estado: { corte: 0 }, texto: 'A da 6 vueltas de 20 dientes: pasan 120 dientes.', ecuacion: [zA, ' · ', nA, ' = 20 · 6 = 120'] },
+        { estado: { corte: 0 }, texto: 'A da 6 vueltas de 20 dientes: por el punto de contacto pasan 120.', ecuacion: [zA, ' · ', nA, ' = 20 · 6 = 120'] },
         { estado: { corte: 0 }, texto: 'B recibe los mismos 120 dientes: 12 vueltas, al revés.', ecuacion: [nB, ' = 120 / 10 = 12'] },
         { estado: { corte: 0 }, texto: 'C recibe 120 dientes de B: 3 vueltas, otra vez al revés.', ecuacion: ['120 / 40 = 3'] },
       ],
     },
     regla: {
-      texto: 'En dos engranajes en contacto pasan los mismos dientes: dientes por vueltas es igual en ambos. Cada contacto invierte el sentido de giro.',
+      texto: 'En dos engranajes en contacto pasan los mismos dientes: dientes por vueltas es igual en ambos. Son inversamente proporcionales. Cada contacto invierte el sentido de giro.',
       ecuacion: [{ llave: [zA, ' · ', nA], nota: 'dientes que pasan', color: 'c-o' }, ' = ', { llave: [zB, ' · ', nB], nota: 'los mismos', color: 'c-i' }],
       condicion: 'los dientes encajan sin resbalar y los engranajes se tocan por fuera; en contacto interior no se invierte el sentido.',
     },
@@ -283,10 +283,15 @@
   // ---------- Laboratorio: juego libre, sin preguntas ----------
   // Mesa 1: tren de tres engranajes con los tres tamaños libres: el del medio cambia sus vueltas, pero no las de C.
   const KL = 22;
+  // Dientes que pasan por cada contacto y vueltas de B y de C: los usan el dibujo, la lectura y los retos.
+  const pasan = val => val.za * 6, vueltasB = val => pasan(val) / val.zb, vueltasC = val => pasan(val) / val.zc;
   const tren = val => {
-    const D = val.za * 6;
-    return engranajes([{ z: val.za, n: 6, color: 'o', nombre: 'A' }, { z: val.zb, n: D / val.zb, color: 'i', nombre: 'B' }, { z: val.zc, n: D / val.zc, color: 'd', nombre: 'C' }], { K: KL, escalonado: true, pie: `Pasan ${D} dientes por cada contacto` });
+    const D = pasan(val);
+    return engranajes([{ z: val.za, n: 6, color: 'o', nombre: 'A' }, { z: val.zb, n: vueltasB(val), color: 'i', nombre: 'B' }, { z: val.zc, n: vueltasC(val), color: 'd', nombre: 'C' }], { K: KL, escalonado: true, pie: `Pasan ${D} dientes por cada contacto` });
   };
+  // Todos los casos de una mesa (para buscar el extremo con el mismo motor, no con un número escrito a mano).
+  const todos = ctr => ctr.reduce((casos, c) => casos.flatMap(x => (c.opciones ? c.opciones.map(o => o.valor)
+    : Array.from({ length: Math.round((c.max - c.min) / c.paso) + 1 }, (_, k) => c.min + k * c.paso)).map(y => Object.assign({}, x, { [c.id]: y }))), [{}]);
   const mesaTren = {
     id: 'tren-de-engranajes', titulo: 'Tren de tres engranajes', pieza: 'rm-plano',
     consigna: 'A da 6 vueltas. Agranda o achica cada engranaje desde arriba. Mira qué cambia en C cuando solo tocas B.',
@@ -296,16 +301,33 @@
       { id: 'zc', etiqueta: 'Dientes de C', min: 10, max: 35, paso: 5, inicio: 30, decimales: 0, color: 'c-d' },
     ],
     dibujo: val => ({ datos: tren(val), estado: {} }),
-    lectura: val => [nB, ` = ${f(val.za * 6 / val.zb, 2)}`, '   ·   ', nC, ` = ${f(val.za * 6 / val.zc, 2)}, igual que A`],
+    lectura: val => [nB, ` = ${f(vueltasB(val), 2)}`, '   ·   ', nC, ` = ${f(vueltasC(val), 2)}, igual que A`],
+    invitaciones: [
+      { texto: 'Haz que C dé exactamente 9 vueltas.',
+        logrado: val => Math.abs(vueltasC(val) - 9) < 1e-9,
+        bien: 'Nueve vueltas: C tiene dos tercios de los dientes de A.' },
+      { texto: 'Guarda dos casos que solo cambien B y compara las vueltas de C.',
+        logrado: (val, guardados) => guardados.some((a, i) => guardados.some((b, j) => j > i && a.za === b.za && a.zc === b.zc
+          && a.zb !== b.zb && Math.abs(vueltasC(a) - vueltasC(b)) < 1e-9)),
+        bien: 'B cambió sus vueltas y C no: el engranaje del medio no decide.' },
+      { texto: 'Busca el caso en que B dé más vueltas.',
+        logrado: val => Math.abs(vueltasB(val) - MAX_B) < 1e-9,
+        bien: 'A grande y B chico: cada vuelta de A le pasa muchos dientes.' },
+      { texto: 'Haz que A y C den las mismas vueltas, con B de otro tamaño.',
+        logrado: val => Math.abs(vueltasC(val) - 6) < 1e-9 && val.zb !== val.za,
+        bien: 'Mismos dientes, mismas vueltas. Y C gira como A: hubo dos contactos.' },
+    ],
     arrastres: [['a', 'za', 'c-o', 0], ['b', 'zb', 'c-i', 1], ['c', 'zc', 'c-d', 2]].map(([id, ctl, color, i]) =>
       manijaRueda('borde-' + id, `tamaño del engranaje ${id.toUpperCase()}`, color, tren, i, ctl, r => r * KL)),
   };
   // Mesa 2: faja libre: los dos radios, las vueltas de A y el tipo de faja.
   const EF = 0.3;
   const fajaLibre = val => faja(val.ra, val.rb, val.c === 'cruzada', { escala: EF });
+  // Vueltas de B con faja: el mismo largo de borde, radio por vueltas igual en las dos.
+  const vueltasFaja = val => val.ra * val.na / val.rb;
   const mesaFaja = {
     id: 'faja-libre', titulo: 'Faja a tu gusto', pieza: 'rm-plano',
-    consigna: 'Cambia los dos radios desde arriba, las vueltas de A y la faja. Busca dos ruedas que den las mismas vueltas.',
+    consigna: 'Dos poleas con faja: cambia los radios desde arriba, las vueltas de A y la faja. Busca dos que den las mismas vueltas.',
     controles: [
       { id: 'ra', etiqueta: 'Radio de A', min: 1, max: 7, paso: 1, inicio: 6, unidad: 'cm', decimales: 0, color: 'c-o' },
       { id: 'rb', etiqueta: 'Radio de B', min: 1, max: 7, paso: 1, inicio: 2, unidad: 'cm', decimales: 0, color: 'c-i' },
@@ -313,12 +335,34 @@
       { id: 'c', etiqueta: 'Faja', opciones: [{ valor: 'abierta', texto: 'Abierta' }, { valor: 'cruzada', texto: 'Cruzada' }] },
     ],
     dibujo: val => ({ datos: fajaLibre(val), estado: {} }),
-    lectura: val => [`A: ${v(val.na)}`, '   ·   ', `B: ${v(val.ra * val.na / val.rb)}, ${val.c === 'cruzada' ? 'al revés' : 'igual que A'}`],
+    lectura: val => [`A: ${v(val.na)}`, '   ·   ', `B: ${v(vueltasFaja(val))}, ${val.c === 'cruzada' ? 'al revés' : 'igual que A'}`],
+    invitaciones: [
+      { texto: 'Haz que A y B den las mismas vueltas.',
+        logrado: val => Math.abs(vueltasFaja(val) - val.na) < 1e-9,
+        bien: 'Solo con radios iguales: la faja iguala el borde, no las vueltas.' },
+      { texto: 'Consigue que B dé 21 vueltas.',
+        logrado: val => Math.abs(vueltasFaja(val) - 21) < 1e-9,
+        bien: 'Rueda chica, muchas vueltas: lleva el mismo borde con poco radio.' },
+      { texto: 'Haz que B gire al revés que A y dé menos vueltas.',
+        logrado: val => val.c === 'cruzada' && vueltasFaja(val) < val.na,
+        bien: 'La faja cruzada invierte, y B más grande gira más lento.' },
+      { texto: 'Busca el caso en que B dé menos vueltas.',
+        logrado: val => Math.abs(vueltasFaja(val) - MIN_FAJA) < 1e-9,
+        bien: 'Un séptimo de vuelta: A chica y lenta, B lo más grande.' },
+      { texto: 'Guarda dos casos con radios distintos en que B dé las mismas vueltas.',
+        logrado: (val, guardados) => guardados.some((a, i) => guardados.some((b, j) => j > i && (a.ra !== b.ra || a.rb !== b.rb)
+          && Math.abs(vueltasFaja(a) - vueltasFaja(b)) < 1e-9)),
+        bien: 'Manda la razón entre los radios, no su tamaño.' },
+    ],
     arrastres: [
       manijaRueda('borde-a', 'radio de la rueda A', 'c-o', fajaLibre, 0, 'ra', r => r / EF),
       manijaRueda('borde-b', 'radio de la rueda B', 'c-i', fajaLibre, 1, 'rb', r => r / EF),
     ],
   };
+
+  // Extremos de las mesas, buscados con el mismo motor en todos sus casos.
+  const MAX_B = Math.max(...todos(mesaTren.controles).map(vueltasB));
+  const MIN_FAJA = Math.min(...todos(mesaFaja.controles).map(vueltasFaja));
 
   return {
     unidad: 'razonamiento-matematico.ruedas-poleas-engranajes',
@@ -327,6 +371,38 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-plano.js'],
+    // Glosario: las palabras que este tema estrena en el curso (docs/teoria.md, 4d). «Radio» viene de razonamiento
+    // deductivo; «eje» se deja sin definir aquí porque en tablas y gráficos es el eje de la gráfica.
+    glosario: [
+      { termino: 'engranaje', def: 'Rueda con dientes que encajan en los de otra para pasarle el giro.',
+        ejemplo: 'Uno de 20 dientes que da 6 vueltas hace pasar 120 dientes.', ver: ['diente', 'punto de contacto'] },
+      { termino: 'diente', simbolo: 'z', def: 'Cada saliente del borde de una rueda dentada; se cuentan para comparar giros.',
+        ejemplo: 'A de 20 y B de 10: B da el doble de vueltas.', ver: ['engranaje'] },
+      { termino: 'punto de contacto', def: 'Donde se tocan dos ruedas; por ahí pasa la misma cantidad de borde o de dientes de cada una.',
+        ejemplo: 'A de 20 dientes da 6 vueltas: por ahí pasan 120.', ver: ['engranaje'] },
+      { termino: 'contacto interior', def: 'Cuando una rueda dentada gira por dentro de otra más grande; ahí el giro no se invierte.',
+        ver: ['sentido de giro'] },
+      { termino: 'inversamente proporcional', formas: ['inversamente proporcional', 'inversamente proporcionales'],
+        def: 'Cuando una cantidad crece y la otra baja a la vez, de modo que su producto no cambia.',
+        ejemplo: '20 dientes y 6 vueltas, o 40 dientes y 3 vueltas: siempre 120.', ver: ['producto'] },
+      { termino: 'sentido de giro', def: 'Hacia dónde gira una rueda: como las agujas del reloj o al revés.',
+        ejemplo: 'Cada contacto entre dos engranajes lo invierte.', ver: ['sentido horario'] },
+      { termino: 'sentido horario', def: 'Giro como el de las agujas del reloj: por arriba, de izquierda a derecha.',
+        ver: ['sentido de giro'] },
+      { termino: 'polea', def: 'Rueda con un canal en el borde por donde pasa una faja o una cuerda.',
+        ejemplo: 'La de un pozo sube el balde tirando de la cuerda.', ver: ['faja'] },
+      { termino: 'faja', def: 'Correa cerrada que rodea dos ruedas y pasa el giro de una a otra sin resbalar.',
+        ejemplo: 'A de 10 cm da 2 vueltas: la correa avanza 40π cm.', ver: ['faja abierta', 'faja cruzada', 'polea'] },
+      { termino: 'faja abierta', def: 'Correa que rodea las dos ruedas por fuera, sin cruzarse: giran en el mismo sentido.',
+        ver: ['faja cruzada'] },
+      { termino: 'faja cruzada', def: 'Correa que se cruza en forma de X entre las dos ruedas: giran en sentidos opuestos.',
+        ver: ['faja abierta'] },
+      { termino: 'largo de borde', formas: ['largo de borde', 'largos de borde'],
+        def: 'Lo que avanza un punto del filo de una rueda: 2πr por cada vuelta.',
+        ejemplo: 'Radio 10 cm y 2 vueltas: 2 · 2π · 10 = 40π cm.', ver: ['faja'] },
+      { termino: 'mismo eje', def: 'Ruedas pegadas a la misma barra de giro: dan siempre las mismas vueltas.',
+        ejemplo: 'Si B da 2 vueltas, la rueda pegada a ella también da 2.', ver: ['largo de borde'] },
+    ],
     historia: {
       texto: 'El mecanismo de Anticitera, de fines del siglo II a. C., usaba engranajes de bronce para representar ciclos del cielo. En 2006, Freeth y su equipo estudiaron sus fragmentos con tomografías para reconstruir qué hacía. Aquí simplificamos a ruedas ideales y preguntamos qué comparten dos ruedas unidas.',
       pregunta: '¿Qué comparten dos ruedas que se tocan?',

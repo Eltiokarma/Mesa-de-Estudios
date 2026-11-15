@@ -440,13 +440,31 @@
     ],
     dibujo: val => ({ datos: datosLibre(val), estado: {} }),
     lectura: val => [`${hhmm(val.h, val.m)} · ángulo menor `, A, ` = ${grados(angulo(val.h, val.m))}`],
+    // Retos: todos los mide angulo(h, m), la misma cuenta que dibuja el arco.
+    invitaciones: [
+      { texto: 'Junta las agujas casi del todo (menos de 3°) sin usar las 12:00.',
+        logrado: val => val.m > 0 && angulo(val.h, val.m) < 3,
+        bien: 'Casi juntas, y no en punto: el horario ya se había corrido.' },
+      { texto: 'Busca una hora que no sea en punto con un ángulo entre 89° y 91°.',
+        logrado: val => val.m > 0 && Math.abs(angulo(val.h, val.m) - 90) <= 1,
+        bien: 'Ni 3:30 ni 9:30: el horario obliga a buscar minutos raros.' },
+      { texto: 'Pon las agujas casi opuestas (178° o más) a una hora que no sea en punto.',
+        logrado: val => val.m > 0 && angulo(val.h, val.m) >= 178,
+        bien: 'Casi en línea recta. ¿Hay otra hora así en la misma vuelta?' },
+      { texto: 'Guarda dos horas distintas con el mismo ángulo menor.',
+        logrado: (val, guardados) => guardados.some((a, i) => guardados.some((b, j) => j > i && (a.h !== b.h || a.m !== b.m)
+          && Math.abs(angulo(a.h, a.m) - angulo(b.h, b.m)) < 1e-9)),
+        bien: 'Mismo ángulo, distinta hora: el ángulo solo no decide qué hora es.' },
+    ],
     arrastres: [
       Object.assign({ id: 'minutero', etiqueta: 'punta del minutero', color: 'c-o' }, manijaMinutero(datosLibre, 0, 59)),
       { id: 'horario', etiqueta: 'punta del horario', color: 'c-i', donde: puntaHorario(datosLibre, 0), mover: (pt, val) => ({ h: horaDe(datosLibre, 0, val, pt) }) },
     ],
   };
   // Mesa 2: un reloj que gana o pierde entre 1 y 6 minutos por hora real, hasta 12 horas (la idea fija +3).
-  const datosGana = val => { const [hi, mi] = sumaMin(8 + val.t, 0, val.g * val.t); return relojes(8 + val.t, 0, hi, mi); };
+  // Lo acumulado (+ adelanto, − atraso): g minutos por cada hora real. Lo usan el dibujo, la lectura y los retos.
+  const acumulado = val => val.g * val.t;
+  const datosGana = val => { const [hi, mi] = sumaMin(8 + val.t, 0, acumulado(val)); return relojes(8 + val.t, 0, hi, mi); };
   const mesaGana = {
     id: 'reloj-que-gana', titulo: 'Reloj que gana o pierde', pieza: 'rm-reloj',
     consigna: 'Puesto en hora a las 8:00. Elige cuánto gana (+) o pierde (−) por hora real y deja pasar horas.',
@@ -455,14 +473,31 @@
       { id: 't', etiqueta: 'Horas reales', min: 0, max: 12, paso: 1, inicio: 0, decimales: 0, color: 'c-h' },
     ],
     dibujo: val => ({ datos: datosGana(val), estado: {} }),
-    lectura: val => [`${plural(val.t, 'hora real', 'horas reales')} a ${val.g > 0 ? '+' : ''}${val.g}\u00a0min: `, val.g === 0 ? 'va en hora' : `${val.g > 0 ? 'adelanta' : 'atrasa'} ${Math.abs(val.g * val.t)}\u00a0min`],
+    lectura: val => [`${plural(val.t, 'hora real', 'horas reales')} a ${val.g > 0 ? '+' : ''}${val.g}\u00a0min: `, val.g === 0 ? 'va en hora' : `${val.g > 0 ? 'adelanta' : 'atrasa'} ${Math.abs(acumulado(val))}\u00a0min`],
+    invitaciones: [
+      { texto: 'Consigue un atraso de 30 minutos exactos.',
+        logrado: val => acumulado(val) === -30,
+        bien: 'Media hora de atraso, y hay más de una forma de llegar.' },
+      { texto: 'Haz que el reloj marque una hora entera más que el real.',
+        logrado: val => acumulado(val) === 60,
+        bien: 'Sesenta minutos de adelanto: el horario ya está en otro número.' },
+      { texto: 'Busca el menor ritmo por hora que llegue a 40 minutos de adelanto.',
+        // El tope de horas sale del control: con 12 horas, 3 min por hora no alcanza y 4 sí.
+        logrado: val => acumulado(val) >= 40 && acumulado({ g: val.g - 1, t: 12 }) < 40,
+        bien: 'Con 4 por hora y 12 horas pasa los 40; con 3, no alcanza.' },
+      { texto: 'Guarda dos casos con el mismo adelanto y distinto ritmo por hora.',
+        logrado: (val, guardados) => guardados.some((a, i) => guardados.some((b, j) => j > i && a.g !== b.g
+          && acumulado(a) > 0 && acumulado(a) === acumulado(b))),
+        bien: 'El mismo adelanto: poco por hora durante más horas, o al revés.' },
+    ],
     arrastres: [{ id: 'hora-real', etiqueta: 'horario del reloj real', color: 'c-h', donde: puntaHorario(datosGana, 0),
       mover: (pt, val) => ({ t: horasReales(horaDe(datosGana, 0, val, pt), val.t) }) }],
   };
   // Mesa 3: el calendario con el día 1 en cualquier día de la semana, hasta el 31.
+  const diaCal = val => DIAS[(val.ini + val.n) % 7];
   const datosCal = val => {
     const base = mesCompleto(val.ini, 1 + val.n);
-    base.notas = [{ t: `El 1 es ${DIAS[val.ini]}; el ${1 + val.n}, ${DIAS[(val.ini + val.n) % 7]}` }];
+    base.notas = [{ t: `El 1 es ${DIAS[val.ini]}; el ${1 + val.n}, ${diaCal(val)}` }];
     return base;
   };
   const mesaCal = {
@@ -475,6 +510,22 @@
     dibujo: val => ({ datos: datosCal(val), estado: {} }),
     lectura: val => [`${plural(val.n, 'día', 'días')} = 7 · ${Math.floor(val.n / 7)} + ${val.n % 7} → `, DIAS[(val.ini + val.n) % 7]],
     arrastres: [manijaDia(datosCal, val => val.ini)],
+    // Retos: el día de la semana sale de diaCal, la misma cuenta que escribe la nota del calendario.
+    invitaciones: [
+      { texto: 'Haz que el 31 del mes caiga domingo.',
+        logrado: val => 1 + val.n === 31 && diaCal(val) === 'domingo',
+        bien: '30 días son 4 semanas y 2 días: el 1 cayó viernes.' },
+      { texto: 'Haz que el 13 caiga viernes.',
+        logrado: val => 1 + val.n === 13 && diaCal(val) === 'viernes',
+        bien: 'Del 1 al 13 pasan 12 días: una semana y 5 días.' },
+      { texto: 'Marca el último día del mes que cae en el mismo día que el 1.',
+        logrado: val => val.n > 0 && val.n % 7 === 0 && 1 + val.n + 7 > 31,
+        bien: 'El 29: del 1 al 29 hay 4 semanas justas.' },
+      { texto: 'Guarda dos fechas del mismo mes que caigan en el mismo día de la semana.',
+        logrado: (val, guardados) => guardados.some((a, i) => guardados.some((b, j) => j > i && a.ini === b.ini && a.n !== b.n
+          && diaCal(a) === diaCal(b))),
+        bien: 'Misma columna: sus fechas se separan en semanas completas.' },
+    ],
   };
 
   return {
@@ -482,6 +533,37 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-reloj.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/rm-tablero.js'],
+    // Glosario: las palabras que este tema estrena en el curso (docs/teoria.md, 4d). Ejemplos calculados a mano y
+    // comprobados con angulo(), bis() y la cuenta de residuos.
+    glosario: [
+      { termino: 'minutero', def: 'Aguja larga del reloj: da una vuelta cada hora y avanza 6° por minuto.',
+        ejemplo: 'A los 20 minutos está a 6 · 20 = 120° de las 12.', ver: ['horario'] },
+      { termino: 'horario', def: 'Aguja corta del reloj: da una vuelta en 12 horas y avanza 0,5° por minuto.',
+        ejemplo: 'A las 8:20 está a 30 · 8 + 0,5 · 20 = 250° de las 12.', ver: ['minutero'] },
+      { termino: 'ángulo menor', formas: ['ángulo menor', 'ángulos menores'],
+        def: 'De los dos ángulos que forman las agujas, el que no pasa de 180°.',
+        ejemplo: 'A las 8:20 las agujas forman 130° y 230°: se toma 130°.', ver: ['horario', 'minutero'] },
+      { termino: 'hora real', formas: ['hora real', 'horas reales', 'tiempo real'],
+        def: 'La que marcaría un reloj exacto; contra ella se mide cuánto gana o pierde otro reloj.',
+        ejemplo: 'El reloj marca 3:00, pero son las 2:40.', ver: ['adelanto', 'atraso'] },
+      { termino: 'adelanto', def: 'Minutos que un reloj marca de más respecto a la hora verdadera.',
+        ejemplo: 'Gana 3 min por cada hora real: en 7 horas, 21 min.', ver: ['hora real', 'atraso'] },
+      { termino: 'atraso', def: 'Minutos que un reloj marca de menos respecto a la hora verdadera.',
+        ejemplo: 'Pierde 5 min por hora real: en 6 horas, 30 min.', ver: ['hora real', 'adelanto'] },
+      { termino: 'campanada', def: 'Cada golpe de un reloj que suena; en la recta del tiempo es un punto.',
+        ejemplo: '6 golpes dejan 5 espacios entre ellos.', ver: ['intervalo'] },
+      { termino: 'intervalo', def: 'Tiempo entre dos sucesos seguidos, por ejemplo de un golpe del reloj al siguiente.',
+        ejemplo: '6 campanadas en 10 s: 5 intervalos de 2 s.', ver: ['campanada'] },
+      { termino: 'año bisiesto', formas: ['año bisiesto', 'años bisiestos', 'bisiesto', 'bisiestos'],
+        def: 'Año de 366 días: suma el 29 de febrero para que el calendario no se desfase del Sol.',
+        ejemplo: '2024 y 2000 lo son; 2023 y 2100, no.', ver: ['calendario gregoriano'] },
+      { termino: 'calendario gregoriano', def: 'El calendario que hoy se usa, con la regla de 1582 para decidir qué años tienen 366 días.',
+        ejemplo: 'Cada 400 años trae 97 años de 366 días, no 100.', ver: ['año bisiesto'] },
+      { termino: 'divisible', def: 'Que al dividirlo entre ese número no sobra nada: el resto es 0.',
+        ejemplo: '2024 lo es entre 4, porque 2024 = 4 · 506.', ver: ['residuo'] },
+      { termino: 'residuo', def: 'Lo que sobra al dividir sin decimales; siempre es menor que el número que divide.',
+        ejemplo: '17 = 7 · 2 + 3: sobran 3 al dividir 17 entre 7.', ver: ['divisible'] },
+    ],
     // Laboratorio: el reloj con minutos de uno en uno, el reloj que gana o pierde lo que se quiera y el calendario con
     // el 1 en cualquier día.
     laboratorio: [mesaReloj, mesaGana, mesaCal],

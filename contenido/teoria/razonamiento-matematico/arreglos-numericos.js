@@ -324,6 +324,10 @@
   // ---------- Laboratorio: juego libre, sin preguntas ----------
   // Mesa 1: el reparto con números seguidos desde a hasta a + n − 1 (la idea solo empieza en 1): hasta 10 números.
   const seguidos = (a, n) => Array.from({ length: n }, (_, k) => a + k);
+  const sale = val => !!particion(seguidos(val.a, val.n));      // el mismo reparto que dibuja gruposConFila
+  const totalSeg = val => suma(seguidos(val.a, val.n));
+  // Lo más que se reparte en la mesa (a de 1 a 6, de 2 a 10 números), buscado caso por caso.
+  const MAS_FICHAS = Math.max(...[1, 2, 3, 4, 5, 6].flatMap(a => [2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (sale({ a, n }) ? n : 0))));
   const mesaReparto = {
     id: 'reparto-libre', titulo: 'Reparte números seguidos', pieza: 'rm-fichas',
     consigna: 'Elige desde qué número empiezas y arrastra el final de la fila. ¿Cuándo salen dos grupos de igual suma?',
@@ -339,20 +343,56 @@
     arrastres: [{ id: 'hasta', etiqueta: 'cuántos números se reparten', color: 'c-d',
       donde: val => finDeFila(Object.assign(gruposConFila(seguidos(val.a, val.n), 10), { tam: 22 }), val.n),
       mover: (pt, val) => ({ n: nDeFila(Object.assign(gruposConFila(seguidos(val.a, val.n), 10), { tam: 22 }), pt) }) }],
+    // Retos: se comprueban con la misma partición que arma los dos grupos del dibujo.
+    invitaciones: [
+      { texto: 'Consigue un total par que igual no se pueda repartir.',
+        logrado: val => totalSeg(val) % 2 === 0 && !sale(val),
+        bien: 'Total par y sin reparto: ser par es necesario, pero no suficiente.' },
+      { texto: 'Arma dos grupos que sumen 15 cada uno.',
+        logrado: val => sale(val) && totalSeg(val) === 30,
+        bien: 'Total 30, mitad 15. ¿Hay otra fila de números seguidos que también lo logre?' },
+      { texto: 'Busca la fila más larga que sí se pueda repartir.',
+        logrado: val => sale(val) && val.n === MAS_FICHAS,
+        bien: `${MAS_FICHAS} números. Con 10 seguidos el total siempre sale impar: ¿por qué?` },
+      { texto: 'Guarda dos casos con el mismo total: uno se reparte y el otro no.',
+        logrado: (val, guardados) => guardados.some(x => sale(x) && guardados.some(y => !sale(y) && totalSeg(y) === totalSeg(x))),
+        bien: 'El mismo total no decide: hay que mostrar el grupo que suma la mitad.' },
+    ],
   };
   // Mesa 2: el cuadrado mágico 3 × 3 con números en progresión (a, a + d, …): el centro y la suma se mueven juntos.
   const LO_SHU = [[2, 7, 6], [9, 5, 1], [4, 3, 8]];
+  const tableroMagico = val => LO_SHU.map(f => f.map(x => val.a + (x - 1) * val.d));   // lo que dibuja la mesa
+  const filaMagica = val => suma(tableroMagico(val)[0]);
+  const centroMagico = val => tableroMagico(val)[1][1];
+  // El salto más chico con el que una fila suma 60, buscado en todos los casos de la mesa (a de 1 a 10, salto de 1 a 5).
+  const SALTO_60 = Math.min(...[1, 2, 3, 4, 5].filter(d => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].some(a => filaMagica({ a, d }) === 60)));
   const mesaMagico = {
     id: 'magico-libre', titulo: 'Cuadrado mágico con otros números', pieza: 'rm-tablero',
-    consigna: 'Cambia el primer número y el salto entre números. Mira cómo cambian la suma por fila y el centro.',
+    consigna: 'Cambia el primer número y el salto: los nueve forman una progresión aritmética. Mira cómo cambian la suma por fila y el centro.',
     controles: [
       { id: 'a', etiqueta: 'Primer número', color: 'c-i', min: 1, max: 10, paso: 1, inicio: 1, decimales: 0 },
       { id: 'd', etiqueta: 'Salto', color: 'c-o', min: 1, max: 5, paso: 1, inicio: 1, decimales: 0 },
     ],
-    dibujo: val => ({ datos: cuadrado(LO_SHU.map(f => f.map(x => val.a + (x - 1) * val.d)), { centro: true, sumas: 0 }), estado: {} }),
-    lectura: val => { const T = suma(LO_SHU.flat().map(x => val.a + (x - 1) * val.d)); return [S, ` = ${T / 3} · `, c, ` = ${T / 9}`]; },
+    dibujo: val => ({ datos: cuadrado(tableroMagico(val), { centro: true, sumas: 0 }), estado: {} }),
+    lectura: val => { const T = suma(tableroMagico(val).flat()); return [S, ` = ${T / 3} · `, c, ` = ${T / 9}`]; },
+    invitaciones: [
+      { texto: 'Consigue que la casilla del centro valga 20.',
+        logrado: val => centroMagico(val) === 20,
+        bien: 'Centro 20, y cada fila suma 60: el triple del centro.' },
+      { texto: 'Haz que cada fila sume 60 con el salto más chico posible.',
+        logrado: val => filaMagica(val) === 60 && val.d === SALTO_60,
+        bien: `Salto ${SALTO_60}: con uno menor, el primer número tendría que pasar de 10.` },
+      { texto: 'Guarda dos cuadrados con el mismo centro y distinto salto.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => y.d !== x.d && centroMagico(y) === centroMagico(x))),
+        bien: 'Mismo centro, misma suma mágica: la fila solo mira el centro.' },
+    ],
   };
   // Mesa 3: el triángulo con esquinas libres: aparecen esquinas sin arreglo posible (el caso raro).
+  const esquinasTri = val => [val.e0, val.e1, val.e2];
+  const distintas = val => new Set(esquinasTri(val)).size === 3;
+  const arregloDe = val => (distintas(val) ? arregloTri(esquinasTri(val)) : null);   // el mismo que dibuja la mesa
+  // Las sumas por lado que sí tienen arreglo, buscadas entre todas las esquinas posibles.
+  const SUMAS_TRI = [1, 2, 3, 4, 5, 6].flatMap(a => [1, 2, 3, 4, 5, 6].flatMap(b => [1, 2, 3, 4, 5, 6].map(cc => arregloDe({ e0: a, e1: b, e2: cc })))).filter(Boolean).map(A => A.S);
   const mesaTri = {
     id: 'triangulo-libre', titulo: 'Esquinas a elección', pieza: 'rm-plano',
     consigna: 'Elige tres esquinas distintas del 1 al 6. A veces la suma da entera y aun así no hay arreglo.',
@@ -367,6 +407,20 @@
       const Sv = (21 + suma(V)) / 3;
       return [Vv, ` = ${suma(V)} · `, S, ` = ${Number.isInteger(Sv) ? Sv : `${21 + suma(V)}/3`}`, arregloTri(V) ? '' : ' · sin arreglo'];
     },
+    invitaciones: [
+      { texto: 'Encuentra esquinas con suma por lado entera y, aun así, sin arreglo.',
+        logrado: val => distintas(val) && (21 + suma(esquinasTri(val))) % 3 === 0 && !arregloDe(val),
+        bien: 'La cuenta da entera, pero los números de en medio no encajan. Faltaba probarlo.' },
+      { texto: 'Consigue la mayor suma por lado que admite el triángulo.',
+        logrado: val => !!arregloDe(val) && arregloDe(val).S === Math.max(...SUMAS_TRI),
+        bien: 'Las esquinas más grandes, contadas dos veces, empujan la suma hacia arriba.' },
+      { texto: 'Consigue la menor suma por lado que admite el triángulo.',
+        logrado: val => !!arregloDe(val) && arregloDe(val).S === Math.min(...SUMAS_TRI),
+        bien: 'Esquinas chicas, suma chica. ¿Cuántas sumas distintas hay entre la menor y la mayor?' },
+      { texto: 'Guarda dos esquinas que sumen lo mismo: una con arreglo y otra sin.',
+        logrado: (val, guardados) => guardados.some(x => arregloDe(x) && guardados.some(y => distintas(y) && !arregloDe(y) && suma(esquinasTri(y)) === suma(esquinasTri(x)))),
+        bien: 'Misma suma de esquinas, distinto final: la ecuación no basta, hay que armarlo.' },
+    ],
   };
 
   return {
@@ -374,6 +428,29 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-tablero.js', '/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/rm-fichas.js'],
+    // Glosario: las palabras que este tema estrena en el curso (docs/teoria.md, 4d).
+    glosario: [
+      { termino: 'cuadrado mágico', formas: ['cuadrado mágico', 'cuadrados mágicos'], def: 'Tablero cuadrado de números en el que cada fila, columna y diagonal suman lo mismo.',
+        ejemplo: 'Filas 2 7 6 · 9 5 1 · 4 3 8: todas suman 15.', ver: ['suma mágica'] },
+      { termino: 'suma mágica', def: 'Lo que suma cada fila, columna o diagonal de un tablero mágico: el total entre el número de filas.',
+        ejemplo: 'Del 1 al 16 suman 136; en el 4 × 4, cada fila suma 136 / 4 = 34.', ver: ['cuadrado mágico'] },
+      { termino: 'arreglo numérico', formas: ['arreglos numéricos', 'arreglo numérico', 'arreglos', 'arreglo'], def: 'Forma de colocar números en una figura para que cumplan una condición, como sumas iguales.',
+        ver: ['suma por lado'] },
+      { termino: 'polígono', def: 'Figura plana y cerrada formada por lados rectos, como el triángulo o el cuadrado.',
+        ver: ['suma por lado'] },
+      { termino: 'suma por lado', def: 'Lo que suman los números de un lado del polígono; en estos acertijos debe ser igual en todos.',
+        ejemplo: 'Del 1 al 6 con esquinas 4, 5 y 6: (21 + 15) / 3 = 12.', ver: ['polígono', 'arreglo numérico'] },
+      { termino: 'progresión aritmética', def: 'Lista de números en la que, de uno al siguiente, se suma siempre el mismo salto.',
+        ejemplo: '1, 4, 7, 10: el salto es 3.', ver: ['cuadrado mágico'] },
+      { termino: 'entero', formas: ['número entero', 'números enteros', 'entero', 'enteros'], def: 'Número sin parte decimal ni fracción, como −2, 0 o 7.',
+        ejemplo: '36 / 3 = 12 es exacto; 28 / 3 no da un número así.' },
+      { termino: 'necesario', formas: ['necesario'], def: 'Se dice de lo que tiene que cumplirse para que algo pase, aunque solo no lo asegure.',
+        ejemplo: 'Total par para repartir 3, 4, 5: se cumple (12), y aun así no sale.', ver: ['suficiente'] },
+      { termino: 'suficiente', def: 'Se dice de lo que, si se cumple, ya asegura el resultado.',
+        ejemplo: 'Mostrar 2 + 5 = 3 + 4 asegura que 2, 3, 4, 5 se reparten.', ver: ['necesario'] },
+      { termino: 'ecuación', def: 'Igualdad con una letra que esconde un número; resolverla es hallar ese número.',
+        formas: ['ecuación', 'ecuaciones'], ejemplo: '3S = 21 + 15 da S = 12.' },
+    ],
     // Laboratorio: el reparto de números seguidos con arrastre, el cuadrado mágico en progresión y el triángulo con
     // esquinas libres (donde aparecen esquinas sin arreglo).
     laboratorio: [mesaReparto, mesaMagico, mesaTri],

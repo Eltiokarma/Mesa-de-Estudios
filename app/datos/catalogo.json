@@ -4619,7 +4619,8 @@
        "/nucleo/kit/piezas/rm-plano.js",
        "/nucleo/kit/piezas/rm-tablero.js"
       ],
-      "ideas": 4
+      "ideas": 4,
+      "terminos": 15
      }
     },
     {
@@ -4654,7 +4655,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rm-plano.js"
       ],
-      "ideas": 4
+      "ideas": 4,
+      "terminos": 16
      }
     },
     {
@@ -4684,7 +4686,8 @@
        "/nucleo/kit/piezas/rm-tablero.js",
        "/nucleo/kit/piezas/rm-plano.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 13
      }
     },
     {
@@ -4712,7 +4715,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rm-tablero.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 13
      }
     },
     {
@@ -4744,7 +4748,8 @@
        "/nucleo/kit/piezas/rm-plano.js",
        "/nucleo/kit/piezas/rm-fichas.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 14
      }
     },
     {
@@ -4775,7 +4780,8 @@
        "/nucleo/kit/piezas/rm-plano.js",
        "/nucleo/kit/piezas/rm-fichas.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 11
      }
     },
     {
@@ -4806,7 +4812,8 @@
        "/nucleo/kit/piezas/rm-plano.js",
        "/nucleo/kit/piezas/rm-tablero.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 15
      }
     },
     {
@@ -4839,7 +4846,8 @@
        "/nucleo/kit/piezas/rm-fichas.js",
        "/nucleo/kit/piezas/rm-plano.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 11
      }
     },
     {
@@ -4874,7 +4882,8 @@
        "/nucleo/kit/piezas/recta.js",
        "/nucleo/kit/piezas/rm-tablero.js"
       ],
-      "ideas": 5
+      "ideas": 5,
+      "terminos": 17
      }
     },
     {
@@ -4905,7 +4914,8 @@
        "/nucleo/kit/piezas/rm-fichas.js",
        "/nucleo/kit/piezas/rm-tablero.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 11
      }
     },
     {
@@ -4935,7 +4945,8 @@
        "/nucleo/kit/piezas/recta.js",
        "/nucleo/kit/piezas/rm-tablero.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 15
      }
     },
     {
@@ -4965,7 +4976,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rm-plano.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 19
      }
     },
     {
@@ -4999,7 +5011,8 @@
        "/nucleo/kit/piezas/ejes.js",
        "/nucleo/kit/piezas/rm-plano.js"
       ],
-      "ideas": 4
+      "ideas": 4,
+      "terminos": 15
      }
     },
     {
@@ -5033,7 +5046,8 @@
        "/nucleo/kit/piezas/balanza.js",
        "/nucleo/kit/piezas/rm-fichas.js"
       ],
-      "ideas": 4
+      "ideas": 4,
+      "terminos": 13
      }
     },
     {
@@ -5065,7 +5079,8 @@
        "/nucleo/kit/piezas/rm-plano.js",
        "/nucleo/kit/piezas/rm-fichas.js"
       ],
-      "ideas": 4
+      "ideas": 4,
+      "terminos": 17
      }
     },
     {
@@ -5103,7 +5118,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rm-plano.js"
       ],
-      "ideas": 4
+      "ideas": 4,
+      "terminos": 25
      }
     },
     {
@@ -5140,7 +5156,8 @@
        "/nucleo/kit/piezas/rm-tablero.js",
        "/nucleo/kit/piezas/rm-plano.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 14
      }
     },
     {
@@ -5170,7 +5187,8 @@
        "/nucleo/kit/piezas/rm-plano.js",
        "/nucleo/kit/piezas/rm-tablero.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 15
      }
     },
     {
@@ -5199,7 +5217,8 @@
        "/nucleo/kit/piezas/rm-tablero.js",
        "/nucleo/kit/piezas/recta.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 14
      }
     }
    ]

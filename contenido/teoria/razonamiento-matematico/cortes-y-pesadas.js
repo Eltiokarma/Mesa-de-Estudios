@@ -44,6 +44,10 @@
   // común «balanza» no exporta geometría ni se edita aquí: sus ideas quedan con − y + (ver el reporte).
   const PLANO = () => Kit.piezas['rm-plano'], FICHAS = () => Kit.piezas['rm-fichas'];
   const enPlano = (d, q) => { const g = PLANO().geometria(d); return { x: g.X(q[0]), y: g.Y(q[1]) }; };
+  // Todos los casos de unos controles numéricos (para los retos que piden «el mayor» o «el menor» de la mesa).
+  const pasosDe = c0 => (c0.opciones ? c0.opciones.map(o => o.valor) : Array.from({ length: Math.round((c0.max - c0.min) / c0.paso) + 1 }, (_, i) => +(c0.min + i * c0.paso).toFixed(6)));
+  const casosDe = ctr => ctr.reduce((acc, c0) => acc.flatMap(v => pasosDe(c0).map(x => Object.assign({}, v, { [c0.id]: x }))), [{}]);
+  const una = calc => { let m; return () => (m === undefined ? (m = calc()) : m); };
   const masCercano = (cands, pos, pt) => cands.map(c0 => [Math.hypot(pos(c0).x - pt.x, pos(c0).y - pt.y), c0]).sort((a, b) => a[0] - b[0])[0][1];
 
   // ---------- Idea 1: cortes rectos ----------
@@ -166,7 +170,7 @@
       pasos: [
         { estado: { vista: 0 }, texto: '¿Qué equilibra 4 círculos?' },
         { estado: { vista: 1, usa: [0] }, texto: 'Doble de la primera balanza: 4 círculos = 6 triángulos.', ecuacion: ['4 ● = 6 ▲'] },
-        { estado: { vista: 2, usa: [1] }, texto: 'Cada triángulo se cambia por 2 cuadrados.', ecuacion: ['6 ▲ = 12 ■'] },
+        { estado: { vista: 2, usa: [1] }, texto: 'Sustitución: cada triángulo se cambia por 2 cuadrados.', ecuacion: ['6 ▲ = 12 ■'] },
       ],
     },
     regla: {
@@ -287,7 +291,7 @@
     pieza: 'rm-fichas',
     juega: {
       consigna: 'Entre varias monedas iguales, una pesa más. Se reparten en tres grupos: dos a la balanza y uno afuera. Cambia cuántas monedas hay.',
-      voz: 'Si la balanza queda pareja, la pesada está afuera.',
+      voz: 'Si la balanza queda pareja, la moneda distinta está afuera.',
       controles: [{ id: 'n', etiqueta: 'Monedas', opciones: [3, 9, 27].map(v => ({ valor: v, texto: String(v) })) }],
       dibujo: val => ({ datos: monedas(val.n), estado: {} }),
       lectura: val => [k, ` = ${pl(pesadas(val.n), 'pesada', 'pesadas')} para ${val.n} monedas`],
@@ -382,7 +386,24 @@
         if (val.tipo === 'aro') { const a = (Math.atan2(x - 5, -(y - 3)) + 2 * Math.PI) % (2 * Math.PI); return { t: val.t >= val.L && a < 0.05 ? val.t : a / (2 * Math.PI) * val.L }; }
         return { t: val.t >= val.L && x >= 9.4 ? val.t : (x - 0.6) / 8.8 * val.L };
       } }],
+    // Retos: cortes, trozos y sobrante salen de cortesDe, el mismo cálculo que pone las marcas.
+    invitaciones: [
+      { texto: 'Guarda un listón y un aro con los mismos trozos. ¿Cuántos cortes pide cada uno?',
+        logrado: (val, guardados) => guardados.some(g => g.tipo === 'liston' && guardados.some(h => h.tipo === 'aro' && q3(h).trozos === q3(g).trozos)),
+        bien: 'Mismos trozos, pero el aro pide un corte más: no tiene puntas sueltas.' },
+      { texto: 'Haz que sobre un trozo más corto que los demás.',
+        logrado: val => q3(val).sobra > 0,
+        bien: 'El trozo corto también es un trozo: los cortes no cambian por él.' },
+      { texto: 'Logra exactamente 6 cortes en un aro, sin que sobre nada.',
+        logrado: val => { const q = q3(val); return val.tipo === 'aro' && q.cortes === 6 && q.sobra === 0; },
+        bien: 'Seis cortes, seis trozos iguales: en el aro siempre coinciden.' },
+      { texto: 'Busca el listón con más cortes que permite la mesa.',
+        logrado: val => val.tipo === 'liston' && q3(val).cortes === masCortes(),
+        bien: 'Largo mayor y trozo menor. Aun así, un corte menos que trozos.' },
+    ],
   };
+  const q3 = val => cortesDe(val.L, val.t, val.tipo);
+  const masCortes = una(() => Math.max(...casosDe(mesaCortes.controles).filter(v => v.tipo === 'liston').map(v => q3(v).cortes)));
   // Mesa 2: el alumno reparte las monedas en la balanza. El peor caso deja el grupo más grande de candidatas: los
   // tercios son el reparto que menos deja.
   function reparto(val) {
@@ -411,7 +432,24 @@
         donde: val => lugar(reparto(val), 2, val.a),
         mover: (pt, val) => { const g = FICHAS().geometria(reparto(val)); return { a: (pt.x - g.filas[0].fichas[0].cx) / g.filas[0].paso }; } },
     ],
+    // Retos: el peor caso es el grupo más grande que puede quedar (el mismo número del pie de la figura).
+    invitaciones: [
+      { texto: 'Con 9 monedas, haz el reparto que deja menos candidatas en el peor caso.',
+        logrado: val => total(val) === 9 && peor(val) === mejorPeor(9),
+        bien: 'Tres, tres y tres: cada resultado deja un tercio.' },
+      { texto: 'Haz que, pase lo que pase, quede una sola candidata.',
+        logrado: val => peor(val) === 1,
+        bien: 'Una pesada basta para 3 monedas: 1 contra 1 y una afuera.' },
+      { texto: 'Con 10 monedas, busca el reparto con el peor caso más chico.',
+        logrado: val => total(val) === 10 && peor(val) === mejorPeor(10),
+        bien: 'Con 10 quedan 4 en el peor caso: hará falta una pesada más que con 9.' },
+      { texto: 'Guarda dos repartos del mismo total: uno parejo y otro que deje más.',
+        logrado: (val, guardados) => guardados.some(g => peor(g) === mejorPeor(total(g)) && guardados.some(h => total(h) === total(g) && peor(h) > peor(g))),
+        bien: 'El reparto disparejo deja más candidatas: se pierde lo que dice una pesada.' },
+    ],
   };
+  const total = val => 2 * val.g + val.a, peor = val => Math.max(val.g, val.a);
+  const mejorPeor = nn => Math.min(...casosDe(mesaReparto.controles).filter(v => total(v) === nn).map(peor));
   // Mesa 3: las pesas en uno o en los dos platillos, hasta 40 kg (la pieza común balanza, sin arrastre).
   function pesasLibre(val) {
     if (val.modo === 'dos') return pesas(val.w);
@@ -427,13 +465,51 @@
     ],
     dibujo: val => ({ datos: pesasLibre(val), estado: {} }),
     lectura: val => [`${val.w} kg = ${val.modo === 'dos' ? expresion(val.w) : [1, 2, 4, 8, 16, 32].filter(p => val.w & p).reverse().join(' + ')}`],
+    // Retos: dónde va cada pesa lo dice ternario(w), el mismo cálculo que arma la balanza.
+    invitaciones: [
+      { texto: 'Con 1, 3, 9 y 27, busca un saco que use las cuatro pesas.',
+        logrado: val => val.modo === 'dos' && ternario(val.w).every(m => m !== 0),
+        bien: 'Las cuatro trabajan: unas a favor del saco y otras en contra.' },
+      { texto: 'Busca un saco en que la pesa de 9 vaya junto al saco.',
+        logrado: val => val.modo === 'dos' && ternario(val.w)[2] === -1,
+        bien: 'Junto al saco, la pesa de 9 resta: el otro platillo tiene más.' },
+      { texto: 'Busca el saco más liviano que ya pide la pesa de 27.',
+        logrado: val => val.modo === 'dos' && val.w === primeroCon27(),
+        bien: '1 + 3 + 9 suman 13: desde 14 kg hace falta la de 27.' },
+      { texto: 'Guarda el mismo saco medido con los dos juegos de pesas.',
+        logrado: (val, guardados) => guardados.some(g => g.modo === 'dos' && guardados.some(h => h.modo === 'uno' && h.w === g.w)),
+        bien: 'Mismo saco, dos maneras. ¿Cuál juego usó menos pesas?' },
+    ],
   };
+  const primeroCon27 = una(() => Math.min(...casosDe(mesaPesas.controles).filter(v => v.modo === 'dos' && ternario(v.w)[3] !== 0).map(v => v.w)));
 
   return {
     unidad: 'razonamiento-matematico.cortes-y-pesadas',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/balanza.js', '/nucleo/kit/piezas/rm-fichas.js'],
+    // Glosario (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. «Peor caso» viene de Certezas.
+    glosario: [
+      { termino: 'balanza', def: 'Instrumento con dos platillos que compara pesos: baja el lado más pesado.',
+        formas: ['balanza', 'balanzas'], ver: ['platillo', 'equilibrio'] },
+      { termino: 'platillo', def: 'Cada uno de los dos lados de la balanza donde se pone lo que se compara.',
+        formas: ['platillo', 'platillos'], ver: ['balanza'] },
+      { termino: 'travesaño', def: 'Barra que une los dos platillos; se inclina hacia el lado que pesa más.', ver: ['balanza'] },
+      { termino: 'equilibrio', def: 'Cuando los dos platillos pesan lo mismo y el travesaño queda horizontal.',
+        ejemplo: '2 círculos de 6 kg y 3 triángulos de 4 kg: 12 kg a cada lado.', ver: ['balanza', 'sustitución'] },
+      { termino: 'sustitución', def: 'Cambiar algo por otra cosa que pesa o vale lo mismo, sin alterar el resultado.',
+        formas: ['sustitución', 'sustituciones'], ejemplo: 'Si ▲ = 2 ■, entonces 6 ▲ se cambian por 12 ■.', ver: ['equilibrio'] },
+      { termino: 'pesas', def: 'Piezas de peso conocido que se ponen en la balanza para medir otra cosa.',
+        ejemplo: 'Con pesas de 1 y 3 kg se mide un saco de 2 kg: 3 − 1.', ver: ['platillo'] },
+      { termino: 'pesada', def: 'Cada vez que se usa la balanza para comparar dos grupos. Tiene tres resultados posibles.',
+        formas: ['pesada', 'pesadas'], ver: ['candidata'] },
+      { termino: 'candidata', def: 'Moneda que todavía puede ser la distinta, según lo que mostraron las comparaciones anteriores.',
+        formas: ['candidata', 'candidatas'], ejemplo: 'Con 9 monedas, 3 contra 3: quedan 3 candidatas.', ver: ['pesada', 'peor caso'] },
+      { termino: 'potencia', def: 'Resultado de multiplicar un número por sí mismo varias veces.',
+        formas: ['potencia', 'potencias'], ejemplo: '3 a la 3 es 3 · 3 · 3 = 27.' },
+      { termino: 'moneda falsa', def: 'Moneda que se ve igual a las demás pero pesa distinto; se busca con la balanza.',
+        ver: ['pesada'] },
+    ],
     // Laboratorio: largo y trozo a elección (con el trozo que no cabe justo), el reparto de monedas que arma el alumno
     // y las pesas en uno o en dos platillos.
     laboratorio: [mesaCortes, mesaReparto, mesaPesas],

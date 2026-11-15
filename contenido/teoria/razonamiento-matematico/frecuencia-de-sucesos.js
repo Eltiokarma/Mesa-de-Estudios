@@ -269,24 +269,43 @@
   // ---------- Laboratorio: juego libre, sin preguntas ----------
   // Mesa 1: cualquier ritmo de 1 a 12 h, de 1 a 3 días, y el caso raro: si T no divide al periodo, no hay toma al final.
   const tomasLibre = val => tomas(val.T, 24 * val.dias);
+  // Cuántas tomas caben (la primera incluida) y a qué hora cae la última; lo usan la lectura y los retos.
+  const cuentaTomas = val => { const Dp = 24 * val.dias, n = Math.floor(Dp / val.T) + 1; return { Dp, n, ult: (n - 1) * val.T }; };
   const mesaTomas = {
     id: 'receta-libre', titulo: 'Receta libre', pieza: 'recta',
-    consigna: 'Arrastra la segunda toma y elige cuántos días dura la receta. Prueba ritmos que no dividen a 24.',
+    consigna: 'Arrastra la segunda toma: así fijas la frecuencia. Elige cuántos días dura la receta y prueba ritmos que no dividen a 24.',
     controles: [
       { id: 'T', etiqueta: 'Cada', min: 1, max: 12, paso: 1, inicio: 5, unidad: 'h', decimales: 0, color: 'c-o' },
       { id: 'dias', etiqueta: 'Días', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-h' },
     ],
     dibujo: val => ({ datos: tomasLibre(val), estado: {} }),
     lectura: val => {
-      const Dp = 24 * val.dias, n = Math.floor(Dp / val.T) + 1, ult = (n - 1) * val.T;
+      const { Dp, n, ult } = cuentaTomas(val);
       return [Nn, ` = ${n} tomas · la última a las ${ult}\u00a0h`, ult < Dp ? ' (antes del final)' : ''];
     },
+    invitaciones: [
+      { texto: 'Haz que la receta tenga justo 13 tomas.',
+        logrado: val => cuentaTomas(val).n === 13,
+        bien: 'Trece tomas son 12 espacios. ¿De cuántas maneras se logra?' },
+      { texto: 'Con 3 días, busca el ritmo más espaciado que dé al menos 10 tomas.',
+        logrado: val => val.dias === 3 && cuentaTomas(val).n >= 10 && cuentaTomas({ T: val.T + 1, dias: 3 }).n < 10,
+        bien: 'Cada 8 h da 10 tomas; cada 9 h, ya solo 9.' },
+      { texto: 'Con un ritmo impar, haz que la última toma caiga justo al final.',
+        logrado: val => val.T % 2 === 1 && cuentaTomas(val).ult === cuentaTomas(val).Dp,
+        bien: 'Cae al final porque el ritmo divide al periodo, sea par o impar.' },
+      { texto: 'Guarda dos recetas con el mismo número de tomas y distinto ritmo.',
+        logrado: (val, guardados) => guardados.some((a, i) => guardados.some((b, j) => j > i && a.T !== b.T
+          && cuentaTomas(a).n === cuentaTomas(b).n)),
+        bien: 'Mismas tomas, otro ritmo: el periodo también cambió.' },
+    ],
     arrastres: [manijaRecta(tomasLibre, 'T', 0, { id: 'segunda', etiqueta: 'segunda toma', color: 'c-o' })],
   };
   // Mesa 2: tres ritmos a la vez, cada uno de 2 a 12 días, en una recta fija de 60 días.
   const L3 = 60;
+  const mcm3 = val => mcm(mcm(val.a, val.b), val.c);
+  const distintos = val => val.a !== val.b && val.b !== val.c && val.a !== val.c;
   const tresTurnos = val => {
-    const m = mcm(mcm(val.a, val.b), val.c);
+    const m = mcm3(val);
     return {
       min: 0, max: L3, paso: 1, cada: 5, decimales: 0, variable: 'día', color: 'h', filas: 3,
       elementos: [
@@ -306,7 +325,22 @@
       { id: 'c', etiqueta: 'C cada', min: 2, max: 12, paso: 1, inicio: 10, unidad: 'días', decimales: 0, color: 'c-h' },
     ],
     dibujo: val => ({ datos: tresTurnos(val), estado: {} }),
-    lectura: val => [`MCM(${val.a}, ${val.b}, ${val.c}) = ${mcm(mcm(val.a, val.b), val.c)}: los tres juntos ese día`],
+    lectura: val => [`MCM(${val.a}, ${val.b}, ${val.c}) = ${mcm3(val)}: los tres juntos ese día`],
+    // Retos: todos los mide mcm3, la misma cuenta que pone la marca verde de «los tres».
+    invitaciones: [
+      { texto: 'Con tres ritmos distintos, haz que los tres coincidan antes del día 20.',
+        logrado: val => distintos(val) && mcm3(val) < 20,
+        bien: 'Si un ritmo es múltiplo de los otros, el MCM no crece.' },
+      { texto: 'Haz que los tres vuelvan a coincidir justo el día 36.',
+        logrado: val => mcm3(val) === 36,
+        bien: '36 es el primer múltiplo común de los tres. ¿Hay otra terna así?' },
+      { texto: 'Haz que el primer día juntos sea el producto de los tres ritmos.',
+        logrado: val => distintos(val) && mcm3(val) === val.a * val.b * val.c,
+        bien: 'Sin factores en común, el MCM es el producto. Si comparten, es menor.' },
+      { texto: 'Busca tres ritmos que no vuelvan a coincidir en los 60 días de la recta.',
+        logrado: val => mcm3(val) > L3,
+        bien: 'El MCM pasó de 60: la marca verde queda fuera de la recta.' },
+    ],
     arrastres: [['a', 0, 'A', 'c-o'], ['b', 1, 'B', 'c-i'], ['c', 2, 'C', 'c-h']].map(([id, fila, n, color]) =>
       manijaRecta(tresTurnos, id, fila, { id: `ritmo-${id}`, etiqueta: `primer descanso de ${n}`, color })),
   };
@@ -317,6 +351,10 @@
     return d;
   };
   const tramoHoras = val => { const a = Math.min(val.desde, val.hasta), b = val.hasta; return (b * (b + 1) - (a - 1) * a) / 2; };
+  // Todo lo que suena en el tramo: horas en punto y, si suenan, las medias horas de adentro.
+  const tramoTotal = val => tramoHoras(val) + (val.medias ? val.hasta - Math.min(val.desde, val.hasta) : 0);
+  // El tramo de tres horas seguidas que más suena, buscado con la misma cuenta en todas las horas de la mesa.
+  const MAX_TRES = Math.max(...Array.from({ length: 10 }, (_, k) => tramoTotal({ desde: k + 1, hasta: k + 3, medias: 1 })));
   const mesaTramo = {
     id: 'tramo-del-dia', titulo: 'Un tramo del día', pieza: 'rm-tablero',
     consigna: 'Arrastra la primera y la última hora del tramo, las dos incluidas. Agrega o quita las medias horas.',
@@ -326,10 +364,19 @@
       { id: 'medias', etiqueta: 'Medias horas', opciones: [{ valor: 0, texto: 'No suenan' }, { valor: 1, texto: 'Una campanada' }] },
     ],
     dibujo: val => ({ datos: datosTramo(val), estado: {} }),
-    lectura: val => {
-      const a = Math.min(val.desde, val.hasta), m = val.medias ? val.hasta - a : 0;
-      return [`De ${a}:00 a ${val.hasta}:00: `, plural(tramoHoras(val) + m, 'campanada', 'campanadas')];
-    },
+    lectura: val => [`De ${Math.min(val.desde, val.hasta)}:00 a ${val.hasta}:00: `, plural(tramoTotal(val), 'campanada', 'campanadas')],
+    invitaciones: [
+      { texto: 'Arma un tramo que dé exactamente 50 campanadas.',
+        logrado: val => tramoTotal(val) === 50,
+        bien: 'Hay dos formas: con medias horas o sin ellas. ¿Encontraste las dos?' },
+      { texto: 'Busca las tres horas seguidas que más campanadas dan.',
+        logrado: val => val.hasta - val.desde === 2 && tramoTotal(val) === MAX_TRES,
+        bien: 'Al final del medio día suenan más, y las medias suman un poco.' },
+      { texto: 'Guarda el mismo tramo con y sin medias horas.',
+        logrado: (val, guardados) => guardados.some((a, i) => guardados.some((b, j) => j > i && a.desde === b.desde
+          && a.hasta === b.hasta && a.hasta > a.desde && a.medias !== b.medias)),
+        bien: 'Las medias horas son una menos que las horas en punto del tramo.' },
+    ],
     arrastres: [manijaHora('desde', 'primera hora del tramo', datosTramo), manijaHora('hasta', 'última hora del tramo', datosTramo)],
   };
 
@@ -338,6 +385,33 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/rm-tablero.js'],
+    // Glosario: las palabras que este tema estrena en el curso (docs/teoria.md, 4d). «Intervalo» y «campanada» vienen
+    // de relojes y calendarios.
+    glosario: [
+      { termino: 'suceso', def: 'Algo que pasa en un momento dado y se puede contar, como una toma o un golpe del reloj.',
+        ejemplo: 'Tomar una pastilla a las 8:00 es uno.', ver: ['frecuencia', 'periodo'] },
+      { termino: 'frecuencia', def: 'Qué tan seguido se repite algo: una vez cada cierto tiempo.',
+        ejemplo: 'Una toma cada 8 horas: 3 veces al día.', ver: ['suceso'] },
+      { termino: 'periodo', def: 'Tramo de tiempo completo que se cuenta, desde que empieza hasta que termina.',
+        ejemplo: 'Una receta de 3 días dura 72 horas.', ver: ['instante inicial'] },
+      { termino: 'instante inicial', def: 'El momento en que se empieza a contar el tiempo: la hora 0.',
+        ejemplo: 'Si la primera toma es a las 8:00, ahí está la hora 0.', ver: ['periodo'] },
+      { termino: 'ambas incluidas', formas: ['ambas incluidas', 'las dos incluidas'],
+        def: 'Que la primera y la última también entran en la cuenta.',
+        ejemplo: 'De las 3:00 a las 5:00, así: 3, 4 y 5.' },
+      { termino: 'múltiplo', def: 'Número que se obtiene al multiplicar otro por un entero: lo contiene una cantidad exacta de veces.',
+        ejemplo: '24 lo es de 6 y de 8: 6 · 4 y 8 · 3.', ver: ['MCM'] },
+      { termino: 'MCM', formas: ['MCM', 'menor múltiplo común', 'mínimo común múltiplo'],
+        def: 'El número más pequeño, mayor que 0, que es múltiplo de dos o más números a la vez.',
+        ejemplo: 'De 6 y 8: 6, 12, 18, 24 y 8, 16, 24. Es 24.', ver: ['múltiplo', 'MCD'] },
+      { termino: 'MCD', formas: ['MCD', 'máximo común divisor'], def: 'El mayor número que divide exactamente a dos o más números.',
+        ejemplo: 'De 6 y 8 es 2.', ver: ['MCM'] },
+      { termino: 'producto', def: 'Resultado de multiplicar dos o más números.',
+        ejemplo: 'El de 6 y 8 es 48, pero coinciden antes, el día 24.', ver: ['MCM'] },
+      { termino: 'suma por parejas', formas: ['suma por parejas', 'por parejas'],
+        def: 'Juntar el primero con el último, el segundo con el penúltimo, y así: cada pareja da lo mismo.',
+        ejemplo: '1 + 2 + … + 12: 6 parejas de 13, en total 78.' },
+    ],
     // Laboratorio: la receta con ritmos que no dividen al periodo, tres ritmos a la vez y un tramo cualquiera del día.
     laboratorio: [mesaTomas, mesaTres, mesaTramo],
     historia: {

@@ -127,7 +127,7 @@
       ],
     },
     regla: {
-      texto: 'Una fórmula vale para todas las figuras cuando sale de cómo se construyen: lo que pone la primera más lo que agrega cada paso.',
+      texto: 'Una fórmula, el término general, vale para todas las figuras cuando sale de cómo se construyen: lo que pone la primera más lo que agrega cada paso.',
       ecuacion: [P, ' = (primera) + (lo que agrega) · ', { llave: ['(', n, ' − 1)'], nota: 'pasos dados', color: 'c-d' }],
       condicion: 'cada figura se arma desde la anterior siempre de la misma manera; ver tres casos no basta sin conocer la construcción.',
     },
@@ -208,7 +208,7 @@
     mira: {
       datos: cuerdas(6),
       pasos: [
-        { estado: { corte: 0 }, texto: 'Los casos 1, 2, 4, 8, 16 sugieren la regla «se duplica».', ecuacion: ['hipótesis: ', { sup: ['2', 'k − 1'] }] },
+        { estado: { corte: 0 }, texto: 'La sucesión 1, 2, 4, 8, 16 sugiere la regla «se duplica».', ecuacion: ['hipótesis: ', { sup: ['2', 'k − 1'] }] },
         { estado: { corte: 0 }, texto: 'Con 6 puntos se cuentan 31 regiones: la hipótesis falla.', ecuacion: [{ sup: ['2', '5'] }, ' = 32 ≠ 31'] },
         { estado: { corte: 0 }, texto: 'La regla correcta sale de contar cruces y cuerdas.', ecuacion: ['regiones = 1 + cuerdas + cruces'] },
       ],
@@ -288,7 +288,7 @@
       pregunta: '¿Cuánto suman los primeros 20 números impares: 1 + 3 + 5 + … + 39?',
       opciones: [
         { id: 'c', texto: '400', correcta: true },
-        { id: 'mitad', texto: '200', error: 'RMT-IND-8', siFuera: '200 sería 20 · 20 / 2. Las L forman un cuadrado entero de 20 × 20.' },
+        { id: 'mitad', texto: '200', error: 'RMT-IND-8', siFuera: '200 sería 20 · 20 / 2. Las L forman un cuadrado completo de 20 × 20.' },
         { id: 'trian', texto: '420', error: 'RMT-IND-9', siFuera: '420 es 20 · 21: esa es la cuenta de los pares 2 + 4 + … + 40.' },
         { id: 'ultimo', texto: '39', error: 'RMT-IND-10', siFuera: '39 es el último impar, no la suma.' },
       ],
@@ -321,7 +321,7 @@
           opciones: opcionesNum(k * k, [
             { id: 'ult', valor: ultimo * ultimo, error: 'RMT-IND-11', siFuera: `Se elevó el último impar; hay ${k} términos, no ${ultimo}.` },
             { id: 'pares', valor: k * (k + 1), error: 'RMT-IND-9', siFuera: 'Esa es la suma de los primeros pares.' },
-            { id: 'mitad', valor: Math.round(k * k / 2), error: 'RMT-IND-8', siFuera: 'Las L forman el cuadrado entero.' },
+            { id: 'mitad', valor: Math.round(k * k / 2), error: 'RMT-IND-8', siFuera: 'Las L forman el cuadrado completo.' },
           ]),
           solucion: { texto: tipo ? `Hay (${ultimo} + 1) / 2 = ${k} impares.` : `Los primeros ${k} impares forman un cuadrado de ${k} × ${k}.`, ecuacion: [{ sup: [String(k), '2'] }, ` = ${k * k}`] },
         };
@@ -332,6 +332,9 @@
   // ---------- Laboratorio: juego libre, sin preguntas ----------
   // Mesa 1: tres formas de palitos y hasta 8 figuras, anclada a la izquierda para que la punta siempre avance.
   const filaLab = (k, val) => palitos(k, val.forma, { lado: 1.05, x0: 0.6, pie: `${FORMAS[val.forma].primero} + ${FORMAS[val.forma].agrega} · ${k - 1} = ${cuenta(val.forma, k)} palitos` });
+  const palitosLab = val => filaLab(val.k, val).lineas.length;
+  // El mayor total menor que 20 entre todas las formas y tamaños de la mesa.
+  const MAS_BAJO_20 = Math.max(...['cuadrado', 'triangulo', 'doble'].flatMap(forma => [1, 2, 3, 4, 5, 6, 7, 8].map(k => palitosLab({ forma, k }))).filter(x => x < 20));
   const mesaPalitos = {
     id: 'palitos-libres', titulo: 'Tres formas de crecer', pieza: 'rm-plano',
     consigna: 'Elige la forma y tira del último palito. Compara lo que agrega cada forma en cada paso.',
@@ -342,9 +345,25 @@
     dibujo: val => ({ datos: filaLab(val.k, val), estado: {} }),
     lectura: val => [`${val.k} ${FORMAS[val.forma].nombre.split(' ')[0]}: `, P, ` = ${cuenta(val.forma, val.k)}`, '   ·   ', `agrega ${FORMAS[val.forma].agrega} por paso`],
     arrastres: [manijaFila('fin-fila', 'fin de la fila de palitos', filaLab, 1, 8, 'k')],
+    // Retos: los palitos se cuentan en el mismo dibujo de la mesa (las líneas de filaLab), no con la fórmula.
+    invitaciones: [
+      { texto: 'Arma una figura de exactamente 22 palitos.',
+        logrado: val => palitosLab(val) === 22,
+        bien: 'Hay dos maneras: 7 cuadrados o 4 columnas de dos pisos. ¿Las encontraste?' },
+      { texto: 'Guarda dos formas distintas que usen el mismo número de palitos.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => y.forma !== x.forma && palitosLab(y) === palitosLab(x))),
+        bien: 'Mismo total, distinta construcción: el número solo no dice cómo creció.' },
+      { texto: 'Busca la figura con más palitos que siga por debajo de 20.',
+        logrado: val => palitosLab(val) === MAS_BAJO_20,
+        bien: `${MAS_BAJO_20} palitos. Lo que agrega cada paso decide a qué totales se llega.` },
+    ],
   };
   // Mesa 2: llega a 6 puntos, el caso que la idea no deja jugar, con la cuenta de cuerdas y cruces.
   const cuerdasLab = k => cuerdas(k, { pie: `Duplicar daría ${Math.pow(2, k - 1)}` });
+  const cruces = k => regiones(k) - 1 - k * (k - 1) / 2;                 // lo mismo que cuenta la lectura
+  const duplica = k => regiones(k) === Math.pow(2, k - 1);
+  // El primer número de puntos en que «se duplica» falla, buscado desde 1.
+  const PRIMERA_FALLA = [1, 2, 3, 4, 5, 6].find(k => !duplica(k));
   const mesaCuerdas = {
     id: 'seis-puntos', titulo: 'Hasta 6 puntos', pieza: 'rm-plano',
     consigna: 'Lleva el último punto por la circunferencia hasta tener 6. Compara las regiones con lo que daría duplicar.',
@@ -352,6 +371,20 @@
     dibujo: val => ({ datos: cuerdasLab(val.k), estado: {} }),
     lectura: val => { const c = val.k * (val.k - 1) / 2, x = regiones(val.k) - 1 - c; const pl = (m, uno, varios) => `${m} ${m === 1 ? uno : varios}`; return [`1 + ${pl(c, 'cuerda', 'cuerdas')} + ${pl(x, 'cruce', 'cruces')} = ${pl(regiones(val.k), 'región', 'regiones')}`]; },
     arrastres: [manijaCirculo(6)],
+    invitaciones: [
+      { texto: 'Encuentra el primer número de puntos en que «se duplica» deja de valer.',
+        logrado: val => val.k === PRIMERA_FALLA,
+        bien: 'Cinco casos seguidos cumplían, y aun así el sexto la descarta: un contraejemplo basta.' },
+      { texto: 'Consigue exactamente 16 regiones.',
+        logrado: val => regiones(val.k) === 16,
+        bien: 'Con 5 puntos todavía se duplica: el patrón aguanta hasta aquí.' },
+      { texto: 'Haz que dentro del círculo haya justo 5 cruces de cuerdas.',
+        logrado: val => cruces(val.k) === 5,
+        bien: 'Cada cruce suma una región: por eso la cuenta sale de cuerdas y cruces.' },
+      { texto: 'Guarda un caso que cumpla «se duplica» y otro que no.',
+        logrado: (val, guardados) => guardados.some(x => duplica(x.k)) && guardados.some(x => !duplica(x.k)),
+        bien: 'Los dos caben en la misma mesa: el patrón era una hipótesis.' },
+    ],
   };
   // Mesa 3: impares que no empiezan en 1: se quitan las primeras L y se ve el cuadrado que falta.
   const lDesde = (k, val) => {
@@ -361,6 +394,12 @@
     d.notas = [{ t: j === 0 ? `${k} × ${k} = ${suma}` : `${k} × ${k} − ${j} × ${j} = ${suma}` }];
     return d;
   };
+  // Lo que suman las L encendidas y cuántas son, contado en las casillas del dibujo (las apagadas van tenues).
+  const encendidas = val => lDesde(val.k, val).celdas.flat().filter(c => c && c.t && !c.tenue);
+  const sumaL = val => encendidas(val).length;
+  const cuantasL = val => new Set(encendidas(val).map(c => c.t)).size;
+  // La mayor suma con exactamente 3 L encendidas, buscada en toda la mesa (k de 1 a 7, de 0 a 3 apagadas).
+  const MAYOR_TRES = Math.max(...[1, 2, 3, 4, 5, 6, 7].flatMap(k => [0, 1, 2, 3].map(j => (cuantasL({ k, j }) === 3 ? sumaL({ k, j }) : 0))));
   const mesaImpares = {
     id: 'impares-desde', titulo: 'Impares desde otro lugar', pieza: 'rm-tablero',
     consigna: 'Agranda el cuadrado y apaga las primeras L. La suma de las L encendidas es un cuadrado menos otro.',
@@ -376,10 +415,47 @@
       return [`${lista} = ${val.k * val.k - j * j}`];
     },
     arrastres: [manijaEsquina(lDesde)],
+    invitaciones: [
+      { texto: 'Haz que las L encendidas sumen 40.',
+        logrado: val => sumaL(val) === 40,
+        bien: '49 − 9 = 40: un cuadrado de 7 menos uno de 3. ¿Qué impares son?' },
+      { texto: 'Con 3 L encendidas, consigue la suma más grande.',
+        logrado: val => cuantasL(val) === 3 && sumaL(val) === MAYOR_TRES,
+        bien: `${MAYOR_TRES} = 7 + 9 + 11. ¿Y si pudieras apagar una L más?` },
+      { texto: 'Guarda dos casos con la misma suma y distintas L encendidas.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => sumaL(y) === sumaL(x) && (y.k !== x.k || Math.min(y.j, y.k) !== Math.min(x.j, x.k)))),
+        bien: 'Dos restas de cuadrados que dan lo mismo: el dibujo lo prueba, no la suerte.' },
+    ],
   };
 
   return {
     unidad: 'razonamiento-matematico.razonamiento-inductivo',
+    // Glosario: las palabras que este tema estrena en el curso (docs/teoria.md, 4d).
+    glosario: [
+      { termino: 'inducción', def: 'Pasar de casos observados a una regla general. Da una hipótesis, todavía no una prueba.',
+        ver: ['hipótesis', 'inducción matemática'] },
+      { termino: 'hipótesis', def: 'Regla que se propone a partir de algunos casos y que todavía falta probar.',
+        ejemplo: '«Se duplica»: 1, 2, 4, 8, 16 regiones… hasta que 6 puntos dan 31.', ver: ['contraejemplo'] },
+      { termino: 'contraejemplo', def: 'Un caso que cumple las condiciones pero no la regla. Basta uno para descartarla.',
+        ejemplo: '6 puntos dan 31 regiones, no 32: descarta «se duplica».', ver: ['hipótesis'] },
+      { termino: 'patrón', formas: ['patrón', 'patrones'], def: 'Algo que se repite de un caso al siguiente y deja adivinar el que viene.',
+        ver: ['hipótesis', 'sucesión'] },
+      { termino: 'sucesión', def: 'Lista ordenada de números o figuras: primero, segundo, tercero… cada uno en su lugar.',
+        ejemplo: '1, 3, 5, 7: los impares en orden.', ver: ['término general'] },
+      { termino: 'término general', def: 'Expresión con n que da cualquier elemento de la lista sin calcular los anteriores.',
+        ejemplo: 'Fila de cuadrados: P = 3n + 1; con n = 20, 61 palitos.', ver: ['sucesión', 'fórmula'] },
+      { termino: 'fórmula', def: 'Expresión con letras y números que da un resultado para cada valor que se pone.',
+        ejemplo: 'P = 3n + 1 con n = 4: 13 palitos.' },
+      { termino: 'cuerda', formas: ['cuerdas'], def: 'Segmento que une dos puntos de una circunferencia.',
+        ejemplo: '4 puntos unidos todos con todos: 6 cuerdas.', ver: ['región'] },
+      { termino: 'región', formas: ['región', 'regiones'], def: 'Cada parte en que queda dividida una figura por las líneas que la cortan.',
+        ejemplo: '3 puntos unidos por 3 cuerdas: el círculo queda en 4 partes.', ver: ['cuerda'] },
+      { termino: 'argumento', def: 'Cadena de razones que explica por qué algo es cierto.', ver: ['demostración'] },
+      { termino: 'demostración', def: 'Argumento que muestra que una afirmación vale siempre, sin dejar ningún caso fuera.',
+        ver: ['argumento', 'inducción matemática'] },
+      { termino: 'inducción matemática', def: 'Prueba de una regla en el primer caso y en el paso de cada caso al siguiente: así vale siempre.',
+        ver: ['demostración', 'inducción'] },
+    ],
     // Laboratorio: tres formas de palitos hasta 8 figuras, el círculo hasta 6 puntos y los impares que no empiezan en 1.
     laboratorio: [mesaPalitos, mesaCuerdas, mesaImpares],
     version: '0.2.0',

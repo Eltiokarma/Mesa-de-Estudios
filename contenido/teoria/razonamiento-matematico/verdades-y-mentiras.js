@@ -215,7 +215,7 @@
       }),
       base: {},
       pasos: [
-        { estado: { corte: 1 }, texto: 'Beto y Dina se contradicen: el único mentiroso está entre ellos.' },
+        { estado: { corte: 1 }, texto: 'Beto y Dina dicen frases contradictorias: el mentiroso está entre ellos.' },
         { estado: { corte: 2 }, texto: 'Entonces Ana y Ciro dicen la verdad: fue Beto, y Ciro no fue.' },
         { estado: { corte: 3 }, texto: 'Se comprueba: con Beto culpable, solo Beto miente.' },
       ],
@@ -348,7 +348,10 @@
     { valor: 0, texto: 'Ana y Beto mienten', f: v => !v[0] && !v[1] },
     { valor: 1, texto: 'Ana miente', f: v => !v[0] },
     { valor: 2, texto: 'Beto dice la verdad', f: v => v[1] },
+    // Con esta, encajan dos suposiciones: la información no decide.
+    { valor: 3, texto: 'Ana dice la verdad', f: v => v[0] },
   ];
+  const cuantasEncajan = fc => asignaciones(3).filter(x => coherente(fr3(fc), x)).length;
   const fr3 = k => [FR3[0], FR3[1], { t: `Ciro: «${FRASES_CIRO[k].texto}»`, valor: FRASES_CIRO[k].f }];
   const v3 = val => [val.a === 'V', val.b === 'V', val.c === 'V'];
   const datos3 = val => tablaSup(TRES, fr3(val.fc), v3(val));
@@ -362,13 +365,32 @@
     ],
     dibujo: val => ({ datos: datos3(val), estado: {} }),
     lectura: val => {
-      const n = asignaciones(3).filter(x => coherente(fr3(val.fc), x)).length;
+      const n = cuantasEncajan(val.fc);
       return [coherente(fr3(val.fc), v3(val)) ? 'Encaja' : 'Choca', ` · ${n} de 8 suposiciones encajan`];
     },
+    // Retos: todos usan coherente(), la misma prueba que llena la columna «Encaja».
+    invitaciones: [
+      { texto: 'Encuentra una suposición que encaje con lo que dice Ciro.',
+        logrado: val => coherente(fr3(val.fc), v3(val)),
+        bien: 'Todas las filas encajan. ¿Será la única? Prueba las otras.' },
+      { texto: 'Elige una frase de Ciro con la que ninguna suposición encaje.',
+        logrado: val => cuantasEncajan(val.fc) === 0,
+        bien: 'Con esa frase el acertijo no tiene salida: todas las suposiciones chocan.' },
+      { texto: 'Elige una frase de Ciro con la que encaje más de una suposición.',
+        logrado: val => cuantasEncajan(val.fc) > 1,
+        bien: 'Hay dos soluciones legales. La información todavía no decide entre ellas.' },
+      { texto: 'Guarda dos suposiciones distintas que encajen con la misma frase de Ciro.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => x.fc === y.fc && v3(x).join() !== v3(y).join()
+          && coherente(fr3(x.fc), v3(x)) && coherente(fr3(y.fc), v3(y)))),
+        bien: 'Dos repartos de veraces y mentirosos, los dos coherentes: no hay respuesta única.' },
+    ],
     arrastres: [['ana', 0, 'a'], ['beto', 1, 'b'], ['ciro', 2, 'c']].map(([id, fila, c]) =>
       Object.assign({ id, etiqueta: `${TRES[fila]}: veraz o miente`, color: 'c-d' }, interruptor(datos3, fila, c))),
   };
   // Mesa 2: el culpable con las dos condiciones del examen, «solo uno miente» o «solo uno dice la verdad».
+  const falsasCon = c => DECL.filter(d => !d.valor(c)).length;
+  const encajaCulpa = val => falsasCon(val.c) === (val.cond === 'miente' ? 1 : 3);
+  const MAX_FALSAS = Math.max(...SOSP.map((_, c) => falsasCon(c)));
   const datosCulpa = val => {
     const fal = DECL.filter(d => !d.valor(val.c)).length, pide = val.cond === 'miente' ? 1 : 3;
     return Object.assign(tablaCulpa(val.c), { notas: [{ t: `Fue ${SOSP[val.c]}: ${falsas(fal)}; se piden ${pide}` }] });
@@ -385,6 +407,21 @@
       const fal = DECL.filter(d => !d.valor(val.c)).length, pide = val.cond === 'miente' ? 1 : 3;
       return [`${SOSP[val.c]}: ${falsas(fal)} · `, fal === pide ? 'encaja' : 'no encaja'];
     },
+    // Retos: cuentan las frases falsas con las mismas declaraciones que pinta el tablero.
+    invitaciones: [
+      { texto: 'Con «solo uno miente», encuentra al culpable que encaja.',
+        logrado: val => val.cond === 'miente' && encajaCulpa(val),
+        bien: 'Una sola frase falsa: la de Dina, que contradice a Beto.' },
+      { texto: 'Cambia a «solo uno dice la verdad» y busca de nuevo al culpable.',
+        logrado: val => val.cond === 'veraz' && encajaCulpa(val),
+        bien: 'Otra condición, otro culpable. Las frases eran las mismas.' },
+      { texto: 'Busca al sospechoso que deja más frases falsas.',
+        logrado: val => falsasCon(val.c) === MAX_FALSAS,
+        bien: 'Con él fallan tres: justo lo que pide «solo uno dice la verdad».' },
+      { texto: 'Guarda los dos culpables que encajan, uno con cada condición.',
+        logrado: (val, guardados) => guardados.some(x => x.cond === 'miente' && encajaCulpa(x)) && guardados.some(x => x.cond === 'veraz' && encajaCulpa(x)),
+        bien: 'La condición del enunciado decide quién fue. Léela antes de suponer.' },
+    ],
     arrastres: [{ id: 'culpable', etiqueta: 'sospechoso que se supone culpable', color: 'c-o',
       donde: val => { const g = TAB().geometria(datosCulpa(val)), p = g.centro(val.c, 1); return { x: p.x + g.cw / 2 - 14, y: p.y }; },
       mover: (pt, val) => ({ c: TAB().geometria(datosCulpa(val)).casilla(pt.x, pt.y).f }) }],
@@ -392,8 +429,10 @@
   // Mesa 3: seis alumnos y las cuatro frases, cada una al lado de su negación: siempre valen lo contrario.
   const SEIS = ['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito'];
   const vf = b => (b ? 'cierta' : 'falsa');
+  // Las dos frases sobre los seis alumnos; las negaciones son siempre su contrario.
+  const frasesSeis = n => { const ap = SEIS.map((_, k) => k < n); return { ap, todos: ap.every(Boolean), ninguno: !ap.some(Boolean) }; };
   const datosSeis = val => {
-    const ap = SEIS.map((_, k) => k < val.n), todos = ap.every(Boolean), ninguno = !ap.some(Boolean);
+    const { ap, todos, ninguno } = frasesSeis(val.n);
     return {
       columnas: ['Aprobó'], filas: SEIS, ancho: 70,
       celdas: ap.map(x => [{ marca: x ? 'si' : 'no', color: x ? 'd' : 'h' }]),
@@ -406,6 +445,21 @@
     controles: [{ id: 'n', etiqueta: 'Aprobaron', min: 0, max: 6, paso: 1, inicio: 6, decimales: 0 }],
     dibujo: val => ({ datos: datosSeis(val), estado: {} }),
     lectura: val => [`${f0(val.n)} de 6 aprobaron · `, val.n === 6 ? '«todos» se cumple' : val.n === 0 ? '«ninguno» se cumple' : 'ni «todos» ni «ninguno»'],
+    // Retos: leen frasesSeis(), lo mismo que escribe las notas del tablero.
+    invitaciones: [
+      { texto: 'Haz que «todos» y «ninguno» sean falsas a la vez.',
+        logrado: val => !frasesSeis(val.n).todos && !frasesSeis(val.n).ninguno,
+        bien: 'Las dos fallan juntas: por eso «ninguno» no es la negación de «todos».' },
+      { texto: 'Haz el menor cambio que vuelve falsa la frase «todos aprobaron».',
+        logrado: val => !frasesSeis(val.n).todos && frasesSeis(val.n + 1).todos,
+        bien: 'Basta uno que no aprobó. Un solo caso rompe un «todos».' },
+      { texto: 'Haz que «ninguno» se cumpla y mira qué pasa con «alguno sí».',
+        logrado: val => frasesSeis(val.n).ninguno,
+        bien: 'Cada frase y su negación nunca valen lo mismo: una cierta, otra falsa.' },
+      { texto: 'Guarda dos casos distintos donde «todos aprobaron» sea falsa.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => x.n !== y.n && !frasesSeis(x.n).todos && !frasesSeis(y.n).todos)),
+        bien: '«Todos» falla de muchas maneras. Lo común a todas: al menos uno no aprobó.' },
+    ],
     arrastres: [{ id: 'aprobaron', etiqueta: 'cuántos aprobaron', color: 'c-d',
       donde: val => { const g = TAB().geometria(datosSeis(val)); return { x: g.x0 + g.cw, y: g.y0 + val.n * g.altoFila }; },
       mover: (pt, val) => { const g = TAB().geometria(datosSeis(val)); return { n: (pt.y - g.y0) / g.altoFila }; } }],
@@ -416,6 +470,28 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-tablero.js'],
+    // Glosario (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso.
+    glosario: [
+      { termino: 'veraz', def: 'Persona que siempre dice la verdad: todo lo que afirma es cierto.', ver: ['mentiroso'] },
+      { termino: 'mentiroso', def: 'Persona que siempre miente: todo lo que afirma es falso.',
+        formas: ['mentiroso', 'mentirosos', 'mentirosa'], ver: ['veraz', 'negación'] },
+      { termino: 'suposición', def: 'Caso que se da por cierto solo para probarlo y ver si choca con los datos.',
+        ejemplo: 'Supón que Ana es veraz: si alguna frase no encaja, esa suposición se descarta.', ver: ['coherente', 'choque'] },
+      { termino: 'coherente', def: 'Sin contradicciones: todos los datos y todas las frases se cumplen a la vez.',
+        ver: ['suposición'] },
+      { termino: 'choque', def: 'Lo que pasa cuando dos datos no pueden cumplirse a la vez. Obliga a descartar la suposición.',
+        formas: ['choque', 'choques', 'choca', 'chocan'], ver: ['coherente'] },
+      { termino: 'frases contradictorias', def: 'Dos frases en las que una dice justo lo contrario de la otra: siempre una es cierta y otra falsa.',
+        formas: ['frases contradictorias', 'frase contradictoria'], ejemplo: '«Fue Dina» y «Beto miente», si Beto es quien dijo «Fue Dina».', ver: ['negación'] },
+      { termino: 'negación', def: 'Frase que es falsa justo cuando la original es cierta, y cierta cuando la original es falsa.',
+        formas: ['negación', 'negaciones'], ejemplo: 'La de «todos aprobaron» es «al menos uno no aprobó».', ver: ['al menos uno'] },
+      { termino: 'al menos uno', def: 'Uno o más; también pueden ser todos.',
+        ejemplo: '«Al menos uno no aprobó» vale si falla 1, si fallan 3 o si fallan los 4.', ver: ['negación'] },
+      { termino: 'tabla de verdad', def: 'Cuadro con todos los casos de cierto y falso, para ver en cuáles se cumple una frase.',
+        formas: ['tabla de verdad', 'tablas de verdad'] },
+      { termino: 'condición', def: 'Lo que tiene que cumplirse para que algo valga, o para decidir qué paso sigue.',
+        formas: ['condición', 'condiciones'], ejemplo: '«Solo uno miente»: de los tres, exactamente uno dice algo falso.' },
+    ],
     // Laboratorio: el acertijo de tres con la frase de Ciro cambiable, el culpable con las dos condiciones y las
     // cuatro frases de «todos/ninguno» junto a su negación.
     laboratorio: [mesaTres, mesaCulpa, mesaSeis],

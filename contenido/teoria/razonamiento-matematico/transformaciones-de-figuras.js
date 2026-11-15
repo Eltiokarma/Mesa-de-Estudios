@@ -36,6 +36,11 @@
   const aUnid = (datos, pt) => { const g = PLANO().geometria(datos); return [(pt.x - g.X(0)) / g.k, (pt.y - g.Y(0)) / g.k]; };
   // Ángulo en grados, en sentido antihorario desde el eje x, del punto (x, y) visto desde O (y hacia abajo).
   const angulo = (O, x, y) => ((Math.atan2(-(y - O[1]), x - O[0]) * 180 / Math.PI) + 360) % 360;
+  // Todos los casos de unos controles (para los retos que piden «el mayor» o «el menor» de la mesa).
+  const pasosDe = c0 => (c0.opciones ? c0.opciones.map(o => o.valor) : Array.from({ length: Math.round((c0.max - c0.min) / c0.paso) + 1 }, (_, i) => +(c0.min + i * c0.paso).toFixed(6)));
+  const casosDe = ctr => ctr.reduce((acc, c0) => acc.flatMap(v => pasosDe(c0).map(y => Object.assign({}, v, { [c0.id]: y }))), [{}]);
+  const una = calc => { let m; return () => (m === undefined ? (m = calc()) : m); };
+  const mismas = (a, b) => a.length === b.length && a.every((c0, i) => c0[0] === b[i][0] && c0[1] === b[i][1]);   // casilla por casilla, la roja primero
   function opcionesTexto(correcta, distractores) {
     const vistos = new Set([correcta]);
     const ops = [{ id: 'c', texto: correcta, correcta: true }];
@@ -186,7 +191,7 @@
       ],
     },
     regla: {
-      texto: 'Si una figura se amplía con factor k, sus longitudes se multiplican por k, sus áreas por k² y sus volúmenes por k³.',
+      texto: 'Si una figura se amplía con factor de escala k, la copia es semejante: sus longitudes se multiplican por k, sus áreas por k² y sus volúmenes por k³.',
       ecuacion: [{ sub: [Ar, 'nueva'] }, ' = ', { sup: [k, '2'] }, ' · ', { sub: [Ar, 'original'] }],
       condicion: 'todas las medidas se multiplican por el mismo k (la figura no se estira solo a lo ancho).',
     },
@@ -434,13 +439,31 @@
     dibujo: val => ({ datos: datosDos(val), estado: {} }),
     lectura: val => [`${CORTO[val.m1]} y luego ${CORTO[val.m2].toLowerCase()}: `, (val.m1 === 'refleja') !== (val.m2 === 'refleja') ? 'invertida' : 'igual'],
     arrastres: [manijaMov('primero', 1, 'm1'), manijaMov('despues', 2, 'm2')],
+    // Retos: la pieza final sale de etapas(), la misma que se dibuja; la orientación, de cuántos reflejos hubo.
+    invitaciones: [
+      { texto: 'Termina con la orientación invertida, sin empezar por un reflejo.',
+        logrado: val => val.m1 !== 'refleja' && invertida(val),
+        bien: 'Un reflejo en cualquier paso invierte la orientación; ningún giro la arregla.' },
+      { texto: 'Aplica dos reflejos seguidos y mira la orientación final.',
+        logrado: val => val.m1 === 'refleja' && val.m2 === 'refleja',
+        bien: 'Dos reflejos se anulan: la orientación vuelve a ser la original.' },
+      { texto: 'Logra con dos movimientos lo mismo que un giro de 180°, sin usarlo.',
+        logrado: val => val.m1 !== 'gira180' && val.m2 !== 'gira180' && mismas(etapas(val)[2], norm(PIEZA.map(MOV.gira180))),
+        bien: 'Dos giros de 90° suman 180°: los giros se acumulan.' },
+      { texto: 'Deja la pieza final igual a la original, sin usar traslaciones.',
+        logrado: val => val.m1 !== 'traslada' && val.m2 !== 'traslada' && mismas(etapas(val)[2], norm(PIEZA)),
+        bien: 'El segundo deshace al primero. ¿Hay otra pareja que lo logre?' },
+    ],
   };
+  const invertida = val => (val.m1 === 'refleja') !== (val.m2 === 'refleja');
   // Mesa 2: la moneda que rueda alrededor de un disco más grande, con cuánto del recorrido se lleva a mano.
   // El radio de la moneda se ajusta para que el camino del centro, de radio (q + 1)·R, llene la figura.
   const RMq = q => 2.8 / (q + 1), OM = [5, 3.1];
+  // Vueltas propias: el camino del centro, de radio (q + 1)·R, entre 2πR; con a grados del recorrido.
+  const vueltasDe = val => val.a / 360 * (val.q + 1);
   const datosDisco = val => {
     const RM = RMq(val.q), rf = val.q * RM, D = rf + RM, a = val.a * Math.PI / 180, cx = OM[0] + D * Math.sin(a), cy = OM[1] - D * Math.cos(a);
-    const vueltas = val.a / 360 * (val.q + 1);
+    const vueltas = vueltasDe(val);
     return { ancho: 10, alto: 6.2,
       circulos: [{ x: OM[0], y: OM[1], r: rf, color: 'i', relleno: 0.2 }, { x: OM[0], y: OM[1], r: D, color: 'o', relleno: 0, discontinua: true, grosor: 'contorno' },
         { x: cx, y: cy, r: RM, color: 'o', relleno: 0.12, marca: (180 + val.a * (val.q + 1)) % 360 }],
@@ -454,7 +477,7 @@
       { id: 'a', etiqueta: 'Recorrido', min: 0, max: 360, paso: 30, inicio: 90, unidad: '°', decimales: 0, color: 'c-o' },
     ],
     dibujo: val => ({ datos: datosDisco(val), estado: {} }),
-    lectura: val => { const v = val.a / 360 * (val.q + 1); return [`Disco de radio ${val.q === 1 ? '' : val.q}R · ${val.a}°: `, `${f(v, 2)} ${v === 1 ? 'vuelta propia' : 'vueltas propias'}`]; },
+    lectura: val => { const v = vueltasDe(val); return [`Disco de radio ${val.q === 1 ? '' : val.q}R · ${val.a}°: `, `${f(v, 2)} ${v === 1 ? 'vuelta propia' : 'vueltas propias'}`]; },
     arrastres: [{ id: 'moneda', etiqueta: 'moneda que rueda', color: 'c-o',
       donde: val => { const D = 2.8, a = val.a * Math.PI / 180; return aFig(datosDisco(val), OM[0] + D * Math.sin(a), OM[1] - D * Math.cos(a)); },
       mover: (pt, val) => {
@@ -463,7 +486,22 @@
         if (val.a > 270 && a < 15) a = 360;
         return { a };
       } }],
+    invitaciones: [
+      { texto: 'Haz que la moneda dé exactamente una vuelta propia.',
+        logrado: val => Math.abs(vueltasDe(val) - 1) < 1e-9,
+        bien: 'Una vuelta propia antes de rodear todo el disco: manda el camino del centro.' },
+      { texto: 'Rodea por completo un disco igual a la moneda.',
+        logrado: val => val.q === 1 && val.a === 360,
+        bien: 'Dos vueltas, no una: el centro recorre un círculo de radio 2R.' },
+      { texto: 'Busca el caso con más vueltas propias que permite la mesa.',
+        logrado: val => Math.abs(vueltasDe(val) - masVueltas()) < 1e-9,
+        bien: 'Disco de 4R y vuelta entera: el centro recorre 5 veces 2πR.' },
+      { texto: 'Guarda dos casos con las mismas vueltas propias y distinto disco.',
+        logrado: (val, guardados) => guardados.some(g => vueltasDe(g) > 0 && guardados.some(h => h.q !== g.q && Math.abs(vueltasDe(h) - vueltasDe(g)) < 1e-9)),
+        bien: 'Disco más grande, menos recorrido para lo mismo. ¿Por qué?' },
+    ],
   };
+  const masVueltas = una(() => Math.max(...casosDe(mesaDisco.controles).map(vueltasDe)));
   // Mesa 3: el punto fijo se corre por el segmento (de un extremo al medio) y el giro llega hasta media vuelta.
   const LS = 4, OS = [5, 4.3];
   const datosBarre = val => {
@@ -495,13 +533,58 @@
         donde: val => { const a = val.t * Math.PI / 180, b = LS - val.p; return aFig(datosBarre(val), OS[0] + b * Math.cos(a), OS[1] - b * Math.sin(a)); },
         mover: (pt, val) => { const [x, y] = aUnid(datosBarre(val), pt); let a = angulo(OS, x, y); if (a > 270) a = 0; return { t: a }; } },
     ],
+    // Retos: el área sale de areaBarre (en π cm²), la misma de la lectura.
+    invitaciones: [
+      { texto: 'Con el giro que tienes, busca el punto fijo que barre la menor área.',
+        logrado: val => Math.abs(areaBarre(val) - Math.min(...pasosDe(mesaBarre.controles[0]).map(p => areaBarre({ p, t: val.t })))) < 1e-9,
+        bien: 'En el medio: dos radios de 2 cm barren menos que uno de 4.' },
+      { texto: 'Haz que el área barrida sea justo 4π cm².',
+        logrado: val => Math.abs(areaBarre(val) - 4) < 1e-9,
+        bien: 'Hay dos maneras: desde el extremo con 90° o desde el medio con 180°.' },
+      { texto: 'Barre la mayor área que permite esta mesa.',
+        logrado: val => Math.abs(areaBarre(val) - mayorArea()) < 1e-9,
+        bien: 'Desde el extremo y media vuelta: medio círculo de radio 4.' },
+      { texto: 'Guarda dos casos con el mismo giro y distinto punto fijo.',
+        logrado: (val, guardados) => guardados.some(g => guardados.some(h => h.t === g.t && h.p !== g.p)),
+        bien: 'Mismo giro, distinta área: mandan las distancias de los extremos al punto fijo.' },
+    ],
   };
+  const mayorArea = una(() => Math.max(...casosDe(mesaBarre.controles).map(areaBarre)));
 
   return {
     unidad: 'razonamiento-matematico.transformaciones-de-figuras',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-plano.js'],
+    // Glosario (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. «Reflejo» viene de Máximos y
+    // mínimos; «perímetro», «circunferencia» y «radio», de unidades anteriores.
+    glosario: [
+      { termino: 'traslación', def: 'Movimiento que desliza una figura sin girarla: todos sus puntos avanzan igual, en la misma dirección.',
+        formas: ['traslación', 'traslaciones', 'trasladar'], ver: ['imagen', 'orientación'] },
+      { termino: 'imagen', def: 'La figura que resulta después de aplicar un movimiento a la original.',
+        formas: ['imagen', 'imágenes'], ver: ['transformación'] },
+      { termino: 'transformación', def: 'Regla que mueve o cambia una figura para dar otra: trasladar, girar, reflejar o ampliar.',
+        formas: ['transformación', 'transformaciones'], ver: ['imagen', 'congruente'] },
+      { termino: 'congruente', def: 'Se dice de figuras con los mismos lados, ángulos y área: una calza sobre la otra.',
+        formas: ['congruente', 'congruentes'], ver: ['semejante'] },
+      { termino: 'orientación', def: 'Sentido en que se recorre el borde de una figura: horario o antihorario. Un espejo lo invierte.',
+        ver: ['reflejo'] },
+      { termino: 'semejante', def: 'Se dice de una figura con la misma forma que otra, aunque de distinto tamaño.',
+        formas: ['semejante', 'semejantes'], ejemplo: 'Lados al doble: la copia es semejante y su área es 4 veces mayor.', ver: ['factor de escala', 'congruente'] },
+      { termino: 'factor de escala', simbolo: 'k', def: 'Número por el que se multiplican todas las longitudes al ampliar o reducir una figura.',
+        ejemplo: 'k = 3: un lado de 2 cm pasa a 6 cm y el área se multiplica por 9.', ver: ['semejante'] },
+      { termino: 'rodar sin resbalar', def: 'Rodar sin patinar: en cada vuelta, el centro avanza justo lo que mide el borde de la rueda.',
+        formas: ['rodar sin resbalar', 'rueda sin resbalar'], ejemplo: 'Radio 1 dm: cada vuelta, el centro avanza 2π dm, unos 6,28 dm.', ver: ['perímetro'] },
+      { termino: 'punto fijo', def: 'Punto que no se mueve durante un giro: todo lo demás gira a su alrededor.',
+        formas: ['punto fijo', 'puntos fijos'] },
+      { termino: 'barrer', def: 'Cubrir una región al moverse, como el limpiaparabrisas sobre el vidrio.',
+        formas: ['barrer', 'barre', 'barren', 'barrida', 'barridas'], ver: ['sector'] },
+      { termino: 'sector', def: 'Parte de un círculo limitada por dos radios y el arco entre ellos, como una tajada de torta.',
+        formas: ['sector', 'sectores'], ejemplo: 'Radio 6 y 90°: un cuarto de círculo, 9π cm².', ver: ['radio'] },
+      { termino: 'disección', def: 'Cortar una figura en piezas que se reacomodan para formar otra, con la misma área.' },
+      { termino: 'equilátero', def: 'Triángulo que tiene sus tres lados iguales, y también sus tres ángulos.',
+        formas: ['equilátero', 'equiláteros'] },
+    ],
     // Laboratorio: dos movimientos seguidos, la moneda alrededor de discos de varios tamaños y el segmento con el punto
     // fijo que se corre.
     laboratorio: [mesaDos, mesaDisco, mesaBarre],

@@ -112,7 +112,7 @@
       datos: cuadricula(3, 2, { paso: true }),
       pasos: [
         { estado: { corte: 1 }, texto: 'Los cruces del borde tienen una sola ruta: todo derecho.' },
-        { estado: { corte: 2 }, texto: 'A un cruce se llega desde su izquierda o desde abajo.', ecuacion: ['1 + 1 = 2'] },
+        { estado: { corte: 2 }, texto: 'A un cruce se llega desde su izquierda o desde abajo: principio de adición.', ecuacion: ['1 + 1 = 2'] },
         { estado: { corte: 4 }, texto: 'Se suma así hasta la esquina de arriba.', ecuacion: ['rutas = izquierda + abajo'] },
         { estado: { corte: 5 }, texto: 'Sin cruces cerrados, es elegir cuáles pasos van hacia arriba.', ecuacion: [{ frac: ['5!', '3! · 2!'] }, ' = 10'] },
       ],
@@ -222,11 +222,11 @@
       pasos: [
         { estado: { corte: 0 }, texto: 'Toda ruta mínima usa 2 pasos en x, uno en y, uno en z.', ecuacion: ['4 pasos'] },
         { estado: { corte: 0 }, texto: 'Una ruta es un orden de esos pasos.', ecuacion: ['x x y z, x y x z, …'] },
-        { estado: { corte: 0 }, texto: 'Los dos pasos en x son iguales: se divide entre 2!.', ecuacion: [{ frac: ['4!', '2! · 1! · 1!'] }, ' = 12'] },
+        { estado: { corte: 0 }, texto: 'Los dos pasos en x son iguales: se divide entre su factorial, 2!.', ecuacion: [{ frac: ['4!', '2! · 1! · 1!'] }, ' = 12'] },
       ],
     },
     regla: {
-      texto: 'En una caja de a × b × c cubitos, una ruta mínima de esquina a esquina es un orden de a pasos en x, b en y y c en z.',
+      texto: 'En una caja de a × b × c cubitos, cada ruta mínima entre esquinas opuestas es una permutación con repetición: a pasos en x, b en y, c en z.',
       ecuacion: ['rutas = ', { frac: ['(a + b + c)!', [{ llave: ['a!'], nota: 'pasos en x', color: 'c-o' }, ' · ', { llave: ['b!'], nota: 'en y', color: 'c-o' }, ' · ', { llave: ['c!'], nota: 'en z', color: 'c-o' }]] }],
       condicion: 'se va por las aristas, siempre acercándose a B; si se permite retroceder, ya no son rutas mínimas.',
     },
@@ -298,7 +298,7 @@
     mira: {
       datos: planta(LA.map(h => FR.map(g => Math.min(h, g))), FR, LA),
       pasos: [
-        { estado: { corte: 0 }, texto: 'De frente se ve la pila más alta de cada columna.' },
+        { estado: { corte: 0 }, texto: 'La vista de frente del sólido muestra la pila más alta de cada columna.' },
         { estado: { corte: 0 }, texto: 'De lado, la más alta de cada fila.' },
         { estado: { corte: 0 }, texto: 'Una casilla no puede pasar ninguno de sus dos límites.', ecuacion: ['altura ≤ mín(frente, lado)'] },
         { estado: { corte: 0 }, texto: 'Las vistas no fijan los cubitos ocultos: hay varias pilas posibles.' },
@@ -307,7 +307,7 @@
     regla: {
       texto: 'La vista de frente da la altura mayor de cada columna; la de lado, la de cada fila. Muchas pilas comparten esas vistas; el máximo usa el menor límite.',
       ecuacion: ['máximo = Σ ', { llave: ['mín(frente, lado)'], nota: 'en cada casilla', color: 'c-o' }],
-      condicion: 'las vistas muestran alturas, sin transparencias; con la vista de planta se sabe además qué casillas están ocupadas.',
+      condicion: 'las vistas muestran alturas, sin transparencias; la vista de planta, mirada desde arriba, dice además qué casillas están ocupadas.',
     },
     ahoraTu: {
       pieza: 'rm-tablero',
@@ -343,6 +343,22 @@
   const manijaCierre = (k, ci, cj) => ({ id: `cierre-${k}`, etiqueta: `cruce cerrado ${k}`, color: 'c-h',
     donde: val => { const g = TAB().geometria(datosCierres(val)), p = g.centro(LN - val[cj], val[ci]); return { x: p.x + 12, y: p.y + 10 }; },
     mover: (pt, val) => { const g = TAB().geometria(datosCierres(val)), q = g.casilla(pt.x - 12, pt.y - 10); return { [ci]: q.c, [cj]: LN - q.f }; } });
+  const rutasLab = val => rutas(LM, LN, cierresDe(val))[LM][LN];
+  const esPunta = q => (q[0] === 0 && q[1] === 0) || (q[0] === LM && q[1] === LN);
+  const mismoCruce = val => val.i1 === val.i2 && val.j1 === val.j2;
+  const claveCierres = val => cierresDe(val).map(q => q.join(',')).sort().join(';');
+  const mismosCierres = (a, b) => claveCierres(a) === claveCierres(b);
+  // El mayor número de rutas que dejan dos cierres distintos, calculado con el motor en todos los pares de cruces.
+  let maxS = null;
+  const maxSalvadas = () => {
+    if (maxS !== null) return maxS;
+    maxS = 0;
+    for (let i1 = 0; i1 <= LM; i1++) for (let j1 = 0; j1 <= LN; j1++) for (let i2 = 0; i2 <= LM; i2++) for (let j2 = 0; j2 <= LN; j2++) {
+      const v = { i1, j1, i2, j2 };
+      if (!mismoCruce(v)) maxS = Math.max(maxS, rutasLab(v));
+    }
+    return maxS;
+  };
   const mesaCierres = {
     id: 'dos-cierres', titulo: 'Dos cruces cerrados', pieza: 'rm-tablero',
     consigna: 'Cuadrícula de 5 a la derecha y 4 hacia arriba. Arrastra las dos ✗ y mira cuántas rutas sobreviven.',
@@ -355,6 +371,21 @@
     dibujo: val => ({ datos: datosCierres(val), estado: {} }),
     lectura: val => [`Cierres en (${val.i1}; ${val.j1}) y (${val.i2}; ${val.j2}): `, plural(rutas(LM, LN, cierresDe(val))[LM][LN], 'ruta', 'rutas')],
     arrastres: [manijaCierre(1, 'i1', 'j1'), manijaCierre(2, 'i2', 'j2')],
+    // Retos: el motor de rutas (la misma tabla que se dibuja) dice cuántas sobreviven.
+    invitaciones: [
+      { texto: 'Deja cero rutas sin cerrar la salida ni la llegada.',
+        logrado: val => rutasLab(val) === 0 && !cierresDe(val).some(q => esPunta(q)),
+        bien: 'Dos cruces junto a la salida bastan: toda ruta pasa por uno de ellos.' },
+      { texto: 'Cierra dos cruces distintos y salva la mayor cantidad de rutas.',
+        logrado: val => !mismoCruce(val) && rutasLab(val) === maxSalvadas(),
+        bien: 'Las esquinas lejanas tienen una sola ruta: cerrarlas casi no cuesta.' },
+      { texto: 'Haz que sobreviva exactamente la mitad de todas las rutas.',
+        logrado: val => 2 * rutasLab(val) === rutas(LM, LN)[LM][LN],
+        bien: 'La mitad justa. ¿Hay otra pareja de cierres que también la dé?' },
+      { texto: 'Guarda dos casos con cierres en sitios distintos y las mismas rutas.',
+        logrado: (val, guardados) => guardados.some(a => guardados.some(b => !mismosCierres(a, b) && rutasLab(a) === rutasLab(b))),
+        bien: 'Mismo total por caminos distintos: el número no dice dónde está el cierre.' },
+    ],
   };
   // Mesa 2: la caja que se estira en sus tres direcciones; el pie trae la cuenta con los números de la caja.
   const PL = ([x, y, z]) => [1.2 + 1.8 * x + 1.2 * z, 6.4 - 1.8 * y - 1.0 * z];
@@ -371,6 +402,10 @@
       pie: `${a + b + c}! / (${a}! · ${b}! · ${c}!) = ${f(n)}` };
   }
   const datosCaja = val => cajaLab(val.a, val.b, val.c);
+  const rutasCaja = val => fact(val.a + val.b + val.c) / (fact(val.a) * fact(val.b) * fact(val.c));
+  const mismaCaja = (x, y) => x.a === y.a && x.b === y.b && x.c === y.c;
+  // La caja de más rutas entre las que suman 6 pasos, buscada con la misma cuenta en todas las de la mesa.
+  const mejorDeSeis = () => { let m = 0; for (let a = 1; a <= 4; a++) for (let b = 1; b <= 3; b++) for (let c = 1; c <= 2; c++) if (a + b + c === 6) m = Math.max(m, rutasCaja({ a, b, c })); return m; };
   const mesaCaja = {
     id: 'caja-que-crece', titulo: 'La caja que se estira', pieza: 'rm-plano',
     consigna: 'Arrastra B para cambiar el ancho y el alto; la esquina del fondo, para la profundidad. Compara las rutas mínimas.',
@@ -392,6 +427,20 @@
           // Proyección sobre la diagonal del fondo, (1,2; −1,0) por paso.
           return { c: ((x - 1.2) * 1.2 - (y - 6.4) * 1.0) / (1.2 * 1.2 + 1.0 * 1.0) }; } },
     ],
+    invitaciones: [
+      { texto: 'Arma una caja con exactamente 60 rutas mínimas.',
+        logrado: val => rutasCaja(val) === 60,
+        bien: '6 pasos con 3, 2 y 1 iguales: 6! / (3! · 2! · 1!) = 60.' },
+      { texto: 'Con 6 pasos en total, busca la caja de más rutas mínimas.',
+        logrado: val => val.a + val.b + val.c === 6 && rutasCaja(val) === mejorDeSeis(),
+        bien: 'Repartir parejo da más órdenes. ¿Pasa lo mismo con 5 pasos?' },
+      { texto: 'Guarda dos cajas de medidas distintas con las mismas rutas mínimas.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => !mismaCaja(x, y) && rutasCaja(x) === rutasCaja(y))),
+        bien: 'Importa cuántos pasos hay de cada clase, no cómo se llama cada dirección.' },
+      { texto: 'Guarda dos cajas iguales salvo el fondo: una con el triple de rutas.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => x.a === y.a && x.b === y.b && x.c !== y.c && rutasCaja(x) === 3 * rutasCaja(y))),
+        bien: 'Un paso de fondo más multiplica por (a + b + 2) / 2. ¿Cuándo duplica?' },
+    ],
   };
   // Mesa 3: armar la pila casilla por casilla; las vistas se calculan solas. Casos raros: una casilla vacía que no
   // cambia ninguna vista, o una torre escondida detrás de otra más alta.
@@ -408,6 +457,25 @@
     arrastres: CASILLAS.map(([i, c]) => ({ id: `casilla-${i}-${c}`, etiqueta: `altura de ${['fondo', 'medio', 'adelante'][i]} ${c + 1}`, color: 'c-o',
       donde: val => { const g = TAB().geometria(datosPila(val)), p = g.centro(i, c); return { x: p.x + 15, y: p.y + 13 - 26 * val[`h${i}${c}`] / 3 }; },
       mover: (pt, val) => { const g = TAB().geometria(datosPila(val)), p = g.centro(i, c); return { [`h${i}${c}`]: (p.y + 13 - pt.y) * 3 / 26 }; } })),
+    // Retos: las vistas las calcula vistaDe, la misma función que pone los números de abajo y de la derecha.
+    invitaciones: [
+      { texto: 'Haz que de frente se vea una escalera: 1, 2, 3.',
+        logrado: val => vistaDe(pilaDe(val)).fr.join() === '1,2,3',
+        bien: 'La escalera de frente no dice cómo está el fondo. Mira el lado.' },
+      { texto: 'Quita cubitos sin que cambie ninguna de las dos vistas del inicio.',
+        logrado: val => { const v = vistaDe(pilaDe(val)), v0 = vistaDe(PILAS[0]);
+          return v.fr.join() === v0.fr.join() && v.la.join() === v0.la.join() && suma(pilaDe(val)) < suma(PILAS[0]); },
+        bien: 'Esos cubitos estaban escondidos: ninguna vista los veía. ¿Cuántos más puedes quitar?' },
+      { texto: 'Consigue 3, 3, 3 de frente y de lado con 12 cubitos o menos.',
+        logrado: val => { const v = vistaDe(pilaDe(val)); return v.fr.join() === '3,3,3' && v.la.join() === '3,3,3' && suma(pilaDe(val)) <= 12; },
+        bien: 'Pocas torres altas llenan las dos vistas. ¿Cuál es el mínimo de verdad?' },
+      { texto: 'Guarda dos pilas distintas con las mismas vistas de frente y de lado.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => {
+          const a = pilaDe(x), b = pilaDe(y), va = vistaDe(a), vb = vistaDe(b);
+          return a.flat().join() !== b.flat().join() && va.fr.join() === vb.fr.join() && va.la.join() === vb.la.join();
+        })),
+        bien: 'Dos sólidos distintos, las mismas vistas: dos vistas no siempre bastan.' },
+    ],
   };
 
   return {
@@ -417,9 +485,42 @@
     requiere: ['/nucleo/kit/piezas/rm-tablero.js', '/nucleo/kit/piezas/rm-plano.js'],
     // Laboratorio: dos cruces cerrados que se arrastran, la caja que se estira en tres direcciones y la pila que se
     // arma casilla por casilla con sus vistas calculadas.
+    // Glosario: los términos que esta unidad estrena en el curso (los demás vienen de unidades anteriores).
+    glosario: [
+      { termino: 'ruta mínima', formas: ['ruta mínima', 'rutas mínimas'],
+        def: 'Camino entre dos puntos sin pasos de más: cada paso acerca a la llegada y ninguno retrocede.',
+        ejemplo: 'En un cubo, de una esquina a la opuesta: 3 aristas, y hay 6 caminos así.', ver: ['arista'] },
+      { termino: 'principio de adición',
+        def: 'Si algo pasa de un modo o de otro, sin casos en común, el total es la suma de ambos.',
+        ejemplo: 'Llegan 3 rutas por la izquierda y 3 por abajo: al cruce llegan 6.', ver: ['ruta mínima'] },
+      { termino: 'factorial', simbolo: 'n!',
+        def: 'Producto de los enteros desde 1 hasta un número. Cuenta las maneras de ordenar objetos todos distintos.',
+        ejemplo: '4! = 4 · 3 · 2 · 1 = 24.', ver: ['permutación con repetición'] },
+      { termino: 'permutación con repetición', formas: ['permutación con repetición', 'permutaciones con repetición'],
+        def: 'Manera de ordenar objetos cuando algunos son iguales: cambiar de lugar dos iguales no da un orden nuevo.',
+        ejemplo: 'Con A, A y B: AAB, ABA, BAA. Son 3! / 2! = 3.', ver: ['factorial'] },
+      { termino: 'arista',
+        def: 'Segmento del borde de un cuerpo donde se juntan dos de sus caras.',
+        ejemplo: 'Un cubo tiene 12: 4 arriba, 4 abajo y 4 de pie.', ver: ['sólido'] },
+      { termino: 'sólido',
+        def: 'Cuerpo con largo, ancho y alto, que ocupa lugar en el espacio, como un cubo o una pila de cubitos.',
+        ver: ['vista'] },
+      { termino: 'vista', formas: ['vista de frente', 'vista de lado', 'vista', 'vistas'],
+        def: 'Dibujo plano de lo que se ve de un cuerpo mirado de frente, de costado o desde arriba.',
+        ejemplo: 'Tres torres de 2, 3 y 1 cubitos en fila: de frente se ve 2, 3, 1.', ver: ['vista de planta', 'sólido'] },
+      { termino: 'vista de planta', formas: ['vista de planta', 'planta'],
+        def: 'Lo que se ve de un cuerpo mirado desde arriba: dice qué casillas del piso están ocupadas.',
+        ver: ['vista'] },
+      { termino: 'dodecaedro',
+        def: 'Cuerpo de 12 caras iguales; cada cara es un pentágono regular.',
+        ejemplo: 'Tiene 20 vértices y 30 aristas: 20 − 30 + 12 = 2.', ver: ['arista'] },
+      { termino: 'ciclo hamiltoniano', formas: ['ciclo hamiltoniano', 'ciclos hamiltonianos'],
+        def: 'Recorrido que pasa una sola vez por cada punto de una red y termina en el punto de partida.',
+        ver: ['dodecaedro'] },
+    ],
     laboratorio: [mesaCierres, mesaCaja, mesaPila],
     historia: {
-      texto: 'En 1857, William Hamilton presentó el juego icosiano: recorrer las aristas de un dodecaedro visitando cada vértice una vez y volver al inicio. Es otra pregunta que la de Euler, que pide pasar una vez por cada arista. Leer qué prohíbe repetir una consigna cambia el problema.',
+      texto: 'En 1857, William Hamilton presentó el juego icosiano: recorrer las aristas de un dodecaedro visitando cada vértice una vez y volver al inicio: un ciclo hamiltoniano. Es otra pregunta que la de Euler, que pide pasar una vez por cada arista. Leer qué prohíbe repetir una consigna cambia el problema.',
       pregunta: '¿Qué no se puede repetir: puntos o caminos?',
       fuente: { titulo: 'Hamilton, The Icosian Calculus · Trinity College Dublin', url: 'https://www.maths.tcd.ie/pub/HistMath/People/Hamilton/Icosian/' },
     },

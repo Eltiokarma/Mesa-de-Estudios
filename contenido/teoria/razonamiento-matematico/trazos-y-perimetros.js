@@ -117,7 +117,7 @@
         textos: [{ x: 5, y: 6.35, t: 'el cruce del centro no es punto', desde: 3 }],
       }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'Cada paso por un punto usa dos líneas: una entra y otra sale.', ecuacion: ['entra + sale = par'] },
+        { estado: { corte: 1 }, texto: 'Cada paso por un vértice usa dos líneas: una entra y otra sale.', ecuacion: ['entra + sale = par'] },
         { estado: { corte: 2 }, texto: 'Un punto impar solo puede ser el inicio o el final.', ecuacion: [I, ' = 2'] },
         { estado: { corte: 3 }, texto: 'Cruzarse no es pasar por un punto.' },
         { estado: { corte: 3 }, texto: 'Dos impares y figura unida: sale, de un impar al otro.' },
@@ -384,7 +384,7 @@
       datos: semis(3, D0, true, { grande: 1, chicos: 2 }),
       pasos: [
         { estado: { corte: 1 }, texto: 'Media circunferencia de 12 cm de diámetro.', ecuacion: [{ frac: ['π · 12', '2'] }, ' = 6π cm'] },
-        { estado: { corte: 2 }, texto: 'Tres medias de 4 cm: el diámetro se reparte, la suma no cambia.', ecuacion: ['3 · ', { frac: ['π · 4', '2'] }, ' = 6π cm'] },
+        { estado: { corte: 2 }, texto: 'Tres semicircunferencias de 4 cm: el diámetro se reparte, la suma no cambia.', ecuacion: ['3 · ', { frac: ['π · 4', '2'] }, ' = 6π cm'] },
         { estado: { corte: 2 }, texto: 'El borde son los dos tramos curvos.', ecuacion: [P, ' = 6π + 6π = 12π cm'] },
       ],
     },
@@ -428,6 +428,11 @@
     return base;
   };
   const posNodo = id => CASA.n.find(n => n.id === id);
+  const analizarSueltas = val => analizar(CASA.n, CASA.a.concat(extras(val)));
+  // El máximo de vértices impares que permiten las dos líneas sueltas, buscado entre todas las puntas posibles.
+  const MAX_IMPARES = (() => { const ids = CASA.n.map(n => n.id); let m = 0;
+    for (const a1 of ids) for (const b1 of ids) for (const a2 of ids) for (const b2 of ids) m = Math.max(m, analizarSueltas({ a1, b1, a2, b2 }).impares);
+    return m; })();
   // La manija va un poco hacia adentro del punto, en dirección a la otra punta, para no tapar el número.
   const manijaPunta = (k, ctl, otra) => ({ id: `punta-${ctl}`, etiqueta: `punta ${k} de la línea suelta`, color: 'c-o',
     donde: val => { const p = posNodo(val[ctl]), q = posNodo(val[otra]), dx = q.x - p.x, dy = q.y - p.y, L = Math.hypot(dx, dy) || 1, s = val[ctl] === val[otra] ? 0 : 0.75;
@@ -450,9 +455,28 @@
     ],
     dibujo: val => ({ datos: datosSueltas(val), estado: {} }),
     lectura: val => { const A = analizar(CASA.n, CASA.a.concat(extras(val))); return [I, ` = ${A.impares}`, '   ·   ', VERED[A.veredicto]]; },
+    // Retos: todos usan analizar(), el mismo que escribe el número de cada vértice y el pie.
+    invitaciones: [
+      { texto: 'Mueve las puntas hasta que la casa salga de un trazo y vuelva al inicio.',
+        logrado: val => analizarSueltas(val).veredicto === 'cerrado',
+        bien: 'Cero vértices impares: cada vez que entras a un punto, puedes salir.' },
+      { texto: 'Consigue la mayor cantidad posible de vértices impares.',
+        logrado: val => analizarSueltas(val).impares === MAX_IMPARES,
+        bien: 'Siempre salen en número par: cada línea suma 1 a dos vértices a la vez.' },
+      { texto: 'Con una línea, repite un lado que ya existe y deja cero impares.',
+        logrado: val => analizarSueltas(val).impares === 0 && extras(val).some(([a, b]) => CASA.a.some(([x, y]) => (x === a && y === b) || (x === b && y === a))),
+        bien: 'Repetir un tramo cambia la paridad de sus dos extremos. Así se arma el recorrido mínimo.' },
+      { texto: 'Guarda dos casos que cambien en una sola punta y tengan distinto veredicto.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => ['a1', 'b1', 'a2', 'b2'].filter(k => x[k] !== y[k]).length === 1
+          && analizarSueltas(x).veredicto !== analizarSueltas(y).veredicto)),
+        bien: 'Mover una punta cambia la paridad de dos vértices: el de antes y el nuevo.' },
+    ],
     arrastres: [manijaPunta(1, 'a1', 'b1'), manijaPunta(2, 'b1', 'a1'), manijaPunta(3, 'a2', 'b2'), manijaPunta(4, 'b2', 'a2')],
   };
   // Mesa 2: la escalera con entrante; se mueven la punta del primer escalón y el fondo del entrante.
+  // Largo de una poligonal cerrada del dibujo, pasado a centímetros con la escala de la figura de 10 × 6 cm.
+  const largoCm = pts => pts.reduce((s, q, i) => { const w = pts[(i + 1) % pts.length]; return s + Math.hypot(w[0] - q[0], w[1] - q[1]); }, 0) / ESC(10, 6).k;
+  const perimEnt = val => largoCm(datosEnt(val).poligonos[1].puntos);
   const datosEnt = val => escalera(10, 6, val.n, val.e, { pie: `${val.n} ${val.n === 1 ? 'escalón' : 'escalones'} · entrante de ${f(val.e)} cm` });
   const mesaEntrante = {
     id: 'escalera-con-entrante', titulo: 'Escalera con entrante', pieza: 'rm-plano',
@@ -463,6 +487,21 @@
     ],
     dibujo: val => ({ datos: datosEnt(val), estado: {} }),
     lectura: val => [P, ` = 32 + 2 · ${f(val.e)} = ${f(32 + 2 * val.e)} cm`],
+    // Retos: el perímetro se mide sobre el mismo contorno que se dibuja (largo de la poligonal, en cm).
+    invitaciones: [
+      { texto: 'Consigue el mayor perímetro posible.',
+        logrado: val => Math.abs(perimEnt(val) - MAX_PERIM) < 1e-9,
+        bien: 'Lo hizo el entrante, no los escalones. ¿Probaste con un solo escalón?' },
+      { texto: 'Haz que el perímetro mida exactamente 34 cm.',
+        logrado: val => Math.abs(perimEnt(val) - 34) < 1e-9,
+        bien: 'Las dos paredes del entrante suman 2 cm: 1 cm de fondo cada una.' },
+      { texto: 'Iguala el perímetro al del rectángulo punteado que encierra la figura.',
+        logrado: val => Math.abs(perimEnt(val) - largoCm(datosEnt(val).poligonos[0].puntos)) < 1e-9,
+        bien: 'Sin entrante, cada lado se desliza al borde: el contorno es el del rectángulo.' },
+      { texto: 'Guarda dos casos con distinto número de escalones y el mismo perímetro.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => x.n !== y.n && Math.abs(perimEnt(x) - perimEnt(y)) < 1e-9)),
+        bien: 'Los escalones no cambian el borde. Solo el entrante agrega.' },
+    ],
     arrastres: [
       { id: 'primer-escalon', etiqueta: 'punta del primer escalón', color: 'c-i',
         donde: val => { const E = ESC(10, 6); return aFig(datosEnt(val), E.X(4 + 6 / val.n), E.Y(0)); },
@@ -472,6 +511,7 @@
         mover: (pt, val) => { const E = ESC(10, 6); return { e: (aUnid(datosEnt(val), pt)[1] - E.y0) / E.k }; } },
     ],
   };
+  const MAX_PERIM = Math.max(...[1, 2, 3, 4, 5, 6].flatMap(n => [0, 1, 2, 3, 4].map(e => perimEnt({ n, e }))));
   // Mesa 3: arcos arriba y abajo del mismo segmento, cada lado con su número de semicírculos. El borde no cambia.
   function arcos2(nA, nB) {
     const R = 4, x0 = 1, y0 = 3.2, pol = [];
@@ -480,15 +520,31 @@
     return { ancho: 10, alto: 6.4, poligonos: pol, lineas: [{ de: [x0, y0], a: [x0 + 2 * R, y0], grosor: 'cuadricula', discontinua: true }], pie: `Arriba ${nA}, abajo ${nB}: borde de ${f(D0)}π cm` };
   }
   const datosArcos = val => arcos2(val.na, val.nb);
+  const MAX_ARCOS = 6;
+  // Largo de todos los arcos dibujados (poligonales abiertas), en unidades del plano.
+  const bordeArcos = val => datosArcos(val).poligonos.reduce((s, pg) => s + pg.puntos.slice(1).reduce((t, q, i) => t + Math.hypot(q[0] - pg.puntos[i][0], q[1] - pg.puntos[i][1]), 0), 0);
   const mesaArcos = {
     id: 'arcos-arriba-y-abajo', titulo: 'Arcos arriba y abajo', pieza: 'rm-plano',
     consigna: 'Sobre un segmento de 12 cm hay arcos arriba y abajo. Cambia cuántos hay en cada lado y compara el borde.',
     controles: [
-      { id: 'na', etiqueta: 'Arriba', min: 1, max: 6, paso: 1, inicio: 1, decimales: 0, color: 'c-o' },
-      { id: 'nb', etiqueta: 'Abajo', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0, color: 'c-i' },
+      { id: 'na', etiqueta: 'Arriba', min: 1, max: MAX_ARCOS, paso: 1, inicio: 1, decimales: 0, color: 'c-o' },
+      { id: 'nb', etiqueta: 'Abajo', min: 1, max: MAX_ARCOS, paso: 1, inicio: 3, decimales: 0, color: 'c-i' },
     ],
     dibujo: val => ({ datos: datosArcos(val), estado: {} }),
     lectura: val => [`Arriba ${val.na}, abajo ${val.nb}: `, P, ` = 6π + 6π = 12π cm`],
+    // Retos: el borde se mide sumando el largo de los arcos dibujados (los mismos polígonos de la figura).
+    invitaciones: [
+      { texto: 'Pon el doble de arcos arriba que abajo.',
+        logrado: val => val.na === 2 * val.nb,
+        bien: 'Doble de arcos, de la mitad de tamaño: cada lado sigue sumando lo mismo.' },
+      { texto: 'Llena el segmento con la mayor cantidad de arcos, arriba y abajo.',
+        logrado: val => val.na === MAX_ARCOS && val.nb === MAX_ARCOS,
+        bien: 'Arcos muy chicos, y el borde igual. ¿Y si fueran cien?' },
+      { texto: 'Guarda dos casos con muy distinta cantidad de arcos y compara sus bordes.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => Math.abs((x.na + x.nb) - (y.na + y.nb)) >= 4
+          && Math.abs(bordeArcos(x) - bordeArcos(y)) < 1e-6)),
+        bien: 'Mismo borde con pocos o muchos arcos: el diámetro se reparte, la suma no cambia.' },
+    ],
     arrastres: [
       { id: 'fin-arco-arriba', etiqueta: 'fin del primer arco de arriba', color: 'c-o',
         donde: val => aFig(datosArcos(val), 1 + 8 / val.na, 3.2 - 0.25),
@@ -504,10 +560,45 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-plano.js'],
+    // Glosario (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso.
+    glosario: [
+      { termino: 'vértice', def: 'Punto de una figura donde terminan o se juntan sus líneas.',
+        ejemplo: 'Un cuadrado tiene 4: uno en cada esquina.', ver: ['vértice impar'] },
+      { termino: 'vértice impar', def: 'Punto al que llega un número impar de líneas. Solo puede ser el inicio o el final del trazo.',
+        formas: ['vértices impares', 'vértice impar', 'puntos impares', 'punto impar'],
+        ejemplo: 'Llegan 3 líneas: una entra, otra sale y la tercera queda sin pareja.', ver: ['paridad', 'un solo trazo'] },
+      { termino: 'extremo', def: 'Cada una de las dos puntas de un tramo o de una fila: ahí empieza o termina.',
+        ejemplo: 'El palo vertical de la cruz tiene dos: arriba y abajo.' },
+      { termino: 'paridad', def: 'Si un número es par o impar.',
+        ejemplo: 'Repetir un tramo suma 1 línea a cada extremo y cambia su paridad.', ver: ['vértice impar'] },
+      { termino: 'un solo trazo', def: 'Dibujo hecho sin levantar el lápiz y sin pasar dos veces por la misma línea.',
+        formas: ['un solo trazo', 'un trazo'], ejemplo: 'Un cuadrado sale así: sus 4 vértices tienen 2 líneas, ninguno es impar.', ver: ['vértice impar', 'recorrido euleriano'] },
+      { termino: 'figura unida', def: 'Figura de una sola pieza: desde cualquier punto se llega a otro siguiendo sus líneas.',
+        formas: ['figura unida', 'figuras unidas'], ejemplo: 'Dos triángulos separados no lo son, aunque cada uno tenga 0 impares.' },
+      { termino: 'recorrido euleriano', def: 'Camino que pasa exactamente una vez por cada línea de una figura.',
+        formas: ['recorrido euleriano', 'recorridos eulerianos'], ver: ['un solo trazo', 'vértice impar'] },
+      { termino: 'perímetro', simbolo: 'P', medida: 'cm', def: 'Largo total del borde de una figura: lo que mide un cordel que la rodea justo.',
+        ejemplo: 'Rectángulo de 10 × 6 cm: P = 2 · (10 + 6) = 32 cm.', ver: ['entrante'] },
+      { termino: 'entrante', def: 'Hueco que se mete desde el borde de una figura. Sus paredes de adentro también son borde.',
+        ejemplo: 'Un entrante de 2 cm de fondo suma 2 · 2 = 4 cm al perímetro.', ver: ['perímetro'] },
+      { termino: 'circunferencia', def: 'Línea curva cerrada con todos sus puntos a la misma distancia del centro.',
+        ejemplo: 'Con 4 cm de diámetro mide π · 4 = 4π cm.', ver: ['diámetro', 'número pi'] },
+      { termino: 'diámetro', simbolo: 'D', medida: 'cm', def: 'Segmento que cruza un círculo de borde a borde pasando por el centro. Mide dos radios.',
+        ver: ['radio', 'circunferencia'] },
+      { termino: 'número pi', simbolo: 'π', def: 'Número fijo, cerca de 3,14: cuántas veces cabe el diámetro en el largo de la circunferencia.',
+        formas: ['número pi', 'π'], ver: ['circunferencia'] },
+      { termino: 'arco', def: 'Trozo curvo de una circunferencia, entre dos de sus puntos.', ver: ['semicircunferencia'] },
+      { termino: 'semicírculo', def: 'Mitad de un círculo, cortado por su diámetro.', ver: ['semicircunferencia'] },
+      { termino: 'semicircunferencia', def: 'Borde curvo de medio círculo: mide π por el diámetro entre dos.',
+        formas: ['semicircunferencia', 'semicircunferencias', 'media circunferencia'],
+        ejemplo: 'Diámetro de 12 cm: π · 12 / 2 = 6π cm.', ver: ['arco', 'semicírculo'] },
+      { termino: 'tramo', def: 'Parte de un camino o de una línea entre dos puntos seguidos.',
+        ejemplo: 'Una ventana con cruz tiene tramos de 3 cm y de 2 cm.', ver: ['vértice'] },
+    ],
     // Laboratorio: la casa con dos líneas sueltas, la escalera con entrante y los arcos arriba y abajo.
     laboratorio: [mesaSueltas, mesaEntrante, mesaArcos],
     historia: {
-      texto: 'En la década de 1730, Euler estudió si se podían cruzar los siete puentes de Königsberg una sola vez cada uno. Cambió las orillas por puntos y los puentes por líneas, y dejó de lado las distancias: importaba cómo se conectaban. Medir un borde es otra pregunta.',
+      texto: 'En la década de 1730, Euler estudió si se podían cruzar los siete puentes de Königsberg una sola vez cada uno. Cambió las orillas por puntos y los puentes por líneas, y dejó de lado las distancias: importaba cómo se conectaban. Hoy se llama recorrido euleriano al que usa cada línea una sola vez. Medir un borde es otra pregunta.',
       pregunta: '¿Qué importa más: el largo o las conexiones?',
       fuente: { titulo: 'Euler, Solutio problematis ad geometriam situs pertinentis · texto original y traducción', url: 'https://www.cantab.net/users/michael.behrend/repubs/maze_maths/pages/euler_en.html' },
     },
