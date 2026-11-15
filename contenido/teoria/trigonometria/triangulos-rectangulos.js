@@ -24,10 +24,12 @@
  *   Duda que resuelve: ¿qué razón uso, desde dónde se mide la depresión y por qué acercarse no siempre agranda lo que se ve?
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/trig-angulos-verticales/motor.js'))
+    : fabrica(root.Kit, root.MotorCampo);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MC) {
   'use strict';
   const f = (x, d = 2) => Kit.formatear(x, d);
   const th = { v: 'c-o', t: 'θ' }, al = { v: 'c-o', t: 'α' }, be = { v: 'c-o', t: 'β' };
@@ -463,11 +465,52 @@
     angulos: [{ en: 'O', de: 'A', a: 'B', texto: 'β', color: 'o', radio: 46 }],
   });
 
+  // ---------- La torre y dos miradas (laboratorio 3D, 15 nov: exploración libre, sin predicciones) ----------
+  // A está al sur del pie; B gira desde el sur hacia el este y el norte (φ, el ángulo en el pie). Elevaciones y AB
+  // las calcula el motor del campo (plantillas/trig-angulos-verticales/motor.js), el mismo que usa la pieza para
+  // dibujar: los retos miden lo que se ve (regla 1).
+  const campoDe = v => MC.campo({ h: v.h, obs: [{ id: 'A', az: 180, d: v.dA }, { id: 'B', az: 180 - v.phi, d: v.dB }] });
+  const eA = v => campoDe(v).obs[0].elev, eB = v => campoDe(v).obs[1].elev, AB = v => campoDe(v).pares[0].distancia;
+  const mesaTorre = {
+    id: 'torre-campo', titulo: 'La torre y dos miradas', pieza: 'trig-campo-3d',
+    consigna: 'Gira el campo. Cambia la torre, las distancias y el ángulo en el pie: mira los triángulos de pie y el del piso.',
+    controles: [
+      { id: 'h', etiqueta: 'h', color: 'c-h', min: 4, max: 20, paso: 2, inicio: 12, unidad: 'm', decimales: 0 },
+      { id: 'dA', etiqueta: 'A al pie', color: 'c-i', min: 2, max: 20, paso: 2, inicio: 16, unidad: 'm', decimales: 0 },
+      { id: 'dB', etiqueta: 'B al pie', color: 'c-i', min: 2, max: 20, paso: 2, inicio: 8, unidad: 'm', decimales: 0 },
+      { id: 'phi', etiqueta: 'ángulo en el pie', color: 'c-o', min: 0, max: 180, paso: 15, inicio: 90, unidad: '°', decimales: 0 },
+    ],
+    dibujo: v => ({ datos: { h: v.h, obs: [{ id: 'A', az: 180, d: v.dA, ang: 'α' }, { id: 'B', az: 180 - v.phi, d: v.dB, ang: 'β' }], par: true, pie: true }, estado: {} }),
+    lectura: v => [al, ` ≈ ${f(eA(v), 1)}° · `, be, ` ≈ ${f(eB(v), 1)}° · `, { v: 'c-f', t: 'AB' }, ` ≈ ${f(AB(v), 1)} m`],
+    invitaciones: [
+      { texto: 'Haz que desde A la punta se vea a 45°.',
+        logrado: v => casi(eA(v), 45),
+        bien: 'A 45°, la torre mide lo mismo que tu distancia al pie.',
+        pista: 'Pon la distancia de A igual a la altura h.' },
+      { texto: 'Con 90° en el pie, deja a A y B a 20 m.',
+        logrado: v => v.phi === 90 && casi(AB(v), 20),
+        bien: 'En el piso hay otro triángulo rectángulo: 12, 16 y 20, como 3, 4 y 5.',
+        pista: 'Busca dos distancias al pie que con 20 formen un trío de Pitágoras.' },
+      { texto: 'Consigue la misma elevación desde A y desde B, en lugares distintos.',
+        logrado: v => casi(eA(v), eB(v)) && AB(v) > 0.5,
+        bien: 'Igual distancia al pie, igual elevación: el rumbo no cambia el ángulo.',
+        pista: 'Iguala las dos distancias al pie y abre el ángulo.' },
+      { texto: 'Logra que AB sea la suma de las dos distancias al pie.',
+        logrado: v => casi(AB(v), v.dA + v.dB),
+        bien: 'Solo en lados opuestos se suman. Si no, el piso arma un triángulo.',
+        pista: 'Lleva el ángulo en el pie hasta su tope.' },
+      { texto: 'Guarda dos casos con la torre al doble y las mismas elevaciones.',
+        logrado: (v, gs) => gs.some(p => gs.some(q => q.h === 2 * p.h && casi(eA(p), eA(q)) && casi(eB(p), eB(q)))),
+        testigo: [{ h: 6, dA: 8, dB: 4, phi: 90 }, { h: 12, dA: 16, dB: 8, phi: 90 }],
+        bien: 'Todo al doble y los mismos ángulos: la elevación fija la forma, no el tamaño.' },
+    ],
+  };
+
   return {
     unidad: 'trigonometria.triangulos-rectangulos',
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/triangulo.js'],
+    requiere: ['/nucleo/kit/piezas/triangulo.js', '/plantillas/trig-angulos-verticales/motor.js', '/nucleo/kit/piezas/trig-campo-3d.js'],
     historia: {
       texto: 'Hacia 1021, al-Biruni escribió un tratado sobre las sombras: relacionaba la altura del Sol, los instrumentos y el cálculo con razones. Para medir algo inalcanzable hacía falta lo mismo que hoy: fijar la horizontal, leer bien el ángulo y conocer una distancia que sí se puede medir.',
       pregunta: '¿Cómo medirías la altura de un edificio sin subir a él?',
@@ -493,6 +536,8 @@
         formas: ['ángulo de depresión', 'ángulos de depresión', 'depresión', 'depresiones'], ejemplo: 'Desde 30 m de alto, con 45°, la lancha está a 30 ÷ tan 45° = 30 m.', ver: ['ángulo de elevación', 'horizontal'] },
       { termino: 'ángulo de observación', def: 'Ángulo entre las visuales a los dos bordes de un objeto: cuánto abarca la mirada.',
         formas: ['ángulo de observación', 'ángulos de observación', 'observación'], ejemplo: 'Letrero de 2 m a 6 m, visto desde 2√3 m: 60° − 30° = 30°.', ver: ['línea visual', 'ángulo de elevación'] },
+      { termino: 'pie', def: 'Punto donde una línea vertical o perpendicular llega al suelo o a la base: justo debajo de la punta.',
+        formas: ['pie'], ejemplo: 'Del ojo al pie de la torre se mide por el suelo, en horizontal.', ver: ['vertical'] },
       { termino: 'distancia', medida: 'm', def: 'Largo del camino más corto entre dos puntos, o de un punto a una recta. Nunca es negativa.',
         formas: ['distancia', 'distancias'], ejemplo: 'Del ojo al pie de una torre, por el suelo: 6 m.', ver: ['horizontal'] },
     ],
@@ -501,6 +546,7 @@
     // deja en «Mira»). «letrero-cerca»: el letrero con sus dos bordes libres y el ojo hasta medio metro del poste,
     // donde β vuelve a bajar; la lectura dice dónde está el máximo.
     laboratorio: [
+      mesaTorre,
       {
         id: 'instrumento', titulo: 'El ojo, sobre el suelo', pieza: 'triangulo',
         consigna: 'El ojo está a una altura a. Arrastra el ojo, el pie y la punta. La torre suma el tramo bajo el ojo.',

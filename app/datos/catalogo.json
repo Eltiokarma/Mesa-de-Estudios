@@ -4027,10 +4027,12 @@
      "teoria": {
       "archivo": "/contenido/teoria/trigonometria/triangulos-rectangulos.js",
       "requiere": [
-       "/nucleo/kit/piezas/triangulo.js"
+       "/nucleo/kit/piezas/triangulo.js",
+       "/plantillas/trig-angulos-verticales/motor.js",
+       "/nucleo/kit/piezas/trig-campo-3d.js"
       ],
       "ideas": 3,
-      "terminos": 22
+      "terminos": 25
      }
     },
     {
@@ -4477,7 +4479,7 @@
        "/nucleo/kit/piezas/triangulo.js"
       ],
       "ideas": 5,
-      "terminos": 34
+      "terminos": 35
      }
     },
     {
@@ -4515,7 +4517,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
