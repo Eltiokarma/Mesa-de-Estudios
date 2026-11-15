@@ -1704,7 +1704,8 @@
        "/nucleo/kit/piezas/alg-venn.js",
        "/nucleo/kit/piezas/recta.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 21
      }
     },
     {
@@ -1742,7 +1743,8 @@
        "/nucleo/kit/piezas/recta.js",
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
-      "ideas": 4
+      "ideas": 4,
+      "terminos": 3
      }
     },
     {
@@ -1821,7 +1823,8 @@
        "/nucleo/kit/piezas/ejes.js",
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
-      "ideas": 5
+      "ideas": 5,
+      "terminos": 2
      }
     },
     {
@@ -1859,7 +1862,8 @@
        "/nucleo/kit/piezas/recta.js",
        "/nucleo/kit/piezas/ejes.js"
       ],
-      "ideas": 4
+      "ideas": 4,
+      "terminos": 2
      }
     },
     {
@@ -1898,7 +1902,8 @@
        "/nucleo/kit/piezas/recta.js",
        "/nucleo/kit/piezas/ejes.js"
       ],
-      "ideas": 4
+      "ideas": 4,
+      "terminos": 2
      }
     },
     {
@@ -2011,7 +2016,8 @@
        "/nucleo/kit/piezas/alg-baldosas.js",
        "/nucleo/kit/piezas/ejes.js"
       ],
-      "ideas": 5
+      "ideas": 5,
+      "terminos": 1
      }
     },
     {
@@ -2053,7 +2059,8 @@
        "/nucleo/kit/piezas/recta.js",
        "/nucleo/kit/piezas/flechas.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 1
      }
     },
     {
@@ -2094,7 +2101,8 @@
        "/nucleo/kit/piezas/recta.js",
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 1
      }
     },
     {
@@ -2132,7 +2140,8 @@
       "requiere": [
        "/nucleo/kit/piezas/ejes.js"
       ],
-      "ideas": 5
+      "ideas": 5,
+      "terminos": 1
      }
     },
     {
@@ -2170,7 +2179,8 @@
        "/nucleo/kit/piezas/ejes.js",
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 1
      }
     },
     {
@@ -2325,7 +2335,8 @@
       "requiere": [
        "/nucleo/kit/piezas/ejes.js"
       ],
-      "ideas": 4
+      "ideas": 4,
+      "terminos": 1
      }
     },
     {
