@@ -1263,7 +1263,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 24
+      "terminos": 25
      }
     },
     {
@@ -1302,7 +1302,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 24
+      "terminos": 25
      }
     },
     {
@@ -1340,7 +1340,7 @@
        "/nucleo/kit/piezas/quim-particulas.js"
       ],
       "ideas": 5,
-      "terminos": 25
+      "terminos": 27
      }
     },
     {
@@ -1378,7 +1378,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 4,
-      "terminos": 16
+      "terminos": 27
      }
     },
     {
@@ -1418,7 +1418,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 12
+      "terminos": 13
      }
     },
     {
@@ -1546,7 +1546,7 @@
        "/nucleo/kit/piezas/quim-molecula.js"
       ],
       "ideas": 6,
-      "terminos": 11
+      "terminos": 12
      }
     },
     {

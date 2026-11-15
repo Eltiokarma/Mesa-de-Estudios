@@ -381,7 +381,7 @@
       },
       voz: 'En cada cambio, primero calcula Q; después compáralo con K.',
       pasos: [
-        { estado: { corte: 1 }, texto: 'En equilibrio Q vale lo mismo que K.', ecuacion: [Q, ' = ', { frac: [cc('N₂O₄'), { sup: [cc('NO₂'), '2'] }] }, ' = 0,9 / 0,09 = 10'] },
+        { estado: { corte: 1 }, texto: 'En equilibrio, el cociente de reacción Q vale lo mismo que K.', ecuacion: [Q, ' = ', { frac: [cc('N₂O₄'), { sup: [cc('NO₂'), '2'] }] }, ' = 0,9 / 0,09 = 10'] },
         { estado: { corte: 2 }, texto: 'Añadir NO₂ baja Q: la mezcla avanza hacia N₂O₄.', ecuacion: [Q, ` = 0,9 / 0,36 = ${f(qDe(0.6, 0.9), 1)} < `, K] },
         { estado: { corte: 3 }, texto: 'Un catalizador no cambia Q ni K: solo llega antes al equilibrio.' },
         { estado: { corte: 4 }, texto: 'Calentar no cambia Q: cambia K. Aquí K baja y la mezcla retrocede.', ecuacion: [Q, ' = 10 > ', K, ' = 4'] },
@@ -441,6 +441,35 @@
       pregunta: '¿Cómo puede algo estar quieto si por dentro sigue cambiando?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §13.2 y §13.3', url: 'https://openstax.org/books/chemistry-2e/pages/13-3-shifting-equilibria-le-chateliers-principle' },
     },
+    // Glosario (docs/teoria.md §4d): las palabras que la unidad estrena en el curso. Los ejemplos se calculan aquí.
+    glosario: [
+      { termino: 'equilibrio químico', formas: ['equilibrio químico', 'equilibrio', 'equilibrios'],
+        def: 'Estado en que la reacción directa y la inversa ocurren con la misma rapidez: las concentraciones dejan de cambiar.',
+        ver: ['reacción reversible', 'constante de equilibrio'] },
+      { termino: 'reacción reversible', formas: ['reacción reversible', 'reacciones reversibles', 'reversible'],
+        def: 'Ocurre en los dos sentidos a la vez: los productos también vuelven a formar reactivos. Se escribe ⇌.',
+        ver: ['reacción directa', 'reacción inversa'] },
+      { termino: 'reacción directa', def: 'El sentido que va de reactivos a productos, de izquierda a derecha en la ecuación.',
+        ver: ['reacción inversa'] },
+      { termino: 'reacción inversa', formas: ['reacción inversa', 'reacciones inversas'], def: 'El sentido que va de productos a reactivos, de derecha a izquierda en la ecuación.',
+        ver: ['reacción directa'] },
+      { termino: 'constante de equilibrio', simbolo: 'K', formas: ['constante de equilibrio', 'constante K'],
+        def: 'Cociente fijo de las concentraciones de equilibrio, productos sobre reactivos con sus exponentes. Solo cambia con la temperatura.',
+        ejemplo: `2 NO₂ ⇌ N₂O₄ con 0,3 y 0,9 mol/L: Kc = 0,9 / 0,3² = ${f(qDe(0.3, 0.9), 0)}.`, ver: ['cociente de reacción', 'acción de masas'] },
+      { termino: 'cociente de reacción', simbolo: 'Q', def: 'La misma cuenta que K, pero con las concentraciones de este momento. Se compara con K.',
+        ejemplo: `Con 0,6 y 0,9 mol/L: Q = 0,9 / 0,6² = ${f(qDe(0.6, 0.9), 1)}, menor que 10: avanza a productos.`, ver: ['constante de equilibrio'] },
+      { termino: 'acción de masas', formas: ['ley de acción de masas', 'acción de masas'], def: 'En equilibrio, productos sobre reactivos con sus exponentes da un número fijo a cada temperatura.',
+        ver: ['constante de equilibrio'] },
+      { termino: 'grado de reacción', simbolo: 'α', def: 'Fracción del reactivo que llega a reaccionar hasta el equilibrio; va de 0 a 1.',
+        ejemplo: `De 10 moléculas de N₂O₄ se rompen 3: α = ${f(3 / 10, 1)}.`, ver: ['disociación', 'tabla inicio–cambio–equilibrio'] },
+      { termino: 'disociación', formas: ['disociación', 'disocia', 'disocian', 'se disocia'],
+        def: 'Ruptura de una molécula en otras más pequeñas, como el N₂O₄ que se separa en dos NO₂.', ver: ['grado de reacción'] },
+      { termino: 'tabla inicio–cambio–equilibrio', def: 'Cuadro con lo que hay al inicio, lo que reacciona y lo que queda de cada sustancia.',
+        ver: ['grado de reacción'] },
+      { termino: 'principio de Le Châtelier', formas: ['principio de Le Châtelier', 'Le Châtelier'],
+        def: 'Si se altera un equilibrio, la mezcla se desplaza en el sentido que contrarresta, en parte, ese cambio.',
+        ver: ['cociente de reacción'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera deja armar cualquier mezcla de NO₂ y N₂O₄ (y
     // calentar): el punto Q se arrastra por la recta y se ve hacia dónde tendría que ir. La segunda cambia las dos
     // constantes de rapidez y el punto de partida (solo A, solo B o mitad): se llega al mismo equilibrio desde cualquier
@@ -462,6 +491,23 @@
             return { x: g.x(q), y: g.filaY(Math.abs(q - val.T) > 1e-9 ? 1 : 2) }; },
           mover: (pt, val) => { const g = Kit.piezas.recta.geometria(labRecta(qDe(val.a, val.b), val.T)), q = (pt.x - g.x(0)) * 50 / (g.x(50) - g.x(0));
             return { b: q * val.a * val.a }; } }],
+        // Retos (docs/teoria.md §4d): los comprueban qDe y la K de la temperatura, lo mismo que pinta la recta.
+        invitaciones: [
+          { texto: 'Calienta y arma una mezcla que ya esté en equilibrio.',
+            logrado: val => val.T === 4 && Math.abs(qDe(val.a, val.b) - val.T) < 1e-9,
+            bien: 'Con K = 4 hacen falta otras concentraciones: la temperatura movió la meta.' },
+          { texto: 'En frío, arma una mezcla que tenga que retroceder hacia NO₂.',
+            logrado: val => val.T === 10 && qDe(val.a, val.b) > val.T,
+            bien: 'Sobra N₂O₄ para ese K y la mezcla lo deshace: principio de Le Châtelier.' },
+          { texto: 'Lleva Q al valor más alto que permite la mesa.',
+            logrado: val => Math.abs(qDe(val.a, val.b) - qDe(0.2, 2)) < 1e-9,
+            bien: 'Poco NO₂ y mucho N₂O₄: el cuadrado de abajo pesa mucho.' },
+          { texto: 'Guarda dos mezclas distintas, las dos en equilibrio en frío.',
+            logrado: (val, guardados) => val.T === 10 && Math.abs(qDe(val.a, val.b) - val.T) < 1e-9
+              && guardados.some(g => g.T === 10 && g.a !== val.a && Math.abs(qDe(g.a, g.b) - g.T) < 1e-9)
+              && guardados.some(g => g.a === val.a && g.b === val.b && g.T === val.T),
+            bien: 'Concentraciones distintas, el mismo K: el equilibrio no es un solo par de números.' },
+        ],
       },
       {
         id: 'desde-cualquier-lado', titulo: 'Desde cualquier lado', pieza: 'ejes',
@@ -477,6 +523,23 @@
         arrastres: [{ id: 'instante', etiqueta: 'instante sobre la curva de A', color: 'c-i',
           donde: val => { const g = Kit.piezas.ejes.geometria(labCurvas(val).datos); return { x: g.X(val.t), y: g.Y(labA(val, val.t)) }; },
           mover: (pt, val) => { const g = Kit.piezas.ejes.geometria(labCurvas(val).datos); return { t: (pt.x - g.X(0)) * 10 / (g.X(10) - g.X(0)) }; } }],
+        // Retos: los comprueba labA, la misma curva que se dibuja (labA en t → ∞ es el nivel donde se aplana).
+        invitaciones: [
+          { texto: 'Haz que A y B se aplanen en partes iguales.',
+            logrado: val => Math.abs(labA(val, Infinity) - 0.5) < 1e-9 && val.a0 !== 0.5,
+            bien: 'Reacción directa y reacción inversa igual de rápidas: K = 1. ¿Y desde solo B?' },
+          { texto: 'Empieza solo con B y llega a un minuto donde haya más B que A.',
+            logrado: val => val.a0 === 0 && val.t > 0 && 1 - labA(val, val.t) > labA(val, val.t) && labA(val, Infinity) < 0.5,
+            bien: 'Aunque B se deshace, el equilibrio queda del lado de B: la ida le gana.' },
+          { texto: 'Logra un equilibrio con menos de 0,2 mol/L de A.',
+            logrado: val => labA(val, Infinity) < 0.2,
+            bien: 'La ida tiene que ser más de cuatro veces la vuelta.' },
+          { texto: 'Guarda dos casos con las mismas k: uno desde solo A y otro desde solo B.',
+            logrado: (val, guardados) => (val.a0 === 0 || val.a0 === 1)
+              && guardados.some(g => g.kd === val.kd && g.ki === val.ki && (g.a0 === 0 || g.a0 === 1) && g.a0 !== val.a0)
+              && guardados.some(g => g.kd === val.kd && g.ki === val.ki && g.a0 === val.a0 && g.t === val.t),
+            bien: 'Desde los dos lados se aplanan en el mismo nivel: es una reacción reversible.' },
+        ],
       },
     ],
     ideas: [dinamico, kc, grado, chatelier],
