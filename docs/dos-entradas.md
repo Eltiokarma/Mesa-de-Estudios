@@ -68,10 +68,36 @@ Con esa unidad se comprueba si lo bonito del video también es agradable de usar
   3. Los cubitos (vistas en razonamiento matemático).
 - **WebGL 2 en el colegio.** Gerson lo pregunta, y además queda como requisito en `docs/guia-profesores.md`.
 
-## Antes de que la primera unidad 3D se publique
+## La primera unidad 3D: enlace químico (15 nov, rama `claude/sweet-maxwell-0knzks`)
 
-- **Respaldo para equipos sin WebGL 2:** el dibujo de siempre (Canvas o SVG), con la misma unidad completa.
-- **Control con teclado** para girar y elegir, para las computadoras del laboratorio y para accesibilidad.
-- **Versión con el service worker:** three.js y la pieza 3D van en la cáscara versionada (`VERSION` de `app/sw.js`). Un `?v=` en la dirección no basta, porque el service worker lo ignora.
-- **Modo ahorro** que el alumno elige: menos resolución y sin sombras ni animaciones de adorno.
-- **Mesa 3D del inicio:** después de la primera unidad completa, no antes.
+Se construyó sobre la rama de teoría `claude/awesome-einstein-ch5g9a`, que ya traía los retos comprobados, el glosario, la ayuda tras dos errores, la colección y el retomar. Lo nuevo:
+
+- **Pieza `quim-molecula-3d`** (`nucleo/kit/piezas/`), la primera pieza viva del kit: trae `montar(el)` además de `dibujar()`. `app/teoria.js` la monta una vez y después solo la actualiza. Los lienzos WebGL se sueltan al cambiar de pieza o de ruta.
+- **Mesa «La molécula que gira»**, la primera del laboratorio de `quimica.enlace-quimico`:
+  - once moléculas, de CH₄ a XeF₄;
+  - dipolos y pares libres a la vista u ocultos;
+  - cinco retos comprobados.
+
+  Todo lo calcula el motor de `plantillas/enlace` (regla 1).
+- **Recorrido comprobado con Playwright** en un Android emulado, sin errores:
+  1. entrar;
+  2. girar y tocar un átomo;
+  3. lograr un reto;
+  4. guardar dos casos, que además cumplen el reto de comparación;
+  5. recargar;
+  6. ver «Tu colección · 2» y «Lo último que hiciste».
+
+**Lo que pedía la lista antes de publicar:**
+- **Respaldo sin WebGL 2:** hecho. Es la proyección plana con `quim-molecula` y el aviso «Vista plana».
+  - Se ve desde el ángulo más cercano a 30° y 20° sin átomos encimados. Una vista de frente aplanaría el CH₄ en un cuadrado de 90°.
+  - El respaldo no gira.
+- **Teclado:** hecho. Las flechas giran 15° e Inicio vuelve a la vista de partida.
+- **Service worker:** hecho. three.js va en la cáscara (v185).
+- **Modo ahorro:** hecho. Está en Perfil → Gráficos en 3D: resolución 1×, sin suavizado y esferas con menos caras.
+- **Mesa 3D del inicio:** después, como se decidió.
+
+**Falta:**
+- probarla en el Redmi;
+- integrarla a `main`, junto con la rama de teoría;
+- sumar la molécula a la «Muestra jugable» de la bienvenida (la entrada de exploración);
+- el prisma y los cubitos.

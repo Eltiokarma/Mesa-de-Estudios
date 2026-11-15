@@ -27,6 +27,12 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 - **Si el servidor local muere:** se reinicia con `node herramientas/servidor.js`. También hay que reiniciarlo después de cambiar `herramientas/construir-catalogo.js`, porque guarda el módulo en memoria.
 - **Para verificar a mano:** Playwright y Chromium ya vienen instalados en el entorno en la nube (`require('playwright')`). Las capturas *fullPage* pierden la emulación táctil, así que lo que depende de `hover` se revisa con capturas normales.
 
+## La molécula que gira: primera unidad 3D (15 nov, rama `claude/sweet-maxwell-0knzks`)
+
+**Qué es.** La mesa 3D del laboratorio de enlace químico, con la pieza viva `quim-molecula-3d`, el modo ahorro y three.js en la cáscara del service worker. Detalle y lo que falta en `docs/dos-entradas.md`, en «La primera unidad 3D».
+
+**Rama.** Está sobre `claude/awesome-einstein-ch5g9a`, la ronda 3 de teoría, más `main`. Para que Gerson la pruebe en el celular hay que integrar las dos ramas a `main`, porque Vercel no publica vistas previas de otras ramas (`vercel.json`, `deploymentEnabled`).
+
 ## Una base, dos entradas (15 nov): decisión de Gerson
 
 **Qué es.** Gerson eligió la versión de ChatGPT de la propuesta de Claude: una base compartida, dos formas de entrar (explorar o prepararse para el examen) y calidad gráfica que se adapta al equipo. Está en `docs/dos-entradas.md`.
