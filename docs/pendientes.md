@@ -1,6 +1,6 @@
 # Pendientes y traspaso
 
-Actualizado el 15 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+Actualizado el 15 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
 
 ## Cómo arrancar una sesión nueva
 
@@ -26,6 +26,20 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 
 - **Si el servidor local muere:** se reinicia con `node herramientas/servidor.js`. También hay que reiniciarlo después de cambiar `herramientas/construir-catalogo.js`, porque guarda el módulo en memoria.
 - **Para verificar a mano:** Playwright y Chromium ya vienen instalados en el entorno en la nube (`require('playwright')`). Las capturas *fullPage* pierden la emulación táctil, así que lo que depende de `hover` se revisa con capturas normales.
+
+## Una base, dos entradas (15 nov): decisión de Gerson
+
+**Qué es.** Gerson eligió la versión de ChatGPT de la propuesta de Claude: una base compartida, dos formas de entrar (explorar o prepararse para el examen) y calidad gráfica que se adapta al equipo. Está en `docs/dos-entradas.md`.
+
+**Lo esencial:**
+- Tres decisiones independientes: qué quiere hacer hoy el alumno, qué sabe y qué puede mover su equipo. El grado solo sugiere por dónde empezar.
+- 3D donde ayuda, con HTML encima para texto y botones. El peor celular recibe todo, con menos sombras y resolución, y hay modo ahorro.
+- Juego libre con invitaciones a retos, y ayudas cuando se enseña un concepto. Disfrutar y aprender se miden por separado.
+- Exploración empieza con 3.º y 4.º. Diciembre es un piloto acotado y marzo de 2027, la ampliación.
+- `claude/awesome-einstein-ch5g9a` se prueba en una versión de prueba y en el Redmi antes de pasar a `main`.
+- **Una unidad completa antes de tres:** entrar, explorar, pedir ayuda, resolver un reto, guardar y regresar.
+
+**Falta que Gerson decida:** qué unidad va primero y si la exploración libre de la mesa queda fuera de la regla 3.
 
 ## Recorrido satisfactorio (15 nov): que todos los alumnos se vayan contentos
 
