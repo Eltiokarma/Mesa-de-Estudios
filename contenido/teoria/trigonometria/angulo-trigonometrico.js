@@ -479,11 +479,53 @@
     },
   };
 
+  // Motor de las mesas del laboratorio: lo usan la lectura, el dibujo y los retos (regla 1).
+  const vueltasEntre = (a, b) => (a - b) / 360;                 // cuántas vueltas separan dos giros
+  const entero = x => Math.abs(x - Math.round(x)) < 1e-9;
+  const coterm = (a, b) => entero(vueltasEntre(a, b));          // terminan en el mismo lado
+  const aCent = g => g * 10 / 9;                                // grados → grados centesimales
+  const arcoDe = val => val.t * val.r;                          // s = θ · r, con θ en radianes
+  const R_MAX = 3;                                              // radio mayor de la mesa «arco-sale»
+
   return {
     unidad: 'trigonometria.angulo-trigonometrico',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js', '/nucleo/kit/piezas/recta.js'],
+    // Glosario del tema (docs/teoria.md §4d): las palabras que el curso estrena aquí. Las demás unidades las heredan.
+    glosario: [
+      { termino: 'ángulo trigonométrico', formas: ['ángulo trigonométrico', 'ángulos trigonométricos'],
+        def: 'Giro de un rayo desde su posición inicial; tiene signo según el sentido y puede pasar de una vuelta.',
+        ejemplo: '−450° es un giro horario de una vuelta y un cuarto.', ver: ['lado inicial', 'sentido antihorario', 'vuelta'] },
+      { termino: 'lado inicial', formas: ['lado inicial', 'lados iniciales'],
+        def: 'Posición de la que parte el rayo que gira. En el plano suele ser el eje x positivo.', ver: ['ángulo trigonométrico'] },
+      { termino: 'sentido antihorario', formas: ['sentido antihorario', 'antihorario'],
+        def: 'Giro contrario al de las agujas del reloj. Por convención, da ángulos positivos.',
+        ejemplo: '+90° lleva el rayo de las 3 a las 12 del reloj.', ver: ['sentido horario'] },
+      { termino: 'sentido horario', formas: ['sentido horario', 'horario'],
+        def: 'Giro como el de las agujas del reloj. Por convención, da ángulos negativos.',
+        ejemplo: '−90° lleva el rayo de las 3 a las 6 del reloj.', ver: ['sentido antihorario'] },
+      { termino: 'ángulos coterminales', formas: ['ángulos coterminales', 'coterminales', 'coterminal'],
+        def: 'Giros distintos que terminan en el mismo lado: se diferencian en un número entero de vueltas.',
+        ejemplo: '390° y 30° difieren en 360°, una vuelta.', ver: ['vuelta'] },
+      { termino: 'grado sexagesimal', simbolo: '°', formas: ['grado sexagesimal', 'grados sexagesimales', 'sexagesimal', 'sexagesimales'],
+        def: 'Unidad de giro que parte la vuelta en 360 partes iguales; cada parte tiene 60 minutos.',
+        ejemplo: 'Un cuarto de vuelta mide 90°.', ver: ['minuto sexagesimal', 'grado centesimal'] },
+      { termino: 'grado centesimal', simbolo: 'ᵍ', formas: ['grado centesimal', 'grados centesimales', 'centesimal', 'centesimales'],
+        def: 'Unidad de giro que parte la vuelta en 400 partes iguales. Es más chica que el grado de 360.',
+        ejemplo: '90° = 100ᵍ: un cuarto de vuelta.', ver: ['grado sexagesimal', 'radián'] },
+      { termino: 'radián', simbolo: 'rad', formas: ['radián', 'radianes'],
+        def: 'Ángulo central cuyo arco mide lo mismo que el radio. Una vuelta tiene 2π de ellos.',
+        ejemplo: 'π rad = 180°, así que 1 rad ≈ 57,3°.', ver: ['arco', 'radio'] },
+      { termino: 'minuto sexagesimal', simbolo: '′', formas: ['minuto sexagesimal', 'minutos sexagesimales', 'minuto', 'minutos'],
+        def: 'Sexagésima parte de un grado: 60 de ellos forman 1°.',
+        ejemplo: '2° 15′ = 2,25°, porque 15/60 = 0,25.', ver: ['grado sexagesimal'] },
+      { termino: 'vuelta', def: 'Giro completo que regresa al lado inicial: 360°, 400ᵍ o 2π rad.', ver: ['ángulos coterminales'] },
+      { termino: 'circunferencia', def: 'Línea cerrada cuyos puntos están todos a la misma distancia de un centro.', ver: ['radio', 'arco'] },
+      { termino: 'radio', simbolo: 'r', def: 'Segmento que va del centro a la circunferencia; también se llama así a su largo.', ver: ['circunferencia'] },
+      { termino: 'arco', simbolo: 's', def: 'Trozo de circunferencia entre dos puntos. En trigonometría también nombra al ángulo que lo abarca.',
+        ver: ['circunferencia', 'radián'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera compara dos giros a la vez (lo que la
     // idea 1 solo deja ver en la predicción); la segunda abre el rango a giros negativos de 5 en 5; la tercera
     // invierte el radián: se fija el ángulo y el radio, y el arco sale de ellos.
@@ -497,10 +539,26 @@
         ],
         dibujo: val => ({ datos: dosGiros(val.a, val.b), estado: {} }),
         lectura: val => {
-          const dif = (val.a - val.b) / 360;
+          const dif = vueltasEntre(val.a, val.b);
           return [{ sub: [th, '1'] }, ` = ${f(val.a)}° · `, { sub: [{ v: 'c-f', t: 'θ' }, '2'] }, ` = ${f(val.b)}° · `,
-            Number.isInteger(dif) ? (dif ? `coterminales, a ${f(Math.abs(dif))} vuelta${Math.abs(dif) > 1 ? 's' : ''}` : 'el mismo giro') : 'no coterminales'];
+            coterm(val.a, val.b) ? (dif ? `coterminales, a ${f(Math.abs(dif))} vuelta${Math.abs(dif) > 1 ? 's' : ''}` : 'el mismo giro') : 'no coterminales'];
         },
+        // Retos comprobados (docs/teoria.md §4d): coterm y vueltasEntre son los mismos que escriben la lectura.
+        invitaciones: [
+          { texto: 'Consigue dos giros coterminales que se separen justo tres vueltas.',
+            logrado: val => coterm(val.a, val.b) && Math.abs(vueltasEntre(val.a, val.b)) === 3,
+            bien: 'Tres vueltas de diferencia y el mismo lado final. ¿Hay giros más separados aún?' },
+          { texto: 'Haz que θ₂ sea el opuesto de θ₁ y que igual terminen juntos.',
+            logrado: val => val.a !== 0 && val.b === -val.a && coterm(val.a, val.b),
+            bien: 'Solo pasa con múltiplos de 180°: media vuelta hacia cada lado cae en el mismo sitio.' },
+          { texto: 'Con θ₁ sobre dos vueltas, pon en θ₂ su coterminal negativo más cercano a cero.',
+            logrado: val => val.a > 720 && val.b < 0 && val.b > -360 && coterm(val.a, val.b),
+            bien: 'Se quitan vueltas hasta pasar de cero hacia atrás. ¿Cuántas quitaste?' },
+          { texto: 'Guarda dos casos con el mismo θ₁: uno coterminal y otro que no.',
+            logrado: (val, guardados) => guardados.some(g => coterm(g.a, g.b)
+              && guardados.some(h => h.a === g.a && !coterm(h.a, h.b))),
+            bien: 'Mismo primer giro, y basta mover el otro unos grados para dejar de coincidir.' },
+        ],
         arrastres: [
           { id: 'punta-1', etiqueta: 'punta del rayo θ₁', color: 'c-o',
             donde: val => punta(dosGiros(val.a, val.b), val.a),
@@ -515,7 +573,26 @@
         consigna: 'Gira el borde del sector en cualquier sentido. La lectura escribe el mismo giro en grados, grados centesimales y radianes.',
         controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: -360, max: 360, paso: 5, inicio: 135, unidad: '°', decimales: 0 }],
         dibujo: val => ({ datos: sector(val.g, `${f(val.g)}°`), estado: {} }),
-        lectura: val => [th, ` = ${f(val.g)}° = `, gc(f(val.g * 10 / 9, 2)), ` = ${piTxt(val.g)} rad`],
+        lectura: val => [th, ` = ${f(val.g)}° = `, gc(f(aCent(val.g), 2)), ` = ${piTxt(val.g)} rad`],
+        invitaciones: [
+          { texto: 'Haz que el giro mida exactamente −150ᵍ.',
+            logrado: val => entero(aCent(val.g)) && Math.round(aCent(val.g)) === -150,
+            bien: '−150ᵍ son −135°: el grado centesimal es más chico, por eso el número crece.' },
+          { texto: 'Consigue un giro de π/2 radianes en sentido horario.',
+            logrado: val => piTxt(val.g) === '−π/2',
+            bien: 'Un cuarto de vuelta hacia la derecha: −90°, −100ᵍ y −π/2 rad a la vez.' },
+          { texto: 'Busca el menor giro positivo que dé un número entero de grados centesimales.',
+            // El menor de la grilla (de 5 en 5): ningún giro positivo anterior da un entero.
+            logrado: val => val.g > 0 && entero(aCent(val.g))
+              && Array.from({ length: val.g / 5 - 1 }, (_, k) => 5 * (k + 1)).every(x => !entero(aCent(x))),
+            bien: '45° = 50ᵍ. Hace falta un múltiplo de 9 para que la cuenta salga entera.' },
+          { texto: 'Encuentra un giro que se escriba con el mismo número en grados y en centesimales.',
+            logrado: val => Math.abs(aCent(val.g) - val.g) < 1e-9,
+            bien: 'Solo el cero: en cualquier otro giro, los centesimales dan un número mayor.' },
+          { texto: 'Guarda dos giros que se diferencien en 100ᵍ exactos.',
+            logrado: (val, guardados) => guardados.some(a => guardados.some(b => Math.abs(aCent(a.g) - aCent(b.g) - 100) < 1e-9)),
+            bien: '100ᵍ de diferencia son 90°: un cuarto de vuelta, en cualquier parte del giro.' },
+        ],
         arrastres: [{ id: 'borde', etiqueta: 'borde del sector θ', color: 'c-o',
           donde: val => punta(sector(val.g, ''), val.g),
           mover: (pt, val) => ({ g: TP().anguloDe(sector(val.g, ''), pt, { cerca: val.g }) }) }],
@@ -525,10 +602,24 @@
         consigna: 'Fija el ángulo en radianes y el radio. Agranda el radio sin tocar el ángulo: el arco crece en la misma proporción.',
         controles: [
           { id: 't', etiqueta: 'θ', color: 'c-o', min: 0.25, max: 6, paso: 0.25, inicio: 1, unidad: 'rad', decimales: 2 },
-          { id: 'r', etiqueta: 'r', color: 'c-d', min: 0.5, max: 3, paso: 0.25, inicio: 1.5, unidad: 'cm', decimales: 2 },
+          { id: 'r', etiqueta: 'r', color: 'c-d', min: 0.5, max: R_MAX, paso: 0.25, inicio: 1.5, unidad: 'cm', decimales: 2 },
         ],
-        dibujo: val => ({ datos: arcoRad(val.r, val.t * val.r), estado: {} }),
-        lectura: val => [s, ' = ', th, ' · ', r, ` = ${f(val.t)} · ${f(val.r)} = ${f(val.t * val.r)} cm · ${f(val.t * 180 / Math.PI, 1)}°`],
+        dibujo: val => ({ datos: arcoRad(val.r, arcoDe(val)), estado: {} }),
+        lectura: val => [s, ' = ', th, ' · ', r, ` = ${f(val.t)} · ${f(val.r)} = ${f(arcoDe(val))} cm · ${f(val.t * 180 / Math.PI, 1)}°`],
+        invitaciones: [
+          { texto: 'Haz que el arco mida justo 3 cm con un radio de 2 cm.',
+            logrado: val => val.r === 2 && Math.abs(arcoDe(val) - 3) < 1e-9,
+            bien: 'θ = 1,5 rad: el arco cabe una vez y media en el radio.' },
+          { texto: 'Busca el ángulo más chico que dé un arco de 6 cm.',
+            logrado: val => Math.abs(arcoDe(val) - 6) < 1e-9 && val.r === R_MAX,
+            bien: 'Con el radio más largo basta un ángulo menor. ¿Y con r = 1,5 cm?' },
+          { texto: 'Lleva el arco casi a la vuelta completa, sin cerrarla.',
+            logrado: val => val.t < 2 * Math.PI && 2 * Math.PI - val.t < 0.5,
+            bien: 'Con 6 radios de arco falta un pedacito: la vuelta mide 2π ≈ 6,28 radios.' },
+          { texto: 'Guarda dos casos con el mismo ángulo, uno con el doble de radio.',
+            logrado: (val, guardados) => guardados.some(a => guardados.some(b => a.t === b.t && Math.abs(b.r - 2 * a.r) < 1e-9)),
+            bien: 'Radio doble, arco doble: el ángulo en radianes es el cociente y no cambió.' },
+        ],
         arrastres: [
           { id: 'fin-arco', etiqueta: 'fin del arco: cambia θ', color: 'c-o',
             donde: val => punta(arcoRad(val.r, val.t * val.r), val.t * 180 / Math.PI, val.r),

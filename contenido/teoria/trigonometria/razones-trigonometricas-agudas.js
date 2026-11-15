@@ -140,7 +140,7 @@
       ],
     },
     regla: {
-      texto: 'En un triángulo rectángulo, cada razón divide dos lados vistos desde el ángulo agudo θ. Depende solo de θ, no del tamaño.',
+      texto: 'En un triángulo rectángulo, cada razón trigonométrica divide dos lados vistos desde el ángulo agudo θ. Depende solo de θ, no del tamaño.',
       ecuacion: ['sen ', th, ' = ', { frac: [{ llave: [CO], nota: 'opuesto a θ', color: 'c-h' }, H] }, '   ·   ', 'cos ', th, ' = ', { frac: [{ llave: [CA], nota: 'junto a θ', color: 'c-i' }, H] }],
       condicion: 'θ agudo de un triángulo rectángulo. tan θ = CO/CA; cot, sec y csc invierten tan, cos y sen.',
       voz: 'Una razón es un número sin unidades: compara dos largos.',
@@ -263,7 +263,7 @@
       ],
     },
     regla: {
-      texto: 'Las razones de 30°, 45° y 60° son exactas: salen del medio cuadrado, con lados 1, 1 y √2, y del medio equilátero, con 1, √3 y 2.',
+      texto: 'Los ángulos notables 30°, 45° y 60° tienen razones exactas: salen del medio cuadrado, con lados 1, 1 y √2, y del medio equilátero, con 1, √3 y 2.',
       ecuacion: ['sen 30° = ', { frac: ['1', '2'] }, '   ·   ', 'sen 45° = ', { frac: ['√2', '2'] }, '   ·   ', 'sen 60° = ', { frac: ['√3', '2'] }],
       condicion: 'se usan los valores exactos, sin redondear. El coseno lee el otro cateto; la tangente, opuesto entre adyacente.',
       voz: 'Dos figuras bastan para recordar los tres ángulos.',
@@ -471,13 +471,18 @@
 
   // ---------- Laboratorio ----------
   const tresL = v => tri(v.co, v.ca, { marco: [8, 6] });
+  // Razones del triángulo de catetos co y ca (las de la lectura y los retos de «tres-razones»).
+  const hipL = v => Math.hypot(v.co, v.ca), senL = v => v.co / hipL(v), cosL = v => v.ca / hipL(v);
+  // Seno de θ en grados y opuesto del triángulo grande de «semejantes» (hipotenusa 2k), como en semL.
+  const senG = g => Math.sin(g * RAD), cosG = g => Math.cos(g * RAD), opGrande = v => 2 * v.k * senG(v.g);
+  const casi = (a, b) => Math.abs(a - b) < 1e-9;
   // Dos triángulos con el mismo θ en A: el chico de hipotenusa 2 (puntos c, b) y el grande de hipotenusa 2k (C, B).
   function semL(v) {
     const c = Math.cos(v.g * RAD), sn = Math.sin(v.g * RAD), K = 2 * v.k;
     return {
       puntos: [{ id: 'A', x: 0, y: 0 }, { id: 'c', x: 2 * c, y: 0 }, { id: 'b', x: 2 * c, y: 2 * sn }, { id: 'C', x: K * c, y: 0 }, { id: 'B', x: K * c, y: K * sn }].concat(marco(6, 6 * Math.sin(60 * RAD))),
       lados: [
-        { de: 'A', a: 'C', color: 'i', texto: '', grosor: 'contorno' }, { de: 'C', a: 'B', color: 'h', texto: f(K * sn), grosor: 'variable' },
+        { de: 'A', a: 'C', color: 'i', texto: '', grosor: 'contorno' }, { de: 'C', a: 'B', color: 'h', texto: f(opGrande(v)), grosor: 'variable' },
         { de: 'A', a: 'B', color: 'd', texto: f(K), grosor: 'variable', lado: -1 },
         { de: 'c', a: 'b', color: 'h', texto: f(2 * sn), grosor: 'variable', lado: -1 }, { de: 'A', a: 'b', color: 'd', texto: '', grosor: 'contorno' },
       ],
@@ -497,6 +502,40 @@
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Aryabhata I», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Aryabhata_I/' },
     },
     ideas: [definicion, notables, aproximados, complementarias],
+    // Glosario (docs/teoria.md §4d): las palabras que esta unidad estrena en el curso. «Cotangente», «secante» y
+    // «cosecante» se definen en «Ángulos en posición normal» (mapa del curso); aquí solo salen como cot, sec y csc.
+    glosario: [
+      { termino: 'razón trigonométrica', def: 'Cociente entre dos lados de un triángulo rectángulo, nombrados desde uno de sus ángulos agudos. Solo depende del ángulo.',
+        formas: ['razón trigonométrica', 'razones trigonométricas'], ejemplo: 'Catetos 3 y 4, hipotenusa 5: sen θ = 3/5 = 0,6.', ver: ['seno', 'coseno', 'tangente'] },
+      { termino: 'triángulo rectángulo', def: 'Figura de tres lados con un ángulo de 90°, llamado ángulo recto.',
+        formas: ['triángulo rectángulo', 'triángulos rectángulos'], ejemplo: 'Lados 3, 4 y 5: como 3² + 4² = 5², tiene un ángulo de 90°.', ver: ['cateto', 'hipotenusa'] },
+      { termino: 'cateto', def: 'Cada uno de los dos lados que forman el ángulo de 90° de un triángulo rectángulo.',
+        formas: ['cateto', 'catetos'], ejemplo: 'En el triángulo de lados 3, 4 y 5, miden 3 y 4.', ver: ['cateto opuesto', 'cateto adyacente', 'hipotenusa'] },
+      { termino: 'cateto opuesto', simbolo: 'CO', def: 'De los dos lados que forman el ángulo de 90°, el que queda frente a θ, sin tocarlo.',
+        formas: ['cateto opuesto', 'catetos opuestos'], ejemplo: 'En el 3-4-5, frente al ángulo de 36,87° queda el lado 3.', ver: ['cateto adyacente'] },
+      { termino: 'cateto adyacente', simbolo: 'CA', def: 'De los dos lados que forman el ángulo de 90°, el que toca a θ.',
+        formas: ['cateto adyacente', 'catetos adyacentes'], ejemplo: 'En el 3-4-5, el ángulo de 36,87° está entre el lado 4 y la hipotenusa.', ver: ['cateto opuesto'] },
+      { termino: 'hipotenusa', simbolo: 'H', def: 'El lado más largo de un triángulo rectángulo: el que queda frente al ángulo de 90°.',
+        formas: ['hipotenusa', 'hipotenusas'], ejemplo: 'Catetos 6 y 8: mide √(36 + 64) = 10.', ver: ['teorema de Pitágoras'] },
+      { termino: 'ángulo agudo', def: 'Ángulo que mide más de 0° y menos de 90°.',
+        formas: ['ángulo agudo', 'ángulos agudos', 'agudo', 'agudos'], ejemplo: '25° y 65° lo son; 90° y 120°, no.', ver: ['ángulos complementarios'] },
+      { termino: 'seno', simbolo: 'sen', def: 'Razón que divide el cateto opuesto a θ entre la hipotenusa.',
+        ejemplo: 'En el 3-4-5, desde el ángulo frente al 3: sen θ = 3/5 = 0,6.', ver: ['coseno', 'razón trigonométrica'] },
+      { termino: 'coseno', simbolo: 'cos', def: 'Razón que divide el cateto adyacente a θ entre la hipotenusa.',
+        ejemplo: 'En el 3-4-5, desde el ángulo frente al 3: cos θ = 4/5 = 0,8.', ver: ['seno', 'co-razón'] },
+      { termino: 'tangente', simbolo: 'tan', def: 'Razón que divide el cateto opuesto a θ entre el cateto adyacente.',
+        ejemplo: 'En el 3-4-5, desde el ángulo frente al 3: tan θ = 3/4 = 0,75.', ver: ['seno', 'coseno'] },
+      { termino: 'ángulos complementarios', def: 'Dos ángulos que suman 90°, como los dos agudos de un triángulo rectángulo.',
+        formas: ['ángulos complementarios', 'complementarios'], ejemplo: '25° y 65°, porque 25° + 65° = 90°.', ver: ['co-razón'] },
+      { termino: 'razones recíprocas', def: 'Dos razones del mismo ángulo con el cociente al revés: multiplicadas dan 1.',
+        formas: ['razones recíprocas', 'razón recíproca', 'recíproca', 'recíprocas'], ejemplo: 'sen θ = 3/5 y csc θ = 5/3: (3/5) · (5/3) = 1.', ver: ['razón trigonométrica'] },
+      { termino: 'triángulos semejantes', def: 'Triángulos de igual forma y distinto tamaño: mismos ángulos y lados proporcionales.',
+        formas: ['triángulos semejantes', 'semejantes'], ejemplo: 'Lados 3-4-5 y 6-8-10: cada lado del segundo es el doble.', ver: ['razón trigonométrica'] },
+      { termino: 'ángulo notable', def: 'Ángulo cuyas razones se conocen exactas, sin calculadora, como 30°, 45° y 60°.',
+        formas: ['ángulo notable', 'ángulos notables'], ejemplo: 'sen 30° = 1/2 y tan 45° = 1, sin redondear.', ver: ['razón trigonométrica'] },
+      { termino: 'teorema de Pitágoras', def: 'En un triángulo rectángulo, la hipotenusa al cuadrado es igual a la suma de los catetos al cuadrado.',
+        formas: ['teorema de Pitágoras', 'Pitágoras'], ejemplo: 'Catetos 3 y 4: H = √(9 + 16) = 5.', ver: ['hipotenusa', 'cateto'] },
+    ],
     // Laboratorio (docs/teoria.md §4b). «tres-razones»: catetos libres de medio en medio, con sen, cos, tan y el ángulo
     // a la vez (la idea 1 solo da el seno). «semejantes»: un triángulo dentro de otro k veces mayor, con el mismo θ; el
     // caso de la predicción, ahora con cualquier ángulo y escala. «complemento-libre»: θ de grado en grado hasta los
@@ -511,9 +550,23 @@
         ],
         dibujo: v => ({ datos: tresL(v), estado: {} }),
         lectura: v => {
-          const hv = Math.hypot(v.co, v.ca);
-          return ['sen ', th, ` = ${f(v.co / hv, 3)} · cos `, th, ` = ${f(v.ca / hv, 3)} · tan `, th, ` = ${f(v.co / v.ca, 3)} · `, th, ` ≈ ${f(Math.atan2(v.co, v.ca) * GRA)}°`];
+          return ['sen ', th, ` = ${f(senL(v), 3)} · cos `, th, ` = ${f(cosL(v), 3)} · tan `, th, ` = ${f(v.co / v.ca, 3)} · `, th, ` ≈ ${f(Math.atan2(v.co, v.ca) * GRA)}°`];
         },
+        // Retos: senL y cosL son los cocientes de los lados que dibuja tresL.
+        invitaciones: [
+          { texto: 'Haz que la tangente de θ valga justo 1.',
+            logrado: v => casi(v.co / v.ca, 1),
+            bien: 'Catetos iguales: θ = 45°, sea cual sea el tamaño.' },
+          { texto: 'Haz que el seno de θ pase de 0,9.',
+            logrado: v => senL(v) > 0.9,
+            bien: 'θ casi se para: el opuesto se acerca a la hipotenusa, sin alcanzarla.' },
+          { texto: 'Arma otro triángulo de lados enteros, distinto del 3-4-5 inicial.',
+            logrado: v => Number.isInteger(v.co) && Number.isInteger(v.ca) && casi(hipL(v), Math.round(hipL(v))) && !(v.co === 3 && v.ca === 4),
+            bien: 'Lados enteros, cocientes limpios. ¿Alguna razón cambió frente al 3-4-5?' },
+          { texto: 'Guarda dos triángulos de distinto tamaño con el mismo seno.',
+            logrado: (v, gs) => gs.some(a => gs.some(b => a.co !== b.co && casi(senL(a), senL(b)))),
+            bien: 'Distinto tamaño, mismo ángulo, mismo seno: la razón no mira el tamaño.' },
+        ],
         // El vértice B: de lado cambia CA; hacia arriba, CO.
         arrastres: [{ id: 'vertice-b', etiqueta: 'vértice B: CA de lado, CO hacia arriba', color: 'c-h',
           donde: v => enPx(tresL(v), v.ca, v.co),
@@ -521,16 +574,31 @@
       },
       {
         id: 'semejantes', titulo: 'Uno dentro de otro', pieza: 'triangulo',
-        consigna: 'El triángulo chico tiene hipotenusa 2; el grande, k veces más. Arrastra la punta del grande: cambias θ y k.',
+        consigna: 'El triángulo chico tiene hipotenusa 2; el grande, k veces más: son triángulos semejantes. Arrastra la punta del grande: cambias θ y k.',
         controles: [
           { id: 'g', etiqueta: 'θ', color: 'c-o', min: 15, max: 60, paso: 1, inicio: 30, unidad: '°', decimales: 0 },
           { id: 'k', etiqueta: 'k', min: 1.5, max: 3, paso: 0.5, inicio: 2, unidad: '', decimales: 1 },
         ],
         dibujo: v => ({ datos: semL(v), estado: {} }),
         lectura: v => {
-          const sn = Math.sin(v.g * RAD);
-          return ['sen ', th, ` = ${f(2 * sn)}/2 = ${f(2 * v.k * sn)}/${f(2 * v.k)} = ${f(sn, 3)} · k = ${f(v.k)}`];
+          const sn = senG(v.g);
+          return ['sen ', th, ` = ${f(2 * sn)}/2 = ${f(opGrande(v))}/${f(2 * v.k)} = ${f(sn, 3)} · k = ${f(v.k)}`];
         },
+        // Retos: opGrande es el cateto rojo del grande que dibuja semL; senG, el seno de los dos.
+        invitaciones: [
+          { texto: 'Haz que el cateto rojo del grande mida justo 3.',
+            logrado: v => casi(opGrande(v), 3),
+            bien: 'Con 30°, el opuesto es media hipotenusa: 6 · 1/2 = 3.' },
+          { texto: 'Haz que el seno de θ pase de 0,8.',
+            logrado: v => senG(v.g) > 0.8,
+            bien: 'Pasa desde unos 54°. Mover k no lo acerca ni lo aleja.' },
+          { texto: 'Consigue el cateto rojo más largo que permite la mesa.',
+            logrado: v => casi(opGrande(v), opGrande({ g: 60, k: 3 })),
+            bien: 'Mayor θ y mayor k alargan el opuesto; el seno solo sigue a θ.' },
+          { texto: 'Guarda dos casos con el mismo θ y distinto k. Compara sus senos.',
+            logrado: (v, gs) => gs.some(a => gs.some(b => a.g === b.g && a.k !== b.k)),
+            bien: 'Los lados cambiaron con k; el seno, no. Depende solo de θ.' },
+        ],
         // La punta B del grande: su dirección es θ y su distancia a A, la hipotenusa 2k.
         arrastres: [{ id: 'punta', etiqueta: 'punta del triángulo grande: θ y k', color: 'c-o',
           donde: v => enPx(semL(v), 2 * v.k * Math.cos(v.g * RAD), 2 * v.k * Math.sin(v.g * RAD)),
@@ -541,7 +609,22 @@
         consigna: 'La hipotenusa mide 1. Lleva el vértice B hasta casi acostarlo o casi pararlo, y compara las cuatro razones.',
         controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: 1, max: 89, paso: 1, inicio: 25, unidad: '°', decimales: 0 }],
         dibujo: v => ({ datos: compL(v), estado: {} }),
-        lectura: v => [`sen ${v.g}° = cos ${90 - v.g}° = ${f(Math.sin(v.g * RAD), 3)} · csc ${v.g}° = ${f(1 / Math.sin(v.g * RAD), 3)}`],
+        lectura: v => [`sen ${v.g}° = cos ${90 - v.g}° = ${f(senG(v.g), 3)} · csc ${v.g}° = ${f(1 / senG(v.g), 3)}`],
+        // Retos: senG y cosG son los catetos que dibuja compL (hipotenusa 1).
+        invitaciones: [
+          { texto: 'Haz que el seno y el coseno de θ sean iguales.',
+            logrado: v => casi(senG(v.g), cosG(v.g)),
+            bien: 'En 45° el ángulo es su propio complemento: los catetos coinciden.' },
+          { texto: 'Busca un θ cuyo seno sea el coseno de 70°.',
+            logrado: v => casi(senG(v.g), cosG(70)),
+            bien: '20° y 70° suman 90°: el mismo cateto, visto desde los dos agudos.' },
+          { texto: 'Haz que csc θ pase de 10.',
+            logrado: v => 1 / senG(v.g) > 10,
+            bien: 'Seno cerca de 0, recíproca enorme: csc crece sin tope.' },
+          { texto: 'Haz que el cateto rojo mida justo la mitad de la hipotenusa.',
+            logrado: v => casi(senG(v.g), 0.5),
+            bien: '30°: medio equilátero. ¿Qué ángulo da un coseno de 1/2?' },
+        ],
         // El vértice B recorre el arco de radio 1.
         arrastres: [{ id: 'vertice-b', etiqueta: 'vértice B: cambia θ', color: 'c-o',
           donde: v => enPx(compL(v), Math.cos(v.g * RAD), Math.sin(v.g * RAD)),

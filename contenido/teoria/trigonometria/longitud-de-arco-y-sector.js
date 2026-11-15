@@ -95,7 +95,7 @@
     temas: ['Longitud de arco'],
     pieza: 'trig-plano',
     juega: {
-      consigna: 'Elige el ángulo central θ y el radio r. La lectura pasa θ a radianes y da el largo del arco s.',
+      consigna: 'Elige el ángulo central θ y el radio r. La lectura pasa θ a radianes y da la longitud de arco s.',
       voz: 'Primero el ángulo en radianes; después lo multiplicamos por el radio.',
       controles: [
         { id: 'g', etiqueta: 'θ', color: 'c-o', min: 30, max: 300, paso: 30, inicio: 90, unidad: '°', decimales: 0 },
@@ -436,7 +436,7 @@
     temas: ['Número de vueltas de una rueda'],
     pieza: 'trig-plano',
     juega: {
-      consigna: 'La rueda avanza sin deslizar. Elige su radio r y cuánto avanza su centro, d. La marca naranja cuenta las vueltas.',
+      consigna: 'La rueda avanza sin deslizar. Elige su radio r y cuánto avanza su centro, d. La marca naranja cuenta el número de vueltas.',
       voz: 'Sigue la marca: cada vuelta completa vuelve a apuntar arriba.',
       controles: [
         { id: 'r', etiqueta: 'r', color: 'c-d', min: 0.5, max: 1.5, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2 },
@@ -534,9 +534,11 @@
   const centroB = (ra, rB, union) => -1.6 + ra + rB + (union === 'faja' ? 0.9 : 0.14);
   const poleas = (rB, union, o = {}) => poleasG(RA, GA, rB, union, o);
   // A, de radio RA, gira GA grados y mueve a B (de radio rB) con faja o engranaje. El laboratorio cambia RA y GA.
+  // Giro de B (grados) cuando A, de radio RA, gira GA: los bordes recorren el mismo largo. Lo usan el dibujo y los retos.
+  const giroDeB = (RA, GA, rB) => GA * RA / rB;
   function poleasG(RA, GA, rB, union, o = {}) {
     const gap = union === 'faja' ? 0.9 : 0.14, D = RA + rB + gap, xa = -1.6, xb = xa + D;
-    const gB = GA * RA / rB, sB = union === 'faja' ? 1 : -1;
+    const gB = giroDeB(RA, GA, rB), sB = union === 'faja' ? 1 : -1;
     const datos = {
       ventana: o.ventana || { x: [-2.9, 4.7], y: [-3.0, 2.4] }, ejes: false,
       circulos: [{ cx: xa, cy: 0, r: RA }, { cx: xb, cy: 0, r: rB }],
@@ -682,6 +684,11 @@
 
   // ---------- Laboratorio ----------
   const secL = v => sector(v.g, v.r, { area: true, ventana: { x: [-4.9, 4.9], y: [-4.9, 4.9] } });
+  // Arco y área del sector del laboratorio: los usan la lectura y los retos (mismas cuentas que sector()).
+  const arcoL = v => v.g * RAD * v.r, areaL = v => arcoL(v) * v.r / 2;
+  // Largo de borde que arrastra la rueda A en la mesa de la faja.
+  const bordeA = v => v.ga * RAD * v.ra;
+  const casi = (a, b) => Math.abs(a - b) < 1e-9;
   // Rueda de radio r que rueda por fuera (o por dentro) de una fija de radio R; su centro recorre p grados alrededor.
   // Sin deslizar, la marca gira p·(R + r)/r por fuera y −p·(R − r)/r por dentro (vista desde afuera).
   const caminoR = v => (v.lado === 'fuera' ? v.R + v.r : v.R - v.r);
@@ -717,6 +724,34 @@
       fuente: { titulo: 'Arquímedes, Medida del círculo, proposición 1; traducción y discusión del seminario de Harvard (2009)', url: 'https://people.math.harvard.edu/archive/archimedes09/pdf/Measurement.of.the.Circle.pdf' },
     },
     ideas: [arco, area, trapecio, vueltas, poleasIdea],
+    // Glosario (docs/teoria.md §4d): las palabras que esta unidad estrena en el curso. «Ángulo», «radián», «arco»,
+    // «radio», «vuelta» y «circunferencia» vienen de «Ángulo trigonométrico».
+    glosario: [
+      { termino: 'longitud de arco', simbolo: 's', medida: 'cm', def: 'Lo que mide el borde curvo entre los lados de un ángulo central, estirado como un hilo.',
+        formas: ['longitud de arco', 'longitudes de arco'], ejemplo: 'Radio 6 cm y 60° (π/3 rad): s = π/3 · 6 = 2π ≈ 6,28 cm.', ver: ['ángulo central', 'sector circular'] },
+      { termino: 'ángulo central', def: 'Ángulo con el vértice en el centro del círculo; sus dos lados son radios.',
+        formas: ['ángulo central', 'ángulos centrales'], ejemplo: 'Un cuarto de pizza tiene un ángulo central de 90°, es decir, π/2 rad.', ver: ['vértice', 'sector circular'] },
+      { termino: 'sector circular', def: 'Parte del círculo encerrada por dos radios y el arco que los une, como una tajada de pizza.',
+        formas: ['sector circular', 'sectores circulares', 'sector', 'sectores'], ejemplo: 'Radio 2 cm y 90°: A = (π/2 · 4)/2 = π ≈ 3,14 cm².', ver: ['ángulo central', 'trapecio circular'] },
+      { termino: 'trapecio circular', def: 'Banda entre dos arcos del mismo ángulo central y dos tramos de radio: un sector grande menos uno chico.',
+        formas: ['trapecio circular', 'trapecios circulares'], ejemplo: '60° de r = 2 a R = 4: A = π/3 · (16 − 4)/2 = 2π cm².', ver: ['sector circular', 'semisuma'] },
+      { termino: 'semisuma', def: 'La mitad de lo que dan dos números sumados: (a + b)/2. Es su promedio.',
+        ejemplo: 'Arcos de 4 cm y 2 cm: (4 + 2)/2 = 3 cm.', ver: ['trapecio circular'] },
+      { termino: 'altura', def: 'Lo que se separa un punto de una base, medido en perpendicular. En una gráfica es la y, con signo.',
+        formas: ['altura', 'alturas'], ejemplo: 'Triángulo de base 6 cm y altura 4 cm: área = 6 · 4/2 = 12 cm².', ver: ['vértice'] },
+      { termino: 'vértice', def: 'Punto donde se juntan los dos lados de un ángulo, o dos lados de una figura.',
+        formas: ['vértice', 'vértices'], ejemplo: 'Un triángulo tiene 3; el ángulo central tiene uno, en el centro del círculo.', ver: ['ángulo central', 'altura'] },
+      { termino: 'número de vueltas', simbolo: 'n', def: 'Cuántas veces algo gira completo sobre sí mismo; cada giro de 360° cuenta uno.',
+        ejemplo: 'Rueda de radio 1 m que avanza 4π m: n = 4π/(2π · 1) = 2.', ver: ['rodar sin deslizar'] },
+      { termino: 'rodar sin deslizar', def: 'Girar sin resbalar: el borde que se apoya en el piso mide lo que avanza el centro.',
+        formas: ['rodar sin deslizar', 'sin deslizar'], ejemplo: 'Radio 1 m: en cada vuelta el centro avanza 2π ≈ 6,28 m.', ver: ['número de vueltas'] },
+      { termino: 'faja', def: 'Correa cerrada que abraza dos ruedas: los bordes de ambas avanzan el mismo largo.',
+        formas: ['faja', 'fajas'], ejemplo: 'De A (radio 1 cm) a B (radio 2 cm): si A gira 120°, B gira 60°.', ver: ['engranaje', 'eje común'] },
+      { termino: 'engranaje', def: 'Rueda con dientes que mueve a otra al encajar; las dos giran en sentidos contrarios.',
+        formas: ['engranaje', 'engranajes'], ejemplo: '12 dientes mueven a 36: 3 vueltas de la chica dan 1 de la grande.', ver: ['faja'] },
+      { termino: 'eje común', def: 'Barra que atraviesa dos ruedas soldadas: giran juntas el mismo ángulo, aunque sus radios sean distintos.',
+        formas: ['eje común', 'mismo eje'], ejemplo: 'Ruedas de 1 cm y 3 cm en un solo eje: si una gira 90°, la otra también.', ver: ['faja'] },
+    ],
     // Laboratorio (docs/teoria.md §4b). «sector-completo»: θ hasta la vuelta entera y el radio libre, con arco y área a
     // la vez (los juegos los separan). «rodea»: la rueda que rueda por fuera o por dentro de otra, el caso que la idea 4
     // solo pregunta. «faja-libre»: los dos radios y el giro de A, con faja o engranaje (la idea fija A).
@@ -729,7 +764,22 @@
           { id: 'r', etiqueta: 'r', color: 'c-d', min: 0.5, max: 4, paso: 0.5, inicio: 2, unidad: 'cm', decimales: 1 },
         ],
         dibujo: v => ({ datos: secL(v), estado: {} }),
-        lectura: v => [th, ` = ${piTxt(v.g)} rad · `, s, ` = ${f(v.g * RAD * v.r)} cm · `, A, ` = ${f(v.g * RAD * v.r * v.r / 2)} cm²`],
+        lectura: v => [th, ` = ${piTxt(v.g)} rad · `, s, ` = ${f(arcoL(v))} cm · `, A, ` = ${f(areaL(v))} cm²`],
+        // Retos: arco y área salen de arcoL y areaL, las mismas cuentas que dibuja sector().
+        invitaciones: [
+          { texto: 'Busca el menor ángulo cuyo arco ya sea más largo que el radio.',
+            logrado: v => arcoL(v) > v.r && arcoL({ g: v.g - 10, r: v.r }) <= v.r,
+            bien: `Pasa entre 50° y 60°: un radián, unos ${f(GRA, 0)}°, da arco igual a radio.` },
+          { texto: 'Consigue un arco de 2π cm sin dar la vuelta entera.',
+            logrado: v => v.g < 360 && casi(arcoL(v), 2 * Math.PI),
+            bien: 'Hay varias formas: menos ángulo pide más radio. ¿Cuál es la tuya?' },
+          { texto: 'Haz que el área dé, en número, el doble que el arco.',
+            logrado: v => casi(areaL(v), 2 * arcoL(v)),
+            bien: 'Pasa con r = 4, sea cual sea el ángulo: el área es arco por r/2.' },
+          { texto: 'Guarda dos sectores de igual ángulo, uno con el doble de radio.',
+            logrado: (v, gs) => gs.some(a => gs.some(b => a.g === b.g && casi(b.r, 2 * a.r))),
+            bien: 'Doble radio: el arco se duplica y el área se cuadruplica. ¿Y con el triple?' },
+        ],
         // El borde del sector cambia θ; el punto del círculo opuesto al borde cambia r (así nunca se tapan).
         arrastres: [
           { id: 'borde', etiqueta: 'borde del sector θ', color: 'c-o',
@@ -751,6 +801,22 @@
         ],
         dibujo: v => ({ datos: rodea(v), estado: {} }),
         lectura: v => [n, ` = ${f(vueltasRodea(v))} vueltas · `, R, ' = ', `${f(v.R / v.r)} `, r, ` · por ${v.lado} · ${f(v.p)}°`],
+        // Retos: las vueltas salen de vueltasRodea, la misma cuenta que gira la marca en rodea().
+        invitaciones: [
+          { texto: 'Da una vuelta por fuera y logra justo 3 vueltas de la marca.',
+            logrado: v => v.lado === 'fuera' && v.p === 360 && casi(vueltasRodea(v), 3),
+            bien: 'La fija mide dos radios, pero salen 3 vueltas: el centro va por R + r.' },
+          { texto: 'Por dentro, rodea el aro una vez y logra una sola vuelta de la marca.',
+            logrado: v => v.lado === 'dentro' && v.p === 360 && casi(vueltasRodea(v), 1),
+            bien: 'Por dentro se resta una: con R = 2r sale una vuelta, no dos.' },
+          { texto: 'Haz que la marca apunte como al inicio sin que el centro haya vuelto.',
+            logrado: v => v.p > 0 && v.p % 360 !== 0 && vueltasRodea(v) >= 1 && casi(vueltasRodea(v), Math.round(vueltasRodea(v))),
+            bien: 'Vueltas justas a medio camino. ¿Qué pasa si ahora ruedas por dentro?' },
+          { texto: 'Logra 6 vueltas de la marca con el camino del centro más corto posible.',
+            // Lo más corto: con las ruedas que más vueltas dan por grado (R = 4 por fuera de r = 0,5), 15° menos ya no alcanza.
+            logrado: v => vueltasRodea(v) >= 6 - 1e-9 && vueltasRodea({ lado: 'fuera', R: 4, r: 0.5, p: v.p - 15 }) < 6 - 1e-9,
+            bien: 'Con una rueda chica junto a una grande, 240° de camino ya dan 6 vueltas.' },
+        ],
         // El centro de la rueda la lleva alrededor (camino); el punto de la rueda fija opuesto cambia R.
         arrastres: [
           { id: 'centro', etiqueta: 'centro de la rueda que rueda', color: 'c-i',
@@ -771,7 +837,22 @@
           { id: 'rb', etiqueta: 'r de B', color: 'c-d', min: 0.5, max: 1.5, paso: 0.25, inicio: 1.5, unidad: 'cm', decimales: 2 },
         ],
         dibujo: v => ({ datos: fajaL(v), estado: {} }),
-        lectura: v => [sub(th, 'B'), ` = ${f(v.ga * v.ra / v.rb)}° · ${v.u === 'faja' ? 'mismo sentido' : 'sentido contrario'} · `, s, ` = ${f(v.ga * RAD * v.ra)} cm`],
+        lectura: v => [sub(th, 'B'), ` = ${f(giroDeB(v.ra, v.ga, v.rb))}° · ${v.u === 'faja' ? 'mismo sentido' : 'sentido contrario'} · `, s, ` = ${f(bordeA(v))} cm`],
+        // Retos: el giro de B sale de giroDeB y el borde de bordeA, las cuentas que usa poleasG() al dibujar.
+        invitaciones: [
+          { texto: 'Haz que B dé una vuelta entera mientras A gira menos de media vuelta.',
+            logrado: v => v.ga < 180 && casi(giroDeB(v.ra, v.ga, v.rb), 360),
+            bien: 'El mismo largo de borde hace girar más a la rueda chica.' },
+          { texto: 'Consigue el mayor giro de B que permiten las ruedas.',
+            logrado: v => giroDeB(v.ra, v.ga, v.rb) >= giroDeB(1.5, 360, 0.5) - 1e-9,
+            bien: 'Tres vueltas de B por una de A: manda la razón de los radios.' },
+          { texto: 'Con faja, haz que el borde de A arrastre justo 2π cm.',
+            logrado: v => v.u === 'faja' && casi(bordeA(v), 2 * Math.PI),
+            bien: 'Una vuelta con radio 1, o 240° con radio 1,5: el mismo largo.' },
+          { texto: 'Guarda una faja y un engranaje con los mismos radios y el mismo giro de A.',
+            logrado: (v, gs) => gs.some(a => gs.some(b => a.u === 'faja' && b.u === 'engranaje' && a.ga === b.ga && a.ra === b.ra && a.rb === b.rb)),
+            bien: 'B gira el mismo ángulo; solo cambia el sentido. ¿Por qué se invierte?' },
+        ],
         // La punta del rayo de A cambia su giro; lo alto de cada rueda cambia su radio.
         arrastres: [
           { id: 'giro-a', etiqueta: 'punta del rayo de A: cambia su giro', color: 'c-o',

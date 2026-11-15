@@ -155,7 +155,7 @@
         { estado: { corte: 2 }, texto: 'Su suma es la diagonal del rombo que forman.', ecuacion: [R_, ' = (cos ', A_, ' + cos ', B_, ';  sen ', A_, ' + sen ', B_, ')'] },
         { estado: { corte: 3 }, texto: 'La diagonal parte el ángulo en dos: va a 50°.', ecuacion: ['dirección = ', semis, ' = 50°'] },
         { estado: { corte: 4 }, texto: 'Media diagonal es la sombra de A: cos 30°.', ecuacion: ['|', R_, '| = 2 cos ', semid, ' = 2 cos 30°'] },
-        { estado: { corte: 5 }, texto: 'La altura de R es la suma de senos.', ecuacion: ['sen ', A_, ' + sen ', B_, ' = 2 sen 50° · cos 30°'] },
+        { estado: { corte: 5 }, texto: 'Suma a producto: la altura de R es la suma de senos.', ecuacion: ['sen ', A_, ' + sen ', B_, ' = 2 sen 50° · cos 30°'] },
       ],
     },
     regla: {
@@ -242,7 +242,7 @@
         { estado: { corte: 1 }, texto: 'El producto de dos cosenos tiene dos ritmos.', ecuacion: ['2 cos ', al, ' cos ', be, ',  con ', al, ' = 3x y ', be, ' = x'] },
         { estado: { corte: 2 }, texto: 'El coseno de la suma es el ritmo rápido.', ecuacion: ['cos(', al, ' + ', be, ') = cos ', al, ' cos ', be, ' − sen ', al, ' sen ', be] },
         { estado: { corte: 3 }, texto: 'El coseno de la diferencia es el lento.', ecuacion: ['cos(', al, ' − ', be, ') = cos ', al, ' cos ', be, ' + sen ', al, ' sen ', be] },
-        { estado: { corte: 3 }, texto: 'Al sumarlos, los senos se cancelan.', ecuacion: ['2 cos 3x cos x = cos 4x + cos 2x'] },
+        { estado: { corte: 3 }, texto: 'Al sumarlos, los senos se cancelan: producto a suma.', ecuacion: ['2 cos 3x cos x = cos 4x + cos 2x'] },
       ],
     },
     regla: {
@@ -369,7 +369,7 @@
         { estado: { corte: 2 }, texto: 'Sus extremos están en una circunferencia: es un polígono regular.', ecuacion: ['radio = ', { frac: ['1', '2 sen 20°'] }] },
         { estado: { corte: 3 }, texto: 'La roja es una cuerda que abarca 5 · 40° = 200°.', ecuacion: ['|R| = ', { frac: ['sen 100°', 'sen 20°'] }] },
         { estado: { corte: 4 }, texto: 'Apunta al ángulo medio entre el primero y el último.', ecuacion: [{ frac: ['40° + 200°', '2'] }, ' = 120°'] },
-        { estado: { corte: 5 }, texto: 'Su altura es la suma de los cinco senos.', ecuacion: ['Σ sen = ', { frac: ['sen 100°', 'sen 20°'] }, ` · sen 120° ≈ ${f(sumaSen(MX, MN))}`] },
+        { estado: { corte: 5 }, texto: 'Su altura es la sumatoria de los cinco senos.', ecuacion: ['Σ sen = ', { frac: ['sen 100°', 'sen 20°'] }, ` · sen 120° ≈ ${f(sumaSen(MX, MN))}`] },
       ],
     },
     regla: {
@@ -464,7 +464,7 @@
       ],
     },
     regla: {
-      texto: 'Un producto de cosenos en que cada ángulo dobla al anterior se reduce con sen 2θ = 2 sen θ cos θ, aplicado una vez por factor.',
+      texto: 'Una productoria de cosenos en que cada ángulo dobla al anterior se reduce con sen 2θ = 2 sen θ cos θ, aplicado una vez por factor.',
       ecuacion: ['cos ', x_, ' · cos 2', x_, ' ⋯ cos ', { sup: ['2', 'n−1'] }, x_, ' = ', { frac: [[{ llave: ['sen ', { sup: ['2', 'n'] }, x_], nota: 'último doble', color: 'c-h' }], [{ sup: ['2', 'n'] }, ' sen ', x_]] }],
       condicion: 'sen x ≠ 0. Si sen x = 0, la fórmula divide entre cero: se multiplica directamente.',
       voz: 'Un factor, un doble y una mitad.',
@@ -560,6 +560,62 @@
     },
   ];
 
+  // Retos del laboratorio: las mismas cuentas que dibujan (resultante, sumaSen, sumaCos, prodCos).
+  const mismo = (g, v) => Object.keys(v).every(k => g[k] === v[k]);
+  const largoR = (a, b) => Math.hypot(...resultante(a, b));
+  // El rombo más largo con A ≠ B en la grilla de la mesa (de 5° en 5°).
+  const MAX_R = (() => { let m = 0; for (let d = 5; d < 360; d += 5) m = Math.max(m, largoR(0, d)); return m; })();
+  const cerrada = (x, n) => Math.abs(sumaSen(x, n)) < 1e-9 && Math.abs(sumaCos(x, n)) < 1e-9;
+  // El paso más chico de la mesa con el que alguna cadena (hasta 12 flechas) vuelve al origen.
+  const MIN_CIERRE = (() => { for (let x = 30; x <= 180; x += 5) for (let n = 1; n <= 12; n++) if (cerrada(x, n)) return x; return null; })();
+  // El mayor producto con cinco factores en la mesa «Hasta cinco dobles».
+  const MAX_PROD5 = (() => { let m = -Infinity; for (let x = 5; x <= 175; x += 5) m = Math.max(m, prodCos(x, 5)); return m; })();
+  laboratorio[0].invitaciones = [
+    { texto: 'Haz que la flecha roja R se anule.',
+      logrado: v => largoR(v.a, v.b) < 1e-9,
+      bien: 'Flechas opuestas: el coseno de la semidiferencia es 0 y el rombo se aplasta.' },
+    { texto: 'Haz que R apunte hacia la semisuma, no al revés.',
+      logrado: v => 2 * cos((v.a - v.b) / 2) > 1e-9,
+      bien: 'Coseno de la semidiferencia positivo: R va hacia la semisuma.' },
+    { texto: 'Con A y B distintas, haz la flecha R lo más larga posible.',
+      logrado: v => mod360(v.a) !== mod360(v.b) && largoR(v.a, v.b) > MAX_R - 1e-9,
+      bien: 'Casi juntas, el rombo casi llega a 2, que es 1 + 1.' },
+    { texto: 'Guarda dos pares con la misma semisuma y R en sentidos opuestos.',
+      logrado: (v, guardados) => guardados.some(g => mismo(g, v))
+        && guardados.some(g => g.a + g.b === v.a + v.b && cos((g.a - g.b) / 2) * cos((v.a - v.b) / 2) < -1e-9),
+      bien: 'La misma recta de la semisuma; el signo del coseno elige el sentido.' },
+  ];
+  laboratorio[1].invitaciones = [
+    { texto: 'Cierra una cadena: que la última flecha vuelva al origen.',
+      logrado: v => cerrada(v.x, v.n),
+      bien: 'Cadena cerrada: todos los senos y todos los cosenos suman 0.' },
+    { texto: 'Cierra la cadena con el paso x más chico que puedas.',
+      logrado: v => cerrada(v.x, v.n) && v.x === MIN_CIERRE,
+      bien: 'Con pasos chicos hacen falta más flechas para dar la vuelta entera.' },
+    { texto: 'Con dos flechas o más, logra Σ cos = 0 sin cerrar la cadena.',
+      logrado: v => v.n >= 2 && Math.abs(sumaCos(v.x, v.n)) < 1e-9 && Math.abs(sumaSen(v.x, v.n)) > 1e-9,
+      bien: 'La roja queda vertical: toda la suma está en los senos.' },
+    { texto: 'Guarda dos cadenas con el mismo paso, distinto n y la misma Σ sen.',
+      logrado: (v, guardados) => guardados.some(g => mismo(g, v))
+        && guardados.some(g => g.x === v.x && g.n !== v.n && Math.abs(sumaSen(g.x, g.n) - sumaSen(v.x, v.n)) < 1e-9),
+      bien: 'Las flechas que sobran no suben ni bajan la roja: suman altura 0.' },
+  ];
+  laboratorio[2].invitaciones = [
+    { texto: 'Haz que el producto valga 0.',
+      logrado: v => Math.abs(prodCos(v.x, v.n)) < 1e-9,
+      bien: 'Basta un factor cero: un rayo doble cayó vertical.' },
+    { texto: 'Haz que el producto valga justo 1/2ⁿ, con n factores.',
+      logrado: v => Math.abs(prodCos(v.x, v.n) * potencia(v.n) - 1) < 1e-9,
+      bien: 'Ahí el último doble tiene la misma altura que x: sen 2ⁿx = sen x.' },
+    { texto: 'Con cinco factores, busca el producto más grande.',
+      logrado: v => v.n === 5 && prodCos(v.x, v.n) > MAX_PROD5 - 1e-9,
+      bien: 'Con x chico casi todos los cosenos rozan 1. ¿Cuál es el que frena?' },
+    { texto: 'Guarda x y 180° − x con los mismos factores y compara los productos.',
+      logrado: (v, guardados) => guardados.some(g => mismo(g, v)) && Math.abs(prodCos(v.x, v.n)) > 1e-9
+        && guardados.some(g => g.n === v.n && g.x !== v.x && g.x + v.x === 180),
+      bien: 'Productos opuestos: solo cos x cambia de signo; sus dobles no.' },
+  ];
+
   return {
     unidad: 'trigonometria.transformaciones-trigonometricas',
     version: '0.1.0',
@@ -568,6 +624,28 @@
     // Laboratorio (docs/teoria.md §4b), sin preguntas: «rombo-entero» abre A y B a la vuelta entera, donde R apunta
     // al revés de la semisuma o se anula (la idea solo lo deja ver en la predicción); «cadena-larga» llega a 12
     // flechas, para cerrar polígonos y ver Σ = 0; «muchos-dobles» lleva la productoria a cinco factores y a x obtusos.
+    glosario: [
+      { termino: 'semidiferencia', def: 'La mitad de lo que queda al restar dos ángulos: (A − B)/2.',
+        ejemplo: 'Con A = 80° y B = 20°: (80° − 20°)/2 = 30°.', ver: ['semisuma', 'suma a producto'] },
+      { termino: 'rombo', def: 'Cuadrilátero con sus cuatro lados iguales. Dos flechas de largo 1 lo forman al sumarse.',
+        formas: ['rombo', 'rombos'], ver: ['diagonal'] },
+      { termino: 'diagonal', def: 'Segmento que une dos vértices opuestos de un cuadrilátero. En el rombo, cada una parte su ángulo en dos.',
+        formas: ['diagonal', 'diagonales'], ejemplo: `Flechas a 20° y 80°: la diagonal va a 50° y mide ${f(Math.hypot(...resultante(20, 80)))}.`, ver: ['rombo'] },
+      { termino: 'suma a producto', def: 'Cambiar sen A + sen B, o una suma de cosenos, por un producto de dos razones.',
+        formas: ['suma a producto', 'sumas a producto'], ejemplo: 'sen 80° + sen 20° = 2 sen 50° cos 30°.', ver: ['semidiferencia', 'producto a suma'] },
+      { termino: 'producto a suma', def: 'Cambiar un producto de dos razones por una suma: la del ángulo suma y la del ángulo diferencia.',
+        formas: ['producto a suma', 'productos a suma'], ejemplo: '2 cos 3x cos x = cos 4x + cos 2x.', ver: ['suma a producto', 'prostaféresis'] },
+      { termino: 'sumatoria', simbolo: 'Σ', def: 'Suma de muchos términos que siguen una misma regla, como sen x + sen 2x + … + sen nx.',
+        formas: ['sumatoria', 'sumatorias'], ejemplo: `sen 60° + sen 120° + … + sen 360° = ${f(Math.abs(sumaSen(60, 6)) < 1e-9 ? 0 : sumaSen(60, 6))}: la cadena se cierra.`, ver: ['polígono regular'] },
+      { termino: 'productoria', def: 'Producto de muchos factores que siguen una misma regla, como cos x · cos 2x · cos 4x.',
+        formas: ['productoria', 'productorias'], ejemplo: `cos 20° · cos 40° · cos 80° = 1/${f(1 / prodCos(20, 3), 0)}.` },
+      { termino: 'polígono regular', def: 'Figura cerrada de lados rectos, todos del mismo largo y con todos sus ángulos iguales.',
+        formas: ['polígono regular', 'polígonos regulares'], ejemplo: 'Seis flechas de largo 1 que giran 60° cada una cierran un hexágono.', ver: ['sumatoria'] },
+      { termino: 'ángulo medio', def: 'El ángulo que queda justo a mitad de camino entre el primero y el último de una lista.',
+        ejemplo: 'Entre 40° y 200°: (40° + 200°)/2 = 120°.', ver: ['sumatoria', 'semisuma'] },
+      { termino: 'prostaféresis', def: 'Viejo truco de cálculo: cambiar un producto de cosenos por una suma, más fácil de hacer a mano.',
+        ver: ['producto a suma'] },
+    ],
     laboratorio,
     historia: {
       texto: 'Antes de las calculadoras, multiplicar números largos era lento. Alrededor del observatorio de Tycho Brahe circuló la prostaféresis: cambiar un producto de cosenos por una suma de dos cosenos que se buscaban en tablas. Varios la usaron y se disputaron la prioridad, así que no tiene un solo inventor. La misma igualdad hoy reorganiza expresiones sin cambiar su valor.',

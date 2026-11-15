@@ -574,7 +574,7 @@
       ],
     },
     regla: {
-      texto: 'Un sistema pide que se cumplan todas sus ecuaciones a la vez. Su conjunto solución es la intersección de los conjuntos de cada ecuación.',
+      texto: 'Un sistema de ecuaciones pide que se cumplan todas a la vez. Su conjunto solución es la intersección de los conjuntos de cada ecuación.',
       ecuacion: ['S = ', { llave: [{ sub: ['S', '1'] }], nota: 'ecuación 1', color: 'c-i' }, ' ∩ ', { llave: [{ sub: ['S', '2'] }], nota: 'ecuación 2', color: 'c-d' }],
       condicion: 'los dos conjuntos se calculan en el mismo intervalo. Si no comparten ningún ángulo, el sistema no tiene solución.',
       voz: 'La unión junta; el sistema exige las dos.',
@@ -631,16 +631,20 @@
   const manijaTres = (fn, v) => (fn === 'sen' ? TP().enPx(mesaTres(fn, v), 2.1, v) : fn === 'cos' ? TP().enPx(mesaTres(fn, v), v, -1.95) : TP().enPx(mesaTres(fn, v), 1, v));
   // Mesa 2: la franja [0°, b] sobre la gráfica de sen o cos, con k libre: los cortes se cuentan solos.
   const curvaCos = { puntos: Array.from({ length: 145 }, (_, i) => [i * 5, Math.cos(rad(i * 5))]), color: 'o' };
+  const en720 = (fn, v) => Math.abs(FN[fn](720) - v) < 1e-9;
   const enFranja = (fn, v, b) => [0, 360].flatMap(o => vuelta(fn, v).map(g => g + o)).filter(g => g <= b + 1e-9);
   const mesaFranja = (fn, v, b) => {
     const todos = [0, 360].flatMap(o => vuelta(fn, v).map(g => g + o)), s = enFranja(fn, v, b);
-    if (Math.abs(v) <= 1 + 1e-12 && fn === 'cos' && Math.abs(v - 1) < 1e-9) todos.push(720);   // cos 720° = 1
+    if (en720(fn, v)) todos.push(720);   // cos 720° = 1 y sen 720° = 0: el final de la segunda vuelta también es solución
     return grafica(b, v, todos.map(g => ({ x: g, y: v, color: 'o', abierto: !(g <= b + 1e-9) })), {
       curvas: [fn === 'sen' ? curvaSen : curvaCos, { puntos: [[0, v], [720, v]], color: 'i', discontinua: true }],
       alt: `Gráfica de ${fnTxt[fn]} θ, la recta y = ${kTxt(v)} y el intervalo [0°, ${f(b)}°]: ${s.length} cortes dentro`,
     });
   };
-  const cuentaFranja = (fn, v, b) => enFranja(fn, v, b).length + (fn === 'cos' && Math.abs(v - 1) < 1e-9 && b >= 720 ? 1 : 0);
+  const cuentaFranja = (fn, v, b) => enFranja(fn, v, b).length + (en720(fn, v) && b >= 720 ? 1 : 0);
+  // Todas las soluciones de las dos vueltas [0°, 720°] (para los retos: ¿cae el final b justo sobre un corte?).
+  const dosVueltas = (fn, v) => [0, 360].flatMap(o => vuelta(fn, v).map(g => g + o)).concat(en720(fn, v) ? [720] : []);
+  const listaFactor = cv => orden([0, 180, ...vuelta('cos', cv)]);
   // Mesa 3: sen θ · (cos θ − c) = 0 con c de −1,5 a 1,5: el segundo factor puede no aportar o repetir un ángulo.
   const mesaFactor = cv => {
     const s1 = [0, 180], s2 = vuelta('cos', cv), todo = orden([...s1, ...s2]);
@@ -658,6 +662,35 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js', '/nucleo/kit/piezas/ejes.js'],
+    glosario: [
+      { termino: 'ecuación trigonométrica', def: 'Igualdad con una incógnita que solo se cumple para algunos valores; aquí la incógnita es un ángulo.',
+        ejemplo: 'sen θ = 1/2 se cumple con θ = 30° y con θ = 150° en una vuelta.',
+        formas: ['ecuación trigonométrica', 'ecuaciones trigonométricas', 'ecuación', 'ecuaciones'], ver: ['solución', 'conjunto solución'] },
+      { termino: 'solución', def: 'Valor de la incógnita que hace verdadera la igualdad.',
+        ejemplo: 'θ = 30° cumple sen θ = 1/2, porque sen 30° = 1/2.', formas: ['solución', 'soluciones'] },
+      { termino: 'solución general', def: 'Fórmula con un entero n que reúne todos los ángulos que cumplen la igualdad, en todas las vueltas.',
+        ejemplo: 'sen θ = 0: θ = 180°·n, con n entero (0°, 180°, 360°, …).',
+        formas: ['solución general', 'soluciones generales'], ver: ['familia de soluciones', 'solución particular'] },
+      { termino: 'familia de soluciones', def: 'Ángulos que salen de uno solo al sumarle o restarle vueltas completas: α + 360°·n.',
+        ejemplo: '30° + 360°·n da 30°, 390°, 750°, … y también −330°.',
+        formas: ['familia de soluciones', 'familias de soluciones'], ver: ['solución general'] },
+      { termino: 'solución particular', def: 'Cada ángulo de la fórmula general que cae dentro del intervalo pedido.',
+        ejemplo: 'De 180°·n, en [0°, 360°) quedan 0° y 180°.',
+        formas: ['solución particular', 'soluciones particulares'], ver: ['solución general', 'intervalo'] },
+      { termino: 'intervalo', def: 'Tramo de valores entre dos extremos. Un corchete incluye ese extremo; un paréntesis lo deja fuera.',
+        ejemplo: '[0°, 360°) incluye 0° y deja fuera 360°.', ver: ['conjunto solución'] },
+      { termino: 'conjunto solución', def: 'Lista completa de los valores que cumplen la igualdad dentro del intervalo pedido.',
+        ejemplo: 'sen θ = 1/2 en [0°, 360°): {30°, 150°}.', ver: ['intervalo', 'intersección'] },
+      { termino: 'factor', def: 'Cada una de las partes que se multiplican en un producto.',
+        ejemplo: 'En sen θ · (cos θ − 1/2) hay dos: sen θ y cos θ − 1/2.', ver: ['factorizar'] },
+      { termino: 'factorizar', def: 'Escribir una expresión como producto de partes, para igualar a cero cada una por separado.',
+        ejemplo: 'sen θ cos θ − sen θ = sen θ · (cos θ − 1).', formas: ['factorizar', 'factoriza', 'factorizando'], ver: ['factor'] },
+      { termino: 'sistema de ecuaciones', def: 'Varias igualdades que deben cumplirse a la vez: sirven solo los valores comunes a todas.',
+        ejemplo: 'sen θ = √3/2 y cos θ = 1/2 en [0°, 360°): solo θ = 60°.',
+        formas: ['sistema de ecuaciones', 'sistemas de ecuaciones'], ver: ['intersección'] },
+      { termino: 'intersección', def: 'Lo que dos conjuntos tienen en común: los elementos que están en los dos a la vez.',
+        ejemplo: '{60°, 120°} y {60°, 300°} comparten solo 60°.', ver: ['sistema de ecuaciones'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera compara seno, coseno y tangente con k de
     // −2 a 2 (la tangente siempre corta dos veces; seno y coseno, no). La segunda junta la función, la recta y el
     // final del intervalo en dos vueltas, con k = ±1 y 0 incluidos. La tercera abre c más allá de 1 en el producto
@@ -678,6 +711,24 @@
         arrastres: [{ id: 'valor-k', etiqueta: 'valor k en la figura', color: 'c-i',
           donde: val => manijaTres(val.fn, val.k),
           mover: (pt, val) => { const q = TP().delPx(mesaTres(val.fn, val.k), pt); return { k: val.fn === 'cos' ? q.x : q.y }; } }],
+        invitaciones: [
+          { texto: 'Con seno, busca una altura k que dé una sola solución en la vuelta.',
+            logrado: val => val.fn === 'sen' && vuelta('sen', val.k).length === 1,
+            bien: 'En k = ±1 la recta solo toca: los dos cortes se juntan en uno.' },
+          { texto: 'Con seno, consigue que 210° sea una de las soluciones.',
+            logrado: val => val.fn === 'sen' && vuelta('sen', val.k).some(g => Math.abs(g - 210) < 1e-6),
+            bien: 'La calculadora diría −30°; la vuelta completa da 210° y 330°.' },
+          { texto: 'Con coseno, logra dos soluciones que sumen exactamente 360°.',
+            logrado: val => { const s = vuelta(val.fn, val.k); return val.fn === 'cos' && s.length === 2 && Math.abs(s[0] + s[1] - 360) < 1e-6; },
+            bien: 'El coseno repite su valor en α y en 360° − α. ¿Pasará con todo k?' },
+          { texto: 'Con tangente, lleva k a un extremo y cuenta las soluciones.',
+            logrado: val => val.fn === 'tan' && Math.abs(Math.abs(val.k) - 2) < 1e-9 && vuelta('tan', val.k).length === 2,
+            bien: 'La tangente no tiene tope: siempre dos por vuelta, separadas 180°.' },
+          { texto: 'Guarda dos casos de seno: uno con dos soluciones y otro sin ninguna.',
+            logrado: (val, guardados) => guardados.some(g => g.fn === 'sen' && vuelta('sen', g.k).length === 2)
+              && guardados.some(g => g.fn === 'sen' && vuelta('sen', g.k).length === 0),
+            bien: 'Misma función, otra altura: fuera de [−1, 1] la recta ya no corta.' },
+        ],
       },
       {
         id: 'franja-libre', titulo: 'La franja y la recta', pieza: 'ejes',
@@ -700,6 +751,20 @@
             donde: val => { const G = EJES().geometria(mesaFranja(val.fn, val.k, val.b)); return { x: G.X(705), y: G.Y(val.k) }; },
             mover: (pt, val) => ({ k: yDeEjes(mesaFranja(val.fn, val.k, val.b), pt.y) }) },
         ],
+        invitaciones: [
+          { texto: 'Consigue cinco soluciones dentro de la franja.',
+            logrado: val => cuentaFranja(val.fn, val.k, val.b) === 5,
+            bien: 'Con sen θ = 0 entran 0°, 180°, 360°, 540° y 720°: los extremos cuentan.' },
+          { texto: 'Con seno, pon el final b justo sobre un corte.',
+            logrado: val => val.fn === 'sen' && dosVueltas('sen', val.k).some(g => g > 0 && Math.abs(g - val.b) < 1e-9),
+            bien: 'Con corchete, ese corte entra. ¿Y si el intervalo fuera abierto en b?' },
+          { texto: 'Con k distinto de 0, 1 y −1, logra un número impar de soluciones.',
+            logrado: val => Math.abs(val.k) > 1e-9 && Math.abs(Math.abs(val.k) - 1) > 1e-9 && cuentaFranja(val.fn, val.k, val.b) % 2 === 1,
+            bien: 'El final b partió una pareja de cortes: solo cuenta lo que queda dentro.' },
+          { texto: 'Guarda dos casos con el mismo b y distinta cantidad de soluciones.',
+            logrado: (val, guardados) => guardados.some(p => guardados.some(q => p.b === q.b && cuentaFranja(p.fn, p.k, p.b) !== cuentaFranja(q.fn, q.k, q.b))),
+            bien: 'El mismo intervalo, otra recta: cuántas caben depende de la función y de k.' },
+        ],
       },
       {
         id: 'factor-fuera', titulo: 'Un factor que no aporta', pieza: 'trig-plano',
@@ -713,6 +778,21 @@
         arrastres: [{ id: 'recta-c', etiqueta: 'recta x = c', color: 'c-d',
           donde: val => TP().enPx(mesaFactor(val.c), val.c, 0),
           mover: (pt, val) => ({ c: TP().delPx(mesaFactor(val.c), pt).x }) }],
+        invitaciones: [
+          { texto: 'Consigue la mayor cantidad posible de soluciones distintas.',
+            logrado: val => listaFactor(val.c).length === 4,
+            bien: 'Cada factor aportó dos ángulos y ninguno se repitió.' },
+          { texto: 'Haz que el segundo factor repita un ángulo del primero.',
+            logrado: val => vuelta('cos', val.c).some(g => g === 0 || g === 180),
+            bien: 'Con c = ±1 sale 0° o 180°, que ya estaban: se cuentan una vez.' },
+          { texto: 'Consigue que 120° sea solución del segundo factor.',
+            logrado: val => vuelta('cos', val.c).some(g => Math.abs(g - 120) < 1e-6),
+            bien: 'cos 120° = −1/2: el segundo factor aporta 120° y 240°.' },
+          { texto: 'Guarda dos casos con distinta c y el mismo conjunto solución.',
+            logrado: (val, guardados) => guardados.some(p => guardados.some(q => Math.abs(p.c - q.c) > 1e-9
+              && listaFactor(p.c).join() === listaFactor(q.c).join())),
+            bien: 'Dos ecuaciones distintas, la misma lista: el segundo factor no sumó nada.' },
+        ],
       },
     ],
     historia: {

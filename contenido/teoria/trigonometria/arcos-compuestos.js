@@ -174,7 +174,7 @@
       ],
     },
     regla: {
-      texto: 'El seno y el coseno de una suma mezclan las razones de los dos ángulos. Para la diferencia se cambia el signo de β.',
+      texto: 'El seno y el coseno de un arco compuesto, como α + β, mezclan las razones de los dos ángulos. Para la diferencia se cambia el signo de β.',
       ecuacion: ['sen(', al, ' ± ', be, ') = ', { llave: ['sen ', al, ' cos ', be], nota: 'altura de Q', color: 'c-d' }, ' ± ', { llave: ['cos ', al, ' sen ', be], nota: 'subida de Q a P', color: 'c-d' },
         // Espacios duros (\u00a0): el segundo miembro del coseno no se parte; si no cabe, baja entero.
         '   ·   ', 'cos(', al, ' ± ', be, ') = ', ['cos\u00a0', al, '\u00a0cos\u00a0', be, '\u00a0∓\u00a0sen\u00a0', al, '\u00a0sen\u00a0', be]],
@@ -409,12 +409,12 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Las dos ondas tienen su cresta en x distintos.', ecuacion: [a_, ' sen x + ', b_, ' cos x = 3 sen x + 4 cos x'] },
         { estado: { corte: 2 }, texto: 'Se saca de factor común la raíz de a² + b².', ecuacion: ['= 5', { par: [{ frac: ['3', '5'] }, ' sen x + ', { frac: ['4', '5'] }, ' cos x'] }] },
-        { estado: { corte: 3 }, texto: '3/5 y 4/5 son el coseno y el seno de φ.', ecuacion: ['= 5(sen x cos φ + cos x sen φ) = 5 sen(x + φ)'] },
+        { estado: { corte: 3 }, texto: '3/5 y 4/5 son coseno y seno del ángulo auxiliar φ.', ecuacion: ['= 5(sen x cos φ + cos x sen φ) = 5 sen(x + φ)'] },
         { estado: { corte: 4 }, texto: 'El seno va de −1 a 1: la onda, de −5 a 5.', ecuacion: [`φ ≈ ${f(deg(Math.atan2(4, 3)), 2)}°`, '   ·   ', '−5 ≤ 3 sen x + 4 cos x ≤ 5'] },
       ],
     },
     regla: {
-      texto: 'Una suma a sen x + b cos x es una sola onda de amplitud R. Por eso su máximo es R y su mínimo es −R.',
+      texto: 'Por la identidad auxiliar, a sen x + b cos x es una sola onda de amplitud R. Por eso su máximo es R y su mínimo es −R.',
       ecuacion: [a_, ' sen x + ', b_, ' cos x = ', { llave: [R_, '\u00a0sen(x\u00a0+\u00a0φ)'], nota: 'una sola onda', color: 'c-h' }, '   ·   ', R_, ' = ', { raiz: [{ sup: [a_, '2'] }, ' + ', { sup: [b_, '2'] }] }],
       condicion: 'el mismo x en los dos términos; cos φ = a/R y sen φ = b/R. Una constante mueve los dos extremos.',
       voz: 'La raíz junta las dos ondas; el seno decide hasta dónde llega.',
@@ -571,11 +571,42 @@
     };
   }
 
+  // Retos del laboratorio: las mismas cuentas que dibujan (sumaLibre, tangente, ondas).
+  const torreSep = (a, b, fn) => { const F = fn === 'sen' ? sen : cos; return Math.abs(F(a) + F(b) - F(a + b)); };
+  const torreDe = v => { const F = v.fn === 'sen' ? sen : cos; return F(v.a) + F(v.b); };
+  const rojaDe = v => (v.fn === 'sen' ? sen : cos)(v.a + v.b);
+  // El mayor error de repartir el seno en la grilla de la mesa (α de 0° a 180°, β de −90° a 180°, de 5° en 5°).
+  const MAX_SEP = (() => { let m = 0; for (let a = 0; a <= 180; a += 5) for (let b = -90; b <= 180; b += 5) m = Math.max(m, torreSep(a, b, 'sen')); return m; })();
+  const seVe = g => puntoTan(g, 'h', '').length > 0;   // el punto rojo de tan(α + β) cae dentro de la recta x = 1
+  const LIM_ONDA = 5;   // tope de a y b en la mesa «Dos ondas, cualquier par»
+  const crestaX = v => ondas(v.a, v.b, 8).puntos[0].x;
+  const mismo = (g, v) => Object.keys(v).every(k => g[k] === v[k]);
+
   return {
     unidad: 'trigonometria.arcos-compuestos',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/triangulo.js'],
+    glosario: [
+      { termino: 'arco compuesto', def: 'Ángulo que se forma sumando o restando dos ángulos, como α + β o α − β.',
+        formas: ['arco compuesto', 'arcos compuestos', 'ángulo compuesto', 'ángulos compuestos'],
+        ejemplo: `75° = 45° + 30°: sen 75° ≈ ${f(sen(75))}, no sen 45° + sen 30° ≈ ${f(sen(45) + sen(30))}.` },
+      { termino: 'denominador', def: 'Lo que va abajo en una fracción: el número entre el que se divide. Nunca puede valer cero.',
+        ejemplo: `Con tan α = 1 y tan β = 1/3, abajo queda 1 − 1/3 = 2/3.` },
+      { termino: 'onda', def: 'Curva que sube y baja repitiendo siempre la misma forma, como la gráfica de y = sen x.',
+        ver: ['cresta', 'amplitud'] },
+      { termino: 'cresta', def: 'El punto más alto de una onda: donde llega a su mayor valor.',
+        ejemplo: `y = 3 sen x + 4 cos x sube hasta ${f(Math.hypot(3, 4))}, cerca de x = ${f(deg(Math.atan2(3, 4)), 1)}°.`, ver: ['onda'] },
+      { termino: 'amplitud', def: 'Cuánto se aleja una onda de su línea del medio, hacia arriba o hacia abajo.',
+        ejemplo: `3 sen x + 4 cos x tiene ${f(Math.hypot(3, 4))}: va de −${f(Math.hypot(3, 4))} a ${f(Math.hypot(3, 4))}, no de −7 a 7.`, ver: ['cresta', 'identidad auxiliar'] },
+      { termino: 'identidad auxiliar', def: 'Igualdad que junta dos ondas en una: a·sen x + b·cos x = R sen(x + φ).',
+        ejemplo: `3 sen x + 4 cos x = 5 sen(x + φ), con φ ≈ ${f(deg(Math.atan2(4, 3)))}°.`, formas: ['identidad auxiliar', 'identidades auxiliares'],
+        ver: ['ángulo auxiliar', 'amplitud'] },
+      { termino: 'ángulo auxiliar', simbolo: 'φ', def: 'Ángulo φ con cos φ = a/R y sen φ = b/R; dice cuánto se corre la onda suma.',
+        ejemplo: `Con a = 3 y b = 4: cos φ = 3/5 y sen φ = 4/5, φ ≈ ${f(deg(Math.atan2(4, 3)))}°.`, ver: ['identidad auxiliar'] },
+      { termino: 'factor común', def: 'Número que multiplica a todos los sumandos y se saca fuera de un paréntesis.',
+        ejemplo: '3 sen x + 4 cos x = 5(3/5 sen x + 4/5 cos x): el 5 sale afuera.' },
+    ],
     // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera abre los giros a la diferencia (β
     // negativo) y al coseno, que la idea 1 no deja probar; la segunda mueve la tangente de grado en grado, hasta el
     // caso exacto α + β = 90° (la idea 2 va de 20° en 20°) con el denominador a la vista; la tercera suelta a y b,
@@ -595,6 +626,21 @@
           return [`${v.fn}(${f(s)}°) = ${f(F(s))} · ${v.fn} `, al, ` + ${v.fn} `, be, ` = ${f(F(v.a) + F(v.b))}`];
         },
         arrastres: manijasSuma(v => sumaLibre(v.a, v.b, v.fn)),
+        invitaciones: [
+          { texto: 'Que la torre llegue justo a la línea roja, con α y β distintos de 0.',
+            logrado: v => v.a !== 0 && v.b !== 0 && Math.abs(torreDe(v) - rojaDe(v)) < 1e-9,
+            bien: 'Coinciden solo en casos raros. Repartir no es la regla.' },
+          { texto: 'Con seno, separa la torre de la línea roja lo más que puedas.',
+            logrado: v => v.fn === 'sen' && torreSep(v.a, v.b, 'sen') > MAX_SEP - 1e-9,
+            bien: 'Ahí repartir falla más que en ningún otro caso. ¿Qué pasa con el coseno?' },
+          { texto: 'Resta (β negativo) y deja la torre y la línea roja a lados opuestos del cero.',
+            logrado: v => v.b < 0 && torreDe(v) * rojaDe(v) < -1e-9,
+            bien: 'Repartir puede dar hasta el signo equivocado. Por eso se usa la fórmula.' },
+          { texto: 'Guarda dos casos con el mismo rayo rojo y distinta torre.',
+            logrado: (v, guardados) => guardados.some(g => mismo(g, v))
+              && guardados.some(g => g.fn === v.fn && g.a + g.b === v.a + v.b && Math.abs(torreDe(g) - torreDe(v)) > 1e-9),
+            bien: 'El mismo ángulo suma, dos torres distintas: la torre no sabe cuánto vale α + β.' },
+        ],
       },
       {
         id: 'tangente-fina', titulo: 'La tangente, grado a grado', pieza: 'trig-plano',
@@ -610,6 +656,21 @@
           return [`α + β = ${f(s)}° · tan = ${t} · denominador ${f(Math.abs(den) < 5e-3 ? 0 : den)}`];
         },
         arrastres: manijasSuma(v => tangente(v.a, v.b)),
+        invitaciones: [
+          { texto: 'Lleva α + β justo a 90° y mira qué hace el denominador.',
+            logrado: v => Math.abs(1 - tan(v.a) * tan(v.b)) < 1e-9,
+            bien: 'Denominador cero: el rayo rojo queda paralelo a x = 1 y no la corta.' },
+          { texto: 'Haz que tan(α + β) valga justo 1, sin dejar ningún ángulo en 0°.',
+            logrado: v => v.a > 0 && v.b > 0 && Math.abs(tan(v.a + v.b) - 1) < 1e-9,
+            bien: 'α + β = 45°. ¿Cuánto suman ahí tan α y tan β? Menos que 1.' },
+          { texto: 'Pasa los 90° y busca el punto rojo más bajo que todavía se vea.',
+            logrado: v => v.a + v.b > 90 && seVe(v.a + v.b) && !seVe(v.a + v.b - 1),
+            bien: 'Pasando 90°, la tangente es negativa: el rayo prolongado corta abajo.' },
+          { texto: 'Guarda dos casos con igual α + β y distinta suma tan α + tan β.',
+            logrado: (v, guardados) => guardados.some(g => mismo(g, v))
+              && guardados.some(g => g.a + g.b === v.a + v.b && Math.abs(tan(g.a) + tan(g.b) - tan(v.a) - tan(v.b)) > 1e-9),
+            bien: 'Mismo punto rojo, distinta suma: por eso la fórmula necesita el denominador.' },
+        ],
       },
       {
         id: 'ondas-libres', titulo: 'Dos ondas, cualquier par', pieza: 'ejes',
@@ -621,6 +682,21 @@
         dibujo: v => ({ datos: ondas(v.a, v.b, 8), estado: {} }),
         lectura: v => [a_, ` = ${f(v.a)} · `, b_, ` = ${f(v.b)} · `, R_, ` = ${f(Math.hypot(v.a, v.b))} · `, a_, ' + ', b_, ` = ${f(v.a + v.b)}`],
         arrastres: crestas(8),
+        invitaciones: [
+          { texto: 'Haz que la cresta roja mida justo 2,5, con a y b distintos de 0.',
+            logrado: v => v.a !== 0 && v.b !== 0 && Math.abs(Math.hypot(v.a, v.b) - 2.5) < 1e-9,
+            bien: 'El triángulo 3, 4 y 5 a la mitad: la amplitud es su hipotenusa.' },
+          { texto: 'Busca la cresta roja más alta posible.',
+            logrado: v => Math.hypot(v.a, v.b) > Math.hypot(LIM_ONDA, LIM_ONDA) - 1e-9,
+            bien: 'Las dos al máximo, y aun así R no llega a |a| + |b|.' },
+          { texto: 'Haz que la cresta roja caiga justo en x = 45°.',
+            logrado: v => Math.abs(crestaX(v) - 45) < 1e-9,
+            bien: 'Con a = b, la cresta cae a medio camino entre 0° y 90°.' },
+          { texto: 'Guarda dos casos con la misma cresta roja y distinto a + b.',
+            logrado: (v, guardados) => guardados.some(g => mismo(g, v))
+              && guardados.some(g => Math.abs(Math.hypot(g.a, g.b) - Math.hypot(v.a, v.b)) < 1e-9 && Math.abs(g.a + g.b - v.a - v.b) > 1e-9),
+            bien: 'Misma cresta, distinto a + b: la amplitud depende de a² + b².' },
+        ],
       },
     ],
     historia: {

@@ -309,7 +309,7 @@
     regla: {
       texto: 'Con A agudo y no comprendido, compara a con h = b sen A y con b: a < h, ninguno; h < a < b, dos; a = h o a ≥ b, uno.',
       ecuacion: ['sen ', B, ' = ', { frac: [[b, ' sen ', A], a] }, '   ·   ', { sub: [B, '2'] }, ' = ', { llave: ['180° − ', { sub: [B, '1'] }], nota: 'el suplemento', color: 'c-i' }],
-      condicion: 'A es agudo y se opone a a. Cada candidato sirve solo si A + B < 180°.',
+      condicion: 'Es el caso ambiguo: A es agudo y se opone a a. Cada candidato sirve solo si A + B < 180°.',
       voz: 'El arco seno da una rama; el suplemento puede ser la otra.',
     },
     ahoraTu: {
@@ -359,8 +359,10 @@
   // Cambia: el ángulo A entre los lados fijos b y c. · Permanece: b y c, y la base sobre la horizontal.
   // Progresa: el término −2bc cos A, que resta si A es agudo y suma si es obtuso. · Se reserva: el caso de
   // 120° con otros lados (la predicción). · Debe verse: que con 90° la ley queda en Pitágoras.
+  // El lado a frente a A, por la ley de cosenos (lo usan la figura, la lectura y los retos de la mesa).
+  const ladoLC = (Ad, bv, cv) => Math.sqrt(bv * bv + cv * cv - 2 * bv * cv * cos(Ad));
   const triLC = (Ad, bv, cv, o = {}) => {
-    const Cx = bv * cos(Ad), Cy = bv * sen(Ad), av = Math.sqrt(bv * bv + cv * cv - 2 * bv * cv * cos(Ad));
+    const Cx = bv * cos(Ad), Cy = bv * sen(Ad), av = ladoLC(Ad, bv, cv);
     const puntos = [{ id: 'A', x: 0, y: 0, rotulo: 'A' }, { id: 'B', x: cv, y: 0, rotulo: 'B' }, { id: 'C', x: Cx, y: Cy, rotulo: 'C' }];
     const lados = [{ de: 'A', a: 'B', color: 'd', texto: `c = ${f(cv)}` }, { de: 'A', a: 'C', color: 'i', texto: o.altura ? 'b' : `b = ${f(bv)}`, lado: o.altura ? -1 : undefined },
       { de: 'B', a: 'C', color: 'o', grosor: 'variable', texto: o.aTexto === undefined ? `a ≈ ${f(av)}` : o.aTexto, final: o.aFinal }];
@@ -533,7 +535,7 @@
       };
     })(),
     regla: {
-      texto: 'Cada lado es la suma de las sombras de los otros dos sobre él. La diferencia de dos lados sobre su suma se lee con tangentes de semiángulos.',
+      texto: 'Ley de proyecciones: cada lado suma las sombras de los otros dos sobre él. La diferencia de dos lados sobre su suma se lee con tangentes de semiángulos.',
       ecuacion: [c, ' = ', { llave: [a, ' cos ', B], nota: 'sombra de a', color: 'c-o' }, ' + ', { llave: [b, ' cos ', A], nota: 'sombra de b', color: 'c-i' }, '   ·   ', { frac: [[a, ' − ', b], [a, ' + ', b]] }, ' = ', { frac: [['tan ', { frac: [[A, ' − ', B], '2'] }], ['tan ', { frac: [[A, ' + ', B], '2'] }]] }],
       condicion: 'Las sombras llevan el signo del coseno: con ángulo obtuso, se restan. En las dos leyes, a se opone a A.',
       voz: 'Una sombra negativa no es un error: dice hacia dónde cae.',
@@ -747,6 +749,7 @@
   };
   // Mesa 3: un viaje de dos tramos con sus rumbos; se arrastran C (primer tramo) y B (segundo tramo).
   const QS = [{ valor: 'NE', texto: 'N…E' }, { valor: 'NO', texto: 'N…O' }, { valor: 'SE', texto: 'S…E' }, { valor: 'SO', texto: 'S…O' }];
+  const viajeDe = val => viaje([val.q1[0], val.t1, val.q1[1]], val.b, [val.q2[0], val.t2, val.q2[1]], val.a);
   const mesaViaje = val => viajeDatos([val.q1[0], val.t1, val.q1[1]], val.b, [val.q2[0], val.t2, val.q2[1]], val.a);
 
   return {
@@ -754,6 +757,30 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js', '/nucleo/kit/piezas/triangulo.js'],
+    glosario: [
+      { termino: 'triángulo oblicuángulo', def: 'Triángulo sin ningún ángulo recto: sus tres ángulos son agudos, o uno es obtuso.',
+        formas: ['triángulo oblicuángulo', 'triángulos oblicuángulos', 'oblicuángulo', 'oblicuángulos'], ver: ['ley de senos', 'ley de cosenos'] },
+      { termino: 'ángulo opuesto', def: 'El ángulo del vértice que está frente a un lado, el único que no lo toca.',
+        ejemplo: 'En el triángulo ABC, frente al lado a está el ángulo A.', formas: ['ángulo opuesto', 'ángulos opuestos'] },
+      { termino: 'ángulo obtuso', def: 'Ángulo mayor que 90° y menor que 180°. Su coseno es negativo.',
+        ejemplo: '120° es obtuso: cos 120° = −1/2.', formas: ['ángulo obtuso', 'ángulos obtusos', 'obtuso', 'obtusos'] },
+      { termino: 'ley de senos', def: 'En todo triángulo, cada lado entre el seno de su ángulo opuesto da el mismo número: 2R.',
+        ejemplo: 'a = 5 y A = 30°: a/sen A = 10, así que R = 5.', ver: ['ángulo opuesto', 'diámetro', 'caso ambiguo'] },
+      { termino: 'diámetro', def: 'Cuerda que pasa por el centro de una circunferencia; mide el doble del radio.',
+        ejemplo: 'Con radio R = 2, mide 2R = 4.', ver: ['ley de senos'] },
+      { termino: 'inscrito', def: 'Que está dentro de otra figura tocándola: vértices sobre la circunferencia, o circunferencia que toca cada lado.',
+        ejemplo: 'Un triángulo con sus tres vértices sobre una circunferencia está inscrito en ella.', formas: ['inscrito', 'inscrita', 'inscritos', 'inscritas'] },
+      { termino: 'caso ambiguo', def: 'Datos lado, lado y ángulo no comprendido que pueden dar dos triángulos, uno o ninguno.',
+        ejemplo: 'A = 30°, b = 8, a = 5: h = 4 < 5 < 8, hay dos.', ver: ['ley de senos'] },
+      { termino: 'ley de cosenos', def: 'Pitágoras corregido para cualquier triángulo: a² = b² + c² − 2bc cos A, con A entre b y c.',
+        ejemplo: 'b = 5, c = 8, A = 60°: a² = 89 − 40 = 49, a = 7.', ver: ['ángulo opuesto'] },
+      { termino: 'ley de proyecciones', def: 'Cada lado de un triángulo es la suma de las sombras de los otros dos sobre él.',
+        ejemplo: 'c = a cos B + b cos A.', ver: ['ley de cosenos'] },
+      { termino: 'ley de tangentes', def: 'Relaciona la diferencia de dos lados sobre su suma con tangentes de la semidiferencia y la semisuma.',
+        ejemplo: '(a − b)/(a + b) = tan((A − B)/2) / tan((A + B)/2).', ver: ['ley de senos'] },
+      { termino: 'rumbo', def: 'Dirección dada por un ángulo agudo desde el norte o el sur, girando hacia el este o el oeste.',
+        ejemplo: 'N 40° E: mira al norte y gira 40° hacia el este.', formas: ['rumbo', 'rumbos'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera abre la ley de cosenos: b, c y A libres
     // (A hasta 150°), con C que se arrastra (cambia A y b a la vez). La segunda abre el caso ambiguo: A, b y a libres,
     // para ver cuándo la altura deja dos, uno o ningún triángulo. La tercera arma un viaje de dos tramos con
@@ -769,8 +796,7 @@
         ],
         dibujo: val => ({ datos: mesaLC(val.A, val.b, val.c), estado: {} }),
         lectura: val => {
-          const p = val.b * val.b + val.c * val.c, t = 2 * val.b * val.c * cos(val.A);
-          return [a, ` ≈ ${f(Math.sqrt(p - t))} · Pitágoras daría ${f(Math.sqrt(p))} · `, A, ` = ${f(val.A)}°`];
+          return [a, ` ≈ ${f(ladoLC(val.A, val.b, val.c))} · Pitágoras daría ${f(Math.hypot(val.b, val.c))} · `, A, ` = ${f(val.A)}°`];
         },
         arrastres: [
           { id: 'vertice-c', etiqueta: 'vértice C: cambia A y b', color: 'c-o',
@@ -779,6 +805,23 @@
           { id: 'vertice-b', etiqueta: 'vértice B: cambia c', color: 'c-d',
             donde: val => enTri(mesaLC(val.A, val.b, val.c), val.c, 0),
             mover: (pt, val) => ({ c: delTri(mesaLC(val.A, val.b, val.c), pt).x }) },
+        ],
+        invitaciones: [
+          { texto: 'Haz que a mida justo lo que daría Pitágoras.',
+            logrado: val => Math.abs(ladoLC(val.A, val.b, val.c) - Math.hypot(val.b, val.c)) < 1e-9,
+            bien: 'Con A = 90°, cos A = 0 y el término extra desaparece.' },
+          { texto: 'Arma un triángulo equilátero: los tres lados iguales.',
+            logrado: val => Math.abs(ladoLC(val.A, val.b, val.c) - val.b) < 1e-9 && Math.abs(val.b - val.c) < 1e-9,
+            bien: 'Con b = c y A = 60°, cos A = 1/2 y a sale igual.' },
+          { texto: 'Haz que a sea más corto que b y que c a la vez.',
+            logrado: val => { const av = ladoLC(val.A, val.b, val.c); return av < val.b - 1e-9 && av < val.c - 1e-9; },
+            bien: 'Frente al ángulo más chico queda el lado más corto.' },
+          { texto: 'Busca el lado a más largo que permite la mesa.',
+            logrado: val => ladoLC(val.A, val.b, val.c) >= ladoLC(150, 8, 8) - 1e-9,
+            bien: 'A muy abierto: cos A es negativo y el término −2bc cos A suma.' },
+          { texto: 'Guarda dos casos con los mismos b y c: uno con A agudo y otro obtuso.',
+            logrado: (val, guardados) => guardados.some(p => guardados.some(q => p.b === q.b && p.c === q.c && p.A < 90 && q.A > 90)),
+            bien: 'Agudo: a queda bajo Pitágoras. Obtuso: lo supera. Decide el signo de cos A.' },
         ],
       },
       {
@@ -797,6 +840,24 @@
         arrastres: [{ id: 'compas', etiqueta: 'punta del compás a', color: 'c-o',
           donde: val => manijaCompas(val.A, val.b, val.a, mesaCompas(val.A, val.b, val.a).datos),
           mover: (pt, val) => ({ a: largoCompas(val.A, val.b, mesaCompas(val.A, val.b, val.a).datos, pt) }) }],
+        invitaciones: [
+          { texto: 'Consigue un solo triángulo, rectángulo en B.',
+            logrado: val => { const Bs = mesaCompas(val.A, val.b, val.a).Bs; return Bs.length === 1 && Math.abs(Bs[0] - 90) < 1e-6; },
+            bien: 'El compás mide justo la altura: toca la base en un solo punto.' },
+          { texto: 'Haz que el compás no toque la base: ningún triángulo.',
+            logrado: val => mesaCompas(val.A, val.b, val.a).Bs.length === 0,
+            bien: 'a quedó bajo la altura h = b sen A: sen B pasaría de 1.' },
+          { texto: 'Logra un solo triángulo con a mayor o igual que b.',
+            logrado: val => val.a >= val.b - 1e-9 && mesaCompas(val.A, val.b, val.a).Bs.length === 1,
+            bien: 'Con a ≥ b el segundo corte cae detrás de A: queda uno solo.' },
+          { texto: 'Con A = 60° y b = 6, busca el menor a que forme triángulo.',
+            logrado: val => val.A === 60 && val.b === 6 && mesaCompas(60, 6, val.a).Bs.length > 0 && mesaCompas(60, 6, val.a - 0.25).Bs.length === 0,
+            bien: 'Justo por encima de la altura: un poco menos y el compás no llega.' },
+          { texto: 'Guarda dos casos con los mismos A y b y distinta cantidad de triángulos.',
+            logrado: (val, guardados) => guardados.some(p => guardados.some(q => p.A === q.A && p.b === q.b
+              && mesaCompas(p.A, p.b, p.a).Bs.length !== mesaCompas(q.A, q.b, q.a).Bs.length)),
+            bien: 'Solo cambió a: comparado con la altura, decide si caben dos, uno o ninguno.' },
+        ],
       },
       {
         id: 'viaje-libre', titulo: 'Un viaje con dos rumbos', pieza: 'trig-plano',
@@ -828,6 +889,21 @@
               const q = TP().delPx(mesaViaje(val), pt), d = { x: q.x - v.Cp[0], y: q.y - v.Cp[1] }, r = rumboDe(d);
               return { q2: r.q, t2: r.t, a: Math.hypot(d.x, d.y) };
             } },
+        ],
+        invitaciones: [
+          { texto: 'Arma un viaje con un ángulo recto en C.',
+            logrado: val => Math.abs(viajeDe(val).ang - 90) < 1e-6,
+            bien: 'Con C = 90°, el regreso sale de Pitágoras: la ley de cosenos pierde su término.' },
+          { texto: 'Haz que el segundo tramo vuelva justo hacia A.',
+            logrado: val => viajeDe(val).ang < 1e-6,
+            bien: 'Para volver, N cambia por S y E por O, con el mismo ángulo.' },
+          { texto: 'Consigue que el regreso mida lo mismo que los dos tramos juntos.',
+            logrado: val => Math.abs(viajeDe(val).cv - (val.a + val.b)) < 1e-6,
+            bien: 'El mismo rumbo dos veces: no hay triángulo, solo una recta.' },
+          { texto: 'Guarda dos viajes con los mismos largos, rumbos distintos y el mismo regreso.',
+            logrado: (val, guardados) => guardados.some(p => guardados.some(q => p.a === q.a && p.b === q.b && (p.q1 !== q.q1 || p.t1 !== q.t1 || p.q2 !== q.q2 || p.t2 !== q.t2)
+              && Math.abs(viajeDe(p).cv - viajeDe(q).cv) < 1e-6)),
+            bien: 'Rumbos distintos, mismo ángulo en C: la ley de cosenos da el mismo regreso.' },
         ],
       },
     ],

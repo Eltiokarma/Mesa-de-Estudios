@@ -645,6 +645,60 @@
     };
   };
 
+  // Retos del laboratorio: las mismas cuentas que dibujan (ARC, cancela, GRAF).
+  const mismo = (gd, v) => Object.keys(v).every(c => gd[c] === v[c]);
+  const hay = (fn, v) => Number.isFinite(ARC[fn](v));
+  const paso1 = v => Math.round(v * 10) / 10;   // k de la mesa «Cuatro inversas», de 0,1 en 0,1
+  // La altura más alta que alcanza el punto naranja de arccos en la grilla de k (de 0,05 en 0,05).
+  const MAX_ARCCOS = (() => { let m = -Infinity; for (let i = -20; i <= 20; i++) m = Math.max(m, GRAF.cos.inv(i / 20)); return m; })();
+  const invitaciones = [
+    [
+      { texto: 'Con arcsen o arccos, busca el mayor k que todavía tiene ángulo.',
+        logrado: v => (v.fn === 'sen' || v.fn === 'cos') && hay(v.fn, v.k) && !hay(v.fn, paso1(v.k + 0.1)),
+        bien: 'Con k = 1 la recta apenas toca la circunferencia; un paso más y no corta.' },
+      { texto: 'Haz que la inversa devuelva un ángulo negativo.',
+        logrado: v => hay(v.fn, v.k) && ARC[v.fn](v.k) < -1e-9,
+        bien: 'Solo arcsen y arctan dan negativos: sus ramas bajan del eje x.' },
+      { texto: 'Con arccot, consigue justo 135°.',
+        logrado: v => v.fn === 'cot' && Math.abs(ARC.cot(v.k) - 135) < 1e-9,
+        bien: 'cot 135° = −1: el punto (−1; 1) cae en la mitad de arriba.' },
+      { texto: 'Guarda arcsen k y arccos k con el mismo k, y suma los dos ángulos.',
+        logrado: (v, guardados) => guardados.some(gd => mismo(gd, v)) && (v.fn === 'sen' || v.fn === 'cos') && hay(v.fn, v.k)
+          && guardados.some(gd => gd.k === v.k && gd.fn !== v.fn && (gd.fn === 'sen' || gd.fn === 'cos') && Math.abs(ARC[gd.fn](gd.k) + ARC[v.fn](v.k) - 90) < 1e-9),
+        bien: 'Siempre suman 90°: arcsen k y arccos k son complementarios.' },
+    ],
+    [
+      { texto: 'Haz que la inversa se cancele: que devuelva el mismo x.',
+        logrado: v => cancela(v.fn, v.x).dentro,
+        bien: 'x estaba en la rama verde: solo ahí la inversa deshace la función.' },
+      { texto: 'Con arcsen, busca el x más grande que todavía se cancela.',
+        logrado: v => v.fn === 'sen' && cancela('sen', v.x).dentro && !cancela('sen', v.x + 15).dentro,
+        bien: '90° es el borde de la rama; más allá, arcsen devuelve otro ángulo.' },
+      { texto: 'Con arccos, elige un x negativo y mira que devuelve −x.',
+        logrado: v => v.fn === 'cos' && v.x < 0 && Math.abs(cancela('cos', v.x).t + v.x) < 1e-6,
+        bien: 'El coseno no ve el signo de x; la rama de arriba devuelve −x.' },
+      { texto: 'Guarda dos x distintos con los que la inversa devuelva el mismo ángulo.',
+        logrado: (v, guardados) => guardados.some(gd => mismo(gd, v)) && !cancela(v.fn, v.x).sinDef
+          && guardados.some(gd => gd.fn === v.fn && gd.x !== v.x && !cancela(gd.fn, gd.x).sinDef && Math.abs(cancela(gd.fn, gd.x).t - cancela(v.fn, v.x).t) < 1e-6),
+        bien: 'Muchos x, un solo ángulo de vuelta: la rama guarda uno por cada valor.' },
+    ],
+    [
+      { texto: 'Haz que el punto naranja y su reflejo verde coincidan.',
+        logrado: v => Math.abs(GRAF[v.fn].inv(v.k) - v.k) < 1e-9,
+        bien: 'Coinciden solo sobre la recta y = x: ahí el reflejo no se mueve.' },
+      { texto: 'Con arccos, lleva el punto naranja lo más alto posible.',
+        logrado: v => v.fn === 'cos' && GRAF.cos.inv(v.k) > MAX_ARCCOS - 1e-9,
+        bien: 'arccos(−1) = π: el techo de su rango, que va de 0 a π.' },
+      { texto: 'Con arcsen, deja el punto naranja justo a la altura π/6.',
+        logrado: v => v.fn === 'sen' && Math.abs(GRAF.sen.inv(v.k) - Math.PI / 6) < 1e-9,
+        bien: 'π/6 rad es 30°: el ángulo cuyo seno es 1/2.' },
+      { texto: 'Con arccos, guarda k y −k, y compara las dos alturas.',
+        logrado: (v, guardados) => guardados.some(gd => mismo(gd, v)) && v.fn === 'cos' && v.k !== 0
+          && guardados.some(gd => gd.fn === 'cos' && Math.abs(gd.k + v.k) < 1e-9),
+        bien: 'Suman π: arccos(−k) es lo que le falta a arccos k para llegar a π.' },
+    ],
+  ];
+
   return {
     unidad: 'trigonometria.funciones-trigonometricas-inversas',
     version: '0.1.0',
@@ -654,6 +708,32 @@
     // el caso que las ideas no dejan probar: |k| > 1 en arcsen y arccos, donde no hay ángulo. La segunda compone las
     // tres inversas con x de −360° a 360° y dice si se cancelan. La tercera pone lado a lado las gráficas de arcsen,
     // arccos y arctan como reflejo de su rama (la idea 4 solo muestra arcsen).
+    glosario: [
+      { termino: 'función inversa', def: 'La que hace el camino de vuelta: recibe el valor de una razón y devuelve un ángulo.',
+        formas: ['función inversa', 'funciones inversas', 'inversa', 'inversas'], ejemplo: 'sen 30° = 1/2, y de vuelta arcsen(1/2) = 30°.', ver: ['rama', 'recíproco'] },
+      { termino: 'rama', def: 'Trozo de una curva que se toma aparte. En las inversas, los ángulos elegidos para no repetir valores.',
+        formas: ['rama', 'ramas'], ejemplo: 'La de arcsen va de −90° a 90°.', ver: ['valor principal'] },
+      { termino: 'valor principal', def: 'El único ángulo de la rama que da una razón; es el que muestra la calculadora.',
+        formas: ['valor principal', 'valores principales'], ejemplo: `sen x = −1/2 tiene muchas soluciones; el principal es ${g(ARC.sen(-0.5))}.`, ver: ['rama'] },
+      { termino: 'arcoseno', simbolo: 'arcsen', def: 'El ángulo entre −90° y 90° cuyo seno es k. Pide k entre −1 y 1.',
+        formas: ['arcoseno', 'arcsen'], ejemplo: `arcsen(−1/2) = ${g(ARC.sen(-0.5))}, no 330° ni 210°.`, ver: ['arcocoseno'] },
+      { termino: 'arcocoseno', simbolo: 'arccos', def: 'El ángulo entre 0° y 180° cuyo coseno es k. Pide k entre −1 y 1.',
+        formas: ['arcocoseno', 'arccos'], ejemplo: `arccos(−1/2) = ${g(ARC.cos(-0.5))}.`, ver: ['arcoseno'] },
+      { termino: 'arcotangente', simbolo: 'arctan', def: 'El ángulo entre −90° y 90°, sin esos extremos, cuya tangente es k. Acepta cualquier k.',
+        formas: ['arcotangente', 'arctan'], ejemplo: `arctan 1 = ${g(ARC.tan(1))}; arctan(−1) = ${g(ARC.tan(-1))}.`, ver: ['arcocotangente'] },
+      { termino: 'arcocotangente', simbolo: 'arccot', def: 'El ángulo entre 0° y 180°, sin esos extremos, cuya cotangente es k.',
+        formas: ['arcocotangente', 'arccot'], ejemplo: `arccot(−1) = ${g(ARC.cot(-1))}.`, ver: ['arcotangente'] },
+      { termino: 'arcosecante', simbolo: 'arcsec', def: 'El ángulo de la rama de arccos cuya secante es k; se calcula como arccos(1/k).',
+        formas: ['arcosecante', 'arcsec'], ejemplo: `arcsec 2 = arccos(1/2) = ${g(ARC.sec(2))}.`, ver: ['arcocoseno', 'recíproco'] },
+      { termino: 'arcocosecante', simbolo: 'arccsc', def: 'El ángulo de la rama de arcsen cuya cosecante es k; se calcula como arcsen(1/k).',
+        formas: ['arcocosecante', 'arccsc'], ejemplo: `arccsc 2 = arcsen(1/2) = ${g(ARC.csc(2))}.`, ver: ['arcoseno', 'recíproco'] },
+      { termino: 'recíproco', def: 'El número que multiplicado por otro da 1: es 1 entre ese número.',
+        formas: ['recíproco', 'recíprocos'], ejemplo: 'El de 2 es 1/2. Ojo: sen⁻¹ x no es 1/sen x.', ver: ['función inversa'] },
+      { termino: 'composición', def: 'Aplicar una función al resultado de otra, empezando por la de adentro.',
+        formas: ['composición', 'compuesta', 'compuestas', 'componer', 'compone'], ejemplo: `arccos(cos 240°) = arccos(−1/2) = ${g(ARC.cos(Math.cos(rad(240))))}.`, ver: ['función inversa'] },
+      { termino: 'reflejo', def: 'Lo que se ve como en un espejo: cada punto pasa al otro lado de una recta, a igual distancia.',
+        formas: ['reflejo', 'reflejos', 'reflejada', 'reflejadas', 'refleja'], ejemplo: 'Al reflejar en y = x, el punto (1/2; π/6) pasa a (π/6; 1/2).', ver: ['función inversa'] },
+    ],
     laboratorio: [
       {
         id: 'cuatro-ramas', titulo: 'Cuatro inversas, k libre', pieza: 'trig-plano',
@@ -671,6 +751,7 @@
         arrastres: [{ id: 'valor-k', etiqueta: 'valor k en la figura', color: 'c-i',
           donde: val => manijaRamas(val.fn, val.k),
           mover: (pt, val) => ({ k: kDeManija(val.fn, pt, mesaRamas(val.fn, val.k)) }) }],
+        invitaciones: invitaciones[0],
       },
       {
         id: 'cancela-o-no', titulo: '¿Se cancela o no?', pieza: 'trig-plano',
@@ -688,6 +769,7 @@
         arrastres: [{ id: 'punto-x', etiqueta: 'punto del ángulo x', color: 'c-h',
           donde: val => TP().enPx(mesaCancela(val.fn, val.x), Math.cos(rad(val.x)), Math.sin(rad(val.x))),
           mover: (pt, val) => ({ x: TP().anguloDe(mesaCancela(val.fn, val.x), pt, { cerca: val.x }) }) }],
+        invitaciones: invitaciones[1],
       },
       {
         id: 'tres-reflejos', titulo: 'Tres gráficas reflejadas', pieza: 'trig-plano',
@@ -701,6 +783,7 @@
         arrastres: [{ id: 'punto-inv', etiqueta: 'punto (k; inversa de k)', color: 'c-i',
           donde: val => TP().enPx(mesaReflejo(val.fn, val.k), val.k, GRAF[val.fn].inv(val.k)),
           mover: (pt, val) => ({ k: TP().delPx(mesaReflejo(val.fn, val.k), pt).x }) }],
+        invitaciones: invitaciones[2],
       },
     ],
     historia: {

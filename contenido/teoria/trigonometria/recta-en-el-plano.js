@@ -492,7 +492,7 @@
     temas: ['Ecuaciones de la recta'],
     pieza: 'trig-plano',
     juega: {
-      consigna: 'Elige la pendiente m y el número b. La recta y = mx + b corta al eje y en b.',
+      consigna: 'Elige m y b en la ecuación de la recta y = mx + b. La recta corta al eje y en b.',
       voz: 'Mira dónde cruza el eje y cuando cambias b.',
       controles: [
         { id: 'm', etiqueta: 'm', color: 'c-o', min: -2, max: 2, paso: 0.5, inicio: 1, decimales: 1 },
@@ -694,6 +694,11 @@
   // ---------- Laboratorio ----------
   // Mesa 1: dos puntos libres en los cuatro cuadrantes: distancia, pendiente (también la vertical) y punto medio.
   const VLAB = { x: [-6, 7.5], y: [-6, 6] };     // más espacio a la derecha para los rótulos de Δy
+  // Distancia AB de la mesa 1 y distancia de P a la recta de la mesa 2: las usan dibujo, lectura y retos.
+  const distAB = v => Math.hypot(v.x2 - v.x1, v.y2 - v.y1);
+  const pendAB = v => (v.x2 === v.x1 ? null : (v.y2 - v.y1) / (v.x2 - v.x1));
+  const distRP = v => Math.abs(v.m * v.px - v.py + v.b) / Math.hypot(1, v.m);
+  const casi = (x, y) => Math.abs(x - y) < 1e-9;
   function dosPuntos(v) {
     const ax = v.x2 - v.x1, ay = v.y2 - v.y1, mx = (v.x1 + v.x2) / 2, my = (v.y1 + v.y2) / 2;
     const linea = ax === 0 && ay === 0 ? [] : [recta(ax === 0 ? null : ay / ax, ax === 0 ? v.x1 : v.y1 - (ay / ax) * v.x1, VLAB, { color: 'o', grosor: 'contorno', discontinua: true })];
@@ -704,14 +709,14 @@
         { de: [v.x1, v.y1], a: [v.x2, v.y2], color: 'd' },
       ]),
       puntos: [{ x: v.x1, y: v.y1, rotulo: 'A', lado: 'so' }, { x: v.x2, y: v.y2, rotulo: 'B', lado: 'ne' }, { x: mx, y: my, color: 'd', rotulo: 'M', lado: 'no' }],
-      alt: `A ${P(v.x1, v.y1)} y B ${P(v.x2, v.y2)}: distancia ${f(Math.hypot(ax, ay))}, punto medio ${P(mx, my)}`,
+      alt: `A ${P(v.x1, v.y1)} y B ${P(v.x2, v.y2)}: distancia ${f(distAB(v))}, punto medio ${P(mx, my)}`,
     } });
   }
   // Mesa 2: una recta y un punto: el pie de la perpendicular H y la distancia d (y el caso d = 0).
   const pasoLab = v => (Math.abs(2 * v.m + v.b) <= 5.5 ? 2 : 1);
   function rectaPunto(v) {
     const t = (v.px + (v.py - v.b) * v.m) / (1 + v.m * v.m), hx = t, hy = v.b + v.m * t;
-    const dd = Math.abs(v.m * v.px - v.py + v.b) / Math.hypot(1, v.m);
+    const dd = distRP(v);
     return plano({ extra: {
       segmentos: [recta(v.m, v.b, VEN, { color: 'o' })].concat(dd > 1e-9 ? [{ de: [v.px, v.py], a: [hx, hy], color: 'd', rotulo: `d ≈ ${f(dd)}` }] : []),
       puntos: [{ x: 0, y: v.b }, { x: pasoLab(v), y: v.m * pasoLab(v) + v.b, color: 'o' }, { x: hx, y: hy, color: 'd', rotulo: 'H', lado: 'se', abierto: true }, { x: v.px, y: v.py, rotulo: 'P', lado: 'ne' }],
@@ -737,8 +742,26 @@
       dibujo: v => ({ datos: dosPuntos(v), estado: {} }),
       lectura: v => {
         const ax = v.x2 - v.x1, ay = v.y2 - v.y1;
-        return [d, ` ≈ ${f(Math.hypot(ax, ay))} · `, m, ax ? ` = ${fr(ay, ax)}` : ': no hay (vertical)', ` · M = ${P((v.x1 + v.x2) / 2, (v.y1 + v.y2) / 2)}`];
+        return [d, ` ≈ ${f(distAB(v))} · `, m, ax ? ` = ${fr(ay, ax)}` : ': no hay (vertical)', ` · M = ${P((v.x1 + v.x2) / 2, (v.y1 + v.y2) / 2)}`];
       },
+      // Retos: distAB y pendAB son las cuentas de dosPuntos (el segmento verde y la recta naranja).
+      invitaciones: [
+        { texto: 'Pon A y B en la misma vertical y mira qué pasa con la pendiente.',
+          logrado: v => v.x1 === v.x2 && v.y1 !== v.y2 && pendAB(v) === null,
+          bien: 'Sin avance no hay división: la recta vertical no tiene pendiente.' },
+        { texto: 'Deja A y B a distancia 5 exacta, sin alinearlos en la cuadrícula.',
+          logrado: v => v.x1 !== v.x2 && v.y1 !== v.y2 && casi(distAB(v), 5),
+          bien: 'Avance 3 y subida 4, o al revés: Pitágoras da 5 exactos.' },
+        { texto: 'Haz que el punto medio M caiga en el origen.',
+          logrado: v => v.x1 + v.x2 === 0 && v.y1 + v.y2 === 0 && distAB(v) > 0,
+          bien: 'A y B quedaron opuestos respecto al origen: cada coordenada cambió de signo.' },
+        { texto: 'Pon A y B lo más lejos posible uno del otro.',
+          logrado: v => casi(distAB(v), distAB({ x1: -5, y1: -5, x2: 5, y2: 5 })),
+          bien: `En esquinas opuestas: √(10² + 10²) ≈ ${f(distAB({ x1: -5, y1: -5, x2: 5, y2: 5 }))}, la diagonal del tablero.` },
+        { texto: 'Guarda dos casos con la misma distancia y distinta pendiente.',
+          logrado: (v, gs) => gs.some(a => gs.some(b => casi(distAB(a), distAB(b)) && distAB(a) > 0 && pendAB(a) !== pendAB(b))),
+          bien: 'Misma distancia, otra inclinación: d no dice hacia dónde va la recta.' },
+      ],
       arrastres: [manijaPunto('punto-a', 'punto A', dosPuntos, 'x1', 'y1'), manijaPunto('punto-b', 'punto B', dosPuntos, 'x2', 'y2')],
     },
     {
@@ -751,9 +774,26 @@
       ],
       dibujo: v => ({ datos: rectaPunto(v), estado: {} }),
       lectura: v => {
-        const dd = Math.abs(v.m * v.px - v.py + v.b) / Math.hypot(1, v.m);
+        const dd = distRP(v);
         return [`${ecRecta(v.m, v.b)} · P${P(v.px, v.py)} · `, d, dd > 1e-9 ? ` ≈ ${f(dd)}` : ' = 0: P está en la recta'];
       },
+      // Retos: distRP es la cuenta con que rectaPunto dibuja el segmento verde.
+      invitaciones: [
+        { texto: 'Pon el punto P justo sobre la recta.',
+          logrado: v => distRP(v) < 1e-9,
+          bien: 'd = 0: P cumple la ecuación y el segmento verde desaparece.' },
+        { texto: 'Haz la recta horizontal y deja P a distancia 4 de ella.',
+          logrado: v => v.m === 0 && casi(distRP(v), 4),
+          bien: 'Con la recta horizontal, la perpendicular es vertical: d es una resta de las y.' },
+        { texto: 'Sin mover la recta, lleva P lo más lejos posible de ella.',
+          logrado: v => v.m === 0.5 && v.b === -1
+            && casi(distRP(v), Math.max(...[[-5, -5], [-5, 5], [5, -5], [5, 5]].map(([x, y]) => distRP({ m: 0.5, b: -1, px: x, py: y })))),
+          bien: 'Una esquina del tablero: siempre se mide por la perpendicular, no por los ejes.' },
+        { texto: 'Guarda dos rectas paralelas, una a cada lado de P, a la misma distancia.',
+          logrado: (v, gs) => gs.some(a => gs.some(c => a.m === c.m && a.b !== c.b && a.px === c.px && a.py === c.py
+            && distRP(a) > 1e-9 && casi(distRP(a), distRP(c)))),
+          bien: 'Paralelas: misma pendiente. P quedó justo en medio de las dos.' },
+      ],
       arrastres: [
         manijaPunto('punto-p', 'punto P', rectaPunto, 'px', 'py'),
         { id: 'inclinar', etiqueta: 'punto de la recta: cambia m', color: 'c-o',
@@ -773,6 +813,21 @@
         const D = det(...triLab(v));
         return [A, ` = ${f(Math.abs(D) / 2)} · det = ${f(D)} · `, D > 0 ? 'P, Q, R antihorario' : D < 0 ? 'P, Q, R horario' : 'en línea, sin área'];
       },
+      // Retos: det es la cuenta con que la lectura da el área y el sentido; el baricentro, el G que dibuja triLibre.
+      invitaciones: [
+        { texto: 'Pon los tres vértices en línea: el área tiene que dar 0.',
+          logrado: v => det(...triLab(v)) === 0,
+          bien: 'En línea no hay triángulo: el determinante vale 0 y el área también.' },
+        { texto: 'Arma un triángulo de área exacta 6.',
+          logrado: v => Math.abs(det(...triLab(v))) / 2 === 6,
+          bien: 'Área 6: el determinante vale 12 o −12, según el orden de los vértices.' },
+        { texto: 'Recorre P, Q y R en sentido antihorario: haz positivo el determinante.',
+          logrado: v => det(...triLab(v)) > 0,
+          bien: 'Antihorario, signo positivo. ¿Qué pasa con el área si intercambias Q y R?' },
+        { texto: 'Haz que el baricentro G caiga en el origen.',
+          logrado: v => v.ax + v.bx + v.cx === 0 && v.ay + v.by + v.cy === 0 && det(...triLab(v)) !== 0,
+          bien: 'G promedia los tres vértices: las x suman cero y las y también.' },
+      ],
       arrastres: [manijaPunto('vertice-p', 'vértice P', triLibre, 'ax', 'ay'), manijaPunto('vertice-q', 'vértice Q', triLibre, 'bx', 'by'), manijaPunto('vertice-r', 'vértice R', triLibre, 'cx', 'cy')],
     },
   ];
@@ -785,6 +840,40 @@
     // Laboratorio: dos puntos libres (incluida la vertical), recta y punto con la perpendicular (y d = 0), y
     // un triángulo de vértices libres con el signo del determinante (incluidos los vértices en línea).
     laboratorio,
+    // Glosario (docs/teoria.md §4d): las palabras que esta unidad estrena en el curso. Distancia, vertical,
+    // horizontal y despejar vienen de «Resolución de triángulos rectángulos»; cuadrante, de «Ángulos en posición normal».
+    glosario: [
+      { termino: 'plano cartesiano', def: 'Plano con dos rectas numeradas que se cruzan en ángulo recto; cada punto queda fijado por dos números.',
+        formas: ['plano cartesiano', 'planos cartesianos'], ver: ['coordenadas', 'origen'] },
+      { termino: 'coordenadas', def: 'Par de números (x; y) que ubica un punto: cuánto se corre de lado y cuánto sube desde el origen.',
+        formas: ['coordenadas', 'coordenada'], ejemplo: '(−2; 3): 2 a la izquierda y 3 hacia arriba.', ver: ['plano cartesiano', 'origen'] },
+      { termino: 'origen', def: 'Punto donde se cruzan los dos ejes numerados: el (0; 0), desde donde se cuentan x e y.',
+        formas: ['origen'], ejemplo: 'De él a (3; 4) hay √(3² + 4²) = 5.', ver: ['coordenadas'] },
+      { termino: 'segmento', def: 'Trozo de recta entre dos puntos, que son sus extremos.',
+        formas: ['segmento', 'segmentos'], ejemplo: 'El que va de (1; 2) a (9; 6) mide √(8² + 4²) ≈ 8,94.', ver: ['punto medio', 'distancia entre dos puntos'] },
+      { termino: 'distancia entre dos puntos', simbolo: 'd', def: 'Largo del segmento que los une; sale de Pitágoras con la resta de las x y la de las y.',
+        formas: ['distancia entre dos puntos'], ejemplo: 'De (−2; 3) a (4; −5): √(6² + 8²) = 10.', ver: ['segmento', 'coordenadas'] },
+      { termino: 'punto medio', simbolo: 'M', def: 'Punto de un segmento que queda a igual distancia de sus dos extremos; promedia sus coordenadas.',
+        formas: ['punto medio', 'puntos medios'], ejemplo: 'De (1; 2) a (9; 6): M = (5; 4).', ver: ['segmento'] },
+      { termino: 'baricentro', simbolo: 'G', def: 'Punto de equilibrio de un triángulo: sus coordenadas son el promedio de las de los tres vértices.',
+        ejemplo: '(1; 1), (2; 6) y (5; 2): G = (8/3; 3).', ver: ['coordenadas'] },
+      { termino: 'determinante', def: 'Número Δx₁·Δy₂ − Δx₂·Δy₁ hecho con dos lados que salen de un vértice. Su signo dice el sentido de recorrido.',
+        formas: ['determinante', 'determinantes'], ejemplo: 'P(1; 1), Q(2; 6), R(5; 2): 1 · 1 − 4 · 5 = −19; área 19/2 = 9,5.', ver: ['valor absoluto'] },
+      { termino: 'valor absoluto', def: 'Lo que vale un número sin su signo: su distancia al cero en la recta numérica.',
+        formas: ['valor absoluto', 'valores absolutos'], ejemplo: '|−19| = 19 y |19| = 19.', ver: ['determinante'] },
+      { termino: 'pendiente', simbolo: 'm', def: 'Lo que sube una recta por cada unidad que avanza hacia la derecha: Δy entre Δx.',
+        formas: ['pendiente', 'pendientes'], ejemplo: 'De (2; 1) a (4; 7): m = 6/2 = 3.', ver: ['ángulo de inclinación'] },
+      { termino: 'ángulo de inclinación', simbolo: 'θ', def: 'Ángulo que forma una recta con el eje x positivo, medido hacia arriba, entre 0° y 180°.',
+        formas: ['ángulo de inclinación', 'ángulos de inclinación', 'inclinación'], ejemplo: 'Pendiente −1: como tan 135° = −1, θ = 135°.', ver: ['pendiente'] },
+      { termino: 'ecuación de la recta', def: 'Igualdad entre x e y que cumplen todos los puntos de una recta, y ningún otro punto.',
+        formas: ['ecuación de la recta', 'ecuaciones de la recta'], ejemplo: 'y = 3x − 5 y 3x − y − 5 = 0 son la misma recta.', ver: ['pendiente', 'intercepto'] },
+      { termino: 'intercepto', simbolo: 'b', def: 'Punto donde una recta cruza el eje vertical; ahí x = 0 e y vale b.',
+        formas: ['intercepto', 'corte con el eje y', 'cortes con el eje y'], ejemplo: 'y = 3x − 5 lo tiene en (0; −5).', ver: ['ecuación de la recta'] },
+      { termino: 'rectas paralelas', def: 'Rectas de un plano que nunca se cruzan. Si no son verticales, tienen la misma pendiente.',
+        formas: ['rectas paralelas', 'paralelas', 'paralela', 'paralelos', 'paralelo'], ejemplo: 'y = 2x + 1 e y = 2x − 3: pendiente 2 las dos.', ver: ['rectas perpendiculares', 'pendiente'] },
+      { termino: 'rectas perpendiculares', def: 'Rectas que se cruzan formando ángulo recto. Si ninguna es vertical, sus pendientes multiplicadas dan −1.',
+        formas: ['rectas perpendiculares', 'perpendiculares', 'perpendicular'], ejemplo: 'Pendientes −3/4 y 4/3: (−3/4) · (4/3) = −1.', ver: ['rectas paralelas', 'pendiente'] },
+    ],
     historia: {
       texto: 'En el siglo XVII, Fermat estudió lugares geométricos con relaciones algebraicas y los compartió por cartas, al mismo tiempo que Descartes desarrollaba su geometría. El plano cartesiano no nació de una sola ocurrencia. La idea clave: todos los puntos de una recta cumplen una misma relación entre x e y, y la pendiente la resume.',
       pregunta: '¿Qué tienen en común todos los puntos de una misma recta?',

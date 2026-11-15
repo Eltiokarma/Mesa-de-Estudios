@@ -353,7 +353,7 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Del giro θ = 300° solo se usa su coseno.', ecuacion: ['cos 300° = ', { frac: ['1', '2'] }] },
         { estado: { corte: 2 }, texto: 'La fórmula del cuadrado da dos candidatos con alturas opuestas.', ecuacion: [{ sup: ['sen', '2'] }, mit, ' = ', { frac: [['1 − cos ', th], '2'] }, ' = ', { frac: ['1', '4'] }, '  ⇒  ±', { frac: ['1', '2'] }] },
-        { estado: { corte: 3 }, texto: 'La mitad de 300° es 150°: cuadrante II.', ecuacion: [mit, ' = 150°'] },
+        { estado: { corte: 3 }, texto: 'El ángulo mitad de 300° es 150°: cuadrante II.', ecuacion: [mit, ' = 150°'] },
         { estado: { corte: 3 }, texto: 'En el cuadrante II el seno es positivo.', ecuacion: ['sen ', mit, ' = +', { frac: ['1', '2'] }] },
       ],
     },
@@ -446,7 +446,7 @@
       ],
     },
     regla: {
-      texto: 'El seno y el coseno del triple son polinomios de grado tres en la razón del ángulo. Triplicar el ángulo no triplica el valor.',
+      texto: 'El seno y el coseno del ángulo triple son polinomios de grado tres en la razón del ángulo. Triplicar el ángulo no triplica el valor.',
       ecuacion: ['sen ', tri, ' = 3 sen ', th, { llave: [' − 4', { sup: ['sen', '3'] }, th], nota: 'el cubo resta', color: 'c-d' }, '   ·   ', 'cos ', tri, ' = 4', { sup: ['cos', '3'] }, th, ' − 3 cos ', th],
       condicion: 'θ real; sen³ θ es (sen θ)³. Conocido sen 3θ, hay hasta tres valores de sen θ: el intervalo elige.',
       voz: 'Tres veces el ángulo; un cubo en la fórmula.',
@@ -558,6 +558,56 @@
     },
   ];
 
+  // Retos del laboratorio: las mismas cuentas que dibujan (sen, FUN, raices y unicos).
+  const mismo = (g, v) => Object.keys(v).every(k => g[k] === v[k]);
+  const PASO_H = 0.05;   // paso de la altura en «Una altura, tres candidatos»
+  const candidatos = (fn, h) => unicos(raices(fn === 'sen', Math.round(h * 100) / 100));
+  laboratorio[0].invitaciones = [
+    { texto: 'Busca un θ distinto de 0° con sen 2θ igual a 2 sen θ.',
+      logrado: v => v.t !== 0 && Math.abs(sen(2 * v.t) - 2 * sen(v.t)) < 1e-9,
+      bien: 'Solo pasa cuando las alturas son 0: doblar el ángulo casi nunca dobla el seno.' },
+    { texto: 'Iguala las alturas del rayo rojo y el naranja, sin que valgan 0.',
+      logrado: v => Math.abs(sen(v.t)) > 1e-9 && Math.abs(sen(2 * v.t) - sen(v.t)) < 1e-9,
+      bien: 'Con cos θ = 1/2, 2 sen θ cos θ vuelve a ser sen θ.' },
+    { texto: 'Busca el primer θ en que la altura turquesa queda bajo el eje x.',
+      logrado: v => sen(v.t / 2) < -1e-9 && !(sen((v.t - 5) / 2) < -1e-9),
+      bien: 'Recién en la segunda vuelta: θ/2 pasa de 180° cuando θ pasa de 360°.' },
+    { texto: 'Guarda dos θ con la misma altura naranja y mitades de signo contrario.',
+      logrado: (v, guardados) => guardados.some(g => mismo(g, v))
+        && guardados.some(g => Math.abs(sen(g.t) - sen(v.t)) < 1e-9 && sen(g.t / 2) * sen(v.t / 2) < -1e-9),
+      bien: 'El mismo rayo θ, otra vuelta: por eso hay que conocer el giro completo.' },
+  ];
+  laboratorio[1].invitaciones = [
+    { texto: 'Pon el punto lleno justo sobre la línea de 1/2.',
+      logrado: v => Math.abs(FUN[v.g].fn(v.x) - 0.5) < 1e-9,
+      bien: 'Ahí cos 2x vale 0: el hueco cae sobre el eje.' },
+    { texto: 'Haz que el hueco llegue a su punto más bajo.',
+      logrado: v => Math.abs(cos(2 * v.x) + 1) < 1e-9,
+      bien: 'Con cos 2x = −1, sen² x toca 1 y cos² x toca 0.' },
+    { texto: 'Haz que el punto lleno y el hueco coincidan.',
+      logrado: v => Math.abs(FUN[v.g].fn(v.x) - cos(2 * v.x)) < 1e-9,
+      bien: 'Con cos² x se juntan arriba, en 1. ¿Dónde lo lograría sen² x?' },
+    { texto: 'Guarda sen² x y cos² x con el mismo x, lejos de 1/2.',
+      logrado: (v, guardados) => guardados.some(g => mismo(g, v)) && Math.abs(FUN[v.g].fn(v.x) - 0.5) > 1e-9
+        && guardados.some(g => g.x === v.x && g.g !== v.g),
+      bien: 'Uno sube sobre 1/2 lo mismo que el otro baja: juntos suman 1.' },
+  ];
+  laboratorio[2].invitaciones = [
+    { texto: 'Busca una altura con solo dos candidatos.',
+      logrado: v => candidatos(v.fn, v.h).length === 2,
+      bien: 'En la cresta, dos candidatos se juntan: la línea apenas toca la curva.' },
+    { texto: 'Haz que uno de los candidatos sea justo 0.',
+      logrado: v => candidatos(v.fn, v.h).some(u => Math.abs(u) < 1e-9),
+      bien: 'Si la razón es 0, la del triple también da 0. ¿Y los otros dos?' },
+    { texto: 'Busca la altura más baja que todavía tenga tres candidatos.',
+      logrado: v => candidatos(v.fn, v.h).length === 3 && candidatos(v.fn, v.h - PASO_H).length < 3,
+      bien: 'Un paso más abajo, la línea ya no corta la curva tres veces.' },
+    { texto: 'Con seno, guarda dos alturas opuestas y compara sus candidatos.',
+      logrado: (v, guardados) => v.fn === 'sen' && v.h !== 0 && guardados.some(g => mismo(g, v))
+        && guardados.some(g => g.fn === 'sen' && Math.abs(g.h + v.h) < 1e-9),
+      bien: 'Altura opuesta, candidatos opuestos: 3s − 4s³ cambia de signo con s.' },
+  ];
+
   return {
     unidad: 'trigonometria.arcos-multiples',
     version: '0.1.0',
@@ -566,6 +616,27 @@
     // Laboratorio (docs/teoria.md §4b), sin preguntas: «doble-y-mitad» junta los dos rayos de las ideas 1 y 3 hasta
     // dos vueltas de 5° en 5°; «punto-a-punto» da a la degradación el punto que su idea no tiene; «tres-candidatos»
     // es el caso inverso del triple (una altura, tres razones), con seno y coseno.
+    glosario: [
+      { termino: 'ángulo doble', simbolo: '2θ', def: 'El ángulo que resulta de girar θ dos veces seguidas.',
+        formas: ['ángulo doble', 'ángulos dobles', 'coseno doble', 'seno doble'],
+        ejemplo: `Con θ = 30°: sen 60° ≈ ${f(sen(60))}, no 2 · sen 30° = ${f(2 * sen(30))}.`, ver: ['ángulo mitad', 'ángulo triple'] },
+      { termino: 'ángulo mitad', simbolo: 'θ/2', def: 'El ángulo que gira justo la mitad que θ, con vueltas incluidas.',
+        formas: ['ángulo mitad', 'ángulos mitad'], ejemplo: 'Si θ = 300°, θ/2 = 150°: queda en el cuadrante II, no en el IV.',
+        ver: ['candidato', 'ángulo doble'] },
+      { termino: 'ángulo triple', simbolo: '3θ', def: 'El ángulo que resulta de girar θ tres veces seguidas.',
+        ejemplo: `Si sen θ = 1/3: sen 3θ = 3 · 1/3 − 4 · 1/27 = 23/27.`, ver: ['polinomio', 'cubo'] },
+      { termino: 'potencia', def: 'Un número multiplicado por sí mismo varias veces; el exponente dice cuántas.',
+        formas: ['potencia', 'potencias'], ejemplo: 'sen² x = (sen x) · (sen x): exponente 2.' },
+      { termino: 'degradación', def: 'Pasar un sen² x o un cos² x a una expresión sin cuadrados, usando el coseno de 2x.',
+        formas: ['degradación', 'bajar la potencia', 'baja la potencia', 'la potencia baja'],
+        ejemplo: `Si cos 2x = 1/3: sen² x = (1 − 1/3)/2 = 1/3.`, ver: ['potencia', 'ángulo doble'] },
+      { termino: 'cubo', def: 'Un número multiplicado tres veces por sí mismo; se escribe con exponente 3.',
+        ejemplo: '(1/3)³ = 1/3 · 1/3 · 1/3 = 1/27.', ver: ['potencia'] },
+      { termino: 'polinomio', def: 'Suma de potencias de una letra, cada una multiplicada por un número, como 3s − 4s³.',
+        formas: ['polinomio', 'polinomios'], ejemplo: 'Con s = 1/2: 3 · 1/2 − 4 · 1/8 = 1.', ver: ['cubo'] },
+      { termino: 'candidato', def: 'Valor que cumple la fórmula pero que todavía hay que revisar: el cuadrante o el intervalo decide.',
+        formas: ['candidato', 'candidatos'], ejemplo: 'sen² (θ/2) = 1/4 da dos: +1/2 y −1/2.', ver: ['ángulo mitad'] },
+    ],
     laboratorio,
     historia: {
       texto: 'En el siglo XV, al-Kashi calculaba en Samarcanda con una precisión enorme para la astronomía. Para obtener el seno de un grado partió del seno de tres grados y de la relación del ángulo triple: una ecuación de tercer grado que resolvió por aproximaciones sucesivas. Una identidad le sirvió para producir un número nuevo, no solo para reescribir.',

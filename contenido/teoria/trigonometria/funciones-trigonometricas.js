@@ -155,11 +155,11 @@
         { estado: { corte: 2 }, texto: 'La altura de un punto del círculo va de −1 a 1.', ecuacion: ['Ran = [−1, 1]'] },
         { estado: { corte: 3 }, texto: 'Una vuelta más deja todo igual: se repite cada 2π.', ecuacion: ['sen(', x_, ' + 2π) = sen ', x_] },
         { estado: { corte: 4 }, texto: 'El coseno es la misma onda, adelantada π/2.', ecuacion: ['cos ', x_, ' = sen(', x_, ' + π/2)'] },
-        { estado: { corte: 4 }, texto: 'El seno es impar y el coseno es par.', ecuacion: ['sen(−', x_, ') = −sen ', x_, '   ·   ', 'cos(−', x_, ') = cos ', x_] },
+        { estado: { corte: 4 }, texto: 'El seno es función impar y el coseno, función par.', ecuacion: ['sen(−', x_, ') = −sen ', x_, '   ·   ', 'cos(−', x_, ') = cos ', x_] },
       ],
     },
     regla: {
-      texto: 'Seno y coseno están definidas para todo x real, toman valores de −1 a 1 y se repiten cada 2π.',
+      texto: 'Las funciones trigonométricas seno y coseno están definidas para todo x real, toman valores de −1 a 1 y se repiten cada 2π.',
       ecuacion: ['Dom = ℝ', '   ·   ', 'Ran = [−1, 1]', '   ·   ', { llave: [T_, ' = 2π'], nota: 'periodo', color: 'c-d' }, '   ·   ', 'cos ', x_, ' = ', { llave: ['sen(', x_, ' + π/2)'], nota: 'seno adelantado', color: 'c-h' }],
       condicion: 'x en radianes; con grados, el periodo es 360°.',
       voz: 'Primero el dominio, después el rango, al final el periodo.',
@@ -255,7 +255,7 @@
       ],
     },
     regla: {
-      texto: 'En y = A sen(Bx) o A cos(Bx), la amplitud es |A|, el periodo es 2π/|B| y la frecuencia es su inversa.',
+      texto: 'En y = A sen(Bx) o A cos(Bx), la amplitud es |A|, el periodo es 2π/|B| y la frecuencia es 1 entre el periodo.',
       ecuacion: ['amplitud = |', A_, '|', '   ·   ', { llave: [T_], nota: 'periodo', color: 'c-d' }, ' = ', { frac: ['2π', ['|', B_, '|']] }, '   ·   ', { llave: ['f'], nota: 'frecuencia', color: 'c-d' }, ' = ', { frac: ['1', T_] }],
       condicion: 'A ≠ 0 y B ≠ 0, con x en radianes.',
       voz: 'Alto por un lado, ancho por el otro.',
@@ -433,7 +433,7 @@
       voz: 'Piensa qué coseno haría falta.',
       opciones: [
         { id: 'c', texto: 'No: haría falta cos x = 2', correcta: true },
-        { id: 'confunde', texto: 'Sí, en x = π/3', error: 'SEC-CONFUNDE', siFuera: 'En π/3 el coseno vale 1/2. La secante es su inversa: vale 2.' },
+        { id: 'confunde', texto: 'Sí, en x = π/3', error: 'SEC-CONFUNDE', siFuera: 'En π/3 el coseno vale 1/2. La secante es 1 entre él: vale 2.' },
         { id: 'inverso', texto: 'Sí, donde cos x = 2', error: 'SEC-INVERSO', siFuera: 'La cuenta 1/2 = 1/cos x está bien; pero ningún coseno vale 2.' },
         { id: 'asintota', texto: 'Sí, cerca de una asíntota', error: 'SEC-ASINTOTA', siFuera: 'Cerca de una asíntota la secante es enorme, no pequeña.' },
       ],
@@ -557,7 +557,7 @@
       texto: 'El periodo depende de la función y de su transformación: seno y coseno, 2π/|B|; tangente y cotangente, π/|B|. Una suma, el menor múltiplo común.',
       // Las dos formas completas van en el texto; aquí, solo qué familia, para que cada relación quepa en una línea a 360 px.
       ecuacion: ['sen, cos:  ', T_, ' = ', { llave: [{ frac: ['2π', ['|', B_, '|']] }], nota: 'solo B cuenta', color: 'c-d' }, '   ·   ', 'tan, cot:  ', T_, ' = ', { frac: ['π', ['|', B_, '|']] }],
-      condicion: 'A ≠ 0 y B ≠ 0; C y D no cambian el periodo. Sin múltiplo común, la suma no es periódica.',
+      condicion: 'A ≠ 0 y B ≠ 0; C y el desplazamiento vertical D no cambian el periodo. Sin múltiplo común, no hay periodo.',
       voz: 'Ni la altura ni el corrimiento cambian el periodo.',
     },
     ahoraTu: {
@@ -692,6 +692,64 @@
     },
   ];
 
+  // Retos del laboratorio: las mismas cuentas que dibujan (ondaLab, CUATRO, mcd del periodo común).
+  const mismo = (g, v) => Object.keys(v).every(k => g[k] === v[k]);
+  const control = (k, id) => laboratorio[k].controles.find(c => c.id === id);
+  const valorCuatro = v => { const C = CUATRO[v.fn], x = v.g * PI / 180; return Math.abs(C.den(x)) > 1e-9 ? C.F(x) : null; };
+  // El mayor |valor| de cada función en la grilla de x (de 5° en 5°): lo más cerca de una asíntota que deja la mesa.
+  const MAX_CUATRO = (() => {
+    const c = control(1, 'g'), m = {};
+    for (const fn of Object.keys(CUATRO)) { m[fn] = 0; for (let g = c.min; g <= c.max; g += c.paso) { const y = valorCuatro({ fn, g }); if (y !== null) m[fn] = Math.max(m[fn], Math.abs(y)); } }
+    return m;
+  })();
+  // El periodo común más corto con m ≠ n (el mayor divisor común de la mesa).
+  const MAX_MCD = (() => { const c = control(2, 'm'); let k = 1; for (let m = c.min; m <= c.max; m++) for (let n = c.min; n <= c.max; n++) if (m !== n) k = Math.max(k, mcd(m, n)); return k; })();
+  laboratorio[0].invitaciones = [
+    { texto: 'Haz que la onda vaya justo de −1 a 3.',
+      logrado: v => Math.abs(v.D - Math.abs(v.A) + 1) < 1e-9 && Math.abs(v.D + Math.abs(v.A) - 3) < 1e-9,
+      bien: 'Línea media en 1 y amplitud 2: D sube todo; A decide el alto.' },
+    { texto: 'Busca el periodo más largo que deja la mesa.',
+      logrado: v => 2 * PI / v.B > 2 * PI / control(0, 'B').min - 1e-9,
+      bien: 'Con B más chico, la onda es más ancha: la llave ocupa toda la ventana.' },
+    { texto: 'Haz que la onda empiece bajando desde su línea media.',
+      logrado: v => v.A < 0,
+      bien: 'A negativa voltea la onda; la amplitud sigue siendo |A|.' },
+    { texto: 'Guarda dos ondas con el mismo rango y distinto A.',
+      logrado: (v, guardados) => guardados.some(g => mismo(g, v))
+        && guardados.some(g => g.A !== v.A && Math.abs(g.D - Math.abs(g.A) - (v.D - Math.abs(v.A))) < 1e-9 && Math.abs(g.D + Math.abs(g.A) - (v.D + Math.abs(v.A))) < 1e-9),
+      bien: 'A y −A dan el mismo rango: la altura no mira el signo.' },
+  ];
+  laboratorio[1].invitaciones = [
+    { texto: 'Pon x justo sobre una asíntota de la función elegida.',
+      logrado: v => valorCuatro(v) === null,
+      bien: 'Ahí el denominador vale 0: la función no existe en ese x.' },
+    { texto: 'Acércate a una asíntota hasta lograr el valor más grande posible.',
+      logrado: v => valorCuatro(v) !== null && Math.abs(valorCuatro(v)) > MAX_CUATRO[v.fn] - 1e-9,
+      bien: 'El valor ya sale de la ventana. Más cerca, crecería sin tope.' },
+    { texto: 'Con secante o cosecante, busca un x donde valga justo 1 o −1.',
+      logrado: v => (v.fn === 'sec' || v.fn === 'csc') && valorCuatro(v) !== null && Math.abs(Math.abs(valorCuatro(v)) - 1) < 1e-9,
+      bien: 'Ahí nace una copa: su base toca 1 o −1.' },
+    { texto: 'Guarda tan y cot en un mismo x, y multiplica sus valores.',
+      logrado: (v, guardados) => guardados.some(g => mismo(g, v)) && ['tan', 'cot'].includes(v.fn) && valorCuatro(v)
+        && guardados.some(g => g.g === v.g && ['tan', 'cot'].includes(g.fn) && g.fn !== v.fn && Math.abs(valorCuatro(g) * valorCuatro(v) - 1) < 1e-9),
+      bien: 'tan x · cot x = 1: cada una es 1 entre la otra.' },
+  ];
+  laboratorio[2].invitaciones = [
+    { texto: 'Consigue que la suma roja se repita cada π.',
+      logrado: v => Math.abs(2 * PI / mcd(v.m, v.n) - PI) < 1e-9,
+      bien: 'Con m y n pares, las dos vuelven a empezar juntas en π.' },
+    { texto: 'Con m distinto de n, busca el periodo común más corto.',
+      logrado: v => v.m !== v.n && mcd(v.m, v.n) === MAX_MCD,
+      bien: 'sen 3x y sen 6x coinciden cada 2π/3: el periodo de la más lenta.' },
+    { texto: 'Haz que la roja sea una sola onda, el doble de alta.',
+      logrado: v => v.m === v.n,
+      bien: 'Con m = n, la suma es 2 sen mx: misma onda, doble amplitud.' },
+    { texto: 'Guarda dos pares distintos con el mismo periodo común, que no sea 2π.',
+      logrado: (v, guardados) => guardados.some(g => mismo(g, v)) && mcd(v.m, v.n) > 1
+        && guardados.some(g => mcd(g.m, g.n) === mcd(v.m, v.n) && !(g.m === v.m && g.n === v.n) && !(g.m === v.n && g.n === v.m)),
+      bien: 'El periodo no depende de m y n solos, sino de lo que comparten.' },
+  ];
+
   return {
     unidad: 'trigonometria.funciones-trigonometricas',
     version: '0.1.0',
@@ -700,6 +758,29 @@
     // Laboratorio (docs/teoria.md §4b), sin preguntas: «onda-completa» junta A (también negativa), B fraccionaria y el
     // corrimiento D que las ideas no dejan mover; «cuatro-funciones» da a secante y cosecante la marca que su idea no
     // tiene, de 5° en 5° para acercarse a las asíntotas; «suma-de-ondas» prueba el periodo común con cualquier m y n.
+    glosario: [
+      { termino: 'función trigonométrica', def: 'Regla que a cada número real x le da un solo valor: su seno, coseno, tangente u otra razón.',
+        formas: ['función trigonométrica', 'funciones trigonométricas', 'función', 'funciones'],
+        ejemplo: 'y = sen x: a x = π/6 le toca y = 1/2.', ver: ['gráfica', 'periodo'] },
+      { termino: 'gráfica', def: 'Dibujo de todos los puntos (x, y) que cumplen una regla: x a lo ancho, y a lo alto.',
+        formas: ['gráfica', 'gráficas'], ver: ['función trigonométrica'] },
+      { termino: 'periodo', simbolo: 'T', def: 'El menor avance de x después del cual la gráfica vuelve a repetirse igual.',
+        formas: ['periodo', 'periodos'], ejemplo: 'sen 2x se repite cada 2π/2 = π.', ver: ['frecuencia', 'múltiplo común'] },
+      { termino: 'frecuencia', simbolo: 'f', def: 'Cuántas ondas completas caben en cada unidad de x: es 1 entre el periodo.',
+        ejemplo: 'Si T = 4π, f = 1/(4π).', ver: ['periodo'] },
+      { termino: 'rango', def: 'Todos los valores que llega a tomar y cuando x recorre los valores permitidos.',
+        ejemplo: 'sen x va de −1 a 1: Ran = [−1, 1].', ver: ['función trigonométrica'] },
+      { termino: 'asíntota', def: 'Recta a la que una curva se acerca cada vez más, sin llegar a tocarla.',
+        formas: ['asíntota', 'asíntotas'], ejemplo: 'tan x tiene una en x = π/2, donde cos x = 0.', ver: ['denominador'] },
+      { termino: 'desplazamiento vertical', simbolo: 'D', def: 'Cuánto sube o baja la onda entera: su línea del centro queda en y = D.',
+        formas: ['desplazamiento vertical', 'altura media', 'línea media'], ejemplo: 'y = 2 sen x + 1 va de −1 a 3, centrada en 1.', ver: ['amplitud'] },
+      { termino: 'función par', def: 'La que da lo mismo en x y en −x: su gráfica es simétrica respecto del eje y.',
+        ejemplo: 'cos(−π/3) = cos(π/3) = 1/2.', ver: ['función impar'] },
+      { termino: 'función impar', def: 'La que en −x da el valor de x con el signo cambiado.',
+        ejemplo: 'sen(−π/6) = −1/2 = −sen(π/6).', ver: ['función par'] },
+      { termino: 'múltiplo común', def: 'Número que es múltiplo de dos números a la vez. El menor sirve como periodo de una suma.',
+        formas: ['múltiplo común', 'múltiplos comunes'], ejemplo: 'π y 2π/3: 2 · π = 3 · 2π/3 = 2π.', ver: ['periodo'] },
+    ],
     laboratorio,
     historia: {
       texto: 'En 1748, Euler publicó la Introductio in analysin infinitorum, que puso a las funciones en el centro del análisis. Seno y coseno dejaron de ser solo valores de una tabla para resolver triángulos: pasaron a ser funciones que cambian sin fin mientras el ángulo gira, con preguntas nuevas sobre su altura, su repetición y su desplazamiento.',

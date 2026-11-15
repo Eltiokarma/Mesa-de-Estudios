@@ -254,7 +254,7 @@
       ],
     },
     regla: {
-      texto: 'Cada razón tiene su recíproca, y tangente y cotangente son cocientes de seno y coseno. Cada una vale solo donde su denominador no se anula.',
+      texto: 'Identidades recíprocas: cada razón por su recíproca da 1. Identidades por cociente: tangente y cotangente dividen seno y coseno. Cada una vale donde su denominador no se anula.',
       ecuacion: ['sen ', th, ' · ', { llave: ['csc ', th], nota: 'recíproca', color: 'c-h' }, ' = 1', '   ·   ', 'cos ', th, ' · ', { llave: ['sec ', th], nota: 'recíproca', color: 'c-i' }, ' = 1', '   ·   ',
         'tan ', th, ' = ', { frac: ['sen θ', { llave: ['cos θ'], nota: 'no nulo', color: 'c-i' }] }, '   ·   ', 'cot ', th, ' = ', { frac: ['cos θ', 'sen θ'] }],
       condicion: 'sen θ ≠ 0 para csc y cot; cos θ ≠ 0 para sec y tan; k entero.',
@@ -567,6 +567,15 @@
     }), { y: { min: -3, max: 3, paso: 1, decimales: 0 } });
   }
 
+  // Para los retos del laboratorio: los mismos controles y la grilla que recorre el lector.
+  const CTR_TRI = { id: 'g', etiqueta: 'θ', color: 'c-o', min: 0, max: 360, paso: 1, inicio: 50, unidad: '°', decimales: 0 };
+  const CTR_MIEMBROS = { id: 'g', etiqueta: 'θ', color: 'c-o', min: 0, max: 360, paso: 5, inicio: 45, unidad: '°', decimales: 0 };
+  const grillaDe = c => Array.from({ length: Math.round((c.max - c.min) / c.paso) + 1 }, (_, k) => c.min + k * c.paso);
+  const COS_MIN = Math.min(...grillaDe(CTR_TRI).map(g => Math.abs(C(g))).filter(a => a > 1e-9));   // el coseno no nulo más chico
+  const separa = (id, g) => { const c = CAND2[id], vi = c.izq(g), vd = c.der(g); return Number.isFinite(vi) && Number.isFinite(vd) ? Math.abs(vi - vd) : NaN; };
+  const SEP_MAX = Math.max(...grillaDe(CTR_MIEMBROS).map(g => separa('s', g)));                // lo más que se aleja sen + cos de 1
+  const cuadDe = g => { const m = ((g % 360) + 360) % 360; return m % 90 === 0 ? 0 : Math.ceil(m / 90); };
+
   return {
     unidad: 'trigonometria.identidades-fundamentales',
     version: '0.1.0',
@@ -581,7 +590,7 @@
         id: 'tres-triangulos', titulo: 'Tres triángulos, cualquier ángulo', pieza: 'trig-plano',
         consigna: 'Elige el triángulo y arrastra P. La lectura suma los cuadrados de los catetos y los compara con la hipotenusa al cuadrado.',
         controles: [
-          { id: 'g', etiqueta: 'θ', color: 'c-o', min: 0, max: 360, paso: 1, inicio: 50, unidad: '°', decimales: 0 },
+          CTR_TRI,
           { id: 'tri', etiqueta: 'Triángulo', opciones: [{ valor: 'sc', texto: 'sen, cos, 1' }, { valor: 'ts', texto: '1, tan, sec' }, { valor: 'cc', texto: '1, cot, csc' }] },
         ],
         dibujo: v => ({ datos: tresLibre(v.g, v.tri), estado: {} }),
@@ -596,13 +605,31 @@
         arrastres: [{ id: 'punto-p', etiqueta: 'punto P del arco θ', color: 'c-o',
           donde: v => punta(tresLibre(v.g, v.tri), v.g),
           mover: (pt, v) => ({ g: giroDe(tresLibre(v.g, v.tri), pt, v.g) }) }],
+        invitaciones: [
+          { texto: 'Con el triángulo de seno y coseno, haz que los dos catetos midan igual.',
+            logrado: v => v.tri === 'sc' && Math.abs(Math.abs(S(v.g)) - Math.abs(C(v.g))) < 1e-9,
+            bien: 'Catetos de √2/2: cada cuadrado vale 1/2 y juntos dan 1.' },
+          { texto: 'Con el triángulo de tangente, haz que la secante mida justo √2.',
+            logrado: v => v.tri === 'ts' && Math.abs(C(v.g)) > 1e-9 && Math.abs(1 + (S(v.g) / C(v.g)) ** 2 - 2) < 1e-9,
+            bien: 'tan² = 1, así que 1 + 1 = 2 = sec². Pasa en 45° y cada 90°.' },
+          { texto: 'Con el triángulo de tangente, acércate todo lo que puedas a 90° sin perder la secante.',
+            logrado: v => v.tri === 'ts' && Math.abs(Math.abs(C(v.g)) - COS_MIN) < 1e-9,
+            bien: 'En 89° la secante pasa de 57: crece sin tope cerca de 90°.' },
+          { texto: 'Con el triángulo de cotangente, pon P donde ese triángulo no exista.',
+            logrado: v => v.tri === 'cc' && Math.abs(S(v.g)) < 1e-9,
+            bien: 'Con sen θ = 0, OP no corta y = 1: ese θ queda fuera del dominio.' },
+          { texto: 'Guarda dos θ de cuadrantes distintos con el triángulo de seno y coseno.',
+            logrado: (v, guardados) => v.tri === 'sc' && cuadDe(v.g) > 0 && guardados.some(c => c.tri === 'sc' && cuadDe(c.g) > 0 && cuadDe(c.g) !== cuadDe(v.g)
+              && Math.abs(S(c.g) ** 2 + C(c.g) ** 2 - (S(v.g) ** 2 + C(v.g) ** 2)) < 1e-9),
+            bien: 'Catetos distintos, misma suma de cuadrados: la identidad no depende de θ.' },
+        ],
       },
       {
         id: 'dos-miembros', titulo: '¿Identidad o casualidad?', pieza: 'ejes',
         consigna: 'Elige una igualdad y arrastra el punto por la curva naranja. Si las dos curvas se separan en algún θ, no es identidad.',
         controles: [
           { id: 'c', etiqueta: 'Igualdad', opciones: [{ valor: 's', texto: 'sen θ + cos θ = 1' }, { valor: 'r', texto: '√(sen²θ) = sen θ' }, { valor: 'a', texto: '(1 − cos²θ)/sen θ = sen θ' }, { valor: 't', texto: 'tan θ + cot θ = sec θ · csc θ' }, { valor: 'c', texto: 'sen⁴θ − cos⁴θ = sen²θ − cos²θ' }] },
-          { id: 'g', etiqueta: 'θ', color: 'c-o', min: 0, max: 360, paso: 5, inicio: 45, unidad: '°', decimales: 0 },
+          CTR_MIEMBROS,
         ],
         dibujo: v => ({ datos: candidata2(v.c, v.g), estado: {} }),
         lectura: v => {
@@ -617,7 +644,57 @@
             return enEjes(d, v.g, y);
           },
           mover: (pt, v) => ({ g: thetaDe(candidata2(v.c, v.g), pt) }) }],
+        invitaciones: [
+          { texto: 'Con sen θ + cos θ = 1, busca un θ donde las dos curvas sí coincidan.',
+            logrado: v => v.c === 's' && separa('s', v.g) < 5e-3,
+            bien: 'Coincidir en un punto no basta: en 45° ya se separan.' },
+          { texto: 'Con sen θ + cos θ = 1, busca dónde la izquierda se aleja más del 1.',
+            logrado: v => v.c === 's' && Math.abs(separa('s', v.g) - SEP_MAX) < 1e-9,
+            bien: 'En 225° vale −1,41, lejísimos de 1. Un contraejemplo ya bastaba.' },
+          { texto: 'Con √(sen²θ) = sen θ, encuentra un contraejemplo.',
+            logrado: v => v.c === 'r' && separa('r', v.g) >= 5e-3,
+            bien: 'Con seno negativo, la raíz da positivo: √(sen²θ) es |sen θ|.' },
+          { texto: 'Con (1 − cos²θ)/sen θ = sen θ, pon el punto en un hueco.',
+            logrado: v => v.c === 'a' && !Number.isFinite(CAND2.a.izq(v.g)),
+            bien: 'Aquí sen θ = 0: simplificar no tapa este hueco del dominio.' },
+          { texto: 'Con sen⁴θ − cos⁴θ = sen²θ − cos²θ, guarda dos θ de cuadrantes distintos donde coincidan.',
+            logrado: (v, guardados) => v.c === 'c' && cuadDe(v.g) > 0 && separa('c', v.g) < 5e-3
+              && guardados.some(c => c.c === 'c' && cuadDe(c.g) > 0 && cuadDe(c.g) !== cuadDe(v.g) && separa('c', c.g) < 5e-3),
+            bien: 'Coinciden, pero eso no la demuestra: factoriza la diferencia de cuadrados.' },
+        ],
       },
+    ],
+    // Glosario del tema (docs/teoria.md, 4d). Recíproca, cociente, seno, coseno, tangente y las demás razones vienen de
+    // unidades anteriores del curso. «Identidad auxiliar» la define arcos-compuestos con otro sentido: aquí no se define.
+    glosario: [
+      { termino: 'identidad trigonométrica', formas: ['identidades trigonométricas', 'identidad trigonométrica', 'identidades', 'identidad'],
+        def: 'Igualdad entre expresiones de θ que se cumple para todo θ donde las dos existen.',
+        ejemplo: 'sen²θ + cos²θ = 1 vale en 0°, en 37° y en cualquier otro θ.', ver: ['dominio', 'demostrar'] },
+      { termino: 'identidad pitagórica', formas: ['identidades pitagóricas', 'identidad pitagórica', 'pitagóricas', 'pitagórica'],
+        def: 'La igualdad sen²θ + cos²θ = 1: Pitágoras en la circunferencia de radio 1. De ella salen otras dos.',
+        ejemplo: 'Si sen θ = 3/5, cos²θ = 1 − 9/25 = 16/25.', ver: ['identidad trigonométrica'] },
+      { termino: 'identidad recíproca', formas: ['identidades recíprocas', 'identidad recíproca'],
+        def: 'Igualdad que dice que una razón por su recíproca da 1, como sen θ · csc θ = 1.',
+        ejemplo: 'cos 60° · sec 60° = 1/2 · 2 = 1.', ver: ['dominio'] },
+      { termino: 'identidad por cociente', formas: ['identidades por cociente', 'identidad por cociente'],
+        def: 'Igualdad que escribe tangente o cotangente como división de seno y coseno, como tan θ = sen θ/cos θ.',
+        ejemplo: 'tan 30° = (1/2)/(√3/2) = √3/3.', ver: ['identidad recíproca'] },
+      { termino: 'dominio', def: 'Valores de la variable para los que una expresión tiene sentido; por ejemplo, sin dividir entre cero.',
+        ejemplo: 'tan θ = sen θ/cos θ no incluye 90° ni 270°, donde cos θ = 0.', ver: ['identidad trigonométrica'] },
+      { termino: 'demostrar', formas: ['demostrar', 'demuestra', 'demuestran', 'demostrarla'],
+        def: 'Probar que una igualdad vale siempre, transformando un lado con pasos válidos hasta llegar al otro.',
+        ejemplo: '(1 − cos²θ)/sen θ = sen²θ/sen θ = sen θ, con sen θ ≠ 0.', ver: ['refutar'] },
+      { termino: 'refutar', formas: ['refutar', 'refuta', 'refutarla'],
+        def: 'Mostrar que una afirmación es falsa. Para eso alcanza un solo caso donde falle.',
+        ver: ['contraejemplo', 'demostrar'] },
+      { termino: 'contraejemplo', def: 'Un caso concreto donde una afirmación falla. Basta uno para saber que no vale siempre.',
+        ejemplo: 'En 45°, sen θ + cos θ ≈ 1,41 ≠ 1: no es identidad.', ver: ['refutar'] },
+      { termino: 'simplificar', formas: ['simplificar', 'simplifica', 'simplificando'],
+        def: 'Reescribir una expresión más corta con pasos válidos. Los valores que se excluían siguen excluidos.',
+        ejemplo: 'sen²θ/sen θ = sen θ, pero θ = 0° sigue fuera.', ver: ['dominio'] },
+      { termino: 'término doble', formas: ['término doble', 'doble producto'],
+        def: 'En (a + b)², el término 2ab: dos veces el producto. Al elevar al cuadrado no desaparece.',
+        ejemplo: '(sen θ + cos θ)² = 1 + 2 sen θ cos θ.', ver: ['identidad pitagórica'] },
     ],
     historia: {
       texto: 'En el siglo X, Abu’l-Wafa hizo tablas trigonométricas y estudió cómo se relacionan las seis líneas de un mismo arco, para la astronomía y para el cálculo. Su obra pertenece a una tradición de lengua árabe que recibió y transformó resultados anteriores. Lo valioso fue convertir relaciones geométricas en instrumentos de cálculo, cuidando los valores para los que cada expresión tiene sentido.',
