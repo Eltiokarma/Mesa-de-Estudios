@@ -109,7 +109,7 @@
       ],
     },
     regla: {
-      texto: 'La razón aritmética compara restando; la geométrica, dividiendo. Multiplicar las dos cantidades conserva la geométrica; sumarles lo mismo conserva la aritmética.',
+      texto: 'La razón aritmética compara restando; la razón geométrica, dividiendo. Multiplicar las dos cantidades conserva la geométrica; sumarles lo mismo conserva la aritmética.',
       ecuacion: [{ llave: [a, ' − ', b], nota: 'aritmética' }, '   ·   ', { llave: [{ frac: [a, b] }], nota: 'geométrica' }, ' = ', k],
       condicion: 'b no es cero. «a y b están en razón 3 a 5» quiere decir a = 3k y b = 5k.',
     },
@@ -195,7 +195,7 @@
       ],
     },
     regla: {
-      texto: 'Una proporción iguala dos razones y equivale a que los productos cruzados sean iguales. Es continua cuando los dos medios son el mismo número.',
+      texto: 'Una proporción iguala dos razones: sus productos cruzados son iguales. Es continua si los dos medios son el mismo número; si no, es discreta y d es la cuarta proporcional.',
       ecuacion: [{ frac: [a, b] }, ' = ', { frac: [c, d] }, ' ⇔ ', { llave: [a, ' · ', d], nota: 'extremos' }, ' = ', { llave: [b, ' · ', c], nota: 'medios' }, '   ·   ', 'continua: ', { sup: [b, '2'] }, ' = ', a, ' · ', d],
       condicion: 'b y d no son cero. En la continua a : b = b : d, b es media proporcional y d, tercera proporcional.',
     },
@@ -235,8 +235,9 @@
   // Cambia: a y b, con A, G y H sobre la recta. Permanece: el orden H ≤ G ≤ A.
   // Progresa: A, luego G, luego H. Se reserva: la ida y vuelta, donde la media correcta es H.
   // Debe verse: H a la izquierda del promedio cuando los tramos tienen la misma distancia.
+  const mediasDe = (x, y) => ({ A: (x + y) / 2, G: Math.sqrt(x * y), H: 2 * x * y / (x + y) });
   const rectaMedias = (x, y, extra = {}) => {
-    const Av = (x + y) / 2, Gv = Math.sqrt(x * y), Hv = 2 * x * y / (x + y);
+    const { A: Av, G: Gv, H: Hv } = mediasDe(x, y);
     return Object.assign({
       min: Math.floor(Math.min(x, y) - 1), max: Math.ceil(Math.max(x, y) + 1), paso: 1, cada: 2, decimales: 2, filas: 3, variable: 'valor',
       elementos: [
@@ -259,7 +260,7 @@
     temas: ['Medias aritmética, geométrica y armónica'],
     pieza: 'recta',
     juega: {
-      consigna: 'Elige dos números. La recta muestra sus tres medias: aritmética, geométrica y armónica. Mira su orden.',
+      consigna: 'Elige dos números. En la recta ves sus tres medias: aritmética, geométrica y armónica. Mira su orden.',
       voz: 'Prueba también dos números iguales.',
       controles: [
         { id: 'x', etiqueta: 'a', color: 'c-o', min: 2, max: 18, paso: 2, inicio: 4, decimales: 0 },
@@ -284,11 +285,11 @@
         { id: 'c', texto: '48 km/h', correcta: true },
         { id: 'prom', texto: '50 km/h', error: 'AR14', siFuera: '50 sería cierto si viajara el mismo tiempo a cada rapidez. Viaja más tiempo a 40.' },
         { id: 'geo', texto: '49 km/h', error: 'AT-MEDIA', siFuera: 'Eso se acerca a la media geométrica; aquí lo que se suma son tiempos.' },
-        { id: 'suma', texto: '100 km/h', error: 'AT-SUMA', siFuera: 'Eso suma las rapideces; la media queda entre 40 y 60.' },
+        { id: 'suma', texto: '100 km/h', error: 'AT-SUMA', siFuera: 'Eso suma las rapideces; la rapidez media queda entre 40 y 60.' },
       ],
       dibujo: { datos: rectaMedias(40, 60, { dA: 9, dG: 9, dH: 9 }), estado: {} },
       revelar: { datos: rectaMedias(40, 60, { dG: 9 }), estado: {} },
-      coincide: 'Coincide: tarda más a 40 km/h, así que la media se acerca a 40.',
+      coincide: 'Coincide: tarda más a 40 km/h, así que la rapidez media se acerca a 40.',
     },
     mira: {
       datos: rectaMedias(40, 60, { dA: 1, dG: 9, dH: 3 }),
@@ -299,7 +300,7 @@
       ],
     },
     regla: {
-      texto: 'Para dos positivos a y b hay tres medias, siempre en el orden H ≤ G ≤ A; las tres coinciden solo si a = b.',
+      texto: 'La media armónica H, la media geométrica G y la media aritmética A de dos positivos cumplen H ≤ G ≤ A; coinciden solo si a = b.',
       ecuacion: [{ llave: [A], nota: 'aritmética', color: 'c-h' }, ' = ', { frac: [[a, ' + ', b], '2'] }, '   ·   ', { llave: [G], nota: 'geométrica', color: 'c-d' }, ' = ', { raiz: [a, b] }, '   ·   ', { llave: ['H'], nota: 'armónica' }, ' = ', { frac: [['2', a, b], [a, ' + ', b]] }],
       condicion: 'tiempos iguales piden la aritmética; distancias iguales en cada tramo piden la armónica; factores que se multiplican, la geométrica.',
     },
@@ -339,7 +340,9 @@
     tiras.push(tira('antecedentes', 'o', suma, kk, { fin: o.sinTexto ? '?' : f(suma * kk), paso: o.pasos ? 3 : 0, extra: { tramos: bs.map(bi => ({ valor: bi * kk, color: 'o', partes: bi })) } }));
     return { max: suma * Math.max(kk, 1), filas: bs.length + 2, tiras };
   };
-  const serieJuego = v => Object.assign(serieDatos([2, 3, 5], v.k), { max: 40 });
+  const CONSEC = [2, 3, 5], SUMA_C = CONSEC.reduce((x, y) => x + y, 0);
+  const sumaAnte = kk => SUMA_C * kk;
+  const serieJuego = v => Object.assign(serieDatos(CONSEC, v.k), { max: 40 });
   const serie = {
     id: 'serie',
     titulo: 'Razones iguales: la suma también',
@@ -350,7 +353,7 @@
       voz: 'Divide la suma de arriba entre la suma de abajo.',
       controles: [{ id: 'k', etiqueta: 'k', color: 'c-d', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 }],
       dibujo: v => ({ datos: serieJuego(v), estado: {} }),
-      lectura: v => [`Antecedentes ${f(10 * v.k)} ÷ consecuentes 10 = `, k, ` = ${f(v.k)}`],
+      lectura: v => [`Antecedentes ${f(sumaAnte(v.k))} ÷ consecuentes ${f(SUMA_C)} = `, k, ` = ${f(sumaAnte(v.k) / SUMA_C)}`],
       minimo: 3,
       // Se arrastra el fin del par 3 (5k): estira los tres antecedentes a la vez. Va arriba, donde la figura se ve
       // entera bajo la barra fija; la escala queda en 40 para que el dedo y la tira no se separen.
@@ -382,7 +385,7 @@
       ],
     },
     regla: {
-      texto: 'Si varias razones son iguales a k, la suma de los antecedentes entre la suma de los consecuentes también es k.',
+      texto: 'En una serie de razones iguales a k, la suma de los antecedentes entre la suma de los consecuentes también es k.',
       ecuacion: [{ frac: [a, '3'] }, ' = ', { frac: [b, '5'] }, ' = … = ', k, '   ·   ', { frac: [[a, ' + ', b, ' + …'], '3 + 5 + …'] }, ' = ', { llave: [k], nota: 'la misma razón', color: 'c-d' }],
       condicion: 'ningún consecuente es cero y su suma tampoco. Con n razones, el producto de antecedentes entre el de consecuentes es kⁿ.',
     },
@@ -406,17 +409,68 @@
   };
 
   // Mesas del laboratorio: el par de antes (a, b) y el de después (a·k + s, b·k + s), a la misma escala de 40.
+  const despues = v => ({ x: v.a * v.k + v.s, y: v.b * v.k + v.s });
   const tirasAntesDespues = v => {
-    const x = v.a * v.k + v.s, y = v.b * v.k + v.s;
+    const { x, y } = despues(v);
     return { max: 40, filas: 4, regla: { paso: 1, cada: 5 }, tiras: [tira('a', 'o', v.a, 1, { fin: f(v.a) }), tira('b', 'i', v.b, 1, { fin: f(v.b) }), tira('a después', 'o', x, 1, { fin: f(x) }), tira('b después', 'i', y, 1, { fin: f(y) })] };
   };
   const rectaLarga = v => rectaMedias(v.x, v.y, { datos: { min: 0, max: 40, paso: 1, cada: 10 } });
+  // Para los retos: la tira b de después más larga con razón 2/3, y la mayor separación entre A y H (toda la grilla).
+  const rango = (lo, hi) => Array.from({ length: hi - lo + 1 }, (_, i) => lo + i);
+  const MAX_23 = Math.max(...rango(1, 8).flatMap(aa => rango(1, 8).flatMap(bb => rango(1, 4).flatMap(kk => rango(0, 8).map(ss => {
+    const p = despues({ a: aa, b: bb, k: kk, s: ss }); return razon(p.x, p.y) === '2/3' ? p.y : 0; })))));
+  const MAX_AH = Math.max(...rango(1, 40).flatMap(xx => rango(1, 40).map(yy => { const m = mediasDe(xx, yy); return m.A - m.H; })));
 
   return {
     unidad: 'aritmetica.razones-y-proporciones',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/recta.js'],
+    // Glosario del tema (docs/teoria.md, 4d): lo que esta unidad estrena en aritmética.
+    glosario: [
+      { termino: 'producto', def: 'Resultado de una multiplicación.', ejemplo: '4 · 9 = 36.', ver: ['factor'] },
+      { termino: 'factor', formas: ['factor', 'factores'], def: 'Cada número que se multiplica en un producto.',
+        ejemplo: 'En 3 · 5 = 15, son 3 y 5.', ver: ['producto'] },
+      { termino: 'cociente', def: 'Resultado de dividir un número entre otro: cuántas veces cabe el segundo en el primero.',
+        ejemplo: '12 ÷ 4 = 3.', ver: ['razón geométrica'] },
+      { termino: 'entero', formas: ['entero', 'enteros', 'número entero', 'números enteros'], def: 'Número sin parte decimal: …, −2, −1, 0, 1, 2, …',
+        ejemplo: '−3 y 12 lo son; 1,5 no.' },
+      { termino: 'rapidez', formas: ['rapidez', 'rapideces', 'rapidez media'], medida: 'km/h', def: 'Distancia recorrida en cada unidad de tiempo, sin importar hacia dónde.',
+        ejemplo: '120 km en 2 h: 60 km/h.', ver: ['media armónica'] },
+      { termino: 'razón', def: 'Comparación entre dos cantidades, por resta o por cociente. Si no se dice cuál, es el cociente.',
+        ejemplo: '6 y 4: por resta, 2; por cociente, 6/4 = 1,5.', ver: ['razón aritmética', 'razón geométrica'] },
+      { termino: 'razón aritmética', def: 'Comparación por resta: cuánto le lleva una cantidad a la otra.',
+        ejemplo: '8 y 5: 8 − 5 = 3.', ver: ['razón geométrica'] },
+      { termino: 'razón geométrica', simbolo: 'k', def: 'Comparación por cociente: cuántas veces cabe la segunda cantidad en la primera.',
+        ejemplo: '12 y 4: 12/4 = 3.', ver: ['razón aritmética', 'proporción'] },
+      { termino: 'antecedente', def: 'El primer término de una razón: el de arriba en a/b, el primero en a − b.',
+        ejemplo: 'En 3/5, es 3.', ver: ['consecuente'] },
+      { termino: 'consecuente', def: 'El segundo término de una razón: el de abajo en a/b, el segundo en a − b.',
+        ejemplo: 'En 3/5, es 5.', ver: ['antecedente'] },
+      { termino: 'proporción', def: 'Igualdad entre dos razones del mismo tipo. Sirve para hallar un término que falta.',
+        ejemplo: '2/3 = 4/6.', ver: ['productos cruzados', 'medios'] },
+      { termino: 'productos cruzados', def: 'En a/b = c/d, los productos a · d y b · c. Si salen iguales, las razones son iguales.',
+        ejemplo: '2/3 = 4/6: 2 · 6 = 3 · 4 = 12.', ver: ['proporción'] },
+      { termino: 'medios', def: 'En a/b = c/d, los términos b y c; a y d se llaman extremos.',
+        ejemplo: 'En 4/6 = 6/9, los dos valen 6.', ver: ['proporción continua'] },
+      { termino: 'proporción continua', formas: ['proporción continua', 'proporciones continuas'],
+        def: 'Proporción cuyos dos términos del centro son el mismo número: a/b = b/d.',
+        ejemplo: '4/6 = 6/9.', ver: ['media proporcional', 'medios'] },
+      { termino: 'cuarta proporcional', def: 'El término d que completa a/b = c/d cuando se conocen a, b y c.',
+        ejemplo: '2/3 = 8/d: 2 · d = 3 · 8, d = 12.', ver: ['productos cruzados'] },
+      { termino: 'media proporcional', def: 'En a/b = b/d, el número b que se repite: multiplicado por sí mismo da a · d.',
+        ejemplo: '4 y 9: b · b = 36, b = 6.', ver: ['proporción continua', 'media geométrica'] },
+      { termino: 'media aritmética', simbolo: 'A', formas: ['media aritmética', 'medias aritméticas', 'promedio', 'media'],
+        def: 'Suma de los números dividida entre cuántos son. Para dos: (a + b)/2.',
+        ejemplo: '40 y 60: (40 + 60)/2 = 50.', ver: ['media geométrica', 'media armónica'] },
+      { termino: 'media geométrica', simbolo: 'G', def: 'Raíz cuadrada del producto de dos positivos, √(a · b). Sirve cuando las cantidades se multiplican.',
+        ejemplo: '4 y 9: √36 = 6.', ver: ['media aritmética', 'media armónica'] },
+      { termino: 'media armónica', simbolo: 'H', def: 'Para dos positivos, 2ab/(a + b). Da la rapidez media en dos tramos de igual distancia.',
+        ejemplo: '40 y 60 km/h: 2 · 40 · 60/100 = 48 km/h.', ver: ['media aritmética', 'media geométrica'] },
+      { termino: 'serie de razones', formas: ['serie de razones', 'series de razones'],
+        def: 'Varias razones iguales a un mismo k. Sumando antecedentes y consecuentes, el cociente sigue siendo k.',
+        ejemplo: 'a/3 = b/5 = c/7 y a + b + c = 60: k = 60/15 = 4.', ver: ['antecedente', 'consecuente'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. «Antes y después» junta las dos comparaciones con cuatro controles; «Tres
     // medias» abre el rango hasta 40 (con pares impares e iguales); la serie es el juego de la idea 4.
     laboratorio: [
@@ -431,7 +485,7 @@
         ],
         dibujo: v => ({ datos: tirasAntesDespues(v), estado: {} }),
         lectura: v => {
-          const x = v.a * v.k + v.s, y = v.b * v.k + v.s;
+          const { x, y } = despues(v);
           return [`${f(v.a)} : ${f(v.b)} → ${f(x)} : ${f(y)}`, '   ·   ', `razón ${razon(x, y)}`, '   ·   ', b, ' − ', a, ` = ${f(y - x)}`];
         },
         arrastres: [
@@ -442,6 +496,20 @@
           { id: 'fin-b2', etiqueta: 'fin de b después: multiplica', color: 'c-d',
             donde: v => finTira(tirasAntesDespues(v), 3, v.b * v.k + v.s), mover: (pt, v) => ({ k: (valorEn(tirasAntesDespues(v), pt.x) - v.s) / v.b }) },
         ],
+        invitaciones: [
+          { texto: 'Consigue que la resta quede igual y la razón cambie.',
+            logrado: v => { const p = despues(v); return p.y - p.x === v.b - v.a && razon(p.x, p.y) !== razon(v.a, v.b); },
+            bien: 'Sumar lo mismo conserva la resta; la razón ya es otra.' },
+          { texto: 'Suma algo y deja el par de después en razón 1 : 2.',
+            logrado: v => { const p = despues(v); return v.s > 0 && razon(p.x, p.y) === '1/2'; },
+            bien: 'Llegaste a 1 : 2 con una suma: sumar sí mueve la razón.' },
+          { texto: 'Busca la tira b de después más larga con razón 2 : 3.',
+            logrado: v => { const p = despues(v); return razon(p.x, p.y) === '2/3' && p.y === MAX_23; },
+            bien: 'Es la más larga que deja la mesa. ¿Qué sumaste para llegar ahí?' },
+          { texto: 'Guarda dos casos con el mismo par de después y distinto par de antes.',
+            logrado: (v, guardados) => guardados.some(g => { const p = despues(g), q = despues(v); return p.x === q.x && p.y === q.y && (g.a !== v.a || g.b !== v.b); }),
+            bien: 'Mismo final desde dos inicios: mirar solo el final no basta.' },
+        ],
       },
       {
         id: 'tres-medias', titulo: 'Tres medias en una recta larga', pieza: 'recta',
@@ -451,13 +519,38 @@
           { id: 'y', etiqueta: 'b', color: 'c-i', min: 1, max: 40, paso: 1, inicio: 36, decimales: 0 },
         ],
         dibujo: v => ({ datos: rectaLarga(v), estado: {} }),
-        lectura: v => [`${f(v.x)} y ${f(v.y)}:`, ' ', 'H = ', f(2 * v.x * v.y / (v.x + v.y)), '   ·   ', G, ` = ${f(Math.sqrt(v.x * v.y))}`, '   ·   ', A, ` = ${f((v.x + v.y) / 2)}`],
+        lectura: v => { const m = mediasDe(v.x, v.y); return [`${f(v.x)} y ${f(v.y)}:`, ' ', 'H = ', f(m.H), '   ·   ', G, ` = ${f(m.G)}`, '   ·   ', A, ` = ${f(m.A)}`]; },
         arrastres: [
           { id: 'punto-a', etiqueta: 'el número a', color: 'c-o', donde: v => puntoRecta(rectaLarga(v), v.x), mover: (pt, v) => ({ x: deRecta(rectaLarga(v), pt.x) }) },
           { id: 'punto-b', etiqueta: 'el número b', color: 'c-i', donde: v => puntoRecta(rectaLarga(v), v.y), mover: (pt, v) => ({ y: deRecta(rectaLarga(v), pt.x) }) },
         ],
+        invitaciones: [
+          { texto: 'Haz que las tres medias caigan en el mismo punto.',
+            logrado: v => { const m = mediasDe(v.x, v.y); return m.A === m.G && m.G === m.H; },
+            bien: 'Solo pasa con a = b. Sepáralos un poco: ¿cuál se aleja primero?' },
+          { texto: 'Busca dos números distintos cuya media armónica sea un entero.',
+            logrado: v => v.x !== v.y && Number.isInteger(mediasDe(v.x, v.y).H),
+            bien: '2ab entre a + b cayó exacto. Comprueba que H quedó a la izquierda.' },
+          { texto: 'Consigue la mayor distancia entre la media aritmética y la armónica.',
+            logrado: v => Math.abs(mediasDe(v.x, v.y).A - mediasDe(v.x, v.y).H - MAX_AH) < 1e-9,
+            bien: 'Lo más distintos posible: así es como más se abren las medias.' },
+          { texto: 'Guarda dos pares con la misma media aritmética y distinta geométrica.',
+            logrado: (v, guardados) => guardados.some(g => mediasDe(g.x, g.y).A === mediasDe(v.x, v.y).A && mediasDe(g.x, g.y).G !== mediasDe(v.x, v.y).G),
+            bien: 'Misma suma, otro producto: la geométrica baja cuando se separan.' },
+        ],
       },
-      Object.assign({ id: 'serie', titulo: 'Razones iguales que se suman', pieza: 'arit-tiras' }, serie.juega),
+      Object.assign({ id: 'serie', titulo: 'Razones iguales que se suman', pieza: 'arit-tiras',
+        invitaciones: [
+          { texto: 'Haz que los antecedentes sumen 30.',
+            logrado: v => sumaAnte(v.k) === 30,
+            bien: '30 entre 10 da 3: la suma guarda la misma razón k.' },
+          { texto: 'Lleva k a su menor valor.',
+            logrado: v => v.k === 1,
+            bien: 'Con k = 1, cada antecedente es igual a su consecuente.' },
+          { texto: 'Guarda dos casos en que una suma de antecedentes sea el doble de la otra.',
+            logrado: (v, guardados) => guardados.some(g => g.k !== v.k && (sumaAnte(g.k) === 2 * sumaAnte(v.k) || sumaAnte(v.k) === 2 * sumaAnte(g.k))),
+            bien: 'Doble k, doble suma: los consecuentes no se movieron.' },
+        ] }, serie.juega),
     ],
     historia: {
       texto: 'En la matemática griega había longitudes que ninguna unidad común medía un número entero de veces. La teoría atribuida a Eudoxo, conservada en el libro V de los Elementos, comparaba esas magnitudes por sus múltiplos. No eran todavía fracciones escritas como hoy. Una proporción afirma que dos comparaciones son iguales: primero se decide qué se compara y en qué orden.',
