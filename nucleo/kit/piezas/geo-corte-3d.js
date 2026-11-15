@@ -84,6 +84,7 @@
         grupo.add(new T.Mesh(geo, h.material(naranja, { side: T.DoubleSide, transparent: true, opacity: 0.85 })));
         const borde = new T.BufferGeometry(); borde.setAttribute('position', new T.Float32BufferAttribute(s.puntos.concat([s.puntos[0]]).flat(), 3));
         grupo.add(new T.Line(borde, new T.LineBasicMaterial({ color: new T.Color(tinta) })));
+        h.etiqueta(new T.Vector3(...c), s.nombre, { color: 'c-o' });      // el nombre, sobre la sección y en su color
       }
       return { aria: alt(d) };
     },

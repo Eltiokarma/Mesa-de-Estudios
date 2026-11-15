@@ -217,7 +217,7 @@
     }
     // Laboratorio: mesas de juego libre, sin preguntas. Si la unidad no trae, el lector usa el juego de cada idea.
     if (def.laboratorio !== undefined) {
-      if (!Array.isArray(def.laboratorio) || !def.laboratorio.length || def.laboratorio.length > 4) mal(def.unidad, 'laboratorio: de 1 a 4 mesas');
+      if (!Array.isArray(def.laboratorio) || !def.laboratorio.length || def.laboratorio.length > 5) mal(def.unidad, 'laboratorio: de 1 a 5 mesas (una puede ser la mesa 3D)');
       const mids = new Set();
       for (const [k, mesa] of (Array.isArray(def.laboratorio) ? def.laboratorio : []).entries()) {
         const dm = `laboratorio ${k + 1} (${mesa && mesa.id})`;

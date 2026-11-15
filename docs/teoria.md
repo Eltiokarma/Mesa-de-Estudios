@@ -160,7 +160,7 @@ arrastres: [{
   - no partir números de su unidad;
   - escribir los exponentes con `{ sup }`, nunca «^».
 
-**Laboratorio (`def.laboratorio`, de 1 a 4 mesas).**
+**Laboratorio (`def.laboratorio`, de 1 a 5 mesas; desde el 15 nov, una puede ser la mesa 3D).**
 - **La ruta:** `#/unidad/<id>/teoria/laboratorio`. Hay una puerta propia en la página de la unidad («Juega libre, sin preguntas») y un chip junto a la ficha.
 - **Las mesas:** cada una tiene la forma de un juego (`id`, `titulo`, `pieza`, `consigna`, `controles`, `dibujo`, `lectura`, `arrastres`), sin mínimo ni preguntas.
 - **Guardar casos:** «Guardar este caso» deja hasta 4 miniaturas, lado a lado, para comparar.

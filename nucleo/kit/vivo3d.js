@@ -14,7 +14,10 @@
  *     distancia?: 7.2, distMin?: 3.6, distMax?: 12
  *   }
  *   op = { alTocar?(objeto) }
- *   h  = { SEG, ahorro, oscuro, varCss(n, porDefecto), material(color, extra), barra(de, a, r, color), flecha(de, a, r, color) }
+ *   h  = { SEG, ahorro, oscuro, varCss(n, porDefecto), material(color, extra), barra(de, a, r, color), flecha(de, a, r, color),
+ *          etiqueta(pos, texto, { color?, letra? }) }
+ *        etiqueta: un rótulo HTML que sigue a un punto de la escena (Vector3 en coordenadas del grupo). Es texto real, legible
+ *        y del color de su variable (regla 4): color 'c-o' le pone la clase «var c-o» de la app; letra: true, en cursiva.
  *
  * Lo común:
  *   - three.js se carga una vez (app/vendor/three); sin WebGL 2 queda el plano con su aviso.
@@ -41,6 +44,10 @@
   function cargarTres() {
     if (root.THREE) return Promise.resolve(true);
     if (typeof document === 'undefined' || typeof root.WebGL2RenderingContext === 'undefined') return Promise.resolve(false);
+    // Respaldo para los navegadores de fábrica con Chromium anterior al 84 (Xiaomi, Oppo): three.js usa WeakRef y
+    // FinalizationRegistry al liberar memoria; sin esto, el script falla y queda solo la vista plana.
+    if (typeof root.WeakRef === 'undefined') root.WeakRef = function (o) { this.deref = function () { return o; }; };
+    if (typeof root.FinalizationRegistry === 'undefined') root.FinalizationRegistry = function () { this.register = this.unregister = function () {}; };
     if (!cargando) cargando = new Promise(ok => {
       const s = document.createElement('script');
       s.src = TRES; s.async = true;
@@ -69,6 +76,11 @@
     renderer.setClearColor(0x000000, 0);
     caja.innerHTML = '';
     caja.appendChild(cv);
+    // Capa de rótulos HTML encima del lienzo (h.etiqueta): se reubican en cada cuadro.
+    const capaEtq = document.createElement('div');
+    capaEtq.className = 'kit-3d-etiquetas'; capaEtq.setAttribute('aria-hidden', 'true');
+    caja.appendChild(capaEtq);
+    let etiquetas = [];
     const pie = document.createElement('div');
     pie.className = 'kit-3d-pie';
     pie.innerHTML = '<p class="kit-3d-nota" aria-live="polite"></p><button type="button" class="kit-3d-inicio" aria-label="Volver a la vista inicial">↺ Vista inicial</button>';
@@ -84,7 +96,18 @@
     const SEG = ah ? 12 : 24;
 
     let pend = false;
-    const dibujarYa = () => { camara.position.set(0, 0, dist); grupo.rotation.set(rad(inc), rad(giro), 0, 'XYZ'); renderer.render(escena, camara); };
+    const ubicarEtiquetas = () => {
+      if (!etiquetas.length) return;
+      grupo.updateMatrixWorld(true); camara.updateMatrixWorld(true);
+      const w = cv.clientWidth, hh = cv.clientHeight;
+      for (const e of etiquetas) {
+        const v = e.pos.clone().applyMatrix4(grupo.matrixWorld).project(camara);
+        const fuera = v.z > 1 || v.z < -1;
+        e.el.style.display = fuera ? 'none' : '';
+        if (!fuera) e.el.style.transform = `translate(${Math.round((v.x + 1) / 2 * w)}px, ${Math.round((1 - v.y) / 2 * hh)}px) translate(-50%, -50%)`;
+      }
+    };
+    const dibujarYa = () => { camara.position.set(0, 0, dist); grupo.rotation.set(rad(inc), rad(giro), 0, 'XYZ'); renderer.render(escena, camara); ubicarEtiquetas(); };
     const pedir = () => { if (pend) return; pend = true; requestAnimationFrame(() => { pend = false; dibujarYa(); }); };
     const acercar = f => { dist = Math.max(DMIN, Math.min(DMAX, dist / f)); pedir(); };
     const inicio = () => { giro = vista.giro; inc = vista.inclinacion; dist = D0; nota.textContent = ''; pedir(); };
@@ -111,11 +134,20 @@
       g.add(c);
       return g;
     };
-    const h = { SEG, ahorro: ah, oscuro, varCss, material, barra, flecha };
+    const etiqueta = (pos, texto, o) => {
+      const el = document.createElement('span');
+      el.className = `kit-3d-etq${o && o.color ? ` var ${o.color}` : ''}${o && o.letra ? ' ec-letra' : ''}`;
+      el.textContent = texto;
+      capaEtq.appendChild(el);
+      etiquetas.push({ pos: pos.clone(), el });
+      return el;
+    };
+    const h = { SEG, ahorro: ah, oscuro, varCss, material, barra, flecha, etiqueta };
     function limpiar() {
       escena.remove(grupo);
       grupo.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
       grupo = new T.Group(); escena.add(grupo); tocables = [];
+      capaEtq.innerHTML = ''; etiquetas = [];
     }
     function poner(d, e) {
       limpiar();

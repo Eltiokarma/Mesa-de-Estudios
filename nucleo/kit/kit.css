@@ -90,3 +90,6 @@
 .kit-3d-inicio{min-height:44px;padding:6px 14px;border-radius:999px;border:2px solid var(--line,#efe3dc);background:var(--card,#fff);color:var(--ink,#2d2340);font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
 .kit-3d-inicio:focus-visible{outline:3px solid var(--brand,#7f5ae0);outline-offset:2px}
 .te-lupa-viva .kit-3d-pie{padding:0 12px 12px}
+/* Rótulos HTML que siguen a un punto de la escena 3D (h.etiqueta en nucleo/kit/vivo3d.js). */
+.kit-3d-etiquetas{position:absolute;left:0;top:0;width:100%;height:0;pointer-events:none}
+.kit-3d-etq{position:absolute;left:0;top:0;font-weight:700;font-size:15px;line-height:1.1;padding:1px 4px;border-radius:6px;background:color-mix(in srgb,var(--card,#fff) 80%,transparent);white-space:nowrap;will-change:transform}

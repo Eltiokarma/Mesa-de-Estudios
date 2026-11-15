@@ -1,8 +1,9 @@
-three.js 0.187.0 (MIT, ver LICENSE), paquete reducido para la prueba 3D (app/prueba3d/).
+three.js 0.187.0 (MIT, ver LICENSE), paquete reducido para el 3D de la app (piezas vivas del kit, nucleo/kit/vivo3d.js) y la prueba 3D.
+Ampliado el 15 nov para la ronda 4 (conos, toros, tubos, curvas, puntos, sólidos platónicos, texturas de canvas).
 Se arma con esbuild desde el paquete npm, solo con las clases que usa la prueba:
-  export { Scene, PerspectiveCamera, OrthographicCamera, WebGLRenderer, Group, Mesh, LineSegments, Line, BoxGeometry, SphereGeometry, CylinderGeometry, BufferGeometry, EdgesGeometry, Float32BufferAttribute, MeshLambertMaterial, MeshBasicMaterial, LineBasicMaterial, LineDashedMaterial, AmbientLight, DirectionalLight, HemisphereLight, Vector2, Vector3, Quaternion, Euler, Matrix4, Plane, Raycaster, Color, DoubleSide, FrontSide, BackSide, Box3, MathUtils, SRGBColorSpace } from 'three';
+  export { Scene, PerspectiveCamera, OrthographicCamera, WebGLRenderer, Group, Object3D, Mesh, InstancedMesh, LineSegments, Line, LineLoop, Points, Sprite, BoxGeometry, SphereGeometry, CylinderGeometry, ConeGeometry, TorusGeometry, CircleGeometry, RingGeometry, PlaneGeometry, LatheGeometry, TubeGeometry, ShapeGeometry, ExtrudeGeometry, IcosahedronGeometry, OctahedronGeometry, TetrahedronGeometry, DodecahedronGeometry, PolyhedronGeometry, BufferGeometry, EdgesGeometry, WireframeGeometry, Float32BufferAttribute, Shape, Path, CatmullRomCurve3, QuadraticBezierCurve3, LineCurve3, MeshLambertMaterial, MeshPhongMaterial, MeshBasicMaterial, LineBasicMaterial, LineDashedMaterial, PointsMaterial, SpriteMaterial, CanvasTexture, AmbientLight, DirectionalLight, HemisphereLight, PointLight, ArrowHelper, Vector2, Vector3, Quaternion, Euler, Matrix4, Plane, Raycaster, Color, Spherical, DoubleSide, FrontSide, BackSide, Box3, Sphere, MathUtils, SRGBColorSpace } from 'three';
   esbuild entrada.js --bundle --minify --format=iife --global-name=THREE --target=es2019,chrome74 --outfile=three-mesa.min.js
-Pesa 549 KB (137 KB con gzip). Requiere WebGL 2 (three.js dejó WebGL 1 en r163).
+Pesa 609 KB (150 KB con gzip); antes de ampliarlo, 549 KB (137 KB). Requiere WebGL 2 (three.js dejó WebGL 1 en r163).
 El --target baja la sintaxis nueva (bloques static de clase, ?. y ??) para que la lean los navegadores de fábrica de
 Xiaomi y Oppo, que traen un Chromium viejo (15 nov 2026: con el paquete sin --target la prueba no cargaba en esos
 celulares). WeakRef y FinalizationRegistry (Chrome 84) tienen un respaldo en app/prueba3d/index.html.
