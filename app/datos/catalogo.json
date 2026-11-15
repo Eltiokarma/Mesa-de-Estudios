@@ -879,7 +879,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 19
+      "terminos": 20
      }
     },
     {
@@ -1180,7 +1180,7 @@
        "/nucleo/kit/piezas/quim-fichas.js"
       ],
       "ideas": 4,
-      "terminos": 19
+      "terminos": 20
      }
     },
     {
@@ -1222,7 +1222,7 @@
        "/nucleo/kit/piezas/quim-cadena.js"
       ],
       "ideas": 5,
-      "terminos": 7
+      "terminos": 22
      }
     },
     {
@@ -1263,7 +1263,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 5
+      "terminos": 7
      }
     },
     {
@@ -1378,7 +1378,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 4,
-      "terminos": 9
+      "terminos": 12
      }
     },
     {

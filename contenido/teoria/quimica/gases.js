@@ -221,7 +221,7 @@
       ],
     },
     regla: {
-      texto: 'PV = nRT une presión, volumen, moles y temperatura. Un mol ocupa RT/P: 22,4 L solo a 273 K y 1 atm. Despejando, la densidad es ρ = PM/RT.',
+      texto: 'PV = nRT une presión, volumen, moles y temperatura. El volumen molar es RT/P: 22,4 L solo a 273 K y 1 atm. Despejando, la densidad es ρ = PM/RT.',
       ecuacion: [{ llave: [P], nota: 'absoluta', color: 'c-o' }, V, ' = ', n, 'R', { llave: [T], nota: 'en kelvin', color: 'c-h' }, '   ·   ', 'ρ = ', { frac: [[P, 'M'], ['R', T]] }],
       condicion: 'gas ideal (presión baja, lejos de condensar), T en kelvin, P absoluta y R = 0,082 atm·L/(mol·K).',
       voz: 'El 22,4 trae sus condiciones pegadas. Revísalas.',
@@ -314,7 +314,7 @@
       ],
     },
     regla: {
-      texto: 'En una mezcla de gases ideales, cada gas empuja como si estuviera solo en todo el recipiente. La presión total es la suma de las parciales.',
+      texto: 'Ley de Dalton: en una mezcla de gases ideales, cada gas empuja como si estuviera solo en todo el recipiente. La presión total es la suma de las parciales.',
       ecuacion: [{ sub: [P, 'total'] }, ' = Σ', { sub: [P, 'i'] }, '   ·   ', { sub: [P, 'i'] }, ' = ', { sub: ['y', 'i'] }, ' · ', { sub: [P, 'total'] }, '   ·   ', { llave: [{ sub: ['y', 'i'] }], nota: 'fracción molar' }, ' = ', { frac: [{ sub: [n, 'i'] }, { sub: [n, 'total'] }] }],
       condicion: 'gases ideales que no reaccionan, a la misma T y en el mismo volumen. Amagat suma volúmenes a igual P y T.',
       voz: 'Cada gas se cuenta por separado y después se suma.',
@@ -397,7 +397,7 @@
       ],
     },
     regla: {
-      texto: 'A igual presión y temperatura, la rapidez de efusión es inversa a la raíz de la masa molar: el gas más liviano sale antes.',
+      texto: 'Ley de Graham: a igual presión y temperatura, la rapidez de efusión es inversa a la raíz de la masa molar: el gas más liviano sale antes.',
       ecuacion: [{ llave: [{ frac: [{ sub: ['v', '1'] }, { sub: ['v', '2'] }] }], nota: 'rapideces' }, ' = ', { llave: [{ raiz: { frac: [{ sub: ['M', '2'] }, { sub: ['M', '1'] }] } }], nota: 'masas molares' }, '   ·   ', { frac: [{ sub: ['t', '1'] }, { sub: ['t', '2'] }] }, ' = ', { raiz: { frac: [{ sub: ['M', '1'] }, { sub: ['M', '2'] }] } }],
       condicion: 'efusión por un orificio pequeño, a la misma P y T; la difusión real también depende de choques y corrientes.',
       voz: 'La raíz no se olvida: masa cuatro veces, rapidez dos.',
@@ -501,10 +501,24 @@
 
   // ---------- Laboratorio ----------
   // Cilindro de 6 L como máximo; una bolita cada 0,05 mol (hasta 12). La presión va en el rótulo de la caja.
+  // La presión del cilindro, P = nRT/V: la usan el rótulo, la lectura y los retos.
+  const pCil = val => val.n * R * val.t / val.v;
+  const INI_CIL = { n: 0.2, v: 4, t: 300 }, INI_MEZ = { a: 6, b: 2, c: 0, v: 2 };
   const labCilindro = val => lupa([{ titulo: `${f(val.n, 2)} mol a ${f(val.t, 0)} K`, forma: 'cilindro', nivel: val.v / 6,
-    particulas: [{ e: 'N2', n: Math.round(val.n / 0.05) }], rotulo: `${f(val.v, 1)} L · ${f(val.n * R * val.t / val.v, 2)} atm` }]);
+    particulas: [{ e: 'N2', n: Math.round(val.n / 0.05) }], rotulo: `${f(val.v, 1)} L · ${f(pCil(val), 2)} atm` }]);
   // Mezcla: cada partícula es 0,01 mol a 300 K, así que aporta 0,246 atm·L; la presión parcial es eso entre V.
   const KP = 0.01 * R * 300;
+  const pPar = (k, v) => k * KP / v, pTot = val => pPar(val.a + val.b + val.c, val.v);
+  // Los extremos de la grilla de cada mesa, buscados una vez con las mismas funciones.
+  let maxCil_ = null, maxMez_ = null;
+  const maxCil = () => {
+    if (maxCil_ === null) { maxCil_ = 0; for (let i = 1; i <= 12; i++) for (let j = 1; j <= 12; j++) for (let t = 100; t <= 600; t += 50) maxCil_ = Math.max(maxCil_, pCil({ n: 0.05 * i, v: 0.5 * j, t })); }
+    return maxCil_;
+  };
+  const maxMez = () => {
+    if (maxMez_ === null) { maxMez_ = 0; for (let j = 2; j <= 8; j++) maxMez_ = Math.max(maxMez_, pTot({ a: 10, b: 6, c: 6, v: j / 2 })); }
+    return maxMez_;
+  };
   const labMezcla = val => lupa([{ titulo: `Mezcla en ${f(val.v, 1)} L`, forma: 'cilindro', nivel: val.v / 4,
     particulas: [{ e: 'N2', n: val.a }, { e: 'O2', n: val.b }, { e: 'He', n: val.c }],
     cuenta: [['N2', val.a], ['O2', val.b], ['He', val.c]].filter(([, k]) => k > 0).map(([e, k]) => ({ e, texto: `${f(k * KP / val.v, 2)} atm` })) }], { alto: 170 });
@@ -519,6 +533,40 @@
       pregunta: '¿Qué tendrías que dejar fijo para comparar dos medidas?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §9.2', url: 'https://openstax.org/books/chemistry-2e/pages/9-2-relating-pressure-volume-amount-and-temperature-the-ideal-gas-law' },
     },
+    // Glosario (docs/teoria.md §4d): las palabras que este tema estrena en química. Mol, masa molar y fracciones vienen
+    // de unidades anteriores; el lector las marca solas.
+    glosario: [
+      { termino: 'presión', simbolo: 'P', medida: 'atm', def: 'Fuerza con que el gas empuja cada unidad de área de las paredes, por los choques de sus partículas.',
+        formas: ['presión', 'presiones'], ejemplo: '0,2 mol en 4 L a 300 K: P = 1,23 atm.', ver: ['presión parcial'] },
+      { termino: 'kelvin', simbolo: 'K', def: 'Unidad de temperatura que cuenta desde el cero absoluto: T = t + 273. Las leyes de gases la piden.',
+        formas: ['kelvin', 'temperatura absoluta'], ejemplo: '27 °C = 300 K.' },
+      { termino: 'ley de Boyle', def: 'Con temperatura y moles fijos, P·V no cambia: si el volumen baja a la mitad, la presión se duplica.',
+        formas: ['ley de Boyle', 'Boyle'], ejemplo: '0,6 atm en 4 L → 1,2 atm en 2 L.', ver: ['presión'] },
+      { termino: 'ley de Charles', def: 'Con presión y moles fijos, el volumen crece en proporción a la temperatura en kelvin.',
+        formas: ['ley de Charles', 'Charles'], ejemplo: '2 L a 300 K → 4 L a 600 K.', ver: ['kelvin'] },
+      { termino: 'ley de Gay-Lussac', def: 'Con volumen y moles fijos, la presión crece en proporción a la temperatura en kelvin.',
+        formas: ['ley de Gay-Lussac', 'Gay-Lussac'], ejemplo: '1 atm a 300 K → 2 atm a 600 K.', ver: ['kelvin'] },
+      { termino: 'ecuación de estado', def: 'PV = nRT: une presión, volumen, moles y temperatura de un gas ideal, con R = 0,082 atm·L/(mol·K).',
+        ejemplo: '1 mol a 273 K y 1 atm: V = 0,082 · 273 = 22,4 L.', ver: ['gas ideal'] },
+      { termino: 'gas ideal', def: 'Modelo de gas cuyas partículas casi no ocupan lugar ni se atraen. Funciona bien a presión baja.',
+        formas: ['gas ideal', 'gases ideales'], ver: ['ecuación de estado'] },
+      { termino: 'condiciones normales', def: '273 K y 1 atm. Ahí un mol de cualquier gas ideal ocupa 22,4 L.',
+        ver: ['volumen molar'] },
+      { termino: 'volumen molar', medida: 'L/mol', def: 'Lo que ocupa un mol de gas: RT/P. Depende de la presión y la temperatura.',
+        ejemplo: 'A 300 K y 1 atm: 0,082 · 300 = 24,6 L.', ver: ['condiciones normales'] },
+      { termino: 'presión parcial', medida: 'atm', def: 'La presión que haría un gas de una mezcla si estuviera solo en todo el recipiente.',
+        formas: ['presión parcial', 'presiones parciales', 'parciales'], ejemplo: '6 de 8 partículas con 0,8 atm totales: 0,6 atm.', ver: ['fracción molar', 'ley de Dalton'] },
+      { termino: 'fracción molar', def: 'Qué parte de los moles de una mezcla es de un gas: sus moles entre los moles totales.',
+        ejemplo: '6 partículas de N₂ entre 8: 0,75.', ver: ['presión parcial'] },
+      { termino: 'ley de Dalton', def: 'En una mezcla de gases que no reaccionan, la presión total es la suma de las parciales de cada gas.',
+        ejemplo: '0,6 + 0,2 = 0,8 atm.', ver: ['presión parcial'] },
+      { termino: 'ley de Graham', def: 'A igual P y T, la rapidez de efusión va como 1 entre la raíz de la masa molar.',
+        ejemplo: 'H₂ frente a O₂: √(32/2) = 4 veces más rápido.', ver: ['efusión'] },
+      { termino: 'efusión', def: 'Salida de un gas por un agujero muy pequeño, partícula por partícula.',
+        ver: ['ley de Graham', 'difusión'] },
+      { termino: 'difusión', def: 'Mezcla espontánea de un gas con otro, avanzando entre sus partículas sin que nadie lo empuje.',
+        ver: ['efusión'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera junta n, V y T con rangos más amplios que las
     // ideas (llega a presiones altas y a 100 K); la segunda junta Dalton con el émbolo: tres gases y un volumen que cambia.
     // El título y el rótulo de cada caja dicen sus condiciones, para que una miniatura guardada se lea sola.
@@ -527,30 +575,62 @@
         id: 'cilindro-completo', titulo: 'El cilindro con todo', pieza: 'quim-particulas',
         consigna: 'Cambia la cantidad de gas, el volumen y la temperatura. Empuja el émbolo y busca la presión más alta y la más baja.',
         controles: [
-          { id: 'n', etiqueta: 'n', color: 'c-d', min: 0.05, max: 0.6, paso: 0.05, inicio: 0.2, unidad: 'mol', decimales: 2 },
-          { id: 'v', etiqueta: 'V', color: 'c-i', min: 0.5, max: 6, paso: 0.5, inicio: 4, unidad: 'L', decimales: 1 },
-          { id: 't', etiqueta: 'T', color: 'c-h', min: 100, max: 600, paso: 50, inicio: 300, unidad: 'K', decimales: 0 },
+          { id: 'n', etiqueta: 'n', color: 'c-d', min: 0.05, max: 0.6, paso: 0.05, inicio: INI_CIL.n, unidad: 'mol', decimales: 2 },
+          { id: 'v', etiqueta: 'V', color: 'c-i', min: 0.5, max: 6, paso: 0.5, inicio: INI_CIL.v, unidad: 'L', decimales: 1 },
+          { id: 't', etiqueta: 'T', color: 'c-h', min: 100, max: 600, paso: 50, inicio: INI_CIL.t, unidad: 'K', decimales: 0 },
         ],
         dibujo: val => labCilindro(val),
-        lectura: val => [`${f(val.n, 2)} mol · ${f(val.v, 1)} L · ${f(val.t, 0)} K → `, P, ` = ${f(val.n * R * val.t / val.v, 2)} atm`],
+        lectura: val => [`${f(val.n, 2)} mol · ${f(val.v, 1)} L · ${f(val.t, 0)} K → `, P, ` = ${f(pCil(val), 2)} atm`],
         arrastres: [{ id: 'embolo', etiqueta: 'émbolo del cilindro', color: 'c-i',
           donde: val => embolo(labCilindro(val)),
           mover: (pt, val) => ({ v: nivelEn(labCilindro(val), pt.y) * 6 }) }],
+        // Retos: todos con pCil, la misma presión que escribe el rótulo del cilindro.
+        invitaciones: [
+          { texto: 'Duplica la presión del inicio cambiando solo el volumen.',
+            logrado: val => val.n === INI_CIL.n && val.t === INI_CIL.t && Math.abs(pCil(val) - 2 * pCil(INI_CIL)) < 1e-9,
+            bien: 'Mitad de volumen, doble presión: ley de Boyle, con n y T quietos.' },
+          { texto: 'Enfría el gas a 100 K y recupera la presión del inicio.',
+            logrado: val => val.t === 100 && Math.abs(pCil(val) - pCil(INI_CIL)) < 1e-9,
+            bien: 'Frío, cada choque pega más suave: hubo que apretar o agregar gas.' },
+          { texto: 'Busca la presión más alta que permite la mesa.',
+            logrado: val => Math.abs(pCil(val) - maxCil()) < 1e-9,
+            bien: 'Mucho gas, caliente y apretado: los tres empujan para arriba.' },
+          { texto: 'Guarda dos casos con la misma presión, uno con el doble de gas.',
+            logrado: (val, g) => g.some(x => Math.abs(pCil(x) - pCil(val)) < 1e-9 && (Math.abs(x.n - 2 * val.n) < 1e-9 || Math.abs(val.n - 2 * x.n) < 1e-9))
+              && g.some(x => x.n === val.n && x.v === val.v && x.t === val.t),
+            bien: 'El doble de gas pide el doble de volumen, o la mitad de temperatura.' },
+        ],
       },
       {
         id: 'mezcla-embolo', titulo: 'Tres gases bajo el émbolo', pieza: 'quim-particulas',
         consigna: 'A 300 K, cada partícula es 0,01 mol. Agrega N₂, O₂ y He y mueve el émbolo: mira la presión de cada gas.',
         controles: [
-          { id: 'a', etiqueta: 'N₂', min: 0, max: 10, paso: 1, inicio: 6, unidad: '', decimales: 0 },
-          { id: 'b', etiqueta: 'O₂', min: 0, max: 6, paso: 1, inicio: 2, unidad: '', decimales: 0 },
-          { id: 'c', etiqueta: 'He', min: 0, max: 6, paso: 1, inicio: 0, unidad: '', decimales: 0 },
-          { id: 'v', etiqueta: 'V', color: 'c-i', min: 1, max: 4, paso: 0.5, inicio: 2, unidad: 'L', decimales: 1 },
+          { id: 'a', etiqueta: 'N₂', min: 0, max: 10, paso: 1, inicio: INI_MEZ.a, unidad: '', decimales: 0 },
+          { id: 'b', etiqueta: 'O₂', min: 0, max: 6, paso: 1, inicio: INI_MEZ.b, unidad: '', decimales: 0 },
+          { id: 'c', etiqueta: 'He', min: 0, max: 6, paso: 1, inicio: INI_MEZ.c, unidad: '', decimales: 0 },
+          { id: 'v', etiqueta: 'V', color: 'c-i', min: 1, max: 4, paso: 0.5, inicio: INI_MEZ.v, unidad: 'L', decimales: 1 },
         ],
         dibujo: val => labMezcla(val),
-        lectura: val => [`${val.a} N₂ + ${val.b} O₂ + ${val.c} He en ${f(val.v, 1)} L → `, { sub: [P, 'total'] }, ` = ${f((val.a + val.b + val.c) * KP / val.v, 2)} atm`],
+        lectura: val => [`${val.a} N₂ + ${val.b} O₂ + ${val.c} He en ${f(val.v, 1)} L → `, { sub: [P, 'total'] }, ` = ${f(pTot(val), 2)} atm`],
         arrastres: [{ id: 'embolo', etiqueta: 'émbolo del cilindro', color: 'c-i',
           donde: val => embolo(labMezcla(val)),
           mover: (pt, val) => ({ v: nivelEn(labMezcla(val), pt.y) * 4 }) }],
+        // Retos: con pPar y pTot, las mismas presiones que escribe la lupa.
+        invitaciones: [
+          { texto: 'Agrega helio sin que cambie la presión del N₂ del inicio.',
+            logrado: val => val.c > 0 && Math.abs(pPar(val.a, val.v) - pPar(INI_MEZ.a, INI_MEZ.v)) < 1e-9,
+            bien: 'El helio suma su propia presión; el N₂ empuja igual que antes.' },
+          { texto: 'Haz que el O₂ tenga justo la mitad de la presión total.',
+            logrado: val => val.b > 0 && Math.abs(pPar(val.b, val.v) - pTot(val) / 2) < 1e-9,
+            bien: 'La mitad de las partículas, la mitad de la presión: fracción molar 0,5.' },
+          { texto: 'Busca la mayor presión total que permite la mesa.',
+            logrado: val => Math.abs(pTot(val) - maxMez()) < 1e-9,
+            bien: 'Todas las partículas y el menor volumen. ¿Qué gas empuja más?' },
+          { texto: 'Guarda dos mezclas distintas con la misma presión total.',
+            logrado: (val, g) => g.some(x => Math.abs(pTot(x) - pTot(val)) < 1e-9 && (x.a !== val.a || x.b !== val.b || x.c !== val.c))
+              && g.some(x => x.a === val.a && x.b === val.b && x.c === val.c && x.v === val.v),
+            bien: 'La total solo cuenta partículas: no le importa de qué gas son.' },
+        ],
       },
     ],
     ideas: [leyes, estado, dalton, graham, reaccion],
