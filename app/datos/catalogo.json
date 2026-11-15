@@ -1010,7 +1010,10 @@
       "requiere": [
        "/nucleo/kit/piezas/quim-particulas.js",
        "/nucleo/kit/piezas/quim-molecula.js",
-       "/nucleo/kit/piezas/ejes.js"
+       "/nucleo/kit/piezas/ejes.js",
+       "/plantillas/enlace/motor.js",
+       "/nucleo/elementos.js",
+       "/nucleo/kit/piezas/quim-molecula-3d.js"
       ],
       "ideas": 5,
       "terminos": 35

@@ -24,10 +24,13 @@
  * CH₃OH 65, CH₄ −162, etanol 78, éter dimetílico −24, Cl₂ −34, Br₂ 59, n-pentano 36, neopentano 10 °C).
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El motor de plantillas/enlace da la forma 3D, los pares libres y los dipolos de la mesa «La molécula que gira».
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/enlace/motor.js'))
+    : fabrica(root.Kit, root.MotorEnlace);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, M) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const Nv = { sub: [{ v: 'c-i', t: 'N' }, 'val'] }, z = { v: 'c-h', t: 'z' }, mu = { v: 'c-o', t: 'μ' };
@@ -565,6 +568,24 @@
   // Mesa 1: dos enlaces iguales unidos a un átomo central (como el O del agua). El dipolo total es la suma de las dos
   // flechas: μ = 2 · μ_enlace · cos(θ/2). Los textos fijos arriba y abajo dejan el encuadre quieto al cambiar θ.
   const ESC_MU = 0.45;                             // unidades de dibujo por debye de la flecha total
+  // ---------- La molécula que gira (laboratorio 3D) ----------
+  // Todo lo calcula el motor de plantillas/enlace (regla 1): posiciones VSEPR, órdenes de enlace de Lewis, pares libres
+  // del central y dipolos por ΔEN. La pieza quim-molecula-3d solo dibuja. Un enlace lleva flecha si el motor no lo
+  // llama «covalente apolar»; la flecha apunta al átomo que atrae más.
+  const GIRA = ['CH4', 'NH3', 'H2O', 'CO2', 'SO2', 'BF3', 'CCl4', 'CHCl3', 'PCl5', 'SF6', 'XeF4'];
+  const enlacesPolares = k => { const x = M.molecula(k); return x.ligandos.some(l => M.tipoEnlace(x.central, l).tipo !== 'covalente apolar'); };
+  function mol3d(k) {
+    const x = M.molecula(k);
+    const atomos = [{ id: 'c', t: x.central, pos: [0, 0, 0] }, ...x.ligandos.map((t, i) => ({ id: `l${i}`, t, pos: x.posiciones.ligandos[i] }))];
+    const enlaces = x.ligandos.map((t, i) => {
+      const te = M.tipoEnlace(x.central, t);
+      return { a: 'c', b: `l${i}`, orden: (x.lewis.ligandos[i] || {}).orden || 1, dipolo: te.tipo === 'covalente apolar' ? undefined : te.mas === t ? 'b' : 'a' };
+    });
+    const pares = x.posiciones.pares.map(dir => ({ en: 'c', dir }));
+    return { atomos, enlaces, pares, total: x.polaridad.polar ? x.polaridad.total : null,
+      alt: `${x.formula} en 3D: forma ${x.vsepr.geometria}, ${x.ligandos.length} enlaces y ${pares.length} pares libres en el átomo central; ${x.polaridad.polar ? 'polar' : 'apolar'}.` };
+  }
+
   const TH_MIN = 60, MB_MAX = 2;                  // rango de la mesa: el ángulo más cerrado y el enlace más polar
   const muTotal = val => 2 * val.mb * Math.cos(val.th / 2 * Math.PI / 180);
   const dosDipolos = val => {
@@ -591,7 +612,8 @@
     unidad: 'quimica.enlace-quimico',
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/quim-particulas.js', '/nucleo/kit/piezas/quim-molecula.js', '/nucleo/kit/piezas/ejes.js'],
+    requiere: ['/nucleo/kit/piezas/quim-particulas.js', '/nucleo/kit/piezas/quim-molecula.js', '/nucleo/kit/piezas/ejes.js',
+      '/plantillas/enlace/motor.js', '/nucleo/elementos.js', '/nucleo/kit/piezas/quim-molecula-3d.js'],
     historia: {
       texto: 'Conocer la masa de los átomos no explicaba por qué se combinan en proporciones fijas. En 1916, Gilbert N. Lewis propuso representar el enlace con electrones compartidos. Era una contabilidad útil, no una descripción completa: la forma, la deslocalización y las propiedades necesitaron después otros modelos. Un par de puntos no son dos bolitas inmóviles.',
       pregunta: '¿Por qué el agua es H₂O y no H₃O?',
@@ -648,6 +670,39 @@
     // angular y cambiar su polaridad, de 60° a 180° (el caso lineal, que anula todo). La segunda junta dos iones y el
     // híbrido. Las lecturas dicen ángulo, dipolo de enlace y resultado, o el ion y dónde quedó el par.
     laboratorio: [
+      {
+        // Exploración libre en 3D (decisión de Gerson, 15 nov: sin predicciones; los retos son invitaciones).
+        id: 'molecula-gira', titulo: 'La molécula que gira', pieza: 'quim-molecula-3d',
+        consigna: 'Gira la molécula con el dedo y toca un átomo para saber cuál es. Cambia de molécula y enciende los dipolos.',
+        controles: [
+          { id: 'mol', etiqueta: 'Molécula', opciones: GIRA.map(k => ({ valor: k, texto: M.molecula(k).formula })) },
+          { id: 'dip', etiqueta: 'Dipolos', opciones: [{ valor: 0, texto: 'Ocultos' }, { valor: 1, texto: 'A la vista' }] },
+          { id: 'par', etiqueta: 'Pares libres', opciones: [{ valor: 1, texto: 'A la vista' }, { valor: 0, texto: 'Ocultos' }] },
+        ],
+        dibujo: val => ({ datos: mol3d(val.mol), estado: { dipolos: val.dip === 1, pares: val.par === 1 } }),
+        lectura: val => { const x = M.molecula(val.mol); return [`${x.formula}: ${x.vsepr.geometria}, ${x.vsepr.hibridacion}, ${x.polaridad.polar ? 'polar' : 'apolar'}`]; },
+        // Retos comprobados con el mismo motor que arma la figura (docs/teoria.md §4d).
+        invitaciones: [
+          { texto: 'Encuentra una molécula con enlaces polares que, en total, sea apolar.',
+            logrado: val => enlacesPolares(val.mol) && !M.molecula(val.mol).polaridad.polar,
+            bien: 'Sus dipolos de enlace se anulan por la forma. Míralo con los dipolos a la vista.' },
+          { texto: 'Busca una molécula cuyo átomo central tenga dos pares libres.',
+            logrado: val => M.molecula(val.mol).posiciones.pares.length === 2,
+            bien: 'Los pares libres también ocupan lugar: empujan a los enlaces.' },
+          { texto: 'Enciende los dipolos y busca la molécula con forma de pirámide.',
+            logrado: val => val.dip === 1 && M.molecula(val.mol).vsepr.geometria === 'piramidal trigonal',
+            bien: 'Tres enlaces y un par libre arriba: las flechas no se anulan.' },
+          { texto: 'Encuentra la molécula que tiene ángulos de 90° y de 120° a la vez.',
+            logrado: val => { const a = M.molecula(val.mol).vsepr.angulos.map(Math.round); return a.includes(90) && a.includes(120); },
+            bien: 'La bipirámide: tres átomos en el ecuador y dos en los polos.' },
+          { texto: 'Guarda dos moléculas con la misma forma: una polar y otra apolar.',
+            logrado: (val, guardados) => guardados.some(a => guardados.some(b => {
+              const x = M.molecula(a.mol), y = M.molecula(b.mol);
+              return x.vsepr.geometria === y.vsepr.geometria && x.polaridad.polar && !y.polaridad.polar;
+            })),
+            bien: 'La forma no basta: también importa qué átomos rodean al central.' },
+        ],
+      },
       {
         id: 'dos-dipolos', titulo: 'Dos dipolos que giran', pieza: 'quim-molecula',
         consigna: 'Agarra el hidrógeno de la derecha y abre o cierra el ángulo. Cambia también la polaridad de cada enlace. ¿Cuándo se anulan?',

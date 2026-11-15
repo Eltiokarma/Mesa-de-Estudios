@@ -67,7 +67,7 @@ Se copia la forma de `contenido/teoria/fisica/movimiento-rectilineo.js`: es la u
 {
   unidad: 'fisica.movimiento-rectilineo', version: '0.1.0',
   estado: 'borrador' | 'completa',     // completa = cubre todos los temas del catálogo
-  requiere: ['/nucleo/kit/piezas/ejes.js'],   // solo piezas del kit
+  requiere: ['/nucleo/kit/piezas/ejes.js'],   // piezas del kit; también el motor de una plantilla (/plantillas/<id>/motor.js) o /nucleo/elementos.js
   historia: { texto (≤ 70 palabras), pregunta (≤ 16), fuente: { titulo, url } },   // la fuente no se muestra
   ideas: [{
     id, titulo (≤ 6 palabras), temas: ['<tema exacto del catálogo>', …], pieza: '<id del kit>',
