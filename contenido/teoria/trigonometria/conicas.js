@@ -248,7 +248,7 @@
       ],
     },
     regla: {
-      texto: 'La elipse es el lugar de los puntos cuya suma de distancias a dos focos es 2a. Centrada en el origen, con focos en el eje x:',
+      texto: 'La elipse es el lugar de los puntos cuya suma de distancias a dos focos es 2a. Centrada en el origen, con el eje focal sobre el eje x:',
       ecuacion: [PF1, ' + ', PF2, ' = ', { llave: ['2', a], nota: 'la cuerda', color: 'c-o' }, SEP, { frac: [sq('x'), sq(a)] }, ' + ', { frac: [sq('y'), sq(b)] }, ' = 1', SEP, { llave: [sq(a)], nota: 'el mayor', color: 'c-o' }, ' = ', sq(b), ' + ', sq(c)],
       condicion: 'a > c ≥ 0. Con c = 0 es una circunferencia; con a = c, el lugar es el segmento entre los focos.',
       voz: 'En la elipse, a es el mayor de los tres.',
@@ -455,9 +455,9 @@
       ],
     },
     regla: {
-      texto: 'Una recta es tangente a una cónica si, al sustituirla, la ecuación de segundo grado tiene discriminante cero: una raíz doble, un solo punto de contacto.',
+      texto: 'Una recta tangente a una cónica la toca así: al sustituirla, la ecuación de segundo grado tiene discriminante cero: una raíz doble, un solo punto de contacto.',
       ecuacion: [{ llave: ['Δ = 0'], nota: 'raíz doble' }],
-      condicion: 'la recta no es paralela al eje de la parábola: una vertical corta x² = 4y una sola vez sin ser tangente.',
+      condicion: 'la recta no es paralela al eje de la parábola: una vertical corta x² = 4y una vez y no es recta tangente.',
       voz: 'Un solo corte no basta; hace falta la raíz doble.',
     },
     ahoraTu: {
@@ -568,7 +568,7 @@
     regla: {
       texto: 'Girar los ejes un ángulo θ con cot 2θ = (A − C)/B quita el término xy. B² − 4AC orienta: negativo, elipse; cero, parábola; positivo, hipérbola.',
       ecuacion: ['cot 2', { llave: [th], nota: 'giro de ejes', color: 'c-o' }, ' = ', { frac: ['A − C', 'B'] }, SEP, 'x = x′cos ', th, ' − y′sen ', th, SEP, 'y = x′sen ', th, ' + y′cos ', th],
-      condicion: 'B ≠ 0 para girar. El discriminante no asegura puntos: puede salir una recta, un punto o nada.',
+      condicion: 'B ≠ 0 para girar. En la ecuación general, el discriminante no asegura puntos: puede salir una recta, un punto o nada.',
       voz: 'El signo orienta; un punto que cumpla lo confirma.',
     },
     ahoraTu: {
@@ -619,8 +619,10 @@
   // ---------- Laboratorio: figuras propias de las mesas ----------
   // Mesa 1: el foco F(0; p) y la directriz y = −p se mueven juntos; P se mueve libre, también bajo la directriz.
   const VL1 = { x: [-4, 4], y: [-2.8, 5.2] };
+  // Las dos distancias de P: al foco F(0; p) y a la directriz y = −p (figura, lectura y retos).
+  const distF = val => Math.hypot(val.x, val.y - val.p), distD = val => Math.abs(val.y + val.p);
   function focoLibre(val) {
-    const pv = val.p, dF = Math.hypot(val.x, val.y - pv), dD = Math.abs(val.y + pv), ok = Math.abs(dF - dD) < 1e-9, X = 2 * Math.sqrt(pv * 5.2);
+    const pv = val.p, dF = distF(val), dD = distD(val), ok = Math.abs(dF - dD) < 1e-9, X = 2 * Math.sqrt(pv * 5.2);
     return {
       ventana: VL1, numeros: 1,
       curvas: [{ puntos: curva(x => [x, x * x / (4 * pv)], -Math.min(4, X), Math.min(4, X)), color: 'h', discontinua: true }],
@@ -651,8 +653,16 @@
   }
   // Mesa 3: la recta y = mx + k contra la parábola x² = 4y, con pasos finos para atrapar la tangente (k = −m²).
   const VL3 = { x: [-4, 6], y: [-4.4, 7.6] };
+  // Discriminante de x² = 4(mx + k), es decir x² − 4mx − 4k = 0 (figura, lectura y retos).
+  const deltaRP = val => 16 * val.m * val.m + 16 * val.k;
+  // La elipse más achatada de la grilla de la mesa 2 (menor b/a con b > 0), para el reto del extremo.
+  let achatada = null;
+  const masAchatada = () => {
+    if (achatada === null) { achatada = Infinity; for (let i = 0; i <= 8; i++) for (let j = 0; j <= 12; j++) { const v = { a: 2 + i / 2, c: j / 2 }, bv = bDe(v); if (bv > 1e-9) achatada = Math.min(achatada, bv / v.a); } }
+    return achatada;
+  };
   function rectaLibre(val) {
-    const D = 16 * val.m * val.m + 16 * val.k, xs = D < -1e-9 ? [] : Math.abs(D) < 1e-9 ? [2 * val.m] : [2 * val.m - Math.sqrt(D) / 2, 2 * val.m + Math.sqrt(D) / 2];
+    const D = deltaRP(val), xs = D < -1e-9 ? [] : Math.abs(D) < 1e-9 ? [2 * val.m] : [2 * val.m - Math.sqrt(D) / 2, 2 * val.m + Math.sqrt(D) / 2];
     // La recta se recorta a la ventana: entre los x donde y sale por arriba o por abajo.
     let x0 = VL3.x[0], x1 = VL3.x[1];
     if (Math.abs(val.m) > 1e-9) {
@@ -673,6 +683,36 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js'],
+    glosario: [
+      { termino: 'lugar geométrico', def: 'Conjunto de todos los puntos que cumplen una condición, y solo de ellos.',
+        ejemplo: 'Los puntos a distancia 2 del origen: la circunferencia x² + y² = 4.', formas: ['lugar geométrico', 'lugares geométricos'] },
+      { termino: 'cónica', def: 'Curva que sale de cortar un cono con un plano: parábola, elipse, hipérbola o circunferencia.',
+        formas: ['cónica', 'cónicas'], ver: ['parábola', 'elipse', 'hipérbola'] },
+      { termino: 'foco', def: 'Punto fijo desde el que se miden las distancias que definen la curva.',
+        ejemplo: 'x² = 4y tiene su foco en (0; 1).', formas: ['foco', 'focos'], ver: ['directriz', 'eje focal'] },
+      { termino: 'directriz', def: 'Recta fija de la parábola: cada punto de la curva está tan lejos de ella como del foco.',
+        ejemplo: 'x² = 4y tiene directriz y = −1.', ver: ['foco', 'parábola'] },
+      { termino: 'parábola', def: 'Curva de los puntos que están a la misma distancia de un punto fijo que de una recta fija.',
+        ejemplo: 'x² = 4py, con foco (0; p) y directriz y = −p.', ver: ['foco', 'directriz'] },
+      { termino: 'elipse', def: 'Curva cerrada de los puntos cuya suma de distancias a dos puntos fijos vale siempre 2a.',
+        ejemplo: 'a = 5 y c = 3 dan b = 4: x²/25 + y²/16 = 1.', ver: ['foco', 'semieje'] },
+      { termino: 'hipérbola', def: 'Curva de dos ramas: la diferencia de distancias de cada punto a dos puntos fijos vale siempre 2a.',
+        ejemplo: 'Focos (±5; 0) y 2a = 6: x²/9 − y²/16 = 1.', ver: ['foco', 'asíntota'] },
+      { termino: 'eje focal', def: 'Recta que pasa por los dos focos; en ella están los vértices de la elipse o de la hipérbola.',
+        ver: ['foco'] },
+      { termino: 'semieje', def: 'Mitad de un eje de la elipse: a va del centro al extremo más lejano; b, al más cercano.',
+        ejemplo: 'x²/4 + y² = 1 tiene semiejes 2 y 1.', formas: ['semieje mayor', 'semieje menor', 'semieje', 'semiejes'], ver: ['elipse'] },
+      { termino: 'recta tangente', def: 'Recta que se apoya en la curva en un solo punto, sin atravesarla: al sustituirla queda una raíz doble.',
+        ejemplo: 'y = x − 1 toca a x² = 4y solo en (2; 1).', formas: ['recta tangente', 'rectas tangentes'], ver: ['discriminante'] },
+      { termino: 'discriminante', simbolo: 'Δ', def: 'Cantidad b² − 4ac que dice cuántas raíces tiene una cuadrática; en las cónicas, B² − 4AC sugiere el tipo.',
+        ejemplo: 'x² − 4x + 4 = 0: Δ = 16 − 16 = 0, una raíz doble.', ver: ['recta tangente', 'ecuación general'] },
+      { termino: 'ecuación general', def: 'Igualdad de segundo grado en x e y, con término xy incluido, que describe cualquier curva de este tipo.',
+        ejemplo: '5x² − 6xy + 5y² − 8 = 0 tiene A = 5, B = −6 y C = 5.',
+        formas: ['ecuación general', 'ecuaciones generales'], ver: ['discriminante', 'rotación de ejes'] },
+      { termino: 'rotación de ejes', simbolo: 'θ', def: 'Cambiar a ejes x′, y′ inclinados un ángulo θ, para que la ecuación pierda el término xy.',
+        ejemplo: '5x² − 6xy + 5y² = 8 con θ = 45° queda x′²/4 + y′² = 1.',
+        formas: ['rotación de ejes', 'girar los ejes', 'gira los ejes', 'giro de ejes'], ver: ['ecuación general'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera mueve también el foco (p) y deja a P ir
     // bajo la directriz, con la parábola punteada como guía; la segunda suelta la cuerda y los focos hasta los casos
     // raros (c = a: un segmento; c > a: ningún punto); la tercera suma la pendiente y pasos finos para atrapar la tangente.
@@ -687,7 +727,7 @@
         ],
         dibujo: val => ({ datos: focoLibre(val), estado: {} }),
         lectura: val => {
-          const dF = Math.hypot(val.x, val.y - val.p), dD = Math.abs(val.y + val.p);
+          const dF = distF(val), dD = distD(val);
           return [p, ` = ${f(val.p)}`, SEP, PF, ` ≈ ${f(dF)}`, SEP, PD, ` = ${f(dD)}`, SEP, Math.abs(dF - dD) < 1e-9 ? 'cumple' : 'no cumple'];
         },
         arrastres: [
@@ -697,6 +737,21 @@
           { id: 'foco', etiqueta: 'foco F: cambia p', color: 'c-o',
             donde: val => TP().enPx(focoLibre(val), 0, val.p),
             mover: (pt, val) => ({ p: TP().delPx(focoLibre(val), pt).y }) },
+        ],
+        invitaciones: [
+          { texto: 'Cambia p y vuelve a poner P sobre la curva: PF = PD.',
+            logrado: val => val.p !== 1 && Math.abs(distF(val) - distD(val)) < 1e-9,
+            bien: 'Otro foco, otra parábola: la condición PF = PD es la misma.' },
+          { texto: 'Pon P en el punto de la curva más cercano al foco.',
+            logrado: val => val.x === 0 && Math.abs(distF(val) - distD(val)) < 1e-9,
+            bien: 'Es el vértice: queda a mitad de camino entre el foco y la directriz.' },
+          { texto: 'Pon P debajo de la directriz y compara las dos distancias.',
+            logrado: val => val.y < -val.p - 1e-9,
+            bien: 'Ahí P está siempre más cerca de la directriz que del foco: nunca cumple.' },
+          { texto: 'Guarda dos puntos simétricos respecto al eje y, con el mismo p.',
+            logrado: (val, guardados) => guardados.some(g => guardados.some(q => g.x !== 0 && g.x === -q.x && g.y === q.y && g.p === q.p
+              && Math.abs(distF(g) - distF(q)) < 1e-9)),
+            bien: 'Mismas distancias al foco y a la directriz: la parábola es simétrica.' },
         ],
       },
       {
@@ -729,6 +784,24 @@
             donde: val => TP().enPx(cuerdaLibre(val), val.c, 0),
             mover: (pt, val) => ({ c: TP().delPx(cuerdaLibre(val), pt).x }) },
         ],
+        invitaciones: [
+          { texto: 'Lleva el lápiz P a la punta más alta de la elipse.',
+            logrado: val => val.c < val.a - 1e-9 && val.t === 90 && Math.abs(Math.hypot(val.c, bDe(val)) - val.a) < 1e-9,
+            bien: 'Arriba, cada tramo de cuerda mide a: por eso b² = a² − c².' },
+          { texto: 'Junta los dos focos y mira qué curva dibuja la cuerda.',
+            logrado: val => val.c === 0,
+            bien: 'Focos juntos: todos los puntos a distancia a. Es una circunferencia.' },
+          { texto: 'Haz que la curva se aplane en el segmento entre los focos.',
+            logrado: val => Math.abs(val.a - val.c) < 1e-9,
+            bien: 'Con c = a, b = 0: la cuerda va tensa de foco a foco.' },
+          { texto: 'Busca la elipse más achatada sin que llegue a ser un segmento.',
+            logrado: val => bDe(val) > 1e-9 && bDe(val) / val.a <= masAchatada() + 1e-12,
+            bien: 'Con c casi igual a a, los focos llegan casi a los extremos.' },
+          { texto: 'Guarda dos elipses con el mismo semieje b y distinto a.',
+            logrado: (val, guardados) => guardados.some(g => guardados.some(q => g.a !== q.a && g.c < g.a && q.c < q.a
+              && Math.abs(bDe(g) - bDe(q)) < 1e-9)),
+            bien: 'Mismo b, otro a: los focos se acomodan para que b² = a² − c².' },
+        ],
       },
       {
         id: 'recta-y-parabola', titulo: 'Recta contra parábola', pieza: 'trig-plano',
@@ -739,7 +812,7 @@
         ],
         dibujo: val => ({ datos: rectaLibre(val), estado: {} }),
         lectura: val => {
-          const D = 16 * val.m * val.m + 16 * val.k;
+          const D = deltaRP(val);
           return [`Δ = ${f(D, 3)}`, SEP, D > 1e-9 ? 'dos cortes' : D < -1e-9 ? 'ningún corte' : `tangente: k = −m² = ${f(val.k, 4)}`];
         },
         arrastres: [
@@ -749,6 +822,23 @@
           { id: 'inclinacion', etiqueta: 'otro punto de la recta: cambia m', color: 'c-o',
             donde: val => TP().enPx(rectaLibre(val), 1.5, 1.5 * val.m + val.k),
             mover: (pt, val) => { const q = TP().delPx(rectaLibre(val), pt); return { m: (q.y - val.k) / Math.max(0.5, q.x) }; } },
+        ],
+        invitaciones: [
+          { texto: 'Haz que la recta toque la parábola una sola vez.',
+            logrado: val => Math.abs(deltaRP(val)) < 1e-9,
+            bien: 'Δ = 0, raíz doble: es una recta tangente. ¿Habrá una para cada m?' },
+          { texto: 'Consigue que la recta no corte la parábola.',
+            logrado: val => deltaRP(val) < -1e-9,
+            bien: 'Δ negativo: al sustituir, la ecuación no tiene raíces reales.' },
+          { texto: 'Con la recta horizontal, haz que toque la parábola solo en su vértice.',
+            logrado: val => val.m === 0 && Math.abs(deltaRP(val)) < 1e-9,
+            bien: 'y = 0 se apoya en x² = 4y justo en (0; 0).' },
+          { texto: 'Con m = 1, busca el menor k que todavía toque la parábola.',
+            logrado: val => val.m === 1 && deltaRP(val) > -1e-9 && deltaRP({ m: 1, k: val.k - 0.0625 }) < -1e-9,
+            bien: 'Justo en k = −m² la recta toca: más abajo, ya no hay corte.' },
+          { texto: 'Guarda dos rectas paralelas: una que corte dos veces y otra que no corte.',
+            logrado: (val, guardados) => guardados.some(g => guardados.some(q => g.m === q.m && deltaRP(g) > 1e-9 && deltaRP(q) < -1e-9)),
+            bien: 'Misma inclinación: subir o bajar la recta cambia el signo de Δ.' },
         ],
       },
     ],
