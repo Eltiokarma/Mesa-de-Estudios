@@ -143,12 +143,12 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'La velocidad de salida se parte en dos: de lado y hacia arriba.', ecuacion: [vx, ' = 25 · 0,6 = 15 m/s', '   ·   ', { sub: [v, 'y0'] }, ' = 25 · 0,8 = 20 m/s'] },
         { estado: { corte: 2 }, texto: 'De lado no hay aceleración: avanza 15 m cada segundo.', ecuacion: [x, ' = 15 ', t] },
-        { estado: { corte: 3 }, texto: 'Hacia arriba es caída libre: vy llega a 0 a los 2 s.', ecuacion: [{ sub: [y, 'máx'] }, ' = ½ · 20 · 2 = 20 m'] },
-        { estado: { corte: 4 }, texto: 'Baja otros 2 s. En 4 s, de lado avanzó 15 · 4.', ecuacion: ['R = ', vx, ' · ', t, ' = 15 · 4 = 60 m'] },
+        { estado: { corte: 3 }, texto: 'Sube en caída libre hasta la altura máxima: vy = 0 a los 2 s.', ecuacion: [{ sub: [y, 'máx'] }, ' = ½ · 20 · 2 = 20 m'] },
+        { estado: { corte: 4 }, texto: 'Baja otros 2 s: tiempo de vuelo, 4 s. Avanzó 15 · 4.', ecuacion: ['R = ', vx, ' · ', t, ' = 15 · 4 = 60 m'] },
       ],
     },
     regla: {
-      texto: 'El tiro se separa en dos movimientos con el mismo reloj: de lado, velocidad constante; hacia arriba, caída libre.',
+      texto: 'El tiro parabólico se separa en dos movimientos con el mismo reloj: de lado, velocidad constante; hacia arriba, caída libre.',
       ecuacion: [x, ' = ', { llave: [vx], nota: 'no cambia', color: 'c-o' }, t, '   ·   ', y, ' = ', { sub: [v, 'y0'] }, t, ' − ', { llave: ['½ ', g, { sup: [t, '2'] }], nota: 'lo que cae', color: 'c-d' }],
       condicion: 'sin aire y con g constante (aquí 10 m/s²). Igual alcance a 30° y 60° pide igual rapidez y altura.',
     },
@@ -262,13 +262,13 @@
         { estado: { paso: 1 }, texto: 'En 2 s el disco gira 90°: todos sus puntos giran lo mismo.', ecuacion: ['ω = ', { frac: ['θ', t] }, ' = ', { frac: ['π/2', '2'] }, ` = ${f(Math.PI / 4, 2)} rad/s`] },
         { estado: { paso: 2 }, texto: 'El punto a 1 m recorre un arco corto.', ecuacion: [s_, ` = 1 · π/2 = ${f(Math.PI / 2, 2)} m`] },
         { estado: { paso: 3 }, texto: 'El punto a 3 m recorre el triple en el mismo tiempo.', ecuacion: [s_, ` = 3 · π/2 = ${f(3 * Math.PI / 2, 2)} m`] },
-        { estado: { paso: 4 }, texto: 'Misma ω, distinta rapidez: la de afuera va tres veces más rápido.', ecuacion: [v, ' = ω r'] },
+        { estado: { paso: 4 }, texto: 'Misma ω, distinta velocidad tangencial: la de afuera va tres veces más rápido.', ecuacion: [v, ' = ω r'] },
       ],
     },
     regla: {
-      texto: 'Un ángulo en radianes es el arco dividido entre el radio. Por eso el arco y la rapidez crecen con el radio.',
+      texto: 'El desplazamiento angular θ, en radianes, es el arco dividido entre el radio. Por eso el arco y la rapidez crecen con el radio.',
       ecuacion: [s_, ' = ', { llave: ['θ r'], nota: 'θ en radianes', color: 'c-i' }, '   ·   ', 'ω = ', { frac: ['Δθ', ['Δ', t]] }, '   ·   ', v, ' = ω r'],
-      condicion: 'θ va en radianes (180° = π rad). En un disco rígido, todos los puntos tienen la misma ω.',
+      condicion: 'θ va en radianes (180° = π rad). En un disco rígido, todos los puntos tienen la misma velocidad angular ω.',
     },
     ahoraTu: {
       pieza: 'fis-lienzo',
@@ -368,9 +368,9 @@
       ],
     },
     regla: {
-      texto: 'En el MCU la rapidez no cambia, pero la dirección de la velocidad sí: hay una aceleración que apunta al centro.',
+      texto: 'En el MCU la rapidez no cambia, pero la dirección de la velocidad sí: hay una aceleración centrípeta, que apunta al centro.',
       ecuacion: [{ llave: [ac], nota: 'al centro', color: 'c-d' }, ' = ', { frac: [{ sup: [v, '2'] }, 'r'] }, ' = ', { sup: ['ω', '2'] }, 'r'],
-      condicion: 'rapidez constante. Si además la rapidez cambia, se suma una aceleración tangencial.',
+      condicion: 'rapidez constante: cada vuelta dura un período T, y la frecuencia es 1/T. Si la rapidez cambia, se suma aceleración tangencial.',
     },
     ahoraTu: {
       pieza: 'fis-lienzo',
@@ -464,7 +464,7 @@
       ],
     },
     regla: {
-      texto: 'En el MCUV la aceleración tangencial no cambia, pero la centrípeta crece con la rapidez. La total suma ambas como vectores perpendiculares.',
+      texto: 'En el MCUV la aceleración tangencial no cambia, pero la aceleración centrípeta crece con la rapidez. La total suma ambas como vectores perpendiculares.',
       ecuacion: [{ llave: [aT, ' = α r'], nota: 'cambia la rapidez', color: 'c-d' }, '   ·   ', ac, ' = ', { frac: [{ sup: [v, '2'] }, 'r'] }, '   ·   ', a, ' = ', { raiz: [{ sup: [aT, '2'] }, ' + ', { sup: [ac, '2'] }] }],
       condicion: 'α constante; ω = ω₀ + α t, como v = v₀ + a t en una recta.',
     },
@@ -501,12 +501,58 @@
     return Object.assign(EJE_TIRO(95, 50), { curvas: [{ puntos: curva, color: 'i' }], puntos });
   }
   const cimaLibre = (vi, ang) => { const g_ = EJ(tiroLibre(vi, ang)), ux = vi * Math.cos(rad(ang)), uy = vi * Math.sin(rad(ang)); return { x: g_.X(ux * uy / G), y: g_.Y(uy * uy / (2 * G)) }; };
+  // Lo que se lee del tiro libre (las mismas cuentas que trazan la curva): vuelo, altura máxima y alcance.
+  const medidasTiro = val => {
+    const ux = val.v0 * Math.cos(rad(val.ang)), uy = val.v0 * Math.sin(rad(val.ang)), T = 2 * uy / G;
+    return { T, H: uy * uy / (2 * G), R: ux * T };
+  };
+  const ANGS_LIBRES = Array.from({ length: (TIRO_LIBRE[1].max - TIRO_LIBRE[1].min) / TIRO_LIBRE[1].paso + 1 }, (_, k) => TIRO_LIBRE[1].min + k * TIRO_LIBRE[1].paso);
+  // La rueda y el giro del laboratorio: el arco y la aceleración son las cuentas de arcoRueda y mcu.
+  const arcoDe = val => val.r * rad(val.deg);
+  const acDe = val => val.v * val.v / val.r;
+  const periodoDe = val => 2 * Math.PI * val.r / val.v;
 
   return {
     unidad: 'fisica.movimiento-parabolico-y-circular',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-lienzo.js'],
+    // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. Velocidad, aceleración
+    // y caída libre vienen de MRU, MRUV y caída libre; vector y componente, de magnitudes y vectores.
+    glosario: [
+      { termino: 'tiro parabólico', def: 'Movimiento de algo lanzado que avanza de lado mientras cae; sin aire, su camino es una parábola.',
+        ejemplo: '25 m/s a 53°: cae a 60 m del punto de salida.', ver: ['alcance horizontal', 'altura máxima', 'tiempo de vuelo'] },
+      { termino: 'alcance horizontal', simbolo: 'R', medida: 'm', formas: ['alcance horizontal', 'alcance', 'alcances'],
+        def: 'Distancia de lado entre el punto de salida y donde cae, a la misma altura.',
+        ejemplo: 'vₓ = 15 m/s durante 4 s: R = 60 m.', ver: ['tiempo de vuelo'] },
+      { termino: 'altura máxima', simbolo: 'y máx', medida: 'm', def: 'Lo más alto que sube un proyectil: ahí su velocidad vertical vale 0.',
+        ejemplo: 'Sale con vᵧ = 20 m/s: sube 20² / 20 = 20 m.', ver: ['tiro parabólico'] },
+      { termino: 'tiempo de vuelo', simbolo: 't', medida: 's', def: 'Cuánto dura un lanzamiento en el aire, desde que sale hasta que cae.',
+        ejemplo: 'Sale con vᵧ = 20 m/s: sube 2 s y baja 2 s; vuela 4 s.', ver: ['altura máxima'] },
+      { termino: 'radián', simbolo: 'rad', formas: ['radián', 'radianes'], def: 'Ángulo cuyo arco mide lo mismo que el radio. Una vuelta tiene 2π de ellos.',
+        ejemplo: '180° = π rad, unos 3,14 rad.', ver: ['desplazamiento angular'] },
+      { termino: 'desplazamiento angular', simbolo: 'θ', medida: 'rad', def: 'Cuánto gira un cuerpo alrededor de un centro, medido como arco entre radio.',
+        ejemplo: 'Un cuarto de vuelta: θ = π/2 rad.', ver: ['radián', 'velocidad angular'] },
+      { termino: 'velocidad angular', simbolo: 'ω', medida: 'rad/s', def: 'Cuánto ángulo gira un cuerpo en cada segundo.',
+        ejemplo: 'Gira 90° en 2 s: ω = π/4 ≈ 0,79 rad/s.', ver: ['velocidad tangencial', 'aceleración angular'] },
+      { termino: 'aceleración angular', simbolo: 'α', medida: 'rad/s²', def: 'Cuánto cambia la velocidad angular en cada segundo.',
+        ejemplo: 'De 0 a 6 rad/s en 3 s: α = 2 rad/s².', ver: ['aceleración tangencial'] },
+      { termino: 'velocidad tangencial', simbolo: 'v', medida: 'm/s', def: 'Velocidad de un punto que gira; apunta a lo largo del círculo y vale ω r.',
+        ejemplo: 'ω = 2 rad/s a 3 m del eje: v = 6 m/s.', ver: ['velocidad angular'] },
+      { termino: 'período', simbolo: 'T', medida: 's', formas: ['período', 'períodos', 'periodo', 'periodos'],
+        def: 'Tiempo que tarda una vuelta completa, o un ciclo que se repite.',
+        ejemplo: 'Radio 2 m a 4 m/s: T = 2π · 2 / 4 ≈ 3,14 s.', ver: ['frecuencia'] },
+      { termino: 'frecuencia', simbolo: 'f', medida: 'Hz', def: 'Cuántas vueltas o ciclos se completan en cada segundo: el inverso del período.',
+        ejemplo: 'T = 0,5 s: f = 2 Hz, dos vueltas por segundo.', ver: ['período'] },
+      { termino: 'MCU', def: 'Movimiento circular uniforme: gira con rapidez constante, pero la dirección de la velocidad cambia.',
+        ver: ['aceleración centrípeta', 'período'] },
+      { termino: 'MCUV', def: 'Movimiento circular uniformemente variado: la rapidez del giro cambia lo mismo cada segundo.',
+        ver: ['aceleración angular', 'aceleración tangencial'] },
+      { termino: 'aceleración centrípeta', simbolo: 'ac', medida: 'm/s²', def: 'La que apunta al centro del giro y cambia la dirección de la velocidad: v² entre r.',
+        ejemplo: '4 m/s en un círculo de 2 m: ac = 8 m/s².', ver: ['MCU'] },
+      { termino: 'aceleración tangencial', simbolo: 'aT', medida: 'm/s²', def: 'La que va a lo largo del giro y cambia la rapidez: α por r.',
+        ejemplo: 'α = 1 rad/s² con r = 2 m: aT = 2 m/s².', ver: ['MCUV', 'aceleración centrípeta'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. El tiro libre abre el rango (5 a 30 m/s, 15° a 75°) para probar el caso
     // raro: ángulos que suman 90° llegan igual de lejos. La rueda y el MCU son los juegos de las ideas 2 y 3.
     laboratorio: [
@@ -516,15 +562,63 @@
         controles: TIRO_LIBRE,
         dibujo: val => ({ datos: tiroLibre(val.v0, val.ang), estado: {} }),
         lectura: val => {
-          const uy = val.v0 * Math.sin(rad(val.ang)), T = 2 * uy / G, R = val.v0 * Math.cos(rad(val.ang)) * T;
-          return [`${f(val.v0, 0)} m/s a ${f(val.ang, 0)}°: cae a ${f(R, 1)} m, sube ${f(uy * uy / (2 * G), 1)} m`];
+          const m = medidasTiro(val);
+          return [`${f(val.v0, 0)} m/s a ${f(val.ang, 0)}°: cae a ${f(m.R, 1)} m, sube ${f(m.H, 1)} m`];
         },
+        invitaciones: [
+          { texto: 'Guarda dos tiros con la misma rapidez, otro ángulo y el mismo alcance.',
+            logrado: (val, guardados) => guardados.some(x => x.v0 === val.v0 && x.ang !== val.ang && Math.abs(medidasTiro(x).R - medidasTiro(val).R) < 1e-6)
+              && guardados.some(x => x.v0 === val.v0 && x.ang === val.ang),
+            bien: 'Caen en el mismo sitio y sus ángulos suman 90°. ¿Pasa también con 15° y 75°?' },
+          { texto: 'Con 20 m/s, busca el ángulo que llega más lejos.',
+            logrado: val => val.v0 === 20 && ANGS_LIBRES.every(an => medidasTiro(val).R >= medidasTiro({ v0: 20, ang: an }).R - 1e-9),
+            bien: '45° gana: reparte la rapidez por igual entre subir y avanzar.' },
+          { texto: 'Haz que la pelota esté justo 3 s en el aire.',
+            logrado: val => Math.abs(medidasTiro(val).T - 3) < 1e-9,
+            bien: 'El tiempo de vuelo solo mira la parte de la rapidez que sube.' },
+          { texto: 'Guarda dos tiros: el que sube más debe llegar menos lejos.',
+            logrado: (val, guardados) => guardados.some(x => {
+              const a = medidasTiro(x), b = medidasTiro(val);
+              return (a.H > b.H + 1e-9 && a.R < b.R - 1e-9) || (a.H < b.H - 1e-9 && a.R > b.R + 1e-9);
+            }) && guardados.some(x => x.v0 === val.v0 && x.ang === val.ang),
+            bien: 'Más alto no es más lejos: subir le quita rapidez de lado.' },
+        ],
         arrastres: [{ id: 'cima', etiqueta: 'cima de la parábola (rapidez y ángulo)', color: 'c-o',
           donde: val => cimaLibre(val.v0, val.ang),
           mover: (pt, val) => masCerca(TIRO_LIBRE[0], TIRO_LIBRE[1], cimaLibre, pt) }],
       },
-      Object.assign({ id: 'rueda', titulo: 'El arco de la rueda', pieza: 'fis-lienzo' }, angulares.juega),
-      Object.assign({ id: 'giro', titulo: 'Rapidez fija, flecha que gira', pieza: 'fis-lienzo' }, mcuIdea.juega),
+      Object.assign({ id: 'rueda', titulo: 'El arco de la rueda', pieza: 'fis-lienzo',
+        invitaciones: [
+          { texto: 'Consigue un arco de justo 2π m, unos 6,28 m.',
+            logrado: val => Math.abs(arcoDe(val) - 2 * Math.PI) < 1e-9,
+            bien: 'Radio 2 y media vuelta, o radio 4 y un cuarto: s = r θ.' },
+          { texto: 'Con radio 4 m, busca el menor giro que recorra más de 10 m.',
+            logrado: val => val.r === 4 && arcoDe(val) > 10 && arcoDe({ r: 4, deg: val.deg - 30 }) <= 10,
+            bien: 'Con 150° el arco ya mide más de dos radios y medio.' },
+          { texto: 'Guarda dos casos con el mismo arco y distinto radio.',
+            logrado: (val, guardados) => guardados.some(x => x.r !== val.r && Math.abs(arcoDe(x) - arcoDe(val)) < 1e-9)
+              && guardados.some(x => x.r === val.r && x.deg === val.deg),
+            bien: 'Mismo arco: la rueda grande gira menos. ¿Cuánto menos, si el radio es el doble?' },
+          { texto: 'Haz que el ángulo girado pase de 6 radianes.',
+            logrado: val => rad(val.deg) > 6,
+            bien: 'Una vuelta entera son 2π radianes: un poco más de 6,28.' },
+        ] }, angulares.juega),
+      Object.assign({ id: 'giro', titulo: 'Rapidez fija, flecha que gira', pieza: 'fis-lienzo',
+        invitaciones: [
+          { texto: 'Haz que la aceleración centrípeta valga justo 2 m/s².',
+            logrado: val => Math.abs(acDe(val) - 2) < 1e-9,
+            bien: 'v² entre r da justo 2. ¿Qué pasa si duplicas la rapidez?' },
+          { texto: 'Consigue una aceleración centrípeta de más de 7 m/s².',
+            logrado: val => acDe(val) > 7,
+            bien: 'Mucha rapidez en un giro cerrado: v² entre r crece rápido.' },
+          { texto: 'Haz que una vuelta completa dure menos de 3,2 s.',
+            logrado: val => periodoDe(val) < 3.2,
+            bien: 'Ese tiempo de una vuelta es el período: 2πr entre v.' },
+          { texto: 'Guarda dos casos con la misma rapidez y distinta aceleración.',
+            logrado: (val, guardados) => guardados.some(x => x.v === val.v && Math.abs(acDe(x) - acDe(val)) > 1e-9)
+              && guardados.some(x => x.v === val.v && x.r === val.r),
+            bien: 'La rapidez no cambia y aun así acelera: lo decide qué tan cerrado es el giro.' },
+        ] }, mcuIdea.juega),
     ],
     historia: {
       texto: 'Un proyectil avanza y cae a la vez. En 1638, Galileo explicó su camino como la suma de un avance parejo y una caída acelerada, sin aire. Después, Huygens estudió el giro: algo puede mantener su rapidez y, aun así, cambiar de dirección todo el tiempo.',
