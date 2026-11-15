@@ -601,9 +601,14 @@
   // Mesa 1, más rica que la idea 1: A y B se arrastran y la razón m : n es libre (de 1 a 5 cada parte), no solo
   // cinco razones fijas. Deja ver que P siempre queda del lado del extremo con el número más chico de su tramo.
   const repartoFig = (A, B, m, k) => divFig(A, B, m, k, { ta: `${m}`, tb: `${k}`, alt: `A${P(...A)} y B${P(...B)}; P divide AB en razón ${m} : ${k} y queda en ${P((k * A[0] + m * B[0]) / (m + k), (k * A[1] + m * B[1]) / (m + k))}` });
+  // Pesos cruzados: P = (n · A + m · B)/(m + n), y AB por Pitágoras.
+  const reparto = v => ({ P: [(v.k * v.ax + v.m * v.bx) / (v.m + v.k), (v.k * v.ay + v.m * v.by) / (v.m + v.k)], AB: Math.hypot(v.bx - v.ax, v.by - v.ay) });
+  // Extremos de la mesa, calculados con sus rangos: la menor fracción del camino m/(m + n) y el AB más largo.
+  const REPARTO_MIN = (() => { let q = 1; for (let m = 1; m <= 5; m++) for (let k = 1; k <= 5; k++) q = Math.min(q, m / (m + k)); return q; })();
+  const REPARTO_AB_MAX = Math.hypot(5 - -5, 4 - -4);
   const mesaReparto = {
     id: 'reparto-libre', titulo: 'Segmento con reparto libre', pieza: 'geo-figura',
-    consigna: 'Arrastra A y B. Cambia m y n. Mira hacia qué extremo se corre P y cuánto mide AB.',
+    consigna: 'Arrastra A y B por el plano cartesiano. Cambia m y n. Mira hacia qué extremo se corre P y cuánto mide AB.',
     controles: [
       { id: 'ax', etiqueta: 'x de A', min: -5, max: 5, paso: 1, inicio: -4, unidad: '', decimales: 0, color: 'c-o' },
       { id: 'ay', etiqueta: 'y de A', min: -4, max: 4, paso: 1, inicio: -3, unidad: '', decimales: 0, color: 'c-o' },
@@ -622,7 +627,22 @@
         donde: v => enPantalla(repartoFig([v.ax, v.ay], [v.bx, v.by], v.m, v.k), [v.bx, v.by]),
         mover: (pt, v) => { const q = alPlano(repartoFig([v.ax, v.ay], [v.bx, v.by], v.m, v.k), pt); return { bx: q[0], by: q[1] }; } },
     ],
-    lectura: v => [`${v.m} : ${v.k}`, SEP, `P = ${P((v.k * v.ax + v.m * v.bx) / (v.m + v.k), (v.k * v.ay + v.m * v.by) / (v.m + v.k))}`, SEP, `AB ≈ ${f(Math.hypot(v.bx - v.ax, v.by - v.ay))}`],
+    lectura: v => { const R = reparto(v); return [`${v.m} : ${v.k}`, SEP, `P = ${P(...R.P)}`, SEP, `AB ≈ ${f(R.AB)}`]; },
+    // Retos: se comprueban con reparto(), la misma cuenta de la lectura (pesos cruzados y Pitágoras).
+    invitaciones: [
+      { texto: 'Haz que P caiga justo en el origen, con A y B distintos.',
+        logrado: v => { const R = reparto(v); return R.AB > 0 && Math.abs(R.P[0]) < 1e-9 && Math.abs(R.P[1]) < 1e-9; },
+        bien: 'El origen reparte AB en la razón que elegiste. ¿Funciona con otra razón?' },
+      { texto: 'Haz que P caiga en un cruce de la cuadrícula sin ser el punto medio.',
+        logrado: v => { const R = reparto(v); return R.AB > 0 && v.m !== v.k && Number.isInteger(+R.P[0].toFixed(9)) && Number.isInteger(+R.P[1].toFixed(9)); },
+        bien: 'Coordenadas enteras: cada avance de A a B se partió en m + n partes exactas.' },
+      { texto: 'Lleva P lo más cerca de A que permitan m y n.',
+        logrado: v => reparto(v).AB > 0 && v.m / (v.m + v.k) === REPARTO_MIN,
+        bien: 'Con 1 : 5, P avanza solo un sexto: B lleva el peso chico.' },
+      { texto: 'Estira AB todo lo que permite la mesa.',
+        logrado: v => Math.abs(reparto(v).AB - REPARTO_AB_MAX) < 1e-9,
+        bien: 'De esquina a esquina: √(10² + 8²). Pitágoras con los avances.' },
+    ],
   };
 
   // Mesa 2: junta las ideas 2 y 3. La recta pasa por A y B, los dos libres (también vertical u horizontal), y P mide
@@ -652,6 +672,10 @@
       angulos: lejos ? [{ en: 'H', de: 'Q', a: U.dist(H, e1) > 0.5 ? 'e1' : 'e0', color: 'h' }] : [],
     });
   };
+  // Avances de A a B, su largo y la distancia de P a la recta AB (la misma cuenta de rectaPunto).
+  const medirRecta = v => { const dx = v.bx - v.ax, dy = v.by - v.ay, L = Math.hypot(dx, dy); return { dx, dy, L, d: L ? Math.abs(dx * (v.py - v.ay) - dy * (v.px - v.ax)) / L : NaN }; };
+  // La mayor pendiente no vertical de la mesa: todo el alto de y en un solo paso de x.
+  const RECTA_M_MAX = (4 - -4) / 1;
   const mesaRecta = {
     id: 'recta-y-punto', titulo: 'Recta y punto libres', pieza: 'geo-figura',
     consigna: 'Arrastra A y B para mover la recta, y P para alejarlo. Prueba una recta vertical y P sobre la recta.',
@@ -676,6 +700,25 @@
       const d = Math.abs(dx * (v.py - v.ay) - dy * (v.px - v.ax)) / L;
       return [dx === 0 ? `vertical, x = ${n(v.ax)}` : `m = ${fr(dy, dx)}`, SEP, { v: 'c-h', t: 'd' }, ` = ${f(d)}${d < 1e-9 ? ': P está en la recta' : ''}`];
     },
+    // Retos: se comprueban con medirRecta(), las mismas cuentas de la lectura y del dibujo (rectaPunto).
+    invitaciones: [
+      { texto: 'Haz una recta vertical. ¿Qué le pasa a la pendiente?',
+        logrado: v => { const R = medirRecta(v); return R.L > 0 && R.dx === 0; },
+        bien: 'Δx = 0: no hay división posible. La recta es x = k, sin pendiente.' },
+      { texto: 'Pon P justo a 5 de la recta.',
+        logrado: v => { const R = medirRecta(v); return R.L > 0 && Math.abs(R.d - 5) < 1e-9; },
+        bien: 'La distancia va por la perpendicular. ¿Encuentras otro P a 5?' },
+      { texto: 'Arma la recta de mayor pendiente positiva que no sea vertical.',
+        logrado: v => { const R = medirRecta(v); return R.L > 0 && R.dx !== 0 && R.dy / R.dx === RECTA_M_MAX; },
+        bien: 'Sube 8 por cada 1 que avanza. Un paso más y sería vertical.' },
+      { texto: 'Pon P sobre la recta, lejos de A y de B.',
+        logrado: v => { const R = medirRecta(v); return R.L > 0 && R.d < 1e-9 && (v.px !== v.ax || v.py !== v.ay) && (v.px !== v.bx || v.py !== v.by); },
+        bien: 'Distancia 0: P cumple la ecuación de la recta.' },
+      { texto: 'Guarda dos rectas paralelas que no sean la misma.',
+        logrado: (v, guardados) => { const R = medirRecta(v); return R.L > 0 && guardados.some(g => { const S = medirRecta(g); return S.L > 0
+          && R.dx * S.dy - R.dy * S.dx === 0 && R.dx * (g.ay - v.ay) - R.dy * (g.ax - v.ax) !== 0; }); },
+        bien: 'Misma pendiente, otro lugar: las paralelas nunca se cortan.' },
+    ],
   };
 
   // Mesa 3: la elipse con semiejes libres. La idea 6 fija a = 5 y b = 3; aquí, si b pasa a a, los focos saltan al eje y,
@@ -691,6 +734,10 @@
       segmentos: [{ de: 'P', a: 'F1', color: 'i', grosor: 'variable' }, ...(c === 0 ? [] : [{ de: 'P', a: 'F2', color: 'd', grosor: 'variable' }])],
     });
   };
+  // Distancia centro–foco, eje de los focos y excentricidad c / (semieje mayor) de la elipse de la mesa.
+  const focos = v => { const c = Math.sqrt(Math.abs(v.a * v.a - v.b * v.b)); return { c, enX: v.a >= v.b, e: c / Math.max(v.a, v.b) }; };
+  // La mayor excentricidad de la mesa, buscada en la grilla de los dos semiejes.
+  const ELIPSE_E_MAX = (() => { let m = 0; for (let a = 1; a <= 5.5; a += 0.5) for (let b = 1; b <= 4.5; b += 0.5) m = Math.max(m, focos({ a, b }).e); return m; })();
   const mesaElipse = {
     id: 'elipse-libre', titulo: 'Elipse con semiejes libres', pieza: 'geo-figura',
     consigna: 'Arrastra P por la curva y los vértices para cambiar a y b. Haz b mayor que a, y luego iguales.',
@@ -718,6 +765,24 @@
       const F = enX ? [c, 0] : [0, c], s = Math.hypot(Pp[0] - F[0], Pp[1] - F[1]) + Math.hypot(Pp[0] + F[0], Pp[1] + F[1]);
       return [{ v: 'c-o', t: 'c' }, ` = ${f(c)}${c === 0 ? ' (circunferencia)' : enX ? ' en x' : ' en y'}`, SEP, `PF₁ + PF₂ = ${f(s)}`];
     },
+    // Retos: se comprueban con focos(), la misma cuenta de la lectura (c² = a² − b² con el eje mayor que toque).
+    invitaciones: [
+      { texto: 'Haz que los dos focos se junten en el centro. ¿Qué curva queda?',
+        logrado: v => focos(v).c === 0,
+        bien: 'c = 0: todos los puntos a la misma distancia del centro. Una circunferencia.' },
+      { texto: 'Arma una elipse con los focos a 3 del centro.',
+        logrado: v => Math.abs(focos(v).c - 3) < 1e-9,
+        bien: 'Semiejes 5 y 4: c² = 25 − 16 = 9. Se resta, no se suma.' },
+      { texto: 'Haz que los focos salten al eje vertical.',
+        logrado: v => focos(v).c > 0 && !focos(v).enX,
+        bien: 'Los focos van siempre sobre el eje mayor, ahora el vertical.' },
+      { texto: 'Arma la elipse más achatada que permite la mesa.',
+        logrado: v => Math.abs(focos(v).e - ELIPSE_E_MAX) < 1e-9,
+        bien: 'Excentricidad casi 1: los focos se van hacia los vértices.' },
+      { texto: 'Guarda dos elipses de distinto tamaño con los mismos focos.',
+        logrado: (v, guardados) => focos(v).c > 0 && guardados.some(g => g.a !== v.a && focos(g).enX === focos(v).enX && Math.abs(focos(g).c - focos(v).c) < 1e-9),
+        bien: 'Mismos focos, otra suma 2a: elipses una dentro de otra.' },
+    ],
   };
 
   return {
@@ -730,6 +795,39 @@
       pregunta: '¿Cómo se vuelve ecuación una condición sobre distancias?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «René Descartes», MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Descartes/' },
     },
+    // Glosario: las palabras que este tema estrena en el curso (docs/teoria.md, 4d). Los ejemplos salen de los casos
+    // de las ideas y se comprobaron con node.
+    glosario: [
+      { termino: 'plano cartesiano', formas: ['plano cartesiano', 'planos cartesianos'],
+        def: 'Plano con dos rectas numeradas perpendiculares, los ejes x e y; cada punto queda nombrado por un par (x; y).',
+        ejemplo: '(3; −2): 3 a la derecha del origen y 2 hacia abajo.', ver: ['coordenadas'] },
+      { termino: 'pesos cruzados', def: 'Para dividir AB en razón m : n, A lleva el peso n y B el peso m.',
+        ejemplo: 'A(1; 2), B(7; 8), razón 1 : 2: P = (2·A + 1·B)/3 = (3; 4).', ver: ['punto medio', 'razón'] },
+      { termino: 'pendiente', simbolo: 'm', def: 'Cuánto sube una recta por cada unidad que avanza hacia la derecha: Δy entre Δx. La recta vertical no tiene.',
+        ejemplo: 'De (−2; −1) a (2; 1): m = 2/4 = 1/2.' },
+      { termino: 'valor absoluto', def: 'Un número sin su signo: su distancia al cero. Por eso nunca es negativo.',
+        ejemplo: '|−20| = 20 y |20| = 20.' },
+      { termino: 'completar cuadrados', formas: ['completar cuadrados', 'completa cuadrados', 'completan cuadrados', 'completa cada cuadrado'],
+        def: 'Sumar a x² + bx el número (b/2)² para que quede un binomio al cuadrado: (x + b/2)².',
+        ejemplo: 'x² − 4x + 4 = (x − 2)².', ver: ['forma general'] },
+      { termino: 'forma general', def: 'Ecuación desarrollada e igualada a cero: x² + y² + Dx + Ey + F = 0.', ver: ['completar cuadrados'] },
+      { termino: 'parábola', def: 'Curva cuyos puntos están a igual distancia de un punto, el foco, y de una recta, la directriz.',
+        ejemplo: 'x² = 8y: foco (0; 2) y directriz y = −2.', ver: ['foco', 'directriz'] },
+      { termino: 'foco', def: 'Punto fijo que define la curva: la parábola tiene uno y la elipse, dos, sobre su eje mayor.',
+        ejemplo: 'x²/25 + y²/9 = 1: focos en (±4; 0).', ver: ['parábola', 'elipse'] },
+      { termino: 'directriz', def: 'Recta fija de la parábola: cada punto de la curva está tan lejos de ella como del foco.',
+        ejemplo: 'x² = 8y: directriz y = −2.', ver: ['parábola'] },
+      { termino: 'elipse', def: 'Curva cerrada en la que la suma de distancias de cada punto a dos focos es siempre 2a.',
+        ejemplo: 'x²/25 + y²/9 = 1: PF₁ + PF₂ = 10 para todo punto P.', ver: ['foco', 'semieje', 'excentricidad'] },
+      { termino: 'semieje', formas: ['semieje', 'semiejes'], def: 'Mitad de un eje de la elipse: va del centro a un vértice. Se llaman a y b.',
+        ejemplo: 'x²/25 + y²/9 = 1: semiejes a = 5 y b = 3.', ver: ['eje mayor', 'eje menor'] },
+      { termino: 'eje mayor', def: 'El segmento más largo que cruza la elipse por su centro; mide 2a y contiene a los focos.', ver: ['eje menor'] },
+      { termino: 'eje menor', def: 'Segmento que cruza la elipse por su centro, perpendicular al más largo; mide 2b.', ver: ['eje mayor'] },
+      { termino: 'excentricidad', simbolo: 'e', def: 'Cociente c/a entre la distancia centro–foco y el semieje mayor: dice qué tan achatada es la elipse.',
+        ejemplo: 'x²/25 + y²/9 = 1: c = 4 y e = 4/5.', ver: ['elipse'] },
+      { termino: 'hipérbola', def: 'Curva en la que la diferencia, sin signo, de las distancias de cada punto a dos focos es fija.',
+        ver: ['elipse', 'foco'] },
+    ],
     // Laboratorio: el reparto libre, la recta con el punto y la elipse con semiejes libres son más ricos que sus ideas.
     laboratorio: [mesaReparto, mesaRecta, mesaElipse],
     ideas: [divIdea, rectaIdea, distIdea, circIdea, parIdea, elIdea],

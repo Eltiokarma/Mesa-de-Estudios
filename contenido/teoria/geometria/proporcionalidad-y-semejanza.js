@@ -558,6 +558,21 @@
   };
 
   // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Valores de un control como los da el lector (min + k·paso, redondeado) y el extremo de una medida en toda la grilla
+  // de la mesa: los retos «el mayor…» se comprueban con la mesa real, no con un número escrito a mano.
+  const valoresDe = c => Array.from({ length: Math.floor((c.max - c.min) / c.paso + 1e-9) + 1 }, (_, k) => Math.round(Math.min(c.max, c.min + k * c.paso) * 1e6) / 1e6);
+  const extremoMesa = (mesa, medida) => {
+    let casos = [{}];
+    for (const c of mesa.controles) casos = casos.flatMap(v => valoresDe(c).map(x => Object.assign({}, v, { [c.id]: x })));
+    return Math.max(...casos.map(medida));
+  };
+  const memo = fn => { let x; return () => (x === undefined ? (x = fn()) : x); };
+  // Razones del corte libre, medidas sobre los puntos que se dibujan, y si DE queda paralela a BC (producto cruz nulo).
+  const corteLibre = v => {
+    const D = U.mezcla(TA, TB, v.t), E = U.mezcla(TA, TC, v.te);
+    const cruz = (E[0] - D[0]) * (TC[1] - TB[1]) - (E[1] - D[1]) * (TC[0] - TB[0]);
+    return { rd: U.dist(TA, D) / U.dist(D, TB), re: U.dist(TA, E) / U.dist(E, TC), paralela: Math.abs(cruz) < 1e-9 };
+  };
   // Mesa 1, más rica que la idea 1: D y E se mueven cada uno por su lado. La idea mantiene DE paralela; aquí el alumno
   // la inclina (el caso de la predicción) y busca a mano cuándo las dos razones vuelven a coincidir.
   const thalesLibre = (t, te) => thales(t, Math.abs(t - te) < 1e-9 ? {} : { E: U.mezcla(TA, TC, te) });
@@ -579,7 +594,23 @@
     ],
     lectura: v => [frac({ v: 'c-o', t: 'AD' }, { v: 'c-i', t: 'DB' }), ` = ${f(v.t / (1 - v.t))}   ·   `, frac({ v: 'c-o', t: 'AE' }, { v: 'c-i', t: 'EC' }),
       ` = ${f(v.te / (1 - v.te))}${Math.abs(v.t - v.te) < 1e-9 ? ': paralela' : ''}`],
+    invitaciones: [
+      { texto: 'Mueve D o E hasta dejar DE paralela a BC.',
+        logrado: v => corteLibre(v).paralela,
+        bien: 'Paralela justo cuando las dos razones coinciden: eso dice Thales.' },
+      { texto: 'Consigue que AD/DB valga 4 con DE paralela a BC.',
+        logrado: v => { const c = corteLibre(v); return c.paralela && Math.abs(c.rd - 4) < 1e-9; },
+        bien: 'AD/DB = 4 obliga a AE/EC = 4: la paralela copia la razón.' },
+      { texto: 'Inclina DE hasta que las dos razones queden lo más distintas posible.',
+        logrado: v => { const c = corteLibre(v); return Math.abs(Math.abs(c.rd - c.re) - difMax()) < 1e-9; },
+        bien: 'Muy inclinada, las razones se separan: sin paralela no hay proporción.' },
+      { texto: 'Guarda dos cortes paralelos a distinta altura. Compara sus razones.',
+        logrado: (v, guardados) => corteLibre(v).paralela && guardados.some(g => g.t === v.t && g.te === v.te)
+          && guardados.some(g => g.t !== v.t && corteLibre(g).paralela),
+        bien: 'Cada paralela da su razón, pero en los dos lados es la misma.' },
+    ],
   };
+  const difMax = memo(() => extremoMesa(mesaThales, v => { const c = corteLibre(v); return Math.abs(c.rd - c.re); }));
   // Mesa 2, más rica que la idea 2: además de los lados, se abre el ángulo A. Deja ver que la razón BD/DC no depende
   // del ángulo, solo de AB y AC.
   const bisecLibre = (c, b, ang) => {
@@ -600,9 +631,10 @@
     id: 'bisectriz-libre', titulo: 'Bisectriz con ángulo libre', pieza: 'geo-figura',
     consigna: 'Arrastra B y C: cambian los lados y la abertura de A. Mira si la razón BD/DC depende del ángulo.',
     controles: [
+      // ∠A va primero (mismos ids): así el reto que compara dos ángulos con los mismos lados se puede comprobar.
+      { id: 'ang', etiqueta: '∠A', min: 50, max: 150, paso: 10, inicio: 70, unidad: '°', decimales: 0, color: 'c-h' },
       { id: 'c', etiqueta: 'AB', min: 1, max: 7, paso: 0.5, inicio: 3, unidad: '', decimales: 1, color: 'c-o' },
       { id: 'b', etiqueta: 'AC', min: 1, max: 7, paso: 0.5, inicio: 6, unidad: '', decimales: 1, color: 'c-i' },
-      { id: 'ang', etiqueta: '∠A', min: 50, max: 150, paso: 10, inicio: 70, unidad: '°', decimales: 0, color: 'c-h' },
     ],
     dibujo: v => ({ datos: bisecLibre(v.c, v.b, v.ang), estado: {} }),
     arrastres: [
@@ -615,7 +647,25 @@
         mover: (p, v) => { const q = alPlano(bisecLibre(v.c, v.b, v.ang), p); return { b: Math.hypot(...q), ang: 2 * (90 + U.grados(Math.atan2(q[1], q[0]))) }; } },
     ],
     lectura: v => [{ v: 'c-h', t: '∠A' }, ` ${v.ang}°   ·   `, frac({ v: 'c-o', t: 'BD' }, { v: 'c-i', t: 'DC' }), ' = ', frac({ v: 'c-o', t: 'AB' }, { v: 'c-i', t: 'AC' }), ` = ${f(v.c / v.b)}`],
+    // Retos: BD/DC se mide sobre el punto D que dibuja bisecLibre, no con la fórmula AB/AC.
+    invitaciones: [
+      { texto: 'Haz que la bisectriz caiga justo en el punto medio de BC.',
+        logrado: v => Math.abs(razonBD(v) - 1) < 1e-9,
+        bien: 'BD = DC solo con AB = AC: el triángulo quedó isósceles.' },
+      { texto: 'Consigue que BD mida el doble que DC.',
+        logrado: v => Math.abs(razonBD(v) - 2) < 1e-9,
+        bien: 'BD/DC = 2 porque AB mide el doble que AC.' },
+      { texto: 'Busca la razón BD/DC más grande que deja la mesa.',
+        logrado: v => Math.abs(razonBD(v) - razonMax()) < 1e-9,
+        bien: 'AB mucho más largo que AC empuja D hacia C.' },
+      { texto: 'Guarda dos casos con los mismos lados y otro ∠A. Compara BD/DC.',
+        logrado: (v, guardados) => guardados.some(g => g.ang === v.ang && g.c === v.c && g.b === v.b)
+          && guardados.some(g => g.c === v.c && g.b === v.b && g.ang !== v.ang && Math.abs(razonBD(g) - razonBD(v)) < 1e-9),
+        bien: 'Otro ángulo, la misma razón: solo mandan AB y AC.' },
+    ],
   };
+  const razonBD = v => { const P = bisecLibre(v.c, v.b, v.ang).puntos, q = id => { const p = P.find(x => x.id === id); return [p.x, p.y]; }; return U.dist(q('B'), q('D')) / U.dist(q('D'), q('C')); };
+  const razonMax = memo(() => extremoMesa(mesaBisectriz, razonBD));
   // Mesa 3, más rica que la idea 5: ancho y alto con escalas distintas. Con kx ≠ ky la figura ya no es semejante y el
   // área se multiplica por kx · ky; solo con kx = ky aparece k².
   const ampl2 = (kx, ky) => {
@@ -644,7 +694,25 @@
       donde: v => enPantalla(ampl2(v.kx, v.ky), [4.4 + 3 * v.kx, 2 * v.ky]),
       mover: (p, v) => { const q = alPlano(ampl2(v.kx, v.ky), p); return { kx: (q[0] - 4.4) / 3, ky: q[1] / 2 }; } }],
     lectura: v => [`área × ${f(v.kx * v.ky)}   ·   ${v.kx === v.ky ? 'semejante' : 'no semejante'}`],
+    // Retos: el factor del área sale de los lados que dibuja ampl2 (nuevo ancho por nuevo alto entre 3 · 2).
+    invitaciones: [
+      { texto: 'Consigue una figura semejante con el área multiplicada por 4.',
+        logrado: v => v.kx === v.ky && Math.abs(factorArea(v) - 4) < 1e-9,
+        bien: 'Lados por 2 y área por 4: con semejanza, el área va por k².' },
+      { texto: 'Haz una figura semejante más chica que la original.',
+        logrado: v => v.kx === v.ky && factorArea(v) < 1,
+        bien: 'Con k = 0,5 el área queda en la cuarta parte: también vale k².' },
+      { texto: 'Busca el mayor factor del área sin que la figura sea semejante.',
+        logrado: v => v.kx !== v.ky && Math.abs(factorArea(v) - factorMaxNoSem()) < 1e-9,
+        bien: 'Casi el máximo. Con las dos escalas iguales a 3, el área iría por 9.' },
+      { texto: 'Guarda dos casos no semejantes con el mismo factor del área.',
+        logrado: (v, guardados) => v.kx !== v.ky && guardados.some(g => g.kx === v.kx && g.ky === v.ky)
+          && guardados.some(g => g.kx !== g.ky && (g.kx !== v.kx || g.ky !== v.ky) && Math.abs(factorArea(g) - factorArea(v)) < 1e-9),
+        bien: 'Mismo factor, formas distintas: el área sola no prueba semejanza.' },
+    ],
   };
+  const factorArea = v => { const P = ampl2(v.kx, v.ky).puntos, x = id => P.find(p => p.id === id); return (x('B').x - x('A').x) * (x('C').y - x('A').y) / (3 * 2); };
+  const factorMaxNoSem = memo(() => extremoMesa(mesaEstirar, v => (v.kx !== v.ky ? factorArea(v) : -Infinity)));
 
   return {
     unidad: 'geometria.proporcionalidad-y-semejanza',
@@ -656,6 +724,47 @@
       pregunta: '¿Qué tienen que ver las áreas con las proporciones?',
       fuente: { titulo: 'Euclides, Elementos VI.2 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookVI/propVI2.html' },
     },
+    // Glosario (docs/teoria.md, 4d): lo que esta unidad estrena. Razón, bisectriz, prolongación, LAL y LLL se definen
+    // antes (triángulos, congruencia); semisuma, en polígonos.
+    glosario: [
+      { termino: 'área', formas: ['área', 'áreas'], medida: 'u²', def: 'Cuánta superficie encierra una figura plana, contada en cuadraditos de lado 1.', ejemplo: 'Un rectángulo de 3 por 4 encierra 12 cuadraditos: 12 u².' },
+      { termino: 'volumen', formas: ['volumen', 'volúmenes'], medida: 'u³', def: 'Cuánto espacio ocupa un cuerpo, contado en cubitos de arista 1.', ejemplo: 'Una caja de 2 por 3 por 4 guarda 24 cubitos: 24 u³.' },
+      { termino: 'incentro', def: 'Punto donde se cortan las tres bisectrices de un triángulo; es el centro de la circunferencia inscrita.', ver: ['bisectriz', 'circunferencia inscrita'] },
+      { termino: 'proporción', formas: ['proporción', 'proporciones'], def: 'Igualdad entre dos razones.',
+        ejemplo: '2/3 = 4/6: los dos cocientes valen lo mismo.', ver: ['proporcional', 'razón'] },
+      { termino: 'proporcional', formas: ['proporcional', 'proporcionales', 'proporcionalmente'],
+        def: 'Dicho de dos parejas de cantidades que forman la misma razón.',
+        ejemplo: 'Tramos 2 y 3 frente a 4 y 6: 2/3 = 4/6.', ver: ['proporción', 'teorema de Thales'] },
+      { termino: 'teorema de Thales', formas: ['teorema de Thales', 'Thales'],
+        def: 'Una paralela a un lado de un triángulo corta los otros dos lados en tramos de igual razón.',
+        ejemplo: 'AD = 2, DB = 3 y AE = 4: EC = 6, porque 2/3 = 4/6.', ver: ['proporcional', 'recíproco'] },
+      { termino: 'recíproco', formas: ['recíproco', 'recíprocos'],
+        def: 'Enunciado con el orden cambiado: lo que era conclusión pasa a ser dato, y al revés.',
+        ejemplo: 'Si las razones en los dos lados son iguales, DE es paralela a BC.', ver: ['teorema de Thales'] },
+      { termino: 'ceviana', def: 'Segmento que va de un vértice de un triángulo a un punto del lado opuesto.',
+        ejemplo: 'Una mediana y una bisectriz interior son casos de este segmento.', ver: ['teorema de Ceva', 'mediana', 'bisectriz'] },
+      { termino: 'concurrentes', formas: ['concurrentes', 'concurrente', 'concurren'],
+        def: 'Dicho de tres o más rectas que pasan por un mismo punto.', ver: ['teorema de Ceva'] },
+      { termino: 'teorema de Ceva', formas: ['teorema de Ceva', 'Ceva'],
+        def: 'Tres segmentos desde los vértices pasan por un punto si el producto de las tres razones, en orden, vale 1.',
+        ejemplo: 'AF/FB = 2 y BD/DC = 1: CE/EA = 1/2.', ver: ['ceviana', 'concurrentes', 'teorema de Menelao'] },
+      { termino: 'teorema de Menelao', formas: ['teorema de Menelao', 'Menelao'],
+        def: 'Tres puntos en los lados de un triángulo o sus prolongaciones están alineados si el producto de razones vale 1.',
+        ver: ['teorema de Ceva'] },
+      { termino: 'semejanza', formas: ['semejanza', 'semejante', 'semejantes'],
+        def: 'Relación entre dos figuras de igual forma: ángulos iguales y lados proporcionales, aunque cambie el tamaño.',
+        ejemplo: 'Lados 3, 4, 5 y 6, 8, 10: semejantes con k = 2.', ver: ['escala', 'antiparalela'] },
+      { termino: 'escala', simbolo: 'k', def: 'Número por el que se multiplica cada longitud al ampliar o reducir una figura.',
+        ejemplo: 'k = 2: un lado de 3 pasa a 6 y el área va por 4.', ver: ['factor del área', 'ampliación', 'razón'] },
+      { termino: 'ampliación', formas: ['ampliación', 'ampliaciones'],
+        def: 'Copia de una figura con todas sus longitudes multiplicadas por un mismo número mayor que 1.', ver: ['escala'] },
+      { termino: 'factor del área', formas: ['factor del área', 'factor de área', 'factor de las áreas'],
+        def: 'Número por el que se multiplica el área al cambiar el tamaño. Con escala k en todo, es k².',
+        ejemplo: 'k = 3: el área se multiplica por 3² = 9.', ver: ['escala'] },
+      { termino: 'antiparalela', formas: ['antiparalela', 'antiparalelas'],
+        def: 'Recta que corta dos lados de un triángulo con los ángulos cruzados: ∠ADE = ∠ACB, no ∠ABC.',
+        ejemplo: 'AE = 3, AB = 9 y AC = 6: AD = 6 · 3/9 = 2.', ver: ['semejanza'] },
+    ],
     // Laboratorio: las tres mesas son más ricas que sus ideas: D y E libres (corte inclinado), la bisectriz con el ángulo
     // A libre y el rectángulo estirado con dos escalas.
     laboratorio: [mesaThales, mesaBisectriz, mesaEstirar],

@@ -121,7 +121,7 @@
       ],
     },
     regla: {
-      texto: 'En la simetría respecto de una recta, el eje es la mediatriz de cada segmento PP′. Se conservan distancias y ángulos, pero la orientación se invierte.',
+      texto: 'En la simetría respecto de una recta, el eje de simetría es la mediatriz de cada segmento PP′. Se conservan distancias y ángulos, pero la orientación se invierte.',
       ecuacion: ['eje x: (x; y) → (x; −y)', SEP, 'eje y: (−x; y)', SEP, 'y = x: ', { llave: ['(y; x)'], nota: 'se intercambian', color: 'c-o' }],
       condicion: 'P′ está en la perpendicular al eje que pasa por P, a la misma distancia del eje y del otro lado.',
       voz: 'Una figura reflejada no se superpone con solo moverla.',
@@ -210,7 +210,7 @@
       ],
     },
     regla: {
-      texto: 'En la simetría respecto de un punto O, O es el punto medio de cada segmento PP′. Equivale a girar 180° alrededor de O: conserva la orientación.',
+      texto: 'En la simetría central, respecto de un punto O, O es el punto medio de cada segmento PP′. Equivale a girar 180° alrededor de O: conserva la orientación.',
       ecuacion: ["P' = ", { llave: ['2O − P'], nota: 'O al medio', color: 'c-d' }, SEP, 'origen: (x; y) → ', { llave: ['(−x; −y)'], nota: 'ambos cambian', color: 'c-o' }],
       condicion: 'O, P y P′ están alineados con OP = OP′. Dos reflexiones en rectas perpendiculares que se cortan en O dan esta simetría.',
       voz: 'Media vuelta: la figura no queda al revés.',
@@ -383,6 +383,11 @@
   };
   // Ángulo de la recta (0° a 180°) que pasa por el origen y por q; cerca de 180° vuelve a 0°.
   const direccion = (q, paso) => { let g = U.grados(Math.atan2(q[1], q[0])); if (g < 0) g += 180; if (g >= 180) g -= 180; return g > 180 - paso / 2 ? g - 180 : g; };
+  // Motor de los retos: P y su imagen P′ con las mismas funciones que dibujan (mueve, F34, refleja).
+  const ppDe = v => { const P = mueve(F34, v.fx, v.fy)[7]; return [P, refleja(P, [0, 0], v.a)]; };
+  const sepPP = v => U.dist(...ppDe(v));
+  // La mayor separación PP′ de toda la grilla de la mesa (se calcula una vez, con el mismo motor).
+  const MAX_PP = (() => { let m = 0; for (let a = 0; a <= 165; a += 15) for (let fx = -3; fx <= 1.5; fx += 0.5) for (let fy = -3; fy <= 1; fy += 0.5) m = Math.max(m, sepPP({ a, fx, fy })); return m; })();
   const mesaEspejo = {
     id: 'espejo-que-gira', titulo: 'Espejo que gira', pieza: 'geo-figura',
     consigna: 'Gira el eje desde su manija y arrastra la F. Busca cuándo P′ cae sobre P y cuándo intercambia coordenadas.',
@@ -406,6 +411,21 @@
       const P = mueve(F34, v.fx, v.fy)[7], Pp = refleja(P, [0, 0], v.a);
       return [`eje a ${f(v.a, 0)}°`, SEP, `P${par(P)} → P′${par(Pp)}`];
     },
+    invitaciones: [
+      { texto: 'Haz que P′ caiga justo sobre P.',
+        logrado: v => sepPP(v) < 1e-6,
+        bien: 'P quedó sobre el eje: es su propio simétrico. ¿Pasa con otro punto?' },
+      { texto: 'Gira el eje hasta que P′ cambie solo el signo de la x de P.',
+        logrado: v => { const [P, Q] = ppDe(v); return Math.abs(P[0]) > 1e-6 && Math.abs(Q[0] + P[0]) < 1e-6 && Math.abs(Q[1] - P[1]) < 1e-6; },
+        bien: 'Eje vertical: es el eje y, y su regla es (−x; y).' },
+      { texto: 'Separa P de su reflejo P′ lo más que puedas.',
+        logrado: v => sepPP(v) > MAX_PP - 1e-6,
+        bien: 'PP′ es el doble de la distancia de P al eje: aléjalo del espejo.' },
+      { texto: 'Guarda dos casos con la F quieta y ejes perpendiculares. Compara los P′.',
+        logrado: (v, guardados) => guardados.some(g => g.fx === v.fx && g.fy === v.fy && Math.abs(Math.abs(g.a - v.a) - 90) < 1e-9
+          && (([q1, q2]) => Math.hypot(q1[0] + q2[0], q1[1] + q2[1]) < 1e-6)([ppDe(g)[1], ppDe(v)[1]])),
+        bien: 'Los dos P′ quedan opuestos respecto del origen: media vuelta entre ellos.' },
+    ],
   };
   // Mesa 2: dos espejos seguidos. La idea 2 solo predice un caso (dos ejes perpendiculares); aquí se mueve el segundo
   // espejo: paralelo al primero da una traslación de 2d; si se cortan con ángulo θ, un giro de 2θ (con 90°, media vuelta).
@@ -422,6 +442,13 @@
       segmentos: [{ de: 'm1a', a: 'm1b', color: 'd', grosor: 'variable', recta: true }, { de: 'm2a', a: 'm2b', color: 'h', grosor: 'variable', recta: true }],
     };
   };
+  // Motor de los retos: la F original y la final, tal como las dibuja dosEspejos.
+  const finalDe = v => { const d = dosEspejos(v.modo, v.d, v.t); return { o: d.regiones[0].puntos, f: d.regiones[2].puntos }; };
+  const desplazaDe = v => { const { o, f: q } = finalDe(v); return [q[0][0] - o[0][0], q[0][1] - o[0][1]]; };
+  const esTraslacion = (v, dx, dy) => { const { o, f: q } = finalDe(v); return o.every((p, k) => Math.abs(q[k][0] - p[0] - dx) < 1e-6 && Math.abs(q[k][1] - p[1] - dy) < 1e-6); };
+  // Giro de la F final respecto de la original, en grados (0 a 360), medido con su primer lado.
+  const giroDe = v => { const { o, f: q } = finalDe(v); let g = U.grados(Math.atan2(q[1][1] - q[0][1], q[1][0] - q[0][0]) - Math.atan2(o[1][1] - o[0][1], o[1][0] - o[0][0])); while (g < 0) g += 360; while (g >= 360) g -= 360; return g; };
+  const MIN_GIRO = Math.min(...[15, 30, 45, 60, 75, 90].map(t => giroDe({ modo: 'cortan', d: 1.5, t })));
   const mesaDos = {
     id: 'dos-espejos', titulo: 'Dos espejos', pieza: 'geo-figura',
     consigna: 'La F se refleja en el eje y, y luego en el espejo rojo. Muévelo: paralelo o cortando. Mira la F final.',
@@ -441,7 +468,38 @@
     lectura: v => (v.modo === 'paralelos'
       ? [`paralelos a ${f(v.d)}`, SEP, `traslación de ${f(2 * v.d)}`]
       : [`se cortan a ${f(v.t, 0)}°`, SEP, `giro de ${f(2 * v.t, 0)}°`]),
+    invitaciones: [
+      { texto: 'Consigue que la F final quede 4 a la derecha de la original.',
+        logrado: v => esTraslacion(v, 4, 0),
+        bien: 'Espejos a 2: la F avanza 4. Comprueba si siempre sale el doble.' },
+      { texto: 'Haz que la F final quede girada media vuelta, de cabeza.',
+        logrado: v => { const { o, f: q } = finalDe(v); return o.every((p, k) => Math.abs(q[k][0] + p[0]) < 1e-6 && Math.abs(q[k][1] + p[1]) < 1e-6); },
+        bien: 'Espejos perpendiculares: dos reflejos dan media vuelta, la simetría central.' },
+      { texto: 'Busca el giro más pequeño que logran los dos espejos.',
+        logrado: v => v.modo === 'cortan' && Math.abs(giroDe(v) - MIN_GIRO) < 1e-6,
+        bien: 'Con θ = 15° la F gira 30°: el giro es el doble del ángulo.' },
+      { texto: 'Guarda dos espejos paralelos, uno al doble de separación que el otro.',
+        logrado: (v, guardados) => v.modo === 'paralelos' && guardados.some(g => g.modo === 'paralelos' && g.d !== v.d
+          && (Math.abs(2 * desplazaDe(g)[0] - desplazaDe(v)[0]) < 1e-6 || Math.abs(2 * desplazaDe(v)[0] - desplazaDe(g)[0]) < 1e-6)),
+        bien: 'Doble separación, doble traslación: la F avanza siempre 2d.' },
+    ],
   };
+
+  // Retos de la mesa del plano: P, P′ y H salen de planoFig, la misma función que dibuja.
+  const plano3 = v => { const ps = planoFig(v.h, v.x).puntos.map(p => [p.x, p.y, p.z]); return { P: ps[0], Q: ps[1], H: ps[2] }; };
+  const sepPlano = v => { const { P, Q } = plano3(v); return U.dist(P, Q); };
+  const MAX_PLANO = Math.max(...[0.5, 1, 1.5, 2, 2.5].map(h => sepPlano({ h, x: 0 })));
+  const retosPlano = [
+    { texto: 'Lleva P lo más lejos que puedas de su simétrico P′.',
+      logrado: v => sepPlano(v) > MAX_PLANO - 1e-9,
+      bien: 'P′ se aleja igual que P: PP′ es el doble de la altura.' },
+    { texto: 'Haz que P y P′ queden justo a 2 de distancia.',
+      logrado: v => Math.abs(sepPlano(v) - 2) < 1e-9,
+      bien: 'Uno arriba y uno abajo: el plano queda justo en la mitad.' },
+    { texto: 'Guarda dos casos con la misma proyección H y distinta altura.',
+      logrado: (v, guardados) => guardados.some(g => g.h !== v.h && U.dist(plano3(g).H, plano3(v).H) < 1e-9),
+      bien: 'H no se movió con la altura: P y P′ comparten su proyección.' },
+  ];
 
   return {
     unidad: 'geometria.simetria',
@@ -453,9 +511,42 @@
       pregunta: '¿Qué conserva una reflexión y qué cambia?',
       fuente: { titulo: 'K. S. Kedlaya, Geometry Unbound, cap. 3 (transformaciones)', url: 'https://kskedlaya.org/geometryunbound/gu-060118.pdf' },
     },
+    // Glosario (docs/teoria.md, 4d): las palabras que este tema estrena en el curso. Mediatriz, punto medio, perpendicular,
+    // proyección y giro vienen de unidades anteriores y el lector las marca solas.
+    glosario: [
+      { termino: 'sólido', formas: ['sólido', 'sólidos'], def: 'Figura de tres dimensiones que encierra una parte del espacio, como un cubo o una esfera.', ver: ['volumen'] },
+      { termino: 'cara', formas: ['cara', 'caras'], def: 'Cada uno de los polígonos planos que limitan un cuerpo de tres dimensiones.', ejemplo: 'Un cubo tiene 6 caras cuadradas.', ver: ['arista'] },
+      { termino: 'perpendicular al plano', def: 'Recta que forma 90° con todas las rectas del plano que pasan por su pie.', ver: ['perpendicular', 'pie'] },
+      { termino: 'transformación', def: 'Regla que lleva cada punto de una figura a otro punto, que se llama su imagen.',
+        formas: ['transformación', 'transformaciones'], ver: ['simetría', 'traslación'] },
+      { termino: 'simetría', def: 'Transformación que lleva cada punto al otro lado de un eje, un centro o un plano, a igual distancia.',
+        ver: ['simétrico', 'eje de simetría', 'simetría central', 'plano de simetría'] },
+      { termino: 'simétrico', def: 'Imagen de un punto o de una figura: a la misma distancia del eje, centro o plano, del otro lado.',
+        formas: ['simétrico', 'simétricos', 'simétrica', 'simétricas'], ejemplo: 'Respecto del eje x, el de P(5; 1) es (5; −1).', ver: ['simetría'] },
+      { termino: 'eje de simetría', def: 'Recta que hace de espejo: es la mediatriz de cada segmento entre un punto y su imagen.',
+        formas: ['eje de simetría', 'ejes de simetría'], ejemplo: 'Con el eje x = 2, el punto (0; 3) va a (4; 3).', ver: ['reflexión', 'mediatriz'] },
+      { termino: 'simetría central', def: 'Simetría respecto de un punto O, que queda en la mitad de cada segmento PP′. Es media vuelta.',
+        ejemplo: 'Respecto de O(1; 0), el punto P(3; 2) va a (−1; −2).', ver: ['orientación'] },
+      { termino: 'plano de simetría', def: 'Plano que parte un sólido en dos mitades, cada una reflejo exacto de la otra.',
+        formas: ['plano de simetría', 'planos de simetría'], ejemplo: 'Un cubo tiene 9: tres paralelos a las caras y seis por aristas opuestas.', ver: ['plano mediador'] },
+      { termino: 'plano mediador', def: 'Plano perpendicular a un segmento por su punto medio: sus puntos están a igual distancia de ambos extremos.',
+        ver: ['plano de simetría', 'punto medio'] },
+      { termino: 'reflexión', def: 'Simetría que actúa como un espejo, en una recta o en un plano. Invierte la orientación de la figura.',
+        formas: ['reflexión', 'reflexiones', 'reflejo', 'reflejos'], ver: ['orientación', 'eje de simetría'] },
+      { termino: 'orientación', def: 'Hacia dónde mira una figura o en qué sentido se recorre: la letra derecha o al revés.',
+        ejemplo: 'Reflejada en el eje y, la F queda al revés; girada 180°, queda derecha.', ver: ['reflexión'] },
+      { termino: 'traslación', def: 'Mover toda la figura la misma distancia y en la misma dirección, sin girarla.',
+        formas: ['traslación', 'traslaciones'], ejemplo: 'Dos espejos paralelos a 1,5 trasladan la F 3 unidades.' },
+      { termino: 'coordenadas', def: 'Par de números (x; y) que ubica un punto: cuánto a lo ancho y cuánto a lo alto del origen.',
+        formas: ['coordenada', 'coordenadas'], ver: ['origen'] },
+      { termino: 'origen', def: 'El punto (0; 0), donde se cortan el eje x y el eje y.', ver: ['coordenadas'] },
+      { termino: 'arista', def: 'Segmento donde se juntan dos caras de un sólido.', ejemplo: 'Un cubo tiene 12.' },
+      { termino: 'superponer', def: 'Poner una figura sobre otra de modo que coincidan punto por punto.',
+        formas: ['superponer', 'superpone', 'superponen', 'superponerse'] },
+    ],
     // Laboratorio: el espejo que gira y los dos espejos son más ricos que sus ideas; la tercera mesa es el juego del
     // reflejo en un plano, con sus dos manijas en 3D.
-    laboratorio: [mesaEspejo, mesaDos, Object.assign({ id: 'reflejo-plano', titulo: 'Reflejo en un plano', pieza: 'geo-figura' }, planoIdea.juega)],
+    laboratorio: [mesaEspejo, mesaDos, Object.assign({ id: 'reflejo-plano', titulo: 'Reflejo en un plano', pieza: 'geo-figura', invitaciones: retosPlano }, planoIdea.juega)],
     ideas: [axialIdea, centralIdea, planoIdea],
   };
 });

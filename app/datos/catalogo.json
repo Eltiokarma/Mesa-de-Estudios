@@ -3232,7 +3232,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 5
+      "ideas": 5,
+      "terminos": 30
      }
     },
     {
@@ -3269,7 +3270,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 4
+      "ideas": 4,
+      "terminos": 36
      }
     },
     {
@@ -3305,7 +3307,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 5
+      "ideas": 5,
+      "terminos": 44
      }
     },
     {
@@ -3342,7 +3345,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 5
+      "ideas": 5,
+      "terminos": 35
      }
     },
     {
@@ -3380,7 +3384,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 44
      }
     },
     {
@@ -3416,7 +3421,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 5
+      "ideas": 5,
+      "terminos": 39
      }
     },
     {
@@ -3451,7 +3457,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 46
      }
     },
     {
@@ -3491,7 +3498,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 49
      }
     },
     {
@@ -3527,7 +3535,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 4
+      "ideas": 4,
+      "terminos": 37
      }
     },
     {
@@ -3556,7 +3565,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 31
      }
     },
     {
@@ -3595,7 +3605,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 5
+      "ideas": 5,
+      "terminos": 35
      }
     },
     {
@@ -3633,7 +3644,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 5
+      "ideas": 5,
+      "terminos": 37
      }
     },
     {
@@ -3673,7 +3685,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 40
      }
     },
     {
@@ -3707,7 +3720,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 24
      }
     },
     {
@@ -3748,7 +3762,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 47
      }
     },
     {
@@ -3789,7 +3804,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 39
      }
     },
     {
@@ -3824,7 +3840,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 32
      }
     },
     {
@@ -3856,7 +3873,8 @@
       "requiere": [
        "/nucleo/kit/piezas/geo-figura.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 23
      }
     }
    ]

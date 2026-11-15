@@ -430,7 +430,28 @@
       donde: v => enPantalla(regLibre(v.n, v.R), vert(v.n, v.R)[0]),
       mover: (q, v) => { const z = alPlano(regLibre(v.n, v.R), q); return { R: Math.hypot(z[0], z[1]) }; } }],
     lectura: v => [cL, ` = ${f(lado(v.n, v.R))}`, sep, cA, ` = ${f(apot(v.n, v.R))}`, sep, frac('P', '2R'), ` = ${f(v.n * lado(v.n, 1) / 2, 3)}`],
+    // Retos comprobados con lado() y apot(), las mismas funciones que dibujan y leen la mesa.
+    invitaciones: [
+      { texto: 'Acerca lo más posible el perímetro entre el diámetro a π.',
+        logrado: v => Math.abs(pSobreD(v.n) - Math.PI) - DIST_PI < 1e-12,
+        bien: 'Con 24 lados, 3,133. Más lados acercan, pero ninguno llega a π.' },
+      { texto: 'Haz que el lado mida justo el doble de la apotema.',
+        logrado: v => Math.abs(lado(v.n, v.R) - 2 * apot(v.n, v.R)) < 1e-9,
+        bien: 'El cuadrado: su ángulo central es recto. ¿Por qué solo él?' },
+      { texto: 'Consigue una apotema que mida justo la mitad del radio.',
+        logrado: v => Math.abs(apot(v.n, v.R) - v.R / 2) < 1e-9,
+        bien: 'El triángulo equilátero: O parte su altura en 2 : 1, como el baricentro.' },
+      { texto: 'Haz que la apotema pase del 99 % del radio.',
+        logrado: v => apot(v.n, v.R) > 0.99 * v.R,
+        bien: 'El polígono casi se pega a la circunferencia: radio y apotema se juntan.' },
+      { texto: 'Guarda dos polígonos con el mismo n y distinto radio; compara P/2R.',
+        logrado: (v, guardados) => guardados.some(g => guardados.some(h => g.n === h.n && g.R !== h.R)),
+        bien: 'Mismo n, mismo P/2R: el tamaño cambia, la forma no.' },
+    ],
   };
+  // Perímetro entre diámetro del polígono de n lados (no depende de R) y su menor distancia a π en la grilla de la mesa.
+  const pSobreD = n => n * lado(n, 1) / 2;
+  const DIST_PI = (() => { let m = Infinity; for (let n = 3; n <= 24; n++) m = Math.min(m, Math.abs(pSobreD(n) - Math.PI)); return m; })();
 
   // Mesa 2, más rica que la idea 2: además de elegir el polígono, el radio se arrastra; la lectura da la fórmula y su
   // valor, para ver que R√3, R√2 y R siguen al radio.
@@ -449,6 +470,20 @@
       donde: v => enPantalla(insLibre(v.n, v.R), vert(v.n, v.R)[0]),
       mover: (q, v) => { const z = alPlano(insLibre(v.n, v.R), q); return { R: Math.hypot(z[0], z[1]) }; } }],
     lectura: v => [cL, ` = ${NOT[v.n][0]} = ${f(lado(v.n, v.R))}`, sep, cA, ` = ${NOTa[v.n]} = ${f(apot(v.n, v.R))}`],
+    invitaciones: [
+      { texto: 'Consigue un lado que mida exactamente 4.',
+        logrado: v => Math.abs(lado(v.n, v.R) - 4) < 1e-9,
+        bien: 'Solo el hexágono: su lado es el radio. Los otros llevan raíz.' },
+      { texto: 'Consigue una apotema que mida justo 2.',
+        logrado: v => Math.abs(apot(v.n, v.R) - 2) < 1e-9,
+        bien: 'Triángulo con R = 4: a = R/2 = 2. ¿Qué radio pediría el cuadrado?' },
+      { texto: 'Con R = 4, busca la apotema más larga de los tres.',
+        logrado: v => v.R === 4 && Math.abs(apot(v.n, 4) - Math.max(...[3, 4, 6].map(n => apot(n, 4)))) < 1e-9,
+        bien: 'El hexágono: con más lados, la apotema se acerca más al radio.' },
+      { texto: 'Guarda un triángulo y un hexágono con el mismo radio; compara sus lados.',
+        logrado: (v, guardados) => guardados.some(g => g.n === 3 && guardados.some(h => h.n === 6 && h.R === g.R)),
+        bien: 'Mismo R: el lado del triángulo es √3 veces el del hexágono.' },
+    ],
   };
 
   // Mesa 3, más rica que la idea 4: P recorre casi todo AB (la idea lo deja entre 0,5 y 0,75), así aparecen los dos
@@ -462,7 +497,26 @@
       donde: v => enPantalla(corteFig(v.t), [10 * v.t, 0]),
       mover: (q, v) => ({ t: alPlano(corteFig(v.t), q)[0] / 10 }) }],
     lectura: v => { const M = Math.max(v.t, 1 - v.t), m = Math.min(v.t, 1 - v.t); return [`total/mayor = ${f(1 / M, 3)}`, sep, `mayor/menor = ${f(M / m, 3)}`]; },
+    // Retos comprobados con razones(), la misma cuenta de la lectura (total/mayor y mayor/menor).
+    invitaciones: [
+      { texto: 'Encuentra un corte en que total/mayor y mayor/menor queden lo más iguales posible.',
+        logrado: v => { const q = razones(v.t); return Math.abs(Math.abs(q.tm - q.mm) - DIF_AUREA) < 1e-9; },
+        bien: 'Las dos rozan 1,618: es φ, la sección áurea. ¿Dónde está el otro corte?' },
+      { texto: 'Haz que mayor/menor valga justo 1,5.',
+        logrado: v => Math.abs(razones(v.t).mm - 1.5) < 1e-9,
+        bien: 'Partes 6 y 4: mayor/menor es 1,5, pero total/mayor da 1,667. Todavía no coinciden.' },
+      { texto: 'Corta de modo que la parte mayor sea más del doble de la menor.',
+        logrado: v => razones(v.t).mm > 2,
+        bien: 'Mayor/menor pasó de 2 y total/mayor no llega a 1,5: lejos de φ.' },
+      { texto: 'Lleva mayor/menor a su valor más grande.',
+        logrado: v => Math.abs(razones(v.t).mm - MM_MAX) < 1e-9,
+        bien: 'En el borde, nueve veces. Total/mayor apenas pasa de 1: las dos se separan.' },
+    ],
   };
+  const razones = t => { const M = Math.max(t, 1 - t), m = Math.min(t, 1 - t); return { tm: 1 / M, mm: M / m }; };
+  const T_CORTE = Array.from({ length: 401 }, (_, k) => +(0.1 + 0.002 * k).toFixed(3));
+  const DIF_AUREA = Math.min(...T_CORTE.map(t => { const q = razones(t); return Math.abs(q.tm - q.mm); }));
+  const MM_MAX = Math.max(...T_CORTE.map(t => razones(t).mm));
 
   return {
     unidad: 'geometria.poligonos-regulares',
@@ -474,6 +528,34 @@
       pregunta: '¿Por qué más lados acercan el polígono al círculo sin igualarlo?',
       fuente: { titulo: 'Euclides, Elementos, libro IV (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookIV/bookIV.html' },
     },
+    // Glosario: lo que este tema estrena. Ángulo central, hexágono, isósceles, inscrito, perímetro y diagonal vienen
+    // de unidades anteriores y el lector los marca solos.
+    glosario: [
+      { termino: 'número pi', simbolo: 'π', formas: ['número pi', 'π'], def: 'Cuántas veces cabe el diámetro en la vuelta de una circunferencia; vale aproximadamente 3,1416.', ver: ['diámetro'] },
+      { termino: 'polígono regular', formas: ['polígono regular', 'polígonos regulares'],
+        def: 'Polígono con todos sus lados iguales y todos sus ángulos iguales.',
+        ejemplo: 'El cuadrado lo es; el rombo no: lados iguales, ángulos distintos.', ver: ['apotema'] },
+      { termino: 'apotema', simbolo: 'a', formas: ['apotema', 'apotemas'],
+        def: 'Segmento perpendicular del centro de un polígono regular al punto medio de uno de sus lados.',
+        ejemplo: 'Hexágono de lado 6: √(36 − 9) = 3√3 ≈ 5,2.', ver: ['polígono regular', 'ángulo central'] },
+      { termino: 'seno', simbolo: 'sen', formas: ['seno', 'senos', 'sen'],
+        def: 'En un triángulo rectángulo, el cateto opuesto a un ángulo agudo dividido entre la hipotenusa.',
+        ejemplo: 'sen 30° = 1/2: el hexágono tiene lado 2R · sen 30° = R.', ver: ['coseno'] },
+      { termino: 'coseno', simbolo: 'cos', formas: ['coseno', 'cosenos', 'cos'],
+        def: 'En un triángulo rectángulo, el cateto pegado a un ángulo agudo dividido entre la hipotenusa.',
+        ejemplo: 'cos 60° = 1/2: el triángulo equilátero tiene apotema R · cos 60° = R/2.', ver: ['seno', 'apotema'] },
+      { termino: 'sección áurea', formas: ['sección áurea', 'secciones áureas'],
+        def: 'Corte de un segmento en que el total es a la parte mayor como la mayor es a la menor.',
+        ejemplo: 'AB = 10: el corte queda a unos 6,18 de A.', ver: ['razón áurea'] },
+      { termino: 'razón áurea', simbolo: 'φ', formas: ['razón áurea', 'razones áureas'],
+        def: 'El número (1 + √5)/2 ≈ 1,618, que cumple φ² = φ + 1.',
+        ejemplo: 'En el pentágono regular, diagonal entre lado da φ.', ver: ['sección áurea'] },
+      { termino: 'ecuación cuadrática', formas: ['ecuación cuadrática', 'ecuaciones cuadráticas'],
+        def: 'Ecuación donde la incógnita aparece elevada al cuadrado, pero no a potencias mayores.',
+        ejemplo: 'd² = d + 1 da d = (1 + √5)/2.' },
+      { termino: 'regla y compás', formas: ['regla y compás'],
+        def: 'Construir figuras solo con una regla sin marcas y un compás, sin medir longitudes ni ángulos.' },
+    ],
     // Laboratorio: las tres mesas son más ricas que sus ideas (n hasta 24 con radio libre, inscritos con radio libre y
     // el corte áureo en todo el segmento).
     laboratorio: [mesaPoligono, mesaInscritos, mesaCorte],

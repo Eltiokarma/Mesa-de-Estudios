@@ -486,7 +486,7 @@
       ],
     },
     regla: {
-      texto: 'Cada esquina recibe la suma de las rutas que llegan desde su izquierda y desde abajo. Sin cuadras cerradas, de A a B hay C(m + n, m) rutas.',
+      texto: 'Cada esquina suma las rutas que llegan desde su izquierda y desde abajo. Sin cuadras cerradas, de A a B hay C(m + n, m), un número combinatorio.',
       ecuacion: ['N(esquina) = N(izquierda) + N(abajo)'],
       condicion: 'solo se avanza a la derecha o hacia arriba. Una cuadra cerrada quita esa entrada a la esquina siguiente.',
       voz: 'Una esquina a la vez: así no se pierde ninguna ruta.',
@@ -641,6 +641,11 @@
       rotulos: [{ x: 3, y: -0.6, texto: '6' }, { x: -0.5, y: 2, texto: '4' }],
     };
   };
+  // Perímetro y área de la figura de la mesa, y si de verdad hay muesca (ancho y fondo distintos de 0).
+  const medirMuesca = v => { const pts = muesca(v.xa, v.xb, v.d); return { P: perim(pts), A: Math.abs(U.area(pts)), hay: v.xa !== v.xb && v.d !== 0 }; };
+  const MUESCA_BASE = medirMuesca({ xa: 0, xb: 0, d: 0 });   // el rectángulo de 6 por 4, sin muesca
+  // El mayor perímetro de la mesa, buscado en toda su grilla.
+  const MUESCA_P_MAX = (() => { let m = 0; for (let xa = 0; xa <= 6; xa++) for (let xb = 0; xb <= 6; xb++) for (let d = -2; d <= 3; d++) m = Math.max(m, medirMuesca({ xa, xb, d }).P); return m; })();
   const mesaMuesca = {
     id: 'muesca-libre', titulo: 'Muesca libre', pieza: 'geo-figura',
     consigna: 'Arrastra las esquinas de la muesca: en el medio, pegada a una esquina, de lado a lado o hacia afuera.',
@@ -656,7 +661,22 @@
       donde: v => enPantalla(figLibre(v.xa, v.xb, v.d), [v[cx], 4 - v.d]),
       mover: (pt, v) => { const q = alPlano(figLibre(v.xa, v.xb, v.d), pt); return { [cx]: q[0], d: 4 - q[1] }; },
     })),
-    lectura: v => { const pts = muesca(v.xa, v.xb, v.d); return [`perímetro ${f(perim(pts), 0)} (sin muesca, 20)`, SEP, `área ${f(Math.abs(U.area(pts)), 0)}`]; },
+    lectura: v => { const M = medirMuesca(v); return [`perímetro ${f(M.P, 0)} (sin muesca, 20)`, SEP, `área ${f(M.A, 0)}`]; },
+    // Retos: se comprueban con medirMuesca(), el mismo borde que se dibuja (muesca) medido con perim y U.area.
+    invitaciones: [
+      { texto: 'Busca la muesca que da el mayor perímetro posible.',
+        logrado: v => Math.abs(medirMuesca(v).P - MUESCA_P_MAX) < 1e-9,
+        bien: 'Muesca honda en el medio: sus dos paredes suman lo más que se puede.' },
+      { texto: 'Quita área sin cambiar el perímetro del rectángulo.',
+        logrado: v => { const M = medirMuesca(v); return M.A < MUESCA_BASE.A - 1e-9 && Math.abs(M.P - MUESCA_BASE.P) < 1e-9; },
+        bien: 'Pegada a una esquina, la muesca es un escalón: el borde se proyecta igual.' },
+      { texto: 'Haz que el perímetro baje de 20.',
+        logrado: v => medirMuesca(v).P < MUESCA_BASE.P - 1e-9,
+        bien: 'De lado a lado ya no hay paredes nuevas: el rectángulo se achica.' },
+      { texto: 'Guarda una muesca hacia adentro y otra hacia afuera con igual perímetro.',
+        logrado: (v, guardados) => { const M = medirMuesca(v); return M.hay && guardados.some(g => { const N = medirMuesca(g); return N.hay && Math.sign(g.d) !== Math.sign(v.d) && Math.abs(N.P - M.P) < 1e-9; }); },
+        bien: 'Mismo borde, áreas distintas: el perímetro no decide el área.' },
+    ],
   };
 
   // Mesa 2, más rica que la idea 5: cuadrícula más grande (hasta 5 por 4) y la cuadra cerrada se arrastra a cualquier
@@ -665,6 +685,9 @@
   const cerradaEn = v => [v.ci, v.cj, v.ori];
   const dentro = v => (v.ori === 'h' ? v.ci < v.m && v.cj <= v.n : v.ci <= v.m && v.cj < v.n);
   const figRutas = v => Object.assign(cuadricula(v.m, v.n, { cerrada: cerradaEn(v) }), { vista: VR });
+  // Cuántas rutas usaban la calle cerrada (las de sin cierre menos las que quedan) y la calle más transitada de m por n.
+  const porLaCalle = v => rutasDP(v.m, v.n)[v.m][v.n] - rutasDP(v.m, v.n, cerradaEn(v))[v.m][v.n];
+  const masTransitada = (m, n) => { let k = 0; for (const ori of ['h', 'v']) for (let ci = 0; ci <= m; ci++) for (let cj = 0; cj <= n; cj++) { const v = { m, n, ori, ci, cj }; if (dentro(v)) k = Math.max(k, porLaCalle(v)); } return k; };
   const mesaRutas = {
     id: 'rutas-con-cierre', titulo: 'Rutas con una calle cerrada', pieza: 'geo-figura',
     consigna: 'Arrastra B para cambiar la cuadrícula y la × para cerrar otra calle. Busca la calle por donde pasan más rutas.',
@@ -690,6 +713,21 @@
       const sin = rutasDP(v.m, v.n)[v.m][v.n], con = rutasDP(v.m, v.n, cerradaEn(v))[v.m][v.n];
       return dentro(v) ? [`rutas ${con} de ${sin}`, SEP, `por la × pasaban ${sin - con}`] : [`rutas ${sin}`, SEP, 'la × está fuera'];
     },
+    // Retos: se comprueban con rutasDP, la misma suma por esquinas que dibuja los números de la cuadrícula.
+    invitaciones: [
+      { texto: 'Cierra la calle por donde pasan más rutas.',
+        logrado: v => dentro(v) && porLaCalle(v) === masTransitada(v.m, v.n),
+        bien: 'La más cargada sale de A o llega a B. ¿Por qué no una del medio?' },
+      { texto: 'Cierra una calle que corte justo la mitad de las rutas.',
+        logrado: v => dentro(v) && 2 * porLaCalle(v) === rutasDP(v.m, v.n)[v.m][v.n],
+        bien: 'La mitad exacta: la mitad de las rutas usaba esa calle.' },
+      { texto: 'Arma una cuadrícula con 15 rutas, con la × fuera.',
+        logrado: v => !dentro(v) && rutasDP(v.m, v.n)[v.m][v.n] === 15,
+        bien: 'Cada ruta tiene 6 cuadras y eliges 2 de un tipo: C(6, 2) = 15.' },
+      { texto: 'Guarda una cuadrícula y la misma volteada. ¿Cambian las rutas?',
+        logrado: (v, guardados) => v.m !== v.n && guardados.some(g => g.m === v.n && g.n === v.m),
+        bien: 'No cambian: elegir las cuadras a la derecha o las de arriba da lo mismo.' },
+    ],
   };
 
   // Mesa 3: el cubo pintado de lado n, separado por clases. La idea 6 solo deja ver el interior de un cubo de 3 con los
@@ -712,6 +750,8 @@
       regiones: caras(vistos, { color: c => CLASE[pintadas(c, n)].color }),
     };
   };
+  // Cubitos de un cubo de lado n con k caras pintadas, contados uno por uno.
+  const porClase = (n, k) => { let c = 0; for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) for (let l = 0; l < n; l++) if (pintadas([i, j, l], n) === k) c++; return c; };
   const mesaPintado = {
     id: 'cubo-pintado', titulo: 'Cubo pintado por clases', pieza: 'geo-figura',
     consigna: 'Arrastra la esquina para cambiar el lado. Deja a la vista una sola clase de cubitos y cuéntalos.',
@@ -731,6 +771,21 @@
       return v.ver === 'todas' ? [`${v.n ** 3} = `, ...[3, 2, 1, 0].flatMap((k, i) => [...(i ? [' + '] : []), { v: `c-${CLASE[k].color}`, t: `${cuenta[k]}` }])]
         : [`${CLASE[v.ver].texto}: ${cuenta[+v.ver]}`, SEP, `de ${v.n ** 3} cubitos`];
     },
+    // Retos: se comprueban con porClase(), que cuenta los cubitos uno por uno con pintadas, como el dibujo.
+    invitaciones: [
+      { texto: 'Deja a la vista justo 27 cubitos sin pintar.',
+        logrado: v => v.ver === '0' && porClase(v.n, 0) === 27,
+        bien: 'Lado 5: el interior es un cubo de lado 3. 3³ = 27.' },
+      { texto: 'Busca el lado en que empatan los cubitos de 1 y de 2 caras pintadas.',
+        logrado: v => porClase(v.n, 1) > 0 && porClase(v.n, 1) === porClase(v.n, 2),
+        bien: 'Lado 4: 6 · 2² = 12 · 2. Con un lado más, ganan las caras.' },
+      { texto: 'Arma un cubo en el que ningún cubito quede sin pintar.',
+        logrado: v => porClase(v.n, 0) === 0,
+        bien: 'Con lado 2 todos son esquinas. Con lado 3 ya aparece uno oculto.' },
+      { texto: 'Guarda dos cubos de distinto lado mostrando solo las esquinas.',
+        logrado: (v, guardados) => v.ver === '3' && guardados.some(g => g.ver === '3' && g.n !== v.n),
+        bien: 'Siempre 8, sea cual sea el lado: un cubo tiene 8 vértices.' },
+    ],
   };
 
   return {
@@ -743,6 +798,29 @@
       pregunta: '¿Qué detalles de una figura puedes ignorar sin cambiar la respuesta?',
       fuente: { titulo: 'MacTutor: The Königsberg bridges', url: 'https://mathshistory.st-andrews.ac.uk/Extras/Konigsberg/' },
     },
+    // Glosario: las palabras que este tema estrena en el curso (docs/teoria.md, 4d). Los ejemplos salen de los casos
+    // de las ideas y se comprobaron con node.
+    glosario: [
+      { termino: 'muesca', def: 'Entrante en el borde de una figura: un pedazo recortado hacia adentro que agrega paredes al perímetro.',
+        ejemplo: 'Rectángulo de 6 por 4 con muesca de fondo 1: perímetro 20 + 2 = 22.', ver: ['perímetro'] },
+      { termino: 'serie', formas: ['serie', 'series'], def: 'Lista ordenada de figuras o números que siguen una regla; se pide el término siguiente o el que falta.',
+        ver: ['analogía'] },
+      { termino: 'analogía', formas: ['analogía', 'analogías'], def: 'Comparación «A es a B como C es a…»: el cambio de A a B se repite desde C.',
+        ver: ['serie'] },
+      { termino: 'distribución', formas: ['distribución', 'distribuciones'],
+        def: 'Figuras con números en lugares fijos, unidos por una misma regla que debe cumplirse en todas.',
+        ejemplo: 'a · b − c: con 3, 4 y 2, el centro es 3 · 4 − 2 = 10.' },
+      { termino: 'abanico', def: 'Rayos que salen de un mismo punto y cortan una base; entre cada dos rayos queda un espacio.',
+        ejemplo: '3 espacios: 3 + 2 + 1 = 6 triángulos con una base.', ver: ['transversal', 'rayo'] },
+      { termino: 'transversal', formas: ['transversal', 'transversales'],
+        def: 'Recta que corta a todos los rayos de un abanico y forma, con cada par de ellos, un triángulo.',
+        ejemplo: 'Abanico de 3 espacios con 2 transversales: 2 · 6 = 12 triángulos.', ver: ['abanico'] },
+      { termino: 'ruta', formas: ['ruta', 'rutas'], def: 'Camino de A a B por las calles de la cuadrícula, avanzando solo hacia la derecha o hacia arriba.',
+        ver: ['número combinatorio'] },
+      { termino: 'número combinatorio', simbolo: 'C(n, k)', def: 'Cuántas formas hay de elegir k cosas entre n, sin importar el orden.',
+        ejemplo: 'Cuadrícula de 3 por 2: C(5, 3) = 10 rutas.', ver: ['ruta'] },
+      { termino: 'teoría de grafos', def: 'Parte de la matemática que estudia puntos unidos por líneas, mirando solo qué está conectado con qué.' },
+    ],
     // Laboratorio: las tres mesas son más ricas que sus ideas (muesca con esquinas libres, rutas con la calle cerrada
     // que se arrastra, cubo pintado de lado 2 a 5 por clases).
     laboratorio: [mesaMuesca, mesaRutas, mesaPintado],

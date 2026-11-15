@@ -284,7 +284,7 @@
       ],
     },
     regla: {
-      texto: 'El ángulo central mide lo mismo que su arco. El inscrito y el semiinscrito (tangente con cuerda) miden la mitad del arco que abarcan.',
+      texto: 'El ángulo central mide lo mismo que su arco. El ángulo inscrito y el semiinscrito (tangente con cuerda) miden la mitad del arco que abarcan.',
       ecuacion: ['central = arco   ·   inscrito = semiinscrito = ', { llave: [{ frac: ['arco', '2'] }], nota: 'mitad del arco', color: 'c-o' }],
       condicion: 'el vértice del inscrito está en la circunferencia, fuera del arco que abarca; todos los inscritos en el mismo arco son iguales.',
       voz: 'Ubica el vértice antes de decidir si va el arco o su mitad.',
@@ -615,6 +615,17 @@
   };
 
   // ---------- Laboratorio: juego libre, sin preguntas ----------
+  // Valores de un control como los da el lector (min + k·paso, redondeado), y el extremo de una medida en toda la grilla
+  // de una mesa: así los retos «el mayor…» se comprueban con la mesa real, no con un número escrito a mano.
+  const valoresDe = c => Array.from({ length: Math.floor((c.max - c.min) / c.paso + 1e-9) + 1 }, (_, k) => Math.round(Math.min(c.max, c.min + k * c.paso) * 1e6) / 1e6);
+  const extremoMesa = (mesa, medida, mayor) => {
+    let casos = [{}];
+    for (const c of mesa.controles) casos = casos.flatMap(v => valoresDe(c).map(x => Object.assign({}, v, { [c.id]: x })));
+    let mejor = mayor ? -Infinity : Infinity;
+    for (const v of casos) { const m = medida(v); if (m !== null) mejor = mayor ? Math.max(mejor, m) : Math.min(mejor, m); }
+    return mejor;
+  };
+  const memo = fn => { let x; return () => (x === undefined ? (x = fn()) : x); };
   // Mesa 1, más rica que la idea 2: los dos radios también se mueven (la idea los fija en 4 y 2), y la chica puede
   // crecer más que la grande. Se agarran el centro O₂ y un punto de cada circunferencia (su radio).
   const posLibre = (d, r1, r2) => {
@@ -652,6 +663,27 @@
         mover: (q, v) => ({ r2: U.dist([v.d, 0], alPlano(dosLibre(v.d, v.r1, v.r2), q)) }) },
     ],
     lectura: v => [{ v: 'c-h', t: 'd' }, ` = ${f(v.d)}${sep}suma ${f(v.r1 + v.r2)}${sep}resta ${f(Math.abs(v.r1 - v.r2))}${sep}${posLibre(v.d, v.r1, v.r2)}`],
+    // Retos: la posición sale de posLibre, la misma que rotula la mesa.
+    invitaciones: [
+      { texto: 'Haz que las dos circunferencias sean tangentes exteriores.',
+        logrado: v => posLibre(v.d, v.r1, v.r2) === 'tangentes exteriores',
+        bien: 'Se tocan por fuera justo cuando d es la suma de los radios.' },
+      { texto: 'Consigue tangentes interiores: una dentro de la otra, tocándose en un punto.',
+        logrado: v => posLibre(v.d, v.r1, v.r2) === 'tangentes interiores',
+        bien: 'Por dentro se tocan cuando d es la resta de los radios.' },
+      { texto: 'Deja la chica entera dentro de la grande, sin tocarla y sin centro común.',
+        logrado: v => posLibre(v.d, v.r1, v.r2) === 'interiores',
+        bien: 'Interiores: d es menor que la resta. ¿Qué pasa si d llega a 0?' },
+      { texto: 'Busca la mayor d con la que todavía se cortan, con tus radios.',
+        // Secantes ahora, y un paso más de d ya no lo son.
+        logrado: v => posLibre(v.d, v.r1, v.r2) === 'secantes' && posLibre(v.d + mesaDos.controles[0].paso, v.r1, v.r2) !== 'secantes',
+        bien: 'Medio paso más y se tocan por fuera: el límite es r₁ + r₂.' },
+      { texto: 'Guarda dos casos tangentes exteriores con distinta d.',
+        logrado: (v, guardados) => posLibre(v.d, v.r1, v.r2) === 'tangentes exteriores'
+          && guardados.some(g => g.d === v.d && g.r1 === v.r1 && g.r2 === v.r2)
+          && guardados.some(g => g.d !== v.d && posLibre(g.d, g.r1, g.r2) === 'tangentes exteriores'),
+        bien: 'Distinta d, misma regla: d = r₁ + r₂ en los dos casos.' },
+    ],
   };
 
   // Mesa 2, más rica que la idea 3: el arco AB se abre de 20° a 340° y P recorre la circunferencia entera, también
@@ -698,12 +730,37 @@
       const k = inscLibre(v.arco, v.fi)._info;
       return [k.borde ? 'semiinscrito' : { v: 'c-i', t: '∠APB' }, ` = ${f(k.ang, 0)}°${sep}arco ${v.arco}°${sep}${k.borde ? 'P en el borde' : k.dentro ? 'P sobre el arco' : 'P fuera del arco'}`];
     },
+    // Retos: el ángulo y dónde cae P salen de inscLibre (_info), la misma función que dibuja.
+    invitaciones: [
+      { texto: 'Haz que el ángulo APB mida justo 90°.',
+        logrado: v => { const k = inscLibre(v.arco, v.fi)._info; return !k.borde && Math.abs(k.ang - 90) < 1e-6; },
+        bien: '90° con un arco de 180°: AB es un diámetro. ¿Dónde más puede ir P?' },
+      { texto: 'Lleva P sobre el arco AB y mira qué arco abarca ahora.',
+        logrado: v => inscLibre(v.arco, v.fi)._info.dentro,
+        bien: 'Ahora P abarca el otro arco: mide 180° menos la mitad de AB.' },
+      { texto: 'Lleva P hasta A o hasta B: el ángulo se vuelve semiinscrito.',
+        logrado: v => inscLibre(v.arco, v.fi)._info.borde,
+        bien: 'Cuerda y tangente: el semiinscrito sigue midiendo la mitad del arco.' },
+      { texto: 'Con P fuera del arco AB, busca el ángulo APB más grande.',
+        logrado: v => { const k = inscLibre(v.arco, v.fi)._info; return !k.borde && !k.dentro && Math.abs(k.ang - angMaxFuera()) < 1e-6; },
+        bien: 'El arco más abierto da el mayor ángulo: siempre la mitad del arco.' },
+      { texto: 'Guarda dos casos con el mismo arco y P en otro lugar, fuera del arco.',
+        logrado: (v, guardados) => {
+          const k = inscLibre(v.arco, v.fi)._info;
+          if (k.borde || k.dentro || !guardados.some(g => g.arco === v.arco && g.fi === v.fi)) return false;
+          return guardados.some(g => { const q = inscLibre(g.arco, g.fi)._info; return g.arco === v.arco && g.fi !== v.fi && !q.borde && !q.dentro && Math.abs(q.ang - k.ang) < 1e-6; });
+        },
+        bien: 'Mismo arco, mismo ángulo: P pasea y el inscrito no cambia.' },
+    ],
   };
+  const angMaxFuera = memo(() => extremoMesa(mesaInscrito, v => { const k = inscLibre(v.arco, v.fi)._info; return k.borde || k.dentro ? null : k.ang; }, true));
 
   // Mesa 3, el caso que la idea 6 no deja probar: D sale de la circunferencia hacia dentro o hacia fuera.
   // Se agarra D y se suelta donde sea (su rumbo y su distancia al centro); A, B y C quedan en la circunferencia.
   const DL = (fi, od) => U.polar(O, od, fi);
   const ciclLibre = (fi, od) => Object.assign(cicl(0, { D: DL(fi, od) }), { vista: { x: [-4.8, 4.8], y: [-4.9, 4.3] } });
+  // ∠B + ∠D del cuadrilátero con D libre: la misma cuenta que escribe la lectura.
+  const sumaBD = v => U.angulo(P6.B, P6.A, P6.C) + U.angulo(DL(v.fi, v.od), P6.A, P6.C);
   const mesaCiclico = {
     id: 'cuadrilatero-libre', titulo: 'D dentro, sobre o fuera', pieza: 'geo-figura',
     consigna: 'Arrastra D por dentro, sobre y fuera de la circunferencia. Compara ∠B + ∠D en cada caso.',
@@ -716,10 +773,27 @@
       donde: v => enPantalla(ciclLibre(v.fi, v.od), DL(v.fi, v.od)),
       mover: (q, v) => { const p = alPlano(ciclLibre(v.fi, v.od), q); return { fi: rumbo(p, 90), od: U.dist(O, p) }; } }],
     lectura: v => {
-      const s = U.angulo(P6.B, P6.A, P6.C) + U.angulo(DL(v.fi, v.od), P6.A, P6.C), donde = Math.abs(v.od - R) < 1e-9 ? 'sobre' : v.od < R ? 'dentro' : 'fuera';
+      const s = sumaBD(v), donde = Math.abs(v.od - R) < 1e-9 ? 'sobre' : v.od < R ? 'dentro' : 'fuera';
       return [{ v: 'c-o', t: '∠B' }, ' + ', { v: 'c-i', t: '∠D' }, ` = ${f(s, 0)}°${sep}D ${donde}, OD = ${f(v.od)}`];
     },
+    invitaciones: [
+      { texto: 'Pon D justo sobre la circunferencia: haz que ∠B + ∠D sume 180°.',
+        logrado: v => Math.abs(sumaBD(v) - 180) < 1e-6,
+        bien: 'Sobre la circunferencia, los opuestos suman 180°. ¿Y si D sale?' },
+      { texto: 'Busca la suma ∠B + ∠D más chica que deja la mesa.',
+        logrado: v => Math.abs(sumaBD(v) - sumaMin()) < 1e-6,
+        bien: 'D lejos del centro cierra ∠D: la suma baja de 180°.' },
+      { texto: 'Ahora busca la suma ∠B + ∠D más grande.',
+        logrado: v => Math.abs(sumaBD(v) - sumaMax()) < 1e-6,
+        bien: 'D cerca del centro abre ∠D. Ya no es un cuadrilátero inscrito.' },
+      { texto: 'Guarda un caso con D dentro y otro con D fuera. Compara las sumas.',
+        logrado: (v, guardados) => guardados.some(g => g.fi === v.fi && g.od === v.od)
+          && guardados.some(g => g.od < R - 1e-9 && sumaBD(g) > 180) && guardados.some(g => g.od > R + 1e-9 && sumaBD(g) < 180),
+        bien: 'Dentro pasa de 180°, fuera no llega: solo sobre ella da justo 180°.' },
+    ],
   };
+  const sumaMin = memo(() => extremoMesa(mesaCiclico, sumaBD, false));
+  const sumaMax = memo(() => extremoMesa(mesaCiclico, sumaBD, true));
 
   return {
     unidad: 'geometria.circunferencia',
@@ -731,6 +805,48 @@
       pregunta: '¿Qué cambia si el vértice sale de la circunferencia?',
       fuente: { titulo: 'Euclides, Elementos III.20 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookIII/propIII20.html' },
     },
+    // Glosario (docs/teoria.md, 4d): lo que esta unidad estrena. Circunferencia, círculo, radio, diámetro, centro, arco
+    // y secante se definen antes (segmentos, triángulos, congruencia); semisuma y semidiferencia, en polígonos.
+    glosario: [
+      { termino: 'circunscrita', formas: ['circunscrita', 'circunscrito', 'circunscritas', 'circunscritos'], def: 'Dicho de una circunferencia: pasa por todos los vértices de un polígono, que queda adentro.', ver: ['circunferencia inscrita'] },
+      { termino: 'cuerda', def: 'Segmento que une dos puntos de una circunferencia.',
+        ejemplo: 'La cuerda más larga pasa por el centro: es el diámetro.', ver: ['arco que abarca', 'diámetro'] },
+      { termino: 'tangente', def: 'Recta que toca la circunferencia en un solo punto, perpendicular al radio que llega ahí.',
+        ejemplo: 'Con r = 3 y P a 5 del centro, cada tangente desde P mide √(25 − 9) = 4.', ver: ['punto de tangencia', 'radio'] },
+      { termino: 'punto de tangencia', formas: ['punto de tangencia', 'puntos de tangencia', 'punto de contacto', 'puntos de contacto'],
+        def: 'Único punto que comparten una recta tangente y la circunferencia.', ver: ['tangente'] },
+      { termino: 'arco que abarca', formas: ['arco que abarca', 'arco que abarcan', 'arcos que abarcan'],
+        def: 'Parte de la circunferencia que queda entre los lados de un ángulo, frente a su vértice.',
+        ver: ['ángulo central', 'ángulo inscrito'] },
+      { termino: 'ángulo central', formas: ['ángulo central', 'ángulos centrales'],
+        def: 'Ángulo con el vértice en el centro de la circunferencia. Mide lo mismo que su arco.',
+        ejemplo: 'Si abarca un arco de 100°, mide 100°.', ver: ['ángulo inscrito'] },
+      { termino: 'ángulo inscrito', formas: ['ángulo inscrito', 'ángulos inscritos'],
+        def: 'Ángulo con el vértice sobre la circunferencia y dos cuerdas como lados. Mide la mitad de su arco.',
+        ejemplo: 'Arco de 100°: el ángulo mide 50°.', ver: ['ángulo central', 'semiinscrito'] },
+      { termino: 'semiinscrito', formas: ['ángulo semiinscrito', 'semiinscrito', 'semiinscritos'],
+        def: 'Ángulo con vértice sobre la circunferencia, entre una cuerda y la tangente. Mide la mitad de su arco.',
+        ejemplo: 'Arco de 100°: mide 50°, igual que un inscrito en ese arco.', ver: ['ángulo inscrito', 'tangente'] },
+      { termino: 'concéntricas', formas: ['concéntricas', 'concéntrica'],
+        def: 'Dicho de dos circunferencias con el mismo centro: la distancia d entre centros es 0.' },
+      { termino: 'tangentes exteriores', def: 'Dos circunferencias que se tocan en un punto, una fuera de la otra: d = r₁ + r₂.',
+        ejemplo: 'Radios 4 y 2: se tocan por fuera con d = 6.', ver: ['tangentes interiores'] },
+      { termino: 'tangentes interiores', def: 'Dos circunferencias que se tocan en un punto, una dentro de la otra: d = r₁ − r₂.',
+        ejemplo: 'Radios 4 y 2: se tocan por dentro con d = 2.', ver: ['tangentes exteriores', 'concéntricas'] },
+      { termino: 'circunferencia inscrita', formas: ['circunferencia inscrita', 'circunferencias inscritas'],
+        def: 'La que queda dentro de un polígono y toca cada uno de sus lados en un punto.', ver: ['teorema de Pitot'] },
+      { termino: 'teorema de Pitot', formas: ['teorema de Pitot', 'Pitot'],
+        def: 'Si los cuatro lados de un cuadrilátero tocan una circunferencia interior, los lados opuestos suman lo mismo.',
+        ejemplo: 'AB = 7, BC = 8 y CD = 5: DA = 7 + 5 − 8 = 4.', ver: ['circunferencia inscrita'] },
+      { termino: 'teorema de Poncelet', formas: ['teorema de Poncelet', 'Poncelet'],
+        def: 'En un triángulo rectángulo, los catetos suman la hipotenusa más el diámetro de la circunferencia interior.',
+        ejemplo: 'Catetos 6 y 8, hipotenusa 10: 6 + 8 = 10 + 2r, así r = 2.', ver: ['circunferencia inscrita'] },
+      { termino: 'cuadrilátero inscrito', formas: ['cuadrilátero inscrito', 'cuadriláteros inscritos'],
+        def: 'Cuadrilátero con sus cuatro vértices sobre una circunferencia. Sus ángulos opuestos suman 180°.',
+        ejemplo: 'Si ∠B = 70°, su opuesto ∠D mide 110°.', ver: ['inscriptible'] },
+      { termino: 'inscriptible', def: 'Dicho de un cuadrilátero cuyos cuatro vértices caben en una misma circunferencia.',
+        ejemplo: '∠A = 100° y ∠C = 80° suman 180°: sí lo es.', ver: ['cuadrilátero inscrito'] },
+    ],
     // Laboratorio: dos circunferencias con radios libres, el arco libre con P suelto y el cuadrilátero con D libre son
     // más ricos que sus ideas (más controles y los casos borde que las ideas no dejan probar).
     laboratorio: [mesaDos, mesaInscrito, mesaCiclico],

@@ -303,7 +303,7 @@
       voz: 'Una sola fracción sirve para el arco y para el sector.',
       pasos: [
         { estado: { corte: 0 }, texto: '60° es la sexta parte de 360°.', ecuacion: [frac('60', '360'), ' = ', frac('1', '6')] },
-        { estado: { corte: 1 }, texto: 'El arco es un sexto de la circunferencia.', ecuacion: ['s = ', frac('1', '6'), ' · 2π · 6 = 2π'] },
+        { estado: { corte: 1 }, texto: 'La longitud de arco es un sexto de la circunferencia.', ecuacion: ['s = ', frac('1', '6'), ' · 2π · 6 = 2π'] },
         { estado: { corte: 2 }, texto: 'El sector es un sexto del círculo.', ecuacion: ['S = ', frac('1', '6'), ' · π · ', cuad(6), ' = 6π'] },
       ],
     },
@@ -563,6 +563,9 @@
       angulos: [{ en: 'O', de: 'A', a: 'B', color: 'h', texto: `${al}°`, radio: 16, mayor: al > 180 }],
     };
   };
+  // Motor de los retos (y de la lectura): arco, sector, triángulo y segmento con θ en radianes.
+  const medSeg = v => { const t = U.rad(v.al), sc = v.r * v.r * t / 2, tr = v.r * v.r * Math.sin(t) / 2; return { arco: v.r * t, sector: sc, tri: tr, seg: sc - tr }; };
+  const MAX_SEG_R2 = Math.max(...Array.from({ length: 35 }, (_, k) => medSeg({ al: 10 + 10 * k, r: 2 }).seg));
   const mesaSector = {
     id: 'sector-y-segmento', titulo: 'Sector y segmento libres', pieza: 'geo-figura',
     consigna: 'Arrastra B para abrir α y A para cambiar r. Cambia a «segmento» y pasa α de 180°.',
@@ -581,10 +584,25 @@
         mover: (q, v) => ({ r: alPlano(segLibre(v.al, v.r, v.ver), q)[0] }) },
     ],
     lectura: v => {
-      const t = U.rad(v.al), sc = v.r * v.r * t / 2, tr = v.r * v.r * Math.sin(t) / 2;
-      return v.ver === 'sector' ? [`arco ≈ ${f(v.r * t)}${sep}sector ≈ ${f(sc)}`]
-        : [`sector ${f(sc)} − triángulo ${f(tr)} = ${f(sc - tr)}`];
+      const m = medSeg(v);
+      return v.ver === 'sector' ? [`arco ≈ ${f(m.arco)}${sep}sector ≈ ${f(m.sector)}`]
+        : [`sector ${f(m.sector)} − triángulo ${f(m.tri)} = ${f(m.seg)}`];
     },
+    invitaciones: [
+      { texto: 'Consigue un sector de área 4π, unos 12,57.',
+        logrado: v => v.ver === 'sector' && Math.abs(medSeg(v).sector - 4 * Math.PI) < 1e-9,
+        bien: 'La fracción α/360 por πr² dio 4π. ¿Hay otro par de r y α?' },
+      { texto: 'Con r = 2, busca el α que da el segmento más grande.',
+        logrado: v => v.ver === 'segmento' && v.r === 2 && medSeg(v).seg > MAX_SEG_R2 - 1e-9,
+        bien: 'Pasado 180°, el segmento es el mayor: casi todo el círculo.' },
+      { texto: 'Encuentra el α en que el segmento es justo medio círculo.',
+        logrado: v => v.ver === 'segmento' && Math.abs(medSeg(v).seg - Math.PI * v.r * v.r / 2) < 1e-9,
+        bien: 'A 180°, la cuerda es un diámetro y el triángulo se aplana a cero.' },
+      { texto: 'Guarda dos sectores de igual α, uno con el doble de radio.',
+        logrado: (v, guardados) => v.ver === 'sector' && guardados.some(g => g.ver === 'sector' && g.al === v.al
+          && (g.r === 2 * v.r || v.r === 2 * g.r) && Math.abs(Math.max(medSeg(g).sector, medSeg(v).sector) / Math.min(medSeg(g).sector, medSeg(v).sector) - 4) < 1e-9),
+        bien: 'Radio doble: arco doble y sector cuádruple. El área usa r dos veces.' },
+    ],
   };
 
   // Mesa 2, más rica que las ideas 4 y 5: corona y trapecio circular juntos, con los dos radios y el ángulo libres.
@@ -601,6 +619,10 @@
       angulos: [{ en: 'O', de: 'A', a: 'B', color: 'h', texto: `${al}°`, radio: 16, mayor: al > 180 }],
     };
   };
+  // Motor de los retos (y de la lectura), en unidades de π: trapecio, corona entera y la trampa (R − r)².
+  const medTrap = v => ({ hay: v.r < v.R, trap: (v.R * v.R - v.r * v.r) * v.al / 360, corona: v.R * v.R - v.r * v.r, trampa: (v.R - v.r) ** 2 });
+  // Lo más que se queda corta la trampa en toda la grilla de radios de la mesa.
+  const MAX_FALTA = (() => { let m = 0; for (let R = 2; R <= 6; R += 0.5) for (let r = 0.5; r <= 6; r += 0.5) { const t = medTrap({ R, r, al: 90 }); if (t.hay) m = Math.max(m, t.corona - t.trampa); } return m; })();
   const mesaTrapecio = {
     id: 'corona-y-trapecio', titulo: 'Corona y trapecio libres', pieza: 'geo-figura',
     consigna: 'Arrastra los extremos de R, de r y el borde B. Compara el trapecio con la corona entera y con la trampa (R − r)².',
@@ -621,13 +643,29 @@
         donde: v => enPantalla(trapLibre(v.R, v.r, v.al), U.polar([0, 0], v.R, v.al)),
         mover: (q, v) => ({ al: rumbo(alPlano(trapLibre(v.R, v.r, v.al), q)) }) },
     ],
-    lectura: v => (v.r >= v.R ? [`r ≥ R: no hay corona`]
-      : [`trapecio ${pi((v.R * v.R - v.r * v.r) * v.al / 360)}${sep}corona ${pi(v.R * v.R - v.r * v.r)}${sep}trampa ${pi((v.R - v.r) ** 2)}`]),
+    lectura: v => { const m = medTrap(v); return !m.hay ? [`r ≥ R: no hay corona`] : [`trapecio ${pi(m.trap)}${sep}corona ${pi(m.corona)}${sep}trampa ${pi(m.trampa)}`]; },
+    invitaciones: [
+      { texto: 'Arma un trapecio circular de área justo 6π.',
+        logrado: v => medTrap(v).hay && Math.abs(medTrap(v).trap - 6) < 1e-9,
+        bien: 'Diste con 6π. ¿Lo logras con otro ángulo y otros radios?' },
+      { texto: 'Busca dónde la trampa (R − r)² se queda más corta que la corona.',
+        logrado: v => { const m = medTrap(v); return m.hay && m.corona - m.trampa > MAX_FALTA - 1e-9; },
+        bien: 'Con r en la mitad de R, la trampa pierde más: 18π.' },
+      { texto: 'Haz que el trapecio sea justo un tercio de su corona.',
+        logrado: v => { const m = medTrap(v); return m.hay && Math.abs(m.trap / m.corona - 1 / 3) < 1e-9; },
+        bien: '120° es un tercio de vuelta: la misma fracción que en el sector.' },
+      { texto: 'Guarda dos coronas de igual área con radios distintos.',
+        logrado: (v, guardados) => medTrap(v).hay && guardados.some(g => medTrap(g).hay && (g.R !== v.R || g.r !== v.r) && Math.abs(medTrap(g).corona - medTrap(v).corona) < 1e-9),
+        bien: 'Radios distintos, misma corona: manda R² − r², no cada radio.' },
+    ],
   };
 
   // Mesa 3, el caso que la idea 5 no deja probar: catetos libres. Las lúnulas suman el triángulo en todo rectángulo.
   const VL = { x: [-4.6, 8.8], y: [-4.6, 8.8] };
   const lunLibre = (a, b) => lunulas({ a, b, blanco: true, vista: VL, alt: `Triángulo rectángulo de catetos ${f(a)} y ${f(b)}: las lúnulas suman ${f(a * b / 2)}, igual que el triángulo` });
+  // Motor de los retos (y de la lectura): las lúnulas por piezas, sin usar la regla que se quiere descubrir.
+  const lunDe = v => { const semi = d => Math.PI * d * d / 8; return semi(v.a) + semi(v.b) + v.a * v.b / 2 - semi(Math.hypot(v.a, v.b)); };
+  const MIN_LUN = Math.min(...Array.from({ length: 13 }, (_, i) => Array.from({ length: 13 }, (_, j) => lunDe({ a: 2 + i / 2, b: 2 + j / 2 }))).flat());
   const mesaLunulas = {
     id: 'lunulas-libres', titulo: 'Lúnulas con catetos libres', pieza: 'geo-figura',
     consigna: 'Arrastra B y C para cambiar los catetos. Compara las lúnulas con el triángulo en cada caso.',
@@ -644,11 +682,21 @@
         donde: v => enPantalla(lunLibre(v.a, v.b), [0, v.b]),
         mover: (q, v) => ({ b: alPlano(lunLibre(v.a, v.b), q)[1] }) },
     ],
-    lectura: v => {
-      // Se calcula por piezas (semicírculos de los catetos + triángulo − semicírculo de la hipotenusa), no con la regla.
-      const semi = d => Math.PI * d * d / 8, lun = semi(v.a) + semi(v.b) + v.a * v.b / 2 - semi(Math.hypot(v.a, v.b));
-      return [`lúnulas ≈ ${f(lun)}${sep}triángulo = ${f(v.a * v.b / 2)}`];
-    },
+    lectura: v => [`lúnulas ≈ ${f(lunDe(v))}${sep}triángulo = ${f(v.a * v.b / 2)}`],
+    invitaciones: [
+      { texto: 'Haz que las lúnulas sumen justo 12.',
+        logrado: v => Math.abs(lunDe(v) - 12) < 1e-9,
+        bien: 'Lúnulas de 12 y triángulo de 12. ¿Con qué otros catetos sale?' },
+      { texto: 'Iguala los catetos y mira las dos lúnulas.',
+        logrado: v => v.a === v.b && Math.abs(lunDe(v) - v.a * v.b / 2) < 1e-9,
+        bien: 'Catetos iguales, lúnulas gemelas: cada una vale medio triángulo.' },
+      { texto: 'Busca las lúnulas más pequeñas que permite la mesa.',
+        logrado: v => lunDe(v) < MIN_LUN + 1e-9,
+        bien: 'Catetos de 2 y lúnulas de 2: siempre lo mismo que el triángulo.' },
+      { texto: 'Guarda dos triángulos de hipotenusas distintas y lúnulas iguales.',
+        logrado: (v, guardados) => guardados.some(g => Math.abs(Math.hypot(g.a, g.b) - Math.hypot(v.a, v.b)) > 1e-9 && Math.abs(lunDe(g) - lunDe(v)) < 1e-9),
+        bien: 'Mismo producto de catetos, mismas lúnulas: la hipotenusa no decide.' },
+    ],
   };
 
   return {
@@ -661,6 +709,30 @@
       pregunta: '¿Cómo se mide algo curvo con piezas rectas?',
       fuente: { titulo: 'Euclides, Elementos XII.2 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookXII/propXII2.html' },
     },
+    // Glosario (docs/teoria.md, 4d): las palabras que este tema estrena en el curso. Circunferencia, círculo, radio,
+    // diámetro, arco, cuerda, ángulo central, semicírculo, concéntrico y circunscrito vienen de unidades anteriores.
+    glosario: [
+      { termino: 'longitud de arco', def: 'Lo que mide un arco estirado: la fracción α/360 de la circunferencia entera.',
+        formas: ['longitud de arco', 'longitudes de arco'], ejemplo: 'Radio 6 y 60°: un sexto de 12π, o sea 2π.', ver: ['sector circular', 'radián'] },
+      { termino: 'sector circular', def: 'Parte del círculo entre dos radios y el arco que los une, como una tajada de pizza.',
+        formas: ['sector circular', 'sectores circulares', 'sector', 'sectores'], ejemplo: 'Radio 6 y 60°: un sexto de 36π, o sea 6π.', ver: ['segmento circular', 'ángulo central'] },
+      { termino: 'segmento circular', def: 'Parte del círculo entre una cuerda y su arco: el sector menos el triángulo de los dos radios.',
+        formas: ['segmento circular', 'segmentos circulares'], ejemplo: 'Radio 2 y 90°: π − 2.', ver: ['sector circular'] },
+      { termino: 'corona circular', def: 'Región entre dos circunferencias con el mismo centro: el círculo grande menos el chico.',
+        formas: ['corona circular', 'coronas circulares', 'corona', 'coronas'], ejemplo: 'Radios 5 y 3: 25π − 9π = 16π.', ver: ['trapecio circular', 'concéntricas'] },
+      { termino: 'trapecio circular', def: 'Parte de una corona entre dos radios: el sector grande menos el chico del mismo ángulo.',
+        ejemplo: 'Radios 5 y 3 con 90°: un cuarto de 16π, o sea 4π.', ver: ['corona circular', 'sector circular'] },
+      { termino: 'lúnula', def: 'Región con forma de luna creciente, limitada por dos arcos de circunferencia.',
+        formas: ['lúnula', 'lúnulas'], ejemplo: 'Con catetos 6 y 8, las dos suman 24: el área del triángulo.', ver: ['región compuesta'] },
+      { termino: 'región compuesta', def: 'Región que se arma sumando y restando piezas que se saben medir: círculos, sectores, triángulos.',
+        formas: ['región compuesta', 'regiones compuestas'], ver: ['lúnula'] },
+      { termino: 'radián', simbolo: 'rad', def: 'Medida de ángulo: el que abre un arco tan largo como el radio. Una vuelta mide 2π.',
+        formas: ['radián', 'radianes'], ejemplo: '180° = π rad ≈ 3,14 rad.', ver: ['longitud de arco', 'arco'] },
+      { termino: 'polígono inscrito', def: 'Polígono con todos sus vértices sobre la circunferencia, por dentro de ella.',
+        formas: ['polígono inscrito', 'polígonos inscritos'], ejemplo: 'El hexágono inscrito en un círculo de diámetro 1 tiene perímetro 3.', ver: ['cota', 'circunscrita'] },
+      { termino: 'cota', def: 'Valor que asegura un límite: una inferior queda por debajo del número buscado; una superior, por encima.',
+        formas: ['cota', 'cotas'], ejemplo: '223/71 < π < 22/7: dos cotas de Arquímedes.' },
+    ],
     // Laboratorio: sector con segmento, corona con trapecio y lúnulas con catetos libres; las tres abren rangos o casos
     // que las ideas no dejan probar (α > 180°, r ≥ R, cualquier triángulo rectángulo).
     laboratorio: [mesaSector, mesaTrapecio, mesaLunulas],

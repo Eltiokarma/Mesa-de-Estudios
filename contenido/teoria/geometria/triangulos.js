@@ -375,6 +375,10 @@
       ],
     };
   };
+  // El ángulo BIC medido en la figura, con el punto I que calcula bis() (no con la fórmula).
+  const anguloBIC = v => { const P = bis(v.b, v.c).puntos, I = P.find(p => p.id === 'I'); return U.angulo([I.x, I.y], [0, 0], [6, 0]); };
+  let BIC_MAX = 0;   // el mayor de la grilla del juego (B y C de 40° a 70°, de 10° en 10°)
+  for (let b = 40; b <= 70; b += 10) for (let c = 40; c <= 70; c += 10) BIC_MAX = Math.max(BIC_MAX, anguloBIC({ b, c }));
   const bisectrices = {
     id: 'angulo-de-bisectrices',
     titulo: 'El ángulo entre dos bisectrices',
@@ -479,6 +483,12 @@
       ],
     };
   };
+  // Los tres ángulos del triángulo libre, como los calcula la figura (A, B y C).
+  const angLibre = v => { const A = [v.ax, v.ay], C = [v.cx, 0], a = U.angulo(A, [0, 0], C), b = U.angulo([0, 0], A, C); return { a, b, c: 180 - a - b }; };
+  let A_MAX = 0;   // el mayor ángulo A de la grilla de la mesa
+  for (let i = 0; i <= 20; i++) for (let j = 0; j <= 11; j++) for (let k = 0; k <= 12; k++) A_MAX = Math.max(A_MAX, angLibre({ ax: -2 + i / 2, ay: 0.5 + j / 2, cx: 2 + k / 2 }).a);
+  // Los pies de altura, mediana y bisectriz que dibuja libre(): coinciden cuando los tres caen en el mismo punto.
+  const pies = v => { const P = libre(v.ax, v.ay, v.cx, 'todas').puntos, x = id => P.find(p => p.id === id).x; return [x('H'), x('M'), x('D')]; };
   const mesaLibre = {
     id: 'triangulo-libre', titulo: 'Triángulo libre', pieza: 'geo-figura',
     consigna: 'Arrastra A y C. Elige qué línea sale de A. Busca un obtuso en C, un rectángulo y un isósceles.',
@@ -501,6 +511,24 @@
       const A = [v.ax, v.ay], C = [v.cx, 0], a = U.angulo(A, [0, 0], C), b = U.angulo([0, 0], A, C), c = 180 - a - b;
       return [cA, ` ${gr(Math.round(a))}   ·   `, cB, ` ${gr(Math.round(b))}   ·   `, cC, ` ${gr(Math.round(c))}   ·   ${nombreAng(a, b, c)}`];
     },
+    invitaciones: [
+      { texto: 'Haz obtuso el ángulo C y mira, con «altura», dónde cae su pie.',
+        logrado: v => angLibre(v).c > 90 + 1e-9 && v.linea === 'h',
+        bien: 'Con C obtuso, la altura desde A cae fuera, en la prolongación.' },
+      { texto: 'Consigue un triángulo rectángulo exacto, con el ángulo recto en B.',
+        logrado: v => Math.abs(angLibre(v).b - 90) < 1e-9,
+        bien: 'Recto en B: la altura desde A es el mismo lado AB.' },
+      { texto: 'Elige «todas» y busca un triángulo donde las líneas notables coinciden.',
+        logrado: v => { const [h, m, d] = pies(v); return v.linea === 'todas' && Math.abs(h - m) < 1e-9 && Math.abs(m - d) < 1e-9; },
+        bien: 'Coinciden con AB = AC. ¿Lo garantiza el isósceles o solo este dibujo?' },
+      { texto: 'Busca el ángulo A más grande que permite la mesa.',
+        logrado: v => Math.abs(angLibre(v).a - A_MAX) < 1e-9,
+        bien: 'Casi llano: A pegado a la base, y B y C casi nada.' },
+      { texto: 'Guarda un acutángulo y un obtusángulo. Compara la suma de sus ángulos.',
+        logrado: (v, gs) => { const n = c => { const x = angLibre(c); return nombreAng(x.a, x.b, x.c); };
+          return gs.some(c => n(c) === 'acutángulo') && gs.some(c => n(c) === 'obtusángulo') && gs.some(c => c.ax === v.ax && c.ay === v.ay && c.cx === v.cx); },
+        bien: 'Formas distintas, la misma suma: los 180° no dependen del dibujo.' },
+    ],
   };
   // Mesa 2: la bisagra con los dos lados libres. La idea 2 fija 5 y 8; aquí se cambian, y el rango se lee en vivo.
   const bisagraLibre = (g, c, a) => {
@@ -515,6 +543,10 @@
         { de: 'A', a: 'C', color: 'h', texto: `x ≈ ${f(x)}` }],
     };
   };
+  // El tercer lado x que dibuja bisagraLibre.
+  const tercero = v => U.dist(U.polar([0, 0], v.c, v.g), [v.a, 0]);
+  let X_MAX = 0;   // el mayor x de la grilla con triángulo de verdad (ángulo en B entre 0° y 180°, sin los extremos)
+  for (let g = 5; g < 180; g += 5) for (let i = 0; i <= 10; i++) for (let j = 0; j <= 14; j++) X_MAX = Math.max(X_MAX, tercero({ g, c: 1 + i / 2, a: 1 + j / 2 }));
   const mesaBisagra = {
     id: 'bisagra-libre', titulo: 'Bisagra con lados libres', pieza: 'geo-figura',
     consigna: 'Arrastra A por su arco y C por la base. Cambia los dos lados y mira cuándo x roza sus límites.',
@@ -537,6 +569,20 @@
       const plano = v.g === 0 || v.g === 180;
       return [`${f(lo)} < `, { v: 'c-h', t: 'x' }, ` < ${f(hi)}   ·   `, { v: 'c-h', t: 'x' }, ` ≈ ${f(x)}${plano ? ': segmento, sin triángulo' : ''}`];
     },
+    invitaciones: [
+      { texto: 'Haz que x toque un extremo de la desigualdad triangular: el triángulo se aplasta.',
+        logrado: v => { const x = tercero(v); return Math.abs(x - Math.abs(v.a - v.c)) < 1e-9 || Math.abs(x - (v.a + v.c)) < 1e-9; },
+        bien: 'En el extremo, x es la suma o la diferencia: puntos alineados, sin triángulo.' },
+      { texto: 'Busca el x más largo que todavía forme triángulo.',
+        logrado: v => v.g > 0 && v.g < 180 && Math.abs(tercero(v) - X_MAX) < 1e-9,
+        bien: 'Se acerca a la suma de los lados, pero nunca la alcanza.' },
+      { texto: 'Con AB y BC distintos, arma un isósceles: que x iguale a uno de ellos.',
+        logrado: v => v.g > 0 && v.g < 180 && v.c !== v.a && nombreLad(v.c, v.a, tercero(v)) === 'isósceles',
+        bien: 'Dos lados iguales. ¿Qué pasa con los ángulos frente a ellos?' },
+      { texto: 'Guarda dos casos con los mismos lados y distinto ángulo en B. Compara x.',
+        logrado: (v, gs) => gs.some(c => c.c === v.c && c.a === v.a && c.g !== v.g) && gs.some(c => c.c === v.c && c.a === v.a && c.g === v.g),
+        bien: 'Mismos lados: a más abertura en B, más largo el tercer lado.' },
+    ],
   };
 
   return {
@@ -551,7 +597,55 @@
     },
     // Laboratorio: el triángulo libre (A y C) y la bisagra con lados libres son más ricos que sus ideas; la tercera mesa
     // es el juego de las bisectrices con su gesto.
-    laboratorio: [mesaLibre, mesaBisagra, Object.assign({ id: 'bisectrices', titulo: 'Ángulo entre bisectrices', pieza: 'geo-figura' }, bisectrices.juega)],
+    // Glosario: las palabras que la unidad estrena (docs/teoria.md, 4d). Triángulo y altura ya salen en «Segmentos y
+    // ángulos», pero se definen aquí, donde son el tema.
+    glosario: [
+      { termino: 'triángulo', simbolo: '△', def: 'Figura cerrada de tres lados rectos que se juntan de dos en dos en tres vértices.',
+        ver: ['ángulo interior', 'desigualdad triangular'] },
+      { termino: 'ángulo interior', formas: ['ángulo interior', 'ángulos interiores', 'interiores', 'interior'],
+        def: 'El que queda dentro de la figura, entre dos lados vecinos. En el triángulo, los tres suman 180°.',
+        ejemplo: `Con 50° y 70°, el tercero mide ${180 - 50 - 70}°.`, ver: ['ángulo exterior'] },
+      { termino: 'ángulo exterior', formas: ['ángulo exterior', 'ángulos exteriores'],
+        def: 'El que forma un lado con la prolongación del lado vecino, por fuera de la figura.',
+        ejemplo: `Con interiores de 50° y 70°, el exterior del tercer vértice mide ${50 + 70}°.`, ver: ['ángulo interior'] },
+      { termino: 'desigualdad triangular', def: 'Cada lado es menor que la suma de los otros dos y mayor que su diferencia.',
+        ejemplo: `Con lados 5 y 8, el tercero está entre ${8 - 5} y ${8 + 5}, sin llegar a ellos.` },
+      { termino: 'acutángulo', def: 'Triángulo con sus tres ángulos agudos, de menos de 90°.' },
+      { termino: 'rectángulo', def: 'Con ángulos rectos: un triángulo con uno de 90°, o un cuadrilátero con los cuatro de 90°.', ver: ['cuadrilátero'] },
+      { termino: 'obtusángulo', def: 'Triángulo con un ángulo obtuso, de más de 90°. Solo puede tener uno.' },
+      { termino: 'escaleno', def: 'Triángulo con sus tres lados de medidas distintas.' },
+      { termino: 'isósceles', def: 'Triángulo con dos lados iguales. Los ángulos frente a esos lados también son iguales.' },
+      { termino: 'equilátero', def: 'Triángulo con sus tres lados iguales. Cada uno de sus ángulos mide 60°.' },
+      { termino: 'perpendicular', simbolo: '⟂', def: 'Que corta a otra línea formando ángulos de 90°.' },
+      { termino: 'altura', def: 'Segmento perpendicular que baja de un vértice o punto hasta la recta de enfrente. Mide la distancia a ella.',
+        ver: ['pie', 'línea notable'] },
+      { termino: 'punto medio', formas: ['punto medio', 'puntos medios'], def: 'El que parte un segmento en dos partes de igual medida.' },
+      { termino: 'mediana', def: 'Segmento que une un vértice del triángulo con el punto medio del lado opuesto.', ver: ['punto medio'] },
+      { termino: 'mediatriz', def: 'Recta perpendicular a un segmento que pasa por su punto medio.', ver: ['perpendicular', 'punto medio'] },
+      { termino: 'línea notable', formas: ['líneas notables', 'línea notable'],
+        def: 'Cada línea especial del triángulo: altura, mediana, bisectriz o mediatriz. Se reconoce por su condición.',
+        ver: ['altura', 'mediana', 'bisectriz', 'mediatriz', 'baricentro', 'incentro'] },
+      { termino: 'pie', formas: ['pie', 'pies'], def: 'Punto donde una línea trazada desde un vértice llega al lado de enfrente o a su prolongación.' },
+      { termino: 'prolongación', def: 'Lo que sigue de un segmento más allá de sus extremos, sobre la misma recta.' },
+      { termino: 'lado opuesto', formas: ['lado opuesto', 'lados opuestos'], def: 'En un triángulo, el lado que no toca al vértice del que se habla.' },
+      { termino: 'demostración', def: 'Razonamiento que prueba que algo vale en todos los casos, no solo en el dibujo.' },
+      { termino: 'proposición', def: 'En los Elementos de Euclides, cada afirmación numerada que se enuncia y después se prueba.' },
+    ],
+    laboratorio: [mesaLibre, mesaBisagra, Object.assign({ id: 'bisectrices', titulo: 'Ángulo entre bisectrices', pieza: 'geo-figura',
+      invitaciones: [
+        { texto: 'Haz que el ángulo BIC mida justo 120°.',
+          logrado: v => Math.abs(anguloBIC(v) - 120) < 1e-6,
+          bien: 'BIC = 120° pide A = 60°. Hay varias parejas de B y C.' },
+        { texto: 'Busca el ángulo BIC más grande de la mesa.',
+          logrado: v => Math.abs(anguloBIC(v) - BIC_MAX) < 1e-6,
+          bien: 'El mayor BIC sale con el mayor A: crecen juntos.' },
+        { texto: 'Haz que B y C sean iguales y mira dónde queda I.',
+          logrado: v => v.b === v.c,
+          bien: 'Con B = C, I cae en la bisectriz de A, que también es altura.' },
+        { texto: 'Guarda dos casos con el mismo ángulo A y distintos B y C.',
+          logrado: (v, gs) => gs.some(c => c.b !== v.b && 180 - c.b - c.c === 180 - v.b - v.c) && gs.some(c => c.b === v.b && c.c === v.c),
+          bien: 'Mismo A, mismo BIC: solo cuenta A, no cómo se reparten B y C.' },
+      ] }, bisectrices.juega)],
     ideas: [suma, desigualdad, lineas, bisectrices],
   };
 });

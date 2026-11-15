@@ -115,7 +115,7 @@
       ],
     },
     regla: {
-      texto: 'El área de un triángulo es base por altura sobre dos. Con dos lados y el ángulo entre ellos, es la mitad de a · b · sen C.',
+      texto: 'El área de un triángulo es base por altura sobre dos. Con dos lados y el ángulo comprendido entre ellos, es la mitad de a · b · sen C.',
       ecuacion: ['S = ', frac([{ llave: [cb], nota: 'base', color: 'c-d' }, ' · ', { llave: [ch], nota: 'altura ⟂', color: 'c-h' }], '2'), '   ·   S = ', frac(['a · b · ', { llave: ['sen C'], nota: 'ángulo entre ambos', color: 'c-i' }], '2')],
       condicion: 'la altura es perpendicular a la recta de la base, aunque caiga fuera; C es el ángulo entre a y b.',
       voz: 'La altura no es un lado inclinado: búscala en perpendicular.',
@@ -533,7 +533,7 @@
       ],
     },
     regla: {
-      texto: 'Con P dentro de un paralelogramo, PAB y PCD suman la mitad del área. El paralelogramo de los puntos medios de un cuadrilátero tiene la mitad de su área.',
+      texto: 'Con P dentro de un paralelogramo, PAB y PCD suman medio paralelogramo. El paralelogramo de Varignon, el de los puntos medios de un cuadrilátero, tiene la mitad de su área.',
       ecuacion: ['[PAB] + [PCD] = ', { llave: [frac('S', '2')], nota: 'mitad del área', color: 'c-d' }, '   ·   [puntos medios] = ', frac('S', '2')],
       condicion: 'en la primera, ABCD es un paralelogramo y P es interior; la segunda vale para todo cuadrilátero convexo.',
       voz: 'Una diagonal parte el problema en triángulos conocidos.',
@@ -583,9 +583,13 @@
       angulos: [{ en: 'H', de: ax > 0 && ax < cx ? 'C' : (ax <= 0 ? 'B' : 'C'), a: 'A', color: 'h' }],
     };
   };
+  // Motor de los retos: el área y la altura afuera, con los mismos puntos que dibuja triLibre.
+  const areaTri = v => area([[v.ax, v.ay], [0, 0], [v.cx, 0]]);
+  const alturaFuera = v => v.ax < 0 || v.ax > v.cx;
+  const MAX_TRI = (() => { let m = 0; for (let ay = 0.5; ay <= 6; ay += 0.5) for (let cx = 1; cx <= 8; cx += 0.5) m = Math.max(m, areaTri({ ax: 1, ay, cx })); return m; })();
   const mesaTri = {
     id: 'triangulo-libre', titulo: 'Base y altura libres', pieza: 'geo-figura',
-    consigna: 'Arrastra A a cualquier lado y C por la base. Busca dos triángulos distintos con la misma área.',
+    consigna: 'Arrastra A a cualquier lado y C por la base. Busca dos triángulos distintos con la misma área: equivalentes.',
     controles: [
       { id: 'ax', etiqueta: 'A a lo ancho', min: -4, max: 10, paso: 0.5, inicio: 1, unidad: '', decimales: 1, color: 'c-o' },
       { id: 'ay', etiqueta: 'A a lo alto', min: 0.5, max: 6, paso: 0.5, inicio: 3, unidad: '', decimales: 1, color: 'c-h' },
@@ -601,6 +605,21 @@
         mover: (q, v) => ({ cx: alPlano(triLibre(v.ax, v.ay, v.cx), q)[0] }) },
     ],
     lectura: v => [cb, ` = ${f(v.cx)}${sep}`, ch, ` = ${f(v.ay)}${sep}área = ${f(v.cx * v.ay / 2)}`],
+    invitaciones: [
+      { texto: 'Consigue área 12 con la altura cayendo fuera del lado.',
+        logrado: v => alturaFuera(v) && Math.abs(areaTri(v) - 12) < 1e-9,
+        bien: 'Afuera también vale: la altura llega a la recta de la base.' },
+      { texto: 'Busca el triángulo de mayor área que permite la mesa.',
+        logrado: v => areaTri(v) > MAX_TRI - 1e-9,
+        bien: 'Base y altura al máximo. ¿Importa dónde quede A a lo ancho?' },
+      { texto: 'Haz un triángulo rectángulo en B que tenga área 8.',
+        // Ángulo recto en B: el producto escalar de BA y BC es cero.
+        logrado: v => Math.abs(v.ax * v.cx) < 1e-9 && Math.abs(areaTri(v) - 8) < 1e-9,
+        bien: 'En el rectángulo, un cateto hace de base y el otro de altura.' },
+      { texto: 'Guarda dos triángulos de igual área: altura dentro en uno, fuera en otro.',
+        logrado: (v, guardados) => guardados.some(g => alturaFuera(g) !== alturaFuera(v) && Math.abs(areaTri(g) - areaTri(v)) < 1e-9),
+        bien: 'Misma base y misma altura: el área no mira dónde cae la altura.' },
+    ],
   };
 
   // Mesa 2, más rica que la idea 5: un cuadrilátero que se deforma con C y D libres, también hasta volverse cóncavo.
@@ -614,9 +633,16 @@
       regiones: [{ puntos: ['A', 'B', 'C', 'D'], color: 'd', opacidad: 0.08, sinBorde: false }, { puntos: ['M0', 'M1', 'M2', 'M3'], color: 'o', opacidad: 0.3, sinBorde: false }],
     };
   };
+  // Motor de los retos: el cuadrilátero, sus puntos medios y si sus lados se cruzan (lo mismo que usa la lectura).
+  const cuadDe = v => [[0, 0], [8, 0], [v.cx, v.cy], [v.dx, v.dy]];
+  const mediosDe = Q => Q.map((p, i) => U.medio(p, Q[(i + 1) % 4]));
+  const seCruza = Q => { const X = U.corte(Q[1], Q[2], Q[3], Q[0]); if (!X) return false; const en = (P, R) => U.dist(P, X) + U.dist(X, R) - U.dist(P, R) < 1e-9; return en(Q[1], Q[2]) && en(Q[3], Q[0]); };
+  const simple = Q => !seCruza(Q) && U.dist(Q[2], Q[3]) > 1e-9 && area(Q) > 1e-9;
+  // Cóncavo: los giros en las esquinas no tienen todos el mismo signo.
+  const concavo = Q => { const g = Q.map((p, i) => { const a = Q[(i + 1) % 4], b = Q[(i + 2) % 4]; return Math.sign((a[0] - p[0]) * (b[1] - a[1]) - (a[1] - p[1]) * (b[0] - a[0])); }); return g.some(x => x > 0) && g.some(x => x < 0); };
   const mesaVarignon = {
     id: 'puntos-medios-libres', titulo: 'Puntos medios en cualquier cuadrilátero', pieza: 'geo-figura',
-    consigna: 'Arrastra C y D. Deforma el cuadrilátero, hasta hundir una esquina, y compara su área con la del paralelogramo.',
+    consigna: 'Arrastra C y D. Deforma el cuadrilátero, hasta hundir una esquina, y compara su área con la del paralelogramo de Varignon.',
     controles: [
       { id: 'cx', etiqueta: 'C a lo ancho', min: 2, max: 11, paso: 0.5, inicio: 9, unidad: '', decimales: 1 },
       { id: 'cy', etiqueta: 'C a lo alto', min: 1, max: 7, paso: 0.5, inicio: 5, unidad: '', decimales: 1 },
@@ -633,11 +659,25 @@
         mover: (q, v) => { const p = alPlano(varLibre(v.cx, v.cy, v.dx, v.dy), q); return { dx: p[0], dy: p[1] }; } },
     ],
     lectura: v => {
-      const Q = [[0, 0], [8, 0], [v.cx, v.cy], [v.dx, v.dy]], M = Q.map((p, i) => U.medio(p, Q[(i + 1) % 4]));
+      const Q = cuadDe(v), M = mediosDe(Q);
       // Si los lados se cruzan, el área con signo de la figura deja de ser su área: se avisa en vez de dar un número falso.
-      const cruza = U.corte(Q[1], Q[2], Q[3], Q[0]) && (() => { const X = U.corte(Q[1], Q[2], Q[3], Q[0]), en = (P, R) => U.dist(P, X) + U.dist(X, R) - U.dist(P, R) < 1e-9; return en(Q[1], Q[2]) && en(Q[3], Q[0]); })();
-      return cruza ? ['los lados se cruzan: no es un cuadrilátero'] : [`ABCD = ${f(area(Q))}${sep}`, { v: 'c-o', t: 'medios' }, ` = ${f(area(M))}`];
+      return seCruza(Q) ? ['los lados se cruzan: no es un cuadrilátero'] : [`ABCD = ${f(area(Q))}${sep}`, { v: 'c-o', t: 'medios' }, ` = ${f(area(M))}`];
     },
+    invitaciones: [
+      { texto: 'Hunde una esquina hasta volverlo cóncavo, sin que los lados se crucen.',
+        logrado: v => { const Q = cuadDe(v); return simple(Q) && concavo(Q) && Math.abs(area(mediosDe(Q)) - area(Q) / 2) < 1e-9; },
+        bien: 'Cóncavo y todo, el paralelogramo sigue en la mitad. ¿Y si se cruzan?' },
+      { texto: 'Arma un cuadrilátero de área 40 y mira su paralelogramo.',
+        logrado: v => { const Q = cuadDe(v); return simple(Q) && Math.abs(area(Q) - 40) < 1e-9; },
+        bien: '40 y 20: la mitad, como en la predicción, ahora con tu figura.' },
+      { texto: 'Haz que el paralelogramo de los puntos medios sea un rectángulo.',
+        logrado: v => { const Q = cuadDe(v), M = mediosDe(Q); return simple(Q) && Math.abs((M[1][0] - M[0][0]) * (M[3][0] - M[0][0]) + (M[1][1] - M[0][1]) * (M[3][1] - M[0][1])) < 1e-9; },
+        bien: 'Sale rectángulo cuando las diagonales son perpendiculares. ¿Y para un rombo?' },
+      { texto: 'Guarda dos cuadriláteros distintos de igual área y compara sus paralelogramos.',
+        logrado: (v, guardados) => { const Q = cuadDe(v); return simple(Q) && guardados.some(g => { const P = cuadDe(g);
+          return simple(P) && (g.cx !== v.cx || g.cy !== v.cy || g.dx !== v.dx || g.dy !== v.dy) && Math.abs(area(P) - area(Q)) < 1e-9 && Math.abs(area(mediosDe(P)) - area(mediosDe(Q))) < 1e-9; }); },
+        bien: 'Formas distintas y misma área: sus paralelogramos también miden igual.' },
+    ],
   };
 
   // Mesa 3, el caso que la idea 5 no deja probar: P también fuera del paralelogramo. Dentro, PAB + PCD es la mitad;
@@ -646,6 +686,9 @@
     alt: `P en (${f(px)}; ${f(py)}): PAB mide ${f(area([[px, py], PA[0], PA[1]]))} y PCD mide ${f(area([[px, py], PA[2], PA[3]]))}`,
     vista: { x: [-1.8, 12.8], y: [-2.6, 7.6] },
   });
+  // Motor de los retos: las dos áreas y si P está dentro, como en la lectura.
+  const dosAreas = v => { const P = [v.px, v.py]; return [area([P, PA[0], PA[1]]), area([P, PA[2], PA[3]])]; };
+  const dentroDe = v => v.py > 0 && v.py < 5 && v.px > 0.4 * v.py && v.px < 8 + 0.4 * v.py;
   const mesaP = {
     id: 'punto-p-libre', titulo: 'P dentro y fuera', pieza: 'geo-figura',
     consigna: 'Arrastra P por dentro y después sácalo por arriba o por abajo. Compara la suma y la diferencia con 20.',
@@ -658,10 +701,23 @@
       donde: v => enPantalla(puntoLibre(v.px, v.py), [v.px, v.py]),
       mover: (q, v) => { const p = alPlano(puntoLibre(v.px, v.py), q); return { px: p[0], py: p[1] }; } }],
     lectura: v => {
-      const P = [v.px, v.py], a = area([P, PA[0], PA[1]]), c = area([P, PA[2], PA[3]]);
-      const dentro = v.py > 0 && v.py < 5 && v.px > 0.4 * v.py && v.px < 8 + 0.4 * v.py;
+      const [a, c] = dosAreas(v), dentro = dentroDe(v);
       return [{ v: 'c-o', t: f(a) }, ' + ', { v: 'c-i', t: f(c) }, ` = ${f(a + c)}${sep}`, { abs: [{ v: 'c-o', t: f(a) }, ' − ', { v: 'c-i', t: f(c) }] }, ` = ${f(Math.abs(a - c))}${sep}${dentro ? 'dentro' : 'fuera'}`];
     },
+    invitaciones: [
+      { texto: 'Deja P dentro con PAB y PCD del mismo tamaño.',
+        logrado: v => { const [a, c] = dosAreas(v); return dentroDe(v) && Math.abs(a - c) < 1e-9; },
+        bien: 'Iguales a media altura: 10 y 10. ¿Cambia algo si lo corres a lo ancho?' },
+      { texto: 'Pon P donde uno de los dos triángulos desaparezca.',
+        logrado: v => Math.min(...dosAreas(v)) < 1e-9,
+        bien: 'Sobre la recta del lado, ese triángulo se aplana; el otro vale 20.' },
+      { texto: 'Saca P por arriba o por abajo y mira la diferencia de los dos.',
+        logrado: v => { const [a, c] = dosAreas(v); return (v.py > 5 || v.py < 0) && Math.abs(Math.abs(a - c) - 20) < 1e-9; },
+        bien: 'Fuera de la franja, la mitad del paralelogramo pasa a ser la diferencia.' },
+      { texto: 'Guarda dos P a la misma altura y distinto ancho. Compara PAB.',
+        logrado: (v, guardados) => dosAreas(v)[0] > 1e-9 && guardados.some(g => g.py === v.py && g.px !== v.px && Math.abs(dosAreas(g)[0] - dosAreas(v)[0]) < 1e-9),
+        bien: 'PAB no cambia: la misma base AB y la misma altura desde P.' },
+    ],
   };
 
   return {
@@ -674,6 +730,23 @@
       pregunta: '¿Cómo sabes que dos figuras distintas tienen la misma área?',
       fuente: { titulo: 'Euclides, Elementos I.35–41 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookI/propI41.html' },
     },
+    // Glosario (docs/teoria.md, 4d): las palabras que este tema estrena en el curso. Área, altura, base, ceviana,
+    // paralelogramo, rombo, trapecio, mediana, diagonal y seno vienen de unidades anteriores y el lector las marca solas.
+    glosario: [
+      { termino: 'ángulo comprendido', def: 'El que forman dos lados en el vértice que comparten.',
+        ejemplo: 'Lados 6 y 4 con 30° comprendido: área 6 · 4 · ½ / 2 = 6.' },
+      { termino: 'oblicuo', def: 'Inclinado: que no forma ángulo recto con la base ni con la recta de referencia.',
+        formas: ['oblicuo', 'oblicuos', 'oblicua', 'oblicuas'], ver: ['altura'] },
+      { termino: 'equivalente', def: 'Dicho de dos figuras o sólidos: tienen la misma área o el mismo volumen, aunque su forma sea distinta.',
+        formas: ['equivalente', 'equivalentes', 'equivalencia'], ejemplo: 'Base 4 y altura 3, o base 6 y altura 2: los dos triángulos miden 6.', ver: ['área', 'volumen'] },
+      { termino: 'razón de áreas', def: 'Cociente entre dos áreas: dice cuántas veces cabe una en la otra.',
+        formas: ['razón de áreas', 'razones de áreas'], ejemplo: 'ABD = 12 y ADC = 6: razón 2.', ver: ['triángulo medio'] },
+      { termino: 'triángulo medio', def: 'El que une los puntos medios de los tres lados de un triángulo. Tiene un cuarto de su área.',
+        ver: ['paralelogramo de Varignon'] },
+      { termino: 'paralelogramo de Varignon', def: 'El que se forma al unir, en orden, los puntos medios de los lados de un cuadrilátero. Mide la mitad.',
+        ejemplo: 'Cuadrilátero de área 40: el de sus puntos medios mide 20.', ver: ['triángulo medio'] },
+      { termino: 'papiro Rhind', def: 'Rollo egipcio de hace unos 3500 años con problemas resueltos de cálculo, entre ellos áreas.' },
+    ],
     // Laboratorio: triángulo con base y altura libres, cuadrilátero libre con sus puntos medios y P dentro y fuera del
     // paralelogramo; las tres abren casos que las ideas no dejan probar.
     laboratorio: [mesaTri, mesaVarignon, mesaP],
