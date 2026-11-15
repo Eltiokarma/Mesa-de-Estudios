@@ -3566,10 +3566,12 @@
      "teoria": {
       "archivo": "/contenido/teoria/geometria/simetria.js",
       "requiere": [
-       "/nucleo/kit/piezas/geo-figura.js"
+       "/nucleo/kit/piezas/geo-figura.js",
+       "/nucleo/solidos3d.js",
+       "/nucleo/kit/piezas/geo-simetria-3d.js"
       ],
       "ideas": 3,
-      "terminos": 32
+      "terminos": 37
      }
     },
     {
