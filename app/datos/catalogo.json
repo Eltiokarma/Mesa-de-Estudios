@@ -2287,10 +2287,12 @@
       "archivo": "/contenido/teoria/algebra/matrices-y-determinantes.js",
       "requiere": [
        "/nucleo/kit/piezas/alg-tabla.js",
-       "/nucleo/kit/piezas/ejes.js"
+       "/nucleo/kit/piezas/ejes.js",
+       "/plantillas/matrices/motor.js",
+       "/nucleo/kit/piezas/alg-columnas-3d.js"
       ],
       "ideas": 5,
-      "terminos": 17
+      "terminos": 20
      }
     },
     {

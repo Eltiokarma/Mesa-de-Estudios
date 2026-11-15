@@ -725,11 +725,63 @@
   };
   const MAX_DET_COL = Math.max(...[-3, 3].flatMap(a => [-3, 3].flatMap(b => [-2, 2].flatMap(c => [-2, 2].map(d => det2([[a, b], [c, d]])))))); 
 
+  // ---------- La caja de las tres columnas (laboratorio 3D, 15 nov: exploración libre, sin predicciones) ----------
+  // A = [u v w] con u = (u₁; 0; 0), v = (v₁; v₂; 0) y w = (w₁; 1; w₃). El determinante lo calcula
+  // plantillas/matrices/motor.js (det3) a través de la pieza alg-columnas-3d: los retos miden lo que se dibuja (regla 1).
+  const COL3 = () => Kit.piezas['alg-columnas-3d'];
+  const cols = v => ({ u: [v.u1, 0, 0], v: [v.v1, v.v2, 0], w: [v.w1, 1, v.w3] });
+  const detCaja = v => COL3().det(cols(v));
+  const mesaCaja = {
+    id: 'caja-columnas', titulo: 'La caja de las tres columnas', pieza: 'alg-columnas-3d',
+    consigna: 'Gira el paralelepípedo con el dedo. Cada flecha es una columna de A: inclínalas y sube o baja w.',
+    controles: [
+      { id: 'u1', etiqueta: 'u₁', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-o' },
+      { id: 'v1', etiqueta: 'v₁', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
+      { id: 'v2', etiqueta: 'v₂', min: 0, max: 3, paso: 1, inicio: 2, decimales: 0, color: 'c-i' },
+      { id: 'w1', etiqueta: 'w₁', min: -2, max: 2, paso: 1, inicio: 0, decimales: 0, color: 'c-d' },
+      { id: 'w3', etiqueta: 'w₃', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0, color: 'c-d' },
+    ],
+    dibujo: v => ({ datos: cols(v), estado: {} }),
+    lectura: v => { const D = detCaja(v); return [`det A = ${f(D)} · volumen ${f(Math.abs(D))}`]; },
+    invitaciones: [
+      { texto: 'Aplasta la caja hasta que su volumen sea 0.',
+        logrado: v => detCaja(v) === 0,
+        bien: 'det A = 0: las tres columnas quedaron en un mismo plano.',
+        pista: 'Lleva w al piso, donde ya están u y v.' },
+      { texto: 'Haz que el determinante sea negativo.',
+        logrado: v => detCaja(v) < 0,
+        bien: 'w cruzó al otro lado del piso: el volumen es el mismo, el signo no.',
+        pista: 'Mira de qué lado del piso queda la punta de w.' },
+      { texto: 'Llega al mayor volumen que permite esta mesa.',
+        logrado: v => Math.abs(detCaja(v)) === volMax(),
+        bien: 'Base u₁ · v₂ por altura |w₃|: inclinar no suma nada.',
+        pista: 'Creo que solo cuentan u₁, v₂ y w₃. Compruébalo inclinando.' },
+      { texto: 'Logra volumen 6 con v y w inclinadas: v₁ y w₁ distintos de 0.',
+        logrado: v => Math.abs(detCaja(v)) === 6 && v.v1 !== 0 && v.w1 !== 0,
+        bien: 'Inclinadas o rectas, la caja guarda su base y su altura.',
+        pista: '6 = 3 · 2 · 1 o 3 · 1 · 2. Después inclina.' },
+      { texto: 'Guarda dos cajas con el mismo volumen y distinta inclinación.',
+        logrado: (v, guardados) => guardados.some(x => guardados.some(y => detCaja(x) !== 0 && Math.abs(detCaja(x)) === Math.abs(detCaja(y))
+          && (x.v1 !== y.v1 || x.w1 !== y.w1))),
+        bien: 'Se deslizan las tapas, como un mazo de cartas: el volumen no cambia.' },
+    ],
+  };
+  // El mayor volumen de la grilla, medido con el motor (se calcula al usarlo: la pieza carga después de este archivo en Node).
+  let VOL_MAX = null;
+  const volMax = () => {
+    if (VOL_MAX !== null) return VOL_MAX;
+    const pasos = c => Array.from({ length: Math.round((c.max - c.min) / c.paso) + 1 }, (_, k) => c.min + k * c.paso);
+    let m = 0;
+    const [c1, , c3, , c5] = mesaCaja.controles;
+    for (const u1 of pasos(c1)) for (const v2 of pasos(c3)) for (const w3 of pasos(c5)) m = Math.max(m, Math.abs(detCaja({ u1, v1: 0, v2, w1: 0, w3 })));
+    return (VOL_MAX = m);
+  };
+
   return {
     unidad: 'algebra.matrices-y-determinantes',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/ejes.js'],
+    requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/ejes.js', '/plantillas/matrices/motor.js', '/nucleo/kit/piezas/alg-columnas-3d.js'],
     historia: {
       texto: 'Los determinantes aparecieron antes que las matrices: Seki en Japón y Leibniz en Europa los usaron para resolver sistemas. Recién en el siglo XIX Sylvester llamó «matriz» a la tabla y Cayley estudió cómo operar con ella. Una tabla de números no dice sola qué operación representa: por eso cada regla de esta unidad tiene su porqué.',
       pregunta: '¿Qué podría medir un solo número de una tabla?',
@@ -753,10 +805,14 @@
       { termino: 'cofactor', formas: ['cofactor', 'cofactores'], def: 'El determinante que queda al tachar una fila y una columna, con un signo según su lugar.' },
       { termino: 'adjunta', formas: ['adjunta', 'adjuntas'], simbolo: 'adj A', def: 'La transpuesta de la matriz de cofactores; dividida entre det A da la inversa.',
         ejemplo: 'adj [[a, b], [c, d]] = [[d, −b], [−c, a]].', ver: ['cofactor', 'inversa'] },
+      { termino: 'paralelepípedo', formas: ['paralelepípedo', 'paralelepípedos'],
+        def: 'Caja de seis caras que son paralelogramos, opuestas de dos en dos; puede estar inclinada.',
+        ejemplo: 'Las columnas (2; 0; 0), (1; 2; 0) y (0; 1; 1) arman uno de volumen 4.', ver: ['determinante', 'volumen'] },
       { termino: 'escalonar', formas: ['escalonar', 'escalona', 'escalonada'], def: 'Restar múltiplos de unas filas a otras hasta dejar ceros bajo cada primer número.', ver: ['rango'] },
       { termino: 'independiente', formas: ['independiente', 'independientes'], def: 'Así es una fila que no se obtiene sumando múltiplos de las demás.', ver: ['rango'] },
     ],
     laboratorio: [
+      mesaCaja,
       columnasLibres,
       Object.assign({ id: 'adjunta-inversa', titulo: 'Adjunta e inversa', pieza: 'alg-tabla', invitaciones: [
         { texto: 'Haz que A no tenga inversa, sin usar ningún 0.',
