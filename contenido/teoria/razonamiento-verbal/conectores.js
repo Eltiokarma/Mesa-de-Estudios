@@ -322,6 +322,7 @@
   const PIDE = { h1: 'ejemplo', h2: 'adicion', h3: 'cierre' };
   const figTab = () => conBandeja(figQ(), 'Conectores', TABLERO.map(x => ({ id: x.id, t: x.t })));
   const conTab = id => TABLERO.find(x => x.id === id);
+  const encajaTab = val => conTab(val.c).clase === PIDE[val.h];
   const mesaTablero = {
     id: 'tablero', titulo: 'El tablero de los conectores', pieza: 'rv-texto',
     consigna: 'Arrastra la marca a un hueco y la ficha a un conector. Mira cuántos conectores encajan en cada hueco.',
@@ -342,6 +343,18 @@
       manija('hueco', 'h', figTab, Object.keys(PIDE), 'hueco que se mira', 'c-d'),
       manija('ficha', 'c', figTab, TABLERO.map(x => x.id), 'ficha del conector'),
     ],
+    // Invitaciones: logrado compara la clase del conector con la que pide el hueco (PIDE), como el dibujo.
+    invitaciones: [
+      { texto: 'Pon en el hueco 2 un conector de adición que no sea «además».',
+        logrado: val => val.h === 'h2' && encajaTab(val) && val.c !== 'ademas',
+        bien: '«También» suma igual que «además»: la clase pesa más que la palabra.' },
+      { texto: 'Busca un conector que no encaje en ningún hueco del texto.',
+        logrado: val => Object.values(PIDE).every(p => p !== conTab(val.c).clase),
+        bien: 'Ningún hueco pide esa relación. ¿Qué tendría que decir el texto para pedirla?' },
+      { texto: 'Guarda dos casos con conectores distintos que encajen en el mismo hueco.',
+        logrado: (val, guardados) => encajaTab(val) && guardados.some(g => g.h === val.h && g.c !== val.c && encajaTab(g)),
+        bien: 'Dos formas, una misma relación: por eso se pueden cambiar.' },
+    ],
   };
 
   return {
@@ -354,10 +367,54 @@
       pregunta: '¿Qué te dice «sin embargo» antes de leer lo que sigue?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (marcadores del discurso)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/marcadoresdiscurso.htm' },
     },
+    glosario: [
+      { termino: 'conector', def: 'Palabra o grupo de palabras que une dos ideas y dice qué relación hay entre ellas.',
+        ejemplo: '«Estudió; sin embargo, desaprobó»: «sin embargo» une y marca un choque.', ver: ['marcador del discurso', 'locución conjuntiva'] },
+      { termino: 'marcador del discurso', formas: ['marcadores del discurso', 'marcador del discurso'],
+        def: 'Nombre que dan los estudios del discurso a las palabras que guían cómo leer lo que sigue.', ver: ['conector'] },
+      { termino: 'adición', def: 'Relación en la que la segunda idea se suma a la primera, en la misma dirección.',
+        ejemplo: '«Ana cocina bien; además, toca el charango.»', ver: ['conector'] },
+      { termino: 'contraste', def: 'Relación en la que la segunda idea se opone a la primera o rompe lo que se esperaba.',
+        ejemplo: '«Llovió toda la noche; aun así, el partido se jugó.»', ver: ['concesión', 'expectativa'] },
+      { termino: 'causa', def: 'Relación en la que una idea da la razón o el motivo de otra.',
+        ejemplo: '«No hubo luz porque cayó un rayo»: el rayo es la razón.', ver: ['consecuencia'] },
+      { termino: 'consecuencia', def: 'Relación en la que la segunda idea es el resultado de la primera.',
+        ejemplo: '«El agua estaba helada; por eso nadie se bañó.»', ver: ['causa'] },
+      { termino: 'concesión', def: 'Contraste en el que se admite un obstáculo que no impide lo que se afirma.',
+        ejemplo: '«Aunque el examen era difícil, la mayoría aprobó.»', ver: ['contraste', 'locución conjuntiva'] },
+      { termino: 'reformulación', def: 'Relación en la que la segunda parte repite la primera con otras palabras, a veces con más precisión.',
+        ejemplo: '«Llegó tarde, es decir, a las once de la noche.»', ver: ['conector'] },
+      { termino: 'expectativa', def: 'Lo que la primera idea hace esperar que venga después; decide si hay contraste o consecuencia.',
+        ejemplo: 'Tras «estudió toda la semana», se espera «aprobó».', ver: ['contraste', 'consecuencia'] },
+      { termino: 'locución conjuntiva', formas: ['locuciones conjuntivas', 'locución conjuntiva', 'locuciones', 'locución'],
+        def: 'Grupo fijo de palabras que funciona como un solo conector.',
+        ejemplo: '«Si bien» equivale a «aunque»; «dado que», a «porque».', ver: ['conector', 'concesión'] },
+    ],
     laboratorio: [
       mesaTablero,
-      Object.assign({ id: 'relacion', titulo: 'Se cumple o se rompe', pieza: 'rv-texto' }, relacion.juega),
-      Object.assign({ id: 'locuciones', titulo: 'Locuciones', pieza: 'rv-texto' }, locuciones.juega),
+      // Retos de las mesas que reusan el juego de una idea: logrado usa encaja() y PASAJE, como su dibujo.
+      Object.assign({ id: 'relacion', titulo: 'Se cumple o se rompe', pieza: 'rv-texto', invitaciones: [
+        { texto: 'Haz que el conector encaje cuando lo esperado se rompe.',
+          logrado: val => !RES[val.r].cumple && encaja(val.r, val.c),
+          bien: 'Lo esperado se rompió y el conector lo dice: eso es un contraste.' },
+        { texto: 'Haz que el conector encaje cuando lo esperado se cumple.',
+          logrado: val => RES[val.r].cumple && encaja(val.r, val.c),
+          bien: 'Estudiar llevó a aprobar: la segunda idea es una consecuencia.' },
+        { texto: 'Guarda dos casos con el mismo conector: que encaje en uno y no en el otro.',
+          logrado: (val, guardados) => guardados.some(g => g.c === val.c && g.r !== val.r && encaja(g.r, g.c) !== encaja(val.r, val.c)),
+          bien: 'El conector no cambió; cambió la relación entre las ideas.' },
+      ] }, relacion.juega),
+      Object.assign({ id: 'locuciones', titulo: 'Locuciones', pieza: 'rv-texto', invitaciones: [
+        { texto: 'Cambia el final y busca la locución que vuelva a encajar.',
+          logrado: val => val.k === 'dejaron' && PASAJE[val.k].ok === val.l,
+          bien: 'Con otro final, la relación pasó de concesión a causa.' },
+        { texto: 'Busca la locución que no encaja con ningún final.',
+          logrado: val => Object.values(PASAJE).every(p => p.ok !== val.l),
+          bien: 'Ningún final es un resultado de que el pasaje suba. Vuelve a leer los dos.' },
+        { texto: 'Guarda dos casos con la misma locución: que encaje en uno y no en el otro.',
+          logrado: (val, guardados) => guardados.some(g => g.l === val.l && g.k !== val.k && (PASAJE[g.k].ok === g.l) !== (PASAJE[val.k].ok === val.l)),
+          bien: 'La locución es la misma; el final decide si la relación se sostiene.' },
+      ] }, locuciones.juega),
     ],
     ideas: [relacion, clases, locuciones],
   };
