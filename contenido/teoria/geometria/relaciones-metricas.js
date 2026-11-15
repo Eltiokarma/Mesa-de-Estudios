@@ -699,7 +699,32 @@
         mover: (q, v) => { const z = alPlano(potLibre(v.px, v.py, v.t), q); let g = U.grados(Math.atan2(z[1] - v.py, z[0] - v.px)); if (g < 0) g += 180; if (g > 177.5) g -= 180; return { t: g }; } },
     ],
     lectura: potLectura,
+    // Retos comprobados con potMesa(), la misma cuenta de potLibre y potLectura (potencia OP² − r² y corte de la recta).
+    invitaciones: [
+      { texto: 'Pon P justo sobre la circunferencia: el producto se vuelve cero.',
+        logrado: v => Math.abs(potMesa(v).pot) < 1e-9,
+        bien: 'Sobre la curva, uno de los tramos mide cero. Sácalo un paso y compara.' },
+      { texto: 'Con P fuera, gira la recta hasta que toque la circunferencia en un solo punto.',
+        logrado: v => { const m = potMesa(v); return m.pot > 1e-9 && Math.abs(m.d2) < 1e-9; },
+        bien: 'Tangente: A y B se juntaron en T, y PA · PB se volvió PT².' },
+      { texto: 'Consigue una tangente PT que mida justo 4.',
+        logrado: v => Math.abs(potMesa(v).pot - 16) < 1e-9,
+        bien: 'PT = 4 con P a 5 del centro: el triángulo OTP es 3, 4, 5.' },
+      { texto: 'Con P dentro, busca el mayor producto PA · PB posible.',
+        logrado: v => { const m = potMesa(v); return m.pot < 0 && Math.abs(m.pot - POT_MIN) < 1e-9; },
+        bien: 'P en el centro: cada tramo es un radio, 3 · 3. ¿Puede crecer más?' },
+      { texto: 'Guarda dos puntos P distintos con el mismo PA · PB y compara su distancia a O.',
+        logrado: (v, guardados) => guardados.some((g, i) => guardados.some((h, j) => j > i && (g.px !== h.px || g.py !== h.py)
+          && potMesa(g).corta && potMesa(h).corta && Math.abs(potMesa(g).pot - potMesa(h).pot) < 1e-9)),
+        bien: 'Mismo producto, misma distancia al centro: la potencia solo mira OP.' },
+    ],
   };
+  // Potencia de P (OP² − r²) y si la recta corta (d2 ≥ 0), como en potLibre; POT_MIN: la menor potencia de la grilla.
+  function potMesa(v) {
+    const u = [Math.cos(U.rad(v.t)), Math.sin(U.rad(v.t))], pu = v.px * u[0] + v.py * u[1], pot = v.px * v.px + v.py * v.py - R5 * R5;
+    return { pot, d2: pu * pu - pot, corta: pu * pu - pot >= 0 };
+  }
+  const POT_MIN = (() => { let m = Infinity; for (let i = 0; i <= 22; i++) for (let j = 0; j <= 12; j++) m = Math.min(m, potMesa({ px: -5.5 + 0.5 * i, py: -3 + 0.5 * j, t: 0 }).pot); return m; })();
 
   // Mesa 2, más rica que la idea 2: A va a cualquier lado y C se corre, así B (y también C) puede ser agudo, recto u
   // obtuso; la lectura muestra el signo de la corrección 2am y el valor de m con su signo.
@@ -717,7 +742,7 @@
   };
   const mesaEuclides = {
     id: 'euclides-libre', titulo: 'Proyección con signo', pieza: 'geo-figura',
-    consigna: 'Arrastra A y C. Haz el ángulo B agudo, recto y obtuso, y mira qué signo toma 2am.',
+    consigna: 'Arrastra A y C. Haz el ángulo B agudo, recto y obtuso, y mira qué signo toma 2am en el teorema de Euclides.',
     controles: [
       { id: 'ax', etiqueta: 'A a lo ancho', min: -4, max: 9, paso: 0.5, inicio: 2, unidad: '', decimales: 1 },
       { id: 'ay', etiqueta: 'A a lo alto', min: 0.5, max: 6, paso: 0.5, inicio: 4, unidad: '', decimales: 1 },
@@ -737,7 +762,28 @@
       const signo = v.ax > 0 ? ' − ' : v.ax < 0 ? ' + ' : ' ± ';
       return [{ v: 'c-i', t: 'm' }, ` = ${f(v.ax)}`, sep, sup2({ v: 'c-h', t: 'b' }), ` = ${f(base)}${signo}${f(corr)} = ${f(base - 2 * v.a * v.ax)}`];
     },
+    // Retos comprobados con la figura de la mesa: ∠B con U.angulo y b² = a² + c² − 2a·m (m = ax, con su signo).
+    invitaciones: [
+      { texto: 'Deja el ángulo B recto, justo: que b² sea a² + c².',
+        logrado: v => Math.abs(angB(v) - 90) < 1e-6,
+        bien: 'Con B recto la proyección se anula y queda Pitágoras. Abre B y compara.' },
+      { texto: 'Haz que la proyección de AB caiga fuera de BC, más allá de B.',
+        logrado: v => v.ax < 0,
+        bien: 'Cayó fuera: B es obtuso y 2am se suma. Compruébalo en b².' },
+      { texto: 'Pon A justo encima de C, con el ángulo C recto.',
+        logrado: v => Math.abs(U.angulo([v.a, 0], [0, 0], [v.ax, v.ay]) - 90) < 1e-6,
+        bien: 'Ahora m mide todo BC, y b² = c² − a². Comprueba la cuenta.' },
+      { texto: 'Con BC = 9, busca el triángulo de lado b más largo.',
+        logrado: v => v.a === 9 && Math.abs(b2(v) - B2_MAX) < 1e-9,
+        bien: 'A lejos y del lado opuesto a C: B muy obtuso y 2am sumando al máximo.' },
+      { texto: 'Guarda dos triángulos con el mismo b: uno con B agudo y otro con B obtuso.',
+        logrado: (v, guardados) => guardados.some(g => g.ax < 0 && guardados.some(h => h.ax > 0 && Math.abs(b2(g) - b2(h)) < 1e-9)),
+        bien: 'El mismo b por dos caminos: c y m cambiaron y la corrección compensó.' },
+    ],
   };
+  const angB = v => U.angulo([0, 0], [v.a, 0], [v.ax, v.ay]);
+  const b2 = v => v.a * v.a + v.ax * v.ax + v.ay * v.ay - 2 * v.a * v.ax;
+  const B2_MAX = (() => { let m = 0; for (let i = 0; i <= 26; i++) for (let j = 0; j <= 11; j++) m = Math.max(m, b2({ a: 9, ax: -4 + 0.5 * i, ay: 0.5 + 0.5 * j })); return m; })();
 
   // Mesa 3, el caso raro de la idea 6: D se suelta de la circunferencia y va a cualquier punto (también dentro o
   // fuera). La lectura dice si Ptolomeo se cumple con igualdad y a qué distancia del centro quedó D.
@@ -760,7 +806,22 @@
       const q = cuad([v.dx, v.dy]), rel = Math.abs(q.izq - q.der) < 0.005 ? '=' : '<';
       return [{ v: 'c-h', t: 'AC · BD' }, ` = ${f(q.izq)} ${rel} ${f(q.der)}`, sep, `OD = ${f(Math.hypot(v.dx, v.dy))}`];
     },
+    // Retos comprobados con cuad(): la igualdad con la misma tolerancia de la lectura; «sobre la circunferencia», a 0,01.
+    invitaciones: [
+      { texto: 'Lleva D hasta que el producto de diagonales iguale la suma.',
+        logrado: v => { const q = cuad([v.dx, v.dy]); return Math.abs(q.izq - q.der) < 0.005; },
+        bien: 'La igualdad pide D en la circunferencia. Comprueba que OD quedó cerca de 3.' },
+      { texto: 'Saca D fuera del círculo y compara el producto con la suma.',
+        logrado: v => Math.hypot(v.dx, v.dy) > R6 + 0.1,
+        bien: 'Fuera, la suma gana: la igualdad pide los cuatro en la circunferencia.' },
+      { texto: 'Con D sobre la circunferencia, busca la diagonal BD más larga.',
+        logrado: v => sobreC(v) && Math.abs(bdMesa(v) - BD_MAX) < 1e-9,
+        bien: 'BD casi 6, un diámetro: ABCD es un rectángulo y Ptolomeo, Pitágoras.' },
+    ],
   };
+  const sobreC = v => Math.abs(Math.hypot(v.dx, v.dy) - R6) < 0.01;
+  const bdMesa = v => U.dist(en(120), [v.dx, v.dy]);
+  const BD_MAX = (() => { let m = 0; for (let i = 0; i < 60; i++) for (let j = 0; j < 50; j++) { const v = { dx: +(-1.5 + 0.1 * i).toFixed(1), dy: +(-4.4 + 0.1 * j).toFixed(1) }; if (sobreC(v)) m = Math.max(m, bdMesa(v)); } return m; })();
 
   return {
     unidad: 'geometria.relaciones-metricas',
@@ -772,6 +833,36 @@
       pregunta: '¿Qué agrega una demostración a un cálculo que ya funciona?',
       fuente: { titulo: 'Euclides, Elementos I.47 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookI/propI47.html' },
     },
+    // Glosario: lo que este tema estrena. Pitágoras, cateto, hipotenusa, ceviana, mediana, cuerda, secante, tangente y
+    // cuadrilátero inscrito vienen de unidades anteriores y el lector los marca solos.
+    glosario: [
+      { termino: 'proyección', formas: ['proyección', 'proyecciones'],
+        def: 'Sombra de un segmento sobre una recta: el tramo entre los pies de las perpendiculares bajadas desde sus extremos.',
+        ejemplo: 'Cateto 6 en un triángulo de hipotenusa 10: su sombra sobre ella mide 36/10 = 3,6.', ver: ['teorema de Euclides', 'media geométrica'] },
+      { termino: 'media geométrica', formas: ['media geométrica', 'medias geométricas'],
+        def: 'Raíz cuadrada del producto de dos números. No es el promedio.',
+        ejemplo: 'De 4 y 9: √(4 · 9) = 6; el promedio sería 6,5.', ver: ['proyección'] },
+      { termino: 'teorema de Euclides', formas: ['teorema de Euclides'],
+        def: 'Corrige a Pitágoras sin ángulo recto: resta 2am si el ángulo es agudo y la suma si es obtuso.',
+        ejemplo: 'a = 8, c = 5, B obtuso, m = 2,5: b² = 64 + 25 + 40 = 129.', ver: ['proyección'] },
+      { termino: 'teorema de Stewart', formas: ['teorema de Stewart', 'Stewart'],
+        def: 'Da el largo de una ceviana con los tres lados y los dos tramos en que parte su lado.',
+        ejemplo: 'b = 7, c = 5, a = 8 y D en el medio: d² = 21.' },
+      { termino: 'semiperímetro', simbolo: 's', formas: ['semiperímetro', 'semiperímetros'],
+        def: 'La mitad de la suma de los tres lados de un triángulo.', ejemplo: 'Lados 13, 14 y 15: s = 42/2 = 21.', ver: ['fórmula de Herón'] },
+      { termino: 'fórmula de Herón', formas: ['fórmula de Herón', 'Herón'],
+        def: 'Calcula el área de un triángulo solo con sus tres lados, sin conocer ninguna altura.',
+        ejemplo: 'Lados 13, 14 y 15: s = 21 y área √(21 · 8 · 7 · 6) = 84.', ver: ['semiperímetro'] },
+      { termino: 'potencia de un punto', formas: ['potencia de un punto', 'potencia'],
+        def: 'Producto PA · PB, igual para toda recta por P que corta la circunferencia. Con la tangente, vale PT².',
+        ejemplo: 'PA = 4 y PB = 9 dan 36: la tangente PT mide 6.', ver: ['media geométrica'] },
+      { termino: 'teorema de Ptolomeo', formas: ['teorema de Ptolomeo', 'Ptolomeo'],
+        def: 'En un cuadrilátero inscrito, el producto de las diagonales es la suma de los productos de lados opuestos.',
+        ejemplo: 'Rectángulo de lados 3√3 y 3, diagonales 6: 36 = 27 + 9.', ver: ['teorema de Viette'] },
+      { termino: 'teorema de Viette', formas: ['teorema de Viette', 'Viette'],
+        def: 'Cociente AC/BD de un cuadrilátero inscrito: arriba, productos de los lados que salen de A y de C.',
+        ver: ['teorema de Ptolomeo'] },
+    ],
     // Laboratorio: las tres mesas son más ricas que sus ideas (P libre con tangente, A y C libres con el signo de 2am,
     // y D suelto de la circunferencia).
     laboratorio: [mesaPotencia, mesaEuclides, mesaPtolomeo],
