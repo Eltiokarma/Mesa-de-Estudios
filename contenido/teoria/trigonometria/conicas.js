@@ -23,10 +23,12 @@
  *   Duda que resuelve: ¿por qué b² = a² − c² en la elipse y c² = a² + b² en la hipérbola, y por qué B² − 4AC no basta?
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/conicas/motor.js'))
+    : fabrica(root.Kit, root.MotorConicas);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MCo) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const PF = { v: 'c-i', t: 'PF' }, PF1 = { sub: [{ v: 'c-i', t: 'PF' }, '1'] }, PF2 = { sub: [{ v: 'c-d', t: 'PF' }, '2'] }, PD = { v: 'c-d', t: 'PD' };
@@ -678,11 +680,49 @@
     };
   }
 
+  // ---------- El cono que se corta (laboratorio 3D, 15 nov: exploración libre, sin predicciones) ----------
+  // El tipo de curva y sus puntos los calcula plantillas/conicas/motor.js (corte3d), el mismo que usa la pieza
+  // trig-cono-3d para dibujar: los retos miden lo que se ve (regla 1). φ es la inclinación del plano y g la de la
+  // generatriz, las dos desde la horizontal; a, cuánto baja el plano bajo el vértice (a = 0: cónica degenerada).
+  const corteDe = v => MCo.corte3d({ inclinacion: v.fi, generatriz: v.g, altura: v.a, alto: 2 });
+  const mesaCono = {
+    id: 'cono-corte', titulo: 'El cono que se corta', pieza: 'trig-cono-3d',
+    consigna: 'Gira el cono doble con el dedo. Inclina el plano, cambia la generatriz y baja el plano: compara φ con g.',
+    controles: [
+      { id: 'fi', etiqueta: 'φ del plano', color: 'c-o', min: 0, max: 85, paso: 5, inicio: 30, unidad: '°', decimales: 0 },
+      { id: 'g', etiqueta: 'g de la generatriz', color: 'c-i', min: 40, max: 75, paso: 5, inicio: 60, unidad: '°', decimales: 0 },
+      { id: 'a', etiqueta: 'plano bajo el vértice', color: 'c-d', min: 0, max: 1.5, paso: 0.5, inicio: 1, decimales: 1 },
+    ],
+    dibujo: v => ({ datos: { inclinacion: v.fi, generatriz: v.g, altura: v.a }, estado: { plano: true } }),
+    lectura: v => ['Corte: ', { v: 'c-h', t: corteDe(v).nombre }, ' · ', { v: 'c-o', t: 'φ' }, ` = ${v.fi}° · `, { v: 'c-i', t: 'g' }, ` = ${v.g}°`],
+    invitaciones: [
+      { texto: 'Corta el cono y saca una circunferencia.',
+        logrado: v => corteDe(v).tipo === 'circunferencia',
+        bien: 'Plano horizontal: cada punto del corte queda a la misma distancia del eje.',
+        pista: 'Deja el plano sin inclinar: φ en 0°.' },
+      { texto: 'Consigue una parábola.',
+        logrado: v => corteDe(v).tipo === 'parabola',
+        bien: 'El plano va paralelo a una generatriz: la curva nunca se cierra.',
+        pista: 'Inclina el plano justo lo mismo que la generatriz: φ igual a g.' },
+      { texto: 'Logra un corte que toque las dos hojas del cono.',
+        logrado: v => v.a > 0 && corteDe(v).hojas === 2,
+        bien: 'Más inclinado que la generatriz: una hipérbola, con una rama en cada hoja.',
+        pista: 'Inclina el plano más que la generatriz.' },
+      { texto: 'Pasa el plano por el vértice y saca dos rectas.',
+        logrado: v => corteDe(v).tipo === 'rectas',
+        bien: 'Por el vértice, la hipérbola se aplasta en dos rectas: una cónica degenerada.',
+        pista: 'Baja el plano a 0 y que φ pase a g.' },
+      { texto: 'Guarda dos casos con la misma φ y distinta curva.',
+        logrado: (v, gs) => gs.some(p => gs.some(q => p.fi === q.fi && p.a > 0 && q.a > 0 && corteDe(p).tipo !== corteDe(q).tipo)),
+        bien: 'φ sola no decide la curva: decide compararla con g.' },
+    ],
+  };
+
   return {
     unidad: 'trigonometria.conicas',
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/trig-plano.js'],
+    requiere: ['/nucleo/kit/piezas/trig-plano.js', '/plantillas/conicas/motor.js', '/nucleo/kit/piezas/trig-cono-3d.js'],
     glosario: [
       { termino: 'lugar geométrico', def: 'Conjunto de todos los puntos que cumplen una condición, y solo de ellos.',
         ejemplo: 'Los puntos a distancia 2 del origen: la circunferencia x² + y² = 4.', formas: ['lugar geométrico', 'lugares geométricos'] },
@@ -709,6 +749,12 @@
       { termino: 'ecuación general', def: 'Igualdad de segundo grado en x e y, con término xy incluido, que describe cualquier curva de este tipo.',
         ejemplo: '5x² − 6xy + 5y² − 8 = 0 tiene A = 5, B = −6 y C = 5.',
         formas: ['ecuación general', 'ecuaciones generales'], ver: ['discriminante', 'rotación de ejes'] },
+      { termino: 'generatriz', simbolo: 'g', def: 'Recta del cono que va del vértice al borde: girándola alrededor del eje se arma el cono.',
+        formas: ['generatriz', 'generatrices'], ejemplo: 'Con g = 60° desde la horizontal, el cono es angosto y alto.', ver: ['cono doble'] },
+      { termino: 'cono doble', def: 'Dos conos unidos por su vértice, con el mismo eje: cada mitad es una hoja.',
+        formas: ['cono doble', 'conos dobles'], ver: ['generatriz', 'cónica'] },
+      { termino: 'cónica degenerada', def: 'Lo que deja un plano que pasa por el vértice del cono: un punto, una recta o dos rectas.',
+        formas: ['cónica degenerada', 'cónicas degeneradas'], ver: ['cono doble'] },
       { termino: 'rotación de ejes', simbolo: 'θ', def: 'Cambiar a ejes x′, y′ inclinados un ángulo θ, para que la ecuación pierda el término xy.',
         ejemplo: '5x² − 6xy + 5y² = 8 con θ = 45° queda x′²/4 + y′² = 1.',
         formas: ['rotación de ejes', 'girar los ejes', 'gira los ejes', 'giro de ejes'], ver: ['ecuación general'] },
@@ -717,6 +763,7 @@
     // bajo la directriz, con la parábola punteada como guía; la segunda suelta la cuerda y los focos hasta los casos
     // raros (c = a: un segmento; c > a: ningún punto); la tercera suma la pendiente y pasos finos para atrapar la tangente.
     laboratorio: [
+      mesaCono,
       {
         id: 'foco-y-directriz', titulo: 'Foco y directriz libres', pieza: 'trig-plano',
         consigna: 'Arrastra P y también el foco F: la directriz se aleja con él. Sobre la curva punteada, las dos distancias coinciden.',

@@ -28,10 +28,12 @@
  *   Duda que resuelve: ¿toda función trigonométrica se repite cada 2π, y por qué sec x nunca vale 1/2?
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/circunferencia-trig/motor.js'))
+    : fabrica(root.Kit, root.MotorCircTrig);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MCT) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const x_ = { v: 'c-o', t: 'x' }, A_ = { v: 'c-h', t: 'A' }, B_ = { v: 'c-i', t: 'B' }, T_ = { v: 'c-d', t: 'T' }, y_ = { v: 'c-h', t: 'y' };
@@ -750,11 +752,49 @@
       bien: 'El periodo no depende de m y n solos, sino de lo que comparten.' },
   ];
 
+  // ---------- La hélice y su sombra (laboratorio 3D, 15 nov: exploración libre, sin predicciones) ----------
+  // P gira B·x grados en una circunferencia de radio A mientras avanza x por el eje: deja una hélice cuya sombra en
+  // la pared es y = A sen Bx. Periodo, vueltas y P los calcula plantillas/circunferencia-trig/motor.js (helice), el
+  // mismo que usa la pieza trig-helice-3d para dibujar: los retos miden lo que se ve (regla 1). Va primera; las otras
+  // mesas conservan sus ids y sus retos (laboratorio[k] sigue apuntando a las mismas).
+  const heliceDe = v => MCT.helice({ A: v.A, B: v.B, g: v.x, hasta: 720 });
+  const mesaHelice = {
+    id: 'helice-sombra', titulo: 'La hélice y su sombra', pieza: 'trig-helice-3d',
+    consigna: 'Gira la hélice: de frente es una circunferencia; de costado, la onda de la pared. Mueve A, B y la x de P.',
+    controles: [
+      { id: 'A', etiqueta: 'A', color: 'c-h', min: 0.5, max: 2, paso: 0.5, inicio: 1.5, decimales: 1 },
+      { id: 'B', etiqueta: 'B', color: 'c-i', min: 0.5, max: 3, paso: 0.5, inicio: 1.5, decimales: 1 },
+      { id: 'x', etiqueta: 'x de P', color: 'c-o', min: 0, max: 720, paso: 15, inicio: 120, unidad: '°', decimales: 0 },
+    ],
+    dibujo: v => ({ datos: { A: v.A, B: v.B, g: v.x }, estado: { piso: true } }),
+    lectura: v => { const r = heliceDe(v); return [`${f(r.vueltas)} vueltas · `, T_, ` = ${f(r.T)}° · altura de P: ${f(r.P.alto)}`]; },
+    invitaciones: [
+      { texto: 'Lleva a P a la cresta: lo más alto de la onda.',
+        logrado: v => Math.abs(heliceDe(v).P.sen - 1) < 1e-9,
+        bien: 'Arriba del todo en su vuelta: el seno vale 1 y la altura es A.',
+        pista: 'Avanza P hasta que quede encima del eje.' },
+      { texto: 'Haz que una vuelta de la hélice mida 180°.',
+        logrado: v => Math.abs(heliceDe(v).T - 180) < 1e-9,
+        bien: 'Una vuelta de P es un periodo: con B = 2, T = 360° ÷ 2.',
+        pista: 'El periodo es 360° entre B.' },
+      { texto: 'Pon a P donde sus dos sombras, pared y piso, miden lo mismo.',
+        logrado: v => { const q = heliceDe(v).P; return Math.abs(q.sen - q.cos) < 1e-9; },
+        bien: 'Seno igual a coseno: P va a 45° de su vuelta, en la diagonal.',
+        pista: 'Con B = 1, busca x = 45°.' },
+      { texto: 'Consigue la hélice más apretada que permite la mesa.',
+        logrado: (v, gs, mesa) => v.B === mesa.controles.find(c => c.id === 'B').max,
+        bien: 'Más vueltas en el mismo tramo: B grande, periodo corto.' },
+      { texto: 'Guarda dos casos con la misma B y distinta A: compara los periodos.',
+        logrado: (v, gs) => gs.some(p => gs.some(q => p.B === q.B && p.A !== q.A)),
+        bien: 'A cambia el radio y la altura de la onda, no cuánto dura una vuelta.' },
+    ],
+  };
+
   return {
     unidad: 'trigonometria.funciones-trigonometricas',
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/trig-onda.js'],
+    requiere: ['/nucleo/kit/piezas/trig-onda.js', '/plantillas/circunferencia-trig/motor.js', '/nucleo/kit/piezas/trig-helice-3d.js'],
     // Laboratorio (docs/teoria.md §4b), sin preguntas: «onda-completa» junta A (también negativa), B fraccionaria y el
     // corrimiento D que las ideas no dejan mover; «cuatro-funciones» da a secante y cosecante la marca que su idea no
     // tiene, de 5° en 5° para acercarse a las asíntotas; «suma-de-ondas» prueba el periodo común con cualquier m y n.
@@ -781,7 +821,7 @@
       { termino: 'múltiplo común', def: 'Número que es múltiplo de dos números a la vez. El menor sirve como periodo de una suma.',
         formas: ['múltiplo común', 'múltiplos comunes'], ejemplo: 'π y 2π/3: 2 · π = 3 · 2π/3 = 2π.', ver: ['periodo'] },
     ],
-    laboratorio,
+    laboratorio: [mesaHelice, ...laboratorio],
     historia: {
       texto: 'En 1748, Euler publicó la Introductio in analysin infinitorum, que puso a las funciones en el centro del análisis. Seno y coseno dejaron de ser solo valores de una tabla para resolver triángulos: pasaron a ser funciones que cambian sin fin mientras el ángulo gira, con preguntas nuevas sobre su altura, su repetición y su desplazamiento.',
       pregunta: '¿Qué cambia si piensas el seno como algo que se mueve?',

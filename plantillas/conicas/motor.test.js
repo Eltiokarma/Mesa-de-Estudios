@@ -286,3 +286,30 @@ test('papel.json: entre 5 y 10 problemas, con respuesta, pasos y verificación',
 for (const p of papel.problemas) test(`papel ${p.id}: ${p.enunciado.slice(0, 60)}`, () => {
   for (const v of p.verificar) comprobar(v.fn, v.args, v.espera, p.id);
 });
+
+// corte3d (15 nov 2026, pieza trig-cono-3d): los puntos están en el cono y en el plano; los extremos del eje mayor de
+// la elipse (inclinación 30°, generatriz 60°, altura 1) se calcularon aparte, en Python, cortando la vista de costado:
+// (0,4330; −0,75) y (−0,8660; −1,5), eje mayor 1,5.
+test('corte3d: la curva está en el cono y en el plano, con el tipo que da la inclinación', () => {
+  const C = (fi, g, a) => motor.corte3d({ inclinacion: fi, generatriz: g, altura: a });
+  for (const [fi, g, a] of [[0, 45, 1], [30, 60, 1], [45, 45, 0.5], [70, 40, 1], [80, 30, 1.5], [60, 30, 0], [40, 40, 0]]) {
+    const r = C(fi, g, a), t = Math.tan(g * Math.PI / 180), m = Math.tan(fi * Math.PI / 180);
+    for (const p of r.tramos.flat()) {
+      assert.ok(Math.abs(Math.hypot(p[0], p[2]) * t - Math.abs(p[1])) < 1e-9, `en el cono ${fi} ${g} ${a}`);
+      assert.ok(Math.abs(m * p[0] - a - p[1]) < 1e-9, `en el plano ${fi} ${g} ${a}`);
+    }
+  }
+  assert.equal(C(0, 45, 1).tipo, 'circunferencia');
+  for (const p of C(0, 45, 1).tramos[0]) cerca(Math.hypot(p[0], p[2]), 1, 'radio a / tan g');
+  assert.equal(C(30, 60, 1).tipo, 'elipse'); assert.equal(C(30, 60, 1).hojas, 1); assert.equal(C(30, 60, 1).tramos.length, 1);
+  const el = C(30, 60, 1).tramos[0], xs = el.map(p => p[0]);
+  cerca(Math.max(...xs), 0.4330127018922194, 'extremo derecho', 1e-3);
+  cerca(Math.min(...xs), -0.866025403784439, 'extremo izquierdo', 1e-3);
+  assert.equal(C(45, 45, 0.5).tipo, 'parabola'); assert.equal(C(45, 45, 0.5).hojas, 1);
+  assert.equal(C(70, 40, 1).tipo, 'hiperbola'); assert.equal(C(70, 40, 1).hojas, 2, 'la hipérbola corta las dos hojas');
+  assert.equal(C(60, 30, 0).tipo, 'rectas'); assert.equal(C(60, 30, 0).tramos.length, 2);
+  assert.equal(C(20, 30, 0).tipo, 'punto'); assert.equal(C(40, 40, 0).tipo, 'rectaDoble');
+  // Con altura, el tipo coincide con el de cono().
+  for (let fi = 0; fi <= 85; fi += 5) for (const g of [20, 45, 70]) assert.equal(C(fi, g, 1).tipo, motor.cono({ inclinacion: fi, generatriz: g }).tipo);
+  assert.throws(() => C(30, 60, -1), /altura/);
+});

@@ -4064,10 +4064,12 @@
      "teoria": {
       "archivo": "/contenido/teoria/trigonometria/triangulos-rectangulos.js",
       "requiere": [
-       "/nucleo/kit/piezas/triangulo.js"
+       "/nucleo/kit/piezas/triangulo.js",
+       "/plantillas/trig-angulos-verticales/motor.js",
+       "/nucleo/kit/piezas/trig-campo-3d.js"
       ],
       "ideas": 3,
-      "terminos": 22
+      "terminos": 25
      }
     },
     {
@@ -4399,10 +4401,12 @@
      "teoria": {
       "archivo": "/contenido/teoria/trigonometria/funciones-trigonometricas.js",
       "requiere": [
-       "/nucleo/kit/piezas/trig-onda.js"
+       "/nucleo/kit/piezas/trig-onda.js",
+       "/plantillas/circunferencia-trig/motor.js",
+       "/nucleo/kit/piezas/trig-helice-3d.js"
       ],
       "ideas": 5,
-      "terminos": 29
+      "terminos": 32
      }
     },
     {
@@ -4511,10 +4515,12 @@
       "archivo": "/contenido/teoria/trigonometria/triangulos-oblicuangulos.js",
       "requiere": [
        "/nucleo/kit/piezas/trig-plano.js",
-       "/nucleo/kit/piezas/triangulo.js"
+       "/nucleo/kit/piezas/triangulo.js",
+       "/plantillas/trig-angulos-verticales/motor.js",
+       "/nucleo/kit/piezas/trig-campo-3d.js"
       ],
       "ideas": 5,
-      "terminos": 34
+      "terminos": 36
      }
     },
     {
@@ -4552,7 +4558,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
@@ -4584,10 +4590,12 @@
      "teoria": {
       "archivo": "/contenido/teoria/trigonometria/conicas.js",
       "requiere": [
-       "/nucleo/kit/piezas/trig-plano.js"
+       "/nucleo/kit/piezas/trig-plano.js",
+       "/plantillas/conicas/motor.js",
+       "/nucleo/kit/piezas/trig-cono-3d.js"
       ],
       "ideas": 5,
-      "terminos": 37
+      "terminos": 40
      }
     },
     {
