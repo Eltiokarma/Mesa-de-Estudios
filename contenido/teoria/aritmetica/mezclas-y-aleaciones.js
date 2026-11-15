@@ -184,7 +184,7 @@
       ],
     },
     regla: {
-      texto: 'Para lograr un precio medio con dos componentes, la cantidad de cada uno es proporcional a la distancia del otro precio al medio.',
+      texto: 'Regla del aspa: para lograr un precio medio con dos componentes, la cantidad de cada uno es proporcional a la distancia del otro precio al medio.',
       ecuacion: [{ frac: [s(q, '1'), s(q, '2')] }, ' = ', { llave: [{ frac: [[s(p, '2'), ' − ', pm], [pm, ' − ', s(p, '1')]] }], nota: 'distancias cruzadas' }],
       condicion: 'el precio buscado está entre los dos precios. Si no está entre ellos, la mezcla es imposible.',
     },
@@ -271,7 +271,7 @@
       ],
     },
     regla: {
-      texto: 'El grado de una mezcla es el porcentaje de alcohol puro en el volumen total. Se suman los litros de alcohol y los litros totales.',
+      texto: 'El grado alcohólico de una mezcla es el porcentaje de alcohol puro en el volumen total. Se suman los litros de alcohol y los litros totales.',
       ecuacion: [gm, ' = ', { llave: [{ frac: [[s(V, '1'), s(g, '1'), ' + ', s(V, '2'), s(g, '2')], [s(V, '1'), ' + ', s(V, '2')]] }], nota: 'alcohol entre volumen' }],
       condicion: 'se supone que los volúmenes se suman; en la realidad alcohol y agua se contraen un poco. El agua tiene 0°.',
     },
@@ -408,6 +408,7 @@
     if (posible) el.push({ tipo: 'distancia', a: v.p1, b: v.m, color: 'o', rotulo: f(b), fila: 2 }, { tipo: 'distancia', a: v.m, b: v.p2, color: 'o', rotulo: f(a), fila: 2 });
     return { datos: { min: 0, max: 32, paso: 1, cada: 5, decimales: 2, prefijo: 'S/ ', filas: 2, variable: 'precio por kg (S/)', color: 'i', elementos: el }, estado: {}, posible, a, b };
   };
+  const gradoMezcla = v => (v.a * v.g1 + v.b * v.g2) / (v.a + v.b);
   const dosAlcoholes = v => ({ datos: Object.assign(vasos([{ V: v.a, g: v.g1 }, { V: v.b, g: v.g2 }]), { max: 20 }), estado: {} });
   const laboratorio = [
     {
@@ -418,6 +419,20 @@
         { id: `q${k}`, etiqueta: `kg del ${k}`, color: 'c-o', min: 1, max: 10, paso: 1, inicio: [5, 2, 1][k - 1], decimales: 0 },
       ]),
       dibujo: rectaTres,
+      invitaciones: [
+        { texto: 'Haz que un kilo de la mezcla cueste justo S/ 15.',
+          logrado: v => Math.abs(rectaTres(v).med - 15) < 1e-9,
+          bien: 'Valor total entre kilos totales da 15. ¿Hay otra manera de lograrlo?' },
+        { texto: 'Aleja el precio medio más de S/ 6 del promedio simple de los tres precios.',
+          logrado: v => Math.abs(rectaTres(v).med - (v.p1 + v.p2 + v.p3) / 3) > 6,
+          bien: 'Los kilos pesan: el punto verde se fue hacia el café con más kilos.' },
+        { texto: 'Deja la mezcla a menos de S/ 1 del café más caro.',
+          logrado: v => Math.max(v.p1, v.p2, v.p3) - rectaTres(v).med < 1,
+          bien: 'Para acercarte tanto, los otros cafés pesan poco o cuestan casi igual.' },
+        { texto: 'Con tres precios distintos, haz que la mezcla cueste justo lo del café del medio.',
+          logrado: v => { const ps = [v.p1, v.p2, v.p3].sort((x, y) => x - y); return ps[0] < ps[1] && ps[1] < ps[2] && Math.abs(rectaTres(v).med - ps[1]) < 1e-9; },
+          bien: 'El café del medio no empuja: los otros dos se equilibran a su alrededor.' },
+      ],
       lectura: v => [`${v.q1}\u00a0kg a ${v.p1}, ${v.q2} a ${v.p2}, ${v.q3} a ${v.p3}: `, pm, ` = ${f(rectaTres(v).med)}`],
       arrastres: PR.map(k => ({
         id: `precio-${k}`, etiqueta: `precio del café ${k}`, color: 'c-i',
@@ -434,6 +449,20 @@
         { id: 'm', etiqueta: 'Precio buscado (S/)', color: 'c-d', min: 1, max: 31, paso: 1, inicio: 17, decimales: 0 },
       ],
       dibujo: aspaLibre,
+      invitaciones: [
+        { texto: 'Pon el precio buscado fuera de los dos precios.',
+          logrado: v => v.m < v.p1 || v.m > v.p2,
+          bien: 'Fuera del tramo no hay mezcla: ningún reparto baja ni sube tanto.' },
+        { texto: 'Consigue que las dos partes del aspa queden iguales.',
+          logrado: v => { const x = aspaLibre(v); return x.posible && x.a === x.b; },
+          bien: 'Partes iguales: el buscado es justo el promedio simple de los dos precios.' },
+        { texto: 'Haz que se necesite el doble de café barato que de caro.',
+          logrado: v => { const x = aspaLibre(v); return x.posible && x.a === 2 * x.b; },
+          bien: 'El buscado quedó a un tercio del tramo, del lado del barato.' },
+        { texto: 'Haz que un café necesite al menos 10 veces los kilos del otro.',
+          logrado: v => { const x = aspaLibre(v); return x.posible && Math.max(x.a, x.b) >= 10 * Math.min(x.a, x.b); },
+          bien: 'Pegado a un precio, casi toda la mezcla es de ese café.' },
+      ],
       lectura: v => { const x = aspaLibre(v); const d = x.posible ? mcd(x.a, x.b) : 1; return x.posible ? [`${sol(v.m)}: kg de ${v.p1} : kg de ${v.p2} = ${f(x.a / d)} : ${f(x.b / d)}`] : [`${sol(v.m)} no está entre ${v.p1} y ${v.p2}: imposible`]; },
       arrastres: [
         { id: 'barato', etiqueta: 'precio barato', color: 'c-i', fila: 1, k: 'p1' },
@@ -455,7 +484,21 @@
         { id: 'b', etiqueta: 'Litros 2', color: 'c-o', min: 1, max: 10, paso: 1, inicio: 5, decimales: 0 },
       ],
       dibujo: dosAlcoholes,
-      lectura: v => [`${v.a} L a ${v.g1}° + ${v.b} L a ${v.g2}°: `, gm, ` = ${f((v.a * v.g1 + v.b * v.g2) / (v.a + v.b))}°`],
+      lectura: v => [`${v.a} L a ${v.g1}° + ${v.b} L a ${v.g2}°: `, gm, ` = ${f(gradoMezcla(v))}°`],
+      invitaciones: [
+        { texto: 'Haz una mezcla de justo 45°.',
+          logrado: v => Math.abs(gradoMezcla(v) - 45) < 1e-9,
+          bien: 'Litros de alcohol puro entre litros totales: comprueba que da 0,45.' },
+        { texto: 'Con agua en uno de los recipientes, consigue justo 75°.',
+          logrado: v => (v.g1 === 0 || v.g2 === 0) && Math.abs(gradoMezcla(v) - 75) < 1e-9,
+          bien: 'El agua solo baja el grado: el otro tuvo que pasar de 75°.' },
+        { texto: 'Con agua en un recipiente, busca el grado final más alto posible.',
+          logrado: v => (v.g1 === 0 && v.g2 === 100 && v.b === 10 && v.a === 1) || (v.g2 === 0 && v.g1 === 100 && v.a === 10 && v.b === 1),
+          bien: 'Ni con un solo litro de agua llegas a 100°: el agua siempre diluye.' },
+        { texto: 'Guarda dos casos con el mismo grado final y distinto volumen total.',
+          logrado: (v, gs) => gs.some(g => Math.abs(gradoMezcla(g) - gradoMezcla(v)) < 1e-9 && g.a + g.b !== v.a + v.b),
+          bien: 'El grado no dice cuánto hay: mide qué parte del total es alcohol.' },
+      ],
       arrastres: [
         { id: 'litros-1', etiqueta: 'final del recipiente 1', color: 'c-o',
           donde: v => { const g = TIRAS().geometria(dosAlcoholes(v).datos); return { x: g.x(v.a), y: g.centroY(0) }; },
@@ -472,6 +515,31 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tiras.js'],
+    // Glosario por tema (docs/teoria.md, 4d). «Grado» y «ley» van con su apellido: en otras unidades del curso
+    // significan otra cosa (grados del círculo, leyes lógicas). «Promedio simple» se estrena antes, en razones.
+    glosario: [
+      { termino: 'mezcla', def: 'Lo que resulta de juntar dos o más sustancias o productos sin que cambien: cada uno aporta lo suyo.',
+        ejemplo: '3 kg de café de S/ 12 con 1 kg de S/ 20 dan 4 kg.', ver: ['componente', 'precio medio'] },
+      { termino: 'componente', def: 'Cada sustancia o producto que entra en una mezcla, con su cantidad y su precio o pureza.',
+        ejemplo: 'Café de S/ 12 con café de S/ 20: dos componentes.', ver: ['mezcla'] },
+      { termino: 'precio medio', simbolo: 'pₘ', def: 'Lo que cuesta cada unidad de una mezcla: el valor total entre la cantidad total.',
+        ejemplo: '3 kg a S/ 12 y 1 kg a S/ 20: 56 ÷ 4 = S/ 14 el kilo.', ver: ['regla del aspa'] },
+      { termino: 'regla del aspa', formas: ['regla del aspa', 'aspa'],
+        def: 'Atajo para dos componentes: la cantidad de cada uno va cruzada con la distancia del otro precio al buscado.',
+        ejemplo: 'S/ 18 con cafés de 12 y 20: distancias 6 y 2; kilos 2 : 6 = 1 : 3.', ver: ['precio medio'] },
+      { termino: 'alcohol puro', def: 'Alcohol sin agua, de 100°. En una mezcla es la parte que se cuenta para hallar los grados.',
+        ejemplo: '6 L de alcohol a 60° tienen 6 · 0,60 = 3,6 L de alcohol puro.', ver: ['grado alcohólico'] },
+      { termino: 'grado alcohólico', simbolo: 'g', medida: '°', formas: ['grado alcohólico', 'grados alcohólicos'],
+        def: 'Porcentaje de alcohol puro en el volumen total de una mezcla; se escribe con el signo °.',
+        ejemplo: '3,6 L de alcohol puro en 8 L: 3,6 ÷ 8 · 100 = 45°.', ver: ['alcohol puro'] },
+      { termino: 'aleación', def: 'Mezcla de metales fundidos juntos, como oro con cobre en una joya.',
+        ejemplo: '2 kg de oro de 18 K fundidos con 1 kg de 12 K: 3 kg.', ver: ['ley de una aleación', 'quilate'] },
+      { termino: 'ley de una aleación', formas: ['ley de una aleación', 'ley de la aleación'],
+        def: 'Fracción de la masa que es metal fino, como el oro puro: su masa entre la masa total.',
+        ejemplo: '2 kg de oro puro en 3 kg: ley 2/3, que son 16 quilates.', ver: ['quilate'] },
+      { termino: 'quilate', simbolo: 'K', def: 'Medida de la pureza del oro en partes de 24: cada una es 1/24 de la masa.',
+        ejemplo: 'Una joya de 18 K tiene 18 ÷ 24 = 75 % de oro.', ver: ['ley de una aleación'] },
+    ],
     laboratorio,
     historia: {
       texto: 'Los problemas de mezclas son mucho más antiguos que la química moderna. En el siglo XIII, Yang Hui comentó problemas de los Nueve capítulos donde un objeto junta materiales de pesos distintos, y había que recuperar las cantidades a partir de los totales. No usaban porcentajes ni nuestros símbolos, pero la estructura es la misma: cada parte aporta según cuánto hay de ella.',
