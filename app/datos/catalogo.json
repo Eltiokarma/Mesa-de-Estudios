@@ -63,7 +63,10 @@
       "requiere": [
        "/nucleo/kit/piezas/recta.js",
        "/nucleo/kit/piezas/fis-dimensiones.js",
-       "/nucleo/kit/piezas/flechas.js"
+       "/nucleo/kit/piezas/flechas.js",
+       "/plantillas/vectores/motor.js",
+       "/nucleo/fisica3d.js",
+       "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 5,
       "terminos": 25

@@ -22,10 +22,12 @@
  *   Duda que resuelve: ¿por qué 3 + 4 no siempre es 7 cuando se suman flechas, y qué cambia al cambiar de unidad?
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // nucleo/fisica3d.js arma la mesa 3D «Flechas en el espacio» con el motor de plantillas/vectores (regla 1).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../nucleo/fisica3d.js')) : fabrica(root.Kit, root.Fisica3D);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, F3) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const A = { v: 'c-o', t: 'A' }, B = { v: 'c-i', t: 'B' }, R = { v: 'c-d', t: 'R' }, th = { v: 'c-h', t: 'θ' };
@@ -410,8 +412,8 @@
       consigna: 'Elige cuánto avanza A en x y cuánto en y. La flecha verde es su unitario: misma dirección, largo 1.',
       voz: 'Prueba también A = 0. ¿Hacia dónde apuntaría su unitario?',
       controles: [
-        { id: 'ax', etiqueta: 'Aₓ', color: 'c-o', min: -4, max: 4, paso: 1, inicio: 3, decimales: 0 },
-        { id: 'ay', etiqueta: 'Aᵧ', color: 'c-o', min: -4, max: 4, paso: 1, inicio: 2, decimales: 0 },
+        { id: 'ax', etiqueta: 'Ax', color: 'c-o', min: -4, max: 4, paso: 1, inicio: 3, decimales: 0 },
+        { id: 'ay', etiqueta: 'Ay', color: 'c-o', min: -4, max: 4, paso: 1, inicio: 2, decimales: 0 },
       ],
       dibujo: val => compA(val.ax, val.ay, { unitario: true, valor: true }),
       lectura: val => {
@@ -595,12 +597,55 @@
   const areaLibre = val => Math.abs(val.a * val.b * senG(val.g));
   const rLibre = val => sumaLibre(val).r;
   const modA = val => Math.hypot(val.ax, val.ay);
+  // Flechas en el espacio (laboratorio 3D, 15 nov: exploración libre, sin predicciones). Módulo, A · B y A × B salen del
+  // motor de plantillas/vectores a través de nucleo/fisica3d.js: la figura, la lectura y los retos usan el mismo número.
+  const esp = val => F3.vectores(val);
+  const casi = (a, b) => Math.abs(a - b) < 1e-9;
+  const mesaEspacio = {
+    id: 'flechas-espacio', titulo: 'Flechas en el espacio', pieza: 'fis-espacio-3d',
+    consigna: 'Gira el espacio con el dedo. Arma A con sus tres componentes; después mira A × B.',
+    controles: [
+      { id: 'ver', etiqueta: 'Mirar', opciones: [{ valor: 'comp', texto: 'Componentes' }, { valor: 'cruz', texto: 'A × B' }] },
+      { id: 'ax', etiqueta: 'Ax', color: 'c-o', min: -2, max: 2, paso: 1, inicio: 2, decimales: 0 },
+      { id: 'ay', etiqueta: 'Ay', color: 'c-o', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'az', etiqueta: 'Az', color: 'c-o', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'b', etiqueta: 'B', color: 'c-i', opciones: ['x', 'y', 'z', 'xy'].map(k => ({ valor: k, texto: F3.BNOMBRE[k] })) },
+    ],
+    dibujo: val => ({ datos: esp(val).datos, estado: {} }),
+    lectura: val => {
+      const e = esp(val);
+      return val.ver === 'cruz' ? [A, ' · ', B, ` = ${f(e.punto)} · |`, A, ' × ', B, `| = ${f(e.modCruz)}`] : ['|', A, `| = √(${[val.ax, val.ay, val.az].map(x => x * x).join(' + ')}) = ${f(e.modA)}`];
+    },
+    invitaciones: [
+      { texto: 'Arma una A que mida justo 3 sin ponerla sobre un eje.',
+        logrado: val => casi(esp(val).modA, 3) && [val.ax, val.ay, val.az].filter(x => x !== 0).length >= 2,
+        bien: 'Tres sombras, un solo largo: √(4 + 4 + 1) = 3. Pitágoras dos veces.',
+        pista: 'Prueba componentes 2, 2 y 1, con el signo que quieras.' },
+      { texto: 'Mirando A × B, logra un producto cero sin que A sea cero.',
+        logrado: val => val.ver === 'cruz' && esp(val).modA > 0 && casi(esp(val).modCruz, 0),
+        bien: 'A quedó paralela a B: no hay paralelogramo, no hay área.',
+        pista: 'Pon A en la misma dirección que B. Mira si queda área entre las dos.' },
+      { texto: 'Logra que A × B apunte hacia arriba, con z positivo.',
+        logrado: val => val.ver === 'cruz' && esp(val).cruz[2] > 1e-9,
+        bien: 'Cambia el orden de los giros y la flecha cambia de lado. Míralo de costado.',
+        pista: 'Con B = î, prueba Ay negativa. Gira el espacio y mira hacia dónde sale.' },
+      { texto: 'Haz A · B = 0 con una A de largo 2 o más.',
+        logrado: val => val.ver === 'cruz' && esp(val).modA >= 2 - 1e-9 && casi(esp(val).punto, 0),
+        bien: 'Perpendiculares: la sombra de A sobre B no mide nada, pero el área es máxima.',
+        pista: 'Elige B = k̂ y deja Az en 0.' },
+      { texto: 'Guarda dos A del mismo largo que apunten a lugares distintos.',
+        logrado: (val, guardados) => guardados.some(a => guardados.some(b => esp(a).modA > 0 && casi(esp(a).modA, esp(b).modA)
+          && (a.ax !== b.ax || a.ay !== b.ay || a.az !== b.az))),
+        bien: 'El largo no dice hacia dónde: para eso están las tres componentes.' },
+    ],
+  };
 
   return {
     unidad: 'fisica.magnitudes-y-vectores',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/fis-dimensiones.js', '/nucleo/kit/piezas/flechas.js'],
+    requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/fis-dimensiones.js', '/nucleo/kit/piezas/flechas.js',
+      '/plantillas/vectores/motor.js', '/nucleo/fisica3d.js', '/nucleo/kit/piezas/fis-espacio-3d.js'],
     // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso (es la primera).
     glosario: [
       { termino: 'magnitud', def: 'Propiedad de algo que se puede medir y decir con un número y una unidad.',
@@ -644,6 +689,7 @@
     // Laboratorio: juego libre, sin preguntas. Las dos mesas nuevas sueltan los dos largos y el ángulo a la vez (en
     // los juegos, A queda fijo); la del medio es el juego de las componentes, con su punta arrastrable.
     laboratorio: [
+      mesaEspacio,
       {
         id: 'suma-libre', titulo: 'Dos flechas sin amarras', pieza: 'flechas',
         consigna: 'Arrastra la punta de A o la de B, o usa los botones. Busca dos casos con el mismo R y otro ángulo.',

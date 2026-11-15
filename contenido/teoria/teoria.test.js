@@ -25,9 +25,10 @@ for (const [curso, archivo] of archivos) {
     assert.ok(u, `la unidad ${id} no está en el catálogo`);
     assert.ok(Teoria.PERSONAJES[curso], `el curso ${curso} no tiene personaje`);
     for (const r of def.requiere || []) {
-      // Piezas del kit, el motor de una plantilla (la unidad reusa su química, regla 1) o la paleta de elementos.
-      assert.match(r, /^\/(nucleo\/kit\/piezas\/[a-z0-9-]+|plantillas\/[a-z0-9-]+\/motor|nucleo\/elementos)\.js$/,
-        `requiere solo piezas del kit, motores de plantilla o nucleo/elementos.js: ${r}`);
+      // Piezas del kit, el motor de una plantilla (la unidad reusa su química, regla 1), la paleta de elementos o las
+      // escenas 3D de física (nucleo/fisica3d.js, que solo ubica lo que calculan los motores de plantilla).
+      assert.match(r, /^\/(nucleo\/kit\/piezas\/[a-z0-9-]+|plantillas\/[a-z0-9-]+\/motor|nucleo\/elementos|nucleo\/fisica3d)\.js$/,
+        `requiere solo piezas del kit, motores de plantilla, nucleo/elementos.js o nucleo/fisica3d.js: ${r}`);
       require(path.join(RAIZ, r));
     }
     const p = Teoria.problemas(def, { temas: u.temas, semillas: 60 });
