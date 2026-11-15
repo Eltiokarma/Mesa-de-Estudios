@@ -417,6 +417,19 @@
   };
   // Mesa 2: la caliza entera, con su masa, pureza y rendimiento en rangos amplios. Se cuenta en g de CaO.
   const caliza = v => ({ datos: barra(v.mm * 0.56, v.p, v.e), estado: { corte: 2 } });
+  // Para los retos: los gramos de CaO salen de la misma pieza que dibuja la barra (último valor tras los recortes).
+  const BP = () => Kit.piezas['barra-porcentaje'];
+  const cao = v => { const x = BP().valores(caliza(v).datos); return x[x.length - 1]; };
+  // La caliza más liviana de la mesa que llega a 100 g de CaO, y el mayor producto sin sobrante (se buscan una vez).
+  let liviana_ = null, techo_ = null;
+  const liviana = () => {
+    if (liviana_ === null) { liviana_ = Infinity; for (let mm = 50; mm <= 400; mm += 50) if (cao({ mm, p: 100, e: 100 }) >= 100 - 1e-9) liviana_ = Math.min(liviana_, mm); }
+    return liviana_;
+  };
+  const techo = () => {
+    if (techo_ === null) { techo_ = 0; for (const r of Object.keys(RECETAS)) for (let x = 0; x <= 8; x++) for (let y = 0; y <= 12; y++) { const L = libre({ r, x, y }); if (!L.sa && !L.sb) techo_ = Math.max(techo_, L.rec * RECETAS[r].c[2]); } }
+    return techo_;
+  };
 
   return {
     unidad: 'quimica.estequiometria',
@@ -428,6 +441,28 @@
       pregunta: '¿Cuántos panes salen si te falta harina pero sobra azúcar?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §4.3', url: 'https://openstax.org/books/chemistry-2e/pages/4-3-reaction-stoichiometry' },
     },
+    // Glosario (docs/teoria.md §4d): las palabras que este tema estrena en química. Reactivo, producto, coeficiente y
+    // ecuación vienen de «Reacciones químicas y balance»; el lector las marca solas.
+    glosario: [
+      { termino: 'estequiometría', def: 'Cálculo de cuánto de cada sustancia entra y sale de una reacción, según su ecuación balanceada.',
+        ejemplo: '28 g de N₂ piden 6 g de H₂ para formar NH₃.', ver: ['razón molar'] },
+      { termino: 'razón molar', def: 'Cuántos moles de una sustancia van por cada mol de otra: el cociente de sus coeficientes.',
+        formas: ['razón molar', 'relación molar'], ejemplo: 'N₂ + 3 H₂ → 2 NH₃: 3 mol de H₂ por mol de N₂.', ver: ['coeficiente'] },
+      { termino: 'reactivo limitante', def: 'El reactivo que se acaba primero: decide cuánto producto sale.',
+        formas: ['reactivo limitante', 'limitante', 'limita'], ejemplo: '3 mol N₂ y 6 mol H₂: 3/1 y 6/3 = 2; limita el H₂.', ver: ['reactivo en exceso'] },
+      { termino: 'reactivo en exceso', def: 'El reactivo que sobra cuando el otro ya se acabó.',
+        formas: ['reactivo en exceso', 'en exceso', 'exceso'], ejemplo: 'Con 3 mol N₂ y 6 mol H₂, sobra 1 mol de N₂.', ver: ['reactivo limitante'] },
+      { termino: 'producto teórico', medida: 'g', def: 'Lo máximo que saldría si toda la parte pura del limitante reaccionara según la receta.',
+        formas: ['producto teórico', 'máximo teórico', 'masa teórica', 'rendimiento teórico'], ejemplo: '200 g de caliza al 80 %: 89,6 g de CaO.', ver: ['rendimiento'] },
+      { termino: 'rendimiento', medida: '%', def: 'Qué porcentaje del producto teórico se obtiene de verdad en el proceso.',
+        formas: ['rendimiento porcentual', 'rendimiento'], ejemplo: 'De 89,6 g posibles salen 67,2 g: 75 %.', ver: ['producto teórico'] },
+      { termino: 'pureza', medida: '%', def: 'Qué porcentaje de una muestra es la sustancia que reacciona; el resto es materia que no reacciona.',
+        formas: ['pureza', 'impureza', 'impurezas'], ejemplo: '200 g de caliza al 80 %: 160 g de CaCO₃.' },
+      { termino: 'equivalente', def: 'Cantidad de sustancia que intercambia 1 mol de H⁺, de OH⁻ o de electrones en una reacción.',
+        formas: ['equivalente', 'equivalentes'], ejemplo: 'Medio mol de H₂SO₄ que cede sus 2 H⁺ es 1 equivalente.', ver: ['masa equivalente'] },
+      { termino: 'masa equivalente', simbolo: 'M_eq', medida: 'g', def: 'Masa molar dividida entre θ, lo que la sustancia intercambia: la masa de un equivalente.',
+        ejemplo: 'H₂SO₄ con θ = 2: 98 / 2 = 49 g.', ver: ['equivalente', 'masa molar'] },
+    ],
     // Laboratorio (docs/teoria.md §4b), sin preguntas. La primera mesa deja elegir la receta (la idea 2 solo trae la
     // del agua) y llegar a 12 mol; la segunda suma la masa de la muestra y rangos de 10 % a 100 %. Los rótulos y la
     // lectura dicen las entradas, para que la miniatura guardada se lea sola.
@@ -442,6 +477,23 @@
         ],
         dibujo: v => libre(v).dib,
         lectura: v => { const R = RECETAS[v.r], L = libre(v); return [`${v.x} ${R.a[1]} + ${v.y} ${R.b[1]} → ${L.rec * R.c[2]} ${R.c[1]}`, L.sa + L.sb ? ` · sobra ${L.sa ? `${L.sa} ${R.a[1]}` : `${L.sb} ${R.b[1]}`}` : ' · no sobra nada']; },
+        // Retos: los decide libre(), la misma cuenta de recetas que dibuja la lupa.
+        invitaciones: [
+          { texto: 'Busca una mezcla que dé producto y en la que no sobre nada.',
+            logrado: v => { const L = libre(v); return L.rec > 0 && !L.sa && !L.sb; },
+            bien: 'Proporción justa: los moles van como los coeficientes.' },
+          { texto: 'Con la receta del agua, haz que limite el reactivo del que hay más moles.',
+            logrado: v => { const L = libre(v); return v.r === 'h2o' && v.x > v.y && L.sa === 0 && L.sb > 0; },
+            bien: 'Hay más H₂, pero la receta pide el doble: se acaba primero.' },
+          { texto: 'Saca la mayor cantidad de producto posible sin que sobre nada.',
+            logrado: v => { const L = libre(v); return !L.sa && !L.sb && L.rec * RECETAS[v.r].c[2] === techo(); },
+            bien: 'El techo lo pone el reactivo que llega primero a su tope.' },
+          { texto: 'Guarda dos mezclas con el mismo producto y distinto sobrante.',
+            logrado: (v, g) => { const L = libre(v); return L.rec > 0
+              && g.some(x => { const X = libre(x); return x.r === v.r && X.rec === L.rec && X.sa + X.sb !== L.sa + L.sb; })
+              && g.some(x => x.r === v.r && x.x === v.x && x.y === v.y); },
+            bien: 'Lo que sobra no suma producto: manda el limitante.' },
+        ],
       },
       {
         id: 'caliza', titulo: 'La caliza de verdad', pieza: 'barra-porcentaje',
@@ -454,6 +506,21 @@
         dibujo: v => caliza(v),
         lectura: v => [`${v.mm} g · ${v.p} % · ${v.e} % → `, m, ` = ${f(v.mm * 0.56 * v.p / 100 * v.e / 100, 1)} g de CaO`],
         arrastres: arrastresBarra(),
+        invitaciones: [
+          { texto: 'Consigue justo 56 g de CaO.',
+            logrado: v => Math.abs(cao(v) - 56) < 1e-6,
+            bien: '56 g salen de 100 g de CaCO₃ puro bien aprovechado. ¿Hay otra manera?' },
+          { texto: 'Guarda dos casos con pureza y rendimiento intercambiados, misma caliza. Compara el CaO.',
+            logrado: (v, g) => v.p !== v.e && g.some(x => x.mm === v.mm && x.p === v.e && x.e === v.p)
+              && g.some(x => x.mm === v.mm && x.p === v.p && x.e === v.e),
+            bien: 'El mismo CaO: los dos recortes se multiplican y el orden no importa.' },
+          { texto: 'Busca la caliza más liviana que igual dé al menos 100 g de CaO.',
+            logrado: v => cao(v) >= 100 - 1e-9 && v.mm === liviana(),
+            bien: 'Con tan poca caliza, pureza y rendimiento tienen que estar al tope.' },
+          { texto: 'Haz que las impurezas pesen más que el CaO que se obtiene.',
+            logrado: v => v.mm * (100 - v.p) / 100 > cao(v),
+            bien: 'Mucha piedra y poco producto. ¿Qué pesa más aquí, la pureza o el horno?' },
+        ],
       },
     ],
     ideas: [relaciones, limita, pureza, equivalente],

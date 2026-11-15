@@ -1011,7 +1011,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 31
+      "terminos": 32
      }
     },
     {
@@ -1180,7 +1180,7 @@
        "/nucleo/kit/piezas/quim-fichas.js"
       ],
       "ideas": 4,
-      "terminos": 10
+      "terminos": 19
      }
     },
     {
@@ -1418,7 +1418,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 8
+      "terminos": 10
      }
     },
     {
@@ -1592,7 +1592,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 9
+      "terminos": 10
      }
     },
     {
@@ -1634,7 +1634,7 @@
        "/nucleo/kit/piezas/quim-composicion.js"
       ],
       "ideas": 4,
-      "terminos": 7
+      "terminos": 8
      }
     },
     {
@@ -1679,7 +1679,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
-      "terminos": 9
+      "terminos": 11
      }
     }
    ]
