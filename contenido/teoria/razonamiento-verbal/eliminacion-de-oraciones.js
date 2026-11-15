@@ -347,7 +347,7 @@
       { termino: 'dato nuevo', formas: ['dato nuevo', 'datos nuevos'],
         def: 'Información del tema que ninguna otra oración había dado; por eso la oración que la trae se conserva.',
         ejemplo: '«Criarlo cuesta poco»: nadie había hablado del costo.', ver: ['redundancia'] },
-      { termino: 'revisión', formas: ['revisión', 'revisar'],
+      { termino: 'revisión', formas: ['revisión', 'revisiones'],
         def: 'Releer un texto para comparar lo que dice con lo que se quiere decir, y corregirlo.',
         ver: ['redundancia', 'impertinencia'] },
     ],

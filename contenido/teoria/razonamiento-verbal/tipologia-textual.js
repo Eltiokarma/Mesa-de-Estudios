@@ -364,7 +364,7 @@
         formas: ['expositivo', 'expositiva', 'expositivos'], ejemplo: '«La helada ocurre porque el suelo pierde calor.»', ver: ['argumentativo'] },
       { termino: 'argumentativo', def: 'Texto que defiende una postura y da razones para convencer al lector.',
         formas: ['argumentativo', 'argumentativa', 'argumentativos'], ejemplo: '«Deberían dar alertas por radio; así cubrirían sus cultivos.»', ver: ['tesis', 'expositivo'] },
-      { termino: 'secuencia', def: 'Trozo de un texto organizado de un solo modo (narra, describe, explica o argumenta).',
+      { termino: 'secuencia', def: 'Orden en que van las partes; en tipología, un trozo de texto que narra, describe, explica o argumenta.',
         ejemplo: 'Un relato puede incluir una descripción del lugar.', ver: ['tipología textual'] },
       { termino: 'textualidad', def: 'Lo que hace que un conjunto de palabras funcione como texto: sentido, propósito y situación.',
         formas: ['textualidad', 'normas de textualidad'], ejemplo: '«PARE» en un cruce la cumple; cuatro oraciones sueltas, no.', ver: ['coherencia', 'propósito'] },

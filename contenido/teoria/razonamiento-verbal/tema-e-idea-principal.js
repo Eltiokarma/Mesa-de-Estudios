@@ -349,7 +349,7 @@
         formas: ['subrayado', 'subrayar', 'subraya'], ver: ['jerarquía'] },
       { termino: 'mapa conceptual', def: 'Esquema de conceptos unidos por flechas con verbos, que muestra cómo se relacionan las ideas.',
         formas: ['mapa conceptual', 'mapas conceptuales'], ejemplo: 'plantas → liberan → oxígeno.', ver: ['enlace', 'proposición'] },
-      { termino: 'enlace', def: 'Verbo o frase sobre la flecha de un mapa conceptual: dice qué relación hay entre dos conceptos.',
+      { termino: 'enlace', formas: ['enlace'], def: 'Verbo o frase sobre la flecha de un mapa conceptual: dice qué relación hay entre dos conceptos.',
         ejemplo: 'En «plantas → usan → luz», es «usan».', ver: ['mapa conceptual'] },
       { termino: 'proposición', def: 'Unidad de un mapa conceptual: concepto, enlace y concepto que afirman algo.',
         formas: ['proposición', 'proposiciones'], ejemplo: '«plantas → liberan → oxígeno».', ver: ['enlace'] },

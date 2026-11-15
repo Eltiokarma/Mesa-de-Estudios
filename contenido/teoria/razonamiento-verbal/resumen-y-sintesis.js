@@ -383,7 +383,7 @@
         ejemplo: '«Como tenía fiebre, Rosa faltó» dice lo mismo que «Rosa no fue porque tenía fiebre».', formas: ['paráfrasis', 'parafrasear'], ver: ['resumen'] },
       { termino: 'síntesis', def: 'Idea nueva que reúne varias fuentes o posturas, conservando lo que comparten y en qué difieren.',
         ejemplo: 'A y B ven un problema de tráfico, pero proponen soluciones distintas.', ver: ['fuente', 'resumen'] },
-      { termino: 'alcance', def: 'A cuántos casos se refiere una afirmación: a todos, a muchos, a algunos o a ninguno.',
+      { termino: 'alcance', def: 'Hasta dónde llega lo que se afirma: a cuántos casos, personas, lugares o tiempos se refiere.',
         ejemplo: '«Algunos mejoraron» tiene menos alcance que «todos mejoraron».' },
       { termino: 'fuente', def: 'Texto o autor del que sale una información o una opinión.',
         ejemplo: 'En la síntesis del tráfico hay dos: el texto A y el texto B.', ver: ['síntesis'] },
