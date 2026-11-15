@@ -62,3 +62,17 @@ test('geometria: cada elemento donde se dibuja; el cursor del reóstato y su inv
   // Sin reóstato, el dibujo no cambia (el dato es opcional).
   assert.equal(P.dibujar(SERIE), P.dibujar(JSON.parse(JSON.stringify(SERIE))));
 });
+
+// Ronda 5 (animación): `flujo` es opcional; sin él la figura no cambia, con él hay puntos de carga que avanzan.
+test('flujo: puntos de carga cada 20 px que avanzan con la fase; sin flujo, el dibujo de siempre', () => {
+  const n = s => (s.match(/kit-carga/g) || []).length;
+  assert.equal(n(P.dibujar(SERIE, {})), 0);
+  const con = f => P.dibujar(Object.assign({}, SERIE, { flujo: { fase: f, color: 'h' } }), {});
+  assert.ok(n(con(0)) > 20, 'el lazo de la malla simple lleva más de 20 puntos');
+  assert.notEqual(con(0), con(7), 'otra fase, otros lugares');
+  assert.equal(con(3), con(23), 'la fase se repite cada 20 px');
+  assert.equal(P.dibujar(Object.assign({}, SERIE, { flujo: { fase: 5 }, abierto: true }), {}), P.dibujar(Object.assign({}, SERIE, { abierto: true }), {}), 'abierto: no circula');
+  const r = P.dibujar(Object.assign({}, PAR, { flujo: { fase: 0, ramas: [0, 4], color: 'h' } }), {});
+  assert.ok(n(r) > n(P.dibujar(Object.assign({}, PAR, { flujo: { fase: 0, color: 'h' } }), {})), 'las ramas con fase llevan sus puntos');
+  assert.ok(!/NaN|undefined/.test(r));
+});
