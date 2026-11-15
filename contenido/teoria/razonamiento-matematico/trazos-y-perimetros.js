@@ -592,6 +592,8 @@
       { termino: 'semicircunferencia', def: 'Borde curvo de medio círculo: mide π por el diámetro entre dos.',
         formas: ['semicircunferencia', 'semicircunferencias', 'media circunferencia'],
         ejemplo: 'Diámetro de 12 cm: π · 12 / 2 = 6π cm.', ver: ['arco', 'semicírculo'] },
+      { termino: 'tramo', def: 'Parte de un camino o de una línea entre dos puntos seguidos.',
+        ejemplo: 'Una ventana con cruz tiene tramos de 3 cm y de 2 cm.', ver: ['vértice'] },
     ],
     // Laboratorio: la casa con dos líneas sueltas, la escalera con entrante y los arcos arriba y abajo.
     laboratorio: [mesaSueltas, mesaEntrante, mesaArcos],

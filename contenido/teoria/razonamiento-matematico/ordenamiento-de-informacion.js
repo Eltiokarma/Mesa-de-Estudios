@@ -506,6 +506,8 @@
         formas: ['frente a', 'enfrente'], ejemplo: 'En una mesa redonda de 8 sillas, frente a la 1 está la 5.' },
       { termino: 'sentido antihorario', def: 'Giro contrario al de las agujas del reloj.',
         formas: ['sentido antihorario', 'antihorario', 'sentido contrario al reloj'], ver: ['a la derecha de'] },
+      { termino: 'giro', def: 'Vuelta de una ronda o de una figura alrededor de su centro, sin cambiar su forma.',
+        formas: ['giro', 'giros'], ejemplo: 'En una mesa de 5, correr a todos una silla es un giro: el orden no cambia.' },
     ],
     // Laboratorio: la mesa redonda de 4 a 8 con derecha y frente, la cuadrada con 1 a 3 sillas por lado y las pistas
     // de la fila puestas o quitadas una a una.

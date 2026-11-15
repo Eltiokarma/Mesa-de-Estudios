@@ -448,6 +448,8 @@
         ejemplo: 'Total par para repartir 3, 4, 5: se cumple (12), y aun así no sale.', ver: ['suficiente'] },
       { termino: 'suficiente', def: 'Se dice de lo que, si se cumple, ya asegura el resultado.',
         ejemplo: 'Mostrar 2 + 5 = 3 + 4 asegura que 2, 3, 4, 5 se reparten.', ver: ['necesario'] },
+      { termino: 'ecuación', def: 'Igualdad con una letra que esconde un número; resolverla es hallar ese número.',
+        formas: ['ecuación', 'ecuaciones'], ejemplo: '3S = 21 + 15 da S = 12.' },
     ],
     // Laboratorio: el reparto de números seguidos con arrastre, el cuadrado mágico en progresión y el triángulo con
     // esquinas libres (donde aparecen esquinas sin arreglo).

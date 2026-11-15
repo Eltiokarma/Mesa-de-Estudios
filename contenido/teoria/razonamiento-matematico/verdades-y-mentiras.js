@@ -489,6 +489,8 @@
         ejemplo: '«Al menos uno no aprobó» vale si falla 1, si fallan 3 o si fallan los 4.', ver: ['negación'] },
       { termino: 'tabla de verdad', def: 'Cuadro con todos los casos de cierto y falso, para ver en cuáles se cumple una frase.',
         formas: ['tabla de verdad', 'tablas de verdad'] },
+      { termino: 'condición', def: 'Lo que tiene que cumplirse para que algo valga, o para decidir qué paso sigue.',
+        formas: ['condición', 'condiciones'], ejemplo: '«Solo uno miente»: de los tres, exactamente uno dice algo falso.' },
     ],
     // Laboratorio: el acertijo de tres con la frase de Ciro cambiable, el culpable con las dos condiciones y las
     // cuatro frases de «todos/ninguno» junto a su negación.
