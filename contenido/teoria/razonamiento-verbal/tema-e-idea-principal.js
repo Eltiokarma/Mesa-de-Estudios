@@ -205,7 +205,7 @@
       { id: 'p2a', t: 'plantas →' }, { id: 'e2', hueco: true, junto: true, reserva: 'absorben' }, { id: 'p2b', junto: true, t: '→ oxígeno' },
     ] },
   ] });
-  const ENLACE = { liberan: { ok: true, dice: 'Fiel: el texto dice «liberan»' }, absorben: { ok: false, dice: 'Invierte la relación: el texto dice lo contrario' }, oxigeno: { ok: false, dice: 'Sin enlace: no afirma nada' } };
+  const ENLACE = { liberan: { ok: true, falla: null, dice: 'Fiel: el texto dice «liberan»' }, absorben: { ok: false, falla: 'invierte', dice: 'Invierte la relación: el texto dice lo contrario' }, oxigeno: { ok: false, falla: 'vacío', dice: 'Sin enlace: no afirma nada' } };
   const estMapa = (e, extra = {}) => Object.assign({ huecos: { e2: e === 'oxigeno' ? '—' : e }, marcas: { e2: ENLACE[e].ok ? 'o' : 'h', t4: 'i', p1: 'i' }, sellos: { m: ENLACE[e].ok ? { t: 'Dice lo del texto', c: 'i' } : { t: 'No es fiel', c: 'h' } } }, extra);
   const mapa = {
     id: 'mapa-conceptual',
@@ -284,6 +284,8 @@
   }
   const figLab = (tx, k) => figura('Texto', TEXTOS[tx].o, TEXTOS[tx].p[k].t);
   const idsDe = tx => TEXTOS[tx].o.map((t, k) => `o${k + 1}`);
+  // Cubre todas las oraciones del texto elegido (con la lista de cada propuesta, la misma que pinta las marcas).
+  const cubreTodo = val => TEXTOS[val.tx].p[val.k].c.length === TEXTOS[val.tx].o.length;
   const mesaPropuestas = {
     id: 'propuestas', titulo: 'Propuestas en tres textos', pieza: 'rv-texto',
     consigna: 'Elige un texto y una propuesta. Arrastra el marcador por las oraciones para ver cuáles cubre.',
@@ -307,6 +309,21 @@
     arrastres: [{ id: 'oracion', etiqueta: 'marcador de la oración', color: 'c-o',
       donde: val => RV().ancla(figLab(val.tx, val.k), `o${Math.min(val.f, TEXTOS[val.tx].o.length)}`),
       mover: (pt, val) => ({ f: +RV().cercana(figLab(val.tx, val.k), pt, idsDe(val.tx)).slice(1) }) }],
+    // Retos: el veredicto y la cobertura salen de veredicto() y de la lista de oraciones de cada propuesta.
+    invitaciones: [
+      { texto: 'En el texto del chuño, busca la propuesta que cubre todo y afirma algo.',
+        logrado: val => val.tx === 'chuno' && veredicto(val.tx, val.k)[0] === 'Idea principal',
+        bien: 'Ninguna oración lo dice sola; la idea se armó uniendo las tres.' },
+      { texto: 'Encuentra una propuesta que no cubra ninguna oración del texto.',
+        logrado: val => TEXTOS[val.tx].p[val.k].c.length === 0,
+        bien: 'Es tan amplia que podría ser de otro texto. ¿Qué la ata a este?' },
+      { texto: 'En el texto de los paneles, marca una oración que el detalle deja fuera.',
+        logrado: val => val.tx === 'paneles' && val.k === 'detalle' && val.f <= TEXTOS[val.tx].o.length && !TEXTOS[val.tx].p[val.k].c.includes(val.f),
+        bien: 'El detalle es cierto, pero deja sin cubrir esa parte del texto.' },
+      { texto: 'Guarda dos propuestas del mismo texto que cubran todo: una solo nombra el tema.',
+        logrado: (val, guardados) => cubreTodo(val) && guardados.some(g => g.tx === val.tx && cubreTodo(g) && veredicto(g.tx, g.k)[0] !== veredicto(val.tx, val.k)[0]),
+        bien: 'Las dos cubren todo; solo una afirma algo sobre el tema.' },
+    ],
   };
 
   return {
@@ -319,10 +336,54 @@
       pregunta: '¿Dónde está la idea principal si ninguna oración la dice?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (macroestructura)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/macroestructuratextual.htm' },
     },
+    glosario: [
+      { termino: 'tema', def: 'De qué trata un texto, dicho en pocas palabras, sin afirmar nada sobre ello.',
+        ejemplo: '«La biblioteca del barrio.»', ver: ['idea principal'] },
+      { termino: 'idea principal', def: 'Lo más importante que el texto afirma sobre su asunto; cubre todas sus partes.',
+        formas: ['idea principal', 'ideas principales'], ejemplo: '«Los cambios de la biblioteca hicieron que más estudiantes la usen.»', ver: ['tema', 'idea secundaria'] },
+      { termino: 'idea secundaria', def: 'Idea que explica, sostiene o ejemplifica a la principal.',
+        formas: ['idea secundaria', 'ideas secundarias', 'secundaria', 'secundarias'], ejemplo: '«Además, aporta hierro y fibra.»', ver: ['idea principal', 'jerarquía'] },
+      { termino: 'jerarquía', def: 'Orden de importancia entre las ideas de un texto: cuál manda y cuáles la apoyan.',
+        ver: ['idea principal', 'idea secundaria'] },
+      { termino: 'subrayado', def: 'Marcar en el texto solo lo esencial: la idea que manda y las palabras clave de sus apoyos.',
+        formas: ['subrayado', 'subrayar', 'subraya'], ver: ['jerarquía'] },
+      { termino: 'mapa conceptual', def: 'Esquema de conceptos unidos por flechas con verbos, que muestra cómo se relacionan las ideas.',
+        formas: ['mapa conceptual', 'mapas conceptuales'], ejemplo: 'plantas → liberan → oxígeno.', ver: ['enlace', 'proposición'] },
+      { termino: 'enlace', def: 'Verbo o frase sobre la flecha de un mapa conceptual: dice qué relación hay entre dos conceptos.',
+        ejemplo: 'En «plantas → usan → luz», es «usan».', ver: ['mapa conceptual'] },
+      { termino: 'proposición', def: 'Unidad de un mapa conceptual: concepto, enlace y concepto que afirman algo.',
+        formas: ['proposición', 'proposiciones'], ejemplo: '«plantas → liberan → oxígeno».', ver: ['enlace'] },
+      { termino: 'macroestructura', def: 'El contenido global que queda cuando se entiende el texto como un todo.',
+        ver: ['idea principal'] },
+    ],
     laboratorio: [
       mesaPropuestas,
-      Object.assign({ id: 'jerarquia', titulo: 'Principal y secundarias', pieza: 'rv-texto' }, jerarquia.juega),
-      Object.assign({ id: 'mapa-conceptual', titulo: 'El enlace del mapa', pieza: 'rv-texto' }, mapa.juega),
+      Object.assign({ id: 'jerarquia', titulo: 'Principal y secundarias', pieza: 'rv-texto',
+        // Retos: PAPEL guarda el papel de cada oración, el mismo que pinta la marca y el sello.
+        invitaciones: [
+          { texto: 'Subraya la oración que no sostiene la idea principal.',
+            logrado: val => PAPEL[val.k][1] === 'h',
+            bien: 'Es cierta, pero no dice por qué la quinua es completa.' },
+          { texto: 'Subraya la secundaria que da un ejemplo.',
+            logrado: val => PAPEL[val.k][0].includes('ejemplo'),
+            bien: 'El plato de quinua muestra lo que la principal afirma.' },
+          { texto: 'Guarda dos oraciones distintas que den razones de la idea principal.',
+            logrado: (val, guardados) => PAPEL[val.k][0].includes('razón') && guardados.some(g => g.k !== val.k && PAPEL[g.k][0].includes('razón')),
+            bien: 'Dos razones, un mismo peso: las dos sostienen la principal.' },
+        ] }, jerarquia.juega),
+      Object.assign({ id: 'mapa-conceptual', titulo: 'El enlace del mapa', pieza: 'rv-texto',
+        // Retos: ENLACE dice si el enlace es fiel al texto y, si no, cómo falla.
+        invitaciones: [
+          { texto: 'Pon un enlace que invierta lo que dice el texto.',
+            logrado: val => ENLACE[val.e].falla === 'invierte',
+            bien: 'Suena científico, pero el texto dice «liberan». Vuelve a la frase.' },
+          { texto: 'Deja la proposición sin enlace y mira qué afirma el mapa.',
+            logrado: val => ENLACE[val.e].falla === 'vacío',
+            bien: 'Sin verbo no hay relación: dos palabras juntas no afirman nada.' },
+          { texto: 'Guarda un mapa fiel al texto y otro que no lo sea.',
+            logrado: (val, guardados) => guardados.some(g => ENLACE[g.e].ok) && guardados.some(g => !ENLACE[g.e].ok),
+            bien: 'Los conceptos son los mismos; el enlace decide si el mapa es fiel.' },
+        ] }, mapa.juega),
     ],
     ideas: [temaIdea, jerarquia, mapa],
   };
