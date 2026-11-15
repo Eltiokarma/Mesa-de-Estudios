@@ -101,7 +101,7 @@
       pasos: [
         { estado: { paso: 1, columna: 1 }, texto: 'f cuenta cuántos datos hay de cada valor; suman n = 20.', ecuacion: ['Σ', fr, ' = n = 20'] },
         { estado: { paso: 2, columna: 2 }, texto: 'h divide cada f entre n; las h suman 1.', ecuacion: [h, ' = ', { frac: [fr, 'n'] }, ' = ', { frac: ['5', '20'] }, ' = 0,25'] },
-        { estado: { paso: 3, columna: 3 }, texto: 'F va sumando: a lo más 2 hermanos son 14.', ecuacion: [Fa, ' = 3 + 6 + 5 = 14'] },
+        { estado: { paso: 3, columna: 3 }, texto: 'La frecuencia acumulada F va sumando: a lo más 2 hermanos son 14.', ecuacion: [Fa, ' = 3 + 6 + 5 = 14'] },
       ],
     },
     regla: {
@@ -540,7 +540,7 @@
       ],
     },
     regla: {
-      texto: 'La varianza promedia los cuadrados de las distancias a la media; la desviación estándar es su raíz. El CV compara la dispersión con la media.',
+      texto: 'La varianza promedia los cuadrados de las distancias a la media; la desviación estándar es su raíz. El coeficiente de variación (CV) compara la dispersión con la media.',
       ecuacion: ['σ² = ', { llave: [{ frac: [['Σ', { sup: [['(', x, ' − ', xb, ')'], '2'] }], 'N'] }], nota: 'promedio de cuadrados', color: 'c-i' }, '   ·   ', 'σ = ', { raiz: 'σ²' }, '   ·   ', 'CV = ', { frac: ['σ', xb] }],
       condicion: 'para toda la población se divide entre N; para una muestra, entre n − 1. El CV pide media positiva.',
     },
@@ -581,11 +581,16 @@
   // Más rico que los juegos: cinco datos que se mueven todos (aparece y desaparece la moda); las cuatro barras a la vez,
   // con sus ángulos de sector; y cuatro datos libres con la varianza de población y la de muestra lado a lado.
   const CINCO = [1, 2, 3, 4, 5];
-  const modaDe = xs => {
+  // Las modas de una lista (vacía si ningún valor se repite); las usan la lectura y los retos.
+  const modasDe = xs => {
     const c = {}; xs.forEach(v => { c[v] = (c[v] || 0) + 1; });
     const max = Math.max(...Object.values(c));
-    return max < 2 ? 'sin moda' : `moda ${Object.keys(c).filter(k => c[k] === max).join(' y ')}`;
+    return max < 2 ? [] : Object.keys(c).filter(k => c[k] === max);
   };
+  const modaDe = xs => { const ms = modasDe(xs); return ms.length ? `moda ${ms.join(' y ')}` : 'sin moda'; };
+  const datosDe = (v, ks) => ks.map(k => v[`x${k}`]);
+  // Ángulo de cada barra en el gráfico de sectores: lo usan la lectura y los retos.
+  const angulosLab = v => { const fs = [0, 1, 2, 3].map(k => v[`f${k}`]), n = suma(fs); return fs.map(fi => 360 * fi / n); };
   const rectaCinco = v => rectaCentrales(CINCO.map(k => v[`x${k}`]), { max: 30 });
   const barrasLab = v => barras([0, 1, 2, 3].map(k => v[`f${k}`]), NOMBRES, { conF: true, ymax: 14 });
   const CUATRO = [1, 2, 3, 4];
@@ -597,6 +602,21 @@
       controles: CINCO.map(k => ({ id: `x${k}`, etiqueta: `Dato ${k}`, color: 'c-o', min: 0, max: 30, paso: 1, inicio: [3, 5, 8, 12, 20][k - 1], decimales: 0 })),
       dibujo: v => ({ datos: rectaCinco(v), estado: {} }),
       lectura: v => { const xs = CINCO.map(k => v[`x${k}`]); return [xb, ` = ${fm(media(xs))} · `, Me, ` = ${fm(mediana(xs))} · ${modaDe(xs)}`]; },
+      invitaciones: [
+        { texto: 'Haz que la media y la mediana sean iguales.',
+          logrado: v => { const xs = datosDe(v, CINCO); return Math.abs(media(xs) - mediana(xs)) < 1e-9; },
+          bien: 'Iguales cuando los datos se reparten parejo a los dos lados del centro.' },
+        { texto: 'Aleja la media más de 5 de la mediana.',
+          logrado: v => { const xs = datosDe(v, CINCO); return Math.abs(media(xs) - mediana(xs)) > 5; },
+          bien: 'Un dato lejano arrastra la media; la mediana casi no se entera.' },
+        { texto: 'Consigue que haya dos modas a la vez.',
+          logrado: v => modasDe(datosDe(v, CINCO)).length === 2,
+          bien: 'Dos valores empatan en repeticiones: los datos tienen dos modas.' },
+        { texto: 'Guarda dos casos con la misma mediana y medias que difieran en más de 5.',
+          logrado: (v, gs) => gs.some(g => mediana(datosDe(g, CINCO)) === mediana(datosDe(v, CINCO))
+            && Math.abs(media(datosDe(g, CINCO)) - media(datosDe(v, CINCO))) > 5),
+          bien: 'La mediana no ve qué tan lejos están los extremos; la media sí.' },
+      ],
       arrastres: CINCO.map(k => ({
         id: `dato-${k}`, etiqueta: `dato ${k}`, color: 'c-o',
         donde: v => { const d = rectaCinco(v), g = RECTA().geometria(d); return { x: g.x(v[`x${k}`]), y: g.filaY(d.elementos[k - 1].fila) }; },
@@ -608,7 +628,21 @@
       consigna: 'Arrastra el techo de cada barra. La lectura da el ángulo que le toca a cada una en un gráfico de sectores.',
       controles: [0, 1, 2, 3].map(k => ({ id: `f${k}`, etiqueta: `f de ${NOMBRES[k]}`, color: 'c-i', min: 1, max: 14, paso: 1, inicio: [8, 5, 3, 4][k], decimales: 0 })),
       dibujo: v => ({ datos: barrasLab(v), estado: {} }),
-      lectura: v => { const fs = [0, 1, 2, 3].map(k => v[`f${k}`]), n = suma(fs); return [`n = ${n}: ${fs.map(fi => `${fm(360 * fi / n, 0)}°`).join(', ')}`]; },
+      lectura: v => { const n = suma([0, 1, 2, 3].map(k => v[`f${k}`])); return [`n = ${n}: ${angulosLab(v).map(a => `${fm(a, 0)}°`).join(', ')}`]; },
+      invitaciones: [
+        { texto: 'Haz que combi ocupe justo medio círculo: 180°.',
+          logrado: v => Math.abs(angulosLab(v)[0] - 180) < 1e-9,
+          bien: 'Medio círculo es la mitad de los alumnos: combi iguala a los otros tres juntos.' },
+        { texto: 'Consigue que las cuatro tajadas midan 90°.',
+          logrado: v => angulosLab(v).every(a => Math.abs(a - 90) < 1e-9),
+          bien: 'Barras iguales, tajadas iguales: cada una es la cuarta parte del total.' },
+        { texto: 'Haz que una barra sea el triple de otra y mira sus ángulos.',
+          logrado: v => { const fs = [0, 1, 2, 3].map(k => v[`f${k}`]); return fs.some(a => fs.some(b => a === 3 * b)); },
+          bien: 'El triple de alumnos da el triple de grados: el ángulo es proporcional.' },
+        { texto: 'Guarda dos casos con la misma barra de combi y distinto ángulo para combi.',
+          logrado: (v, gs) => gs.some(g => g.f0 === v.f0 && Math.abs(angulosLab(g)[0] - angulosLab(v)[0]) > 1e-9),
+          bien: 'Mismos alumnos, otro ángulo: la tajada depende también del total.' },
+      ],
       arrastres: [0, 1, 2, 3].map(k => ({
         id: `barra-${k}`, etiqueta: `techo de la barra de ${NOMBRES[k]}`, color: 'c-i',
         donde: v => { const g = EJES().geometria(barrasLab(v)); return { x: g.X(k + 1), y: g.Y(v[`f${k}`]) }; },
@@ -621,6 +655,21 @@
       controles: CUATRO.map(k => ({ id: `x${k}`, etiqueta: `Dato ${k}`, color: 'c-o', min: 0, max: 20, paso: 1, inicio: [6, 9, 11, 14][k - 1], decimales: 0 })),
       dibujo: v => ({ datos: rectaCuatro(v), estado: { corte: 1 } }),
       lectura: v => { const xs = CUATRO.map(k => v[`x${k}`]); return [xb, ` = ${fm(media(xs))} · σ² = ${fm(varianza(xs))} · s² = ${fm(varianza(xs, true))}`]; },
+      invitaciones: [
+        { texto: 'Haz que las dos varianzas valgan 0.',
+          logrado: v => varianza(datosDe(v, CUATRO)) === 0,
+          bien: 'Sin distancias a la media no hay dispersión: los datos coinciden.' },
+        { texto: 'Consigue que s² valga justo 12.',
+          logrado: v => Math.abs(varianza(datosDe(v, CUATRO), true) - 12) < 1e-9,
+          bien: 'Los cuadrados de las distancias suman 36, y 36 ÷ 3 = 12.' },
+        { texto: 'Haz que s² le gane a σ² por más de 5.',
+          logrado: v => { const xs = datosDe(v, CUATRO); return varianza(xs, true) - varianza(xs) > 5; },
+          bien: 'Con cuatro datos, s² siempre es 4/3 de σ². Compruébalo en la lectura.' },
+        { texto: 'Guarda dos casos con la misma media y distinta varianza.',
+          logrado: (v, gs) => gs.some(g => media(datosDe(g, CUATRO)) === media(datosDe(v, CUATRO))
+            && Math.abs(varianza(datosDe(g, CUATRO)) - varianza(datosDe(v, CUATRO))) > 1e-9),
+          bien: 'La media no dice cuánto se separan los datos; la varianza sí.' },
+      ],
       arrastres: CUATRO.map(k => ({
         id: `dato-${k}`, etiqueta: `dato ${k}`, color: 'c-o',
         donde: v => { const d = rectaCuatro(v), g = RECTA().geometria(d); return { x: g.x(v[`x${k}`]), y: g.filaY(d.elementos[k - 1].fila) }; },
@@ -634,6 +683,52 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/recta.js'],
+    // Glosario por tema (docs/teoria.md, 4d). «Media» (y la geométrica y la armónica) se estrenan en razones y proporciones.
+    // «Muestra» va con su artículo: el verbo «muestra» sale en muchas unidades. «Continua» y «dato» no van solos:
+    // en otras unidades significan otra cosa (proporción continua, el dato de un problema).
+    glosario: [
+      { termino: 'población', def: 'Todo el grupo de personas o cosas sobre el que se quiere saber algo.',
+        ejemplo: 'Todos los alumnos del colegio.', ver: ['muestra'] },
+      { termino: 'muestra', formas: ['una muestra', 'la muestra', 'muestras'],
+        def: 'Parte del grupo que de verdad se observa o se pregunta, para sacar conclusiones del grupo entero.',
+        ejemplo: '20 alumnos elegidos entre los 600 del colegio.', ver: ['población'] },
+      { termino: 'variable cualitativa', formas: ['variable cualitativa', 'cualitativa', 'cualitativas'],
+        def: 'Característica que se describe con palabras o categorías, no con números.',
+        ejemplo: 'Cómo llega cada alumno: combi, a pie, bici o mototaxi.', ver: ['variable cuantitativa'] },
+      { termino: 'variable cuantitativa', formas: ['variable cuantitativa', 'cuantitativa', 'cuantitativas'],
+        def: 'Característica que se expresa con números: discreta si se cuenta, continua si se mide.',
+        ejemplo: 'Número de hermanos (discreta); estatura en centímetros (continua).', ver: ['variable cualitativa'] },
+      { termino: 'frecuencia', simbolo: 'f', def: 'Cuántas veces aparece un valor o una categoría entre los datos.',
+        ejemplo: 'Si 5 alumnos tienen 2 hermanos, la frecuencia de x = 2 es 5.', ver: ['frecuencia relativa', 'frecuencia acumulada'] },
+      { termino: 'frecuencia relativa', simbolo: 'h', def: 'Qué parte del total tiene un valor: sus apariciones entre el número de datos. Todas suman 1.',
+        ejemplo: '5 de 20 alumnos: h = 5 ÷ 20 = 0,25.', ver: ['frecuencia'] },
+      { termino: 'frecuencia acumulada', simbolo: 'F', def: 'Cuántos datos hay hasta un valor, incluido: se suman las cuentas de ese valor y de los anteriores.',
+        ejemplo: '3, 6 y 5 alumnos con 0, 1 y 2 hermanos: hasta 2 hay 14.', ver: ['frecuencia'] },
+      { termino: 'histograma', def: 'Gráfico de barras pegadas para datos medidos y agrupados en intervalos; cada barra cubre su intervalo.',
+        ejemplo: 'Estaturas de 150 a 155 cm, de 155 a 160 cm…: barras juntas.', ver: ['frecuencia'] },
+      { termino: 'gráfico de sectores', formas: ['gráfico de sectores', 'gráficos de sectores', 'sectores'],
+        def: 'Círculo partido en tajadas: cada categoría toma de los 360° la misma parte que tiene del total.',
+        ejemplo: '5 de 20 alumnos van a pie: 0,25 · 360° = 90°.', ver: ['frecuencia relativa'] },
+      { termino: 'mediana', simbolo: 'Me', def: 'El dato del centro con los datos ordenados; si son una cantidad par, el promedio de los dos centrales.',
+        ejemplo: 'En 2, 4, 4, 9 y 90 es 4, aunque el 90 esté lejos.', ver: ['moda', 'cuartil'] },
+      { termino: 'moda', def: 'El valor que más se repite entre los datos. Puede haber varias o ninguna.',
+        ejemplo: 'En 2, 4, 4 y 9 es 4.', ver: ['mediana'] },
+      { termino: 'media ponderada', formas: ['media ponderada', 'promedio ponderado'],
+        def: 'Promedio en que cada dato cuenta según su peso: suma de dato por peso, entre la suma de pesos.',
+        ejemplo: '12 con 1 crédito y 18 con 3: (12 + 54) ÷ 4 = 16,5.', ver: ['mediana'] },
+      { termino: 'cuartil', simbolo: 'Q', def: 'Cada uno de los tres valores que parten los datos ordenados en cuatro grupos con igual cantidad.',
+        ejemplo: 'Con 7 datos ordenados, Q1 es el 2.º, Q2 el 4.º y Q3 el 6.º.', ver: ['mediana', 'percentil'] },
+      { termino: 'percentil', def: 'Valor que deja por debajo un porcentaje dado de los datos ordenados.',
+        ejemplo: 'El percentil 90 deja debajo el 90 % de los datos.', ver: ['cuartil'] },
+      { termino: 'dispersión', def: 'Cuánto se separan los datos entre sí o de su centro.', ver: ['varianza', 'desviación estándar'] },
+      { termino: 'varianza', simbolo: 'σ²', def: 'Promedio de los cuadrados de las distancias de cada dato a la media: mide cuánto se separan.',
+        ejemplo: 'Datos 2, 4 y 9, media 5: (9 + 1 + 16) ÷ 3 ≈ 8,67.', ver: ['desviación estándar', 'dispersión'] },
+      { termino: 'desviación estándar', simbolo: 'σ', def: 'Raíz cuadrada de la varianza: cuánto se aleja un dato típico de la media, en sus mismas unidades.',
+        ejemplo: 'Con varianza 8,67: σ = √8,67 ≈ 2,94.', ver: ['varianza', 'coeficiente de variación'] },
+      { termino: 'coeficiente de variación', simbolo: 'CV', formas: ['coeficiente de variación', 'CV'],
+        def: 'Desviación estándar entre la media: compara cuánto se separan datos de tamaños distintos.',
+        ejemplo: 'σ = 2,94 y media 5: 2,94 ÷ 5 ≈ 0,59.', ver: ['desviación estándar'] },
+    ],
     laboratorio,
     historia: {
       texto: 'Londres ya anotaba nacimientos y entierros cuando John Graunt los estudió en 1662. Convirtió listas administrativas en preguntas sobre una población: cuántos morían de cada causa, si nacían más varones. Lo que se podía concluir dependía de cómo se habían anotado los datos, como hoy. Esta unidad sigue esa pregunta: qué resumen elegir y qué se pierde al reducir muchos datos a un número.',
