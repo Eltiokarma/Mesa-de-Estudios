@@ -3812,7 +3812,9 @@
      "teoria": {
       "archivo": "/contenido/teoria/geometria/solidos-de-revolucion.js",
       "requiere": [
-       "/nucleo/kit/piezas/geo-figura.js"
+       "/nucleo/kit/piezas/geo-figura.js",
+       "/nucleo/solidos3d.js",
+       "/nucleo/kit/piezas/geo-revolucion-3d.js"
       ],
       "ideas": 6,
       "terminos": 39

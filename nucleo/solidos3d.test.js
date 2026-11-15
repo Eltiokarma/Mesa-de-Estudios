@@ -102,11 +102,12 @@ test('revolución: Pappus da los volúmenes de libro', () => {
 test('revolución: el área del perfil coincide con el área de la región (fórmula de la lazada)', () => {
   for (const id of S.REGIONES) for (const d of [0, 0.75, 2]) {
     const g = S.region(id, d), p = g.perfil;
-    let A = 0, Mx = 0;
-    for (let i = 0; i < p.length; i++) { const a = p[i], b = p[(i + 1) % p.length], c = a[0] * b[1] - b[0] * a[1]; A += c / 2; Mx += (a[0] + b[0]) * c / 6; }
+    let A = 0, Mx = 0, My = 0;
+    for (let i = 0; i < p.length; i++) { const a = p[i], b = p[(i + 1) % p.length], c = a[0] * b[1] - b[0] * a[1]; A += c / 2; Mx += (a[0] + b[0]) * c / 6; My += (a[1] + b[1]) * c / 6; }
     const tol = id === 'semicirculo' || id === 'circulo' ? 0.02 : 1e-9;     // los arcos van con 24 a 32 tramos
     assert.ok(Math.abs(Math.abs(A) - g.area) < tol * g.area, `${id} área`);
     assert.ok(Math.abs(Mx / A - g.rc) < tol * g.rc + 1e-9, `${id} centroide`);
+    assert.ok(Math.abs(My / A - g.yc) < 0.02, `${id} centroide en y`);
   }
 });
 

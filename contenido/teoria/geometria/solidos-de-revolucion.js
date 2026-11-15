@@ -755,11 +755,49 @@
     ],
   };
 
+  // ---------- La región que gira (laboratorio 3D, ronda 4: exploración libre, sin predicciones) ----------
+  // Perfil, centroide y volumen los calcula nucleo/solidos3d.js (revolucion) a través de la pieza geo-revolucion-3d:
+  // los retos miden lo mismo que se dibuja (regla 1). El giro es un control con − y +, no una animación.
+  const S3 = () => (typeof module === 'object' && module.exports ? require('../../../nucleo/solidos3d.js') : self.Solidos3D);
+  const rev = v => S3().revolucion(v.region, v.d, v.grados);
+  const mesaGira3d = {
+    id: 'region-gira-3d', titulo: 'La región que gira', pieza: 'geo-revolucion-3d',
+    consigna: 'Elige una región, sepárala del eje y súbele el giro: mira qué sólido barre. Gira la vista con el dedo.',
+    controles: [
+      { id: 'region', etiqueta: 'Región', opciones: [{ valor: 'rectangulo', texto: 'rectángulo' }, { valor: 'triangulo', texto: 'triángulo' },
+        { valor: 'semicirculo', texto: 'semicírculo' }, { valor: 'circulo', texto: 'círculo' }] },
+      { id: 'd', etiqueta: 'distancia al eje', color: 'c-o', min: 0, max: 2, paso: 0.5, inicio: 0, decimales: 1 },
+      { id: 'grados', etiqueta: 'giro', color: 'c-d', min: 0, max: 360, paso: 30, inicio: 90, unidad: '°', decimales: 0 },
+    ],
+    dibujo: v => ({ datos: { region: v.region, d: v.d, grados: v.grados }, estado: {} }),
+    lectura: v => { const r = rev(v); return [{ v: 'c-h', t: `V = ${f(r.volumen)}` }, SEP, r.entero ? r.solido : `${f(v.grados, 0)}° de 360°`]; },
+    invitaciones: [
+      { texto: 'Arma una esfera completa.',
+        logrado: v => rev(v).entero && rev(v).solido === 'esfera',
+        bien: 'El semicírculo pegado al eje barre la esfera: V = 4/3 · π · r³.',
+        pista: 'Usa el semicírculo pegado al eje y da la vuelta entera.' },
+      { texto: 'Arma un sólido con un túnel en el medio.',
+        logrado: v => rev(v).entero && v.d > 0,
+        bien: 'La región no toca el eje: al girar deja un hueco alrededor de él.',
+        pista: 'Separa la región del eje y gira 360°.' },
+      { texto: 'Barre justo la mitad del volumen de la vuelta entera.',
+        logrado: v => v.grados > 0 && Math.abs(2 * rev(v).volumen - rev(v).completo) < 1e-9,
+        bien: 'Media vuelta, medio volumen: el volumen crece parejo con el ángulo.' },
+      { texto: 'Guarda un cilindro y un cono completos, de igual radio y altura.',
+        logrado: (v, guardados) => ['cilindro', 'cono'].every(s => guardados.some(g => rev(g).entero && rev(g).solido === s)),
+        bien: 'El cono es un tercio: la mitad de área y su centroide más cerca del eje.' },
+      { texto: 'Guarda dos vueltas enteras del rectángulo, una con el doble de volumen.',
+        logrado: (v, guardados) => guardados.some(a => guardados.some(b => a.region === 'rectangulo' && b.region === 'rectangulo'
+          && rev(a).entero && rev(b).entero && Math.abs(rev(a).volumen - 2 * rev(b).volumen) < 1e-9)),
+        bien: 'Se dobló el camino del centroide, no la distancia al eje. Así lo dice Pappus.' },
+    ],
+  };
+
   return {
     unidad: 'geometria.solidos-de-revolucion',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/geo-figura.js'],
+    requiere: ['/nucleo/kit/piezas/geo-figura.js', '/nucleo/solidos3d.js', '/nucleo/kit/piezas/geo-revolucion-3d.js'],
     historia: {
       texto: 'En Sobre la esfera y el cilindro, Arquímedes demostró que una esfera ocupa dos tercios del cilindro que la envuelve, y que su superficie equivale a cuatro círculos máximos. No lo sacó de mirar un dibujo: lo probó con argumentos geométricos. Pidió que en su tumba grabaran una esfera dentro de un cilindro.',
       pregunta: '¿Qué fracción del cilindro ocupa la esfera?',
@@ -806,7 +844,7 @@
         ejemplo: 'Círculo de radio 1 a 3 del eje: V = π · 1² · 2π · 3 = 6π².', ver: ['Pappus-Guldin'] },
     ],
     // Laboratorio: las tres mesas son más ricas que sus ideas (dos medidas libres, otra forma, el caso límite).
-    laboratorio: [mesaCono, mesaPappus, mesaZona],
+    laboratorio: [mesaGira3d, mesaCono, mesaPappus, mesaZona],
     ideas: [cilIdea, conoIdea, desIdea, esfIdea, zonaIdea, pappIdea],
   };
 });

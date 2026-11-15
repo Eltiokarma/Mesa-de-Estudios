@@ -12,7 +12,7 @@
  *   planosSimetria(poli) → [normales]        todos sus planos de simetría (pasan por el centro)
  *   apoyar(poli) → el sólido girado con una cara en el piso (para el desarrollo)
  *   desarrollo(poli, t) → { caras: [[puntos]], raiz }   t = 0: el desarrollo plano; t = 1: el sólido armado
- *   region(id, d) → { perfil: [[r, y]], area, rc, nombre }   región del plano meridiano a distancia d del eje
+ *   region(id, d) → { perfil: [[r, y]], area, rc, yc, nombre }   (rc, yc: centroide de la región)   región del plano meridiano a distancia d del eje
  *   revolucion(id, d, grados) → { volumen, completo, solido, ... }   Pappus-Guldin: V = área · ángulo · rc
  *   cubitos(n) → [{ p: [i, j, k], pintadas: [caras], clase }]   cubo de lado n pintado por fuera
  *   porClase(n) → { 3, 2, 1, 0 }             cuántos cubitos tienen 3, 2, 1 y 0 caras pintadas
@@ -180,11 +180,11 @@
 
   // ---------- Sólidos de revolución (eje vertical; r es la distancia al eje) ----------
   const REGIONES = {
-    rectangulo: { nombre: 'rectángulo', area: 2, rc: 0.5, perfil: d => [[d, -1], [d + 1, -1], [d + 1, 1], [d, 1]] },
-    triangulo: { nombre: 'triángulo', area: 1, rc: 1 / 3, perfil: d => [[d, -1], [d + 1, -1], [d, 1]] },
-    semicirculo: { nombre: 'semicírculo', area: Math.PI / 2, rc: 4 / (3 * Math.PI),
+    rectangulo: { nombre: 'rectángulo', area: 2, rc: 0.5, yc: 0, perfil: d => [[d, -1], [d + 1, -1], [d + 1, 1], [d, 1]] },
+    triangulo: { nombre: 'triángulo', area: 1, rc: 1 / 3, yc: -1 / 3, perfil: d => [[d, -1], [d + 1, -1], [d, 1]] },
+    semicirculo: { nombre: 'semicírculo', area: Math.PI / 2, rc: 4 / (3 * Math.PI), yc: 0,
       perfil: d => Array.from({ length: 25 }, (_, k) => { const a = Math.PI * k / 24; return [d + Math.sin(a), Math.cos(a)]; }) },
-    circulo: { nombre: 'círculo', area: Math.PI * 0.36, rc: 0.6,
+    circulo: { nombre: 'círculo', area: Math.PI * 0.36, rc: 0.6, yc: 0,
       perfil: d => Array.from({ length: 32 }, (_, k) => { const a = 2 * Math.PI * k / 32; return [d + 0.6 + 0.6 * Math.cos(a), 0.6 * Math.sin(a)]; }) },
   };
   // Qué sólido barre la región al dar la vuelta entera.
@@ -197,7 +197,7 @@
   function region(id, d) {
     const R = REGIONES[id];
     if (!R) throw new Error(`región desconocida: ${id}`);
-    return { id, nombre: R.nombre, perfil: R.perfil(d), area: R.area, rc: d + R.rc };
+    return { id, nombre: R.nombre, perfil: R.perfil(d), area: R.area, rc: d + R.rc, yc: R.yc };
   }
   function revolucion(id, d, grados) {
     const g = region(id, d), th = rad(grados);
