@@ -542,7 +542,7 @@
     ],
     laboratorio,
     historia: {
-      texto: 'Los problemas de mezclas son mucho más antiguos que la química moderna. En el siglo XIII, Yang Hui comentó problemas de los Nueve capítulos donde un objeto junta materiales de pesos distintos, y había que recuperar las cantidades a partir de los totales. No usaban porcentajes ni nuestros símbolos, pero la estructura es la misma: cada parte aporta según cuánto hay de ella.',
+      texto: 'Los problemas de mezclas son mucho más antiguos que la química moderna. En el siglo XIII, Yang Hui comentó problemas de los Nueve capítulos donde un objeto junta materiales de masas distintas, y había que recuperar las cantidades a partir de los totales. No usaban porcentajes ni nuestros símbolos, pero la estructura es la misma: cada parte aporta según cuánto hay de ella.',
       pregunta: '¿Cómo sabrías cuánto oro tiene una joya sin separarlo?',
       fuente: { titulo: 'O’Connor y Robertson, Yang Hui — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Yang_Hui/' },
     },
