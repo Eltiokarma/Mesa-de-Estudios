@@ -62,17 +62,24 @@
     alt: 'Concentración del reactivo A contra el tiempo: baja rápido al inicio y cada vez más despacio.',
   }, extra);
   const cuerda = (a, b, extra = {}) => Object.assign({ puntos: [[a, conc(a)], [b, conc(b)]], color: 'h' }, extra);
+  // Animación (decisión de Gerson, 15 nov: química se mueve sola). El intervalo avanza solo, 8 min en 5 s, una y otra vez:
+  // la curva de [A] se dibuja hasta el final del intervalo (lo que falta va punteado) y la cuerda roja se va aplanando.
+  const desdeA = val => {
+    const b = Math.min(10, val.a + 2);
+    return { datos: ejesVel({ curvas: [{ puntos: muestra(conc, 0, b), color: 'o' }, { puntos: muestra(conc, b, 10, 20), color: 'o', discontinua: true }, cuerda(val.a, b)],
+      puntos: [{ x: val.a, y: conc(val.a), color: 'o' }, { x: b, y: conc(b), color: 'o' }] }), estado: {} };
+  };
   const velocidad = {
     id: 'rapidez-pendiente',
     titulo: 'La rapidez es una pendiente',
     temas: ['Velocidad de reacción'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Elige desde qué minuto mides. La recta roja une la concentración al inicio y al final de un intervalo de 2 minutos.',
+      consigna: 'La reacción avanza sola (8 min en 5 s). La recta roja une [A] en los extremos de 2 min: mira cómo se aplana.',
       voz: 'Mira qué tan inclinada queda la recta roja.',
-      controles: [{ id: 'a', etiqueta: 'Desde', color: 'c-i', min: 0, max: 8, paso: 1, inicio: 0, unidad: 'min', decimales: 0 }],
-      dibujo: val => ({ datos: ejesVel({ curvas: [{ puntos: muestra(conc, 0, 10), color: 'o' }, cuerda(val.a, val.a + 2)], puntos: [{ x: val.a, y: conc(val.a), color: 'o' }, { x: val.a + 2, y: conc(val.a + 2), color: 'o' }] }), estado: {} }),
-      lectura: val => [r, ` media = ${f((conc(val.a) - conc(val.a + 2)) / 2, 3)}\u00a0mol/(L·min)`],
+      controles: [{ id: 'a', etiqueta: 'Desde', color: 'c-i', min: 0, max: 8, paso: 1, inicio: 0, unidad: 'min', decimales: 0, auto: { velocidad: 1.6 } }],
+      dibujo: val => desdeA(val),
+      lectura: val => [`De ${f(val.a, 1)} a ${f(val.a + 2, 1)} min: `, r, ` media = ${f((conc(val.a) - conc(val.a + 2)) / 2, 3)}\u00a0mol/(L·min)`],
       minimo: 3,
       // Se agarra el primer punto de la cuerda y se corre por la curva: elige desde qué minuto se mide; la cuerda se aplana.
       arrastres: [{ id: 'desde', etiqueta: 'inicio del intervalo sobre la curva', color: 'c-i',
@@ -151,10 +158,11 @@
     temas: ['Teoría de colisiones y complejo activado', 'Perfil de energía de una reacción'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Cambia la energía de activación y el calor de reacción. Mira qué parte del perfil se mueve con cada uno.',
+      consigna: 'La cima sube y baja sola: es la energía de activación. Cambia ΔH y mira qué parte del perfil mueve cada uno.',
       voz: 'Una perilla mueve la cima; la otra, el final.',
       controles: [
-        { id: 'ea', etiqueta: 'Eₐ', color: 'c-d', min: 20, max: 90, paso: 10, inicio: 50, unidad: 'kJ/mol', decimales: 0 },
+        // Animación: Eₐ barre su rango sola (la cima sube y baja); los productos se quedan donde los pone ΔH.
+        { id: 'ea', etiqueta: 'Eₐ', color: 'c-d', min: 20, max: 90, paso: 10, inicio: 50, unidad: 'kJ/mol', decimales: 0, auto: { velocidad: 20, modo: 'rebota' } },
         { id: 'dh', etiqueta: 'ΔH', min: -60, max: 60, paso: 20, inicio: -40, unidad: 'kJ/mol', decimales: 0 },
       ],
       dibujo: val => ({ datos: perfil(val.ea, val.dh, { curvas: [perfil(val.ea, val.dh).curvas[0], flechaEa(val.ea)] }), estado: {} }),
@@ -251,7 +259,9 @@
       alt: `Modelo de reparto de energías de las moléculas: ${f(100 * fracc(ea, th), 1)} % tiene energía mayor o igual que Eₐ (área sombreada).`,
     }, extra);
   }
-  const TEMP = { baja: 1, alta: 1.3 }, CAT = { no: 6, si: 4 };
+  // Animación: la temperatura sube y baja sola entre 300 y 390 K. En el modelo, el ancho θ de la curva es proporcional a
+  // T (θ = T / 300 K: 1 a 300 K y 1,3 a 390 K, los mismos dos casos de «Mira»). Modelo cualitativo, en u. a.
+  const tht = T => T / 300, CAT = { no: 6, si: 4 };
   const ATOMOS = { Zn: { color: 'o', estilo: 'lleno', r: 6 }, H: { color: 'h', estilo: 'hueco', r: 4.5 } };
   const bloque = (polvo) => {
     const out = [];
@@ -270,20 +280,20 @@
     temas: ['Factores que afectan la velocidad'],
     pieza: 'ejes',
     juega: {
-      consigna: 'La curva reparte las moléculas según su energía. Cambia la temperatura y el catalizador. El área sombreada son las que pueden reaccionar al chocar.',
+      consigna: 'La temperatura sube y baja sola; la curva reparte las moléculas por energía. Pon el catalizador: el área sombreada son las que pueden reaccionar.',
       voz: 'Mira el área a la derecha de la línea de Eₐ.',
       controles: [
-        { id: 'T', etiqueta: 'Temperatura', opciones: [{ valor: 'baja', texto: 'Más baja' }, { valor: 'alta', texto: 'Más alta' }] },
+        { id: 'T', etiqueta: 'T', min: 300, max: 390, paso: 30, inicio: 300, unidad: 'K', decimales: 0, auto: { velocidad: 30, modo: 'rebota' } },
         { id: 'cat', etiqueta: 'Catalizador', opciones: [{ valor: 'no', texto: 'Sin' }, { valor: 'si', texto: 'Con' }] },
       ],
-      dibujo: val => ({ datos: energias(TEMP[val.T], CAT[val.cat]), estado: {} }),
-      lectura: val => [`Pueden reaccionar: ${f(100 * fracc(CAT[val.cat], TEMP[val.T]), 1)} % de los choques`],
+      dibujo: val => ({ datos: energias(tht(val.T), CAT[val.cat]), estado: {} }),
+      lectura: val => [`A ${f(val.T, 0)} K pueden reaccionar ${f(100 * fracc(CAT[val.cat], tht(val.T)), 1)} % de los choques`],
       minimo: 3,
       // La línea de Eₐ se agarra por arriba y se corre: hacia la izquierda es poner el catalizador (control de opciones:
       // cae en la Eₐ más cercana). El área sombreada responde.
       arrastres: [{ id: 'barrera', etiqueta: 'línea de Eₐ: a la izquierda, con catalizador', color: 'c-d',
-        donde: val => { const g = G(energias(TEMP[val.T], CAT[val.cat])); return { x: g.X(CAT[val.cat]), y: g.Y(0.3) }; },
-        mover: (pt, val) => { const e = xEn(energias(TEMP[val.T], CAT[val.cat]), pt.x); return { cat: Math.abs(e - CAT.si) < Math.abs(e - CAT.no) ? 'si' : 'no' }; } }],
+        donde: val => { const g = G(energias(tht(val.T), CAT[val.cat])); return { x: g.X(CAT[val.cat]), y: g.Y(0.3) }; },
+        mover: (pt, val) => { const e = xEn(energias(tht(val.T), CAT[val.cat]), pt.x); return { cat: Math.abs(e - CAT.si) < Math.abs(e - CAT.no) ? 'si' : 'no' }; } }],
     },
     predice: {
       pieza: 'quim-particulas',
@@ -366,14 +376,15 @@
     temas: ['Leyes de velocidad y orden de reacción'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Elige el orden respecto a A y una concentración. El segundo punto está en el doble de [A]. Compara las dos rapideces.',
+      consigna: '[A] sube y baja sola; el segundo punto queda siempre en el doble. Elige el orden y compara las dos rapideces.',
       voz: 'Cuenta cuántas veces sube r cuando [A] se duplica.',
       controles: [
         { id: 'm', etiqueta: 'Orden', opciones: [0, 1, 2].map(k => ({ valor: k, texto: ORDEN[k] })) },
-        { id: 'a', etiqueta: '[A]', color: 'c-o', min: 0.2, max: 0.5, paso: 0.1, inicio: 0.3, unidad: 'mol/L', decimales: 1 },
+        // Animación: [A] barre su rango sola; la pareja de puntos corre por la curva y la razón de rapideces no cambia.
+        { id: 'a', etiqueta: '[A]', color: 'c-o', min: 0.2, max: 0.5, paso: 0.1, inicio: 0.3, unidad: 'mol/L', decimales: 1, auto: { velocidad: 0.1, modo: 'rebota' } },
       ],
       dibujo: val => ({ datos: ejesOrden(val.m, { puntos: [{ x: val.a, y: K * val.a ** val.m, color: 'h', guias: true }, { x: 2 * val.a, y: K * (2 * val.a) ** val.m, color: 'h', guias: true }] }), estado: {} }),
-      lectura: val => [A, ` ${f(val.a, 1)} → ${f(2 * val.a, 1)}: `, r, ` se multiplica por ${f(2 ** val.m, 0)}`],
+      lectura: val => [A, ` ${f(val.a, 2)} → ${f(2 * val.a, 2)}: `, r, ` ${f(K * val.a ** val.m, 2)} → ${f(K * (2 * val.a) ** val.m, 2)}, por ${f(2 ** val.m, 0)}`],
       minimo: 3,
       // El primer punto se corre por la curva: el dedo elige [A]; el segundo, en 2[A], lo sigue y se compara su altura.
       arrastres: [{ id: 'concentracion', etiqueta: 'concentración sobre la curva', color: 'c-o',
@@ -459,28 +470,39 @@
     }
     return { cf, marcas };
   }
+  // Animación: la reacción corre sola, 12 min en 6 s. La curva se dibuja hasta t (lo que falta, punteado), el punto
+  // naranja baja por ella y cada marca de «mitad» aparece recién cuando el punto la pasa.
+  const vidaT = val => {
+    const v = vida(val.a0, val.o), tt = Math.min(12, Math.max(0, val.t)), pasadas = v.marcas.filter(m => m[0] <= tt + 1e-9);
+    return { v, tt, pasadas, datos: ejesVida({
+      curvas: [{ puntos: muestra(v.cf, 0, tt), color: 'o' }, { puntos: muestra(v.cf, tt, 12, 20), color: 'o', discontinua: true }],
+      puntos: [...pasadas.map(([x, y]) => ({ x, y, color: 'i', guias: true })), { x: tt, y: v.cf(tt), color: 'o', rotulo: f(v.cf(tt), 2) }],
+      alt: `Concentración contra tiempo, ${val.o === 1 ? 'primer' : 'segundo'} orden, desde ${f(val.a0, 1)} mol/L: a los ${f(tt, 1)} min quedan ${f(v.cf(tt), 2)} mol/L y van ${pasadas.length} mitades.` }) };
+  };
   const vidaMedia = {
     id: 'vida-media',
     titulo: 'La mitad en tiempos iguales',
     temas: ['Vida media'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Elige cuánto reactivo hay al inicio y el orden. Los puntos marcan cada vez que la concentración queda a la mitad.',
+      consigna: 'La reacción corre sola (12 min en 6 s). Cada punto turquesa marca una mitad: mide cuánto los separa y cambia el orden.',
       voz: 'Mide la distancia entre puntos seguidos.',
       controles: [
         { id: 'a0', etiqueta: '[A]₀', color: 'c-o', min: 0.4, max: 1, paso: 0.2, inicio: 0.8, unidad: 'mol/L', decimales: 1 },
         { id: 'o', etiqueta: 'Orden', opciones: [{ valor: 1, texto: 'Primero' }, { valor: 2, texto: 'Segundo' }] },
+        { id: 't', etiqueta: 't', color: 'c-i', min: 0, max: 12, paso: 0.5, inicio: 1, unidad: 'min', decimales: 1, auto: { velocidad: 2 } },
       ],
-      dibujo: val => {
-        const v = vida(val.a0, val.o);
-        return { datos: ejesVida({ curvas: [{ puntos: muestra(v.cf, 0, 12), color: 'o' }], puntos: v.marcas.map(([x, y]) => ({ x, y, color: 'i', guias: true })) }), estado: {} };
-      },
-      lectura: val => { const v = vida(val.a0, val.o); return [{ sub: [A, '0'] }, ` = ${f(val.a0, 1)}: mitades a los `, t, ` = ${v.marcas.map(m => f(m[0], 1)).join('; ')}\u00a0min`]; },
+      dibujo: val => ({ datos: vidaT(val).datos, estado: {} }),
+      lectura: val => { const x = vidaT(val); return [t, ` = ${f(x.tt, 1)} min: `, A, ` = ${f(x.v.cf(x.tt), 2)} · mitades: ${x.pasadas.length ? x.pasadas.map(m => f(m[0], 1)).join('; ') : 'ninguna'}`]; },
       minimo: 3,
       // El inicio de la curva se sube o se baja: el dedo elige [A]₀ y las marcas de cada mitad se reacomodan (o no, en primer orden).
       arrastres: [{ id: 'inicio', etiqueta: 'concentración inicial', color: 'c-o',
         donde: val => { const g = G(ejesVida()); return { x: g.X(0), y: g.Y(val.a0) }; },
-        mover: pt => ({ a0: yEn(ejesVida(), pt.y) }) }],
+        mover: pt => ({ a0: yEn(ejesVida(), pt.y) }) },
+      // El punto que avanza también se agarra y se corre por la curva: es elegir el instante.
+      { id: 'instante', etiqueta: 'instante sobre la curva', color: 'c-i',
+        donde: val => { const x = vidaT(val), g = G(x.datos); return { x: g.X(x.tt), y: g.Y(x.v.cf(x.tt)) }; },
+        mover: pt => ({ t: xEn(ejesVida(), pt.x) }) }],
     },
     predice: {
       pregunta: 'Una sustancia se descompone con primer orden y su vida media es 10 min. Empiezas con 80 g. ¿Cuánto queda a los 30 min?',
@@ -556,15 +578,16 @@
   };
   // Orden 0: [A] = [A]₀ − kt (hasta 0); orden 1: [A]₀·e^(−kt); orden 2: [A]₀ / (1 + k[A]₀t).
   const labConc = (val, x) => (val.o === 0 ? Math.max(0, val.a0 - val.k * x) : val.o === 1 ? val.a0 * Math.exp(-val.k * x) : val.a0 / (1 + val.k * val.a0 * x));
+  // Animación: el instante avanza solo (12 min en 6 s); la curva se dibuja hasta él y lo que falta va punteado.
   const labCurva = val => ejesVida({
-    curvas: [{ puntos: muestra(x => labConc(val, x), 0, 12, 48), color: 'o' }],
+    curvas: [{ puntos: muestra(x => labConc(val, x), 0, val.t, 48), color: 'o' }, { puntos: muestra(x => labConc(val, x), val.t, 12, 24), color: 'o', discontinua: true }],
     puntos: [{ x: 0, y: val.a0, color: 'o' }, { x: val.t, y: labConc(val, val.t), color: 'i', rotulo: f(labConc(val, val.t), 2), guias: true }],
     alt: `Concentración contra tiempo, orden ${ORDEN[val.o]}, k = ${f(val.k, 2)}: de ${f(val.a0, 1)} mol/L a ${f(labConc(val, val.t), 2)} mol/L a los ${f(val.t, 1)} min.`,
   });
 
   return {
     unidad: 'quimica.cinetica-quimica',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/quim-particulas.js'],
     historia: {
@@ -602,10 +625,42 @@
       { termino: 'etapa elemental', def: 'Un solo paso de un mecanismo, tal como chocan las partículas; ahí el orden coincide con el coeficiente.',
         ver: ['mecanismo', 'orden de reacción'] },
     ],
-    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera es el perfil con catalizador: el camino nuevo,
-    // punteado, baja la cima sin mover reactivos ni productos (la idea 2 no tiene catalizador). La segunda junta orden
-    // 0, 1 y 2 con k y [A]₀ libres, y un instante que se arrastra por la curva. Las lecturas dicen entradas y resultado.
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera (animada desde la 0.2.0) junta orden 0, 1 y 2
+    // con k y [A]₀ libres, y un instante que avanza solo y se arrastra por la curva. La segunda es el perfil con
+    // catalizador: el camino nuevo, punteado, baja la cima sin mover reactivos ni productos (la idea 2 no tiene
+    // catalizador). Las lecturas dicen entradas y resultado.
     laboratorio: [
+      {
+        id: 'curva-con-todo', titulo: 'La curva con todo', pieza: 'ejes',
+        consigna: 'La reacción corre sola (12 min en 6 s). Elige el orden, k y [A]₀, y mira cuánto queda en cada instante.',
+        controles: [
+          { id: 'o', etiqueta: 'Orden', opciones: [1, 2, 0].map(k => ({ valor: k, texto: ORDEN[k] })) },
+          { id: 'k', etiqueta: 'k', min: 0.05, max: 0.5, paso: 0.05, inicio: 0.2, decimales: 2 },
+          { id: 'a0', etiqueta: '[A]₀', color: 'c-o', min: 0.2, max: 1, paso: 0.1, inicio: 0.8, unidad: 'mol/L', decimales: 1 },
+          { id: 't', etiqueta: 't', color: 'c-i', min: 0, max: 12, paso: 0.5, inicio: 5, unidad: 'min', decimales: 1, auto: { velocidad: 2 } },
+        ],
+        dibujo: val => ({ datos: labCurva(val), estado: {} }),
+        lectura: val => [`Orden ${ORDEN[val.o]} · k ${f(val.k, 2)} · ${f(val.t, 1)} min: de ${f(val.a0, 1)} a ${f(labConc(val, val.t), 2)}\u00a0mol/L`],
+        arrastres: [{ id: 'instante', etiqueta: 'instante sobre la curva', color: 'c-i',
+          donde: val => { const g = G(labCurva(val)); return { x: g.X(val.t), y: g.Y(labConc(val, val.t)) }; },
+          mover: (pt, val) => ({ t: xEn(labCurva(val), pt.x) }) }],
+        // Retos: los comprueba labConc, la misma función que traza la curva.
+        invitaciones: [
+          { texto: 'En primer orden, pon el instante justo en una vida media.',
+            logrado: val => val.o === 1 && val.t > 0 && Math.abs(labConc(val, val.t) / val.a0 - 0.5) < 0.01,
+            bien: 'Queda la mitad. Cambia [A]₀: ¿se corre ese instante?' },
+          { texto: 'Con orden cero, busca el primer instante en que se acaba el reactivo.',
+            logrado: val => val.o === 0 && val.t > 0 && labConc(val, val.t) < 1e-9 && labConc(val, val.t - 0.5) > 1e-9,
+            bien: 'En orden cero baja lo mismo cada minuto, hasta acabarse.' },
+          { texto: 'Haz que en el instante quede menos del 10 % del inicio.',
+            logrado: val => labConc(val, val.t) < 0.1 * val.a0,
+            bien: 'Casi no queda. ¿Qué orden tarda más en llegar ahí?' },
+          { texto: 'Guarda dos casos de orden uno: mismo k e instante, distinta [A]₀.',
+            logrado: (val, guardados) => val.o === 1 && guardados.some(g => g.o === 1 && g.k === val.k && g.t === val.t && g.a0 !== val.a0)
+              && guardados.some(g => g.o === val.o && g.k === val.k && g.t === val.t && g.a0 === val.a0),
+            bien: 'En los dos queda la misma fracción: el primer orden no mira cuánto había.' },
+        ],
+      },
       {
         id: 'perfil-catalizador', titulo: 'El perfil con catalizador', pieza: 'ejes',
         consigna: 'Arrastra la cima y los productos. Pon el catalizador y compara las dos cimas: ¿cambia ΔH?',
@@ -639,37 +694,6 @@
             logrado: (val, guardados) => guardados.some(g => g.cat !== val.cat && g.ea === val.ea && g.dh === val.dh)
               && guardados.some(g => g.cat === val.cat && g.ea === val.ea && g.dh === val.dh),
             bien: 'Dos cimas y un mismo ΔH: el catalizador abre otro camino, no cambia el balance.' },
-        ],
-      },
-      {
-        id: 'curva-con-todo', titulo: 'La curva con todo', pieza: 'ejes',
-        consigna: 'Elige el orden, k y cuánto reactivo hay. Arrastra el instante por la curva y lee cuánto queda.',
-        controles: [
-          { id: 'o', etiqueta: 'Orden', opciones: [1, 2, 0].map(k => ({ valor: k, texto: ORDEN[k] })) },
-          { id: 'k', etiqueta: 'k', min: 0.05, max: 0.5, paso: 0.05, inicio: 0.2, decimales: 2 },
-          { id: 'a0', etiqueta: '[A]₀', color: 'c-o', min: 0.2, max: 1, paso: 0.1, inicio: 0.8, unidad: 'mol/L', decimales: 1 },
-          { id: 't', etiqueta: 't', color: 'c-i', min: 0, max: 12, paso: 0.5, inicio: 5, unidad: 'min', decimales: 1 },
-        ],
-        dibujo: val => ({ datos: labCurva(val), estado: {} }),
-        lectura: val => [`Orden ${ORDEN[val.o]} · k ${f(val.k, 2)} · ${f(val.t, 1)} min: de ${f(val.a0, 1)} a ${f(labConc(val, val.t), 2)}\u00a0mol/L`],
-        arrastres: [{ id: 'instante', etiqueta: 'instante sobre la curva', color: 'c-i',
-          donde: val => { const g = G(labCurva(val)); return { x: g.X(val.t), y: g.Y(labConc(val, val.t)) }; },
-          mover: (pt, val) => ({ t: xEn(labCurva(val), pt.x) }) }],
-        // Retos: los comprueba labConc, la misma función que traza la curva.
-        invitaciones: [
-          { texto: 'En primer orden, pon el instante justo en una vida media.',
-            logrado: val => val.o === 1 && val.t > 0 && Math.abs(labConc(val, val.t) / val.a0 - 0.5) < 0.01,
-            bien: 'Queda la mitad. Cambia [A]₀: ¿se corre ese instante?' },
-          { texto: 'Con orden cero, busca el primer instante en que se acaba el reactivo.',
-            logrado: val => val.o === 0 && val.t > 0 && labConc(val, val.t) < 1e-9 && labConc(val, val.t - 0.5) > 1e-9,
-            bien: 'En orden cero baja lo mismo cada minuto, hasta acabarse.' },
-          { texto: 'Haz que en el instante quede menos del 10 % del inicio.',
-            logrado: val => labConc(val, val.t) < 0.1 * val.a0,
-            bien: 'Casi no queda. ¿Qué orden tarda más en llegar ahí?' },
-          { texto: 'Guarda dos casos de orden uno: mismo k e instante, distinta [A]₀.',
-            logrado: (val, guardados) => val.o === 1 && guardados.some(g => g.o === 1 && g.k === val.k && g.t === val.t && g.a0 !== val.a0)
-              && guardados.some(g => g.o === val.o && g.k === val.k && g.t === val.t && g.a0 === val.a0),
-            bien: 'En los dos queda la misma fracción: el primer orden no mira cuánto había.' },
         ],
       },
     ],
