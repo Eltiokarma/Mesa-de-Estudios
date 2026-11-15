@@ -771,7 +771,7 @@
         ejemplo: 'x² − 2x − 3: Δ = 4 + 12 = 16, dos raíces.', ver: ['ecuación cuadrática', 'raíz'] },
       { termino: 'parábola', formas: ['parábola', 'parábolas'], def: 'Curva en forma de U de y = ax² + bx + c; con a negativo, se abre hacia abajo.',
         ver: ['vértice'] },
-      { termino: 'vértice', def: 'El punto más bajo o más alto de una parábola: ahí da la vuelta.', ejemplo: 'y = x² − 2x − 3 baja hasta (1; −4).' },
+      { termino: 'vértice', def: 'En una parábola, su punto más bajo o más alto. En un polígono, cada esquina.', ejemplo: 'y = x² − 2x − 3 baja hasta (1; −4).' },
       { termino: 'completar el cuadrado', formas: ['completar el cuadrado', 'completando el cuadrado', 'completando cuadrados'],
         def: 'Sumar lo que falta para escribir x² + bx como parte de (x + b/2)².', ejemplo: 'x² + 6x = (x + 3)² − 9.' },
     ],
