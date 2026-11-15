@@ -1980,7 +1980,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 13
+      "terminos": 21
      }
     },
     {
@@ -2222,7 +2222,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
-      "terminos": 13
+      "terminos": 15
      }
     },
     {
@@ -2413,7 +2413,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 8
+      "terminos": 9
      }
     }
    ]

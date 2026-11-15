@@ -130,7 +130,7 @@
       };
     })(),
     regla: {
-      texto: 'Dividir P entre D es hallar el cociente Q y el resto R con P = D · Q + R, donde el grado de R es menor que el de D.',
+      texto: 'Dividir el dividendo P entre D es hallar el cociente Q y el resto R con P = D · Q + R, y R de grado menor que D.',
       ecuacion: [P, ' = ', { llave: [D, ' · ', Q], nota: 'múltiplo de D', color: 'c-i' }, ' + ', { llave: [R], nota: 'menor que D', color: 'c-h' }],
       condicion: 'D no es el polinomio cero. El grado de Q es grado de P menos grado de D.',
     },
@@ -413,9 +413,9 @@
       ],
     },
     regla: {
-      texto: 'El resto de dividir P(x) entre x − a es P(a). Si P(a) = 0, x − a es factor y P es divisible entre x − a.',
+      texto: 'Teorema del resto: dividir P(x) entre x − a deja resto P(a). Si P(a) = 0, x − a es factor y P es divisible entre x − a.',
       ecuacion: [P, ' = (x − ', a, ')·', Q, ' + ', { llave: [P, '(', a, ')'], nota: 'el resto', color: 'c-h' }],
-      condicion: 'el divisor es de grado 1. Para kx + b se evalúa en x = −b/k.',
+      condicion: 'el divisor es de grado 1, como pide el teorema del resto. Para kx + b se evalúa en x = −b/k.',
     },
     ahoraTu: {
       generar(s) {
@@ -559,7 +559,28 @@
     arrastres: [{ id: 'punto', etiqueta: 'punto (a; P(a)) de la curva', color: 'c-o',
       donde: v => { const g = EJES().geometria(restoLab(v)); return { x: g.X(v.a), y: g.Y(evaluar(cub(v), v.a)) }; },
       mover: (pt, v) => { const g = EJES().geometria(restoLab(v)); return { a: inversa(g.X, -3, 3)(pt.x) }; } }],
+    // Retos comprobados (docs/teoria.md §4d): el resto es evaluar(cub(v), a), el mismo que da la altura del punto.
+    invitaciones: [
+      { texto: 'Haz que el resto valga 0.',
+        logrado: v => evaluar(cub(v), v.a) === 0,
+        bien: 'Resto 0: x − a es factor y el punto quedó sobre el eje x.' },
+      { texto: 'Con a = 2 o a = −2, logra que los dos restos sean iguales.',
+        logrado: v => Math.abs(v.a) === 2 && evaluar(cub(v), 2) === evaluar(cub(v), -2),
+        bien: 'P(2) − P(−2) = 16 + 4c: con c = −4 se empatan.' },
+      { texto: 'Arma un polinomio divisible entre x, x − 1 y x + 1 a la vez.',
+        logrado: v => [0, 1, -1].every(z => evaluar(cub(v), z) === 0),
+        bien: 'x³ − x = x(x − 1)(x + 1): tres restos cero, tres factores.' },
+      { texto: 'Busca el resto más grande de toda la mesa.',
+        logrado: v => evaluar(cub(v), v.a) === MAX_RESTO,
+        bien: 'Todo al máximo y a = 3: 27 + 27 + 18 + 6 = 78.' },
+    ],
   };
+  // El mayor resto P(a) de la mesa (a de −3 a 3 cada 0,5; b, c y d en sus rangos): se calcula, no se escribe.
+  const MAX_RESTO = (() => {
+    let m = -Infinity;
+    for (let a = -3; a <= 3; a += 0.5) for (let b = -3; b <= 3; b++) for (let c = -6; c <= 6; c++) for (let d = -6; d <= 6; d++) m = Math.max(m, evaluar([1, b, c, d], a));
+    return m;
+  })();
   // Mesa 2: Ruffini con los cuatro coeficientes y a libres.
   const mesaRuffini = {
     id: 'ruffini-libre', titulo: 'Tu propio Ruffini', pieza: 'alg-tabla',
@@ -573,8 +594,23 @@
     ],
     dibujo: v => ({ datos: tablaRuffini([v.p, v.q, v.r, v.s], v.a), estado: {} }),
     lectura: v => { const cs = [v.p, v.q, v.r, v.s], b = ruffini(cs, v.a); return [Q, ` = ${poli(b.slice(0, -1))}`, '   ·   ', R, ` = ${f(b[3])} = P(${f(v.a)})`]; },
+    invitaciones: [
+      { texto: 'Haz que la última casilla sea 0.',
+        logrado: v => ruffini([v.p, v.q, v.r, v.s], v.a)[3] === 0,
+        bien: 'División exacta: a es raíz y x − a es factor.' },
+      { texto: 'Consigue un cociente con sus tres casillas iguales.',
+        logrado: v => { const b = ruffini([v.p, v.q, v.r, v.s], v.a); return b[0] === b[1] && b[1] === b[2]; },
+        bien: 'Cada paso sumó justo lo que hacía falta para repetir.' },
+      { texto: 'Haz que el cociente tenga un 0 en la casilla del medio.',
+        logrado: v => { const b = ruffini([v.p, v.q, v.r, v.s], v.a); return b[0] !== 0 && b[1] === 0; },
+        bien: 'El cociente no tiene término en x: le falta una potencia.' },
+      { texto: 'Busca un resto mayor que 50.',
+        logrado: v => ruffini([v.p, v.q, v.r, v.s], v.a)[3] > 50,
+        bien: 'Con a = 3, cada casilla se triplica antes de sumar.' },
+    ],
   };
   // Mesa 3: el cociente notable con «+»: los signos se alternan y el resto depende de n (lo que la idea 5 reserva).
+  const restoMas = v => { const b = ruffini([1, ...Array(v.n - 1).fill(0), v.a ** v.n], -v.a); return b[b.length - 1]; };
   const mesaSigno = {
     id: 'notable-con-mas', titulo: 'Cociente notable con signo más', pieza: 'alg-tabla',
     consigna: 'Divide xⁿ + aⁿ entre x + a: en Ruffini se usa −a. ¿Para qué n el resto es 0?',
@@ -584,6 +620,20 @@
     ],
     dibujo: v => ({ datos: tablaRuffini([1, ...Array(v.n - 1).fill(0), v.a ** v.n], -v.a), estado: {} }),
     lectura: v => { const b = ruffini([1, ...Array(v.n - 1).fill(0), v.a ** v.n], -v.a); return [`n = ${v.n}`, '   ·   ', R, ` = ${f(b[b.length - 1])}${b[b.length - 1] === 0 ? ': exacta' : ''}`]; },
+    invitaciones: [
+      { texto: 'Busca otro n, distinto de 3, que dé división exacta.',
+        logrado: v => v.n !== 3 && restoMas(v) === 0,
+        bien: 'Con n impar, (−a)ⁿ + aⁿ = 0: queda exacta.' },
+      { texto: 'Haz que el resto sea 32.',
+        logrado: v => restoMas(v) === 32,
+        bien: 'n par: el resto es 2aⁿ, y 2 · 2⁴ = 32.' },
+      { texto: 'Busca el mayor resto de la mesa.',
+        logrado: v => restoMas(v) === Math.max(...[2, 3, 4, 5, 6].flatMap(n => [1, 2, 3].map(a => restoMas({ n, a })))),
+        bien: '2 · 3⁶ = 1458: con n par el resto crece muy rápido.' },
+      { texto: 'Guarda dos casos con el mismo a: uno exacto y otro con resto.',
+        logrado: (v, guardados) => guardados.some(g => g.a === v.a && (restoMas(g) === 0) !== (restoMas(v) === 0)) && guardados.some(g => g.a === v.a && g.n === v.n),
+        bien: 'Lo decide n: impar exacta, par con resto.' },
+    ],
   };
 
   return {
@@ -592,6 +642,24 @@
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/ejes.js'],
     laboratorio: [mesaResto, mesaRuffini, mesaSigno],
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'dividendo', def: 'El polinomio que se reparte en una división: el que va antes del signo ÷.', ejemplo: 'En (x² − 1) ÷ (x − 1), es x² − 1.',
+        ver: ['divisor'] },
+      { termino: 'divisor', formas: ['divisor', 'divisores'], def: 'El polinomio entre el que se divide.', ejemplo: 'En (x² − 1) ÷ (x − 1), es x − 1.', ver: ['dividendo', 'resto'] },
+      { termino: 'resto', formas: ['resto', 'restos'], def: 'Lo que sobra al dividir; su grado es menor que el del divisor.',
+        ejemplo: '(x² + 1) ÷ (x − 1): cociente x + 1, sobra 2.', ver: ['teorema del resto'] },
+      { termino: 'teorema del resto', def: 'Al dividir P(x) entre x − a, lo que sobra es P(a): basta evaluar, sin dividir.',
+        ejemplo: 'x³ − 4x entre x − 1 deja 1 − 4 = −3.', ver: ['resto', 'evaluar'] },
+      { termino: 'divisible', def: 'Así es un polinomio cuando la división entre otro no deja nada sobrante.', ver: ['división exacta'] },
+      { termino: 'división exacta', formas: ['división exacta', 'divisiones exactas', 'exacta', 'exactas'], def: 'La que tiene resto 0.',
+        ejemplo: '(x² − 1) ÷ (x − 1) = x + 1, sin sobrante.', ver: ['divisible'] },
+      { termino: 'Ruffini', formas: ['Ruffini'], def: 'Tabla corta para dividir entre x − a usando solo los coeficientes: bajar, multiplicar por a y sumar.',
+        ver: ['resto'] },
+      { termino: 'cociente notable', formas: ['cociente notable', 'cocientes notables'],
+        def: 'División como (xⁿ − aⁿ) ÷ (x − a), que es exacta y cuyo resultado se escribe sin dividir.',
+        ejemplo: '(x³ − 8) ÷ (x − 2) = x² + 2x + 4.' },
+    ],
     historia: {
       texto: 'Ordenar los coeficientes para evaluar y dividir rápido no tiene un solo inventor. El llamado método de Horner tiene antecedentes, y su artículo de 1819 ni siquiera trae el procedimiento moderno, que aparece recién en uno de 1830. Más que el nombre, importa por qué funciona: la división entre x − a junta cociente, resto y el valor P(a) en una sola tabla.',
       pregunta: '¿Por qué ordenar los coeficientes ahorra operaciones?',
