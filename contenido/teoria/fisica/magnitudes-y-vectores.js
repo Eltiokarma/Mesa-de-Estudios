@@ -119,7 +119,7 @@
       ],
     },
     regla: {
-      texto: 'Una magnitud no cambia al cambiar de unidad: cambia el número. Se multiplica por factores que valen 1. Las del SI derivadas salen de las siete fundamentales.',
+      texto: 'Una magnitud no cambia al cambiar de unidad: cambia el número. Se multiplica por factores que valen 1. Las magnitudes derivadas del Sistema Internacional salen de las siete fundamentales.',
       ecuacion: ['72 ', { frac: ['km', 'h'] }, ' · ', { llave: [{ frac: ['1000 m', '1 km'] }], nota: 'vale 1', color: 'c-o' }, ' · ', { llave: [{ frac: ['1 h', '3600 s'] }], nota: 'vale 1', color: 'c-o' }, ' = 20 ', { frac: ['m', 's'] }],
       condicion: 'cada factor tiene arriba y abajo lo mismo medido en dos unidades; si la unidad está al cuadrado, el factor también.',
     },
@@ -242,9 +242,9 @@
       ],
     },
     regla: {
-      texto: 'En una ecuación física, cada término tiene la misma dimensión. Las derivadas se arman con las fundamentales: masa, longitud y tiempo, entre otras.',
+      texto: 'En una ecuación física, cada término tiene la misma dimensión. Las magnitudes derivadas se arman con las magnitudes fundamentales: masa, longitud y tiempo, entre otras.',
       ecuacion: ['[F] = M L ', { sup: ['T', '−2'] }, '   ·   ', '[E] = M ', { sup: ['L', '2'] }, ' ', { sup: ['T', '−2'] }, '   ·   ', '[', k, ' · Q] = ', { llave: ['[', k, '] · [Q]'], nota: 'se multiplican', color: 'c-h' }],
-      condicion: 'solo se suman o igualan términos de la misma dimensión. Que cuadre no prueba que la ecuación sea correcta.',
+      condicion: 'en el análisis dimensional solo se suman o igualan términos de igual dimensión. Que cuadre no prueba que la ecuación sea correcta.',
     },
     ahoraTu: {
       pieza: 'fis-dimensiones',
@@ -349,7 +349,7 @@
     mira: {
       datos: colaPunta(6, 4, 60, { circulo: false, pasoB: 1, pasoR: 2 }).datos,
       pasos: [
-        { estado: { paso: 0 }, texto: 'Se dibuja A con su largo: 6 unidades.', ecuacion: [A, ' = 6'] },
+        { estado: { paso: 0 }, texto: 'A es una magnitud vectorial: se dibuja con su largo, 6 unidades.', ecuacion: [A, ' = 6'] },
         { estado: { paso: 1 }, texto: 'B empieza en la punta de A, sin cambiar largo ni dirección.', ecuacion: [B, ' = 4,   ', th, ' = 60°'] },
         { estado: { paso: 2 }, texto: 'R une la cola de A con la punta de B.', ecuacion: [{ sup: [R, '2'] }, ' = ', { sup: [A, '2'] }, ' + ', { sup: [B, '2'] }, ' + 2', A, B, ' cos ', th] },
         { estado: { paso: 2, final: true }, texto: 'Con cos 60° = 0,5: R² = 36 + 16 + 24.', ecuacion: [R, ` = √76 ≈ ${f(Math.sqrt(76), 2)}`] },
@@ -543,7 +543,7 @@
       pasos: [
         { estado: { paso: 0 }, texto: 'A mide 4, B mide 3 y forman 60°.', ecuacion: [A, ' = 4,  ', B, ' = 3,  ', th, ' = 60°'] },
         { estado: { paso: 1 }, texto: 'La sombra de B sobre A mide 3 · cos 60° = 1,5.', ecuacion: ['B cos θ = 1,5'] },
-        { estado: { paso: 2 }, texto: 'El escalar es A por esa sombra: un número, sin dirección.', ecuacion: [vA, ' · ', vB, ' = ', A, B, ' cos ', th, ' = 4 · 1,5 = 6'] },
+        { estado: { paso: 2 }, texto: 'El producto escalar da una magnitud escalar: un número, sin dirección.', ecuacion: [vA, ' · ', vB, ' = ', A, B, ' cos ', th, ' = 4 · 1,5 = 6'] },
         { estado: { paso: 3 }, texto: 'El vectorial mide el área del paralelogramo.', ecuacion: ['|', vA, ' × ', vB, '| = ', A, B, ` sen `, th, ` = ${f(12 * senG(60), 2)}`] },
         { estado: { paso: 3 }, texto: 'Apunta perpendicular al plano de A y B, por la mano derecha.', ecuacion: [vA, ' × ', vB, ` = ${f(12 * senG(60), 2)} k̂`] },
       ],
@@ -590,12 +590,57 @@
   // Mesas del laboratorio: la escala se fija con los largos máximos, para que las puntas sigan al dedo.
   const sumaLibre = val => colaPunta(val.a, val.b, val.g, { marco: [[-4, 0], [12.5, 6]] });
   const prodLibre = val => prod(val.a, val.b, val.g, { marco: [[-5, -0.7], [10, 5]] });
+  // Lo que miden la sombra (escalar) y el paralelogramo (área del vectorial) en la mesa libre; lo usan la lectura y los retos.
+  const escalarLibre = val => val.a * val.b * cosG(val.g);
+  const areaLibre = val => Math.abs(val.a * val.b * senG(val.g));
+  const rLibre = val => sumaLibre(val).r;
+  const modA = val => Math.hypot(val.ax, val.ay);
 
   return {
     unidad: 'fisica.magnitudes-y-vectores',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/fis-dimensiones.js', '/nucleo/kit/piezas/flechas.js'],
+    // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso (es la primera).
+    glosario: [
+      { termino: 'magnitud', def: 'Propiedad de algo que se puede medir y decir con un número y una unidad.',
+        ejemplo: 'El largo de un lápiz: 2,5 m, que también son 250 cm.', ver: ['magnitud fundamental', 'magnitud derivada'] },
+      { termino: 'magnitud fundamental', formas: ['magnitud fundamental', 'magnitudes fundamentales'],
+        def: 'Una de las siete que el SI toma como base, como la masa, la longitud y el tiempo.',
+        ejemplo: 'La longitud se mide en metros y el tiempo, en segundos.', ver: ['magnitud derivada', 'Sistema Internacional'] },
+      { termino: 'magnitud derivada', formas: ['magnitud derivada', 'magnitudes derivadas'],
+        def: 'La que se arma combinando las fundamentales, como la velocidad: longitud entre tiempo.',
+        ejemplo: '[F] = M L T⁻²: la fuerza sale de masa, longitud y tiempo.', ver: ['magnitud fundamental', 'dimensión'] },
+      { termino: 'Sistema Internacional', simbolo: 'SI', def: 'Acuerdo mundial de unidades: metro, kilogramo, segundo y otras cuatro de base.',
+        ejemplo: '72 km/h, en unidades del SI, son 20 m/s.', ver: ['magnitud fundamental'] },
+      { termino: 'dimensión', simbolo: '[ ]', formas: ['dimensión', 'dimensiones'],
+        def: 'Cómo se arma una magnitud con masa (M), longitud (L) y tiempo (T), sin mirar la unidad.',
+        ejemplo: '[v] = L T⁻¹, se mida en m/s o en km/h.', ver: ['análisis dimensional'] },
+      { termino: 'análisis dimensional', def: 'Comprobar con M, L y T que cada término de una ecuación tenga la misma dimensión, o despejar una.',
+        ejemplo: 'Si x = k t², entonces [k] = L T⁻².', ver: ['dimensión'] },
+      { termino: 'magnitud escalar', formas: ['magnitud escalar', 'magnitudes escalares'],
+        def: 'La que queda dicha del todo con un número y su unidad, sin dirección.',
+        ejemplo: 'Una masa de 3 kg o un tiempo de 10 s.', ver: ['vector'] },
+      { termino: 'vector', formas: ['vector', 'vectores', 'magnitud vectorial', 'magnitudes vectoriales'],
+        def: 'Flecha con tamaño, dirección y sentido; representa magnitudes como el desplazamiento o la fuerza.',
+        ejemplo: 'Una fuerza de 4 N hacia arriba.', ver: ['módulo', 'magnitud escalar', 'componente'] },
+      { termino: 'módulo', simbolo: '|A|', def: 'El tamaño de un vector: el largo de su flecha. Nunca es negativo.',
+        ejemplo: 'A = 3î + 4ĵ mide |A| = 5.', ver: ['vector'] },
+      { termino: 'resultante', simbolo: 'R', def: 'Vector que reemplaza a varios: va de la cola del primero a la punta del último.',
+        ejemplo: 'A = 3 y B = 4 a 90°: R = 5.', ver: ['vector'] },
+      { termino: 'componente', def: 'Lo que un vector avanza a lo largo de un eje, con su signo.',
+        ejemplo: 'A = 3î + 4ĵ: Aₓ = 3 y Aᵧ = 4.', ver: ['vector unitario', 'módulo'] },
+      { termino: 'vector unitario', simbolo: 'û', formas: ['vector unitario', 'vectores unitarios', 'unitario', 'unitarios'],
+        def: 'Flecha de largo 1 que apunta igual que otra; sale de dividirla entre su módulo.',
+        ejemplo: 'A = 6î + 8ĵ: û = 0,6î + 0,8ĵ.', ver: ['componente'] },
+      { termino: 'producto escalar', simbolo: 'A · B', def: 'Número que sale de multiplicar un largo por la sombra del otro: A B cos θ.',
+        ejemplo: 'A = 4 y B = 3 a 60°: A · B = 6.', ver: ['producto vectorial'] },
+      { termino: 'producto vectorial', simbolo: 'A × B',
+        def: 'Vector perpendicular a los dos, cuyo largo es el área de su paralelogramo: A B sen θ.',
+        ejemplo: 'A = 4 y B = 5 a 90°: |A × B| = 20.', ver: ['producto escalar'] },
+      { termino: 'masa', simbolo: 'm', medida: 'kg', def: 'Cuánta materia tiene un cuerpo. Es fundamental en el SI y no cambia de un lugar a otro.',
+        ejemplo: 'Un saco de 5 kg tiene 5 kg en Lima y en la Luna.', ver: ['magnitud fundamental'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. Las dos mesas nuevas sueltan los dos largos y el ángulo a la vez (en
     // los juegos, A queda fijo); la del medio es el juego de las componentes, con su punta arrastrable.
     laboratorio: [
@@ -608,7 +653,23 @@
           { id: 'g', etiqueta: 'θ', color: 'c-h', min: 0, max: 180, paso: 15, inicio: 90, unidad: '°', decimales: 0 },
         ],
         dibujo: val => { const c = sumaLibre(val); return { datos: c.datos, estado: c.estado }; },
-        lectura: val => [A, ` = ${f(val.a, 0)} · `, B, ` = ${f(val.b, 0)} · `, th, ` = ${f(val.g, 0)}° → `, R, ` = ${f(sumaLibre(val).r, 2)}`],
+        lectura: val => [A, ` = ${f(val.a, 0)} · `, B, ` = ${f(val.b, 0)} · `, th, ` = ${f(val.g, 0)}° → `, R, ` = ${f(rLibre(val), 2)}`],
+        // Retos: cada uno lo comprueba la misma resultante que se dibuja (colaPunta).
+        invitaciones: [
+          { texto: 'Haz que R mida lo mismo que A + B.',
+            logrado: val => Math.abs(rLibre(val) - (val.a + val.b)) < 1e-9,
+            bien: 'Solo a 0° los módulos se suman: las dos flechas apuntan igual.' },
+          { texto: 'Consigue que R mida justo 5, sin que A ni B midan 5.',
+            logrado: val => Math.abs(rLibre(val) - 5) < 1e-9 && val.a !== 5 && val.b !== 5,
+            bien: 'Un triángulo 3, 4, 5 escondido en la suma. ¿Qué ángulo lo arma?' },
+          { texto: 'Haz que R sea más corta que A y también que B.',
+            logrado: val => rLibre(val) < Math.min(val.a, val.b) - 1e-9,
+            bien: 'Sumar flechas puede dar menos que cada una. ¿Desde qué ángulo pasa?' },
+          { texto: 'Guarda dos casos con el mismo R y distinto ángulo.',
+            logrado: (val, guardados) => guardados.some(x => x.g !== val.g && Math.abs(rLibre(x) - rLibre(val)) < 1e-9)
+              && guardados.some(x => x.a === val.a && x.b === val.b && x.g === val.g),
+            bien: 'Mismo R por dos caminos: los largos compensan lo que cambia el ángulo.' },
+        ],
         arrastres: [
           { id: 'punta-a', etiqueta: 'punta de A', color: 'c-o',
             donde: val => { const g = FL().geometria(sumaLibre(val).datos); return { x: g.X(val.a), y: g.Y(0) }; },
@@ -621,7 +682,21 @@
             } },
         ],
       },
-      Object.assign({ id: 'componentes', titulo: 'Componentes y unitario', pieza: 'flechas' }, componentes.juega),
+      Object.assign({ id: 'componentes', titulo: 'Componentes y unitario', pieza: 'flechas',
+        // Retos: el módulo es el mismo Math.hypot que dibuja compA; el unitario, cada componente entre el módulo.
+        invitaciones: [
+          { texto: 'Consigue que A mida justo 5.',
+            logrado: val => Math.abs(modA(val) - 5) < 1e-9,
+            bien: 'Componentes 3 y 4, módulo 5: Pitágoras con las sombras de A.' },
+          { texto: 'Haz que el unitario apunte hacia abajo y a la izquierda.',
+            logrado: val => modA(val) > 0 && val.ax / modA(val) < 0 && val.ay / modA(val) < 0,
+            bien: 'El unitario copia los signos de A: misma dirección, largo 1.' },
+          { texto: 'Guarda dos A de distinto largo con el mismo unitario.',
+            logrado: (val, guardados) => modA(val) > 0 && guardados.some(x => modA(x) > 0 && Math.abs(modA(x) - modA(val)) > 1e-9
+              && Math.abs(x.ax / modA(x) - val.ax / modA(val)) < 1e-9 && Math.abs(x.ay / modA(x) - val.ay / modA(val)) < 1e-9)
+              && guardados.some(x => x.ax === val.ax && x.ay === val.ay),
+            bien: 'Distinto largo, mismo unitario: û solo guarda hacia dónde apunta A.' },
+        ] }, componentes.juega),
       {
         id: 'productos-libre', titulo: 'Sombra y área a la vez', pieza: 'flechas',
         consigna: 'Cambia los dos largos y el ángulo. Compara la sombra de B sobre A con el área del paralelogramo.',
@@ -631,7 +706,23 @@
           { id: 'g', etiqueta: 'θ', color: 'c-h', min: 0, max: 180, paso: 15, inicio: 45, unidad: '°', decimales: 0 },
         ],
         dibujo: val => prodLibre(val),
-        lectura: val => [`${f(val.a, 0)} y ${f(val.b, 0)} a ${f(val.g, 0)}°: escalar ${f(val.a * val.b * cosG(val.g), 2)} · área ${f(Math.abs(val.a * val.b * senG(val.g)), 2)}`],
+        lectura: val => [`${f(val.a, 0)} y ${f(val.b, 0)} a ${f(val.g, 0)}°: escalar ${f(escalarLibre(val), 2)} · área ${f(areaLibre(val), 2)}`],
+        // Retos: la sombra y el área son las de la figura (A B cos θ y A B sen θ).
+        invitaciones: [
+          { texto: 'Haz que el producto escalar valga 0.',
+            logrado: val => Math.abs(escalarLibre(val)) < 1e-9,
+            bien: 'A 90° la sombra desaparece y el área es la mayor. ¿Coincidencia?' },
+          { texto: 'Busca el menor ángulo que da un producto escalar negativo.',
+            logrado: val => escalarLibre(val) < -1e-9 && escalarLibre(Object.assign({}, val, { g: val.g - 15 })) >= -1e-9,
+            bien: 'Pasado 90°, la sombra cae detrás de A: el escalar tiene signo.' },
+          { texto: 'Haz que el área sea 0 sin que el escalar sea 0.',
+            logrado: val => areaLibre(val) < 1e-9 && Math.abs(escalarLibre(val)) > 1e-9,
+            bien: 'Flechas alineadas: no encierran área, pero la sombra es entera.' },
+          { texto: 'Guarda dos casos con la misma área y distinto producto escalar.',
+            logrado: (val, guardados) => guardados.some(x => Math.abs(areaLibre(x) - areaLibre(val)) < 1e-9 && Math.abs(escalarLibre(x) - escalarLibre(val)) > 1e-9)
+              && guardados.some(x => x.a === val.a && x.b === val.b && x.g === val.g),
+            bien: 'Misma área, otra sombra: cada producto mira el ángulo a su manera.' },
+        ],
         arrastres: [
           { id: 'punta-a', etiqueta: 'punta de A', color: 'c-o',
             donde: val => { const g = FL().geometria(prodLibre(val).datos); return { x: g.X(val.a), y: g.Y(0) }; },
