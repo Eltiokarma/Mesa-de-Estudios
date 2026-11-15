@@ -554,9 +554,6 @@
         },
         // Retos: senL y cosL son los cocientes de los lados que dibuja tresL.
         invitaciones: [
-          { texto: 'Guarda dos triángulos de distinto tamaño con el mismo seno.',
-            logrado: (v, gs) => gs.some(a => gs.some(b => a.co !== b.co && casi(senL(a), senL(b)))),
-            bien: 'Distinto tamaño, mismo ángulo, mismo seno: la razón no mira el tamaño.' },
           { texto: 'Haz que la tangente de θ valga justo 1.',
             logrado: v => casi(v.co / v.ca, 1),
             bien: 'Catetos iguales: θ = 45°, sea cual sea el tamaño.' },
@@ -566,6 +563,9 @@
           { texto: 'Arma otro triángulo de lados enteros, distinto del 3-4-5 inicial.',
             logrado: v => Number.isInteger(v.co) && Number.isInteger(v.ca) && casi(hipL(v), Math.round(hipL(v))) && !(v.co === 3 && v.ca === 4),
             bien: 'Lados enteros, cocientes limpios. ¿Alguna razón cambió frente al 3-4-5?' },
+          { texto: 'Guarda dos triángulos de distinto tamaño con el mismo seno.',
+            logrado: (v, gs) => gs.some(a => gs.some(b => a.co !== b.co && casi(senL(a), senL(b)))),
+            bien: 'Distinto tamaño, mismo ángulo, mismo seno: la razón no mira el tamaño.' },
         ],
         // El vértice B: de lado cambia CA; hacia arriba, CO.
         arrastres: [{ id: 'vertice-b', etiqueta: 'vértice B: CA de lado, CO hacia arriba', color: 'c-h',
@@ -586,9 +586,6 @@
         },
         // Retos: opGrande es el cateto rojo del grande que dibuja semL; senG, el seno de los dos.
         invitaciones: [
-          { texto: 'Guarda dos casos con el mismo θ y distinto k. Compara sus senos.',
-            logrado: (v, gs) => gs.some(a => gs.some(b => a.g === b.g && a.k !== b.k)),
-            bien: 'Los lados cambiaron con k; el seno, no. Depende solo de θ.' },
           { texto: 'Haz que el cateto rojo del grande mida justo 3.',
             logrado: v => casi(opGrande(v), 3),
             bien: 'Con 30°, el opuesto es media hipotenusa: 6 · 1/2 = 3.' },
@@ -598,6 +595,9 @@
           { texto: 'Consigue el cateto rojo más largo que permite la mesa.',
             logrado: v => casi(opGrande(v), opGrande({ g: 60, k: 3 })),
             bien: 'Mayor θ y mayor k alargan el opuesto; el seno solo sigue a θ.' },
+          { texto: 'Guarda dos casos con el mismo θ y distinto k. Compara sus senos.',
+            logrado: (v, gs) => gs.some(a => gs.some(b => a.g === b.g && a.k !== b.k)),
+            bien: 'Los lados cambiaron con k; el seno, no. Depende solo de θ.' },
         ],
         // La punta B del grande: su dirección es θ y su distancia a A, la hipotenusa 2k.
         arrastres: [{ id: 'punta', etiqueta: 'punta del triángulo grande: θ y k', color: 'c-o',
