@@ -394,7 +394,7 @@
   const mesaPoli = {
     id: 'dos-palabras', titulo: 'Fría y dura', pieza: 'rv-texto',
     consigna: 'Elige la palabra que falta y la oración. Arrastra un reemplazo al hueco y compara qué acepción pide cada oración.',
-    voz: 'La misma palabra, tres sentidos.',
+    voz: 'Una palabra polisémica: la misma forma, tres acepciones.',
     controles: [
       { id: 'w', etiqueta: 'Palabra', opciones: [{ valor: 'fria', texto: 'fría' }, { valor: 'dura', texto: 'dura' }] },
       { id: 'o', etiqueta: 'Oración', opciones: [{ valor: 0, texto: '1' }, { valor: 1, texto: '2' }, { valor: 2, texto: '3' }] },
@@ -413,7 +413,25 @@
       donde: val => RV().ancla(figPoli(val), `p-${POLI[val.w].ws[val.r]}`),
       mover: (pt, val) => { const ws = POLI[val.w].ws, id = RV().cercana(figPoli(val), pt, ws.map(w => `p-${w}`)); return { r: ws.indexOf(id.slice(2)) }; },
     }],
+    // Invitaciones: encajaPoli compara el reemplazo con el de la oración, como el sello «Encaja» del dibujo.
+    invitaciones: [
+      { texto: 'Con «dura», pon en una oración el reemplazo que encaja.',
+        logrado: val => val.w === 'dura' && encajaPoli(val),
+        bien: 'Las pistas de la oración eligieron la acepción, no la memoria.' },
+      { texto: 'Pon «helada» en una oración donde cambie el sentido.',
+        logrado: val => POLI[val.w].ws[val.r] === 'helada' && !encajaPoli(val),
+        bien: '«Helada» guarda la temperatura; esta oración pedía otra acepción.' },
+      { texto: 'Guarda dos oraciones de la misma palabra, cada una con su reemplazo justo.',
+        logrado: (val, guardados) => encajaPoli(val) && guardados.some(g => g.w === val.w && g.o !== val.o && encajaPoli(g)),
+        bien: 'Misma palabra, dos reemplazos distintos. ¿Qué pista decidió cada uno?' },
+      { texto: 'Guarda la misma acepción con «fría» y con «dura».',
+        logrado: (val, guardados) => encajaPoli(val) && guardados.some(g => g.w !== val.w && encajaPoli(g) && casoPoli(g).sentido === casoPoli(val).sentido),
+        bien: 'Dos palabras distintas que aquí hablan de lo mismo: el trato.' },
+    ],
   };
+  // Ayudas de los retos: el caso de la oración elegida y si el reemplazo encaja (lo mismo que decide el sello).
+  function casoPoli(val) { const P = POLI[val.w]; return P.casos[P.orden[val.o]]; }
+  function encajaPoli(val) { return casoPoli(val).ok === POLI[val.w].ws[val.r]; }
   // Escala de valoración: tres conductas, cuatro palabras cada una, del elogio a la crítica.
   const ESCALA = {
     peso: { o: ['Rosa es', 'y pesa poco para su altura.'], den: 'tiene poco peso', ws: ['esbelta', 'delgada', 'flaca', 'esquelética'] },
@@ -441,6 +459,19 @@
       donde: val => RV().ancla(figEscala(val.k), `p-${ESCALA[val.k].ws[val.n]}`),
       mover: (pt, val) => { const ws = ESCALA[val.k].ws; return { n: ws.indexOf(RV().cercana(figEscala(val.k), pt, ws.map(w => `p-${w}`)).slice(2)) }; },
     }],
+    // Invitaciones: la valoración de cada palabra sale de VALOR, la misma tabla que pone el sello de la fila.
+    invitaciones: [
+      { texto: 'Describe al vecino con la palabra que más lo critica.',
+        logrado: val => val.k === 'gasta' && val.n === VALOR.length - 1,
+        bien: '«Tacaño» dice lo mismo que «ahorrativo», pero lo juzga.' },
+      { texto: 'Encuentra para Rosa una palabra casi neutra.',
+        logrado: val => val.k === 'peso' && VALOR[val.n][1] === 'd',
+        bien: 'Describe el peso sin elogiar ni criticar mucho.' },
+      { texto: 'Guarda dos palabras para Pedro: una que lo elogie y otra que lo critique.',
+        logrado: (val, guardados) => val.k === 'insiste' && [VALOR[0][1], VALOR[VALOR.length - 1][1]]
+          .every(c => guardados.some(g => g.k === 'insiste' && VALOR[g.n][1] === c)),
+        bien: 'Lo que dice no cambió: insiste mucho. Cambió la connotación.' },
+    ],
   };
 
   return {
@@ -453,10 +484,41 @@
       pregunta: '¿Por qué un diccionario no basta para entender una oración?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Diccionario de autoridades)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/contextodiscursivo.htm' },
     },
+    // Glosario: las palabras con que el curso habla del sentido de las palabras en su oración.
+    glosario: [
+      { termino: 'acepción', def: 'Cada uno de los significados que puede tener una misma palabra.',
+        ejemplo: '«Fría» tiene una acepción de temperatura y otra de trato.', formas: ['acepción', 'acepciones'], ver: ['polisemia', 'contexto'] },
+      { termino: 'polisemia', def: 'Hecho de que una misma palabra tenga varios significados.',
+        ejemplo: '«Dura» es polisémica: piedra dura, crítica dura, semana dura.', formas: ['polisemia', 'polisémica', 'polisémicas', 'polisémico'], ver: ['acepción'] },
+      { termino: 'contexto', def: 'Lo que rodea a una palabra o a un texto y ayuda a entender su sentido.',
+        ejemplo: 'En «su respuesta fue fría y cortante», «cortante» muestra que se habla del trato.', ver: ['acepción'] },
+      { termino: 'denotación', def: 'Lo que una palabra describe o nombra, sin juicios.',
+        ejemplo: '«Delgada» y «esquelética» describen lo mismo: poco peso.', ver: ['connotación'] },
+      { termino: 'connotación', def: 'Valoración o asociación que una palabra suma a lo que describe.',
+        ejemplo: '«Esbelta» elogia; «esquelética» critica.', formas: ['connotación', 'connotaciones', 'connotar'], ver: ['denotación', 'valoración'] },
+      { termino: 'valoración', def: 'Juicio de elogio o de crítica que una palabra suma sobre lo que nombra.',
+        ejemplo: '«Perseverante» elogia a Pedro; «terco» lo critica, aunque digan lo mismo.', formas: ['valoración', 'valoraciones'], ver: ['connotación'] },
+      { termino: 'precisión léxica', def: 'Elegir la palabra que nombra justo lo que se quiere decir y encaja con toda la oración.',
+        ejemplo: '«Redactó un informe» es más exacto que «hizo un informe».', formas: ['precisión léxica', 'palabra precisa', 'palabras precisas'], ver: ['comodín'] },
+      { termino: 'comodín', def: 'Palabra tan general que encaja en casi cualquier oración y por eso informa poco.',
+        ejemplo: '«Hacer», «ver» y «cosa».', formas: ['comodín', 'comodines'], ver: ['precisión léxica'] },
+    ],
     laboratorio: [
       mesaPoli,
       mesaEscala,
-      Object.assign({ id: 'pistas', titulo: 'Las pistas de «inocuo»', pieza: 'rv-texto' }, inferencia.juega),
+      Object.assign({ id: 'pistas', titulo: 'Las pistas de «inocuo»', pieza: 'rv-texto',
+        // Retos: QUE_DICE es lo que la lectura en vivo dice de cada parte marcada.
+        invitaciones: [
+          { texto: 'Marca la parte del texto que dice qué significa «inocuo».',
+            logrado: val => QUE_DICE[val.p] === QUE_DICE.c,
+            bien: 'Tras los dos puntos viene la explicación: no hace daño.' },
+          { texto: 'Marca un detalle cercano que no ayuda a entender la palabra.',
+            logrado: val => QUE_DICE[val.p] === QUE_DICE.d,
+            bien: 'El frasco azul está cerca, pero no habla de la palabra.' },
+          { texto: 'Guarda la parte que explica y la que solo confirma, para compararlas.',
+            logrado: (val, guardados) => ['b', 'c'].every(p => guardados.some(g => g.p === p)),
+            bien: 'Una dice qué es; la otra, con «aunque», lo sostiene.' },
+        ] }, inferencia.juega),
     ],
     ideas: [acepcion, denotaConnota, precision, inferencia],
   };
