@@ -106,7 +106,7 @@
         notas: [{ t: `Con 3 pistas: ${ordenesL(3).length} órdenes · con 4: ${ordenesL(4).length}`, desde: 3 }],
       },
       pasos: [
-        { estado: { corte: 1 }, texto: 'Un orden que cumple las pistas 1, 2 y 3.' },
+        { estado: { corte: 1 }, texto: 'Ordenamiento lineal: un orden en fila que cumple las pistas 1, 2 y 3.' },
         { estado: { corte: 2 }, texto: 'Hay otros que también las cumplen: falta información.' },
         { estado: { corte: 3 }, texto: 'La pista 4 tacha el orden con Ana junto a Ciro.' },
         { estado: { corte: 3 }, texto: 'Se concluye solo lo que se repite en todos los órdenes que quedan.' },
@@ -210,7 +210,7 @@
     mira: {
       datos: Object.assign(mesa(5, ['Ana', 'Beto', '', '', ''], { colores: { 0: 'i', 1: 'o' }, flecha: true }), {}),
       pasos: [
-        { estado: { corte: 0 }, texto: 'Se sienta a Ana abajo: es la referencia.' },
+        { estado: { corte: 0 }, texto: 'En un ordenamiento circular, se sienta a Ana abajo: es la referencia.' },
         { estado: { corte: 0 }, texto: 'Mirando al centro, su derecha va en sentido contrario al reloj.' },
         { estado: { corte: 0 }, texto: 'Ubicada Ana, el resto se ordena como en una fila.', ecuacion: ['órdenes en la mesa = ', { llave: ['(n − 1)!'], nota: 'sin la referencia', color: 'c-i' }] },
       ],
@@ -366,6 +366,7 @@
     if (n % 2 === 0) col[(g + n / 2) % n] = 'd';
     return mesa(n, nombres, { colores: col });
   };
+  const derechaDe = val => (ronda(val).nodos.find(x => x.color === 'o') || {}).etiqueta;
   const mesaRonda = {
     id: 'mesa-redonda', titulo: 'Mesa redonda libre', pieza: 'rm-plano',
     consigna: 'Elige cuántos se sientan y arrastra a Ana. Mira quién queda a su derecha y quién enfrente.',
@@ -375,6 +376,22 @@
     ],
     dibujo: val => ({ datos: ronda(val), estado: {} }),
     lectura: val => [`Derecha de Ana: ${NOM8[1]} · enfrente: `, val.n % 2 ? 'nadie (son impares)' : NOM8[val.n / 2]],
+    // Retos: leen las sillas que pinta ronda(): Ana en turquesa (i), su derecha en naranja (o), enfrente en verde (d).
+    invitaciones: [
+      { texto: 'Gira la mesa hasta que Ana quede en la silla de más arriba.',
+        logrado: val => { const ns = ronda(val).nodos, ana = ns.find(x => x.color === 'i'); return ns.every(x => x.y >= ana.y - 1e-9); },
+        bien: 'Ana cambió de silla, pero su vecino de la derecha es el mismo.' },
+      { texto: 'Haz que Eva quede enfrente de Ana.',
+        logrado: val => ronda(val).nodos.some(x => x.color === 'd' && x.etiqueta === 'Eva'),
+        bien: 'Con 8 personas, enfrente queda a media vuelta: cuatro sillas más allá.' },
+      { texto: 'Sienta a tanta gente que nadie quede justo enfrente de Ana.',
+        logrado: val => !ronda(val).nodos.some(x => x.color === 'd'),
+        bien: 'Con un número impar, la media vuelta cae entre dos sillas.' },
+      { texto: 'Guarda dos casos con Ana en sillas distintas. ¿Quién queda a su derecha?',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => x.g % x.n !== y.g % y.n
+          && derechaDe(x) === derechaDe(y))),
+        bien: 'El mismo vecino en los dos: girar a todos no cambia el orden.' },
+    ],
     arrastres: [{ id: 'ana', etiqueta: 'silla de Ana', color: 'c-i',
       donde: val => enSilla(ronda(val), val.g % val.n),
       mover: (pt, val) => { const k = sillaCercana(ronda(val), pt); return k === val.g % val.n ? {} : { g: k }; } }],
@@ -400,6 +417,10 @@
       aristas: [{ de: 'q' + ana, a: 'q' + fr, color: 'o', grosor: 'variable' }], frente: fr };
   }
   const datosCuad = val => { const d = cuadradaK(val.k, (val.s - 1) % (4 * val.k)); delete d.frente; return d; };
+  const anaCuad = val => (val.s - 1) % (4 * val.k);
+  const frenteCuad = val => cuadradaK(val.k, anaCuad(val)).frente + 1;
+  const vecinosCuad = val => cuadradaK(val.k, anaCuad(val)).nodos.filter(x => x.color === 'd').length;
+  const MAX_VECINOS = Math.max(...[1, 2, 3].map(k => vecinosCuad({ k, s: 1 })));
   const mesaCuad = {
     id: 'mesa-cuadrada-libre', titulo: 'Mesa cuadrada libre', pieza: 'rm-plano',
     consigna: 'Elige cuántas sillas hay por lado y arrastra a Ana. En naranja, quien está enfrente; en verde, quien comparte su lado.',
@@ -409,6 +430,21 @@
     ],
     dibujo: val => ({ datos: datosCuad(val), estado: {} }),
     lectura: val => { const a = (val.s - 1) % (4 * val.k); return [`Silla ${a + 1}: enfrente la ${cuadradaK(val.k, a).frente + 1}`, val.k > 1 ? ` · su lado: ${plural(val.k - 1, 'silla', 'sillas')} más` : ' · sola en su lado']; },
+    // Retos: usan cuadradaK(), la misma que numera las sillas y marca frente (o) y lado (d).
+    invitaciones: [
+      { texto: 'Con dos sillas por lado, sienta a Ana frente a la silla 3.',
+        logrado: val => val.k === 2 && frenteCuad(val) === 3,
+        bien: 'Frente a la 3 está la 8: se cruza la mesa, no se cuentan sillas.' },
+      { texto: 'Deja a Ana sola en su lado de la mesa.',
+        logrado: val => vecinosCuad(val) === 0,
+        bien: 'Con una silla por lado, la cuadrada se parece a la redonda de 4.' },
+      { texto: 'Busca la mesa con más gente compartiendo el lado de Ana.',
+        logrado: val => vecinosCuad(val) === MAX_VECINOS,
+        bien: 'Más sillas por lado, más vecinos de lado. Frente sigue siendo una sola.' },
+      { texto: 'Guarda dos mesas distintas con Ana en la silla 1 y compara quién queda enfrente.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => x.k !== y.k && anaCuad(x) === 0 && anaCuad(y) === 0)),
+        bien: 'Frente a la 1 cambia con la mesa: depende de cuántas sillas hay por lado.' },
+    ],
     arrastres: [{ id: 'ana', etiqueta: 'silla de Ana', color: 'c-i',
       donde: val => enSilla(datosCuad(val), (val.s - 1) % (4 * val.k)),
       mover: (pt, val) => { const k = sillaCercana(datosCuad(val), pt); return k === (val.s - 1) % (4 * val.k) ? {} : { s: k + 1 }; } }],
@@ -417,12 +453,32 @@
   // Sin arrastre: las pistas son frases.
   const SINO = [{ valor: 1, texto: 'Sí' }, { valor: 0, texto: 'No' }];
   const ordenesSel = val => permutaciones(GENTE).filter(p => PISTAS_L.every((c, k) => !val['p' + k] || c.ok(p)));
+  const nPistas = val => PISTAS_L.filter((_, k) => val['p' + k]).length;
+  const TODAS = Object.fromEntries(PISTAS_L.map((_, k) => ['p' + k, 1]));
+  // Lo menos que dejan dos pistas juntas, buscado entre todos los pares.
+  const MIN_DOS = Math.min(...PISTAS_L.flatMap((_, i) => PISTAS_L.map((_, j) => (i < j ? ordenesSel({ ['p' + i]: 1, ['p' + j]: 1 }).length : Infinity))));
   const mesaPistas = {
     id: 'pistas-a-elegir', titulo: 'Pistas a elegir', pieza: 'rm-tablero',
     consigna: 'Pon o quita cada pista de la fila de cuatro. ¿Qué pistas sobran y cuáles hacen falta?',
     controles: PISTAS_L.map((c, k) => ({ id: 'p' + k, etiqueta: c.t, opciones: SINO })),
     dibujo: val => ({ datos: filaOrdenes(ordenesSel(val)), estado: {} }),
     lectura: val => { const n = PISTAS_L.filter((_, k) => val['p' + k]).length, o = ordenesSel(val).length; return [`${plural(n, 'pista', 'pistas')}: `, plural(o, 'orden posible', 'órdenes posibles')]; },
+    // Retos: cuentan con ordenesSel(), el mismo filtro que llena el tablero de órdenes.
+    invitaciones: [
+      { texto: 'Quita una pista sin que cambie el número de órdenes posibles.',
+        logrado: val => nPistas(val) === PISTAS_L.length - 1 && ordenesSel(val).length === ordenesSel(TODAS).length,
+        bien: 'Esa pista sobraba: lo que tacha ya lo tachaban las otras.' },
+      { texto: 'Quita todas las pistas y mira cuántos órdenes caben en la fila.',
+        logrado: val => nPistas(val) === 0,
+        bien: `Sin pistas, ${permutaciones(GENTE).length} órdenes: 4 · 3 · 2 · 1. Cada pista va tachando.` },
+      { texto: 'Deja solo dos pistas que juntas dejen la menor cantidad de órdenes.',
+        logrado: val => nPistas(val) === 2 && ordenesSel(val).length === MIN_DOS,
+        bien: 'Dos pistas que tachan cosas distintas rinden más que dos parecidas.' },
+      { texto: 'Guarda dos casos con una sola pista cada uno, distintas, y compara sus órdenes.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => nPistas(x) === 1 && nPistas(y) === 1
+          && PISTAS_L.some((_, k) => x['p' + k] !== y['p' + k]))),
+        bien: `Cada una sola deja ${ordenesSel({ p0: 1 }).length} de ${permutaciones(GENTE).length}. Ninguna basta: hacen falta juntas.` },
+    ],
   };
 
   return {
@@ -430,6 +486,27 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-tablero.js', '/nucleo/kit/piezas/rm-plano.js'],
+    // Glosario (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso.
+    glosario: [
+      { termino: 'ordenamiento lineal', def: 'Ubicar personas o cosas en una fila, de un extremo al otro, según unas pistas.',
+        formas: ['ordenamiento lineal'], ver: ['a la izquierda de', 'junto a'] },
+      { termino: 'ordenamiento circular', def: 'Ubicar personas alrededor de una mesa redonda, donde no hay primer ni último lugar.',
+        formas: ['ordenamiento circular'], ver: ['referencia', 'sentido antihorario'] },
+      { termino: 'referencia', def: 'Persona o lugar fijo desde el que se ubica a todos los demás.',
+        ejemplo: 'Con Ana fija abajo, «a su derecha» ya señala una sola silla.', ver: ['ordenamiento circular'] },
+      { termino: 'a la izquierda de', def: 'En una fila, en algún lugar antes, sin decir cuántos lugares hay de por medio.',
+        formas: ['a la izquierda de'], ejemplo: 'Eva en el 1.º y Fito en el 4.º: Eva está a la izquierda de Fito.', ver: ['inmediatamente', 'junto a'] },
+      { termino: 'a la derecha de', def: 'Del lado de la mano derecha de quien mira. En la mesa redonda, mirando al centro, va contra el reloj.',
+        formas: ['a la derecha de'], ver: ['sentido antihorario'] },
+      { termino: 'inmediatamente', def: 'Sin nadie en medio: en el lugar de al lado.',
+        ejemplo: 'Eva inmediatamente a la izquierda de Fito: Eva en el 2.º, Fito en el 3.º.', ver: ['junto a'] },
+      { termino: 'junto a', def: 'Al lado, sin nadie en medio, sea a la izquierda o a la derecha.',
+        formas: ['junto a'], ver: ['inmediatamente'] },
+      { termino: 'frente a', def: 'En una mesa, en la silla del otro lado: la que se mira cruzando la mesa.',
+        formas: ['frente a', 'enfrente'], ejemplo: 'En una mesa redonda de 8 sillas, frente a la 1 está la 5.' },
+      { termino: 'sentido antihorario', def: 'Giro contrario al de las agujas del reloj.',
+        formas: ['sentido antihorario', 'antihorario', 'sentido contrario al reloj'], ver: ['a la derecha de'] },
+    ],
     // Laboratorio: la mesa redonda de 4 a 8 con derecha y frente, la cuadrada con 1 a 3 sillas por lado y las pistas
     // de la fila puestas o quitadas una a una.
     laboratorio: [mesaRonda, mesaCuad, mesaPistas],
