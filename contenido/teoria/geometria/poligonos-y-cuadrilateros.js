@@ -594,6 +594,13 @@
         { de: 'M0', a: 'M1', color: 'd', paralela: 1 }, { de: 'M2', a: 'M3', color: 'd', paralela: 1 }, { de: 'M1', a: 'M2', color: 'i', paralela: 2 }, { de: 'M3', a: 'M0', color: 'i', paralela: 2 }],
     };
   };
+  const verticesCuad = v => [[0, 0], [8, 0], [v.cx, v.cy], [v.dx, v.dy]];
+  // Lados MN y NP del paralelogramo de adentro, y el coseno del ángulo en N (0 si es recto).
+  const ladosAdentro = v => { const M = medios(...verticesCuad(v)); return [U.dist(M[0], M[1]), U.dist(M[1], M[2])]; };
+  const cruceAdentro = v => {
+    const M = medios(...verticesCuad(v)), p = [M[0][0] - M[1][0], M[0][1] - M[1][1]], q = [M[2][0] - M[1][0], M[2][1] - M[1][1]];
+    return (p[0] * q[0] + p[1] * q[1]) / (Math.hypot(...p) * Math.hypot(...q) || 1);
+  };
   const mesaCuad = {
     id: 'cuadrilatero-libre', titulo: 'Cóncavo, cruzado o convexo', pieza: 'geo-figura',
     consigna: 'Arrastra C y D a cualquier lado: hasta un cuadrilátero cóncavo o cruzado. Mira si adentro sigue el paralelogramo.',
@@ -616,6 +623,26 @@
       const V = [[0, 0], [8, 0], [v.cx, v.cy], [v.dx, v.dy]], M = medios(...V);
       return [`${tipoCuad(V)}`, sep, `MN = PQ = ${f(U.dist(M[0], M[1]), 2)}`, sep, `NP = QM = ${f(U.dist(M[1], M[2]), 2)}`];
     },
+    // Retos: el tipo sale de tipoCuad y los lados de adentro, de los puntos medios que se dibujan (medios).
+    invitaciones: [
+      { texto: 'Convierte ABCD en un cuadrilátero cóncavo, con un entrante.',
+        logrado: v => tipoCuad(verticesCuad(v)) === 'cóncavo',
+        bien: 'Con entrante y todo, adentro queda un paralelogramo. Comprueba sus lados opuestos.' },
+      { texto: 'Cruza dos lados de ABCD: haz un cuadrilátero cruzado.',
+        logrado: v => tipoCuad(verticesCuad(v)) === 'cruzado',
+        bien: 'Ni cruzado se rompe: cada lado de adentro es base media de un triángulo.' },
+      { texto: 'Consigue que el paralelogramo de adentro sea un rombo.',
+        logrado: v => { const L = ladosAdentro(v); return Math.abs(L[0] - L[1]) < 1e-9; },
+        bien: 'Rombo adentro porque AC y BD miden igual. Cada lado es media diagonal.' },
+      { texto: 'Consigue que el paralelogramo de adentro sea un rectángulo.',
+        logrado: v => Math.abs(cruceAdentro(v)) < 1e-9,
+        bien: 'Ángulo recto adentro: las diagonales AC y BD son perpendiculares.' },
+      { texto: 'Guarda un caso convexo y otro cruzado. Compara las figuras de adentro.',
+        // La grilla de esta mesa es grande: el reto pide los dos tipos, no medidas exactas iguales.
+        logrado: (v, guardados) => guardados.some(g => g.cx === v.cx && g.cy === v.cy && g.dx === v.dx && g.dy === v.dy)
+          && ['convexo', 'cruzado'].every(t => guardados.some(g => tipoCuad(verticesCuad(g)) === t)),
+        bien: 'En los dos hay un paralelogramo: sus lados miden la mitad de AC y BD.' },
+    ],
   };
 
   // Mesa 2, más rica que la idea 3: el ángulo va de 5° en 5° y los dos lados se cambian; se dibujan las diagonales con
@@ -639,6 +666,17 @@
       angulos: [{ en: 'A', de: 'B', a: 'D', color: 'd', texto: `${t}°` }, { en: 'O', de: 'C', a: 'D', color: 'h', radio: 16, texto: `${f(180 - cruce, 0)}°` }],
     };
   };
+  // La diagonal AC más larga entre todos los casos de la mesa (se calcula una vez, con los controles de la mesa).
+  let acMax;
+  const acMaxima = () => {
+    if (acMax === undefined) {
+      const rango = c => Array.from({ length: Math.round((c.max - c.min) / c.paso) + 1 }, (_, k) => c.min + k * c.paso);
+      const [ct, ca, cb] = mesaPara.controles;
+      acMax = 0;
+      for (const t of rango(ct)) for (const a of rango(ca)) for (const b of rango(cb)) acMax = Math.max(acMax, diagonalesDe(t, a, b).ac);
+    }
+    return acMax;
+  };
   const mesaPara = {
     id: 'paralelogramo-libre', titulo: 'Diagonales del paralelogramo', pieza: 'geo-figura',
     consigna: 'Arrastra D y B. Busca diagonales iguales, luego un cruce de 90°, luego las dos cosas. Lee el nombre que gana.',
@@ -661,13 +699,41 @@
       // AC − BD = 0 dice «diagonales iguales» sin comparar dos números; el cruce va escrito en la figura, en O.
       return [nombreLibre(v.t, v.a, v.b), sep, `AC − BD = ${f(Math.abs(ac - bd) < 1e-9 ? 0 : ac - bd, 2)}`];
     },
+    // Retos: las diagonales y su cruce salen de diagonalesDe, la misma función que dibuja.
+    invitaciones: [
+      { texto: 'Consigue diagonales iguales sin que la figura sea un cuadrado.',
+        logrado: v => { const d = diagonalesDe(v.t, v.a, v.b); return Math.abs(d.ac - d.bd) < 1e-9 && v.a !== v.b; },
+        bien: 'Diagonales iguales: ∠A quedó recto. Es un rectángulo, con cualquier par de lados.' },
+      { texto: 'Haz que las diagonales se crucen a 90° con ∠A distinto de 90°.',
+        logrado: v => Math.abs(diagonalesDe(v.t, v.a, v.b).cruce - 90) < 1e-6 && v.t !== 90,
+        bien: 'Cruce recto: los cuatro lados son iguales. Es un rombo, sin importar ∠A.' },
+      { texto: 'Logra las dos cosas a la vez: diagonales iguales y cruce de 90°.',
+        logrado: v => { const d = diagonalesDe(v.t, v.a, v.b); return Math.abs(d.ac - d.bd) < 1e-9 && Math.abs(d.cruce - 90) < 1e-6; },
+        bien: 'Cumple las dos condiciones: el cuadrado es rectángulo y también rombo.' },
+      { texto: 'Busca la diagonal AC más larga que permite la mesa.',
+        // La más larga de la grilla: se recorre la grilla real de la mesa con diagonalesDe.
+        logrado: v => Math.abs(diagonalesDe(v.t, v.a, v.b).ac - acMaxima()) < 1e-9,
+        bien: 'AC queda frente a ∠B: cuanto más abierto ∠B, más larga AC.' },
+      { texto: 'Guarda dos casos con los mismos lados y ∠A que sumen 180°.',
+        logrado: (v, guardados) => v.t !== 90 && guardados.some(g => g.t === v.t && g.a === v.a && g.b === v.b)
+          && guardados.some(g => g.a === v.a && g.b === v.b && g.t + v.t === 180),
+        bien: 'Las diagonales se intercambian: la AC de uno es la BD del otro.' },
+    ],
   };
 
   // Mesa 3, más rica que la idea 4: D se mueve libre (posición y altura) y C estira la base menor, que puede salirse
   // por encima de B. La lectura da la mediana y el tramo central a la vez.
-  const trapLibre = (dx, h, b) => {
+  const puntosTrap = (dx, h, b) => {
     const A = [0, 0], Bb = [10, 0], D = [dx, h], C = [dx + b, h];
-    const M = U.medio(A, D), N = U.medio(Bb, C), P = U.medio(A, C), Q = U.medio(Bb, D);
+    return { A, Bb, C, D, M: U.medio(A, D), N: U.medio(Bb, C), P: U.medio(A, C), Q: U.medio(Bb, D) };
+  };
+  // Medidas que se leen en la figura: mediana, tramo PQ y los dos lados no paralelos.
+  const medTrap = v => {
+    const p = puntosTrap(v.dx, v.h, v.b);
+    return { mn: U.dist(p.M, p.N), pq: U.dist(p.P, p.Q), ad: U.dist(p.A, p.D), bc: U.dist(p.Bb, p.C) };
+  };
+  const trapLibre = (dx, h, b) => {
+    const { C, D, M, N, P, Q } = puntosTrap(dx, h, b);
     return {
       alt: `Trapecio de bases 10 y ${f(b)} y altura ${f(h)}: la mediana mide ${f((10 + b) / 2)} y el tramo entre las diagonales, ${f((10 - b) / 2)}`,
       vista: { x: [-3.6, 14.6], y: [-0.8, 6.6] },
@@ -697,6 +763,35 @@
         mover: (q, v) => ({ b: alPlano(trapLibre(v.dx, v.h, v.b), q)[0] - v.dx }) },
     ],
     lectura: v => [{ v: 'c-o', t: 'MN' }, ` = ${f((10 + v.b) / 2, 2)}`, sep, { v: 'c-h', t: 'PQ' }, ` = ${f((10 - v.b) / 2, 2)}`],
+    // Retos: MN, PQ y los lados salen de los puntos que dibuja trapLibre (puntosTrap), no de la fórmula.
+    invitaciones: [
+      { texto: 'Haz que la mediana MN mida justo 8.',
+        logrado: v => Math.abs(medTrap(v).mn - 8) < 1e-9,
+        bien: 'MN = 8 con b = 6: la semisuma de 10 y 6. ¿Importó la altura?' },
+      { texto: 'Busca el tramo rojo PQ más corto que deja la mesa.',
+        logrado: v => Math.abs(medTrap(v).pq - pqMinimo()) < 1e-9,
+        bien: 'Con bases casi iguales, PQ casi desaparece. ¿Qué pasaría si b midiera 10?' },
+      { texto: 'Haz un trapecio isósceles: AD y BC del mismo largo.',
+        logrado: v => { const m = medTrap(v); return Math.abs(m.ad - m.bc) < 1e-9; },
+        bien: 'Lados no paralelos iguales. MN sigue dependiendo solo de las bases.' },
+      { texto: 'Estira la base menor hasta que C pase más allá de B.',
+        logrado: v => v.dx + v.b > 10,
+        bien: 'C pasó más allá de B y la mediana sigue siendo la semisuma de las bases.' },
+      { texto: 'Guarda dos casos con la misma b, otra altura y otro corrimiento.',
+        logrado: (v, guardados) => guardados.some(g => g.dx === v.dx && g.h === v.h && g.b === v.b)
+          && guardados.some(g => g.b === v.b && g.h !== v.h && g.dx !== v.dx && Math.abs(medTrap(g).mn - medTrap(v).mn) < 1e-9),
+        bien: 'Misma MN en los dos: la altura y el corrimiento no la mueven.' },
+    ],
+  };
+  // El PQ más corto entre todos los casos de la mesa (con sus controles reales).
+  let pqMin;
+  const pqMinimo = () => {
+    if (pqMin === undefined) {
+      const c = mesaTrap.controles.find(x => x.id === 'b');
+      pqMin = Infinity;
+      for (let b = c.min; b <= c.max + 1e-9; b += c.paso) pqMin = Math.min(pqMin, medTrap({ dx: 0, h: 4, b }).pq);
+    }
+    return pqMin;
   };
 
   return {
@@ -709,6 +804,40 @@
       pregunta: '¿Qué línea convierte una figura nueva en triángulos conocidos?',
       fuente: { titulo: 'Euclides, Elementos I.34 (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookI/propI34.html' },
     },
+    // Glosario (docs/teoria.md, 4d): lo que esta unidad estrena en el curso. Ángulo interior y exterior, diagonal,
+    // paralelogramo, cuadrado, mediana y base media se definen en unidades anteriores (triángulos, segmentos, congruencia).
+    glosario: [
+      { termino: 'polígono', def: 'Figura plana cerrada hecha de segmentos rectos, unidos de dos en dos por sus extremos.',
+        ejemplo: 'Un pentágono tiene 5 lados, 5 vértices y sus ángulos interiores suman 540°.', ver: ['polígono convexo', 'cuadrilátero'] },
+      { termino: 'polígono convexo', formas: ['polígono convexo', 'polígonos convexos'],
+        def: 'Figura de lados rectos sin entrantes: cada ángulo interior mide menos de 180°.',
+        ejemplo: 'Un rectángulo lo es: sus cuatro ángulos miden 90°.', ver: ['cóncavo'] },
+      { termino: 'cóncavo', formas: ['cóncavo', 'cóncavos', 'cóncava', 'cóncavas'],
+        def: 'Dicho de un polígono con un entrante: al menos un ángulo interior mide más de 180°.',
+        ejemplo: 'Una punta de flecha de cuatro lados: el vértice del entrante pasa de 180°.', ver: ['polígono convexo'] },
+      { termino: 'cuadrilátero cruzado', formas: ['cuadrilátero cruzado', 'cuadriláteros cruzados', 'cruzado'],
+        def: 'Cuatro segmentos que se cierran, pero dos lados se cortan entre sí, como un lazo.',
+        ver: ['cuadrilátero'] },
+      { termino: 'cuadrilátero', def: 'Polígono de cuatro lados: tiene cuatro vértices, cuatro ángulos y dos diagonales.',
+        ejemplo: 'Sus ángulos interiores suman (4 − 2) · 180° = 360°.', ver: ['trapecio', 'trapezoide', 'rombo'] },
+      { termino: 'rombo', def: 'Paralelogramo con sus cuatro lados iguales. Sus diagonales se cortan en ángulo recto.',
+        ejemplo: 'Un cuadrado es un rombo que además tiene ángulos rectos.', ver: ['cuadrilátero'] },
+      { termino: 'trapecio', def: 'Cuadrilátero con exactamente un par de lados paralelos, que se llaman bases.',
+        ejemplo: 'Bases de 10 y 4: la mediana mide (10 + 4)/2 = 7.', ver: ['mediana del trapecio', 'trapezoide'] },
+      { termino: 'trapezoide', def: 'Cuadrilátero sin ningún par de lados paralelos.',
+        ejemplo: 'Diagonales de 10 y 14: el paralelogramo de sus puntos medios tiene perímetro 24.', ver: ['trapecio'] },
+      { termino: 'mediana del trapecio', formas: ['mediana del trapecio', 'medianas del trapecio', 'mediana MN'],
+        def: 'Segmento entre los puntos medios de los lados no paralelos. Mide la semisuma de las bases.',
+        ejemplo: 'Bases 10 y 6: (10 + 6)/2 = 8.', ver: ['trapecio'] },
+      { termino: 'semisuma', def: 'La mitad de la suma de dos cantidades.', ejemplo: 'Semisuma de 10 y 4: (10 + 4)/2 = 7.', ver: ['semidiferencia'] },
+      { termino: 'semidiferencia', def: 'La mitad de la resta de dos cantidades: la mayor menos la menor.',
+        ejemplo: 'Semidiferencia de 10 y 4: (10 − 4)/2 = 3.', ver: ['semisuma'] },
+      { termino: 'perímetro', def: 'Suma de las longitudes de todos los lados de una figura.',
+        ejemplo: 'Lados 5, 3, 5 y 3: 5 + 3 + 5 + 3 = 16.' },
+      { termino: 'hexágono', def: 'Polígono de seis lados.', ejemplo: 'Sus ángulos interiores suman (6 − 2) · 180° = 720°.' },
+      { termino: 'octógono', def: 'Polígono de ocho lados.', ejemplo: 'Sus ángulos interiores suman (8 − 2) · 180° = 1080°.' },
+      { termino: 'decágono', def: 'Polígono de diez lados.', ejemplo: 'Tiene 10 · (10 − 3)/2 = 35 diagonales.' },
+    ],
     // Laboratorio: las tres mesas son más ricas que sus ideas (cuadrilátero cóncavo y cruzado, paralelogramo con las
     // diagonales medidas y trapecio con los dos extremos de la base menor libres).
     laboratorio: [mesaCuad, mesaPara, mesaTrap],
