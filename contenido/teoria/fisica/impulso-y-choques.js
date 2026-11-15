@@ -59,9 +59,10 @@
   });
   const pulso = (Fm, T, t0 = 0) => [[t0, 0], [t0 + T / 2, Fm], [t0 + T, 0]];
   // El golpe del juego: triángulo de pico Fm y duración T, con su área (el impulso) rotulada.
+  const areaGolpe = (Fm, T, forma = 'tri') => (forma === 'rect' ? Fm * T : Fm * T / 2);
   const golpe = (Fm, T, forma = 'tri', fmax = 50) => {
     const pts = forma === 'rect' ? [[0, 0], [0, Fm], [T, Fm], [T, 0]] : pulso(Fm, T);
-    const J = forma === 'rect' ? Fm * T : Fm * T / 2;
+    const J = areaGolpe(Fm, T, forma);
     return Object.assign(ejeFt(0.6, fmax), { curvas: [{ puntos: pts, color: 'h' }], areas: [{ puntos: pts, color: 'i', rotulo: `${f(J)} N·s` }] });
   };
   const impulso = {
@@ -201,7 +202,7 @@
       ],
     },
     regla: {
-      texto: 'Si sobre el sistema no actúa impulso externo, la cantidad de movimiento total se conserva: la suma de m·v, con signo, es la misma antes y después.',
+      texto: 'En un sistema aislado, sin impulso externo, la cantidad de movimiento total se conserva: la suma de m·v, con signo, es la misma antes y después.',
       ecuacion: [{ llave: [{ sub: ['m', 'A'] }, { sub: [v, 'A'] }, ' + ', { sub: ['m', 'B'] }, { sub: [v, 'B'] }], nota: 'antes', color: 'c-i' }, ' = ', { llave: [{ sub: ['m', 'A'] }, { sub: [v, "A'"] }, ' + ', { sub: ['m', 'B'] }, { sub: [v, "B'"] }], nota: 'después', color: 'c-i' }],
       condicion: 'el impulso de las fuerzas externas es nulo o despreciable en ese intervalo. Las velocidades llevan signo.',
     },
@@ -286,7 +287,7 @@
       datos: rielChoque(0, 2),
       pasos: [
         { estado: { corte: 0 }, texto: 'Antes: 2 kg a 4 m/s.', ecuacion: [p, ' = 2 · 4 = 8 kg·m/s', '   ·   ', 'K = ½ · 2 · ', { sup: ['4', '2'] }, ' = 16 J'] },
-        { estado: { corte: 1 }, texto: 'Salen pegados: los 4 kg comparten la cantidad de movimiento.', ecuacion: [v, ' = 8 / 4 = 2 m/s'] },
+        { estado: { corte: 1 }, texto: 'Salen pegados (perfectamente inelástico): los 4 kg comparten la cantidad de movimiento.', ecuacion: [v, ' = 8 / 4 = 2 m/s'] },
         { estado: { corte: 1 }, texto: 'La energía cinética después es la mitad.', ecuacion: ['K = ½ · 4 · ', { sup: ['2', '2'] }, ' = 8 J'] },
         { estado: { corte: 1 }, texto: 'Elástico (e = 1): A se detiene y B sale con los 16 J.', ecuacion: ['e = 1:   ', { sub: [v, "A'"] }, ' = 0', '   ·   ', { sub: [v, "B'"] }, ' = 4 m/s'] },
       ],
@@ -520,12 +521,51 @@
   };
   // Centro de masa libre: las dos masas se arrastran por la regla.
   const cmLibre = val => { const cs = [{ x: val.x1, m: val.m1 }, { x: val.x2, m: val.m2 }]; return rectaCM(cs, xcm(cs), { min: -2, max: 12 }); };
+  // Para los retos: la misma cuenta que dibuja cada mesa. `guardado` dice si el caso actual ya se guardó.
+  const salidaGolpe = val => areaGolpe(val.F, val.T, val.forma) / val.m;
+  const xcmLibre = val => xcm([{ x: val.x1, m: val.m1 }, { x: val.x2, m: val.m2 }]);
+  const guardado = (val, gs, claves) => gs.some(g => claves.every(c => g[c] === val[c]));
+  // La mayor pérdida de energía cinética que dan los controles del choque libre (pegados, e = 0), calculada una vez.
+  let perdidaMax = null;
+  const PERDIDA_MAX = () => {
+    if (perdidaMax === null) {
+      perdidaMax = 0;
+      for (let vA = 1; vA <= 6; vA++) for (let vB = -3; vB <= 3; vB++) for (let mA = 1; mA <= 4; mA++) for (let mB = 1; mB <= 4; mB++) {
+        const c = choqueLibre({ vA, vB, mA, mB, e: 0 });
+        if (c.choca) perdidaMax = Math.max(perdidaMax, c.K0 - c.K1);
+      }
+    }
+    return perdidaMax;
+  };
 
   return {
     unidad: 'fisica.impulso-y-choques',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-riel.js', '/nucleo/kit/piezas/torre.js', '/nucleo/kit/piezas/recta.js'],
+    // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso.
+    glosario: [
+      { termino: 'impulso', simbolo: 'J', medida: 'N·s', def: 'Efecto de una fuerza que actúa durante un tiempo: el área bajo la gráfica F–t.',
+        ejemplo: 'Golpe triangular de 40 N que dura 0,3 s: J = ½ · 40 · 0,3 = 6 N·s.', ver: ['cantidad de movimiento'] },
+      { termino: 'cantidad de movimiento', simbolo: 'p', medida: 'kg·m/s', def: 'Masa por velocidad de un cuerpo; apunta hacia donde va. El impulso neto la cambia.',
+        ejemplo: '2 kg a 4 m/s: p = 2 · 4 = 8 kg·m/s.', ver: ['impulso', 'velocidad'] },
+      { termino: 'sistema aislado', def: 'Grupo de cuerpos sobre el que nada de afuera influye: solo actúan entre ellos.',
+        ver: ['fuerza externa', 'cantidad de movimiento'] },
+      { termino: 'fuerza interna', formas: ['fuerza interna', 'fuerzas internas'], def: 'Fuerza que un cuerpo del grupo hace sobre otro del mismo grupo. No cambia la cantidad de movimiento total.',
+        ejemplo: 'El resorte entre dos carritos los separa, pero su p total sigue en 0.', ver: ['fuerza externa'] },
+      { termino: 'fuerza externa', formas: ['fuerza externa', 'fuerzas externas', 'impulso externo'], def: 'Fuerza que algo de fuera del grupo hace sobre él. Su impulso sí cambia la cantidad de movimiento total.',
+        ver: ['fuerza interna', 'sistema aislado'] },
+      { termino: 'centro de masa', simbolo: 'xcm', medida: 'm', def: 'Punto promedio de las posiciones de un grupo de cuerpos, donde cada uno pesa según su masa.',
+        ejemplo: '3 kg en 0 y 1 kg en 8 m: xcm = 8 / 4 = 2 m.' },
+      { termino: 'choque elástico', formas: ['choque elástico', 'choques elásticos'], def: 'Choque en el que la energía cinética total de después es igual a la de antes; e = 1.',
+        ejemplo: '2 kg a 4 m/s contra 2 kg quieto: A se detiene y B sale a 4 m/s.', ver: ['coeficiente de restitución'] },
+      { termino: 'choque inelástico', formas: ['choque inelástico', 'choques inelásticos', 'inelástico', 'inelásticos'], def: 'Choque en el que parte de la energía cinética se vuelve calor y deformación; e es menor que 1.',
+        ver: ['choque elástico', 'choque perfectamente inelástico'] },
+      { termino: 'choque perfectamente inelástico', formas: ['choque perfectamente inelástico', 'perfectamente inelástico'], def: 'Choque en el que los cuerpos salen pegados, con una sola velocidad; e = 0.',
+        ejemplo: '2 kg a 4 m/s se pega a 2 kg quieto: salen juntos a 2 m/s.', ver: ['choque inelástico'] },
+      { termino: 'coeficiente de restitución', simbolo: 'e', def: 'Cociente entre la rapidez con que dos cuerpos se separan y la rapidez con que se acercaban.',
+        ejemplo: 'Llega al suelo a 20 m/s y rebota a 10 m/s: e = 0,5.', ver: ['choque elástico'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. Cada mesa suelta lo que su idea deja fijo: la masa y la forma del
     // golpe, la velocidad de los dos carritos (también de frente) y el lugar de cada masa.
     laboratorio: [
@@ -539,7 +579,7 @@
           { id: 'm', etiqueta: 'masa', min: 0.25, max: 2, paso: 0.25, inicio: 0.5, unidad: 'kg', decimales: 2 },
         ],
         dibujo: val => ({ datos: golpe(val.F, val.T, val.forma), estado: {} }),
-        lectura: val => { const J = val.forma === 'rect' ? val.F * val.T : val.F * val.T / 2; return [`J = ${f(J)}\u00a0N·s con ${f(val.m)}\u00a0kg → `, v, ` = ${f(J / val.m)}\u00a0m/s`]; },
+        lectura: val => { const J = areaGolpe(val.F, val.T, val.forma); return [`J = ${f(J)}\u00a0N·s con ${f(val.m)}\u00a0kg → `, v, ` = ${f(J / val.m)}\u00a0m/s`]; },
         arrastres: [
           { id: 'pico', etiqueta: 'altura de la fuerza', color: 'c-h',
             donde: val => { const g = PZ('ejes').geometria(golpe(val.F, val.T, val.forma)); return { x: g.X(val.T / 2), y: g.Y(val.F) }; },
@@ -548,16 +588,33 @@
             donde: val => { const g = PZ('ejes').geometria(golpe(val.F, val.T, val.forma)); return { x: g.X(val.T), y: g.Y(0) }; },
             mover: (pt, val) => ({ T: PZ('ejes').geometria(golpe(val.F, val.T, val.forma)).Xi(pt.x) }) },
         ],
+        invitaciones: [
+          { texto: 'Guarda un triángulo y un rectángulo que den el mismo impulso.',
+            logrado: (val, guardados) => guardado(val, guardados, ['forma', 'F', 'T', 'm'])
+              && guardados.some(g => g.forma !== val.forma && Math.abs(areaGolpe(g.F, g.T, g.forma) - areaGolpe(val.F, val.T, val.forma)) < 1e-9),
+            bien: 'Formas distintas, la misma área: cuenta el impulso, no el dibujo.' },
+          { texto: 'Haz que la pelota salga justo a 20 m/s.',
+            logrado: val => Math.abs(salidaGolpe(val) - 20) < 1e-9,
+            bien: 'Hay varias maneras: más masa pide más área. ¿Encontraste otra?' },
+          { texto: 'Con un golpe triangular, consigue la mayor rapidez de salida.',
+            logrado: val => val.forma === 'tri' && salidaGolpe(val) >= salidaGolpe({ forma: 'tri', F: 50, T: 0.5, m: 0.25 }) - 1e-9,
+            bien: 'Pico alto, golpe largo y masa chica. ¿Cuál de las tres pesa más?' },
+          { texto: 'Con solo 10 N de pico, lanza la pelota a más de 5 m/s.',
+            logrado: val => val.F === 10 && salidaGolpe(val) > 5,
+            bien: 'Una fuerza chica que dura más también empuja mucho.' },
+        ],
       },
       {
         id: 'choque-libre', titulo: 'Choque frontal libre', pieza: 'fis-riel',
         consigna: 'Arrastra las flechas de velocidad de A y B (B puede venir de frente). Elige masas y qué tan elástico es.',
+        // e va primero: así el validador, que prueba los retos de dos casos guardados con los primeros 160 de la
+        // grilla, alcanza a comparar el mismo choque elástico y pegado (los ids no cambian).
         controles: [
+          { id: 'e', etiqueta: 'elástico (e)', min: 0, max: 1, paso: 0.25, inicio: 1, decimales: 2 },
           { id: 'vA', etiqueta: 'v de A', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 4, unidad: 'm/s', decimales: 0 },
           { id: 'vB', etiqueta: 'v de B', color: 'c-o', min: -3, max: 3, paso: 1, inicio: -2, unidad: 'm/s', decimales: 0 },
           { id: 'mA', etiqueta: 'masa de A', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'kg', decimales: 0 },
           { id: 'mB', etiqueta: 'masa de B', min: 1, max: 4, paso: 1, inicio: 1, unidad: 'kg', decimales: 0 },
-          { id: 'e', etiqueta: 'elástico (e)', min: 0, max: 1, paso: 0.25, inicio: 1, decimales: 2 },
         ],
         dibujo: val => ({ datos: rielLibre(val), estado: {} }),
         lectura: val => {
@@ -571,6 +628,21 @@
           { id: 'flecha-b', etiqueta: 'velocidad de B', color: 'c-o',
             donde: val => PZ('fis-riel').punta(rielLibre(val), 0, { x: XB0, v: val.vB }),
             mover: (pt, val) => ({ vB: PZ('fis-riel').velocidadDe(rielLibre(val), XB0, pt.x) }) },
+        ],
+        invitaciones: [
+          { texto: 'Haz que choquen y los dos queden quietos después.',
+            logrado: val => { const c = choqueLibre(val); return c.choca && Math.abs(c.vA2) < 1e-9 && Math.abs(c.vB2) < 1e-9; },
+            bien: 'La p total ya era cero: pegados, no les queda con qué moverse.' },
+          { texto: 'Consigue que A y B intercambien sus velocidades al chocar.',
+            logrado: val => { const c = choqueLibre(val); return c.choca && Math.abs(c.vA2 - val.vB) < 1e-9 && Math.abs(c.vB2 - val.vA) < 1e-9; },
+            bien: 'Masas iguales y choque elástico: cada uno sale con la del otro.' },
+          { texto: 'Busca el choque que más energía cinética pierde.',
+            logrado: val => { const c = choqueLibre(val); return c.choca && c.K0 - c.K1 >= PERDIDA_MAX() - 1e-9; },
+            bien: 'De frente, rápidos y pegados. Aun así, p no cambió.' },
+          { texto: 'Guarda el mismo choque elástico y pegado. Compara p y K.',
+            logrado: (val, guardados) => choqueLibre(val).choca && guardado(val, guardados, ['vA', 'vB', 'mA', 'mB', 'e'])
+              && guardados.some(g => g.vA === val.vA && g.vB === val.vB && g.mA === val.mA && g.mB === val.mB && g.e + val.e === 1 && g.e * val.e === 0),
+            bien: 'La p es la misma en los dos; K solo se quedó en el elástico.' },
         ],
       },
       {
@@ -589,6 +661,21 @@
           donde: val => { const g = PZ('recta').geometria(cmLibre(val)); return { x: g.x(val['x' + n]), y: g.filaY(1) }; },
           mover: (pt, val) => ({ ['x' + n]: inversa(PZ('recta').geometria(cmLibre(val)).x, -2, 12)(pt.x) }),
         })),
+        invitaciones: [
+          { texto: 'Pon el centro de masa justo en x = 5 m.',
+            logrado: val => Math.abs(xcmLibre(val) - 5) < 1e-9,
+            bien: 'Hay muchas maneras. ¿Las masas eran iguales en la tuya?' },
+          { texto: 'Lleva el centro de masa lo más a la derecha que puedas.',
+            logrado: val => xcmLibre(val) >= xcmLibre({ x1: 4, m1: 1, x2: 12, m2: 6 }) - 1e-9,
+            bien: 'Todo lo pesado a la derecha. Igual no llega hasta la masa 2.' },
+          { texto: 'Haz que el centro quede tres veces más cerca de la masa 2.',
+            logrado: val => Math.abs((xcmLibre(val) - val.x1) - 3 * (val.x2 - xcmLibre(val))) < 1e-9,
+            bien: 'La masa 2 es el triple: el centro se le acerca tres veces más.' },
+          { texto: 'Guarda dos casos con masas distintas y el centro en el mismo punto.',
+            logrado: (val, guardados) => guardado(val, guardados, ['x1', 'm1', 'x2', 'm2'])
+              && guardados.some(g => (g.m1 !== val.m1 || g.m2 !== val.m2) && Math.abs(xcmLibre(g) - xcmLibre(val)) < 1e-9),
+            bien: 'Menos masa más lejos equilibra más masa más cerca.' },
+        ],
       },
     ],
     historia: {
