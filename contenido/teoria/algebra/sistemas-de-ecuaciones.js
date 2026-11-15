@@ -637,17 +637,63 @@
     ],
   };
 
+  // ---------- Tres planos (laboratorio 3D, 15 nov: exploración libre, sin predicciones) ----------
+  // Ecuaciones 1 y 2 fijas (x + y + z = 3 y x − y + z = 1); el alumno mueve la tercera. Qué tienen en común los tres
+  // planos lo calcula plantillas/matrices/motor.js (tresPlanos) a través de la pieza alg-planos-3d (regla 1).
+  const PL3 = () => Kit.piezas['alg-planos-3d'];
+  const E1 = [1, 1, 1, 3], E2 = [1, -1, 1, 1];
+  const ec3 = v => [v.a3, v.b3, v.c3, v.d3];
+  const sis3 = v => PL3().sistema({ planos: [E1, E2, ec3(v)] });
+  const RES3 = { recta: 'una recta común', plano: 'un plano común', ninguna: 'ninguna solución', todo: 'todo el espacio' };
+  const mesaPlanos = {
+    id: 'tres-planos', titulo: 'Tres planos', pieza: 'alg-planos-3d',
+    consigna: 'Gira el cubo con el dedo. Cada ecuación es un plano; mueve la tercera y mira qué comparten los tres.',
+    controles: [
+      { id: 'a3', etiqueta: 'a₃ (con x)', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0, color: 'c-d' },
+      { id: 'b3', etiqueta: 'b₃ (con y)', min: -2, max: 2, paso: 1, inicio: 0, decimales: 0, color: 'c-d' },
+      { id: 'c3', etiqueta: 'c₃ (con z)', min: -2, max: 2, paso: 1, inicio: -1, decimales: 0, color: 'c-d' },
+      { id: 'd3', etiqueta: 'd₃ (al otro lado)', min: -3, max: 5, paso: 1, inicio: 0, decimales: 0, color: 'c-d' },
+    ],
+    dibujo: v => ({ datos: { planos: [E1, E2, ec3(v)] }, estado: {} }),
+    lectura: v => {
+      const r = sis3(v);
+      return ['ec. 3: ', { v: 'c-d', t: PL3().ecuacion(ec3(v)) }, ` · ${r.tipo === 'punto' ? `un punto (${r.punto.map(x => f(x)).join('; ')})` : RES3[r.tipo]}`];
+    },
+    invitaciones: [
+      { texto: 'Haz que los tres planos compartan toda una recta.',
+        logrado: v => sis3(v).tipo === 'recta' && [v.a3, v.b3, v.c3].some(x => x !== 0),
+        bien: 'El tercer plano pasa por la recta de los otros dos: infinitas soluciones.',
+        pista: 'Creo que a₃ = c₃ es la clave. Después busca el d₃ que no la rompa.' },
+      { texto: 'Deja el sistema sin solución sin que ningún plano sea paralelo a otro.',
+        logrado: v => sis3(v).caso === 'prisma',
+        bien: 'Se cortan de dos en dos, en tres rectas paralelas: ningún punto es de los tres.',
+        pista: 'Parte de una recta común y corre d₃ un paso.' },
+      { texto: 'Pon el tercer plano paralelo al primero.',
+        logrado: v => v.a3 !== 0 && v.a3 === v.b3 && v.b3 === v.c3 && sis3(v).caso === 'paralelos',
+        bien: 'Misma inclinación, otro d: nunca se tocan. El sistema no tiene solución.',
+        pista: 'Copia los números de x + y + z y cambia solo d₃.' },
+      { texto: 'Logra una solución única que quede en el piso: z = 0.',
+        logrado: v => sis3(v).tipo === 'punto' && sis3(v).punto[2] === 0,
+        bien: 'Los tres planos se cruzan en (2; 1; 0). Compruébalo en cada ecuación.',
+        pista: 'Las ecuaciones 1 y 2 piden y = 1 y x + z = 2.' },
+      { texto: 'Guarda dos casos con iguales a₃, b₃ y c₃: uno con recta común, otro sin solución.',
+        logrado: (v, guardados) => guardados.some(x => guardados.some(y => x.a3 === y.a3 && x.b3 === y.b3 && x.c3 === y.c3
+          && sis3(x).tipo === 'recta' && sis3(y).tipo === 'ninguna')),
+        bien: 'La inclinación es la misma; d₃ solo corre el plano y decide si toca la recta.' },
+    ],
+  };
+
   return {
     unidad: 'algebra.sistemas-de-ecuaciones',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-tabla.js'],
+    requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-tabla.js', '/plantillas/matrices/motor.js', '/nucleo/kit/piezas/alg-planos-3d.js'],
     historia: {
       texto: 'Los Nueve capítulos, un libro chino de hace unos dos mil años, resolvían problemas con varias cantidades desconocidas ordenando los coeficientes en tablas y eliminando términos. Lo que hoy llamamos eliminación gaussiana es mucho más antiguo que su nombre. La idea que se conserva es transformar el problema sin cambiar sus soluciones, que pueden ser una, ninguna o infinitas.',
       pregunta: '¿Qué cambio de una ecuación no cambia sus soluciones?',
       fuente: { titulo: 'O’Connor y Robertson, Matrices and determinants — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Matrices_and_determinants/' },
     },
-    laboratorio: [rectasLibres, parabolaRecta, Object.assign({ id: 'rangos', titulo: 'Rangos que deciden', pieza: 'alg-tabla', invitaciones: [
+    laboratorio: [mesaPlanos, rectasLibres, parabolaRecta, Object.assign({ id: 'rangos', titulo: 'Rangos que deciden', pieza: 'alg-tabla', invitaciones: [
       { texto: 'Haz que el sistema no tenga solución.',
         logrado: v => rangos(v.k, v.m).rA !== rangos(v.k, v.m).rAb,
         bien: 'La fila 2 dice 0 = algo distinto de 0: incompatible.' },
@@ -671,6 +717,9 @@
         ejemplo: 'x = Δx/Δ e y = Δy/Δ.', ver: ['determinante'] },
       { termino: 'matriz ampliada', formas: ['matriz ampliada', 'matrices ampliadas'], simbolo: '(A|b)',
         def: 'La de los coeficientes con una columna más: la de los términos independientes.', ver: ['rango'] },
+      { termino: 'plano', formas: ['plano', 'planos'], local: true,
+        def: 'Superficie lisa y sin borde, como una hoja infinita. Cada ecuación ax + by + cz = d dibuja uno.',
+        ejemplo: 'z = 0 es el piso: todos los puntos de altura 0.' },
       { termino: 'tangente', formas: ['tangente', 'tangentes'], def: 'Recta que toca a una curva en un punto sin atravesarla allí.' },
     ],
     ideas: [dosRectas, gauss, cramer, rouche, noLineal],

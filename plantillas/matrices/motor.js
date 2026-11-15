@@ -499,7 +499,78 @@
       t1: num(t1), t2: num(t2), ancho: num(a), alto: num(alto), det: num(D) };
   }
 
+
+  // ---------- Tres planos (ronda 4 del 3D: pieza alg-planos-3d y la mesa de sistemas de ecuaciones) ----------
+  // Cada plano es [a, b, c, d]: ax + by + cz = d. Rangos exactos de la matriz de coeficientes y de la ampliada
+  // (Rouché–Frobenius) y lo que se ve: el punto común, la recta común o por qué no hay solución.
+  function rangoQ(M) {
+    const A = M.map(f => f.slice()), m = A.length, n = A[0].length;
+    let r = 0;
+    for (let j = 0; j < n && r < m; j++) {
+      const p = A.findIndex((f, i) => i >= r && !cero(f[j]));
+      if (p < 0) continue;
+      [A[r], A[p]] = [A[p], A[r]];
+      for (let i = 0; i < m; i++) if (i !== r && !cero(A[i][j])) { const k = div(A[i][j], A[r][j]); A[i] = A[i].map((x, c) => res(x, mul(k, A[r][c]))); }
+      r++;
+    }
+    return r;
+  }
+  const cruzQ = (a, b) => [res(mul(a[1], b[2]), mul(a[2], b[1])), res(mul(a[2], b[0]), mul(a[0], b[2])), res(mul(a[0], b[1]), mul(a[1], b[0]))];
+  const nulo = v => v.every(cero);
+  function resolver3(A, b) {
+    const D = detQ(A);
+    return [0, 1, 2].map(j => div(detQ(A.map((f, i) => f.map((v, k) => (k === j ? b[i] : v)))), D));
+  }
+  // Recta común a dos planos de normales no paralelas: dirección n₁ × n₂ y el punto de la recta más cercano al origen.
+  function rectaDe(p1, p2) {
+    const n1 = p1.slice(0, 3), n2 = p2.slice(0, 3), dir = cruzQ(n1, n2);
+    if (nulo(dir)) return null;
+    return { punto: resolver3([n1, n2, dir], [p1[3], p2[3], F(0)]), dir };
+  }
+  function tresPlanos({ planos }) {
+    if (!Array.isArray(planos) || planos.length !== 3 || planos.some(p => !Array.isArray(p) || p.length !== 4)) throw new Error('se esperaban tres planos [a, b, c, d]');
+    const P = planos.map(p => p.map(Q)), A = P.map(p => p.slice(0, 3));
+    const rA = rangoQ(A), rB = rangoQ(P), n3 = v => v.map(num);
+    const pares = [];
+    for (const [i, j] of [[0, 1], [0, 2], [1, 2]]) {
+      if (nulo(A[i]) || nulo(A[j])) continue;
+      const r = rectaDe(P[i], P[j]);
+      if (r) pares.push({ i, j, punto: n3(r.punto), dir: n3(r.dir) });
+    }
+    let tipo, caso, punto = null, recta = null, ptTexto = '';
+    if (rA < rB) {
+      tipo = 'ninguna';
+      const vacio = P.findIndex(p => nulo(p.slice(0, 3)) && !cero(p[3]));
+      const paralelos = [[0, 1], [0, 2], [1, 2]].some(([i, j]) => !nulo(A[i]) && !nulo(A[j]) && nulo(cruzQ(A[i], A[j])) && rangoQ([P[i], P[j]]) === 2);
+      caso = vacio >= 0 ? 'imposible' : paralelos ? 'paralelos' : 'prisma';
+    } else if (rA === 3) {
+      tipo = 'punto'; caso = 'punto'; const x = resolver3(A, P.map(p => p[3])); punto = n3(x); ptTexto = `(${x.map(txt).join('; ')})`;
+    } else if (rA === 2) {
+      tipo = 'recta'; caso = 'recta';
+      const [i, j] = [[0, 1], [0, 2], [1, 2]].find(([x, y]) => !nulo(A[x]) && !nulo(A[y]) && !nulo(cruzQ(A[x], A[y])));
+      const r = rectaDe(P[i], P[j]); recta = { punto: n3(r.punto), dir: n3(r.dir) };
+    } else if (rA === 1) { tipo = 'plano'; caso = 'plano'; }
+    else { tipo = 'todo'; caso = 'todo'; }
+    const TEXTO = { punto: `una solución: ${ptTexto}`, recta: 'infinitas soluciones: una recta común',
+      plano: 'infinitas soluciones: un plano común', todo: 'infinitas soluciones: todo el espacio', paralelos: 'ninguna solución: hay planos paralelos',
+      prisma: 'ninguna solución: se cortan de dos en dos', imposible: 'ninguna solución: una ecuación es imposible' };
+    return { tipo, caso, rango: rA, rangoAmpliado: rB, punto, recta, pares, texto: TEXTO[caso] };
+  }
+  // Tramo de la recta p + t·dir dentro del cubo |x|, |y|, |z| ≤ lado (null si no lo cruza).
+  function recortarRecta({ punto, dir, lado }) {
+    let t0 = -Infinity, t1 = Infinity;
+    for (let k = 0; k < 3; k++) {
+      if (Math.abs(dir[k]) < 1e-12) { if (Math.abs(punto[k]) > lado + 1e-12) return null; continue; }
+      let a = (-lado - punto[k]) / dir[k], b = (lado - punto[k]) / dir[k];
+      if (a > b) [a, b] = [b, a];
+      t0 = Math.max(t0, a); t1 = Math.min(t1, b);
+    }
+    if (!(t1 > t0 + 1e-12)) return null;
+    const en = t => punto.map((x, k) => x + t * dir[k]);
+    return [en(t0), en(t1)];
+  }
+
   return { textoMatriz, textoNumero, orden, construir, elemento, tipos, iguales, sumar, escalar, transpuesta, producto,
     ordenProducto, composicion, kSistema, sustituir, det, det2, det3, detK, propiedadesDet, inversa2, kSinInversa, cramer2, cramer3,
-    productoTranspuesta, aplicar, paralelogramo, cizalla };
+    productoTranspuesta, aplicar, paralelogramo, cizalla, tresPlanos, recortarRecta };
 });

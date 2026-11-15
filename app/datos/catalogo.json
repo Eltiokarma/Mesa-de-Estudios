@@ -2330,10 +2330,12 @@
       "archivo": "/contenido/teoria/algebra/sistemas-de-ecuaciones.js",
       "requiere": [
        "/nucleo/kit/piezas/ejes.js",
-       "/nucleo/kit/piezas/alg-tabla.js"
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/plantillas/matrices/motor.js",
+       "/nucleo/kit/piezas/alg-planos-3d.js"
       ],
       "ideas": 5,
-      "terminos": 27
+      "terminos": 28
      }
     },
     {
