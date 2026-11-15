@@ -91,26 +91,28 @@
   const manijaCarga = (dib, q, k = 0) => { const a = GA().geometria(dib.datos).atomo(k); return { x: a.cx + 90 + PASO_Q * q, y: a.cy }; };
   const cargaEn = (dib, pt, k = 0) => (pt.x - GA().geometria(dib.datos).atomo(k).cx - 90) / PASO_Q;
   const atomoDe = v => ({ datos: { atomos: [especie(v.z, v.n, v.q)] }, estado: {} });
+  // Animación (docs/3d.md §6): un control con auto avanza sin ajustarse al paso; los conteos se leen enteros.
+  const ent = (v, ...ids) => { const w = Object.assign({}, v); for (const k of ids) w[k] = Math.round(w[k]); return w; };
   const nucleo = {
     id: 'nucleo-identidad',
     titulo: 'El núcleo decide el elemento',
     temas: ['Partículas subatómicas', 'Número atómico y de masa', 'Isótopos'],
     pieza: 'quim-atomo',
     juega: {
-      consigna: 'Cambia los protones, los neutrones y la carga. Mira qué cambia el nombre del elemento y qué solo cambia la masa o la carga.',
+      consigna: 'Los neutrones suben y bajan solos: mira si cambia el nombre. Después cambia los protones y la carga.',
       voz: 'Mueve una sola cosa a la vez y mira el nombre.',
       controles: [
         { id: 'z', etiqueta: 'Protones', color: 'c-h', min: 1, max: 12, paso: 1, inicio: 6, decimales: 0 },
-        { id: 'n', etiqueta: 'Neutrones', color: 'c-d', min: 0, max: 14, paso: 1, inicio: 6, decimales: 0 },
+        { id: 'n', etiqueta: 'Neutrones', color: 'c-d', min: 0, max: 14, paso: 1, inicio: 6, decimales: 0, auto: { velocidad: 2.5, modo: 'rebota' } },
         { id: 'q', etiqueta: 'Carga', min: -2, max: 2, paso: 1, inicio: 0, decimales: 0 },
       ],
-      dibujo: v => atomoDe(v),
-      lectura: v => (v.q > v.z ? [`${NOMBRE[v.z]}: no tiene ${v.q} electrones que perder`] : [Z, ` = ${v.z}: ${NOMBRE[v.z]} · `, A, ` = ${v.z + v.n} · carga ${signo(v.q)}`]),
+      dibujo: v => atomoDe(ent(v, 'n')),
+      lectura: v => { v = ent(v, 'n'); return v.q > v.z ? [`${NOMBRE[v.z]}: no tiene ${v.q} electrones que perder`] : [Z, ` = ${v.z}: ${NOMBRE[v.z]} · `, A, ` = ${v.z + v.n} · carga ${signo(v.q)}`]; },
       minimo: 4,
       // Se agarra un electrón y se lo saca del átomo (o se lo trae): responde la carga, y el nombre no cambia.
       arrastres: [{ id: 'carga', etiqueta: 'carga: a la derecha salen electrones', color: 'c-i',
-        donde: v => manijaCarga(atomoDe(v), v.q),
-        mover: (pt, v) => ({ q: cargaEn(atomoDe(v), pt) }) }],
+        donde: v => manijaCarga(atomoDe(ent(v, 'n')), v.q),
+        mover: (pt, v) => ({ q: cargaEn(atomoDe(ent(v, 'n')), pt) }) }],
     },
     predice: {
       pregunta: 'Un átomo de sodio tiene 11 protones, 12 neutrones y 11 electrones. Si pierde un electrón, ¿qué es ahora?',
@@ -184,6 +186,9 @@
     actual: { titulo: 'Modelo actual, 1926', nodos: ['El electrón se comporta como onda', 'Orbitales: regiones donde es probable hallarlo', 'Es el modelo que se usa hoy'] },
   };
   const cadenaModelo = k => ({ datos: { columnas: [{ titulo: MODELOS[k].titulo, nodos: MODELOS[k].nodos.map((t, i) => ({ texto: t, color: ['d', 'o', undefined][i] })) }] }, estado: {} });
+  // Animación: la cadena se recorre sola de arriba abajo (2 s por paso); lo que aún no se lee queda tenue.
+  const PARTE = ['Evidencia', 'Modelo', 'Límite'], pasoDe = t => Math.min(2, Math.floor(t / 2));
+  const cadenaModeloT = (k, t) => { const d = cadenaModelo(k); d.datos.columnas[0].nodos.forEach((n, i) => { if (i > pasoDe(t)) n.tenue = true; }); return d; };
   // Sin arrastre: el control elige entre cuatro modelos históricos; no hay una magnitud que agarrar en la cadena.
   const modelos = {
     id: 'modelos-atomicos',
@@ -191,11 +196,12 @@
     temas: ['Modelos atómicos de Dalton a Bohr', 'Modelo actual'],
     pieza: 'quim-cadena',
     juega: {
-      consigna: 'Elige un modelo. Arriba está lo que se observó, al medio el modelo que lo explicaba y abajo lo que no lograba explicar.',
+      consigna: 'La cadena se recorre sola: arriba lo que se observó, al medio el modelo que lo explicaba, abajo lo que no explicaba. Elige un modelo.',
       voz: 'Lee cada cadena de arriba abajo: evidencia, modelo, límite.',
-      controles: [{ id: 'k', etiqueta: 'Modelo', opciones: Object.keys(MODELOS).map(k => ({ valor: k, texto: MODELOS[k].titulo.split(',')[0] })) }],
-      dibujo: v => cadenaModelo(v.k),
-      lectura: v => [`${MODELOS[v.k].titulo}: ${MODELOS[v.k].nodos[1]}`.split(' ').slice(0, 12).join(' ')],
+      controles: [{ id: 'k', etiqueta: 'Modelo', opciones: Object.keys(MODELOS).map(k => ({ valor: k, texto: MODELOS[k].titulo.split(',')[0] })) },
+        { id: 't', etiqueta: 't', min: 0, max: 6, paso: 0.1, inicio: 6, unidad: 's', decimales: 1, auto: { velocidad: 1 } }],
+      dibujo: v => cadenaModeloT(v.k, v.t),
+      lectura: v => [`${PARTE[pasoDe(v.t)]}: ${MODELOS[v.k].nodos[pasoDe(v.t)]}`.split(' ').slice(0, 12).join(' ')],
       minimo: 3,
     },
     predice: {
@@ -273,19 +279,19 @@
     temas: ['Números cuánticos y orbitales'],
     pieza: 'quim-cajas',
     juega: {
-      consigna: 'Elige los números cuánticos n y l. Cuenta las cajas (orbitales) y las flechas (electrones) que caben.',
+      consigna: 'El número cuántico n sube y baja solo. Cuenta las cajas (orbitales) y las flechas (electrones) que caben; cambia también l.',
       voz: 'Prueba también un l igual o mayor que n.',
       controles: [
-        { id: 'n', etiqueta: 'n', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0 },
+        { id: 'n', etiqueta: 'n', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0, auto: { velocidad: 0.7, modo: 'rebota' } },
         { id: 'l', etiqueta: 'l', min: 0, max: 2, paso: 1, inicio: 1, decimales: 0 },
       ],
-      dibujo: v => dibNivel(v),
-      lectura: v => (v.l >= v.n ? [`l = ${v.l} no existe con n = ${v.n}: l es menor que n`] : [`${v.n}${LETRA[v.l]}: ${2 * v.l + 1} orbitales, ${2 * (2 * v.l + 1)} electrones como máximo`]),
+      dibujo: v => dibNivel(ent(v, 'n')),
+      lectura: v => { v = ent(v, 'n'); return v.l >= v.n ? [`l = ${v.l} no existe con n = ${v.n}: l es menor que n`] : [`${v.n}${LETRA[v.l]}: ${2 * v.l + 1} orbitales, ${2 * (2 * v.l + 1)} electrones como máximo`]; },
       minimo: 4,
       // Se jala el borde de abajo del nivel: aparece (o se va) un subnivel, y la lectura cuenta las cajas.
       arrastres: [{ id: 'nivel', etiqueta: 'borde del nivel: abajo, n mayor',
-        donde: v => { const g = GC().geometria(dibNivel(v).datos); return { x: 26, y: g.top + v.n * g.fila - 4 }; },
-        mover: (pt, v) => { const g = GC().geometria(dibNivel(v).datos); return { n: (pt.y + 4 - g.top) / g.fila }; } }],
+        donde: v => { v = ent(v, 'n'); const g = GC().geometria(dibNivel(v).datos); return { x: 26, y: g.top + v.n * g.fila - 4 }; },
+        mover: (pt, v) => { v = ent(v, 'n'); const g = GC().geometria(dibNivel(v).datos); return { n: (pt.y + 4 - g.top) / g.fila }; } }],
     },
     predice: {
       pregunta: '¿Cuántos electrones caben, como máximo, en el nivel n = 4?',
@@ -377,15 +383,15 @@
     temas: ['Configuración electrónica de átomos e iones'],
     pieza: 'quim-cajas',
     juega: {
-      consigna: 'Cambia el número de electrones del átomo neutro. Mira en qué subnivel entra cada electrón nuevo.',
+      consigna: 'Los electrones entran solos, uno por uno, del hidrógeno al calcio. Mira en qué subnivel entra cada uno; pausa o arrastra el último.',
       voz: 'Fíjate qué pasa al llegar a 19.',
-      controles: [{ id: 'z', etiqueta: 'Z', color: 'c-h', min: 1, max: 20, paso: 1, inicio: 6, decimales: 0 }],
-      dibujo: v => ({ datos: { filas: filasConfig(config(v.z)) }, estado: {} }),
-      lectura: v => [Z, ` = ${v.z} (${SIMB[v.z]}): ${textoConfig(config(v.z))}`],
+      controles: [{ id: 'z', etiqueta: 'Z', color: 'c-h', min: 1, max: 20, paso: 1, inicio: 6, decimales: 0, auto: { velocidad: 1.5, modo: 'rebota' } }],
+      dibujo: v => ({ datos: { filas: filasConfig(config(Math.round(v.z))) }, estado: {} }),
+      lectura: v => { const z = Math.round(v.z); return [Z, ` = ${z} (${SIMB[z]}): ${textoConfig(config(z))}`]; },
       minimo: 4,
       // Se agarra el último electrón y se lo pone en otra caja: Z sigue a la flecha, y la configuración se reescribe.
       arrastres: [{ id: 'ultimo', etiqueta: 'último electrón: llévalo a otra caja', color: 'c-h',
-        donde: v => sitioFlecha(v.z),
+        donde: v => sitioFlecha(Math.round(v.z)),
         mover: pt => ({ z: masCercana(pt, 20) }) }],
     },
     predice: {
@@ -453,6 +459,17 @@
     Cl: { filas: [['3s', 2, 1], ['3p', 5, 3]], d: 1 }, 'Mn²⁺': { filas: [['4s', 0, 1], ['3d', 5, 5]], d: 5 }, 'Zn²⁺': { filas: [['4s', 0, 1], ['3d', 10, 5]], d: 0 }, B: { filas: [['2s', 2, 1], ['2p', 1, 3]], d: 1 },
   };
   const cajasValencia = k => ({ datos: { filas: VALENCIA[k].filas.map(([nombre, e, cajas]) => ({ nombre, e, cajas })), desapareados: true, rotulo: `${VALENCIA[k].d} desapareados · ${VALENCIA[k].d ? 'paramagnético' : 'diamagnético'}` }, estado: {} });
+  // Animación: los electrones de valencia entran de a uno (uno por segundo, 2 s quieto al empezar), por subnivel y,
+  // dentro de él, como dice Hund (la pieza llena así cuando no se le dan flechas). Al final quedan 3 s completos.
+  // Los desapareados de cada momento los cuenta el mismo llenado de Hund.
+  const hund = (e, cajas) => (e <= cajas ? e : 2 * cajas - e);
+  function llenado(k, t) {
+    const filas = VALENCIA[k].filas, total = filas.reduce((a, r) => a + r[1], 0), puestos = Math.max(0, Math.min(total, Math.floor(t - 1)));
+    let resto = puestos, d = 0;
+    const parcial = filas.map(([nombre, e, cajas]) => { const x = Math.min(e, resto); resto -= x; d += hund(x, cajas); return { nombre, e: x, cajas }; });
+    return { total, puestos, d, filas: parcial };
+  }
+  const cajasLlenando = (k, t) => { const q = llenado(k, t); return { datos: { filas: q.filas, desapareados: true, rotulo: `${q.d} ${q.d === 1 ? 'desapareado' : 'desapareados'}${q.puestos === q.total ? ` · ${q.d ? 'paramagnético' : 'diamagnético'}` : ''}` }, estado: {} }; };
   // Radios iónicos de Shannon (1976), NC 6, en pm.
   const ISO10 = [['O²⁻', 8, 140], ['F⁻', 9, 133], ['Na⁺', 11, 102], ['Mg²⁺', 12, 72], ['Al³⁺', 13, 53.5]];
   const ISO18 = [['S²⁻', 16, 184], ['Cl⁻', 17, 181], ['K⁺', 19, 138], ['Ca²⁺', 20, 100]];
@@ -472,11 +489,12 @@
     temas: ['Paramagnetismo y especies isoelectrónicas'],
     pieza: 'quim-cajas',
     juega: {
-      consigna: 'Elige una especie y mira sus cajas de valencia. Las cajas marcadas tienen un electrón solo, sin pareja.',
+      consigna: 'Los electrones de valencia entran solos, uno por uno: primero uno en cada caja. Elige una especie y cuenta las cajas marcadas.',
       voz: 'Cuenta solo las cajas marcadas.',
-      controles: [{ id: 'k', etiqueta: 'Especie', opciones: ['N', 'O', 'F', 'Ne', 'Fe²⁺'].map(k => ({ valor: k, texto: k })) }],
-      dibujo: v => cajasValencia(v.k),
-      lectura: v => [`${v.k}: ${VALENCIA[v.k].d} desapareados · ${VALENCIA[v.k].d ? 'lo atrae un imán' : 'un imán no lo atrae'}`],
+      controles: [{ id: 'k', etiqueta: 'Especie', opciones: ['N', 'O', 'F', 'Ne', 'Fe²⁺'].map(k => ({ valor: k, texto: k })) },
+        { id: 't', etiqueta: 't', min: 0, max: 12, paso: 0.1, inicio: 12, unidad: 's', decimales: 1, auto: { velocidad: 1.5 } }],
+      dibujo: v => cajasLlenando(v.k, v.t),
+      lectura: v => { const q = llenado(v.k, v.t); return [`${v.k}: ${q.puestos} de ${q.total} electrones · ${q.d} ${q.d === 1 ? 'desapareado' : 'desapareados'}${q.puestos === q.total ? (q.d ? ': lo atrae un imán' : ': no lo atrae un imán') : ''}`]; },
       minimo: 3,
     },
     predice: {
@@ -564,8 +582,11 @@
     const o = MA.orbital(v.orb), nb = MA.nube(v.orb, { corte: v.cor === 1 });
     return { datos: { puntos: nb.puntos, escala: v.esc === 1 ? 2.2 / o.r90 : ESC_COMUN, nombre: o.nombre, corte: nb.corte, lobulos: MA.lobulos(v.orb),
       vista: o.corte === 'z' ? { giro: 30, inclinacion: 55 } : { giro: 30, inclinacion: 20 },   // dxy y dx²−y²: mejor desde arriba
-      nodos: v.nod === 1 ? { radiales: o.radiales, planos: o.planos, conos: o.conos } : null }, estado: {} };
+      nodos: v.nod === 1 ? { radiales: o.radiales, planos: o.planos, conos: o.conos } : null, medidas: medidasDe(v, nb) }, estado: {} };
   };
+  // Animación (ronda 5): la nube se arma sola, medida a medida (los puntos del motor salen en orden de azar), en 8 s.
+  // Sin t (casos guardados de antes), la nube entera.
+  const medidasDe = (v, nb) => (Number.isFinite(v.t) ? Math.round(nb.puntos.length * (0.04 + 0.96 * Math.min(1, v.t / 8))) : nb.puntos.length);
 
   return {
     unidad: 'quimica.estructura-atomica',
@@ -630,15 +651,16 @@
         // Exploración libre en 3D (decisión de Gerson, 15 nov: sin predicciones; los retos son invitaciones).
         // La nube, los nodos y el r90 salen del motor de plantillas/atomo-y-tabla (orbital, nube): solo el hidrógeno.
         id: 'nube-orbital', titulo: 'La nube del orbital', pieza: 'quim-orbital-3d',
-        consigna: 'Gira la nube con el dedo: cada punto es un lugar probable del electrón. Córtala, enciende los nodos y compara tamaños en radios de Bohr.',
+        consigna: 'La nube se arma sola, medida a medida: cada punto es un lugar probable del electrón. Gírala, córtala y compara tamaños en radios de Bohr.',
         controles: [
           { id: 'orb', etiqueta: 'Orbital', opciones: MA.ORBITALES.map(k => ({ valor: k, texto: MA.orbital(k).nombre })) },
           { id: 'cor', etiqueta: 'Nube', opciones: [{ valor: 0, texto: 'Entera' }, { valor: 1, texto: 'Cortada' }] },
           { id: 'nod', etiqueta: 'Nodos', opciones: [{ valor: 0, texto: 'Ocultos' }, { valor: 1, texto: 'A la vista' }] },
           { id: 'esc', etiqueta: 'Tamaño', opciones: [{ valor: 1, texto: 'Ampliado' }, { valor: 0, texto: 'Misma escala' }] },
+          { id: 't', etiqueta: 't', min: 0, max: 8, paso: 0.5, inicio: 8, unidad: 's', decimales: 1, auto: { velocidad: 1 } },
         ],
         dibujo: v => nubeDe(v),
-        lectura: v => { const o = MA.orbital(v.orb); return [`${o.nombre}: ${o.nodos} ${o.nodos === 1 ? 'nodo' : 'nodos'} · 90 % dentro de ${f(o.r90, 1)} a₀`]; },
+        lectura: v => { const o = MA.orbital(v.orb); return [`${nubeDe(v).datos.medidas} puntos · ${o.nombre}: ${o.nodos} ${o.nodos === 1 ? 'nodo' : 'nodos'} · 90 % dentro de ${f(o.r90, 1)} a₀`]; },
         // Retos comprobados con el mismo motor que arma la nube (docs/teoria.md §4d).
         invitaciones: [
           { texto: 'Corta la nube y encuentra un orbital con un hueco esférico por dentro.',

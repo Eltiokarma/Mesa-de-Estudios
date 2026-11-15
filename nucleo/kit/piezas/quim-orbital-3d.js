@@ -14,10 +14,15 @@
  *   lobulos: [{ signo: ±1, pos: [x, y, z] }], // dónde va el rótulo «ψ +» o «ψ −» (lo da el motor)
  *   corte:   'x' | 'y' | 'z' | null,          // si la nube es una lámina, el eje perpendicular a ella (para el alt)
  *   vista:   { giro, inclinacion },           // opcional; sin ella, 30° y 20°
+ *   medidas: número,                          // opcional (ronda 5, animación): solo se ven los primeros puntos de la
+ *                                             // muestra, como si la nube se armara medida a medida; sin él, todos
  *   alt,
  * }
  * Colores (regla 4): ψ positiva turquesa c-i, ψ negativa violeta c-f, con rótulos «ψ +» y «ψ −» del mismo color; los nodos,
  * en tinta tenue; los ejes x, y, z, rótulos en cursiva.
+ *
+ * Animación (docs/3d.md §6): con `medidas`, forma(datos) no depende de cuántas se ven y mover solo cambia el rango de
+ * dibujo de los puntos ya armados (setDrawRange): la escena no se rearma en cada cuadro.
  *
  * Respaldo (dibujar): la nube proyectada en el plano desde datos.vista (una muestra de 700 puntos), los ejes y los
  * nodos esféricos como círculos punteados. Se usa mientras carga three.js, sin WebGL 2, en Node y en las miniaturas.
@@ -44,6 +49,8 @@
   // Rótulos de signo: en los puntos que da el motor (lobulos: el lugar más probable de cada signo).
   const rotulos = d => (d.lobulos || []).map(l => ({ signo: l.signo, texto: l.signo > 0 ? 'ψ +' : 'ψ −', color: l.signo > 0 ? 'c-i' : 'c-f', pos: l.pos }));
   const PLANO_EJE = { x: 'yz', y: 'xz', z: 'xy' };
+  // Cuántos puntos de la muestra se ven (todos si no se da medidas).
+  const vistos = d => (Number.isFinite(d.medidas) ? Math.max(0, Math.min(d.puntos.length, Math.round(d.medidas))) : d.puntos.length);
   function alt(d) {
     if (d.alt) return d.alt;
     const n = d.nodos, partes = [];
@@ -52,16 +59,17 @@
       if (n.planos.length) partes.push(`${n.planos.length === 1 ? 'un plano nodal' : `${n.planos.length} planos nodales`}`);
       if (n.conos.length) partes.push('dos conos nodales');
     }
-    const signos = new Set(d.puntos.map(p => p[3])).size === 2 ? ', con zonas de ψ positiva y negativa' : '';
-    return `Nube del orbital ${d.nombre} del hidrógeno${d.corte ? `, cortada por el plano ${PLANO_EJE[d.corte]}` : ''}: ${d.puntos.length} puntos donde es probable hallar al electrón${signos}${partes.length ? `; ${partes.join(', ')}` : ''}.`;
+    const pts = d.puntos.slice(0, vistos(d));
+    const signos = new Set(pts.map(p => p[3])).size === 2 ? ', con zonas de ψ positiva y negativa' : '';
+    return `Nube del orbital ${d.nombre} del hidrógeno${d.corte ? `, cortada por el plano ${PLANO_EJE[d.corte]}` : ''}: ${pts.length} puntos donde es probable hallar al electrón${signos}${partes.length ? `; ${partes.join(', ')}` : ''}.`;
   }
 
   // ---------- Respaldo plano ----------
   function plano(d) {
     const v = vistaDe(d), W = 320, H = 260, E = 38;
     const p2 = p => { const q = girar(aEscena(p), v.giro, v.inclinacion); return [W / 2 + q[0] * E, H / 2 - q[1] * E]; };
-    const paso = Math.max(1, Math.ceil(d.puntos.length / 700));
-    const puntos = d.puntos.filter((p, i) => i % paso === 0).map(p => { const q = p2(p.map((x, k) => (k < 3 ? x * d.escala : x))); return [q[0], q[1], p[3]]; });
+    const paso = Math.max(1, Math.ceil(d.puntos.length / 700)), n = vistos(d);
+    const puntos = d.puntos.filter((p, i) => i % paso === 0 && i < n).map(p => { const q = p2(p.map((x, k) => (k < 3 ? x * d.escala : x))); return [q[0], q[1], p[3]]; });
     const ejes = ['x', 'y', 'z'].map((t, k) => { const u = [0, 0, 0]; u[k] = EJE; const w = u.map(x => -x); return { t, de: p2(w), a: p2(u) }; });
     const circulos = d.nodos ? d.nodos.radiales.map(r => r * d.escala * E) : [];
     return { W, H, puntos, ejes, circulos };
@@ -77,21 +85,32 @@
   }
 
   // ---------- En vivo, sobre la base común ----------
+  // Cuántos de los índices (crecientes) quedan por debajo de n: los puntos de ese signo que ya se ven.
+  function contar(indices, n) { let lo = 0, hi = indices.length; while (lo < hi) { const m = (lo + hi) >> 1; if (indices[m] < n) lo = m + 1; else hi = m; } return lo; }
   const SPEC = {
     plano: d => dibujar(d),
     vista: d => vistaDe(d),
     clave: d => JSON.stringify([d.nombre, d.vista || null]),
+    // Ruta rápida: todo lo que se arma menos cuántos puntos se ven.
+    forma: d => JSON.stringify([d.nombre, d.corte || null, d.puntos.length, d.escala, d.nodos || null, d.vista || null, Number.isFinite(d.medidas)]),
+    mover(T, grupo, d) {
+      const n = vistos(d);
+      grupo.children.forEach(o => { if (o.userData.indices) o.geometry.setDrawRange(0, contar(o.userData.indices, n)); });
+    },
     distancia: 9, distMin: 3.5, distMax: 15,
     construir(T, grupo, d, e, h) {
       const tinta = h.varCss('--ink', '#2d2340');
       const color = { 1: h.varCss('--c-i', '#08807a'), '-1': h.varCss('--c-f', '#6b3dbd') };
       const paso = h.ahorro ? 2 : 1;
       for (const s of [1, -1]) {
-        const pos = [];
-        d.puntos.forEach((p, i) => { if (p[3] === s && i % paso === 0) pos.push(...aEscena(p).map(x => x * d.escala)); });
+        const pos = [], indices = [];
+        d.puntos.forEach((p, i) => { if (p[3] === s && i % paso === 0) { pos.push(...aEscena(p).map(x => x * d.escala)); indices.push(i); } });
         if (!pos.length) continue;
         const g = new T.BufferGeometry(); g.setAttribute('position', new T.Float32BufferAttribute(pos, 3));
-        grupo.add(new T.Points(g, new T.PointsMaterial({ color: new T.Color(color[s]), size: h.ahorro ? 0.09 : 0.065, sizeAttenuation: true, transparent: true, opacity: 0.85, depthWrite: false })));
+        g.setDrawRange(0, contar(indices, vistos(d)));
+        const nube = new T.Points(g, new T.PointsMaterial({ color: new T.Color(color[s]), size: h.ahorro ? 0.09 : 0.065, sizeAttenuation: true, transparent: true, opacity: 0.85, depthWrite: false }));
+        nube.userData.indices = indices;
+        grupo.add(nube);
       }
       // Ejes x, y, z con su rótulo en cursiva y el núcleo en el centro.
       const ejes = [];
@@ -127,5 +146,5 @@
   };
   const montar = (el, op) => Kit.vivo3d.montar(el, SPEC, op);
 
-  return { id: 'quim-orbital-3d', dibujar, alt, montar, plano, girar, aEscena, rotulos };
+  return { id: 'quim-orbital-3d', dibujar, alt, montar, plano, girar, aEscena, rotulos, vistos, contar, forma: SPEC.forma };
 });

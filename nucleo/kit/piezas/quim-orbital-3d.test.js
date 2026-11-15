@@ -62,3 +62,20 @@ test('girar y pasar a la escena conservan las distancias (la vista no cambia la 
   assert.ok(Math.abs(Math.hypot(...P.aEscena(v)) - Math.hypot(...v)) < 1e-12);
   assert.deepEqual(P.aEscena([0, 0, 1]), [0, 1, -0]);                // el eje z de química queda hacia arriba
 });
+
+test('animación: con medidas se ven solo los primeros puntos de la muestra y la forma no cambia (ronda 5)', () => {
+  const d = datos('2pz'), total = d.puntos.length;
+  assert.equal(P.vistos(d), total);                                    // sin medidas, todos (como antes)
+  assert.equal(P.dibujar(d), P.dibujar(Object.assign({}, d, { medidas: undefined })));
+  const poco = Object.assign({}, d, { medidas: 100 }), mucho = Object.assign({}, d, { medidas: 800 });
+  assert.equal(P.vistos(poco), 100);
+  assert.match(P.alt(poco), /: 100 puntos/);
+  const circulos = s => (s.match(/r="1.6"/g) || []).length;
+  assert.ok(circulos(P.dibujar(poco)) < circulos(P.dibujar(mucho)));
+  assert.equal(P.forma(poco), P.forma(mucho));                         // mover, no rearmar
+  assert.notEqual(P.forma(poco), P.forma(datos('3pz', { medidas: 100 })));
+  // contar: cuántos índices crecientes quedan por debajo de n.
+  assert.equal(P.contar([0, 3, 5, 9], 5), 2);
+  assert.equal(P.contar([0, 3, 5, 9], 100), 4);
+  assert.equal(P.contar([], 10), 0);
+});
