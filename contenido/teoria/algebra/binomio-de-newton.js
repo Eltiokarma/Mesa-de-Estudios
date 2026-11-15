@@ -134,7 +134,7 @@
       ],
     },
     regla: {
-      texto: 'Cada término elige a o b en cada paréntesis. El coeficiente de aⁿ⁻ᵏbᵏ cuenta de cuántas maneras se eligen los k paréntesis que dan b.',
+      texto: 'En el binomio de Newton, cada término elige a o b en cada paréntesis. El coeficiente de aⁿ⁻ᵏbᵏ cuenta de cuántas maneras se eligen los k paréntesis con b.',
       ecuacion: ['(', a, ' + ', b, ')ⁿ = Σ ', { llave: ['C(n, ', k, ')'], nota: 'formas de elegir', color: 'c-d' }, ' ', { sup: [a, ['n − ', k]] }, ' ', { sup: [b, k] }],
       condicion: 'n es entero no negativo; hay n + 1 términos y los coeficientes de la fila n suman 2ⁿ.',
     },
@@ -473,6 +473,8 @@
       alt: `Curva exacta de (1 + x) elevado a ${v.al} y la suma de ${v.m} términos de su serie`,
     });
   };
+  const expTotal = v => v.p * (N2 - v.k) - v.q * v.k;
+  const errorSerie = v => Math.abs(parcialA(v.al, v.x, v.m) - exacta(v.al, v.x));
   const laboratorio = [
     {
       id: 'pascal-colores', titulo: 'El triángulo hasta la fila 8', pieza: 'alg-tabla',
@@ -488,6 +490,21 @@
         donde: v => { const d = trianguloMarcado(v.n, v.m), g = TABLA().geometria(d); return { x: Math.min(306, g.cx(v.n, v.n) + g.paso * 0.75), y: g.cy(v.n) }; },
         mover: (pt, v) => ({ n: filaDe(trianguloMarcado(v.n, v.m), pt.y) }),
       }],
+      // Retos comprobados (docs/teoria.md §4d): miran fila(n) y C(n, k), los mismos números que llenan el triángulo.
+      invitaciones: [
+        { texto: 'Con los pares marcados, busca una fila de más de dos números sin ningún par.',
+          logrado: v => v.m === 2 && v.n > 1 && fila(v.n).every(c => c % 2 !== 0),
+          bien: 'Las filas 3 y 7 son todas impares: justo antes de 4 y de 8.' },
+        { texto: 'Busca la fila cuya suma es 128.',
+          logrado: v => fila(v.n).reduce((a, b) => a + b, 0) === 128,
+          bien: 'Cada fila suma el doble que la anterior: 2⁷ = 128.' },
+        { texto: 'Con múltiplos de 3, haz que todos menos los extremos lo sean.',
+          logrado: v => v.m === 3 && v.n > 1 && fila(v.n).slice(1, -1).every(c => c % 3 === 0),
+          bien: 'Fila 3: en una fila de número primo, los de en medio son múltiplos de él.' },
+        { texto: 'Guarda dos filas seguidas.',
+          logrado: (v, guardados) => guardados.some(g => Math.abs(g.n - v.n) === 1) && guardados.some(g => g.n === v.n && g.m === v.m),
+          bien: 'Cada número de abajo suma dos de arriba: por eso la suma se duplica.' },
+      ],
     },
     {
       id: 'termino-libre', titulo: 'Término general a medida', pieza: 'alg-tabla',
@@ -505,6 +522,21 @@
         donde: v => { const g = TABLA().geometria(tablaGeneral(v)); return { x: g.xs[g.nc] - 4, y: g.cy(v.k) }; },
         mover: (pt, v) => ({ k: filaDe(tablaGeneral(v), pt.y) }),
       }],
+      invitaciones: [
+        { texto: 'Busca el término sin x.',
+          logrado: v => expTotal(v) === 0,
+          bien: 'Exponente total 0: ese es el término independiente.' },
+        { texto: 'Con c = −1, haz que el coeficiente marcado sea negativo.',
+          logrado: v => v.c === -1 && C(N2, v.k) * v.c ** v.k < 0,
+          bien: '(−1)ᵏ: con k impar, el signo cambia.' },
+        { texto: 'Busca el coeficiente más grande de la mesa.',
+          logrado: v => C(N2, v.k) * v.c ** v.k === Math.max(...[1, 2, -1].flatMap(c => [0, 1, 2, 3, 4, 5, 6].map(k => C(N2, k) * c ** k))),
+          bien: '15 · 2⁴ = 240: compiten el número combinatorio y la potencia de c.' },
+        { texto: 'Guarda dos binomios distintos con el término sin x en la misma fila.',
+          logrado: (v, guardados) => expTotal(v) === 0 && guardados.some(g => (g.p !== v.p || g.q !== v.q) && g.k === v.k && expTotal(g) === 0)
+            && guardados.some(g => ['p', 'q', 'c', 'k'].every(z => g[z] === v[z])),
+          bien: 'Lo decide la razón entre p y q, no sus valores.' },
+      ],
     },
     {
       id: 'serie-alfa', titulo: 'La serie con otro exponente', pieza: 'ejes',
@@ -521,6 +553,21 @@
         donde: v => { const g = EJES().geometria(EJ3); return { x: g.X(v.x), y: g.Y(Math.max(-1, Math.min(4, exacta(v.al, v.x)))) }; },
         mover: pt => ({ x: inversa(EJES().geometria(EJ3).X, -0.8, 1.4)(pt.x) }),
       }],
+      invitaciones: [
+        { texto: 'Con α = 2, haz que la suma sea exacta.',
+          logrado: v => v.al === '2' && errorSerie(v) < 1e-9,
+          bien: 'α natural: desde el cuarto término, todos los coeficientes son 0.' },
+        { texto: 'Con α = −1, pon x donde la serie ya no converge.',
+          logrado: v => v.al === '-1' && Math.abs(v.x) >= 1 - 1e-9,
+          bien: 'Con |x| ≥ 1, sumar más términos no acerca la suma.' },
+        { texto: 'Con α = 1/2 y x = 0,2, logra un error menor que 0,001.',
+          logrado: v => v.al === '1/2' && Math.abs(v.x - 0.2) < 1e-9 && errorSerie(v) < 0.001,
+          bien: 'Cerca de 0, pocos términos ya dan una buena aproximación.' },
+        { texto: 'Guarda el mismo α y el mismo x con más términos y menos error.',
+          logrado: (v, guardados) => guardados.some(g => g.al === v.al && Math.abs(g.x - v.x) < 1e-9 && g.m < v.m && errorSerie(g) > errorSerie(v) + 1e-12)
+            && guardados.some(g => g.al === v.al && Math.abs(g.x - v.x) < 1e-9 && g.m === v.m),
+          bien: 'Con |x| < 1, cada término más acerca la suma al valor exacto.' },
+      ],
     },
   ];
 
@@ -528,6 +575,20 @@
     unidad: 'algebra.binomio-de-newton',
     version: '0.2.0',
     laboratorio,
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'binomio', formas: ['binomio', 'binomios'], def: 'Polinomio de dos términos.', ejemplo: 'x + 2 y a − b.', ver: ['binomio de Newton'] },
+      { termino: 'binomio de Newton', def: 'La fórmula que desarrolla (a + b)ⁿ sin multiplicar paréntesis por paréntesis.',
+        ejemplo: '(a + b)³ = a³ + 3a²b + 3ab² + b³.', ver: ['número combinatorio'] },
+      { termino: 'factorial', formas: ['factorial', 'factoriales'], simbolo: 'n!', def: 'El producto de todos los enteros de 1 hasta n; 0! vale 1.', ejemplo: '4! = 4 · 3 · 2 · 1 = 24.' },
+      { termino: 'número combinatorio', formas: ['número combinatorio', 'números combinatorios', 'combinatorio', 'combinatorios'], simbolo: 'C(n, k)',
+        def: 'Cuántas maneras hay de elegir k cosas entre n, sin importar el orden: n!/(k!(n − k)!).', ejemplo: 'C(4, 2) = 6.', ver: ['factorial', 'triángulo de Pascal'] },
+      { termino: 'triángulo de Pascal', def: 'Tabla donde cada número es la suma de los dos de arriba; da los coeficientes de (a + b)ⁿ.',
+        ejemplo: 'Fila 4: 1, 4, 6, 4, 1.', ver: ['número combinatorio'] },
+      { termino: 'término general', formas: ['término general', 'términos generales'], def: 'Fórmula que da cualquier término del desarrollo por su lugar, sin escribir los anteriores.',
+        ejemplo: 'En (a + b)ⁿ: C(n, k) aⁿ⁻ᵏ bᵏ.' },
+      { termino: 'natural', formas: ['natural', 'naturales'], def: 'Número que sirve para contar: 0, 1, 2, 3 y así.', ejemplo: 'α = 2 lo es; α = 1/2 no.' },
+    ],
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/ejes.js'],
     historia: {
