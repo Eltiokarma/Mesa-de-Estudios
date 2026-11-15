@@ -83,25 +83,32 @@
     coloide: { texto: 'Coloide', e: 'coloide', k: 6, lee: 'Grupitos de 1 a 1000 nm: no se asientan, desvían la luz.' },
     suspension: { texto: 'Suspensión', e: 'grumo', k: 4, lee: 'Grumos de más de 1000 nm: se asientan y se filtran.' },
   };
-  const vasoSistema = (k, reposo) => {
+  // Animación (decisión de Gerson, 15 nov: química se mueve sola). Una hora de reposo en 6 s. Los grumos de la
+  // suspensión caen a rapidez constante (rapidez terminal) y tocan el fondo a los 30 min; lo disuelto y el coloide solo
+  // tiemblan (agitación térmica), nunca bajan. Modelo cualitativo: los 30 min son ilustrativos, no un dato.
+  const BAJA = 30, Y0 = [0.18, 0.42, 0.28, 0.56], FONDO = 0.86;
+  const altura = (j, tt) => Math.min(FONDO, Y0[j] + (FONDO - Y0[j]) * tt / BAJA);
+  const enFondo = (k, tt) => k === 'suspension' && tt >= BAJA;
+  const vasoReposo = (k, tt) => {
     const S = SISTEMAS[k];
-    const parts = reposo && k === 'suspension' ? rejilla('grumo', 4, 4, 0.1, 0.9, 0.86, 0.86) : [{ e: S.e, n: S.k }];
-    return lupa([{ titulo: `${S.texto}${reposo ? ', en reposo' : ''}`, forma: 'vaso', nivel: 0.9, particulas: parts }], { separacion: 26 });
+    const parts = k === 'suspension' ? Y0.map((y, j) => ({ e: 'grumo', n: 1, x: 0.1 + 0.8 * j / 3, y: altura(j, tt) })) : [{ e: S.e, n: S.k }];
+    return lupa([{ titulo: `${S.texto}, ${f(tt, 0)} min quieto`, forma: 'vaso', nivel: 0.9, particulas: parts }], { separacion: 26, agita: enFondo(k, tt) ? undefined : tt / 10, agitaAmp: 2 });
   };
+  const leeReposo = (k, tt) => (k === 'suspension' ? (enFondo(k, tt) ? 'Los grumos ya están en el fondo.' : 'Los grumos van cayendo al fondo.') : k === 'coloide' ? 'Los grupitos siguen repartidos: no caen.' : 'Los iones siguen repartidos: no caen.');
   const dispersos = {
     id: 'sistemas-dispersos',
     titulo: 'Solución, coloide o suspensión',
     temas: ['Sistemas dispersos: soluciones, coloides y suspensiones'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Elige un sistema y déjalo en reposo. Compara el tamaño de lo disperso y si cae al fondo.',
+      consigna: 'El vaso queda en reposo: una hora pasa en 6 segundos. Elige un sistema y mira si lo disperso cae al fondo.',
       voz: 'Mira el tamaño de lo que flota. Eso decide el nombre.',
       controles: [
         { id: 'k', etiqueta: 'Sistema', opciones: Object.keys(SISTEMAS).map(x => ({ valor: x, texto: SISTEMAS[x].texto })) },
-        { id: 'r', etiqueta: 'Reposo', opciones: [{ valor: 'no', texto: 'Recién agitado' }, { valor: 'si', texto: 'Una hora quieto' }] },
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 60, paso: 5, inicio: 0, unidad: 'min', decimales: 0, auto: { velocidad: 10 } },
       ],
-      dibujo: val => vasoSistema(val.k, val.r === 'si'),
-      lectura: val => [SISTEMAS[val.k].lee],
+      dibujo: val => vasoReposo(val.k, val.t),
+      lectura: val => [`${f(val.t, 0)} min en reposo · ${leeReposo(val.k, val.t)}`],
       minimo: 3,
     },
     predice: {
@@ -167,22 +174,33 @@
     curvas: [{ puntos: curvaDe(KNO3), rotulo: 'KNO₃', en: [72, 144] }, { puntos: curvaDe(NACL), discontinua: true, rotulo: 'NaCl', en: [70, 37] }],
     alt: 'Curvas de solubilidad en 100 g de agua: la del nitrato de potasio sube mucho con la temperatura (de 13 g a 0 °C a 169 g a 80 °C); la del cloruro de sodio casi no cambia (36 a 38 g).',
   }, extra);
+  // Animación: la temperatura sube y baja sola (barrido de 0 a 80 °C). Entre dos filas de la tabla, la curva dibujada
+  // es una recta; solT lee esa misma recta, así el punto y la lectura cuadran con lo que se ve.
+  const solT = T => { const ts = Object.keys(KNO3).map(Number); for (let i = 0; i < ts.length - 1; i++) if (T <= ts[i + 1]) return KNO3[ts[i]] + (KNO3[ts[i + 1]] - KNO3[ts[i]]) * (T - ts[i]) / (ts[i + 1] - ts[i]); return KNO3[80]; };
+  const ejesBarrido = val => {
+    const sT = solT(val.T), sobra = val.m > sT;
+    return ejesSol({
+      curvas: [...ejesSol().curvas, ...(sobra ? [{ puntos: [[val.T, sT], [val.T, val.m]], color: 'h' }] : [])],
+      puntos: [{ x: val.T, y: val.m, color: 'd', rotulo: `${f(val.m, 0)} g`, guias: true }, { x: val.T, y: sT, color: 'd', abierto: true }],
+      alt: `Curvas de solubilidad; a ${f(val.T, 0)} °C caben ${f(sT, 1)} g de KNO₃ en 100 g de agua y se echaron ${f(val.m, 0)} g${sobra ? `: sobran ${f(val.m - sT, 1)} g` : ''}.`,
+    });
+  };
   const solubilidad = {
     id: 'curva-solubilidad',
     titulo: 'Cuánto cabe en el agua',
     temas: ['Solubilidad y curvas de solubilidad'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Echa nitrato de potasio (KNO₃) en 100 g de agua y elige la temperatura. Mira si el punto queda bajo la curva o encima.',
+      consigna: 'El agua con KNO₃ se calienta y se enfría sola. Mira cuándo el punto cruza la curva: la raya roja es lo que sobra.',
       voz: 'Bajo la curva cabe más; encima, sobra.',
       controles: [
-        { id: 'T', etiqueta: 'T', min: 0, max: 80, paso: 10, inicio: 20, unidad: '°C', decimales: 0 },
+        { id: 'T', etiqueta: 'T', min: 0, max: 80, paso: 10, inicio: 20, unidad: '°C', decimales: 0, auto: { velocidad: 16, modo: 'rebota' } },
         { id: 'm', etiqueta: 'm', color: 'c-d', min: 10, max: 150, paso: 10, inicio: 50, unidad: 'g', decimales: 0 },
       ],
-      dibujo: val => ({ datos: ejesSol({ puntos: [{ x: val.T, y: val.m, color: 'd', rotulo: `${f(val.m, 0)} g`, guias: true }] }), estado: {} }),
+      dibujo: val => ({ datos: ejesBarrido(val), estado: {} }),
       lectura: val => {
-        const s = KNO3[val.T];
-        return val.m <= s ? ['Se disuelve todo; caben ', `${f(s - val.m, 1)} g más`] : ['Se disuelven ', `${f(s, 1)} g; quedan ${f(val.m - s, 1)} g sin disolver`];
+        const s = solT(val.T);
+        return val.m <= s ? [`${f(val.T, 0)} °C: se disuelve todo; caben `, `${f(s - val.m, 1)} g más`] : [`${f(val.T, 0)} °C: se disuelven `, `${f(s, 1)} g; sobran ${f(val.m - s, 1)} g`];
       },
       minimo: 3,
       // El punto se arrastra en las dos direcciones: a los lados cambia la temperatura y hacia arriba la masa echada.
@@ -263,18 +281,19 @@
   // Cambia: cuántas bolitas de soluto y cuánto volumen · Permanece: cada bolita vale 0,01 mol · Progresa: de contar
   // bolitas a contar bolitas por volumen · Se reserva: el vaso con menos moles y más concentrado · Debe verse: la
   // densidad de bolitas, no su número.
-  const vasoConc = val => lupa([{ titulo: 'Solución', forma: 'vaso', nivel: val.v / 500, rotulo: `${f(val.v, 0)} mL`, particulas: [{ e: 'ion', n: val.k }] }]);
+  // Animación: el volumen sube y baja solo (las mismas bolitas en más o menos solución); las bolitas tiemblan.
+  const vasoConc = val => lupa([{ titulo: 'Solución', forma: 'vaso', nivel: val.v / 500, rotulo: `${f(val.v, 0)} mL`, particulas: [{ e: 'ion', n: val.k }] }], { agita: val.v / 60, agitaAmp: 2 });
   const concentracion = {
     id: 'concentracion',
     titulo: 'Concentración: cantidad entre volumen',
     temas: ['Concentración: porcentajes, molaridad, normalidad y molalidad'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Cada bolita es 0,01 mol de soluto. Cambia cuántas hay y el volumen de solución. Mira qué tan juntas quedan.',
+      consigna: 'Cada bolita es 0,01 mol de soluto. El volumen sube y baja solo; cambia cuántas bolitas hay. Mira qué tan juntas quedan.',
       voz: 'Fíjate en cuántas bolitas hay por cada parte del vaso.',
       controles: [
         { id: 'k', etiqueta: 'n', color: 'c-o', min: 2, max: 12, paso: 2, inicio: 4, unidad: 'bolitas', decimales: 0 },
-        { id: 'v', etiqueta: 'V', color: 'c-i', min: 100, max: 500, paso: 100, inicio: 200, unidad: 'mL', decimales: 0 },
+        { id: 'v', etiqueta: 'V', color: 'c-i', min: 100, max: 500, paso: 100, inicio: 200, unidad: 'mL', decimales: 0, auto: { velocidad: 80, modo: 'rebota' } },
       ],
       dibujo: val => vasoConc(val),
       lectura: val => [c, ` = ${f(val.k * 0.01, 2)} mol / ${f(val.v / 1000, 1)} L = ${f(val.k * 0.01 / (val.v / 1000), 2)}\u00a0mol/L`],
@@ -373,16 +392,17 @@
   // diluir y la densidad no cambia al retirar.
   const BOLITA = 0.002;                                                 // mol por bolita
   const vaso = (titulo, v, k, extra = {}) => Object.assign({ titulo, forma: 'vaso', nivel: v / 260, rotulo: `${f(v, 0)} mL`, particulas: [{ e: 'ion', n: k }] }, extra);
-  const conAgua = val => lupa([vaso('Inicio', 100, 10), vaso('Con agua', val.v, 10)], { flechas: true, alto: 190, separacion: 16 });
+  // Animación: el agua entra sola en el segundo vaso, de 100 a 250 mL, una y otra vez; las bolitas se reparten.
+  const conAgua = val => lupa([vaso('Inicio', 100, 10), vaso('Con agua', val.v, 10)], { flechas: true, alto: 190, separacion: 16, agita: val.v / 40, agitaAmp: 1.5 });
   const dilucion = {
     id: 'diluir-y-retirar',
     titulo: 'Diluir no es retirar',
     temas: ['Dilución y mezcla de soluciones'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Tienes 100 mL de solución con 0,020 mol de soluto. Añade agua hasta el volumen que elijas y lee n y c.',
+      consigna: 'Tienes 100 mL de solución con 0,020 mol de soluto. El agua entra sola: cuenta las bolitas y lee n y c.',
       voz: 'Cuenta las bolitas antes y después de añadir agua.',
-      controles: [{ id: 'v', etiqueta: 'V', color: 'c-i', min: 100, max: 250, paso: 50, inicio: 100, unidad: 'mL', decimales: 0 }],
+      controles: [{ id: 'v', etiqueta: 'V', color: 'c-i', min: 100, max: 250, paso: 50, inicio: 100, unidad: 'mL', decimales: 0, auto: { velocidad: 30 } }],
       dibujo: val => conAgua(val),
       lectura: val => [n, ' = 0,020 mol · ', c, ` = ${f(0.02 / (val.v / 1000), 3)}\u00a0mol/L`],
       minimo: 3,
@@ -472,9 +492,11 @@
   const BOL = 0.5;                                                      // mmol por bolita
   const neutra = vb => {
     const nH = 2, nOH = 0.1 * vb, quedaH = Math.max(0, nH - nOH), sobraOH = Math.max(0, nOH - nH), agua = Math.min(nH, nOH);
+    // Las bolitas son pares enteros de 0,5 mmol: se cuentan con floor para que un par aparezca recién cuando se completa.
+    const kH = Math.round(nH / BOL), kAgua = Math.floor(agua / BOL + 1e-9), kOH = Math.floor(sobraOH / BOL + 1e-9);
     return { nOH, quedaH, sobraOH, agua, dib: lupa([{ titulo: 'Matraz', forma: 'vaso', nivel: (20 + vb) / 60, rotulo: `${f(20 + vb, 0)} mL`,
-      particulas: [{ e: 'H', n: Math.round(quedaH / BOL) }, { e: 'OH', n: Math.round(sobraOH / BOL) }, { e: 'agua', n: Math.round(agua / BOL) }],
-      cuenta: [{ e: 'H', texto: `${f(quedaH, 1)}` }, { e: 'OH', texto: `${f(sobraOH, 1)}` }, { e: 'agua', texto: `${f(agua, 1)}` }] }], { separacion: 24 }) };
+      particulas: [{ e: 'H', n: kH - kAgua }, { e: 'OH', n: kOH }, { e: 'agua', n: kAgua }],
+      cuenta: [{ e: 'H', texto: `${f(quedaH, 1)}` }, { e: 'OH', texto: `${f(sobraOH, 1)}` }, { e: 'agua', texto: `${f(agua, 1)}` }] }], { separacion: 24, agita: vb / 8, agitaAmp: 1.5 }) };
   };
   const esteq = {
     id: 'estequiometria-solucion',
@@ -482,11 +504,11 @@
     temas: ['Estequiometría en soluciones'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Al matraz con 20 mL de HCl 0,10 mol/L le añades NaOH 0,10 mol/L. Cada bolita es 0,5 mmol. Mira qué queda.',
+      consigna: 'Al matraz con 20 mL de HCl 0,10 mol/L le cae NaOH 0,10 mol/L solo. Cada bolita es 0,5 mmol. Mira qué queda.',
       voz: 'Cada OH⁻ se lleva un H⁺. Cuenta los pares.',
-      controles: [{ id: 'v', etiqueta: 'NaOH', color: 'c-i', min: 0, max: 40, paso: 5, inicio: 5, unidad: 'mL', decimales: 0 }],
+      controles: [{ id: 'v', etiqueta: 'NaOH', color: 'c-i', min: 0, max: 40, paso: 5, inicio: 5, unidad: 'mL', decimales: 0, auto: { velocidad: 6 } }],
       dibujo: val => neutra(val.v).dib,
-      lectura: val => { const x = neutra(val.v); return [n, `(OH⁻) = ${f(x.nOH, 1)} mmol · queda H⁺ ${f(x.quedaH, 1)}\u00a0mmol`]; },
+      lectura: val => { const x = neutra(val.v); return [`${f(val.v, 1)} mL · `, n, `(OH⁻) = ${f(x.nOH, 1)} mmol · queda H⁺ ${f(x.quedaH, 1)}\u00a0mmol`]; },
       minimo: 3,
       // El nivel del matraz se agarra y se sube: es añadir base (20 mL de ácido + lo agregado). Los pares responden.
       arrastres: [{ id: 'base', etiqueta: 'nivel del matraz: más arriba, más NaOH', color: 'c-i',
@@ -549,13 +571,26 @@
   // ---------- Laboratorio ----------
   // Mezcla: los tres vasos usan la misma escala (600 mL llenan el vaso), para que los niveles se comparen a simple vista.
   const cMezcla = val => (val.ca * val.va + val.cb * val.vb) / (val.va + val.vb);
+  // Animación: en el tercer vaso, las bolitas de A empiezan en su lado (izquierda, en proporción a su volumen) y las de B
+  // en el otro; se van mezclando solas hasta quedar parejas. La fracción mezclada sigue 1 − e^(−t/1,2) (se acerca a lo
+  // uniforme sin llegar de golpe; modelo cualitativo de difusión). La concentración final vale cuando ya está pareja.
+  const mezclado = val => (val.t === undefined ? 1 : 1 - Math.exp(-val.t / 1.2));
+  const enMezcla = (val, ka, kb) => {
+    const fa = val.va / (val.va + val.vb), p = mezclado(val), out = [];
+    const sitio = (j, lo, hi) => { const r = azar(j * 7 + ka * 31 + kb * 97 + 3); return [lo + (hi - lo) * r(), 0.08 + 0.84 * r()]; };
+    for (let j = 0; j < ka + kb; j++) {
+      const [x0, y0] = j < ka ? sitio(j, 0.06, 0.06 + 0.88 * fa) : sitio(j, 0.06 + 0.88 * fa, 0.94), [x1, y1] = sitio(j + 500, 0.06, 0.94);
+      out.push({ e: 'ion', n: 1, x: x0 + (x1 - x0) * p, y: y0 + (y1 - y0) * p });
+    }
+    return out;
+  };
   const mezclaLab = val => {
     const ka = Math.round(val.ca * val.va / 10), kb = Math.round(val.cb * val.vb / 10);
     return lupa([
       { titulo: 'A', forma: 'vaso', nivel: val.va / 600, rotulo: `${f(val.ca, 1)} M`, particulas: [{ e: 'ion', n: ka }] },
       { titulo: 'B', forma: 'vaso', nivel: val.vb / 600, rotulo: `${f(val.cb, 1)} M`, particulas: [{ e: 'ion', n: kb }] },
-      { titulo: 'Mezcla', forma: 'vaso', nivel: (val.va + val.vb) / 600, rotulo: `${f(cMezcla(val), 2)} M`, particulas: [{ e: 'ion', n: ka + kb }] },
-    ], { alto: 190, separacion: 18, flechas: true,
+      { titulo: 'Mezcla', forma: 'vaso', nivel: (val.va + val.vb) / 600, rotulo: `${f(cMezcla(val), 2)} M`, particulas: enMezcla(val, ka, kb) },
+    ], { alto: 190, separacion: 18, flechas: true, agita: val.t, agitaAmp: 1.5,
       alt: `Vaso A con ${f(val.va, 0)} mL a ${f(val.ca, 1)} mol/L (${ka} bolitas) y vaso B con ${f(val.vb, 0)} mL a ${f(val.cb, 1)} mol/L (${kb} bolitas); la mezcla tiene ${ka + kb} bolitas en ${f(val.va + val.vb, 0)} mL: ${f(cMezcla(val), 3)} mol/L.` });
   };
   // Solubilidad entre dos temperaturas de la tabla: interpolación lineal (aproximación para jugar, no un dato de tabla).
@@ -572,7 +607,7 @@
 
   return {
     unidad: 'quimica.soluciones',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/quim-particulas.js', '/nucleo/kit/piezas/ejes.js'],
     historia: {
@@ -620,15 +655,16 @@
     laboratorio: [
       {
         id: 'mezcla-dos', titulo: 'Mezcla dos soluciones', pieza: 'quim-particulas',
-        consigna: 'Cada bolita es 0,01 mol. Elige la concentración de A y de B, arrastra sus niveles y mira la mezcla.',
+        consigna: 'Recién vertidas, A y B se mezclan solas en el tercer vaso. Elige c y V, y mira cuándo la mezcla queda pareja.',
         controles: [
           { id: 'ca', etiqueta: 'c A', color: 'c-h', min: 0.1, max: 0.4, paso: 0.1, inicio: 0.2, unidad: 'mol/L', decimales: 1 },
           { id: 'va', etiqueta: 'V A', color: 'c-i', min: 100, max: 300, paso: 100, inicio: 200, unidad: 'mL', decimales: 0 },
           { id: 'cb', etiqueta: 'c B', color: 'c-h', min: 0.1, max: 0.4, paso: 0.1, inicio: 0.4, unidad: 'mol/L', decimales: 1 },
           { id: 'vb', etiqueta: 'V B', color: 'c-i', min: 100, max: 300, paso: 100, inicio: 100, unidad: 'mL', decimales: 0 },
+          { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 6, paso: 0.5, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } },
         ],
         dibujo: val => mezclaLab(val),
-        lectura: val => [`${f(val.ca, 1)} M · ${f(val.va, 0)} mL + ${f(val.cb, 1)} M · ${f(val.vb, 0)} mL → `, c, ` = ${f(cMezcla(val), 3)} M`],
+        lectura: val => [`Mezclado ${f(100 * mezclado(val), 0)} % · al final `, c, ` = ${f(cMezcla(val), 3)} M`],
         arrastres: [
           { id: 'nivel-a', etiqueta: 'nivel del vaso A', color: 'c-i', donde: val => superficie(mezclaLab(val), 0), mover: (pt, val) => ({ va: nivelEn(mezclaLab(val), pt.y) * 600 }) },
           { id: 'nivel-b', etiqueta: 'nivel del vaso B', color: 'c-i', donde: val => superficie(mezclaLab(val), 1), mover: (pt, val) => ({ vb: nivelEn(mezclaLab(val), pt.y) * 600 }) },
@@ -644,6 +680,10 @@
           { texto: 'Con A a 0,1 M, logra que la mezcla pase de 0,3 M.',
             logrado: val => val.ca === 0.1 && cMezcla(val) > 0.3,
             bien: 'B tiene que poner mucho más volumen. Aun así, nunca llega a 0,4 M.' },
+          { texto: 'Pausa la mezcla cuando ya esté casi pareja: más del 95 % mezclado.',
+            logrado: val => mezclado(val) > 0.95,
+            bien: 'Ya no se distingue qué bolita vino de A: recién ahí vale esa c.',
+            pista: 'Espera a que la lectura pase del 95 % y pausa; ajusta t con − y +.' },
           { texto: 'Guarda dos mezclas con la misma concentración y distinto volumen total.',
             logrado: (val, guardados) => guardados.some(g => g.va + g.vb !== val.va + val.vb && Math.abs(cMezcla(g) - cMezcla(val)) < 1e-9)
               && guardados.some(g => g.ca === val.ca && g.va === val.va && g.cb === val.cb && g.vb === val.vb),
