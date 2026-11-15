@@ -818,6 +818,38 @@
     // Laboratorio (docs/teoria.md §4b): sin preguntas. La primera mesa es más rica que los juegos: junta fórmula
     // general, familias y anillos, con n de 1 a 8 y los casos que la idea no deja probar. La segunda compara dos
     // estructuras cualesquiera. La lectura dice entradas y resultado, para que un caso guardado se lea solo.
+    glosario: [
+      { termino: 'hidrocarburo', def: 'Compuesto formado solo por átomos de carbono e hidrógeno, como el metano o el benceno.',
+        ejemplo: 'El propano, C₃H₈, es el gas de muchos balones de cocina.', ver: ['alcano'] },
+      { termino: 'alcano', def: 'Hidrocarburo de cadena abierta con solo enlaces simples entre carbonos. Fórmula general CₙH₂ₙ₊₂.',
+        ejemplo: 'Con 4 carbonos: 2 · 4 + 2 = 10 H, el butano C₄H₁₀.', ver: ['alqueno', 'cicloalcano'] },
+      { termino: 'alqueno', def: 'Hidrocarburo de cadena abierta con un enlace doble entre carbonos. Si tiene uno solo: CₙH₂ₙ.',
+        ejemplo: 'Eteno, C₂H₄: dos H menos que el etano, C₂H₆.', ver: ['alcano', 'alquino'] },
+      { termino: 'alquino', def: 'Hidrocarburo de cadena abierta con un enlace triple entre carbonos. Si tiene uno solo: CₙH₂ₙ₋₂.',
+        ejemplo: 'Etino o acetileno, C₂H₂: el gas de los sopletes.', ver: ['alqueno'] },
+      { termino: 'cicloalcano', def: 'Hidrocarburo de enlaces simples con los carbonos cerrados en anillo: CₙH₂ₙ, dos H menos que el alcano.',
+        ejemplo: 'Ciclohexano, C₆H₁₂: misma fórmula que un hexeno.', ver: ['alcano', 'isómero'] },
+      { termino: 'hibridación', def: 'Mezcla de orbitales que fija la forma del carbono: sp³ a 109,5°, sp² a 120°, sp a 180°.',
+        ejemplo: 'En el eteno, cada carbono del doble enlace es sp².', ver: ['orbital'] },
+      { termino: 'aromático', def: 'Compuesto con un anillo como el del benceno, con enlaces dobles repartidos por todo el anillo.',
+        formas: ['aromático', 'aromáticos', 'aromática', 'aromáticas'], ver: ['benceno'] },
+      { termino: 'benceno', simbolo: 'C₆H₆', def: 'Anillo de seis carbonos con sus tres enlaces dobles repartidos por igual entre los seis.',
+        ejemplo: 'Sus seis enlaces C–C miden lo mismo: 140 pm.', ver: ['aromático'] },
+      { termino: 'cadena principal', def: 'Cadena de carbonos que da la base del nombre; se elige con las reglas IUPAC, no solo por largo.',
+        formas: ['cadena principal', 'cadenas principales'] },
+      { termino: 'isómero', def: 'Compuesto con la misma fórmula molecular que otro, pero con sus átomos unidos o ubicados de otra forma.',
+        ejemplo: 'Butano y metilpropano: los dos son C₄H₁₀.', formas: ['isómero', 'isómeros', 'isomería'], ver: ['fórmula molecular'] },
+      { termino: 'cis', def: 'Isómero con dos grupos iguales del mismo lado del enlace doble.',
+        ejemplo: 'cis-but-2-eno: sus dos CH₃ van del mismo lado.', ver: ['trans'] },
+      { termino: 'trans', def: 'Isómero con dos grupos iguales en lados opuestos del enlace doble.',
+        ejemplo: 'trans-but-2-eno: sus dos CH₃ van en lados opuestos.', ver: ['cis'] },
+      { termino: 'isómero óptico', def: 'Cada una de dos moléculas que son imagen en el espejo una de otra y no se pueden superponer.',
+        formas: ['isómeros ópticos', 'isómero óptico'], ver: ['isómero'] },
+      { termino: 'adición', def: 'Reacción en que se abre un enlace doble o triple y se unen átomos nuevos a esos carbonos.',
+        ejemplo: 'Eteno + H₂ → etano: C₂H₄ gana dos H.', ver: ['sustitución'] },
+      { termino: 'sustitución', def: 'Reacción en que un átomo de la molécula sale y otro ocupa su lugar.',
+        ejemplo: 'CH₄ + Cl₂ → CH₃Cl + HCl: un H cambia por Cl.', ver: ['adición'] },
+    ],
     laboratorio: [
       {
         id: 'cadena-que-crece', titulo: 'La cadena que crece', pieza: 'quim-molecula',
@@ -839,6 +871,25 @@
             if (val.forma === 'anillo' && val.n >= 3) return { n: cercana([3, 4, 5, 6, 7, 8], extremoLab, pt, val, 'n', (q, p) => Math.abs(radio(q) - radio(p))) };
             return { n: cercana([1, 2, 3, 4, 5, 6, 7, 8], extremoLab, pt, val, 'n') };
           } }],
+        invitaciones: [
+          { texto: 'Consigue un hidrocarburo con exactamente 12 hidrógenos.',
+            logrado: val => { const c = cadenaLab(val); return !c.aviso && c.H === 12; },
+            bien: 'Pentano, un alqueno o un anillo: más de un camino a 12 H.' },
+          { texto: 'Busca el anillo más chico que acepte un enlace triple.',
+            logrado: val => { const c = cadenaLab(val), menos = cadenaLab(Object.assign({}, val, { n: val.n - 1 })); return c.anillo && c.orden === 3 && menos.orden !== 3; },
+            bien: 'Ocho carbonos: el triple pide 180° y solo un anillo grande lo estira.' },
+          { texto: 'Pide un enlace doble o triple donde no puede haberlo.',
+            logrado: val => cadenaLab(val).n === 1 && +val.e > 1,
+            bien: 'Sin enlace C–C no hay doble. ¿Desde cuántos carbonos se puede?' },
+          { texto: 'Guarda un alqueno y un cicloalcano con la misma fórmula.',
+            logrado: (val, guardados) => { const c = cadenaLab(val);
+              return guardados.some(g => { const d = cadenaLab(g); return d.n === c.n && d.H === c.H && [d.fam, c.fam].sort().join() === 'alqueno,cicloalcano'; }); },
+            bien: 'Cerrar el anillo cuesta dos H, igual que un enlace doble.' },
+          { texto: 'Guarda dos alcanos seguidos: ¿cuántos H suma cada carbono nuevo?',
+            logrado: (val, guardados) => { const c = cadenaLab(val);
+              return c.fam === 'alcano' && guardados.some(g => { const d = cadenaLab(g); return d.fam === 'alcano' && Math.abs(d.n - c.n) === 1; }); },
+            bien: 'Cada CH₂ nuevo suma dos H: por eso queda CₙH₂ₙ₊₂.' },
+        ],
       },
       {
         id: 'a-contra-b', titulo: 'Dos estructuras lado a lado', pieza: 'quim-molecula',
@@ -850,6 +901,22 @@
         dibujo: val => figura([mover(EST[val.a], 0, 0, 'a'), mover(EST[val.b], 0, 2.7, 'b')], { escala: 40, alto: 280, textos: [{ x: -1.0, y: 0.3, t: 'A', peso: 700 }, { x: -1.0, y: 3.0, t: 'B', peso: 700 }] }),
         lectura: val => { const r = relacion(val.a, val.b); return [`A: ${r.fa} · B: ${r.fb} → ${r.rel}`]; },
         // Sin arrastre: A y B son estructuras de una lista; elegirlas no tiene una variable que agarrar.
+        invitaciones: [
+          { texto: 'Pon frente a frente dos estructuras que sean isómeros.',
+            logrado: val => relacion(val.a, val.b).rel === 'isómeros',
+            bien: 'Misma fórmula, otras uniones: eso es un isómero, no el dibujo.' },
+          { texto: 'Busca dos dibujos distintos que sean la misma molécula.',
+            logrado: val => val.a !== val.b && relacion(val.a, val.b).rel === 'la misma molécula',
+            bien: 'Doblar o voltear el dibujo no cambia ninguna unión.' },
+          { texto: 'Junta el pentano con su isómero de más ramas.',
+            logrado: val => { const ramas = k => EST[k].n.filter(x => x[1] === 'CH₃').length - 2;
+              const r = relacion(val.a, val.b), c5 = LADO.filter(k => cuenta(EST[k]).c === 5);
+              return r.rel === 'isómeros' && Math.max(ramas(val.a), ramas(val.b)) === Math.max(...c5.map(ramas)) && Math.min(ramas(val.a), ramas(val.b)) === 0; },
+            bien: 'Dos metilos en un solo carbono: C₅H₁₂ igual, otra sustancia.' },
+          { texto: 'Elige dos estructuras que ni siquiera sean isómeros.',
+            logrado: val => relacion(val.a, val.b).rel === 'otro compuesto',
+            bien: 'Si la fórmula cambia, ya no hay isomería posible.' },
+        ],
       },
     ],
     ideas: [carbono, formulas, aromatico, isomeros, geometrica, reacciones],
