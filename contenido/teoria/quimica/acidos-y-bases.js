@@ -99,17 +99,50 @@
       resaltos: rot ? [{ atomos: ['a', 'h', 'a2'], texto: 'par 1', color: 'h', desde: 3 }, { atomos: ['b', 'b2'], texto: 'par 2', color: 'i', desde: 4 }] : [],
       alt: `${P.texto}: el H⁺ pasa del ${P.a}H al ${P.b}; quedan ${P.ac} y H–${P.bc}.` }, estado: { corte } };
   }
+  // Animación (ronda 5): el traspaso en cámara lenta, en una sola fila y en un ciclo de 4 s. Hasta 1 s, el ácido entero;
+  // de 1 a 2,5 s, el H⁺ viaja en línea recta hasta la base; después quedan los conjugados. En Lewis, el NH₃ se acerca
+  // con su par libre y se une al BF₃. Es un esquema del orden de los hechos: el traspaso real dura mucho menos.
+  const SALE = 1, LLEGA = 2.5;
+  const QUIEN = { hcl: ['HCl', 'H₂O', 'HCl dio el H⁺: es el ácido.'], nh3: ['H₂O', 'NH₃', 'El agua dio el H⁺: aquí es ácido.'],
+    acetico: ['CH₃COOH', 'H₂O', 'CH₃COOH dio el H⁺: es el ácido.'], lewis: ['NH₃', 'BF₃', 'NH₃ dio su par: base de Lewis.'] };
+  const avance = t => Math.min(1, Math.max(0, (t - SALE) / (LLEGA - SALE)));
+  function traspaso(k, t) {
+    const P = PARES[k], q = avance(t);
+    if (P.lewis) {
+      const unido = t >= LLEGA, xn = 2.6 - 1.2 * q;
+      return { datos: { escala: 44, alto: 130,
+        atomos: [{ id: 'b', t: unido ? 'F₃B' : 'BF₃', x: 0, y: 0 }, { id: 'n', t: 'NH₃', x: xn, y: 0, color: 'i' }],
+        enlaces: unido ? [{ a: 'b', b: 'n' }] : [], pares: unido ? [] : [{ en: 'n', ang: 180 }],
+        flechas: [{ de: [2.6, -0.8], a: [0.6, -0.8], color: 'o' }],
+        alt: unido ? 'El NH₃ ya se unió al BF₃ con su par de electrones: F₃B–NH₃, sin pasar ningún protón.' : 'El NH₃ se acerca al BF₃ con su par libre por delante.' }, estado: {} };
+    }
+    const vuela = t >= SALE && t < LLEGA, llego = t >= LLEGA, xh = 1.15 + (2.3 - 1.15) * q;
+    return { datos: { escala: 50, alto: 130,
+      atomos: [{ id: 'a', t: t < SALE ? P.a : P.ac, x: 0, y: 0 }, { id: 'h', t: vuela ? 'H⁺' : 'H', x: xh, y: 0, color: 'o' }, { id: 'b', t: llego ? P.bc : P.b, x: 3.4, y: 0 }],
+      enlaces: t < SALE ? [{ a: 'a', b: 'h' }] : llego ? [{ a: 'h', b: 'b' }] : [],
+      textos: t < SALE ? [{ x: 2.3, y: 0, t: '+' }] : llego ? [{ x: 1.15, y: 0, t: '+' }] : [],
+      flechas: [{ de: [1.3, -0.8], a: [3.1, -0.8], color: 'o' }],
+      alt: `${P.texto}: ${t < SALE ? `el H⁺ todavía está en el ${P.a}H` : vuela ? `el H⁺ va del ${P.a} al ${P.b}` : `quedan ${P.ac} y H–${P.bc}`}.` }, estado: {} };
+  }
+  const leeTraspaso = (k, t) => {
+    const [da, recibe, fin] = QUIEN[k], s = `${f(t, 1)} s · `;
+    if (k === 'lewis') return [s + (t < LLEGA ? `el ${da} acerca su par al ${recibe}` : fin)];
+    return [s + (t < SALE ? `el ${da} tiene el H⁺` : t < LLEGA ? `el H⁺ va del ${da} al ${recibe}` : fin)];
+  };
   const proton = {
     id: 'acido-da-proton',
     titulo: 'El ácido da, la base recibe',
     temas: ['Teorías de Arrhenius, Brønsted-Lowry y Lewis', 'Pares conjugados y fuerza relativa'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Elige un par de sustancias. Arriba están antes de reaccionar y abajo, después. Sigue el H⁺ naranja: ¿de quién sale y a quién llega?',
+      consigna: 'En cámara lenta, el H⁺ naranja salta de una sustancia a otra. Elige el par y mira quién lo da y quién lo recibe.',
       voz: 'Sigue al protón; el nombre de la sustancia viene después.',
-      controles: [{ id: 'k', etiqueta: 'Par', opciones: Object.keys(PARES).map(k => ({ valor: k, texto: PARES[k].texto })) }],
-      dibujo: val => parDibujo(val.k, 4, false),
-      lectura: val => [PARES[val.k].lee],
+      controles: [
+        { id: 'k', etiqueta: 'Par', opciones: Object.keys(PARES).map(k => ({ valor: k, texto: PARES[k].texto })) },
+        { id: 't', etiqueta: 't', min: 0, max: 4, paso: 0.1, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } },
+      ],
+      dibujo: val => traspaso(val.k, val.t),
+      lectura: val => leeTraspaso(val.k, val.t),
       minimo: 3,
     },
     predice: {
@@ -188,14 +221,16 @@
     temas: ['Pares conjugados y fuerza relativa', 'Ka, Kb y Kw'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Elige un ácido y su concentración. La lupa muestra 24 moléculas de ácido (el agua no se dibuja). Cuenta cuántas se separaron en iones.',
+      consigna: 'Elige un ácido: su concentración sube y baja sola. La lupa muestra 24 moléculas (sin el agua): cuenta las que se separan en iones.',
       voz: 'Compara el fuerte con los débiles a la misma concentración.',
+      // Animación (ronda 5): C barre de 0,01 a 0,1 M y vuelve. La fracción ionizada sale del balance de cargas con la C
+      // del momento; las moléculas tiemblan (agitación térmica, sin cálculo).
       controles: [
         { id: 'k', etiqueta: 'Ácido', opciones: Object.keys(ACIDOS).map(k => ({ valor: k, texto: ACIDOS[k].texto })) },
-        { id: 'c', etiqueta: 'C', opciones: [{ valor: 0.1, texto: '0,1 M' }, { valor: 0.01, texto: '0,01 M' }] },
+        { id: 'c', etiqueta: 'C', color: 'c-i', min: 0.01, max: 0.1, paso: 0.01, inicio: 0.1, unidad: 'M', decimales: 2, auto: { velocidad: 0.03, modo: 'rebota' } },
       ],
-      dibujo: val => lupaAcido([caja(val.k, val.c, ACIDOS[val.k].texto)]),
-      lectura: val => [`Se ioniza el ${f(100 * alfa(val.c, ACIDOS[val.k].ka), 1)} % · `, pH, ` = ${fp(pHde(hAcido(val.c, ACIDOS[val.k].ka)))}`],
+      dibujo: val => lupaAcido([caja(val.k, val.c, `${ACIDOS[val.k].texto}, ${f(val.c, 2)} M`)], { agita: val.c * 40, agitaAmp: 1.5 }),
+      lectura: val => [C, ` = ${f(val.c, 2)} M · ioniza ${f(100 * alfa(val.c, ACIDOS[val.k].ka), 1)} % · `, pH, ` = ${fp(pHde(hAcido(val.c, ACIDOS[val.k].ka)))}`],
       minimo: 3,
     },
     predice: {
@@ -274,11 +309,13 @@
     temas: ['pH y pOH'],
     pieza: 'recta',
     juega: {
-      consigna: 'Empiezas con 0,1 M de un ácido. Cada dilución multiplica el volumen por 10 con agua pura. Mira cómo se mueve el pH.',
+      consigna: 'Empiezas con 0,1 M de un ácido. El agua pura entra sola: cada segundo, el volumen se multiplica por 10. Mira el pH.',
       voz: 'Prueba muchas diluciones seguidas con el ácido fuerte.',
+      // Animación (ronda 5): n avanza solo y continuo (entre dos diluciones enteras, el volumen crece como 10ⁿ); los
+      // puntos huecos quedan en cada dilución entera ya pasada. Al llegar a 8, vuelve a empezar con un vaso nuevo.
       controles: [
         { id: 'k', etiqueta: 'Ácido', opciones: Object.keys(DILUIDOS).map(k => ({ valor: k, texto: DILUIDOS[k].texto })) },
-        { id: 'n', etiqueta: 'Diluciones ×10', min: 0, max: 8, paso: 1, inicio: 0, decimales: 0 },
+        { id: 'n', etiqueta: 'Diluciones ×10', min: 0, max: 8, paso: 1, inicio: 0, decimales: 0, auto: { velocidad: 1 } },
       ],
       dibujo: val => {
         const ka = DILUIDOS[val.k].ka, pts = [];
@@ -287,7 +324,7 @@
         pts.push({ tipo: 'punto', x: p, color: 'h', rotulo: fp(p), fila: 2 });
         return { datos: ESC(pts), estado: {} };
       },
-      lectura: val => [C, ` = ${cien(0.1 / 10 ** val.n, 0)} M · `, pH, ` = ${fp(pHde(hAcido(0.1 / 10 ** val.n, DILUIDOS[val.k].ka)))}`],
+      lectura: val => [C, ` = ${cien(0.1 / 10 ** val.n, Number.isInteger(val.n) ? 0 : 1)} M · `, pH, ` = ${fp(pHde(hAcido(0.1 / 10 ** val.n, DILUIDOS[val.k].ka)))}`],
       minimo: 4,
       // El punto del pH final se corre por la recta: al soltarlo cae en el número de diluciones cuyo pH está más cerca.
       // Se ve que hacia el 7 el punto ya no avanza aunque se diluya más.
@@ -378,10 +415,11 @@
     temas: ['Neutralización y titulación'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Agregas NaOH 0,1 M a 25 mL de HCl 0,1 M: es una titulación. Mueve el volumen agregado y mira el pH.',
+      consigna: 'Titulación en cámara rápida: cae NaOH 0,1 M sobre 25 mL de HCl 0,1 M, 50 mL en 10 s. Mira dónde salta el pH.',
       voz: 'Busca el volumen donde la curva salta.',
-      controles: [{ id: 'v', etiqueta: 'V', color: 'c-o', min: 0, max: 50, paso: 2.5, inicio: 0, unidad: 'mL', decimales: 1 }],
-      dibujo: val => ({ datos: ejesTit({ curvas: [{ puntos: curva(Infinity), color: 'h' }], puntos: [{ x: val.v, y: pHtit(val.v, Infinity), color: 'o', rotulo: fp(pHtit(val.v, Infinity)), guias: true }] }), estado: {} }),
+      // Animación (ronda 5): la bureta gotea sola a 5 mL/s y la curva se dibuja hasta el volumen del momento.
+      controles: [{ id: 'v', etiqueta: 'V', color: 'c-o', min: 0, max: 50, paso: 2.5, inicio: 0, unidad: 'mL', decimales: 1, auto: { velocidad: 5 } }],
+      dibujo: val => ({ datos: ejesTit({ curvas: [{ puntos: curva(Infinity).filter(p => p[0] < val.v).concat([[val.v, pHtit(val.v, Infinity)]]), color: 'h' }], puntos: [{ x: val.v, y: pHtit(val.v, Infinity), color: 'o', rotulo: fp(pHtit(val.v, Infinity)), guias: true }] }), estado: {} }),
       lectura: val => [V, ` = ${f(val.v, 1)} mL · `, pH, ` = ${fp(pHtit(val.v, Infinity))}`],
       minimo: 4,
       // El punto naranja se arrastra a lo largo de la curva: el dedo elige el volumen de base y el pH responde.
@@ -454,7 +492,7 @@
   const labC = val => { const c = val.m / val.v; return c >= 0.01 ? f(c, 3) : cien(c, 1); };
   const labVaso = val => {
     const ka = ACIDOS[val.k].ka, ion = Math.round(12 * alfa(val.m / val.v, ka));
-    return { datos: { atomos: ATOMOS, especies: ESPECIES, alto: 170, separacion: 18,
+    return { datos: { atomos: ATOMOS, especies: ESPECIES, alto: 170, separacion: 18, agita: val.v * 20, agitaAmp: 1.5,
       cajas: [{ titulo: `${ACIDOS[val.k].texto}, ${f(val.m, 4)} mol`, forma: 'vaso', nivel: val.v, rotulo: `${f(val.v, 2)} L`,
         particulas: [{ e: 'HA', n: 12 - ion }, { e: 'H3O', n: ion }, { e: 'Am', n: ion }] }],
       alt: `Lupa (modelo; el agua no se dibuja): ${ACIDOS[val.k].texto} en ${f(val.v, 2)} L, ${12 - ion} moléculas enteras y ${ion} pares de iones de 12.` }, estado: {} };
@@ -472,7 +510,7 @@
 
   return {
     unidad: 'quimica.acidos-y-bases',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/quim-molecula.js', '/nucleo/kit/piezas/quim-particulas.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/ejes.js'],
     historia: {
@@ -521,11 +559,12 @@
     laboratorio: [
       {
         id: 'vaso-que-se-diluye', titulo: 'El ácido que se diluye', pieza: 'quim-particulas',
-        consigna: 'Elige el ácido y cuántos moles hay. Sube el nivel del vaso para agregar agua y cuenta los iones en la lupa.',
+        consigna: 'Elige el ácido y cuántos moles hay. El agua entra sola al vaso; también puedes subir su nivel. Cuenta los iones y mira el pH.',
+        // Animación (ronda 5): el vaso se llena solo de 0,5 a 1 L en 5 s y vuelve a empezar; las moléculas tiemblan.
         controles: [
           { id: 'k', etiqueta: 'Ácido', opciones: Object.keys(ACIDOS).map(k => ({ valor: k, texto: ACIDOS[k].texto })) },
           { id: 'm', etiqueta: 'Cantidad', opciones: [{ valor: 0.1, texto: '0,1 mol' }, { valor: 0.01, texto: '0,01 mol' }, { valor: 0.001, texto: '0,001 mol' }, { valor: 0.0001, texto: '0,0001 mol' }] },
-          { id: 'v', etiqueta: 'V', color: 'c-o', min: 0.5, max: 1, paso: 0.05, inicio: 0.5, unidad: 'L', decimales: 2 },
+          { id: 'v', etiqueta: 'V', color: 'c-o', min: 0.5, max: 1, paso: 0.05, inicio: 0.5, unidad: 'L', decimales: 2, auto: { velocidad: 0.1 } },
         ],
         dibujo: val => labVaso(val),
         lectura: val => [`${ACIDOS[val.k].texto.split(' ')[0]} `, C, ` = ${labC(val)} M → ${f(100 * alfa(val.m / val.v, ACIDOS[val.k].ka), 0)} % · `, pH, ` = ${fp(pHde(hAcido(val.m / val.v, ACIDOS[val.k].ka)))}`],

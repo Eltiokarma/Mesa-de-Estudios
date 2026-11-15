@@ -17,6 +17,11 @@
  *
  * Colores (regla 4): número de carbonos n turquesa c-i, número de H naranja c-o, enlace doble o triple rojo c-h,
  * ángulo verde c-d. Los átomos de las estructuras van en tinta salvo el enlace múltiple y la cadena resaltada.
+ * Animación (decisión de Gerson, 15 nov: química se mueve sola): en cada idea un control «Conteo» (paso 1) avanza solo
+ * y recorre la estructura como lo haría el dedo del alumno: los enlaces de cada carbono, los H de cada grupo, los
+ * enlaces del anillo, la fila de carbonos, los grupos del doble enlace o el inventario de la reacción. Lo que se está
+ * contando va en violeta c-f. Cada cuadro sale de la misma estructura (nada se escribe a mano); no se dibuja ningún
+ * estado intermedio inventado ni dobles que «saltan» (EN6). La mesa 3D «El enlace que gira» gira φ sola, en cámara lenta.
  * Datos (no van al alumno): ángulos ideales 109,5°, 120° y 180°; longitudes C–C 154 pm, C=C 134 pm, benceno
  * 140 pm, C≡C 120 pm (OpenStax Organic Chemistry §1.8–1.9 y §15.2). Nombres según IUPAC 2013 (P-31, P-44),
  * comprobados a mano: 2-metilbutano, 2,2-dimetilpropano, but-2-eno, 2-metilbut-2-eno, butan-2-ol.
@@ -110,6 +115,39 @@
   const ORDEN_C2 = { etano: 1, eteno: 2, etino: 3 };
   const manijaC2 = val => { const g = QM().encuadre(vistaC2(val.t).datos); return { x: g.X(0.65), y: g.Y(0) - 14 - 18 * (ORDEN_C2[val.t] - 1) }; };
 
+  // ---------- Animación: el conteo que avanza solo ----------
+  // Un control «Conteo» de paso 1 avanza 1,5 pasos por segundo; durante la animación llega con decimales, así que el
+  // paso del recorrido es su parte entera, dando la vuelta cuando se acaba la lista (fase).
+  const conteo = max => ({ id: 'r', etiqueta: 'Conteo', color: 'c-f', min: 0, max, paso: 1, inicio: 0, unidad: '', decimales: 0, auto: { velocidad: 1.5 } });
+  const fase = (r, n) => Math.floor((r || 0) + 1e-9) % n;
+  const SIN = 99;                                   // desde: 99 deja un rótulo armado pero oculto (el encuadre no salta)
+  // Idea 1: los enlaces de cada carbono, uno por uno (los H primero, después el enlace C–C, que vale su orden).
+  function cuentaC2(tipo) {
+    const d = dos(tipo), pasos = [];
+    for (const c of ['c1', 'c2']) {
+      let suma = 0;
+      for (const e of [...d.e.filter(x => x[0] === c && x[1] !== 'c1' && x[1] !== 'c2'), d.e[0]]) {
+        suma += e[2] || 1; pasos.push({ c, e, suma });
+      }
+    }
+    pasos.push({ fin: true });
+    return { d, pasos };
+  }
+  function vistaC2Viva(val) {
+    const fig = vistaC2(val.t), { d, pasos } = cuentaC2(val.t), k = fase(val.r, pasos.length), p = pasos[k];
+    const pos = new Map(d.n.map(([id, , x, y]) => [id, [x, y]]));
+    // Rótulo con la suma de cada enlace: afuera de su H, o sobre el enlace C–C del lado del carbono que se cuenta.
+    // Visibles solo los ya contados del carbono que se mira.
+    fig.datos.textos = (fig.datos.textos || []).concat(pasos.filter(q => !q.fin).map((q, j) => {
+      const [c, o, orden] = q.e, C = pos.get(c), O = pos.get(o), L = Math.hypot(O[0] - C[0], O[1] - C[1]) || 1;
+      const esCC = o === 'c2', xy = esCC ? [q.c === 'c1' ? 0.22 : 1.08, -0.5] : [O[0] + 0.42 * (O[0] - C[0]) / L, O[1] + 0.42 * (O[1] - C[1]) / L];
+      const t = (orden || 1) > 1 ? Array.from({ length: orden }, (_, i) => q.suma - orden + 1 + i).join('·') : String(q.suma);
+      return { x: xy[0], y: xy[1], t, color: 'f', desde: !p.fin && q.c === p.c && j <= k ? 0 : SIN };
+    }));
+    if (!p.fin) fig.datos.resaltos = [{ atomos: [p.c], color: 'f' }];
+    return { fig, p };
+  }
+
   // ---------- Idea 1: cuatro enlaces por carbono; la forma sale de los enlaces múltiples ----------
   // Cambia: el enlace entre los dos carbonos · Permanece: dos carbonos y la regla de cuatro enlaces · Progresa: simple,
   // doble, triple: menos H y ángulo más abierto · Se reserva: el propeno, donde cada carbono tiene su propia forma ·
@@ -133,11 +171,12 @@
     temas: ['El carbono e hibridación', 'Alcanos, alquenos y alquinos'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Cambia el enlace entre los dos carbonos. Cuenta los enlaces de cada C y mira el ángulo con sus vecinos.',
+      consigna: 'El conteo recorre los enlaces de cada carbono solo. Cambia el enlace C–C y mira: siempre llega a 4, y el ángulo se abre.',
       voz: 'Cuenta los enlaces de un carbono: el doble vale dos.',
-      controles: [{ id: 't', etiqueta: 'Enlace C–C', opciones: [{ valor: 'etano', texto: 'Simple' }, { valor: 'eteno', texto: 'Doble' }, { valor: 'etino', texto: 'Triple' }] }],
-      dibujo: val => vistaC2(val.t),
-      lectura: val => [C2[val.t].lee],
+      controles: [{ id: 't', etiqueta: 'Enlace C–C', opciones: [{ valor: 'etano', texto: 'Simple' }, { valor: 'eteno', texto: 'Doble' }, { valor: 'etino', texto: 'Triple' }] }, conteo(9)],
+      dibujo: val => vistaC2Viva(val).fig,
+      lectura: val => { const { p } = vistaC2Viva(val), c = C2[val.t];
+        return [p.fin ? `Cada C: 4 enlaces · ${c.f} · ${c.hib} · ${c.ang}` : `C ${p.c === 'c1' ? 'izquierdo' : 'derecho'}: lleva ${p.suma} ${p.suma === 1 ? 'enlace' : 'enlaces'} · ${c.f} · ${c.ang}`]; },
       minimo: 3,
       // Se agarra el enlace C–C y se tira hacia arriba: cada tramo suma una línea al enlace (simple, doble, triple).
       // Responden los H, que bajan de 6 a 4 y a 2, y el ángulo, que se abre de 109,5° a 120° y a 180°.
@@ -242,20 +281,43 @@
   // El carbono que se mueve en cada estructura: el extremo de la cadena, la rama o el que cierra el anillo.
   const EXTREMO = { semi: { lineal: 'k3', ramificada: 'k3', ciclica: 'r3' }, des: { lineal: 'c3', ramificada: 'b', ciclica: 'c3' } };
   const CADENA = { lineal: ['C₄H₁₀', 'cadena lineal'], ramificada: ['C₄H₁₀', 'cadena ramificada'], ciclica: ['C₄H₈', 'cadena cerrada (anillo)'] };
+  // Animación: el conteo pasa por cada carbono y suma sus H (los del grupo, o los átomos H unidos a él en la desarrollada).
+  const DIG = s => [...String(s)].reduce((a, ch) => a * 10 + SUB.indexOf(ch), 0);
+  const hDeGrupo = t => { const m = /^C(H([₀-₉]*))?$/.exec(t); return m && m[1] ? (m[2] ? DIG(m[2]) : 1) : 0; };
+  function sumaH(est) {
+    const pasos = [];
+    let suma = 0;
+    for (const [id, t] of est.n) {
+      if (!/^C/.test(t)) continue;
+      const hs = t === 'C' ? est.e.filter(e => e.includes(id)).map(e => (e[0] === id ? e[1] : e[0])).filter(o => est.n.find(x => x[0] === o)[1] === 'H') : [];
+      const h = t === 'C' ? hs.length : hDeGrupo(t);
+      suma += h; pasos.push({ id, h, suma, atomos: [id, ...hs] });
+    }
+    pasos.push({ fin: true, suma });
+    return pasos;
+  }
+  const estCadena = val => (val.f === 'des' ? desarrollada(val.c) : SEMI[val.c]);
+  function vistaCadenaViva(val) {
+    const fig = vistaCadena(val), pasos = sumaH(estCadena(val)), p = pasos[fase(val.r, pasos.length)];
+    if (!p.fin) fig.datos.resaltos = [{ atomos: p.atomos, color: 'f' }];
+    return { fig, p };
+  }
   const formulas = {
     id: 'formulas-cadenas',
     titulo: 'Una molécula, varias fórmulas',
     temas: ['Tipos de fórmulas y cadenas', 'Cicloalcanos'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Elige una cadena de cuatro carbonos y cómo escribirla. Cuenta los H en la fórmula desarrollada y compáralos con la semidesarrollada.',
+      consigna: 'El conteo suma los H carbono por carbono, solo. Elige cadena y fórmula: ¿el total cambia al escribirla de otra forma? ¿Y en el anillo?',
       voz: 'Las dos fórmulas dicen lo mismo; una lo dice más corto.',
       controles: [
         { id: 'c', etiqueta: 'Cadena', opciones: [{ valor: 'lineal', texto: 'Lineal' }, { valor: 'ramificada', texto: 'Ramificada' }, { valor: 'ciclica', texto: 'Anillo' }] },
         { id: 'f', etiqueta: 'Fórmula', opciones: [{ valor: 'semi', texto: 'Semidesarrollada' }, { valor: 'des', texto: 'Desarrollada' }] },
+        conteo(5),
       ],
-      dibujo: vistaCadena,
-      lectura: val => [`${CADENA[val.c][0]} · ${CADENA[val.c][1]}`],
+      dibujo: val => vistaCadenaViva(val).fig,
+      lectura: val => { const { p } = vistaCadenaViva(val);
+        return [p.fin ? `${CADENA[val.c][0]} · ${CADENA[val.c][1]}` : `Este carbono: +${p.h} H · van ${p.suma} H`]; },
       minimo: 4,
       // Se agarra el último carbono: a la derecha deja la cadena lineal, bajo el del medio la vuelve rama y junto
       // al primero cierra el anillo. Responde la fórmula de la lectura: el anillo pierde dos H.
@@ -338,17 +400,28 @@
     ciclohexeno: { est: anillo(['CH', 'CH', 'CH₂', 'CH₂', 'CH₂', 'CH₂'], 1.2, [2]), lee: 'C₆H₁₀, ciclohexeno: un solo doble. No aromático.', arom: false, nombre: 'ciclohexeno' },
   };
   const vistaAnillo = (k, extra = {}) => figura([mover(ANILLOS[k].est, 0, 0, '')], Object.assign({ escala: 44, alto: 220 }, extra));
+  // Animación: el conteo da la vuelta al anillo enlace por enlace y compara cada uno con el anterior. Los dobles no se
+  // mueven nunca (moverlos actuaría EN6): solo avanza la marca violeta.
+  function vueltaAnillo(k) {
+    const anillo6 = ANILLOS[k].est.e.filter(e => /^r/.test(e[0]) && /^r/.test(e[1])), o = e => e[2] || 1;
+    return [...anillo6.map((e, i) => ({ e, i, doble: o(e) === 2, alterna: o(e) !== o(anillo6[(i + 5) % 6]) })), { fin: true }];
+  }
+  function vistaAnilloViva(val) {
+    const pasos = vueltaAnillo(val.k), p = pasos[fase(val.r, pasos.length)];
+    return { fig: vistaAnillo(val.k, p.fin ? {} : { resaltos: [{ atomos: [p.e[0], p.e[1]], color: 'f' }] }), p };
+  }
   const aromatico = {
     id: 'aromaticos',
     titulo: 'El benceno y sus dobles repartidos',
     temas: ['Aromáticos'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Compara anillos de seis carbonos. Mira cuántos enlaces dobles tiene cada uno y si alternan con simples en todo el anillo.',
+      consigna: 'El conteo da la vuelta al anillo, enlace por enlace. Compara anillos: ¿cada doble va entre dos simples en toda la vuelta?',
       voz: 'Compara dónde van los dobles, no la forma del anillo.',
-      controles: [{ id: 'k', etiqueta: 'Anillo', opciones: Object.keys(ANILLOS).map(k => ({ valor: k, texto: { 'kekule-a': 'Benceno A', 'kekule-b': 'Benceno B', tolueno: 'Tolueno', ciclohexano: 'Ciclohexano', ciclohexeno: 'Ciclohexeno' }[k] })) }],
-      dibujo: val => vistaAnillo(val.k),
-      lectura: val => [ANILLOS[val.k].lee],
+      controles: [{ id: 'k', etiqueta: 'Anillo', opciones: Object.keys(ANILLOS).map(k => ({ valor: k, texto: { 'kekule-a': 'Benceno A', 'kekule-b': 'Benceno B', tolueno: 'Tolueno', ciclohexano: 'Ciclohexano', ciclohexeno: 'Ciclohexeno' }[k] })) }, conteo(7)],
+      dibujo: val => vistaAnilloViva(val).fig,
+      lectura: val => { const { p } = vistaAnilloViva(val);
+        return [p.fin ? ANILLOS[val.k].lee : `Enlace ${p.i + 1} de 6: ${p.doble ? 'doble' : 'simple'} · ${p.alterna ? 'alterna' : 'no alterna'}`]; },
       minimo: 3,
       // Sin arrastre, a propósito: lo natural sería deslizar un doble por el anillo, y eso actúa justo la idea
       // errónea EN6 («los dobles saltan de lugar»). Las cinco opciones son moléculas distintas: se eligen.
@@ -429,17 +502,24 @@
     dimetilpropano: { lee: 'C₅H₁₂: tres en fila y dos ramas en el centro.', fila: ['k0', 'k1', 'k2'], mueve: 'm1' },
   };
   const vistaC5 = val => figura([mover(EST[val.k], 0, 0, '')], { escala: 44, alto: 190, resaltos: [{ atomos: C5[val.k].fila, color: 'i' }] });
+  // Animación: el conteo sigue la fila más larga carbono por carbono; la marca crece hasta cubrirla.
+  function vistaC5Viva(val) {
+    const fila = C5[val.k].fila, k = fase(val.r, fila.length + 1), fig = vistaC5(val);
+    if (k < fila.length) fig.datos.resaltos = [{ atomos: fila.slice(0, k + 1), color: 'f' }];
+    return { fig, k, fila };
+  }
   const isomeros = {
     id: 'isomeros-estructurales',
     titulo: 'Mismos átomos, otras uniones',
     temas: ['Isomería estructural y geométrica'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Las tres estructuras tienen cinco carbonos y doce hidrógenos. Elige una y busca su fila de carbonos más larga.',
+      consigna: 'Las tres son C₅H₁₂. El conteo sigue sola la fila de carbonos más larga: mira cómo se acorta al cambiar las uniones.',
       voz: 'Sigue las uniones con el dedo, carbono por carbono.',
-      controles: [{ id: 'k', etiqueta: 'Estructura', opciones: [{ valor: 'pentano', texto: 'Pentano' }, { valor: 'metilbutano', texto: '2-metilbutano' }, { valor: 'dimetilpropano', texto: '2,2-dimetilpropano' }] }],
-      dibujo: vistaC5,
-      lectura: val => [C5[val.k].lee],
+      controles: [{ id: 'k', etiqueta: 'Estructura', opciones: [{ valor: 'pentano', texto: 'Pentano' }, { valor: 'metilbutano', texto: '2-metilbutano' }, { valor: 'dimetilpropano', texto: '2,2-dimetilpropano' }] }, conteo(6)],
+      dibujo: val => vistaC5Viva(val).fig,
+      lectura: val => { const { k, fila } = vistaC5Viva(val);
+        return [k < fila.length ? `Fila de ${k + 1} ${k ? 'carbonos' : 'carbono'} · C₅H₁₂` : C5[val.k].lee]; },
       minimo: 3,
       // Se agarra un carbono y se cambia de vecino: al final de la fila es pentano, colgado abajo del carbono 2 es
       // 2-metilbutano, arriba de él es 2,2-dimetilpropano. Responde la fila resaltada, que se acorta: 5, 4, 3.
@@ -524,6 +604,25 @@
     trans: { g: ['CH₃', 'H', 'H', 'CH₃'], lee: 'trans-but-2-eno: los CH₃ en lados opuestos.', nombre: 'but-2-eno', tiene: true },
     'but-1-eno': { g: ['H', 'H', 'CH₂CH₃', 'H'], lee: 'but-1-eno: un C del doble tiene dos H iguales.', nombre: 'but-1-eno', tiene: false },
   };
+  // Animación: el conteo revisa los dos grupos de cada carbono del doble enlace y, si hay cis/trans, dónde quedan
+  // los CH₃. Todo sale de la lista de grupos g (el mismo dato que dibuja la molécula).
+  function revisaAlq(k) {
+    const g = ALQ[k].g, dist = (a, b) => (a !== b ? 'distintos' : 'iguales');
+    const pasos = [
+      { atomos: ['g0', 'g1'], lee: `C izquierdo: ${g[0]} y ${g[1]}, ${dist(g[0], g[1])}` },
+      { atomos: ['g2', 'g3'], lee: `C derecho: ${g[2]} y ${g[3]}, ${dist(g[2], g[3])}` },
+    ];
+    if (g[0] !== g[1] && g[2] !== g[3]) {
+      const j = g[2] === g[0] ? 'g2' : 'g3';
+      pasos.push({ atomos: ['g0'], y: [j], lee: j === 'g2' ? `Los ${g[0]}, del mismo lado: cis` : `Los ${g[0]}, en lados opuestos: trans` });
+    } else pasos.push({ atomos: g[0] === g[1] ? ['g0', 'g1'] : ['g2', 'g3'], lee: 'Un C con dos grupos iguales: sin cis ni trans' });
+    pasos.push({ fin: true, lee: ALQ[k].lee });
+    return pasos;
+  }
+  const vistaAlqViva = val => {
+    const pasos = revisaAlq(val.k), p = pasos[fase(val.r, pasos.length)];
+    return { fig: figura([mover(alqueno(ALQ[val.k].g), 0, 0, '')], Object.assign({ escala: 48, alto: 170 }, p.fin ? {} : { resaltos: [{ atomos: p.atomos, color: 'f' }, ...(p.y ? [{ atomos: p.y, color: 'f' }] : [])] })), p };
+  };
   const QUIRAL = (izq) => {
     const s = izq ? 1 : -1;
     return { n: [['c', 'C', 0, 0], ['h', 'H', 0, -1.0], ['oh', 'OH', s * 1.1, 0], ['m', 'CH₃', 0, 1.0], ['e', 'CH₂CH₃', -s * 1.7, 0]], e: [['c', 'h'], ['c', 'oh'], ['c', 'm'], ['c', 'e']] };
@@ -534,11 +633,11 @@
     temas: ['Isomería estructural y geométrica', 'Isomería óptica (solo San Marcos)'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Cambia los grupos de cada carbono del doble enlace. Mira si los dos CH₃ quedan del mismo lado o en lados opuestos.',
+      consigna: 'El conteo revisa solo los dos grupos de cada carbono del doble enlace. Cambia la molécula y mira dónde quedan los CH₃.',
       voz: 'Mira los dos grupos de cada carbono del doble enlace.',
-      controles: [{ id: 'k', etiqueta: 'Molécula', opciones: [{ valor: 'cis', texto: 'cis-but-2-eno' }, { valor: 'trans', texto: 'trans-but-2-eno' }, { valor: 'but-1-eno', texto: 'but-1-eno' }] }],
-      dibujo: val => figura([mover(alqueno(ALQ[val.k].g), 0, 0, '')], { escala: 48, alto: 170 }),
-      lectura: val => [ALQ[val.k].lee],
+      controles: [{ id: 'k', etiqueta: 'Molécula', opciones: [{ valor: 'cis', texto: 'cis-but-2-eno' }, { valor: 'trans', texto: 'trans-but-2-eno' }, { valor: 'but-1-eno', texto: 'but-1-eno' }] }, conteo(4)],
+      dibujo: val => vistaAlqViva(val).fig,
+      lectura: val => [vistaAlqViva(val).p.lee],
       minimo: 3,
       // Sin arrastre, a propósito: pasar un CH₃ de arriba abajo con el dedo actúa el giro alrededor del doble enlace,
       // que la predicción enseña que no ocurre (QM-GIRO-DOBLE). Cis y trans se eligen como moléculas distintas.
@@ -650,17 +749,49 @@
     const fig = figura([...R.partes, ...P.partes], Object.assign({ escala: 36, alto: 190, flechas: [{ de: [W / 2, 0.55], a: [W / 2, 1.85] }], textos: [...R.textos, ...P.textos] }, extra));
     return fig;
   }
+  // Animación: el conteo hace el inventario de la reacción, elemento por elemento (arriba contra abajo) y al final
+  // cuenta moléculas. Los números salen de los rótulos que se dibujan (coeficiente y subíndices), no de una tabla.
+  const atomosDe = t => {
+    const m = /^(\d+)\s+(.*)$/.exec(t), k = m ? +m[1] : 1, out = {};
+    for (const [, el, n] of (m ? m[2] : t).matchAll(/([A-Z][a-z]?)([₀-₉]*)/g)) out[el] = (out[el] || 0) + k * (n ? DIG(n) : 1);
+    return out;
+  };
+  const coef = t => { const m = /^(\d+)\s/.exec(t); return m ? +m[1] : 1; };
+  const lado = partes => {
+    const tot = {}, mol = []; let n = 0;
+    partes.filter(x => x !== '+').forEach(est => {
+      const c = {};
+      for (const [, t] of est.n) for (const [el, k] of Object.entries(atomosDe(t))) c[el] = (c[el] || 0) + k;
+      for (const [el, k] of Object.entries(c)) tot[el] = (tot[el] || 0) + k;
+      mol.push(c); n += est.n.length === 1 ? coef(est.n[0][1]) : 1;
+    });
+    return { tot, mol, n };
+  };
+  function inventario(k) {
+    const R = lado(REAC[k].r), P = lado(REAC[k].p), pasos = [];
+    for (const el of ['C', 'H', 'O', 'Cl'].filter(x => R.tot[x] || P.tot[x])) {
+      const marca = (L, pref) => L.mol.map((c, i) => (c[el] ? { atomos: REAC[k][pref === 'r' ? 'r' : 'p'].filter(x => x !== '+')[i].n.map(([id]) => `${pref}${i}${id}`), color: 'f' } : null)).filter(Boolean);
+      pasos.push({ lee: `${el}: ${R.tot[el] || 0} arriba, ${P.tot[el] || 0} abajo`, resaltos: [...marca(R, 'r'), ...marca(P, 'p')] });
+    }
+    pasos.push({ lee: `Moléculas: ${R.n} arriba, ${P.n} abajo`, resaltos: [] });
+    pasos.push({ fin: true, lee: REAC[k].lee, resaltos: [] });
+    return pasos;
+  }
+  const reaccionViva = val => {
+    const pasos = inventario(val.k), p = pasos[fase(val.r, pasos.length)];
+    return { fig: reaccion(val.k, true, p.resaltos.length ? { resaltos: p.resaltos } : {}), p };
+  };
   const reacciones = {
     id: 'reacciones-organicas',
     titulo: 'Qué enlace cambia en la reacción',
     temas: ['Tipos de reacciones orgánicas'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Elige una reacción. Arriba están los reactivos y abajo, los productos. Mira qué enlace se abre, qué átomo cambia de lugar y qué sale.',
+      consigna: 'Arriba, los reactivos; abajo, los productos. El conteo hace solo el inventario, átomo por átomo. Elige una reacción: ¿qué enlace cambia y qué sale?',
       voz: 'Haz el inventario: ¿los productos son una molécula o varias?',
-      controles: [{ id: 'k', etiqueta: 'Reacción', opciones: [{ valor: 'adicion', texto: 'Adición' }, { valor: 'sustitucion', texto: 'Sustitución' }, { valor: 'eliminacion', texto: 'Eliminación' }, { valor: 'combustion', texto: 'Combustión' }] }],
-      dibujo: val => reaccion(val.k),
-      lectura: val => [REAC[val.k].lee],
+      controles: [{ id: 'k', etiqueta: 'Reacción', opciones: [{ valor: 'adicion', texto: 'Adición' }, { valor: 'sustitucion', texto: 'Sustitución' }, { valor: 'eliminacion', texto: 'Eliminación' }, { valor: 'combustion', texto: 'Combustión' }] }, conteo(5)],
+      dibujo: val => reaccionViva(val).fig,
+      lectura: val => [reaccionViva(val).p.lee],
       minimo: 3,
       // Sin arrastre: las cuatro opciones son reacciones distintas, con otros reactivos; no hay una variable continua
       // ni un átomo que, al moverlo, lleve de una a otra.
@@ -787,7 +918,6 @@
   // comparando uniones (todas las formas de emparejar átomos de A con los de B), no la forma del dibujo.
   const LADO = ['butano', 'butano-doblado', 'isobutano', 'pentano', 'pentano-doblado', 'metilbutano', 'metilbutano-espejo', 'dimetilpropano'];
   const NOM_LADO = { butano: 'Butano', 'butano-doblado': 'Butano doblado', isobutano: 'Metilpropano', pentano: 'Pentano', 'pentano-doblado': 'Pentano doblado', metilbutano: '2-metilbutano', 'metilbutano-espejo': '2-metilbutano volteado', dimetilpropano: '2,2-dimetilpropano' };
-  const DIG = s => [...String(s)].reduce((a, ch) => a * 10 + SUB.indexOf(ch), 0);
   const cuenta = est => est.n.reduce((acc, [, t]) => { const m = /^C(H([₀-₉]*))?$/.exec(t); acc.c += 1; acc.h += m && m[1] ? (m[2] ? DIG(m[2]) : 1) : 0; return acc; }, { c: 0, h: 0 });
   function permutaciones(k) {
     if (k <= 1) return [[0]];
@@ -825,7 +955,7 @@
 
   return {
     unidad: 'quimica.hidrocarburos',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/quim-molecula.js', '/plantillas/hidrocarburos/motor.js', '/nucleo/elementos.js', '/nucleo/kit/piezas/quim-molecula-3d.js'],
     historia: {
@@ -887,17 +1017,19 @@
         // Exploración libre en 3D (decisión de Gerson, 15 nov: sin predicciones; los retos son invitaciones).
         // Posiciones, φ, forma y distancia entre los CH₃ salen del motor de plantillas/hidrocarburos (conformacion).
         id: 'enlace-que-gira', titulo: 'El enlace que gira', pieza: 'quim-molecula-3d',
-        consigna: 'Gira la molécula con el dedo. Con φ gira solo la mitad de atrás, alrededor del enlace C–C. Mírala a lo largo del enlace.',
+        consigna: 'En cámara lenta, φ gira sola la mitad de atrás alrededor del enlace C–C. Prueba el butano y mira la distancia entre sus CH₃.',
         controles: [
           { id: 'mol', etiqueta: 'Molécula', opciones: Object.keys(MH.CONFORMABLES).map(k => ({ valor: k, texto: NOMBRE_CONF[k] })) },
-          { id: 'phi', etiqueta: 'φ', color: 'c-d', min: 0, max: 330, paso: 30, inicio: 60, unidad: '°', decimales: 0 },
+          // Animación: φ va y vuelve solo (30° por segundo; la molécula real gira miles de millones de veces más rápido).
+          // La pieza mueve los átomos ya armados (forma y mover de quim-molecula-3d): no rearma la escena en cada cuadro.
+          { id: 'phi', etiqueta: 'φ', color: 'c-d', min: 0, max: 330, paso: 30, inicio: 60, unidad: '°', decimales: 0, auto: { velocidad: 30, modo: 'rebota' } },
           { id: 'mir', etiqueta: 'Mirar', opciones: [{ valor: 0, texto: 'De costado' }, { valor: 1, texto: 'A lo largo del enlace' }] },
         ],
         dibujo: v => conf3d(v),
         lectura: v => {
           const c = MH.conformacion(v.mol, v.phi);
-          if (!c.gira) return [`${c.isomero}: el doble enlace no gira · CH₃ a ${f(c.distancia, 0)} pm`];
-          return [phiV, ` = ${c.phi}°: ${c.nombre || c.forma}${c.mol === 'butano' ? `, CH₃ a ${f(c.distancia, 0)} pm` : ''}`];
+          if (!c.gira) return [phiV, ` = ${f(v.phi, 0)}° · ${c.isomero}: el doble no gira · CH₃ a ${f(c.distancia, 0)} pm`];
+          return [phiV, ` = ${f(c.phi, 0)}°: ${c.nombre || c.forma}${c.mol === 'butano' ? `, CH₃ a ${f(c.distancia, 0)} pm` : ''}`];
         },
         // Retos comprobados con el mismo motor que arma la molécula (docs/teoria.md §4d).
         invitaciones: [

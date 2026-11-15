@@ -77,28 +77,57 @@
   };
   const juntar = (...ps) => ({ atomos: ps.flatMap(p => p.atomos || []), enlaces: ps.flatMap(p => p.enlaces || []), textos: ps.flatMap(p => p.textos || []) });
 
+  // ---------- Animación (decisión de Gerson, 15 nov: química se mueve sola) ----------
+  // En cámara lenta, las uniones se forman una por una entre 0,4 s y 4,8 s; la molécula queda armada 1,2 s y vuelve a
+  // empezar (t de 0 a 6 s). Cada unión tiene su avance q de 0 a 1: hasta 0,7 el bloque se acerca; al tocarse aparece
+  // el enlace verde y su agua baja a su sitio. Los tiempos son ilustrativos (aquí no hay cinética); lo que se cuenta,
+  // enlaces, aguas y masa, es exacto en cada cuadro. Sin t (predicción, «Mira», «Ahora tú»), la molécula está armada.
+  const TT = { id: 't', etiqueta: 't', min: 0, max: 6, paso: 0.1, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } };
+  const suave = x => { const y = Math.max(0, Math.min(1, x)); return y * y * (3 - 2 * y); };
+  const avanceU = (t, U) => (t === undefined ? U : Math.max(0, Math.min(1, (t - 0.4) / 4.4)) * U);
+  const qU = (s, i) => Math.max(0, Math.min(1, s - i));
+  const TOCA = 0.7;
+  const formadas = (t, U) => { const s = avanceU(t, U); let k = 0; for (let i = 0; i < U; i++) if (qU(s, i) >= TOCA - 1e-9) k++; return k; };
+  // La cadena que se arma: el bloque i (desde el segundo) baja desde 1,2 unidades arriba de su sitio mientras su unión
+  // avanza. Dos anclas invisibles fijan el alto del encuadre (la figura no salta mientras bajan los bloques y el agua).
+  function cadenaViva(rotulos, t, { paso = 1.6 } = {}) {
+    const U = rotulos.length - 1, s = avanceU(t, U), atomos = [], enlaces = [], textos = [];
+    rotulos.forEach((r, i) => {
+      const q = i ? qU(s, i - 1) : 1;
+      atomos.push({ id: `u${i}`, t: r, x: i * paso, y: -1.2 * (1 - suave(q / TOCA)), color: 'i' });
+      if (i && q >= TOCA - 1e-9) {
+        enlaces.push({ a: `u${i - 1}`, b: `u${i}`, orden: 1, color: 'd' });
+        textos.push({ x: (i - 0.5) * paso, y: 0.35 + 0.7 * suave((q - TOCA) / (1 - TOCA)), t: 'H₂O', color: 'h' });
+      }
+    });
+    textos.push({ x: 0, y: -1.2, t: '', hasta: -1 }, { x: 0, y: 1.05, t: '', hasta: -1 });
+    return { atomos, enlaces, textos };
+  }
+
   // ---------- Idea 1: unir azúcares suelta agua ----------
   // Cambia: cuántas glucosas se unen · Permanece: 180 por glucosa, 18 por agua · Progresa: n bloques, n − 1 enlaces,
   // n − 1 aguas · Se reserva: la sacarosa (dos azúcares distintos con la misma masa) · Debe verse: un agua bajo cada enlace.
   const GLU = 180, AGUA = 18;
   const masaPoli = n => GLU * n - AGUA * (n - 1);
+  const azucarViva = val => mol(cadenaViva(Array(Math.round(val.n)).fill('Glc'), val.t));
   const azucares = {
     id: 'unir-azucares',
     titulo: 'Cada unión de azúcares suelta agua',
     temas: ['Carbohidratos'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Elige cuántas glucosas se unen en cadena. Cuenta los enlaces que se forman y las moléculas de agua que salen.',
+      consigna: 'En cámara lenta, las glucosas bajan y se unen una por una. Con cada enlace sale un agua y la masa baja 18 u.',
       voz: 'Cuenta enlaces y aguas; compáralos con el número de glucosas.',
-      controles: [{ id: 'n', etiqueta: 'n glucosas', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 2, unidad: '', decimales: 0 }],
-      dibujo: val => mol(cadena(Array(val.n).fill('Glc'))),
-      lectura: val => [nV, ` = ${val.n}: ${pl(val.n - 1, 'enlace', 'enlaces')}, ${pl(val.n - 1, 'agua', 'aguas')}`, '   ·   ', MV, ` = ${f(masaPoli(val.n))} u`],
+      controles: [{ id: 'n', etiqueta: 'n glucosas', color: 'c-i', min: 1, max: 6, paso: 1, inicio: 3, unidad: '', decimales: 0 }, TT],
+      dibujo: val => azucarViva(val),
+      // La masa del momento: las glucosas menos el agua que ya salió (al final, la de la cadena entera).
+      lectura: val => { const u = formadas(val.t, val.n - 1); return [`${f(val.t, 1)} s · `, nV, ` = ${val.n}: ${pl(u, 'enlace', 'enlaces')}, ${pl(u, 'agua', 'aguas')} · `, MV, ` = ${f(GLU * val.n - AGUA * u)} u`]; },
       minimo: 3,
       // Se agarra la última glucosa y se tira a la derecha para alargar la cadena. Responden los enlaces verdes, las
       // aguas bajo cada uno y la masa, que sube 162 u por glucosa (180 menos el agua que sale).
       arrastres: [{ id: 'ultima', etiqueta: 'última glucosa: tira para alargar la cadena', color: 'c-i',
-        donde: val => sobre(mol(cadena(Array(val.n).fill('Glc'))), `u${val.n - 1}`),
-        mover: (pt, val) => ({ n: cercana([1, 2, 3, 4, 5, 6], v => sobre(mol(cadena(Array(v.n).fill('Glc'))), `u${v.n - 1}`), pt, val, 'n') }) }],
+        donde: val => sobre(azucarViva(val), `u${Math.round(val.n) - 1}`),
+        mover: (pt, val) => ({ n: cercana([1, 2, 3, 4, 5, 6], v => sobre(azucarViva(v), `u${v.n - 1}`), pt, val, 'n') }) }],
     },
     predice: {
       pregunta: ['La sacarosa (azúcar de mesa) se forma uniendo una glucosa (180 u) con una fructosa (180 u). ¿Cuál es la masa molecular ', MV, ' de la sacarosa?'],
@@ -178,19 +207,34 @@
     return { atomos: at, enlaces: en, textos: tx };
   }
   const masaGrasa = k => GLIC + 3 * ACIDOS[k].M - 3 * AGUA;
+  // Animación de la grasa: los tres ácidos llegan por la derecha, uno por uno (la misma línea de tiempo que la cadena).
+  // Mientras su unión avanza, el ácido (C, su C=O y su cadena) está corrido hasta 1 unidad a la derecha; al tocarse,
+  // aparece la unión éster verde y su agua sale hacia la derecha. Un ancla invisible fija el ancho del encuadre.
+  function grasaViva(k, t) {
+    const g = grasa(k, { aguas: false }), s = avanceU(t, 3);
+    for (let i = 0; i < 3; i++) {
+      const q = qU(s, i), dx = 1.0 * (1 - suave(q / TOCA));
+      for (const a of g.atomos) if (a.id === `c${i}` || a.id === `k${i}` || a.id === `d${i}`) a.x += dx;
+      if (q < TOCA - 1e-9) g.enlaces = g.enlaces.filter(e => !(e.a === `o${i}` && e.b === `c${i}`));
+      else g.textos.push({ x: 5.3 + 0.6 * suave((q - TOCA) / (1 - TOCA)), y: i * FILA, t: '+ H₂O', color: 'h' });
+    }
+    g.textos.push({ x: 5.9, y: 0, t: '', hasta: -1 });
+    return mol(Object.assign(g, { escala: 32, alto: 240 }));
+  }
   const lipidos = {
     id: 'grasas-trigliceridos',
     titulo: 'Una grasa: glicerol y tres ácidos',
     temas: ['Lípidos'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Cambia el ácido graso. Mira las tres uniones éster con el glicerol y si la cadena tiene un doble enlace.',
+      consigna: 'En cámara lenta, cada ácido graso se une a un OH del glicerol y suelta un agua. Cambia el ácido: ¿trae doble enlace?',
       voz: 'Cuenta las uniones del glicerol.',
-      controles: [{ id: 'k', etiqueta: 'Ácido graso', opciones: ['palmitico', 'estearico', 'oleico'].map(k => ({ valor: k, texto: ACIDOS[k].nombre })) }],
-      dibujo: val => mol(Object.assign(grasa(val.k), { escala: 32, alto: 240 })),
+      controles: [{ id: 'k', etiqueta: 'Ácido graso', opciones: ['palmitico', 'estearico', 'oleico'].map(k => ({ valor: k, texto: ACIDOS[k].nombre })) }, TT],
+      dibujo: val => grasaViva(val.k, val.t),
       // Sin arrastre: se cambia de ácido graso (otra molécula); el codo cis no está dibujado como geometría que se
-      // pueda doblar, solo nombrado. La mesa «Tres ácidos distintos» del laboratorio los combina.
-      lectura: val => [`${ACIDOS[val.k].sat ? 'Saturada: suele ser sólida (grasa)' : 'Insaturada: suele ser líquida (aceite)'} · `, MV, ` = ${f(masaGrasa(val.k))} u`],
+      // pueda doblar, solo nombrado. La mesa «Tres ácidos distintos» del laboratorio los combina. La masa del momento
+      // es la de las piezas menos el agua que ya salió.
+      lectura: val => { const u = formadas(val.t, 3), a = ACIDOS[val.k]; return [`${f(val.t, 1)} s: ${u} de 3 ésteres · ${a.sat ? 'saturada (sólida)' : 'insaturada (líquida)'} · `, MV, ` = ${f(GLIC + 3 * a.M - AGUA * u)} u`]; },
       minimo: 3,
     },
     predice: {
@@ -258,22 +302,23 @@
     enlaces.push(ex({ a: 'p0', b: 'p5', discontinuo: true }), ex({ a: 'p1', b: 'p4', discontinuo: true }));
     return { atomos, enlaces, textos: [] };
   }
+  const peptidoVivo = val => mol(cadenaViva(SEC.slice(0, Math.round(val.n)), val.t, { paso: 1.5 }));
   const proteinas = {
     id: 'peptidos-plegado',
     titulo: 'Desplegar no es cortar',
     temas: ['Aminoácidos y proteínas'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Elige cuántos aminoácidos forman la cadena. Cuenta los enlaces peptídicos (verdes) y el agua que salió en cada uno.',
+      consigna: 'En cámara lenta, los aminoácidos se unen uno por uno. Cuenta los enlaces peptídicos (verdes) y las aguas que salen.',
       voz: 'Compara el número de bloques con el de enlaces.',
-      controles: [{ id: 'n', etiqueta: 'n aminoácidos', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 2, unidad: '', decimales: 0 }],
-      dibujo: val => mol(cadena(SEC.slice(0, val.n), { paso: 1.5 })),
-      lectura: val => [nV, ` = ${val.n} aminoácidos: ${pl(val.n - 1, 'enlace peptídico', 'enlaces peptídicos')}, ${pl(val.n - 1, 'agua', 'aguas')}`],
+      controles: [{ id: 'n', etiqueta: 'n aminoácidos', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 4, unidad: '', decimales: 0 }, TT],
+      dibujo: val => peptidoVivo(val),
+      lectura: val => { const u = formadas(val.t, val.n - 1); return [`${f(val.t, 1)} s · `, nV, ` = ${val.n}: ${pl(u, 'enlace peptídico', 'enlaces peptídicos')}, ${pl(u, 'agua', 'aguas')}`]; },
       minimo: 3,
       // Se agarra el último aminoácido y se tira para alargar la cadena; responden los enlaces verdes y las aguas.
       arrastres: [{ id: 'ultimo', etiqueta: 'último aminoácido: tira para alargar', color: 'c-i',
-        donde: val => sobre(mol(cadena(SEC.slice(0, val.n), { paso: 1.5 })), `u${val.n - 1}`),
-        mover: (pt, val) => ({ n: cercana([2, 3, 4, 5, 6], v => sobre(mol(cadena(SEC.slice(0, v.n), { paso: 1.5 })), `u${v.n - 1}`), pt, val, 'n') }) }],
+        donde: val => sobre(peptidoVivo(val), `u${Math.round(val.n) - 1}`),
+        mover: (pt, val) => ({ n: cercana([2, 3, 4, 5, 6], v => sobre(peptidoVivo(v), `u${v.n - 1}`), pt, val, 'n') }) }],
     },
     predice: {
       pregunta: 'Al cocinar un huevo, la clara pasa de transparente a blanca porque sus proteínas se desnaturalizan. ¿Qué pasa con sus enlaces peptídicos?',
@@ -356,19 +401,52 @@
     },
     estado: {},
   });
+  // Animación del juego: la vitamina se agita con aceite y agua y se deja en reposo (modelo cualitativo, cámara lenta).
+  // Ocho moléculas empiezan repartidas, cuatro en cada capa; las cuatro de la capa que no la disuelve cruzan, una por
+  // una (cada una en 1 s, desde 0,6 + 1,6·m s), a la capa que sí: «lo parecido disuelve a lo parecido». Todas cruzan
+  // porque estas vitaminas son mucho más solubles en una fase que en la otra; el ritmo es ilustrativo, no medido.
+  // Las dos capas van lado a lado (la pieza pone las cajas en fila); los títulos dicen cuál es cuál.
+  const PP = () => Kit.piezas['quim-particulas'];
+  const SITIOS = [[0.2, 0.18], [0.72, 0.3], [0.36, 0.52], [0.78, 0.76], [0.16, 0.84], [0.56, 0.12], [0.5, 0.7], [0.86, 0.5]];
+  const cruce = (t, m) => (t === undefined ? 1 : suave((t - 0.6 - 1.6 * m) / 1.0));
+  function reparto(k, t) {
+    const destino = VIT[k][1] === 'lipo' ? 0 : 1, cajas = [{ titulo: 'Capa de aceite', forma: 'caja', particulas: [] }, { titulo: 'Capa de agua', forma: 'caja', particulas: [] }];
+    const base = { atomos: { V: { estilo: 'lleno', r: 6 }, ac: { color: 'o', estilo: 'hueco', r: 3 }, ag: { color: 'i', estilo: 'hueco', r: 3 } }, especies: { vit: [['V', 0, 0]] }, alto: 150, separacion: 22, cajas };
+    const g = PP().geometria(base), r0 = PP().region(cajas[0], g, 0), r1 = PP().region(cajas[1], g, 1);
+    // Posición absoluta del sitio j en la caja c, llevada a coordenadas de la caja 0 (todas las vitaminas van en ella).
+    const en = (c, [u, v]) => { const r = c ? r1 : r0; return [(r.x + r.w * u - r0.x) / r0.w, (r.y + r.h * v - r0.y) / r0.h]; };
+    let m = 0, llegaron = 0;
+    for (let j = 0; j < 8; j++) {
+      const desde = j % 2;
+      let x, y;
+      if (desde === destino) { [x, y] = en(desde, SITIOS[j]); llegaron++; }
+      else {
+        const p = cruce(t, m++), a = en(desde, SITIOS[j]), b = en(destino, SITIOS[(j + 3) % 8]);
+        x = a[0] + (b[0] - a[0]) * p; y = a[1] + (b[1] - a[1]) * p - 0.25 * Math.sin(Math.PI * p);
+        if (p >= 0.5) llegaron++;
+      }
+      cajas[0].particulas.push({ e: 'vit', n: 1, x, y });
+    }
+    cajas[0].particulas.push({ e: 'ac', n: 12 }); cajas[1].particulas.push({ e: 'ag', n: 12 });
+    const lugar = destino ? 'el agua' : 'el aceite';
+    return { llegaron, lugar, dib: { datos: Object.assign(base, { agita: t === undefined ? undefined : t, agitaAmp: 1.5,
+      alt: `Vitamina ${VIT[k][0]} agitada con aceite y agua: ${llegaron} de 8 moléculas ya están en ${lugar}, la capa que la disuelve.` }), estado: {} } };
+  }
   const vitaminas = {
     id: 'vitaminas-solubilidad',
     titulo: 'Vitaminas: en grasa o en agua',
     temas: ['Vitaminas'],
     pieza: 'quim-cadena',
     juega: {
-      consigna: 'Elige una vitamina y mira en qué columna cae. Lee qué parte de su estructura decide dónde se disuelve.',
+      consigna: 'Agitamos la vitamina con aceite y agua. En reposo, cada molécula se va a la capa que la disuelve (modelo, cámara lenta).',
       voz: 'La estructura decide dónde se disuelve.',
-      controles: [{ id: 'k', etiqueta: 'Vitamina', opciones: ['A', 'D', 'C', 'B12'].map(k => ({ valor: k, texto: VIT[k][0] })) }],
-      dibujo: val => columnas(val.k),
-      // Sin arrastre, a propósito: llevar la vitamina a su columna sería responder con el gesto la pregunta de
-      // «Ahora tú». Aquí la columna la marca la figura y el alumno lee por qué.
-      lectura: val => [`Vitamina ${VIT[val.k][0]}: se disuelve en ${VIT[val.k][1] === 'lipo' ? 'grasa (liposoluble)' : 'agua (hidrosoluble)'}.`],
+      pieza: 'quim-particulas',
+      controles: [{ id: 'k', etiqueta: 'Vitamina', opciones: ['A', 'D', 'C', 'B12'].map(k => ({ valor: k, texto: VIT[k][0] })) },
+        { id: 't', etiqueta: 't', min: 0, max: 8, paso: 0.1, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } }],
+      dibujo: val => reparto(val.k, val.t).dib,
+      // Sin arrastre, a propósito: llevar la vitamina a su capa sería responder con el gesto la pregunta de «Ahora
+      // tú». Aquí las moléculas van solas y el alumno lee por qué. Las columnas de la predicción y «Mira» dicen la razón.
+      lectura: val => { const x = reparto(val.k, val.t); return [`${f(val.t, 1)} s · vitamina ${VIT[val.k][0]}: ${x.llegaron} de 8 en ${x.lugar}`]; },
       minimo: 3,
     },
     predice: {
@@ -456,19 +534,38 @@
     polifenol: { fig: () => mol(Object.assign(anillo(['CH', 'CH', 'CH', 'C', 'C', 'CH'], { 3: 'OH', 4: 'OH' }), { escala: 36, alto: 220, resaltos: [{ atomos: ['s3', 's4'], color: 'h', texto: 'varios OH' }] })), lee: 'Polifenol (té, maíz morado): varios OH en anillos aromáticos.' },
     colorante: { fig: () => tramo(), lee: 'Carotenoide (achiote, zanahoria): muchos dobles alternados.' },
   };
+  // Animación del juego: la molécula gira sola en el plano (15 s por vuelta). Afirmación de la pieza: la orientación en
+  // el papel no cambia la molécula; el rasgo resaltado sigue ahí en cualquier giro. Gira alrededor del centro de sus
+  // átomos; los rótulos quedan derechos. Alto fijo de 250 px para que quepa la cadena del carotenoide parada.
+  const girar = (dib, g) => {
+    if (g === undefined) return dib;
+    const d = dib.datos, a = g * Math.PI / 180, c = Math.cos(a), sn = Math.sin(a);
+    const cx = d.atomos.reduce((x, q) => x + q.x, 0) / d.atomos.length, cy = d.atomos.reduce((x, q) => x + q.y, 0) / d.atomos.length;
+    const rot = q => Object.assign({}, q, { x: cx + (q.x - cx) * c - (q.y - cy) * sn, y: cy + (q.x - cx) * sn + (q.y - cy) * c });
+    // El nombre del rasgo no va bajo su marco (al girar caería sobre el anillo): va afuera, en la dirección del rasgo
+    // desde el centro, y gira con la molécula.
+    const lejos = Math.max(...d.atomos.map(q => Math.hypot(q.x - cx, q.y - cy)));
+    const nombres = (d.resaltos || []).filter(r => r.texto).map(r => {
+      const as = d.atomos.filter(q => r.atomos.includes(q.id)), mx = as.reduce((x, q) => x + q.x, 0) / as.length - cx, my = as.reduce((x, q) => x + q.y, 0) / as.length - cy, L = Math.hypot(mx, my) || 1;
+      return { x: cx + mx / L * (lejos + 1.1), y: cy + my / L * (lejos + 1.1), t: r.texto, color: r.color, peso: 700 };
+    });
+    const resaltos = (d.resaltos || []).map(r => Object.assign({}, r, { texto: undefined }));
+    return { datos: Object.assign({}, d, { atomos: d.atomos.map(rot), textos: [...(d.textos || []), ...nombres].map(rot), resaltos, escala: Math.min(d.escala, 32), alto: 250 }), estado: {} };
+  };
   const naturales = {
     id: 'productos-naturales',
     titulo: 'Familias por estructura, no por origen',
     temas: ['Alcaloides y polifenoles', 'Colorantes naturales'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Cada familia de productos naturales tiene un rasgo de estructura. Elige una y mira el rasgo resaltado.',
+      consigna: 'Cada familia tiene un rasgo de estructura. La molécula gira sola: el dibujo cambia, la molécula no. Elige una familia.',
       voz: 'Busca el rasgo que comparten, no de dónde vienen.',
-      controles: [{ id: 'k', etiqueta: 'Familia', opciones: [{ valor: 'alcaloide', texto: 'Alcaloide' }, { valor: 'polifenol', texto: 'Polifenol' }, { valor: 'colorante', texto: 'Carotenoide' }] }],
-      dibujo: val => RASGO[val.k].fig(),
+      controles: [{ id: 'k', etiqueta: 'Familia', opciones: [{ valor: 'alcaloide', texto: 'Alcaloide' }, { valor: 'polifenol', texto: 'Polifenol' }, { valor: 'colorante', texto: 'Carotenoide' }] },
+        { id: 'g', etiqueta: 'giro', min: 0, max: 360, paso: 15, inicio: 0, unidad: '°', decimales: 0, auto: { velocidad: 24 } }],
+      dibujo: val => girar(RASGO[val.k].fig(), val.g),
       // Sin arrastre: las tres familias son moléculas distintas con rasgos distintos (N en anillo, OH, dobles); se
       // eligen. La mesa «Dobles alternados y color» del laboratorio sí desliza el punto por la gráfica.
-      lectura: val => [RASGO[val.k].lee],
+      lectura: val => [`${RASGO[val.k].lee} Giro: ${f(val.g, 0)}°.`],
       minimo: 3,
     },
     predice: {
@@ -533,17 +630,20 @@
   const BLOQUES = { glc: { nombre: 'glucosas', rot: () => 'Glc', M: () => GLU }, aa: { nombre: 'aminoácidos', rot: i => SEC[i % SEC.length], M: i => AA[SEC[i % SEC.length]] } };
   function polimero(val) {
     const b = BLOQUES[val.b], n = val.n, anillo = val.forma === 'anillo' && n >= 3, uniones = anillo ? n : n - 1;
-    const rot = Array.from({ length: n }, (_, i) => b.rot(i)), masa = rot.reduce((acc, _, i) => acc + b.M(i), 0) - AGUA * uniones;
+    const rot = Array.from({ length: n }, (_, i) => b.rot(i)), suma = rot.reduce((acc, _, i) => acc + b.M(i), 0), masa = suma - AGUA * uniones;
+    // Animación: las uniones se forman una por una con la línea de tiempo de las ideas (t). En la cadena, los bloques
+    // bajan a su sitio; en el anillo, quedan en su lugar y los enlaces aparecen en orden: el último cierra la vuelta.
+    const u = formadas(val.t, uniones);
     let d;
     if (anillo) {
       const R = 1.6 / (2 * Math.sin(Math.PI / n));
       const atomos = rot.map((t, i) => ({ id: `u${i}`, t, x: R * Math.cos(2 * Math.PI * i / n - Math.PI / 2), y: R * Math.sin(2 * Math.PI * i / n - Math.PI / 2), color: 'i' }));
-      const enlaces = rot.map((_, i) => ({ a: `u${i}`, b: `u${(i + 1) % n}`, orden: 1, color: 'd' }));
-      d = { atomos, enlaces, textos: [{ x: 0, y: 0, t: `${uniones} H₂O`, color: 'h' }] };
-    } else d = cadena(rot);
+      const enlaces = rot.slice(0, u).map((_, i) => ({ a: `u${i}`, b: `u${(i + 1) % n}`, orden: 1, color: 'd' }));
+      d = { atomos, enlaces, textos: [{ x: 0, y: 0, t: `${u} H₂O`, color: 'h' }] };
+    } else d = cadenaViva(rot, val.t);
     const aviso = val.forma === 'anillo' && n < 3 ? [{ x: (n - 1) * 0.8, y: -1.1, t: 'un anillo pide 3 bloques', color: 'h' }] : [];
     d.textos = d.textos.concat(aviso);
-    return { dib: mol(Object.assign(d, { escala: 25, alto: 230 })), n, uniones, masa, anillo, nombre: b.nombre };
+    return { dib: mol(Object.assign(d, { escala: 25, alto: 230 })), n, uniones, masa, anillo, nombre: b.nombre, u, masaAhora: suma - AGUA * u };
   }
   // En la cadena, la manija va arriba del último bloque; en el anillo, 22 px hacia afuera del centro (160, 115).
   const manijaPol = val => {
@@ -574,9 +674,9 @@
 
   return {
     unidad: 'quimica.biomoleculas-y-productos-naturales',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/quim-molecula.js', '/nucleo/kit/piezas/quim-cadena.js', '/nucleo/kit/piezas/ejes.js'],
+    requiere: ['/nucleo/kit/piezas/quim-molecula.js', '/nucleo/kit/piezas/quim-cadena.js', '/nucleo/kit/piezas/quim-particulas.js', '/nucleo/kit/piezas/ejes.js'],
     historia: {
       texto: 'Saber que una proteína está hecha de aminoácidos no dice en qué orden van. Desde 1943, Frederick Sanger cortó la insulina con reacciones controladas, separó los trozos y los identificó, hasta reconstruir su secuencia; lo contó en su conferencia Nobel de 1958. Romper enlaces, cambiar el plegado y medir una función resultaron ser preguntas distintas.',
       pregunta: '¿Cómo sabrías el orden de las piezas de una cadena que no ves?',
@@ -621,14 +721,16 @@
     laboratorio: [
       {
         id: 'polimero', titulo: 'Cadena o anillo de bloques', pieza: 'quim-molecula',
-        consigna: 'Elige glucosas o aminoácidos y arrastra el último bloque para alargar. Ciérralo en anillo: cuenta uniones y aguas otra vez.',
+        consigna: 'En cámara lenta, los bloques se unen solos. Arrastra el último para alargar; ciérralo en anillo y cuenta uniones y aguas otra vez.',
         controles: [
           { id: 'b', etiqueta: 'Bloques', opciones: [{ valor: 'glc', texto: 'Glucosas' }, { valor: 'aa', texto: 'Aminoácidos' }] },
           { id: 'n', etiqueta: 'n', color: 'c-i', min: 1, max: 8, paso: 1, inicio: 4, unidad: '', decimales: 0 },
           { id: 'forma', etiqueta: 'Forma', opciones: [{ valor: 'abierta', texto: 'Cadena' }, { valor: 'anillo', texto: 'Anillo' }] },
+          TT,
         ],
         dibujo: val => polimero(val).dib,
-        lectura: val => { const c = polimero(val); return [nV, ` = ${c.n} ${c.nombre} · ${c.anillo ? 'anillo' : 'cadena'} → ${pl(c.uniones, 'unión', 'uniones')}, ${c.uniones} H₂O`, '   ·   ', MV, ` = ${f(c.masa)} u`]; },
+        // La masa del momento: los bloques menos el agua que ya salió; con la molécula armada, la del polímero.
+        lectura: val => { const c = polimero(val); return [`${f(val.t, 1)} s · ${c.n} ${c.nombre} · ${c.u} de ${pl(c.uniones, 'unión', 'uniones')} · `, MV, ` = ${f(c.masaAhora)} u`]; },
         // Se agarra el último bloque: en la cadena, más a la derecha es más largo; en el anillo, más lejos del centro
         // es un anillo más grande. Responden las uniones, las aguas y la masa.
         arrastres: [{ id: 'ultimo', etiqueta: 'último bloque: arrástralo para alargar', color: 'c-i',
@@ -653,6 +755,10 @@
             logrado: val => { const m = polimero(val).masa;
               return ['glc', 'aa'].every(b => ['abierta', 'anillo'].every(forma => polimero({ b, n: 8, forma }).masa <= m + 1e-9)); },
             bien: 'Ocho bloques en cadena: la masa crece, pero cada unión resta 18 u.' },
+          { texto: 'Pausa una cadena justo cuando ya salieron dos aguas y falta al menos otra.',
+            logrado: val => { const c = polimero(val); return !c.anillo && c.u === 2 && c.uniones > 2; },
+            bien: 'Dos uniones hechas, dos aguas fuera: la masa ya bajó 36 u.',
+            pista: 'Mira la lectura: pausa cuando diga «2 de» y ajusta t con − y +.' },
           { texto: 'Pide un anillo que no se puede cerrar.',
             logrado: val => val.forma === 'anillo' && !polimero(val).anillo,
             bien: 'Con menos de tres bloques no hay vuelta que cerrar.' },

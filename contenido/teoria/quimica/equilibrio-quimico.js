@@ -70,16 +70,23 @@
     curvas: [{ puntos: muestra(cA, 0, 10), color: 'o', rotulo: 'A', en: [6, cA(6)] }, { puntos: muestra(cB, 0, 10), rotulo: 'B', en: [6, cB(6)] }],
     alt: `Reacción A ⇌ B que empieza solo con A (1 mol/L): A baja y B sube hasta quedar planas en ${f(AEQ, 2)} y ${f(1 - AEQ, 2)} mol/L.`,
   }, extra);
+  // Animación (decisión de Gerson, 15 nov: química se mueve sola). El tiempo corre solo, 10 min en 5 s: las curvas se
+  // dibujan hasta t (lo que falta va punteado) y las dos rapideces de la lectura se acercan hasta igualarse.
+  const hastaT = (fn, tt, extra = {}) => [Object.assign({ puntos: muestra(fn, 0, tt) }, extra), Object.assign({ puntos: muestra(fn, tt, 10, 20), discontinua: true }, extra, { rotulo: undefined })];
+  const dinamicoT = val => ejesEq({
+    curvas: [...hastaT(cA, val.t, { color: 'o', rotulo: 'A', en: [6, cA(6)] }), ...hastaT(cB, val.t, { rotulo: 'B', en: [6, cB(6)] })],
+    puntos: [{ x: val.t, y: cA(val.t), color: 'o', guias: true }, { x: val.t, y: cB(val.t) }],
+  });
   const dinamico = {
     id: 'equilibrio-dinamico',
     titulo: 'Equilibrio: dos rapideces iguales',
     temas: ['Reacciones reversibles y equilibrio dinámico'],
     pieza: 'ejes',
     juega: {
-      consigna: 'La reacción A ⇌ B empieza solo con A. Mueve el tiempo y compara la rapidez directa (A → B) con la inversa (B → A).',
+      consigna: 'A ⇌ B empieza solo con A y avanza sola (10 min en 5 s). Compara la rapidez directa (A → B) con la inversa (B → A).',
       voz: 'Mira las dos rapideces, no solo las curvas.',
-      controles: [{ id: 't', etiqueta: 't', color: 'c-i', min: 0, max: 10, paso: 1, inicio: 0, unidad: 'min', decimales: 0 }],
-      dibujo: val => ({ datos: ejesEq({ puntos: [{ x: val.t, y: cA(val.t), color: 'o', guias: true }, { x: val.t, y: cB(val.t) }] }), estado: {} }),
+      controles: [{ id: 't', etiqueta: 't', color: 'c-i', min: 0, max: 10, paso: 1, inicio: 0, unidad: 'min', decimales: 0, auto: { velocidad: 2 } }],
+      dibujo: val => ({ datos: dinamicoT(val), estado: {} }),
       lectura: val => [r, ` directa ${f(KD * cA(val.t), 3)} · inversa ${f(KI * cB(val.t), 3)}\u00a0mol/(L·min)`],
       minimo: 3,
       // El punto de A se arrastra por su curva: el dedo elige el instante t (la inversa de X de la pieza ejes) y las dos
@@ -148,17 +155,33 @@
   const KN = 10;                                                   // Kc de 2 NO₂ ⇌ N₂O₄ en el modelo
   const MEZCLAS = { 1: [1, 1], 2: [2, 4], 3: [3, 9] };             // bolitas de NO₂ y de N₂O₄ (0,1 mol/L cada una)
   const mezcla = k => { const [a, b] = MEZCLAS[k]; return lupa([{ titulo: 'Equilibrio', forma: 'caja', particulas: [{ e: 'NO2', n: a }, { e: 'N2O4', n: b }], rotulo: `NO₂ ${f(a / 10, 1)} · N₂O₄ ${f(b / 10, 1)} mol/L` }], { separacion: 30 }); };
+  // Animación: cada mezcla empieza solo con NO₂ (los mismos átomos de N) y llega sola a su equilibrio, 12 min en 5 s.
+  // Avance: d[N₂O₄]/dt = KV·(K·[NO₂]² − [N₂O₄]), integrado con RK4 de paso fijo (función pura de t). KV = 0,1 por minuto
+  // es una rapidez ilustrativa; K = 10 es la del modelo. Las bolitas se redondean a 0,1 mol/L conservando los N.
+  const KV = 0.1;
+  function avanza(no2, n2o4, k, tt) {
+    const g = y => KV * (k * (no2 - 2 * y) ** 2 - (n2o4 + y));
+    const n = Math.ceil(Math.max(0, tt) / 0.02), h = n ? tt / n : 0;
+    let y = 0;
+    for (let i = 0; i < n; i++) { const k1 = g(y), k2 = g(y + h * k1 / 2), k3 = g(y + h * k2 / 2), k4 = g(y + h * k3); y += h * (k1 + 2 * k2 + 2 * k3 + k4) / 6; }
+    return { no2: no2 - 2 * y, n2o4: n2o4 + y };
+  }
+  const llegada = val => { const [a, b] = MEZCLAS[val.k], c = avanza((a + 2 * b) / 10, 0, KN, val.t), nb = Math.round(10 * c.n2o4); return Object.assign(c, { nb, na: a + 2 * b - 2 * nb }); };
+  const mezclaT = val => { const c = llegada(val); return lupa([{ titulo: `Mezcla ${val.k}, a los ${f(val.t, 1)} min`, forma: 'caja', particulas: [{ e: 'NO2', n: c.na }, { e: 'N2O4', n: c.nb }], rotulo: `NO₂ ${f(c.no2, 2)} · N₂O₄ ${f(c.n2o4, 2)} mol/L` }], { separacion: 24, agita: val.t, agitaAmp: 2 }); };
   const kc = {
     id: 'kc-kp',
     titulo: 'La constante: Kc y Kp',
     temas: ['Kc y Kp'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Tres mezclas de 2 NO₂ ⇌ N₂O₄ en equilibrio, a la misma temperatura. Cada bolita es 0,1 mol/L. Compara el cociente de cada una.',
+      consigna: 'Cada mezcla empieza solo con NO₂ y llega sola al equilibrio de 2 NO₂ ⇌ N₂O₄ (12 min en 5 s). Compara el cociente final.',
       voz: 'Prueba con y sin el exponente 2.',
-      controles: [{ id: 'k', etiqueta: 'Mezcla', opciones: [1, 2, 3].map(k => ({ valor: k, texto: `Mezcla ${k}` })) }],
-      dibujo: val => mezcla(val.k),
-      lectura: val => { const [a, b] = MEZCLAS[val.k]; return [cc('N₂O₄'), ' / ', { sup: [cc('NO₂'), '2'] }, ` = ${f(b / 10, 1)} / ${f((a / 10) ** 2, 2)} = ${f((b / 10) / (a / 10) ** 2, 0)}`]; },
+      controles: [
+        { id: 'k', etiqueta: 'Mezcla', opciones: [1, 2, 3].map(k => ({ valor: k, texto: `Mezcla ${k}` })) },
+        { id: 't', etiqueta: 't', color: 'c-i', min: 0, max: 12, paso: 1, inicio: 0, unidad: 'min', decimales: 0, auto: { velocidad: 2.4 } },
+      ],
+      dibujo: val => mezclaT(val),
+      lectura: val => { const c = llegada(val); return [cc('N₂O₄'), ' / ', { sup: [cc('NO₂'), '2'] }, ` = ${f(c.n2o4, 2)} / ${f(c.no2 ** 2, 3)} = ${f(c.n2o4 / c.no2 ** 2, 1)}`]; },
       minimo: 3,
     },
     predice: {
@@ -243,15 +266,16 @@
     temas: ['Grado de reacción'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Empiezas con 10 moléculas de N₂O₄ ⇌ 2 NO₂. Elige qué fracción α se disocia y cuenta qué hay en el equilibrio.',
+      consigna: 'Empiezas con 10 moléculas de N₂O₄ ⇌ 2 NO₂. La fracción α que se disocia sube y baja sola: cuenta qué hay en el equilibrio.',
       voz: 'Por cada una que se rompe, aparecen dos.',
-      controles: [{ id: 'a', etiqueta: 'α', min: 0.1, max: 0.9, paso: 0.1, inicio: 0.2, decimales: 1 }],
+      // Animación: α barre su rango sola; las moléculas se cuentan con α redondeado a décimos (10 moléculas al inicio).
+      controles: [{ id: 'a', etiqueta: 'α', min: 0.1, max: 0.9, paso: 0.1, inicio: 0.2, decimales: 1, auto: { velocidad: 0.2, modo: 'rebota' } }],
       dibujo: val => {
         const x = Math.round(10 * val.a);
         return lupa([{ titulo: 'Inicio', forma: 'caja', particulas: [{ e: 'N2O4', n: 10 }], rotulo: '10 N₂O₄' },
-          { titulo: 'Equilibrio', forma: 'caja', particulas: [{ e: 'N2O4', n: 10 - x }, { e: 'NO2', n: 2 * x }], rotulo: `${10 - x} N₂O₄ · ${2 * x} NO₂` }], { flechas: true, separacion: 25 });
+          { titulo: 'Equilibrio', forma: 'caja', particulas: [{ e: 'N2O4', n: 10 - x }, { e: 'NO2', n: 2 * x }], rotulo: `${10 - x} N₂O₄ · ${2 * x} NO₂` }], { flechas: true, separacion: 25, agita: 5 * val.a, agitaAmp: 1.5 });
       },
-      lectura: val => { const x = Math.round(10 * val.a); return [`Quedan ${10 - x} N₂O₄ y hay ${2 * x} NO₂: ${10 + x} moléculas`]; },
+      lectura: val => { const x = Math.round(10 * val.a); return [`α = ${f(x / 10, 1)}: quedan ${10 - x} N₂O₄ y hay ${2 * x} NO₂, ${10 + x} moléculas`]; },
       minimo: 3,
     },
     predice: {
@@ -340,17 +364,30 @@
       alt: `Recta numérica con K = ${f(k, 1)} y Q = ${f(q, 1)}: ${hacia(q, k)}.`,
     }, extra);
   }
+  // Animación: tras el cambio, la mezcla vuelve sola al equilibrio (5 min en 5 s, cámara rápida) con el mismo avanza de
+  // la idea 2; Q recorre la recta hasta K. Se da por llegada cuando Q queda a menos de 0,15 de K (la recta ya no los separa).
+  const yaEn = (q, k) => Math.abs(q - k) < 0.15;
+  const vuelta = val => { const C = CAMBIOS[val.k], k = C.K || KN, c = avanza(C.no2, C.n2o4, k, val.t); return { k, q: qDe(c.no2, c.n2o4) }; };
+  const rectaVuelta = val => {
+    // Al llegar, Q y K quedan en el mismo punto: un solo rótulo, «Q = K», para que no se encimen.
+    const x = vuelta(val), base = rectaQK(x.q, x.k);
+    if (yaEn(x.q, x.k)) base.elementos = [{ tipo: 'punto', x: x.k, color: 'd', rotulo: `Q = K = ${f(x.k, 0)}`, fila: 2 }];
+    return base;
+  };
   const chatelier = {
     id: 'le-chatelier',
     titulo: 'Le Chatelier: compara Q con K',
     temas: ['Principio de Le Chatelier'],
     pieza: 'recta',
     juega: {
-      consigna: '2 NO₂ ⇌ N₂O₄ está en equilibrio con 0,3 y 0,9 mol/L (K = 10, exotérmica). Elige un cambio y mira dónde cae Q.',
+      consigna: 'Equilibrio 2 NO₂ ⇌ N₂O₄ (0,3 y 0,9 mol/L, exotérmica). Elige un cambio: Q o K saltan y, en cámara rápida, Q vuelve hasta K.',
       voz: 'La flecha va de Q hacia K. Eso dice hacia dónde avanza.',
-      controles: [{ id: 'k', etiqueta: 'Cambio', opciones: Object.keys(CAMBIOS).map(k => ({ valor: k, texto: CAMBIOS[k].texto })) }],
-      dibujo: val => { const C = CAMBIOS[val.k], q = qDe(C.no2, C.n2o4); return { datos: rectaQK(q, C.K || KN), estado: {} }; },
-      lectura: val => { const C = CAMBIOS[val.k], q = qDe(C.no2, C.n2o4), k = C.K || KN; return [Q, ` = ${f(q, 1)}, `, K, ` = ${f(k, 0)}: ${hacia(q, k)}`]; },
+      controles: [
+        { id: 'k', etiqueta: 'Cambio', opciones: Object.keys(CAMBIOS).map(k => ({ valor: k, texto: CAMBIOS[k].texto })) },
+        { id: 't', etiqueta: 't', color: 'c-i', min: 0, max: 5, paso: 0.25, inicio: 0, unidad: 'min', decimales: 2, auto: { velocidad: 1 } },
+      ],
+      dibujo: val => ({ datos: rectaVuelta(val), estado: {} }),
+      lectura: val => { const x = vuelta(val); return [`${f(val.t, 1)} min: `, Q, ` = ${f(x.q, 1)}, `, K, ` = ${f(x.k, 0)}: ${yaEn(x.q, x.k) ? 'ya en equilibrio' : hacia(x.q, x.k)}`]; },
       minimo: 3,
     },
     predice: {
@@ -421,19 +458,37 @@
   // ---------- Laboratorio ----------
   const labRecta = (q, k) => rectaQK(q, k, { max: 50, cada: 2, paso: 5,
     alt: `Recta numérica de 0 a 50 con K = ${f(k, 1)} y Q = ${f(q, 1)}: ${hacia(q, k)}.` });
+  // Animación de la mesa: la mezcla armada (círculo abierto, con la manija) evoluciona sola hacia el equilibrio, 5 min
+  // en 5 s; el punto lleno es su Q en ese instante y la flecha va de él hasta K. La manija sigue en la Q del armado.
+  // La mesa arranca fuera del equilibrio (0,5 y 0,9 mol/L: Q = 3,6) para que el viaje se vea al abrir.
+  const labQt = val => { const c = avanza(val.a, val.b, val.T, val.t || 0); return qDe(c.no2, c.n2o4); };
+  const labRectaT = val => {
+    const q0 = qDe(val.a, val.b), qt = labQt(val), base = labRecta(q0, val.T);
+    if (Math.abs(q0 - val.T) < 1e-9) return base;
+    const llega = yaEn(qt, val.T);
+    return Object.assign(base, {
+      elementos: [
+        { tipo: 'punto', x: val.T, color: 'd', rotulo: llega ? `Q = K = ${f(val.T, 0)}` : `K = ${f(val.T, 1)}`, fila: 2 },
+        { tipo: 'punto', x: q0, color: 'o', abierto: true, fila: 1 },
+        ...(llega ? [] : [{ tipo: 'salto', a: qt, b: val.T, color: 'o', fila: 1 }, { tipo: 'punto', x: qt, color: 'o', rotulo: `Q = ${f(qt, 1)}`, fila: 1 }]),
+      ],
+      alt: `Recta de 0 a 50: la mezcla armada tiene Q = ${f(q0, 1)}; a los ${f(val.t || 0, 1)} min, Q = ${f(qt, 1)} y K = ${f(val.T, 1)}.`,
+    });
+  };
   // A ⇌ B con [A] + [B] = 1 mol/L: [A](t) = Aeq + (A0 − Aeq)·e^(−(kd + ki)t), Aeq = ki/(kd + ki).
   const labA = (val, x) => { const aeq = val.ki / (val.kd + val.ki); return aeq + (val.a0 - aeq) * Math.exp(-(val.kd + val.ki) * x); };
   const labCurvas = val => {
     const A = x => labA(val, x), aeq = val.ki / (val.kd + val.ki);
     return { datos: ejesEq({
-      curvas: [{ puntos: muestra(A, 0, 10), color: 'o', rotulo: 'A', en: [7, A(7)] }, { puntos: muestra(x => 1 - A(x), 0, 10), rotulo: 'B', en: [7, 1 - A(7)] }],
+      // Animación: el instante avanza solo (10 min en 5 s); las curvas se dibujan hasta él y lo que falta va punteado.
+      curvas: [...hastaT(A, val.t, { color: 'o', rotulo: 'A', en: [7, A(7)] }), ...hastaT(x => 1 - A(x), val.t, { rotulo: 'B', en: [7, 1 - A(7)] })],
       puntos: [{ x: val.t, y: A(val.t), color: 'o', guias: true }, { x: val.t, y: 1 - A(val.t) }],
       alt: `A ⇌ B con k de ida ${f(val.kd, 2)} y de vuelta ${f(val.ki, 2)} por minuto, empezando con ${f(val.a0, 1)} mol/L de A: se aplanan en ${f(aeq, 2)} de A y ${f(1 - aeq, 2)} de B.` }), estado: {} };
   };
 
   return {
     unidad: 'quimica.equilibrio-quimico',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/quim-particulas.js', '/nucleo/kit/piezas/recta.js'],
     historia: {
@@ -471,20 +526,21 @@
         ver: ['cociente de reacción'] },
     ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera deja armar cualquier mezcla de NO₂ y N₂O₄ (y
-    // calentar): el punto Q se arrastra por la recta y se ve hacia dónde tendría que ir. La segunda cambia las dos
+    // calentar): el punto Q se arrastra por la recta y, desde la 0.2.0, la mezcla viaja sola hasta K. La segunda cambia las dos
     // constantes de rapidez y el punto de partida (solo A, solo B o mitad): se llega al mismo equilibrio desde cualquier
     // lado, que la idea 1 solo enuncia. Las lecturas dicen entradas y resultado, para que el caso guardado se lea solo.
     laboratorio: [
       {
         id: 'mezcla-libre', titulo: 'Arma la mezcla y compara', pieza: 'recta',
-        consigna: 'Elige [NO₂], [N₂O₄] y la temperatura. Arrastra Q por la recta y lee hacia dónde avanza 2 NO₂ ⇌ N₂O₄.',
+        consigna: 'Arma 2 NO₂ ⇌ N₂O₄ con [NO₂], [N₂O₄] y la temperatura. En cámara rápida, mira cómo Q viaja desde tu mezcla hasta K.',
         controles: [
-          { id: 'a', etiqueta: '[NO₂]', color: 'c-o', min: 0.2, max: 0.6, paso: 0.05, inicio: 0.3, unidad: 'mol/L', decimales: 2 },
+          { id: 'a', etiqueta: '[NO₂]', color: 'c-o', min: 0.2, max: 0.6, paso: 0.05, inicio: 0.5, unidad: 'mol/L', decimales: 2 },
           { id: 'b', etiqueta: '[N₂O₄]', color: 'c-o', min: 0.1, max: 2, paso: 0.1, inicio: 0.9, unidad: 'mol/L', decimales: 1 },
           { id: 'T', etiqueta: 'T', opciones: [{ valor: 10, texto: 'Frío (K = 10)' }, { valor: 4, texto: 'Caliente (K = 4)' }] },
+          { id: 't', etiqueta: 't', color: 'c-i', min: 0, max: 5, paso: 0.25, inicio: 0, unidad: 'min', decimales: 2, auto: { velocidad: 1 } },
         ],
-        dibujo: val => ({ datos: labRecta(qDe(val.a, val.b), val.T), estado: {} }),
-        lectura: val => [`${f(val.a, 2)} y ${f(val.b, 1)} mol/L → `, Q, ` = ${f(qDe(val.a, val.b), 1)}: ${hacia(qDe(val.a, val.b), val.T).split(' (')[0]}`],
+        dibujo: val => ({ datos: labRectaT(val), estado: {} }),
+        lectura: val => { const q = labQt(val); return [`${f(val.a, 2)} y ${f(val.b, 1)} mol/L → `, Q, ` = ${f(q, 1)}: ${yaEn(q, val.T) ? 'ya en equilibrio' : hacia(q, val.T).split(' (')[0]}`]; },
         // Q se agarra y se corre: con [NO₂] fijo, mover Q es cambiar [N₂O₄] = Q·[NO₂]² (la inversa exacta de donde).
         arrastres: [{ id: 'q', etiqueta: 'Q de la mezcla: mueve el N₂O₄', color: 'c-o',
           donde: val => { const g = Kit.piezas.recta.geometria(labRecta(qDe(val.a, val.b), val.T)), q = qDe(val.a, val.b);
@@ -506,20 +562,22 @@
             logrado: (val, guardados) => val.T === 10 && Math.abs(qDe(val.a, val.b) - val.T) < 1e-9
               && guardados.some(g => g.T === 10 && g.a !== val.a && Math.abs(qDe(g.a, g.b) - g.T) < 1e-9)
               && guardados.some(g => g.a === val.a && g.b === val.b && g.T === val.T),
-            bien: 'Concentraciones distintas, el mismo K: el equilibrio no es un solo par de números.' },
+            bien: 'Concentraciones distintas, el mismo K: el equilibrio no es un solo par de números.',
+            // Testigo: con t animado la grilla crece y la muestra de pares no da con estas dos (0,2 y 0,4; 0,3 y 0,9).
+            testigo: [{ a: 0.2, b: 0.4, T: 10, t: 0 }, { a: 0.3, b: 0.9, T: 10, t: 0 }] },
         ],
       },
       {
         id: 'desde-cualquier-lado', titulo: 'Desde cualquier lado', pieza: 'ejes',
-        consigna: 'Cambia las rapideces de ida y de vuelta y desde dónde empieza A ⇌ B. Arrastra el instante y mira dónde se aplanan.',
+        consigna: 'A ⇌ B avanza sola (10 min en 5 s). Cambia las rapideces de ida y de vuelta y desde dónde empieza: mira dónde se aplanan.',
         controles: [
           { id: 'kd', etiqueta: 'k ida', color: 'c-h', min: 0.1, max: 0.5, paso: 0.05, inicio: 0.3, unidad: '/min', decimales: 2 },
           { id: 'ki', etiqueta: 'k vuelta', color: 'c-h', min: 0.1, max: 0.5, paso: 0.05, inicio: 0.15, unidad: '/min', decimales: 2 },
           { id: 'a0', etiqueta: 'Empieza', opciones: [{ valor: 1, texto: 'Solo A' }, { valor: 0, texto: 'Solo B' }, { valor: 0.5, texto: 'Mitad y mitad' }] },
-          { id: 't', etiqueta: 't', color: 'c-i', min: 0, max: 10, paso: 1, inicio: 2, unidad: 'min', decimales: 0 },
+          { id: 't', etiqueta: 't', color: 'c-i', min: 0, max: 10, paso: 1, inicio: 2, unidad: 'min', decimales: 0, auto: { velocidad: 2 } },
         ],
         dibujo: val => labCurvas(val),
-        lectura: val => { const A = labA(val, val.t); return [K, ` = ${f(val.kd / val.ki, 2)} · a los ${val.t} min: A ${f(A, 2)}, B ${f(1 - A, 2)}`]; },
+        lectura: val => { const A = labA(val, val.t); return [K, ` = ${f(val.kd / val.ki, 2)} · a los ${f(val.t, 1)} min: A ${f(A, 2)}, B ${f(1 - A, 2)}`]; },
         arrastres: [{ id: 'instante', etiqueta: 'instante sobre la curva de A', color: 'c-i',
           donde: val => { const g = Kit.piezas.ejes.geometria(labCurvas(val).datos); return { x: g.X(val.t), y: g.Y(labA(val, val.t)) }; },
           mover: (pt, val) => { const g = Kit.piezas.ejes.geometria(labCurvas(val).datos); return { t: (pt.x - g.X(0)) * 10 / (g.X(10) - g.X(0)) }; } }],

@@ -43,3 +43,18 @@ test('comunes: sana, pura, alto fijo y alt', () => {
   sana(s0); sana(s1); assert.equal(alto(s0), alto(s1)); assert.equal(s0, P.dibujar(D, { corte: 0 }));
   assert.match(P.alt(D), /no a escala/);
 });
+
+test('agita (ronda 5): sin el campo el dibujo no cambia; con él, las partículas tiemblan sin cambiar su número', () => {
+  const cuenta = s => (s.match(/class="kit-particula/g) || []).length;
+  const base = P.dibujar(D, { corte: 1 });
+  const a = P.dibujar(Object.assign({}, D, { agita: 0.3 }), { corte: 1 }), b = P.dibujar(Object.assign({}, D, { agita: 0.7 }), { corte: 1 });
+  sana(a); sana(b);
+  assert.equal(cuenta(a), cuenta(base)); assert.equal(cuenta(b), cuenta(base));
+  assert.notEqual(a, b); assert.notEqual(a, base);
+  assert.equal(a, P.dibujar(Object.assign({}, D, { agita: 0.3 }), { corte: 1 }), 'pura: mismo t, mismo dibujo');
+  assert.equal(alto(a), alto(base));
+  // El temblor no pasa de la amplitud pedida.
+  const xs = s => [...s.matchAll(/<circle cx="([\d.]+)" cy="([\d.]+)"/g)].map(m => [+m[1], +m[2]]);
+  const quieto = xs(P.dibujar(Object.assign({}, D, { agita: 0, agitaAmp: 0 }), { corte: 1 })), movido = xs(P.dibujar(Object.assign({}, D, { agita: 0.45, agitaAmp: 2 }), { corte: 1 }));
+  movido.forEach(([x, y], j) => { assert.ok(Math.abs(x - quieto[j][0]) <= 2.01 && Math.abs(y - quieto[j][1]) <= 2.01); });
+});

@@ -29,6 +29,7 @@
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const fv = n => `${n > 0 ? '+' : ''}${Kit.formatear(n, 2).replace(/^(−?\d+)$/, '$1,00').replace(/,(\d)$/, ',$10')} V`;
+  const f1 = n => Kit.formatear(n, 1).replace(/^(−?\d+)$/, '$1,0');   // un decimal siempre (la lectura no salta de ancho)
   const E = { v: 'c-d', t: 'E' }, I = { v: 'c-o', t: 'I' }, m = { v: 'c-i', t: 'm' };
   const E0 = { sup: [E, '°'] };
   function azar(s) {
@@ -75,17 +76,21 @@
     temas: ['Semirreacciones y potenciales de reducción', 'Celdas galvánicas y fem'],
     pieza: 'quim-celda',
     juega: {
-      consigna: 'Arma una pila con dos metales, cada uno en una disolución de sus iones. Mira cuál se oxida, adónde van los electrones y la fem.',
+      consigna: 'Electrones (puntos turquesa) por el alambre e iones por el puente, a rapidez de dibujo. Arma la pila y mira hacia dónde van.',
       voz: 'Ubica primero dónde ocurre la oxidación.',
+      // Animación (ronda 5): la carga avanza con t. Con la misma resistencia, la corriente es proporcional a la fem, así
+      // que los puntos corren más rápido con más fem (flujo = fem · t, en espacios entre puntos). Cada punto representa
+      // muchísimas partículas; la rapidez es de dibujo, no la real.
       controles: [
         { id: 'a', etiqueta: 'Izquierda', opciones: ['Mg', 'Zn', 'Fe', 'Cu'].map(x => ({ valor: x, texto: x })) },
         { id: 'b', etiqueta: 'Derecha', opciones: ['Zn', 'Pb', 'Cu', 'Ag'].map(x => ({ valor: x, texto: x })) },
+        { id: 't', etiqueta: 't', min: 0, max: 6, paso: 0.1, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } },
       ],
-      dibujo: val => pila(val.a, val.b),
+      dibujo: val => { const p = pila(val.a, val.b); return { datos: Object.assign({}, p.datos, { flujo: Math.abs(MET[val.b].e0 - MET[val.a].e0) * val.t }), estado: {} }; },
       lectura: val => {
         if (val.a === val.b) return ['Metales iguales: no hay corriente.'];
         const an = MET[val.a].e0 < MET[val.b].e0 ? val.a : val.b, ca = an === val.a ? val.b : val.a;
-        return [`Ánodo ${an}, cátodo ${ca} · `, E0, ` = ${fv(MET[ca].e0 - MET[an].e0)}`];
+        return [`${f1(val.t)} s · ánodo ${an} → cátodo ${ca} · `, E0, ` = ${fv(MET[ca].e0 - MET[an].e0)}`];
       },
       minimo: 3,
     },
@@ -161,20 +166,32 @@
     { id: 'metal', etiqueta: 'cola de la flecha: el metal que se oxida', color: 'c-d',
       donde: val => ({ x: RX(datos(val)).x(MET[val.met].e0), y: RX(datos(val)).filaY(0) }), mover: pt => ({ met: masCerca(metales, pt.x) }) },
   ];
+  const mide = t => Math.min(1, Math.max(0, t / 3));
   const espont = {
     id: 'espontaneidad',
     titulo: 'Espontánea si E es positivo',
     temas: ['Espontaneidad redox', 'Semirreacciones y potenciales de reducción'],
     pieza: 'recta',
     juega: {
-      consigna: 'Pon una barra de metal en una disolución de otro ion. El ion se reduce si en la escala está más arriba que el metal.',
+      consigna: 'Una barra de metal en otra disolución. La flecha mide sola del metal al ion: si sube en la escala, el ion se reduce.',
       voz: 'Compara las dos posiciones en la escala.',
+      // Animación (ronda 5): la flecha crece del metal al ion en 3 s (es una regla que mide la resta, no una reacción
+      // que avanza) y queda 1 s con su E°; luego vuelve a medir.
       controles: [
         { id: 'met', etiqueta: 'Metal', opciones: ['Mg', 'Zn', 'Fe'].map(x => ({ valor: x, texto: x })) },
         { id: 'ion', etiqueta: 'Disolución', opciones: ['Pb', 'Cu', 'Ag'].map(x => ({ valor: x, texto: MET[x].ion })) },
+        { id: 't', etiqueta: 't', min: 0, max: 4, paso: 0.1, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } },
       ],
-      dibujo: val => ({ datos: ESCALA([{ tipo: 'salto', a: MET[val.met].e0, b: MET[val.ion].e0, color: 'd', rotulo: fv(MET[val.ion].e0 - MET[val.met].e0), fila: 0 }]), estado: {} }),
-      lectura: val => { const e = MET[val.ion].e0 - MET[val.met].e0; return [E0, ` = ${fv(e)}: ${e > 0 ? `el ${val.met} se disuelve; aparece ${val.ion}` : 'no hay reacción'}.`]; },
+      dibujo: val => {
+        const a = MET[val.met].e0, b = MET[val.ion].e0, q = mide(val.t), punta = a + (b - a) * q;
+        const el = q * Math.abs(b - a) < 0.05 ? { tipo: 'punto', x: a, color: 'd', fila: 0 } : { tipo: 'salto', a, b: punta, color: 'd', rotulo: fv(punta - a), fila: 0 };
+        return { datos: ESCALA([el]), estado: {} };
+      },
+      lectura: val => {
+        const e = MET[val.ion].e0 - MET[val.met].e0;
+        if (mide(val.t) < 1) return [`La flecha mide ${fv(e * mide(val.t))} desde el ${val.met}…`];
+        return [E0, ` = ${fv(e)}: ${e > 0 ? `el ${val.met} se disuelve; aparece ${val.ion}` : 'no hay reacción'}.`];
+      },
       minimo: 3,
       arrastres: flechaEsc(['Mg', 'Zn', 'Fe'], ['Pb', 'Cu', 'Ag']),
     },
@@ -244,13 +261,15 @@
     temas: ['Electrólisis', 'Leyes de Faraday'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Una fuente hace pasar corriente por una disolución de Cu²⁺ y se deposita cobre en el cátodo. Elige la corriente y el tiempo.',
+      consigna: 'Una fuente deposita cobre del Cu²⁺ en el cátodo; una hora pasa en 6 s. Elige la corriente y mira crecer la masa.',
       voz: 'Mira cómo cambia la recta al subir la corriente.',
+      // Animación (ronda 5): t corre solo de 0 a 60 min (10 min por segundo); la recta se dibuja llena hasta t y
+      // punteada después.
       controles: [
         { id: 'i', etiqueta: 'I', color: 'c-o', min: 1, max: 5, paso: 1, inicio: 2, unidad: 'A', decimales: 0 },
-        { id: 't', etiqueta: 't', min: 10, max: 60, paso: 10, inicio: 30, unidad: 'min', decimales: 0 },
+        { id: 't', etiqueta: 't', min: 0, max: 60, paso: 10, inicio: 0, unidad: 'min', decimales: 0, auto: { velocidad: 10 } },
       ],
-      dibujo: val => ({ datos: ejesM({ curvas: [{ puntos: [[0, 0], [60, mDep('Cu', val.i, 60)]], color: 'i', rotulo: `Cu, ${val.i} A` }], puntos: [{ x: val.t, y: mDep('Cu', val.i, val.t), color: 'i', rotulo: `${f(mDep('Cu', val.i, val.t))} g`, guias: true }] }), estado: {} }),
+      dibujo: val => ({ datos: ejesM({ curvas: [{ puntos: [[val.t, mDep('Cu', val.i, val.t)], [60, mDep('Cu', val.i, 60)]], color: 'i', discontinua: true, rotulo: `Cu, ${f(val.i, 1)} A`, en: [10, 7] }, { puntos: [[0, 0], [val.t, mDep('Cu', val.i, val.t)]], color: 'i' }], puntos: [{ x: val.t, y: mDep('Cu', val.i, val.t), color: 'i', rotulo: `${f(mDep('Cu', val.i, val.t))} g`, guias: true }] }), estado: {} }),
       lectura: val => ['Q = ', I, `·t = ${f(val.i * val.t * 60, 0)} C · `, m, ` = ${f(mDep('Cu', val.i, val.t))} g`],
       minimo: 3,
       // Dos manijas: el punto se corre por la recta (elige t) y el extremo de la recta sube o baja (elige I: más corriente,
@@ -334,13 +353,14 @@
     temas: ['Diagrama de Pourbaix (solo San Marcos)'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Mueve el punto: elige el pH de la disolución y el potencial de un electrodo. El mapa dice qué le pasa al agua.',
+      consigna: 'El potencial del electrodo sube y baja solo. Elige el pH y mira qué zonas cruza el punto: qué le pasa al agua.',
       voz: 'Busca los bordes de la zona donde el agua no cambia.',
+      // Animación (ronda 5): E barre de −1 a 1,5 V y vuelve (0,5 V por segundo); el punto cruza las dos líneas del agua.
       controles: [
         { id: 'p', etiqueta: 'pH', min: 0, max: 14, paso: 1, inicio: 7, decimales: 0 },
-        { id: 'e', etiqueta: 'E', color: 'c-d', min: -1, max: 1.5, paso: 0.25, inicio: 0.5, unidad: 'V', decimales: 2 },
+        { id: 'e', etiqueta: 'E', color: 'c-d', min: -1, max: 1.5, paso: 0.25, inicio: 0.5, unidad: 'V', decimales: 2, auto: { velocidad: 0.5, modo: 'rebota' } },
       ],
-      dibujo: val => ({ datos: ejesP({ puntos: [{ x: val.p, y: val.e, color: 'd', rotulo: `(${f(val.p, 0)}; ${f(val.e)} V)` }] }), estado: {} }),
+      dibujo: val => ({ datos: ejesP({ puntos: [{ x: val.p, y: val.e, color: 'd', guias: true }] }), estado: {} }),
       lectura: val => [`pH ${f(val.p, 0)}, `, E, ` = ${f(val.e)} V: ${zona(val.p, val.e)}.`],
       minimo: 4,
       // El punto se arrastra en las dos direcciones: hacia los lados cambia el pH y hacia arriba el potencial.
@@ -416,6 +436,24 @@
     puntos: [{ x: val.t, y: mDep(val.x, val.i, val.t), color: 'i', rotulo: `${f(mDep(val.x, val.i, val.t))} g`, guias: true }],
     alt: `Masa de ${val.x} depositada contra tiempo con ${f(val.i, 1)} A: ${f(mDep(val.x, val.i, val.t))} g a los ${f(val.t, 0)} min. La recta punteada es la del cobre.`,
   });
+  // La pila que trabaja (ronda 5): una pila galvánica que entrega la corriente I durante t. Faraday (mDep) dice cuánta
+  // masa pierde el ánodo y cuánta gana el cátodo con la misma carga. Cada barra empieza con 10 g; su ancho sigue a la
+  // raíz de su masa (barra de sección cuadrada y largo fijo). La rapidez de los puntos crece con I; es de dibujo.
+  const M0 = 10;
+  const papeles = val => { const an = MET[val.a].e0 < MET[val.b].e0 ? val.a : val.b; return { an, ca: an === val.a ? val.b : val.a }; };
+  const cambio = val => {
+    if (val.a === val.b) return { pierde: 0, gana: 0 };
+    const { an, ca } = papeles(val);
+    return { pierde: Math.min(M0, mDep(an, val.i, val.t)), gana: mDep(ca, val.i, val.t) };
+  };
+  const pilaLab = val => {
+    const p = pila(val.a, val.b).datos;
+    if (val.a === val.b) return { datos: p, estado: {} };
+    const { an, ca } = papeles(val), c = cambio(val), izqAn = an === val.a;
+    const gAn = Math.sqrt((M0 - c.pierde) / M0), gCa = Math.sqrt((M0 + c.gana) / M0);
+    return { datos: Object.assign({}, p, { flujo: val.i * val.t / 20, grosor: { izq: izqAn ? gAn : gCa, der: izqAn ? gCa : gAn },
+      alt: `Pila de ${an} (ánodo) y ${ca} (cátodo) con ${f(val.i, 1)} A durante ${f(val.t, 0)} min: el ${an} pierde ${f(c.pierde)} g y el ${ca} gana ${f(c.gana)} g. Los electrones van por el alambre; los iones, por el puente.` }), estado: {} };
+  };
   const zonaCorta = (p, e) => (e > eO2(p) ? 'se oxida' : e < eH2(p) ? 'se reduce' : 'estable');
   const mapaLab = val => ejesP({
     curvas: ejesP().curvas.concat([{ puntos: [[0, MET[val.x].e0], [14, MET[val.x].e0]], color: 'h', discontinua: true, rotulo: `${MET[val.x].ion} / ${val.x}`, en: [2, MET[val.x].e0 + 0.12] }]),
@@ -425,7 +463,7 @@
 
   return {
     unidad: 'quimica.electroquimica',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/quim-celda.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/ejes.js'],
     historia: {
@@ -469,11 +507,44 @@
         def: 'Mapa de potencial contra pH que muestra qué especie es estable en cada zona.',
         ver: ['potencial de reducción'] },
     ],
-    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera abre la escala a los siete pares, en los dos
-    // sentidos (la idea 2 solo deja metales activos contra iones nobles). La segunda deposita cinco metales con más
-    // corriente y más tiempo, con la recta del cobre de fondo. La tercera pone un metal sobre el mapa del agua: se ve que
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera (ronda 5, animada) es una pila que trabaja: el
+    // ánodo adelgaza y el cátodo engorda según Faraday. La segunda abre la escala a los siete pares, en los dos
+    // sentidos (la idea 2 solo deja metales activos contra iones nobles). La tercera deposita cinco metales con más
+    // corriente y más tiempo, con la recta del cobre de fondo. La cuarta pone un metal sobre el mapa del agua: se ve que
     // su línea no depende del pH. Las lecturas dicen entradas y resultado, para que el caso guardado se lea solo.
     laboratorio: [
+      {
+        id: 'pila-que-trabaja', titulo: 'La pila que trabaja', pieza: 'quim-celda',
+        consigna: 'La pila da corriente sola; una hora pasa en 6 s. Mira el ánodo adelgazar y el cátodo engordar con metal nuevo.',
+        controles: [
+          { id: 'a', etiqueta: 'Izquierda', opciones: ['Mg', 'Zn', 'Fe', 'Cu'].map(x => ({ valor: x, texto: x })) },
+          { id: 'b', etiqueta: 'Derecha', opciones: ['Zn', 'Pb', 'Cu', 'Ag'].map(x => ({ valor: x, texto: x })) },
+          { id: 'i', etiqueta: 'I', color: 'c-o', min: 0.5, max: 5, paso: 0.5, inicio: 2, unidad: 'A', decimales: 1 },
+          { id: 't', etiqueta: 't', min: 0, max: 60, paso: 5, inicio: 0, unidad: 'min', decimales: 0, auto: { velocidad: 10 } },
+        ],
+        dibujo: val => pilaLab(val),
+        lectura: val => {
+          if (val.a === val.b) return ['Metales iguales: no hay corriente.'];
+          const { an, ca } = papeles(val), c = cambio(val);
+          return [`${f(val.t, 0)} min · `, m, `(${an}) −${f(c.pierde)} g · `, m, `(${ca}) +${f(c.gana)} g`];
+        },
+        // Retos: los comprueba mDep (Faraday), la misma cuenta que adelgaza y engorda las barras.
+        invitaciones: [
+          { texto: 'Pausa la pila cuando el cátodo ya ganó más de 1 g.',
+            logrado: val => cambio(val).gana > 1,
+            bien: 'Cada gramo pide su carga: corriente por tiempo.',
+            pista: 'Espera a que la lectura pase de 1 g y pausa; ajusta t con − y +.' },
+          { texto: 'Haz que el cátodo gane más masa que la que pierde el ánodo.',
+            logrado: val => cambio(val).gana > cambio(val).pierde + 1e-9,
+            bien: 'Los mismos electrones, pero cada metal pesa distinto por mol.' },
+          { texto: 'Con plata en el cátodo, logra que gane más de 10 g.',
+            logrado: val => val.a !== val.b && papeles(val).ca === 'Ag' && cambio(val).gana > 10,
+            bien: 'Un electrón por átomo y átomos pesados: la plata engorda rápido.' },
+          { texto: 'Arma la pila de mayor fem.',
+            logrado: val => val.a === 'Mg' && val.b === 'Ag',
+            bien: `Magnesio y plata: los más alejados en la escala, ${fv(MET.Ag.e0 - MET.Mg.e0).replace('+', '')}.` },
+        ],
+      },
       {
         id: 'escala-completa', titulo: 'Cualquier metal, cualquier ion', pieza: 'recta',
         consigna: 'Arrastra la cola de la flecha a un metal y la punta a un ion. Busca qué pares reaccionan solos.',

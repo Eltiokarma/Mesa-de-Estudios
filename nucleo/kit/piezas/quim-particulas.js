@@ -24,6 +24,9 @@
  *   }],
  *   flechas: true,                          // flecha entre cajas consecutivas (antes → después)
  *   alto: 150, separacion: 20,              // alto de las cajas y lado de la celda de cada partícula, en px
+ *   agita: t,                               // opcional (ronda 5, animación): tiempo en s; cada partícula tiembla
+ *                                           // alrededor de su casilla, con fase y frecuencia propias (agitación térmica)
+ *   agitaAmp: 3,                            // opcional: amplitud del temblor en px (por defecto, 1/6 de la celda)
  *   alt: 'texto alternativo',
  * }
  * estado = { corte }: se ve lo que tiene desde ≤ corte y no tiene hasta < corte. Lo nuevo del paso se anima.
@@ -131,6 +134,12 @@
             const cs = lista[i % lista.length];
             const juego = c.orden === 'filas' ? 0 : Math.max(0, Math.min(3, (sep - 16) / 2));
             cx = cs[0] + (hash(i + 11, k + 3) - 0.5) * 2 * juego; cy = cs[1] + (hash(k + 5, i + 17) - 0.5) * 2 * juego;
+          }
+          if (Number.isFinite(d.agita)) {
+            // Temblor puro de (datos): fase y frecuencia salen del hash de la partícula; sin reloj ni azar.
+            const amp = Number.isFinite(d.agitaAmp) ? d.agitaAmp : sep / 6, fx = 0.6 + 0.8 * hash(i + 3, k + 29), fy = 0.6 + 0.8 * hash(k + 31, i + 7);
+            cx += amp * Math.sin(2 * Math.PI * (fx * d.agita + hash(i + 41, k + 1)));
+            cy += amp * Math.sin(2 * Math.PI * (fy * d.agita + hash(k + 43, i + 2)));
           }
           if (!ve(grupo)) continue;
           let p = especieSVG(d, grupo.e, cx, cy);
