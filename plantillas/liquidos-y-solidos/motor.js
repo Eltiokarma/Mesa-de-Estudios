@@ -511,7 +511,68 @@
       errores: { 'se-derrite-como-el-agua': [{ de: 'sólido', a: 'líquido' }, { de: 'líquido', a: 'gas' }] } };
   }
 
-  return { K0, ATM, MMHG_PA, R_MMHG, LIQUIDOS, SUSTANCIAS, FASES,
+  // ---------- Redes cristalinas cúbicas (15 nov 2026, mesa 3D «La celda que se repite») ----------
+  // Tres redes de un solo tipo de átomo, como esferas iguales que se tocan: cúbica simple (cs), centrada en el cuerpo
+  // (bcc) y centrada en las caras (fcc). Coordenadas en aristas de la celda (a = 1). La fracción de cada sitio, el
+  // número de átomos por celda, la relación entre a y r, el número de coordinación (contado por fuerza bruta sobre la
+  // red) y la fracción de empaquetamiento salen de aquí (OpenStax Chemistry 2e §10.6). Verificados aparte en Python.
+  const REDES = {
+    cs: { nombre: 'cúbica simple', sigla: 'CS', base: [[0, 0, 0]] },
+    bcc: { nombre: 'cúbica centrada en el cuerpo', sigla: 'BCC', base: [[0, 0, 0], [0.5, 0.5, 0.5]] },
+    fcc: { nombre: 'cúbica centrada en las caras', sigla: 'FCC', base: [[0, 0, 0], [0.5, 0.5, 0], [0.5, 0, 0.5], [0, 0.5, 0.5]] },
+  };
+  const red = k => { if (!REDES[k]) throw new Error(`red: no conozco «${k}» (hay cs, bcc y fcc)`); return REDES[k]; };
+  const casi = (a, b) => Math.abs(a - b) < 1e-9;
+  // Puntos de la red dentro de [desde, hasta]³ (en aristas), sin repetir.
+  function puntosRed(k, desde, hasta) {
+    const b = red(k).base, out = [];
+    for (let i = Math.floor(desde) - 1; i <= hasta; i++) for (let j = Math.floor(desde) - 1; j <= hasta; j++) for (let l = Math.floor(desde) - 1; l <= hasta; l++) {
+      for (const p of b) {
+        const q = [i + p[0], j + p[1], l + p[2]];
+        if (q.every(x => x >= desde - 1e-9 && x <= hasta + 1e-9)) out.push(q);
+      }
+    }
+    return out;
+  }
+  // Vecinos más cercanos de un punto de la red: los que están a la menor distancia (fuerza bruta en 3 × 3 × 3 celdas).
+  function vecinosRed(k, p) {
+    const ds = puntosRed(k, p[0] - 1.5, p[0] + 1.5).filter(q => Math.abs(q[1] - p[1]) <= 1.5 && Math.abs(q[2] - p[2]) <= 1.5)
+      .map(q => ({ q, d: Math.hypot(q[0] - p[0], q[1] - p[1], q[2] - p[2]) })).filter(x => x.d > 1e-9);
+    const min = Math.min(...ds.map(x => x.d));
+    return { distancia: min, puntos: ds.filter(x => casi(x.d, min)).map(x => x.q) };
+  }
+  const TIPO_SITIO = { 3: 'vértice', 2: 'arista', 1: 'cara', 0: 'centro' };
+  function celda(k) {
+    const R = red(k);
+    const sitios = puntosRed(k, 0, 1).map(p => {
+      const borde = p.filter(x => casi(x, 0) || casi(x, 1)).length;
+      return { p, tipo: TIPO_SITIO[borde], fraccion: 1 / Math.pow(2, borde), dentro: p.map(x => (casi(x, 0) ? 1 : casi(x, 1) ? -1 : 0)) };
+    });
+    const atomos = sitios.reduce((s, x) => s + x.fraccion, 0);
+    const v = vecinosRed(k, [0, 0, 0]);
+    const r = v.distancia / 2;                               // esferas iguales que se tocan con su vecino más cercano
+    const contacto = { cs: 'arista', bcc: 'diagonal del cubo', fcc: 'diagonal de una cara' }[k];
+    return {
+      red: k, nombre: R.nombre, sigla: R.sigla, sitios, atomosPorCelda: atomos,
+      cuenta: { vértice: sitios.filter(s => s.tipo === 'vértice').length, cara: sitios.filter(s => s.tipo === 'cara').length, centro: sitios.filter(s => s.tipo === 'centro').length },
+      radio: r, aSobreR: 1 / r, contacto, coordinacion: v.puntos.length,
+      empaquetamiento: atomos * (4 / 3) * Math.PI * r * r * r,
+      errores: { 'cuenta-enteros': sitios.length },        // contar cada esfera como entera
+    };
+  }
+  // Bloque de n × n × n celdas: todos los puntos de la red, el del centro (un vértice compartido por 8 celdas) y sus vecinos.
+  function bloqueRed(k, n) {
+    n = n || 2;
+    const puntos = puntosRed(k, 0, n), c = [n / 2, n / 2, n / 2];
+    const centro = puntos.findIndex(p => p.every((x, i) => casi(x, c[i])));
+    const v = vecinosRed(k, c);
+    const vecinos = v.puntos.map(q => puntos.findIndex(p => p.every((x, i) => casi(x, q[i]))));
+    return { puntos, centro, vecinos, distancia: v.distancia, n };
+  }
+  const REDES_ORDEN = ['cs', 'bcc', 'fcc'];
+
+  return { REDES, REDES_ORDEN, celda, bloqueRed, vecinosRed, puntosRed,
+    K0, ATM, MMHG_PA, R_MMHG, LIQUIDOS, SUSTANCIAS, FASES,
     presionVapor, ebullicion, presionAltitud, ebullicionAltitud, hierve, ebullicionLugar, ollaPresion,
     sustancia, puentesH, puenteHEntre, quienesFormanPuentes, ordenEbullicion, razonEbullicion,
     gasSobreAgua, humedadRelativa, vaporDesdeHR, equilibrioCerrado, compararFrascos,
