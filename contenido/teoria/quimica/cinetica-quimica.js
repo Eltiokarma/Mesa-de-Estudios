@@ -547,6 +547,7 @@
   // ---------- Laboratorio ----------
   // Perfil: el camino con catalizador es otra cima (Eₐ a la mitad) sobre los mismos reactivos y productos.
   const labEaCat = val => Math.max(val.ea / 2, val.dh, 0);
+  const eaVista = val => (val.cat === 'si' ? labEaCat(val) : val.ea);   // la barrera que muestra la lectura
   const labPerfil = val => {
     const base = perfil(val.ea, val.dh), curvas = [base.curvas[0], flechaEa(val.ea), flechaDH(val.dh)];
     if (val.cat === 'si') curvas.push(Object.assign({}, perfil(labEaCat(val), val.dh).curvas[0], { color: 'd', discontinua: true, rotulo: 'con catalizador', en: [5, R0 + labEaCat(val)] }));
@@ -571,6 +572,36 @@
       pregunta: '¿Cómo medirías algo que cambia mientras lo mides?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §12.3 y §12.4', url: 'https://openstax.org/books/chemistry-2e/pages/12-3-rate-laws' },
     },
+    // Glosario (docs/teoria.md §4d): las palabras que la unidad estrena en el curso. Los ejemplos se calculan aquí.
+    glosario: [
+      { termino: 'rapidez de reacción', simbolo: 'r', medida: 'mol/(L·s)', formas: ['rapidez de reacción', 'velocidad de reacción', 'rapidez', 'rapideces'],
+        def: 'Cuánto cambia la concentración de una sustancia en cada unidad de tiempo, dividido entre su coeficiente.',
+        ejemplo: `[A] baja de 0,80 a ${f(conc(2), 2)} mol/L en 2 min: r = ${f((conc(0) - conc(2)) / 2, 2)} mol/(L·min).`, ver: ['ley de velocidad'] },
+      { termino: 'perfil de energía', def: 'Gráfica de la energía a lo largo del avance de la reacción, con una cima entre reactivos y productos.',
+        ver: ['energía de activación', 'complejo activado'] },
+      { termino: 'energía de activación', simbolo: 'Eₐ', medida: 'kJ/mol', def: 'Barrera que deben superar los reactivos al chocar para convertirse en productos.',
+        ejemplo: `Reactivos a 100 y cima a 160 kJ/mol: Eₐ = ${f(160 - R0, 0)} kJ/mol.`, ver: ['complejo activado', 'catalizador'] },
+      { termino: 'complejo activado', def: 'Arreglo inestable de átomos en la cima del perfil, a medio camino entre reactivos y productos.',
+        ver: ['perfil de energía'] },
+      { termino: 'calor de reacción', simbolo: 'ΔH', medida: 'kJ/mol', def: 'Energía de los productos menos la de los reactivos: negativo si la reacción libera calor.',
+        ejemplo: `Reactivos a 100 y productos a 60 kJ/mol: ΔH = ${f(60 - R0, 0)} kJ/mol.`, ver: ['exotérmica', 'endotérmica'] },
+      { termino: 'catalizador', def: 'Sustancia que abre un camino con menor barrera y acelera la reacción sin gastarse.',
+        ejemplo: 'Con la barrera a la mitad, más choques la superan; ΔH no cambia.', ver: ['energía de activación'] },
+      { termino: 'ley de velocidad', def: 'Fórmula que da la rapidez según las concentraciones, cada una elevada a su orden.',
+        ejemplo: `r = k[A]²: con k = 0,2 y [A] = 0,6 mol/L, r = ${f(0.2 * 0.6 * 0.6, 3)} mol/(L·s).`, ver: ['orden de reacción', 'constante de velocidad'] },
+      { termino: 'orden de reacción', formas: ['orden de reacción', 'orden', 'órdenes'],
+        def: 'Exponente de una concentración en la ley de velocidad; sale de experimentos, no de los coeficientes.',
+        ejemplo: `[A] se duplica y r se cuadruplica: 2ᵐ = 4, m = ${f(Math.log(4) / Math.log(2), 0)}.`, ver: ['ley de velocidad'] },
+      { termino: 'constante de velocidad', simbolo: 'k', def: 'Número que multiplica a las concentraciones en la ley de velocidad; crece con la temperatura.',
+        ver: ['ley de velocidad'] },
+      { termino: 'vida media', simbolo: 't½', medida: 'min o s', def: 'Tiempo que tarda la concentración de un reactivo en bajar a la mitad.',
+        ejemplo: `Primer orden con k = 0,2 por minuto: t½ = ln 2 / 0,2 = ${f(Math.log(2) / KP, 2)} min.`, ver: ['primer orden'] },
+      { termino: 'primer orden', def: 'Caso en que la rapidez es proporcional a una sola concentración: esta baja a la mitad en tiempos iguales.',
+        ver: ['vida media', 'orden de reacción'] },
+      { termino: 'mecanismo', def: 'Serie de pasos sencillos por los que los reactivos llegan a ser productos.', ver: ['etapa elemental'] },
+      { termino: 'etapa elemental', def: 'Un solo paso de un mecanismo, tal como chocan las partículas; ahí el orden coincide con el coeficiente.',
+        ver: ['mecanismo', 'orden de reacción'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera es el perfil con catalizador: el camino nuevo,
     // punteado, baja la cima sin mover reactivos ni productos (la idea 2 no tiene catalizador). La segunda junta orden
     // 0, 1 y 2 con k y [A]₀ libres, y un instante que se arrastra por la curva. Las lecturas dicen entradas y resultado.
@@ -593,6 +624,22 @@
             donde: val => { const g = G(labPerfil(val)); return { x: g.X(8.8), y: g.Y(R0 + val.dh) }; },
             mover: (pt, val) => ({ dh: yEn(labPerfil(val), pt.y) - R0 }) },
         ],
+        // Retos (docs/teoria.md §4d): los comprueban labEaCat y los niveles del perfil, lo mismo que se dibuja.
+        invitaciones: [
+          { texto: 'Haz una reacción endotérmica: los productos más arriba que los reactivos.',
+            logrado: val => val.dh > 0,
+            bien: 'Ahora absorbe calor. ¿La barrera de vuelta es mayor o menor que la de ida?' },
+          { texto: 'Consigue que la reacción inversa tenga una barrera de 150 kJ/mol.',
+            logrado: val => eaVista(val) - val.dh === 150,
+            bien: 'La vuelta sube desde los productos: Eₐ más lo que bajaron.' },
+          { texto: 'Con catalizador, deja la barrera en solo 20 kJ/mol.',
+            logrado: val => val.cat === 'si' && labEaCat(val) === 20,
+            bien: 'La cima bajó y los productos no se movieron. ¿Qué pasó con ΔH?' },
+          { texto: 'Guarda el mismo perfil sin catalizador y con él.',
+            logrado: (val, guardados) => guardados.some(g => g.cat !== val.cat && g.ea === val.ea && g.dh === val.dh)
+              && guardados.some(g => g.cat === val.cat && g.ea === val.ea && g.dh === val.dh),
+            bien: 'Dos cimas y un mismo ΔH: el catalizador abre otro camino, no cambia el balance.' },
+        ],
       },
       {
         id: 'curva-con-todo', titulo: 'La curva con todo', pieza: 'ejes',
@@ -608,6 +655,22 @@
         arrastres: [{ id: 'instante', etiqueta: 'instante sobre la curva', color: 'c-i',
           donde: val => { const g = G(labCurva(val)); return { x: g.X(val.t), y: g.Y(labConc(val, val.t)) }; },
           mover: (pt, val) => ({ t: xEn(labCurva(val), pt.x) }) }],
+        // Retos: los comprueba labConc, la misma función que traza la curva.
+        invitaciones: [
+          { texto: 'En primer orden, pon el instante justo en una vida media.',
+            logrado: val => val.o === 1 && val.t > 0 && Math.abs(labConc(val, val.t) / val.a0 - 0.5) < 0.01,
+            bien: 'Queda la mitad. Cambia [A]₀: ¿se corre ese instante?' },
+          { texto: 'Con orden cero, busca el primer instante en que se acaba el reactivo.',
+            logrado: val => val.o === 0 && val.t > 0 && labConc(val, val.t) < 1e-9 && labConc(val, val.t - 0.5) > 1e-9,
+            bien: 'En orden cero baja lo mismo cada minuto, hasta acabarse.' },
+          { texto: 'Haz que en el instante quede menos del 10 % del inicio.',
+            logrado: val => labConc(val, val.t) < 0.1 * val.a0,
+            bien: 'Casi no queda. ¿Qué orden tarda más en llegar ahí?' },
+          { texto: 'Guarda dos casos de orden uno: mismo k e instante, distinta [A]₀.',
+            logrado: (val, guardados) => val.o === 1 && guardados.some(g => g.o === 1 && g.k === val.k && g.t === val.t && g.a0 !== val.a0)
+              && guardados.some(g => g.o === val.o && g.k === val.k && g.t === val.t && g.a0 === val.a0),
+            bien: 'En los dos queda la misma fracción: el primer orden no mira cuánto había.' },
+        ],
       },
     ],
     ideas: [velocidad, perfilEnergia, factores, orden, vidaMedia],
