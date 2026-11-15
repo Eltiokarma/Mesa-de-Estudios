@@ -445,7 +445,7 @@
     regla: {
       texto: 'El área se escribe con cualquiera de los tres radios: el inscrito con el semiperímetro, el circunscrito con los tres lados y el exinscrito con p − a.',
       ecuacion: [S, ' = ', p, { llave: [r], nota: 'adentro', color: 'c-d' }, SEP, S, ' = ', { frac: [[a, b, c], ['4', { llave: [R], nota: 'vértices', color: 'c-d' }]] }, SEP, S, ' = ', { llave: [ra], nota: 'afuera', color: 'c-d' }, '(', p, ' − ', a, ')'],
-      condicion: 'r toca los tres lados por dentro; R pasa por los tres vértices; rₐ toca el lado a por fuera.',
+      condicion: 'r, el inradio, toca los lados por dentro; R, el circunradio, pasa por los vértices; rₐ, el exradio, toca a por fuera.',
       voz: 'Antes de sustituir, nombra el círculo: adentro, por los vértices o afuera.',
     },
     ahoraTu: {
@@ -715,6 +715,7 @@
   // ---------- Laboratorio: figuras propias de las mesas ----------
   // Mesa 1: dos lados y el ángulo libres, en una ventana fija donde caben lados de hasta 7.
   const VL1 = { x: [-7.3, 7.6], y: [-1.3, 7.7] };
+  const areaLAL = val => val.b * val.c * sen(val.A) / 2;
   // La altura se rotula arriba, a la izquierda de B: así no cruza el lado BC cuando el triángulo es angosto.
   function abanicoLibre(val) {
     const d = abanico(val.A, { ventana: VL1 }, val.c, val.b), hv = val.c * sen(val.A);
@@ -743,6 +744,8 @@
   // Mesa 3: base a = 8 y lado c = 5 fijos; el lado b mueve el vértice A sobre la circunferencia de radio 5.
   const VL3 = { x: [-4.6, 9.4], y: [-2.3, 5.9] };
   const pieBis = bv => 8 * 5 / (5 + bv);
+  // Largo t de la ceviana AD (lectura y retos): del vértice A al punto D, a m de B.
+  const cevianaT = (bv, mv) => { const P = porLados(8, bv, 5).A; return Math.hypot(P[0] - mv, P[1]); };
   function cevianaLibre(val) {
     const T = porLados(8, val.b, 5), D = [val.m, 0], E = [pieBis(val.b), 0];
     return {
@@ -763,6 +766,33 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js'],
+    glosario: [
+      { termino: 'perímetro', def: 'Suma de los largos de todos los lados de una figura.', ejemplo: 'Lados 5, 5 y 6: 5 + 5 + 6 = 16.' },
+      { termino: 'semiperímetro', simbolo: 'p', def: 'La mitad de la suma de los tres lados del triángulo.',
+        ejemplo: 'Lados 13, 14 y 15: p = 42/2 = 21.', ver: ['perímetro', 'fórmula de Herón'] },
+      { termino: 'fórmula de Herón', def: 'Da el área de un triángulo solo con sus tres lados: S = √(p(p − a)(p − b)(p − c)).',
+        ejemplo: 'Lados 13, 14, 15: p = 21 y S = √(21 · 8 · 7 · 6) = 84.', formas: ['fórmula de Herón', 'Herón'], ver: ['semiperímetro'] },
+      { termino: 'circunferencia circunscrita', def: 'Circunferencia que pasa por los tres vértices del triángulo.',
+        formas: ['circunferencia circunscrita', 'circunscrita', 'circunscrito'], ver: ['circunradio'] },
+      { termino: 'circunradio', simbolo: 'R', def: 'Radio de la circunferencia que pasa por los tres vértices. Sirve en S = abc/(4R).',
+        ejemplo: 'Lados 6, 8 y 10: R = 5, la mitad de la hipotenusa.', ver: ['circunferencia circunscrita', 'ley de senos'] },
+      { termino: 'inradio', simbolo: 'r', def: 'Radio de la circunferencia que toca los tres lados por dentro. Sirve en S = p · r.',
+        ejemplo: 'Lados 6, 8 y 10: S = 24 y p = 12, así que r = 2.', ver: ['inscrito', 'semiperímetro'] },
+      { termino: 'circunferencia exinscrita', def: 'Circunferencia fuera del triángulo que toca un lado y las prolongaciones de los otros dos.',
+        formas: ['circunferencia exinscrita', 'exinscrita', 'exinscrito'], ver: ['exradio'] },
+      { termino: 'exradio', simbolo: 'rₐ', def: 'Radio de la circunferencia que toca el lado a por fuera. Sirve en S = rₐ(p − a).',
+        ejemplo: 'Lados 6, 8 y 10 con a = 10: rₐ = 24/(12 − 10) = 12.', ver: ['circunferencia exinscrita'] },
+      { termino: 'ceviana', def: 'Segmento que une un vértice con un punto cualquiera del lado opuesto.',
+        ver: ['mediana', 'bisectriz', 'teorema de Stewart'] },
+      { termino: 'mediana', def: 'Segmento que va de un vértice al punto medio del lado opuesto.',
+        ejemplo: 'Con base a = 8, cae a 4 de cada extremo.', ver: ['ceviana'] },
+      { termino: 'bisectriz', def: 'Recta que parte un ángulo en dos ángulos iguales; en el triángulo, llega hasta el lado opuesto.',
+        ejemplo: 'c = b = 5 y a = 8: cae en el punto medio, m = n = 4.', formas: ['bisectriz', 'bisectrices'], ver: ['ceviana'] },
+      { termino: 'teorema de Stewart', def: 'Da el largo t de una ceviana con los tres lados y los dos trozos m y n.',
+        ejemplo: 'b²m + c²n = a(t² + mn), con m = BD y n = DC.', formas: ['teorema de Stewart', 'Stewart'], ver: ['ceviana'] },
+      { termino: 'cuadrilátero', def: 'Figura plana de cuatro lados. Sus dos diagonales unen vértices opuestos.',
+        ejemplo: 'Diagonales 8 y 6 que se cruzan a 90°: S = ½ · 8 · 6 = 24.', formas: ['cuadrilátero', 'cuadriláteros'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera suelta los dos lados y el ángulo de
     // 5° a 175° (la idea 1 fija los lados y salta de 25 en 25); la segunda deja elegir lados que no cierran, el caso
     // que la idea 2 solo muestra en la predicción; la tercera mueve el lado b para ver la bisectriz alejarse de la mediana.
@@ -776,7 +806,7 @@
           { id: 'c', etiqueta: 'c', color: 'c-i', min: 2, max: 7, paso: 1, inicio: 6, decimales: 0 },
         ],
         dibujo: val => ({ datos: abanicoLibre(val), estado: {} }),
-        lectura: val => [S, ` = ½ · ${f(val.b)} · ${f(val.c)} · sen ${f(val.A)}° ≈ ${f(val.b * val.c * sen(val.A) / 2)}`, SEP, h, ` ≈ ${f(val.c * sen(val.A))}`],
+        lectura: val => [S, ` = ½ · ${f(val.b)} · ${f(val.c)} · sen ${f(val.A)}° ≈ ${f(areaLAL(val))}`, SEP, h, ` ≈ ${f(val.c * sen(val.A))}`],
         arrastres: [
           { id: 'vertice-b', etiqueta: 'vértice B: cambia A y c', color: 'c-o',
             donde: val => TP().enPx(abanicoLibre(val), val.c * cos(val.A), val.c * sen(val.A)),
@@ -784,6 +814,21 @@
           { id: 'vertice-c', etiqueta: 'vértice C: cambia b', color: 'c-i',
             donde: val => TP().enPx(abanicoLibre(val), val.b, 0),
             mover: (pt, val) => ({ b: TP().delPx(abanicoLibre(val), pt).x }) },
+        ],
+        invitaciones: [
+          { texto: 'Sin cambiar b ni c, busca el ángulo que da el área más grande.',
+            logrado: val => areaLAL(val) >= areaLAL({ A: 90, b: val.b, c: val.c }) - 1e-9,
+            bien: 'Con A = 90° el seno vale 1: la altura es todo el lado c.' },
+          { texto: 'Consigue un área de exactamente 6.',
+            logrado: val => Math.abs(areaLAL(val) - 6) < 1e-9,
+            bien: 'Varias parejas lo logran: lo que cuenta es el producto b · c · sen A.' },
+          { texto: 'Haz que la altura h mida justo la mitad del lado c.',
+            logrado: val => Math.abs(val.c * sen(val.A) - val.c / 2) < 1e-9,
+            bien: 'La altura es c sen A: con sen A = 1/2, mide medio lado.' },
+          { texto: 'Guarda dos casos con los mismos lados, ángulos distintos e igual área.',
+            logrado: (val, guardados) => guardados.some(p => guardados.some(q => p.b === q.b && p.c === q.c && p.A !== q.A
+              && Math.abs(areaLAL(p) - areaLAL(q)) < 1e-9)),
+            bien: 'A y 180° − A tienen el mismo seno: misma altura, misma área.' },
         ],
       },
       {
@@ -809,6 +854,25 @@
             donde: val => TP().enPx(ladosLibres(val), val.a, 0),
             mover: (pt, val) => ({ a: TP().delPx(ladosLibres(val), pt).x }) },
         ],
+        invitaciones: [
+          { texto: 'Elige lados que no cierren y mira qué queda bajo la raíz.',
+            logrado: val => heron(val.a, val.b, val.c).rad < -1e-9,
+            bien: 'Bajo la raíz queda un negativo: Herón avisa que no hay triángulo.' },
+          { texto: 'Haz que p menos el lado mayor sea justo cero.',
+            logrado: val => Math.abs(heron(val.a, val.b, val.c).pv - Math.max(val.a, val.b, val.c)) < 1e-9,
+            bien: 'Un lado iguala la suma de los otros dos: el triángulo se aplana, área cero.' },
+          { texto: 'Consigue un área entera con tres lados distintos.',
+            logrado: val => { const k = heron(val.a, val.b, val.c), Sv = Math.sqrt(Math.max(0, k.rad));
+              return cierra(val) && val.a !== val.b && val.b !== val.c && val.a !== val.c && Math.abs(Sv - Math.round(Sv)) < 1e-9; },
+            bien: 'Área entera sin medir ningún ángulo: Herón solo pidió los tres lados.' },
+          { texto: 'Con a = 10, busca el área más grande que permite la mesa.',
+            logrado: val => val.a === 10 && heron(10, val.b, val.c).rad >= Math.max(...[2, 3, 4, 5, 6, 7, 8].map(x => heron(10, x, 8).rad)) - 1e-9,
+            bien: 'Los dos lados más largos dan la mayor área. ¿Y si a fuera más corto?' },
+          { texto: 'Guarda dos triángulos con el mismo perímetro y distinta área.',
+            logrado: (val, guardados) => guardados.some(p => guardados.some(q => cierra(p) && cierra(q)
+              && p.a + p.b + p.c === q.a + q.b + q.c && Math.abs(heron(p.a, p.b, p.c).rad - heron(q.a, q.b, q.c).rad) > 1e-9)),
+            bien: 'El mismo perímetro no fija el área: la forma también cuenta.' },
+        ],
       },
       {
         id: 'bisectriz-o-mediana', titulo: 'Bisectriz contra mediana', pieza: 'trig-plano',
@@ -818,7 +882,7 @@
           { id: 'm', etiqueta: 'm = BD', color: 'c-d', min: 0.5, max: 7.5, paso: 0.25, inicio: 2, decimales: 2 },
         ],
         dibujo: val => ({ datos: cevianaLibre(val), estado: {} }),
-        lectura: val => [t, ` ≈ ${f(Math.hypot(porLados(8, val.b, 5).A[0] - val.m, porLados(8, val.b, 5).A[1]))}`, SEP, `bisectriz en ${f(pieBis(val.b))}`, SEP, 'mediana en 4'],
+        lectura: val => [t, ` ≈ ${f(cevianaT(val.b, val.m))}`, SEP, `bisectriz en ${f(pieBis(val.b))}`, SEP, 'mediana en 4'],
         arrastres: [
           { id: 'vertice-a', etiqueta: 'vértice A: cambia b', color: 'c-i',
             donde: val => { const T = porLados(8, val.b, 5); return TP().enPx(cevianaLibre(val), T.A[0], T.A[1]); },
@@ -826,6 +890,24 @@
           { id: 'pie-d', etiqueta: 'punto D: cambia m', color: 'c-d',
             donde: val => TP().enPx(cevianaLibre(val), val.m, 0),
             mover: (pt, val) => ({ m: TP().delPx(cevianaLibre(val), pt).x }) },
+        ],
+        invitaciones: [
+          { texto: 'Haz que la bisectriz y la mediana caigan en el mismo punto.',
+            logrado: val => Math.abs(pieBis(val.b) - 4) < 1e-9,
+            bien: 'Con b = c el triángulo es isósceles: bisectriz y mediana coinciden.' },
+          { texto: 'Pon D justo en el pie de la bisectriz.',
+            logrado: val => Math.abs(val.m - pieBis(val.b)) < 1e-9,
+            bien: 'Los trozos quedan en razón c : b; el lado corto se lleva el trozo corto.' },
+          { texto: 'Sin cambiar b, mueve D hasta la ceviana más corta.',
+            logrado: val => { const t0 = cevianaT(val.b, val.m);
+              // Mínimo de la grilla para ese b: ningún vecino de D (un paso de 0,25 a cada lado) da una ceviana más corta.
+              return (val.m - 0.25 < 0.5 - 1e-9 || t0 <= cevianaT(val.b, val.m - 0.25) + 1e-12)
+                && (val.m + 0.25 > 7.5 + 1e-9 || t0 <= cevianaT(val.b, val.m + 0.25) + 1e-12); },
+            bien: 'La más corta apunta lo más derecho posible a la base: la altura, si cae dentro.' },
+          { texto: 'Guarda dos casos con el mismo b, distinto D y cevianas del mismo largo.',
+            logrado: (val, guardados) => guardados.some(p => guardados.some(q => p.b === q.b && p.m !== q.m
+              && Math.abs(cevianaT(p.b, p.m) - cevianaT(q.b, q.m)) < 1e-9)),
+            bien: 'Dos pies a igual distancia de la altura dan cevianas iguales.' },
         ],
       },
     ],
