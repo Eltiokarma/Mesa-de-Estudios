@@ -1832,10 +1832,12 @@
       "requiere": [
        "/nucleo/kit/piezas/alg-tabla.js",
        "/nucleo/kit/piezas/alg-baldosas.js",
-       "/nucleo/kit/piezas/ejes.js"
+       "/nucleo/kit/piezas/ejes.js",
+       "/plantillas/cuadrado-crece/motor.js",
+       "/nucleo/kit/piezas/alg-cubo-3d.js"
       ],
       "ideas": 5,
-      "terminos": 26
+      "terminos": 28
      }
     },
     {
@@ -2194,7 +2196,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -2310,10 +2312,12 @@
       "archivo": "/contenido/teoria/algebra/matrices-y-determinantes.js",
       "requiere": [
        "/nucleo/kit/piezas/alg-tabla.js",
-       "/nucleo/kit/piezas/ejes.js"
+       "/nucleo/kit/piezas/ejes.js",
+       "/plantillas/matrices/motor.js",
+       "/nucleo/kit/piezas/alg-columnas-3d.js"
       ],
       "ideas": 5,
-      "terminos": 17
+      "terminos": 20
      }
     },
     {
@@ -2351,10 +2355,12 @@
       "archivo": "/contenido/teoria/algebra/sistemas-de-ecuaciones.js",
       "requiere": [
        "/nucleo/kit/piezas/ejes.js",
-       "/nucleo/kit/piezas/alg-tabla.js"
+       "/nucleo/kit/piezas/alg-tabla.js",
+       "/plantillas/matrices/motor.js",
+       "/nucleo/kit/piezas/alg-planos-3d.js"
       ],
       "ideas": 5,
-      "terminos": 27
+      "terminos": 28
      }
     },
     {
@@ -2389,7 +2395,9 @@
      "teoria": {
       "archivo": "/contenido/teoria/algebra/programacion-lineal.js",
       "requiere": [
-       "/nucleo/kit/piezas/ejes.js"
+       "/nucleo/kit/piezas/ejes.js",
+       "/plantillas/programacion-lineal/motor.js",
+       "/nucleo/kit/piezas/alg-techo-3d.js"
       ],
       "ideas": 4,
       "terminos": 22
@@ -2460,10 +2468,12 @@
       "archivo": "/contenido/teoria/algebra/binomio-de-newton.js",
       "requiere": [
        "/nucleo/kit/piezas/alg-tabla.js",
-       "/nucleo/kit/piezas/ejes.js"
+       "/nucleo/kit/piezas/ejes.js",
+       "/plantillas/cuadrado-crece/motor.js",
+       "/nucleo/kit/piezas/alg-cubo-3d.js"
       ],
       "ideas": 4,
-      "terminos": 23
+      "terminos": 24
      }
     }
    ]
