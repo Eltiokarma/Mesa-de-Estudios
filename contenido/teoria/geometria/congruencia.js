@@ -579,9 +579,34 @@
       const n = cuantos(v.g, v.a);
       return [{ v: 'c-o', t: '∠A' }, ` ${v.g}°   ·   `, { v: 'c-i', t: 'BC' }, ` ${f(v.a)}   ·   ${['ningún triángulo', 'un triángulo', 'dos triángulos'][n]}`];
     },
+    // Retos comprobados con cuantos(), que cuenta los cortes del compás que dibuja llaLibre().
+    invitaciones: [
+      { texto: 'Abre el compás tan poco que no alcance el lado: ningún triángulo.',
+        logrado: v => cuantos(v.g, v.a) === 0,
+        bien: 'BC no llega al lado de A: con esos datos no hay triángulo.' },
+      { texto: 'Busca el caso en que el compás apenas toca el lado: un solo triángulo.',
+        logrado: v => cuantos(v.g, v.a) === 1 && v.a < 7,
+        bien: 'Lo toca en un punto: ahí LLA da uno solo. ¿Y si lo abres un poco?' },
+      { texto: 'Con ∠A = 40°, busca el BC más corto que ya da dos triángulos.',
+        logrado: v => v.g === 40 && cuantos(v.g, v.a) === 2 && v.a === BC_DOS_40,
+        bien: 'Apenas pasa la distancia de B al lado: el compás corta dos veces.' },
+      { texto: 'Haz obtuso el ángulo A y consigue un triángulo.',
+        logrado: v => v.g > 90 && cuantos(v.g, v.a) === 1,
+        bien: 'Con A obtuso el compás corta una sola vez: ahí LLA sí fija el triángulo.' },
+      { texto: 'Guarda dos casos con el mismo ∠A y distinto número de triángulos.',
+        logrado: (v, gs) => gs.some(c => c.g === v.g && cuantos(c.g, c.a) !== cuantos(v.g, v.a)) && gs.some(c => c.g === v.g && c.a === v.a),
+        bien: 'Mismo ángulo, otro BC, otro final: LLA no es criterio.' },
+    ],
   };
+  // El BC más corto de la grilla (de 2 a 9, de 0,5 en 0,5) que con ∠A = 40° da dos triángulos.
+  const BC_DOS_40 = Array.from({ length: 15 }, (_, k) => 2 + k / 2).find(a => cuantos(40, a) === 2);
   // Mesa 2: C libre dentro y fuera del círculo. La idea 4 deja a C en el arco; la predicción lo mete adentro una vez.
   const semiLibre = (cx, cy) => Object.assign(semi(0, { C: [cx, cy], alt: `C en (${f(cx)}; ${f(cy)}): ángulo en C de ${f(U.angulo([cx, cy], [-5, 0], [5, 0]), 0)}° y mediana CM de ${f(Math.hypot(cx, cy))}` }), { vista: { x: [-5.8, 5.8], y: [-1.6, 7.6] } });
+  // El ángulo en C y la mediana CM del triángulo que dibuja semiLibre (A en −5, B en 5 y M en el origen).
+  const anguloC = v => U.angulo([v.cx, v.cy], [-5, 0], [5, 0]);
+  const medianaCM = v => U.dist([v.cx, v.cy], U.medio([-5, 0], [5, 0]));
+  let C_MAX = 0;   // el mayor ángulo en C de la grilla de la mesa
+  for (let i = 0; i <= 18; i++) for (let j = 0; j <= 13; j++) C_MAX = Math.max(C_MAX, anguloC({ cx: -4.5 + i / 2, cy: 0.5 + j / 2 }));
   const mesaSemi = {
     id: 'c-libre', titulo: 'C dentro y fuera del círculo', pieza: 'geo-figura',
     consigna: 'Arrastra C a cualquier lugar. Compara el ángulo en C con la mediana CM: ¿cuándo vale 5?',
@@ -594,7 +619,21 @@
     arrastres: [{ id: 'vertice-c', etiqueta: 'vértice C', color: 'c-o',
       donde: v => enPantalla(semiLibre(v.cx, v.cy), [v.cx, v.cy]),
       mover: (pt, v) => { const q = alPlano(semiLibre(v.cx, v.cy), pt); return { cx: q[0], cy: q[1] }; } }],
-    lectura: v => [{ v: 'c-o', t: '∠C' }, ` ${f(U.angulo([v.cx, v.cy], [-5, 0], [5, 0]), 0)}°   ·   `, { v: 'c-h', t: 'CM' }, ` ${f(Math.hypot(v.cx, v.cy))}   ·   AB/2 = 5`],
+    lectura: v => [{ v: 'c-o', t: '∠C' }, ` ${f(anguloC(v), 0)}°   ·   `, { v: 'c-h', t: 'CM' }, ` ${f(medianaCM(v))}   ·   AB/2 = 5`],
+    invitaciones: [
+      { texto: 'Busca otro lugar de C donde la mediana CM mida justo 5.',
+        logrado: v => Math.abs(medianaCM(v) - 5) < 1e-9 && !(v.cx === 3 && v.cy === 4),
+        bien: 'CM = 5 y el ángulo en C vuelve a 90°: van siempre juntos.' },
+      { texto: 'Saca C del círculo hasta que el ángulo en C quede agudo.',
+        logrado: v => anguloC(v) < 90 - 1e-9,
+        bien: 'Afuera: ángulo agudo y CM mayor que 5. El círculo separa los casos.' },
+      { texto: 'Haz el ángulo en C lo más abierto que permite la mesa.',
+        logrado: v => Math.abs(anguloC(v) - C_MAX) < 1e-9,
+        bien: 'Pegado a AB, el ángulo casi llega a 180° y CM se encoge.' },
+      { texto: 'Guarda un caso dentro del círculo y otro fuera. Compara sus CM.',
+        logrado: (v, gs) => gs.some(c => medianaCM(c) < 5 - 1e-9) && gs.some(c => medianaCM(c) > 5 + 1e-9) && gs.some(c => c.cx === v.cx && c.cy === v.cy),
+        bien: 'Adentro, CM menor que 5; afuera, mayor. Solo en el borde es la mitad.' },
+    ],
   };
   // Mesa 3: la base media con la base BC que también cambia (la idea la deja fija en 8) y A en un rango más amplio.
   const baseLibre = (ax, ay, cx) => {
@@ -609,6 +648,8 @@
         { de: 'B', a: 'C', color: 'd', grosor: 'variable', texto: f(cx), paralela: 1 }, { de: 'M', a: 'N', color: 'o', grosor: 'variable', texto: f(cx / 2), paralela: 1 }],
     };
   };
+  // La base media MN, medida entre los puntos medios M y N que dibuja baseLibre().
+  const baseMN = v => { const P = baseLibre(v.ax, v.ay, v.cx).puntos, M = P.find(p => p.id === 'M'), N = P.find(p => p.id === 'N'); return U.dist([M.x, M.y], [N.x, N.y]); };
   const mesaBase = {
     id: 'base-libre', titulo: 'Base media con base libre', pieza: 'geo-figura',
     consigna: 'Arrastra A y también C. Estira la base y deforma el triángulo: mira qué fracción de BC es MN.',
@@ -627,6 +668,21 @@
         mover: (pt, v) => ({ cx: alPlano(baseLibre(v.ax, v.ay, v.cx), pt)[0] }) },
     ],
     lectura: v => [{ v: 'c-o', t: 'MN' }, ` = ${f(v.cx / 2)}   ·   `, { v: 'c-d', t: 'BC' }, ` = ${f(v.cx)}   ·   paralelas`],
+    // Retos comprobados con MN medida entre los puntos medios que dibuja baseLibre(), no con BC/2.
+    invitaciones: [
+      { texto: 'Haz que la base media MN mida justo 3.',
+        logrado: v => Math.abs(baseMN(v) - 3) < 1e-9,
+        bien: 'MN = 3 pide BC = 6, quede donde quede A.' },
+      { texto: 'Busca la base media más larga que permite la mesa.',
+        logrado: v => Math.abs(baseMN(v) - baseMN({ ax: 0, ay: 1, cx: mesaBase.controles[2].max })) < 1e-9,
+        bien: 'La más larga sale con la base más larga. A no ayuda.' },
+      { texto: 'Lleva A más allá de C, hasta que el triángulo quede obtuso en C.',
+        logrado: v => v.ax > v.cx,
+        bien: 'Obtuso y todo, MN sigue midiendo la mitad de BC.' },
+      { texto: 'Guarda dos casos con la misma BC y A muy lejos. Compara MN.',
+        logrado: (v, gs) => gs.some(c => c.cx === v.cx && Math.abs(c.ax - v.ax) >= 4) && gs.some(c => c.ax === v.ax && c.ay === v.ay && c.cx === v.cx),
+        bien: 'Misma BC, misma MN: la posición de A no entra en la cuenta.' },
+    ],
   };
 
   return {
@@ -641,6 +697,45 @@
     },
     // Laboratorio: las tres mesas son más ricas que sus ideas: LLA con el ángulo y el compás libres, C fuera del arco y
     // la base media con la base que se estira.
+    // Glosario: las palabras que la unidad estrena (docs/teoria.md, 4d). Hipotenusa y cateto ya salen en «Segmentos y
+    // ángulos», pero se definen aquí, donde son el tema; circunferencia, radio y diámetro se estrenan aquí en el curso.
+    glosario: [
+      { termino: 'congruente', simbolo: '≅', formas: ['congruentes', 'congruente', 'congruencia'],
+        def: 'Igual en forma y en tamaño: una figura calza exacto sobre la otra.', ver: ['criterio'] },
+      { termino: 'criterio', formas: ['criterio', 'criterios'],
+        def: 'Grupo mínimo de datos iguales que asegura que dos triángulos son iguales en forma y tamaño.', ver: ['LAL', 'ALA', 'LLL', 'LLA'] },
+      { termino: 'LAL', def: 'Lado, ángulo, lado: dos lados iguales y el ángulo que queda entre ellos.', ver: ['criterio'] },
+      { termino: 'ALA', def: 'Ángulo, lado, ángulo: dos ángulos iguales y el lado que queda entre ellos.', ver: ['criterio'] },
+      { termino: 'LLL', def: 'Lado, lado, lado: los tres lados iguales, uno a uno.', ver: ['criterio'] },
+      { termino: 'LLA', def: 'Dos lados y un ángulo que no queda entre ellos. No basta: puede haber dos triángulos.', ver: ['criterio'] },
+      { termino: 'distancia', formas: ['distancia', 'distancias'],
+        def: 'Largo del camino más corto. De un punto a una recta, se mide por la perpendicular.', ver: ['perpendicular'] },
+      { termino: 'equidistar', formas: ['equidistar', 'equidista', 'equidistan', 'equidistantes'],
+        def: 'Estar a la misma distancia de dos puntos o de dos líneas.', ver: ['mediatriz', 'bisectriz'] },
+      { termino: 'base media', formas: ['base media', 'bases medias'],
+        def: 'Segmento que une los puntos medios de dos lados de un triángulo. Mide la mitad del tercero.',
+        ejemplo: `Si el tercer lado mide 8, la base media mide ${8 / 2}.`, ver: ['punto medio'] },
+      { termino: 'hipotenusa', def: 'En un triángulo rectángulo, el lado opuesto al ángulo de 90°. Es el más largo.',
+        ejemplo: `Con catetos 3 y 4, mide ${Math.hypot(3, 4)}.`, ver: ['cateto', 'Pitágoras'] },
+      { termino: 'cateto', formas: ['cateto', 'catetos'], def: 'Cada uno de los dos lados que forman el ángulo de 90° en un triángulo rectángulo.',
+        ver: ['hipotenusa'] },
+      { termino: 'Pitágoras', formas: ['teorema de Pitágoras', 'Pitágoras'],
+        def: 'En un triángulo rectángulo, la suma de los cuadrados de los catetos es el cuadrado de la hipotenusa.',
+        ejemplo: `3² + 4² = ${3 * 3 + 4 * 4} = 5²`, ver: ['hipotenusa', 'cateto'] },
+      { termino: 'triángulo rectángulo notable', formas: ['triángulo rectángulo notable', 'triángulos rectángulos notables', 'rectángulos notables', 'rectángulo notable'],
+        def: 'Rectángulo de ángulos agudos 30° y 60°, 45° y 45°, o 37° y 53°: sus lados guardan razones fijas.',
+        ejemplo: `El de 45° con catetos 1 tiene hipotenusa √2 ≈ ${f(Math.SQRT2, 2)}.` },
+      { termino: 'circunferencia', formas: ['circunferencia', 'circunferencias'],
+        def: 'Línea curva cerrada cuyos puntos están todos a la misma distancia de un punto fijo, su centro.', ver: ['radio', 'diámetro', 'círculo'] },
+      { termino: 'círculo', formas: ['círculo', 'círculos'], def: 'La región plana que encierra una circunferencia, con todo su interior.', ver: ['circunferencia'] },
+      { termino: 'radio', formas: ['radio', 'radios'], def: 'Segmento del centro a un punto de la circunferencia; también, su medida.', ver: ['diámetro'] },
+      { termino: 'diámetro', formas: ['diámetro', 'diámetros'],
+        def: 'Segmento que pasa por el centro y une dos puntos de la circunferencia. Mide dos radios.', ver: ['radio'] },
+      { termino: 'semicircunferencia', def: 'Mitad de una circunferencia, de un extremo de un diámetro al otro.', ver: ['diámetro'] },
+      { termino: 'paralelogramo', def: 'Cuadrilátero con sus lados opuestos paralelos de dos en dos.' },
+      { termino: 'diagonal', formas: ['diagonal', 'diagonales'], def: 'Segmento que une dos vértices no vecinos de una figura.' },
+      { termino: 'axioma', formas: ['axioma', 'axiomas'], def: 'Afirmación que se acepta sin probarla y sirve de punto de partida para probar lo demás.' },
+    ],
     laboratorio: [mesaLLA, mesaSemi, mesaBase],
     ideas: [criterios, lugares, baseMedia, medianaHip, notables],
   };
