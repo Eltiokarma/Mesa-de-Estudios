@@ -75,15 +75,15 @@
   const KF1 = 4;
   function jalar(ang, o = {}) {
     const Fv = o.F || 20, dd = 5, W = Fv * dd * Math.cos(rad(ang)), c = Math.cos(rad(ang)), s = Math.sin(rad(ang));
-    const P = [0.45, 0.35];
+    const P = [0.45, 0.35], A = Math.round(ang);   // el ángulo animado corre continuo; se rotula en grados enteros
     return {
       vista: { x0: -2.2, x1: 2.6, y0: -0.7, y1: 1.9 }, escalaF: KF1,
-      alt: o.alt || `Caja jalada con ${f(Fv, 0)} N a ${ang}° de la horizontal a lo largo de 5 m: el trabajo de la cuerda es ${f(W, 1)} J.`,
+      alt: o.alt || `Caja jalada con ${f(Fv, 0)} N a ${A}° de la horizontal a lo largo de 5 m: el trabajo de la cuerda es ${f(W, 1)} J.`,
       poligonos: [{ puntos: [[-2.1, 0], [2.5, 0]], rayado: true }, caja(0, 0, 0.9, 0.7)],
       segmentos: [{ de: [-0.45, -0.35], a: [2.2, -0.35], color: 'i', grosor: 'variable', texto: 'recorre 5 m', lado: -1 }],
       flechas: [{ de: P, d: [Fv * c, Fv * s], color: 'o', rotulo: `F = ${f(Fv, 0)} N` },
-        ...(o.comp ? [{ de: P, d: [Fv * c, 0], color: 'o', discontinua: true, rotulo: `${f(Fv * c, 1)} N`, paso: o.comp }] : [])],
-      arcos: ang > 0 && ang < 180 ? [{ c: P, rpx: 28, de: 0, a: ang, rotulo: `${ang}°` }] : [],
+        ...(o.comp !== undefined ? [{ de: P, d: [Fv * c, 0], color: 'o', discontinua: true, rotulo: `${f(Fv * c, 1)} N`, paso: o.comp }] : [])],
+      arcos: ang > 0 && ang < 180 ? [{ c: P, rpx: 28, de: 0, a: ang, rotulo: `${A}°` }] : [],
     };
   }
   // La punta de F gira alrededor de su cola (la caja): ángulo desde la horizontal, de 0° a 180°; su largo es F.
@@ -95,17 +95,20 @@
     if (th < 0) th = th < -90 ? 180 : 0;   // bajo el piso, se queda en el extremo más cercano
     return { th, largo: Math.hypot(dx, dy) };
   };
+  // Lectura del trabajo con el ángulo que se ve rotulado (entero), para que cos θ y W cuadren con la figura.
+  const leerW = (Fv, ang) => { const A = Math.round(ang); return `W = ${f(Fv, 0)} · 5 · cos ${A}° = ${f(Fv * 5 * Math.cos(rad(A)), 1)} J`; };
   const trabajo = {
     id: 'trabajo-y-angulo',
     titulo: 'Solo trabaja lo que acompaña',
     temas: ['Trabajo de fuerzas constantes y variables'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Una cuerda jala una caja con 20 N mientras avanza 5 m. Cambia el ángulo de la cuerda.',
-      voz: 'Prueba 90°. ¿Cuánto ayuda la cuerda al avance?',
-      controles: [{ id: 'ang', etiqueta: 'Ángulo', min: 0, max: 180, paso: 30, inicio: 30, unidad: '°', decimales: 0 }],
-      dibujo: val => ({ datos: jalar(val.ang), estado: {} }),
-      lectura: val => [`W = 20 · 5 · cos ${val.ang}° = ${f(100 * Math.cos(rad(val.ang)), 1)} J`],
+      consigna: 'Una cuerda jala una caja con 20 N por 5 m y gira sola. Mira la parte punteada: la que acompaña al avance.',
+      voz: 'Mira qué pasa al cruzar 90°. ¿Cuánto ayuda la cuerda al avance?',
+      // Animación: el ángulo barre de 0° a 180° y vuelve (30° por segundo); W = F d cos θ se recalcula en cada cuadro.
+      controles: [{ id: 'ang', etiqueta: 'Ángulo', min: 0, max: 180, paso: 30, inicio: 30, unidad: '°', decimales: 0, auto: { velocidad: 30, modo: 'rebota' } }],
+      dibujo: val => ({ datos: jalar(val.ang, { comp: 0 }), estado: {} }),
+      lectura: val => [leerW(20, val.ang)],
       minimo: 4,
       // Arrastra la punta de la cuerda (F) alrededor de la caja: el ángulo sigue al dedo.
       arrastres: [{ id: 'cuerda', etiqueta: 'ángulo de la cuerda (punta de F)', color: 'c-o',
@@ -168,17 +171,31 @@
   const KJ2 = 0.028; // 80 J (lo más que da el juego) caben en 2,2 m de figura
   // Motor del empujón (lo mismo que dibuja): carrito de 2 kg desde el reposo, W = F d = K.
   const salida = (Fv, dd) => { const W = Fv * dd; return { W, v: Math.sqrt(2 * W / 2) }; };
+  // Escalas de la figura: 0,3 m de dibujo por metro recorrido y 2,5 px por newton. La fuerza empuja desde atrás: su
+  // punta toca la espalda del carrito (x = −1,3 en la salida).
+  const ME2 = 0.3, KF2 = 2.5, ATRAS = -1.3;
+  // s: metros ya recorridos desde el reposo (la animación los barre de 0 a 4 m). Mientras s < d la fuerza empuja y
+  // W = K = F·s; después suelta (flecha punteada donde soltó) y el carrito sigue, sin roce, con la K que ganó.
+  // Sin s (predice y mira), el carrito está en la salida y las barras muestran el empujón completo.
+  const recorrido = (Fv, dd, ss) => { const dentro = ss === undefined ? dd : Math.min(ss, dd), W = Fv * dentro; return { dentro, W, v: Math.sqrt(2 * W / 2) }; };
+  const puntaF2 = (dd, ss) => ATRAS + ME2 * (ss === undefined ? 0 : Math.min(ss, dd));
+  const VISTA2 = { x0: -2.2, x1: 2.2, y0: -0.6, y1: 3 }, PXM2 = 280 / 4.4;
   function empujon(Fv, dd, o = {}) {
-    const { W, v: vv } = salida(Fv, dd);
+    const { W, v: vv } = recorrido(Fv, dd, o.s), cx = ATRAS + 0.3 + ME2 * (o.s || 0), suelto = o.s !== undefined && o.s >= dd;
+    // La flecha sale de la punta y se corre hacia atrás su propio largo (tras); el rótulo va sobre su mitad. PXM2: px por
+    // metro del lienzo con esta vista (fis-lienzo: 280 px útiles para 4,4 m), solo para ubicar ese rótulo.
+    const pf = puntaF2(dd, o.s), largo = Fv * KF2 / PXM2;
     const b = barras([{ etq: 'W', val: W }, { etq: 'K', val: W, color: 'h' }], 0.6, 0.3, 0.6, KJ2);
     return {
-      vista: { x0: -2.2, x1: 2.2, y0: -0.6, y1: 3 }, escalaF: 4,
-      alt: o.alt || `Carrito de 2 kg empujado con ${Fv} N a lo largo de ${dd} m desde el reposo: el trabajo, ${f(W, 0)} J, es su energía cinética; sale a ${f(vv, 2)} m/s.`,
-      poligonos: [{ puntos: [[-2.1, 0], [0.3, 0]], rayado: true }, caja(-1.5, 0.12, 0.6, 0.4), ...b.pol],
-      discos: [{ c: [-1.7, 0.08], r: 0.08 }, { c: [-1.3, 0.08], r: 0.08 }],
-      segmentos: [{ de: [-1.8, -0.3], a: [-1.8 + dd * 0.35, -0.3], color: 'i', grosor: 'variable', texto: `${dd} m`, lado: -1 }],
-      flechas: [{ de: [-1.2, 0.32], d: [Fv, 0], color: 'o', rotulo: `${Fv} N` }],
-      textos: [...b.tex, { en: [-1.1, 1.0], texto: `v = ${f(vv, 2)} m/s`, color: 'h' }],
+      vista: VISTA2, escalaF: KF2,
+      alt: o.alt || (o.s === undefined
+        ? `Carrito de 2 kg empujado con ${Fv} N a lo largo de ${dd} m desde el reposo: el trabajo, ${f(W, 0)} J, es su energía cinética; sale a ${f(vv, 2)} m/s.`
+        : `Carrito de 2 kg empujado con ${Fv} N durante ${dd} m; lleva ${f(o.s, 2)} m recorridos: trabajo y energía cinética de ${f(W, 0)} J, a ${f(vv, 2)} m/s.`),
+      poligonos: [{ puntos: [[-2.1, 0], [0.5, 0]], rayado: true }, caja(cx, 0.12, 0.6, 0.4), ...b.pol],
+      discos: [{ c: [cx - 0.2, 0.08], r: 0.08 }, { c: [cx + 0.2, 0.08], r: 0.08 }],
+      segmentos: [{ de: [ATRAS, -0.3], a: [ATRAS + dd * ME2, -0.3], color: 'i', grosor: 'variable', texto: `${dd} m`, lado: -1 }],
+      flechas: [{ de: [pf, 0.32], tras: [-Fv, 0], d: [Fv, 0], color: 'o', discontinua: suelto }],
+      textos: [...b.tex, { en: [pf - largo / 2, 0.62], texto: suelto ? `${Fv} N: soltó` : `${Fv} N`, color: 'o' }, { en: [-1, 1.3], texto: `v = ${f(vv, 2)} m/s`, color: 'h' }],
     };
   }
   const teorema = {
@@ -187,23 +204,26 @@
     temas: ['Teorema trabajo-energía cinética'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Un carrito de 2 kg parte del reposo sin rozamiento. Elige la fuerza y por cuántos metros empuja.',
+      consigna: 'Un carrito de 2 kg parte del reposo sin rozamiento. Avanza solo, punto a punto: mira crecer W y K con cada metro empujado.',
       voz: 'Busca dos maneras de darle la misma rapidez.',
+      // Animación: s, los metros recorridos, barre de 0 a 4 m (1 m por segundo de pantalla, no es el ritmo real).
       controles: [
         { id: 'F', etiqueta: 'F', color: 'c-o', min: 5, max: 20, paso: 5, inicio: 10, unidad: 'N', decimales: 0 },
         { id: 'd', etiqueta: 'd', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'm', decimales: 0 },
+        { id: 's', etiqueta: 'Recorrido', color: 'c-i', min: 0, max: 4, paso: 0.25, inicio: 0, unidad: 'm', decimales: 2, auto: { velocidad: 1, modo: 'repite' } },
       ],
-      dibujo: val => ({ datos: empujon(val.F, val.d), estado: {} }),
-      lectura: val => [`W = `, K, ` = ${f(salida(val.F, val.d).W, 0)} J · v = ${f(salida(val.F, val.d).v, 2)} m/s`],
+      dibujo: val => ({ datos: empujon(val.F, val.d, { s: val.s }), estado: {} }),
+      lectura: val => { const e = recorrido(val.F, val.d, val.s); return [`s = ${f(val.s, 2)} m · W = `, K, ` = ${f(e.W, 0)} J · v = ${f(e.v, 2)} m/s`]; },
       minimo: 4,
-      // Arrastra la punta de F (más fuerza) o el final de la cota turquesa (más distancia). Las barras responden.
+      // Arrastra la cola de F hacia atrás (más fuerza) o el final de la cota turquesa (más distancia). Las barras
+      // responden. Las dos manijas devuelven también s tal cual: tomarlas pausa la animación.
       arrastres: [
-        { id: 'fuerza', etiqueta: 'fuerza (punta de F)', color: 'c-o',
-          donde: val => { const g = LZ(empujon(val.F, val.d)); return { x: g.X(-1.2) + val.F * 4, y: g.Y(0.32) }; },
-          mover: (pt, val) => ({ F: (pt.x - LZ(empujon(val.F, val.d)).X(-1.2)) / 4 }) },
+        { id: 'fuerza', etiqueta: 'fuerza (cola de F)', color: 'c-o',
+          donde: val => { const g = LZ({ vista: VISTA2 }); return { x: g.X(puntaF2(val.d, val.s)) - val.F * KF2, y: g.Y(0.32) }; },
+          mover: (pt, val) => ({ F: (LZ({ vista: VISTA2 }).X(puntaF2(val.d, val.s)) - pt.x) / KF2, s: val.s }) },
         { id: 'distancia', etiqueta: 'distancia empujada (fin de la cota)', color: 'c-i',
-          donde: val => { const g = LZ(empujon(val.F, val.d)); return { x: g.X(-1.8 + val.d * 0.35), y: g.Y(-0.3) }; },
-          mover: (pt, val) => ({ d: (LZ(empujon(val.F, val.d)).Xi(pt.x) + 1.8) / 0.35 }) },
+          donde: val => { const g = LZ({ vista: VISTA2 }); return { x: g.X(ATRAS + val.d * ME2), y: g.Y(-0.3) }; },
+          mover: (pt, val) => ({ d: (LZ({ vista: VISTA2 }).Xi(pt.x) - ATRAS) / ME2, s: val.s }) },
       ],
     },
     predice: {
@@ -265,9 +285,10 @@
     temas: ['Energía potencial gravitatoria y elástica'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Comprime un resorte de k = 200 N/m. La fuerza crece con x; el área sombreada es la energía potencial elástica.',
-      voz: 'Duplica la compresión. ¿Cuántas veces crece el área?',
-      controles: [{ id: 'x', etiqueta: 'x', color: 'c-i', min: 0.05, max: 0.4, paso: 0.05, inicio: 0.1, unidad: 'm', decimales: 2 }],
+      consigna: 'Un resorte de k = 200 N/m se comprime y se suelta solo. El área verde bajo la recta es la energía potencial elástica.',
+      voz: 'Mira el área cuando x se duplica. ¿Cuántas veces crece?',
+      // Animación: la compresión x va y vuelve de 0,05 m a 0,4 m (0,1 m por segundo); Ue = ½ k x² en cada cuadro.
+      controles: [{ id: 'x', etiqueta: 'x', color: 'c-i', min: 0.05, max: 0.4, paso: 0.05, inicio: 0.1, unidad: 'm', decimales: 2, auto: { velocidad: 0.1, modo: 'rebota' } }],
       dibujo: val => ({ datos: resorteEjes(val.x), estado: {} }),
       lectura: val => [Ue, ` = ${f(K3 * val.x * val.x / 2, 2)} J · `, F, ` = ${f(K3 * val.x, 0)} N`],
       minimo: 3,
@@ -348,36 +369,39 @@
     const m = 2, E = m * G * h0, perd = roce ? 0.25 * E * frac : 0, Uv = m * G * h0 * (1 - frac) * (1 - frac), Kv = E - Uv - perd;
     return { m, E, perd, Uv, Kv, vv: Math.sqrt(2 * Kv / m) };
   }
+  // Punto de la rampa en el avance u (0 arriba, 1 abajo): la misma curva que se dibuja.
+  const enRampa = (h0, u) => [-2 + 2.4 * u, h0 * 0.36 * (1 - u) * (1 - u)];
   function rampa(h0, roce, frac = 1, o = {}) {
     const { E, perd, Uv, Kv, vv } = energias(h0, roce, frac);
     const curva = Array.from({ length: 21 }, (_, i) => { const t = i / 20; return [-2 + 2.4 * t, h0 * 0.36 * (1 - t) * (1 - t)]; });
-    const pos = curva[Math.round(frac * 20)];
+    const pos = enRampa(h0, frac);   // continuo: la animación barre el avance sin saltar de muestra en muestra
     const b = barras([{ etq: 'U', val: Uv, color: 'd' }, { etq: 'K', val: Kv, color: 'h' }, { etq: 'calor', val: perd }], 0.9, 0.3, 0.38, KJ4);
     return {
       vista: { x0: -2.2, x1: 2.4, y0: -0.6, y1: 2.6 },
       alt: o.alt || `Carrito de 2 kg que baja desde ${h0} m ${roce ? 'con rozamiento' : 'sin rozamiento'}: U = ${f(Uv, 0)} J, K = ${f(Kv, 0)} J${roce ? `, calor ${f(perd, 0)} J` : ''}; rapidez ${f(vv, 2)} m/s.`,
       poligonos: [{ puntos: curva, grosor: 'contorno', rayado: true }, { puntos: [[0.4, 0], [0.7, 0]], rayado: true }, ...b.pol],
       discos: [{ c: [pos[0], pos[1] + 0.12], r: 0.12 }],
-      segmentos: frac === 0 ? [{ de: [-2.1, 0], a: [-2.1, h0 * 0.36], color: 'i', grosor: 'variable', texto: `${h0} m`, lado: 1 }] : [],
+      segmentos: frac === 0 || o.cota ? [{ de: [-2.1, 0], a: [-2.1, h0 * 0.36], color: 'i', grosor: 'variable', texto: `${h0} m`, lado: 1 }] : [],
       textos: [...b.tex, ...(frac > 0 ? [{ en: [-0.9, 2.3], texto: `v = ${f(vv, 2)} m/s`, color: 'h' }] : [])],
     };
   }
-  const bolita = (h0, frac) => { const g = LZ(rampa(h0, false, frac)), t = Math.round(frac * 20) / 20; return { x: g.X(-2 + 2.4 * t), y: g.Y(h0 * 0.36 * (1 - t) * (1 - t) + 0.12) }; };
+  const bolita = (h0, frac) => { const g = LZ(rampa(h0, false, frac)), p = enRampa(h0, frac); return { x: g.X(p[0]), y: g.Y(p[1] + 0.12) }; };
   const conservacion = {
     id: 'conservacion-energia',
     titulo: 'La suma no cambia sin roce',
     temas: ['Conservación de la energía mecánica'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Un carrito de 2 kg baja por una rampa. Elige la altura de salida, si hay rozamiento y en qué parte de la bajada mirarlo.',
+      consigna: 'Un carrito de 2 kg baja solo por la rampa, punto a punto. Mira cómo U pasa a K. Cambia la altura y el rozamiento.',
       voz: 'Sin roce, mira la suma de U y K en cada punto.',
       controles: [
         { id: 'h', etiqueta: 'h', color: 'c-i', min: 2, max: 5, paso: 1, inicio: 4, unidad: 'm', decimales: 0 },
         { id: 'roce', etiqueta: 'Rozamiento', opciones: [{ valor: 0, texto: 'Sin' }, { valor: 1, texto: 'Con' }], inicio: 0 },
-        { id: 'frac', etiqueta: 'Avance', min: 0, max: 1, paso: 0.25, inicio: 0.5, unidad: '', decimales: 2 },
+        // Animación: el avance barre la bajada de arriba abajo en 4 s y vuelve a empezar (no es el ritmo real).
+        { id: 'frac', etiqueta: 'Avance', min: 0, max: 1, paso: 0.25, inicio: 0.5, unidad: '', decimales: 2, auto: { velocidad: 0.25, modo: 'repite' } },
       ],
-      dibujo: val => ({ datos: rampa(val.h, val.roce === 1, val.frac), estado: {} }),
-      lectura: val => { const e = energias(val.h, val.roce === 1, val.frac); return [U, ' + ', K, ` = ${f(e.Uv + e.Kv, 0)} J`]; },
+      dibujo: val => ({ datos: rampa(val.h, val.roce === 1, val.frac, { cota: true }), estado: {} }),
+      lectura: val => { const e = energias(val.h, val.roce === 1, val.frac); return [U, ` = ${f(e.Uv, 0)} · `, K, ` = ${f(e.Kv, 0)} · `, U, ' + ', K, ` = ${f(e.Uv + e.Kv, 0)} J`]; },
       // Arrastra la bolita por la rampa: el avance sigue al dedo; las barras responden. La altura va con − y +.
       arrastres: [{ id: 'bolita', etiqueta: 'avance de la bolita en la rampa',
         donde: val => bolita(val.h, val.frac),
@@ -447,13 +471,17 @@
   // Debe verse: igual trabajo en menos tiempo es más potencia; nunca sale más de lo que entra.
   const KJ5 = 0.00022; // los 10 000 J que consume con 50 % caben en 2,2 m
   function motor(t, ef, o = {}) {
-    const W = 50 * G * 10, Pu = W / t, Ein = W / ef, Pin = Ein / t;
+    const W = 50 * G * 10, Pu = W / t, Ein = W / ef, Pin = Ein / t, vs = 10 / t;   // sube a velocidad constante
     const b = barras([{ etq: 'entra', val: Ein }, { etq: 'útil', val: W, color: 'd' }, { etq: 'calor', val: Ein - W }], -0.3, 0.3, 0.55, KJ5);
+    // La carga cuelga de una polea; su flecha de velocidad (40 px por m/s) se alarga cuando el tiempo se acorta.
     return {
-      vista: { x0: -2.2, x1: 2.2, y0: -0.6, y1: 2.9 },
-      alt: o.alt || `Motor que sube 50 kg a 10 m en ${t} s con eficiencia ${f(ef * 100, 0)} %: potencia útil ${f(Pu, 0)} W, de entrada ${f(Pin, 0)} W.`,
-      poligonos: [caja(-1.6, 0.3, 0.7, 0.5), ...b.pol],
-      textos: [...b.tex, { en: [-1.6, 0.48], texto: 'motor' }, { en: [-1.4, 2.4], texto: `${f(Pu, 0)} W útiles`, color: 'd' }],
+      vista: { x0: -2.2, x1: 2.2, y0: -0.6, y1: 3.3 },
+      alt: o.alt || `Motor que sube 50 kg a 10 m en ${f(t, 0)} s con eficiencia ${f(ef * 100, 0)} %: sube a ${f(vs, 2)} m/s; potencia útil ${f(Pu, 0)} W, de entrada ${f(Pin, 0)} W.`,
+      poligonos: [caja(-1.7, 0.3, 0.72, 0.5), caja(-0.95, 0.9, 0.5, 0.35), { puntos: [[-1.45, 0.8], [-1.45, 2.2]], grosor: 'fino' }, { puntos: [[-0.95, 1.25], [-0.95, 2.2]], grosor: 'fino' }, ...b.pol],
+      discos: [{ c: [-1.2, 2.2], r: 0.25 }],
+      flechas: [{ de: [-0.8, 1.25], d: [0, vs], escala: 40 }],
+      textos: [...b.tex, { en: [-1.7, 0.48], texto: 'motor' }, { en: [-0.95, 0.66], texto: '50 kg' },
+        { en: [-1.3, 2.68], texto: `sube a ${f(vs, 2)} m/s` }, { en: [-1.3, 3.05], texto: `${f(Pu, 0)} W útiles`, color: 'd' }],
     };
   }
   const potencia = {
@@ -462,14 +490,15 @@
     temas: ['Potencia y eficiencia'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Un motor sube 50 kg a 10 m de altura. Elige cuánto tarda y qué fracción de lo que consume aprovecha.',
-      voz: 'Cambia solo el tiempo. ¿Cambia la barra útil?',
+      consigna: 'Un motor sube 50 kg a 10 m; el tiempo cambia solo, de 10 a 40 s. Mira la barra útil y la potencia.',
+      voz: 'Mientras cambia el tiempo, ¿cambia la barra útil?',
+      // Animación: el tiempo de subida va y vuelve de 10 s a 40 s (6 s por segundo); P = W / t en cada cuadro.
       controles: [
-        { id: 't', etiqueta: 't', min: 10, max: 40, paso: 10, inicio: 20, unidad: 's', decimales: 0 },
+        { id: 't', etiqueta: 't', min: 10, max: 40, paso: 10, inicio: 20, unidad: 's', decimales: 0, auto: { velocidad: 6, modo: 'rebota' } },
         { id: 'ef', etiqueta: 'Eficiencia', opciones: [{ valor: 1, texto: '100 %' }, { valor: 0.8, texto: '80 %' }, { valor: 0.5, texto: '50 %' }], inicio: 0.8 },
       ],
       dibujo: val => ({ datos: motor(val.t, val.ef), estado: {} }),
-      lectura: val => [`P útil = ${f(5000 / val.t, 0)} W · consume ${f(5000 / val.ef / val.t, 0)} W`],
+      lectura: val => [`t = ${f(val.t, 1)} s · P útil = ${f(5000 / val.t, 0)} W · consume ${f(5000 / val.ef / val.t, 0)} W`],
       minimo: 4,
     },
     predice: {
@@ -559,13 +588,13 @@
     laboratorio: [
       {
         id: 'cuerda-libre', titulo: 'Cuerda con fuerza y ángulo', pieza: 'fis-lienzo',
-        consigna: 'Arrastra la punta de F: su largo es la fuerza y su giro, el ángulo. La caja avanza 5 m.',
+        consigna: 'La cuerda gira sola mientras la caja avanza 5 m. Arrastra la punta de F: su largo es la fuerza y su giro, el ángulo.',
         controles: [
           { id: 'F', etiqueta: 'F', color: 'c-o', min: 5, max: 20, paso: 5, inicio: 15, unidad: 'N', decimales: 0 },
-          { id: 'ang', etiqueta: 'Ángulo', min: 0, max: 180, paso: 15, inicio: 45, unidad: '°', decimales: 0 },
+          { id: 'ang', etiqueta: 'Ángulo', min: 0, max: 180, paso: 15, inicio: 45, unidad: '°', decimales: 0, auto: { velocidad: 30, modo: 'rebota' } },
         ],
-        dibujo: val => ({ datos: jalar(val.ang, { F: val.F }), estado: {} }),
-        lectura: val => [`W = ${f(val.F, 0)} · 5 · cos ${val.ang}° = ${f(trabajoCuerda(val), 1)} J`],
+        dibujo: val => ({ datos: jalar(val.ang, { F: val.F, comp: 0 }), estado: {} }),
+        lectura: val => [leerW(val.F, val.ang)],
         arrastres: [{ id: 'cuerda', etiqueta: 'fuerza y ángulo de la cuerda (punta de F)', color: 'c-o',
           donde: val => puntaF(val.ang, val.F),
           mover: (pt, val) => { const q = anguloDe(pt, val.ang, val.F); return { ang: q.th, F: q.largo / KF1 }; } }],
@@ -580,6 +609,11 @@
             // El extremo de la grilla: la fuerza más grande, justo contra el avance.
             logrado: val => trabajoCuerda(val) <= trabajoCuerda({ F: 20, ang: 180 }) + 1e-9,
             bien: 'Toda la fuerza contra el avance: frena con −100 J.' },
+          { texto: 'Pausa la cuerda justo cuando deja de hacer trabajo.',
+            // Con la animación en pausa el ángulo queda donde se detuvo: vale si W cae a menos de 1 J de cero.
+            logrado: val => Math.abs(trabajoCuerda(val)) < 1,
+            bien: 'A 90° la cuerda solo jala de lado: W = 0 con cualquier fuerza.',
+            pista: 'Pausa cerca de 90°; ajusta el ángulo con − y +.' },
           { texto: 'Guarda dos casos con distinta fuerza que hagan el mismo trabajo, sin ser cero.',
             logrado: (val, guardados) => Math.abs(trabajoCuerda(val)) > 1e-9 && guardado(val, guardados, ['F', 'ang'])
               && guardados.some(g => g.F !== val.F && Math.abs(trabajoCuerda(g) - trabajoCuerda(val)) < 1e-9),
