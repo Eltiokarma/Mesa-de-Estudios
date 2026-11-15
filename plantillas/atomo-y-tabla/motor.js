@@ -423,7 +423,136 @@
     return r;
   }
 
-  return { SIMBOLOS, NOMBRES, ZTABLA, EI, RADIO, EN, SUCESIVAS, RADIO_IONICO, EXCEPCIONES, elemento, especie, particulas,
+  // ---------- Orbitales del átomo de hidrógeno (15 nov 2026, mesa 3D «La nube del orbital») ----------
+  // Solo el hidrógeno (un electrón, Z = 1), con distancias en radios de Bohr a₀ (52,9 pm). Funciones radiales R_nl de
+  // n = 1 a 3 escritas a mano (OpenStax Chemistry 2e §6.3; cualquier texto de cuántica) y partes angulares reales
+  // normalizadas (orbitales px, py, pz, dz², dxz, dyz, dxy, dx²−y²). Verificadas aparte con la fórmula general de
+  // Laguerre (r90, nodos y valores; ver casos.json). La nube es una muestra de puntos con densidad |ψ|²: dice dónde es
+  // probable hallar al electrón, no un camino. El signo de ψ se informa como «+» o «−»: no es una carga.
+  const S3 = Math.sqrt(3), S6 = Math.sqrt(6), S30 = Math.sqrt(30), PI4 = 4 * Math.PI;
+  const RADIAL = {
+    '1,0': r => 2 * Math.exp(-r),
+    '2,0': r => (2 - r) * Math.exp(-r / 2) / (2 * Math.SQRT2),
+    '2,1': r => r * Math.exp(-r / 2) / (2 * S6),
+    '3,0': r => 2 * (27 - 18 * r + 2 * r * r) * Math.exp(-r / 3) / (81 * S3),
+    '3,1': r => 4 * (6 * r - r * r) * Math.exp(-r / 3) / (81 * S6),
+    '3,2': r => 4 * r * r * Math.exp(-r / 3) / (81 * S30),
+  };
+  // Parte angular real (x, y, z con r = 1), su máximo de |Y|², el nombre, los planos nodales (normal) y los conos.
+  const C54 = Math.acos(1 / S3) * 180 / Math.PI;
+  const ANG = {
+    s: { l: 0, Y: () => 1 / Math.sqrt(PI4), max: 1 / PI4, planos: [], conos: [], corte: 'y', eje: null },
+    px: { l: 1, Y: (x) => Math.sqrt(3 / PI4) * x, max: 3 / PI4, planos: [[1, 0, 0]], conos: [], corte: 'y', eje: 'x' },
+    py: { l: 1, Y: (x, y) => Math.sqrt(3 / PI4) * y, max: 3 / PI4, planos: [[0, 1, 0]], conos: [], corte: 'x', eje: 'y' },
+    pz: { l: 1, Y: (x, y, z) => Math.sqrt(3 / PI4) * z, max: 3 / PI4, planos: [[0, 0, 1]], conos: [], corte: 'y', eje: 'z' },
+    dz2: { l: 2, Y: (x, y, z) => Math.sqrt(5 / (16 * Math.PI)) * (3 * z * z - 1), max: 5 / (4 * Math.PI), planos: [], conos: [C54], corte: 'y', eje: 'z' },
+    dxz: { l: 2, Y: (x, y, z) => Math.sqrt(15 / PI4) * x * z, max: 15 / (16 * Math.PI), planos: [[1, 0, 0], [0, 0, 1]], conos: [], corte: 'y', eje: null },
+    dyz: { l: 2, Y: (x, y, z) => Math.sqrt(15 / PI4) * y * z, max: 15 / (16 * Math.PI), planos: [[0, 1, 0], [0, 0, 1]], conos: [], corte: 'x', eje: null },
+    dxy: { l: 2, Y: (x, y) => Math.sqrt(15 / PI4) * x * y, max: 15 / (16 * Math.PI), planos: [[1, 0, 0], [0, 1, 0]], conos: [], corte: 'z', eje: null },
+    'dx2-y2': { l: 2, Y: (x, y) => Math.sqrt(15 / (16 * Math.PI)) * (x * x - y * y), max: 15 / (16 * Math.PI),
+      planos: [[Math.SQRT1_2, Math.SQRT1_2, 0], [Math.SQRT1_2, -Math.SQRT1_2, 0]], conos: [], corte: 'z', eje: null },
+  };
+  const ORBITALES = ['1s', '2s', '2px', '2py', '2pz', '3s', '3px', '3py', '3pz', '3dz2', '3dxz', '3dyz', '3dxy', '3dx2-y2'];
+  const NOMBRE_ORB = { dz2: 'dz²', 'dx2-y2': 'dx²−y²' };
+  // Integral de R²r² de 0 a r (regla de Simpson fina): la probabilidad de hallar al electrón dentro de una esfera de radio r.
+  function dentroDe(n, l, r, pasos) {
+    const R = RADIAL[`${n},${l}`], N = pasos || 4000, h = r / N;
+    let s = 0;
+    for (let i = 0; i <= N; i++) { const x = i * h, v = R(x) * R(x) * x * x; s += (i === 0 || i === N ? 1 : i % 2 ? 4 : 2) * v; }
+    return s * h / 3;
+  }
+  const cache90 = new Map();
+  function radio90(n, l) {             // radio de la esfera que encierra el 90 % (bisección sobre dentroDe)
+    const k = `${n},${l}`;
+    if (cache90.has(k)) return cache90.get(k);
+    let a = 0, b = 60;
+    for (let i = 0; i < 50; i++) { const m = (a + b) / 2; if (dentroDe(n, l, m) < 0.9) a = m; else b = m; }
+    cache90.set(k, (a + b) / 2);
+    return (a + b) / 2;
+  }
+  // Nodos radiales: ceros de R_nl con r > 0 (fórmulas cerradas de los polinomios de arriba).
+  const NODOS_R = { '1,0': [], '2,0': [2], '2,1': [], '3,0': [(9 - 3 * S3) / 2, (9 + 3 * S3) / 2], '3,1': [6], '3,2': [] };
+  function orbital(id) {
+    const m = /^([1-3])(s|p|d)(.*)$/.exec(String(id));
+    if (!m || !ORBITALES.includes(id)) throw new Error(`orbital: no conozco «${id}» (hay ${ORBITALES.join(', ')})`);
+    const n = +m[1], l = 'spd'.indexOf(m[2]), clave = l === 0 ? 's' : m[2] + m[3], a = ANG[clave];
+    const radiales = NODOS_R[`${n},${l}`];
+    return {
+      id, n, l, nombre: `${n}${m[2]}${NOMBRE_ORB[clave] ? NOMBRE_ORB[clave].slice(1) : m[3]}`, subnivel: `${n}${m[2]}`,
+      eje: a.eje, corte: a.corte, radiales: radiales.slice(), planos: a.planos.map(p => p.slice()), conos: a.conos.slice(),
+      nodosRadiales: radiales.length, nodosAngulares: l, nodos: n - 1,
+      r90: radio90(n, l),
+    };
+  }
+  function psi(id, x, y, z) {
+    const o = orbital(id), r = Math.hypot(x, y, z), a = ANG[o.l === 0 ? 's' : id.slice(1)];
+    const R = RADIAL[`${o.n},${o.l}`](r);
+    return r === 0 ? (o.l === 0 ? R * a.Y() : 0) : R * a.Y(x / r, y / r, z / r);
+  }
+  // Nube de puntos con densidad |ψ|²: r por la inversa de la distribución radial (tabla), dirección por rechazo con |Y|².
+  // corte: true deja solo la lámina |coordenada de o.corte| < 6 % del r90 (para ver los nodos de adentro).
+  // Determinística: la misma semilla da los mismos puntos. Cada punto es [x, y, z, signo de ψ].
+  const nubes = new Map();
+  function nube(id, op) {
+    op = op || {};
+    const N = op.n || 1600, corte = !!op.corte, semilla = op.semilla === undefined ? 7 : op.semilla;
+    const k = `${id}|${N}|${corte}|${semilla}`;
+    if (nubes.has(k)) return nubes.get(k);
+    const o = orbital(id), R = RADIAL[`${o.n},${o.l}`], a = ANG[o.l === 0 ? 's' : id.slice(1)];
+    const RMAX = 3.2 * o.r90, M = 3000, rs = [0], cdf = [0];
+    for (let i = 1; i <= M; i++) { const r = RMAX * i / M, rm = RMAX * (i - 0.5) / M; rs.push(r); cdf.push(cdf[i - 1] + R(rm) * R(rm) * rm * rm * RMAX / M); }
+    const tot = cdf[M];
+    let q = (semilla * 2654435761 + 97) >>> 0;
+    const azar = () => { q = (q + 0x6D2B79F5) >>> 0; let t = q; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const eje = 'xyz'.indexOf(o.corte), delta = 0.06 * o.r90, puntos = [];
+    let intentos = 0;
+    while (puntos.length < N && intentos < 400000) {
+      intentos++;
+      const u = azar() * tot;
+      let lo = 0, hi = M;
+      while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (cdf[mid] < u) lo = mid; else hi = mid; }
+      const r = rs[lo] + (rs[hi] - rs[lo]) * (u - cdf[lo]) / ((cdf[hi] - cdf[lo]) || 1);
+      let d;
+      for (;;) {                                    // dirección uniforme en la esfera, aceptada con |Y|²/max
+        const cz = 2 * azar() - 1, ph = 2 * Math.PI * azar(), s = Math.sqrt(1 - cz * cz);
+        d = [s * Math.cos(ph), s * Math.sin(ph), cz];
+        const Y = a.Y(d[0], d[1], d[2]);
+        if (azar() * a.max <= Y * Y) break;
+      }
+      const p = [d[0] * r, d[1] * r, d[2] * r];
+      if (corte && Math.abs(p[eje]) > delta) continue;
+      const v = R(r) * a.Y(d[0], d[1], d[2]);
+      puntos.push([p[0], p[1], p[2], v >= 0 ? 1 : -1]);
+    }
+    const r = { id, puntos, corte: corte ? o.corte : null, grosor: corte ? 2 * delta : null, r90: o.r90 };
+    nubes.set(k, r);
+    return r;
+  }
+  // Dónde poner el rótulo de cada signo: el punto más probable de ese signo (máximo de ψ²r², que es la densidad por
+  // capa en esa dirección) entre 26 direcciones (ejes, diagonales de cara y de cubo) y radios de 0 a 3·r90.
+  const DIRS = (() => {
+    const d = [];
+    for (const x of [1, 0, -1]) for (const y of [1, 0, -1]) for (const z of [1, 0, -1]) if (x || y || z) { const m = Math.hypot(x, y, z); d.push([x / m, y / m, z / m]); }
+    return d;
+  })();
+  function lobulos(id) {
+    const o = orbital(id), R = RADIAL[`${o.n},${o.l}`], a = ANG[o.l === 0 ? 's' : id.slice(1)], mejor = {};
+    for (const d of DIRS) {
+      const Y = a.Y(d[0], d[1], d[2]);
+      if (Math.abs(Y) < 1e-12) continue;
+      for (let i = 1; i <= 600; i++) {
+        const r = 3 * o.r90 * i / 600, v = R(r) * Y, s = v > 0 ? 1 : v < 0 ? -1 : 0, q = v * v * r * r;
+        if (s && (!mejor[s] || q > mejor[s].q + 1e-15)) mejor[s] = { q, pos: [d[0] * r, d[1] * r, d[2] * r] };
+      }
+    }
+    return [1, -1].filter(s => mejor[s]).map(s => ({ signo: s, pos: mejor[s].pos }));
+  }
+
+  // El orbital más grande de la lista (por r90), para los retos de extremo.
+  const mayorOrbital = () => ORBITALES.reduce((m, id) => (orbital(id).r90 > orbital(m).r90 ? id : m));
+
+  return { ORBITALES, orbital, psi, nube, radio90, dentroDe, mayorOrbital, lobulos,
+    SIMBOLOS, NOMBRES, ZTABLA, EI, RADIO, EN, SUCESIVAS, RADIO_IONICO, EXCEPCIONES, elemento, especie, particulas,
     configuracion, cajas, ultimoElectron, electronQueSale, electronQueEntra, secuencia, escalasDibujo, niveles, ubicacion, enCasilla, propiedad, ordenar, mapa, compararEI,
     ionizacionesSucesivas, compararRadio, isoelectronicos, ordenarRadios };
 });
