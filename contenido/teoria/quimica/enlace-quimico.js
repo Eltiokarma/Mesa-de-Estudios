@@ -494,7 +494,7 @@
     temas: ['Fuerzas intermoleculares'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Elige una sustancia y mira la atracción entre dos moléculas vecinas (línea punteada). Compara su temperatura de ebullición.',
+      consigna: 'Elige una sustancia y mira las fuerzas intermoleculares entre dos moléculas vecinas (línea punteada). Compara su temperatura de ebullición.',
       voz: 'La línea punteada no es un enlace: es una atracción entre moléculas.',
       controles: [{ id: 'k', etiqueta: 'Sustancia', opciones: Object.keys(PARES).map(k => ({ valor: k, texto: PARES[k].t })) }],
       dibujo: val => PARES[val.k].d(),
@@ -507,7 +507,7 @@
       voz: 'Piensa en lo que une a las moléculas, no en su masa.',
       opciones: [
         { id: 'c', texto: 'El H₂O, por sus puentes de hidrógeno', correcta: true },
-        { id: 'masa', texto: 'El H₂S, porque es más pesado', error: 'EN16', siFuera: 'Más masa suele dar más dispersión, cierto. Aquí el puente de hidrógeno del agua pesa más.' },
+        { id: 'masa', texto: 'El H₂S, porque es más pesado', error: 'EN16', siFuera: 'Más masa suele dar más fuerzas de London, cierto. Aquí el puente de hidrógeno del agua pesa más.' },
         { id: 'igual', texto: 'Igual: los dos son del grupo 16', error: 'QM-GRUPO-EB', siFuera: 'Comparten grupo, sí. Pero solo el agua forma puentes de hidrógeno.' },
         { id: 'enlace', texto: 'El H₂O, porque su enlace O–H es más fuerte', error: 'EN14', siFuera: 'El O–H es fuerte, bien visto. Pero al hervir no se rompe: se separan moléculas.' },
       ],
@@ -565,8 +565,10 @@
   // Mesa 1: dos enlaces iguales unidos a un átomo central (como el O del agua). El dipolo total es la suma de las dos
   // flechas: μ = 2 · μ_enlace · cos(θ/2). Los textos fijos arriba y abajo dejan el encuadre quieto al cambiar θ.
   const ESC_MU = 0.45;                             // unidades de dibujo por debye de la flecha total
+  const TH_MIN = 60, MB_MAX = 2;                  // rango de la mesa: el ángulo más cerrado y el enlace más polar
+  const muTotal = val => 2 * val.mb * Math.cos(val.th / 2 * Math.PI / 180);
   const dosDipolos = val => {
-    const h = val.th / 2 * Math.PI / 180, L = 1.15, mt = 2 * val.mb * Math.cos(h);
+    const h = val.th / 2 * Math.PI / 180, L = 1.15, mt = muTotal(val);
     const datos = {
       atomos: [A('o', 'O', 0, 0), A('h1', 'H', -L * Math.sin(h), L * Math.cos(h)), A('h2', 'H', L * Math.sin(h), L * Math.cos(h))],
       enlaces: [B('o', 'h1', 1, { dipolo: 'a' }), B('o', 'h2', 1, { dipolo: 'a' })],
@@ -595,6 +597,53 @@
       pregunta: '¿Por qué el agua es H₂O y no H₃O?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §7.6', url: 'https://openstax.org/books/chemistry-2e/pages/7-6-molecular-structure-and-polarity' },
     },
+    // Glosario (docs/teoria.md §4d): las palabras que la unidad estrena en el curso de química.
+    glosario: [
+      { termino: 'enlace químico', formas: ['enlace químico', 'enlaces químicos', 'enlace', 'enlaces'],
+        def: 'Unión que mantiene juntos a dos átomos o iones, según cómo se reparten sus electrones.',
+        ver: ['enlace iónico', 'enlace covalente', 'enlace metálico'] },
+      { termino: 'enlace iónico', formas: ['enlace iónico', 'enlaces iónicos', 'iónico'],
+        def: 'Atracción entre cationes y aniones: un metal cede electrones a un no metal y forman una red.',
+        ejemplo: 'NaCl: cada Na⁺ rodeado de seis Cl⁻.', ver: ['catión', 'anión'] },
+      { termino: 'enlace covalente', formas: ['enlace covalente', 'enlaces covalentes', 'covalente', 'covalentes'],
+        def: 'Unión de dos átomos, casi siempre no metales, que comparten uno o más pares de electrones.',
+        ejemplo: 'H–O–H: dos pares compartidos en el agua.', ver: ['estructura de Lewis'] },
+      { termino: 'enlace metálico', formas: ['enlace metálico', 'metálico'],
+        def: 'Cationes de un metal ordenados en un mar de electrones que se mueven entre todos.',
+        ver: ['metal'] },
+      { termino: 'regla del octeto', formas: ['regla del octeto', 'octeto'],
+        def: 'Tendencia de los átomos a quedar con ocho electrones en su último nivel al unirse. Tiene excepciones.',
+        ejemplo: 'En el BF₃ el boro queda con 6.', ver: ['estructura de Lewis'] },
+      { termino: 'estructura de Lewis', formas: ['estructura de Lewis', 'estructuras de Lewis'],
+        def: 'Dibujo de una molécula o ion con sus enlaces como rayas y sus pares sin compartir como puntos.',
+        ejemplo: 'CO₂: O=C=O con dos pares libres en cada O, 16 electrones.', ver: ['par libre', 'símbolo de Lewis'] },
+      { termino: 'par libre', formas: ['par libre', 'pares libres'],
+        def: 'Par de electrones de valencia que no forma parte de ningún enlace. También empuja y cambia la forma.',
+        ejemplo: 'El O del agua tiene dos.', ver: ['forma molecular'] },
+      { termino: 'resonancia', def: 'Caso en que varias estructuras de Lewis válidas solo difieren en dónde va un par de electrones.',
+        ver: ['híbrido'] },
+      { termino: 'híbrido', formas: ['híbrido de resonancia', 'híbrido'],
+        def: 'La especie real cuando hay resonancia: los electrones repartidos entre todas las estructuras, con enlaces iguales.',
+        ejemplo: 'NO₃⁻: tres enlaces N–O de orden 4/3.', ver: ['resonancia'] },
+      { termino: 'dipolo', formas: ['dipolo', 'dipolos'], simbolo: 'μ', medida: 'D',
+        def: 'Separación de carga: un extremo algo positivo y otro algo negativo. Se dibuja como flecha.',
+        ver: ['electronegatividad', 'molécula polar'] },
+      { termino: 'molécula polar', formas: ['molécula polar', 'moléculas polares', 'polar', 'polares'],
+        def: 'Molécula cuyos dipolos de enlace no se anulan: le queda una flecha total.',
+        ejemplo: 'H₂O, angular: 1,85 D; el CO₂, lineal, no lo es.', ver: ['dipolo'] },
+      { termino: 'forma molecular', formas: ['forma molecular', 'formas moleculares'],
+        def: 'Figura que dibujan los átomos alrededor del átomo central; se nombra sin contar los pares libres.',
+        ejemplo: 'El NH₃ tiene 4 regiones y forma piramidal.', ver: ['par libre'] },
+      { termino: 'fuerzas intermoleculares', formas: ['fuerzas intermoleculares', 'fuerza intermolecular'],
+        def: 'Atracciones entre moléculas vecinas, mucho más débiles que los enlaces de dentro de cada una.',
+        ver: ['puente de hidrógeno', 'fuerzas de London'] },
+      { termino: 'puente de hidrógeno', formas: ['puente de hidrógeno', 'puentes de hidrógeno'],
+        def: 'Atracción fuerte entre un H unido a N, O o F y un par libre de otra molécula.',
+        ejemplo: 'Por ellos el agua hierve a 100 °C y el H₂S, a −60 °C.', ver: ['fuerzas intermoleculares'] },
+      { termino: 'fuerzas de London', formas: ['fuerzas de London', 'fuerza de London'],
+        def: 'Atracción débil entre dipolos pasajeros; la tienen todas las moléculas y crece con su tamaño.',
+        ver: ['fuerzas intermoleculares'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera deja girar los dos enlaces de una molécula
     // angular y cambiar su polaridad, de 60° a 180° (el caso lineal, que anula todo). La segunda junta dos iones y el
     // híbrido. Las lecturas dicen ángulo, dipolo de enlace y resultado, o el ion y dónde quedó el par.
@@ -603,14 +652,30 @@
         id: 'dos-dipolos', titulo: 'Dos dipolos que giran', pieza: 'quim-molecula',
         consigna: 'Agarra el hidrógeno de la derecha y abre o cierra el ángulo. Cambia también la polaridad de cada enlace. ¿Cuándo se anulan?',
         controles: [
-          { id: 'th', etiqueta: 'θ', color: 'c-d', min: 60, max: 180, paso: 5, inicio: 105, unidad: '°', decimales: 0 },
-          { id: 'mb', etiqueta: 'Dipolo de enlace', color: 'c-o', min: 0.5, max: 2, paso: 0.1, inicio: 1.5, unidad: 'D', decimales: 1 },
+          { id: 'th', etiqueta: 'θ', color: 'c-d', min: TH_MIN, max: 180, paso: 5, inicio: 105, unidad: '°', decimales: 0 },
+          { id: 'mb', etiqueta: 'Dipolo de enlace', color: 'c-o', min: 0.5, max: MB_MAX, paso: 0.1, inicio: 1.5, unidad: 'D', decimales: 1 },
         ],
         dibujo: val => dosDipolos(val),
-        lectura: val => [`θ = ${f(val.th, 0)}° · enlace ${f(val.mb, 1)} D → `, mu, ` = ${f(2 * val.mb * Math.cos(val.th / 2 * Math.PI / 180))} D`],
+        lectura: val => [`θ = ${f(val.th, 0)}° · enlace ${f(val.mb, 1)} D → `, mu, ` = ${f(muTotal(val))} D`],
         arrastres: [{ id: 'hidrogeno', etiqueta: 'hidrógeno: abre o cierra el ángulo', color: 'c-d',
           donde: val => manijaH(val),
           mover: (pt, val) => ({ th: anguloEn(pt, val) }) }],
+        // Retos comprobados (docs/teoria.md §4d): miden el dipolo total con muTotal, la misma suma que dibuja la flecha.
+        invitaciones: [
+          { texto: 'Haz que los dos dipolos se anulen por completo.',
+            logrado: val => muTotal(val) < 0.005,
+            bien: 'Lineal: enlaces polares y molécula apolar. Así queda el CO₂.' },
+          { texto: 'Consigue un dipolo total igual al de un solo enlace.',
+            logrado: val => Math.abs(muTotal(val) - val.mb) < 0.005,
+            bien: 'A 120°, dos flechas suman lo mismo que una. ¿Y a 90°?' },
+          { texto: 'Busca el dipolo total más grande que permite la mesa.',
+            logrado: val => Math.abs(muTotal(val) - muTotal({ th: TH_MIN, mb: MB_MAX })) < 1e-9,
+            bien: 'Ángulo cerrado y enlaces muy polares: las flechas casi se suman enteras.' },
+          { texto: 'Guarda dos casos con el mismo ángulo: uno con el doble de dipolo total.',
+            logrado: (val, guardados) => guardados.some(a => guardados.some(b => a.th === b.th && muTotal(b) > 0.005
+              && Math.abs(muTotal(a) - 2 * muTotal(b)) < 1e-6)),
+            bien: 'Con el ángulo fijo, el total sigue a la polaridad de cada enlace.' },
+        ],
       },
       {
         id: 'resonancia-libre', titulo: 'El par que se reparte', pieza: 'quim-molecula',
@@ -625,6 +690,19 @@
         arrastres: [{ id: 'doble', etiqueta: 'doble enlace: llévalo a un oxígeno o al centro', color: 'c-i',
           donde: val => mitad(resDib(val), val.k),
           mover: (pt, val) => ({ k: dobleCerca(resDib(val), pt, true) }) }],
+        // Retos: cuentan los electrones con resDib, el mismo armado que dibuja la estructura.
+        invitaciones: [
+          { texto: 'Lleva el carbonato a su híbrido: el ion real.',
+            logrado: val => val.ion === 'CO3' && val.k === 3,
+            bien: 'Tres enlaces iguales: el par doble está repartido entre los tres oxígenos.' },
+          { texto: 'Guarda dos estructuras del mismo ion que solo cambien dónde va el doble enlace.',
+            logrado: (val, guardados) => guardados.some(a => guardados.some(b => a.ion === b.ion && a.k !== b.k && a.k < 3 && b.k < 3)),
+            bien: 'Mismos átomos; solo se mueve un par. Eso es resonancia.' },
+          { texto: 'Guarda una estructura de cada ion con los mismos electrones de valencia.',
+            logrado: (val, guardados) => guardados.some(a => guardados.some(b => a.ion !== b.ion && a.k < 3 && b.k < 3
+              && resDib(a).nval === resDib(b).nval)),
+            bien: 'Igual cuenta de electrones, igual triángulo. ¿Por qué el carbonato tiene más carga?' },
+        ],
       },
     ],
     ideas: [tres, lewisSolo, res, geo, fuerzas],
