@@ -5139,7 +5139,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 2
+      "ideas": 2,
+      "terminos": 8
      }
     },
     {
@@ -5169,7 +5170,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 14
      }
     },
     {
@@ -5206,7 +5208,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 4
+      "ideas": 4,
+      "terminos": 16
      }
     },
     {
@@ -5234,7 +5237,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 13
      }
     },
     {
@@ -5262,7 +5266,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 13
      }
     },
     {
@@ -5291,7 +5296,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 17
      }
     },
     {
@@ -5328,7 +5334,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 4
+      "ideas": 4,
+      "terminos": 19
      }
     },
     {
@@ -5365,7 +5372,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 27
      }
     },
     {
@@ -5401,7 +5409,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 14
      }
     },
     {
@@ -5435,7 +5444,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 18
      }
     },
     {
@@ -5472,7 +5482,8 @@
        "/nucleo/kit/piezas/rv-texto.js",
        "/nucleo/kit/piezas/rv-barras.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 13
      }
     },
     {
@@ -5507,7 +5518,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 16
      }
     },
     {
@@ -5540,7 +5552,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 2
+      "ideas": 2,
+      "terminos": 13
      }
     },
     {
@@ -5573,7 +5586,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 16
      }
     },
     {
@@ -5610,7 +5624,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 17
      }
     },
     {
@@ -5643,7 +5658,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 15
      }
     },
     {
@@ -5670,7 +5686,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 2
+      "ideas": 2,
+      "terminos": 18
      }
     },
     {
@@ -5701,7 +5718,8 @@
       "requiere": [
        "/nucleo/kit/piezas/rv-texto.js"
       ],
-      "ideas": 3
+      "ideas": 3,
+      "terminos": 14
      }
     }
    ]
