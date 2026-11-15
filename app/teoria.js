@@ -47,11 +47,10 @@
   const glosarioDe = curso => glosarios[curso] || (glosarios[curso] = fetch(`/app/datos/glosario/${curso}.json`)
     .then(r => (r.ok ? r.json() : { entradas: [] })).catch(() => { delete glosarios[curso]; return { entradas: [] }; }));
 
+  // Todo se pide a la vez y se ejecuta en orden (los scripts van con async = false): la base, los requiere (motores antes
+  // que sus piezas) y el archivo de la unidad. Antes se pedían uno por uno y cada viaje sumaba la demora de la red.
   async function cargarUnidad(u) {
-    await cargarEstilo();
-    for (const s of BASE) await cargar(s);                     // en orden: kit → trazo → … → teoria
-    await Promise.all((u.teoria.requiere || []).map(cargar));
-    await cargar(u.teoria.archivo);
+    await Promise.all([cargarEstilo(), ...[...BASE, ...(u.teoria.requiere || []), u.teoria.archivo].map(cargar)]);
     const def = window.Teoria.unidades[u.id];
     if (!def) throw new Error('El archivo de teoría no registró la unidad');
     return def;

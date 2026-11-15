@@ -65,9 +65,15 @@
 
   // ---------- Registro (navegador) ----------
   const unidades = {};
+  // El validador completo (retos en toda la grilla, glosario, semillas de «Ahora tú») corre en las pruebas (npm test):
+  // en el celular del alumno no se repite, porque tardaba segundos al abrir cada unidad (15 nov). En la computadora de
+  // desarrollo (localhost) o con ?revisar en la dirección, sí corre, pero después de mostrar la unidad.
+  const revisarAqui = () => { try { const l = root.location; return !!l && (/^(localhost|127\.0\.0\.1)$/.test(l.hostname) || /[?&]revisar\b/.test(l.search)); } catch (e) { return false; } };
   function unidad(def) {
-    const p = problemas(def);
-    if (p.length && root && root.console) root.console.warn(`Teoría ${def && def.unidad}:`, p);
+    if (revisarAqui()) setTimeout(() => {
+      const p = problemas(def);
+      if (p.length && root.console) root.console.warn(`Teoría ${def && def.unidad}:`, p);
+    }, 1500);
     unidades[def.unidad] = def;
     if (root && typeof root.dispatchEvent === 'function' && typeof root.CustomEvent === 'function') {
       root.dispatchEvent(new root.CustomEvent('teoria:unidad', { detail: def.unidad }));
