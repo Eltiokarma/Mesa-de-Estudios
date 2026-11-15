@@ -53,6 +53,39 @@
     A: [['A', 0, 0]], B: [['B', 0, 0]], AB: [['A', -6, 0], ['B', 6, 0]], X: [['X', 0, 0]], XB: [['X', -6, 0], ['B', 6, 0]], AY: [['A', -6, 0], ['Y', 6, 0]], XY: [['X', -6, 0], ['Y', 6, 0]],
   };
   const lupa = (cajas, extra = {}) => ({ datos: Object.assign({ atomos: ATOMOS, especies: ESPECIES, alto: 140, separacion: 26, flechas: cajas.length > 1, cajas }, extra), estado: {} });
+  // ---------- Partículas que se mueven solas (animación, docs/3d.md §6) ----------
+  // Modelo cinético, en cámara lenta y determinístico (regla 1: cada cuadro es función de t). En un cilindro o una caja
+  // las partículas vuelan en recta y rebotan (gas); en un vaso se deslizan alrededor de su lugar (líquido); las que
+  // tienen un lugar fijo (un sólido en el fondo) vibran en su sitio. Frecuencias múltiplos de 1/CICLO: nada salta.
+  const CICLO = 8, W2 = 2 * Math.PI / CICLO;
+  const h01 = (a, b) => { let h = (Math.imul(a + 0x9E3779B9, 0x85EBCA6B) ^ Math.imul(b + 0x7F4A7C15, 0xC2B2AE35)) >>> 0; h ^= h >>> 15; h = Math.imul(h, 0x2C1B3C6D); h ^= h >>> 12; return (h >>> 0) / 4294967296; };
+  const tri = u => { const w = ((u % 2) + 2) % 2; return w > 1 ? 2 - w : w; };
+  const acota = (u, a = 0.06, b = 0.94) => Math.max(a, Math.min(b, u));
+  function mover(caja, t, k = 0) {
+    const lista = [];
+    for (const g of caja.particulas || []) { const n = Math.round(g.n === undefined ? 1 : g.n); for (let j = 0; j < n; j++) lista.push(g); }
+    const libres = lista.filter(g => !(Number.isFinite(g.x) && Number.isFinite(g.y)));
+    const cols = Math.max(1, Math.round(Math.sqrt(libres.length * 1.6))), filas = Math.max(1, Math.ceil(libres.length / cols));
+    const casilla = libres.map((_, i) => i).sort((a, b) => h01(k + 1, a) - h01(k + 1, b));
+    const gas = caja.forma !== 'vaso';
+    let libre = 0;
+    const particulas = lista.map((g, i) => {
+      const r = j => h01(i * 7 + j, k * 13 + 3);
+      if (Number.isFinite(g.x) && Number.isFinite(g.y)) {
+        return Object.assign({}, g, { n: 1, x: acota(g.x + 0.018 * Math.sin(W2 * (6 + Math.floor(r(1) * 3)) * t + 6.3 * r(2))), y: acota(g.y + 0.018 * Math.sin(W2 * (6 + Math.floor(r(3) * 3)) * t + 6.3 * r(4)), 0.06, 0.96) });
+      }
+      const c = casilla[libre++], bx = 0.14 + 0.72 * (cols === 1 ? 0.5 : (c % cols) / (cols - 1)), by = 0.16 + 0.68 * (filas === 1 ? 0.5 : Math.floor(c / cols) / (filas - 1));
+      if (gas) {
+        const vx = (2 + Math.floor(r(1) * 3)) * (r(2) < 0.5 ? -1 : 1) * 2 / CICLO, vy = (1 + Math.floor(r(3) * 3)) * (r(4) < 0.5 ? -1 : 1) * 2 / CICLO;
+        return Object.assign({}, g, { n: 1, x: 0.06 + 0.88 * tri(bx + vx * t), y: 0.07 + 0.86 * tri(by + vy * t) });
+      }
+      return Object.assign({}, g, { n: 1, x: acota(bx + 0.07 * Math.sin(W2 * (1 + Math.floor(r(1) * 2)) * t + 6.3 * r(2)) + 0.03 * Math.sin(W2 * 3 * t + 6.3 * r(3))),
+        y: acota(by + 0.05 * Math.sin(W2 * (1 + Math.floor(r(4) * 2)) * t + 6.3 * r(5)), 0.06, 0.95) });
+    });
+    return Object.assign({}, caja, { particulas });
+  }
+  const T_ANIMA = { id: 't', etiqueta: 't', min: 0, max: CICLO, paso: 0.1, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } };
+  const ent = (v, ...ids) => { const x = Object.assign({}, v); for (const k of ids) x[k] = Math.round(x[k]); return x; };
   const fondo = (e, n, y0 = 0.82, y1 = 0.95, x0 = 0.15, x1 = 0.85) => Array.from({ length: n }, (_, k) => ({ e, n: 1, x: x0 + (x1 - x0) * (n === 1 ? 0.5 : k / (n - 1)), y: k % 2 ? y1 : y0 }));
 
   // ---------- Idea 1: indicios, no pruebas ----------
@@ -71,11 +104,11 @@
     temas: ['Evidencias de una reacción'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Elige un fenómeno. Compara las partículas de antes y de después: ¿aparece alguna especie que antes no estaba?',
+      consigna: 'Elige un fenómeno; las partículas se mueven en cámara lenta. Compara antes y después: ¿aparece alguna especie que antes no estaba?',
       voz: 'Lo que ves es una observación; falta explicar qué significa.',
-      controles: [{ id: 'k', etiqueta: 'Fenómeno', opciones: Object.keys(FEN).map(k => ({ valor: k, texto: FEN[k].t })) }],
-      dibujo: val => lupa([FEN[val.k].antes, FEN[val.k].despues]),
-      lectura: val => [FEN[val.k].lee],
+      controles: [{ id: 'k', etiqueta: 'Fenómeno', opciones: Object.keys(FEN).map(k => ({ valor: k, texto: FEN[k].t })) }, T_ANIMA],
+      dibujo: val => lupa([mover(FEN[val.k].antes, val.t, 0), mover(FEN[val.k].despues, val.t, 1)]),
+      lectura: val => [`${f(val.t, 1)} s · ${FEN[val.k].lee}`],
       minimo: 3,
     },
     predice: {
@@ -147,11 +180,11 @@
     temas: ['Clasificación de las reacciones'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Elige un tipo de reacción y compara antes y después. Fíjate qué partículas se juntan, se separan o se cambian de pareja.',
+      consigna: 'Elige un tipo de reacción; las partículas vuelan en cámara lenta. Compara antes y después: ¿qué se junta, se separa o cambia de pareja?',
       voz: 'Sigue a una sola partícula de antes a después.',
-      controles: [{ id: 'k', etiqueta: 'Tipo', opciones: Object.keys(TIPOS).map(k => ({ valor: k, texto: TIPOS[k].t })) }],
-      dibujo: val => lupa([{ titulo: 'Antes', forma: 'caja', particulas: TIPOS[val.k].a }, { titulo: 'Después', forma: 'caja', particulas: TIPOS[val.k].d }]),
-      lectura: val => [`${TIPOS[val.k].t}: ${TIPOS[val.k].lee}`],
+      controles: [{ id: 'k', etiqueta: 'Tipo', opciones: Object.keys(TIPOS).map(k => ({ valor: k, texto: TIPOS[k].t })) }, T_ANIMA],
+      dibujo: val => lupa([mover({ titulo: 'Antes', forma: 'caja', particulas: TIPOS[val.k].a }, val.t, 0), mover({ titulo: 'Después', forma: 'caja', particulas: TIPOS[val.k].d }, val.t, 1)]),
+      lectura: val => [`${f(val.t, 1)} s · ${TIPOS[val.k].t}: ${TIPOS[val.k].lee}`],
       minimo: 3,
     },
     predice: {
@@ -220,14 +253,14 @@
     temas: ['Balance por tanteo'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Quema de metano. Cambia cuántas moléculas de O₂ y de H₂O hay. Busca que cada elemento tenga los mismos átomos a los dos lados.',
+      consigna: 'Quema de metano. Las moléculas de H₂O suben y bajan solas; cambia tú las de O₂. Busca los mismos átomos a los dos lados.',
       voz: 'Compara elemento por elemento: C, después H, después O.',
       controles: [
         { id: 'a', etiqueta: 'O₂', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
-        { id: 'b', etiqueta: 'H₂O', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
+        { id: 'b', etiqueta: 'H₂O', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0, auto: { velocidad: 0.8, modo: 'rebota' } },
       ],
-      dibujo: val => metano(val.a, val.b),
-      lectura: val => [`H: 4 | ${2 * val.b}`, '   ·   ', `O: ${2 * val.a} | ${2 + val.b}${val.b === 2 && val.a === 2 ? ' · balanceada ✓' : ''}`],
+      dibujo: val => { val = ent(val, 'b'); return metano(val.a, val.b); },
+      lectura: val => { val = ent(val, 'b'); return [`H: 4 | ${2 * val.b}`, '   ·   ', `O: ${2 * val.a} | ${2 + val.b}${val.b === 2 && val.a === 2 ? ' · balanceada ✓' : ''}`]; },
       minimo: 4,
     },
     predice: {
@@ -307,17 +340,29 @@
     h2: { t: 'H₂ + Cl₂', s: [['H', 0, 1], ['Cl', 0, -1]], ox: 'H₂', red: 'Cl₂', e: 2 },
   };
   const saltos = (s, desde = [0, 0]) => s.map(([x, a, b], i) => ({ tipo: 'salto', a, b, color: 'd', rotulo: `${x}: ${b > a ? 'se oxida' : 'se reduce'}`, fila: i + 1, desde: desde[i] }));
+  // Animación: primero se dibuja el salto del que se oxida, después el del que se reduce, y quedan los dos (1,5 s
+  // cada paso). La lectura dice cada salto en su momento.
+  const pasoRedox = t => Math.min(3, 1 + Math.floor(t / 1.5));
+  const sg2 = n => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '0');
+  function leeRedox(k, t) {
+    const r = REAC[k], p = pasoRedox(t);
+    if (p === 3) return `${r.ox} se oxida (reductor); ${r.red} se reduce (oxidante)`;
+    const [x, a, b] = r.s[p - 1];
+    return `${x}: de ${sg2(a)} a ${sg2(b)}, ${b > a ? 'pierde electrones: se oxida' : 'gana electrones: se reduce'}`;
+  }
   const redox = {
     id: 'oxida-reduce',
     titulo: 'Quién se oxida, quién se reduce',
     temas: ['Oxidación, reducción y agentes'],
     pieza: 'recta',
     juega: {
-      consigna: 'Elige una reacción. En la recta de estados de oxidación, un salto va a la derecha y otro a la izquierda. Compara los dos.',
+      consigna: 'Elige una reacción. En la recta de estados de oxidación los saltos se dibujan solos: uno a la derecha y otro a la izquierda.',
       voz: 'Sube quien pierde electrones; baja quien los gana.',
-      controles: [{ id: 'k', etiqueta: 'Reacción', opciones: Object.keys(REAC).map(k => ({ valor: k, texto: REAC[k].t })) }],
-      dibujo: val => recta(saltos(REAC[val.k].s)),
-      lectura: val => { const r = REAC[val.k]; return [`${r.ox} se oxida (reductor); ${r.red} se reduce (oxidante)`]; },
+      controles: [{ id: 'k', etiqueta: 'Reacción', opciones: Object.keys(REAC).map(k => ({ valor: k, texto: REAC[k].t })) },
+        { id: 't', etiqueta: 't', min: 0, max: 6, paso: 0.1, inicio: 6, unidad: 's', decimales: 1, auto: { velocidad: 1 } }],
+      // corte = paso + 0,5: se ve lo de desde ≤ paso, sin la clase de «lo nuevo» de «Mira» (que volvería a empezar).
+      dibujo: val => { const d = recta(saltos(REAC[val.k].s, [1, 2])); d.estado = { corte: pasoRedox(val.t) + 0.5 }; return d; },
+      lectura: val => [leeRedox(val.k, val.t)],
       minimo: 3,
     },
     predice: {
@@ -387,15 +432,15 @@
     temas: ['Balance redox por ion-electrón'],
     pieza: 'quim-fichas',
     juega: {
-      consigna: 'Semirreacción del permanganato en medio ácido. Agrega electrones a la izquierda hasta que la carga sea igual a la de la derecha.',
+      consigna: 'Semirreacción del permanganato en medio ácido. Los electrones de la izquierda suben y bajan solos: pausa cuando la carga iguale a la de la derecha.',
       voz: 'Compara las dos cargas, no solo los átomos.',
-      controles: [{ id: 'n', etiqueta: 'e⁻', color: 'c-i', min: 0, max: 8, paso: 1, inicio: 0, decimales: 0 }],
-      dibujo: val => media(val.n),
-      lectura: val => [`izquierda: ${sg(7 - val.n)}`, '   ·   ', `derecha: +2${7 - val.n === 2 ? ' ✓' : ''}`],
+      controles: [{ id: 'n', etiqueta: 'e⁻', color: 'c-i', min: 0, max: 8, paso: 1, inicio: 0, decimales: 0, auto: { velocidad: 1.2, modo: 'rebota' } }],
+      dibujo: val => media(Math.round(val.n)),
+      lectura: val => { const n = Math.round(val.n); return [`izquierda: ${sg(7 - n)}`, '   ·   ', `derecha: +2${7 - n === 2 ? ' ✓' : ''}`]; },
       // Se agarra el final de la fila de cargas negativas y se estira: cada cuadrito nuevo es un electrón que llega a
       // la izquierda; la carga sin pareja baja hasta dejar solo los +2 de la derecha.
       arrastres: [{ id: 'electrones', etiqueta: 'final de la fila de cargas negativas', color: 'c-i',
-        donde: val => finFila(media(val.n), 1 + val.n),
+        donde: val => finFila(media(Math.round(val.n)), 1 + Math.round(val.n)),
         mover: pt => ({ n: (pt.x - 47) / 17 }) }],
       minimo: 4,
     },
@@ -533,15 +578,15 @@
     laboratorio: [
       {
         id: 'metano-libre', titulo: 'El metano con todo', pieza: 'quim-particulas',
-        consigna: 'Ahora puedes cambiar los cuatro coeficientes. Busca la ecuación balanceada y después otra que también cuadre con números más grandes.',
+        consigna: 'El O₂ sube y baja solo; tú cambias los otros tres coeficientes. Busca la ecuación balanceada y otra que cuadre con números más grandes.',
         controles: [
           { id: 'a', etiqueta: 'CH₄', color: 'c-o', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0 },
-          { id: 'b', etiqueta: 'O₂', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 1, decimales: 0 },
+          { id: 'b', etiqueta: 'O₂', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 1, decimales: 0, auto: { velocidad: 1, modo: 'rebota' } },
           { id: 'c', etiqueta: 'CO₂', color: 'c-o', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0 },
           { id: 'd', etiqueta: 'H₂O', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 1, decimales: 0 },
         ],
-        dibujo: v => comb(v),
-        lectura: v => [`${v.a} : ${v.b} : ${v.c} : ${v.d} → ${estadoComb(v)}`],
+        dibujo: v => comb(ent(v, 'b')),
+        lectura: v => { v = ent(v, 'b'); return [`${v.a} : ${v.b} : ${v.c} : ${v.d} → ${estadoComb(v)}`]; },
         // Retos: todos los decide estadoComb, el mismo inventario que escribe la lectura.
         invitaciones: [
           { texto: 'Balancea la combustión del metano con los enteros más pequeños.',
