@@ -186,7 +186,7 @@
       ],
     },
     regla: {
-      texto: 'Una onda armónica cumple y = A sen(kx − ωt). Su rapidez es v = λf = ω/k, y la decide el medio: la fuente solo fija la frecuencia.',
+      texto: 'Función de onda armónica: y = A sen(kx − ωt). Su rapidez es v = λf = ω/k, y la decide el medio: la fuente solo fija la frecuencia.',
       ecuacion: [y, ' = A sen(kx − ω', t, ')', '   ·   ', 'k = ', { llave: [{ frac: ['2π', lam] }], nota: 'fase por metro', color: 'c-d' }, '   ·   ', 'ω = ', { llave: ['2π', fr], nota: 'fase por segundo', color: 'c-h' }, '   ·   ', v, ' = ', lam, fr],
       condicion: 'medio no dispersivo y amplitud pequeña; con (kx + ωt) la onda va hacia −x.',
     },
@@ -350,7 +350,7 @@
       ],
     },
     regla: {
-      texto: 'Una onda que se refleja en extremos fijos se superpone consigo misma. Solo persisten los modos en que caben medias longitudes de onda enteras.',
+      texto: 'Una onda que se refleja en extremos fijos se superpone consigo misma: forma una onda estacionaria. Solo persisten los modos en que caben medias longitudes de onda enteras.',
       ecuacion: ['L = n ', { llave: [{ frac: [lam, '2'] }], nota: 'media onda', color: 'c-d' }, '   ·   ', { sub: [fr, 'n'] }, ' = ', { frac: [['n ', v], '2L'] }],
       condicion: 'cuerda con los dos extremos fijos; n = 1, 2, 3… es el número de vientres.',
     },
@@ -424,7 +424,7 @@
       ],
     },
     regla: {
-      texto: 'La onda transporta energía; la intensidad es la potencia por unidad de área. El nivel en decibeles es el logaritmo de la intensidad: multiplicar I por 10 suma 10 dB.',
+      texto: 'La intensidad de la onda es la potencia por unidad de área. El nivel de intensidad sonora, en decibeles, es su logaritmo: I por 10 suma 10 dB.',
       ecuacion: ['I = ', { frac: ['P', 'A'] }, '   ·   ', 'β = 10 log ', { frac: ['I', { sub: ['I', '0'] }] }, '   ·   ', { llave: [{ sub: ['I', '0'] }, ' = ', { sup: ['10', '−12'] }, ' W/m²'], nota: 'apenas se oye' }],
       condicion: 'fuente pequeña que emite igual en todas direcciones y sin absorción (A = 4πr²). El oído no percibe en proporción a I.',
     },
@@ -490,11 +490,58 @@
     puntos: [{ x: val.r, y: beta(val.N * Ir(val.r)), rotulo: `${f(beta(val.N * Ir(val.r)), 1)} dB`, guias: true }],
   });
 
+  // Para los retos: las mismas cuentas que dibujan y leen las mesas. `guardado` dice si el caso actual ya se guardó.
+  const lamG = val => velC(val.T, val.mu) / val.f;
+  const crestasG = val => Math.floor((2 - lamG(val) / 4) / lamG(val) + 1e-9) + 1;   // crestas en λ/4 + kλ ≤ 2 m
+  const lamFija = val => 2 * val.L / val.n;
+  const frecFija = val => val.n * VC / (2 * val.L);
+  const nivelP = val => beta(val.N * Ir(val.r));
+  const guardado = (val, gs, claves) => gs.some(g => claves.every(c => g[c] === val[c]));
+
   return {
     unidad: 'fisica.ondas-mecanicas',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js'],
+    // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. «Medio» y «fase» a
+    // secas no se definen (tienen otro sentido en otras unidades); «intensidad» va como «intensidad de la onda».
+    glosario: [
+      { termino: 'onda', def: 'Perturbación que viaja y lleva energía de un lugar a otro, sin llevar materia.',
+        ver: ['onda mecánica', 'longitud de onda'] },
+      { termino: 'onda mecánica', formas: ['onda mecánica', 'ondas mecánicas'], def: 'Onda que necesita un medio material que vibre, como una cuerda, el agua o el aire.',
+        ejemplo: 'El sonido: en el vacío no se oye nada.', ver: ['onda'] },
+      { termino: 'onda transversal', formas: ['onda transversal', 'ondas transversales', 'transversal', 'transversales'],
+        def: 'Onda en la que cada punto del medio oscila perpendicular a la dirección en que avanza.',
+        ejemplo: 'Una cuerda agitada: sus puntos suben y bajan mientras la onda avanza.', ver: ['onda longitudinal'] },
+      { termino: 'onda longitudinal', formas: ['onda longitudinal', 'ondas longitudinales', 'longitudinal', 'longitudinales'],
+        def: 'Onda en la que cada punto del medio oscila en la misma dirección en que avanza.',
+        ejemplo: 'El sonido en el aire: las capas de aire van y vienen.', ver: ['onda transversal'] },
+      { termino: 'longitud de onda', formas: ['longitud de onda', 'longitudes de onda'], simbolo: 'λ', medida: 'm',
+        def: 'Distancia entre dos crestas seguidas: lo que avanza la onda en un período.',
+        ejemplo: 'v = 2 m/s y f = 1 Hz: λ = 2 / 1 = 2 m.', ver: ['cresta'] },
+      { termino: 'cresta', def: 'Punto más alto de una onda o de una curva que sube y baja; el más bajo es el valle.',
+        ver: ['longitud de onda'] },
+      { termino: 'función de onda', def: 'Fórmula que da la altura de cada punto del medio en cada instante.',
+        ejemplo: 'y = 2 sen(2πx − 4πt): λ = 1 m y f = 2 Hz.', ver: ['longitud de onda'] },
+      { termino: 'reflexión', formas: ['reflexión', 'reflexiones', 'se refleja', 'se reflejan'],
+        def: 'Rebote de una onda al llegar al borde de su medio: vuelve hacia donde venía.', ver: ['onda estacionaria'] },
+      { termino: 'onda estacionaria', formas: ['onda estacionaria', 'ondas estacionarias'],
+        def: 'Vibración que no avanza: la forman dos ondas iguales que viajan en sentidos opuestos y se superponen.',
+        ejemplo: 'Una cuerda de guitarra, fija en sus dos extremos, al sonar.', ver: ['nodo', 'vientre'] },
+      { termino: 'nodo', def: 'Punto de una onda estacionaria que siempre está quieto.',
+        ejemplo: 'En una cuerda fija, los dos extremos siempre están quietos.', ver: ['vientre'] },
+      { termino: 'vientre', formas: ['vientre', 'vientres', 'antinodo', 'antinodos'], def: 'Punto de una onda estacionaria que oscila con la mayor amplitud.',
+        ver: ['nodo'] },
+      { termino: 'frecuencia fundamental', simbolo: 'f₁', medida: 'Hz', def: 'La frecuencia más baja con que puede vibrar una cuerda fija: la del modo 1.',
+        ejemplo: 'Cuerda de 1 m con ondas a 100 m/s: f₁ = 100 / 2 = 50 Hz.', ver: ['onda estacionaria'] },
+      { termino: 'intensidad de la onda', formas: ['intensidad de la onda', 'intensidad de una onda'], simbolo: 'I', medida: 'W/m²',
+        def: 'Energía que lleva la onda en cada segundo por cada metro cuadrado que atraviesa.',
+        ejemplo: 'Lejos de un parlante, al doble de distancia llega la cuarta parte.', ver: ['nivel de intensidad sonora'] },
+      { termino: 'nivel de intensidad sonora', simbolo: 'β', medida: 'dB', def: 'Medida, en decibeles, de qué tan intenso es un sonido comparado con el más débil que se oye.',
+        ejemplo: 'I = 10⁻⁴ W/m²: β = 10 log 10⁸ = 80 dB.', ver: ['decibel'] },
+      { termino: 'decibel', formas: ['decibel', 'decibeles'], simbolo: 'dB', def: 'Unidad del nivel sonoro: cada vez que la intensidad se multiplica por 10, el nivel sube 10.',
+        ejemplo: 'De 60 dB, con el doble de intensidad, a unos 63 dB.', ver: ['nivel de intensidad sonora'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. La guitarra junta las ideas 2 y 3 (tensión, cuerda y frecuencia); la
     // cuerda fija suelta el largo y llega al modo 6; los parlantes prueban lo que la idea 5 solo pregunta.
     laboratorio: [
@@ -507,11 +554,26 @@
           { id: 'f', etiqueta: 'f', color: 'c-h', min: 25, max: 200, paso: 25, inicio: 50, unidad: 'Hz', decimales: 0 },
         ],
         dibujo: val => ({ datos: guitarra(val), estado: {} }),
-        lectura: val => { const vv = velC(val.T, val.mu); return [`${f(val.T)}\u00a0N y ${f(val.f)}\u00a0Hz: `, v, ` = ${f(vv, 1)}\u00a0m/s, `, lam, ` = ${f(vv / val.f, 2)}\u00a0m`]; },
+        lectura: val => { const vv = velC(val.T, val.mu); return [`${f(val.T)} N y ${f(val.f)} Hz: `, v, ` = ${f(vv, 1)} m/s, `, lam, ` = ${f(lamG(val), 2)} m`]; },
         arrastres: [
           { id: 'primera-cresta', etiqueta: 'primera cresta', color: 'c-h',
             donde: val => enEjes(guitarra(val), velC(val.T, val.mu) / val.f / 4, A1),
             mover: (pt, val) => ({ f: velC(val.T, val.mu) / (4 * Math.max(0.02, EJ().geometria(guitarra(val)).Xi(pt.x))) }) },
+        ],
+        invitaciones: [
+          { texto: 'Guarda dos casos con la misma rapidez y distinta longitud de onda.',
+            logrado: (val, guardados) => guardado(val, guardados, ['T', 'mu', 'f'])
+              && guardados.some(g => Math.abs(velC(g.T, g.mu) - velC(val.T, val.mu)) < 1e-9 && Math.abs(lamG(g) - lamG(val)) > 1e-9),
+            bien: 'Solo cambió f: la cuerda decide v, y la frecuencia reparte λ.' },
+          { texto: 'Con la cuerda gruesa, iguala la rapidez de la delgada tensada a 20 N.',
+            logrado: val => val.mu === 0.04 && Math.abs(velC(val.T, 0.04) - velC(20, 0.01)) < 1e-9,
+            bien: 'Cuatro veces más pesada pidió cuatro veces la tensión.' },
+          { texto: 'Busca la longitud de onda más larga posible.',
+            logrado: val => lamG(val) >= lamG({ T: 90, mu: 0.01, f: 25 }) - 1e-9,
+            bien: 'Cuerda tensa, liviana y frecuencia baja: las crestas se separan más.' },
+          { texto: 'Haz que en los 2 m de cuerda quepan seis crestas o más.',
+            logrado: val => crestasG(val) >= 6,
+            bien: 'Crestas apretadas, λ chica. ¿Lo lograste con f o con la cuerda?' },
         ],
       },
       {
@@ -522,11 +584,26 @@
           { id: 'n', etiqueta: 'modo n', min: 1, max: 6, paso: 1, inicio: 2, decimales: 0 },
         ],
         dibujo: val => ({ datos: modoLibre(val), estado: {} }),
-        lectura: val => [`L = ${f(val.L, 2)}\u00a0m, n = ${f(val.n)}: `, lam, ` = ${f(2 * val.L / val.n, 2)}\u00a0m, `, fr, ` = ${f(val.n * VC / (2 * val.L), 1)}\u00a0Hz`],
+        lectura: val => [`L = ${f(val.L, 2)} m, n = ${f(val.n)}: `, lam, ` = ${f(lamFija(val), 2)} m, `, fr, ` = ${f(frecFija(val), 1)} Hz`],
         arrastres: [
           { id: 'extremo', etiqueta: 'extremo derecho de la cuerda',
             donde: val => enEjes(modoLibre(val), val.L, 0),
             mover: (pt, val) => ({ L: EJ().geometria(modoLibre(val)).Xi(pt.x) }) },
+        ],
+        invitaciones: [
+          { texto: 'Haz que la cuerda vibre justo a 150 Hz.',
+            logrado: val => Math.abs(frecFija(val) - 150) < 1e-9,
+            bien: 'Más modo o menos largo: dos caminos a la misma frecuencia.' },
+          { texto: 'Consigue una cuerda con cinco nodos, contando los extremos.',
+            logrado: val => modoLibre(val).puntos.length === 5,
+            bien: 'Cinco nodos y cuatro vientres: siempre hay un nodo más.' },
+          { texto: 'Busca la frecuencia fundamental más grave posible.',
+            logrado: val => val.n === 1 && frecFija(val) <= frecFija({ L: 2, n: 1 }) + 1e-9,
+            bien: 'Cuerda larga y modo 1: la nota más grave. Por eso el contrabajo es grande.' },
+          { texto: 'Guarda dos cuerdas de distinto largo con la misma longitud de onda.',
+            logrado: (val, guardados) => guardado(val, guardados, ['L', 'n'])
+              && guardados.some(g => g.L !== val.L && Math.abs(lamFija(g) - lamFija(val)) < 1e-9),
+            bien: 'Misma λ y misma f: la cuerda larga solo tiene más vientres.' },
         ],
       },
       {
@@ -537,11 +614,23 @@
           { id: 'N', etiqueta: 'Parlantes', opciones: NP, inicio: 2 },
         ],
         dibujo: val => ({ datos: parlantes(val), estado: {} }),
-        lectura: val => [`${NP.find(q => q.valor === val.N).texto} a ${f(val.r)}\u00a0m: β = ${f(beta(val.N * Ir(val.r)), 1)}\u00a0dB`],
+        lectura: val => [`${NP.find(q => q.valor === val.N).texto} a ${f(val.r)} m: β = ${f(nivelP(val), 1)} dB`],
         arrastres: [
           { id: 'distancia', etiqueta: 'distancia a los parlantes',
             donde: val => enEjes(parlantes(val), val.r, beta(val.N * Ir(val.r))),
             mover: (pt, val) => ({ r: EJ().geometria(parlantes(val)).Xi(pt.x) }) },
+        ],
+        invitaciones: [
+          { texto: 'Guarda 1 parlante y 10 parlantes a la misma distancia.',
+            logrado: (val, guardados) => guardado(val, guardados, ['r', 'N'])
+              && guardados.some(g => g.r === val.r && g.N * val.N === 10),
+            bien: 'Diez veces la intensidad suma solo 10 dB: el nivel es un logaritmo.' },
+          { texto: 'Haz que el nivel sea justo 80 dB.',
+            logrado: val => Math.abs(nivelP(val) - 80) < 1e-9,
+            bien: 'Un parlante a 1 m. ¿Dónde tendrías lo mismo con diez?' },
+          { texto: 'Busca el nivel más bajo que puedes conseguir.',
+            logrado: val => nivelP(val) <= nivelP({ r: 10, N: 1 }) + 1e-9,
+            bien: 'Diez veces más lejos, cien veces menos intensidad: 20 dB menos.' },
         ],
       },
     ],
