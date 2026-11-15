@@ -600,7 +600,7 @@
       { termino: 'ángulo de referencia', simbolo: 'α', formas: ['ángulo de referencia', 'ángulos de referencia'],
         def: 'Ángulo agudo entre el lado final y el eje x. Da el tamaño de las razones; el cuadrante, su signo.',
         ejemplo: '210° termina a 30° del eje x: α = 210° − 180° = 30°.', ver: ['reducción al primer cuadrante', 'lado final'] },
-      { termino: 'co-razón', formas: ['co-razón', 'co-razones'],
+      { termino: 'co-razón', formas: ['co-razón', 'co-razones', 'cofunción', 'cofunciones'],
         def: 'Pareja de una razón: seno con coseno, tangente con cotangente. Aparece al reducir con 90° o 270°.',
         ejemplo: 'cos(90° + 30°) = −sen 30° = −1/2.', ver: ['cuarto de vuelta', 'cotangente'] },
       { termino: 'ángulos suplementarios', formas: ['ángulos suplementarios', 'suplementarios', 'suplementario'],

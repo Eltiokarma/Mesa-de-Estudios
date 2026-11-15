@@ -599,7 +599,7 @@
         ejemplo: `y = 3 sen x + 4 cos x sube hasta ${f(Math.hypot(3, 4))}, cerca de x = ${f(deg(Math.atan2(3, 4)), 1)}°.`, ver: ['onda'] },
       { termino: 'amplitud', def: 'Cuánto se aleja una onda de su línea del medio, hacia arriba o hacia abajo.',
         ejemplo: `3 sen x + 4 cos x tiene ${f(Math.hypot(3, 4))}: va de −${f(Math.hypot(3, 4))} a ${f(Math.hypot(3, 4))}, no de −7 a 7.`, ver: ['cresta', 'identidad auxiliar'] },
-      { termino: 'identidad auxiliar', def: 'Igualdad que convierte a sen x + b cos x en una sola onda R sen(x + φ).',
+      { termino: 'identidad auxiliar', def: 'Igualdad que junta dos ondas en una: a·sen x + b·cos x = R sen(x + φ).',
         ejemplo: `3 sen x + 4 cos x = 5 sen(x + φ), con φ ≈ ${f(deg(Math.atan2(4, 3)))}°.`, formas: ['identidad auxiliar', 'identidades auxiliares'],
         ver: ['ángulo auxiliar', 'amplitud'] },
       { termino: 'ángulo auxiliar', simbolo: 'φ', def: 'Ángulo φ con cos φ = a/R y sen φ = b/R; dice cuánto se corre la onda suma.',

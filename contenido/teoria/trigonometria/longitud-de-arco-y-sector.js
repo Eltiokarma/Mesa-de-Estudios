@@ -743,7 +743,7 @@
         formas: ['vértice', 'vértices'], ejemplo: 'Un triángulo tiene 3; el ángulo central tiene uno, en el centro del círculo.', ver: ['ángulo central', 'altura'] },
       { termino: 'número de vueltas', simbolo: 'n', def: 'Cuántas veces algo gira completo sobre sí mismo; cada giro de 360° cuenta uno.',
         ejemplo: 'Rueda de radio 1 m que avanza 4π m: n = 4π/(2π · 1) = 2.', ver: ['rodar sin deslizar'] },
-      { termino: 'rodar sin deslizar', def: 'Girar sin resbalar: el borde que toca el piso avanza justo lo mismo que el centro.',
+      { termino: 'rodar sin deslizar', def: 'Girar sin resbalar: el borde que se apoya en el piso mide lo que avanza el centro.',
         formas: ['rodar sin deslizar', 'sin deslizar'], ejemplo: 'Radio 1 m: en cada vuelta el centro avanza 2π ≈ 6,28 m.', ver: ['número de vueltas'] },
       { termino: 'faja', def: 'Correa cerrada que abraza dos ruedas: los bordes de ambas avanzan el mismo largo.',
         formas: ['faja', 'fajas'], ejemplo: 'De A (radio 1 cm) a B (radio 2 cm): si A gira 120°, B gira 60°.', ver: ['engranaje', 'eje común'] },
