@@ -103,7 +103,7 @@
       ],
     },
     regla: {
-      texto: 'Las escalas son reglas con distinto cero y distinto tamaño de grado. Para lecturas se usa la fórmula completa; para cambios, solo el tamaño del grado.',
+      texto: 'Las escalas termométricas son reglas con distinto cero y distinto tamaño de grado. Para lecturas se usa la fórmula completa; para cambios, solo el tamaño del grado.',
       ecuacion: [{ sub: [T, 'F'] }, ' = 1,8 ', { sub: [T, 'C'] }, ' + ', { llave: ['32'], nota: 'corre el cero' }, '   ·   ', { sub: [T, 'K'] }, ' = ', { sub: [T, 'C'] }, ' + 273', '   ·   ', 'Δ', { sub: [T, 'F'] }, ' = 1,8 Δ', { sub: [T, 'C'] }],
       condicion: 'Kelvin empieza en el cero absoluto y su grado es igual al Celsius: un cambio en K es igual que en °C.',
     },
@@ -155,8 +155,10 @@
   // Sin arrastre en el juego: lo que se elige es una masa, y la masa no está en la gráfica T–t. En el laboratorio
   // («Mezcla libre») se arrastran los dos puntos de partida, que sí son temperaturas.
   const curvaHacia = (T0, Tf, tau, tmax = 10, n = 21) => Array.from({ length: n }, (_, i) => { const tt = tmax * i / (n - 1); return [tt, Tf + (T0 - Tf) * Math.exp(-tt / tau)]; });
+  // Temperatura final de la mezcla (mismo c): la usan la figura, la lectura y los retos del laboratorio.
+  const tFinal = (m1, T1, m2, T2) => (m1 * T1 + m2 * T2) / (m1 + m2);
   const ejeTt = (m1, T1, m2, T2, extra = {}) => {
-    const Tf = (m1 * T1 + m2 * T2) / (m1 + m2);
+    const Tf = tFinal(m1, T1, m2, T2);
     return Object.assign({
       x: { min: 0, max: 10, paso: 2, nombre: 't', unidad: 'min', decimales: 0, color: 'd' },
       y: { min: 0, max: 100, paso: 20, nombre: 'T', unidad: '°C', decimales: 0, color: 'h' },
@@ -305,11 +307,14 @@
   // Se manipula: el punto, que se arrastra por la curva de calentamiento (el calor Q).
   const M4 = 100;
   const tramos = [[0, -20], [1, 0], [9, 0], [19, 100], [24, 100]];   // kcal y °C para 100 g de hielo desde −20 °C
+  // Gramos fundidos y gramos de vapor con q kcal: los usan la lectura y los retos del laboratorio.
+  const fundidos = q => Math.min(M4, Math.max(0, (q - 1) * 1000 / 80));
+  const vapor = q => Math.max(0, (q - 19) * 1000 / 540);
   const estadoFase = q => {
     if (q <= 1) return { T: -20 + 20 * q, que: 'hielo' };
-    if (q <= 9) return { T: 0, que: `hielo y agua (${f((q - 1) * 1000 / 80, 0)} g fundidos)` };
+    if (q <= 9) return { T: 0, que: `hielo y agua (${f(fundidos(q), 0)} g fundidos)` };
     if (q <= 19) return { T: (q - 9) * 10, que: 'agua' };
-    return { T: 100, que: `agua hirviendo (${f((q - 19) * 1000 / 540, 1)} g de vapor)` };
+    return { T: 100, que: `agua hirviendo (${f(vapor(q), 1)} g de vapor)` };
   };
   const ejeFase = (extra = {}) => Object.assign({
     x: { min: 0, max: 24, paso: 4, nombre: 'Q', unidad: 'kcal', decimales: 0, color: 'o' },
@@ -384,7 +389,8 @@
     y: { min: 0, max: 10, paso: 2, nombre: 'ΔL', unidad: 'mm', decimales: 0, color: 'i' },
     curvas: [{ puntos: [[0, 0], [100, a * L0 * 100 / 1000]], color: 'i', rotulo: `${ALFA[a] || ''} de ${f(L0)} m` }],
   }, extra);
-  const datosDil = val => { const dl = val.a * val.L0 * val.dt / 1000; return ejeDil(val.L0, val.a, { puntos: [{ x: val.dt, y: dl, color: 'i', rotulo: `${f(dl, 2)} mm`, guias: true }] }); };
+  const alarga = val => val.a * val.L0 * val.dt / 1000;   // mm: lo usan la figura, la lectura y los retos
+  const datosDil = val => { const dl = alarga(val); return ejeDil(val.L0, val.a, { puntos: [{ x: val.dt, y: dl, color: 'i', rotulo: `${f(dl, 2)} mm`, guias: true }] }); };
   const dilatacion = {
     id: 'dilatacion',
     titulo: 'Al calentarse, todo largo crece',
@@ -399,7 +405,7 @@
         { id: 'a', etiqueta: 'Material', opciones: [{ valor: 12, texto: 'acero' }, { valor: 24, texto: 'aluminio' }], inicio: 12 },
       ],
       dibujo: val => ({ datos: datosDil(val), estado: {} }),
-      lectura: val => [dL, ` = ${f(val.a * val.L0 * val.dt / 1000, 2)} mm`],
+      lectura: val => [dL, ` = ${f(alarga(val), 2)} mm`],
       minimo: 3,
       arrastres: [puntoEnX('calentar', 'cuánto se calienta', 'c-h', datosDil, 'dt', val => val.a * val.L0 * val.dt / 1000)],
     },
@@ -423,9 +429,9 @@
       ],
     },
     regla: {
-      texto: 'Al calentarse, cada largo de un sólido crece en proporción a sí mismo y al cambio de temperatura: también los huecos y los bordes.',
+      texto: 'Dilatación: al calentarse, cada largo de un sólido crece en proporción a sí mismo y al cambio de temperatura: también los huecos y los bordes.',
       ecuacion: [dL, ' = α ', { llave: [{ sub: [L, '0'] }], nota: 'largo inicial', color: 'c-i' }, ' ', dT, '   ·   ', 'área: β = 2α', '   ·   ', 'volumen: γ = 3α'],
-      condicion: 'cambios de temperatura moderados, sin cambio de fase; α depende del material.',
+      condicion: 'cambios de temperatura moderados, sin cambio de fase; el coeficiente de dilatación α depende del material.',
     },
     ahoraTu: {
       generar(s) {
@@ -538,11 +544,49 @@
     },
   };
 
+  // Para los retos del laboratorio: la final de la mesa de mezcla y «este caso es uno de los guardados».
+  const fin = val => tFinal(val.m1, val.T1, val.m2, val.T2);
+  const mismo = (g, val) => Object.keys(val).every(k => g[k] === val[k]);
+
   return {
     unidad: 'fisica.temperatura-y-calor',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js'],
+    // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. Energía, presión,
+    // densidad y fluido vienen de unidades anteriores y el lector las marca solas.
+    glosario: [
+      { termino: 'temperatura', simbolo: 'T', medida: '°C o K', def: 'Qué tan caliente o frío está un cuerpo. Crece con la agitación media de sus partículas.',
+        ejemplo: '20 °C = 68 °F = 293 K: el mismo estado en tres escalas.', ver: ['calor', 'escala termométrica'] },
+      { termino: 'calor', simbolo: 'Q', medida: 'cal o J', def: 'Energía que pasa de un cuerpo a otro porque están a distinta temperatura: del más caliente al más frío.',
+        ejemplo: '100 g de agua que suben 10 °C reciben 1000 cal.', ver: ['temperatura', 'calor específico'] },
+      { termino: 'equilibrio térmico', def: 'Cuando dos cuerpos en contacto ya tienen la misma temperatura y dejan de intercambiar calor.',
+        ejemplo: '100 g de agua a 80 °C con 300 g a 20 °C: las dos quedan a 35 °C.', ver: ['ley cero'] },
+      { termino: 'ley cero', def: 'Si dos cuerpos están en equilibrio térmico con un tercero, también lo están entre sí. Por eso sirve un termómetro.',
+        ver: ['equilibrio térmico'] },
+      { termino: 'escala termométrica', def: 'Regla para ponerle número a la temperatura: fija dónde está el cero y cuánto vale un grado.',
+        formas: ['escala termométrica', 'escalas termométricas'], ejemplo: 'El hielo que se funde marca 0 °C, 32 °F y 273 K.', ver: ['cero absoluto'] },
+      { termino: 'cero absoluto', def: 'La menor temperatura posible: 0 K, unos −273 °C. Nada se puede enfriar más.',
+        ver: ['escala termométrica'] },
+      { termino: 'calor específico', simbolo: 'c', medida: 'cal/(g·°C)', def: 'Energía que pide un gramo de un material para que su temperatura suba 1 °C.',
+        ejemplo: 'Agua: 1 cal/(g·°C); arena: 0,2. Con el mismo calor, la arena sube cinco veces más.', ver: ['capacidad calorífica'] },
+      { termino: 'capacidad calorífica', simbolo: 'C', medida: 'cal/°C', def: 'Energía que pide un cuerpo entero para subir 1 °C: su masa por su calor específico.',
+        ejemplo: '200 g de agua: C = 200 · 1 = 200 cal/°C.', ver: ['calor específico'] },
+      { termino: 'calor latente', simbolo: 'L', medida: 'cal/g', def: 'Energía que pide cada gramo para pasar de un estado a otro sin cambiar de temperatura.',
+        ejemplo: 'Fundir 100 g de hielo a 0 °C pide 100 · 80 = 8000 cal.', ver: ['cambio de fase'] },
+      { termino: 'cambio de fase', def: 'Paso de un estado a otro, como de sólido a líquido o de líquido a vapor.',
+        formas: ['cambio de fase', 'cambios de fase'], ejemplo: 'A nivel del mar, el agua que hierve se queda en 100 °C.', ver: ['calor latente'] },
+      { termino: 'dilatación', def: 'Aumento de tamaño de un cuerpo al calentarse: crecen sus largos, su área y su volumen.',
+        ejemplo: 'Una varilla de acero de 2 m que sube 60 °C se alarga 1,44 mm.', ver: ['coeficiente de dilatación'] },
+      { termino: 'coeficiente de dilatación', simbolo: 'α', medida: '1/°C', def: 'Cuánto crece cada metro de un material por cada grado que sube su temperatura.',
+        ejemplo: 'Acero: α = 12 · 10⁻⁶ 1/°C; cada metro crece 0,012 mm por grado.', ver: ['dilatación'] },
+      { termino: 'conducción', def: 'Paso de calor por contacto, de partícula en partícula, sin que la materia se desplace.',
+        ejemplo: 'Pared de ladrillo de 10 m² y 20 cm, con 10 °C de diferencia: pasan 300 J por segundo.', ver: ['convección', 'radiación'] },
+      { termino: 'convección', def: 'Paso de calor porque un fluido caliente se mueve y se lleva la energía consigo.',
+        ejemplo: 'El aire caliente de una estufa sube y calienta el cuarto.', ver: ['conducción', 'radiación'] },
+      { termino: 'radiación', def: 'Paso de energía como ondas, por ejemplo la luz; no necesita materia y cruza el vacío.',
+        ejemplo: 'El calor del Sol llega a la Tierra a través del espacio.', ver: ['conducción', 'convección'] },
+    ],
     laboratorio: [
       {
         // Más rica que la idea 2: las dos masas y las dos temperaturas se eligen, y los puntos de partida se arrastran.
@@ -556,15 +600,62 @@
         ],
         dibujo: val => ({ datos: ejeTt(val.m1, val.T1, val.m2, val.T2), estado: {} }),
         // Las masas se leen en los rótulos de las curvas; la lectura dice las dos temperaturas y la final.
-        lectura: val => [`${f(val.T1)}\u00a0°C y ${f(val.T2)}\u00a0°C → `, { sub: [T, 'f'] }, ` = ${f((val.m1 * val.T1 + val.m2 * val.T2) / (val.m1 + val.m2), 1)}\u00a0°C`],
+        lectura: val => [`${f(val.T1)}\u00a0°C y ${f(val.T2)}\u00a0°C → `, { sub: [T, 'f'] }, ` = ${f(fin(val), 1)}\u00a0°C`],
         arrastres: [['1', 'agua caliente'], ['2', 'agua fría']].map(([k, nom]) => ({
           id: 'inicio-' + k, etiqueta: `temperatura inicial del ${nom}`, color: 'c-h',
           donde: val => { const g = EJES().geometria(ejeTt(val.m1, val.T1, val.m2, val.T2)); return { x: g.X(0), y: g.Y(val['T' + k]) }; },
           mover: (pt, val) => ({ ['T' + k]: EJES().geometria(ejeTt(val.m1, val.T1, val.m2, val.T2)).Yi(pt.y) }),
         })),
+        // Retos comprobados (docs/teoria.md, 4d): fin usa tFinal, la misma cuenta que pone el punto final.
+        invitaciones: [
+          { texto: 'Haz que la mezcla termine justo a 50 °C.',
+            logrado: val => Math.abs(fin(val) - 50) < 1e-9,
+            bien: 'Justo 50 °C. ¿Hay otra pareja de masas que también lo logre?' },
+          { texto: 'Consigue que la fría suba el triple de lo que baja la caliente.',
+            logrado: val => Math.abs((fin(val) - val.T2) - 3 * (val.T1 - fin(val))) < 1e-9,
+            bien: 'El calor que cede una lo gana la otra; la de menos masa cambia más.' },
+          { texto: 'Con el agua caliente a 100 °C, deja la mezcla por debajo de 15 °C.',
+            logrado: val => val.T1 === 100 && fin(val) < 15,
+            bien: 'Poca agua hirviendo en mucha fría casi no se nota. Cuenta la masa.' },
+          { texto: 'Guarda dos mezclas con el mismo final y distinta masa caliente.',
+            logrado: (val, guardados) => guardados.some(g => g.m1 !== val.m1 && Math.abs(fin(g) - fin(val)) < 1e-9)
+              && guardados.some(g => mismo(g, val)),
+            bien: 'Mismo final con otra receta: importa la masa junto con la temperatura.' },
+        ],
       },
-      Object.assign({ id: 'curva-calentamiento', titulo: 'La curva del hielo', pieza: 'ejes' }, fase.juega),
-      Object.assign({ id: 'varilla', titulo: 'La varilla que se estira', pieza: 'ejes' }, dilatacion.juega),
+      Object.assign({ id: 'curva-calentamiento', titulo: 'La curva del hielo', pieza: 'ejes',
+        invitaciones: [
+          { texto: 'Detén el calor cuando la mitad del hielo ya esté fundida.',
+            logrado: val => fundidos(val.q) === M4 / 2,
+            bien: 'Mitad hielo, mitad agua, y el termómetro sigue en 0 °C.' },
+          { texto: 'Busca el menor calor que deja todo el hielo convertido en agua.',
+            logrado: val => fundidos(val.q) >= M4 && fundidos(val.q - 1) < M4,
+            bien: 'Con 9 kcal acaba la meseta. Recién ahí la temperatura vuelve a subir.' },
+          { texto: 'Haz que empiece a salir vapor.',
+            logrado: val => vapor(val.q) > 0,
+            bien: 'Ya hierve a 100 °C. ¿Subirá la temperatura si sigues dando calor?' },
+          { texto: 'Guarda dos casos con distinto calor y la misma temperatura.',
+            logrado: (val, guardados) => guardados.some(g => g.q !== val.q && estadoFase(g.q).T === estadoFase(val.q).T)
+              && guardados.some(g => g.q === val.q),
+            bien: 'Más calor, misma temperatura: en la meseta el calor cambia la fase.' },
+        ] }, fase.juega),
+      Object.assign({ id: 'varilla', titulo: 'La varilla que se estira', pieza: 'ejes',
+        invitaciones: [
+          { texto: 'Haz que la varilla se alargue justo 2,4 mm.',
+            logrado: val => Math.abs(alarga(val) - 2.4) < 1e-9,
+            bien: '2,4 mm justos. ¿Lo logras también con el otro material?' },
+          { texto: 'Haz que la varilla se alargue más de 8 mm.',
+            logrado: val => alarga(val) > 8,
+            bien: 'Larga, muy caliente y de aluminio: los tres factores al máximo.' },
+          { texto: 'Guarda dos casos del mismo material: uno que se alargue el doble que otro.',
+            logrado: (val, guardados) => guardados.some(g => g.a === val.a && Math.abs(alarga(val) - 2 * alarga(g)) < 1e-9)
+              && guardados.some(g => mismo(g, val)),
+            bien: 'Doble de largo o doble de ΔT: el alargamiento es proporcional a cada uno.' },
+          { texto: 'Guarda una de acero y otra de aluminio que se alarguen igual.',
+            logrado: (val, guardados) => guardados.some(g => g.a !== val.a && Math.abs(alarga(g) - alarga(val)) < 1e-9)
+              && guardados.some(g => mismo(g, val)),
+            bien: 'El aluminio crece el doble por metro: con la mitad de largo, empata.' },
+        ] }, dilatacion.juega),
     ],
     historia: {
       texto: 'Los termoscopios de inicios del siglo XVII mostraban que algo se calentaba, pero sin una escala común; algunos respondían también a la presión del aire. En el siglo XVIII, Fahrenheit y Celsius fijaron puntos que cualquiera podía reproducir, como el hielo que se funde. Medir temperatura se volvió comparable entre laboratorios.',
