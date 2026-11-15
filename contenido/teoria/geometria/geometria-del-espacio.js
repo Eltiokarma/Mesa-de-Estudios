@@ -599,7 +599,7 @@
       datos: triedroFig(150, 120, 100),
       voz: 'Dos condiciones, y las dos tienen que cumplirse.',
       pasos: [
-        { estado: { corte: 0 }, texto: 'Al plegar, los bordes rojos deben juntarse sin montarse.', ecuacion: ['150° + 120° + 100° = 370°'] },
+        { estado: { corte: 0 }, texto: 'Al plegar el desarrollo, los bordes rojos deben juntarse sin montarse.', ecuacion: ['150° + 120° + 100° = 370°'] },
         { estado: { corte: 0 }, texto: 'Las caras ya pasan de una vuelta: se montan.', ecuacion: ['370° ≥ 360°'] },
         { estado: { corte: 0 }, texto: 'La otra condición sí se cumple, pero no basta.', ecuacion: ['150° < 120° + 100°'] },
       ],
@@ -649,8 +649,11 @@
   // Mesa 1, más rica que la idea 2: también cambia el largo de AB, y el ángulo llega a 0° (AB acostado: la sombra es
   // el segmento entero) y a 90° (AB de pie: la sombra es un punto). Se arrastra B en su plano vertical: ángulo y largo.
   const ESC = 0.9;
-  const sombra = v => proyFig(v.th, v.giro, { L: ESC * v.ab, AB: f(v.ab), ABp: f(v.ab * Math.cos(U.rad(v.th))), BB: v.th > 0 ? f(v.ab * Math.sin(U.rad(v.th))) : '',
-    alt: `Segmento AB de ${f(v.ab)} a ${v.th}° del plano: su sombra AB′ mide ${f(v.ab * Math.cos(U.rad(v.th)))} y la altura BB′, ${f(v.ab * Math.sin(U.rad(v.th)))}` });
+  // Motor de la mesa: la sombra AB′ = AB · cos θ y la altura BB′ = AB · sen θ. Dibujo, lectura y retos usan estas dos.
+  const largoSombra = v => v.ab * Math.cos(U.rad(v.th)), alturaB = v => v.ab * Math.sin(U.rad(v.th));
+  const casi = (x, y) => Math.abs(x - y) < 1e-9;
+  const sombra = v => proyFig(v.th, v.giro, { L: ESC * v.ab, AB: f(v.ab), ABp: f(largoSombra(v)), BB: v.th > 0 ? f(alturaB(v)) : '',
+    alt: `Segmento AB de ${f(v.ab)} a ${v.th}° del plano: su sombra AB′ mide ${f(largoSombra(v))} y la altura BB′, ${f(alturaB(v))}` });
   const mesaSombra = {
     id: 'sombra-libre', titulo: 'Sombra de cualquier segmento', pieza: 'geo-figura',
     consigna: 'Arrastra B: cambia el ángulo y el largo de AB. Prueba 0° y 90°. Gira la cámara y compara la sombra.',
@@ -663,12 +666,34 @@
     arrastres: [{ id: 'punta-b', etiqueta: 'punta B del segmento', color: 'c-h',
       donde: v => enPantalla(sombra(v), puntaB(v.th, ESC * v.ab)),
       mover: (p, v) => { const [u, w] = enPlano(sombra(v), A2, DIR, [0, 1, 0], p); return { th: U.grados(Math.atan2(w, u)), ab: Math.hypot(u, w) / ESC }; } }],
-    lectura: v => [nb(`θ = ${v.th}°`), SEP, nb(`AB = ${f(v.ab)}`), SEP, nb(`AB′ = ${f(v.ab * Math.cos(U.rad(v.th)))}`), SEP, nb(`BB′ = ${f(v.ab * Math.sin(U.rad(v.th)))}`)],
+    lectura: v => [nb(`θ = ${v.th}°`), SEP, nb(`AB = ${f(v.ab)}`), SEP, nb(`AB′ = ${f(largoSombra(v))}`), SEP, nb(`BB′ = ${f(alturaB(v))}`)],
+    // Retos (docs/teoria.md §4d): cada logrado usa largoSombra y alturaB, las mismas que dibujan.
+    invitaciones: [
+      { texto: 'Haz que la sombra AB′ mida justo la mitad de AB.',
+        logrado: v => casi(largoSombra(v), v.ab / 2),
+        bien: 'La mitad pide θ = 60°: cos 60° = 1/2, con cualquier largo de AB.' },
+      { texto: 'Consigue que la sombra de AB se reduzca a un solo punto.',
+        logrado: v => casi(largoSombra(v), 0),
+        bien: 'AB de pie, a 90°: la sombra es solo el punto A.' },
+      { texto: 'Haz que la sombra AB′ y la altura BB′ midan lo mismo.',
+        logrado: v => v.th > 0 && v.th < 90 && casi(largoSombra(v), alturaB(v)),
+        bien: 'A 45° los dos catetos son iguales: el triángulo ABB′ es isósceles.' },
+      { texto: 'Guarda dos casos con la misma sombra AB′ y distinto ángulo real.',
+        logrado: (v, guardados) => guardados.some(g => g.th !== v.th && casi(largoSombra(g), largoSombra(v)))
+          && guardados.some(g => g.th === v.th && g.ab === v.ab && g.giro === v.giro),
+        bien: 'La misma sombra no dice el ángulo: también importa el largo de AB.' },
+      { texto: 'Guarda dos casos con el mismo AB y ángulo, y otra cámara.',
+        logrado: (v, guardados) => guardados.some(g => g.th === v.th && g.ab === v.ab && g.giro !== v.giro)
+          && guardados.some(g => g.th === v.th && g.ab === v.ab && g.giro === v.giro),
+        bien: 'El dibujo cambió y AB′ no: el ángulo real no depende de la cámara.' },
+    ],
   };
   // Mesa 2, más rica que la idea 3: A puede caer sobre la recta l (AB = 0, entonces PB = PA) y las medidas van de
   // medio en medio. Se arrastran P y A, como en la idea.
-  const tresLibre = v => tresFig(v.h, v.d, { PA: f(v.h), AB: v.d > 0 ? f(v.d) : '', PB: f(Math.hypot(v.h, v.d)),
-    alt: `PA de ${f(v.h)} perpendicular al plano y A a ${f(v.d)} de la recta l: PB mide ${f(Math.hypot(v.h, v.d))} y es perpendicular a l` });
+  // Motor de la mesa: PB = √(PA² + AB²), por las tres perpendiculares.
+  const largoPB = v => Math.hypot(v.h, v.d);
+  const tresLibre = v => tresFig(v.h, v.d, { PA: f(v.h), AB: v.d > 0 ? f(v.d) : '', PB: f(largoPB(v)),
+    alt: `PA de ${f(v.h)} perpendicular al plano y A a ${f(v.d)} de la recta l: PB mide ${f(largoPB(v))} y es perpendicular a l` });
   const mesaTres = {
     id: 'tres-perpendiculares-libre', titulo: 'Tres perpendiculares sin límites', pieza: 'geo-figura',
     consigna: 'Arrastra P y A. Lleva A hasta la recta l: ¿qué pasa con PB? Compara PB con PA y AB.',
@@ -678,13 +703,30 @@
     ],
     dibujo: v => ({ datos: tresLibre(v), estado: {} }),
     arrastres: tresArrastres(tresLibre),
-    lectura: v => [nb(`PA = ${f(v.h)}`), SEP, nb(`AB = ${f(v.d)}`), SEP, nb(`PB = ${f(Math.hypot(v.h, v.d))}`)],
+    lectura: v => [nb(`PA = ${f(v.h)}`), SEP, nb(`AB = ${f(v.d)}`), SEP, nb(`PB = ${f(largoPB(v))}`)],
+    invitaciones: [
+      { texto: 'Haz que la distancia PB de P a la recta l mida justo 5.',
+        logrado: v => casi(largoPB(v), 5),
+        bien: 'PA y AB de 3 y 4: el triángulo PAB es el 3-4-5.' },
+      { texto: 'Con PA = 2, busca la distancia PB más corta posible.',
+        logrado: v => v.h === 2 && largoPB(v) <= v.h + 1e-9,
+        bien: 'A sobre l: PB = PA. Más cerca de l, imposible.' },
+      { texto: 'Consigue que el triángulo PAB tenga sus dos catetos iguales.',
+        logrado: v => v.d > 0 && casi(v.h, v.d),
+        bien: 'PA = AB: PB mide PA · √2, como la diagonal de un cuadrado.' },
+      { texto: 'Guarda dos casos con la misma PB y distinta altura PA.',
+        logrado: (v, guardados) => guardados.some(g => g.h !== v.h && casi(largoPB(g), largoPB(v)))
+          && guardados.some(g => g.h === v.h && g.d === v.d),
+        bien: 'P más alto y A más cerca de l dan la misma distancia.' },
+    ],
   };
   // Mesa 3, más rica que la idea 4: el diedro pasa de 90° (obtuso: H cae en la prolongación de la otra cara) y OP
   // cambia. Se arrastra P: el ángulo y la distancia a la arista a la vez.
   const RD = 0.65, VD = { x: [-3.4, 2.9], y: [-1.9, 3.1] };
-  const diedroLibre = v => diedroFig(v.al, { r: RD * v.d, vista: VD, d: f(v.d), PH: f(v.d * Math.sin(U.rad(v.al))),
-    alt: `Diedro de ${v.al}°: P a ${f(v.d)} de la arista está a ${f(v.d * Math.sin(U.rad(v.al)))} de la otra cara${v.al > 90 ? '; H cae en la prolongación de esa cara' : ''}` });
+  // Motor de la mesa: PH = OP · sen α es la distancia a la otra cara; OH = OP · cos α dice dónde cae H (negativo: fuera).
+  const largoPH = v => v.d * Math.sin(U.rad(v.al)), pieH = v => v.d * Math.cos(U.rad(v.al));
+  const diedroLibre = v => diedroFig(v.al, { r: RD * v.d, vista: VD, d: f(v.d), PH: f(largoPH(v)),
+    alt: `Diedro de ${v.al}°: P a ${f(v.d)} de la arista está a ${f(largoPH(v))} de la otra cara${v.al > 90 ? '; H cae en la prolongación de esa cara' : ''}` });
   const mesaDiedro = {
     id: 'diedro-abierto', titulo: 'Diedro hasta obtuso', pieza: 'geo-figura',
     consigna: 'Arrastra P: abre la puerta más allá de 90° y aléjala de la arista. Mira dónde cae H.',
@@ -696,7 +738,22 @@
     arrastres: [{ id: 'punto-p', etiqueta: 'punto P de la puerta', color: 'c-i',
       donde: v => enPantalla(diedroLibre(v), sum([0, 0, 0.6], por([Math.cos(U.rad(v.al)), Math.sin(U.rad(v.al)), 0], RD * v.d))),
       mover: (p, v) => { const [u, w] = enPlano(diedroLibre(v), [0, 0, 0.6], [1, 0, 0], [0, 1, 0], p); return { al: U.grados(Math.atan2(w, u)), d: Math.hypot(u, w) / RD }; } }],
-    lectura: v => [nb(`α = ${v.al}°`), SEP, nb(`OP = ${f(v.d)}`), SEP, nb(`PH = ${f(v.d * Math.sin(U.rad(v.al)))}${v.al > 90 ? ', H fuera' : ''}`)],
+    lectura: v => [nb(`α = ${v.al}°`), SEP, nb(`OP = ${f(v.d)}`), SEP, nb(`PH = ${f(largoPH(v))}${v.al > 90 ? ', H fuera' : ''}`)],
+    invitaciones: [
+      { texto: 'Haz que P quede justo a 2 de la otra cara.',
+        logrado: v => casi(largoPH(v), 2),
+        bien: 'OP y el diedro se compensan. ¿Hay otra manera de llegar a 2?' },
+      { texto: 'Con OP = 3, aleja P lo más posible de la otra cara.',
+        logrado: v => v.d === 3 && largoPH(v) >= v.d - 1e-9,
+        bien: 'A 90° el seno vale 1: PH llega a medir lo mismo que OP.' },
+      { texto: 'Consigue que H caiga sobre la otra cara, no en su prolongación.',
+        logrado: v => pieH(v) > 1e-9,
+        bien: 'Con diedro agudo, H cae en la cara; con obtuso, fuera de ella.' },
+      { texto: 'Guarda dos diedros distintos con el mismo OP y la misma PH.',
+        logrado: (v, guardados) => guardados.some(g => g.al !== v.al && g.d === v.d && casi(largoPH(g), largoPH(v)))
+          && guardados.some(g => g.al === v.al && g.d === v.d),
+        bien: 'α y 180° − α tienen el mismo seno: la misma distancia.' },
+    ],
   };
 
   return {
@@ -709,6 +766,38 @@
       pregunta: '¿Por qué el ángulo que ves dibujado no siempre es el real?',
       fuente: { titulo: 'Euclides, Elementos XI (edición de D. E. Joyce)', url: 'https://math.clarku.edu/~djoyce/java/elements/bookXI/bookXI.html' },
     },
+    // Glosario por tema (docs/teoria.md §4d): lo que esta unidad estrena en el curso. «Plano», «perpendicular»,
+    // «perpendicular al plano», «proyección», «arista», «cara» y «cubo» salen antes en el curso (hasta Simetría); el
+    // lector los marca con su definición de allá.
+    glosario: [
+      { termino: 'pie de la perpendicular', def: 'Punto donde toca el plano, o la recta, la línea que baja a 90° desde un punto.',
+        ver: ['proyección ortogonal'] },
+      { termino: 'proyección ortogonal', def: 'Sombra que deja una figura sobre un plano cuando cada punto baja a 90° hasta él.',
+        ejemplo: 'Un segmento de 10 a 30° del plano deja una sombra de 5√3 ≈ 8,66.', ver: ['pie de la perpendicular', 'ángulo con el plano'] },
+      { termino: 'ángulo con el plano', formas: ['ángulo con el plano', 'ángulo entre una recta y un plano'],
+        def: 'El que forma una recta con su sombra sobre ese plano. Va de 0° a 90°.',
+        ejemplo: 'Si la sombra mide la mitad del segmento, el ángulo es 60°.', ver: ['proyección ortogonal'] },
+      { termino: 'tres perpendiculares', formas: ['teorema de las tres perpendiculares', 'tres perpendiculares'],
+        def: 'Teorema: si PA cae a 90° sobre un plano y AB forma 90° con una recta l suya, PB también.',
+        ejemplo: 'PA = 4 y AB = 3: la distancia de P a l es PB = 5.', ver: ['pie de la perpendicular'] },
+      { termino: 'diedro', formas: ['ángulo diedro', 'diedro', 'diedros'],
+        def: 'Abertura entre dos semiplanos que comparten su borde recto, como una puerta entreabierta y la pared.',
+        ejemplo: 'Abierto 60°: un punto a 6 de la bisagra queda a 3√3 ≈ 5,2 de la pared.', ver: ['semiplano', 'ángulo plano'] },
+      { termino: 'semiplano', def: 'Mitad de un plano: la parte que queda a un lado de una recta, que le sirve de borde.' },
+      { termino: 'ángulo plano', formas: ['ángulo plano del diedro', 'ángulo plano'],
+        def: 'Medida de un diedro: dos rayos a 90° de la arista, uno en cada cara, desde un mismo punto.', ver: ['diedro'] },
+      { termino: 'rectas cruzadas', formas: ['rectas cruzadas', 'recta cruzada'],
+        def: 'Dos rectas del espacio que no se cortan ni son paralelas: no caben en un mismo plano.',
+        ejemplo: 'En un cubo, una arista vertical y una diagonal de la base que no la toca.', ver: ['perpendicular común'] },
+      { termino: 'perpendicular común', def: 'Único segmento que forma 90° con dos rectas cruzadas a la vez. Su largo es la distancia entre ellas.',
+        ejemplo: 'En un cubo de arista 4, entre AE y BD mide 2√2.', ver: ['rectas cruzadas'] },
+      { termino: 'triedro', def: 'Rincón de tres caras planas que salen de un mismo vértice, como la esquina de una caja.',
+        ejemplo: 'Caras de 80°, 100° y 120°: suman 300°, menos de 360°, y cierran.', ver: ['desarrollo'] },
+      { termino: 'desarrollo', def: 'Figura plana que se obtiene al abrir las caras de un sólido o de un rincón sobre la mesa.' },
+      { termino: 'perspectiva', def: 'Manera de dibujar en el papel un objeto de tres dimensiones tal como se ve desde un lugar.' },
+      { termino: 'planta', def: 'Vista de un objeto desde arriba, proyectada a 90° sobre el piso.', ver: ['alzado', 'proyección ortogonal'] },
+      { termino: 'alzado', def: 'Vista de un objeto de frente, proyectada a 90° sobre un plano vertical.', ver: ['planta'] },
+    ],
     // Laboratorio: las tres mesas son más ricas que sus ideas (rango completo, caso límite y un control más).
     laboratorio: [mesaSombra, mesaTres, mesaDiedro],
     ideas: [perpIdea, proyIdea, tresIdea, diedroIdea, cruzIdea, trIdea],
