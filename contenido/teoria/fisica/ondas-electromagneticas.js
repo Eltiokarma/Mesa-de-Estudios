@@ -247,7 +247,7 @@
     temas: ['Espectro electromagnético'],
     pieza: 'recta',
     juega: {
-      consigna: 'La regla marca la longitud de onda en potencias de diez: −6 es 10⁻⁶ m. Elige una banda y lee su frecuencia.',
+      consigna: 'La regla marca la longitud de onda por su exponente de diez: −6 es 10⁻⁶ m. Elige una banda y lee su frecuencia.',
       voz: 'Fíjate en lo angosta que es la franja visible.',
       controles: [{ id: 'banda', etiqueta: 'Banda', opciones: BANDAS.map(b => ({ valor: b.id, texto: b.texto })) }],
       dibujo: val => ({ datos: reglaEsp(BANDAS.find(b => b.id === val.banda).tip), estado: {} }),
@@ -460,7 +460,7 @@
           { texto: 'Lleva el punto a la frecuencia más alta de toda la regla.',
             logrado: val => val.lg <= -12 + 1e-9,
             bien: 'Rayos gamma: la λ más corta da la f más alta.' },
-          { texto: 'Guarda dos puntos separados por una potencia de diez y compara sus frecuencias.',
+          { texto: 'Guarda dos puntos separados por un factor de diez y compara sus frecuencias.',
             logrado: (val, guardados) => guardados.some(g => Math.abs(Math.abs(g.lg - val.lg) - 1) < 1e-9)
               && guardados.some(g => g.lg === val.lg),
             bien: 'Diez veces más λ, diez veces menos f: el producto sigue siendo c.' },

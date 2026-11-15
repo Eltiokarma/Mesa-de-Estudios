@@ -570,7 +570,7 @@
     regla: {
       texto: 'Ecuación de continuidad: el caudal se conserva; donde el tubo es angosto, el líquido va más rápido. Principio de Bernoulli: donde va más rápido, la presión es menor.',
       ecuacion: [{ llave: [{ sub: ['A', '1'] }, { sub: [v, '1'] }], nota: 'el caudal' }, ' = ', { sub: ['A', '2'] }, { sub: [v, '2'] }, '   ·   ', p, ' + ', { llave: ['½ρ', { sup: [v, '2'] }], nota: 'por ir rápido', color: 'c-o' }, ' + ρg', h, ' = constante'],
-      condicion: 'flujo estacionario, incompresible y sin viscosidad, siguiendo una misma línea de corriente. g = 10 m/s².',
+      condicion: 'flujo estacionario, incompresible y sin viscosidad, siguiendo una misma línea de flujo. g = 10 m/s².',
     },
     ahoraTu: {
       generar(s) {
@@ -643,7 +643,7 @@
         ejemplo: 'Tubo de 0,01 m² con agua a 2 m/s: Q = 0,02 m³/s.', ver: ['ecuación de continuidad'] },
       { termino: 'ecuación de continuidad', def: 'En un tubo lleno, pasa el mismo caudal por todas partes: A₁v₁ = A₂v₂.',
         ejemplo: 'Con la mitad del área, el agua va al doble de rapidez.', ver: ['caudal'] },
-      { termino: 'principio de Bernoulli', formas: ['principio de Bernoulli', 'ecuación de Bernoulli'], def: 'A lo largo de una corriente, donde el fluido va más rápido, su presión es menor.',
+      { termino: 'principio de Bernoulli', formas: ['principio de Bernoulli', 'ecuación de Bernoulli'], def: 'En un fluido que corre sin roce, donde va más rápido, su presión es menor.',
         ejemplo: 'Agua que pasa de 1 a 2 m/s a la misma altura: la presión baja 1500 Pa.', ver: ['ecuación de continuidad'] },
     ],
     laboratorio: [

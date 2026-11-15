@@ -501,7 +501,7 @@
       pasos: [
         { estado: { paso: 1 }, texto: 'Vidrio de n = 1,5 con caras de radio 20 cm, en el aire.', ecuacion: [{ sub: ['R', '1'] }, ' = 20 cm', '   ·   ', { sub: ['R', '2'] }, ' = −20 cm'] },
         { estado: { paso: 1 }, texto: 'La ecuación del fabricante da el foco.', ecuacion: [{ frac: ['1', fF] }, ' = (1,5 − 1)(', { frac: ['1', '20'] }, ' + ', { frac: ['1', '20'] }, ') = ', { frac: ['1', '20'] }] },
-        { estado: { paso: 1 }, texto: 'La potencia usa f en metros: 0,2 m.', ecuacion: ['P = ', { frac: ['1', '0,2 m'] }, ' = 5 D'] },
+        { estado: { paso: 1 }, texto: 'La potencia de la lente usa f en metros: 0,2 m.', ecuacion: ['P = ', { frac: ['1', '0,2 m'] }, ' = 5 D'] },
       ],
     },
     regla: {
@@ -515,10 +515,10 @@
         if (s % 2 === 0) {
           const fc = r.de([10, 20, 25, 40, 50, -25, -50]), P = 100 / fc;
           return {
-            pregunta: ['Una lente tiene ', fF, ` = ${f(fc, 0)} cm. ¿Cuál es su potencia?`],
+            pregunta: ['Una lente tiene ', fF, ` = ${f(fc, 0)} cm. ¿Cuál es la potencia de la lente?`],
             opciones: opciones(P, [
               { id: 'cm', valor: 1 / fc, error: 'P-CM', siFuera: 'Eso usa f en centímetros; la dioptría pide metros.' },
-              { id: 'inv', valor: fc / 100, error: 'P-INVERSA', siFuera: 'Ese es f en metros; la potencia es su inversa.' },
+              { id: 'inv', valor: fc / 100, error: 'P-INVERSA', siFuera: 'Ese es f en metros; la potencia de la lente es su inversa.' },
               { id: 'signo', valor: -P, error: 'OP-SIGNO', siFuera: 'El signo de P sigue al de f: convergente positiva.' },
             ], x => `${f(x, 2)} D`),
             solucion: { texto: 'Inversa de f en metros.', ecuacion: [`P = 1 / ${f(fc / 100, 2)} m = ${f(P, 2)} D`] },
@@ -689,7 +689,7 @@
         { texto: 'Haz que el foco quede a 50 cm.',
           logrado: val => Math.abs(fFab(val.n, val.R) - 50) < 1e-6,
           bien: 'Solo 2 dioptrías: una lente casi plana desvía poco la luz.' },
-        { texto: 'Busca la lente de mayor potencia que permite la mesa.',
+        { texto: 'Busca la lente más potente que permite la mesa.',
           logrado: val => 100 / fFab(val.n, val.R) >= 100 / fFab(1.8, 10) - 1e-9,
           bien: 'Caras muy curvas y mucho índice: el foco se acerca a la lente.' },
         { texto: 'Guarda dos lentes distintas con la misma distancia focal.',

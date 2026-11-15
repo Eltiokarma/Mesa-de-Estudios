@@ -358,7 +358,7 @@
     temas: ['Fuerza elástica'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Cuelga una masa del resorte y elige su constante elástica k. La línea discontinua marca su largo sin carga.',
+      consigna: 'Cuelga una masa del resorte y elige su constante elástica k. La línea discontinua marca su largo natural.',
       voz: 'Duplica la masa con el mismo k. ¿Qué le pasa a x?',
       controles: [
         { id: 'k', etiqueta: 'k', min: 100, max: 400, paso: 100, inicio: 200, unidad: 'N/m', decimales: 0 },
@@ -406,7 +406,7 @@
     regla: {
       texto: 'Un resorte ideal hace una fuerza proporcional a cuánto se deforma, y en contra de esa deformación.',
       ecuacion: [Fe, ' = k ', { llave: [x], nota: 'desde el largo natural', color: 'c-i' }],
-      condicion: 'x se mide desde el largo natural (sin carga) y el resorte no pasa su límite elástico.',
+      condicion: 'x se mide desde el largo natural (sin nada colgado) y el resorte no pasa su límite elástico.',
     },
     ahoraTu: {
       pieza: 'fis-lienzo',
@@ -576,8 +576,8 @@
     temas: ['Máquinas simples'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Sostén una carga con una polea fija o con una polea móvil. Elige la carga y compara la fuerza de la mano.',
-      voz: 'Con la misma carga, cambia de polea. ¿Cuántos tramos sostienen?',
+      consigna: 'Sostén un bulto con una polea fija o con una polea móvil. Elige su peso y compara la fuerza de la mano.',
+      voz: 'Con el mismo bulto, cambia de polea. ¿Cuántos tramos sostienen?',
       controles: [
         { id: 'P', etiqueta: 'P', color: 'c-d', min: 40, max: 120, paso: 20, inicio: 80, unidad: 'N', decimales: 0 },
         { id: 'movil', etiqueta: 'Polea', opciones: [{ valor: 0, texto: 'Fija' }, { valor: 1, texto: 'Móvil' }], inicio: 0 },
@@ -591,7 +591,7 @@
         mover: (pt, val) => ({ P: (pt.y - LZ(polea(val.P, val.movil === 1)).Y(0.4)) / K6 }) }],
     },
     predice: {
-      pregunta: 'Con una polea móvil sostienes 80 N con solo 40 N. Para subir la carga 1 m, ¿cuánta cuerda tienes que jalar?',
+      pregunta: 'Con una polea móvil sostienes 80 N con solo 40 N. Para subir el bulto 1 m, ¿cuánta cuerda tienes que jalar?',
       opciones: [
         { id: 'c', texto: '2 m', correcta: true },
         { id: 'uno', texto: '1 m, lo mismo que sube', error: 'MS-CUERDA', siFuera: 'Con polea fija, sí. Aquí cada uno de los dos tramos se acorta 1 m.' },
@@ -613,18 +613,18 @@
     regla: {
       texto: 'Una máquina ideal cambia fuerza por distancia: si reduce la fuerza, la mano recorre más. Fuerza por distancia se conserva.',
       ecuacion: [F, ' · ', { llave: [{ sub: [d, 'mano'] }], nota: 'cuerda jalada', color: 'c-i' }, ' = ', P, ' · ', { llave: [{ sub: [d, 'carga'] }], nota: 'lo que sube', color: 'c-i' }],
-      condicion: 'poleas y cuerdas sin masa ni rozamiento. Cada polea móvil reparte la carga entre dos tramos.',
+      condicion: 'poleas y cuerdas sin masa ni rozamiento. Cada polea móvil reparte el peso entre dos tramos.',
     },
     ahoraTu: {
       generar(sm) {
         const r = azar(sm), n = r.ent(1, 3), Pv = r.de([80, 120, 160, 240, 320]), pide = sm % 2 ? 'fuerza' : 'cuerda', h = r.de([1, 2, 3]);
         const k = 2 ** n, Fv = Pv / k, cu = h * k;
-        const pre = `Un sistema tiene ${n} ${n === 1 ? 'polea móvil' : 'poleas móviles'} en serie (cada una reparte su carga en dos tramos) y sube ${Pv} N`;
+        const pre = `Un sistema tiene ${n} ${n === 1 ? 'polea móvil' : 'poleas móviles'} una tras otra (cada una reparte su peso en dos tramos) y sube ${Pv} N`;
         return pide === 'fuerza' ? {
           pregunta: `${pre}. Sin rozamiento, ¿con qué fuerza hay que jalar?`,
           opciones: opciones(Fv, [
             { id: 'mitad-n', valor: Pv / (2 * n), error: 'MS-SUMA', siFuera: 'Eso reparte entre 2n tramos. En serie, cada polea vuelve a dividir entre dos.' },
-            { id: 'todo', valor: Pv, error: 'MS-CUERDA', siFuera: 'Eso sería con polea fija: no reparte la carga.' },
+            { id: 'todo', valor: Pv, error: 'MS-CUERDA', siFuera: 'Eso sería con polea fija: no reparte el peso.' },
             { id: 'una', valor: Pv / 2, error: 'MS-MITAD', siFuera: 'Esa es la fuerza con una sola polea móvil.' },
           ], v => `${f(v, 2)} N`),
           solucion: { texto: `Cada polea divide entre dos: ${n} veces.`, ecuacion: [F, ` = ${Pv} / `, n > 1 ? { sup: ['2', `${n}`] } : '2', ` = ${f(Fv, 2)} N`] },
@@ -633,7 +633,7 @@
           opciones: opciones(cu, [
             { id: 'igual', valor: h, error: 'MS-CUERDA', siFuera: 'Eso sería con polea fija.' },
             { id: 'mitad', valor: h / k, error: 'MS-MITAD', siFuera: 'Menos fuerza no ahorra cuerda: la cuerda se multiplica.' },
-            { id: 'suma', valor: 2 * n * h, error: 'MS-SUMA', siFuera: 'Eso suma dos por polea; en serie cada polea duplica.' },
+            { id: 'suma', valor: 2 * n * h, error: 'MS-SUMA', siFuera: 'Eso suma dos por polea; una tras otra, cada polea duplica.' },
           ], v => `${f(v, 2)} m`),
           solucion: { texto: 'La fuerza baja tantas veces como la cuerda crece.', ecuacion: [`cuerda = ${h} · ${k} = ${f(cu, 0)} m`] },
         };
@@ -773,7 +773,7 @@
         ] }, nudo.juega),
     ],
     historia: {
-      texto: 'Equilibrar cargas fue un problema práctico mucho antes de la mecánica moderna. Arquímedes relacionó pesos y distancias en la palanca con argumentos geométricos. Siglos después, Stevin estudió cuerpos en planos inclinados. Hoy esas ideas se escriben como dos condiciones: que las fuerzas y los giros se cancelen.',
+      texto: 'Equilibrar pesos fue un problema práctico mucho antes de la mecánica moderna. Arquímedes relacionó pesos y distancias en la palanca con argumentos geométricos. Siglos después, Stevin estudió cuerpos en planos inclinados. Hoy esas ideas se escriben como dos condiciones: que las fuerzas y los giros se cancelen.',
       pregunta: '¿Por qué una puerta se abre más fácil empujando lejos de las bisagras?',
       fuente: { titulo: 'NYU — Archimedes, The Law of the Lever', url: 'https://math.nyu.edu/Archimedes/Lever/LeverLaw.html' },
     },
