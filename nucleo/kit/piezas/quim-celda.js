@@ -19,6 +19,12 @@
  *   iones: true,                             // flechas de cationes y aniones en el puente (o en el líquido)
  *   medidor: '1,10 V',                       // lectura del voltímetro (galvánica) o de la fuente (electrolítica)
  *   desde: { electrones, iones, roles, medidor },   // en qué paso aparece cada cosa (0 por defecto)
+ *   flujo: s,                                // opcional (ronda 5, animación): cuánto avanzó la carga, en «espacios»
+ *                                            // entre puntos (1 = un espacio). Con electrones, puntos e⁻ que corren por
+ *                                            // el alambre en su sentido; con iones, cationes (naranja) hacia el cátodo
+ *                                            // y aniones (verde) hacia el ánodo, por el puente o el líquido. Puro de s.
+ *   grosor: { izq: 1, der: 1 },              // opcional: ancho de cada electrodo, en veces el normal (el ánodo que se
+ *                                            // gasta adelgaza, el cátodo que recibe metal engorda); lo calcula la unidad
  *   alt
  * }
  * estado = { corte }. Alto fijo: 236.
@@ -48,10 +54,11 @@
       s += `<path d="M${x} ${YV}L${x} ${YV + HV}L${x + w} ${YV + HV}L${x + w} ${YV}" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>`;
     }
     const ex = galv ? [50, 270] : [100, 220];
+    const gr = d.grosor || {};
     [L, R].forEach((e, k) => {
-      const x = ex[k];
-      s += `<rect x="${x - 7}" y="${YA + 22}" width="14" height="${YV + HV - 14 - (YA + 22)}" rx="2" fill="${T.color(e.color)}" fill-opacity="0.35" stroke="${T.color(e.color)}" stroke-width="2"/>`;
-      s += T.rotulo(x + (k ? 12 : -12), YV + 34, e.electrodo || '', { ancla: k ? 'start' : 'end', peso: 700, color: e.color });
+      const x = ex[k], gk = gr[k ? 'der' : 'izq'], w = Number.isFinite(gk) ? 14 * Math.max(0.2, Math.min(2.4, gk)) : 14;
+      s += `<rect x="${T.n(x - w / 2)}" y="${YA + 22}" width="${T.n(w)}" height="${YV + HV - 14 - (YA + 22)}" rx="2" fill="${T.color(e.color)}" fill-opacity="0.35" stroke="${T.color(e.color)}" stroke-width="2"/>`;
+      s += T.rotulo(x + (k ? 1 : -1) * (5 + w / 2), YV + 34, e.electrodo || '', { ancla: k ? 'start' : 'end', peso: 700, color: e.color });
       if (galv && e.disolucion) s += T.rotulo(k ? 240 : 80, YV + HV - 12, e.disolucion, { ancla: 'middle', peso: 600 });
     });
     if (!galv && (L.disolucion || R.disolucion)) s += T.rotulo(160, YV + HV - 12, L.disolucion || R.disolucion, { ancla: 'middle', peso: 600 });
@@ -92,6 +99,46 @@
         q += T.flecha(catDer ? 190 : 130, YV + 52, catDer ? 130 : 190, YV + 52, { color: 'd', grosor: 2 }) + T.rotulo(catDer ? 196 : 124, YV + 57, '−', { ancla: catDer ? 'start' : 'end', color: 'd', peso: 700 });
       }
       s += `<g class="kit-iones${nuevo('iones')}">${q}</g>`;
+    }
+    // Flujo (animación): puntos que avanzan con s. Los electrones solo sobre el alambre (arriba de los vasos); los
+    // iones solo dentro del puente o del líquido.
+    if (Number.isFinite(d.flujo)) {
+      const fr = x => x - Math.floor(x);
+      // Puntos separados `paso` px a lo largo de una poligonal, corridos fr(s)·paso en su sentido.
+      const sobre = (pts, paso, s0, salta) => {
+        const seg = [];
+        let largo = 0;
+        for (let i = 0; i < pts.length - 1; i++) { const l = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]); seg.push([largo, l]); largo += l; }
+        const out = [];
+        for (let u = fr(s0) * paso; u < largo; u += paso) {
+          const i = seg.findIndex(([a, l]) => u <= a + l), [a, l] = seg[i], q = (u - a) / l;
+          const x = pts[i][0] + (pts[i + 1][0] - pts[i][0]) * q, y = pts[i][1] + (pts[i + 1][1] - pts[i][1]) * q;
+          if (!salta || !salta(x, y)) out.push([x, y]);
+        }
+        return out;
+      };
+      const bolas = (ps, r, c) => ps.map(([x, y]) => `<circle cx="${T.n(x)}" cy="${T.n(y)}" r="${r}" fill="${T.color(c)}"/>`).join('');
+      if (d.electrones && ve('electrones')) {
+        const ida = [[ex[0], YA + 20], [ex[0], YA], [ex[1], YA], [ex[1], YA + 20]];
+        const ps = sobre(d.electrones === 'izq' ? ida.reverse() : ida, 22, d.flujo, x => Math.abs(x - 160) < (galv ? 20 : 26));
+        s += `<g class="kit-flujo-e">${bolas(ps, 3.5, 'i')}</g>`;
+      }
+      if (d.iones && ve('iones')) {
+        const catDer = (R.rol || '').startsWith('cát');
+        let cat, an;
+        if (galv) {
+          // Dos carriles dentro del puente (12 px de ancho): cationes por el de adentro, aniones por el de afuera.
+          const carril = o => [[102 + o, YV + 30], [102 + o, YV - 8 + o], [218 - o, YV - 8 + o], [218 - o, YV + 30]];
+          const c1 = carril(3), c2 = carril(-3);
+          cat = sobre(catDer ? c1 : c1.reverse(), 26, d.flujo);
+          an = sobre(catDer ? c2.reverse() : c2, 26, d.flujo + 0.5);
+        } else {
+          const c1 = [[ex[0] + 14, YV + 44], [ex[1] - 14, YV + 44]], c2 = [[ex[0] + 14, YV + 62], [ex[1] - 14, YV + 62]];
+          cat = sobre(catDer ? c1 : c1.reverse(), 24, d.flujo);
+          an = sobre(catDer ? c2.reverse() : c2, 24, d.flujo + 0.5);
+        }
+        s += `<g class="kit-flujo-iones">${bolas(cat, 3, 'o')}${bolas(an, 3, 'd')}</g>`;
+      }
     }
     // Roles bajo cada electrodo.
     if (ve('roles')) {
