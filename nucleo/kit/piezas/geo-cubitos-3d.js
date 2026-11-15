@@ -68,7 +68,7 @@
     return { W, H, caras };
   }
   function dibujar(d) {
-    const pl = plano(d), n = x => Math.round(x * 10) / 10;
+    const pl = plano(d), n = x => Math.round(x);   // píxeles enteros: con 125 cubitos el SVG pesa menos
     const caras = pl.caras.map(c => `<polygon points="${c.pts.map(p => `${n(p[0])},${n(p[1])}`).join(' ')}" fill="var(--${CLASE[c.clase].color}, ${CLASE[c.clase].hex})" fill-opacity="${c.pintada ? 0.9 : 0.4}" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round"/>`).join('');
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${pl.W} ${pl.H}" width="${pl.W}" height="${pl.H}" role="img" aria-label="${alt(d).replace(/"/g, '&quot;')} Vista plana." class="kit-svg" font-family="inherit">${caras}</svg>`;
   }
