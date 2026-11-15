@@ -4476,10 +4476,12 @@
       "archivo": "/contenido/teoria/trigonometria/triangulos-oblicuangulos.js",
       "requiere": [
        "/nucleo/kit/piezas/trig-plano.js",
-       "/nucleo/kit/piezas/triangulo.js"
+       "/nucleo/kit/piezas/triangulo.js",
+       "/plantillas/trig-angulos-verticales/motor.js",
+       "/nucleo/kit/piezas/trig-campo-3d.js"
       ],
       "ideas": 5,
-      "terminos": 35
+      "terminos": 36
      }
     },
     {

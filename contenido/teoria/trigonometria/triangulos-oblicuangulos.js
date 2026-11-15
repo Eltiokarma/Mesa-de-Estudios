@@ -26,10 +26,12 @@
  *   Duda que resuelve: ¿por qué la calculadora da un solo B si a veces hay dos triángulos, y desde dónde se mide un rumbo?
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/trig-angulos-verticales/motor.js'))
+    : fabrica(root.Kit, root.MotorCampo);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MC) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const A = { v: 'c-o', t: 'A' }, a = { v: 'c-o', t: 'a' }, B = { v: 'c-i', t: 'B' }, b = { v: 'c-i', t: 'b' };
@@ -752,11 +754,57 @@
   const viajeDe = val => viaje([val.q1[0], val.t1, val.q1[1]], val.b, [val.q2[0], val.t2, val.q2[1]], val.a);
   const mesaViaje = val => viajeDatos([val.q1[0], val.t1, val.q1[1]], val.b, [val.q2[0], val.t2, val.q2[1]], val.a);
 
+  // ---------- Dos rumbos y la torre (laboratorio 3D, 15 nov: exploración libre, sin predicciones) ----------
+  // A y B están en el piso, cada uno con su rumbo desde el pie de una torre de 8 m. El rumbo se arma como en la
+  // idea 5 (desde N o S, θ hacia E u O). Rumbos, ángulo en el pie y AB los calcula el motor del campo
+  // (plantillas/trig-angulos-verticales/motor.js), el mismo que usa la pieza trig-campo-3d para dibujar (regla 1).
+  const ALTO = 8;
+  const acimut = (q, t) => ({ NE: t, SE: 180 - t, SO: 180 + t, NO: 360 - t })[q];
+  const campoR = v => MC.campo({ h: ALTO, obs: [{ id: 'A', az: acimut(v.qA, v.tA), d: v.dA }, { id: 'B', az: acimut(v.qB, v.tB), d: v.dB }] });
+  const ABr = v => campoR(v).pares[0].distancia, pieR = v => campoR(v).pares[0].angulo, rumboR = (q, t) => MC.rumbo(acimut(q, t)).texto;
+  const mesaRumbos = {
+    id: 'torre-rumbos', titulo: 'Dos rumbos y la torre', pieza: 'trig-campo-3d',
+    consigna: 'Gira el campo. Elige el rumbo y la distancia de A y de B desde el pie de la torre: mira el triángulo del piso.',
+    controles: [
+      { id: 'qA', etiqueta: 'A hacia', opciones: QS, inicio: 'NE' },
+      { id: 'tA', etiqueta: 'θ de A', color: 'c-h', min: 0, max: 90, paso: 30, inicio: 30, unidad: '°', decimales: 0 },
+      { id: 'dA', etiqueta: 'A al pie', color: 'c-i', min: 2, max: 12, paso: 2, inicio: 10, unidad: 'm', decimales: 0 },
+      { id: 'qB', etiqueta: 'B hacia', opciones: QS, inicio: 'SE' },
+      { id: 'tB', etiqueta: 'θ de B', color: 'c-h', min: 0, max: 90, paso: 30, inicio: 60, unidad: '°', decimales: 0 },
+      { id: 'dB', etiqueta: 'B al pie', color: 'c-i', min: 2, max: 12, paso: 2, inicio: 6, unidad: 'm', decimales: 0 },
+    ],
+    dibujo: v => ({ datos: { h: ALTO, obs: [{ id: 'A', az: acimut(v.qA, v.tA), d: v.dA }, { id: 'B', az: acimut(v.qB, v.tB), d: v.dB }], par: true, pie: true, vista: { giro: -20, inclinacion: 40 } }, estado: {} }),
+    lectura: v => [`A: ${rumboR(v.qA, v.tA)} · B: ${rumboR(v.qB, v.tB)} · `, { v: 'c-f', t: 'AB' }, ` ≈ ${f(ABr(v), 1)} m`],
+    invitaciones: [
+      { texto: 'Pon a B con rumbo S 60° O.',
+        logrado: v => rumboR(v.qB, v.tB) === 'S 60° O',
+        bien: 'Desde el sur, 60° hacia el oeste. Un rumbo nunca pasa de 90°.',
+        pista: 'B mira al sur y gira hacia el oeste: elige S…O.' },
+      { texto: 'Abre 120° en el pie, entre A y B.',
+        logrado: v => pieR(v) === 120,
+        bien: 'Con ese ángulo y las dos distancias, la ley de cosenos da AB.',
+        pista: 'Junta los rumbos: N 30° E y S 30° E ya suman 120° en el pie.' },
+      { texto: 'Con A y B a la misma distancia del pie, haz AB igual a esa distancia.',
+        logrado: v => v.dA === v.dB && Math.abs(ABr(v) - v.dA) < 1e-9,
+        bien: 'Dos lados iguales y 60° en el pie: el piso arma un equilátero.',
+        pista: 'Iguala las distancias y deja 60° entre los rumbos.' },
+      { texto: 'Logra que A y B vean la punta a 45°, con rumbos distintos.',
+        logrado: v => campoR(v).obs.every(o => Math.abs(o.elev - 45) < 1e-9) && pieR(v) > 0,
+        bien: 'Los dos a 8 m, como la torre: el rumbo no cambia la elevación.',
+        pista: 'La torre mide 8 m. ¿A qué distancia se ve a 45°?' },
+      { texto: 'Guarda dos casos con las mismas distancias, el mismo AB y rumbos distintos.',
+        logrado: (v, gs) => gs.some(p => gs.some(q => p.dA === q.dA && p.dB === q.dB && Math.abs(ABr(p) - ABr(q)) < 1e-9
+          && (rumboR(p.qA, p.tA) !== rumboR(q.qA, q.tA) || rumboR(p.qB, p.tB) !== rumboR(q.qB, q.tB)))),
+        testigo: [{ qA: 'NE', tA: 30, dA: 10, qB: 'SE', tB: 60, dB: 6 }, { qA: 'NO', tA: 60, dA: 10, qB: 'NE', tB: 30, dB: 6 }],
+        bien: 'Girar los dos juntos no cambia AB: manda el ángulo en el pie.' },
+    ],
+  };
+
   return {
     unidad: 'trigonometria.triangulos-oblicuangulos',
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/trig-plano.js', '/nucleo/kit/piezas/triangulo.js'],
+    requiere: ['/nucleo/kit/piezas/trig-plano.js', '/nucleo/kit/piezas/triangulo.js', '/plantillas/trig-angulos-verticales/motor.js', '/nucleo/kit/piezas/trig-campo-3d.js'],
     glosario: [
       { termino: 'triángulo oblicuángulo', def: 'Triángulo sin ningún ángulo recto: sus tres ángulos son agudos, o uno es obtuso.',
         formas: ['triángulo oblicuángulo', 'triángulos oblicuángulos', 'oblicuángulo', 'oblicuángulos'], ver: ['ley de senos', 'ley de cosenos'] },
@@ -786,6 +834,7 @@
     // para ver cuándo la altura deja dos, uno o ningún triángulo. La tercera arma un viaje de dos tramos con
     // cualquier rumbo y da el ángulo interior en C y la distancia de regreso.
     laboratorio: [
+      mesaRumbos,
       {
         id: 'cosenos-libre', titulo: 'Dos lados y su ángulo', pieza: 'triangulo',
         consigna: 'Arrastra C para cambiar el ángulo A y el lado b; arrastra B para cambiar c. Compara a con Pitágoras.',
