@@ -649,9 +649,9 @@
           mover: (pt, v) => ({ q: v.z - masCercana(pt, 23) }) }],
         // Retos: los electrones solos y el último subnivel salen de config() y solos(), lo mismo que pinta las cajas.
         invitaciones: [
-          { texto: 'Encuentra un ion con todos sus electrones apareados.',
-            logrado: v => v.q !== 0 && v.z - v.q > 0 && solos(config(v.z - v.q)) === 0,
-            bien: 'Ninguna flecha sola: ese ion no lo atrae un imán. ¿Qué gas noble tiene esas cajas?' },
+          { texto: 'Encuentra un catión con todos sus electrones apareados.',
+            logrado: v => v.q > 0 && v.z - v.q > 0 && solos(config(v.z - v.q)) === 0,
+            bien: 'Ninguna flecha sola: a ese catión no lo atrae un imán. ¿Le pasa a todo catión?' },
           { texto: 'Busca la especie con más electrones desapareados que puedas armar.',
             logrado: v => v.z - v.q > 0 && solos(config(v.z - v.q)) === MAX_SOLOS,
             bien: 'Una flecha por caja antes de aparear: así reparte Hund.' },

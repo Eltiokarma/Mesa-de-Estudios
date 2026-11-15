@@ -762,9 +762,9 @@
         lectura: val => { const fams = [...new Set(POR_FORMULA[val.f].slice(0, 3).map(k => NOMBRE_FAM[MOL[k].fam].toLowerCase()))]; return [`${val.f} → ${fams.length > 1 ? 'isómeros de función: ' + fams.join(', ') : 'mismo grupo, otras uniones: ' + fams[0]}`]; },
         // Sin arrastre: se elige una fórmula; no hay una variable que agarrar.
         invitaciones: [
-          { texto: 'Busca una fórmula que sea a la vez un fenol y un éter.',
+          { texto: 'Busca una fórmula que pueda armar un fenol o un éter.',
             logrado: val => familias(val.f).includes('fenol') && familias(val.f).includes('eter'),
-            bien: 'El mismo OH cambia de familia según a qué carbono se une.' },
+            bien: 'Mismos átomos: el O con H sobre el anillo, o el O entre dos carbonos.' },
           { texto: 'Encuentra una fórmula donde un ácido y un éster sean isómeros de función.',
             logrado: val => familias(val.f).includes('acido') && familias(val.f).includes('ester'),
             bien: 'Mismos átomos, otro grupo: el éster no es ácido.' },
