@@ -126,7 +126,7 @@
       ],
     },
     regla: {
-      texto: 'Una progresión aritmética suma siempre la misma diferencia d; una geométrica multiplica siempre por la misma razón r. Unos pocos términos no fijan la regla.',
+      texto: 'Una progresión aritmética suma siempre la misma diferencia d; una progresión geométrica multiplica siempre por la misma razón r. Unos pocos términos no fijan la regla.',
       ecuacion: [an('n'), ' = ', an('1'), ' + ', { llave: ['(', n, ' − 1)'], nota: 'saltos', color: 'c-i' }, 'd', '   ·   ', an('n'), ' = ', an('1'), { sup: ['r', [n, ' − 1']] }],
       condicion: 'n es entero positivo, y el modelo, aritmético o geométrico, se declara o se justifica: no se adivina.',
     },
@@ -478,7 +478,7 @@
       ],
     },
     regla: {
-      texto: 'Si cada término es una diferencia de la forma bₖ − bₖ₊₁, al sumar se cancelan los de en medio y quedan los extremos.',
+      texto: 'Suma telescópica: si cada término es una diferencia de la forma bₖ − bₖ₊₁, al sumar se cancelan los de en medio y quedan los extremos.',
       ecuacion: [Sn('n'), ' = ', { llave: [{ sub: ['b', '1'] }], nota: 'el primero', color: 'c-d' }, ' − ', { llave: [{ sub: ['b', 'n+1'] }], nota: 'el último', color: 'c-d' }],
       condicion: 'todos los términos siguen el mismo patrón bₖ − bₖ₊₁, sin saltarse ninguno.',
     },
@@ -646,6 +646,22 @@
     arrastres: [{ id: 'borde', etiqueta: 'borde de arriba de la banda', color: 'c-h',
       donde: val => { const S = SUC_BANDA[val.s], g = lienzoDe(ejeBanda(S)); return { x: g.X(16), y: g.Y(S.L + val.e) }; },
       mover: (pt, val) => { const S = SUC_BANDA[val.s]; return { e: lienzoDe(ejeBanda(S)).aY(pt.y) - S.L }; } }],
+    // Retos comprobados (docs/teoria.md §4d): el n de entrada es desdeN(), el mismo que marca la línea verde.
+    invitaciones: [
+      { texto: 'Haz que todos los puntos queden adentro desde n = 21.',
+        logrado: val => desdeN(SUC_BANDA[val.s], val.e) === 21,
+        bien: 'Más angosta la banda, más tarde entran; pero siempre llega un n.' },
+      { texto: 'Con 1/n, haz que entren todos desde n = 5.',
+        logrado: val => val.s === '1/n' && desdeN(SUC_BANDA[val.s], val.e) === 5,
+        bien: '1/n < 0,25 desde n = 5: el límite es 0.' },
+      { texto: 'Angosta la banda al mínimo.',
+        logrado: val => Math.abs(val.e - 0.05) < 1e-9,
+        bien: 'Con ε = 0,05 entran más tarde, pero entran: eso es converger.' },
+      { texto: 'Guarda dos sucesiones con la misma banda y distinto n de entrada.',
+        logrado: (val, guardados) => guardados.some(g => Math.abs(g.e - val.e) < 1e-9 && g.s !== val.s && desdeN(SUC_BANDA[g.s], g.e) !== desdeN(SUC_BANDA[val.s], val.e))
+          && guardados.some(g => g.s === val.s && Math.abs(g.e - val.e) < 1e-9),
+        bien: 'Todas llegan a su límite, pero unas tardan más.' },
+    ],
   };
   // Mesa 2: la serie geométrica con a₁ y r libres, de −1,2 a 1,2 (r = 1, r = −1 y |r| > 1 incluidos).
   const EJE_RAZON = (e => Object.assign(e, { y: Object.assign(e.y, { nombre: 'Sₙ', color: 'd' }) }))(ejes(16, -4, 12));
@@ -676,9 +692,26 @@
         donde: val => { const g = lienzoDe(EJE_RAZON); return { x: g.X(2), y: g.Y(val.a1 * (1 + val.r)) }; },
         mover: (pt, val) => ({ r: lienzoDe(EJE_RAZON).aY(pt.y) / val.a1 - 1 }) },
     ],
+    invitaciones: [
+      { texto: 'Haz que la suma total sea exactamente 6.',
+        logrado: val => Math.abs(val.r) < 1 - 1e-9 && Math.abs(val.a1 / (1 - val.r) - 6) < 1e-9,
+        bien: 'a₁/(1 − r) = 6: las sumas parciales se detienen en esa altura.' },
+      { texto: 'Consigue una razón con la que las sumas no se detengan.',
+        logrado: val => Math.abs(val.r) >= 1 - 1e-9,
+        bien: 'Con |r| ≥ 1 los términos no se achican: la serie no converge.' },
+      { texto: 'Con razón negativa, haz que la suma converja.',
+        logrado: val => val.r < -1e-9 && Math.abs(val.r) < 1 - 1e-9,
+        bien: 'Los términos alternan de signo: la suma queda por debajo de a₁.' },
+      { texto: 'Busca la mayor suma que todavía converja.',
+        logrado: val => Math.abs(val.r) < 1 - 1e-9 && Math.abs(val.a1 / (1 - val.r) - MAX_SUMA_GEO) < 1e-9,
+        bien: '3/(1 − 0,9) = 30: cerca de r = 1, la suma crece mucho.' },
+    ],
   };
   // Mesa 3: la progresión aritmética que se arma con dos puntos (a₁ y a₆, lejos para que sus manijas no se pisen), y su suma S₆ (las ideas no la dejan arrastrar).
   const EJE_PA = ejes(7, -10, 15);
+  const sumaPA = val => 3 * (val.a1 + (val.a1 + 5 * val.d));
+  // La mayor suma convergente de la mesa de la razón (a₁ de 1 a 3, |r| < 1 en pasos de 0,1): se calcula, no se escribe.
+  const MAX_SUMA_GEO = Math.max(...[1, 2, 3].flatMap(a1 => Array.from({ length: 19 }, (_, k) => (k - 9) / 10).map(r => a1 / (1 - r))));
   const mesaAritmetica = {
     id: 'aritmetica', titulo: 'Progresión con dos puntos', pieza: 'ejes',
     consigna: 'Arrastra el primer término y el sexto: la diferencia d sale de los dos. Mira los seis términos y su suma.',
@@ -702,6 +735,20 @@
         donde: val => { const g = lienzoDe(EJE_PA); return { x: g.X(6), y: g.Y(val.a1 + 5 * val.d) }; },
         mover: (pt, val) => ({ d: (lienzoDe(EJE_PA).aY(pt.y) - val.a1) / 5 }) },
     ],
+    invitaciones: [
+      { texto: 'Haz que la suma de los seis términos sea 0.',
+        logrado: val => sumaPA(val) === 0,
+        bien: 'Positivos y negativos se cancelan: a₁ + a₆ = 0.' },
+      { texto: 'Consigue una progresión constante.',
+        logrado: val => val.d === 0,
+        bien: 'd = 0: todos los términos iguales, una recta horizontal.' },
+      { texto: 'Busca la mayor suma posible de los seis términos.',
+        logrado: val => sumaPA(val) === Math.max(...[0, 1, 2, 3, 4, 5].flatMap(a1 => [-2, -1, 0, 1, 2].map(d => sumaPA({ a1, d })))),
+        bien: 'a₁ = 5 y d = 2: 3 · (5 + 15) = 60.' },
+      { texto: 'Guarda dos progresiones distintas con la misma suma de seis términos.',
+        logrado: (val, guardados) => guardados.some(g => (g.a1 !== val.a1 || g.d !== val.d) && sumaPA(g) === sumaPA(val)) && guardados.some(g => g.a1 === val.a1 && g.d === val.d),
+        bien: 'La suma solo mira a₁ + a₆: muchas progresiones la comparten.' },
+    ],
   };
 
   return {
@@ -711,6 +758,25 @@
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-tabla.js'],
     // Laboratorio: tres mesas propias con gesto directo (banda ε, razón libre, progresión con su suma).
     laboratorio: [mesaBanda, mesaRazon, mesaAritmetica],
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'sucesión', formas: ['sucesión', 'sucesiones'], simbolo: 'aₙ', def: 'Lista ordenada de números: el primero, el segundo, el tercero, y así sin fin.',
+        ejemplo: '1, 4, 9, 16…: aₙ = n².' },
+      { termino: 'progresión aritmética', formas: ['progresión aritmética', 'progresiones aritméticas'],
+        def: 'Sucesión en la que cada término es el anterior más un número fijo d, la diferencia.', ejemplo: '2, 5, 8, 11…: d = 3.', ver: ['progresión geométrica'] },
+      { termino: 'progresión geométrica', formas: ['progresión geométrica', 'progresiones geométricas'],
+        def: 'Sucesión en la que cada término es el anterior por un número fijo r, la razón.', ejemplo: '3, 6, 12, 24…: r = 2.', ver: ['progresión aritmética'] },
+      { termino: 'límite', formas: ['límite', 'límites'], simbolo: 'L', def: 'El número al que los términos se acercan tanto como se quiera, desde algún lugar en adelante.',
+        ejemplo: '3 − 2/n se acerca a 3.', ver: ['convergente'] },
+      { termino: 'convergente', formas: ['convergente', 'convergentes', 'converge', 'convergen', 'converja'], def: 'Así es una sucesión o serie que tiene un límite.',
+        ejemplo: '1/n lo es: tiende a 0.', ver: ['límite', 'serie'] },
+      { termino: 'sucesión recurrente', formas: ['sucesión recurrente', 'sucesiones recurrentes'], def: 'La que da cada término a partir de los anteriores.',
+        ejemplo: 'Fibonacci: aₙ = aₙ₋₁ + aₙ₋₂.', ver: ['condiciones iniciales'] },
+      { termino: 'condiciones iniciales', formas: ['condiciones iniciales', 'condición inicial'], def: 'Los primeros términos que hay que dar para que una regla recurrente arranque.' },
+      { termino: 'serie', formas: ['serie', 'series'], def: 'La suma de los términos de una sucesión, uno tras otro.', ejemplo: '1/2 + 1/4 + 1/8 + … = 1.', ver: ['suma parcial'] },
+      { termino: 'suma parcial', formas: ['suma parcial', 'sumas parciales'], simbolo: 'Sₙ', def: 'La suma de los n primeros términos.', ejemplo: 'Para 1, 3, 5, 7: S₃ = 9.' },
+      { termino: 'suma telescópica', formas: ['suma telescópica', 'sumas telescópicas'], def: 'Suma en la que los términos de en medio se cancelan y solo quedan el primero y el último.' },
+    ],
     historia: {
       texto: 'Las series infinitas resultaron muy útiles para calcular, pero sumar infinitos términos con las reglas de las sumas finitas podía llevar a errores. En su Curso de análisis de 1821, Cauchy impulsó estudiar la convergencia de forma explícita. La pregunta que queda es qué significa sumar infinitos términos: se mira la sucesión de sumas parciales y su límite.',
       pregunta: '¿Se puede sumar algo que nunca termina?',

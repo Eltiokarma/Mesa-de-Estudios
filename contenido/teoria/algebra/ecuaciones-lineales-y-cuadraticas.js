@@ -379,7 +379,7 @@
       ],
     },
     regla: {
-      texto: 'En ax² + bx + c = 0 (a ≠ 0), Δ = b² − 4ac decide: dos raíces reales si Δ > 0, una doble si Δ = 0, ninguna real si Δ < 0.',
+      texto: 'En la ecuación cuadrática ax² + bx + c = 0 (a ≠ 0), Δ = b² − 4ac decide: dos raíces reales si Δ > 0, una doble si Δ = 0, ninguna real si Δ < 0.',
       ecuacion: [D, ' = ', { llave: [b, '² − 4a', c], nota: 'decide los cortes', color: 'c-d' }, '   ·   ', x, ' = ', { frac: [['−', b, ' ± ', { raiz: [D] }], '2a'] }],
       condicion: 'a ≠ 0. Si Δ < 0 la parábola no corta el eje x, aunque haya dos raíces complejas que la gráfica no muestra.',
     },
@@ -568,7 +568,7 @@
       ],
     },
     regla: {
-      texto: 'Primero se dice qué cantidad representa la letra. Cada frase se vuelve una igualdad entre cantidades, y la respuesta se comprueba en el enunciado.',
+      texto: 'Primero se dice qué cantidad representa la letra, la incógnita. Cada frase se vuelve una igualdad entre cantidades, y la respuesta se comprueba en el enunciado.',
       ecuacion: ['6 por profesor  ⇒  ', { llave: [Sx], nota: 'cuántos estudiantes', color: 'c-o' }, ' = 6', { llave: [Px], nota: 'cuántos profesores', color: 'c-i' }],
       condicion: 'la letra es un número (cuántos estudiantes), no una etiqueta («estudiante»); la solución debe tener sentido en el problema.',
     },
@@ -611,6 +611,8 @@
   // hacia abajo). Manijas: el corte con el eje y (c) y el vértice (b); con a = 0 no hay vértice y la de b pasa al
   // punto de x = 1, que inclina la recta.
   const EJESL = { x: { min: -6, max: 6, paso: 1, cada: 2, nombre: 'x', decimales: 0, color: 'o' }, y: { min: -10, max: 10, paso: 2, cada: 2, nombre: 'y', decimales: 0 } };
+  // El menor producto r·s de la mesa de raíces (r y s de −3 a 4): se calcula, no se escribe.
+  const MIN_PRODUCTO = Math.min(...[-3, -2, -1, 0, 1, 2, 3, 4].flatMap(r => [-3, -2, -1, 0, 1, 2, 3, 4].map(s => r * s)));
   const parabolaLibre = {
     id: 'parabola-libre', titulo: 'La parábola con a, b, c', pieza: 'ejes',
     consigna: 'En y = ax² + bx + c, prueba también a = 0 y a negativo. Arrastra el vértice y el corte con el eje y.',
@@ -649,11 +651,27 @@
           return { b: -2 * v.a * inversa(g.X, -6, 6)(pt.x) };
         } },
     ],
+    // Retos comprobados (docs/teoria.md §4d): cuentan con raices(), la misma que pone los puntos naranjas.
+    invitaciones: [
+      { texto: 'Haz que la parábola toque el eje x en un solo punto.',
+        logrado: v => v.a !== 0 && raices(v.a, v.b, v.c).length === 1,
+        bien: 'Δ = 0: las dos raíces se juntaron en el vértice.' },
+      { texto: 'Consigue una parábola que se abra hacia abajo y no corte el eje x.',
+        logrado: v => v.a < 0 && raices(v.a, v.b, v.c).length === 0,
+        bien: 'Queda toda bajo el eje: ningún número real la hace cero.' },
+      { texto: 'Haz que las dos raíces sean opuestas, como −2 y 2.',
+        logrado: v => { const rs = v.a ? raices(v.a, v.b, v.c) : []; return rs.length === 2 && Math.abs(rs[0] + rs[1]) < 1e-9; },
+        bien: 'Con b = 0 suman cero: la parábola es simétrica respecto del eje y.' },
+      { texto: 'Con a = 0, haz que ningún número sea solución.',
+        logrado: v => v.a === 0 && v.b === 0 && v.c !== 0,
+        bien: 'Queda c = 0 con c distinto de cero: falso para todo x.' },
+    ],
   };
   // Mesa 2: cada lado de ax + b = cx + d es una recta; la solución es donde se cruzan. Las paralelas no se cruzan
   // (sin solución) y la misma recta da todo número: el caso degenerado de la idea 1, visto en el plano.
   const EJESR = { x: { min: -6, max: 6, paso: 1, cada: 2, nombre: 'x', decimales: 0, color: 'o' }, y: { min: -12, max: 12, paso: 4, nombre: 'y', decimales: 0 } };
   const ladoTxt = (m, n) => Kit.plano(poli([m, n], 'x'));
+  const cruceX = v => (v.d - v.b) / (v.a - v.c);
   const dosLados = {
     id: 'dos-lados', titulo: 'Cada lado es una recta', pieza: 'ejes',
     consigna: 'La recta turquesa es el lado izquierdo y la roja, el derecho. Donde se cruzan está la solución. Busca rectas que no se crucen.',
@@ -691,6 +709,21 @@
         if (k === 'b') return { b: yv }; if (k === 'd') return { d: yv };
         return k === 'a' ? { a: (yv - v.b) / xm } : { c: (yv - v.d) / xm };
       } })),
+    invitaciones: [
+      { texto: 'Haz que las rectas no se crucen: la ecuación queda sin solución.',
+        logrado: v => v.a === v.c && v.b !== v.d,
+        bien: 'Paralelas: misma inclinación, distinto corte. Nunca valen lo mismo.' },
+      { texto: 'Junta las dos rectas en una sola.',
+        logrado: v => v.a === v.c && v.b === v.d,
+        bien: 'Los dos lados son iguales siempre: todo número es solución.' },
+      { texto: 'Haz que se crucen justo en x = 2.',
+        logrado: v => v.a !== v.c && cruceX(v) === 2,
+        bien: 'En x = 2 los dos lados dan lo mismo. Compruébalo en la lectura.' },
+      { texto: 'Guarda dos casos con rectas distintas que se crucen en el mismo x.',
+        logrado: (v, guardados) => v.a !== v.c && guardados.some(g => g.a !== g.c && ['a', 'b', 'c', 'd'].some(k => g[k] !== v[k]) && Math.abs(cruceX(g) - cruceX(v)) < 1e-9)
+          && guardados.some(g => ['a', 'b', 'c', 'd'].every(k => g[k] === v[k])),
+        bien: 'Ecuaciones distintas, la misma solución: se llaman equivalentes.' },
+    ],
   };
 
   return {
@@ -703,7 +736,45 @@
       pregunta: '¿Cómo sabes que no te falta ninguna solución?',
       fuente: { titulo: 'O’Connor y Robertson, Quadratic, cubic and quartic equations — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Quadratic_etc_equations/' },
     },
-    laboratorio: [parabolaLibre, dosLados, Object.assign({ id: 'raices-libres', titulo: 'Elige las dos raíces', pieza: 'ejes' }, vieta.juega, { minimo: undefined })],
+    laboratorio: [parabolaLibre, dosLados, Object.assign({ id: 'raices-libres', titulo: 'Elige las dos raíces', pieza: 'ejes', invitaciones: [
+      { texto: 'Haz que el producto de las raíces sea negativo.',
+        logrado: v => v.r * v.s < 0,
+        bien: 'Una raíz a cada lado del cero: el término independiente queda negativo.' },
+      { texto: 'Consigue que la ecuación desarrollada no tenga término en x.',
+        logrado: v => -(v.r + v.s) === 0,
+        bien: 'Suma cero: la parábola queda centrada en el eje y.' },
+      { texto: 'Busca las dos raíces con suma 5 y producto 6.',
+        logrado: v => v.r + v.s === 5 && v.r * v.s === 6,
+        bien: 'Son 2 y 3: x² − 5x + 6 = 0, sin resolver nada.' },
+      { texto: 'Busca el término independiente más pequeño de la mesa.',
+        logrado: v => v.r * v.s === MIN_PRODUCTO,
+        bien: '−3 · 4 = −12: raíces lejos del cero y a lados opuestos.' },
+      { texto: 'Guarda dos casos con la misma suma de raíces y distinto producto.',
+        logrado: (v, guardados) => guardados.some(g => g.r + g.s === v.r + v.s && g.r * g.s !== v.r * v.s) && guardados.some(g => g.r === v.r && g.s === v.s),
+        bien: 'El vértice queda en la misma vertical; sube o baja con el producto.' },
+    ] }, vieta.juega, { minimo: undefined })],
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'ecuación', def: 'Igualdad con una letra desconocida, que puede ser verdadera para unos valores y falsa para otros.',
+        ejemplo: '3x + 4 = x + 12 solo es verdadera con x = 4.', ver: ['solución', 'incógnita'] },
+      { termino: 'incógnita', def: 'La letra cuyo valor se busca al resolver un problema.', ejemplo: 'Si S es el número de estudiantes, S es la letra buscada.' },
+      { termino: 'solución', formas: ['solución', 'soluciones'], def: 'Cada valor que, puesto en lugar de la letra, hace verdadera la igualdad.',
+        ejemplo: 'En x² = 3x, sirven 0 y 3: 0 = 0 y 9 = 9.', ver: ['raíz'] },
+      { termino: 'raíz', formas: ['raíz', 'raíces'], def: 'Número que cumple P(x) = 0: donde la gráfica toca el eje x. Con √, es el resultado del radical.',
+        ejemplo: 'x² − 4 = 0 tiene raíces −2 y 2.', ver: ['solución', 'radical'] },
+      { termino: 'ecuación cuadrática', formas: ['ecuación cuadrática', 'ecuaciones cuadráticas', 'cuadrática', 'cuadráticas'],
+        def: 'Ecuación de la forma ax² + bx + c = 0, con a ≠ 0: la letra sale al cuadrado.', ver: ['discriminante'] },
+      { termino: 'coeficiente', def: 'Número que multiplica a la letra en un término.', ejemplo: 'En 2x² − 10x + 12, son 2 y −10.' },
+      { termino: 'término independiente', formas: ['término independiente', 'términos independientes'],
+        def: 'El número que va solo, sin letra; en ax² + bx + c es la c.', ejemplo: 'En x² − 5x + 6, es 6.' },
+      { termino: 'discriminante', simbolo: 'Δ', def: 'El número b² − 4ac: si es positivo hay dos raíces reales; si es cero, una; si es negativo, ninguna.',
+        ejemplo: 'x² − 2x − 3: Δ = 4 + 12 = 16, dos raíces.', ver: ['ecuación cuadrática', 'raíz'] },
+      { termino: 'parábola', formas: ['parábola', 'parábolas'], def: 'Curva en forma de U de y = ax² + bx + c; con a negativo, se abre hacia abajo.',
+        ver: ['vértice'] },
+      { termino: 'vértice', def: 'En una parábola, su punto más bajo o más alto. En un polígono, cada esquina.', ejemplo: 'y = x² − 2x − 3 baja hasta (1; −4).' },
+      { termino: 'completar el cuadrado', formas: ['completar el cuadrado', 'completando el cuadrado', 'completando cuadrados'],
+        def: 'Sumar lo que falta para escribir x² + bx como parte de (x + b/2)².', ejemplo: 'x² + 6x = (x + 3)² − 9.' },
+    ],
     ideas: [primerGrado, dividirX, discriminante, vieta, planteo],
   };
 });

@@ -139,7 +139,7 @@
     regla: {
       texto: 'i² = −1. Multiplicar por i gira la flecha 90° en sentido antihorario sin cambiar su largo. Cuatro giros vuelven al inicio: iⁿ depende del resto de n entre 4.',
       ecuacion: ['(a + b', I, ')·', I, ' = ', { llave: ['−b + a', I], nota: 'girada 90°', color: 'c-d' }, '   ·   ', { sup: [I, '4'] }, ' = 1'],
-      condicion: 'a y b son reales; el eje real va a la derecha y el imaginario hacia arriba.',
+      condicion: 'a y b son reales, i es la unidad imaginaria; el eje real va a la derecha y el imaginario, arriba.',
     },
     ahoraTu: {
       generar(s) {
@@ -685,6 +685,11 @@
     }), estado: {} };
   };
   const ejeInv = (datos, pt) => { const g = EJES().geometria(datos); return [inversa(g.X, -6, 6)(pt.x), inversa(g.Y, -4, 4)(pt.y)]; };
+  const resultadoDos = val => opera(val.op, cis(val.rz, val.tz), cis(val.rw, val.tw));
+  const dist2 = val => (val.px - val.cx) ** 2 + (val.py - val.cy) ** 2;
+  // Extremos de las mesas (se calculan, no se escriben): la espiral más cerrada y la mayor distancia del punto al centro.
+  const MIN_ESPIRAL = Math.min(...[0.9, 0.95, 1, 1.05, 1.1].flatMap(r => [1, 2, 3, 4, 5, 6].map(n => r ** n)));
+  const MAX_DIST2 = Math.max(...[-3, 3].flatMap(cx => [-1, 1].flatMap(cy => [-6, 6].flatMap(px => [-3, 3].map(py => dist2({ cx, cy, px, py }))))));
   const laboratorio = [
     {
       id: 'dos-flechas', titulo: 'Dos flechas, cuatro operaciones', pieza: 'flechas',
@@ -699,6 +704,21 @@
       dibujo: dibujoDos,
       lectura: lecturaDos,
       arrastres: [puntaPolar(dibujoDos, 'rz', 'tz', 'punta-z', 'c-o', 'z', -7.5), puntaPolar(dibujoDos, 'rw', 'tw', 'punta-w', 'c-i', 'w', -7.5)],
+      // Retos comprobados (docs/teoria.md §4d): miran la flecha verde que calcula opera(), la misma que se dibuja.
+      invitaciones: [
+        { texto: 'Con el producto, haz que el resultado caiga en el eje real positivo.',
+          logrado: val => { const r = resultadoDos(val); return val.op === 'producto' && Math.abs(r[1]) < 1e-9 && r[0] > 0; },
+          bien: 'Los ángulos sumaron 360°: el producto es un real positivo.' },
+        { texto: 'Haz que z + w sea 0.',
+          logrado: val => { const r = resultadoDos(val); return val.op === 'suma' && Math.hypot(...r) < 1e-9; },
+          bien: 'w es el opuesto de z: el mismo largo, media vuelta.' },
+        { texto: 'Con el cociente, consigue un resultado de módulo 3.',
+          logrado: val => val.op === 'cociente' && Math.abs(Math.hypot(...resultadoDos(val)) - 3) < 1e-9,
+          bien: '1,5 ÷ 0,5 = 3: el cociente divide los módulos.' },
+        { texto: 'Haz que el producto caiga sobre el eje imaginario.',
+          logrado: val => { const r = resultadoDos(val); return val.op === 'producto' && Math.abs(r[0]) < 1e-9; },
+          bien: 'Los ángulos suman 90° o 270°: un imaginario puro.' },
+      ],
     },
     {
       id: 'espiral', titulo: 'Potencias que giran en espiral', pieza: 'flechas',
@@ -711,6 +731,20 @@
       dibujo: dibujoEspiral,
       lectura: val => [`|z| = ${f(val.r)}, ${val.t}°: `, { sup: [z, String(val.n)] }, ` mide ${f(val.r ** val.n)} y gira ${val.t * val.n}°`],
       arrastres: [puntaPolar(dibujoEspiral, 'r', 't')],
+      invitaciones: [
+        { texto: 'Haz que todas las puntas queden sobre la circunferencia de radio 1.',
+          logrado: val => potencias(val.r, val.t, val.n).every(p => Math.abs(Math.hypot(...p) - 1) < 1e-9),
+          bien: 'Con |z| = 1, cada potencia solo gira: el largo no cambia.' },
+        { texto: 'Consigue que la última potencia caiga en el eje real negativo.',
+          logrado: val => { const p = potencias(val.r, val.t, val.n)[val.n - 1]; return Math.abs(p[1]) < 1e-9 && p[0] < 0; },
+          bien: 'n veces el ángulo dio 180°: zⁿ es un real negativo.' },
+        { texto: 'Con n = 6, haz que la última punta vuelva al eje real positivo.',
+          logrado: val => { const p = potencias(val.r, val.t, val.n)[val.n - 1]; return val.n === 6 && Math.abs(p[1]) < 1e-9 && p[0] > 0; },
+          bien: 'Seis giros de 60°: una vuelta completa.' },
+        { texto: 'Busca la espiral que más se cierra hacia el centro.',
+          logrado: val => Math.abs(val.r ** val.n - MIN_ESPIRAL) < 1e-12,
+          bien: '0,9⁶ ≈ 0,53: si |z| < 1, las potencias se encogen.' },
+      ],
     },
     {
       id: 'disco-libre', titulo: 'Un disco y un punto', pieza: 'ejes',
@@ -735,6 +769,24 @@
           donde: val => { const g = EJES().geometria(dibujoDisco(val).datos); return { x: g.X(val.px), y: g.Y(val.py) }; },
           mover: (pt, val) => { const [re, im] = ejeInv(dibujoDisco(val).datos, pt); return { px: re, py: im }; } },
       ],
+      invitaciones: [
+        { texto: 'Pon el punto justo en el borde del disco.',
+          logrado: val => dist2(val) === val.r * val.r,
+          bien: 'Los puntos del borde están a distancia r del centro.' },
+        { texto: 'Con radio 1, pon z dentro del disco y sobre el eje imaginario.',
+          logrado: val => val.r === 1 && val.px === 0 && dist2(val) <= 1,
+          bien: 'Re(z) = 0: un imaginario puro dentro del disco.' },
+        { texto: 'Aleja z lo más posible del centro.',
+          logrado: val => dist2(val) === MAX_DIST2,
+          bien: 'Esquinas opuestas de la mesa: |z − z₀| = √97.' },
+        { texto: 'Guarda dos casos con z en el mismo lugar: dentro y fuera del disco.',
+          logrado: (val, guardados) => {
+            const dentro = v => dist2(v) <= v.r * v.r;
+            return guardados.some(g => g.px === val.px && g.py === val.py && dentro(g) !== dentro(val))
+              && guardados.some(g => ['cx', 'cy', 'r', 'px', 'py'].every(k => g[k] === val[k]));
+          },
+          bien: 'El punto no se movió: el disco decide si está dentro.' },
+      ],
     },
   ];
 
@@ -742,6 +794,19 @@
     unidad: 'algebra.numeros-complejos',
     version: '0.2.0',
     laboratorio,
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'unidad imaginaria', simbolo: 'i', def: 'El número i, que cumple i² = −1. Multiplicar por él gira 90°.', ver: ['número complejo'] },
+      { termino: 'parte real', formas: ['parte real', 'partes reales'], simbolo: 'Re(z)', def: 'En z = a + bi, el número a: cuánto va a la derecha.', ejemplo: 'Re(3 − 2i) = 3.' },
+      { termino: 'parte imaginaria', formas: ['parte imaginaria', 'partes imaginarias'], simbolo: 'Im(z)', def: 'En z = a + bi, el número b, sin la i: cuánto sube.',
+        ejemplo: 'Im(3 − 2i) = −2.' },
+      { termino: 'plano complejo', def: 'Plano con el eje real a lo ancho y el imaginario hacia arriba: cada a + bi es un punto.' },
+      { termino: 'módulo', formas: ['módulo', 'módulos'], simbolo: '|z|', def: 'El largo de la flecha de un complejo: √(a² + b²).', ejemplo: '|3 + 4i| = 5.', ver: ['forma polar'] },
+      { termino: 'forma polar', def: 'Escribir un complejo con su largo r y su ángulo θ: r(cos θ + i sen θ).', ejemplo: 'i = 1(cos 90° + i sen 90°).',
+        ver: ['módulo', 'argumento'] },
+      { termino: 'raíz n-ésima', formas: ['raíz n-ésima', 'raíces n-ésimas'], def: 'Número que elevado a n da el número dado. Un complejo no nulo tiene n de ellas.',
+        ejemplo: 'Las cuartas de 1 son 1, i, −1 y −i.' },
+    ],
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/flechas.js', '/nucleo/kit/piezas/ejes.js'],
     historia: {

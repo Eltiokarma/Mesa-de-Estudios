@@ -218,7 +218,7 @@
         { id: 'c', texto: '∅', correcta: true },
         { id: 'punto', texto: '{3}', error: 'NR4', siFuera: '{3} sería cierto si B incluyera al 3; su paréntesis lo deja fuera.' },
         { id: 'union', texto: '(−1, 5)', error: 'NR3', siFuera: '(−1, 5) es A ∪ B: lo que está en alguno. La intersección pide estar en los dos.' },
-        { id: 'a', texto: '(−1, 3]', error: 'TAL-INTER-A', siFuera: 'Ese es A completo. Un número de A está en A ∩ B solo si también está en B.' },
+        { id: 'a', texto: '(−1, 3]', error: 'TAL-INTER-A', siFuera: 'Ese es todo A. Un número de A está en A ∩ B solo si también está en B.' },
       ],
       dibujo: { datos: rectaOp(IA, { a: 3, b: 5, ca: false, cb: false }, '∩'), estado: {} },
       revelar: { datos: rectaOp(IA, { a: 3, b: 5, ca: false, cb: false }, '∩', [{ tipo: 'punto', x: 3, color: 'h', abierto: true, rotulo: '3 ∉ B', fila: 0 }]), estado: {} },
@@ -339,7 +339,7 @@
     regla: {
       texto: 'Un conjunto acotado puede no tener máximo. En (0, 1), para cada x hay otro mayor, (x + 1)/2. La menor cota superior, el supremo, es 1.',
       ecuacion: [x, ' < ', { llave: [{ frac: [[x, ' + 1'], '2'] }], nota: 'otro mayor', color: 'c-d' }, ' < ', { llave: ['1'], nota: 'el supremo', color: 'c-i' }],
-      condicion: 'el máximo tiene que pertenecer al conjunto; el supremo no. Entre dos reales distintos siempre hay otro.',
+      condicion: 'el máximo tiene que pertenecer al conjunto; el supremo no. Entre dos reales distintos siempre hay otro: es la densidad.',
     },
     ahoraTu: {
       generar(s) {
@@ -424,7 +424,7 @@
         } }],
     },
     predice: {
-      pregunta: ['Con ', a, ' ★ ', b, ' = ', a, ' + ', b, ' − 1, ¿qué número e cumple ', a, ' ★ e = ', a, ' para todo ', a, '?'],
+      pregunta: ['Con ', a, ' ★ ', b, ' = ', a, ' + ', b, ' − 1, ¿qué elemento e cumple ', a, ' ★ e = ', a, ' para todo ', a, '?'],
       opciones: [
         { id: 'c', texto: '1', correcta: true },
         { id: 'cero', texto: '0', error: 'NR14', siFuera: `0 es el neutro de la suma; aquí 2 ★ 0 = ${f(REGLAS['a + b − 1'](2, 0))}, no 2.` },
@@ -446,7 +446,7 @@
       ],
     },
     regla: {
-      texto: 'Las propiedades de una operación se comprueban. Es conmutativa si la tabla es simétrica respecto de la diagonal; e es neutro si deja igual a cada elemento.',
+      texto: 'Las propiedades de una operación binaria se comprueban. Es conmutativa si la tabla es simétrica respecto de la diagonal; e es neutro si deja igual a cada elemento.',
       ecuacion: [a, ' ★ ', { llave: ['e'], nota: 'el neutro', color: 'c-d' }, ' = e ★ ', a, ' = ', a],
       condicion: 'no se supone nada porque la regla se parezca a la suma. En los reales, el 0 no tiene inverso multiplicativo.',
     },
@@ -487,7 +487,7 @@
         // Neutro: con a ★ b = a + b + k, el neutro es −k.
         const reg2 = [a, ' + ', b, k ? ` ${k > 0 ? '+' : '−'} ${f(Math.abs(k))}` : ''];
         return {
-          pregunta: ['Si ', a, ' ★ ', b, ' = ', ...reg2, ', ¿qué número e cumple ', a, ' ★ e = ', a, ' para todo ', a, '?'],
+          pregunta: ['Si ', a, ' ★ ', b, ' = ', ...reg2, ', ¿qué elemento e cumple ', a, ' ★ e = ', a, ' para todo ', a, '?'],
           opciones: distintas([
             { id: 'c', texto: f(-k), correcta: true },
             { id: 'cero', texto: f(k === 0 ? 1 : 0), error: 'NR14', siFuera: k === 0 ? 'Con 1, a ★ 1 = a + 1, no a.' : `0 es el neutro de la suma; aquí a ★ 0 = a ${k > 0 ? '+' : '−'} ${f(Math.abs(k))}.` },
@@ -538,6 +538,8 @@
       alt: `S = ${texto({ a: val.p, b: val.q, ca: cp, cb: cq })}: ínfimo ${f(val.p)}, supremo ${f(val.q)}`,
     };
   };
+  // El neutro de una regla en {0, 1, 2, 3}: el e que deja igual a cada elemento por los dos lados (null si no hay).
+  const neutroDe = regla => { const e = C4.find(e => C4.every(p => REGLAS[regla](p, e) === p && REGLAS[regla](e, p) === p)); return e === undefined ? null : e; };
   const LABORATORIO = [
     {
       id: 'dos-intervalos', titulo: 'Dos intervalos, cuatro extremos', pieza: 'recta',
@@ -553,6 +555,27 @@
       dibujo: val => ({ datos: rectaDosI(val), estado: {} }),
       lectura: val => { const { I, J, vI, vJ, R } = dosI(val); return [`${vI ? '∅' : texto(I)} ${val.op} ${vJ ? '∅' : texto(J)} = ${textoU(R)}`]; },
       arrastres: [extremoDe('a1', 'c-o', 3, 'inicio de A'), extremoDe('b1', 'c-o', 3, 'final de A'), extremoDe('a2', 'c-i', 2, 'inicio de B'), extremoDe('b2', 'c-i', 2, 'final de B')],
+      // Retos comprobados (docs/teoria.md §4d): miran el resultado que calcula dosI(), el mismo que pinta la recta.
+      invitaciones: [
+        { texto: 'Haz que A ∩ B sea un solo punto.',
+          logrado: val => { const { R } = dosI(val); return val.op === '∩' && R.length === 1 && R[0].a === R[0].b; },
+          bien: 'Se tocan en un extremo que entra en los dos: queda un solo número.' },
+        { texto: 'Consigue que A ∪ B quede partida en dos trozos.',
+          logrado: val => val.op === '∪' && dosI(val).R.length === 2,
+          bien: 'Entre los trozos hay un hueco: la unión no siempre es un intervalo.' },
+        { texto: 'Haz que A ∩ B sea igual a B, sin que A y B sean iguales.',
+          logrado: val => { const { I, J, vJ, R } = dosI(val); return val.op === '∩' && !vJ && textoU(R) === texto(J) && texto(I) !== texto(J); },
+          bien: 'B quedó dentro de A: cortar con A no le quita nada.' },
+        { texto: 'Guarda dos casos con distinto A y la misma A ∩ B, sin que sea vacía.',
+          logrado: (val, guardados) => {
+            const r = dosI(val), mismo = g => ['a1', 'b1', 'a2', 'b2', 'ext', 'op'].every(k => g[k] === val[k]);
+            return val.op === '∩' && r.R.length > 0 && guardados.some(mismo) && guardados.some(g => {
+              const o = dosI(g);
+              return g.op === '∩' && texto(o.I) !== texto(r.I) && textoU(o.R) === textoU(r.R);
+            });
+          },
+          bien: 'Lo que A tiene fuera de B no cuenta en la intersección.' },
+      ],
     },
     {
       id: 'supremo-infimo', titulo: 'Supremo, ínfimo, máximo y mínimo', pieza: 'recta',
@@ -569,8 +592,35 @@
         { id: 'desde', etiqueta: 'inicio de S', color: 'c-o', donde: val => enRecta(rectaSupInf(val), val.p, 1, true), mover: (pt, val) => ({ p: deRecta(rectaSupInf(val), pt.x) }) },
         { id: 'hasta', etiqueta: 'final de S', color: 'c-o', donde: val => enRecta(rectaSupInf(val), val.q, 1, true), mover: (pt, val) => ({ q: deRecta(rectaSupInf(val), pt.x) }) },
       ],
+      invitaciones: [
+        { texto: 'Haz que S no tenga máximo ni mínimo.',
+          logrado: val => val.cp === 'no' && val.cq === 'no',
+          bien: 'Sin máximo ni mínimo, pero acotado: el supremo y el ínfimo siguen ahí.' },
+        { texto: 'Consigue un ínfimo negativo que no sea mínimo.',
+          logrado: val => val.p < 0 && val.cp === 'no',
+          bien: 'El borde de abajo existe, pero no pertenece a S.' },
+        { texto: 'Haz que el supremo sea también máximo, con S de largo 5.',
+          logrado: val => val.cq === 'si' && val.q - val.p === 5,
+          bien: 'El máximo es el supremo cuando ese borde entra en S.' },
+        { texto: 'Guarda dos casos con el mismo supremo: uno con máximo y otro sin él.',
+          logrado: (val, guardados) => guardados.some(g => g.q === val.q && g.cq !== val.cq) && guardados.some(g => g.q === val.q && g.cq === val.cq),
+          bien: 'El supremo no cambió; solo cambió si pertenece a S.' },
+      ],
     },
-    Object.assign({ id: 'tabla-libre', titulo: 'La tabla de una operación', pieza: 'alg-tabla' }, operaciones.juega),
+    Object.assign({ id: 'tabla-libre', titulo: 'La tabla de una operación', pieza: 'alg-tabla', invitaciones: [
+      { texto: 'Elige una regla conmutativa y una casilla fuera de la diagonal.',
+        logrado: val => val.a !== val.b && C4.every(p => C4.every(q => REGLAS[val.regla](p, q) === REGLAS[val.regla](q, p))),
+        bien: 'La tabla es un espejo respecto de la diagonal: el orden no importa.' },
+      { texto: 'Con a − 2b, busca la casilla que da el menor número de la tabla.',
+        logrado: val => val.regla === 'a − 2b' && REGLAS[val.regla](val.a, val.b) === Math.min(...C4.flatMap(p => C4.map(q => REGLAS[val.regla](p, q)))),
+        bien: 'a lo más chico y b lo más grande: restar 2b pesa el doble.' },
+      { texto: 'Con a + b − 1, marca una casilla que dé el neutro.',
+        logrado: val => val.regla === 'a + b − 1' && REGLAS[val.regla](val.a, val.b) === neutroDe(val.regla),
+        bien: 'Esa fila y esa columna son inversos: juntos dan el neutro.' },
+      { texto: 'Con el mayor de a y b, pon en la columna b el neutro.',
+        logrado: val => val.regla === 'el mayor' && val.b === neutroDe(val.regla),
+        bien: 'El 0 no le gana a nadie del conjunto: deja igual a cada uno.' },
+    ] }, operaciones.juega),
   ];
 
   return {
@@ -579,6 +629,38 @@
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/alg-tabla.js'],
     laboratorio: LABORATORIO,
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'número real', formas: ['número real', 'números reales', 'reales'],
+        def: 'Cualquier número que tiene su lugar en la recta: enteros, fracciones y los que no son fracción, como √2.',
+        ver: ['intervalo', 'densidad'] },
+      { termino: 'desigualdad', simbolo: '<, ≤', def: 'Comparación que dice cuál de dos cantidades es menor, como a < b o a ≤ b.',
+        ejemplo: '2 < 5, pero al multiplicar por −1: −2 > −5.' },
+      { termino: 'intervalo', def: 'Todos los números de la recta que hay entre dos bordes, sin saltarse ninguno.',
+        ejemplo: '[−1, 3) va de −1, que entra, hasta 3, que no entra.', ver: ['extremo'] },
+      { termino: 'extremo', def: 'Cada una de las dos puntas de algo: de un intervalo, de una lista o de una gráfica.',
+        ejemplo: 'En [−1, 3), el −1 entra (corchete) y el 3 no (paréntesis).', ver: ['intervalo'] },
+      { termino: 'cota superior', formas: ['cota superior', 'cotas superiores', 'cota', 'cotas'],
+        def: 'Número que ningún elemento del conjunto supera.', ejemplo: 'Para [0, 1), el 1 y el 5 lo son.', ver: ['supremo'] },
+      { termino: 'acotado', formas: ['acotado', 'acotada', 'acotados', 'acotadas'],
+        def: 'Conjunto que tiene números que lo encierran por arriba y por abajo: no se va al infinito.', ver: ['cota superior'] },
+      { termino: 'supremo', simbolo: 'sup', def: 'La menor de las cotas superiores. Puede no estar dentro del conjunto.',
+        ejemplo: 'sup (0, 1) = 1, y el 1 no está en (0, 1).', ver: ['máximo', 'ínfimo'] },
+      { termino: 'ínfimo', simbolo: 'ínf', def: 'La mayor de las cotas inferiores: el borde de abajo de un conjunto.', ver: ['mínimo', 'supremo'] },
+      { termino: 'máximo', simbolo: 'máx', def: 'El mayor elemento de un conjunto. Tiene que pertenecer a él.',
+        ejemplo: '[0, 3] tiene máximo 3; [0, 3) no tiene.', ver: ['supremo'] },
+      { termino: 'mínimo', simbolo: 'mín', def: 'El menor elemento de un conjunto. Tiene que pertenecer a él.', ver: ['ínfimo'] },
+      { termino: 'densidad', def: 'Propiedad de los reales: entre dos números distintos siempre hay otro.', ejemplo: 'Entre 0,9 y 1 está 0,95.' },
+      { termino: 'operación binaria', formas: ['operación binaria', 'operaciones binarias'],
+        def: 'Regla que a cada par de números a y b le asigna un resultado, a ★ b.', ver: ['conmutativa', 'elemento neutro'] },
+      { termino: 'conmutativa', formas: ['conmutativa', 'conmutativas'], def: 'Así es una operación cuando el orden no cambia el resultado: a ★ b = b ★ a.',
+        ejemplo: 'La suma lo es: 2 + 3 = 3 + 2. La resta no lo es.' },
+      { termino: 'elemento neutro', formas: ['elemento neutro', 'neutro'], simbolo: 'e',
+        def: 'El número que, operado con cualquier otro, lo deja igual: a ★ e = a.', ejemplo: 'En la suma es 0; en la multiplicación, 1.',
+        ver: ['inverso'] },
+      { termino: 'inverso', def: 'El número que, operado con otro, da el neutro.', ejemplo: 'En la suma, el de 5 es −5: 5 + (−5) = 0.',
+        ver: ['elemento neutro'] },
+    ],
     historia: {
       texto: 'Los irracionales se usaron mucho antes de saber construirlos con rigor. En el siglo XIX, varios matemáticos los fundaron con cortes de racionales o con sucesiones; Dedekind publicó su propuesta en 1872. No se trataba de añadir cifras misteriosas, sino de que el orden y los límites funcionaran sin huecos. Los intervalos de esta unidad usan ese lenguaje moderno.',
       pregunta: '¿Hay un número justo antes del 1?',

@@ -107,11 +107,12 @@
   // Cambia: a, b, c y el signo · Permanece: la ventana y el punto de prueba (0; 0) · Progresa: el lado sombreado ·
   // Se reserva: el caso con b negativo, donde «≥» no es «arriba» · Debe verse: el punto de prueba decide el lado.
   const V1 = [-6, -4, 6, 4];
+  const CMP = { '≤': (u, c) => u <= c, '<': (u, c) => u < c, '≥': (u, c) => u >= c, '>': (u, c) => u > c };
   const semi = (r, signo, o = {}) => {
     const [a, b, c] = r, mayor = signo === '≥' || signo === '>';
     const R = mayor ? [-a, -b, -c] : r;
     const poli = region([R], caja(...V1)), borde = tramo(r, V1);
-    const cumple0 = mayor ? 0 >= c : 0 <= c;
+    const cumple0 = CMP[signo](0, c);   // en el origen ax + by vale 0; con < o >, el borde no cumple
     return Object.assign(EJ(-6, 6, -4, 4), {
       areas: poli.length > 2 ? [{ puntos: poli, color: 'd', cerrada: true, desde: o.desdeArea }] : [],
       curvas: borde ? [{ puntos: borde, color: 'd', discontinua: signo === '<' || signo === '>', desde: o.desdeBorde }] : [],
@@ -379,7 +380,7 @@
       };
     })(),
     regla: {
-      texto: 'Las rectas Z = k son paralelas. En una región cerrada, acotada y no vacía, el máximo y el mínimo de Z se alcanzan en vértices: basta evaluarlos.',
+      texto: 'Las rectas Z = k de la función objetivo son paralelas. En una región cerrada, acotada y no vacía, el máximo y el mínimo de Z están en vértices: basta evaluarlos.',
       ecuacion: [{ llave: [{ sub: [Z, 'máx'] }], nota: 'el mejor valor', color: 'c-h' }, ' = el mayor ', Z, ' de los vértices'],
       condicion: 'si la recta de nivel es paralela a un lado, todo ese lado puede ser óptimo, no solo un vértice.',
     },
@@ -560,7 +561,27 @@
         mover: pt => { const g = EJES().geometria(ejQ1()); return { p: inversa(g.X, 0, 9)(pt.x), q: inversa(g.Y, 0, 6)(pt.y) }; } },
       manijaNivel(ejQ1(), 'nivel', 'recta de nivel: deslízala', 'c-h', v => [v.p, v.q], 'k'),
     ],
+    // Retos comprobados (docs/teoria.md §4d): evalúan Z con Zf() en los vértices PL_L, los mismos que se dibujan.
+    invitaciones: [
+      { texto: 'Desliza la recta roja hasta el último nivel que toca la región.',
+        logrado: v => (v.p || v.q) > 0 && v.k === maxL(v),
+        bien: 'El máximo está en un vértice: un poco más y la recta ya no toca.' },
+      { texto: 'Gira Z hasta que dos vértices empaten en el máximo.',
+        logrado: v => (v.p || v.q) > 0 && topL(v).length > 1,
+        bien: 'La recta de nivel quedó paralela a un lado: todo ese lado es óptimo.' },
+      { texto: 'Con q = 0, desliza la recta hasta el máximo.',
+        logrado: v => v.q === 0 && v.p > 0 && v.k === maxL(v),
+        bien: 'Con Z = px solo importa ir lo más a la derecha posible.' },
+      { texto: 'Guarda dos Z distintas con el máximo en el mismo vértice.',
+        logrado: (v, guardados) => {
+          const uno = w => ((w.p || w.q) > 0 && topL(w).length === 1 ? pt(topL(w)[0]) : null), a = uno(v);
+          return a !== null && guardados.some(g => (g.p !== v.p || g.q !== v.q) && uno(g) === a) && guardados.some(g => g.p === v.p && g.q === v.q && g.k === v.k);
+        },
+        bien: 'Muchas direcciones llevan al mismo vértice: el óptimo cambia por saltos.' },
+    ],
   };
+  const maxL = v => Math.max(...PL_L.map(Zf(v.p, v.q)));
+  const topL = v => PL_L.filter(w => Zf(v.p, v.q)(w) === maxL(v));
   // Mesa 2: los bordes se arrastran. Con y ≥ t por encima de x + y ≤ m, la región se vacía: el caso raro que la idea
   // 2 no deja probar. La lectura da los vértices y el máximo de 2x + y para comparar casos guardados.
   const regionMovil = {
@@ -591,7 +612,25 @@
         donde: v => { const g = EJES().geometria(ejQ1()); return { x: g.X(8.5), y: g.Y(v.t) }; },
         mover: pt => ({ t: inversa(EJES().geometria(ejQ1()).Y, 0, 6)(pt.y) }) },
     ],
+    invitaciones: [
+      { texto: 'Haz que la región tenga cuatro vértices.',
+        logrado: v => poliMovil(v).length === 4,
+        bien: 'Cada vértice es el cruce de dos bordes que de verdad limitan.' },
+      { texto: 'Haz que la región quede vacía.',
+        logrado: v => poliMovil(v).length < 3,
+        bien: 'Las restricciones se contradicen: no hay solución que optimizar.' },
+      { texto: 'Consigue que el máximo de 2x + y valga 8.',
+        logrado: v => { const P = poliMovil(v); return P.length > 2 && Math.max(...P.map(Zf(2, 1))) === 8; },
+        bien: 'El máximo cayó en un vértice, como siempre en una región cerrada.' },
+      { texto: 'Guarda dos regiones con distinto n y el mismo máximo de 2x + y.',
+        logrado: (v, guardados) => {
+          const mx = w => { const P = poliMovil(w); return P.length > 2 ? Math.max(...P.map(Zf(2, 1))) : null; };
+          return mx(v) !== null && guardados.some(g => g.n !== v.n && g.m === v.m && g.t === v.t && mx(g) === mx(v)) && guardados.some(g => g.m === v.m && g.n === v.n && g.t === v.t);
+        },
+        bien: 'Si el borde x = n no pasa por el vértice óptimo, moverlo no cambia el máximo.' },
+    ],
   };
+  const poliMovil = v => region([...BASE, [1, 1, v.m], [1, 0, v.n], [0, -1, -v.t]], caja(...Q1));
 
   return {
     unidad: 'algebra.programacion-lineal',
@@ -603,7 +642,32 @@
       pregunta: '¿Cómo elegirías el mejor plan si hay muchos posibles?',
       fuente: { titulo: 'O’Connor y Robertson, George Dantzig — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Dantzig_George/' },
     },
-    laboratorio: [nivelLibre, regionMovil, Object.assign({ id: 'semiplano-libre', titulo: 'Un semiplano', pieza: 'ejes' }, semiplano.juega, { minimo: undefined })],
+    laboratorio: [nivelLibre, regionMovil, Object.assign({ id: 'semiplano-libre', titulo: 'Un semiplano', pieza: 'ejes', invitaciones: [
+      { texto: 'Haz que el origen no cumpla la desigualdad.',
+        logrado: v => (v.a || v.b) !== 0 && !CMP[v.s](0, v.c),
+        bien: 'El punto de prueba (0; 0) cayó del otro lado del borde.' },
+      { texto: 'Consigue un borde vertical.',
+        logrado: v => v.b === 0 && v.a !== 0,
+        bien: 'Sin y: el borde es x = c/a y el semiplano queda a un lado.' },
+      { texto: 'Pon el punto (1; 1) justo en el borde, sin que cumpla.',
+        logrado: v => (v.a || v.b) !== 0 && v.a + v.b === v.c && !CMP[v.s](v.a + v.b, v.c),
+        bien: 'Con < o >, el borde no entra: se dibuja punteado.' },
+      { texto: 'Busca un semiplano con (2; −1) dentro y (−2; 1) fuera.',
+        logrado: v => (v.a || v.b) !== 0 && CMP[v.s](2 * v.a - v.b, v.c) && !CMP[v.s](-2 * v.a + v.b, v.c),
+        bien: 'Un punto de prueba de cada lado decide qué lado se pinta.' },
+    ] }, semiplano.juega, { minimo: undefined })],
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'programación lineal', def: 'Buscar el mayor o menor valor de una expresión lineal cuando las variables cumplen varias desigualdades.' },
+      { termino: 'semiplano', formas: ['semiplano', 'semiplanos'], def: 'Cada una de las dos mitades en que una recta parte el plano.', ver: ['borde'] },
+      { termino: 'borde', formas: ['borde', 'bordes'], def: 'Línea o punto donde termina una región y empieza lo de afuera.', ejemplo: 'De x + y ≤ 4, es la recta x + y = 4.' },
+      { termino: 'punto de prueba', def: 'Punto que se reemplaza en la desigualdad para saber qué lado del borde cumple.', ejemplo: 'Con (0; 0) en x + y ≤ 4: 0 ≤ 4, cumple.' },
+      { termino: 'restricción', formas: ['restricción', 'restricciones'], def: 'Cada condición que deben cumplir las variables del problema.', ejemplo: 'x ≥ 0, y ≥ 0, x + y ≤ 5.' },
+      { termino: 'región factible', formas: ['región factible', 'regiones factibles'], def: 'Los puntos que cumplen todas las restricciones a la vez.', ver: ['restricción', 'vértice'] },
+      { termino: 'función objetivo', def: 'La expresión Z = px + qy que se quiere hacer máxima o mínima.', ver: ['recta de nivel'] },
+      { termino: 'recta de nivel', formas: ['recta de nivel', 'rectas de nivel'], def: 'Los puntos donde Z vale un mismo número k: px + qy = k.', ver: ['función objetivo'] },
+      { termino: 'óptimo', formas: ['óptimo', 'óptimos', 'óptima'], def: 'El mejor valor posible de Z en la región: el máximo o el mínimo buscado.' },
+    ],
     ideas: [semiplano, factible, nivelIdea, especiales],
   };
 });

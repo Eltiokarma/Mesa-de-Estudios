@@ -572,7 +572,32 @@
     arrastres: [{ id: 'punto', etiqueta: 'punto de la curva', color: 'c-o',
       donde: v => { const g = EJES().geometria(dibujoCub(v)); return { x: g.X(v.x), y: g.Y(evaluar(cubica(v), v.x)) }; },
       mover: (pt, v) => { const g = EJES().geometria(dibujoCub(v)); return { x: inversa(g.X, -3, 3)(pt.x) }; } }],
+    // Retos comprobados (docs/teoria.md §4d): evalúan con evaluar(cubica(v), x), lo mismo que pone el punto.
+    invitaciones: [
+      { texto: 'Pon el punto en x = 1 y haz que caiga sobre el eje x.',
+        logrado: v => v.x === 1 && evaluar(cubica(v), 1) === 0,
+        bien: 'P(1) es la suma de los coeficientes: 1 + b + c + d = 0.' },
+      { texto: 'Haz que la curva corte el eje y en −4.',
+        logrado: v => evaluar(cubica(v), 0) === -4,
+        bien: 'P(0) es el término independiente: se lee en el eje y.' },
+      { texto: 'Pon el punto en x = 1 y haz que P(1) = P(−1).',
+        logrado: v => v.x === 1 && evaluar(cubica(v), 1) === evaluar(cubica(v), -1),
+        bien: 'P(1) − P(−1) = 2 + 2c: con c = −1 se empatan.' },
+      { texto: 'Busca el punto más alto que se puede lograr en esta mesa.',
+        logrado: v => evaluar(cubica(v), v.x) === MAX_CUBICA,
+        bien: 'Todo al máximo y x = 3: 27 + 27 + 18 + 5 = 77.' },
+      { texto: 'Guarda dos polinomios distintos con la misma altura en el mismo x.',
+        logrado: (v, guardados) => guardados.some(g => g.x === v.x && (g.b !== v.b || g.c !== v.c || g.d !== v.d) && evaluar(cubica(g), g.x) === evaluar(cubica(v), v.x))
+          && guardados.some(g => ['x', 'b', 'c', 'd'].every(k => g[k] === v[k])),
+        bien: '¿Fue en x = 0? Ahí solo manda d: los demás términos se anulan.' },
+    ],
   };
+  // La mayor altura de la mesa del cúbico (x de −3 a 3 cada 0,5; b, c y d en sus rangos): se calcula, no se escribe.
+  const MAX_CUBICA = (() => {
+    let m = -Infinity;
+    for (let x = -3; x <= 3; x += 0.5) for (let b = -3; b <= 3; b++) for (let c = -6; c <= 6; c++) for (let d = -5; d <= 5; d++) m = Math.max(m, evaluar([1, b, c, d], x));
+    return m;
+  })();
   // Mesa 2: P contra Q en curvas y en casillas a la vez; el cursor x mide las dos alturas.
   const QL = [1, 2, -1];   // Q(x) = x² + 2x − 1
   const dosLab = v => {
@@ -604,6 +629,23 @@
     arrastres: [{ id: 'cursor', etiqueta: 'punto de P en la curva', color: 'c-o',
       donde: v => { const g = EJES().geometria(dosLab(v)); return { x: g.X(v.t), y: g.Y(evaluar([v.a, v.b, v.c], v.t)) }; },
       mover: (pt, v) => { const g = EJES().geometria(dosLab(v)); return { t: inversa(g.X, -3, 2)(pt.x) }; } }],
+    invitaciones: [
+      { texto: 'Haz que P y Q valgan igual en x = −2, con casillas distintas.',
+        logrado: v => v.t === -2 && evaluar([v.a, v.b, v.c], -2) === evaluar(QL, -2) && [v.a, v.b, v.c].some((c, i) => c !== QL[i]),
+        bien: 'Empatan en un punto, pero no son el mismo polinomio.' },
+      { texto: 'Copia Q casilla por casilla.',
+        logrado: v => [v.a, v.b, v.c].every((c, i) => c === QL[i]),
+        bien: 'Mismos coeficientes: valen igual en todo x. Son idénticos.' },
+      { texto: 'Haz que P sea constante y valga lo mismo que Q en el x marcado.',
+        logrado: v => v.a === 0 && v.b === 0 && evaluar([v.a, v.b, v.c], v.t) === evaluar(QL, v.t),
+        bien: 'Grado 0: una recta horizontal que corta a la parábola Q.' },
+      { texto: 'Sin copiar Q, guarda dos x donde P y Q empaten sin cambiar los coeficientes.',
+        logrado: (v, guardados) => {
+          const empata = g => evaluar([g.a, g.b, g.c], g.t) === evaluar(QL, g.t), igual = g => g.a === v.a && g.b === v.b && g.c === v.c;
+          return [v.a, v.b, v.c].some((c, i) => c !== QL[i]) && empata(v) && guardados.some(g => igual(g) && g.t !== v.t && empata(g)) && guardados.some(g => igual(g) && g.t === v.t);
+        },
+        bien: 'Dos empates no bastan para ser idénticos: en grado 2 hacen falta tres.' },
+    ],
   };
   // Mesa 3: el producto con un control más (el término independiente de Q).
   const mesaProducto = {
@@ -616,6 +658,20 @@
     ],
     dibujo: v => ({ datos: tablaProducto([1, v.a], [1, v.b, v.c]), estado: {} }),
     lectura: v => [P, '·', Q, ` = ${poli(multiplicar([1, v.a], [1, v.b, v.c]))}`],
+    invitaciones: [
+      { texto: 'Consigue un producto sin término independiente.',
+        logrado: v => multiplicar([1, v.a], [1, v.b, v.c])[3] === 0,
+        bien: 'Basta que a o c sea 0: el término independiente es a · c.' },
+      { texto: 'Haz que todos los coeficientes del producto sean positivos.',
+        logrado: v => multiplicar([1, v.a], [1, v.b, v.c]).every(c => c > 0),
+        bien: 'Con todo positivo, ningún término se resta al juntar los semejantes.' },
+      { texto: 'Busca el producto con el mayor término independiente.',
+        logrado: v => multiplicar([1, v.a], [1, v.b, v.c])[3] === Math.max(...[-4, 4].flatMap(a => [-4, 4].map(c => a * c))),
+        bien: 'a · c = 16: dos signos iguales dan positivo.' },
+      { texto: 'Haz que el producto sea x³ − 8.',
+        logrado: v => poli(multiplicar([1, v.a], [1, v.b, v.c])) === poli([1, 0, 0, -8]),
+        bien: '(x − 2)(x² + 2x + 4): los términos del medio se cancelan.' },
+    ],
   };
 
   return {
@@ -624,6 +680,28 @@
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/ejes.js'],
     laboratorio: [mesaCubica, mesaDos, mesaProducto],
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'polinomio', formas: ['polinomio', 'polinomios'], def: 'Suma de términos con letras elevadas a exponentes enteros no negativos.',
+        ejemplo: 'x³ − 3x + 1 es uno; 1/x no lo es.', ver: ['término', 'grado'] },
+      { termino: 'término', formas: ['término', 'términos'], def: 'Cada sumando de una expresión: un número por letras con sus exponentes.',
+        ejemplo: 'En 2x² − 5x + 3 hay tres: 2x², −5x y 3.', ver: ['coeficiente', 'parte literal'] },
+      { termino: 'variable', formas: ['variable', 'variables'], def: 'Letra que puede tomar distintos valores numéricos.', ejemplo: 'En P(x) = x² + 1, es x.' },
+      { termino: 'parte literal', def: 'Las letras de un término con sus exponentes, sin el número que las multiplica.', ejemplo: 'En −7x²y es x²y.' },
+      { termino: 'grado', formas: ['grado', 'grados'], def: 'En un término, la suma de los exponentes de sus letras.', ejemplo: '3x²y⁴ tiene 2 + 4 = 6.',
+        ver: ['grado absoluto', 'grado relativo'] },
+      { termino: 'grado absoluto', def: 'El mayor de los grados de los términos de un polinomio.', ejemplo: 'x³y + x²y⁴: los grados son 4 y 6; es 6.' },
+      { termino: 'grado relativo', def: 'El mayor exponente que tiene una letra elegida en el polinomio.', ejemplo: 'En x³y + x²y⁴, respecto a x es 3.' },
+      { termino: 'evaluar', formas: ['evaluar', 'evalúa', 'evaluarlo'], def: 'Reemplazar la letra por un número y hacer las cuentas.',
+        ejemplo: 'P(x) = x² − 1 en x = 3: P(3) = 8.' },
+      { termino: 'completo', formas: ['completo', 'completos'], def: 'Así es un polinomio que tiene todas las potencias de la letra, desde su grado hasta x⁰.',
+        ejemplo: 'x³ + x − 1 no lo es: falta x².' },
+      { termino: 'ordenado', formas: ['ordenado', 'ordenados'], def: 'Así es un polinomio cuyos exponentes solo bajan, o solo suben, de un término al siguiente.' },
+      { termino: 'homogéneo', formas: ['homogéneo', 'homogéneos'], def: 'Así es un polinomio cuyos términos tienen todos el mismo grado.', ejemplo: 'x² + 3xy − y²: grado 2 en cada uno.' },
+      { termino: 'idéntico', formas: ['idéntico', 'idénticos'], def: 'Dos polinomios lo son si tienen el mismo coeficiente en cada potencia: valen igual para todo x.' },
+      { termino: 'semejante', formas: ['semejante', 'semejantes'], def: 'Dos términos lo son si tienen la misma parte literal: solo esos se pueden juntar al sumar.',
+        ejemplo: '3x² + 5x² = 8x²; 3x² + 5x no se junta.' },
+    ],
     historia: {
       texto: 'En 1591, François Viète defendió usar letras para las cantidades conocidas y para las desconocidas. No era todavía nuestra escritura de polinomios, pero permitió razonar sobre familias enteras de problemas y no solo sobre ejemplos con números. Esa es la idea de esta unidad: coeficientes, exponentes y variables cumplen papeles distintos, y operar debe conservar el valor de la expresión.',
       pregunta: '¿Qué ganas al escribir una letra en vez de un número?',

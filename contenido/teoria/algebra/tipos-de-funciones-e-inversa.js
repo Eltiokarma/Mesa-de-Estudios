@@ -133,7 +133,7 @@
       ],
     },
     regla: {
-      texto: 'f es par si f(−x) = f(x): su gráfica es simétrica respecto al eje y. Es impar si f(−x) = −f(x): simétrica respecto al origen.',
+      texto: 'Una función par cumple f(−x) = f(x): su gráfica es simétrica respecto al eje y. Una función impar cumple f(−x) = −f(x): simétrica respecto al origen.',
       ecuacion: ['f(−', x, ') = ', { llave: ['f(', x, ')'], nota: 'par' }, '  o  ', { llave: ['−f(', x, ')'], nota: 'impar' }],
       condicion: 'el dominio es simétrico: si x está en el dominio, −x también. Sin eso no es par ni impar.',
     },
@@ -622,6 +622,22 @@
     arrastres: [{ id: 'punto', etiqueta: 'punto de f', color: 'c-o',
       donde: v => { const g = lienzo(-4, 4, -4, 4), a = Math.max(v.a, DOMS[v.dom]), yy = ESPEJO[v.fn](a); return { x: g.X(a), y: g.Y(Math.max(-4, Math.min(4, yy))) }; },
       mover: pt => ({ a: lienzo(-4, 4, -4, 4).aX(pt.x) }) }],
+    // Retos comprobados (docs/teoria.md §4d): usan ESPEJO, DOMS e inyectivaEn, lo mismo que dibuja y lee la mesa.
+    invitaciones: [
+      { texto: 'Con x², recorta el dominio para que el reflejo sea una función.',
+        logrado: v => v.fn === 'x²' && inyectivaEn(ESPEJO[v.fn], DOMS[v.dom]),
+        bien: 'En x ≥ 0, x² es inyectiva: su reflejo es √x.' },
+      { texto: 'Pon el punto justo sobre la recta y = x.',
+        logrado: v => { const a = Math.max(v.a, DOMS[v.dom]); return ESPEJO[v.fn](a) === a; },
+        bien: 'Ahí el punto y su reflejo coinciden: f(a) = a.' },
+      { texto: 'Con 2ˣ, consigue que el reflejo caiga en (4; 2).',
+        logrado: v => { const a = Math.max(v.a, DOMS[v.dom]); return v.fn === '2ˣ' && ESPEJO[v.fn](a) === 4 && a === 2; },
+        bien: '2² = 4, así que la inversa lleva 4 en 2: es el logaritmo en base 2.' },
+      { texto: 'Guarda la misma f con los dos dominios: con reflejo función y sin él.',
+        logrado: (v, guardados) => guardados.some(g => g.fn === v.fn && g.dom !== v.dom && inyectivaEn(ESPEJO[g.fn], DOMS[g.dom]) !== inyectivaEn(ESPEJO[v.fn], DOMS[v.dom]))
+          && guardados.some(g => g.fn === v.fn && g.dom === v.dom),
+        bien: 'La misma fórmula: recortar el dominio decide si hay inversa.' },
+    ],
   };
   // Mesa 2: la recta horizontal con el dominio que se recorta y más funciones (x³ − 3x sube, baja y vuelve a subir).
   const FUNS2 = Object.assign({}, FUNS, { 'x³ − 3x': u => u ** 3 - 3 * u });
@@ -647,6 +663,20 @@
     arrastres: [{ id: 'recta', etiqueta: 'recta horizontal y = c', color: 'c-h',
       donde: v => { const g = lienzo(-4, 4, -4, 6); return { x: g.X(3.5), y: g.Y(v.c) }; },
       mover: pt => ({ c: lienzo(-4, 4, -4, 6).aY(pt.y) }) }],
+    invitaciones: [
+      { texto: 'Con x³ − 3x, busca una altura que la corte tres veces.',
+        logrado: v => v.fn === 'x³ − 3x' && cortes(FUNS2[v.fn], v.c, DOMS[v.dom], 4).length === 3,
+        bien: 'Tres x con la misma salida: no es inyectiva.' },
+      { texto: 'Con x² en ℝ, busca la única altura que la toca una sola vez.',
+        logrado: v => v.fn === 'x²' && v.dom === 'ℝ' && cortes(FUNS2[v.fn], v.c, DOMS[v.dom], 4).length === 1,
+        bien: 'Solo en el vértice: cualquier altura positiva la toca dos veces.' },
+      { texto: 'Recorta el dominio para que |x| − 1 sea inyectiva.',
+        logrado: v => v.fn === '|x| − 1' && inyectivaEn(FUNS2[v.fn], DOMS[v.dom]),
+        bien: 'Sin la mitad izquierda, ya no hay dos x con la misma altura.' },
+      { texto: 'Con 2x + 1, busca una altura que no la corte nunca.',
+        logrado: v => v.fn === '2x + 1' && cortes(FUNS2[v.fn], v.c, DOMS[v.dom], 4).length === 0,
+        bien: 'Con x ≥ 0 no baja de 1: no alcanza todas las salidas.' },
+    ],
   };
   // Mesa 3: dos tanques juntos, para comparar cuál se vacía antes (dos modelos con su dominio).
   const mesaTanques = {
@@ -671,6 +701,20 @@
     },
     lectura: v => [`A se vacía en ${f(v.v0 / v.r)} min · B en ${f(v.v0b / v.rb)} min`],
     arrastres: [...tanqueArrastres('v0', 'r', 'c-i', 'c-i', 'A'), ...tanqueArrastres('v0b', 'rb', 'c-f', 'c-f', 'B')],
+    invitaciones: [
+      { texto: 'Sin tocar el tanque A, haz que B se vacíe antes.',
+        logrado: v => v.v0 === 600 && v.r === 40 && v.v0b / v.rb < v.v0 / v.r,
+        bien: 'Para vaciarse antes, B necesita menos agua o salir más rápido.' },
+      { texto: 'Haz que A empiece con más agua, pero se vacíe antes que B.',
+        logrado: v => v.v0 > v.v0b && v.v0 / v.r < v.v0b / v.rb,
+        bien: 'Decide el cociente V₀/r, no solo cuánta agua hay.' },
+      { texto: 'Consigue que tengan lo mismo justo a los 5 minutos.',
+        logrado: v => v.r !== v.rb && (v.v0 - v.v0b) / (v.r - v.rb) === 5 && 5 < Math.min(v.v0 / v.r, v.v0b / v.rb),
+        bien: 'Las dos rectas se cruzan a los 5 min, antes de vaciarse.' },
+      { texto: 'Busca el vaciado más lento posible de A.',
+        logrado: v => v.v0 / v.r === 600 / 20,
+        bien: 'Lo más lleno y lo más lento: 600/20 = 30 min.' },
+    ],
   };
 
   return {
@@ -680,6 +724,25 @@
     requiere: ['/nucleo/kit/piezas/ejes.js'],
     // Laboratorio: tres mesas propias con gesto directo; todas suman el dominio como control (o un segundo modelo).
     laboratorio: [mesaEspejo, mesaRecta, mesaTanques],
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'función par', formas: ['función par', 'funciones pares'], def: 'La que da lo mismo en x y en −x: su gráfica se refleja igual en el eje y.',
+        ejemplo: 'x²: (−3)² = 3² = 9.', ver: ['función impar'] },
+      { termino: 'función impar', formas: ['función impar', 'funciones impares'], def: 'La que cambia de signo al cambiar x por −x: es simétrica respecto al origen.',
+        ejemplo: 'x³: (−2)³ = −8 = −(2³).', ver: ['función par'] },
+      { termino: 'creciente', formas: ['creciente', 'crecientes'], def: 'Así es una función en un intervalo si, al aumentar x, también aumenta f(x).', ver: ['decreciente'] },
+      { termino: 'decreciente', formas: ['decreciente', 'decrecientes'], def: 'Así es una función en un intervalo si, al aumentar x, f(x) disminuye.', ver: ['creciente'] },
+      { termino: 'codominio', def: 'El conjunto donde se declara que caen las salidas; puede tener valores que nadie alcanza.',
+        ejemplo: 'f: ℝ → ℝ, f(x) = x²: el −1 no se alcanza.', ver: ['rango', 'sobreyectiva'] },
+      { termino: 'inyectiva', formas: ['inyectiva', 'inyectivas'], def: 'Función en la que entradas distintas dan salidas distintas: ninguna recta horizontal la corta dos veces.',
+        ejemplo: '2x + 1 lo es; x² en ℝ no.', ver: ['biyectiva'] },
+      { termino: 'sobreyectiva', formas: ['sobreyectiva', 'sobreyectivas'], def: 'Función que alcanza todos los valores del codominio.', ver: ['codominio', 'biyectiva'] },
+      { termino: 'biyectiva', formas: ['biyectiva', 'biyectivas'], def: 'Función inyectiva y sobreyectiva a la vez: cada salida viene de una sola entrada.', ver: ['inversa'] },
+      { termino: 'inversa', formas: ['inversa', 'inversas'], simbolo: 'f⁻¹', def: 'Lo que deshace a otra: si f lleva a en b, ella lleva b en a.',
+        ejemplo: 'f(x) = 2x + 1 y f⁻¹(x) = (x − 1)/2.', ver: ['biyectiva'] },
+      { termino: 'modelar', formas: ['modelar', 'modelo', 'modelos'], def: 'Describir una situación real con una fórmula, eligiendo la variable y el dominio con sentido.',
+        ejemplo: 'Tanque de 600 L a 40 L/min: V = 600 − 40t, con 0 ≤ t ≤ 15.' },
+    ],
     historia: {
       texto: 'Al ampliarse la idea de función, se separó la relación entre variables de la fórmula que la describe. Las discusiones sobre qué dependencias admitir mostraron que una misma apariencia algebraica no basta: importan el dominio y las salidas. Para invertir una relación hace falta que cada salida identifique a su entrada. La inversa no sale de cambiar un símbolo ni de tomar el recíproco.',
       pregunta: '¿Se puede deshacer toda correspondencia?',

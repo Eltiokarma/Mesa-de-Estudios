@@ -375,7 +375,7 @@
     temas: ['Conjunto potencia y cardinalidad'],
     pieza: 'alg-tabla',
     juega: {
-      consigna: 'Elige cuántos elementos tiene el conjunto. Cada fila es un subconjunto: ✓ si el elemento está, punto si no está.',
+      consigna: 'Elige el cardinal: cuántos elementos tiene el conjunto. Cada fila es un subconjunto: ✓ si el elemento está, punto si no está.',
       voz: 'Cuenta las filas cada vez que agregas un elemento.',
       controles: [{ id: 'n', etiqueta: 'Elementos', min: 0, max: 3, paso: 1, inicio: 1, decimales: 0, color: 'c-o' }],
       dibujo: val => ({ datos: tablaPotencia(val.n), estado: {} }),
@@ -408,7 +408,7 @@
       ],
     },
     regla: {
-      texto: 'Cada elemento distinto se pone o no se pone. Con n elementos distintos hay 2ⁿ subconjuntos, contando el vacío y el propio conjunto.',
+      texto: 'Cada elemento distinto se pone o no se pone. Con n elementos distintos hay 2ⁿ subconjuntos, contando el vacío y el propio conjunto: juntos forman el conjunto potencia.',
       ecuacion: [{ llave: ['n(P(', A, '))'], nota: 'subconjuntos', color: 'c-d' }, ' = ', { llave: [{ sup: ['2', { v: 'c-o', t: 'n' }] }], nota: 'n distintos', color: 'c-o' }],
       condicion: 'n cuenta elementos distintos: {2, 3, 3, 5} tiene n = 3. En una unión, lo común se cuenta una sola vez.',
     },
@@ -520,7 +520,7 @@
         { tipo: 'punto', x: 0, color: 'h', abierto: true, rotulo: 'falla', desde: 3, fila: 1 },
       ]),
       pasos: [
-        { estado: { corte: 1 }, texto: 'Afirmación: para todo x de {−2, …, 3}, x² > 0.', ecuacion: ['∀', x, ' ∈ {−2, …, 3}: ', x, '² > 0'] },
+        { estado: { corte: 1 }, texto: 'Cuantificador «para todo»: cada x de {−2, …, 3} cumple x² > 0.', ecuacion: ['∀', x, ' ∈ {−2, …, 3}: ', x, '² > 0'] },
         { estado: { corte: 2 }, texto: 'Cinco números la cumplen. Eso todavía no prueba el «todo».', ecuacion: ['(−2)² = 4 > 0', '   ·   ', '…', '   ·   ', '3² = 9 > 0'] },
         { estado: { corte: 3 }, texto: 'Con x = 0: 0² = 0, que no es mayor que 0.', ecuacion: ['0² = 0'] },
         { estado: { corte: 3 }, texto: 'Un solo contraejemplo hace falsa la afirmación universal.', ecuacion: ['∃', x, ': ', x, '² ≤ 0   (', x, ' = 0)'] },
@@ -726,6 +726,23 @@
         return [`Fila ${val.p}, ${val.q}: ${VF(valor(val.f1, a, b))} y ${VF(valor(val.f2, a, b))} · coinciden en ${igual} de 4`];
       },
       arrastres: [manijaFila(tablaDos, 'fila marcada: valores de p y q')],
+      // Retos comprobados (docs/teoria.md §4d): cuentan con valor(), la misma tabla que pinta la pieza.
+      invitaciones: [
+        { texto: 'Marca la única fila donde p → q es falsa.',
+          logrado: val => [val.f1, val.f2].includes('p → q') && !valor('p → q', val.p === 'V', val.q === 'V'),
+          bien: 'Solo falla si prometes y no cumples: p verdadera, q falsa.' },
+        { texto: 'Junta p → q y q → p, y marca una fila donde dan distinto.',
+          logrado: val => [val.f1, val.f2].sort().join() === ['p → q', 'q → p'].sort().join()
+            && valor(val.f1, val.p === 'V', val.q === 'V') !== valor(val.f2, val.p === 'V', val.q === 'V'),
+          bien: 'La recíproca no dice lo mismo. ¿Y la contrarrecíproca, falla alguna vez?' },
+        { texto: 'Busca dos fórmulas que no coincidan en ninguna fila.',
+          logrado: val => FILAS.every(([a, b]) => valor(val.f1, a, b) !== valor(val.f2, a, b)),
+          bien: 'Una es la negación de la otra: donde una dice V, la otra dice F.' },
+        { texto: 'Junta dos fórmulas distintas, iguales en las cuatro filas, sin ninguna flecha.',
+          logrado: val => val.f1 !== val.f2 && !/→|↔/.test(val.f1 + val.f2)
+            && FILAS.every(([a, b]) => valor(val.f1, a, b) === valor(val.f2, a, b)),
+          bien: 'Negar un «y» da un «o» de negaciones: eso es De Morgan.' },
+      ],
     },
     {
       id: 'tres-conjuntos', titulo: 'Tres conjuntos y una ficha', pieza: 'alg-venn',
@@ -740,6 +757,24 @@
         return [`${val.op}: ${S.length} ${S.length === 1 ? "elemento" : "elementos"} · el ${val.n} ${S.includes(val.n) ? 'entra' : 'no entra'}`];
       },
       arrastres: [fichaVenn(venn3(), U12, en3)],
+      invitaciones: [
+        { texto: 'Pon la ficha en el único número que está en los tres conjuntos.',
+          logrado: val => en3(val.n).every(Boolean),
+          bien: 'El 12: par, múltiplo de 3 y mayor que 6 a la vez.' },
+        { texto: 'Elige A − (B ∪ C) y deja la ficha dentro de la región sombreada.',
+          logrado: val => val.op === 'A − (B ∪ C)' && OPS3[val.op](...en3(val.n)),
+          bien: 'Pares que no son múltiplos de 3 ni pasan de 6. ¿Cuántos quedan?' },
+        { texto: 'Busca la operación con más elementos y una ficha que quede fuera.',
+          logrado: val => {
+            const cuenta = op => U12.filter(n => OPS3[op](...en3(n))).length;
+            return cuenta(val.op) === Math.max(...Object.keys(OPS3).map(cuenta)) && !OPS3[val.op](...en3(val.n));
+          },
+          bien: 'Ni par, ni múltiplo de 3, ni mayor que 6: queda fuera de todo.' },
+        { texto: 'Guarda dos casos con la misma ficha: dentro con una operación, fuera con otra.',
+          logrado: (val, guardados) => guardados.some(g => g.n === val.n && g.op !== val.op && OPS3[g.op](...en3(g.n)) !== OPS3[val.op](...en3(val.n)))
+            && guardados.some(g => g.n === val.n && g.op === val.op),
+          bien: 'El número no cambia de lugar; cambia qué región pinta la operación.' },
+      ],
     },
     {
       id: 'contraejemplo', titulo: 'Busca el contraejemplo', pieza: 'recta',
@@ -752,6 +787,21 @@
       dibujo: val => ({ datos: rectaTestigo(val, DOMS3, { min: -4, max: 7 }), estado: {} }),
       lectura: val => lecturaTestigo(val, DOMS3),
       arrastres: [manijaTestigo(DOMS3, { min: -4, max: 7 })],
+      invitaciones: [
+        { texto: 'Rompe «2x > x» con un testigo del dominio.',
+          logrado: val => val.pr === '2x > x' && estadoTestigo(val, DOMS3) === 'falla',
+          bien: 'Con x ≤ 0 el doble no supera. Un caso basta para negar el «todo».' },
+        { texto: 'Rompe «x² ≠ 4» con un testigo del dominio.',
+          logrado: val => val.pr === 'x² ≠ 4' && estadoTestigo(val, DOMS3) === 'falla',
+          bien: '¿Encontraste el 2 o el −2? El cuadrado esconde el signo.' },
+        { texto: 'En {1, …, 5}, pon el menor testigo que rompe «x < 4».',
+          logrado: val => val.pr === 'x < 4' && val.dom === '{1, …, 5}' && estadoTestigo(val, DOMS3) === 'falla'
+            && val.t === Math.min(...DOMS3[val.dom].filter(v => !PRED[val.pr](v))),
+          bien: 'Desde el 4 ya no se cumple. ¿Y en {−2, …, 3}?' },
+        { texto: 'Halla una propiedad y un dominio donde ningún número falle, sin usar «x + 1 > x».',
+          logrado: val => val.pr !== 'x + 1 > x' && DOMS3[val.dom].every(PRED[val.pr]),
+          bien: 'Ahí el «para todo» es verdadero. Cambia el dominio y puede caer.' },
+      ],
     },
   ];
 
@@ -761,6 +811,52 @@
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/alg-venn.js', '/nucleo/kit/piezas/recta.js'],
     laboratorio: LABORATORIO,
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'proposición', def: 'Frase que solo puede ser verdadera o falsa, nunca las dos cosas a la vez.',
+        ejemplo: '«7 es primo» es verdadera; «¿qué hora es?» no es una proposición.', ver: ['conector', 'tabla de verdad'] },
+      { termino: 'conector', def: 'Palabra o signo que une frases para formar otra: y (∧), o (∨), si… entonces (→).',
+        ver: ['condicional', 'negación'] },
+      { termino: 'tabla de verdad', formas: ['tabla de verdad', 'tablas de verdad'],
+        def: 'Lista de cada caso de V y F de las letras, con lo que vale la fórmula en ese caso.',
+        ejemplo: 'Con p y q hay 4 filas: VV, VF, FV y FF.', ver: ['tautología', 'equivalencia'] },
+      { termino: 'condicional', simbolo: 'p → q', def: 'La frase «si p, entonces q». Solo es falsa cuando p es verdadera y q es falsa.',
+        ejemplo: 'p = V y q = F: p → q da F.', ver: ['recíproca', 'contrarrecíproca'] },
+      { termino: 'negación', simbolo: '~p', def: 'Lo que cambia la verdad de una frase: si era verdadera pasa a falsa, y al revés.',
+        ver: ['contraejemplo'] },
+      { termino: 'recíproca', def: 'Cambiar de lugar las dos partes de un «si…, entonces»: de p → q a q → p.',
+        ver: ['contrarrecíproca'] },
+      { termino: 'contrarrecíproca', def: 'Cambiar de lugar las dos partes y negarlas: de p → q a ~q → ~p. Vale siempre lo mismo.',
+        ver: ['recíproca', 'equivalencia'] },
+      { termino: 'tautología', def: 'Fórmula que da verdadero en todas las filas de su tabla, pase lo que pase con las letras.',
+        ejemplo: 'p ∨ ~p: o llueve o no llueve.', ver: ['tabla de verdad'] },
+      { termino: 'equivalencia', simbolo: '≡', formas: ['equivalencia', 'equivalencias', 'equivalente', 'equivalentes'],
+        def: 'Relación entre dos fórmulas que dan el mismo valor en cada fila de la tabla.',
+        ejemplo: 'p → q ≡ ~p ∨ q: coinciden en las cuatro filas.', ver: ['contrarrecíproca'] },
+      { termino: 'condición suficiente', formas: ['condición suficiente', 'suficiente'],
+        def: 'Lo que, si ocurre, ya asegura otra cosa. En p → q, que ocurra p basta para q.', ver: ['condición necesaria'] },
+      { termino: 'condición necesaria', formas: ['condición necesaria', 'necesaria'],
+        def: 'Lo que tiene que ocurrir para que ocurra otra cosa. En p → q, sin q no hay p.', ver: ['condición suficiente'] },
+      { termino: 'conjunto', def: 'Grupo de objetos bien definido: siempre se puede decir si algo está o no está en él.',
+        ver: ['subconjunto', 'cardinal'] },
+      { termino: 'subconjunto', simbolo: '⊂', def: 'Grupo cuyos elementos están todos dentro de otro. El vacío y el mismo grupo también cuentan.',
+        ejemplo: '{2, 5} está dentro de {2, 3, 5}.', ver: ['conjunto potencia'] },
+      { termino: 'intersección', simbolo: '∩', def: 'Los elementos que están en los dos conjuntos a la vez.',
+        ejemplo: '{1, 2, 3} ∩ {2, 3, 4} = {2, 3}.', ver: ['unión'] },
+      { termino: 'unión', simbolo: '∪', def: 'Los elementos que están en un conjunto, en el otro o en ambos, contados una sola vez.',
+        ejemplo: '{1, 2} ∪ {2, 3} = {1, 2, 3}.', ver: ['intersección'] },
+      { termino: 'complemento', simbolo: 'A′', def: 'Lo que está en el universo pero no en el conjunto dado.',
+        ejemplo: 'U = {1, …, 6} y A = {1, 2}: A′ = {3, 4, 5, 6}.', ver: ['conjunto'] },
+      { termino: 'conjunto potencia', simbolo: 'P(A)', def: 'El conjunto de todos los subconjuntos de A, con el vacío y el propio A.',
+        ejemplo: 'A = {2, 5}: P(A) = {∅, {2}, {5}, {2, 5}}.', ver: ['subconjunto', 'cardinal'] },
+      { termino: 'cardinal', simbolo: 'n(A)', def: 'Cuántos elementos distintos tiene un conjunto.',
+        ejemplo: 'n({2, 3, 3, 5}) = 3: el 3 repetido cuenta una vez.', ver: ['conjunto potencia'] },
+      { termino: 'cuantificador', simbolo: '∀, ∃', def: 'Expresión que dice a cuántos del dominio les toca: «para todo» (∀) o «existe al menos uno» (∃).',
+        ver: ['contraejemplo', 'dominio'] },
+      { termino: 'contraejemplo', def: 'Un caso del dominio que no cumple lo afirmado. Uno solo hace falsa una frase con «para todo».',
+        ejemplo: 'x = 0 hace falsa «todo x cumple x² > 0».', ver: ['cuantificador'] },
+      { termino: 'dominio', def: 'El conjunto de valores que puede tomar la variable.', ejemplo: 'Dominio {1, …, 5}: x solo vale 1, 2, 3, 4 o 5.' },
+    ],
     historia: {
       texto: 'En 1854, George Boole publicó Las leyes del pensamiento: trató las condiciones con un álgebra, con reglas para combinarlas. Las letras, los conectores y las tablas de verdad que usamos hoy son una presentación moderna. La idea de fondo sigue igual: revisar todos los casos posibles antes de aceptar una conclusión, aunque suene convincente.',
       pregunta: '¿Cómo sabrías que una conclusión vale siempre?',

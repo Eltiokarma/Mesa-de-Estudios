@@ -465,7 +465,7 @@
       ],
     },
     regla: {
-      texto: '(f∘g)(x) = f(g(x)): primero actúa g y después f. El orden importa. Las operaciones f + g y f · g se hacen punto a punto.',
+      texto: 'En la composición, (f∘g)(x) = f(g(x)): primero actúa g y después f. El orden importa. Las operaciones f + g y f · g se hacen punto a punto.',
       ecuacion: ['(f∘g)(', x, ') = f(', { llave: ['g(', x, ')'], nota: 'actúa primero' }, ')'],
       condicion: 'x debe estar en el dominio de g, y g(x) en el de f. f + g usa el dominio común.',
     },
@@ -631,8 +631,8 @@
     predice: {
       pregunta: ['En ', y, ' = −(', x, ' − 1)(', x, ' + 1)(', x, ' − 2), cuando ', x, ' crece mucho, ¿qué hace la gráfica?'],
       opciones: [
-        { id: 'c', texto: 'Baja sin límite', correcta: true },
-        { id: 'sube', texto: 'Sube sin límite', error: 'TAL-SIGNO-PRINCIPAL', siFuera: 'Sería así sin el signo menos: el término principal es −x³.' },
+        { id: 'c', texto: 'Baja sin parar', correcta: true },
+        { id: 'sube', texto: 'Sube sin parar', error: 'TAL-SIGNO-PRINCIPAL', siFuera: 'Sería así sin el signo menos: el término principal es −x³.' },
         { id: 'plana', texto: 'Se acerca a 0', error: 'TAL-EXTREMO-PLANO', siFuera: 'Un polinomio no se aplana: su término de mayor grado domina.' },
         { id: 'corta', texto: 'Vuelve a cortar el eje', error: 'TAL-MAS-RAICES', siFuera: 'Solo tiene tres raíces: −1, 1 y 2. Después de 2 no hay más cortes.' },
       ],
@@ -702,8 +702,8 @@
         return {
           pregunta: [`En ${expr}, cuando x se va hacia ${derecha ? '+∞' : '−∞'}, ¿la gráfica sube o baja?`],
           opciones: [
-            { id: 'c', texto: va > 0 ? 'Sube sin límite' : 'Baja sin límite', correcta: true },
-            { id: 'otro', texto: va > 0 ? 'Baja sin límite' : 'Sube sin límite', error: 'TAL-SIGNO-PRINCIPAL', siFuera: `El término principal es ${L < 0 ? '−' : ''}${Math.abs(L) === 1 ? '' : f(Math.abs(L))}x${'⁰¹²³⁴⁵⁶'[grado]}; revisa su signo ahí.` },
+            { id: 'c', texto: va > 0 ? 'Sube sin parar' : 'Baja sin parar', correcta: true },
+            { id: 'otro', texto: va > 0 ? 'Baja sin parar' : 'Sube sin parar', error: 'TAL-SIGNO-PRINCIPAL', siFuera: `El término principal es ${L < 0 ? '−' : ''}${Math.abs(L) === 1 ? '' : f(Math.abs(L))}x${'⁰¹²³⁴⁵⁶'[grado]}; revisa su signo ahí.` },
             { id: 'plana', texto: 'Se acerca a 0', error: 'TAL-EXTREMO-PLANO', siFuera: 'Un polinomio no se aplana: su término de mayor grado domina.' },
           ],
           solucion: { texto: `Grado ${grado}, coeficiente principal ${f(L)}: manda ${L < 0 ? '−' : ''}${Math.abs(L) === 1 ? '' : f(Math.abs(L))}x${'⁰¹²³⁴⁵⁶'[grado]}.`, ecuacion: [`x → ${derecha ? '+∞' : '−∞'}  ⇒  `, y, ` → ${va > 0 ? '+∞' : '−∞'}`] },
@@ -740,7 +740,24 @@
     arrastres: [{ id: 'ancla', etiqueta: 'punto ancla (h; k)', color: 'c-h',
       donde: v => { const g = lienzo(-6, 6, -5, 5); return { x: g.X(v.h), y: g.Y(v.k) }; },
       mover: pt => { const g = lienzo(-6, 6, -5, 5); return { h: g.aX(pt.x), k: g.aY(pt.y) }; } }],
+    // Retos comprobados (docs/teoria.md §4d): evalúan la misma y = ±f(x − h) + k que dibuja la curva turquesa.
+    invitaciones: [
+      { texto: 'Haz que la curva turquesa pase por el origen.',
+        logrado: v => trasladada(v)(0) === 0,
+        bien: '±f(0 − h) + k = 0: el origen quedó sobre la curva.' },
+      { texto: 'Con |x| y −f, pon el vértice en (−3; 2).',
+        logrado: v => v.base === '|x|' && v.signo === -1 && v.h === -3 && v.k === 2,
+        bien: 'Volteada hacia abajo, el vértice pasó a ser el punto más alto.' },
+      { texto: 'Con x², haz una parábola hacia abajo que no corte el eje x.',
+        logrado: v => v.base === 'x²' && [-6, -3, 0, 3, 6, v.h].every(z => trasladada(v)(z) < 0),
+        bien: 'Abre hacia abajo y su vértice quedó bajo el eje: k < 0.' },
+      { texto: 'Guarda dos casos iguales salvo h: uno a la derecha y otro a la izquierda.',
+        logrado: (v, guardados) => v.h !== 0 && guardados.some(g => g.base === v.base && g.k === v.k && g.signo === v.signo && g.h === -v.h)
+          && guardados.some(g => ['base', 'h', 'k', 'signo'].every(c => g[c] === v[c])),
+        bien: 'f(x − h) va a la derecha si h > 0: el signo de adentro engaña.' },
+    ],
   };
+  const trasladada = v => xx => v.signo * BASES[v.base](xx - v.h) + v.k;
   // Mesa 2: la parábola con b de uno en uno y la cuenta de raíces (el discriminante, que las ideas no muestran).
   const mesaParabola = {
     id: 'parabola', titulo: 'Parábola: vértice y raíces', pieza: 'ejes',
@@ -775,7 +792,23 @@
         const B = ajusta(-2 * v.a * g.aX(pt.x), 1, -4, 4);
         return { b: B, c: g.aY(pt.y) + B * B / (4 * v.a) };
       } }],
+    invitaciones: [
+      { texto: 'Pon el vértice justo sobre el eje x.',
+        logrado: v => v.a !== 0 && cuad(v.a, v.b, v.c)(-v.b / (2 * v.a)) === 0,
+        bien: 'Una raíz doble: el vértice toca el eje.' },
+      { texto: 'Haz que el vértice sea un máximo, por encima del eje x.',
+        logrado: v => v.a < 0 && cuad(v.a, v.b, v.c)(-v.b / (2 * v.a)) > 0,
+        bien: 'Abre hacia abajo desde arriba del eje: tiene que cortarlo dos veces.' },
+      { texto: 'Haz que el eje de simetría sea el eje y.',
+        logrado: v => v.a !== 0 && -v.b / (2 * v.a) === 0,
+        bien: 'x = −b/(2a) = 0 pide b = 0: f(−x) = f(x).' },
+      { texto: 'Busca el vértice más bajo de la mesa.',
+        logrado: v => v.a !== 0 && cuad(v.a, v.b, v.c)(-v.b / (2 * v.a)) === MIN_VERTICE,
+        bien: 'a = 1, b = ±4 y c = −4: el vértice baja hasta −8.' },
+    ],
   };
+  // El vértice más bajo de la mesa de la parábola (a ≠ 0 de −2 a 2; b y c de −4 a 4): se calcula, no se escribe.
+  const MIN_VERTICE = (() => { let m = Infinity; for (const a of [-2, -1, 1, 2]) for (let b = -4; b <= 4; b++) for (let c = -4; c <= 4; c++) m = Math.min(m, cuad(a, b, c)(-b / (2 * a))); return m; })();
   // Mesa 3: el polinomio con su signo principal, que la idea 6 reserva para predecir.
   const mesaPolinomio = {
     id: 'polinomio', titulo: 'Raíces y signo principal', pieza: 'ejes',
@@ -799,6 +832,23 @@
       return [`Raíces ${[...rs].sort((p, q) => p - q).map(z => f(z)).join('; ')} · ${dobles.length ? `rebota en ${dobles.join('')}` : 'cruza en cada una'} · ${v.lider > 0 ? 'sube' : 'baja'} al final`];
     },
     arrastres: polinomial.juega.arrastres,
+    invitaciones: [
+      { texto: 'Haz que la curva cruce el eje en tres puntos distintos.',
+        logrado: v => new Set([v.r1, v.r2, v.r3]).size === 3,
+        bien: 'Tres raíces simples: cruza en cada una.' },
+      { texto: 'Junta las tres raíces en una sola.',
+        logrado: v => new Set([v.r1, v.r2, v.r3]).size === 1,
+        bien: 'Raíz triple: cruza, pero se aplana como x³.' },
+      { texto: 'Haz que la curva empiece arriba, a la izquierda.',
+        logrado: v => cubica([v.r1, v.r2, v.r3], v.lider, 4)(-10) > 0,
+        bien: 'Con − delante, el término de mayor grado manda: empieza arriba.' },
+      { texto: 'Guarda dos casos: uno que rebota en 0 y otro que cruza en 0.',
+        logrado: (v, guardados) => {
+          const en0 = w => [w.r1, w.r2, w.r3].filter(z => z === 0).length, a = en0(v);
+          return (a === 1 || a === 2) && guardados.some(g => en0(g) === 3 - a) && guardados.some(g => ['r1', 'r2', 'r3', 'lider'].every(c => g[c] === v[c]));
+        },
+        bien: 'Multiplicidad 2 rebota; multiplicidad 1 cruza.' },
+    ],
   };
 
   return {
@@ -808,6 +858,23 @@
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/alg-tabla.js'],
     // Laboratorio: tres mesas propias, todas con gesto directo y más controles que los juegos de las ideas.
     laboratorio: [mesaTraslacion, mesaParabola, mesaPolinomio],
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'función', formas: ['función', 'funciones'], def: 'Regla que a cada entrada permitida le asigna una sola salida.',
+        ejemplo: 'f(x) = x²: a 3 le toca 9, y solo 9.', ver: ['dominio', 'rango'] },
+      { termino: 'rango', def: 'En una función, las salidas que de verdad se obtienen. En una matriz, cuántas filas independientes tiene.', ejemplo: 'f(x) = x² tiene rango [0, +∞).',
+        ver: ['dominio', 'función'] },
+      { termino: 'gráfica', formas: ['gráfica', 'gráficas'], def: 'Todos los puntos (x; f(x)) dibujados en el plano.', ver: ['función'] },
+      { termino: 'eje de simetría', def: 'Recta vertical que parte la parábola en dos mitades iguales; pasa por el vértice.', ejemplo: 'y = x² − 2x: es x = 1.' },
+      { termino: 'máximo entero', formas: ['máximo entero', 'mayor entero'], simbolo: '⌊x⌋', def: 'El entero más grande que no pasa de x.',
+        ejemplo: '⌊2,7⌋ = 2 y ⌊−2,7⌋ = −3.' },
+      { termino: 'composición', formas: ['composición', 'compuesta', 'compuestas'], simbolo: 'f∘g', def: 'Aplicar una función al resultado de otra: primero g, después f.',
+        ejemplo: 'g(x) = x + 1, f(x) = x²: (f∘g)(2) = 9.' },
+      { termino: 'traslación', formas: ['traslación', 'traslaciones', 'trasladar', 'traslada', 'trasladado'],
+        def: 'Mover una gráfica sin girarla ni deformarla: a un lado, arriba o abajo.', ejemplo: 'y = (x − 2)² + 1 es y = x² movida 2 a la derecha y 1 arriba.' },
+      { termino: 'reflejo', formas: ['reflejo', 'reflejos', 'refleja', 'reflexión', 'reflexiones'],
+        def: 'La gráfica dada vuelta como en un espejo sobre un eje.', ejemplo: 'y = −x² es y = x² volteada sobre el eje x.' },
+    ],
     historia: {
       texto: 'La idea de función no nació completa. Pasó por problemas de curvas y de cálculo, y en el siglo XVIII Euler la escribió como expresión analítica. Después se amplió: una función no tiene que ser una fórmula bonita ni una curva continua. Hoy lo decisivo es que cada entrada de su dominio tenga una única salida.',
       pregunta: '¿Toda tabla de valores describe una función?',

@@ -470,6 +470,7 @@
   const REL4 = ['<', '≤', '>', '≥'].map(r => ({ valor: r, texto: `${r} 0` }));
   // Mesa 2: la parábola con su signo: abre hacia arriba o hacia abajo (la regla de la idea 2 solo prueba a > 0).
   const ejesLibre = val => ejesParabola(val.r1, val.r2, val.rel, { ymax: 12, signo: val.abre === 'abajo' ? -1 : 1 });
+  const solLibre = val => resolver([{ r: val.r1, m: 1 }, { r: val.r2, m: 1 }], [], val.abre === 'abajo' ? -1 : 1, val.rel);
   const LABORATORIO = [
     {
       id: 'tres-factores', titulo: 'Tres factores y un exponente', pieza: 'recta',
@@ -484,6 +485,22 @@
       dibujo: val => ({ datos: rectaTres(val), estado: {} }),
       lectura: val => [`P ${val.rel} 0 → ${conjunto(resolver(tresF(val), [], 1, val.rel))}`],
       arrastres: [raizRecta('r1', 1), raizRecta('r2', 2), raizRecta('r3', 3)],
+      // Retos comprobados (docs/teoria.md §4d): miran resolver() y valor(), los mismos que pintan la recta.
+      invitaciones: [
+        { texto: 'Haz que el signo no cambie al cruzar r₂, con las tres raíces separadas.',
+          logrado: val => val.r1 !== val.r2 && val.r3 !== val.r2
+            && Math.sign(valor(tresF(val), [], 1, val.r2 - 0.5)) === Math.sign(valor(tresF(val), [], 1, val.r2 + 0.5)),
+          bien: 'Multiplicidad par: P toca el cero en r₂ sin cambiar de signo.' },
+        { texto: 'Logra que P < 0 sea un solo intervalo, sin infinitos.',
+          logrado: val => { const sol = resolver(tresF(val), [], 1, val.rel); return val.rel === '<' && sol.length === 1 && sol[0].a !== null && sol[0].b !== null; },
+          bien: 'Grado par: P es positivo en los dos extremos y lo negativo queda encerrado.' },
+        { texto: 'Consigue que P ≥ 0 tenga un punto suelto.',
+          logrado: val => val.rel === '≥' && resolver(tresF(val), [], 1, val.rel).some(I => I.a !== null && I.a === I.b),
+          bien: 'Ahí P vale cero, pero a cada lado es negativo.' },
+        { texto: 'Haz que P > 0 valga para todo x, menos un solo número.',
+          logrado: val => { const sol = resolver(tresF(val), [], 1, val.rel); return val.rel === '>' && sol.length === 2 && sol[0].a === null && sol[1].b === null && sol[0].b === sol[1].a; },
+          bien: 'Las tres raíces juntas con m = 2 dan (x − r)⁴: positivo salvo en r.' },
+      ],
     },
     {
       id: 'parabola-libre', titulo: 'La parábola que abre', pieza: 'ejes',
@@ -498,8 +515,36 @@
       lectura: val => { const sg = val.abre === 'abajo' ? -1 : 1, F = [{ r: val.r1, m: 1 }, { r: val.r2, m: 1 }]; return [...producto(F, sg), ` ${val.rel} 0 → ${conjunto(resolver(F, [], sg, val.rel))}`]; },
       arrastres: ['r1', 'r2'].map((k, i) => ({ id: `raiz-${i + 1}`, etiqueta: `raíz r${i + 1}`, color: 'c-o',
         donde: val => enEje(ejesLibre(val), val[k]), mover: (pt, val) => ({ [k]: deEje(ejesLibre(val), pt.x) }) })),
+      invitaciones: [
+        { texto: 'Con la parábola hacia abajo, logra que la solución sea [−3, 1].',
+          logrado: val => { const sol = solLibre(val); return val.abre === 'abajo' && sol.length === 1 && sol[0].a === -3 && sol[0].b === 1 && sol[0].ca && sol[0].cb; },
+          bien: 'Hacia abajo es positiva entre las raíces; con ≥ entran los bordes.' },
+        { texto: 'Haz que la solución sea todos los reales menos un punto.',
+          logrado: val => { const sol = solLibre(val); return sol.length === 2 && sol[0].a === null && sol[1].b === null && sol[0].b === sol[1].a; },
+          bien: 'Raíz doble: la parábola toca el eje sin cruzarlo.' },
+        { texto: 'Consigue que ningún x cumpla la inecuación.',
+          logrado: val => solLibre(val).length === 0,
+          bien: 'Si solo toca el eje, nunca queda del otro lado: conjunto vacío.' },
+        { texto: 'Guarda dos casos con las mismas raíces y el mismo sentido, abriendo hacia lados opuestos.',
+          logrado: (val, guardados) => val.r1 !== val.r2 && guardados.some(g => g.r1 === val.r1 && g.r2 === val.r2 && g.rel === val.rel && g.abre !== val.abre)
+            && guardados.some(g => g.r1 === val.r1 && g.r2 === val.r2 && g.rel === val.rel && g.abre === val.abre),
+          bien: 'Voltear la parábola cambia lo de adentro por lo de afuera.' },
+      ],
     },
-    Object.assign({ id: 'cociente', titulo: 'El hueco del denominador', pieza: 'recta' }, fraccionarias.juega),
+    Object.assign({ id: 'cociente', titulo: 'El hueco del denominador', pieza: 'recta', invitaciones: [
+      { texto: 'Haz que x = 0 caiga en un tramo positivo.',
+        logrado: val => val.a !== 0 && val.b !== 0 && valor([{ r: val.a, m: 1 }], [{ r: val.b, m: 1 }], 1, 0) > 0,
+        bien: 'El 0 quedó fuera de los dos ceros: arriba y abajo tienen el mismo signo.' },
+      { texto: 'Deja un tramo negativo de largo 5.',
+        logrado: val => resolver([{ r: val.a, m: 1 }], [{ r: val.b, m: 1 }], 1, '<').some(I => I.a !== null && I.b !== null && I.b - I.a === 5),
+        bien: 'Lo negativo está entre los dos puntos críticos, sean cuales sean.' },
+      { texto: 'Haz que el cero de arriba y el del denominador coincidan.',
+        logrado: val => val.a === val.b,
+        bien: 'Se cancelan: vale 1 en todas partes, menos en un hueco.' },
+      { texto: 'Guarda dos casos con a y b intercambiados.',
+        logrado: (val, guardados) => val.a !== val.b && guardados.some(g => g.a === val.b && g.b === val.a) && guardados.some(g => g.a === val.a && g.b === val.b),
+        bien: 'Mismos tramos; lo que cambia es qué borde queda hueco.' },
+    ] }, fraccionarias.juega),
   ];
 
   return {
@@ -508,6 +553,25 @@
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/ejes.js'],
     laboratorio: LABORATORIO,
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'inecuación', formas: ['inecuación', 'inecuaciones'],
+        def: 'Desigualdad con una letra: se busca el conjunto de valores que la hacen verdadera.',
+        ejemplo: '2x − 1 > 5 se cumple con todo x > 3.', ver: ['desigualdad', 'sentido'] },
+      { termino: 'sentido', def: 'Hacia dónde apunta algo. En una desigualdad, < o >: multiplicar por un negativo lo invierte.',
+        ejemplo: '−2x < 6 pasa a x > −3.' },
+      { termino: 'factor', formas: ['factor', 'factores'], def: 'Cada expresión que se multiplica en un producto.',
+        ejemplo: 'En (x − 1)(x + 2), son x − 1 y x + 2.' },
+      { termino: 'punto crítico', formas: ['punto crítico', 'puntos críticos'],
+        def: 'Valor de x que anula un factor del numerador o del denominador: ahí el signo puede cambiar.', ver: ['tramo'] },
+      { termino: 'tramo', formas: ['tramo', 'tramos'], def: 'Pedazo de la recta entre dos puntos críticos seguidos: ahí la expresión no cambia de signo.',
+        ver: ['punto crítico'] },
+      { termino: 'multiplicidad', def: 'Cuántas veces se repite una raíz como factor. Si es par, el signo no cambia al cruzarla.',
+        ejemplo: 'En (x − 1)²(x + 2), el 1 tiene 2: es raíz doble.', ver: ['raíz'] },
+      { termino: 'numerador', def: 'Lo que va arriba de la raya en una fracción.', ejemplo: 'En (x − 2)/(x + 1), es x − 2.', ver: ['denominador'] },
+      { termino: 'cociente', formas: ['cociente', 'cocientes'], def: 'El resultado de dividir, o la división escrita como fracción.',
+        ejemplo: '(x − a)/(x − b) no existe en x = b.', ver: ['numerador', 'denominador'] },
+    ],
     historia: {
       texto: 'Los signos «menor que» y «mayor que» aparecen impresos en la Praxis de 1631, publicada después de la muerte de Thomas Harriot; los historiadores distinguen esa edición de sus manuscritos. La notación corta permitió escribir comparaciones dentro del álgebra. Aquí se trata de algo más que leer signos: transformar una condición sin perder ni agregar valores, y saber cuándo se invierte el orden.',
       pregunta: '¿Qué operación podría dar vuelta una desigualdad?',

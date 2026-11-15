@@ -429,7 +429,7 @@
       ],
     },
     regla: {
-      texto: 'Un sistema tiene solución si rango A = rango (A|b). Si ese rango es igual al número de incógnitas, la solución es única; si es menor, hay infinitas.',
+      texto: 'Un sistema es compatible (tiene solución) si rango A = rango (A|b). Si ese rango es igual al número de incógnitas, la solución es única; si es menor, hay infinitas.',
       ecuacion: [{ llave: ['r(A)'], nota: 'sin los términos' }, ' = ', { llave: ['r(A|b)'], nota: 'con los términos' }, '  ⇔  hay solución'],
       condicion: 'una fila 0 … 0 | 0 no es una solución: es una ecuación que se cumple siempre.',
     },
@@ -565,7 +565,26 @@
       ...manijasRecta(VL, 'la recta verde', 'a1', 'c1', 'c-d').map(m => Object.assign(m, { id: `${m.id}-verde` })),
       ...manijasRecta(VL, 'la recta roja', 'a2', 'c2', 'c-h').map(m => Object.assign(m, { id: `${m.id}-roja` })),
     ],
+    // Retos comprobados (docs/teoria.md §4d): clasifican con clasificar2(), la misma que decide el dibujo y la lectura.
+    invitaciones: [
+      { texto: 'Haz que el sistema no tenga solución.',
+        logrado: v => tipo2(v).tipo === 'ninguna',
+        bien: 'Paralelas distintas: el sistema es incompatible.' },
+      { texto: 'Encima una recta sobre la otra.',
+        logrado: v => tipo2(v).tipo === 'infinitas',
+        bien: 'La misma recta dos veces: infinitas soluciones.' },
+      { texto: 'Haz que se crucen en (1; 2).',
+        logrado: v => { const k = tipo2(v); return k.tipo === 'una' && k.x === 1 && k.y === 2; },
+        bien: 'Ese punto cumple las dos ecuaciones a la vez.' },
+      { texto: 'Guarda dos sistemas con Δ = 0: uno sin solución y otro con infinitas.',
+        logrado: (v, guardados) => {
+          const t = tipo2(v).tipo;
+          return t !== 'una' && guardados.some(g => tipo2(g).tipo !== 'una' && tipo2(g).tipo !== t) && guardados.some(g => ['a1', 'c1', 'a2', 'c2'].every(k => g[k] === v[k]));
+        },
+        bien: 'Δ = 0 no decide solo: miran los términos independientes.' },
+    ],
   };
+  const tipo2 = v => clasificar2(v.a1, 1, v.c1, v.a2, 1, v.c2);
   // Mesa 2: la parábola también sube y baja (y = x² + k) y la recta se agarra por dos puntos (x = −1 y x = 1):
   // con las dos cosas moviéndose, el alumno busca la tangente y ve que Δ = 0 la delata.
   const VP = { x: { min: -4, max: 4, paso: 1, nombre: 'x', decimales: 0, color: 'o' }, y: { min: -4, max: 8, paso: 2, nombre: 'y', decimales: 0, color: 'i' } };
@@ -599,6 +618,23 @@
           return { n: (yv + otro) / 2, m: xm * (yv - otro) / 2 };
         } })),
     ],
+    invitaciones: [
+      { texto: 'Haz que la recta solo toque la parábola en un punto.',
+        logrado: v => cortesPL(v.m, v.n - v.k).length === 1,
+        bien: 'Δ = 0: la recta es tangente a la parábola.' },
+      { texto: 'Consigue que no tengan ningún punto común.',
+        logrado: v => cortesPL(v.m, v.n - v.k).length === 0,
+        bien: 'Δ < 0: la ecuación que resulta no tiene raíces reales.' },
+      { texto: 'Con la recta horizontal, haz que corte en x = −2 y x = 2.',
+        logrado: v => v.m === 0 && cortesPL(v.m, v.n - v.k).join() === [-2, 2].join(),
+        bien: 'x² + k = n con n − k = 4: x = ±2.' },
+      { texto: 'Guarda dos casos con la misma recta: uno con dos cortes y otro sin ninguno.',
+        logrado: (v, guardados) => {
+          const c = w => cortesPL(w.m, w.n - w.k).length, a = c(v);
+          return (a === 0 || a === 2) && guardados.some(g => g.m === v.m && g.n === v.n && c(g) === 2 - a) && guardados.some(g => g.m === v.m && g.n === v.n && g.k === v.k);
+        },
+        bien: 'Mover la parábola cambia el Δ de la ecuación que resulta.' },
+    ],
   };
 
   return {
@@ -611,7 +647,32 @@
       pregunta: '¿Qué cambio de una ecuación no cambia sus soluciones?',
       fuente: { titulo: 'O’Connor y Robertson, Matrices and determinants — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Matrices_and_determinants/' },
     },
-    laboratorio: [rectasLibres, parabolaRecta, Object.assign({ id: 'rangos', titulo: 'Rangos que deciden', pieza: 'alg-tabla' }, rouche.juega, { minimo: undefined })],
+    laboratorio: [rectasLibres, parabolaRecta, Object.assign({ id: 'rangos', titulo: 'Rangos que deciden', pieza: 'alg-tabla', invitaciones: [
+      { texto: 'Haz que el sistema no tenga solución.',
+        logrado: v => rangos(v.k, v.m).rA !== rangos(v.k, v.m).rAb,
+        bien: 'La fila 2 dice 0 = algo distinto de 0: incompatible.' },
+      { texto: 'Consigue una solución única con y = 1.',
+        logrado: v => rangos(v.k, v.m).tipo === 'única' && (v.m - 6) / (v.k - 4) === 1,
+        bien: 'De abajo hacia arriba: y = 1 y luego x = 3 − 2 = 1.' },
+      { texto: 'Guarda dos casos con el mismo m: uno con solución y otro sin ella.',
+        logrado: (v, guardados) => guardados.some(g => g.m === v.m && (rangos(g.k, g.m).tipo === 'ninguna') !== (rangos(v.k, v.m).tipo === 'ninguna'))
+          && guardados.some(g => g.m === v.m && g.k === v.k),
+        bien: 'Solo k = 4 vuelve cero el lado izquierdo: ahí cae el rango de A.' },
+    ] }, rouche.juega, { minimo: undefined })],
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'sistema', formas: ['sistema', 'sistemas'], def: 'Grupo de ecuaciones que deben cumplirse a la vez con los mismos valores de las letras.',
+        ejemplo: 'x + y = 5 y x − y = 1: x = 3, y = 2.', ver: ['compatible', 'incompatible'] },
+      { termino: 'compatible', formas: ['compatible', 'compatibles'], def: 'Así es un sistema que tiene al menos una solución.', ver: ['incompatible'] },
+      { termino: 'incompatible', formas: ['incompatible', 'incompatibles'], def: 'Así es un sistema sin ninguna solución: sus ecuaciones se contradicen.',
+        ejemplo: 'x + y = 1 y x + y = 3.', ver: ['compatible'] },
+      { termino: 'paralela', formas: ['paralela', 'paralelas'], def: 'Rectas con la misma inclinación que nunca se cruzan.', ejemplo: 'y = 2x + 1 e y = 2x − 3.' },
+      { termino: 'regla de Cramer', formas: ['regla de Cramer', 'Cramer'], def: 'Fórmula que da cada incógnita como un cociente de determinantes, si Δ ≠ 0.',
+        ejemplo: 'x = Δx/Δ e y = Δy/Δ.', ver: ['determinante'] },
+      { termino: 'matriz ampliada', formas: ['matriz ampliada', 'matrices ampliadas'], simbolo: '(A|b)',
+        def: 'La de los coeficientes con una columna más: la de los términos independientes.', ver: ['rango'] },
+      { termino: 'tangente', formas: ['tangente', 'tangentes'], def: 'Recta que toca a una curva en un punto sin atravesarla allí.' },
+    ],
     ideas: [dosRectas, gauss, cramer, rouche, noLineal],
   };
 });

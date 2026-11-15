@@ -312,7 +312,7 @@
       ],
     },
     regla: {
-      texto: 'Elevar al cuadrado no es reversible: junta √u = v con −√u = v. Cada candidato se comprueba en la ecuación original.',
+      texto: 'En una ecuación irracional, elevar al cuadrado no es reversible: junta √u = v con −√u = v. Cada candidato se comprueba en la ecuación original.',
       ecuacion: [{ raiz: ['u'] }, ' = v  ⇔  u = ', { sup: ['v', '2'] }, '   ·   ', 'y  ', { llave: ['v ≥ 0'], nota: 'descarta extraños', color: 'c-h' }],
       condicion: 'u ≥ 0 y v ≥ 0 en la original. Además √(x²) = |x|, no x.',
     },
@@ -479,6 +479,11 @@
       alt: `La V y = |2x − 1| y la recta ${lineaTxt(vs.m, vs.c)}: ${sol ? `${sol.length} cortes` : 'coinciden en un brazo'}`,
     };
   };
+  const valQ = z => z.p / z.q;
+  // Largo de la solución de √(x − 1) < k: de 1 a 1 + k² si k > 0 (como la lectura de la idea); null si no hay x.
+  const largoRaiz = k => (k > 0 ? (1 + k * k) - 1 : null);
+  // El mayor r (de 0 a 5) que deja fuera al 0 con |x − a| ≤ r, para algún centro a de −5 a 5.
+  const MAX_R_SIN_CERO = Math.max(...[0, 1, 2, 3, 4, 5].filter(r => [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5].some(a => Math.abs(a) > r)));
   const LABORATORIO = [
     {
       id: 'distancia-libre', titulo: 'Centro, distancia y relación', pieza: 'recta',
@@ -494,6 +499,21 @@
         { id: 'centro', etiqueta: 'centro a', color: 'c-o', donde: val => enRecta(rectaRel(val), val.a, 0), mover: (pt, val) => ({ a: deRecta(rectaRel(val), pt.x) }) },
         { id: 'radio', etiqueta: 'punto a + r: cambia la distancia r', color: 'c-i', donde: val => enRecta(rectaRel(val), val.a + val.r, 1), mover: (pt, val) => ({ r: deRecta(rectaRel(val), pt.x) - val.a }) },
       ],
+      // Retos comprobados (docs/teoria.md §4d): comparan con conjuntoAbs(), el mismo conjunto que da la lectura.
+      invitaciones: [
+        { texto: 'Haz que la solución sea un solo número.',
+          logrado: val => /^\{[^;]*\}$/.test(conjuntoAbs(val.a, val.r, val.rel)),
+          bien: 'Distancia cero: solo el centro está a 0 de sí mismo.' },
+        { texto: 'Consigue que la solución sea [−4, 2].',
+          logrado: val => conjuntoAbs(val.a, val.r, val.rel) === conjuntoAbs(-1, 3, '≤'),
+          bien: 'Centro −1 y distancia 3: |x + 1| ≤ 3.' },
+        { texto: 'Haz que todos los reales cumplan.',
+          logrado: val => conjuntoAbs(val.a, val.r, val.rel) === 'ℝ',
+          bien: 'Toda distancia es mayor o igual que 0: nadie queda fuera.' },
+        { texto: 'Con ≤ r, busca el mayor r que todavía deje fuera al 0.',
+          logrado: val => val.rel === '≤' && Math.abs(0 - val.a) > val.r && val.r === MAX_R_SIN_CERO,
+          bien: 'El 0 está a |a| del centro: r tiene que quedar por debajo.' },
+      ],
     },
     {
       id: 'v-y-recta', titulo: 'La V contra cualquier recta', pieza: 'ejes',
@@ -508,8 +528,38 @@
         { id: 'intercepto', etiqueta: 'corte con el eje y: cambia c', color: 'c-o', donde: val => enPlano(ejesVM(val), 0, val.c), mover: (pt, val) => ({ c: deY(ejesVM(val), pt.y) }) },
         { id: 'pendiente', etiqueta: 'punto en x = 2: cambia la pendiente m', color: 'c-o', donde: val => enPlano(ejesVM(val), 2, 2 * val.m + val.c), mover: (pt, val) => ({ m: (deY(ejesVM(val), pt.y) - val.c) / 2 }) },
       ],
+      invitaciones: [
+        { texto: 'Haz que la recta no corte la V: ninguna solución.',
+          logrado: val => { const s = cortesMC(val.m, val.c); return !!s && s.length === 0; },
+          bien: 'Los candidatos salen, pero ninguno cumple en la original.' },
+        { texto: 'Consigue exactamente una solución.',
+          logrado: val => { const s = cortesMC(val.m, val.c); return !!s && s.length === 1; },
+          bien: 'Un candidato pasó la prueba; el otro tenía el lado derecho negativo.' },
+        { texto: 'Haz que la recta se monte sobre un brazo de la V.',
+          logrado: val => cortesMC(val.m, val.c) === null,
+          bien: 'Infinitas soluciones: cada punto del brazo es un corte.' },
+        { texto: 'Busca una recta que corte la V en x = −1.',
+          logrado: val => { const s = cortesMC(val.m, val.c); return !!s && s.some(z => valQ(z) === -1); },
+          bien: '|2 · (−1) − 1| = 3: la recta pasa por (−1; 3).' },
+        { texto: 'Guarda dos rectas con la misma m: una con dos cortes y otra sin ninguno.',
+          logrado: (val, guardados) => {
+            const n = v => { const s = cortesMC(v.m, v.c); return s ? s.length : -1; };
+            return guardados.some(g => g.m === val.m && n(g) + n(val) === 2 && n(g) * n(val) === 0) && guardados.some(g => g.m === val.m && g.c === val.c);
+          },
+          bien: 'Subir o bajar la recta decide cuántos cortes hay.' },
+      ],
     },
-    Object.assign({ id: 'raiz-nivel', titulo: 'La raíz bajo un nivel', pieza: 'ejes' }, rinec.juega),
+    Object.assign({ id: 'raiz-nivel', titulo: 'La raíz bajo un nivel', pieza: 'ejes', invitaciones: [
+      { texto: 'Haz que ningún x cumpla √(x − 1) < k.',
+        logrado: val => largoRaiz(val.k) === null,
+        bien: 'Una raíz nunca baja de 0: con k ≤ 0 no hay x.' },
+      { texto: 'Haz que la solución sea [1, 2).',
+        logrado: val => largoRaiz(val.k) === 1,
+        bien: 'Con k = 1, cuadrar da x − 1 < 1: de 1 hasta 2.' },
+      { texto: 'Busca el k con la solución más larga.',
+        logrado: val => largoRaiz(val.k) === Math.max(...[-1, 0, 1, 2, 3].map(largoRaiz)),
+        bien: 'La solución crece con k²: de 1 hasta 10.' },
+    ] }, rinec.juega),
   ];
 
   return {
@@ -518,6 +568,23 @@
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/ejes.js'],
     laboratorio: LABORATORIO,
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'valor absoluto', simbolo: '|x|', def: 'La distancia de un número al cero, sin signo: nunca es negativa.',
+        ejemplo: '|−4| = 4 y |4| = 4.', ver: ['distancia'] },
+      { termino: 'distancia', formas: ['distancia', 'distancias'], def: 'Cuánto separa a dos puntos de la recta: el mayor menos el menor.',
+        ejemplo: 'De 1 a −2 hay |1 − (−2)| = 3.', ver: ['valor absoluto', 'centro'] },
+      { termino: 'centro', def: 'El punto o el término del medio. En |x − a| ≤ r, es a: desde ahí se mide.', ejemplo: 'En |x + 1| ≤ 3 es −1.' },
+      { termino: 'no negativo', formas: ['no negativo', 'no negativos', 'no negativa', 'no negativas'], def: 'Mayor o igual que cero.',
+        ejemplo: 'El 0 y el 5 lo son; el −1, no.' },
+      { termino: 'ecuación irracional', formas: ['ecuación irracional', 'ecuaciones irracionales'],
+        def: 'Ecuación con la letra dentro de una raíz.', ejemplo: '√(x + 3) = x − 3.', ver: ['elevar al cuadrado'] },
+      { termino: 'elevar al cuadrado', formas: ['elevar al cuadrado', 'cuadrar'],
+        def: 'Multiplicar cada lado por sí mismo. Sirve para quitar una raíz, pero puede traer soluciones falsas.',
+        ejemplo: 'x = 2 pasa a x² = 4, que también acepta −2.', ver: ['candidato'] },
+      { termino: 'candidato', formas: ['candidato', 'candidatos', 'candidata', 'candidatas'],
+        def: 'Valor que sale de los pasos y todavía no se comprobó en la ecuación original.', ver: ['solución'] },
+    ],
     historia: {
       texto: 'Rafael Bombelli publicó en 1572 su Álgebra, pensada como una exposición más clara y cuidadosa de las reglas de su tiempo. Trabajar con radicales y con cantidades entonces dudosas lo obligaba a revisar cada operación. El valor absoluto moderno no es suyo, pero la necesidad sigue: elevar al cuadrado puede dejar candidatos que la ecuación original no acepta.',
       pregunta: '¿Toda operación se puede deshacer sin perder nada?',
