@@ -1705,7 +1705,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 6,
-      "terminos": 22
+      "terminos": 23
      }
     },
     {
@@ -2105,7 +2105,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 6,
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -2144,7 +2144,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 18
+      "terminos": 31
      }
     },
     {
@@ -2183,7 +2183,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 6,
-      "terminos": 15
+      "terminos": 17
      }
     },
     {
@@ -2263,7 +2263,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 3
+      "terminos": 4
      }
     },
     {
@@ -2377,7 +2377,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 6,
-      "terminos": 3
+      "terminos": 5
      }
     },
     {
