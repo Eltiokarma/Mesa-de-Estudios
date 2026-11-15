@@ -2370,7 +2370,9 @@
      "teoria": {
       "archivo": "/contenido/teoria/algebra/programacion-lineal.js",
       "requiere": [
-       "/nucleo/kit/piezas/ejes.js"
+       "/nucleo/kit/piezas/ejes.js",
+       "/plantillas/programacion-lineal/motor.js",
+       "/nucleo/kit/piezas/alg-techo-3d.js"
       ],
       "ideas": 4,
       "terminos": 22

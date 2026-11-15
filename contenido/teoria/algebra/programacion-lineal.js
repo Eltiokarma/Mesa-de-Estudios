@@ -632,17 +632,69 @@
   };
   const poliMovil = v => region([...BASE, [1, 1, v.m], [1, 0, v.n], [0, -1, -v.t]], caja(...Q1));
 
+  // ---------- El techo de Z (laboratorio 3D, 15 nov: exploración libre, sin predicciones) ----------
+  // La región de la mesa 1 en el piso y Z = px + qy como altura: un techo plano. Vértices, alturas y óptimo los
+  // calcula plantillas/programacion-lineal/motor.js (optimizar) a través de la pieza alg-techo-3d (regla 1).
+  const TECHO = () => Kit.piezas['alg-techo-3d'];
+  const R_TECHO = [[1, 1, '<=', 6], [1, 0, '<=', 4], [-1, 2, '<=', 6]];   // las de la mesa 1: x + y ≤ 6 · x ≤ 4 · −x + 2y ≤ 6
+  const ESCALA_Z = 2.6 / 24;                                              // fija: los techos de la mesa se comparan a la vista
+  const datosTecho = v => ({ restricciones: R_TECHO, objetivo: [v.p, v.q], k: v.k, escalaZ: ESCALA_Z });
+  const optTecho = v => TECHO().optimo(datosTecho(v));
+  let Z_TOPE = null;
+  const zTope = mesa => {        // el techo más alto de toda la grilla, medido con el motor
+    if (Z_TOPE !== null) return Z_TOPE;
+    const [cp, cq] = mesa.controles, pasos = c => Array.from({ length: Math.round((c.max - c.min) / c.paso) + 1 }, (_, k) => c.min + k * c.paso);
+    return (Z_TOPE = Math.max(...pasos(cp).flatMap(p => pasos(cq).map(q => optTecho({ p, q, k: 0 }).valor))));
+  };
+  const mesaTecho = {
+    id: 'techo-z', titulo: 'El techo de Z', pieza: 'alg-techo-3d',
+    consigna: 'Gira la escena con el dedo. Sobre cada punto, Z = px + qy es una altura. Inclina el techo y sube el plano k.',
+    controles: [
+      { id: 'p', etiqueta: 'p', color: 'c-o', min: -2, max: 4, paso: 1, inicio: 3, decimales: 0 },
+      { id: 'q', etiqueta: 'q', color: 'c-i', min: 0, max: 4, paso: 1, inicio: 2, decimales: 0 },
+      { id: 'k', etiqueta: 'k', color: 'c-h', min: -8, max: 24, paso: 1, inicio: 10, decimales: 0 },
+    ],
+    dibujo: v => ({ datos: datosTecho(v), estado: {} }),
+    lectura: v => {
+      if (!v.p && !v.q) return [{ v: 'c-h', t: 'Z' }, ' = 0 en toda la región'];
+      const o = optTecho(v);
+      return [{ v: 'c-h', t: `Z máx = ${f(o.valor)}` }, ` ${o.tipo === 'unico' ? `en ${o.optimoTexto}` : 'en un lado entero'} · k ${v.k > o.valor ? 'pasa por encima' : 'corta el techo'}`];
+    },
+    invitaciones: [
+      { texto: 'Sube el plano k hasta que toque el techo en un solo punto.',
+        logrado: v => optTecho(v).tipo === 'unico' && v.k === optTecho(v).valor,
+        bien: 'Lo último que toca es la esquina más alta: ese vértice es el óptimo.',
+        pista: 'Creo que basta mirar el poste más alto. Lleva k hasta su punta.' },
+      { texto: 'Inclina el techo para que todo un borde quede arriba.',
+        logrado: v => (v.p || v.q) && optTecho(v).tipo !== 'unico',
+        bien: 'Techo paralelo a un borde: cada punto de ese lado es óptimo.',
+        pista: 'Prueba p = q: el techo sube igual que x + y.' },
+      { texto: 'Haz que la esquina más alta sea (0; 3).',
+        logrado: v => optTecho(v).tipo === 'unico' && optTecho(v).optimoTexto === '(0; 3)',
+        bien: 'Con p negativo, ir hacia la derecha baja el techo.',
+        pista: '¿Y si moverse en x restara? Prueba un p negativo.' },
+      { texto: 'Logra el techo más alto que permite esta mesa.',
+        logrado: (v, g, mesa) => optTecho(v).valor === zTope(mesa || mesaTecho),
+        bien: 'Con p y q al tope, Z llega a 24 en una esquina de arriba.',
+        pista: 'Sube p y q todo lo que puedas.' },
+      { texto: 'Guarda dos techos con el máximo en esquinas distintas.',
+        logrado: (v, guardados) => guardados.some(x => guardados.some(y => optTecho(x).tipo === 'unico' && optTecho(y).tipo === 'unico'
+          && optTecho(x).optimoTexto !== optTecho(y).optimoTexto)),
+        bien: 'La región no cambió; la inclinación de Z decidió la esquina.' },
+    ],
+  };
+
   return {
     unidad: 'algebra.programacion-lineal',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/ejes.js'],
+    requiere: ['/nucleo/kit/piezas/ejes.js', '/plantillas/programacion-lineal/motor.js', '/nucleo/kit/piezas/alg-techo-3d.js'],
     historia: {
       texto: 'La programación lineal nació de planificar con recursos limitados. En 1947, Dantzig formuló el método símplex; «programar» quería decir hacer planes y horarios, no escribir software. El problema junta muchas restricciones con una cantidad que se quiere mejorar. Con dos variables, esa estructura se puede dibujar: primero se ve si hay puntos posibles y después cuál es el mejor.',
       pregunta: '¿Cómo elegirías el mejor plan si hay muchos posibles?',
       fuente: { titulo: 'O’Connor y Robertson, George Dantzig — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Dantzig_George/' },
     },
-    laboratorio: [nivelLibre, regionMovil, Object.assign({ id: 'semiplano-libre', titulo: 'Un semiplano', pieza: 'ejes', invitaciones: [
+    laboratorio: [mesaTecho, nivelLibre, regionMovil, Object.assign({ id: 'semiplano-libre', titulo: 'Un semiplano', pieza: 'ejes', invitaciones: [
       { texto: 'Haz que el origen no cumpla la desigualdad.',
         logrado: v => (v.a || v.b) !== 0 && !CMP[v.s](0, v.c),
         bien: 'El punto de prueba (0; 0) cayó del otro lado del borde.' },
