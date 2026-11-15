@@ -737,7 +737,7 @@
         formas: ['trapecio circular', 'trapecios circulares'], ejemplo: '60° de r = 2 a R = 4: A = π/3 · (16 − 4)/2 = 2π cm².', ver: ['sector circular', 'semisuma'] },
       { termino: 'semisuma', def: 'La mitad de lo que dan dos números sumados: (a + b)/2. Es su promedio.',
         ejemplo: 'Arcos de 4 cm y 2 cm: (4 + 2)/2 = 3 cm.', ver: ['trapecio circular'] },
-      { termino: 'altura', def: 'Distancia de un punto a una base, medida en la línea que forma ángulo recto con ella.',
+      { termino: 'altura', def: 'Lo que se separa un punto de una base, medido en perpendicular. En una gráfica es la y, con signo.',
         formas: ['altura', 'alturas'], ejemplo: 'Triángulo de base 6 cm y altura 4 cm: área = 6 · 4/2 = 12 cm².', ver: ['vértice'] },
       { termino: 'vértice', def: 'Punto donde se juntan los dos lados de un ángulo, o dos lados de una figura.',
         formas: ['vértice', 'vértices'], ejemplo: 'Un triángulo tiene 3; el ángulo central tiene uno, en el centro del círculo.', ver: ['ángulo central', 'altura'] },
