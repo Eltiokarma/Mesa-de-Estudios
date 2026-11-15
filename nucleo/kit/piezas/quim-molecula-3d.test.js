@@ -57,3 +57,34 @@ test('escala opcional: achica el respaldo plano sin cambiar la molécula', () =>
   assert.equal(P.plano(Object.assign({}, d, { escala: 0.6 }), {}).escala, 24);
   assert.deepEqual(P.plano(Object.assign({}, d, { escala: 0.6 }), {}).atomos, P.plano(d, {}).atomos);
 });
+
+// Animación (docs/3d.md §6, regla 6): la forma no cambia al girar un enlace, y mover deja la escena igual que rearmarla.
+test('forma y mover: la conformación que gira se mueve sin rearmar y queda como armada de nuevo', () => {
+  const fs = require('fs'), vm = require('vm'), path = require('path');
+  const T = vm.runInNewContext(`${fs.readFileSync(path.join(__dirname, '../../../app/vendor/three/three-mesa.min.js'), 'utf8')};THREE`, {});
+  const MH = require('../../../plantillas/hidrocarburos/motor.js');
+  const mol = phi => { const c = MH.conformacion('butano', phi); return { atomos: c.atomos, enlaces: c.enlaces, pares: [], total: null }; };
+  const E = { dipolos: false, pares: false };
+  assert.equal(P.forma(mol(0), E), P.forma(mol(137.4), E));
+  assert.notEqual(P.forma(mol(0), E), P.forma({ ...mol(0), enlaces: mol(0).enlaces.slice(1) }, E));
+  assert.equal(P.forma(AGUA, { dipolos: true, pares: true }), null);          // pares y dipolos a la vista: se rearma
+  const h = {
+    SEG: 8, material: () => new T.MeshBasicMaterial(), etiqueta: p => ({ p: p.clone() }), moverEtiqueta: (el, p) => { el.p.copy(p); },
+    barra: (de, a, r) => { const v = new T.Vector3().subVectors(a, de), m = new T.Mesh(new T.CylinderGeometry(r, r, v.length(), 8));
+      m.position.copy(de).addScaledVector(v, 0.5); m.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), v.clone().normalize()); return m; },
+    oscuro: () => false, varCss: (n, x) => x,
+  };
+  const armar = d => { const g = new T.Group(); P.spec.construir(T, g, d, E, h); return g; };
+  const g = armar(mol(60));
+  assert.equal(P.spec.mover(T, g, mol(137.4), E, h), true);
+  const ref = armar(mol(137.4));
+  assert.equal(g.children.length, ref.children.length);
+  // Cada barra: mismos extremos (el eje y del cilindro, escalado, cae sobre el de la barra armada de nuevo).
+  const punta = x => new T.Vector3(0, 0.5 * x.geometry.parameters.height, 0).multiply(x.scale).applyQuaternion(x.quaternion).add(x.position);
+  g.children.forEach((o, i) => {
+    const r = ref.children[i];
+    assert.ok(o.position.distanceTo(r.position) < 1e-9);
+    if (o.geometry.type === 'CylinderGeometry') assert.ok(punta(o).distanceTo(punta(r)) < 1e-9);
+  });
+  assert.equal(P.spec.mover(T, new T.Group(), mol(0), E, h), false);           // sin escena armada: pide rearmar
+});

@@ -96,6 +96,21 @@
   }
 
   // ---------- En vivo: la escena sobre la base común (nucleo/kit/vivo3d.js) ----------
+  const posiciones = (T, d) => new Map(d.atomos.map(a => [a.id, new T.Vector3(...a.pos).multiplyScalar(1.15 * (d.escala || 1))]));
+  // Hacia dónde se separan las líneas de un enlace doble o triple (perpendicular al enlace).
+  function ladoDe(T, A, B, esc) {
+    const eje = new T.Vector3().subVectors(B, A).normalize();
+    let lado = new T.Vector3().crossVectors(eje, new T.Vector3(0, 0, 1));
+    if (lado.length() < 0.1) lado = new T.Vector3().crossVectors(eje, new T.Vector3(0, 1, 0));
+    return lado.normalize().multiplyScalar(0.11 * esc);
+  }
+  // Forma de la escena: qué átomos y enlaces hay (no dónde). Con pares libres o dipolos a la vista no hay ruta rápida
+  // (null): sus flechas y nubes dependen de las posiciones, y esas mesas no se animan.
+  function forma(d, e) {
+    e = e || {};
+    if ((e.pares !== false && (d.pares || []).length) || (e.dipolos && (d.total || d.enlaces.some(x => x.dipolo)))) return null;
+    return JSON.stringify([d.atomos.map(a => [a.id, a.t]), d.enlaces.map(x => [x.a, x.b, x.orden || 1]), d.escala || 1, !!d.simbolos]);
+  }
   const NOMBRE = t => (El && El.COLORES && El.COLORES[t] ? El.COLORES[t].nombre : t);
   const SPEC = {
     plano: (d, e) => dibujar(d, e),
@@ -107,21 +122,18 @@
       const colorDe = t => { try { return El.color(t, h.oscuro() ? 'oscuro' : 'claro'); } catch (err) { return h.oscuro() ? '#c9bfd6' : '#6b5f78'; } };
       const tinta = h.varCss('--ink', '#2d2340'), naranja = h.varCss('--c-o', '#b85a06'), violeta = h.varCss('--c-f', '#6b3dbd');
       const esc = d.escala || 1;                     // 1 salvo que la mesa pida achicar (dos moléculas lado a lado)
-      const P = new Map(d.atomos.map(a => [a.id, new T.Vector3(...a.pos).multiplyScalar(1.15 * esc)]));
-      const tocables = [];
+      const P = posiciones(T, d);
+      const tocables = [], vivo = { esferas: new Map(), etqs: new Map(), barras: [] };   // para mover (la animación)
       for (const a of d.atomos) {
         const s = new T.Mesh(new T.SphereGeometry((a.t === 'H' ? 0.24 : 0.36) * esc, h.SEG, Math.round(h.SEG * 0.7)), h.material(colorDe(a.t)));
-        s.position.copy(P.get(a.id)); s.userData = { t: a.t }; grupo.add(s); tocables.push(s);
-        if (d.simbolos && a.t !== 'C') h.etiqueta(P.get(a.id), a.t);       // símbolo encima del átomo (texto real)
+        s.position.copy(P.get(a.id)); s.userData = { t: a.t }; grupo.add(s); tocables.push(s); vivo.esferas.set(a.id, s);
+        if (d.simbolos && a.t !== 'C') vivo.etqs.set(a.id, h.etiqueta(P.get(a.id), a.t));   // símbolo encima del átomo (texto real)
       }
       for (const x of d.enlaces) {
-        const A = P.get(x.a), B = P.get(x.b), n = x.orden || 1, eje = new T.Vector3().subVectors(B, A).normalize();
-        let lado = new T.Vector3().crossVectors(eje, new T.Vector3(0, 0, 1));
-        if (lado.length() < 0.1) lado = new T.Vector3().crossVectors(eje, new T.Vector3(0, 1, 0));
-        lado.normalize().multiplyScalar(0.11 * esc);
+        const A = P.get(x.a), B = P.get(x.b), n = x.orden || 1, lado = ladoDe(T, A, B, esc);
         for (let k = 0; k < n; k++) {
-          const off = lado.clone().multiplyScalar(k - (n - 1) / 2);
-          grupo.add(h.barra(A.clone().add(off), B.clone().add(off), (n > 1 ? 0.045 : 0.07) * esc, tinta));
+          const off = lado.clone().multiplyScalar(k - (n - 1) / 2), m = h.barra(A.clone().add(off), B.clone().add(off), (n > 1 ? 0.045 : 0.07) * esc, tinta);
+          grupo.add(m); vivo.barras.push({ a: x.a, b: x.b, k, n, m, largo: A.distanceTo(B) });
         }
         if (e.dipolos && x.dipolo) {            // flecha del enlace, al costado, hacia el átomo que atrae más
           const de = x.dipolo === 'b' ? A : B, a = x.dipolo === 'b' ? B : A, u = new T.Vector3().subVectors(a, de);
@@ -139,11 +151,33 @@
         const u = new T.Vector3(...d.total).normalize(), largo = Math.min(1.9, 0.9 + modulo(d.total) * 0.6);
         grupo.add(h.flecha(u.clone().multiplyScalar(0.45), u.clone().multiplyScalar(0.45 + largo), 0.07, naranja));
       }
+      grupo.userData.vivo = vivo;
       return { tocables, aria: alt(d) };
+    },
+    // Animación (docs/3d.md §6, regla 6): mientras la forma no cambie (mismos átomos, mismos enlaces, sin pares ni
+    // dipolos a la vista), mover solo corre esferas, barras y rótulos a las posiciones nuevas, sin rearmar la escena.
+    forma,
+    mover(T, grupo, d, e, h) {
+      const vivo = grupo.userData.vivo;
+      if (!vivo) return false;
+      const P = posiciones(T, d), esc = d.escala || 1, arriba = new T.Vector3(0, 1, 0);
+      for (const a of d.atomos) {
+        const s = vivo.esferas.get(a.id); if (!s) return false;
+        s.position.copy(P.get(a.id));
+        if (vivo.etqs.has(a.id)) h.moverEtiqueta(vivo.etqs.get(a.id), P.get(a.id));
+      }
+      for (const b of vivo.barras) {
+        const A = P.get(b.a), B = P.get(b.b), off = ladoDe(T, A, B, esc).multiplyScalar(b.k - (b.n - 1) / 2);
+        const v = new T.Vector3().subVectors(B, A);
+        b.m.position.copy(A).add(off).addScaledVector(v, 0.5);
+        b.m.quaternion.setFromUnitVectors(arriba, v.clone().normalize());
+        b.m.scale.set(1, v.length() / b.largo, 1);
+      }
+      return true;
     },
   };
   // montar(el, { alTocar }) → { actualizar(datos, estado), acercar(f), inicio(), soltar(), enVivo } (nucleo/kit/vivo3d.js).
   const montar = (el, op) => Kit.vivo3d.montar(el, SPEC, { alTocar: o => { if (op && op.alTocar && o && o.userData) op.alTocar(o.userData.t); } });
 
-  return { id: 'quim-molecula-3d', dibujar, alt, montar, plano, girar, mejorVista };
+  return { id: 'quim-molecula-3d', dibujar, alt, montar, plano, girar, mejorVista, forma, spec: SPEC };
 });
