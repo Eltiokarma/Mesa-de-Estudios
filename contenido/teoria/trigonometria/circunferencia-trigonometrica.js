@@ -144,7 +144,7 @@
       ],
     },
     regla: {
-      texto: 'Cada número real t es un arco de largo t medido desde A: antihorario si t > 0, horario si t < 0. Su extremo P tiene coordenadas (cos t, sen t).',
+      texto: 'Cada número real t es un arco dirigido de largo t, desde A: antihorario si t > 0, horario si t < 0. Su extremo P tiene coordenadas (cos t, sen t).',
       ecuacion: ['P = (', { llave: ['cos ', t_], nota: 'abscisa de P', color: 'c-i' }, ', ', { llave: ['sen ', t_], nota: 'ordenada de P', color: 'c-h' }, ')'],
       condicion: 'radio 1 y centro en el origen; t es un largo de arco, igual a su medida en radianes.',
       voz: 'Un número, un arco; el signo dice hacia dónde se enrolla.',
@@ -353,7 +353,7 @@
       ],
     },
     regla: {
-      texto: 'La línea tangente es la ordenada del corte de OP con x = 1. La cotangente es la abscisa del corte de OP con y = 1. Las dos llevan signo.',
+      texto: 'La línea tangente es la ordenada del corte de OP con x = 1. La línea cotangente es la abscisa del corte de OP con y = 1. Las dos llevan signo.',
       ecuacion: ['T = (1, ', { llave: ['tan ', th], nota: 'altura de T', color: 'c-d' }, ')', '   ·   ', 'C = (', { llave: ['cot ', th], nota: 'abscisa de C', color: 'c-d' }, ', 1)'],
       condicion: 'tan no existe si OP es vertical (90°, 270°); cot no existe si OP es horizontal (0°, 180°).',
       voz: 'Cuando OP es paralela a la recta, no hay corte: no hay valor.',
@@ -559,7 +559,7 @@
       ],
     },
     regla: {
-      texto: 'Una línea crece si su extremo sube o va a la derecha, aunque se acorte. En el II, el seno decrece, el coseno decrece y la tangente crece.',
+      texto: 'Una línea es creciente si su extremo sube o va a la derecha, aunque se acorte. En el II, seno y coseno son decrecientes; la tangente, creciente.',
       ecuacion: ['II: sen 1 → 0', '   ·   ', 'cos 0 → −1', '   ·   ', 'tan −∞ → 0'],
       condicion: 'θ avanza en sentido antihorario. ∞ indica que la línea crece sin tope: no es un valor.',
       voz: 'Leamos el número con su signo, no el largo de la flecha.',
@@ -651,6 +651,21 @@
     };
   }
 
+  // Controles del laboratorio (los retos miran sus mismos rangos) y los valores de su grilla, como los ajusta el lector.
+  const CTR_DOS = [
+    { id: 'a', etiqueta: 'θ₁', color: 'c-o', min: 0, max: 360, paso: 5, inicio: 100, unidad: '°', decimales: 0 },
+    { id: 'b', etiqueta: 'θ₂', color: 'c-f', min: 0, max: 360, paso: 5, inicio: 170, unidad: '°', decimales: 0 },
+  ];
+  const CTR_T = { id: 't', etiqueta: 't', color: 'c-o', min: -12, max: 12, paso: 0.1, inicio: 7.5, decimales: 1 };
+  const grillaDe = c => Array.from({ length: Math.round((c.max - c.min) / c.paso) + 1 }, (_, k) => Math.round((c.min + k * c.paso) * 1e6) / 1e6);
+  const SENOS = grillaDe(CTR_DOS[0]).map(FN.sen);
+  const DIF_MAX = Math.max(...SENOS) - Math.min(...SENOS);                     // sen θ₁ − sen θ₂ más grande de la mesa
+  const T_III = Math.min(...grillaDe(CTR_T).filter(t => t > 0 && cuadT(t) === 3));  // el primer t positivo que cae en el III
+  const aA = t => Math.hypot(Math.cos(t) - 1, Math.sin(t));                    // distancia de P al origen de arcos A
+  const CERCA_A = Math.min(...grillaDe(CTR_T).filter(t => t !== 0).map(aA));
+  const iguales = (p, q) => Number.isFinite(p) && Number.isFinite(q) && Math.abs(p - q) < 1e-9;
+  const mismoPunto = (a, b) => Math.abs(Math.cos(rad(a)) - Math.cos(rad(b))) < 1e-9 && Math.abs(Math.sin(rad(a)) - Math.sin(rad(b))) < 1e-9;
+
   return {
     unidad: 'trigonometria.circunferencia-trigonometrica',
     version: '0.1.0',
@@ -679,13 +694,29 @@
         arrastres: [{ id: 'punto-p', etiqueta: 'punto P del arco θ', color: 'c-o',
           donde: v => punta(seis(v.g, v.ver), v.g),
           mover: (pt, v) => ({ g: giroDe(seis(v.g, v.ver), pt, v.g) }) }],
+        invitaciones: [
+          { texto: 'Haz que seno y coseno valgan lo mismo, con signo incluido.',
+            logrado: v => iguales(FN.sen(v.g), FN.cos(v.g)),
+            bien: 'Pasa en 45° y en 225°. ¿En cuál de los dos son negativos?' },
+          { texto: 'Con las seis líneas, haz que solo tangente y cotangente sean positivas.',
+            logrado: v => v.ver === 'seis' && cuadDeg(v.g) === 3,
+            bien: 'En el III, x e y son negativas: solo sus cocientes quedan positivos.' },
+          { texto: 'Con tan y cot a la vista, deja la tangente sin valor.',
+            logrado: v => (v.ver === 'tc' || v.ver === 'seis') && !Number.isFinite(tanD(v.g)),
+            bien: 'OP vertical no corta la recta x = 1: sin corte, no hay tangente.' },
+          { texto: 'Con sec y csc, busca el P cuya secante quede más cerca del centro.',
+            logrado: v => (v.ver === 'scc' || v.ver === 'seis') && Number.isFinite(secD(v.g)) && Math.abs(Math.abs(secD(v.g)) - 1) < 1e-9,
+            bien: 'Lo más cerca es 1 o −1: la secante nunca entra a la circunferencia.' },
+          { texto: 'Guarda dos P de cuadrantes distintos con el mismo seno.',
+            logrado: (v, guardados) => cuadDeg(v.g) > 0 && guardados.some(c => cuadDeg(c.g) > 0 && cuadDeg(c.g) !== cuadDeg(v.g) && iguales(FN.sen(c.g), FN.sen(v.g))),
+            bien: 'Misma altura en dos cuadrantes: uno es el reflejo del otro en el eje y.' },
+        ],
       },
       {
         id: 'dos-arcos', titulo: 'Dos arcos, una línea', pieza: 'trig-plano',
         consigna: 'Arrastra P₁ y la manija morada de θ₂, y elige la línea. Compara los dos valores con su signo, no por el largo.',
         controles: [
-          { id: 'a', etiqueta: 'θ₁', color: 'c-o', min: 0, max: 360, paso: 5, inicio: 100, unidad: '°', decimales: 0 },
-          { id: 'b', etiqueta: 'θ₂', color: 'c-f', min: 0, max: 360, paso: 5, inicio: 170, unidad: '°', decimales: 0 },
+          CTR_DOS[0], CTR_DOS[1],
           { id: 'fn', etiqueta: 'Línea', opciones: [{ valor: 'cos', texto: 'coseno' }, { valor: 'sen', texto: 'seno' }, { valor: 'tan', texto: 'tangente' }] },
         ],
         dibujo: v => ({ datos: dosArcos(v.a, v.b, v.fn), estado: {} }),
@@ -702,11 +733,25 @@
             donde: v => punta(dosArcos(v.a, v.b, v.fn), v.b, 0.65),
             mover: (pt, v) => ({ b: giroDe(dosArcos(v.a, v.b, v.fn), pt, v.b) }) },
         ],
+        invitaciones: [
+          { texto: 'Con el coseno, consigue que la línea más larga sea también la de mayor valor.',
+            logrado: v => { const p = FN.cos(v.a), q = FN.cos(v.b); return v.fn === 'cos' && Math.abs(Math.abs(p) - Math.abs(q)) > 1e-9 && (Math.abs(p) > Math.abs(q)) === (p > q); },
+            bien: 'La flecha larga apunta a la derecha: así largo y valor coinciden.' },
+          { texto: 'Con la tangente, haz que dos arcos que terminan en puntos distintos den el mismo valor.',
+            logrado: v => v.fn === 'tan' && !mismoPunto(v.a, v.b) && iguales(FN.tan(v.a), FN.tan(v.b)),
+            bien: 'Separados por 180°: OP es la misma recta y corta en el mismo T.' },
+          { texto: 'Con el seno, logra el mismo largo para los dos, pero con signos contrarios.',
+            logrado: v => v.fn === 'sen' && Math.abs(FN.sen(v.a)) > 1e-9 && Math.abs(FN.sen(v.a) + FN.sen(v.b)) < 1e-9,
+            bien: 'Mismo largo, signo opuesto: una flecha sube y la otra baja.' },
+          { texto: 'Con el seno, haz que sen θ₁ − sen θ₂ sea lo más grande posible.',
+            logrado: v => v.fn === 'sen' && Math.abs(FN.sen(v.a) - FN.sen(v.b) - DIF_MAX) < 1e-9,
+            bien: 'θ₁ arriba en B y θ₂ abajo en B′: de 1 a −1 hay 2.' },
+        ],
       },
       {
         id: 'numero-sin-tope', titulo: 'El número real, sin tope', pieza: 'trig-plano',
         consigna: 'Arrastra el extremo del arco y da más de una vuelta, en cualquier sentido. La lectura descuenta las vueltas completas de 2π.',
-        controles: [{ id: 't', etiqueta: 't', color: 'c-o', min: -12, max: 12, paso: 0.1, inicio: 7.5, decimales: 1 }],
+        controles: [CTR_T],
         dibujo: v => ({ datos: arcoLargo(v.t), estado: {} }),
         lectura: v => {
           const k = Math.floor(v.t / (2 * Math.PI)), resto = v.t - 2 * Math.PI * k, q = cuadT(v.t);
@@ -715,7 +760,50 @@
         arrastres: [{ id: 'extremo', etiqueta: 'extremo P del arco t', color: 'c-o',
           donde: v => TP().enPx(arcoLargo(v.t), Math.cos(v.t), Math.sin(v.t)),
           mover: (pt, v) => ({ t: rad(TP().anguloDe(arcoLargo(v.t), pt, { cerca: v.t * 180 / Math.PI })) }) }],
+        invitaciones: [
+          { texto: 'Busca el menor t positivo que termine en el cuadrante III.',
+            logrado: v => v.t === T_III,
+            bien: 'Apenas pasa π ≈ 3,14: media vuelta y un poquito más.' },
+          { texto: 'Con t distinto de 0, deja P lo más cerca posible de A.',
+            logrado: v => v.t !== 0 && aA(v.t) <= CERCA_A + 1e-9,
+            bien: 'Casi 2π ≈ 6,28: una vuelta completa mide 2π radios de arco.' },
+          { texto: 'Da más de una vuelta en sentido horario y termina en el cuadrante II.',
+            logrado: v => v.t < -2 * Math.PI && cuadT(v.t) === 2,
+            bien: 'Se descuenta la vuelta completa y lo que sobra cae en el II.' },
+          { texto: 'Guarda dos t de signo contrario que terminen en el mismo cuadrante.',
+            logrado: (v, guardados) => cuadT(v.t) > 0 && guardados.some(c => c.t * v.t < 0 && cuadT(c.t) === cuadT(v.t)),
+            bien: 'El signo da el sentido; el cuadrante, el lugar donde termina el arco.' },
+        ],
       },
+    ],
+    // Glosario del tema (docs/teoria.md, 4d). Seno, coseno, tangente, cotangente, secante, cosecante, abscisa y ordenada
+    // vienen de unidades anteriores del curso.
+    glosario: [
+      { termino: 'circunferencia trigonométrica', formas: ['circunferencias trigonométricas', 'circunferencia trigonométrica', 'C.T.'],
+        def: 'Circunferencia de radio 1 con centro en el origen. En ella cada razón se ve como un segmento con signo.',
+        ejemplo: 'Su punto de 90° es B(0, 1): sen 90° = 1 y cos 90° = 0.', ver: ['origen de arcos', 'línea seno'] },
+      { termino: 'número real', formas: ['número real', 'números reales'],
+        def: 'Cualquier número de la recta numérica, como −3, 1/2 o π. En la C.T. es un arco desde A.',
+        ejemplo: 't = 4 queda entre π ≈ 3,14 y 3π/2 ≈ 4,71: termina en el cuadrante III.', ver: ['arco dirigido'] },
+      { termino: 'arco dirigido', formas: ['arco dirigido', 'arcos dirigidos'],
+        def: 'Arco medido desde A con signo: positivo en sentido antihorario, negativo en sentido horario.',
+        ejemplo: 't = −1: un radio de arco en sentido horario, hasta el cuadrante IV.', ver: ['origen de arcos', 'número real'] },
+      { termino: 'origen de arcos', def: 'El punto A(1, 0) de la C.T., desde donde se mide el largo de todo arco.',
+        ejemplo: 'Un arco de largo π sale de A y llega a A′(−1, 0).', ver: ['arco dirigido'] },
+      { termino: 'línea seno', def: 'Flecha vertical del eje x hasta P. Su valor con signo, la ordenada de P, es el seno.',
+        ejemplo: 'En 210° apunta hacia abajo y mide 1/2: sen 210° = −1/2.', ver: ['línea coseno', 'ordenada'] },
+      { termino: 'línea coseno', def: 'Flecha horizontal del eje y hasta P. Su valor con signo, la abscisa de P, es el coseno.',
+        ejemplo: 'cos 170° ≈ −0,98 es menor que cos 100° ≈ −0,17, aunque su flecha sea más larga.', ver: ['línea seno', 'abscisa'] },
+      { termino: 'línea tangente', def: 'Tramo de la recta x = 1 que va de A hasta donde la corta OP prolongado. Mide la tangente.',
+        ejemplo: 'En 135°, OP corta x = 1 en (1, −1): tan 135° = −1.', ver: ['línea cotangente'] },
+      { termino: 'línea cotangente', def: 'Tramo de la recta y = 1 que va de B hasta donde la corta OP prolongado. Mide la cotangente.',
+        ejemplo: 'En 120°, el corte cae en x ≈ −0,58: cot 120° ≈ −0,58.', ver: ['línea tangente', 'cotangente'] },
+      { termino: 'creciente', formas: ['creciente', 'crecientes'],
+        def: 'Se dice de una línea cuyo valor, con signo, aumenta mientras el arco avanza, aunque la flecha se acorte.',
+        ejemplo: 'En el II, la tangente pasa de −2,75 en 110° a −0,36 en 160°: sube.', ver: ['decreciente'] },
+      { termino: 'decreciente', formas: ['decreciente', 'decrecientes'],
+        def: 'Se dice de una línea cuyo valor, con signo, disminuye mientras el arco avanza.',
+        ejemplo: 'En el II, el coseno pasa de 0 en 90° a −1 en 180°.', ver: ['creciente'] },
     ],
     historia: {
       texto: 'En el siglo XV, Regiomontanus escribió De triangulis, que ordenó lo que se sabía de triángulos planos y esféricos para la astronomía. Sus tablas relacionaban lados y ángulos con muchos cálculos. La circunferencia de radio 1 es una elección moderna: quita el factor de escala y deja leer cada razón como un segmento. El problema sigue siendo el mismo: ver las seis razones juntas sin perder sus signos.',
