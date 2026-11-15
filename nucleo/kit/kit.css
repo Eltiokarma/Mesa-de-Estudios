@@ -78,3 +78,9 @@
 .kit-3d-lienzo:active{cursor:grabbing}
 .kit-3d-lienzo:focus-visible{outline:3px solid var(--brand, #7f5ae0);outline-offset:2px}
 .kit-3d-nota{min-height:1.4em;margin:6px 0 0;text-align:center;font-size:14px;color:var(--sub, inherit)}
+
+/* Pieza viva en la lupa (app/teoria.js, abrirLupaViva): el lienzo ocupa toda el área. */
+.te-lupa-viva .te-lupa-area{display:flex;padding:0;overflow:hidden}
+.te-lupa-viva .kit-3d{flex:1;display:flex;flex-direction:column;min-height:0}
+.te-lupa-viva .kit-3d-lienzo{flex:1;width:100%;min-height:0}
+.kit-3d-volver{margin-top:8px}

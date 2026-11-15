@@ -117,7 +117,7 @@
   const colorDe = t => { try { return El.color(t, oscuro() ? 'oscuro' : 'claro'); } catch (e) { return oscuro() ? '#c9bfd6' : '#6b5f78'; } };
   const NOMBRE = t => (El && El.COLORES && El.COLORES[t] ? El.COLORES[t].nombre : t);
 
-  function vivo(caja, alTocar) {
+  function vivo(caja, alTocar, perdido) {
     const T = root.THREE, ah = ahorro();
     const cv = document.createElement('canvas');
     cv.className = 'kit-3d-lienzo';
@@ -133,7 +133,10 @@
     nota.className = 'kit-3d-nota'; nota.setAttribute('aria-live', 'polite');
     caja.appendChild(nota);
     const escena = new T.Scene(), camara = new T.PerspectiveCamera(35, 1, 0.1, 50);
-    camara.position.set(0, 0, 7.2);
+    // Distancia de la cámara: acercar y alejar (pellizco, Ctrl + rueda o rueda dentro de la lupa, y los botones de la lupa).
+    let dist = 7.2;
+    const DIST_MIN = 3.6, DIST_MAX = 12;
+    camara.position.set(0, 0, dist);
     escena.add(new T.HemisphereLight(0xffffff, 0xd9cfc6, 1.7));
     const sol = new T.DirectionalLight(0xffffff, 1.3); sol.position.set(3, 5, 6); escena.add(sol);
     let mol = new T.Group(); escena.add(mol);
@@ -141,9 +144,11 @@
     const SEG = ah ? 12 : 24;
 
     let pend = false;
-    const dibujarYa = () => { mol.rotation.set(rad(inc), rad(giro), 0, 'XYZ'); renderer.render(escena, camara); };
+    const dibujarYa = () => { camara.position.z = dist; mol.rotation.set(rad(inc), rad(giro), 0, 'XYZ'); renderer.render(escena, camara); };
+    const acercar = f => { dist = Math.max(DIST_MIN, Math.min(DIST_MAX, dist / f)); pedir(); };
     const pedir = () => { if (pend) return; pend = true; requestAnimationFrame(() => { pend = false; dibujarYa(); }); };
-    const tamano = () => { const w = caja.clientWidth || 300, h = Math.max(220, Math.min(w, 340)); renderer.setSize(w, h, false); cv.style.height = `${h}px`; camara.aspect = w / h; camara.updateProjectionMatrix(); pedir(); };
+    // En la lupa (pantalla completa) el lienzo ocupa todo el alto disponible; en la página, un cuadro de 220 a 340 px.
+    const tamano = () => { const w = caja.clientWidth || 300, h = caja.closest('.te-lupa') ? Math.max(220, caja.clientHeight || w) : Math.max(220, Math.min(w, 340)); renderer.setSize(w, h, false); cv.style.height = `${h}px`; camara.aspect = w / h; camara.updateProjectionMatrix(); pedir(); };
     const ro = new ResizeObserver(tamano); ro.observe(caja);
 
     const material = (c, o) => new T.MeshLambertMaterial(Object.assign({ color: new T.Color(c) }, o || {}));
@@ -206,14 +211,26 @@
     // Girar con el dedo; tocar sin arrastrar dice qué átomo es.
     let abajo = null;
     const ray = new T.Raycaster(), ptr = new T.Vector2();
-    cv.addEventListener('pointerdown', ev => { abajo = { x: ev.clientX, y: ev.clientY, g: giro, i: inc, movio: false }; cv.setPointerCapture(ev.pointerId); });
+    const dedos = new Map(); let pellizco = null;
+    cv.addEventListener('pointerdown', ev => {
+      dedos.set(ev.pointerId, ev); cv.setPointerCapture(ev.pointerId);
+      if (dedos.size === 2) { const [a, b] = [...dedos.values()]; pellizco = { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), dist }; abajo = null; return; }
+      abajo = { x: ev.clientX, y: ev.clientY, g: giro, i: inc, movio: false };
+    });
     cv.addEventListener('pointermove', ev => {
+      if (dedos.has(ev.pointerId)) dedos.set(ev.pointerId, ev);
+      if (pellizco && dedos.size === 2) {
+        const [a, b] = [...dedos.values()], d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+        if (pellizco.d > 0) { dist = Math.max(DIST_MIN, Math.min(DIST_MAX, pellizco.dist * pellizco.d / Math.max(1, d))); pedir(); }
+        return;
+      }
       if (!abajo) return;
       const dx = ev.clientX - abajo.x, dy = ev.clientY - abajo.y;
       if (!abajo.movio && Math.hypot(dx, dy) < 6) return;
       abajo.movio = true; giro = abajo.g + dx * 0.6; inc = Math.max(-85, Math.min(85, abajo.i + dy * 0.6)); pedir();
     });
     const soltarDedo = ev => {
+      dedos.delete(ev.pointerId); if (dedos.size < 2) pellizco = null;
       const fue = abajo; abajo = null;
       if (!fue || fue.movio || ev.type === 'pointercancel') return;
       const r = cv.getBoundingClientRect();
@@ -232,33 +249,58 @@
       else if (k === 'Home') { giro = vista.giro; inc = vista.inclinacion; } else return;
       ev.preventDefault(); pedir();
     });
-    cv.addEventListener('webglcontextlost', ev => { ev.preventDefault(); nota.textContent = 'El equipo cortó el dibujo 3D. Vuelve a abrir la mesa.'; });
+    // Android puede cortar el 3D (otra app pidió memoria, o la pantalla se apagó): avisa a montar, que pone la vista
+    // plana y lo vuelve a armar al tocar «Volver al 3D» o al regresar a la app.
+    cv.addEventListener('webglcontextlost', ev => { ev.preventDefault(); if (perdido) perdido(); });
+    cv.addEventListener('wheel', ev => {
+      if (!ev.ctrlKey && !caja.closest('.te-lupa')) return;          // la rueda sola desplaza la página
+      ev.preventDefault(); acercar(ev.deltaY < 0 ? 1.12 : 1 / 1.12);
+    }, { passive: false });
 
     return {
       poner(d, e, nuevaVista) {
         if (nuevaVista) { vista = vistaDe(d); giro = vista.giro; inc = vista.inclinacion; nota.textContent = ''; }
         poner(d, e);
       },
+      acercar,
       soltar() {
-        ro.disconnect(); limpiar();
-        renderer.dispose();
-        const x = renderer.getContext().getExtension('WEBGL_lose_context'); if (x) x.loseContext();
+        ro.disconnect();
+        try { limpiar(); renderer.dispose(); const x = renderer.getContext().getExtension('WEBGL_lose_context'); if (x && !renderer.getContext().isContextLost()) x.loseContext(); }
+        catch (e) { /* el contexto ya estaba perdido */ }
       },
     };
   }
 
-  // montar(el, { alTocar }) → { actualizar(datos, estado), soltar() }. Mientras carga, o sin WebGL 2, el respaldo plano.
+  // montar(el, { alTocar }) → { actualizar(datos, estado), acercar(f), soltar(), enVivo }. Mientras carga, o sin WebGL 2,
+  // el respaldo plano. Si el equipo corta el 3D, queda el plano con «Volver al 3D», y se rearma solo al volver a la app.
   function montar(el, op) {
     const caja = document.createElement('div');
     caja.className = 'kit-3d';
     el.innerHTML = ''; el.appendChild(caja);
-    let datos = null, estado = {}, v = null, aviso = '', fin = false, clave = '';
-    const pintarPlano = () => { if (datos) caja.innerHTML = dibujar(datos, estado) + (aviso ? `<p class="kit-3d-nota">${aviso}</p>` : ''); };
+    let datos = null, estado = {}, v = null, aviso = '', fin = false, clave = '', cortado = false;
+    const pintarPlano = () => {
+      if (!datos) return;
+      caja.innerHTML = dibujar(datos, estado) + (aviso ? `<p class="kit-3d-nota">${aviso}</p>` : '')
+        + (cortado ? '<button type="button" class="btn borde kit-3d-volver">Volver al 3D</button>' : '');
+    };
+    const armar = () => {
+      try { v = vivo(caja, op && op.alTocar, perdido); cortado = false; aviso = ''; if (datos) v.poner(datos, estado, true); return true; }
+      catch (e) { v = null; return false; }
+    };
+    function perdido() {
+      if (fin) return;
+      if (v) v.soltar();
+      v = null; cortado = true; aviso = 'El equipo pausó el 3D para ahorrar memoria.';
+      pintarPlano();
+    }
+    const reintentar = () => { if (fin || !cortado) return; if (!armar()) { aviso = 'Vista plana: este equipo no pudo volver al 3D.'; pintarPlano(); } };
+    caja.addEventListener('click', ev => { if (ev.target.closest('.kit-3d-volver')) reintentar(); });
+    const alVolver = () => { if (document.visibilityState === 'visible') reintentar(); };
+    document.addEventListener('visibilitychange', alVolver);
     cargarTres().then(ok => {
       if (fin) return;
       if (!ok) { aviso = 'Vista plana: este equipo no dibuja en 3D.'; pintarPlano(); return; }
-      try { v = vivo(caja, op && op.alTocar); if (datos) v.poner(datos, estado, true); }
-      catch (e) { v = null; aviso = 'Vista plana: este equipo no pudo dibujar en 3D.'; pintarPlano(); }
+      if (!armar()) { aviso = 'Vista plana: este equipo no pudo dibujar en 3D.'; pintarPlano(); }
     });
     return {
       actualizar(d, e) {
@@ -267,7 +309,8 @@
         datos = d; estado = e || {};
         if (v) v.poner(datos, estado, nueva); else pintarPlano();
       },
-      soltar() { fin = true; if (v) v.soltar(); v = null; },
+      acercar(f) { if (v) v.acercar(f); },
+      soltar() { fin = true; document.removeEventListener('visibilitychange', alVolver); if (v) v.soltar(); v = null; },
       get enVivo() { return !!v; },
     };
   }
