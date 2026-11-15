@@ -191,7 +191,7 @@
     mira: {
       datos: rectaC([{ x: 1.28, y: 3.84, color: 'tinta', rotulo: 'Luna: 1,28 s', guias: true, desde: 2 }]),
       pasos: [
-        { estado: { corte: 1 }, texto: 'Cada segundo, cualquier onda electromagnética avanza 3 × 10⁸ m en el vacío.', ecuacion: ['c = 3 × ', { sup: ['10', '8'] }, ' m/s'] },
+        { estado: { corte: 1 }, texto: 'En el vacío, toda onda electromagnética va a la rapidez de la luz.', ecuacion: ['c = 3 × ', { sup: ['10', '8'] }, ' m/s'] },
         { estado: { corte: 2 }, texto: 'A la Luna hay 3,84 × 10⁸ m.', ecuacion: ['t = ', { frac: [['3,84 × ', diez(8)], ['3 × ', diez(8)]] }, ` = ${f(3.84e8 / C, 2)} s`] },
         { estado: { corte: 2 }, texto: 'Radio y rayos X difieren en λ y f, no en su producto.', ecuacion: [lam, ' ', fr, ' = c'] },
       ],
@@ -279,7 +279,7 @@
       ],
     },
     regla: {
-      texto: 'El espectro ordena las ondas electromagnéticas por su longitud de onda. Como λf = c, a menor λ, mayor frecuencia.',
+      texto: 'El espectro electromagnético ordena las ondas por su longitud de onda. Como λf = c, a menor λ, mayor frecuencia.',
       ecuacion: [fr, ' = ', { llave: [{ frac: ['c', lam] }], nota: 'inversa de λ', color: 'c-d' }],
       condicion: 'en el vacío. Los límites entre bandas son convenciones: el espectro es continuo.',
     },
@@ -361,7 +361,7 @@
       ],
     },
     regla: {
-      texto: 'Al pasar de un medio a otro la frecuencia no cambia. La rapidez y la longitud de onda se dividen entre el índice n.',
+      texto: 'Al pasar de un medio a otro la frecuencia no cambia. La rapidez y la longitud de onda se dividen entre el índice de refracción n.',
       ecuacion: ['v = ', { frac: ['c', 'n'] }, '   ·   ', lam, ' = ', { llave: [{ frac: [lam0, 'n'] }], nota: 'más corta', color: 'c-d' }, '   ·   ', fr, ' igual'],
       condicion: 'el medio es transparente y la frontera está quieta. n depende un poco del color; aquí se toma fijo.',
     },
@@ -409,6 +409,32 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-onda-em.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/recta.js'],
+    // Glosario del tema (docs/teoria.md, 4d). Longitud de onda viene de ondas mecánicas; campo eléctrico, de electrostática;
+    // los rayos X, de física moderna.
+    glosario: [
+      { termino: 'onda electromagnética', def: 'Un campo eléctrico y uno magnético que oscilan juntos y avanzan solos, sin necesitar un medio.',
+        formas: ['onda electromagnética', 'ondas electromagnéticas'], ejemplo: 'La luz, la radio y las microondas son de esta clase.', ver: ['vacío', 'espectro electromagnético'] },
+      { termino: 'rapidez de la luz', simbolo: 'c', medida: 'm/s', def: 'Lo que avanza la luz cada segundo en el vacío: 3 × 10⁸ m/s. Ninguna señal la supera.',
+        ejemplo: 'A la Luna hay 3,84 × 10⁸ m: la luz tarda 1,28 s.', ver: ['vacío', 'índice de refracción'] },
+      { termino: 'vacío', def: 'Espacio sin materia, ni siquiera aire. La luz lo atraviesa; el sonido no puede.',
+        ver: ['onda electromagnética'] },
+      { termino: 'espectro electromagnético', def: 'Todas las ondas de campos ordenadas por su longitud de onda, de los rayos gamma a la radio.',
+        ejemplo: 'Una FM de 100 MHz tiene λ = 3 m: cae en la radio.', ver: ['luz visible', 'ondas de radio'] },
+      { termino: 'luz visible', def: 'La franja angosta del espectro que ve el ojo: longitudes de onda de unos 400 a 700 nm.',
+        formas: ['luz visible', 'visible'], ejemplo: 'Rojo, unos 700 nm; violeta, unos 400 nm.', ver: ['infrarrojo', 'ultravioleta'] },
+      { termino: 'índice de refracción', simbolo: 'n', def: 'Cuántas veces más lenta va la luz en un medio que en el vacío: n = c/v.',
+        formas: ['índice de refracción', 'índices de refracción'], ejemplo: 'Agua, n = 1,33: la luz va a unos 2,26 × 10⁸ m/s.', ver: ['rapidez de la luz'] },
+      { termino: 'infrarrojo', def: 'Ondas un poco más largas que la luz roja. No se ven, pero se sienten como calor.',
+        formas: ['infrarrojo', 'infrarrojos', 'infrarroja'], ver: ['luz visible'] },
+      { termino: 'ultravioleta', def: 'Ondas un poco más cortas que la luz violeta. No se ven y causan las quemaduras de sol.',
+        ver: ['luz visible'] },
+      { termino: 'microondas', def: 'Ondas de un milímetro a un metro de largo. Las usan el horno, el wifi y los radares.',
+        ejemplo: 'Horno a 2,45 GHz: λ ≈ 12 cm.', ver: ['espectro electromagnético'] },
+      { termino: 'ondas de radio', def: 'Las ondas de campos más largas, de más de un metro. Llevan las señales de AM y FM.',
+        formas: ['ondas de radio', 'onda de radio'], ver: ['espectro electromagnético'] },
+      { termino: 'rayos gamma', def: 'Las ondas de campos más cortas y de más energía. Salen de los núcleos de los átomos.',
+        formas: ['rayos gamma', 'gamma'], ver: ['espectro electromagnético'] },
+    ],
     // Laboratorio: la regla del espectro sin bandas fijas (el punto corre de a cuarto de potencia), la onda con un
     // rango de λ más amplio (y su frecuencia) y el cambio de medio de la idea 4.
     laboratorio: [
@@ -421,6 +447,24 @@
         arrastres: [{ id: 'lambda', etiqueta: 'punto λ sobre la regla', color: 'c-d',
           donde: val => ({ x: RECTA().geometria(reglaLibre(val).datos).x(val.lg), y: RECTA().geometria(reglaLibre(val).datos).filaY(3) }),
           mover: pt => ({ lg: logDe(pt) }) }],
+        invitaciones: [
+          { texto: 'Lleva el punto a la banda de las microondas.',
+            logrado: val => nombreBanda(val.lg) === 'microondas',
+            bien: 'Del milímetro al metro: aquí viven el horno y el wifi.' },
+          { texto: 'Sal de la franja visible hacia el lado de mayor frecuencia.',
+            logrado: val => nombreBanda(val.lg) === 'ultravioleta',
+            bien: 'Ultravioleta: más energía que el violeta. Por eso quema la piel.' },
+          { texto: 'Pon el punto donde la frecuencia valga 3 × 10¹⁴ Hz.',
+            logrado: val => Math.abs(C / Math.pow(10, val.lg) / 3e14 - 1) < 1e-9,
+            bien: 'Un micrómetro, justo pasando el rojo: infrarrojo, el que sentimos como calor.' },
+          { texto: 'Lleva el punto a la frecuencia más alta de toda la regla.',
+            logrado: val => val.lg <= -12 + 1e-9,
+            bien: 'Rayos gamma: la λ más corta da la f más alta.' },
+          { texto: 'Guarda dos puntos separados por una potencia de diez y compara sus frecuencias.',
+            logrado: (val, guardados) => guardados.some(g => Math.abs(Math.abs(g.lg - val.lg) - 1) < 1e-9)
+              && guardados.some(g => g.lg === val.lg),
+            bien: 'Diez veces más λ, diez veces menos f: el producto sigue siendo c.' },
+        ],
       },
       {
         id: 'onda-larga', titulo: 'Ondas largas y cortas', pieza: 'fis-onda-em',
@@ -433,8 +477,37 @@
         lectura: val => [fr, ' = ', ...cientL(C / val.L, 1), ' Hz · ', B0, ' = ', ...cientL(val.E / C, 1), ' T'],
         arrastres: [{ id: 'cresta', etiqueta: 'primera cresta del campo eléctrico', color: 'c-o',
           donde: val => cresta(val.E, val.L), mover: (pt, val) => deCresta(pt, val.E, val.L) }],
+        invitaciones: [
+          { texto: 'Consigue una onda de 100 MHz, como la de una radio FM.',
+            logrado: val => Math.abs(C / val.L / 1e8 - 1) < 1e-9,
+            bien: 'λ = 3 m: una onda de radio del tamaño de una puerta.' },
+          { texto: 'Busca la frecuencia más baja que permite la mesa.',
+            logrado: val => C / val.L <= C / 9 * (1 + 1e-9),
+            bien: 'La onda más larga es la de menor frecuencia. ¿Cambió su rapidez?' },
+          { texto: 'Haz que B₀ valga justo 10⁻⁶ T.',
+            logrado: val => Math.abs(val.E / C / 1e-6 - 1) < 1e-9,
+            bien: 'E₀ = 300 V/m: el campo eléctrico es c veces el magnético.' },
+          { texto: 'Guarda dos ondas con el mismo E₀ y distinta λ. ¿Cambió B₀?',
+            logrado: (val, guardados) => guardados.some(g => g.E === val.E && g.L !== val.L)
+              && guardados.some(g => g.E === val.E && g.L === val.L),
+            bien: 'B₀ solo sigue a E₀: la longitud de onda no lo toca.' },
+        ],
       },
-      Object.assign({ id: 'cambio-medio', titulo: 'Luz que cambia de medio', pieza: 'ejes' }, medioIdea.juega),
+      Object.assign({ id: 'cambio-medio', titulo: 'Luz que cambia de medio', pieza: 'ejes', invitaciones: [
+        { texto: 'Haz que la luz roja mida 350 nm dentro del medio.',
+          logrado: val => val.col === 'rojo' && Math.abs(COLORES[val.col] / val.n - 350) < 1e-6,
+          bien: 'Con n = 2 va a la mitad de c y las crestas se juntan.' },
+        { texto: 'Busca el medio donde la luz va más lenta.',
+          logrado: val => val.n >= 2.4 - 1e-9,
+          bien: 'n = 2,4, como el diamante: la luz va a 1,25 × 10⁸ m/s.' },
+        { texto: 'Haz que las crestas no cambien al cruzar la línea punteada.',
+          logrado: val => Math.abs(COLORES[val.col] / val.n - COLORES[val.col]) < 1e-9,
+          bien: 'Con n = 1 el medio es como el vacío: nada frena la luz.' },
+        { texto: 'Guarda dos casos con el mismo color y distinto medio. ¿Cambió el color?',
+          logrado: (val, guardados) => guardados.some(g => g.col === val.col && g.n !== val.n)
+            && guardados.some(g => g.col === val.col && g.n === val.n),
+          bien: 'El color lo fija la frecuencia, y la frecuencia no cambia al entrar.' },
+      ] }, medioIdea.juega),
     ],
     historia: {
       texto: 'Electricidad, magnetismo e inducción parecían temas distintos. En 1865, Maxwell publicó una teoría del campo electromagnético que predecía ondas que avanzan solas, y calculó su rapidez: coincidía con la de la luz. La luz resultó ser una de esas ondas. Las cuatro ecuaciones compactas que se enseñan hoy son una reescritura posterior.',
