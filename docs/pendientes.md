@@ -127,6 +127,74 @@ Lo que hay que decidir al empezar (proponer a Gerson antes de construir):
 
 **Pendiente de la versión A de MRU (14 nov):** los umbrales del empujón con el dedo (suave, medio y fuerte; `UMBRALES_DEDO` en `plantillas/mruv/leccion.js`) son hipótesis: calibrarlos en el celular de Gerson. Con su visto bueno, `v2.html` reemplaza a la escena vieja en la app y `mruv` sale de `herramientas/jugar-primero-pendientes.json`.
 
+## Prueba de estrés de Rive: cifra real (15 nov, Redmi 15C de Gerson)
+
+**Equipo:** Redmi 15C, 4 GB, 8 núcleos, pantalla de 360 × 800 a 2× y Chrome 157. La batería estaba al 68 %. Runtime 2.50.0.
+
+| Escenario | fps media | fps p5 | Cuadros perdidos (10 s) | Peor pausa |
+| --- | --- | --- | --- | --- |
+| Sin Rive | 59,8 | 59,9 | 2 | 33 ms |
+| 1 chica (la mascota) | 60 | 59,9 | 0 | 17 ms |
+| 1 grande (600 × 600 px, 128 formas) | 59,7 | 59,9 | 3 | 50 ms |
+| 1 que sigue el dedo | 59,9 | 59,9 | 0 | 17 ms |
+| Grande + chica | 59,6 | 59,9 | 4 | 50 ms |
+| Dedo + chica | 59,5 | 59,9 | 5 | 50 ms |
+| 2 grandes | 58,9 | 59,9 | 11 | 33 ms |
+| Grande + dedo + chica | 60 | 59,9 | 0 | 17 ms |
+| 3 grandes | 58,8 | 59,9 | 11 | 33 ms |
+
+No hubo tareas largas en ningún escenario. La memoria de JavaScript se quedó en 9,5 MB, pero esa cifra no cuenta el wasm de Rive.
+
+**Lo que dice:**
+- En este celular, Rive no es el límite: hasta 3 lienzos grandes animados a la vez mantienen unos 59 fps.
+- La emulación del 14 nov (14 fps con un lienzo grande) era muy pesimista: el Chromium sin pantalla dibuja el canvas por software.
+
+**Decisión:** el tope de la sección 6.3, dos lienzos y uno en movimiento, se queda, pero como regla de **atención** (Mayer: una sola cosa que mirar) y ya no de rendimiento. Con esta cifra, Rive deja de estar bloqueado por el rendimiento. Lo que falta es el arte y el plan pagado.
+
+**Falta de la prueba:**
+- correr la misma prueba con `?runtime=2.43.1`, para decidir si se borra `app/vendor/rive-2.43.1/`;
+- la línea de «Probar a mano» (¿la pelota va pegada al dedo?);
+- una sesión larga, de 15 minutos o más, para ver calor y batería;
+- las computadoras del colegio.
+
+## Prueba 3D con three.js (15 nov): para correr en el mismo celular
+
+**Qué es.** La página `app/prueba3d/` decide si una pieza 3D entra al kit. Se abre en <https://mesa-de-estudios.vercel.app/app/prueba3d/>; en local, `npm run dev`.
+
+**Tres experiencias:**
+- **El prisma que se corta:** altura, inclinación y giro del plano. La sección la calcula `app/prueba3d/geometria.js`, con pruebas; el cubo cortado por el centro da un hexágono regular.
+- **La molécula que gira:** CO₂, BF₃, CH₄, NH₃ y H₂O, con sus pares libres. Se toca un átomo para saber cuál es.
+- **Los cubitos:** tocar pone o quita y arrastrar gira. Tiene las vistas frente, perfil, planta e isométrica.
+
+**Cómo funciona:**
+- Dibuja solo cuando algo cambia. Recuerda la escena y la vista al volver.
+- Si el equipo no tiene WebGL 2, lo avisa: three.js lo exige desde la versión r163.
+- three.js 0.187.0 (MIT) va reducido a lo que se usa, en `app/vendor/three/`: 549 KB, 137 KB con gzip.
+
+**Medición:** «Correr la medición» (30 s) hace girar los tres objetos sin parar, que es el peor caso, y guarda en el JSON los fps, el p5, los cuadros perdidos, la peor pausa y la tarjeta gráfica (`renderer`). «Medir 5 s mientras lo giro» mide el uso real con el dedo.
+
+**Qué tiene que hacer Gerson:**
+1. Abrirla en el Redmi 15C y jugar un par de minutos con los tres objetos.
+2. Correr la medición y mandar el JSON.
+3. Contestar en una línea:
+   - ¿se entiende cómo girar y cómo tocar?
+   - ¿se siente pegado al dedo?
+   - ¿qué te dieron ganas de repetir?
+
+**Antes de que entre al kit:**
+- la medición en el celular;
+- WebGL 2 en las computadoras del colegio;
+- respaldo en Canvas 2D, como el cubo de `geometria-espacio`;
+- control con teclado.
+
+**Candidatas:** de 15 a 20 unidades, una acción concreta por unidad:
+- cortar, desplegar o construir en geometría del espacio y en sólidos;
+- girar y ver la forma en geometría molecular;
+- la mano derecha en magnetismo;
+- vistas de cubitos en razonamiento matemático.
+
+La «mesa 3D» del inicio que propuso ChatGPT queda para después de esta prueba.
+
 ## Prueba de estrés de Rive (versión 0), 14 nov, en `main`
 
 **Qué hay.** Nada de la app cambió: es una página de prueba aparte.
