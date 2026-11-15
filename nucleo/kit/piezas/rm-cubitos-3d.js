@@ -74,6 +74,7 @@
     if (d.malla) ps.push([0, 0, 0], d.malla);
     if (d.piso) ps.push([0, 0, 0], [d.piso[0], d.piso[1], 0]);
     for (const q of d.ruta || []) ps.push(q);
+    for (const m of d.marcas || []) ps.push(m.p);                // los rótulos también caben en el cuadro
     if (!ps.length) ps.push([0, 0, 0], [1, 1, 1]);
     const mn = [0, 1, 2].map(i => Math.min(...ps.map(p => p[i]))), mx = [0, 1, 2].map(i => Math.max(...ps.map(p => p[i])));
     return { mn, mx, centro: mn.map((v, i) => (v + mx[i]) / 2), lado: Math.max(1, ...mx.map((v, i) => v - mn[i])) };
@@ -266,7 +267,7 @@
       }
       // La ruta: barras gruesas por las aristas.
       const ruta = d.ruta || [];
-      for (let i = 0; i + 1 < ruta.length; i++) grupo.add(h.barra(t3(ruta[i]), t3(ruta[i + 1]), 0.07, naranja));
+      for (let i = 0; i + 1 < ruta.length; i++) grupo.add(h.barra(t3(ruta[i]), t3(ruta[i + 1]), 0.05 / escala, naranja));   // grosor fijo en pantalla
       for (const m of d.marcas || []) h.etiqueta(t3(m.p), m.texto, { color: m.color });
       return { aria: alt(d) };
     },
