@@ -247,9 +247,9 @@ function vInicio() {
   const reto = conEscena ? `<div class="reto tinte" style="${Ilus.tinte(conEscena.c.id)}">${Ilus.viñeta(conEscena.c.id, 'class="reto-vineta vineta-flota"')}${Ilus.gato('class="reto-gato-mini"')}
       <div class="etq">Reto de hoy · ${esc(conEscena.c.nombre)}</div>
       <h3>${esc(conEscena.u.nombre)}</h3>
-      <p>${conEscena.u.plantillas.length ? 'Predice antes de ver la respuesta.' : esc(conEscena.u.temas.slice(0, 3).join(' · '))}</p>
+      <p>${temaPendiente(conEscena.u) ? 'Primero, una prueba corta del tema; después, a jugar.' : conEscena.u.plantillas.length ? 'Predice antes de ver la respuesta.' : esc(conEscena.u.temas.slice(0, 3).join(' · '))}</p>
       ${conEscena.u.plantillas.length
-        ? `<a class="btn tinta" href="${esc(enlace(cat.plantillas[conEscena.u.plantillas[0]], conEscena.u.id))}" data-abrir="${esc(conEscena.u.id)}">${VERBO[cat.plantillas[conEscena.u.plantillas[0]].formato] || 'Abrir'} ›</a>`
+        ? `<a class="btn tinta" href="${esc(enlace(cat.plantillas[conEscena.u.plantillas[0]], conEscena.u.id))}" data-abrir="${esc(conEscena.u.id)}">${temaPendiente(conEscena.u) ? 'Empezar' : VERBO[cat.plantillas[conEscena.u.plantillas[0]].formato] || 'Abrir'} ›</a>`
         : `<a class="btn tinta" href="#/unidad/${esc(conEscena.u.id)}">Ver unidad ›</a>`}
     </div>` : `<div class="reto">${Ilus.gatoDormido('class="reto-gato"')}<h3>Estudiaste todas las unidades</h3><p>Ahora toca recordarlas: el repaso de hoy te espera.</p></div>`;
   // Lo que sigue: solo unidades con módulo (las demás no tienen nada que abrir todavía), una por curso primero
@@ -450,7 +450,8 @@ function vUnidad(id, sub) {
   if (sub === 'examen') return vExamen(c, u);
   if (sub === 'pregunta') return vPregunta(c, u);
   const n = modulosDe(u).length, gens = generadoresDe(u).length, ex = (est.examenes || {})[id];
-  est.vistas[id] = est.vistas[id] || hoy();   // abrir la unidad es una visita (no la acredita como estudiada)
+  const primeraVisita = est.vistas[id] || hoy();
+  est.vistas[id] = primeraVisita;   // abrir la unidad es una visita (no la acredita como estudiada)
   const nv = nivelDe(u), marcada = !!(est.marcadas || {})[id];
   const puerta = (k, d, principal) => `<a class="puerta${principal ? ' principal' : ''}" href="#/unidad/${esc(id)}/${k}">${iconoPuerta(k)}<span class="t">${SUB_UNIDAD[k]}</span><span class="d">${d}</span></a>`;
   $app.innerHTML = `<header class="unidad-hero tinte" style="${Ilus.tinte(c.id)}">
@@ -459,7 +460,7 @@ function vUnidad(id, sub) {
         <div><p class="sub">${esc(c.nombre)} · ${u.grado}.º de secundaria</p><h1>${esc(u.nombre)}</h1></div></div>
       <p class="sub temas">${esc(u.temas.join(' · '))}</p>
       ${(est.temas || {})[id] && est.temas[id].entrada ? `<p class="sub">Prueba del tema: ${est.temas[id].entrada.aciertos} de ${est.temas[id].entrada.total} ideas acertadas</p>` : ''}
-      <div class="nivel-u"><span class="tag nivel-${nv.nivel}">${esc(nv.nivel >= 0 ? nv.nombre : 'Sin empezar')}</span>${nv.falta ? `<span class="sub">${esc(nv.falta)}</span>` : ''}</div>
+      <div class="nivel-u">${nv.nivel > 0 || (nv.nivel === 0 && primeraVisita < hoy()) ? `<span class="tag nivel-${nv.nivel}">${esc(nv.nombre)}</span>` : ''}${nv.falta ? `<span class="sub">${esc(nv.nivel < 1 ? `Para empezar: ${nv.falta.charAt(0).toLowerCase()}${nv.falta.slice(1)}` : nv.falta)}</span>` : ''}</div>
       <button type="button" class="marca-vista${marcada ? ' on' : ''}" data-ver aria-pressed="${marcada}"><span class="caja-v" aria-hidden="true">${marcada ? '✓' : ''}</span>${marcada ? 'La marqué como estudiada' : 'Ya la estudié por mi cuenta'}</button>
     </header>
     <nav class="puertas aparece" aria-label="Qué hacer en esta unidad">
@@ -779,7 +780,7 @@ function vProgreso() {
         <path d="M20 90a70 70 0 0 1 140 0" fill="none" stroke="var(--brand)" stroke-width="18" stroke-linecap="round" stroke-dasharray="${L}" stroke-dashoffset="${L * (1 - p)}"/></svg>
         <div style="margin-top:-46px;text-align:center"><div class="n">${Math.round(p * 100)}<span style="font-size:20px">%</span></div><div class="l">${hechas} de ${q.length} unidades estudiadas</div></div></div>
       <ul class="niveles-resumen">${['Visitadas', 'La estudié', 'Con ayuda', 'Sin ayuda', 'La recuerdo'].map((t, k) => `<li><b>${porNivel[k]}</b> ${t}</li>`).join('')}</ul>
-      ${q.length - hechas ? `<div class="aviso">🍫 Te faltan ${q.length - hechas} unidades. Una por día también cuenta.</div>` : ''}
+      <div class="aviso">${hechas ? `🍫 Llevas ${hechas} ${hechas === 1 ? 'unidad estudiada' : 'unidades estudiadas'}. Sigue a tu ritmo.` : '🍫 Cuando termines la teoría de una unidad, aparece aquí.'}</div>
     </div>
     ${repasoProgreso()}
     <h2>Últimos 7 días</h2>
