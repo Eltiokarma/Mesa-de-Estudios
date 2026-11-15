@@ -139,7 +139,7 @@
     mira: {
       datos: oersted(10, 4, true, { circ: 1, vectores: 3 }),
       pasos: [
-        { estado: { paso: 0 }, texto: 'La aguja se alinea con el campo magnético que hay donde está.', ecuacion: ['aguja ∥ ', B, ' total'] },
+        { estado: { paso: 0 }, texto: 'El polo norte de la aguja apunta como el campo magnético de ese punto.', ecuacion: ['aguja ∥ ', B, ' total'] },
         { estado: { paso: 1 }, texto: 'El campo forma círculos: pulgar con la corriente, los dedos dan el giro.', ecuacion: ['regla de la mano derecha'] },
         { estado: { paso: 2 }, texto: 'A 4 cm, el campo del cable vale:', ecuacion: [B, ' = ', { frac: [['μ₀', I], '2π r'] }, ` = ${f(bHilo(10, 4), 0)} μT`] },
         { estado: { paso: 3 }, texto: 'Se suma, como flecha, al campo de la Tierra.', ecuacion: ['tan θ = ', { frac: [`${f(bHilo(10, 4), 0)}`, `${BT}`] }, `  →  θ = ${f(giro(10, 4), 0)}°`] },
@@ -563,6 +563,27 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-lienzo.js'],
+    // Glosario del tema (docs/teoria.md, 4d): lo que esta unidad estrena. Corriente y voltaje vienen de circuitos.
+    glosario: [
+      { termino: 'imán', def: 'Objeto que atrae el hierro y tiene dos polos, norte y sur, que no se pueden separar.',
+        formas: ['imán', 'imanes'], ver: ['polo magnético', 'campo magnético'] },
+      { termino: 'polo magnético', def: 'Cada extremo de un imán, norte o sur. Polos iguales se repelen; distintos se atraen.',
+        formas: ['polo magnético', 'polos magnéticos', 'polo norte', 'polo sur'], ejemplo: 'El norte de una brújula apunta hacia el norte geográfico.', ver: ['imán'] },
+      { termino: 'campo magnético', simbolo: 'B', medida: 'T', def: 'Lo que un imán o una corriente crea a su alrededor y que empuja cargas en movimiento.',
+        formas: ['campo magnético', 'campos magnéticos'], ejemplo: 'Un cable con 10 A, a 4 cm: B = 50 μT.', ver: ['tesla', 'fuerza magnética'] },
+      { termino: 'tesla', simbolo: 'T', def: 'Unidad del campo magnético en el SI. El campo de la Tierra es de unas decenas de microteslas.',
+        ejemplo: '1 T empuja con 1 N a 1 m de cable con 1 A, a 90°.', ver: ['campo magnético'] },
+      { termino: 'experimento de Oersted', def: 'Prueba de 1820: una corriente cercana desvía una brújula. Mostró que la electricidad produce efectos magnéticos.',
+        formas: ['experimento de Oersted', 'experimento de Ørsted'], ver: ['campo magnético'] },
+      { termino: 'mano derecha', def: 'Truco para hallar sentidos: pulgar con la corriente; los dedos doblados dan el giro del campo.',
+        formas: ['regla de la mano derecha', 'mano derecha'], ver: ['campo magnético', 'fuerza magnética'] },
+      { termino: 'espira', def: 'Alambre doblado en una sola vuelta cerrada, como un anillo, por donde pasa corriente.',
+        ejemplo: 'Radio 5 cm con 10 A: en su centro, B ≈ 126 μT.', ver: ['solenoide'] },
+      { termino: 'solenoide', def: 'Alambre enrollado en muchas vueltas seguidas, como un resorte. Adentro produce un campo casi uniforme.',
+        ejemplo: '20 vueltas en 10 cm con 2 A: adentro, B ≈ 0,50 mT.', ver: ['espira', 'campo magnético'] },
+      { termino: 'fuerza magnética', simbolo: 'F', medida: 'N', def: 'Empuje de un campo magnético sobre una carga que se mueve o un cable con corriente. Siempre va de costado.',
+        formas: ['fuerza magnética', 'fuerzas magnéticas'], ejemplo: 'Cable de 0,5 m con 6 A, a 90° de 0,2 T: F = 0,6 N.', ver: ['mano derecha'] },
+    ],
     laboratorio: [
       {
         // Lo que la idea 4 no deja probar: cualquier ángulo de 0° a 180°, también el cable paralelo a B (F = 0).
@@ -585,6 +606,22 @@
             return { t: a };
           },
         }],
+        invitaciones: [
+          { texto: 'Con la corriente que elijas, gira el cable hasta la mayor fuerza posible.',
+            logrado: val => Math.abs(fCable(val.i, val.t) - val.i * LC * BC) < 1e-9,
+            bien: 'Perpendicular al campo empuja más. ¿Qué pasa si sigues girando hasta 180°?' },
+          { texto: 'Con corriente en el cable, logra que la fuerza sea cero.',
+            logrado: val => val.i > 0 && fCable(val.i, val.t) < 1e-9,
+            bien: 'La corriente sigue, pero va a lo largo de B: el campo no la empuja.' },
+          { texto: 'Consigue 0,3 N en el campo de 0,2 teslas, sin poner el cable a 90°.',
+            logrado: val => val.t !== 90 && Math.abs(fCable(val.i, val.t) - 0.3) < 1e-9,
+            bien: 'Inclinado, solo cuenta la parte del cable perpendicular al campo: sen θ.' },
+          { texto: 'Guarda dos ángulos distintos, con la misma corriente, que den la misma fuerza.',
+            logrado: (val, guardados) => fCable(val.i, val.t) > 1e-9
+              && guardados.some(g => g.i === val.i && g.t !== val.t && Math.abs(fCable(g.i, g.t) - fCable(val.i, val.t)) < 1e-9)
+              && guardados.some(g => g.i === val.i && g.t === val.t),
+            bien: 'θ y 180° − θ tienen el mismo seno: el campo no distingue esos giros.' },
+        ],
       },
       {
         // Lo que la idea 5 reserva: corrientes distintas. La fuerza sigue siendo igual sobre los dos cables.
@@ -599,8 +636,39 @@
         dibujo: val => ({ datos: paralelos(val.i1, val.i2, val.d, val.m === 1), estado: {} }),
         lectura: val => [F, ` = ${f(fPar(val.i1, val.i2, val.d), 0)}\u00a0μN/m sobre cada cable · ${val.m === 1 ? 'se atraen' : 'se repelen'}`],
         arrastres: [arrastreSeparacion(val => paralelos(val.i1, val.i2, val.d, val.m === 1))],
+        invitaciones: [
+          { texto: 'Pon en un cable cinco veces la corriente del otro. ¿Qué flecha crece más?',
+            logrado: val => val.i1 === 5 * val.i2 || val.i2 === 5 * val.i1,
+            bien: 'Las dos flechas miden lo mismo: es una sola interacción, acción y reacción.' },
+          { texto: 'Busca la menor fuerza posible sin apagar ningún cable.',
+            logrado: val => fPar(val.i1, val.i2, val.d) <= fPar(2, 2, 10) + 1e-9,
+            bien: 'Poca corriente y mucha separación. ¿Cuál de las dos cosas pesa más?' },
+          { texto: 'Logra que se repelan con 100 μN por metro.',
+            logrado: val => val.m === 0 && Math.abs(fPar(val.i1, val.i2, val.d) - 100) < 1e-6,
+            bien: 'Sentidos opuestos se repelen. ¿Cuántas combinaciones dan esos 100?' },
+          { texto: 'Guarda dos casos: el mismo arreglo y luego el doble de corriente en un cable.',
+            logrado: (val, guardados) => guardados.some(g => g.m === val.m && g.d === val.d
+              && ((g.i1 * 2 === val.i1 && g.i2 === val.i2) || (g.i2 * 2 === val.i2 && g.i1 === val.i1)))
+              && guardados.some(g => g.i1 === val.i1 && g.i2 === val.i2 && g.m === val.m && g.d === val.d),
+            bien: 'Doble corriente en uno, doble fuerza en los dos. ¿Y si duplicas ambas?' },
+        ],
       },
-      Object.assign({ id: 'brujula', titulo: 'La brújula junto al cable', pieza: 'fis-lienzo' }, oerstedIdea.juega),
+      Object.assign({ id: 'brujula', titulo: 'La brújula junto al cable', pieza: 'fis-lienzo', invitaciones: [
+        { texto: 'Antes del experimento de Oersted no había corriente. Apágala y mira la aguja.',
+          logrado: val => val.i === 0 && giro(val.i, val.r) === 0,
+          bien: 'Sin corriente solo queda la Tierra: la aguja vuelve al norte.' },
+        { texto: 'Haz que la aguja gire justo 45°.',
+          logrado: val => Math.abs(giro(val.i, val.r) - 45) < 1e-6,
+          bien: 'A 45°, el campo del cable iguala al de la Tierra: 25 μT.' },
+        { texto: 'Haz que la aguja gire más de 80°.',
+          logrado: val => giro(val.i, val.r) > 80,
+          bien: 'Aun así no llega a 90°: la Tierra siempre tira un poco al norte.' },
+        { texto: 'Guarda dos casos con el mismo giro y distinta corriente.',
+          logrado: (val, guardados) => val.i > 0
+            && guardados.some(g => g.i !== val.i && Math.abs(giro(g.i, g.r) - giro(val.i, val.r)) < 1e-9)
+            && guardados.some(g => g.i === val.i && g.r === val.r),
+          bien: 'Doble corriente al doble de distancia, el mismo campo: B va con I/r.' },
+      ] }, oerstedIdea.juega),
     ],
     historia: {
       texto: 'La brújula se usaba desde hacía siglos, pero nadie la relacionaba con la electricidad. En 1820, Hans Christian Ørsted notó que una corriente desviaba una aguja imantada cercana, y que el giro no apuntaba hacia el alambre sino alrededor de él. La noticia corrió por Europa: en semanas, Ampère medía fuerzas entre cables con corriente.',
