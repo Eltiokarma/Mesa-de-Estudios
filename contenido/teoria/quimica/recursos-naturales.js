@@ -74,9 +74,10 @@
     temas: ['Petróleo y refinación'],
     pieza: 'recta',
     juega: {
-      consigna: 'En la torre, cada plato está a una temperatura. Elige una y mira qué fracciones del petróleo hierven en ese intervalo.',
+      // Animación (decisión de Gerson, 15 nov): la temperatura recorre la torre de 0 a 400 °C y vuelve, en 8 s por tramo.
+      consigna: 'La temperatura del plato sube y baja sola por la torre. Mira qué fracciones hierven en cada momento: los tramos se traslapan.',
       voz: 'Fíjate en que cada fracción ocupa un tramo, no un punto.',
-      controles: [{ id: 't', etiqueta: 'T', color: 'c-h', min: 0, max: 400, paso: 25, inicio: 100, unidad: '°C', decimales: 0 }],
+      controles: [{ id: 't', etiqueta: 'T', color: 'c-h', min: 0, max: 400, paso: 25, inicio: 100, unidad: '°C', decimales: 0, auto: { velocidad: 50, modo: 'rebota' } }],
       dibujo: val => ({ datos: torre([{ tipo: 'punto', x: val.t, color: 'h', rotulo: `${f(val.t, 0)} °C`, fila: 0 }]), estado: {} }),
       lectura: val => [`A ${f(val.t, 0)} °C hierven: ${hierven(val.t).join(' y ') || 'ninguna'}.`],
       minimo: 3,
@@ -165,10 +166,12 @@
     temas: ['Gasolina y octanaje'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Elige un octanaje. La caja muestra la mezcla de referencia: isooctano (naranja, ramificado) y heptano (turquesa, en cadena) que detona igual.',
+      // Animación: el octanaje sube y baja solo (80 a 100); cada 5 octanos, una molécula de heptano cambia por isooctano.
+      // Las moléculas tiemblan (agitación térmica, solo para dar vida: el temblor no es un dato).
+      consigna: 'El octanaje sube y baja solo. La caja muestra la mezcla patrón que detona igual: isooctano (naranja) y heptano (turquesa).',
       voz: 'Cuenta cuántas de las 20 moléculas son isooctano.',
-      controles: [{ id: 'o', etiqueta: 'Octanaje', min: 80, max: 100, paso: 5, inicio: 85, decimales: 0 }],
-      dibujo: val => lupa([mezcla(val.o, `Detona como ${f(val.o, 0)} octanos`)]),
+      controles: [{ id: 'o', etiqueta: 'Octanaje', min: 80, max: 100, paso: 5, inicio: 85, decimales: 0, auto: { velocidad: 4, modo: 'rebota' } }],
+      dibujo: val => lupa([mezcla(val.o, `Detona como ${f(val.o, 0)} octanos`)], { agita: val.o / 4, agitaAmp: 1.5 }),
       lectura: val => [`Mezcla patrón: ${f(val.o, 0)} % isooctano, ${f(100 - val.o, 0)} % heptano.`],
       minimo: 3,
     },
@@ -244,21 +247,35 @@
     return lupa([{ titulo: 'Antes', forma: 'caja', particulas: [{ e: COMB[k].fuel, n, desde }, { e: 'O2', n: p.O2, desde }] }, { titulo: 'Después', forma: 'caja', particulas: despues }], { flechas: true, separacion: 26,
       alt: `Antes: ${n} de ${COMB[k].fuel === 'Cs' ? 'C' : 'CH₄'} y ${f(p.O2, 0)} de O₂. Después: ${f(p.co2, 0)} CO₂, ${f(p.co, 0)} CO, ${f(p.hollin, 0)} C (hollín), ${f(p.h2o, 0)} H₂O y ${f(p.sobraO2, 0)} O₂ que sobra.` });
   }
+  // Animación: en cámara lenta, la primera molécula de combustible se quema a 1 s y la segunda a 2 s (t de 0 a 4 s).
+  // Cada una se lleva su parte de O₂ y deja sus productos; el O₂ que no se usa queda sin reaccionar. Los conteos salen
+  // de quemar() con 1 y 2 moléculas; los tiempos son ilustrativos.
+  const quemadas = t => (t === undefined ? 2 : t >= 2 ? 2 : t >= 1 ? 1 : 0);
+  function combustionViva(k, oPorUno, t) {
+    const j = quemadas(t), tot = quemar(k, 2, oPorUno), p = quemar(k, j, oPorUno), usado = p.O2 - p.sobraO2;
+    const queda = [{ e: COMB[k].fuel, n: 2 - j }, { e: 'O2', n: Math.round(tot.O2 - usado) }].filter(x => x.n > 0);
+    const sale = [{ e: 'CO2', n: p.co2 }, { e: 'CO', n: p.co }, { e: 'Cs', n: p.hollin }, { e: 'H2O', n: p.h2o }].filter(x => x.n > 0);
+    return lupa([{ titulo: 'Sin reaccionar', forma: 'caja', particulas: queda }, { titulo: 'Productos', forma: 'caja', particulas: sale }], { flechas: true, separacion: 26, agita: t, agitaAmp: 1.5,
+      alt: `A los ${f(t, 1)} s se quemaron ${j} de 2 moléculas de ${COMB[k].fuel === 'Cs' ? 'C' : 'CH₄'}. Sin reaccionar: ${2 - j} de combustible y ${f(tot.O2 - usado, 0)} de O₂. Productos: ${f(p.co2, 0)} CO₂, ${f(p.co, 0)} CO y ${f(p.h2o, 0)} H₂O.` });
+  }
+  const leerCorto = (k, o) => { const p = quemar(k, 2, o); return p.co || p.hollin ? 'sale CO: incompleta' : `todo C a CO₂${p.sobraO2 ? ', sobra O₂' : ''}`; };
   const leer = (k, o) => { const p = quemar(k, 2, o); return p.co || p.hollin ? `Sale ${p.co ? 'CO' : ''}${p.hollin ? (p.co ? ' y hollín' : 'hollín') : ''}: incompleta.` : `Todo el carbono termina en CO₂: completa${p.sobraO2 ? ', sobra O₂' : ''}.`; };
+  const oDe = val => (val.k === 'metano' ? (val.o === 'justo' ? 2 : 3) : (val.o === 'justo' ? 1 : 1.5));
   const combustionIdea = {
     id: 'combustion',
     titulo: 'Con poco oxígeno sale CO',
     temas: ['Combustión completa e incompleta', 'Gas natural y carbón'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Quema dos moléculas de combustible con el oxígeno que elijas. Compara qué hay antes y después.',
+      consigna: 'En cámara lenta, dos moléculas de combustible se queman una tras otra. Elige el oxígeno y mira qué sobra y qué sale.',
       voz: 'Sigue a los átomos de carbono: ¿dónde terminan?',
       controles: [
         { id: 'k', etiqueta: 'Combustible', opciones: Object.keys(COMB).map(k => ({ valor: k, texto: COMB[k].texto })) },
         { id: 'o', etiqueta: 'O₂ por molécula', opciones: [{ valor: 'justo', texto: 'El justo' }, { valor: 'sobra', texto: 'De sobra' }] },
+        { id: 't', etiqueta: 't', min: 0, max: 4, paso: 0.1, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } },
       ],
-      dibujo: val => combustion(val.k, val.k === 'metano' ? (val.o === 'justo' ? 2 : 3) : (val.o === 'justo' ? 1 : 1.5)),
-      lectura: val => [leer(val.k, val.k === 'metano' ? (val.o === 'justo' ? 2 : 3) : (val.o === 'justo' ? 1 : 1.5))],
+      dibujo: val => combustionViva(val.k, oDe(val), val.t),
+      lectura: val => [`${f(val.t, 1)} s: ${quemadas(val.t)} de 2 quemadas · ${leerCorto(val.k, oDe(val))}`],
       minimo: 3,
     },
     predice: {
@@ -325,15 +342,27 @@
     temas: ['Recursos minerales del Perú (solo San Marcos)', 'Metalurgia del Fe, Cu, Pb, Zn, Au y Ag (solo San Marcos)'],
     pieza: 'quim-cadena',
     juega: {
-      consigna: 'De 1 000 kg de mena, la ley dice qué parte es metal y la recuperación, qué parte de ese metal se logra sacar.',
+      // Animación: la ley sube y baja sola (1 a 8 %). El juego usa las dos barras de la mesa «La mena en dos barras»
+      // (quim-composicion): el tramo naranja crece con la ley; «Mira» y la predicción siguen con la cadena de pasos.
+      consigna: 'De 1 000 kg de mena, la ley (sube y baja sola) es la parte que es metal; la recuperación, lo que se logra sacar.',
       voz: 'Mira cuánto queda después de cada paso.',
+      pieza: 'quim-composicion',
       controles: [
         { id: 'met', etiqueta: 'Metal', opciones: Object.keys(METAL).map(k => ({ valor: k, texto: METAL[k].nombre })) },
-        { id: 'ley', etiqueta: 'w', color: 'c-o', min: 1, max: 8, paso: 1, inicio: 2, unidad: '%', decimales: 0 },
+        { id: 'ley', etiqueta: 'w', color: 'c-o', min: 1, max: 8, paso: 1, inicio: 2, unidad: '%', decimales: 1, auto: { velocidad: 1.5, modo: 'rebota' } },
         { id: 'rec', etiqueta: 'r', color: 'c-d', min: 70, max: 95, paso: 5, inicio: 90, unidad: '%', decimales: 0 },
       ],
-      dibujo: val => barra(val.ley, val.rec, val.met),
-      lectura: val => [`Del total de la mena sale el ${f(val.ley * val.rec / 100, 2)} % como ${METAL[val.met].nombre}.`],
+      dibujo: val => ({ datos: menaBarras(val), estado: {} }),
+      lectura: val => [`Ley ${f(val.ley, 1)} %: sale el ${f(val.ley * val.rec / 100, 2)} % de la mena como ${METAL[val.met].nombre}.`],
+      // Los dos bordes se arrastran, como en la mesa: arrastrar la ley pausa la animación.
+      arrastres: [
+        { id: 'ley', etiqueta: 'borde del metal en la mena', color: 'c-o',
+          donde: v => { const g = PC().geometria(menaBarras(v)); return { x: g.xDe(0, v.ley), y: g.y(0) + g.hb / 2 }; },
+          mover: (pt, v) => ({ ley: PC().geometria(menaBarras(v)).valorEn(0, pt.x) }) },
+        { id: 'rec', etiqueta: 'borde de lo recuperado', color: 'c-d',
+          donde: v => { const g = PC().geometria(menaBarras(v)); return { x: g.xDe(1, v.rec), y: g.y(1) + g.hb / 2 }; },
+          mover: (pt, v) => ({ rec: PC().geometria(menaBarras(v)).valorEn(1, pt.x) }) },
+      ],
       minimo: 3,
     },
     predice: {
@@ -411,7 +440,7 @@
 
   return {
     unidad: 'quimica.recursos-naturales',
-    version: '0.1.0',
+    version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/quim-cadena.js', '/nucleo/kit/piezas/quim-particulas.js', '/nucleo/kit/piezas/quim-composicion.js'],
     historia: {
@@ -456,10 +485,11 @@
     laboratorio: [
       {
         id: 'dos-platos', titulo: 'Dos platos de la torre', pieza: 'recta',
-        consigna: 'Corre los dos platos. Entre ellos se recoge lo que hierve en ese tramo. Busca un tramo que junte dos fracciones.',
+        // Animación: el plato 2 recorre la torre solo (0 a 400 °C y vuelve); el tramo y lo que recoge cambian con él.
+        consigna: 'El plato 2 recorre la torre solo. Entre los dos platos se recoge lo que hierve en ese tramo. Corre los platos y prueba.',
         controles: [
           { id: 'a', etiqueta: 'plato 1', color: 'c-h', min: 0, max: 400, paso: 25, inicio: 150, unidad: '°C', decimales: 0 },
-          { id: 'b', etiqueta: 'plato 2', color: 'c-h', min: 0, max: 400, paso: 25, inicio: 250, unidad: '°C', decimales: 0 },
+          { id: 'b', etiqueta: 'plato 2', color: 'c-h', min: 0, max: 400, paso: 25, inicio: 250, unidad: '°C', decimales: 0, auto: { velocidad: 40, modo: 'rebota' } },
         ],
         dibujo: v => dosPlatos(v),
         lectura: v => [`${f(Math.min(v.a, v.b), 0)} a ${f(Math.max(v.a, v.b), 0)} °C: ${recoge(v).join(', ') || 'nada'}`],
