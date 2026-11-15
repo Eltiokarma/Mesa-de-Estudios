@@ -4551,10 +4551,12 @@
      "teoria": {
       "archivo": "/contenido/teoria/trigonometria/conicas.js",
       "requiere": [
-       "/nucleo/kit/piezas/trig-plano.js"
+       "/nucleo/kit/piezas/trig-plano.js",
+       "/plantillas/conicas/motor.js",
+       "/nucleo/kit/piezas/trig-cono-3d.js"
       ],
       "ideas": 5,
-      "terminos": 37
+      "terminos": 40
      }
     },
     {

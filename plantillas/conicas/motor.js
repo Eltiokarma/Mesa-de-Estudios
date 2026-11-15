@@ -77,6 +77,12 @@
  *       cortes (ordenados por x: puntos de la vista de costado donde el plano corta las generatrices, para el dibujo), errores (nombres
  *       de las otras curvas: cerrada CO31 'una elipse', abierta CO32 'una hipérbola', rectas CO33 'dos rectas'; cada
  *       uno solo si es distinto de la respuesta), coinciden, conica: { tipo 'polar', e, l } }.
+ *   corte3d({ inclinacion, generatriz, altura, alto })
+ *       El mismo corte, en 3D, para la pieza viva trig-cono-3d (15 nov 2026). Cono doble con el vértice en el origen y el
+ *       eje vertical (y); su radio a la altura y es |y| / tan(generatriz); cada hoja llega hasta |y| = alto (por
+ *       defecto 2). El plano es y = tan(inclinacion)·x − altura: altura 0 pasa por el vértice y da las cónicas
+ *       degeneradas (un punto, una recta o dos rectas). → { tipo, nombre, e, hojas (cuántas hojas toca: 0, 1 o 2),
+ *       tramos: [[[x, y, z], …], …] (trozos continuos de la curva, recortados al cono dibujado) }.
  *   puntoEn(conica, t, rama)
  *       Punto de la cónica para el parámetro t: ángulo en radianes en la elipse (h + a cos t; k + b sen t, girado si
  *       el eje es y) y en la circunferencia; en la parábola (h + pt²; k + 2pt); en la hipérbola (h ± a ch t; k + b sh t),
@@ -599,6 +605,56 @@
     return Object.assign(q, { tipo, nombre, e, cortes, conica: { tipo: 'polar', e, l: 1 } });
   }
 
+  function corte3d(o) {
+    o = o || {};
+    const fi = Number(o.inclinacion), g = Number(o.generatriz), a = Number(o.altura || 0), Y = Number(o.alto || 2);
+    if (!Number.isFinite(fi) || fi < 0 || fi > 85) throw new Error('la inclinación va de 0° a 85°');
+    if (!Number.isFinite(g) || g < 10 || g > 80) throw new Error('la generatriz va de 10° a 80°');
+    if (!(a >= 0)) throw new Error('la altura del plano va bajo el vértice: 0 o más');
+    const T = 1e-9, t = Math.tan(g * GR), m = Math.tan(fi * GR);
+    let tipo;
+    if (a < T) tipo = Math.abs(fi - g) < T ? 'rectaDoble' : (fi < g ? 'punto' : 'rectas');
+    else tipo = fi < T ? 'circunferencia' : (Math.abs(fi - g) < T ? 'parabola' : (fi < g ? 'elipse' : 'hiperbola'));
+    const tramos = [];
+    if (a < T) {
+      // Por el vértice: las generatrices que caen en el plano, cos φ = tan g / tan fi (una sola si fi = g).
+      if (tipo !== 'punto') {
+        const c = Math.min(1, t / m), fs = tipo === 'rectaDoble' ? [0] : [Math.acos(c), -Math.acos(c)];
+        for (const f of fs) {
+          const tramo = [];
+          for (let k = -12; k <= 12; k++) {          // de la hoja de abajo a la de arriba, pasando por el vértice
+            const y = Y * k / 12, r = y / t;
+            tramo.push([r * Math.cos(f), y, r * Math.sin(f)]);
+          }
+          tramos.push(tramo);
+        }
+      } else tramos.push([[0, 0, 0]]);
+    } else {
+      // ρ = a / (m cos φ − s·tan g) en la hoja s (s = 1 arriba, −1 abajo); vale si ρ > 0 y |y| ≤ alto.
+      const N = 240;
+      for (const sg of [1, -1]) {
+        let tramo = [];
+        const cerrar = () => { if (tramo.length > 1) tramos.push(tramo); tramo = []; };
+        for (let k = 0; k <= N; k++) {
+          const f = -Math.PI + 2 * Math.PI * k / N, den = m * Math.cos(f) - sg * t;
+          const r = Math.abs(den) > 1e-12 ? a / den : -1, y = sg * r * t;
+          if (r > 0 && Math.abs(y) <= Y + 1e-9) tramo.push([r * Math.cos(f), y, r * Math.sin(f)]);
+          else cerrar();
+        }
+        cerrar();
+      }
+      // Una curva cerrada que cruza φ = ±π queda partida en dos trozos: se unen.
+      for (let i = 0; i < tramos.length; i++) for (let j = 0; j < tramos.length; j++) {
+        if (i === j || !tramos[i] || !tramos[j]) continue;
+        const u = tramos[i][tramos[i].length - 1], v = tramos[j][0];
+        if (Math.hypot(u[0] - v[0], u[1] - v[1], u[2] - v[2]) < 1e-9) { tramos[i] = tramos[i].concat(tramos[j].slice(1)); tramos[j] = null; }
+      }
+    }
+    const lista = tramos.filter(Boolean);
+    const hojas = new Set(lista.flat().filter(p => Math.abs(p[1]) > 1e-9).map(p => Math.sign(p[1]))).size;
+    return { tipo, nombre: NOMBRE[tipo], e: a < T ? null : Math.sin(fi * GR) / Math.sin(g * GR), hojas, tramos: lista };
+  }
+
   // ---------- Puntos, distancias y trazos (numéricos, para el dibujo) ----------
   const numDe = C => (C && C.num ? C.num : C);
   function puntoEn(Cc, t, rama) {
@@ -677,6 +733,6 @@
     return fTexto(fraccion(v));
   }
 
-  return { circunferencia, circunferenciaGeneral, parabola, elipse, hiperbola, general, jardinero, plato, cono,
+  return { circunferencia, circunferenciaGeneral, parabola, elipse, hiperbola, general, jardinero, plato, cono, corte3d,
     puntoEn, sobre, distancias, trazar, texto, fraccion: x => fraccion(x), ERRORES };
 });
