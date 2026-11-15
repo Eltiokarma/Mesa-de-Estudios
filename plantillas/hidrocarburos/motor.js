@@ -1078,7 +1078,48 @@
   // La distancia más grande entre los extremos al girar de 30 en 30 grados (para los retos de extremo).
   const distanciaMaxima = mol => Math.max(...Array.from({ length: 12 }, (_, k) => conformacion(mol, 30 * k).distancia));
 
+  // ---------- La molécula y su espejo (15 nov 2026, mesa 3D «El espejo que no encaja») ----------
+  // Un carbono con cuatro átomos en tetraedro (109,47°) y largos reales de enlace (C–H 109, C–F 135, C–Cl 177,
+  // C–Br 194 pm; OpenStax Chemistry 2e, tabla 7.5). La copia es su imagen en un espejo plano (x → −x) que después se gira
+  // alrededor del eje vertical. Encaja si, con el mismo centro, cada átomo de la copia cae sobre uno igual de la
+  // original. Con cuatro átomos distintos (CHFClBr) ningún giro sirve: es quiral. Verificado aparte en Python.
+  const ESPEJOS = {
+    CHFCl2: { texto: 'CHFCl₂', arriba: 'H', abajo: ['F', 'Cl', 'Cl'] },
+    CH2FCl: { texto: 'CH₂FCl', arriba: 'Cl', abajo: ['F', 'H', 'H'] },
+    CHFClBr: { texto: 'CHFClBr', arriba: 'H', abajo: ['F', 'Cl', 'Br'] },
+  };
+  const LARGO_CX = { H: 109, F: 135, Cl: 177, Br: 194 };
+  const giroY = (p, g) => { const a = g * Math.PI / 180; return [p[0] * Math.cos(a) + p[2] * Math.sin(a), p[1], -p[0] * Math.sin(a) + p[2] * Math.cos(a)]; };
+  function tetraedro(k) {                                    // [{ t, pos }] en pm, con el C en el origen
+    const m = ESPEJOS[k];
+    if (!m) throw new Error(`espejo: no conozco «${k}» (hay ${Object.keys(ESPEJOS).join(', ')})`);
+    const at = [{ t: 'C', pos: [0, 0, 0] }, { t: m.arriba, pos: [0, LARGO_CX[m.arriba], 0] }];
+    m.abajo.forEach((t, i) => {                              // azimut 60°, 180° y 300° desde +z hacia +x
+      const b = (60 + 120 * i) * Math.PI / 180, L = LARGO_CX[t];
+      at.push({ t, pos: [L * Math.sqrt(8) / 3 * Math.sin(b), -L / 3, L * Math.sqrt(8) / 3 * Math.cos(b)] });
+    });
+    return at;
+  }
+  function encajaCon(a, b) {                                 // cada átomo de b sobre uno igual de a (mismos centros)
+    return b.every(x => a.some(y => y.t === x.t && Math.hypot(x.pos[0] - y.pos[0], x.pos[1] - y.pos[1], x.pos[2] - y.pos[2]) < 1e-6));
+  }
+  function espejo(k, giro) {
+    const g = norm360(giro || 0), orig = tetraedro(k);
+    const copia = orig.map(a => ({ t: a.t, pos: giroY([-a.pos[0], a.pos[1], a.pos[2]], g) }));
+    const encaja = encajaCon(orig, copia);
+    const giros = Array.from({ length: 12 }, (_, i) => 30 * i).filter(x => encajaCon(orig, orig.map(a => ({ t: a.t, pos: giroY([-a.pos[0], a.pos[1], a.pos[2]], x) }))));
+    const SEP = 1.6 * L_CC;                                  // las dos moléculas, lado a lado
+    const atomos = [], enlaces = [];
+    [[orig, -SEP, 'o'], [copia, SEP, 'e']].forEach(([lista, dx, pre]) => lista.forEach((a, i) => {
+      atomos.push({ id: `${pre}${i}`, t: a.t, pos: [(a.pos[0] + dx) / L_CC, a.pos[1] / L_CC, a.pos[2] / L_CC] });
+      if (i) enlaces.push({ a: `${pre}0`, b: `${pre}${i}`, orden: 1 });
+    }));
+    const distintos = new Set(orig.slice(1).map(a => a.t)).size;
+    return { mol: k, texto: ESPEJOS[k].texto, giro: g, encaja, quiral: giros.length === 0, girosQueEncajan: giros, distintos, atomos, enlaces };
+  }
+
   return {
+    ESPEJOS, espejo, tetraedro,
     CONFORMABLES, conformacion, diedro, distanciaMaxima,
     molecula, formula, tipo, formulaGeneral, insaturaciones, tiposCarbono, hibridacion, enlaces,
     canonica, mismaMolecula, cisTrans, nombre, semidesarrollada, cadenas,

@@ -816,6 +816,12 @@
     return { datos: { atomos: c.atomos, enlaces: c.enlaces, pares: [], total: null, vista: MIRAR[v.mir] }, estado: { dipolos: false, pares: false } };
   };
   const phiV = { v: 'c-d', t: 'φ' };
+  // Mesa 3D «El espejo que no encaja»: la molécula y su copia en el espejo, del motor (espejo); escala 0,6 para que
+  // quepan las dos lado a lado.
+  const espejo3d = v => {
+    const e = MH.espejo(v.mol, v.g);
+    return { datos: { atomos: e.atomos, enlaces: e.enlaces, pares: [], total: null, vista: { giro: 0, inclinacion: 15 }, escala: 0.6, simbolos: true }, estado: { dipolos: false, pares: false } };
+  };
 
   return {
     unidad: 'quimica.hidrocarburos',
@@ -827,8 +833,8 @@
       pregunta: '¿Cómo pueden dos sustancias tener la misma fórmula y ser distintas?',
       fuente: { titulo: 'OpenStax, Organic Chemistry, §3.4 y §5.2', url: 'https://openstax.org/books/organic-chemistry/pages/3-4-naming-alkanes' },
     },
-    // Laboratorio (docs/teoria.md §4b): sin preguntas. La 3D (el enlace que gira) va primera. La de la cadena es más rica que los juegos: junta fórmula
-    // general, familias y anillos, con n de 1 a 8 y los casos que la idea no deja probar. La tercera compara dos
+    // Laboratorio (docs/teoria.md §4b): sin preguntas. Las dos 3D (el enlace que gira y el espejo que no encaja) van primero. La de la cadena es más rica que los juegos: junta fórmula
+    // general, familias y anillos, con n de 1 a 8 y los casos que la idea no deja probar. La cuarta compara dos
     // estructuras cualesquiera. La lectura dice entradas y resultado, para que un caso guardado se lea solo.
     glosario: [
       { termino: 'hidrocarburo', def: 'Compuesto formado solo por átomos de carbono e hidrógeno, como el metano o el benceno.',
@@ -872,6 +878,9 @@
         ver: ['eclipsada'] },
       { termino: 'anti', def: 'Conformación alternada del butano con sus dos CH₃ opuestos, a 180°: la más estable.', ver: ['gauche'] },
       { termino: 'gauche', def: 'Conformación alternada del butano con sus dos CH₃ a 60°, vecinos.', ver: ['anti'] },
+      { termino: 'quiral', formas: ['quiral', 'quirales'],
+        def: 'Que no encaja con su imagen en un espejo, por más que se la gire.',
+        ejemplo: 'El CHFClBr, y también tu mano.', ver: ['isómero óptico'] },
     ],
     laboratorio: [
       {
@@ -912,6 +921,36 @@
             logrado: (v, guardados) => ['cis-but-2-eno', 'trans-but-2-eno'].every(m => guardados.some(a => a.mol === m)),
             bien: 'Ningún giro lleva de uno al otro: son isómeros, no conformaciones.',
             pista: 'Guarda el cis, cambia al trans y guárdalo también.' },
+        ],
+      },
+      {
+        // Segunda mesa 3D (exploración libre): la molécula y su imagen en el espejo; encaja o no lo dice el motor.
+        id: 'espejo-no-encaja', titulo: 'El espejo que no encaja', pieza: 'quim-molecula-3d',
+        consigna: 'A la izquierda, la molécula; a la derecha, su imagen en un espejo. Gira la copia y busca que encaje con la original.',
+        controles: [
+          { id: 'mol', etiqueta: 'Molécula', opciones: Object.keys(MH.ESPEJOS).map(k => ({ valor: k, texto: MH.ESPEJOS[k].texto })) },
+          { id: 'g', etiqueta: 'Giro de la copia', min: 0, max: 330, paso: 30, inicio: 0, unidad: '°', decimales: 0 },
+        ],
+        dibujo: v => espejo3d(v),
+        lectura: v => { const e = MH.espejo(v.mol, v.g); return [`${e.texto}, copia a ${e.giro}°: ${e.encaja ? 'encaja con la original' : 'no encaja'}`]; },
+        // Retos comprobados con el mismo motor que arma las dos moléculas (docs/teoria.md §4d).
+        invitaciones: [
+          { texto: 'Gira la copia del espejo hasta que encaje con la original.',
+            logrado: v => MH.espejo(v.mol, v.g).encaja,
+            bien: 'Encajó: esa molécula y su espejo son la misma. No tiene isómeros ópticos.',
+            pista: 'Con CHFCl₂, gira la copia de 30 en 30 y mira la lectura.' },
+          { texto: 'Busca la molécula cuyo espejo no encaja con ningún giro.',
+            logrado: v => MH.espejo(v.mol, v.g).quiral,
+            bien: 'Es quiral: cuatro átomos distintos en el carbono. Su espejo es un isómero óptico.',
+            pista: 'Busca la que tiene cuatro átomos distintos alrededor del carbono.' },
+          { texto: 'Guarda la copia del CHFClBr con dos giros distintos. ¿Encaja alguna?',
+            logrado: (v, guardados) => guardados.some(a => guardados.some(b => a.mol === 'CHFClBr' && b.mol === 'CHFClBr' && a.g !== b.g)),
+            bien: 'Ninguna encaja: como tu mano izquierda y tu mano derecha.',
+            pista: 'Guarda un caso del CHFClBr, gira la copia y guarda otro.' },
+          { texto: 'Guarda una molécula que encaje con su espejo y otra que no pueda.',
+            logrado: (v, guardados) => guardados.some(a => MH.espejo(a.mol, a.g).encaja) && guardados.some(b => MH.espejo(b.mol, b.g).quiral),
+            bien: 'La clave está en el carbono: tres átomos distintos o cuatro.',
+            pista: 'Guarda el CHFCl₂ girado hasta encajar y después el CHFClBr.' },
         ],
       },
       {
