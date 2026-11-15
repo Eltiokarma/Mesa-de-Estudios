@@ -106,7 +106,7 @@
       ],
     },
     regla: {
-      texto: 'Un primo es un entero mayor que 1 con exactamente dos divisores positivos: 1 y él mismo. Si tiene más, es compuesto.',
+      texto: 'Un primo es un entero mayor que 1 con exactamente dos divisores positivos: 1 y él mismo. Si tiene más, es un número compuesto.',
       ecuacion: [p, ' primo  ⇔  ', p, ' > 1 y sus divisores son ', { llave: ['{1, ', p, '}'], nota: 'solo dos' }],
       condicion: 'el 1 no es primo ni compuesto. Para descartar un primo, basta probar divisores hasta su raíz cuadrada.',
     },
@@ -132,14 +132,15 @@
   // Cambia: hasta qué primo se tacha. Permanece: la grilla de 1 a 60.
   // Progresa: múltiplos de 2, de 3, de 5, de 7. Se reserva: que el siguiente primo empieza a tachar en su cuadrado.
   // Debe verse: lo que queda sin tachar son primos.
+  // x queda tachado si es 1 o si su menor primo ya tachó (y no es él mismo).
+  const tachado = (x, hasta) => x === 1 || (factores(x)[0][0] <= hasta && factores(x)[0][0] !== x);
+  const sinTachar = (N, hasta) => { let c = 0; for (let x = 2; x <= N; x++) if (!tachado(x, hasta)) c++; return c; };
   const grilla = (N, hasta) => {
     const filas = [];
     for (let i = 0; i < N / 10; i++) filas.push(Array.from({ length: 10 }, (_, j) => {
       const x = 10 * i + j + 1;
-      const menor = x > 1 ? factores(x)[0][0] : 0;
-      const tachado = x === 1 || (menor <= hasta && menor !== x);
       const primoVisto = esPrimo(x) && x <= hasta;
-      return { t: String(x), tenue: tachado, resalta: primoVisto, color: primoVisto ? 'i' : undefined };
+      return { t: String(x), tenue: tachado(x, hasta), resalta: primoVisto, color: primoVisto ? 'i' : undefined };
     }));
     return { columnas: Array.from({ length: 10 }, () => ''), filas, filasMax: N / 10, alt: `Números del 1 al ${N}; tachados los múltiplos de los primos hasta ${hasta}` };
   };
@@ -196,7 +197,7 @@
       ],
     },
     regla: {
-      texto: 'La criba tacha los múltiplos de cada primo empezando en su cuadrado. Basta usar los primos hasta la raíz cuadrada del límite.',
+      texto: 'La criba de Eratóstenes tacha los múltiplos de cada primo empezando en su cuadrado. Basta usar los primos hasta la raíz cuadrada del límite.',
       ecuacion: [p, ' tacha desde ', { sup: [p, '2'] }, '   ·   ', 'se usan los ', p, ' ≤ ', { llave: ['√N'], nota: 'raíz del límite' }],
       condicion: 'los menores que p² ya fueron tachados por un primo más chico. Lo que queda sin tachar, menos el 1, son primos.',
     },
@@ -265,7 +266,7 @@
       ],
     },
     regla: {
-      texto: 'Todo entero mayor que 1 es un producto de primos, de una sola manera salvo el orden. Dos números son PESI si no comparten ningún primo.',
+      texto: 'Teorema fundamental de la aritmética: todo entero mayor que 1 es producto de primos de una sola manera, salvo el orden. Dos números son PESI si no comparten primos.',
       ecuacion: [n_, ' = ', { llave: [{ sup: [p, ea] }], nota: 'potencia' }, ' · ', { sup: [q, eb] }, ' · …', '   ·   ', 'PESI ⇔ mcd = 1'],
       condicion: 'PESI es una propiedad de la pareja: dos compuestos pueden serlo, y dos números iguales mayores que 1 nunca lo son.',
     },
@@ -448,7 +449,7 @@
       ],
     },
     regla: {
-      texto: 'φ(n) cuenta los enteros de 1 a n que no comparten ningún primo con n. Cada primo de n deja la fracción 1 − 1/p.',
+      texto: 'La función de Euler φ(n) cuenta los enteros de 1 a n que no comparten ningún primo con n. Cada primo de n deja la fracción 1 − 1/p.',
       ecuacion: [{ llave: ['φ(', n_, ')'], nota: 'coprimos' }, ' = ', n_, ' · (1 − ', { frac: ['1', { sub: [p, '1'] }] }, ') · (1 − ', { frac: ['1', { sub: [p, '2'] }] }, ') · …'],
       condicion: 'se usan los primos distintos de n, cada uno una vez. Si n es primo, φ(n) = n − 1.',
     },
@@ -518,7 +519,7 @@
       ],
     },
     regla: {
-      texto: 'Si p es primo y no divide a a, aᵖ⁻¹ deja resto 1 (Fermat). Además, (p − 1)! deja p − 1 (Wilson).',
+      texto: 'Si p es primo y no divide a a, aᵖ⁻¹ deja resto 1 (teorema de Fermat). Además, (p − 1)! deja p − 1 (teorema de Wilson).',
       ecuacion: [{ llave: [{ sup: [ea, [p, ' − 1']] }, ' ≡ 1'], nota: 'Fermat' }, '  (mód ', p, ')', '   ·   ', { llave: ['(', p, ' − 1)! ≡ −1'], nota: 'Wilson' }, '  (mód ', p, ')'],
       condicion: 'Wilson vale solo si p es primo. Euler generaliza Fermat: a elevado a φ(n) ≡ 1 si mcd(a, n) = 1.',
     },
@@ -555,6 +556,17 @@
     const q = Math.floor(nv / c), r = nv % c;
     return { bloques: [{ n: nv, columnas: c, color: r ? 'o' : 'i', marcoFilas: true, rotulo: r ? `${q} ${q === 1 ? 'fila' : 'filas'} y ${r} ${r === 1 ? 'suelta' : 'sueltas'}` : `${q} × ${c}`, tramos: r ? [{ de: q * c, a: nv - 1, color: 'h' }] : [], huecos: Math.max(0, c - nv) }], ficha: 14, altoMax: 140 };
   };
+  // Retos de la criba: ¿lo que queda sin tachar son solo primos? y el marcador anterior de la lista.
+  const MARCAS = [2, 3, 5, 7, 11];
+  const soloPrimos = hasta => { for (let x = 2; x <= 100; x++) if (!tachado(x, hasta) && !esPrimo(x)) return false; return true; };
+  const antes = pp => MARCAS[Math.max(0, MARCAS.indexOf(pp) - 1)];
+  // Sueltas de la mesa «filas de c» (las mismas que pinta filasDe).
+  const sueltas = v => v.n % v.c;
+  // Mesa «otro primo»: cantidad y suma de divisores de 2ᵃ · qᵇ (guardadas por n: el reto mira toda la grilla).
+  const nQ = v => 2 ** v.a * v.q ** v.b;
+  const memo = new Map();
+  const infoN = nv => { if (!memo.has(nv)) { const ds = divisores(nv); memo.set(nv, { cant: ds.length, suma: ds.reduce((u, z) => u + z, 0) }); } return memo.get(nv); };
+  let MAX_D = 0; for (const q0 of [3, 5, 7]) MAX_D = Math.max(MAX_D, infoN(2 ** 4 * q0 ** 3).cant);
   // Mesa «otro primo»: la tabla de exponentes con q en lugar de 3.
   const tablaDivQ = (a, b, qq) => ({
     columnas: [{ t: '' }, ...Array.from({ length: a + 1 }, (_, i) => ({ t: `2${sup(i)}`, color: 'h' }))],
@@ -567,6 +579,33 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    // Glosario: las palabras que esta unidad estrena en el curso (docs/teoria.md §4d). «máximo común divisor» se
+    // estrena en divisibilidad; «número primo», en lógica proposicional. «compuesto» suelto no es forma: en interés
+    // es el interés compuesto.
+    glosario: [
+      { termino: 'número compuesto', def: 'Entero mayor que 1 que tiene más de dos divisores: se arma en más de un rectángulo.',
+        formas: ['número compuesto', 'números compuestos'], ejemplo: '6 tiene 1, 2, 3 y 6: arma 1 × 6 y 2 × 3.', ver: ['divisor'] },
+      { termino: 'criba de Eratóstenes', def: 'Método para hallar primos: se tachan los múltiplos de cada primo y quedan los que no se tachan.',
+        formas: ['criba de Eratóstenes', 'criba'], ejemplo: 'Hasta 100 basta tachar con 2, 3, 5 y 7.', ver: ['raíz cuadrada'] },
+      { termino: 'raíz cuadrada', simbolo: '√', def: 'El número positivo que, multiplicado por sí mismo, da el número dado.',
+        formas: ['raíz cuadrada', 'raíces cuadradas'], ejemplo: '√49 = 7, porque 7 · 7 = 49.' },
+      { termino: 'factorización', def: 'Escribir un número como producto de primos, con exponentes para los que se repiten.',
+        formas: ['factorización', 'factorizaciones', 'factoriza'], ejemplo: '60 = 2² · 3 · 5.', ver: ['factor primo'] },
+      { termino: 'factor primo', def: 'Primo que divide exacto a un número; aparece en su descomposición en primos.',
+        formas: ['factor primo', 'factores primos', 'divisor primo', 'divisores primos'], ejemplo: 'Los de 60 son 2, 3 y 5.', ver: ['factorización'] },
+      { termino: 'teorema fundamental', formas: ['teorema fundamental de la aritmética', 'teorema fundamental'], def: 'Todo entero mayor que 1 se escribe como producto de primos de una sola manera, salvo el orden.',
+        ejemplo: '60 = 2² · 3 · 5, se empiece por donde se empiece.', ver: ['factorización'] },
+      { termino: 'PESI', def: 'Dos o más números que no comparten ningún factor primo: su máximo común divisor es 1.',
+        formas: ['PESI', 'primos entre sí', 'coprimos', 'coprimo'], ejemplo: '8 = 2³ y 15 = 3 · 5 lo son.', ver: ['máximo común divisor'] },
+      { termino: 'función de Euler', simbolo: 'φ(n)', def: 'Cuenta los enteros de 1 a n que no comparten ningún factor primo con n.',
+        ejemplo: 'φ(12) = 4: el 1, el 5, el 7 y el 11.', ver: ['PESI'] },
+      { termino: 'teorema de Fermat', def: 'Si p es primo y no divide a a, entonces aᵖ⁻¹ deja resto 1 al dividir entre p.',
+        ejemplo: '2⁶ = 64 = 7 · 9 + 1.', ver: ['teorema de Wilson'] },
+      { termino: 'teorema de Wilson', def: 'Si p es primo, multiplicar de 1 hasta p − 1 deja resto p − 1 al dividir entre p.',
+        ejemplo: '1 · 2 · 3 · 4 · 5 · 6 = 720 = 7 · 102 + 6.', ver: ['teorema de Fermat'] },
+      { termino: 'número perfecto', def: 'Número igual a la suma de sus divisores menores que él.',
+        formas: ['número perfecto', 'números perfectos'], ejemplo: '28 = 1 + 2 + 4 + 7 + 14.', ver: ['divisor'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. «Filas de c» prueba un ancho a la vez y deja ver el sobrante (el gesto de
     // la idea 1); «Divisores con otro primo» cambia el 3 por 5 o 7; la criba hasta 100 deja probar el 11, que no tacha nada.
     laboratorio: [
@@ -582,6 +621,20 @@
           const q = Math.floor(v.n / v.c), r = v.n % v.c;
           return r ? [`${v.n} en filas de ${v.c}: ${q} ${q === 1 ? 'fila' : 'filas'}, ${r === 1 ? 'sobra 1' : `sobran ${r}`}`] : [`${v.n} = ${q} × ${v.c}: no sobra ninguna`];
         },
+        invitaciones: [
+          { texto: 'Arma una sola fila llena con una cantidad prima de fichas.',
+            logrado: v => v.c === v.n && esPrimo(v.n),
+            bien: 'Un primo solo se llena así, en una fila. ¿Probaste otros anchos?' },
+          { texto: 'Con 12 fichas, busca el ancho más grande, menor que 12, sin sueltas.',
+            logrado: v => v.n === 12 && sueltas(v) === 0 && v.c === Math.max(...divisores(v.n).filter(x => x < v.n)),
+            bien: '2 filas de 6: el mayor divisor de 12 después del propio 12.' },
+          { texto: 'Arma un cuadrado: tantas filas como fichas tiene cada fila.',
+            logrado: v => sueltas(v) === 0 && v.n === v.c * v.c,
+            bien: 'Un cuadrado: c se empareja consigo mismo, y la cantidad de divisores sale impar.' },
+          { texto: 'Guarda dos casos con el mismo ancho y n seguidos: uno lleno, otro con una suelta.',
+            logrado: (v, guardados) => guardados.some(g => g.c === v.c && Math.abs(g.n - v.n) === 1 && Math.min(sueltas(g), sueltas(v)) === 0 && Math.max(sueltas(g), sueltas(v)) === 1),
+            bien: 'Una ficha más y ya sobra: ningún ancho de 3 o más llena dos seguidos.' },
+        ],
         arrastres: [{ id: 'ancho', etiqueta: 'borde derecho de las filas: c', color: 'c-i',
           donde: v => { const g = FICHAS().geometria(filasDe(v.n, v.c)); const cj = g.caja(0); return { x: cj.x + cj.ancho, y: cj.y + g.paso / 2 }; },
           mover: (pt, v) => {
@@ -600,9 +653,23 @@
         ],
         dibujo: v => ({ datos: tablaDivQ(v.a, v.b, v.q), estado: {} }),
         lectura: v => {
-          const nv = 2 ** v.a * v.q ** v.b, ds = divisores(nv);
-          return [`n = ${nv}: `, { v: 'c-d', t: String(ds.length) }, ` divisores, suman ${f(ds.reduce((u, z) => u + z, 0))}`];
+          const nv = nQ(v), x = infoN(nv);
+          return [`n = ${nv}: `, { v: 'c-d', t: String(x.cant) }, ` divisores, suman ${f(x.suma)}`];
         },
+        invitaciones: [
+          { texto: 'Consigue un n con exactamente 9 divisores.',
+            logrado: v => infoN(nQ(v)).cant === 9,
+            bien: '9 = 3 · 3: a = 2 y b = 2, con cualquier q.' },
+          { texto: 'Haz que los divisores sumen justo el doble de n.',
+            logrado: v => infoN(nQ(v)).suma === 2 * nQ(v),
+            bien: 'Número perfecto: sus divisores menores que él suman lo mismo que él.' },
+          { texto: 'Busca el n con más divisores que deja esta mesa.',
+            logrado: v => infoN(nQ(v)).cant === MAX_D,
+            bien: '20 divisores: 5 columnas por 4 filas, sea cual sea q.' },
+          { texto: 'Guarda dos n con la misma cantidad de divisores y distinta suma.',
+            logrado: (v, guardados) => guardados.some(g => infoN(nQ(g)).cant === infoN(nQ(v)).cant && infoN(nQ(g)).suma !== infoN(nQ(v)).suma),
+            bien: 'La misma tabla con otros números: contar divisores no es sumarlos.' },
+        ],
         arrastres: [esquina('esquina', v => tablaDivQ(v.a, v.b, v.q), 4, 3, (a, b, v) => tablaDivQ(a, b, v.q))],
       },
       {
@@ -610,7 +677,18 @@
         consigna: 'La lista llega a 100. Lleva el marcador al último primo que tacha. ¿El 11 tacha algo nuevo?',
         controles: [{ id: 'p', etiqueta: 'tachar hasta', color: 'c-i', opciones: [2, 3, 5, 7, 11].map(x => ({ valor: x, texto: String(x) })) }],
         dibujo: v => ({ datos: grilla(100, v.p), estado: {} }),
-        lectura: v => { let c = 0; for (let x = 2; x <= 100; x++) if (factores(x)[0][0] > v.p || esPrimo(x)) c++; return [`Hasta ${v.p}: quedan ${c} sin tachar de 100`]; },
+        lectura: v => [`Hasta ${v.p}: quedan ${sinTachar(100, v.p)} sin tachar de 100`],
+        invitaciones: [
+          { texto: 'Haz que el 49 quede tachado.',
+            logrado: v => tachado(49, v.p),
+            bien: '49 = 7²: el primero que el 7 tacha sin ayuda de 2, 3 o 5.' },
+          { texto: 'Busca el menor marcador que deje sin tachar solo primos.',
+            logrado: v => soloPrimos(v.p) && !soloPrimos(antes(v.p)),
+            bien: 'Con el 5 quedaban 49, 77 y 91. El 7 los tacha.' },
+          { texto: 'Guarda dos marcadores que dejen la misma cantidad sin tachar.',
+            logrado: (v, guardados) => guardados.some(g => g.p !== v.p && sinTachar(100, g.p) === sinTachar(100, v.p)),
+            bien: 'El 7 y el 11 dejan 25: basta llegar a la raíz de 100.' },
+        ],
         arrastres: [{ id: 'primo', etiqueta: 'último primo que tacha', color: 'c-i',
           donde: v => celdaNum(grilla(100, v.p), v.p, 10),
           mover: (pt, v) => ({ p: masCerca(pt, [2, 3, 5, 7, 11].map(x => Object.assign({ valor: x }, celdaNum(grilla(100, v.p), x, 10)))).valor }) }],
