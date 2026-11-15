@@ -15,7 +15,7 @@ function grilla(ctr) {
   const dom = ctr.map(c => c.opciones ? c.opciones.map(o => o.valor)
     : Array.from({ length: Math.floor((c.max - c.min) / c.paso + 1e-9) + 1 }, (_, k) => +(c.min + k * c.paso).toFixed(6)));
   const total = dom.reduce((n, d) => n * d.length, 1), out = [];
-  for (let i = 0; i < Math.min(total, 20000); i++) { let idx = i; const v = {}; ctr.forEach((c, k) => { v[c.id] = dom[k][idx % dom[k].length]; idx = Math.floor(idx / dom[k].length); }); out.push(v); }
+  for (let i = 0; i < Math.min(total, 2e6); i++) { let idx = i; const v = {}; ctr.forEach((c, k) => { v[c.id] = dom[k][idx % dom[k].length]; idx = Math.floor(idx / dom[k].length); }); out.push(v); }
   return out;
 }
 
@@ -35,11 +35,11 @@ function grilla(ctr) {
     const ir = async h => { await p.goto(`${BASE}#${h}`); await p.waitForTimeout(900); };
     // 1. Una idea: el primer término subrayado y su hoja.
     await ir(`/unidad/${U}/teoria/${def.ideas[0].id}`);
-    const terms = await p.locator('.te-term').count();
+    const terms = await p.locator('.te-term:visible').count();
     let hoja = '';
     if (terms) {
-      await p.locator('.te-term').first().scrollIntoViewIfNeeded();
-      await p.locator('.te-term').first().click(); await p.waitForTimeout(300);
+      await p.locator('.te-term:visible').first().scrollIntoViewIfNeeded();
+      await p.locator('.te-term:visible').first().click(); await p.waitForTimeout(300);
       hoja = (await p.locator('.te-glosa').first().innerText().catch(() => '')).replace(/\s+/g, ' ').slice(0, 90);
       await p.screenshot({ path: `${SAL}/${uc}-hoja.png` });
     }
