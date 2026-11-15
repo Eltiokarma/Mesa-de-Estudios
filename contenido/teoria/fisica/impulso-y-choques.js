@@ -65,20 +65,41 @@
     const J = areaGolpe(Fm, T, forma);
     return Object.assign(ejeFt(0.6, fmax), { curvas: [{ puntos: pts, color: 'h' }], areas: [{ puntos: pts, color: 'i', rotulo: `${f(J)} N·s` }] });
   };
+  // Animación (decisión de Gerson, 15 nov: física se mueve sola). El golpe ocurre en cámara lenta: t avanza 0,15 s
+  // por segundo de pantalla. F(t) es la misma forma del golpe; el área hasta t, J(t), sale de integrar esa forma en
+  // fórmula cerrada (regla 1), y v(t) = J(t) / m porque la pelota estaba quieta.
+  const fuerzaEn = (Fm, T, tt, forma = 'tri') => {
+    if (tt < 0 || tt > T) return 0;
+    return forma === 'rect' ? Fm : (tt <= T / 2 ? 2 * Fm * tt / T : 2 * Fm * (T - tt) / T);
+  };
+  const impulsoHasta = (Fm, T, tt, forma = 'tri') => {
+    const u = Math.max(0, Math.min(tt, T));
+    if (forma === 'rect') return Fm * u;
+    return u <= T / 2 ? Fm * u * u / T : Fm * T / 2 - Fm * (T - u) * (T - u) / T;
+  };
+  const golpeT = (Fm, T, tt, forma = 'tri', fmax = 50) => {
+    const u = Math.max(0, Math.min(tt, T)), Ju = impulsoHasta(Fm, T, tt, forma);
+    const pts = forma === 'rect' ? [[0, Fm], [u, Fm]] : [[0, 0], ...(u > T / 2 ? [[T / 2, Fm]] : []), [u, fuerzaEn(Fm, T, u, forma)]];
+    const d = golpe(Fm, T, forma, fmax);
+    d.areas = u > 0 ? [{ puntos: pts, color: 'i', rotulo: Ju >= 0.5 ? `${f(Ju)} N·s` : '' }] : [];
+    d.puntos = [{ x: tt, y: fuerzaEn(Fm, T, tt, forma), color: 'h', guias: true }];
+    return d;
+  };
   const impulso = {
     id: 'impulso',
     titulo: 'El área de F–t empuja',
     temas: ['Impulso', 'Cantidad de movimiento'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Una raqueta golpea una pelota quieta de 0,5 kg. Elige el pico de la fuerza y cuánto dura el golpe.',
+      consigna: 'Una raqueta golpea una pelota quieta de 0,5 kg, en cámara lenta. Mira cómo se llena el área. Cambia el pico y la duración.',
       voz: 'Mira el área sombreada y la rapidez con que sale la pelota.',
       controles: [
         { id: 'F', etiqueta: 'F máx', color: 'c-h', min: 10, max: 50, paso: 10, inicio: 30, unidad: 'N', decimales: 0 },
         { id: 'T', etiqueta: 'Δt', color: 'c-d', min: 0.1, max: 0.5, paso: 0.1, inicio: 0.2, unidad: 's', decimales: 1 },
+        { id: 't', etiqueta: 't', color: 'c-d', min: 0, max: 0.6, paso: 0.01, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 0.15, modo: 'repite' } },
       ],
-      dibujo: val => ({ datos: golpe(val.F, val.T), estado: {} }),
-      lectura: val => ['Impulso ', f(val.F * val.T / 2), ' N·s · sale a ', v, ` = ${f(val.F * val.T / 2 / M1)} m/s`],
+      dibujo: val => ({ datos: golpeT(val.F, val.T, val.t), estado: {} }),
+      lectura: val => { const J = impulsoHasta(val.F, val.T, val.t); return [t, ` = ${f(val.t)} s · J = ${f(J)} N·s · `, v, ` = ${f(J / M1)} m/s`]; },
       minimo: 3,
       // Arrastra el pico (qué tan fuerte) o el final del golpe (cuánto dura); el área responde.
       arrastres: [
@@ -163,20 +184,29 @@
       ],
     };
   };
+  // Animación: el resorte suelta a los carritos en t = 0,2 s y cada uno sigue con su velocidad: x = x₀ + v·(t − 0,2).
+  // En cámara lenta (0,2 s por segundo de pantalla). La p total, que se lee en vivo, sigue en 0.
+  const SUELTA = 0.2;
+  const explosionT = (mA, mB, tt) => {
+    const d = explosion(mA, mB), s = Math.max(0, tt - SUELTA), vA = s > 0 ? -J0 / mA : 0, vB = s > 0 ? J0 / mB : 0;
+    d.filas[1] = { rotulo: 'Ahora', nota: `p total = ${f(mA * vA + mB * vB)}`, carros: [{ x: 5 + (-J0 / mA) * s, m: mA, v: vA, rotulo: 'A' }, { x: 5 + PEG(LR) + (J0 / mB) * s, m: mB, v: vB, rotulo: 'B', variante: 'b' }] };
+    return d;
+  };
   const conservacion = {
     id: 'conservacion',
     titulo: 'Lo que uno gana, otro pierde',
     temas: ['Conservación de la cantidad de movimiento', 'Cantidad de movimiento'],
     pieza: 'fis-riel',
     juega: {
-      consigna: 'Dos carritos quietos tienen un resorte apretado entre ellos. Se suelta y los separa. Elige sus masas.',
+      consigna: 'Dos carritos quietos tienen un resorte apretado entre ellos. Se suelta y los separa, en cámara lenta. Elige sus masas y compara.',
       voz: 'Compara las flechas de velocidad con las masas.',
       controles: [
         { id: 'mA', etiqueta: 'masa de A', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'kg', decimales: 0 },
         { id: 'mB', etiqueta: 'masa de B', min: 1, max: 4, paso: 1, inicio: 1, unidad: 'kg', decimales: 0 },
+        { id: 't', etiqueta: 't', color: 'c-d', min: 0, max: 0.8, paso: 0.02, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 0.2, modo: 'repite' } },
       ],
-      dibujo: val => ({ datos: explosion(val.mA, val.mB), estado: { corte: 1 } }),
-      lectura: val => [{ sub: [p, 'A'] }, ` = ${f(-J0)} · `, { sub: [p, 'B'] }, ` = +${f(J0)} · total 0 kg·m/s`],
+      dibujo: val => ({ datos: explosionT(val.mA, val.mB, val.t), estado: { corte: 1 } }),
+      lectura: val => { const s = val.t > SUELTA; return [t, ` = ${f(val.t)} s · `, { sub: [p, 'A'] }, ` = ${s ? f(-J0) : 0} · `, { sub: [p, 'B'] }, ` = ${s ? '+' + f(J0) : 0} · total 0`]; },
       minimo: 3,
     },
     predice: {
@@ -254,20 +284,35 @@
       ],
     };
   };
+  // Animación: A sale de x = 2 m hacia B (quieto en 5,5 m); se tocan cuando A llega a 5,5 m − un carrito, en
+  // tc = (5,5 − 2 − largo del carrito) / 4 s. Antes de tc, x = x₀ + v·t; después, cada uno sigue con la velocidad que
+  // dan p y e (choque()). En cámara lenta: 0,25 s por segundo de pantalla. K se lee en vivo; p no cambia.
+  const XA3 = 2, XB3 = 5.5, TC3 = (XB3 - PEG(10) - XA3) / VA;
+  const enChoque3 = (e, mB, tt) => {
+    const c = choque(e, mB), s = tt - TC3;
+    if (s < 0) return { xA: XA3 + VA * tt, xB: XB3, vA: VA, vB: 0, K: c.K0 };
+    return { xA: XB3 - PEG(10) + c.vA2 * s, xB: XB3 + c.vB2 * s, vA: c.vA2, vB: c.vB2, K: c.K1 };
+  };
+  const rielChoqueT = (e, mB, tt) => {
+    const d = rielChoque(e, mB), q = enChoque3(e, mB, tt);
+    d.filas[1] = { rotulo: 'Ahora', nota: `K = ${f(q.K)} J`, carros: [{ x: q.xA, m: MA, v: q.vA, rotulo: 'A' }, { x: q.xB, m: mB, v: q.vB, rotulo: 'B', variante: 'b' }] };
+    return d;
+  };
   const elastico = {
     id: 'elastico-inelastico',
     titulo: 'La energía cinética puede perderse',
     temas: ['Choques elásticos e inelásticos', 'Conservación de la cantidad de movimiento'],
     pieza: 'fis-riel',
     juega: {
-      consigna: 'A (2 kg, 4 m/s) choca con B, quieto. Elige la masa de B y qué tan elástico es el choque.',
+      consigna: 'A (2 kg, 4 m/s) choca con B, quieto, en cámara lenta. Elige la masa de B y qué tan elástico es el choque.',
       voz: 'Lee la energía cinética antes y después, y la suma de m·v.',
       controles: [
         { id: 'e', etiqueta: 'elástico (e)', min: 0, max: 1, paso: 0.25, inicio: 0.5, decimales: 2 },
         { id: 'mB', etiqueta: 'masa de B', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'kg', decimales: 0 },
+        { id: 't', etiqueta: 't', color: 'c-d', min: 0, max: 1, paso: 0.02, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 0.25, modo: 'repite' } },
       ],
-      dibujo: val => ({ datos: rielChoque(val.e, val.mB), estado: { corte: 1 } }),
-      lectura: val => { const c = choque(val.e, val.mB); return [p, ` = 8 antes y después · K: 16 → ${f(c.K1)} J`]; },
+      dibujo: val => ({ datos: rielChoqueT(val.e, val.mB, val.t), estado: { corte: 1 } }),
+      lectura: val => { const q = enChoque3(val.e, val.mB, val.t); return [t, ` = ${f(val.t)} s · `, p, ` = ${f(MA * q.vA + val.mB * q.vB)} · K = ${f(q.K)} J`]; },
       minimo: 3,
     },
     predice: {
@@ -330,17 +375,47 @@
       { y: e * e * H, v: e * VH, marcas: [e * e * H], rotulo: 'sube' },
     ] }, estado: {},
   });
+  // Animación: la pelota cae y rebota sola, a velocidad real. Cada tramo es un tiro vertical en fórmula cerrada:
+  // cae 2 s desde 20 m; en el rebote n sale a uₙ = eⁿ · 20 m/s y vuela 2uₙ/g (regla 1). Las marcas son las alturas
+  // que ya alcanzó: 20, 20e², 20e⁴…
+  const enRebote = (e, tt) => {
+    const caida = Math.sqrt(2 * H / G);
+    if (tt <= caida) return { y: H - G * tt * tt / 2, v: -G * tt, n: 0, u: 0, cimas: [H] };
+    let ini = caida, u = VH, n = 0;
+    const cimas = [H];
+    while (n < 60) {
+      n += 1; u *= e;
+      const vuelo = 2 * u / G;
+      if (u < 0.05) return { y: 0, v: 0, n, u, cimas };
+      const s = tt - ini;
+      if (s <= vuelo) { if (s >= u / G) cimas.push(u * u / (2 * G)); return { y: Math.max(0, u * s - G * s * s / 2), v: u - G * s, n, u, cimas }; }
+      cimas.push(u * u / (2 * G)); ini += vuelo;
+    }
+    return { y: 0, v: 0, n, u, cimas };
+  };
+  const torreReboteT = (e, tt) => {
+    const d = torreRebote(e), q = enRebote(e, tt);
+    d.datos.pelotas[0] = { y: q.y, v: q.v, marcas: q.cimas, rotulo: 'pelota' };
+    d.datos.pelotas[1] = Object.assign({}, d.datos.pelotas[1], { rotulo: 'rebote 1' });
+    return d;
+  };
   const restitucion = {
     id: 'restitucion',
     titulo: 'e compara rapideces',
     temas: ['Coeficiente de restitución'],
     pieza: 'torre',
     juega: {
-      consigna: 'Una pelota cae desde 20 m y rebota en el suelo. Elige qué tan elástica es y mira hasta dónde sube.',
+      consigna: 'Una pelota cae desde 20 m y rebota sola. Elige qué tan elástica es y compara la rapidez con que llega y con que sale.',
       voz: 'Compara las dos flechas de velocidad: la de llegada y la de salida.',
-      controles: [{ id: 'e', etiqueta: 'e', min: 0.2, max: 1, paso: 0.1, inicio: 0.6, decimales: 1 }],
-      dibujo: val => torreRebote(val.e),
-      lectura: val => ['Llega: 20\u00a0m/s · sale: ', f(val.e * VH, 1), '\u00a0m/s · sube: ', f(val.e * val.e * H, 1), '\u00a0m'],
+      controles: [
+        { id: 'e', etiqueta: 'e', min: 0.2, max: 1, paso: 0.1, inicio: 0.6, decimales: 1 },
+        { id: 't', etiqueta: 't', color: 'c-d', min: 0, max: 8, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 1, modo: 'repite' } },
+      ],
+      dibujo: val => torreReboteT(val.e, val.t),
+      lectura: val => {
+        const q = enRebote(val.e, val.t);
+        return [`y = ${f(q.y, 1)}\u00a0m · `, v, ` = ${f(q.v, 1)}\u00a0m/s · `, q.n ? `salió a ${f(q.u, 1)}\u00a0m/s` : 'aún no rebota'];
+      },
       minimo: 3,
       // Arrastra la pelota que sube: su altura es e²·20 m, así que la manija da e = √(h / 20).
       arrastres: [
@@ -430,20 +505,22 @@
     ],
   });
   const xcm = cs => cs.reduce((s, c) => s + c.m * c.x, 0) / cs.reduce((s, c) => s + c.m, 0);
+  const m01 = m => Math.round(m * 10) / 10;
   const centro = {
     id: 'centro-masa',
     titulo: 'El centro de masa queda',
     temas: ['Centro de masa', 'Conservación de la cantidad de movimiento'],
     pieza: 'recta',
     juega: {
-      consigna: 'Hay una masa en x = 0 y otra en x = 8 m. Cambia las masas y mira dónde queda su centro de masa.',
+      consigna: 'Una masa está en x = 0 y otra en x = 8 m. La segunda crece y decrece sola: mira hacia dónde se corre el centro.',
       voz: 'Fíjate hacia cuál de las dos se corre el centro.',
       controles: [
         { id: 'm1', etiqueta: 'masa en 0', min: 1, max: 5, paso: 1, inicio: 1, unidad: 'kg', decimales: 0 },
-        { id: 'm2', etiqueta: 'masa en 8 m', min: 1, max: 5, paso: 1, inicio: 3, unidad: 'kg', decimales: 0 },
+        { id: 'm2', etiqueta: 'masa en 8 m', min: 1, max: 5, paso: 1, inicio: 3, unidad: 'kg', decimales: 0, auto: { velocidad: 1, modo: 'rebota' } },
       ],
-      dibujo: val => { const cs = [{ x: 0, m: val.m1 }, { x: 8, m: val.m2 }]; return { datos: rectaCM(cs, xcm(cs)), estado: {} }; },
-      lectura: val => [`Centro de masa en x = ${f(8 * val.m2 / (val.m1 + val.m2))} m`],
+      // Animación: la masa en 8 m barre de 1 a 5 kg y vuelve (de a 0,1 kg); el centro sale de la misma cuenta.
+      dibujo: val => { const cs = [{ x: 0, m: val.m1 }, { x: 8, m: m01(val.m2) }]; return { datos: rectaCM(cs, xcm(cs)), estado: {} }; },
+      lectura: val => [`Con ${f(m01(val.m2), 1)} kg en 8 m: centro en x = ${f(8 * m01(val.m2) / (val.m1 + m01(val.m2)))} m`],
       minimo: 3,
     },
     predice: {
@@ -571,15 +648,16 @@
     laboratorio: [
       {
         id: 'golpe-libre', titulo: 'Golpes de dos formas', pieza: 'ejes',
-        consigna: 'Elige la forma del golpe, su pico, su duración y la masa. Busca dos golpes distintos con el mismo impulso.',
+        consigna: 'El golpe corre solo, en cámara lenta. Elige forma, pico, duración y masa. Busca dos golpes distintos con el mismo impulso.',
         controles: [
           { id: 'forma', etiqueta: 'Forma', opciones: [{ valor: 'tri', texto: 'triángulo' }, { valor: 'rect', texto: 'rectángulo' }] },
           { id: 'F', etiqueta: 'F máx', color: 'c-h', min: 10, max: 50, paso: 5, inicio: 30, unidad: 'N', decimales: 0 },
           { id: 'T', etiqueta: 'Δt', color: 'c-d', min: 0.1, max: 0.5, paso: 0.05, inicio: 0.2, unidad: 's', decimales: 2 },
           { id: 'm', etiqueta: 'masa', min: 0.25, max: 2, paso: 0.25, inicio: 0.5, unidad: 'kg', decimales: 2 },
+          { id: 't', etiqueta: 't', color: 'c-d', min: 0, max: 0.6, paso: 0.02, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 0.15, modo: 'repite' } },
         ],
-        dibujo: val => ({ datos: golpe(val.F, val.T, val.forma), estado: {} }),
-        lectura: val => { const J = areaGolpe(val.F, val.T, val.forma); return [`J = ${f(J)}\u00a0N·s con ${f(val.m)}\u00a0kg → `, v, ` = ${f(J / val.m)}\u00a0m/s`]; },
+        dibujo: val => ({ datos: golpeT(val.F, val.T, val.t, val.forma), estado: {} }),
+        lectura: val => { const J = impulsoHasta(val.F, val.T, val.t, val.forma); return [t, ` = ${f(val.t)}\u00a0s: J = ${f(J)}\u00a0N·s → `, v, ` = ${f(J / val.m)}\u00a0m/s`]; },
         arrastres: [
           { id: 'pico', etiqueta: 'altura de la fuerza', color: 'c-h',
             donde: val => { const g = PZ('ejes').geometria(golpe(val.F, val.T, val.forma)); return { x: g.X(val.T / 2), y: g.Y(val.F) }; },
@@ -599,6 +677,10 @@
           { texto: 'Con un golpe triangular, consigue la mayor rapidez de salida.',
             logrado: val => val.forma === 'tri' && salidaGolpe(val) >= salidaGolpe({ forma: 'tri', F: 50, T: 0.5, m: 0.25 }) - 1e-9,
             bien: 'Pico alto, golpe largo y masa chica. ¿Cuál de las tres pesa más?' },
+          { texto: 'Pausa el golpe justo cuando lleva la mitad de su impulso.',
+            logrado: val => { const J = areaGolpe(val.F, val.T, val.forma), Jt = impulsoHasta(val.F, val.T, val.t, val.forma); return val.t > 0 && Math.abs(Jt - J / 2) <= 0.02 * J; },
+            bien: 'La mitad del área llega a la mitad del golpe: es simétrico.',
+            pista: 'Mira el número de J y ajusta t con − y + hasta la mitad.' },
           { texto: 'Con solo 10 N de pico, lanza la pelota a más de 5 m/s.',
             logrado: val => val.F === 10 && salidaGolpe(val) > 5,
             bien: 'Una fuerza chica que dura más también empuja mucho.' },
