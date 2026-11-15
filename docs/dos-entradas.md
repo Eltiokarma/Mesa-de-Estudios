@@ -129,3 +129,50 @@ Se construyó sobre la rama de teoría `claude/awesome-einstein-ch5g9a`, que ya 
 6. cerrar la app y volver otro día.
 
 **Decisión de Gerson (15 nov): three.js se baja con la app.** El archivo de three.js (unos 137 KB comprimido) se sigue guardando en la cáscara del service worker, al instalar. Así el 3D abre sin conexión desde el primer día, aunque el colegio no tenga buena señal cuando el profesor pida abrirlo. A cambio, también lo baja quien nunca usa el 3D. Se descartó bajarlo recién la primera vez que se abre el 3D.
+
+## Decisiones de Gerson tras probar la app (15 nov, noche)
+
+**Lo que dijo:**
+- «A cada rato me querían mandar a resolver ejercicios o examen o laboratorio, no pude estudiar nada ni hojear nada.»
+- La teoría se siente insuficiente y desordenada.
+- El glosario es feo.
+- El 3D se siente frío.
+
+**Lo que decidió:**
+1. **La prueba del tema es opcional y va después de la teoría,** con un botón para volver a tomarla cuando quiera.
+2. **Se mantiene jugar, predecir y ver, pero se puede leer.** Leer es una actividad lúdica, no trabajo, si el texto es digerible. La ficha de reglas queda abierta para hojear.
+3. **Los topes de texto se amplían por ahora;** el diseño puede cambiar.
+4. **El glosario es el otro 50 % de la teoría:** a color, con botones y deslizable, como los ejercicios.
+5. **Faltan ejercicios resueltos paso a paso,** para que el alumno sepa por dónde empezar el análisis.
+
+**Fase 1, hecha:**
+- **La prueba del tema:** sin candado, ofrecida al terminar la teoría y con una puerta en la unidad («Opcional…» o «volver a tomarla»). Cada intento trae otras preguntas.
+- **Inicio, curso y unidad, centrados en la teoría:**
+  - «Estudiar la teoría» en el reto de hoy;
+  - «Teoría ›» en lo que sigue;
+  - las tarjetas del curso dicen «Teoría · N ideas»;
+  - las pruebas del curso bajan al final;
+  - la puerta Teoría es la principal.
+- **Teoría:**
+  - fila fija con Reglas, Glosario y Laboratorio;
+  - la ficha de reglas, abierta;
+  - la consigna, arriba de la figura (la figura fija la tapaba);
+  - botones «Siguiente: …».
+- **Un color por función:**
+  - jugar, en naranja;
+  - comprobar (predice y ahora tú), en morado;
+  - leer y ver (mira y la regla), en turquesa;
+  - ayuda, en verde;
+  - las puertas de la unidad, con el color de su función.
+- **Escenas de ejercicios:**
+  - barra «‹ Volver a la unidad», que reemplaza el «‹ App» chico;
+  - la pregunta que espera al juego ya no parece apagada: dice «↑ Primero juega con la figura».
+- **El título de la unidad** se parte con guion («proporcio-nes»), no a la mitad de la palabra.
+
+**Fase 2, siguiente:**
+- el momento «Lee», con tarjetas;
+- «Así se resuelve», el ejercicio resuelto paso a paso que calcula el motor;
+- el glosario en tarjetas deslizables;
+- la animación en la base 3D (el cañón), con pausa y que se duerme fuera de pantalla.
+
+Se prueba en Razones y proporciones y en Movimiento parabólico.

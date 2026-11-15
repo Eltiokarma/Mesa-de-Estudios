@@ -174,7 +174,7 @@ arrastres: [{
 
 Detalle en `docs/recorrido.md`.
 
-- **Prueba de entrada del tema.** Es obligatoria antes de la teoría, los ejercicios y el simulacro. Sale sola de los `ahoraTu` (semilla 500 + k, una pregunta por idea): cada idea necesita un `ahoraTu` cuya semilla 500 en adelante dé una pregunta válida, y el validador ya lo exige con sus 40 o más semillas.
+- **Prueba del tema.** ~~Obligatoria antes de la teoría~~. **Desde el 15 nov es opcional y va después de la teoría** (decisión de Gerson), con un botón en la unidad para volver a tomarla. El primer intento queda en `est.temas[u].entrada` (eventos con `fase: 'entrada'`); los siguientes, en `est.temas[u].intentos` (`fase: 'repetida'`), con otras semillas de las 60 validadas. Sale sola de los `ahoraTu` (semilla 500 + k, una pregunta por idea): cada idea necesita un `ahoraTu` cuya semilla 500 en adelante dé una pregunta válida, y el validador ya lo exige con sus 40 o más semillas.
 - **Calibración.** Las ideas acertadas en esa prueba empiezan por la regla.
 - **Colección.** Lo que el alumno guarda en el laboratorio es `{ unidad, mesa, valores }`, y la figura se reconstruye con `mesa.dibujo(valores)`. Por eso no se cambia el `id` de una mesa ni el de sus controles sin migrar `est.coleccion`.
 - **Invitaciones** (`mesa.invitaciones`, de 1 a 6). Son retos libres, como «Haz que el carrito se detenga justo antes de los 10 m». Desde el 15 nov, cada una la comprueba el motor: ver 4d.
