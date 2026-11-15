@@ -282,7 +282,8 @@
       else {
         const vistos = new Set();
         const N = o.semillas || 40;
-        for (let s = 0; s < N; s++) {
+        // También las semillas de la prueba de entrada del tema (500 + k): app/teoria.js, Teoria.entrada.
+        for (const s of [...Array(N).keys(), ...Array.from({ length: 6 }, (_, k) => 500 + k)]) {
           let c;
           try { c = a.generar(s); } catch (err) { mal(`${d} ahoraTu semilla ${s}`, `falló: ${err.message}`); continue; }
           const dd = `${d} ahoraTu semilla ${s}`;
