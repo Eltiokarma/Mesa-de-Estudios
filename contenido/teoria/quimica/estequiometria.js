@@ -78,11 +78,11 @@
     temas: ['Relaciones masa-masa, mol-mol y volumen-volumen'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Cada bolita es 1 mol de moléculas. Elige cuántos moles de N₂ entran y mira cuánto H₂ pide la receta y cuánto NH₃ sale.',
+      consigna: 'Cada bolita es 1 mol de moléculas. Los moles de N₂ suben y bajan solos: mira cuánto H₂ pide la receta y cuánto NH₃ sale.',
       voz: 'La receta cuenta moléculas. Comprueba que se repite igual.',
-      controles: [{ id: 'k', etiqueta: 'N₂', color: 'c-i', min: 1, max: 3, paso: 1, inicio: 1, unidad: 'mol', decimales: 0 }],
-      dibujo: val => receta(val.k),
-      lectura: val => [`${val.k} N₂ + ${3 * val.k} H₂ → ${2 * val.k} NH₃ (en mol)`],
+      controles: [{ id: 'k', etiqueta: 'N₂', color: 'c-i', min: 1, max: 3, paso: 1, inicio: 1, unidad: 'mol', decimales: 0, auto: { velocidad: 0.6, modo: 'rebota' } }],
+      dibujo: val => receta(Math.round(val.k)),
+      lectura: val => { const k = Math.round(val.k); return [`${k} N₂ + ${3 * k} H₂ → ${2 * k} NH₃ (en mol)`]; },
       minimo: 3,
     },
     predice: {
@@ -165,20 +165,37 @@
       { titulo: 'Después', forma: 'caja', particulas: [{ e: 'H2O', n: L.agua }, { e: 'H2', n: L.sobraH, resalta: true }, { e: 'O2', n: L.sobraO, resalta: true }], cuenta: [{ e: 'H2O', texto: `${L.agua}` }] },
     ]);
   };
+  // Animación: la reacción ocurre paquete por paquete (2 H₂ + O₂ → 2 H₂O, uno cada 0,9 s) hasta que algo se acaba;
+  // a la derecha, la mezcla de ese momento. Al final queda la figura de siempre: el agua y lo que sobra, con su aro.
+  const paquetes = (h, o) => Math.floor(Math.min(h / 2, o) + 1e-9);
+  const hechos = (h, o, t) => Math.min(paquetes(h, o), Math.floor(t / 0.9));
+  function limitanteT(h, o, t) {
+    const P = paquetes(h, o), p = hechos(h, o, t);
+    if (p === P) return limitanteFig(h, o);
+    return lupa([
+      { titulo: 'Antes', forma: 'caja', particulas: [{ e: 'H2', n: h }, { e: 'O2', n: o }], cuenta: [{ e: 'H2', texto: `${h}` }, { e: 'O2', texto: `${o}` }] },
+      { titulo: 'Reaccionando', forma: 'caja', particulas: [{ e: 'H2O', n: 2 * p }, { e: 'H2', n: h - 2 * p }, { e: 'O2', n: o - p }], cuenta: [{ e: 'H2O', texto: `${2 * p}` }] },
+    ]);
+  }
   const limita = {
     id: 'reactivo-limitante',
     titulo: 'El que se acaba primero',
     temas: ['Reactivo limitante y en exceso'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Elige cuántas moléculas de H₂ y de O₂ hay. La receta es 2 H₂ + O₂ → 2 H₂O. Lo que sobra queda con un aro.',
+      consigna: 'Elige cuántas moléculas de H₂ y de O₂ hay. La receta 2 H₂ + O₂ → 2 H₂O ocurre sola, paquete por paquete. Lo sobrante lleva aro.',
       voz: 'Arma paquetes de la receta hasta que algo se acabe.',
       controles: [
         { id: 'h', etiqueta: 'H₂', min: 2, max: 10, paso: 1, inicio: 4, unidad: 'moléculas', decimales: 0 },
         { id: 'o', etiqueta: 'O₂', min: 1, max: 6, paso: 1, inicio: 4, unidad: 'moléculas', decimales: 0 },
+        { id: 't', etiqueta: 't', min: 0, max: 7, paso: 0.1, inicio: 7, unidad: 's', decimales: 1, auto: { velocidad: 1 } },
       ],
-      dibujo: val => limitanteFig(val.h, val.o),
-      lectura: val => { const L = limitante(val.h, val.o); return [L.lim === 'ninguno' ? 'Se acaban los dos a la vez' : `Limita ${L.lim} · sobran ${L.lim === 'H₂' ? `${f(L.sobraO, 1)} O₂` : `${f(L.sobraH, 0)} H₂`}`]; },
+      dibujo: val => limitanteT(val.h, val.o, val.t),
+      lectura: val => {
+        const L = limitante(val.h, val.o), P = paquetes(val.h, val.o), p = hechos(val.h, val.o, val.t);
+        if (p < P) return [`Paquete ${p} de ${P}: ${2 * p} H₂O · quedan ${val.h - 2 * p} H₂ y ${val.o - p} O₂`];
+        return [L.lim === 'ninguno' ? 'Se acaban los dos a la vez' : `Limita ${L.lim} · sobran ${L.lim === 'H₂' ? `${f(L.sobraO, 1)} O₂` : `${f(L.sobraH, 0)} H₂`}`];
+      },
       minimo: 3,
     },
     predice: {
@@ -248,32 +265,35 @@
   // Geometría de barra-porcentaje para el gesto (la pieza no exporta geometria, solo valores): la barra va de x = 10 a
   // 310 con el total a 310, su centro está en y = 60 y la fila del primer pedazo, en y = 103. Pedido al molde: exportarla.
   // Como x es fracción del total, la manija no depende de los gramos: la parte pura está en p/100 y el final en p·η.
-  const arrastresBarra = () => [
+  // pf: la pureza que se dibuja (en la idea, la que anima el control, llevada a su paso de 10 %).
+  const arrastresBarra = (pf = val => val.p) => [
     { id: 'pureza', etiqueta: 'borde de la parte pura', color: 'c-h',
-      donde: val => ({ x: 10 + 3 * val.p, y: 103 }),
+      donde: val => ({ x: 10 + 3 * pf(val), y: 103 }),
       mover: pt => ({ p: (pt.x - 10) / 3 }) },
     { id: 'rendimiento', etiqueta: 'final de la barra: lo que se obtiene', color: 'c-h',
-      donde: val => ({ x: 10 + 300 * val.p * val.e / 1e4, y: 60 }),
-      mover: (pt, val) => ({ e: 1e4 * (pt.x - 10) / (300 * Math.max(1, val.p)) }) },
+      donde: val => ({ x: 10 + 300 * pf(val) * val.e / 1e4, y: 60 }),
+      mover: (pt, val) => ({ e: 1e4 * (pt.x - 10) / (300 * Math.max(1, pf(val))) }) },
   ];
+  // Animación (docs/3d.md §6): la pureza cambia sola y se lee en su paso de 10 %.
+  const p10 = val => Math.round(val.p / 10) * 10;
   const pureza = {
     id: 'pureza-rendimiento',
     titulo: 'Pureza y rendimiento recortan',
     temas: ['Rendimiento de una reacción', 'Reactivos impuros'],
     pieza: 'barra-porcentaje',
     juega: {
-      consigna: '100 g de caliza puros darían 56 g de CaO (CaCO₃ → CaO + CO₂). Elige la pureza de la muestra y el rendimiento del horno.',
+      consigna: '100 g de caliza puros darían 56 g de CaO (CaCO₃ → CaO + CO₂). La pureza de la muestra cambia sola; elige el rendimiento del horno.',
       voz: 'Mira qué parte de la barra recorta cada porcentaje.',
       controles: [
-        { id: 'p', etiqueta: 'Pureza', color: 'c-h', min: 50, max: 100, paso: 10, inicio: 80, unidad: '%', decimales: 0 },
+        { id: 'p', etiqueta: 'Pureza', color: 'c-h', min: 50, max: 100, paso: 10, inicio: 80, unidad: '%', decimales: 0, auto: { velocidad: 12, modo: 'rebota' } },
         { id: 'e', etiqueta: 'Rendimiento', color: 'c-h', min: 50, max: 100, paso: 10, inicio: 100, unidad: '%', decimales: 0 },
       ],
-      dibujo: val => ({ datos: barra(56, val.p, val.e), estado: { corte: 2 } }),
-      lectura: val => ['Se obtienen ', m, ` = ${f(56 * val.p / 100 * val.e / 100, 1)} g de CaO`],
+      dibujo: val => ({ datos: barra(56, p10(val), val.e), estado: { corte: 2 } }),
+      lectura: val => [`Pureza ${f(p10(val), 0)} %: se obtienen `, m, ` = ${f(56 * p10(val) / 100 * val.e / 100, 1)} g de CaO`],
       minimo: 3,
       // Dos manijas: el borde izquierdo del pedazo de impureza (fila 1) es la parte pura, y el extremo de la barra es lo
       // que el horno entrega. Mover la pureza corre también el final: el rendimiento muerde lo que quedó.
-      arrastres: arrastresBarra(),
+      arrastres: arrastresBarra(p10),
     },
     predice: {
       pregunta: ['200 g de caliza con 80 % de CaCO₃ se calientan; el rendimiento es 75 %. ¿Qué ', m, ' de CaO se obtiene? (CaCO₃ 100 g/mol, CaO 56 g/mol)'],
@@ -336,17 +356,25 @@
     caoh2: { texto: 'Ca(OH)₂', M: 74, th: 2, fichas: [{ t: 'Ca²⁺', carga: 2, n: 1 }, { t: 'OH⁻', carga: -1, n: 2 }], que: 'OH⁻' },
   };
   const fichas = k => ({ datos: { fichas: ACIDOS[k].fichas, neta: 'carga total' }, estado: {} });
+  // Animación: al neutralizarse, los H⁺ (u OH⁻) se van de a uno, cada segundo; lo que queda muestra su carga. Después
+  // de 2 s sin ninguno, la sustancia vuelve entera y empieza otra vez.
+  const salen = (k, t) => Math.max(0, Math.min(ACIDOS[k].th, Math.floor(t - 0.5)));
+  const fichasT = (k, t) => { const A = ACIDOS[k], n = salen(k, t); return { datos: { fichas: A.fichas.map(x => (x.t === A.que ? Object.assign({}, x, { n: x.n - n }) : x)).filter(x => x.n > 0), neta: 'carga total' }, estado: {} }; };
   const equivalente = {
     id: 'masa-equivalente',
     titulo: 'Equivalente: lo que se intercambia',
     temas: ['Equivalente químico y masa equivalente'],
     pieza: 'quim-fichas',
     juega: {
-      consigna: 'Elige un ácido o una base y cuenta cuántos H⁺ u OH⁻ entrega al neutralizarse por completo. Ese número es θ.',
+      consigna: 'Elige un ácido o una base: al neutralizarse, sus H⁺ u OH⁻ se van solos, de a uno. Cuenta cuántos entrega: ese número es θ.',
       voz: 'Cuenta las fichas que se intercambian; las demás se quedan.',
-      controles: [{ id: 'k', etiqueta: 'Sustancia', opciones: Object.keys(ACIDOS).map(k => ({ valor: k, texto: ACIDOS[k].texto })) }],
-      dibujo: val => fichas(val.k),
-      lectura: val => { const A = ACIDOS[val.k]; return [`θ = ${A.th} ${A.que}`, '   ·   ', `masa equivalente = ${f(A.M, 1)}/${A.th} = ${f(A.M / A.th, 2)} g`]; },
+      controles: [{ id: 'k', etiqueta: 'Sustancia', opciones: Object.keys(ACIDOS).map(k => ({ valor: k, texto: ACIDOS[k].texto })) },
+        { id: 't', etiqueta: 't', min: 0, max: 6, paso: 0.1, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } }],
+      dibujo: val => fichasT(val.k, val.t),
+      lectura: val => {
+        const A = ACIDOS[val.k], n = salen(val.k, val.t);
+        return n < A.th ? [`${A.texto}: entregó ${n} ${A.que} de ${A.th}`] : [`θ = ${A.th} ${A.que}`, '   ·   ', `masa equivalente = ${f(A.M, 1)}/${A.th} = ${f(A.M / A.th, 2)} g`];
+      },
       minimo: 3,
     },
     predice: {
@@ -469,14 +497,15 @@
     laboratorio: [
       {
         id: 'limitante-libre', titulo: 'Dos recetas, un limitante', pieza: 'quim-particulas',
-        consigna: 'Elige la receta y cuántos moles pones de cada reactivo. Cada bolita es 1 mol. Busca una mezcla en la que no sobre nada.',
+        consigna: 'Elige la receta y los moles del primer reactivo; los del segundo cambian solos. Cada bolita es 1 mol. Pausa cuando no sobre nada.',
         controles: [
           { id: 'r', etiqueta: 'Receta', opciones: Object.keys(RECETAS).map(k => ({ valor: k, texto: RECETAS[k].ec })) },
           { id: 'x', etiqueta: 'primer reactivo', color: 'c-i', min: 0, max: 8, paso: 1, inicio: 3, unidad: 'mol', decimales: 0 },
-          { id: 'y', etiqueta: 'segundo reactivo', color: 'c-i', min: 0, max: 12, paso: 1, inicio: 6, unidad: 'mol', decimales: 0 },
+          { id: 'y', etiqueta: 'segundo reactivo', color: 'c-i', min: 0, max: 12, paso: 1, inicio: 6, unidad: 'mol', decimales: 0, auto: { velocidad: 1.2, modo: 'rebota' } },
         ],
-        dibujo: v => libre(v).dib,
-        lectura: v => { const R = RECETAS[v.r], L = libre(v); return [`${v.x} ${R.a[1]} + ${v.y} ${R.b[1]} → ${L.rec * R.c[2]} ${R.c[1]}`, L.sa + L.sb ? ` · sobra ${L.sa ? `${L.sa} ${R.a[1]}` : `${L.sb} ${R.b[1]}`}` : ' · no sobra nada']; },
+        dibujo: v => libre(Object.assign({}, v, { y: Math.round(v.y) })).dib,
+        lectura: v => {
+          v = Object.assign({}, v, { y: Math.round(v.y) }); const R = RECETAS[v.r], L = libre(v); return [`${v.x} ${R.a[1]} + ${v.y} ${R.b[1]} → ${L.rec * R.c[2]} ${R.c[1]}`, L.sa + L.sb ? ` · sobra ${L.sa ? `${L.sa} ${R.a[1]}` : `${L.sb} ${R.b[1]}`}` : ' · no sobra nada']; },
         // Retos: los decide libre(), la misma cuenta de recetas que dibuja la lupa.
         invitaciones: [
           { texto: 'Busca una mezcla que dé producto y en la que no sobre nada.',
