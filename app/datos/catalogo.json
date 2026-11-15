@@ -879,7 +879,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 17
+      "terminos": 18
      }
     },
     {
@@ -968,7 +968,7 @@
        "/nucleo/kit/piezas/quim-molecula.js"
       ],
       "ideas": 5,
-      "terminos": 28
+      "terminos": 29
      }
     },
     {
@@ -1053,7 +1053,7 @@
        "/nucleo/kit/piezas/quim-cadena.js"
       ],
       "ideas": 5,
-      "terminos": 29
+      "terminos": 30
      }
     },
     {
@@ -1096,7 +1096,7 @@
        "/nucleo/kit/piezas/quim-composicion.js"
       ],
       "ideas": 5,
-      "terminos": 10
+      "terminos": 23
      }
     },
     {
@@ -1180,7 +1180,7 @@
        "/nucleo/kit/piezas/quim-fichas.js"
       ],
       "ideas": 4,
-      "terminos": 4
+      "terminos": 6
      }
     },
     {
@@ -1222,7 +1222,7 @@
        "/nucleo/kit/piezas/quim-cadena.js"
       ],
       "ideas": 5,
-      "terminos": 2
+      "terminos": 4
      }
     },
     {
@@ -1302,7 +1302,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 4
+      "terminos": 5
      }
     },
     {
@@ -1340,7 +1340,7 @@
        "/nucleo/kit/piezas/quim-particulas.js"
       ],
       "ideas": 5,
-      "terminos": 5
+      "terminos": 6
      }
     },
     {
@@ -1378,7 +1378,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 4,
-      "terminos": 3
+      "terminos": 4
      }
     },
     {
@@ -1418,7 +1418,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 6
+      "terminos": 7
      }
     },
     {
@@ -1460,7 +1460,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 8
+      "terminos": 9
      }
     },
     {
@@ -1503,7 +1503,7 @@
        "/nucleo/kit/piezas/quim-molecula.js"
       ],
       "ideas": 6,
-      "terminos": 8
+      "terminos": 9
      }
     },
     {
@@ -1546,7 +1546,7 @@
        "/nucleo/kit/piezas/quim-molecula.js"
       ],
       "ideas": 6,
-      "terminos": 7
+      "terminos": 8
      }
     },
     {

@@ -114,7 +114,7 @@
         { estado: { corte: 1 }, texto: 'De cada 100 átomos, 76 son de cloro-35.', ecuacion: [`0,7576 × 34,969 = ${f(0.7576 * M35, 3)} u`] },
         { estado: { corte: 2 }, texto: 'Los otros 24 son de cloro-37.', ecuacion: [`0,2424 × 36,966 = ${f(0.2424 * M37, 3)} u`] },
         { estado: { corte: 2 }, texto: 'La suma es la masa atómica promedio de la tabla.', ecuacion: [`${f(0.7576 * M35, 3)} + ${f(0.2424 * M37, 3)} = ${f(0.7576 * M35 + 0.2424 * M37, 2)} u`] },
-        { estado: { corte: 2 }, texto: 'La unidad u es la doceava parte de la masa de un carbono-12.', ecuacion: ['1 u = ¹⁄₁₂ m(¹²C)'] },
+        { estado: { corte: 2 }, texto: 'La unidad de masa atómica, u, es la doceava parte de un carbono-12.', ecuacion: ['1 u = ¹⁄₁₂ m(¹²C)'] },
       ],
     },
     regla: {
@@ -180,7 +180,7 @@
       datos: { unidad: 'g', balanzas: [{ izq: { saco: 18 }, der: { saco: 44 }, estado: 'der-baja' }], alt: 'Balanza con 1 mol de agua (18 g) y 1 mol de dióxido de carbono (44 g).' },
       voz: 'Separemos contar de pesar.',
       pasos: [
-        { estado: { rastros: { 0: ['1 mol = 6,022 × 10²³ entidades'] } }, texto: 'Un mol es un número de entidades, como una docena pero enorme.', ecuacion: [NA, ' = 6,022 × 10²³ mol⁻¹'] },
+        { estado: { rastros: { 0: ['1 mol = 6,022 × 10²³ entidades'] } }, texto: 'Un mol es el número de Avogadro de entidades: una docena enorme.', ecuacion: [NA, ' = 6,022 × 10²³ mol⁻¹'] },
         { estado: { rastros: { 0: ['izquierda: 1 mol de H₂O = 18 g'] } }, texto: 'Un mol de agua pesa 2 · 1 + 16 = 18 g.', ecuacion: [M_, '(H₂O) = 18 g/mol'] },
         { estado: { rastros: { 0: ['derecha: 1 mol de CO₂ = 44 g'] } }, texto: 'Un mol de CO₂ pesa 12 + 2 · 16 = 44 g: mismo número, otra masa.', ecuacion: [M_, '(CO₂) = 44 g/mol'] },
         { estado: { rastros: { 0: ['88 g de CO₂ = 2 mol'] } }, texto: 'Para pasar de gramos a moles se divide entre la masa molar.', ecuacion: [n_, ' = ', { frac: [m_, M_] }, ' = ', { frac: ['88', '44'] }, ' = 2 mol'] },
@@ -504,6 +504,12 @@
   // ocupan el ancho entero (escala propia), para comparar el % de átomos con el % de masa (el error ES19).
   const formula = v => [['C', v.c], ['H', v.h], ['O', v.o]].filter(([, k]) => k > 0).map(([el, k]) => el + sub(k)).join('');
   const masaDe = v => 12 * v.c + v.h + 16 * v.o;
+  // El mayor % de H en masa que dan los controles de la mesa (se busca una vez, con la misma masaDe).
+  let maxH_ = null;
+  const maxH = () => {
+    if (maxH_ === null) { maxH_ = 0; for (let c = 1; c <= 6; c++) for (let h = 0; h <= 14; h++) for (let o = 0; o <= 6; o++) maxH_ = Math.max(maxH_, h / masaDe({ c, h, o })); }
+    return maxH_;
+  };
   const dosBarras = v => {
     const els = [['C', v.c, 12], ['H', v.h, 1], ['O', v.o, 16]];
     return { filas: [
@@ -522,6 +528,36 @@
       pregunta: '¿Cómo cuentas granos de arroz sin contarlos uno por uno?',
       fuente: { titulo: 'BIPM, unidad base mol', url: 'https://www.bipm.org/en/si-base-units/mole' },
     },
+    // Glosario (docs/teoria.md §4d): las palabras que este tema estrena en química. Las de antes (átomo, isótopo,
+    // molécula, compuesto…) las marca el lector solo, con «Lo viste en…».
+    glosario: [
+      { termino: 'mol', simbolo: 'n', def: 'Paquete de 6,022 × 10²³ entidades, como una docena enorme. Sirve para contar partículas pesando.',
+        ejemplo: '2 mol de agua son 1,2044 × 10²⁴ moléculas.', ver: ['número de Avogadro', 'masa molar'] },
+      { termino: 'número de Avogadro', simbolo: 'N_A', medida: 'mol⁻¹', def: 'Cuántas entidades hay en un mol: 6,022 × 10²³.',
+        formas: ['número de Avogadro', 'Avogadro'], ver: ['mol'] },
+      { termino: 'entidad', def: 'Cada cosa que se cuenta en química: un átomo, una molécula, un ion o una unidad de fórmula.',
+        formas: ['entidad', 'entidades'], ver: ['mol'] },
+      { termino: 'cantidad de sustancia', simbolo: 'n', medida: 'mol', def: 'Magnitud que dice cuántas entidades hay, contadas en moles; no es la masa.',
+        ver: ['mol'] },
+      { termino: 'masa molar', simbolo: 'M', medida: 'g/mol', def: 'Cuántos gramos pesa un mol de una sustancia. Se obtiene sumando las masas atómicas de su fórmula.',
+        ejemplo: 'H₂O: 2 · 1 + 16 = 18 g/mol.', ver: ['mol', 'masa atómica'] },
+      { termino: 'masa atómica', medida: 'u', def: 'Lo que pesa un átomo, en u. La de la tabla es el promedio de sus isótopos según su abundancia.',
+        formas: ['masa atómica promedio', 'masa atómica', 'masas atómicas'], ejemplo: 'Cloro: 0,7576 · 34,969 + 0,2424 · 36,966 = 35,45 u.', ver: ['abundancia', 'unidad de masa atómica'] },
+      { termino: 'unidad de masa atómica', simbolo: 'u', def: 'La doceava parte de la masa de un átomo de carbono-12. Mide masas de átomos y moléculas.',
+        ver: ['masa atómica'] },
+      { termino: 'abundancia', medida: '%', def: 'De cada 100 átomos de un elemento en la naturaleza, cuántos son de un isótopo dado.',
+        ejemplo: 'El 75,76 % del cloro es cloro-35.', ver: ['masa atómica'] },
+      { termino: 'fórmula empírica', def: 'La razón de enteros más simple entre los átomos de un compuesto.',
+        ejemplo: 'C₆H₁₂O₆ → CH₂O, razón 1 : 2 : 1.', ver: ['fórmula molecular'] },
+      { termino: 'fórmula molecular', def: 'Cuántos átomos de cada elemento tiene de verdad una molécula: un múltiplo entero de la empírica.',
+        ejemplo: 'Empírica CH₂O (30 g/mol) y 180 g/mol: factor 6, C₆H₁₂O₆.', ver: ['fórmula empírica'] },
+      { termino: 'ley de Lavoisier', def: 'En una reacción en un sistema cerrado, la masa total de antes es igual a la de después.',
+        formas: ['ley de Lavoisier', 'Lavoisier'], ejemplo: '4 g de H₂ + 32 g de O₂ → 36 g de agua.' },
+      { termino: 'ley de Proust', def: 'Un compuesto puro tiene siempre la misma razón entre las masas de sus elementos, venga de donde venga.',
+        formas: ['ley de Proust', 'Proust'], ejemplo: 'En el agua, O : H = 8 : 1 en masa, siempre.', ver: ['ley de Lavoisier'] },
+      { termino: 'proporciones múltiples', def: 'Si dos elementos forman varios compuestos, las masas de uno unidas a igual masa del otro van como enteros pequeños.',
+        formas: ['ley de las proporciones múltiples', 'proporciones múltiples'], ejemplo: 'Con 12 g de C: 16 g de O en CO y 32 g en CO₂, 1 : 2.', ver: ['ley de Proust'] },
+    ],
     // Laboratorio (docs/teoria.md §4b), sin preguntas. La primera mesa saca el promedio de la lupa del cloro a
     // cualquier par de isótopos (más controles, el caso de 0 % y 100 %); la segunda pone lado a lado el % de átomos
     // y el % de masa de una molécula que el alumno arma, el caso del CH₄ de la idea 4 hecho mesa.
@@ -541,6 +577,22 @@
         arrastres: [{ id: 'borde', etiqueta: 'borde entre los dos isótopos', color: 'c-h',
           donde: v => { const g = PC().geometria(isoBarra(v)); return { x: g.xDe(0, v.p), y: g.y(0) + g.hb / 2 }; },
           mover: (pt, v) => ({ p: PC().geometria(isoBarra(v)).valorEn(0, pt.x) }) }],
+        // Retos: cada logrado usa promIso, el mismo promedio que dibuja la barra y escribe su título.
+        invitaciones: [
+          { texto: 'Arma el cloro de la tabla: isótopos de 35 y 37 u, promedio 35,5 u.',
+            logrado: v => v.a === 35 && v.d === 2 && Math.abs(promIso(v) - 35.5) < 1e-9,
+            bien: 'Tres de cada cuatro son de 35 u: por eso el promedio queda cerca de 35.' },
+          { texto: 'Haz que el promedio caiga justo a la mitad entre las dos masas.',
+            logrado: v => Math.abs(promIso(v) - (v.a + v.d / 2)) < 1e-9,
+            bien: 'Mitad y mitad de abundancia. ¿Hacia dónde se corre si sube el liviano?' },
+          { texto: 'Consigue que la masa promedio sea igual a la de un isótopo.',
+            logrado: v => Math.abs(promIso(v) - v.a) < 1e-9 || Math.abs(promIso(v) - (v.a + v.d)) < 1e-9,
+            bien: 'Solo pasa con un isótopo al 100 %. Con dos, el promedio cae entre ellos.' },
+          { texto: 'Guarda dos casos con la misma masa promedio y distinta abundancia.',
+            logrado: (v, g) => g.some(x => x.p !== v.p && Math.abs(promIso(x) - promIso(v)) < 1e-9)
+              && g.some(x => x.a === v.a && x.d === v.d && x.p === v.p),
+            bien: 'El promedio solo no dice qué isótopos hay: hace falta saber sus masas.' },
+        ],
       },
       {
         id: 'atomos-o-masa', titulo: 'Átomos contra masa', pieza: 'quim-composicion',
@@ -557,6 +609,22 @@
         arrastres: [{ id: 'carbono', etiqueta: 'borde de los átomos de carbono',
           donde: v => { const g = PC().geometria(dosBarras(v)); return { x: g.xDe(0, v.c), y: g.y(0) + g.hb / 2 }; },
           mover: (pt, v) => { const g = PC().geometria(dosBarras(v)), fr = Math.max(0, Math.min(0.95, (pt.x - g.x0) / g.largo(0))); return { c: fr * (v.h + v.o) / (1 - fr) }; } }],
+        // Retos: los porcentajes salen de masaDe, la misma masa que dibuja la barra de abajo.
+        invitaciones: [
+          { texto: 'Haz que el oxígeno pese más de la mitad, con menos de un tercio de átomos.',
+            logrado: v => v.o / (v.c + v.h + v.o) < 1 / 3 && 16 * v.o / masaDe(v) > 0.5,
+            bien: 'Pocos átomos de O, pero cada uno pesa 16 veces un H. ¿Y el carbono?' },
+          { texto: 'Arma una molécula con exactamente 40 % de carbono en masa.',
+            logrado: v => Math.abs(100 * 12 * v.c / masaDe(v) - 40) < 1e-9,
+            bien: 'CH₂O da 40 %, y la glucosa también: comparten fórmula empírica.' },
+          { texto: 'Busca la molécula con el mayor porcentaje de hidrógeno en masa.',
+            logrado: v => Math.abs(v.h / masaDe(v) - maxH()) < 1e-12,
+            bien: 'Aun con muchísimos H por cada C, el hidrógeno apenas pasa la mitad de la masa.' },
+          { texto: 'Guarda dos fórmulas distintas con los mismos porcentajes en masa.',
+            logrado: (v, g) => g.some(x => formula(x) !== formula(v) && [[12, 'c'], [1, 'h'], [16, 'o']].every(([ma, e]) => Math.abs(ma * x[e] / masaDe(x) - ma * v[e] / masaDe(v)) < 1e-9))
+              && g.some(x => x.c === v.c && x.h === v.h && x.o === v.o),
+            bien: 'Misma razón de átomos, mismos porcentajes: el análisis no distingue CH₂ de C₂H₄.' },
+        ],
       },
     ],
     ideas: [masaProm, mol, relaciones, composicion, leyes],
