@@ -619,7 +619,7 @@
         def: 'Plano que pasa por el núcleo y en el que un orbital no tiene ningún punto.',
         ejemplo: 'El 2pz tiene uno: el plano xy.', ver: ['nodo'] },
       { termino: 'radio de Bohr', formas: ['radio de Bohr', 'radios de Bohr'], simbolo: 'a₀', medida: 'pm',
-        def: 'Unidad de distancia del átomo de hidrógeno: 52,9 pm, unas veinte millonésimas de milímetro.',
+        def: 'Unidad de distancia dentro del átomo de hidrógeno: 52,9 pm. En un milímetro caben unos 19 millones.',
         ver: ['orbital'] },
     ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La 3D (la nube del orbital) va primera. La segunda abre los rangos de la idea 1 (hasta Z = 20 y
