@@ -67,6 +67,7 @@
       guias: [{ de: [0, -2.6], a: [0, 2.8], color: 'tinta' }],
     }, extra);
   }
+  const flujoDe = val => val.B * AREA * Math.cos(val.th * Math.PI / 180);   // Wb, lo que lee la mesa
   const flujo = {
     id: 'flujo',
     titulo: 'El flujo cuenta lo que cruza',
@@ -80,7 +81,7 @@
         { id: 'th', etiqueta: 'θ', min: 0, max: 90, paso: 15, inicio: 30, unidad: '°', decimales: 0 },
       ],
       dibujo: val => ({ datos: flujoDib(val.B, val.th), estado: { paso: 0 } }),
-      lectura: val => [Phi, ` = ${f(val.B * AREA * Math.cos(val.th * Math.PI / 180), 3)}\u00a0Wb`],
+      lectura: val => [Phi, ` = ${f(flujoDe(val), 3)}\u00a0Wb`],
       minimo: 3,
       // Gira la espira tomando la punta de su normal; estira las flechas de B tomando la de la derecha.
       arrastres: [
@@ -117,7 +118,7 @@
       ],
     },
     regla: {
-      texto: 'El flujo magnético mide cuánto campo atraviesa una superficie: B por el área que queda de frente al campo.',
+      texto: 'El flujo magnético mide cuánto campo atraviesa una superficie: B por el área que queda de frente al campo. Se mide en weber (Wb).',
       ecuacion: [Phi, ' = ', B, ' ', { llave: ['A cos θ'], nota: 'la sombra', color: 'c-d' }],
       condicion: 'B es uniforme sobre la espira y θ es el ángulo entre B y la normal, no entre B y el plano.',
     },
@@ -145,8 +146,9 @@
   // Progresa: la pendiente de cada tramo de Φ–t, con su fem rotulada encima · Se reserva: el tramo plano (Φ grande, ε = 0) ·
   // Debe verse: la fem sale de la pendiente de Φ–t, no de su altura.
   const NV = 50;
+  const femSube = (F1, ts) => NV * F1 / ts, femBaja = F1 => NV * F1 / 0.4;   // V: el flujo cae a cero en 0,4 s
   function faradayDib(F1, ts, rot = true, desde = {}) {
-    const e1 = NV * F1 / ts, e3 = NV * F1 / 0.4, T3 = 1.2;
+    const e1 = femSube(F1, ts), e3 = femBaja(F1), T3 = 1.2;
     return {
       x: { min: 0, max: 2, paso: 0.4, nombre: 't', unidad: 's', decimales: 1 },
       y: { min: 0, max: 1.2, paso: 0.2, nombre: 'Φ', unidad: 'Wb', decimales: 1, color: 'd' },
@@ -176,7 +178,7 @@
         { id: 'ts', etiqueta: 'Sube en', min: 0.2, max: 0.6, paso: 0.2, inicio: 0.4, unidad: 's', decimales: 1 },
       ],
       dibujo: val => ({ datos: faradayDib(val.F1, val.ts), estado: {} }),
-      lectura: val => [eps, ` al subir = 50 · ${f(val.F1, 1)} / ${f(val.ts, 1)} = ${f(NV * val.F1 / val.ts, 1)}\u00a0V`],
+      lectura: val => [eps, ` al subir = 50 · ${f(val.F1, 1)} / ${f(val.ts, 1)} = ${f(femSube(val.F1, val.ts), 1)}\u00a0V`],
       minimo: 3,
       // Arrastra la esquina donde el flujo deja de subir: arriba-abajo cambia Φ final; a los lados, cuánto tarda.
       arrastres: [{ id: 'esquina', etiqueta: 'esquina del tramo que sube', color: 'c-d',
@@ -281,7 +283,7 @@
       ],
     },
     regla: {
-      texto: 'La corriente inducida circula de modo que su propio campo se opone al cambio del flujo que la produce.',
+      texto: 'Ley de Lenz: la corriente inducida circula de modo que su propio campo se opone al cambio del flujo que la produce.',
       ecuacion: ['si ', Phi, ' sube, B ind. va contra B', '   ·   ', 'si ', Phi, ' baja, B ind. va con B'],
       condicion: 'se compara con el cambio del flujo, no con el campo: al alejar el imán, el campo inducido acompaña a B.',
     },
@@ -377,7 +379,7 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Cada segundo la barra barre 0,5 · 2 = 1 m².', ecuacion: ['ΔA = ℓ ', v, ' Δt = 1 m²'] },
         { estado: { corte: 2 }, texto: 'El flujo sube 0,6 · 1 = 0,6 Wb cada segundo: una recta.', ecuacion: [dPhi, ' = ', B, ' ℓ ', v, ' Δt'] },
-        { estado: { corte: 2 }, texto: 'Faraday: la fem es esa pendiente.', ecuacion: [eps, ' = ', { frac: [dPhi, 'Δt'] }, ' = ', B, ' ℓ ', v, ' = 0,6 V'] },
+        { estado: { corte: 2 }, texto: 'Ley de Faraday: la fem es esa pendiente.', ecuacion: [eps, ' = ', { frac: [dPhi, 'Δt'] }, ' = ', B, ' ℓ ', v, ' = 0,6 V'] },
         { estado: { corte: 2 }, texto: 'Con el foco de 2 Ω circula una corriente.', ecuacion: ['I = ', { frac: [eps, 'R'] }, ' = 0,3 A'] },
       ],
     },
@@ -472,7 +474,7 @@
       ],
     },
     regla: {
-      texto: 'Una espira que gira con rapidez constante da una fem senoidal. Su valor eficaz es el pico entre √2.',
+      texto: 'En un generador, una espira que gira con rapidez constante da una fem senoidal. Su valor eficaz es el pico entre √2.',
       ecuacion: [{ sub: [eps, 'ef'] }, ' = ', { llave: [{ frac: [{ sub: [eps, 'máx'] }, { raiz: '2' }] }], nota: 'pico entre √2', color: 'c-h' }, '   ·   ', { sub: ['I', 'ef'] }, ' = ', { frac: [{ sub: ['I', 'máx'] }, { raiz: '2' }] }],
       condicion: 'la señal es senoidal. El eficaz es el valor continuo que daría la misma potencia en una resistencia.',
     },
@@ -480,10 +482,10 @@
       generar(s) {
         const r = azar(s), pide = s % 2 ? 'pico' : 'ef', mag = r.de(['V', 'A']);
         const ef = mag === 'V' ? r.de([110, 120, 220, 230, 380]) : r.de([2, 5, 10, 15]), pico = ef * Math.SQRT2;
-        const nom = mag === 'V' ? 'tensión' : 'corriente', fmt = n => `${f(n, 1)} ${mag}`;
+        const nom = mag === 'V' ? 'Un voltaje alterno' : 'Una corriente alterna', fmt = n => `${f(n, 1)} ${mag}`;
         const dado = pide === 'ef' ? pico : ef, bien = pide === 'ef' ? ef : pico;
         return {
-          pregunta: pide === 'ef' ? `Una ${nom} alterna senoidal tiene un pico de ${f(dado, 1)} ${mag}. ¿Cuál es su valor eficaz?` : `Un aparato marca una ${nom} alterna eficaz de ${f(dado, 0)} ${mag}. ¿Cuál es el valor pico?`,
+          pregunta: pide === 'ef' ? `${nom} senoidal tiene un pico de ${f(dado, 1)} ${mag}. ¿Cuál es su valor eficaz?` : `${nom} tiene un valor eficaz de ${f(dado, 0)} ${mag}. ¿Cuál es el valor pico?`,
           dibujo: mag === 'V' && ef <= 280 ? { datos: sen(pico, 2, false), estado: {} } : undefined,
           opciones: opciones(bien, [
             { id: 'invertido', valor: pide === 'ef' ? dado * Math.SQRT2 : dado / Math.SQRT2, error: 'AC-PICO', siFuera: 'Eso aplica √2 al revés: el pico es el valor más alto.' },
@@ -533,7 +535,7 @@
     mira: {
       datos: trafoDib(200, 600).datos,
       pasos: [
-        { estado: { paso: 1 }, texto: 'La alterna del primario hace variar el flujo del núcleo.', ecuacion: [{ sub: ['V', 'p'] }, ' = 220 V'] },
+        { estado: { paso: 1 }, texto: 'La corriente alterna del primario hace variar el flujo del núcleo.', ecuacion: [{ sub: ['V', 'p'] }, ' = 220 V'] },
         { estado: { paso: 1 }, texto: 'El mismo cambio de flujo cruza cada vuelta de las dos bobinas.', ecuacion: [{ frac: [{ sub: ['V', 'p'] }, { sub: ['N', 'p'] }] }, ' = ', { frac: [{ sub: ['V', 's'] }, { sub: ['N', 's'] }] }] },
         { estado: { paso: 2 }, texto: 'El triple de vueltas da el triple de voltaje.', ecuacion: [{ sub: ['V', 's'] }, ' = 220 · ', { frac: ['600', '200'] }, ' = 660 V'] },
         { estado: { paso: 2 }, texto: 'La potencia no crece: la corriente baja en la misma razón.', ecuacion: [{ sub: ['V', 'p'] }, { sub: ['I', 'p'] }, ' = ', { sub: ['V', 's'] }, { sub: ['I', 's'] }] },
@@ -576,8 +578,9 @@
   // Mesa «rieles con todo suelto»: con B que entra y v hacia la derecha, la corriente sube por la barra; cambiar el
   // sentido de v o de B la invierte (la fuerza sobre las cargas es q v × B).
   const sentidoI = val => (val.v === 0 ? null : (val.v > 0) === (val.s === 'entra') ? 'arriba' : 'abajo');
+  const femLibre = val => val.B * val.l * val.v;
   const barraLibre = val => {
-    const e = val.B * val.l * val.v, P = e * e / RES;
+    const e = femLibre(val), P = e * e / RES;
     return { datos: { modo: 'barra', colores: COL, barra: { largo: 10, x: 4, l: val.l, sentido: val.s, v: val.v, escalaV: EV, corriente: sentidoI(val), brillo: Math.min(1, P / 6.25) }, rotulo: `ε = ${f(Math.abs(e), 2)} V` }, estado: {} };
   };
 
@@ -586,6 +589,34 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/flechas.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-espira.js'],
+    // Glosario del tema (docs/teoria.md, 4d). Campo magnético, tesla, espira y solenoide vienen de magnetismo; voltaje y
+    // fuerza electromotriz, de circuitos.
+    glosario: [
+      { termino: 'flujo magnético', simbolo: 'Φ', medida: 'Wb', def: 'Cuánto campo magnético atraviesa una superficie: el campo por el área que queda de frente.',
+        formas: ['flujo magnético', 'flujos magnéticos'], ejemplo: 'B = 0,8 T, A = 0,5 m², θ = 60°: Φ = 0,2 Wb.', ver: ['weber', 'campo magnético'] },
+      { termino: 'weber', simbolo: 'Wb', def: 'Unidad del flujo magnético en el SI: un tesla que atraviesa de frente un metro cuadrado.',
+        ejemplo: '1 Wb = 1 T · 1 m².', ver: ['flujo magnético', 'tesla'] },
+      { termino: 'inducción electromagnética', def: 'Aparición de un voltaje en un circuito cuando cambia el campo magnético que lo atraviesa.',
+        ver: ['ley de Faraday', 'fem inducida'] },
+      { termino: 'ley de Faraday', def: 'La fem inducida es igual a las vueltas por la rapidez con que cambia el flujo.',
+        ejemplo: '50 vueltas; Φ sube 0,6 Wb en 0,2 s: ε = 150 V.', ver: ['fem inducida', 'ley de Lenz'] },
+      { termino: 'ley de Lenz', def: 'La corriente inducida circula de modo que su campo se opone al cambio de flujo que la produce.',
+        ejemplo: 'Acercas un polo N: la espira le muestra otro N y lo repele.', ver: ['corriente inducida', 'ley de Faraday'] },
+      { termino: 'fem inducida', simbolo: 'ε', medida: 'V', def: 'Voltaje que aparece en una espira o bobina solo mientras cambia el flujo que la atraviesa.',
+        ejemplo: 'Barra de 0,5 m a 2 m/s en 0,6 T: ε = 0,6 V.', ver: ['ley de Faraday'] },
+      { termino: 'corriente inducida', def: 'Corriente que circula por un circuito cerrado gracias a una fem inducida.',
+        formas: ['corriente inducida', 'corrientes inducidas'], ejemplo: 'ε = 0,6 V con un foco de 2 Ω: I = 0,3 A.', ver: ['ley de Lenz'] },
+      { termino: 'bobina', def: 'Alambre enrollado en muchas vueltas. Si el flujo cambia, se suman las fem de todas las vueltas.',
+        ver: ['solenoide', 'ley de Faraday'] },
+      { termino: 'corriente alterna', def: 'Corriente que cambia de sentido una y otra vez, como la de los enchufes de casa.',
+        formas: ['corriente alterna', 'corrientes alternas'], ejemplo: 'En el Perú, 60 Hz: cambia de sentido 120 veces por segundo.', ver: ['valor eficaz', 'generador'] },
+      { termino: 'valor eficaz', def: 'Valor continuo que daría la misma potencia media que la señal alterna; en una senoide, el pico entre √2.',
+        formas: ['valor eficaz', 'valores eficaces', 'eficaz'], ejemplo: 'Pico de 311 V: eficaz 311/√2 ≈ 220 V.', ver: ['corriente alterna'] },
+      { termino: 'generador', def: 'Máquina que hace girar una espira o bobina en un campo magnético para producir corriente alterna.',
+        formas: ['generador', 'generadores'], ver: ['corriente alterna', 'inducción electromagnética'] },
+      { termino: 'transformador', def: 'Dos bobinas sobre un mismo núcleo de hierro que suben o bajan el voltaje de una corriente alterna.',
+        formas: ['transformador', 'transformadores'], ejemplo: 'Bobinas de 200 y 600 vueltas con 220 V de entrada: salen 660 V.', ver: ['bobina'] },
+    ],
     // Laboratorio: la barra con todo suelto (también hacia atrás y con el campo al revés: el caso que la idea 4 no deja
     // probar, donde la corriente cambia de sentido), la espira que gira en B y la gráfica Φ–t de Faraday.
     laboratorio: [
@@ -600,18 +631,63 @@
         ],
         dibujo: val => barraLibre(val),
         lectura: val => {
-          const e = val.B * val.l * val.v, sube = sentidoI(val);
+          const e = femLibre(val), sube = sentidoI(val);
           return [eps, ` = ${f(Math.abs(e), 2)}\u00a0V · I = ${f(Math.abs(e) / RES, 2)}\u00a0A`, sube ? (sube === 'arriba' ? ' que sube' : ' que baja') : ''];
         },
         arrastres: [{ id: 'rapidez', etiqueta: 'punta de la flecha de v', color: 'c-o',
           donde: val => ESP().geometria(barraLibre(val).datos).puntaV(val.v === 0 ? 1e-9 : val.v),
           mover: (pt, val) => ({ v: ESP().geometria(barraLibre(val).datos).vDe(pt) }) }],
+        invitaciones: [
+          { texto: 'Apaga el foco sin quitar el campo ni acortar la barra.',
+            logrado: val => femLibre(val) === 0 && sentidoI(val) === null,
+            bien: 'Barra quieta, flujo quieto: sin cambio no hay fem inducida.' },
+          { texto: 'Consigue una fem de 4 V o más.',
+            logrado: val => Math.abs(femLibre(val)) >= 4 - 1e-9,
+            bien: 'Más campo, más largo y más rapidez: más área barrida por segundo.' },
+          { texto: 'Logra exactamente 1 A por el foco de 2 Ω.',
+            logrado: val => Math.abs(Math.abs(femLibre(val)) / RES - 1) < 1e-9,
+            bien: 'Hay varias maneras de lograr 2 V. ¿Cuántas encuentras?' },
+          { texto: 'Guarda dos casos con la misma rapidez y la corriente en sentidos opuestos.',
+            logrado: (val, guardados) => sentidoI(val) !== null
+              && guardados.some(g => Math.abs(g.v) === Math.abs(val.v) && sentidoI(g) !== null && sentidoI(g) !== sentidoI(val))
+              && guardados.some(g => g.v === val.v && g.B === val.B && g.l === val.l && g.s === val.s),
+            bien: 'Ir hacia atrás o voltear B invierte la corriente. ¿Y si haces las dos cosas?' },
+        ],
       },
-      Object.assign({ id: 'espira-gira', titulo: 'La espira que gira', pieza: 'flechas' }, flujo.juega),
-      Object.assign({ id: 'flujo-tiempo', titulo: 'Subidas de flujo', pieza: 'ejes' }, faraday.juega),
+      Object.assign({ id: 'espira-gira', titulo: 'La espira que gira', pieza: 'flechas', invitaciones: [
+        { texto: 'Gira la espira hasta que ninguna línea de B la atraviese.',
+          logrado: val => flujoDe(val) < 1e-9,
+          bien: 'Con B en su plano, la sombra desaparece: flujo cero aunque B sea grande.' },
+        { texto: 'Consigue un flujo de 0,5 weber.',
+          logrado: val => Math.abs(flujoDe(val) - 0.5) < 1e-9,
+          bien: 'De frente y con el campo más fuerte: toda el área cuenta.' },
+        { texto: 'Logra 0,15 Wb con la espira inclinada.',
+          logrado: val => val.th > 0 && Math.abs(flujoDe(val) - 0.15) < 1e-9,
+          bien: 'Inclinada a 60°, la sombra es la mitad del área.' },
+        { texto: 'Guarda dos casos con el mismo flujo y distinto campo.',
+          logrado: (val, guardados) => flujoDe(val) > 1e-9
+            && guardados.some(g => g.B !== val.B && Math.abs(flujoDe(g) - flujoDe(val)) < 1e-9)
+            && guardados.some(g => g.B === val.B && g.th === val.th),
+          bien: 'Más campo pero más inclinada: lo que cuenta es B por la sombra.' },
+      ] }, flujo.juega),
+      Object.assign({ id: 'flujo-tiempo', titulo: 'Subidas de flujo', pieza: 'ejes', invitaciones: [
+        { texto: 'Haz que la fem de subida llegue a 250 V.',
+          logrado: val => Math.abs(femSube(val.F1, val.ts) - 250) < 1e-6,
+          bien: 'Mucho flujo en poco tiempo: el cambio más brusco da la fem más grande.' },
+        { texto: 'Haz que la subida dé el doble de fem que la bajada.',
+          logrado: val => Math.abs(femSube(val.F1, val.ts) - 2 * femBaja(val.F1)) < 1e-6,
+          bien: 'El mismo cambio de flujo en la mitad del tiempo: doble fem.' },
+        { texto: 'Haz que la fem de subida sea 100 V.',
+          logrado: val => Math.abs(femSube(val.F1, val.ts) - 100) < 1e-6,
+          bien: '¿Es la única forma? Prueba con el doble de flujo.' },
+        { texto: 'Guarda dos casos con distinto flujo final y la misma fem de subida.',
+          logrado: (val, guardados) => guardados.some(g => g.F1 !== val.F1 && Math.abs(femSube(g.F1, g.ts) - femSube(val.F1, val.ts)) < 1e-6)
+            && guardados.some(g => g.F1 === val.F1 && g.ts === val.ts),
+          bien: 'Doble flujo en doble tiempo: la ley de Faraday mira el ritmo del cambio.' },
+      ] }, faraday.juega),
     ],
     historia: {
-      texto: 'Ya se sabía que una corriente mueve una brújula. En 1831, Faraday probó lo inverso con dos bobinas en un anillo de hierro: la aguja se movía solo al conectar o desconectar, nunca mientras la corriente seguía igual. Lo que induce no es el magnetismo, sino su cambio.',
+      texto: 'Ya se sabía que una corriente mueve una brújula. En 1831, Faraday probó lo inverso con dos bobinas en un anillo de hierro: la aguja se movía solo al conectar o desconectar, nunca mientras la corriente seguía igual. Había hallado la inducción electromagnética: lo que induce no es el magnetismo, sino su cambio.',
       pregunta: '¿Por qué la aguja quedaba quieta con la corriente encendida?',
       fuente: { titulo: 'Royal Institution — Faraday’s ring-coil apparatus', url: 'https://www.rigb.org/explore-science/explore/collection/michael-faradays-ring-coil-apparatus' },
     },
