@@ -44,6 +44,10 @@
   const enPlano = (d, q) => { const g = PLANO().geometria(d); return { x: g.X(q[0]), y: g.Y(q[1]) }; };
   const dePlano = (d, pt) => { const g = PLANO().geometria(d); return [(pt.x - g.X(0)) / g.k, (pt.y - g.Y(0)) / g.k]; };
   const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
+  // Todos los casos de los controles de una mesa (para los retos que piden «el menor» o «el mayor» de la mesa).
+  const pasosDe = c => Array.from({ length: Math.round((c.max - c.min) / c.paso) + 1 }, (_, k) => +(c.min + k * c.paso).toFixed(6));
+  const casosDe = ctr => ctr.reduce((acc, c) => acc.flatMap(v => pasosDe(c).map(x => Object.assign({}, v, { [c.id]: x }))), [{}]);
+  const una = calc => { let m; return () => (m === undefined ? (m = calc()) : m); };
 
   // ---------- Idea 1: cantidad mínima de personas ----------
   // Cambia: cuántas personas tienen los dos papeles · Permanece: 3 docentes y 4 músicos · Progresa: el total que baja ·
@@ -387,7 +391,11 @@
   }
   // Regiones de todo el plano (las rectas son infinitas): 1 + rectas + Σ (rectas por el punto − 1) en cada cruce.
   // Se avisa si algún cruce cae fuera del dibujo, para que no se cuente a ojo solo lo que se ve.
-  function contarRegiones(rs) {
+  // Una recta encima de otra (la misma recta dos veces) se cuenta una sola vez: no parte nada nuevo.
+  function contarRegiones(todas) {
+    const misma = (a, b) => Math.abs(a.d[0] * b.d[1] - a.d[1] * b.d[0]) < 1e-9 && Math.abs((b.p[0] - a.p[0]) * a.d[1] - (b.p[1] - a.p[1]) * a.d[0]) < 1e-9;
+    const rs = todas.filter((r, i) => !todas.slice(0, i).some(o => misma(o, r)));
+    const encima = rs.length < todas.length;
     const ps = [];
     let paralelas = false, fuera = false;
     for (let i = 0; i < rs.length; i++) for (let j = i + 1; j < rs.length; j++) {
@@ -400,7 +408,7 @@
       if (q) q.r.add(i).add(j); else ps.push({ x, y, r: new Set([i, j]) });
     }
     const regiones = 1 + rs.length + ps.reduce((m, o) => m + o.r.size - 1, 0);
-    return { regiones, paralelas, fuera, triple: ps.some(o => o.r.size >= 3) };
+    return { regiones, paralelas, fuera, encima, triple: ps.some(o => o.r.size >= 3) };
   }
   const cuarta = val => ({ p: [val.px, val.py], d: dirDe(val.th) });
   function mesaRectasDatos(val) {
@@ -424,6 +432,7 @@
     dibujo: val => ({ datos: Object.assign(mesaRectasDatos(val), { nodos: [{ id: 'p', x: val.px, y: val.py, r: 6, relleno: 1, color: 'o' }] }), estado: {} }),
     lectura: val => {
       const q = contarRegiones(FIJAS.concat([cuarta(val)]));
+      if (q.encima) return [`Encima de otra recta: 3 rectas, ${q.regiones} regiones`];
       return [`4 rectas: ${q.regiones} regiones`, q.paralelas ? ' · hay paralelas' : q.triple ? ' · tres por un punto' : q.fuera ? ' · un cruce fuera del dibujo' : ' · el máximo'];
     },
     arrastres: [
@@ -434,7 +443,24 @@
         donde: val => enPlano(mesaRectasDatos(val), brazo(val)),
         mover: (pt, val) => { const [x, y] = dePlano(mesaRectasDatos(val), pt); return { th: ((Math.atan2(y - val.py, x - val.px) * 180 / Math.PI) % 180 + 180) % 180 }; } },
     ],
+    // Retos: cada uno cuenta las regiones con contarRegiones, el mismo motor de la lectura.
+    invitaciones: [
+      { texto: 'Pon la cuarta recta paralela a una de las otras tres.',
+        logrado: val => { const q = reg4(val); return q.paralelas && !q.encima; },
+        bien: 'Una paralela no corta a esa recta: falta un trozo y una región.' },
+      { texto: 'Haz que la cuarta recta pase justo por un cruce de dos rectas fijas.',
+        logrado: val => { const q = reg4(val); return q.triple && !q.paralelas; },
+        bien: 'Tres por un punto: dos cortes se juntan en uno y se pierde una región.' },
+      { texto: 'Busca la posición que deja el menor número de regiones.',
+        logrado: val => { const q = reg4(val); return !q.encima && q.regiones === menosRegiones(); },
+        bien: 'Paralela y por un cruce a la vez: se pierden dos regiones de golpe.' },
+      { texto: 'Logra el máximo de regiones con un cruce fuera del dibujo.',
+        logrado: val => { const q = reg4(val); return q.regiones === regiones(4) && q.fuera; },
+        bien: 'No se ve, pero el cruce existe: la recta sigue y parte el plano igual.' },
+    ],
   };
+  const reg4 = val => contarRegiones(FIJAS.concat([cuarta(val)]));
+  const menosRegiones = una(() => Math.min(...casosDe(mesaRectas.controles).map(reg4).filter(q => !q.encima).map(q => q.regiones)));
   // Mesa 2: el río con A fija y B que se mueve: el punto del río es libre y se compara con el mínimo.
   function rioLibre(val) {
     const B = [val.bx, val.by], B2l = [val.bx, 2 * RIO - val.by];
@@ -466,7 +492,25 @@
         donde: val => enPlano(rioLibre(val), [val.bx, val.by]),
         mover: (pt, val) => { const [x, y] = dePlano(rioLibre(val), pt); return { bx: x, by: y }; } },
     ],
+    // Retos: el mejor punto es el de la grilla más cercano a donde la recta de A a B′ corta el río (xRio).
+    invitaciones: [
+      { texto: 'Toca el río en el punto que da el camino más corto.',
+        logrado: val => enMejor(val),
+        bien: 'Es justo donde la recta de A a B′ cruza el río.' },
+      { texto: 'Toca el río justo debajo de B. ¿Mejora o empeora?',
+        logrado: val => Math.abs(val.x - val.bx) < 1e-9,
+        bien: 'Ir derecho a B alarga el tramo desde A: el total crece.' },
+      { texto: 'Logra el camino mínimo más corto de todos moviendo también B.',
+        logrado: val => enMejor(val) && Math.abs(minLibre(val) - menorMin()) < 1e-9,
+        bien: 'B cerca de A y cerca del río: la recta AB′ se acorta.' },
+      { texto: 'Guarda dos casos con B en sitios distintos, cada uno en su mejor punto.',
+        logrado: (val, guardados) => guardados.some(g => enMejor(g) && guardados.some(h => enMejor(h) && (h.bx !== g.bx || h.by !== g.by))),
+        bien: 'Distinto B, distinto punto, la misma receta: reflejar y trazar la recta.' },
+    ],
   };
+  const xRio = val => PA[0] + (val.bx - PA[0]) * (RIO - PA[1]) / ((2 * RIO - val.by) - PA[1]);
+  const enMejor = val => Math.abs(val.x - xRio(val)) <= mesaRio.controles[0].paso / 2 + 1e-9;
+  const menorMin = una(() => Math.min(...casosDe(mesaRio.controles.slice(1)).map(minLibre)));
   // Mesa 3: el modelo de ventas a elección (q = a − bp): el mejor precio se corre con a y con b.
   const pLibre = val => Math.min(val.p, val.a / val.b);
   const mesaPrecio = {
@@ -486,13 +530,55 @@
         // Si el control está más allá del último precio que vende, la manija queda al final y no lo baja sin querer.
         return { p: val.p > pm && x >= pm - 0.25 ? val.p : x };
       } }],
+    // Retos: la recaudación sale de recauda(a, b), la misma que dibuja la curva.
+    invitaciones: [
+      { texto: 'Pon el precio que más recauda para el modelo que elegiste.',
+        logrado: val => { const R0 = rLibre(val), d = mesaPrecio.controles[2].paso; return val.p <= val.a / val.b && R0 >= recauda(val.a, val.b)(val.p - d) - 1e-9 && R0 >= recauda(val.a, val.b)(val.p + d) - 1e-9; },
+        bien: 'El mejor precio queda a la mitad entre los dos que recaudan cero.' },
+      { texto: 'Haz que se recaude cero, aunque la entrada no sea gratis.',
+        logrado: val => val.p > 0 && rLibre(val) === 0,
+        bien: 'A ese precio nadie compra. Es el segundo cero de la curva.' },
+      { texto: 'Busca la mayor recaudación que permite esta mesa.',
+        logrado: val => Math.abs(rLibre(val) - mayorR()) < 1e-9,
+        bien: 'Más público (a grande) y pocas pérdidas por sol (b chico).' },
+      { texto: 'Busca un precio mayor que S/ 10 que recaude lo mismo que S/ 10.',
+        logrado: val => { const R10 = recauda(val.a, val.b)(10); return R10 > 0 && pLibre(val) > 10 && Math.abs(rLibre(val) - R10) < 1e-9; },
+        bien: 'Están a igual distancia del mejor precio: la curva es simétrica.' },
+    ],
   };
+  const rLibre = val => recauda(val.a, val.b)(pLibre(val));
+  const mayorR = una(() => Math.max(...casosDe(mesaPrecio.controles).map(rLibre)));
 
   return {
     unidad: 'razonamiento-matematico.maximos-y-minimos',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-fichas.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/rm-plano.js'],
+    // Glosario (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso.
+    glosario: [
+      { termino: 'cota', def: 'Valor que el resultado no puede cruzar, como «al menos 4». Con un caso que lo alcanza, prueba el mejor.',
+        formas: ['cota', 'cotas'], ejemplo: 'Hay 4 músicos: al menos 4 personas. Si 4 alcanzan, el mínimo es 4.' },
+      { termino: 'recaudación', simbolo: 'R', medida: 'S/', def: 'Dinero total que se junta al vender: el precio de cada entrada por las entradas vendidas.',
+        ejemplo: 'A S/ 20 se venden 80 − 40 = 40 entradas: R = S/ 800.', ver: ['modelo de ventas'] },
+      { termino: 'modelo de ventas', def: 'Fórmula que dice cuántas entradas se venden a cada precio. Con ella se calcula lo que se junta.',
+        formas: ['modelo de ventas', 'modelos de ventas'], ejemplo: 'q = 80 − 2p: a S/ 10 se venden 60 entradas.', ver: ['recaudación'] },
+      { termino: 'punto medio', def: 'El punto que queda justo a la mitad entre otros dos, a la misma distancia de ambos.',
+        ejemplo: 'Entre los precios 0 y 45, el punto medio es 22,5.' },
+      { termino: 'simétrica', def: 'Que se ve igual a los dos lados de una línea, como doblada sobre ella.',
+        formas: ['simétrica', 'simétricas', 'simétrico', 'simétricos', 'simetría', 'simetrías'], ejemplo: 'p(90 − 2p) da 1000 con p = 20 y con p = 25.', ver: ['punto medio'] },
+      { termino: 'completar el cuadrado', def: 'Reescribir una expresión como un número menos un cuadrado, para ver su mayor valor de un vistazo.',
+        formas: ['completar el cuadrado', 'completando el cuadrado'], ejemplo: 'p(90 − 2p) = 1012,5 − 2(p − 22,5)²: nunca pasa de 1012,5.' },
+      { termino: 'paralela', def: 'Recta que nunca corta a otra del mismo plano, por más que las prolongues.',
+        formas: ['paralela', 'paralelas'], ejemplo: 'Dos rectas horizontales distintas son paralelas: no se cruzan.' },
+      { termino: 'reflejo', def: 'Copia de espejo: el punto pasa al otro lado de la recta, a la misma distancia de ella.',
+        formas: ['reflejo', 'reflejos', 'reflejar', 'refleja', 'reflejando', 'reflejada', 'reflejado'], ejemplo: 'B a 2,4 cuadros sobre el río: su reflejo B′ queda 2,4 cuadros debajo.', ver: ['simétrica'] },
+      { termino: 'optimizar', def: 'Buscar el mejor valor posible: el mayor o el menor, según lo que se pida.',
+        formas: ['optimizar', 'optimiza', 'optimizan'], ver: ['cota', 'restricción'] },
+      { termino: 'restricción', def: 'Condición que limita lo que se puede elegir, como «sin rectas paralelas» o «precio entero».',
+        formas: ['restricción', 'restricciones'], ver: ['optimizar'] },
+      { termino: 'programación lineal', def: 'Método para hallar la mejor decisión cuando lo que se busca y las condiciones son de primer grado.',
+        ver: ['restricción', 'optimizar'] },
+    ],
     // Laboratorio: la cuarta recta que se mueve y gira (paralelas y tres por un punto), el río con B móvil y el modelo
     // de ventas a elección.
     laboratorio: [mesaRectas, mesaRio, mesaPrecio],
