@@ -995,3 +995,5 @@ body.con-lupa{overflow:hidden}
 /* La historia de la idea, cerrada, es una línea discreta (no una tarjeta grande que empuja la figura hacia abajo). */
 .te-historia:not([open]){padding:4px 14px;box-shadow:none;background:transparent;border:1.5px dashed var(--line)}
 .te-historia:not([open]) summary{min-height:40px;font-size:15px}
+.te-play{display:inline-flex;align-items:center;gap:6px}
+.te-term-nb{white-space:nowrap}

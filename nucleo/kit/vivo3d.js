@@ -217,6 +217,7 @@
       if (!abajo) return;
       const dx = ev.clientX - abajo.x, dy = ev.clientY - abajo.y;
       if (!abajo.movio && Math.hypot(dx, dy) < 6) return;
+      if (!abajo.movio) caja.dispatchEvent(new CustomEvent('kit3d:gira', { bubbles: true }));   // el juego pausa lo que gira solo
       abajo.movio = true; giro = abajo.g + dx * 0.6; inc = Math.max(-85, Math.min(85, abajo.i + dy * 0.6)); pedir();
     });
     const soltarDedo = ev => {

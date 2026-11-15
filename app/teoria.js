@@ -232,7 +232,10 @@
           const b = document.createElement('button');
           b.type = 'button'; b.className = 'te-term'; b.dataset.term = m.clave; b.setAttribute('aria-haspopup', 'dialog');
           b.textContent = txt.slice(m.inicio, m.fin);
-          frag.append(b); k = m.fin;
+          // La puntuación que sigue va pegada al término (si no, la coma quedaba sola al comienzo de la línea).
+          const punt = /^[,.;:)!?»”]+/.exec(txt.slice(m.fin));
+          if (punt) { const nb = document.createElement('span'); nb.className = 'te-term-nb'; nb.append(b, punt[0]); frag.append(nb); k = m.fin + punt[0].length; }
+          else { frag.append(b); k = m.fin; }
         }
         frag.append(txt.slice(k));
         n.replaceWith(frag);
@@ -854,7 +857,7 @@
       };
       const aplicar = cambio => {
         let cambio_ = false;
-        if (anim && cambio && anim.id in cambio) anim.pausar();      // arrastrar lo animado lo detiene
+        if (anim && cambio && anim.ids.some(k => k in cambio)) anim.pausar();      // arrastrar lo animado lo detiene
         for (const [k, v] of Object.entries(cambio || {})) {
           const c = ctr.find(x => x.id === k); if (!c) continue;
           const nv = T.ajustar(c, v);
@@ -892,41 +895,59 @@
       // pantalla, sin apretar nada. La figura, la gráfica y los números de la lectura se mueven con él. Se pausa con su
       // botón o al tomar ese control con el dedo; se duerme fuera de pantalla o con la app escondida; con movimiento
       // reducido arranca pausado. Los cuadros de la animación no cuentan como casos probados ni como retos.
-      const auto = ctr.find(c => c.auto && !c.opciones);
+      // Varios controles pueden llevar `auto` (pedido de la ronda 5: el émbolo que baja mientras las partículas vuelan):
+      // todos avanzan juntos y comparten un botón de pausa, junto al primero.
+      const autos = ctr.filter(c => c.auto && !c.opciones);
       let anim = null;
-      if (auto) {
-        const A = typeof auto.auto === 'object' ? auto.auto : {};
-        const rango = auto.max - auto.min, vel = A.velocidad || rango / 4, modo = A.modo || 'repite';
-        let corriendo = !reducido(), dir = 1, ultimo = 0, raf = 0, visible = true, pintado = 0;
-        const el = z.querySelector(`[data-c="${auto.id}"]`);
+      if (autos.length) {
+        const pista = autos.map(c => { const A = typeof c.auto === 'object' ? c.auto : {}, rango = c.max - c.min;
+          return { c, rango, vel: A.velocidad || rango / 4, modo: A.modo || 'repite', dir: 1, alGirar: !!A.pausaAlGirar }; });
+        let corriendo = !reducido(), ultimo = 0, raf = 0, visible = true, pintado = 0;
+        const el = z.querySelector(`[data-c="${autos[0].id}"]`);
         const btn = document.createElement('button');
         btn.type = 'button'; btn.className = 'te-play';
         el.appendChild(btn);
-        const rotulo = () => { btn.textContent = corriendo ? '⏸ Pausa' : '▶ Seguir'; btn.setAttribute('aria-pressed', String(!corriendo)); if (lec) lec.setAttribute('aria-live', corriendo ? 'off' : 'polite'); };
+        const IC_PAUSA = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="3.5" height="12" rx="1" fill="currentColor"/></svg>';
+        const IC_SEGUIR = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z" fill="currentColor"/></svg>';
+        const rotulo = () => { btn.innerHTML = corriendo ? `${IC_PAUSA}<span>Pausa</span>` : `${IC_SEGUIR}<span>Seguir</span>`; btn.setAttribute('aria-pressed', String(!corriendo)); if (lec) lec.setAttribute('aria-live', corriendo ? 'off' : 'polite'); };
         const cuadro = now => {
           raf = 0;
           if (!corriendo || !visible || document.hidden) { ultimo = 0; return; }
           const dt = ultimo ? Math.min(0.1, (now - ultimo) / 1000) : 0; ultimo = now;
-          let v = vals[auto.id] + dir * vel * dt;
-          if (modo === 'rebota') { if (v > auto.max) { v = 2 * auto.max - v; dir = -1; } if (v < auto.min) { v = 2 * auto.min - v; dir = 1; } }
-          else if (v > auto.max) v = auto.min + (v - auto.max) % (rango || 1);
-          vals[auto.id] = Math.round(v * 1e5) / 1e5;
+          for (const q of pista) {
+            const c = q.c;
+            let v = vals[c.id] + q.dir * q.vel * dt;
+            if (q.modo === 'rebota') { if (v > c.max) { v = 2 * c.max - v; q.dir = -1; } if (v < c.min) { v = 2 * c.min - v; q.dir = 1; } }
+            else if (v > c.max) v = c.min + (v - c.max) % (q.rango || 1);
+            vals[c.id] = Math.round(v * 1e5) / 1e5;
+          }
           if (now - pintado > 33) { pintado = now; pintarJ(false); }        // ~30 cuadros por segundo: alcanza y ahorra
           raf = requestAnimationFrame(cuadro);
         };
         const arrancar = () => { if (!raf && corriendo && visible && !document.hidden) raf = requestAnimationFrame(cuadro); };
-        const pausar = () => { corriendo = false; rotulo(); };
-        btn.onclick = () => { corriendo = !corriendo; rotulo(); arrancar(); };
+        // Al pausar, cada valor animado queda en un paso de su control (pedido de la ronda 5): los retos y los casos
+        // guardados ven un valor limpio, no uno intermedio como q = 4,73.
+        const pausar = () => {
+          if (!corriendo) return;
+          corriendo = false;
+          for (const q of pista) vals[q.c.id] = T.ajustar(q.c, vals[q.c.id]);
+          rotulo(); pintarJ(false);
+        };
+        btn.onclick = () => { if (corriendo) pausar(); else { corriendo = true; rotulo(); arrancar(); } };
         const io = typeof IntersectionObserver === 'function' ? new IntersectionObserver(es => { visible = es.some(x => x.isIntersecting); arrancar(); }) : null;
         if (io) io.observe(f);
         const alVolver = () => arrancar();
         document.addEventListener('visibilitychange', alVolver);
+        // Girar el 3D con el dedo pausa lo que gira solo (si el control lo pide con pausaAlGirar, o se llama «giro»).
+        const alGirar = () => { if (pista.some(q => q.alGirar || q.c.id === 'giro')) pausar(); };
+        f.addEventListener('kit3d:gira', alGirar);
         rotulo(); arrancar();
-        anim = { id: auto.id, pausar, destruir() { corriendo = false; if (raf) cancelAnimationFrame(raf); if (io) io.disconnect(); document.removeEventListener('visibilitychange', alVolver); } };
+        anim = { ids: autos.map(c => c.id), id: autos[0].id, pausar,
+          destruir() { corriendo = false; if (raf) cancelAnimationFrame(raf); if (io) io.disconnect(); document.removeEventListener('visibilitychange', alVolver); f.removeEventListener('kit3d:gira', alGirar); } };
       }
       const enInput = e => {
         const el = e.target.closest('[data-c]'); if (!el) return;
-        if (anim && el.dataset.c === anim.id) anim.pausar();
+        if (anim && anim.ids.includes(el.dataset.c)) anim.pausar();
         const c = ctr.find(x => x.id === el.dataset.c);
         vals[c.id] = T.ajustar(c, +e.target.value); pintarJ(); tocar();
       };
@@ -934,7 +955,7 @@
         if (e.target.closest('.te-reinicio')) { Object.assign(vals, T.inicio(j)); pintarJ(); return; }
         const b = e.target.closest('button[data-paso],button[data-v]'); if (!b) return;
         const el = b.closest('[data-c]'); const c = ctr.find(x => x.id === el.dataset.c);
-        if (anim && c.id === anim.id) anim.pausar();
+        if (anim && anim.ids.includes(c.id)) anim.pausar();
         vals[c.id] = c.opciones ? c.opciones.find(x => String(x.valor) === b.dataset.v).valor : T.ajustar(c, vals[c.id] + (+b.dataset.paso) * c.paso);
         pintarJ(); tocar();
       };
