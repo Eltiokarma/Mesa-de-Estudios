@@ -737,7 +737,7 @@
         ejemplo: 'Lados 6 y 4 con 30° comprendido: área 6 · 4 · ½ / 2 = 6.' },
       { termino: 'oblicuo', def: 'Inclinado: que no forma ángulo recto con la base ni con la recta de referencia.',
         formas: ['oblicuo', 'oblicuos', 'oblicua', 'oblicuas'] },
-      { termino: 'equivalente', def: 'Dicho de dos figuras: tienen la misma área, aunque su forma sea distinta.',
+      { termino: 'equivalente', def: 'Dicho de dos figuras o sólidos: tienen la misma área o el mismo volumen, aunque su forma sea distinta.',
         formas: ['equivalente', 'equivalentes', 'equivalencia'], ejemplo: 'Base 4 y altura 3, o base 6 y altura 2: los dos triángulos miden 6.' },
       { termino: 'razón de áreas', def: 'Cociente entre dos áreas: dice cuántas veces cabe una en la otra.',
         formas: ['razón de áreas', 'razones de áreas'], ejemplo: 'ABD = 12 y ADC = 6: razón 2.', ver: ['triángulo medio'] },

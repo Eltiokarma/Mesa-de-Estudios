@@ -161,7 +161,7 @@
     regla: {
       texto: 'El volumen de todo prisma, recto u oblicuo, es el área de la base por la altura perpendicular. En el recto, el área lateral es perímetro por altura.',
       ecuacion: ['V = ', { v: 'c-d', t: 'B' }, ' · ', { llave: [{ v: 'c-h', t: 'h' }], nota: 'no la arista', color: 'c-h' }, '   ·   ', 'recto: ', { v: 'c-d', t: 'A' }, { sub: ['', 'L'] }, ' = (2p) · ', { v: 'c-h', t: 'h' }],
-      condicion: 'h es perpendicular a las bases. En un prisma regular, además, la base es un polígono regular y es recto.',
+      condicion: 'h es perpendicular a las bases. Un prisma regular es un prisma recto cuya base es un polígono regular.',
       voz: 'La arista inclinada no es la altura.',
     },
     ahoraTu: {
@@ -652,12 +652,16 @@
   // Mesa 1, más rica que las ideas 1 y 3: la pirámide dentro del prisma de igual base y altura. La cúspide se corre
   // por la tapa (pirámide oblicua: el volumen no cambia) y se cambian lado y altura. Tres manijas.
   const EP = 0.5, Y0 = -1.25;
+  // Motor de la mesa: el prisma es base por altura y la pirámide, un tercio. Lectura, texto alternativo y retos
+  // usan estas dos; la cúspide (cx, cz) no entra: misma base y misma altura.
+  const volPrisma = v => v.a * v.a * v.h, volPir = v => volPrisma(v) / 3;
+  const casi = (x, y) => Math.abs(x - y) < 1e-9;
   const enPrisma = v => {
     const L = v.a * EP / 2, yT = Y0 + v.h * EP, Vx = v.cx * L, Vz = v.cz * L;
     const base = [[-L, Y0, L], [L, Y0, L], [L, Y0, -L], [-L, Y0, -L]], tapa = base.map(q => [q[0], yT, q[2]]);
     const Pr = solido([...base, ...tapa], 'R'), Pi = solido([...base, [Vx, yT, Vz]], 'Q', { color: 'h' });
     return {
-      alt: `Prisma de base cuadrada de lado ${f(v.a)} y altura ${f(v.h)} con una pirámide de la misma base y altura dentro: volúmenes ${f(v.a * v.a * v.h)} y ${f(v.a * v.a * v.h / 3)}`,
+      alt: `Prisma de base cuadrada de lado ${f(v.a)} y altura ${f(v.h)} con una pirámide de la misma base y altura dentro: volúmenes ${f(volPrisma(v))} y ${f(volPir(v))}`,
       tresD: TD, vista: { x: [-2.6, 2.6], y: [-2.1, 2.3] },
       puntos: [...Pr.puntos, ...Pi.puntos, pt('Vc', [Vx, yT, Vz], { color: 'h' }), pt('Hc', [Vx, Y0, Vz], { sinPunto: true })],
       solidos: [Pr.solido, Pi.solido],
@@ -686,17 +690,38 @@
         donde: v => enPantalla(enPrisma(v), [v.a * EP / 2, Y0 + v.h * EP, v.a * EP / 2]),
         mover: (p, v) => ({ h: sobre(enPrisma(v), [v.a * EP / 2, Y0, v.a * EP / 2], [v.a * EP / 2, Y0 + EP, v.a * EP / 2], p) }) },
     ],
-    lectura: v => [nb(`prisma ${f(v.a * v.a * v.h)}`), SEP, nb(`pirámide ${f(v.a * v.a * v.h / 3)}`), SEP, nb('razón 3')],
+    lectura: v => [nb(`prisma ${f(volPrisma(v))}`), SEP, nb(`pirámide ${f(volPir(v))}`), SEP, nb('razón 3')],
+    // Retos (docs/teoria.md §4d): cada logrado usa volPrisma y volPir, las mismas de la lectura.
+    invitaciones: [
+      { texto: 'Haz que la pirámide tenga volumen 12.',
+        logrado: v => casi(volPir(v), 12),
+        bien: 'Base 9 y altura 4: 9 · 4 / 3 = 12. El prisma mide 36.' },
+      { texto: 'Lleva la cúspide a una esquina de la tapa. ¿Cambió el volumen?',
+        logrado: v => Math.abs(v.cx) === 1 && Math.abs(v.cz) === 1,
+        bien: 'Pirámide oblicua, misma base y altura: sigue siendo un tercio del prisma.' },
+      { texto: 'Arma la pirámide más grande que permite esta mesa.',
+        logrado: v => casi(volPir(v), VOL_MAX),
+        bien: 'Lado 5 y altura 5: 125/3. El prisma sigue siendo el triple.' },
+      { texto: 'Guarda dos pirámides de igual volumen y bases distintas.',
+        logrado: (v, guardados) => guardados.some(g => g.a !== v.a && casi(volPir(g), volPir(v)))
+          && guardados.some(g => g.a === v.a && g.h === v.h && g.cx === v.cx && g.cz === v.cz),
+        bien: 'Base más chica y más altura: el volumen se compensa.' },
+    ],
   };
+  // La pirámide más grande de la mesa: la misma cuenta con los máximos de lado y de altura.
+  const VOL_MAX = volPir({ a: mesaEnPrisma.controles[0].max, h: mesaEnPrisma.controles[1].max });
   // Mesa 2, más rica que la idea 4: las dos bases y la altura libres. La base menor llega a 0 (pirámide) y a 3 con la
   // mayor en 3 (prisma): los dos casos límite. La lectura pone al lado el «promedio de bases por altura», que falla.
   const ET = 0.3, YT = -1.4, XA = 1.25;
+  // Motor de la mesa: vt es el volumen exacto; promedio, el «promedio de bases por la altura» que falla.
+  const volTronco = v => vt(v.a, v.b, v.h), promedio = v => (v.a * v.a + v.b * v.b) / 2 * v.h;
+  const fallo = v => promedio(v) - volTronco(v);
   const troncoLibre = v => {
     const A = v.a * ET / 2, Bm = v.b * ET / 2, y1 = YT + v.h * ET;
     const base = [[-A, YT, A], [A, YT, A], [A, YT, -A], [-A, YT, -A]];
     const P = v.b > 0 ? [...base, [-Bm, y1, Bm], [Bm, y1, Bm], [Bm, y1, -Bm], [-Bm, y1, -Bm]] : [...base, [0, y1, 0]], S = solido(P, 'S');
     return {
-      alt: `Tronco de bases cuadradas de lados ${f(v.a)} y ${f(v.b)} y altura ${f(v.h)}: volumen ${f(vt(v.a, v.b, v.h))}; el promedio de bases por la altura daría ${f((v.a * v.a + v.b * v.b) / 2 * v.h)}`,
+      alt: `Tronco de bases cuadradas de lados ${f(v.a)} y ${f(v.b)} y altura ${f(v.h)}: volumen ${f(volTronco(v))}; el promedio de bases por la altura daría ${f(promedio(v))}`,
       tresD: TD, vista: { x: [-1.8, 1.8], y: [-1.95, 1.6] },
       puntos: [...S.puntos, pt('h0', [XA, YT, 0], { sinPunto: true }), pt('h1', [XA, y1, 0], { sinPunto: true }), pt('c1', [Bm, y1, Bm], { sinPunto: true })],
       solidos: [S.solido],
@@ -724,8 +749,28 @@
         donde: v => enPantalla(troncoLibre(v), [XA, YT + v.h * ET, 0]),
         mover: (p, v) => ({ h: sobre(troncoLibre(v), [XA, YT, 0], [XA, YT + ET, 0], p) }) },
     ],
-    lectura: v => [nb(`V = ${f(vt(v.a, v.b, v.h))}`), SEP, nb(`promedio por h = ${f((v.a * v.a + v.b * v.b) / 2 * v.h)}`)],
+    lectura: v => [nb(`V = ${f(volTronco(v))}`), SEP, nb(`promedio por h = ${f(promedio(v))}`)],
+    invitaciones: [
+      { texto: 'Haz que el promedio de bases por la altura acierte el volumen.',
+        logrado: v => casi(fallo(v), 0),
+        bien: 'Solo acierta con bases iguales: ya no es tronco, es prisma.' },
+      { texto: 'Arma otro tronco de volumen 56, distinto al del papiro.',
+        logrado: v => casi(volTronco(v), PAPIRO) && !(v.a === 4 && v.b === 2 && v.h === 6),
+        bien: 'Lados 4 y 1, altura 8: también 56, con otras medidas.' },
+      { texto: 'Busca el tronco donde el promedio se equivoca por más.',
+        logrado: v => casi(fallo(v), FALLO_MAX),
+        bien: 'Bases muy distintas y mucha altura: el promedio se pasa por 48.' },
+      { texto: 'Convierte el tronco en pirámide y compara con base por altura.',
+        logrado: v => casi(volTronco(v), v.a * v.a * v.h / 3),
+        bien: 'Base menor 0: el tronco es una pirámide, un tercio de base por altura.' },
+    ],
   };
+  // El tronco del papiro (lados 4 y 2, altura 6) y el mayor fallo del promedio en la grilla de la mesa.
+  const PAPIRO = vt(4, 2, 6);
+  const FALLO_MAX = (() => {
+    const [ca, cb, ch] = mesaTronco.controles, pasos = c => Array.from({ length: Math.round((c.max - c.min) / c.paso) + 1 }, (_, k) => c.min + k * c.paso);
+    return Math.max(...pasos(ca).flatMap(a => pasos(cb).flatMap(b => pasos(ch).map(h => fallo({ a, b, h })))));
+  })();
 
   return {
     unidad: 'geometria.prisma-y-piramide',
@@ -737,9 +782,55 @@
       pregunta: '¿Por qué el volumen no es el promedio de las bases por la altura?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Egyptian papyri», MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Egyptian_papyri/' },
     },
+    // Glosario por tema (docs/teoria.md §4d). «Prisma», «pirámide», «cara lateral» y «arista lateral» vienen de
+    // Poliedros; «apotema», «volumen», «media geométrica» y «semiperímetro», de unidades anteriores.
+    glosario: [
+      { termino: 'prisma recto', formas: ['prisma recto', 'prismas rectos'],
+        def: 'El que tiene las aristas laterales a 90° de las bases: su altura mide lo mismo que ellas.', ver: ['prisma oblicuo'] },
+      { termino: 'prisma oblicuo', formas: ['prisma oblicuo', 'prismas oblicuos'],
+        def: 'El de aristas laterales inclinadas: su altura, a 90° de la base, es más corta que ellas.',
+        ejemplo: 'Arista 10 a 53° de la base: altura 10 · sen 53° = 8.', ver: ['prisma recto'] },
+      { termino: 'prisma regular', formas: ['prisma regular', 'prismas regulares'],
+        def: 'Prisma recto cuya base es un polígono regular, como un lápiz hexagonal.', ver: ['prisma recto'] },
+      { termino: 'pirámide regular', formas: ['pirámide regular', 'pirámides regulares'],
+        def: 'Pirámide de base regular con la punta justo encima del centro de esa base.', ver: ['apotema de la pirámide'] },
+      { termino: 'apotema de la pirámide',
+        def: 'Altura de una cara lateral: va de la punta al punto medio de un lado de la base.',
+        ejemplo: 'Altura 4 y apotema de la base 3: mide √(4² + 3²) = 5.', ver: ['pirámide regular', 'área lateral'] },
+      { termino: 'área lateral', formas: ['área lateral', 'áreas laterales'],
+        def: 'Suma de las áreas de las caras laterales, sin contar las bases.',
+        ejemplo: 'Pirámide de base cuadrada de lado 6 y apotema 5: 4 · 6 · 5 / 2 = 60.', ver: ['área total'] },
+      { termino: 'área total', formas: ['área total', 'áreas totales'],
+        def: 'Área lateral más el área de las bases: todo lo que habría que forrar.',
+        ejemplo: 'Esa misma pirámide: 60 + 6² = 96.', ver: ['área lateral'] },
+      { termino: 'paralelepípedo', formas: ['paralelepípedo', 'paralelepípedos', 'paralelepípedo rectangular'],
+        def: 'Prisma de seis caras que son paralelogramos, opuestas de dos en dos. El rectangular es una caja.',
+        ejemplo: 'Caja de 4, 3 y 12: diagonal √(4² + 3² + 12²) = 13.' },
+      { termino: 'cúspide', def: 'Punta de una pirámide: el vértice donde se juntan todas sus caras laterales.' },
+      { termino: 'tronco de pirámide', formas: ['tronco de pirámide', 'troncos de pirámide'],
+        def: 'Lo que queda de una pirámide entre la base y un corte paralelo a ella: tiene dos bases semejantes.',
+        ejemplo: 'Lados 4 y 2, altura 6: V = 6/3 · (16 + 4 + 8) = 56.', ver: ['pirámide regular'] },
+      { termino: 'tronco de prisma', formas: ['tronco de prisma', 'troncos de prisma'],
+        def: 'Lo que queda de un prisma bajo un corte inclinado: sus aristas laterales miden distinto.',
+        ejemplo: 'Base 10 y aristas 4, 6 y 8: V = 10 · 6 = 60.', ver: ['equivalente'] },
+      { termino: 'sólidos semejantes', formas: ['sólidos semejantes', 'sólidos son semejantes'],
+        def: 'Uno es copia a escala del otro: todas sus longitudes se multiplican por un mismo número k.',
+        ejemplo: 'Con k = 1/2, el volumen queda en (1/2)³ = 1/8.' },
+    ],
     // Laboratorio: la pirámide en su prisma y el tronco libre son más ricas que sus ideas; la tercera mesa es el corte
     // de la idea 6 con su gesto.
-    laboratorio: [mesaEnPrisma, mesaTronco, Object.assign({ id: 'escala', titulo: 'Escala al cubo', pieza: 'geo-figura' }, semIdea.juega)],
+    // La mesa de la escala trae sus retos en el primer objeto; los cuenta k³, la misma razón de la lectura.
+    laboratorio: [mesaEnPrisma, mesaTronco, Object.assign({ id: 'escala', titulo: 'Escala al cubo', pieza: 'geo-figura', invitaciones: [
+      { texto: 'Haz que la punta tenga justo 1/8 del volumen de la pirámide.',
+        logrado: v => casi(v.t ** 3, 1 / 8),
+        bien: 'k = 1/2: la mitad de alto deja solo un octavo del volumen.' },
+      { texto: 'Corta lo más cerca posible de la punta y lee los volúmenes.',
+        logrado: v => v.t === semIdea.juega.controles[0].min,
+        bien: 'k = 1/4 deja 1/64 del volumen arriba: casi todo es tronco.' },
+      { texto: 'Guarda dos cortes en que uno tenga el doble de k que el otro.',
+        logrado: (v, guardados) => guardados.some(g => casi(v.t, 2 * g.t) || casi(g.t, 2 * v.t)) && guardados.some(g => g.t === v.t),
+        bien: 'Doble de k, ocho veces el volumen: 2³ = 8.' },
+    ] }, semIdea.juega)],
     ideas: [prismaIdea, cajaIdea, pirIdea, troncoIdea, tpIdea, semIdea],
   };
 });
