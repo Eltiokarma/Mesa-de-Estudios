@@ -208,7 +208,7 @@
       ],
     },
     regla: {
-      texto: 'La tensión superficial y la viscosidad crecen con las fuerzas entre moléculas. En un tubo delgado, un líquido que moja sube más cuanto más angosto es el tubo.',
+      texto: 'La tensión superficial y la viscosidad crecen con las fuerzas entre moléculas. Por capilaridad, un líquido que moja sube en un tubo más cuanto más angosto es.',
       ecuacion: [{ llave: [h], nota: 'lo que sube', color: 'c-i' }, ' = ', { frac: ['2γ', ['ρg', r]] }],
       condicion: 'vale para un líquido que moja el vidrio (ángulo de contacto cercano a 0); el mercurio no lo moja y baja.',
       voz: 'Tubo más angosto, subida mayor. Comprueba con la curva.',
@@ -519,6 +519,13 @@
     alt: `Presión de vapor del agua y del etanol contra la temperatura. Con ${f(val.p, 0)} kPa afuera, el agua hierve a ${f(ebulle(val.p), 0)} °C y el etanol a ${f(ebulleE(val.p), 0)} °C.`,
   }), estado: {} });
   // Mesa 2: el mapa del CO₂ con pasos finos y más presión que la idea 4 (pasa el punto crítico con holgura).
+  // Para los retos: la menor presión de la grilla en que el CO₂ queda líquido, con la misma fase() que rotula el punto.
+  let minLiq_ = null;
+  const minLiq = () => {
+    if (minLiq_ === null) { minLiq_ = Infinity; for (let t = -100; t <= 40; t += 2) for (let p = 1; p <= 100; p++) if (fase(t, p) === 'líquido') minLiq_ = Math.min(minLiq_, p); }
+    return minLiq_;
+  };
+  const sinLiquido = q => q === 'sólido' || q === 'gas';
   const dibFase2 = val => ({ datos: ejesFase({ puntos: [{ x: val.t, y: val.p, color: 'o', rotulo: fase(val.t, val.p) }, { x: TP[0], y: TP[1], color: 'h', rotulo: 'triple' }, { x: TC[0], y: TC[1], color: 'h', rotulo: 'crítico' }] }), estado: {} });
 
   return {
@@ -531,6 +538,40 @@
       pregunta: '¿Por qué en Juliaca el agua hierve antes que en Lima?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §10.4', url: 'https://openstax.org/books/chemistry-2e/pages/10-4-phase-diagrams' },
     },
+    // Glosario (docs/teoria.md §4d): las palabras que este tema estrena en química. Fase, presión y gas ideal vienen de
+    // unidades anteriores; el lector las marca solas.
+    glosario: [
+      { termino: 'sólido cristalino', def: 'Sólido cuyas partículas siguen un orden que se repite. Funde a una temperatura fija.',
+        formas: ['sólido cristalino', 'sólidos cristalinos', 'cristalino'], ejemplo: 'La sal y el hielo.', ver: ['sólido amorfo'] },
+      { termino: 'sólido amorfo', def: 'Sólido con partículas fijas pero sin orden que se repita. Al calentarlo se ablanda poco a poco.',
+        formas: ['sólido amorfo', 'sólidos amorfos', 'amorfo'], ejemplo: 'El vidrio.', ver: ['sólido cristalino'] },
+      { termino: 'tensión superficial', simbolo: 'γ', medida: 'N/m', def: 'Tirón hacia adentro que sienten las moléculas de la superficie de un líquido; la hace como una piel.',
+        ejemplo: 'Agua: 0,0728 N/m; etanol: 0,0223 N/m.', ver: ['capilaridad'] },
+      { termino: 'viscosidad', def: 'Cuánto le cuesta fluir a un líquido. La miel tiene mucha; el agua, poca.',
+        ver: ['tensión superficial'] },
+      { termino: 'capilaridad', def: 'Subida o bajada de un líquido en un tubo muy delgado, por su tensión superficial y cómo moja la pared.',
+        ejemplo: 'Agua en un tubo de 0,5 mm de radio: sube unos 3 cm.', ver: ['tensión superficial'] },
+      { termino: 'presión de vapor', medida: 'kPa', def: 'Presión del vapor sobre su líquido en un frasco cerrado, cuando se evapora tanto como se condensa.',
+        formas: ['presión de vapor', 'presiones de vapor'], ejemplo: 'Agua a 20 °C: 2,3 kPa.', ver: ['ebullición'] },
+      { termino: 'ebullición', def: 'Cuando la presión de vapor de un líquido iguala la de afuera: se forman burbujas de vapor en todo él.',
+        formas: ['temperatura de ebullición', 'ebullición', 'hierve', 'hervir'], ejemplo: 'En Juliaca, a 63 kPa, el agua lo hace a 87 °C.', ver: ['presión de vapor'] },
+      { termino: 'diagrama de fases', def: 'Mapa de presión contra temperatura que dice en qué estado está estable una sustancia.',
+        formas: ['diagrama de fases', 'diagramas de fases'], ver: ['punto triple', 'punto crítico'] },
+      { termino: 'punto triple', def: 'La única presión y temperatura donde sólido, líquido y gas de una sustancia conviven.',
+        ejemplo: 'CO₂: −56,6 °C y 5,1 atm.', ver: ['diagrama de fases'] },
+      { termino: 'punto crítico', def: 'Presión y temperatura desde las cuales ya no se distingue el líquido del gas.',
+        ejemplo: 'CO₂: 31 °C y 72,9 atm.', ver: ['fluido supercrítico'] },
+      { termino: 'fluido supercrítico', def: 'Estado pasado el punto crítico: llena el recipiente como un gas, pero es denso como un líquido.',
+        formas: ['fluido supercrítico', 'supercrítico'], ver: ['punto crítico'] },
+      { termino: 'sublimación', def: 'Paso directo de sólido a gas, sin fundirse primero.',
+        formas: ['sublimación', 'sublima', 'sublimar'], ejemplo: 'El hielo seco a 1 atm.', ver: ['diagrama de fases'] },
+      { termino: 'humedad relativa', medida: '%', def: 'Cuánto vapor de agua tiene el aire comparado con el máximo que cabe a esa temperatura.',
+        ver: ['presión de vapor'] },
+      { termino: 'gas húmedo', def: 'Gas recogido sobre agua: lleva vapor de agua mezclado, que suma su presión.',
+        formas: ['gas húmedo', 'gases húmedos'], ver: ['gas seco'] },
+      { termino: 'gas seco', def: 'La parte del gas húmedo que no es vapor: su presión es la total menos la del vapor.',
+        ver: ['gas húmedo'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera pone dos líquidos bajo la misma presión (la
     // idea 3 solo tiene agua); la segunda recorre el mapa del CO₂ con pasos finos, de 0 a 100 atm. Las lecturas dicen
     // las condiciones y el resultado, para que un caso guardado se lea solo.
@@ -544,6 +585,22 @@
         arrastres: [{ id: 'presion', etiqueta: 'línea de la presión de afuera', color: 'c-o',
           donde: val => { const g = EJES().geometria(dibDos(val).datos); return { x: g.X(ebulle(val.p)), y: g.Y(val.p) }; },
           mover: (pt, val) => ({ p: inversa(EJES().geometria(dibDos(val).datos).Y, 0, 110)(pt.y) }) }],
+        // Retos: con ebulle y ebulleE, las mismas curvas que ponen los puntos de ebullición en la gráfica.
+        invitaciones: [
+          { texto: 'Busca la presión de afuera a la que el agua hierve a 90 °C.',
+            logrado: val => f(ebulle(val.p), 0) === '90',
+            bien: 'Es como a unos 3000 m de altura. ¿Y el etanol, dónde hierve ahí?' },
+          { texto: 'Consigue que el agua hierva por debajo de 70 °C.',
+            logrado: val => ebulle(val.p) < 70,
+            bien: 'Con tan poca presión, un huevo tarda muchísimo en cocerse.' },
+          { texto: 'Busca la presión más baja en que el etanol todavía hierve sobre 60 °C.',
+            logrado: val => val.p > 20 && ebulleE(val.p) > 60 && ebulleE(val.p - 1) <= 60,
+            bien: 'Un kilopascal menos y ya hierve bajo 60 °C. La curva manda.' },
+          { texto: 'Guarda dos casos: que el agua del segundo hierva donde hervía el etanol del primero.',
+            logrado: (val, g) => g.some(x => x.p !== val.p && f(ebulle(val.p), 0) === f(ebulleE(x.p), 0))
+              && g.some(x => x.p === val.p),
+            bien: 'Bajando la presión, el agua imita al etanol: lo que cambió fue afuera.' },
+        ],
       },
       {
         id: 'mapa-co2', titulo: 'El mapa completo del CO₂', pieza: 'ejes',
@@ -557,6 +614,23 @@
         arrastres: [{ id: 'punto', etiqueta: 'punto del mapa: temperatura y presión', color: 'c-o',
           donde: val => { const g = EJES().geometria(dibFase2(val).datos); return { x: g.X(val.t), y: g.Y(val.p) }; },
           mover: (pt, val) => { const g = EJES().geometria(dibFase2(val).datos); return { t: inversa(g.X, -100, 40)(pt.x), p: inversa(g.Y, 0, 100)(pt.y) }; } }],
+        // Retos: los decide fase(), la misma que rotula el punto del mapa.
+        invitaciones: [
+          { texto: 'Pon el CO₂ líquido a 20 °C, temperatura de una sala.',
+            logrado: val => val.t === 20 && fase(val.t, val.p) === 'líquido',
+            bien: 'A 20 °C pide decenas de atmósferas: así viaja en los extintores.' },
+          { texto: 'Busca la menor presión a la que el CO₂ puede ser líquido.',
+            logrado: val => fase(val.t, val.p) === 'líquido' && val.p === minLiq(),
+            bien: 'Bajo el punto triple no hay líquido: por eso el hielo seco no moja.' },
+          { texto: 'Lleva el punto a la zona del fluido supercrítico.',
+            logrado: val => fase(val.t, val.p) === 'supercrítico',
+            bien: 'Pasado el punto crítico, ya no se distingue líquido de gas.' },
+          { texto: 'Guarda dos casos a la misma presión: uno sólido y otro gas, sin líquido entre ellos.',
+            logrado: (val, g) => val.p < TP[1] && sinLiquido(fase(val.t, val.p))
+              && g.some(x => x.p === val.p && sinLiquido(fase(x.t, x.p)) && fase(x.t, x.p) !== fase(val.t, val.p))
+              && g.some(x => x.t === val.t && x.p === val.p),
+            bien: 'Bajo 5,1 atm, el sólido pasa directo a gas: eso es sublimar.' },
+        ],
       },
     ],
     ideas: [estados, capilar, vapor, diagrama, humedad],
