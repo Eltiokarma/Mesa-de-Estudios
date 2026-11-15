@@ -73,7 +73,7 @@
     // Parte de v perpendicular a B: la única que empuja.
     if (Math.abs(Math.sin(t)) > 1e-9 && Math.abs(Math.cos(t)) > 1e-9) datos.trazos.push({ puntos: [V.map(x => x * LV), [0, V[1] * LV, V[2] * LV], [0, 0, 0]], color: 'c-o', punteado: true });
     if (r.modulo > 1e-9) datos.flechas.push({ de: [0, 0, 0], a: F.map(x => x * LF), color: 'c-d', rotulo: 'F' });
-    datos.bolas.push({ en: [0, 0, 0], r: 0.16, color: v.q > 0 ? 'c-h' : 'c-f', rotulo: v.q > 0 ? 'q +' : 'q −' });
+    datos.bolas.push({ en: [0, 0, 0], r: 0.16, color: 'tinta', rotulo: v.q > 0 ? 'q +' : 'q −' });
     datos.alt = `Carga ${v.q > 0 ? 'positiva' : 'negativa'} con velocidad v a ${f(v.th, 0)}° del campo B: `
       + (r.modulo > 1e-9 ? `la fuerza F mide ${f(r.modulo)} de qvB y es perpendicular a v y a B.` : 'la fuerza es cero.');
     return { datos, F, modulo: r.modulo, sen: r.sen, perpendicular: r.perpendicular };

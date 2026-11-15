@@ -20,10 +20,12 @@
  *   Duda que resuelve: ¿por qué la fuerza magnética nunca apunta hacia donde apunta el campo?
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // nucleo/fisica3d.js arma la mesa 3D «La mano derecha en 3D» con el motor de plantillas/magnetismo (regla 1).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../nucleo/fisica3d.js')) : fabrica(root.Kit, root.Fisica3D);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, F3) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const B = { v: 'c-i', t: 'B' }, I = { v: 'c-h', t: 'I' }, v = { v: 'c-o', t: 'v' }, F = { v: 'c-d', t: 'F' };
@@ -558,11 +560,49 @@
     },
   };
 
+  // La mano derecha en 3D (laboratorio 3D, 15 nov: exploración libre, sin predicciones). F = q v × B la calcula el motor
+  // de plantillas/magnetismo (fuerzaCarga) a través de nucleo/fisica3d.js: la flecha, la lectura y los retos usan el mismo
+  // número. B fijo hacia la derecha; v forma el ángulo θ con B y gira alrededor de B. F se mide en veces qvB.
+  const lz = val => F3.lorentz(val);
+  const mismo = (a, b) => Math.abs(a - b) < 1e-9;
+  const mesaMano = {
+    id: 'mano-derecha-3d', titulo: 'La mano derecha en 3D', pieza: 'fis-espacio-3d',
+    consigna: 'Gira la escena con el dedo. Cambia el ángulo de v con B, gírala alrededor de B y mira hacia dónde sale F.',
+    controles: [
+      { id: 'th', etiqueta: 'Ángulo entre v y B', min: 0, max: 180, paso: 15, inicio: 60, unidad: '°', decimales: 0 },
+      { id: 'fi', etiqueta: 'Giro de v alrededor de B', min: 0, max: 315, paso: 45, inicio: 90, unidad: '°', decimales: 0 },
+      { id: 'q', etiqueta: 'Carga', opciones: [{ valor: 1, texto: 'Positiva' }, { valor: -1, texto: 'Negativa' }] },
+    ],
+    dibujo: val => ({ datos: lz(val).datos, estado: {} }),
+    lectura: val => [`θ = ${f(val.th, 0)}° · `, F, ` = ${f(lz(val).modulo)} · q`, v, B],
+    invitaciones: [
+      { texto: 'Haz que la carga se mueva y no sienta ninguna fuerza.',
+        logrado: val => mismo(lz(val).modulo, 0),
+        bien: 'v va a lo largo de B: no cruza ninguna línea del campo.',
+        pista: 'Lleva el ángulo entre v y B a un extremo.' },
+      { texto: 'Logra la fuerza más grande que permite la mesa.',
+        logrado: val => mismo(lz(val).modulo, 1),
+        bien: 'A 90°, toda la velocidad cruza el campo: F = qvB entera.' },
+      { texto: 'Con la carga positiva, haz que F apunte hacia arriba.',
+        logrado: val => val.q > 0 && lz(val).F[2] > 0.5,
+        bien: 'Dedos con v, doblados hacia B: el pulgar sale hacia arriba.',
+        pista: 'Deja θ en 90° y prueba otros giros de v alrededor de B.' },
+      { texto: 'Logra que F valga justo la mitad de qvB.',
+        logrado: val => mismo(lz(val).modulo, 0.5),
+        bien: 'sen 30° = 1/2: solo la mitad de v cruza el campo.',
+        pista: 'La línea punteada es la parte de v que cruza B. Hazla la mitad de v.' },
+      { texto: 'Guarda dos casos con distinto ángulo y la misma fuerza F, en tamaño y sentido.',
+        logrado: (val, guardados) => guardados.some(a => guardados.some(b => a.th !== b.th && lz(a).modulo > 0.1
+          && lz(a).F.every((c, k) => mismo(c, lz(b).F[k])))),
+        bien: 'θ y 180° − θ: la parte de v que cruza B es la misma.' },
+    ],
+  };
+
   return {
     unidad: 'fisica.magnetismo',
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/fis-lienzo.js'],
+    requiere: ['/nucleo/kit/piezas/fis-lienzo.js', '/plantillas/magnetismo/motor.js', '/nucleo/fisica3d.js', '/nucleo/kit/piezas/fis-espacio-3d.js'],
     // Glosario del tema (docs/teoria.md, 4d): lo que esta unidad estrena. Corriente y voltaje vienen de circuitos.
     glosario: [
       { termino: 'imán', def: 'Objeto que atrae el hierro y tiene dos polos, norte y sur, que no se pueden separar.',
@@ -585,6 +625,7 @@
         formas: ['fuerza magnética', 'fuerzas magnéticas'], ejemplo: 'Cable de 0,5 m con 6 A, a 90° de 0,2 T: F = 0,6 N.', ver: ['mano derecha'] },
     ],
     laboratorio: [
+      mesaMano,
       {
         // Lo que la idea 4 no deja probar: cualquier ángulo de 0° a 180°, también el cable paralelo a B (F = 0).
         id: 'cable-que-gira', titulo: 'El cable que gira', pieza: 'fis-lienzo',

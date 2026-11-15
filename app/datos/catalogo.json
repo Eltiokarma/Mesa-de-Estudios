@@ -671,7 +671,10 @@
      "teoria": {
       "archivo": "/contenido/teoria/fisica/magnetismo.js",
       "requiere": [
-       "/nucleo/kit/piezas/fis-lienzo.js"
+       "/nucleo/kit/piezas/fis-lienzo.js",
+       "/plantillas/magnetismo/motor.js",
+       "/nucleo/fisica3d.js",
+       "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 5,
       "terminos": 16
