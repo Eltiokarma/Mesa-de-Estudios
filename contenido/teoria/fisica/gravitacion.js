@@ -54,6 +54,9 @@
   const VISTA = { x0: -1.3, x1: 4.2, y0: -1.3, y1: 3.2 }, VISTA_C = { x0: -3.4, x1: 3.4, y0: -3.2, y1: 3.4 }, VISTA_O = { x0: -4.4, x1: 4.4, y0: -4.4, y1: 4.7 };
   const tierra = (rot = 'Tierra') => ({ c: [0, 0], r: 1, color: 'i', relleno: 0.12, rotulo: rot });
   const cuad = n => ({ sup: [n, '2'] });
+  // Lo que miden las ideas y las mesas (las mismas cuentas de orbita, elipse y atraccion); lo usan dibujo, lectura y retos.
+  const vOrb = rr => V0 / Math.sqrt(rr);                  // km/s
+  const tOrb = rr => 1.4 * rr ** 1.5;                     // h (vuelta rasante ≈ 1,4 h)
 
   // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas del lienzo (fis-lienzo.geometria, con los
   // mismos datos que dibuja la idea). El objeto se arrastra a lo largo de su radio: mover proyecta el dedo sobre él.
@@ -77,8 +80,8 @@
       vista: VISTA, escalaF: KF1,
       alt: o.alt || `Objeto de ${m} kg a ${f(rr, 1)} R del centro de la Tierra: la atracción vale ${f(Fv, 1)} N, hacia el centro.`,
       discos: [tierra(), { c: P, r: 0.12 }],
-      segmentos: [{ de: [0, 0], a: P, color: 'i', discontinua: true, texto: o.sinR ? undefined : `r = ${f(rr, 1)} R`, lado: -1 }],
-      flechas: o.sinF ? [] : [{ de: P, d: [-Math.cos(rad(ANG1)) * Fv, -Math.sin(rad(ANG1)) * Fv], color: 'o', rotulo: `F = ${f(Fv, 0)} N`, lado: -1 }],
+      segmentos: [{ de: [0, 0], a: P, color: 'i', discontinua: true, texto: o.sinR ? undefined : `r = ${f(rr, 1)} R`, lado: 1 }],
+      flechas: o.sinF ? [] : [{ de: P, d: [-Math.cos(rad(ANG1)) * Fv, -Math.sin(rad(ANG1)) * Fv], color: 'o', rotulo: `F = ${f(Fv, 0)} N`, lado: -1, rotuloEn: 'cola' }],
     };
   }
   const inversa = {
@@ -87,10 +90,11 @@
     temas: ['Ley de gravitación universal', 'Variación de g con la altura'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Aleja un objeto del centro de la Tierra (R es su radio) y elige su masa. Mira la atracción.',
+      consigna: 'El objeto se aleja y se acerca solo (R es el radio terrestre). Mira la flecha F. Arrástralo o elige su masa.',
       voz: 'Lleva el objeto de 1 R a 2 R. ¿Cuánto se achica F?',
       controles: [
-        { id: 'r', etiqueta: 'r', color: 'c-i', min: 1, max: 4, paso: 0.5, inicio: 1, unidad: 'R', decimales: 1 },
+        { id: 'r', etiqueta: 'r', color: 'c-i', min: 1, max: 4, paso: 0.5, inicio: 1, unidad: 'R', decimales: 1,
+          auto: { velocidad: 0.75, modo: 'rebota' } },          // de 1 R a 4 R en 4 s, ida y vuelta
         { id: 'm', etiqueta: 'm', min: 50, max: 150, paso: 50, inicio: 100, unidad: 'kg', decimales: 0 },
       ],
       dibujo: val => ({ datos: atraccion(val.r, val.m), estado: {} }),
@@ -154,13 +158,13 @@
   // Debe verse: g = F/m es del lugar, no del objeto.
   const KG2 = 16;
   function campo(rr, m, o = {}) {
-    const gv = G0 / (rr * rr), P = en(rr, 60), Fv = m * gv;
+    const gv = G0 / (rr * rr), P = en(rr, 60), Fv = m * gv, rm = 0.07 + 0.1 * Math.cbrt(m / 100); // la bolita crece con m
     const mapa = [];
     for (const k of [2, 3]) for (let d = 22.5; d < 360; d += 45) mapa.push({ de: en(k, d), d: [-Math.cos(rad(d)) * G0 / (k * k), -Math.sin(rad(d)) * G0 / (k * k)], color: 'd' });
     return {
       vista: VISTA_C, escalaF: KG2,
       alt: o.alt || `Campo gravitatorio: flechas hacia el centro, más cortas lejos. A ${f(rr, 1)} R, g = ${f(gv, 2)} m/s² para cualquier masa; sobre ${m} kg, F = ${f(Fv, 0)} N.`,
-      discos: [tierra(''), { c: P, r: 0.13 }],
+      discos: [tierra(''), { c: P, r: rm }],
       flechas: [...mapa, { de: P, d: [-Math.cos(rad(60)) * gv, -Math.sin(rad(60)) * gv], color: 'd', rotulo: `g = ${f(gv, 2)}` }],
     };
   }
@@ -183,14 +187,15 @@
     temas: ['Campo gravitatorio', 'Variación de g con la altura'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Las flechas verdes son el campo g alrededor de la Tierra. Mueve un objeto y cambia su masa.',
+      consigna: 'Las flechas verdes son el campo g. La masa del objeto crece y se achica sola: ¿cambia su flecha verde? Arrástralo para cambiar r.',
       voz: 'Cambia solo la masa. ¿La flecha verde del objeto cambia?',
       controles: [
         { id: 'r', etiqueta: 'r', color: 'c-i', min: 1.5, max: 3.5, paso: 0.5, inicio: 2, unidad: 'R', decimales: 1 },
-        { id: 'm', etiqueta: 'm', min: 1, max: 100, paso: 33, inicio: 1, unidad: 'kg', decimales: 0 },
+        { id: 'm', etiqueta: 'm', min: 1, max: 100, paso: 33, inicio: 1, unidad: 'kg', decimales: 0,
+          auto: { velocidad: 25, modo: 'rebota' } },            // de 1 a 100 kg en 4 s, ida y vuelta: g no se mueve
       ],
       dibujo: val => ({ datos: campo(val.r, val.m), estado: {} }),
-      lectura: val => [g, ` = ${f(G0 / (val.r * val.r), 2)} m/s² · `, F, ` = ${f(val.m * G0 / (val.r * val.r), 1)} N`],
+      lectura: val => [`m = ${f(val.m, 0)} kg · `, g, ` = ${f(G0 / (val.r * val.r), 2)} m/s² · `, F, ` = ${f(val.m * G0 / (val.r * val.r), 0)} N`],
       minimo: 3,
       // Arrastra el objeto hacia afuera o hacia adentro, en su radio: su flecha g se ajusta a las del mapa.
       arrastres: [{ id: 'objeto', etiqueta: 'distancia al centro de la Tierra', color: 'c-i',
@@ -243,14 +248,16 @@
   // Cambia: el radio de la órbita · Permanece: la Tierra y g(r) apuntando al centro · Progresa: v, que baja al subir ·
   // Se reserva: el período, que crece mucho más rápido que r · Debe verse: más lejos, más lento.
   const KV3 = 9, KG3 = 9;
+  // Ángulo del satélite a la hora t (en h): parte de arriba (90°) y da una vuelta cada tOrb(r), en sentido antihorario.
+  const angOrb = (rr, t) => 90 + 360 * ((t || 0) / tOrb(rr) % 1);
   function orbita(rr, o = {}) {
-    const vv = V0 / Math.sqrt(rr), gv = G0 / (rr * rr), P = en(rr, 90);
+    const vv = vOrb(rr), gv = G0 / (rr * rr), th = angOrb(rr, o.t), P = en(rr, th), c = Math.cos(rad(th)), s = Math.sin(rad(th));
     return {
       vista: VISTA_O, escalaF: KG3,
       alt: o.alt || `Satélite en órbita circular a ${f(rr, 1)} R del centro: va a ${f(vv, 2)} km/s y su aceleración, g = ${f(gv, 2)} m/s², apunta al centro.`,
       discos: [tierra(), { c: P, r: 0.13 }],
       arcos: [{ c: [0, 0], r: rr, de: 0, a: 360, grosor: 'fino', discontinua: true }],
-      flechas: [...(o.sinV ? [] : [{ de: P, d: [-vv, 0], escala: KV3, color: 'h', rotulo: `v = ${f(vv, 2)} km/s` }]), { de: P, d: [0, -gv], color: 'd', rotulo: 'g' }],
+      flechas: [...(o.sinV ? [] : [{ de: P, d: [-s * vv, c * vv], escala: KV3, color: 'h', rotulo: `v = ${f(vv, 2)} km/s` }]), { de: P, d: [-c * gv, -s * gv], color: 'd', rotulo: 'g' }],
     };
   }
   const orbitaIdea = {
@@ -259,16 +266,28 @@
     temas: ['Campo gravitatorio', 'Ley de gravitación universal'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Elige el radio de la órbita circular de un satélite, en radios terrestres. Mira su rapidez.',
+      consigna: 'El satélite gira solo, en tiempo acelerado. Arrástralo o elige el radio de su órbita, en radios terrestres. Mira su rapidez.',
       voz: 'Compara la rapidez a 1 R y a 4 R.',
-      controles: [{ id: 'r', etiqueta: 'r', color: 'c-i', min: 1, max: 4, paso: 0.5, inicio: 2, unidad: 'R', decimales: 1 }],
-      dibujo: val => ({ datos: orbita(val.r), estado: {} }),
-      lectura: val => [v, ` = ${f(V0 / Math.sqrt(val.r), 2)} km/s · una vuelta en ${f(1.4 * val.r ** 1.5, 1)} h`],
+      controles: [
+        { id: 'r', etiqueta: 'r', color: 'c-i', min: 1, max: 4, paso: 0.5, inicio: 2, unidad: 'R', decimales: 1 },
+        // t en horas, en tiempo acelerado: 1,5 h por segundo (a 2 R, una vuelta en unos 2,6 s). T va en tinta.
+        { id: 't', etiqueta: 't', min: 0, max: 24, paso: 0.1, inicio: 0, unidad: 'h', decimales: 1, auto: { velocidad: 1.5, modo: 'repite' } },
+      ],
+      dibujo: val => ({ datos: orbita(val.r, { t: val.t }), estado: {} }),
+      lectura: val => [`t = ${f(val.t, 1)} h · `, v, ` = ${f(vOrb(val.r), 2)} km/s · T = ${f(tOrb(val.r), 1)} h`],
       minimo: 3,
-      // Arrastra el satélite hacia arriba o abajo: la órbita crece o se achica y la flecha v responde.
+      // Arrastra el satélite hacia afuera o hacia adentro por su radio: la órbita crece o se achica y la flecha v
+      // responde. El satélite se queda en el mismo ángulo (t se ajusta al nuevo período), y tocarlo pausa la vuelta.
       arrastres: [{ id: 'satelite', etiqueta: 'radio de la órbita', color: 'c-i',
-        donde: val => radial(orbita(val.r), 90).donde(val.r),
-        mover: (pt, val) => ({ r: radial(orbita(val.r), 90).r(pt) }) }],
+        donde: val => radial(orbita(val.r, { t: val.t }), angOrb(val.r, val.t)).donde(val.r),
+        mover: (pt, val) => {
+          const [cr, ct] = orbitaIdea.juega.controles, th = angOrb(val.r, val.t);
+          const r = Math.min(cr.max, Math.max(cr.min, cr.min + Math.round((radial(orbita(val.r, { t: val.t }), th).r(pt) - cr.min) / cr.paso) * cr.paso));
+          // Mismas vueltas completas y mismo ángulo, con el período del nuevo radio (sin pasarse del tope de t).
+          let n = Math.floor(val.t / tOrb(val.r)), t = (n + (th - 90) / 360) * tOrb(r);
+          while (t > ct.max && n > 0) { n--; t = (n + (th - 90) / 360) * tOrb(r); }
+          return { r, t: Math.round(t * 1e4) / 1e4 };
+        } }],
     },
     predice: {
       pregunta: 'Un satélite pasa de una órbita circular de 2 R a otra de 4 R del centro de la Tierra. ¿Qué pasa con su rapidez?',
@@ -316,23 +335,41 @@
   // Progresa: el amontonamiento de marcas lejos del Sol · Se reserva: dos áreas barridas iguales ·
   // Debe verse: cerca del Sol va más rápido; T² crece como a³.
   const A4 = 2.4;
-  function kepler(e, k, a = A4) {
-    // Posición a tiempo k/12 de vuelta (anomalía media M), con el Sol en el origen (un foco).
+  // Ecuación de Kepler M = E − e sen E, resuelta por Newton con 40 iteraciones fijas (determinista).
+  function anomalia(e, k) {
     const M = 2 * Math.PI * k / 12;
     let E = M;
     for (let i = 0; i < 40; i++) E = E - (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+    return E;
+  }
+  function kepler(e, k, a = A4) {
+    // Posición a tiempo k/12 de vuelta (anomalía media M), con el Sol en el origen (un foco).
+    const E = anomalia(e, k);
     return [a * (Math.cos(E) - e), a * Math.sqrt(1 - e * e) * Math.sin(E)];
+  }
+  // El planeta al mes t (0 a 12) de una órbita de semieje a = 1 UA y un año, como la Tierra. Rapidez por vis viva:
+  // v = 30 km/s · √(2/r − 1), con r en UA (30 km/s es la rapidez circular a 1 UA, redondeada).
+  const V_UA = 30, KV4 = 1;
+  function planetaEn(e, t) {
+    const E = anomalia(e, t), P = kepler(e, t), rUA = Math.hypot(P[0], P[1]) / A4;
+    const dx = -Math.sin(E), dy = Math.sqrt(1 - e * e) * Math.cos(E), u = Math.hypot(dx, dy);
+    const vv = V_UA * Math.sqrt(2 / rUA - 1);
+    return { P, rUA, v: vv, d: [dx / u * vv, dy / u * vv] };
   }
   function elipse(e, o = {}) {
     const pts = Array.from({ length: 73 }, (_, i) => { const E = 2 * Math.PI * i / 72; return [A4 * (Math.cos(E) - e), A4 * Math.sqrt(1 - e * e) * Math.sin(E)]; });
     const marcas = Array.from({ length: 12 }, (_, k) => kepler(e, k));
     const sector = (k0, k1) => [[0, 0], ...Array.from({ length: 9 }, (_, i) => kepler(e, k0 + (k1 - k0) * i / 8))];
+    // Con o.t (mes): el planeta, la línea Sol–planeta, el área barrida desde la última marca y la flecha v.
+    const pl = o.t === undefined ? null : planetaEn(e, o.t), k0 = pl ? Math.floor(o.t) : 0;
     return {
       vista: { x0: -4.3, x1: 2.7, y0: -2.6, y1: 2.6 },
       alt: o.alt || `Órbita con excentricidad ${f(e, 1)}, el Sol en un foco y doce marcas a tiempos iguales: ${e > 0 ? 'se amontonan lejos del Sol, donde va más lento' : 'quedan parejas'}.`,
-      poligonos: [{ puntos: pts, grosor: 'fino' }, ...(o.areas ? [{ puntos: sector(0, 1), cerrado: true, relleno: 0.3, color: 'i', paso: o.areas }, { puntos: sector(6, 7), cerrado: true, relleno: 0.3, color: 'i', paso: o.areas }] : [])],
-      discos: [{ c: [0, 0], r: 0.22, color: 'o', relleno: 0.6 }],
+      poligonos: [{ puntos: pts, grosor: 'fino' }, ...(pl ? [{ puntos: sector(k0, o.t), cerrado: true, relleno: 0.3, color: 'i' }] : []), ...(o.areas ? [{ puntos: sector(0, 1), cerrado: true, relleno: 0.3, color: 'i', paso: o.areas }, { puntos: sector(6, 7), cerrado: true, relleno: 0.3, color: 'i', paso: o.areas }] : [])],
+      discos: [{ c: [0, 0], r: 0.22, color: 'o', relleno: 0.6 }, ...(pl ? [{ c: pl.P, r: 0.12 }] : [])],
       puntos: marcas.map(([x, y]) => ({ x, y, color: 'h', paso: o.marcas || 0 })),
+      segmentos: pl ? [{ de: [0, 0], a: pl.P, color: 'i' }] : [],
+      flechas: pl ? [{ de: pl.P, d: pl.d, escala: KV4, color: 'h', rotulo: 'v' }] : [],
       textos: o.textos || [],
     };
   }
@@ -343,11 +380,15 @@
     temas: ['Leyes de Kepler'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Cambia qué tan alargada es la órbita. Los puntos rojos marcan dónde está el planeta cada mismo tiempo.',
+      consigna: 'El planeta recorre su órbita solo, un año en seis segundos; los puntos rojos marcan cada mes. Cambia la forma: ¿dónde corre más?',
       voz: 'Mira dónde se juntan los puntos: ¿cerca o lejos del Sol?',
-      controles: [{ id: 'e', etiqueta: 'Forma', opciones: [{ valor: 0, texto: 'Círculo' }, { valor: 0.4, texto: 'e = 0,4' }, { valor: 0.7, texto: 'e = 0,7' }], inicio: 0.4 }],
-      dibujo: val => ({ datos: elipse(val.e), estado: {} }),
-      lectura: val => [val.e === 0 ? 'Marcas parejas: rapidez constante' : 'Lejos del Sol las marcas se juntan: va más lento'],
+      controles: [
+        { id: 'e', etiqueta: 'Forma', opciones: [{ valor: 0, texto: 'Círculo' }, { valor: 0.4, texto: 'e = 0,4' }, { valor: 0.7, texto: 'e = 0,7' }], inicio: 0.4 },
+        // t en meses de una órbita de un año (tiempo acelerado: 2 meses por segundo). T va en tinta.
+        { id: 't', etiqueta: 't', min: 0, max: 12, paso: 0.1, inicio: 0, unidad: 'meses', decimales: 1, auto: { velocidad: 2, modo: 'repite' } },
+      ],
+      dibujo: val => ({ datos: elipse(val.e, { t: val.t }), estado: {} }),
+      lectura: val => { const p = planetaEn(val.e, val.t); return [r_, ` = ${f(p.rUA, 2)} UA · `, v, ` = ${f(p.v, 1)} km/s`]; },
       minimo: 3,
       // Arrastra el punto más lejano del Sol hacia la izquierda: la órbita se estira (la forma más cercana).
       arrastres: [{ id: 'afelio', etiqueta: 'punto más lejano del Sol (forma de la órbita)',
@@ -431,27 +472,25 @@
     { id: 'r2', etiqueta: 'r de B', color: 'c-i', min: 1, max: 4, paso: 0.25, inicio: 4, unidad: 'R', decimales: 2 },
   ];
   const ELIPSE_LIBRE = { id: 'e', etiqueta: 'e', min: 0, max: 0.75, paso: 0.05, inicio: 0.5, unidad: '', decimales: 2 };
-  // Lo que miden las mesas del laboratorio (las mismas cuentas de orbita, elipse y atraccion); lo usan la lectura y los retos.
-  const vOrb = rr => V0 / Math.sqrt(rr);                  // km/s
-  const tOrb = rr => 1.4 * rr ** 1.5;                     // h (vuelta rasante ≈ 1,4 h)
   const cercaLejos = e => (1 + e) / (1 - e);              // cuántas veces más rápido cerca del Sol que lejos
   const fAtraccion = val => val.m * G0 / (val.r * val.r);  // N
 
   // Órbitas en cualquier plano (laboratorio 3D de contexto, 15 nov: exploración libre, sin predicciones). El satélite
-  // avanza solo cuando el alumno arrastra t. Período, rapidez y g los calcula el motor de plantillas/gravitacion (orbita y
+  // avanza solo (t con auto, en tiempo acelerado: 1,5 h por segundo; la órbita de un día da su vuelta en 16 s); el
+  // número de objetos de la escena no cambia con t, así que fis-espacio-3d solo los mueve. Período, rapidez y g los calcula el motor de plantillas/gravitacion (orbita y
   // geoestacionario) a través de nucleo/fisica3d.js. Lo que el 3D muestra: toda órbita rodea el centro de la Tierra.
   const orb3 = val => F3.orbita(val);
   const RADIOS3 = [{ valor: 1.1, texto: '1,1 R' }, { valor: 2, texto: '2 R' }, { valor: 4, texto: '4 R' }, { valor: 'dia', texto: '6,6 R' }];
   const mesaPlano = {
     id: 'orbita-plano-3d', titulo: 'Órbitas en cualquier plano', pieza: 'fis-espacio-3d',
-    consigna: 'Gira la Tierra con el dedo. Elige el radio, inclina el plano de la órbita y arrastra t para que el satélite avance.',
+    consigna: 'Gira la Tierra con el dedo. El satélite avanza solo, en tiempo acelerado. Elige el radio e inclina el plano: mira cuánto tarda cada vuelta.',
     controles: [
       { id: 'r', etiqueta: 'Radio de la órbita', color: 'c-i', opciones: RADIOS3, inicio: 2 },
       { id: 'inc', etiqueta: 'Inclinación del plano', min: 0, max: 90, paso: 15, inicio: 30, unidad: '°', decimales: 0 },
-      { id: 't', etiqueta: 't', min: 0, max: 24, paso: 0.5, inicio: 0, unidad: 'h', decimales: 1 },
+      { id: 't', etiqueta: 't', min: 0, max: 24, paso: 0.5, inicio: 0, unidad: 'h', decimales: 1, auto: { velocidad: 1.5, modo: 'repite' } },
     ],
     dibujo: val => ({ datos: orb3(val).datos, estado: {} }),
-    lectura: val => { const o = orb3(val); return [`Vuelta en ${f(o.T, 1)} h · `, v, ` = ${f(o.v / 1000, 1)} km/s`]; },
+    lectura: val => { const o = orb3(val); return [`t = ${f(val.t, 1)} h · T = ${f(o.T, 1)} h · `, v, ` = ${f(o.v / 1000, 1)} km/s`]; },
     invitaciones: [
       { texto: 'Busca la órbita que da una vuelta en un día justo.',
         logrado: val => Math.abs(orb3(val).T - 24) < 1e-9,
@@ -463,7 +502,7 @@
       { texto: 'Con la órbita más baja, deja que el satélite dé más de dos vueltas.',
         logrado: (val, g, mesa) => val.r === mesa.controles[0].opciones[0].valor && orb3(val).vueltas > 2,
         bien: 'Abajo va a casi 8 km/s: una vuelta en hora y media.',
-        pista: 'Elige 1,1 R y arrastra t más allá de 3,3 h.' },
+        pista: 'Cuando t pase de 3,3 h, pausa y elige 1,1 R.' },
       { texto: 'Guarda dos órbitas del mismo radio y distinta inclinación.',
         logrado: (val, guardados) => guardados.some(a => guardados.some(b => a.r === b.r && a.inc !== b.inc
           && Math.abs(orb3(a).T - orb3(b).T) < 1e-9)),
