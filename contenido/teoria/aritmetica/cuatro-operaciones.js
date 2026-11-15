@@ -112,7 +112,7 @@
       ],
     },
     regla: {
-      texto: 'La suma de 1 a n es la mitad de un rectángulo de n por n + 1. Para consecutivos de a hasta z: primero más último, por cuántos, entre 2.',
+      texto: 'La sumatoria de 1 a n es la mitad de un rectángulo de n por n + 1. Para consecutivos de a hasta z: primero más último, por cuántos, entre 2.',
       ecuacion: ['1 + 2 + … + ', n_, ' = ', { llave: [{ frac: [[n_, '(', n_, ' + 1)'], '2'] }], nota: 'medio rectángulo', color: 'c-o' }, '   ·   ', 'a + … + z = ', { frac: ['(a + z)(z − a + 1)', '2'] }],
       condicion: 'los sumandos son consecutivos (suben de 1 en 1). Con pares 2 + 4 + … + 2n, la suma es n(n + 1).',
     },
@@ -208,7 +208,7 @@
       datos: rectaCA(3400, false),
       pasos: [
         { estado: { corte: 0 }, texto: '3 400 tiene cuatro cifras: su potencia es 10 000.', ecuacion: ['k = 4 → ', { sup: ['10', '4'] }, ' = 10 000'] },
-        { estado: { corte: 1 }, texto: 'El complemento es lo que falta para llegar.', ecuacion: ['CA(3 400) = 10 000 − 3 400 = ', { v: 'c-d', t: '6 600' }] },
+        { estado: { corte: 1 }, texto: 'El complemento aritmético es lo que falta para llegar.', ecuacion: ['CA(3 400) = 10 000 − 3 400 = ', { v: 'c-d', t: '6 600' }] },
         { estado: { corte: 1 }, texto: 'Atajo: 9 menos cada cifra, 10 menos la última no nula.', ecuacion: ['9 − 3 = 6 · 10 − 4 = 6 · 00'] },
       ],
     },
@@ -466,7 +466,7 @@
       ],
     },
     regla: {
-      texto: 'Multiplicar reparte sobre la suma. Si un factor aumenta k, el producto aumenta k veces el otro factor.',
+      texto: 'Propiedad distributiva: multiplicar reparte sobre la suma. Si un factor aumenta k, el producto aumenta k veces el otro factor.',
       ecuacion: ['(m + n) · ', bb, ' = m · ', bb, ' + n · ', bb, '   ·   ', '(a + k) · ', bb, ' = a · ', bb, ' + ', { llave: ['k · ', bb], nota: 'lo que sube', color: 'c-h' }],
       condicion: 'el otro factor no cambia. Si los dos cambian, se suman los dos aportes y el de k por el otro cambio.',
     },
@@ -587,6 +587,14 @@
       { n: k * c, columnas: c, color: 'i', tramos, rotulo: `${k} × ${c}` },
     ], altoMax: 150, ficha: 11, alt: `Escalera de ${a0} a ${z0}; al lado, dos escaleras iguales forman un rectángulo de ${k} por ${c}` };
   }
+  // Suma de la escalera de a hasta z (la misma que lee la mesa) y la menor suma que dejan sus controles.
+  const sumaAZ = v => (v.z - v.a + 1) * (v.a + v.z) / 2;
+  let MIN_AZ = Infinity; for (let a0 = 1; a0 <= 4; a0++) for (let z0 = 5; z0 <= 10; z0++) MIN_AZ = Math.min(MIN_AZ, sumaAZ({ a: a0, z: z0 }));
+  // Restos de la mesa de la recta: por defecto y por exceso (0 si la división es exacta).
+  const rLab = v => v.a % v.d, reLab = v => (rLab(v) ? v.d - rLab(v) : 0);
+  // Lo que sube el producto de la tira de arriba a la de abajo, y la mayor subida con k ≤ 9 y b ≤ 9.
+  const sube = v => (v.a + v.k) * v.b - v.a * v.b;
+  const MAX_SUBE = sube({ a: 10, b: 9, k: 9 });
   // Recta de 0 a 112 (fija) con los dos múltiplos vecinos; si la división es exacta, a cae sobre el múltiplo.
   function rectaLab(av, dv) {
     const qv = Math.floor(av / dv), rv = av - qv * dv;
@@ -621,6 +629,35 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-tiras.js'],
+    // Glosario: las palabras que esta unidad estrena en el curso (docs/teoria.md §4d). «cociente», «factor»,
+    // «producto» y «múltiplo» se estrenan antes en el curso (magnitudes, razones y conjuntos): aquí no se repiten.
+    glosario: [
+      // «sumandos» va en plural a propósito: «sumando» suelto es el gerundio en razones y estadística.
+      { termino: 'sumandos', def: 'Los números que se juntan en una suma.',
+        ejemplo: 'En 3 + 4 + 5 = 12 son tres: 3, 4 y 5.', ver: ['sumatoria'] },
+      { termino: 'sumatoria', def: 'Suma de muchos términos que siguen una regla, como 1 + 2 + … + n.',
+        ejemplo: '1 + 2 + … + 20 = 20 · 21 / 2 = 210.', ver: ['sumandos', 'consecutivo'] },
+      { termino: 'consecutivo', def: 'Números enteros que van uno detrás del otro, de 1 en 1, sin saltarse ninguno.',
+        formas: ['consecutivos', 'consecutivo', 'consecutivas'], ejemplo: '7, 8 y 9 lo son; 7, 9 y 11 no.' },
+      { termino: 'complemento aritmético', simbolo: 'CA', def: 'Lo que le falta a un número para llegar a 10, 100, 1000…, según cuántas cifras tiene.',
+        ejemplo: 'CA(3 400) = 10 000 − 3 400 = 6 600.', ver: ['potencia'] },
+      { termino: 'dividendo', simbolo: 'a', def: 'El número que se reparte en una división: el que va antes del signo ÷.',
+        ejemplo: 'En 47 ÷ 6, es 47.', ver: ['divisor'] },
+      { termino: 'divisor', simbolo: 'd', def: 'El número entre el que se divide. Si no sobra nada, se dice que divide al otro.',
+        ejemplo: 'En 47 ÷ 6, es 6: 47 = 6 · 7 + 5.', ver: ['dividendo'] },
+      { termino: 'cociente entero', simbolo: 'q', def: 'Cuántas veces cabe completo el divisor en el dividendo, sin contar lo que sobra.',
+        formas: ['cociente entero', 'cocientes enteros'], ejemplo: '47 ÷ 6: cabe 7 veces, porque 6 · 7 = 42 ≤ 47.', ver: ['resto', 'divisor'] },
+      { termino: 'resto por defecto', simbolo: 'r', def: 'Lo que pasa el dividendo del múltiplo del divisor que queda justo debajo.',
+        formas: ['resto por defecto', 'restos por defecto', 'por defecto'], ejemplo: '47 = 6 · 7 + 5: es 5.', ver: ['resto por exceso'] },
+      { termino: 'resto por exceso', simbolo: 'rₑ', def: 'Lo que le falta al dividendo para llegar al múltiplo del divisor que queda justo encima.',
+        formas: ['resto por exceso', 'restos por exceso', 'por exceso'], ejemplo: '47 = 6 · 8 − 1: es 1, y 5 + 1 = 6.', ver: ['resto por defecto'] },
+      { termino: 'división exacta', def: 'La que no deja nada sobrante: el dividendo es un múltiplo del divisor.',
+        formas: ['división es exacta', 'división exacta', 'divisiones exactas'], ejemplo: '48 ÷ 6 = 8 y no sobra nada.', ver: ['divisor'] },
+      { termino: 'préstamo', def: 'Al restar por columnas, la unidad que se pide a la columna de la izquierda cuando la cifra no alcanza.',
+        ejemplo: 'En base 10 trae 10 unidades; en base 5, trae 5.', ver: ['base de numeración'] },
+      { termino: 'propiedad distributiva', def: 'Multiplicar una suma da lo mismo que multiplicar cada parte y sumar los resultados.',
+        ejemplo: '24 · 7 = 20 · 7 + 4 · 7 = 140 + 28 = 168.' },
+    ],
     // Laboratorio: juego libre, sin preguntas. «Escaleras que no empiezan en 1» generaliza la idea 1 (de a hasta z);
     // «Restos con números grandes» abre a hasta 100 y d hasta 12, con divisiones exactas; «Dos productos» pone a · b
     // y (a + k) · b en la misma escala, con k negativo también.
@@ -633,7 +670,21 @@
           { id: 'z', etiqueta: 'z', color: 'c-i', min: 5, max: 10, paso: 1, inicio: 7, decimales: 0 },
         ],
         dibujo: v => ({ datos: escalerasAZ(v.a, v.z), estado: {} }),
-        lectura: v => { const k = v.z - v.a + 1; return [`${v.a} + … + ${v.z} = ${k} · ${v.a + v.z} / 2 = `, { v: 'c-d', t: String(k * (v.a + v.z) / 2) }]; },
+        lectura: v => { const k = v.z - v.a + 1; return [`${v.a} + … + ${v.z} = ${k} · ${v.a + v.z} / 2 = `, { v: 'c-d', t: String(sumaAZ(v)) }]; },
+        invitaciones: [
+          { texto: 'Haz que la escalera sume justo 42.',
+            logrado: v => sumaAZ(v) === 42,
+            bien: '3 + … + 9: siete sumandos, (3 + 9) · 7 / 2 = 42.' },
+          { texto: 'Busca el rectángulo más parecido a un cuadrado.',
+            logrado: v => (v.a + v.z) - (v.z - v.a + 1) === 1,
+            bien: 'Desde 1, las columnas son una más que las filas: n por n + 1.' },
+          { texto: 'Busca la escalera con la suma más chica.',
+            logrado: v => sumaAZ(v) === MIN_AZ,
+            bien: '4 + 5 = 9: dos sumandos, medio rectángulo de 2 por 9.' },
+          { texto: 'Guarda dos escaleras distintas que sumen 15.',
+            logrado: (v, guardados) => sumaAZ(v) === 15 && guardados.some(g => (g.a !== v.a || g.z !== v.z) && sumaAZ(g) === 15),
+            bien: '5 × 6 y 3 × 10: dos rectángulos de 30, la misma mitad.' },
+        ],
         arrastres: [{ id: 'borde', etiqueta: 'borde derecho del rectángulo (z)', color: 'c-i',
           donde: v => bordeDerecho(escalerasAZ(v.a, v.z)),
           // Ancho total: (z + (a + z)) · 11 + 18, de ahí z.
@@ -651,6 +702,21 @@
           const qv = Math.floor(v.a / v.d), rv = v.a % v.d;
           return rv ? [`${v.a} ÷ ${v.d}: r = ${rv}, `, re, ` = ${v.d - rv} (suman ${v.d})`] : [`${v.a} ÷ ${v.d} es exacta: ${v.a} = ${v.d} · ${qv}`];
         },
+        // Retos: rLab y reLab son los mismos restos que mide la recta (v.a % v.d y lo que falta).
+        invitaciones: [
+          { texto: 'Haz que la división sea exacta con a mayor que 90.',
+            logrado: v => v.a > 90 && rLab(v) === 0,
+            bien: 'a cae sobre un múltiplo: no sobra ni falta nada.' },
+          { texto: 'Haz que los dos restos sean iguales.',
+            logrado: v => rLab(v) > 0 && rLab(v) === reLab(v),
+            bien: 'Solo pasa con divisor par: cada resto es la mitad de d.' },
+          { texto: 'Con d = 12, consigue el resto por exceso más grande posible.',
+            logrado: v => v.d === 12 && rLab(v) > 0 && reLab(v) === v.d - 1,
+            bien: 'rₑ = 11 cuando r = 1: los dos restos siempre suman 12.' },
+          { texto: 'Guarda dos casos con el mismo d y los restos intercambiados.',
+            logrado: (v, guardados) => rLab(v) > 0 && guardados.some(g => g.d === v.d && rLab(g) > 0 && rLab(g) !== rLab(v) && rLab(g) === reLab(v)),
+            bien: 'Lo que a uno le sobra, al otro le falta: posiciones en espejo.' },
+        ],
         arrastres: [{ id: 'a', etiqueta: 'el dividendo a en la recta', color: 'c-o',
           donde: v => { const g = RECTA().geometria(rectaLab(v.a, v.d)); return { x: g.x(v.a), y: g.filaY(1) }; },
           mover: (pt, v) => ({ a: inversa(RECTA().geometria(rectaLab(v.a, v.d)).x, 0, 112)(pt.x) }) }],
@@ -664,7 +730,21 @@
           { id: 'k', etiqueta: 'k', color: 'c-h', min: -9, max: 9, paso: 1, inicio: 3, decimales: 0 },
         ],
         dibujo: v => ({ datos: dosProductos(v.a, v.b, v.k), estado: {} }),
-        lectura: v => [`${v.a + v.k} · ${v.b} − ${v.a} · ${v.b} = ${v.k} · ${v.b} = `, { v: 'c-h', t: f(v.k * v.b) }],
+        lectura: v => [`${v.a + v.k} · ${v.b} − ${v.a} · ${v.b} = ${v.k} · ${v.b} = `, { v: 'c-h', t: f(sube(v)) }],
+        invitaciones: [
+          { texto: 'Haz que el producto baje justo 24.',
+            logrado: v => sube(v) === -24,
+            bien: 'Bajar 24 es quitar grupos de b: 4 de 6, o 3 de 8.' },
+          { texto: 'Haz que las dos tiras midan lo mismo.',
+            logrado: v => sube(v) === 0,
+            bien: 'Con k = 0 no se agrega ni se quita ningún grupo.' },
+          { texto: 'Consigue la mayor subida que dejan los controles.',
+            logrado: v => sube(v) === MAX_SUBE,
+            bien: 'Nueve grupos de 9: 81, sin importar cuánto vale a.' },
+          { texto: 'Guarda dos casos con distinto a y la misma subida.',
+            logrado: (v, guardados) => sube(v) !== 0 && guardados.some(g => g.a !== v.a && sube(g) === sube(v)),
+            bien: 'Cambió a y la subida no: solo cuentan k y b.' },
+        ],
         arrastres: [
           { id: 'fin-a', etiqueta: 'final de la tira de arriba (a)', color: 'c-o',
             donde: v => { const g = TIRAS().geometria(dosProductos(v.a, v.b, v.k)); return { x: g.x(v.a * v.b), y: g.tiraY(0) }; },
@@ -676,7 +756,7 @@
       },
     ],
     historia: {
-      texto: 'Los papiros matemáticos egipcios multiplican sin nuestra tabla: duplican y suman algunos duplicados. Para 13 × 7 bastaba sumar 8 × 7, 4 × 7 y 1 × 7. Dividir era buscar qué múltiplos formaban una cantidad. Muestra que una operación y su procedimiento no son lo mismo: lo que se conserva es la propiedad de repartir.',
+      texto: 'Los papiros matemáticos egipcios multiplican sin nuestra tabla: duplican y suman algunos duplicados. Para 13 × 7 bastaba sumar 8 × 7, 4 × 7 y 1 × 7. Dividir era buscar qué múltiplos formaban una cantidad. Enseña que una operación y su procedimiento no son lo mismo: lo que se conserva es la propiedad de repartir.',
       pregunta: '¿Cómo multiplicarías solo duplicando y sumando?',
       fuente: { titulo: 'O’Connor y Robertson, Egyptian Papyri — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Egyptian_papyri/' },
     },
