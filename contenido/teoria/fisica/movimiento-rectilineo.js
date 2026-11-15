@@ -572,6 +572,12 @@
           return { datos: { largo: 60, cada: 10, carriles: [{ x: ms[ms.length - 1], marcas: ms, flecha: val.a ? { a: val.a } : undefined }] }, estado: {} };
         },
         lectura: val => [v0, ` = ${f(val.v0)} m/s · `, a, ` = ${f(val.a)} m/s²`],
+        invitaciones: [
+          'Haz que el carrito se detenga justo antes de la marca de 10 m.',
+          'Busca la salida más lenta que igual llegue a 30 m.',
+          'Consigue marcas que se junten como un acordeón.',
+          'Guarda dos casos con la misma última marca y distinta aceleración.',
+        ],
       },
       Object.assign({ id: 'ida-vuelta', titulo: 'Ida y vuelta en v–t', pieza: 'ejes' }, distancia.juega),
       Object.assign({ id: 'recta-vt', titulo: 'La recta v–t', pieza: 'ejes' }, mruv.juega),

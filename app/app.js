@@ -166,8 +166,9 @@ function vBienvenida() {
   $app.innerHTML = `<section class="bienvenida">
     <div class="hero">
       ${Ilus.escritorio('class="deco"')}
-      <h1>Ve la física.<br>Entiende el examen.</h1>
-      <p>Escenas que se mueven, predicciones antes de ver la respuesta y problemas para resolver en papel.</p>
+      <h1>Mueve las ideas.<br>Entiende el examen.</h1>
+      <p>Física, química, matemática y razonamiento: juegas con la figura, predices y después ves por qué.</p>
+      <a class="btn blanco muestra-btn" href="#/muestra">Probar una mesa sin registrarme ›</a>
     </div>
     ${esAlumnoCuenta() ? `<p class="sub" style="margin:0">Hola, <b>${esc(est.nombre || cuenta().nombre || '')}</b>. Antes de empezar, dos preguntas.</p>`
       : `<label class="sub" for="nombre">¿Cómo te llamas?</label>
@@ -692,6 +693,23 @@ function vPregunta(c, u) {
   };
 }
 
+// ---------- Muestra jugable (P1-A): una mesa de laboratorio sin registrarse, sin preguntas ni pruebas ----------
+// Tres experiencias distintas (mover un carrito, deformar un triángulo, probar conectores). No es una unidad evaluada
+// en sí: si el alumno después hace la prueba del tema, el evento «tema» anota que ya la había explorado (expuesto).
+const MUESTRAS = ['fisica.movimiento-rectilineo', 'geometria.triangulos', 'razonamiento-verbal.conectores'];
+function vMuestra(arg) {
+  pantallaSola('muestra');
+  const k = ((+arg || 0) % MUESTRAS.length + MUESTRAS.length) % MUESTRAS.length;
+  const c = cursoDeUnidad(MUESTRAS[k]), u = c && c.unidades.find(x => x.id === MUESTRAS[k]);
+  if (!u || !u.teoria) return ir(est.uni && est.grado ? '#/inicio' : '#/bienvenida');
+  const listo = est.uni && est.grado;
+  const cab = () => `<header class="muestra-cab"><p class="sub">Muestra · ${esc(c.nombre)}</p><h1>Juega sin registrarte</h1>
+      <p class="sub">Nada se califica. Cuando quieras, empiezas a estudiar.</p>
+      <div class="acciones-prueba"><a class="btn borde" href="#/muestra/${k + 1}">Otra muestra</a>
+        <a class="btn morado" href="${listo ? '#/inicio' : '#/bienvenida'}">${listo ? 'Ir al inicio' : 'Empezar a estudiar'}</a></div></header>`;
+  cuandoListo(modulo('teoria'), () => Teoria.vista({ $app, cat, est, esc, guardar, registrar, marcarDia, cab, sub: 'laboratorio', muestra: true }, u));
+}
+
 // ---------- Por hoy terminé (P0-C): resumen de lo que de verdad pasó hoy, qué quedó guardado y un próximo paso opcional ----------
 function resumenDeHoy() {
   const d = hoy(), ev = eventos().filter(e => e.alumno === est.alumno && e.t && new Date(e.t).toLocaleDateString('en-CA') === d);
@@ -797,6 +815,15 @@ function resumenHTML() {
     `<tr><td>${esc((cat.plantillas[m.modulo] || {}).titulo || m.modulo)}</td><td>${pct(m.entrada)}</td><td>${pct(m.salida)}</td><td>${m.predicciones} (${pct(m.acierto)} bien)</td></tr>`).join('')}</tbody></table></div>`;
 }
 
+// Mi colección (Perfil): los casos que el alumno guardó en los laboratorios, con su nombre; cada uno abre su mesa con sus
+// valores exactos (el laboratorio lo reconstruye con el motor).
+function coleccionHTML() {
+  const col = Array.isArray(est.coleccion) ? est.coleccion.slice().reverse() : [];
+  if (!col.length) return '<h2>Tu colección</h2><p class="sub">Aún no guardas casos. En el laboratorio de cada unidad, «Guardar este caso» los deja aquí.</p>';
+  return `<h2>Tu colección · ${col.length}</h2><div class="lista">${col.slice(0, 20).map(cs => { const cu = cursoDeUnidad(cs.unidad), un = cu && cu.unidades.find(x => x.id === cs.unidad);
+    return un ? `<a class="item" style="${Ilus.tinte(cu.id)}" href="#/unidad/${esc(cs.unidad)}/teoria/laboratorio" data-caso="${esc(cs.id)}">${icono(cu.id)}<span class="tx"><span class="t">${esc(cs.nombre)}</span><br><span class="d">${esc(un.nombre)} · ${esc(cs.fecha)}</span></span><span class="ir">Abrir ›</span></a>` : ''; }).join('')}</div>`;
+}
+
 function vPerfil() {
   const unis = Object.entries(cat.universidades).filter(([k]) => k !== 'una').map(([k]) =>
     `<button class="chip${est.uni === k ? ' on' : ''}" data-uni="${k}">${esc(UNI_CORTA[k] || k)}</button>`).join('');
@@ -812,6 +839,13 @@ function vPerfil() {
     <h2>Grado</h2><div class="chips">${GRADOS.map(([k, t]) => `<button class="chip${est.grado === k ? ' on' : ''}" data-grado="${k}">${esc(t)}</button>`).join('')}</div>
     ${cu ? '' : `<h2>Código del colegio</h2><input type="text" id="colegio" maxlength="20" value="${esc(est.colegio)}" placeholder="Lo da tu profesor" autocapitalize="characters">`}
     <h2>Apariencia</h2><div class="chips">${temas}</div>
+    <h2>Tu compañero</h2><div class="chips">
+      <button class="chip${!(est.prefs || {}).discreto ? ' on' : ''}" data-pref="discreto" data-v="">Conversa</button>
+      <button class="chip${(est.prefs || {}).discreto ? ' on' : ''}" data-pref="discreto" data-v="1">Discreto: habla solo para ayudar</button></div>
+    <div class="chips" style="margin-top:8px">
+      <button class="chip${!(est.prefs || {}).sinFestejo ? ' on' : ''}" data-pref="sinFestejo" data-v="">Con festejos</button>
+      <button class="chip${(est.prefs || {}).sinFestejo ? ' on' : ''}" data-pref="sinFestejo" data-v="1">Sin festejos</button></div>
+    ${coleccionHTML()}
     <h2>Esta app</h2>
     <div class="lista">
       <div class="item"><span class="ico" aria-hidden="true">${offlineListo ? '✓' : '…'}</span><span class="tx"><span class="t">${offlineListo ? 'Lista para usar sin internet' : 'Preparando modo sin internet'}</span><br>
@@ -839,6 +873,8 @@ function vPerfil() {
   $app.querySelectorAll('[data-grado]').forEach(b => b.onclick = () => { est.grado = b.dataset.grado; guardar(); vPerfil(); });
   $app.querySelectorAll('[data-uni]').forEach(b => b.onclick = () => { est.uni = b.dataset.uni; guardar(); vPerfil(); });
   $app.querySelectorAll('[data-tema]').forEach(b => b.onclick = () => { est.tema = b.dataset.tema; guardar(); aplicarTema(); vPerfil(); });
+  $app.querySelectorAll('[data-pref]').forEach(b => b.onclick = () => { est.prefs = Object.assign({}, est.prefs, { [b.dataset.pref]: !!b.dataset.v }); guardar(); vPerfil(); });
+  $app.querySelectorAll('[data-caso]').forEach(a => a.onclick = () => sessionStorage.setItem('abrir-caso', a.dataset.caso));
   const bi = document.getElementById('instalar');
   if (bi) bi.onclick = async () => { instalar.prompt(); await instalar.userChoice; instalar = null; vPerfil(); };
   const bb = document.getElementById('borrar');
@@ -919,7 +955,7 @@ function vIngreso() {
   $app.innerHTML = `<section class="bienvenida ingreso">
     <div class="hero">
       ${Ilus.escritorio('class="deco"')}
-      <h1>Ve la física.<br>Entiende el examen.</h1>
+      <h1>Mueve las ideas.<br>Entiende el examen.</h1>
       <p>Entra con el usuario y la contraseña que te dio tu profesor. Tu avance se guarda en tu cuenta, en cualquier equipo.</p>
     </div>
     <form id="fIngreso" class="form-cuenta" novalidate>
@@ -1253,6 +1289,8 @@ function render() {
     if (u && ruta === 'otro') return ir('#/salir');
   }
   if (['ingreso', 'contrasena', 'salir', 'panel'].includes(ruta)) return ir('#/inicio');
+  // La muestra jugable no pide universidad ni grado: se juega primero y se configura después (P1-A, docs/recorrido.md).
+  if (ruta === 'muestra') return vMuestra(arg);
   if ((!est.uni || !est.grado) && ruta !== 'bienvenida') return ir('#/bienvenida');
   if (ruta === 'bienvenida') return vBienvenida();
   $nav.hidden = false; document.body.dataset.ruta = ruta; document.body.classList.add('con-nav');

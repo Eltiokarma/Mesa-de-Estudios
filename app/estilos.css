@@ -884,3 +884,23 @@ body.con-lupa{overflow:hidden}
 .cierre-prox{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px}
 .cierre-prox legend{font-weight:700;margin-bottom:8px}
 .cierre-prox .chip{min-height:44px}
+
+/* ---------- Laboratorio con colección, invitaciones, reinicio y ayuda graduada ---------- */
+.te-invita{margin:0;padding:10px 12px;border-radius:14px;background:var(--brand-soft);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-weight:600}
+.te-reinicio{align-self:flex-start}
+.te-labo-acc{display:flex;gap:8px;flex-wrap:wrap}
+.te-guardado{margin:0;min-height:20px}
+.te-caso{padding:6px}
+.te-caso figcaption{display:flex;flex-direction:column;gap:4px}
+.te-nombre{font:inherit;font-weight:700;font-size:15px;border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;background:var(--card);color:var(--ink);width:100%;min-height:40px}
+.te-caso-l{font-size:13px}
+.te-caso-acc{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.te-caso-acc .btn{padding:8px 12px;min-height:44px;font-size:14px}
+.te-caso.elegir{outline:2px dashed var(--brand);outline-offset:2px}
+.te-deshacer{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 8px}
+.te-ayuda2{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+
+/* Muestra jugable desde la bienvenida */
+.muestra-btn{margin-top:12px}
+.muestra-cab{margin-bottom:14px}
+.muestra-cab h1{margin:2px 0 4px}

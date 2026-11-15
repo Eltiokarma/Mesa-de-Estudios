@@ -44,7 +44,7 @@
   function vista(ctx, u) {
     const { $app, esc } = ctx;
     const c = ctx.cat.cursos.find(x => x.unidades.some(y => y.id === u.id));
-    const sub = decodeURIComponent(location.hash.split('/')[4] || '');   // #/unidad/<id>/teoria/<idea | ficha | laboratorio>
+    const sub = ctx.sub || decodeURIComponent(location.hash.split('/')[4] || '');   // #/unidad/<id>/teoria/<idea | ficha | laboratorio>
     $app.innerHTML = `<div class="card te-cargando" role="status">Abriendo la teoría…</div>`;
     const h = location.hash;
     cargarUnidad(u).then(def => {
@@ -144,7 +144,7 @@
       return `<a class="te-chip${on ? ' on' : ''}${hecha(st, i.id) ? ' hecha' : sabidas.has(i.id) ? ' sabida' : ''}" href="#/unidad/${esc(u.id)}/teoria/${esc(i.id)}"${on ? ' aria-current="step"' : ''}>
         <span class="te-num" aria-hidden="true">${hecha(st, i.id) ? '✓' : k + 1}</span><span>${esc(i.titulo)}</span>${hecha(st, i.id) ? '<span class="lector"> (terminada)</span>' : sabidas.has(i.id) ? '<span class="lector"> (la acertaste en la prueba de entrada)</span>' : ''}</a>`;
     };
-    const cab = `${ctx.cab('Teoría')}
+    const cab = ctx.muestra ? ctx.cab() : `${ctx.cab('Teoría')}
       <nav class="te-ideas" aria-label="Ideas de esta unidad">${ideas.map(chip).join('')}
         <a class="te-chip te-lab${lab ? ' on' : ''}" href="#/unidad/${esc(u.id)}/teoria/laboratorio"${lab ? ' aria-current="page"' : ''}>
         <span class="te-num" aria-hidden="true">⚗</span><span>Laboratorio</span></a>
@@ -194,11 +194,15 @@
       fig.innerHTML = P.dibujar(dib.datos, dib.estado || {});
       $('#te-alt').textContent = P.alt(dib.datos);
     };
+    // Preferencias del alumno (Perfil): compañero discreto (habla solo para ayudar) y sin festejos (no celebra).
+    const prefs = ctx.est.prefs || {};
+    const ESENCIAL = new Set(['no-coincide', 'error', 'ayuda', 'fin']);
     const actuar = (que, texto) => {
       const a = T.ACTUACION[que] || T.ACTUACION.juego;
       masc.dataset.expresion = a.expresion;
-      try { if (window.Mascota) Mascota.pose(a.pose); } catch (e) { /* la app nunca espera a la mascota */ }
-      if (texto !== undefined) dice.textContent = texto;
+      const pose = prefs.sinFestejo && (a.pose === 'celebra' || a.pose === 'hito') ? 'reposo' : a.pose;
+      try { if (window.Mascota) Mascota.pose(pose); } catch (e) { /* la app nunca espera a la mascota */ }
+      if (texto !== undefined) dice.textContent = prefs.discreto && !ESENCIAL.has(que) ? '' : texto;
     };
     const decir = t => { aviso.textContent = t || ''; };
     // Lo que dice el compañero cuando la unidad no trae su propia línea (su voz de la guía, nucleo/teoria.js).
@@ -345,7 +349,15 @@
           const fb = zona.querySelector('.te-fb');
           fb.innerHTML = `${o && !bien ? `<p>${E.html(o.siFuera)}</p>` : ''}<p class="te-sol">${E.html(caso.solucion.texto)}</p>${caso.solucion.ecuacion ? `<p class="te-ec">${E.html(caso.solucion.ecuacion)}</p>` : ''}
             ${si.hecha || bien ? '<button type="button" class="btn borde te-otro">Otro caso</button>' : ''}`;
-          actuar(e === 'nose' ? 'ayuda' : bien ? 'acierto' : 'error', voz(e === 'nose' ? 'nose' : bien ? 'acierto' : 'error'));
+          // Ayuda graduada: el primer error trae su explicación y la solución; dos seguidos (o «No sé» dos veces)
+          // cambian la ayuda: volver a la explicación paso a paso o jugar libre en el laboratorio, sin castigo.
+          si.seguidos = bien ? 0 : (si.seguidos || 0) + 1;
+          if (si.seguidos >= 2) {
+            actuar('ayuda', voz('ayuda2'));
+            fb.insertAdjacentHTML('beforeend', `<div class="te-ayuda2"><button type="button" class="btn borde" data-ir="mira">Volver a la explicación</button>
+              <a class="btn borde" href="#/unidad/${esc(u.id)}/teoria/laboratorio">Jugar en el laboratorio</a></div>`);
+            fb.querySelector('[data-ir="mira"]').onclick = () => ir('mira');
+          } else actuar(e === 'nose' ? 'ayuda' : bien ? 'acierto' : 'error', voz(e === 'nose' ? 'nose' : bien ? 'acierto' : 'error'));
           mostrar(fb);
           evento('ahora-tu', { opcion: e, correcta: bien, error: (o && o.error) || null, nose: e === 'nose', semilla });
           si.semilla = ++semilla;
@@ -396,6 +408,13 @@
     }
 
     // Laboratorio: elegir una mesa, jugar sin preguntas y guardar hasta 4 casos para compararlos lado a lado.
+    /*
+     * Laboratorio con colección propia (pedido de Gerson y de los «8 alumnos», 15 nov). Los casos guardados viven en
+     * est.coleccion (este celular; con cuenta viajan con el estado, sin reglas de unión todavía: docs/recorrido.md):
+     *   { id, unidad, mesa, valores, nombre, fecha, version }
+     * La figura se reconstruye siempre con el motor (mesa.dibujo(valores)), nunca se guarda el dibujo. Tope: 6 por mesa
+     * y 40 en total; lleno, se pide elegir cuál reemplazar. Quitar deja «Deshacer» en el mismo lugar.
+     */
     function laboratorio() {
       const raizL = $app.querySelector('.te-labo');
       const q = s => raizL.querySelector(s);
@@ -404,45 +423,94 @@
       const mascL = q('[data-mascota]'), diceL = q('.te-dice span');
       try { if (window.Mascota) Mascota.pose('reposo'); } catch (e) { /* nada */ }
       mascL.dataset.expresion = 'E9';
-      diceL.textContent = 'Aquí no hay preguntas. Prueba casos raros y compáralos.';
+      diceL.textContent = 'Aquí no hay preguntas. Prueba casos raros y guarda los que te gusten.';
       conectarLupa(raizL);
       st.lab = st.lab || {};
-      let actual = mesas.find(m => m.id === st.lab.mesa) || mesas[0], jg = null, guardados = [];
+      const est = ctx.est;
+      est.coleccion = Array.isArray(est.coleccion) ? est.coleccion : [];
+      const MAX_MESA = 6, MAX_TOTAL = 40;
+      const pedido = sessionStorage.getItem('abrir-caso'); sessionStorage.removeItem('abrir-caso');
+      const casoPedido = pedido && est.coleccion.find(x => x.id === pedido && x.unidad === u.id);
+      let actual = mesas.find(m => m.id === (casoPedido ? casoPedido.mesa : st.lab.mesa)) || mesas[0], jg = null, quitado = null, reemplazar = false;
       const t0L = Date.now();
+      const deMesa = () => est.coleccion.filter(x => x.unidad === u.id && x.mesa === actual.id);
+      const lecturaDe = v => { try { return actual.lectura ? E.html(actual.lectura(v)) : ''; } catch (e) { return ''; } };
+      const dibujoDe = v => { const P = Kit.piezas[actual.pieza]; const d = actual.dibujo(v); return P.dibujar(d.datos, d.estado || {}); };
       const pintarNav = () => { nav.innerHTML = mesas.map(m => `<button type="button" class="te-ficha-op" data-mesa="${esc(m.id)}" aria-pressed="${m === actual}">${esc(m.titulo)}</button>`).join(''); };
-      const pintarRegistro = () => {
-        regL.innerHTML = guardados.length ? `<p class="te-etq">Casos guardados</p><div class="te-casos-g">${guardados.map((g, k) =>
-          `<figure class="te-caso"><div class="kit-figura">${g.svg}</div><figcaption>${g.lectura}</figcaption>
-            <button type="button" class="te-quitar" data-quitar="${k}" aria-label="Quitar el caso ${k + 1}">×</button></figure>`).join('')}</div>` : '';
+      const invitacion = () => {
+        const inv = actual.invitaciones || [];
+        if (!inv.length) return '';
+        const k = (st.lab.inv || 0) % inv.length;
+        return `<p class="te-invita"><span>${esc(inv[k])}</span><button type="button" class="btn borde te-otra-idea">Otra idea</button></p>`;
       };
-      const abrir = m => {
+      const pintarRegistro = () => {
+        const casos = deMesa();
+        regL.innerHTML = `${quitado ? `<p class="te-deshacer" role="status">Quitaste «${esc(quitado.nombre)}». <button type="button" class="btn borde" data-deshacer>Deshacer</button></p>` : ''}
+          ${casos.length ? `<p class="te-etq">Tus casos de esta mesa · ${casos.length} de ${MAX_MESA}</p>
+          <div class="te-casos-g">${casos.map(cs => `<figure class="te-caso${reemplazar ? ' elegir' : ''}">
+              <div class="kit-figura">${dibujoDe(cs.valores)}</div>
+              <figcaption><input class="te-nombre" data-renombrar="${esc(cs.id)}" value="${esc(cs.nombre)}" aria-label="Nombre del caso" maxlength="40"><span class="te-caso-l">${lecturaDe(cs.valores)}</span></figcaption>
+              <div class="te-caso-acc">${reemplazar ? `<button type="button" class="btn morado" data-reemplazar="${esc(cs.id)}">Reemplazar este</button>`
+                : `<button type="button" class="btn borde" data-abrir-caso="${esc(cs.id)}">Abrir</button><button type="button" class="btn borde" data-quitar="${esc(cs.id)}" aria-label="Quitar ${esc(cs.nombre)}">Quitar</button>`}</div>
+            </figure>`).join('')}</div>` : '<p class="sub">Los casos que guardes quedan aquí, con su nombre, para volver a ellos otro día.</p>'}`;
+      };
+      const guardarCaso = (sobre) => {
+        const v = jg.valores(), n = est.coleccion.filter(x => x.unidad === u.id && x.mesa === actual.id).length;
+        const caso = { id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), unidad: u.id, mesa: actual.id, valores: v,
+          nombre: `Caso ${n + 1}`, fecha: new Date().toLocaleDateString('en-CA'), version: def.version };
+        if (sobre) { const k = est.coleccion.findIndex(x => x.id === sobre); est.coleccion.splice(k, 1, Object.assign(caso, { nombre: est.coleccion[k].nombre })); }
+        else est.coleccion.push(caso);
+        reemplazar = false; quitado = null; ctx.guardar();
+        pintarRegistro();
+        const aviso = q('.te-guardado'); if (aviso) aviso.textContent = `«${caso.nombre}» quedó guardado en este celular.`;
+        diceL.textContent = 'Quedó guardado. Ponle nombre si quieres.';
+        ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: actual.id, momento: 'laboratorio', casos: deMesa().length, ms: Date.now() - t0L });
+      };
+      const abrir = (m, valores) => {
         if (jg) jg.destruir();
-        actual = m; st.lab.mesa = m.id; ctx.guardar(); guardados = [];
-        pintarNav(); pintarRegistro();
-        jg = montarJuego(m, { fig: figL, zona: zonaL, lectura: q('.te-lectura'), alt: $app.querySelector('#te-alt'), piezaPorDefecto: m.pieza, alTocar: () => {} });
-        const b = document.createElement('button'); b.type = 'button'; b.className = 'btn borde te-guardar'; b.textContent = 'Guardar este caso';
-        zonaL.appendChild(b);
-        b.onclick = () => {
-          const svg = figL.innerHTML.replace(/<g class="te-manija[\s\S]*?<\/g>/g, '');
-          if (guardados.length >= MAX_CASOS) guardados.shift();
-          guardados.push({ svg, lectura: q('.te-lectura').innerHTML || esc(JSON.stringify(jg.valores())) });
-          pintarRegistro();
-          ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: m.id, momento: 'laboratorio', casos: guardados.length, ms: Date.now() - t0L });
-        };
+        actual = m; st.lab.mesa = m.id; ctx.guardar(); quitado = null; reemplazar = false;
+        pintarNav();
+        jg = montarJuego(m, { fig: figL, zona: zonaL, lectura: q('.te-lectura'), alt: $app.querySelector('#te-alt'), piezaPorDefecto: m.pieza, alTocar: () => {}, valores, reiniciar: true });
+        zonaL.insertAdjacentHTML('afterbegin', invitacion());
+        zonaL.insertAdjacentHTML('beforeend', '<div class="te-labo-acc"><button type="button" class="btn morado te-guardar">Guardar este caso</button></div><p class="sub te-guardado" role="status"></p>');
+        pintarRegistro();
       };
       nav.addEventListener('click', e => { const b = e.target.closest('[data-mesa]'); if (b) abrir(mesas.find(m => m.id === b.dataset.mesa)); });
-      regL.addEventListener('click', e => { const b = e.target.closest('[data-quitar]'); if (b) { guardados.splice(+b.dataset.quitar, 1); pintarRegistro(); } });
-      abrir(actual);
+      zonaL.addEventListener('click', e => {
+        if (e.target.closest('.te-otra-idea')) { st.lab.inv = (st.lab.inv || 0) + 1; ctx.guardar(); const p = zonaL.querySelector('.te-invita'); if (p) p.outerHTML = invitacion(); return; }
+        if (!e.target.closest('.te-guardar')) return;
+        if (deMesa().length >= MAX_MESA || est.coleccion.length >= MAX_TOTAL) {
+          reemplazar = true; pintarRegistro();
+          q('.te-guardado').textContent = deMesa().length >= MAX_MESA ? `Ya tienes ${MAX_MESA} casos en esta mesa: elige cuál reemplazar.` : 'Tu colección está llena: elige cuál reemplazar.';
+          return;
+        }
+        guardarCaso();
+      });
+      regL.addEventListener('click', e => {
+        const ab = e.target.closest('[data-abrir-caso]'), qu = e.target.closest('[data-quitar]'), re = e.target.closest('[data-reemplazar]'), de = e.target.closest('[data-deshacer]');
+        if (ab) { const cs = est.coleccion.find(x => x.id === ab.dataset.abrirCaso); jg.fijar(cs.valores); diceL.textContent = `Volviste a «${cs.nombre}».`; figL.scrollIntoView({ block: 'nearest' }); }
+        if (qu) { const k = est.coleccion.findIndex(x => x.id === qu.dataset.quitar); quitado = Object.assign({ k }, est.coleccion[k]); est.coleccion.splice(k, 1); ctx.guardar(); pintarRegistro(); const d = regL.querySelector('[data-deshacer]'); if (d) d.focus(); }
+        if (re) guardarCaso(re.dataset.reemplazar);
+        if (de && quitado) { const { k, ...cs } = quitado; est.coleccion.splice(Math.min(k, est.coleccion.length), 0, cs); quitado = null; ctx.guardar(); pintarRegistro(); }
+      });
+      regL.addEventListener('change', e => {
+        const r = e.target.closest('[data-renombrar]'); if (!r) return;
+        const cs = est.coleccion.find(x => x.id === r.dataset.renombrar);
+        if (cs) { cs.nombre = r.value.trim().slice(0, 40) || cs.nombre; r.value = cs.nombre; ctx.guardar(); }
+      });
+      abrir(actual, casoPedido ? casoPedido.valores : undefined);
+      if (casoPedido) diceL.textContent = `Tu caso «${casoPedido.nombre}» está como lo dejaste.`;
     }
 
     // El juego: controles con − y +, barra y opciones; manijas sobre la figura; lectura en vivo; casos distintos probados.
     function montarJuego(j, o) {
       const { fig: f, zona: z, lectura: lec } = o;
-      const vals = T.inicio(j), probados = new Set();
+      const vals = Object.assign(T.inicio(j), o.valores || {}), probados = new Set();
       const ctr = j.controles || [], arr = j.arrastres || [];
       z.innerHTML = `<h3 class="lector" tabindex="-1">Juega</h3><p class="te-consigna">${esc(j.consigna)}</p>
         ${arr.length ? '<p class="te-pista"><span class="te-pista-m" aria-hidden="true"></span>Arrastra los círculos de la figura, o usa − y +.</p>' : ''}
         <div class="te-controles">${ctr.map(control).join('')}</div>
+        ${ctr.length ? '<button type="button" class="btn borde te-reinicio">Volver al inicio</button>' : ''}
         ${o.minimo ? '<p class="sub te-casos" aria-live="polite"></p>' : ''}`;
       let tocado = false;
       const tocar = () => { if (!tocado) { tocado = true; o.alTocar(); } };
@@ -529,6 +597,7 @@
         vals[c.id] = T.ajustar(c, +e.target.value); pintarJ(); tocar();
       };
       const enClick = e => {
+        if (e.target.closest('.te-reinicio')) { Object.assign(vals, T.inicio(j)); pintarJ(); return; }
         const b = e.target.closest('button[data-paso],button[data-v]'); if (!b) return;
         const el = b.closest('[data-c]'); const c = ctr.find(x => x.id === el.dataset.c);
         vals[c.id] = c.opciones ? c.opciones.find(x => String(x.valor) === b.dataset.v).valor : T.ajustar(c, vals[c.id] + (+b.dataset.paso) * c.paso);
@@ -540,6 +609,7 @@
       return {
         probados: () => probados.size,
         valores: () => Object.assign({}, vals),
+        fijar(v) { for (const c of ctr) if (v && v[c.id] !== undefined) vals[c.id] = T.ajustar(c, v[c.id]); pintarJ(); },
         destruir() {
           f.removeEventListener('pointerdown', abajo); f.removeEventListener('pointermove', mueve);
           f.removeEventListener('pointerup', arriba); f.removeEventListener('pointercancel', arriba);

@@ -35,6 +35,8 @@ async function cargarPieza(id) {
 }
 // Mascota: repertorio cerrado de docs/escena-viva.md, sección 6. Nunca rompe la práctica si falla o no está.
 function pose(nombre) {
+  // Preferencia «sin festejos» (Perfil): la mascota no celebra; el texto de la respuesta no cambia.
+  try { const pr = (JSON.parse(localStorage.getItem('lab-v1') || '{}').prefs) || {}; if (pr.sinFestejo && (nombre === 'celebra' || nombre === 'hito')) nombre = 'reposo'; } catch (e) { /* sin almacenamiento */ }
   try { if (window.Mascota && typeof window.Mascota.pose === 'function') window.Mascota.pose(nombre); } catch (e) { /* la app nunca espera a la mascota */ }
 }
 const MASCOTA = '<div class="mascota" data-mascota aria-hidden="true"></div>';
