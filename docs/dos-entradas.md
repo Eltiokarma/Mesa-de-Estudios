@@ -44,7 +44,7 @@ Todo alumno necesita comprender, practicar y tener curiosidad. Uno de academia p
 
 1. **Por dónde empieza Exploración:** con 3.º y 4.º de secundaria. Hay que comprobar qué contenidos existentes encajan y qué saberes previos piden.
 2. **Fechas:** diciembre de 2026 sigue como objetivo de un **piloto acotado**, siempre que funcione el recorrido esencial. Marzo de 2027 es la meta de **ampliación**.
-3. **Integrar a `main`:** los cambios actuales se prueban primero en una versión de prueba y en el Redmi 15C antes de integrarlos. Hoy son los 187 commits de `claude/awesome-einstein-ch5g9a`: la ronda 3 de teoría y `app/prueba3d/`. Se revisa qué incluyen y cómo funcionan.
+3. **Integrar a `main`:** los cambios actuales se prueban primero en una versión de prueba y en el Redmi 15C antes de integrarlos. **Cambió el mismo 15 nov:** Gerson decidió que Vercel publique solo `main` y que todo vaya a `main`; él lo prueba ahí. Hoy son los 187 commits de `claude/awesome-einstein-ch5g9a`: la ronda 3 de teoría y `app/prueba3d/`. Se revisa qué incluyen y cómo funcionan.
 
 ## Lo que sigue: una unidad completa antes de tres
 
@@ -101,3 +101,29 @@ Se construyó sobre la rama de teoría `claude/awesome-einstein-ch5g9a`, que ya 
 - integrarla a `main`, junto con la rama de teoría;
 - sumar la molécula a la «Muestra jugable» de la bienvenida (la entrada de exploración);
 - el prisma y los cubitos.
+
+## La unidad completa (15 nov, tarde, en `main`)
+
+**Lo integrado.** La rama `claude/sweet-maxwell-0knzks`, que traía la ronda 3 de teoría, la molécula 3D y la prueba 3D, pasó entera a `main`.
+
+**Lo que faltaba del recorrido**, sin más predicciones (excepción de la regla 3):
+
+- **Pedir ayuda, en cualquier reto de cualquier mesa:**
+  - **«Pista»:** la del reto (`pista`, de 16 palabras o menos) o una general;
+  - **«Muéstrame»:** después de la pista. Pone el caso de la grilla que cumple el reto y cambia menos controles, y lo calcula el motor (regla 1). No está en los retos que piden casos guardados.
+  - Lo visto con «Muéstrame» queda como «Lo viste con ayuda», no como logrado, y «Otro reto» lo salta.
+  - Los 5 retos de la molécula traen su pista propia, revisada contra el motor de `plantillas/enlace`.
+- **El 3D que se corta vuelve solo.** Si Android corta el dibujo 3D, queda la vista plana con «Volver al 3D», y se rearma solo al regresar a la app.
+- **La lupa con la pieza 3D:** el mismo lienzo pasa a pantalla completa, sin abrir un segundo contexto WebGL, con − y + para acercar. Además se acerca con el pellizco y con Ctrl + rueda.
+- **Medición, por separado:**
+  - **explorar:** al salir del laboratorio queda un evento `explora` con el tiempo, los casos probados, las mesas, los guardados, los retos y las ayudas;
+  - **aprender:** `invitacion` dice con cuánta ayuda se logró cada reto, y `reto-ayuda` dice si fue pista o «Muéstrame»;
+  - **el informe:** `herramientas/analizar-medicion.js` arma la tabla «Laboratorio: explorar y aprender, por separado» y la lista de las palabras del glosario más consultadas.
+
+**Para Gerson, en el Redmi:** el recorrido completo de enlace químico, en su laboratorio y la mesa «La molécula que gira»:
+1. entrar;
+2. girar y tocar átomos;
+3. pedir pista y «Muéstrame»;
+4. lograr otro reto solo;
+5. guardar dos moléculas;
+6. cerrar la app y volver otro día.

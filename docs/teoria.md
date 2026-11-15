@@ -202,6 +202,7 @@ invitaciones: [
   - que el reto se pueda lograr: busca en toda la grilla de controles, o en una muestra fija si pasa de 20 000 casos. Con casos guardados, prueba pares de una muestra de 500 repartida por toda la grilla; antes de la ronda 3 eran los primeros 160 casos, y casi solo variaba el primer control;
   - que no esté ya cumplido al abrir la mesa;
   - que `logrado` no falle.
+- **`pista`** (opcional, de 16 palabras o menos): la primera ayuda. Si el reto no trae una, sale una general. Después de la pista, «Muéstrame» pone el caso de la grilla que el motor da por logrado y que menos controles cambia. «Muéstrame» no está en los retos que piden casos guardados. Lo visto así cuenta como «Lo viste con ayuda», no como logrado.
 - **Qué ve el alumno:**
   - una tarjeta «Reto · 1 de 4»;
   - al cumplirlo, «✓ Lo lograste», la línea `bien` del compañero y su pose de festejo (sin festejo si lo pidió en Perfil);
