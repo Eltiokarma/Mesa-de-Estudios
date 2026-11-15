@@ -53,6 +53,9 @@
   }
   const caja = (cx, y0, w, h) => ({ puntos: [[cx - w / 2, y0], [cx + w / 2, y0], [cx + w / 2, y0 + h], [cx - w / 2, y0 + h]], cerrado: true });
   const SEN = { 30: 0.5, 37: 0.6, 53: 0.8, 60: Math.sqrt(3) / 2 }, COS = { 30: Math.sqrt(3) / 2, 37: 0.8, 53: 0.6, 60: 0.5 };
+  // Ángulos notables con su valor de examen (37° y 53° del triángulo 3-4-5); los demás, con el seno exacto. La
+  // animación del nudo pasa por todos los ángulos entre 30° y 60°.
+  const sen = a => SEN[a] !== undefined ? SEN[a] : Math.sin(rad(a)), cos = a => COS[a] !== undefined ? COS[a] : Math.cos(rad(a));
 
   // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas del lienzo (fis-lienzo.geometria, con los
   // mismos datos que dibuja la idea). Si la relación es lineal, mover usa la inversa; si no (la barra que se inclina,
@@ -90,11 +93,12 @@
     temas: ['Primera y tercera ley de Newton', 'Diagrama de cuerpo libre'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Un libro descansa en la mesa. Elige su masa y cuánto lo aprieta la mano hacia abajo. Mira la fuerza normal.',
+      consigna: 'Un libro descansa en la mesa y la mano lo aprieta hacia abajo, más y menos, sola. Elige la masa y mira la fuerza normal.',
       voz: 'Aprieta sin cambiar la masa. ¿Qué flecha crece?',
       controles: [
         { id: 'm', etiqueta: 'm', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'kg', decimales: 0 },
-        { id: 'F', etiqueta: 'F', color: 'c-o', min: 0, max: 20, paso: 5, inicio: 0, unidad: 'N', decimales: 0 },
+        { id: 'F', etiqueta: 'F', color: 'c-o', min: 0, max: 20, paso: 5, inicio: 0, unidad: 'N', decimales: 0,
+          auto: { velocidad: 6, modo: 'rebota' } },
       ],
       dibujo: val => ({ datos: libro(val.m, val.F), estado: {} }),
       lectura: val => [N, ` = ${f(val.m * G + val.F, 0)} N · `, P, ` = ${f(val.m * G, 0)} N`],
@@ -156,11 +160,11 @@
   // aplanar las cuerdas y no es P/2.
   const K2 = 1.25;
   function lampara(Pv, ang, o = {}) {
-    const Tv = Pv / (2 * SEN[ang]), A = 2.2, yn = 2 - A * Math.tan(rad(ang)), nudo = [0, yn];
-    const u1 = [-COS[ang], SEN[ang]], u2 = [COS[ang], SEN[ang]];
+    const Tv = Pv / (2 * sen(ang)), A = 2.2, yn = 2 - A * Math.tan(rad(ang)), nudo = [0, yn];
+    const u1 = [-cos(ang), sen(ang)], u2 = [cos(ang), sen(ang)];
     return {
       vista: { x0: -2.5, x1: 2.5, y0: -3.6, y1: 2.3 }, escalaF: K2,
-      alt: o.alt || `Lámpara de ${f(Pv, 0)} N colgada de dos cuerdas a ${ang}° de la horizontal; cada cuerda tira con ${f(Tv, 1)} N.`,
+      alt: o.alt || `Lámpara de ${f(Pv, 0)} N colgada de dos cuerdas a ${f(ang, 0)}° de la horizontal; cada cuerda tira con ${f(Tv, 1)} N.`,
       poligonos: [{ puntos: [[-2.45, 2], [2.45, 2]], rayado: true }, { puntos: [[-A, 2], nudo, [A, 2]] }, { puntos: [nudo, [0, yn - 0.45]] }, caja(0, yn - 0.85, 0.5, 0.4)],
       discos: [{ c: nudo, r: 0.06 }],
       flechas: [
@@ -174,8 +178,8 @@
           { de: nudo, d: [Tv * COS[ang], 0], color: 'i', discontinua: true, rotulo: `${f(Tv * COS[ang], 0)} N`, paso: o.pH },
         ] : []),
       ],
-      arcos: [{ c: [A, 2], rpx: 30, de: 180, a: 180 + ang, rotulo: `${ang}°` }],
-      textos: o.sinT ? [] : [{ en: [1.3, -3.2], texto: `T = ${f(Tv, 1)} N`, color: 'i', paso: o.pT || 0 }],
+      arcos: [{ c: [A, 2], rpx: 30, de: 180, a: 180 + ang, rotulo: `${f(ang, 0)}°` }],
+      textos: o.sinT ? [] : [{ en: [-1.5, -3.2], texto: `T = ${f(Tv, 1)} N`, color: 'i', paso: o.pT || 0 }],
     };
   }
   const nudo = {
@@ -184,14 +188,15 @@
     temas: ['Equilibrio de una partícula', 'Diagrama de cuerpo libre'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Una lámpara cuelga de dos cuerdas iguales. Elige su peso y el ángulo de las cuerdas con el techo.',
+      consigna: 'Una lámpara cuelga de dos cuerdas iguales que se aplanan y se paran solas. Elige el peso y mira las flechas T.',
       voz: 'Aplana las cuerdas sin cambiar el peso. Mira las flechas T.',
       controles: [
         { id: 'P', etiqueta: 'P', color: 'c-d', min: 20, max: 50, paso: 10, inicio: 30, unidad: 'N', decimales: 0 },
-        { id: 'ang', etiqueta: 'Ángulo', opciones: [30, 37, 53, 60].map(k => ({ valor: k, texto: `${k}°` })), inicio: 53 },
+        { id: 'ang', etiqueta: 'θ', min: 30, max: 60, paso: 1, inicio: 53, unidad: '°', decimales: 0,
+          auto: { velocidad: 6, modo: 'rebota' } },
       ],
       dibujo: val => ({ datos: lampara(val.P, val.ang), estado: {} }),
-      lectura: val => ['Cada cuerda: ', T, ` = ${f(val.P / (2 * SEN[val.ang]), 1)} N`],
+      lectura: val => [`θ = ${f(val.ang, 0)}° · cada cuerda: `, T, ` = ${f(val.P / (2 * sen(val.ang)), 1)} N`],
       minimo: 3,
       // Arrastra el nudo hacia arriba (aplana las cuerdas: el ángulo baja) o la punta del peso hacia abajo.
       arrastres: [
@@ -258,7 +263,9 @@
       poligonos: [{ puntos: [[-1.65, 0], [1.65, 0]], rayado: true }, caja(0, 0, 1.1, 0.8)],
       flechas: [
         ...(Fv > 0 ? [{ de: [-0.55 - Fv * K3 / 82.35, 0.5], d: [Fv, 0], color: 'o', rotulo: `F = ${f(Fv, 0)} N`, rotuloEn: 'cola' }] : []),
-        ...(fv > 0 && !o.sinF ? [{ de: [-0.55, 0.12], d: [-fv, 0], color: 'h', rotulo: `f = ${f(fv, 0)} N` }] : []),
+        // El tope estático μs N, punteado detrás de f: mientras la caja está quieta, f lo va llenando.
+        ...(o.tope ? [{ de: [-0.55, 0.07], d: [-max, 0], color: 'h', discontinua: true }] : []),
+        ...(fv > 0 && !o.sinF ? [{ de: [-0.55, o.tope ? 0.2 : 0.12], d: [-fv, 0], color: 'h', rotulo: `f = ${f(fv, 0)} N` }] : []),
       ],
       textos: [{ en: [0, 1.05], texto: desliza ? 'desliza' : 'quieta' }],
     };
@@ -269,11 +276,12 @@
     temas: ['Rozamiento estático y cinético'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Empuja una caja de 4 kg con fuerza creciente. Aquí μs = 0,5 y μk = 0,3. Mira la flecha roja.',
-      voz: 'Sube F de a poco. ¿La flecha roja crece siempre?',
-      controles: [{ id: 'F', etiqueta: 'F', color: 'c-o', min: 0, max: 30, paso: 2, inicio: 4, unidad: 'N', decimales: 0 }],
-      dibujo: val => ({ datos: cajaRoce(4, val.F), estado: {} }),
-      lectura: val => { const fv = val.F > 20 ? 12 : val.F; return [fr, ` = ${f(fv, 0)} N · máximo estático 20 N`]; },
+      consigna: 'La mano empuja una caja de 4 kg, más y luego menos (μs = 0,5; μk = 0,3). Mira la flecha roja y su tope punteado.',
+      voz: 'Pausa cuando quieras. ¿La flecha roja crece siempre?',
+      controles: [{ id: 'F', etiqueta: 'F', color: 'c-o', min: 0, max: 30, paso: 2, inicio: 4, unidad: 'N', decimales: 0,
+        auto: { velocidad: 5, modo: 'rebota' } }],
+      dibujo: val => ({ datos: cajaRoce(4, val.F, { tope: true }), estado: {} }),
+      lectura: val => { const r = roceDe({ m: 4, F: val.F }); return [F, ` = ${f(val.F, 0)} N · `, fr, ` = ${f(r.f, 0)} N · ${r.desliza ? 'desliza' : 'quieta'}`]; },
       minimo: 4,
       // Arrastra la mano (la cola de F) hacia la izquierda: más larga, más empuje. La flecha roja responde.
       arrastres: [{ id: 'empuje', etiqueta: 'empuje de la mano', color: 'c-o',
@@ -349,7 +357,7 @@
       poligonos: [{ puntos: [[-0.2, top], [0.2, top]], rayado: true }, { puntos: zig, grosor: 'contorno' }, caja(0, bajo - 0.06, 0.08, 0.06)],
       segmentos: [{ de: [-0.2, top - L0], a: [0.12, top - L0], discontinua: true },
         ...(o.sinX ? [] : [{ de: [0.14, top - L0], a: [0.14, bajo], color: 'i', grosor: 'variable', texto: `x = ${f(xv * 100, 1)} cm`, lado: -1 }])],
-      flechas: [{ de: [0.02, bajo - 0.06], d: [0, -m * G], color: 'd', rotulo: `P = ${f(m * G, 0)} N` }, { de: [-0.06, bajo - 0.03], d: [0, k * xv], color: 'o', rotulo: 'kx', lado: -1 }],
+      flechas: [{ de: [0.02, bajo - 0.06], d: [0, -m * G], color: 'd', rotulo: `P = ${f(m * G, 1)} N` }, { de: [-0.06, bajo - 0.03], d: [0, k * xv], color: 'o', rotulo: 'kx', lado: -1 }],
     };
   }
   const elastica = {
@@ -358,14 +366,15 @@
     temas: ['Fuerza elástica'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Cuelga una masa del resorte y elige su constante elástica k. La línea discontinua marca su largo natural.',
+      consigna: 'La masa colgada crece y baja sola. La línea discontinua marca el largo natural. Elige la constante elástica k y mira x.',
       voz: 'Duplica la masa con el mismo k. ¿Qué le pasa a x?',
       controles: [
         { id: 'k', etiqueta: 'k', min: 100, max: 400, paso: 100, inicio: 200, unidad: 'N/m', decimales: 0 },
-        { id: 'm', etiqueta: 'm', min: 0.5, max: 2, paso: 0.5, inicio: 1, unidad: 'kg', decimales: 1 },
+        { id: 'm', etiqueta: 'm', min: 0.5, max: 2, paso: 0.5, inicio: 1, unidad: 'kg', decimales: 1,
+          auto: { velocidad: 0.4, modo: 'rebota' } },
       ],
       dibujo: val => ({ datos: resorte(val.k, val.m), estado: {} }),
-      lectura: val => [x, ` = ${f(val.m * G / val.k * 100, 1)} cm · `, Fe, ` = ${f(val.m * G, 0)} N`],
+      lectura: val => [Fe, ` = ${f(val.m * G, 1)} N · `, x, ` = ${f(val.m * G / val.k * 100, 1)} cm`],
       minimo: 3,
       // Arrastra la punta del peso hacia abajo (la manija va en tinta, como m): cuelgas más masa y el resorte se estira (la punta baja por las dos cosas).
       arrastres: [{ id: 'peso', etiqueta: 'masa colgada (punta del peso)',
@@ -488,14 +497,15 @@
     temas: ['Torque', 'Equilibrio del cuerpo rígido'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'A la izquierda cuelgan 3 kg a 1 m del apoyo. Elige la masa de la derecha y dónde colgarla.',
+      consigna: 'A la izquierda cuelgan 3 kg a 1 m del apoyo. La masa derecha se corre sola. Elige cuánta y mira cuándo se nivela.',
       voz: 'Busca dos maneras distintas de dejar la barra horizontal.',
       controles: [
         { id: 'm2', etiqueta: 'm', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'kg', decimales: 0 },
-        { id: 'd2', etiqueta: 'd', color: 'c-i', min: 0.5, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2 },
+        { id: 'd2', etiqueta: 'd', color: 'c-i', min: 0.5, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2,
+          auto: { velocidad: 0.3, modo: 'rebota' } },
       ],
       dibujo: val => ({ datos: palanca(3, 1, val.m2, val.d2), estado: {} }),
-      lectura: val => [`τ izquierda = 30 N·m · τ derecha = ${f(val.m2 * G * val.d2, 1)} N·m`],
+      lectura: val => [`τ izq. = 30 N·m · τ der. = ${f(val.m2 * G * val.d2, 1)} N·m`],
       minimo: 4,
       arrastres: arrastresPalanca(val => [3, 1, val.m2, val.d2], { m2: 0, d2: 1 }, () => torque.juega.controles, 'der'),
     },
@@ -549,24 +559,32 @@
   // Cambia: la carga y si hay polea móvil · Permanece: la carga sube 1 m · Progresa: los tramos que sostienen ·
   // Se reserva: la cuerda que hay que jalar, que se duplica · Debe verse: menos fuerza, más cuerda, mismo trabajo.
   const K6 = 0.6;
+  // h: cuánto subió la carga (m). La cuerda es una sola y no se estira: con polea fija la mano baja h; con la
+  // móvil, cada tramo se acorta h y la mano sube 2h.
   function polea(Pv, movil, o = {}) {
-    const Fv = movil ? Pv / 2 : Pv;
+    const Fv = movil ? Pv / 2 : Pv, h = o.h || 0;
     const base = {
-      vista: { x0: -1.6, x1: 1.6, y0: -1.2, y1: 3.7 }, escalaF: K6,
+      vista: { x0: -1.6, x1: 1.6, y0: -1.2, y1: 4.2 }, escalaF: K6,
       alt: o.alt || (movil ? `Polea móvil que sostiene ${Pv} N con dos tramos de cuerda: la mano tira con ${f(Fv, 0)} N.` : `Polea fija: la mano tira con ${f(Fv, 0)} N para sostener ${Pv} N.`),
       poligonos: [{ puntos: movil ? [[-1.5, 3], [0, 3]] : [[-1.5, 3], [1.5, 3]], rayado: true }],
     };
     if (!movil) {
       base.discos = [{ c: [0, 2.6], r: 0.3 }];
-      base.poligonos.push({ puntos: [[0, 3], [0, 2.6]] }, { puntos: [[-0.3, 2.6], [-0.3, 0.9]] }, caja(-0.3, 0.4, 0.6, 0.5), { puntos: [[0.3, 2.6], [0.3, 1.2]] });
-      base.flechas = [{ de: [-0.3, 0.4], d: [0, -Pv], color: 'd', rotulo: `P = ${Pv} N` }, { de: [0.3, 1.2], d: [0, -Fv], color: 'o', rotulo: `F = ${f(Fv, 0)} N` }];
+      base.poligonos.push({ puntos: [[0, 3], [0, 2.6]] }, { puntos: [[-0.3, 2.6], [-0.3, 0.9 + h]] }, caja(-0.3, 0.4 + h, 0.6, 0.5), { puntos: [[0.3, 2.6], [0.3, 1.2 - h]] });
+      base.flechas = [{ de: [-0.3, 0.4 + h], d: [0, -Pv], color: 'd', rotulo: `P = ${f(Pv, 0)} N`, lado: -1 }, { de: [0.3, 1.2 - h], d: [0, -Fv], color: 'o', rotulo: `F = ${f(Fv, 0)} N` }];
     } else {
-      base.discos = [{ c: [0, 1.5], r: 0.3 }];
-      base.poligonos.push({ puntos: [[-0.3, 3], [-0.3, 1.5]] }, { puntos: [[0.3, 1.5], [0.3, 2.85]] }, { puntos: [[0, 1.5], [0, 0.9]] }, caja(0, 0.4, 0.6, 0.5));
-      base.flechas = [{ de: [0, 0.4], d: [0, -Pv], color: 'd', rotulo: `P = ${Pv} N` }, { de: [0.3, 2.85], d: [0, Fv], color: 'o', rotulo: `F = ${f(Fv, 0)} N` },
+      base.discos = [{ c: [0, 1.5 + h], r: 0.3 }];
+      base.poligonos.push({ puntos: [[-0.3, 3], [-0.3, 1.5 + h]] }, { puntos: [[0.3, 1.5 + h], [0.3, 2.85 + 2 * h]] }, { puntos: [[0, 1.5 + h], [0, 0.9 + h]] }, caja(0, 0.4 + h, 0.6, 0.5));
+      base.flechas = [{ de: [0, 0.4 + h], d: [0, -Pv], color: 'd', rotulo: `P = ${f(Pv, 0)} N` }, { de: [0.3, 2.85 + 2 * h], d: [0, Fv], color: 'o', rotulo: `F = ${f(Fv, 0)} N` },
         ...(o.pT ? [{ de: [-0.3, 1.9], d: [0, Pv / 2], color: 'i', discontinua: true, rotulo: 'T', paso: o.pT }, { de: [0.3, 1.9], d: [0, Pv / 2], color: 'i', discontinua: true, rotulo: 'T', paso: o.pT }] : [])];
       if (o.cotas) base.segmentos = [{ de: [-1, 0.4], a: [-1, 1.4], color: 'i', grosor: 'variable', texto: 'sube 1 m', lado: 1, paso: o.cotas },
         { de: [1.1, 2.85], a: [1.1, 0.85], color: 'o', grosor: 'variable', texto: 'jalas 2 m', paso: o.cotas }];
+    }
+    // Mientras sube (juego animado): cuánto subió la carga y cuánta cuerda pasó por la mano, desde donde empezaron.
+    if (o.h !== undefined && h > 0.01) {
+      const mano = movil ? [0.3, 2.85] : [0.3, 1.2], dm = movil ? 2 * h : -h;
+      base.segmentos = [{ de: [-0.85, 0.4], a: [-0.85, 0.4 + h], color: 'i', grosor: 'variable', texto: `${f(h, 2)} m`, lado: -1 },
+        { de: [0.75, mano[1]], a: [0.75, mano[1] + dm], color: 'o', grosor: 'variable', texto: `${f(Math.abs(dm), 2)} m`, lado: movil ? 1 : -1 }];
     }
     return base;
   }
@@ -576,19 +594,21 @@
     temas: ['Máquinas simples'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Sostén un bulto con una polea fija o con una polea móvil. Elige su peso y compara la fuerza de la mano.',
+      consigna: 'La mano sube y baja un bulto. Elige el peso y la polea, fija o móvil; compara la fuerza y cuánto recorre la mano.',
       voz: 'Con el mismo bulto, cambia de polea. ¿Cuántos tramos sostienen?',
       controles: [
         { id: 'P', etiqueta: 'P', color: 'c-d', min: 40, max: 120, paso: 20, inicio: 80, unidad: 'N', decimales: 0 },
         { id: 'movil', etiqueta: 'Polea', opciones: [{ valor: 0, texto: 'Fija' }, { valor: 1, texto: 'Móvil' }], inicio: 0 },
+        { id: 'h', etiqueta: 'sube', color: 'c-i', min: 0, max: 0.4, paso: 0.1, inicio: 0, unidad: 'm', decimales: 2,
+          auto: { velocidad: 0.15, modo: 'rebota' } },
       ],
-      dibujo: val => ({ datos: polea(val.P, val.movil === 1), estado: {} }),
-      lectura: val => [F, ` = ${f(val.movil ? val.P / 2 : val.P, 0)} N · `, val.movil ? 'dos tramos sostienen' : 'un tramo sostiene'],
+      dibujo: val => ({ datos: polea(val.P, val.movil === 1, { h: val.h }), estado: {} }),
+      lectura: val => [F, ` = ${f(val.movil ? val.P / 2 : val.P, 0)} N · sube ${f(val.h, 2)} m · mano ${f((val.movil ? 2 : 1) * val.h, 2)} m`],
       minimo: 3,
       // Arrastra la punta del peso hacia abajo (más carga). Fija o móvil se elige con los botones: son dos montajes.
       arrastres: [{ id: 'carga', etiqueta: 'peso de la carga', color: 'c-d',
-        donde: val => { const g = LZ(polea(val.P, val.movil === 1)); return { x: g.X(val.movil === 1 ? 0 : -0.3), y: g.Y(0.4) + val.P * K6 }; },
-        mover: (pt, val) => ({ P: (pt.y - LZ(polea(val.P, val.movil === 1)).Y(0.4)) / K6 }) }],
+        donde: val => { const g = LZ(polea(val.P, val.movil === 1, { h: val.h })); return { x: g.X(val.movil === 1 ? 0 : -0.3), y: g.Y(0.4 + val.h) + val.P * K6 }; },
+        mover: (pt, val) => ({ P: (pt.y - LZ(polea(val.P, val.movil === 1, { h: val.h })).Y(0.4 + val.h)) / K6 }) }],
     },
     predice: {
       pregunta: 'Con una polea móvil sostienes 80 N con solo 40 N. Para subir el bulto 1 m, ¿cuánta cuerda tienes que jalar?',
@@ -645,13 +665,16 @@
     { id: 'm1', etiqueta: 'm izq.', min: 1, max: 4, paso: 1, inicio: 3, unidad: 'kg', decimales: 0 },
     { id: 'd1', etiqueta: 'd izq.', color: 'c-i', min: 0.5, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2 },
     { id: 'm2', etiqueta: 'm der.', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'kg', decimales: 0 },
-    { id: 'd2', etiqueta: 'd der.', color: 'c-i', min: 0.5, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2 },
+    { id: 'd2', etiqueta: 'd der.', color: 'c-i', min: 0.5, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2,
+      auto: { velocidad: 0.3, modo: 'rebota' } },
   ];
   // Lo que miden las mesas del laboratorio (las mismas cuentas de palanca, cajaRoce y lampara); lo usan la lectura y los retos.
   const torquesDe = val => [val.m1 * G * val.d1, val.m2 * G * val.d2];
   const horizontal = val => { const [t1, t2] = torquesDe(val); return Math.abs(t1 - t2) < 1e-9; };
+  // Para pausar la animación «justo»: torques a menos de 1 N·m (la barra se ve horizontal).
+  const casiHorizontal = val => { const [t1, t2] = torquesDe(val); return Math.abs(t1 - t2) <= 1; };
   const roceDe = val => { const Nv = val.m * G, desliza = val.F > MS * Nv + 1e-9; return { desliza, f: desliza ? MK * Nv : val.F }; };
-  const tensionDe = val => val.P / (2 * SEN[val.ang]);
+  const tensionDe = val => val.P / (2 * sen(val.ang));
 
   return {
     unidad: 'fisica.estatica',
@@ -703,12 +726,12 @@
     laboratorio: [
       {
         id: 'palanca-libre', titulo: 'Palanca con los dos lados libres', pieza: 'fis-lienzo',
-        consigna: 'Elige masa y distancia de cada lado. Arrastra los ganchos o las puntas de los pesos hasta dejar la barra horizontal.',
+        consigna: 'La masa de la derecha se corre sola por la barra. Pausa cuando quede horizontal, o elige masas y arrastra ganchos y pesos.',
         controles: PALANCA_LIBRE,
         dibujo: val => ({ datos: palanca(val.m1, val.d1, val.m2, val.d2), estado: {} }),
         lectura: val => {
           const [t1, t2] = torquesDe(val);
-          return [`τ: ${f(t1, 1)} N·m contra ${f(t2, 1)} N·m · ${horizontal(val) ? 'horizontal' : `baja la ${t1 > t2 ? 'izquierda' : 'derecha'}`}`];
+          return [`τ: ${f(t1, 1)} N·m contra ${f(t2, 1)} N·m · ${Math.abs(t1 - t2) < 0.05 ? 'horizontal' : `baja la ${t1 > t2 ? 'izquierda' : 'derecha'}`}`];
         },
         invitaciones: [
           { texto: 'Deja la barra horizontal con masas distintas a cada lado.',
@@ -720,6 +743,10 @@
           { texto: 'Haz que cada lado haga justo 40 N·m de torque.',
             logrado: val => torquesDe(val).every(t => Math.abs(t - 40) < 1e-9),
             bien: '4 kg a 1 m o 2 kg a 2 m: el mismo giro.' },
+          { texto: 'Pausa la barra justo cuando quede horizontal.',
+            logrado: val => casiHorizontal(val),
+            bien: 'Ahí los dos torques se igualan: peso por brazo, igual a cada lado.',
+            pista: 'Pausa cerca y ajusta d der. con − y +.' },
           { texto: 'Guarda dos casos horizontales con distinto torque.',
             logrado: (val, guardados) => horizontal(val) && guardados.some(x => horizontal(x) && Math.abs(torquesDe(x)[0] - torquesDe(val)[0]) > 1e-9)
               && guardados.some(x => x.m1 === val.m1 && x.d1 === val.d1 && x.m2 === val.m2 && x.d2 === val.d2),
@@ -764,7 +791,7 @@
             logrado: val => Math.abs(tensionDe(val) - val.P) < 1e-9,
             bien: 'A 30°, cada cuerda tira con todo el peso. ¿Y si fueran verticales?' },
           { texto: 'Con 40 N, busca el ángulo que menos tensa las cuerdas.',
-            logrado: val => val.P === 40 && nudo.juega.controles[1].opciones.every(o => tensionDe(val) <= tensionDe({ P: 40, ang: o.valor }) + 1e-9),
+            logrado: val => val.P === 40 && valoresDe(nudo.juega.controles[1]).every(a => tensionDe(val) <= tensionDe({ P: 40, ang: a }) + 1e-9),
             bien: 'Cuerdas más paradas sostienen mejor: casi todo su jalón va hacia arriba.' },
           { texto: 'Guarda dos casos con la misma tensión y distinto peso.',
             logrado: (val, guardados) => guardados.some(x => x.P !== val.P && Math.abs(tensionDe(x) - tensionDe(val)) < 1e-9)
