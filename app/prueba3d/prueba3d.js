@@ -31,7 +31,7 @@
     pantalla: `${screen.width}×${screen.height}`, ventana: `${innerWidth}×${innerHeight}`, dpr: devicePixelRatio, lienzo: `${cv.width}×${cv.height}` });
   const sinDibujo = motivo => {
     fallo(motivo);
-    const r = () => ({ prueba: 'prueba-3d', version: 2, fecha: new Date().toISOString(), nota: $('#celular').value.trim(), dispositivo: dispositivo(), gl: infoGL, error: motivo, errores: window.P3_ERRORES || [] });
+    const r = () => ({ prueba: 'prueba-3d', version: 3, fecha: new Date().toISOString(), nota: $('#celular').value.trim(), dispositivo: dispositivo(), gl: infoGL, error: motivo, errores: window.P3_ERRORES || [] });
     const texto = () => JSON.stringify(r(), null, 2);
     $('#medir-todo').onclick = $('#medir-mano').onclick = () => { $('#estado').textContent = 'No se puede medir: ' + motivo + ' Descarga el JSON igual y mándalo.'; };
     $('#copiar').onclick = () => navigator.clipboard && navigator.clipboard.writeText(texto()).then(() => { $('#estado').textContent = 'Copiado.'; });
@@ -215,7 +215,7 @@
   cambiarEscena(); tamano();
 
   // ---------- Medición (como la de Rive: cuadros por segundo, cuadros perdidos, peor pausa, tareas largas) ----------
-  const resultados = { prueba: 'prueba-3d', version: 2, fecha: '', three: '0.187.0', nota: '', dispositivo: {}, gl: infoGL, escenas: [] };
+  const resultados = { prueba: 'prueba-3d', version: 3, fecha: '', three: '0.187.0', nota: '', dispositivo: {}, gl: infoGL, escenas: [] };
   let largas = 0;
   try { new PerformanceObserver(l => { largas += l.getEntries().length; }).observe({ type: 'longtask', buffered: false }); } catch (e) { /* no disponible */ }
   function medir(ms, girar) {

@@ -32,7 +32,7 @@
 <body>
 <main>
   <header>
-    <p class="sub">Prueba de Mesa de Estudios · no es parte de la app · versión 2</p>
+    <p class="sub">Prueba de Mesa de Estudios · no es parte de la app · versión 3</p>
     <h1>¿Se siente bien girar cosas en 3D en este equipo?</h1>
     <p class="sub">Tres objetos para tocar. Gíralos con el dedo o con los botones. Al final, «Correr la medición» toma unos 30 segundos sin tocar nada.</p>
   </header>
@@ -82,8 +82,14 @@
   addEventListener('error', function (e) { P3_FALLO('Error: ' + (e.message || 'sin mensaje') + (e.filename ? ' (' + e.filename.split('/').pop() + ':' + e.lineno + ')' : '')); });
   addEventListener('unhandledrejection', function (e) { P3_FALLO('Error: ' + (e.reason && e.reason.message || e.reason)); });
 </script>
-<script src="/app/vendor/three/three-mesa.min.js"></script>
-<script src="geometria.js"></script>
-<script src="prueba3d.js"></script>
+<script>
+  // Respaldo para navegadores anteriores a Chrome 84 (three.js usa WeakRef y FinalizationRegistry al liberar memoria).
+  if (typeof WeakRef === 'undefined') window.WeakRef = function (o) { this.deref = function () { return o; }; };
+  if (typeof FinalizationRegistry === 'undefined') window.FinalizationRegistry = function () { this.register = this.unregister = function () {}; };
+</script>
+<!-- ?v= cambia en cada versión: los navegadores de fábrica guardan copias aunque se abra en incógnito. -->
+<script src="/app/vendor/three/three-mesa.min.js?v=3"></script>
+<script src="geometria.js?v=3"></script>
+<script src="prueba3d.js?v=3"></script>
 </body>
 </html>
