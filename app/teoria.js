@@ -26,7 +26,7 @@
   }
   if (typeof addEventListener === 'function') addEventListener('hashchange', () => setTimeout(() => soltarVivos(null), 0));
   const KIT_CSS = '/nucleo/kit/kit.css';
-  const BASE = ['/nucleo/kit/kit.js', '/nucleo/kit/trazo.js', '/nucleo/kit/linea-tiempo.js', '/nucleo/ecuacion.js', '/nucleo/glosario.js', '/nucleo/teoria.js'];
+  const BASE = ['/nucleo/kit/kit.js', '/nucleo/kit/vivo3d.js', '/nucleo/kit/trazo.js', '/nucleo/kit/linea-tiempo.js', '/nucleo/ecuacion.js', '/nucleo/glosario.js', '/nucleo/teoria.js'];
   const cargados = {};
   const cargar = src => cargados[src] || (cargados[src] = new Promise((ok, mal) => {
     const s = document.createElement('script'); s.src = src; s.async = false;

@@ -84,3 +84,9 @@
 .te-lupa-viva .kit-3d{flex:1;display:flex;flex-direction:column;min-height:0}
 .te-lupa-viva .kit-3d-lienzo{flex:1;width:100%;min-height:0}
 .kit-3d-volver{margin-top:8px}
+/* Pie de la pieza viva: lo que dice al tocar y el botón «Vista inicial» (nucleo/kit/vivo3d.js). */
+.kit-3d-pie{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px}
+.kit-3d-pie .kit-3d-nota{margin:0;flex:1;text-align:left}
+.kit-3d-inicio{min-height:44px;padding:6px 14px;border-radius:999px;border:2px solid var(--line,#efe3dc);background:var(--card,#fff);color:var(--ink,#2d2340);font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+.kit-3d-inicio:focus-visible{outline:3px solid var(--brand,#7f5ae0);outline-offset:2px}
+.te-lupa-viva .kit-3d-pie{padding:0 12px 12px}
