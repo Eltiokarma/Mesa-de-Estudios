@@ -341,7 +341,7 @@
       ],
     },
     regla: {
-      texto: 'El cuadrado de una suma tiene dos cuadrados y dos rectángulos iguales. La suma por la diferencia deja solo la resta de los cuadrados.',
+      texto: 'Son productos notables: el cuadrado de una suma tiene dos cuadrados y dos rectángulos iguales; la suma por la diferencia deja una diferencia de cuadrados.',
       ecuacion: ['(', a, ' + ', b, ')² = ', a, '² + ', { llave: ['2', a, b], nota: 'huecos', color: 'c-d' }, ' + ', b, '²', '   ·   ',
         '(', a, ' + ', b, ')(', a, ' − ', b, ') = ', a, '² − ', b, '²'],
       condicion: 'valen para todo par de números reales a y b; la figura de áreas solo ilustra el caso de lados positivos.',
@@ -565,6 +565,22 @@
         donde: v => { const g = BALD().geometria(rectXPQ(v)); return { x: g.xs[1][1], y: g.ys[1][1] }; },
         mover: (pt, v) => { const g = BALD().geometria(rectXPQ(v)); return { p: (pt.x - g.xs[1][0]) / g.esc, q: (pt.y - g.ys[1][0]) / g.esc }; } },
     ],
+    // Retos comprobados (docs/teoria.md §4d): miden las mismas piezas que pinta rectXPQ (x², px, qx y pq).
+    invitaciones: [
+      { texto: 'Haz que el rectángulo vuelva a ser un cuadrado.',
+        logrado: v => v.x + v.p === v.x + v.q,
+        bien: 'Con p = q sale (x + p)²: las dos piezas del medio son iguales.' },
+      { texto: 'Busca un caso con área total 30.',
+        logrado: v => (v.x + v.p) * (v.x + v.q) === 30,
+        bien: 'x² + (p + q)x + pq dio 30. ¿Hay otro trío que lo logre?' },
+      { texto: 'Haz que las dos piezas del medio juntas midan lo mismo que x².',
+        logrado: v => v.p * v.x + v.q * v.x === v.x * v.x,
+        bien: 'Pasa cuando x = p + q: el término en x iguala al cuadrado.' },
+      { texto: 'Guarda dos casos con el mismo x y el mismo p + q, pero distinto pq.',
+        logrado: (v, guardados) => guardados.some(g => g.x === v.x && g.p + g.q === v.p + v.q && g.p * g.q !== v.p * v.q)
+          && guardados.some(g => g.x === v.x && g.p === v.p && g.q === v.q),
+        bien: 'Las piezas del medio suman igual; solo cambia la de la esquina.' },
+    ],
   };
   // Mesa 2: la raíz del cuadrado contra la raíz cúbica del cubo, con x negativo (lo que la idea 2 reserva).
   const ejesIndice = v => ejesRaiz({
@@ -573,6 +589,8 @@
     puntos: [{ x: v.x, y: v.k === 2 ? Math.abs(v.x) : v.x, color: 'o', rotulo: f(v.k === 2 ? Math.abs(v.x) : v.x, 0), guias: true }],
     alt: v.k === 2 ? `Raíz de x al cuadrado: en x = ${v.x} vale ${Math.abs(v.x)}` : `Raíz cúbica de x al cubo: en x = ${v.x} vale ${v.x}`,
   });
+  const raizDe = v => (v.k === 2 ? Math.abs(v.x) : v.x);
+  const XS_INDICE = Array.from({ length: 13 }, (_, k) => k - 6);
   const mesaIndice = {
     id: 'raiz-de-la-potencia', titulo: 'Índice par contra índice impar', pieza: 'ejes',
     consigna: 'Arrastra el punto por la gráfica, también hacia los negativos. Cambia el índice y compara.',
@@ -586,6 +604,20 @@
       { id: 'punto', etiqueta: 'punto de la gráfica', color: 'c-o',
         donde: v => { const g = EJES().geometria(ejesIndice(v)); return { x: g.X(v.x), y: g.Y(v.k === 2 ? Math.abs(v.x) : v.x) }; },
         mover: (pt, v) => { const g = EJES().geometria(ejesIndice(v)); return { x: inversa(g.X, -6, 6)(pt.x) }; } },
+    ],
+    invitaciones: [
+      { texto: 'Con √(x²), pon el punto en un negativo donde la raíz dé 4.',
+        logrado: v => v.k === 2 && v.x < 0 && raizDe(v) === 4,
+        bien: '√((−4)²) = 4: el índice par devuelve el valor absoluto.' },
+      { texto: 'Haz que ∛(x³) dé un número negativo.',
+        logrado: v => v.k === 3 && raizDe(v) < 0,
+        bien: 'El índice impar conserva el signo. ¿Y el par?' },
+      { texto: 'Con √(x²), busca el punto que más se aleja de la recta y = x.',
+        logrado: v => v.k === 2 && raizDe(v) - v.x === Math.max(...XS_INDICE.map(x => raizDe({ k: 2, x }) - x)),
+        bien: 'En x = −6 la distancia es 12: la raíz da 6, no −6.' },
+      { texto: 'Guarda el mismo x con los dos índices, cuando den resultados distintos.',
+        logrado: (v, guardados) => guardados.some(g => g.x === v.x && g.k !== v.k && raizDe(g) !== raizDe(v)) && guardados.some(g => g.x === v.x && g.k === v.k),
+        bien: 'Solo los negativos los separan: ahí √(x²) = −x.' },
     ],
   };
   // Mesa 3: la tabla de la idea 1 con exponentes negativos, que la idea solo deja predecir.
@@ -610,6 +642,20 @@
       }, estado: {},
     }),
     lectura: v => [`${pot(v.a, v.m)} · ${pot(v.a, v.n)} = ${pot(v.a, v.m + v.n)} = ${valorPot(v.a, v.m + v.n)}`],
+    invitaciones: [
+      { texto: 'Consigue que el producto valga 1, sin que m ni n sean 0.',
+        logrado: v => v.m !== 0 && Math.pow(v.a, v.m) * Math.pow(v.a, v.n) === 1,
+        bien: 'Exponentes opuestos se anulan: la suma da 0 y a⁰ = 1.' },
+      { texto: 'Busca el producto más pequeño de toda la mesa.',
+        logrado: v => Math.pow(v.a, v.m + v.n) === Math.min(...[2, 3, 4, 5].map(a => Math.pow(a, -6))),
+        bien: 'Base grande y exponente muy negativo: 1/5⁶, casi nada.' },
+      { texto: 'Con m y n de distinto signo, haz que el producto sea menor que 1.',
+        logrado: v => v.m * v.n < 0 && Math.pow(v.a, v.m + v.n) < 1,
+        bien: 'Gana el exponente negativo: el resultado queda bajo la raya de fracción.' },
+      { texto: 'Guarda dos casos con la misma base y el mismo valor, pero distinto m.',
+        logrado: (v, guardados) => guardados.some(g => g.a === v.a && g.m !== v.m && g.m + g.n === v.m + v.n) && guardados.some(g => g.a === v.a && g.m === v.m && g.n === v.n),
+        bien: 'Solo importa la suma m + n: muchas parejas dan la misma.' },
+    ],
   };
 
   return {
@@ -623,6 +669,38 @@
       fuente: { titulo: 'O’Connor y Robertson, René Descartes — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Descartes/' },
     },
     laboratorio: [mesaRect, mesaIndice, mesaSigno],
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'potencia', simbolo: 'aⁿ', def: 'Producto de un número por sí mismo varias veces: 2⁴ = 2 · 2 · 2 · 2 = 16.',
+        ver: ['base', 'exponente'] },
+      { termino: 'base', def: 'El número que se repite como factor; en aⁿ es la a.', ejemplo: 'En 5³ es el 5: 5 · 5 · 5 = 125.', ver: ['exponente'] },
+      { termino: 'exponente', def: 'El número pequeño de arriba en aⁿ: cuántas veces se multiplica la a. Si es negativo, indica dividir.',
+        ejemplo: '2⁻³ = 1/2³ = 1/8.', ver: ['base', 'potencia'] },
+      { termino: 'radical', simbolo: '√', def: 'Expresión con el signo √ que pide una raíz: el número que, elevado al índice, da lo de adentro.',
+        ver: ['índice', 'radicando'] },
+      { termino: 'índice', def: 'Número chico en el signo √ que dice qué raíz se saca: 2 la cuadrada, 3 la cúbica.',
+        ejemplo: '∛8 = 2, porque 2³ = 8.', ver: ['radical'] },
+      { termino: 'radicando', def: 'Lo que está debajo del signo √.', ejemplo: 'En √(x + 9), es x + 9.', ver: ['radical'] },
+      { termino: 'producto notable', formas: ['producto notable', 'productos notables'],
+        def: 'Multiplicación tan frecuente que su resultado se escribe de memoria, sin hacer toda la cuenta.',
+        ejemplo: '(a + b)² = a² + 2ab + b².', ver: ['diferencia de cuadrados', 'identidad'] },
+      { termino: 'diferencia de cuadrados', formas: ['diferencia de cuadrados', 'diferencias de cuadrados'],
+        def: 'La resta a² − b²; sale de multiplicar la suma por la diferencia: (a + b)(a − b).',
+        ejemplo: '7² − 3² = (7 + 3)(7 − 3) = 40.', ver: ['producto notable'] },
+      { termino: 'identidad', def: 'Igualdad que se cumple con cualquier valor de las letras, no solo con algunos.',
+        ejemplo: '(a + b)² = a² + 2ab + b² vale para todo a y b.' },
+      { termino: 'distributiva', formas: ['distributiva', 'distributividad'], def: 'Propiedad que reparte un producto sobre una suma: a(b + c) = ab + ac.',
+        ejemplo: '3(x + 2) = 3x + 6.' },
+      { termino: 'radical doble', formas: ['radical doble', 'radicales dobles'], def: 'Una raíz con otra raíz adentro, de la forma √(A ± 2√B).',
+        ejemplo: '√(5 + 2√6) = √3 + √2, porque 3 + 2 = 5 y 3 · 2 = 6.', ver: ['radical'] },
+      { termino: 'denominador', def: 'El número de abajo en una fracción: entre cuánto se divide.', ejemplo: 'En 3/4 es el 4.' },
+      { termino: 'racionalizar', formas: ['racionalizar', 'racionaliza', 'racionalización'],
+        def: 'Cambiar una fracción por otra de igual valor cuyo denominador ya no tenga raíces.',
+        ejemplo: '1/√2 = √2/2.', ver: ['conjugado', 'denominador'] },
+      { termino: 'conjugado', formas: ['conjugado', 'conjugados', 'conjugada'],
+        def: 'La misma pareja de términos con el signo del medio cambiado: √a − √b y √a + √b.',
+        ejemplo: '(√5 − √3)(√5 + √3) = 5 − 3 = 2.', ver: ['racionalizar', 'diferencia de cuadrados'] },
+    ],
     ideas: [leyes, radicales, notables, dobles, racionalizar],
   };
 });
