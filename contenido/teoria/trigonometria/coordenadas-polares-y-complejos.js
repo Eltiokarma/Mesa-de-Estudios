@@ -172,7 +172,7 @@
     regla: {
       texto: 'Un punto (r; θ) está en x = r cos θ, y = r sen θ. Tiene infinitos nombres: sumar vueltas a θ, o cambiar el signo de r y sumar 180°.',
       ecuacion: [xx, ' = ', { llave: [r], nota: 'al polo', color: 'c-d' }, ' cos ', { llave: [th], nota: 'el giro', color: 'c-o' }, SEP, yy, ' = ', r, ' sen ', th, SEP, '(', r, '; ', th, ') = (−', r, '; ', th, ' + 180°)'],
-      condicion: 'θ desde el eje x positivo, antihorario. En el polo, r = 0 y cualquier θ sirve.',
+      condicion: 'θ desde el eje polar (el eje x positivo), antihorario. En el polo, r = 0 y cualquier θ sirve.',
       voz: 'Muchos nombres, un solo punto.',
     },
     ahoraTu: {
@@ -265,7 +265,7 @@
     regla: {
       texto: 'Todo z ≠ 0 se escribe con su módulo y su argumento. El argumento se elige por el cuadrante de (a; b); arctan(b/a) solo da el ángulo de referencia.',
       ecuacion: ['z = ', a, ' + ', b, 'i = ', { llave: [mz], nota: 'el largo', color: 'c-d' }, ' cis ', { llave: [th], nota: 'el giro', color: 'c-o' }, SEP, 'cis ', th, ' = cos ', th, ' + i sen ', th, SEP, mz, ' = √(', { sup: [a, '2'] }, ' + ', { sup: [b, '2'] }, ')'],
-      condicion: '|z| nunca es negativo. θ se repite cada 360°; z = 0 no tiene argumento.',
+      condicion: '|z| nunca es negativo. θ se repite cada 360°; z = 0 no tiene argumento. La unidad imaginaria i cumple i² = −1.',
       voz: 'El cuadrante decide; la tangente solo ayuda.',
     },
     ahoraTu: {
@@ -593,9 +593,12 @@
     arcos: [{ de: 0, a: val.t, r: 0.45, color: 'o', rotulo: `${f(val.t)}°` }],
   });
   // Mesa 2: z = a + bi en los cuatro cuadrantes, con arctan(b/a) a la vista para compararlo con el argumento.
-  // Mesa 3: z y w libres; la flecha verde es z·w o z/w.
+  const cartLibre = val => [val.r * Math.cos(rad(val.t)), val.r * Math.sin(rad(val.t))];
+  const argDe = (av, bv) => mod360(deg(Math.atan2(bv, av)));
+  // Mesa 3: z y w libres; la flecha verde es z·w o z/w (largo R y giro T, sin reducir a una vuelta).
+  const resultado = val => (val.op === 'mul' ? { R: val.rz * val.rw, T: val.tz + val.tw } : { R: val.rz / val.rw, T: val.tz - val.tw });
   function operacion(val) {
-    const mul = val.op === 'mul', R = mul ? val.rz * val.rw : val.rz / val.rw, T = mul ? val.tz + val.tw : val.tz - val.tw;
+    const mul = val.op === 'mul', { R, T } = resultado(val);
     return {
       ventana: { x: [-4.3, 4.3], y: [-4.3, 4.3] }, numeros: 1, nombres: ['Re', 'Im'],
       circulos: [{ r: 1, discontinua: true }],
@@ -610,6 +613,34 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/trig-plano.js'],
+    glosario: [
+      { termino: 'coordenadas polares', def: 'Par (r; θ) que ubica un punto por su distancia al polo y su giro desde el eje polar.',
+        ejemplo: '(2; 90°) es el punto (0; 2) del plano.', formas: ['coordenadas polares', 'coordenada polar', 'polares'], ver: ['polo', 'eje polar'] },
+      { termino: 'polo', def: 'Punto fijo, el origen, desde el que se mide la distancia r de cada punto.',
+        ejemplo: 'En el polo, r = 0 con cualquier θ.', ver: ['coordenadas polares'] },
+      { termino: 'eje polar', def: 'Rayo fijo que sale del polo hacia la derecha, el eje x positivo; desde él se mide θ.',
+        ver: ['polo'] },
+      { termino: 'número complejo', simbolo: 'z', def: 'Número de la forma a + bi, con a y b reales; se dibuja como el punto (a; b).',
+        ejemplo: 'z = 3 + 4i es el punto (3; 4).', formas: ['número complejo', 'números complejos', 'complejo', 'complejos'], ver: ['unidad imaginaria', 'módulo', 'argumento'] },
+      { termino: 'unidad imaginaria', simbolo: 'i', def: 'Número i cuyo cuadrado es −1. Multiplicar por él gira 90° en el plano.',
+        ejemplo: 'i² = −1 y i · i · i · i = 1.', ver: ['número complejo'] },
+      { termino: 'plano complejo', def: 'Plano donde cada a + bi es el punto (a; b): parte real en horizontal, imaginaria en vertical.',
+        ver: ['eje real', 'número complejo'] },
+      { termino: 'eje real', def: 'Eje horizontal del plano de los complejos: ahí están los números sin parte imaginaria.',
+        ejemplo: '−2 = −2 + 0i está sobre él, con argumento 180°.', formas: ['eje real', 'ejes reales'], ver: ['plano complejo'] },
+      { termino: 'módulo', simbolo: '|z|', def: 'Largo de la flecha de un complejo: su distancia al origen. Nunca es negativo.',
+        ejemplo: '|3 + 4i| = √(9 + 16) = 5.', ver: ['argumento'] },
+      { termino: 'argumento', simbolo: 'θ', def: 'Ángulo que gira la flecha de un complejo desde el eje real positivo; el cuadrante lo decide.',
+        ejemplo: '−1 − i tiene 225°, no 45°.', ver: ['módulo', 'eje real'] },
+      { termino: 'cis', def: 'Abreviatura de cos θ + i sen θ: el punto de largo 1 con giro θ.',
+        ejemplo: '2 cis 90° = 2(0 + i · 1) = 2i.', formas: ['cis'], ver: ['forma trigonométrica'] },
+      { termino: 'forma trigonométrica', def: 'Escritura r cis θ de un complejo, con su módulo r y su argumento θ.',
+        ejemplo: '1 + i = √2 cis 45°.', formas: ['forma trigonométrica', 'forma polar'], ver: ['cis', 'forma exponencial'] },
+      { termino: 'forma exponencial', def: 'Escritura r·e^(iθ) de un complejo: el mismo largo r y el mismo giro θ que r cis θ.',
+        ejemplo: '2·e^(iπ/2) = 2 cis 90° = 2i.', ver: ['forma trigonométrica'] },
+      { termino: 'fórmula de De Moivre', def: '(r cis θ)ⁿ = rⁿ cis nθ: el largo se eleva a la n, y el giro se multiplica.',
+        ejemplo: '(1 + i)⁸ = (√2)⁸ cis 360° = 16.', formas: ['fórmula de De Moivre', 'De Moivre'], ver: ['forma trigonométrica'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): tres mesas sin preguntas. La primera deja r negativo (el caso que la idea 1
     // reserva para la predicción) y muestra el otro nombre del punto; la segunda abre z a los cuatro cuadrantes, con
     // arctan(b/a) al lado del argumento; la tercera suelta z y w a la vez y deja elegir producto o cociente.
@@ -622,7 +653,7 @@
           { id: 't', etiqueta: 'θ', color: 'c-o', min: 0, max: 360, paso: 15, inicio: 30, unidad: '°', decimales: 0 },
         ],
         dibujo: val => ({ datos: polarLibre(val), estado: {} }),
-        lectura: val => [`(${f(val.r)}; ${f(val.t)}°) = (${f(-val.r)}; ${f(mod360(val.t + 180))}°)`, SEP, '(', xx, '; ', yy, `) = (${f(val.r * Math.cos(rad(val.t)))}; ${f(val.r * Math.sin(rad(val.t)))})`],
+        lectura: val => [`(${f(val.r)}; ${f(val.t)}°) = (${f(-val.r)}; ${f(mod360(val.t + 180))}°)`, SEP, '(', xx, '; ', yy, `) = (${f(cartLibre(val)[0])}; ${f(cartLibre(val)[1])})`],
         arrastres: [
           { id: 'punto', etiqueta: 'punto: r con signo sobre la recta', color: 'c-d',
             donde: val => enP(polarLibre(val), val.r, val.t),
@@ -630,6 +661,20 @@
           { id: 'rayo', etiqueta: 'punta del rayo: gira θ', color: 'c-o',
             donde: val => enP(polarLibre(val), RAYO, val.t),
             mover: (pt, val) => ({ t: TP().anguloDe(polarLibre(val), pt, { cerca: val.t }) }) },
+        ],
+        invitaciones: [
+          { texto: 'Con un r negativo, lleva el punto a (0; 2).',
+            logrado: val => { const [x, y] = cartLibre(val); return val.r < 0 && Math.abs(x) < 1e-9 && Math.abs(y - 2) < 1e-9; },
+            bien: '(−2; 270°) y (2; 90°) son el mismo punto: dos nombres para un lugar.' },
+          { texto: 'Con r negativo, pon el punto en el primer cuadrante.',
+            logrado: val => { const [x, y] = cartLibre(val); return val.r < 0 && x > 1e-9 && y > 1e-9; },
+            bien: 'El rayo apunta al tercer cuadrante y r negativo camina al revés.' },
+          { texto: 'Lleva el punto al polo.',
+            logrado: val => val.r === 0,
+            bien: 'En el polo, r = 0: gira θ cuanto quieras y el punto no se mueve.' },
+          { texto: 'Guarda dos casos con el mismo θ y r de signos opuestos.',
+            logrado: (val, guardados) => guardados.some(g => guardados.some(q => g.t === q.t && g.r !== 0 && g.r === -q.r)),
+            bien: 'Cambiar el signo de r refleja el punto a través del polo.' },
         ],
       },
       {
@@ -642,12 +687,30 @@
         dibujo: val => ({ datos: complejo(val.a, val.b), estado: {} }),
         lectura: val => {
           if (!val.a && !val.b) return ['z = 0: sin argumento'];
-          const t = G(mod360(deg(Math.atan2(val.b, val.a))));
+          const t = G(argDe(val.a, val.b));
           return [mz, ` = ${f(Math.hypot(val.a, val.b))}`, SEP, th, ` = ${t}`, SEP, val.a ? `arctan(b/a) = ${G(deg(Math.atan(val.b / val.a)))}` : 'a = 0: sin arctan'];
         },
         arrastres: [{ id: 'punta-z', etiqueta: 'punta de z = a + bi', color: 'c-i',
           donde: val => TP().enPx(complejo(val.a, val.b), val.a, val.b),
           mover: (pt, val) => { const q = TP().delPx(complejo(val.a, val.b), pt); return { a: q.x, b: q.y }; } }],
+        invitaciones: [
+          { texto: 'Busca un z donde arctan(b/a) sí dé el argumento.',
+            logrado: val => val.a !== 0 && Math.abs(deg(Math.atan(val.b / val.a)) - argDe(val.a, val.b)) < 1e-9,
+            bien: 'Solo en el primer cuadrante coinciden. En los otros, el cuadrante corrige.' },
+          { texto: 'Haz que el argumento sea justo 135°.',
+            logrado: val => (val.a || val.b) && Math.abs(argDe(val.a, val.b) - 135) < 1e-9,
+            bien: 'arctan(b/a) diría −45°; en el segundo cuadrante se suman 180°.' },
+          { texto: 'Consigue un z de módulo 2,5 que no esté sobre un eje.',
+            logrado: val => val.a !== 0 && val.b !== 0 && Math.abs(Math.hypot(val.a, val.b) - 2.5) < 1e-9,
+            bien: '1,5 y 2 son un triángulo 3-4-5 a la mitad: |z| = 2,5.' },
+          { texto: 'Busca el z de mayor módulo con argumento en el cuarto cuadrante.',
+            logrado: val => { const t = argDe(val.a, val.b); return t > 270 && t < 360 && Math.hypot(val.a, val.b) >= Math.hypot(3, 3) - 1e-9; },
+            bien: 'Una esquina de la mesa: |z| = 3√2 y θ = 315°.' },
+          { texto: 'Guarda dos z con el mismo arctan(b/a) y argumentos distintos.',
+            logrado: (val, guardados) => guardados.some(g => guardados.some(q => g.a !== 0 && q.a !== 0
+              && Math.abs(Math.atan(g.b / g.a) - Math.atan(q.b / q.a)) < 1e-12 && Math.abs(argDe(g.a, g.b) - argDe(q.a, q.b)) > 1e-9)),
+            bien: 'z y −z dan el mismo arctan(b/a): solo el cuadrante los separa.' },
+        ],
       },
       {
         id: 'producto-cociente', titulo: 'Dos flechas: multiplicar o dividir', pieza: 'trig-plano',
@@ -661,7 +724,7 @@
         ],
         dibujo: val => ({ datos: operacion(val), estado: {} }),
         lectura: val => {
-          const mul = val.op === 'mul', R = mul ? val.rz * val.rw : val.rz / val.rw, T = mul ? val.tz + val.tw : val.tz - val.tw;
+          const mul = val.op === 'mul', { R, T } = resultado(val);
           return [mul ? 'z·w = ' : 'z/w = ', `${f(R)} cis ${G(mod360(T))}`, SEP, `giro ${mul ? `${f(val.tz)}° + ${f(val.tw)}°` : `${f(val.tz)}° − ${f(val.tw)}°`}`];
         },
         arrastres: [
@@ -671,6 +734,23 @@
           { id: 'punta-w', etiqueta: 'punta de w: largo y giro', color: 'c-o',
             donde: val => enP(operacion(val), val.rw, val.tw),
             mover: (pt, val) => { const u = puntaDe(operacion(val), pt, val.tw); return { rw: u.m, tw: u.t }; } },
+        ],
+        invitaciones: [
+          { texto: 'Consigue que z·w caiga sobre el eje real positivo.',
+            logrado: val => val.op === 'mul' && Math.abs(mod360(resultado(val).T)) < 1e-9,
+            bien: 'Los giros suman una vuelta exacta, o cero: el producto queda sin giro.' },
+          { texto: 'Haz que z·w apunte justo al revés que z.',
+            logrado: val => val.op === 'mul' && Math.abs(mod360(resultado(val).T - val.tz) - 180) < 1e-9,
+            bien: 'w gira 180°: multiplicar por un número negativo da media vuelta.' },
+          { texto: 'Con dividir, logra que z/w mida exactamente 1.',
+            logrado: val => val.op === 'div' && Math.abs(resultado(val).R - 1) < 1e-9,
+            bien: 'Mismo largo arriba y abajo: dividir solo dejó el giro.' },
+          { texto: 'Busca la flecha verde más larga posible.',
+            logrado: val => resultado(val).R >= resultado({ op: 'mul', rz: 2, rw: 2, tz: 0, tw: 0 }).R - 1e-9,
+            bien: '2 · 2 o 2 / 0,5: los dos dan 4. Los largos se multiplican o se dividen.' },
+          { texto: 'Guarda un producto y un cociente con los mismos z y w.',
+            logrado: (val, guardados) => guardados.some(g => guardados.some(q => g.op !== q.op && g.rz === q.rz && g.tz === q.tz && g.rw === q.rw && g.tw === q.tw)),
+            bien: 'Uno suma el giro de w y el otro lo resta: quedan simétricos respecto a z.' },
         ],
       },
     ],
