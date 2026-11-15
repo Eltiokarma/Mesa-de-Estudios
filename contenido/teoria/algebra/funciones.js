@@ -862,7 +862,7 @@
     glosario: [
       { termino: 'función', formas: ['función', 'funciones'], def: 'Regla que a cada entrada permitida le asigna una sola salida.',
         ejemplo: 'f(x) = x²: a 3 le toca 9, y solo 9.', ver: ['dominio', 'rango'] },
-      { termino: 'rango', def: 'Las salidas que de verdad se obtienen al usar todas las entradas permitidas.', ejemplo: 'f(x) = x² tiene rango [0, +∞).',
+      { termino: 'rango', def: 'En una función, las salidas que de verdad se obtienen. En una matriz, cuántas filas independientes tiene.', ejemplo: 'f(x) = x² tiene rango [0, +∞).',
         ver: ['dominio', 'función'] },
       { termino: 'gráfica', formas: ['gráfica', 'gráficas'], def: 'Todos los puntos (x; f(x)) dibujados en el plano.', ver: ['función'] },
       { termino: 'eje de simetría', def: 'Recta vertical que parte la parábola en dos mitades iguales; pasa por el vértice.', ejemplo: 'y = x² − 2x: es x = 1.' },

@@ -254,9 +254,9 @@
       };
     })(),
     regla: {
-      texto: 'La transpuesta cambia filas por columnas. La traza suma la diagonal de una matriz cuadrada, y no cambia al transponer. Simétrica significa igual a su transpuesta.',
+      texto: 'La transpuesta cambia filas por columnas. La traza suma la diagonal de una matriz cuadrada, y no cambia al transponer. Una matriz simétrica es igual a su transpuesta.',
       ecuacion: [{ sub: ['(Aᵀ)', 'ij'] }, ' = ', { llave: [{ sub: [A, 'ji'] }], nota: 'índices al revés', color: 'c-o' }, '   ·   ', 'tr(Aᵀ) = tr(', A, ')'],
-      condicion: 'diagonal, identidad y triangular son matrices cuadradas; una de m×n tiene transpuesta de n×m.',
+      condicion: 'diagonal, triangular y la matriz identidad son cuadradas; una de m×n tiene transpuesta de n×m.',
     },
     ahoraTu: {
       pieza: 'alg-tabla',
@@ -500,7 +500,7 @@
           { estado: { corte: 1 }, texto: 'Primero, el determinante. Si fuera 0, no habría inversa.', ecuacion: [`det A = 4·2 − 2·3 = ${f(D)}`] },
           { estado: { corte: 2 }, texto: 'Adjunta: se intercambian a y d, y b y c cambian de signo.', ecuacion: [`adj A = ${mt(J)}`] },
           { estado: { corte: 3 }, texto: 'La inversa es la adjunta dividida entre el determinante.', ecuacion: ['A⁻¹ = ', { frac: ['adj A', `${f(D)}`] }] },
-          { estado: { corte: 3 }, texto: 'Comprobación: A por su inversa da la identidad.', ecuacion: [`A·A⁻¹ = ${mt(P)} = I`] },
+          { estado: { corte: 3 }, texto: 'Comprobación: A por su inversa da la matriz identidad.', ecuacion: [`A·A⁻¹ = ${mt(P)} = I`] },
         ],
       };
     })(),
@@ -545,6 +545,10 @@
   // Cambia: la tercera fila · Permanece: las dos primeras filas · Progresa: la eliminación que deja ceros · Se reserva:
   // la fila que se vuelve nula · Debe verse: rango = filas no nulas al escalonar, no el tamaño.
   const R1 = [1, 2, 3], R2 = [2, 1, 0];
+  const M2 = v => [[v.a, v.b], [v.c, v.d]];
+  // El determinante más negativo de la mesa de la inversa (casillas de −3 a 4): se calcula, no se escribe.
+  const MIN_DET_INV = Math.min(...[-3, 4].flatMap(a => [-3, 4].flatMap(b => [-3, 4].flatMap(c => [-3, 4].map(d => det2([[a, b], [c, d]]))))));
+  const fila3 = v => { const F3 = comb(v.x, v.y); F3[2] += v.e; return F3; };
   const comb = (x, y) => R1.map((v, k) => x * v + y * R2[k]);
   const filaTxt = v => v.map(x => f(x)).join(', ');
   const escalonar = M => {
@@ -699,7 +703,27 @@
       manijaColumna(EJL, 'columna-1', 'punta de la columna 1 (a, c)', 'c-o', 'a', 'c'),
       manijaColumna(EJL, 'columna-2', 'punta de la columna 2 (b, d)', 'c-i', 'b', 'd'),
     ],
+    // Retos comprobados (docs/teoria.md §4d): el determinante es det2(), el mismo que da el área y el color.
+    invitaciones: [
+      { texto: 'Aplasta el paralelogramo en una recta, con las dos columnas distintas y no nulas.',
+        logrado: v => det2([[v.a, v.b], [v.c, v.d]]) === 0 && (v.a !== v.b || v.c !== v.d) && (v.a || v.c) !== 0 && (v.b || v.d) !== 0,
+        bien: 'Columnas alineadas: det = 0 y la matriz no tiene inversa.' },
+      { texto: 'Consigue área 1 sin que sea el cuadrado punteado.',
+        logrado: v => Math.abs(det2([[v.a, v.b], [v.c, v.d]])) === 1 && !(v.a === 1 && v.c === 0 && v.b === 0 && v.d === 1),
+        bien: 'Otra forma, la misma área: el determinante mide área.' },
+      { texto: 'Haz que el determinante sea negativo.',
+        logrado: v => det2([[v.a, v.b], [v.c, v.d]]) < 0,
+        bien: 'Paralelogramo volteado: la columna 2 quedó a la derecha de la 1.' },
+      { texto: 'Busca el mayor determinante de la mesa.',
+        logrado: v => det2([[v.a, v.b], [v.c, v.d]]) === MAX_DET_COL,
+        bien: '3 · 2 − 3 · (−2) = 12: columnas largas y casi perpendiculares.' },
+      { texto: 'Guarda dos casos con las columnas cambiadas de lugar.',
+        logrado: (v, guardados) => det2([[v.a, v.b], [v.c, v.d]]) !== 0 && guardados.some(g => g.a === v.b && g.c === v.d && g.b === v.a && g.d === v.c)
+          && guardados.some(g => ['a', 'b', 'c', 'd'].every(k => g[k] === v[k])),
+        bien: 'El mismo paralelogramo, con el signo del determinante cambiado.' },
+    ],
   };
+  const MAX_DET_COL = Math.max(...[-3, 3].flatMap(a => [-3, 3].flatMap(b => [-2, 2].flatMap(c => [-2, 2].map(d => det2([[a, b], [c, d]])))))); 
 
   return {
     unidad: 'algebra.matrices-y-determinantes',
@@ -711,10 +735,58 @@
       pregunta: '¿Qué podría medir un solo número de una tabla?',
       fuente: { titulo: 'O’Connor y Robertson, Matrices and determinants — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Matrices_and_determinants/' },
     },
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'matriz', formas: ['matriz', 'matrices'], def: 'Tabla de números ordenados en filas y columnas.', ejemplo: 'Una de 2×3 tiene 2 filas y 3 columnas.' },
+      { termino: 'matriz cuadrada', formas: ['matriz cuadrada', 'matrices cuadradas'], def: 'La que tiene tantas filas como columnas.', ver: ['diagonal'] },
+      { termino: 'diagonal', formas: ['diagonal', 'diagonales'], def: 'En una tabla cuadrada, las casillas de arriba a la izquierda hasta abajo a la derecha.',
+        ejemplo: 'En [[1, 2], [3, 4]] son 1 y 4.', ver: ['traza'] },
+      { termino: 'transpuesta', formas: ['transpuesta', 'transpuestas'], simbolo: 'Aᵀ', def: 'La matriz que resulta de cambiar las filas por las columnas.',
+        ejemplo: 'La fila (1, 2) pasa a ser columna.' },
+      { termino: 'traza', def: 'La suma de los números de la diagonal de una matriz cuadrada.', ejemplo: 'En [[1, 2], [3, 4]] es 1 + 4 = 5.' },
+      { termino: 'matriz simétrica', formas: ['matriz simétrica', 'matrices simétricas'], def: 'La que es igual a su transpuesta: se refleja en la diagonal.',
+        ejemplo: '[[1, 5], [5, 2]].', ver: ['transpuesta'] },
+      { termino: 'matriz identidad', simbolo: 'I', def: 'Cuadrada, con 1 en la diagonal y 0 en lo demás: multiplicar por ella no cambia nada.' },
+      { termino: 'determinante', formas: ['determinante', 'determinantes'], simbolo: 'det A',
+        def: 'Número de una matriz cuadrada: en 2×2, ad − bc, el área con signo del paralelogramo de sus columnas.',
+        ejemplo: 'det [[3, −1], [1, 2]] = 6 + 1 = 7.', ver: ['inversa'] },
+      { termino: 'cofactor', formas: ['cofactor', 'cofactores'], def: 'El determinante que queda al tachar una fila y una columna, con un signo según su lugar.' },
+      { termino: 'adjunta', formas: ['adjunta', 'adjuntas'], simbolo: 'adj A', def: 'La transpuesta de la matriz de cofactores; dividida entre det A da la inversa.',
+        ejemplo: 'adj [[a, b], [c, d]] = [[d, −b], [−c, a]].', ver: ['cofactor', 'inversa'] },
+      { termino: 'escalonar', formas: ['escalonar', 'escalona', 'escalonada'], def: 'Restar múltiplos de unas filas a otras hasta dejar ceros bajo cada primer número.', ver: ['rango'] },
+      { termino: 'independiente', formas: ['independiente', 'independientes'], def: 'Así es una fila que no se obtiene sumando múltiplos de las demás.', ver: ['rango'] },
+    ],
     laboratorio: [
       columnasLibres,
-      Object.assign({ id: 'adjunta-inversa', titulo: 'Adjunta e inversa', pieza: 'alg-tabla' }, inversa.juega, { minimo: undefined }),
-      Object.assign({ id: 'rango-libre', titulo: 'Filas que aportan', pieza: 'alg-tabla' }, rangoIdea.juega, { minimo: undefined }),
+      Object.assign({ id: 'adjunta-inversa', titulo: 'Adjunta e inversa', pieza: 'alg-tabla', invitaciones: [
+        { texto: 'Haz que A no tenga inversa, sin usar ningún 0.',
+          logrado: v => det2(M2(v)) === 0 && [v.a, v.b, v.c, v.d].every(x => x !== 0),
+          bien: 'Filas proporcionales: det = 0 y no hay inversa.' },
+        { texto: 'Consigue una inversa de puros enteros, con A distinta de la identidad.',
+          logrado: v => Math.abs(det2(M2(v))) === 1 && !(v.a === 1 && v.b === 0 && v.c === 0 && v.d === 1),
+          bien: 'Con det = ±1, dividir entre det no deja fracciones.' },
+        { texto: 'Haz que A sea su propia inversa, sin ser la identidad.',
+          logrado: v => { const D = det2(M2(v)), J = adj2(M2(v)); return D !== 0 && J.every((fila, i) => fila.every((x, j) => x / D === M2(v)[i][j])) && !(v.a === 1 && v.b === 0 && v.c === 0 && v.d === 1); },
+          bien: 'Aplicarla dos veces deja todo como estaba.' },
+        { texto: 'Busca el determinante más negativo.',
+          logrado: v => det2(M2(v)) === MIN_DET_INV,
+          bien: '(−3) · 4 − 4 · 4 = −28: ad chico y bc grande.' },
+      ] }, inversa.juega, { minimo: undefined }),
+      Object.assign({ id: 'rango-libre', titulo: 'Filas que aportan', pieza: 'alg-tabla', invitaciones: [
+        { texto: 'Haz que el rango sea 3.',
+          logrado: v => rango([R1, R2, fila3(v)]) === 3,
+          bien: 'La tercera fila ya no sale de las otras dos: aporta.' },
+        { texto: 'Con el ajuste en 0, haz que la tercera fila sea toda de ceros.',
+          logrado: v => v.e === 0 && fila3(v).every(x => x === 0),
+          bien: 'Una fila de ceros nunca aporta al rango.' },
+        { texto: 'Haz que la tercera fila sea el doble de la primera.',
+          logrado: v => fila3(v).every((x, k) => x === 2 * R1[k]),
+          bien: 'Proporcional a otra fila: el rango sigue en 2.' },
+        { texto: 'Guarda dos casos con distinto rango, cambiando solo el ajuste.',
+          logrado: (v, guardados) => guardados.some(g => g.x === v.x && g.y === v.y && g.e !== v.e && rango([R1, R2, fila3(g)]) !== rango([R1, R2, fila3(v)]))
+            && guardados.some(g => g.x === v.x && g.y === v.y && g.e === v.e),
+          bien: 'Un número cambiado basta para que la fila deje de depender.' },
+      ] }, rangoIdea.juega, { minimo: undefined }),
     ],
     ideas: [producto, transpuesta, determinante, inversa, rangoIdea],
   };
