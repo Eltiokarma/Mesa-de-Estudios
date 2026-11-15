@@ -1,6 +1,6 @@
 # Pendientes y traspaso
 
-Actualizado el 14 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Teoría interactiva: molde hecho» y después «Estado al 13 nov, tarde». Justo antes van lo recién hecho: la prueba de estrés de Rive (versión 0, a la espera de la cifra del celular de Gerson) y la cola de repaso.
+Actualizado el 15 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
 
 ## Cómo arrancar una sesión nueva
 
@@ -26,6 +26,73 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 
 - **Si el servidor local muere:** se reinicia con `node herramientas/servidor.js`. También hay que reiniciarlo después de cambiar `herramientas/construir-catalogo.js`, porque guarda el módulo en memoria.
 - **Para verificar a mano:** Playwright y Chromium ya vienen instalados en el entorno en la nube (`require('playwright')`). Las capturas *fullPage* pierden la emulación táctil, así que lo que depende de `hover` se revisa con capturas normales.
+
+## Recorrido satisfactorio (15 nov): que todos los alumnos se vayan contentos
+
+**Qué es.** Sale de la revisión de ChatGPT, que evaluó la app como lo harían ocho alumnos ficticios. Está en `docs/recorrido.md`, con la tabla de qué recibe cada alumno.
+
+**Decisiones de Gerson:**
+- La prueba de entrada del curso es opcional, y opcional antes del laboratorio.
+- La del tema es obligatoria y calibra la teoría.
+- Diseñar para los ocho alumnos.
+- Rive espera la prueba de estrés.
+- La sincronización de la colección espera el backend.
+
+**Hecho en la rama `claude/awesome-einstein-ch5g9a`:**
+- **Avance honesto** en cuatro niveles (`nucleo/avance.js`). Abrir ya no es estudiar.
+- **Prueba del tema** con una pregunta por idea. Calibra la teoría y anota `expuesto`.
+- **El simulacro y las minipruebas se retoman** sin duplicar.
+- **«Terminar»** resume el día y deja un próximo paso.
+- **El inicio** ofrece seguir donde quedaste.
+- **Colección de casos con nombre:** en el celular, reconstruida con el motor.
+- **En el laboratorio:** «Volver al inicio» e invitaciones (por ahora, solo en física).
+- **Ayuda** tras dos errores en «Ahora tú».
+- **Preferencias:** compañero discreto y sin festejos.
+- **Las líneas de los compañeros:** llegada, regreso, despedida y ayuda.
+- **Muestra jugable** sin registrarse y promesa nueva de la portada.
+
+**Pendiente:** está en `docs/recorrido.md`, sección «Pendiente»:
+- invitaciones en las 434 mesas;
+- sorpresas del motor;
+- reto con final;
+- ayuda en la práctica;
+- colección con cuenta;
+- turnos en un mismo celular;
+- prueba con 5 alumnos.
+
+### Rive y los compañeros: el bloque de la revisión, conciliado con lo que ya estaba
+
+Todo espera la prueba de estrés en el celular de Gerson (sección «Prueba de estrés de Rive», más abajo) y el plan pagado de Rive.
+
+- [ ] **La prueba de estrés** (`app/mascotas/estres.html`) en el celular de 4 GB. Con sus cifras se fija la regla 6.3: cuántos lienzos y formas animadas, el peso total y el umbral para pasar al respaldo SVG.
+- [ ] **El contrato** sigue igual:
+  - máquina `Mesa`;
+  - `pose` de 0 a 7;
+  - `reducido`.
+
+  Falta documentar cómo entran las expresiones E0–E9 (hoy van en `data-expresion`, sin conectar a un `.riv`), los gestos G1–G5 y la mirada.
+- [ ] **Un compañero completo primero:** llegada, regreso, curiosidad, ayuda tras error, confirmación de guardado y despedida. Se valida antes de replicarlo en los otros siete.
+- [ ] **Cada compañero actúa distinto con el mismo objeto,** según la guía: Tilo observa y prueba; Neri manipula; Luma ordena para comparar; Faro propone una variante.
+- [ ] **Un guion por secuencia.** Cada guion fija:
+  - las poses clave;
+  - anticipación, acción y asentamiento;
+  - la expresión y la mirada;
+  - el objeto;
+  - el disparador, la salida y la interrupción.
+
+  Los bocetos y la silueta se validan antes de vectorizar.
+- [ ] **E9 como pausa disponible**, con una despedida tranquila.
+- [ ] **Transiciones al terminar una unidad:** con estado final estático, interrumpibles y con movimiento reducido. La actuación no demora el uso.
+- [ ] **Integrar un `.riv` real** y probarlo:
+  - el contrato;
+  - el respaldo SVG;
+  - el archivo ausente o incompatible;
+  - la descarga cortada;
+  - sin conexión;
+  - la pestaña oculta.
+- [ ] **El inventario final:** el catálogo de unos 15 archivos (`pogil-v2-rive.md` §6.2) se concilia con los ocho compañeros.
+- [ ] **El gato de los premios y de lectura:** se cambia por el compañero del curso, y se unifican los eventos de cierre.
+- [ ] **La versión A de MRUV** entra al recorrido publicado cuando pase sus verificaciones. `herramientas/jugar-primero-pendientes.json` ya solo tiene `mruv`.
 
 ## Teoría interactiva: molde hecho y ocho cursos en paralelo (14 nov, noche)
 

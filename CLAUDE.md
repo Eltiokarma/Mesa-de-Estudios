@@ -29,6 +29,7 @@ docs/publicar.md               cómo publicar la app en Vercel (vercel.json, .ve
 docs/guia-profesores.md        guía para el profesor del colegio piloto (enlaces, pruebas, laboratorio, datos)
 docs/pogil-v2-rive.md          auditoría de las escenas y dirección: POGIL v2, cinco rutas, dónde entra Rive, progresiones y orden de trabajo
 docs/temario-completo.md       las 152 unidades con ruta, gesto, tramo y campos abiertos para investigar (copia de trabajo de Gerson)
+docs/recorrido.md              recorrido para los ocho alumnos ficticios: avance honesto (nucleo/avance.js), prueba del tema, retomar, «Terminar», colección y muestra
 docs/teoria.md                 contrato de la teoría interactiva (molde de las 152 unidades); fuentes investigadas en docs/teoria/
 contenido/teoria/<curso>/<unidad>.js  teoría de cada unidad (cinco momentos por idea); lector en app/teoria.js, formato en nucleo/teoria.js
 docs/escena-viva.md            contrato del rediseño: el ejercicio se cuenta solo (topes de texto, formato escena/pasos/fantasmas, kit, mascota Rive)

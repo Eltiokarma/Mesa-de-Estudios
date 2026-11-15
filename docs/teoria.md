@@ -170,6 +170,15 @@ arrastres: [{
   - el caso raro que la idea no deja probar.
 - **Ejemplo:** en física, la «pista con acelerador» junta MRU y MRUV en una sola mesa.
 
+## 4c. Recorrido (15 nov): prueba del tema, colección e invitaciones
+
+Detalle en `docs/recorrido.md`.
+
+- **Prueba de entrada del tema.** Es obligatoria antes de la teoría, los ejercicios y el simulacro. Sale sola de los `ahoraTu` (semilla 500 + k, una pregunta por idea): cada idea necesita un `ahoraTu` cuya semilla 500 en adelante dé una pregunta válida, y el validador ya lo exige con sus 40 o más semillas.
+- **Calibración.** Las ideas acertadas en esa prueba empiezan por la regla.
+- **Colección.** Lo que el alumno guarda en el laboratorio es `{ unidad, mesa, valores }`, y la figura se reconstruye con `mesa.dibujo(valores)`. Por eso no se cambia el `id` de una mesa ni el de sus controles sin migrar `est.coleccion`.
+- **Invitaciones** (`mesa.invitaciones`, de 1 a 6, de 16 palabras o menos). Son retos libres, como «Haz que el carrito se detenga justo antes de los 10 m». Tienen que poder hacerse con los controles y rangos reales de la mesa: cada una se comprueba a mano o con el motor antes de escribirla.
+
 ## 5. Topes de texto (los vigila `contenido/teoria/teoria.test.js`)
 
 | Campo | Palabras |
