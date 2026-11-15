@@ -2786,10 +2786,12 @@
       "archivo": "/contenido/teoria/aritmetica/analisis-combinatorio.js",
       "requiere": [
        "/nucleo/kit/piezas/arit-tabla.js",
-       "/nucleo/kit/piezas/arit-fichas.js"
+       "/nucleo/kit/piezas/arit-fichas.js",
+       "/plantillas/probabilidad-dados/motor.js",
+       "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 5,
-      "terminos": 11
+      "terminos": 12
      }
     },
     {

@@ -15,10 +15,13 @@
  * verde (c-d) y lo que se repite o se agrupa, rojo (c-h). Piezas: arit-tabla y arit-fichas.
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El principio de multiplicación del motor de plantillas/probabilidad-dados cuenta los menús de la mesa 3D (regla 1).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/probabilidad-dados/motor.js'))
+    : fabrica(root.Kit, root.MotorDados);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MDa) {
   'use strict';
   const f = (x, d = 0) => Kit.formatear(x, d);
   const N = { v: 'c-o', t: 'n' }, R = { v: 'c-i', t: 'r' };
@@ -465,11 +468,68 @@
     filas: Array.from({ length: 9 }, (_, k) => [{ t: String(k), color: 'i', tenue: k > n }, { t: f(V(n, k)), tenue: k > n }, { t: f(fact(k)), tenue: k > n }, { t: f(C(n, k)), color: 'd', resalta: k <= n && (k === r || k === n - r), tenue: k > n }]),
   });
 
+  // Mesa 3D (ronda 4, docs/3d.md, 3D de contexto): el menú con postre. Con dos tiempos los menús son una tabla; con tres,
+  // una caja: cada cubito es un menú. Cambia: cuántos platos hay de cada tiempo y lo que se fija · Permanece: un cubito
+  // por menú · Progresa: la caja, que crece por un lado a la vez · Se reserva: el verde, para los menús con un plato fijo ·
+  // Debe verse: «y» multiplica: entradas · segundos · postres. Las cuentas son MDa.multiplicacion (regla 1).
+  const FIJA = { nada: 'Nada', entrada: 'La primera entrada', postre: 'El primer postre' };
+  const menus3 = v => MDa.multiplicacion([v.e, v.s, v.p]);
+  const fijos = v => (v.fija === 'entrada' ? MDa.multiplicacion([1, v.s, v.p]) : v.fija === 'postre' ? MDa.multiplicacion([v.e, v.s, 1]) : menus3(v));
+  function datosMenu(v) {
+    const bloques = [];
+    for (let k = 0; k < v.p; k++) for (let j = 0; j < v.s; j++) for (let i = 0; i < v.e; i++)
+      bloques.push({ x: i, y: j, z: k, g: (v.fija === 'entrada' ? i === 0 : v.fija === 'postre' ? k === 0 : true) ? 0 : 1 });
+    return {
+      bloques,
+      grupos: [
+        { nombre: v.fija === 'nada' ? 'menús' : 'menús con ese plato fijo', color: 'c-d', dice: `${fijos(v)} menús` + (v.fija === 'nada' ? '' : ` con ${FIJA[v.fija].toLowerCase()}`) },
+        { nombre: 'menús con otro plato', dice: `${menus3(v) - fijos(v)} menús con otro plato` },
+      ],
+      // Cada tiempo junto a su lado, afuera de la caja (el margen crece con la caja, para no caer encima).
+      marcas: (o => [
+        { p: [v.e / 2, -o, 0], texto: `${v.e} ${v.e === 1 ? 'entrada' : 'entradas'}`, color: 'c-o' },
+        { p: [v.e + o, v.s * 0.6, 0], texto: `${v.s} ${v.s === 1 ? 'segundo' : 'segundos'}`, color: 'c-i' },
+        { p: [-o, -o, v.p / 2], texto: `${v.p} ${v.p === 1 ? 'postre' : 'postres'}`, color: 'c-f' },
+      ])(0.9 + 0.2 * Math.max(v.e, v.s, v.p)),
+      alt: `Caja de ${v.e} por ${v.s} por ${v.p}: ${menus3(v)} menús distintos` + (v.fija === 'nada' ? '.' : `, ${fijos(v)} de ellos en verde, con ${FIJA[v.fija].toLowerCase()}.`),
+    };
+  }
+  const mesaMenu = {
+    id: 'menu-con-postre', titulo: 'El menú con postre', pieza: 'ari-cubitos-3d',
+    consigna: 'Cada cubito es un menú: una entrada, un segundo y un postre. Gira la caja y cambia cuántos platos hay.',
+    controles: [
+      { id: 'e', etiqueta: 'Entradas', color: 'c-o', min: 1, max: 5, paso: 1, inicio: 2, decimales: 0 },
+      { id: 's', etiqueta: 'Segundos', color: 'c-i', min: 1, max: 5, paso: 1, inicio: 3, decimales: 0 },
+      { id: 'p', etiqueta: 'Postres', color: 'c-f', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'fija', etiqueta: 'Fija', opciones: Object.keys(FIJA).map(k => ({ valor: k, texto: FIJA[k] })) },
+    ],
+    dibujo: v => ({ datos: datosMenu(v), estado: {} }),
+    lectura: v => [`${v.e} · ${v.s} · ${v.p} = `, { v: 'c-d', t: String(menus3(v)) }, ' menús' + (v.fija === 'nada' ? '' : `; ${fijos(v)} en verde`)],
+    invitaciones: [
+      { texto: 'Con al menos dos platos de cada tiempo, arma justo 24 menús.',
+        logrado: v => v.e > 1 && v.s > 1 && v.p > 1 && menus3(v) === 24,
+        bien: 'Cada lado de la caja multiplica: 24 cubitos, ninguno repetido.',
+        pista: 'Busca tres números, de 2 o más, que multiplicados den 24.' },
+      { texto: 'Con 9 platos en total, consigue la mayor cantidad de menús.',
+        logrado: v => v.e + v.s + v.p === 9 && menus3(v) === 27,
+        bien: 'Repartir parejo da más: 3 · 3 · 3 = 27 le gana a 2 · 3 · 4 = 24.',
+        pista: 'Reparte los 9 platos lo más parejo que puedas.' },
+      { texto: 'Fija la primera entrada en una caja de 3 × 3 × 3: ¿cuántos menús quedan?',
+        logrado: v => v.e === 3 && v.s === 3 && v.p === 3 && v.fija === 'entrada',
+        bien: 'Una capa de 3 · 3 = 9: fijar un plato quita un factor.',
+        pista: 'Pon 3 en cada tiempo y elige «La primera entrada».' },
+      { texto: 'Guarda dos casos con los mismos menús y cajas de distinta forma.',
+        logrado: (v, g) => g.some(x => g.some(y => menus3(x) === menus3(y) && [x.e, x.s, x.p].sort().join() !== [y.e, y.s, y.p].sort().join())),
+        bien: 'El orden de los factores no cambia el producto, pero la caja sí cambia.',
+        pista: 'Prueba 2 · 2 · 3 y después 4 · 3 · 1. Guarda los dos.' },
+    ],
+  };
+
   return {
     unidad: 'aritmetica.analisis-combinatorio',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-fichas.js'],
+    requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-fichas.js', '/plantillas/probabilidad-dados/motor.js', '/nucleo/kit/piezas/ari-cubitos-3d.js'],
     // Glosario por tema (docs/teoria.md, 4d). «Variación» aquí es la de contar; la «variación porcentual» es de porcentajes.
     glosario: [
       { termino: 'principio de multiplicación', def: 'Si una tarea se hace en etapas seguidas, las formas de cada etapa se multiplican entre sí.',
@@ -500,6 +560,7 @@
     // Laboratorio: juego libre, sin preguntas. Los casilleros libres juntan con y sin repetición y el caso de más puestos
     // que personas; la tabla de grupos compara órdenes y grupos para todo r a la vez; la tercera es el menú de la idea 1.
     laboratorio: [
+      mesaMenu,
       {
         id: 'casilleros-libres', titulo: 'Casilleros con y sin repetir', pieza: 'arit-tabla',
         consigna: 'Llena r puestos con n objetos. Elige si un objeto puede repetirse. Prueba más puestos que objetos.',
