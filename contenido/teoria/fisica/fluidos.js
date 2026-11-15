@@ -80,10 +80,10 @@
     temas: ['Densidad y presión', 'Presión hidrostática y atmosférica'],
     pieza: 'fis-vasos',
     juega: {
-      consigna: 'Tres vasos de formas distintas tienen líquido hasta la misma altura. Baja el punto y cambia el líquido.',
+      consigna: 'Tres vasos de formas distintas, llenos hasta la misma altura. El punto baja y sube solo: mira la presión en los tres. Cambia el líquido.',
       voz: 'Compara los tres puntos. ¿Qué número cambia y qué número se repite?',
       controles: [
-        { id: 'h', etiqueta: 'h', color: 'c-d', min: 0.1, max: 0.8, paso: 0.1, inicio: 0.3, unidad: 'm', decimales: 1 },
+        { id: 'h', etiqueta: 'h', color: 'c-d', min: 0.1, max: 0.8, paso: 0.1, inicio: 0.3, unidad: 'm', decimales: 1, auto: { velocidad: 0.2, modo: 'rebota' } },
         { id: 'rho', etiqueta: 'Líquido', opciones: [{ valor: 800, texto: 'aceite' }, { valor: 1000, texto: 'agua' }, { valor: 1200, texto: 'salmuera' }], inicio: 1000 },
       ],
       dibujo: val => ({ datos: tresVasos(val.h, val.rho), estado: {} }),
@@ -174,14 +174,14 @@
     temas: ['Manómetro, barómetro y vasos comunicantes'],
     pieza: 'fis-vasos',
     juega: {
-      consigna: 'A la izquierda, un tubo en U con agua: echa aceite en una rama. A la derecha, un barómetro de mercurio: cámbialo de ciudad.',
+      consigna: 'Entra y sale aceite en una rama del tubo en U: mira cuánto sube el agua del otro lado. El barómetro cambia con la ciudad.',
       voz: 'Mira cuánto sube el agua del otro lado y cuánto mide el mercurio.',
       controles: [
-        { id: 'ha', etiqueta: 'aceite', color: 'c-d', min: 0.1, max: 0.4, paso: 0.05, inicio: 0.2, unidad: 'm', decimales: 2 },
+        { id: 'ha', etiqueta: 'aceite', color: 'c-d', min: 0.1, max: 0.4, paso: 0.05, inicio: 0.2, unidad: 'm', decimales: 2, auto: { velocidad: 0.08, modo: 'rebota' } },
         { id: 'c', etiqueta: 'Ciudad', opciones: [{ valor: 1, texto: 'Lima' }, { valor: 2, texto: 'Arequipa' }, { valor: 3, texto: 'Juliaca' }], inicio: 1 },
       ],
       dibujo: val => ({ datos: figuraU(val.ha, val.c), estado: {} }),
-      lectura: val => [`Desnivel del agua: ${f(val.ha * RHO_AC / RHO_W * 100)} cm · mercurio: ${f(columnaHg(CIUDAD[val.c].p) * 100, 0)} cm`],
+      lectura: val => [`Desnivel del agua: ${f(val.ha * RHO_AC / RHO_W * 100, 1)} cm · mercurio: ${f(columnaHg(CIUDAD[val.c].p) * 100, 0)} cm`],
       minimo: 3,
       // Arrastra la superficie del aceite: su tope está en hL + ha = H0 + ha·(1 − ρa/2ρw).
       arrastres: [{
@@ -272,14 +272,15 @@
     temas: ['Principio de Pascal'],
     pieza: 'fis-vasos',
     juega: {
-      consigna: 'Empuja el émbolo chico. Elige la fuerza y cuántas veces más grande es el área del émbolo grande.',
+      consigna: 'La fuerza sobre el émbolo chico sube y baja sola. Mira cómo la sigue la del grande. Cambia cuántas veces más área tiene.',
       voz: 'Las dos flechas son fuerzas. ¿Qué tienen en común los dos émbolos?',
       controles: [
-        { id: 'F1', etiqueta: 'F₁', color: 'c-h', min: 10, max: 40, paso: 10, inicio: 20, unidad: 'N', decimales: 0 },
+        { id: 'F1', etiqueta: 'F₁', color: 'c-h', min: 10, max: 40, paso: 10, inicio: 20, unidad: 'N', decimales: 0, auto: { velocidad: 10, modo: 'rebota' } },
         { id: 'k', etiqueta: 'A₂ / A₁', min: 2, max: 5, paso: 1, inicio: 3, decimales: 0 },
       ],
-      dibujo: val => ({ datos: prensa(val.F1, val.k), estado: {} }),
-      lectura: val => [{ sub: [F, '2'] }, ` = ${f(val.F1)} · ${f(val.k)} = ${f(val.F1 * val.k)} N`],
+      // Mientras corre, F₁ avanza de newton en newton (el cuadro no muestra decimales que nadie eligió).
+      dibujo: val => ({ datos: prensa(Math.round(val.F1), val.k), estado: {} }),
+      lectura: val => [{ sub: [F, '2'] }, ` = ${f(Math.round(val.F1))} · ${f(val.k)} = ${f(Math.round(val.F1) * val.k)} N`],
       minimo: 3,
       // Arrastra la cola de la flecha F₁ hacia arriba: más largo es empujar más fuerte.
       arrastres: [arrastreF1(val => prensa(val.F1, val.k))],
@@ -362,20 +363,31 @@
       recipientes: [{ tipo: 'vaso', forma: 'ancho', nivel: niv, tono: tonoDe(rl), bloque: { ancho: 0.24, alto: LADO, base, rotulo: o.rot || MAT[rb], E: o.sinE ? undefined : { largo: q.En * esc, texto: `E = ${f(q.En, 1)} N` }, W: { largo: q.Wn * esc, texto: `W = ${f(q.Wn, 1)} N` } } }],
     };
   };
+  // Animación (15 nov): una mano sostiene el bloque y lo hunde hasta cubrirlo y lo vuelve a sacar. El empuje es el peso
+  // del líquido desalojado, ρ g V·fracción (regla 1); el peso no cambia. Donde E = W, suelto, flotaría.
+  const empujeHundido = (rl, fr) => rl * G * VB * fr;
+  const vasoHundido = (rb, rl, fr) => {
+    const W = rb * VB * G, En = empujeHundido(rl, fr), esc = 2.2;
+    return {
+      alto: 1, unidad: 'm',
+      recipientes: [{ tipo: 'vaso', forma: 'ancho', nivel: NIV_B, tono: tonoDe(rl), bloque: { ancho: 0.24, alto: LADO, base: NIV_B - LADO * fr, rotulo: MAT[rb], E: En > 0 ? { largo: En * esc, texto: `E = ${f(En, 1)} N` } : undefined, W: { largo: W * esc, texto: `W = ${f(W, 1)} N` } } }],
+    };
+  };
   const arquimedes = {
     id: 'empuje',
     titulo: 'El empuje es el líquido desalojado',
     temas: ['Principio de Arquímedes'],
     pieza: 'fis-vasos',
     juega: {
-      consigna: 'Pon un bloque de 1 litro en el líquido. Cambia su material y el líquido, y compara el empuje hidrostático E con el peso W.',
+      consigna: 'Una mano hunde y saca un bloque de 1 litro. Compara el empuje hidrostático E con el peso W. Cambia el material y el líquido.',
       voz: 'Fíjate qué parte del bloque queda bajo la superficie.',
       controles: [
         { id: 'rb', etiqueta: 'Bloque', opciones: [{ valor: 250, texto: 'corcho' }, { valor: 600, texto: 'madera' }, { valor: 900, texto: 'hielo' }, { valor: 2700, texto: 'aluminio' }], inicio: 600 },
         { id: 'rl', etiqueta: 'Líquido', opciones: [{ valor: 800, texto: 'aceite' }, { valor: 1000, texto: 'agua' }], inicio: 1000 },
+        { id: 's', etiqueta: 'sumergido', min: 0, max: 100, paso: 10, inicio: 0, unidad: '%', decimales: 0, auto: { velocidad: 25, modo: 'rebota' } },
       ],
-      dibujo: val => ({ datos: vasoBloque(val.rb, val.rl), estado: {} }),
-      lectura: val => { const q = flota(val.rb, val.rl); return q.hunde ? ['Se hunde · ', E, ` = ${f(q.En, 1)} N < W`] : [`Flota con ${f(q.frac * 100, 0)} % sumergido · `, E, ' = W']; },
+      dibujo: val => ({ datos: vasoHundido(val.rb, val.rl, val.s / 100), estado: {} }),
+      lectura: val => { const q = flota(val.rb, val.rl), En = empujeHundido(val.rl, val.s / 100); return [E, ` = ${f(En, 1)} N · W = ${f(q.Wn, 1)} N`, q.hunde ? '' : Math.abs(En - q.Wn) < 0.06 ? ' · aquí flota' : '']; },
       minimo: 3,
     },
     predice: {
@@ -453,10 +465,10 @@
     temas: ['Tensión superficial'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Un alambre deslizante cierra un marco con una película de líquido. Elige su largo y el líquido; la película tira de él.',
+      consigna: 'Un alambre deslizante cierra un marco con una película de líquido. Su largo crece y se achica solo: mira la fuerza. Cambia el líquido.',
       voz: 'La película tiene dos caras, y las dos tiran del alambre.',
       controles: [
-        { id: 'L', etiqueta: 'L', min: 2, max: 10, paso: 2, inicio: 4, unidad: 'cm', decimales: 0 },
+        { id: 'L', etiqueta: 'L', min: 2, max: 10, paso: 2, inicio: 4, unidad: 'cm', decimales: 0, auto: { velocidad: 2, modo: 'rebota' } },
         { id: 'g', etiqueta: 'Líquido', opciones: [{ valor: 73, texto: 'agua' }, { valor: 25, texto: 'jabonosa' }], inicio: 25 },
       ],
       dibujo: val => ({ datos: ejeAlambre(val), estado: {} }),
@@ -530,11 +542,11 @@
     temas: ['Caudal, continuidad y Bernoulli (solo San Marcos)'],
     pieza: 'fis-vasos',
     juega: {
-      consigna: 'El agua entra por la izquierda y pasa por un tramo angosto. Elige la rapidez de entrada y cuánto se angosta el tubo.',
+      consigna: 'El tubo se angosta y se ensancha solo. Mira la flecha de rapidez y los tubitos. Cambia la rapidez de entrada.',
       voz: 'Mira las dos flechas y la altura del agua en los tubitos.',
       controles: [
         { id: 'v1', etiqueta: 'v₁', color: 'c-o', min: 0.5, max: 1, paso: 0.25, inicio: 0.5, unidad: 'm/s', decimales: 2 },
-        { id: 'k', etiqueta: 'A₁ / A₂', min: 1, max: 3, paso: 0.5, inicio: 2, decimales: 1 },
+        { id: 'k', etiqueta: 'A₁ / A₂', min: 1, max: 3, paso: 0.5, inicio: 2, decimales: 1, auto: { velocidad: 0.5, modo: 'rebota' } },
       ],
       dibujo: val => ({ datos: tuboB(val.v1, val.k).datos, estado: {} }),
       lectura: val => { const b = tuboB(val.v1, val.k); return [{ sub: [v, '2'] }, ` = ${f(b.v2)} m/s · Δp = ${f(b.dp / 1000, 2)} kPa`]; },
@@ -650,9 +662,9 @@
       {
         // Más rica que la idea 1: suma la presión del aire de la ciudad y deja probar el mercurio.
         id: 'presion-total', titulo: 'Presión total en tres vasos', pieza: 'fis-vasos',
-        consigna: 'Baja el punto, cambia el líquido y la ciudad. Compara la presión del líquido con la del aire.',
+        consigna: 'El punto baja y sube solo. Cambia el líquido y la ciudad, y compara la presión del líquido con la del aire.',
         controles: [
-          { id: 'h', etiqueta: 'h', color: 'c-d', min: 0.1, max: 0.8, paso: 0.1, inicio: 0.5, unidad: 'm', decimales: 1 },
+          { id: 'h', etiqueta: 'h', color: 'c-d', min: 0.1, max: 0.8, paso: 0.1, inicio: 0.5, unidad: 'm', decimales: 1, auto: { velocidad: 0.2, modo: 'rebota' } },
           { id: 'rho', etiqueta: 'Líquido', opciones: [{ valor: 800, texto: 'aceite' }, { valor: 1000, texto: 'agua' }, { valor: 1200, texto: 'salmuera' }, { valor: 13600, texto: 'mercurio' }], inicio: 1000 },
           { id: 'c', etiqueta: 'Ciudad', opciones: [{ valor: 1, texto: 'Lima' }, { valor: 2, texto: 'Arequipa' }, { valor: 3, texto: 'Juliaca' }], inicio: 1 },
         ],
