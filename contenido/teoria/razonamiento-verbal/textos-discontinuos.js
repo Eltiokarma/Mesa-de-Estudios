@@ -308,6 +308,21 @@
         donde: val => punta(libre(val.min, val.j), 'j'),
         mover: (pt, val) => ({ j: RB().valorEn(libre(val.min, val.j), pt.x + DENTRO) }) },
     ],
+    // Retos: cada logrado usa seVe y pct, las mismas cuentas que escribe la lectura.
+    invitaciones: [
+      { texto: 'Haz que Juliaca se vea al menos tres veces más larga que Puno.',
+        logrado: val => seVe(82, val.j, val.min) >= 3,
+        bien: 'Se ve el triple, pero los números escritos siguen diciendo cuánto es de verdad.' },
+      { texto: 'Haz que Juliaca se vea justo el doble de larga que Puno.',
+        logrado: val => Math.abs(seVe(82, val.j, val.min) - 2) < 1e-9,
+        bien: 'El doble a la vista, aunque Juliaca vende apenas un poco más. Revisa el eje.' },
+      { texto: 'Pon Juliaca en 100 t y deja la imagen fiel a los datos.',
+        logrado: val => val.j === 100 && Math.abs(seVe(82, val.j, val.min) - val.j / 82) < 1e-9,
+        bien: 'Con el eje en cero, el largo de cada barra dice lo mismo que su número.' },
+      { texto: 'Guarda dos casos con la misma venta de Juliaca que se vean muy distintos.',
+        logrado: (val, guardados) => guardados.some(g => g.j === val.j && g.min !== val.min && Math.abs(seVe(82, g.j, g.min) - seVe(82, val.j, val.min)) >= 0.5),
+        bien: 'Mismos datos, dos imágenes. Lo único que cambió fue dónde empieza el eje.' },
+    ],
   };
 
   return {
@@ -316,14 +331,61 @@
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rv-texto.js', '/nucleo/kit/piezas/rv-barras.js'],
     historia: {
-      texto: 'En 1859, Florence Nightingale y Harriet Martineau publicaron un informe que unía texto y gráficos sobre la salud de los soldados británicos en la guerra de Crimea. Sus diagramas separaban las causas de muerte para que el público entendiera los datos. Leerlos exigía mirar a la vez categorías, convenciones y explicaciones.',
+      texto: 'En 1859, Florence Nightingale y Harriet Martineau publicaron un informe que unía texto y gráficos sobre la salud de los soldados británicos en la guerra de Crimea. Sus diagramas separaban las causas de muerte para que el público entendiera los datos. Leerlos exigía mirar a la vez categorías, convenciones y explicaciones, como en todo texto discontinuo.',
       pregunta: '¿Qué miras primero en un gráfico?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Nightingale y Martineau, 1859)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/comprensionlectora.htm' },
     },
+    glosario: [
+      { termino: 'texto discontinuo', def: 'Texto que da su información en tablas, gráficos, mapas o listas, y no en párrafos seguidos.',
+        formas: ['texto discontinuo', 'textos discontinuos'], ver: ['tabla', 'gráfico', 'infografía'] },
+      { termino: 'tabla', def: 'Cuadro de filas y columnas: cada dato está en el cruce de una fila con una columna.',
+        ejemplo: 'Fila «Colegio C», columna «aprobados»: 18.', ver: ['proporción'] },
+      { termino: 'gráfico', def: 'Dibujo que muestra datos con barras, líneas o sectores para compararlos de un vistazo.',
+        formas: ['gráfico', 'gráficos'], ver: ['gráfico de barras', 'eje'] },
+      { termino: 'gráfico de barras', def: 'Dibujo en que cada dato es una barra; su largo es fiel al valor si el eje empieza en cero.',
+        formas: ['gráfico de barras'], ver: ['eje', 'escala'] },
+      { termino: 'infografía', def: 'Pieza que junta título, texto breve, cifras y dibujos para explicar un tema.',
+        formas: ['infografía', 'infografías'], ver: ['texto mixto'] },
+      { termino: 'texto mixto', def: 'Texto que combina párrafos con una tabla o un gráfico; las dos partes se completan.',
+        formas: ['texto mixto', 'textos mixtos'], ver: ['infografía', 'texto discontinuo'] },
+      { termino: 'eje', def: 'Línea con números que da la escala de un gráfico; primero se mira dónde empieza.',
+        ejemplo: `Con el eje desde 80 t, la barra de 88 t se ve ${f(seVe(82, 88, 80))} veces la de 82 t.`, formas: ['eje', 'ejes'], ver: ['escala'] },
+      { termino: 'escala', def: 'Cómo se reparten los valores a lo largo del eje: qué número corresponde a cada marca.',
+        ver: ['eje'] },
+      { termino: 'proporción', def: 'Una cantidad dividida entre su propio total; sirve para comparar grupos de distinto tamaño.',
+        ejemplo: `18 aprobados de 30 alumnos: ${f(pct(18, 30))} %.`, formas: ['proporción', 'proporciones'], ver: ['tabla'] },
+    ],
     laboratorio: [
       mesaEje,
-      Object.assign({ id: 'tabla', titulo: 'La tabla y sus totales', pieza: 'rv-texto' }, tablaIdea.juega),
-      Object.assign({ id: 'texto-y-grafico', titulo: 'Texto y gráfico juntos', pieza: 'rv-barras' }, mixtos.juega),
+      Object.assign({ id: 'tabla', titulo: 'La tabla y sus totales', pieza: 'rv-texto',
+        // Retos: se comprueban con pct, mejor y masAprob, las cuentas que escriben el sello y la lectura.
+        invitaciones: [
+          { texto: 'Busca el colegio con la mayor proporción de aprobados y mírala.',
+            logrado: val => val.m === 'p' && val.c === mejor(COLE).id,
+            bien: 'Aprobó la mayor parte de sus alumnos, aunque no tiene más aprobados.' },
+          { texto: 'Muestra el colegio con más aprobados, mirando solo la cantidad.',
+            logrado: val => val.m === 'n' && val.c === masAprob(COLE).id,
+            bien: 'Es la cantidad más alta. ¿Y si la comparas con su propio total?' },
+          { texto: 'Guarda dos colegios: el de más aprobados, con menor proporción.',
+            logrado: (val, guardados) => guardados.some(g => {
+              const a = COLE.find(x => x.id === g.c), b = COLE.find(x => x.id === val.c);
+              return a !== b && (a.ap - b.ap) * (pct(a.ap, a.tot) - pct(b.ap, b.tot)) < 0;
+            }),
+            bien: 'Más aprobados no es aprobar mejor: cada fila se mide con su total.' },
+        ] }, tablaIdea.juega),
+      Object.assign({ id: 'texto-y-grafico', titulo: 'Texto y gráfico juntos', pieza: 'rv-barras',
+        // Retos: se comprueban con AFIRMA, la tabla que dice qué parte respalda cada afirmación.
+        invitaciones: [
+          { texto: 'Elige la afirmación que respaldan a la vez el texto y el gráfico.',
+            logrado: val => AFIRMA[val.a].ok && AFIRMA[val.a].estado.texto === 'i' && !!AFIRMA[val.a].estado.marcas,
+            bien: 'El texto dice que crecieron; las barras dicen cuánto. Se completan.' },
+          { texto: 'Busca la afirmación que la infografía no permite sostener.',
+            logrado: val => !AFIRMA[val.a].ok,
+            bien: 'Precio y ventas suben juntos, pero nada dice que uno cause lo otro.' },
+          { texto: 'Guarda una afirmación respaldada y otra que no lo esté.',
+            logrado: (val, guardados) => guardados.some(g => AFIRMA[g.a].ok) && guardados.some(g => !AFIRMA[g.a].ok),
+            bien: 'Compáralas: ¿qué parte de la infografía sostiene a la primera?' },
+        ] }, mixtos.juega),
     ],
     ideas: [tablaIdea, escala, mixtos],
   };
