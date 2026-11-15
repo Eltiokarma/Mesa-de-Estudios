@@ -375,9 +375,12 @@
   // Mesa 1, más rica que la idea 2: los cuatro centros a la vez, con A libre en el plano (la idea lo deja a altura fija y
   // muestra un centro por vez). Deja buscar el rectángulo exacto, el isósceles con los centros alineados y el equilátero.
   const VCU = { x: [-3.4, 9.4], y: [-3.6, 7.4] };
+  const fueraVista = p => p[0] < VCU.x[0] || p[0] > VCU.x[1] || p[1] < VCU.y[0] || p[1] > VCU.y[1];
+  // Reto «lo más bajo con H dentro»: la menor altura de A con triángulo acutángulo, buscada en la grilla de la mesa.
+  const AY_MIN_H = (() => { let m = Infinity; for (let i = 0; i <= 20; i++) for (let j = 0; j <= 10; j++) { const A = [-2 + 0.5 * i, 1 + 0.5 * j]; if (tipo(A) === 'acutángulo') m = Math.min(m, A[1]); } return m; })();
   const cuatro = (ax, ay, circ) => {
     const A = [ax, ay], c = centros(A), fuera = ['O', 'H'].filter(k => !dentro(c[k], A));
-    const lejos = p => p[0] < VCU.x[0] || p[0] > VCU.x[1] || p[1] < VCU.y[0] || p[1] > VCU.y[1];
+    const lejos = fueraVista;
     return {
       alt: `Triángulo ${tipo(A)}: baricentro e incentro dentro; circuncentro y ortocentro ${fuera.length ? `con ${fuera.map(k => NOMBRE[k]).join(' y ')} fuera` : 'dentro'}`,
       vista: VCU,
@@ -402,6 +405,24 @@
       const A = [v.ax, v.ay], c = centros(A), fuera = ['O', 'H'].filter(k => !dentro(c[k], A));
       return [`${tipo(A)}   ·   fuera: ${fuera.length ? fuera.join(' y ') : 'ninguno'}`];
     },
+    // Retos comprobados con centros(), dentro() y tipo(): las mismas funciones que dibujan la mesa.
+    invitaciones: [
+      { texto: 'Muestra la circunscrita y lleva su centro justo sobre el lado BC.',
+        logrado: v => v.circ === 'O' && Math.abs(centros([v.ax, v.ay]).O[1]) < 1e-9,
+        bien: 'O quedó en el medio de BC: el ángulo en A es recto. ¿Dónde está H?' },
+      { texto: 'Saca del triángulo al circuncentro y al ortocentro a la vez.',
+        logrado: v => { const A = [v.ax, v.ay], c = centros(A); return !dentro(c.O, A) && !dentro(c.H, A); },
+        bien: 'Salieron los dos: un ángulo es obtuso. Comprueba que G e I siguen dentro.' },
+      { texto: 'Baja A lo más que puedas sin que el ortocentro salga del triángulo.',
+        logrado: v => v.ay === AY_MIN_H && tipo([v.ax, v.ay]) === 'acutángulo',
+        bien: 'Más abajo ya no hay acutángulo: un ángulo llega a 90° o más. ¿Cuál?' },
+      { texto: 'Pon los cuatro centros sobre una misma recta, todos a la vista.',
+        logrado: v => { const c = centros([v.ax, v.ay]); return ['O', 'H', 'G', 'I'].every(k => Math.abs(c[k][0] - c.G[0]) < 1e-9 && !fueraVista(c[k])); },
+        bien: 'Con AB = AC, los cuatro caen en el eje de simetría. Mueve A y compara.' },
+      { texto: 'Guarda un acutángulo y un obtusángulo, y compara dónde queda el ortocentro.',
+        logrado: (v, guardados) => guardados.some(g => tipo([g.ax, g.ay]) === 'acutángulo') && guardados.some(g => tipo([g.ax, g.ay]) === 'obtusángulo'),
+        bien: 'Dentro en uno, fuera en el otro: H depende del ángulo mayor.' },
+    ],
   };
   // Mesa 2, más rica que la idea 3: la circunferencia de nueve puntos siempre a la vista y A en un rango más amplio
   // (también obtusángulos, donde H sale del triángulo y la recta sigue).
@@ -418,8 +439,27 @@
       const c = centros([v.ax, v.ay]), og = U.dist(c.O, c.G);
       return [{ v: 'c-h', t: 'GH' }, ` : `, { v: 'c-i', t: 'OG' }, ` = ${og < 1e-6 ? '—' : f(U.dist(c.G, c.H) / og)}   ·   R/2 = ${f(c.R / 2)}`];
     },
+    invitaciones: [
+      { texto: 'Haz que el ortocentro H caiga justo en un vértice.',
+        logrado: v => { const A = [v.ax, v.ay], H = centros(A).H; return [A, B, C].some(P => U.dist(H, P) < 1e-9); },
+        bien: 'H en el vértice del ángulo recto. Ubica ahora O: ¿en qué lado quedó?' },
+      { texto: 'Busca el menor radio posible de la circunferencia de nueve puntos.',
+        logrado: v => Math.abs(centros([v.ax, v.ay]).R - R_MIN_E) < 1e-9,
+        bien: 'R/2 = 1,5: el menor, cuando BC es diámetro de la circunscrita.' },
+      { texto: 'Pon la recta de Euler vertical, perpendicular a BC.',
+        logrado: v => { const c = centros([v.ax, v.ay]); return Math.abs(c.O[0] - c.H[0]) < 1e-9 && U.dist(c.O, c.H) > 1e-9; },
+        bien: 'Vertical cuando AB = AC. Comprueba si el incentro también cae en ella.' },
+      { texto: 'Guarda dos triángulos de formas distintas con el mismo radio R/2.',
+        logrado: (v, guardados) => guardados.some((g, i) => guardados.some((h, j) => j > i && Math.abs(centros([g.ax, g.ay]).R - centros([h.ax, h.ay]).R) < 1e-6
+          && !(g.ay === h.ay && (g.ax === h.ax || g.ax === 6 - h.ax)))),
+        bien: 'Mismo R, mismo radio de nueve puntos: la forma movió su centro, no su tamaño.' },
+    ],
   };
+  // Menor circunradio en la grilla de la mesa de Euler (el reto lo pide sin decir dónde está).
+  const R_MIN_E = (() => { let m = Infinity; for (let i = 0; i <= 16; i++) for (let j = 0; j <= 8; j++) m = Math.min(m, centros([-1 + 0.5 * i, 2 + 0.5 * j]).R); return m; })();
   // Mesa 3: las seis áreas del baricentro, que la idea 1 reserva para la predicción, con A libre y el área en vivo.
+  const sexto = v => Math.abs(U.area([[v.ax, v.ay], B, C])) / 6;
+  const SEXTO_MAX = (() => { let m = 0; for (let i = 0; i <= 16; i++) for (let j = 0; j <= 8; j++) m = Math.max(m, sexto({ ax: -1 + 0.5 * i, ay: 1 + 0.5 * j })); return m; })();
   const seisLibre = (ax, ay) => bari([ax, ay], { seis: true, alt: `Las medianas parten el triángulo en seis de área ${f(Math.abs(U.area([[ax, ay], B, C])) / 6)} cada uno` });
   const mesaSeis = {
     id: 'seis-areas', titulo: 'Seis triangulitos del baricentro', pieza: 'geo-figura',
@@ -431,6 +471,21 @@
     dibujo: v => ({ datos: seisLibre(v.ax, v.ay), estado: {} }),
     arrastres: [arrastreA(seisLibre)],
     lectura: v => { const S = Math.abs(U.area([[v.ax, v.ay], B, C])); return [`área ${f(S)}   ·   cada uno ${f(S / 6)}`]; },
+    invitaciones: [
+      { texto: 'Consigue que cada triangulito mida justo 1,5.',
+        logrado: v => Math.abs(sexto(v) - 1.5) < 1e-9,
+        bien: 'Área 9 entre seis. Mueve A a lo ancho: ¿cambia algún triangulito?' },
+      { texto: 'Deforma el triángulo hasta que un ángulo quede obtuso.',
+        logrado: v => tipo([v.ax, v.ay]) === 'obtusángulo',
+        bien: 'Obtuso y todo, las seis siguen iguales: bases iguales y altura común.' },
+      { texto: 'Busca la mayor área que puede tener cada triangulito.',
+        logrado: v => Math.abs(sexto(v) - SEXTO_MAX) < 1e-9,
+        bien: 'A en lo más alto da el mayor. El ancho no cambió nada: compruébalo.' },
+      { texto: 'Guarda dos triángulos de formas distintas con triangulitos de igual área.',
+        logrado: (v, guardados) => guardados.some((g, i) => guardados.some((h, j) => j > i && Math.abs(sexto(g) - sexto(h)) < 1e-9
+          && !(g.ay === h.ay && (g.ax === h.ax || g.ax === 6 - h.ax)))),
+        bien: 'Misma altura sobre BC, mismas seis áreas, aunque la forma cambie.' },
+    ],
   };
 
   return {
@@ -443,6 +498,32 @@
       pregunta: '¿Qué tienen en común nueve puntos tan distintos?',
       fuente: { titulo: 'K. S. Kedlaya, Geometry Unbound, cap. 7', url: 'https://kskedlaya.org/geometryunbound/gu-060118.pdf' },
     },
+    // Glosario: lo que este tema estrena en el curso. Mediana, bisectriz, mediatriz, altura, incentro, circunscrita e
+    // inscrita vienen de unidades anteriores y el lector las marca solas.
+    glosario: [
+      { termino: 'punto notable', formas: ['puntos notables', 'punto notable'],
+        def: 'Punto especial de un triángulo donde se cortan tres líneas del mismo tipo, como las medianas o las alturas.',
+        ver: ['baricentro', 'circuncentro', 'ortocentro', 'excentro'] },
+      { termino: 'baricentro', simbolo: 'G', def: 'Punto donde se cortan las tres medianas. Parte cada una en razón 2 : 1 desde el vértice.',
+        ejemplo: 'Mediana de 9: del vértice a G hay 6, y de G al lado, 3.', ver: ['recta de Euler'] },
+      { termino: 'circuncentro', simbolo: 'O', def: 'Punto donde se cortan las mediatrices de los lados. Está a la misma distancia de los tres vértices.',
+        ejemplo: 'En un triángulo rectángulo, es el punto medio de la hipotenusa.', ver: ['circunradio'] },
+      { termino: 'ortocentro', simbolo: 'H', def: 'Punto donde se cortan las tres alturas o sus prolongaciones. Queda fuera si el triángulo es obtusángulo.',
+        ejemplo: 'En un triángulo rectángulo en B, es el mismo vértice B.', ver: ['recta de Euler'] },
+      { termino: 'excentro', simbolo: 'E', def: 'Corte de la bisectriz interior de un ángulo con las exteriores de los otros dos. Siempre queda fuera.',
+        ejemplo: 'Con ∠A = 60°, el excentro relativo a BC da ∠BEC = 90° − 30° = 60°.', ver: ['circunferencia exinscrita'] },
+      { termino: 'circunradio', simbolo: 'R', def: 'Radio de la circunferencia que pasa por los tres vértices del triángulo.',
+        ejemplo: 'Triángulo rectángulo de hipotenusa 10: R = 5.', ver: ['circuncentro'] },
+      { termino: 'recta de Euler', formas: ['recta de Euler', 'rectas de Euler'],
+        def: 'Recta que pasa por el circuncentro, el baricentro y el ortocentro, con GH igual al doble de OG.',
+        ejemplo: 'Si OG = 2, entonces GH = 4 y OH = 6.', ver: ['circunferencia de nueve puntos'] },
+      { termino: 'circunferencia de nueve puntos', formas: ['circunferencia de nueve puntos', 'circunferencia de los nueve puntos', 'círculo de nueve puntos'],
+        def: 'Pasa por nueve puntos: medios de los lados, pies de las alturas y medios de AH, BH, CH.',
+        ejemplo: 'Si el circunradio mide 10, su radio mide 5.', ver: ['circunradio', 'recta de Euler'] },
+      { termino: 'circunferencia exinscrita', formas: ['circunferencia exinscrita', 'circunferencias exinscritas', 'exinscrita', 'exinscritas'],
+        def: 'Toca un lado del triángulo por fuera y las prolongaciones de los otros dos. Su centro es un excentro.',
+        ver: ['excentro'] },
+    ],
     // Laboratorio: los cuatro centros juntos con A libre, Euler con los nueve puntos y obtusángulos, y las seis áreas
     // del baricentro: las tres son más ricas que sus ideas.
     laboratorio: [mesaCuatro, mesaEuler, mesaSeis],
