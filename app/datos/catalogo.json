@@ -1807,10 +1807,12 @@
       "requiere": [
        "/nucleo/kit/piezas/alg-tabla.js",
        "/nucleo/kit/piezas/alg-baldosas.js",
-       "/nucleo/kit/piezas/ejes.js"
+       "/nucleo/kit/piezas/ejes.js",
+       "/plantillas/cuadrado-crece/motor.js",
+       "/nucleo/kit/piezas/alg-cubo-3d.js"
       ],
       "ideas": 5,
-      "terminos": 26
+      "terminos": 28
      }
     },
     {
@@ -2169,7 +2171,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 32
+      "terminos": 33
      }
     },
     {

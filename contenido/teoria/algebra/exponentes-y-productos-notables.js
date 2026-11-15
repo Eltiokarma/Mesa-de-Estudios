@@ -658,17 +658,61 @@
     ],
   };
 
+  // ---------- El cubo que se abre (laboratorio 3D, 15 nov: exploración libre, sin predicciones) ----------
+  // Las ocho piezas y sus volúmenes los arma plantillas/cuadrado-crece/motor.js (piezasCubo) a través de la pieza
+  // alg-cubo-3d: los retos miden lo mismo que se dibuja (regla 1). abrir es el control de tiempo: nada se anima solo.
+  const CUBO3 = () => Kit.piezas['alg-cubo-3d'];
+  const cuentaCubo = v => CUBO3().cuenta(v);
+  const vol = (v, k) => cuentaCubo(v).tipos[k].volumen;
+  const mesaCubo = {
+    id: 'cubo-se-abre', titulo: 'El cubo que se abre', pieza: 'alg-cubo-3d',
+    consigna: 'Gira el cubo con el dedo y ábrelo. Cambia a y b: mira qué piezas crecen entre las dos esquinas.',
+    controles: [
+      { id: 'a', etiqueta: 'a', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0, color: 'c-o' },
+      { id: 'b', etiqueta: 'b', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0, color: 'c-i' },
+      { id: 'abrir', etiqueta: 'Abrir', min: 0, max: 1, paso: 0.25, inicio: 0, decimales: 2 },
+    ],
+    dibujo: v => ({ datos: { a: v.a, b: v.b, abrir: v.abrir }, estado: {} }),
+    lectura: v => {
+      const c = cuentaCubo(v), t = c.tipos;
+      return [`(a + b)³ = ${f(c.suma)}: `, { v: 'c-o', t: f(t.a3.volumen) }, ' + ', { v: 'c-d', t: f(3 * t.a2b.volumen) }, ' + ',
+        { v: 'c-f', t: f(3 * t.ab2.volumen) }, ' + ', { v: 'c-i', t: f(t.b3.volumen) }];
+    },
+    invitaciones: [
+      { texto: 'Abre el cubo: logra que a³ y b³ juntos superen a las seis del medio.',
+        logrado: v => v.abrir >= 0.5 && vol(v, 'a3') + vol(v, 'b3') > 3 * (vol(v, 'a2b') + vol(v, 'ab2')),
+        bien: 'Pasa solo con a mucho mayor que b. Casi siempre, el medio pesa más.',
+        pista: 'Creo que conviene un a grande y un b chico. Ábrelo y compara.' },
+      { texto: 'Haz que las seis piezas del medio sean iguales entre sí.',
+        logrado: v => vol(v, 'a2b') === vol(v, 'ab2'),
+        bien: 'Con a = b, cada pieza del medio mide lo mismo que a³.',
+        pista: 'a²b y ab² cambian una letra por otra. ¿Cuándo da igual?' },
+      { texto: 'Arma un cubo de volumen 125 y ábrelo del todo.',
+        logrado: v => cuentaCubo(v).suma === 125 && v.abrir === 1,
+        bien: 'Arista 5: el volumen sale de a + b, no de a³ + b³.',
+        pista: '125 = 5 · 5 · 5. ¿Cuánto debe sumar a + b?' },
+      { texto: 'Consigue que una sola pieza ab² mida 18.',
+        logrado: v => vol(v, 'ab2') === 18,
+        bien: '2 · 3 · 3 = 18: dos lados miden b y uno mide a.',
+        pista: 'Toca una pieza ab²: dos de sus lados miden b.' },
+      { texto: 'Guarda dos cubos con la misma arista y distinto a³ + b³.',
+        logrado: (v, guardados) => guardados.some(x => guardados.some(y => x.a + x.b === y.a + y.b
+          && vol(x, 'a3') + vol(x, 'b3') !== vol(y, 'a3') + vol(y, 'b3'))),
+        bien: 'El total no cambió; las esquinas y el medio se repartieron distinto.' },
+    ],
+  };
+
   return {
     unidad: 'algebra.exponentes-y-productos-notables',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/alg-baldosas.js', '/nucleo/kit/piezas/ejes.js'],
+    requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/alg-baldosas.js', '/nucleo/kit/piezas/ejes.js', '/plantillas/cuadrado-crece/motor.js', '/nucleo/kit/piezas/alg-cubo-3d.js'],
     historia: {
       texto: 'En La Géométrie, de 1637, Descartes mostró que los problemas de figuras podían escribirse y resolverse con relaciones algebraicas. No inventó cada identidad escolar: su obra continuó una tradición. Aquí las potencias y los productos notables traducen figuras en expresiones, con una salvedad: una partición de áreas explica una igualdad para lados positivos, y extenderla a negativos pide razones algebraicas.',
       pregunta: '¿Una figura demuestra una igualdad para todos los números?',
       fuente: { titulo: 'O’Connor y Robertson, René Descartes — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Descartes/' },
     },
-    laboratorio: [mesaRect, mesaIndice, mesaSigno],
+    laboratorio: [mesaCubo, mesaRect, mesaIndice, mesaSigno],
     // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
     glosario: [
       { termino: 'potencia', simbolo: 'aⁿ', def: 'Producto de un número por sí mismo varias veces: 2⁴ = 2 · 2 · 2 · 2 = 16.',
@@ -687,6 +731,10 @@
       { termino: 'diferencia de cuadrados', formas: ['diferencia de cuadrados', 'diferencias de cuadrados'],
         def: 'La resta a² − b²; sale de multiplicar la suma por la diferencia: (a + b)(a − b).',
         ejemplo: '7² − 3² = (7 + 3)(7 − 3) = 40.', ver: ['producto notable'] },
+      { termino: 'arista', formas: ['arista', 'aristas'], def: 'Cada borde recto de un cubo o de una caja, donde se juntan dos caras.',
+        ejemplo: 'Un cubo de arista 3 tiene volumen 3³ = 27.', ver: ['volumen'] },
+      { termino: 'volumen', formas: ['volumen', 'volúmenes'], def: 'Cuánto espacio ocupa un cuerpo: en una caja, largo por ancho por alto.',
+        ejemplo: 'Una caja de 2 por 1 por 1 tiene volumen 2.', ver: ['arista'] },
       { termino: 'identidad', def: 'Igualdad que se cumple con cualquier valor de las letras, no solo con algunos.',
         ejemplo: '(a + b)² = a² + 2ab + b² vale para todo a y b.' },
       { termino: 'distributiva', formas: ['distributiva', 'distributividad'], def: 'Propiedad que reparte un producto sobre una suma: a(b + c) = ab + ac.',
