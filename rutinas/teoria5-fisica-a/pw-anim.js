@@ -28,7 +28,7 @@ async function revisar(b, nombre, hash, esLab) {
   const { ctx, p } = await pagina(b, false);
   await p.goto(`${BASE}#${hash}`); await p.waitForTimeout(1500);
   if (esLab) { await p.locator('[data-mesa]').first().click(); await p.waitForTimeout(1500); }
-  await p.locator('.te-fig').first().scrollIntoViewIfNeeded().catch(() => {});
+  await p.locator('.te-fig').first().evaluate(el => el.scrollIntoView({ block: 'center' })).catch(() => {}); await p.waitForTimeout(200);
   const play = p.locator('.te-play');
   const hay = await play.count();
   marca(hay, `${nombre}: tiene control animado («⏸ Pausa»)`);

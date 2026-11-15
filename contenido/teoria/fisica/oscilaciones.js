@@ -248,10 +248,11 @@
     temas: ['Masa-resorte horizontal y vertical'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Cuelga distintas masas de un resorte, o cambia el resorte. Lee cuánto tarda una oscilación completa.',
+      consigna: 'La masa colgada crece y decrece sola. Mira el punto: el período sube cada vez menos. Pausa, cambia el resorte o arrastra el punto.',
       voz: 'Mira cuánto crece T cuando la masa se cuadruplica.',
+      // Animación (15 nov): la masa barre su rango ida y vuelta (5 s por tramo) y el punto recorre la curva T–m.
       controles: [
-        { id: 'm', etiqueta: 'm', min: 0.25, max: 2, paso: 0.25, inicio: 0.5, unidad: 'kg', decimales: 2 },
+        { id: 'm', etiqueta: 'm', min: 0.25, max: 2, paso: 0.25, inicio: 0.5, unidad: 'kg', decimales: 2, auto: { velocidad: 0.35, modo: 'rebota' } },
         { id: 'k', etiqueta: 'Resorte', opciones: [{ valor: 20, texto: 'k = 20 N/m' }, { valor: 80, texto: 'k = 80 N/m' }], inicio: 20 },
       ],
       dibujo: val => ({ datos: tmJuego(val), estado: {} }),
@@ -338,10 +339,11 @@
     temas: ['Péndulo simple'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Cambia el largo del hilo de un péndulo y llévalo a la Luna. Lee cuánto tarda una ida y vuelta.',
+      consigna: 'El hilo del péndulo se alarga y se acorta solo. Mira el punto subir por la curva; después pausa y llévalo a la Luna.',
       voz: 'Compara un hilo de 0,5 m con uno de 2 m.',
+      // Animación (15 nov): el largo barre su rango ida y vuelta (5 s por tramo) y el punto recorre la curva T–L.
       controles: [
-        { id: 'L', etiqueta: 'L', min: 0.25, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2 },
+        { id: 'L', etiqueta: 'L', min: 0.25, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2, auto: { velocidad: 0.35, modo: 'rebota' } },
         { id: 'g', etiqueta: 'Lugar', opciones: [{ valor: 10, texto: 'Tierra' }, { valor: 1.6, texto: 'Luna' }], inicio: 10 },
       ],
       dibujo: val => ({ datos: tlJuego(val), estado: {} }),
@@ -422,23 +424,32 @@
     ],
   }, extra);
   const eJuego = val => { const U = 0.5 * K5 * val.x * val.x; return ejeE({ puntos: [{ x: val.x, y: U, rotulo: `U = ${f(U, 2)}`, guias: true }, { x: val.x, y: E5 - U, rotulo: `K = ${f(E5 - U, 2)}` }] }); };
+  // Animación (15 nov): el mismo bloque de la idea 1 (0,5 kg, ω = 10 rad/s) oscila en cámara lenta, un período cada 4 s
+  // de pantalla: x = A cos(ωt) y los dos puntos (U y K) corren sobre sus curvas. Arrastrar el punto convierte x en t.
+  const xE = tt => r0(A5 * Math.cos(W1 * tt));
+  const eJuegoT = val => eJuego({ x: xE(val.t) });
   const energia = {
     id: 'energia-mas',
     titulo: 'La energía se reparte, no cambia',
     temas: ['Energía en el MAS'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Un resorte de k = 50 N/m oscila con amplitud 0,2 m: su energía es 1 J. Mueve el bloque y mira el reparto.',
+      consigna: 'El resorte de k = 50 N/m oscila solo, en cámara lenta, con 1 J. Mira los dos puntos: uno sube si el otro baja.',
       voz: 'Lee las dos energías y súmalas en cada posición.',
-      controles: [{ id: 'x', etiqueta: 'x', color: 'c-i', min: -0.2, max: 0.2, paso: 0.05, inicio: 0.1, unidad: 'm', decimales: 2 }],
-      dibujo: val => ({ datos: eJuego(val), estado: {} }),
-      lectura: val => { const U = 0.5 * K5 * val.x * val.x; return [`U = ${f(U, 2)} J · K = ${f(E5 - U, 2)} J · suma 1 J`]; },
+      controles: [{ id: 't', etiqueta: 't', color: 'c-h', min: 0, max: T1, paso: PASO_T1, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: T1 / 4 } }],
+      dibujo: val => ({ datos: eJuegoT(val), estado: {} }),
+      lectura: val => { const xx = xE(val.t), U = 0.5 * K5 * xx * xx; return [x, ` = ${f(xx)} m · U = ${f(U, 2)} J · K = ${f(E5 - U, 2)} J`]; },
       minimo: 3,
-      // Arrastra el punto de U por la parábola: su lugar en el eje horizontal es la posición del bloque.
+      // Arrastra el punto de U por la parábola: su lugar en el eje horizontal es la posición del bloque, que se convierte
+      // en el instante de la oscilación (la animación se pausa).
       arrastres: [
         { id: 'posicion', etiqueta: 'posición del bloque', color: 'c-i',
-          donde: val => enEjes(eJuego(val), val.x, 0.5 * K5 * val.x * val.x),
-          mover: (pt, val) => ({ x: PZ('ejes').geometria(eJuego(val)).Xi(pt.x) }) },
+          donde: val => { const xx = xE(val.t); return enEjes(eJuegoT(val), xx, 0.5 * K5 * xx * xx); },
+          mover: (pt, val) => {
+            const q = Math.max(-A5, Math.min(A5, PZ('ejes').geometria(eJuegoT(val)).Xi(pt.x)));
+            const ang = Math.acos(q / A5) / W1;
+            return { t: val.t > T1 / 2 ? T1 - ang : ang };
+          } },
       ],
     },
     predice: {
