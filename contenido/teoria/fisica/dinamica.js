@@ -62,6 +62,40 @@
     return mejor;
   };
 
+  // Animación (decisión de Gerson, 15 nov: física se mueve sola; docs/3d.md §6). Cada cuadro sale de la cinemática
+  // de aceleración constante con la a que da ΣF = ma (regla 1): x = v0 t + ½ a t², v = v0 + a t, en fórmula cerrada.
+  // Si a < 0, el cuerpo frena hasta v = 0 y ahí queda (el rozamiento estático lo sostiene); si llega al final de la
+  // pista (D metros; el plano inclinado), se queda abajo hasta que t vuelve a empezar. Con D = Infinity no hay final.
+  function recorrido(av, v0, D, tt) {
+    if (av < 0) {
+      const ts = v0 / -av, te = Math.min(tt, ts);
+      return { x: v0 * te + av * te * te / 2, v: tt >= ts ? 0 : v0 + av * te, a: tt >= ts ? 0 : av, te, quieto: tt >= ts };
+    }
+    const tf = av > 0 ? (Math.sqrt(v0 * v0 + 2 * av * D) - v0) / av : (v0 > 0 ? D / v0 : Infinity);
+    const te = Math.min(tt, tf);
+    return { x: v0 * te + av * te * te / 2, v: v0 + av * te, a: av, te, fin: tt >= tf };
+  }
+  // Marcas cada dt segundos (estroboscopio): lo recorrido en cada instante k·dt hasta el momento actual.
+  const marcasDe = (av, v0, D, tt, dt) => { const r = recorrido(av, v0, D, tt), out = []; for (let k = 0; k * dt <= r.te + 1e-9; k++) out.push(recorrido(av, v0, D, k * dt).x); return out; };
+  // px por metro de fis-lienzo para una vista (la misma cuenta que su geometria: 280 × 260 px útiles).
+  const escalaDe = v => Math.min(280 / (v.x1 - v.x0), 260 / (v.y1 - v.y0));
+  // Cámara que sigue al cuerpo: avanza en pantalla hasta xMax y después el piso corre hacia atrás (postes cada 0,5 m,
+  // fijos al piso), como una cámara que lo acompaña. xw es lo recorrido; X0, dónde empieza en pantalla.
+  function camara(xw, X0, xMax, vista, marcas) {
+    const off = Math.max(0, X0 + xw - xMax), L0 = vista.x0 + 0.05, L1 = vista.x1 - 0.05, POSTE = 0.5;
+    const postes = [];
+    for (let x = L0 + POSTE - (off % POSTE); x <= L1 + 1e-9; x += POSTE) postes.push({ de: [x, 0], a: [x, -0.14], grosor: 'fino' });
+    return {
+      xc: X0 + xw - off, off,
+      poligonos: [{ puntos: [[L0, 0], [L1, 0]] }],
+      segmentos: postes,
+      puntos: marcas.map(x => X0 + x - off).filter(x => x >= L0).map(x => ({ x, y: -0.32, hueco: true })),
+      textos: [{ en: [L0, vista.y1 - 0.12], texto: 'marcas cada 0,25 s', ancla: 'start', peso: 400 },
+        ...(off > 0 ? [{ en: [L1, -0.7], texto: 'la cámara lo sigue', ancla: 'end', peso: 400 }] : [])],
+    };
+  }
+  const tiempo = (max, paso, velocidad) => ({ id: 't', etiqueta: 't', min: 0, max, paso, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad, modo: 'repite' } });
+
   // ---------- Idea 1: la aceleración sigue a la fuerza neta ----------
   // Cambia: F y m · Permanece: el carrito y su piso sin roce · Progresa: la flecha de a, que crece con F y se achica
   // con m · Se reserva: un carrito que avanza mientras F lo frena · Debe verse: a apunta como ΣF, no como v.
@@ -81,25 +115,46 @@
       textos: [{ en: [0, 0.32], texto: `${f(m, 0)} kg` }],
     };
   }
+  // El carrito animado: arranca del reposo en X01; pasado x = 0,9 m de pantalla, la cámara lo sigue (camara).
+  const VISTA1T = { x0: -2, x1: 2.4, y0: -0.8, y1: 1.85 }, S1T = escalaDe(VISTA1T), KF1T = 5, KA1T = 5, KV1T = 4, X01 = -0.5;
+  const carritoCam = (Fv, m, tt) => { const av = Fv / m, r = recorrido(av, 0, Infinity, tt); return Object.assign(camara(r.x, X01, 0.9, VISTA1T, marcasDe(av, 0, Infinity, tt, 0.25)), { r }); };
+  function carritoT(Fv, m, tt) {
+    const av = Fv / m, c = carritoCam(Fv, m, tt), r = c.r, xc = c.xc, izq = xc - 0.45, cola = izq - Fv * KF1T / S1T;
+    return {
+      vista: VISTA1T, alt: `Carrito de ${f(m, 0)} kg empujado con ${f(Fv, 0)} N sin rozamiento: acelera ${f(av, 2)} m/s²; a los ${f(r.te, 2)} s va a ${f(r.v, 1)} m/s.`,
+      poligonos: [...c.poligonos, caja(xc, 0.12, 0.9, 0.5)],
+      discos: [{ c: [xc - 0.28, 0.08], r: 0.08 }, { c: [xc + 0.28, 0.08], r: 0.08 }],
+      segmentos: c.segmentos,
+      flechas: [
+        ...(Fv > 0 ? [{ de: [cola, 0.3], d: [Fv, 0], escala: KF1T, color: 'o' }] : []),
+        ...(Fv > 0 ? [{ de: [xc - 0.3, 0.95], d: [av, 0], escala: KA1T, color: 'h', rotulo: 'a' }] : []),
+        ...(r.v > 1e-9 ? [{ de: [xc - 0.3, 1.3], d: [r.v, 0], escala: KV1T, rotulo: 'v' }] : []),
+      ],
+      puntos: c.puntos,
+      textos: [{ en: [xc, 0.32], texto: `${f(m, 0)} kg` },
+        ...(Fv > 0 ? [{ en: [izq - 0.05, 0.72], texto: `F = ${f(Fv, 0)} N`, color: 'o', ancla: 'end' }] : []), ...c.textos],
+    };
+  }
   const segunda = {
     id: 'fuerza-neta-acelera',
     titulo: 'La aceleración sigue a la fuerza',
     temas: ['Segunda ley de Newton'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Empuja un carrito sin rozamiento. Elige la fuerza y la masa, y mira la flecha roja de la aceleración.',
+      consigna: 'El carrito arranca del reposo, en cámara lenta. Elige la fuerza y la masa; mira la flecha roja y cómo se separan las marcas.',
       voz: 'Duplica la masa con la misma fuerza. ¿Qué le pasa a a?',
       controles: [
         { id: 'F', etiqueta: 'F', color: 'c-o', min: 2, max: 12, paso: 2, inicio: 6, unidad: 'N', decimales: 0 },
         { id: 'm', etiqueta: 'm', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'kg', decimales: 0 },
+        tiempo(1.5, 0.05, 0.4),
       ],
-      dibujo: val => ({ datos: carrito(val.F, val.m), estado: {} }),
-      lectura: val => [a, ` = ${f(val.F / val.m, 2)} m/s² hacia la derecha`],
+      dibujo: val => ({ datos: carritoT(val.F, val.m, val.t), estado: {} }),
+      lectura: val => { const r = recorrido(val.F / val.m, 0, Infinity, val.t); return [a, ` = ${f(val.F / val.m, 2)} m/s² · v = ${f(r.v, 1)} m/s · x = ${f(r.x, 2)} m`]; },
       minimo: 3,
-      // Arrastra la mano (la cola de F) hacia la izquierda: más fuerza. La flecha roja responde.
+      // Arrastra la mano (la cola de F) hacia la izquierda: más fuerza. La flecha roja responde; el carrito sigue andando.
       arrastres: [{ id: 'empuje', etiqueta: 'fuerza de la mano', color: 'c-o',
-        donde: val => { const g = LZ(carrito(val.F, val.m)); return { x: g.X(-0.45) - val.F * KF1, y: g.Y(0.3) }; },
-        mover: (pt, val) => ({ F: (LZ(carrito(val.F, val.m)).X(-0.45) - pt.x) / KF1 }) }],
+        donde: val => { const g = LZ(carritoT(val.F, val.m, val.t)); return { x: g.X(carritoCam(val.F, val.m, val.t).xc - 0.45) - val.F * KF1T, y: g.Y(0.3) }; },
+        mover: (pt, val) => { const g = LZ(carritoT(val.F, val.m, val.t)); return { F: (g.X(carritoCam(val.F, val.m, val.t).xc - 0.45) - pt.x) / KF1T }; } }],
     },
     predice: {
       pregunta: 'Un carrito avanza hacia la derecha. Una fuerza constante de 6 N lo empuja hacia la izquierda. ¿Hacia dónde apunta su aceleración ahora?',
@@ -176,14 +231,15 @@
     temas: ['Masa y peso'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Elige una masa y llévala a la Tierra, a Marte o a la Luna. Mira el peso.',
-      voz: 'La masa escrita en la caja no cambia. ¿Y la flecha?',
+      consigna: 'La masa sube y baja sola. Llévala a la Tierra, a Marte o a la Luna, y mira cuánto crece el peso por cada kilo.',
+      voz: 'Con la misma masa, ¿dónde es más corta la flecha del peso?',
+      // La masa barre su rango (20 kg por segundo, ida y vuelta): P = m g crece con m, con la pendiente g del lugar.
       controles: [
-        { id: 'm', etiqueta: 'm', min: 20, max: 80, paso: 20, inicio: 60, unidad: 'kg', decimales: 0 },
+        { id: 'm', etiqueta: 'm', min: 20, max: 80, paso: 20, inicio: 60, unidad: 'kg', decimales: 0, auto: { velocidad: 20, modo: 'rebota' } },
         { id: 'g', etiqueta: 'Lugar', opciones: [{ valor: 10, texto: 'Tierra' }, { valor: 3.7, texto: 'Marte' }, { valor: 1.6, texto: 'Luna' }], inicio: 10 },
       ],
       dibujo: val => ({ datos: persona(val.m, val.g), estado: {} }),
-      lectura: val => [P, ` = ${f(val.m * val.g, 0)} N · m = ${f(val.m, 0)} kg en todo lugar`],
+      lectura: val => [P, ` = ${f(val.m * val.g, 0)} N con m = ${f(val.m, 0)} kg: ${f(val.g, 1)} N por kilo`],
       minimo: 3,
       // Arrastra la punta del peso: cambias la masa (manija en tinta, como m). El lugar se elige con los botones.
       arrastres: [{ id: 'masa', etiqueta: 'masa (punta del peso)',
@@ -253,25 +309,50 @@
         ...(o.sinA ? [] : [{ de: [0, 0.85], d: [av, 0], escala: KA3, color: 'h', rotulo: av > 0 ? `a = ${f(av, 2)} m/s²` : undefined }])],
     };
   }
+  // El bloque animado: ya desliza a V03 cuando t = 0. Si F supera al rozamiento acelera; si lo iguala va parejo; si
+  // es menor, frena y se queda (el rozamiento estático iguala a F). Lo usan la idea y la mesa «bloque-libre».
+  const VISTA3T = { x0: -1.9, x1: 2.3, y0: -0.8, y1: 1.85 }, S3T = escalaDe(VISTA3T), KA3T = 8, KV3T = 5, V03 = 1, X03 = -0.05;
+  const deslizaDe = (Fv, mu, m, tt) => { const fk = mu * m * G, r = recorrido((Fv - fk) / m, V03, Infinity, tt); return Object.assign(r, { f: r.quieto ? Fv : fk }); };
+  const bloqueCam = (Fv, mu, m, tt) => camara(deslizaDe(Fv, mu, m, tt).x, X03, 0.9, VISTA3T, marcasDe((Fv - mu * m * G) / m, V03, Infinity, tt, 0.25));
+  function bloqueT(Fv, mu, m, tt) {
+    const r = deslizaDe(Fv, mu, m, tt), c = bloqueCam(Fv, mu, m, tt), xc = c.xc, izq = xc - 0.45, cola = izq - Fv * KF3 / S3T;
+    return {
+      vista: VISTA3T, escalaF: KF3,
+      alt: `Bloque de ${m} kg que desliza, jalado con ${f(Fv, 0)} N contra un rozamiento de ${f(r.f, 0)} N: a = ${f(r.a, 2)} m/s², v = ${f(r.v, 1)} m/s.`,
+      poligonos: [...c.poligonos, caja(xc, 0, 0.9, 0.6)],
+      segmentos: c.segmentos,
+      flechas: [
+        ...(Fv > 0 ? [{ de: [cola, 0.4], d: [Fv, 0], color: 'o' }] : []),
+        ...(r.f > 0 ? [{ de: [izq, 0.1], d: [-r.f, 0], rotulo: 'f' }] : []),
+        ...(Math.abs(r.a) > 1e-9 ? [{ de: [xc - 0.3, 1.0], d: [r.a, 0], escala: KA3T, color: 'h', rotulo: 'a' }] : []),
+        ...(r.v > 1e-9 ? [{ de: [xc - 0.3, 1.32], d: [r.v, 0], escala: KV3T, rotulo: 'v' }] : []),
+      ],
+      puntos: c.puntos,
+      textos: [{ en: [xc, 0.35], texto: `${m} kg` }, ...(Fv > 0 ? [{ en: [izq - 0.05, 0.72], texto: `F = ${f(Fv, 0)} N`, color: 'o', ancla: 'end' }] : []),
+        ...(r.quieto ? [{ en: [xc, 1.0], texto: 'se detuvo' }] : []), ...c.textos],
+    };
+  }
+  const lecturaRoce = (Fv, mu, m, tt) => { const r = deslizaDe(Fv, mu, m, tt); return [`f = ${f(r.f, 0)} N · `, a, ` = ${f(r.a, 2)} m/s² · v = ${f(r.v, 1)} m/s`]; };
   const roceMov = {
     id: 'rozamiento-en-movimiento',
     titulo: 'Acelera lo que sobra',
     temas: ['Rozamiento en movimiento'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Jala un bloque de 5 kg que ya desliza. Elige la fuerza y el coeficiente de rozamiento cinético μk.',
+      consigna: 'Un bloque de 5 kg ya desliza, en cámara lenta. Elige la fuerza y el rozamiento μk; mira si acelera, va parejo o frena.',
       voz: 'Busca la fuerza con la que no acelera.',
       controles: [
         { id: 'F', etiqueta: 'F', color: 'c-o', min: 10, max: 30, paso: 5, inicio: 20, unidad: 'N', decimales: 0 },
         { id: 'mu', etiqueta: 'μk', opciones: [{ valor: 0, texto: '0' }, { valor: 0.2, texto: '0,2' }, { valor: 0.4, texto: '0,4' }], inicio: 0.2 },
+        tiempo(1.5, 0.05, 0.4),
       ],
-      dibujo: val => ({ datos: bloque(val.F, val.mu), estado: {} }),
-      lectura: val => { const fk = val.mu * 50; return [`f = ${f(fk, 0)} N · `, a, ` = ${f(Math.max(0, val.F - fk) / 5, 2)} m/s²`]; },
+      dibujo: val => ({ datos: bloqueT(val.F, val.mu, 5, val.t), estado: {} }),
+      lectura: val => lecturaRoce(val.F, val.mu, 5, val.t),
       minimo: 4,
       // Arrastra la mano (la cola de F) hacia la izquierda: más fuerza. μk se elige con los botones.
       arrastres: [{ id: 'jalon', etiqueta: 'fuerza de la mano', color: 'c-o',
-        donde: val => { const g = LZ(bloque(val.F, val.mu)); return { x: g.X(-0.45 - val.F * KF3 / S3), y: g.Y(0.4) }; },
-        mover: (pt, val) => ({ F: (-0.45 - LZ(bloque(val.F, val.mu)).Xi(pt.x)) * S3 / KF3 }) }],
+        donde: val => { const g = LZ(bloqueT(val.F, val.mu, 5, val.t)), izq = bloqueCam(val.F, val.mu, 5, val.t).xc - 0.45; return { x: g.X(izq - val.F * KF3 / S3T), y: g.Y(0.4) }; },
+        mover: (pt, val) => { const g = LZ(bloqueT(val.F, val.mu, 5, val.t)), izq = bloqueCam(val.F, val.mu, 5, val.t).xc - 0.45; return { F: (izq - g.Xi(pt.x)) * S3T / KF3 }; } }],
     },
     predice: {
       pregunta: 'Un bloque de 5 kg se jala con 20 N y desliza con velocidad constante. ¿Cuánto vale el rozamiento?',
@@ -324,7 +405,8 @@
   function plano(m, ang, o = {}) {
     const L = 3, c = Math.cos(rad(ang)), s = Math.sin(rad(ang)), H = L * s, B = L * c;
     const u = [-c, -s], nrm = [-s, c]; // a lo largo (hacia abajo) y normal
-    const pc = [B * 0.55, H * 0.55], C = [pc[0] + nrm[0] * 0.25, pc[1] + nrm[1] * 0.25];
+    const dd = o.d === undefined ? L * 0.55 : o.d;  // dónde está el bloque, medido sobre el plano desde abajo
+    const pc = [c * dd, s * dd], C = [pc[0] + nrm[0] * 0.25, pc[1] + nrm[1] * 0.25];
     const w = 0.5, h = 0.5;
     const esq = [[-w / 2, 0], [w / 2, 0], [w / 2, h], [-w / 2, h]].map(([p, q]) => [pc[0] - u[0] * p * -1 + nrm[0] * q, pc[1] - u[1] * p * -1 + nrm[1] * q]);
     const Pv = m * G, av = G * s;
@@ -337,10 +419,23 @@
         { de: C, d: [0, -Pv], color: 'd', rotulo: `P = ${Pv} N` },
         { de: C, d: [u[0] * Pv * s, u[1] * Pv * s], color: 'd', discontinua: true, rotulo: 'P sen θ', paso: o.pC || 0 },
         { de: C, d: [nrm[0] * Pv * c, nrm[1] * Pv * c], color: 'i', rotulo: 'N', paso: o.pC || 0 },
-        ...(o.sinA ? [] : [{ de: [C[0] + nrm[0] * 0.55, C[1] + nrm[1] * 0.55], d: [u[0] * av, u[1] * av], escala: KA4, color: 'h', rotulo: 'a' }]),
+        ...(o.sinA ? [] : [{ de: [C[0] + nrm[0] * 0.55, C[1] + nrm[1] * 0.55], d: [u[0] * av, u[1] * av], escala: o.KA || KA4, color: 'h', rotulo: 'a' }]),
       ],
+      ...(o.marcas ? { puntos: o.marcas.map(q => ({ x: c * q - nrm[0] * 0.15, y: s * q - nrm[1] * 0.15, hueco: true })) } : {}),
+      ...(o.textos ? { textos: o.textos } : {}),
     };
   }
+  // El plano animado: el bloque se suelta en D04 y baja hasta D14 (medido sobre el plano), con s = ½ g sen θ t².
+  // sen θ con los valores de los triángulos notables (30°, 37°, 53°), como en la lectura y en los exámenes.
+  const D04 = 2.6, D14 = 0.7, KA4T = 6, SEN = { 30: 0.5, 37: 0.6, 53: 0.8 };
+  const bajada = (ang, tt) => recorrido(G * SEN[ang], 0, D04 - D14, tt);
+  const planoT = (m, ang, tt) => {
+    const r = bajada(ang, tt), av = G * SEN[ang];
+    return Object.assign(plano(m, ang, { d: D04 - r.x, KA: KA4T,
+      marcas: marcasDe(av, 0, D04 - D14, tt, 0.1).map(x => D04 - x),
+      textos: [{ en: [-0.5, 2.7], texto: 'marcas cada 0,1 s', ancla: 'start', peso: 400 }] }),
+    { alt: `Bloque de ${m} kg que baja sin roce por un plano a ${ang}°: a = ${f(av, 2)} m/s²; a los ${f(r.te, 2)} s va a ${f(r.v, 1)} m/s.` });
+  };
   function mesaPolea(m1, m2, o = {}) {
     const av = m2 * G / (m1 + m2), Tv = m1 * av;
     return {
@@ -364,14 +459,15 @@
     temas: ['Bloques, poleas y planos inclinados'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Un bloque baja por un plano inclinado sin rozamiento. Elige el ángulo y la masa del bloque.',
+      consigna: 'Un bloque baja por un plano inclinado sin rozamiento, en cámara lenta. Elige el ángulo y la masa; mira la flecha roja y las marcas.',
       voz: 'Cambia solo la masa. ¿Cambia la flecha roja?',
       controles: [
         { id: 'ang', etiqueta: 'Ángulo', opciones: [30, 37, 53].map(k => ({ valor: k, texto: `${k}°` })), inicio: 30 },
         { id: 'm', etiqueta: 'm', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'kg', decimales: 0 },
+        tiempo(1, 0.02, 0.25),
       ],
-      dibujo: val => ({ datos: plano(val.m, val.ang), estado: {} }),
-      lectura: val => [a, ` = ${f(G * ({ 30: 0.5, 37: 0.6, 53: 0.8 })[val.ang], 2)} m/s² · `, P, ` = ${val.m * G} N`],
+      dibujo: val => ({ datos: planoT(val.m, val.ang, val.t), estado: {} }),
+      lectura: val => [a, ` = ${f(G * SEN[val.ang], 2)} m/s² · v = ${f(bajada(val.ang, val.t).v, 1)} m/s · `, P, ` = ${val.m * G} N`],
       minimo: 4,
       // Arrastra la cima del plano hacia arriba o abajo (cuenta solo la altura: el ángulo más cercano) o la punta del peso (la masa, en tinta como m).
       arrastres: [
@@ -379,8 +475,8 @@
           donde: val => cimaPlano(val.m, val.ang),
           mover: (pt, val) => ({ ang: cercano(planoIdea.juega.controles[0], ang => ({ x: pt.x, y: cimaPlano(val.m, ang).y }), pt) }) },
         { id: 'masa', etiqueta: 'masa del bloque (punta del peso)',
-          donde: val => { const d = plano(val.m, val.ang), g = LZ(d), C = d.flechas[0].de; return { x: g.X(C[0]), y: g.Y(C[1]) + val.m * G * KP4 }; },
-          mover: (pt, val) => { const d = plano(val.m, val.ang), g = LZ(d), C = d.flechas[0].de; return { m: (pt.y - g.Y(C[1])) / (G * KP4) }; } },
+          donde: val => { const d = planoT(val.m, val.ang, val.t), g = LZ(d), C = d.flechas[0].de; return { x: g.X(C[0]), y: g.Y(C[1]) + val.m * G * KP4 }; },
+          mover: (pt, val) => { const d = planoT(val.m, val.ang, val.t), g = LZ(d), C = d.flechas[0].de; return { m: (pt.y - g.Y(C[1])) / (G * KP4) }; } },
       ],
     },
     predice: {
@@ -464,9 +560,10 @@
     temas: ['Dinámica circular'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Un auto de 1000 kg pasa por lo alto de una loma de 10 m de radio. Elige su rapidez y mira la normal.',
-      voz: 'Sube la rapidez de a poco. ¿Qué flecha se achica?',
-      controles: [{ id: 'v', etiqueta: 'v', min: 0, max: 10, paso: 2.5, inicio: 5, unidad: 'm/s', decimales: 1 }],
+      consigna: 'Un auto de 1000 kg pasa por lo alto de una loma de radio 10 m. Su rapidez cambia sola: mira la normal.',
+      voz: 'Mira cuando la rapidez sube. ¿Qué flecha se achica?',
+      // La rapidez barre de 0 a 10 m/s y vuelve (2,5 m/s por segundo): N = m (g − v²/r) baja hasta 0.
+      controles: [{ id: 'v', etiqueta: 'v', min: 0, max: 10, paso: 2.5, inicio: 5, unidad: 'm/s', decimales: 1, auto: { velocidad: 2.5, modo: 'rebota' } }],
       dibujo: val => ({ datos: loma(val.v, { conV: true }), estado: {} }),
       lectura: val => [N, ` = ${f(Math.max(0, M5 * (G - val.v * val.v / R5)), 0)} N · `, P, ' = 10 000 N'],
       minimo: 3,
@@ -522,8 +619,25 @@
   // balanza, N · Se reserva: el ascensor a velocidad constante, que marca igual que en reposo ·
   // Debe verse: la balanza mide N, y N depende de a, no de v.
   const M6 = 60, KF6 = 0.12, KA6 = 10;
+  // Animación: la velocidad del ascensor es v = V06 + a (t − 1), positiva hacia arriba (con a > 1 baja, se detiene y
+  // sube). La cámara viaja con el ascensor: las marcas de la pared (una por metro) pasan con y = V06 t + ½ a (t² − 2t).
+  const V06 = 1;
+  const viaje = (av, tt) => ({ v: V06 + av * (tt - 1), y: V06 * tt + av * (tt * tt - 2 * tt) / 2 });
+  function pared(y) {
+    const out = [];
+    for (let k = Math.ceil(y - 1); k <= y + 3.1; k++) out.push({ de: [-1.55, k - y], a: [-1.25, k - y], grosor: 'fino' });
+    return out;
+  }
   function ascensor(av, o = {}) {
-    const Nv = M6 * (G + av);
+    const Nv = M6 * (G + av), vj = o.t === undefined ? null : viaje(av, o.t);
+    if (vj) {
+      const base = ascensor(av, Object.assign({}, o, { t: undefined }));
+      return Object.assign(base, {
+        alt: `Persona de 60 kg sobre una balanza en un ascensor con a = ${f(av, 0)} m/s² y v = ${f(vj.v, 1)} m/s (positivas hacia arriba): la balanza marca ${f(Nv, 0)} N.`,
+        segmentos: pared(vj.y),
+        flechas: base.flechas.concat(Math.abs(vj.v) > 0.05 ? [{ de: [-1.8, 1.5], d: [0, vj.v], escala: 8, rotulo: 'v', lado: -1 }] : []),
+      });
+    }
     return {
       vista: { x0: -2, x1: 2, y0: -1.1, y1: 3.2 }, escalaF: KF6,
       alt: o.alt || `Persona de 60 kg sobre una balanza en un ascensor con aceleración ${f(av, 0)} m/s² (positiva hacia arriba): la balanza marca ${f(Nv, 0)} N.`,
@@ -542,11 +656,11 @@
     temas: ['Movimiento relativo y sistemas inerciales'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Una persona de 60 kg está sobre una balanza en un ascensor. Elige la aceleración del ascensor: positiva es hacia arriba.',
+      consigna: 'Persona de 60 kg sobre una balanza en un ascensor, en cámara lenta. Elige su aceleración (positiva, hacia arriba). ¿Cambia la balanza con v?',
       voz: 'Prueba a = 0. ¿Importa si el ascensor sube o baja?',
-      controles: [{ id: 'a', etiqueta: 'a', color: 'c-h', min: -4, max: 4, paso: 2, inicio: 2, unidad: 'm/s²', decimales: 0 }],
-      dibujo: val => ({ datos: ascensor(val.a), estado: {} }),
-      lectura: val => [`La balanza marca `, N, ` = ${f(M6 * (G + val.a), 0)} N`],
+      controles: [{ id: 'a', etiqueta: 'a', color: 'c-h', min: -4, max: 4, paso: 2, inicio: 2, unidad: 'm/s²', decimales: 0 }, tiempo(2, 0.05, 0.5)],
+      dibujo: val => ({ datos: ascensor(val.a, { t: val.t }), estado: {} }),
+      lectura: val => [`v = ${f(viaje(val.a, val.t).v, 1)} m/s · la balanza marca `, N, ` = ${f(M6 * (G + val.a), 0)} N`],
       minimo: 3,
       // Arrastra la punta de la flecha roja: arriba, el ascensor acelera hacia arriba; abajo, hacia abajo.
       arrastres: [{ id: 'aceleracion', etiqueta: 'aceleración del ascensor', color: 'c-h',
@@ -601,6 +715,7 @@
     { id: 'F', etiqueta: 'F', color: 'c-o', min: 0, max: 35, paso: 5, inicio: 25, unidad: 'N', decimales: 0 },
     { id: 'm', etiqueta: 'm', min: 5, max: 8, paso: 1, inicio: 5, unidad: 'kg', decimales: 0 },
     { id: 'mu', etiqueta: 'μk', opciones: [{ valor: 0, texto: '0' }, { valor: 0.2, texto: '0,2' }, { valor: 0.4, texto: '0,4' }], inicio: 0.2 },
+    tiempo(1.5, 0.05, 0.4),
   ];
   const rocBloque = val => val.mu * val.m * G;
   const netaBloque = val => Math.max(0, val.F - rocBloque(val));
@@ -644,10 +759,10 @@
     laboratorio: [
       {
         id: 'bloque-libre', titulo: 'Fuerza, masa y rozamiento', pieza: 'fis-lienzo',
-        consigna: 'Jala un bloque que ya desliza. Cambia la fuerza, la masa y μk, y mira cuánto sobra para acelerar.',
+        consigna: 'El bloque ya desliza, en cámara lenta. Cambia la fuerza, la masa y μk, y mira cuánto sobra para acelerar.',
         controles: BLOQUE_LIBRE,
-        dibujo: val => ({ datos: bloque(val.F, val.mu, { m: val.m }), estado: {} }),
-        lectura: val => [F, ` = ${f(val.F, 0)} N, f = ${f(rocBloque(val), 0)} N: `, a, ` = ${f(aBloque(val), 2)} m/s²`],
+        dibujo: val => ({ datos: bloqueT(val.F, val.mu, val.m, val.t), estado: {} }),
+        lectura: val => lecturaRoce(val.F, val.mu, val.m, val.t),
         invitaciones: [
           { texto: 'Haz que el bloque deslice sin acelerar, aunque lo jales.',
             logrado: val => val.F > 0 && Math.abs(val.F - rocBloque(val)) < 1e-9,
@@ -662,16 +777,20 @@
             logrado: (val, guardados) => netaBloque(val) > 0 && guardados.some(x => Math.abs(netaBloque(x) - netaBloque(val)) < 1e-9 && Math.abs(aBloque(x) - aBloque(val)) > 1e-9)
               && guardados.some(x => x.F === val.F && x.m === val.m && x.mu === val.mu),
             bien: 'La misma fuerza neta acelera menos a la masa mayor.' },
+          { texto: 'Haz que el bloque frene y páusalo justo cuando se detiene.',
+            logrado: val => { const fk = rocBloque(val); return val.F < fk && Math.abs(val.t - V03 * val.m / (fk - val.F)) <= 0.025 + 1e-9; },
+            bien: 'Frenó porque el rozamiento le ganaba a F. Quieto, el roce estático iguala a F.',
+            pista: 'Usa F menor que el rozamiento y pausa cuando v llegue a 0; afina con − y +.' },
         ],
         arrastres: [{ id: 'jalon', etiqueta: 'fuerza de la mano', color: 'c-o',
-          donde: val => { const g = LZ(bloque(val.F, val.mu, { m: val.m })); return { x: g.X(-0.45 - val.F * KF3 / S3), y: g.Y(0.4) }; },
-          mover: (pt, val) => ({ F: (-0.45 - LZ(bloque(val.F, val.mu, { m: val.m })).Xi(pt.x)) * S3 / KF3 }) }],
+          donde: val => { const g = LZ(bloqueT(val.F, val.mu, val.m, val.t)), izq = bloqueCam(val.F, val.mu, val.m, val.t).xc - 0.45; return { x: g.X(izq - val.F * KF3 / S3T), y: g.Y(0.4) }; },
+          mover: (pt, val) => { const g = LZ(bloqueT(val.F, val.mu, val.m, val.t)), izq = bloqueCam(val.F, val.mu, val.m, val.t).xc - 0.45; return { F: (izq - g.Xi(pt.x)) * S3T / KF3 }; } }],
       },
       Object.assign({}, ascensorIdea.juega, {
         id: 'ascensor-libre', titulo: 'Ascensor hasta la caída libre', pieza: 'fis-lienzo',
-        consigna: 'Lleva la aceleración del ascensor de +6 a −10 m/s². ¿Qué marca la balanza si el cable se corta?',
-        controles: [{ id: 'a', etiqueta: 'a', color: 'c-h', min: -10, max: 6, paso: 2, inicio: 2, unidad: 'm/s²', decimales: 0 }],
-        lectura: val => [a, ` = ${f(val.a, 0)} m/s²: la balanza marca `, N, ` = ${f(balanzaDe(val), 0)} N`],
+        consigna: 'En cámara lenta. Lleva la aceleración del ascensor de +6 a −10 m/s². ¿Qué marca la balanza si el cable se corta?',
+        controles: [{ id: 'a', etiqueta: 'a', color: 'c-h', min: -10, max: 6, paso: 2, inicio: 2, unidad: 'm/s²', decimales: 0 }, tiempo(2, 0.05, 0.5)],
+        lectura: val => [a, ` = ${f(val.a, 0)} m/s², v = ${f(viaje(val.a, val.t).v, 1)} m/s: balanza `, N, ` = ${f(balanzaDe(val), 0)} N`],
         minimo: undefined, voz: undefined,
         invitaciones: [
           { texto: 'Haz que la balanza marque justo el peso de la persona.',
