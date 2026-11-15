@@ -325,6 +325,12 @@
     d.pie = kk > n ? `El ${kk} no está en el doble ${n}` : `El ${kk} sale ${veces} veces en ${n + 1} fichas`;
     return d;
   }
+  // Lo que se marca en el dibujo: las fichas resaltadas con el número y cuántas mitades lo llevan.
+  const marcadas = val => dominoK(val.n, val.k).filas.flatMap(fl => fl.fichas).filter(fi => fi.valor.includes(val.k));
+  const vecesK = val => marcadas(val).reduce((m, fi) => m + fi.valor.filter(x => x === val.k).length, 0);
+  const fichasJuego = n => dominoK(n, 0).filas.reduce((m, fl) => m + fl.fichas.length, 0);
+  // El juego más chico de la mesa con 10 fichas o más.
+  const MENOR_10 = unoA(1, 6).find(n => fichasJuego(n) >= 10);
   const mesaDomino = {
     id: 'domino-marcado', titulo: 'Busca un número en el dominó', pieza: 'rm-fichas',
     consigna: 'Elige el doble y un número. Se marcan las fichas que lo tienen: cuenta cuántas veces sale.',
@@ -336,9 +342,26 @@
     lectura: val => (val.k > val.n ? [`Doble ${val.n}: el ${val.k} no está`]
       : [`Doble ${val.n}: ${pl(total(val.n), 'ficha', 'fichas')} · el ${val.k} sale ${val.n + 2} veces`]),
     arrastres: [Object.assign({ id: 'doble', etiqueta: 'hasta qué doble llega el juego', color: 'c-o' }, manijaDomino(val => dominoK(val.n, val.k)))],
+    // Retos: se cuentan las fichas marcadas en el mismo dibujo de la mesa (dominoK).
+    invitaciones: [
+      { texto: 'Haz que el número marcado salga 8 veces en total.',
+        logrado: val => vecesK(val) === 8,
+        bien: 'Doble seis: 7 fichas lo tienen, y su doble lo lleva dos veces.' },
+      { texto: 'Marca un número que no tenga ninguna ficha en el juego.',
+        logrado: val => marcadas(val).length === 0,
+        bien: 'Si el juego llega a un doble menor, ese número no existe en él.' },
+      { texto: 'Busca el juego más chico que tenga 10 fichas o más.',
+        logrado: val => val.n === MENOR_10,
+        bien: `Doble ${MENOR_10}: 6 fichas de números distintos y 4 dobles.` },
+      { texto: 'Guarda dos números distintos del mismo juego y compara cuántas veces salen.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => y.n === x.n && y.k !== x.k && vecesK(x) > 0 && vecesK(y) > 0)),
+        bien: 'Salen igual de veces: el juego no prefiere a ningún número.' },
+    ],
   };
   // Mesa 2: la pila de dados que crece: se arrastra el dado de abajo para agregar o quitar dados.
   const lugarDado = (a, i) => { const g = FICHAS().geometria(pila(5, a)); return { x: g.filas[i].fichas[0].cx, y: g.filas[i].fichas[0].cy }; };
+  const ocultasPila = val => 7 * val.k - val.a;   // cada dado aporta su par opuesto; se resta la cara que se ve
+  const MAYOR_PILA = Math.max(...unoA(1, 6).flatMap(a => unoA(1, 5).map(k => ocultasPila({ a, k }))));
   const mesaPila = {
     id: 'pila-dados', titulo: 'La pila de dados', pieza: 'rm-fichas',
     consigna: 'Elige la cara de arriba y arrastra el dado de abajo para apilar más. Suma las caras tapadas.',
@@ -347,10 +370,21 @@
       { id: 'k', etiqueta: 'Dados', color: 'c-d', min: 1, max: 5, paso: 1, inicio: 2, decimales: 0 },
     ],
     dibujo: val => ({ datos: pila(val.k, val.a), estado: {} }),
-    lectura: val => [`${pl(val.k, 'dado', 'dados')}: ocultas = 7 · ${val.k} − ${val.a} = ${7 * val.k - val.a}`],
+    lectura: val => [`${pl(val.k, 'dado', 'dados')}: ocultas = 7 · ${val.k} − ${val.a} = ${ocultasPila(val)}`],
     arrastres: [{ id: 'abajo', etiqueta: 'cuántos dados hay en la pila', color: 'c-d',
       donde: val => lugarDado(val.a, val.k - 1),
       mover: (pt, val) => ({ k: masCercano(unoA(1, 5), m => lugarDado(val.a, m - 1), pt) }) }],
+    invitaciones: [
+      { texto: 'Consigue que las caras tapadas sumen 20.',
+        logrado: val => ocultasPila(val) === 20,
+        bien: 'Tres pares de 7 son 21; se ve el 1 de arriba: quedan 20.' },
+      { texto: 'Arma la pila con la mayor suma de caras tapadas.',
+        logrado: val => ocultasPila(val) === MAYOR_PILA,
+        bien: 'Muchos dados y el 1 arriba: lo que se ve resta lo menos posible.' },
+      { texto: 'Guarda dos pilas con la misma cara arriba y un dado de diferencia.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => y.a === x.a && y.k === x.k + 1)),
+        bien: 'Un dado más, siempre 7 más: su cara de arriba y la de abajo.' },
+    ],
   };
   // Mesa 3: la cuadrícula rectangular m × n (la idea solo deja cuadradas): se arrastran el borde derecho y el de abajo.
   const ladoRect = (m, n) => Math.min(1.6, 9.4 / m, 5.4 / n);
@@ -364,6 +398,11 @@
   const cuadradosRect = (m, n) => unoA(1, Math.min(m, n)).reduce((t2, q) => t2 + (m - q + 1) * (n - q + 1), 0);
   const bordeDer = (m, n) => { const L = ladoRect(m, n); return [5 + m * L / 2, 0.4 + n * L / 2]; };
   const bordeAbajo = (m, n) => { const L = ladoRect(m, n); return [5, 0.4 + n * L]; };
+  const cerillasLab = val => mallaRect(val.m, val.n).lineas.length;   // las cerillas que dibuja la mesa
+  const cuadradosLab = val => cuadradosRect(val.m, val.n);
+  const CASOS_RECT = unoA(1, 6).flatMap(m => unoA(1, 4).map(n => ({ m, n })));
+  // Lo menos que se gasta en cerillas para tener 10 cuadrados o más.
+  const MENOS_CERILLAS_10 = Math.min(...CASOS_RECT.filter(v => cuadradosLab(v) >= 10).map(cerillasLab));
   const mesaRect = {
     id: 'rectangulo-cerillas', titulo: 'Cuadrícula rectangular', pieza: 'rm-plano',
     consigna: 'Arrastra el borde derecho y el de abajo. En un rectángulo, ¿cuántos cuadrados de cada tamaño caben?',
@@ -381,6 +420,20 @@
         donde: val => enPlano(mallaRect(val.m, val.n), bordeAbajo(val.m, val.n)),
         mover: (pt, val) => ({ n: masCercano(unoA(1, 4), q => enPlano(mallaRect(val.m, val.n), bordeAbajo(val.m, q)), pt) }) },
     ],
+    invitaciones: [
+      { texto: 'Arma una cuadrícula con exactamente 14 cuadrados.',
+        logrado: val => cuadradosLab(val) === 14,
+        bien: 'Hay dos: 3 × 3 y 5 × 2. ¿Encontraste la otra?' },
+      { texto: 'Consigue cuadrados de 4 tamaños distintos.',
+        logrado: val => Math.min(val.m, val.n) >= 4,
+        bien: 'El lado más corto manda: decide hasta qué tamaño caben.' },
+      { texto: 'Usa las menos cerillas posibles para tener 10 cuadrados o más.',
+        logrado: val => cuadradosLab(val) >= 10 && cerillasLab(val) === MENOS_CERILLAS_10,
+        bien: `${MENOS_CERILLAS_10} cerillas: ninguna cuadrícula más barata llega a 10.` },
+      { texto: 'Guarda dos cuadrículas con los mismos cuadrados y distintas cerillas.',
+        logrado: (val, guardados) => guardados.some(x => guardados.some(y => cuadradosLab(y) === cuadradosLab(x) && cerillasLab(y) !== cerillasLab(x))),
+        bien: 'Mismos cuadrados, distinto gasto: se cuentan por separado.' },
+    ],
   };
 
   return {
@@ -388,6 +441,23 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-fichas.js', '/nucleo/kit/piezas/rm-plano.js'],
+    // Glosario: las palabras que este tema estrena en el curso (docs/teoria.md, 4d).
+    glosario: [
+      { termino: 'dominó', def: 'Juego de fichas con dos mitades marcadas con puntos: una ficha por cada pareja de números.',
+        ejemplo: 'Doble seis: de 0–0 a 6–6, 28 fichas.', ver: ['ficha doble', 'par sin orden'] },
+      { termino: 'ficha doble', formas: ['ficha doble', 'fichas dobles', 'dobles'], def: 'Ficha de dominó con el mismo número en sus dos mitades, como 3–3.',
+        ejemplo: 'El doble seis tiene 7: del 0–0 al 6–6.', ver: ['dominó'] },
+      { termino: 'par sin orden', formas: ['par sin orden', 'pares sin orden'], def: 'Dos números juntos en los que no importa cuál va primero: 2–5 y 5–2 son lo mismo.',
+        ejemplo: 'Del 0 al 3 hay 6 pares de números distintos: 4 · 3 / 2.', ver: ['dominó'] },
+      { termino: 'dado común', formas: ['dado común', 'dados comunes'], def: 'Cubo con puntos del 1 al 6 en sus caras, puestos de modo que las caras de enfrente suman 7.',
+        ver: ['caras opuestas'] },
+      { termino: 'caras opuestas', formas: ['caras opuestas', 'cara opuesta', 'su opuesta'], def: 'Dos caras de un cubo que no se tocan: una enfrente de la otra, como arriba y abajo.',
+        ejemplo: 'En un dado común, el 2 está enfrente del 5.', ver: ['dado común'] },
+      { termino: 'caras tapadas', formas: ['caras tapadas', 'cara tapada', 'ocultas'], def: 'Caras de un dado que no se ven porque tocan la mesa u otro dado.',
+        ejemplo: 'Tres dados apilados con el 5 arriba: 7 · 3 − 5 = 16.', ver: ['caras opuestas'] },
+      { termino: 'cerilla', def: 'Palito de fósforo. En estos acertijos, cada uno es un lado igual de la figura.',
+        ejemplo: 'Una cuadrícula de 2 × 2 usa 12.', ver: ['cuadrícula'] },
+    ],
     // Laboratorio: el dominó con un número marcado, la pila de dados que crece y la cuadrícula rectangular.
     laboratorio: [mesaDomino, mesaPila, mesaRect],
     historia: {
