@@ -33,6 +33,7 @@ docs/recorrido.md              recorrido para los ocho alumnos ficticios: avance
 docs/dos-entradas.md           decisión del 15 nov: una base, dos entradas (explorar o examen), gráficos que se adaptan y una unidad completa antes de tres
 docs/teoria.md                 contrato de la teoría interactiva (molde de las 152 unidades); fuentes investigadas en docs/teoria/
 contenido/teoria/<curso>/<unidad>.js  teoría de cada unidad (cinco momentos por idea); lector en app/teoria.js, formato en nucleo/teoria.js
+docs/3d.md                     molde del 3D: cuándo va, la pieza viva sobre nucleo/kit/vivo3d.js y la mesa 3D del laboratorio
 nucleo/glosario.js             glosario por tema: una definición por curso, términos tocables en la teoría; app/datos/glosario/<curso>.json lo arma npm run catalogo
 docs/escena-viva.md            contrato del rediseño: el ejercicio se cuenta solo (topes de texto, formato escena/pasos/fantasmas, kit, mascota Rive)
 nucleo/kit/                    kit común de escenas: trazo, línea de tiempo y piezas (barra-porcentaje)
