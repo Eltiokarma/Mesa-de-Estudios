@@ -17,10 +17,12 @@
  *   Duda que resuelve: ¿por qué un imán quieto no enciende nada aunque su campo sea enorme?
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // nucleo/fisica3d.js arma la mesa 3D «La espira y su sombra» con el motor de plantillas/induccion (regla 1).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../nucleo/fisica3d.js')) : fabrica(root.Kit, root.Fisica3D);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, F3) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const B = { v: 'c-i', t: 'B' }, Phi = { v: 'c-d', t: 'Φ' }, eps = { v: 'c-h', t: 'ε' }, v = { v: 'c-o', t: 'v' };
@@ -584,11 +586,49 @@
     return { datos: { modo: 'barra', colores: COL, barra: { largo: 10, x: 4, l: val.l, sentido: val.s, v: val.v, escalaV: EV, corriente: sentidoI(val), brillo: Math.min(1, P / 6.25) }, rotulo: `ε = ${f(Math.abs(e), 2)} V` }, estado: {} };
   };
 
+  // La espira y su sombra (laboratorio 3D, 15 nov: exploración libre, sin predicciones). Φ = B·A·cos θ lo calcula el motor
+  // de plantillas/induccion (flujo) a través de nucleo/fisica3d.js. La sombra verde de la espira en el piso, que el campo
+  // vertical atraviesa, mide A·|cos θ|: el flujo es B por esa sombra, con signo.
+  const esp3 = val => F3.espira(val);
+  const igual = (a, b) => Math.abs(a - b) < 1e-9;
+  const mesaSombra = {
+    id: 'espira-sombra-3d', titulo: 'La espira y su sombra', pieza: 'fis-espacio-3d',
+    consigna: 'Gira la escena con el dedo. Inclina la espira y mira su sombra verde en el piso: eso es lo que cruza el campo.',
+    controles: [
+      { id: 'th', etiqueta: 'Inclinación θ', min: 0, max: 180, paso: 15, inicio: 30, unidad: '°', decimales: 0 },
+      { id: 'B', etiqueta: 'B', color: 'c-i', min: 0.2, max: 1, paso: 0.2, inicio: 0.6, unidad: 'T', decimales: 1 },
+      { id: 'A', etiqueta: 'Área A', min: 0.04, max: 0.16, paso: 0.04, inicio: 0.08, unidad: 'm²', decimales: 2 },
+    ],
+    dibujo: val => ({ datos: esp3(val).datos, estado: {} }),
+    lectura: val => [Phi, ' = ', B, `·A·cos ${f(val.th, 0)}° = ${f(esp3(val).Phi, 3)} Wb`],
+    invitaciones: [
+      { texto: 'Gira la espira hasta que el campo no la cruce.',
+        logrado: val => igual(esp3(val).Phi, 0),
+        bien: 'De canto, su sombra es una raya: Φ = 0 aunque B siga igual.',
+        pista: 'Mira la sombra verde del piso y haz que desaparezca.' },
+      { texto: 'Consigue el flujo más grande que permite la mesa.',
+        logrado: (val, g, mesa) => igual(esp3(val).Phi, mesa.controles[1].max * mesa.controles[2].max),
+        bien: 'Espira grande, campo fuerte y de frente: cos 0° = 1.' },
+      { texto: 'Haz que el flujo salga negativo.',
+        logrado: val => esp3(val).Phi < -1e-9,
+        bien: 'Pasó de 90°: el campo entra por la otra cara de la espira.',
+        pista: 'Inclina la espira más allá de 90° y mira la flecha n.' },
+      { texto: 'Deja el flujo en la mitad del que daría la espira de frente.',
+        logrado: val => igual(esp3(val).cos, 0.5),
+        bien: 'A 60°, la sombra mide la mitad del área: cos 60° = 1/2.',
+        pista: 'La sombra tiene que medir la mitad de la espira.' },
+      { texto: 'Guarda dos casos con el mismo flujo y distinta inclinación.',
+        logrado: (val, guardados) => guardados.some(a => guardados.some(b => a.th !== b.th && Math.abs(esp3(a).Phi) > 1e-9 && igual(esp3(a).Phi, esp3(b).Phi))),
+        bien: 'Poca área de frente o mucha inclinada: el flujo solo cuenta la sombra.' },
+    ],
+  };
+
   return {
     unidad: 'fisica.induccion-electromagnetica',
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/flechas.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-espira.js'],
+    requiere: ['/nucleo/kit/piezas/flechas.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-espira.js',
+      '/plantillas/induccion/motor.js', '/nucleo/fisica3d.js', '/nucleo/kit/piezas/fis-espacio-3d.js'],
     // Glosario del tema (docs/teoria.md, 4d). Campo magnético, tesla, espira y solenoide vienen de magnetismo; voltaje y
     // fuerza electromotriz, de circuitos.
     glosario: [
@@ -620,6 +660,7 @@
     // Laboratorio: la barra con todo suelto (también hacia atrás y con el campo al revés: el caso que la idea 4 no deja
     // probar, donde la corriente cambia de sentido), la espira que gira en B y la gráfica Φ–t de Faraday.
     laboratorio: [
+      mesaSombra,
       {
         id: 'barra-libre', titulo: 'Rieles con todo suelto', pieza: 'fis-espira',
         consigna: 'Estira la flecha de v hacia adelante o hacia atrás. Cambia B, su sentido y el largo de la barra. Mira hacia dónde va I.',

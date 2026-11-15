@@ -714,7 +714,10 @@
       "requiere": [
        "/nucleo/kit/piezas/flechas.js",
        "/nucleo/kit/piezas/ejes.js",
-       "/nucleo/kit/piezas/fis-espira.js"
+       "/nucleo/kit/piezas/fis-espira.js",
+       "/plantillas/induccion/motor.js",
+       "/nucleo/fisica3d.js",
+       "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 6,
       "terminos": 28
