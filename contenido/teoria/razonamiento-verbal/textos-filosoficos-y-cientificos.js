@@ -70,7 +70,7 @@
     },
     predice: {
       pregunta: 'Según este informe sobre leer y las notas, ¿qué conclusión está respaldada?',
-      voz: 'Distingue «van juntos» de «uno causa el otro».',
+      voz: 'Distingue «van juntos» (una correlación) de «uno causa el otro».',
       opciones: opciones('Leer más y tener mejores notas aparecen juntos', [
         ['Leer más causa mejores notas', 'RV47', 'Aparecen juntos, pero el informe no prueba que uno cause el otro.'],
         ['Está comprobado que leer sube las notas', 'RV52', 'El informe solo lo propone como posible explicación.'],
@@ -200,7 +200,7 @@
   ]);
   const mesaInforme = {
     id: 'cuanto-dice', titulo: '¿Cuánto puede decir el informe?', pieza: 'rv-texto',
-    consigna: 'Cambia el método, la palabra de la conclusión y su alcance. Mira cuándo la conclusión queda respaldada y cuándo excede.',
+    consigna: 'Cambia el método, la palabra de la conclusión y su alcance. Mira cuándo la evidencia respalda la conclusión y cuándo esta excede.',
     voz: 'La conclusión no puede ir más allá del método.',
     controles: [
       { id: 'metodo', etiqueta: 'Método', opciones: [{ valor: 'compara', texto: 'compara' }, { valor: 'no', texto: 'no compara' }] },
@@ -212,6 +212,22 @@
       return { datos: figInf(val), estado: { marcas: { o1: 'i', o2: val.metodo === 'no' ? 'h' : 'd', o3: f.length ? 'h' : 'o' }, sellos: { o: f.length ? { t: 'Excede', c: 'h' } : { t: 'Respaldada', c: 'i' } } } };
     },
     lectura: val => { const f = fallas(val); return f.length ? [excede('Excede'), `: ${f.join(', ')}`] : [dato('Respaldada'), val.verbo === 'quiza' ? ': como hipótesis' : ': lo observado']; },
+    // Invitaciones: cada logrado cuenta con fallas(), la misma revisión que pone el sello «Excede» o «Respaldada».
+    invitaciones: [
+      { texto: 'Haz que la conclusión exceda por las tres razones a la vez.',
+        logrado: val => fallas(val).length === 3,
+        bien: 'Sin comparar, con «causa» y para todo el país: tres saltos sobre la evidencia.' },
+      { texto: 'Compara los colegios y aun así haz que la conclusión exceda.',
+        logrado: val => val.metodo === 'compara' && fallas(val).length > 0,
+        bien: 'Comparar ayuda, pero el estudio solo observa: no alcanza para decir «causa».' },
+      { texto: 'Consigue una conclusión respaldada que solo sea una hipótesis.',
+        logrado: val => fallas(val).length === 0 && val.verbo === 'quiza',
+        bien: '«Quizá» propone sin afirmar. El informe puede sostener eso.' },
+      { texto: 'Guarda dos casos que difieran en una parte: uno respaldado y otro no.',
+        logrado: (val, guardados) => guardados.some(g => ['metodo', 'verbo', 'alcance'].filter(c => g[c] !== val[c]).length === 1
+          && (fallas(g).length === 0) !== (fallas(val).length === 0)),
+        bien: 'Una sola parte cambió el respaldo. Señala cuál fue en el informe.' },
+    ],
   };
 
   return {
@@ -224,10 +240,53 @@
       pregunta: '¿Qué diferencia hay entre observar algo y explicarlo?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Descartes 1637; Philosophical Transactions 1665)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/txtargumentativo.htm' },
     },
+    glosario: [
+      { termino: 'texto científico', def: 'Texto que comunica observaciones y su explicación, diciendo cómo se obtuvieron y hasta dónde valen.',
+        formas: ['texto científico', 'textos científicos'], ver: ['método', 'hipótesis', 'límite'] },
+      { termino: 'texto filosófico', def: 'Texto que plantea una pregunta general, precisa sus términos y razona para defender una respuesta.',
+        formas: ['texto filosófico', 'textos filosóficos'], ver: ['tesis'] },
+      { termino: 'método', def: 'El modo en que se obtuvieron los datos: qué se midió, a quiénes y con qué se comparó.',
+        ejemplo: 'Comparar diez colegios con huerto y diez sin huerto de la misma zona.', ver: ['texto científico', 'evidencia'] },
+      { termino: 'hipótesis', def: 'Explicación propuesta que todavía no está comprobada. Suele anunciarse con «quizá» o «posible».',
+        ejemplo: '«Quizá cultivar despierta interés por probar lo cosechado.»', ver: ['evidencia', 'correlación'] },
+      { termino: 'evidencia', def: 'Lo observado o medido que se ofrece para sostener una afirmación.',
+        ejemplo: 'Más verduras comidas en los colegios con huerto respaldan «van juntos», no «causa».', ver: ['hipótesis', 'método'] },
+      { termino: 'correlación', def: 'Relación en que dos cosas aparecen o cambian juntas. No prueba, por sí sola, que una cause la otra.',
+        ejemplo: 'Helados vendidos y ahogados suben juntos en verano: el calor explica los dos.', ver: ['hipótesis'] },
+      { termino: 'límite', def: 'Lo que un estudio no llegó a cubrir y, por eso, no puede afirmar.',
+        ejemplo: 'El estudio no siguió a los alumnos fuera del colegio.', ver: ['generalizar', 'método'] },
+    ],
     laboratorio: [
       mesaInforme,
-      Object.assign({ id: 'informe', titulo: 'El informe de los huertos', pieza: 'rv-texto' }, cientifico.juega),
-      Object.assign({ id: 'amistad', titulo: 'El texto de la amistad', pieza: 'rv-texto' }, filosofico.juega),
+      // Invitaciones de las mesas que reusan un juego: miran PARTE y PFIL, las tablas que ponen el sello de cada oración.
+      Object.assign({ id: 'informe', titulo: 'El informe de los huertos', pieza: 'rv-texto', invitaciones: [
+        { texto: 'Marca la oración que solo propone una explicación.',
+          logrado: val => PARTE[val.k][0].includes('hipótesis'),
+          bien: '«Una explicación posible» avisa que no está comprobada.' },
+        { texto: 'Encuentra la oración que dice lo que el estudio no cubre.',
+          logrado: val => PARTE[val.k][0].startsWith('Límite'),
+          bien: 'El informe declara su límite: fuera del colegio, no sabemos qué comen.' },
+        { texto: 'Marca la oración que cuenta cómo se comparó.',
+          logrado: val => PARTE[val.k][0].startsWith('Método'),
+          bien: 'Sin ese grupo de comparación, «más verduras» no tendría contra qué medirse.' },
+        { texto: 'Guarda el dato y la explicación propuesta, y compáralos.',
+          logrado: (val, guardados) => { const t = x => PARTE[x.k][1]; return (t(val) === 'o' && guardados.some(g => t(g) === 'i')) || (t(val) === 'i' && guardados.some(g => t(g) === 'o')); },
+          bien: 'Uno se observó; el otro se propone. No pesan igual.' },
+      ] }, cientifico.juega),
+      Object.assign({ id: 'amistad', titulo: 'El texto de la amistad', pieza: 'rv-texto', invitaciones: [
+        { texto: 'Marca la oración que el autor sostiene como tesis.',
+          logrado: val => PFIL[val.k][1] === 'o',
+          bien: 'Sale de su definición de amigo. Señala qué frase permite sostenerla.' },
+        { texto: 'Encuentra lo que otros dirían contra el autor.',
+          logrado: val => PFIL[val.k][1] === 'h',
+          bien: '«Se dirá que…» presenta una idea ajena. No es la del autor.' },
+        { texto: 'Marca dónde el autor fija el sentido de una palabra.',
+          logrado: val => PFIL[val.k][0].startsWith('Término'),
+          bien: '«Llamaremos» avisa que la palabra se usará así en todo el texto.' },
+        { texto: 'Guarda la objeción y la oración que la responde.',
+          logrado: (val, guardados) => { const t = x => PFIL[x.k][0]; return (t(val).startsWith('Respuesta') && guardados.some(g => PFIL[g.k][1] === 'h')) || (PFIL[val.k][1] === 'h' && guardados.some(g => t(g).startsWith('Respuesta'))); },
+          bien: 'Objeción y respuesta van juntas: el autor discute, no solo opina.' },
+      ] }, filosofico.juega),
     ],
     ideas: [cientifico, filosofico],
   };
