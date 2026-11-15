@@ -43,6 +43,8 @@
     return [fn(ps.slice(0, n).join(' ')), ' ' + ps.slice(n).join(' ')];
   };
   const queda = t => ({ v: 'c-i', t }), prueba = t => ({ v: 'c-o', t }), tema = t => ({ v: 'c-d', t }), sobra = t => ({ v: 'c-h', t });
+  // Una oración tapada no deja pérdida si su tabla lo dice («No se pierde nada…»): lo usan el dibujo y los retos.
+  const sinPerdida = (tabla, k) => tabla[k][0].startsWith('No se pierde');
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
   // Texto: el tema como título y las oraciones numeradas, una por renglón.
   const lista = (titulo, oraciones) => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo, modo: 'lista', fragmentos: oraciones.map((t, k) => ({ id: `o${k + 1}`, t })) }] });
@@ -79,8 +81,8 @@
       consigna: 'Tapa una oración y relee el texto sin ella. Busca la que puedes quitar sin que se pierda nada.',
       voz: 'Relee todo el texto después de tapar.',
       controles: [{ id: 'k', etiqueta: 'Tapar', opciones: [1, 2, 3, 4, 5].map(k => ({ valor: k, texto: `${k}` })) }],
-      dibujo: val => ({ datos: lista('Tema: el cuy como alimento', CUY), estado: tapar(val.k, val.k === 4, PIERDE_CUY[val.k][1]) }),
-      lectura: val => [val.k === 4 ? corto(queda, PIERDE_CUY[val.k][0]) : corto(sobra, PIERDE_CUY[val.k][0])],
+      dibujo: val => ({ datos: lista('Tema: el cuy como alimento', CUY), estado: tapar(val.k, sinPerdida(PIERDE_CUY, val.k), PIERDE_CUY[val.k][1]) }),
+      lectura: val => [sinPerdida(PIERDE_CUY, val.k) ? corto(queda, PIERDE_CUY[val.k][0]) : corto(sobra, PIERDE_CUY[val.k][0])],
       minimo: 3,
       // Arrastra la cinta a otra oración: la tapa y el texto se relee sin ella.
       arrastres: [cinta(lista('Tema: el cuy como alimento', CUY), 5)],
@@ -204,8 +206,8 @@
       consigna: 'Tapa cada oración del texto de la laguna. Busca la que choca con lo que el texto ya dio por cierto.',
       voz: 'Un «sin embargo» no siempre es una contradicción.',
       controles: [{ id: 'k', etiqueta: 'Tapar', opciones: [1, 2, 3, 4, 5].map(k => ({ valor: k, texto: `${k}` })) }],
-      dibujo: val => ({ datos: lista('Tema: la laguna seca', LAGUNA), estado: tapar(val.k, val.k === 4, PIERDE_LAG[val.k][1]) }),
-      lectura: val => [val.k === 4 ? corto(queda, PIERDE_LAG[val.k][0]) : corto(sobra, PIERDE_LAG[val.k][0])],
+      dibujo: val => ({ datos: lista('Tema: la laguna seca', LAGUNA), estado: tapar(val.k, sinPerdida(PIERDE_LAG, val.k), PIERDE_LAG[val.k][1]) }),
+      lectura: val => [sinPerdida(PIERDE_LAG, val.k) ? corto(queda, PIERDE_LAG[val.k][0]) : corto(sobra, PIERDE_LAG[val.k][0])],
       minimo: 3,
       arrastres: [cinta(lista('Tema: la laguna seca', LAGUNA), 5)],
     },
@@ -294,6 +296,22 @@
       if (r.sobran.length) return [prueba(`Sobra${r.sobran.length > 1 ? 'n' : ''} ${r.sobran.length}`), `: ${r.sobran[0][0]}`];
       return [queda('Texto limpio'), ': nada se pierde'];
     },
+    // Invitaciones: logrado usa revisaLlama, la misma revisión que marca el dibujo y escribe la lectura.
+    invitaciones: [
+      { texto: 'Deja el texto limpio: que nada sobre y nada se pierda.',
+        logrado: val => { const r = revisaLlama(val); return !r.pierde.length && !r.sobran.length; },
+        bien: 'Quitaste una gemela, la ajena y la que choca. Cada cinta tuvo su razón.' },
+      { texto: 'Tapa a la vez las dos oraciones gemelas.',
+        logrado: val => { const r = revisaLlama(val); return r.fuera.has(2) && r.fuera.has(3); },
+        bien: 'Sin ninguna, el texto ya no dice cuánto carga. De dos gemelas, sobra una.' },
+      { texto: 'Usa una sola cinta: quita solo la oración que choca con la primera.',
+        logrado: val => { const r = revisaLlama(val); return r.fuera.size === 1 && !r.sobran.some(x => x[1] === 4) && !r.pierde.length; },
+        bien: 'El texto ya no se contradice, aunque todavía repite y se va del tema.' },
+      { texto: 'Guarda un caso que pierda algo y otro con el texto limpio.',
+        logrado: (val, guardados) => [val, ...guardados].some(g => { const r = revisaLlama(g); return !r.pierde.length && !r.sobran.length; })
+          && [val, ...guardados].some(g => revisaLlama(g).pierde.length > 0),
+        bien: 'Compáralos: en uno quitaste algo que el texto necesitaba. ¿Qué era?' },
+    ],
     arrastres: ['a', 'b', 'c'].map((id, k) => ({
       id: `cinta-${k + 1}`, etiqueta: `cinta ${k + 1}`, color: 'c-o',
       donde: val => RV().ancla(figLlama(), val[id] ? `o${val[id]}` : `c${k + 1}`),
@@ -311,10 +329,55 @@
       pregunta: '¿Cómo sabes que una oración sobra?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (revisión de textos)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/coherencia.htm' },
     },
+    glosario: [
+      { termino: 'redundancia', formas: ['redundancia', 'redundante', 'redundantes'],
+        def: 'Defecto de una oración que repite, aunque con otras palabras, lo que otra ya dijo.',
+        ejemplo: '«Tiene mucha proteína» y «aporta bastante proteína»: una sobra.', ver: ['dato nuevo'] },
+      { termino: 'impertinencia', formas: ['impertinencia', 'impertinente', 'impertinentes'],
+        def: 'Defecto de una oración que se aparta del tema del texto, aunque repita alguna de sus palabras.',
+        ejemplo: 'En un texto sobre la quena: «La caña sirve para hacer techos».', ver: ['redundancia'] },
+      { termino: 'incompatibilidad', formas: ['incompatibilidad', 'incompatible', 'incompatibles'],
+        def: 'Defecto de una oración que niega lo que el texto ya afirmó sobre lo mismo y en el mismo momento.',
+        ejemplo: '«La laguna se secó en 2024» y «ese verano estuvo llena».', ver: ['contradicción', 'compatible'] },
+      { termino: 'compatible', def: 'Dicho de dos ideas: que pueden ser ciertas a la vez, aunque se opongan en algo.',
+        ejemplo: '«Se secó la laguna; sin embargo, los pozos tenían agua.»', ver: ['incompatibilidad'] },
+      { termino: 'contradicción', formas: ['contradicción', 'contradicciones'],
+        def: 'Choque entre dos afirmaciones que no pueden ser verdaderas al mismo tiempo.',
+        ejemplo: '«Estaba seca» y «estaba llena», la misma laguna, el mismo verano.', ver: ['incompatibilidad'] },
+      { termino: 'dato nuevo', formas: ['dato nuevo', 'datos nuevos'],
+        def: 'Información del tema que ninguna otra oración había dado; por eso la oración que la trae se conserva.',
+        ejemplo: '«Criarlo cuesta poco»: nadie había hablado del costo.', ver: ['redundancia'] },
+      { termino: 'revisión', formas: ['revisión', 'revisiones'],
+        def: 'Releer un texto para comparar lo que dice con lo que se quiere decir, y corregirlo.',
+        ver: ['redundancia', 'impertinencia'] },
+    ],
     laboratorio: [
       mesaLlama,
-      Object.assign({ id: 'redundancia', titulo: 'Lo que repite', pieza: 'rv-texto' }, redundancia.juega),
-      Object.assign({ id: 'contradice', titulo: 'Lo que contradice', pieza: 'rv-texto' }, incompatibilidad.juega),
+      // Retos de las mesas que reusan el juego de una idea: logrado lee las mismas tablas de pérdida que el dibujo.
+      Object.assign({ id: 'redundancia', titulo: 'Lo que repite', pieza: 'rv-texto', invitaciones: [
+        { texto: 'Tapa la oración que el texto no extraña al releerlo.',
+          logrado: val => sinPerdida(PIERDE_CUY, val.k),
+          bien: 'La 4 dice lo mismo que la 2 con otras palabras: es redundante.' },
+        { texto: 'Tapa la oración cuya falta deja un «por eso» sin razón.',
+          logrado: val => PIERDE_CUY[val.k][0].includes('«por eso»'),
+          bien: 'La 3 se apoyaba en ella. Una oración también sostiene a otras.' },
+        { texto: 'Guarda dos casos: uno sin pérdida y otro que pierda un dato nuevo.',
+          logrado: (val, guardados) => [val, ...guardados].some(g => sinPerdida(PIERDE_CUY, g.k))
+            && [val, ...guardados].some(g => PIERDE_CUY[g.k][0].includes('dato nuevo')),
+          bien: 'Las dos parecen de más; solo una repite. La otra trae el costo.' },
+      ] }, redundancia.juega),
+      Object.assign({ id: 'contradice', titulo: 'Lo que contradice', pieza: 'rv-texto', invitaciones: [
+        { texto: 'Tapa la oración que contradice lo que el texto dio por cierto.',
+          logrado: val => sinPerdida(PIERDE_LAG, val.k),
+          bien: 'Seca y llena en el mismo verano no pueden ser ciertas a la vez.' },
+        { texto: 'Tapa la oración que empieza con «sin embargo» y mira qué se pierde.',
+          logrado: val => LAGUNA[val.k - 1].startsWith('Sin embargo'),
+          bien: 'Se pierde la razón de cuidar los pozos: ese contraste sí aportaba.' },
+        { texto: 'Guarda dos casos: la oración que choca y la que solo contrasta.',
+          logrado: (val, guardados) => [val, ...guardados].some(g => sinPerdida(PIERDE_LAG, g.k))
+            && [val, ...guardados].some(g => LAGUNA[g.k - 1].startsWith('Sin embargo')),
+          bien: 'Las dos marcan una oposición; solo una niega lo que el texto afirmó.' },
+      ] }, incompatibilidad.juega),
     ],
     ideas: [redundancia, impertinencia, incompatibilidad],
   };

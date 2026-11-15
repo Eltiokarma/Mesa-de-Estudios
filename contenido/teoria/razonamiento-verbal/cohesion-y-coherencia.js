@@ -225,9 +225,9 @@
   // Debe verse: que la 4 usa «chasquis», y solo una candidata los presenta antes.
   const CAMINO = ['Los incas construyeron caminos por todo su territorio.', 'Esos caminos unían el Cusco con regiones muy lejanas.', null, 'Gracias a los chasquis, un mensaje recorría cientos de kilómetros en días.'];
   const CANDIDATAS = {
-    a: { t: 'Por ellos corrían los chasquis, mensajeros que se relevaban.', ok: true, dice: 'Retoma «caminos» y presenta a los chasquis' },
-    b: { t: 'Los incas también cultivaban maíz y papa en andenes.', ok: false, dice: 'Cambia de tema: la 4 queda sin enlace' },
-    c: { t: 'Hoy muchos tramos están bajo la carretera.', ok: false, dice: 'Retoma los caminos, pero la 4 no sabe quiénes son los chasquis' },
+    a: { t: 'Por ellos corrían los chasquis, mensajeros que se relevaban.', ok: true, falla: null, dice: 'Retoma «caminos» y presenta a los chasquis' },
+    b: { t: 'Los incas también cultivaban maíz y papa en andenes.', ok: false, falla: 'tema', dice: 'Cambia de tema: la 4 queda sin enlace' },
+    c: { t: 'Hoy muchos tramos están bajo la carretera.', ok: false, falla: 'nombre', dice: 'Retoma los caminos, pero la 4 no sabe quiénes son los chasquis' },
   };
   // La oración 3 cambia de texto según la candidata: va en datos (una oración larga no cabe en un hueco).
   const figCam = c => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: CAMINO.map((t, k) => ({ id: `o${k + 1}`, t: t || CANDIDATAS[c].t })) }] });
@@ -380,6 +380,7 @@
   const RASGO = w => `${w.g === 'm' ? 'masculino' : 'femenino'} ${w.n === 'sg' ? 'singular' : 'plural'}`;
   const VECINOS = texto('Texto', '[[Los vecinos]] compraron [[unas semillas]], [[un costal]] y [[un burro]]. Después, [[ellos]] [[las]] sembraron y [[lo]] guardaron vacío en el corral.');
   const concuerda = (p, r) => PALABRAS[p].g === PALABRAS[r].g && PALABRAS[p].n === PALABRAS[r].n;
+  const conSentido = (p, r) => concuerda(p, r) && PALABRAS[p].sentido === r;
   const mesaConcuerda = {
     id: 'concordar-no-basta', titulo: 'Concordar no basta', pieza: 'rv-texto',
     consigna: 'Arrastra un pronombre y su referente. Mira si concuerdan en género y número, y si además tiene sentido.',
@@ -389,16 +390,31 @@
       { id: 'r', etiqueta: 'Referente', opciones: CANDS.map(valor => ({ valor, texto: PALABRAS[valor].t })) },
     ],
     dibujo: val => {
-      const c = concuerda(val.p, val.r), ok = c && PALABRAS[val.p].sentido === val.r;
+      const c = concuerda(val.p, val.r), ok = conSentido(val.p, val.r);
       return { datos: VECINOS, estado: { marcas: { [val.p]: 'o', [val.r]: ok ? 'i' : 'h' }, sellos: { o: ok ? { t: 'Tiene sentido', c: 'i' } : c ? { t: 'Concuerda, sin sentido', c: 'h' } : { t: 'No concuerda', c: 'h' } } } };
     },
     lectura: val => {
-      const c = concuerda(val.p, val.r), ok = c && PALABRAS[val.p].sentido === val.r;
+      const c = concuerda(val.p, val.r), ok = conSentido(val.p, val.r);
       return [remite(PALABRAS[val.p].t), ` (${RASGO(PALABRAS[val.p])}) → `, ok ? ref(PALABRAS[val.r].t) : mal(PALABRAS[val.r].t), c ? (ok ? ' · concuerda y tiene sentido' : ' · concuerda, sin sentido') : ' · no concuerda'];
     },
     arrastres: [
       manija('pronombre', 'p', () => VECINOS, PRONS, 'pronombre que se mira'),
       manija('referente', 'r', () => VECINOS, CANDS, 'referente del pronombre', 'c-i'),
+    ],
+    // Retos: los comprueban concuerda y conSentido, las mismas que deciden el sello del texto.
+    invitaciones: [
+      { texto: 'Encuentra el referente con sentido del pronombre «las».',
+        logrado: val => val.p === 'm5' && conSentido(val.p, val.r),
+        bien: '«Las» retoma las semillas: lo que se siembra. ¿Y «lo»?' },
+      { texto: 'Une «lo» con un referente que concuerde, pero no tenga sentido.',
+        logrado: val => val.p === 'm6' && concuerda(val.p, val.r) && !conSentido(val.p, val.r),
+        bien: 'Burro y costal concuerdan con «lo»; solo el costal se guarda vacío.' },
+      { texto: 'Busca un par que no concuerde ni en género ni en número.',
+        logrado: val => PALABRAS[val.p].g !== PALABRAS[val.r].g && PALABRAS[val.p].n !== PALABRAS[val.r].n,
+        bien: 'Ahí la forma ya descarta el par, antes de pensar en el sentido.' },
+      { texto: 'Guarda dos casos con el mismo pronombre: uno con sentido y otro sin él.',
+        logrado: (val, guardados) => guardados.some(g => g.p === val.p && g.r !== val.r && conSentido(g.p, g.r) !== conSentido(val.p, val.r)),
+        bien: 'El mismo pronombre, dos referentes: el texto decide cuál sostiene.' },
     ],
   };
 
@@ -412,10 +428,60 @@
       pregunta: '¿Basta un «por eso» para que un texto tenga sentido?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (lingüística textual)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/cohesion.htm' },
     },
+    glosario: [
+      { termino: 'cohesión', def: 'Los enlaces visibles que unen las oraciones de un texto: conectores, pronombres, repeticiones.',
+        ejemplo: '«Por eso» y «él» enlazan dos oraciones.', ver: ['coherencia', 'conector'] },
+      { termino: 'coherencia', def: 'Que el texto tenga un sentido global y no se contradiga, aunque falten enlaces visibles.',
+        ejemplo: '«Todos aprobaron. Tres desaprobaron.» no la tiene.', ver: ['cohesión', 'contradicción'] },
+      { termino: 'referente', def: 'Aquello a lo que remite una palabra como «él», «lo» o «este animal».',
+        ejemplo: 'En «Ana llegó; ella traía pan», el de «ella» es Ana.', ver: ['pronombre', 'anáfora'] },
+      { termino: 'pronombre', def: 'Palabra que ocupa el lugar de un nombre para no repetirlo: él, ella, lo, las, esto.',
+        ejemplo: '«Compré pan y lo comí»: «lo» está por «pan».', ver: ['referente', 'sustitución'] },
+      { termino: 'anáfora', def: 'Palabra o expresión que retoma algo dicho antes en el texto.',
+        ejemplo: '«Vi a Luis. Él me saludó.»', ver: ['catáfora', 'referente'] },
+      { termino: 'catáfora', def: 'Palabra que anuncia algo que se dirá después en el texto.',
+        ejemplo: '«Te lo advierto: no toques el cable.»', ver: ['anáfora'] },
+      { termino: 'repetición', def: 'Volver a nombrar algo con la misma palabra para mantener el hilo del texto.',
+        ejemplo: '«El agua es vital. El agua limpia previene males.»', ver: ['sustitución', 'elipsis'] },
+      { termino: 'sustitución', def: 'Volver a nombrar algo con otra expresión o un pronombre que remite a lo mismo.',
+        ejemplo: '«La vicuña… Este animal…»', ver: ['repetición', 'pronombre'] },
+      { termino: 'elipsis', def: 'Callar una palabra ya dicha porque el lector la recupera sin esfuerzo.',
+        ejemplo: '«Pedro compró pan y Ana, queso» (se calla «compró»).', ver: ['repetición', 'sustitución'] },
+      { termino: 'concordancia', def: 'Coincidencia de género y número entre palabras que se refieren a lo mismo.',
+        formas: ['concordancia', 'concuerda', 'concuerdan', 'concordar'], ejemplo: '«Las» va con «semillas»: femenino y plural.', ver: ['pronombre'] },
+      { termino: 'tópico', def: 'Lo que una oración toma como ya conocido, del cual parte para decir algo más.',
+        formas: ['tópico'], ejemplo: 'En «Esos caminos unían regiones», es «esos caminos».', ver: ['comento'] },
+      { termino: 'comento', def: 'Lo nuevo que una oración agrega sobre lo ya conocido.',
+        ejemplo: 'En «Esos caminos unían regiones», es «unían regiones».', ver: ['tópico'] },
+    ],
     laboratorio: [
       mesaConcuerda,
-      Object.assign({ id: 'referente', titulo: 'El texto de Marta', pieza: 'rv-texto' }, referencia.juega),
-      Object.assign({ id: 'hilo', titulo: 'El hilo de los caminos', pieza: 'rv-texto' }, progresion.juega),
+      Object.assign({ id: 'referente', titulo: 'El texto de Marta', pieza: 'rv-texto',
+        // Retos: OK dice qué referente da sentido y POR, qué pasa con cada par (lo mismo que muestra la lectura).
+        invitaciones: [
+          { texto: 'Une «Él» con el referente que da sentido al texto.',
+            logrado: val => val.p === 'm3' && OK[val.p] === val.r,
+            bien: '«Él» retoma al hermano, aunque el libro esté más cerca.' },
+          { texto: 'Une «lo» con un referente que concuerde y aun así no tenga sentido.',
+            logrado: val => val.p === 'm4' && OK[val.p] !== val.r && POR[`${val.p}-${val.r}`].startsWith('Concuerda'),
+            bien: 'Concordar no basta: a una persona no se la lee.' },
+          { texto: 'Guarda los dos pronombres, cada uno con su referente con sentido.',
+            logrado: (val, guardados) => ['m3', 'm4'].every(p => guardados.some(g => g.p === p && OK[p] === g.r)),
+            bien: 'Cada pronombre tiene su referente: el texto entero se sostiene.' },
+        ] }, referencia.juega),
+      Object.assign({ id: 'hilo', titulo: 'El hilo de los caminos', pieza: 'rv-texto',
+        // Retos: CANDIDATAS dice si la oración mantiene el hilo y, si no, por qué falla (tema o nombre que falta).
+        invitaciones: [
+          { texto: 'Pon una candidata que cambie de tema y corte el hilo.',
+            logrado: val => CANDIDATAS[val.c].falla === 'tema',
+            bien: 'Los andenes son de los incas, pero la 4 ya no sabe de qué habla.' },
+          { texto: 'Busca la candidata que retoma los caminos y aun así corta el hilo.',
+            logrado: val => CANDIDATAS[val.c].falla === 'nombre',
+            bien: 'Retomar no basta: la 4 necesita que alguien presente a los chasquis.' },
+          { texto: 'Guarda un caso donde el hilo sigue y otro donde se corta.',
+            logrado: (val, guardados) => guardados.some(g => CANDIDATAS[g.c].ok) && guardados.some(g => !CANDIDATAS[g.c].ok),
+            bien: 'Compáralos: lo nuevo de la 3 es lo conocido de la 4.' },
+        ] }, progresion.juega),
     ],
     ideas: [referencia, recursos, progresion, noContradiccion],
   };

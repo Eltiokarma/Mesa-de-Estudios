@@ -317,6 +317,22 @@
       return [sigue(pl(n('i'), 'sigue', 'siguen')), '   ·   ', duda(`${n('d')} en duda`), '   ·   ', cae(pl(n('h'), 'se cae', 'se caen'))];
     },
     arrastres: [marcador(val => figEsc(val), ['o1', 'o2', 'o3', 'o4'], 'f', 'marcador de la oración')],
+    // Retos: logrado usa casillaEsc y cambiosEsc, las mismas funciones que marcan cada oración y el mundo.
+    invitaciones: [
+      { texto: 'Arma un mundo en el que se caigan tres oraciones a la vez.',
+        logrado: val => casillaEsc(val).filter(x => x === 'h').length === 3,
+        bien: 'Tres caen, pero la 3 solo queda en duda. ¿Por qué no cae?' },
+      { texto: 'Deja en duda la oración 3 cambiando una sola cosa.',
+        logrado: val => casillaEsc(val)[2] === 'd' && cambiosEsc(val).length === 1,
+        bien: 'Se fue su causa, no su verdad: podría haber otra razón del cansancio.' },
+      { texto: 'Cambia algo sin que ninguna oración quede en duda.',
+        logrado: val => cambiosEsc(val).length >= 1 && !casillaEsc(val).includes('d'),
+        bien: 'Ese cambio toca una oración de la que no depende ninguna otra.' },
+      { texto: 'Guarda dos mundos distintos que dejen igual cada oración.',
+        logrado: (val, guardados) => guardados.some(g => cambiosEsc(g).join() !== cambiosEsc(val).join()
+          && casillaEsc(g).join() === casillaEsc(val).join()),
+        bien: 'Dos supuestos distintos, el mismo resultado. Revisa cuál de los cambios decide.' },
+    ],
   };
 
   return {
@@ -329,10 +345,56 @@
       pregunta: '¿Lo que pasó cien veces pasará la vez ciento uno?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Hume, 1748)', url: 'https://openstax.org/books/contemporary-mathematics/pages/2-7-logical-arguments' },
     },
+    glosario: [
+      { termino: 'extrapolación', def: 'Llevar lo que dice un texto a un caso que no trata: otro lugar, tiempo o grupo.',
+        formas: ['extrapolación', 'extrapolaciones', 'extrapolar'], ejemplo: 'Si la totora crece en agua tranquila, ¿crecerá en un río correntoso?', ver: ['caso nuevo', 'condición'] },
+      { termino: 'caso nuevo', def: 'Situación de la que el texto no habla y a la que se quiere aplicar lo que dice.',
+        formas: ['caso nuevo', 'casos nuevos'], ver: ['extrapolación'] },
+      { termino: 'condición', def: 'Lo que tiene que cumplirse para que algo ocurra o para que una relación valga.',
+        formas: ['condición', 'condiciones'], ejemplo: 'La totora pide dos: agua poco profunda y tranquila.', ver: ['condicional'] },
+      { termino: 'condicional', def: 'Oración de la forma «si A, entonces B»: une un requisito con un resultado.',
+        formas: ['condicional', 'condicionales'], ejemplo: 'Si el río crece, cierran el puente; sin crecida, no se sabe.', ver: ['condición', 'solo si'] },
+      { termino: 'solo si', def: 'Marca que el requisito es la única vía: sin él, el resultado no ocurre.',
+        ejemplo: '«Cierran el puente solo si el río crece»: sin crecida, no cierran.', ver: ['condicional'] },
+      { termino: 'subjuntivo', def: 'Forma del verbo para lo supuesto o deseado, como «hubiera» o «quedara».',
+        ejemplo: 'Si hubiera un bus escolar, no caminarían una hora.', ver: ['mundo posible'] },
+      { termino: 'mundo posible', def: 'Situación imaginada en la que cambia algo y se revisa qué afirmaciones siguen en pie.',
+        formas: ['mundo posible', 'mundos posibles'], ejemplo: 'Con la escuela a una cuadra, la caminata de una hora se cae.', ver: ['subjuntivo'] },
+    ],
     laboratorio: [
       mesaMundos,
-      Object.assign({ id: 'condicional', titulo: 'Si el río crece', pieza: 'rv-texto' }, condicional.juega),
-      Object.assign({ id: 'caso-nuevo', titulo: 'Totora en otro lugar', pieza: 'rv-texto' }, llevar.juega),
+      Object.assign({
+        id: 'condicional', titulo: 'Si el río crece', pieza: 'rv-texto',
+        // Retos: logrado lee SUP y SUPUESTO, lo mismo que pone el sello «Seguro» o «No se sabe».
+        invitaciones: [
+          { texto: 'Niega la condición de la regla: supón que el río no crece.',
+            logrado: val => SUPUESTO[val.parte][val.ocurre] === 'nocrece',
+            bien: 'Sin crecida, el puente queda sin decidir. Podrían cerrarlo por obras.' },
+          { texto: 'Busca otro supuesto, además de la crecida, que sí dé algo seguro.',
+            logrado: val => SUPUESTO[val.parte][val.ocurre] !== 'crece' && SUP[SUPUESTO[val.parte][val.ocurre]].c === 'i',
+            bien: 'Puente abierto: el río no creció. Negar el resultado sí decide.' },
+          { texto: 'Guarda dos supuestos sobre el puente: uno seguro y otro que no se sabe.',
+            logrado: (val, guardados) => val.parte === 'b' && guardados.some(g => g.parte === 'b'
+              && SUP[SUPUESTO.b[g.ocurre]].c !== SUP[SUPUESTO.b[val.ocurre]].c),
+            bien: 'Cerrado no dice por qué; abierto sí descarta la crecida.' },
+        ],
+      }, condicional.juega),
+      Object.assign({
+        id: 'caso-nuevo', titulo: 'Totora en otro lugar', pieza: 'rv-texto',
+        // Retos: logrado lee CASOS, lo mismo que marca si cada condición se cumple en el caso nuevo.
+        invitaciones: [
+          { texto: 'Busca un caso nuevo al que no se pueda llevar lo que dice el texto.',
+            logrado: val => !(CASOS[val.k].p && CASOS[val.k].q),
+            bien: 'Basta que falle una condición para que la relación no viaje.' },
+          { texto: 'En el río, deja el marcador en la condición que falla.',
+            logrado: val => val.k === 'rio' && !CASOS[val.k][val.f],
+            bien: 'Es poco profundo, pero correntoso: la otra condición no alcanza.' },
+          { texto: 'Guarda dos casos que fallen por condiciones distintas.',
+            logrado: (val, guardados) => !CASOS[val.k][val.f]
+              && guardados.some(g => g.k !== val.k && g.f !== val.f && !CASOS[g.k][g.f]),
+            bien: 'Las dos condiciones pesan: cada una, sola, puede cerrar el paso.' },
+        ],
+      }, llevar.juega),
     ],
     ideas: [llevar, condicional, mundos],
   };

@@ -114,7 +114,7 @@
       ],
     },
     regla: {
-      texto: 'Resumir es quitar detalles y conservar lo esencial con sus relaciones y su alcance. El literal usa frases del texto; el interpretativo, palabras propias, sin agregar hechos ni exagerar.',
+      texto: 'Resumir es quitar detalles y conservar lo esencial con sus relaciones y su alcance. El resumen literal usa frases del texto; el interpretativo, palabras propias, sin agregar hechos ni exagerar.',
       ecuacion: [{ llave: [rel('relaciones')], nota: 'qué une', color: 'c-d' }, ' + ', { llave: [dice('alcance')], nota: 'cuántos', color: 'c-i' }],
       condicion: 'se mantienen cuantificadores (algunos, todos), negaciones y causas tal como el texto los dice.',
     },
@@ -249,6 +249,7 @@
     una: { a1: ['La omite', 'h'], b1: ['La omite', 'h'], a2: ['La recoge', 'i'], b2: ['La borra', 'h'] },
   };
   const IDS_AB = ['a1', 'a2', 'b1', 'b2'];
+  const malasSin = k => IDS_AB.filter(id => RASTRO[k][id][1] === 'h').length;
   const sintesis = {
     id: 'sintesis',
     titulo: 'Sintetizar sin borrar diferencias',
@@ -323,6 +324,7 @@
     causa: { t: 'el taller los hizo leer a diario.', d: ['Lo invierte: es causa', 'h'] },
   };
   const tratoLab = (q, r) => ({ a: ['Conserva: el taller', 'i'], b: CUANT[q].b, c: ['Conserva: mejoraron', 'i'], d: RELA[r].d, e: q === 'todos' ? ['Lo contradice', 'h'] : ['Lo omite: se entiende', 'd'] });
+  const fielesLab = val => { const T = tratoLab(val.q, val.r); return IDS_T.filter(id => T[id][1] !== 'h').length; };
   const figArma = (q, r) => figura(TALLER, [['r1', `${CUANT[q].t} alumnos del taller mejoraron su comprensión${RELA[r].t ? ';' : '.'}`]].concat(RELA[r].t ? [['r2', RELA[r].t]] : []), 'Tu resumen');
   const mesaArma = {
     id: 'arma-resumen', titulo: 'Arma tu resumen', pieza: 'rv-texto',
@@ -343,6 +345,21 @@
       return lee(T[val.f]).concat([` · fiel en ${fieles} de ${IDS_T.length}`]);
     },
     arrastres: [marcador(val => figArma(val.q, val.r), IDS_T, 'f', 'frase del original')],
+    // Retos: cada logrado cuenta con tratoLab, la misma regla que pinta las frases y el sello.
+    invitaciones: [
+      { texto: 'Arma un resumen que contradiga la última frase del original.',
+        logrado: val => tratoLab(val.q, val.r).e[0] === 'Lo contradice',
+        bien: '«Todos» choca con «los demás no cambiaron». Una palabra bastó para contradecir.' },
+      { texto: 'Busca el resumen que cambia más frases del original.',
+        logrado: val => fielesLab(val) === Math.min(...Object.keys(CUANT).flatMap(q => Object.keys(RELA).map(r => fielesLab({ q, r })))),
+        bien: 'Cantidad y relación cambiadas a la vez: casi nada del original queda en pie.' },
+      { texto: 'Deja fiel todo salvo una frase y pon el marcador sobre ella.',
+        logrado: val => fielesLab(val) === IDS_T.length - 1 && tratoLab(val.q, val.r)[val.f][1] === 'h',
+        bien: 'Una sola pieza basta para que el resumen ya no sea fiel.' },
+      { texto: 'Guarda dos resúmenes igual de fieles, pero con distinta relación.',
+        logrado: (val, guardados) => guardados.some(g => g.r !== val.r && fielesLab(g) === fielesLab(val)),
+        bien: 'Fallan en lo mismo por caminos distintos. ¿Qué frase pierde cada uno?' },
+    ],
   };
 
   return {
@@ -355,10 +372,62 @@
       pregunta: '¿Qué no se puede quitar al resumir?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (macrorreglas)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/macrorreglastextuales.htm' },
     },
+    glosario: [
+      { termino: 'resumen', def: 'Versión más corta de un texto que conserva sus ideas esenciales y cómo se relacionan.',
+        ejemplo: '«Algunos alumnos mejoraron leyendo a diario» resume las cinco frases del taller.', formas: ['resumen', 'resúmenes'], ver: ['paráfrasis', 'síntesis'] },
+      { termino: 'resumen literal', def: 'Resumen armado con frases del propio texto, sin cambiar lo que dicen.',
+        formas: ['resumen literal'], ver: ['resumen interpretativo'] },
+      { termino: 'resumen interpretativo', def: 'Resumen con palabras propias que generaliza lo dicho, sin agregar hechos ni exagerar.',
+        ejemplo: '«Avisar a tiempo protegió la cosecha» resume tres hechos de la helada.', formas: ['resumen interpretativo'], ver: ['resumen literal', 'generalizar'] },
+      { termino: 'paráfrasis', def: 'Decir lo mismo que un texto con otras palabras, sin agregar, quitar ni cambiar información.',
+        ejemplo: '«Como tenía fiebre, Rosa faltó» dice lo mismo que «Rosa no fue porque tenía fiebre».', formas: ['paráfrasis', 'parafrasear'], ver: ['resumen'] },
+      { termino: 'síntesis', def: 'Idea nueva que reúne varias fuentes o posturas, conservando lo que comparten y en qué difieren.',
+        ejemplo: 'A y B ven un problema de tráfico, pero proponen soluciones distintas.', ver: ['fuente', 'resumen'] },
+      { termino: 'alcance', def: 'Hasta dónde llega lo que se afirma: a cuántos casos, personas, lugares o tiempos se refiere.',
+        ejemplo: '«Algunos mejoraron» tiene menos alcance que «todos mejoraron».' },
+      { termino: 'fuente', def: 'Texto o autor del que sale una información o una opinión.',
+        ejemplo: 'En la síntesis del tráfico hay dos: el texto A y el texto B.', ver: ['síntesis'] },
+      { termino: 'macrorregla', def: 'Operación para pasar de las oraciones a la idea global: suprimir, seleccionar, generalizar o construir.',
+        formas: ['macrorreglas', 'macrorregla'], ver: ['generalizar'] },
+      { termino: 'generalizar', def: 'Reemplazar varios casos concretos por una idea que los abarca a todos.',
+        ejemplo: '«Radio, plástico y papas cubiertas» se generaliza como «avisar y proteger la cosecha».', formas: ['generalizar', 'generaliza', 'generalizan'], ver: ['macrorregla'] },
+      { termino: 'accesorio', def: 'Lo que se puede quitar sin cambiar el sentido: detalles, repeticiones o datos menores.',
+        formas: ['accesorio', 'accesorios'], ver: ['resumen'] },
+    ],
     laboratorio: [
       mesaArma,
-      Object.assign({ id: 'parafrasis', titulo: 'Paráfrasis o inferencia', pieza: 'rv-texto' }, parafrasis.juega),
-      Object.assign({ id: 'sintesis', titulo: 'Síntesis de dos fuentes', pieza: 'rv-texto' }, sintesis.juega),
+      Object.assign({ id: 'parafrasis', titulo: 'Paráfrasis o inferencia', pieza: 'rv-texto',
+        // Retos: se comprueban con PARTES y PAR, las mismas tablas que marcan cada parte y ponen el sello.
+        invitaciones: [
+          { texto: 'Pon el marcador en la parte que agrega algo que el original no dice.',
+            logrado: val => PARTES[val.k][val.f][0].startsWith('Agrega'),
+            bien: 'Puede ser cierto, pero el original no lo dice: ya es una inferencia.' },
+          { texto: 'Busca la versión que dice lo contrario del original.',
+            logrado: val => !PAR[val.k].ok && Object.values(PARTES[val.k]).some(p => p[0].startsWith('Lo contrario')),
+            bien: '«Fue» en lugar de «no fue». Vuelve a la frase: la negación cambia todo.' },
+          { texto: 'Encuentra la versión que dice menos y marca lo que le falta.',
+            logrado: val => PARTES[val.k][val.f][0].startsWith('Falta'),
+            bien: 'Sin «porque tenía fiebre» se pierde la causa. Dice menos que el original.' },
+          { texto: 'Guarda la paráfrasis y otra versión que no lo sea.',
+            logrado: (val, guardados) => guardados.some(g => PAR[g.k].ok) && guardados.some(g => !PAR[g.k].ok),
+            bien: 'Ponlas lado a lado: ¿qué parte de la segunda ya no está en el original?' },
+        ] }, parafrasis.juega),
+      Object.assign({ id: 'sintesis', titulo: 'Síntesis de dos fuentes', pieza: 'rv-texto',
+        // Retos: se comprueban con RASTRO, la tabla que dice qué hizo cada síntesis con cada frase de A y de B.
+        invitaciones: [
+          { texto: 'Busca la síntesis que inventa un acuerdo y marca la frase que contradice.',
+            logrado: val => RASTRO[val.k][val.f][0].startsWith('La contradice'),
+            bien: 'B no pide prohibir autos. Juntarlos así borra su desacuerdo.' },
+          { texto: 'Encuentra la síntesis que cruza a los autores y marca una frase cambiada.',
+            logrado: val => RASTRO[val.k][val.f][0].startsWith('Se la atribuye'),
+            bien: 'Cada propuesta quedó con el autor equivocado. ¿Quién dice qué, en realidad?' },
+          { texto: 'Busca la síntesis con más frases mal recogidas.',
+            logrado: val => malasSin(val.k) === Math.max(...Object.keys(RASTRO).map(malasSin)),
+            bien: 'Las cuatro frases fallan. Rastrear cada parte hasta su fuente lo deja ver.' },
+          { texto: 'Guarda la síntesis fiel y otra que falle en una sola frase.',
+            logrado: (val, guardados) => guardados.some(g => malasSin(g.k) === 0) && guardados.some(g => malasSin(g.k) === 1),
+            bien: 'Un solo descuido basta: la síntesis ya no respeta lo que dice B.' },
+        ] }, sintesis.juega),
     ],
     ideas: [alcance, parafrasis, sintesis],
   };

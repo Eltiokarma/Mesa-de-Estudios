@@ -53,10 +53,10 @@
   // cuantificador. Se reserva: «some» (predicción). Debe verse: la palabra y su sentido real, junto al texto.
   const LIB = [['a', 'Actually,'], ['b', 'the town library'], ['c', 'used to'], ['d', 'open on Sundays.'], ['e', 'Now it is closed, but'], ['f', 'few'], ['g', 'people know it.']];
   const PAL = {
-    a: { glosa: '«Actually» = en realidad (no «actualmente»)', trampa: true },
-    b: { glosa: '«Library» = biblioteca (no «librería»)', trampa: true },
-    c: { glosa: '«Used to» = antes solía: ya no', trampa: true },
-    f: { glosa: '«Few» = pocos (no «algunos»)', trampa: true },
+    a: { glosa: '«Actually» = en realidad (no «actualmente»)', trampa: true, clase: 'falso amigo' },
+    b: { glosa: '«Library» = biblioteca (no «librería»)', trampa: true, clase: 'falso amigo' },
+    c: { glosa: '«Used to» = antes solía: ya no', trampa: true, clase: 'tiempo' },
+    f: { glosa: '«Few» = pocos (no «algunos»)', trampa: true, clase: 'cuantificador' },
   };
   const basico = {
     id: 'palabras-que-enganan',
@@ -65,7 +65,7 @@
     pieza: 'rv-texto',
     juega: {
       consigna: 'Arrastra el marcador por el texto en inglés. Mira qué palabras se parecen al español y significan otra cosa.',
-      voz: 'Que se parezca al español no garantiza que signifique lo mismo.',
+      voz: 'Un cognado se parece al español y significa lo mismo; un falso amigo, no.',
       controles: [{ id: 'k', etiqueta: 'Palabra', opciones: [{ valor: 'a', texto: 'Actually' }, { valor: 'b', texto: 'library' }, { valor: 'c', texto: 'used to' }, { valor: 'f', texto: 'few' }] }],
       dibujo: val => ({ datos: tarjeta('Text', LIB), estado: { marcas: { [val.k]: 'o' }, sellos: { o: { t: 'Revisa el sentido', c: 'h' } } } }),
       lectura: val => { const [w, sentido] = PAL[val.k].glosa.split(' = '); return [prueba(w), ` = ${sentido}`]; },
@@ -314,6 +314,21 @@
       return [sost(CUANT.find(q => q.valor === val.t).texto), ' → ', prueba(CUANT.find(q => q.valor === val.a).texto), ': ', fn(CASILLA[k][0])];
     },
     arrastres: [marcador(val => figCuant(val.a), CUANT.map(q => q.valor), 't', 'lo que dice el texto')],
+    // Invitaciones: cada logrado pide la casilla a casillaCuant(), la misma cuenta de mundos que pone el sello.
+    invitaciones: [
+      { texto: 'Consigue un statement que el texto vuelva false.',
+        logrado: val => casillaCuant(val.t, val.a) === 'false',
+        bien: 'El texto lo contradice: no hay ningún caso posible donde valgan los dos.' },
+      { texto: 'Haz que el statement se deduzca sin estar escrito en el texto.',
+        logrado: val => casillaCuant(val.t, val.a) === 'follows',
+        bien: 'No está escrito, pero se sigue: si caminan todos, caminan algunos.' },
+      { texto: 'Busca un par que quede not stated.',
+        logrado: val => casillaCuant(val.t, val.a) === 'notstated',
+        bien: 'El texto deja las dos puertas abiertas. No podemos saberlo con este texto.' },
+      { texto: 'Guarda dos casos con el mismo statement y casillas distintas.',
+        logrado: (val, guardados) => guardados.some(g => g.a === val.a && g.t !== val.t && casillaCuant(g.t, g.a) !== casillaCuant(val.t, val.a)),
+        bien: 'El statement no cambió; cambió lo que dice el texto. Eso decide.' },
+    ],
   };
 
   return {
@@ -326,10 +341,52 @@
       pregunta: '¿Entender cada palabra es entender el texto?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (MCER 2001 y 2020)', url: 'https://learnenglish.britishcouncil.org/free-resources/reading' },
     },
+    glosario: [
+      { termino: 'falso amigo', def: 'Palabra inglesa que se parece a una española pero significa otra cosa.',
+        formas: ['falso amigo', 'falsos amigos'], ejemplo: '«Library» es biblioteca, no librería.', ver: ['cognado'] },
+      { termino: 'cognado', def: 'Palabra inglesa que se parece a una española y significa lo mismo.',
+        ejemplo: '«Important» es importante; «animal», animal.', ver: ['falso amigo'] },
+      { termino: 'tiempo del verbo', def: 'La forma del verbo que dice cuándo ocurre algo: antes, ahora o después.',
+        ejemplo: '«Walk» es presente; «walked», pasado; «will walk», futuro.', ver: ['used to'] },
+      { termino: 'used to', def: 'Expresión inglesa para una costumbre del pasado que ya no ocurre.',
+        ejemplo: '«We used to live near the lake»: antes vivíamos cerca del lago.', ver: ['tiempo del verbo'] },
+      { termino: 'main idea', def: 'En inglés, lo más importante que afirma un texto, dicho de modo que cubra todas sus partes.',
+        ver: ['idea principal', 'summary'] },
+      { termino: 'summary', def: 'Versión breve de un texto en inglés que conserva lo esencial sin listar detalles.',
+        ver: ['resumen', 'main idea'] },
+      { termino: 'statement', def: 'Afirmación sobre un texto que se compara con lo que este dice para decidir si vale.',
+        formas: ['statement', 'statements'], ver: ['not stated'] },
+      { termino: 'not stated', def: 'Lo que el texto no dice ni niega: no se puede marcar como verdadero ni como falso.',
+        ejemplo: '«Ana has two brothers»: ninguna oración habla de hermanos.', ver: ['statement'] },
+    ],
     laboratorio: [
       mesaCuant,
-      Object.assign({ id: 'palabras', titulo: 'Palabras que engañan', pieza: 'rv-texto' }, basico.juega),
-      Object.assign({ id: 'stated', titulo: 'Stated or not stated', pieza: 'rv-texto' }, dice.juega),
+      // Invitaciones de las mesas que reusan un juego: miran PAL y AF, las tablas que dan la lectura y el sello.
+      Object.assign({ id: 'palabras', titulo: 'Palabras que engañan', pieza: 'rv-texto', invitaciones: [
+        { texto: 'Marca la palabra que habla de algo que ya no pasa.',
+          logrado: val => PAL[val.k].clase === 'tiempo',
+          bien: '«Used to open» y «now it is closed» dicen lo mismo: antes sí, ahora no.' },
+        { texto: 'Encuentra la palabra que dice cuántas personas lo saben.',
+          logrado: val => PAL[val.k].clase === 'cuantificador',
+          bien: '«Few» es pocos, casi nadie. «A few» sería otra cosa.' },
+        { texto: 'Guarda dos falsos amigos distintos y compara su sentido real.',
+          logrado: (val, guardados) => PAL[val.k].clase === 'falso amigo' && guardados.some(g => g.k !== val.k && PAL[g.k].clase === 'falso amigo'),
+          bien: 'Se parecen al español y significan otra cosa. El resto de la oración lo delata.' },
+      ] }, basico.juega),
+      Object.assign({ id: 'stated', titulo: 'Stated or not stated', pieza: 'rv-texto', invitaciones: [
+        { texto: 'Encuentra la oración que contradice al statement.',
+          logrado: val => AF[val.k].sello[1] === 'h' && !!AF[val.k].marcas[val.f],
+          bien: 'La 1 dice Puno, no Lima. Esa frase exacta lo vuelve false.' },
+        { texto: 'Halla la oración que dice lo mismo que el statement A.',
+          logrado: val => AF[val.k].sello[1] === 'i' && !!AF[val.k].marcas[val.f],
+          bien: '«Every morning she walks to school»: ahí está la evidencia.' },
+        { texto: 'Elige el statement que ninguna oración decide.',
+          logrado: val => AF[val.k].sello[1] === 'd',
+          bien: 'Que no se mencione no lo vuelve falso: es not stated.' },
+        { texto: 'Guarda un caso false y uno not stated, y compáralos.',
+          logrado: (val, guardados) => { const c = x => AF[x.k].sello[1]; return (c(val) === 'd' && guardados.some(g => c(g) === 'h')) || (c(val) === 'h' && guardados.some(g => c(g) === 'd')); },
+          bien: 'Uno choca con una frase; el otro no encuentra ninguna. No son lo mismo.' },
+      ] }, dice.juega),
     ],
     ideas: [basico, mainIdea, dice],
   };

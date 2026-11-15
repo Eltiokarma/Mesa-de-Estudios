@@ -116,7 +116,7 @@
     regla: {
       texto: 'Una afirmación es compatible si el texto la dice o se deduce de él; incompatible si la contradice, con sus palabras o deduciendo. Si no, no se sabe.',
       ecuacion: [{ llave: [resp('dice | deduce')], nota: 'compatible', color: 'c-i' }, '   ·   ', { llave: [contra('contradice')], nota: 'incompatible', color: 'c-h' }, '   ·   ', nose('no se sabe')],
-      condicion: 'se compara sujeto, tiempo y cantidad (todos, algunos, ninguno); lo no mencionado no es incompatible.',
+      condicion: 'se compara sujeto, tiempo y cuantificador (todos, algunos, ninguno); lo no mencionado no es incompatible.',
     },
     ahoraTu: {
       generar(s) {
@@ -265,6 +265,24 @@
       donde: val => RV().ancla(figCuantAf(val.a), val.t),
       mover: (pt, val) => ({ t: RV().cercana(figCuantAf(val.a), pt, CUANT.map(q => q.valor)) }),
     }],
+    // Retos: logrado usa casillaCuant, la misma función que pone el sello de la mesa.
+    invitaciones: [
+      { texto: 'Busca un par en el que el texto contradiga la afirmación.',
+        logrado: val => casillaCuant(val.t, val.a) === 'contradice',
+        bien: 'Ahí no hay mundo en que los dos sean verdad. ¿Pasa con otro par?' },
+      { texto: 'Encuentra un par distinto en el que la afirmación se deduzca del texto.',
+        logrado: val => casillaCuant(val.t, val.a) === 'deduce',
+        bien: 'Si el texto es verdad, la afirmación también: no queda salida.' },
+      { texto: 'Con el texto «al menos una», busca la afirmación que no se puede saber.',
+        logrado: val => val.t === 'alguna' && casillaCuant(val.t, val.a) === 'nose',
+        bien: '«Al menos una» deja abierto si son todas o solo algunas.' },
+      { texto: 'Guarda dos pares con el mismo texto: uno que se deduce y otro que se contradice.',
+        logrado: (val, guardados) => {
+          const c = casillaCuant(val.t, val.a), otra = { deduce: 'contradice', contradice: 'deduce' }[c];
+          return !!otra && guardados.some(g => g.t === val.t && g.a !== val.a && casillaCuant(g.t, g.a) === otra);
+        },
+        bien: 'Un mismo texto obliga a una afirmación y descarta otra. Compáralas.' },
+    ],
   };
 
   return {
@@ -277,10 +295,64 @@
       pregunta: '¿«Alguno no» es lo contrario de «todos»?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Aristóteles, Sobre la interpretación)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/inferencia.htm' },
     },
+    glosario: [
+      { termino: 'afirmación', def: 'Oración que dice que algo es o no es así; puede ser verdadera o falsa.',
+        formas: ['afirmación', 'afirmaciones'], ejemplo: '«Todas las casas tienen luz» es verdadera o falsa según el texto.', ver: ['oración', 'negación'] },
+      { termino: 'cuantificador', def: 'Palabra que dice cuántos casos de un grupo abarca lo dicho: todos, algunos, ninguno.',
+        formas: ['cuantificador', 'cuantificadores'], ejemplo: 'En «ningún pozo tiene agua», el que manda es «ningún».', ver: ['universal', 'afirmación particular'] },
+      { termino: 'universal', def: 'Que habla de todos los casos de un grupo, sin excepción: «todas las aves migran».',
+        formas: ['universal', 'universales'], ver: ['afirmación particular', 'cuantificador'] },
+      { termino: 'afirmación particular', def: 'Que habla de al menos un caso de un grupo, sin decir qué pasa con los demás.',
+        formas: ['afirmación particular', 'afirmaciones particulares', 'particulares'], ejemplo: '«Algunos peces son nativos» no dice si lo son todos.', ver: ['universal', 'al menos uno'] },
+      { termino: 'al menos uno', def: 'Indica un caso o más: asegura que existe, sin descartar que sean todos.',
+        formas: ['al menos uno', 'al menos una', 'al menos un'], ejemplo: 'Si al menos un ave migra, quizá migren todas.', ver: ['cuantificador', 'afirmación particular'] },
+      { termino: 'negación', def: 'Forma de decir que algo no es así, con palabras como «no», «ninguno» o «nunca».',
+        formas: ['negación', 'negaciones'], ejemplo: 'Negar «todas migran» es decir «alguna no migra», no «ninguna migra».', ver: ['afirmación', 'contradicción'] },
+      { termino: 'no se puede saber', def: 'Caso de una afirmación que el texto ni dice, ni deduce, ni contradice.',
+        formas: ['no se puede saber', 'no se sabe'], ejemplo: '«La escuela tiene computadoras»: el texto de Ccota no habla de eso.', ver: ['compatible'] },
+      { termino: 'sujeto', def: 'De quién o de qué se dice algo en una oración.',
+        formas: ['sujeto', 'sujetos'], ejemplo: 'En «la escuela abrió en 2018», es «la escuela».', ver: ['oración'] },
+    ],
     laboratorio: [
       mesaCuant,
-      Object.assign({ id: 'casillas', titulo: 'Las cuatro casillas', pieza: 'rv-texto' }, casillas.juega),
-      Object.assign({ id: 'idea-principal', titulo: 'Contra la idea principal', pieza: 'rv-texto' }, ideaPrincipal.juega),
+      Object.assign({
+        id: 'casillas', titulo: 'Las cuatro casillas', pieza: 'rv-texto',
+        // Retos: logrado usa decide() y AF, lo mismo que dibuja la casilla de la mesa.
+        invitaciones: [
+          { texto: 'Lleva la afirmación 4 a la frase que la contradice sin decirlo igual.',
+            logrado: val => val.k === 'impl' && decide(val.k, val.f),
+            bien: 'Choca deduciendo: si en 2015 no había luz, no la hubo desde 2012.' },
+          { texto: 'Encuentra la afirmación que ninguna frase del texto decide.',
+            logrado: val => AF[val.k].c === 'nose',
+            bien: 'El texto calla sobre eso. Callar no es contradecir.' },
+          { texto: 'Busca una afirmación que solo se decide uniendo dos frases.',
+            logrado: val => Object.keys(AF[val.k].marcas).length === 2 && decide(val.k, val.f),
+            bien: 'Ninguna frase sola bastaba; juntas, sostienen la afirmación.' },
+          { texto: 'Guarda dos afirmaciones decididas por la misma frase: una compatible y otra incompatible.',
+            logrado: (val, guardados) => decide(val.k, val.f) && guardados.some(g => g.f === val.f && g.k !== val.k
+              && decide(g.k, g.f) && CASILLA[AF[g.k].c][1] !== CASILLA[AF[val.k].c][1]),
+            bien: 'La misma frase confirma una y descarta la otra.' },
+        ],
+      }, casillas.juega),
+      Object.assign({
+        id: 'idea-principal', titulo: 'Contra la idea principal', pieza: 'rv-texto',
+        // Retos: logrado lee AF2, lo mismo que marca qué oraciones chocan con la afirmación.
+        invitaciones: [
+          { texto: 'Guarda dos oraciones distintas con las que choque la misma afirmación.',
+            logrado: (val, guardados) => AF2[val.k].marcas[val.f] === 'h'
+              && guardados.some(g => g.k === val.k && g.f !== val.f && AF2[g.k].marcas[g.f] === 'h'),
+            bien: 'Solo la que niega la idea principal choca en más de un lugar.' },
+          { texto: 'Busca la afirmación que choca con un detalle, no con la idea principal.',
+            logrado: val => Object.keys(AF2[val.k].marcas).length === 1 && AF2[val.k].marcas[val.f] === 'h',
+            bien: 'Choca con la oración 1 y deja en pie lo demás del texto.' },
+          { texto: 'Encuentra la afirmación que no choca con ninguna oración.',
+            logrado: val => Object.keys(AF2[val.k].marcas).length === 0,
+            bien: 'Habla de otra cosa: con este texto no se puede saber.' },
+          { texto: 'Con la afirmación B, deja el marcador en una oración con la que no choca.',
+            logrado: val => val.k === 'frase' && AF2[val.k].marcas[val.f] !== 'h',
+            bien: 'Esa oración no la decide. Un detalle se juega en una sola frase.' },
+        ],
+      }, ideaPrincipal.juega),
     ],
     ideas: [casillas, ideaPrincipal],
   };
