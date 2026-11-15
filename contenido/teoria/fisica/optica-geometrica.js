@@ -111,7 +111,7 @@
       ],
     },
     regla: {
-      texto: 'El rayo reflejado sale con el mismo ángulo que llega. El refractado cumple la ley de Snell; los ángulos se miden desde la normal.',
+      texto: 'El rayo reflejado sale con el mismo ángulo que llega. El refractado cumple la ley de Snell; los ángulos se miden desde la recta normal.',
       ecuacion: [{ llave: [n1, ' sen ', t1], nota: 'al llegar', color: 'c-o' }, ' = ', { llave: [n2, ' sen ', t2], nota: 'al salir', color: 'c-i' }],
       condicion: 'la frontera es lisa. Al entrar a un medio de mayor n, se acerca a la normal; a 0°, no se desvía.',
     },
@@ -348,7 +348,7 @@
         { estado: { paso: 1 }, texto: 'El rayo paralelo al eje rebota pasando por el foco.', ecuacion: [fF, ' = 8 cm'] },
         { estado: { paso: 2 }, texto: 'El que llega al vértice rebota simétrico respecto del eje.', ecuacion: [dO, ' = 24 cm'] },
         { estado: { paso: 3 }, texto: 'El que pasa por el foco vuelve paralelo. Se cruzan en la imagen.', ecuacion: [{ frac: ['1', fF] }, ' = ', { frac: ['1', dO] }, ' + ', { frac: ['1', dI] }] },
-        { estado: { paso: 3 }, texto: 'La imagen queda a 12 cm, real, invertida y de la mitad.', ecuacion: [dI, ' = 12 cm', '   ·   ', 'm = −', { frac: ['12', '24'] }, ' = −0,5'] },
+        { estado: { paso: 3 }, texto: 'Imagen real a 12 cm: invertida y de la mitad del tamaño.', ecuacion: [dI, ' = 12 cm', '   ·   ', 'm = −', { frac: ['12', '24'] }, ' = −0,5'] },
       ],
     },
     regla: {
@@ -505,7 +505,7 @@
       ],
     },
     regla: {
-      texto: 'La distancia focal sale del índice y de los radios de las caras. La potencia es su inversa, en dioptrías.',
+      texto: 'La distancia focal sale del índice y de los radios de las caras. La potencia de una lente es la inversa de f, en dioptrías.',
       ecuacion: [{ frac: ['1', fF] }, ' = ', { llave: ['(n − 1)'], nota: 'el vidrio' }, '(', { frac: ['1', { sub: ['R', '1'] }] }, ' − ', { frac: ['1', { sub: ['R', '2'] }] }, ')', '   ·   ', { llave: ['P'], nota: 'dioptrías' }, ' = ', { frac: ['1', fF] }],
       condicion: 'lente delgada en el aire (en otro medio, n es el índice relativo). f en metros para P en dioptrías.',
     },
@@ -541,14 +541,20 @@
 
   // Mesas del laboratorio.
   const MEDIOS_LAB = { aire: 1, agua: 1.33, vidrio: 1.5, diamante: 2.42 };
+  // El menor ángulo crítico entre todas las parejas de medios de la mesa (para el reto del extremo).
+  const N_LAB = Object.values(MEDIOS_LAB);
+  const CRIT_MIN = Math.min(...N_LAB.flatMap(na => N_LAB.filter(nb => nb < na).map(nb => grad(Math.asin(nb / na)))));
+  // Aumento de la imagen del banco (null si el objeto está en el foco).
+  const aumentoBanco = val => (Math.abs(val.d - fDe(val)) < 1e-9 ? null : -imgEsp(fDe(val), val.d, val.h).d / val.d);
   const frontera = val => {
     const na = MEDIOS_LAB[val.m1], nb = MEDIOS_LAB[val.m2], b = refracta(na, nb, val.a);
     const c = na > nb ? grad(Math.asin(nb / na)) : null;
     return { datos: { n1: na, n2: nb, nombre1: val.m1, nombre2: val.m2, t1: val.a, t2: b, reflejado: true, critico: c,
       rotulos: { t1: `θ₁ = ${f(val.a, 0)}°`, t2: b === null ? undefined : `θ₂ = ${f(b, 1)}°` } }, estado: {} };
   };
+  const fDe = val => (val.e.endsWith('-') ? -1 : 1) * val.f;   // f con signo: divergente o convexo, negativa
   const bancoLibre = val => {
-    const lenteSi = val.e.startsWith('lente'), fv = (val.e.endsWith('-') ? -1 : 1) * val.f;
+    const lenteSi = val.e.startsWith('lente'), fv = fDe(val);
     const enFoco = Math.abs(val.d - fv) < 1e-9;
     let im = enFoco ? null : imgEsp(fv, val.d, val.h);
     const rayos = fv > 0 ? ['paralelo', 'centro', 'foco'] : ['paralelo', 'centro'];
@@ -565,6 +571,46 @@
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-interfaz.js', '/nucleo/kit/piezas/fis-banco-optico.js'],
+    // Glosario del tema (docs/teoria.md, 4d). Reflexión viene de ondas mecánicas; índice de refracción, de ondas
+    // electromagnéticas. «Foco» no se define: en el curso también es la bombilla de los circuitos.
+    glosario: [
+      { termino: 'refracción', def: 'Cambio de dirección de la luz al pasar de un medio a otro, porque cambia su rapidez.',
+        ejemplo: 'Un lápiz dentro de un vaso con agua parece quebrado.', ver: ['ley de Snell', 'índice de refracción'] },
+      { termino: 'ley de Snell', def: 'Al cambiar de medio, n₁ sen θ₁ = n₂ sen θ₂, con los ángulos medidos desde la recta normal.',
+        ejemplo: 'Del aire al vidrio (n = 1,5) a 30°: sen θ₂ = 1/3, θ₂ ≈ 19,5°.', ver: ['refracción', 'recta normal'] },
+      { termino: 'recta normal', def: 'Línea perpendicular a la superficie en el punto donde llega el rayo. Desde ella se miden los ángulos.',
+        formas: ['recta normal', 'rectas normales'], ver: ['ángulo de incidencia'] },
+      { termino: 'ángulo de incidencia', simbolo: 'θ₁', def: 'Ángulo entre el rayo que llega a la superficie y la recta normal.',
+        formas: ['ángulo de incidencia', 'ángulos de incidencia'], ver: ['recta normal', 'ley de Snell'] },
+      { termino: 'reflexión total', def: 'Si la luz va hacia un medio de menor índice y pasa el ángulo crítico, no sale: rebota toda.',
+        ejemplo: 'Así viaja la luz dentro de una fibra óptica.', ver: ['ángulo crítico'] },
+      { termino: 'ángulo crítico', simbolo: 'θc', def: 'Ángulo de llegada con el que el rayo sale rasante, a 90°. Pasado ese ángulo, ya no sale.',
+        formas: ['ángulo crítico', 'ángulos críticos', 'ángulo límite'], ejemplo: 'Del vidrio al aire: sen θc = 1/1,5, θc ≈ 41,8°.', ver: ['reflexión total'] },
+      { termino: 'espejo plano', def: 'Superficie lisa y plana que refleja la luz. Da una imagen derecha, del mismo tamaño y detrás.',
+        formas: ['espejo plano', 'espejos planos'], ejemplo: 'Vela a 6 cm delante: su imagen queda 6 cm detrás.', ver: ['imagen virtual'] },
+      { termino: 'espejo cóncavo', def: 'Espejo curvo hacia adentro, como el interior de una cuchara. Junta los rayos paralelos.',
+        formas: ['espejo cóncavo', 'espejos cóncavos'], ejemplo: 'f = 8 cm y objeto a 24 cm: imagen real a 12 cm.', ver: ['espejo convexo', 'distancia focal'] },
+      { termino: 'espejo convexo', def: 'Espejo curvo hacia afuera, como el dorso de una cuchara. Separa los rayos y achica la imagen.',
+        formas: ['espejo convexo', 'espejos convexos'], ejemplo: 'Los de las esquinas de las tiendas, que muestran todo el local.', ver: ['espejo cóncavo'] },
+      { termino: 'distancia focal', simbolo: 'f', medida: 'cm', def: 'Distancia del espejo o de la lente a su foco. Positiva si junta los rayos; negativa si los separa.',
+        formas: ['distancia focal', 'distancias focales'], ejemplo: 'Una lente de 5 D tiene f = 0,2 m = 20 cm.', ver: ['potencia de una lente'] },
+      { termino: 'imagen real', def: 'Imagen donde los rayos sí se juntan: se puede recoger en una pantalla.',
+        formas: ['imagen real', 'imágenes reales'], ejemplo: 'La de un proyector sobre la pared.', ver: ['imagen virtual'] },
+      { termino: 'imagen virtual', def: 'Imagen donde los rayos solo parecen juntarse: se ve, pero no se puede recoger en una pantalla.',
+        formas: ['imagen virtual', 'imágenes virtuales'], ejemplo: 'La de tu cara en un espejo plano.', ver: ['imagen real'] },
+      { termino: 'aumento', simbolo: 'm', def: 'Tamaño de la imagen entre tamaño del objeto. Es negativo si la imagen sale invertida.',
+        ejemplo: 'dₒ = 30 cm, dᵢ = 15 cm: m = −0,5, invertida y de la mitad.', ver: ['imagen real'] },
+      { termino: 'lente convergente', def: 'Lente más gruesa en el centro que junta los rayos paralelos. Su f es positiva.',
+        formas: ['lente convergente', 'lentes convergentes'], ejemplo: 'Una lupa.', ver: ['lente divergente', 'distancia focal'] },
+      { termino: 'lente divergente', def: 'Lente más delgada en el centro que separa los rayos paralelos. Su f es negativa.',
+        formas: ['lente divergente', 'lentes divergentes'], ejemplo: 'Los lentes para la miopía.', ver: ['lente convergente'] },
+      { termino: 'ecuación del fabricante', def: 'Da la distancia focal de una lente a partir de su índice y de los radios de sus caras.',
+        ejemplo: 'n = 1,5 y radios de 20 cm: 1/f = 0,5 · 2/20, f = 20 cm.', ver: ['distancia focal'] },
+      { termino: 'potencia de una lente', simbolo: 'P', medida: 'D', def: 'Inversa de la distancia focal medida en metros. Dice cuánto desvía la luz la lente.',
+        formas: ['potencia de una lente', 'potencia de la lente'], ejemplo: 'f = 0,2 m: P = 5 D.', ver: ['dioptría'] },
+      { termino: 'dioptría', simbolo: 'D', def: 'Unidad de la potencia de una lente: la de una lente con su foco a un metro.',
+        formas: ['dioptría', 'dioptrías'], ejemplo: 'f = 50 cm: 2 D.', ver: ['potencia de una lente'] },
+    ],
     // Laboratorio: la frontera con los dos medios a elegir (entra, sale o queda atrapada en una sola mesa), el banco
     // con los cuatro elementos y el objeto que se arrastra en las dos direcciones, y el fabricante de la idea 6.
     laboratorio: [
@@ -582,6 +628,23 @@
           return b === null ? [t1, ` = ${f(val.a, 0)}°: reflexión total (`, tc, ` = ${f(grad(Math.asin(nb / na)), 1)}°)`] : [t1, ` = ${f(val.a, 0)}°: `, t2, ` = ${f(b, 1)}°`];
         },
         arrastres: [{ id: 'rayo', etiqueta: 'comienzo del rayo incidente', color: 'c-o', donde: val => manijaRayo(val.a), mover: pt => ({ a: anguloDe(pt) }) }],
+        invitaciones: [
+          { texto: 'Pon el rayo a menos de un grado del ángulo crítico, todavía saliendo.',
+            logrado: val => { const c = frontera(val).datos.critico; return c !== null && refracta(MEDIOS_LAB[val.m1], MEDIOS_LAB[val.m2], val.a) !== null && c - val.a < 1; },
+            bien: 'Casi en el ángulo crítico, el rayo sale pegado a la superficie.' },
+          { texto: 'Con dos medios distintos, haz que el rayo cruce sin desviarse.',
+            logrado: val => val.m1 !== val.m2 && refracta(MEDIOS_LAB[val.m1], MEDIOS_LAB[val.m2], val.a) === val.a,
+            bien: 'Por la recta normal no se desvía. ¿Cambió su rapidez al entrar?' },
+          { texto: 'Busca la pareja de medios con el ángulo crítico más pequeño.',
+            logrado: val => { const c = frontera(val).datos.critico; return c !== null && c <= CRIT_MIN + 1e-9; },
+            bien: 'Del diamante al aire, 24,4°: por eso el diamante atrapa tanta luz.' },
+          { texto: 'Guarda dos casos con el mismo θ₁: en uno sale el rayo y en otro no.',
+            logrado: (val, guardados) => {
+              const sale = x => refracta(MEDIOS_LAB[x.m1], MEDIOS_LAB[x.m2], x.a) !== null;
+              return guardados.some(g => g.a === val.a && sale(g) !== sale(val)) && guardados.some(g => g.a === val.a && g.m1 === val.m1 && g.m2 === val.m2);
+            },
+            bien: 'Mismo ángulo de incidencia: la pareja de medios decide la reflexión total.' },
+        ],
       },
       {
         id: 'banco-libre', titulo: 'Lentes y espejos', pieza: 'fis-banco-optico',
@@ -594,7 +657,7 @@
         ],
         dibujo: val => bancoLibre(val),
         lectura: val => {
-          const fv = (val.e.endsWith('-') ? -1 : 1) * val.f;
+          const fv = fDe(val);
           if (Math.abs(val.d - fv) < 1e-9) return [dO, ' = ', fF, `: los rayos salen paralelos`];
           const im = imgEsp(fv, val.d, val.h);
           return [dO, ` = ${f(val.d, 0)} cm: `, dI, ` = ${f(im.d, 1)} cm · m = ${f(-im.d / val.d, 2)}`];
@@ -602,8 +665,38 @@
         arrastres: [{ id: 'objeto', etiqueta: 'punta del objeto (distancia y altura)', color: 'c-h',
           donde: val => puntaObjeto(bancoLibre(val).datos),
           mover: (pt, val) => ({ d: dDe(bancoLibre(val).datos, pt), h: hDe(bancoLibre(val).datos, pt) }) }],
+        invitaciones: [
+          { texto: 'Pon el objeto justo en el foco de una lente convergente.',
+            logrado: val => val.e === 'lente+' && aumentoBanco(val) === null,
+            bien: 'En el foco los rayos salen paralelos: no se forma imagen.' },
+          { texto: 'Consigue una imagen virtual más grande que el objeto.',
+            logrado: val => { const m = aumentoBanco(val); return m !== null && imgEsp(fDe(val), val.d, val.h).d < 0 && m > 1; },
+            bien: 'Objeto dentro del foco de algo convergente: así trabaja una lupa.' },
+          { texto: 'Logra una imagen real del mismo tamaño que el objeto.',
+            logrado: val => { const m = aumentoBanco(val); return m !== null && Math.abs(m + 1) < 1e-9; },
+            bien: 'Objeto a dos veces f: imagen invertida, del mismo tamaño, también a 2f.' },
+          { texto: 'Guarda una lente y un espejo con el mismo f y el objeto igual.',
+            logrado: (val, guardados) => aumentoBanco(val) !== null
+              && guardados.some(g => g.e[0] !== val.e[0] && fDe(g) === fDe(val) && g.d === val.d && g.h === val.h)
+              && guardados.some(g => g.e === val.e && g.f === val.f && g.d === val.d && g.h === val.h),
+            bien: 'Mismo aumento con la misma ecuación. Cambia de qué lado queda la imagen.' },
+        ],
       },
-      Object.assign({ id: 'fabricante', titulo: 'Curvatura, índice y foco', pieza: 'fis-banco-optico' }, fab.juega),
+      Object.assign({ id: 'fabricante', titulo: 'Curvatura, índice y foco', pieza: 'fis-banco-optico', invitaciones: [
+        { texto: 'Consigue una lente de 10 dioptrías.',
+          logrado: val => Math.abs(100 / fFab(val.n, val.R) - 10) < 1e-6,
+          bien: 'f = 10 cm: caras curvas y vidrio común ya hacen una lupa fuerte.' },
+        { texto: 'Haz que el foco quede a 50 cm.',
+          logrado: val => Math.abs(fFab(val.n, val.R) - 50) < 1e-6,
+          bien: 'Solo 2 dioptrías: una lente casi plana desvía poco la luz.' },
+        { texto: 'Busca la lente de mayor potencia que permite la mesa.',
+          logrado: val => 100 / fFab(val.n, val.R) >= 100 / fFab(1.8, 10) - 1e-9,
+          bien: 'Caras muy curvas y mucho índice: el foco se acerca a la lente.' },
+        { texto: 'Guarda dos lentes distintas con la misma distancia focal.',
+          logrado: (val, guardados) => guardados.some(g => (g.n !== val.n || g.R !== val.R) && Math.abs(fFab(g.n, g.R) - fFab(val.n, val.R)) < 1e-6)
+            && guardados.some(g => g.n === val.n && g.R === val.R),
+          bien: 'Más índice compensa caras menos curvas: f depende de los dos.' },
+      ] }, fab.juega),
     ],
     historia: {
       texto: 'Explicar la visión obligaba a separar lo que hace el ojo de lo que hace la luz. En el siglo XI, Ibn al-Haytham combinó geometría y experimentos para estudiar reflexión y refracción, discutiendo a los autores griegos. Su Libro de óptica se tradujo al latín y siguió leyéndose siglos después.',
