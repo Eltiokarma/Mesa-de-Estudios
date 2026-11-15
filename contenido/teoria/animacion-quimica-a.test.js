@@ -14,7 +14,7 @@ const Ecuacion = require('../../nucleo/ecuacion.js');
 
 const RAIZ = path.join(__dirname, '..', '..');
 // Unidades de esta parte. A medida que se animan, se agregan aquí.
-const UNIDADES = ['materia-y-energia', 'estructura-atomica'];
+const UNIDADES = ['materia-y-energia', 'estructura-atomica', 'tabla-periodica'];
 // Ideas que de verdad no se prestan a animación (explicadas en rutinas/teoria5-quimica-a.md).
 const SIN_ANIMAR = new Set([]);
 
