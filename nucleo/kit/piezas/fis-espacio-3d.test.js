@@ -54,3 +54,13 @@ test('cada escena de física cabe en el presupuesto (60 mallas) y no tiene NaN',
 });
 
 function casi(a, b) { assert.ok(Math.abs(a - b) < 1e-9, `${a} ≠ ${b}`); }
+
+test('forma: la animación solo mueve (misma forma en cada t) y rearma si cambia qué objetos hay', () => {
+  const tiro = [0, 1.5, 3, 4.5].map(t => P.forma(F.tiro({ v0: 30, ang: 60, t }).datos));
+  const orb = [0, 2, 5].map(t => P.forma(F.orbita({ r: 'dia', inc: 60, t }).datos));
+  for (const fs of [tiro, orb]) assert.ok(fs.every(x => x === fs[0]), 'misma forma en todo t');
+  assert.notEqual(P.forma(F.tiro({ v0: 30, ang: 60, t: 1 }).datos), P.forma(F.orbita({ r: 'dia', inc: 60, t: 1 }).datos));
+  const d = { escena: 'x', flechas: [{ de: [0, 0, 0], a: [1, 0, 0], color: 'c-o' }] };
+  assert.notEqual(P.forma(d), P.forma(Object.assign({}, d, { flechas: [] })));
+  assert.equal(P.forma(d), P.forma(Object.assign({}, d, { flechas: [{ de: [0, 0, 0], a: [0, 2, 1], color: 'c-o' }] })));
+});

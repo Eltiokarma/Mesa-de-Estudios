@@ -12,7 +12,8 @@
  *   ejes:    { largo, nombres: ['x','y','z'] } | null   // ejes de tinta con su nombre en la punta
  *   flechas: [{ de, a, color, rotulo, grosor }]          // de y a: [x, y, z]; color: 'c-o'…'c-f' o 'tinta'
  *   trazos:  [{ puntos: [[x,y,z]…], color, punteado, cerrado }]
- *   bolas:   [{ en, r, color, rotulo }]
+ *   bolas:   [{ en, r, color, rotulo, oculta }]           // oculta: armada pero sin verse (una marca que la animación
+ *                                                          // enciende después, sin cambiar la forma)
  *   caras:   [{ puntos, color, opacidad }]               // polígono plano (convexo) relleno, con su borde
  *   rotulos: [{ en, texto, color }]                      // rótulos sueltos (sin objeto)
  *   vista:   { giro, inclinacion }, alt
@@ -63,7 +64,7 @@
       trazos: lista(d.trazos).map(t => ({ puntos: t.puntos.map(p2), color: t.color, punteado: !!t.punteado, cerrado: !!t.cerrado })),
       flechas: lista(d.flechas).filter(f => Math.hypot(f.a[0] - f.de[0], f.a[1] - f.de[1], f.a[2] - f.de[2]) > 1e-9)
         .map(f => ({ de: p2(f.de), a: p2(f.a), color: f.color, rotulo: f.rotulo, grosor: f.grosor || 1 })),
-      bolas: lista(d.bolas).map(b => ({ en: p2(b.en), r: (b.r || 0.12) * E, color: b.color, rotulo: b.rotulo })),
+      bolas: lista(d.bolas).filter(b => !b.oculta).map(b => ({ en: p2(b.en), r: (b.r || 0.12) * E, color: b.color, rotulo: b.rotulo })),
       rotulos: lista(d.rotulos).map(r => ({ en: p2(r.en), texto: r.texto, color: r.color })),
     };
   }
@@ -101,6 +102,30 @@
       + lista(d.bolas).length + lista(d.caras).length;
   }
 
+  // Triángulos en abanico desde el centro de un polígono plano convexo (las caras).
+  function abanico(pts, T) {
+    const cen = pts.reduce((s, p) => s.add(p), new T.Vector3()).multiplyScalar(1 / pts.length), pos = [];
+    for (let k = 0; k < pts.length; k++) { const p = pts[k], q = pts[(k + 1) % pts.length]; pos.push(cen.x, cen.y, cen.z, p.x, p.y, p.z, q.x, q.y, q.z); }
+    return pos;
+  }
+  // Mueve los puntos de una línea ya armada (mismo número de puntos).
+  function ponerPuntos(l, pts) {
+    const at = l.geometry.getAttribute('position');
+    pts.forEach((p, i) => at.setXYZ(i, p.x, p.y, p.z));
+    at.needsUpdate = true; l.geometry.computeBoundingSphere();
+    if (l.material.isLineDashedMaterial) l.computeLineDistances();
+  }
+  // Qué objetos arma la escena: si esto no cambia de un cuadro al siguiente, mover basta (docs/3d.md §6).
+  const noNula = f => Math.hypot(f.a[0] - f.de[0], f.a[1] - f.de[1], f.a[2] - f.de[2]) > 1e-9;
+  function forma(d) {
+    return JSON.stringify([d.escena || '', d.vista || null, d.escala || 1, d.ejes || null,
+      lista(d.flechas).filter(noNula).map(f => [f.color || '', f.grosor || 1, !!f.rotulo]),
+      lista(d.bolas).map(b => [b.color || '', b.r || 0.12, !!b.rotulo]),
+      lista(d.trazos).map(t => [t.puntos.length, t.color || '', !!t.punteado, !!t.cerrado]),
+      lista(d.caras).map(c => [c.puntos.length, c.color || '', c.opacidad]),
+      lista(d.rotulos).map(r => r.color || '')]);
+  }
+
   // ---------- En vivo: la escena sobre la base común (nucleo/kit/vivo3d.js) ----------
   const SPEC = {
     plano: d => dibujar(d),
@@ -117,35 +142,74 @@
         const l = new T.Line(g, m); if (punteado) l.computeLineDistances(); return l;
       };
       const etq = (p, t, c) => h.etiqueta(p, t, c && VAR[c] ? { color: c } : {});
+      // Lo que se arma queda anotado en grupo.userData.vivos, para que mover (la animación) lo cambie sin rearmar.
+      const vivos = { flechas: [], bolas: [], trazos: [], caras: [], rotulos: [] };
+      grupo.userData.vivos = vivos;
       for (const x of ejesDe(d)) {
         const a = V(x.a);
         grupo.add(linea([V(x.de), a], tinta, false, false));
         etq(a.clone().multiplyScalar(1.08), x.texto, null);
       }
       for (const c of lista(d.caras)) {
-        const pts = c.puntos.map(V), cen = pts.reduce((s, p) => s.add(p), new T.Vector3()).multiplyScalar(1 / pts.length), pos = [];
-        for (let k = 0; k < pts.length; k++) { const p = pts[k], q = pts[(k + 1) % pts.length]; pos.push(cen.x, cen.y, cen.z, p.x, p.y, p.z, q.x, q.y, q.z); }
-        const geo = new T.BufferGeometry(); geo.setAttribute('position', new T.Float32BufferAttribute(pos, 3)); geo.computeVertexNormals();
-        grupo.add(new T.Mesh(geo, h.material(color(c.color), { side: T.DoubleSide, transparent: true, opacity: c.opacidad === undefined ? 0.3 : c.opacidad, depthWrite: false })));
-        grupo.add(linea(pts, color(c.color), false, true));
+        const pts = c.puntos.map(V);
+        const geo = new T.BufferGeometry(); geo.setAttribute('position', new T.Float32BufferAttribute(abanico(pts, T), 3)); geo.computeVertexNormals();
+        const malla = new T.Mesh(geo, h.material(color(c.color), { side: T.DoubleSide, transparent: true, opacity: c.opacidad === undefined ? 0.3 : c.opacidad, depthWrite: false }));
+        const borde = linea(pts, color(c.color), false, true);
+        grupo.add(malla); grupo.add(borde);
+        vivos.caras.push({ malla, borde });
       }
-      for (const t of lista(d.trazos)) grupo.add(linea(t.puntos.map(V), color(t.color), t.punteado, t.cerrado));
+      for (const t of lista(d.trazos)) { const l = linea(t.puntos.map(V), color(t.color), t.punteado, t.cerrado); grupo.add(l); vivos.trazos.push(l); }
       for (const f of lista(d.flechas)) {
         const de = V(f.de), a = V(f.a);
         if (de.distanceTo(a) < 1e-9) continue;
-        grupo.add(h.flecha(de, a, 0.035 * (f.grosor || 1), color(f.color)));
-        if (f.rotulo) etq(a.clone().add(a.clone().sub(de).normalize().multiplyScalar(0.25)), f.rotulo, f.color);
+        const g = h.flecha(de, a, 0.035 * (f.grosor || 1), color(f.color));
+        grupo.add(g);
+        const largo = de.distanceTo(a), punta = Math.min(0.32, largo * 0.4);
+        vivos.flechas.push({ g, cuerpo0: largo - punta, punta0: punta,
+          el: f.rotulo ? etq(a.clone().add(a.clone().sub(de).normalize().multiplyScalar(0.25)), f.rotulo, f.color) : null });
       }
       for (const b of lista(d.bolas)) {
         const m = new T.Mesh(new T.SphereGeometry(b.r || 0.12, h.SEG, Math.max(8, h.SEG / 2)), h.material(color(b.color)));
-        m.position.copy(V(b.en)); grupo.add(m);
-        if (b.rotulo) etq(V(b.en).add(new T.Vector3(0, (b.r || 0.12) + 0.22, 0)), b.rotulo, b.color);
+        m.position.copy(V(b.en)); m.visible = !b.oculta; grupo.add(m);
+        vivos.bolas.push({ m, el: b.rotulo ? etq(V(b.en).add(new T.Vector3(0, (b.r || 0.12) + 0.22, 0)), b.rotulo, b.color) : null });
       }
-      for (const r of lista(d.rotulos)) etq(V(r.en), r.texto, r.color);
+      for (const r of lista(d.rotulos)) vivos.rotulos.push(etq(V(r.en), r.texto, r.color));
       return { aria: alt(d) };
+    },
+    // Animación (docs/3d.md §6): mientras no cambie qué objetos hay (cuántos, de qué color, con o sin rótulo, cuántos
+    // puntos lleva cada trazo), cada cuadro solo mueve lo armado: posiciones, giros y escalas, y el texto de los rótulos.
+    forma: d => forma(d),
+    mover(T, grupo, d, e, h) {
+      const vivos = grupo.userData.vivos;
+      if (!vivos) return false;
+      const V = p => new T.Vector3(...aEscena(d, p));
+      const arriba = new T.Vector3(0, 1, 0);
+      const fl = lista(d.flechas).filter(f => Math.hypot(f.a[0] - f.de[0], f.a[1] - f.de[1], f.a[2] - f.de[2]) > 1e-9);
+      fl.forEach((f, k) => {
+        const q = vivos.flechas[k], de = V(f.de), a = V(f.a), v = a.clone().sub(de), largo = v.length(), u = v.clone().normalize();
+        const punta = Math.min(0.32, largo * 0.4), fin = de.clone().addScaledVector(u, largo - punta);
+        const [cuerpo, cono] = q.g.children;
+        cuerpo.position.copy(de).add(fin).multiplyScalar(0.5); cuerpo.quaternion.setFromUnitVectors(arriba, u);
+        cuerpo.scale.set(1, Math.max(1e-4, (largo - punta) / (q.cuerpo0 || 1e-4)), 1);
+        cono.position.copy(fin).addScaledVector(u, punta / 2); cono.quaternion.setFromUnitVectors(arriba, u);
+        cono.scale.set(1, punta / (q.punta0 || 1e-4), 1);
+        if (q.el) h.moverEtiqueta(q.el, a.clone().addScaledVector(u, 0.25), f.rotulo);
+      });
+      lista(d.bolas).forEach((b, k) => {
+        const q = vivos.bolas[k]; q.m.position.copy(V(b.en)); q.m.visible = !b.oculta;
+        if (q.el) h.moverEtiqueta(q.el, V(b.en).add(new T.Vector3(0, (b.r || 0.12) + 0.22, 0)), b.rotulo);
+      });
+      lista(d.trazos).forEach((t, k) => ponerPuntos(vivos.trazos[k], t.puntos.map(V).concat(t.cerrado ? [V(t.puntos[0])] : [])));
+      lista(d.caras).forEach((c, k) => {
+        const pts = c.puntos.map(V), q = vivos.caras[k], at = q.malla.geometry.getAttribute('position');
+        at.array.set(abanico(pts, T)); at.needsUpdate = true; q.malla.geometry.computeVertexNormals(); q.malla.geometry.computeBoundingSphere();
+        ponerPuntos(q.borde, pts.concat([pts[0]]));
+      });
+      lista(d.rotulos).forEach((r, k) => h.moverEtiqueta(vivos.rotulos[k], V(r.en), r.texto));
+      return true;
     },
   };
   const montar = (el, op) => Kit.vivo3d.montar(el, SPEC, op);
 
-  return { id: 'fis-espacio-3d', dibujar, alt, montar, plano, girar, aTres, mallas };
+  return { id: 'fis-espacio-3d', dibujar, alt, montar, plano, girar, aTres, mallas, forma };
 });

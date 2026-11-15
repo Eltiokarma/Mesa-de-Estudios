@@ -111,10 +111,10 @@
     temas: ['Imanes y experimento de Oersted', 'Campo de un conductor recto, una espira y un solenoide'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Un cable vertical lleva corriente hacia arriba (sale de la pantalla). Una brújula está al sur del cable. Cambia la corriente y la distancia.',
+      consigna: 'Un cable vertical lleva corriente que sale de la pantalla; la brújula está al sur. La corriente sube y baja sola: mira la aguja.',
       voz: 'Sin corriente, la aguja mira al norte. Mira cuánto se tuerce.',
       controles: [
-        { id: 'i', etiqueta: 'I', color: 'c-h', min: 0, max: 20, paso: 5, inicio: 10, unidad: 'A', decimales: 0 },
+        { id: 'i', etiqueta: 'I', color: 'c-h', min: 0, max: 20, paso: 5, inicio: 10, unidad: 'A', decimales: 0, auto: { velocidad: 8, modo: 'rebota' } },
         { id: 'r', etiqueta: 'Distancia', min: 2, max: 6, paso: 2, inicio: 4, unidad: 'cm', decimales: 0 },
       ],
       dibujo: val => ({ datos: oersted(val.i, val.r), estado: {} }),
@@ -212,11 +212,11 @@
     temas: ['Campo de un conductor recto, una espira y un solenoide'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Un alambre enrollado en muchas vueltas: un solenoide con 2 A. Cambia las vueltas y el largo, y mira el campo de adentro.',
+      consigna: 'Un solenoide con 2 A: un alambre de muchas vueltas. Se estira y se encoge solo: mira el campo de adentro. Cambia las vueltas.',
       voz: 'Compara las dos flechas de adentro: ¿miden lo mismo?',
       controles: [
         { id: 'n', etiqueta: 'Vueltas', min: 10, max: 30, paso: 10, inicio: 20, unidad: '', decimales: 0 },
-        { id: 'L', etiqueta: 'Largo', min: 10, max: 20, paso: 5, inicio: 10, unidad: 'cm', decimales: 0 },
+        { id: 'L', etiqueta: 'Largo', min: 10, max: 20, paso: 5, inicio: 10, unidad: 'cm', decimales: 0, auto: { velocidad: 4, modo: 'rebota' } },
       ],
       dibujo: val => ({ datos: solenoide(val.n, val.L), estado: {} }),
       lectura: val => [B, ` adentro = ${f(bSol(val.n, val.L), 2)} mT · ${f(val.n / (val.L / 100), 0)} vueltas por metro`],
@@ -292,7 +292,12 @@
   const PXV = 14, PXF = 30;
   const Y0 = -4.5;                                            // el protón entra por abajo: su vuelta sube                                     // px por 10⁵ m/s y px por 10⁻¹⁴ N
   const fCarga = (v5, bt) => QE * v5 * 1e5 * bt / 1e-14;       // en 10⁻¹⁴ N
+  // Animación (15 nov): o.t (ns) pone al protón en su vuelta. Gira con ω = qB/m (el período, 2πm/qB, no depende de v):
+  // en cámara lenta, un nanosegundo del modelo dura 1/150 s en pantalla. v sigue tangente y F apunta al centro.
+  const omega = bt => QE * bt / MP;                                   // rad/s
+  const angulo = (bt, tns) => omega(bt) * tns * 1e-9;
   function proton(v5, bt, o = {}) {
+    if (o.t) return protonGira(v5, bt, o.t);
     const r = radio(v5, bt), quieto = v5 === 0;
     // El protón está en (0, 0) yendo hacia +x; con B entrando, F = qv×B apunta hacia +y: el centro está arriba.
     return {
@@ -308,25 +313,47 @@
         : `Un protón a ${f(v5, 0)}×10⁵ m/s hacia la derecha en un campo que entra; la fuerza apunta hacia arriba, perpendicular a v, y describe una circunferencia de ${f(r, 1)} cm.`,
     };
   }
+  function protonGira(v5, bt, tns) {
+    const r = radio(v5, bt), a = angulo(bt, tns), c = [0, Y0 + r], sn = Math.sin(a), cs = Math.cos(a);
+    const pos = [c[0] + r * sn, c[1] - r * cs], u = [cs, sn], n = [-sn, cs], Fv = fCarga(v5, bt);
+    return {
+      vista: VISTA3,
+      textos: [...grillaX(-5.2, 5.2, -4.9, 4.0, 1.6), { en: [-5.8, 4.8], texto: `B = ${f(bt, 2)} T entrando`, ancla: 'start', color: 'i', peso: 700 }],
+      arcos: [{ c, r, de: 0, a: 360, discontinua: true }],
+      discos: [{ c: pos, r: 0.4, color: 'o', relleno: 0.3, rotulo: '+' }],
+      flechas: [
+        { de: [pos[0] + 0.5 * u[0], pos[1] + 0.5 * u[1]], d: [v5 * u[0], v5 * u[1]], escala: PXV, color: 'o', rotulo: 'v' },
+        { de: [pos[0] + 0.5 * n[0], pos[1] + 0.5 * n[1]], d: [Fv * n[0], Fv * n[1]], escala: PXF, color: 'd', rotulo: 'F' },
+      ],
+      alt: `Un protón a ${f(v5, 0)}×10⁵ m/s da vueltas en un campo que entra: la fuerza apunta siempre al centro de la circunferencia de ${f(r, 1)} cm, perpendicular a v.`,
+    };
+  }
+  // La manija sigue a la punta de la flecha v, donde esté el protón; arrastrarla a lo largo de v cambia la rapidez.
+  const puntaV = val => {
+    const r = radio(val.v, val.b), a = angulo(val.b, val.t), c = [0, Y0 + r], pos = [c[0] + r * Math.sin(a), c[1] - r * Math.cos(a)];
+    const g = LIENZO().geometria(proton(val.v, val.b, { t: val.t })), u = [Math.cos(a), Math.sin(a)];
+    return { g, x0: g.X(pos[0] + 0.5 * u[0]), y0: g.Y(pos[1] + 0.5 * u[1]), u };
+  };
   const cargaIdea = {
     id: 'fuerza-carga',
     titulo: 'La fuerza va de costado',
     temas: ['Fuerza magnética sobre una carga'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Un protón entra a un campo magnético que apunta hacia adentro de la pantalla. Cambia su rapidez y el campo, y mira su camino.',
+      consigna: 'Un protón da vueltas, en cámara lenta, en un campo magnético que entra a la pantalla. Mira hacia dónde apunta F. Cambia su rapidez.',
       voz: 'Fíjate en el ángulo entre la flecha de v y la de F.',
       controles: [
         { id: 'v', etiqueta: 'v, en 10⁵ m/s', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 },
         { id: 'b', etiqueta: 'B', color: 'c-i', min: 0.1, max: 0.2, paso: 0.05, inicio: 0.15, unidad: 'T', decimales: 2 },
+        { id: 't', etiqueta: 't', color: 'c-d', min: 0, max: 2000, paso: 25, inicio: 0, unidad: 'ns', decimales: 0, auto: { velocidad: 150 } },
       ],
-      dibujo: val => ({ datos: proton(val.v, val.b), estado: {} }),
-      lectura: val => [F, ` = ${cien(fCarga(val.v, val.b) * 1e-14, 1)} N · radio ${f(radio(val.v, val.b), 1)} cm`],
-      // La flecha v sale de x = 0,5 cm y mide PXV px por cada 10⁵ m/s (fis-lienzo dibuja d · escala px).
+      dibujo: val => ({ datos: proton(val.v, val.b, { t: val.t }), estado: {} }),
+      lectura: val => [F, ` = ${cien(fCarga(val.v, val.b) * 1e-14, 1)} N · radio ${f(radio(val.v, val.b), 1)} cm · giró ${f(angulo(val.b, val.t) * 180 / Math.PI % 360, 0)}°`],
+      // La flecha v sale del protón y mide PXV px por cada 10⁵ m/s (fis-lienzo dibuja d · escala px), donde esté.
       arrastres: [{
         id: 'rapidez', etiqueta: 'punta de la flecha de velocidad', color: 'c-o',
-        donde: val => { const g = LIENZO().geometria(proton(val.v, val.b)); return { x: g.X(0.5) + val.v * PXV, y: g.Y(Y0) }; },
-        mover: (pt, val) => ({ v: (pt.x - LIENZO().geometria(proton(val.v, val.b)).X(0.5)) / PXV }),
+        donde: val => { const q = puntaV(val); return { x: q.x0 + val.v * PXV * q.u[0], y: q.y0 - val.v * PXV * q.u[1] }; },
+        mover: (pt, val) => { const q = puntaV(val); return { v: ((pt.x - q.x0) * q.u[0] - (pt.y - q.y0) * q.u[1]) / PXV }; },
       }],
       minimo: 3,
     },
@@ -411,10 +438,10 @@
     temas: ['Fuerza sobre un conductor'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Un cable de 0,5 m con corriente dentro de un campo de 0,2 T. Cambia la corriente y el ángulo con el campo.',
+      consigna: 'Un cable de 0,5 m en un campo de 0,2 T. Su corriente sube y baja sola: mira la fuerza. Cambia el ángulo.',
       voz: 'El círculo verde es la fuerza que sale de la pantalla. Mira cuándo crece.',
       controles: [
-        { id: 'i', etiqueta: 'I', color: 'c-h', min: 2, max: 10, paso: 2, inicio: 6, unidad: 'A', decimales: 0 },
+        { id: 'i', etiqueta: 'I', color: 'c-h', min: 2, max: 10, paso: 2, inicio: 6, unidad: 'A', decimales: 0, auto: { velocidad: 4, modo: 'rebota' } },
         { id: 't', etiqueta: 'Ángulo', opciones: [{ valor: 90, texto: '90°' }, { valor: 60, texto: '60°' }, { valor: 30, texto: '30°' }] },
       ],
       dibujo: val => ({ datos: cableEnB(val.i, val.t), estado: {} }),
@@ -498,12 +525,12 @@
     temas: ['Fuerza entre cables paralelos'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Dos cables paralelos, vistos desde arriba, con la misma corriente. Cambia la corriente, el sentido del segundo y la separación.',
+      consigna: 'Dos cables paralelos, vistos desde arriba, con la misma corriente. Se acercan y se alejan solos: mira las fuerzas. Cambia el sentido del segundo.',
       voz: 'Mira hacia dónde apuntan las flechas al cambiar el sentido.',
       controles: [
         { id: 'i', etiqueta: 'I', color: 'c-h', min: 4, max: 8, paso: 2, inicio: 6, unidad: 'A', decimales: 0 },
         { id: 'm', etiqueta: 'Segundo cable', opciones: [{ valor: 1, texto: 'Mismo sentido' }, { valor: 0, texto: 'Opuesto' }] },
-        { id: 'd', etiqueta: 'Separación', min: 4, max: 8, paso: 2, inicio: 6, unidad: 'cm', decimales: 0 },
+        { id: 'd', etiqueta: 'Separación', min: 4, max: 8, paso: 2, inicio: 6, unidad: 'cm', decimales: 0, auto: { velocidad: 2, modo: 'rebota' } },
       ],
       dibujo: val => ({ datos: paralelos(val.i, val.i, val.d, val.m === 1), estado: {} }),
       lectura: val => [F, ` = ${f(fPar(val.i, val.i, val.d), 0)} μN por metro · ${val.m === 1 ? 'se atraen' : 'se repelen'}`],
@@ -567,9 +594,9 @@
   const mismo = (a, b) => Math.abs(a - b) < 1e-9;
   const mesaMano = {
     id: 'mano-derecha-3d', titulo: 'La mano derecha en 3D', pieza: 'fis-espacio-3d',
-    consigna: 'Gira la escena con el dedo. Cambia el ángulo de v con B, gírala alrededor de B y mira hacia dónde sale F.',
+    consigna: 'El ángulo entre v y B se abre y se cierra solo: mira cómo cambia F. Gira la escena con el dedo.',
     controles: [
-      { id: 'th', etiqueta: 'Ángulo entre v y B', min: 0, max: 180, paso: 15, inicio: 60, unidad: '°', decimales: 0 },
+      { id: 'th', etiqueta: 'Ángulo entre v y B', min: 0, max: 180, paso: 15, inicio: 60, unidad: '°', decimales: 0, auto: { velocidad: 30, modo: 'rebota' } },
       { id: 'fi', etiqueta: 'Giro de v alrededor de B', min: 0, max: 315, paso: 45, inicio: 90, unidad: '°', decimales: 0 },
       { id: 'q', etiqueta: 'Carga', opciones: [{ valor: 1, texto: 'Positiva' }, { valor: -1, texto: 'Negativa' }] },
     ],
