@@ -886,7 +886,45 @@ body.con-lupa{overflow:hidden}
 .cierre-prox .chip{min-height:44px}
 
 /* ---------- Laboratorio con colección, invitaciones, reinicio y ayuda graduada ---------- */
-.te-invita{margin:0;padding:10px 12px;border-radius:14px;background:var(--brand-soft);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-weight:600}
+/* Retos del laboratorio (invitaciones): el motor comprueba cada uno; logrado, la tarjeta cambia de color y dice cuál fue. */
+.te-invita{margin:0;padding:10px 12px;border-radius:14px;background:var(--brand-soft);display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between;border:2px solid transparent}
+.te-invita p{margin:0;flex:1 1 200px;display:flex;flex-direction:column;gap:2px}
+.te-invita-etq{font-size:13px;font-weight:700;color:var(--muted)}
+.te-invita-t{font-weight:600;font-size:16px}
+.te-invita.logrado{background:color-mix(in srgb,var(--ok) 14%,var(--card));border-color:var(--ok)}
+.te-invita.logrado .te-invita-etq{color:var(--ok)}
+@media (prefers-reduced-motion:no-preference){.te-invita.logrado{animation:te-logro .45s cubic-bezier(.2,.9,.3,1.2)}}
+@keyframes te-logro{from{transform:scale(.97)}to{transform:none}}
+/* Glosario: el término se subraya con puntos (no solo color) y abre una hoja abajo con su definición. */
+.te-term{font:inherit;color:inherit;background:none;border:0;padding:1px 0;margin:0;cursor:pointer;text-decoration:underline dotted 2px;text-decoration-color:var(--brand);text-underline-offset:4px;border-radius:4px;display:inline}
+.te-term:hover{background:var(--brand-soft)}
+.te-term:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.te-glosa{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + max(12px,env(safe-area-inset-bottom)));width:min(528px,calc(100% - 24px));max-height:60dvh;overflow:auto;overscroll-behavior:contain;z-index:45;background:var(--card);border:2px solid var(--line);border-radius:22px;box-shadow:0 12px 34px rgba(92,52,110,.22);padding:12px 16px 16px}
+.te-glosa[hidden]{display:none}
+@media (prefers-reduced-motion:no-preference){.te-glosa:not([hidden]){animation:te-glosa-in .22s ease-out}}
+@keyframes te-glosa-in{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
+.te-glosa-cab{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.te-glosa-origen{margin:0;font-size:13px;font-weight:700;color:var(--brand)}
+.te-glosa-x{min-width:44px;min-height:44px;border:0;background:none;font-size:26px;line-height:1;color:var(--muted);border-radius:12px;cursor:pointer}
+.te-glosa-t{margin:0 0 4px;font-size:22px}
+.te-glosa-t:focus{outline:none}
+.te-glosa-sm{margin:0 0 6px;color:var(--muted);font-size:15px}
+.te-glosa-sm b{color:var(--ink)}
+.te-glosa-d{margin:0 0 8px;font-size:18px;line-height:1.45}
+.te-glosa-e{margin:0 0 8px;font-size:16px;line-height:1.4}
+.te-glosa-e span,.te-glosa-ver span{display:block;font-size:13px;font-weight:700;color:var(--muted)}
+.te-glosa-ver{margin:0 0 8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.te-glosa-ver span{flex-basis:100%}
+.te-glosa-todo{display:inline-flex;min-height:44px;align-items:center;font-weight:700;color:var(--brand)}
+.te-glo h2{margin-top:0}
+.te-glo-sec{font-size:15px;color:var(--muted);margin:16px 0 6px}
+.te-glo-item{padding:10px 0;border-top:1px solid var(--line)}
+.te-glo-item h3{margin:0 0 2px;font-size:18px}
+.te-glo-item p{margin:0 0 4px;line-height:1.45}
+.te-glo-sim{font-family:var(--serif,Cambria,"Noto Serif",serif);color:var(--muted);font-weight:400}
+.te-glo-de{font-size:14px}
+.te-glo-q{width:100%;min-height:48px;font:inherit;font-size:17px;border-radius:14px;border:2px solid var(--line);padding:8px 12px;background:var(--bg);color:var(--ink);margin:4px 0 10px}
+.te-glo-q:focus-visible{outline:3px solid var(--brand);outline-offset:1px}
 .te-reinicio{align-self:flex-start}
 .te-labo-acc{display:flex;gap:8px;flex-wrap:wrap}
 .te-guardado{margin:0;min-height:20px}

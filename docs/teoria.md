@@ -177,7 +177,83 @@ Detalle en `docs/recorrido.md`.
 - **Prueba de entrada del tema.** Es obligatoria antes de la teoría, los ejercicios y el simulacro. Sale sola de los `ahoraTu` (semilla 500 + k, una pregunta por idea): cada idea necesita un `ahoraTu` cuya semilla 500 en adelante dé una pregunta válida, y el validador ya lo exige con sus 40 o más semillas.
 - **Calibración.** Las ideas acertadas en esa prueba empiezan por la regla.
 - **Colección.** Lo que el alumno guarda en el laboratorio es `{ unidad, mesa, valores }`, y la figura se reconstruye con `mesa.dibujo(valores)`. Por eso no se cambia el `id` de una mesa ni el de sus controles sin migrar `est.coleccion`.
-- **Invitaciones** (`mesa.invitaciones`, de 1 a 6, de 16 palabras o menos). Son retos libres, como «Haz que el carrito se detenga justo antes de los 10 m». Tienen que poder hacerse con los controles y rangos reales de la mesa: cada una se comprueba a mano o con el motor antes de escribirla.
+- **Invitaciones** (`mesa.invitaciones`, de 1 a 6). Son retos libres, como «Haz que el carrito se detenga justo antes de los 10 m». Desde el 15 nov, cada una la comprueba el motor: ver 4d.
+
+## 4d. Retos comprobados y glosario por tema (15 nov)
+
+### Retos del laboratorio (`mesa.invitaciones`)
+
+Cada invitación es un objeto; un texto suelto ya no pasa el validador:
+
+```js
+invitaciones: [
+  { texto: 'Haz que el carrito se detenga justo antes de la marca de 10 m.',   // ≤ 16 palabras
+    logrado: val => val.a < 0 && val.v0 > 0 && frenado(val) >= 8 && frenado(val) < 10,
+    bien: 'Frenó antes de los 10 m. ¿Qué pasa si sales un poco más rápido?' },  // opcional, ≤ 16 palabras
+  { texto: 'Guarda dos casos con la misma última marca y distinta aceleración.',
+    logrado: (val, guardados) => /* … */ },                                    // con dos argumentos mira los casos guardados
+]
+```
+
+- **`logrado` usa el motor de la mesa,** las mismas funciones que dibujan (regla 1). Nunca se compara con un número escrito a mano si el motor lo puede calcular.
+- **Qué revisa el validador:**
+  - que el reto se pueda lograr: busca en toda la grilla de controles, o en una muestra fija si pasa de 20 000 casos;
+  - que no esté ya cumplido al abrir la mesa;
+  - que `logrado` no falle.
+- **Qué ve el alumno:**
+  - una tarjeta «Reto · 1 de 4»;
+  - al cumplirlo, «✓ Lo lograste», la línea `bien` del compañero y su pose de festejo (sin festejo si lo pidió en Perfil);
+  - «Otro reto» salta al siguiente que falta.
+- **Qué se guarda:** los retos logrados quedan en `est.teoria[unidad].lab.logradas[mesa]`. Cada logro va a la medición como `{ tipo: 'teoria', momento: 'invitacion' }`.
+- **Cuántos:** de 3 a 6 por mesa y de varios tipos:
+  - un extremo («la salida más lenta que…»);
+  - un caso exacto («justo antes de 10 m»);
+  - una forma («marcas como un acordeón»);
+  - una comparación entre dos casos guardados.
+
+### Glosario por tema (`def.glosario`)
+
+**Pedido de Gerson:** «que el alumno no se encuentre con algo en chino». La parte común está en `nucleo/glosario.js`, con pruebas.
+
+```js
+glosario: [
+  { termino: 'aceleración', simbolo: 'a', medida: 'm/s²',
+    def: 'Cuánto cambia la velocidad en cada segundo.',            // ≤ 20 palabras, sin usar el mismo término
+    ejemplo: 'De 0 a 10 m/s en 5 s: a = 2 m/s².',                  // opcional, ≤ 20 palabras
+    ver: ['velocidad', 'pendiente'],                                 // opcional: otros términos del curso
+    formas: ['aceleración', 'aceleraciones'] },                      // opcional: cómo aparece en el texto
+]
+```
+
+- **Una definición por curso.** El término se define en la unidad que lo estrena; si otra unidad lo vuelve a definir, la prueba falla.
+  - En las demás unidades del curso donde aparece, el lector lo marca igual. La hoja dice de dónde viene:
+    - «Lo viste en «MRU, MRUV y caída libre»», si el alumno ya abrió esa unidad;
+    - «Se explica en…», si todavía no la abrió.
+  - Así los términos repetidos no se escriben dos veces y nunca quedan sin explicar.
+- **Qué entra:**
+  - las palabras técnicas que la unidad usa: magnitudes, nombres de leyes, de figuras, de funciones o de figuras retóricas;
+  - las siglas (MRU);
+  - las palabras comunes con sentido técnico: «trabajo», «potencia», «normal».
+  - No entran las palabras de la escena, como «carrito».
+- **De 6 a 15 términos** por unidad es lo normal; el tope es 24.
+- **El término es una palabra, no un símbolo.** El símbolo va en `simbolo`, y la unidad de medida en `medida`.
+- **Las formas.** Por defecto, el término y su plural simple. Si el texto dice «distancia» a secas para «distancia recorrida», va en `formas`.
+- **Qué revisa el validador:**
+  - los topes de palabras;
+  - que el término no se repita en la unidad;
+  - que la definición no use el mismo término;
+  - que cada término aparezca en el texto de la unidad;
+  - que cada `ver` exista en el glosario del curso.
+- **Herramienta de ayuda:** `node herramientas/palabras-glosario.js <unidad>` lista las palabras candidatas que ningún glosario del curso cubre todavía. Es un informe para decidir, no una prueba.
+- **En la app:**
+  - el término sale subrayado con puntos la primera vez que aparece en cada pantalla: consigna, pasos, regla, preguntas y ficha;
+  - al tocarlo se abre una hoja abajo con la definición, el símbolo, la medida, el ejemplo y «Ver también»;
+  - no se marca en los títulos, las opciones, las ecuaciones ni la lectura en vivo;
+  - no aparece en la prueba del tema ni en el simulacro;
+  - el chip «Glosario» de la teoría (`#/unidad/<id>/teoria/glosario`) muestra las palabras nuevas del tema, las que vienen de otros temas y una búsqueda en todo el curso. Queda libre, como el laboratorio: no pide la prueba del tema.
+  - Cada consulta va a la medición como `{ momento: 'glosario', termino }`. Las palabras más consultadas son las que el texto no está explicando bien.
+- **Archivos:** `npm run catalogo` arma `app/datos/glosario/<curso>.json`. El servidor local lo arma al vuelo y el service worker lo guarda para usarlo sin conexión.
+- **Unidad de referencia:** `fisica/movimiento-rectilineo.js`, con 12 términos y 4 retos comprobados.
 
 ## 5. Topes de texto (los vigila `contenido/teoria/teoria.test.js`)
 

@@ -14,10 +14,11 @@
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
-  const api = fabrica(root, nodo ? require('./ecuacion.js') : root.Ecuacion, nodo ? require('./kit/kit.js') : root.Kit);
+  const api = fabrica(root, nodo ? require('./ecuacion.js') : root.Ecuacion, nodo ? require('./kit/kit.js') : root.Kit,
+    nodo ? require('./glosario.js') : root.Glosario);
   if (nodo) module.exports = api;
   else root.Teoria = Object.assign(root.Teoria || {}, api);
-})(typeof self !== 'undefined' ? self : this, function (root, Ecuacion, Kit) {
+})(typeof self !== 'undefined' ? self : this, function (root, Ecuacion, Kit, Glosario) {
   'use strict';
 
   // Los ocho compañeros (docs/teoria/fuentes/guia-personajes.pdf). La asignación es provisional, como dice la guía.
@@ -175,6 +176,37 @@
       if (conMinimo && !(j.minimo >= 1)) mal(d, 'minimo: cuántos casos distintos prueba el alumno antes de seguir (1 o más)');
     }
 
+    // Una invitación del laboratorio: { texto, logrado, bien? }. Se busca en la grilla de los controles (toda, o una
+    // muestra fija si es muy grande) un caso que la cumpla; y no debe estar cumplida ya en el inicio. Si `logrado`
+    // pide dos argumentos, mira también los casos guardados de la mesa (p. ej. «dos casos con la misma marca»).
+    function revisarInvitacion(di, mesa, inv) {
+      if (typeof inv === 'string') { mal(di, `«${inv}» sin comprobación: escríbela como { texto, logrado(valores) }`); return; }
+      if (!inv || !String(inv.texto || '').trim()) { mal(di, 'sin texto'); return; }
+      tope(di, 'voz', inv.texto);
+      if (inv.bien !== undefined) tope(di, 'voz', inv.bien);
+      if (typeof inv.logrado !== 'function') { mal(di, 'sin logrado(valores): el motor tiene que poder comprobarla'); return; }
+      const casos = grilla(mesa.controles || []);
+      const ok = (v, g) => { try { return inv.logrado(v, g) === true; } catch (err) { mal(di, `logrado falló: ${err.message}`); return null; } };
+      const ini = inicio(mesa);
+      if (ok(ini, []) ) mal(di, 'ya está cumplida al abrir la mesa: el reto tiene que pedir mover algo');
+      let alcanza = false;
+      if (inv.logrado.length >= 2) {
+        const m = casos.slice(0, 160);
+        for (const a of m) { for (const b of m) { const r = ok(b, [a, b]); if (r === null) return; if (r) { alcanza = true; break; } } if (alcanza) break; }
+      } else for (const v of casos) { const r = ok(v, []); if (r === null) return; if (r) { alcanza = true; break; } }
+      if (!alcanza) mal(di, `nadie la puede lograr con los controles de la mesa («${inv.texto}»)`);
+    }
+    // Todos los casos de la grilla de controles; si son más de 20 000, una muestra fija (misma semilla siempre).
+    function grilla(ctr) {
+      const dom = ctr.map(c => c.opciones ? c.opciones.map(o => o.valor)
+        : Array.from({ length: Math.floor((c.max - c.min) / c.paso + 1e-9) + 1 }, (_, k) => ajustar(c, c.min + k * c.paso)));
+      const total = dom.reduce((n, d) => n * d.length, 1);
+      const caso = idx => { const v = {}; ctr.forEach((c, k) => { v[c.id] = dom[k][idx % dom[k].length]; idx = Math.floor(idx / dom[k].length); }); return v; };
+      if (total <= 20000) return Array.from({ length: total }, (_, i) => caso(i));
+      let a = 12345; const r = () => { a = (Math.imul(a, 1103515245) + 12345) >>> 0; return a / 4294967296; };
+      return Array.from({ length: 20000 }, () => caso(Math.floor(r() * total)));
+    }
+
     // Laboratorio: mesas de juego libre, sin preguntas. Si la unidad no trae, el lector usa el juego de cada idea.
     if (def.laboratorio !== undefined) {
       if (!Array.isArray(def.laboratorio) || !def.laboratorio.length || def.laboratorio.length > 4) mal(def.unidad, 'laboratorio: de 1 a 4 mesas');
@@ -186,10 +218,11 @@
         if (!mesa.titulo) mal(dm, 'sin título'); else tope(dm, 'titulo', mesa.titulo);
         if (!mesa.pieza) mal(dm, 'sin pieza');
         revisarJuego(dm, mesa, mesa.pieza, false);
-        // Invitaciones juguetonas (opcionales): retos libres que se pueden hacer con los controles reales de la mesa.
+        // Invitaciones juguetonas (opcionales): retos libres con los controles reales de la mesa. Cada una trae
+        // `logrado(valores, guardados)`, que el motor evalúa: el lector dice «¡Lo lograste!» solo si de verdad pasó.
         if (mesa.invitaciones !== undefined) {
-          if (!Array.isArray(mesa.invitaciones) || mesa.invitaciones.length > 6) mal(dm, 'invitaciones: lista de 1 a 6');
-          else for (const t of mesa.invitaciones) { if (!String(t || '').trim()) mal(dm, 'invitación vacía'); tope(dm, 'voz', t); }
+          if (!Array.isArray(mesa.invitaciones) || !mesa.invitaciones.length || mesa.invitaciones.length > 6) mal(dm, 'invitaciones: lista de 1 a 6');
+          else for (const [ki, inv] of mesa.invitaciones.entries()) revisarInvitacion(`${dm} invitación ${ki + 1}`, mesa, inv);
         }
       }
     }
@@ -300,6 +333,7 @@
         if (vistos.size < Math.min(5, N)) mal(d, `ahoraTu da solo ${vistos.size} casos distintos en ${N} semillas (se necesitan 5 o más)`);
       }
     }
+    if (Glosario) for (const q of Glosario.revisar(def)) mal(def.unidad, q);
     if (!['borrador', 'completa'].includes(def.estado)) mal(def.unidad, 'estado: «borrador» o «completa»');
     if (o.temas) {
       const cubiertos = new Set(def.ideas.flatMap(i => i.temas || []));

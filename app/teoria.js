@@ -6,7 +6,11 @@
  *
  * Cada idea recorre cinco momentos: juega → predice → mira → regla → ahora tú. Solo la predicción bloquea (regla 3);
  * antes se juega (decisión 20). El estado vive en est.teoria[unidad]; los eventos «teoria» van a la medición.
- * Rutas: #/unidad/<id>/teoria (la idea en curso), …/teoria/<idea>, …/teoria/laboratorio y …/teoria/ficha.
+ * Rutas: #/unidad/<id>/teoria (la idea en curso), …/teoria/<idea>, …/teoria/laboratorio, …/teoria/ficha y …/teoria/glosario.
+ *
+ * Glosario (15 nov): los términos del glosario del curso (app/datos/glosario/<curso>.json, nucleo/glosario.js) se
+ * marcan solos en el texto, la primera vez que salen en cada pantalla; al tocarlos abre una hoja con la definición y
+ * de dónde viene (nuevo en este tema, o de otra unidad). Nunca en la prueba del tema ni en las opciones.
  *
  * Gesto directo (pedido de Gerson, 14 nov): el juego declara `arrastres`, manijas sobre la figura que el alumno arrastra;
  * cada arrastre mueve controles que también tienen − y + (nunca solo arrastre). La lupa amplía cualquier figura
@@ -15,7 +19,7 @@
 (function () {
   'use strict';
   const KIT_CSS = '/nucleo/kit/kit.css';
-  const BASE = ['/nucleo/kit/kit.js', '/nucleo/kit/trazo.js', '/nucleo/kit/linea-tiempo.js', '/nucleo/ecuacion.js', '/nucleo/teoria.js'];
+  const BASE = ['/nucleo/kit/kit.js', '/nucleo/kit/trazo.js', '/nucleo/kit/linea-tiempo.js', '/nucleo/ecuacion.js', '/nucleo/glosario.js', '/nucleo/teoria.js'];
   const cargados = {};
   const cargar = src => cargados[src] || (cargados[src] = new Promise((ok, mal) => {
     const s = document.createElement('script'); s.src = src; s.async = false;
@@ -30,6 +34,11 @@
   const reducido = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   const ICONO_LUPA = '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 15l5 5M10.5 8v5M8 10.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   const MAX_CASOS = 4;
+
+  // Glosario del curso: se pide una vez y queda en memoria (el service worker lo guarda para usarlo sin conexión).
+  const glosarios = {};
+  const glosarioDe = curso => glosarios[curso] || (glosarios[curso] = fetch(`/app/datos/glosario/${curso}.json`)
+    .then(r => (r.ok ? r.json() : { entradas: [] })).catch(() => { delete glosarios[curso]; return { entradas: [] }; }));
 
   async function cargarUnidad(u) {
     await cargarEstilo();
@@ -47,9 +56,9 @@
     const sub = ctx.sub || decodeURIComponent(location.hash.split('/')[4] || '');   // #/unidad/<id>/teoria/<idea | ficha | laboratorio>
     $app.innerHTML = `<div class="card te-cargando" role="status">Abriendo la teoría…</div>`;
     const h = location.hash;
-    cargarUnidad(u).then(def => {
+    Promise.all([cargarUnidad(u), glosarioDe(c.id)]).then(([def, glos]) => {
       if (location.hash !== h) return;
-      pintar(ctx, c, u, def, sub);
+      pintar(ctx, c, u, def, sub, glos);
     }, () => {
       if (location.hash !== h) return;
       $app.innerHTML = `<div class="card"><h2>No se pudo abrir la teoría</h2>
@@ -126,7 +135,26 @@
   }
 
   // ---------- Pantalla ----------
-  function pintar(ctx, c, u, def, sub) {
+  // La hoja del glosario se abre desde cualquier pantalla de la teoría; la última pantalla pintada dice qué abrir.
+  let glosaActual = null;
+  document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('.te-term,[data-glosa]');
+    if (b && glosaActual) { e.preventDefault(); glosaActual(b.dataset.term || b.dataset.glosa, b); return; }
+    const capa = document.querySelector('.te-glosa');
+    if (capa && !capa.hidden && (e.target.closest('.te-glosa-x') || !e.target.closest('.te-glosa'))) cerrarGlosa();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarGlosa(); });
+  window.addEventListener('hashchange', () => cerrarGlosa(false));
+  let glosaVuelta = null;
+  function cerrarGlosa(devolverFoco = true) {
+    const capa = document.querySelector('.te-glosa');
+    if (!capa || capa.hidden) return;
+    capa.hidden = true;
+    if (devolverFoco && glosaVuelta && glosaVuelta.isConnected) glosaVuelta.focus();
+    glosaVuelta = null;
+  }
+
+  function pintar(ctx, c, u, def, sub, glos) {
     const { $app, esc } = ctx;
     const T = window.Teoria, E = window.Ecuacion, Kit = window.Kit;
     const st = estadoUnidad(ctx, u.id);
@@ -135,8 +163,77 @@
     // Calibración (prueba de entrada del tema, Teoria.entrada): las ideas acertadas ahí empiezan por la regla.
     const sabidas = new Set((((ctx.est.temas || {})[u.id] || {}).entrada || {}).sabidas || []);
     const primeraPendiente = ideas.find(i => !hecha(st, i.id) && !sabidas.has(i.id)) || ideas.find(i => !hecha(st, i.id)) || ideas[ideas.length - 1];
-    const ficha = sub === 'ficha', lab = sub === 'laboratorio';
-    const idea = ficha || lab ? null : ideas.find(i => i.id === sub) || primeraPendiente;
+    const ficha = sub === 'ficha', lab = sub === 'laboratorio', glosa = sub === 'glosario';
+    const idea = ficha || lab || glosa ? null : ideas.find(i => i.id === sub) || primeraPendiente;
+
+    // ---------- Glosario: términos tocables y hoja con la definición ----------
+    const G = window.Glosario;
+    const entradas = (G && glos && glos.entradas) || [];
+    const porClave = new Map(entradas.map(e => [G.clave(e.termino), e]));
+    const aqui = entradas.filter(e => e.aparece.includes(u.id));
+    const buscadorG = aqui.length ? G.buscador(aqui) : null;
+    const origen = e => (e.en === u.id ? 'Nuevo en este tema'
+      : (ctx.est.teoria || {})[e.en] ? `Lo viste en «${e.enNombre}»` : `Se explica en «${e.enNombre}»`);
+    // No se marca dentro de botones, opciones, ecuaciones, títulos, la lectura en vivo ni lo que dice el compañero.
+    const NO_MARCAR = 'button,a,input,textarea,select,label,output,svg,h1,h2,h3,.alts,.var,[class*="ec-"],.te-term,.te-momentos,.te-dice,.te-lectura,.te-glosa,.te-casos';
+    function marcarTerminos(el) {
+      if (!buscadorG || !el) return;
+      // Un término se marca una vez por pantalla: la primera vez que sale entre lo que se ve ahora.
+      const usados = new Set([...el.querySelectorAll('.te-term')].map(b => b.dataset.term));
+      const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, { acceptNode: n => (n.nodeValue.trim() && n.parentElement
+        && !n.parentElement.closest(NO_MARCAR) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT) });
+      const nodos = [];
+      for (let n = tw.nextNode(); n; n = tw.nextNode()) nodos.push(n);
+      for (const n of nodos) {
+        const txt = n.nodeValue, ms = G.marcas(txt, aqui, usados, buscadorG);
+        if (!ms.length) continue;
+        const frag = document.createDocumentFragment();
+        let k = 0;
+        for (const m of ms) {
+          frag.append(txt.slice(k, m.inicio));
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'te-term'; b.dataset.term = m.clave; b.setAttribute('aria-haspopup', 'dialog');
+          b.textContent = txt.slice(m.inicio, m.fin);
+          frag.append(b); k = m.fin;
+        }
+        frag.append(txt.slice(k));
+        n.replaceWith(frag);
+      }
+    }
+    // Lo que se pinta después (pasos de «Mira», preguntas, consignas) también se marca.
+    function vigilar(el) {
+      if (!buscadorG || !el || !window.MutationObserver) return;
+      const OPC = { childList: true, subtree: true };
+      let pend = false;
+      const ob = new MutationObserver(() => {
+        if (pend) return;
+        pend = true;
+        requestAnimationFrame(() => { pend = false; ob.disconnect(); if (el.isConnected) { marcarTerminos(el); ob.observe(el, OPC); } });
+      });
+      marcarTerminos(el); ob.observe(el, OPC);
+    }
+    glosaActual = (k, desde) => {
+      const e = porClave.get(k); if (!e) return;
+      let capa = document.querySelector('.te-glosa');
+      if (!capa) {
+        capa = document.createElement('div'); capa.className = 'te-glosa'; capa.setAttribute('role', 'dialog');
+        document.body.appendChild(capa);
+      }
+      const ver = (e.ver || []).map(v => porClave.get(G.clave(v))).filter(Boolean);
+      capa.setAttribute('aria-label', `Qué significa ${e.termino}`);
+      capa.innerHTML = `<div class="te-glosa-cab"><p class="te-glosa-origen">${esc(origen(e))}</p>
+          <button type="button" class="te-glosa-x" aria-label="Cerrar">×</button></div>
+        <h3 class="te-glosa-t" tabindex="-1">${esc(e.termino)}</h3>
+        ${e.simbolo || e.medida ? `<p class="te-glosa-sm">${e.simbolo ? `Símbolo <b class="ec-letra">${esc(e.simbolo)}</b>` : ''}${e.simbolo && e.medida ? ' · ' : ''}${e.medida ? `se mide en <b>${esc(e.medida)}</b>` : ''}</p>` : ''}
+        <p class="te-glosa-d">${esc(e.def)}</p>
+        ${e.ejemplo ? `<p class="te-glosa-e"><span>Ejemplo</span> ${esc(e.ejemplo)}</p>` : ''}
+        ${ver.length ? `<p class="te-glosa-ver"><span>Ver también</span> ${ver.map(v => `<button type="button" class="te-ficha-op" data-glosa="${esc(G.clave(v.termino))}">${esc(v.termino)}</button>`).join(' ')}</p>` : ''}
+        ${glosa ? '' : `<a class="te-glosa-todo" href="#/unidad/${esc(u.id)}/teoria/glosario">Todo el glosario del tema ›</a>`}`;
+      capa.hidden = false;
+      if (!glosaVuelta || !desde.closest('.te-glosa')) glosaVuelta = desde;
+      capa.querySelector('.te-glosa-t').focus({ preventScroll: true });
+      ctx.registrar({ tipo: 'teoria', unidad: u.id, momento: 'glosario', termino: e.termino });
+    };
     const n = ideas.filter(i => hecha(st, i.id)).length;
 
     const chip = (i, k) => {
@@ -149,7 +246,9 @@
         <a class="te-chip te-lab${lab ? ' on' : ''}" href="#/unidad/${esc(u.id)}/teoria/laboratorio"${lab ? ' aria-current="page"' : ''}>
         <span class="te-num" aria-hidden="true">⚗</span><span>Laboratorio</span></a>
         <a class="te-chip te-ficha${ficha ? ' on' : ''}" href="#/unidad/${esc(u.id)}/teoria/ficha"${ficha ? ' aria-current="page"' : ''}>
-        <span class="te-num" aria-hidden="true">≡</span><span>Ficha de repaso</span></a></nav>
+        <span class="te-num" aria-hidden="true">≡</span><span>Ficha de repaso</span></a>
+        ${aqui.length ? `<a class="te-chip te-glo-chip${glosa ? ' on' : ''}" href="#/unidad/${esc(u.id)}/teoria/glosario"${glosa ? ' aria-current="page"' : ''}>
+        <span class="te-num" aria-hidden="true">Aa</span><span>Glosario</span></a>` : ''}</nav>
       <p class="sub te-avance">${n} de ${ideas.length} ideas terminadas${sabidas.size ? ` · en la prueba de entrada acertaste ${sabidas.size}` : ''}</p>`;
 
     const figuraHTML = `<div class="te-figcaja"><figure class="te-fig kit-figura" aria-describedby="te-alt"></figure>
@@ -160,7 +259,8 @@
           <p class="te-dice" role="status"><b>${esc(per.nombre)}</b> <span></span></p>
         </div>`;
 
-    if (ficha) { $app.innerHTML = cab + vistaFicha(); conectarLupas($app); return; }
+    if (ficha) { $app.innerHTML = cab + vistaFicha(); conectarLupas($app); vigilar($app.querySelector('.te-fichas')); return; }
+    if (glosa) { $app.innerHTML = cab + vistaGlosario(); return conectarGlosario(); }
     if (lab) { $app.innerHTML = cab + `<section class="card te-idea te-labo" aria-labelledby="te-titulo" data-m="juega">
         <h2 id="te-titulo">Laboratorio</h2>
         <p class="sub te-labo-sub">Juega libre: nada se califica. Guarda casos para compararlos.</p>
@@ -228,6 +328,8 @@
     };
     const evento = (momento, extra) => ctx.registrar(Object.assign({ tipo: 'teoria', unidad: u.id, idea: idea.id, momento, ms: Date.now() - t0 }, extra));
     conectarLupa(raiz);
+    vigilar(zona);
+    vigilar($app.querySelector('.te-historia'));
 
     // 1. Juega: arrastrar sobre la figura o usar − y +; lectura en vivo y conteo de casos distintos.
     function juega() {
@@ -396,6 +498,44 @@
         <p class="te-cond"><b>Vale si</b> ${esc(String(r.condicion).replace(/^si\s+/i, ''))}</p></div>`;
     }
 
+    // Glosario del tema: las palabras nuevas de esta unidad, las que vienen de otras y una búsqueda en todo el curso.
+    function vistaGlosario() {
+      const propias = aqui.filter(e => e.en === u.id), otras = aqui.filter(e => e.en !== u.id);
+      const item = e => `<article class="te-glo-item">
+          <h3>${esc(e.termino)}${e.simbolo ? ` <span class="te-glo-sim ec-letra">${esc(e.simbolo)}</span>` : ''}</h3>
+          <p>${esc(e.def)}</p>
+          ${e.medida ? `<p class="sub">Se mide en ${esc(e.medida)}.</p>` : ''}
+          ${e.ejemplo ? `<p class="te-glosa-e"><span>Ejemplo</span> ${esc(e.ejemplo)}</p>` : ''}
+          ${e.en !== u.id ? `<p class="sub te-glo-de">${esc(origen(e))}</p>` : ''}</article>`;
+      return `<section class="card te-glo" aria-labelledby="te-glo-t">
+          <h2 id="te-glo-t">Glosario del tema</h2>
+          <p class="sub">Las palabras de este tema, dichas en simple. En la teoría, toca una palabra subrayada para ver qué significa.</p>
+          ${propias.length ? `<h3 class="te-glo-sec">Nuevas en este tema · ${propias.length}</h3>${propias.map(item).join('')}` : ''}
+          ${otras.length ? `<h3 class="te-glo-sec">Vienen de otros temas · ${otras.length}</h3>${otras.map(item).join('')}` : ''}
+          ${aqui.length ? '' : '<p>Este tema todavía no tiene glosario.</p>'}
+        </section>
+        <section class="card te-glo" aria-labelledby="te-glo-b">
+          <h2 id="te-glo-b">Buscar en todo ${esc(c.nombre)}</h2>
+          <label class="sub" for="te-glo-q">Escribe una palabra que no entiendas</label>
+          <input id="te-glo-q" type="search" class="te-glo-q" autocomplete="off" spellcheck="false">
+          <div class="te-glo-res" role="status"></div>
+        </section>`;
+    }
+    function conectarGlosario() {
+      const q = $app.querySelector('.te-glo-q'), res = $app.querySelector('.te-glo-res');
+      const pintarRes = () => {
+        const k = G ? G.clave(q.value) : '';
+        if (!k) { res.innerHTML = `<p class="sub">${entradas.length} palabras en el glosario de ${esc(c.nombre)}.</p>`; return; }
+        const hall = entradas.filter(e => G.clave(e.termino).includes(k) || e.formas.some(f => G.clave(f).includes(k)))
+          .concat(entradas.filter(e => !G.clave(e.termino).includes(k) && G.clave(e.def).includes(k))).slice(0, 20);
+        res.innerHTML = hall.length ? hall.map(e => `<article class="te-glo-item"><h3>${esc(e.termino)}</h3><p>${esc(e.def)}</p>
+            <p class="sub te-glo-de">${e.en === u.id ? 'De este tema' : `Del tema «${esc(e.enNombre)}»`}</p></article>`).join('')
+          : '<p>Esa palabra no está en el glosario de este curso todavía. Pregúntale a tu profesor y anótala.</p>';
+      };
+      q.addEventListener('input', pintarRes);
+      pintarRes();
+    }
+
     function vistaFicha() {
       return `<section class="te-fichas">${ideas.map((i, k) => hecha(st, i.id)
         ? `<article class="card te-fic"><h2>${k + 1}. ${esc(i.titulo)}</h2>
@@ -425,7 +565,9 @@
       mascL.dataset.expresion = 'E9';
       diceL.textContent = 'Aquí no hay preguntas. Prueba casos raros y guarda los que te gusten.';
       conectarLupa(raizL);
+      vigilar(zonaL);
       st.lab = st.lab || {};
+      st.lab.logradas = st.lab.logradas || {};
       const est = ctx.est;
       est.coleccion = Array.isArray(est.coleccion) ? est.coleccion : [];
       const MAX_MESA = 6, MAX_TOTAL = 40;
@@ -437,11 +579,31 @@
       const lecturaDe = v => { try { return actual.lectura ? E.html(actual.lectura(v)) : ''; } catch (e) { return ''; } };
       const dibujoDe = v => { const P = Kit.piezas[actual.pieza]; const d = actual.dibujo(v); return P.dibujar(d.datos, d.estado || {}); };
       const pintarNav = () => { nav.innerHTML = mesas.map(m => `<button type="button" class="te-ficha-op" data-mesa="${esc(m.id)}" aria-pressed="${m === actual}">${esc(m.titulo)}</button>`).join(''); };
+      // Invitaciones: un reto a la vez; su `logrado(valores, guardados)` lo comprueba el motor de la mesa (regla 1).
+      const logradas = () => st.lab.logradas[actual.id] || (st.lab.logradas[actual.id] = []);
+      const invK = () => { const inv = actual.invitaciones || []; return inv.length ? (st.lab.inv || 0) % inv.length : -1; };
+      const textoInv = x => (typeof x === 'string' ? x : x.texto);
       const invitacion = () => {
-        const inv = actual.invitaciones || [];
-        if (!inv.length) return '';
-        const k = (st.lab.inv || 0) % inv.length;
-        return `<p class="te-invita"><span>${esc(inv[k])}</span><button type="button" class="btn borde te-otra-idea">Otra idea</button></p>`;
+        const inv = actual.invitaciones || [], k = invK();
+        if (k < 0) return '';
+        const ya = logradas().includes(k), cuenta = `${logradas().length} de ${inv.length}`;
+        return `<div class="te-invita${ya ? ' logrado' : ''}" role="status"><p><span class="te-invita-etq">${ya ? '✓ Lo lograste' : 'Reto'} · ${cuenta}</span>
+          <span class="te-invita-t">${esc(textoInv(inv[k]))}</span></p>
+          ${inv.length > 1 ? '<button type="button" class="btn borde te-otra-idea">Otro reto</button>' : ''}</div>`;
+      };
+      const comprobarInv = v => {
+        const inv = actual.invitaciones || [], k = invK();
+        if (k < 0 || logradas().includes(k) || typeof inv[k] !== 'object' || typeof inv[k].logrado !== 'function') return;
+        let ok = false;
+        try { ok = inv[k].logrado(v, deMesa().map(x => x.valores)) === true; } catch (e) { ok = false; }
+        if (!ok) return;
+        logradas().push(k); ctx.guardar();
+        const p = zonaL.querySelector('.te-invita'); if (p) p.outerHTML = invitacion();
+        diceL.textContent = inv[k].bien || '¡Lo lograste!';
+        const prefs = ctx.est.prefs || {};
+        mascL.dataset.expresion = 'E7';
+        try { if (window.Mascota) Mascota.pose(prefs.sinFestejo ? 'reposo' : 'celebra'); } catch (e) { /* nada */ }
+        ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: actual.id, momento: 'invitacion', invitacion: k, ms: Date.now() - t0L });
       };
       const pintarRegistro = () => {
         const casos = deMesa();
@@ -465,19 +627,30 @@
         const aviso = q('.te-guardado'); if (aviso) aviso.textContent = `«${caso.nombre}» quedó guardado en este celular.`;
         diceL.textContent = 'Quedó guardado. Ponle nombre si quieres.';
         ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: actual.id, momento: 'laboratorio', casos: deMesa().length, ms: Date.now() - t0L });
+        comprobarInv(v);
       };
       const abrir = (m, valores) => {
         if (jg) jg.destruir();
         actual = m; st.lab.mesa = m.id; ctx.guardar(); quitado = null; reemplazar = false;
         pintarNav();
-        jg = montarJuego(m, { fig: figL, zona: zonaL, lectura: q('.te-lectura'), alt: $app.querySelector('#te-alt'), piezaPorDefecto: m.pieza, alTocar: () => {}, valores, reiniciar: true });
+        jg = montarJuego(m, { fig: figL, zona: zonaL, lectura: q('.te-lectura'), alt: $app.querySelector('#te-alt'), piezaPorDefecto: m.pieza, alTocar: () => {}, valores, reiniciar: true,
+          alCambiar: v => comprobarInv(v) });
         zonaL.insertAdjacentHTML('afterbegin', invitacion());
         zonaL.insertAdjacentHTML('beforeend', '<div class="te-labo-acc"><button type="button" class="btn morado te-guardar">Guardar este caso</button></div><p class="sub te-guardado" role="status"></p>');
         pintarRegistro();
       };
       nav.addEventListener('click', e => { const b = e.target.closest('[data-mesa]'); if (b) abrir(mesas.find(m => m.id === b.dataset.mesa)); });
       zonaL.addEventListener('click', e => {
-        if (e.target.closest('.te-otra-idea')) { st.lab.inv = (st.lab.inv || 0) + 1; ctx.guardar(); const p = zonaL.querySelector('.te-invita'); if (p) p.outerHTML = invitacion(); return; }
+        if (e.target.closest('.te-otra-idea')) {
+          // El siguiente reto que falta; si ya están todos, el siguiente sin más.
+          const inv = actual.invitaciones || [], hechas = logradas();
+          let k = invK();
+          for (let n = 0; n < inv.length; n++) { k = (k + 1) % inv.length; if (!hechas.includes(k) || hechas.length >= inv.length) break; }
+          st.lab.inv = k; ctx.guardar();
+          const p = zonaL.querySelector('.te-invita'); if (p) p.outerHTML = invitacion();
+          comprobarInv(jg.valores());
+          return;
+        }
         if (!e.target.closest('.te-guardar')) return;
         if (deMesa().length >= MAX_MESA || est.coleccion.length >= MAX_TOTAL) {
           reemplazar = true; pintarRegistro();
@@ -525,6 +698,7 @@
         ponerManijas();
         if (j.lectura) lec.innerHTML = E.html(j.lectura(vals));
         if (contar) probados.add(JSON.stringify(vals));
+        if (contar && o.alCambiar) o.alCambiar(Object.assign({}, vals));
         const cas = z.querySelector('.te-casos');
         if (cas) cas.textContent = probados.size < o.minimo ? `Casos probados: ${probados.size} de ${o.minimo}` : `Casos probados: ${probados.size}`;
         for (const c of ctr) {

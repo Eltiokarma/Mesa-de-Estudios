@@ -143,7 +143,7 @@ function anotarUltima(ruta) {
 // Título legible de una ruta guardada: «MRU, MRUV y caída libre · teoría».
 function tituloRuta(hash) {
   const [, ruta, a, b, c] = String(hash || '').split('/');
-  const SUB = { teoria: c === 'laboratorio' ? 'laboratorio' : c === 'ficha' ? 'ficha de repaso' : 'teoría', ejercicios: 'ejercicios', examen: 'simulacro', entrada: 'prueba del tema' };
+  const SUB = { teoria: c === 'laboratorio' ? 'laboratorio' : c === 'ficha' ? 'ficha de repaso' : c === 'glosario' ? 'glosario' : 'teoría', ejercicios: 'ejercicios', examen: 'simulacro', entrada: 'prueba del tema' };
   if (ruta === 'unidad') { const cu = cursoDeUnidad(decodeURIComponent(a)), u = cu && cu.unidades.find(x => x.id === decodeURIComponent(a)); return u ? `${u.nombre}${SUB[b] ? ` · ${SUB[b]}` : ''}` : ''; }
   if (ruta === 'practica' || ruta === 'lectura') { const pl = cat.plantillas[decodeURIComponent(a)]; return pl ? pl.titulo : ''; }
   return '';
@@ -439,8 +439,8 @@ function vUnidad(id, sub) {
   if (llevarAEntrada(c)) return;
   sessionStorage.setItem('ultima-unidad', id);
   if (sub === 'entrada') return vEntradaTema(c, u);
-  // La prueba del tema va antes de la teoría, los ejercicios y el simulacro; el laboratorio queda libre.
-  const libre = sub === 'teoria' && ['laboratorio'].includes(location.hash.split('/')[4]);
+  // La prueba del tema va antes de la teoría, los ejercicios y el simulacro; el laboratorio y el glosario quedan libres.
+  const libre = sub === 'teoria' && ['laboratorio', 'glosario'].includes(location.hash.split('/')[4]);
   if (['teoria', 'ejercicios', 'examen'].includes(sub) && !libre && temaPendiente(u)) {
     sessionStorage.setItem('tema-destino-' + u.id, location.hash);
     return ir(`#/unidad/${u.id}/entrada`);

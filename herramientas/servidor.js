@@ -10,6 +10,7 @@
 //                          y regenera el Gantt de Mermaid de docs/hoja-de-ruta.md
 //   /app/datos/catalogo.json → el catálogo armado al vuelo desde catalogo/ (ver construir-catalogo.js)
 //   /app/datos/pruebas.json  → el banco de pruebas de entrada y salida, armado al vuelo desde catalogo/pruebas/
+//   /app/datos/glosario/<curso>.json → el glosario del curso, armado al vuelo desde contenido/teoria/
 // Todo lo demás se sirve como archivo estático desde la raíz del repositorio.
 // Solo escucha en 127.0.0.1: es una herramienta de desarrollo, no un servidor público.
 //
@@ -24,7 +25,7 @@ const path = require('node:path');
 const zlib = require('node:zlib');
 const crypto = require('node:crypto');
 const hoja = require('./hoja-de-ruta');
-const { construir, construirPruebas } = require('./construir-catalogo');
+const { construir, construirPruebas, construirGlosario, textoGlosario } = require('./construir-catalogo');
 
 const RAIZ = path.join(__dirname, '..');
 const PUERTO = Number(process.env.PORT) || 4173;
@@ -97,6 +98,8 @@ const servidor = http.createServer(async (req, res) => {
   if (ruta === '/api/hoja-de-ruta') return api(req, res);
   if (ruta === '/app/datos/catalogo.json') return enviarConCache(req, res, JSON.stringify(construir()), TIPOS['.json']);
   if (ruta === '/app/datos/pruebas.json') return enviarConCache(req, res, JSON.stringify(construirPruebas()), TIPOS['.json']);
+  const mg = /^\/app\/datos\/glosario\/([a-z-]+)\.json$/.exec(ruta), g = mg && construirGlosario()[mg[1]];
+  if (g) return enviarConCache(req, res, textoGlosario(g), TIPOS['.json']);
   if (PROHIBIDO.test(ruta)) return enviar(res, 404, 'No encontrado');
   if (ruta.endsWith('/')) ruta += 'index.html';
   const archivo = path.normalize(path.join(RAIZ, ruta));

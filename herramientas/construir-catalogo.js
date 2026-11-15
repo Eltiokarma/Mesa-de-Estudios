@@ -22,20 +22,41 @@ const ORDEN_AREAS = ['ciencias', 'matematica', 'razonamiento', 'letras'];
 // El servidor local arma el catálogo en cada pedido: se guarda lo leído por fecha de modificación, y el módulo se
 // suelta de module.children (si no, cada recarga dejaba 152 módulos vivos y Node se quedaba sin memoria).
 const teoriaLeida = new Map();
-function teoriaDe(u) {
+const Glosario = require('../nucleo/glosario.js');
+function leerTeoria(u) {
   const [curso, slug] = u.id.split('.');
   const rel = `contenido/teoria/${curso}/${slug}.js`;
   const abs = path.join(RAIZ, rel);
-  if (!fs.existsSync(abs)) return {};
+  if (!fs.existsSync(abs)) return null;
   const t = fs.statSync(abs).mtimeMs, previo = teoriaLeida.get(abs);
-  if (previo && previo.t === t) return previo.r;
+  if (previo && previo.t === t) return previo;
   delete require.cache[require.resolve(abs)];
   const def = require(abs);
   delete require.cache[require.resolve(abs)];
   module.children = module.children.filter(m => m.id !== abs);
-  const r = { teoria: { archivo: `/${rel}`, requiere: def.requiere || [], ideas: (def.ideas || []).length } };
-  teoriaLeida.set(abs, { t, r });
-  return r;
+  // Del archivo solo se guarda lo que necesitan el catálogo y el glosario (no el módulo entero).
+  const x = { t, r: { teoria: { archivo: `/${rel}`, requiere: def.requiere || [], ideas: (def.ideas || []).length } },
+    glosario: def.glosario || [], texto: Glosario.texto(def) };
+  teoriaLeida.set(abs, x);
+  return x;
+}
+const teoriaDe = u => { const x = leerTeoria(u); return x ? x.r : {}; };
+
+// Glosario de un curso (nucleo/glosario.js): los términos que define cada unidad, en el orden del curso, y en qué
+// unidades aparece cada uno. La app lo lee de app/datos/glosario/<curso>.json.
+function glosarioDeCurso(c) {
+  const us = c.unidades.map(u => ({ u, x: leerTeoria(u) })).filter(y => y.x)
+    .map(({ u, x }) => ({ id: u.id, nombre: u.nombre, def: { glosario: x.glosario }, texto: x.texto }));
+  return Glosario.indice(us);
+}
+function construirGlosario() {
+  const leer = p => JSON.parse(fs.readFileSync(p, 'utf8'));
+  const dir = path.join(RAIZ, 'catalogo', 'cursos'), out = {};
+  for (const f of fs.readdirSync(dir).filter(x => x.endsWith('.json')).sort()) {
+    const c = leer(path.join(dir, f)), g = glosarioDeCurso(c);
+    out[c.id] = { curso: c.id, entradas: g.entradas, problemas: g.problemas };
+  }
+  return out;
 }
 
 function construir() {
@@ -52,6 +73,15 @@ function construir() {
         potencial_visual: u.potencial_visual, grado: u.grado, plantillas: u.plantillas,
       }, teoriaDe(u))),
     }));
+  // Cuántos términos del glosario del curso aparecen en cada unidad (los propios y los que vienen de otra): la app
+  // muestra el chip «Glosario» solo si hay alguno.
+  for (const c of cursos) {
+    const { entradas } = glosarioDeCurso(c);
+    for (const u of c.unidades) {
+      const n = entradas.filter(e => e.aparece.includes(u.id)).length;
+      if (u.teoria && n) u.teoria.terminos = n;
+    }
+  }
   const dirPl = path.join(RAIZ, 'plantillas');
   const plantillas = {};
   for (const d of fs.readdirSync(dirPl).sort()) {
@@ -118,7 +148,11 @@ function construirPruebas() {
 }
 function textoPruebas() { return JSON.stringify(construirPruebas(), null, 1) + '\n'; }
 
-module.exports = { construir, texto, SALIDA, construirPruebas, textoPruebas, SALIDA_PRUEBAS };
+const DIR_GLOSARIO = path.join(RAIZ, 'app', 'datos', 'glosario');
+// Lo que va a la app: sin la lista de problemas (esa la vigila contenido/teoria/teoria.test.js).
+const textoGlosario = g => JSON.stringify({ curso: g.curso, entradas: g.entradas }) + '\n';
+
+module.exports = { construir, texto, SALIDA, construirPruebas, textoPruebas, SALIDA_PRUEBAS, construirGlosario, textoGlosario, DIR_GLOSARIO };
 
 if (require.main === module) {
   // Los códigos del formato lectura salen del informe de razonamiento verbal (la app no lee Markdown).
@@ -130,6 +164,10 @@ if (require.main === module) {
   fs.mkdirSync(path.dirname(SALIDA), { recursive: true });
   fs.writeFileSync(SALIDA, texto());
   fs.writeFileSync(SALIDA_PRUEBAS, textoPruebas());
+  fs.mkdirSync(DIR_GLOSARIO, { recursive: true });
+  const glos = construirGlosario();
+  for (const g of Object.values(glos)) fs.writeFileSync(path.join(DIR_GLOSARIO, `${g.curso}.json`), textoGlosario(g));
+  for (const g of Object.values(glos)) for (const p of g.problemas) console.warn(`glosario: ${p}`);
   const c = construir(), pr = construirPruebas();
   console.log(`app/datos/catalogo.json: ${c.cursos.length} cursos, ${c.cursos.reduce((n, x) => n + x.unidades.length, 0)} unidades, ${Object.keys(c.plantillas).length} plantillas`);
   console.log(`app/datos/pruebas.json: ${Object.keys(pr.cursos).length} cursos, ${Object.values(pr.cursos).reduce((n, b) => n + b.pares.length, 0)} ítems por forma`);

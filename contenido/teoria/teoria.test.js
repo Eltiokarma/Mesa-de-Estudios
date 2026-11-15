@@ -48,3 +48,14 @@ test('cada compañero tiene sus líneas por defecto, dentro del tope de la voz',
     }
   }
 });
+
+test('glosario: un término por curso, referencias que existen y archivos de la app al día', () => {
+  const C = require('../../herramientas/construir-catalogo.js');
+  const glos = C.construirGlosario();
+  const problemas = Object.values(glos).flatMap(g => g.problemas);
+  assert.deepEqual(problemas, [], problemas.join('\n'));
+  for (const g of Object.values(glos)) {
+    const f = path.join(C.DIR_GLOSARIO, `${g.curso}.json`);
+    assert.ok(fs.existsSync(f) && fs.readFileSync(f, 'utf8') === C.textoGlosario(g), `app/datos/glosario/${g.curso}.json no está al día: corre npm run catalogo`);
+  }
+});

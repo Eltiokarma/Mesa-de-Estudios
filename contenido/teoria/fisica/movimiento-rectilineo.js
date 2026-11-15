@@ -550,11 +550,42 @@
     },
   };
 
+  // Motor de la pista con acelerador (lo mismo que dibuja): frena hasta detenerse, sin retroceder.
+  const marcasPista = val => { const alto = val.a < 0 ? val.v0 / -val.a : Infinity; return [0, 1, 2, 3, 4, 5].map(k => { const tk = Math.min(k, alto); return val.v0 * tk + val.a * tk * tk / 2; }); };
+  const ultima = val => marcasPista(val)[5];
+  const frenado = val => (val.a < 0 ? val.v0 * val.v0 / (-2 * val.a) : Infinity);
+
   return {
     unidad: 'fisica.movimiento-rectilineo',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/pista.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/torre.js'],
+    // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. Las que vengan de
+    // otra unidad (magnitudes y vectores) se definen allá y el lector las marca solas.
+    glosario: [
+      { termino: 'posición', simbolo: 'x', medida: 'm', def: 'Dónde está el móvil, contado desde el cero de la recta, con signo.',
+        ejemplo: 'x = −2 m: dos metros a la izquierda del cero.', ver: ['desplazamiento'] },
+      { termino: 'desplazamiento', simbolo: 'Δx', medida: 'm', def: 'Cambio de posición: dónde terminó menos dónde empezó. Puede ser negativo.',
+        ejemplo: 'De x = 5 m a x = 2 m: Δx = −3 m.', ver: ['distancia recorrida'] },
+      { termino: 'distancia recorrida', medida: 'm', def: 'Todo el camino hecho, sumando idas y vueltas. Nunca es negativa.',
+        formas: ['distancia recorrida', 'distancia'], ejemplo: 'Ir 4 m y volver 4 m: recorriste 8 m, aunque Δx = 0.', ver: ['desplazamiento'] },
+      { termino: 'velocidad', simbolo: 'v', medida: 'm/s', def: 'Cuánto cambia la posición en cada segundo. Su signo dice hacia dónde va.',
+        ejemplo: 'v = −3 m/s: va hacia la izquierda, 3 m cada segundo.', ver: ['rapidez', 'aceleración'] },
+      { termino: 'rapidez', medida: 'm/s', def: 'Qué tan rápido va, sin importar el sentido: la velocidad sin su signo.',
+        formas: ['rapidez', 'rapideces'], ver: ['velocidad'] },
+      { termino: 'aceleración', simbolo: 'a', medida: 'm/s²', def: 'Cuánto cambia la velocidad en cada segundo.',
+        ejemplo: 'De 0 a 10 m/s en 5 s: a = 2 m/s².', ver: ['velocidad', 'pendiente'] },
+      { termino: 'pendiente', def: 'Cuánto sube una recta por cada paso hacia la derecha. En la gráfica v–t es la aceleración.',
+        ver: ['aceleración'] },
+      { termino: 'instante', simbolo: 't', medida: 's', def: 'Un momento preciso del tiempo, como «a los 3 s».' },
+      { termino: 'MRU', def: 'Movimiento en línea recta con velocidad que no cambia: avanza lo mismo cada segundo.', ver: ['velocidad'] },
+      { termino: 'caída libre', def: 'Movimiento de algo que solo cae por la atracción de la Tierra, sin que el aire lo frene.',
+        ver: ['gravedad'] },
+      { termino: 'gravedad', simbolo: 'g', medida: 'm/s²', def: 'Aceleración hacia abajo que da la Tierra: cerca del suelo, unos 9,8 m/s². En los problemas se usa 10.',
+        ver: ['caída libre'] },
+      { termino: 'velocidad relativa', def: 'Cómo se mueve un móvil visto desde el otro: la diferencia de sus velocidades.',
+        formas: ['velocidad relativa', 'velocidades relativas'], ver: ['velocidad'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. La pista con acelerador junta MRU y MRUV; las otras dos son los juegos
     // de las ideas con su gesto directo.
     laboratorio: [
@@ -567,16 +598,26 @@
         ],
         dibujo: val => {
           // Frena hasta detenerse, sin retroceder: después de parar, las marcas se quedan en el mismo sitio.
-          const alto = val.a < 0 ? val.v0 / -val.a : Infinity;
-          const ms = [0, 1, 2, 3, 4, 5].map(k => { const tk = Math.min(k, alto); return val.v0 * tk + val.a * tk * tk / 2; });
+          const ms = marcasPista(val);
           return { datos: { largo: 60, cada: 10, carriles: [{ x: ms[ms.length - 1], marcas: ms, flecha: val.a ? { a: val.a } : undefined }] }, estado: {} };
         },
         lectura: val => [v0, ` = ${f(val.v0)} m/s · `, a, ` = ${f(val.a)} m/s²`],
+        // Invitaciones: cada una trae logrado(valores, guardados), que comprueba el motor de la mesa (no el texto).
         invitaciones: [
-          'Haz que el carrito se detenga justo antes de la marca de 10 m.',
-          'Busca la salida más lenta que igual llegue a 30 m.',
-          'Consigue marcas que se junten como un acordeón.',
-          'Guarda dos casos con la misma última marca y distinta aceleración.',
+          { texto: 'Haz que el carrito se detenga justo antes de la marca de 10 m.',
+            logrado: val => val.a < 0 && val.v0 > 0 && frenado(val) >= 8 && frenado(val) < 10,
+            bien: 'Frenó antes de los 10 m. ¿Qué pasa si sales un poco más rápido?' },
+          { texto: 'Busca la salida más lenta que igual llegue a 30 m en 5 s.',
+            // La más lenta de la grilla: v₀ = 1 con a = 2 llega a 35 m (con v₀ = 0 no pasa de 25 m).
+            logrado: val => ultima(val) >= 30 && val.v0 === 1,
+            bien: 'Con v₀ = 1 m/s ya alcanza: la aceleración hizo el resto.' },
+          { texto: 'Consigue marcas que se junten como un acordeón.',
+            logrado: val => val.a < 0 && val.v0 > 0,
+            bien: 'Las marcas se juntan porque cada segundo avanza menos.' },
+          { texto: 'Guarda dos casos con la misma última marca y distinta aceleración.',
+            logrado: (val, guardados) => guardados.some(g => g.a !== val.a && Math.abs(ultima(g) - ultima(val)) < 1e-9)
+              && guardados.some(g => g.a === val.a && g.v0 === val.v0),
+            bien: 'El mismo lugar a los 5 s, por dos caminos distintos.' },
         ],
       },
       Object.assign({ id: 'ida-vuelta', titulo: 'Ida y vuelta en v–t', pieza: 'ejes' }, distancia.juega),
