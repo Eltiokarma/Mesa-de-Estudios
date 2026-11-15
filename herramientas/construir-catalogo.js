@@ -36,7 +36,7 @@ function leerTeoria(u) {
   module.children = module.children.filter(m => m.id !== abs);
   // Del archivo solo se guarda lo que necesitan el catálogo y el glosario (no el módulo entero).
   const x = { t, r: { teoria: { archivo: `/${rel}`, requiere: def.requiere || [], ideas: (def.ideas || []).length } },
-    glosario: def.glosario || [], texto: Glosario.texto(def) };
+    glosario: def.glosario || [], glosarioSin: def.glosarioSin, texto: Glosario.texto(def) };
   teoriaLeida.set(abs, x);
   return x;
 }
@@ -46,7 +46,7 @@ const teoriaDe = u => { const x = leerTeoria(u); return x ? x.r : {}; };
 // unidades aparece cada uno. La app lo lee de app/datos/glosario/<curso>.json.
 function glosarioDeCurso(c) {
   const us = c.unidades.map(u => ({ u, x: leerTeoria(u) })).filter(y => y.x)
-    .map(({ u, x }) => ({ id: u.id, nombre: u.nombre, def: { glosario: x.glosario }, texto: x.texto }));
+    .map(({ u, x }) => ({ id: u.id, nombre: u.nombre, def: { glosario: x.glosario, glosarioSin: x.glosarioSin }, texto: x.texto }));
   return Glosario.indice(us);
 }
 function construirGlosario() {

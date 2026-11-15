@@ -176,25 +176,43 @@
       if (conMinimo && !(j.minimo >= 1)) mal(d, 'minimo: cuántos casos distintos prueba el alumno antes de seguir (1 o más)');
     }
 
-    // Una invitación del laboratorio: { texto, logrado, bien? }. Se busca en la grilla de los controles (toda, o una
-    // muestra fija si es muy grande) un caso que la cumpla; y no debe estar cumplida ya en el inicio. Si `logrado`
-    // pide dos argumentos, mira también los casos guardados de la mesa (p. ej. «dos casos con la misma marca»).
+    // Una invitación del laboratorio: { texto, logrado, bien?, testigo? }. logrado(valores, guardados, mesa) → true solo si
+    // se cumplió. Se busca un caso que la cumpla en la grilla de los controles (toda, o una muestra fija si es muy grande);
+    // y no debe estar cumplida ya en el inicio. Si `logrado` pide dos argumentos o más, mira también los casos guardados:
+    // se prueban pares de una muestra repartida por toda la grilla (ronda 3: antes, solo los primeros 160 casos).
+    // `testigo`: casos que la cumplen, para las grillas enormes o las coincidencias raras; el último es el actual y todos
+    // cuentan como guardados. El validador comprueba que el testigo de verdad la cumpla con valores de la grilla.
     function revisarInvitacion(di, mesa, inv) {
       if (typeof inv === 'string') { mal(di, `«${inv}» sin comprobación: escríbela como { texto, logrado(valores) }`); return; }
       if (!inv || !String(inv.texto || '').trim()) { mal(di, 'sin texto'); return; }
       tope(di, 'voz', inv.texto);
       if (inv.bien !== undefined) tope(di, 'voz', inv.bien);
       if (typeof inv.logrado !== 'function') { mal(di, 'sin logrado(valores): el motor tiene que poder comprobarla'); return; }
-      const casos = grilla(mesa.controles || []);
-      const ok = (v, g) => { try { return inv.logrado(v, g) === true; } catch (err) { mal(di, `logrado falló: ${err.message}`); return null; } };
-      const ini = inicio(mesa);
-      if (ok(ini, []) ) mal(di, 'ya está cumplida al abrir la mesa: el reto tiene que pedir mover algo');
+      const ctr = mesa.controles || [];
+      let fallo = false;
+      const ok = (v, g) => { try { return inv.logrado(v, g, mesa) === true; } catch (err) { if (!fallo) mal(di, `logrado falló: ${err.message}`); fallo = true; return null; } };
+      if (ok(inicio(mesa), [])) mal(di, 'ya está cumplida al abrir la mesa: el reto tiene que pedir mover algo');
+      if (fallo) return;
+      if (inv.testigo !== undefined) {
+        const t = Array.isArray(inv.testigo) ? inv.testigo : null;
+        if (!t || !t.length || t.length > 6) { mal(di, 'testigo: lista de 1 a 6 casos { control: valor }'); return; }
+        for (const v of t) for (const c of ctr) if (!v || v[c.id] === undefined || ajustar(c, v[c.id]) !== v[c.id]) { mal(di, `testigo: ${JSON.stringify(v)} no es un caso de la grilla (${c.id})`); return; }
+        if (!ok(t[t.length - 1], t)) mal(di, `el testigo no la cumple («${inv.texto}»)`);
+        return;
+      }
+      const casos = grilla(ctr);
       let alcanza = false;
       if (inv.logrado.length >= 2) {
-        const m = casos.slice(0, 160);
-        for (const a of m) { for (const b of m) { const r = ok(b, [a, b]); if (r === null) return; if (r) { alcanza = true; break; } } if (alcanza) break; }
+        // Pares: una muestra de hasta 500 casos repartidos por toda la grilla (siempre la misma), todos contra todos.
+        const m = muestra(casos, 500);
+        for (const b of m) { for (const a of m) { const r = ok(b, [a, b]); if (r === null) return; if (r) { alcanza = true; break; } } if (alcanza) break; }
       } else for (const v of casos) { const r = ok(v, []); if (r === null) return; if (r) { alcanza = true; break; } }
-      if (!alcanza) mal(di, `nadie la puede lograr con los controles de la mesa («${inv.texto}»)`);
+      if (!alcanza) mal(di, `nadie la puede lograr con los controles de la mesa («${inv.texto}»); si es una coincidencia rara, da un testigo`);
+    }
+    function muestra(casos, n) {
+      if (casos.length <= n) return casos;
+      let a = 987654321; const r = () => { a = (Math.imul(a, 1103515245) + 12345) >>> 0; return a / 4294967296; };
+      return Array.from({ length: n }, () => casos[Math.floor(r() * casos.length)]);
     }
     // Todos los casos de la grilla de controles; si son más de 20 000, una muestra fija (misma semilla siempre).
     function grilla(ctr) {

@@ -196,8 +196,10 @@ invitaciones: [
 ```
 
 - **`logrado` usa el motor de la mesa,** las mismas funciones que dibujan (regla 1). Nunca se compara con un número escrito a mano si el motor lo puede calcular.
+- **Firma:** `logrado(valores, guardados, mesa)`. El tercer argumento da los rangos de los controles, para los retos de extremo («el mayor…») sin copiar los topes.
+- **`testigo`** (opcional, de 1 a 6 casos de la grilla): los casos que cumplen el reto; el último es el actual y todos cuentan como guardados. Sirve para las coincidencias raras y las grillas enormes. El validador comprueba que el testigo de verdad cumpla el reto.
 - **Qué revisa el validador:**
-  - que el reto se pueda lograr: busca en toda la grilla de controles, o en una muestra fija si pasa de 20 000 casos;
+  - que el reto se pueda lograr: busca en toda la grilla de controles, o en una muestra fija si pasa de 20 000 casos. Con casos guardados, prueba pares de una muestra de 500 repartida por toda la grilla; antes de la ronda 3 eran los primeros 160 casos, y casi solo variaba el primer control;
   - que no esté ya cumplido al abrir la mesa;
   - que `logrado` no falle.
 - **Qué ve el alumno:**
@@ -237,7 +239,11 @@ glosario: [
   - No entran las palabras de la escena, como «carrito».
 - **De 6 a 15 términos** por unidad es lo normal; el tope es 24.
 - **El término es una palabra, no un símbolo.** El símbolo va en `simbolo`, y la unidad de medida en `medida`.
-- **Las formas.** Por defecto, el término y su plural simple. Si el texto dice «distancia» a secas para «distancia recorrida», va en `formas`.
+- **Las formas.** Por defecto, el término y su plural simple. Una forma suelta se marca en todo el curso: si una palabra suelta tiene otro sentido en otra unidad, no la pongas como forma. Por eso «distancia» dejó de ser forma de «distancia recorrida».
+- **Palabras con dos sentidos en el curso** («raíz», «tangente», «base»):
+  - `{ termino, def, local: true }` vale solo en su unidad y ahí gana a la del curso; no cuenta como repetida;
+  - `glosarioSin: ['carga']`, en la unidad, hace que esos términos del curso no se marquen ahí.
+- **Qué texto cuenta.** Todo lo que el alumno lee, también las preguntas generadas de «Ahora tú». No cuentan los nombres internos: `id`, `error`, `tipo`, `valor`, `grosor`, `alt`, `temas`.
 - **Qué revisa el validador:**
   - los topes de palabras;
   - que el término no se repita en la unidad;

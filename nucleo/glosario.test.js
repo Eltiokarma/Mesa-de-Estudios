@@ -63,3 +63,25 @@ test('índice del curso: una definición por término, dónde aparece y referenc
   assert.match(problemas.join('\n'), /c\.b: «Vector» ya se define en c\.a/);
   assert.match(problemas.join('\n'), /manda a ver «módulo»/);
 });
+
+test('sentido local y términos tapados por unidad', () => {
+  const us = [
+    { id: 'c.a', nombre: 'A', def: { glosario: [{ termino: 'raíz', def: 'Valor que anula un polinomio.' }] }, texto: 'Una raíz.' },
+    { id: 'c.b', nombre: 'B', def: { glosario: [{ termino: 'raíz', def: 'Número que elevado da otro.', local: true }] }, texto: 'La raíz cuadrada.' },
+    { id: 'c.c', nombre: 'C', def: { glosarioSin: ['raíz'] }, texto: 'La raíz del árbol.' },
+    { id: 'c.d', nombre: 'D', texto: 'Otra raíz.' },
+  ];
+  const { entradas, problemas } = G.indice(us);
+  assert.deepEqual(problemas, []);
+  const curso = entradas.find(e => !e.local), local = entradas.find(e => e.local);
+  assert.deepEqual(curso.aparece, ['c.a', 'c.d']);
+  assert.deepEqual(local.aparece, ['c.b']);
+  assert.equal(local.en, 'c.b');
+});
+
+test('el texto no cuenta códigos de error ni datos internos, y sí las preguntas generadas de «Ahora tú»', () => {
+  const t = G.texto({ ideas: [{ opciones: [{ texto: 'Sí', error: 'AL-INVERSA', valor: 'inversa' }], dibujo: { alt: 'Plano complejo', tipo: 'intervalo' },
+    ahoraTu: { generar: s => ({ pregunta: `¿Cuál es la pendiente con la semilla ${s}?` }) } }] });
+  assert.doesNotMatch(t, /INVERSA|inversa|Plano complejo|intervalo/);
+  assert.match(t, /pendiente/);
+});

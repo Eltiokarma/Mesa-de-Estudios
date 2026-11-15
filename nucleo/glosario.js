@@ -11,6 +11,9 @@
  * Un término se define una sola vez por curso, en la unidad que lo estrena. En las demás unidades del curso donde
  * aparece, el lector lo marca igual con su definición y dice de dónde viene: así los términos repetidos no se
  * vuelven a escribir y nunca quedan sin explicar.
+ * Palabras con dos sentidos en el curso («raíz», «tangente», «base»), pedido de la ronda 3:
+ *   { termino, def, local: true }   vale solo en su unidad y ahí gana a la del curso (no cuenta como repetida)
+ *   glosarioSin: ['distancia']        en esta unidad no se marcan esos términos del curso
  * Funciona en el navegador (window.Glosario) y en Node.
  */
 (function (root, fabrica) {
@@ -43,7 +46,10 @@
 
   // Todo el texto de una unidad (consignas, pasos, reglas, preguntas, opciones, notas de llaves, invitaciones…).
   // Se recorre el objeto entero; se saltan los campos que son nombres internos y no texto para el alumno.
-  const NO_TEXTO = new Set(['id', 'pieza', 'color', 'v', 'url', 'requiere', 'version', 'estado', 'unidad', 'glosario', 'temas', 'expresion', 'pose', 'medida', 'simbolo']);
+  // (error: códigos de error de las opciones; tipo, valor y grosor: datos internos de piezas y opciones; alt: el texto
+  // para el lector de pantalla, donde el lector no marca nada.)
+  const NO_TEXTO = new Set(['id', 'pieza', 'color', 'v', 'url', 'requiere', 'version', 'estado', 'unidad', 'glosario', 'glosarioSin', 'temas',
+    'expresion', 'pose', 'medida', 'simbolo', 'error', 'tipo', 'valor', 'grosor', 'alt']);
   function texto(def) {
     const out = [], vistos = new Set();
     const ir = (x, k) => {
@@ -55,6 +61,12 @@
       for (const [kk, v] of Object.entries(x)) ir(v, kk);
     };
     ir(def);
+    // Lo que se genera y el alumno lee en pantalla: las preguntas de «Ahora tú» (unas semillas, como la prueba del tema).
+    for (const idea of (def && def.ideas) || []) {
+      const g = idea && idea.ahoraTu && idea.ahoraTu.generar;
+      if (typeof g !== 'function') continue;
+      for (const sem of [0, 1, 2, 3, 500, 501]) { try { ir(g(sem)); } catch (e) { /* el validador de la teoría ya lo reporta */ } }
+    }
     return out.join('\n');
   }
 
@@ -85,7 +97,8 @@
   // revisar(def) → problemas del glosario de una unidad (vacía si cumple). Sin glosario no hay problema (todavía).
   function revisar(def) {
     const out = [], mal = (d, q) => out.push(`glosario${d ? ` «${d}»` : ''}: ${q}`);
-    const g = def && def.glosario;
+    const g = def && def.glosario, sin = def && def.glosarioSin;
+    if (sin !== undefined && (!Array.isArray(sin) || sin.some(x => typeof x !== 'string' || !x.trim()))) mal('', 'glosarioSin: lista de términos del curso');
     if (g === undefined) return out;
     if (!Array.isArray(g) || !g.length || g.length > MAX) { mal('', `lista de 1 a ${MAX} términos`); return out; }
     const txt = texto(def), vistos = new Set();
@@ -106,29 +119,42 @@
       for (const c of ['simbolo', 'medida']) if (e[c] !== undefined && (typeof e[c] !== 'string' || !e[c].trim() || e[c].length > 16)) mal(t, `${c}: texto corto`);
       if (e.ver !== undefined && (!Array.isArray(e.ver) || e.ver.some(x => typeof x !== 'string' || !x.trim()))) mal(t, 'ver: lista de términos');
       if (e.formas !== undefined && (!Array.isArray(e.formas) || !e.formas.length)) mal(t, 'formas: lista de cómo aparece en el texto');
+      if (e.local !== undefined && e.local !== true) mal(t, 'local: true o nada');
       if (!aparece(txt, e)) mal(t, 'no aparece en la teoría de la unidad (¿falta en «formas»?)');
     }
     return out;
   }
 
   // indice(unidades) → { entradas, problemas } de un curso. unidades: [{ id, nombre, def? , texto? }] en el orden del curso.
-  //   entrada: { termino, def, simbolo, medida, ejemplo, ver, formas, en, enNombre, aparece: [ids de unidad] }
+  //   entrada: { termino, def, simbolo, medida, ejemplo, ver, formas, en, enNombre, aparece: [ids de unidad], local? }
   function indice(unidades) {
-    const entradas = [], porClave = new Map(), problemas = [];
-    for (const u of unidades) for (const e of ((u.def && u.def.glosario) || [])) {
-      const k = clave(e.termino);
-      if (porClave.has(k)) { problemas.push(`${u.id}: «${e.termino}» ya se define en ${porClave.get(k).en}; aquí no se repite, el lector lo marca solo`); continue; }
+    const entradas = [], porClave = new Map(), locales = [], problemas = [];
+    const ficha = (u, e) => {
       const x = { termino: e.termino, def: e.def, formas: formasDe(e), en: u.id, enNombre: u.nombre, aparece: [] };
       for (const c of ['simbolo', 'medida', 'ejemplo', 'ver']) if (e[c] !== undefined) x[c] = e[c];
+      return x;
+    };
+    for (const u of unidades) for (const e of ((u.def && u.def.glosario) || [])) {
+      if (e.local) { locales.push(Object.assign(ficha(u, e), { local: true })); continue; }
+      const k = clave(e.termino);
+      if (porClave.has(k)) { problemas.push(`${u.id}: «${e.termino}» ya se define en ${porClave.get(k).en}; aquí no se repite, el lector lo marca solo (si aquí significa otra cosa, usa local: true)`); continue; }
+      const x = ficha(u, e);
       porClave.set(k, x); entradas.push(x);
     }
-    const b = buscador(entradas);
+    // En cada unidad valen las del curso, menos las que tapa (glosarioSin o una local con la misma clave), más sus locales.
     for (const u of unidades) {
+      const propias = locales.filter(x => x.en === u.id);
+      const tapadas = new Set([...((u.def && u.def.glosarioSin) || []).map(clave), ...propias.map(x => clave(x.termino))]);
+      const valen = entradas.filter(e => !tapadas.has(clave(e.termino))).concat(propias);
+      const mapa = new Map(valen.map(e => [clave(e.termino), e]));
       const txt = u.texto !== undefined ? u.texto : (u.def ? texto(u.def) : '');
-      for (const m of marcas(txt, entradas, new Set(), b)) porClave.get(m.clave).aparece.push(u.id);
+      for (const m of marcas(txt, valen)) mapa.get(m.clave).aparece.push(u.id);
     }
-    for (const x of entradas) for (const v of x.ver || []) if (!porClave.has(clave(v))) problemas.push(`${x.en}: «${x.termino}» manda a ver «${v}», que no está en el glosario del curso`);
-    return { entradas, problemas };
+    for (const x of entradas.concat(locales)) for (const v of x.ver || []) {
+      const k = clave(v);
+      if (!porClave.has(k) && !locales.some(l => l.en === x.en && clave(l.termino) === k)) problemas.push(`${x.en}: «${x.termino}» manda a ver «${v}», que no está en el glosario del curso`);
+    }
+    return { entradas: entradas.concat(locales), problemas };
   }
 
   return { clave, plural, formasDe, texto, buscador, marcas, aparece, revisar, indice, TOPES, MAX };

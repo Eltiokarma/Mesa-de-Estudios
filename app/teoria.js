@@ -169,7 +169,9 @@
     // ---------- Glosario: términos tocables y hoja con la definición ----------
     const G = window.Glosario;
     const entradas = (G && glos && glos.entradas) || [];
-    const porClave = new Map(entradas.map(e => [G.clave(e.termino), e]));
+    // Una definición local (local: true) vale solo en su unidad y ahí gana a la del curso.
+    const porClave = new Map();
+    for (const e of entradas) if ((!e.local || e.en === u.id) && (!porClave.has(G.clave(e.termino)) || e.local)) porClave.set(G.clave(e.termino), e);
     const aqui = entradas.filter(e => e.aparece.includes(u.id));
     const buscadorG = aqui.length ? G.buscador(aqui) : null;
     const origen = e => (e.en === u.id ? 'Nuevo en este tema'
@@ -334,7 +336,7 @@
     // 1. Juega: arrastrar sobre la figura o usar − y +; lectura en vivo y conteo de casos distintos.
     function juega() {
       const j = idea.juega;
-      actuar('consigna', j.voz || j.consigna);
+      actuar('consigna', j.voz || T.plano(j.consigna));
       juego = montarJuego(j, { fig, zona, lectura, alt: $('#te-alt'), piezaPorDefecto: idea.pieza, alTocar: () => actuar('juego'), minimo: j.minimo });
       sig.textContent = 'Ya probé, sigo';
       sig.onclick = () => {
@@ -479,7 +481,7 @@
     }
 
     // Arranque: el momento guardado (si ya predijo, no vuelve a predecir desde cero).
-    actuar('llegada', idea.juega.voz || idea.juega.consigna);
+    actuar('llegada', idea.juega.voz || T.plano(idea.juega.consigna));
     // Idea acertada en la prueba de entrada y sin empezar: va directo a la regla, con la opción de jugar igual.
     const yaSabia = sabidas.has(idea.id) && !si.hecha && !si.prediccion && (si.momento || 'juega') === 'juega';
     if (yaSabia) {
@@ -595,7 +597,7 @@
         const inv = actual.invitaciones || [], k = invK();
         if (k < 0 || logradas().includes(k) || typeof inv[k] !== 'object' || typeof inv[k].logrado !== 'function') return;
         let ok = false;
-        try { ok = inv[k].logrado(v, deMesa().map(x => x.valores)) === true; } catch (e) { ok = false; }
+        try { ok = inv[k].logrado(v, deMesa().map(x => x.valores), actual) === true; } catch (e) { ok = false; }
         if (!ok) return;
         logradas().push(k); ctx.guardar();
         const p = zonaL.querySelector('.te-invita'); if (p) p.outerHTML = invitacion();
@@ -680,7 +682,7 @@
       const { fig: f, zona: z, lectura: lec } = o;
       const vals = Object.assign(T.inicio(j), o.valores || {}), probados = new Set();
       const ctr = j.controles || [], arr = j.arrastres || [];
-      z.innerHTML = `<h3 class="lector" tabindex="-1">Juega</h3><p class="te-consigna">${esc(j.consigna)}</p>
+      z.innerHTML = `<h3 class="lector" tabindex="-1">Juega</h3><p class="te-consigna">${typeof j.consigna === 'string' ? esc(j.consigna) : E.html(j.consigna)}</p>
         ${arr.length ? '<p class="te-pista"><span class="te-pista-m" aria-hidden="true"></span>Arrastra los círculos de la figura, o usa − y +.</p>' : ''}
         <div class="te-controles">${ctr.map(control).join('')}</div>
         ${ctr.length ? '<button type="button" class="btn borde te-reinicio">Volver al inicio</button>' : ''}
