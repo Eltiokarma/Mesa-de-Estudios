@@ -642,7 +642,9 @@
       // El caso de la grilla que cumple el reto y menos controles cambia respecto de lo que el alumno tiene ahora.
       const casoQueCumple = (x, v) => {
         let mejor = null, dif = Infinity;
-        for (const c of T.grilla(actual.controles || [])) {
+        // Primero el testigo del reto, si lo trae (en grillas de más de 20 000 casos la muestra puede no tener ninguno).
+        const testigo = Array.isArray(x.testigo) ? x.testigo.slice().reverse() : [];
+        for (const c of testigo.concat(T.grilla(actual.controles || []))) {
           let ok = false;
           try { ok = x.logrado(c, [], actual) === true; } catch (e) { ok = false; }
           if (!ok) continue;

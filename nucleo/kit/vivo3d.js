@@ -11,7 +11,9 @@
  *     construir(T, grupo, datos, estado, h) → { tocables?: [Object3D], aria?: texto }
  *                                          arma la escena dentro de `grupo` (se limpia sola antes de cada cambio)
  *     tocar?(objeto) → texto               qué decir cuando el alumno toca un objeto sin arrastrar
- *     distancia?: 7.2, distMin?: 3.6, distMax?: 12
+ *     distancia?: 7.2 | (datos) → número   distancia de la cámara; como función, el encuadre sigue a los datos (un
+ *                                          desarrollo abierto ocupa más que el sólido cerrado). distMin y distMax, en
+ *     distMin?, distMax?                   proporción a ella si no se dan.
  *   }
  *   op = { alTocar?(objeto) }
  *   h  = { SEG, ahorro, oscuro, varCss(n, porDefecto), material(color, extra), barra(de, a, r, color), flecha(de, a, r, color),
@@ -87,7 +89,13 @@
     caja.appendChild(pie);
     const nota = pie.querySelector('.kit-3d-nota');
     const escena = new T.Scene(), camara = new T.PerspectiveCamera(35, 1, 0.1, 80);
-    const D0 = spec.distancia || 7.2, DMIN = spec.distMin || D0 * 0.5, DMAX = spec.distMax || D0 * 1.7;
+    // Distancia de partida: fija o según los datos (spec.distancia(datos)); se recalcula al cambiar de caso (clave).
+    let D0 = typeof spec.distancia === 'number' ? spec.distancia : 7.2, DMIN, DMAX;
+    const fijarD0 = d => {
+      D0 = typeof spec.distancia === 'function' ? (d ? spec.distancia(d) : 7.2) : (spec.distancia || 7.2);
+      DMIN = spec.distMin || D0 * 0.5; DMAX = spec.distMax || D0 * 1.7;
+    };
+    fijarD0(null);
     let dist = D0;
     escena.add(new T.HemisphereLight(0xffffff, 0xd9cfc6, 1.7));
     const sol = new T.DirectionalLight(0xffffff, 1.3); sol.position.set(3, 5, 6); escena.add(sol);
@@ -96,18 +104,30 @@
     const SEG = ah ? 12 : 24;
 
     let pend = false;
+    // Rótulos (ronda 4, pedidos de química, geometría, álgebra y aritmética): siempre dentro del lienzo (no ensanchan la
+    // página) y atenuados cuando su punto queda detrás de una superficie opaca (un rayo desde la cámara lo comprueba).
+    const rayEtq = new T.Raycaster();
+    const opacos = () => { const xs = []; grupo.traverse(o => { if (o.isMesh && o.material && !(o.material.transparent && o.material.opacity < 0.6)) xs.push(o); }); return xs; };
     const ubicarEtiquetas = () => {
       if (!etiquetas.length) return;
       grupo.updateMatrixWorld(true); camara.updateMatrixWorld(true);
-      const w = cv.clientWidth, hh = cv.clientHeight;
+      const w = cv.clientWidth, hh = cv.clientHeight, objs = opacos();
       for (const e of etiquetas) {
-        const v = e.pos.clone().applyMatrix4(grupo.matrixWorld).project(camara);
+        const mundo = e.pos.clone().applyMatrix4(grupo.matrixWorld), v = mundo.clone().project(camara);
         const fuera = v.z > 1 || v.z < -1;
         e.el.style.display = fuera ? 'none' : '';
-        if (!fuera) e.el.style.transform = `translate(${Math.round((v.x + 1) / 2 * w)}px, ${Math.round((1 - v.y) / 2 * hh)}px) translate(-50%, -50%)`;
+        if (fuera) continue;
+        const mw = e.el.offsetWidth / 2, mh = e.el.offsetHeight / 2;
+        const x = Math.max(mw + 2, Math.min(w - mw - 2, (v.x + 1) / 2 * w)), y = Math.max(mh + 2, Math.min(hh - mh - 2, (1 - v.y) / 2 * hh));
+        e.el.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px) translate(-50%, -50%)`;
+        const hacia = mundo.clone().sub(camara.position), lejos = hacia.length();
+        rayEtq.set(camara.position, hacia.normalize()); rayEtq.far = lejos - 0.05;
+        e.el.classList.toggle('tapado', objs.length > 0 && rayEtq.intersectObjects(objs, false).length > 0);
       }
     };
-    const dibujarYa = () => { camara.position.set(0, 0, dist); grupo.rotation.set(rad(inc), rad(giro), 0, 'XYZ'); renderer.render(escena, camara); ubicarEtiquetas(); };
+    // Con el lienzo más alto que ancho (la lupa en un celular vertical), la cámara se aleja en proporción: si no, la figura
+    // se corta a los costados (pedido de aritmética y razonamiento matemático).
+    const dibujarYa = () => { camara.position.set(0, 0, dist / Math.min(1, camara.aspect || 1)); grupo.rotation.set(rad(inc), rad(giro), 0, 'XYZ'); renderer.render(escena, camara); ubicarEtiquetas(); };
     const pedir = () => { if (pend) return; pend = true; requestAnimationFrame(() => { pend = false; dibujarYa(); }); };
     const acercar = f => { dist = Math.max(DMIN, Math.min(DMAX, dist / f)); pedir(); };
     const inicio = () => { giro = vista.giro; inc = vista.inclinacion; dist = D0; nota.textContent = ''; pedir(); };
@@ -214,7 +234,7 @@
 
     return {
       poner(d, e, nuevaVista) {
-        if (nuevaVista) { vista = spec.vista(d); giro = vista.giro; inc = vista.inclinacion; dist = D0; nota.textContent = ''; }
+        if (nuevaVista) { fijarD0(d); vista = spec.vista(d); giro = vista.giro; inc = vista.inclinacion; dist = D0; nota.textContent = ''; }
         poner(d, e);
       },
       acercar, inicio,
