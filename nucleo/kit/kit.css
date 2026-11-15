@@ -70,3 +70,11 @@
 @keyframes kit-barre-der{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 @keyframes kit-aparece{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 @keyframes kit-funde{from{opacity:0}to{opacity:1}}
+
+/* Pieza viva en 3D (quim-molecula-3d): el lienzo ocupa el ancho de la figura; la nota dice qué átomo se tocó o si
+   se ve la vista plana. touch-action: none para que arrastrar gire la molécula en vez de mover la página. */
+.kit-3d{position:relative;width:100%}
+.kit-3d-lienzo{display:block;width:100%;touch-action:none;border-radius:16px;cursor:grab}
+.kit-3d-lienzo:active{cursor:grabbing}
+.kit-3d-lienzo:focus-visible{outline:3px solid var(--brand, #7f5ae0);outline-offset:2px}
+.kit-3d-nota{min-height:1.4em;margin:6px 0 0;text-align:center;font-size:14px;color:var(--sub, inherit)}
