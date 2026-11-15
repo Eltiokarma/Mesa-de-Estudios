@@ -93,7 +93,7 @@
     temas: ['Ángulos menores de una vuelta'],
     pieza: 'trig-plano',
     juega: {
-      consigna: 'Gira θ. El arco verde mide α, el ángulo agudo entre el lado final y el eje x. El punto hueco lo copia.',
+      consigna: 'Gira θ. El arco verde mide α, el ángulo agudo del lado final al eje x. El punto hueco lo copia en el primer cuadrante.',
       voz: 'Compara las alturas de P y de su copia.',
       controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: 15, max: 345, paso: 15, inicio: 150, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: referencia(val.g), estado: {} }),
@@ -139,7 +139,7 @@
       ],
     },
     regla: {
-      texto: 'Cada razón de θ es igual, salvo el signo, a la misma razón de su ángulo de referencia α. El signo lo da el cuadrante de θ.',
+      texto: 'Reducir al primer cuadrante: cada razón de θ es, salvo el signo, la misma razón de su ángulo de referencia α. El cuadrante de θ da el signo.',
       ecuacion: [{ llave: ['sen(180° − ', al, ')'], nota: 'en el II', color: 'c-o' }, ' = sen ', al, '   ·   ', { llave: ['cos(180° + ', al, ')'], nota: 'en el III', color: 'c-o' }, ' = −cos ', al, '   ·   ', { llave: ['tan(360° − ', al, ')'], nota: 'en el IV', color: 'c-o' }, ' = −tan ', al],
       condicion: 'α es el ángulo agudo entre el lado final de θ y el eje x. El signo se decide con θ.',
       voz: 'El signo sale del ángulo original; el tamaño, del agudo.',
@@ -504,12 +504,15 @@
     const nueva = a % 180 ? CO[fn] : fn, v = FN[fn](a + sg * 10) / FN[nueva](10);
     return [`${v < 0 ? '−' : ''}${nueva} `, th];
   }
+  const CTR_GIRO = { id: 'g', etiqueta: 'θ', color: 'c-o', min: -720, max: 1080, paso: 15, inicio: 855, unidad: '°', decimales: 0 };
+  const parejaDe = val => { const [a, sg] = RELS[val.rel]; return a + sg * val.g; };   // el ángulo de P′
+  const MAS_180 = RELS.findIndex(([a, sg]) => a === 180 && sg > 0), MENOS_90 = RELS.findIndex(([a, sg]) => a === 90 && sg < 0);
   const laboratorio = [
     {
       id: 'cualquier-giro', titulo: 'Cualquier giro, paso a paso', pieza: 'trig-plano',
       consigna: 'Gira P hasta tres vueltas, en cualquier sentido, y elige la razón. La lectura quita las vueltas, da α y el signo.',
       controles: [
-        { id: 'g', etiqueta: 'θ', color: 'c-o', min: -720, max: 1080, paso: 15, inicio: 855, unidad: '°', decimales: 0 },
+        CTR_GIRO,
         { id: 'fn', etiqueta: 'razón', opciones: ['sen', 'cos', 'tan'].map(v => ({ valor: v, texto: v })) },
       ],
       dibujo: val => ({ datos: labGiro(val.g), estado: {} }),
@@ -522,6 +525,24 @@
       arrastres: [{ id: 'punta', etiqueta: 'punta del giro θ', color: 'c-o',
         donde: val => enUno(labGiro(val.g), val.g),
         mover: (pt, val) => ({ g: angulo(labGiro(val.g), pt, val.g) }) }],
+      invitaciones: [
+        { texto: 'Consigue una razón negativa cuyo ángulo de referencia mida 60°.',
+          logrado: val => cuadrante(val.g) > 0 && refDe(val.g) === 60 && FN[val.fn](val.g) < -1e-9,
+          bien: 'El tamaño lo puso 60°; el signo, el cuadrante del giro.' },
+        { texto: 'Busca un giro del cuadrante III donde la razón elegida sea positiva.',
+          logrado: val => cuadrante(val.g) === 3 && FN[val.fn](val.g) > 1e-9,
+          bien: 'En el III solo la tangente es positiva: menos entre menos.' },
+        { texto: 'Haz que la tangente no esté definida con un giro negativo.',
+          logrado: val => val.fn === 'tan' && val.g < 0 && !Number.isFinite(FN.tan(val.g)),
+          bien: 'Lado final sobre el eje y: x = 0 y no hay cociente.' },
+        { texto: 'Busca el giro más negativo de la mesa con el lado final de 855°.',
+          logrado: val => mod360(val.g) === mod360(CTR_GIRO.inicio) && val.g - 360 < CTR_GIRO.min,
+          bien: 'Quitando vueltas, los dos quedan en 135°: mismas razones.' },
+        { texto: 'Guarda dos giros de cuadrantes distintos con la misma razón y el mismo valor.',
+          logrado: (val, guardados) => cuadrante(val.g) > 0 && guardados.some(c => c.fn === val.fn && cuadrante(c.g) > 0
+            && cuadrante(c.g) !== cuadrante(val.g) && Math.abs(FN[c.fn](c.g) - FN[val.fn](val.g)) < 1e-9),
+          bien: 'Mismo ángulo de referencia y mismo signo en los dos cuadrantes.' },
+      ],
     },
     {
       id: 'siete-relaciones', titulo: 'Espejos y cuartos de vuelta', pieza: 'trig-plano',
@@ -543,6 +564,22 @@
           donde: val => { const [a, sg] = RELS[val.rel]; return enUno(relacion(val), a + sg * val.g); },
           mover: (pt, val) => { const [a, sg] = RELS[val.rel]; return { g: sg * (angulo(relacion(val), pt, a + sg * val.g) - a) }; } },
       ],
+      invitaciones: [
+        { texto: 'Con la pareja 90° − θ, haz que P′ caiga justo sobre P.',
+          logrado: val => val.rel === MENOS_90 && Math.abs(Math.cos(rad(parejaDe(val))) - Math.cos(rad(val.g))) < 1e-9
+            && Math.abs(Math.sin(rad(parejaDe(val))) - Math.sin(rad(val.g))) < 1e-9,
+          bien: 'En 45° seno y coseno son iguales: la co-razón da lo mismo.' },
+        { texto: 'Haz que la lectura cambie a la co-razón y dé los dos signos negativos.',
+          logrado: val => { const r = RELS[val.rel]; return reducida('sen', r)[0] === '−cos ' && reducida('cos', r)[0] === '−sen '; },
+          bien: 'Con 270° − θ, P′ cae en el III: seno y coseno negativos.' },
+        { texto: 'Con la pareja 180° + θ, deja a P′ lo más abajo posible.',
+          logrado: val => val.rel === MAS_180 && Math.abs(Math.sin(rad(parejaDe(val))) + 1) < 1e-9,
+          bien: 'Media vuelta desde 90°: P′ llega al punto más bajo, sen = −1.' },
+        { texto: 'Con el mismo θ, guarda dos parejas distintas cuyos P′ tengan la misma altura.',
+          logrado: (val, guardados) => guardados.some(c => c.g === val.g && c.rel !== val.rel
+            && Math.abs(Math.sin(rad(parejaDe(c))) - Math.sin(rad(parejaDe(val)))) < 1e-9),
+          bien: 'Misma altura, mismo seno: uno es el reflejo del otro en el eje y.' },
+      ],
     },
   ];
 
@@ -553,6 +590,26 @@
     requiere: ['/nucleo/kit/piezas/trig-plano.js'],
     // Laboratorio: un giro de hasta tres vueltas en los dos sentidos con la razón a elegir (rango y casos que las
     // ideas no dan), y θ con sus siete parejas (90°, 180°, 270° y 360° ± θ) para comparar razón y signo de cada una.
+    // Glosario del tema (docs/teoria.md, 4d). Cuadrante, lado final y cotangente vienen de «Ángulos en posición normal».
+    glosario: [
+      { termino: 'reducción al primer cuadrante', formas: ['reducción al primer cuadrante', 'reducir al primer cuadrante'],
+        def: 'Escribir una razón de cualquier ángulo como la de un ángulo agudo, con el signo que le toca.',
+        ejemplo: 'cos 210° = −cos 30° = −√3/2.', ver: ['ángulo de referencia', 'co-razón'] },
+      { termino: 'primer cuadrante', def: 'Región del plano donde x e y son positivas, entre 0° y 90°. Ahí las seis razones son positivas.',
+        ejemplo: '30° termina en el punto (0,87; 0,5), con las dos coordenadas positivas.', ver: ['cuadrante'] },
+      { termino: 'ángulo de referencia', simbolo: 'α', formas: ['ángulo de referencia', 'ángulos de referencia'],
+        def: 'Ángulo agudo entre el lado final y el eje x. Da el tamaño de las razones; el cuadrante, su signo.',
+        ejemplo: '210° termina a 30° del eje x: α = 210° − 180° = 30°.', ver: ['reducción al primer cuadrante', 'lado final'] },
+      { termino: 'co-razón', formas: ['co-razón', 'co-razones'],
+        def: 'Pareja de una razón: seno con coseno, tangente con cotangente. Aparece al reducir con 90° o 270°.',
+        ejemplo: 'cos(90° + 30°) = −sen 30° = −1/2.', ver: ['cuarto de vuelta', 'cotangente'] },
+      { termino: 'ángulos suplementarios', formas: ['ángulos suplementarios', 'suplementarios', 'suplementario'],
+        def: 'Dos ángulos que suman 180°. Tienen el mismo seno y cosenos opuestos.',
+        ejemplo: '40° y 140°: sen 140° = sen 40° ≈ 0,64; cos 140° ≈ −0,77.', ver: ['ángulo de referencia'] },
+      { termino: 'cuarto de vuelta', formas: ['cuarto de vuelta', 'cuartos de vuelta'],
+        def: 'Giro de 90°, la cuarta parte de un giro completo. Intercambia las coordenadas del punto, con un cambio de signo.',
+        ejemplo: 'El punto (0,87; 0,5) gira 90° y queda en (−0,5; 0,87).', ver: ['co-razón'] },
+    ],
     laboratorio,
     historia: {
       texto: 'En el siglo XVI, Rheticus se propuso tablas de las seis razones con muchas cifras. Murió sin terminarlas; sus colaboradores siguieron y Valentin Otho publicó el Opus Palatinum. Calcular cada ángulo por separado era enorme. Las simetrías ayudan: si dos ángulos se relacionan, basta calcular uno y revisar el otro. Reducir al primer cuadrante es usar esas simetrías, y a veces cambian seno por coseno.',
