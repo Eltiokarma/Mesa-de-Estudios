@@ -58,7 +58,20 @@ test('escala opcional: achica el respaldo plano sin cambiar la molécula', () =>
   assert.deepEqual(P.plano(Object.assign({}, d, { escala: 0.6 }), {}).atomos, P.plano(d, {}).atomos);
 });
 
-// Animación (docs/3d.md §6, regla 6): la forma no cambia al girar un enlace, y mover deja la escena igual que rearmarla.
+test('animación: el giro propio gira la proyección como la vista, sin cambiar la forma (ronda 5)', () => {
+  const v = AGUA.vista;
+  const con = g => P.plano(Object.assign({}, AGUA, { giro: g }), { dipolos: true, pares: true });
+  assert.deepEqual(con(0), P.plano(AGUA, { dipolos: true, pares: true }));          // sin giro, como antes
+  const visto = P.plano(Object.assign({}, AGUA, { vista: { giro: v.giro + 90, inclinacion: v.inclinacion } }), { dipolos: true, pares: true });
+  assert.deepEqual(con(90).atomos, visto.atomos);
+  assert.equal(P.forma(Object.assign({}, AGUA, { giro: 0 }), {}), P.forma(Object.assign({}, AGUA, { giro: 120 }), {}));
+  assert.notEqual(P.forma(AGUA, { dipolos: true }), P.forma(AGUA, { dipolos: false }));
+  // Girar no cambia la molécula: las distancias entre átomos de la proyección cambian, las 3D no (las da la unidad).
+  assert.notDeepEqual(con(0).atomos, con(90).atomos);
+});
+
+// Ampliación (sesión quimica-b, hidrocarburos): un enlace que gira cambia posiciones, no la forma; mover deja la escena
+// igual que rearmarla. Con pares libres o dipolos a la vista, si las posiciones cambian, pide rearmar.
 test('forma y mover: la conformación que gira se mueve sin rearmar y queda como armada de nuevo', () => {
   const fs = require('fs'), vm = require('vm'), path = require('path');
   const T = vm.runInNewContext(`${fs.readFileSync(path.join(__dirname, '../../../app/vendor/three/three-mesa.min.js'), 'utf8')};THREE`, {});
@@ -67,24 +80,28 @@ test('forma y mover: la conformación que gira se mueve sin rearmar y queda como
   const E = { dipolos: false, pares: false };
   assert.equal(P.forma(mol(0), E), P.forma(mol(137.4), E));
   assert.notEqual(P.forma(mol(0), E), P.forma({ ...mol(0), enlaces: mol(0).enlaces.slice(1) }, E));
-  assert.equal(P.forma(AGUA, { dipolos: true, pares: true }), null);          // pares y dipolos a la vista: se rearma
   const h = {
     SEG: 8, material: () => new T.MeshBasicMaterial(), etiqueta: p => ({ p: p.clone() }), moverEtiqueta: (el, p) => { el.p.copy(p); },
     barra: (de, a, r) => { const v = new T.Vector3().subVectors(a, de), m = new T.Mesh(new T.CylinderGeometry(r, r, v.length(), 8));
       m.position.copy(de).addScaledVector(v, 0.5); m.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), v.clone().normalize()); return m; },
-    oscuro: () => false, varCss: (n, x) => x,
+    flecha: () => new T.Group(), oscuro: () => false, varCss: (n, x) => x,
   };
-  const armar = d => { const g = new T.Group(); P.spec.construir(T, g, d, E, h); return g; };
+  const armar = (d, e = E) => { const g = new T.Group(); P.spec.construir(T, g, d, e, h); return g; };
   const g = armar(mol(60));
   assert.equal(P.spec.mover(T, g, mol(137.4), E, h), true);
-  const ref = armar(mol(137.4));
-  assert.equal(g.children.length, ref.children.length);
+  const ref = armar(mol(137.4)), hijos = x => x.children[0].children;      // todo va dentro del pivote
+  assert.equal(hijos(g).length, hijos(ref).length);
   // Cada barra: mismos extremos (el eje y del cilindro, escalado, cae sobre el de la barra armada de nuevo).
   const punta = x => new T.Vector3(0, 0.5 * x.geometry.parameters.height, 0).multiply(x.scale).applyQuaternion(x.quaternion).add(x.position);
-  g.children.forEach((o, i) => {
-    const r = ref.children[i];
+  hijos(g).forEach((o, i) => {
+    const r = hijos(ref)[i];
     assert.ok(o.position.distanceTo(r.position) < 1e-9);
     if (o.geometry.type === 'CylinderGeometry') assert.ok(punta(o).distanceTo(punta(r)) < 1e-9);
   });
   assert.equal(P.spec.mover(T, new T.Group(), mol(0), E, h), false);           // sin escena armada: pide rearmar
+  // Con pares a la vista: girar todo (giro) sigue por la ruta rápida; mover átomos pide rearmar.
+  const agua = armar(AGUA, { pares: true });
+  assert.equal(P.spec.mover(T, agua, Object.assign({}, AGUA, { giro: 40 }), { pares: true }, h), true);
+  const otra = Object.assign({}, AGUA, { atomos: AGUA.atomos.map(a => (a.id === 'H1' ? Object.assign({}, a, { pos: [0.9, -0.5, 0] }) : a)) });
+  assert.equal(P.spec.mover(T, agua, otra, { pares: true }, h), false);
 });
