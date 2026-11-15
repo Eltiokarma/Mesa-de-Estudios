@@ -68,6 +68,7 @@
     argumenta: { tipo: 'Argumentativo: defiende una postura', partes: [['Las comunidades'], ['deberían', 'e'], ['recibir alertas de helada por radio.'], ['Así', 'e'], ['podrían cubrir sus cultivos a tiempo.'], ['Es injusto que', 'e'], ['se enteren cuando ya perdieron la cosecha.']] },
   };
   const figVer = k => texto('Tema: la helada', VERS[k].partes);
+  const trozoVer = val => { const d = figVer(val.v), id = idEn(d, val.p); return { id, ev: /^e/.test(id), evs: d.secciones[0].fragmentos.filter(f => /^e/.test(f.id)).map(f => f.id) }; };
   const estVer = (k, extra = {}) => Object.assign({ marcas: evid(figVer(k)), sellos: { o: { t: VERS[k].tipo.split(':')[0], c: 'd' } } }, extra);
   const proposito = {
     id: 'proposito',
@@ -146,14 +147,15 @@
   // Debe verse: que una lista de oraciones correctas puede no ser un texto.
   // aporta: qué norma cumple (o qué le falta) cada trozo, en el orden de sus partes.
   const AVISO = {
-    completo: { partes: [['Vecinos de la calle Lima:', 'e'], ['el sábado cortarán el agua de 8 a 14 h'], ['por arreglo de tuberías.', 'e'], ['Llenen sus baldes el viernes.', 'e']], dice: 'Es un texto: tiene sentido y propósito', ok: true,
+    completo: { partes: [['Vecinos de la calle Lima:', 'e'], ['el sábado cortarán el agua de 8 a 14 h'], ['por arreglo de tuberías.', 'e'], ['Llenen sus baldes el viernes.', 'e']], dice: 'Es un texto: tiene sentido y propósito', ok: true, falla: null,
       aporta: ['Situación: a quién va', 'Información nueva: qué y cuándo', 'Sentido: dice por qué', 'Propósito: qué hacer'] },
-    sueltas: { partes: [['El sábado es un día.'], ['Las tuberías son de plástico.'], ['Los baldes tienen asa.'], ['La calle Lima es larga.']], dice: 'Falla la coherencia: no forman un todo', ok: false,
+    sueltas: { partes: [['El sábado es un día.'], ['Las tuberías son de plástico.'], ['Los baldes tienen asa.'], ['La calle Lima es larga.']], dice: 'Falla la coherencia: no forman un todo', ok: false, falla: 'coherencia',
       aporta: ['Bien escrita, pero suelta', 'No se une con las otras', 'No se une con las otras', 'No dice para qué'] },
-    sinquien: { partes: [['Cortarán el agua.'], ['Llenen sus baldes.']], dice: 'Falla la situación: ¿cuándo?, ¿a quién?', ok: false,
+    sinquien: { partes: [['Cortarán el agua.'], ['Llenen sus baldes.']], dice: 'Falla la situación: ¿cuándo?, ¿a quién?', ok: false, falla: 'situación',
       aporta: ['Falta: ¿cuándo?, ¿dónde?', 'Falta: ¿quién lo pide?'] },
   };
   const figAv = k => texto('Aviso', AVISO[k].partes);
+  const aportaAv = val => { const d = figAv(val.k); return AVISO[val.k].aporta[d.secciones[0].fragmentos.findIndex(f => f.id === idEn(d, val.p))]; };
   const textualidad = {
     id: 'normas-textualidad',
     titulo: 'Qué hace que algo sea texto',
@@ -199,7 +201,7 @@
     regla: {
       texto: 'Un texto es una unidad de sentido con un propósito, en una situación. Se reconoce por sus normas: cohesión, coherencia, intención, aceptabilidad, información, situación y relación con otros textos.',
       ecuacion: [ev('sentido'), ' + ', prop('propósito'), ' + ', { llave: [op('situación')], nota: 'quién y dónde', color: 'c-o' }, ' → texto'],
-      condicion: 'se juzga el conjunto en su situación; el largo o la corrección de cada oración no deciden.',
+      condicion: 'se juzga la textualidad del conjunto en su situación; el largo o la corrección de cada oración no deciden.',
     },
     ahoraTu: {
       generar(s) {
@@ -320,6 +322,21 @@
       // Solo el nombre va de color: así se parte por palabras y cabe en la miniatura del caso guardado.
       return [ev(SEC[dom].n), ' domina', sec.length ? ` · apoyo: ${sec.join(', ')}` : ' · sin apoyo de otro tipo'];
     },
+    // Retos: el tipo que domina lo calcula dominante(), la misma jerarquía que pinta el sello.
+    invitaciones: [
+      { texto: 'Logra que domine el expositivo con una sola oración que explique.',
+        logrado: val => dominante(val) === 'explica' && [val.s1, val.s2, val.s3].filter(t => t === 'explica').length === 1,
+        bien: 'Una explicación basta para organizar los sucesos y los rasgos como ejemplos.' },
+      { texto: 'Arma un relato que domine, con una descripción de apoyo.',
+        logrado: val => dominante(val) === 'narra' && [val.s1, val.s2, val.s3].includes('describe'),
+        bien: 'El relato avanza; la descripción lo detiene para mostrar cómo era.' },
+      { texto: 'Usa tres tipos distintos sin que domine el argumentativo.',
+        logrado: val => new Set([val.s1, val.s2, val.s3]).size === 3 && dominante(val) !== 'argumenta',
+        bien: 'Sin una postura, ¿qué secuencia organiza a las otras dos?' },
+      { texto: 'Guarda dos textos con la misma primera oración y distinto tipo dominante.',
+        logrado: (val, guardados) => guardados.some(g => g.s1 === val.s1 && dominante(g) !== dominante(val)),
+        bien: 'La misma oración cambia de papel según lo que organiza el conjunto.' },
+    ],
   };
 
   return {
@@ -332,10 +349,63 @@
       pregunta: '¿Un texto sobre vacunas tiene que ser científico?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (tipología textual)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/tipologia.htm' },
     },
+    glosario: [
+      { termino: 'tipología textual', def: 'Clasificación de los textos según lo que buscan: narrar, describir, explicar o defender una postura.',
+        formas: ['tipología textual', 'tipología'], ver: ['propósito', 'secuencia'] },
+      { termino: 'propósito', def: 'Para qué se escribe un texto: lo que busca lograr en quien lo lee.',
+        ejemplo: 'Un aviso de corte de agua busca que llenen sus baldes.', ver: ['intención', 'tipología textual'] },
+      { termino: 'intención', def: 'Lo que el autor quiere lograr al escribir; se deduce de cómo arma el texto.',
+        ejemplo: 'Nombrar Juliaca y Puno muestra que la feria atrae gente de lejos.', ver: ['propósito'] },
+      { termino: 'narrativo', def: 'Texto que cuenta sucesos ordenados en el tiempo, con personajes que hacen algo.',
+        formas: ['narrativo', 'narrativa', 'narrativos'], ejemplo: '«Rosa despertó, salió y encontró la escarcha.»', ver: ['descriptivo'] },
+      { termino: 'descriptivo', def: 'Texto que muestra cómo es algo: sus partes, rasgos y estado.',
+        formas: ['descriptivo', 'descriptiva', 'descriptivos'], ejemplo: '«La chacra amaneció blanca y dura.»', ver: ['narrativo'] },
+      { termino: 'expositivo', def: 'Texto que informa o explica cómo es o por qué ocurre algo, sin defender una postura.',
+        formas: ['expositivo', 'expositiva', 'expositivos'], ejemplo: '«La helada ocurre porque el suelo pierde calor.»', ver: ['argumentativo'] },
+      { termino: 'argumentativo', def: 'Texto que defiende una postura y da razones para convencer al lector.',
+        formas: ['argumentativo', 'argumentativa', 'argumentativos'], ejemplo: '«Deberían dar alertas por radio; así cubrirían sus cultivos.»', ver: ['tesis', 'expositivo'] },
+      { termino: 'secuencia', def: 'Trozo de un texto organizado de un solo modo (narra, describe, explica o argumenta).',
+        ejemplo: 'Un relato puede incluir una descripción del lugar.', ver: ['tipología textual'] },
+      { termino: 'textualidad', def: 'Lo que hace que un conjunto de palabras funcione como texto: sentido, propósito y situación.',
+        formas: ['textualidad', 'normas de textualidad'], ejemplo: '«PARE» en un cruce la cumple; cuatro oraciones sueltas, no.', ver: ['coherencia', 'propósito'] },
+      { termino: 'nivel literal', def: 'Lectura que encuentra la respuesta escrita en una frase del texto.',
+        formas: ['nivel literal'], ejemplo: '«¿Cuántos puestos tenía?» Diez: está escrito.', ver: ['nivel inferencial'] },
+      { termino: 'nivel inferencial', def: 'Lectura que deduce la respuesta uniendo partes del texto; no está escrita en una sola frase.',
+        formas: ['nivel inferencial', 'inferencial'], ejemplo: 'De diez a doscientos puestos: la feria creció.', ver: ['nivel literal', 'nivel crítico'] },
+      { termino: 'nivel crítico', def: 'Lectura que juzga el texto con razones: si tiene razón, si convence, si le falta algo.',
+        formas: ['nivel crítico', 'crítico'], ejemplo: '¿Tienen razón los vecinos que temen?', ver: ['nivel inferencial'] },
+    ],
     laboratorio: [
       mesaMezcla,
-      Object.assign({ id: 'proposito', titulo: 'Las cuatro versiones', pieza: 'rv-texto' }, proposito.juega),
-      Object.assign({ id: 'aviso', titulo: 'El aviso del agua', pieza: 'rv-texto' }, textualidad.juega),
+      Object.assign({ id: 'proposito', titulo: 'Las cuatro versiones', pieza: 'rv-texto',
+        // Retos: trozoVer dice, con figVer e idEn, si el marcador está sobre una evidencia del propósito.
+        invitaciones: [
+          { texto: 'En la versión que argumenta, pon el marcador en la palabra que propone algo.',
+            logrado: val => val.v === 'argumenta' && trozoVer(val).id === trozoVer(val).evs[0],
+            bien: '«Deberían» delata una postura: el texto quiere convencer.' },
+          { texto: 'En la versión que narra, marca el último suceso que cuenta.',
+            logrado: val => val.v === 'narra' && trozoVer(val).id === trozoVer(val).evs[trozoVer(val).evs.length - 1],
+            bien: 'Despertó, salió, encontró: los sucesos en orden arman el relato.' },
+          { texto: 'Guarda dos versiones distintas con el marcador sobre una evidencia.',
+            logrado: (val, guardados) => trozoVer(val).ev && guardados.some(g => g.v !== val.v && trozoVer(g).ev),
+            bien: 'Mismo tema, distinta evidencia: el propósito cambió, no la helada.' },
+        ] }, proposito.juega),
+      Object.assign({ id: 'aviso', titulo: 'El aviso del agua', pieza: 'rv-texto',
+        // Retos: aportaAv lee lo que aporta el trozo bajo el marcador; AVISO dice qué norma falla en cada versión.
+        invitaciones: [
+          { texto: 'En el aviso que funciona, marca el trozo que dice para qué se escribió.',
+            logrado: val => AVISO[val.k].ok && aportaAv(val).startsWith('Propósito'),
+            bien: '«Llenen sus baldes» es la razón de todo el aviso.' },
+          { texto: 'Busca la versión de oraciones bien escritas que no forma un texto.',
+            logrado: val => AVISO[val.k].falla === 'coherencia',
+            bien: 'Cada oración es correcta; juntas no dicen nada a nadie.' },
+          { texto: 'En la versión corta, marca el trozo al que le falta quién lo pide.',
+            logrado: val => AVISO[val.k].falla === 'situación' && aportaAv(val).includes('quién'),
+            bien: '«Llenen sus baldes», pero ¿quién lo pide y a quiénes?' },
+          { texto: 'Guarda dos versiones que fallen por razones distintas.',
+            logrado: (val, guardados) => !AVISO[val.k].ok && guardados.some(g => !AVISO[g.k].ok && AVISO[g.k].falla !== AVISO[val.k].falla),
+            bien: 'Una falla en el sentido; otra, en la situación. Las dos dejan de ser texto.' },
+        ] }, textualidad.juega),
     ],
     ideas: [proposito, textualidad, niveles],
   };
