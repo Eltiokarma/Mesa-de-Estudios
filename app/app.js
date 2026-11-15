@@ -89,7 +89,11 @@ function racha() {
   while (s.has(d.toLocaleDateString('en-CA'))) { n++; d.setDate(d.getDate() - 1); }
   return n;
 }
-function aplicarTema() { if (est.tema) document.documentElement.dataset.theme = est.tema; else delete document.documentElement.dataset.theme; }
+function aplicarTema() {
+  if (est.tema) document.documentElement.dataset.theme = est.tema; else delete document.documentElement.dataset.theme;
+  // Modo ahorro de los gráficos 3D (Perfil → Gráficos): las piezas vivas lo leen al montarse (quim-molecula-3d).
+  if (est.prefs && est.prefs.ahorro) document.documentElement.dataset.ahorro = '1'; else delete document.documentElement.dataset.ahorro;
+}
 
 // ---------- Catálogo ----------
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -846,6 +850,9 @@ function vPerfil() {
     <div class="chips" style="margin-top:8px">
       <button class="chip${!(est.prefs || {}).sinFestejo ? ' on' : ''}" data-pref="sinFestejo" data-v="">Con festejos</button>
       <button class="chip${(est.prefs || {}).sinFestejo ? ' on' : ''}" data-pref="sinFestejo" data-v="1">Sin festejos</button></div>
+    <h2>Gráficos en 3D</h2><div class="chips">
+      <button class="chip${!(est.prefs || {}).ahorro ? ' on' : ''}" data-pref="ahorro" data-v="">Completos</button>
+      <button class="chip${(est.prefs || {}).ahorro ? ' on' : ''}" data-pref="ahorro" data-v="1">Ahorro: menos detalle y menos batería</button></div>
     ${coleccionHTML()}
     <h2>Esta app</h2>
     <div class="lista">
@@ -874,7 +881,7 @@ function vPerfil() {
   $app.querySelectorAll('[data-grado]').forEach(b => b.onclick = () => { est.grado = b.dataset.grado; guardar(); vPerfil(); });
   $app.querySelectorAll('[data-uni]').forEach(b => b.onclick = () => { est.uni = b.dataset.uni; guardar(); vPerfil(); });
   $app.querySelectorAll('[data-tema]').forEach(b => b.onclick = () => { est.tema = b.dataset.tema; guardar(); aplicarTema(); vPerfil(); });
-  $app.querySelectorAll('[data-pref]').forEach(b => b.onclick = () => { est.prefs = Object.assign({}, est.prefs, { [b.dataset.pref]: !!b.dataset.v }); guardar(); vPerfil(); });
+  $app.querySelectorAll('[data-pref]').forEach(b => b.onclick = () => { est.prefs = Object.assign({}, est.prefs, { [b.dataset.pref]: !!b.dataset.v }); guardar(); aplicarTema(); vPerfil(); });
   $app.querySelectorAll('[data-caso]').forEach(a => a.onclick = () => sessionStorage.setItem('abrir-caso', a.dataset.caso));
   const bi = document.getElementById('instalar');
   if (bi) bi.onclick = async () => { instalar.prompt(); await instalar.userChoice; instalar = null; vPerfil(); };

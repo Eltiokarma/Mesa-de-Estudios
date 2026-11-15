@@ -18,6 +18,13 @@
  */
 (function () {
   'use strict';
+  // Piezas vivas montadas (figuras con WebGL, como quim-molecula-3d): se sueltan al reemplazarlas, al cambiar de ruta
+  // o cuando su figura ya no está en la página, para no juntar contextos WebGL (el navegador admite pocos).
+  const vivos = new Set();
+  function soltarVivos(f) {
+    for (const g of [...vivos]) if (g === f || !g.isConnected) { if (g._vivo) g._vivo.c.soltar(); g._vivo = null; vivos.delete(g); }
+  }
+  if (typeof addEventListener === 'function') addEventListener('hashchange', () => setTimeout(() => soltarVivos(null), 0));
   const KIT_CSS = '/nucleo/kit/kit.css';
   const BASE = ['/nucleo/kit/kit.js', '/nucleo/kit/trazo.js', '/nucleo/kit/linea-tiempo.js', '/nucleo/ecuacion.js', '/nucleo/glosario.js', '/nucleo/teoria.js'];
   const cargados = {};
@@ -691,7 +698,11 @@
       const tocar = () => { if (!tocado) { tocado = true; o.alTocar(); } };
       const pintarJ = (contar = true) => {
         const P = Kit.piezas[j.pieza || o.piezaPorDefecto], dib = j.dibujo(vals);
-        f.innerHTML = P.dibujar(dib.datos, dib.estado || {});
+        // Pieza viva (montar, como quim-molecula-3d): se monta una vez y después solo se actualiza; las demás, SVG.
+        if (P.montar) {
+          if (!f._vivo || f._vivo.P !== P) { soltarVivos(f); f._vivo = { P, c: P.montar(f) }; vivos.add(f); }
+          f._vivo.c.actualizar(dib.datos, dib.estado || {});
+        } else { soltarVivos(f); f.innerHTML = P.dibujar(dib.datos, dib.estado || {}); }
         if (o.alt) o.alt.textContent = P.alt(dib.datos);
         f.classList.toggle('con-manijas', arr.length > 0);
         // Una figura muy alta no se queda fija al bajar: taparía la consigna y los controles.
