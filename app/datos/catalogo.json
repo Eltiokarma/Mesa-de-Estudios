@@ -1744,7 +1744,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 4,
-      "terminos": 19
+      "terminos": 20
      }
     },
     {
@@ -1785,7 +1785,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 21
+      "terminos": 22
      }
     },
     {
@@ -1825,7 +1825,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 5,
-      "terminos": 18
+      "terminos": 19
      }
     },
     {
@@ -1864,7 +1864,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 20
+      "terminos": 21
      }
     },
     {
@@ -1941,7 +1941,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 5
+      "terminos": 20
      }
     },
     {
@@ -1980,7 +1980,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 9
+      "terminos": 13
      }
     },
     {
@@ -2020,7 +2020,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 13
+      "terminos": 18
      }
     },
     {
@@ -2063,7 +2063,7 @@
        "/nucleo/kit/piezas/flechas.js"
       ],
       "ideas": 6,
-      "terminos": 14
+      "terminos": 18
      }
     },
     {
@@ -2105,7 +2105,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 6,
-      "terminos": 14
+      "terminos": 17
      }
     },
     {
@@ -2144,7 +2144,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 13
+      "terminos": 14
      }
     },
     {
@@ -2222,7 +2222,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
-      "terminos": 12
+      "terminos": 13
      }
     },
     {
@@ -2304,7 +2304,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 5,
-      "terminos": 10
+      "terminos": 12
      }
     },
     {
@@ -2342,7 +2342,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 9
+      "terminos": 10
      }
     },
     {
@@ -2377,7 +2377,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 6,
-      "terminos": 2
+      "terminos": 3
      }
     },
     {
@@ -2413,7 +2413,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 7
+      "terminos": 8
      }
     }
    ]
