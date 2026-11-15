@@ -356,6 +356,21 @@
       return [rel(RELS[val.r].texto), ': ', v === 'si' ? base(SELLO[v].t) : mal(SELLO[v].t), ` · cumplen ${n} de 8`];
     },
     arrastres: [ficha(val => figTaller(val.r), Object.keys(FICHAS), 'ficha que entra en la oración')],
+    // Invitaciones: logrado usa veredicto, la misma función que pone el sello de la oración puente.
+    invitaciones: [
+      { texto: 'Haz que la oración puente se cumpla con la relación de causa.',
+        logrado: val => val.r === 'causa' && veredicto(val.r, val.p) === 'si',
+        bien: 'La chispa produce el incendio; al revés no sería verdad.' },
+      { texto: 'Encuentra una ficha que cumpla «parte y todo», pero solo al revés.',
+        logrado: val => veredicto(val.r, val.p) === 'reves',
+        bien: 'Las mismas palabras, en otro orden: la dirección también cuenta.' },
+      { texto: 'Busca la ficha que no cumple ninguna de las seis relaciones.',
+        logrado: val => Object.keys(RELS).every(r => veredicto(r, val.p) === 'no'),
+        bien: 'El martes viene después del lunes, pero el lunes no lo produce.' },
+      { texto: 'Guarda dos fichas que cumplan relaciones distintas, cada una con su oración.',
+        logrado: (val, guardados) => veredicto(val.r, val.p) === 'si' && guardados.some(g => g.r !== val.r && veredicto(g.r, g.p) === 'si'),
+        bien: 'Cada par pidió su propia oración: decide la relación, no el tema.' },
+    ],
   };
 
   return {
@@ -368,10 +383,58 @@
       pregunta: '¿Qué tienen en común un carpintero y un cirujano?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Aristóteles, Poética)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/comprensionlectora.htm' },
     },
+    // Glosario: las palabras con que el curso habla de analogías y relaciones entre palabras.
+    glosario: [
+      { termino: 'analogía', def: 'Parecido entre dos pares de palabras que guardan la misma relación, en el mismo orden.',
+        ejemplo: '«carpintero : serrucho» y «cirujano : bisturí»: cada uno trabaja con su herramienta.', ver: ['par base', 'oración puente'],
+        formas: ['analogía', 'analogías'] },
+      { termino: 'par base', def: 'Las dos palabras de la pregunta cuya relación hay que encontrar repetida en otro par.',
+        ejemplo: 'En «dedo : mano», el dedo es una parte de la mano.', formas: ['par base', 'pares base'], ver: ['analogía'] },
+      { termino: 'oración puente', def: 'Frase corta que dice cómo se relacionan dos palabras; debe ser verdadera para ambos pares.',
+        ejemplo: '«Un carpintero trabaja con un serrucho como herramienta».', formas: ['oración puente', 'oraciones puente'], ver: ['relación'] },
+      { termino: 'relación', def: 'Lazo entre el significado de dos palabras: herramienta, parte, tipo, causa u opuesto.',
+        ejemplo: 'Entre «pétalo» y «flor» hay una relación de parte y todo.', ver: ['analogía'] },
+      { termino: 'sinónimo', def: 'Palabra que significa casi lo mismo que otra, en el mismo rasgo de significado.',
+        ejemplo: '«Alegre» y «contento».', ver: ['antónimo'] },
+      { termino: 'antónimo', def: 'Palabra que significa lo contrario de otra dentro del mismo rasgo.',
+        ejemplo: '«Frío» y «caliente», en la temperatura; «cansado» no es contrario de «alegre».', ver: ['sinónimo'] },
+      { termino: 'causa y efecto', def: 'Relación en que lo primero produce lo segundo; que venga antes no basta.',
+        ejemplo: '«fuego : humo», pero no «lunes : martes».', ver: ['relación'] },
+      { termino: 'parte y todo', def: 'Relación en que lo primero es un pedazo o componente de lo segundo.',
+        ejemplo: '«dedo : mano», «pétalo : flor».', ver: ['relación'] },
+      { termino: 'género y especie', def: 'Relación entre una clase y uno de sus miembros: todo miembro está en la clase, no al revés.',
+        ejemplo: '«mamífero : perro»: todo perro es mamífero.', ver: ['género próximo', 'especie'] },
+      { termino: 'oración', def: 'Grupo de palabras con sentido completo, que dice algo sobre alguien o algo.',
+        ejemplo: '«El fuego produce el humo».', formas: ['oración', 'oraciones'] },
+    ],
     laboratorio: [
       mesaTaller,
-      Object.assign({ id: 'en-dos-sentidos', titulo: 'En los dos sentidos', pieza: 'rv-texto' }, claseCausa.juega),
-      Object.assign({ id: 'un-rasgo', titulo: 'Sinónimos y antónimos', pieza: 'rv-texto' }, sinAnt.juega),
+      Object.assign({ id: 'en-dos-sentidos', titulo: 'En los dos sentidos', pieza: 'rv-texto',
+        // Retos: el tipo de relación de cada par base sale de PARES, el mismo dato que arma las dos tarjetas.
+        invitaciones: [
+          { texto: 'Elige un par base en el que lo primero produzca lo segundo.',
+            logrado: val => PARES[val.p].tipo === 'Causa y efecto',
+            bien: 'Al revés deja de ser verdad: el efecto no produce la causa.' },
+          { texto: 'Guarda dos pares de causa y efecto y compara sus tarjetas al revés.',
+            logrado: (val, guardados) => PARES[val.p].tipo === 'Causa y efecto' && guardados.some(g => g.p !== val.p && PARES[g.p].tipo === PARES[val.p].tipo),
+            bien: 'En los dos, la tarjeta al revés es falsa. La dirección es parte de la relación.' },
+          { texto: 'Guarda un par de clase y uno de causa, y compara qué tarjeta falla.',
+            logrado: (val, guardados) => new Set(guardados.map(g => PARES[g.p].tipo)).size >= 2,
+            bien: 'Relaciones distintas, y en ambas falla la tarjeta al revés.' },
+        ] }, claseCausa.juega),
+      Object.assign({ id: 'un-rasgo', titulo: 'Sinónimos y antónimos', pieza: 'rv-texto',
+        // Retos: ALEGRE dice, para cada palabra, qué oración puente usa y si se cumple (lo mismo que dibuja la mesa).
+        invitaciones: [
+          { texto: 'Busca la palabra que es lo contrario de «alegre» en el ánimo.',
+            logrado: val => ALEGRE[val.p].ok && ALEGRE[val.p].puente[1] !== ALEGRE.contento.puente[1],
+            bien: 'Triste y alegre se oponen en el mismo rasgo: el ánimo.' },
+          { texto: 'Encuentra una palabra distinta de «alegre» que, sin embargo, no sea su contraria.',
+            logrado: val => !ALEGRE[val.p].ok && ALEGRE[val.p].puente[1] === ALEGRE.triste.puente[1],
+            bien: '«Cansado» habla de la energía, no del ánimo: distinto no es contrario.' },
+          { texto: 'Guarda un sinónimo y un antónimo de «alegre».',
+            logrado: (val, guardados) => new Set(guardados.filter(g => ALEGRE[g.p].ok).map(g => ALEGRE[g.p].rel)).size >= 2,
+            bien: 'Uno comparte el rasgo y el otro se opone en él.' },
+        ] }, sinAnt.juega),
     ],
     ideas: [relacionNoTema, claseCausa, sinAnt],
   };
