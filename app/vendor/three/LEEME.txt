@@ -1,0 +1,5 @@
+three.js 0.187.0 (MIT, ver LICENSE), paquete reducido para la prueba 3D (app/prueba3d/).
+Se arma con esbuild desde el paquete npm, solo con las clases que usa la prueba:
+  export { Scene, PerspectiveCamera, OrthographicCamera, WebGLRenderer, Group, Mesh, LineSegments, Line, BoxGeometry, SphereGeometry, CylinderGeometry, BufferGeometry, EdgesGeometry, Float32BufferAttribute, MeshLambertMaterial, MeshBasicMaterial, LineBasicMaterial, LineDashedMaterial, AmbientLight, DirectionalLight, HemisphereLight, Vector2, Vector3, Quaternion, Euler, Matrix4, Plane, Raycaster, Color, DoubleSide, FrontSide, BackSide, Box3, MathUtils, SRGBColorSpace } from 'three';
+  esbuild entrada.js --bundle --minify --format=iife --global-name=THREE --outfile=three-mesa.min.js
+Pesa 549 KB (137 KB con gzip). Requiere WebGL 2 (three.js dejó WebGL 1 en r163).

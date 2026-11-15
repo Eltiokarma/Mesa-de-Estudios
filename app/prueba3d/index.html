@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prueba 3D · Mesa de Estudios</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/app/estilos.css">
+<style>
+  body{padding:max(14px,env(safe-area-inset-top)) 14px 40px}
+  main{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+  h1{margin:0;font-size:24px}
+  .p3-tabs{display:flex;gap:8px;flex-wrap:wrap}
+  .p3-tabs button{min-height:44px;padding:8px 14px;border-radius:999px;border:2px solid var(--line);background:var(--card);font-weight:700}
+  .p3-tabs button[aria-pressed=true]{border-color:var(--brand);background:var(--brand-soft)}
+  .p3-lienzo{position:relative;border-radius:20px;overflow:hidden;background:#f6efe8;border:2px solid var(--line);touch-action:none;aspect-ratio:1/1}
+  .p3-lienzo canvas{display:block;width:100%;height:100%}
+  .p3-lectura{min-height:26px;text-align:center;font-weight:700;font-size:18px}
+  .p3-ctrl{display:flex;flex-wrap:wrap;gap:8px}
+  .p3-ctrl button{min-height:44px;min-width:44px;padding:8px 12px;border-radius:14px;border:2px solid var(--line);background:var(--card);font-weight:700}
+  .p3-ctrl button[aria-pressed=true]{border-color:var(--brand);background:var(--brand-soft)}
+  .p3-fila{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center}
+  .p3-fila input{width:100%;min-height:44px;accent-color:var(--brand)}
+  .p3-res{font-size:13px;font-variant-numeric:tabular-nums;overflow-x:auto}
+  .p3-res table{border-collapse:collapse;width:100%}
+  .p3-res td,.p3-res th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:right}
+  .p3-res td:first-child,.p3-res th:first-child{text-align:left}
+  .p3-aviso{padding:12px;border-radius:14px;background:var(--acento);color:var(--acento-ink);font-weight:600}
+  textarea{width:100%;min-height:44px;font:inherit;border-radius:12px;border:2px solid var(--line);padding:8px;background:var(--card);color:var(--ink)}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="sub">Prueba de Mesa de Estudios · no es parte de la app</p>
+    <h1>¿Se siente bien girar cosas en 3D en este equipo?</h1>
+    <p class="sub">Tres objetos para tocar. Gíralos con el dedo o con los botones. Al final, «Correr la medición» toma unos 30 segundos sin tocar nada.</p>
+  </header>
+  <div id="sin-webgl" class="p3-aviso" hidden></div>
+  <nav class="p3-tabs" aria-label="Objetos">
+    <button type="button" data-escena="corte" aria-pressed="true">Prisma que se corta</button>
+    <button type="button" data-escena="molecula" aria-pressed="false">Molécula que gira</button>
+    <button type="button" data-escena="cubitos" aria-pressed="false">Cubitos</button>
+  </nav>
+  <div class="p3-lienzo" id="lienzo"><canvas id="cv" role="img" aria-label="Figura en 3D"></canvas></div>
+  <p class="p3-lectura" id="lectura" aria-live="polite"></p>
+  <div class="p3-ctrl" role="group" aria-label="Mover la vista">
+    <button type="button" data-giro="-90" aria-label="Girar a la izquierda 90 grados">↺ 90°</button>
+    <button type="button" data-giro="90" aria-label="Girar a la derecha 90 grados">↻ 90°</button>
+    <button type="button" data-vista="frente">Frente</button>
+    <button type="button" data-vista="perfil">Perfil</button>
+    <button type="button" data-vista="planta">Planta</button>
+    <button type="button" data-vista="iso">Isométrica</button>
+  </div>
+  <div id="propios" class="p3-ctrl" style="flex-direction:column;align-items:stretch"></div>
+  <section class="card">
+    <h2 style="margin-top:0">Medición</h2>
+    <label class="sub" for="celular">Celular o computadora (marca, modelo, memoria, batería)</label>
+    <textarea id="celular" rows="2" placeholder="Redmi 15C, 4 GB, Chrome 157, 68 %"></textarea>
+    <div class="p3-ctrl" style="margin-top:10px">
+      <button type="button" id="medir-todo">Correr la medición (30 s)</button>
+      <button type="button" id="medir-mano">Medir 5 s mientras lo giro</button>
+    </div>
+    <p class="sub" id="estado" role="status"></p>
+    <div class="p3-res" id="resultados"></div>
+    <div class="p3-ctrl" style="margin-top:10px">
+      <button type="button" id="copiar">Copiar resultados</button>
+      <button type="button" id="bajar">Descargar JSON</button>
+    </div>
+  </section>
+</main>
+<script src="/app/vendor/three/three-mesa.min.js"></script>
+<script src="geometria.js"></script>
+<script src="prueba3d.js"></script>
+</body>
+</html>
