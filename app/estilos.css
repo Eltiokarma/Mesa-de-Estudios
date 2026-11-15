@@ -596,7 +596,7 @@ input[type=file]{font:inherit;max-width:100%}
 .unidad-hero{border:2px solid var(--borde);border-radius:30px;box-shadow:0 6px 0 var(--plat);padding:14px 16px 16px}
 .unidad-hero .volver,.unidad-cab .volver{margin:0 0 12px;border:2px solid var(--borde);box-shadow:0 3px 0 var(--borde);background:#fff;color:#2d2340}
 .uh-cuerpo{display:grid;grid-template-columns:144px minmax(0,1fr);gap:14px;align-items:center}
-.unidad-hero h1{font-size:22px;margin-top:4px;overflow-wrap:anywhere}
+.unidad-hero h1{font-size:22px;margin-top:4px;overflow-wrap:break-word;hyphens:auto}
 .unidad-hero .temas{margin:12px 0 0}
 .marca-vista{margin-top:14px;display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:6px 16px 6px 8px;border-radius:999px;border:2px solid var(--borde);background:#fff;color:#2d2340;font-weight:700;font-size:15px}
 .marca-vista .caja-v{width:26px;height:26px;border-radius:50%;border:2px solid var(--borde);display:grid;place-items:center;font-size:14px}
@@ -946,3 +946,47 @@ body.con-lupa{overflow:hidden}
 .muestra-btn{margin-top:12px}
 .muestra-cab{margin-bottom:14px}
 .muestra-cab h1{margin:2px 0 4px}
+
+/* ---- Fase 1 (15 nov): teoría ordenada ---- */
+/* Atajos de la teoría: una fila fija de tres botones de color, siempre visible (antes al final de una tira deslizable). */
+.te-atajos{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px;margin:12px 0 10px}
+.te-atajo{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:56px;padding:6px 4px;border-radius:16px;border:2px solid transparent;text-decoration:none;font-weight:700;font-size:14px;color:var(--ink);text-align:center}
+.te-atajo-ic{font-size:18px;line-height:1}
+.te-atajo-ficha{background:color-mix(in srgb,var(--c-i) 16%,var(--card))}
+.te-atajo-glosario{background:color-mix(in srgb,var(--c-d) 16%,var(--card))}
+.te-atajo-laboratorio{background:color-mix(in srgb,var(--c-o) 16%,var(--card))}
+.te-atajo.on{border-color:currentColor}
+.te-atajo-ficha.on{color:var(--c-i)}.te-atajo-glosario.on{color:var(--c-d)}.te-atajo-laboratorio.on{color:var(--c-o)}
+/* Ficha de repaso abierta: cada regla en su tarjeta, numerada. */
+.te-fichas-intro{margin:0 0 10px}
+.te-fic-cab{display:flex;align-items:center;gap:10px}
+.te-fic-cab h2{margin:0;font-size:19px}
+.te-fic-n{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:color-mix(in srgb,var(--c-i) 18%,var(--card));color:var(--c-i);font-weight:800}
+.te-fic.hecha .te-fic-n{background:var(--ok);color:#fff}
+.te-fic-ir{margin-top:10px}
+/* Puertas de la unidad con el color de su función (15 nov): leer en turquesa, jugar en naranja, ejercitar en morado,
+   comprobar en verde, examen en rojo. La teoría es la principal: llena de color. */
+.puerta{--fn:var(--line)}
+.puerta-teoria{--fn:var(--c-i)}.puerta-laboratorio{--fn:var(--c-o)}.puerta-ejercicios{--fn:var(--brand)}
+.puerta-entrada{--fn:var(--c-d)}.puerta-examen{--fn:var(--c-h)}.puerta-pregunta{--fn:var(--muted)}
+.puerta:not(.principal){background:color-mix(in srgb,var(--fn) 12%,var(--card));border-color:color-mix(in srgb,var(--fn) 55%,var(--borde,var(--line)))}
+.puerta:not(.principal) .ic-puerta{color:var(--fn)}
+.puerta.principal{background:var(--fn);color:var(--bg);box-shadow:0 5px 0 color-mix(in srgb,var(--fn) 60%,#000)}
+.puerta.principal .d{color:color-mix(in srgb,var(--bg) 88%,var(--fn))}
+.puerta.principal:active{box-shadow:0 1px 0 color-mix(in srgb,var(--fn) 60%,#000)}
+.pruebas-curso{margin-top:18px}
+/* Un color por momento (15 nov): jugar en naranja, comprobar (predice y ahora tú) en morado, leer y ver (mira y la
+   regla) en turquesa. Lo llevan la pestaña del momento, el borde de la tarjeta, la consigna y el botón de seguir. */
+.te-idea,.te-labo{--mom:var(--brand)}
+.te-idea[data-m=juega],.te-labo{--mom:var(--c-o)}
+.te-idea[data-m=predice],.te-idea[data-m=ahora-tu]{--mom:var(--brand)}
+.te-idea[data-m=mira],.te-idea[data-m=regla]{--mom:var(--c-i)}
+.te-idea{border-top:6px solid var(--mom)}
+.te-momentos li[data-m=juega]{--c:var(--c-o)}.te-momentos li[data-m=predice]{--c:var(--brand)}
+.te-momentos li[data-m=mira]{--c:var(--c-i)}.te-momentos li[data-m=regla]{--c:var(--c-i)}.te-momentos li[data-m=ahora-tu]{--c:var(--brand)}
+.te-momentos li.pasado{border-top-color:color-mix(in srgb,var(--c) 45%,var(--card));color:var(--ink)}
+.te-momentos li.on{border-top-color:var(--c);color:var(--c);font-weight:800}
+.te-idea .btn.te-sig{background:var(--mom);color:var(--bg)}
+.te-consigna-arriba{margin:8px 0 10px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--mom) 12%,var(--card));border-left:5px solid var(--mom);font-size:17px;line-height:1.45;font-weight:600}
+/* Ayuda en verde (pista, «Muéstrame», volver a la explicación): se distingue de seguir y de comprobar. */
+.te-pista,.te-muestra,.te-ayuda2 .btn{background:color-mix(in srgb,var(--c-d) 14%,var(--card));border:1.5px solid color-mix(in srgb,var(--c-d) 55%,var(--line));color:var(--ink)}

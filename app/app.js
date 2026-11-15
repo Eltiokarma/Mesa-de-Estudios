@@ -119,7 +119,7 @@ const ctxPrueba = () => ({ $app, cat, est, esc, guardar, registrar, marcarDia, p
 const salidaAbierta = curso => (est.salidaHabilitada || []).some(x => x === curso || x === 'todas');
 // Las escenas abren su propia página (con botón para volver); las predicciones y la lectura van dentro de la app.
 // La lectura recibe además la unidad, para mostrar solo los textos que la tocan.
-const enlace = (p, unidad) => p.formato === 'escena' ? `${p.url}?desde=app` : p.formato === 'lectura' && unidad ? `${p.url}/${encodeURIComponent(unidad)}` : p.url;
+const enlace = (p, unidad) => p.formato === 'escena' ? `${p.url}?desde=app${unidad ? `&unidad=${encodeURIComponent(unidad)}` : ''}` : p.formato === 'lectura' && unidad ? `${p.url}/${encodeURIComponent(unidad)}` : p.url;
 const VERBO = { escena: 'Abrir escena', predicciones: 'Practicar', lectura: 'Leer' };
 const ETIQUETA = { escena: 'Escena', predicciones: 'Práctica', lectura: 'Lectura' };
 function avance(c, uni) { const us = unidadesDe(c, uni); return us.length ? us.filter(estudiada).length / us.length : 0; }
@@ -251,18 +251,20 @@ function vInicio() {
   const reto = conEscena ? `<div class="reto tinte" style="${Ilus.tinte(conEscena.c.id)}">${Ilus.viñeta(conEscena.c.id, 'class="reto-vineta vineta-flota"')}${Ilus.gato('class="reto-gato-mini"')}
       <div class="etq">Reto de hoy · ${esc(conEscena.c.nombre)}</div>
       <h3>${esc(conEscena.u.nombre)}</h3>
-      <p>${temaPendiente(conEscena.u) ? 'Primero, una prueba corta del tema; después, a jugar.' : conEscena.u.plantillas.length ? 'Predice antes de ver la respuesta.' : esc(conEscena.u.temas.slice(0, 3).join(' · '))}</p>
-      ${conEscena.u.plantillas.length
-        ? `<a class="btn tinta" href="${esc(enlace(cat.plantillas[conEscena.u.plantillas[0]], conEscena.u.id))}" data-abrir="${esc(conEscena.u.id)}">${temaPendiente(conEscena.u) ? 'Empezar' : VERBO[cat.plantillas[conEscena.u.plantillas[0]].formato] || 'Abrir'} ›</a>`
+      <p>${conEscena.u.teoria ? 'Empieza por la teoría: lees, juegas y entiendes por qué.' : conEscena.u.plantillas.length ? 'Predice antes de ver la respuesta.' : esc(conEscena.u.temas.slice(0, 3).join(' · '))}</p>
+      ${conEscena.u.teoria ? `<a class="btn tinta" href="#/unidad/${esc(conEscena.u.id)}/teoria">Estudiar la teoría ›</a>`
+        : conEscena.u.plantillas.length
+        ? `<a class="btn tinta" href="${esc(enlace(cat.plantillas[conEscena.u.plantillas[0]], conEscena.u.id))}" data-abrir="${esc(conEscena.u.id)}">${VERBO[cat.plantillas[conEscena.u.plantillas[0]].formato] || 'Abrir'} ›</a>`
         : `<a class="btn tinta" href="#/unidad/${esc(conEscena.u.id)}">Ver unidad ›</a>`}
     </div>` : `<div class="reto">${Ilus.gatoDormido('class="reto-gato"')}<h3>Estudiaste todas las unidades</h3><p>Ahora toca recordarlas: el repaso de hoy te espera.</p></div>`;
   // Lo que sigue: solo unidades con módulo (las demás no tienen nada que abrir todavía), una por curso primero
   // para que no salgan cuatro del mismo curso, y luego el resto en el orden del temario.
   const conModulo = pend.filter(x => x !== conEscena && cat.plantillas[x.u.plantillas[0]]);
   const cursosVistos = new Set(), primeras = conModulo.filter(x => !cursosVistos.has(x.c.id) && cursosVistos.add(x.c.id));
-  const sig = [...primeras, ...conModulo.filter(x => !primeras.includes(x))].slice(0, 4).map(x => `<a class="item" style="${Ilus.tinte(x.c.id)}" href="${esc(enlace(cat.plantillas[x.u.plantillas[0]], x.u.id))}" data-abrir="${esc(x.u.id)}">${icono(x.c.id)}
+  // Si la unidad tiene teoría, «Lo que sigue» lleva a la teoría (Gerson, 15 nov: primero estudiar, después ejercitar).
+  const sig = [...primeras, ...conModulo.filter(x => !primeras.includes(x))].slice(0, 4).map(x => `<a class="item" style="${Ilus.tinte(x.c.id)}" href="${esc(x.u.teoria ? `#/unidad/${x.u.id}/teoria` : enlace(cat.plantillas[x.u.plantillas[0]], x.u.id))}"${x.u.teoria ? '' : ` data-abrir="${esc(x.u.id)}"`}>${icono(x.c.id)}
       <span class="tx"><span class="t">${esc(x.u.nombre)}</span><br><span class="d">${esc(x.c.nombre)} · ${esc(etiquetaUbic(x.u, est.uni))}</span></span>
-      <span class="ir">${tagAdelanto(x.u)}${esc(ETIQUETA[cat.plantillas[x.u.plantillas[0]].formato] || 'Abrir')} ›</span></a>`).join('');
+      <span class="ir">${tagAdelanto(x.u)}${x.u.teoria ? 'Teoría' : esc(ETIQUETA[cat.plantillas[x.u.plantillas[0]].formato] || 'Abrir')} ›</span></a>`).join('');
   // Tus cursos: carrusel de pegatinas con la viñeta de cada curso.
   const carrusel = cat.cursos.filter(c => unidadesDe(c, est.uni).length).map(c => { const a = avance(c, est.uni);
     return `<a class="cursito tinte" style="${Ilus.tinte(c.id)}" href="#/curso/${esc(c.id)}">${Ilus.viñeta(c.id)}<span class="t">${esc(c.nombre)}</span>
@@ -323,7 +325,7 @@ function vCursos() {
 // entrada. Curso de lectura: la entrada es el primer texto del módulo, una vez por sesión, para que el botón de volver
 // deje ver el curso (al abrir cualquier ejercicio, la entrada vuelve a ir primero). Devuelve true si redirigió.
 // Decisión de Gerson (14 nov): la prueba de entrada del CURSO es opcional (se ofrece en la página del curso, nunca se
-// impone); la del TEMA es obligatoria antes de su teoría, ejercicios y simulacro (temaPendiente). Se deja la función
+// impone); la del TEMA tampoco: es opcional y va después de la teoría (decisión de Gerson, 15 nov). Se deja la función
 // por si vuelve a hacer falta, pero no redirige.
 function llevarAEntrada(c) {
   return false;
@@ -361,7 +363,7 @@ function vCurso(id) {
   const grados = [...new Set(ord.map(u => u.grado))].sort((a, b) => peso(a) - peso(b));
   const tarjeta = u => `<a class="unidad-t${estudiada(u) ? ' hecha' : ''}" href="#/unidad/${esc(u.id)}" data-unidad="${esc(u.id)}">
       <span class="lamina">${dibujo(c, u)}${estudiada(u) ? `<span class="hecho" title="${esc(nivelDe(u).nombre)}">✓<span class="lector"> ${esc(nivelDe(u).nombre)}</span></span>` : ''}</span>
-      <span class="t">${esc(u.nombre)}</span><span class="d">${textoEjercicios(modulosDe(u).length)}</span></a>`;
+      <span class="t">${esc(u.nombre)}</span><span class="d">${u.teoria ? esc(textoTeoriaCorto(u)) : textoEjercicios(modulosDe(u).length)}</span></a>`;
   const filas = grados.map(g => { const del = ord.filter(u => u.grado === g);
     const marca = g === mio ? '<span class="tag acento">Tu grado</span>' : mio && g > mio ? '<span class="tag gris">Adelanto</span>' : mio ? '<span class="tag gris">Repaso</span>' : '';
     return `<section class="fila-u" aria-labelledby="fg-${g}">
@@ -374,8 +376,8 @@ function vCurso(id) {
     <h1>${esc(c.nombre)}</h1><p class="sub">${esc(AREA_TXT[c.area])} · ${us.length} unidades · ${pc} % estudiado</p>
     <span class="barra" aria-hidden="true"><i style="width:${pc}%"></i></span>
     <div class="chips"><button class="chip${todas ? '' : ' on'}" data-todas="0">${esc(UNI_CORTA[est.uni] || 'Mi universidad')}</button><button class="chip${todas ? ' on' : ''}" data-todas="1">Todas las unidades</button></div></header>
-    ${PC ? PC.tarjeta(ctxPrueba(), c.id) : ''}${lec ? tarjetaLectura(lec, c) : ''}
-    <div class="filas-u" style="${Ilus.tinte(c.id)}">${filas}</div>`;
+    <div class="filas-u" style="${Ilus.tinte(c.id)}">${filas}</div>
+    ${PC || lec ? `<div class="pruebas-curso">${PC ? PC.tarjeta(ctxPrueba(), c.id) : ''}${lec ? tarjetaLectura(lec, c) : ''}</div>` : ''}`;
   $app.querySelectorAll('[data-todas]').forEach(b => b.onclick = () => { sessionStorage.setItem('todas', b.dataset.todas); vCurso(id); });
   $app.querySelectorAll('.fila-u').forEach(armarFila);
   // Al volver de una unidad, su tarjeta queda a la vista y con el foco (sin mover la página de golpe al entrar).
@@ -422,17 +424,27 @@ const ICONO_PUERTA = {
   teoria: '<path d="M12 6c-3-2-6-2-9-1v13c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1zM12 6v13"/>',
   ejercicios: '<path d="M4 20l1-4L16 5l3 3L8 19zM14 7l3 3"/>',
   examen: '<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13l2 2 4-4"/>',
+  entrada: '<path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM8 12l3 3 5-6"/>',
   pregunta: '<path d="M4 5h16v11H11l-5 4v-4H4zM10 9a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6 1V12M12 14.2v.1"/>',
   laboratorio: '<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3M7.5 15h9"/>',
 };
 const iconoPuerta = k => `<svg class="ic-puerta" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">${ICONO_PUERTA[k]}</svg>`;
-const SUB_UNIDAD = { teoria: 'Teoría', ejercicios: 'Ejercicios', examen: 'Exámenes', pregunta: 'Dejar una pregunta' };
+const SUB_UNIDAD = { teoria: 'Teoría', ejercicios: 'Ejercicios', examen: 'Exámenes', pregunta: 'Dejar una pregunta', entrada: 'Prueba del tema' };
+// La prueba del tema (opcional, después de la teoría; se puede volver a tomar): lo que dice su puerta.
+function textoPruebaTema(u) {
+  const tm = (est.temas || {})[u.id] || {}, ult = (tm.intentos && tm.intentos[tm.intentos.length - 1]) || tm.entrada;
+  return ult ? `Última: ${ult.aciertos} de ${ult.total} · volver a tomarla` : `Opcional: ${u.teoria.ideas || 0} preguntas para comprobar lo que aprendiste`;
+}
 const N_EXAMEN = 5;
 const generadoresDe = u => modulosDe(u).filter(p => p.formato === 'predicciones');
 
+// En la tarjeta de la unidad (página del curso): la teoría primero (15 nov), en corto.
+function textoTeoriaCorto(u) {
+  const st = (est.teoria || {})[u.id], n = u.teoria.ideas || 0, h = st ? Object.values(st.ideas || {}).filter(i => i.hecha).length : 0;
+  return h ? `Teoría: ${h} de ${n} ideas` : `Teoría · ${n} ${n === 1 ? 'idea' : 'ideas'}`;
+}
 // Lo que dice la puerta de la teoría: cuántas ideas tiene y cuántas terminó el alumno.
 function textoTeoria(u) {
-  if (temaPendiente(u)) return `Primero, la prueba del tema (${u.teoria.ideas || 0} preguntas)`;
   const st = (est.teoria || {})[u.id], n = u.teoria.ideas || 0;
   const h = st ? Object.values(st.ideas || {}).filter(i => i.hecha).length : 0;
   return h ? `${h} de ${n} ideas terminadas` : `${n} ${n === 1 ? 'idea' : 'ideas'} para jugar y entender`;
@@ -443,12 +455,7 @@ function vUnidad(id, sub) {
   if (llevarAEntrada(c)) return;
   sessionStorage.setItem('ultima-unidad', id);
   if (sub === 'entrada') return vEntradaTema(c, u);
-  // La prueba del tema va antes de la teoría, los ejercicios y el simulacro; el laboratorio y el glosario quedan libres.
-  const libre = sub === 'teoria' && ['laboratorio', 'glosario'].includes(location.hash.split('/')[4]);
-  if (['teoria', 'ejercicios', 'examen'].includes(sub) && !libre && temaPendiente(u)) {
-    sessionStorage.setItem('tema-destino-' + u.id, location.hash);
-    return ir(`#/unidad/${u.id}/entrada`);
-  }
+  // La prueba del tema es opcional y va después de la teoría (decisión de Gerson, 15 nov): ya no se impone antes de nada.
   if (sub === 'teoria') return vTeoria(c, u);
   if (sub === 'ejercicios') return vEjercicios(c, u);
   if (sub === 'examen') return vExamen(c, u);
@@ -457,7 +464,7 @@ function vUnidad(id, sub) {
   const primeraVisita = est.vistas[id] || hoy();
   est.vistas[id] = primeraVisita;   // abrir la unidad es una visita (no la acredita como estudiada)
   const nv = nivelDe(u), marcada = !!(est.marcadas || {})[id];
-  const puerta = (k, d, principal) => `<a class="puerta${principal ? ' principal' : ''}" href="#/unidad/${esc(id)}/${k}">${iconoPuerta(k)}<span class="t">${SUB_UNIDAD[k]}</span><span class="d">${d}</span></a>`;
+  const puerta = (k, d, principal) => `<a class="puerta puerta-${k}${principal ? ' principal' : ''}" href="#/unidad/${esc(id)}/${k}">${iconoPuerta(k)}<span class="t">${SUB_UNIDAD[k]}</span><span class="d">${d}</span></a>`;
   $app.innerHTML = `<header class="unidad-hero tinte" style="${Ilus.tinte(c.id)}">
       <a class="volver" href="#/curso/${esc(c.id)}" aria-label="Volver a ${esc(c.nombre)}">‹</a>
       <div class="uh-cuerpo"><span class="lamina">${dibujo(c, u)}</span>
@@ -468,10 +475,11 @@ function vUnidad(id, sub) {
       <button type="button" class="marca-vista${marcada ? ' on' : ''}" data-ver aria-pressed="${marcada}"><span class="caja-v" aria-hidden="true">${marcada ? '✓' : ''}</span>${marcada ? 'La marqué como estudiada' : 'Ya la estudié por mi cuenta'}</button>
     </header>
     <nav class="puertas aparece" aria-label="Qué hacer en esta unidad">
-      ${puerta('teoria', u.teoria ? textoTeoria(u) : 'En preparación', false)}
-      ${u.teoria ? `<a class="puerta" href="#/unidad/${esc(id)}/teoria/laboratorio">${iconoPuerta('laboratorio')}<span class="t">Laboratorio</span><span class="d">Juega libre, sin preguntas</span></a>` : ''}
-      ${puerta('ejercicios', textoEjercicios(n), n > 0)}
+      ${puerta('teoria', u.teoria ? textoTeoria(u) : 'En preparación', !!u.teoria)}
+      ${u.teoria ? `<a class="puerta puerta-laboratorio" href="#/unidad/${esc(id)}/teoria/laboratorio">${iconoPuerta('laboratorio')}<span class="t">Laboratorio</span><span class="d">Juega libre, sin preguntas</span></a>` : ''}
+      ${puerta('ejercicios', textoEjercicios(n), !u.teoria && n > 0)}
       ${puerta('examen', gens ? (ex ? `Último: ${ex.ultimo.aciertos} de ${ex.ultimo.total}` : `${N_EXAMEN} preguntas tipo examen`) : 'En preparación')}
+      ${u.teoria ? puerta('entrada', textoPruebaTema(u)) : ''}
       ${puerta('pregunta', 'Para tu profesor')}
     </nav>`;
   $app.querySelector('[data-ver]').onclick = () => {
@@ -487,7 +495,6 @@ const cabUnidad = (c, u, titulo) => `<header class="unidad-cab tinte" style="${I
     <span class="lamina">${dibujo(c, u)}</span><div><p class="sub">${esc(c.nombre)} · ${esc(u.nombre)}</p><h1>${esc(titulo)}</h1></div></header>`;
 
 // Prueba de entrada del tema (app/teoria.js, Teoria.entrada): pendiente si la unidad tiene teoría y aún no la hizo.
-const temaPendiente = u => !!u.teoria && !(((est.temas || {})[u.id] || {}).entrada);
 function vEntradaTema(c, u) {
   if (!u.teoria) return ir(`#/unidad/${u.id}`);
   cuandoListo(modulo('teoria'), () => Teoria.entrada({ $app, cat, est, esc, guardar, registrar, marcarDia, cab: t => cabUnidad(c, u, t) }, u));
@@ -1330,14 +1337,7 @@ function render() {
 // Abrir una escena cuenta como día activo y marca la unidad como estudiada.
 document.addEventListener('click', e => {
   const a = e.target.closest('[data-abrir]'); if (!a) return;
-  // Abrir un ejercicio de una unidad cuya prueba del tema falta: primero la prueba (decisión de Gerson, 14 nov).
-  // La del curso ya no se impone. Abrir cuenta como visita, nunca como unidad estudiada (nucleo/avance.js).
-  const c = cursoDeUnidad(a.dataset.abrir), u = c && c.unidades.find(x => x.id === a.dataset.abrir);
-  if (u && temaPendiente(u)) {
-    e.preventDefault();
-    sessionStorage.setItem('tema-destino-' + u.id, a.getAttribute('href').startsWith('#') ? a.getAttribute('href') : `#/unidad/${u.id}/ejercicios`);
-    return ir(`#/unidad/${u.id}/entrada`);
-  }
+  // Abrir cuenta como visita, nunca como unidad estudiada (nucleo/avance.js). La prueba del tema ya no se impone (15 nov).
   est.vistas[a.dataset.abrir] = est.vistas[a.dataset.abrir] || hoy(); marcarDia(); guardar();
 });
 window.addEventListener('hashchange', render);

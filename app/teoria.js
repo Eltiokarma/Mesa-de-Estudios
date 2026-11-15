@@ -279,17 +279,15 @@
       return `<a class="te-chip${on ? ' on' : ''}${hecha(st, i.id) ? ' hecha' : sabidas.has(i.id) ? ' sabida' : ''}" href="#/unidad/${esc(u.id)}/teoria/${esc(i.id)}"${on ? ' aria-current="step"' : ''}>
         <span class="te-num" aria-hidden="true">${hecha(st, i.id) ? '✓' : k + 1}</span><span>${esc(i.titulo)}</span>${hecha(st, i.id) ? '<span class="lector"> (terminada)</span>' : sabidas.has(i.id) ? '<span class="lector"> (la acertaste en la prueba de entrada)</span>' : ''}</a>`;
     };
+    // Atajos siempre a la vista (antes quedaban escondidos al final de la tira de ideas): ficha, glosario y laboratorio.
+    const atajo = (k, txt, ic, on) => `<a class="te-atajo te-atajo-${k}${on ? ' on' : ''}" href="#/unidad/${esc(u.id)}/teoria/${k}"${on ? ' aria-current="page"' : ''}><span class="te-atajo-ic" aria-hidden="true">${ic}</span><span>${txt}</span></a>`;
     const cab = ctx.muestra ? ctx.cab() : `${ctx.cab('Teoría')}
-      <nav class="te-ideas" aria-label="Ideas de esta unidad">${ideas.map(chip).join('')}
-        <a class="te-chip te-lab${lab ? ' on' : ''}" href="#/unidad/${esc(u.id)}/teoria/laboratorio"${lab ? ' aria-current="page"' : ''}>
-        <span class="te-num" aria-hidden="true">⚗</span><span>Laboratorio</span></a>
-        <a class="te-chip te-ficha${ficha ? ' on' : ''}" href="#/unidad/${esc(u.id)}/teoria/ficha"${ficha ? ' aria-current="page"' : ''}>
-        <span class="te-num" aria-hidden="true">≡</span><span>Ficha de repaso</span></a>
-        ${aqui.length ? `<a class="te-chip te-glo-chip${glosa ? ' on' : ''}" href="#/unidad/${esc(u.id)}/teoria/glosario"${glosa ? ' aria-current="page"' : ''}>
-        <span class="te-num" aria-hidden="true">Aa</span><span>Glosario</span></a>` : ''}</nav>
+      <nav class="te-atajos" aria-label="Para hojear y jugar">${atajo('ficha', 'Reglas', '≡', ficha)}${aqui.length ? atajo('glosario', 'Glosario', 'Aa', glosa) : ''}${atajo('laboratorio', 'Laboratorio', '⚗', lab)}</nav>
+      <nav class="te-ideas" aria-label="Ideas de esta unidad">${ideas.map(chip).join('')}</nav>
       <p class="sub te-avance">${n} de ${ideas.length} ideas terminadas${sabidas.size ? ` · en la prueba de entrada acertaste ${sabidas.size}` : ''}</p>`;
 
-    const figuraHTML = `<div class="te-figcaja"><figure class="te-fig kit-figura" aria-describedby="te-alt"></figure>
+    // La consigna del juego va arriba de la figura (15 nov): con la figura fija al bajar, debajo quedaba tapada.
+    const figuraHTML = `<p class="te-consigna te-consigna-arriba" hidden></p><div class="te-figcaja"><figure class="te-fig kit-figura" aria-describedby="te-alt"></figure>
         <div class="te-figbarra"><button type="button" class="te-zoom" aria-label="Ampliar la figura">${ICONO_LUPA}</button></div></div>
         <p class="lector" id="te-alt"></p>`;
     const vozHTML = `<div class="te-voz">
@@ -367,6 +365,7 @@
     const evento = (momento, extra) => ctx.registrar(Object.assign({ tipo: 'teoria', unidad: u.id, idea: idea.id, momento, ms: Date.now() - t0 }, extra));
     conectarLupa(raiz);
     vigilar(zona);
+    vigilar(raiz.querySelector('.te-consigna-arriba'));
     vigilar($app.querySelector('.te-historia'));
 
     // 1. Juega: arrastrar sobre la figura o usar − y +; lectura en vivo y conteo de casos distintos.
@@ -374,7 +373,7 @@
       const j = idea.juega;
       actuar('consigna', j.voz || T.plano(j.consigna));
       juego = montarJuego(j, { fig, zona, lectura, alt: $('#te-alt'), piezaPorDefecto: idea.pieza, alTocar: () => actuar('juego'), minimo: j.minimo });
-      sig.textContent = 'Ya probé, sigo';
+      sig.textContent = 'Siguiente: Predice ›';
       sig.onclick = () => {
         const p = juego.probados();
         if (p < j.minimo) { decir(`Prueba ${j.minimo - p === 1 ? 'un caso más' : `${j.minimo - p} casos más`} antes de seguir: cambia un valor.`); (zona.querySelector('input,button') || sig).focus(); return; }
@@ -426,7 +425,7 @@
         if (o.correcta) { fb.innerHTML = E.html(p.coincide || 'Coincide con lo que pasa.'); actuar('coincide', voz('coincide')); }
         else { fb.innerHTML = `${E.html(o.siFuera)}`; actuar('no-coincide', p.noCoincide || voz('noCoincide')); }
         mostrar(fb);
-        sig.textContent = 'Ver por qué';
+        sig.textContent = 'Siguiente: Mira por qué ›';
         sig.onclick = () => ir('mira');
       };
       if (ya) { const b = zona.querySelector(`[data-op="${CSS.escape(ya)}"]`); if (b) b.classList.add('on'); resolver(ya); return; }
@@ -452,7 +451,7 @@
         pieza: P, datos: m.datos, pasos: m.pasos, base: m.base, figura: fig, pie: zona.querySelector('.te-paso'), inicio: 1,
         textoPaso: paso => `<p>${E.html(paso.texto)}</p>${paso.ecuacion ? `<p class="te-ec">${E.html(paso.ecuacion)}</p>` : ''}`,
       });
-      sig.textContent = 'Ver la regla';
+      sig.textContent = 'Siguiente: La regla ›';
       sig.onclick = () => ir('regla');
     }
 
@@ -464,7 +463,7 @@
       fig.innerHTML = P.dibujar(m.datos, Object.assign({}, m.base || {}, m.pasos[m.pasos.length - 1].estado || {}));
       $('#te-alt').textContent = P.alt(m.datos);
       zona.innerHTML = reglaHTML(r, true);
-      sig.textContent = 'Ahora tú';
+      sig.textContent = 'Siguiente: Ahora tú ›';
       sig.onclick = () => ir('ahora-tu');
     }
 
@@ -507,9 +506,14 @@
           if (fb.querySelector('.te-otro')) fb.querySelector('.te-otro').onclick = nuevo;
           const k = ideas.indexOf(idea), siguiente = ideas[k + 1];
           if (si.hecha) {
-            sig.textContent = siguiente ? 'Siguiente idea' : 'Ver la ficha de repaso';
+            sig.textContent = siguiente ? `Siguiente idea: ${siguiente.titulo} ›` : 'Ver todas las reglas ›';
             sig.onclick = () => { location.hash = `#/unidad/${u.id}/teoria/${siguiente ? siguiente.id : 'ficha'}`; };
-            if (!siguiente && ideas.every(i => hecha(st, i.id))) { actuar('fin', voz('fin')); evento('fin', {}); }
+            if (!siguiente && ideas.every(i => hecha(st, i.id))) {
+              actuar('fin', voz('fin')); evento('fin', {});
+              // Al terminar la teoría se ofrece la prueba del tema (opcional; decisión de Gerson, 15 nov).
+              if (!fb.querySelector('.te-oferta')) fb.insertAdjacentHTML('beforeend', `<div class="te-oferta"><p><b>Terminaste la teoría.</b> ¿Quieres comprobar lo que aprendiste?</p>
+                <a class="btn borde" href="#/unidad/${esc(u.id)}/entrada">Hacer la prueba del tema</a></div>`);
+            }
           } else { sig.textContent = 'Otro caso'; sig.onclick = nuevo; }
         };
       };
@@ -574,15 +578,16 @@
       pintarRes();
     }
 
+    // Ficha de repaso: todas las reglas a la vista, para hojear cuando se quiera (decisión de Gerson, 15 nov: leer no
+    // depende de jugar). Las ideas que aún no se jugaron lo dicen y llevan a la idea.
     function vistaFicha() {
-      return `<section class="te-fichas">${ideas.map((i, k) => hecha(st, i.id)
-        ? `<article class="card te-fic"><h2>${k + 1}. ${esc(i.titulo)}</h2>
+      return `<p class="sub te-fichas-intro">Las reglas de las ${ideas.length} ideas, para leer cuando quieras. Para entender por qué valen, juega cada idea.</p>
+        <section class="te-fichas">${ideas.map((i, k) => `<article class="card te-fic${hecha(st, i.id) ? ' hecha' : ''}">
+            <div class="te-fic-cab"><span class="te-fic-n" aria-hidden="true">${hecha(st, i.id) ? '✓' : k + 1}</span><h2>${esc(i.titulo)}</h2></div>
             <div class="te-figcaja"><figure class="kit-figura te-fig te-fig-chica">${Kit.piezas[i.mira.pieza || i.pieza].dibujar(i.mira.datos, Object.assign({}, i.mira.base || {}, i.mira.pasos[i.mira.pasos.length - 1].estado || {}))}</figure>
             <div class="te-figbarra"><button type="button" class="te-zoom" aria-label="Ampliar la figura de ${esc(i.titulo)}">${ICONO_LUPA}</button></div></div>
-            ${reglaHTML(i.regla)}</article>`
-        : `<article class="card te-fic pendiente"><h2>${k + 1}. ${esc(i.titulo)}</h2>
-            <p class="sub">Se abre al terminar esta idea: primero juegas y predices.</p>
-            <a class="btn borde" href="#/unidad/${esc(u.id)}/teoria/${esc(i.id)}">Ir a esta idea ›</a></article>`).join('')}</section>`;
+            ${reglaHTML(i.regla)}
+            ${hecha(st, i.id) ? '' : `<a class="btn borde te-fic-ir" href="#/unidad/${esc(u.id)}/teoria/${esc(i.id)}">Jugar esta idea ›</a>`}</article>`).join('')}</section>`;
     }
 
     // Laboratorio: elegir una mesa, jugar sin preguntas y guardar hasta 4 casos para compararlos lado a lado.
@@ -604,6 +609,7 @@
       diceL.textContent = 'Aquí no hay preguntas. Prueba casos raros y guarda los que te gusten.';
       conectarLupa(raizL);
       vigilar(zonaL);
+      vigilar(raizL.querySelector('.te-consigna-arriba'));
       st.lab = st.lab || {};
       st.lab.logradas = st.lab.logradas || {};
       const est = ctx.est;
@@ -776,7 +782,11 @@
       const { fig: f, zona: z, lectura: lec } = o;
       const vals = Object.assign(T.inicio(j), o.valores || {}), probados = new Set();
       const ctr = j.controles || [], arr = j.arrastres || [];
-      z.innerHTML = `<h3 class="lector" tabindex="-1">Juega</h3><p class="te-consigna">${typeof j.consigna === 'string' ? esc(j.consigna) : E.html(j.consigna)}</p>
+      // La consigna va en su lugar arriba de la figura, si la pantalla lo tiene (idea y laboratorio).
+      const consignaHTML = typeof j.consigna === 'string' ? esc(j.consigna) : E.html(j.consigna);
+      const slotC = f.closest('.te-idea, .te-labo') && f.closest('.te-idea, .te-labo').querySelector('.te-consigna-arriba');
+      if (slotC) { slotC.innerHTML = consignaHTML; slotC.hidden = false; }
+      z.innerHTML = `<h3 class="lector" tabindex="-1">Juega</h3>${slotC ? '' : `<p class="te-consigna">${consignaHTML}</p>`}
         ${arr.length ? '<p class="te-pista"><span class="te-pista-m" aria-hidden="true"></span>Arrastra los círculos de la figura, o usa − y +.</p>' : ''}
         <div class="te-controles">${ctr.map(control).join('')}</div>
         ${ctr.length ? '<button type="button" class="btn borde te-reinicio">Volver al inicio</button>' : ''}
@@ -891,6 +901,7 @@
         fijar(v) { for (const c of ctr) if (v && v[c.id] !== undefined) vals[c.id] = T.ajustar(c, v[c.id]); pintarJ(); },
         destruir() {
           if (roFig) roFig.disconnect();
+          if (slotC) { slotC.hidden = true; slotC.textContent = ''; }
           f.removeEventListener('pointerdown', abajo); f.removeEventListener('pointermove', mueve);
           f.removeEventListener('pointerup', arriba); f.removeEventListener('pointercancel', arriba);
           f.removeEventListener('touchstart', sinScroll); f.classList.remove('con-manijas', 'arrastrando');
@@ -944,32 +955,47 @@
     const T = window.Teoria, E = window.Ecuacion;
     est.temas = est.temas || {};
     const tm = est.temas[u.id] = est.temas[u.id] || {};
-    const destino = sessionStorage.getItem('tema-destino-' + u.id) || `#/unidad/${u.id}/teoria`;
     const per = T.PERSONAJES[c.id] || { nombre: 'Tu compañero' };
-    // Las preguntas salen siempre iguales para este alumno y esta unidad (semilla fija): retomar no las cambia.
+    // Prueba del tema opcional, después de la teoría, y se puede volver a tomar (decisión de Gerson, 15 nov).
+    //   El primer intento queda en tm.entrada (la medición y la calibración lo usan); los siguientes, en tm.intentos.
+    //   Las preguntas del primero salen con las semillas 500 + k (las que revisa el validador); cada intento nuevo, con
+    //   otras semillas de las 60 validadas, para que no se repitan. Retomar a medias no las cambia.
+    tm.intentos = tm.intentos || [];
+    const nIntento = tm.entrada ? tm.intentos.length + 1 : 0;
+    const semilla = k => (nIntento ? (nIntento * 7 + k * 3) % 60 : 500 + k);
     const preguntas = def.ideas.map((idea, k) => {
-      const caso = idea.ahoraTu.generar(500 + k);
-      return { idea, caso, ops: T.barajar(caso.opciones, 900 + k) };
+      const caso = idea.ahoraTu.generar(semilla(k));
+      return { idea, caso, ops: T.barajar(caso.opciones, 900 + k + nIntento * 31) };
     });
-    if (tm.entrada) { location.hash = destino; return; }
-    const en = tm.enCurso = tm.enCurso || { i: 0, resp: preguntas.map(() => null) };
+    const hechas = def.ideas.filter(i => ((((est.teoria || {})[u.id] || {}).ideas || {})[i.id] || {}).hecha).length;
+    const en = tm.enCurso && tm.enCurso.intento === nIntento ? tm.enCurso : (tm.enCurso = { intento: nIntento, i: 0, resp: preguntas.map(() => null) });
     const t0 = Date.now();
     let tP = Date.now();
     const cab = ctx.cab('Prueba del tema');
 
+    // Resultado del último intento, con «Volver a tomarla» (si no hay uno a medias).
+    function resumen() {
+      const ult = tm.intentos.length ? tm.intentos[tm.intentos.length - 1] : tm.entrada;
+      $app.innerHTML = `${cab}<section class="card te-entrada">
+        <span class="etq-p">Prueba del tema · ${tm.intentos.length + 1 === 1 ? '1 vez' : `${tm.intentos.length + 1} veces`}</span>
+        <h2>La última vez: ${ult.aciertos} de ${ult.total} ideas</h2>
+        <p class="sub">Cada vez salen otras preguntas. No es nota: sirve para ver qué ya tienes y qué conviene repasar.</p>
+        <div class="acciones-prueba"><button type="button" class="btn morado" id="te-otra">Volver a tomarla</button>
+          <a class="btn borde" href="#/unidad/${esc(u.id)}/teoria">Ir a la teoría</a></div></section>`;
+      $app.querySelector('#te-otra').onclick = () => { intro(); };
+    }
     function intro() {
       $app.innerHTML = `${cab}<section class="card te-entrada">
-        <span class="etq-p">Antes de estudiar ${esc(u.nombre)}</span>
+        <span class="etq-p">${nIntento ? 'Otra vez, con preguntas nuevas' : 'Comprueba lo que aprendiste'}</span>
         <h2>${preguntas.length} preguntas cortas, una por idea</h2>
-        <ul class="temas-l"><li>No es nota: sirve para ajustar el tema a lo que ya sabes.</li>
-          <li>Lo que aciertes empieza directo en la regla; lo demás, jugando.</li>
+        <ul class="temas-l"><li>Es opcional y no es nota: sirve para ver qué ya tienes y qué conviene repasar.</li>
+          ${hechas < def.ideas.length && !nIntento ? '<li>Lo mejor es hacerla después de la teoría. Si la haces antes, lo que aciertes empieza directo en la regla.</li>' : ''}
           <li>Si no sabes, marca «No sé»: ayuda más que adivinar.</li>
           <li>Puedes salir y volver: se guarda donde quedaste.</li></ul>
-        <p class="sub">El laboratorio de la unidad está libre: puedes jugar ahí antes, si quieres.</p>
         <div class="te-voz"><div class="mascota" data-mascota data-curso="${esc(c.id)}" aria-hidden="true"></div>
           <p class="te-dice"><b>${esc(per.nombre)}</b> <span>${esc((per.voces && per.voces.prediccion) || '')}</span></p></div>
         <div class="acciones-prueba"><button type="button" class="btn morado" id="te-empezar">${en.i || en.resp.some(Boolean) ? `Seguir en la pregunta ${en.i + 1}` : 'Empezar'}</button>
-          <a class="btn borde" href="#/unidad/${esc(u.id)}/teoria/laboratorio">Ir al laboratorio</a></div></section>`;
+          <a class="btn borde" href="#/unidad/${esc(u.id)}/teoria">${hechas ? 'Volver a la teoría' : 'Primero la teoría'}</a></div></section>`;
       $app.querySelector('#te-empezar').onclick = () => { tP = Date.now(); pregunta(); };
     }
     function pregunta() {
@@ -1007,19 +1033,22 @@
         filas.push({ idea: q.idea.id, opcion: r, correcta: bien, error: (o && !bien && o.error) || null });
       });
       // Primero se guarda el resultado y después se registran los eventos: si se corta entre los dos, no se duplica.
-      const expuesto = !!((est.vistas || {})[u.id] || ((est.teoria || {})[u.id] || {}).lab);
-      tm.entrada = { fecha: new Date().toLocaleDateString('en-CA'), aciertos, total: preguntas.length, nose, sabidas, expuesto };
+      const expuesto = !!((est.vistas || {})[u.id] || ((est.teoria || {})[u.id] || {}).lab || hechas);
+      const r = { fecha: new Date().toLocaleDateString('en-CA'), aciertos, total: preguntas.length, nose, sabidas, expuesto, ideasHechas: hechas };
+      if (nIntento) tm.intentos.push(r); else tm.entrada = r;
       delete tm.enCurso; ctx.guardar();
-      filas.forEach(f => ctx.registrar(Object.assign({ tipo: 'tema-item', fase: 'entrada', unidad: u.id }, f)));
-      ctx.registrar({ tipo: 'tema', fase: 'entrada', unidad: u.id, aciertos, total: preguntas.length, nose, expuesto, ms: Date.now() - t0 });
+      // fase: «entrada» el primer intento (como antes) y «repetida» los siguientes, para no mezclarlos en la medición.
+      const fase = nIntento ? 'repetida' : 'entrada';
+      filas.forEach(f => ctx.registrar(Object.assign({ tipo: 'tema-item', fase, unidad: u.id, intento: nIntento }, f)));
+      ctx.registrar({ tipo: 'tema', fase, unidad: u.id, aciertos, total: preguntas.length, nose, expuesto, ideasHechas: hechas, intento: nIntento, ms: Date.now() - t0 });
       $app.innerHTML = `${cab}<section class="card te-entrada">
         <span class="etq-p">Prueba del tema lista</span>
         <h2>${aciertos} de ${preguntas.length} ideas ya las tienes</h2>
-        <ul class="te-calib">${def.ideas.map(i => `<li class="${sabidas.includes(i.id) ? 'si' : 'no'}"><span aria-hidden="true">${sabidas.includes(i.id) ? '✓' : '○'}</span> ${esc(i.titulo)} <span class="sub">${sabidas.includes(i.id) ? 'empiezas por la regla' : 'empiezas jugando'}</span></li>`).join('')}</ul>
-        <a class="btn morado" href="${esc(destino)}">Seguir</a></section>`;
-      sessionStorage.removeItem('tema-destino-' + u.id);
+        <ul class="te-calib">${def.ideas.map(i => `<li class="${sabidas.includes(i.id) ? 'si' : 'no'}"><span aria-hidden="true">${sabidas.includes(i.id) ? '✓' : '○'}</span> ${esc(i.titulo)} <span class="sub">${sabidas.includes(i.id) ? 'la tienes' : 'conviene repasarla'}</span></li>`).join('')}</ul>
+        <div class="acciones-prueba"><a class="btn morado" href="#/unidad/${esc(u.id)}/teoria">${hechas >= def.ideas.length ? 'Repasar la teoría' : 'Ir a la teoría'}</a>
+          <a class="btn borde" href="#/unidad/${esc(u.id)}">Volver a la unidad</a></div></section>`;
     }
-    intro();
+    if ((tm.entrada || tm.intentos.length) && !(tm.enCurso && (tm.enCurso.i || tm.enCurso.resp.some(Boolean)))) resumen(); else intro();
   }
 
   window.Teoria = Object.assign(window.Teoria || {}, { vista, entrada });
