@@ -3114,7 +3114,9 @@
       "requiere": [
        "/nucleo/kit/piezas/arit-tabla.js",
        "/nucleo/kit/piezas/arit-fichas.js",
-       "/nucleo/kit/piezas/recta.js"
+       "/nucleo/kit/piezas/recta.js",
+       "/plantillas/potenciacion/motor.js",
+       "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 4,
       "terminos": 23

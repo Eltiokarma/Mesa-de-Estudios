@@ -10,8 +10,9 @@
  *
  * datos = {
  *   bloques: [{ x, y, z, w?, h?, d?, g }],    // esquina menor del bloque; z hacia arriba; w, h, d: lados en x, y, z (1)
- *   grupos:  [{ nombre, color?, rotulo?, dice? }],   // color: 'c-o', 'c-i', 'c-h', 'c-d', 'c-f' o nada (neutro)
- *                                                      // rotulo: texto HTML del color del grupo (regla 4); dice: al tocar
+ *   grupos:  [{ nombre, color?, rotulo?, rotuloEn?, dice? }],  // color: 'c-o', 'c-i', 'c-h', 'c-d', 'c-f' o nada (neutro)
+ *                                                      // rotulo: texto HTML del color del grupo (regla 4), sobre su tapa
+ *                                                      // o en rotuloEn [x, y, z]; dice: lo que se lee al tocarlo
  *   marco?:  { x, y, z, w, h, d, color?, rotulo? },  // caja de alambre: la caja que se llena, el cubo que falta…
  *   marcas?: [{ p: [x, y, z], texto, color? }],      // rótulos sueltos: lo que significa cada eje («×2», «12 cm»)
  *   hueco?:  0.1,                              // separación entre bloques, en la misma unidad
@@ -65,6 +66,7 @@
   }
   // Dónde va el rótulo de un grupo: sobre el centro de su tapa más alta (en coordenadas del motor).
   function puntoRotulo(d, i) {
+    if (d.grupos[i].rotuloEn) return d.grupos[i].rotuloEn;
     const bs = d.bloques.filter(b => b.g === i);
     if (!bs.length) return null;
     const sx = bs.reduce((a, b) => a + b.x + lados(b)[0] / 2, 0) / bs.length, sy = bs.reduce((a, b) => a + b.y + lados(b)[1] / 2, 0) / bs.length;
