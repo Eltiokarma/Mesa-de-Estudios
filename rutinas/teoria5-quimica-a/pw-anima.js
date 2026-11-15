@@ -1,6 +1,6 @@
 // Recorre la animación automática (docs/3d.md §6) de unidades de química, a 360 × 780.
 // Con `npm run dev` corriendo:  node rutinas/teoria5-quimica-a/pw-anima.js <unidad-corta> [más…]
-// Por idea y por la primera mesa: la lectura cambia sola en 700 ms, «⏸ Pausa» la congela y, con movimiento
+// Por idea y por la primera mesa: la lectura cambia sola entre dos momentos separados por 700 ms, «⏸ Pausa» la congela y, con movimiento
 // reducido, arranca quieta. Deja capturas en $SAL.
 const path = require('path');
 const fs = require('fs');
@@ -12,10 +12,13 @@ fs.mkdirSync(SAL, { recursive: true });
 
 async function revisar(p, nombre, conPausa) {
   const lec = p.locator('.te-lectura').first();
-  await p.waitForTimeout(500);
-  const a = (await lec.innerText()).trim();
-  await p.waitForTimeout(700);
-  const b = (await lec.innerText()).trim();
+  // Cinco lecturas cada 700 ms: basta que cambie entre dos seguidas (las que se arman y se quedan completas un rato
+  // pueden caer en esa pausa final).
+  await p.waitForTimeout(300);
+  const ls = [];
+  for (let k = 0; k < 5; k++) { ls.push((await lec.innerText()).trim()); await p.waitForTimeout(700); }
+  const i = Math.max(0, ls.findIndex((x, k) => k > 0 && x !== ls[k - 1]) - 1);
+  const a = ls[i], b = ls[i + 1];
   const play = p.locator('.te-play').first();
   const hay = await play.count();
   const rot = hay ? (await play.innerText()).trim() : '(sin botón)';

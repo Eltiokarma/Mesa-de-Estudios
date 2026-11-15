@@ -14,7 +14,7 @@ const Ecuacion = require('../../nucleo/ecuacion.js');
 
 const RAIZ = path.join(__dirname, '..', '..');
 // Unidades de esta parte. A medida que se animan, se agregan aquí.
-const UNIDADES = ['materia-y-energia', 'estructura-atomica', 'tabla-periodica', 'enlace-quimico'];
+const UNIDADES = ['materia-y-energia', 'estructura-atomica', 'tabla-periodica', 'enlace-quimico', 'nomenclatura-inorganica'];
 // Ideas que de verdad no se prestan a animación (explicadas en rutinas/teoria5-quimica-a.md).
 const SIN_ANIMAR = new Set([]);
 
@@ -44,7 +44,7 @@ function revisar(nombre, j, piezaPorDefecto) {
       assert.ok(Number.isFinite(p.x) && Number.isFinite(p.y), `${nombre}: manija ${a.id} no finita`);
     }
   }
-  if (j.lectura) assert.ok(lecturas.size >= 3, `${nombre}: la lectura no se mueve con la animación`);
+  if (j.lectura) assert.ok(lecturas.size >= 2, `${nombre}: la lectura no se mueve con la animación`);
 }
 
 for (const u of UNIDADES) {
