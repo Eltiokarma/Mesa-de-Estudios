@@ -81,17 +81,19 @@
     cajas: [{ titulo: '25 átomos de cloro', forma: 'caja', particulas: [{ e: 'cloro-35', n: n35 }, { e: 'cloro-37', n: 25 - n35 }], cuenta: [{ e: 'cloro-35', texto: `³⁵Cl: ${n35}` }, { e: 'cloro-37', texto: `³⁷Cl: ${25 - n35}` }] }],
     alt: `Lupa (modelo, no a escala) con 25 átomos de cloro: ${n35} de cloro-35 y ${25 - n35} de cloro-37.` }, extra), estado: {} });
   const promedio = p => (p * M35 + (100 - p) * M37) / 100;
+  // Animación (docs/3d.md §6): un control con auto avanza sin ajustarse a su paso; aquí se lee en su paso.
+  const alPaso = (x, paso, min = 0) => min + Math.round((x - min) / paso) * paso;
   const masaProm = {
     id: 'masa-atomica-promedio',
     titulo: 'Masa atómica: un promedio',
     temas: ['Unidad de masa atómica y masa atómica promedio'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'El cloro tiene dos isótopos: cloro-35 (34,969 u) y cloro-37 (36,966 u). Cambia cuántos hay de cada uno y lee la masa promedio.',
+      consigna: 'El cloro tiene dos isótopos: cloro-35 (34,969 u) y cloro-37 (36,966 u). Cuántos hay de cada uno cambia solo: lee la masa promedio.',
       voz: 'Mira hacia qué masa se acerca el promedio.',
-      controles: [{ id: 'p', etiqueta: '% de cloro-35', min: 0, max: 100, paso: 4, inicio: 52, unidad: '%', decimales: 0 }],
-      dibujo: v => lupaCl(v.p / 4),
-      lectura: v => [`masa promedio: ${f(promedio(v.p), 3)} u`],
+      controles: [{ id: 'p', etiqueta: '% de cloro-35', min: 0, max: 100, paso: 4, inicio: 52, unidad: '%', decimales: 0, auto: { velocidad: 16, modo: 'rebota' } }],
+      dibujo: v => lupaCl(alPaso(v.p, 4) / 4),
+      lectura: v => [`${f(alPaso(v.p, 4), 0)} % de cloro-35 → masa promedio: ${f(promedio(alPaso(v.p, 4)), 3)} u`],
       minimo: 3,
     },
     predice: {
@@ -152,14 +154,14 @@
     temas: ['Número de Avogadro y mol', 'Masa molar'],
     pieza: 'balanza',
     juega: {
-      consigna: 'Elige una sustancia y cuántos moles pones en la balanza. Lee cuántos gramos pesa esa cantidad.',
+      consigna: 'Elige una sustancia. Los moles en la balanza suben y bajan solos: lee cuántos gramos pesa cada cantidad.',
       voz: 'Compara 1 mol de una sustancia con 1 mol de otra.',
       controles: [
         { id: 'k', etiqueta: 'Sustancia', opciones: Object.keys(SUST).map(k => ({ valor: k, texto: k })) },
-        { id: 'n', etiqueta: 'n', color: 'c-o', min: 0.5, max: 3, paso: 0.5, inicio: 1, unidad: 'mol', decimales: 1 },
+        { id: 'n', etiqueta: 'n', color: 'c-o', min: 0.5, max: 3, paso: 0.5, inicio: 1, unidad: 'mol', decimales: 1, auto: { velocidad: 0.6, modo: 'rebota' } },
       ],
-      dibujo: v => pesar(v.k, v.n),
-      lectura: v => [n_, ` = ${f(v.n, 1)} mol de ${v.k} → `, m_, ` = ${f(v.n * masaMolar(v.k), 1)} g`],
+      dibujo: v => pesar(v.k, alPaso(v.n, 0.5, 0.5)),
+      lectura: v => { const n = alPaso(v.n, 0.5, 0.5); return [n_, ` = ${f(n, 1)} mol de ${v.k} → `, m_, ` = ${f(n * masaMolar(v.k), 1)} g`]; },
       minimo: 4,
     },
     predice: {
@@ -244,14 +246,14 @@
     temas: ['Relaciones molares en una fórmula'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Elige una fórmula y cuántas moléculas pones en la lupa. Debajo se cuentan los átomos de cada elemento.',
+      consigna: 'Elige una fórmula. Las moléculas de la lupa suben y bajan solas; debajo se cuentan los átomos de cada elemento.',
       voz: 'Compara la cuenta con los subíndices de la fórmula.',
       controles: [
         { id: 'k', etiqueta: 'Fórmula', opciones: Object.keys(MOLEC).map(k => ({ valor: k, texto: k })) },
-        { id: 'u', etiqueta: 'Moléculas', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0 },
+        { id: 'u', etiqueta: 'Moléculas', min: 1, max: 4, paso: 1, inicio: 2, decimales: 0, auto: { velocidad: 0.8, modo: 'rebota' } },
       ],
-      dibujo: v => ({ datos: lupaFormula(v.k, v.u), estado: {} }),
-      lectura: v => [`${v.u} ${v.k}: ${FORM[v.k].map(([el, c]) => `${v.u * c} ${el}`).join(', ')}`],
+      dibujo: v => ({ datos: lupaFormula(v.k, Math.round(v.u)), estado: {} }),
+      lectura: v => { const u = Math.round(v.u); return [`${u} ${v.k}: ${FORM[v.k].map(([el, c]) => `${u * c} ${el}`).join(', ')}`]; },
       minimo: 4,
     },
     predice: {
@@ -313,17 +315,25 @@
   const pct = k => FORM[k].map(([el, c]) => [el, 100 * MA[el] * c / masaMolar(k)]);
   const barra = (k, titulo) => ({ titulo: titulo || `${k}: ${f(masaMolar(k), 1)} g/mol`, tramos: pct(k).map(([el, p]) => ({ valor: p, texto: `${el} ${f(p, 1)} %`, color: COLOR_EL[el] })) });
   const COMP = ['H₂O', 'CO₂', 'NH₃', 'NaCl', 'C₆H₁₂O₆', 'H₂SO₄'];
+  // Animación: la barra se llena sola, elemento por elemento (en 4 s), con lo que pesa cada uno; lo que falta queda
+  // gris y sin texto. Completa, se queda 2 s y vuelve a empezar.
+  const cuantos = (k, t) => Math.max(1, Math.min(FORM[k].length, 1 + Math.floor(t / (4 / FORM[k].length))));
+  function barraT(k, t) {
+    const b = barra(k), n = cuantos(k, t), puestos = b.tramos.slice(0, n), falta = 100 - puestos.reduce((a, x) => a + x.valor, 0);
+    return Object.assign({}, b, { tramos: n < b.tramos.length ? [...puestos, { valor: falta, texto: '', tenue: true }] : puestos });
+  }
   const composicion = {
     id: 'composicion-formula-empirica',
     titulo: 'De porcentajes a fórmula',
     temas: ['Composición centesimal', 'Fórmula empírica y molecular'],
     pieza: 'quim-composicion',
     juega: {
-      consigna: 'Elige un compuesto. La barra es su masa molar entera y cada tramo es lo que pesa un elemento: su porcentaje en masa.',
+      consigna: 'Elige un compuesto. La barra es su masa molar entera; se llena sola, elemento por elemento, con lo que pesa cada uno.',
       voz: 'Compara el largo de cada tramo con cuántos átomos hay.',
-      controles: [{ id: 'k', etiqueta: 'Compuesto', opciones: COMP.map(k => ({ valor: k, texto: k })) }],
-      dibujo: v => ({ datos: { filas: [barra(v.k)] }, estado: {} }),
-      lectura: v => [pct(v.k).map(([el, p]) => `${el} ${f(p, 1)} %`).join(' · ')],
+      controles: [{ id: 'k', etiqueta: 'Compuesto', opciones: COMP.map(k => ({ valor: k, texto: k })) },
+        { id: 't', etiqueta: 't', min: 0, max: 6, paso: 0.1, inicio: 6, unidad: 's', decimales: 1, auto: { velocidad: 1 } }],
+      dibujo: v => ({ datos: { filas: [barraT(v.k, v.t)] }, estado: {} }),
+      lectura: v => [pct(v.k).slice(0, cuantos(v.k, v.t)).map(([el, p]) => `${el} ${f(p, 1)} %`).join(' · ')],
       minimo: 3,
     },
     predice: {
@@ -405,16 +415,16 @@
     temas: ['Leyes ponderales'],
     pieza: 'quim-composicion',
     juega: {
-      consigna: 'Elige cuánta agua se forma. Las barras están a la misma escala. Compara el hidrógeno y el oxígeno de cada muestra.',
+      consigna: 'La masa de agua que se forma crece y baja sola. Las barras están a la misma escala: compara el hidrógeno y el oxígeno.',
       voz: 'Divide el oxígeno entre el hidrógeno en cada caso.',
-      controles: [{ id: 'g', etiqueta: 'Agua', color: 'c-i', min: 9, max: 36, paso: 9, inicio: 9, unidad: 'g', decimales: 0 }],
-      dibujo: v => ({ datos: muestras(v.g), estado: {} }),
-      lectura: v => [`O : H = ${f(8 * v.g / 9, 0)} : ${f(v.g / 9, 0)} = 8 : 1`],
+      controles: [{ id: 'g', etiqueta: 'Agua', color: 'c-i', min: 9, max: 36, paso: 9, inicio: 9, unidad: 'g', decimales: 0, auto: { velocidad: 9, modo: 'rebota' } }],
+      dibujo: v => ({ datos: muestras(alPaso(v.g, 9, 9)), estado: {} }),
+      lectura: v => { const g = alPaso(v.g, 9, 9); return [`${f(g, 0)} g de agua: O : H = ${f(8 * g / 9, 0)} : ${f(g / 9, 0)} = 8 : 1`]; },
       minimo: 3,
       // Se agarra el extremo de la barra de abajo y se estira: la masa de agua crece y los dos tramos crecen juntos,
       // así que la razón O : H de la lectura no cambia. La barra de 36 g fija la escala común.
       arrastres: [{ id: 'muestra', etiqueta: 'extremo de la barra de agua', color: 'c-i',
-        donde: v => { const g = PC().geometria(muestras(v.g)); return { x: g.xDe(1, v.g), y: g.y(1) + g.hb / 2 }; },
+        donde: v => { const q = alPaso(v.g, 9, 9), g = PC().geometria(muestras(q)); return { x: g.xDe(1, q), y: g.y(1) + g.hb / 2 }; },
         mover: pt => ({ g: PC().geometria(muestras(9)).valorEn(1, pt.x) }) }],
     },
     predice: {
@@ -565,17 +575,17 @@
     laboratorio: [
       {
         id: 'isotopos', titulo: 'Dos isótopos en una barra', pieza: 'quim-composicion',
-        consigna: 'Elige la masa del isótopo liviano y cuánto más pesa el otro. Arrastra el borde entre los tramos: es la abundancia.',
+        consigna: 'La abundancia del liviano cambia sola: mira el promedio. Elige las masas de los isótopos; pausa o arrastra el borde entre los tramos.',
         controles: [
           { id: 'a', etiqueta: 'isótopo liviano', min: 6, max: 80, paso: 1, inicio: 35, unidad: 'u', decimales: 0 },
           { id: 'd', etiqueta: 'el otro pesa más', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'u', decimales: 0 },
-          { id: 'p', etiqueta: '% del liviano', color: 'c-h', min: 0, max: 100, paso: 1, inicio: 76, unidad: '%', decimales: 0 },
+          { id: 'p', etiqueta: '% del liviano', color: 'c-h', min: 0, max: 100, paso: 1, inicio: 76, unidad: '%', decimales: 0, auto: { velocidad: 15, modo: 'rebota' } },
         ],
-        dibujo: v => ({ datos: isoBarra(v), estado: {} }),
-        lectura: v => [`${v.p} % de ${v.a} u · ${100 - v.p} % de ${v.a + v.d} u → ${f(promIso(v), 2)} u`],
+        dibujo: v => ({ datos: isoBarra(Object.assign({}, v, { p: Math.round(v.p) })), estado: {} }),
+        lectura: v => { v = Object.assign({}, v, { p: Math.round(v.p) }); return [`${v.p} % de ${v.a} u · ${100 - v.p} % de ${v.a + v.d} u → ${f(promIso(v), 2)} u`]; },
         // El borde entre los dos tramos es la abundancia del liviano: correrlo a la derecha acerca el promedio a su masa.
         arrastres: [{ id: 'borde', etiqueta: 'borde entre los dos isótopos', color: 'c-h',
-          donde: v => { const g = PC().geometria(isoBarra(v)); return { x: g.xDe(0, v.p), y: g.y(0) + g.hb / 2 }; },
+          donde: v => { v = Object.assign({}, v, { p: Math.round(v.p) }); const g = PC().geometria(isoBarra(v)); return { x: g.xDe(0, v.p), y: g.y(0) + g.hb / 2 }; },
           mover: (pt, v) => ({ p: PC().geometria(isoBarra(v)).valorEn(0, pt.x) }) }],
         // Retos: cada logrado usa promIso, el mismo promedio que dibuja la barra y escribe su título.
         invitaciones: [

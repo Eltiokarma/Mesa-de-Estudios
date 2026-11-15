@@ -68,6 +68,11 @@
   const SIMBOLOS = Object.fromEntries(SIMB.map((s, z) => [z, s]).filter(([z]) => +z > 0));
   const valores = (tabla, zs) => Object.fromEntries(zs.filter(z => tabla[z] !== undefined).map(z => [z, tabla[z] === null ? NaN : tabla[z]]));
   const TODOS = Array.from({ length: 36 }, (_, i) => i + 1);
+  // Animación (docs/3d.md §6): un control con auto avanza sin ajustarse a su paso; Z se lee entero.
+  const zr = v => Object.assign({}, v, { z: Math.round(v.z) });
+  // Un cursor que recorre una lista de elementos, uno por segundo (el último se queda hasta que vuelve a empezar).
+  const T_CURSOR = max => ({ id: 't', etiqueta: 't', min: 0, max, paso: 0.1, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } });
+  const enCursor = (zs, t) => zs[Math.max(0, Math.min(zs.length - 1, Math.floor(t)))];
 
   // Lugar en la tabla, deducido de Z por la configuración (orden 1s 2s 2p 3s 3p 4s 3d 4p).
   function lugar(z) {
@@ -110,19 +115,19 @@
     temas: ['Ley periódica', 'Periodos, grupos y bloques', 'Metales, no metales y semimetales'],
     pieza: 'quim-tabla',
     juega: {
-      consigna: 'Mueve Z para recorrer la tabla. Cambia la vista entre bloques y metales. Lee el periodo, el grupo y la clase de cada elemento.',
+      consigna: 'La casilla recorre la tabla sola, Z por Z. Cambia la vista entre bloques y metales. Lee el periodo, el grupo y la clase.',
       voz: 'Mira qué tienen en común los de una misma columna.',
       controles: [
-        { id: 'z', etiqueta: 'Z', color: 'c-h', min: 1, max: 36, paso: 1, inicio: 11, decimales: 0 },
+        { id: 'z', etiqueta: 'Z', color: 'c-h', min: 1, max: 36, paso: 1, inicio: 11, decimales: 0, auto: { velocidad: 1.5 } },
         { id: 'vista', etiqueta: 'Vista', opciones: [{ valor: 'bloques', texto: 'Bloques s, p, d' }, { valor: 'metales', texto: 'Metales y no metales' }] },
       ],
-      dibujo: v => tabla({ marcadas: [{ Z: v.z, color: 'h' }], bloques: v.vista === 'bloques', escalera: v.vista === 'metales' }),
-      lectura: v => { const l = lugar(v.z); return [`${SIMB[v.z]}: periodo ${l.periodo} · grupo ${l.grupo} · bloque ${l.bloque} · ${clase(v.z)}`]; },
+      dibujo: v => { v = zr(v); return tabla({ marcadas: [{ Z: v.z, color: 'h' }], bloques: v.vista === 'bloques', escalera: v.vista === 'metales' }); },
+      lectura: v => { v = zr(v); const l = lugar(v.z); return [`${SIMB[v.z]}: periodo ${l.periodo} · grupo ${l.grupo} · bloque ${l.bloque} · ${clase(v.z)}`]; },
       minimo: 4,
       // Se agarra la casilla marcada y se la lleva a otra: Z sigue al dedo, y la lectura da periodo, grupo y clase.
       arrastres: [{ id: 'casilla', etiqueta: 'casilla marcada: llévala a otro elemento', color: 'c-h',
-        donde: v => enCasilla(v.z),
-        mover: (pt, v) => ({ z: zBajo(pt, v.z) }) }],
+        donde: v => enCasilla(zr(v).z),
+        mover: (pt, v) => ({ z: zBajo(pt, zr(v).z) }) }],
     },
     predice: {
       pregunta: 'En 1869, Mendeléiev ordenó los elementos y dejó dos casillas vacías: bajo el aluminio y bajo el silicio. ¿Qué pasó después?',
@@ -195,11 +200,11 @@
     temas: ['Notación de Lewis', 'Ubicación de un elemento'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Cambia Z y mira el símbolo de Lewis: un punto por cada electrón del último nivel. Compara los puntos con el grupo.',
+      consigna: 'Z sube y baja solo; mira el símbolo de Lewis: un punto por cada electrón del último nivel. Compara los puntos con el grupo.',
       voz: 'Los puntos se reparten solos antes de formar parejas.',
-      controles: [{ id: 'z', etiqueta: 'Z', color: 'c-h', min: 1, max: 20, paso: 1, inicio: 7, decimales: 0 }],
-      dibujo: v => ({ datos: lewis(v.z), estado: {} }),
-      lectura: v => { const l = lugar(v.z); return [`${SIMB[v.z]}: …${ultimoNivel(v.z)} · grupo ${l.grupo} · ${v.z === 2 ? 2 : valencia(v.z)} puntos`]; },
+      controles: [{ id: 'z', etiqueta: 'Z', color: 'c-h', min: 1, max: 20, paso: 1, inicio: 7, decimales: 0, auto: { velocidad: 1.2, modo: 'rebota' } }],
+      dibujo: v => ({ datos: lewis(zr(v).z), estado: {} }),
+      lectura: v => { v = zr(v); const l = lugar(v.z); return [`${SIMB[v.z]}: …${ultimoNivel(v.z)} · grupo ${l.grupo} · ${v.z === 2 ? 2 : valencia(v.z)} puntos`]; },
       minimo: 4,
     },
     predice: {
@@ -263,16 +268,16 @@
     temas: ['Radio atómico e iónico'],
     pieza: 'quim-tabla',
     juega: {
-      consigna: 'Elige un grupo. El círculo de cada casilla es proporcional al radio atómico. Mira cómo cambia de arriba abajo.',
+      consigna: 'Elige un grupo. El círculo de cada casilla es proporcional al radio. Un marco baja solo por la columna: mira cómo cambia.',
       voz: 'Compara cada círculo con el de arriba.',
-      controles: [{ id: 'g', etiqueta: 'Grupo', opciones: Object.keys(GRUPOS).map(g => ({ valor: g, texto: `Grupo ${g}` })) }],
+      controles: [{ id: 'g', etiqueta: 'Grupo', opciones: Object.keys(GRUPOS).map(g => ({ valor: g, texto: `Grupo ${g}` })) }, T_CURSOR(4)],
       // Se agarra la cabeza de la columna (sobre el número del grupo) y se la corre a otra: al soltar, cae en el grupo más cercano de los cuatro.
       arrastres: [{ id: 'columna', etiqueta: 'columna del grupo', color: 'c-i',
         donde: v => { const c = QT().casilla(GRUPOS[v.g][0]); return { x: c.cx, y: c.y - 12 }; },
         mover: pt => { const col = (pt.x - QT().casilla(1).x) / QT().casilla(1).w - 0.5;
           return { g: Object.keys(GRUPOS).reduce((a, b) => (Math.abs(QT().casilla(GRUPOS[b][0]).col - col) < Math.abs(QT().casilla(GRUPOS[a][0]).col - col) ? b : a)) }; } }],
-      dibujo: v => tabla({ propiedad: { valores: valores(RADIO, GRUPOS[v.g]), max: 245, forma: 'circulo', color: 'i', nombre: 'radio (pm)' }, rotulo: 'r: radio calculado (pm)' }),
-      lectura: v => { const zs = GRUPOS[v.g]; return [Rv, `: de ${RADIO[zs[0]]} pm (${SIMB[zs[0]]}) a ${RADIO[zs[zs.length - 1]]} pm (${SIMB[zs[zs.length - 1]]})`]; },
+      dibujo: v => tabla({ propiedad: { valores: valores(RADIO, GRUPOS[v.g]), max: 245, forma: 'circulo', color: 'i', nombre: 'radio (pm)' }, rotulo: 'r: radio calculado (pm)', marcadas: [{ Z: enCursor(GRUPOS[v.g], v.t), color: 'i' }] }),
+      lectura: v => { const z = enCursor(GRUPOS[v.g], v.t); return [Rv, ` (${SIMB[z]}) = ${RADIO[z]} pm · periodo ${lugar(z).periodo}`]; },
       minimo: 3,
     },
     predice: {
@@ -351,15 +356,18 @@
     temas: ['Energía de ionización y afinidad electrónica'],
     pieza: 'quim-tabla',
     juega: {
-      consigna: 'Elige un periodo. Cada barra es la energía para quitarle un electrón al átomo gaseoso. Recorre la fila de izquierda a derecha.',
+      consigna: 'Elige un periodo. Cada barra es la energía para quitarle un electrón al átomo gaseoso. Un marco recorre la fila solo: ¿siempre sube?',
       voz: 'Busca las barras que no siguen la subida.',
-      controles: [{ id: 'p', etiqueta: 'Periodo', opciones: Object.keys(PERIODOS).map(p => ({ valor: p, texto: `Periodo ${p}` })) }],
+      controles: [{ id: 'p', etiqueta: 'Periodo', opciones: Object.keys(PERIODOS).map(p => ({ valor: p, texto: `Periodo ${p}` })) }, T_CURSOR(9)],
       // Se agarra el comienzo de la fila y se lo sube o baja: al soltar, cae en el periodo 3 o en el 4.
       arrastres: [{ id: 'fila', etiqueta: 'fila del periodo', color: 'c-o',
         donde: v => enCasilla(PERIODOS[v.p][0]),
         mover: pt => { const c = QT().casilla(11), per = 3 + (pt.y - c.cy) / c.h; return { p: per < 3.5 ? '3' : '4' }; } }],
-      dibujo: v => barrasEI(PERIODOS[v.p]),
-      lectura: v => { const zs = PERIODOS[v.p]; return [EIv, `: de ${EI[zs[0]]} (${SIMB[zs[0]]}) a ${EI[zs[7]]} kJ/mol (${SIMB[zs[7]]})`]; },
+      dibujo: v => barrasEI(PERIODOS[v.p], { marcadas: [{ Z: enCursor(PERIODOS[v.p], v.t), color: 'o' }] }),
+      lectura: v => {
+        const zs = PERIODOS[v.p], z = enCursor(zs, v.t), i = zs.indexOf(z), antes = i > 0 ? zs[i - 1] : null;
+        return [EIv, ` (${SIMB[z]}) = ${EI[z]} kJ/mol${antes ? (EI[z] > EI[antes] ? ` · sube desde ${SIMB[antes]}` : ` · baja desde ${SIMB[antes]}`) : ''}`];
+      },
       minimo: 2,
     },
     predice: {
@@ -418,6 +426,8 @@
   // (C–H) a uno muy desigual (Na–Cl) · Se reserva: el flúor aislado, que no tiene carga · Debe verse: hacia qué
   // átomo se corre el par de electrones.
   const PARES_EN = { 'H–Cl': [1, 17], 'C–H': [6, 1], 'O–H': [8, 1], 'Na–Cl': [11, 17], 'C–O': [6, 8] };
+  // Animación: un marco recorre el periodo 2 de izquierda a derecha y después baja por el grupo 17 (las dos tendencias).
+  const RUTA_EN = [3, 4, 5, 6, 7, 8, 9, 17, 35];
   const barrasEN = (zs, extra = {}) => tabla(Object.assign({ propiedad: { valores: valores(EN, zs), max: 4, forma: 'barra', color: 'd', nombre: 'EN (Pauling)' }, rotulo: 'EN: electronegatividad (Pauling)' }, extra));
   // Sin arrastre: el control elige un enlace, es decir, un par de elementos; no hay un solo objeto que agarrar.
   // (En el laboratorio, la mesa «Dos elementos lado a lado» deja arrastrar cada casilla por separado.)
@@ -429,11 +439,11 @@
     temas: ['Electronegatividad'],
     pieza: 'quim-tabla',
     juega: {
-      consigna: 'Elige un enlace. Las barras son la electronegatividad de cada elemento. Compara las de los dos átomos marcados.',
+      consigna: 'Elige un enlace y compara las barras de electronegatividad de los dos átomos marcados. Otro marco recorre solo el periodo 2 y el grupo 17.',
       voz: 'Mira cuál de los dos tiene la barra más alta.',
-      controles: [{ id: 'k', etiqueta: 'Enlace', opciones: Object.keys(PARES_EN).map(k => ({ valor: k, texto: k })) }],
-      dibujo: v => barrasEN(TODOS, { marcadas: PARES_EN[v.k].map(Z => ({ Z, color: 'd' })) }),
-      lectura: v => { const [a, b] = PARES_EN[v.k], m = EN[a] > EN[b] ? a : b; return ['Δ', ENv, ` = ${f(Math.abs(EN[a] - EN[b]))}: el ${SIMB[m]} atrae más el par`]; },
+      controles: [{ id: 'k', etiqueta: 'Enlace', opciones: Object.keys(PARES_EN).map(k => ({ valor: k, texto: k })) }, T_CURSOR(RUTA_EN.length + 1)],
+      dibujo: v => barrasEN(TODOS, { marcadas: [...PARES_EN[v.k].map(Z => ({ Z, color: 'd' })), ...(PARES_EN[v.k].includes(enCursor(RUTA_EN, v.t)) ? [] : [{ Z: enCursor(RUTA_EN, v.t) }])] }),
+      lectura: v => { const [a, b] = PARES_EN[v.k], m = EN[a] > EN[b] ? a : b, z = enCursor(RUTA_EN, v.t); return [`${SIMB[z]}: `, ENv, ` ${f(EN[z])} · par ${v.k}: Δ`, ENv, ` ${f(Math.abs(EN[a] - EN[b]))}, atrae el ${SIMB[m]}`]; },
       minimo: 3,
     },
     predice: {
@@ -571,16 +581,16 @@
     laboratorio: [
       {
         id: 'tres-propiedades', titulo: 'Un elemento, tres propiedades', pieza: 'quim-tabla',
-        consigna: 'Lleva la casilla a cualquier elemento, también a los de transición. Cambia la propiedad del fondo y compara con sus vecinos.',
+        consigna: 'La casilla recorre la tabla sola, también los de transición. Cambia la propiedad del fondo; pausa o arrastra la casilla para comparar vecinos.',
         controles: [
-          { id: 'z', etiqueta: 'Z', color: 'c-h', min: 1, max: 36, paso: 1, inicio: 11, decimales: 0 },
+          { id: 'z', etiqueta: 'Z', color: 'c-h', min: 1, max: 36, paso: 1, inicio: 11, decimales: 0, auto: { velocidad: 1.5 } },
           { id: 'p', etiqueta: 'Propiedad', opciones: OP_PROPS },
         ],
-        dibujo: v => tablaProp(v.p, [{ Z: v.z, color: 'h' }]),
-        lectura: v => [`${SIMBV(v.z)}: `, Rv, ` ${valorDe('r', v.z)} · `, EIv, ` ${valorDe('ei', v.z)} · `, ENv, ` ${valorDe('en', v.z)}`],
+        dibujo: v => tablaProp(v.p, [{ Z: zr(v).z, color: 'h' }]),
+        lectura: v => { v = zr(v); return [`${SIMBV(v.z)}: `, Rv, ` ${valorDe('r', v.z)} · `, EIv, ` ${valorDe('ei', v.z)} · `, ENv, ` ${valorDe('en', v.z)}`]; },
         arrastres: [{ id: 'casilla', etiqueta: 'casilla marcada: llévala a otro elemento', color: 'c-h',
-          donde: v => enCasilla(v.z),
-          mover: (pt, v) => ({ z: zBajo(pt, v.z) }) }],
+          donde: v => enCasilla(zr(v).z),
+          mover: (pt, v) => ({ z: zBajo(pt, zr(v).z) }) }],
         // Retos comprobados (docs/teoria.md §4d): leen las mismas tablas de datos y el mismo lugar(z) que pinta la casilla.
         invitaciones: [
           { texto: 'Busca el átomo más grande de toda la tabla.',

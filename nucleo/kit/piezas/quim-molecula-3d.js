@@ -18,9 +18,14 @@
  *   vista:   { giro, inclinacion },                        // grados (opcional): sin ella, la que más separa los átomos
  *   escala:  número,                                      // opcional (1): achica todo, para que quepan dos moléculas
  *   simbolos: true,                                       // opcional: rótulo HTML con el símbolo de cada átomo que no es C
+ *   giro:    grados,                                      // opcional (ronda 5, animación): la molécula girada sobre su eje
+ *                                                         // vertical; sin él, 0. Girar no cambia la molécula.
  *   alt,
  * }
  * estado = { dipolos: true|false, pares: true|false }.
+ *
+ * Animación (docs/3d.md §6): forma(datos, estado) no depende de giro, y mover solo gira el pivote que guarda la molécula
+ * y lleva cada rótulo a su lugar (h.moverEtiqueta): la escena no se rearma en cada cuadro.
  *
  * En vivo, sobre la base común nucleo/kit/vivo3d.js: arrastrar gira, pellizco acerca, teclado, «Vista inicial», modo ahorro,
  * dibujar solo cuando algo cambia y volver solo si el equipo corta el 3D. Aquí solo se arma la escena; tocar un átomo
@@ -71,7 +76,7 @@
 
   // ---------- Respaldo plano ----------
   function plano(d, e) {
-    const v = vistaDe(d), g = p => girar(p, v.giro, v.inclinacion);
+    const v = vistaDe(d), g = p => girar(p, v.giro + (d.giro || 0), v.inclinacion);   // giro propio, después la vista
     const pos = new Map(d.atomos.map(a => [a.id, g(a.pos)]));
     const atomos = d.atomos.map(a => { const p = pos.get(a.id); return { id: a.id, t: a.t, x: p[0] * L, y: -p[1] * L }; });
     const enlaces = d.enlaces.map(x => ({ a: x.a, b: x.b, orden: x.orden || 1, dipolo: e.dipolos ? x.dipolo : undefined }));
@@ -101,18 +106,34 @@
     plano: (d, e) => dibujar(d, e),
     vista: d => vistaDe(d),
     clave: d => JSON.stringify(d.atomos.map(a => a.t)) + JSON.stringify(d.vista || {}),
+    // Ruta rápida: todo lo que se arma menos el giro propio.
+    forma: (d, e) => JSON.stringify([d.atomos, d.enlaces, d.pares || null, d.total || null, d.escala || 1, !!d.simbolos, d.vista || null, !!e.dipolos, e.pares !== false]),
+    mover(T, grupo, d, e, h) {
+      const piv = grupo.children.find(o => o.userData && o.userData.pivote);
+      if (!piv) return false;
+      const a = rad(d.giro || 0), Y = new T.Vector3(0, 1, 0);
+      piv.rotation.y = a;
+      for (const r of piv.userData.rotulos) h.moverEtiqueta(r.el, r.base.clone().applyAxisAngle(Y, a));
+      return true;
+    },
     distancia: 7.2, distMin: 3.6, distMax: 12,
     tocar: o => (o && o.userData && o.userData.t ? `Ese átomo es de ${NOMBRE(o.userData.t)} (${o.userData.t}).` : ''),
     construir(T, grupo, d, e, h) {
       const colorDe = t => { try { return El.color(t, h.oscuro() ? 'oscuro' : 'claro'); } catch (err) { return h.oscuro() ? '#c9bfd6' : '#6b5f78'; } };
       const tinta = h.varCss('--ink', '#2d2340'), naranja = h.varCss('--c-o', '#b85a06'), violeta = h.varCss('--c-f', '#6b3dbd');
       const esc = d.escala || 1;                     // 1 salvo que la mesa pida achicar (dos moléculas lado a lado)
+      // Todo va en un pivote que gira con datos.giro (la animación lo mueve sin rearmar); el grupo de afuera es la vista.
+      const caja = grupo, Y = new T.Vector3(0, 1, 0), giro = rad(d.giro || 0);
+      grupo = new T.Group(); grupo.userData = { pivote: true, rotulos: [] }; grupo.rotation.y = giro; caja.add(grupo);
       const P = new Map(d.atomos.map(a => [a.id, new T.Vector3(...a.pos).multiplyScalar(1.15 * esc)]));
       const tocables = [];
       for (const a of d.atomos) {
         const s = new T.Mesh(new T.SphereGeometry((a.t === 'H' ? 0.24 : 0.36) * esc, h.SEG, Math.round(h.SEG * 0.7)), h.material(colorDe(a.t)));
         s.position.copy(P.get(a.id)); s.userData = { t: a.t }; grupo.add(s); tocables.push(s);
-        if (d.simbolos && a.t !== 'C') h.etiqueta(P.get(a.id), a.t);       // símbolo encima del átomo (texto real)
+        if (d.simbolos && a.t !== 'C') {                                     // símbolo encima del átomo (texto real)
+          const base = P.get(a.id).clone();
+          grupo.userData.rotulos.push({ el: h.etiqueta(base.clone().applyAxisAngle(Y, giro), a.t), base });
+        }
       }
       for (const x of d.enlaces) {
         const A = P.get(x.a), B = P.get(x.b), n = x.orden || 1, eje = new T.Vector3().subVectors(B, A).normalize();
@@ -145,5 +166,5 @@
   // montar(el, { alTocar }) → { actualizar(datos, estado), acercar(f), inicio(), soltar(), enVivo } (nucleo/kit/vivo3d.js).
   const montar = (el, op) => Kit.vivo3d.montar(el, SPEC, { alTocar: o => { if (op && op.alTocar && o && o.userData) op.alTocar(o.userData.t); } });
 
-  return { id: 'quim-molecula-3d', dibujar, alt, montar, plano, girar, mejorVista };
+  return { id: 'quim-molecula-3d', dibujar, alt, montar, plano, girar, mejorVista, forma: SPEC.forma };
 });

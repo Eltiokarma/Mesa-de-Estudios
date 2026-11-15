@@ -69,14 +69,14 @@
     temas: ['Presión y temperatura', 'Leyes de Boyle, Charles y Gay-Lussac'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'El cilindro tiene siempre el mismo gas. Mueve el émbolo (volumen) y cambia la temperatura en kelvin. Lee la presión.',
+      consigna: 'El cilindro tiene siempre el mismo gas. El émbolo sube y baja solo: lee la presión. Cambia también la temperatura en kelvin.',
       voz: 'Cambia una sola cosa y mira qué pasa con la presión.',
       controles: [
-        { id: 'v', etiqueta: 'V', color: 'c-i', min: 1, max: 4, paso: 0.5, inicio: 4, unidad: 'L', decimales: 1 },
+        { id: 'v', etiqueta: 'V', color: 'c-i', min: 1, max: 4, paso: 0.5, inicio: 4, unidad: 'L', decimales: 1, auto: { velocidad: 0.6, modo: 'rebota' } },
         { id: 't', etiqueta: 'T', color: 'c-h', min: 200, max: 400, paso: 50, inicio: 300, unidad: 'K', decimales: 0 },
       ],
       dibujo: val => piston(val.v),
-      lectura: val => [P, ` = ${f(N_MOL * R * val.t / val.v, 2)} atm · `, P, V, ` = ${f(N_MOL * R * val.t, 2)} atm·L`],
+      lectura: val => [V, ` = ${f(val.v, 1)} L: `, P, ` = ${f(N_MOL * R * val.t / val.v, 2)} atm · `, P, V, ` = ${f(N_MOL * R * val.t, 2)} atm·L`],
       minimo: 3,
       // El émbolo se agarra y se empuja: el volumen es la variable del fenómeno; la presión responde en la lectura.
       arrastres: [{ id: 'embolo', etiqueta: 'émbolo del cilindro', color: 'c-i',
@@ -169,14 +169,14 @@
     temas: ['Ecuación de estado', 'Densidad y masa molar de un gas', 'Volumen molar y condiciones normales'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Hay 1 mol de gas. Cambia la presión y la temperatura; el émbolo sube o baja hasta que el volumen cumple PV = nRT.',
+      consigna: 'Hay 1 mol de gas. La presión sube y baja sola; el émbolo se mueve hasta que el volumen cumple PV = nRT. Cambia la temperatura.',
       voz: 'Busca en qué condiciones el volumen da 22,4 L.',
       controles: [
-        { id: 'p', etiqueta: 'P', color: 'c-o', min: 0.5, max: 2, paso: 0.25, inicio: 1, unidad: 'atm', decimales: 2 },
+        { id: 'p', etiqueta: 'P', color: 'c-o', min: 0.5, max: 2, paso: 0.25, inicio: 1, unidad: 'atm', decimales: 2, auto: { velocidad: 0.3, modo: 'rebota' } },
         { id: 't', etiqueta: 'T', color: 'c-h', min: 273, max: 373, paso: 25, inicio: 298, unidad: 'K', decimales: 0 },
       ],
       dibujo: val => unMol(val.p, val.t),
-      lectura: val => [V, ` = ${f(R * val.t / val.p, 1)} L por mol`],
+      lectura: val => [P, ` = ${f(val.p, 2)} atm: `, V, ` = ${f(R * val.t / val.p, 1)} L por mol`],
       minimo: 3,
       // Empujar el émbolo es subir la presión: la manija mueve P (V = RT/P), y el volumen que se lee es el que dejó.
       arrastres: [{ id: 'embolo-p', etiqueta: 'émbolo: más abajo, más presión', color: 'c-o',
@@ -279,14 +279,14 @@
     temas: ['Mezclas: Dalton y Amagat'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'En esta caja rígida, a T fija, cada partícula aporta 0,1 atm. Agrega N₂ y O₂ y lee la presión de cada gas.',
+      consigna: 'En esta caja rígida, a T fija, cada partícula aporta 0,1 atm. El N₂ entra y sale solo; agrega O₂ y lee cada presión.',
       voz: 'Compara lo que aporta una partícula de N₂ con una de O₂.',
       controles: [
-        { id: 'a', etiqueta: 'N₂', min: 1, max: 8, paso: 1, inicio: 6, unidad: '', decimales: 0 },
+        { id: 'a', etiqueta: 'N₂', min: 1, max: 8, paso: 1, inicio: 6, unidad: '', decimales: 0, auto: { velocidad: 1.2, modo: 'rebota' } },
         { id: 'b', etiqueta: 'O₂', min: 1, max: 6, paso: 1, inicio: 2, unidad: '', decimales: 0 },
       ],
-      dibujo: val => mezcla(val.a, val.b),
-      lectura: val => [{ sub: [P, 'total'] }, ` = ${f(val.a * K, 1)} + ${f(val.b * K, 1)} = ${f((val.a + val.b) * K, 1)} atm`],
+      dibujo: val => mezcla(Math.round(val.a), val.b),
+      lectura: val => { const a = Math.round(val.a); return [{ sub: [P, 'total'] }, ` = ${f(a * K, 1)} + ${f(val.b * K, 1)} = ${f((a + val.b) * K, 1)} atm`]; },
       minimo: 3,
     },
     predice: {
@@ -354,11 +354,13 @@
     temas: ['Difusión y efusión: Graham'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Elige un gas y compara qué tan rápido sale por un agujero pequeño frente al O₂, a la misma presión y temperatura.',
+      consigna: 'Elige un gas y compara qué tan rápido sale por un agujero pequeño frente al O₂. Un punto recorre solo la curva: mira cómo baja.',
       voz: 'Mira cuánto cambia la rapidez entre gases livianos y pesados.',
-      controles: [{ id: 'g', etiqueta: 'Gas', opciones: Object.keys(GASES).map(k => ({ valor: k, texto: GASES[k][0] })) }],
-      dibujo: val => { const [nom, M] = GASES[val.g]; return { datos: ejesGraham({ puntos: [{ x: M, y: Math.sqrt(32 / M), color: 'd', rotulo: `${nom}: ${f(Math.sqrt(32 / M), 2)}`, guias: true }] }), estado: {} }; },
-      lectura: val => { const [nom, M] = GASES[val.g]; return [val.g === 'O2' ? 'El O₂ es la referencia: rapidez 1' : `${nom} sale ${f(Math.sqrt(32 / M), 2)} veces lo que el O₂`]; },
+      controles: [{ id: 'g', etiqueta: 'Gas', opciones: Object.keys(GASES).map(k => ({ valor: k, texto: GASES[k][0] })) },
+        // Animación: la masa molar recorre la curva sola, de 2 a 48 g/mol y vuelta; el punto del gas elegido se queda.
+        { id: 'M', etiqueta: 'M', min: 2, max: 48, paso: 1, inicio: 32, unidad: 'g/mol', decimales: 0, auto: { velocidad: 8, modo: 'rebota' } }],
+      dibujo: val => { const [nom, M] = GASES[val.g], Mc = Math.round(val.M); return { datos: ejesGraham({ puntos: [{ x: Mc, y: Math.sqrt(32 / Mc), color: 'd', abierto: true }, { x: M, y: Math.sqrt(32 / M), color: 'd', rotulo: `${nom}: ${f(Math.sqrt(32 / M), 2)}`, guias: true }] }), estado: {} }; },
+      lectura: val => { const [nom, M] = GASES[val.g], Mc = Math.round(val.M); return [`${val.g === 'O2' ? 'O₂: referencia, 1' : `${nom}: ${f(Math.sqrt(32 / M), 2)} veces el O₂`} · M = ${Mc} g/mol: ${f(Math.sqrt(32 / Mc), 2)}`]; },
       minimo: 3,
       // El punto se desliza por la curva: al soltarlo cae en el gas de masa molar más cercana (el control es de opciones).
       arrastres: [{ id: 'gas', etiqueta: 'gas sobre la curva', color: 'c-d',
@@ -424,6 +426,8 @@
   // Cambia: los gramos de Zn y las condiciones · Permanece: Zn + 2 HCl → ZnCl₂ + H₂ · Progresa: masa → mol → mol de gas →
   // volumen con PV = nRT · Se reserva: que el último paso usa las condiciones del enunciado · Debe verse: la cadena completa.
   const COND = { cn: ['273 K y 1 atm', 273, 1], amb: ['298 K y 1 atm', 298, 1], jul: ['Juliaca: 283 K y 0,62 atm', 283, 0.62] };
+  // Animación: los gramos de Zn cambian solos y se leen en su paso de 6,5 g (0,1 mol).
+  const zn = val => Math.max(6.5, Math.round(val.z / 6.5) * 6.5);
   const cadena = (gZn, c, extra = {}) => {
     const [txt, t, p] = COND[c], nn = gZn / 65, v = nn * R * t / p;
     return { datos: { columnas: [{ titulo: 'Zn + 2 HCl → ZnCl₂ + H₂', nodos: [
@@ -439,14 +443,14 @@
     temas: ['Estequiometría con gases'],
     pieza: 'quim-cadena',
     juega: {
-      consigna: 'El zinc reacciona con ácido y desprende H₂. Elige cuántos gramos de Zn y en qué condiciones se mide el gas.',
+      consigna: 'El zinc reacciona con ácido y desprende H₂. Los gramos de Zn suben y bajan solos: sigue la cadena. Elige dónde se mide el gas.',
       voz: 'Sigue la cadena: gramos, moles, receta, litros.',
       controles: [
-        { id: 'z', etiqueta: 'Zn', min: 6.5, max: 32.5, paso: 6.5, inicio: 13, unidad: 'g', decimales: 1 },
+        { id: 'z', etiqueta: 'Zn', min: 6.5, max: 32.5, paso: 6.5, inicio: 13, unidad: 'g', decimales: 1, auto: { velocidad: 5, modo: 'rebota' } },
         { id: 'c', etiqueta: 'Condiciones', opciones: Object.keys(COND).map(k => ({ valor: k, texto: COND[k][0] })) },
       ],
-      dibujo: val => cadena(val.z, val.c),
-      lectura: val => { const [, t, p] = COND[val.c], v = val.z / 65 * R * t / p; return [V, ` = ${f(v, 2)} L de H₂`]; },
+      dibujo: val => cadena(zn(val), val.c),
+      lectura: val => { const [, t, p] = COND[val.c], v = zn(val) / 65 * R * t / p; return [`${f(zn(val), 1)} g de Zn → `, V, ` = ${f(v, 2)} L de H₂`]; },
       minimo: 3,
     },
     predice: {
@@ -573,10 +577,10 @@
     laboratorio: [
       {
         id: 'cilindro-completo', titulo: 'El cilindro con todo', pieza: 'quim-particulas',
-        consigna: 'Cambia la cantidad de gas, el volumen y la temperatura. Empuja el émbolo y busca la presión más alta y la más baja.',
+        consigna: 'El émbolo sube y baja solo: mira la presión. Cambia la cantidad de gas y la temperatura; pausa o empuja el émbolo para buscar extremos.',
         controles: [
           { id: 'n', etiqueta: 'n', color: 'c-d', min: 0.05, max: 0.6, paso: 0.05, inicio: INI_CIL.n, unidad: 'mol', decimales: 2 },
-          { id: 'v', etiqueta: 'V', color: 'c-i', min: 0.5, max: 6, paso: 0.5, inicio: INI_CIL.v, unidad: 'L', decimales: 1 },
+          { id: 'v', etiqueta: 'V', color: 'c-i', min: 0.5, max: 6, paso: 0.5, inicio: INI_CIL.v, unidad: 'L', decimales: 1, auto: { velocidad: 1, modo: 'rebota' } },
           { id: 't', etiqueta: 'T', color: 'c-h', min: 100, max: 600, paso: 50, inicio: INI_CIL.t, unidad: 'K', decimales: 0 },
         ],
         dibujo: val => labCilindro(val),

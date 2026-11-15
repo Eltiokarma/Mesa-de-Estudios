@@ -47,6 +47,12 @@
     return [{ id: 'c', texto: bien, correcta: true }, ...malas.filter(x => !vistos.has(x.texto) && vistos.add(x.texto))].slice(0, 4);
   };
   const fichas = (lista, extra = {}) => ({ datos: Object.assign({ fichas: lista }, extra), estado: {} });
+  // ---------- Animación (docs/3d.md §6) ----------
+  // Un control con auto avanza sin ajustarse a su paso: los conteos se leen enteros. Las piezas que se arman por
+  // pasos reciben corte = paso + 0,5: se ve lo de desde ≤ paso, sin la clase de «lo nuevo» de «Mira» (que en cada
+  // cuadro volvería a empezar).
+  const ent = (v, ...ids) => { const x = Object.assign({}, v); for (const k of ids) x[k] = Math.round(x[k]); return x; };
+  const T_AUTO = (max, vel = 1) => ({ id: 't', etiqueta: 't', min: 0, max, paso: 0.1, inicio: max, unidad: 's', decimales: 1, auto: { velocidad: vel } });
 
   // ---------- Idea 1: los estados de oxidación suman la carga ----------
   // Cambia: el estado del átomo que falta · Permanece: O −2 y H +1 en sus fichas · Progresa: la suma se acerca a la
@@ -68,7 +74,7 @@
   // Inversa: k = (x − 47)/17 + 1 cuadritos, ω = ±k/n según la fila (frontera en y = 127).
   const PF = () => Kit.piezas['quim-fichas'];
   const arrastreVerde = (dib, nAt, id) => ({ id: 'estado', etiqueta: 'final de las cargas del átomo verde', color: 'c-d',
-    donde: val => { const k = val[id] * nAt(val), g = PF().geometria(dib(val).datos); return k === 0 ? { x: 30, y: 127 } : g.cuadrito(Math.abs(k) - 1, k > 0 ? '+' : '−'); },
+    donde: val => { const k = Math.round(val[id] * nAt(val)), g = PF().geometria(dib(val).datos); return k === 0 ? { x: 30, y: 127 } : g.cuadrito(Math.abs(k) - 1, k > 0 ? '+' : '−'); },
     mover: (pt, val) => { const k = (pt.x - 47) / 17 + 1; return { [id]: (pt.y < 127 ? k : -k) / nAt(val) }; } });
   const oxidacion = {
     id: 'estados-oxidacion',
@@ -76,14 +82,15 @@
     temas: ['Estados de oxidación'],
     pieza: 'quim-fichas',
     juega: {
-      consigna: 'Elige una especie y ajusta el estado de oxidación del átomo verde hasta que la suma de estados sea igual a su carga.',
+      consigna: 'El estado de oxidación del átomo verde sube y baja solo. Pausa, o ajústalo tú, cuando la suma de estados sea igual a la carga.',
       voz: 'Ajusta el verde y mira cuánto queda sin pareja.',
       controles: [
         { id: 'k', etiqueta: 'Especie', opciones: Object.keys(ESPECIES).map(k => ({ valor: k, texto: ESPECIES[k].t })) },
-        { id: 'w', etiqueta: 'ω', color: 'c-d', min: -4, max: 8, paso: 1, inicio: 0, decimales: 0 },
+        { id: 'w', etiqueta: 'ω', color: 'c-d', min: -4, max: 8, paso: 1, inicio: 0, decimales: 0, auto: { velocidad: 1.5, modo: 'rebota' } },
       ],
-      dibujo: val => oxDib(val.k, val.w),
+      dibujo: val => oxDib(val.k, Math.round(val.w)),
       lectura: val => {
+        val = ent(val, 'w');
         const e = ESPECIES[val.k], suma = val.w + e.fijos.reduce((a, [, c, n]) => a + c * n, 0);
         return [`suma ${sg(suma)}`, '   ·   ', `carga de ${e.t}: `, z, ` = ${sg(e.z)}${suma === e.z ? ' ✓' : ''}`];
       },
@@ -160,17 +167,21 @@
     return { datos: { columnas: [{ titulo: o.t, color: 'd', nodos: [
       { texto: `Sistemática: ${o.sis}`, desde: desde[1] }, { texto: `Stock: ${o.stock}`, color: 'd', desde: desde[2] }, { texto: `Tradicional: ${o.trad}`, desde: desde[3] }], flechas: [] }] }, estado: {} };
   };
+  // Animación: los tres nombres se leen solos, uno cada 2 s; los otros quedan tenues.
+  const SISTEMAS = ['Sistemática', 'Stock', 'Tradicional'], cualNombre = t => Math.min(2, Math.floor(t / 2));
+  const nombresT = (k, t) => { const d = nombres(k); d.datos.columnas[0].nodos.forEach((n, i) => { if (i !== cualNombre(t)) n.tenue = true; }); return d; };
+  const NOMBRE_DE = (k, i) => [OXIDOS[k].sis, OXIDOS[k].stock, OXIDOS[k].trad][i];
   const tipos = {
     id: 'tres-nombres',
     titulo: 'Un compuesto, tres nombres',
     temas: ['Tipos de nomenclatura'],
     pieza: 'quim-cadena',
     juega: {
-      consigna: 'Elige un óxido y compara sus tres nombres. Busca qué dato usa cada sistema: cuántos átomos o qué estado de oxidación.',
+      consigna: 'Elige un óxido: sus tres nombres se leen solos, uno por uno. Busca qué dato usa cada sistema: cuántos átomos o qué estado de oxidación.',
       voz: 'Tres nombres, una sola fórmula. Compáralos uno por uno.',
-      controles: [{ id: 'k', etiqueta: 'Óxido', opciones: Object.keys(OXIDOS).map(k => ({ valor: k, texto: OXIDOS[k].t })) }],
-      dibujo: val => nombres(val.k),
-      lectura: val => { const o = OXIDOS[val.k]; return [`${o.m} con `, w, ` = +${o.w}; sus estados: ${o.est}`]; },
+      controles: [{ id: 'k', etiqueta: 'Óxido', opciones: Object.keys(OXIDOS).map(k => ({ valor: k, texto: OXIDOS[k].t })) }, Object.assign(T_AUTO(6), { inicio: 0 })],
+      dibujo: val => nombresT(val.k, val.t),
+      lectura: val => { const o = OXIDOS[val.k], i = cualNombre(val.t); return [`${SISTEMAS[i]}: ${NOMBRE_DE(val.k, i)} · ${o.m} con `, w, ` = +${o.w}`]; },
       minimo: 3,
     },
     predice: {
@@ -246,17 +257,28 @@
     const der = [{ texto: `${s} + H₂`, desde: desde[3] }, { texto: HIDR[k], desde: desde[3] }];
     return { datos: { columnas: [{ titulo: 'Con oxígeno', nodos: izq, flechas: [{ de: 0, a: 1, desde: desde[1] }, { de: 1, a: 2, texto: '+ H₂O', desde: desde[2] }] }, { titulo: 'Con hidrógeno', nodos: der }] }, estado: {} };
   }
+  // Animación: el árbol se arma solo, un paso cada 1,2 s: el elemento con O₂, su óxido, el óxido con agua y, al final,
+  // el camino con hidrógeno. Se queda completo unos segundos y vuelve a empezar.
+  const pasoArbol = t => Math.min(4, 1 + Math.floor(t / 1.2));
+  const arbolT = (k, t) => { const d = arbol(k, [1, 2, 3, 4]); d.estado = { corte: pasoArbol(t) + 0.5 }; return d; };
+  function leeArbol(k, t) {
+    const e = ELEM[k], s = e.s || k, p = pasoArbol(t);
+    if (p === 1) return `${e.nom} + O₂`;
+    if (p === 2) return `da el óxido ${e.metal ? 'básico' : 'ácido'} ${oxido(s, e.w)}`;
+    if (p === 3) return e.metal ? `con agua, el hidróxido ${hidroxido(s, e.w)}` : `con agua, el oxácido ${oxacido(s, e.w).f}`;
+    return `con hidrógeno: ${HIDR[k]}`;
+  }
   const funciones = {
     id: 'arbol-funciones',
     titulo: 'El árbol de las funciones',
     temas: ['Óxidos e hidruros', 'Hidróxidos', 'Ácidos oxácidos e hidrácidos', 'Peróxidos'],
     pieza: 'quim-cadena',
     juega: {
-      consigna: 'Elige un elemento con su estado de oxidación. Sigue los dos caminos: con oxígeno y después agua; y con hidrógeno.',
+      consigna: 'Elige un elemento con su estado de oxidación. El árbol se arma solo: con oxígeno y después agua; y con hidrógeno.',
       voz: 'Compara un metal con un no metal en el mismo camino.',
-      controles: [{ id: 'k', etiqueta: 'Elemento', opciones: Object.keys(ELEM).map(k => ({ valor: k, texto: ELEM[k].nom })) }],
-      dibujo: val => arbol(val.k),
-      lectura: val => { const e = ELEM[val.k]; return [`${e.nom}: ${e.metal ? 'metal, da hidróxido' : 'no metal, da oxácido'}`, '   ·   ', w, ` = +${e.w}`]; },
+      controles: [{ id: 'k', etiqueta: 'Elemento', opciones: Object.keys(ELEM).map(k => ({ valor: k, texto: ELEM[k].nom })) }, T_AUTO(7.5)],
+      dibujo: val => arbolT(val.k, val.t),
+      lectura: val => [leeArbol(val.k, val.t), '   ·   ', w, ` = +${ELEM[val.k].w}`],
       minimo: 4,
     },
     predice: {
@@ -335,20 +357,38 @@
     const dib = fichas([{ t: C[0], carga: C[2], n: nc, color: 'o', desde }, { t: A[0], carga: -A[2], n: na, color: 'i', desde }]);
     return { fo, nombre: `${A[3]} de ${C[3]}`, nc, na, dib };
   }
+  // Animación: las fichas entran solas, enteras, de a una (el armado dura 4,5 s y se queda 1,5 s completo): un catión
+  // si la carga neta es negativa o cero, un anión si es positiva, hasta que queda neutra. La secuencia la arma la
+  // misma cuenta de cargas.
+  function armado(c, a) {
+    const qc = CAT[c][2], qa = AN[a][2], pasos = [[1, 0]];
+    for (let g = 0; g < 20; g++) {
+      const [nc, na] = pasos[pasos.length - 1], q = nc * qc - na * qa;
+      if (q === 0 && na > 0) break;
+      pasos.push(q > 0 ? [nc, na + 1] : [nc + 1, na]);
+    }
+    return pasos;
+  }
+  function salT(c, a, t) {
+    const pasos = armado(c, a), i = Math.min(pasos.length - 1, Math.floor(t / (4.5 / pasos.length))), [nc, na] = pasos[i];
+    const C = CAT[c], A = AN[a], fin = i === pasos.length - 1;
+    return { nc, na, q: nc * C[2] - na * A[2], fin, dib: fichas([{ t: C[0], carga: C[2], n: nc, color: 'o' }, { t: A[0], carga: -A[2], n: na, color: 'i' }]) };
+  }
   const sales = {
     id: 'sales',
     titulo: 'Fichas enteras hasta carga cero',
     temas: ['Sales oxisales y haloideas'],
     pieza: 'quim-fichas',
     juega: {
-      consigna: 'Elige un catión y un anión. Se ponen fichas enteras hasta que cada carga + tenga su − enfrente. Lee la fórmula y el nombre.',
+      consigna: 'Elige un catión y un anión. Las fichas entran solas, enteras, hasta que cada carga + tenga su − enfrente. Lee la fórmula.',
       voz: 'Las fichas no se parten: se agregan enteras.',
       controles: [
         { id: 'c', etiqueta: 'Catión', opciones: ['Na', 'Ca', 'Al'].map(k => ({ valor: k, texto: CAT[k][0] })) },
         { id: 'a', etiqueta: 'Anión', opciones: ['Cl', 'SO4', 'PO4'].map(k => ({ valor: k, texto: AN[k][0] })) },
+        T_AUTO(6),
       ],
-      dibujo: val => sal(val.c, val.a).dib,
-      lectura: val => { const x = sal(val.c, val.a); return [`${x.fo}: ${x.nombre}`]; },
+      dibujo: val => salT(val.c, val.a, val.t).dib,
+      lectura: val => { const x = sal(val.c, val.a), y = salT(val.c, val.a, val.t); return [y.fin ? `${x.fo}: ${x.nombre}` : `${y.nc} ${CAT[val.c][0]} y ${y.na} ${AN[val.a][0]}: carga neta ${sg(y.q)}`]; },
       minimo: 4,
     },
     predice: {
@@ -417,17 +457,25 @@
     hidrato: { t: 'CuSO₄·5H₂O', clase: 'hidratada', f: [{ t: 'Cu²⁺', carga: 2, color: 'o' }, { t: 'SO₄²⁻', carga: -2, color: 'i' }, { t: 'H₂O', carga: 0, n: 5 }], lee: 'Cinco H₂O enteras sin carga: sal hidratada.' },
     neutra: { t: 'Na₂CO₃', clase: 'neutra', f: [{ t: 'Na⁺', carga: 1, n: 2, color: 'o' }, { t: 'CO₃²⁻', carga: -2, color: 'i' }], lee: 'Solo catión y anión: sal neutra.' },
   };
+  // Animación: las fichas de la sal entran solas, de a una (el armado dura 4,5 s y se queda 1,5 s completo); la carga
+  // neta se cuenta en cada momento.
+  function espT(k, t) {
+    const todas = []; for (const x of ESP[k].f) for (let j = 0; j < (x.n || 1); j++) todas.push(x);
+    const n = Math.max(1, Math.min(todas.length, 1 + Math.floor(t / (4.5 / todas.length))));
+    const lista = []; for (const x of todas.slice(0, n)) { const u = lista.find(y => y.t === x.t); if (u) u.n += 1; else lista.push(Object.assign({}, x, { n: 1 })); }
+    return { n, total: todas.length, q: todas.slice(0, n).reduce((a, x) => a + x.carga, 0), dib: fichas(lista) };
+  }
   const especiales = {
     id: 'sales-acidas-basicas-hidratadas',
     titulo: 'Sales con H, OH o agua',
     temas: ['Sales ácidas, básicas e hidratadas'],
     pieza: 'quim-fichas',
     juega: {
-      consigna: 'Elige una sal y busca la ficha que la distingue de una sal neutra: un H en el anión, un OH⁻ o agua sin carga.',
+      consigna: 'Elige una sal: sus fichas entran solas. Busca la que la distingue de una sal neutra: un H en el anión, un OH⁻ o agua.',
       voz: 'Busca la ficha que sobra respecto de una sal neutra.',
-      controles: [{ id: 'k', etiqueta: 'Sal', opciones: Object.keys(ESP).map(k => ({ valor: k, texto: ESP[k].t })) }],
-      dibujo: val => fichas(ESP[val.k].f),
-      lectura: val => [`${ESP[val.k].t}: ${ESP[val.k].lee}`],
+      controles: [{ id: 'k', etiqueta: 'Sal', opciones: Object.keys(ESP).map(k => ({ valor: k, texto: ESP[k].t })) }, T_AUTO(6)],
+      dibujo: val => espT(val.k, val.t).dib,
+      lectura: val => { const y = espT(val.k, val.t); return [y.n === y.total ? `${ESP[val.k].t}: ${ESP[val.k].lee}` : `${ESP[val.k].t}: ${y.n} de ${y.total} fichas · carga neta ${sg(y.q)}`]; },
       minimo: 3,
     },
     predice: {
@@ -552,15 +600,16 @@
     laboratorio: [
       {
         id: 'sal-a-mano', titulo: 'La sal armada a mano', pieza: 'quim-fichas',
-        consigna: 'Elige un catión y un anión, y pon tú las fichas. Estira cada fila de cuadritos hasta que no quede carga sin pareja.',
+        consigna: 'Las fichas de anión suben y bajan solas. Elige los dos iones, pon las fichas y pausa cuando no quede carga sin pareja.',
         controles: [
           { id: 'c', etiqueta: 'Catión', opciones: CATL.map(k => ({ valor: k, texto: CAT[k][0] })) },
           { id: 'a', etiqueta: 'Anión', opciones: ANL.map(k => ({ valor: k, texto: AN[k][0] })) },
           { id: 'nc', etiqueta: 'fichas de catión', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
-          { id: 'na', etiqueta: 'fichas de anión', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
+          { id: 'na', etiqueta: 'fichas de anión', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0, auto: { velocidad: 0.8, modo: 'rebota' } },
         ],
-        dibujo: v => salMano(v),
+        dibujo: v => salMano(ent(v, 'na')),
         lectura: v => {
+          v = ent(v, 'na');
           const C = CAT[v.c], A = AN[v.a], q = cargaMano(v), x = sal(v.c, v.a);
           return [q !== 0 ? `${v.nc} ${C[0]} + ${v.na} ${A[0]}: carga ${sg(q)}, no es neutra` : v.nc === x.nc ? `${x.fo}: ${x.nombre} ✓` : `neutra, pero se simplifica a ${x.fo}`];
         },
@@ -569,7 +618,7 @@
           { id: 'cation', etiqueta: 'final de las cargas del catión', color: 'c-o',
             donde: v => filaFin(CAT[v.c][2], v.nc, '+'), mover: (pt, v) => ({ nc: ((pt.x - 47) / 17 + 1) / CAT[v.c][2] }) },
           { id: 'anion', etiqueta: 'final de las cargas del anión', color: 'c-i',
-            donde: v => filaFin(AN[v.a][2], v.na, '−'), mover: (pt, v) => ({ na: ((pt.x - 47) / 17 + 1) / AN[v.a][2] }) },
+            donde: v => filaFin(AN[v.a][2], Math.round(v.na), '−'), mover: (pt, v) => ({ na: ((pt.x - 47) / 17 + 1) / AN[v.a][2] }) },
         ],
         // Retos comprobados (docs/teoria.md §4d): la carga neta y la fórmula mínima salen de cargaMano y sal(), lo mismo
         // que la lectura.

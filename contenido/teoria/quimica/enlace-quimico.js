@@ -77,6 +77,32 @@
     hielo: { titulo: 'Hielo (H₂O)', caja: { forma: 'caja', particulas: red('H2O', null, 5, 4, 0.12, 0.88, 0.12, 0.88) }, lee: 'Moléculas de agua: átomos que comparten electrones. Covalente.' },
   };
   const solido = k => lupa([Object.assign({ titulo: SOLIDOS[k].titulo }, SOLIDOS[k].caja)]);
+  // ---------- Animación (docs/3d.md §6): partículas que se mueven solas ----------
+  // Modelo en cámara lenta y determinístico (regla 1: cada cuadro es función de t). Los iones, los cationes del metal
+  // y las moléculas del hielo vibran en su sitio de la red; los electrones del metal vuelan entre ellos y rebotan en
+  // el borde de la lupa (el «mar de electrones»). Frecuencias múltiplos de 1/CICLO: al volver t a 0 nada salta.
+  const CICLO = 8, W2 = 2 * Math.PI / CICLO;
+  const h01 = (a, b) => { let h = (Math.imul(a + 0x9E3779B9, 0x85EBCA6B) ^ Math.imul(b + 0x7F4A7C15, 0xC2B2AE35)) >>> 0; h ^= h >>> 15; h = Math.imul(h, 0x2C1B3C6D); h ^= h >>> 12; return (h >>> 0) / 4294967296; };
+  const tri = u => { const w = ((u % 2) + 2) % 2; return w > 1 ? 2 - w : w; };
+  function vibrar(particulas, t) {
+    const out = []; let i = 0;
+    for (const g of particulas) {
+      const n = Math.round(g.n === undefined ? 1 : g.n);
+      for (let j = 0; j < n; j++, i++) {
+        const r = k => h01(i * 7 + k, 3);
+        if (Number.isFinite(g.x) && Number.isFinite(g.y)) {
+          out.push(Object.assign({}, g, { n: 1, x: Math.max(0.05, Math.min(0.95, g.x + 0.016 * Math.sin(W2 * (6 + Math.floor(r(1) * 3)) * t + 6.3 * r(2)))),
+            y: Math.max(0.05, Math.min(0.95, g.y + 0.02 * Math.sin(W2 * (6 + Math.floor(r(3) * 3)) * t + 6.3 * r(4)))) }));
+        } else {                                       // vuela en recta y rebota (electrones del metal)
+          const vx = (2 + Math.floor(r(1) * 3)) * (r(2) < 0.5 ? -1 : 1) * 2 / CICLO, vy = (1 + Math.floor(r(3) * 3)) * (r(4) < 0.5 ? -1 : 1) * 2 / CICLO;
+          out.push(Object.assign({}, g, { n: 1, x: 0.04 + 0.92 * tri(r(5) + vx * t), y: 0.05 + 0.9 * tri(r(6) + vy * t) }));
+        }
+      }
+    }
+    return out;
+  }
+  const solidoT = (k, t) => lupa([Object.assign({ titulo: SOLIDOS[k].titulo }, SOLIDOS[k].caja, { particulas: vibrar(SOLIDOS[k].caja.particulas, t) })]);
+  const LEE_T = { sal: 'red de iones Na⁺ y Cl⁻: iónico.', cobre: 'cationes de cobre en un mar de electrones: metálico.', hielo: 'moléculas de agua que comparten electrones: covalente.' };
   const TIPOS = {
     ionico: { nombre: 'Iónico', si: 'Sería iónico si se unieran un metal y un no metal en una red de iones.', porque: 'Metal con no metal: red de cationes y aniones.' },
     covalente: { nombre: 'Covalente', si: 'Sería covalente si solo hubiera no metales compartiendo pares de electrones.', porque: 'Solo no metales: comparten pares de electrones.' },
@@ -89,11 +115,12 @@
     temas: ['Enlace iónico', 'Enlace metálico'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Elige un sólido y míralo con la lupa. Fíjate qué partícula se repite y si hay grupos sueltos o una red continua.',
+      consigna: 'Elige un sólido y míralo con la lupa, en cámara lenta: todo vibra. Fíjate qué partícula se repite y qué se mueve libre.',
       voz: 'Primero el inventario: qué partícula se repite en cada sólido.',
-      controles: [{ id: 'k', etiqueta: 'Sólido', opciones: Object.keys(SOLIDOS).map(k => ({ valor: k, texto: SOLIDOS[k].titulo })) }],
-      dibujo: val => solido(val.k),
-      lectura: val => [SOLIDOS[val.k].lee],
+      controles: [{ id: 'k', etiqueta: 'Sólido', opciones: Object.keys(SOLIDOS).map(k => ({ valor: k, texto: SOLIDOS[k].titulo })) },
+        { id: 't', etiqueta: 't', min: 0, max: CICLO, paso: 0.1, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } }],
+      dibujo: val => solidoT(val.k, val.t),
+      lectura: val => [`t = ${f(val.t, 1)} s · ${LEE_T[val.k]}`],
       minimo: 3,
     },
     predice: {
@@ -169,6 +196,17 @@
     N2: { t: 'N₂', l: () => lewis([A('n1', 'N', -0.65, 0), A('n2', 'N', 0.65, 0)], [B('n1', 'n2', 3)], [...P('n1', 180), ...P('n2', 0)]) },
     BF3: { t: 'BF₃', l: () => lewis([A('b', 'B', 0, 0), A('f1', 'F', 0, -1.2), A('f2', 'F', -1.04, 0.6), A('f3', 'F', 1.04, 0.6)], [B('b', 'f1'), B('b', 'f2'), B('b', 'f3')], [...P('f1', -90, 180, 0), ...P('f2', 150, 60, 240), ...P('f3', 30, 120, -60)]) },
   };
+  // Animación: los electrones se colocan solos, de a dos: primero los enlaces, después los pares libres (un paso cada
+  // 0,6 s). La cuenta de los colocados la hace el mismo dibujo; al final se ve la estructura completa.
+  function colocar(d, t) {
+    const dd = Object.assign({}, d.datos), pasos = [...dd.enlaces.map(e => ({ e, n: 2 * (e.orden || 1) })), ...dd.pares.map(p => ({ p, n: 2 }))];
+    const k = Math.max(0, Math.min(pasos.length, Math.floor(t))), puesto = new Set(pasos.slice(0, k).map(x => x.e || x.p));
+    // Lo que falta se oculta con desde (no se quita): así el encuadre de la pieza no salta mientras se coloca.
+    dd.enlaces = dd.enlaces.map(e => (puesto.has(e) ? e : Object.assign({}, e, { desde: 99 })));
+    dd.pares = dd.pares.map(p => (puesto.has(p) ? p : Object.assign({}, p, { desde: 99 })));
+    return { dib: { datos: dd, estado: d.estado }, usados: pasos.slice(0, k).reduce((a, x) => a + x.n, 0), total: d.nval, completo: k === pasos.length };
+  }
+  const T_COLOCAR = { id: 't', etiqueta: 't', min: 0, max: 16, paso: 0.1, inicio: 16, unidad: 's', decimales: 1, auto: { velocidad: 1.6 } };
   const LEE = { H2O: 'O con 8 y cada H con 2.', NH3: 'N con 8: tres enlaces y un par.', CH4: 'C con 8: cuatro enlaces.', CO2: 'Dos dobles enlaces: todos con 8.', N2: 'Triple enlace: cada N con 8.', BF3: 'El boro se queda con 6: excepción.' };
   // Sin arrastre: el control elige entre moléculas distintas; los enlaces y pares son la respuesta, no una perilla.
   const lewisSolo = {
@@ -177,11 +215,11 @@
     temas: ['Regla del octeto', 'Enlace covalente y estructuras de Lewis'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Elige una molécula. Cuenta los electrones de valencia y comprueba que enlaces y pares libres los usan todos.',
+      consigna: 'Elige una molécula. Los electrones se colocan solos, de a dos: enlaces y después pares libres. Comprueba que se usan todos.',
       voz: 'Cada línea son dos electrones; cada par de puntos, también.',
-      controles: [{ id: 'k', etiqueta: 'Molécula', opciones: Object.keys(MOLS).map(k => ({ valor: k, texto: MOLS[k].t })) }],
-      dibujo: val => MOLS[val.k].l(),
-      lectura: val => [MOLS[val.k].t, ': ', Nv, ` = ${f(MOLS[val.k].l().nval, 0)} e⁻. ${LEE[val.k]}`],
+      controles: [{ id: 'k', etiqueta: 'Molécula', opciones: Object.keys(MOLS).map(k => ({ valor: k, texto: MOLS[k].t })) }, T_COLOCAR],
+      dibujo: val => colocar(MOLS[val.k].l(), val.t).dib,
+      lectura: val => { const c = colocar(MOLS[val.k].l(), val.t); return c.completo ? [MOLS[val.k].t, ': ', Nv, ` = ${f(c.total, 0)} e⁻. ${LEE[val.k]}`] : [MOLS[val.k].t, `: colocados ${c.usados} de `, Nv, ` = ${f(c.total, 0)} e⁻`]; },
       minimo: 3,
     },
     predice: {
@@ -271,11 +309,11 @@
     temas: ['Resonancia'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Ion nitrato, NO₃⁻. Elige a qué oxígeno va el doble enlace. Cuenta los electrones en cada dibujo.',
+      consigna: 'Ion nitrato, NO₃⁻. Elige a qué oxígeno va el doble enlace. Los electrones se colocan solos, de a dos: cuéntalos en cada dibujo.',
       voz: 'Mira qué se mueve entre un dibujo y otro.',
-      controles: [{ id: 'k', etiqueta: 'Doble enlace', opciones: [{ valor: 0, texto: 'Arriba' }, { valor: 1, texto: 'Izquierda' }, { valor: 2, texto: 'Derecha' }] }],
-      dibujo: val => triangular('N', val.k, -1),
-      lectura: val => [`Doble enlace ${['arriba', 'a la izquierda', 'a la derecha'][val.k]}: `, Nv, ' = 24 e⁻ igual'],
+      controles: [{ id: 'k', etiqueta: 'Doble enlace', opciones: [{ valor: 0, texto: 'Arriba' }, { valor: 1, texto: 'Izquierda' }, { valor: 2, texto: 'Derecha' }] }, T_COLOCAR],
+      dibujo: val => colocar(triangular('N', val.k, -1), val.t).dib,
+      lectura: val => { const c = colocar(triangular('N', val.k, -1), val.t); return c.completo ? [`Doble enlace ${['arriba', 'a la izquierda', 'a la derecha'][val.k]}: `, Nv, ` = ${f(c.total, 0)} e⁻ igual`] : [`Colocados ${c.usados} de `, Nv, ` = ${f(c.total, 0)} e⁻`]; },
       minimo: 3,
       // Se agarra el doble enlace y se lo lleva a otro O: los átomos no se mueven y la cuenta de 24 no cambia.
       arrastres: [{ id: 'doble', etiqueta: 'doble enlace: llévalo a otro oxígeno', color: 'c-i',
@@ -374,6 +412,24 @@
     if (GEOM[k].dipA) d.datos.enlaces = d.datos.enlaces.map(e => Object.assign(e, { dipolo: 'a' }));
     return d;
   }
+  // Animación: la molécula entra inclinada 50° y a t = 1 s se enciende un campo eléctrico (flecha de + a −). Una molécula
+  // polar siente un giro que la alinea, con su extremo δ− hacia la placa +; una apolar no siente giro y se queda. El
+  // giro se modela como un acercamiento exponencial (molécula frenada por sus vecinas): es cualitativo, no un cálculo.
+  const TH0 = 50, girarXY = (x, y, g) => { const a = g * Math.PI / 180; return [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a)]; };
+  const conCampo = t => t >= 1;
+  const giroDe = (k, t) => (GEOM[k].mu && conCampo(t) ? TH0 * Math.exp(-(t - 1) / 0.8) : TH0);
+  function formaCampo(k, t) {
+    const d = formaDib(k), dd = Object.assign({}, d.datos), g = giroDe(k, t);
+    dd.atomos = dd.atomos.map(a => { const [x, y] = girarXY(a.x, a.y, g); return Object.assign({}, a, { x, y }); });
+    dd.pares = dd.pares.map(p => Object.assign({}, p, { ang: p.ang + g }));
+    dd.flechas = (dd.flechas || []).map(fl => Object.assign({}, fl, { de: girarXY(fl.de[0], fl.de[1], g), a: girarXY(fl.a[0], fl.a[1], g) }));
+    dd.angulos = [];
+    // El campo siempre está en los datos (oculto con desde mientras está apagado): así el encuadre no salta.
+    const apagado = conCampo(t) ? {} : { desde: 99 };
+    dd.flechas.push(Object.assign({ de: [-2.2, -1.05], a: [-2.2, 1.05] }, apagado));
+    dd.textos = (dd.textos || []).concat([Object.assign({ x: -2.55, y: -0.85, t: '+', peso: 700 }, apagado), Object.assign({ x: -2.55, y: 1.1, t: '−', peso: 700 }, apagado)]);
+    return { datos: dd, estado: d.estado };
+  }
   // Sin arrastre en el juego: el control elige entre moléculas distintas. El ángulo que se agarra está en el
   // laboratorio («Dos dipolos que giran»), donde se ve cómo la suma de dipolos depende de la forma.
   const geo = {
@@ -382,11 +438,16 @@
     temas: ['Hibridación y geometría molecular', 'Polaridad'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Elige una molécula. Mira su forma, los dipolos de cada enlace (flechas naranjas) y si queda una flecha total.',
+      consigna: 'Elige una molécula: mira su forma y sus dipolos (flechas naranjas). Un campo eléctrico se enciende solo: ¿la molécula gira?',
       voz: 'Cuenta las regiones de electrones alrededor del átomo central.',
-      controles: [{ id: 'k', etiqueta: 'Molécula', opciones: Object.keys(GEOM).map(k => ({ valor: k, texto: GEOM[k].t })) }],
-      dibujo: val => formaDib(val.k),
-      lectura: val => { const g = GEOM[val.k]; return [`${g.t}: ${g.forma}, ${g.hib}, ${f(g.ang, 1)}° · `, mu, g.mu ? ` = ${f(g.mu)} D` : ' = 0']; },
+      controles: [{ id: 'k', etiqueta: 'Molécula', opciones: Object.keys(GEOM).map(k => ({ valor: k, texto: GEOM[k].t })) },
+        { id: 't', etiqueta: 't', min: 0, max: 6, paso: 0.1, inicio: 6, unidad: 's', decimales: 1, auto: { velocidad: 1 } }],
+      dibujo: val => formaCampo(val.k, val.t),
+      lectura: val => {
+        const g = GEOM[val.k], th = `${f(giroDe(val.k, val.t), 0)}°`, ts = `t = ${f(val.t, 1)} s · `;
+        if (!conCampo(val.t)) return [`${ts}${g.t}: sin campo, inclinada ${th}`];
+        return g.mu ? [`${ts}${g.t} polar, `, mu, ` = ${f(g.mu)} D: gira, ${th}`] : [`${ts}${g.t} apolar, `, mu, ` = 0: no gira, ${th}`];
+      },
       minimo: 3,
     },
     predice: {
@@ -488,6 +549,17 @@
     void tipo;
     return { datos: { atomos: at, enlaces: en, textos, escala: 48, alto: 130 }, estado: {} };
   }
+  // Animación: la temperatura sube y baja sola (de −180 °C a 120 °C). Mientras no llega a la de ebullición, las dos
+  // moléculas siguen unidas por su atracción; al pasarla, la segunda se aleja y la línea punteada desaparece.
+  function dosT(k, T) {
+    const d = PARES[k].d(), dd = Object.assign({}, d.datos);
+    if (T < PARES[k].eb) return d;
+    const lejos = new Set(k === 'metano' ? ['b'] : ['x2', 'h2']);
+    dd.atomos = dd.atomos.map(a => (lejos.has(a.id) ? Object.assign({}, a, { x: a.x + 1.1 }) : a));
+    dd.enlaces = dd.enlaces.filter(e => !e.discontinuo);
+    dd.textos = [{ x: 0.2, y: 0.9, t: 'se separan', color: 'o' }];
+    return { datos: dd, estado: d.estado };
+  }
   // Sin arrastre: el control elige entre tres sustancias; la atracción entre vecinas no tiene una perilla natural.
   // Hallazgo 9 de la auditoría: son dos representaciones a propósito. El juego muestra la atracción entre dos
   // moléculas vecinas; «Mira» pasa a los ejes de ebullición, donde el agua se sale de la tendencia de su grupo.
@@ -497,11 +569,12 @@
     temas: ['Fuerzas intermoleculares'],
     pieza: 'quim-molecula',
     juega: {
-      consigna: 'Elige una sustancia y mira las fuerzas intermoleculares entre dos moléculas vecinas (línea punteada). Compara su temperatura de ebullición.',
+      consigna: 'Elige una sustancia: mira las fuerzas intermoleculares entre dos vecinas (línea punteada). La temperatura sube y baja sola: ¿cuándo se separan?',
       voz: 'La línea punteada no es un enlace: es una atracción entre moléculas.',
-      controles: [{ id: 'k', etiqueta: 'Sustancia', opciones: Object.keys(PARES).map(k => ({ valor: k, texto: PARES[k].t })) }],
-      dibujo: val => PARES[val.k].d(),
-      lectura: val => [`${PARES[val.k].t}: ${PARES[val.k].f} · hierve a ${f(PARES[val.k].eb, 0)} °C`],
+      controles: [{ id: 'k', etiqueta: 'Sustancia', opciones: Object.keys(PARES).map(k => ({ valor: k, texto: PARES[k].t })) },
+        { id: 'T', etiqueta: 'T', min: -180, max: 120, paso: 5, inicio: 20, unidad: '°C', decimales: 0, auto: { velocidad: 45, modo: 'rebota' } }],
+      dibujo: val => dosT(val.k, val.T),
+      lectura: val => { const P = PARES[val.k], T = Math.round(val.T / 5) * 5; return [T < P.eb ? `${P.t} a ${f(T, 0)} °C: siguen unidas (${P.f})` : `${P.t} a ${f(T, 0)} °C: ya pasó ${f(P.eb, 0)} °C, se separan`]; },
       minimo: 3,
     },
     predice: {
@@ -673,14 +746,16 @@
       {
         // Exploración libre en 3D (decisión de Gerson, 15 nov: sin predicciones; los retos son invitaciones).
         id: 'molecula-gira', titulo: 'La molécula que gira', pieza: 'quim-molecula-3d',
-        consigna: 'Gira la molécula con el dedo y toca un átomo para saber cuál es. Cambia de molécula y enciende los dipolos.',
+        consigna: 'La molécula gira sola: su forma no cambia. Pausa, gírala con el dedo y toca un átomo. Cambia de molécula y enciende los dipolos.',
         controles: [
           { id: 'mol', etiqueta: 'Molécula', opciones: GIRA.map(k => ({ valor: k, texto: M.molecula(k).formula })) },
           { id: 'dip', etiqueta: 'Dipolos', opciones: [{ valor: 0, texto: 'Ocultos' }, { valor: 1, texto: 'A la vista' }] },
           { id: 'par', etiqueta: 'Pares libres', opciones: [{ valor: 1, texto: 'A la vista' }, { valor: 0, texto: 'Ocultos' }] },
+          // Animación (ronda 5): la molécula gira sola sobre su eje vertical, 30° por segundo (la pieza mueve, no rearma).
+          { id: 'giro', etiqueta: 'Giro', min: 0, max: 360, paso: 30, inicio: 0, unidad: '°', decimales: 0, auto: { velocidad: 30 } },
         ],
-        dibujo: val => ({ datos: mol3d(val.mol), estado: { dipolos: val.dip === 1, pares: val.par === 1 } }),
-        lectura: val => { const x = M.molecula(val.mol); return [`${x.formula}: ${x.vsepr.geometria}, ${x.vsepr.hibridacion.replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d])}, ${x.polaridad.polar ? 'polar' : 'apolar'}`]; },
+        dibujo: val => ({ datos: Object.assign({}, mol3d(val.mol), { giro: val.giro || 0 }), estado: { dipolos: val.dip === 1, pares: val.par === 1 } }),
+        lectura: val => { const x = M.molecula(val.mol); return [`${x.formula}: ${x.vsepr.geometria}, ${x.vsepr.hibridacion.replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d])}, ${x.polaridad.polar ? 'polar' : 'apolar'} · giro ${f(val.giro || 0, 0)}°`]; },
         // Retos comprobados con el mismo motor que arma la figura (docs/teoria.md §4d).
         invitaciones: [
           { texto: 'Encuentra una molécula con enlaces polares que, en total, sea apolar.',

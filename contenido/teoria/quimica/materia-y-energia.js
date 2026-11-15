@@ -75,6 +75,47 @@
     return out;
   }
 
+  // ---------- Partículas que se mueven solas (animación, docs/3d.md §6) ----------
+  // Modelo cinético, en cámara lenta y determinístico: cada cuadro es una función de t (regla 1), sin azar ni reloj.
+  // Un gas vuela en recta y rebota en las paredes; un líquido se desliza alrededor de su lugar sin salir de su capa;
+  // un sólido vibra en su sitio. Todas las frecuencias son múltiplos de 1/CICLO: cuando t vuelve a 0, nada salta.
+  const CICLO = 8, W2 = 2 * Math.PI / CICLO;
+  const h01 = (a, b) => { let h = (Math.imul(a + 0x9E3779B9, 0x85EBCA6B) ^ Math.imul(b + 0x7F4A7C15, 0xC2B2AE35)) >>> 0; h ^= h >>> 15; h = Math.imul(h, 0x2C1B3C6D); h ^= h >>> 12; return (h >>> 0) / 4294967296; };
+  const tri = u => { const w = ((u % 2) + 2) % 2; return w > 1 ? 2 - w : w; };    // ida y vuelta entre 0 y 1: el rebote
+  const acota = (u, a = 0.06, b = 0.94) => Math.max(a, Math.min(b, u));
+  // particulas: los grupos de una caja; modo: 'gas' | 'liquido' | 'solido' (un grupo puede traer su propio modo).
+  // Devuelve una partícula por elemento, con su x, y (fracciones de la región) en el instante t.
+  function mover(particulas, modo, t, k = 0, cols0) {
+    const lista = [];
+    for (const g of particulas || []) { const n = Math.round(g.n === undefined ? 1 : g.n); for (let j = 0; j < n; j++) lista.push(g); }
+    const libres = lista.filter(g => !(Number.isFinite(g.x) && Number.isFinite(g.y)));
+    const cols = cols0 || Math.max(1, Math.round(Math.sqrt(libres.length * 1.6))), filas = Math.max(1, Math.ceil(libres.length / cols));
+    const casilla = libres.map((_, i) => i).sort((a, b) => h01(k + 1, a) - h01(k + 1, b));
+    let libre = 0;
+    return lista.map((g, i) => {
+      const r = j => h01(i * 7 + j, k * 13 + 3), md = g.modo || modo;
+      let bx = g.x, by = g.y;
+      if (!(Number.isFinite(bx) && Number.isFinite(by))) {
+        const c = casilla[libre++], q = c % cols, fl = Math.floor(c / cols);
+        bx = 0.14 + 0.72 * (cols === 1 ? 0.5 : q / (cols - 1)); by = 0.16 + 0.68 * (filas === 1 ? 0.5 : fl / (filas - 1));
+      }
+      let x, y;
+      if (md === 'gas') {
+        const vx = (2 + Math.floor(r(1) * 3)) * (r(2) < 0.5 ? -1 : 1) * 2 / CICLO, vy = (1 + Math.floor(r(3) * 3)) * (r(4) < 0.5 ? -1 : 1) * 2 / CICLO;
+        x = 0.06 + 0.88 * tri(bx + vx * t); y = 0.07 + 0.86 * tri(by + vy * t);
+      } else if (md === 'liquido') {
+        x = acota(bx + 0.07 * Math.sin(W2 * (1 + Math.floor(r(1) * 2)) * t + 6.3 * r(2)) + 0.03 * Math.sin(W2 * 3 * t + 6.3 * r(3)));
+        y = acota(by + 0.05 * Math.sin(W2 * (1 + Math.floor(r(4) * 2)) * t + 6.3 * r(5)), 0.06, 0.95);
+      } else {
+        x = acota(bx + 0.018 * Math.sin(W2 * (6 + Math.floor(r(1) * 3)) * t + 6.3 * r(2)));
+        y = acota(by + 0.018 * Math.sin(W2 * (6 + Math.floor(r(3) * 3)) * t + 6.3 * r(4)), 0.06, 0.96);
+      }
+      const p = Object.assign({}, g, { n: 1, x, y }); delete p.modo;
+      return p;
+    });
+  }
+  const T_ANIMA = { id: 't', etiqueta: 't', min: 0, max: CICLO, paso: 0.1, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } };
+
   // ---------- Idea 1: sustancia o mezcla se decide con la lupa ----------
   // Cambia: la muestra · Permanece: la caja y la escala de la lupa · Progresa: de una especie a varias, de una fase
   // a dos · Se reserva: la mezcla que se ve uniforme (agua con azúcar) · Debe verse: cuántas especies hay.
@@ -85,6 +126,9 @@
     aceite: { titulo: 'Agua y aceite', caja: { forma: 'vaso', nivel: 0.9, particulas: [...rejilla('aceite', 6, 3, 0.18, 0.82, 0.1, 0.3), ...rejilla('H2O', 9, 3, 0.15, 0.85, 0.55, 0.92)] }, lee: 'Agua y aceite: 2 especies, dos fases. Mezcla heterogénea.' },
   };
   const muestra = k => lupa([Object.assign({ titulo: MUESTRAS[k].titulo }, MUESTRAS[k].caja)]);
+  // En el juego las partículas se mueven: el oxígeno vuela (gas); el agua y lo disuelto se deslizan (líquido), y el
+  // aceite y el agua se mueven cada uno en su capa, sin mezclarse.
+  const muestraT = (k, t) => { const c = MUESTRAS[k].caja; return lupa([Object.assign({ titulo: MUESTRAS[k].titulo }, c, { particulas: mover(c.particulas, c.forma === 'cilindro' ? 'gas' : 'liquido', t) })]); };
   // Gesto directo (docs/teoria.md §4b): en las ideas con ejes, la manija es el punto del gráfico. Se ubica con
   // ejes.geometria y se lee con su inversa lineal (como en fisica/movimiento-rectilineo.js).
   const EJES = () => Kit.piezas.ejes;
@@ -97,11 +141,11 @@
     temas: ['Qué estudia la química', 'Sustancias y mezclas'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Elige una muestra y mira sus partículas con la lupa. Cuenta cuántas especies distintas hay y si forman una o dos capas.',
+      consigna: 'Las partículas se mueven solas, en cámara lenta. Elige una muestra y cuenta cuántas especies hay y si forman una o dos capas.',
       voz: 'Mira primero cuántas clases de partícula hay. El aspecto viene después.',
-      controles: [{ id: 'k', etiqueta: 'Muestra', opciones: Object.keys(MUESTRAS).map(k => ({ valor: k, texto: MUESTRAS[k].titulo })) }],
-      dibujo: val => muestra(val.k),
-      lectura: val => [MUESTRAS[val.k].lee],
+      controles: [{ id: 'k', etiqueta: 'Muestra', opciones: Object.keys(MUESTRAS).map(k => ({ valor: k, texto: MUESTRAS[k].titulo })) }, T_ANIMA],
+      dibujo: val => muestraT(val.k, val.t),
+      lectura: val => [`t = ${f(val.t, 1)} s · `, MUESTRAS[val.k].lee],
       minimo: 3,
     },
     predice: {
@@ -182,6 +226,15 @@
     decae: { texto: 'Carbono-14 que decae', antes: { titulo: 'Carbono-14', forma: 'caja', particulas: [{ e: 'C', n: 6 }] }, despues: { titulo: 'Después', forma: 'caja', particulas: [{ e: 'C', n: 3 }, { e: 'N', n: 3, resalta: true }] }, lee: 'Cambia el núcleo: el átomo pasa a otro elemento. Nuclear.' },
   };
   const proceso = k => lupa([PROCESOS[k].antes, PROCESOS[k].despues], { flechas: true });
+  // En el juego cada caja se mueve según su estado: el hielo vibra, el agua se desliza, el vapor y los gases vuelan.
+  // En «disolver sal», antes, la sal está quieta en el fondo (sólido) y el agua se desliza encima.
+  const MODOS = { funde: ['solido', 'liquido'], hierve: ['liquido', 'gas'], disuelve: [null, 'liquido'], quema: ['gas', 'gas'], decae: ['solido', 'solido'] };
+  const LEE_CORTO = { funde: 'mismas moléculas, otro orden: físico.', hierve: 'mismas moléculas, más separadas: físico.', disuelve: 'mismas partículas, ahora mezcladas: físico.', quema: 'moléculas nuevas, mismos átomos: químico.', decae: 'cambia el núcleo y el elemento: nuclear.' };
+  const procesoT = (k, t) => {
+    const P = PROCESOS[k], [ma, md] = MODOS[k];
+    const antes = ma ? P.antes.particulas : P.antes.particulas.map(g => Object.assign({ modo: g.e === 'H2O' ? 'liquido' : 'solido' }, g));
+    return lupa([Object.assign({}, P.antes, { particulas: mover(antes, ma, t, 0) }), Object.assign({}, P.despues, { particulas: mover(P.despues.particulas, md, t, 1) })], { flechas: true });
+  };
   // Sin arrastre: el control elige entre procesos distintos (antes y después); no hay una perilla natural.
   const cambios = {
     id: 'fisico-quimico-nuclear',
@@ -189,11 +242,11 @@
     temas: ['Estados de agregación', 'Propiedades físicas y químicas', 'Fenómenos físicos, químicos y nucleares'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Elige un proceso. A la izquierda está antes y a la derecha, después. Compara las partículas de las dos cajas.',
+      consigna: 'Elige un proceso: antes a la izquierda, después a la derecha. Las partículas se mueven en cámara lenta. Compara las dos cajas.',
       voz: 'Una observación no es una explicación: mira qué partículas hay después.',
-      controles: [{ id: 'k', etiqueta: 'Proceso', opciones: Object.keys(PROCESOS).map(k => ({ valor: k, texto: PROCESOS[k].texto })) }],
-      dibujo: val => proceso(val.k),
-      lectura: val => [PROCESOS[val.k].lee],
+      controles: [{ id: 'k', etiqueta: 'Proceso', opciones: Object.keys(PROCESOS).map(k => ({ valor: k, texto: PROCESOS[k].texto })) }, T_ANIMA],
+      dibujo: val => procesoT(val.k, val.t),
+      lectura: val => [`t = ${f(val.t, 1)} s · `, LEE_CORTO[val.k]],
       minimo: 3,
     },
     predice: {
@@ -271,16 +324,27 @@
     curvas: [{ puntos: CURVA, color: 'h' }],
     alt: 'Curva de calentamiento de 10 g de hielo desde −20 °C: sube hasta 0 °C, se queda plana mientras se funde y después sube hasta 100 °C.',
   }, extra);
-  const dibCalor = val => { const e = estadoCalor(val.q); return { datos: ejesCalor({ puntos: [{ x: val.q, y: e.T, color: 'h', rotulo: `${f(e.T, 0)} °C` }] }), estado: {} }; };
+  // La curva se dibuja hasta el calor entregado; lo que falta queda punteado, como camino por recorrer.
+  function hastaQ(curva, q) {
+    const out = [curva[0]];
+    for (let i = 1; i < curva.length; i++) {
+      const [x0, y0] = curva[i - 1], [x1, y1] = curva[i];
+      if (q >= x1) { out.push(curva[i]); continue; }
+      if (q > x0) out.push([q, y0 + (y1 - y0) * (q - x0) / (x1 - x0)]);
+      break;
+    }
+    return out;
+  }
+  const dibCalor = val => { const e = estadoCalor(val.q); return { datos: ejesCalor({ curvas: [{ puntos: CURVA, color: 'h', discontinua: true }, { puntos: hastaQ(CURVA, val.q), color: 'h' }], puntos: [{ x: val.q, y: e.T, color: 'h', rotulo: `${f(e.T, 0)} °C` }] }), estado: {} }; };
   const calor = {
     id: 'calor-sensible-latente',
     titulo: 'Calor que no sube temperatura',
     temas: ['Calor sensible y latente'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Entrega calor a 10 g de hielo que empiezan a −20 °C. Mira dónde queda el punto en la curva.',
+      consigna: 'El calor entra solo, a ritmo fijo, a 10 g de hielo que empiezan a −20 °C. Mira el tramo donde el punto no sube.',
       voz: 'Fíjate en el tramo donde el punto avanza sin subir.',
-      controles: [{ id: 'q', etiqueta: 'Q', color: 'c-o', min: 0, max: 8, paso: 0.5, inicio: 0, unidad: 'kJ', decimales: 1 }],
+      controles: [{ id: 'q', etiqueta: 'Q', color: 'c-o', min: 0, max: 8, paso: 0.5, inicio: 0, unidad: 'kJ', decimales: 1, auto: { velocidad: 0.8 } }],
       dibujo: val => dibCalor(val),
       lectura: val => { const e = estadoCalor(val.q); return [Tm, ` = ${f(e.T, 1)} °C · ${e.fase === 'fundiendo' ? `fundido ${f(100 * e.frac, 0)} %` : e.fase}`]; },
       minimo: 3,
@@ -365,21 +429,23 @@
     alt: `Recta de la energía contra la masa que desaparece: E = Δm·c². Cada miligramo da 90 000 millones de joules (0,09 TJ).`,
   }, extra);
   const dibMasa = val => ({ datos: ejesMasa(100, { puntos: [{ x: val.mg, y: val.mg * 0.09, color: 'd', rotulo: `${f(val.mg * 0.09, 1)} TJ`, guias: true }] }), estado: {} });
+  // Mientras Δm sube y baja sola, se lee en pasos de 10 mg (los del control).
+  const mg10 = val => Object.assign({}, val, { mg: Math.round(val.mg / 10) * 10 });
   const energia = {
     id: 'masa-energia',
     titulo: 'La energía nuclear pierde masa',
     temas: ['Equivalencia masa-energía'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Elige cuántos miligramos de masa desaparecen en un proceso nuclear y lee cuánta energía sale.',
+      consigna: 'La masa que desaparece en un proceso nuclear sube y baja sola. Lee cuánta energía sale; pausa o arrastra el punto.',
       voz: 'Mira qué tan empinada es esta recta.',
-      controles: [{ id: 'mg', etiqueta: 'Δm', color: 'c-i', min: 10, max: 100, paso: 10, inicio: 10, unidad: 'mg', decimales: 0 }],
-      dibujo: val => dibMasa(val),
-      lectura: val => [E, ` = ${cien(val.mg * 1e-6 * C2)} J`],
+      controles: [{ id: 'mg', etiqueta: 'Δm', color: 'c-i', min: 10, max: 100, paso: 10, inicio: 10, unidad: 'mg', decimales: 0, auto: { velocidad: 25, modo: 'rebota' } }],
+      dibujo: val => dibMasa(mg10(val)),
+      lectura: val => [dm, ` = ${f(mg10(val).mg, 0)} mg · `, E, ` = ${cien(mg10(val).mg * 1e-6 * C2)} J`],
       minimo: 3,
       // Se agarra el punto y se lo sube por la recta: la manija mueve Δm y la energía responde en el eje vertical.
       arrastres: [{ id: 'masa', etiqueta: 'punto de la recta: masa que desaparece', color: 'c-i',
-        donde: val => { const g = EJES().geometria(dibMasa(val).datos); return { x: g.X(val.mg), y: g.Y(val.mg * 0.09) }; },
+        donde: val => { const g = EJES().geometria(dibMasa(val).datos), q = mg10(val).mg; return { x: g.X(q), y: g.Y(q * 0.09) }; },
         mover: (pt, val) => ({ mg: inversa(EJES().geometria(dibMasa(val).datos).X, 0, 100)(pt.x) }) }],
     },
     predice: {
@@ -457,7 +523,7 @@
     return { datos: ejesCalor({
       x: { min: 0, max: QMAX, paso: 4, nombre: 'Q', unidad: 'kJ', decimales: 0, color: 'o' },
       y: { min: -40, max: 200, paso: 40, nombre: 'T', unidad: '°C', decimales: 0, color: 'h' },
-      curvas: [{ puntos: curva, color: 'h' }],
+      curvas: [{ puntos: curva, color: 'h', discontinua: true }, { puntos: hastaQ(curva, val.q), color: 'h' }],
       puntos: [{ x: val.q, y: e.T, color: 'h', rotulo: `${f(e.T, 0)} °C` }],
       alt: `Curva de calentamiento de 10 g de agua desde ${f(val.t0, 0)} °C hasta ${f(QMAX, 0)} kJ: meseta corta a 0 °C (fundir) y meseta larga a 100 °C (hervir). Con ${f(val.q, 1)} kJ está a ${f(e.T, 0)} °C.`,
     }), estado: {} };
@@ -521,10 +587,10 @@
     laboratorio: [
       {
         id: 'hielo-a-vapor', titulo: 'Del hielo al vapor', pieza: 'ejes',
-        consigna: 'Elige dónde empieza el hielo y empuja el punto por la curva. Compara el largo de las dos mesetas.',
+        consigna: 'El calor entra solo y el punto recorre la curva. Compara el largo de las dos mesetas; elige dónde empieza el hielo.',
         controles: [
           { id: 't0', etiqueta: 'T inicial', color: 'c-h', min: -40, max: 0, paso: 5, inicio: -20, unidad: '°C', decimales: 0 },
-          { id: 'q', etiqueta: 'Q', color: 'c-o', min: 0, max: QMAX, paso: 0.5, inicio: 2, unidad: 'kJ', decimales: 1 },
+          { id: 'q', etiqueta: 'Q', color: 'c-o', min: 0, max: QMAX, paso: 0.5, inicio: 2, unidad: 'kJ', decimales: 1, auto: { velocidad: 2.5 } },
         ],
         dibujo: val => dibLab(val),
         lectura: val => { const e = estadoLab(val.t0, val.q); return [`${f(val.t0, 0)} °C + ${f(val.q, 1)} kJ → `, Tm, ` = ${f(e.T, 0)} °C, ${e.lee}`]; },

@@ -57,3 +57,15 @@ test('escala opcional: achica el respaldo plano sin cambiar la molécula', () =>
   assert.equal(P.plano(Object.assign({}, d, { escala: 0.6 }), {}).escala, 24);
   assert.deepEqual(P.plano(Object.assign({}, d, { escala: 0.6 }), {}).atomos, P.plano(d, {}).atomos);
 });
+
+test('animación: el giro propio gira la proyección como la vista, sin cambiar la forma (ronda 5)', () => {
+  const v = AGUA.vista;
+  const con = g => P.plano(Object.assign({}, AGUA, { giro: g }), { dipolos: true, pares: true });
+  assert.deepEqual(con(0), P.plano(AGUA, { dipolos: true, pares: true }));          // sin giro, como antes
+  const visto = P.plano(Object.assign({}, AGUA, { vista: { giro: v.giro + 90, inclinacion: v.inclinacion } }), { dipolos: true, pares: true });
+  assert.deepEqual(con(90).atomos, visto.atomos);
+  assert.equal(P.forma(Object.assign({}, AGUA, { giro: 0 }), {}), P.forma(Object.assign({}, AGUA, { giro: 120 }), {}));
+  assert.notEqual(P.forma(AGUA, { dipolos: true }), P.forma(AGUA, { dipolos: false }));
+  // Girar no cambia la molécula: las distancias entre átomos de la proyección cambian, las 3D no (las da la unidad).
+  assert.notDeepEqual(con(0).atomos, con(90).atomos);
+});

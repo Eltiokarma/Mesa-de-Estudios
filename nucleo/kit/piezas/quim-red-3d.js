@@ -14,7 +14,10 @@
  *   bloque:  { puntos: [[x, y, z]], centro, vecinos: [i], n },           // bloque: en aristas (0 a n)
  *   radio:   r/a con que se dibujan las esferas (el real o uno chico para ver adentro),
  *   nombre:  'cúbica centrada en las caras', vista, alt,
+ *   giro:    grados,                          // opcional (ronda 5, animación): la figura girada sobre su eje vertical
  * }
+ * Animación (docs/3d.md §6): forma(datos) no depende de giro, y mover solo gira el pivote que guarda la figura y lleva
+ * cada rótulo a su lugar (h.moverEtiqueta): la escena no se rearma en cada cuadro.
  * Colores (regla 4): lo que cuenta para la celda (átomos por celda) turquesa c-i, con rótulos «⅛», «½» y «1» del mismo
  * color; los vecinos del átomo del centro (número de coordinación) naranja c-o, con sus enlaces; el resto, tinta tenue.
  *
@@ -89,7 +92,8 @@
   // ---------- Respaldo plano ----------
   function plano(d) {
     const v = vistaDe(d), W = 320, H = 260, E = 40, N = n(d);
-    const p2 = p => { const q = girar(aEscena(d, p), v.giro, v.inclinacion); return [W / 2 + q[0] * E, H / 2 - q[1] * E, q[2]]; };
+    // Giro propio de la figura (animación), después la vista.
+    const p2 = p => { const q = girar(aEscena(d, p), v.giro + (d.giro || 0), v.inclinacion); return [W / 2 + q[0] * E, H / 2 - q[1] * E, q[2]]; };
     const aristas = [];
     for (let i = 0; i <= N; i++) for (let j = 0; j <= N; j++) {
       aristas.push([p2([0, i, j]), p2([N, i, j])], [p2([i, 0, j]), p2([i, N, j])], [p2([i, j, 0]), p2([i, j, N])]);
@@ -121,10 +125,24 @@
     plano: d => dibujar(d),
     vista: d => vistaDe(d),
     clave: d => JSON.stringify([d.modo, d.vista || null]),
+    // Ruta rápida: todo lo que se arma menos el giro propio.
+    forma: d => JSON.stringify([d.modo, d.sitios || null, d.bloque || null, d.radio, d.nombre, d.vista || null]),
+    mover(T, grupo, d, e, h) {
+      const piv = grupo.children.find(o => o.userData && o.userData.pivote);
+      if (!piv) return false;
+      const a = rad(d.giro || 0), Y = new T.Vector3(0, 1, 0);
+      piv.rotation.y = a;
+      for (const x of piv.userData.rotulos) h.moverEtiqueta(x.el, x.base.clone().applyAxisAngle(Y, a));
+      return true;
+    },
     distancia: 8.4, distMin: 4, distMax: 14,
     construir(T, grupo, d, e, h) {
       const tinta = h.varCss('--ink', '#2d2340'), turquesa = h.varCss('--c-i', '#08807a'), naranja = h.varCss('--c-o', '#b85a06');
       const L = lado(d), N = n(d), r = d.radio * L, V = p => new T.Vector3(...aEscena(d, p));
+      // Todo va en un pivote que gira con datos.giro (la animación lo mueve sin rearmar); el grupo de afuera es la vista.
+      const caja = grupo, Y = new T.Vector3(0, 1, 0), giro = rad(d.giro || 0);
+      grupo = new T.Group(); grupo.userData = { pivote: true, rotulos: [] }; grupo.rotation.y = giro; caja.add(grupo);
+      const rotulo = (pos, texto, o) => grupo.userData.rotulos.push({ el: h.etiqueta(pos.clone().applyAxisAngle(Y, giro), texto, o), base: pos.clone() });
       // Aristas de las celdas.
       const pos = [];
       for (let i = 0; i <= N; i++) for (let j = 0; j <= N; j++) {
@@ -151,7 +169,7 @@
         const gl = new T.BufferGeometry(); gl.setAttribute('position', new T.Float32BufferAttribute(lin, 3));
         grupo.add(new T.LineSegments(gl, new T.LineBasicMaterial({ color: new T.Color(naranja) })));
         const cv = d.bloque.puntos[d.bloque.centro];
-        h.etiqueta(V([cv[0], cv[1] + 0.32, cv[2]]), `${d.bloque.vecinos.length} vecinos`, { color: 'c-o' });
+        rotulo(V([cv[0], cv[1] + 0.32, cv[2]]), `${d.bloque.vecinos.length} vecinos`, { color: 'c-o' });
         return { aria: alt(d) };
       }
       // Celda: el trozo de cada esfera que queda dentro del cubo, con sus tapas planas.
@@ -168,11 +186,11 @@
           c.position.copy(V(s.p)); grupo.add(c);
         }
       }
-      for (const x of rotulos(d)) h.etiqueta(V(x.p), x.texto, { color: 'c-i' });
+      for (const x of rotulos(d)) rotulo(V(x.p), x.texto, { color: 'c-i' });
       return { aria: alt(d) };
     },
   };
   const montar = (el, op) => Kit.vivo3d.montar(el, SPEC, op);
 
-  return { id: 'quim-red-3d', dibujar, alt, montar, plano, girar, gajo, sector, tapas, rotulos };
+  return { id: 'quim-red-3d', dibujar, alt, montar, plano, girar, gajo, sector, tapas, rotulos, forma: SPEC.forma };
 });

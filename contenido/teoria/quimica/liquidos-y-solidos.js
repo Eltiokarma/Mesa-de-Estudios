@@ -80,6 +80,38 @@
     gas: { texto: 'Gas', caja: { forma: 'cilindro', nivel: 1, particulas: [{ e: 'H2O', n: 5 }] }, lee: 'Separadas y libres: llena todo el recipiente.' },
   };
   const muestra = k => lupa([Object.assign({ titulo: ESTADOS[k].texto }, ESTADOS[k].caja)]);
+  // ---------- Partículas que se mueven solas (animación, docs/3d.md §6) ----------
+  // Modelo cinético, en cámara lenta y determinístico (regla 1: cada cuadro es función de t). Las que tienen un lugar
+  // fijo (los dos sólidos) vibran en su sitio; en un vaso se deslizan alrededor de su lugar (líquido); en un cilindro o
+  // una caja sin lugares fijos vuelan en recta y rebotan (gas). Frecuencias múltiplos de 1/CICLO: nada salta.
+  const CICLO = 8, W2 = 2 * Math.PI / CICLO;
+  const h01 = (a, b) => { let x = (Math.imul(a + 0x9E3779B9, 0x85EBCA6B) ^ Math.imul(b + 0x7F4A7C15, 0xC2B2AE35)) >>> 0; x ^= x >>> 15; x = Math.imul(x, 0x2C1B3C6D); x ^= x >>> 12; return (x >>> 0) / 4294967296; };
+  const tri = u => { const w = ((u % 2) + 2) % 2; return w > 1 ? 2 - w : w; };
+  const acota = (u, a = 0.06, b = 0.94) => Math.max(a, Math.min(b, u));
+  function mover(caja, t, k = 0) {
+    const lista = [];
+    for (const g of caja.particulas || []) { const n = Math.round(g.n === undefined ? 1 : g.n); for (let j = 0; j < n; j++) lista.push(g); }
+    const libres = lista.filter(g => !(Number.isFinite(g.x) && Number.isFinite(g.y)));
+    const cols = Math.max(1, Math.round(Math.sqrt(libres.length * 1.6))), filas = Math.max(1, Math.ceil(libres.length / cols));
+    const casilla = libres.map((_, i) => i).sort((a, b) => h01(k + 1, a) - h01(k + 1, b));
+    const gas = caja.forma !== 'vaso';
+    let libre = 0;
+    const particulas = lista.map((g, i) => {
+      const r = j => h01(i * 7 + j, k * 13 + 3);
+      if (Number.isFinite(g.x) && Number.isFinite(g.y)) {
+        return Object.assign({}, g, { n: 1, x: acota(g.x + 0.018 * Math.sin(W2 * (6 + Math.floor(r(1) * 3)) * t + 6.3 * r(2))), y: acota(g.y + 0.018 * Math.sin(W2 * (6 + Math.floor(r(3) * 3)) * t + 6.3 * r(4)), 0.06, 0.96) });
+      }
+      const c = casilla[libre++], bx = 0.14 + 0.72 * (cols === 1 ? 0.5 : (c % cols) / (cols - 1)), by = 0.16 + 0.68 * (filas === 1 ? 0.5 : Math.floor(c / cols) / (filas - 1));
+      if (gas) {
+        const vx = (2 + Math.floor(r(1) * 3)) * (r(2) < 0.5 ? -1 : 1) * 2 / CICLO, vy = (1 + Math.floor(r(3) * 3)) * (r(4) < 0.5 ? -1 : 1) * 2 / CICLO;
+        return Object.assign({}, g, { n: 1, x: 0.06 + 0.88 * tri(bx + vx * t), y: 0.07 + 0.86 * tri(by + vy * t) });
+      }
+      return Object.assign({}, g, { n: 1, x: acota(bx + 0.07 * Math.sin(W2 * (1 + Math.floor(r(1) * 2)) * t + 6.3 * r(2)) + 0.03 * Math.sin(W2 * 3 * t + 6.3 * r(3))),
+        y: acota(by + 0.05 * Math.sin(W2 * (1 + Math.floor(r(4) * 2)) * t + 6.3 * r(5)), 0.06, 0.95) });
+    });
+    return Object.assign({}, caja, { particulas });
+  }
+  const T_ANIMA = { id: 's', etiqueta: 't', min: 0, max: CICLO, paso: 0.1, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } };
   // Sin arrastre: el control elige entre estados y sólidos distintos; no hay una magnitud que agarrar en la lupa.
   const estados = {
     id: 'orden-y-libertad',
@@ -87,11 +119,11 @@
     temas: ['Propiedades de los estados de agregación', 'Sólidos cristalinos y amorfos'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Elige un estado y mira dónde están las partículas: si tienen lugar fijo, si se repite un patrón y si llenan el recipiente.',
+      consigna: 'Elige un estado; las partículas se mueven en cámara lenta. Mira si tienen lugar fijo, si se repite un patrón y si llenan el recipiente.',
       voz: 'Compara el orden de los dos sólidos.',
-      controles: [{ id: 'k', etiqueta: 'Estado', opciones: Object.keys(ESTADOS).map(k => ({ valor: k, texto: ESTADOS[k].texto })) }],
-      dibujo: val => muestra(val.k),
-      lectura: val => [ESTADOS[val.k].lee],
+      controles: [{ id: 'k', etiqueta: 'Estado', opciones: Object.keys(ESTADOS).map(k => ({ valor: k, texto: ESTADOS[k].texto })) }, T_ANIMA],
+      dibujo: val => lupa([mover(Object.assign({ titulo: ESTADOS[val.k].texto }, ESTADOS[val.k].caja), val.s)]),
+      lectura: val => [`${f(val.s, 1)} s · ${ESTADOS[val.k].lee}`],
       minimo: 3,
     },
     predice: {
@@ -169,10 +201,10 @@
     temas: ['Tensión superficial, viscosidad y capilaridad'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Un tubo de vidrio delgado entra en un líquido y el líquido sube. Elige el radio del tubo y el líquido, y lee la altura.',
+      consigna: 'Un tubo de vidrio delgado entra en un líquido y el líquido sube. El radio del tubo cambia solo: lee la altura. Elige el líquido.',
       voz: 'Prueba tubos cada vez más angostos.',
       controles: [
-        { id: 'r', etiqueta: 'r', color: 'c-d', min: 0.25, max: 2, paso: 0.25, inicio: 1, unidad: 'mm', decimales: 2 },
+        { id: 'r', etiqueta: 'r', color: 'c-d', min: 0.25, max: 2, paso: 0.25, inicio: 1, unidad: 'mm', decimales: 2, auto: { velocidad: 0.35, modo: 'rebota' } },
         { id: 'l', etiqueta: 'Líquido', opciones: Object.keys(LIQ).map(k => ({ valor: k, texto: LIQ[k][0] })) },
       ],
       dibujo: val => dibCap(val),
@@ -254,9 +286,9 @@
     temas: ['Presión de vapor y punto de ebullición'],
     pieza: 'ejes',
     juega: {
-      consigna: 'La curva es la presión del vapor del agua a cada temperatura. Cambia la presión de afuera y mira dónde la corta.',
+      consigna: 'La curva es la presión del vapor del agua a cada temperatura. La presión de afuera sube y baja sola: mira dónde corta la curva.',
       voz: 'Busca la temperatura de ebullición en Juliaca.',
-      controles: [{ id: 'p', etiqueta: 'P externa', color: 'c-o', min: 40, max: 200, paso: 10, inicio: 100, unidad: 'kPa', decimales: 0 }],
+      controles: [{ id: 'p', etiqueta: 'P externa', color: 'c-o', min: 40, max: 200, paso: 10, inicio: 100, unidad: 'kPa', decimales: 0, auto: { velocidad: 30, modo: 'rebota' } }],
       dibujo: val => dibPv(val),
       lectura: val => [`Con ${f(val.p, 0)} kPa afuera, hierve a `, T, ` = ${f(ebulle(val.p), 1)} °C`],
       minimo: 3,
@@ -355,14 +387,14 @@
     temas: ['Diagrama de fases'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Este es el diagrama de fases del CO₂. Mueve el punto con la temperatura y la presión y lee en qué fase está.',
+      consigna: 'Diagrama de fases del CO₂. La presión sube y baja sola: lee en qué fase está. Cambia la temperatura y mueve el punto.',
       voz: 'Busca dónde está el CO₂ líquido.',
       controles: [
-        { id: 't', etiqueta: 'T', color: 'c-h', min: -90, max: 40, paso: 10, inicio: -90, unidad: '°C', decimales: 0 },
-        { id: 'p', etiqueta: 'P', color: 'c-o', min: 1, max: 76, paso: 1, inicio: 1, unidad: 'atm', decimales: 0 },
+        { id: 't', etiqueta: 'T', color: 'c-h', min: -90, max: 40, paso: 10, inicio: -20, unidad: '°C', decimales: 0 },
+        { id: 'p', etiqueta: 'P', color: 'c-o', min: 1, max: 76, paso: 1, inicio: 1, unidad: 'atm', decimales: 0, auto: { velocidad: 12, modo: 'rebota' } },
       ],
-      dibujo: val => dibFase(val),
-      lectura: val => [`A ${f(val.t, 0)} °C y ${f(val.p, 0)} atm: ${fase(val.t, val.p)}`],
+      dibujo: val => dibFase(Object.assign({}, val, { p: Math.round(val.p) })),
+      lectura: val => [`A ${f(val.t, 0)} °C y ${f(Math.round(val.p), 0)} atm: ${fase(val.t, Math.round(val.p))}`],
       minimo: 4,
       // Se agarra el punto y se lo pasea por el mapa: x es la temperatura, y la presión; la fase se lee en el rótulo.
       arrastres: [arrastreFase],
@@ -439,14 +471,14 @@
     temas: ['Gases húmedos y humedad relativa'],
     pieza: 'quim-particulas',
     juega: {
-      consigna: 'Cada molécula de agua en el aire aporta 0,5 kPa de vapor. Agrega vapor y cambia la temperatura; lo que no cabe se condensa.',
+      consigna: 'Cada molécula de agua en el aire aporta 0,5 kPa. El vapor entra y sale solo; cambia la temperatura. Lo que no cabe se condensa.',
       voz: 'Mira cuánto vapor cabe a cada temperatura.',
       controles: [
-        { id: 'v', etiqueta: 'Vapor', min: 1, max: 8, paso: 1, inicio: 4, unidad: 'moléculas', decimales: 0 },
+        { id: 'v', etiqueta: 'Vapor', min: 1, max: 8, paso: 1, inicio: 4, unidad: 'moléculas', decimales: 0, auto: { velocidad: 1.2, modo: 'rebota' } },
         { id: 't', etiqueta: 'T', opciones: [10, 20, 30].map(x => ({ valor: x, texto: `${x} °C` })) },
       ],
-      dibujo: val => lupa([cajaHumeda(val.v, val.t)]),
-      lectura: val => { const H = humedo(val.v, val.t); return H.gotas ? [`Satura a ${f(PSAT[val.t], 2)} kPa: ${H.gotas} se condensan`] : [{ sub: [P, 'vapor'] }, ` = ${f(H.pv, 1)} kPa · HR = ${f(H.hr, 0)} %`]; },
+      dibujo: val => lupa([cajaHumeda(Math.round(val.v), val.t)]),
+      lectura: val => { const H = humedo(Math.round(val.v), val.t); return H.gotas ? [`Satura a ${f(PSAT[val.t], 2)} kPa: ${H.gotas} se condensan`] : [{ sub: [P, 'vapor'] }, ` = ${f(H.pv, 1)} kPa · HR = ${f(H.hr, 0)} %`]; },
       minimo: 3,
     },
     predice: {
@@ -606,14 +638,16 @@
         // Exploración libre en 3D (decisión de Gerson, 15 nov: sin predicciones; los retos son invitaciones).
         // Fracciones, átomos por celda, vecinos y empaquetamiento salen del motor (celda, bloqueRed).
         id: 'celda-se-repite', titulo: 'La celda que se repite', pieza: 'quim-red-3d',
-        consigna: 'Gira la celda con el dedo: de cada esfera solo cuenta el trozo de adentro. Cambia de red y mira ocho celdas juntas.',
+        consigna: 'La celda gira sola: de cada esfera solo cuenta el trozo de adentro. Pausa y gírala con el dedo. Cambia de red; mira ocho celdas.',
         controles: [
           { id: 'red', etiqueta: 'Red', opciones: ML.REDES_ORDEN.map(k => ({ valor: k, texto: { cs: 'Cúbica simple', bcc: 'Centrada en el cuerpo', fcc: 'Centrada en las caras' }[k] })) },
           { id: 'vis', etiqueta: 'Ver', opciones: [{ valor: 0, texto: 'Una celda' }, { valor: 1, texto: 'Ocho celdas' }] },
           { id: 'tam', etiqueta: 'Esferas', opciones: [{ valor: 1, texto: 'Tamaño real' }, { valor: 0, texto: 'Chicas' }] },
+          // Animación (ronda 5): la figura gira sola sobre su eje vertical, 30° por segundo (la pieza mueve, no rearma).
+          { id: 'giro', etiqueta: 'Giro', min: 0, max: 360, paso: 30, inicio: 0, unidad: '°', decimales: 0, auto: { velocidad: 30 } },
         ],
-        dibujo: v => redDe(v),
-        lectura: v => { const c = ML.celda(v.red); return [`${c.sigla}: `, Nc, ` = ${f(c.atomosPorCelda, 0)} por celda, ${c.coordinacion} vecinos, ${f(100 * c.empaquetamiento, 0)} % lleno`]; },
+        dibujo: v => { const d = redDe(v); d.datos.giro = v.giro || 0; return d; },
+        lectura: v => { const c = ML.celda(v.red); return [`${c.sigla}: `, Nc, ` = ${f(c.atomosPorCelda, 0)} por celda, ${c.coordinacion} vecinos, ${f(100 * c.empaquetamiento, 0)} % lleno · ${f(v.giro || 0, 0)}°`]; },
         // Retos comprobados con el mismo motor que arma la celda (docs/teoria.md §4d).
         invitaciones: [
           { texto: 'Arma una celda con 4 átomos en total, contando solo los trozos de adentro.',

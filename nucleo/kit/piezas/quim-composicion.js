@@ -12,6 +12,7 @@
  *
  * datos = {
  *   filas: [{ titulo: '100 g de glucosa', tramos: [{ valor: 40, texto: 'C 40 g', color: 'o' }, …], desde, hasta }],
+ *          // un tramo con tenue: true se dibuja sin relleno y punteado: lo que todavía falta (animación, ronda 5)
  *   escala: 'propia' | 'comun',
  *   alt
  * }
@@ -37,7 +38,9 @@
     let x = X0, abajo = 0;
     for (const t of f.tramos || []) {
       const w = tot > 0 ? largo * Math.max(0, t.valor || 0) / tot : 0;
-      s += `<rect x="${T.n(x)}" y="${y + 24}" width="${T.n(w)}" height="${HB}" fill="${T.color(t.color)}" fill-opacity="0.22" stroke="${T.color(t.color)}" stroke-width="2"/>`;
+      // tenue (ronda 5): un tramo que todavía no se llena, sin relleno y punteado (lo que falta de la barra).
+      s += t.tenue ? `<rect x="${T.n(x)}" y="${y + 24}" width="${T.n(w)}" height="${HB}" fill="none" stroke="currentColor" stroke-opacity="0.55" stroke-width="2" stroke-dasharray="5 4"/>`
+        : `<rect x="${T.n(x)}" y="${y + 24}" width="${T.n(w)}" height="${HB}" fill="${T.color(t.color)}" fill-opacity="0.22" stroke="${T.color(t.color)}" stroke-width="2"/>`;
       if (t.texto) {
         const tw = T.ancho(t.texto, 14, 600);
         if (tw + 8 <= w) s += T.rotulo(x + w / 2, y + 24 + HB / 2 + 5, t.texto, { ancla: 'middle', peso: 600, tam: 14, clase: 'kit-num' });

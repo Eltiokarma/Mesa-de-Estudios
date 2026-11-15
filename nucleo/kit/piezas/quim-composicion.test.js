@@ -51,3 +51,12 @@ test('geometría: xDe y valorEn son inversas y caen en el borde de cada tramo', 
     }
   }
 });
+
+test('un tramo tenue se dibuja punteado y sin relleno, y ocupa su parte de la barra (ronda 5)', () => {
+  const con = P.dibujar({ filas: [{ tramos: [{ valor: 40, texto: 'C 40 %' }, { valor: 60, tenue: true }] }] }, {});
+  const sin = P.dibujar({ filas: [{ tramos: [{ valor: 40, texto: 'C 40 %' }, { valor: 60 }] }] }, {});
+  assert.match(con, /stroke-dasharray="5 4"/);
+  assert.doesNotMatch(sin, /stroke-dasharray="5 4"/);
+  const anchos = s => [...s.matchAll(/<rect [^>]*width="([\d.]+)"/g)].map(m => +m[1]);
+  assert.deepEqual(anchos(con), anchos(sin));
+});
