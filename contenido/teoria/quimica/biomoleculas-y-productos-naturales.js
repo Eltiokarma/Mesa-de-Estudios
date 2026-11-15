@@ -585,6 +585,39 @@
     // Laboratorio (docs/teoria.md §4b): sin preguntas. La primera mesa es más rica que los juegos: dos tipos de
     // bloque, hasta 8 y el anillo. La segunda arma una grasa con tres ácidos distintos; la tercera desliza el punto
     // por las mediciones de color. La lectura dice entradas y resultado, para que un caso guardado se lea solo.
+    glosario: [
+      { termino: 'monosacárido', def: 'Azúcar simple que no se parte en azúcares más chicos, como la glucosa o la fructosa.',
+        formas: ['monosacárido', 'monosacáridos'], ejemplo: 'Glucosa, C₆H₁₂O₆: 6 · 12 + 12 + 6 · 16 = 180 u.', ver: ['enlace glucosídico'] },
+      { termino: 'enlace glucosídico', def: 'Unión entre dos azúcares a través de un oxígeno; al formarse suelta una molécula de agua.',
+        formas: ['enlace glucosídico', 'enlaces glucosídicos'], ejemplo: 'Dos glucosas: 180 + 180 − 18 = 342 u, la maltosa.', ver: ['hidrólisis', 'monosacárido'] },
+      { termino: 'hidrólisis', def: 'Ruptura de un enlace usando una molécula de agua: lo inverso de la unión que la soltó.',
+        ejemplo: 'Maltosa + H₂O → dos glucosas: 342 + 18 = 360 u.', ver: ['enlace glucosídico', 'enlace peptídico'] },
+      { termino: 'polímero', def: 'Molécula grande hecha de muchas unidades pequeñas, iguales o parecidas, unidas en cadena.',
+        ejemplo: 'Almidón y celulosa: cadenas de cientos de glucosas.', ver: ['monosacárido', 'proteína'] },
+      { termino: 'ácido graso', def: 'Ácido carboxílico de cadena larga; en las grasas comunes suele tener de 12 a 18 carbonos.',
+        formas: ['ácido graso', 'ácidos grasos'], ejemplo: 'Ácido palmítico, C₁₅H₃₁COOH: 256 u.', ver: ['ácido carboxílico', 'triglicérido'] },
+      { termino: 'triglicérido', def: 'Grasa formada por glicerol unido a tres ácidos grasos; cada unión suelta un agua.',
+        formas: ['triglicérido', 'triglicéridos'], ejemplo: 'Glicerol y tres esteáricos: 92 + 3 · 284 − 3 · 18 = 890 u.', ver: ['ácido graso', 'éster'] },
+      { termino: 'aminoácido', def: 'Molécula con un grupo amino, NH₂, y un grupo ácido, COOH: el bloque de las proteínas.',
+        formas: ['aminoácido', 'aminoácidos'], ejemplo: 'Glicina, NH₂CH₂COOH: 75 u.', ver: ['enlace peptídico'] },
+      { termino: 'enlace peptídico', def: 'Unión C(=O)–NH entre dos aminoácidos; al formarse suelta una molécula de agua.',
+        formas: ['enlace peptídico', 'enlaces peptídicos'], ejemplo: 'Dos glicinas: 75 + 75 − 18 = 132 u.', ver: ['aminoácido', 'amida'] },
+      { termino: 'proteína', def: 'Cadena larga de aminoácidos unidos por enlaces peptídicos, plegada en una forma propia.',
+        ver: ['desnaturalización'] },
+      { termino: 'desnaturalización', def: 'Pérdida del plegado de una proteína por calor, ácido o sal, sin cortar sus enlaces peptídicos.',
+        formas: ['desnaturalización', 'desnaturalizar', 'desnaturalizan', 'desnaturalizada', 'desnaturalizado'],
+        ejemplo: 'La clara del huevo frito pasa de transparente a blanca.', ver: ['hidrólisis'] },
+      { termino: 'liposoluble', def: 'Que se disuelve en grasas y no en agua, por ser casi toda cadenas de C e H.',
+        formas: ['liposoluble', 'liposolubles'], ejemplo: 'Vitaminas A, D, E y K: se guardan en la grasa del cuerpo.', ver: ['hidrosoluble'] },
+      { termino: 'hidrosoluble', def: 'Que se disuelve en agua, por tener varios grupos OH u otros grupos polares.',
+        formas: ['hidrosoluble', 'hidrosolubles'], ejemplo: 'Vitamina C: el exceso sale por la orina.', ver: ['liposoluble'] },
+      { termino: 'alcaloide', def: 'Sustancia de plantas con nitrógeno, casi siempre dentro de un anillo, de efecto fuerte en el cuerpo.',
+        ejemplo: 'Cafeína del café; quinina de la cascarilla.', ver: ['polifenol'] },
+      { termino: 'polifenol', def: 'Sustancia de plantas con varios OH unidos a anillos aromáticos; muchos dan color o sabor astringente.',
+        ejemplo: 'Las antocianinas del maíz morado.', ver: ['fenol', 'alcaloide'] },
+      { termino: 'carotenoide', def: 'Colorante natural de cadena larga con muchos dobles enlaces alternados; absorbe luz azul y se ve naranja.',
+        ejemplo: 'β-caroteno: 11 dobles, absorbe a 455 nm.', ver: ['polifenol'] },
+    ],
     laboratorio: [
       {
         id: 'polimero', titulo: 'Cadena o anillo de bloques', pieza: 'quim-molecula',
@@ -605,6 +638,25 @@
             if (val.forma === 'anillo' && val.n >= 3) return { n: cercana([3, 4, 5, 6, 7, 8], manijaPol, pt, val, 'n', (q, p) => Math.abs(radio(q) - radio(p))) };
             return { n: cercana([1, 2, 3, 4, 5, 6, 7, 8], manijaPol, pt, val, 'n') };
           } }],
+        invitaciones: [
+          { texto: 'Arma el disacárido de glucosa: dos glucosas y una sola agua.',
+            logrado: val => { const c = polimero(val); return val.b === 'glc' && c.n === 2 && c.uniones === 1; },
+            bien: '180 + 180 − 18 = 342 u. ¿Cuántas aguas suelta con tres?' },
+          { texto: 'Arma un polímero que suelte exactamente 5 aguas.',
+            logrado: val => polimero(val).uniones === 5,
+            bien: 'Cadena de 6 o anillo de 5: se cuentan uniones, no bloques.' },
+          { texto: 'Guarda una cadena y un anillo con los mismos bloques: compara masas.',
+            logrado: (val, guardados) => { const c = polimero(val);
+              return guardados.some(g => g.b === val.b && g.n === val.n && polimero(g).anillo !== c.anillo); },
+            bien: 'El anillo suelta una agua más: pesa 18 u menos.' },
+          { texto: 'Busca el polímero más pesado que se puede armar aquí.',
+            logrado: val => { const m = polimero(val).masa;
+              return ['glc', 'aa'].every(b => ['abierta', 'anillo'].every(forma => polimero({ b, n: 8, forma }).masa <= m + 1e-9)); },
+            bien: 'Ocho bloques en cadena: la masa crece, pero cada unión resta 18 u.' },
+          { texto: 'Pide un anillo que no se puede cerrar.',
+            logrado: val => val.forma === 'anillo' && !polimero(val).anillo,
+            bien: 'Con menos de tres bloques no hay vuelta que cerrar.' },
+        ],
       },
       {
         id: 'grasa-mixta', titulo: 'Tres ácidos distintos', pieza: 'quim-molecula',
@@ -613,6 +665,21 @@
         dibujo: dibujoMixta,
         lectura: val => { const g = grasaMixta(val); return [`${g.ins} de 3 con doble cis`, '   ·   ', MV, ` = ${f(g.m)} u`]; },
         // Sin arrastre: cada cadena se elige de una lista de ácidos; no hay una variable continua que agarrar.
+        invitaciones: [
+          { texto: 'Arma un triglicérido con sus tres cadenas insaturadas, como un aceite.',
+            logrado: val => grasaMixta(val).ins === 3,
+            bien: 'Tres codos cis: las cadenas no se apilan y queda líquida.' },
+          { texto: 'Busca el triglicérido más liviano posible.',
+            logrado: val => grasaMixta(val).m === GLIC + 3 * Math.min(...Object.values(ACIDOS).map(a => a.M)) - 3 * AGUA,
+            bien: 'Tres cadenas cortas: menos carbonos, menos masa.' },
+          { texto: 'Consigue que solo una de las tres cadenas lleve un doble cis.',
+            logrado: val => grasaMixta(val).ins === 1,
+            bien: 'Un solo codo ya estorba el apilado de las cadenas.' },
+          { texto: 'Guarda dos grasas con la misma masa y ácidos distintos.',
+            logrado: (val, guardados) => { const a = grasaMixta(val), ka = a.ks.slice().sort().join();
+              return guardados.some(g => { const b = grasaMixta(g); return b.m === a.m && b.ks.slice().sort().join() !== ka; }); },
+            bien: 'Igual masa, otros ácidos: la balanza sola no dice qué grasa es.' },
+        ],
       },
       {
         id: 'dobles-y-color', titulo: 'Dobles alternados y color', pieza: 'ejes',
@@ -624,6 +691,17 @@
         arrastres: [{ id: 'medida', etiqueta: 'punto de la medición', color: 'c-d',
           donde: puntoAbs,
           mover: (pt, val) => ({ d: cercana(ABS.map(a => String(a[0])), puntoAbs, pt, val, 'd', (q, p) => Math.abs(q.x - p.x)) }) }],
+        invitaciones: [
+          { texto: 'Busca la primera molécula de la lista que ya tiene color.',
+            logrado: val => { const [k, l] = ABS.find(a => String(a[0]) === val.d); return l >= 400 && ABS.every(([k2, l2]) => k2 >= k || l2 < 400); },
+            bien: 'Once dobles alternados: absorbe azul y la vemos naranja.' },
+          { texto: 'Encuentra la molécula incolora que absorbe la λ más larga.',
+            logrado: val => { const [, l] = ABS.find(a => String(a[0]) === val.d); return l < 400 && ABS.every(([, l2]) => l2 >= 400 || l2 <= l); },
+            bien: 'Sigue en el ultravioleta: le falta cadena para tener color.' },
+          { texto: 'Guarda dos moléculas y compara cuánto sube λ con los dobles.',
+            logrado: (val, guardados) => guardados.some(g => g.d !== val.d),
+            bien: 'Más dobles alternados, más larga la luz que absorbe.' },
+        ],
       },
     ],
     ideas: [azucares, lipidos, proteinas, vitaminas, naturales],
