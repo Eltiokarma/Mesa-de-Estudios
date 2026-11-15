@@ -83,6 +83,7 @@
   const ENT = ['sopa', 'ceviche', 'papa', 'tamal'], SEG = ['lomo', 'ají', 'trucha', 'cuy'];
   const menu = (e, s) => ({ columnas: ['', ...SEG.slice(0, s).map(t => ({ t, color: 'i' }))], cabeza: true, filasMax: 4,
     filas: ENT.slice(0, e).map(t => [{ t, color: 'o' }, ...SEG.slice(0, s).map(() => ({ t: '●', color: 'd' }))]) });
+  const menus = v => v.e * v.s;
   const principios = {
     id: 'principios',
     titulo: '«Y» multiplica, «o» suma',
@@ -96,7 +97,7 @@
         { id: 's', etiqueta: 'Segundos', color: 'c-i', min: 1, max: 4, paso: 1, inicio: 3, decimales: 0 },
       ],
       dibujo: v => ({ datos: menu(v.e, v.s), estado: {} }),
-      lectura: v => [`${v.e} ${v.e === 1 ? 'entrada' : 'entradas'} y ${v.s} ${v.s === 1 ? 'segundo' : 'segundos'}: ${v.e * v.s} ${v.e * v.s === 1 ? 'menú' : 'menús'}`],
+      lectura: v => [`${v.e} ${v.e === 1 ? 'entrada' : 'entradas'} y ${v.s} ${v.s === 1 ? 'segundo' : 'segundos'}: ${menus(v)} ${menus(v) === 1 ? 'menú' : 'menús'}`],
       minimo: 3,
       // Se tira del borde de abajo (una entrada más) y del borde derecho (un segundo más).
       arrastres: [
@@ -133,7 +134,7 @@
       ],
     },
     regla: {
-      texto: 'Si se hace una etapa y después otra, las formas se multiplican. Si se elige una sola opción entre grupos que no se mezclan, se suman.',
+      texto: 'Principio de multiplicación: una etapa y luego otra multiplican las formas. Principio de adición: elegir una sola opción entre grupos que no se mezclan suma las formas.',
       ecuacion: ['«y»: m · k', '   ·   ', '«o»: m + k'],
       condicion: 'en «o», ninguna opción está en los dos grupos; si alguna se repite, se resta. En «y», las etapas son independientes.',
     },
@@ -216,7 +217,7 @@
       ],
     },
     regla: {
-      texto: 'Ordenar r de n objetos distintos da n(n − 1)… con r factores: es la variación. Si se ordenan todos, es n factorial.',
+      texto: 'Ordenar r de n objetos distintos da n(n − 1)… con r factores: es la variación. Si se ordenan todos, es una permutación: n factorial.',
       ecuacion: [{ sub: ['V', [N, ',', R]] }, ' = ', { frac: [[N, '!'], [{ llave: ['(', N, ' − ', R, ')!'], nota: 'los que sobran' }]] }, '   ·   ', { sub: ['P', N] }, ' = ', N, '!'],
       condicion: 'objetos distintos, sin repetir y el orden importa. 0! = 1. Si se puede repetir, cada puesto tiene n opciones: nʳ.',
     },
@@ -292,12 +293,12 @@
       pasos: [
         { estado: { paso: 1, fila: 0 }, texto: 'En fila, 4 personas se ordenan de 4! = 24 formas.', ecuacion: ['4! = 24'] },
         { estado: { paso: 4, fila: [0, 1, 2, 3] }, texto: 'En ronda, estos 4 giros son la misma mesa.', ecuacion: ['cada ronda = 4 filas'] },
-        { estado: { paso: 4, columna: 1 }, texto: 'Fijamos a A en una silla y ordenamos al resto.', ecuacion: [{ frac: ['4!', '4'] }, ' = 3! = 6'] },
+        { estado: { paso: 4, columna: 1 }, texto: 'Fijamos a A en una silla y ordenamos a los demás.', ecuacion: [{ frac: ['4!', '4'] }, ' = 3! = 6'] },
       ],
     },
     regla: {
-      texto: 'En una ronda, girar a todos no cambia la disposición. Se fija a una persona y se ordenan las demás en fila.',
-      ecuacion: [{ sub: ['P', ['c', '(', N, ')']] }, ' = ', { llave: ['(', N, ' − 1)!'], nota: 'resto en fila', color: 'c-o' }],
+      texto: 'En una permutación circular (una ronda), girar a todos no cambia la disposición. Se fija a una persona y se ordenan las demás en fila.',
+      ecuacion: [{ sub: ['P', ['c', '(', N, ')']] }, ' = ', { llave: ['(', N, ' − 1)!'], nota: 'los demás en fila', color: 'c-o' }],
       condicion: 'personas distintas y solo los giros se toman como iguales. Si también reflejar es igual (un collar), se divide entre 2.',
     },
     ahoraTu: {
@@ -362,7 +363,7 @@
       ],
     },
     regla: {
-      texto: 'Si de n objetos hay a iguales de un tipo, b de otro…, cada orden se repite a!·b!… veces. Se divide entre eso.',
+      texto: 'Permutación con repetición: si de n objetos hay a iguales de un tipo, b de otro…, cada orden se repite a!·b!… veces. Se divide entre eso.',
       ecuacion: [{ frac: [[N, '!'], [{ llave: ['a! · b! ⋯'], nota: 'órdenes repetidos', color: 'c-h' }]] }],
       condicion: 'se usan todos los objetos y los iguales no se distinguen. Si todos son distintos, queda n!.',
     },
@@ -429,7 +430,7 @@
       ],
     },
     regla: {
-      texto: 'Una combinación es un grupo sin orden. Se cuentan los órdenes y se divide entre los r! órdenes de cada grupo.',
+      texto: 'Una combinación es un grupo sin orden. Se cuentan los órdenes y se divide entre los r! de cada grupo: da el número combinatorio.',
       ecuacion: [{ sub: ['C', [N, ',', R]] }, ' = ', { frac: [[N, '!'], [{ llave: [R, '!'], nota: 'por grupo', color: 'c-h' }, ' (', N, ' − ', R, ')!']] }, '   ·   ', { sub: ['C', [N, ',', R]] }, ' = ', { sub: ['C', [N, ',', N, ' − ', R]] }],
       condicion: 'objetos distintos y el orden no importa. Si los puestos tienen roles distintos, no se divide: es una variación.',
     },
@@ -456,6 +457,9 @@
   // ---------- Laboratorio ----------
   // Grupos contra órdenes: una fila por cada r de 0 a 8; la de r y la de n − r tienen los mismos grupos. Con r > n no
   // hay forma de elegir: esas filas dan 0 y se ven atenuadas.
+  // Opciones de cada puesto y su producto (los casilleros libres): las usan la lectura y los retos.
+  const opcionesPuestos = v => Array.from({ length: v.r }, (_, k) => (v.rep === 'si' ? v.n : Math.max(0, v.n - k)));
+  const formasPuestos = v => opcionesPuestos(v).reduce((a, b) => a * b, 1);
   const tablaGrupos = (n, r) => ({
     columnas: [{ t: 'r', color: 'i' }, { t: 'órdenes', color: 'd' }, { t: 'r!', color: 'h' }, { t: 'grupos', color: 'd' }], filasMax: 9,
     filas: Array.from({ length: 9 }, (_, k) => [{ t: String(k), color: 'i', tenue: k > n }, { t: f(V(n, k)), tenue: k > n }, { t: f(fact(k)), tenue: k > n }, { t: f(C(n, k)), color: 'd', resalta: k <= n && (k === r || k === n - r), tenue: k > n }]),
@@ -466,6 +470,33 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-fichas.js'],
+    // Glosario por tema (docs/teoria.md, 4d). «Variación» aquí es la de contar; la «variación porcentual» es de porcentajes.
+    glosario: [
+      { termino: 'principio de multiplicación', def: 'Si una tarea se hace en etapas seguidas, las formas de cada etapa se multiplican entre sí.',
+        ejemplo: '2 entradas y 3 segundos: 2 · 3 = 6 menús.', ver: ['principio de adición'] },
+      { termino: 'principio de adición', def: 'Si se elige una sola opción entre grupos que no comparten nada, las formas de cada grupo se suman.',
+        ejemplo: '3 combis o 2 buses: 3 + 2 = 5 formas de viajar.', ver: ['principio de multiplicación'] },
+      { termino: 'factorial', simbolo: 'n!', def: 'Producto de los enteros de 1 hasta n: cuenta las formas de ordenar n objetos distintos. Además, 0! = 1.',
+        ejemplo: '5! = 5 · 4 · 3 · 2 · 1 = 120.', ver: ['permutación'] },
+      { termino: 'variación', simbolo: 'V', def: 'Cada forma de elegir r objetos de n y ponerlos en orden: el orden sí importa.',
+        ejemplo: 'Presidente y secretario entre 5 personas: 5 · 4 = 20.', ver: ['combinación', 'permutación'] },
+      { termino: 'permutación', def: 'Cada forma de ordenar en fila todos los objetos de un grupo; con n distintos hay n!.',
+        ejemplo: '4 libros en un estante: 4! = 24 órdenes.', ver: ['factorial', 'variación'] },
+      { termino: 'permutación circular', formas: ['permutación circular', 'permutaciones circulares'],
+        def: 'Orden en ronda, donde girar a todos no cambia nada; con n objetos distintos hay (n − 1)!.',
+        ejemplo: '5 amigos en una mesa redonda: 4! = 24.', ver: ['permutación'] },
+      { termino: 'permutación con repetición', formas: ['permutación con repetición', 'permutaciones con repetición'],
+        def: 'Orden de objetos donde algunos son iguales: n! se divide entre el factorial de cada grupo de iguales.',
+        ejemplo: 'Las letras de CASA: 4! ÷ 2! = 12 palabras.', ver: ['permutación', 'factorial'] },
+      { termino: 'combinación', def: 'Grupo de r objetos elegidos entre n, sin importar el orden: A con B es igual a B con A.',
+        ejemplo: 'Comisión de 2 entre 5 personas: 20 ÷ 2 = 10.', ver: ['variación', 'número combinatorio'] },
+      { termino: 'independiente', formas: ['independiente', 'independientes'],
+        def: 'Se dice de etapas o eventos en que lo ocurrido en uno no cambia lo que puede pasar en otro.',
+        ejemplo: 'Dos dados: lo que sale en el primero no cambia el segundo.', ver: ['principio de multiplicación'] },
+      { termino: 'número combinatorio', simbolo: 'C', formas: ['número combinatorio', 'números combinatorios'],
+        def: 'Cuántos grupos distintos de r se forman con n objetos: n! entre r! y entre (n − r)!.',
+        ejemplo: 'C(5, 2) = 120 ÷ (2 · 6) = 10.', ver: ['combinación'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. Los casilleros libres juntan con y sin repetición y el caso de más puestos
     // que personas; la tabla de grupos compara órdenes y grupos para todo r a la vez; la tercera es el menú de la idea 1.
     laboratorio: [
@@ -479,9 +510,23 @@
         ],
         dibujo: v => ({ datos: casilleros(v.n, v.r, v.rep === 'si'), estado: { paso: v.r } }),
         lectura: v => {
-          const xs = Array.from({ length: v.r }, (_, k) => (v.rep === 'si' ? v.n : Math.max(0, v.n - k)));
-          return [`${v.rep === 'si' ? 'repitiendo' : 'sin repetir'}: ${xs.join(' · ')} = ${f(xs.reduce((a, b) => a * b, 1))}`];
+          const xs = opcionesPuestos(v);
+          return [`${v.rep === 'si' ? 'repitiendo' : 'sin repetir'}: ${xs.join(' · ')} = ${f(formasPuestos(v))}`];
         },
+        invitaciones: [
+          { texto: 'Consigue justo 120 formas sin repetir.',
+            logrado: v => v.rep === 'no' && formasPuestos(v) === 120,
+            bien: 'Hay más de un camino a 120. ¿Cuántos encontraste?' },
+          { texto: 'Sin repetir, pon más puestos que objetos.',
+            logrado: v => v.rep === 'no' && v.r > v.n && formasPuestos(v) === 0,
+            bien: 'A algún puesto no le queda nadie: cero formas.' },
+          { texto: 'Busca la mayor cantidad de formas que permiten los controles.',
+            logrado: v => formasPuestos(v) === Math.pow(10, 6),
+            bien: 'Un millón: cada uno de los 6 puestos tiene sus 10 opciones.' },
+          { texto: 'Guarda el mismo n y r dos veces: una sin repetir y otra repitiendo.',
+            logrado: (v, gs) => gs.some(g => g.n === v.n && g.r === v.r && g.rep !== v.rep && formasPuestos(g) !== formasPuestos(v)),
+            bien: 'Repetir da más formas: cada puesto conserva todas sus opciones.' },
+        ],
         arrastres: [manijaPuestos(v => casilleros(v.n, v.r, v.rep === 'si'))],
       },
       {
@@ -493,12 +538,37 @@
         ],
         dibujo: v => ({ datos: tablaGrupos(v.n, v.r), estado: { fila: v.r } }),
         lectura: v => [`n = ${v.n}, r = ${v.r}: ${f(V(v.n, v.r))} órdenes ÷ ${f(fact(v.r))} = ${f(C(v.n, v.r))} grupos`],
+        invitaciones: [
+          { texto: 'Busca una fila donde órdenes y grupos coincidan, con r mayor que 0.',
+            logrado: v => v.r >= 1 && v.r <= v.n && V(v.n, v.r) === C(v.n, v.r),
+            bien: 'Con un solo elegido no hay nada que ordenar: 1! = 1.' },
+          { texto: 'Consigue justo 35 grupos.',
+            logrado: v => C(v.n, v.r) === 35,
+            bien: 'Elegir 3 de 7 es dejar fuera 4: por eso también sale con r = 4.' },
+          { texto: 'Con n = 8, busca la r que da más grupos.',
+            logrado: v => v.n === 8 && [0, 1, 2, 3, 4, 5, 6, 7, 8].every(k => C(8, k) <= C(8, v.r)),
+            bien: 'El máximo cae al medio: 70 grupos con r = 4.' },
+          { texto: 'Guarda dos casos con el mismo n y los mismos grupos, pero distinta r.',
+            logrado: (v, gs) => gs.some(g => g.n === v.n && g.r !== v.r && g.r <= g.n && v.r <= v.n && C(g.n, g.r) === C(v.n, v.r)),
+            bien: 'Elegir r es lo mismo que dejar fuera n − r.' },
+        ],
         // Se baja por la tabla: la fila tocada es r (la manija va en el borde de la columna r, sin tapar el número).
         arrastres: [{ id: 'fila-r', etiqueta: 'fila de r', color: 'c-i',
           donde: v => { const g = TABLA().geometria(tablaGrupos(v.n, v.r)); return { x: g.xs[1], y: g.celda(v.r, 0).y }; },
           mover: (pt, v) => ({ r: filasHasta(TABLA().geometria(tablaGrupos(v.n, v.r)), pt.y) - 0.5 }) }],
       },
-      Object.assign({ id: 'menu', titulo: 'El menú', pieza: 'arit-tabla' }, principios.juega),
+      Object.assign({ id: 'menu', titulo: 'El menú', pieza: 'arit-tabla',
+        invitaciones: [
+          { texto: 'Arma justo 12 menús distintos.',
+            logrado: v => menus(v) === 12,
+            bien: 'Doce puntos: cada entrada va con cada segundo.' },
+          { texto: 'Con 6 platos en total, consigue la mayor cantidad de menús.',
+            logrado: v => v.e + v.s === 6 && [1, 2, 3, 4, 5].every(e => e * (6 - e) <= menus(v)),
+            bien: 'Repartir parejo da más: 3 · 3 = 9 le gana a 2 · 4 = 8.' },
+          { texto: 'Guarda dos casos con los mismos menús y distinto número de entradas.',
+            logrado: (v, gs) => gs.some(g => g.e !== v.e && menus(g) === menus(v)),
+            bien: 'Filas por columnas: girar el rectángulo no cambia los puntos.' },
+        ] }, principios.juega),
     ],
     historia: {
       texto: 'El triángulo aritmético, que reúne las cuentas de esta unidad, se conocía en varias tradiciones antes de Pascal. Su aporte fue estudiar con orden sus propiedades y usos. La dificultad de entonces es la de hoy: decidir qué resultados cuentan como distintos. El orden y la repetición cambian lo que se cuenta; la fórmula viene después.',
