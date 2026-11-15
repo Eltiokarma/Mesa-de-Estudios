@@ -1,6 +1,6 @@
 # Pendientes y traspaso
 
-Actualizado el 15 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
+Actualizado el 15 de noviembre de 2026. La siguiente sesión empieza aquí: léelo después de `CLAUDE.md`, empezando por «Una base, dos entradas» (15 nov), después «Recorrido satisfactorio» (15 nov) y después «Teoría interactiva» y «Estado al 13 nov, tarde».
 
 ## Cómo arrancar una sesión nueva
 
@@ -26,6 +26,20 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 
 - **Si el servidor local muere:** se reinicia con `node herramientas/servidor.js`. También hay que reiniciarlo después de cambiar `herramientas/construir-catalogo.js`, porque guarda el módulo en memoria.
 - **Para verificar a mano:** Playwright y Chromium ya vienen instalados en el entorno en la nube (`require('playwright')`). Las capturas *fullPage* pierden la emulación táctil, así que lo que depende de `hover` se revisa con capturas normales.
+
+## Una base, dos entradas (15 nov): decisión de Gerson
+
+**Qué es.** Gerson eligió la versión de ChatGPT de la propuesta de Claude: una base compartida, dos formas de entrar (explorar o prepararse para el examen) y calidad gráfica que se adapta al equipo. Está en `docs/dos-entradas.md`.
+
+**Lo esencial:**
+- Tres decisiones independientes: qué quiere hacer hoy el alumno, qué sabe y qué puede mover su equipo. El grado solo sugiere por dónde empezar.
+- 3D donde ayuda, con HTML encima para texto y botones. El peor celular recibe todo, con menos sombras y resolución, y hay modo ahorro.
+- Juego libre con invitaciones a retos, y ayudas cuando se enseña un concepto. Disfrutar y aprender se miden por separado.
+- Exploración empieza con 3.º y 4.º. Diciembre es un piloto acotado y marzo de 2027, la ampliación.
+- `claude/awesome-einstein-ch5g9a` se prueba en una versión de prueba y en el Redmi antes de pasar a `main`.
+- **Una unidad completa antes de tres:** entrar, explorar, pedir ayuda, resolver un reto, guardar y regresar.
+
+**Decidido el 15 nov:** three.js entra al kit (60 fps en el Redmi 15C) y la primera unidad completa es la geometría molecular. La exploración libre de la mesa queda fuera de la regla 3: Gerson lo confirmó y está escrito como excepción en `CLAUDE.md`.
 
 ## Recorrido satisfactorio (15 nov): que todos los alumnos se vayan contentos
 
@@ -172,6 +186,19 @@ No hubo tareas largas en ningún escenario. La memoria de JavaScript se quedó e
 - three.js 0.187.0 (MIT) va reducido a lo que se usa, en `app/vendor/three/`: 549 KB, 137 KB con gzip.
 
 **Medición:** «Correr la medición» (30 s) hace girar los tres objetos sin parar, que es el peor caso, y guarda en el JSON los fps, el p5, los cuadros perdidos, la peor pausa y la tarjeta gráfica (`renderer`). «Medir 5 s mientras lo giro» mide el uso real con el dedo.
+
+**Resultado (15 nov, versión 4): pasa en los dos celulares.** Medición de 30 s girando sin parar, que es el peor caso (resumen en `docs/datos/prueba3d/`):
+
+| Celular | GPU | fps (p5) | Cuadros perdidos | Peor pausa |
+| --- | --- | --- | --- | --- |
+| Redmi 15C, 4 GB | Mali-G52 MC2 | 60 (59,9) en los tres objetos | 0 | 17,1 ms |
+| Poco X7, 8 GB | Mali-G615 MC2 | 60,8 (60,6) | 1 | 32,8 ms |
+
+Sin tareas largas y con 9,5 MB de memoria JS. Chrome 157 en los dos. **Gerson (15 nov):** se entiende cómo girar. La molécula le pareció la más bonita, pero le gustaron los tres. **three.js entra al kit.** El orden está en `docs/dos-entradas.md`. Gerson preguntará al colegio por WebGL 2 en sus computadoras, y queda como requisito en `docs/guia-profesores.md`.
+
+**Lo que costó que cargara (versiones 1 a 4):** la versión 1 se moría sin aviso, y no se sabe con certeza por qué. Lo más probable es el segundo contexto WebGL que se abría para probar, porque la versión 4 lo quitó y es la que anduvo. La versión 4 dice en pantalla en qué paso va y avisa a los 10 s si no terminó.
+
+**Ojo con el service worker:** busca las respuestas con `ignoreSearch`, así que un `?v=` en la dirección no salta su copia guardada. En una PC que ya tenía la app, la página nueva corrió con un `prueba3d.js` viejo. Dibujó bien, pero dio un aviso falso de «no terminó». Para la prueba basta con abrirla en incógnito. Si una pieza 3D entra a la app, debe ir en la cáscara versionada (`VERSION` de `app/sw.js`), no confiar en `?v=`.
 
 **Qué tiene que hacer Gerson:**
 1. Abrirla en el Redmi 15C y jugar un par de minutos con los tres objetos.

@@ -1,0 +1,47 @@
+{
+  "prueba": "prueba-3d",
+  "version": 4,
+  "fecha": "2026-11-15T08:40:56.456Z",
+  "three": "0.187.0",
+  "nota": "Poco x7",
+  "dispositivo": {
+    "agente": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Mobile Safari/537.36",
+    "nucleos": 8,
+    "memoriaGB": 8,
+    "pantalla": "376×835",
+    "ventana": "375×697",
+    "dpr": 3.25,
+    "lienzo": "688×688"
+  },
+  "gl": {
+    "webgl2": true,
+    "renderer": "ANGLE (ARM, Mali-G615 MC2, OpenGL ES 3.2)",
+    "maxTextura": 8192
+  },
+  "escenas": [
+    {
+      "id": "corte",
+      "fpsMedia": 60.8,
+      "fpsP5": 60.6,
+      "perdidos": 1,
+      "peorMs": 32.8
+    },
+    {
+      "id": "molecula",
+      "fpsMedia": 60.8,
+      "fpsP5": 60.6,
+      "perdidos": 0,
+      "peorMs": 16.5
+    },
+    {
+      "id": "cubitos",
+      "fpsMedia": 61,
+      "fpsP5": 60.6,
+      "perdidos": 0,
+      "peorMs": 16.5
+    }
+  ],
+  "tareasLargas": 0,
+  "memoriaMB": 9.5,
+  "completa": true
+}

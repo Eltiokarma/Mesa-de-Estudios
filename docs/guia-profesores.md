@@ -27,7 +27,8 @@ Muchas unidades traen además un botón **✎ Papel**, con problemas para resolv
 1. **La dirección de la app:** **https://mesa-de-estudios.vercel.app** (publicada el 12 nov 2026). Abre la pantalla de ingreso; «Probar sin cuenta» entra en modo demostración.
 2. **Un código para su colegio.** Elijan una palabra corta, sin espacios, por ejemplo `ABC` o `SANJOSE`. Ese código va en todos los datos y sirve para separar su colegio de otros. No identifica a ningún alumno.
 3. **El enlace para los alumnos.** Es la dirección de la app con el código al final: `…/app/?colegio=ABC`. Compártanlo por WhatsApp o en un código QR en la pizarra. El alumno también puede escribir el código después, en **Perfil → Código del colegio**.
-4. **Ábranla una vez con internet** en cada equipo. Desde ahí queda guardada y funciona sin conexión; en Perfil aparece "Lista para usar sin internet". En algunos celulares aparece además el botón **Instalar en este celular**, que la deja como una app más (en el iPhone no aparece; ahí se usa desde el navegador).
+4. **Revisen que los equipos dibujen en 3D.** Algunas unidades muestran objetos en 3D, y para eso el navegador necesita WebGL 2. Lo tiene cualquier Chrome, Edge o Firefox actualizado; un celular como el Redmi 15C lo tiene. Para comprobarlo en cada equipo, abran https://mesa-de-estudios.vercel.app/app/prueba3d/ en una ventana de incógnito: si aparece el cubo cortado, está bien. Si sale un cuadro de aviso, anoten qué dice y avísennos.
+5. **Ábranla una vez con internet** en cada equipo. Desde ahí queda guardada y funciona sin conexión; en Perfil aparece "Lista para usar sin internet". En algunos celulares aparece además el botón **Instalar en este celular**, que la deja como una app más (en el iPhone no aparece; ahí se usa desde el navegador).
 
 ## 3. Cómo entran los alumnos
 
