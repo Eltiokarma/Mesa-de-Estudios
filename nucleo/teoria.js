@@ -187,6 +187,7 @@
       if (!inv || !String(inv.texto || '').trim()) { mal(di, 'sin texto'); return; }
       tope(di, 'voz', inv.texto);
       if (inv.bien !== undefined) tope(di, 'voz', inv.bien);
+      if (inv.pista !== undefined) tope(di, 'voz', inv.pista);
       if (typeof inv.logrado !== 'function') { mal(di, 'sin logrado(valores): el motor tiene que poder comprobarla'); return; }
       const ctr = mesa.controles || [];
       let fallo = false;
@@ -214,17 +215,6 @@
       let a = 987654321; const r = () => { a = (Math.imul(a, 1103515245) + 12345) >>> 0; return a / 4294967296; };
       return Array.from({ length: n }, () => casos[Math.floor(r() * casos.length)]);
     }
-    // Todos los casos de la grilla de controles; si son más de 20 000, una muestra fija (misma semilla siempre).
-    function grilla(ctr) {
-      const dom = ctr.map(c => c.opciones ? c.opciones.map(o => o.valor)
-        : Array.from({ length: Math.floor((c.max - c.min) / c.paso + 1e-9) + 1 }, (_, k) => ajustar(c, c.min + k * c.paso)));
-      const total = dom.reduce((n, d) => n * d.length, 1);
-      const caso = idx => { const v = {}; ctr.forEach((c, k) => { v[c.id] = dom[k][idx % dom[k].length]; idx = Math.floor(idx / dom[k].length); }); return v; };
-      if (total <= 20000) return Array.from({ length: total }, (_, i) => caso(i));
-      let a = 12345; const r = () => { a = (Math.imul(a, 1103515245) + 12345) >>> 0; return a / 4294967296; };
-      return Array.from({ length: 20000 }, () => caso(Math.floor(r() * total)));
-    }
-
     // Laboratorio: mesas de juego libre, sin preguntas. Si la unidad no trae, el lector usa el juego de cada idea.
     if (def.laboratorio !== undefined) {
       if (!Array.isArray(def.laboratorio) || !def.laboratorio.length || def.laboratorio.length > 4) mal(def.unidad, 'laboratorio: de 1 a 4 mesas');
@@ -362,6 +352,18 @@
     return out;
   }
 
+  // Todos los casos de la grilla de controles; si son más de 20 000, una muestra fija (misma semilla siempre).
+  // La usan el validador de retos y el «Muéstrame» del laboratorio (app/teoria.js).
+  function grilla(ctr) {
+    const dom = ctr.map(c => c.opciones ? c.opciones.map(o => o.valor)
+      : Array.from({ length: Math.floor((c.max - c.min) / c.paso + 1e-9) + 1 }, (_, k) => ajustar(c, c.min + k * c.paso)));
+    const total = dom.reduce((n, d) => n * d.length, 1);
+    const caso = idx => { const v = {}; ctr.forEach((c, k) => { v[c.id] = dom[k][idx % dom[k].length]; idx = Math.floor(idx / dom[k].length); }); return v; };
+    if (total <= 20000) return Array.from({ length: total }, (_, i) => caso(i));
+    let a = 12345; const r = () => { a = (Math.imul(a, 1103515245) + 12345) >>> 0; return a / 4294967296; };
+    return Array.from({ length: 20000 }, () => caso(Math.floor(r() * total)));
+  }
+
   // Valores iniciales de los controles de juega.
   function inicio(juega) {
     const v = {};
@@ -387,5 +389,5 @@
     return x;
   }
 
-  return { unidad, unidades, problemas, plano, inicio, ajustar, barajar, PERSONAJES, ACTUACION, PRESUPUESTO, MOMENTOS, palabras };
+  return { unidad, unidades, problemas, plano, inicio, ajustar, grilla, barajar, PERSONAJES, ACTUACION, PRESUPUESTO, MOMENTOS, palabras };
 });

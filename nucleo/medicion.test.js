@@ -312,3 +312,23 @@ test('repaso: la autoevaluación del papel va aparte y no entra al acierto medid
   const { informeRepaso } = require('../herramientas/analizar-medicion.js');
   assert.match(informeRepaso([e('prediccion', '2026-11-09T15:00:00Z', {}), e('repaso-item', '2026-11-12T15:00:00Z', { fuente: 'papel', autoevaluacion: 'si' })]), /autoevaluación, no es acierto medido/);
 });
+
+test('laboratorio: explorar y aprender por separado, y el glosario más consultado', () => {
+  const { informeExploracion } = require('../herramientas/analizar-medicion.js');
+  assert.equal(informeExploracion([]), '');
+  const ev = (alumno, t, extra) => Object.assign({ alumno, t, tipo: 'teoria', unidad: 'quimica.enlace-quimico' }, extra);
+  const md = informeExploracion([
+    ev('a', '2026-11-15T10:00:00Z', { momento: 'explora', ms: 120000, casos: 6 }),
+    ev('a', '2026-11-16T10:00:00Z', { momento: 'explora', ms: 60000, casos: 2 }),
+    ev('b', '2026-11-15T11:00:00Z', { momento: 'explora', ms: 240000, casos: 10 }),
+    ev('a', '2026-11-15T10:01:00Z', { momento: 'invitacion', invitacion: 0, ayuda: 0 }),
+    ev('b', '2026-11-15T11:01:00Z', { momento: 'invitacion', invitacion: 1, ayuda: 1 }),
+    ev('b', '2026-11-15T11:02:00Z', { momento: 'reto-ayuda', invitacion: 2, nivel: 'muestra' }),
+    ev('b', '2026-11-15T11:03:00Z', { momento: 'laboratorio', casos: 1 }),
+    ev('a', '2026-11-15T10:02:00Z', { momento: 'glosario', termino: 'dipolo' }),
+    ev('b', '2026-11-15T11:04:00Z', { momento: 'glosario', termino: 'dipolo' }),
+  ]);
+  assert.match(md, /\| quimica\.enlace-quimico \| 2 \| 2 \| 6 \| 1 \| 1 \|/);   // 2 alumnos, mediana 2 min, 6 casos, 1 guardado, 1 volvió
+  assert.match(md, /\| quimica\.enlace-quimico \| 1 \| 1 \| 1 \|/);              // solo, con pista, con «Muéstrame»
+  assert.match(md, /\| quimica\.enlace-quimico \| dipolo \| 2 \|/);
+});

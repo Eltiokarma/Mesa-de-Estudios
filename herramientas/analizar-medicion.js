@@ -11,7 +11,7 @@ const Medicion = require('../nucleo/medicion.js');
 function unir(listas) {
   const vistos = new Set(), todos = [];
   for (const l of listas) for (const e of l) {
-    const k = [e.alumno, e.t, e.tipo, e.modulo, e.problema, e.fase, e.curso, e.item].join('|');
+    const k = [e.alumno, e.t, e.tipo, e.modulo, e.problema, e.fase, e.curso, e.item, e.unidad, e.momento, e.termino, e.invitacion].join('|');
     if (vistos.has(k)) continue;
     vistos.add(k); todos.push(e);
   }
@@ -42,6 +42,48 @@ function informe(eventos) {
   md += informeLectura(eventos);
   md += informeCursos(eventos);
   md += informeRepaso(eventos);
+  md += informeExploracion(eventos);
+  return md;
+}
+
+// Laboratorio y mesa (docs/dos-entradas.md): disfrutar explorando y demostrar lo aprendido se miden por separado.
+//   Explorar: alumnos, minutos (mediana), casos distintos probados (mediana), guardados, si vuelven otro día.
+//   Aprender: retos logrados solos, con pista y vistos con «Muéstrame».
+//   Glosario: las palabras más consultadas (señal de lo que el texto no explica bien).
+function informeExploracion(eventos) {
+  const ev = eventos.filter(e => e.tipo === 'teoria' && ['explora', 'invitacion', 'reto-ayuda', 'laboratorio', 'glosario'].includes(e.momento));
+  if (!ev.length) return '';
+  const med = xs => { if (!xs.length) return null; const a = xs.slice().sort((x, y) => x - y), m = Math.floor(a.length / 2); return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2; };
+  const dia = e => String(e.t).slice(0, 10);
+  const porU = {};
+  for (const e of ev) {
+    const u = porU[e.unidad] || (porU[e.unidad] = { alumnos: new Set(), ms: [], casos: [], guardados: 0, dias: {}, solos: 0, pista: 0, muestra: 0 });
+    if (e.momento === 'explora') {
+      u.alumnos.add(e.alumno); u.ms.push(+e.ms || 0); u.casos.push(+e.casos || 0);
+      (u.dias[e.alumno] = u.dias[e.alumno] || new Set()).add(dia(e));
+    }
+    if (e.momento === 'laboratorio') u.guardados++;
+    if (e.momento === 'invitacion') { if (e.ayuda) u.pista++; else u.solos++; }
+    if (e.momento === 'reto-ayuda' && e.nivel === 'muestra') u.muestra++;
+  }
+  const filas = Object.entries(porU).filter(([, u]) => u.alumnos.size);
+  let md = '';
+  if (filas.length) {
+    const n = x => x === null ? '—' : String(Math.round(x * 10) / 10).replace('.', ',');
+    md += '\n# Laboratorio: explorar y aprender, por separado\n\n## Explorar\n\n| Unidad | Alumnos | Minutos (mediana) | Casos probados (mediana) | Casos guardados | Volvieron otro día |\n| --- | --- | --- | --- | --- | --- |\n';
+    for (const [id, u] of filas) md += `| ${id} | ${u.alumnos.size} | ${n(med(u.ms) === null ? null : med(u.ms) / 60000)} | ${n(med(u.casos))} | ${u.guardados} | ${Object.values(u.dias).filter(d => d.size > 1).length} |\n`;
+    md += '\n## Aprender (retos del laboratorio)\n\n| Unidad | Logrados solos | Logrados después de una pista | Vistos con «Muéstrame» |\n| --- | --- | --- | --- |\n';
+    for (const [id, u] of filas) md += `| ${id} | ${u.solos} | ${u.pista} | ${u.muestra} |\n`;
+    md += '\nUn reto visto con «Muéstrame» no cuenta como logrado. Disfrutar (quedarse, probar, guardar, volver) no prueba que se aprendió: para eso están los retos, la prueba del tema y «Ahora tú».\n';
+  }
+  const glos = {};
+  for (const e of ev) if (e.momento === 'glosario' && e.termino) { const k = `${e.unidad}|${e.termino}`; glos[k] = (glos[k] || 0) + 1; }
+  const top = Object.entries(glos).sort((a, b) => b[1] - a[1]).slice(0, 15);
+  if (top.length) {
+    md += '\n## Glosario: las palabras más consultadas\n\n| Unidad | Término | Consultas |\n| --- | --- | --- |\n';
+    for (const [k, c] of top) { const [u, t] = k.split('|'); md += `| ${u} | ${t} | ${c} |\n`; }
+    md += '\nUna palabra muy consultada es una pista de que la teoría la usa sin explicarla bien.\n';
+  }
   return md;
 }
 
@@ -130,7 +172,7 @@ function cargarBancos() {
   return out;
 }
 
-module.exports = { unir, informe, informeCursos, informeLectura, informeRepaso };
+module.exports = { unir, informe, informeCursos, informeLectura, informeRepaso, informeExploracion };
 
 if (require.main === module) {
   const args = process.argv.slice(2);

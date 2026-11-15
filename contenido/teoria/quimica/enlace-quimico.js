@@ -680,27 +680,32 @@
           { id: 'par', etiqueta: 'Pares libres', opciones: [{ valor: 1, texto: 'A la vista' }, { valor: 0, texto: 'Ocultos' }] },
         ],
         dibujo: val => ({ datos: mol3d(val.mol), estado: { dipolos: val.dip === 1, pares: val.par === 1 } }),
-        lectura: val => { const x = M.molecula(val.mol); return [`${x.formula}: ${x.vsepr.geometria}, ${x.vsepr.hibridacion}, ${x.polaridad.polar ? 'polar' : 'apolar'}`]; },
+        lectura: val => { const x = M.molecula(val.mol); return [`${x.formula}: ${x.vsepr.geometria}, ${x.vsepr.hibridacion.replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d])}, ${x.polaridad.polar ? 'polar' : 'apolar'}`]; },
         // Retos comprobados con el mismo motor que arma la figura (docs/teoria.md §4d).
         invitaciones: [
           { texto: 'Encuentra una molécula con enlaces polares que, en total, sea apolar.',
             logrado: val => enlacesPolares(val.mol) && !M.molecula(val.mol).polaridad.polar,
-            bien: 'Sus dipolos de enlace se anulan por la forma. Míralo con los dipolos a la vista.' },
+            bien: 'Sus dipolos de enlace se anulan por la forma. Míralo con los dipolos a la vista.',
+            pista: 'Enciende los dipolos: busca flechas en los enlaces, pero ninguna flecha gruesa en el centro.' },
           { texto: 'Busca una molécula cuyo átomo central tenga dos pares libres.',
             logrado: val => M.molecula(val.mol).posiciones.pares.length === 2,
-            bien: 'Los pares libres también ocupan lugar: empujan a los enlaces.' },
+            bien: 'Los pares libres también ocupan lugar: empujan a los enlaces.',
+            pista: 'Deja los pares libres a la vista y cuenta las nubes violetas sobre el átomo central.' },
           { texto: 'Enciende los dipolos y busca la molécula con forma de pirámide.',
             logrado: val => val.dip === 1 && M.molecula(val.mol).vsepr.geometria === 'piramidal trigonal',
-            bien: 'Tres enlaces y un par libre arriba: las flechas no se anulan.' },
+            bien: 'Tres enlaces y un par libre arriba: las flechas no se anulan.',
+            pista: 'Una pirámide tiene tres átomos abajo y algo arriba. ¿Qué ocupa la punta?' },
           { texto: 'Encuentra la molécula que tiene ángulos de 90° y de 120° a la vez.',
             logrado: val => { const a = M.molecula(val.mol).vsepr.angulos.map(Math.round); return a.includes(90) && a.includes(120); },
-            bien: 'La bipirámide: tres átomos en el ecuador y dos en los polos.' },
+            bien: 'La bipirámide: tres átomos en el ecuador y dos en los polos.',
+            pista: 'Busca una molécula con cinco átomos alrededor del central. Gírala hasta verla de costado.' },
           { texto: 'Guarda dos moléculas con la misma forma: una polar y otra apolar.',
             logrado: (val, guardados) => guardados.some(a => guardados.some(b => {
               const x = M.molecula(a.mol), y = M.molecula(b.mol);
               return x.vsepr.geometria === y.vsepr.geometria && x.polaridad.polar && !y.polaridad.polar;
             })),
-            bien: 'La forma no basta: también importa qué átomos rodean al central.' },
+            bien: 'La forma no basta: también importa qué átomos rodean al central.',
+            pista: 'Compara CH₄ y CHCl₃: misma forma. Guarda las dos y mira la lectura.' },
         ],
       },
       {

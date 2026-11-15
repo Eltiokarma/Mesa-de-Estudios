@@ -893,6 +893,10 @@ body.con-lupa{overflow:hidden}
 .te-invita-t{font-weight:600;font-size:16px}
 .te-invita.logrado{background:color-mix(in srgb,var(--ok) 14%,var(--card));border-color:var(--ok)}
 .te-invita.logrado .te-invita-etq{color:var(--ok)}
+.te-invita-acc{display:flex;flex-wrap:wrap;gap:8px}
+.te-invita-pista{flex-basis:100%;margin:0;font-size:16px;line-height:1.4}
+.te-invita-pista span{display:block;font-size:13px;font-weight:700;color:var(--muted)}
+.te-invita.visto{border-color:var(--line);background:var(--card)}
 @media (prefers-reduced-motion:no-preference){.te-invita.logrado{animation:te-logro .45s cubic-bezier(.2,.9,.3,1.2)}}
 @keyframes te-logro{from{transform:scale(.97)}to{transform:none}}
 /* Glosario: el término se subraya con puntos (no solo color) y abre una hoja abajo con su definición. */

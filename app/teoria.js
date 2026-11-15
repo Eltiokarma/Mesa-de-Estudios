@@ -87,6 +87,36 @@
   const mesasDe = def => (def.laboratorio && def.laboratorio.length ? def.laboratorio
     : def.ideas.map(i => Object.assign({ id: i.id, titulo: i.titulo, pieza: i.juega.pieza || i.pieza }, i.juega)));
 
+  // ---------- Lupa de una pieza viva (3D): el mismo lienzo pasa a pantalla completa y se acerca con − y + ----------
+  // No se abre un segundo lienzo WebGL (el navegador admite pocos): se mueve el que ya está y al cerrar vuelve a su sitio.
+  function abrirLupaViva(f, origen) {
+    const lienzo = f.firstElementChild, c = f._vivo.c;
+    if (!lienzo) return;
+    const capa = document.createElement('div');
+    capa.className = 'te-lupa te-lupa-viva';
+    capa.setAttribute('role', 'dialog'); capa.setAttribute('aria-modal', 'true'); capa.setAttribute('aria-label', 'Figura en 3D ampliada');
+    capa.innerHTML = `<div class="te-lupa-barra">
+        <button type="button" class="te-mm" data-z="-1" aria-label="Alejar">−</button>
+        <button type="button" class="te-mm" data-z="1" aria-label="Acercar">+</button>
+        <button type="button" class="btn borde te-lupa-cerrar">Cerrar</button></div>
+      <div class="te-lupa-area"></div>`;
+    document.body.appendChild(capa);
+    document.body.classList.add('con-lupa');
+    capa.querySelector('.te-lupa-area').appendChild(lienzo);
+    const cerrar = () => {
+      if (!capa.isConnected) return;
+      f.appendChild(lienzo); capa.remove(); document.body.classList.remove('con-lupa');
+      document.removeEventListener('keydown', tecla); removeEventListener('hashchange', cerrar);
+      if (origen && origen.isConnected) origen.focus();
+    };
+    const tecla = e => { if (e.key === 'Escape') cerrar(); };
+    document.addEventListener('keydown', tecla);
+    addEventListener('hashchange', cerrar);
+    capa.querySelector('.te-lupa-cerrar').onclick = cerrar;
+    capa.addEventListener('click', e => { const b = e.target.closest('[data-z]'); if (b) c.acercar(b.dataset.z === '1' ? 1.25 : 0.8); });
+    const cv = lienzo.querySelector('canvas'); if (cv) cv.focus({ preventScroll: true });
+  }
+
   // ---------- Lupa: la figura ampliada, con − y + y pellizco con dos dedos ----------
   const PASOS_ZOOM = [1, 1.5, 2, 3, 4];
   function abrirLupa(svgHTML, alt, origen) {
@@ -590,29 +620,82 @@
       const pintarNav = () => { nav.innerHTML = mesas.map(m => `<button type="button" class="te-ficha-op" data-mesa="${esc(m.id)}" aria-pressed="${m === actual}">${esc(m.titulo)}</button>`).join(''); };
       // Invitaciones: un reto a la vez; su `logrado(valores, guardados)` lo comprueba el motor de la mesa (regla 1).
       const logradas = () => st.lab.logradas[actual.id] || (st.lab.logradas[actual.id] = []);
+      // Ayuda del reto (15 nov, docs/dos-entradas.md: «pedir ayuda»): primero una pista; si no basta, «Muéstrame» pone un
+      // caso de la grilla que el motor da por logrado. Lo visto con ayuda se cuenta aparte de lo logrado solo.
+      st.lab.ayudas = st.lab.ayudas || {};
+      const ayudas = () => st.lab.ayudas[actual.id] || (st.lab.ayudas[actual.id] = {});
+      let mostrando = false;
+      // Medición de la exploración (docs/dos-entradas.md, «se miden por separado»): al salir del laboratorio queda un
+      // evento «explora» con el tiempo, los casos distintos probados, las mesas, los guardados, los retos y las ayudas.
+      const ses = { casos: 0, mesas: new Set(), guardados: 0, retos: 0, ayudas: 0, cerrado: false };
+      const cerrarSesion = () => {
+        if (ses.cerrado) return;
+        ses.cerrado = true; removeEventListener('hashchange', cerrarSesion); removeEventListener('pagehide', cerrarSesion);
+        if (jg) ses.casos += jg.probados();
+        ctx.registrar({ tipo: 'teoria', unidad: u.id, momento: 'explora', ms: Date.now() - t0L, casos: ses.casos, mesas: ses.mesas.size,
+          guardados: ses.guardados, retos: ses.retos, ayudas: ses.ayudas });
+      };
+      addEventListener('hashchange', cerrarSesion); addEventListener('pagehide', cerrarSesion);
+      const PISTA_COMUN = 'Cambia un control a la vez y mira qué dice la lectura.';
+      const PISTA_GUARDA = 'Guarda un caso, cambia un solo control y guarda otro.';
+      const conGuardados = x => typeof x === 'object' && typeof x.logrado === 'function' && x.logrado.length >= 2;
+      // El caso de la grilla que cumple el reto y menos controles cambia respecto de lo que el alumno tiene ahora.
+      const casoQueCumple = (x, v) => {
+        let mejor = null, dif = Infinity;
+        for (const c of T.grilla(actual.controles || [])) {
+          let ok = false;
+          try { ok = x.logrado(c, [], actual) === true; } catch (e) { ok = false; }
+          if (!ok) continue;
+          const d = Object.keys(c).filter(k => c[k] !== v[k]).length;
+          if (d < dif) { mejor = c; dif = d; if (d <= 1) break; }
+        }
+        return mejor;
+      };
       const invK = () => { const inv = actual.invitaciones || []; return inv.length ? (st.lab.inv || 0) % inv.length : -1; };
       const textoInv = x => (typeof x === 'string' ? x : x.texto);
       const invitacion = () => {
         const inv = actual.invitaciones || [], k = invK();
         if (k < 0) return '';
-        const ya = logradas().includes(k), cuenta = `${logradas().length} de ${inv.length}`;
-        return `<div class="te-invita${ya ? ' logrado' : ''}" role="status"><p><span class="te-invita-etq">${ya ? '✓ Lo lograste' : 'Reto'} · ${cuenta}</span>
-          <span class="te-invita-t">${esc(textoInv(inv[k]))}</span></p>
-          ${inv.length > 1 ? '<button type="button" class="btn borde te-otra-idea">Otro reto</button>' : ''}</div>`;
+        const ya = logradas().includes(k), ay = ayudas()[k] || 0, visto = ay >= 2, cuenta = `${logradas().length} de ${inv.length}`;
+        const x = inv[k], guarda = conGuardados(x);
+        const pista = ay >= 1 && !ya ? `<p class="te-invita-pista"><span>Pista</span> ${esc((typeof x === 'object' && x.pista) || (guarda ? PISTA_GUARDA : PISTA_COMUN))}</p>` : '';
+        const boton = ya || visto ? '' : ay === 0 ? '<button type="button" class="btn borde te-pista">Pista</button>'
+          : guarda ? '' : '<button type="button" class="btn borde te-muestra">Muéstrame</button>';
+        return `<div class="te-invita${ya ? ' logrado' : visto ? ' visto' : ''}" role="status"><p><span class="te-invita-etq">${ya ? '✓ Lo lograste' : visto ? 'Lo viste con ayuda' : 'Reto'} · ${cuenta}</span>
+          <span class="te-invita-t">${esc(textoInv(x))}</span></p>${pista}
+          <div class="te-invita-acc">${boton}${inv.length > 1 ? '<button type="button" class="btn borde te-otra-idea">Otro reto</button>' : ''}</div></div>`;
       };
       const comprobarInv = v => {
         const inv = actual.invitaciones || [], k = invK();
-        if (k < 0 || logradas().includes(k) || typeof inv[k] !== 'object' || typeof inv[k].logrado !== 'function') return;
+        if (k < 0 || mostrando || logradas().includes(k) || (ayudas()[k] || 0) >= 2 || typeof inv[k] !== 'object' || typeof inv[k].logrado !== 'function') return;
         let ok = false;
         try { ok = inv[k].logrado(v, deMesa().map(x => x.valores), actual) === true; } catch (e) { ok = false; }
         if (!ok) return;
-        logradas().push(k); ctx.guardar();
+        logradas().push(k); ctx.guardar(); ses.retos++;
         const p = zonaL.querySelector('.te-invita'); if (p) p.outerHTML = invitacion();
         diceL.textContent = inv[k].bien || '¡Lo lograste!';
         const prefs = ctx.est.prefs || {};
         mascL.dataset.expresion = 'E7';
         try { if (window.Mascota) Mascota.pose(prefs.sinFestejo ? 'reposo' : 'celebra'); } catch (e) { /* nada */ }
-        ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: actual.id, momento: 'invitacion', invitacion: k, ms: Date.now() - t0L });
+        ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: actual.id, momento: 'invitacion', invitacion: k, ayuda: ayudas()[k] || 0, ms: Date.now() - t0L });
+      };
+      const pedirAyuda = nivel => {
+        const inv = actual.invitaciones || [], k = invK(), x = inv[k];
+        if (k < 0) return;
+        if (nivel === 2) {
+          const caso = casoQueCumple(x, jg.valores());
+          if (!caso) { diceL.textContent = 'No encontré un caso para mostrarte. Prueba otro reto.'; return; }
+          ayudas()[k] = 2; ctx.guardar();
+          mostrando = true; jg.fijar(caso); mostrando = false;
+          diceL.textContent = (typeof x === 'object' && x.bien) || 'Así se logra. Mira qué cambió.';
+        } else {
+          ayudas()[k] = Math.max(1, ayudas()[k] || 0); ctx.guardar();
+          diceL.textContent = 'Una pista. Si no sale, te muestro un caso.';
+        }
+        const p = zonaL.querySelector('.te-invita'); if (p) p.outerHTML = invitacion();
+        const foco = zonaL.querySelector('.te-invita .te-muestra, .te-invita .te-otra-idea'); if (foco) foco.focus({ preventScroll: true });
+        ses.ayudas++;
+        ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: actual.id, momento: 'reto-ayuda', invitacion: k, nivel: nivel === 2 ? 'muestra' : 'pista', ms: Date.now() - t0L });
       };
       const pintarRegistro = () => {
         const casos = deMesa();
@@ -631,7 +714,7 @@
           nombre: `Caso ${n + 1}`, fecha: new Date().toLocaleDateString('en-CA'), version: def.version };
         if (sobre) { const k = est.coleccion.findIndex(x => x.id === sobre); est.coleccion.splice(k, 1, Object.assign(caso, { nombre: est.coleccion[k].nombre })); }
         else est.coleccion.push(caso);
-        reemplazar = false; quitado = null; ctx.guardar();
+        reemplazar = false; quitado = null; ctx.guardar(); ses.guardados++;
         pintarRegistro();
         const aviso = q('.te-guardado'); if (aviso) aviso.textContent = `«${caso.nombre}» quedó guardado en este celular.`;
         diceL.textContent = 'Quedó guardado. Ponle nombre si quieres.';
@@ -639,7 +722,8 @@
         comprobarInv(v);
       };
       const abrir = (m, valores) => {
-        if (jg) jg.destruir();
+        if (jg) { ses.casos += jg.probados(); jg.destruir(); }
+        ses.mesas.add(m.id);
         actual = m; st.lab.mesa = m.id; ctx.guardar(); quitado = null; reemplazar = false;
         pintarNav();
         jg = montarJuego(m, { fig: figL, zona: zonaL, lectura: q('.te-lectura'), alt: $app.querySelector('#te-alt'), piezaPorDefecto: m.pieza, alTocar: () => {}, valores, reiniciar: true,
@@ -650,9 +734,11 @@
       };
       nav.addEventListener('click', e => { const b = e.target.closest('[data-mesa]'); if (b) abrir(mesas.find(m => m.id === b.dataset.mesa)); });
       zonaL.addEventListener('click', e => {
+        if (e.target.closest('.te-pista')) { pedirAyuda(1); return; }
+        if (e.target.closest('.te-muestra')) { pedirAyuda(2); return; }
         if (e.target.closest('.te-otra-idea')) {
-          // El siguiente reto que falta; si ya están todos, el siguiente sin más.
-          const inv = actual.invitaciones || [], hechas = logradas();
+          // El siguiente reto que falta (ni logrado ni visto con ayuda); si ya están todos, el siguiente sin más.
+          const inv = actual.invitaciones || [], hechas = logradas().concat(Object.keys(ayudas()).filter(i => ayudas()[i] >= 2).map(Number));
           let k = invK();
           for (let n = 0; n < inv.length; n++) { k = (k + 1) % inv.length; if (!hechas.includes(k) || hechas.length >= inv.length) break; }
           st.lab.inv = k; ctx.guardar();
@@ -694,6 +780,11 @@
         <div class="te-controles">${ctr.map(control).join('')}</div>
         ${ctr.length ? '<button type="button" class="btn borde te-reinicio">Volver al inicio</button>' : ''}
         ${o.minimo ? '<p class="sub te-casos" aria-live="polite"></p>' : ''}`;
+      // Una figura muy alta no se queda fija al bajar: taparía la consigna, los retos y los controles. Se recalcula cuando
+      // la figura cambia de tamaño (una pieza 3D crece recién cuando carga three.js).
+      const altura = () => { const c = f.closest('.te-figcaja'); if (c) c.classList.toggle('alta', f.getBoundingClientRect().height > innerHeight * 0.42); };
+      const roFig = typeof ResizeObserver === 'function' ? new ResizeObserver(() => altura()) : null;
+      if (roFig) roFig.observe(f);
       let tocado = false;
       const tocar = () => { if (!tocado) { tocado = true; o.alTocar(); } };
       const pintarJ = (contar = true) => {
@@ -707,7 +798,7 @@
         f.classList.toggle('con-manijas', arr.length > 0);
         // Una figura muy alta no se queda fija al bajar: taparía la consigna y los controles.
         const caja = f.closest('.te-figcaja');
-        if (caja) requestAnimationFrame(() => caja.classList.toggle('alta', f.getBoundingClientRect().height > innerHeight * 0.42));
+        if (caja) requestAnimationFrame(altura);
         ponerManijas();
         if (j.lectura) lec.innerHTML = E.html(j.lectura(vals));
         if (contar) probados.add(JSON.stringify(vals));
@@ -798,6 +889,7 @@
         valores: () => Object.assign({}, vals),
         fijar(v) { for (const c of ctr) if (v && v[c.id] !== undefined) vals[c.id] = T.ajustar(c, v[c.id]); pintarJ(); },
         destruir() {
+          if (roFig) roFig.disconnect();
           f.removeEventListener('pointerdown', abajo); f.removeEventListener('pointermove', mueve);
           f.removeEventListener('pointerup', arriba); f.removeEventListener('pointercancel', arriba);
           f.removeEventListener('touchstart', sinScroll); f.classList.remove('con-manijas', 'arrastrando');
@@ -822,6 +914,7 @@
       el.addEventListener('click', e => {
         const b = e.target.closest('.te-zoom'); if (!b) return;
         const caja = b.closest('.te-figcaja'), f = caja && caja.querySelector('.te-fig');
+        if (f && f._vivo && f._vivo.c.enVivo) { abrirLupaViva(f, b); return; }
         if (!f || !f.querySelector('svg')) return;
         abrirLupa(f.innerHTML, (f.querySelector('svg').getAttribute('aria-label') || ''), b);
       });
