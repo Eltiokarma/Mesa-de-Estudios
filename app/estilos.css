@@ -93,7 +93,7 @@ h2 a{font-size:14px;font-weight:500;color:var(--muted);text-decoration:none}
 input[type=text]{width:100%;font:inherit;color:inherit;background:var(--card);border:2px solid var(--line);border-radius:var(--radius-s);padding:14px}
 input[type=text]:focus{outline:none;border-color:var(--brand)}
 .vacio{color:var(--muted);text-align:center;padding:24px}
-#nav{position:fixed;left:50%;transform:translateX(-50%);bottom:max(12px,env(safe-area-inset-bottom));width:min(528px,calc(100% - 24px));background:var(--card);border-radius:24px;box-shadow:0 10px 30px rgba(92,52,110,.16);display:grid;grid-template-columns:repeat(4,1fr);padding:8px}
+#nav{position:fixed;left:50%;transform:translateX(-50%);bottom:max(12px,env(safe-area-inset-bottom));width:min(528px,calc(100% - 24px));background:var(--card);border-radius:24px;box-shadow:0 10px 30px rgba(92,52,110,.16);display:grid;grid-template-columns:repeat(5,1fr);padding:8px}
 #nav[hidden]{display:none}
 #nav a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;font-size:11px;color:var(--muted);padding:6px 0;border-radius:16px}
 #nav a.on{color:var(--brand);background:var(--brand-soft);font-weight:700}
@@ -871,3 +871,16 @@ body.con-lupa{overflow:hidden}
 .te-calib .sub{font-weight:400;margin:0}
 .te-chip.sabida .te-num{border-color:var(--ok);color:var(--ok)}
 .te-calibra{margin:0;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--ok) 10%,var(--card));display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:15px}
+
+/* ---------- Recorrido: seguir donde quedaste y cierre (docs/recorrido.md) ---------- */
+.seguir{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+.seguir h3{margin:2px 0 4px}
+.seguir-fila{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;align-items:center}
+.seguir-fila .sub{margin:0}
+.saludo-comp{margin:0 0 14px}
+.seguir .btn{align-self:flex-start}
+.cierre{display:flex;flex-direction:column;gap:14px;margin-top:16px}
+.cierre p{margin:0}
+.cierre-prox{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px}
+.cierre-prox legend{font-weight:700;margin-bottom:8px}
+.cierre-prox .chip{min-height:44px}

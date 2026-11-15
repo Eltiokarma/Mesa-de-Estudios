@@ -114,10 +114,15 @@ async function vista(ctx, id) {
 
   // ---- Pruebas de entrada y salida: mismas semillas para todos, sin corrección inmediata ----
   function prueba(fase) {
-    let i = 0, aciertos = 0, nose = 0; const respuestas = []; const t0 = Date.now();
+    // Se retoma donde quedó (P0-C): las preguntas salen de semillas fijas por fase, así que basta guardar lo respondido.
+    const g = st.enCurso && st.enCurso.fase === fase ? st.enCurso : null;
+    let i = g ? g.respuestas.length : 0, aciertos = g ? g.aciertos : 0, nose = g ? g.nose : 0;
+    const respuestas = g ? g.respuestas.slice() : []; const t0 = Date.now() - (g ? g.ms || 0 : 0);
+    const anotarCurso = () => { st.enCurso = { fase, respuestas: respuestas.slice(), aciertos, nose, ms: Date.now() - t0 }; guardar(); };
     const sig = () => {
       if (i === N_PRUEBA) {
-        st[fase] = { aciertos, total: N_PRUEBA, nose }; guardar();
+        if (st[fase]) return fase === 'entrada' ? practica() : resultado();   // ya estaba cerrada: no se registra dos veces
+        st[fase] = { aciertos, total: N_PRUEBA, nose }; delete st.enCurso; guardar();
         registrar({ tipo: 'prueba', fase, modulo: id, unidad, aciertos, total: N_PRUEBA, respuestas: respuestas.join(''), nose, ms: Date.now() - t0 });
         return fase === 'entrada' ? practica() : resultado();
       }
@@ -128,9 +133,9 @@ async function vista(ctx, id) {
       const pintada = Date.now();
       $app.querySelectorAll('.alt').forEach(b => b.onclick = () => {
         if (Date.now() - pintada < 450) return; // un doble toque no contesta también la siguiente
-        if (b.dataset.nose) { respuestas.push('0'); nose++; i++; return sig(); } // «No sé»: 0 en la cadena
+        if (b.dataset.nose) { respuestas.push('0'); nose++; i++; anotarCurso(); return sig(); } // «No sé»: 0 en la cadena
         const a = p.alternativas.find(x => x.letra === b.dataset.letra);
-        respuestas.push(a.letra); if (a.correcta) aciertos++; i++; sig();
+        respuestas.push(a.letra); if (a.correcta) aciertos++; i++; anotarCurso(); sig();
       });
       window.scrollTo(0, 0);
     };

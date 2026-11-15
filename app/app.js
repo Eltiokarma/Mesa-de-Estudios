@@ -129,6 +129,33 @@ function cola(uni) {
   return todas.sort((a, b) => a.a - b.a || a.k - b.k || a.ci - b.ci);
 }
 
+// ---------- Recorrido: última actividad, próximo paso y compañero (docs/recorrido.md) ----------
+// est.ultima = { hash, fecha }: la última pantalla de estudio o juego (no el inicio ni el perfil). Sirve para «Seguir donde
+// quedaste» y para que el compañero reconozca lo que de verdad hizo el alumno.
+const RUTAS_ACTIVIDAD = ['unidad', 'practica', 'lectura'];
+function anotarUltima(ruta) {
+  if (est.proximo && est.proximo.hash === location.hash) { est.proximo = null; guardar(); }
+  const partes = location.hash.split('/');
+  if (!RUTAS_ACTIVIDAD.includes(ruta) || (ruta === 'unidad' && !partes[3])) return;
+  if (est.ultima && est.ultima.hash === location.hash && est.ultima.fecha === hoy()) return;
+  est.ultima = { hash: location.hash, fecha: hoy() }; guardar();
+}
+// Título legible de una ruta guardada: «MRU, MRUV y caída libre · teoría».
+function tituloRuta(hash) {
+  const [, ruta, a, b, c] = String(hash || '').split('/');
+  const SUB = { teoria: c === 'laboratorio' ? 'laboratorio' : c === 'ficha' ? 'ficha de repaso' : 'teoría', ejercicios: 'ejercicios', examen: 'simulacro', entrada: 'prueba del tema' };
+  if (ruta === 'unidad') { const cu = cursoDeUnidad(decodeURIComponent(a)), u = cu && cu.unidades.find(x => x.id === decodeURIComponent(a)); return u ? `${u.nombre}${SUB[b] ? ` · ${SUB[b]}` : ''}` : ''; }
+  if (ruta === 'practica' || ruta === 'lectura') { const pl = cat.plantillas[decodeURIComponent(a)]; return pl ? pl.titulo : ''; }
+  return '';
+}
+const cursoDeRuta = hash => { const [, ruta, a] = String(hash || '').split('/'); const id = decodeURIComponent(a || '');
+  if (ruta === 'unidad') return cursoDeUnidad(id); const pl = cat.plantillas[id]; return pl ? cursoDeUnidad(pl.unidades[0]) : null; };
+const diasDesde = f => (f ? Math.round((Date.parse(hoy()) - Date.parse(f)) / 864e5) : Infinity);
+// El compañero de un curso y una de sus líneas (nucleo/teoria.js); {lugar} se cambia por el título de la actividad.
+function companero(cursoId) { const P = window.Teoria && Teoria.PERSONAJES; return (P && (P[cursoId] || P.fisica)) || { nombre: '', voces: {} }; }
+const lineaDe = (per, k, lugar) => String((per.voces || {})[k] || '').replace('{lugar}', lugar || 'tu última actividad');
+const discreto = () => !!(est.prefs && est.prefs.discreto);
+
 // ---------- Vistas ----------
 const icono = id => Ilus.iconoCurso(id);
 
@@ -236,6 +263,22 @@ function vInicio() {
     return `<a class="cursito tinte" style="${Ilus.tinte(c.id)}" href="#/curso/${esc(c.id)}">${Ilus.viñeta(c.id)}<span class="t">${esc(c.nombre)}</span>
       <span class="barra" aria-label="${Math.round(a * 100)} % estudiado"><i style="width:${Math.round(a * 100)}%"></i></span></a>`; }).join('');
   const salidas = avisosSalida();
+  // Seguir donde quedaste: el próximo paso que dejó al cerrar o, si no, la última actividad (hasta 21 días).
+  const prox = est.proximo && diasDesde(est.proximo.fecha) <= 21 ? est.proximo : null;
+  const ult = !prox && est.ultima && diasDesde(est.ultima.fecha) <= 21 ? est.ultima : null;
+  const destino = prox || ult, tDest = destino && tituloRuta(destino.hash);
+  const cursoComp = (destino && cursoDeRuta(destino.hash)) || (conEscena && conEscena.c) || cat.cursos[0];
+  const per = companero(cursoComp && cursoComp.id);
+  // La llegada se dice una vez por día; al volver a otra pantalla, el compañero no repite el saludo.
+  const yaSaludo = sessionStorage.getItem('saludo') === hoy();
+  sessionStorage.setItem('saludo', hoy());
+  const linea = destino && tDest ? lineaDe(per, 'regreso', tDest) : yaSaludo ? '' : lineaDe(per, 'llegada');
+  const seguir = destino && tDest ? `<div class="card seguir tinte" style="${Ilus.tinte(cursoComp.id)}">
+      <div class="seguir-fila"><div class="mascota" data-mascota data-curso="${esc(cursoComp.id)}" aria-hidden="true"></div>
+        <div><div class="etq">${prox ? 'Tu próximo paso' : 'Lo último que hiciste'}</div><h3>${esc(tDest)}</h3>
+          ${linea && !discreto() ? `<p class="sub"><b>${esc(per.nombre)}</b> ${esc(linea)}</p>` : ''}</div></div>
+      <a class="btn tinta" href="${esc(destino.hash)}">Seguir ›</a></div>`
+    : linea && !discreto() ? `<div class="seguir-fila saludo-comp"><div class="mascota" data-mascota data-curso="${esc(cursoComp.id)}" aria-hidden="true"></div><p class="sub"><b>${esc(per.nombre)}</b> ${esc(linea)}</p></div>` : '';
   $app.innerHTML = `
     ${salidas.map(({ c, href }) => `<a class="aviso" style="display:block;text-decoration:none;margin-top:0" href="${esc(href)}">Tu profesor abrió la prueba de salida de ${esc(c.nombre)}. Hazla aquí ›</a>`).join('')}
     <header class="saludo"><span class="avatar">${esc((est.nombre || '?')[0].toUpperCase())}</span>
@@ -243,6 +286,7 @@ function vInicio() {
       <span class="pildora-racha" title="Racha de estudio">${Ilus.mini.llama}${racha()}<span class="lector"> ${racha() === 1 ? 'día seguido' : 'días seguidos'}</span></span>
       ${esAlumnoCuenta() ? `${pildoraSync()}<a class="btn borde solo-grande" href="#/salir">Cerrar sesión</a>` : '<a class="btn borde solo-grande" href="#/otro">Otro alumno en esta PC</a>'}</header>
     <div class="col2 inicio"><div>
+    ${seguir}
     ${tarjetaRepaso()}
     ${reto}
     <h2>Hoy</h2>
@@ -510,6 +554,9 @@ async function vExamen(c, u) {
   est.examenes = est.examenes || {};
   const reg = est.examenes[u.id] = Object.assign({ intentos: 0, ultimo: null }, est.examenes[u.id] || {});
   const intento = reg.intentos + 1;
+  // Simulacro que se retoma (P0-C): las preguntas salen de semillas fijas por intento, así que basta guardar dónde
+  // iba y qué marcó. Si el intento guardado es otro (ya se terminó), se empieza uno nuevo.
+  const guardado = reg.enCurso && reg.enCurso.intento === intento ? reg.enCurso : null;
   // Cinco preguntas repartidas entre los generadores de la unidad; si una semilla no da alternativas, se prueba otra.
   const preguntas = [];
   for (let i = 0, k = 0; preguntas.length < N_EXAMEN && k < N_EXAMEN * 4; k++) {
@@ -517,8 +564,11 @@ async function vExamen(c, u) {
     try { const p = g.generar(`examen-${est.alumno}-${u.id}-${intento}-${k}`); if (p && Array.isArray(p.alternativas) && p.alternativas.length > 1) { preguntas.push({ g, p }); i++; } } catch { /* semilla sin problema válido: otra */ }
   }
   if (!preguntas.length) { $app.querySelector('.vacio').textContent = 'No se pudieron armar las preguntas de esta unidad.'; return; }
-  const resp = preguntas.map(() => null), t0 = Date.now(), tiempos = preguntas.map(() => 0);
-  let i = 0, tPreg = Date.now();
+  const resp = guardado ? preguntas.map((_, k) => guardado.resp[k] || null) : preguntas.map(() => null);
+  const tiempos = guardado ? preguntas.map((_, k) => guardado.tiempos[k] || 0) : preguntas.map(() => 0);
+  const t0 = Date.now() - (guardado ? guardado.ms || 0 : 0);
+  let i = guardado ? Math.min(guardado.i, preguntas.length - 1) : 0, tPreg = Date.now();
+  const anotarCurso = () => { reg.enCurso = { intento, i, resp: resp.slice(), tiempos: tiempos.slice(), ms: Date.now() - t0 }; guardar(); };
 
   function intro() {
     $app.innerHTML = `${cabUnidad(c, u, 'Exámenes')}
@@ -526,10 +576,10 @@ async function vExamen(c, u) {
         <h2>${preguntas.length} preguntas como las del examen de admisión</h2>
         <ul class="temas-l"><li>Sin pistas: la corrección llega al final, con la explicación de cada error.</li>
           <li>Puedes dejar preguntas en blanco y volver a ellas antes de terminar.</li>
-          <li>Si sales de esta pantalla, el simulacro se pierde. Cada intento trae preguntas nuevas.</li></ul>
-        ${reg.ultimo ? `<p class="sub">La última vez: ${reg.ultimo.aciertos} de ${reg.ultimo.total} correctas.</p>` : ''}
-        <button type="button" class="btn morado" id="empezar">Empezar el simulacro</button></div>`;
-    document.getElementById('empezar').onclick = () => { tPreg = Date.now(); pregunta(); };
+          <li>Si sales, queda guardado donde ibas. Cada intento nuevo trae preguntas nuevas.</li></ul>
+        ${reg.ultimo ? `<p class="sub">La última vez: ${reg.ultimo.aciertos} de ${reg.ultimo.total} correctas${reg.mejor ? ` · tu mejor: ${Math.round(reg.mejor * preguntas.length)} de ${preguntas.length}` : ''}.</p>` : ''}
+        <button type="button" class="btn morado" id="empezar">${guardado ? `Seguir en la pregunta ${i + 1}` : 'Empezar el simulacro'}</button></div>`;
+    document.getElementById('empezar').onclick = () => { tPreg = Date.now(); anotarCurso(); pregunta(); };
   }
   function pregunta() {
     const { p } = preguntas[i], ultima = i === preguntas.length - 1;
@@ -549,24 +599,34 @@ async function vExamen(c, u) {
       $app.querySelectorAll('.alt').forEach(x => { const on = x.dataset.letra === resp[i]; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
       $app.querySelector('.ex-blanco').textContent = resp[i] ? `Marcaste la ${resp[i]}. Puedes cambiarla.` : 'Sin marcar: si sigues, queda en blanco.';
       $app.querySelectorAll('.ex-puntos span')[i].classList.toggle('resp', !!resp[i]);
+      anotarCurso();
     });
-    const mover = d => { tiempos[i] += Date.now() - tPreg; tPreg = Date.now(); i += d; window.scrollTo(0, 0); pregunta(); };
+    const mover = d => { tiempos[i] += Date.now() - tPreg; tPreg = Date.now(); i += d; anotarCurso(); window.scrollTo(0, 0); pregunta(); };
     document.getElementById('ant').onclick = () => mover(-1);
     document.getElementById('sig').onclick = () => (ultima ? (tiempos[i] += Date.now() - tPreg, terminar()) : mover(1));
   }
   function terminar() {
     let aciertos = 0, blancos = 0;
+    // Para no registrar dos veces el mismo intento (por ejemplo, si se toca «Terminar» dos veces), se cierra primero.
+    if (!reg.enCurso && reg.intentos >= intento) return;
+    const porRegistrar = [];
     preguntas.forEach(({ g, p }, k) => {
       const a = resp[k] && p.alternativas.find(x => x.letra === resp[k]);
       if (!a) blancos++; else if (a.correcta) aciertos++;
-      registrar(a ? { tipo: 'examen-item', curso: c.id, unidad: u.id, plantilla: g.id, problema: p.id, opcion: a.letra, correcta: !!a.correcta, error: a.correcta ? '' : (a.error || {}).id || '', ms: tiempos[k] }
+      porRegistrar.push(a ? { tipo: 'examen-item', curso: c.id, unidad: u.id, plantilla: g.id, problema: p.id, opcion: a.letra, correcta: !!a.correcta, error: a.correcta ? '' : (a.error || {}).id || '', ms: tiempos[k] }
         : { tipo: 'examen-item', curso: c.id, unidad: u.id, plantilla: g.id, problema: p.id, opcion: '', correcta: false, error: '', nose: true, ms: tiempos[k] });
     });
-    registrar({ tipo: 'examen', curso: c.id, unidad: u.id, aciertos, total: preguntas.length, nose: blancos, respuestas: resp.map(x => x || '0').join(''), ms: Date.now() - t0 });
-    reg.intentos = intento; reg.ultimo = { aciertos, total: preguntas.length, blancos, fecha: hoy() }; guardar(); marcarDia();
+    porRegistrar.push({ tipo: 'examen', curso: c.id, unidad: u.id, aciertos, total: preguntas.length, nose: blancos, respuestas: resp.map(x => x || '0').join(''), ms: Date.now() - t0 });
+    const antes = reg.ultimo;
+    reg.intentos = intento; reg.ultimo = { aciertos, total: preguntas.length, blancos, fecha: hoy() };
+    reg.mejor = Math.max(reg.mejor || 0, aciertos / preguntas.length);
+    delete reg.enCurso; guardar(); marcarDia();
+    // Primero queda cerrado el intento y después se registran sus eventos: si se corta aquí, no se duplica.
+    porRegistrar.forEach(registrar);
     const min = Math.max(1, Math.round((Date.now() - t0) / 60000));
     $app.innerHTML = `${cabUnidad(c, u, 'Exámenes')}
       <div class="card ex-nota"><div class="n">${aciertos}<span> de ${preguntas.length}</span></div><div class="l">correctas${blancos ? ` · ${blancos} en blanco` : ''} · ${min} min</div>
+        ${antes ? `<p class="sub">La vez anterior: ${antes.aciertos} de ${antes.total}. ${aciertos > antes.aciertos ? 'Mejoraste.' : aciertos === antes.aciertos ? 'Igual que antes.' : 'Esta vez fueron menos; revisa abajo qué preguntas cambiaron.'}</p>` : ''}
         <div class="acciones-prueba"><a class="btn morado" href="#/unidad/${esc(u.id)}/examen" id="otro">Otro simulacro</a><a class="btn borde" href="#/unidad/${esc(u.id)}">Volver a la unidad</a></div></div>
       <h2>Revisa cada pregunta</h2>
       <div class="lista">${preguntas.map(({ p }, k) => {
@@ -630,6 +690,59 @@ function vPregunta(c, u) {
     quitar = ses.alCambiar(ver);
     Promise.resolve().then(() => ses.sincronizar()).catch(() => {});
   };
+}
+
+// ---------- Por hoy terminé (P0-C): resumen de lo que de verdad pasó hoy, qué quedó guardado y un próximo paso opcional ----------
+function resumenDeHoy() {
+  const d = hoy(), ev = eventos().filter(e => e.alumno === est.alumno && e.t && new Date(e.t).toLocaleDateString('en-CA') === d);
+  const r = { preguntas: 0, bien: 0, ideas: new Set(), labs: new Set(), casos: 0, textos: 0, simulacros: 0, temas: 0 };
+  for (const e of ev) {
+    if (['prediccion', 'previo', 'examen-item', 'repaso-item', 'tema-item'].includes(e.tipo) || (e.tipo === 'teoria' && ['prediccion', 'ahora-tu'].includes(e.momento))) { r.preguntas++; if (e.correcta) r.bien++; }
+    if (e.tipo === 'teoria' && e.momento === 'ahora-tu' && e.correcta) r.ideas.add(`${e.unidad}/${e.idea}`);
+    if (e.tipo === 'teoria' && e.momento === 'laboratorio') { r.labs.add(e.unidad); r.casos++; }
+    if (e.tipo === 'lectura') r.textos++;
+    if (e.tipo === 'examen') r.simulacros++;
+    if (e.tipo === 'tema') r.temas++;
+  }
+  const partes = [];
+  if (r.ideas.size) partes.push(`terminaste ${r.ideas.size} ${r.ideas.size === 1 ? 'idea' : 'ideas'} de teoría`);
+  if (r.casos) partes.push(`guardaste ${r.casos} ${r.casos === 1 ? 'caso' : 'casos'} en ${r.labs.size} ${r.labs.size === 1 ? 'laboratorio' : 'laboratorios'}`);
+  // Los aciertos se dicen si los hubo; un día difícil no se resume con un «0 bien» (los datos siguen en la medición).
+  if (r.preguntas) partes.push(`respondiste ${r.preguntas} ${r.preguntas === 1 ? 'pregunta' : 'preguntas'}${r.bien ? ` (${r.bien} bien)` : ''}`);
+  if (r.textos) partes.push(`leíste ${r.textos} ${r.textos === 1 ? 'texto' : 'textos'}`);
+  if (r.simulacros) partes.push(`hiciste ${r.simulacros} ${r.simulacros === 1 ? 'simulacro' : 'simulacros'}`);
+  if (r.temas) partes.push(`hiciste ${r.temas} ${r.temas === 1 ? 'prueba de tema' : 'pruebas de tema'}`);
+  return { partes, vacio: !ev.length };
+}
+function vCierre() {
+  const { partes, vacio } = resumenDeHoy();
+  const ult = est.ultima && diasDesde(est.ultima.fecha) <= 21 ? est.ultima : null;
+  const cursoComp = (ult && cursoDeRuta(ult.hash)) || cat.cursos[0], per = companero(cursoComp && cursoComp.id);
+  const q = cola(est.uni), sig = q.find(x => !estudiada(x.u));
+  const opciones = [
+    ult && tituloRuta(ult.hash) ? { hash: ult.hash, t: `Seguir con ${tituloRuta(ult.hash)}` } : null,
+    sig ? { hash: `#/unidad/${sig.u.id}`, t: `Empezar ${sig.u.nombre}` } : null,
+  ].filter(Boolean);
+  const guardado = esAlumnoCuenta() ? `Quedó guardado en este celular. ${textoSync()}.` : 'Quedó guardado en este celular.';
+  $app.innerHTML = `<h1>Por hoy</h1>
+    <div class="card cierre">
+      <div class="seguir-fila"><div class="mascota" data-mascota data-curso="${esc(cursoComp.id)}" aria-hidden="true"></div>
+        <p class="sub"><b>${esc(per.nombre)}</b> ${esc(vacio ? 'Hasta pronto.' : lineaDe(per, 'despedida'))}</p></div>
+      ${vacio ? '<p>Hoy no hubo actividad. Puedes volver cuando quieras.</p>'
+        : `<p>Hoy ${esc(partes.join(', '))}.</p><p class="sub">${esc(guardado)}</p>`}
+      ${opciones.length ? `<fieldset class="cierre-prox"><legend>¿Dejas un próximo paso? (opcional)</legend>
+        ${opciones.map((o, k) => `<button type="button" class="chip${est.proximo && est.proximo.hash === o.hash ? ' on' : ''}" data-prox="${k}" aria-pressed="${!!(est.proximo && est.proximo.hash === o.hash)}">${esc(o.t)}</button>`).join('')}
+        <button type="button" class="chip" data-prox="-1" aria-pressed="false">Lo decido después</button></fieldset>
+        <p class="sub cierre-ok" role="status"></p>` : ''}
+      <a class="btn borde" href="#/inicio">Volver al inicio</a></div>`;
+  try { if (window.Mascota) Mascota.pose('reposo'); } catch { /* la app nunca espera a la mascota */ }
+  $app.querySelectorAll('[data-prox]').forEach(b => b.onclick = () => {
+    const k = +b.dataset.prox;
+    est.proximo = k >= 0 ? { hash: opciones[k].hash, fecha: hoy() } : null; guardar();
+    $app.querySelectorAll('[data-prox]').forEach(x => { const on = x === b && k >= 0; x.classList.toggle('on', on); x.setAttribute('aria-pressed', String(on)); });
+    $app.querySelector('.cierre-ok').textContent = k >= 0 ? `Listo: al volver te espera «${opciones[k].t.replace(/^(Seguir con|Empezar) /, '')}».` : 'Está bien: al volver eliges.';
+  });
+  registrar({ tipo: 'cierre', vacio, ms: 0 });
 }
 
 function vProgreso() {
@@ -1144,6 +1257,8 @@ function render() {
   if (ruta === 'bienvenida') return vBienvenida();
   $nav.hidden = false; document.body.dataset.ruta = ruta; document.body.classList.add('con-nav');
   $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === (['curso', 'unidad', 'papel', 'practica', 'prueba', 'lectura'].includes(ruta) ? 'cursos' : ruta === 'otro' ? 'perfil' : ruta)));
+  anotarUltima(ruta);
+  if (ruta === 'cierre') return vCierre();
   if (ruta === 'practica') {
     $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === 'cursos'));
     return cuandoListo(modulo('practica'), () => Practica.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || '')));
