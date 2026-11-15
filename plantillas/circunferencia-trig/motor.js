@@ -23,6 +23,11 @@
  *   ecuacionFactorizada(factores, desde, hasta)     producto de factores fn x − k = 0 (no se divide entre nada)
  *   suma(a, b, fn), doble(a, fn)                    sen(a + b) contra sen a + sen b; sen 2a contra 2 sen a
  *   pitagorica(g)                                   sen² + cos² = 1
+ *   helice({ A, B, D, g, hasta, n })                (15 nov 2026, pieza trig-helice-3d) el punto P gira B·x grados en una
+ *                                                   circunferencia de radio A mientras avanza x grados por el eje. Su
+ *                                                   sombra de costado es y = A sen Bx + D; la de abajo, A cos Bx.
+ *                                                   → { T (periodo, grados), vueltas (de 0 a hasta), P: { g, giro, sen, cos,
+ *                                                   alto, fondo }, puntos: [[x, alto, fondo], …] }
  *   fraccion(x, maxDen), textoPi(coef), textoExacto(e), sumaExacta(a, b)
  *
  * Cada resultado que es la respuesta de una predicción trae un campo 'errores' con lo que dan los errores
@@ -527,7 +532,17 @@
       errores: depurar({ sinCuadrados: s + c, senoDelCuadrado: valor('sen', g * g) + valor('cos', g * g) }, 1) };   // TR17: sen²x leído como sen(x²)
   }
 
+  function helice(o) {
+    const A = Number(o.A), B = Number(o.B), D = Number(o.D || 0), hasta = Number(o.hasta || 720), n = o.n || 240, g = Number(o.g || 0);
+    if (!(A > 0)) throw new Error('el radio A debe ser positivo');
+    if (!(B > 0)) throw new Error('B debe ser positivo');
+    const en = x => { const s = valor('sen', B * x), c = valor('cos', B * x); return { sen: s, cos: c, alto: A * s + D, fondo: A * c }; };
+    const puntos = [];
+    for (let k = 0; k <= n; k++) { const x = hasta * k / n, q = en(x); puntos.push([x, q.alto, q.fondo]); }
+    return { T: 360 / B, vueltas: B * hasta / 360, P: Object.assign({ g, giro: B * g }, en(g)), puntos };
+  }
+
   return { PI, FNS, NOTABLES: ANGULOS_NOTABLES, fraccion, textoPi, textoExacto, exactoDe, sumaExacta,
     razones, escalar, notable, resolverRectangulo, valor, exacto, normalizar, coterminal, cuadrante, referencia: r => referencia(normalizar(r)),
-    punto, reducir, senoidal, evaluar, muestrear, extremos, ceros, asintotas, ecuacion, ecuacionFactorizada, suma, doble, pitagorica, aGrados };
+    punto, reducir, senoidal, evaluar, muestrear, extremos, ceros, asintotas, ecuacion, ecuacionFactorizada, suma, doble, pitagorica, helice, aGrados };
 });

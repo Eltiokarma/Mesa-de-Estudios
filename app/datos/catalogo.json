@@ -4364,10 +4364,12 @@
      "teoria": {
       "archivo": "/contenido/teoria/trigonometria/funciones-trigonometricas.js",
       "requiere": [
-       "/nucleo/kit/piezas/trig-onda.js"
+       "/nucleo/kit/piezas/trig-onda.js",
+       "/plantillas/circunferencia-trig/motor.js",
+       "/nucleo/kit/piezas/trig-helice-3d.js"
       ],
       "ideas": 5,
-      "terminos": 29
+      "terminos": 32
      }
     },
     {
