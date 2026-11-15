@@ -291,7 +291,7 @@
   const indice = orden => PERMS.findIndex(p => p.join() === orden.join()) + 1;
   const mesaLibre = {
     id: 'ordena-tu', titulo: 'Ordena tú', pieza: 'rv-texto',
-    consigna: 'Elige un texto y arrastra sus oraciones a otro renglón. Busca el orden en que ninguna queda sin lo que necesita.',
+    consigna: 'Elige un texto y arrastra sus oraciones a otro renglón. Busca el plan de redacción en que ninguna queda sin lo que necesita.',
     voz: 'Prueba también órdenes raros.',
     controles: [
       { id: 't', etiqueta: 'Texto', opciones: [{ valor: 'abejas', texto: 'abejas' }, { valor: 'chuno', texto: 'chuño' }, { valor: 'flautas', texto: 'flautas' }] },
@@ -303,6 +303,22 @@
       if (!r.length) return [bien('Orden coherente'), ` · abre «${ors[orden[0]].t.split(' ').slice(0, 2).join(' ')}…»`];
       return [roto(`${r.length} sin lo que necesita`), ` · abre «${ors[orden[0]].t.split(' ').slice(0, 2).join(' ')}…»`];
     },
+    // Invitaciones: logrado cuenta las oraciones rotas con `rotos`, la misma función que pinta el sello.
+    invitaciones: [
+      { texto: 'Busca un orden en que ninguna oración quede sin lo que necesita.',
+        logrado: val => !rotos(TEXTOS[val.t][1], PERMS[val.n - 1]).length,
+        bien: 'Cada oración tiene antes lo que retoma. ¿Hay otro orden que también sirva?' },
+      { texto: 'Abre con la oración de «por eso» y deja rota solo esa.',
+        logrado: val => { const ors = TEXTOS[val.t][1], o = PERMS[val.n - 1], r = rotos(ors, o); return ors[o[0]].t.startsWith('Por eso') && r.length === 1 && r[0] === o[0]; },
+        bien: 'Lo demás se sostiene; solo la conclusión queda sin su razón.' },
+      { texto: 'Con las flautas, deja rota solo la oración de «ambas».',
+        logrado: val => { const r = rotos(INSTR, PERMS[val.n - 1]); return val.t === 'flautas' && r.length === 1 && INSTR[r[0]].t.startsWith('Ambas'); },
+        bien: '«Ambas» llegó antes de conocer a las dos. Busca qué le falta antes.' },
+      { texto: 'Guarda los órdenes coherentes de dos textos distintos.',
+        logrado: (val, guardados) => !rotos(TEXTOS[val.t][1], PERMS[val.n - 1]).length
+          && guardados.some(g => g.t !== val.t && !rotos(TEXTOS[g.t][1], PERMS[g.n - 1]).length),
+        bien: 'Uno lo ordena el referente; otro, el tiempo o la comparación.' },
+    ],
     arrastres: [0, 1, 2, 3].map(j => ({
       id: `oracion-${j + 1}`, etiqueta: `oración ${j + 1} del texto`, color: 'c-i',
       donde: val => RV().ancla(figLibre(val), `s${j}`),
@@ -322,10 +338,55 @@
     },
     // Las ideas 2 y 3 comparan tres planes fijos (A, B y C): no tienen manija; el reordenamiento libre de esas mismas
     // oraciones está en la mesa «Ordena tú».
+    glosario: [
+      { termino: 'plan de redacción', formas: ['plan de redacción', 'planes de redacción'],
+        def: 'Orden en que conviene poner las oraciones de un texto para que cada una tenga antes lo que necesita.',
+        ejemplo: 'Abejas: 2 – 3 – 4 – 1, del tema a la conclusión.', ver: ['orden lógico', 'secuencia cronológica'] },
+      { termino: 'subtema', def: 'Parte del tema general que desarrolla una o varias oraciones del texto.',
+        ejemplo: 'Tema: las abejas. Subtema: cómo llevan el polen.', ver: ['tema'] },
+      { termino: 'secuencia cronológica', formas: ['secuencia cronológica', 'secuencias cronológicas'],
+        def: 'Orden de un texto que sigue el tiempo: lo que pasó o se hace primero va antes.',
+        ejemplo: 'Primero se hielan las papas; luego se pisan; finalmente se secan.', ver: ['marcador de tiempo'] },
+      { termino: 'marcador de tiempo', formas: ['marcadores de tiempo', 'marcador de tiempo'],
+        def: 'Palabra que indica en qué momento de una serie va una acción.',
+        ejemplo: '«Primero», «luego», «después», «finalmente».', ver: ['secuencia cronológica', 'conector'] },
+      { termino: 'orden lógico', def: 'Orden que pone cada idea después de la que la sostiene, como la causa antes de su efecto.',
+        ejemplo: '«Se secan al sol»; por eso, «se conserva durante años».', ver: ['causa', 'consecuencia'] },
+      { termino: 'análisis', def: 'Forma de ordenar un texto: primero se presenta un todo y luego cada una de sus partes.',
+        ejemplo: 'La célula; luego su membrana, su núcleo y su citoplasma.', ver: ['comparación'] },
+      { termino: 'comparación', formas: ['comparación', 'comparaciones', 'comparar'],
+        def: 'Forma de ordenar un texto: se presentan dos cosas y después sus diferencias o semejanzas.',
+        ejemplo: 'La quena y la zampoña; «en cambio» y «ambas» van después.', ver: ['análisis', 'contraste'] },
+      { termino: 'retórica', def: 'Arte antiguo de preparar un discurso: qué decir, en qué orden y cómo decirlo.',
+        ejemplo: 'Aristóteles escribió una «Retórica» en el siglo IV a. C.' },
+    ],
     laboratorio: [
       mesaLibre,
-      Object.assign({ id: 'abre-y-retoma', titulo: 'Qué abre y qué retoma', pieza: 'rv-texto' }, temaSubtemas.juega),
-      Object.assign({ id: 'presentar-comparar', titulo: 'Presentar y comparar', pieza: 'rv-texto' }, comparar.juega),
+      // Retos de las mesas que reusan el juego de una idea: logrado usa `rotos`, como el sello de su dibujo.
+      Object.assign({ id: 'abre-y-retoma', titulo: 'Qué abre y qué retoma', pieza: 'rv-texto', invitaciones: [
+        { texto: 'Abre el texto con la conclusión y mira qué queda sin su razón.',
+          logrado: val => ABEJAS[val.k].t.startsWith('Por eso'),
+          bien: '«Por eso» necesita una razón antes. Una conclusión no puede abrir.' },
+        { texto: 'Abre con «Ellas» y busca qué pronombre queda sin referente.',
+          logrado: val => ABEJAS[val.k].t.startsWith('Ellas') && rotos(ABEJAS, abrirCon(val.k)).includes(val.k),
+          bien: '«Ellas» no sabe a quién se refiere: las abejas todavía no aparecen.' },
+        { texto: 'Guarda dos aperturas con una oración rota cada una, pero distinta.',
+          logrado: (val, guardados) => { const r = rotos(ABEJAS, abrirCon(val.k)); return r.length === 1
+            && guardados.some(g => { const q = rotos(ABEJAS, abrirCon(g.k)); return q.length === 1 && q[0] !== r[0]; }); },
+          bien: 'Cada oración que sube deja atrás lo que necesitaba. ¿Cuál pide qué?' },
+      ] }, temaSubtemas.juega),
+      Object.assign({ id: 'presentar-comparar', titulo: 'Presentar y comparar', pieza: 'rv-texto', invitaciones: [
+        { texto: 'Elige el plan que dice «ambas» antes de presentar las dos flautas.',
+          logrado: val => rotos(INSTR, PLANES3[val.p]).some(j => INSTR[j].t.startsWith('Ambas')),
+          bien: '«Ambas» junta dos cosas; aquí la zampoña aún no aparece.' },
+        { texto: 'Elige el plan donde «en cambio» llega antes que la quena.',
+          logrado: val => rotos(INSTR, PLANES3[val.p]).some(j => INSTR[j].t.includes('en cambio')),
+          bien: '«En cambio» marca una diferencia con algo que todavía no se dijo.' },
+        { texto: 'Guarda un plan coherente y otro con una comparación fuera de tiempo.',
+          logrado: (val, guardados) => [val, ...guardados].some(g => !rotos(INSTR, PLANES3[g.p]).length)
+            && [val, ...guardados].some(g => rotos(INSTR, PLANES3[g.p]).length > 0),
+          bien: 'Compara dónde va «ambas» en cada uno: después de conocer a las dos.' },
+      ] }, comparar.juega),
     ],
     ideas: [temaSubtemas, tiempoCausa, comparar],
   };
