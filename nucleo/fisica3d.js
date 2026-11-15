@@ -140,13 +140,16 @@
     const datos = { escena: 'tiro', escala: 0.9, ejes: null, vista: { giro: -18, inclinacion: 14 }, flechas: [], trazos: [], bolas: [], caras: [] };
     datos.caras.push({ puntos: [[PARED, -0.7, ZB], [PARED, 0.7, ZB], [PARED, 0.7, ZB + 2], [PARED, -0.7, ZB + 2]], color: 'tinta', opacidad: 0.1 });
     datos.trazos.push({ puntos: [suelo(PARED), suelo(X0T + 92 * KT)], color: 'tinta' });
-    const camino = p.puntos(60).filter(q => q.t <= t + 1e-9).map(q => enEsc(q.x, q.y));
+    // El camino recorrido hasta t, siempre con el mismo número de puntos (los que faltan esperan sobre la pelota), y
+    // las marcas de cada medio segundo, todas presentes y ocultas hasta que pasa su instante: así, mientras t avanza
+    // solo (la animación), la escena 3D se mueve sin rearmarse (fis-espacio-3d, forma y mover).
+    const camino = p.puntos(60).map(q => (q.t <= t + 1e-9 ? enEsc(q.x, q.y) : enEsc(e.x, e.y)));
     camino.push(enEsc(e.x, e.y));
     datos.trazos.push({ puntos: camino, color: 'c-i', punteado: true });
     // Marcas cada medio segundo: la sombra en el suelo y la sombra en la pared.
-    for (let k = 1; k * 0.5 < t - 1e-9 && k <= 12; k++) {
-      const q = p.estado(k * 0.5), P = enEsc(q.x, q.y);
-      datos.bolas.push({ en: suelo(P[0]), r: 0.045, color: 'c-i' }, { en: pared(P[2]), r: 0.045, color: 'c-i' });
+    for (let k = 1; k <= 12; k++) {
+      const q = p.estado(Math.min(k * 0.5, p.tVuelo)), P = enEsc(q.x, q.y), oculta = !(k * 0.5 < t - 1e-9);
+      datos.bolas.push({ en: suelo(P[0]), r: 0.045, color: 'c-i', oculta }, { en: pared(P[2]), r: 0.045, color: 'c-i', oculta });
     }
     const P = enEsc(e.x, e.y);
     datos.bolas.push({ en: P, r: 0.12, color: 'tinta' }, { en: suelo(P[0]), r: 0.08, color: 'c-i' }, { en: pared(P[2]), r: 0.08, color: 'c-i', rotulo: 'y' });
