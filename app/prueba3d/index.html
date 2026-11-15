@@ -25,14 +25,14 @@
   .p3-res table{border-collapse:collapse;width:100%}
   .p3-res td,.p3-res th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:right}
   .p3-res td:first-child,.p3-res th:first-child{text-align:left}
-  .p3-aviso{padding:12px;border-radius:14px;background:var(--acento);color:var(--acento-ink);font-weight:600}
+  .p3-aviso{white-space:pre-wrap;overflow-wrap:anywhere;padding:12px;border-radius:14px;background:var(--acento);color:var(--acento-ink);font-weight:600}
   textarea{width:100%;min-height:44px;font:inherit;border-radius:12px;border:2px solid var(--line);padding:8px;background:var(--card);color:var(--ink)}
 </style>
 </head>
 <body>
 <main>
   <header>
-    <p class="sub">Prueba de Mesa de Estudios · no es parte de la app</p>
+    <p class="sub">Prueba de Mesa de Estudios · no es parte de la app · versión 2</p>
     <h1>¿Se siente bien girar cosas en 3D en este equipo?</h1>
     <p class="sub">Tres objetos para tocar. Gíralos con el dedo o con los botones. Al final, «Correr la medición» toma unos 30 segundos sin tocar nada.</p>
   </header>
@@ -69,6 +69,19 @@
     </div>
   </section>
 </main>
+<script>
+  // Antes que three.js: si algo falla (también un error de sintaxis del paquete en un navegador viejo), se ve en pantalla.
+  window.P3_ERRORES = [];
+  window.P3_FALLO = function (t) {
+    window.P3_ERRORES.push(t);
+    var a = document.getElementById('sin-webgl'); if (!a) return;
+    a.hidden = false;
+    a.textContent = 'Algo falló y la prueba no puede dibujar. Mándale una captura de este cuadro a Claude.\n\n'
+      + window.P3_ERRORES.join('\n') + '\n\nNavegador: ' + navigator.userAgent;
+  };
+  addEventListener('error', function (e) { P3_FALLO('Error: ' + (e.message || 'sin mensaje') + (e.filename ? ' (' + e.filename.split('/').pop() + ':' + e.lineno + ')' : '')); });
+  addEventListener('unhandledrejection', function (e) { P3_FALLO('Error: ' + (e.reason && e.reason.message || e.reason)); });
+</script>
 <script src="/app/vendor/three/three-mesa.min.js"></script>
 <script src="geometria.js"></script>
 <script src="prueba3d.js"></script>

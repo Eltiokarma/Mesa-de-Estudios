@@ -16,21 +16,39 @@
   const guardar = () => { try { localStorage.setItem('prueba3d', JSON.stringify(st)); } catch (e) { /* sin almacenamiento */ } };
 
   // ---------- WebGL 2 ----------
+  // Si algo falla, se dice en pantalla (P3_FALLO, en index.html) y los botones de medición igual dan un JSON con el motivo.
+  const fallo = t => (window.P3_FALLO ? window.P3_FALLO(t) : console.error(t));
+  const cv = $('#cv'), caja = $('#lienzo');
   const prueba = document.createElement('canvas').getContext('webgl2');
-  if (!prueba || !T) {
-    const a = $('#sin-webgl'); a.hidden = false;
-    a.textContent = 'Este equipo no tiene WebGL 2: three.js no puede dibujar aquí. La app seguiría usando los dibujos de siempre (Canvas y SVG). Anótalo en la medición.';
-  }
   const infoGL = (() => {
     if (!prueba) return { webgl2: false };
     const ext = prueba.getExtension('WEBGL_debug_renderer_info');
     return { webgl2: true, renderer: ext ? prueba.getParameter(ext.UNMASKED_RENDERER_WEBGL) : prueba.getParameter(prueba.RENDERER), maxTextura: prueba.getParameter(prueba.MAX_TEXTURE_SIZE) };
   })();
-  if (!prueba || !T) return;
+  // Se suelta el contexto de prueba: algunos celulares no dan un segundo contexto mientras el primero sigue vivo.
+  if (prueba) { const x = prueba.getExtension('WEBGL_lose_context'); if (x) x.loseContext(); }
+  const dispositivo = () => ({ agente: navigator.userAgent, nucleos: navigator.hardwareConcurrency || null, memoriaGB: navigator.deviceMemory || null,
+    pantalla: `${screen.width}×${screen.height}`, ventana: `${innerWidth}×${innerHeight}`, dpr: devicePixelRatio, lienzo: `${cv.width}×${cv.height}` });
+  const sinDibujo = motivo => {
+    fallo(motivo);
+    const r = () => ({ prueba: 'prueba-3d', version: 2, fecha: new Date().toISOString(), nota: $('#celular').value.trim(), dispositivo: dispositivo(), gl: infoGL, error: motivo, errores: window.P3_ERRORES || [] });
+    const texto = () => JSON.stringify(r(), null, 2);
+    $('#medir-todo').onclick = $('#medir-mano').onclick = () => { $('#estado').textContent = 'No se puede medir: ' + motivo + ' Descarga el JSON igual y mándalo.'; };
+    $('#copiar').onclick = () => navigator.clipboard && navigator.clipboard.writeText(texto()).then(() => { $('#estado').textContent = 'Copiado.'; });
+    $('#bajar').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([texto()], { type: 'application/json' })); a.download = `prueba3d-${Date.now()}.json`; a.click(); };
+  };
+  if (!T) return sinDibujo('three.js no cargó en este navegador (puede ser un navegador antiguo: prueba en Chrome actualizado).');
+  if (!G) return sinDibujo('geometria.js no cargó.');
+  if (!prueba) return sinDibujo('Este equipo no tiene WebGL 2: three.js no puede dibujar aquí. La app seguiría usando los dibujos de siempre (Canvas y SVG).');
 
   // ---------- Escena común ----------
-  const cv = $('#cv'), caja = $('#lienzo');
-  const renderer = new T.WebGLRenderer({ canvas: cv, antialias: true });
+  let renderer;
+  try { renderer = new T.WebGLRenderer({ canvas: cv, antialias: true }); } catch (e1) {
+    try { renderer = new T.WebGLRenderer({ canvas: cv, antialias: false }); } catch (e2) {
+      return sinDibujo('No se pudo crear el dibujo 3D: ' + (e2 && e2.message || e2));
+    }
+  }
+  cv.addEventListener('webglcontextlost', e => { e.preventDefault(); fallo('El celular cortó el dibujo 3D (se perdió el contexto WebGL). Recarga la página.'); });
   renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
   renderer.outputColorSpace = T.SRGBColorSpace;
   renderer.setClearColor(0xf6efe8, 1);
@@ -197,7 +215,7 @@
   cambiarEscena(); tamano();
 
   // ---------- Medición (como la de Rive: cuadros por segundo, cuadros perdidos, peor pausa, tareas largas) ----------
-  const resultados = { prueba: 'prueba-3d', version: 1, fecha: '', three: '0.187.0', nota: '', dispositivo: {}, gl: infoGL, escenas: [] };
+  const resultados = { prueba: 'prueba-3d', version: 2, fecha: '', three: '0.187.0', nota: '', dispositivo: {}, gl: infoGL, escenas: [] };
   let largas = 0;
   try { new PerformanceObserver(l => { largas += l.getEntries().length; }).observe({ type: 'longtask', buffered: false }); } catch (e) { /* no disponible */ }
   function medir(ms, girar) {
@@ -222,9 +240,9 @@
     $('#resultados').innerHTML = `<table><tr><th>Objeto</th><th>fps</th><th>p5</th><th>perdidos</th><th>peor ms</th></tr>${resultados.escenas.map(r => `<tr><td>${r.nombre}</td><td>${r.fpsMedia}</td><td>${r.fpsP5}</td><td>${r.perdidos}</td><td>${r.peorMs}</td></tr>`).join('')}</table>
       <p class="sub">WebGL: ${infoGL.renderer || '—'}</p>`;
   }
-  const dispositivo = () => ({ agente: navigator.userAgent, nucleos: navigator.hardwareConcurrency || null, memoriaGB: navigator.deviceMemory || null,
-    pantalla: `${screen.width}×${screen.height}`, ventana: `${innerWidth}×${innerHeight}`, dpr: devicePixelRatio, lienzo: `${cv.width}×${cv.height}` });
-  $('#medir-todo').onclick = async () => {
+  $('#medir-todo').onclick = () => medirTodo().catch(e => { fallo('Error al medir: ' + (e && e.message || e)); $('#estado').textContent = 'La medición se cortó por un error (ver el cuadro de arriba).'; });
+  const medirTodo = async () => {
+    $('#estado').textContent = 'Empezando la medición…';
     const antes = st.escena; resultados.escenas = []; resultados.fecha = new Date().toISOString(); resultados.nota = $('#celular').value.trim(); resultados.dispositivo = dispositivo();
     for (const esc of ['corte', 'molecula', 'cubitos']) {
       st.escena = esc; cambiarEscena();
