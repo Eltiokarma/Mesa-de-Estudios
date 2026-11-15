@@ -1705,7 +1705,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 6,
-      "terminos": 21
+      "terminos": 22
      }
     },
     {
@@ -1744,7 +1744,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 4,
-      "terminos": 3
+      "terminos": 18
      }
     },
     {
@@ -1784,7 +1784,8 @@
        "/nucleo/kit/piezas/alg-baldosas.js",
        "/nucleo/kit/piezas/ejes.js"
       ],
-      "ideas": 5
+      "ideas": 5,
+      "terminos": 1
      }
     },
     {
@@ -1824,7 +1825,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 5,
-      "terminos": 2
+      "terminos": 3
      }
     },
     {
@@ -1863,7 +1864,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 2
+      "terminos": 5
      }
     },
     {
@@ -1903,7 +1904,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 2
+      "terminos": 4
      }
     },
     {
@@ -1977,7 +1978,8 @@
        "/nucleo/kit/piezas/alg-tabla.js",
        "/nucleo/kit/piezas/ejes.js"
       ],
-      "ideas": 5
+      "ideas": 5,
+      "terminos": 1
      }
     },
     {
@@ -2017,7 +2019,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 1
+      "terminos": 3
      }
     },
     {
@@ -2060,7 +2062,7 @@
        "/nucleo/kit/piezas/flechas.js"
       ],
       "ideas": 6,
-      "terminos": 1
+      "terminos": 2
      }
     },
     {
@@ -2102,7 +2104,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 6,
-      "terminos": 1
+      "terminos": 5
      }
     },
     {
@@ -2141,7 +2143,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 1
+      "terminos": 8
      }
     },
     {
@@ -2180,7 +2182,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 6,
-      "terminos": 1
+      "terminos": 2
      }
     },
     {
@@ -2218,7 +2220,8 @@
        "/nucleo/kit/piezas/flechas.js",
        "/nucleo/kit/piezas/ejes.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 1
      }
     },
     {
@@ -2298,7 +2301,8 @@
        "/nucleo/kit/piezas/ejes.js",
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
-      "ideas": 5
+      "ideas": 5,
+      "terminos": 1
      }
     },
     {
@@ -2336,7 +2340,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 1
+      "terminos": 5
      }
     },
     {
@@ -2370,7 +2374,8 @@
        "/nucleo/kit/piezas/ejes.js",
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 2
      }
     },
     {
