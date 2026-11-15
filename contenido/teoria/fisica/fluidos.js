@@ -111,13 +111,13 @@
         { estado: { corte: 1 }, texto: 'Sobre cada m² del punto hay una columna de agua de 0,5 m.', ecuacion: [h, ' = 0,5 m'] },
         { estado: { corte: 2 }, texto: 'Esa columna pesa ρ·g·h por cada m²: masa = densidad × volumen.', ecuacion: ['m = ρ · V = 1000 · 0,5 = 500 kg por m²'] },
         { estado: { corte: 3 }, texto: 'Presión es fuerza entre área: 5000 N sobre 1 m².', ecuacion: [p, ' = ', { frac: [F, 'A'] }, ' = ρ g ', h, ' = 5000 Pa = 5 kPa'] },
-        { estado: { corte: 3 }, texto: 'Encima del agua está el aire, que también aprieta.', ecuacion: [p, ' = ', p0, ' + ρ g ', h] },
+        { estado: { corte: 3 }, texto: 'Encima del agua está el aire, otro fluido, que también aprieta.', ecuacion: [p, ' = ', p0, ' + ρ g ', h] },
       ],
     },
     regla: {
-      texto: 'En un líquido en reposo, la presión crece con la profundidad: p = p₀ + ρgh. Puntos a la misma profundidad tienen la misma presión, sea cual sea la forma del recipiente.',
+      texto: 'En un líquido en reposo, la presión hidrostática ρgh crece con la profundidad. Puntos a la misma profundidad tienen la misma presión, sea cual sea la forma del recipiente.',
       ecuacion: [p, ' = ', { llave: [p0], nota: 'la del aire', color: 'c-i' }, ' + ', { llave: ['ρ g ', h], nota: 'la del líquido', color: 'c-d' }, '   ·   ', p, ' = ', { frac: [F, 'A'] }, '   ·   ', 'ρ = ', { frac: ['m', 'V'] }],
-      condicion: 'líquido homogéneo y quieto; h, en vertical desde la superficie. p₀ es la del aire: unos 100 kPa en Lima.',
+      condicion: 'líquido homogéneo y quieto; h, en vertical desde la superficie. p₀ es la presión atmosférica: unos 100 kPa en Lima.',
     },
     ahoraTu: {
       pieza: 'fis-vasos',
@@ -213,7 +213,7 @@
       ],
     },
     regla: {
-      texto: 'En un líquido quieto y conectado, los puntos a la misma altura tienen la misma presión. Por eso las columnas se equilibran: la más densa queda más baja.',
+      texto: 'En vasos comunicantes con líquido quieto, los puntos a igual altura tienen igual presión. Así miden el manómetro y el barómetro: la columna más densa queda más baja.',
       ecuacion: [{ sub: ['ρ', '1'] }, { sub: [h, '1'] }, ' = ', { sub: ['ρ', '2'] }, { sub: [h, '2'] }, '   ·   ', p0, ' = ', { llave: [{ sub: ['ρ', 'Hg'] }, ' g ', h], nota: 'columna de mercurio', color: 'c-d' }],
       condicion: 'los dos puntos están en el mismo líquido, sin otro líquido entre ellos, y las ramas están abiertas al mismo aire.',
     },
@@ -307,7 +307,7 @@
       ],
     },
     regla: {
-      texto: 'Un cambio de presión en un líquido encerrado llega igual a todos sus puntos. En la prensa, la fuerza crece con el área y el recorrido baja igual.',
+      texto: 'Principio de Pascal: un cambio de presión en un líquido encerrado llega igual a todos sus puntos. En la prensa, la fuerza crece con el área.',
       ecuacion: [{ frac: [{ sub: [F, '1'] }, { sub: ['A', '1'] }] }, ' = ', { frac: [{ sub: [F, '2'] }, { sub: ['A', '2'] }] }, '   ·   ', { llave: [{ sub: ['A', '1'] }, { sub: ['d', '1'] }], nota: 'volumen que baja' }, ' = ', { llave: [{ sub: ['A', '2'] }, { sub: ['d', '2'] }], nota: 'volumen que sube' }],
       condicion: 'líquido encerrado que no se comprime, émbolos a la misma altura y sin rozamiento.',
     },
@@ -368,7 +368,7 @@
     temas: ['Principio de Arquímedes'],
     pieza: 'fis-vasos',
     juega: {
-      consigna: 'Pon un bloque de 1 litro en el líquido. Cambia su material y el líquido, y compara el empuje E con el peso W.',
+      consigna: 'Pon un bloque de 1 litro en el líquido. Cambia su material y el líquido, y compara el empuje hidrostático E con el peso W.',
       voz: 'Fíjate qué parte del bloque queda bajo la superficie.',
       controles: [
         { id: 'rb', etiqueta: 'Bloque', opciones: [{ valor: 250, texto: 'corcho' }, { valor: 600, texto: 'madera' }, { valor: 900, texto: 'hielo' }, { valor: 2700, texto: 'aluminio' }], inicio: 600 },
@@ -401,7 +401,7 @@
       ],
     },
     regla: {
-      texto: 'Un líquido empuja hacia arriba a lo que tiene dentro con una fuerza igual al peso del líquido desalojado. Si el cuerpo flota, el empuje iguala su peso.',
+      texto: 'Principio de Arquímedes: lo que está en un líquido recibe hacia arriba un empuje hidrostático igual al peso del líquido desalojado. Si flota, el empuje iguala su peso.',
       ecuacion: [E, ' = ', { sub: ['ρ', 'líquido'] }, ' g ', { llave: [{ sub: ['V', 'sumergido'] }], nota: 'solo lo hundido' }, '   ·   ', 'flota: ', E, ' = W'],
       condicion: 'V es solo el volumen bajo la superficie. Flota si su densidad media es menor que la del líquido.',
     },
@@ -568,7 +568,7 @@
       ],
     },
     regla: {
-      texto: 'El caudal se conserva: donde el tubo es angosto, el líquido va más rápido. Y a lo largo de la corriente, donde va más rápido, la presión es menor.',
+      texto: 'Ecuación de continuidad: el caudal se conserva; donde el tubo es angosto, el líquido va más rápido. Principio de Bernoulli: donde va más rápido, la presión es menor.',
       ecuacion: [{ llave: [{ sub: ['A', '1'] }, { sub: [v, '1'] }], nota: 'el caudal' }, ' = ', { sub: ['A', '2'] }, { sub: [v, '2'] }, '   ·   ', p, ' + ', { llave: ['½ρ', { sup: [v, '2'] }], nota: 'por ir rápido', color: 'c-o' }, ' + ρg', h, ' = constante'],
       condicion: 'flujo estacionario, incompresible y sin viscosidad, siguiendo una misma línea de corriente. g = 10 m/s².',
     },
@@ -601,11 +601,51 @@
     },
   };
 
+  // Para los retos: las mismas cuentas que leen las mesas. `guardado` dice si el caso actual ya se guardó.
+  const presionTotal = val => CIUDAD[val.c].p + val.rho * G * val.h / 1000;   // kPa
+  const fuerza2 = val => val.F1 * val.k;
+  const guardado = (val, gs, claves) => gs.some(g => claves.every(c => g[c] === val[c]));
+
   return {
     unidad: 'fisica.fluidos',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-vasos.js', '/nucleo/kit/piezas/ejes.js'],
+    // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. «Empuje» a secas no se
+    // define (en estática es el de la mano): va «empuje hidrostático». Pascal, Arquímedes y Bernoulli solo dentro del
+    // nombre del principio, para no marcar a las personas.
+    glosario: [
+      { termino: 'fluido', def: 'Sustancia que fluye y toma la forma de su recipiente: un líquido o un gas.',
+        ver: ['presión'] },
+      { termino: 'densidad', simbolo: 'ρ', medida: 'kg/m³', def: 'Masa que hay en cada unidad de volumen de una sustancia: masa entre volumen.',
+        ejemplo: '1 m³ de agua tiene 1000 kg: ρ = 1000 kg/m³.', ver: ['empuje hidrostático'] },
+      { termino: 'presión', simbolo: 'p', medida: 'Pa', def: 'Fuerza perpendicular repartida sobre cada unidad de área: fuerza entre área.',
+        ejemplo: '5000 N sobre 1 m²: p = 5000 Pa = 5 kPa.', ver: ['presión hidrostática', 'presión atmosférica'] },
+      { termino: 'presión hidrostática', medida: 'Pa', def: 'La que hace un líquido quieto por el peso de lo que tiene encima: ρgh.',
+        ejemplo: 'A 0,5 m bajo el agua: 1000 · 10 · 0,5 = 5000 Pa.', ver: ['presión'] },
+      { termino: 'presión atmosférica', simbolo: 'p₀', medida: 'kPa', def: 'La que hace el aire sobre todo lo que toca, por el peso del aire de encima.',
+        ejemplo: 'Unos 101 kPa en Lima y unos 64 kPa en Juliaca.', ver: ['barómetro'] },
+      { termino: 'vasos comunicantes', def: 'Recipientes unidos por abajo; con un mismo líquido quieto, su nivel queda a la misma altura.',
+        ver: ['manómetro'] },
+      { termino: 'manómetro', def: 'Aparato que mide una presión comparándola con una columna de líquido, como un tubo en U.',
+        ver: ['vasos comunicantes', 'barómetro'] },
+      { termino: 'barómetro', def: 'Aparato que mide la presión atmosférica; el de mercurio usa la altura de una columna.',
+        ejemplo: 'En Lima, la columna de mercurio mide unos 76 cm.', ver: ['presión atmosférica'] },
+      { termino: 'principio de Pascal', def: 'Un cambio de presión en un líquido encerrado llega igual a todos sus puntos.',
+        ejemplo: '20 N en un émbolo; en otro de área 5 veces mayor, salen 100 N.', ver: ['presión'] },
+      { termino: 'principio de Arquímedes', def: 'Todo cuerpo dentro de un líquido recibe una fuerza hacia arriba igual al peso del líquido que desaloja.',
+        ver: ['empuje hidrostático'] },
+      { termino: 'empuje hidrostático', simbolo: 'E', medida: 'N', def: 'Fuerza hacia arriba que hace un líquido sobre lo que está dentro de él.',
+        ejemplo: 'Madera de 1 litro flotando en agua: E = W = 6 N.', ver: ['principio de Arquímedes', 'densidad'] },
+      { termino: 'tensión superficial', simbolo: 'γ', medida: 'N/m', def: 'Tirón de la superficie de un líquido, como una piel, por cada metro de borde.',
+        ejemplo: 'Agua: γ ≈ 0,073 N/m; el jabón la baja.' },
+      { termino: 'caudal', simbolo: 'Q', medida: 'm³/s', def: 'Volumen de fluido que pasa por una sección del tubo en cada segundo: área por rapidez.',
+        ejemplo: 'Tubo de 0,01 m² con agua a 2 m/s: Q = 0,02 m³/s.', ver: ['ecuación de continuidad'] },
+      { termino: 'ecuación de continuidad', def: 'En un tubo lleno, pasa el mismo caudal por todas partes: A₁v₁ = A₂v₂.',
+        ejemplo: 'Con la mitad del área, el agua va al doble de rapidez.', ver: ['caudal'] },
+      { termino: 'principio de Bernoulli', formas: ['principio de Bernoulli', 'ecuación de Bernoulli'], def: 'A lo largo de una corriente, donde el fluido va más rápido, su presión es menor.',
+        ejemplo: 'Agua que pasa de 1 a 2 m/s a la misma altura: la presión baja 1500 Pa.', ver: ['ecuación de continuidad'] },
+    ],
     laboratorio: [
       {
         // Más rica que la idea 1: suma la presión del aire de la ciudad y deja probar el mercurio.
@@ -617,8 +657,23 @@
           { id: 'c', etiqueta: 'Ciudad', opciones: [{ valor: 1, texto: 'Lima' }, { valor: 2, texto: 'Arequipa' }, { valor: 3, texto: 'Juliaca' }], inicio: 1 },
         ],
         dibujo: val => ({ datos: tresVasos(val.h, val.rho), estado: {} }),
-        lectura: val => [`${LIQ[val.rho]}, `, h, ` = ${f(val.h, 1)}\u00a0m en ${CIUDAD[val.c].n}: `, p, ` = ${f(CIUDAD[val.c].p + val.rho * G * val.h / 1000, 1)}\u00a0kPa`],
+        lectura: val => [`${LIQ[val.rho]}, `, h, ` = ${f(val.h, 1)}\u00a0m en ${CIUDAD[val.c].n}: `, p, ` = ${f(presionTotal(val), 1)}\u00a0kPa`],
         arrastres: [arrastreProfundidad(val => tresVasos(val.h, val.rho))],
+        invitaciones: [
+          { texto: 'Guarda el mismo punto del mismo l\u00edquido en Lima y en Juliaca.',
+            logrado: (val, guardados) => guardado(val, guardados, ['h', 'rho', 'c'])
+              && guardados.some(g => g.h === val.h && g.rho === val.rho && g.c * val.c === 3),
+            bien: 'El l\u00edquido aprieta igual; la diferencia la pone el aire de cada ciudad.' },
+          { texto: 'Haz que el l\u00edquido apriete m\u00e1s que todo el aire de encima.',
+            logrado: val => val.rho * G * val.h / 1000 > CIUDAD[val.c].p,
+            bien: 'Con mercurio, menos de un metro pesa m\u00e1s que toda esa atm\u00f3sfera.' },
+          { texto: 'Busca la presi\u00f3n total m\u00e1s baja que puedes conseguir.',
+            logrado: val => presionTotal(val) <= presionTotal({ h: 0.1, rho: 800, c: 3 }) + 1e-9,
+            bien: 'Poco l\u00edquido, liviano, y una ciudad alta con menos aire encima.' },
+          { texto: 'En Lima, haz que la presi\u00f3n total llegue justo a 109 kPa.',
+            logrado: val => val.c === 1 && Math.abs(presionTotal(val) - 109) < 1e-9,
+            bien: 'El agua puso 8 kPa: \u03c1gh, sin importar la forma del vaso.' },
+        ],
       },
       {
         // El caso que la idea 4 no deja probar: cualquier densidad, y un metal que flota en mercurio.
@@ -641,8 +696,35 @@
             return { rb: Math.min(1, frac) * val.rl };
           },
         }],
+        invitaciones: [
+          { texto: 'Haz que el bloque flote con justo la mitad hundida.',
+            logrado: val => { const q = flota(val.rb, val.rl); return !q.hunde && Math.abs(q.frac - 0.5) < 1e-9; },
+            bien: 'Mitad hundida: el bloque tiene la mitad de la densidad del líquido.' },
+          { texto: 'Haz flotar un bloque de 2700 kg/m³, como el aluminio.',
+            logrado: val => val.rb === 2700 && !flota(val.rb, val.rl).hunde,
+            bien: 'Flota en mercurio: lo que decide es comparar densidades, no si es metal.' },
+          { texto: 'Busca el bloque más denso que todavía flota en agua.',
+            logrado: val => val.rl === 1000 && !flota(val.rb, 1000).hunde && flota(val.rb + 100, 1000).hunde,
+            bien: 'Con la misma densidad del agua queda entero adentro, sin hundirse.' },
+          { texto: 'Guarda el mismo bloque flotando en agua y en salmuera.',
+            logrado: (val, guardados) => !flota(val.rb, val.rl).hunde && guardado(val, guardados, ['rb', 'rl'])
+              && guardados.some(g => g.rb === val.rb && g.rl !== val.rl && [g.rl, val.rl].sort().join() === '1000,1200' && !flota(g.rb, g.rl).hunde),
+            bien: 'En salmuera, más densa, basta hundir menos para igualar el peso.' },
+        ],
       },
-      Object.assign({ id: 'prensa', titulo: 'La prensa hidráulica', pieza: 'fis-vasos' }, pascal.juega),
+      Object.assign({ id: 'prensa', titulo: 'La prensa hidráulica', pieza: 'fis-vasos',
+        invitaciones: [
+          { texto: 'Levanta justo 120 N con el émbolo grande.',
+            logrado: val => Math.abs(fuerza2(val) - 120) < 1e-9,
+            bien: 'Hay dos maneras: más fuerza abajo o un émbolo grande más ancho.' },
+          { texto: 'Con la menor fuerza posible, levanta 100 N o más.',
+            logrado: val => fuerza2(val) >= 100 && fuerza2({ F1: val.F1 - 10, k: 5 }) < 100,
+            bien: 'Con 20 N alcanzó: el área cinco veces mayor multiplicó la fuerza.' },
+          { texto: 'Guarda dos prensas que levanten lo mismo con distinta fuerza.',
+            logrado: (val, guardados) => guardado(val, guardados, ['F1', 'k'])
+              && guardados.some(g => g.F1 !== val.F1 && Math.abs(fuerza2(g) - fuerza2(val)) < 1e-9),
+            bien: 'Menos fuerza pidió más área: la presión es la misma en los dos émbolos.' },
+        ] }, pascal.juega),
     ],
     historia: {
       texto: 'En 1644, Torricelli describió una columna de mercurio sostenida en un tubo invertido y la explicó por el peso del aire de afuera. En 1648, Pascal hizo comparar un barómetro al pie y en la cima de una montaña: arriba, la columna era más baja. La presión del aire se volvió algo que se mide.',
