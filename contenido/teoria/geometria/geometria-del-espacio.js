@@ -756,11 +756,53 @@
     ],
   };
 
+  // ---------- La varilla y el diedro (laboratorio 3D, ronda 4: exploración libre, sin predicciones) ----------
+  // Sombra, altura, PH y el pie H los calcula nucleo/solidos3d.js (varilla, diedro) a través de la pieza geo-espacio-3d:
+  // los retos miden lo mismo que se dibuja (regla 1).
+  const S3 = () => (typeof module === 'object' && module.exports ? require('../../../nucleo/solidos3d.js') : self.Solidos3D);
+  const var3 = v => S3().varilla(v.a, v.L, 30), die3 = v => S3().diedro(v.phi, v.p);
+  const mesaEspacio3d = {
+    id: 'varilla-diedro-3d', titulo: 'La varilla y el diedro', pieza: 'geo-espacio-3d',
+    consigna: 'Gira la escena con el dedo. Levanta la varilla y mira su sombra; después abre el diedro y sigue el pie de P.',
+    controles: [
+      { id: 'modo', etiqueta: 'Escena', opciones: [{ valor: 'varilla', texto: 'varilla y sombra' }, { valor: 'diedro', texto: 'diedro' }] },
+      { id: 'a', etiqueta: 'ángulo de la varilla', color: 'c-h', min: 0, max: 90, paso: 5, inicio: 30, unidad: '°', decimales: 0 },
+      { id: 'L', etiqueta: 'largo de la varilla', color: 'c-o', min: 1, max: 3, paso: 0.5, inicio: 2, decimales: 1 },
+      { id: 'phi', etiqueta: 'abertura del diedro', color: 'c-h', min: 15, max: 165, paso: 15, inicio: 60, unidad: '°', decimales: 0 },
+      { id: 'p', etiqueta: 'P a la arista', color: 'c-o', min: 1, max: 2.5, paso: 0.5, inicio: 2, decimales: 1 },
+    ],
+    dibujo: v => ({ datos: v.modo === 'diedro' ? { modo: 'diedro', phi: v.phi, p: v.p } : { modo: 'varilla', a: v.a, L: v.L }, estado: {} }),
+    lectura: v => (v.modo === 'diedro'
+      ? [{ v: 'c-h', t: `diedro ${f(v.phi, 0)}°` }, SEP, { v: 'c-i', t: `PH = ${f(die3(v).PH)}` }, SEP, die3(v).dentro ? 'H en la cara' : 'H fuera de la cara']
+      : [{ v: 'c-d', t: `sombra ${f(var3(v).sombra)}` }, SEP, { v: 'c-i', t: `altura ${f(var3(v).altura)}` }, SEP, { v: 'c-h', t: `${f(v.a, 0)}°` }]),
+    invitaciones: [
+      { texto: 'Haz que la sombra mida justo la mitad de la varilla.',
+        logrado: v => v.modo === 'varilla' && Math.abs(var3(v).sombra - v.L / 2) < 1e-9,
+        bien: 'Con 60° pasa aquí. ¿Y con otro largo? Pruébalo: depende solo del ángulo.',
+        pista: 'Levanta la varilla: cuanto más parada, más corta la sombra.' },
+      { texto: 'Deja la varilla con la sombra y la altura iguales.',
+        logrado: v => v.modo === 'varilla' && v.a > 0 && Math.abs(var3(v).sombra - var3(v).altura) < 1e-9,
+        bien: 'A 45°, sombra igual a altura. Mídelo en el triángulo, no en el dibujo.',
+        pista: 'Mira cuándo el triángulo A, H, B tiene dos catetos iguales.' },
+      { texto: 'Levanta la varilla hasta que su sombra sea solo un punto.',
+        logrado: v => v.modo === 'varilla' && var3(v).sombra < 1e-9,
+        bien: 'Perpendicular al plano: su proyección ortogonal es su pie, un punto.' },
+      { texto: 'Abre el diedro hasta que el pie H caiga fuera de la cara del piso.',
+        logrado: v => v.modo === 'diedro' && !die3(v).dentro,
+        bien: 'Diedro obtuso: H cae en la prolongación del piso. PH sigue siendo la distancia.',
+        pista: 'Pasa de 90°: la cara verde se inclina hacia atrás.' },
+      { texto: 'Guarda dos diedros distintos en que P quede a la misma distancia PH.',
+        logrado: (v, guardados) => v.modo === 'diedro' && guardados.some(g => g.modo === 'diedro' && g.phi !== v.phi
+          && Math.abs(die3(g).PH - die3(v).PH) < 1e-9),
+        bien: 'Mismo PH con otra abertura: PH no basta para saber el diedro.' },
+    ],
+  };
+
   return {
     unidad: 'geometria.geometria-del-espacio',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/geo-figura.js'],
+    requiere: ['/nucleo/kit/piezas/geo-figura.js', '/nucleo/solidos3d.js', '/nucleo/kit/piezas/geo-espacio-3d.js'],
     historia: {
       texto: 'Un dibujo en perspectiva deforma ángulos y longitudes. En 1799, Gaspard Monge publicó un método para representar un objeto con dos proyecciones ortogonales sobre planos perpendiculares: la planta y el alzado. Con ellas, ingenieros y canteros podían medir en el papel las longitudes y los ángulos reales de una pieza antes de cortarla.',
       pregunta: '¿Por qué el ángulo que ves dibujado no siempre es el real?',
@@ -799,7 +841,7 @@
       { termino: 'alzado', def: 'Vista de un objeto de frente, proyectada a 90° sobre un plano vertical.', ver: ['planta'] },
     ],
     // Laboratorio: las tres mesas son más ricas que sus ideas (rango completo, caso límite y un control más).
-    laboratorio: [mesaSombra, mesaTres, mesaDiedro],
+    laboratorio: [mesaEspacio3d, mesaSombra, mesaTres, mesaDiedro],
     ideas: [perpIdea, proyIdea, tresIdea, diedroIdea, cruzIdea, trIdea],
   };
 });

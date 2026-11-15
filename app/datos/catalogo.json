@@ -3688,7 +3688,9 @@
      "teoria": {
       "archivo": "/contenido/teoria/geometria/geometria-del-espacio.js",
       "requiere": [
-       "/nucleo/kit/piezas/geo-figura.js"
+       "/nucleo/kit/piezas/geo-figura.js",
+       "/nucleo/solidos3d.js",
+       "/nucleo/kit/piezas/geo-espacio-3d.js"
       ],
       "ideas": 6,
       "terminos": 41
