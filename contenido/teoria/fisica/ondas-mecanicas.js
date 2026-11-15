@@ -71,9 +71,12 @@
     temas: ['Ondas transversales y longitudinales'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Una onda recorre una cuerda hacia la derecha. Avanza el reloj y sigue a la vez la cresta y el punto P de la cuerda.',
+      // Animación (15 nov): el reloj corre solo, en cámara lenta (un período de 1 s dura 4 s en pantalla). Cada cuadro es
+      // la misma función de onda y = A sen(2π(x − vt)/λ); al dar la vuelta (t = 1 s = T) la forma es la misma.
+      consigna: 'Una onda recorre la cuerda hacia la derecha, en cámara lenta. Sigue a la vez la cresta y el punto P: ¿cuánto avanza cada uno?',
       voz: 'Compara cuánto avanza la cresta y cuánto avanza P.',
-      controles: [{ id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 1, paso: 0.125, inicio: 0, unidad: 's', decimales: 3 }],
+      controles: [{ id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 1, paso: 0.125, inicio: 0, unidad: 's', decimales: 3,
+        auto: { velocidad: 0.25, modo: 'repite' } }],
       dibujo: val => ({ datos: cuerda(val.t), estado: {} }),
       lectura: val => ['Cresta: x = ', f(crestaEn(val.t), 2), ' m · P: ', y, ` = ${f(onda(val.t)(XP), 1)} cm`],
       minimo: 3,
@@ -144,24 +147,45 @@
   // Cambia: la frecuencia con que se agita la cuerda · Permanece: la cuerda, que decide v = 2 m/s ·
   // Progresa: λ, que se acorta · Se reserva: leer v, λ y f desde la ecuación y = A sen(kx − ωt) ·
   // Debe verse: en un mismo medio, más frecuencia da crestas más juntas, no una onda más rápida.
-  const agita = fq => { const L = V1 / fq; return ejeYx({ curvas: [{ puntos: muestras(xx => A1 * Math.sin(2 * PI * xx / L), 0, 4, 161), color: 'i' }], puntos: [{ x: L / 4, y: A1, color: 'd', rotulo: '' }, { x: L / 4 + L, y: A1, color: 'd', rotulo: `λ = ${f(L, 2)} m` }] }); };
+  // Animación (15 nov): la onda corre sola en cámara lenta (4 veces), y = A sen(2π(x/λ − f t)). Los puntos verdes van
+  // sobre dos crestas seguidas (están a λ); P, en x = 1,5 m, solo sube y baja. t llega a 2 s: con f múltiplo de 0,5 Hz
+  // la onda vuelve a su forma inicial y la vuelta no salta.
+  // Crestas en x = λ(1/4 + f t − k): la primera dentro de la cuerda es la de k = ⌊1/4 + f t⌋.
+  const kPrimera = (fq, tt) => Math.floor(0.25 + fq * tt + 1e-9);
+  const primeraCresta = (vv, fq, tt) => (vv / fq) * (0.25 + fq * tt - kPrimera(fq, tt));
+  // Arrastrar la primera cresta (con el reloj quieto) fija f: la misma cresta pasa por el dedo. Despeja f de
+  // px = v t + (v/f)(1/4 − k); si el dedo sale de esa rama, f queda en el extremo del rango.
+  const fDeCresta = (px, vv, fq, tt, fmin, fmax) => {
+    const k = kPrimera(fq, tt), q = vv * (0.25 - k) / (px - vv * tt);
+    return Number.isFinite(q) && q > 0 ? Math.min(fmax, Math.max(fmin, q)) : (k === 0 ? fmax : fmin);
+  };
+  const ondaF = (fq, tt) => xx => A1 * Math.sin(2 * PI * (xx * fq / V1 - fq * tt));
+  const agita = (fq, tt = 0) => {
+    const L = V1 / fq, x1 = primeraCresta(V1, fq, tt), cr = [x1, x1 + L].filter(c => c <= 4 + 1e-9);
+    return ejeYx({ curvas: [{ puntos: muestras(ondaF(fq, tt), 0, 4, 161), color: 'i' }],
+      puntos: [...cr.map((c, k) => ({ x: c, y: A1, color: 'd', rotulo: k === cr.length - 1 ? `λ = ${f(L, 2)} m` : '' })),
+        { x: XP, y: ondaF(fq, tt)(XP), color: 'i', rotulo: 'P', guias: true }] });
+  };
   const funcion = {
     id: 'funcion-de-onda',
     titulo: 'v = λf: el medio manda',
     temas: ['Función de onda'],
     pieza: 'ejes',
     juega: {
-      consigna: 'En la misma cuerda, la onda viaja a 2 m/s. Agita su extremo con distinta frecuencia y mira la distancia entre crestas.',
+      consigna: 'Esta cuerda lleva la onda a 2 m/s, en cámara lenta. Cambia la frecuencia y mira cuánto se separan las crestas.',
       voz: 'Mira qué cambia en la cuerda cuando agitas más rápido.',
-      controles: [{ id: 'f', etiqueta: 'f', color: 'c-h', min: 0.5, max: 4, paso: 0.5, inicio: 1, unidad: 'Hz', decimales: 1 }],
-      dibujo: val => ({ datos: agita(val.f), estado: {} }),
-      lectura: val => [lam, ` = `, v, `/`, fr, ` = 2/${f(val.f, 1)} = ${f(V1 / val.f, 2)} m`],
+      controles: [
+        { id: 'f', etiqueta: 'f', color: 'c-h', min: 0.5, max: 4, paso: 0.5, inicio: 1, unidad: 'Hz', decimales: 1 },
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 2, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 0.25, modo: 'repite' } },
+      ],
+      dibujo: val => ({ datos: agita(val.f, val.t), estado: {} }),
+      lectura: val => [lam, ` = `, v, `/`, fr, ` = 2/${f(val.f, 1)} = ${f(V1 / val.f, 2)} m · P: `, y, ` = ${f(ondaF(val.f, val.t)(XP), 1)} cm`],
       minimo: 3,
-      // Arrastra la primera cresta: está a λ/4 del extremo; como v = 2 m/s no cambia, eso fija f = v/λ.
+      // Arrastra la primera cresta: detiene el reloj y, como v = 2 m/s no cambia, su lugar fija λ y con él f = v/λ.
       arrastres: [
         { id: 'primera-cresta', etiqueta: 'primera cresta', color: 'c-h',
-          donde: val => enEjes(agita(val.f), V1 / val.f / 4, A1),
-          mover: (pt, val) => ({ f: V1 / (4 * Math.max(0.05, EJ().geometria(agita(val.f)).Xi(pt.x))) }) },
+          donde: val => enEjes(agita(val.f, val.t), primeraCresta(V1, val.f, val.t), A1),
+          mover: (pt, val) => ({ t: val.t, f: fDeCresta(EJ().geometria(agita(val.f, val.t)).Xi(pt.x), V1, val.f, val.t, 0.5, 4) }) },
       ],
     },
     predice: {
@@ -229,27 +253,45 @@
     y: { min: 0, max: 100, paso: 20, nombre: 'v', unidad: 'm/s', decimales: 0, color: 'o' },
     curvas: [{ puntos: muestras(T => velC(T, mu), 0, 100, 51), color: 'o', rotulo: mu === 0.01 ? 'delgada' : 'gruesa', en: [70, velC(70, mu) + 8] }],
   }, extra);
-  const vtJuego = val => ejeVT(val.mu, { puntos: [{ x: val.T, y: velC(val.T, val.mu), color: 'o', rotulo: `${f(velC(val.T, val.mu), 1)} m/s`, guias: true }] });
+  // Animación (15 nov): dos pulsos salen juntos de x = 5 m, uno por cada cuerda, con la misma tensión; cada uno avanza
+  // x = 5 + v t, con v = √(T/μ). Cámara lenta (4 veces): 1 s de pulso dura 4 s. El punto naranja es la meta de t = 1 s.
+  const X0P = 5, ANCHO_P = 4;
+  const pulso = x0 => xx => 2 * Math.exp(-(((xx - x0) / ANCHO_P) ** 2));
+  const posP = (T, mu, tt) => X0P + velC(T, mu) * tt;
+  const NOMBRE3 = mu => (mu === 0.01 ? 'delgada' : 'gruesa');
+  const carrera = val => {
+    const otro = val.mu === 0.01 ? 0.04 : 0.01, xa = posP(val.T, val.mu, val.t), xb = posP(val.T, otro, val.t);
+    return {
+      x: { min: 0, max: 100, paso: 20, nombre: 'x', unidad: 'm', decimales: 0 },
+      y: { min: -1, max: 3, paso: 1, nombre: 'y', unidad: 'cm', decimales: 0, color: 'i' },
+      curvas: [
+        { puntos: muestras(pulso(xb), 0, 100, 201), color: 'i', discontinua: true, rotulo: NOMBRE3(otro), en: [xb, -0.55] },
+        { puntos: muestras(pulso(xa), 0, 100, 201), color: 'i', rotulo: NOMBRE3(val.mu), en: [xa, 2.5] },
+      ],
+      puntos: [{ x: posP(val.T, val.mu, 1), y: 0, color: 'o', rotulo: 'en 1 s', abierto: true }],
+    };
+  };
   const rapidez = {
     id: 'rapidez-cuerda',
     titulo: 'Tensión y masa deciden v',
     temas: ['Rapidez de una onda en una cuerda'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Tensa una cuerda delgada (10 g/m) o una gruesa (40 g/m) y lee con qué rapidez corre un pulso por ella.',
+      consigna: 'Dos pulsos parten juntos, en cámara lenta: uno por la cuerda delgada (10 g/m), otro por la gruesa (40 g/m). Cambia la tensión.',
       voz: 'Mira cuánta tensión hace falta para duplicar la rapidez.',
       controles: [
         { id: 'T', etiqueta: 'tensión', min: 10, max: 90, paso: 10, inicio: 40, unidad: 'N', decimales: 0 },
         { id: 'mu', etiqueta: 'Cuerda', opciones: [{ valor: 0.01, texto: 'delgada' }, { valor: 0.04, texto: 'gruesa' }], inicio: 0.01 },
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 1, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 0.25, modo: 'repite' } },
       ],
-      dibujo: val => ({ datos: vtJuego(val), estado: {} }),
-      lectura: val => [v, ` = √(${f(val.T)}/${f(val.mu)}) = ${f(velC(val.T, val.mu), 1)} m/s`],
+      dibujo: val => ({ datos: carrera(val), estado: {} }),
+      lectura: val => [v, ` = √(${f(val.T)}/${f(val.mu)}) = ${f(velC(val.T, val.mu), 1)} m/s · x = ${f(posP(val.T, val.mu, val.t), 0)} m`],
       minimo: 3,
-      // Arrastra el punto por la curva: su lugar en el eje horizontal es la tensión.
+      // Arrastra la meta de 1 s de la cuerda elegida: más lejos pide más rapidez, y v = √(T/μ) da la tensión.
       arrastres: [
-        { id: 'tension', etiqueta: 'tensión de la cuerda', color: 'c-o',
-          donde: val => enEjes(vtJuego(val), val.T, velC(val.T, val.mu)),
-          mover: (pt, val) => ({ T: EJ().geometria(vtJuego(val)).Xi(pt.x) }) },
+        { id: 'tension', etiqueta: 'tensión de la cuerda: meta del pulso en 1 s', color: 'c-o',
+          donde: val => enEjes(carrera(val), posP(val.T, val.mu, 1), 0),
+          mover: (pt, val) => { const vv = Math.max(0, EJ().geometria(carrera(val)).Xi(pt.x) - X0P); return { T: val.mu * vv * vv }; } },
       ],
     },
     predice: {
@@ -317,17 +359,32 @@
       puntos: o.sinNodos ? [] : Array.from({ length: n + 1 }, (_, k) => ({ x: k * LC / n, y: 0, rotulo: k === 0 ? 'nodo' : undefined })),
     };
   };
+  // Animación (15 nov): y = 2A sen(kx) cos(ωt), con 2A = 2 cm y f = n v / 2L. En cámara lenta (200 veces): t va en
+  // milisegundos y 20 ms es un número entero de períodos para n = 1 a 4, así la vuelta no salta. La envolvente
+  // (las dos curvas punteadas) y los nodos no se mueven; la curva llena y el vientre sí.
+  const fModo = n => n * VC / (2 * LC);
+  const yModo = (n, tms) => xx => 2 * Math.sin(n * PI * xx / LC) * Math.cos(2 * PI * fModo(n) * tms / 1000);
+  const modoT = (n, tms) => {
+    const base = modo(n), yy = yModo(n, tms);
+    return Object.assign(base, {
+      curvas: [...base.curvas.map(c => Object.assign({}, c, { discontinua: true })), { puntos: muestras(yy, 0, LC), color: 'i' }],
+      puntos: [...base.puntos, { x: LC / (2 * n), y: yy(LC / (2 * n)), color: 'i', rotulo: 'vientre' }],
+    });
+  };
   const estacionarias = {
     id: 'ondas-estacionarias',
     titulo: 'Solo caben medias ondas',
     temas: ['Reflexión y ondas estacionarias'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Una cuerda de 1 m, fija en sus dos extremos, vibra. Las ondas se reflejan en los extremos y se superponen. Cambia el modo.',
+      consigna: 'Una cuerda de 1 m, fija en sus extremos, vibra en cámara lenta (200 veces). Las ondas reflejadas se superponen. Cambia el modo.',
       voz: 'Cuenta los nodos, los puntos que no se mueven.',
-      controles: [{ id: 'n', etiqueta: 'modo n', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 }],
-      dibujo: val => ({ datos: modo(val.n), estado: {} }),
-      lectura: val => [lam, ` = 2L/n = ${f(2 * LC / val.n, 2)} m · `, fr, ` = ${f(val.n * VC / (2 * LC))} Hz`],
+      controles: [
+        { id: 'n', etiqueta: 'modo n', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 },
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 20, paso: 0.25, inicio: 0, unidad: 'ms', decimales: 2, auto: { velocidad: 5, modo: 'repite' } },
+      ],
+      dibujo: val => ({ datos: modoT(val.n, val.t), estado: {} }),
+      lectura: val => [lam, ` = ${f(2 * LC / val.n, 2)} m · `, fr, ` = ${f(fModo(val.n))} Hz · vientre: `, y, ` = ${f(yModo(val.n, val.t)(LC / (2 * val.n)), 1)} cm`],
       minimo: 3,
     },
     predice: {
@@ -389,9 +446,10 @@
     temas: ['Energía transportada por una onda', 'Intensidad y nivel de intensidad sonora'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Un parlante emite sonido por igual en todas direcciones. Aléjate y mira cómo bajan la intensidad y el nivel en decibeles.',
+      // Animación (15 nov): no hay reloj; tu distancia r va y viene sola entre 1 y 10 m y el punto recorre la curva β–r.
+      consigna: 'Un parlante emite sonido por igual en todas direcciones. Tu distancia va y viene sola: mira cómo bajan la intensidad y los decibeles.',
       voz: 'Mira cuánto baja el nivel cada vez que la distancia se duplica.',
-      controles: [{ id: 'r', etiqueta: 'distancia', min: 1, max: 10, paso: 1, inicio: 1, unidad: 'm', decimales: 0 }],
+      controles: [{ id: 'r', etiqueta: 'distancia', min: 1, max: 10, paso: 1, inicio: 1, unidad: 'm', decimales: 0, auto: { velocidad: 2.25, modo: 'rebota' } }],
       dibujo: val => ({ datos: bJuego(val), estado: {} }),
       lectura: val => [`I = ${f(Ir(val.r) * 1e6, 2)} µW/m² · β = ${f(beta(Ir(val.r)), 1)} dB`],
       minimo: 3,
@@ -460,13 +518,21 @@
   // ---------- Laboratorio ----------
   // Cuerda de guitarra: la tensión y la cuerda fijan v (idea 3); la frecuencia, λ = v/f (idea 2). Juntas en una mesa.
   const MUS = [{ valor: 0.01, texto: 'delgada' }, { valor: 0.04, texto: 'gruesa' }];
+  // Animación (15 nov): la onda corre en cámara lenta (200 veces), y = A sen(2π(x/λ − f t)), con t en milisegundos; 40 ms
+  // es un número entero de períodos para f múltiplo de 25 Hz. P, en x = 1 m, sube y baja en su lugar.
+  const XG = 1;
+  const tG = val => (val.t || 0) / 1000;
+  const yG = val => xx => A1 * Math.sin(2 * PI * (xx * val.f / velC(val.T, val.mu) - val.f * tG(val)));
+  const crestaG = val => primeraCresta(velC(val.T, val.mu), val.f, tG(val));
   const guitarra = val => {
-    const vv = velC(val.T, val.mu), L = vv / val.f;
+    const L = velC(val.T, val.mu) / val.f, xc = crestaG(val), cr = [xc, xc + L].filter(c => c <= 2 + 1e-9);
     return {
       x: { min: 0, max: 2, paso: 0.5, nombre: 'x', unidad: 'm', decimales: 1 },
       y: { min: -3, max: 3, paso: 1, nombre: 'y', unidad: 'cm', decimales: 0, color: 'i' },
-      curvas: [{ puntos: muestras(xx => A1 * Math.sin(2 * PI * xx / L), 0, 2, 481), color: 'i' }],
-      puntos: [{ x: L / 4, y: A1, color: 'd', rotulo: `λ/4 = ${f(L / 4, 2)} m` }],
+      curvas: [{ puntos: muestras(yG(val), 0, 2, 481), color: 'i' }],
+      // Dos crestas seguidas en verde (están a λ); el rótulo va en la segunda, o en la única que cabe.
+      puntos: [...cr.map((c, k) => ({ x: c, y: A1, color: 'd', rotulo: k === cr.length - 1 ? `λ = ${f(L, 2)} m` : '' })),
+        { x: XG, y: yG(val)(XG), color: 'i', rotulo: 'P', guias: true }],
     };
   };
   // Cuerda fija en los dos extremos, de largo variable (el extremo derecho se arrastra), con v = 100 m/s.
@@ -547,18 +613,24 @@
     laboratorio: [
       {
         id: 'guitarra', titulo: 'Tensión, cuerda y frecuencia', pieza: 'ejes',
-        consigna: 'Tensa la cuerda, elige su grosor y su frecuencia. Arrastra la primera cresta. ¿Qué cambia λ sin cambiar v?',
+        consigna: 'La onda corre en cámara lenta (200 veces). Tensa la cuerda, elige su grosor y su frecuencia. ¿Qué cambia λ sin cambiar v?',
         controles: [
           { id: 'T', etiqueta: 'tensión', min: 10, max: 90, paso: 10, inicio: 40, unidad: 'N', decimales: 0 },
           { id: 'mu', etiqueta: 'Cuerda', opciones: MUS, inicio: 0.01 },
           { id: 'f', etiqueta: 'f', color: 'c-h', min: 25, max: 200, paso: 25, inicio: 50, unidad: 'Hz', decimales: 0 },
+          { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 40, paso: 0.5, inicio: 0, unidad: 'ms', decimales: 1, auto: { velocidad: 5, modo: 'repite' } },
         ],
         dibujo: val => ({ datos: guitarra(val), estado: {} }),
-        lectura: val => { const vv = velC(val.T, val.mu); return [`${f(val.T)} N y ${f(val.f)} Hz: `, v, ` = ${f(vv, 1)} m/s, `, lam, ` = ${f(lamG(val), 2)} m`]; },
+        lectura: val => [v, ` = ${f(velC(val.T, val.mu), 1)} m/s · `, lam, ` = ${f(lamG(val), 2)} m · P: `, y, ` = ${f(yG(val)(XG), 1)} cm`],
         arrastres: [
           { id: 'primera-cresta', etiqueta: 'primera cresta', color: 'c-h',
-            donde: val => enEjes(guitarra(val), velC(val.T, val.mu) / val.f / 4, A1),
-            mover: (pt, val) => ({ f: velC(val.T, val.mu) / (4 * Math.max(0.02, EJ().geometria(guitarra(val)).Xi(pt.x))) }) },
+            donde: val => enEjes(guitarra(val), Math.min(2, crestaG(val)), A1),
+            // Si la primera cresta todavía no entra en los 2 m, la manija espera en el borde: ahí no cambia nada.
+            mover: (pt, val) => {
+              const px = EJ().geometria(guitarra(val)).Xi(pt.x);
+              if (crestaG(val) > 2 && px >= 2 - 1e-6) return { t: val.t };
+              return { t: val.t, f: fDeCresta(px, velC(val.T, val.mu), val.f, tG(val), 25, 200) };
+            } },
         ],
         invitaciones: [
           { texto: 'Guarda dos casos con la misma rapidez y distinta longitud de onda.',
@@ -574,6 +646,10 @@
           { texto: 'Haz que en los 2 m de cuerda quepan seis crestas o más.',
             logrado: val => crestasG(val) >= 6,
             bien: 'Crestas apretadas, λ chica. ¿Lo lograste con f o con la cuerda?' },
+          { texto: 'Pausa la cuerda justo cuando P esté en lo más alto.',
+            logrado: val => yG(val)(XG) >= 0.95 * A1,
+            bien: 'P llegó arriba sin moverse de x = 1 m: sube y baja en su lugar.',
+            pista: 'Mira subir a P y pausa en la cresta; ajusta t con − y +.' },
         ],
       },
       {
