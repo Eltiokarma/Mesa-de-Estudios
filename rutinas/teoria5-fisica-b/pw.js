@@ -41,13 +41,13 @@ async function revisar(p, nombre, archivo, reducido) {
       const base = `http://localhost:${puerto}/app/#/unidad/${unidad}/teoria`;
       for (const idea of def.ideas) {
         await p.goto(`${base}/${idea.id}`); await espera(900);
-        const fig = await p.$('.te-fig'); if (fig) await fig.scrollIntoViewIfNeeded();
+        await p.evaluate(() => { const f = document.querySelector('.te-fig'); if (f) { f.scrollIntoView({ block: 'start' }); scrollBy(0, -40); } });
         console.log(await revisar(p, `${corto}/${idea.id}`, `${corto}-${idea.id}`, reducido));
       }
       const mesa = (def.laboratorio || [])[0];
       if (mesa) {
         await p.goto(`${base}/laboratorio`); await espera(1500);
-        const fig = await p.$('.te-fig'); if (fig) await fig.scrollIntoViewIfNeeded();
+        await p.evaluate(() => { const f = document.querySelector('.te-fig'); if (f) { f.scrollIntoView({ block: 'start' }); scrollBy(0, -40); } });
         console.log(await revisar(p, `${corto}/lab:${mesa.id}`, `${corto}-lab-${mesa.id}`, reducido));
       }
       if (errores.length) console.log('  ERRORES DE PÁGINA: ' + errores.join(' | '));

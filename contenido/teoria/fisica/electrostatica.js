@@ -81,20 +81,34 @@
     for (const p of partes) for (const k of ['discos', 'textos', 'segmentos']) o[k].push(...(p[k] || []));
     return o;
   };
+  // Animación (15 nov): una fila de abajo cuenta el contacto en el tiempo. Las esferas se acercan (0 a 1,5 s), se tocan
+  // (1,5 a 2,5 s: la carga ya se repartió, en un instante) y se separan (2,5 a 4 s). Arriba queda el «antes» de referencia.
+  const XA = 3.5, XB = 7.5, TOQUE = 0.75;   // al tocarse, los centros quedan a dos radios (1,5)
+  const acerca = tt => (tt < 1.5 ? tt / 1.5 : tt < 2.5 ? 1 : Math.max(0, (4 - tt) / 1.5));
+  const tocaron = tt => tt >= 1.5;
+  const filaViva = (a, b, tt) => {
+    const u = acerca(tt), d = (XB - XA) / 2 - TOQUE, xa = XA + d * u, xb = XB - d * u;
+    const qa = tocaron(tt) ? (a + b) / 2 : a, qb = tocaron(tt) ? (a + b) / 2 : b, y = FILAS[1];
+    return {
+      discos: [carga(xa, y, 0.75, qa, 'A'), carga(xb, y, 0.75, qb, 'B')],
+      textos: [textoQ(xa, y - 1.45, qa, ''), textoQ(xb, y - 1.45, qb, ''), { en: [-2.4, y - 0.2], texto: 'ahora', ancla: 'start', peso: 600 }],
+    };
+  };
   const contacto = {
     id: 'electrizacion',
     titulo: 'La carga se reparte',
     temas: ['Carga y electrización'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Dos esferas metálicas iguales, con mango aislante, se tocan y se separan. Elige sus cargas, en microcoulombs, y mira cómo quedan.',
+      consigna: 'Dos esferas metálicas iguales, con mango aislante, se tocan y se separan solas, en cámara lenta. Elige sus cargas, en microcoulombs, y mira cómo quedan.',
       voz: 'Suma las dos cargas de arriba y luego las de abajo.',
       controles: [
         { id: 'a', etiqueta: 'q de A', color: 'c-o', min: -6, max: 8, paso: 2, inicio: 6, unidad: 'μC', decimales: 0 },
         { id: 'b', etiqueta: 'q de B', color: 'c-o', min: -6, max: 8, paso: 2, inicio: -2, unidad: 'μC', decimales: 0 },
+        { id: 't', etiqueta: 't', color: 'c-d', min: 0, max: 4, paso: 0.5, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1.5 } },
       ],
-      dibujo: val => ({ datos: juntar(fila(FILAS[0], [val.a, val.b], 'antes'), fila(FILAS[1], [(val.a + val.b) / 2, (val.a + val.b) / 2], 'después')), estado: {} }),
-      lectura: val => [`Total antes: ${conSigno(val.a + val.b, 'μC')} · total después: ${conSigno(val.a + val.b, 'μC')}`],
+      dibujo: val => ({ datos: juntar(fila(FILAS[0], [val.a, val.b], 'antes'), filaViva(val.a, val.b, val.t)), estado: {} }),
+      lectura: val => { const qa = tocaron(val.t) ? (val.a + val.b) / 2 : val.a, qb = tocaron(val.t) ? (val.a + val.b) / 2 : val.b; return [`${val.t < 1.5 ? 'se acercan' : val.t <= 2.5 ? 'se tocan' : 'separadas'} · A: ${conSigno(qa, 'μC')} · B: ${conSigno(qb, 'μC')} · total: ${conSigno(qa + qb, 'μC')}`]; },
       minimo: 3,
     },
     predice: {
@@ -187,11 +201,11 @@
     temas: ['Ley de Coulomb'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Dos cargas iguales se empujan. Elige cuánta carga tiene cada una y a qué distancia están.',
+      consigna: 'Dos cargas iguales se empujan. La de la derecha se acerca y se aleja sola: mira el largo de las flechas. Cambia la carga.',
       voz: 'Duplica la distancia y mira cuánto se acortan las flechas.',
       controles: [
         { id: 'q', etiqueta: 'q', color: 'c-o', min: 2, max: 3, paso: 1, inicio: 2, unidad: 'μC', decimales: 0 },
-        { id: 'r', etiqueta: 'r', color: 'c-i', min: 3, max: 6, paso: 1, inicio: 3, unidad: 'cm', decimales: 0 },
+        { id: 'r', etiqueta: 'r', color: 'c-i', min: 3, max: 6, paso: 1, inicio: 3, unidad: 'cm', decimales: 0, auto: { velocidad: 1, modo: 'rebota' } },
       ],
       dibujo: val => ({ datos: lienzo2(par(val.q, val.q, val.r)), estado: {} }),
       lectura: val => [F, ` = ${f(fCoulomb(val.q, val.q, val.r), 1)} N sobre cada carga`],
@@ -310,10 +324,10 @@
     temas: ['Campo eléctrico y líneas de fuerza', 'Energía potencial y potencial eléctrico'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Dos cargas de 2 nC a 10 cm. Mueve P y cambia el signo de la segunda. Mira cómo se suman E₁ y E₂.',
+      consigna: 'Dos cargas de 2 nC a 10 cm. P va y viene solo: mira cómo se suman E₁ y E₂. Cambia el signo de una.',
       voz: 'Busca un punto donde las dos flechas se cancelen.',
       controles: [
-        { id: 'x', etiqueta: 'P en', min: 3, max: 7, paso: 1, inicio: 4, unidad: 'cm', decimales: 0 },
+        { id: 'x', etiqueta: 'P en', min: 3, max: 7, paso: 1, inicio: 4, unidad: 'cm', decimales: 0, auto: { velocidad: 1.5, modo: 'rebota' } },
         { id: 's', etiqueta: 'Segunda carga', opciones: [{ valor: 1, texto: 'Positiva' }, { valor: -1, texto: 'Negativa' }] },
       ],
       dibujo: val => ({ datos: campo(val.x, val.s, { valores: false }), estado: {} }),
@@ -391,7 +405,8 @@
   function placas(dv, dc, part, o = {}) {
     const Ev = ePlacas(dv, dc) / 1000;   // kV/m
     const sg = part === 'p' ? 1 : -1;    // el campo apunta de + (izquierda) a − (derecha)
-    const xp = part === 'p' ? 0.8 : dc - 0.8;
+    // o.vuelo (0 a 1): fracción del tiempo de cruce; con fuerza constante, lo recorrido crece con el cuadrado del tiempo.
+    const x0 = part === 'p' ? 0.8 : dc - 0.8, xp = o.vuelo === undefined ? x0 : x0 + sg * (dc - 1.6) * o.vuelo * o.vuelo;
     const eq = [0.25, 0.5, 0.75].map(k => k * dc);
     return {
       vista: VISTA4,
@@ -424,15 +439,17 @@
     temas: ['Carga en campo uniforme', 'Superficies equipotenciales y conductores', 'Energía potencial y potencial eléctrico'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Dos placas metálicas con un voltaje entre ellas. Cambia el voltaje, la separación y la partícula, y mira el campo y la fuerza.',
+      consigna: 'Dos placas con un voltaje entre ellas. La partícula cruza sola, en cámara lenta: mira su fuerza. Cambia el voltaje, la separación y la partícula.',
       voz: 'Compara las flechas de E en dos lugares distintos entre las placas.',
       controles: [
         { id: 'dv', etiqueta: 'ΔV', min: 100, max: 400, paso: 100, inicio: 200, unidad: 'V', decimales: 0 },
         { id: 'd', etiqueta: 'd', color: 'c-i', min: 2, max: 6, paso: 2, inicio: 4, unidad: 'cm', decimales: 0 },
         { id: 'p', etiqueta: 'Partícula', opciones: [{ valor: 'p', texto: 'Protón' }, { valor: 'e', texto: 'Electrón' }] },
+        { id: 'u', etiqueta: 'cruce', min: 0, max: 1, paso: 0.25, inicio: 0, decimales: 2, auto: { velocidad: 0.4 } },
       ],
-      dibujo: val => ({ datos: placas(val.dv, val.d, val.p), estado: {} }),
-      lectura: val => [E, ` = ${f(ePlacas(val.dv, val.d), 0)} V/m · `, F, ` = ${cien(QE * ePlacas(val.dv, val.d), 1)} N`],
+      dibujo: val => ({ datos: placas(val.dv, val.d, val.p, { vuelo: val.u }), estado: {} }),
+      // Mientras cruza: el campo (no cambia) y lo recorrido desde la placa de salida (crece con t²).
+      lectura: val => [E, ` = ${f(ePlacas(val.dv, val.d), 0)} V/m · `, F, ` = ${cien(QE * ePlacas(val.dv, val.d), 1)} N · `, `${f((val.d - 1.6) * val.u * val.u, 1)} cm`],
       minimo: 4,
       arrastres: [arrastrePlaca(val => placas(val.dv, val.d, val.p))],
     },
@@ -509,14 +526,15 @@
     temas: ['Condensadores en serie y en paralelo'],
     pieza: 'fis-circuito',
     juega: {
-      consigna: 'Dos condensadores, descargados, se conectan a una pila de 12 V. Elige cómo conectarlos y cuánto vale C₁. Mira la carga de cada uno.',
+      consigna: 'Dos condensadores descargados se conectan a una pila de 12 V. C₁ crece y se achica solo: mira la carga de cada uno.',
       voz: 'Compara la carga de los dos en serie y luego en paralelo.',
       controles: [
         { id: 'm', etiqueta: 'Conexión', opciones: [{ valor: 'serie', texto: 'En serie' }, { valor: 'paralelo', texto: 'En paralelo' }] },
-        { id: 'c1', etiqueta: 'C₁', min: 2, max: 6, paso: 1, inicio: 3, unidad: 'μF', decimales: 0 },
+        { id: 'c1', etiqueta: 'C₁', min: 2, max: 6, paso: 1, inicio: 3, unidad: 'μF', decimales: 0, auto: { velocidad: 1.5, modo: 'rebota' } },
       ],
-      dibujo: val => conectar(val.m, val.c1, C2),
-      lectura: val => [`Capacidad equivalente: ${f(ceqDe(val.m, val.c1, C2), 2)} μF`],
+      // Mientras corre, C₁ avanza de microfaradio en microfaradio (los rótulos no muestran decimales que nadie eligió).
+      dibujo: val => conectar(val.m, Math.round(val.c1), C2),
+      lectura: val => [`Capacidad equivalente: ${f(ceqDe(val.m, Math.round(val.c1), C2), 2)} μF`],
       minimo: 3,
     },
     predice: {
@@ -598,9 +616,9 @@
     temas: ['Energía de un condensador'],
     pieza: 'fis-cuentas',
     juega: {
-      consigna: 'Un condensador cargado sigue conectado a su pila. Separa sus placas y mira cuántas veces cambian C, Q, V y U.',
+      consigna: 'Un condensador cargado sigue conectado a su pila. Sus placas se separan y se juntan solas: mira cuántas veces cambian C, Q, V y U.',
       voz: 'Con la pila conectada, ¿qué barra no se mueve?',
-      controles: [{ id: 'k', etiqueta: 'Separación', min: 1, max: 3, paso: 1, inicio: 2, unidad: '× d', decimales: 0 }],
+      controles: [{ id: 'k', etiqueta: 'Separación', min: 1, max: 3, paso: 1, inicio: 2, unidad: '× d', decimales: 1, auto: { velocidad: 0.6, modo: 'rebota' } }],
       dibujo: val => ({ datos: barrasF('con', val.k), estado: {} }),
       lectura: val => ['U = ½ C V² → ', fmtF(1 / val.k), ' la energía inicial'],
       minimo: 2,
@@ -724,11 +742,11 @@
         // Lo que la idea 2 no deja probar: cargas distintas y de signo contrario (se atraen) y distancias de 2 a 8 cm.
         // Las flechas van a 0,3 px por newton (en el juego, 0,75) para que las fuerzas grandes quepan.
         id: 'coulomb-libre', titulo: 'Dos cargas cualesquiera', pieza: 'fis-lienzo',
-        consigna: 'Elige las dos cargas, también con signo distinto, y arrastra la de la derecha. Compara las dos flechas.',
+        consigna: 'La carga de la derecha se acerca y se aleja sola. Elige las dos cargas, también de signo distinto, y compara las dos flechas.',
         controles: [
           { id: 'q1', etiqueta: 'q₁', color: 'c-o', min: -4, max: 4, paso: 1, inicio: -2, unidad: 'μC', decimales: 0 },
           { id: 'q2', etiqueta: 'q₂', color: 'c-o', min: 1, max: 4, paso: 1, inicio: 4, unidad: 'μC', decimales: 0 },
-          { id: 'r', etiqueta: 'r', color: 'c-i', min: 2, max: 8, paso: 1, inicio: 4, unidad: 'cm', decimales: 0 },
+          { id: 'r', etiqueta: 'r', color: 'c-i', min: 2, max: 8, paso: 1, inicio: 4, unidad: 'cm', decimales: 0, auto: { velocidad: 1.5, modo: 'rebota' } },
         ],
         dibujo: val => ({ datos: parLibre(val), estado: {} }),
         lectura: val => { const Fv = fCoulomb(val.q1, val.q2, val.r); return [F, ` = ${f(Math.abs(Fv), 1)}\u00a0N en cada una`, Fv < 0 ? ': se atraen' : Fv > 0 ? ': se repelen' : '']; },
