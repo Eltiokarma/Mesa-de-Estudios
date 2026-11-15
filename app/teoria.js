@@ -820,7 +820,13 @@
           const el = z.querySelector(`[data-c="${c.id}"]`);
           if (!el) continue;
           if (c.opciones) el.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(String(vals[c.id]) === b.dataset.v)));
-          else { el.querySelector('input').value = vals[c.id]; el.querySelector('output').innerHTML = valorControl(c, vals[c.id]); }
+          else {
+            el.querySelector('input').value = vals[c.id];
+            // Solo el texto del número (nodeValue): cambiar los nodos dispararía el marcado del glosario en cada cuadro.
+            const out = el.querySelector('output'), txt = valorPlano(c, vals[c.id]);
+            if (out.childNodes.length === 1 && out.firstChild.nodeType === 3) { if (out.firstChild.nodeValue !== txt) out.firstChild.nodeValue = txt; }
+            else out.textContent = txt;
+          }
         }
       };
       // Manijas: un anillo visible de 18 px dentro de una zona de toque de 44 px, en coordenadas de la figura.
@@ -848,6 +854,7 @@
       };
       const aplicar = cambio => {
         let cambio_ = false;
+        if (anim && cambio && anim.id in cambio) anim.pausar();      // arrastrar lo animado lo detiene
         for (const [k, v] of Object.entries(cambio || {})) {
           const c = ctr.find(x => x.id === k); if (!c) continue;
           const nv = T.ajustar(c, v);
@@ -880,8 +887,46 @@
       f.addEventListener('pointerdown', abajo); f.addEventListener('pointermove', mueve);
       f.addEventListener('pointerup', arriba); f.addEventListener('pointercancel', arriba);
       f.addEventListener('touchstart', sinScroll, { passive: false });
+      // ---------- Animación (decisión de Gerson, 15 nov: física y química se mueven solas) ----------
+      // Un control con `auto: { velocidad, modo }` (el tiempo t, un ángulo que gira…) avanza solo apenas se abre la
+      // pantalla, sin apretar nada. La figura, la gráfica y los números de la lectura se mueven con él. Se pausa con su
+      // botón o al tomar ese control con el dedo; se duerme fuera de pantalla o con la app escondida; con movimiento
+      // reducido arranca pausado. Los cuadros de la animación no cuentan como casos probados ni como retos.
+      const auto = ctr.find(c => c.auto && !c.opciones);
+      let anim = null;
+      if (auto) {
+        const A = typeof auto.auto === 'object' ? auto.auto : {};
+        const rango = auto.max - auto.min, vel = A.velocidad || rango / 4, modo = A.modo || 'repite';
+        let corriendo = !reducido(), dir = 1, ultimo = 0, raf = 0, visible = true, pintado = 0;
+        const el = z.querySelector(`[data-c="${auto.id}"]`);
+        const btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'te-play';
+        el.appendChild(btn);
+        const rotulo = () => { btn.textContent = corriendo ? '⏸ Pausa' : '▶ Seguir'; btn.setAttribute('aria-pressed', String(!corriendo)); if (lec) lec.setAttribute('aria-live', corriendo ? 'off' : 'polite'); };
+        const cuadro = now => {
+          raf = 0;
+          if (!corriendo || !visible || document.hidden) { ultimo = 0; return; }
+          const dt = ultimo ? Math.min(0.1, (now - ultimo) / 1000) : 0; ultimo = now;
+          let v = vals[auto.id] + dir * vel * dt;
+          if (modo === 'rebota') { if (v > auto.max) { v = 2 * auto.max - v; dir = -1; } if (v < auto.min) { v = 2 * auto.min - v; dir = 1; } }
+          else if (v > auto.max) v = auto.min + (v - auto.max) % (rango || 1);
+          vals[auto.id] = Math.round(v * 1e5) / 1e5;
+          if (now - pintado > 33) { pintado = now; pintarJ(false); }        // ~30 cuadros por segundo: alcanza y ahorra
+          raf = requestAnimationFrame(cuadro);
+        };
+        const arrancar = () => { if (!raf && corriendo && visible && !document.hidden) raf = requestAnimationFrame(cuadro); };
+        const pausar = () => { corriendo = false; rotulo(); };
+        btn.onclick = () => { corriendo = !corriendo; rotulo(); arrancar(); };
+        const io = typeof IntersectionObserver === 'function' ? new IntersectionObserver(es => { visible = es.some(x => x.isIntersecting); arrancar(); }) : null;
+        if (io) io.observe(f);
+        const alVolver = () => arrancar();
+        document.addEventListener('visibilitychange', alVolver);
+        rotulo(); arrancar();
+        anim = { id: auto.id, pausar, destruir() { corriendo = false; if (raf) cancelAnimationFrame(raf); if (io) io.disconnect(); document.removeEventListener('visibilitychange', alVolver); } };
+      }
       const enInput = e => {
         const el = e.target.closest('[data-c]'); if (!el) return;
+        if (anim && el.dataset.c === anim.id) anim.pausar();
         const c = ctr.find(x => x.id === el.dataset.c);
         vals[c.id] = T.ajustar(c, +e.target.value); pintarJ(); tocar();
       };
@@ -889,6 +934,7 @@
         if (e.target.closest('.te-reinicio')) { Object.assign(vals, T.inicio(j)); pintarJ(); return; }
         const b = e.target.closest('button[data-paso],button[data-v]'); if (!b) return;
         const el = b.closest('[data-c]'); const c = ctr.find(x => x.id === el.dataset.c);
+        if (anim && c.id === anim.id) anim.pausar();
         vals[c.id] = c.opciones ? c.opciones.find(x => String(x.valor) === b.dataset.v).valor : T.ajustar(c, vals[c.id] + (+b.dataset.paso) * c.paso);
         pintarJ(); tocar();
       };
@@ -900,6 +946,7 @@
         valores: () => Object.assign({}, vals),
         fijar(v) { for (const c of ctr) if (v && v[c.id] !== undefined) vals[c.id] = T.ajustar(c, v[c.id]); pintarJ(); },
         destruir() {
+          if (anim) anim.destruir();
           if (roFig) roFig.disconnect();
           if (slotC) { slotC.hidden = true; slotC.textContent = ''; }
           f.removeEventListener('pointerdown', abajo); f.removeEventListener('pointermove', mueve);
@@ -920,6 +967,7 @@
         <output for="te-c-${esc(c.id)}"></output></div>`;
     }
     function valorControl(c, v) { return `${Kit.formatear(v, c.decimales === undefined ? 2 : c.decimales)}${c.unidad ? ` ${esc(c.unidad)}` : ''}`; }
+    function valorPlano(c, v) { return `${Kit.formatear(v, c.decimales === undefined ? 2 : c.decimales)}${c.unidad ? ` ${c.unidad}` : ''}`; }
 
     // Botón de lupa de cada figura: amplía lo que se ve en ese momento.
     function conectarLupa(el) {

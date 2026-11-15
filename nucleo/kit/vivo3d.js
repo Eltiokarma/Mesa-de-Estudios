@@ -11,13 +11,17 @@
  *     construir(T, grupo, datos, estado, h) → { tocables?: [Object3D], aria?: texto }
  *                                          arma la escena dentro de `grupo` (se limpia sola antes de cada cambio)
  *     tocar?(objeto) → texto               qué decir cuando el alumno toca un objeto sin arrastrar
+ *     forma?(datos, estado) → texto        con mover: mientras la forma no cambie, cada cambio de datos (un cuadro de
+ *     mover?(T, grupo, datos, estado, h)   la animación) mueve lo que ya está armado en vez de rearmar la escena
+ *                                          (devuelve false para pedir que se rearme). Toda pieza animada lo necesita:
+ *                                          rearmar 30 veces por segundo gasta memoria y batería.
  *     distancia?: 7.2 | (datos) → número   distancia de la cámara; como función, el encuadre sigue a los datos (un
  *                                          desarrollo abierto ocupa más que el sólido cerrado). distMin y distMax, en
  *     distMin?, distMax?                   proporción a ella si no se dan.
  *   }
  *   op = { alTocar?(objeto) }
  *   h  = { SEG, ahorro, oscuro, varCss(n, porDefecto), material(color, extra), barra(de, a, r, color), flecha(de, a, r, color),
- *          etiqueta(pos, texto, { color?, letra? }) }
+ *          etiqueta(pos, texto, { color?, letra? }) → el rótulo; h.moverEtiqueta(el, pos, texto?) lo mueve en mover }
  *        etiqueta: un rótulo HTML que sigue a un punto de la escena (Vector3 en coordenadas del grupo). Es texto real, legible
  *        y del color de su variable (regla 4): color 'c-o' le pone la clase «var c-o» de la app; letra: true, en cursiva.
  *
@@ -100,7 +104,7 @@
     escena.add(new T.HemisphereLight(0xffffff, 0xd9cfc6, 1.7));
     const sol = new T.DirectionalLight(0xffffff, 1.3); sol.position.set(3, 5, 6); escena.add(sol);
     let grupo = new T.Group(); escena.add(grupo);
-    let vista = { giro: 30, inclinacion: 20 }, giro = 30, inc = 20, tocables = [];
+    let vista = { giro: 30, inclinacion: 20 }, giro = 30, inc = 20, tocables = [], formaActual = null;
     const SEG = ah ? 12 : 24;
 
     let pend = false;
@@ -162,7 +166,8 @@
       etiquetas.push({ pos: pos.clone(), el });
       return el;
     };
-    const h = { SEG, ahorro: ah, oscuro, varCss, material, barra, flecha, etiqueta };
+    const moverEtiqueta = (el, pos, texto) => { const e = etiquetas.find(x => x.el === el); if (!e) return; e.pos.copy(pos); if (texto !== undefined && el.textContent !== texto) el.textContent = texto; };
+    const h = { SEG, ahorro: ah, oscuro, varCss, material, barra, flecha, etiqueta, moverEtiqueta };
     function limpiar() {
       escena.remove(grupo);
       grupo.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
@@ -235,6 +240,10 @@
     return {
       poner(d, e, nuevaVista) {
         if (nuevaVista) { fijarD0(d); vista = spec.vista(d); giro = vista.giro; inc = vista.inclinacion; dist = D0; nota.textContent = ''; }
+        // Ruta rápida de la animación: misma forma → mover lo armado (sin rearmar ni liberar memoria en cada cuadro).
+        const f = spec.forma && spec.mover ? spec.forma(d, e || {}) : null;
+        if (!nuevaVista && f !== null && f === formaActual && spec.mover(T, grupo, d, e || {}, h) !== false) { pedir(); return; }
+        formaActual = f;
         poner(d, e);
       },
       acercar, inicio,

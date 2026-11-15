@@ -990,3 +990,8 @@ body.con-lupa{overflow:hidden}
 .te-consigna-arriba{margin:8px 0 10px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--mom) 12%,var(--card));border-left:5px solid var(--mom);font-size:17px;line-height:1.45;font-weight:600}
 /* Ayuda en verde (pista, «Muéstrame», volver a la explicación): se distingue de seguir y de comprobar. */
 .te-pista,.te-muestra,.te-ayuda2 .btn{background:color-mix(in srgb,var(--c-d) 14%,var(--card));border:1.5px solid color-mix(in srgb,var(--c-d) 55%,var(--line));color:var(--ink)}
+/* Botón de pausa de la animación, junto a su control (el tiempo t que avanza solo). */
+.te-play{grid-column:1/-1;justify-self:start;margin-top:4px;min-height:40px;padding:6px 14px;border-radius:999px;border:1.5px solid color-mix(in srgb,var(--c-o) 55%,var(--line));background:color-mix(in srgb,var(--c-o) 12%,var(--card));font:inherit;font-weight:700;color:var(--ink);cursor:pointer}
+/* La historia de la idea, cerrada, es una línea discreta (no una tarjeta grande que empuja la figura hacia abajo). */
+.te-historia:not([open]){padding:4px 14px;box-shadow:none;background:transparent;border:1.5px dashed var(--line)}
+.te-historia:not([open]) summary{min-height:40px;font-size:15px}
