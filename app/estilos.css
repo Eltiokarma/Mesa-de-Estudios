@@ -921,12 +921,6 @@ body.con-lupa{overflow:hidden}
 .te-glosa-ver span{flex-basis:100%}
 .te-glosa-todo{display:inline-flex;min-height:44px;align-items:center;font-weight:700;color:var(--brand)}
 .te-glo h2{margin-top:0}
-.te-glo-sec{font-size:15px;color:var(--muted);margin:16px 0 6px}
-.te-glo-item{padding:10px 0;border-top:1px solid var(--line)}
-.te-glo-item h3{margin:0 0 2px;font-size:18px}
-.te-glo-item p{margin:0 0 4px;line-height:1.45}
-.te-glo-sim{font-family:var(--serif,Cambria,"Noto Serif",serif);color:var(--muted);font-weight:400}
-.te-glo-de{font-size:14px}
 .te-glo-q{width:100%;min-height:48px;font:inherit;font-size:17px;border-radius:14px;border:2px solid var(--line);padding:8px 12px;background:var(--bg);color:var(--ink);margin:4px 0 10px}
 .te-glo-q:focus-visible{outline:3px solid var(--brand);outline-offset:1px}
 .te-reinicio{align-self:flex-start}
@@ -997,3 +991,47 @@ body.con-lupa{overflow:hidden}
 .te-historia:not([open]) summary{min-height:40px;font-size:15px}
 .te-play{display:inline-flex;align-items:center;gap:6px}
 .te-term-nb{white-space:nowrap}
+
+/* ---------- Glosario en tarjetas (fase 2): mazos deslizables por idea, con el color de la idea ---------- */
+.glo-top .te-glo-q{width:100%;min-height:48px;font-size:17px;padding:10px 14px;border:2px solid var(--brand);border-radius:14px;background:var(--card);color:inherit}
+.glo-resumen{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding:10px 12px;border-radius:16px;background:var(--brand-soft)}
+.glo-resumen b{font-size:20px;color:var(--brand)}
+.glo-repasar{background:var(--brand);color:var(--brand-ink)}
+.glo-mazo{margin:18px 0 6px}
+.glo-mazo-t{display:flex;align-items:center;gap:10px;margin:0 4px 8px;font-size:18px;color:var(--gc)}
+.glo-n{flex:0 0 auto;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--gc);color:var(--card);font-size:15px}
+.glo-cuenta{margin-left:auto;min-width:28px;padding:2px 9px;border-radius:999px;background:color-mix(in srgb,var(--gc) 14%,transparent);font-size:14px;text-align:center}
+.glo-fila{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;padding:4px 4px 14px;scrollbar-width:thin}
+.glo-carta{flex:0 0 min(84%,320px);scroll-snap-align:start;display:flex;flex-direction:column;gap:6px;padding:14px 16px 12px;border-radius:20px;border:2px solid var(--gc);border-top-width:8px;background:color-mix(in srgb,var(--gc) 7%,var(--card));box-shadow:0 4px 0 color-mix(in srgb,var(--gc) 35%,transparent)}
+.glo-carta.sabe{background:var(--card);border-style:dashed}
+.glo-carta h3{margin:0;font-size:22px;color:var(--gc)}
+.glo-carta-cab{display:flex;justify-content:space-between;gap:8px;min-height:20px}
+.glo-tipo{margin:0;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.glo-ok,.glo-rep{font-size:12px;font-weight:800;padding:2px 8px;border-radius:999px}
+.glo-ok{background:color-mix(in srgb,var(--c-d) 18%,transparent);color:var(--c-d)}
+.glo-rep{background:color-mix(in srgb,var(--c-o) 18%,transparent);color:var(--c-o)}
+.glo-sm{margin:0;color:var(--muted);font-size:15px}
+.glo-sm b{color:var(--gc);font-size:18px}
+.glo-def{margin:0;font-size:17px;line-height:1.45}
+.glo-ej{border-radius:14px;background:var(--card);border:1.5px solid color-mix(in srgb,var(--gc) 40%,transparent)}
+.glo-ej summary{min-height:44px;display:flex;align-items:center;padding:0 12px;font-weight:700;color:var(--gc);cursor:pointer}
+.glo-ej p{margin:0;padding:0 12px 10px;font-size:16px}
+.glo-acc{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:4px}
+.glo-b{min-height:44px;display:inline-flex;align-items:center;padding:8px 14px;border-radius:999px;border:2px solid var(--gc,var(--brand));background:var(--card);color:var(--gc,var(--brand));font-weight:700;font-size:15px;text-decoration:none;cursor:pointer}
+.glo-sabe[aria-pressed="false"]{background:var(--gc);color:var(--card)}
+.glo-hall{margin-top:10px}
+/* Repaso con tarjetas que se voltean */
+.glo-repaso{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;gap:14px;padding:max(14px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));background:var(--bg,var(--card));overflow:auto}
+.glo-rep-barra{display:flex;justify-content:space-between;align-items:center;font-weight:700;color:var(--muted)}
+.glo-rep-carta{flex:0 1 auto;min-height:min(56dvh,440px);max-width:520px;width:100%;margin:0 auto;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:24px 20px;border-radius:26px;border:3px solid var(--brand);border-top-width:10px;background:var(--brand-soft);text-align:center}
+.glo-rep-carta h2{margin:0;font-size:32px;color:var(--brand)}
+.glo-rep-carta.volteada{border-color:var(--c-i);background:color-mix(in srgb,var(--c-i) 9%,var(--card));text-align:left}
+.glo-rep-carta.volteada .glo-tipo{color:var(--c-i);font-size:15px}
+.glo-rep-carta .glo-def{font-size:19px}
+.glo-rep-ej{margin:0;font-size:16px}
+.glo-rep-acc{max-width:520px;width:100%;margin:0 auto;display:flex;gap:10px}
+.glo-rep-acc .btn{flex:1;justify-content:center;min-height:52px}
+.glo-rep-no{--gc:var(--c-o)}
+@media (prefers-reduced-motion:no-preference){.glo-rep-carta{animation:glo-voltea .25s ease-out}}
+@keyframes glo-voltea{from{transform:rotateY(70deg);opacity:.3}to{transform:none;opacity:1}}
+.glo-top h2{margin-top:0}

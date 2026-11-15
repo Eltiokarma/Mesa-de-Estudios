@@ -543,42 +543,123 @@
         <p class="te-cond"><b>Vale si</b> ${esc(String(r.condicion).replace(/^si\s+/i, ''))}</p></div>`;
     }
 
-    // Glosario del tema: las palabras nuevas de esta unidad, las que vienen de otras y una búsqueda en todo el curso.
+    // ---------- Glosario en tarjetas (decisión de Gerson, 15 nov: «el otro 50 % de la teoría», con color y botones) ----------
+    // Buscador arriba; un mazo deslizable por idea (cada término va en la primera idea donde aparece), con el color de la
+    // idea; «Ya me la sé» se guarda en est.glosario[unidad][término]; «Repasar con tarjetas» las muestra una a una y se
+    // voltean. Las que vienen de otros temas, en su propio mazo.
+    // (Funciones y no constantes: el lector las llama antes de llegar a esta línea.)
+    function marcasGlo() { ctx.est.glosario = ctx.est.glosario || {}; return ctx.est.glosario[u.id] || (ctx.est.glosario[u.id] = {}); }
+    function mazosGlosario() {
+      const COLOR_IDEA = ['c-i', 'c-o', 'c-d', 'c-f', 'c-h'];
+      const libres = new Set(aqui.map(e => G.clave(e.termino))), mazos = [];
+      ideas.forEach((idea, k) => {
+        const txt = G.texto({ ideas: [idea] });
+        const es = aqui.filter(e => libres.has(G.clave(e.termino)) && e.en === u.id && G.aparece(txt, e));
+        es.forEach(e => libres.delete(G.clave(e.termino)));
+        if (es.length) mazos.push({ titulo: idea.titulo, n: k + 1, color: COLOR_IDEA[k % COLOR_IDEA.length], idea: idea.id, es });
+      });
+      const resto = aqui.filter(e => libres.has(G.clave(e.termino)) && e.en === u.id);
+      if (resto.length) mazos.push({ titulo: 'Más palabras del tema', n: '+', color: 'c-f', es: resto });
+      const otras = aqui.filter(e => e.en !== u.id);
+      if (otras.length) mazos.push({ titulo: 'Vienen de otros temas', n: '↩', color: 'c-h', es: otras, ajenas: true });
+      return mazos;
+    }
+    function cartaGlo(e, color, idea) {
+      const k = G.clave(e.termino), m = marcasGlo()[k];
+      return `<article class="glo-carta${m === 'sabe' ? ' sabe' : ''}" style="--gc:var(--${color})" data-term="${esc(k)}" data-color="${color}"${idea ? ` data-idea="${esc(idea)}"` : ''}>
+          <div class="glo-carta-cab"><span class="glo-tipo">${e.en === u.id ? 'Palabra nueva' : esc(origen(e))}</span>${m === 'sabe' ? '<span class="glo-ok">✓ Me la sé</span>' : m === 'repasa' ? '<span class="glo-rep">Repasar</span>' : ''}</div>
+          <h3>${esc(e.termino)}</h3>
+          ${e.simbolo || e.medida ? `<p class="glo-sm">${e.simbolo ? `<b class="ec-letra">${esc(e.simbolo)}</b>` : ''}${e.simbolo && e.medida ? ' · ' : ''}${e.medida ? `en ${esc(e.medida)}` : ''}</p>` : ''}
+          <p class="glo-def">${esc(e.def)}</p>
+          ${e.ejemplo ? `<details class="glo-ej"><summary>Ver ejemplo</summary><p>${esc(e.ejemplo)}</p></details>` : ''}
+          <div class="glo-acc"><button type="button" class="glo-b glo-sabe" data-sabe="${esc(k)}" aria-pressed="${m === 'sabe'}">${m === 'sabe' ? 'La repaso otra vez' : 'Ya me la sé'}</button>
+            ${idea ? `<a class="glo-b glo-ver" href="#/unidad/${esc(u.id)}/teoria/${esc(idea)}">Verla en la teoría</a>` : e.en !== u.id ? `<a class="glo-b glo-ver" href="#/unidad/${esc(e.en)}/teoria/glosario">Ir a su tema</a>` : ''}</div>
+        </article>`;
+    }
+    function resumenGlo(sabe, total) { return `<b>${sabe}</b> de ${total} ya te las sabes`; }
     function vistaGlosario() {
-      const propias = aqui.filter(e => e.en === u.id), otras = aqui.filter(e => e.en !== u.id);
-      const item = e => `<article class="te-glo-item">
-          <h3>${esc(e.termino)}${e.simbolo ? ` <span class="te-glo-sim ec-letra">${esc(e.simbolo)}</span>` : ''}</h3>
-          <p>${esc(e.def)}</p>
-          ${e.medida ? `<p class="sub">Se mide en ${esc(e.medida)}.</p>` : ''}
-          ${e.ejemplo ? `<p class="te-glosa-e"><span>Ejemplo</span> ${esc(e.ejemplo)}</p>` : ''}
-          ${e.en !== u.id ? `<p class="sub te-glo-de">${esc(origen(e))}</p>` : ''}</article>`;
-      return `<section class="card te-glo" aria-labelledby="te-glo-t">
+      const mazos = mazosGlosario(), total = aqui.length, sabe = aqui.filter(e => marcasGlo()[G.clave(e.termino)] === 'sabe').length;
+      return `<div class="glo-vista"><section class="card glo-top" aria-labelledby="te-glo-t">
           <h2 id="te-glo-t">Glosario del tema</h2>
-          <p class="sub">Las palabras de este tema, dichas en simple. En la teoría, toca una palabra subrayada para ver qué significa.</p>
-          ${propias.length ? `<h3 class="te-glo-sec">Nuevas en este tema · ${propias.length}</h3>${propias.map(item).join('')}` : ''}
-          ${otras.length ? `<h3 class="te-glo-sec">Vienen de otros temas · ${otras.length}</h3>${otras.map(item).join('')}` : ''}
-          ${aqui.length ? '' : '<p>Este tema todavía no tiene glosario.</p>'}
-        </section>
-        <section class="card te-glo" aria-labelledby="te-glo-b">
-          <h2 id="te-glo-b">Buscar en todo ${esc(c.nombre)}</h2>
-          <label class="sub" for="te-glo-q">Escribe una palabra que no entiendas</label>
-          <input id="te-glo-q" type="search" class="te-glo-q" autocomplete="off" spellcheck="false">
+          <p class="sub">Las palabras de este tema, dichas en simple. Desliza cada mazo y toca una tarjeta para ver su ejemplo.</p>
+          <label class="lector" for="te-glo-q">Buscar una palabra</label>
+          <input id="te-glo-q" type="search" class="te-glo-q" placeholder="Busca una palabra" autocomplete="off" spellcheck="false">
           <div class="te-glo-res" role="status"></div>
-        </section>`;
+          ${total ? `<div class="glo-resumen"><span>${resumenGlo(sabe, total)}</span>
+            <button type="button" class="btn glo-repasar">Repasar con tarjetas</button></div>` : '<p>Este tema todavía no tiene glosario.</p>'}
+        </section>
+        ${mazos.map(m => `<section class="glo-mazo" style="--gc:var(--${m.color})" aria-label="${esc(m.titulo)}">
+            <h3 class="glo-mazo-t"><span class="glo-n" aria-hidden="true">${m.n}</span>${esc(m.titulo)}<span class="glo-cuenta">${m.es.length}</span></h3>
+            <div class="glo-fila">${m.es.map(e => cartaGlo(e, m.color, m.idea)).join('')}</div></section>`).join('')}</div>`;
     }
     function conectarGlosario() {
       const q = $app.querySelector('.te-glo-q'), res = $app.querySelector('.te-glo-res');
       const pintarRes = () => {
         const k = G ? G.clave(q.value) : '';
-        if (!k) { res.innerHTML = `<p class="sub">${entradas.length} palabras en el glosario de ${esc(c.nombre)}.</p>`; return; }
+        if (!k) { res.innerHTML = ''; return; }
         const hall = entradas.filter(e => G.clave(e.termino).includes(k) || e.formas.some(f => G.clave(f).includes(k)))
           .concat(entradas.filter(e => !G.clave(e.termino).includes(k) && G.clave(e.def).includes(k))).slice(0, 20);
-        res.innerHTML = hall.length ? hall.map(e => `<article class="te-glo-item"><h3>${esc(e.termino)}</h3><p>${esc(e.def)}</p>
-            <p class="sub te-glo-de">${e.en === u.id ? 'De este tema' : `Del tema «${esc(e.enNombre)}»`}</p></article>`).join('')
-          : '<p>Esa palabra no está en el glosario de este curso todavía. Pregúntale a tu profesor y anótala.</p>';
+        res.innerHTML = hall.length ? `<div class="glo-fila glo-hall">${hall.map(e => cartaGlo(e, 'brand', null)).join('')}</div>`
+          : '<p class="sub">Esa palabra no está en el glosario de este curso todavía. Pregúntale a tu profesor y anótala.</p>';
       };
       q.addEventListener('input', pintarRes);
-      pintarRes();
+      // El escucha va en la vista (que se rehace al volver), no en #app, para no sumar uno por cada visita.
+      $app.querySelector('.glo-vista').addEventListener('click', e => {
+        const b = e.target.closest('[data-sabe]');
+        if (b) {
+          const k = b.dataset.sabe, m = marcasGlo();
+          m[k] = m[k] === 'sabe' ? 'repasa' : 'sabe'; ctx.guardar();
+          ctx.registrar({ tipo: 'teoria', unidad: u.id, momento: 'glosario-marca', termino: k, sabe: m[k] === 'sabe' });
+          // Se rehace solo esa tarjeta (y su copia en la búsqueda), sin mover la pantalla ni perder el foco.
+          const e0 = entradas.find(x => G.clave(x.termino) === k);
+          $app.querySelectorAll('.glo-carta').forEach(t => {
+            if (t.dataset.term !== k) return;
+            const tmp = document.createElement('div'); tmp.innerHTML = cartaGlo(e0, t.dataset.color, t.dataset.idea || null);
+            t.replaceWith(tmp.firstElementChild);
+          });
+          const r = $app.querySelector('.glo-resumen span');
+          if (r) r.innerHTML = resumenGlo(aqui.filter(x => marcasGlo()[G.clave(x.termino)] === 'sabe').length, aqui.length);
+          const otra = [...$app.querySelectorAll(`[data-sabe]`)].find(x => x.dataset.sabe === k); if (otra) otra.focus();
+          return;
+        }
+        if (e.target.closest('.glo-repasar')) repasoGlosario();
+      });
+    }
+    // Repaso con tarjetas: primero las marcadas para repasar, después las que aún no se marcaron (no las que ya sabe).
+    function repasoGlosario() {
+      const m = marcasGlo(), orden = mazosGlosario().flatMap(z => z.es);   // en el orden de las ideas
+      const cola = orden.filter(e => m[G.clave(e.termino)] === 'repasa').concat(orden.filter(e => !m[G.clave(e.termino)]));
+      const lista = cola.length ? cola : orden;
+      let i = 0, volteada = false, sabidas = 0;
+      const capa = document.createElement('div');
+      capa.className = 'glo-repaso'; capa.setAttribute('role', 'dialog'); capa.setAttribute('aria-modal', 'true'); capa.setAttribute('aria-label', 'Repaso del glosario');
+      document.body.appendChild(capa); document.body.classList.add('con-lupa');
+      const cerrar = () => { capa.remove(); document.body.classList.remove('con-lupa'); document.removeEventListener('keydown', tecla); pintar(ctx, c, u, def, 'glosario', glos); };
+      const tecla = ev => { if (ev.key === 'Escape') cerrar(); };
+      document.addEventListener('keydown', tecla);
+      const pintarR = () => {
+        if (i >= lista.length) {
+          capa.innerHTML = `<div class="glo-rep-carta fin"><h2>¡Listo!</h2><p>${sabidas} de ${lista.length} te las sabías.</p>
+            <button type="button" class="btn morado glo-rep-cerrar">Volver al glosario</button></div>`;
+          capa.querySelector('.glo-rep-cerrar').onclick = cerrar; return;
+        }
+        const e = lista[i];
+        capa.innerHTML = `<div class="glo-rep-barra"><span>${i + 1} de ${lista.length}</span><button type="button" class="btn borde glo-rep-cerrar">Cerrar</button></div>
+          <div class="glo-rep-carta${volteada ? ' volteada' : ''}">
+            ${volteada ? `<p class="glo-tipo">${esc(e.termino)}</p><p class="glo-def">${esc(e.def)}</p>${e.ejemplo ? `<p class="glo-rep-ej"><b>Ejemplo:</b> ${esc(e.ejemplo)}</p>` : ''}`
+              : `<p class="glo-tipo">¿Qué significa?</p><h2>${esc(e.termino)}</h2>${e.simbolo ? `<p class="glo-sm"><b class="ec-letra">${esc(e.simbolo)}</b></p>` : ''}<p class="sub">Dilo en voz alta o piénsalo, y voltea la tarjeta.</p>`}
+          </div>
+          <div class="glo-rep-acc">${volteada ? `<button type="button" class="btn glo-b glo-rep-no">Repasar otra vez</button><button type="button" class="btn morado glo-rep-si">La sabía</button>`
+            : '<button type="button" class="btn morado ancho glo-rep-voltear">Voltear</button>'}</div>`;
+        capa.querySelector('.glo-rep-cerrar').onclick = cerrar;
+        const v = capa.querySelector('.glo-rep-voltear'); if (v) { v.onclick = () => { volteada = true; pintarR(); }; v.focus(); }
+        const marcar = sabe => { const k = G.clave(e.termino); m[k] = sabe ? 'sabe' : 'repasa'; if (sabe) sabidas++; ctx.guardar();
+          ctx.registrar({ tipo: 'teoria', unidad: u.id, momento: 'glosario-repaso', termino: k, sabe }); i++; volteada = false; pintarR(); };
+        const si = capa.querySelector('.glo-rep-si'), no = capa.querySelector('.glo-rep-no');
+        if (si) { si.onclick = () => marcar(true); si.focus(); }
+        if (no) no.onclick = () => marcar(false);
+      };
+      pintarR();
     }
 
     // Ficha de repaso: todas las reglas a la vista, para hojear cuando se quiera (decisión de Gerson, 15 nov: leer no
