@@ -185,7 +185,7 @@
     temas: ['Sistemas sexagesimal, centesimal y radial', 'Conversión entre sistemas'],
     pieza: 'trig-plano',
     juega: {
-      consigna: 'Elige el giro y mira la parte sombreada de la vuelta. La lectura lo escribe en los tres sistemas.',
+      consigna: 'Elige el giro y mira qué parte de la circunferencia recorre. La lectura lo escribe en los tres sistemas.',
       voz: 'Fíjate en qué parte de la vuelta queda sombreada.',
       controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: 18, max: 360, paso: 18, inicio: 90, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: sector(val.g, fraccion(val.g)), estado: {} }),

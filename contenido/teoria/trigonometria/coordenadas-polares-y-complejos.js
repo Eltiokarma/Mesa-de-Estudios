@@ -219,7 +219,7 @@
     temas: ['Forma trigonométrica de un complejo'],
     pieza: 'trig-plano',
     juega: {
-      consigna: 'Mueve a y b. La flecha verde mide |z|; el arco naranja es el argumento θ, desde el eje real positivo.',
+      consigna: 'Mueve a y b en el plano complejo. La flecha verde mide |z|; el arco naranja es el argumento θ, desde el eje real positivo.',
       voz: 'Conservemos el eje real como lado inicial del giro.',
       controles: [
         { id: 'a', etiqueta: 'a', color: 'c-i', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0 },

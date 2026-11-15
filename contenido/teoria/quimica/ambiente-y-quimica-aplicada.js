@@ -294,7 +294,7 @@
     temas: ['Reciclaje y tecnologías limpias'],
     pieza: 'barra-porcentaje',
     juega: {
-      consigna: 'De 100 kg de botellas usadas, elige qué parte se recolecta y qué parte de lo recolectado recupera la planta.',
+      consigna: 'De 100 kg de botellas usadas, elige qué parte se recolecta y qué parte de lo recolectado recupera la planta de reciclaje.',
       voz: 'Mira sobre qué se aplica el segundo porcentaje.',
       controles: [
         { id: 'a', etiqueta: 'Recolectado', color: 'c-o', min: 30, max: 90, paso: 10, inicio: 50, unidad: '%', decimales: 0 },

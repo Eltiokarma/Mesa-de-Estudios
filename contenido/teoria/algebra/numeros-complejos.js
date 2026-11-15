@@ -558,7 +558,7 @@
     temas: ['Regiones en el plano complejo'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Elige un tipo de región y mueve su medida. El borde continuo está incluido; el discontinuo, no.',
+      consigna: 'Elige un tipo de región del plano complejo y mueve su medida. El borde continuo está incluido; el discontinuo, no.',
       voz: 'Mira qué controla el número en cada región.',
       controles: [
         { id: 'tipo', etiqueta: 'Región', opciones: [{ valor: 'disco', texto: '|z − (1 + i)| ≤ r' }, { valor: 're', texto: 'Re(z) ≥ k' }, { valor: 'im', texto: 'Im(z) < k' }] },

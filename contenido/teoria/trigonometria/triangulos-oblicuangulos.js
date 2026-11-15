@@ -116,7 +116,7 @@
     temas: ['Ley de senos'],
     pieza: 'trig-plano',
     juega: {
-      consigna: 'Arrastra los vértices C y A. Cada lado lleva el color de su ángulo opuesto; la lectura lo divide entre ese seno.',
+      consigna: 'Arrastra los vértices C y A del triángulo inscrito. Cada lado lleva el color de su ángulo opuesto; la lectura lo divide entre ese seno.',
       voz: 'Conservemos cada lado frente a su ángulo; después comparemos las tres razones.',
       controles: [
         { id: 'A', etiqueta: 'A', color: 'c-o', min: 20, max: 100, paso: 10, inicio: 50, unidad: '°', decimales: 0 },

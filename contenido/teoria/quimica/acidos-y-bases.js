@@ -378,7 +378,7 @@
     temas: ['Neutralización y titulación'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Agregas NaOH 0,1 M a 25 mL de HCl 0,1 M. Mueve el volumen agregado y mira el pH de la mezcla.',
+      consigna: 'Agregas NaOH 0,1 M a 25 mL de HCl 0,1 M: es una titulación. Mueve el volumen agregado y mira el pH.',
       voz: 'Busca el volumen donde la curva salta.',
       controles: [{ id: 'v', etiqueta: 'V', color: 'c-o', min: 0, max: 50, paso: 2.5, inicio: 0, unidad: 'mL', decimales: 1 }],
       dibujo: val => ({ datos: ejesTit({ curvas: [{ puntos: curva(Infinity), color: 'h' }], puntos: [{ x: val.v, y: pHtit(val.v, Infinity), color: 'o', rotulo: fp(pHtit(val.v, Infinity)), guias: true }] }), estado: {} }),

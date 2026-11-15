@@ -492,7 +492,7 @@
     temas: ['Criterios de semejanza de triángulos'],
     pieza: 'geo-figura',
     juega: {
-      consigna: 'El rectángulo de 3 por 2 se amplía con escala k: cada lado se multiplica por k. Cambia k y mira lados y perímetro.',
+      consigna: 'Ampliación con escala k: cada lado del rectángulo de 3 por 2 se multiplica por k. Cambia k y mira lados y perímetro.',
       voz: 'Cambia k. Sigue los dos lados a la vez.',
       controles: [{ id: 'k', etiqueta: 'k', min: 0.5, max: 3, paso: 0.5, inicio: 1.5, unidad: '', decimales: 1, color: 'c-o' }],
       dibujo: v => ({ datos: ampl(v.k), estado: {} }),

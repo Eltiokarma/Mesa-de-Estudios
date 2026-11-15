@@ -88,7 +88,7 @@
     temas: ['Desarrollo del binomio'],
     pieza: 'alg-tabla',
     juega: {
-      consigna: 'Elige el exponente n. La fila verde da los coeficientes de (a + b)ⁿ; cada número suma los dos de arriba.',
+      consigna: 'Elige el exponente n. La fila verde del triángulo de Pascal da los coeficientes de (a + b)ⁿ; cada número suma los dos de arriba.',
       voz: 'Suma los números de cada fila.',
       controles: [{ id: 'n', etiqueta: 'n', min: 0, max: 5, paso: 1, inicio: 2, decimales: 0, color: 'c-d' }],
       dibujo: v => ({ datos: triangulo(v.n), estado: {} }),
