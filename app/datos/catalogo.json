@@ -1509,10 +1509,13 @@
      "teoria": {
       "archivo": "/contenido/teoria/quimica/hidrocarburos.js",
       "requiere": [
-       "/nucleo/kit/piezas/quim-molecula.js"
+       "/nucleo/kit/piezas/quim-molecula.js",
+       "/plantillas/hidrocarburos/motor.js",
+       "/nucleo/elementos.js",
+       "/nucleo/kit/piezas/quim-molecula-3d.js"
       ],
       "ideas": 6,
-      "terminos": 32
+      "terminos": 37
      }
     },
     {

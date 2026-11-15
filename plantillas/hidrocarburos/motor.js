@@ -1002,7 +1002,84 @@
     return { mayor, a: A, b: B, diferencia: Math.abs(A.teb - B.teb), razon, errores: { porCarbonos: fa === fb ? 'iguales' : (fa > fb ? A.nombre : B.nombre), compacto: fa === fb ? (A.teb > B.teb ? B.nombre : A.nombre) : null } };
   }
 
+  // ---------- Conformaciones en 3D (15 nov 2026, mesa 3D «El enlace que gira») ----------
+  // Etano y butano giran alrededor de su enlace simple C–C central; cis- y trans-but-2-eno no giran (el enlace π se
+  // rompería). Geometría ideal: C–C 154 pm, C=C 134 pm, C–H 109 pm, 109,47° en los sp³ y 120° en los sp² (los datos de
+  // la cabecera). Posiciones en largos de C–C (154 pm = 1), con el centro del enlace central en el origen y ese enlace
+  // sobre el eje x, como las pide la pieza quim-molecula-3d. φ es el ángulo diedro C1–C2–C3–C4 (en el etano, H–C–C–H
+  // de dos H marcados). Verificado aparte en Python con el método NeRF (ver casos.json).
+  const CONFORMABLES = { etano: 'etano', butano: 'butano', 'cis-but-2-eno': 'cis-but-2-eno', 'trans-but-2-eno': 'trans-but-2-eno' };
+  const L_CC = 154, L_CdC = 134, L_CH = 109, TETRA = Math.acos(-1 / 3);
+  const v3 = {
+    suma: (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]], resta: (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]],
+    por: (a, k) => [a[0] * k, a[1] * k, a[2] * k], punto: (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2],
+    cruz: (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]],
+    largo: a => Math.hypot(a[0], a[1], a[2]), unit: a => { const m = Math.hypot(a[0], a[1], a[2]); return [a[0] / m, a[1] / m, a[2] / m]; },
+  };
+  // Dirección de un sustituyente del carbono que mira a su pareja en el sentido «haciaPareja» (±1 en x), con ángulo de
+  // enlace ang y azimut az (grados, alrededor del eje x; 0 = +y).
+  const sustituyente = (haciaPareja, ang, az) => {
+    const a = az * Math.PI / 180;
+    return [haciaPareja * Math.cos(ang), Math.sin(ang) * Math.cos(a), Math.sin(ang) * Math.sin(a)];
+  };
+  // Los tres H de un CH₃ en Cm, unido a Cp (que a su vez está unido a Cq): alternados, uno opuesto a Cq.
+  function hidrogenosMetilo(Cm, Cp, Cq) {
+    const u = v3.unit(v3.resta(Cm, Cp)), w = v3.resta(Cq, Cp);
+    const e1 = v3.unit(v3.por(v3.resta(w, v3.por(u, v3.punto(w, u))), -1)), e2 = v3.cruz(u, e1);
+    return [0, 120, 240].map(g => {
+      const a = g * Math.PI / 180;
+      const d = v3.suma(v3.por(u, 1 / 3), v3.por(v3.suma(v3.por(e1, Math.cos(a)), v3.por(e2, Math.sin(a))), Math.sqrt(8) / 3));
+      return v3.suma(Cm, v3.por(d, L_CH));
+    });
+  }
+  const norm360 = g => ((g % 360) + 360) % 360;
+  function diedro(a, b, c, d) {                              // ángulo diedro a–b–c–d en grados, de 0 a 360
+    const b1 = v3.resta(b, a), b2 = v3.resta(c, b), b3 = v3.resta(d, c);
+    const n1 = v3.cruz(b1, b2), n2 = v3.cruz(b2, b3), m1 = v3.cruz(n1, v3.unit(b2));
+    return norm360(Math.atan2(v3.punto(m1, n2), v3.punto(n1, n2)) * 180 / Math.PI);
+  }
+  function conformacion(mol, phi) {
+    if (!CONFORMABLES[mol]) throw new Error(`conformacion: no conozco «${mol}» (hay ${Object.keys(CONFORMABLES).join(', ')})`);
+    const doble = /but-2-eno/.test(mol), gira = !doble;
+    const f = doble ? (mol.startsWith('cis') ? 0 : 180) : norm360(phi === undefined ? 60 : phi);
+    const cc = doble ? L_CdC : L_CC, ang = doble ? 2 * Math.PI / 3 : TETRA;
+    const C2 = [-cc / 2, 0, 0], C3 = [cc / 2, 0, 0];
+    const at = [], en = [];
+    const pon = (t, pos) => { at.push({ id: `a${at.length}`, t, pos }); return at.length - 1; };
+    const une = (a, b, orden) => en.push({ a: `a${a}`, b: `a${b}`, orden: orden || 1 });
+    const i2 = pon('C', C2), i3 = pon('C', C3);
+    une(i2, i3, doble ? 2 : 1);
+    const azIzq = doble ? [0, 180] : [0, 120, 240], azDer = azIzq.map(g => g - f);   // con este sentido, el diedro medido C1–C2–C3–C4 es φ
+    const conCH3 = mol !== 'etano';
+    let C1 = null, C4 = null, iC1, iC4;
+    azIzq.forEach((g, k) => {
+      const largo = conCH3 && k === 0 ? L_CC : L_CH, p = v3.suma(C2, v3.por(sustituyente(1, ang, g), largo));
+      if (conCH3 && k === 0) { C1 = p; iC1 = pon('C', p); une(i2, iC1); } else une(i2, pon('H', p));
+    });
+    azDer.forEach((g, k) => {
+      const largo = conCH3 && k === 0 ? L_CC : L_CH, p = v3.suma(C3, v3.por(sustituyente(-1, ang, g), largo));
+      if (conCH3 && k === 0) { C4 = p; iC4 = pon('C', p); une(i3, iC4); } else une(i3, pon('H', p));
+    });
+    if (conCH3) {
+      for (const h of hidrogenosMetilo(C1, C2, C3)) une(iC1, pon('H', h));
+      for (const h of hidrogenosMetilo(C4, C3, C2)) une(iC4, pon('H', h));
+    }
+    // Los dos átomos que definen φ: C1 y C4, o en el etano el primer H de cada carbono.
+    const A = conCH3 ? C1 : at[2].pos, D = conCH3 ? C4 : at[2 + azIzq.length].pos;
+    const distancia = v3.largo(v3.resta(D, A));
+    const resto = norm360(f) % 120;
+    const forma = !gira ? null : resto === 0 ? 'eclipsada' : resto === 60 ? 'alternada' : 'intermedia';
+    const nombreB = mol !== 'butano' ? null : { 0: 'sin', 60: 'gauche', 120: 'eclipsada', 180: 'anti', 240: 'eclipsada', 300: 'gauche' }[f] || null;
+    return {
+      mol, gira, phi: f, forma, nombre: nombreB, isomero: doble ? (f === 0 ? 'cis' : 'trans') : null, distancia,
+      atomos: at.map(a => ({ id: a.id, t: a.t, pos: v3.por(a.pos, 1 / L_CC) })), enlaces: en,
+    };
+  }
+  // La distancia más grande entre los extremos al girar de 30 en 30 grados (para los retos de extremo).
+  const distanciaMaxima = mol => Math.max(...Array.from({ length: 12 }, (_, k) => conformacion(mol, 30 * k).distancia));
+
   return {
+    CONFORMABLES, conformacion, diedro, distanciaMaxima,
     molecula, formula, tipo, formulaGeneral, insaturaciones, tiposCarbono, hibridacion, enlaces,
     canonica, mismaMolecula, cisTrans, nombre, semidesarrollada, cadenas,
     isomeros, contarIsomeros, coordenadas, girar, intercambiar, estereoDeCoordenadas,

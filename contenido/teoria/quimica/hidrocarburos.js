@@ -22,10 +22,13 @@
  * comprobados a mano: 2-metilbutano, 2,2-dimetilpropano, but-2-eno, 2-metilbut-2-eno, butan-2-ol.
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El motor de plantillas/hidrocarburos da las posiciones 3D de la mesa «El enlace que gira» (conformacion).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/hidrocarburos/motor.js'))
+    : fabrica(root.Kit, root.MotorHidrocarburos);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MH) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const nC = { v: 'c-i', t: 'n' };
@@ -805,18 +808,27 @@
     return { fa: formula(ca.c, ca.h), fb: formula(cb.c, cb.h), rel };
   }
 
+  // Mesa 3D «El enlace que gira»: la molécula de la pieza quim-molecula-3d sale entera del motor (conformacion).
+  const NOMBRE_CONF = { etano: 'Etano', butano: 'Butano', 'cis-but-2-eno': 'cis-but-2-eno', 'trans-but-2-eno': 'trans-but-2-eno' };
+  const MIRAR = [{ giro: 20, inclinacion: 18 }, { giro: -84, inclinacion: 6 }];   // de costado · a lo largo del enlace C–C
+  const conf3d = v => {
+    const c = MH.conformacion(v.mol, v.phi);
+    return { datos: { atomos: c.atomos, enlaces: c.enlaces, pares: [], total: null, vista: MIRAR[v.mir] }, estado: { dipolos: false, pares: false } };
+  };
+  const phiV = { v: 'c-d', t: 'φ' };
+
   return {
     unidad: 'quimica.hidrocarburos',
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/quim-molecula.js'],
+    requiere: ['/nucleo/kit/piezas/quim-molecula.js', '/plantillas/hidrocarburos/motor.js', '/nucleo/elementos.js', '/nucleo/kit/piezas/quim-molecula-3d.js'],
     historia: {
       texto: 'Conocer la composición de una sustancia orgánica no bastaba para explicar sus propiedades: dos sustancias podían tener la misma fórmula y comportarse distinto. En 1874, van ’t Hoff propuso que los cuatro enlaces del carbono apuntan a los vértices de un tetraedro. Esa idea espacial ayudó a explicar los isómeros. Las fórmulas de cadenas que usamos hoy recogen esa historia.',
       pregunta: '¿Cómo pueden dos sustancias tener la misma fórmula y ser distintas?',
       fuente: { titulo: 'OpenStax, Organic Chemistry, §3.4 y §5.2', url: 'https://openstax.org/books/organic-chemistry/pages/3-4-naming-alkanes' },
     },
-    // Laboratorio (docs/teoria.md §4b): sin preguntas. La primera mesa es más rica que los juegos: junta fórmula
-    // general, familias y anillos, con n de 1 a 8 y los casos que la idea no deja probar. La segunda compara dos
+    // Laboratorio (docs/teoria.md §4b): sin preguntas. La 3D (el enlace que gira) va primera. La de la cadena es más rica que los juegos: junta fórmula
+    // general, familias y anillos, con n de 1 a 8 y los casos que la idea no deja probar. La tercera compara dos
     // estructuras cualesquiera. La lectura dice entradas y resultado, para que un caso guardado se lea solo.
     glosario: [
       { termino: 'hidrocarburo', def: 'Compuesto formado solo por átomos de carbono e hidrógeno, como el metano o el benceno.',
@@ -849,8 +861,59 @@
         ejemplo: 'Eteno + H₂ → etano: C₂H₄ gana dos H.', ver: ['sustitución'] },
       { termino: 'sustitución', def: 'Reacción en que un átomo de la molécula sale y otro ocupa su lugar.',
         ejemplo: 'CH₄ + Cl₂ → CH₃Cl + HCl: un H cambia por Cl.', ver: ['adición'] },
+      { termino: 'conformación', formas: ['conformación', 'conformaciones'],
+        def: 'Cada forma que toma una molécula al girar sus enlaces simples, sin romper ninguno.',
+        ejemplo: 'El butano anti y el gauche son la misma molécula.', ver: ['isómero'] },
+      { termino: 'eclipsada', formas: ['eclipsada', 'eclipsadas', 'eclipsado'],
+        def: 'Conformación en la que, mirando a lo largo del enlace C–C, los átomos de adelante tapan a los de atrás.',
+        ver: ['alternada'] },
+      { termino: 'alternada', formas: ['alternada', 'alternadas'],
+        def: 'Conformación en la que los átomos de adelante caen entre los de atrás, a 60°: la más cómoda.',
+        ver: ['eclipsada'] },
+      { termino: 'anti', def: 'Conformación alternada del butano con sus dos CH₃ opuestos, a 180°: la más estable.', ver: ['gauche'] },
+      { termino: 'gauche', def: 'Conformación alternada del butano con sus dos CH₃ a 60°, vecinos.', ver: ['anti'] },
     ],
     laboratorio: [
+      {
+        // Exploración libre en 3D (decisión de Gerson, 15 nov: sin predicciones; los retos son invitaciones).
+        // Posiciones, φ, forma y distancia entre los CH₃ salen del motor de plantillas/hidrocarburos (conformacion).
+        id: 'enlace-que-gira', titulo: 'El enlace que gira', pieza: 'quim-molecula-3d',
+        consigna: 'Gira la molécula con el dedo. Con φ gira solo la mitad de atrás, alrededor del enlace C–C. Mírala a lo largo del enlace.',
+        controles: [
+          { id: 'mol', etiqueta: 'Molécula', opciones: Object.keys(MH.CONFORMABLES).map(k => ({ valor: k, texto: NOMBRE_CONF[k] })) },
+          { id: 'phi', etiqueta: 'φ', color: 'c-d', min: 0, max: 330, paso: 30, inicio: 60, unidad: '°', decimales: 0 },
+          { id: 'mir', etiqueta: 'Mirar', opciones: [{ valor: 0, texto: 'De costado' }, { valor: 1, texto: 'A lo largo del enlace' }] },
+        ],
+        dibujo: v => conf3d(v),
+        lectura: v => {
+          const c = MH.conformacion(v.mol, v.phi);
+          if (!c.gira) return [`${c.isomero}: el doble enlace no gira · CH₃ a ${f(c.distancia, 0)} pm`];
+          return [phiV, ` = ${c.phi}°: ${c.nombre || c.forma}${c.mol === 'butano' ? `, CH₃ a ${f(c.distancia, 0)} pm` : ''}`];
+        },
+        // Retos comprobados con el mismo motor que arma la molécula (docs/teoria.md §4d).
+        invitaciones: [
+          { texto: 'Gira el butano hasta dejar sus dos CH₃ lo más lejos posible.',
+            logrado: v => v.mol === 'butano' && Math.abs(MH.conformacion('butano', v.phi).distancia - MH.distanciaMaxima('butano')) < 1e-9,
+            bien: 'Anti: los CH₃ opuestos. Es la conformación más estable del butano.',
+            pista: 'Mira a lo largo del enlace y gira hasta que los CH₃ queden opuestos.' },
+          { texto: 'Deja el etano eclipsado y míralo a lo largo del enlace: cada H tapa a otro.',
+            logrado: v => v.mol === 'etano' && v.mir === 1 && MH.conformacion('etano', v.phi).forma === 'eclipsada',
+            bien: 'Eclipsada: los H se estorban. Gira 60° y quedan alternados.',
+            pista: 'Elige «A lo largo del enlace» y gira φ de 30 en 30.' },
+          { texto: 'Busca una conformación gauche del butano: sus CH₃ alternados pero vecinos.',
+            logrado: v => v.mol === 'butano' && MH.conformacion('butano', v.phi).nombre === 'gauche',
+            bien: 'Gauche: alternada, con los CH₃ a 60°. Un poco menos estable que anti.',
+            pista: 'Prueba el butano con φ = 60° o φ = 300°.' },
+          { texto: 'Guarda el cis-but-2-eno con dos valores distintos de φ y compara.',
+            logrado: (v, guardados) => guardados.some(a => guardados.some(b => a.mol === 'cis-but-2-eno' && b.mol === 'cis-but-2-eno' && a.phi !== b.phi)),
+            bien: 'Nada cambió: el doble enlace no gira. Habría que romperlo.',
+            pista: 'Guarda un caso, mueve φ sin cambiar de molécula y guarda otro.' },
+          { texto: 'Guarda el cis y el trans del but-2-eno, y compara sus CH₃.',
+            logrado: (v, guardados) => ['cis-but-2-eno', 'trans-but-2-eno'].every(m => guardados.some(a => a.mol === m)),
+            bien: 'Ningún giro lleva de uno al otro: son isómeros, no conformaciones.',
+            pista: 'Guarda el cis, cambia al trans y guárdalo también.' },
+        ],
+      },
       {
         id: 'cadena-que-crece', titulo: 'La cadena que crece', pieza: 'quim-molecula',
         consigna: 'Arrastra el último carbono para alargar la cadena. Cambia el primer enlace y ciérrala en anillo. Busca qué no se puede armar.',
