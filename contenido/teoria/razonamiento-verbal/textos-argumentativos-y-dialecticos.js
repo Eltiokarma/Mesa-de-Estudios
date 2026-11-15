@@ -85,7 +85,7 @@
       ],
     },
     regla: {
-      texto: 'Un texto argumentativo defiende una tesis con razones. Puede citar una objeción para responderla: esa objeción no es la postura del autor.',
+      texto: 'Un texto argumentativo defiende una tesis con argumentos, es decir, razones. Puede citar una objeción para responderla: esa objeción no es la postura del autor.',
       ecuacion: [razon('razones'), ' → ', { llave: [tesis('tesis')], nota: 'lo que defiende', color: 'c-o' }, ' ← responde a ', { llave: [objecion('objeción')], nota: 'lo de otros', color: 'c-h' }],
       condicion: 'marcas como «algunos dicen», «se cree» presentan a otros; «sin embargo», «pero» suelen abrir la postura del autor.',
     },
@@ -293,6 +293,22 @@
       donde: val => RV().ancla(figDeb(val), `b${val.f}`),
       mover: (pt, val) => ({ f: RV().cercana(figDeb(val), pt, ['a1', 'a2', 'b1', 'b2']).slice(1) }),
     }],
+    // Retos: logrado usa difiere y tipoDebate, las mismas funciones que pintan las filas y la lectura.
+    invitaciones: [
+      { texto: 'Arma un debate en el que A y B no tengan nada que discutir.',
+        logrado: val => { const d = difiere(val); return !d[1] && !d[2]; },
+        bien: 'Si coinciden en dato y propuesta, no hay cuestión: solo hay acuerdo.' },
+      { texto: 'Haz que A y B discutan el dato, pero no qué hacer.',
+        logrado: val => { const d = difiere(val); return d[1] && !d[2]; },
+        bien: 'Proponen lo mismo partiendo de hechos distintos. ¿Qué tendrían que comprobar?' },
+      { texto: 'Con B aceptando el dato, deja el marcador en la fila donde se oponen.',
+        logrado: val => val.dato === 'acepta' && difiere(val)[val.f],
+        bien: 'Ahí está la cuestión: en la propuesta, no en el dato.' },
+      { texto: 'Guarda dos debates que discutan cuestiones distintas.',
+        logrado: (val, guardados) => { const hay = v => difiere(v)[1] || difiere(v)[2];
+          return hay(val) && guardados.some(g => hay(g) && tipoDebate(g) !== tipoDebate(val)); },
+        bien: 'Cambia lo que se discute según dónde se separan las posturas.' },
+    ],
   };
 
   return {
@@ -305,10 +321,65 @@
       pregunta: '¿Convencer es lo mismo que tener buenas razones?',
       fuente: { titulo: 'Matriz de teoría de razonamiento verbal (Aristóteles, Retórica)', url: 'https://cvc.cervantes.es/ensenanza/biblioteca_ele/diccio_ele/diccionario/txtargumentativo.htm' },
     },
+    glosario: [
+      { termino: 'tesis', def: 'Idea que el autor defiende en un texto y que busca que el lector acepte.',
+        formas: ['tesis'], ejemplo: 'En el texto del celular: bien usado, es una herramienta valiosa.', ver: ['argumento', 'postura', 'antítesis'] },
+      { termino: 'argumento', def: 'Razón que el autor da para que se acepte lo que defiende.',
+        formas: ['argumento', 'argumentos'], ejemplo: '«Permite buscar datos al instante» apoya usar el celular en clase.', ver: ['tesis', 'objeción'] },
+      { termino: 'antítesis', def: 'Postura opuesta a otra, que responde la misma pregunta de manera contraria.',
+        formas: ['antítesis'], ejemplo: 'Frente a «prohibir el celular», la contraria es «permitirlo».', ver: ['tesis', 'síntesis'] },
+      { termino: 'postura', def: 'Lo que alguien piensa y defiende sobre un asunto que se discute.',
+        formas: ['postura', 'posturas'], ver: ['tesis', 'debate'] },
+      { termino: 'objeción', def: 'Idea en contra de la tesis; el autor puede citarla para responderla, sin hacerla suya.',
+        formas: ['objeción', 'objeciones'], ejemplo: '«Algunos dicen que el celular solo distrae»: el autor lo cita para rebatirlo.', ver: ['tesis', 'argumento'] },
+      { termino: 'cuestión disputada', def: 'Pregunta de fondo que dos o más autores responden de manera distinta.',
+        formas: ['cuestión disputada', 'cuestión'], ejemplo: 'A y B discuten: ¿qué hacer con el tráfico del centro?', ver: ['debate', 'punto común'] },
+      { termino: 'debate', def: 'Discusión en la que posturas distintas sobre un mismo asunto se enfrentan con razones.',
+        formas: ['debate', 'debates'], ver: ['postura', 'cuestión disputada'] },
+      { termino: 'punto común', def: 'Lo que dos autores aceptan, aunque discutan otra cosa.',
+        formas: ['punto común', 'puntos comunes'], ejemplo: 'A y B aceptan que el tráfico creció; discrepan en qué hacer.', ver: ['cuestión disputada'] },
+      { termino: 'dialéctico', def: 'Que presenta posturas opuestas sobre un asunto y las hace dialogar, con acuerdo final o sin él.',
+        formas: ['dialéctico', 'dialéctica', 'dialécticos', 'dialécticas'], ver: ['tesis', 'antítesis', 'síntesis'] },
+      { termino: 'desacuerdo razonado', def: 'Cierre de un debate en que cada postura queda clara con sus razones, sin acuerdo.',
+        ejemplo: 'Represa sí o no: cada autor muestra sus razones y no se concilian.', ver: ['debate', 'síntesis'] },
+    ],
     laboratorio: [
       mesaDebate,
-      Object.assign({ id: 'tesis-razones', titulo: 'El texto del celular', pieza: 'rv-texto' }, tesisRazones.juega),
-      Object.assign({ id: 'cuestion', titulo: 'El debate del tráfico', pieza: 'rv-texto' }, debate.juega),
+      Object.assign({
+        id: 'tesis-razones', titulo: 'El texto del celular', pieza: 'rv-texto',
+        // Retos: logrado lee ROL, lo mismo que pone el sello del papel de cada oración.
+        invitaciones: [
+          { texto: 'Lleva el marcador a la oración que dice lo que el autor defiende.',
+            logrado: val => ROL[val.k][0].startsWith('Tesis'),
+            bien: '«Sin embargo» abre la voz del autor. Lo de antes era de otros.' },
+          { texto: 'Busca la oración que retoma la tesis al final.',
+            logrado: val => ROL[val.k][0].startsWith('Conclusión'),
+            bien: '«Por eso» vuelve a la tesis y responde la objeción del inicio.' },
+          { texto: 'Guarda dos oraciones distintas que cumplan el mismo papel en el texto.',
+            logrado: (val, guardados) => guardados.some(g => g.k !== val.k && ROL[g.k][1] === ROL[val.k][1]),
+            bien: 'Mismo papel, distinto contenido. Señala qué frase permite sostenerlo.' },
+          { texto: 'Guarda la objeción y la oración que la responde.',
+            logrado: (val, guardados) => { const es = (v, r) => ROL[v.k][0].startsWith(r);
+              return (es(val, 'Objeción') && guardados.some(g => es(g, 'Conclusión'))) || (es(val, 'Conclusión') && guardados.some(g => es(g, 'Objeción'))); },
+            bien: 'Prohibir frente a enseñar a usarlo: el autor cita para contestar.' },
+        ],
+      }, tesisRazones.juega),
+      Object.assign({
+        id: 'cuestion', titulo: 'El debate del tráfico', pieza: 'rv-texto',
+        // Retos: logrado lee MIRA, lo mismo que marca las oraciones y pone los sellos de A y de B.
+        invitaciones: [
+          { texto: 'Marca las oraciones en que A y B coinciden.',
+            logrado: val => !!(MIRA[val.k].sellos.A && MIRA[val.k].sellos.B),
+            bien: 'Comparten el dato. Coincidir en algo no cierra la discusión.' },
+          { texto: 'Pon el marcador en la propuesta de B.',
+            logrado: val => !!MIRA[val.k].sellos.B && !MIRA[val.k].sellos.A,
+            bien: 'Más buses, sin prohibir: esa es la postura de B, no la de A.' },
+          { texto: 'Guarda la postura de A y la de B para compararlas.',
+            logrado: (val, guardados) => { const postura = v => Object.values(MIRA[v.k].marcas).includes('o');
+              return postura(val) && guardados.some(g => g.k !== val.k && postura(g)); },
+            bien: 'Responden distinto a la misma pregunta: ¿qué hacer con el tráfico?' },
+        ],
+      }, debate.juega),
     ],
     ideas: [tesisRazones, debate, dialectica],
   };
