@@ -21,7 +21,7 @@ function grilla(ctr) {
 
 (async () => {
   const b = await chromium.launch();
-  const log = [];
+  const log = { push: s => console.log(s) };
   for (const unidad of unidades) {
     const def = require(path.join(process.cwd(), 'contenido/teoria', unidad.replace('.', '/') + '.js'));
     const ctx = await b.newContext({ viewport: { width: 360, height: 780 }, deviceScaleFactor: 1 });
@@ -39,9 +39,10 @@ function grilla(ctr) {
     await p.waitForTimeout(900);
     const terms = await p.$$eval('.te-term', bs => bs.map(x => x.textContent));
     log.push(`${unidad}: términos marcados en la idea 1: ${terms.join(', ') || 'NINGUNO'}`);
-    const t = await p.$('.te-term');
+    let t = null;
+    for (const x of await p.$$('.te-term')) if (await x.isVisible()) { t = x; break; }
     if (t) {
-      await t.scrollIntoViewIfNeeded(); await t.click(); await p.waitForTimeout(400);
+      await t.scrollIntoViewIfNeeded(); await t.click({ timeout: 3000 }).catch(() => {}); await p.waitForTimeout(400);
       const h = await p.$eval('.te-glosa', e => e.innerText.replace(/\s+/g, ' ').slice(0, 160)).catch(() => 'SIN HOJA');
       log.push(`  hoja: ${h}`);
       await p.screenshot({ path: path.join(salida, `${corto}-hoja.png`) });
@@ -68,7 +69,11 @@ function grilla(ctr) {
       const bt = await p.$(`[data-mesa="${mesa.id}"]`);
       if (bt) { await bt.click(); await p.waitForTimeout(300); }
       // «Otro reto» hasta llegar al k.
-      for (let i = 0; i < k; i++) { const o = await p.$('.te-invita .te-otra-idea'); if (o) { await o.click(); await p.waitForTimeout(150); } }
+      for (let i = 0; i < 8; i++) {
+        const tx = await p.$eval('.te-invita-t', e => e.textContent).catch(() => '');
+        if (tx === inv[k].texto) break;
+        const o = await p.$('.te-invita .te-otra-idea'); if (o) { await o.click(); await p.waitForTimeout(150); }
+      }
       for (const c of mesa.controles || []) {
         if (c.opciones) { const bo = await p.$(`.te-control[data-c="${c.id}"] button[data-v="${meta[c.id]}"]`); if (bo) await bo.click(); }
         else await p.$eval(`#te-c-${c.id}`, (el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); }, meta[c.id]);
@@ -83,6 +88,6 @@ function grilla(ctr) {
     log.push(errores.length ? '  ERRORES DE PÁGINA: ' + errores.join(' | ') : '  sin errores de página');
     await ctx.close();
   }
-  console.log(log.join('\n'));
+
   await b.close();
 })();

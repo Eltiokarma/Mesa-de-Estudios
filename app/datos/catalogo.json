@@ -66,7 +66,7 @@
        "/nucleo/kit/piezas/flechas.js"
       ],
       "ideas": 5,
-      "terminos": 4
+      "terminos": 21
      }
     },
     {
@@ -110,7 +110,7 @@
        "/nucleo/kit/piezas/torre.js"
       ],
       "ideas": 5,
-      "terminos": 12
+      "terminos": 14
      }
     },
     {
@@ -159,7 +159,7 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 4,
-      "terminos": 5
+      "terminos": 22
      }
     },
     {
@@ -200,7 +200,7 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 6,
-      "terminos": 2
+      "terminos": 22
      }
     },
     {
@@ -239,7 +239,7 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 6,
-      "terminos": 5
+      "terminos": 21
      }
     },
     {
@@ -275,7 +275,7 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 4,
-      "terminos": 4
+      "terminos": 23
      }
     },
     {
@@ -313,7 +313,7 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 5,
-      "terminos": 5
+      "terminos": 20
      }
     },
     {
@@ -355,7 +355,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 5,
-      "terminos": 3
+      "terminos": 20
      }
     },
     {
@@ -393,7 +393,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 8
+      "terminos": 25
      }
     },
     {
@@ -431,7 +431,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 2
+      "terminos": 24
      }
     },
     {
@@ -471,7 +471,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
-      "terminos": 1
+      "terminos": 22
      }
     },
     {
@@ -509,7 +509,8 @@
       "requiere": [
        "/nucleo/kit/piezas/ejes.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 24
      }
     },
     {
@@ -543,7 +544,8 @@
        "/nucleo/kit/piezas/ejes.js",
        "/nucleo/kit/piezas/fis-cuentas.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 21
      }
     },
     {
@@ -589,7 +591,7 @@
        "/nucleo/kit/piezas/fis-cuentas.js"
       ],
       "ideas": 6,
-      "terminos": 1
+      "terminos": 23
      }
     },
     {
@@ -632,7 +634,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
-      "terminos": 2
+      "terminos": 28
      }
     },
     {
@@ -669,7 +671,7 @@
        "/nucleo/kit/piezas/fis-lienzo.js"
       ],
       "ideas": 5,
-      "terminos": 3
+      "terminos": 17
      }
     },
     {
@@ -709,7 +711,7 @@
        "/nucleo/kit/piezas/fis-espira.js"
       ],
       "ideas": 6,
-      "terminos": 4
+      "terminos": 28
      }
     },
     {
@@ -747,7 +749,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 4,
-      "terminos": 1
+      "terminos": 24
      }
     },
     {
@@ -788,7 +790,7 @@
        "/nucleo/kit/piezas/fis-banco-optico.js"
       ],
       "ideas": 6,
-      "terminos": 1
+      "terminos": 21
      }
     },
     {
@@ -829,7 +831,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 6,
-      "terminos": 4
+      "terminos": 33
      }
     }
    ]
