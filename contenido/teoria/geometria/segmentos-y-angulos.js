@@ -98,7 +98,7 @@
       opciones: [
         { id: 'c', texto: `${f(dAB + dBC)} cm`, correcta: true },
         { id: 'igual', texto: '10 cm', error: 'GE-SEG1', siFuera: '10 cm sería cierto con B en la recta, entre A y C. Fuera de ella, el camino crece.' },
-        { id: 'altura', texto: '13 cm', error: 'GE-SEG2', siFuera: 'Sumar la altura a AC parece razonable, pero cada tramo se mide en diagonal, por separado.' },
+        { id: 'altura', texto: '13 cm', error: 'GE-SEG2', siFuera: 'Sumar la altura a AC parece razonable, pero cada tramo se mide inclinado, por separado.' },
         { id: 'nose', texto: 'No se puede saber', error: 'GE-SEG3', siFuera: 'Faltaría un dato si no supiéramos la altura. Con 4, 6 y 3 cm, cada tramo es una hipotenusa.' },
       ],
       dibujo: { datos: tramos(BX, BY), estado: {} },
@@ -388,18 +388,20 @@
   // Cambia: la inclinación θ de la secante · Permanece: dos rectas paralelas · Progresa: qué pares son iguales y cuáles suman 180° ·
   // Se reserva: una recta que deja de ser paralela · Debe verse: la igualdad depende del paralelismo, no del aspecto.
   const th = { v: 'c-o', t: 'θ' };
+  // Las medidas que la figura rotula: el naranja de abajo (en P), el de arriba (en Q) y el conjugado turquesa en Q.
+  const medidasSecante = (t, giro = 0) => ({ abajo: t, arriba: t - giro, conjugado: 180 - t + giro });
   const secante = (t, o = {}) => {
-    const giro = o.giro || 0, h = 2.4;
+    const giro = o.giro || 0, h = 2.4, m = medidasSecante(t, giro);
     const dx = h / Math.tan(U.rad(t)), P = [-dx / 2, 0], Q = [dx / 2, h];
     const up = U.polar(Q, 1.6, t), dn = U.polar(P, -1.6, t);
     const R = U.polar(Q, 3, giro), L = U.polar(Q, -3, giro);
     const e = o.etapa === undefined ? 9 : o.etapa;
     const txt = (v, k) => (o.textos === false ? undefined : (e >= k ? `${v}°` : undefined));
     const angs = [
-      { en: 'P', de: 'Pd', a: 'Q', color: 'o', texto: txt(t, 0), radio: 24 },
-      { en: 'Q', de: 'Qd', a: 'Qu', color: 'o', texto: txt(t - giro, 1), radio: 24, desde: o.pasos ? 1 : 0 },
-      { en: 'Q', de: 'Qi', a: 'P', color: 'o', texto: txt(t - giro, 3), radio: 24, desde: o.pasos ? 3 : 0 },
-      { en: 'Q', de: 'Qd', a: 'P', color: 'i', texto: txt(180 - t + giro, 4), radio: 30, desde: o.pasos ? 4 : 0 },
+      { en: 'P', de: 'Pd', a: 'Q', color: 'o', texto: txt(m.abajo, 0), radio: 24 },
+      { en: 'Q', de: 'Qd', a: 'Qu', color: 'o', texto: txt(m.arriba, 1), radio: 24, desde: o.pasos ? 1 : 0 },
+      { en: 'Q', de: 'Qi', a: 'P', color: 'o', texto: txt(m.arriba, 3), radio: 24, desde: o.pasos ? 3 : 0 },
+      { en: 'Q', de: 'Qd', a: 'P', color: 'i', texto: txt(m.conjugado, 4), radio: 30, desde: o.pasos ? 4 : 0 },
     ];
     if (o.pasos) angs.splice(2, 0, { en: 'Q', de: 'Qi', a: 'Qb', color: 'o', texto: undefined, radio: 18, desde: 2 });
     return {
@@ -494,6 +496,8 @@
   // Cambia: a y b, los ángulos de cada tramo con su paralela · Permanece: las paralelas · Progresa: la paralela auxiliar por V ·
   // Se reserva: la línea auxiliar (aparece en la predicción) · Debe verse: x se parte en a y b, alternos internos.
   const ca = { v: 'c-o', t: 'a' }, cb = { v: 'c-i', t: 'b' }, cx = { v: 'c-h', t: 'x' };
+  // El quiebre que rotula la figura (x = a + b, por la paralela auxiliar).
+  const quiebreX = v => v.a + v.b;
   const quiebre = (a, b, o = {}) => {
     const V = [3.4, 1.5];
     const T1 = U.polar(V, 1.5 / Math.sin(U.rad(a)), 180 - a), B1 = U.polar(V, 1.5 / Math.sin(U.rad(b)), 180 + b);
@@ -522,6 +526,8 @@
       donde: v => enPantalla(dib(v.a, v.b, v), U.polar([3.4, 1.5], 1.5 / Math.sin(U.rad(v.b)), 180 + v.b)),
       mover: (pt, v) => ({ b: angTramo(alPlano(dib(v.a, v.b, v), pt)[0]) }) },
   ];
+  const QUIEBRES = [];   // todos los x de la grilla del juego (a y b de 20° a 70°, de 5° en 5°)
+  for (let a = 20; a <= 70; a += 5) for (let b = 20; b <= 70; b += 5) QUIEBRES.push(quiebreX({ a, b }));
   const quiebreIdea = {
     id: 'quiebre',
     titulo: 'El quiebre entre paralelas',
@@ -537,7 +543,7 @@
       dibujo: v => ({ datos: quiebre(v.a, v.b, { x: true }), estado: {} }),
       // Se agarran T y B, que corren por su paralela: V queda fijo y cada tramo se inclina.
       arrastres: arrastresQuiebre((a, b) => quiebre(a, b, { x: true })),
-      lectura: v => [cx, ` = ${v.a + v.b}°   ·   `, ca, ' + ', cb, ` = ${v.a + v.b}°`],
+      lectura: v => [cx, ` = ${quiebreX(v)}°   ·   `, ca, ' + ', cb, ` = ${v.a + v.b}°`],
       minimo: 3,
     },
     predice: {
@@ -616,9 +622,32 @@
           return { g: U.grados(Math.atan(Math.max(-1e3, Math.min(1e3, (q[1] - Q[1]) / Math.max(q[0] - Q[0], 0.05))))) };
         } },
     ],
-    lectura: v => ['naranjas ', `${v.t}° y ${v.t - v.g}°   ·   conjugados ${180 + v.g}°${v.g === 0 ? ': paralelas' : ''}`],
+    lectura: v => { const m = medidasSecante(v.t, v.g); return ['naranjas ', `${m.abajo}° y ${m.arriba}°   ·   conjugados ${m.abajo + m.conjugado}°${v.g === 0 ? ': paralelas' : ''}`]; },
+    // Retos comprobados con las medidas que rotula la figura (medidasSecante).
+    invitaciones: [
+      { texto: 'Haz que los dos ángulos naranjas vuelvan a ser iguales.',
+        logrado: v => { const m = medidasSecante(v.t, v.g); return m.abajo === m.arriba; },
+        bien: 'Iguales solo con giro cero: correspondientes iguales garantizan rectas paralelas.' },
+      { texto: 'Consigue que los dos naranjas difieran lo más posible.',
+        logrado: v => { const m = medidasSecante(v.t, v.g); return Math.abs(m.abajo - m.arriba) === Math.max(-mesaSecante.controles[1].min, mesaSecante.controles[1].max); },
+        bien: 'La diferencia es el giro de la recta de arriba, no la secante.' },
+      { texto: 'Haz que la secante forme un ángulo recto con la recta de abajo.',
+        logrado: v => medidasSecante(v.t, v.g).abajo === 90,
+        bien: 'Secante perpendicular. ¿Lo es también a la de arriba? Mira el giro.' },
+      { texto: 'Haz que los conjugados internos sumen 170°.',
+        logrado: v => { const m = medidasSecante(v.t, v.g); return m.abajo + m.conjugado === 170; },
+        bien: 'Sumar menos de 180° delata que las rectas no son paralelas.' },
+      { texto: 'Guarda dos casos con el mismo giro y distinta secante. Compara sus naranjas.',
+        logrado: (v, gs) => { const d = c => { const m = medidasSecante(c.t, c.g); return m.abajo - m.arriba; };
+          return v.g !== 0 && gs.some(c => c.g === v.g && c.t !== v.t && d(c) === d(v)) && gs.some(c => c.g === v.g && c.t === v.t); },
+        bien: 'Otra secante, la misma diferencia: la culpa es del giro.' },
+    ],
   };
   // Mesa 2: B libre en el plano, no solo en la recta. La idea 1 deja a B fuera de la recta solo en la predicción.
+  // El camino A → B → C que dibuja tramosLibre; el rodeo es lo que pasa de AC = 10.
+  const camino = v => Math.hypot(v.bx, v.by) + Math.hypot(10 - v.bx, v.by);
+  let CAMINO_MAX = 0;   // el mayor de la grilla de la mesa (bx de −2 a 12, by de 0 a 3,5, de 0,5 en 0,5)
+  for (let i = 0; i <= 28; i++) for (let j = 0; j <= 7; j++) CAMINO_MAX = Math.max(CAMINO_MAX, camino({ bx: -2 + i / 2, by: j / 2 }));
   const tramosLibre = (bx, by) => Object.assign(tramos(bx, by), { vista: { x: [-3, 13], y: [-1.4, 4.2] } });
   const mesaPunto = {
     id: 'punto-libre', titulo: 'B fuera de la recta', pieza: 'geo-figura',
@@ -632,10 +661,21 @@
     arrastres: [{ id: 'punto-b', etiqueta: 'punto B', color: 'c-o',
       donde: v => enPantalla(tramosLibre(v.bx, v.by), [v.bx, v.by]),
       mover: (pt, v) => { const q = alPlano(tramosLibre(v.bx, v.by), pt); return { bx: q[0], by: q[1] }; } }],
-    lectura: v => {
-      const s = Math.hypot(v.bx, v.by) + Math.hypot(10 - v.bx, v.by);
-      return [AB, ' + ', BC, ` ≈ ${f(s)} cm   ·   rodeo ${f(s - 10)} cm`];
-    },
+    lectura: v => { const s = camino(v); return [AB, ' + ', BC, ` ≈ ${f(s)} cm   ·   rodeo ${f(s - 10)} cm`]; },
+    invitaciones: [
+      { texto: 'Deja el rodeo en cero: que el camino por B mida igual que AC.',
+        logrado: v => Math.abs(camino(v) - 10) < 1e-9,
+        bien: 'Rodeo cero solo con B entre A y C. ¿Y si B pasa de C?' },
+      { texto: 'Pon B sobre la recta, pero fuera del tramo entre A y C.',
+        logrado: v => v.by === 0 && (v.bx < 0 || v.bx > 10),
+        bien: 'En la recta y con rodeo: «en la recta» no basta, falta «entre».' },
+      { texto: 'Busca el rodeo más grande que permite la mesa.',
+        logrado: v => Math.abs(camino(v) - CAMINO_MAX) < 1e-9,
+        bien: 'Lejos y alto: el rodeo crece. La suma nunca baja de AC.' },
+      { texto: 'Guarda dos casos con el mismo rodeo y B en lugares distintos.',
+        logrado: (v, gs) => gs.some(c => (c.bx !== v.bx || c.by !== v.by) && Math.abs(camino(c) - camino(v)) < 1e-9) && gs.some(c => c.bx === v.bx && c.by === v.by),
+        bien: 'Mismo rodeo en dos lugares. ¿Están en espejo respecto del medio de AC?' },
+    ],
   };
 
   return {
@@ -650,7 +690,61 @@
     },
     // Laboratorio: la secante con la recta que gira y B libre en el plano son más ricas que sus ideas; la tercera mesa es
     // el quiebre con sus dos manijas.
-    laboratorio: [mesaSecante, mesaPunto, Object.assign({ id: 'quiebre', titulo: 'El quiebre entre paralelas', pieza: 'geo-figura' }, quiebreIdea.juega)],
+    // Glosario: las palabras que el curso estrena aquí (docs/teoria.md, 4d). Es la primera unidad de geometría, así que
+    // trae el vocabulario de base. Triángulo, altura, hipotenusa y cateto también salen aquí, pero se definen en
+    // «Triángulos» y «Congruencia», donde son el tema; el lector los marca igual.
+    glosario: [
+      { termino: 'punto', def: 'Lugar exacto, sin tamaño. Se nombra con una letra mayúscula, como A o B.' },
+      { termino: 'recta', def: 'Línea derecha sin principio ni fin. Por dos puntos pasa una sola.', ver: ['segmento', 'rayo'] },
+      { termino: 'plano', def: 'Superficie lisa que se extiende sin fin en todas direcciones, como una hoja que nunca acaba.' },
+      { termino: 'segmento', def: 'Trozo de recta entre dos puntos, sus extremos. Tiene una medida fija.',
+        ejemplo: `Con B entre A y C, AB = 4 y BC = 6: AC = ${4 + 6}.`, ver: ['recta'] },
+      { termino: 'rayo', def: 'Parte de una recta que empieza en un punto y sigue sin fin hacia un solo lado.', ver: ['ángulo'] },
+      { termino: 'ángulo', simbolo: '∠', medida: '°', def: 'Abertura entre dos rayos que salen del mismo punto. Se mide en grados.',
+        ejemplo: '∠AOB: el vértice es O y los lados son OA y OB.', ver: ['vértice', 'bisectriz'] },
+      { termino: 'vértice', def: 'Punto donde se juntan los lados de un ángulo o de una figura.' },
+      { termino: 'ángulo agudo', formas: ['ángulo agudo', 'ángulos agudos', 'agudo', 'agudos'], def: 'El que mide más de 0° y menos de 90°: más cerrado que una esquina.' },
+      { termino: 'ángulo recto', formas: ['ángulo recto', 'ángulos rectos'], def: 'El que mide exactamente 90°, como la esquina de una hoja.' },
+      { termino: 'ángulo obtuso', formas: ['ángulo obtuso', 'ángulos obtusos', 'obtuso', 'obtusos'], def: 'El que mide más de 90° y menos de 180°: más abierto que una esquina.' },
+      { termino: 'ángulo llano', formas: ['ángulo llano', 'ángulos llanos', 'llano'], def: 'El que mide 180°: sus dos lados forman una sola recta.' },
+      { termino: 'ángulo no convexo', formas: ['ángulo no convexo', 'ángulos no convexos', 'no convexo'], def: 'El que mide más de 180° y menos de 360°: su abertura rodea por afuera.' },
+      { termino: 'bisectriz', def: 'Rayo que parte un ángulo en dos ángulos iguales.', ejemplo: `La de un ángulo de 50° deja dos de ${50 / 2}°.` },
+      { termino: 'complemento', formas: ['complemento', 'complementos', 'complementarios', 'complementario'],
+        def: 'Lo que le falta a un ángulo para llegar a 90°.', ejemplo: `El de 35° es ${90 - 35}°, porque 35° + ${90 - 35}° = 90°.`, ver: ['suplemento'] },
+      { termino: 'suplemento', formas: ['suplemento', 'suplementos', 'suplementarios', 'suplementario'],
+        def: 'Lo que le falta a un ángulo para llegar a 180°.', ejemplo: `El de 35° es ${180 - 35}°, porque 35° + ${180 - 35}° = 180°.`, ver: ['complemento'] },
+      { termino: 'rectas paralelas', simbolo: '∥', formas: ['rectas paralelas', 'paralelas', 'paralela', 'paralelos', 'paralelo'],
+        def: 'Rectas de un mismo plano que nunca se cortan, por más que se prolonguen.', ver: ['secante'] },
+      { termino: 'secante', def: 'Recta que corta a otras líneas o a una curva. Al cruzar dos paralelas forma ocho ángulos.',
+        ver: ['ángulos correspondientes', 'alternos internos', 'conjugados internos'] },
+      { termino: 'ángulos correspondientes', formas: ['ángulos correspondientes', 'correspondientes', 'correspondiente'],
+        def: 'Los que ocupan el mismo lugar en cada cruce de la secante. Entre paralelas, son iguales.', ver: ['secante'] },
+      { termino: 'alternos internos', formas: ['alternos internos', 'alterno interno', 'alternos', 'alterno'],
+        def: 'Ángulos entre las dos rectas y a distinto lado de la secante. Entre paralelas, son iguales.', ver: ['conjugados internos'] },
+      { termino: 'conjugados internos', formas: ['conjugados internos', 'conjugado interno', 'conjugados', 'conjugado'],
+        def: 'Ángulos entre las dos rectas y al mismo lado de la secante. Entre paralelas, suman 180°.',
+        ejemplo: `Si uno mide 60°, el otro mide ${180 - 60}°.`, ver: ['alternos internos'] },
+      { termino: 'opuestos por el vértice', formas: ['opuestos por el vértice', 'opuesto por el vértice'],
+        def: 'Los dos ángulos que quedan frente a frente cuando se cruzan dos rectas. Siempre son iguales.' },
+      { termino: 'adyacentes', formas: ['adyacentes', 'adyacente'], def: 'Ángulos que comparten el vértice y un lado, uno al costado del otro, sin encimarse.' },
+      { termino: 'línea auxiliar', formas: ['paralela auxiliar', 'línea auxiliar', 'figura auxiliar', 'auxiliar'],
+        def: 'Línea extra que se traza en la figura para hacer visible una relación y poder justificarla.' },
+    ],
+    laboratorio: [mesaSecante, mesaPunto, Object.assign({ id: 'quiebre', titulo: 'El quiebre entre paralelas', pieza: 'geo-figura',
+      invitaciones: [
+        { texto: 'Haz que el quiebre x mida justo 90°.',
+          logrado: v => quiebreX(v) === 90,
+          bien: 'Un quiebre recto con a + b = 90°. ¿Cuántas parejas lo logran?' },
+        { texto: 'Busca el quiebre más cerrado que permite la mesa.',
+          logrado: v => quiebreX(v) === Math.min(...QUIEBRES),
+          bien: 'Los dos tramos casi pegados a sus paralelas: x se cierra.' },
+        { texto: 'Haz el quiebre simétrico: el mismo ángulo arriba y abajo.',
+          logrado: v => v.a === v.b,
+          bien: 'Simétrico: la paralela auxiliar parte x en dos mitades iguales.' },
+        { texto: 'Guarda dos casos con el mismo quiebre x y distintos a y b.',
+          logrado: (v, gs) => gs.some(c => c.a !== v.a && quiebreX(c) === quiebreX(v)) && gs.some(c => c.a === v.a && c.b === v.b),
+          bien: 'El mismo x por dos caminos: solo cuenta la suma a + b.' },
+      ] }, quiebreIdea.juega)],
     ideas: [fuera, aberturaIdea, bisectriz, paralelas, quiebreIdea],
   };
 });
