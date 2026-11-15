@@ -184,7 +184,7 @@
     regla: {
       texto: 'Síntesis: varias sustancias forman una. Descomposición: una forma varias. Desplazamiento: un elemento reemplaza a otro. Doble desplazamiento: dos compuestos intercambian iones.',
       ecuacion: ['A + B → AB', '   ·   ', 'AB → A + B', '   ·   ', 'X + AB → XB + A', '   ·   ', 'AB + XY → AY + XB'],
-      condicion: 'los criterios se solapan: una síntesis o un desplazamiento pueden ser también redox; combustión y ácido-base son otras etiquetas.',
+      condicion: 'los criterios se solapan: una síntesis o un desplazamiento pueden ser también redox; combustión, ácido-base, exotérmica o endotérmica son otras etiquetas.',
       voz: 'Una reacción puede llevar dos etiquetas.',
     },
     ahoraTu: {
@@ -259,7 +259,7 @@
       ],
     },
     regla: {
-      texto: 'Se ajustan los coeficientes (cuántas moléculas), nunca los subíndices (qué sustancia), hasta que cada elemento tenga los mismos átomos a los dos lados.',
+      texto: 'Por tanteo, se ajustan los coeficientes (cuántas moléculas), nunca los subíndices (qué sustancia), hasta que cada elemento tenga los mismos átomos a los dos lados.',
       ecuacion: [cf(4), ' Fe + ', cf(3), ' O₂ → ', cf(2), ' ', { llave: ['Fe₂O₃'], nota: 'fija' }],
       condicion: 'se usan los enteros más pequeños. Una ecuación balanceada no prueba que la reacción ocurra ni muestra sus pasos.',
       voz: 'Inventario igual antes y después; elemento por elemento.',
@@ -424,7 +424,7 @@
       ],
     },
     regla: {
-      texto: 'Separa oxidación y reducción. En cada una, balancea el átomo central, el O con H₂O, el H con H⁺ y la carga con electrones. Iguala electrones y suma.',
+      texto: 'Método ion-electrón: en cada mitad (oxidación y reducción) balancea el átomo central, el O con H₂O, el H con H⁺ y la carga con electrones. Iguala electrones y suma.',
       ecuacion: ['MnO₄⁻ + 8 H⁺ + ', { llave: ['5 ', el], nota: 'cierra la carga', color: 'c-i' }, ' → Mn²⁺ + 4 H₂O'],
       condicion: 'así se hace en medio ácido; en medio básico, al final los H⁺ se neutralizan con OH⁻. La suma no lleva electrones.',
       voz: 'Átomos primero; la carga cierra con electrones.',
@@ -475,6 +475,15 @@
   const semi = v => { const S = SEMI[v.k]; return { datos: { fichas: [{ t: S.ion, carga: S.q, color: 'd' }, { t: `${S.h} H⁺`, carga: S.h, color: 'h' }, { t: `${v.n} e⁻`, carga: -v.n, color: 'i' }], neta: 'carga a la izquierda',
     alt: `${S.ion} + ${S.h} H⁺ + ${v.n} e⁻: carga ${sg(S.q + S.h - v.n)} a la izquierda; a la derecha, ${S.der}, carga ${sg(S.qd)}.` }, estado: {} }; };
 
+  // Para los retos: la ecuación que cuadra con más moléculas en la grilla, y los electrones que pide cada semirreacción.
+  let mayor_ = null;
+  const mayorComb = () => {
+    if (mayor_ === null) { mayor_ = 0; for (let a = 1; a <= 3; a++) for (let b = 1; b <= 6; b++) for (let c = 1; c <= 3; c++) for (let d = 1; d <= 6; d++) if (estadoComb({ a, b, c, d }) !== 'no cuadra') mayor_ = Math.max(mayor_, a + b + c + d); }
+    return mayor_;
+  };
+  const pideSemi = k => SEMI[k].q + SEMI[k].h - SEMI[k].qd;
+  const cuadraSemi = v => SEMI[v.k].q + SEMI[v.k].h - v.n === SEMI[v.k].qd;
+
   return {
     unidad: 'quimica.reacciones-y-balance',
     version: '0.1.0',
@@ -485,6 +494,40 @@
       pregunta: '¿Qué tendría que conservarse para que una ecuación sea creíble?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §4.1', url: 'https://openstax.org/books/chemistry-2e/pages/4-1-writing-and-balancing-chemical-equations' },
     },
+    // Glosario (docs/teoria.md §4d): las palabras que este tema estrena en química. «Estado de oxidación» viene de
+    // nomenclatura y «combustión» se define en recursos naturales: el lector las marca solas.
+    glosario: [
+      { termino: 'reacción química', def: 'Cambio en que unas sustancias se transforman en otras nuevas, con otras propiedades.',
+        formas: ['reacción química', 'reacciones químicas', 'reacción', 'reacciones'], ejemplo: 'Hierro con oxígeno forma óxido de hierro.', ver: ['reactivo', 'producto'] },
+      { termino: 'reactivo', def: 'Sustancia que se gasta en una reacción. Se escribe a la izquierda de la flecha.',
+        ver: ['producto'] },
+      { termino: 'producto', def: 'Sustancia nueva que se forma en una reacción. Se escribe a la derecha de la flecha.',
+        ver: ['reactivo'] },
+      { termino: 'coeficiente', def: 'Número delante de una fórmula: cuántas moléculas, o moles, de esa sustancia toman parte.',
+        ejemplo: '2 H₂O: dos moléculas de agua, con 4 H y 2 O.', ver: ['subíndice'] },
+      { termino: 'subíndice', def: 'Número pequeño abajo de un símbolo: cuántos átomos de ese elemento hay. Cambiarlo cambia la sustancia.',
+        ejemplo: 'H₂O es agua; H₂O₂ es agua oxigenada.', ver: ['coeficiente'] },
+      { termino: 'oxidación', def: 'Pérdida de electrones: el número que indica la carga aparente del átomo sube.',
+        formas: ['oxidación', 'oxidarse', 'se oxida'], ejemplo: 'Zn → Zn²⁺ + 2 e⁻: el zinc va de 0 a +2.', ver: ['reducción', 'redox'] },
+      { termino: 'reducción', def: 'Ganancia de electrones: el número que indica la carga aparente del átomo baja.',
+        formas: ['reducción', 'reducirse', 'se reduce'], ejemplo: 'Cu²⁺ + 2 e⁻ → Cu: el cobre va de +2 a 0.', ver: ['oxidación', 'redox'] },
+      { termino: 'agente oxidante', def: 'Sustancia que le quita electrones a otra y así la oxida; ella misma gana electrones.',
+        formas: ['agente oxidante', 'oxidante'], ejemplo: 'En Zn + Cu²⁺, el Cu²⁺ es quien toma los electrones.', ver: ['agente reductor'] },
+      { termino: 'agente reductor', def: 'Sustancia que le cede electrones a otra; ella misma pierde electrones, se oxida.',
+        formas: ['agente reductor', 'reductor'], ejemplo: 'En Zn + Cu²⁺, el zinc entrega 2 electrones.', ver: ['agente oxidante'] },
+      { termino: 'redox', def: 'Reacción con traspaso de electrones: una especie los pierde y otra los gana, en igual número.',
+        ver: ['oxidación', 'reducción'] },
+      { termino: 'semirreacción', def: 'Mitad de una reacción redox escrita aparte: solo la oxidación o solo la reducción, con sus electrones.',
+        ejemplo: 'MnO₄⁻ + 8 H⁺ + 5 e⁻ → Mn²⁺ + 4 H₂O.', ver: ['método ion-electrón'] },
+      { termino: 'método ion-electrón', def: 'Forma de balancear redox: cada mitad por separado, con agua, H⁺ y electrones; luego se suman.',
+        ver: ['semirreacción'] },
+      { termino: 'exotérmica', def: 'Dicho de una reacción que libera calor al entorno: los productos guardan menos energía que los reactivos.',
+        formas: ['exotérmica', 'exotérmicas', 'exotérmico', 'exotérmicos'], ejemplo: 'Quemar metano calienta la cocina.', ver: ['endotérmica'] },
+      { termino: 'endotérmica', def: 'Dicho de una reacción que absorbe calor del entorno: los productos guardan más energía que los reactivos.',
+        formas: ['endotérmica', 'endotérmicas', 'endotérmico', 'endotérmicos'], ejemplo: 'Descomponer la caliza en el horno pide calor todo el tiempo.', ver: ['exotérmica'] },
+      { termino: 'síntesis', def: 'Reacción en que dos o más sustancias se unen y forman una sola.',
+        ejemplo: '2 H₂ + O₂ → 2 H₂O.', ver: ['reacción química'] },
+    ],
     // Laboratorio (docs/teoria.md §4b), sin preguntas. La primera mesa suelta los cuatro coeficientes (más controles y el
     // caso de los múltiplos); la segunda trae cinco semirreacciones, hasta 12 electrones, con la fila estirable.
     laboratorio: [
@@ -499,6 +542,23 @@
         ],
         dibujo: v => comb(v),
         lectura: v => [`${v.a} : ${v.b} : ${v.c} : ${v.d} → ${estadoComb(v)}`],
+        // Retos: todos los decide estadoComb, el mismo inventario que escribe la lectura.
+        invitaciones: [
+          { texto: 'Balancea la combustión del metano con los enteros más pequeños.',
+            logrado: v => estadoComb(v) === 'balanceada ✓',
+            bien: 'Cada átomo de antes sigue ahí después, solo que con otra pareja.' },
+          { texto: 'Encuentra otra ecuación que cuadre, pero sin los enteros mínimos.',
+            logrado: v => estadoComb(v) === 'cuadra, sin enteros mínimos',
+            bien: 'Cuadra igual, pero se divide entre un número común. Se escribe la mínima.' },
+          { texto: 'Balancea usando la mayor cantidad de moléculas que permite la mesa.',
+            logrado: v => estadoComb(v) !== 'no cuadra' && v.a + v.b + v.c + v.d === mayorComb(),
+            bien: 'Triple receta, mismas proporciones. ¿Cambió algo del inventario por molécula?' },
+          { texto: 'Guarda un caso que no cuadre; luego arréglalo cambiando solo el O₂.',
+            logrado: (v, g) => estadoComb(v) === 'balanceada ✓'
+              && g.some(x => estadoComb(x) === 'no cuadra' && x.a === v.a && x.c === v.c && x.d === v.d && x.b !== v.b)
+              && g.some(x => x.a === v.a && x.b === v.b && x.c === v.c && x.d === v.d),
+            bien: 'El oxígeno se ajusta al final: está en los dos productos.' },
+        ],
       },
       {
         id: 'semirreacciones', titulo: 'Cinco semirreacciones', pieza: 'quim-fichas',
@@ -513,6 +573,22 @@
         arrastres: [{ id: 'electrones', etiqueta: 'final de la fila de cargas negativas', color: 'c-i',
           donde: v => finFila(semi(v), -SEMI[v.k].q + v.n),
           mover: (pt, v) => ({ n: (pt.x - 47) / 17 + 1 + SEMI[v.k].q }) }],
+        // Retos: la carga de cada lado sale de SEMI, la misma tabla que arma las fichas.
+        invitaciones: [
+          { texto: 'Iguala la carga del permanganato: ¿cuántos electrones pide?',
+            logrado: v => v.k === 'mn' && cuadraSemi(v),
+            bien: 'Cinco electrones: el manganeso baja de +7 a +2, cinco escalones.' },
+          { texto: 'Busca la semirreacción que pide más electrones y balancéala.',
+            logrado: v => cuadraSemi(v) && v.n === Math.max(...Object.keys(SEMI).map(pideSemi)),
+            bien: 'Seis: son dos cromos y cada uno baja tres escalones.' },
+          { texto: 'Pásate de largo: deja la izquierda más negativa que la derecha.',
+            logrado: v => SEMI[v.k].q + SEMI[v.k].h - v.n < SEMI[v.k].qd,
+            bien: 'Con electrones de más, la carga no cuadra. Solo un número sirve.' },
+          { texto: 'Guarda dos semirreacciones balanceadas: una con el doble de electrones que la otra.',
+            logrado: (v, g) => cuadraSemi(v) && g.some(x => cuadraSemi(x) && (v.n === 2 * x.n || x.n === 2 * v.n) && x.n > 0)
+              && g.some(x => x.k === v.k && x.n === v.n),
+            bien: 'Para sumarlas, la de menos electrones se multiplica por 2.' },
+        ],
       },
     ],
     ideas: [evidencias, clasif, tanteo, redox, ionE],

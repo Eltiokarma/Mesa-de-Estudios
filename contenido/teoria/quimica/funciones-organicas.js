@@ -659,6 +659,8 @@
   const POR_FORMULA = {};
   for (const k of Object.keys(MOL)) (POR_FORMULA[cuentaMol(MOL[k].m)] = POR_FORMULA[cuentaMol(MOL[k].m)] || []).push(k);
   const FORMULAS = Object.keys(POR_FORMULA).filter(fm => POR_FORMULA[fm].length >= 2);
+  // Familias (sin repetir) de las moléculas que se dibujan para una fórmula: las usan la lectura y los retos.
+  const familias = fm => [...new Set(POR_FORMULA[fm].slice(0, 3).map(k => MOL[k].fam))];
   function mismaFormula(fm) {
     const ks = POR_FORMULA[fm].slice(0, 3);
     return figura(ks.map((k, i) => [MOL[k].m, 0, 2.6 * i, `m${i}`]), {
@@ -680,6 +682,38 @@
     // Laboratorio (docs/teoria.md §4b): sin preguntas. La primera mesa es más rica que los juegos: tres grupos,
     // cadenas de 3 a 6 y el nombre armado por el código, con dos manijas (el grupo y el extremo de la cadena).
     // La segunda junta todas las moléculas de la unidad que comparten fórmula. La lectura dice entradas y resultado.
+    glosario: [
+      { termino: 'grupo funcional', def: 'Átomo o grupo de átomos que decide cómo reacciona una molécula orgánica y a qué familia pertenece.',
+        ejemplo: 'El OH hace del etanol, CH₃CH₂OH, un alcohol.', formas: ['grupo funcional', 'grupos funcionales'], ver: ['alcohol'] },
+      { termino: 'alcohol', def: 'Compuesto orgánico con un OH unido a un carbono de enlaces simples, no a un anillo aromático.',
+        ejemplo: 'Etanol, CH₃CH₂OH: fórmula C₂H₆O.', ver: ['fenol', 'grupo funcional'] },
+      { termino: 'fenol', def: 'Compuesto con un OH unido directamente a un anillo aromático.',
+        ejemplo: 'El más simple es C₆H₅OH.', ver: ['aromático', 'alcohol'] },
+      { termino: 'éter', def: 'Compuesto con un oxígeno entre dos carbonos: C–O–C.',
+        ejemplo: 'Metoximetano, CH₃OCH₃: misma fórmula que el etanol, C₂H₆O.', ver: ['isómero de función'] },
+      { termino: 'carbonilo', def: 'Grupo C=O: un carbono unido a un oxígeno por un enlace doble.',
+        ver: ['aldehído', 'cetona'] },
+      { termino: 'aldehído', def: 'Compuesto con el C=O en el extremo de la cadena, con un H en ese mismo carbono.',
+        ejemplo: 'Propanal, CH₃CH₂CHO: fórmula C₃H₆O.', ver: ['cetona', 'carbonilo'] },
+      { termino: 'cetona', def: 'Compuesto con el C=O en medio de la cadena, entre dos carbonos.',
+        ejemplo: 'Propanona o acetona, CH₃COCH₃: también C₃H₆O.', ver: ['aldehído', 'carbonilo'] },
+      { termino: 'ácido carboxílico', def: 'Compuesto con el grupo COOH: un C=O y un OH en el mismo carbono.',
+        ejemplo: 'Ácido etanoico, CH₃COOH: el ácido del vinagre.', formas: ['ácido carboxílico', 'ácidos carboxílicos'], ver: ['éster'] },
+      { termino: 'éster', def: 'Compuesto que sale de un ácido carboxílico y un alcohol al soltar agua; su grupo es COO entre carbonos.',
+        ejemplo: 'Metanoato de metilo, HCOOCH₃: C₂H₄O₂, como el ácido etanoico.', ver: ['ácido carboxílico'] },
+      { termino: 'amina', def: 'Compuesto derivado del amoniaco: un nitrógeno unido a uno, dos o tres carbonos.',
+        ejemplo: 'Metilamina, CH₃NH₂.', ver: ['amida'] },
+      { termino: 'amida', def: 'Compuesto con un nitrógeno unido al carbono de un C=O.',
+        ejemplo: 'Etanamida, CH₃CONH₂.', ver: ['amina', 'carbonilo'] },
+      { termino: 'nitrilo', def: 'Compuesto con un carbono unido a un nitrógeno por un enlace triple: C≡N.',
+        ejemplo: 'Etanonitrilo, CH₃CN.' },
+      { termino: 'isómero de función', def: 'Compuestos con la misma fórmula molecular y distinto grupo funcional.',
+        ejemplo: 'Etanol y metoximetano: los dos son C₂H₆O.', formas: ['isómeros de función', 'isómero de función'], ver: ['isómero', 'grupo funcional'] },
+      { termino: 'sufijo', def: 'Terminación del nombre que dice la familia: -ol, -al, -ona, -amina.',
+        ejemplo: 'Propanona: la terminación -ona avisa que es cetona.', ver: ['localizador'] },
+      { termino: 'localizador', def: 'Número del nombre que dice en qué carbono está el grupo; se usa el menor posible.',
+        ejemplo: 'Butan-2-ol: el OH está en el carbono 2.', formas: ['localizador', 'localizadores'], ver: ['sufijo'] },
+    ],
     laboratorio: [
       {
         id: 'grupo-en-la-cadena', titulo: 'El grupo que recorre la cadena', pieza: 'quim-molecula',
@@ -701,6 +735,24 @@
             donde: manijaFin,
             mover: (pt, val) => { const n = cercana([3, 4, 5, 6], manijaFin, pt, val, 'n'); return { n, p: Math.min(val.p, n) }; } },
         ],
+        invitaciones: [
+          { texto: 'Lleva el C=O al extremo de la cadena y mira la familia.',
+            logrado: val => val.g === 'co' && grupoLab(val).fam === 'aldehído',
+            bien: 'En el extremo, ese carbono lleva un H: ya es aldehído, -al.' },
+          { texto: 'Pon el C=O justo en el centro de una cadena de 5 carbonos.',
+            logrado: val => { const c = grupoLab(val); return c.fam === 'cetona' && c.n === 5 && 2 * c.p === c.n + 1; },
+            bien: 'Pentan-3-ona: desde cualquier extremo el localizador es 3.' },
+          { texto: 'Pon el OH en la segunda mitad de la cadena: ¿qué localizador lleva?',
+            logrado: val => { const c = grupoLab(val); return val.g === 'oh' && 2 * c.p > c.n + 1; },
+            bien: 'Se numera desde el otro extremo: el localizador siempre es el menor.' },
+          { texto: 'Busca la cetona más corta que se puede armar.',
+            logrado: val => { const c = grupoLab(val); return c.fam === 'cetona' && ![3, 4, 5, 6].some(n => n < c.n && grupoLab({ g: 'co', p: 2, n }).fam === 'cetona'); },
+            bien: 'Propanona: con tres carbonos ya hay un medio. ¿Por qué no hay etanona?' },
+          { texto: 'Guarda dos posiciones distintas del grupo que den el mismo nombre.',
+            logrado: (val, guardados) => { const c = grupoLab(val);
+              return guardados.some(g => { const d = grupoLab(g); return d.p !== c.p && d.nom === c.nom; }); },
+            bien: 'Mismo nombre, misma molécula: solo cambió desde dónde la numeraste.' },
+        ],
       },
       {
         id: 'misma-formula', titulo: 'Todas las de una fórmula', pieza: 'quim-molecula',
@@ -709,6 +761,20 @@
         dibujo: val => mismaFormula(val.f),
         lectura: val => { const fams = [...new Set(POR_FORMULA[val.f].slice(0, 3).map(k => NOMBRE_FAM[MOL[k].fam].toLowerCase()))]; return [`${val.f} → ${fams.length > 1 ? 'isómeros de función: ' + fams.join(', ') : 'mismo grupo, otras uniones: ' + fams[0]}`]; },
         // Sin arrastre: se elige una fórmula; no hay una variable que agarrar.
+        invitaciones: [
+          { texto: 'Busca una fórmula que pueda armar un fenol o un éter.',
+            logrado: val => familias(val.f).includes('fenol') && familias(val.f).includes('eter'),
+            bien: 'Mismos átomos: el O con H sobre el anillo, o el O entre dos carbonos.' },
+          { texto: 'Encuentra una fórmula donde un ácido y un éster sean isómeros de función.',
+            logrado: val => familias(val.f).includes('acido') && familias(val.f).includes('ester'),
+            bien: 'Mismos átomos, otro grupo: el éster no es ácido.' },
+          { texto: 'Busca una fórmula cuyas moléculas tengan el mismo grupo funcional.',
+            logrado: val => familias(val.f).length === 1,
+            bien: 'Ahí no hay isomería de función: cambian las uniones, no el grupo.' },
+          { texto: 'Guarda dos fórmulas distintas con la misma pareja de familias.',
+            logrado: (val, guardados) => guardados.some(g => g.f !== val.f && familias(g.f).length > 1 && familias(g.f).join() === familias(val.f).join()),
+            bien: 'Un CH₂ más no cambia qué familias caben en la fórmula.' },
+        ],
       },
     ],
     ideas: [oxigeno, carbonilo, acidos, nitrogeno, isomeria, nombre],

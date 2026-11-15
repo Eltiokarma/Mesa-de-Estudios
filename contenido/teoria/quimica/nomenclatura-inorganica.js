@@ -482,6 +482,9 @@
   const CATL = ['Na', 'Ca', 'Al', 'NH4'], ANL = ['Cl', 'S', 'CO3', 'SO4', 'PO4'];  // sin NO₃⁻: «NaNO₃» dispara el aviso de NaN del validador
   const salMano = v => { const C = CAT[v.c], A = AN[v.a]; return fichas([{ t: C[0], carga: C[2], n: v.nc, color: 'o' }, { t: A[0], carga: -A[2], n: v.na, color: 'i' }],
     { neta: 'carga neta', alt: `${v.nc} ${C[0]} y ${v.na} ${A[0]}: carga neta ${sg(v.nc * C[2] - v.na * A[2])}.` }); };
+  const cargaMano = v => v.nc * CAT[v.c][2] - v.na * AN[v.a][2];
+  // La sal simplificada con más fichas entre los iones de la mesa (para el reto del extremo).
+  const MAS_FICHAS = Math.max(...CATL.flatMap(c => ANL.map(a => { const x = sal(c, a); return x.nc + x.nc * CAT[c][2] / AN[a][2]; })));
   const filaFin = (q, n, signo) => PF().geometria({ fichas: [] }).cuadrito(q * n - 1, signo);
   // Mesa 2: estados de oxidación con los casos raros: peróxido (O −1), hidruro (H −1) y dos átomos que comparten.
   const RAROS = {
@@ -490,6 +493,9 @@
     s2o3: { t: 'S₂O₃²⁻', z: -2, x: 'S', nx: 2, fijos: [['O', -2, 3]] },
     hno3: { t: 'HNO₃', z: 0, x: 'N', nx: 1, fijos: [['H', 1, 1], ['O', -2, 3]] },
   };
+  const sumaRaro = v => { const e = RAROS[v.k]; return v.w * e.nx + e.fijos.reduce((a, [, c, n]) => a + c * n, 0); };
+  const cuadra = v => sumaRaro(v) === RAROS[v.k].z;
+  const MAX_W = Math.max(...Object.keys(RAROS).flatMap(k => Array.from({ length: 11 }, (_, i) => i - 3).filter(w => cuadra({ k, w }))));
   const raroDib = v => { const e = RAROS[v.k]; return fichas([{ t: `${e.x}${sub(e.nx)} ${e.nx > 1 ? `${e.nx}·(${sg(v.w)})` : sg(v.w)}`, carga: v.w * e.nx, n: 1, color: 'd' }, ...e.fijos.map(grupo)],
     { neta: 'suma de estados', alt: `${e.t} con ${e.x} a ${sg(v.w)}: suma ${sg(v.w * e.nx + e.fijos.reduce((a, [, c, n]) => a + c * n, 0))}, carga ${sg(e.z)}.` }); };
 
@@ -503,6 +509,43 @@
       pregunta: '¿Qué tendría que decir un nombre para reconstruir la fórmula?',
       fuente: { titulo: 'IUPAC, Brief Guide to Inorganic Nomenclature', url: 'https://iupac.org/what-we-do/nomenclature/brief-guides/' },
     },
+    // Glosario (docs/teoria.md §4d): las palabras que la unidad estrena en el curso de química.
+    glosario: [
+      { termino: 'estado de oxidación', formas: ['estado de oxidación', 'estados de oxidación'], simbolo: 'ω',
+        def: 'Carga que tendría un átomo si todos sus enlaces fueran iónicos. En una especie, todos suman su carga.',
+        ejemplo: 'HNO₃: +1 + ω + 3 · (−2) = 0, así el N vale +5.', ver: ['enlace iónico'] },
+      { termino: 'nomenclatura sistemática', formas: ['nomenclatura sistemática', 'sistemática'],
+        def: 'Nombra con prefijos que cuentan átomos: mono, di, tri, tetra.', ejemplo: 'PbO₂: dióxido de plomo.', ver: ['nomenclatura Stock'] },
+      { termino: 'nomenclatura Stock', formas: ['nomenclatura Stock', 'Stock'],
+        def: 'Nombra con el estado de oxidación del metal en números romanos, entre paréntesis.',
+        ejemplo: 'Fe₂O₃: 2ω = 6, óxido de hierro(III).', ver: ['estado de oxidación'] },
+      { termino: 'óxido básico', formas: ['óxido básico', 'óxidos básicos'], def: 'Compuesto de un metal con oxígeno. Con agua forma un hidróxido.',
+        ejemplo: 'CaO + H₂O → Ca(OH)₂.', ver: ['hidróxido', 'óxido ácido'] },
+      { termino: 'óxido ácido', formas: ['óxido ácido', 'óxidos ácidos'], def: 'Compuesto de un no metal con oxígeno; también se llama anhídrido. Con agua forma un oxácido.',
+        ejemplo: 'SO₃ + H₂O → H₂SO₄.', ver: ['oxácido', 'óxido básico'] },
+      { termino: 'hidróxido', formas: ['hidróxido', 'hidróxidos'], def: 'Compuesto de un catión metálico con iones OH⁻.',
+        ejemplo: 'NaOH: hidróxido de sodio.', ver: ['óxido básico'] },
+      { termino: 'oxácido', formas: ['ácido oxácido', 'oxácido', 'oxácidos'], def: 'Ácido formado por hidrógeno, un no metal y oxígeno.',
+        ejemplo: 'H₂SO₄, ácido sulfúrico.', ver: ['óxido ácido', 'hidrácido'] },
+      { termino: 'hidrácido', formas: ['hidrácido', 'hidrácidos'], def: 'Ácido sin oxígeno: hidrógeno unido a un no metal, disuelto en agua.',
+        ejemplo: 'HCl(ac), ácido clorhídrico.', ver: ['oxácido'] },
+      { termino: 'sal', formas: ['sal', 'sales'], def: 'Compuesto iónico de un catión con el anión que deja un ácido al perder sus H⁺.',
+        ejemplo: 'NaCl, del HCl; CaCO₃, del H₂CO₃.', ver: ['oxisal', 'hidrácido'] },
+      { termino: 'oxisal', formas: ['oxisal', 'oxisales'], def: 'Sal cuyo anión lleva oxígeno; viene de un oxácido.',
+        ejemplo: 'K₂SO₄, sulfato de potasio.', ver: ['oxácido'] },
+      { termino: 'ion poliatómico', formas: ['ion poliatómico', 'iones poliatómicos'],
+        def: 'Ion de varios átomos unidos que se comporta como una sola pieza: va entre paréntesis si se repite.',
+        ejemplo: 'Ca₃(PO₄)₂: dos fosfatos PO₄³⁻.', ver: ['ion'] },
+      { termino: 'sal ácida', formas: ['sal ácida', 'sales ácidas'], def: 'Sal cuyo anión conserva algún hidrógeno del ácido.',
+        ejemplo: 'NaHCO₃, con el anión HCO₃⁻.', ver: ['sal'] },
+      { termino: 'sal hidratada', formas: ['sal hidratada', 'sales hidratadas', 'hidrato', 'hidratos'],
+        def: 'Sal con moléculas de agua fijas en su cristal; se escriben después de un punto.',
+        ejemplo: 'CaSO₄·2H₂O: dos aguas por cada CaSO₄.', ver: ['sal'] },
+      { termino: 'peróxido', formas: ['peróxido', 'peróxidos'], def: 'Compuesto con dos oxígenos unidos entre sí, O₂²⁻, donde cada oxígeno vale −1.',
+        ejemplo: 'H₂O₂: 2 · (+1) + 2 · (−1) = 0.', ver: ['estado de oxidación'] },
+      { termino: 'hidruro', formas: ['hidruro', 'hidruros'], def: 'Compuesto del hidrógeno con un metal, donde el hidrógeno vale −1.',
+        ejemplo: 'NaH: +1 − 1 = 0.', ver: ['estado de oxidación'] },
+    ],
     // Laboratorio (docs/teoria.md §4b), sin preguntas. La primera mesa suelta el número de fichas (la idea 4 lo pone
     // sola): el alumno puede dejar la sal cargada y ver por qué no vale. La segunda trae los casos raros que la idea 1
     // deja para la predicción: peróxido, hidruro y dos átomos del mismo elemento.
@@ -518,7 +561,7 @@
         ],
         dibujo: v => salMano(v),
         lectura: v => {
-          const C = CAT[v.c], A = AN[v.a], q = v.nc * C[2] - v.na * A[2], x = sal(v.c, v.a);
+          const C = CAT[v.c], A = AN[v.a], q = cargaMano(v), x = sal(v.c, v.a);
           return [q !== 0 ? `${v.nc} ${C[0]} + ${v.na} ${A[0]}: carga ${sg(q)}, no es neutra` : v.nc === x.nc ? `${x.fo}: ${x.nombre} ✓` : `neutra, pero se simplifica a ${x.fo}`];
         },
         // El final de cada fila: arriba, las cargas del catión (q por ficha); abajo, las del anión.
@@ -527,6 +570,23 @@
             donde: v => filaFin(CAT[v.c][2], v.nc, '+'), mover: (pt, v) => ({ nc: ((pt.x - 47) / 17 + 1) / CAT[v.c][2] }) },
           { id: 'anion', etiqueta: 'final de las cargas del anión', color: 'c-i',
             donde: v => filaFin(AN[v.a][2], v.na, '−'), mover: (pt, v) => ({ na: ((pt.x - 47) / 17 + 1) / AN[v.a][2] }) },
+        ],
+        // Retos comprobados (docs/teoria.md §4d): la carga neta y la fórmula mínima salen de cargaMano y sal(), lo mismo
+        // que la lectura.
+        invitaciones: [
+          { texto: 'Arma la sal de calcio y fosfato sin que quede carga suelta.',
+            logrado: v => v.c === 'Ca' && v.a === 'PO4' && cargaMano(v) === 0,
+            bien: 'Tres de +2 contra dos de −3: seis y seis. El fosfato va entre paréntesis.' },
+          { texto: 'Arma una sal neutra que todavía se pueda simplificar.',
+            logrado: v => cargaMano(v) === 0 && v.nc !== sal(v.c, v.a).nc,
+            bien: 'Neutra no basta: la fórmula usa la proporción más pequeña.' },
+          { texto: 'Busca la sal neutra, ya simplificada, que pide más fichas en total.',
+            logrado: v => cargaMano(v) === 0 && v.nc === sal(v.c, v.a).nc && v.nc + v.na === MAS_FICHAS,
+            bien: 'Cargas que no se dividen entre sí piden más fichas de cada lado.' },
+          { texto: 'Guarda dos sales neutras con el mismo anión y distinto número de cationes.',
+            logrado: (v, guardados) => guardados.some(x => guardados.some(y => x.a === y.a && x.nc !== y.nc
+              && cargaMano(x) === 0 && cargaMano(y) === 0)),
+            bien: 'Mismo anión, otra carga del catión: cambia cuántas fichas pide.' },
         ],
       },
       {
@@ -537,8 +597,23 @@
           { id: 'w', etiqueta: 'ω', color: 'c-d', min: -3, max: 7, paso: 1, inicio: 0, decimales: 0 },
         ],
         dibujo: v => raroDib(v),
-        lectura: v => { const e = RAROS[v.k], suma = v.w * e.nx + e.fijos.reduce((a, [, c, n]) => a + c * n, 0); return [`${e.x} ${sg(v.w)} en ${e.t}: suma ${sg(suma)}, carga ${sg(e.z)}${suma === e.z ? ' ✓' : ''}`]; },
+        lectura: v => { const e = RAROS[v.k], suma = sumaRaro(v); return [`${e.x} ${sg(v.w)} en ${e.t}: suma ${sg(suma)}, carga ${sg(e.z)}${suma === e.z ? ' ✓' : ''}`]; },
         arrastres: [arrastreVerde(raroDib, v => RAROS[v.k].nx, 'w')],
+        // Retos: «cuadra» cuando sumaRaro, la misma suma de la lectura, iguala la carga de la especie.
+        invitaciones: [
+          { texto: 'Haz que cuadre el peróxido de hidrógeno: ¿cuánto vale cada oxígeno?',
+            logrado: v => v.k === 'h2o2' && cuadra(v),
+            bien: 'Cada oxígeno vale −1: los dos están unidos entre sí.' },
+          { texto: 'Haz que el hidrógeno valga −1 en un compuesto neutro.',
+            logrado: v => v.k === 'nah' && cuadra(v),
+            bien: 'Junto a un metal, el hidrógeno gana el electrón: es un hidruro.' },
+          { texto: 'Busca la especie donde el átomo verde llega al estado más alto.',
+            logrado: v => cuadra(v) && v.w === MAX_W,
+            bien: 'El nitrógeno del HNO₃ da todos sus electrones de valencia.' },
+          { texto: 'Guarda dos especies distintas, ya cuadradas, con el mismo estado del átomo verde.',
+            logrado: (v, guardados) => guardados.some(x => guardados.some(y => x.k !== y.k && x.w === y.w && cuadra(x) && cuadra(y))),
+            bien: 'Mismo −1 en peróxido e hidruro: el valor depende de los vecinos.' },
+        ],
       },
     ],
     ideas: [oxidacion, tipos, funciones, sales, especiales],

@@ -553,6 +553,7 @@
   const queda3 = (val, i) => [100, val.a, val.a * val.s / 100, val.a * val.s * val.b / 1e4][i];
   // Mesa 2: un cubo de arista a (1 a 4 cm) cortado en k partes por arista (1 a 20): A = 6a²k. La escala del eje sigue
   // a la arista, así la recta se ve entera; el punto gris es el cubo sin cortar.
+  const areaCubo = v => 6 * v.a * v.a * v.k;   // área total de los k³ cubitos: la usan el dibujo, la lectura y los retos
   const ejesCubo = (a, extra = {}) => {
     const tope = 6 * a * a * 20;
     return Object.assign({
@@ -577,6 +578,37 @@
     // Laboratorio (docs/teoria.md §4b): sin preguntas. La primera mesa es más rica que el juego de reciclaje: tres
     // filtros con rangos de 10 a 100 % y tres manijas. La segunda junta la arista y los cortes, hasta 20 por arista.
     // La lectura dice entradas y resultado, para que un caso guardado se entienda solo.
+    glosario: [
+      { termino: 'contaminante', def: 'Sustancia que, en cantidad suficiente, daña a los seres vivos o al ambiente al que llega.',
+        ejemplo: 'El SO₂ de una fundición: termina como lluvia ácida.', formas: ['contaminante', 'contaminantes'], ver: ['lluvia ácida'] },
+      { termino: 'smog', def: 'Niebla sucia de la ciudad: humo y gases del tránsito que la luz solar convierte en ozono y otros irritantes.',
+        ver: ['contaminante'] },
+      { termino: 'lluvia ácida', def: 'Lluvia con ácidos formados en el aire a partir de SO₂ y de óxidos de nitrógeno.',
+        ejemplo: 'SO₂ → SO₃, y SO₃ + H₂O → H₂SO₄.', ver: ['contaminante', 'escala de pH'] },
+      { termino: 'efecto invernadero', def: 'Retención de calor en la atmósfera: gases como el CO₂ dejan pasar la luz pero frenan el calor que sale.',
+        ver: ['capa de ozono'] },
+      { termino: 'capa de ozono', def: 'Zona alta de la atmósfera con más O₃, que absorbe gran parte de la luz ultravioleta del Sol.',
+        ver: ['CFC', 'efecto invernadero'] },
+      { termino: 'CFC', def: 'Clorofluorocarbonos: gases de aerosoles y refrigeradoras antiguas que destruyen el ozono de la estratosfera.',
+        ver: ['capa de ozono'] },
+      { termino: 'eutrofización', def: 'Exceso de nutrientes en un lago: crecen algas, al morir se descomponen y se gasta el oxígeno del agua.',
+        ejemplo: 'Fosfatos de detergentes y fertilizantes que llegan a una bahía.', ver: ['oxígeno disuelto'] },
+      { termino: 'oxígeno disuelto', def: 'O₂ mezclado en el agua, el que respiran los peces; lo gastan las bacterias que descomponen materia.',
+        ver: ['eutrofización'] },
+      { termino: 'potabilización', def: 'Tratamiento que vuelve el agua apta para beber: coagular, sedimentar, filtrar y desinfectar.',
+        formas: ['potabilización', 'potabilizar'], ver: ['desinfección'] },
+      { termino: 'desinfección', def: 'Paso que mata o inactiva los microbios del agua, por ejemplo con cloro o luz ultravioleta.',
+        formas: ['desinfección', 'desinfectar'], ver: ['potabilización'] },
+      { termino: 'reciclaje', def: 'Recuperar el material de un producto usado para fabricar otro, en lugar de botarlo.',
+        ver: ['recuperación'] },
+      { termino: 'monómero', def: 'Molécula pequeña que se repite muchas veces, unida a otras iguales, para formar un polímero.',
+        ejemplo: 'Eteno, CH₂=CH₂, el monómero del polietileno.', formas: ['monómero', 'monómeros'], ver: ['polímero'] },
+      { termino: 'polimerización por adición', def: 'Unión de muchos monómeros que abren su doble enlace y se enganchan sin soltar ninguna molécula.',
+        ejemplo: 'n CH₂=CH₂ → (–CH₂–CH₂–)ₙ: el polietileno.', ver: ['monómero', 'adición'] },
+      { termino: 'nanoescala', def: 'Tamaños de 1 a 100 nanómetros, donde muchos átomos quedan en la superficie y cambian las propiedades.' },
+      { termino: 'corrosión', def: 'Deterioro de un metal por una reacción redox en su superficie, con agua y oxígeno.',
+        ejemplo: 'El hierro de un clavo mojado forma herrumbre.', ver: ['oxidación'] },
+    ],
     laboratorio: [
       {
         id: 'tres-filtros', titulo: 'Tres filtros sobre 100 kg', pieza: 'barra-porcentaje',
@@ -600,6 +632,21 @@
             donde: val => ({ x: xBarra(queda3(val, 3)), y: yFila(3) }),
             mover: (pt, val) => ({ b: 100 * (pt.x - 10) / (3 * queda3(val, 2)) }) },
         ],
+        invitaciones: [
+          { texto: 'Recupera al menos 60 kg de cada 100 kg.',
+            logrado: val => queda3(val, 3) >= 60,
+            bien: 'Para llegar alto, los tres filtros tienen que ser buenos a la vez.' },
+          { texto: 'Pon dos filtros al 100 % y deja salir justo la mitad.',
+            logrado: val => [val.a, val.s, val.b].filter(x => x === 100).length === 2 && Math.abs(queda3(val, 3) - 50) < 1e-9,
+            bien: 'Basta un solo filtro al 50 % para perder la mitad.' },
+          { texto: 'Pasa de 80 kg con la separación por debajo de 90 %.',
+            logrado: val => queda3(val, 3) > 80 && val.s < 90,
+            bien: 'Con los otros perfectos, el filtro flojo pone el techo.' },
+          { texto: 'Guarda dos casos con los mismos tres porcentajes en otro orden.',
+            logrado: (val, guardados) => { const k = x => [x.a, x.s, x.b].sort((p, q) => p - q).join();
+              return guardados.some(g => k(g) === k(val) && (g.a !== val.a || g.s !== val.s || g.b !== val.b) && Math.abs(queda3(g, 3) - queda3(val, 3)) < 1e-9); },
+            bien: 'Mismos kilos: los filtros se multiplican y el orden no importa.' },
+        ],
       },
       {
         id: 'cubo-partido', titulo: 'Arista y cortes juntos', pieza: 'ejes',
@@ -610,13 +657,27 @@
         ],
         dibujo: val => ({ datos: ejesCubo(val.a, { puntos: [
           { x: 1, y: 6 * val.a * val.a, rotulo: 'entero' },
-          { x: val.k, y: 6 * val.a * val.a * val.k, color: 'o', rotulo: `${f(6 * val.a * val.a * val.k, 0)} cm²`, guias: true },
+          { x: val.k, y: areaCubo(val), color: 'o', rotulo: `${f(areaCubo(val), 0)} cm²`, guias: true },
         ] }), estado: {} }),
-        lectura: val => [`a = ${val.a} cm, k = ${val.k} → ${f(val.k ** 3, 0)} cubitos, `, A, ` = ${f(6 * val.a * val.a * val.k, 0)} cm²`],
+        lectura: val => [`a = ${val.a} cm, k = ${val.k} → ${f(val.k ** 3, 0)} cubitos, `, A, ` = ${f(areaCubo(val), 0)} cm²`],
         // El punto se desliza por la recta: más a la derecha, más cortes; responde el área (el volumen no cambia).
         arrastres: [{ id: 'cortes', etiqueta: 'punto sobre la recta: más cortes', color: 'c-o',
           donde: puntoCubo,
           mover: (pt, val) => { const g = PZ('ejes').geometria(ejesCubo(val.a)); return { k: (pt.x - g.X(0)) / (g.X(1) - g.X(0)) }; } }],
+        invitaciones: [
+          { texto: 'Haz que el área total sea diez veces la del cubo entero.',
+            logrado: val => areaCubo(val) === 10 * areaCubo({ a: val.a, k: 1 }),
+            bien: 'Diez veces la superficie, y el volumen no cambió nada.' },
+          { texto: 'Con el cubo de 1 cm, busca el menor k que pase de 100 cm².',
+            logrado: val => val.a === 1 && areaCubo(val) > 100 && areaCubo({ a: 1, k: val.k - 1 }) <= 100,
+            bien: 'Cada corte suma área; el volumen sigue en 1 cm³.' },
+          { texto: 'Guarda dos cubos de distinta arista con la misma área total.',
+            logrado: (val, guardados) => guardados.some(g => g.a !== val.a && areaCubo(g) === areaCubo(val)),
+            bien: 'Un cubo grande poco partido iguala a uno chico muy partido.' },
+          { texto: 'Llega al área más grande que permite esta mesa.',
+            logrado: val => areaCubo(val) === areaCubo({ a: 4, k: 20 }),
+            bien: 'La mayor superficie posible: por eso un polvo fino reacciona tan rápido.' },
+        ],
       },
     ],
     ideas: [aire, agua, eutro, reciclaje, polimeros, nano],

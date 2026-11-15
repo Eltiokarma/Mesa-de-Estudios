@@ -137,7 +137,7 @@
       ],
     },
     regla: {
-      texto: 'Brønsted-Lowry: el ácido da un H⁺ y la base lo recibe; cada uno queda como su conjugado. Arrhenius mira H⁺ y OH⁻ en agua; Lewis, pares de electrones.',
+      texto: 'Brønsted-Lowry: el ácido da un H⁺ y la base lo recibe; quedan conjugados. Arrhenius mira H⁺ y OH⁻ en agua; una base de Lewis cede un par de electrones.',
       ecuacion: [{ llave: ['HA + B'], nota: 'ácido y base' }, ' ⇌ ', { llave: ['A⁻ + HB⁺'], nota: 'sus conjugados' }],
       condicion: 'el papel depende de la reacción: el agua es base frente al HCl y ácido frente al NH₃.',
       voz: 'Primero ubica el protón; el nombre de cada papel sale solo.',
@@ -450,6 +450,7 @@
   // ---------- Laboratorio ----------
   // Vaso: 12 moléculas-modelo de ácido; el nivel es V/1 L. La fracción ionizada sale del balance de cargas con C = m/V.
   const PZ = () => Kit.piezas['quim-particulas'];
+  const labPH = val => pHde(hAcido(val.m / val.v, ACIDOS[val.k].ka));   // el pH que da la lectura
   const labC = val => { const c = val.m / val.v; return c >= 0.01 ? f(c, 3) : cien(c, 1); };
   const labVaso = val => {
     const ka = ACIDOS[val.k].ka, ion = Math.round(12 * alfa(val.m / val.v, ka));
@@ -479,6 +480,40 @@
       pregunta: '¿Cómo compararías dos números que difieren un millón de veces?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §14.2; IUPAC Gold Book, pH', url: 'https://openstax.org/books/chemistry-2e/pages/14-2-ph-and-poh' },
     },
+    // Glosario (docs/teoria.md §4d): las palabras que la unidad estrena en el curso. Los ejemplos se calculan aquí.
+    glosario: [
+      { termino: 'ácido', def: 'Sustancia que entrega un H⁺ a otra; en agua aumenta la cantidad de H₃O⁺.',
+        ejemplo: 'HCl + H₂O → Cl⁻ + H₃O⁺: el HCl da su H⁺ al agua.', ver: ['base', 'Brønsted-Lowry'] },
+      { termino: 'base', def: 'Sustancia que recibe un H⁺ de otra; en agua aumenta la cantidad de OH⁻.',
+        ejemplo: 'NH₃ + H₂O → NH₄⁺ + OH⁻: el NH₃ recibe el H⁺.', ver: ['ácido', 'base de Lewis'] },
+      { termino: 'Brønsted-Lowry', formas: ['Brønsted-Lowry', 'Brønsted'], def: 'Modelo en que el ácido da un protón y la base lo recibe; sirve también fuera del agua.',
+        ver: ['par conjugado'] },
+      { termino: 'base de Lewis', formas: ['base de Lewis', 'bases de Lewis'], def: 'Especie que entrega un par de electrones para formar un enlace, aunque no haya protones.',
+        ejemplo: 'En BF₃ + NH₃, el NH₃ da su par libre.', ver: ['base'] },
+      { termino: 'par conjugado', formas: ['par conjugado', 'pares conjugados', 'conjugado', 'conjugada', 'conjugados'],
+        def: 'Dos especies que se diferencian solo en un H⁺, como HCl y Cl⁻.', ver: ['Brønsted-Lowry'] },
+      { termino: 'ionización', formas: ['ionización', 'ioniza', 'ionizan', 'ionizada', 'ionizadas'],
+        def: 'Separación de una molécula en iones al disolverse, como HF → H⁺ + F⁻.', ver: ['ácido fuerte', 'ácido débil'] },
+      { termino: 'ácido fuerte', formas: ['ácido fuerte', 'ácidos fuertes'], def: 'El que se separa en iones casi por completo en agua, como el HCl.',
+        ver: ['ácido débil'] },
+      { termino: 'ácido débil', formas: ['ácido débil', 'ácidos débiles'], def: 'El que se separa en iones solo en parte: la mayoría de sus moléculas siguen enteras.',
+        ejemplo: `CH₃COOH 0,1 M: solo el ${f(100 * alfa(0.1, KA.acetico), 1)} % se separa.`, ver: ['constante de acidez'] },
+      { termino: 'constante de acidez', simbolo: 'Kₐ', def: 'Número que mide cuánto se separa en iones un ácido débil: mientras mayor, más fuerte.',
+        ejemplo: `HF: ${cien(KA.hf)}; ácido acético: ${cien(KA.acetico)}. El HF es más fuerte.`, ver: ['pKa'] },
+      { termino: 'pKa', def: 'Menos el logaritmo de Kₐ: mientras menor, más fuerte es el ácido.',
+        ejemplo: `Ácido acético: −log(${cien(KA.acetico)}) = ${fp(-Math.log10(KA.acetico))}.`, ver: ['constante de acidez'] },
+      { termino: 'escala de pH', formas: ['escala de pH', 'pH'], def: 'Medida de la acidez: menos el logaritmo de [H₃O⁺]. Bajo 7 es ácido y sobre 7, básico, a 25 °C.',
+        ejemplo: `[H₃O⁺] = 0,001 M: pH = ${fp(-Math.log10(0.001))}.`, ver: ['pOH'] },
+      { termino: 'pOH', def: 'Lo mismo que el pH, pero con los OH⁻: −log[OH⁻]. A 25 °C, sumado al pH da 14.',
+        ejemplo: `[OH⁻] = 0,01 M: pOH = ${fp(-Math.log10(0.01))} y pH = ${fp(14 + Math.log10(0.01))}.`, ver: ['escala de pH'] },
+      { termino: 'neutralización', def: 'Reacción de un ácido con una base: los H⁺ y los OH⁻ forman agua y queda una sal.',
+        ver: ['titulación'] },
+      { termino: 'titulación', def: 'Agregar poco a poco una solución de concentración conocida para medir cuánto ácido o base hay.',
+        ver: ['punto de equivalencia'] },
+      { termino: 'punto de equivalencia', formas: ['punto de equivalencia', 'equivalencia'],
+        def: 'Momento de la titulación en que los moles de base agregados igualan a los de ácido.',
+        ejemplo: `25 mL de HCl 0,1 M piden ${f(0.1 * VA / CB, 0)} mL de NaOH 0,1 M.`, ver: ['titulación'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera junta fuerza y concentración en un solo vaso: se
     // agrega agua arrastrando el nivel y se ve que el débil se ioniza más al diluirse (lo que la idea 2 no deja probar).
     // La segunda titula cualquiera de los tres ácidos a tres concentraciones, con la curva del HCl de fondo para comparar.
@@ -498,6 +533,22 @@
         arrastres: [{ id: 'nivel', etiqueta: 'nivel del vaso: más arriba, más agua', color: 'c-o',
           donde: val => nivelVaso(labVaso(val)),
           mover: (pt, val) => ({ v: volumenEn(labVaso(val), pt.y) }) }],
+        // Retos (docs/teoria.md §4d): los comprueban alfa y hAcido, las mismas cuentas de la lupa y la lectura.
+        invitaciones: [
+          { texto: 'Con un ácido débil, logra que más de la mitad de la lupa esté ionizada.',
+            logrado: val => val.k !== 'hcl' && Math.round(12 * alfa(val.m / val.v, ACIDOS[val.k].ka)) > 6,
+            bien: 'Muy diluido, el débil se ioniza casi entero. Kₐ es la misma; cambió C.' },
+          { texto: 'Con HCl, deja el pH justo en 3.',
+            logrado: val => val.k === 'hcl' && Math.abs(labPH(val) - 3) < 0.005,
+            bien: 'Una milésima de mol por litro: pH 3. ¿Qué cantidad daría pH 4?' },
+          { texto: 'Busca el pH más alto que permite la mesa.',
+            logrado: val => Object.keys(ACIDOS).every(k => labPH(val) >= labPH({ k, m: 0.0001, v: 1 }) - 1e-9),
+            bien: 'Poco ácido, mucha agua y el más débil. Aun así, no llega a 7.' },
+          { texto: 'Guarda HF y CH₃COOH con la misma cantidad y el mismo volumen.',
+            logrado: (val, guardados) => val.k !== 'hcl' && guardados.some(g => g.k !== 'hcl' && g.k !== val.k && g.m === val.m && g.v === val.v)
+              && guardados.some(g => g.k === val.k && g.m === val.m && g.v === val.v),
+            bien: 'Misma concentración, distinta Kₐ: el HF se ioniza más y su pH es menor.' },
+        ],
       },
       {
         id: 'titula-cualquiera', titulo: 'Titula cualquier ácido', pieza: 'ejes',
@@ -512,6 +563,22 @@
         arrastres: [{ id: 'base-agregada', etiqueta: 'volumen de NaOH sobre la curva', color: 'c-o',
           donde: val => puntoTit(val.v, ACIDOS[val.k].ka, val.c),
           mover: pt => ({ v: vEn(pt) }) }],
+        // Retos: los comprueban pHtit y los moles de la equivalencia (C·25 mL = 0,1 M·V), lo mismo que traza la curva.
+        invitaciones: [
+          { texto: 'Deja el punto justo en el punto de equivalencia.',
+            logrado: val => Math.abs(val.v - val.c * VA / CB) < 1e-9,
+            bien: 'Moles de base iguales a los de ácido. ¿Ahí el pH es 7 con todos?' },
+          { texto: 'Con un ácido débil, busca el punto donde el pH vale su pKa.',
+            logrado: val => val.k !== 'hcl' && Math.abs(pHtit(val.v, ACIDOS[val.k].ka, val.c) + Math.log10(ACIDOS[val.k].ka)) < 0.1,
+            bien: 'Es la media neutralización: tanto ácido como su base conjugada.' },
+          { texto: 'Pasa la equivalencia y lleva el pH por encima de 12.',
+            logrado: val => pHtit(val.v, ACIDOS[val.k].ka, val.c) > 12,
+            bien: 'Ya no queda ácido: la base que sobra manda el pH.' },
+          { texto: 'Guarda HCl y HF de igual concentración, sin base agregada.',
+            logrado: (val, guardados) => val.v === 0 && guardados.some(g => g.v === 0 && g.c === val.c && ((g.k === 'hcl') !== (val.k === 'hcl')) && (g.k === 'hf' || val.k === 'hf'))
+              && guardados.some(g => g.k === val.k && g.c === val.c && g.v === val.v),
+            bien: 'Misma concentración, distinto pH: la fuerza decide cuánto se ioniza.' },
+        ],
       },
     ],
     ideas: [proton, fuerza, escala, titulacion],

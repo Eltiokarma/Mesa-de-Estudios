@@ -464,6 +464,7 @@
   };
   // Mesa 2: hasta un gramo que desaparece, comparado con el carbón que habría que quemar (3,3 × 10⁷ J por kg).
   const E_CARBON = 3.3e7;
+  const energiaMg = mg => mg * 1e-6 * C2, carbon = mg => energiaMg(mg) / E_CARBON / 1000;   // J y toneladas de carbón
   const dibGramo = val => ({ datos: ejesMasa(1000, { puntos: [{ x: val.mg, y: val.mg * 0.09, color: 'd', rotulo: `${f(val.mg * 0.09, 1)} TJ`, guias: true }] }), estado: {} });
 
   return {
@@ -476,6 +477,44 @@
       pregunta: '¿Qué pesarías para saber si algo pierde masa al quemarse?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §1.2', url: 'https://openstax.org/books/chemistry-2e/pages/1-2-phases-and-classification-of-matter' },
     },
+    // Glosario (docs/teoria.md §4d): las palabras que la unidad estrena en el curso de química.
+    glosario: [
+      { termino: 'sustancia', formas: ['sustancia pura', 'sustancias puras', 'sustancia', 'sustancias'],
+        def: 'Materia formada por una sola especie de partícula, con propiedades fijas: el agua, el oxígeno, la sal.',
+        ver: ['elemento', 'compuesto', 'mezcla'] },
+      { termino: 'elemento', def: 'Sustancia con átomos de una sola clase. No se descompone en otras más simples por medios químicos.',
+        ejemplo: 'El oxígeno O₂: moléculas de dos átomos, los dos de oxígeno.', ver: ['compuesto'] },
+      { termino: 'compuesto', def: 'Sustancia con dos o más clases de átomos unidos en proporción fija.',
+        ejemplo: 'El agua H₂O: siempre 2 átomos de hidrógeno por 1 de oxígeno.', ver: ['elemento', 'molécula'] },
+      { termino: 'molécula', def: 'Grupo de átomos unidos que viaja junto: la partícula más pequeña de muchas sustancias.',
+        ejemplo: 'Una molécula de CO₂ lleva 1 carbono y 2 oxígenos: 3 átomos.', ver: ['compuesto'] },
+      { termino: 'mezcla', def: 'Dos o más sustancias juntas que no se unen químicamente y se pueden separar por medios físicos.',
+        ver: ['mezcla homogénea', 'mezcla heterogénea'] },
+      { termino: 'mezcla homogénea', formas: ['mezcla homogénea', 'mezclas homogéneas'],
+        def: 'Mezcla que se ve igual en todas sus partes: tiene una sola fase.', ejemplo: 'Agua con azúcar disuelta.', ver: ['fase'] },
+      { termino: 'mezcla heterogénea', formas: ['mezcla heterogénea', 'mezclas heterogéneas'],
+        def: 'Mezcla en la que se distinguen partes distintas: tiene dos o más fases.', ejemplo: 'Agua con aceite: dos capas.', ver: ['fase'] },
+      { termino: 'fase', def: 'Parte de un sistema con las mismas propiedades en todos sus puntos, separada de las otras por un borde.',
+        ejemplo: 'Hielo flotando en agua: una sola sustancia, dos fases.' },
+      { termino: 'cambio físico', formas: ['cambio físico', 'cambios físicos'],
+        def: 'Transformación en la que las partículas siguen siendo las mismas: cambian de orden, de lugar o de estado.',
+        ejemplo: 'Fundir hielo: antes y después hay moléculas de H₂O.', ver: ['cambio químico'] },
+      { termino: 'cambio químico', formas: ['cambio químico', 'cambios químicos'],
+        def: 'Transformación en la que aparecen sustancias nuevas, armadas con los mismos átomos reordenados.',
+        ejemplo: 'El hierro que se oxida forma óxido de hierro.', ver: ['cambio físico', 'cambio nuclear'] },
+      { termino: 'cambio nuclear', formas: ['cambio nuclear', 'cambios nucleares', 'proceso nuclear', 'procesos nucleares'],
+        def: 'Transformación del núcleo de los átomos: el elemento pasa a ser otro y se libera mucha energía.',
+        ejemplo: 'El radio-226 emite una partícula alfa y queda radón-222.', ver: ['cambio químico'] },
+      { termino: 'energía', simbolo: 'E', medida: 'J', def: 'Lo que permite calentar, mover o transformar algo. Se mide en joules.',
+        ver: ['calor sensible', 'calor latente'] },
+      { termino: 'calor sensible', def: 'Calor que sube o baja la temperatura de un cuerpo sin cambiarle el estado.',
+        ejemplo: 'Calentar 10 g de agua 20 °C: 10 · 4,18 · 20 = 836 J.', ver: ['calor específico', 'calor latente'] },
+      { termino: 'calor latente', simbolo: 'L', medida: 'J/g', def: 'Calor que cambia el estado de un gramo sin cambiar su temperatura.',
+        ejemplo: 'Fundir 10 g de hielo a 0 °C: 10 · 334 = 3340 J.', ver: ['calor sensible', 'fase'] },
+      { termino: 'calor específico', simbolo: 'c', medida: 'J/(g·°C)',
+        def: 'Calor que necesita un gramo de una sustancia para subir 1 °C.', ejemplo: 'Agua líquida: 4,18 J/(g·°C); hielo: 2,1 J/(g·°C).',
+        ver: ['calor sensible'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera lleva el hielo hasta vapor, con la meseta de
     // hervir que la idea 3 no alcanza; la segunda llega a un gramo y lo traduce a carbón quemado. Las lecturas dicen
     // entradas y resultado, para que un caso guardado se lea solo.
@@ -492,16 +531,44 @@
         arrastres: [{ id: 'calor', etiqueta: 'punto de la curva: calor entregado', color: 'c-o',
           donde: val => { const g = EJES().geometria(dibLab(val).datos); return { x: g.X(val.q), y: g.Y(estadoLab(val.t0, val.q).T) }; },
           mover: (pt, val) => ({ q: inversa(EJES().geometria(dibLab(val).datos).X, 0, QMAX)(pt.x) }) }],
+        // Retos comprobados (docs/teoria.md §4d): los mira estadoLab, el mismo cálculo que pone el punto en la curva.
+        invitaciones: [
+          { texto: 'Busca el menor calor con el que todo el hielo ya es agua líquida.',
+            logrado: val => estadoLab(val.t0, val.q).lee === 'agua líquida' && estadoLab(val.t0, val.q - 0.5).lee !== 'agua líquida',
+            bien: 'Ahí terminó la meseta de fundir. ¿Y si el hielo empieza más frío?' },
+          { texto: 'Guarda dos casos con distinto calor y la misma temperatura.',
+            logrado: (val, guardados) => guardados.some(a => guardados.some(b => a.q !== b.q
+              && Math.abs(estadoLab(a.t0, a.q).T - estadoLab(b.t0, b.q).T) < 1e-9)),
+            bien: 'Más calor y el mismo termómetro: ese calor cambió el estado, no la temperatura.' },
+          { texto: 'Deja la mitad del agua hervida y la otra mitad líquida, a 100 °C.',
+            logrado: val => { const k = tramos(val.t0), x = (val.q - k.c) / (k.d - k.c); return x >= 0.45 && x <= 0.55; },
+            bien: 'Media meseta larga. Hervir pide mucho más calor que fundir.' },
+          { texto: 'Calienta el vapor por encima de 120 °C.',
+            logrado: val => estadoLab(val.t0, val.q).lee === 'vapor' && estadoLab(val.t0, val.q).T > 120,
+            bien: 'Sin cambio de estado, el calor específico manda otra vez: la curva vuelve a subir.' },
+        ],
       },
       {
         id: 'gramo-carbon', titulo: 'Un gramo contra el carbón', pieza: 'ejes',
         consigna: 'Sube el punto por la recta hasta un gramo. La lectura dice cuánto carbón habría que quemar para igualarlo.',
         controles: [{ id: 'mg', etiqueta: 'Δm', color: 'c-i', min: 10, max: 1000, paso: 10, inicio: 100, unidad: 'mg', decimales: 0 }],
         dibujo: val => dibGramo(val),
-        lectura: val => [`${f(val.mg, 0)} mg → `, E, ` = ${cien(val.mg * 1e-6 * C2)} J = ${f(val.mg * 1e-6 * C2 / E_CARBON / 1000, 0)} t de carbón`],
+        lectura: val => [`${f(val.mg, 0)} mg → `, E, ` = ${cien(energiaMg(val.mg))} J = ${f(carbon(val.mg), 0)} t de carbón`],
         arrastres: [{ id: 'masa', etiqueta: 'punto de la recta: masa que desaparece', color: 'c-i',
           donde: val => { const g = EJES().geometria(dibGramo(val).datos); return { x: g.X(val.mg), y: g.Y(val.mg * 0.09) }; },
           mover: (pt, val) => ({ mg: inversa(EJES().geometria(dibGramo(val).datos).X, 0, 1000)(pt.x) }) }],
+        // Retos: toneladas de carbón con la misma cuenta de la lectura (E = Δm·c² entre la energía de un kg de carbón).
+        invitaciones: [
+          { texto: 'Busca la menor masa que ya equivale a mil toneladas de carbón.',
+            logrado: val => carbon(val.mg) >= 1000 && carbon(val.mg - 10) < 1000,
+            bien: 'Menos de medio gramo basta. ¿Cuánto carbón valdría un gramo entero?' },
+          { texto: 'Guarda dos casos: uno que libere el triple de energía que el otro.',
+            logrado: (val, guardados) => guardados.some(a => guardados.some(b => Math.abs(energiaMg(a.mg) - 3 * energiaMg(b.mg)) < 1e-6 * energiaMg(a.mg))),
+            bien: 'Triple de masa perdida, triple de energía: la recta pasa por el cero.' },
+          { texto: 'Haz que desaparezca un gramo entero de masa.',
+            logrado: val => val.mg === 1000,
+            bien: 'Un solo gramo vale miles de toneladas de carbón: c² es enorme.' },
+        ],
       },
     ],
     ideas: [sustancia, cambios, calor, energia],

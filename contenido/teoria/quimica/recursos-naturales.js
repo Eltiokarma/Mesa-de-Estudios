@@ -404,6 +404,8 @@
     { titulo: `en 1 000 kg: ${f(kg, 1)} kg de ${n}`, tramos: [{ valor: v.ley, texto: `${f(v.ley, 1)} %`, color: 'o' }, { valor: 100 - v.ley, texto: 'roca' }] },
     { titulo: `de ese ${n} se recuperan ${f(sale, 1)} kg`, tramos: [{ valor: v.rec, texto: `${f(v.rec, 0)} %`, color: 'd' }, { valor: 100 - v.rec, texto: 'se pierde' }] },
   ], alt: `Mena de ${n} con ley ${f(v.ley, 1)} % y recuperación ${f(v.rec, 0)} %: de 1 000 kg salen ${f(sale, 1)} kg.` }; };
+  // Kilos de metal que salen de 1 000 kg de mena: los usan la lectura y los retos.
+  const kgSale = v => 10 * v.ley * v.rec / 100;
   // Mesa 3: la combustión con el oxígeno que el alumno quiera, de muy poco (hollín) a mucho (sobra O₂).
   const leerPocos = (k, o) => { const p = quemar(k, 2, o); return [`${f(2 * o, 0)} O₂ → `, [[p.co2, 'CO₂'], [p.co, 'CO'], [p.hollin, 'C (hollín)'], [p.h2o, 'H₂O'], [p.sobraO2, 'O₂']].filter(([x]) => x > 0).map(([x, t]) => `${f(x, 0)} ${t}`).join(' + ')]; };
 
@@ -420,6 +422,37 @@
     // Laboratorio (docs/teoria.md §4b), sin preguntas. La torre con dos platos (un tramo, no un punto); la mena como
     // dos barras con los bordes arrastrables y rangos más amplios; y la combustión con el oxígeno libre, donde aparece
     // el hollín que la idea 3 no deja ver. Títulos y lecturas dicen las entradas, para que el caso guardado se lea solo.
+    glosario: [
+      { termino: 'petróleo', def: 'Mezcla líquida de muchos hidrocarburos, formada bajo tierra en millones de años a partir de restos de seres vivos.',
+        ver: ['hidrocarburo', 'destilación fraccionada'] },
+      { termino: 'destilación fraccionada', def: 'Separación de una mezcla de líquidos en una torre, según el intervalo de temperatura en que hierve cada parte.',
+        ejemplo: 'La gasolina se recoge entre 30 y 200 °C.', ver: ['petróleo', 'refinación'] },
+      { termino: 'refinación', def: 'Procesos que convierten el petróleo crudo en productos útiles: separar, romper y limpiar sus moléculas.',
+        ver: ['destilación fraccionada', 'craqueo'] },
+      { termino: 'craqueo', def: 'Ruptura de moléculas grandes del petróleo en otras más chicas, con calor o catalizador, para obtener más gasolina.',
+        ejemplo: 'C₁₆H₃₄ → C₈H₁₈ + C₈H₁₆: 34 H a cada lado.', ver: ['refinación'] },
+      { termino: 'octanaje', def: 'Número que mide cuánto resiste una gasolina a la detonación, comparada con isooctano (100) y heptano (0).',
+        ejemplo: 'Gasolina de 90: detona como 90 % de isooctano y 10 % de heptano.', ver: ['isooctano', 'detonación'] },
+      { termino: 'isooctano', def: '2,2,4-trimetilpentano, C₈H₁₈: hidrocarburo ramificado que resiste la detonación; vale 100 en la escala de octanaje.',
+        ver: ['octanaje', 'isómero'] },
+      { termino: 'detonación', def: 'Encendido espontáneo de la mezcla en el motor antes de que llegue la llama; golpea el pistón.',
+        formas: ['detonación', 'detonaciones', 'detona', 'detonan'], ver: ['octanaje'] },
+      { termino: 'combustión', def: 'Reacción rápida de una sustancia con oxígeno que libera calor y, casi siempre, luz.',
+        ejemplo: 'CH₄ + 2 O₂ → CO₂ + 2 H₂O.', ver: ['combustión completa', 'combustión incompleta'] },
+      { termino: 'combustión completa', def: 'La que tiene oxígeno suficiente: todo el carbono termina en CO₂ y el hidrógeno en agua.',
+        ejemplo: '2 CH₄ con 4 O₂: salen 2 CO₂ y 4 H₂O.', ver: ['combustión incompleta'] },
+      { termino: 'combustión incompleta', def: 'La que tiene poco oxígeno: parte del carbono queda como CO, un gas tóxico, o como hollín.',
+        ejemplo: '2 CH₄ con 3 O₂: salen 2 CO y 4 H₂O.', ver: ['hollín', 'combustión completa'] },
+      { termino: 'hollín', def: 'Polvo negro de carbono sin quemar que deja una combustión con muy poco oxígeno.' },
+      { termino: 'gas natural', def: 'Mezcla de gases del subsuelo, sobre todo metano, CH₄, que se usa como combustible.',
+        ver: ['combustión'] },
+      { termino: 'mena', def: 'Roca de la que conviene sacar un metal porque lo trae en cantidad suficiente.',
+        ejemplo: 'La calcopirita, CuFeS₂, da el cobre de muchas menas peruanas.', formas: ['mena', 'menas'], ver: ['ley del mineral'] },
+      { termino: 'ley del mineral', def: 'Porcentaje de metal que trae la mena: cuántos kilos de metal hay en cada 100 kg de roca.',
+        ejemplo: 'Ley 2 %: 1 000 kg de mena traen 20 kg de cobre.', formas: ['ley del mineral', 'ley de la mena'], ver: ['mena', 'recuperación'] },
+      { termino: 'recuperación', def: 'Porcentaje del metal de la mena que el proceso logra sacar; el resto se pierde en los relaves.',
+        ejemplo: 'De 20 kg con 90 %: salen 18 kg.', ver: ['ley del mineral'] },
+    ],
     laboratorio: [
       {
         id: 'dos-platos', titulo: 'Dos platos de la torre', pieza: 'recta',
@@ -434,6 +467,20 @@
           { id: 'plato-1', etiqueta: 'primer plato', color: 'c-h', donde: v => ({ x: GR().x(v.a), y: GR().filaY(0) }), mover: pt => ({ a: tDeX(pt.x) }) },
           { id: 'plato-2', etiqueta: 'segundo plato', color: 'c-h', donde: v => ({ x: GR().x(v.b), y: GR().filaY(0) }), mover: pt => ({ b: tDeX(pt.x) }) },
         ],
+        invitaciones: [
+          { texto: 'Ajusta un tramo que recoja solo gasolina.',
+            logrado: v => { const r = recoge(v); return r.length === 1 && r[0] === 'gasolina'; },
+            bien: 'Una sola fracción, pero sigue siendo mezcla: hierve en un intervalo.' },
+          { texto: 'Pon los dos platos en la misma temperatura y recoge dos fracciones.',
+            logrado: v => v.a === v.b && recoge(v).length >= 2,
+            bien: 'A esa temperatura hierven las dos: las fracciones se traslapan.' },
+          { texto: 'Recoge todas las fracciones de la torre a la vez.',
+            logrado: v => recoge(v).length === FRAC.length,
+            bien: 'Un tramo tan ancho recoge todo el crudo: no separa nada.' },
+          { texto: 'Guarda dos tramos del mismo ancho que recojan distinto número de fracciones.',
+            logrado: (v, guardados) => guardados.some(g => Math.abs(g.a - g.b) === Math.abs(v.a - v.b) && recoge(g).length !== recoge(v).length),
+            bien: 'El ancho no basta: importa en qué parte de la torre cae.' },
+        ],
       },
       {
         id: 'mena-barras', titulo: 'La mena en dos barras', pieza: 'quim-composicion',
@@ -444,7 +491,7 @@
           { id: 'rec', etiqueta: 'r', color: 'c-d', min: 40, max: 100, paso: 5, inicio: 90, unidad: '%', decimales: 0 },
         ],
         dibujo: v => ({ datos: menaBarras(v), estado: {} }),
-        lectura: v => [w, ` = ${f(v.ley, 1)} % · `, r, ` = ${f(v.rec, 0)} % → ${f(10 * v.ley * v.rec / 100, 1)} kg de ${METAL[v.met].nombre}`],
+        lectura: v => [w, ` = ${f(v.ley, 1)} % · `, r, ` = ${f(v.rec, 0)} % → ${f(kgSale(v), 1)} kg de ${METAL[v.met].nombre}`],
         arrastres: [
           { id: 'ley', etiqueta: 'borde del metal en la mena', color: 'c-o',
             donde: v => { const g = PC().geometria(menaBarras(v)); return { x: g.xDe(0, v.ley), y: g.y(0) + g.hb / 2 }; },
@@ -452,6 +499,20 @@
           { id: 'rec', etiqueta: 'borde de lo recuperado', color: 'c-d',
             donde: v => { const g = PC().geometria(menaBarras(v)); return { x: g.xDe(1, v.rec), y: g.y(1) + g.hb / 2 }; },
             mover: (pt, v) => ({ rec: PC().geometria(menaBarras(v)).valorEn(1, pt.x) }) },
+        ],
+        invitaciones: [
+          { texto: 'Con 90 % de recuperación, busca la menor ley del mineral que dé 10 kg o más.',
+            logrado: v => v.rec === 90 && kgSale(v) >= 10 && kgSale(Object.assign({}, v, { ley: v.ley - 0.5 })) < 10,
+            bien: 'Ya alcanza, y aun así casi toda la tonelada se queda como roca.' },
+          { texto: 'Saca exactamente 50 kg de metal de la tonelada de mena.',
+            logrado: v => Math.abs(kgSale(v) - 50) < 1e-9,
+            bien: '¿Encontraste otra pareja de ley y recuperación que también dé 50 kg?' },
+          { texto: 'Haz que se pierda más metal del que se recupera.',
+            logrado: v => 10 * v.ley - kgSale(v) > kgSale(v),
+            bien: 'Bajo 50 % de recuperación, el relave se lleva más que la planta.' },
+          { texto: 'Guarda dos menas con leyes distintas que den los mismos kilos de metal.',
+            logrado: (v, guardados) => guardados.some(g => g.ley !== v.ley && Math.abs(kgSale(g) - kgSale(v)) < 1e-9),
+            bien: 'Una mejor recuperación compensa una ley más pobre.' },
         ],
       },
       {
@@ -463,6 +524,21 @@
         ],
         dibujo: v => combustion(v.k, v.o),
         lectura: v => leerPocos(v.k, v.o),
+        invitaciones: [
+          { texto: 'Baja el oxígeno hasta que aparezca hollín.',
+            logrado: v => quemar(v.k, 2, v.o).hollin > 0,
+            bien: 'Sin O₂ para todos, parte del carbono queda solo: hollín.' },
+          { texto: 'Consigue una combustión incompleta que deje CO y nada de hollín.',
+            logrado: v => { const p = quemar(v.k, 2, v.o); return p.co > 0 && p.hollin === 0; },
+            bien: 'El CO no se ve ni huele: por eso es tan peligroso.' },
+          { texto: 'Con carbón, busca el oxígeno justo: todo a CO₂ y que no sobre O₂.',
+            logrado: v => { const p = quemar(v.k, 2, v.o); return v.k === 'carbon' && p.co === 0 && p.hollin === 0 && p.sobraO2 === 0; },
+            bien: 'El carbón pide menos O₂ que el metano: no tiene H que quemar.' },
+          { texto: 'Guarda metano y carbón con el mismo oxígeno: solo uno suelta CO.',
+            logrado: (v, guardados) => { const sucio = x => { const p = quemar(x.k, 2, x.o); return p.co + p.hollin > 0; };
+              return guardados.some(g => g.k !== v.k && g.o === v.o && sucio(g) !== sucio(v)); },
+            bien: 'El metano gasta parte del O₂ en agua y le falta para su carbono.' },
+        ],
       },
     ],
     ideas: [destilar, octanaje, combustionIdea, mena],

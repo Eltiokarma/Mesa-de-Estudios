@@ -270,7 +270,7 @@
     temas: ['Números cuánticos y orbitales'],
     pieza: 'quim-cajas',
     juega: {
-      consigna: 'Elige el nivel n y el subnivel l. Cuenta las cajas (orbitales) y las flechas (electrones) que caben.',
+      consigna: 'Elige los números cuánticos n y l. Cuenta las cajas (orbitales) y las flechas (electrones) que caben.',
       voz: 'Prueba también un l igual o mayor que n.',
       controles: [
         { id: 'n', etiqueta: 'n', min: 1, max: 3, paso: 1, inicio: 2, decimales: 0 },
@@ -548,6 +548,8 @@
   const SIMB_Q = (z, q) => `${SIMB[z]}${carga(q)}`;
   // Mesa 2: el ion y sus cajas a la vez (ideas 4 y 5 juntas): Z y carga deciden los electrones; se marcan los solos.
   const solos = c => c.reduce((a, [nom, k]) => { const cj = cajasDe(nom); return a + (k <= cj ? k : 2 * cj - k); }, 0);
+  // El máximo de electrones solos que alcanza la mesa (hasta 23 electrones), calculado con las mismas cajas.
+  const MAX_SOLOS = Math.max(...Array.from({ length: 23 }, (_, k) => solos(config(k + 1))));
   const dibIon = v => {
     const el = v.z - v.q, c = el > 0 ? config(el) : [];
     return { datos: { filas: filasConfig(c), desapareados: true, rotulo: el > 0 ? `${SIMB_Q(v.z, v.q)}: ${solos(c)} desapareados` : el === 0 ? `${SIMB_Q(v.z, v.q)}: sin electrones` : `${SIMB[v.z]} no tiene tantos electrones` }, estado: {} };
@@ -563,6 +565,41 @@
       pregunta: '¿Cómo sabes qué hay dentro de algo que no puedes ver?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §2.3', url: 'https://openstax.org/books/chemistry-2e/pages/2-3-atomic-structure-and-symbolism' },
     },
+    // Glosario (docs/teoria.md §4d): las palabras que la unidad estrena en el curso de química.
+    glosario: [
+      { termino: 'átomo', def: 'Partícula más pequeña de un elemento: un núcleo con protones y neutrones, rodeado de electrones.',
+        ver: ['protón', 'electrón', 'elemento'] },
+      { termino: 'protón', formas: ['protón', 'protones'], def: 'Partícula del núcleo con carga positiva. Cuántos hay decide de qué elemento es el átomo.',
+        ver: ['número atómico'] },
+      { termino: 'neutrón', formas: ['neutrón', 'neutrones'], def: 'Partícula del núcleo sin carga, con masa casi igual a la del protón.',
+        ver: ['isótopo', 'número de masa'] },
+      { termino: 'electrón', formas: ['electrón', 'electrones'], def: 'Partícula muy liviana con carga negativa que ocupa la zona alrededor del núcleo.',
+        ver: ['orbital', 'ion'] },
+      { termino: 'número atómico', simbolo: 'Z', def: 'Cantidad de protones del núcleo. Cada elemento tiene el suyo.',
+        ejemplo: 'El sodio tiene Z = 11: once protones.', ver: ['protón'] },
+      { termino: 'número de masa', simbolo: 'A', def: 'Protones más neutrones de un núcleo.',
+        ejemplo: 'Sodio con 11 protones y 12 neutrones: A = 11 + 12 = 23.', ver: ['número atómico', 'neutrón'] },
+      { termino: 'isótopo', formas: ['isótopo', 'isótopos'], def: 'Átomos del mismo elemento con distinto número de neutrones, y por eso distinto número de masa.',
+        ejemplo: 'Cloro-35 y cloro-37: ambos con 17 protones; 18 y 20 neutrones.', ver: ['número de masa'] },
+      { termino: 'ion', formas: ['ion', 'iones'], def: 'Átomo o grupo de átomos con carga, porque ganó o perdió electrones.',
+        ejemplo: 'Na⁺: 11 protones y 10 electrones, carga 11 − 10 = +1.', ver: ['catión', 'anión'] },
+      { termino: 'catión', formas: ['catión', 'cationes'], def: 'Ion positivo: tiene menos electrones que protones.', ejemplo: 'Ca²⁺ perdió 2 electrones.', ver: ['anión'] },
+      { termino: 'anión', formas: ['anión', 'aniones'], def: 'Ion negativo: tiene más electrones que protones.', ejemplo: 'Cl⁻ ganó 1 electrón: 18 en total.', ver: ['catión'] },
+      { termino: 'orbital', def: 'Región alrededor del núcleo donde es probable hallar un electrón. Caben dos, con espín opuesto.',
+        ver: ['números cuánticos'] },
+      { termino: 'números cuánticos', formas: ['números cuánticos', 'número cuántico'], simbolo: 'n, l, mₗ, mₛ',
+        def: 'Cuatro valores que describen a un electrón: nivel, subnivel, orbital y espín.',
+        ejemplo: 'n = 3, l = 1 es el subnivel 3p.', ver: ['orbital'] },
+      { termino: 'configuración electrónica', formas: ['configuración electrónica', 'configuraciones electrónicas', 'configuración'],
+        def: 'Cómo se reparten los electrones de una especie en sus subniveles, del de menor energía al de mayor.',
+        ejemplo: 'Cl, con 17 electrones: 1s² 2s² 2p⁶ 3s² 3p⁵.', ver: ['orbital'] },
+      { termino: 'electrón desapareado', formas: ['electrón desapareado', 'electrones desapareados', 'desapareados', 'desapareado'],
+        def: 'Electrón solo en su orbital, sin otro de espín opuesto a su lado.',
+        ejemplo: 'El nitrógeno tiene 3 en el 2p, uno por caja.', ver: ['orbital'] },
+      { termino: 'isoelectrónico', formas: ['isoelectrónico', 'isoelectrónicos', 'isoelectrónica', 'isoelectrónicas'],
+        def: 'Dicho de dos especies distintas que tienen la misma cantidad de electrones.',
+        ejemplo: 'Na⁺, Ne y F⁻: los tres con 10 electrones.', ver: ['ion'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera abre los rangos de la idea 1 (hasta Z = 20 y
     // cargas de ±3); la segunda junta la configuración de un ion con sus desapareados. La lectura dice la especie y
     // lo que resulta, para que un caso guardado se lea solo.
@@ -581,10 +618,25 @@
         arrastres: [{ id: 'carga', etiqueta: 'carga: a la derecha salen electrones', color: 'c-i',
           donde: v => manijaCarga(atomoDe(v), v.q),
           mover: (pt, v) => ({ q: cargaEn(atomoDe(v), pt) }) }],
+        // Retos comprobados (docs/teoria.md §4d): miden protones, neutrones y carga, lo mismo que arma el dibujo.
+        invitaciones: [
+          { texto: 'Arma otro isótopo del sodio: mismo número atómico, número de masa 25.',
+            logrado: v => v.z === 11 && v.z + v.n === 25 && v.q <= v.z,
+            bien: 'Más neutrones y sigue siendo sodio: el elemento lo deciden los protones.' },
+          { texto: 'Arma un anión con tantos electrones como el argón.',
+            logrado: v => v.q < 0 && v.z - v.q === 18,
+            bien: 'Mismos electrones que el argón, otro núcleo. ¿Cuál será el más grande?' },
+          { texto: 'Deja un catión sin un solo electrón.',
+            logrado: v => v.q > 0 && v.z - v.q === 0,
+            bien: 'Solo queda el núcleo. La carga es igual a los protones.' },
+          { texto: 'Guarda dos núcleos de elementos distintos con el mismo número de masa.',
+            logrado: (v, guardados) => guardados.some(a => guardados.some(b => a.z !== b.z && a.z + a.n === b.z + b.n)),
+            bien: 'Mismo A, distinto Z: no son isótopos, son elementos diferentes.' },
+        ],
       },
       {
         id: 'cajas-ion', titulo: 'Las cajas de un ion', pieza: 'quim-cajas',
-        consigna: 'Elige el elemento y su carga. Lleva la última flecha a otra caja: la carga cambia y se marcan los electrones solos.',
+        consigna: 'Elige el elemento y su carga: sale su configuración electrónica. Lleva la última flecha a otra caja y mira los electrones solos.',
         controles: [
           { id: 'z', etiqueta: 'Z', color: 'c-h', min: 1, max: 20, paso: 1, inicio: 17, decimales: 0 },
           { id: 'q', etiqueta: 'Carga', min: -3, max: 3, paso: 1, inicio: 0, decimales: 0 },
@@ -595,6 +647,21 @@
         arrastres: [{ id: 'ultimo', etiqueta: 'último electrón: llévalo a otra caja', color: 'c-i',
           donde: v => sitioFlecha(Math.max(1, v.z - v.q)),
           mover: (pt, v) => ({ q: v.z - masCercana(pt, 23) }) }],
+        // Retos: los electrones solos y el último subnivel salen de config() y solos(), lo mismo que pinta las cajas.
+        invitaciones: [
+          { texto: 'Encuentra un catión con todos sus electrones apareados.',
+            logrado: v => v.q > 0 && v.z - v.q > 0 && solos(config(v.z - v.q)) === 0,
+            bien: 'Ninguna flecha sola: a ese catión no lo atrae un imán. ¿Le pasa a todo catión?' },
+          { texto: 'Busca la especie con más electrones desapareados que puedas armar.',
+            logrado: v => v.z - v.q > 0 && solos(config(v.z - v.q)) === MAX_SOLOS,
+            bien: 'Una flecha por caja antes de aparear: así reparte Hund.' },
+          { texto: 'Haz que el último electrón caiga en una caja 4s.',
+            logrado: v => { const c = v.z - v.q > 0 ? config(v.z - v.q) : []; return c.length > 0 && c[c.length - 1][0] === '4s'; },
+            bien: 'El 4s se llena antes que el 3d: tiene menos energía.' },
+          { texto: 'Guarda dos especies distintas con la misma configuración del neón.',
+            logrado: (v, guardados) => guardados.some(a => guardados.some(b => a.z !== b.z && a.z - a.q === 10 && b.z - b.q === 10)),
+            bien: 'Isoelectrónicas: mismas cajas, distinto núcleo. La de más protones es la más chica.' },
+        ],
       },
     ],
     ideas: [nucleo, modelos, cuanticos, configuracion, desapareados],
