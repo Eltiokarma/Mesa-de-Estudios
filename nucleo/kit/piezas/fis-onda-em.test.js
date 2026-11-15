@@ -31,3 +31,14 @@ test('sin NaN ni hex; texto de 14 o más; alto fijo; puro; rastro por pasos', ()
   assert.ok(!/var\(--c-i\)/.test(P.dibujar(D, { paso: 1 })), 'en el paso 1 todavía no está B');
   assert.ok(/var\(--c-o\)/.test(P.dibujar(D, { paso: 2 })), 'en el paso 2 E sigue dibujado');
 });
+
+// Ronda 5 (animación): `fase` es opcional; sin ella (o con 0) la figura es la de siempre; con ella la onda avanza.
+test('fase: la onda avanza; con fase 0 o 1 es la de siempre; las crestas siguen juntas', () => {
+  assert.equal(P.dibujar(Object.assign({}, D, { fase: 0 }), {}), P.dibujar(D, {}));
+  assert.equal(P.dibujar(Object.assign({}, D, { fase: 1 }), {}), P.dibujar(D, {}));
+  assert.notEqual(P.dibujar(Object.assign({}, D, { fase: 0.3 }), {}), P.dibujar(D, {}));
+  const { pE, pB } = P.puntos(Object.assign({}, D, { fase: 0.3 })), { EJE } = P.constantes;
+  const kE = pE.reduce((m, p, k) => (p[1] < pE[m][1] ? k : m), 0), maxB = Math.max(...pB.map(p => p[1] - EJE));
+  assert.ok(Math.abs(pB[kE][1] - EJE - maxB) < 1e-9, 'donde E tiene su cresta, B también: misma fase');
+  for (const fa of [0.1, 0.5, 0.9]) for (const ciclos of [1, 2, 4]) assert.ok(!/NaN|undefined/.test(P.dibujar({ amplitud: 0.8, ciclos, rotuloL: 'λ', fase: fa }, {})));
+});

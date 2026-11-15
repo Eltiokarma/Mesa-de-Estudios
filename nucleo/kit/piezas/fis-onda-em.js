@@ -14,7 +14,9 @@
  *   ciclos: 1..4,              // cuántas longitudes de onda caben en el eje (la longitud de onda, al revés)
  *   colores: { E: 'o', B: 'i', l: 'd' },
  *   rotuloL: 'λ = 4 m',        // cota de una longitud de onda (opcional; lo escribe quien llama)
- *   nota: 'vacío: avanza a c'  // texto bajo el eje (opcional)
+ *   nota: 'vacío: avanza a c', // texto bajo el eje (opcional)
+ *   fase: 0..1                 // opcional (ronda 5, animación): cuánto avanzó la onda, en longitudes de onda; corre
+ *                              // las dos curvas y la primera cresta (con sus flechas y la cota λ). Sin fase, como siempre.
  * }
  * estado = { paso }: 1 campo E · 2 campo B · 3 crestas alineadas y cota de λ. Sin paso, todo a la vista (rastro).
  * El dibujo es una función pura de (datos, estado).
@@ -36,7 +38,7 @@
     const L = (X1 - X0) / Math.max(0.5, d.ciclos || 2);
     const pE = [], pB = [];
     for (let k = 0; k <= 96; k++) {
-      const x = X0 + (X1 - X0) * k / 96, s = Math.sin(2 * Math.PI * (x - X0) / L);
+      const x = X0 + (X1 - X0) * k / 96, s = Math.sin(2 * Math.PI * ((x - X0) / L - (d.fase || 0)));
       pE.push([x, EJE - a * s]);
       pB.push([x + PZ[0] * a * 0.8 * s, EJE + PZ[1] * a * 0.8 * s]);
     }
@@ -65,7 +67,9 @@
       s += `<path class="kit-aparece" d="${camino(pE)}" fill="none" stroke="${T.color(C.E)}" stroke-width="3" stroke-linejoin="round"/>`;
     }
     // La primera cresta: una flecha de cada campo, con su nombre.
-    const xc = X0 + L / 4;
+    // La primera cresta: en L/4 sin fase; con fase, donde haya llegado (siempre dentro del primer largo de onda).
+    const fr = d.fase === undefined ? 0 : ((0.25 + d.fase) % 1 + 1) % 1 - 0.25;
+    const xc = X0 + L / 4 + L * fr;
     if (ve(1) && a > 1) s += T.flecha(xc, EJE, xc, EJE - a, { grosor: T.GROSOR.variable, color: C.E }) + T.rotulo(xc + 6, EJE - a - 6, 'E', { color: C.E, peso: 700 });
     if (ve(2) && a > 1) {
       const bx = xc + PZ[0] * a * 0.8, by = EJE + PZ[1] * a * 0.8;
@@ -77,7 +81,8 @@
     }
     if (d.rotuloL && ve(3)) {
       const y = 18;
-      s += T.cota(xc, xc + L, y + 8, { color: C.l }) + T.rotulo(xc + L / 2, y, d.rotuloL, { ancla: 'middle', color: C.l, peso: 700 });
+      const x1 = xc + L > X1 + 1 ? xc - L : xc;   // con fase, la cota de λ cabe siempre en el eje (una cresta antes)
+      s += T.cota(x1, x1 + L, y + 8, { color: C.l }) + T.rotulo(x1 + L / 2, y, d.rotuloL, { ancla: 'middle', color: C.l, peso: 700 });
     }
     if (d.nota) s += T.rotulo(W / 2, ALTO - 8, d.nota, { ancla: 'middle', peso: 700 });
     return T.svg(W, ALTO, s, { alt: alt(d) });

@@ -76,24 +76,41 @@
   // Debe verse: E y B son perpendiculares entre sí y a la dirección de avance, y tienen sus máximos en el mismo lugar.
   // La onda se dibuja con fis-onda-em: amplitud relativa a 400 V/m y tantos ciclos como caben en 12 m de eje.
   const ondaEM = (Eamp, L, nota) => ({ amplitud: Eamp / 400, ciclos: 12 / L, rotuloL: `λ = ${f(L, 0)} m`, nota });
+  // Animación (15 nov): la onda avanza a c en cámara lenta (t en ns; 1 s de pantalla son 10 ns). Lo avanzado, en
+  // largos de onda, es c t / λ con c = 0,3 m/ns. El reloj da la vuelta a los 200 ns, múltiplo del período de todas las λ
+  // de la idea (10, 13,3, 16,7 y 20 ns): la onda no salta al volver a empezar.
+  const C_MNS = 0.3;
+  const faseOnda = (Lv, tns) => C_MNS * tns / Lv;
+  const eBorde = (E0v, Lv, tns) => E0v * Math.sin(-2 * Math.PI * faseOnda(Lv, tns));   // E en el borde izquierdo
+  // Dónde está la primera cresta de E en el instante t (la misma cuenta que usa fis-onda-em con su fase).
+  // Con ciclos = 12/λ, un largo de onda mide (X1 − X0)·λ/12 px y la cresta sin fase está en X0 + ese largo / 4.
+  const xCresta = (E0v, Lv, tns) => { const k = OEM().constantes, L = (k.X1 - k.X0) * Lv / 12, fr = ((0.25 + faseOnda(Lv, tns)) % 1 + 1) % 1; return k.X0 + L * fr; };
   const campos = {
     id: 'campos-cruzados',
     titulo: 'E y B, juntos y cruzados',
     temas: ['Características de las ondas electromagnéticas'],
     pieza: 'fis-onda-em',
     juega: {
-      consigna: 'Una onda avanza hacia la derecha. La curva naranja es el campo eléctrico; la turquesa, el magnético, que oscila hacia el fondo.',
+      consigna: 'Una onda avanza a la derecha, en cámara lenta. La curva naranja es el campo eléctrico; la turquesa, el magnético, que oscila hacia el fondo.',
       voz: 'Busca la cresta naranja y mira qué hace la turquesa ahí.',
       controles: [
         { id: 'E', etiqueta: 'E₀', color: 'c-o', min: 100, max: 400, paso: 100, inicio: 300, unidad: 'V/m', decimales: 0 },
         { id: 'L', etiqueta: 'λ', color: 'c-d', min: 3, max: 6, paso: 1, inicio: 4, unidad: 'm', decimales: 0 },
+        { id: 't', etiqueta: 't', min: 0, max: 200, paso: 1, inicio: 0, unidad: 'ns', decimales: 0, auto: { velocidad: 10 } },
       ],
-      dibujo: val => ({ datos: ondaEM(val.E, val.L), estado: {} }),
-      lectura: val => [B0, ' = ', E0, ' / c = ', ...cientL(val.E / C), ' T'],
+      dibujo: val => ({ datos: Object.assign(ondaEM(val.E, val.L), { fase: faseOnda(val.L, val.t) }), estado: {} }),
+      lectura: val => [E, ` en el borde = ${f(eBorde(val.E, val.L, val.t), 0)} V/m · `, B0, ' = ', ...cientL(val.E / C), ' T'],
       minimo: 3,
-      // Toma la primera cresta de E: arriba-abajo cambia E₀; a los lados, la longitud de onda.
+      // Toma la primera cresta de E: arriba-abajo cambia E₀; a los lados, la longitud de onda. Tomarla detiene la onda
+      // y la deja en t = 0, con la cresta donde siempre (la manija va donde está la cresta en ese momento).
       arrastres: [{ id: 'cresta', etiqueta: 'primera cresta del campo eléctrico', color: 'c-o',
-        donde: val => cresta(val.E, val.L), mover: (pt, val) => deCresta(pt, val.E, val.L) }],
+        donde: val => ({ x: xCresta(val.E, val.L, val.t), y: cresta(val.E, val.L).y }),
+        // La cresta corre con t: se busca la λ que la deja bajo el dedo en este instante (la más cercana a la actual).
+        mover: (pt, val) => {
+          let mejor = val.L, err = Infinity;
+          for (let L = 2.5; L <= 6.5 + 1e-9; L += 0.005) { const e = Math.abs(xCresta(val.E, L, val.t) - pt.x) + 0.2 * Math.abs(L - val.L); if (e < err) { err = e; mejor = L; } }
+          return { E: deCresta(pt, val.E, val.L).E, L: mejor };
+        } }],
     },
     predice: {
       pregunta: 'Entre la Tierra y un satélite casi no hay aire. ¿Llegan las ondas de radio que manda la antena?',
@@ -166,17 +183,19 @@
     temas: ['Rapidez de la luz'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Elige qué onda envías y a dónde. La recta muestra cuánto avanza cada segundo en el vacío.',
+      consigna: 'Elige qué onda envías y a dónde, y mírala viajar, a mitad de rapidez. La recta muestra cuánto avanza cada segundo en el vacío.',
       voz: 'Cambia el tipo de onda y fíjate si el punto se mueve.',
       controles: [
         { id: 'tipo', etiqueta: 'Onda', opciones: Object.entries(TIPOS).map(([valor, texto]) => ({ valor, texto })) },
-        { id: 'dest', etiqueta: 'Destino', opciones: [{ valor: 'gps', texto: 'GPS' }, { valor: 'geo', texto: 'geoestacionario' }, { valor: 'luna', texto: 'Luna' }] },
+        { id: 'dest', etiqueta: 'Destino', opciones: [{ valor: 'gps', texto: 'GPS' }, { valor: 'geo', texto: 'geoestacionario' }, { valor: 'luna', texto: 'Luna' }], inicio: 'luna' },
+        { id: 't', etiqueta: 't', min: 0, max: 1.4, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 0.5 } },
       ],
+      // El pulso sale en t = 0 y avanza d = c t hasta llegar; ahí se queda (regla 1: la misma recta).
       dibujo: val => {
-        const D = DESTINOS[val.dest], t = D.d / C;
-        return { datos: rectaC([{ x: t, y: D.d / 1e8, color: 'tinta', rotulo: `${TIPOS[val.tipo]}: ${f(t, 3)} s`, guias: true }]), estado: {} };
+        const D = DESTINOS[val.dest], t = D.d / C, tv = Math.min(val.t, t);
+        return { datos: rectaC([{ x: t, y: D.d / 1e8, color: 'tinta', rotulo: `${TIPOS[val.tipo]}: ${f(t, 3)} s`, guias: true }, { x: tv, y: C * tv / 1e8, color: 'o' }]), estado: {} };
       },
-      lectura: val => [`Llega a ${DESTINOS[val.dest].nombre} en ${f(DESTINOS[val.dest].d / C, 3)}\u00a0s`],
+      lectura: val => { const D = DESTINOS[val.dest], t = D.d / C; return val.t >= t ? [`Llegó a ${D.nombre} en ${f(t, 3)}\u00a0s`] : [`Va por ${f(C * val.t / 1e8, 2)} × 10⁸ m; llega en ${f(t, 3)}\u00a0s`]; },
       minimo: 3,
     },
     predice: {
@@ -243,21 +262,27 @@
       .concat([{ tipo: 'intervalo', a: -6.4, b: -6.1, ca: true, cb: true, color: 'h', rotulo: 'visible', fila: 2, desde: 0 }])
       .concat(marca !== undefined ? [{ tipo: 'punto', x: Math.log10(marca), color: 'o', rotulo: 'λ', fila: 3, desde: 0 }] : []),
   }, extra);
+  const lamEnBanda = val => { const b = BANDAS.find(x => x.id === val.banda); return 10 ** (b.a + (val.u === undefined ? 0.5 : val.u) * (b.b - b.a)); };
   const espectro = {
     id: 'espectro',
     titulo: 'El espectro es una regla',
     temas: ['Espectro electromagnético'],
     pieza: 'recta',
     juega: {
-      consigna: 'La regla marca la longitud de onda por su exponente de diez: −6 es 10⁻⁶ m. Elige una banda y lee su frecuencia.',
+      consigna: 'La regla marca λ por su exponente de diez: −6 es 10⁻⁶ m. El punto recorre la banda elegida: lee su frecuencia.',
       voz: 'Fíjate en lo angosta que es la franja visible.',
-      controles: [{ id: 'banda', etiqueta: 'Banda', opciones: BANDAS.map(b => ({ valor: b.id, texto: b.texto })) }],
-      dibujo: val => ({ datos: reglaEsp(BANDAS.find(b => b.id === val.banda).tip), estado: {} }),
-      lectura: val => { const b = BANDAS.find(x => x.id === val.banda); return [lam, ' ≈ ', ...cientL(b.tip), ' m · ', fr, ' ≈ ', ...cientL(C / b.tip), ' Hz']; },
+      controles: [
+        { id: 'banda', etiqueta: 'Banda', opciones: BANDAS.map(b => ({ valor: b.id, texto: b.texto })) },
+        { id: 'u', etiqueta: 'recorrido', min: 0, max: 1, paso: 0.25, inicio: 0.5, decimales: 2, auto: { velocidad: 0.3, modo: 'rebota' } },
+      ],
+      // Animación (15 nov): el punto λ va y viene dentro de la banda elegida (de su borde corto a su borde largo, en
+      // exponente de diez): f = c/λ baja cuando λ sube (regla 1).
+      dibujo: val => ({ datos: reglaEsp(lamEnBanda(val)), estado: {} }),
+      lectura: val => { const L = lamEnBanda(val); return [lam, ' ≈ ', ...cientL(L), ' m · ', fr, ' ≈ ', ...cientL(C / L), ' Hz']; },
       minimo: 3,
       // Corre el punto λ por la regla: la banda es la que lo contiene (el control de opciones sigue al dedo).
       arrastres: [{ id: 'lambda', etiqueta: 'punto λ sobre la regla', color: 'c-o',
-        donde: val => { const d = reglaEsp(BANDAS.find(b => b.id === val.banda).tip), g = RECTA().geometria(d); return { x: g.x(Math.log10(BANDAS.find(b => b.id === val.banda).tip)), y: g.filaY(3) }; },
+        donde: val => { const d = reglaEsp(lamEnBanda(val)), g = RECTA().geometria(d); return { x: g.x(Math.log10(lamEnBanda(val))), y: g.filaY(3) }; },
         mover: pt => ({ banda: bandaDe(logDe(pt)).id }) }],
     },
     predice: {
@@ -328,11 +353,11 @@
     temas: ['Luz visible', 'Características de las ondas electromagnéticas'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Luz que viene por el aire entra a la derecha en un medio transparente. Elige su color y el índice del medio.',
+      consigna: 'Luz que viene por el aire entra a un medio transparente. Su índice sube y baja solo: mira las crestas. Cambia el color.',
       voz: 'Compara las crestas a cada lado de la línea punteada.',
       controles: [
         { id: 'col', etiqueta: 'Color', opciones: Object.keys(COLORES).map(k => ({ valor: k, texto: k })) },
-        { id: 'n', etiqueta: 'n', min: 1, max: 2.4, paso: 0.2, inicio: 1.4, unidad: '', decimales: 1 },
+        { id: 'n', etiqueta: 'n', min: 1, max: 2.4, paso: 0.2, inicio: 1.4, unidad: '', decimales: 1, auto: { velocidad: 0.4, modo: 'rebota' } },
       ],
       dibujo: val => ({ datos: medio(COLORES[val.col], val.n), estado: {} }),
       lectura: val => [lam, ` = ${f(COLORES[val.col], 0)} / ${f(val.n, 1)} = ${f(COLORES[val.col] / val.n, 0)}\u00a0nm · `, fr, ' igual'],
@@ -406,21 +431,21 @@
   const nombreBanda = lg => (lg >= -6.4 && lg < -6.1 ? 'visible' : bandaDe(lg).texto);
   const reglaLibre = val => ({ datos: Object.assign(reglaEsp(), { elementos: reglaEsp().elementos.concat([{ tipo: 'punto', x: val.lg, color: 'o', rotulo: 'λ', fila: 3 }]) }), estado: {} });
 
-  // E y B que avanzan (laboratorio 3D, 15 nov: exploración libre, sin predicciones). La onda no se anima sola: el alumno
-  // arrastra t (docs/3d.md, regla 4). f, el período, B₀ y el valor de E en el origen los calcula el motor de
+  // E y B que avanzan (laboratorio 3D, 15 nov: exploración libre, sin predicciones). Desde la ronda 5 la onda avanza
+  // sola (t con auto, en cámara lenta: 1 s de pantalla son 2,5 ns) y fis-espacio-3d la mueve sin rearmar (forma y mover). f, el período, B₀ y el valor de E en el origen los calcula el motor de
   // plantillas/ondas-electromagneticas (ondaDeLambda, campos e instante) a través de nucleo/fisica3d.js.
   const onda3 = val => F3.ondaEM(val);
   const mismo = (a, b) => Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
   const mesaOnda = {
     id: 'onda-3d', titulo: 'E y B que avanzan', pieza: 'fis-espacio-3d',
-    consigna: 'Gira la onda con el dedo y mírala de frente y de costado. Arrastra t para que avance.',
+    consigna: 'La onda avanza sola, en cámara lenta. Gírala con el dedo y mírala de frente y de costado: E y B suben juntos.',
     controles: [
       { id: 'lam', etiqueta: 'λ', color: 'c-d', min: 1.5, max: 6, paso: 1.5, inicio: 3, unidad: 'm', decimales: 1 },
       { id: 'E0', etiqueta: 'E₀', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 3, unidad: 'V/m', decimales: 0 },
-      { id: 't', etiqueta: 't', min: 0, max: 20, paso: 0.5, inicio: 0, unidad: 'ns', decimales: 1 },
+      { id: 't', etiqueta: 't', min: 0, max: 20, paso: 0.5, inicio: 0, unidad: 'ns', decimales: 1, auto: { velocidad: 2.5 } },
     ],
     dibujo: val => ({ datos: onda3(val).datos, estado: {} }),
-    lectura: val => { const o = onda3(val); return [fr, ` = ${f(o.f / 1e6, 0)} MHz · `, B0, ` = ${f(o.B0 * 1e9, 0)} nT`]; },
+    lectura: val => { const o = onda3(val); return [fr, ` = ${f(o.f / 1e6, 0)} MHz · `, B0, ` = ${f(o.B0 * 1e9, 0)} nT · `, E, ` origen = ${f(o.Eorigen, 1)} V/m`]; },
     invitaciones: [
       { texto: 'Detén la onda cuando, en el origen, E apunte abajo con todo su valor.',
         logrado: val => mismo(onda3(val).Eorigen, -val.E0),
