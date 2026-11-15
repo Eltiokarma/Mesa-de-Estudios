@@ -64,3 +64,12 @@ test('girar conserva el largo (la vista no cambia la figura)', () => {
   const v = [0.7, -0.2, 1.1];
   assert.ok(Math.abs(Math.hypot(...P.girar(v, 40, -25)) - Math.hypot(...v)) < 1e-12);
 });
+
+test('animación: el giro propio gira la proyección como la vista, sin cambiar la forma (ronda 5)', () => {
+  const d = celda('fcc'), v = { giro: 30, inclinacion: 22 };
+  assert.deepEqual(P.plano(Object.assign({}, d, { giro: 0 })), P.plano(d));          // sin giro, como antes
+  const g = P.plano(Object.assign({}, d, { giro: 45 })), w = P.plano(Object.assign({}, d, { vista: { giro: v.giro + 45, inclinacion: v.inclinacion } }));
+  assert.deepEqual(g.esferas, w.esferas);
+  assert.equal(P.forma(Object.assign({}, d, { giro: 0 })), P.forma(Object.assign({}, d, { giro: 200 })));
+  assert.notEqual(P.forma(d), P.forma(bloque('fcc')));
+});
