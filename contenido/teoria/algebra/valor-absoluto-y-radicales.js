@@ -574,7 +574,7 @@
         ejemplo: '|−4| = 4 y |4| = 4.', ver: ['distancia'] },
       { termino: 'distancia', formas: ['distancia', 'distancias'], def: 'Cuánto separa a dos puntos de la recta: el mayor menos el menor.',
         ejemplo: 'De 1 a −2 hay |1 − (−2)| = 3.', ver: ['valor absoluto', 'centro'] },
-      { termino: 'centro', def: 'El punto desde el que se mide la distancia en |x − a|: es a.', ejemplo: 'En |x + 1| ≤ 3 es −1.' },
+      { termino: 'centro', def: 'El punto o el término del medio. En |x − a| ≤ r, es a: desde ahí se mide.', ejemplo: 'En |x + 1| ≤ 3 es −1.' },
       { termino: 'no negativo', formas: ['no negativo', 'no negativos', 'no negativa', 'no negativas'], def: 'Mayor o igual que cero.',
         ejemplo: 'El 0 y el 5 lo son; el −1, no.' },
       { termino: 'ecuación irracional', formas: ['ecuación irracional', 'ecuaciones irracionales'],

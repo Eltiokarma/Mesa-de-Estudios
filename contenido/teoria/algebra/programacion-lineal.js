@@ -660,7 +660,7 @@
     glosario: [
       { termino: 'programación lineal', def: 'Buscar el mayor o menor valor de una expresión lineal cuando las variables cumplen varias desigualdades.' },
       { termino: 'semiplano', formas: ['semiplano', 'semiplanos'], def: 'Cada una de las dos mitades en que una recta parte el plano.', ver: ['borde'] },
-      { termino: 'borde', formas: ['borde', 'bordes'], def: 'La recta ax + by = c que separa un semiplano del otro.', ejemplo: 'De x + y ≤ 4, es x + y = 4.' },
+      { termino: 'borde', formas: ['borde', 'bordes'], def: 'Línea o punto donde termina una región y empieza lo de afuera.', ejemplo: 'De x + y ≤ 4, es la recta x + y = 4.' },
       { termino: 'punto de prueba', def: 'Punto que se reemplaza en la desigualdad para saber qué lado del borde cumple.', ejemplo: 'Con (0; 0) en x + y ≤ 4: 0 ≤ 4, cumple.' },
       { termino: 'restricción', formas: ['restricción', 'restricciones'], def: 'Cada condición que deben cumplir las variables del problema.', ejemplo: 'x ≥ 0, y ≥ 0, x + y ≤ 5.' },
       { termino: 'región factible', formas: ['región factible', 'regiones factibles'], def: 'Los puntos que cumplen todas las restricciones a la vez.', ver: ['restricción', 'vértice'] },

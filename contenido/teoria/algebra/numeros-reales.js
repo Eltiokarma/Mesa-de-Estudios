@@ -218,7 +218,7 @@
         { id: 'c', texto: '∅', correcta: true },
         { id: 'punto', texto: '{3}', error: 'NR4', siFuera: '{3} sería cierto si B incluyera al 3; su paréntesis lo deja fuera.' },
         { id: 'union', texto: '(−1, 5)', error: 'NR3', siFuera: '(−1, 5) es A ∪ B: lo que está en alguno. La intersección pide estar en los dos.' },
-        { id: 'a', texto: '(−1, 3]', error: 'TAL-INTER-A', siFuera: 'Ese es A completo. Un número de A está en A ∩ B solo si también está en B.' },
+        { id: 'a', texto: '(−1, 3]', error: 'TAL-INTER-A', siFuera: 'Ese es todo A. Un número de A está en A ∩ B solo si también está en B.' },
       ],
       dibujo: { datos: rectaOp(IA, { a: 3, b: 5, ca: false, cb: false }, '∩'), estado: {} },
       revelar: { datos: rectaOp(IA, { a: 3, b: 5, ca: false, cb: false }, '∩', [{ tipo: 'punto', x: 3, color: 'h', abierto: true, rotulo: '3 ∉ B', fila: 0 }]), estado: {} },
@@ -424,7 +424,7 @@
         } }],
     },
     predice: {
-      pregunta: ['Con ', a, ' ★ ', b, ' = ', a, ' + ', b, ' − 1, ¿qué número e cumple ', a, ' ★ e = ', a, ' para todo ', a, '?'],
+      pregunta: ['Con ', a, ' ★ ', b, ' = ', a, ' + ', b, ' − 1, ¿qué elemento e cumple ', a, ' ★ e = ', a, ' para todo ', a, '?'],
       opciones: [
         { id: 'c', texto: '1', correcta: true },
         { id: 'cero', texto: '0', error: 'NR14', siFuera: `0 es el neutro de la suma; aquí 2 ★ 0 = ${f(REGLAS['a + b − 1'](2, 0))}, no 2.` },
@@ -487,7 +487,7 @@
         // Neutro: con a ★ b = a + b + k, el neutro es −k.
         const reg2 = [a, ' + ', b, k ? ` ${k > 0 ? '+' : '−'} ${f(Math.abs(k))}` : ''];
         return {
-          pregunta: ['Si ', a, ' ★ ', b, ' = ', ...reg2, ', ¿qué número e cumple ', a, ' ★ e = ', a, ' para todo ', a, '?'],
+          pregunta: ['Si ', a, ' ★ ', b, ' = ', ...reg2, ', ¿qué elemento e cumple ', a, ' ★ e = ', a, ' para todo ', a, '?'],
           opciones: distintas([
             { id: 'c', texto: f(-k), correcta: true },
             { id: 'cero', texto: f(k === 0 ? 1 : 0), error: 'NR14', siFuera: k === 0 ? 'Con 1, a ★ 1 = a + 1, no a.' : `0 es el neutro de la suma; aquí a ★ 0 = a ${k > 0 ? '+' : '−'} ${f(Math.abs(k))}.` },
@@ -638,8 +638,8 @@
         ejemplo: '2 < 5, pero al multiplicar por −1: −2 > −5.' },
       { termino: 'intervalo', def: 'Todos los números de la recta que hay entre dos bordes, sin saltarse ninguno.',
         ejemplo: '[−1, 3) va de −1, que entra, hasta 3, que no entra.', ver: ['extremo'] },
-      { termino: 'extremo', def: 'Cada uno de los dos bordes de un intervalo. Con corchete entra; con paréntesis, no entra.',
-        ver: ['intervalo'] },
+      { termino: 'extremo', def: 'Cada una de las dos puntas de algo: de un intervalo, de una lista o de una gráfica.',
+        ejemplo: 'En [−1, 3), el −1 entra (corchete) y el 3 no (paréntesis).', ver: ['intervalo'] },
       { termino: 'cota superior', formas: ['cota superior', 'cotas superiores', 'cota', 'cotas'],
         def: 'Número que ningún elemento del conjunto supera.', ejemplo: 'Para [0, 1), el 1 y el 5 lo son.', ver: ['supremo'] },
       { termino: 'acotado', formas: ['acotado', 'acotada', 'acotados', 'acotadas'],

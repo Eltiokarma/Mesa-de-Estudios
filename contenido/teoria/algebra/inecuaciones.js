@@ -558,7 +558,7 @@
       { termino: 'inecuación', formas: ['inecuación', 'inecuaciones'],
         def: 'Desigualdad con una letra: se busca el conjunto de valores que la hacen verdadera.',
         ejemplo: '2x − 1 > 5 se cumple con todo x > 3.', ver: ['desigualdad', 'sentido'] },
-      { termino: 'sentido', def: 'Hacia dónde apunta una desigualdad: < o >. Multiplicar por un negativo lo invierte.',
+      { termino: 'sentido', def: 'Hacia dónde apunta algo. En una desigualdad, < o >: multiplicar por un negativo lo invierte.',
         ejemplo: '−2x < 6 pasa a x > −3.' },
       { termino: 'factor', formas: ['factor', 'factores'], def: 'Cada expresión que se multiplica en un producto.',
         ejemplo: 'En (x − 1)(x + 2), son x − 1 y x + 2.' },

@@ -328,7 +328,7 @@
     temas: ['Aspa simple, doble y doble especial'],
     pieza: 'alg-tabla',
     juega: {
-      consigna: 'Elige un ejemplo y avanza el paso. Cada paso traza un aspa y comprueba el término que reconstruye.',
+      consigna: 'Elige un ejemplo y avanza el paso. Cada paso dibuja un aspa y comprueba el término que reconstruye.',
       voz: 'Cada aspa usa dos columnas.',
       controles: [
         { id: 'ej', etiqueta: 'Ejemplo', opciones: [{ valor: 'doble', texto: 'doble' }, { valor: 'especial', texto: 'doble especial' }] },
@@ -543,14 +543,14 @@
     mira: {
       datos: Object.assign(tablaMult([['x − 1', 1, 2, 2], ['x + 1', 1, 0, 2]]), { filas: tablaMult([['x − 1', 1, 2, 2], ['x + 1', 1, 0, 2]]).filas.map(fl => fl.map((c, k) => (k === 1 || k === 2 ? { t: c, desde: 1 } : c))) }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'Primero se factoriza cada polinomio por completo.', ecuacion: ['P = (x + 1)(x − 1)', '   ·   ', 'Q = (x − 1)²'] },
+        { estado: { corte: 1 }, texto: 'Primero se factoriza cada polinomio del todo.', ecuacion: ['P = (x + 1)(x − 1)', '   ·   ', 'Q = (x − 1)²'] },
         { estado: { corte: 2 }, texto: 'MCD: los factores comunes con su menor exponente.', ecuacion: ['MCD = (x − 1)¹ = x − 1'] },
         { estado: { corte: 2 }, texto: 'MCM: todos los factores con su mayor exponente.', ecuacion: ['MCM = (x + 1)(x − 1)²'] },
         { estado: { corte: 2 }, texto: 'Comprobación: MCD por MCM da P por Q.', ecuacion: ['(x − 1) · (x + 1)(x − 1)² = P · Q'] },
       ],
     },
     regla: {
-      texto: 'Se factorizan los polinomios por completo. El MCD lleva los factores comunes con su menor exponente; el MCM, todos los factores con su mayor exponente.',
+      texto: 'Se factorizan los polinomios del todo. El MCD lleva los factores comunes con su menor exponente; el MCM, todos los factores con su mayor exponente.',
       ecuacion: ['MCD · MCM = ', { llave: ['P · Q'], nota: 'mónicos', color: 'c-d' }],
       condicion: 'MCD y MCM se fijan salvo una constante: se eligen mónicos, con coeficiente principal 1.',
     },
@@ -744,7 +744,7 @@
         ejemplo: '(x − 1)²(x + 2) y (x − 1)(x + 2)³: (x − 1)²(x + 2)³.', ver: ['MCD'] },
     ],
     historia: {
-      texto: 'La proposición II.4 de los Elementos de Euclides parte el cuadrado sobre un segmento en dos cuadrados y dos rectángulos. Euclides lo dice con geometría; leerlo como (a + b)² es una interpretación moderna. Leer esa relación en los dos sentidos lleva de expandir a factorizar, con un límite: las longitudes no son negativas, y la identidad algebraica vale más allá de la figura.',
+      texto: 'La proposición II.4 de los Elementos de Euclides parte el cuadrado sobre un segmento en dos cuadrados y dos rectángulos. Euclides lo dice con geometría; leerlo como (a + b)² es una interpretación moderna. Leer esa relación en los dos sentidos lleva de expandir a factorizar, con una salvedad: las longitudes no son negativas, y la identidad algebraica vale más allá de la figura.',
       pregunta: '¿Qué cambia si lees la misma igualdad al revés?',
       fuente: { titulo: 'Euclides, Elementos II.4; edición y comentario de David E. Joyce — Clark University', url: 'https://mathcs.clarku.edu/~djoyce/elements/bookII/propII4.html' },
     },

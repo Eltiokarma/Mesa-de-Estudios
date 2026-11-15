@@ -664,7 +664,7 @@
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/alg-baldosas.js', '/nucleo/kit/piezas/ejes.js'],
     historia: {
-      texto: 'En La Géométrie, de 1637, Descartes mostró que los problemas de figuras podían escribirse y resolverse con relaciones algebraicas. No inventó cada identidad escolar: su obra continuó una tradición. Aquí las potencias y los productos notables traducen figuras en expresiones, con un límite: una partición de áreas explica una igualdad para lados positivos, y extenderla a negativos pide razones algebraicas.',
+      texto: 'En La Géométrie, de 1637, Descartes mostró que los problemas de figuras podían escribirse y resolverse con relaciones algebraicas. No inventó cada identidad escolar: su obra continuó una tradición. Aquí las potencias y los productos notables traducen figuras en expresiones, con una salvedad: una partición de áreas explica una igualdad para lados positivos, y extenderla a negativos pide razones algebraicas.',
       pregunta: '¿Una figura demuestra una igualdad para todos los números?',
       fuente: { titulo: 'O’Connor y Robertson, René Descartes — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Descartes/' },
     },

@@ -631,8 +631,8 @@
     predice: {
       pregunta: ['En ', y, ' = −(', x, ' − 1)(', x, ' + 1)(', x, ' − 2), cuando ', x, ' crece mucho, ¿qué hace la gráfica?'],
       opciones: [
-        { id: 'c', texto: 'Baja sin límite', correcta: true },
-        { id: 'sube', texto: 'Sube sin límite', error: 'TAL-SIGNO-PRINCIPAL', siFuera: 'Sería así sin el signo menos: el término principal es −x³.' },
+        { id: 'c', texto: 'Baja sin parar', correcta: true },
+        { id: 'sube', texto: 'Sube sin parar', error: 'TAL-SIGNO-PRINCIPAL', siFuera: 'Sería así sin el signo menos: el término principal es −x³.' },
         { id: 'plana', texto: 'Se acerca a 0', error: 'TAL-EXTREMO-PLANO', siFuera: 'Un polinomio no se aplana: su término de mayor grado domina.' },
         { id: 'corta', texto: 'Vuelve a cortar el eje', error: 'TAL-MAS-RAICES', siFuera: 'Solo tiene tres raíces: −1, 1 y 2. Después de 2 no hay más cortes.' },
       ],
@@ -702,8 +702,8 @@
         return {
           pregunta: [`En ${expr}, cuando x se va hacia ${derecha ? '+∞' : '−∞'}, ¿la gráfica sube o baja?`],
           opciones: [
-            { id: 'c', texto: va > 0 ? 'Sube sin límite' : 'Baja sin límite', correcta: true },
-            { id: 'otro', texto: va > 0 ? 'Baja sin límite' : 'Sube sin límite', error: 'TAL-SIGNO-PRINCIPAL', siFuera: `El término principal es ${L < 0 ? '−' : ''}${Math.abs(L) === 1 ? '' : f(Math.abs(L))}x${'⁰¹²³⁴⁵⁶'[grado]}; revisa su signo ahí.` },
+            { id: 'c', texto: va > 0 ? 'Sube sin parar' : 'Baja sin parar', correcta: true },
+            { id: 'otro', texto: va > 0 ? 'Baja sin parar' : 'Sube sin parar', error: 'TAL-SIGNO-PRINCIPAL', siFuera: `El término principal es ${L < 0 ? '−' : ''}${Math.abs(L) === 1 ? '' : f(Math.abs(L))}x${'⁰¹²³⁴⁵⁶'[grado]}; revisa su signo ahí.` },
             { id: 'plana', texto: 'Se acerca a 0', error: 'TAL-EXTREMO-PLANO', siFuera: 'Un polinomio no se aplana: su término de mayor grado domina.' },
           ],
           solucion: { texto: `Grado ${grado}, coeficiente principal ${f(L)}: manda ${L < 0 ? '−' : ''}${Math.abs(L) === 1 ? '' : f(Math.abs(L))}x${'⁰¹²³⁴⁵⁶'[grado]}.`, ecuacion: [`x → ${derecha ? '+∞' : '−∞'}  ⇒  `, y, ` → ${va > 0 ? '+∞' : '−∞'}`] },

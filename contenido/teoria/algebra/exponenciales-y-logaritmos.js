@@ -303,7 +303,7 @@
       pregunta: ['Si n crece sin parar (cada hora, cada segundo…), ¿qué pasa con (1 + 1/n)ⁿ?'],
       opciones: [
         { id: 'c', texto: 'Se acerca a 2,718…', correcta: true },
-        { id: 'infinito', texto: 'Crece sin límite', error: 'TAL-E-INFINITO', siFuera: 'Sube, pero cada vez menos: de n = 365 a n = 1 000 000 gana menos de 0,01.' },
+        { id: 'infinito', texto: 'Crece sin tope', error: 'TAL-E-INFINITO', siFuera: 'Sube, pero cada vez menos: de n = 365 a n = 1 000 000 gana menos de 0,01.' },
         { id: 'uno', texto: 'Se acerca a 1, porque 1/n se achica', error: 'TAL-E-UNO', siFuera: 'Sería así si el exponente no creciera; aquí se multiplica n veces.' },
         { id: 'dos', texto: 'Se queda en 2', error: 'TAL-E-DOS', siFuera: '2 es el caso anual, n = 1. Repartir siempre da algo más.' },
       ],
@@ -325,9 +325,9 @@
       ],
     },
     regla: {
-      texto: 'Con 100 % de interés en n partes, el capital se multiplica por (1 + 1/n)ⁿ. Al crecer n, ese factor se acerca a e ≈ 2,71828: no crece sin límite.',
+      texto: 'Con 100 % de interés en n partes, el capital se multiplica por (1 + 1/n)ⁿ. Al crecer n, ese factor se acerca a e ≈ 2,71828: no crece sin fin.',
       ecuacion: ['e = lím ', { llave: ['(1 + ', { frac: ['1', 'n'] }, ')', { sup: ['', 'n'] }], nota: 'factor del año', color: 'c-i' }, '   ·   ', 'e ≈ 2,71828'],
-      condicion: 'n crece sin límite. ln es el logaritmo de base e y cumple las mismas propiedades que los demás logaritmos.',
+      condicion: 'n crece sin fin. ln es el logaritmo de base e y cumple las mismas propiedades que los demás logaritmos.',
     },
     ahoraTu: {
       generar(s) {

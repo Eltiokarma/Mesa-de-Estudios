@@ -185,7 +185,7 @@
     rectangular: { M: [[1, 4, 0], [2, -1, 3]], nombre: 'rectangular 2×3' },
     cuadrada: { M: [[2, 1, 5], [0, 3, -1], [4, 2, 1]], nombre: 'cuadrada 3×3' },
     diagonal: { M: [[3, 0, 0], [0, -1, 0], [0, 0, 2]], nombre: 'diagonal' },
-    identidad: { M: [[1, 0, 0], [0, 1, 0], [0, 0, 1]], nombre: 'identidad' },
+    identidad: { M: [[1, 0, 0], [0, 1, 0], [0, 0, 1]], nombre: 'matriz identidad' },
     triangular: { M: [[2, 5, 1], [0, 4, 3], [0, 0, 1]], nombre: 'triangular superior' },
     simetrica: { M: [[1, 2, 5], [2, 0, 3], [5, 3, 4]], nombre: 'simétrica' },
   };
@@ -255,7 +255,7 @@
     })(),
     regla: {
       texto: 'La transpuesta cambia filas por columnas. La traza suma la diagonal de una matriz cuadrada, y no cambia al transponer. Una matriz simétrica es igual a su transpuesta.',
-      ecuacion: [{ sub: ['(Aᵀ)', 'ij'] }, ' = ', { llave: [{ sub: [A, 'ji'] }], nota: 'índices al revés', color: 'c-o' }, '   ·   ', 'tr(Aᵀ) = tr(', A, ')'],
+      ecuacion: [{ sub: ['(Aᵀ)', 'ij'] }, ' = ', { llave: [{ sub: [A, 'ji'] }], nota: 'subíndices al revés', color: 'c-o' }, '   ·   ', 'tr(Aᵀ) = tr(', A, ')'],
       condicion: 'diagonal, triangular y la matriz identidad son cuadradas; una de m×n tiene transpuesta de n×m.',
     },
     ahoraTu: {
@@ -762,10 +762,10 @@
         { texto: 'Haz que A no tenga inversa, sin usar ningún 0.',
           logrado: v => det2(M2(v)) === 0 && [v.a, v.b, v.c, v.d].every(x => x !== 0),
           bien: 'Filas proporcionales: det = 0 y no hay inversa.' },
-        { texto: 'Consigue una inversa de puros enteros, con A distinta de la identidad.',
+        { texto: 'Consigue una inversa de puros enteros, con A distinta de la matriz identidad.',
           logrado: v => Math.abs(det2(M2(v))) === 1 && !(v.a === 1 && v.b === 0 && v.c === 0 && v.d === 1),
           bien: 'Con det = ±1, dividir entre det no deja fracciones.' },
-        { texto: 'Haz que A sea su propia inversa, sin ser la identidad.',
+        { texto: 'Haz que A sea su propia inversa, sin ser la matriz identidad.',
           logrado: v => { const D = det2(M2(v)), J = adj2(M2(v)); return D !== 0 && J.every((fila, i) => fila.every((x, j) => x / D === M2(v)[i][j])) && !(v.a === 1 && v.b === 0 && v.c === 0 && v.d === 1); },
           bien: 'Aplicarla dos veces deja todo como estaba.' },
         { texto: 'Busca el determinante más negativo.',
