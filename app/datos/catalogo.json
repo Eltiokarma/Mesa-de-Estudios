@@ -159,7 +159,10 @@
       "archivo": "/contenido/teoria/fisica/movimiento-parabolico-y-circular.js",
       "requiere": [
        "/nucleo/kit/piezas/ejes.js",
-       "/nucleo/kit/piezas/fis-lienzo.js"
+       "/nucleo/kit/piezas/fis-lienzo.js",
+       "/plantillas/tiro-parabolico/motor.js",
+       "/nucleo/fisica3d.js",
+       "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 4,
       "terminos": 22

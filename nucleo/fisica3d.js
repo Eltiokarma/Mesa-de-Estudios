@@ -128,25 +128,29 @@
   }
 
   // ---------- Tiro parabólico con sus dos sombras ----------
-  const KT = 5 / 90, X0T = -2.4, PARED = -2.9;    // 90 m caben en 5 de escena; la pared queda detrás del lanzador
+  // 75 m caben en 4,6 de escena (los tiros más largos salen del cuadro: se aleja con − o el pellizco); el suelo queda bajo
+  // el centro (ZB) y la pared, detrás del lanzador.
+  const KT = 4.6 / 75, X0T = -2, PARED = -2.4, ZB = -0.9;
   function tiro(v) {
     const { T: MT } = M(), p = MT.proyectil({ v0: v.v0, angulo: v.ang }), t = Math.min(v.t, p.tVuelo), e = p.estado(t);
-    const enEsc = (x, y) => [X0T + x * KT, 0, Math.max(0, y) * KT];
-    const datos = { escena: 'tiro', escala: 0.8, ejes: null, vista: { giro: 18, inclinacion: 14 }, flechas: [], trazos: [], bolas: [], caras: [] };
-    datos.caras.push({ puntos: [[PARED, -0.6, 0], [PARED, 0.6, 0], [PARED, 0.6, 2.2], [PARED, -0.6, 2.2]], color: 'tinta', opacidad: 0.06 });
-    datos.trazos.push({ puntos: [[PARED, 0, 0], [X0T + 92 * KT, 0, 0]], color: 'tinta' });
+    const enEsc = (x, y) => [X0T + x * KT, 0, ZB + Math.max(0, y) * KT];
+    const suelo = X => [X, 0, ZB], pared = Z => [PARED, 0, Z];
+    const datos = { escena: 'tiro', escala: 0.9, ejes: null, vista: { giro: -18, inclinacion: 14 }, flechas: [], trazos: [], bolas: [], caras: [] };
+    datos.caras.push({ puntos: [[PARED, -0.7, ZB], [PARED, 0.7, ZB], [PARED, 0.7, ZB + 2], [PARED, -0.7, ZB + 2]], color: 'tinta', opacidad: 0.1 });
+    datos.trazos.push({ puntos: [suelo(PARED), suelo(X0T + 92 * KT)], color: 'tinta' });
     const camino = p.puntos(60).filter(q => q.t <= t + 1e-9).map(q => enEsc(q.x, q.y));
     camino.push(enEsc(e.x, e.y));
     datos.trazos.push({ puntos: camino, color: 'c-i', punteado: true });
-    // Marcas cada medio segundo: la pelota, su sombra en el suelo y su sombra en la pared.
+    // Marcas cada medio segundo: la sombra en el suelo y la sombra en la pared.
     for (let k = 1; k * 0.5 < t - 1e-9 && k <= 12; k++) {
       const q = p.estado(k * 0.5), P = enEsc(q.x, q.y);
-      datos.bolas.push({ en: [P[0], 0, 0], r: 0.045, color: 'c-i' }, { en: [PARED, 0, P[2]], r: 0.045, color: 'c-i' });
+      datos.bolas.push({ en: suelo(P[0]), r: 0.045, color: 'c-i' }, { en: pared(P[2]), r: 0.045, color: 'c-i' });
     }
     const P = enEsc(e.x, e.y);
-    datos.bolas.push({ en: P, r: 0.12, color: 'tinta' }, { en: [P[0], 0, 0], r: 0.08, color: 'c-i', rotulo: 'x' }, { en: [PARED, 0, P[2]], r: 0.08, color: 'c-i', rotulo: 'y' });
-    datos.trazos.push({ puntos: [P, [P[0], 0, 0]], color: 'tinta', punteado: true }, { puntos: [P, [PARED, 0, P[2]]], color: 'tinta', punteado: true });
-    const KV = 0.03;
+    datos.bolas.push({ en: P, r: 0.12, color: 'tinta' }, { en: suelo(P[0]), r: 0.08, color: 'c-i' }, { en: pared(P[2]), r: 0.08, color: 'c-i', rotulo: 'y' });
+    datos.rotulos = [{ en: [P[0], 0, ZB - 0.3], texto: 'x', color: 'c-i' }];      // bajo el suelo: no choca con vy
+    datos.trazos.push({ puntos: [P, suelo(P[0])], color: 'tinta', punteado: true }, { puntos: [P, pared(P[2])], color: 'tinta', punteado: true });
+    const KV = 0.035;
     if (t < p.tVuelo - 1e-9) {
       datos.flechas.push({ de: P, a: [P[0] + e.vx * KV, 0, P[2]], color: 'c-o', rotulo: 'vx', grosor: 0.6 });
       if (Math.abs(e.vy) > 1e-9) datos.flechas.push({ de: P, a: [P[0], 0, P[2] + e.vy * KV], color: 'c-o', rotulo: 'vy', grosor: 0.6 });

@@ -19,10 +19,12 @@
  *   Duda que resuelve: ¿por qué algo con rapidez constante puede tener aceleración?
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // nucleo/fisica3d.js arma la mesa 3D «La pelota y sus dos sombras» con el motor de plantillas/tiro-parabolico (regla 1).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../nucleo/fisica3d.js')) : fabrica(root.Kit, root.Fisica3D);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, F3) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const x = { v: 'c-i', t: 'x' }, y = { v: 'c-i', t: 'y' }, s_ = { v: 'c-i', t: 's' }, v = { v: 'c-o', t: 'v' };
@@ -512,11 +514,47 @@
   const acDe = val => val.v * val.v / val.r;
   const periodoDe = val => 2 * Math.PI * val.r / val.v;
 
+  // La pelota y sus dos sombras (laboratorio 3D de contexto, 15 nov: exploración libre, sin predicciones). Una luz desde
+  // arriba deja la sombra en el suelo (x, MRU) y otra desde el frente la deja en la pared (y, MRUV): el mismo reloj t,
+  // que arrastra el alumno, mueve las dos. Posiciones, tiempos y alcance: motor de plantillas/tiro-parabolico
+  // (proyectil) a través de nucleo/fisica3d.js. Las marcas son cada medio segundo.
+  const tiro3 = val => F3.tiro(val);
+  const ANGS3 = [30, 37, 45, 53, 60];
+  const igual3 = (p, q) => Math.abs(p - q) < 1e-9;
+  const mesaSombras = {
+    id: 'dos-sombras-3d', titulo: 'La pelota y sus dos sombras', pieza: 'fis-espacio-3d',
+    consigna: 'Gira la escena con el dedo. Arrastra t y compara las marcas de la sombra del suelo con las de la pared.',
+    controles: [
+      { id: 'v0', etiqueta: 'v₀', color: 'c-o', min: 10, max: 30, paso: 5, inicio: 20, unidad: 'm/s', decimales: 0 },
+      { id: 'ang', etiqueta: 'Ángulo', opciones: ANGS3.map(a => ({ valor: a, texto: `${a}°` })), inicio: 45 },
+      { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 6, paso: 0.25, inicio: 1.5, unidad: 's', decimales: 2 },
+    ],
+    dibujo: val => ({ datos: tiro3(val).datos, estado: {} }),
+    lectura: val => { const r = tiro3(val); return [t, ` = ${f(r.t, 2)} s · `, x, ` = ${f(r.x, 1)} m · `, y, ` = ${f(r.y, 1)} m`]; },
+    invitaciones: [
+      { texto: 'Detén la pelota justo en lo más alto de su camino.',
+        logrado: val => tiro3(val).enAire && igual3(tiro3(val).t, tiro3(val).tSubida),
+        bien: 'En la cima, la sombra de la pared se detiene; la del suelo sigue igual.',
+        pista: 'Mira la flecha vy y avanza t hasta que desaparezca.' },
+      { texto: 'Logra que la sombra del suelo pase los 40 m con la pelota en el aire.',
+        logrado: val => tiro3(val).enAire && tiro3(val).x >= 40,
+        bien: 'La sombra del suelo avanza lo mismo cada medio segundo: vx no cambia.' },
+      { texto: 'Busca el tiro que sube más alto en toda la mesa.',
+        logrado: (val, g, mesa) => igual3(tiro3(val).H, Math.max(...ANGS3.map(a => tiro3({ v0: mesa.controles[0].max, ang: a, t: 0 }).H))),
+        bien: 'Mucha rapidez y el ángulo más empinado: más vy, más altura.',
+        pista: 'La altura solo depende de vy. ¿Qué rapidez y ángulo dan la mayor?' },
+      { texto: 'Guarda dos tiros con el mismo alcance y distinto ángulo.',
+        logrado: (val, guardados) => guardados.some(p => guardados.some(q => p.ang !== q.ang && igual3(tiro3(p).alcance, tiro3(q).alcance))),
+        bien: 'Ángulos que suman 90° llegan igual de lejos, por caminos distintos.' },
+    ],
+  };
+
   return {
     unidad: 'fisica.movimiento-parabolico-y-circular',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-lienzo.js'],
+    requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-lienzo.js', '/plantillas/tiro-parabolico/motor.js', '/nucleo/fisica3d.js',
+      '/nucleo/kit/piezas/fis-espacio-3d.js'],
     // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. Velocidad, aceleración
     // y caída libre vienen de MRU, MRUV y caída libre; vector y componente, de magnitudes y vectores.
     glosario: [
@@ -556,6 +594,7 @@
     // Laboratorio: juego libre, sin preguntas. El tiro libre abre el rango (5 a 30 m/s, 15° a 75°) para probar el caso
     // raro: ángulos que suman 90° llegan igual de lejos. La rueda y el MCU son los juegos de las ideas 2 y 3.
     laboratorio: [
+      mesaSombras,
       {
         id: 'tiro-libre', titulo: 'Tiro con cualquier ángulo', pieza: 'ejes',
         consigna: 'Arrastra la cima o usa − y +. Guarda un tiro a 30° y otro a 60° con la misma rapidez.',
