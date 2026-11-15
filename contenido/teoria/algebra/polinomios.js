@@ -639,7 +639,7 @@
       { texto: 'Haz que P sea constante y valga lo mismo que Q en el x marcado.',
         logrado: v => v.a === 0 && v.b === 0 && evaluar([v.a, v.b, v.c], v.t) === evaluar(QL, v.t),
         bien: 'Grado 0: una recta horizontal que corta a la parábola Q.' },
-      { texto: 'Guarda dos x donde P y Q empaten, con los mismos a, b y c, sin copiar Q.',
+      { texto: 'Sin copiar Q, guarda dos x donde P y Q empaten sin cambiar los coeficientes.',
         logrado: (v, guardados) => {
           const empata = g => evaluar([g.a, g.b, g.c], g.t) === evaluar(QL, g.t), igual = g => g.a === v.a && g.b === v.b && g.c === v.c;
           return [v.a, v.b, v.c].some((c, i) => c !== QL[i]) && empata(v) && guardados.some(g => igual(g) && g.t !== v.t && empata(g)) && guardados.some(g => igual(g) && g.t === v.t);
