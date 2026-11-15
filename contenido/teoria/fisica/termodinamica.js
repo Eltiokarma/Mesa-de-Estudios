@@ -50,12 +50,13 @@
   const EJES = () => Kit.piezas.ejes, BARRAS = () => Kit.piezas['fis-cuentas'];
   const conSigno = (n, u = 'J') => `${n > 0 ? '+' : n < 0 ? '−' : ''}${f(Math.abs(n), 0)} ${u}`;
   // Barras de la primera ley: lo que entra como calor, lo que sale como trabajo (−W) y el resultado ΔU = Q − W.
+  const deltaU = (q, w) => q - w;
   const cuentas = (q, w, max = 600, extra = {}) => ({
-    max: Math.max(max, Math.abs(q), Math.abs(w), Math.abs(q - w)), igual: 2,
+    max: Math.max(max, Math.abs(q), Math.abs(w), Math.abs(deltaU(q, w))), igual: 2,
     barras: [
       { rotulo: 'Q', valor: q, texto: conSigno(q), desde: extra.dq },
       { rotulo: '−W', valor: -w, texto: conSigno(-w), desde: extra.dw },
-      { rotulo: 'ΔU', valor: q - w, texto: conSigno(q - w), color: 'd', desde: extra.du },
+      { rotulo: 'ΔU', valor: deltaU(q, w), texto: conSigno(deltaU(q, w)), color: 'd', desde: extra.du },
     ],
   });
 
@@ -128,7 +129,7 @@
       ],
     },
     regla: {
-      texto: 'En un gas ideal, presión por volumen es proporcional a la temperatura absoluta. Su energía interna depende solo de T.',
+      texto: 'Ecuación de estado: en un gas ideal, presión por volumen es proporcional a la temperatura absoluta. Su energía interna depende solo de T.',
       ecuacion: [P, V, ' = n R ', { llave: [T], nota: 'en kelvin', color: 'c-h' }],
       condicion: 'T en kelvin, gas a presión baja y lejos de condensarse. R = 0,082 atm·L/(mol·K) = 8,31 J/(mol·K).',
     },
@@ -338,7 +339,7 @@
       ],
     },
     regla: {
-      texto: 'El trabajo del gas es el área bajo su camino en P–V: positiva al expandirse y negativa al comprimirse. En un ciclo, el área encerrada.',
+      texto: 'El trabajo del gas es el área bajo su camino en el diagrama P–V: positiva al expandirse y negativa al comprimirse. En un ciclo, el área encerrada.',
       ecuacion: ['W = área bajo P–V', '   ·   ', 'isobárico: W = ', P, dV],
       condicion: 'el proceso es lento (cuasiestático): el gas tiene una presión definida en cada punto del camino. 1 kPa·L = 1 J.',
     },
@@ -509,7 +510,7 @@
         { estado: { corte: 1 }, texto: 'U depende solo de T: sube lo mismo en los dos casos.', ecuacion: [dU, ` = ${f(1.5)} · 8,31 · 20 = ${f(calentar('P', 1, 20).du, 0)} J`] },
         { estado: { corte: 2 }, texto: 'A presión fija el gas se expande y empuja.', ecuacion: ['W = ', P, dV, ` = nR`, dT, ` = ${f(calentar('P', 1, 20).w, 0)} J`] },
         { estado: { corte: 3 }, texto: 'El calor cubre las dos cosas.', ecuacion: [`Q = ${f(calentar('P', 1, 20).du, 0)} + ${f(calentar('P', 1, 20).w, 0)} = ${f(calentar('P', 1, 20).q, 0)} J`] },
-        { estado: { corte: 3, fantasma: { indice: 0, valor: calentar('V', 1, 20).q, rotulo: 'a volumen fijo' } }, texto: 'Por mol y por kelvin: la diferencia es justo R.', ecuacion: [{ sub: ['c', 'p'] }, ' − ', { sub: ['c', 'v'] }, ' = R = 8,31 J/(mol·K)'] },
+        { estado: { corte: 3, fantasma: { indice: 0, valor: calentar('V', 1, 20).q, rotulo: 'a volumen fijo' } }, texto: 'Calores molares, por mol y por kelvin: la diferencia es justo R.', ecuacion: [{ sub: ['c', 'p'] }, ' − ', { sub: ['c', 'v'] }, ' = R = 8,31 J/(mol·K)'] },
       ],
     },
     regla: {
@@ -566,7 +567,7 @@
       minimo: 3,
     },
     predice: {
-      pregunta: 'Un inventor dice que su motor trabaja entre un foco a 400 K y otro a 300 K, y convierte en trabajo el 40 % del calor que recibe. ¿Es posible?',
+      pregunta: 'Un inventor dice que su motor trabaja entre un foco caliente a 400 K y uno frío a 300 K, y convierte en trabajo el 40 % del calor que recibe. ¿Es posible?',
       opciones: [
         { id: 'c', texto: 'No: el máximo es 25 %', correcta: true },
         { id: 'menos-100', texto: 'Sí: 40 % es menos que 100 %', error: 'T15', siFuera: 'Es cierto que nunca llega a 100 %. Pero el techo real lo fijan las dos temperaturas.' },
@@ -579,7 +580,7 @@
     mira: {
       datos: motor(400, 300).datos,
       pasos: [
-        { estado: {}, texto: 'Entran 1000 J del foco a 400 K.', ecuacion: [{ sub: ['Q', 'cal'] }, ' = 1000 J'] },
+        { estado: {}, texto: 'Entran 1000 J del foco caliente, a 400 K.', ecuacion: [{ sub: ['Q', 'cal'] }, ' = 1000 J'] },
         { estado: {}, texto: 'El máximo que se convierte depende solo de las temperaturas.', ecuacion: [{ sub: ['η', 'máx'] }, ' = 1 − ', { frac: [{ sub: [T, 'f'] }, { sub: [T, 'c'] }] }, ' = 1 − 300/400 = 25 %'] },
         { estado: {}, texto: 'Como mucho 250 J salen como trabajo.', ecuacion: [{ sub: ['W', 'máx'] }, ' = 0,25 · 1000 = 250 J'] },
         { estado: { fantasma: { indice: 1, valor: -400, rotulo: 'lo que promete: 400 J' } }, texto: 'Los otros 750 J van al foco frío. No hay motor que los evite.', ecuacion: [{ sub: ['Q', 'frío'] }, ' = 1000 − 250 = 750 J'] },
@@ -588,7 +589,7 @@
     regla: {
       texto: 'Un motor térmico siempre echa calor al foco frío. Su rendimiento no supera el de Carnot, que depende solo de las dos temperaturas.',
       ecuacion: ['η = ', { frac: ['W', { sub: ['Q', 'cal'] }] }, ' ≤ ', { llave: ['1 − ', { frac: [{ sub: [T, 'f'] }, { sub: [T, 'c'] }] }], nota: 'techo de Carnot' }],
-      condicion: 'temperaturas en kelvin. El máximo lo alcanza solo una máquina reversible; las reales rinden menos.',
+      condicion: 'temperaturas en kelvin. El máximo lo alcanza solo una máquina reversible, como la del ciclo de Carnot; las reales rinden menos.',
     },
     ahoraTu: {
       generar(s) {
@@ -617,30 +618,134 @@
     },
   };
 
+  // Para los retos del laboratorio (docs/teoria.md, 4d): todos los casos de una mesa, para hallar sus extremos con
+  // las mismas cuentas que dibujan, y «este caso es uno de los guardados».
+  const casosDe = ctl => ctl.reduce((acc, c) => {
+    const vs = [];
+    for (let k = 0; c.min + k * c.paso <= c.max + 1e-9; k++) vs.push(Math.round((c.min + k * c.paso) * 1e6) / 1e6);
+    return acc.flatMap(a => vs.map(v => Object.assign({}, a, { [c.id]: v })));
+  }, [{}]);
+  const mismo = (g, val) => Object.keys(val).every(k => g[k] === val[k]);
+  const CTL_LIBRE = [
+    { id: 'vk', etiqueta: 'V de la esquina', color: 'c-i', min: 2, max: 6, paso: 0.5, inicio: 4, unidad: 'L', decimales: 1 },
+    { id: 'pk', etiqueta: 'P de la esquina en kPa', color: 'c-o', min: 0, max: 400, paso: 25, inicio: 350, decimales: 0 },
+  ];
+  const wLibre = val => areaBajo([E1, [val.vk, val.pk], E2]);
+  const W_RECTA = areaBajo(CAMINOS.recta);
+  const W_LIBRE_MAX = Math.max(...casosDe(CTL_LIBRE).map(wLibre));
+  const DU_MAX = Math.max(...casosDe(primera.juega.controles).map(v => deltaU(v.q, v.w)));
+  const P_MAX = Math.max(...casosDe(gas.juega.controles).map(v => presion(v.t, v.v)));
+
   return {
     unidad: 'fisica.termodinamica',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/fis-cuentas.js'],
+    // Glosario del tema (docs/teoria.md, 4d). Temperatura, calor, calor específico y cero absoluto vienen de
+    // «Temperatura y calor»; trabajo, energía y presión, de unidades anteriores. La primera y la segunda ley no van
+    // como término: «primera ley de la termodinámica» pasa el tope de 4 palabras, y «primera ley» a secas marcaría
+    // también las de Newton y Kepler (pedido al molde).
+    glosario: [
+      { termino: 'gas ideal', def: 'Modelo de gas cuyas partículas solo chocan, sin atraerse. Cumple PV = nRT; los reales se parecen a baja presión.',
+        ver: ['ecuación de estado', 'energía interna'] },
+      { termino: 'ecuación de estado', def: 'Fórmula que une presión, volumen, temperatura y cantidad de un gas: PV = nRT.',
+        ejemplo: '1 mol a 300 K en 4 L: P = 0,082 · 300 / 4 = 6,15 atm.', ver: ['gas ideal', 'temperatura absoluta'] },
+      { termino: 'temperatura absoluta', simbolo: 'T', medida: 'K', def: 'Lectura en kelvin, contada desde el cero absoluto. Es la que va en PV = nRT.',
+        ejemplo: '27 °C son 300 K; 327 °C son 600 K, el doble.', ver: ['cero absoluto'] },
+      { termino: 'energía interna', simbolo: 'U', medida: 'J', def: 'Suma de las energías de todas las partículas de un cuerpo. En un gas ideal depende solo de T.',
+        ejemplo: '1 mol de helio que sube 20 K: ΔU = 1,5 · 8,31 · 20 ≈ 249 J.', ver: ['gas ideal'] },
+      { termino: 'proceso isotérmico', formas: ['proceso isotérmico', 'procesos isotérmicos', 'isotérmico'],
+        def: 'Cambio de un gas a temperatura fija. En un gas ideal, U no cambia y Q = W.',
+        ejemplo: 'Se expande haciendo 400 J de trabajo: recibe 400 J de calor.', ver: ['proceso adiabático'] },
+      { termino: 'proceso isobárico', formas: ['proceso isobárico', 'procesos isobáricos', 'isobárico'],
+        def: 'Cambio de un gas a presión fija; su trabajo es la presión por el cambio de volumen.',
+        ejemplo: 'A 200 kPa, de 2 L a 5 L: W = 200 · 3 = 600 J.', ver: ['diagrama P–V'] },
+      { termino: 'proceso isocórico', formas: ['proceso isocórico', 'procesos isocóricos', 'isocórico'],
+        def: 'Cambio de un gas a volumen fijo: no hace trabajo y todo el calor cambia su energía interna.',
+        ejemplo: 'Tanque rígido que recibe 300 J de calor: W = 0 y ΔU = 300 J.', ver: ['energía interna'] },
+      { termino: 'proceso adiabático', formas: ['proceso adiabático', 'procesos adiabáticos', 'adiabático'],
+        def: 'Cambio de un gas sin intercambiar calor: el trabajo sale de su energía interna o entra en ella.',
+        ejemplo: 'Se expande haciendo 300 J de trabajo sin calor: ΔU = −300 J y se enfría.', ver: ['proceso isotérmico'] },
+      { termino: 'diagrama P–V', formas: ['diagrama P–V', 'diagramas P–V', 'diagrama P-V'],
+        def: 'Gráfica de la presión contra el volumen de un gas; el área bajo su camino es el trabajo.',
+        ejemplo: 'A 300 kPa, de 2 L a 6 L: área = 300 · 4 = 1200 J.', ver: ['proceso isobárico'] },
+      { termino: 'calor molar', simbolo: 'cv, cp', medida: 'J/(mol·K)', formas: ['calor molar', 'calores molares'],
+        def: 'Energía que pide un mol para subir 1 K. A presión fija es mayor que a volumen fijo.',
+        ejemplo: 'Helio: cv ≈ 12,5 y cp ≈ 20,8 J/(mol·K); la diferencia es R = 8,31.', ver: ['calor específico'] },
+      { termino: 'máquina térmica', formas: ['máquina térmica', 'máquinas térmicas', 'motor térmico', 'motores térmicos'],
+        def: 'Aparato que recibe calor de un foco caliente, convierte una parte en trabajo y echa el resto al frío.',
+        ver: ['foco térmico', 'rendimiento'] },
+      { termino: 'foco térmico', formas: ['foco térmico', 'focos térmicos', 'foco caliente', 'foco frío'],
+        def: 'Cuerpo tan grande que da o recibe calor sin que cambie su temperatura, como una caldera o el aire.',
+        ver: ['máquina térmica'] },
+      { termino: 'rendimiento', simbolo: 'η', medida: '%', def: 'Fracción del calor recibido que una máquina convierte en trabajo: η = W / Qcal.',
+        ejemplo: 'Recibe 1000 J y da 250 J de trabajo: η = 25 %.', ver: ['ciclo de Carnot'] },
+      { termino: 'ciclo de Carnot', def: 'Ciclo ideal y reversible entre dos temperaturas; da el mayor rendimiento posible: 1 − Tf/Tc, en kelvin.',
+        ejemplo: 'Entre 400 K y 300 K: η máx = 1 − 300/400 = 25 %.', ver: ['rendimiento', 'máquina térmica'] },
+    ],
     laboratorio: [
       {
         // Lo que la idea 3 no deja probar: cualquier camino de 1 a 2 por una esquina que se arrastra.
         id: 'camino-libre', titulo: 'Camino libre de 1 a 2', pieza: 'ejes',
         consigna: 'Arrastra la esquina del camino entre los estados 1 y 2. Busca el camino de más trabajo y el de menos.',
-        controles: [
-          { id: 'vk', etiqueta: 'V de la esquina', color: 'c-i', min: 2, max: 6, paso: 0.5, inicio: 4, unidad: 'L', decimales: 1 },
-          { id: 'pk', etiqueta: 'P de la esquina en kPa', color: 'c-o', min: 0, max: 400, paso: 25, inicio: 350, decimales: 0 },
-        ],
+        controles: CTL_LIBRE,
         dibujo: val => ({ datos: caminoLibre(val), estado: {} }),
-        lectura: val => [`Esquina en ${f(val.vk, 1)}\u00a0L y ${f(val.pk, 0)}\u00a0kPa: W = ${f(areaBajo([E1, [val.vk, val.pk], E2]), 0).replace(/\s/g, '\u00a0')}\u00a0J`],
+        lectura: val => [`Esquina en ${f(val.vk, 1)}\u00a0L y ${f(val.pk, 0)}\u00a0kPa: W = ${f(wLibre(val), 0).replace(/\s/g, '\u00a0')}\u00a0J`],
+        // Retos comprobados: wLibre es el área que pinta la figura (areaBajo del mismo camino).
+        invitaciones: [
+          { texto: 'Busca el camino de 1 a 2 que da el mayor trabajo.',
+            logrado: val => Math.abs(wLibre(val) - W_LIBRE_MAX) < 1e-9,
+            bien: 'Subir la presión antes de expandirse: más área, más trabajo.' },
+          { texto: 'Pon la esquina para que el trabajo sea igual al de la recta.',
+            logrado: val => Math.abs(wLibre(val) - W_RECTA) < 1e-9,
+            bien: 'Solo empata sobre la recta. Otro camino, otra área: W depende del camino.' },
+          { texto: 'Consigue un trabajo menor que la mitad del de la recta.',
+            logrado: val => wLibre(val) < W_RECTA / 2,
+            bien: 'Mismos estados 1 y 2, y mucho menos trabajo. ¿Cambió ΔU?' },
+          { texto: 'Guarda dos caminos con esquinas distintas y el mismo trabajo.',
+            logrado: (val, guardados) => guardados.some(g => !mismo(g, val) && Math.abs(wLibre(g) - wLibre(val)) < 1e-9)
+              && guardados.some(g => mismo(g, val)),
+            bien: 'Formas distintas, misma área. El trabajo solo mira el área.' },
+        ],
         arrastres: [{
           id: 'esquina', etiqueta: 'esquina del camino', color: 'c-o',
           donde: val => { const g = EJES().geometria(caminoLibre(val)); return { x: g.X(val.vk), y: g.Y(val.pk) }; },
           mover: (pt, val) => { const g = EJES().geometria(caminoLibre(val)); return { vk: g.Xi(pt.x), pk: g.Yi(pt.y) }; },
         }],
       },
-      Object.assign({ id: 'primera-ley', titulo: 'Barras de la primera ley', pieza: 'fis-cuentas' }, primera.juega),
-      Object.assign({ id: 'gas-ideal', titulo: 'El punto del gas', pieza: 'ejes' }, gas.juega),
+      Object.assign({ id: 'primera-ley', titulo: 'Barras de la primera ley', pieza: 'fis-cuentas',
+        invitaciones: [
+          { texto: 'Haz que el gas reciba calor y aun así se enfríe.',
+            logrado: val => val.q > 0 && deltaU(val.q, val.w) < 0,
+            bien: 'Entró calor y U bajó: el gas gastó más empujando el pistón.' },
+          { texto: 'Logra ΔU = −300 J sin que el gas pierda calor.',
+            logrado: val => val.q >= 0 && deltaU(val.q, val.w) === -300,
+            bien: 'Sin perder calor, se enfrió: todo lo pagó el trabajo que hizo.' },
+          { texto: 'Busca el mayor aumento posible de la energía interna.',
+            logrado: val => deltaU(val.q, val.w) === DU_MAX,
+            bien: 'Entra calor y además empujan el pistón: las dos barras suman.' },
+          { texto: 'Guarda dos casos con el mismo ΔU y distinto calor.',
+            logrado: (val, guardados) => guardados.some(g => g.q !== val.q && deltaU(g.q, g.w) === deltaU(val.q, val.w))
+              && guardados.some(g => mismo(g, val)),
+            bien: 'Mismo ΔU, otro reparto: U no recuerda si llegó como calor o trabajo.' },
+        ] }, primera.juega),
+      Object.assign({ id: 'gas-ideal', titulo: 'El punto del gas', pieza: 'ejes',
+        invitaciones: [
+          { texto: 'Lleva el gas por debajo de 2 atm de presión.',
+            logrado: val => presion(val.t, val.v) < 2,
+            bien: 'Frío y con mucho espacio: las moléculas golpean poco las paredes.' },
+          { texto: 'Busca la mayor presión que permite la mesa.',
+            logrado: val => Math.abs(presion(val.t, val.v) - P_MAX) < 1e-9,
+            bien: 'La más caliente en el menor volumen. ¿Cuánto da PV/T?' },
+          { texto: 'Guarda dos estados: que la presión de uno sea el doble que la del otro.',
+            logrado: (val, guardados) => guardados.some(g => Math.abs(presion(val.t, val.v) - 2 * presion(g.t, g.v)) < 1e-9)
+              && guardados.some(g => mismo(g, val)),
+            bien: 'Doble de kelvin o mitad de volumen: la presión se duplica.' },
+          { texto: 'Guarda dos estados con distinta temperatura y la misma presión.',
+            logrado: (val, guardados) => guardados.some(g => g.t !== val.t && Math.abs(presion(g.t, g.v) - presion(val.t, val.v)) < 1e-9)
+              && guardados.some(g => mismo(g, val)),
+            bien: 'Doble de T y doble de V: la presión no se movió.' },
+        ] }, gas.juega),
     ],
     historia: {
       texto: 'Las máquinas de vapor ya movían minas antes de que alguien supiera su límite. En 1824, Sadi Carnot se preguntó cuánto trabajo puede dar el calor que pasa de un cuerpo caliente a uno frío, con una máquina ideal. Décadas después, las mediciones de Joule y el trabajo de Clausius y Kelvin separaron dos ideas: la energía se conserva, y no todo el calor puede volverse trabajo.',
