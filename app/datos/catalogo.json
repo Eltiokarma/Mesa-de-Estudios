@@ -943,10 +943,12 @@
        "/nucleo/kit/piezas/quim-atomo.js",
        "/nucleo/kit/piezas/quim-cadena.js",
        "/nucleo/kit/piezas/quim-cajas.js",
-       "/nucleo/kit/piezas/recta.js"
+       "/nucleo/kit/piezas/recta.js",
+       "/plantillas/atomo-y-tabla/motor.js",
+       "/nucleo/kit/piezas/quim-orbital-3d.js"
       ],
       "ideas": 5,
-      "terminos": 23
+      "terminos": 26
      }
     },
     {
@@ -1034,7 +1036,7 @@
        "/nucleo/kit/piezas/quim-molecula-3d.js"
       ],
       "ideas": 5,
-      "terminos": 35
+      "terminos": 36
      }
     },
     {
@@ -1283,10 +1285,12 @@
       "archivo": "/contenido/teoria/quimica/liquidos-y-solidos.js",
       "requiere": [
        "/nucleo/kit/piezas/quim-particulas.js",
-       "/nucleo/kit/piezas/ejes.js"
+       "/nucleo/kit/piezas/ejes.js",
+       "/plantillas/liquidos-y-solidos/motor.js",
+       "/nucleo/kit/piezas/quim-red-3d.js"
       ],
       "ideas": 5,
-      "terminos": 25
+      "terminos": 30
      }
     },
     {
@@ -1483,7 +1487,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -1523,10 +1527,13 @@
      "teoria": {
       "archivo": "/contenido/teoria/quimica/hidrocarburos.js",
       "requiere": [
-       "/nucleo/kit/piezas/quim-molecula.js"
+       "/nucleo/kit/piezas/quim-molecula.js",
+       "/plantillas/hidrocarburos/motor.js",
+       "/nucleo/elementos.js",
+       "/nucleo/kit/piezas/quim-molecula-3d.js"
       ],
       "ideas": 6,
-      "terminos": 32
+      "terminos": 38
      }
     },
     {

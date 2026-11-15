@@ -3,7 +3,7 @@
   "unidades": "Partículas y electrones en unidades; energía de ionización en kJ/mol; radios en pm; electronegatividad de Pauling, sin unidades.",
   "constantes": "Configuración por la regla de Möller (n + l, y a igual n + l, por n), con Cr y Cu como únicas excepciones del período 4 (Mo, Ag y Au, el mismo patrón). Cationes: salen primero los de mayor n y, a igual n, los de mayor l. Cajas de mₗ = −l a +l, primero las flechas hacia arriba (mₛ = +1/2). Datos de tabla de Z = 1 a 36: primera energía de ionización de NIST (eV × 96,485, redondeada a entero), radios calculados de Clementi y otros (1967) y electronegatividad de Pauling (Allred 1961); radios iónicos de Shannon (1976, coordinación 6).",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.resta-carga-a-neutrones, valores.P); los textos (configuraciones como '[Ar] 3d5', con el exponente pegado a la subcapa) y los booleanos se comparan exactos; las listas, completas y en orden; los números, con la tolerancia.",
-  "verificacion": "Recalculados el 7 de noviembre de 2026 por un subagente que no leyó el motor ni este archivo (solo la cabecera de motor.js): su propio programa en Python con llenado por Möller y Cr y Cu como excepciones, cationes que pierden primero los de mayor n, cajas de −l a +l y fracciones exactas para mₛ; los órdenes isoelectrónicos también por Z. Coinciden los 29 casos. Solo difiere el redondeo de las 4.as energías sucesivas del Na (9543) y del Mg (10543), en menos de 0,03 %. Los datos de NIST, Clementi, Pauling y Shannon se cotejaron de memoria, no contra la fuente: hay que confirmarlos con el libro o la tabla que use el colegio.",
+  "verificacion": "Recalculados el 7 de noviembre de 2026 por un subagente que no leyó el motor ni este archivo (solo la cabecera de motor.js): su propio programa en Python con llenado por Möller y Cr y Cu como excepciones, cationes que pierden primero los de mayor n, cajas de −l a +l y fracciones exactas para mₛ; los órdenes isoelectrónicos también por Z. Coinciden los 29 casos. Solo difiere el redondeo de las 4.as energías sucesivas del Na (9543) y del Mg (10543), en menos de 0,03 %. Los datos de NIST, Clementi, Pauling y Shannon se cotejaron de memoria, no contra la fuente: hay que confirmarlos con el libro o la tabla que use el colegio. Orbitales del hidrógeno (15 nov 2026): nodos y ψ (y el r90, en orbitales.test.js) verificados aparte en Python con la fórmula general R_nl de los polinomios de Laguerre asociados e integración numérica (paso 1e-4 a₀).",
   "tolerancia": 1e-09,
   "casos": [
     {
@@ -650,6 +650,167 @@
         "Z": 34,
         "bloque": "p",
         "grupoAB": "VIA"
+      }
+    },
+    {
+      "nombre": "Orbital 1s del hidrógeno: sin nodos (n = 1, l = 0)",
+      "fn": "orbital",
+      "args": [
+        "1s"
+      ],
+      "espera": {
+        "n": 1,
+        "l": 0,
+        "nodosRadiales": 0,
+        "nodosAngulares": 0
+      }
+    },
+    {
+      "nombre": "Orbital 2s: un nodo esférico en r = 2 a₀",
+      "fn": "orbital",
+      "args": [
+        "2s"
+      ],
+      "espera": {
+        "radiales": [
+          2
+        ],
+        "nodosRadiales": 1,
+        "nodosAngulares": 0
+      }
+    },
+    {
+      "nombre": "Orbital 2pz: sin nodo esférico y con el plano xy como nodo",
+      "fn": "orbital",
+      "args": [
+        "2pz"
+      ],
+      "espera": {
+        "nodosRadiales": 0,
+        "nodosAngulares": 1,
+        "planos": [
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "eje": "z"
+      }
+    },
+    {
+      "nombre": "Orbital 3s: dos nodos esféricos, en 1,902 y 7,098 a₀",
+      "fn": "orbital",
+      "args": [
+        "3s"
+      ],
+      "espera": {
+        "nodosRadiales": 2,
+        "radiales": [
+          1.901923788646684,
+          7.098076211353316
+        ]
+      }
+    },
+    {
+      "nombre": "Orbital 3px: un nodo esférico en 6 a₀ y un plano nodal",
+      "fn": "orbital",
+      "args": [
+        "3px"
+      ],
+      "espera": {
+        "radiales": [
+          6
+        ],
+        "nodosRadiales": 1,
+        "nodosAngulares": 1
+      }
+    },
+    {
+      "nombre": "Orbital 3dxy: dos planos nodales (x = 0 e y = 0), ningún nodo esférico",
+      "fn": "orbital",
+      "args": [
+        "3dxy"
+      ],
+      "espera": {
+        "nodosRadiales": 0,
+        "nodosAngulares": 2,
+        "planos": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "nombre": "Orbital 3dz²: sin planos nodales; dos conos nodales a 54,74° del eje z",
+      "fn": "orbital",
+      "args": [
+        "3dz2"
+      ],
+      "espera": {
+        "nodosAngulares": 2,
+        "planos": [],
+        "conos.0": 54.735610317245346
+      }
+    },
+    {
+      "nombre": "ψ del 2s a 1 a₀ del núcleo: R₂₀(1)/√(4π) = 0,21444/3,5449 = 0,06049",
+      "fn": "psi",
+      "args": [
+        "2s",
+        1,
+        0,
+        0
+      ],
+      "espera": {
+        "valor": 0.06049268112978585
+      }
+    },
+    {
+      "nombre": "ψ del 3pz a 1 a₀ sobre el eje z: R₃₁(1)·√(3/4π) = 0,035291; en el eje −z cambia de signo",
+      "fn": "psi",
+      "args": [
+        "3pz",
+        0,
+        0,
+        1
+      ],
+      "espera": {
+        "valor": 0.03529069568139934
+      },
+      "tambien": [
+        {
+          "args": [
+            "3pz",
+            0,
+            0,
+            -1
+          ],
+          "espera": {
+            "valor": -0.03529069568139934
+          }
+        }
+      ]
+    },
+    {
+      "nombre": "ψ del 3dxy en un punto de su plano nodal x = 0 vale 0",
+      "fn": "psi",
+      "args": [
+        "3dxy",
+        0,
+        2,
+        1
+      ],
+      "espera": {
+        "valor": 0
       }
     }
   ]

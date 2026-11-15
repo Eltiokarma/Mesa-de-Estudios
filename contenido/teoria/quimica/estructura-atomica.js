@@ -23,10 +23,13 @@
  * Fuentes (no van al alumno): OpenStax Chemistry 2e §2.3 y §6.4; Dalton (1808), Rutherford (1911), Bohr (1913).
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El motor de plantillas/atomo-y-tabla calcula la nube, los nodos y el r90 de la mesa 3D «La nube del orbital».
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/atomo-y-tabla/motor.js'))
+    : fabrica(root.Kit, root.MotorAtomo);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MA) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const Z = { v: 'c-h', t: 'Z' }, N = { v: 'c-d', t: 'N' }, A = { v: 'c-o', t: 'A' }, e = { v: 'c-i', t: 'e' };
@@ -555,11 +558,21 @@
     return { datos: { filas: filasConfig(c), desapareados: true, rotulo: el > 0 ? `${SIMB_Q(v.z, v.q)}: ${solos(c)} desapareados` : el === 0 ? `${SIMB_Q(v.z, v.q)}: sin electrones` : `${SIMB[v.z]} no tiene tantos electrones` }, estado: {} };
   };
 
+  // Mesa 3D «La nube del orbital»: los datos de la pieza quim-orbital-3d, todos del motor (regla 1).
+  const ESC_COMUN = 2.4 / MA.orbital(MA.mayorOrbital()).r90;
+  const nubeDe = v => {
+    const o = MA.orbital(v.orb), nb = MA.nube(v.orb, { corte: v.cor === 1 });
+    return { datos: { puntos: nb.puntos, escala: v.esc === 1 ? 2.2 / o.r90 : ESC_COMUN, nombre: o.nombre, corte: nb.corte, lobulos: MA.lobulos(v.orb),
+      vista: o.corte === 'z' ? { giro: 30, inclinacion: 55 } : { giro: 30, inclinacion: 20 },   // dxy y dx²−y²: mejor desde arriba
+      nodos: v.nod === 1 ? { radiales: o.radiales, planos: o.planos, conos: o.conos } : null }, estado: {} };
+  };
+
   return {
     unidad: 'quimica.estructura-atomica',
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/quim-atomo.js', '/nucleo/kit/piezas/quim-cadena.js', '/nucleo/kit/piezas/quim-cajas.js', '/nucleo/kit/piezas/recta.js'],
+    requiere: ['/nucleo/kit/piezas/quim-atomo.js', '/nucleo/kit/piezas/quim-cadena.js', '/nucleo/kit/piezas/quim-cajas.js', '/nucleo/kit/piezas/recta.js',
+      '/plantillas/atomo-y-tabla/motor.js', '/nucleo/kit/piezas/quim-orbital-3d.js'],
     historia: {
       texto: 'Desde 1808, John Dalton explicó las proporciones de combinación con átomos de masa propia; algunas de sus fórmulas estaban equivocadas. En 1911, la dispersión de partículas alfa llevó a Rutherford al núcleo, y en 1913 Bohr propuso niveles de energía. El modelo actual no es una foto: es la descripción que mejor explica las evidencias que tenemos.',
       pregunta: '¿Cómo sabes qué hay dentro de algo que no puedes ver?',
@@ -599,11 +612,60 @@
       { termino: 'isoelectrónico', formas: ['isoelectrónico', 'isoelectrónicos', 'isoelectrónica', 'isoelectrónicas'],
         def: 'Dicho de dos especies distintas que tienen la misma cantidad de electrones.',
         ejemplo: 'Na⁺, Ne y F⁻: los tres con 10 electrones.', ver: ['ion'] },
+      { termino: 'nodo', formas: ['nodo', 'nodos', 'nodo esférico', 'nodos esféricos'],
+        def: 'Lugar de un orbital donde la probabilidad de hallar al electrón es cero.',
+        ejemplo: 'El 2s tiene un nodo esférico a 2 a₀ del núcleo.', ver: ['orbital', 'plano nodal'] },
+      { termino: 'plano nodal', formas: ['plano nodal', 'planos nodales'],
+        def: 'Plano que pasa por el núcleo y en el que un orbital no tiene ningún punto.',
+        ejemplo: 'El 2pz tiene uno: el plano xy.', ver: ['nodo'] },
+      { termino: 'radio de Bohr', formas: ['radio de Bohr', 'radios de Bohr'], simbolo: 'a₀', medida: 'pm',
+        def: 'Unidad de distancia dentro del átomo de hidrógeno: 52,9 pm. En un milímetro caben unos 19 millones.',
+        ver: ['orbital'] },
     ],
-    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera abre los rangos de la idea 1 (hasta Z = 20 y
-    // cargas de ±3); la segunda junta la configuración de un ion con sus desapareados. La lectura dice la especie y
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La 3D (la nube del orbital) va primera. La segunda abre los rangos de la idea 1 (hasta Z = 20 y
+    // cargas de ±3); la tercera junta la configuración de un ion con sus desapareados. La lectura dice la especie y
     // lo que resulta, para que un caso guardado se lea solo.
     laboratorio: [
+      {
+        // Exploración libre en 3D (decisión de Gerson, 15 nov: sin predicciones; los retos son invitaciones).
+        // La nube, los nodos y el r90 salen del motor de plantillas/atomo-y-tabla (orbital, nube): solo el hidrógeno.
+        id: 'nube-orbital', titulo: 'La nube del orbital', pieza: 'quim-orbital-3d',
+        consigna: 'Gira la nube con el dedo: cada punto es un lugar probable del electrón. Córtala, enciende los nodos y compara tamaños en radios de Bohr.',
+        controles: [
+          { id: 'orb', etiqueta: 'Orbital', opciones: MA.ORBITALES.map(k => ({ valor: k, texto: MA.orbital(k).nombre })) },
+          { id: 'cor', etiqueta: 'Nube', opciones: [{ valor: 0, texto: 'Entera' }, { valor: 1, texto: 'Cortada' }] },
+          { id: 'nod', etiqueta: 'Nodos', opciones: [{ valor: 0, texto: 'Ocultos' }, { valor: 1, texto: 'A la vista' }] },
+          { id: 'esc', etiqueta: 'Tamaño', opciones: [{ valor: 1, texto: 'Ampliado' }, { valor: 0, texto: 'Misma escala' }] },
+        ],
+        dibujo: v => nubeDe(v),
+        lectura: v => { const o = MA.orbital(v.orb); return [`${o.nombre}: ${o.nodos} ${o.nodos === 1 ? 'nodo' : 'nodos'} · 90 % dentro de ${f(o.r90, 1)} a₀`]; },
+        // Retos comprobados con el mismo motor que arma la nube (docs/teoria.md §4d).
+        invitaciones: [
+          { texto: 'Corta la nube y encuentra un orbital con un hueco esférico por dentro.',
+            logrado: v => v.cor === 1 && MA.orbital(v.orb).nodosRadiales >= 1,
+            bien: 'Ese hueco es un nodo: ahí el electrón no aparece nunca.',
+            pista: 'Prueba los orbitales s de n = 2 o 3, con la nube cortada.' },
+          { texto: 'Busca un orbital con dos planos nodales: planos sin un solo punto.',
+            logrado: v => MA.orbital(v.orb).planos.length === 2,
+            bien: 'Dos planos nodales y cuatro lóbulos, como un trébol: es un orbital d.',
+            pista: 'Enciende los nodos y recorre los orbitales 3d.' },
+          { texto: 'Pon un orbital p con sus dos lóbulos sobre el eje z.',
+            logrado: v => MA.orbital(v.orb).l === 1 && MA.orbital(v.orb).eje === 'z',
+            bien: 'Un lóbulo ψ + y otro ψ −: es el signo de ψ, no una carga.',
+            pista: 'Mira los rótulos x, y, z y elige el p que va por z.' },
+          { texto: 'A la misma escala, encuentra el orbital más grande de la lista.',
+            logrado: v => v.esc === 0 && v.orb === MA.mayorOrbital(),
+            bien: 'Con n crece la nube. Córtalo: ¿cuántos nodos esconde?',
+            pista: 'Deja «Misma escala» y compara los orbitales de n = 3.' },
+          { texto: 'Guarda un 2p y un 3p del mismo eje, a la misma escala.',
+            logrado: (v, guardados) => guardados.some(a => guardados.some(b => {
+              const x = MA.orbital(a.orb), y = MA.orbital(b.orb);
+              return a.esc === 0 && b.esc === 0 && x.l === 1 && y.l === 1 && x.eje === y.eje && x.n === 2 && y.n === 3;
+            })),
+            bien: 'Misma forma, más grande. Y el 3p esconde un nodo esférico.',
+            pista: 'Guarda el 2pz, cambia al 3pz y guárdalo también.' },
+        ],
+      },
       {
         id: 'arma-ion', titulo: 'Arma cualquier átomo o ion', pieza: 'quim-atomo',
         consigna: 'Elige protones, neutrones y carga hasta el calcio. Saca o trae electrones con la manija y mira qué no cambia.',

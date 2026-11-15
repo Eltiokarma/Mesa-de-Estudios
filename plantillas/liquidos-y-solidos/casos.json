@@ -3,7 +3,7 @@
   "unidades": "Temperatura en °C; presión en mmHg (1 atm = 760 mmHg; 1 mmHg = 133,322 Pa) salvo en los diagramas de fases, que van en atm; presionAltitud y el campo Pa en pascales; volumen en L; moles en mol; humedad relativa en %.",
   "constantes": "Antoine (log10 P/mmHg = A − B/(C + T/°C)): agua 8,07131; 1730,63; 233,426 hasta 100 °C y 8,14019; 1810,94; 244,485 sobre 100 °C; etanol 8,20417; 1642,89; 230,300; acetona 7,11714; 1210,595; 229,664. ISA: P = 101 325 (1 − 2,25577·10⁻⁵ h)^5,25588 Pa. R = 62,36 mmHg·L/(mol·K) en PV = nRT y R = 8,314 J/(mol·K) en Clausius–Clapeyron; K = °C + 273,15. Puntos de ebullición normales del CRC (ver la cabecera de motor.js). Agua: triple 0,01 °C y 611,657 Pa, crítico 373,946 °C y 22,064 MPa, ΔH_sub 51,06 kJ/mol, fusión con pendiente −13,46 MPa/K. CO₂: triple −56,558 °C y 517,95 kPa, crítico 30,978 °C y 7,3773 MPa, sublimación normal −78,464 °C, fusión con pendiente 4,676 MPa/K; curvas de Clausius–Clapeyron por dos puntos (ver la cabecera).",
   "convencion": "Cada caso llama a la función 'fn' de motor.js con 'args' y compara 'espera'. Los campos anidados van con punto (errores.no-resta es lo que da el error típico 'no-resta'; cambios.0.T es la temperatura del primer cambio). El campo vacío '' es el resultado entero (fase devuelve un texto; presionCurva y presionAltitud, un número). Los textos, booleanos y listas se comparan exactos; los números, con la tolerancia relativa.",
-  "verificacion": "Lo verificó un subagente independiente el 7 de noviembre de 2026, sin leer el motor ni los casos: con su propio programa en Python rehízo Antoine (despeje cerrado y bisección), la atmósfera estándar, el gas recogido sobre agua, la humedad relativa y el rocío, los puentes de hidrógeno por reglas y los diagramas de fases con los datos declarados. De 52 casos, 48 coinciden exactos. Los otros 4 (16, 47, 49 y 50) coinciden al tomar 100 °C nominales, los puntos del CO₂ en Pa y R = 8,314 J/(mol·K). Los datos de tabla (constantes de Antoine y puntos de ebullición del CRC) se cotejaron de memoria y caen dentro del 2 %.",
+  "verificacion": "Lo verificó un subagente independiente el 7 de noviembre de 2026, sin leer el motor ni los casos: con su propio programa en Python rehízo Antoine (despeje cerrado y bisección), la atmósfera estándar, el gas recogido sobre agua, la humedad relativa y el rocío, los puentes de hidrógeno por reglas y los diagramas de fases con los datos declarados. De 52 casos, 48 coinciden exactos. Los otros 4 (16, 47, 49 y 50) coinciden al tomar 100 °C nominales, los puntos del CO₂ en Pa y R = 8,314 J/(mol·K). Los datos de tabla (constantes de Antoine y puntos de ebullición del CRC) se cotejaron de memoria y caen dentro del 2 %. Redes cúbicas (15 nov 2026): átomos por celda, número de coordinación, r/a y empaquetamiento recalculados aparte en Python contando en una grilla de 200³ qué parte del cubo ocupan las esferas (sin fracciones por sitio): coinciden con 1, 2 y 4; 6, 8 y 12; 52,36, 68,01 y 74,03 % (la grilla, a 0,02 %).",
   "tolerancia": 1e-09,
   "casos": [
     {
@@ -780,6 +780,71 @@
       ],
       "espera": {
         "": -78.464
+      }
+    },
+    {
+      "nombre": "Red cúbica simple: 8 octavos = 1 átomo por celda, 6 vecinos, a = 2r y 52,36 % del espacio lleno (π/6)",
+      "fn": "celda",
+      "args": [
+        "cs"
+      ],
+      "espera": {
+        "atomosPorCelda": 1,
+        "coordinacion": 6,
+        "radio": 0.5,
+        "aSobreR": 2,
+        "empaquetamiento": 0.5235987755982988,
+        "cuenta.vértice": 8,
+        "cuenta.cara": 0,
+        "cuenta.centro": 0,
+        "contacto": "arista",
+        "errores.cuenta-enteros": 8
+      }
+    },
+    {
+      "nombre": "Red BCC: 8 octavos + 1 entero = 2 átomos, 8 vecinos, a = 4r/√3 y 68,02 % lleno (π√3/8); contar enteros daría 9",
+      "fn": "celda",
+      "args": [
+        "bcc"
+      ],
+      "espera": {
+        "atomosPorCelda": 2,
+        "coordinacion": 8,
+        "radio": 0.4330127018922193,
+        "aSobreR": 2.3094010767585034,
+        "empaquetamiento": 0.6801747615878316,
+        "cuenta.centro": 1,
+        "contacto": "diagonal del cubo",
+        "errores.cuenta-enteros": 9
+      }
+    },
+    {
+      "nombre": "Red FCC: 8 octavos + 6 mitades = 4 átomos, 12 vecinos, a = 2√2 r y 74,05 % lleno (π/(3√2)); contar enteros daría 14",
+      "fn": "celda",
+      "args": [
+        "fcc"
+      ],
+      "espera": {
+        "atomosPorCelda": 4,
+        "coordinacion": 12,
+        "radio": 0.3535533905932738,
+        "aSobreR": 2.8284271247461903,
+        "empaquetamiento": 0.7404804896930609,
+        "cuenta.cara": 6,
+        "contacto": "diagonal de una cara",
+        "errores.cuenta-enteros": 14
+      }
+    },
+    {
+      "nombre": "Bloque FCC de 2 × 2 × 2 celdas: 63 puntos y el del centro con 12 vecinos a a/√2",
+      "fn": "bloqueRed",
+      "args": [
+        "fcc",
+        2
+      ],
+      "espera": {
+        "n": 2,
+        "distancia": 0.7071067811865476
       }
     }
   ]

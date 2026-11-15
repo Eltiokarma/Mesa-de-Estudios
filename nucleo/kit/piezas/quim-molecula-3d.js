@@ -16,6 +16,8 @@
  *   pares:   [{ en: id, dir: [x, y, z] }],                 // un par libre en la dirección dir (vector unitario)
  *   total:   [x, y, z] | null,                             // dipolo total (para la flecha gruesa); null o ~0: no hay
  *   vista:   { giro, inclinacion },                        // grados (opcional): sin ella, la que más separa los átomos
+ *   escala:  número,                                      // opcional (1): achica todo, para que quepan dos moléculas
+ *   simbolos: true,                                       // opcional: rótulo HTML con el símbolo de cada átomo que no es C
  *   alt,
  * }
  * estado = { dipolos: true|false, pares: true|false }.
@@ -79,7 +81,7 @@
       const q = g(d.total), m = Math.hypot(q[0], q[1]) || 1, k = Math.min(1.4, 0.6 + modulo(d.total) * 0.5) * L / m;
       flechas.push({ de: [0, 0], a: [q[0] * k, -q[1] * k], dipolo: true, color: 'o' });
     }
-    return { atomos, enlaces, pares, flechas, escala: 40, alto: 230 };
+    return { atomos, enlaces, pares, flechas, escala: 40 * (d.escala || 1), alto: 230 };
   }
   function alt(d) {
     if (d.alt) return d.alt;
@@ -104,20 +106,22 @@
     construir(T, grupo, d, e, h) {
       const colorDe = t => { try { return El.color(t, h.oscuro() ? 'oscuro' : 'claro'); } catch (err) { return h.oscuro() ? '#c9bfd6' : '#6b5f78'; } };
       const tinta = h.varCss('--ink', '#2d2340'), naranja = h.varCss('--c-o', '#b85a06'), violeta = h.varCss('--c-f', '#6b3dbd');
-      const P = new Map(d.atomos.map(a => [a.id, new T.Vector3(...a.pos).multiplyScalar(1.15)]));
+      const esc = d.escala || 1;                     // 1 salvo que la mesa pida achicar (dos moléculas lado a lado)
+      const P = new Map(d.atomos.map(a => [a.id, new T.Vector3(...a.pos).multiplyScalar(1.15 * esc)]));
       const tocables = [];
       for (const a of d.atomos) {
-        const s = new T.Mesh(new T.SphereGeometry(a.t === 'H' ? 0.24 : 0.36, h.SEG, Math.round(h.SEG * 0.7)), h.material(colorDe(a.t)));
+        const s = new T.Mesh(new T.SphereGeometry((a.t === 'H' ? 0.24 : 0.36) * esc, h.SEG, Math.round(h.SEG * 0.7)), h.material(colorDe(a.t)));
         s.position.copy(P.get(a.id)); s.userData = { t: a.t }; grupo.add(s); tocables.push(s);
+        if (d.simbolos && a.t !== 'C') h.etiqueta(P.get(a.id), a.t);       // símbolo encima del átomo (texto real)
       }
       for (const x of d.enlaces) {
         const A = P.get(x.a), B = P.get(x.b), n = x.orden || 1, eje = new T.Vector3().subVectors(B, A).normalize();
         let lado = new T.Vector3().crossVectors(eje, new T.Vector3(0, 0, 1));
         if (lado.length() < 0.1) lado = new T.Vector3().crossVectors(eje, new T.Vector3(0, 1, 0));
-        lado.normalize().multiplyScalar(0.11);
+        lado.normalize().multiplyScalar(0.11 * esc);
         for (let k = 0; k < n; k++) {
           const off = lado.clone().multiplyScalar(k - (n - 1) / 2);
-          grupo.add(h.barra(A.clone().add(off), B.clone().add(off), n > 1 ? 0.045 : 0.07, tinta));
+          grupo.add(h.barra(A.clone().add(off), B.clone().add(off), (n > 1 ? 0.045 : 0.07) * esc, tinta));
         }
         if (e.dipolos && x.dipolo) {            // flecha del enlace, al costado, hacia el átomo que atrae más
           const de = x.dipolo === 'b' ? A : B, a = x.dipolo === 'b' ? B : A, u = new T.Vector3().subVectors(a, de);
@@ -126,9 +130,9 @@
         }
       }
       if (e.pares !== false) for (const p of d.pares || []) {
-        const u = new T.Vector3(...p.dir).normalize(), s = new T.Mesh(new T.SphereGeometry(0.3, h.SEG, Math.round(h.SEG * 0.7)),
+        const u = new T.Vector3(...p.dir).normalize(), s = new T.Mesh(new T.SphereGeometry(0.3 * esc, h.SEG, Math.round(h.SEG * 0.7)),
           h.material(violeta, { transparent: true, opacity: 0.32, depthWrite: false }));
-        s.position.copy(P.get(p.en)).addScaledVector(u, 0.62); s.scale.set(0.75, 1.3, 0.75);
+        s.position.copy(P.get(p.en)).addScaledVector(u, 0.62 * esc); s.scale.set(0.75, 1.3, 0.75);
         s.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), u); grupo.add(s);
       }
       if (e.dipolos && d.total && modulo(d.total) > 0.005) {

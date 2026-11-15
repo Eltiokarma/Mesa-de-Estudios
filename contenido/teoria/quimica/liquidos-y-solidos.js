@@ -28,10 +28,13 @@
  * Fuentes: OpenStax Chemistry 2e §10.3 y §10.4; NIST Chemistry WebBook (CO₂, agua).
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El motor de plantillas/liquidos-y-solidos calcula las celdas y los bloques de la mesa 3D «La celda que se repite».
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/liquidos-y-solidos/motor.js'))
+    : fabrica(root.Kit, root.MotorLiquidos);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, ML) {
   'use strict';
   const f = (x, d = 2) => Kit.formatear(x, d);
   const P = { v: 'c-o', t: 'P' }, T = { v: 'c-h', t: 'T' }, h = { v: 'c-i', t: 'h' }, r = { v: 'c-d', t: 'r' };
@@ -528,11 +531,22 @@
   const sinLiquido = q => q === 'sólido' || q === 'gas';
   const dibFase2 = val => ({ datos: ejesFase({ puntos: [{ x: val.t, y: val.p, color: 'o', rotulo: fase(val.t, val.p) }, { x: TP[0], y: TP[1], color: 'h', rotulo: 'triple' }, { x: TC[0], y: TC[1], color: 'h', rotulo: 'crítico' }] }), estado: {} });
 
+  // Mesa 3D «La celda que se repite»: datos de la pieza quim-red-3d, todos del motor (celda, bloqueRed; regla 1).
+  const redDe = v => {
+    const c = ML.celda(v.red);
+    return { datos: v.vis === 1
+      ? { modo: 'bloque', bloque: ML.bloqueRed(v.red, 2), radio: v.tam === 1 ? c.radio : 0.12, nombre: c.nombre }
+      : { modo: 'celda', sitios: c.sitios, radio: v.tam === 1 ? c.radio : 0.14, nombre: c.nombre }, estado: {} };
+  };
+  const MAS_LLENA = ML.REDES_ORDEN.reduce((m, k) => (ML.celda(k).empaquetamiento > ML.celda(m).empaquetamiento ? k : m));
+  const Nc = { v: 'c-i', t: 'N' };
+
   return {
     unidad: 'quimica.liquidos-y-solidos',
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/quim-particulas.js', '/nucleo/kit/piezas/ejes.js'],
+    requiere: ['/nucleo/kit/piezas/quim-particulas.js', '/nucleo/kit/piezas/ejes.js',
+      '/plantillas/liquidos-y-solidos/motor.js', '/nucleo/kit/piezas/quim-red-3d.js'],
     historia: {
       texto: 'Saber cuándo pueden convivir hielo, agua y vapor pide más que nombrar estados. En 1878, Josiah Willard Gibbs publicó un estudio sobre el equilibrio de sustancias con varias fases que ordenó esas observaciones con temperatura y presión. Un diagrama de fases actual resume esas condiciones de equilibrio. No es una película del calentamiento: dice qué fase es estable, no cuánto tarda en cambiar.',
       pregunta: '¿Por qué en Juliaca el agua hierve antes que en Lima?',
@@ -571,11 +585,59 @@
         formas: ['gas húmedo', 'gases húmedos'], ver: ['gas seco'] },
       { termino: 'gas seco', def: 'La parte del gas húmedo que no es vapor: su presión es la total menos la del vapor.',
         ver: ['gas húmedo'] },
+      { termino: 'red cristalina', formas: ['red cristalina', 'redes cristalinas', 'red', 'redes'],
+        def: 'Orden de puntos que se repite igual en las tres direcciones; en cada punto hay un átomo o ion.',
+        ver: ['celda unitaria', 'sólido cristalino'] },
+      { termino: 'celda unitaria', formas: ['celda unitaria', 'celdas unitarias', 'celda', 'celdas'],
+        def: 'La caja más pequeña que, repetida como ladrillos, arma toda la red cristalina.',
+        ejemplo: 'Un átomo en un vértice se reparte entre 8 de ellas: cuenta ⅛.', ver: ['red cristalina'] },
+      { termino: 'número de coordinación', formas: ['número de coordinación', 'números de coordinación'],
+        def: 'Cuántos átomos tocan a uno dado en una red: los que están más cerca de él.',
+        ejemplo: 'Cúbica simple: 6; centrada en el cuerpo: 8; centrada en las caras: 12.', ver: ['red cristalina'] },
+      { termino: 'empaquetamiento', formas: ['empaquetamiento', 'fracción de empaquetamiento'], medida: '%',
+        def: 'Parte del volumen de la celda que ocupan las esferas; el resto es espacio vacío.',
+        ejemplo: 'Centrada en las caras: 74 %, lo más que se puede con esferas iguales.', ver: ['celda unitaria'] },
     ],
-    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera pone dos líquidos bajo la misma presión (la
-    // idea 3 solo tiene agua); la segunda recorre el mapa del CO₂ con pasos finos, de 0 a 100 atm. Las lecturas dicen
+    // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La 3D (la celda que se repite) va primera. La segunda pone dos líquidos bajo la misma presión (la
+    // idea 3 solo tiene agua); la tercera recorre el mapa del CO₂ con pasos finos, de 0 a 100 atm. Las lecturas dicen
     // las condiciones y el resultado, para que un caso guardado se lea solo.
     laboratorio: [
+      {
+        // Exploración libre en 3D (decisión de Gerson, 15 nov: sin predicciones; los retos son invitaciones).
+        // Fracciones, átomos por celda, vecinos y empaquetamiento salen del motor (celda, bloqueRed).
+        id: 'celda-se-repite', titulo: 'La celda que se repite', pieza: 'quim-red-3d',
+        consigna: 'Gira la celda con el dedo: de cada esfera solo cuenta el trozo de adentro. Cambia de red y mira ocho celdas juntas.',
+        controles: [
+          { id: 'red', etiqueta: 'Red', opciones: ML.REDES_ORDEN.map(k => ({ valor: k, texto: { cs: 'Cúbica simple', bcc: 'Centrada en el cuerpo', fcc: 'Centrada en las caras' }[k] })) },
+          { id: 'vis', etiqueta: 'Ver', opciones: [{ valor: 0, texto: 'Una celda' }, { valor: 1, texto: 'Ocho celdas' }] },
+          { id: 'tam', etiqueta: 'Esferas', opciones: [{ valor: 1, texto: 'Tamaño real' }, { valor: 0, texto: 'Chicas' }] },
+        ],
+        dibujo: v => redDe(v),
+        lectura: v => { const c = ML.celda(v.red); return [`${c.sigla}: `, Nc, ` = ${f(c.atomosPorCelda, 0)} por celda, ${c.coordinacion} vecinos, ${f(100 * c.empaquetamiento, 0)} % lleno`]; },
+        // Retos comprobados con el mismo motor que arma la celda (docs/teoria.md §4d).
+        invitaciones: [
+          { texto: 'Arma una celda con 4 átomos en total, contando solo los trozos de adentro.',
+            logrado: v => v.vis === 0 && ML.celda(v.red).atomosPorCelda === 4,
+            bien: 'Ocho octavos y seis mitades: 1 + 3 = 4. No son 14.',
+            pista: 'Prueba la red con un átomo en el centro de cada cara.' },
+          { texto: 'Mira ocho celdas y busca la red donde cada átomo toca a 8 vecinos.',
+            logrado: v => v.vis === 1 && ML.celda(v.red).coordinacion === 8,
+            bien: 'Número de coordinación 8: el del centro toca a los ocho vértices.',
+            pista: 'Elige «Ocho celdas» y esferas chicas, y cuenta las naranjas.' },
+          { texto: 'Encuentra la red que deja menos espacio vacío entre sus esferas.',
+            logrado: v => v.red === MAS_LLENA,
+            bien: 'El mayor empaquetamiento: así se apilan las naranjas en el mercado.',
+            pista: 'Compara el porcentaje lleno de la lectura en las tres redes.' },
+          { texto: 'Con esferas chicas, encuentra un átomo que cuente entero para la celda.',
+            logrado: v => v.tam === 0 && v.vis === 0 && ML.celda(v.red).sitios.some(s => s.fraccion === 1),
+            bien: 'El del centro no se reparte con otra celda: cuenta 1.',
+            pista: 'Busca una red con un átomo justo en el centro del cubo.' },
+          { texto: 'Guarda dos redes: una con el doble de átomos por celda que la otra.',
+            logrado: (v, guardados) => guardados.some(a => guardados.some(b => ML.celda(a.red).atomosPorCelda === 2 * ML.celda(b.red).atomosPorCelda)),
+            bien: 'Más átomos en el mismo cubo: más masa en el mismo volumen.',
+            pista: 'Guarda la cúbica simple y después la centrada en el cuerpo.' },
+        ],
+      },
       {
         id: 'dos-liquidos', titulo: 'Agua y etanol, misma presión', pieza: 'ejes',
         consigna: 'Sube o baja la presión de afuera, como si cambiaras de altura. Compara dónde hierve cada líquido.',

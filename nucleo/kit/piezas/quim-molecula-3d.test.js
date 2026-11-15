@@ -49,3 +49,11 @@ test('girar conserva el largo y la vista mueve la proyección', () => {
   const b = P.plano(Object.assign({}, AGUA, { vista: { giro: 90, inclinacion: 0 } }), {}).atomos.find(x => x.id === 'H1');
   assert.notEqual(a.x.toFixed(6), b.x.toFixed(6));
 });
+
+test('escala opcional: achica el respaldo plano sin cambiar la molécula', () => {
+  const d = { atomos: [{ id: 'c', t: 'C', pos: [0, 0, 0] }, { id: 'h', t: 'H', pos: [1, 0, 0] }], enlaces: [{ a: 'c', b: 'h', orden: 1 }], pares: [], total: null, vista: { giro: 0, inclinacion: 0 } };
+  const P = require('./quim-molecula-3d.js');
+  assert.equal(P.plano(d, {}).escala, 40);
+  assert.equal(P.plano(Object.assign({}, d, { escala: 0.6 }), {}).escala, 24);
+  assert.deepEqual(P.plano(Object.assign({}, d, { escala: 0.6 }), {}).atomos, P.plano(d, {}).atomos);
+});
