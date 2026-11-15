@@ -4814,10 +4814,12 @@
       "archivo": "/contenido/teoria/razonamiento-matematico/razonamiento-inductivo.js",
       "requiere": [
        "/nucleo/kit/piezas/rm-plano.js",
-       "/nucleo/kit/piezas/rm-tablero.js"
+       "/nucleo/kit/piezas/rm-tablero.js",
+       "/plantillas/cubitos-pintados/motor.js",
+       "/nucleo/kit/piezas/rm-cubitos-3d.js"
       ],
       "ideas": 3,
-      "terminos": 14
+      "terminos": 17
      }
     },
     {

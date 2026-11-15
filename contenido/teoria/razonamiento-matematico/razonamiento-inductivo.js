@@ -15,10 +15,13 @@
  *   Duda que resuelve: «si funciona en tres casos, ¿ya está?».
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El motor de plantillas/cubitos-pintados cuenta, cubito por cubito, las caras pintadas de la mesa «El cubo que crece».
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/cubitos-pintados/motor.js'))
+    : fabrica(root.Kit, root.MotorCubitos);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MC) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const n = { v: 'c-d', t: 'n' }, P = { v: 'c-o', t: 'P' };
@@ -428,6 +431,59 @@
     ],
   };
 
+  // ---------- El cubo que crece (laboratorio 3D, 15 nov: exploración libre, sin predicciones) ----------
+  // Un cubo de n × n × n cubitos pintado por fuera. El motor de plantillas/cubitos-pintados cuenta, cubito por cubito,
+  // cuántas caras pintadas tiene cada uno; la pieza rm-cubitos-3d dibuja esas mismas caras (regla 1). Separar deja ver
+  // los de adentro; resaltar apaga los demás. La inducción: con n = 2, 3, 4… cada grupo crece a su manera.
+  const TONO_CARA = ['blanca', 'pintada', 'base'];
+  const pintadoDe = val => MC.pintado({ dims: [val.n, val.n, val.n] });
+  const cuantos = (val, k) => pintadoDe(val).cuenta[k];
+  const VER = [{ valor: -1, texto: 'Todos' }, { valor: 3, texto: '3 caras' }, { valor: 2, texto: '2 caras' }, { valor: 1, texto: '1 cara' }, { valor: 0, texto: 'Sin pintar' }];
+  function datosCubo(val) {
+    const r = pintadoDe(val), c = r.cuenta, n3 = val.n * val.n * val.n;
+    return {
+      celdas: r.celdas.map((p, i) => (val.ver === -1 || r.pintadas[i] === val.ver
+        ? { p, caras: r.porCara[i].map(x => ({ tono: TONO_CARA[x] })) } : { p, tono: 'tenue' })),
+      separar: val.sep / 4,
+      marcas: [{ p: [val.n / 2, -0.4, 0], texto: `n = ${val.n}`, color: 'c-d' }],
+      alt: `Cubo de ${val.n} × ${val.n} × ${val.n} = ${n3} cubitos, pintado por fuera: ${c[3]} con tres caras pintadas, ${c[2]} con dos, ${c[1]} con una y ${c[0]} sin pintar.`,
+    };
+  }
+  const mesaCubo = {
+    id: 'cubo-que-crece', titulo: 'El cubo que crece', pieza: 'rm-cubitos-3d',
+    consigna: 'Gira el cubo pintado con el dedo. Cambia el lado, sepáralo y resalta un grupo: mira cómo crece cada uno.',
+    controles: [
+      { id: 'n', etiqueta: 'Lado (n)', color: 'c-d', min: 2, max: 6, paso: 1, inicio: 3, decimales: 0 },
+      { id: 'sep', etiqueta: 'Separar', min: 0, max: 4, paso: 1, inicio: 0, decimales: 0 },
+      { id: 'ver', etiqueta: 'Resaltar', opciones: VER },
+    ],
+    dibujo: val => ({ datos: datosCubo(val), estado: {} }),
+    lectura: val => { const c = pintadoDe(val).cuenta; return [`${c[3]} con 3 · ${c[2]} con 2 · ${c[1]} con 1 · ${c[0]} sin pintar`]; },
+    // Retos comprobados con el mismo motor que pinta las caras (docs/teoria.md §4d).
+    invitaciones: [
+      { texto: 'En el cubo de lado 4, separa los cubitos y resalta los que no tienen pintura.',
+        logrado: val => val.n === 4 && val.sep >= 2 && val.ver === 0 && cuantos(val, 0) > 0,
+        bien: 'Son 8 cubitos interiores: un cubo de lado 2 escondido. Lado n − 2, siempre.',
+        pista: 'Lado 4, separa dos pasos o más y elige «Sin pintar».' },
+      { texto: 'Busca el cubo que tiene 36 cubitos con dos caras pintadas.',
+        logrado: val => cuantos(val, 2) === 36 && val.ver === 2,
+        bien: 'Viven en las 12 aristas, 3 en cada una: 12 · (n − 2) = 36.',
+        pista: 'Resalta «2 caras»: están en las aristas, sin contar las esquinas.' },
+      { texto: 'Encuentra un cubo sin ningún cubito de dos caras pintadas.',
+        logrado: val => cuantos(val, 2) === 0,
+        bien: 'Con lado 2 todo es esquina: los 8 cubitos tienen tres caras.',
+        pista: 'Achica el cubo lo más que puedas.' },
+      { texto: 'Haz que los de una cara pintada sean más que los de dos.',
+        logrado: val => cuantos(val, 1) > cuantos(val, 2),
+        bien: 'Desde lado 5 ganan las caras: un cuadrado crece más rápido que una recta.',
+        pista: 'Agranda el cubo y compara los dos números de la lectura.' },
+      { texto: 'Guarda los cubos de lado 3 y 4: ¿qué grupo creció más?',
+        logrado: (val, guardados) => guardados.some(x => x.n === 3) && guardados.some(x => x.n === 4),
+        bien: 'Las esquinas siguen en 8; los de una cara saltan de 6 a 24.',
+        pista: 'Guarda el de lado 3, sube a 4 y guarda otra vez.' },
+    ],
+  };
+
   return {
     unidad: 'razonamiento-matematico.razonamiento-inductivo',
     // Glosario: las palabras que este tema estrena en el curso (docs/teoria.md, 4d).
@@ -453,14 +509,20 @@
       { termino: 'argumento', def: 'Cadena de razones que explica por qué algo es cierto.', ver: ['demostración'] },
       { termino: 'demostración', def: 'Argumento que muestra que una afirmación vale siempre, sin dejar ningún caso fuera.',
         ver: ['argumento', 'inducción matemática'] },
+      { termino: 'cara pintada', formas: ['cara pintada', 'caras pintadas'],
+        def: 'Cara de un cubito que quedaba por fuera del cuerpo cuando se pintó; las de adentro quedan sin pintar.',
+        ejemplo: 'En un cubo de 3 × 3 × 3, el cubito de una esquina tiene 3 caras pintadas.', ver: ['cubito interior'] },
+      { termino: 'cubito interior', formas: ['cubito interior', 'cubitos interiores'],
+        def: 'Cubito que no toca ninguna cara del cubo grande: no recibe pintura.',
+        ejemplo: 'Cubo de lado 5: los interiores forman un cubo de lado 3, con 27 cubitos.', ver: ['cara pintada'] },
       { termino: 'inducción matemática', def: 'Prueba de una regla en el primer caso y en el paso de cada caso al siguiente: así vale siempre.',
         ver: ['demostración', 'inducción'] },
     ],
-    // Laboratorio: tres formas de palitos hasta 8 figuras, el círculo hasta 6 puntos y los impares que no empiezan en 1.
-    laboratorio: [mesaPalitos, mesaCuerdas, mesaImpares],
-    version: '0.2.0',
+    // Laboratorio: el cubo pintado que crece en 3D, tres formas de palitos hasta 8 figuras, el círculo hasta 6 puntos y los impares que no empiezan en 1.
+    laboratorio: [mesaCubo, mesaPalitos, mesaCuerdas, mesaImpares],
+    version: '0.3.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/rm-tablero.js'],
+    requiere: ['/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/rm-tablero.js', '/plantillas/cubitos-pintados/motor.js', '/nucleo/kit/piezas/rm-cubitos-3d.js'],
     historia: {
       texto: 'En 1739 y 1748, David Hume preguntó qué justifica pasar de lo observado a lo que no se ha observado. Esa duda filosófica es distinta de la inducción matemática, que es una demostración. En un examen, reconocer un patrón da una hipótesis: varias reglas pueden encajar con los mismos primeros términos.',
       pregunta: '¿Cuántos casos hacen falta para estar seguro?',
