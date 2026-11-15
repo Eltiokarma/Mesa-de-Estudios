@@ -700,6 +700,7 @@
     // Glosario: las palabras que la unidad estrena (docs/teoria.md, 4d). Hipotenusa y cateto ya salen en «Segmentos y
     // ángulos», pero se definen aquí, donde son el tema; circunferencia, radio y diámetro se estrenan aquí en el curso.
     glosario: [
+      { termino: 'razón', def: 'Cociente entre dos medidas: dice cuántas veces cabe una en la otra.', ejemplo: 'Lados de 6 y 3: la razón es 6 : 3 = 2.' },
       { termino: 'congruente', simbolo: '≅', formas: ['congruentes', 'congruente', 'congruencia'],
         def: 'Igual en forma y en tamaño: una figura calza exacto sobre la otra.', ver: ['criterio'] },
       { termino: 'criterio', formas: ['criterio', 'criterios'],
@@ -724,7 +725,7 @@
         ejemplo: `3² + 4² = ${3 * 3 + 4 * 4} = 5²`, ver: ['hipotenusa', 'cateto'] },
       { termino: 'triángulo rectángulo notable', formas: ['triángulo rectángulo notable', 'triángulos rectángulos notables', 'rectángulos notables', 'rectángulo notable'],
         def: 'Rectángulo de ángulos agudos 30° y 60°, 45° y 45°, o 37° y 53°: sus lados guardan razones fijas.',
-        ejemplo: `El de 45° con catetos 1 tiene hipotenusa √2 ≈ ${f(Math.SQRT2, 2)}.` },
+        ejemplo: `El de 45° con catetos 1 tiene hipotenusa √2 ≈ ${f(Math.SQRT2, 2)}.`, ver: ['semejanza'] },
       { termino: 'circunferencia', formas: ['circunferencia', 'circunferencias'],
         def: 'Línea curva cerrada cuyos puntos están todos a la misma distancia de un punto fijo, su centro.', ver: ['radio', 'diámetro', 'círculo'] },
       { termino: 'círculo', formas: ['círculo', 'círculos'], def: 'La región plana que encierra una circunferencia, con todo su interior.', ver: ['circunferencia'] },
@@ -732,7 +733,7 @@
       { termino: 'diámetro', formas: ['diámetro', 'diámetros'],
         def: 'Segmento que pasa por el centro y une dos puntos de la circunferencia. Mide dos radios.', ver: ['radio'] },
       { termino: 'semicircunferencia', def: 'Mitad de una circunferencia, de un extremo de un diámetro al otro.', ver: ['diámetro'] },
-      { termino: 'paralelogramo', def: 'Cuadrilátero con sus lados opuestos paralelos de dos en dos.' },
+      { termino: 'paralelogramo', def: 'Cuadrilátero con sus lados opuestos paralelos de dos en dos.', ver: ['cuadrilátero'] },
       { termino: 'diagonal', formas: ['diagonal', 'diagonales'], def: 'Segmento que une dos vértices no vecinos de una figura.' },
       { termino: 'axioma', formas: ['axioma', 'axiomas'], def: 'Afirmación que se acepta sin probarla y sirve de punto de partida para probar lo demás.' },
     ],

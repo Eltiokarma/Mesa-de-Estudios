@@ -694,6 +694,7 @@
     // trae el vocabulario de base. Triángulo, altura, hipotenusa y cateto también salen aquí, pero se definen en
     // «Triángulos» y «Congruencia», donde son el tema; el lector los marca igual.
     glosario: [
+      { termino: 'arco', def: 'Parte de una circunferencia entre dos de sus puntos. Sirve para medir la abertura de un ángulo.', ver: ['ángulo'] },
       { termino: 'punto', def: 'Lugar exacto, sin tamaño. Se nombra con una letra mayúscula, como A o B.' },
       { termino: 'recta', def: 'Línea derecha sin principio ni fin. Por dos puntos pasa una sola.', ver: ['segmento', 'rayo'] },
       { termino: 'plano', def: 'Superficie lisa que se extiende sin fin en todas direcciones, como una hoja que nunca acaba.' },
@@ -708,7 +709,7 @@
       { termino: 'ángulo obtuso', formas: ['ángulo obtuso', 'ángulos obtusos', 'obtuso', 'obtusos'], def: 'El que mide más de 90° y menos de 180°: más abierto que una esquina.' },
       { termino: 'ángulo llano', formas: ['ángulo llano', 'ángulos llanos', 'llano'], def: 'El que mide 180°: sus dos lados forman una sola recta.' },
       { termino: 'ángulo no convexo', formas: ['ángulo no convexo', 'ángulos no convexos', 'no convexo'], def: 'El que mide más de 180° y menos de 360°: su abertura rodea por afuera.' },
-      { termino: 'bisectriz', def: 'Rayo que parte un ángulo en dos ángulos iguales.', ejemplo: `La de un ángulo de 50° deja dos de ${50 / 2}°.` },
+      { termino: 'bisectriz', def: 'Rayo que parte un ángulo en dos ángulos iguales.', ejemplo: `La de un ángulo de 50° deja dos de ${50 / 2}°.`, ver: ['incentro'] },
       { termino: 'complemento', formas: ['complemento', 'complementos', 'complementarios', 'complementario'],
         def: 'Lo que le falta a un ángulo para llegar a 90°.', ejemplo: `El de 35° es ${90 - 35}°, porque 35° + ${90 - 35}° = 90°.`, ver: ['suplemento'] },
       { termino: 'suplemento', formas: ['suplemento', 'suplementos', 'suplementarios', 'suplementario'],

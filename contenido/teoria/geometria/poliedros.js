@@ -457,7 +457,7 @@
         ver: ['poliedro convexo', 'poliedro regular'] },
       { termino: 'poliedro convexo', formas: ['poliedro convexo', 'poliedros convexos'],
         def: 'Sólido de caras planas sin huecos ni entrantes: el segmento entre dos puntos suyos queda adentro.',
-        ejemplo: 'Un cubo lo es; un marco con un túnel, no.', ver: ['teorema de Euler'] },
+        ejemplo: 'Un cubo lo es; un marco con un túnel, no.', ver: ['teorema de Euler', 'polígono convexo'] },
       { termino: 'teorema de Euler', simbolo: 'C + V = A + 2',
         def: 'En todo poliedro convexo, caras más vértices es igual a aristas más dos.',
         ejemplo: 'Cubo: 6 caras + 8 vértices = 12 aristas + 2.', ver: ['poliedro convexo'] },

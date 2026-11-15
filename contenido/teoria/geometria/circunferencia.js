@@ -808,10 +808,11 @@
     // Glosario (docs/teoria.md, 4d): lo que esta unidad estrena. Circunferencia, círculo, radio, diámetro, centro, arco
     // y secante se definen antes (segmentos, triángulos, congruencia); semisuma y semidiferencia, en polígonos.
     glosario: [
+      { termino: 'circunscrita', formas: ['circunscrita', 'circunscrito', 'circunscritas', 'circunscritos'], def: 'Dicho de una circunferencia: pasa por todos los vértices de un polígono, que queda adentro.', ver: ['circunferencia inscrita'] },
       { termino: 'cuerda', def: 'Segmento que une dos puntos de una circunferencia.',
-        ejemplo: 'La cuerda más larga pasa por el centro: es el diámetro.', ver: ['arco que abarca'] },
+        ejemplo: 'La cuerda más larga pasa por el centro: es el diámetro.', ver: ['arco que abarca', 'diámetro'] },
       { termino: 'tangente', def: 'Recta que toca la circunferencia en un solo punto, perpendicular al radio que llega ahí.',
-        ejemplo: 'Con r = 3 y P a 5 del centro, cada tangente desde P mide √(25 − 9) = 4.', ver: ['punto de tangencia'] },
+        ejemplo: 'Con r = 3 y P a 5 del centro, cada tangente desde P mide √(25 − 9) = 4.', ver: ['punto de tangencia', 'radio'] },
       { termino: 'punto de tangencia', formas: ['punto de tangencia', 'puntos de tangencia', 'punto de contacto', 'puntos de contacto'],
         def: 'Único punto que comparten una recta tangente y la circunferencia.', ver: ['tangente'] },
       { termino: 'arco que abarca', formas: ['arco que abarca', 'arco que abarcan', 'arcos que abarcan'],

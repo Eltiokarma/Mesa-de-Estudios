@@ -802,7 +802,7 @@
     // de las ideas y se comprobaron con node.
     glosario: [
       { termino: 'muesca', def: 'Entrante en el borde de una figura: un pedazo recortado hacia adentro que agrega paredes al perímetro.',
-        ejemplo: 'Rectángulo de 6 por 4 con muesca de fondo 1: perímetro 20 + 2 = 22.' },
+        ejemplo: 'Rectángulo de 6 por 4 con muesca de fondo 1: perímetro 20 + 2 = 22.', ver: ['perímetro'] },
       { termino: 'serie', formas: ['serie', 'series'], def: 'Lista ordenada de figuras o números que siguen una regla; se pide el término siguiente o el que falta.',
         ver: ['analogía'] },
       { termino: 'analogía', formas: ['analogía', 'analogías'], def: 'Comparación «A es a B como C es a…»: el cambio de A a B se repite desde C.',
@@ -811,7 +811,7 @@
         def: 'Figuras con números en lugares fijos, unidos por una misma regla que debe cumplirse en todas.',
         ejemplo: 'a · b − c: con 3, 4 y 2, el centro es 3 · 4 − 2 = 10.' },
       { termino: 'abanico', def: 'Rayos que salen de un mismo punto y cortan una base; entre cada dos rayos queda un espacio.',
-        ejemplo: '3 espacios: 3 + 2 + 1 = 6 triángulos con una base.', ver: ['transversal'] },
+        ejemplo: '3 espacios: 3 + 2 + 1 = 6 triángulos con una base.', ver: ['transversal', 'rayo'] },
       { termino: 'transversal', formas: ['transversal', 'transversales'],
         def: 'Recta que corta a todos los rayos de un abanico y forma, con cada par de ellos, un triángulo.',
         ejemplo: 'Abanico de 3 espacios con 2 transversales: 2 · 6 = 12 triángulos.', ver: ['abanico'] },

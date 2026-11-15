@@ -531,12 +531,13 @@
     // Glosario: lo que este tema estrena. Ángulo central, hexágono, isósceles, inscrito, perímetro y diagonal vienen
     // de unidades anteriores y el lector los marca solos.
     glosario: [
+      { termino: 'número pi', simbolo: 'π', formas: ['número pi', 'π'], def: 'Cuántas veces cabe el diámetro en la vuelta de una circunferencia; vale aproximadamente 3,1416.', ver: ['diámetro'] },
       { termino: 'polígono regular', formas: ['polígono regular', 'polígonos regulares'],
         def: 'Polígono con todos sus lados iguales y todos sus ángulos iguales.',
         ejemplo: 'El cuadrado lo es; el rombo no: lados iguales, ángulos distintos.', ver: ['apotema'] },
       { termino: 'apotema', simbolo: 'a', formas: ['apotema', 'apotemas'],
         def: 'Segmento perpendicular del centro de un polígono regular al punto medio de uno de sus lados.',
-        ejemplo: 'Hexágono de lado 6: √(36 − 9) = 3√3 ≈ 5,2.', ver: ['polígono regular'] },
+        ejemplo: 'Hexágono de lado 6: √(36 − 9) = 3√3 ≈ 5,2.', ver: ['polígono regular', 'ángulo central'] },
       { termino: 'seno', simbolo: 'sen', formas: ['seno', 'senos', 'sen'],
         def: 'En un triángulo rectángulo, el cateto opuesto a un ángulo agudo dividido entre la hipotenusa.',
         ejemplo: 'sen 30° = 1/2: el hexágono tiene lado 2R · sen 30° = R.', ver: ['coseno'] },

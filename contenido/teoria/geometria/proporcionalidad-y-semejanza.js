@@ -727,8 +727,11 @@
     // Glosario (docs/teoria.md, 4d): lo que esta unidad estrena. Razón, bisectriz, prolongación, LAL y LLL se definen
     // antes (triángulos, congruencia); semisuma, en polígonos.
     glosario: [
+      { termino: 'área', formas: ['área', 'áreas'], medida: 'u²', def: 'Cuánta superficie encierra una figura plana, contada en cuadraditos de lado 1.', ejemplo: 'Un rectángulo de 3 por 4 encierra 12 cuadraditos: 12 u².' },
+      { termino: 'volumen', formas: ['volumen', 'volúmenes'], medida: 'u³', def: 'Cuánto espacio ocupa un cuerpo, contado en cubitos de arista 1.', ejemplo: 'Una caja de 2 por 3 por 4 guarda 24 cubitos: 24 u³.' },
+      { termino: 'incentro', def: 'Punto donde se cortan las tres bisectrices de un triángulo; es el centro de la circunferencia inscrita.', ver: ['bisectriz', 'circunferencia inscrita'] },
       { termino: 'proporción', formas: ['proporción', 'proporciones'], def: 'Igualdad entre dos razones.',
-        ejemplo: '2/3 = 4/6: los dos cocientes valen lo mismo.', ver: ['proporcional'] },
+        ejemplo: '2/3 = 4/6: los dos cocientes valen lo mismo.', ver: ['proporcional', 'razón'] },
       { termino: 'proporcional', formas: ['proporcional', 'proporcionales', 'proporcionalmente'],
         def: 'Dicho de dos parejas de cantidades que forman la misma razón.',
         ejemplo: 'Tramos 2 y 3 frente a 4 y 6: 2/3 = 4/6.', ver: ['proporción', 'teorema de Thales'] },
@@ -739,7 +742,7 @@
         def: 'Enunciado con el orden cambiado: lo que era conclusión pasa a ser dato, y al revés.',
         ejemplo: 'Si las razones en los dos lados son iguales, DE es paralela a BC.', ver: ['teorema de Thales'] },
       { termino: 'ceviana', def: 'Segmento que va de un vértice de un triángulo a un punto del lado opuesto.',
-        ejemplo: 'Una mediana y una bisectriz interior son casos de este segmento.', ver: ['teorema de Ceva'] },
+        ejemplo: 'Una mediana y una bisectriz interior son casos de este segmento.', ver: ['teorema de Ceva', 'mediana', 'bisectriz'] },
       { termino: 'concurrentes', formas: ['concurrentes', 'concurrente', 'concurren'],
         def: 'Dicho de tres o más rectas que pasan por un mismo punto.', ver: ['teorema de Ceva'] },
       { termino: 'teorema de Ceva', formas: ['teorema de Ceva', 'Ceva'],
@@ -752,7 +755,7 @@
         def: 'Relación entre dos figuras de igual forma: ángulos iguales y lados proporcionales, aunque cambie el tamaño.',
         ejemplo: 'Lados 3, 4, 5 y 6, 8, 10: semejantes con k = 2.', ver: ['escala', 'antiparalela'] },
       { termino: 'escala', simbolo: 'k', def: 'Número por el que se multiplica cada longitud al ampliar o reducir una figura.',
-        ejemplo: 'k = 2: un lado de 3 pasa a 6 y el área va por 4.', ver: ['factor del área', 'ampliación'] },
+        ejemplo: 'k = 2: un lado de 3 pasa a 6 y el área va por 4.', ver: ['factor del área', 'ampliación', 'razón'] },
       { termino: 'ampliación', formas: ['ampliación', 'ampliaciones'],
         def: 'Copia de una figura con todas sus longitudes multiplicadas por un mismo número mayor que 1.', ver: ['escala'] },
       { termino: 'factor del área', formas: ['factor del área', 'factor de área', 'factor de las áreas'],

@@ -800,9 +800,9 @@
     glosario: [
       { termino: 'plano cartesiano', formas: ['plano cartesiano', 'planos cartesianos'],
         def: 'Plano con dos rectas numeradas perpendiculares, los ejes x e y; cada punto queda nombrado por un par (x; y).',
-        ejemplo: '(3; −2): 3 a la derecha del origen y 2 hacia abajo.' },
+        ejemplo: '(3; −2): 3 a la derecha del origen y 2 hacia abajo.', ver: ['coordenadas'] },
       { termino: 'pesos cruzados', def: 'Para dividir AB en razón m : n, A lleva el peso n y B el peso m.',
-        ejemplo: 'A(1; 2), B(7; 8), razón 1 : 2: P = (2·A + 1·B)/3 = (3; 4).' },
+        ejemplo: 'A(1; 2), B(7; 8), razón 1 : 2: P = (2·A + 1·B)/3 = (3; 4).', ver: ['punto medio', 'razón'] },
       { termino: 'pendiente', simbolo: 'm', def: 'Cuánto sube una recta por cada unidad que avanza hacia la derecha: Δy entre Δx. La recta vertical no tiene.',
         ejemplo: 'De (−2; −1) a (2; 1): m = 2/4 = 1/2.' },
       { termino: 'valor absoluto', def: 'Un número sin su signo: su distancia al cero. Por eso nunca es negativo.',
