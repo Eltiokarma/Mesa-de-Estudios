@@ -63,6 +63,14 @@
   const cambio = (c, color) => (c >= 0 ? aum(c, color) : des(-c, color));
   // Escala fija en 2 · P₀: arrastrar un pedazo no cambia la regla bajo el dedo (si el final pasa de 2 · P₀, manda él).
   const cadena = v => barra(v.P, [cambio(v.c1, 'i'), cambio(v.c2, 'h'), cambio(v.c3, 'd')], { escala: 2 * v.P });
+  // Lo que leen la lectura y los retos de las mesas (la misma barra que dibuja).
+  const finCadena = v => valoresDe(cadena(v))[3];
+  const varTotal = v => 100 * (finCadena(v) - v.P) / v.P;
+  const casi = (u, w) => Math.abs(u - w) < 1e-9;
+  const venta = v => v.C * (1 + v.m / 100) * (1 - v.d / 100);
+  const ganPct = v => 100 * (venta(v) - v.C) / v.C;
+  const pasos5 = (lo, hi) => Array.from({ length: (hi - lo) / 5 + 1 }, (_, i) => lo + 5 * i);
+  const MAX_G20 = Math.max(...pasos5(5, 100).flatMap(m => pasos5(20, 60).map(d => ganPct({ C: 100, m, d }))));
   const conSigno = n => `${n > 0 ? '+' : n < 0 ? '−' : ''}${f(Math.abs(n))} %`;
 
   // ---------- Idea 1: cada porcentaje tiene una base (tanto por cuanto) ----------
@@ -75,7 +83,7 @@
     temas: ['Tanto por cuanto'],
     pieza: 'barra-porcentaje',
     juega: {
-      consigna: 'Elige la base y el porcentaje. Mira qué pedazo de la barra se separa.',
+      consigna: 'Elige la base del porcentaje (lo que vale 100 %) y el porcentaje. Mira qué pedazo de la barra se separa.',
       voz: 'Cambia la base sin tocar el porcentaje, y mira el pedazo.',
       controles: [
         { id: 'B', etiqueta: 'B', color: 'c-o', min: 100, max: 400, paso: 50, inicio: 200, decimales: 0 },
@@ -211,9 +219,9 @@
       ],
     },
     regla: {
-      texto: 'Cada cambio multiplica lo que dejó el anterior. Un descuento r deja el factor 1 − r; un aumento r, el factor 1 + r.',
+      texto: 'En descuentos sucesivos, cada cambio multiplica lo que dejó el anterior. Un descuento r deja el factor 1 − r; un aumento r, el factor 1 + r.',
       ecuacion: [Pf, ' = ', { llave: [P0], nota: 'precio inicial', color: 'c-o' }, ' ', { llave: ['(1 − ', r1, ')(1 − ', r2, ')'], nota: 'factor por cambio', color: 'c-i' }],
-      condicion: 'cada porcentaje se aplica sobre el resultado anterior. El orden de los descuentos no cambia el final, sí cada monto.',
+      condicion: 'cada porcentaje se aplica sobre el resultado anterior. El orden de los descuentos no cambia el final, sí cada cantidad.',
     },
     ahoraTu: {
       generar(s) {
@@ -309,7 +317,7 @@
         return {
           pregunta: ['Un precio pasó de ', { v: 'c-o', t: sol(P) }, ' a ', { v: 'c-d', t: sol(fin) }, '. ¿Cuál es la variación porcentual?'],
           opciones: opciones(v, [
-            { id: 'base-final', valor: 100 * (fin - P) / fin, error: 'AR3', siFuera: 'Eso divide entre el precio final. La variación se mide contra el inicial.' },
+            { id: 'base-final', valor: 100 * (fin - P) / fin, error: 'AR3', siFuera: 'Eso divide entre el precio final. La variación porcentual se mide contra el inicial.' },
             { id: 'soles', valor: fin - P, error: 'AR5', siFuera: 'Ese es el cambio en soles, no en porcentaje.' },
             { id: 'razon', valor: 100 * fin / P, error: 'AR4', siFuera: 'Eso es el final como porcentaje del inicio, no el cambio.' },
           ], n => `${n > 0 ? '+' : ''}${f(n)} %`),
@@ -484,6 +492,41 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/barra-porcentaje.js'],
+    // Glosario del tema (docs/teoria.md, 4d). «base del porcentaje» no se acorta a «base»: numeración usa «base» en otro sentido.
+    glosario: [
+      { termino: 'porcentaje', simbolo: '%', def: 'Parte de una cantidad contada por cada cien: p % son p centésimos de la base.',
+        ejemplo: '20 % de S/ 200 = 0,20 · 200 = S/ 40.', ver: ['base del porcentaje'] },
+      { termino: 'base del porcentaje', def: 'La cantidad que vale el 100 %: de ella se toma cada porcentaje.',
+        ejemplo: 'S/ 20 de una base de S/ 80: 20/80 = 25 %.', ver: ['porcentaje'] },
+      { termino: 'descuento', formas: ['descuento', 'descuentos'], def: 'Lo que se le quita a un precio. Si es r %, queda el (100 − r) % del precio.',
+        ejemplo: '20 % menos a S/ 500: se paga S/ 400.', ver: ['aumento', 'descuentos sucesivos'] },
+      { termino: 'aumento', formas: ['aumento', 'aumentos'], def: 'Lo que se le agrega a una cantidad. Si es r %, queda el (100 + r) %.',
+        ejemplo: '25 % más a S/ 400: S/ 500.', ver: ['descuento', 'variación porcentual'] },
+      { termino: 'descuentos sucesivos', formas: ['descuentos sucesivos', 'aumentos sucesivos'],
+        def: 'Cambios en porcentaje que se aplican uno tras otro: cada uno se calcula sobre lo que dejó el anterior.',
+        ejemplo: 'S/ 500 con 20 % y 30 %: 500 · 0,80 · 0,70 = S/ 280.', ver: ['descuento único'] },
+      { termino: 'descuento único', def: 'Un solo porcentaje de rebaja que deja el mismo final que varios seguidos.',
+        ejemplo: '20 % y luego 30 %: se paga el 56 %; el único es 44 %.', ver: ['descuentos sucesivos'] },
+      { termino: 'variación porcentual', def: 'Cuánto cambió una cantidad, dividido entre su valor inicial y por 100.',
+        ejemplo: 'De S/ 400 a S/ 500: 100/400 · 100 = 25 %.', ver: ['aumento', 'descuento'] },
+      { termino: 'precio de costo', formas: ['precio de costo', 'costo', 'costos'],
+        def: 'Lo que pagó el vendedor por el producto. Suele ser la base de la ganancia.',
+        ejemplo: 'Se compró a S/ 200.', ver: ['precio de lista', 'precio de venta', 'ganancia'] },
+      { termino: 'precio de lista', def: 'Precio que se anuncia antes de las rebajas; sobre él se calcula la rebaja.',
+        ejemplo: 'Costo S/ 200 y se lista 40 % más: S/ 280.', ver: ['precio de costo', 'precio de venta'] },
+      { termino: 'precio de venta', formas: ['precio de venta', 'venta', 'ventas'], def: 'Lo que el cliente paga al final, después de las rebajas.',
+        ejemplo: 'Lista S/ 280 con rebaja de 20 %: S/ 224.', ver: ['precio de lista', 'ganancia'] },
+      { termino: 'ganancia', formas: ['ganancia', 'ganancias'], def: 'Lo que queda al restar el costo al precio de venta, cuando sale positivo.',
+        ejemplo: 'Compra a S/ 200 y vende a S/ 224: S/ 24, el 12 % del costo.', ver: ['pérdida', 'precio de costo'] },
+      { termino: 'pérdida', formas: ['pérdida', 'pérdidas'], def: 'Lo que falta cuando el precio de venta queda por debajo del costo.',
+        ejemplo: 'Costo S/ 200 y venta S/ 180: S/ 20, el 10 % del costo.', ver: ['ganancia'] },
+      { termino: 'impuesto', formas: ['impuesto', 'impuestos'], def: 'Dinero que se paga al Estado: se agrega al precio y se calcula sobre el valor sin ese recargo.',
+        ejemplo: '18 % sobre S/ 200: S/ 36.', ver: ['IGV', 'tasa'] },
+      { termino: 'IGV', def: 'Impuesto General a las Ventas: en el Perú se suma un 18 % al precio sin él.',
+        ejemplo: 'S/ 200 sin IGV son S/ 236 con IGV; 236 ÷ 1,18 = 200.', ver: ['impuesto'] },
+      { termino: 'tasa', formas: ['tasa', 'tasas'], def: 'El porcentaje que fija el problema para un impuesto, un interés o un cambio.',
+        ejemplo: 'Una tasa de 18 % es 0,18 de la base.', ver: ['impuesto', 'porcentaje'] },
+    ],
     // Laboratorio: juego libre, sin preguntas.
     // · «Tres cambios seguidos» es más rica que los juegos: cada cambio puede subir o bajar, el precio inicial se elige y
     //   se puede probar el caso raro de los juegos (el orden). Guardar −20, +10 y +10 contra +10, +10 y −20 muestra
@@ -500,13 +543,27 @@
           { id: 'c3', etiqueta: '3.º', color: 'c-d', min: -50, max: 50, paso: 5, inicio: 10, unidad: '%', decimales: 0 },
         ],
         dibujo: v => ({ datos: cadena(v), estado: { corte: 3, final: true } }),
-        lectura: v => { const fin = valoresDe(cadena(v))[3]; return [`${conSigno(v.c1)}, ${conSigno(v.c2)}, ${conSigno(v.c3)} → ${sol(fin)} · ${conSigno(100 * (fin - v.P) / v.P)}`]; },
+        lectura: v => [`${conSigno(v.c1)}, ${conSigno(v.c2)}, ${conSigno(v.c3)} → ${sol(finCadena(v))} · ${conSigno(varTotal(v))}`],
         arrastres: ['c1', 'c2', 'c3'].map((id, k) => ({
           id: `fin-${k + 1}`, etiqueta: `final del cambio ${k + 1}`, color: ['c-i', 'c-h', 'c-d'][k],
           donde: v => { const d = cadena(v); return enFila(d, k + 1, valoresDe(d)[k + 1]); },
           // El nuevo valor del pedazo, sobre lo que dejó el cambio anterior.
           mover: (pt, v) => { const d = cadena(v), vs = valoresDe(d), g = BP().geometria(d); return { [id]: 100 * (g.deX(pt.x) / vs[k] - 1) }; },
         })),
+        invitaciones: [
+          { texto: 'Haz que los tres cambios sumen 0 % y que el final baje más del 10 %.',
+            logrado: v => v.c1 + v.c2 + v.c3 === 0 && varTotal(v) < -10,
+            bien: 'Suman 0 % y aun así bajó: cada cambio se toma de otra base.' },
+          { texto: 'Deja el final justo en la mitad de P₀, con los tres cambios distintos de 0.',
+            logrado: v => v.c1 !== 0 && v.c2 !== 0 && v.c3 !== 0 && casi(finCadena(v), v.P / 2),
+            bien: 'La mitad sin bajar 50 % de una vez. Comprueba: multiplica los tres factores.' },
+          { texto: 'Haz que el final pase del doble de P₀.',
+            logrado: v => finCadena(v) > 2 * v.P,
+            bien: 'Ningún cambio llega a 100 %, pero juntos más que duplican.' },
+          { texto: 'Guarda dos casos con distinto P₀ y la misma variación porcentual.',
+            logrado: (v, guardados) => guardados.some(g => g.P !== v.P && casi(varTotal(g), varTotal(v))),
+            bien: 'Distinto inicio, misma variación porcentual: no depende de P₀.' },
+        ],
       },
       {
         id: 'ganancia', titulo: 'Ganancia según la base', pieza: 'barra-porcentaje',
@@ -517,7 +574,7 @@
           { id: 'd', etiqueta: 'Rebaja', color: 'c-h', min: 0, max: 60, paso: 5, inicio: 20, unidad: '%', decimales: 0 },
         ],
         dibujo: v => ({ datos: barra(v.C, [aum(v.m), des(v.d, 'h')]), estado: { corte: 2 } }),
-        lectura: v => { const V = v.C * (1 + v.m / 100) * (1 - v.d / 100), G = V - v.C; return [`${sol(v.C)} → ${sol(V)} · ${conSigno(100 * G / v.C)} del costo · ${conSigno(100 * G / V)} de la venta`]; },
+        lectura: v => { const V = venta(v), G = V - v.C; return [`${sol(v.C)} → ${sol(V)} · ${conSigno(ganPct(v))} del costo · ${conSigno(100 * G / V)} de la venta`]; },
         arrastres: [
           { id: 'costo', etiqueta: 'fin del costo', color: 'c-i',
             donde: v => enFila(barra(v.C, [aum(v.m), des(v.d, 'h')]), 1, v.C),
@@ -526,10 +583,24 @@
             donde: v => { const d = barra(v.C, [aum(v.m), des(v.d, 'h')]); return enBarra(d, valoresDe(d)[2]); },
             mover: (pt, v) => ({ d: 100 * (1 - fr(barra(v.C, [aum(v.m), des(v.d, 'h')]), pt.x)) }) },
         ],
+        invitaciones: [
+          { texto: 'Haz que la venta sea igual al costo: ni gana ni pierde.',
+            logrado: v => casi(venta(v), v.C),
+            bien: 'Ni gana ni pierde, aunque la subida y la rebaja no son iguales.' },
+          { texto: 'Consigue una pérdida aunque la subida sea mayor que la rebaja.',
+            logrado: v => v.m > v.d && venta(v) < v.C - 1e-9,
+            bien: 'La rebaja se toma de una base más grande, por eso pesa más.' },
+          { texto: 'Con una rebaja de 20 % o más, busca la mayor ganancia sobre el costo.',
+            logrado: v => v.d >= 20 && casi(ganPct(v), MAX_G20),
+            bien: 'La subida más alta con la rebaja más chica permitida.' },
+          { texto: 'Guarda dos casos con la misma ganancia en soles y distinto costo.',
+            logrado: (v, guardados) => guardados.some(g => g.C !== v.C && casi(venta(g) - g.C, venta(v) - v.C)),
+            bien: 'Misma ganancia en soles, otro porcentaje: la base cambió.' },
+        ],
       },
     ],
     historia: {
-      texto: 'Los comerciantes del Mediterráneo comparaban monedas, pesos y medidas que no eran iguales en cada ciudad. La Summa de Luca Pacioli, impresa en 1494, reunió la aritmética práctica de su tiempo: proporciones, cambios y contabilidad. No inventó esas técnicas; las ordenó. Expresar todo «por cada cien» fue una manera de comparar sobre una base común.',
+      texto: 'Los comerciantes del Mediterráneo comparaban monedas, pesas y medidas que no eran iguales en cada ciudad. La Summa de Luca Pacioli, impresa en 1494, reunió la aritmética práctica de su tiempo: proporciones, cambios y contabilidad. No inventó esas técnicas; las ordenó. Expresar todo «por cada cien» fue una manera de comparar sobre una base común.',
       pregunta: '¿Cómo compararías dos precios en monedas distintas?',
       fuente: { titulo: 'O’Connor y Robertson, Luca Pacioli — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Pacioli/' },
     },

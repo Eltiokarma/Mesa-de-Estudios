@@ -276,7 +276,7 @@
       ],
     },
     regla: {
-      texto: 'La raíz cuadrada entera de N es el mayor q con q² ≤ N; el residuo es N − q². La cúbica entera usa q³ ≤ N < (q + 1)³.',
+      texto: 'La raíz cuadrada entera de N es el mayor q con q² ≤ N; el residuo es N − q². La raíz cúbica entera usa q³ ≤ N < (q + 1)³.',
       ecuacion: [{ sup: [q, '2'] }, ' ≤ ', N, ' < ', { sup: [q1, '2'] }, '   ·   ', r, ' = ', { llave: [N, ' − ', { sup: [q, '2'] }], nota: 'lo que sobra', color: 'c-h' }, ' ≤ 2', q],
       condicion: 'N es entero no negativo. Si el residuo pasara de 2q, cabría un cuadrado más grande.',
     },
@@ -424,14 +424,33 @@
     { tipo: 'punto', x: v.N, color: 'o', fila: 1, rotulo: `N = ${f(v.N, 0)}` },
     { tipo: 'intervalo', a: v.x * v.x, b: (v.x + 0.1) ** 2, ca: true, cb: false, color: 'i', fila: 2, rotulo: `${f(v.x)}² a ${f(v.x + 0.1)}²` },
   ] }, estado: {} });
+  // Para los retos: si la décima x encierra a √N (la misma prueba que escribe la lectura de la mesa «encerrar»).
+  const encierra = v => v.x * v.x <= v.N + 1e-9 && v.N < (v.x + 0.1) ** 2 - 1e-9;
+  const residuo = Nv => Nv - isqrt(Nv) ** 2;
+  const mismo = (g, v, ks) => g.some(x => ks.every(k => x[k] === v[k]));
+  const NMAX = 200;
   const laboratorio = [
     {
       id: 'raiz-grande', titulo: 'Raíz entera hasta 200 fichas', pieza: 'arit-fichas',
       consigna: 'Elige N hasta 200. Arrastra el primer hueco: cada lugar que avanzas es una ficha más en el residuo.',
-      controles: [{ id: 'N', etiqueta: 'N', color: 'c-o', min: 2, max: 200, paso: 1, inicio: 50, unidad: 'fichas', decimales: 0 }],
+      controles: [{ id: 'N', etiqueta: 'N', color: 'c-o', min: 2, max: NMAX, paso: 1, inicio: 50, unidad: 'fichas', decimales: 0 }],
       dibujo: v => ({ datos: fichasRaiz(v.N), estado: { paso: 1 } }),
       lectura: v => { const qq = isqrt(v.N); return [N, ` = ${v.N}: `, q, ` = ${qq}, `, r, ` = ${v.N - qq * qq}, faltan ${(qq + 1) ** 2 - v.N}`]; },
       arrastres: [hueco('N', 2)],
+      invitaciones: [
+        { texto: 'Consigue que no sobre ninguna ficha.',
+          logrado: v => residuo(v.N) === 0,
+          bien: 'Residuo 0: N es un cuadrado perfecto y su raíz es exacta.' },
+        { texto: 'Busca el cuadrado perfecto más grande que se puede armar en esta mesa.',
+          logrado: v => residuo(v.N) === 0 && isqrt(v.N) === isqrt(NMAX),
+          bien: '14² = 196; el cuadrado de 15 ya pide 225 fichas.' },
+        { texto: 'Haz que falte justo una ficha para el cuadrado siguiente.',
+          logrado: v => (isqrt(v.N) + 1) ** 2 - v.N === 1,
+          bien: 'Ahí el residuo llega a 2q, el mayor posible antes de crecer.' },
+        { texto: 'Guarda dos N con la misma raíz entera y distinto residuo.',
+          logrado: (v, g) => mismo(g, v, ['N']) && g.some(x => x.N !== v.N && isqrt(x.N) === isqrt(v.N)),
+          bien: 'La misma raíz sirve para todo N desde q² hasta (q + 1)² − 1.' },
+      ],
     },
     {
       // Sin arrastre: los exponentes son números que se eligen, no lugares de la tabla.
@@ -440,6 +459,25 @@
       controles: PR4.map((p, i) => ({ id: `e${p}`, etiqueta: `exponente de ${p}`, color: 'c-o', min: 0, max: 6, paso: 1, inicio: [2, 3, 0, 1][i], unidad: '', decimales: 0 })),
       dibujo: v => ({ datos: tablaExp4(PR4.map(p => v[`e${p}`])), estado: {} }),
       lectura: v => { const es = PR4.map(p => v[`e${p}`]); return [N, ` = ${escribir(PR4.map((p, i) => [p, es[i]]))}: ${clasif(es)}`]; },
+      invitaciones: [
+        { texto: 'Arma un número mayor que 1 que sea cuadrado y cubo a la vez.',
+          logrado: v => { const es = PR4.map(p => v[`e${p}`]); return clasif(es) === 'cuadrado y cubo' && es.some(e => e > 0); },
+          bien: 'Exponentes múltiplos de 6: es una sexta potencia, como 64 = 2⁶.' },
+        { texto: 'Haz un cubo perfecto que no sea cuadrado perfecto.',
+          logrado: v => clasif(PR4.map(p => v[`e${p}`])) === 'cubo perfecto',
+          bien: 'Basta un exponente impar, como el 3, para que no sea cuadrado.' },
+        { texto: 'Busca el menor cuadrado perfecto que use los cuatro primos.',
+          // Todos pares y ninguno 0: el menor es con todos en 2.
+          logrado: v => { const es = PR4.map(p => v[`e${p}`]); return clasif(es) !== 'ni cuadrado ni cubo' && es.every(e => e === 2); },
+          bien: '2² · 3² · 5² · 7² = 210² = 44 100.' },
+        { texto: 'Guarda un cuadrado perfecto y un cubo perfecto que difieran en un solo exponente.',
+          logrado: (v, g) => mismo(g, v, PR4.map(p => `e${p}`)) && g.some(x => {
+            const ex = PR4.map(p => x[`e${p}`]), ev = PR4.map(p => v[`e${p}`]);
+            const cambios = ex.filter((e, i) => e !== ev[i]).length, cx = clasif(ex), cv = clasif(ev);
+            return cambios === 1 && ((cx === 'cuadrado perfecto' && cv === 'cubo perfecto') || (cx === 'cubo perfecto' && cv === 'cuadrado perfecto'));
+          }),
+          bien: 'Un exponente decide: par para el cuadrado, múltiplo de 3 para el cubo.' },
+      ],
     },
     {
       id: 'encerrar', titulo: 'Encerrar la raíz de cualquier N', pieza: 'recta',
@@ -449,7 +487,7 @@
         { id: 'x', etiqueta: 'x', color: 'c-i', min: 1, max: 4.5, paso: 0.1, inicio: 2, unidad: '', decimales: 1 },
       ],
       dibujo: rectaN,
-      lectura: v => (v.x * v.x <= v.N + 1e-9 && v.N < (v.x + 0.1) ** 2 - 1e-9
+      lectura: v => (encierra(v)
         ? [{ raiz: { v: 'c-o', t: String(v.N) } }, ` está entre ${f(v.x)} y ${f(v.x + 0.1)}`]
         : [`${f(v.x)}² = ${f(v.x * v.x)} · `, N, ` = ${v.N} queda fuera`]),
       arrastres: [
@@ -460,6 +498,20 @@
           donde: v => { const g = RECTA().geometria(rectaN(v).datos); return { x: g.x(v.x * v.x), y: g.filaY(2) }; },
           mover: (pt, v) => ({ x: Math.sqrt(Math.max(0, inversa(RECTA().geometria(rectaN(v).datos).x, 0, 22)(pt.x))) }) },
       ],
+      invitaciones: [
+        { texto: 'Encierra la raíz de 10 entre dos décimas seguidas.',
+          logrado: v => v.N === 10 && encierra(v),
+          bien: '3,1² = 9,61 y 3,2² = 10,24: √10 ≈ 3,16 queda entre ellas.' },
+        { texto: 'Haz que N caiga justo en el borde izquierdo del tramo.',
+          logrado: v => encierra(v) && Math.abs(v.x * v.x - v.N) < 1e-9,
+          bien: 'El borde es x²: si toca a N, la raíz es exacta.' },
+        { texto: 'Encierra el mayor N de la mesa.',
+          logrado: v => v.N === 20 && encierra(v),
+          bien: '4,4² = 19,36 y 4,5² = 20,25: √20 está cerca de 4,47.' },
+        { texto: 'Guarda dos casos con el mismo tramo: uno que encierra a N y otro que no.',
+          logrado: (v, g) => mismo(g, v, ['N', 'x']) && g.some(x => x.x === v.x && encierra(x) !== encierra(v)),
+          bien: 'Cada tramo mide menos de 1: a lo sumo cabe un entero.' },
+      ],
     },
   ];
 
@@ -468,6 +520,37 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/recta.js'],
+    glosario: [
+      { termino: 'cuadrado perfecto', formas: ['cuadrado perfecto', 'cuadrados perfectos'],
+        def: 'Entero que resulta de multiplicar otro entero por sí mismo: sus primos tienen exponentes pares.',
+        ejemplo: '144 = 2⁴ · 3² = 12².', ver: ['cubo perfecto', 'raíz entera'] },
+      { termino: 'cubo perfecto', formas: ['cubo perfecto', 'cubos perfectos'],
+        def: 'Entero que es otro entero multiplicado tres veces por sí mismo: sus exponentes son múltiplos de 3.',
+        ejemplo: '216 = 2³ · 3³ = 6³.', ver: ['cuadrado perfecto', 'raíz cúbica'] },
+      { termino: 'raíz entera', formas: ['raíz cuadrada entera', 'raíz entera', 'raíces enteras'],
+        def: 'El mayor entero cuyo cuadrado no pasa de N: el lado del mayor cuadrado que se arma con N fichas.',
+        ejemplo: 'De 80 es 8, porque 8² = 64 ≤ 80 < 81 = 9².', ver: ['residuo', 'raíz por exceso'] },
+      { termino: 'raíz cúbica', formas: ['raíz cúbica entera', 'raíz cúbica', 'cúbica'],
+        def: 'Número que, multiplicado tres veces por sí mismo, da N. La entera es el mayor q con q³ ≤ N.',
+        ejemplo: 'De 30, la entera es 3: 3³ = 27 ≤ 30 < 64 = 4³.', ver: ['cubo perfecto'] },
+      { termino: 'residuo', simbolo: 'r', def: 'Lo que sobra al sacar la raíz entera: N menos el cuadrado de esa raíz.',
+        ejemplo: '80 − 8² = 16.', ver: ['raíz entera'] },
+      { termino: 'raíz por exceso', formas: ['raíz por exceso'],
+        def: 'El menor entero cuyo cuadrado ya pasa de N: la raíz entera más 1.',
+        ejemplo: 'De 80 es 9: 9² = 81 pasa a 80 por 1.', ver: ['raíz entera'] },
+      { termino: 'criterio de exclusión', formas: ['criterio de exclusión', 'criterios de exclusión'],
+        def: 'Prueba rápida que solo sirve para descartar: si falla, el número no es cuadrado; si se cumple, falta comprobar.',
+        ejemplo: 'Ningún cuadrado termina en 7: 2 027 no es cuadrado.', ver: ['condición necesaria'] },
+      { termino: 'condición necesaria', formas: ['condición necesaria', 'necesaria', 'necesarias'],
+        def: 'Lo que tiene que cumplirse para que algo sea cierto, aunque cumplirlo no alcance.',
+        ejemplo: 'Para ser cuadrado hay que terminar en 0, 1, 4, 5, 6 o 9; 2 021 cumple y no es.', ver: ['condición suficiente'] },
+      { termino: 'condición suficiente', formas: ['condición suficiente', 'suficiente', 'suficientes'],
+        def: 'Lo que basta para asegurar algo: si se cumple, ya no hace falta comprobar más.',
+        ejemplo: 'Tener todos los exponentes pares basta para ser cuadrado perfecto.', ver: ['condición necesaria'] },
+      { termino: 'operación inversa', formas: ['operación inversa', 'operaciones inversas'],
+        def: 'Operación que deshace lo que hizo otra: aplicada después, devuelve el número del inicio.',
+        ejemplo: '5² = 25 y √25 = 5: la raíz deshace el cuadrado.', ver: ['raíz entera'] },
+    ],
     laboratorio,
     historia: {
       texto: 'La tablilla babilónica YBC 7289 muestra un cuadrado con su diagonal y una aproximación de la raíz de dos en base 60, muy precisa. Sabemos qué valor se escribió, pero no cómo se obtuvo: un número no revela el método. Esta unidad une potencias y raíces como operaciones inversas, y separa los valores exactos de las aproximaciones.',

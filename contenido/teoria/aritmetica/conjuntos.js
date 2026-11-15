@@ -222,11 +222,11 @@
       pasos: [
         { estado: {}, texto: 'La tabla de Carroll tiene las mismas cuatro zonas que el Venn.', ecuacion: ['filas: A o no A   ·   columnas: B o no B'] },
         { estado: { fila: 0 }, texto: 'La fila A: todo lo que está en A.', ecuacion: [A, ' = {1, 2, 3, 4, 6}'] },
-        { estado: { fila: 0, columna: 2 }, texto: 'El cruce con «no B» es A ∩ B′.', ecuacion: [A, ' ∩ ', Bv, '′ = ', A, ' − ', Bv, ' = {1, 2, 6}'] },
+        { estado: { fila: 0, columna: 2 }, texto: 'El cruce con «no B» es la diferencia de conjuntos A − B.', ecuacion: [A, ' ∩ ', Bv, '′ = ', A, ' − ', Bv, ' = {1, 2, 6}'] },
       ],
     },
     regla: {
-      texto: 'Cada operación es una condición de pertenencia: ∪ pide estar en uno, ∩ en los dos, − en el primero y no en el segundo, y A′ no estar en A.',
+      texto: 'Cada operación es una condición de pertenencia: la unión ∪ pide estar en uno; la intersección ∩, en los dos; A − B, en A y no en B; A′, fuera de A.',
       ecuacion: [A, ' − ', Bv, ' = ', A, ' ∩ ', Bv, '′', '   ·   ', A, ' Δ ', Bv, ' =', '   ·   ', '(', A, ' − ', Bv, ') ∪ (', Bv, ' − ', A, ')'],
       condicion: 'el complemento depende del universo U: con otro U, A′ cambia. Venn y Carroll muestran criterios, no tamaños.',
     },
@@ -444,7 +444,7 @@
       ],
     },
     regla: {
-      texto: 'A × B es el conjunto de pares ordenados (a, b) con a de A y b de B. Hay tantos como filas por columnas.',
+      texto: 'El producto cartesiano A × B es el conjunto de pares ordenados (a, b) con a de A y b de B. Hay tantos como filas por columnas.',
       ecuacion: ['n(', A, ' × ', Bv, ') = ', { llave: ['n(', A, ') · n(', Bv, ')'], nota: 'filas por columnas' }],
       condicion: 'el orden importa: (a, b) = (c, d) solo si a = c y b = d. Si A ≠ B, A × B ≠ B × A.',
     },
@@ -501,6 +501,11 @@
     return { ok: true, x, sa: v.a - x, sb: v.b - x, ni: v.u - union };
   }
   // Producto en los dos órdenes: en B × A, el primer lugar del par es de B (las filas siguen siendo los números de A).
+  // Lo que leen la lectura y los retos de las mesas (las mismas funciones que dibujan).
+  const disjuntas = (o1, o2) => !elementos3(o1).some(x => elementos3(o2).includes(x));
+  const MAS3 = Math.max(...Object.keys(OPS3).map(o => elementos3(o).length));
+  const union = v => { const c = cuentas(v); return c.ok ? v.a + v.b - c.x : null; };
+  const pares = v => v.a * v.b;
   const prodOrden = (na, nb, orden) => {
     const d = prod(na, nb, {}, true);
     if (orden === 'AB') return d;
@@ -512,6 +517,45 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-venn.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    // Glosario del tema (docs/teoria.md, 4d). «elemento» se estrena en lógica proposicional.
+    glosario: [
+      { termino: 'múltiplo', formas: ['múltiplo', 'múltiplos'], def: 'Resultado de multiplicar un número por un entero.',
+        ejemplo: '42 lo es de 6, porque 6 · 7 = 42.' },
+      { termino: 'conjunto', def: 'Colección bien definida: de cualquier objeto se puede decir si está o no está en ella.',
+        ejemplo: 'Los múltiplos de 4 menores que 10: {4, 8}.', ver: ['elemento', 'universo'] },
+      { termino: 'pertenencia', simbolo: '∈', formas: ['pertenencia', 'pertenece', 'pertenecen', 'pertenecer'],
+        def: 'Relación entre un elemento y la colección que lo contiene. Se escribe ∈; si no está, ∉.',
+        ejemplo: '4 ∈ {2, 4, 6}, pero 5 ∉ {2, 4, 6}.', ver: ['inclusión'] },
+      { termino: 'inclusión', simbolo: '⊂', formas: ['inclusión', 'está incluido', 'están incluidos'],
+        def: 'Relación entre dos conjuntos: todos los elementos del primero están también en el segundo.',
+        ejemplo: '{4, 8} ⊂ {2, 4, 6, 8}.', ver: ['pertenencia', 'subconjunto'] },
+      { termino: 'subconjunto', def: 'Conjunto hecho solo con elementos de otro: puede llevar algunos, todos o ninguno.',
+        ejemplo: '{1, 2} tiene 4: ∅, {1}, {2} y {1, 2}.', ver: ['inclusión', 'conjunto potencia'] },
+      { termino: 'conjunto vacío', simbolo: '∅', formas: ['conjunto vacío', 'vacío'],
+        def: 'El que no tiene ningún elemento. Está incluido en todo conjunto.',
+        ejemplo: '{x ∈ ℕ : x < 0} = ∅.', ver: ['subconjunto'] },
+      { termino: 'universo', simbolo: 'U', def: 'Conjunto de referencia: contiene todo lo que el problema toma en cuenta.',
+        ejemplo: 'Con U = {1, …, 9} y A = {2, 4, 6, 8}: A′ = {1, 3, 5, 7, 9}.', ver: ['complemento'] },
+      { termino: 'extensión', def: 'Manera de dar un conjunto escribiendo todos sus elementos, uno por uno, entre llaves.',
+        ejemplo: 'Los pares de {1, …, 9}: {2, 4, 6, 8}.', ver: ['comprensión'] },
+      { termino: 'comprensión', def: 'Manera de dar un conjunto con la propiedad que cumplen sus elementos, sin listarlos.',
+        ejemplo: '{x ∈ U : x es par}.', ver: ['extensión'] },
+      { termino: 'unión', simbolo: '∪', def: 'Operación que junta los elementos que están en A, en B o en los dos.',
+        ejemplo: '{1, 2} ∪ {2, 3} = {1, 2, 3}.', ver: ['intersección'] },
+      { termino: 'intersección', simbolo: '∩', def: 'Lo común a dos conjuntos: los elementos que están en los dos a la vez.',
+        ejemplo: '{1, 2} ∩ {2, 3} = {2}.', ver: ['unión'] },
+      { termino: 'diferencia de conjuntos', simbolo: 'A − B', def: 'Los elementos que están en el primer conjunto y no están en el segundo.',
+        ejemplo: '{1, 2, 6} − {2, 3} = {1, 6}.', ver: ['complemento'] },
+      { termino: 'complemento', simbolo: 'A′', def: 'Los elementos del universo que no están en el conjunto: lo que le falta para llenar U.',
+        ejemplo: 'Con U = {1, 2, 3, 4} y A = {1, 2}: A′ = {3, 4}.', ver: ['universo'] },
+      { termino: 'conjunto potencia', simbolo: 'P(A)', def: 'El que reúne todos los subconjuntos de A. Si A tiene n elementos, tiene 2ⁿ.',
+        ejemplo: 'A = {a, b}: P(A) = {∅, {a}, {b}, {a, b}}, son 4.', ver: ['subconjunto'] },
+      { termino: 'par ordenado', formas: ['par ordenado', 'pares ordenados'],
+        def: 'Dos valores escritos en un orden que importa: (1, x) no es lo mismo que (x, 1).',
+        ver: ['producto cartesiano'] },
+      { termino: 'producto cartesiano', simbolo: 'A × B', def: 'Todos los pares con el primer lugar tomado de A y el segundo de B.',
+        ejemplo: '{1, 2} × {x} = {(1, x), (2, x)}.', ver: ['par ordenado'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. «Tres conjuntos» pasa a tres aros y operaciones combinadas (el juego
     // de la idea 2 solo tiene dos); «Conteo con universo» agrega a los que no están en ninguno y rangos amplios;
     // «Pares en los dos órdenes» compara A × B con B × A.
@@ -528,6 +572,20 @@
         arrastres: [{ id: 'sonda', etiqueta: 'sonda: zona del diagrama que se prueba',
           donde: v => sondaEn(venn3(), v.z === 'u' ? '' : v.z),
           mover: pt => ({ z: zonaEn(venn3(), pt) || 'u' }) }],
+        invitaciones: [
+          { texto: 'Elige la operación que deja exactamente un elemento.',
+            logrado: v => elementos3(v.o).length === 1,
+            bien: 'Solo el 6 es par, múltiplo de 3 y menor que 7.' },
+          { texto: 'Busca la operación con más elementos.',
+            logrado: v => elementos3(v.o).length === MAS3,
+            bien: 'Afuera quedan el 7 y el 11: ningún aro los recoge.' },
+          { texto: 'Busca una zona de (A ∩ B) ∪ C fuera de A ∩ (B ∪ C).',
+            logrado: v => { const z = v.z === 'u' ? '' : v.z; return OPS3['(A ∩ B) ∪ C'](z) && !OPS3['A ∩ (B ∪ C)'](z); },
+            bien: 'Mover los paréntesis cambió las zonas. ¿Pasa lo mismo con dos uniones?' },
+          { texto: 'Guarda dos operaciones que no compartan ningún elemento.',
+            logrado: (v, guardados) => guardados.some(g => g.o !== v.o && disjuntas(g.o, v.o)),
+            bien: 'Su intersección es el conjunto vacío: no comparten nada.' },
+        ],
       },
       {
         id: 'conteo-universo', titulo: 'Conteo con universo', pieza: 'arit-venn',
@@ -543,6 +601,20 @@
           return { datos: venn([], [], [], { regiones: c.ok ? { A: String(c.sa), AB: String(c.x), B: String(c.sb), '': String(c.ni) } : {} }), estado: { resalta: c.ok ? [''] : [] } };
         },
         lectura: v => { const c = cuentas(v); return c.ok ? [`ninguno: ${v.u} − (${v.a} + ${v.b} − ${c.x}) = ${c.ni}`] : [c.motivo]; },
+        invitaciones: [
+          { texto: 'Haz que nadie se quede sin jugar: cero en la zona de afuera.',
+            logrado: v => { const c = cuentas(v); return c.ok && c.ni === 0; },
+            bien: 'Ahora U es justo A ∪ B: n(A) + n(B) − n(A ∩ B).' },
+          { texto: 'Con n(A) + n(B) mayor que n(U), busca el menor «los dos» posible.',
+            logrado: v => v.a + v.b > v.u && cuentas(v).ok && !cuentas(Object.assign({}, v, { x: v.x - 1 })).ok,
+            bien: 'Ese es el mínimo: n(A) + n(B) − n(U). Con menos, A ∪ B no cabe.' },
+          { texto: 'Consigue que todos los de B estén también en A.',
+            logrado: v => { const c = cuentas(v); return c.ok && v.b > 0 && c.x === v.b; },
+            bien: 'B está incluido en A: la zona «solo B» quedó en cero.' },
+          { texto: 'Guarda dos casos con el mismo n(A ∪ B) y distinta intersección.',
+            logrado: (v, guardados) => union(v) !== null && guardados.some(g => union(g) === union(v) && cuentas(g).x !== cuentas(v).x),
+            bien: 'Misma unión, otra intersección: las zonas se repartieron distinto.' },
+        ],
       },
       {
         id: 'pares-orden', titulo: 'Pares en los dos órdenes', pieza: 'arit-tabla',
@@ -553,8 +625,22 @@
           { id: 'orden', etiqueta: 'Orden', opciones: [{ valor: 'AB', texto: 'A × B' }, { valor: 'BA', texto: 'B × A' }], inicio: 'AB' },
         ],
         dibujo: v => ({ datos: prodOrden(v.a, v.b, v.orden), estado: {} }),
-        lectura: v => [`${v.orden === 'AB' ? 'A × B' : 'B × A'}: ${v.a} · ${v.b} = ${v.a * v.b} pares, primero de ${v.orden === 'AB' ? 'A' : 'B'}`],
+        lectura: v => [`${v.orden === 'AB' ? 'A × B' : 'B × A'}: ${v.a} · ${v.b} = ${pares(v)} pares, primero de ${v.orden === 'AB' ? 'A' : 'B'}`],
         arrastres: arrastresProd('a', 'b'),
+        invitaciones: [
+          { texto: 'Arma un producto cartesiano con exactamente 12 pares.',
+            logrado: v => pares(v) === 12,
+            bien: '12 pares: filas por columnas. ¿De qué otra forma llegas a 12?' },
+          { texto: 'Haz que la tabla tenga tantas filas como columnas.',
+            logrado: v => v.a === v.b,
+            bien: 'Con n(A) = n(B), los pares forman un cuadrado.' },
+          { texto: 'Consigue el producto cartesiano con más pares que deja la mesa.',
+            logrado: v => pares(v) === pares({ a: 4, b: 4 }),
+            bien: 'Cuatro por cuatro: 16 pares. Cada elemento nuevo agrega una fila entera.' },
+          { texto: 'Guarda A × B y B × A con n(A) distinto de n(B).',
+            logrado: (v, guardados) => v.a !== v.b && guardados.some(g => g.a === v.a && g.b === v.b && g.orden !== v.orden),
+            bien: 'Misma cantidad de pares, pero no los mismos: el orden importa.' },
+        ],
       },
     ],
     historia: {

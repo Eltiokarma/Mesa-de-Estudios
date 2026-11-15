@@ -138,7 +138,7 @@
       ],
     },
     regla: {
-      texto: 'Dos fracciones son el mismo racional si los productos cruzados son iguales. Multiplicar o dividir arriba y abajo por lo mismo no cambia la cantidad.',
+      texto: 'Dos fracciones equivalentes son el mismo número racional: sus productos cruzados son iguales. Multiplicar o dividir arriba y abajo por lo mismo no cambia la cantidad.',
       ecuacion: [{ frac: [a, b] }, ' = ', { frac: [c, d] }, '   ⇔   ', { llave: [a, ' · ', d, ' = ', b, ' · ', c], nota: 'productos cruzados' }],
       condicion: 'b y d no son cero. Sumar o restar lo mismo arriba y abajo sí cambia la cantidad.',
     },
@@ -226,9 +226,9 @@
       ],
     },
     regla: {
-      texto: 'Con denominadores positivos, a/b < c/d cuando a · d < b · c. Propia: menor que 1. Impropia: mayor que 1. Aparente: un entero.',
+      texto: 'Con denominadores positivos, a/b < c/d cuando a · d < b · c. Fracción propia: menor que 1. Impropia: mayor que 1. Aparente: un entero.',
       ecuacion: [{ frac: [a, b] }, ' < ', { frac: [c, d] }, '   ⇔   ', a, ' · ', d, ' < ', b, ' · ', c],
-      condicion: 'b y d positivos. Una impropia se escribe mixta: 7/3 = 2 y 1/3.',
+      condicion: 'b y d positivos. Una impropia se escribe como número mixto: 7/3 = 2 y 1/3.',
     },
     ahoraTu: {
       generar(s) {
@@ -390,7 +390,7 @@
       ],
     },
     regla: {
-      texto: 'Periódico puro: el período sobre tantos 9 como cifras tiene. Mixto: lo que hay hasta el período, menos lo de antes, sobre tantos 9 y tantos 0.',
+      texto: 'Periódico puro: el período sobre tantos 9 como cifras tiene. Periódico mixto: lo que hay hasta el período, menos lo de antes, sobre tantos 9 y tantos 0.',
       ecuacion: ['0,1666… = ', { llave: [{ frac: ['16 − 1', '90'] }], nota: 'nueves y ceros' }, ' = ', { frac: ['1', '6'] }],
       condicion: 'el decimal es periódico. Un período de 9 da un número exacto: 0,999… = 1.',
     },
@@ -506,6 +506,16 @@
     { tipo: 'punto', x: v.a / v.b, color: 'o', fila: 1, rotulo: `${v.a}/${v.b}` },
     { tipo: 'punto', x: v.c / v.d, color: 'o', fila: 2, rotulo: `${v.c}/${v.d}` },
   ], { max: 4 }), estado: {} });
+  // Para los retos: la menor separación no nula entre dos fracciones de la recta (denominadores de 2 a 8), y si la
+  // división en base B termina. Los calcula el motor.
+  const sep = v => diferencia(v.a, v.b, v.c, v.d);
+  let MINSEP = [1, 1];
+  for (let b1 = 2; b1 <= 8; b1++) for (let b2 = 2; b2 <= 8; b2++) for (let a1 = 1; a1 <= 16; a1++) for (let a2 = 1; a2 <= 16; a2++) {
+    const [n, m] = diferencia(a1, b1, a2, b2);
+    if (n > 0 && n * MINSEP[1] < m * MINSEP[0]) MINSEP = [n, m];
+  }
+  const exacta = v => division(v.a, v.b, v.B).inicio === -1;
+  const mismo = (g, v, ks) => g.some(x => ks.every(k => x[k] === v[k]));
   const laboratorio = [
     {
       id: 'dos-tiras', titulo: 'Dos fracciones en tiras', pieza: 'arit-tiras',
@@ -518,6 +528,17 @@
       ],
       dibujo: dosTiras,
       lectura: v => [fr(v.a, v.b), ` ${signo(v)} `, fr(v.c, v.d), ` · cruzados ${v.a * v.d} y ${v.b * v.c}`],
+      invitaciones: [
+        { texto: 'Arma dos fracciones escritas distinto que den el mismo largo.',
+          logrado: v => signo(v) === '=' && (v.a !== v.c || v.b !== v.d),
+          bien: 'Otra partición, el mismo número racional. Comprueba los productos cruzados.' },
+        { texto: 'Haz que la fracción de numerador mayor sea la tira más corta.',
+          logrado: v => (v.a > v.c && signo(v) === '<') || (v.c > v.a && signo(v) === '>'),
+          bien: 'El numerador solo no decide: importa en cuántas partes se cortó.' },
+        { texto: 'Haz que una tira pase de una unidad y la otra no llegue.',
+          logrado: v => (v.a > v.b && v.c < v.d) || (v.c > v.d && v.a < v.b),
+          bien: 'La impropia pasa de 1: se puede escribir como número mixto.' },
+      ],
       arrastres: [
         { id: 'borde-1', etiqueta: 'borde pintado de la primera tira', color: 'c-o',
           donde: v => { const g = TIRAS().geometria(dosTiras(v).datos); return { x: g.x(v.a / v.b), y: g.centroY(0) }; },
@@ -538,6 +559,23 @@
       ],
       dibujo: dosPuntos,
       lectura: v => [fr(v.a, v.b), ` ${signo(v)} `, fr(v.c, v.d), ` · las separa ${txtFr(...diferencia(v.a, v.b, v.c, v.d))}`],
+      invitaciones: [
+        { texto: 'Busca dos fracciones distintas, lo más cercanas posible sin ser iguales.',
+          logrado: v => { const [n, m] = sep(v); return n > 0 && n * MINSEP[1] === m * MINSEP[0]; },
+          bien: 'Más cerca no se puede con estos denominadores. ¿Y si partes en más?' },
+        { texto: 'Ubica dos fracciones separadas justo por media unidad.',
+          logrado: v => { const [n, m] = sep(v); return n === 1 && m === 2; },
+          bien: 'Media unidad entre ellas: compruébalo con un denominador común.' },
+        { texto: 'Pon las dos fracciones, escritas distinto, sobre el mismo entero.',
+          logrado: v => v.a % v.b === 0 && v.c % v.d === 0 && sep(v)[0] === 0 && v.b !== v.d,
+          bien: 'Dos fracciones aparentes: el mismo entero escrito de dos maneras.' },
+        { texto: 'Guarda dos casos con la misma separación y fracciones distintas.',
+          logrado: (v, g) => mismo(g, v, ['a', 'b', 'c', 'd']) && g.some(x => {
+            const [n1, m1] = sep(x), [n2, m2] = sep(v);
+            return n1 * m2 === n2 * m1 && (x.a * v.b !== x.b * v.a || x.c * v.d !== x.d * v.c);
+          }),
+          bien: 'La misma distancia en la recta con números distintos: cuenta la resta, no los números.' },
+      ],
       arrastres: [
         { id: 'punto-1', etiqueta: 'punto de la primera fracción', color: 'c-o',
           donde: v => { const g = RECTA().geometria(dosPuntos(v).datos); return { x: g.x(v.a / v.b), y: g.filaY(1) }; },
@@ -558,6 +596,21 @@
       ],
       dibujo: v => ({ datos: tablaDiv(v.a, v.b, v.B), estado: {} }),
       lectura: v => [fr(v.a, v.b), ` en base ${v.B} = ${decimal(v.a, v.b, v.B)}`],
+      invitaciones: [
+        { texto: 'Consigue un decimal exacto, que no sea entero, en una base distinta de 10.',
+          logrado: v => v.B !== 10 && v.a % v.b !== 0 && exacta(v),
+          bien: 'Termina porque cada primo del denominador simplificado divide a la base.' },
+        { texto: 'Busca un periódico puro: que se repita desde la primera cifra.',
+          logrado: v => division(v.a, v.b, v.B).inicio === 0,
+          bien: 'Puro: el denominador simplificado no comparte primos con la base.' },
+        { texto: 'Consigue un período de seis cifras o más.',
+          // inicio −2: no se repitió en las 12 cifras de la tabla; aquí eso pasa solo con períodos de 8 o más.
+          logrado: v => { const d = division(v.a, v.b, v.B); return d.inicio === -2 || (d.inicio >= 0 && d.cifras.length - d.inicio >= 6); },
+          bien: 'Con divisor b caben a lo sumo b − 1 restos distintos antes de repetir.' },
+        { texto: 'Guarda dos fracciones de igual denominador y base: una exacta y otra periódica.',
+          logrado: (v, g) => mismo(g, v, ['a', 'b', 'B']) && g.some(x => x.b === v.b && x.B === v.B && exacta(x) !== exacta(v)),
+          bien: 'Decide el denominador ya simplificado, no el que se escribe.' },
+      ],
     },
   ];
 
@@ -566,6 +619,46 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    glosario: [
+      { termino: 'numerador', def: 'Número de arriba de una fracción: cuántas partes iguales de la unidad se toman.',
+        ejemplo: 'En 3/4 se toman 3 de las 4 partes.', ver: ['número racional'] },
+      { termino: 'número racional', formas: ['número racional', 'números racionales'],
+        def: 'Número que se puede escribir como cociente de dos enteros, con divisor distinto de 0.',
+        ejemplo: '0,75 = 3/4 y −2 = −2/1 lo son; √2 no.', ver: ['fracciones equivalentes', 'número irracional'] },
+      { termino: 'fracciones equivalentes', formas: ['fracciones equivalentes', 'fracción equivalente'],
+        def: 'Fracciones escritas distinto que valen lo mismo: marcan el mismo punto de la recta.',
+        ejemplo: '6/8 = 3/4 = 9/12, porque 6 · 4 = 8 · 3 = 24.', ver: ['fracción simplificada'] },
+      { termino: 'fracción simplificada', formas: ['fracción simplificada', 'simplificada'],
+        def: 'Fracción cuyo numerador y denominador solo tienen al 1 como divisor común.',
+        ejemplo: '18/24 se simplifica dividiendo entre 6: queda 3/4.', ver: ['fracciones equivalentes', 'divisor común'] },
+      { termino: 'fracción propia', formas: ['fracción propia', 'fracciones propias'],
+        def: 'Fracción con numerador menor que el denominador: vale menos que 1.',
+        ejemplo: '3/5 = 0,6.', ver: ['fracción impropia'] },
+      { termino: 'fracción impropia', formas: ['fracción impropia', 'fracciones impropias', 'impropia'],
+        def: 'Fracción con numerador mayor que el denominador: vale más que 1.',
+        ejemplo: '7/3 = 2,333…', ver: ['número mixto', 'fracción propia'] },
+      { termino: 'fracción aparente', formas: ['fracción aparente', 'fracciones aparentes', 'aparente', 'aparentes'],
+        def: 'Fracción cuyo numerador es múltiplo del denominador: en realidad es un entero.',
+        ejemplo: '12/4 = 3.', ver: ['fracción impropia'] },
+      { termino: 'número mixto', formas: ['número mixto', 'números mixtos'],
+        def: 'Un entero más una fracción propia, escritos juntos: otra forma de escribir una impropia.',
+        ejemplo: '7/3 = 2 y 1/3, porque 7 = 2 · 3 + 1.', ver: ['fracción impropia'] },
+      { termino: 'decimal exacto', formas: ['decimal exacto', 'decimales exactos'],
+        def: 'Decimal con una cantidad finita de cifras después de la coma: la división termina con resto 0.',
+        ejemplo: '7/40 = 0,175.', ver: ['decimal periódico'] },
+      { termino: 'decimal periódico', formas: ['decimal periódico', 'decimales periódicos', 'periódico', 'periódicos'],
+        def: 'Decimal infinito en que un bloque de cifras, el período, se repite sin fin.',
+        ejemplo: '1/6 = 0,1666…: el 6 se repite porque vuelve el resto 4.', ver: ['periódico puro', 'periódico mixto'] },
+      { termino: 'periódico puro', def: 'Decimal que se repite desde la primera cifra después de la coma.',
+        ejemplo: '0,2424… = 24/99 = 8/33.', ver: ['periódico mixto', 'generatriz'] },
+      { termino: 'periódico mixto', def: 'Decimal con cifras que no se repiten entre la coma y el bloque que sí se repite.',
+        ejemplo: '0,1666… = (16 − 1)/90 = 1/6.', ver: ['periódico puro', 'generatriz'] },
+      { termino: 'generatriz', def: 'La fracción de la que sale un decimal: al dividir sus dos números se obtiene ese decimal.',
+        ejemplo: 'La de 0,333… es 1/3.', ver: ['decimal periódico'] },
+      { termino: 'número irracional', formas: ['número irracional', 'números irracionales', 'irracional', 'irracionales'],
+        def: 'Número con decimales infinitos que nunca repiten un bloque: no es cociente de dos enteros.',
+        ejemplo: '√2 = 1,41421… y π = 3,14159…', ver: ['número racional'] },
+    ],
     laboratorio,
     historia: {
       texto: 'Las fracciones decimales permitieron calcular con partes de la unidad casi como con enteros. Simon Stevin defendió su uso práctico en 1585. No fue el único inventor de los decimales y su notación era distinta de la nuestra. Esta unidad separa el número de sus escrituras: una fracción, un decimal exacto o periódico y un punto de la recta pueden ser el mismo valor.',

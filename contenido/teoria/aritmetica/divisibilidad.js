@@ -277,7 +277,7 @@
       ],
     },
     regla: {
-      texto: 'Los restos de a, a², a³, … entre m se repiten en un ciclo. Para aⁿ, se busca el lugar del ciclo con el resto de n entre su largo.',
+      texto: 'Los restos potenciales de a, a², a³, … entre m se repiten en un ciclo. Para aⁿ, se busca el lugar del ciclo con el resto de n entre su largo.',
       ecuacion: [{ sup: [a, 'n'] }, ' ≡ ', { llave: [{ sup: [a, 'n mód L'] }], nota: 'lugar del ciclo', color: 'c-o' }, '  (mód ', m, ')'],
       condicion: 'si n mód L es 0, toca el último del ciclo. El ciclo se comprueba en la tabla, no se supone.',
     },
@@ -424,7 +424,7 @@
       ],
     },
     regla: {
-      texto: 'ax + by = c tiene soluciones enteras exactamente cuando el mcd de a y b divide a c. Si hay una, hay infinitas.',
+      texto: 'La ecuación diofántica ax + by = c tiene soluciones enteras exactamente cuando el mcd de a y b divide a c. Si hay una, hay infinitas.',
       // En tres líneas: a 360 px «hay enteros con ax + by = c» se partía antes de la c.
       ecuacion: [{ llave: ['mcd(', a, ', b) | c'], nota: 'la condición' }, ' ⇔', '   ·   ', a, 'x + by = c', '   ·   ', 'tiene x, y enteros'],
       condicion: 'para x, y naturales o acotados se revisan los límites: el mcd asegura enteros, no positivos.',
@@ -459,12 +459,37 @@
 
   // Fichas del laboratorio: cuelgan de arriba y la ficha es más chica, para que quepan 16 filas.
   const LAB = { arriba: true, altoMax: 200, ficha: 20 };
+  // Lo que miden las mesas (las mismas cuentas que rotulan las fichas y la tabla).
+  const sobra = v => v.n % v.m;
+  const juntos = v => (v.a % v.m) + (v.b % v.m);
+  const largo = v => { const c = ciclo(v.b, v.k); return c.xs.length - c.ini; };
+  let MAX_L = 0; for (let b0 = 2; b0 <= 12; b0++) for (let k0 = 2; k0 <= 10; k0++) MAX_L = Math.max(MAX_L, largo({ b: b0, k: k0 }));
 
   return {
     unidad: 'aritmetica.divisibilidad',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    // Glosario: las palabras que esta unidad estrena en el curso (docs/teoria.md §4d). «número primo» se estrena
+    // en lógica proposicional y conjuntos («x es primo»): aquí no se repite.
+    glosario: [
+      { termino: 'divisible', def: 'Que se puede repartir entre otro número sin que sobre nada.',
+        formas: ['divisible', 'divisibles'], ejemplo: '91 lo es entre 7: 91 = 7 · 13.', ver: ['divisor', 'división exacta'] },
+      { termino: 'congruencia', simbolo: '≡', def: 'Relación entre dos números que dejan el mismo resto al dividirlos entre m. Se escribe con ≡.',
+        ejemplo: '17 ≡ 2 (mód 5): los dos dejan resto 2.', ver: ['resto'] },
+      { termino: 'restos potenciales', def: 'Los restos de a, a², a³… al dividir entre un mismo número; sirven para hallar el de aⁿ.',
+        formas: ['restos potenciales', 'resto potencial'], ejemplo: 'Entre 7, los de 2, 2², 2³ son 2, 4 y 1.', ver: ['ciclo', 'potencia'] },
+      { termino: 'ciclo', simbolo: 'L', def: 'Tramo de restos que se repite siempre igual. Su largo permite reducir exponentes grandes.',
+        ejemplo: '2, 4, 1, 2, 4, 1…: mide 3, y 2⁵⁰ deja lo mismo que 2².', ver: ['restos potenciales'] },
+      { termino: 'exponente', def: 'Número pequeño, arriba a la derecha, que dice cuántas veces se multiplica la base.',
+        ejemplo: 'En 2⁵ = 32 es 5: 2 · 2 · 2 · 2 · 2.', ver: ['potencia'] },
+      { termino: 'criterio de divisibilidad', def: 'Regla para saber el resto, o si sobra algo, mirando solo las cifras, sin hacer la división.',
+        formas: ['criterio de divisibilidad', 'criterios de divisibilidad'], ejemplo: '5 877 entre 9: sus cifras suman 27, que deja resto 0.', ver: ['cifra'] },
+      { termino: 'máximo común divisor', simbolo: 'MCD', def: 'El mayor número que divide exacto a la vez a dos o más números.',
+        formas: ['máximo común divisor', 'MCD'], ejemplo: 'MCD(6, 9) = 3.', ver: ['divisor'] },
+      { termino: 'ecuación diofántica', def: 'Ecuación como ax + by = c en la que solo valen soluciones enteras.',
+        formas: ['ecuación diofántica', 'ecuaciones diofánticas'], ejemplo: '6x + 9y = 21 tiene x = 2, y = 1; 6x + 9y = 20 no tiene.', ver: ['máximo común divisor'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. «Filas grandes» abre n hasta 48 y filas hasta 12; «Juntar sobrantes»
     // deja elegir el divisor (el juego lo fija en 5); «Ciclos largos» llega a la potencia 9 y a la base 12, con divisores que
     // comparten factores con la base (ciclos que no empiezan en la primera potencia).
@@ -477,7 +502,24 @@
           { id: 'm', etiqueta: 'm', color: 'c-i', min: 3, max: 12, paso: 1, inicio: 7, decimales: 0 },
         ],
         dibujo: v => ({ datos: filas(v.n, v.m, LAB), estado: {} }),
-        lectura: v => (v.n % v.m ? [`${v.n} en filas de ${v.m}: sobran `, { v: 'c-h', t: String(v.n % v.m) }] : [`${v.n} en filas de ${v.m}: no sobra nada`]),
+        lectura: v => (sobra(v) ? [`${v.n} en filas de ${v.m}: sobran `, { v: 'c-h', t: String(sobra(v)) }] : [`${v.n} en filas de ${v.m}: no sobra nada`]),
+        invitaciones: [
+          { texto: 'Busca el mayor n que llene filas de 7 sin sobrar.',
+            logrado: v => v.m === 7 && sobra(v) === 0 && v.n + v.m > 48,
+            bien: '42 = 7 · 6: el siguiente múltiplo de 7, 49, ya no cabe.' },
+          { texto: 'Con filas de 12, haz que sobre lo más posible.',
+            logrado: v => v.m === 12 && sobra(v) === v.m - 1,
+            bien: 'Sobran 11: con una ficha más se llena otra fila.' },
+          { texto: 'Haz exactamente 4 filas llenas, sin nada suelto.',
+            logrado: v => sobra(v) === 0 && v.n / v.m === 4,
+            bien: 'n = 4 · m: n es múltiplo de m, y m divide a n.' },
+          { texto: 'Busca un n que deje sobrante con cualquier largo de fila.',
+            logrado: v => { for (let c = 3; c <= 12; c++) if (sobra({ n: v.n, m: c }) === 0) return false; return true; },
+            bien: 'Ningún largo de 3 a 12 lo llena. ¿Probaste con filas de 2?' },
+          { texto: 'Guarda dos largos de fila distintos que llenen el mismo n.',
+            logrado: (v, guardados) => sobra(v) === 0 && guardados.some(g => g.n === v.n && g.m !== v.m && sobra(g) === 0),
+            bien: 'Mismo n, dos divisores: hay varias maneras de llenarlo.' },
+        ],
         arrastres: arrastresFilas(13, 48, 3, 12, LAB),
       },
       {
@@ -490,6 +532,20 @@
         ],
         dibujo: v => ({ datos: juntar(v.a, v.b, v.m), estado: { paso: 1 } }),
         lectura: v => [`m = ${v.m}: ${v.a % v.m} + ${v.b % v.m} → `, { v: 'c-h', t: String((v.a + v.b) % v.m) }, ` = resto de ${v.a + v.b}`],
+        invitaciones: [
+          { texto: 'Haz que los sobrantes juntos llenen justo una fila.',
+            logrado: v => juntos(v) === v.m,
+            bien: 'Los sobrantes completaron una fila: a + b es múltiplo de m.' },
+          { texto: 'Con m = 8, junta la mayor cantidad posible de sobrantes.',
+            logrado: v => v.m === 8 && juntos(v) === 2 * (v.m - 1),
+            bien: '7 + 7 = 14: una fila llena y sobran 6. Ese es el resto.' },
+          { texto: 'Haz que a + b deje el mismo resto que a, con b mayor que m.',
+            logrado: v => v.b > v.m && (v.a + v.b) % v.m === v.a % v.m,
+            bien: 'b no cambió el resto: b es múltiplo de m.' },
+          { texto: 'Guarda dos casos con el mismo m, otro a y los mismos sobrantes.',
+            logrado: (v, guardados) => guardados.some(g => g.m === v.m && g.a !== v.a && g.a % g.m === v.a % v.m && g.b % g.m === v.b % v.m),
+            bien: 'Otros números, los mismos sobrantes: el resto de a + b no cambió.' },
+        ],
         arrastres: arrastresJuntar(3, 30, v => v.m),
       },
       {
@@ -502,11 +558,29 @@
         ],
         dibujo: v => ({ datos: tablaPot(v.b, v.k, 9), estado: { fila: v.e - 1 } }),
         lectura: v => lecturaPot(v.b, v.k, v.e),
+        // Retos: ciclo() y powmod() son las mismas que llenan la tabla.
+        invitaciones: [
+          { texto: 'Busca el ciclo más largo que deja esta mesa.',
+            logrado: v => largo(v) === MAX_L,
+            bien: 'Largo 6: con divisores hasta 10, ningún ciclo es más largo.' },
+          { texto: 'Haz que el ciclo no empiece en la primera potencia.',
+            logrado: v => ciclo(v.b, v.k).ini > 0,
+            bien: 'Base y divisor comparten un factor: los primeros restos ya no vuelven.' },
+          { texto: 'Haz que todas las potencias dejen resto 0.',
+            logrado: v => ciclo(v.b, v.k).xs.every(x => x === 0),
+            bien: 'El divisor divide a la base: cada potencia es su múltiplo.' },
+          { texto: 'Con divisor 7, busca una potencia con exponente mayor que 1 que deje resto 1.',
+            logrado: v => v.k === 7 && v.e > 1 && powmod(v.b, v.e, v.k) === 1,
+            bien: 'Resto 1: desde la potencia siguiente, el ciclo vuelve a empezar.' },
+          { texto: 'Guarda dos exponentes distintos, con la misma base y divisor, y el mismo resto.',
+            logrado: (v, guardados) => guardados.some(g => g.b === v.b && g.k === v.k && g.e !== v.e && powmod(g.b, g.e, g.k) === powmod(v.b, v.e, v.k)),
+            bien: 'Mismo resto: los exponentes se diferencian en un múltiplo del largo del ciclo.' },
+        ],
         arrastres: [arrastrePot(9)],
       },
     ],
     historia: {
-      texto: 'Las preguntas sobre restos son muy antiguas, pero en 1801 Gauss las ordenó en sus Disquisitiones Arithmeticae con el lenguaje de las congruencias. Ese lenguaje permite trabajar con lo que sobra de una división sin calcular el número completo. Los criterios que vemos aquí salen de él: de lo que deja cada potencia de 10.',
+      texto: 'Las preguntas sobre restos son muy antiguas, pero en 1801 Gauss las ordenó en sus Disquisitiones Arithmeticae con el lenguaje de las congruencias. Ese lenguaje permite trabajar con lo que sobra de una división sin calcular el número completo. Los criterios de divisibilidad que vemos aquí salen de él: de lo que deja cada potencia de 10.',
       pregunta: '¿Se puede saber lo que sobra sin dividir todo?',
       fuente: { titulo: 'O’Connor y Robertson, Carl Friedrich Gauss — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Gauss/' },
     },

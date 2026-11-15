@@ -120,7 +120,7 @@
       ],
     },
     regla: {
-      texto: 'Son directamente proporcionales si su cociente es constante: la gráfica es una recta que pasa por el origen. Son inversamente proporcionales si su producto es constante.',
+      texto: 'Son directamente proporcionales si su cociente es una constante k: la gráfica es una recta que pasa por el origen. Son inversamente proporcionales si el producto es la constante k.',
       ecuacion: ['directa: ', { llave: [{ frac: [y, x] }], nota: 'cociente' }, ' = ', k, '   ·   ', 'inversa: ', { llave: [x, ' · ', y], nota: 'producto' }, ' = ', k],
       condicion: 'crecer juntas no basta: y = 2x + 3 crece y no es proporcional. En la inversa, x no puede ser 0.',
     },
@@ -173,6 +173,7 @@
       { rotulo: o.rotDias || `un día = ${f(porDia)} horas-obrero`, color: 'i', paso: o.paso, sinContorno: true, tramos: dias(obra, porDia, { numerar: true, paso: o.paso }) },
     ],
   });
+  const OBRA = 120, diasObra = v => OBRA / (v.o * v.h);
   const compuesta = {
     id: 'compuesta',
     titulo: 'La obra se reparte en días',
@@ -185,8 +186,8 @@
         { id: 'o', etiqueta: 'Obreros', color: 'c-o', min: 2, max: 6, paso: 1, inicio: 3, decimales: 0 },
         { id: 'h', etiqueta: 'Horas al día', color: 'c-i', min: 2, max: 10, paso: 2, inicio: 4, decimales: 0 },
       ],
-      dibujo: v => ({ datos: obraDatos(120, v.o * v.h), estado: {} }),
-      lectura: v => [`${f(v.o)} · ${f(v.h)} = ${f(v.o * v.h)} por día → ${f(120 / (v.o * v.h))} días`],
+      dibujo: v => ({ datos: obraDatos(OBRA, v.o * v.h), estado: {} }),
+      lectura: v => [`${f(v.o)} · ${f(v.h)} = ${f(v.o * v.h)} por día → ${f(diasObra(v))} días`],
       minimo: 3,
       // Se arrastra el fin del primer día: alargarlo es trabajar más horas al día (con los mismos obreros).
       arrastres: [
@@ -216,7 +217,7 @@
       ],
     },
     regla: {
-      texto: 'Si la obra es la misma, obreros por horas diarias por días da siempre lo mismo. Cada magnitud que trabaja es inversa a los días.',
+      texto: 'En la regla de tres compuesta, si la obra es la misma, obreros por horas diarias por días da lo mismo. Cada magnitud que trabaja es inversa a los días.',
       ecuacion: [{ llave: [{ sub: ['o', '1'] }, { sub: ['h', '1'] }, { sub: ['d', '1'] }], nota: 'la obra' }, ' = ', { llave: [{ sub: ['o', '2'] }, { sub: ['h', '2'] }, { sub: ['d', '2'] }], nota: 'la misma obra' }],
       condicion: 'todos rinden igual y la obra no cambia. Si la obra se duplica, los días se duplican: obra y días son directas.',
     },
@@ -310,7 +311,7 @@
       ],
     },
     regla: {
-      texto: 'Repartir un total en forma directa a unos pesos da a cada uno su peso entre la suma de pesos. El reparto inverso usa como pesos los inversos.',
+      texto: 'En el reparto directo, a cada uno le toca el total por su peso entre la suma de pesos. El reparto inverso usa como pesos los inversos.',
       ecuacion: [{ sub: ['x', 'i'] }, ' = ', { llave: [T], nota: 'total', color: 'c-d' }, ' · ', { llave: [{ frac: [wi, ['Σ', 'w']] }], nota: 'su fracción' }, '   ·   ', 'inverso: ', wi, ' → ', { frac: ['1', wi] }],
       condicion: 'los pesos son positivos. Multiplicar todos los pesos por el mismo número no cambia el reparto.',
     },
@@ -429,6 +430,13 @@
   // Mesa «tres relaciones»: y = kx, xy = 6k o y = kx + 6 (crece con x, pero no es proporcional).
   const NOMBRE = { directa: 'Directa', inversa: 'Inversa', afin: 'Ninguna' };
   const yLibre = (tipo, kk, xv) => (tipo === 'directa' ? kk * xv : tipo === 'inversa' ? 6 * kk / xv : kk * xv + 6);
+  // Lo que leen la lectura y los retos de las mesas: el punto, el reparto entre tres y sus extremos en la grilla.
+  const rango = (lo, hi) => Array.from({ length: hi - lo + 1 }, (_, i) => lo + i);
+  const yDe = v => yLibre(v.tipo, v.k, v.x);
+  const MAX_Y = Math.max(...['directa', 'inversa', 'afin'].flatMap(tipo => rango(1, 6).flatMap(kk => rango(1, 6).map(xv => yLibre(tipo, kk, xv)))));
+  const partes3 = v => { const w = [v.p, v.q, v.r].map(z => (v.modo === 'inverso' ? 1 / z : z)), sw = w[0] + w[1] + w[2]; return w.map(z => 600 * z / sw); };
+  const MAX_P = Math.max(...['directo', 'inverso'].flatMap(modo => rango(1, 6).flatMap(p => rango(1, 6).flatMap(q => rango(1, 6).map(r => Math.max(...partes3({ modo, p, q, r })))))));
+  const casi = (u, w) => Math.abs(u - w) < 1e-9;
   const planoLibre = v => {
     const yv = yLibre(v.tipo, v.k, v.x);
     return {
@@ -445,6 +453,44 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/arit-tiras.js'],
+    // Glosario del tema (docs/teoria.md, 4d). «ganancia» se define en porcentajes, donde es la idea central.
+    glosario: [
+      { termino: 'fracción', formas: ['fracción', 'fracciones'], def: 'Número que dice cuántas partes iguales de una unidad se toman: a/b, con b distinto de 0.',
+        ejemplo: 'Con pesos 1 y 3, a la primera le toca 1/4 del total.' },
+      { termino: 'magnitud', def: 'Algo que se puede medir o contar y que cambia de valor: obreros, días, precio, distancia.',
+        ejemplo: 'Los días que dura una obra.', ver: ['directamente proporcional', 'inversamente proporcional'] },
+      { termino: 'directamente proporcional', formas: ['directamente proporcional', 'directamente proporcionales'],
+        def: 'Dos cantidades lo son si su cociente no cambia: si una se duplica, la otra también.',
+        ejemplo: 'A S/ 4 el kilo: 2 kg cuestan S/ 8 y 5 kg, S/ 20.', ver: ['constante de proporcionalidad'] },
+      { termino: 'inversamente proporcional', formas: ['inversamente proporcional', 'inversamente proporcionales'],
+        def: 'Dos cantidades lo son si su producto no cambia: si una se duplica, la otra queda en la mitad.',
+        ejemplo: '12 obreros en 15 días o 20 en 9: 12 · 15 = 20 · 9 = 180.', ver: ['constante de proporcionalidad'] },
+      { termino: 'constante de proporcionalidad', simbolo: 'k', formas: ['constante de proporcionalidad', 'constante k'],
+        def: 'El número fijo de la relación: y ÷ x en la directa, x · y en la inversa.',
+        ejemplo: 'y = 4x: k = 4.', ver: ['directamente proporcional', 'inversamente proporcional'] },
+      { termino: 'origen', def: 'El punto (0; 0) de una gráfica, donde se cruzan los dos ejes.',
+        ejemplo: 'y = 4x pasa por él; y = 2x + 3, no.', ver: ['directamente proporcional'] },
+      { termino: 'regla de tres', formas: ['regla de tres', 'regla de tres simple', 'regla de tres compuesta'],
+        def: 'Método para hallar un valor que falta entre magnitudes proporcionales. Se llama compuesta si intervienen más de dos.',
+        ejemplo: '12 obreros en 15 días; 20 obreros en 12 · 15 ÷ 20 = 9 días.', ver: ['magnitud', 'obra'] },
+      { termino: 'obra', def: 'En problemas de trabajo, el total que hay que hacer. No cambia aunque cambien los obreros o las horas.',
+        ejemplo: '8 obreros, 6 h al día, 10 días: 8 · 6 · 10 = 480 horas-obrero.', ver: ['horas-obrero'] },
+      { termino: 'horas-obrero', formas: ['horas-obrero', 'días-obrero'],
+        def: 'Unidad de trabajo: lo que hace un obrero en una hora. Contado por días, es día-obrero.',
+        ejemplo: '3 obreros durante 4 horas: 12 horas-obrero.', ver: ['obra'] },
+      { termino: 'peso', formas: ['peso', 'pesos'], def: 'Número que dice cuánto le toca o cuánto cuenta cada parte en un reparto o en un promedio.',
+        ejemplo: 'S/ 240 con pesos 1 y 3: 4 partes, S/ 60 y S/ 180.', ver: ['reparto directo', 'reparto inverso'] },
+      { termino: 'reparto directo', formas: ['reparto directo', 'repartos directos'],
+        def: 'Repartir un total en partes proporcionales a unos pesos: el peso mayor recibe más.',
+        ejemplo: 'S/ 240 en forma directa a 2 y 3: S/ 96 y S/ 144.', ver: ['peso', 'reparto inverso'] },
+      { termino: 'reparto inverso', formas: ['reparto inverso', 'repartos inversos'],
+        def: 'Repartir un total usando como pesos los inversos 1/2, 1/3…: el número mayor recibe menos.',
+        ejemplo: 'S/ 240 en forma inversa a 2 y 3: S/ 144 y S/ 96.', ver: ['peso', 'reparto directo'] },
+      { termino: 'regla de compañía', def: 'Reparto de la ganancia entre socios en forma directa a capital por tiempo de cada uno.',
+        ejemplo: 'A: S/ 4000 por 6 meses (24); B: S/ 3000 por 12 (36). Se reparte 2 : 3.', ver: ['capital', 'reparto directo'] },
+      { termino: 'capital', formas: ['capital', 'capitales'], def: 'Dinero que alguien pone en un negocio, o presta, para que produzca ganancia.',
+        ejemplo: 'B puso un capital de S/ 3000 durante 12 meses.', ver: ['regla de compañía'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. «Tres relaciones» suma el caso que crece sin ser proporcional (y = kx + 6)
     // y deja elegir la constante; «Reparto entre tres» corta un total en tres partes; la obra es el juego de la idea 2.
     laboratorio: [
@@ -472,6 +518,20 @@
               return { k: v.tipo === 'directa' ? yv / 6 : v.tipo === 'inversa' ? yv : (yv - 6) / 6 };
             } },
         ],
+        invitaciones: [
+          { texto: 'Pon el punto donde y ÷ x da 4, sin que la relación sea directa.',
+            logrado: v => v.tipo !== 'directa' && casi(yDe(v) / v.x, 4),
+            bien: 'Un solo punto con cociente 4 no prueba nada: mueve x y mira.' },
+          { texto: 'Consigue el punto más alto que deja la mesa.',
+            logrado: v => yDe(v) === MAX_Y,
+            bien: 'Lo más alto lo da la que suma 6, y no es proporcional.' },
+          { texto: 'Haz que el rectángulo verde tenga área 30.',
+            logrado: v => v.tipo === 'inversa' && casi(v.x * yDe(v), 30),
+            bien: 'Muévete por la curva: el área sigue en 30. Así es la inversa.' },
+          { texto: 'Guarda dos puntos distintos de una misma gráfica con el mismo producto x · y.',
+            logrado: (v, guardados) => guardados.some(g => g.tipo === v.tipo && g.k === v.k && g.x !== v.x && casi(g.x * yDe(g), v.x * yDe(v))),
+            bien: 'Mismo producto en dos puntos de la curva: la constante k no cambió.' },
+        ],
       },
       {
         id: 'reparto-tres', titulo: 'Reparto entre tres', pieza: 'arit-tiras',
@@ -483,10 +543,7 @@
           { id: 'r', etiqueta: 'Peso 3', color: 'c-h', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0 },
         ],
         dibujo: v => ({ datos: repartoDatos(600, [v.p, v.q, v.r], v.modo === 'inverso'), estado: {} }),
-        lectura: v => {
-          const inv = v.modo === 'inverso', w = [v.p, v.q, v.r].map(z => (inv ? 1 / z : z)), sw = w[0] + w[1] + w[2];
-          return [`${inv ? 'Inverso' : 'Directo'} a ${v.p}, ${v.q}, ${v.r}: ${w.map(z => f(600 * z / sw)).join('; ')}`];
-        },
+        lectura: v => [`${v.modo === 'inverso' ? 'Inverso' : 'Directo'} a ${v.p}, ${v.q}, ${v.r}: ${partes3(v).map(z => f(z)).join('; ')}`],
         arrastres: [
           { id: 'corte-1', etiqueta: 'primer corte: peso 1', color: 'c-o',
             donde: v => enTira(repartoDatos(600, [v.p, v.q, v.r], v.modo === 'inverso'), 1, parte1(600, [v.p, v.q, v.r], v.modo === 'inverso')),
@@ -503,8 +560,36 @@
               return { q: w2 > 0 ? (inv ? 1 / w2 : w2) : (inv ? 6 : 1) };
             } },
         ],
+        invitaciones: [
+          { texto: 'En un reparto inverso, haz que una parte sea justo S/ 300.',
+            logrado: v => v.modo === 'inverso' && partes3(v).some(z => casi(z, 300)),
+            bien: 'La mitad para uno: en el inverso, al del peso más chico.' },
+          { texto: 'Consigue que las tres partes sean iguales.',
+            logrado: v => { const z = partes3(v); return casi(z[0], z[1]) && casi(z[1], z[2]); },
+            bien: 'Con pesos iguales, directo e inverso dan lo mismo.' },
+          { texto: 'Busca la parte más grande que le puede tocar a una sola persona.',
+            logrado: v => casi(Math.max(...partes3(v)), MAX_P),
+            bien: 'Ni con el peso más extremo se lleva todo: los otros reciben algo.' },
+          { texto: 'Guarda el reparto directo y el inverso con los mismos pesos, no todos iguales.',
+            logrado: (v, guardados) => !(v.p === v.q && v.q === v.r) && guardados.some(g => g.p === v.p && g.q === v.q && g.r === v.r && g.modo !== v.modo),
+            bien: 'Mismos pesos, orden al revés: en el inverso, el peso mayor recibe menos.' },
+        ],
       },
-      Object.assign({ id: 'obra', titulo: 'La obra se corta en días', pieza: 'arit-tiras' }, compuesta.juega),
+      Object.assign({ id: 'obra', titulo: 'La obra se corta en días', pieza: 'arit-tiras',
+        invitaciones: [
+          { texto: 'Haz que la obra se termine en exactamente 5 días.',
+            logrado: v => diasObra(v) === 5,
+            bien: 'Hay tres maneras de avanzar 24 por día. ¿Cuáles son?' },
+          { texto: 'Elige obreros y horas que terminen la obra en menos días.',
+            logrado: v => diasObra(v) === OBRA / (6 * 10),
+            bien: 'Con 60 horas-obrero por día, la obra cabe en 2 días.' },
+          { texto: 'Consigue que el último día quede incompleto.',
+            logrado: v => !Number.isInteger(diasObra(v)),
+            bien: 'El pedazo rojo es un día que no se trabaja entero.' },
+          { texto: 'Guarda dos casos con los mismos días y distinto número de obreros.',
+            logrado: (v, guardados) => guardados.some(g => g.o !== v.o && diasObra(g) === diasObra(v)),
+            bien: 'Menos obreros con más horas: lo que se avanza por día quedó igual.' },
+        ] }, compuesta.juega),
     ],
     historia: {
       texto: 'El Liber abaci de Fibonacci, de 1202, circuló por el Mediterráneo con métodos que su autor aprendió en el norte de África y en sus viajes. Mostró la utilidad del cálculo para problemas concretos de comercio, sin inventar la proporcionalidad. Repartir un total con criterios explícitos es una necesidad antigua; escribirla con pesos y una suma es la forma moderna.',

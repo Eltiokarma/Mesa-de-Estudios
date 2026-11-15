@@ -70,7 +70,7 @@
     temas: ['Base de un sistema'],
     pieza: 'arit-fichas',
     juega: {
-      consigna: 'Elige cuántas fichas hay y la base. Cada fila llena es un grupo; las rojas quedan sueltas.',
+      consigna: 'Elige cuántas fichas hay y la base de numeración. Cada fila llena es un grupo; las rojas quedan sueltas.',
       voz: 'Cuenta los grupos y las sueltas antes de leer el numeral.',
       controles: [
         { id: 'n', etiqueta: 'Fichas', min: 5, max: 24, paso: 1, inicio: 13, decimales: 0 },
@@ -203,7 +203,7 @@
       ],
     },
     regla: {
-      texto: 'Cada cifra se multiplica por la potencia de la base de su lugar, contando desde 0 a la derecha, y se suma todo.',
+      texto: 'Descomposición polinómica: cada cifra se multiplica por la potencia de la base de su lugar, contando desde 0 a la derecha, y se suma todo.',
       // A 360 px no cabe en una línea: el separador la parte en el «=» (sin él se partía entre «+» y d₀).
       ecuacion: [{ sub: [['(', { sub: [d, 'k'] }, '…', { sub: [d, '1'] }, { sub: [d, '0'] }, ')'], b] }, ' =', '   ·   ', { sub: [d, 'k'] }, ' ', { sup: [b, 'k'] }, ' + … + ', { sub: [d, '1'] }, ' ', b, ' + ', { sub: [d, '0'] }],
       condicion: 'cada cifra cumple 0 ≤ d < b. El lugar de la derecha es b⁰ = 1.',
@@ -282,7 +282,7 @@
       ],
     },
     regla: {
-      texto: 'Para pasar de base 10 a base b se divide entre b hasta que el cociente es 0. Los restos, del último al primero, son las cifras.',
+      texto: 'Cambio de base: para pasar de base 10 a base b se divide entre b hasta que el cociente es 0. Los restos, del último al primero, son las cifras.',
       ecuacion: [N, ' = ', b, ' · q + ', { llave: [r], nota: 'una cifra', color: 'c-h' }, '   ·   ', '0 ≤ ', r, ' < ', b],
       condicion: 'el número no cambia, solo su escritura. Entre dos bases que no son 10, se pasa primero por base 10.',
     },
@@ -446,6 +446,25 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-tiras.js'],
+    // Glosario: las palabras que esta unidad estrena en el curso (docs/teoria.md §4d).
+    glosario: [
+      { termino: 'sistema de numeración', def: 'Conjunto de símbolos y reglas para escribir y leer cualquier número.',
+        formas: ['sistema de numeración', 'sistemas de numeración'], ver: ['base de numeración', 'cifra'] },
+      { termino: 'base de numeración', simbolo: 'b', def: 'Cuántas unidades de un orden se canjean por una del orden siguiente.',
+        formas: ['base de numeración', 'bases de numeración'], ejemplo: 'En base 5, cinco sueltas forman un grupo: 5 = (10)₅.', ver: ['cifra', 'numeral'] },
+      { termino: 'cifra', simbolo: 'd', def: 'Cada símbolo con que se escribe un número. En base b va de 0 a b − 1.',
+        ejemplo: 'En base 4 solo hay cuatro: 0, 1, 2 y 3.', ver: ['numeral'] },
+      { termino: 'numeral', def: 'La escritura de un número con cifras. Un mismo número tiene distinta escritura en cada base.',
+        ejemplo: 'Treinta se escribe (30) en base 10 y (132)₄ en base 4.', ver: ['cifra', 'base de numeración'] },
+      { termino: 'potencia', def: 'Resultado de multiplicar un número por sí mismo varias veces; el exponente dice cuántas.',
+        ejemplo: '4² = 4 · 4 = 16 y 2³ = 2 · 2 · 2 = 8.' },
+      { termino: 'descomposición polinómica', def: 'Escribir un numeral como suma de cada cifra por la potencia de la base de su lugar.',
+        ejemplo: '(132)₄ = 1 · 16 + 3 · 4 + 2 = 30.', ver: ['potencia', 'numeral'] },
+      { termino: 'resto', simbolo: 'r', def: 'Lo que sobra al dividir sin pasarse: es menor que el divisor y puede ser 0.',
+        ejemplo: '19 entre 3: cociente 6 y sobra 1, porque 3 · 6 + 1 = 19.' },
+      { termino: 'cambio de base', def: 'Escribir el mismo número en otra base: se divide entre la nueva base y se leen los restos.',
+        ejemplo: '19 = (201)₃, porque los restos salen 1, 0 y 2.', ver: ['resto', 'base de numeración'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. «Canje amplio» abre la base de 4 a 10 (incluye base 10, el caso que
     // el juego no deja) y hasta 40 fichas; «Libros largos» llega a 1500 páginas, con el bloque de cuatro cifras.
     laboratorio: [
@@ -458,6 +477,24 @@
         ],
         dibujo: v => ({ datos: fichasLab(v.n, v.b), estado: {} }),
         lectura: v => [`${v.n} fichas en base ${v.b}: ${nb(enBase(v.n, v.b), v.b)}`],
+        // Retos: cada uno lee el numeral con enBase, la misma función que rotula las fichas.
+        invitaciones: [
+          { texto: 'Consigue un numeral que termine en 0: ninguna ficha suelta.',
+            logrado: v => enBase(v.n, v.b).endsWith('0'),
+            bien: 'Sin sueltas, la cifra de las unidades es 0. ¿Pasa en otra base?' },
+          { texto: 'Con 40 fichas, busca la base más chica que las escriba con dos cifras.',
+            logrado: v => v.n === 40 && enBase(v.n, v.b).length === 2 && enBase(v.n, v.b - 1).length > 2,
+            bien: 'Base 7: 40 = (55)₇. Con una base menos, ya hacen falta tres cifras.' },
+          { texto: 'Arma un numeral de tres cifras iguales.',
+            logrado: v => /^(\d)\1\1$/.test(enBase(v.n, v.b)),
+            bien: 'Tres unos: un grupo de grupos, un grupo y una suelta.' },
+          { texto: 'Haz que el numeral copie la cantidad de fichas, con dos cifras o más.',
+            logrado: v => v.n >= 10 && enBase(v.n, v.b) === String(v.n),
+            bien: 'Solo en base 10 el numeral copia la cantidad. Por eso (132)₄ no es 132.' },
+          { texto: 'Guarda dos casos con las mismas cifras en bases distintas.',
+            logrado: (v, guardados) => guardados.some(g => g.b !== v.b && enBase(g.n, g.b) === enBase(v.n, v.b)),
+            bien: 'Mismas cifras, distinta cantidad: el numeral solo no dice cuánto es.' },
+        ],
         arrastres: [{ id: 'fila', etiqueta: 'largo de la fila (la base)', color: 'c-o',
           donde: v => bordeFila(fichasLab(v.n, v.b), v.b),
           mover: (pt, v) => ({ b: baseEn(fichasLab(v.n, v.b), pt.x) }) }],
@@ -468,11 +505,26 @@
         controles: [{ id: 'P', etiqueta: 'Última página', min: 5, max: 1500, paso: 5, inicio: 1200, decimales: 0 }],
         dibujo: v => ({ datos: tirasPaginas(v.P, 4900), estado: {} }),
         lectura: v => [`De 1 a ${v.P}: `, { v: 'c-d', t: String(totalCifras(v.P)) }, ' cifras'],
+        // Retos: bloques() y totalCifras() son las mismas que arman las tiras.
+        invitaciones: [
+          { texto: 'Encuentra el libro que usa justo 1002 cifras.',
+            logrado: v => totalCifras(v.P) === 1002,
+            bien: 'Página 370: 9 + 180 + 813. ¿Cuántas páginas tienen tres cifras?' },
+          { texto: 'Busca el libro más corto que ya tenga una página de cuatro cifras.',
+            logrado: v => { const u = bloques(v.P).pop(); return u.k === 4 && u.cuantos === 1; },
+            bien: 'La página 1000 es la primera de cuatro cifras: 10³.' },
+          { texto: 'Haz que la tira de cifras tenga solo dos bloques.',
+            logrado: v => bloques(v.P).length === 2,
+            bien: 'Hasta la página 99 solo hay números de una y de dos cifras.' },
+          { texto: 'Guarda dos libros que se lleven 5 páginas y 15 cifras.',
+            logrado: (v, guardados) => guardados.some(g => Math.abs(g.P - v.P) === 5 && Math.abs(totalCifras(g.P) - totalCifras(v.P)) === 15),
+            bien: 'Cinco páginas de tres cifras: 15 cifras más. Cada bloque cobra distinto.' },
+        ],
         arrastres: [finLibro('P', 4900)],
       },
     ],
     historia: {
-      texto: 'La numeración que usamos se fue armando entre la India, las sociedades de lengua árabe y Europa, durante siglos y con sistemas que convivían. Nadie la inventó de una vez. Su idea clave es que un símbolo vale según el lugar que ocupa. Escribir un número en otra base cambia cómo se ve, no cuánto es.',
+      texto: 'El sistema de numeración que usamos se fue armando entre la India, las sociedades de lengua árabe y Europa, durante siglos y con sistemas que convivían. Nadie la inventó de una vez. Su idea clave es que un símbolo vale según el lugar que ocupa. Escribir un número en otra base cambia cómo se ve, no cuánto es.',
       pregunta: '¿Qué cambia si contamos de cinco en cinco?',
       fuente: { titulo: 'O’Connor y Robertson, Arabic numerals — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Arabic_numerals/' },
     },

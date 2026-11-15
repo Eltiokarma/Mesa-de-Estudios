@@ -205,7 +205,7 @@
     regla: {
       texto: 'La nominal j se divide entre m para la tasa de cada período. La efectiva es lo que de verdad crece en el año. Tasas equivalentes dan el mismo factor.',
       ecuacion: [{ sub: ['i', 'ef'] }, ' = ', { sup: [['(1 + ', { llave: [{ frac: [j, m] }], nota: 'por período', color: 'c-i' }, ')'], m] }, ' − 1'],
-      condicion: 'una tasa efectiva anual no se divide entre 12: la mensual equivalente es la raíz doceava del factor, menos 1.',
+      condicion: 'una tasa efectiva anual no se divide entre 12: la tasa equivalente mensual es la raíz doceava del factor, menos 1.',
     },
     ahoraTu: {
       generar(s) {
@@ -227,7 +227,7 @@
         const ief = r.de([0.1, 0.12, 0.15, 0.2, 0.25, 0.3]), per = r.de([2, 4]);
         const eq = 100 * (Math.pow(1 + ief, 1 / per) - 1);
         return {
-          pregunta: ['Una tasa efectiva anual es ', { v: 'c-i', t: `${f(ief * 100)} %` }, `. ¿Qué tasa efectiva ${per === 2 ? 'semestral' : 'trimestral'} es equivalente?`],
+          pregunta: ['Una tasa efectiva anual es ', { v: 'c-i', t: `${f(ief * 100)} %` }, `. ¿Cuál es la tasa equivalente ${per === 2 ? 'semestral' : 'trimestral'}?`],
           opciones: opciones(eq, [
             { id: 'divide', valor: ief * 100 / per, error: 'AT-DIVIDE-EFECTIVA', siFuera: `Eso divide entre ${per}; al componer daría más que ${f(ief * 100)} %.` },
             { id: 'igual', valor: ief * 100, error: 'AT-NOMINAL', siFuera: 'Esa es la anual; el período es más corto.' },
@@ -338,7 +338,7 @@
     temas: ['Descuento comercial y racional'],
     pieza: 'arit-tiras',
     juega: {
-      consigna: 'Una letra de S/ 1200 se cobra antes de vencer. Elige los meses que faltan y la tasa anual. Compara los dos descuentos.',
+      consigna: 'Una letra de cambio de S/ 1200 se cobra antes de vencer. Elige los meses que faltan y la tasa anual. Compara los dos descuentos.',
       voz: 'La parte de color es lo que se pierde por cobrar antes.',
       controles: [
         { id: 't', etiqueta: 'Faltan', color: 'c-h', min: 1, max: 12, paso: 1, inicio: 5, unidad: 'meses', decimales: 0 },
@@ -484,8 +484,10 @@
   // ---------- Laboratorio ----------
   // Más rico que los juegos: la tasa de 1 a 20 % y hasta 10 períodos, con el continuo al lado; el descuento con plazos
   // de hasta 2 años, donde el comercial se come toda la letra (el caso raro); y tres letras en vez de dos.
+  // Los tres montos de la mesa: los usan el dibujo, la lectura y los retos.
+  const montosLab = v => { const tasa = v.i / 100; return { s: 1000 * (1 + tasa * v.n), c: 1000 * Math.pow(1 + tasa, v.n), e: 1000 * Math.exp(tasa * v.n) }; };
   const tresMontos = v => {
-    const tasa = v.i / 100, s = 1000 * (1 + tasa * v.n), c = 1000 * Math.pow(1 + tasa, v.n), e = 1000 * Math.exp(tasa * v.n);
+    const tasa = v.i / 100, { s, c, e } = montosLab(v);
     const tira = (rot, monto) => ({ rotulo: `${rot}: ${sol(monto)}`, color: 'd', tramos: [{ valor: 1000, color: 'o', relleno: 0.22, texto: 'P' }, { valor: monto - 1000, color: 'i', relleno: 0.35 }] });
     return { datos: { max: 1000 * Math.exp(tasa * 10), filas: 3, tiras: [tira('simple', s), tira('compuesto', c), tira('continuo', e)] }, estado: {} };
   };
@@ -498,11 +500,12 @@
     ] }, estado: {}, Dc, Pr };
   };
   const letras3 = v => [1, 2, 3].map(k => ({ F: v[`F${k}`], t: v[`t${k}`] }));
+  const promLetras = v => (v.t1 + v.t2 + v.t3) / 3;
   const rectaLetras = v => {
     const ls = letras3(v), S = ls.reduce((a, l) => a + l.F, 0), tbar = ls.reduce((a, l) => a + l.F * l.t, 0) / S;
     const el = ls.map((l, k) => ({ tipo: 'punto', x: l.t, color: ['o', 'i', 'h'][k], rotulo: sol(l.F), fila: k + 1 }));
     el.push({ tipo: 'punto', x: tbar, color: 'd', rotulo: `${f(tbar)} meses`, fila: 0 });
-    return { datos: { min: 0, max: 12, paso: 1, cada: 1, decimales: 2, filas: 3, variable: 't (meses)', color: 'h', elementos: el }, estado: { fantasma: { marca: ls.reduce((a, l) => a + l.t, 0) / 3, rotulo: 'promedio simple' } }, tbar };
+    return { datos: { min: 0, max: 12, paso: 1, cada: 1, decimales: 2, filas: 3, variable: 't (meses)', color: 'h', elementos: el }, estado: { fantasma: { marca: promLetras(v), rotulo: 'promedio simple' } }, tbar };
   };
   const laboratorio = [
     {
@@ -513,7 +516,21 @@
         { id: 'n', etiqueta: 'n', color: 'c-h', min: 1, max: 10, paso: 1, inicio: 5, decimales: 0 },
       ],
       dibujo: tresMontos,
-      lectura: v => [i, ` = ${v.i} %, `, n, ` = ${v.n}: compuesto ${sol(1000 * Math.pow(1 + v.i / 100, v.n))}`],
+      lectura: v => [i, ` = ${v.i} %, `, n, ` = ${v.n}: compuesto ${sol(montosLab(v).c)}`],
+      invitaciones: [
+        { texto: 'Busca la tasa más baja que duplique el capital compuesto en 10 períodos.',
+          logrado: v => v.n === 10 && montosLab(v).c >= 2000 && montosLab({ i: v.i - 1, n: 10 }).c < 2000,
+          bien: 'Con 8 % ya se duplica. ¿Cuántos períodos necesitaría el interés simple?' },
+        { texto: 'Haz que el interés compuesto llegue al doble del interés simple.',
+          logrado: v => { const x = montosLab(v); return x.c - 1000 >= 2 * (x.s - 1000); },
+          bien: 'Lo ganado sobre lo ganado ya pesa tanto como todo el interés simple.' },
+        { texto: 'Consigue que las tres tiras casi no se distingan: menos de S/ 5 de diferencia.',
+          logrado: v => { const x = montosLab(v); return x.e - x.s < 5; },
+          bien: 'Con tasa y tiempo chicos, las tres maneras de crecer casi coinciden.' },
+        { texto: 'Guarda dos casos con el mismo monto simple y distinto monto compuesto.',
+          logrado: (v, gs) => gs.some(g => Math.abs(montosLab(g).s - montosLab(v).s) < 1e-9 && Math.abs(montosLab(g).c - montosLab(v).c) > 0.005),
+          bien: 'Mismo i · n, distinto compuesto: ¿cuál ganó más, el de más períodos?' },
+      ],
       arrastres: [
         { id: 'periodos', etiqueta: 'final de la tira compuesta', color: 'c-h',
           donde: v => ({ x: finMonto(v, v.n), y: TIRAS().geometria(tresMontos(v).datos).centroY(1) }),
@@ -528,7 +545,21 @@
         { id: 'd', etiqueta: 'Tasa anual', color: 'c-i', min: 6, max: 60, paso: 6, inicio: 36, unidad: '%', decimales: 0 },
       ],
       dibujo: descLab,
-      lectura: v => { const x = descLab(v); return [`${v.d} %, ${v.t} meses: comercial ${sol(1200 - x.Dc)} · racional ${sol(x.Pr)}`]; },
+      lectura: v => { const x = descLab(v); return [`${v.d} %, ${v.t} meses: comercial ${sol(1200 - x.Dc)} · racional ${sol(x.Pr)}`]; },
+      invitaciones: [
+        { texto: 'Haz que el descuento comercial se coma toda la letra.',
+          logrado: v => descLab(v).Dc >= 1200,
+          bien: 'Con el comercial no recibes nada. ¿El racional también llega a cero?' },
+        { texto: 'Consigue que con el descuento racional se reciban justo S/ 1000.',
+          logrado: v => Math.abs(descLab(v).Pr - 1000) < 0.005,
+          bien: 'S/ 1000 más su interés simple del plazo llegan justo a 1200.' },
+        { texto: 'Busca un caso donde el comercial descuente el doble que el racional.',
+          logrado: v => { const x = descLab(v); return Math.abs(x.Dc - 2 * (1200 - x.Pr)) < 0.005; },
+          bien: 'Pasa cuando la tasa del plazo llega a 100 %. Comprueba: tasa por meses.' },
+        { texto: 'Guarda dos casos con el mismo descuento comercial y distinta tasa.',
+          logrado: (v, gs) => gs.some(g => g.d !== v.d && Math.abs(descLab(g).Dc - descLab(v).Dc) < 0.005),
+          bien: 'Lo que decide es la tasa por el tiempo: mismo producto, mismo descuento.' },
+      ],
       arrastres: [
         { id: 'corte-racional', etiqueta: 'corte del descuento racional', color: 'c-h',
           donde: v => { const g = TIRAS().geometria(descLab(v).datos); return { x: g.x(descLab(v).Pr), y: g.centroY(1) }; },
@@ -543,7 +574,19 @@
         { id: `t${k}`, etiqueta: `Vence en (${k})`, color: 'c-h', min: 1, max: 12, paso: 1, inicio: [2, 9, 5][k - 1], unidad: 'meses', decimales: 0 },
       ]),
       dibujo: rectaLetras,
-      lectura: v => [`Vence a los ${f(rectaLetras(v).tbar)} meses; promedio simple ${f((v.t1 + v.t2 + v.t3) / 3)}`],
+      lectura: v => [`Vence a los ${f(rectaLetras(v).tbar)} meses; promedio simple ${f(promLetras(v))}`],
+      invitaciones: [
+        { texto: 'Haz que el vencimiento común caiga justo a los 6 meses.',
+          logrado: v => Math.abs(rectaLetras(v).tbar - 6) < 1e-9,
+          bien: 'Seis meses exactos: valor por plazo, sumado, da seis veces el total.' },
+        { texto: 'Aleja el punto verde más de 2 meses del promedio simple.',
+          logrado: v => Math.abs(rectaLetras(v).tbar - promLetras(v)) > 2,
+          bien: 'Una letra que vale mucho jala la fecha común hacia su plazo.' },
+        { texto: 'Con plazos y valores distintos, haz que la fecha común iguale al promedio simple.',
+          logrado: v => new Set([v.t1, v.t2, v.t3]).size === 3 && new Set([v.F1, v.F2, v.F3]).size > 1
+            && Math.abs(rectaLetras(v).tbar - promLetras(v)) < 1e-9,
+          bien: 'Los pesos de los dos lados se equilibran. ¿Qué letra quedó al centro?' },
+      ],
       arrastres: [1, 2, 3].map(k => ({
         id: `letra-${k}`, etiqueta: `plazo de la letra ${k}`, color: 'c-h',
         donde: v => { const g = RECTA().geometria(rectaLetras(v).datos); return { x: g.x(v[`t${k}`]), y: g.filaY(k) }; },
@@ -557,6 +600,45 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/recta.js'],
+    // Glosario por tema (docs/teoria.md, 4d). «Tasa» y «descuento» se estrenan en porcentajes y «capital» en
+    // magnitudes proporcionales; «período» no se define aquí porque en números racionales significa otra cosa.
+    glosario: [
+      { termino: 'interés', def: 'Dinero que se gana por prestar o depositar dinero durante un tiempo: el pago por usarlo.',
+        ejemplo: 'Depositas S/ 1000 y al año retiras S/ 1100: ganaste S/ 100.', ver: ['monto', 'interés simple', 'interés compuesto'] },
+      { termino: 'interés simple', def: 'Cada período se gana lo mismo, siempre sobre el dinero inicial; lo ganado no vuelve a ganar.',
+        ejemplo: 'S/ 1000 al 10 % anual durante 3 años: 100 + 100 + 100 = S/ 300.', ver: ['interés compuesto'] },
+      { termino: 'interés compuesto', def: 'Lo ganado en cada período se suma al saldo y también gana: el saldo se multiplica por un factor.',
+        ejemplo: 'S/ 1000 al 10 % anual durante 3 años: 1000 · 1,1³ = S/ 1331.', ver: ['interés simple', 'capitalizar'] },
+      { termino: 'monto', simbolo: 'F', def: 'Cantidad de dinero. Al prestar o depositar, es lo que hay al final: lo inicial más lo ganado.',
+        ejemplo: 'S/ 1000 que ganan S/ 331 dan un monto de S/ 1331.', ver: ['interés'] },
+      { termino: 'capitalizar', def: 'Sumar al saldo lo ganado en un período, para que desde entonces también produzca ganancia.',
+        formas: ['capitalizar', 'capitaliza', 'capitalizada', 'capitalizable'],
+        ejemplo: '12 % anual capitalizable cada mes: cada mes se suma el 1 % del saldo.', ver: ['interés compuesto'] },
+      { termino: 'tasa nominal', simbolo: 'j', def: 'Porcentaje anual anunciado que se reparte entre los períodos del año; no es lo que crece de verdad.',
+        ejemplo: '12 % anual capitalizable cada mes: 12 % ÷ 12 = 1 % por mes.', ver: ['tasa efectiva'] },
+      { termino: 'tasa efectiva', def: 'Porcentaje que de verdad crece el dinero en un período, contando la ganancia sobre la ganancia.',
+        ejemplo: '1 % mensual durante 12 meses: 1,01¹² − 1 = 12,68 % anual.', ver: ['tasa nominal', 'tasa equivalente'] },
+      { termino: 'tasa equivalente', formas: ['tasa equivalente', 'tasas equivalentes'],
+        def: 'Tasas de períodos distintos que, en el mismo tiempo, hacen crecer el dinero por el mismo factor.',
+        ejemplo: '10 % semestral equivale a 21 % anual: 1,1 · 1,1 = 1,21.', ver: ['tasa efectiva'] },
+      { termino: 'valor presente', simbolo: 'P', def: 'Lo que vale hoy un dinero que llegará después; se halla dividiendo entre el factor de crecimiento.',
+        ejemplo: 'S/ 1210 dentro de 2 años al 10 %: 1210 ÷ 1,21 = S/ 1000.', ver: ['valor futuro'] },
+      { termino: 'valor futuro', simbolo: 'F', def: 'Lo que llegará a valer un dinero de hoy: se multiplica por el factor de crecimiento.',
+        ejemplo: 'S/ 1000 al 10 % anual valen 1000 · 1,21 = S/ 1210 en 2 años.', ver: ['valor presente'] },
+      { termino: 'letra de cambio', formas: ['letra de cambio', 'letras de cambio'],
+        def: 'Documento por el que alguien se compromete a pagar una cantidad fija en una fecha dada.',
+        ejemplo: 'Una letra de S/ 1200 que vence en 5 meses.', ver: ['valor nominal'] },
+      { termino: 'valor nominal', def: 'Cantidad escrita en la letra: lo que se cobra completo el día en que vence.',
+        ejemplo: 'Letra de S/ 1200 a 5 meses: si esperas, cobras los S/ 1200.', ver: ['letra de cambio'] },
+      { termino: 'descuento comercial', def: 'Rebaja por cobrar una letra antes de su fecha, calculada sobre la cantidad escrita en ella.',
+        ejemplo: 'S/ 1200 a 5 meses, al 24 % anual: 1200 · 0,24 · 5/12 = S/ 120.', ver: ['descuento racional', 'valor nominal'] },
+      { termino: 'descuento racional', def: 'Rebaja por cobrar antes, igual al interés simple de lo que se recibe hoy; menor que la comercial.',
+        ejemplo: 'S/ 1200 a 5 meses, al 24 % anual: 1200 − 1200 ÷ 1,10 = S/ 109,09.', ver: ['descuento comercial'] },
+      { termino: 'vencimiento común', def: 'Fecha única en que una sola letra reemplaza a varias: el promedio de sus plazos, pesado por su valor.',
+        ejemplo: 'S/ 1000 a 3 meses y S/ 3000 a 7: (3000 + 21 000) ÷ 4000 = 6 meses.', ver: ['letra de cambio'] },
+      { termino: 'límite', def: 'Valor al que algo se acerca cada vez más, sin pasarlo, cuando el proceso sigue sin fin.',
+        ejemplo: 'Al 12 % capitalizando cada vez más seguido, la tasa efectiva se acerca a 12,75 %.', ver: ['capitalizar'] },
+    ],
     laboratorio,
     historia: {
       texto: 'En 1683, Jacob Bernoulli se preguntó qué pasa con un capital si el interés se suma cada vez más seguido. El monto crece, pero no sin límite: se acerca a un tope que hoy relacionamos con el número e. Él todavía no tenía la relación moderna entre exponenciales y logaritmos. La lección sigue viva: capital, tasa por período y número de períodos se fijan antes de calcular.',

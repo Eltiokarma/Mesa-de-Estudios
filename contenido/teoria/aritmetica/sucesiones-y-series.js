@@ -112,7 +112,7 @@
       ],
     },
     regla: {
-      texto: 'En una progresión aritmética cada término suma d al anterior. Del primero al término n hay n − 1 saltos.',
+      texto: 'En una progresión aritmética cada término suma d, la diferencia común, al anterior. Del primero al término n hay n − 1 saltos.',
       ecuacion: [an, ' = ', a1, ' + ', { llave: ['(', n, ' − 1)'], nota: 'saltos', color: 'c-h' }, ' ', d, '   ·   ', n, ' = ', { frac: [[an, ' − ', a1], d] }, ' + 1'],
       condicion: 'la diferencia d es la misma entre todos los términos consecutivos y no es cero.',
     },
@@ -497,11 +497,50 @@
     return { max: 5.4, filas: 1, regla: { paso: 1, cada: 1 }, tiras: [{ rotulo: `límite ${f(lim)}`, color: 'd', tramos: [...t.map((x, i) => ({ valor: x, color: i % 2 ? 'i' : 'o' })), { valor: Math.max(0, lim - s), hueco: true }] }] };
   };
 
+  // Para los retos: las mismas cuentas que escriben las lecturas de las mesas.
+  const sumaPA = v => terminos(v.a, v.d, v.n).reduce((u, z) => u + z, 0);
+  const ultimoPG = v => v.a * v.r ** (v.n - 1);
+  const sumaPG = v => terminos(v.a, v.r, v.n, true).reduce((u, z) => u + z, 0);
+  const falta = v => { const q = RAZONES_LAB[v.r]; return 1 / (1 - q) - sumaHueco(q, v.k); };
+  const LEJOS = Object.keys(RAZONES_LAB).reduce((m, k) => (RAZONES_LAB[k] > RAZONES_LAB[m] ? k : m));   // la razón de límite más lejano
+  // La mayor suma de la mesa de tiras: crece con a₁, r y n, así que es la de los tres máximos de sus controles.
+  const MAXPG = sumaPG(Object.fromEntries(pg.juega.controles.map(c => [c.id, c.max])));
+  const mismo = (g, v, ks) => g.some(x => ks.every(k => x[k] === v[k]));
+
   return {
     unidad: 'aritmetica.sucesiones-y-series',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    glosario: [
+      { termino: 'sucesión', formas: ['sucesión', 'sucesiones'],
+        def: 'Lista ordenada de números que siguen una regla; cada uno ocupa un lugar: primero, segundo…',
+        ejemplo: '2, 5, 10, 17, … sigue la regla n² + 1.', ver: ['término', 'serie'] },
+      { termino: 'progresión aritmética', formas: ['progresión aritmética', 'progresiones aritméticas'],
+        def: 'Sucesión en que cada número se obtiene sumando siempre la misma cantidad al anterior.',
+        ejemplo: '3, 7, 11, 15: se suma 4 cada vez.', ver: ['diferencia común', 'progresión geométrica'] },
+      { termino: 'diferencia común', simbolo: 'd',
+        def: 'Lo que se suma para pasar de un término al siguiente en una progresión aritmética.',
+        ejemplo: 'En 3, 7, 11, 15 es 7 − 3 = 4.', ver: ['progresión aritmética'] },
+      { termino: 'progresión geométrica', formas: ['progresión geométrica', 'progresiones geométricas'],
+        def: 'Sucesión en que cada número se obtiene multiplicando el anterior siempre por la misma razón.',
+        ejemplo: '2, 6, 18, 54: se multiplica por 3.', ver: ['progresión aritmética', 'suma infinita'] },
+      { termino: 'serie', formas: ['serie', 'series'],
+        def: 'La suma de los términos de una sucesión, que puede tener fin o seguir sin terminar.',
+        ejemplo: '3 + 7 + 11 + 15 + 19 = 55.', ver: ['sucesión', 'suma infinita'] },
+      { termino: 'suma infinita', formas: ['suma geométrica infinita', 'suma infinita', 'sumas infinitas'],
+        def: 'Suma que nunca termina. Puede acercarse cada vez más a un valor fijo o crecer sin tope.',
+        ejemplo: '1 + 1/2 + 1/4 + … se acerca a 2; 1 + 1 + 1 + … no.', ver: ['progresión geométrica'] },
+      { termino: 'sumas notables', formas: ['sumas notables', 'suma notable'],
+        def: 'Fórmulas conocidas para sumar listas que aparecen mucho, como los primeros impares o los cuadrados.',
+        ejemplo: '1 + 3 + 5 + 7 = 4² = 16.', ver: ['serie'] },
+      { termino: 'diferencias sucesivas', formas: ['diferencias sucesivas', 'primeras diferencias', 'segundas diferencias', 'diferencias de orden k'],
+        def: 'Restas entre términos vecinos, repetidas fila tras fila; la fila en que se vuelven constantes da el grado.',
+        ejemplo: '2, 5, 10, 17: primeras 3, 5, 7; segundas 2, 2.', ver: ['polinomio'] },
+      { termino: 'polinomio', formas: ['polinomio', 'polinomios'],
+        def: 'Suma de potencias de una variable multiplicadas por números fijos. Su grado es el mayor exponente.',
+        ejemplo: 'n² + 1 es de grado 2: da 2, 5, 10, 17…', ver: ['diferencias sucesivas'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. La escalera con su copia junta las ideas 1 y 2 para cualquier progresión
     // (también d = 0); la suma sin fin usa una sola escala para comparar razones; la tercera es el juego de la idea 3.
     laboratorio: [
@@ -527,6 +566,20 @@
             donde: v => finFila(mesaEscalera(v), terminos(v.a, v.d, v.n), v.n - 1, anchoCopia(v)),
             mover: (pt, v) => ({ d: (largoEn(mesaEscalera(v), pt.x) - v.a) / (v.n - 1) }) },
         ],
+        invitaciones: [
+          { texto: 'Pon la copia al revés y arma un rectángulo de 30 fichas.',
+            logrado: v => v.copia === 'si' && v.n * anchoCopia(v) === 30,
+            bien: 'El rectángulo es el doble de la suma: las naranjas son 15.' },
+          { texto: 'Arma una progresión cuya suma sea justo 50.',
+            logrado: v => sumaPA(v) === 50,
+            bien: 'Comprueba: número de filas por el promedio del primero y el último.' },
+          { texto: 'Haz que todas las filas midan lo mismo.',
+            logrado: v => v.d === 0,
+            bien: 'Con d = 0 la escalera ya es un rectángulo: la suma es n · a₁.' },
+          { texto: 'Guarda dos progresiones distintas con la misma suma.',
+            logrado: (v, g) => mismo(g, v, ['a', 'd', 'n']) && g.some(x => (x.a !== v.a || x.d !== v.d || x.n !== v.n) && sumaPA(x) === sumaPA(v)),
+            bien: 'Otra escalera, las mismas fichas. ¿Qué tienen en común sus promedios?' },
+        ],
       },
       {
         id: 'suma-sin-fin', titulo: 'Suma sin fin, misma regla', pieza: 'arit-tiras',
@@ -538,8 +591,36 @@
         dibujo: v => ({ datos: tiraLab(RAZONES_LAB[v.r], v.k), estado: {} }),
         lectura: v => { const q = RAZONES_LAB[v.r]; const lim = 1 / (1 - q); return [`r = ${v.r}, ${v.k} términos: falta ${f(lim - sumaHueco(q, v.k), 6)} para ${f(lim)}`]; },
         arrastres: [manijaSuma(v => tiraLab(RAZONES_LAB[v.r], v.k), v => RAZONES_LAB[v.r])],
+        invitaciones: [
+          { texto: 'Haz que lo que falta sea menor que una centésima.',
+            logrado: v => falta(v) < 0.01,
+            bien: 'Casi llega, pero nunca pasa del límite: siempre falta algo.' },
+          { texto: 'Con r = 1/2, haz que falte justo 0,0625.',
+            logrado: v => v.r === '1/2' && Math.abs(falta(v) - 0.0625) < 1e-9,
+            bien: '0,0625 = 1/16: cada término tapó la mitad de lo que faltaba.' },
+          { texto: 'Con la razón de límite más lejano, haz que falte menos de 1.',
+            logrado: v => v.r === LEJOS && falta(v) < 1,
+            bien: 'Con razón cerca de 1, el hueco se cierra despacio y el límite crece.' },
+          { texto: 'Guarda dos razones distintas con la misma cantidad de términos.',
+            logrado: (v, g) => mismo(g, v, ['r', 'k']) && g.some(x => x.k === v.k && x.r !== v.r),
+            bien: 'Con los mismos términos, la razón más chica deja menos hueco.' },
+        ],
       },
-      Object.assign({ id: 'tiras-geometricas', titulo: 'Tiras que se multiplican', pieza: 'arit-tiras' }, pg.juega),
+      Object.assign({ id: 'tiras-geometricas', titulo: 'Tiras que se multiplican', pieza: 'arit-tiras',
+        invitaciones: [
+          { texto: 'Haz que el último término sea justo 54.',
+            logrado: v => ultimoPG(v) === 54,
+            bien: '54 = 2 · 3³: al lugar 4 se llega multiplicando tres veces.' },
+          { texto: 'Haz que todas las tiras midan lo mismo.',
+            logrado: v => v.r === 1,
+            bien: 'Con r = 1 no crece nada: la suma es n · a₁.' },
+          { texto: 'Consigue la suma más grande que permite la mesa.',
+            logrado: v => sumaPG(v) === MAXPG,
+            bien: '3 + 9 + 27 + 81 = 120: la última tira pesa más que las otras juntas.' },
+          { texto: 'Guarda dos casos con el mismo último término y distinta razón.',
+            logrado: (v, g) => mismo(g, v, ['a', 'r', 'n']) && g.some(x => x.r !== v.r && ultimoPG(x) === ultimoPG(v)),
+            bien: 'El mismo final por caminos distintos. ¿Suman lo mismo?' },
+        ] }, pg.juega),
     ],
     historia: {
       texto: 'En el prefacio de la Cuadratura de la parábola, Arquímedes cuenta que el segmento de parábola mide cuatro tercios de un triángulo adecuado, y separa cómo lo exploró de cómo lo demostró. Esa idea de juntar aportes cada vez más chicos que se acercan a un valor es la de las sumas infinitas. La notación de términos y sumatorias es muy posterior.',

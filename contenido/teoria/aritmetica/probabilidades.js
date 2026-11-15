@@ -117,7 +117,7 @@
       ],
     },
     regla: {
-      texto: 'Si todos los resultados son igual de probables, la probabilidad es casos favorables entre casos posibles.',
+      texto: 'En un experimento aleatorio con resultados igual de probables, la probabilidad es casos favorables entre casos posibles.',
       ecuacion: [P(A), ' = ', { frac: [[{ llave: ['n(', A, ')'], nota: 'favorables', color: 'c-o' }], [{ llave: ['n(Ω)'], nota: 'posibles' }]] }],
       condicion: 'los resultados del espacio son equiprobables. La frecuencia relativa de muchos ensayos se acerca a P, pero no la demuestra.',
     },
@@ -268,7 +268,7 @@
       ],
     },
     regla: {
-      texto: 'Saber que pasó B achica el universo a B. Se cuenta lo de A que está dentro de B y se divide entre B.',
+      texto: 'Probabilidad condicional: saber que pasó B achica el universo a B. Se cuenta lo de A que está dentro de B y se divide entre B.',
       ecuacion: [P([A, ' | ', B]), ' = ', { frac: [P([A, ' ∩ ', B]), [{ llave: P(B), nota: 'nuevo universo', color: 'c-i' }]] }],
       condicion: 'P(B) > 0. Si saber B no cambia nada, A y B son independientes: P(A ∩ B) = P(A)·P(B).',
     },
@@ -419,6 +419,7 @@
   }, extra);
   // El dado en una sola tira: seis caras de 1/6 cada una (compacto: la figura no tapa las opciones).
   const dado = conE => ({ max: 1, filas: 1, tiras: [{ rotulo: 'cada cara: 1/6', color: 'o', fin: conE ? 'E = 3,5' : '', tramos: [1, 2, 3, 4, 5, 6].map(x => ({ valor: 1 / 6, color: 'i', texto: String(x) })) }] });
+  const esperanzaRuleta = v => 2 / 3 + v.g / 6;
   const esperanza = {
     id: 'esperanza',
     titulo: 'El promedio a la larga',
@@ -429,7 +430,7 @@
       voz: 'Sube el premio y mira cuánto aporta su tira.',
       controles: [{ id: 'g', etiqueta: 'Premio', color: 'c-o', min: 6, max: 30, paso: 6, inicio: 12, unidad: 'soles', decimales: 0 }],
       dibujo: v => ({ datos: reparto([[0, 1 / 2, '1/2'], [2, 1 / 3, '1/3'], [v.g, 1 / 6, '1/6']]), estado: {} }),
-      lectura: v => [`E[X] = 0 + ${f(2 / 3)} + ${f(v.g / 6)} = ${f(2 / 3 + v.g / 6)} soles`],
+      lectura: v => [`E[X] = 0 + ${f(2 / 3)} + ${f(v.g / 6)} = ${f(esperanzaRuleta(v))} soles`],
       minimo: 3,
     },
     predice: {
@@ -495,6 +496,11 @@
   // Dos dados con condición: el evento «la suma es igual, al menos o a lo más s» y lo que se sabe, «el primer dado
   // salió k o más» (k = 1 es no saber nada). Lo que ya no puede ser se apaga y cambia el denominador.
   const CMP = { igual: (x, s) => x === s, 'al menos': (x, s) => x >= s, 'a lo más': (x, s) => x <= s };
+  // Favorables y universo de la mesa de dados; lo usan la lectura y los retos.
+  const cuentaLab = v => ({ fav: cuenta((i, j) => i >= v.k && CMP[v.cmp](i + j, v.s)), uni: 6 * (7 - v.k) });
+  const probLab = v => { const c = cuentaLab(v); return c.fav / c.uni; };
+  // Fallados de cada máquina por cada 100 artículos; lo usan la lectura y los retos.
+  const fallosLab = v => { const fa = v.pa * v.da / 100, fb = (100 - v.pa) * v.db / 100; return { fa, fb, pb: fa + fb > 0 ? fb / (fa + fb) : null }; };
   const dadosLab = v => dados((i, j) => (i >= v.k && CMP[v.cmp](i + j, v.s) ? 'd' : null), i => i < v.k);
   // La fábrica libre: rangos amplios, también máquinas que nunca fallan.
   const fabricaLab = v => fabrica(v.pa, v.da, v.db);
@@ -504,6 +510,44 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-tiras.js'],
+    // Glosario por tema (docs/teoria.md, 4d). Unión, complemento y universo vienen de conjuntos; frecuencia relativa,
+    // de estadística; «independiente», de análisis combinatorio (etapas independientes).
+    glosario: [
+      { termino: 'probabilidad', simbolo: 'P', def: 'Número de 0 a 1 que mide qué tan posible es que algo pase: 0 es nunca y 1, seguro.',
+        ejemplo: 'Sacar 6 con un dado: P = 1/6.', ver: ['casos favorables', 'espacio muestral'] },
+      { termino: 'experimento aleatorio', formas: ['experimento aleatorio', 'experimentos aleatorios'],
+        def: 'Prueba cuyo resultado no se puede saber antes, aunque se repita igual, como lanzar un dado.',
+        ejemplo: 'Lanzar dos dados y anotar los dos números.', ver: ['espacio muestral'] },
+      { termino: 'espacio muestral', simbolo: 'Ω', def: 'Todos los resultados que pueden salir en un experimento, cada uno contado una vez.',
+        ejemplo: 'Dos dados: de (1, 1) a (6, 6), 6 · 6 = 36 resultados.', ver: ['evento', 'experimento aleatorio'] },
+      { termino: 'evento', def: 'Grupo de resultados que cumplen una condición; «pasa» si sale cualquiera de ellos.',
+        ejemplo: '«La suma es 11»: (5, 6) y (6, 5).', ver: ['espacio muestral'] },
+      { termino: 'equiprobable', formas: ['equiprobable', 'equiprobables'],
+        def: 'Que tiene la misma probabilidad que los demás resultados: ninguno sale más seguido que otro.',
+        ejemplo: 'Cada casilla de dos dados tiene 1/36.', ver: ['probabilidad'] },
+      { termino: 'casos favorables', formas: ['casos favorables', 'favorables'],
+        def: 'Resultados que cumplen lo pedido; van en el numerador, sobre todos los casos posibles.',
+        ejemplo: 'Suma 7 con dos dados: 6 de 36 casos.', ver: ['probabilidad'] },
+      { termino: 'eventos excluyentes', formas: ['eventos excluyentes', 'excluyentes', 'excluyente'],
+        def: 'Dos eventos que no pueden pasar a la vez: no comparten ningún resultado.',
+        ejemplo: 'Con un dado, «sale 1» y «sale par».', ver: ['evento'] },
+      { termino: 'probabilidad condicional', simbolo: 'P(A | B)',
+        def: 'Probabilidad de un evento sabiendo que ya pasó otro: se cuenta solo dentro de lo que sigue siendo posible.',
+        ejemplo: 'Salió par; ¿más de 3? Quedan 2, 4 y 6: P = 2/3.', ver: ['probabilidad', 'teorema de Bayes'] },
+      { termino: 'probabilidad total', def: 'Suma de lo que aporta cada caso: la probabilidad del caso por la del evento dentro de él.',
+        ejemplo: 'Fallados: 0,6 · 0,1 + 0,4 · 0,25 = 0,16.', ver: ['teorema de Bayes'] },
+      { termino: 'teorema de Bayes', formas: ['teorema de Bayes', 'Bayes'],
+        def: 'Regla para mirar al revés: sabiendo el resultado, qué parte de él vino de cada caso.',
+        ejemplo: 'De 16 fallados, 10 son de B: P(B | F) = 10/16 = 62,5 %.', ver: ['probabilidad total', 'probabilidad condicional'] },
+      { termino: 'variable aleatoria', simbolo: 'X', formas: ['variable aleatoria', 'variables aleatorias'],
+        def: 'Regla que da un número a cada resultado de un experimento, como lo que se gana en cada tiro.',
+        ejemplo: 'En la ruleta, X vale 0, 2 o 12 soles.', ver: ['esperanza'] },
+      { termino: 'esperanza', simbolo: 'E[X]', formas: ['esperanza', 'valor esperado'],
+        def: 'Promedio a la larga de lo que vale una variable: la suma de cada valor por su probabilidad.',
+        ejemplo: 'Dado común: (1 + 2 + 3 + 4 + 5 + 6) ÷ 6 = 3,5.', ver: ['variable aleatoria'] },
+      { termino: 'denominador', def: 'Número de abajo de una fracción: en cuántas partes iguales se partió la unidad.',
+        ejemplo: 'En P = 2/36, el 36 cuenta todos los casos posibles.', ver: ['probabilidad condicional'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. Los dados con condición juntan las ideas 1 y 3 (evento y universo a la
     // vez); la fábrica libre deja probar porcentajes de 0 a 50 y una máquina que no falla; la tercera es la ruleta.
     laboratorio: [
@@ -517,9 +561,23 @@
         ],
         dibujo: v => ({ datos: dadosLab(v), estado: {} }),
         lectura: v => {
-          const fav = cuenta((i, j) => i >= v.k && CMP[v.cmp](i + j, v.s)), uni = 6 * (7 - v.k);
+          const { fav, uni } = cuentaLab(v);
           return [`suma ${v.cmp} ${v.s}, primer dado ≥ ${v.k}: ${fav} de ${uni}`];
         },
+        invitaciones: [
+          { texto: 'Consigue una probabilidad de exactamente 1/2.',
+            logrado: v => Math.abs(probLab(v) - 1 / 2) < 1e-9,
+            bien: 'La mitad de lo que todavía puede ser. ¿Cambiaste el universo para lograrlo?' },
+          { texto: 'Arma un evento seguro: que cumpla todo lo que todavía puede ser.',
+            logrado: v => probLab(v) === 1,
+            bien: 'Probabilidad 1: no queda ninguna casilla encendida fuera del evento.' },
+          { texto: 'Sabiendo algo del primer dado, deja la suma 7 con la misma probabilidad que sin saber.',
+            logrado: v => v.cmp === 'igual' && v.s === 7 && v.k > 1 && Math.abs(probLab(v) - probLab({ cmp: 'igual', s: 7, k: 1 })) < 1e-9,
+            bien: 'Sigue en 1/6: la suma 7 es independiente de lo que sabes del primer dado.' },
+          { texto: 'Guarda el mismo evento sin saber nada y sabiendo algo que lo haga más probable.',
+            logrado: (v, gs) => gs.some(g => g.cmp === v.cmp && g.s === v.s && (g.k === 1 ? v.k > 1 && probLab(v) > probLab(g) : v.k === 1 && probLab(g) > probLab(v))),
+            bien: 'Saber algo achicó el denominador: el evento pesa más dentro del nuevo universo.' },
+        ],
         arrastres: [
           marcadorSuma(dadosLab),
           // En el borde izquierdo de la fila k: lo que está debajo de esa fila ya no puede ser.
@@ -538,13 +596,38 @@
         ],
         dibujo: v => ({ datos: fabricaLab(v), estado: { paso: 3 } }),
         lectura: v => {
-          const fa = v.pa * v.da / 100, fb = (100 - v.pa) * v.db / 100;
-          const pb = fa + fb > 0 ? `${f(100 * fb / (fa + fb), 1)}${NB}%` : 'sin fallados';
+          const x = fallosLab(v), pb = x.pb === null ? 'sin fallados' : `${f(100 * x.pb, 1)}${NB}%`;
           return [`A hace ${v.pa}, falla ${v.da}${NB}% · B falla ${v.db}${NB}%: `, P([B, ' | F']), ` = ${pb}`];
         },
         arrastres: manijasFallados,
+        invitaciones: [
+          { texto: 'Haz que ningún fallado venga de B, aunque haya fallados.',
+            logrado: v => fallosLab(v).pb === 0,
+            bien: 'Si B no falla, todo fallado es de A: Bayes da 0 % para B.' },
+          { texto: 'Consigue que justo la mitad de los fallados vengan de B.',
+            logrado: v => fallosLab(v).pb !== null && Math.abs(fallosLab(v).pb - 0.5) < 1e-9,
+            bien: 'Mitad y mitad: lo que cuenta son los fallados de cada una, no sus porcentajes.' },
+          { texto: 'Con B haciendo 30 artículos o menos, que B cause más del 80 % de los fallados.',
+            logrado: v => v.pa >= 70 && v.da > 0 && fallosLab(v).pb > 0.8,
+            bien: 'Hace poco, pero falla mucho: P(F | B) alto pesa más que su tamaño.' },
+          { texto: 'Guarda dos casos con el mismo total de fallados y distinto reparto entre A y B.',
+            logrado: (v, gs) => gs.some(g => { const a = fallosLab(g), b = fallosLab(v); return a.pb !== null && b.pb !== null
+              && Math.abs(a.fa + a.fb - b.fa - b.fb) < 1e-9 && Math.abs(a.pb - b.pb) > 1e-9; }),
+            bien: 'El mismo total puede venir de lugares muy distintos: Bayes mira de dónde.' },
+        ],
       },
-      Object.assign({ id: 'ruleta', titulo: 'La ruleta y su promedio', pieza: 'arit-tiras' }, esperanza.juega),
+      Object.assign({ id: 'ruleta', titulo: 'La ruleta y su promedio', pieza: 'arit-tiras',
+        invitaciones: [
+          { texto: 'Haz que la tira del premio aporte justo 3 soles por tiro.',
+            logrado: v => Math.abs(esperanzaRuleta(v) - esperanzaRuleta({ g: 0 }) - 3) < 1e-9,
+            bien: '18 · 1/6 = 3: aporta 3 soles por tiro, aunque casi nunca sale.' },
+          { texto: 'Haz que cada tiro valga, en promedio, más de 5 soles.',
+            logrado: v => esperanzaRuleta(v) > 5,
+            bien: 'El premio sale solo un sexto de las veces, pero su tira manda.' },
+          { texto: 'Guarda un premio y su doble. ¿Se dobló también la esperanza?',
+            logrado: (v, gs) => gs.some(g => g.g === 2 * v.g || v.g === 2 * g.g),
+            bien: 'No se dobla: los 2/3 de la tira de 2 soles no cambian.' },
+        ] }, esperanza.juega),
     ],
     historia: {
       texto: 'En 1654, Pascal y Fermat se escribieron cartas sobre cómo repartir lo apostado en una partida interrumpida. El reparto no podía depender solo del marcador: había que pensar en todo lo que aún podía pasar. Hubo autores antes que ellos, pero la idea quedó: armar el espacio de resultados y justificar cada probabilidad. La notación de eventos vino después.',

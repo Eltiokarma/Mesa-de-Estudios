@@ -100,7 +100,7 @@
       ],
     },
     regla: {
-      texto: 'Se supone que todos son del tipo más barato. Lo que falta para el total, dividido entre lo que agrega cada canje, da cuántos son del otro tipo.',
+      texto: 'Falsa suposición: se supone que todos son del tipo más barato. Lo que falta para el total, dividido entre lo que agrega cada canje, da cuántos son del otro tipo.',
       ecuacion: [{ sub: ['n', 'b'] }, ' = ', { frac: [[{ llave: [T, ' − n · a'], nota: 'lo que falta', color: 'c-d' }], [{ llave: ['b − a'], nota: 'cada canje', color: 'c-i' }]] }],
       condicion: 'cada canje cambia el total en la misma cantidad b − a; es una ecuación lineal escrita de otra forma.',
     },
@@ -169,7 +169,7 @@
       ],
     },
     regla: {
-      texto: 'Para hallar el inicio se parte del final y se aplica la operación inversa de cada paso, en orden contrario. Siempre se comprueba de ida.',
+      texto: 'Método regresivo: para hallar el inicio se parte del final y se aplica la operación inversa de cada paso, en orden contrario. Siempre se comprueba de ida.',
       ecuacion: ['× ↔ ÷', '   ·   ', '+ ↔ −', '   ·   ', 'último → primero'],
       condicion: 'cada operación es invertible en el dominio: no se multiplica por 0 y las divisiones quedan dentro de los números permitidos.',
     },
@@ -204,6 +204,8 @@
       { rotulo: 'padre', color: 'o', fin: `${p + a}`, tramos: [{ valor: h + a, color: 'o', relleno: 0.12 }, { valor: p - h, color: 'i', texto: `diferencia ${p - h}` }] },
     ],
   });
+  // Cuántas veces la edad del hijo tiene el padre (40 y 10 hoy) cuando pasan a años: lo escribe la lectura y lo miran los retos.
+  const vecesEdad = a => (40 + a) / (10 + a);
   const edades = {
     id: 'edades',
     titulo: 'La diferencia de edades no cambia',
@@ -214,7 +216,7 @@
       voz: 'Mira el pedazo turquesa mientras cambias los años.',
       controles: [{ id: 'a', etiqueta: 'Años que pasan', color: 'c-h', min: -8, max: 30, paso: 2, inicio: 0, unidad: 'años', decimales: 0 }],
       dibujo: v => ({ datos: tirasEdad(40, 10, v.a), estado: {} }),
-      lectura: v => [`Diferencia 30 · el padre tiene ${f((40 + v.a) / (10 + v.a))} veces la edad`],
+      lectura: v => [`Diferencia 30 · el padre tiene ${f(vecesEdad(v.a))} veces la edad`],
       minimo: 3,
       // Se agarra el fin de la tira del hijo: moverlo es hacer pasar los años (las dos tiras crecen lo mismo).
       arrastres: [{ id: 'hijo', etiqueta: 'edad del hijo', color: 'c-h',
@@ -539,8 +541,9 @@
 
   // ---------- Laboratorio ----------
   // Canje libre: los dos precios se eligen, también iguales o al revés (b ≤ a), donde la falsa suposición ya no sirve.
+  const totalCanje = v => (12 - v.k) * v.a + v.k * v.b;
   const tiraCanjeLab = v => {
-    const total = (12 - v.k) * v.a + v.k * v.b;
+    const total = totalCanje(v);
     return { max: 12 * Math.max(v.a, v.b) * 1.05, filas: 1, tiras: [{ rotulo: `${12 - v.k} de S/${NB}${v.a} y ${v.k} de S/${NB}${v.b}`, color: 'd', fin: `S/${NB}${total}`,
       tramos: [{ valor: (12 - v.k) * v.a, partes: 12 - v.k, color: 'o' }, ...(v.k ? [{ valor: v.k * v.b, partes: v.k, color: 'i' }] : [])] }] };
   };
@@ -556,11 +559,60 @@
     ] };
   };
 
+  // Para los retos: distancia entre A y B en la persecución, el encuentro más temprano que la mesa permite y el
+  // momento de la mesa de edades en que el padre tiene más veces la edad del hijo. Los calcula el motor.
+  const separacion = v => Math.abs(posiciones(v).B - posiciones(v).A);
+  const juntos = v => v.t > 0 && separacion(v) < 1e-9;
+  let MINT = Infinity;
+  for (let vA = 20; vA <= 100; vA += 10) for (let vB = 10; vB <= 100; vB += 10) for (let k = 1; k <= 12; k++)
+    if (juntos({ modo: 'encuentro', vA, vB, t: k / 2 })) MINT = Math.min(MINT, k / 2);
+  const cEdad = edades.juega.controles[0];
+  let MAXVECES = cEdad.min;
+  for (let a = cEdad.min; a <= cEdad.max; a += cEdad.paso) if (vecesEdad(a) > vecesEdad(MAXVECES)) MAXVECES = a;
+  const mismo = (g, v, ks) => g.some(x => ks.every(k => x[k] === v[k]));
+
   return {
     unidad: 'aritmetica.razonamiento-numerico',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/recta.js'],
+    glosario: [
+      { termino: 'falsa suposición', formas: ['falsa suposición'],
+        def: 'Suponer que todos los objetos son del mismo tipo y corregir con lo que cambia cada canje.',
+        ejemplo: '12 entradas de S/ 5 darían 60; faltan 21 y cada canje suma 3: 7 de S/ 8.', ver: ['incógnita'] },
+      { termino: 'falsa posición', formas: ['falsa posición'],
+        def: 'Probar con un valor cómodo y escalarlo según el error, cuando la relación es proporcional.',
+        ejemplo: 'Si x + x/4 = 15, prueba 4: da 5. Hay que triplicar, así que x = 12.', ver: ['falsa suposición'] },
+      { termino: 'método regresivo', formas: ['método regresivo'],
+        def: 'Hallar el inicio partiendo del final y deshaciendo cada paso, del último al primero.',
+        ejemplo: 'x · 4 + 6 = 50: 50 − 6 = 44 y 44 ÷ 4 = 11.', ver: ['operación inversa'] },
+      { termino: 'incógnita', formas: ['incógnita', 'incógnitas'],
+        def: 'Número desconocido que se busca; se nombra con una letra para poder escribir la relación.',
+        ejemplo: 'En x + 5 = 12, la x vale 7.', ver: ['ecuación lineal'] },
+      { termino: 'ecuación lineal', formas: ['ecuación lineal', 'ecuaciones lineales'],
+        def: 'Igualdad en la que las letras solo se suman o se multiplican por números fijos, sin potencias.',
+        ejemplo: '5x + 8(12 − x) = 81 da x = 5.', ver: ['incógnita'] },
+      { termino: 'diferencia de edades', formas: ['diferencia de edades'],
+        def: 'Cuántos años le lleva una persona a otra. No cambia con el tiempo.',
+        ejemplo: 'Padre 40 e hijo 10: le lleva 30, hoy y en 20 años (60 y 30).' },
+      { termino: 'móviles al encuentro', formas: ['móviles al encuentro', 'al encuentro'],
+        def: 'Dos móviles que van uno hacia el otro: cada hora la distancia baja la suma de sus rapideces.',
+        ejemplo: '300 km a 60 y 40 km/h: se cruzan en 300 ÷ 100 = 3 h.', ver: ['alcance'] },
+      { termino: 'alcance', formas: ['alcance', 'alcances'],
+        def: 'Un móvil persigue a otro más lento: cada hora la distancia baja la diferencia de sus rapideces.',
+        ejemplo: '300 km a 100 y 40 km/h: lo alcanza en 300 ÷ 60 = 5 h.', ver: ['móviles al encuentro'] },
+      { termino: 'criptoaritmética', def: 'Operación escrita con letras en lugar de cifras; se averigua qué cifra es cada letra.',
+        ejemplo: 'AB + BA = 154 pide A + B = 14, porque AB + BA = 11(A + B).', ver: ['valor posicional'] },
+      { termino: 'valor posicional', formas: ['valor posicional'],
+        def: 'Lo que vale una cifra según el lugar que ocupa en el número.',
+        ejemplo: 'En 47, el 4 vale 40 y el 7 vale 7: 47 = 10 · 4 + 7.', ver: ['cifra', 'reverso'] },
+      { termino: 'reverso', formas: ['reverso', 'reversos'],
+        def: 'El número que se forma con las mismas cifras escritas en orden contrario.',
+        ejemplo: 'El de 47 es 74; 47 + 74 = 121 = 11 · 11.', ver: ['valor posicional'] },
+      { termino: 'llevada', formas: ['llevadas', 'llevada'],
+        def: 'Lo que pasa a la columna siguiente cuando las cifras de una columna suman 10 o más.',
+        ejemplo: '58 + 67: 8 + 7 = 15, se escribe 5 y se lleva 1.', ver: ['valor posicional'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. El canje libre deja probar precios iguales o al revés; la persecución pone
     // el tiempo en la mano (también B más rápido que A, que la idea no deja); la tercera es el juego de las edades.
     laboratorio: [
@@ -573,11 +625,25 @@
           { id: 'k', etiqueta: 'Del precio 2', color: 'c-i', min: 0, max: 12, paso: 1, inicio: 4, unidad: '', decimales: 0 },
         ],
         dibujo: v => ({ datos: tiraCanjeLab(v), estado: {} }),
-        lectura: v => [`${12 - v.k} × ${v.a} + ${v.k} × ${v.b} = S/${NB}${(12 - v.k) * v.a + v.k * v.b} · canje: ${v.b - v.a >= 0 ? '+' : '−'}${Math.abs(v.b - v.a)}`],
+        lectura: v => [`${12 - v.k} × ${v.a} + ${v.k} × ${v.b} = S/${NB}${totalCanje(v)} · canje: ${v.b - v.a >= 0 ? '+' : '−'}${Math.abs(v.b - v.a)}`],
         // El borde entre los dos colores, como pestaña bajo la tira (no tapa el total): a su derecha, las del precio 2.
         arrastres: [{ id: 'borde', etiqueta: 'borde entre los dos precios', color: 'c-i',
           donde: v => { const g = TIRAS().geometria(tiraCanjeLab(v)); return { x: g.x((12 - v.k) * v.a), y: g.tiraY(0) + g.altoTira + 10 }; },
           mover: (pt, v) => ({ k: 12 - TIRAS().geometria(tiraCanjeLab(v)).deX(pt.x) / v.a }) }],
+        invitaciones: [
+          { texto: 'Consigue que las doce entradas cuesten justo S/ 100.',
+            logrado: v => totalCanje(v) === 100,
+            bien: 'Total = 12 · precio 1 + canjes · diferencia. Compruébalo en la lectura.' },
+          { texto: 'Haz que mover el borde ya no cambie el total.',
+            logrado: v => v.a === v.b,
+            bien: 'Precios iguales: cada canje suma 0 y la falsa suposición no sirve.' },
+          { texto: 'Haz que cada canje baje el total en vez de subirlo.',
+            logrado: v => v.b < v.a,
+            bien: 'Si el segundo es más barato, conviene suponer que todos son del caro.' },
+          { texto: 'Guarda dos casos con el mismo total y distintos precios.',
+            logrado: (v, g) => mismo(g, v, ['a', 'b', 'k']) && g.some(x => (x.a !== v.a || x.b !== v.b) && totalCanje(x) === totalCanje(v)),
+            bien: 'El total solo no dice los precios: hace falta otro dato.' },
+        ],
       },
       {
         id: 'persecucion', titulo: 'Persecución con reloj', pieza: 'recta',
@@ -593,8 +659,36 @@
         arrastres: [{ id: 'auto-a', etiqueta: 'posición de A', color: 'c-h',
           donde: v => { const g = RECTA().geometria(rectaReloj(v)); return { x: g.x(v.vA * v.t), y: g.filaY(1) }; },
           mover: (pt, v) => ({ t: inversa(RECTA().geometria(rectaReloj(v)).x, 0, 650)(pt.x) / v.vA }) }],
+        invitaciones: [
+          { texto: 'Al encuentro, haz que A y B se junten justo a las 2 h.',
+            logrado: v => v.modo === 'encuentro' && v.t === 2 && juntos(v),
+            bien: '300 ÷ 2 = 150: la suma de rapideces es la que cierra la distancia.' },
+          { texto: 'En la persecución, consigue que A alcance a B.',
+            logrado: v => v.modo === 'alcance' && juntos(v),
+            bien: 'En el alcance cierra la diferencia de rapideces: t = 300 ÷ (vA − vB).' },
+          { texto: 'Busca el encuentro más temprano que permite la mesa.',
+            logrado: v => v.modo === 'encuentro' && juntos(v) && v.t === MINT,
+            bien: 'Con 100 y 100 km/h cierran 200 km cada hora: 1,5 h.' },
+          { texto: 'Haz que A persiga a B y la distancia entre ellos crezca.',
+            logrado: v => v.modo === 'alcance' && v.vB > v.vA && v.t > 0,
+            bien: 'Si B va más rápido, la diferencia de rapideces lo aleja: nunca lo alcanza.' },
+        ],
       },
-      Object.assign({ id: 'edades-libre', titulo: 'Las dos tiras de edad', pieza: 'arit-tiras' }, edades.juega),
+      Object.assign({ id: 'edades-libre', titulo: 'Las dos tiras de edad', pieza: 'arit-tiras',
+        invitaciones: [
+          { texto: 'Haz que el padre tenga el doble de la edad del hijo.',
+            logrado: v => vecesEdad(v.a) === 2,
+            bien: 'El doble llega cuando el hijo tiene 30, lo mismo que la diferencia.' },
+          { texto: 'Haz que el padre tenga dos veces y media la edad del hijo.',
+            logrado: v => vecesEdad(v.a) === 2.5,
+            bien: 'En 10 años: 50 y 20. La razón cambió; la diferencia, no.' },
+          { texto: 'Busca el momento en que el padre tiene más veces la edad del hijo.',
+            logrado: v => v.a === MAXVECES,
+            bien: 'Hacia el pasado las veces crecen rápido; la diferencia sigue en 30.' },
+          { texto: 'Guarda dos momentos distintos y compara la diferencia y las veces.',
+            logrado: (v, g) => mismo(g, v, ['a']) && g.some(x => x.a !== v.a),
+            bien: 'Siempre 30 años de diferencia: lo que cambia es cuántas veces.' },
+        ] }, edades.juega),
     ],
     historia: {
       texto: 'En el papiro Rhind, de Egipto, algunos problemas se resuelven partiendo de un valor cómodo y corrigiéndolo según el resultado. Esa estrategia se llamó después falsa posición. No es adivinar: funciona porque la relación es proporcional, y eso permite escalar el ensayo. Esta unidad recupera esa lógica: modelar, probar y comprobar.',
