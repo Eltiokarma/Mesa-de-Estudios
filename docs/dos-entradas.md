@@ -33,7 +33,7 @@ Todo alumno necesita comprender, practicar y tener curiosidad. Uno de academia p
 - Cuando se enseña un concepto concreto, sí hay preguntas, pistas, ejemplos y comprobaciones. La evidencia favorece el descubrimiento **con apoyo** sobre el descubrimiento sin ayuda (Alfieri y otros, 2011, metaanálisis; en las fuentes de `docs/fundacional.md`). Eso respalda diseñar buenas ayudas, no poner un cuestionario antes de cada interacción.
 - **Se miden por separado** dos resultados: disfrutar explorando y demostrar lo aprendido.
 
-**Cómo convive con la regla 3 de `CLAUDE.md`** (jugar, después predecir, después ver): la exploración libre de la mesa no es una escena de ejercicio. Cuando el alumno entra a aprender un concepto, la escena sigue la regla 3 tal cual. **Esta lectura está por confirmar con Gerson.**
+**Cómo convive con la regla 3 de `CLAUDE.md`** (jugar, después predecir, después ver): la exploración libre de la mesa no es una escena de ejercicio. Cuando el alumno entra a aprender un concepto, la escena sigue la regla 3 tal cual. **Gerson lo confirmó el 15 nov y quedó como excepción escrita en la regla 3.**
 
 ### 4. Alcance y fechas con prudencia
 
@@ -67,10 +67,6 @@ Con esa unidad se comprueba si lo bonito del video también es agradable de usar
   2. El prisma que se corta (geometría del espacio).
   3. Los cubitos (vistas en razonamiento matemático).
 - **WebGL 2 en el colegio.** Gerson lo pregunta, y además queda como requisito en `docs/guia-profesores.md`.
-
-## Por decidir
-
-- **La regla 3 en la exploración libre** (ver el punto 3).
 
 ## Antes de que la primera unidad 3D se publique
 

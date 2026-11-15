@@ -39,7 +39,7 @@ Si hay que hacer OCR, instala tesseract en español: `apt-get install -y tessera
 - `claude/awesome-einstein-ch5g9a` se prueba en una versión de prueba y en el Redmi antes de pasar a `main`.
 - **Una unidad completa antes de tres:** entrar, explorar, pedir ayuda, resolver un reto, guardar y regresar.
 
-**Decidido el 15 nov:** three.js entra al kit (60 fps en el Redmi 15C) y la primera unidad completa es la geometría molecular. **Falta que Gerson confirme** si la exploración libre de la mesa queda fuera de la regla 3.
+**Decidido el 15 nov:** three.js entra al kit (60 fps en el Redmi 15C) y la primera unidad completa es la geometría molecular. La exploración libre de la mesa queda fuera de la regla 3: Gerson lo confirmó y está escrito como excepción en `CLAUDE.md`.
 
 ## Recorrido satisfactorio (15 nov): que todos los alumnos se vayan contentos
 
