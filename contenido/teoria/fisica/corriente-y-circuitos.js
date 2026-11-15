@@ -203,14 +203,14 @@
         puntos: [{ x: 3, y: 3 * resistencia('nicromo', 2, 1), color: 'o', rotulo: `${f(3 * resistencia('nicromo', 2, 1), 1)} V`, guias: true, desde: 2 }],
       }),
       pasos: [
-        { estado: { corte: 0 }, texto: 'La resistencia depende del material, del largo y del área.', ecuacion: [R, ' = ρ ', { frac: ['L', 'A'] }] },
+        { estado: { corte: 0 }, texto: 'La resistencia depende del material (su resistividad ρ), del largo y del área.', ecuacion: [R, ' = ρ ', { frac: ['L', 'A'] }] },
         { estado: { corte: 1 }, texto: 'Nicromo, 2 m y 1 mm²: el área se pasa a m².', ecuacion: [R, ' = 1,1×', diez('−6'), ' · ', { frac: ['2', ['1×', diez('−6')]] }, ` = ${f(resistencia('nicromo', 2, 1), 2)} Ω`] },
         { estado: { corte: 2 }, texto: 'En este alambre, V es proporcional a I: la recta pasa por el origen.', ecuacion: [V, ' = ', I, R, ` = 3 · ${f(resistencia('nicromo', 2, 1), 1)} = ${f(3 * resistencia('nicromo', 2, 1), 1)} V`] },
         { estado: { corte: 2 }, texto: 'Doble de largo multiplica por 2; doble de área divide entre 2.', ecuacion: [{ frac: ['2L', '2A'] }, ' = ', { frac: ['L', 'A'] }] },
       ],
     },
     regla: {
-      texto: 'La resistencia crece con el largo y baja con el área. En un conductor óhmico, el voltaje es proporcional a la corriente: R es la pendiente.',
+      texto: 'La resistencia eléctrica crece con el largo y baja con el área. Ley de Ohm: en un conductor óhmico, el voltaje es proporcional a la corriente: R es la pendiente.',
       ecuacion: [R, ' = ', { llave: ['ρ'], nota: 'el material' }, ' ', { frac: ['L', 'A'] }, '   ·   ', V, ' = ', I, R],
       condicion: 'conductor óhmico a temperatura fija. Un foco caliente no es óhmico: su R sube al calentarse.',
     },
@@ -409,10 +409,14 @@
   // Debe verse: por la rama de menor resistencia pasa más corriente; lo que entra al nudo sale.
   // R₃ es un reóstato de 6 Ω (su cursor se arrastra); con r2 se pide también R₂ como reóstato (mesa del laboratorio).
   const R1 = 2, R2K = 3, RMAX5 = 6;
+  // Reparto en el nudo: R₁ en serie con R₂ ∥ R₃ y la pila de 12 V. Lo usan la figura, la lectura y los retos.
+  const reparto = (r2, r3) => {
+    const rp = r2 * r3 / (r2 + r3), it = 12 / (R1 + rp), vp = it * rp;
+    return { rp, it, vp, i2: vp / r2, i3: vp / r3 };
+  };
   const kirchhoff = (r3, o = {}) => {
     const r2 = o.r2 || R2K, rmax = o.rmax || RMAX5;
-    const rp = r2 * r3 / (r2 + r3), it = 12 / (R1 + rp), vp = it * rp;
-    const i2 = vp / r2, i3 = vp / r3;
+    const { it, vp, i2, i3 } = reparto(r2, r3);
     const rama2 = o.r2 ? reostato : (rot, rr, m, ex) => resist(rot, ex), dc = o.r2 ? 1 : 2;   // la mesa usa 1 decimal en la figura
     return { datos: {
       fuente: pila(12),
@@ -460,7 +464,7 @@
       ],
     },
     regla: {
-      texto: 'En un nudo, la suma de corrientes que entran es igual a la que sale. En una malla cerrada, las subidas y bajadas de voltaje suman cero.',
+      texto: 'Leyes de Kirchhoff: en un nudo, la suma de corrientes que entran es igual a la que sale. En una malla cerrada, las subidas y bajadas de voltaje suman cero.',
       ecuacion: ['Σ', { sub: [I, 'entran'] }, ' = Σ', { sub: [I, 'salen'] }, '   ·   ', { llave: ['Σ', EPS], nota: 'lo que sube', color: 'c-o' }, ' = ', { llave: ['Σ', I, R], nota: 'lo que baja', color: 'c-o' }],
       condicion: 'corrientes estables; los signos se fijan con un sentido de recorrido elegido antes de empezar.',
     },
@@ -585,42 +589,141 @@
     }, estado: {} };
   };
 
+  // Para los retos del laboratorio (docs/teoria.md, 4d): todos los casos de una mesa (para sus extremos, con las mismas
+  // cuentas que dibujan) y «este caso es uno de los guardados».
+  const casosDe = ctl => ctl.reduce((acc, c) => {
+    const vs = c.opciones ? c.opciones.map(o => o.valor) : [];
+    if (!c.opciones) for (let k = 0; c.min + k * c.paso <= c.max + 1e-9; k++) vs.push(Math.round((c.min + k * c.paso) * 1e6) / 1e6);
+    return acc.flatMap(a => vs.map(v => Object.assign({}, a, { [c.id]: v })));
+  }, [{}]);
+  const mismo = (g, val) => Object.keys(val).every(k => g[k] === val[k]);
+  const CTL_PILA = [
+    { id: 'e', etiqueta: 'ε', color: 'c-o', min: 3, max: 24, paso: 3, inicio: 12, unidad: 'V', decimales: 0 },
+    { id: 'ri', etiqueta: 'r interna', min: 0.5, max: 4, paso: 0.5, inicio: 2, unidad: 'Ω', decimales: 1 },
+    { id: 'r', etiqueta: 'R', color: 'c-i', min: 0, max: 20, paso: 1, inicio: 6, unidad: 'Ω', decimales: 0 },
+  ];
+  const CTL_RAMAS = [
+    { id: 'r2', etiqueta: 'R₂', color: 'c-i', min: 1, max: 12, paso: 1, inicio: 3, unidad: 'Ω', decimales: 0 },
+    { id: 'r3', etiqueta: 'R₃', color: 'c-i', min: 1, max: 12, paso: 1, inicio: 6, unidad: 'Ω', decimales: 0 },
+  ];
+  const I_PILA_MAX = Math.max(...casosDe(CTL_PILA).map(v => cuentaPila(v).i));
+  const I_NUDO_MAX = Math.max(...casosDe(CTL_RAMAS).map(v => reparto(v.r2, v.r3).it));
+  const R_ALAMBRE_MAX = Math.max(...casosDe(ohm.juega.controles).map(v => resistencia(v.m, v.L, 1)));
+
   return {
     unidad: 'fisica.corriente-y-circuitos',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-circuito.js', '/nucleo/kit/piezas/ejes.js'],
+    // Glosario del tema (docs/teoria.md, 4d). Carga, conductor, diferencia de potencial, en serie y en paralelo vienen
+    // de «Electrostática»; potencia y energía, de «Trabajo y energía». «Resistencia» a secas no se marca (la
+    // referencia dice «resistencia del aire»); «nudo» tampoco (en estática es el nudo de las cuerdas).
+    glosario: [
+      { termino: 'corriente eléctrica', simbolo: 'I', medida: 'A (ampere)', formas: ['corriente eléctrica', 'corrientes eléctricas', 'corriente', 'corrientes'],
+        def: 'Cantidad de carga que cruza un corte del cable en cada segundo.',
+        ejemplo: '30 C en 5 s: I = 30 / 5 = 6 A.', ver: ['densidad de corriente', 'voltaje'] },
+      { termino: 'densidad de corriente', simbolo: 'J', medida: 'A/m²', def: 'Corriente que pasa por cada unidad de área del cable: la corriente entre la sección.',
+        ejemplo: '2 A por un cable de 1 mm²: J = 2 A/mm².', ver: ['corriente eléctrica'] },
+      { termino: 'resistencia eléctrica', simbolo: 'R', medida: 'Ω (ohmio)', formas: ['resistencia eléctrica', 'resistencias eléctricas'],
+        def: 'Cuánto se opone un objeto al paso de la corriente: el voltaje que pide por cada ampere.',
+        ejemplo: 'Con 12 V pasan 3 A: R = 12 / 3 = 4 Ω.', ver: ['ley de Ohm', 'resistividad'] },
+      { termino: 'resistividad', simbolo: 'ρ', medida: 'Ω·m', def: 'Cuánto se opone un material al paso de la corriente, sin importar la forma del alambre.',
+        ejemplo: 'Nicromo de 2 m y 1 mm²: R = 1,1 × 10⁻⁶ · 2 / 10⁻⁶ = 2,2 Ω.', ver: ['resistencia eléctrica'] },
+      { termino: 'ley de Ohm', def: 'En muchos conductores a temperatura fija, el voltaje es proporcional a la corriente: V = IR.',
+        ejemplo: '4 Ω con 3 A: V = 3 · 4 = 12 V.', ver: ['resistencia eléctrica'] },
+      { termino: 'voltaje', simbolo: 'V', medida: 'V (voltio)', def: 'Otro nombre de la diferencia de potencial: la energía que gana o pierde cada coulomb entre dos puntos.',
+        ver: ['diferencia de potencial', 'fuerza electromotriz'] },
+      { termino: 'fuerza electromotriz', simbolo: 'ε', medida: 'V', formas: ['fuerza electromotriz', 'fem'],
+        def: 'Energía que una pila o un generador da a cada coulomb que lo atraviesa.',
+        ejemplo: 'Una pila de 12 V da 12 J a cada coulomb.', ver: ['resistencia interna', 'voltaje'] },
+      { termino: 'resistencia interna', simbolo: 'r', medida: 'Ω', def: 'Resistencia de la propia pila: con corriente, se come parte de su energía y baja el voltaje de sus bornes.',
+        ejemplo: '12 V, r = 1 Ω y 2 A: en bornes quedan 12 − 2 · 1 = 10 V.', ver: ['fuerza electromotriz', 'cortocircuito'] },
+      { termino: 'amperímetro', def: 'Aparato que mide la corriente. Va en serie, para que la corriente pase por él.', ver: ['voltímetro'] },
+      { termino: 'voltímetro', def: 'Aparato que mide el voltaje entre dos puntos. Va en paralelo y casi no roba corriente.', ver: ['amperímetro'] },
+      { termino: 'cortocircuito', def: 'Unir los bornes sin resistencia: la corriente se dispara y todo el voltaje se pierde dentro de la pila.',
+        ejemplo: 'Pila de 12 V con r = 2 Ω en corto: I = 12 / 2 = 6 A.', ver: ['resistencia interna'] },
+      { termino: 'reóstato', def: 'Resistencia que se puede cambiar corriendo un cursor sobre un alambre largo.', ver: ['resistencia eléctrica'] },
+      { termino: 'leyes de Kirchhoff', formas: ['leyes de Kirchhoff', 'ley de Kirchhoff'],
+        def: 'Dos reglas de circuitos: lo que entra a un nudo sale, y en cada malla los voltajes suman cero.',
+        ejemplo: 'Entran 3 A a un nudo y salen 2 A y 1 A.', ver: ['malla'] },
+      { termino: 'malla', def: 'Camino cerrado de un circuito que sale de un punto y vuelve a él.', ver: ['leyes de Kirchhoff'] },
+      { termino: 'efecto Joule', def: 'Calentamiento de un conductor por el que pasa corriente: la energía eléctrica se vuelve calor.',
+        ejemplo: '6 Ω con 2 A: P = 2² · 6 = 24 W de calor.', ver: ['resistencia eléctrica'] },
+    ],
     // Laboratorio: la pila real con todo suelto (incluido el cortocircuito y la potencia que llega a R), las dos
     // ramas con sus dos cursores y la recta V–I de la idea 2.
     laboratorio: [
       {
         id: 'pila-reostato', titulo: 'Pila real con reóstato', pieza: 'fis-circuito',
         consigna: 'Elige la fem y la resistencia interna, y corre el cursor. ¿Con qué R recibe más potencia el reóstato? Prueba también R = 0.',
-        controles: [
-          { id: 'e', etiqueta: 'ε', color: 'c-o', min: 3, max: 24, paso: 3, inicio: 12, unidad: 'V', decimales: 0 },
-          { id: 'ri', etiqueta: 'r interna', min: 0.5, max: 4, paso: 0.5, inicio: 2, unidad: 'Ω', decimales: 1 },
-          { id: 'r', etiqueta: 'R', color: 'c-i', min: 0, max: 20, paso: 1, inicio: 6, unidad: 'Ω', decimales: 0 },
-        ],
+        controles: CTL_PILA,
         dibujo: val => labPila(val),
         lectura: val => { const c = cuentaPila(val); return [R, ` = ${f(val.r)}\u00a0Ω: `, I, ` = ${f(c.i, 2)}\u00a0A · `, V, ` = ${f(c.v, 2)}\u00a0V · `, P, ` = ${f(c.p, 1)}\u00a0W`]; },
         arrastres: [{ id: 'cursor', etiqueta: 'cursor del reóstato', color: 'c-i',
           donde: val => cursor(labPila(val).datos, 'serie', 1, 20).donde(val.r),
           mover: (pt, val) => ({ r: cursor(labPila(val).datos, 'serie', 1, 20).mover(pt) }) }],
+        // Retos comprobados (docs/teoria.md, 4d): cuentaPila es la misma cuenta que escribe los rótulos del circuito.
+        invitaciones: [
+          { texto: 'Haz un cortocircuito: que el voltaje en los bornes de la pila sea cero.',
+            logrado: val => Math.abs(cuentaPila(val).v) < 1e-9,
+            bien: 'En corto, todo el voltaje se queda adentro de la pila. ¿Y la corriente?' },
+          { texto: 'Con esa pila, busca la R que recibe más potencia.',
+            logrado: val => {
+              const p = cuentaPila(val).p;
+              const al = d => (val.r + d < 0 || val.r + d > 20 ? -1 : cuentaPila(Object.assign({}, val, { r: val.r + d })).p);
+              return p > 0 && p >= al(-1) && p >= al(1);
+            },
+            bien: 'La potencia máxima llega cuando R se parece a la resistencia interna.' },
+          { texto: 'Consigue la mayor corriente que permite la mesa.',
+            logrado: val => Math.abs(cuentaPila(val).i - I_PILA_MAX) < 1e-9,
+            bien: 'Fem grande, poca r y en corto: por eso un corto calienta tanto.' },
+          { texto: 'Guarda dos casos con la misma pila: que uno lleve el doble de corriente.',
+            logrado: (val, guardados) => guardados.some(g => g.e === val.e && g.ri === val.ri
+              && (Math.abs(cuentaPila(g).i - 2 * cuentaPila(val).i) < 1e-9 || Math.abs(cuentaPila(val).i - 2 * cuentaPila(g).i) < 1e-9))
+              && guardados.some(g => mismo(g, val)),
+            bien: 'Doble de corriente, más voltaje perdido adentro: en bornes queda ε − Ir.' },
+        ],
       },
       {
         id: 'dos-ramas', titulo: 'Dos ramas, dos cursores', pieza: 'fis-circuito',
         consigna: 'R₁ = 2 Ω en serie y dos reóstatos en paralelo. Corre los dos cursores y mira cómo se reparte la corriente en el nudo.',
-        controles: [
-          { id: 'r2', etiqueta: 'R₂', color: 'c-i', min: 1, max: 12, paso: 1, inicio: 3, unidad: 'Ω', decimales: 0 },
-          { id: 'r3', etiqueta: 'R₃', color: 'c-i', min: 1, max: 12, paso: 1, inicio: 6, unidad: 'Ω', decimales: 0 },
-        ],
+        controles: CTL_RAMAS,
         dibujo: val => kirchhoff(val.r3, { r2: val.r2, rmax: 12, ramas: true, v: false }),
-        lectura: val => { const rp = val.r2 * val.r3 / (val.r2 + val.r3), it = 12 / (R1 + rp), vp = it * rp; return [I, ` = ${f(it, 2)}\u00a0A = ${f(vp / val.r2, 2)}\u00a0A + ${f(vp / val.r3, 2)}\u00a0A`]; },
+        lectura: val => { const { it, vp } = reparto(val.r2, val.r3); return [I, ` = ${f(it, 2)}\u00a0A = ${f(vp / val.r2, 2)}\u00a0A + ${f(vp / val.r3, 2)}\u00a0A`]; },
         arrastres: ['r2', 'r3'].map((id, k) => ({ id: `cursor-${id}`, etiqueta: `cursor del reóstato ${id === 'r2' ? 'R₂' : 'R₃'}`, color: 'c-i',
           donde: val => cursor(kirchhoff(val.r3, { r2: val.r2, rmax: 12, ramas: true, v: false }).datos, 'ramas', k, 12).donde(val[id]),
           mover: (pt, val) => ({ [id]: cursor(kirchhoff(val.r3, { r2: val.r2, rmax: 12, ramas: true, v: false }).datos, 'ramas', k, 12).mover(pt) }) })),
+        invitaciones: [
+          { texto: 'Haz que las dos ramas lleven la misma corriente.',
+            logrado: val => Math.abs(reparto(val.r2, val.r3).i2 - reparto(val.r2, val.r3).i3) < 1e-9,
+            bien: 'Ramas iguales, mitad y mitad. ¿Qué pasa si una se hace el doble?' },
+          { texto: 'Logra que por R₂ pase el triple de corriente que por R₃.',
+            logrado: val => Math.abs(reparto(val.r2, val.r3).i2 - 3 * reparto(val.r2, val.r3).i3) < 1e-9,
+            bien: 'La rama de menos resistencia lleva más, y lo que entra al nudo sale.' },
+          { texto: 'Haz que entre al nudo la mayor corriente posible.',
+            logrado: val => Math.abs(reparto(val.r2, val.r3).it - I_NUDO_MAX) < 1e-9,
+            bien: 'Ramas al mínimo: menos resistencia equivalente, más corriente total.' },
+          { texto: 'Guarda dos casos con distinta R₂ y la misma corriente total.',
+            logrado: (val, guardados) => guardados.some(g => g.r2 !== val.r2 && Math.abs(reparto(g.r2, g.r3).it - reparto(val.r2, val.r3).it) < 1e-9)
+              && guardados.some(g => mismo(g, val)),
+            bien: 'Otras ramas, la misma resistencia equivalente: la pila no nota la diferencia.' },
+        ],
       },
-      Object.assign({ id: 'recta-vi', titulo: 'La recta V contra I', pieza: 'ejes' }, ohm.juega),
+      Object.assign({ id: 'recta-vi', titulo: 'La recta V contra I', pieza: 'ejes',
+        invitaciones: [
+          { texto: 'Busca la recta más empinada.',
+            logrado: val => Math.abs(resistencia(val.m, val.L, 1) - R_ALAMBRE_MAX) < 1e-12,
+            bien: 'Nicromo y largo: más voltaje para la misma corriente. La pendiente es R.' },
+          { texto: 'Haz que con 4 A el alambre pida menos de 5 V.',
+            logrado: val => 4 * resistencia(val.m, val.L, 1) < 5,
+            bien: 'Poca pendiente, poca resistencia: alambre corto o un material que conduce mejor.' },
+          { texto: 'Guarda dos alambres del mismo material: uno con el triple de resistencia.',
+            logrado: (val, guardados) => guardados.some(g => g.m === val.m
+              && (Math.abs(resistencia(g.m, g.L, 1) - 3 * resistencia(val.m, val.L, 1)) < 1e-12
+                || Math.abs(resistencia(val.m, val.L, 1) - 3 * resistencia(g.m, g.L, 1)) < 1e-12))
+              && guardados.some(g => mismo(g, val)),
+            bien: 'Triple de largo, triple de resistencia: R crece con el largo.' },
+        ] }, ohm.juega),
     ],
     historia: {
       texto: 'Antes de 1800 la electricidad se veía en chispas y descargas breves. Ese año, Alessandro Volta apiló discos de dos metales separados por cartón húmedo y obtuvo, por primera vez, una corriente que duraba. Con fuentes así, Georg Ohm midió en 1827 cómo la corriente dependía del largo y del grosor del alambre.',
