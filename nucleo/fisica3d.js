@@ -100,12 +100,12 @@
   }
 
   // ---------- Onda electromagnética ----------
-  const LARGO = 6, KX = 1, AMP = 0.25;            // 6 m de camino a escala 1; 0,25 de escena por V/m
+  const LARGO = 6, KX = 1, AMP = 0.3;             // 6 m de camino a escala 1; 0,3 de escena por V/m
   function ondaEM(v) {
     const { O } = M(), o = O.ondaDeLambda(v.lam, 'm'), T = 1e9 / o.f, cB = O.campos(v.E0);   // período en ns
     const X0 = -LARGO * KX / 2, h = AMP * v.E0;
     const valor = x => O.instante(x, v.t, v.lam, T).electrico;          // seno de la fase, el mismo para E y para B
-    const datos = { escena: 'onda-em', escala: 0.55, ejes: null, vista: { giro: 30, inclinacion: 16 }, flechas: [], trazos: [], bolas: [] };
+    const datos = { escena: 'onda-em', escala: 0.68, ejes: null, vista: { giro: 35, inclinacion: 20 }, flechas: [], trazos: [], bolas: [] };
     const N = 96, curvaE = [], curvaB = [];
     for (let k = 0; k <= N; k++) { const x = LARGO * k / N, s = valor(x); curvaE.push([X0 + x * KX, 0, h * s]); curvaB.push([X0 + x * KX, -h * s, 0]); }
     datos.trazos.push({ puntos: [[X0, 0, 0], [X0 + LARGO * KX + 0.3, 0, 0]], color: 'tinta' }, { puntos: curvaE, color: 'c-o' }, { puntos: curvaB, color: 'c-i' });
@@ -114,8 +114,14 @@
       datos.flechas.push({ de: [X, 0, 0], a: [X, 0, h * s], color: 'c-o', grosor: 0.5 }, { de: [X, 0, 0], a: [X, -h * s, 0], color: 'c-i', grosor: 0.5 });
     }
     datos.flechas.push({ de: [X0 + LARGO * KX + 0.3, 0, 0], a: [X0 + LARGO * KX + 1.1, 0, 0], color: 'tinta', rotulo: 'c' });
+    // λ en verde, bajo el eje: de una cresta a la siguiente hay un largo λ (regla 4: λ verde en la unidad).
+    const yl = -h - 0.35;
+    datos.trazos.push({ puntos: [[X0, 0, yl + 0.12], [X0, 0, yl], [X0 + v.lam * KX, 0, yl], [X0 + v.lam * KX, 0, yl + 0.12]], color: 'c-d' });
+    datos.rotulos = [{ en: [X0 + v.lam * KX / 2, 0, yl - 0.25], texto: 'λ', color: 'c-d' }];
     const E0 = valor(0);
-    datos.bolas.push({ en: [X0, 0, h * E0], r: 0.09, color: 'c-o', rotulo: 'E' }, { en: [X0, -h * E0, 0], r: 0.09, color: 'c-i', rotulo: 'B' });
+    datos.bolas.push({ en: [X0, 0, h * E0], r: 0.09, color: 'c-o' }, { en: [X0, -h * E0, 0], r: 0.09, color: 'c-i' });
+    // Los nombres van sobre el plano de cada campo, al comienzo: E arriba (vertical) y B hacia adelante (horizontal).
+    datos.rotulos.push({ en: [X0 - 0.35, 0, h + 0.3], texto: 'E', color: 'c-o' }, { en: [X0 - 0.35, -h - 0.3, 0], texto: 'B', color: 'c-i' });
     datos.alt = `Onda de λ = ${f(v.lam, 1)} m que avanza a c: E sube y baja en vertical y B en horizontal, en fase y perpendiculares; `
       + `a t = ${f(v.t, 1)} ns, en el origen E vale ${f(v.E0 * E0, 2)} V/m.`;
     return { datos, f: o.f, T, B0: cB.B0, Eorigen: v.E0 * E0 };

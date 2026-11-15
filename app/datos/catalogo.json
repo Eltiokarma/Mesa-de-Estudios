@@ -755,10 +755,13 @@
       "requiere": [
        "/nucleo/kit/piezas/fis-onda-em.js",
        "/nucleo/kit/piezas/ejes.js",
-       "/nucleo/kit/piezas/recta.js"
+       "/nucleo/kit/piezas/recta.js",
+       "/plantillas/ondas-electromagneticas/motor.js",
+       "/nucleo/fisica3d.js",
+       "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 4,
-      "terminos": 24
+      "terminos": 25
      }
     },
     {

@@ -17,10 +17,12 @@
  *   Duda que resuelve: ¿por qué la radio, la luz y los rayos X son lo mismo y llegan a la vez?
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // nucleo/fisica3d.js arma la mesa 3D «E y B que avanzan» con el motor de plantillas/ondas-electromagneticas (regla 1).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../nucleo/fisica3d.js')) : fabrica(root.Kit, root.Fisica3D);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, F3) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const E = { v: 'c-o', t: 'E' }, B = { v: 'c-i', t: 'B' }, lam = { v: 'c-d', t: 'λ' }, fr = { v: 'c-h', t: 'f' };
@@ -404,11 +406,46 @@
   const nombreBanda = lg => (lg >= -6.4 && lg < -6.1 ? 'visible' : bandaDe(lg).texto);
   const reglaLibre = val => ({ datos: Object.assign(reglaEsp(), { elementos: reglaEsp().elementos.concat([{ tipo: 'punto', x: val.lg, color: 'o', rotulo: 'λ', fila: 3 }]) }), estado: {} });
 
+  // E y B que avanzan (laboratorio 3D, 15 nov: exploración libre, sin predicciones). La onda no se anima sola: el alumno
+  // arrastra t (docs/3d.md, regla 4). f, el período, B₀ y el valor de E en el origen los calcula el motor de
+  // plantillas/ondas-electromagneticas (ondaDeLambda, campos e instante) a través de nucleo/fisica3d.js.
+  const onda3 = val => F3.ondaEM(val);
+  const mismo = (a, b) => Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
+  const mesaOnda = {
+    id: 'onda-3d', titulo: 'E y B que avanzan', pieza: 'fis-espacio-3d',
+    consigna: 'Gira la onda con el dedo y mírala de frente y de costado. Arrastra t para que avance.',
+    controles: [
+      { id: 'lam', etiqueta: 'λ', color: 'c-d', min: 1.5, max: 6, paso: 1.5, inicio: 3, unidad: 'm', decimales: 1 },
+      { id: 'E0', etiqueta: 'E₀', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 3, unidad: 'V/m', decimales: 0 },
+      { id: 't', etiqueta: 't', min: 0, max: 20, paso: 0.5, inicio: 0, unidad: 'ns', decimales: 1 },
+    ],
+    dibujo: val => ({ datos: onda3(val).datos, estado: {} }),
+    lectura: val => { const o = onda3(val); return [fr, ` = ${f(o.f / 1e6, 0)} MHz · `, B0, ` = ${f(o.B0 * 1e9, 0)} nT`]; },
+    invitaciones: [
+      { texto: 'Detén la onda cuando, en el origen, E apunte abajo con todo su valor.',
+        logrado: val => mismo(onda3(val).Eorigen, -val.E0),
+        bien: 'Justo ahí B también llega a su máximo: suben y bajan juntos.',
+        pista: 'Avanza t de a poco y mira la bolita E del origen.' },
+      { texto: 'Busca la onda de mayor frecuencia de la mesa.',
+        logrado: (val, g, mesa) => mismo(onda3(val).f, onda3({ lam: mesa.controles[0].min, E0: 1, t: 0 }).f),
+        bien: 'λ más corta, más vaivenes cada segundo: f = c/λ.' },
+      { texto: 'Haz que B₀ valga 20 nT.',
+        logrado: val => mismo(onda3(val).B0, 2e-8),
+        bien: 'B₀ = E₀/c: un campo diminuto, pero siempre junto a E.',
+        pista: 'B₀ sale de dividir E₀ entre c. ¿Qué E₀ da 20 nT?' },
+      { texto: 'Guarda dos momentos de la misma onda separados por un período.',
+        logrado: (val, guardados) => guardados.some(a => guardados.some(b => a.lam === b.lam && a.E0 === b.E0
+          && mismo(Math.abs(a.t - b.t), onda3(a).T))),
+        bien: 'Un período después la onda se ve igual: avanzó justo una λ.' },
+    ],
+  };
+
   return {
     unidad: 'fisica.ondas-electromagneticas',
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/fis-onda-em.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/recta.js'],
+    requiere: ['/nucleo/kit/piezas/fis-onda-em.js', '/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/recta.js',
+      '/plantillas/ondas-electromagneticas/motor.js', '/nucleo/fisica3d.js', '/nucleo/kit/piezas/fis-espacio-3d.js'],
     // Glosario del tema (docs/teoria.md, 4d). Longitud de onda viene de ondas mecánicas; campo eléctrico, de electrostática;
     // los rayos X, de física moderna.
     glosario: [
@@ -438,6 +475,7 @@
     // Laboratorio: la regla del espectro sin bandas fijas (el punto corre de a cuarto de potencia), la onda con un
     // rango de λ más amplio (y su frecuencia) y el cambio de medio de la idea 4.
     laboratorio: [
+      mesaOnda,
       {
         id: 'regla-continua', titulo: 'Recorre todo el espectro', pieza: 'recta',
         consigna: 'Corre el punto λ por la regla, de los rayos gamma a la radio. Mira en qué banda cae y su frecuencia.',
