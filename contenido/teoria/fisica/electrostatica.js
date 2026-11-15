@@ -87,7 +87,7 @@
     temas: ['Carga y electrización'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Dos esferas metálicas iguales se tocan y se separan. Elige sus cargas, en microcoulombs, y mira cómo quedan.',
+      consigna: 'Dos esferas metálicas iguales, con mango aislante, se tocan y se separan. Elige sus cargas, en microcoulombs, y mira cómo quedan.',
       voz: 'Suma las dos cargas de arriba y luego las de abajo.',
       controles: [
         { id: 'a', etiqueta: 'q de A', color: 'c-o', min: -6, max: 8, paso: 2, inicio: 6, unidad: 'μC', decimales: 0 },
@@ -112,7 +112,7 @@
     mira: {
       datos: juntar(fila(FILAS[0], [12, 0, 0], 'inicio'), fila(FILAS[1], [6, 6, 0], 'A con B', 1), fila(FILAS[2], [6, 3, 3], 'B con C', 2)),
       pasos: [
-        { estado: { paso: 0 }, texto: 'Al inicio solo A tiene carga: +12 μC.', ecuacion: ['total = +12 μC'] },
+        { estado: { paso: 0 }, texto: 'Electrización por contacto: al inicio solo A tiene carga, +12 μC.', ecuacion: ['total = +12 μC'] },
         { estado: { paso: 1 }, texto: 'A toca a B: el total, +12 μC, se reparte entre dos esferas iguales.', ecuacion: [{ sub: [q, 'A'] }, ' = ', { sub: [q, 'B'] }, ' = ', { frac: ['12 + 0', '2'] }, ' = +6 μC'] },
         { estado: { paso: 2 }, texto: 'B toca a C: ahora se reparten los +6 μC de B.', ecuacion: [{ sub: [q, 'B'] }, ' = ', { sub: [q, 'C'] }, ' = ', { frac: ['6 + 0', '2'] }, ' = +3 μC'] },
         { estado: { paso: 2 }, texto: 'La suma de las tres sigue siendo +12 μC: la carga se conservó.', ecuacion: ['6 + 3 + 3 = 12 μC'] },
@@ -223,7 +223,7 @@
       ],
     },
     regla: {
-      texto: 'Dos cargas puntuales se atraen o se repelen con fuerzas iguales y opuestas, proporcionales al producto de las cargas e inversas al cuadrado de la distancia.',
+      texto: 'Ley de Coulomb: dos cargas puntuales se atraen o se repelen con fuerzas iguales y opuestas, proporcionales al producto de las cargas e inversas al cuadrado de la distancia.',
       ecuacion: [F, ' = k ', { frac: [[{ abs: [{ sub: [q, '1'] }, { sub: [q, '2'] }] }], { llave: [{ sup: [r, '2'] }], nota: 'distancia al cuadrado', color: 'c-i' }] }, '   ·   ', 'k = 9 × ', diez('9'), ' N·m²/C²'],
       condicion: 'cargas puntuales y quietas, en el aire o el vacío, con q en coulombs y r en metros.',
     },
@@ -325,7 +325,7 @@
       arrastres: [arrastreP(val => campo(val.x, val.s, { valores: false }))],
     },
     predice: {
-      pregunta: 'Con las dos cargas positivas, en el punto medio el campo total es cero. ¿Cuánto vale ahí el potencial eléctrico?',
+      pregunta: 'Con las dos cargas positivas, en el punto medio el campo eléctrico total es cero. ¿Cuánto vale ahí el potencial eléctrico?',
       opciones: [
         { id: 'c', texto: `${f(2 * Vde(QN, 5), 0)} V`, correcta: true },
         { id: 'cero', texto: '0 V: el campo es cero', error: 'EL-E0V', siFuera: 'E = 0 es cierto: las flechas se cancelan. El potencial no es flecha, y los dos aportes son positivos.' },
@@ -387,8 +387,9 @@
   const QE = 1.6e-19;
   const VISTA4 = { x0: -2.2, x1: 8.6, y0: -3, y1: 3.2 };
   const EPX4 = 3.2;   // px por kV/m
+  const ePlacas = (dv, dc) => dv / (dc / 100);   // V/m: lo usan la figura, la lectura y los retos
   function placas(dv, dc, part, o = {}) {
-    const Ev = dv / (dc / 100) / 1000;   // kV/m
+    const Ev = ePlacas(dv, dc) / 1000;   // kV/m
     const sg = part === 'p' ? 1 : -1;    // el campo apunta de + (izquierda) a − (derecha)
     const xp = part === 'p' ? 0.8 : dc - 0.8;
     const eq = [0.25, 0.5, 0.75].map(k => k * dc);
@@ -431,7 +432,7 @@
         { id: 'p', etiqueta: 'Partícula', opciones: [{ valor: 'p', texto: 'Protón' }, { valor: 'e', texto: 'Electrón' }] },
       ],
       dibujo: val => ({ datos: placas(val.dv, val.d, val.p), estado: {} }),
-      lectura: val => [E, ` = ${f(val.dv / (val.d / 100), 0)} V/m · `, F, ` = ${cien(QE * val.dv / (val.d / 100), 1)} N`],
+      lectura: val => [E, ` = ${f(ePlacas(val.dv, val.d), 0)} V/m · `, F, ` = ${cien(QE * ePlacas(val.dv, val.d), 1)} N`],
       minimo: 4,
       arrastres: [arrastrePlaca(val => placas(val.dv, val.d, val.p))],
     },
@@ -458,7 +459,7 @@
       ],
     },
     regla: {
-      texto: 'Entre placas paralelas el campo es uniforme. Una carga gana una energía cinética igual a su carga por la diferencia de potencial que recorre.',
+      texto: 'Entre placas paralelas el campo es uniforme. Una carga pierde energía potencial eléctrica y gana igual energía cinética: su carga por la diferencia de potencial recorrida.',
       ecuacion: [E, ' = ', { frac: ['ΔV', d] }, '   ·   ', F, ' = ', q, E, '   ·   ', 'ΔK = ', { llave: [{ abs: [q] }, ' ΔV'], nota: 'no importa d' }],
       condicion: 'placas grandes y cercanas; solo actúa la fuerza eléctrica. 1 eV = 1,6 × 10⁻¹⁹ J.',
     },
@@ -528,7 +529,7 @@
       ],
       dibujo: conectar('serie', 2, 6, { q: false }),
       revelar: conectar('serie', 2, 6, { v: true }),
-      coincide: 'Coincide: los dos guardan 9 μC; V = Q/C da 9 V y 3 V, que suman 12 V.',
+      coincide: 'Coincide: los dos guardan 18 μC; V = Q/C da 9 V y 3 V, que suman 12 V.',
     },
     mira: {
       datos: conectar('serie', 2, 6, { v: true, desde: 2 }).datos,
@@ -659,11 +660,65 @@
     },
   };
 
+  // Para los retos del laboratorio (docs/teoria.md, 4d): todos los casos de una mesa (para sus extremos, con las mismas
+  // cuentas que dibujan) y «este caso es uno de los guardados».
+  const casosDe = ctl => ctl.reduce((acc, c) => {
+    const vs = c.opciones ? c.opciones.map(o => o.valor) : [];
+    if (!c.opciones) for (let k = 0; c.min + k * c.paso <= c.max + 1e-9; k++) vs.push(Math.round((c.min + k * c.paso) * 1e6) / 1e6);
+    return acc.flatMap(a => vs.map(v => Object.assign({}, a, { [c.id]: v })));
+  }, [{}]);
+  const mismo = (g, val) => Object.keys(val).every(k => g[k] === val[k]);
+  const fF = val => fCoulomb(val.q1, val.q2, val.r);
+  const CTL_CAMPO = [
+    { id: 'x', etiqueta: 'P en', min: 2, max: 8, paso: 0.5, inicio: 5, unidad: 'cm', decimales: 1 },
+    { id: 's', etiqueta: 'Segunda carga', opciones: [{ valor: 1, texto: 'Positiva' }, { valor: -1, texto: 'Negativa' }], inicio: 1 },
+  ];
+  // Componente x del campo y potencial en P, las mismas cuentas de campo() (la figura) y de la lectura.
+  const eLab = val => Ede(QN, val.x) - val.s * Ede(QN, 10 - val.x);
+  const vLab = val => Vde(QN, val.x) + Vde(val.s * QN, 10 - val.x);
+  const E_LAB_MAX = Math.max(...casosDe(CTL_CAMPO).map(v => Math.abs(eLab(v))));
+  const E_PLACAS_MIN = Math.min(...casosDe(uniforme.juega.controles).map(v => ePlacas(v.dv, v.d)));
+
   return {
     unidad: 'fisica.electrostatica',
     version: '0.1.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-lienzo.js', '/nucleo/kit/piezas/fis-circuito.js', '/nucleo/kit/piezas/fis-cuentas.js'],
+    // Glosario del tema (docs/teoria.md, 4d). Fuerza, trabajo, energía cinética y sistema aislado vienen de unidades
+    // anteriores. «Dieléctrico» no va: esta teoría no lo trae (está en la escena de electrostática 0.2.0).
+    glosario: [
+      { termino: 'carga eléctrica', simbolo: 'q', medida: 'C', formas: ['carga eléctrica', 'cargas eléctricas', 'carga', 'cargas'],
+        def: 'Propiedad de la materia que hace que los cuerpos se atraigan o se repelan; puede ser positiva o negativa.',
+        ejemplo: 'Un electrón tiene −1,6 × 10⁻¹⁹ C; 1 μC es una millonésima de coulomb.', ver: ['ley de Coulomb', 'electrización'] },
+      { termino: 'electrización', def: 'Dar o quitar electrones a un cuerpo para que quede cargado: por frotamiento, por contacto o por inducción.',
+        ejemplo: 'Esferas iguales de +6 μC y −2 μC se tocan: quedan con +2 μC cada una.', ver: ['carga eléctrica', 'conductor'] },
+      { termino: 'conductor', formas: ['conductor', 'conductores', 'conductora', 'conductoras'],
+        def: 'Material por el que las cargas se mueven con facilidad, como los metales.', ver: ['aislante'] },
+      { termino: 'aislante', def: 'Material en el que las cargas casi no se mueven, como el plástico o el vidrio.', ver: ['conductor'] },
+      { termino: 'ley de Coulomb', def: 'Fuerza entre dos cargas puntuales: crece con el producto de las cargas y cae con el cuadrado de la distancia.',
+        ejemplo: '1 μC y 4 μC a 3 cm: F = 40 N sobre cada una.', ver: ['carga eléctrica', 'campo eléctrico'] },
+      { termino: 'campo eléctrico', simbolo: 'E', medida: 'N/C = V/m', def: 'Fuerza por cada coulomb que sentiría una carga puesta en ese punto. Es una flecha.',
+        ejemplo: 'Placas a 4 cm con 200 V entre ellas: E = 200 / 0,04 = 5000 V/m.', ver: ['línea de campo', 'potencial eléctrico'] },
+      { termino: 'línea de campo', formas: ['línea de campo', 'líneas de campo', 'línea de fuerza', 'líneas de fuerza'],
+        def: 'Línea que sigue la dirección del campo: sale de las cargas positivas y entra en las negativas.', ver: ['campo eléctrico'] },
+      { termino: 'energía potencial eléctrica', simbolo: 'U', medida: 'J', def: 'Energía guardada por la posición de una carga cerca de otras; al soltarla, se vuelve energía cinética.',
+        ejemplo: 'Un electrón que cruza 200 V pierde 200 eV de ella y gana 200 eV de cinética.', ver: ['potencial eléctrico'] },
+      { termino: 'potencial eléctrico', simbolo: 'V', medida: 'V (voltio)', def: 'Energía por cada coulomb en un punto. Es un número con signo, no una flecha.',
+        ejemplo: 'A 5 cm de 2 nC: V = 9 × 10⁹ · 2 × 10⁻⁹ / 0,05 = 360 V.', ver: ['diferencia de potencial', 'campo eléctrico'] },
+      { termino: 'diferencia de potencial', simbolo: 'ΔV', medida: 'V', def: 'Cuánto cambia el potencial eléctrico entre dos puntos: la energía que gana o pierde cada coulomb.',
+        ejemplo: 'Una pila de 12 V: cada coulomb que la cruza gana 12 J.', ver: ['potencial eléctrico'] },
+      { termino: 'superficie equipotencial', formas: ['superficie equipotencial', 'superficies equipotenciales', 'equipotencial', 'equipotenciales'],
+        def: 'Superficie cuyos puntos tienen todos el mismo potencial: mover una carga sobre ella no cuesta trabajo.', ver: ['línea de campo'] },
+      { termino: 'condensador', def: 'Dos placas conductoras separadas que guardan cargas iguales y opuestas, y con ellas energía.',
+        ejemplo: 'Uno de 3 μF a 12 V guarda Q = 3 · 12 = 36 μC.', ver: ['capacidad eléctrica'] },
+      { termino: 'capacidad eléctrica', simbolo: 'C', medida: 'F (faradio)', formas: ['capacidad eléctrica', 'capacidad', 'capacidades'],
+        def: 'Cuánta carga guarda un condensador por cada voltio entre sus placas: C = Q / V.',
+        ejemplo: 'En serie, 2 μF y 6 μF equivalen a 2 · 6 / 8 = 1,5 μF.', ver: ['condensador', 'en serie'] },
+      { termino: 'en serie', def: 'Conexión uno tras otro, por un solo camino: todos llevan la misma carga o la misma corriente.',
+        ejemplo: '2 μF y 6 μF en serie con 12 V: los dos guardan 18 μC.', ver: ['en paralelo'] },
+      { termino: 'en paralelo', def: 'Conexión lado a lado entre los mismos dos puntos: todos tienen el mismo voltaje.',
+        ejemplo: '2 μF y 6 μF en paralelo equivalen a 8 μF.', ver: ['en serie'] },
+    ],
     laboratorio: [
       {
         // Lo que la idea 2 no deja probar: cargas distintas y de signo contrario (se atraen) y distancias de 2 a 8 cm.
@@ -678,20 +733,66 @@
         dibujo: val => ({ datos: parLibre(val), estado: {} }),
         lectura: val => { const Fv = fCoulomb(val.q1, val.q2, val.r); return [F, ` = ${f(Math.abs(Fv), 1)}\u00a0N en cada una`, Fv < 0 ? ': se atraen' : Fv > 0 ? ': se repelen' : '']; },
         arrastres: [arrastreR(parLibre)],
+        // Retos comprobados (docs/teoria.md, 4d): fF es fCoulomb, la misma cuenta que da el largo de las flechas.
+        invitaciones: [
+          { texto: 'Haz que se atraigan con más de 100 N.',
+            logrado: val => fF(val) < -100,
+            bien: 'Signos opuestos, cargas grandes y cerca. ¿Cuál de los tres pesa más?' },
+          { texto: 'Consigue que las cargas no se ejerzan ninguna fuerza.',
+            logrado: val => fF(val) === 0,
+            bien: 'Sin carga en una, no hay fuerza en ninguna: es una sola interacción.' },
+          { texto: 'Guarda dos casos con las mismas cargas: que una fuerza sea cuatro veces la otra.',
+            logrado: (val, guardados) => fF(val) !== 0 && guardados.some(g => g.q1 === val.q1 && g.q2 === val.q2
+              && (Math.abs(fF(g) - 4 * fF(val)) < 1e-6 * Math.abs(fF(g)) || Math.abs(fF(val) - 4 * fF(g)) < 1e-6 * Math.abs(fF(val))))
+              && guardados.some(g => mismo(g, val)),
+            bien: 'Mitad de distancia, cuatro veces la fuerza: manda el cuadrado.' },
+          { texto: 'Guarda dos casos con cargas distintas, la misma distancia y la misma fuerza.',
+            logrado: (val, guardados) => fF(val) !== 0 && guardados.some(g => g.r === val.r && (g.q1 !== val.q1 || g.q2 !== val.q2)
+              && Math.abs(fF(g) - fF(val)) < 1e-6 * Math.abs(fF(val)))
+              && guardados.some(g => mismo(g, val)),
+            bien: 'Cuenta el producto de las cargas, no cada una por separado.' },
+        ],
       },
       {
         // Más rica que la idea 3: P recorre casi toda la línea y se ven a la vez el campo y el potencial con números.
         id: 'campo-y-potencial', titulo: 'Campo y potencial en P', pieza: 'fis-lienzo',
         consigna: 'Arrastra P entre las cargas y cambia el signo de la segunda. Lee E y V a la vez.',
-        controles: [
-          { id: 'x', etiqueta: 'P en', min: 2, max: 8, paso: 0.5, inicio: 5, unidad: 'cm', decimales: 1 },
-          { id: 's', etiqueta: 'Segunda carga', opciones: [{ valor: 1, texto: 'Positiva' }, { valor: -1, texto: 'Negativa' }], inicio: 1 },
-        ],
+        controles: CTL_CAMPO,
         dibujo: val => ({ datos: campoLab(val), estado: {} }),
-        lectura: val => { const t = Ede(QN, val.x) - val.s * Ede(QN, 10 - val.x); return [`P a ${f(val.x, 1)}\u00a0cm: `, E, ` = ${f(Math.abs(t), 1)}\u00a0kN/C`]; },
+        lectura: val => [`P a ${f(val.x, 1)}\u00a0cm: `, E, ` = ${f(Math.abs(eLab(val)), 1)}\u00a0kN/C`],
         arrastres: [arrastreP(campoLab)],
+        invitaciones: [
+          { texto: 'Encuentra un punto P donde el potencial sea cero.',
+            logrado: val => Math.abs(vLab(val)) < 1e-9,
+            bien: 'V = 0 y el campo no es cero: son dos cosas distintas.' },
+          { texto: 'Busca el lugar y el signo que dan el campo más fuerte en P.',
+            logrado: val => Math.abs(Math.abs(eLab(val)) - E_LAB_MAX) < 1e-9,
+            bien: 'Pegado a una carga y con la otra de signo opuesto: las flechas se suman.' },
+          { texto: 'Haz que el campo en P apunte hacia la izquierda.',
+            logrado: val => eLab(val) < 0,
+            bien: 'Gana la carga más cercana. ¿Qué pasa si cambias el signo de la segunda?' },
+          { texto: 'Guarda dos puntos con el mismo potencial y campos opuestos.',
+            logrado: (val, guardados) => guardados.some(g => Math.abs(vLab(g) - vLab(val)) < 1e-6 && eLab(g) * eLab(val) < 0)
+              && guardados.some(g => mismo(g, val)),
+            bien: 'Mismo V con flechas al revés: el potencial no sabe de direcciones.' },
+        ],
       },
-      Object.assign({ id: 'placas', titulo: 'Las placas paralelas', pieza: 'fis-lienzo' }, uniforme.juega),
+      Object.assign({ id: 'placas', titulo: 'Las placas paralelas', pieza: 'fis-lienzo',
+        invitaciones: [
+          { texto: 'Haz que el campo entre las placas valga justo 10 000 V/m.',
+            logrado: val => Math.abs(ePlacas(val.dv, val.d) - 10000) < 1e-6,
+            bien: 'Justo 10 000 V/m. ¿Lo logras con otro voltaje?' },
+          { texto: 'Guarda dos casos con distinto voltaje y el mismo campo.',
+            logrado: (val, guardados) => guardados.some(g => g.dv !== val.dv && Math.abs(ePlacas(g.dv, g.d) - ePlacas(val.dv, val.d)) < 1e-6)
+              && guardados.some(g => mismo(g, val)),
+            bien: 'Doble de voltaje y doble de separación: el campo no cambió.' },
+          { texto: 'Haz que la fuerza sobre la partícula apunte contra el campo.',
+            logrado: val => placas(val.dv, val.d, val.p).flechas.slice(-1)[0].d[0] < 0,
+            bien: 'Con carga negativa, la fuerza va contra E: el electrón busca la placa +.' },
+          { texto: 'Busca la fuerza más débil que permite la mesa.',
+            logrado: val => Math.abs(ePlacas(val.dv, val.d) - E_PLACAS_MIN) < 1e-9,
+            bien: 'Poco voltaje y placas lejos. ¿Gana menos energía al cruzar?' },
+        ] }, uniforme.juega),
     ],
     historia: {
       texto: 'En el siglo XVIII era fácil sacar chispas y difícil medir una fuerza eléctrica pequeña. Charles-Augustin de Coulomb usó una balanza de torsión: un hilo fino que se retuerce un ángulo según la fuerza. Variando la separación entre dos esferas cargadas, publicó entre 1785 y 1789 que la fuerza cae con el cuadrado de la distancia.',
