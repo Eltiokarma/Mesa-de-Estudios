@@ -64,7 +64,7 @@
     temas: ['Diagramas lineales y de Venn-Euler', 'Deductivo directo e indirecto'],
     pieza: 'rm-plano',
     juega: {
-      consigna: 'Premisas: todos los A son B y algunos B son C. Prueba cada lugar posible de C y mira si toca a A.',
+      consigna: 'Las premisas: todos los A son B y algunos B son C. En este diagrama de Venn, prueba cada lugar de C: ¿toca a A?',
       voz: 'Cada lugar de C es un dibujo posible. Probemos todos.',
       controles: [{ id: 'c', etiqueta: 'C', opciones: [{ valor: 'lejos', texto: 'Lejos de A' }, { valor: 'cruza', texto: 'Cruza a A' }, { valor: 'cubre', texto: 'Cubre a A' }] }],
       dibujo: val => ({ datos: venn(POS_C[val.c]), estado: {} }),
@@ -209,7 +209,7 @@
       ],
     },
     regla: {
-      texto: 'De «si p, entonces q» se concluye q cuando ocurre p (directo) y «no p» cuando no ocurre q (indirecto). Saber q o «no p» no basta.',
+      texto: 'Del condicional «si p, entonces q» se concluye q cuando ocurre p (forma directa) y «no p» cuando no ocurre q (forma indirecta). Saber q o «no p» no basta.',
       ecuacion: [{ llave: ['(p ⇒ q)'], nota: 'la regla', color: 'c-i' }, ' y p ⇒ q', '   ·   ', '(p ⇒ q) y ', { llave: ['no q'], nota: 'el dato', color: 'c-o' }, ' ⇒ no p'],
       condicion: 'la regla se cumple siempre, sin excepciones, y p y q significan lo mismo en todo el razonamiento.',
     },
@@ -310,7 +310,7 @@
       ],
     },
     regla: {
-      texto: 'Cada fila y cada columna tiene exactamente una ✓. Al poner una ✓, se tacha el resto de su fila y de su columna.',
+      texto: 'En un cuadro de doble entrada, cada fila y cada columna tiene exactamente una ✓. Al poner una ✓, se tacha el resto de su fila y de su columna.',
       ecuacion: ['✓ seguro  ⇔  vale en todos los repartos que quedan'],
       condicion: 'cada persona tiene una sola cosa y cada cosa es de una sola persona; si no, el cuadro no es de reparto.',
     },
@@ -470,6 +470,23 @@
     ],
     dibujo: val => ({ datos: vennLibre(val), estado: {} }),
     lectura: val => !tocan(VB, cLibre(val)) ? ['C fuera de B: no vale como dibujo'] : ['Dibujo válido: algún ', A, tocan(VA, cLibre(val)) ? ' es ' : ' no es ', C],
+    // Retos: cada logrado usa tocan(), la misma prueba que decide el pie y la línea punteada del dibujo.
+    invitaciones: [
+      { texto: 'Haz un dibujo que cumpla las premisas y donde algún A también sea C.',
+        logrado: val => tocan(VB, cLibre(val)) && tocan(VA, cLibre(val)),
+        bien: 'Este dibujo dice «sí». Falta ver si todos los dibujos dicen lo mismo.' },
+      { texto: 'Pon C del lado izquierdo de A, cumpliendo las premisas y sin tocar a A.',
+        logrado: val => val.cx < VA.x && tocan(VB, cLibre(val)) && !tocan(VA, cLibre(val)),
+        bien: 'C puede tocar a B por cualquier lado. Las premisas no lo amarran a A.' },
+      { texto: 'Mueve C a la derecha hasta el último lugar en que todavía toca a B.',
+        // Un paso más (0,1) a la derecha y C ya no tocaría a B.
+        logrado: val => tocan(VB, cLibre(val)) && !tocan(VB, cLibre({ cx: Math.round(val.cx * 10 + 1) / 10, cr: val.cr })),
+        bien: 'Ese es el borde: un paso más y «algunos B son C» ya no se cumple.' },
+      { texto: 'Guarda dos dibujos que cumplan las premisas: en uno algún A es C; en otro, ninguno.',
+        logrado: (val, guardados) => guardados.some(g => tocan(VB, cLibre(g)) && tocan(VA, cLibre(g)))
+          && guardados.some(g => tocan(VB, cLibre(g)) && !tocan(VA, cLibre(g))),
+        bien: 'Los dos cumplen las premisas y dicen lo contrario: no hay conclusión sobre A y C.' },
+    ],
     arrastres: [
       { id: 'centro-c', etiqueta: 'centro del círculo C', color: 'c-d',
         donde: val => enPx(vennLibre(val), val.cx, 3), mover: (pt, val) => ({ cx: aU(vennLibre(val), pt).x }) },
@@ -480,12 +497,34 @@
   // Mesa 2: las cuatro pistas del reparto, cada una prendida o apagada: el orden no importa, importa cuáles.
   const SINO = [{ valor: 1, texto: 'Sí' }, { valor: 0, texto: 'No' }];
   const activas = val => PISTAS.filter((_, k) => val['p' + k]);
+  // Casillas ✓ (iguales en todos los repartos que quedan) y el grupo más chico de pistas que deja un solo reparto.
+  const seguras = pistas => { const v = compatibles(pistas); let n = 0; for (let q = 0; q < 3; q++) for (let i = 0; i < 3; i++) if (v.length && v.every(p => p[q] === i)) n++; return n; };
+  const MIN_PISTAS = Math.min(...Array.from({ length: 1 << PISTAS.length }, (_, m) => PISTAS.filter((_, k) => (m >> k) & 1))
+    .filter(ps => compatibles(ps).length === 1).map(ps => ps.length));
   const mesaCuadro = {
     id: 'pistas-a-eleccion', titulo: 'Pistas a elección', pieza: 'rm-tablero',
     consigna: 'Prende y apaga cada pista. Busca el grupo más chico de pistas que deja un solo reparto.',
     controles: TXT.map((t, k) => ({ id: 'p' + k, etiqueta: t, opciones: SINO, inicio: k < 3 ? 1 : 0 })),
     dibujo: val => ({ datos: cuadro(P3, D3, activas(val)), estado: {} }),
     lectura: val => { const n = compatibles(activas(val)).length, k = activas(val).length; return [`${k} ${k === 1 ? 'pista' : 'pistas'}: ${n} ${n === 1 ? 'reparto posible' : 'repartos posibles'}`]; },
+    // Retos: cuentan con compatibles(), lo mismo que pone las ✗ y las ✓ del cuadro.
+    invitaciones: [
+      { texto: 'Prende y apaga pistas hasta que quede un solo reparto posible.',
+        logrado: val => compatibles(activas(val)).length === 1,
+        bien: 'Un solo reparto: cada fila y cada columna quedó con su ✓.' },
+      { texto: 'Deja un solo reparto con el menor número de pistas. ¿Cuál sobraba?',
+        logrado: val => compatibles(activas(val)).length === 1 && activas(val).length === MIN_PISTAS,
+        bien: 'Una pista no aportaba nada: lo que tachaba ya lo tachaban las otras.' },
+      { texto: 'Consigue una ✓ segura aunque todavía quede más de un reparto.',
+        logrado: val => compatibles(activas(val)).length > 1 && seguras(activas(val)) > 0,
+        bien: 'Esa casilla coincide en todos los repartos que quedan: es seguro sin saberlo todo.' },
+      { texto: 'Apaga todas las pistas y cuenta cuántos repartos son posibles sin datos.',
+        logrado: val => activas(val).length === 0,
+        bien: `Sin pistas quedan los ${PERMS.length} repartos. Cada pista va tachando algunos.` },
+      { texto: 'Guarda dos grupos de pistas distintos que dejen un solo reparto.',
+        logrado: (val, guardados) => new Set(guardados.filter(g => compatibles(activas(g)).length === 1).map(g => activas(g).join('|'))).size >= 2,
+        bien: 'Dos caminos distintos llegan al mismo reparto. ¿Cuál usa menos pistas?' },
+    ],
   };
   // Mesa 3: el parentesco entre dos personas cualesquiera del árbol, con el camino que sube y baja.
   const PADRE = { pedro: 'raul', tomas: 'raul', ana: 'pedro', luis: 'pedro', ivan: 'tomas' };
@@ -499,6 +538,7 @@
   }
   const NOMBRES = { '1,0': ['padre', 'madre'], '2,0': ['abuelo', 'abuela'], '0,1': ['hijo', 'hija'], '0,2': ['nieto', 'nieta'], '1,1': ['hermano', 'hermana'], '2,1': ['tío', 'tía'], '1,2': ['sobrino', 'sobrina'], '2,2': ['primo', 'prima'] };
   const PERSONAS = ARBOL_N.map(n => ({ valor: n.id, texto: n.etiqueta }));
+  const largo = (de, a) => { const c = camino(de, a); return c.u + c.d; };
   const arbolPar = val => {
     const c = camino(val.de, val.a), on = new Set(c.pasos.map(p => [...p].sort().join('-')));
     return {
@@ -517,6 +557,23 @@
       const c = camino(val.de, val.a), nom = NOMBRES[`${c.u},${c.d}`][val.a === 'ana' ? 1 : 0];
       return [`Para ${NODO[val.de].etiqueta}, ${NODO[val.a].etiqueta} es su ${nom}: sube ${c.u}, baja ${c.d}`];
     },
+    // Retos: todos leen camino(), el mismo que pinta las líneas del árbol.
+    invitaciones: [
+      { texto: 'Busca a la persona que es tío de Ana.',
+        logrado: val => val.de === 'ana' && val.a !== 'ana' && camino('ana', val.a).u === 2 && camino('ana', val.a).d === 1,
+        bien: 'Tomás: sube dos líneas hasta Raúl y baja una. ¿Quién es sobrino de Tomás?' },
+      { texto: 'Busca el pariente más lejano de Luis: el camino con más líneas.',
+        logrado: val => val.de === 'luis' && val.a !== 'luis' && largo('luis', val.a) === Math.max(...ARBOL_N.map(n => largo('luis', n.id))),
+        bien: 'Su primo Iván: sube dos y baja dos. Ningún camino desde Luis es más largo.' },
+      { texto: 'Guarda dos casos donde la misma persona sea padre de alguien y también hijo.',
+        logrado: (val, guardados) => guardados.some(x => { const c = camino(x.de, x.a); return c.u === 1 && c.d === 0
+          && guardados.some(y => { const e = camino(y.de, y.a); return y.a === x.a && e.u === 0 && e.d === 1; }); }),
+        bien: 'Una persona, dos papeles. Por eso dos padres y dos hijos pueden ser tres.' },
+      { texto: 'Guarda un par y después el mismo par al revés, con otro nombre de parentesco.',
+        logrado: (val, guardados) => guardados.some(x => x.de !== x.a && camino(x.de, x.a).u !== camino(x.de, x.a).d
+          && guardados.some(y => y.de === x.a && y.a === x.de)),
+        bien: 'Al voltear el par, lo que subía ahora baja: tío se vuelve sobrino.' },
+    ],
     arrastres: [
       { id: 'desde', etiqueta: 'persona desde la que se mira', color: 'c-i',
         donde: val => enPx(arbolPar(val), NODO[val.de].x - 0.55, NODO[val.de].y + 0.3),
@@ -533,6 +590,35 @@
     laboratorio: [mesaVenn, mesaFamilia, mesaCuadro],
     version: '0.2.0',
     estado: 'completa',
+    // Glosario (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso.
+    glosario: [
+      { termino: 'premisa', def: 'Dato o afirmación que se acepta como punto de partida para razonar.',
+        ejemplo: '«Todos los A son B» y «algunos B son C» son dos premisas.', ver: ['conclusión'] },
+      { termino: 'conclusión', def: 'Lo que se afirma a partir de los datos. Es segura solo si vale en todos los casos posibles.',
+        ejemplo: 'De «todo A es B» y «todo B es C» sale: todo A es C.', ver: ['premisa', 'certeza'] },
+      { termino: 'algunos', def: 'En lógica: al menos uno, y quizás todos. No dice cuáles ni cuántos.',
+        formas: ['algunos', 'algunas', 'algún'], ejemplo: '«Algunos B son C» se cumple aunque un solo B sea C.' },
+      { termino: 'diagrama de Venn', def: 'Dibujo con un círculo por grupo: muestra qué grupos están dentro de otros, se cruzan o se separan.',
+        formas: ['diagrama de Venn', 'diagramas de Venn'], ejemplo: '«Todos los A son B»: el círculo A queda dentro del círculo B.' },
+      { termino: 'compatible', def: 'Que cumple a la vez todas las premisas o pistas. Puede haber varios casos así.', ver: ['premisa'] },
+      { termino: 'certeza', def: 'Seguridad total: algo vale en todos los casos que permiten los datos, sin excepción.', ver: ['compatible'] },
+      { termino: 'válido', def: 'Dicho de un razonamiento: si sus premisas son verdaderas, lo que concluye no puede ser falso.',
+        formas: ['válido', 'válida', 'válidos', 'válidas'], ver: ['premisa', 'conclusión'] },
+      { termino: 'condicional', def: 'Frase «si p, entonces q»: asegura que siempre que pasa p, también pasa q.',
+        ejemplo: '«Si llueve, la pista se moja»: con lluvia, la pista no puede quedar seca.', ver: ['forma directa', 'forma indirecta'] },
+      { termino: 'forma directa', def: 'Razonar desde «si p, entonces q» y «pasa p» hasta «pasa q».',
+        ejemplo: 'Si llueve, se moja. Llueve. Entonces está mojada.', ver: ['condicional', 'forma indirecta'] },
+      { termino: 'forma indirecta', def: 'Razonar desde «si p, entonces q» y «no pasa q» hasta «no pasa p».',
+        ejemplo: 'Si llueve, se moja. Está seca. Entonces no llovió.', ver: ['condicional', 'forma directa'] },
+      { termino: 'cuadro de doble entrada', def: 'Tabla con un grupo en las filas y otro en las columnas, para marcar qué va con qué.',
+        formas: ['cuadro de doble entrada', 'cuadro'], ejemplo: 'Personas en filas y deportes en columnas: ✗ si no puede ser, ✓ si es seguro.' },
+      { termino: 'parentesco', def: 'Relación de familia entre dos personas, como padre, tío o primo.',
+        formas: ['parentesco', 'parentescos'], ejemplo: 'El hijo de tu tío es tu primo.', ver: ['árbol genealógico'] },
+      { termino: 'árbol genealógico', def: 'Dibujo de una familia: cada línea une a un padre o una madre con un hijo o una hija.',
+        formas: ['árbol genealógico', 'árbol', 'árboles'], ejemplo: 'De Ana a su primo Iván: el camino sube 2 líneas y baja 2.', ver: ['parentesco'] },
+      { termino: 'radio', def: 'Distancia del centro de un círculo a su borde. Es la mitad del diámetro.',
+        formas: ['radio', 'radios'], ver: ['diámetro'] },
+    ],
     requiere: ['/nucleo/kit/piezas/rm-plano.js', '/nucleo/kit/piezas/rm-tablero.js'],
     historia: {
       texto: 'En el siglo IV a. C., Aristóteles estudió qué conclusiones se siguen necesariamente de unas premisas. Separó dos cosas: que las premisas sean verdaderas y que el paso hacia la conclusión sea válido. Los acertijos de familias y repartos de hoy son otra aplicación de esa misma pregunta.',
