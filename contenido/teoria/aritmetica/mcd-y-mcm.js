@@ -12,13 +12,17 @@
  *     primer punto común · acción: el botón fijo de abajo.
  *   Estados: juego sin tocar · casos probados · predicción · coincide / no coincide · paso a paso · caso nuevo · «No sé».
  *   Duda que resuelve: «¿cuándo es MCD y cuándo es MCM, si los dos dicen “común”?».
- * Colores (regla 4): a naranja (c-o), b turquesa (c-i), el MCD verde (c-d), el MCM rojo (c-h).
+ * Colores (regla 4): a naranja (c-o), b turquesa (c-i), el MCD verde (c-d), el MCM rojo (c-h). En las mesas 3D, el
+ *   tercer lado c va en violeta (c-f), y el lado m del cubo de prueba, en verde solo cuando llena justo (es divisor común).
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El motor de plantillas/fracciones llena la caja (MCD) y arma el cubo de ladrillos (MCM) de las mesas 3D (regla 1).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/fracciones/motor.js'))
+    : fabrica(root.Kit, root.MotorFracciones);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MF) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const A = { v: 'c-o', t: 'a' }, Bv = { v: 'c-i', t: 'b' };
@@ -534,11 +538,124 @@
     };
   };
 
+  // Mesas 3D (ronda 4, docs/3d.md): el MCD y el MCM de tres números, que en las cintas no se ven juntos.
+  // Caja · Cambia: los lados y el cubo de prueba · Permanece: la caja punteada · Progresa: de sobrar a llenar justo ·
+  //   Se reserva: el verde, solo para el cubo que divide a los tres · Debe verse: el cubo más grande que llena es el MCD.
+  // Ladrillos · Cambia: el ladrillo y el lado del cubo · Permanece: el cubo punteado, en rojo · Progresa: los ladrillos
+  //   de cada lado, en el color de su medida · Se reserva: el cierre justo · Debe verse: el cubo más chico es el MCM.
+  const C3 = { v: 'c-f', t: 'c' };
+  const llena = v => MF.llenarCaja(v.a, v.b, v.c, v.m);
+  const cierra = v => MF.cuboDeLadrillos(v.a, v.b, v.c, v.L);
+  const ladosCaja = [
+    { id: 'a', etiqueta: 'a', color: 'c-o', min: 2, max: 12, paso: 1, inicio: 12, unidad: 'cm', decimales: 0 },
+    { id: 'b', etiqueta: 'b', color: 'c-i', min: 2, max: 12, paso: 1, inicio: 8, unidad: 'cm', decimales: 0 },
+    { id: 'c', etiqueta: 'c', color: 'c-f', min: 2, max: 8, paso: 1, inicio: 6, unidad: 'cm', decimales: 0 },
+  ];
+  function datosLlena(v) {
+    const r = llena(v);
+    return {
+      bloques: r.cubos.map(q => ({ x: q.x, y: q.y, z: q.z, w: r.m, h: r.m, d: r.m, g: 0 })),
+      grupos: [{ nombre: `cubos de ${r.m} cm`, color: r.justo ? 'c-d' : null, dice: `${r.cantidad} cubos de ${r.m} cm${r.justo ? ', llenan justo' : ''}` }],
+      marco: { x: 0, y: 0, z: 0, w: v.a, h: v.b, d: v.c },
+      // Cada medida junto a su lado, afuera de la caja (el margen crece con la caja, para no caer encima).
+      marcas: (o => [
+        { p: [v.a / 2, -o, 0], texto: `${v.a}`, color: 'c-o' },
+        { p: [v.a + o, v.b * 0.6, 0], texto: `${v.b}`, color: 'c-i' },
+        { p: [v.a + o, -o, v.c / 2], texto: `${v.c}`, color: 'c-f' },
+      ])(0.6 + 0.12 * Math.max(v.a, v.b, v.c)),
+      hueco: 0.15 * Math.min(1, r.m / 2),
+      alt: `Caja de ${v.a} por ${v.b} por ${v.c} cm con cubos de ${r.m} cm: caben ${r.cantidad}` + (r.justo ? ' y la llenan justo.' : ' y sobra espacio.'),
+    };
+  }
+  function datosLadrillos(v) {
+    const r = cierra(v), eje = ['c-o', 'c-i', 'c-f'];
+    return {
+      bloques: r.aristas.map(q => ({ x: q.x, y: q.y, z: q.z, w: v.a, h: v.b, d: v.c, g: q.eje + 1 })),
+      grupos: [
+        { nombre: 'ladrillo de la esquina', dice: 'El ladrillo de la esquina cuenta en los tres lados.' },
+        ...[0, 1, 2].map(k => ({ nombre: `ladrillos a lo ${['largo', 'ancho', 'alto'][k]}`, color: eje[k], dice: `${r.porArista[k]} ladrillos de ${r.lados[k]} cm a lo ${['largo', 'ancho', 'alto'][k]}` })),
+      ],
+      marco: { x: 0, y: 0, z: 0, w: v.L, h: v.L, d: v.L, color: 'c-h' },
+      marcas: [
+        { p: [v.L / 2, -0.25 * v.L, 0], texto: `×${r.porArista[0]}`, color: 'c-o' },
+        { p: [-0.25 * v.L, v.L / 2, 0], texto: `×${r.porArista[1]}`, color: 'c-i' },
+        { p: [-0.15 * v.L, 0, 0.75 * v.L], texto: `×${r.porArista[2]}`, color: 'c-f' },
+      ],
+      hueco: 0.12,
+      alt: `Cubo de lado ${v.L} con ladrillos de ${v.a} por ${v.b} por ${v.c}: ` + (r.justo ? `cierra justo con ${f(r.ladrillos, 0)} ladrillos.` : `${r.sobra.map((x, k) => (x ? `${v.L} no es múltiplo de ${r.lados[k]}` : '')).filter(Boolean).join(' y ')}.`),
+    };
+  }
+  const mesaLlena = {
+    id: 'caja-que-se-llena', titulo: 'La caja que se llena', pieza: 'ari-cubitos-3d',
+    consigna: 'Gira la caja con el dedo. Cambia sus lados y el lado de los cubos: busca cubos que la llenen sin dejar hueco.',
+    controles: ladosCaja.concat([{ id: 'm', etiqueta: 'Lado del cubo', color: 'c-d', min: 1, max: 12, paso: 1, inicio: 5, unidad: 'cm', decimales: 0 }]),
+    dibujo: v => ({ datos: datosLlena(v), estado: {} }),
+    lectura: v => { const r = llena(v); return [`Cubos de ${r.m}: caben ${r.porLado.join(' · ')} = ${r.cantidad}` + (r.esMcd ? ', justo: es el MCD' : r.justo ? ', llenan justo' : ', sobra espacio')]; },
+    invitaciones: [
+      { texto: 'Llena la caja de 12 × 8 × 6 con los cubos más grandes posibles.',
+        logrado: v => v.a === 12 && v.b === 8 && v.c === 6 && llena(v).esMcd,
+        bien: 'Lado 2: el mayor que divide a 12, a 8 y a 6. Es el MCD.',
+        pista: 'Prueba lados que dividan a 12, a 8 y a 6. ¿Cuál es el mayor?' },
+      { texto: 'Arma una caja cuyo MCD sea 4 y llénala con cubos de 4.',
+        logrado: v => llena(v).esMcd && v.m === 4,
+        bien: 'Cubos de 4 dividen a los tres lados, y ninguno más grande lo hace.',
+        pista: 'Usa lados que sean múltiplos de 4, como 8, 12 y 4.' },
+      { texto: 'Llena justo una caja que no sea cubo usando solo dos cubos.',
+        logrado: v => llena(v).justo && llena(v).cantidad === 2 && !(v.a === v.b && v.b === v.c),
+        bien: 'Dos cubos: un lado mide el doble y los otros dos, justo el cubo.',
+        pista: 'Busca lados como 12, 6 y 6, con cubos de 6.' },
+      { texto: 'Haz que el cubo divida a dos lados y deje hueco solo en el tercero.',
+        logrado: v => llena(v).cantidad > 0 && llena(v).sobra.filter(x => x > 0).length === 1,
+        bien: 'Basta un lado que el cubo no divida para que la caja no se llene.',
+        pista: 'Mira cuál lado deja hueco y cambia solo ese.' },
+      { texto: 'Guarda dos llenados justos de una caja: con el MCD y con cubos más chicos.',
+        testigo: [{ a: 12, b: 8, c: 6, m: 2 }, { a: 12, b: 8, c: 6, m: 1 }],
+        logrado: (v, g) => g.some(x => g.some(y => x.a === y.a && x.b === y.b && x.c === y.c && llena(x).esMcd && llena(y).justo && !llena(y).esMcd)),
+        bien: 'Todo divisor común llena; el MCD lo hace con menos cubos.',
+        pista: 'Con 12, 8 y 6, guarda cubos de 2 y después de 1.' },
+    ],
+  };
+  const mesaLadrillos = {
+    id: 'ladrillos-cubo', titulo: 'Ladrillos que arman un cubo', pieza: 'ari-cubitos-3d',
+    consigna: 'Gira el cubo con el dedo. Elige el ladrillo y el lado del cubo: cada lado tiene que llevar ladrillos enteros.',
+    controles: [
+      { id: 'a', etiqueta: 'largo', color: 'c-o', min: 2, max: 6, paso: 1, inicio: 2, unidad: 'cm', decimales: 0 },
+      { id: 'b', etiqueta: 'ancho', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 3, unidad: 'cm', decimales: 0 },
+      { id: 'c', etiqueta: 'alto', color: 'c-f', min: 2, max: 6, paso: 1, inicio: 4, unidad: 'cm', decimales: 0 },
+      { id: 'L', etiqueta: 'Lado del cubo', color: 'c-h', min: 2, max: 60, paso: 1, inicio: 10, unidad: 'cm', decimales: 0 },
+    ],
+    dibujo: v => ({ datos: datosLadrillos(v), estado: {} }),
+    lectura: v => { const r = cierra(v); return r.justo ? [`Cubo de ${v.L}: ${r.porArista.join(' · ')} = ${f(r.ladrillos, 0)} ladrillos` + (r.esMcm ? ' (MCM)' : '')] : [`Lado ${v.L}: no cierra, ${r.sobra.filter(x => x).length === 1 ? 'un lado sobra' : 'sobran lados'}`]; },
+    invitaciones: [
+      { texto: 'Arma el cubo más chico con ladrillos de 2 × 3 × 4.',
+        logrado: v => v.a === 2 && v.b === 3 && v.c === 4 && cierra(v).esMcm,
+        bien: 'Lado 12, el MCM: 6 · 4 · 3 = 72 ladrillos.',
+        pista: 'El lado del cubo tiene que ser múltiplo de 2, de 3 y de 4.' },
+      { texto: 'Cierra un cubo justo que no sea el más chico posible.',
+        logrado: v => cierra(v).justo && !cierra(v).esMcm,
+        bien: 'Cualquier múltiplo común cierra; el MCM es solo el primero.',
+        pista: 'Encuentra el cubo más chico y duplica su lado.' },
+      { texto: 'Elige un ladrillo cuyo cubo más chico mida 60 cm, y ármalo.',
+        logrado: v => cierra(v).esMcm && v.L === 60,
+        bien: '60 = 2² · 3 · 5: cada primo con su exponente mayor.',
+        pista: 'Prueba un ladrillo de 3 × 4 × 5.' },
+      { texto: 'Haz que dos lados cierren y uno no.',
+        logrado: v => cierra(v).sobra.filter(x => x > 0).length === 1,
+        bien: 'Basta un lado que no divida al cubo para que no cierre.',
+        pista: 'Con 2 × 3 × 4, prueba un lado de 6 o de 18.' },
+      { texto: 'Guarda dos ladrillos distintos con el mismo cubo más chico, ya armado.',
+        logrado: (v, g) => g.some(x => g.some(y => cierra(x).esMcm && cierra(y).esMcm && x.L === y.L
+          && [x.a, x.b, x.c].sort().join() !== [y.a, y.b, y.c].sort().join())),
+        bien: 'El cubo depende de los tres lados juntos, no de un ladrillo en especial.',
+        pista: 'Prueba 2 × 3 × 4 y 3 × 4 × 6: los dos cierran en 12.' },
+    ],
+  };
+
   return {
     unidad: 'aritmetica.mcd-y-mcm',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    requiere: ['/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tabla.js', '/plantillas/fracciones/motor.js', '/nucleo/kit/piezas/ari-cubitos-3d.js'],
     // Laboratorio: juego libre, sin preguntas. «Cintas libres» deja elegir los largos (también dos que solo comparten el
     // 1); «Tres combis» agrega una tercera y el caso en que el encuentro cae fuera de la recta; Euclides es el juego de la idea 3.
     glosario: [
@@ -568,6 +685,7 @@
         ejemplo: '1,41 aproxima √2: 1,41² = 1,9881, casi 2.', ver: ['convergente'] },
     ],
     laboratorio: [
+      mesaLlena, mesaLadrillos,
       {
         id: 'cintas-libres', titulo: 'Cintas de cualquier largo', pieza: 'arit-tiras',
         consigna: 'Arrastra el fin de cada cinta y el fin del primer trozo. Busca el trozo más largo que no deje sobrante.',

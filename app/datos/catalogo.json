@@ -3031,7 +3031,9 @@
       "requiere": [
        "/nucleo/kit/piezas/arit-tiras.js",
        "/nucleo/kit/piezas/recta.js",
-       "/nucleo/kit/piezas/arit-tabla.js"
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/plantillas/fracciones/motor.js",
+       "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 5,
       "terminos": 23
