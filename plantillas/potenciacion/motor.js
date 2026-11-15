@@ -15,6 +15,7 @@
  *                                errores típicos al dar la raíz y el residuo
  *   esCuadrado(N), esCubo(N)     ¿N = k² o N = k³ para un entero k?
  *   agregarParaSiguiente(k, n)   de kⁿ a (k+1)ⁿ: la L de 2k + 1 fichas (o la cáscara de 3k² + 3k + 1 cubitos), por partes
+ *   cuboConResto(N, separar)     N cubitos: el cubo k³ y el residuo puesto en la cáscara de (k+1)³ (caras, aristas, esquina)
  * Cifras terminales y criterios
  *   terminaciones(n)             las últimas cifras posibles de kⁿ en base 10 (por la rueda: k mod 10 → kⁿ mod 10)
  *   criterios(N)                 los criterios de exclusión de cuadrados (última cifra, ceros, terminación en 5, entre 4,
@@ -410,7 +411,27 @@
     return A.map((p, i) => { const q = B[i], o = Object.assign({}, q); for (const c of ['x', 'y', 'z']) if (c in p) o[c] = p[c] + (q[c] - p[c]) * t; return o; });
   }
 
-  return { raizEntera, esCuadrado, esCubo, agregarParaSiguiente, terminaciones, criterios, puedeSerCuadrado, factores,
+  // N cubitos (15 nov 2026, mesa 3D de la teoría): el cubo más grande que cabe, k³, y el residuo r = N − k³ puesto en la
+  // cáscara que lleva a (k+1)³, en el orden en que se arma: primero las tres caras de k·k (de una en una), después las
+  // tres aristas de k y al final la esquina. separar: la cáscara se aparta del cubo (como en crecerCubo), para contarla.
+  const RANGO_CASCARA = { cara: 0, arista: 1, esquina: 2 };
+  function cuboConResto(N, separar) {
+    const R = raizEntera(N, 3), K = R.k;
+    if (K > 12) throw new Error('N es demasiado grande para dibujar el cubo (hasta 13³ − 1)');
+    if (K < 1) return { N: R.N, k: 0, r: R.r, falta: R.rp, potencia: 0, siguiente: 1, exacto: R.exacta, cubo: [], resto: [], hueco: [], caras: 0, aristas: 0, esquina: 0 };
+    const C = crecerCubo(K, separar ? 1.5 : 0), pos = separar ? C.separados : C.cubitos;
+    const cara = c => (c.x === K ? 0 : c.y === K ? 1 : 2);
+    const cascara = pos.map((c, i) => Object.assign({}, c, { i: C.cubitos[i] })).filter(c => c.parte !== 'viejo')
+      .sort((p, q) => RANGO_CASCARA[p.parte] - RANGO_CASCARA[q.parte] || (p.parte === 'cara' ? cara(p.i) - cara(q.i) : 0)
+        || p.i.z - q.i.z || p.i.y - q.i.y || p.i.x - q.i.x);
+    const limpio = c => ({ x: c.x, y: c.y, z: c.z, parte: c.parte });
+    const resto = cascara.slice(0, R.r).map(limpio), cuenta = p => resto.filter(c => c.parte === p).length;
+    return { N: R.N, k: K, r: R.r, falta: R.rp, potencia: R.potencia, siguiente: R.siguiente, exacto: R.exacta,
+      cubo: pos.filter(c => c.parte === 'viejo').map(limpio), resto, hueco: cascara.slice(R.r).map(limpio),
+      caras: cuenta('cara'), aristas: cuenta('arista'), esquina: cuenta('esquina') };
+  }
+
+  return { cuboConResto, raizEntera, esCuadrado, esCubo, agregarParaSiguiente, terminaciones, criterios, puedeSerCuadrado, factores,
     menorMultiplicador, menorDivisor, cuadradosEntre, cuadradosDeCifras, cifrasRaiz, sumaImpares, terminaEn5, restosCuadrados, tablaRestos,
     layoutCuadrado, layoutFilas, fichasFactores, layoutL, filasImpares, capasL, cuboIso, crecerCubo, reacomodar, interpolar, ordenar, iraiz, miles, sup, textoFactores };
 });

@@ -15,10 +15,13 @@
  * queda fuera o el error, rojo (c-h). Piezas: arit-tabla (los dados) y arit-tiras (árbol en barras y esperanza).
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El motor de plantillas/probabilidad-dados cuenta los casos de la mesa 3D de los tres dados (regla 1).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/probabilidad-dados/motor.js'))
+    : fabrica(root.Kit, root.MotorDados);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MDa) {
   'use strict';
   const f = (x, d = 2) => Kit.formatear(x, d);
   const A = { v: 'c-o', t: 'A' }, B = { v: 'c-i', t: 'B' };
@@ -505,11 +508,76 @@
   // La fábrica libre: rangos amplios, también máquinas que nunca fallan.
   const fabricaLab = v => fabrica(v.pa, v.da, v.db);
 
+  // Mesa 3D (ronda 4, docs/3d.md, 3D de contexto): el espacio muestral de tres dados es una caja de 6 × 6 × 6; con dos,
+  // una sola capa. Cambia: cuántos dados y el evento · Permanece: un cubito por resultado, en su lugar · Progresa: los
+  // cubitos verdes del evento · Se reserva: la comparación entre dos y tres dados · Debe verse: P = verdes / todos.
+  // Qué cubitos cumplen lo dice MDa.probabilidad (regla 1); la pieza solo los pinta.
+  const EVENTOS = {
+    igual: { texto: 'Suma igual a', ev: s => ({ tipo: 'suma', op: '=', valor: s }), nombre: s => `suma ${s}` },
+    alMenos: { texto: 'Suma de al menos', ev: s => ({ tipo: 'suma', op: '>=', valor: s }), nombre: s => `suma ${s} o más` },
+    seis: { texto: 'Al menos un 6', ev: () => ({ tipo: 'alMenosUno', op: '=', valor: 6 }), nombre: () => 'al menos un 6' },
+    sinSeis: { texto: 'Ningún 6', ev: () => ({ tipo: 'ninguno', op: '=', valor: 6 }), nombre: () => 'ningún 6' },
+  };
+  const prob = v => MDa.probabilidad({ dados: v.dados }, EVENTOS[v.ev].ev(v.s));
+  function datosDados(v) {
+    const r = prob(v), verdes = new Set(r.casillas.map(c => c.join(','))), bloques = [];
+    for (let k = 1; k <= (v.dados === 3 ? 6 : 1); k++) for (let j = 1; j <= 6; j++) for (let i = 1; i <= 6; i++) {
+      const res = v.dados === 3 ? [i, j, k] : [i, j];
+      bloques.push({ x: i - 1, y: j - 1, z: k - 1, g: verdes.has(res.join(',')) ? 0 : 1 });
+    }
+    const nombre = EVENTOS[v.ev].nombre(v.s);
+    return {
+      bloques,
+      grupos: [
+        { nombre: `resultados con ${nombre}`, color: 'c-d', dice: `${r.favorables} resultados con ${nombre}` },
+        { nombre: 'resultados que no cumplen', dice: `${r.total - r.favorables} resultados no cumplen` },
+      ],
+      marcas: [
+        { p: [3, -1.4, -0.6], texto: '1.er dado' },
+        { p: [7, 3, -0.6], texto: '2.º dado' },
+      ].concat(v.dados === 3 ? [{ p: [-1.4, -1.4, 3.5], texto: '3.er dado' }] : []),
+      alt: `${v.dados === 3 ? 'Caja de 6 por 6 por 6' : 'Capa de 6 por 6'}: ${r.total} resultados, ${r.favorables} con ${nombre} en verde; probabilidad ${r.p.texto}.`,
+    };
+  }
+  const mesaDados = {
+    id: 'tres-dados', titulo: 'Tres dados en una caja', pieza: 'ari-cubitos-3d',
+    consigna: 'Cada cubito es un resultado. Gira la caja con el dedo, cambia el evento y cuenta los verdes.',
+    controles: [
+      { id: 'dados', etiqueta: 'Dados', opciones: [{ valor: 2, texto: 'Dos' }, { valor: 3, texto: 'Tres' }] },
+      { id: 'ev', etiqueta: 'Evento', opciones: Object.keys(EVENTOS).map(k => ({ valor: k, texto: EVENTOS[k].texto })) },
+      { id: 's', etiqueta: 'suma', color: 'c-o', min: 2, max: 18, paso: 1, inicio: 7, decimales: 0 },
+    ],
+    dibujo: v => ({ datos: datosDados(v), estado: {} }),
+    lectura: v => { const r = prob(v); return [`${r.favorables} de ${r.total}: P = ${r.p.texto}`]; },
+    invitaciones: [
+      { texto: 'Con tres dados, busca la suma más probable.',
+        logrado: v => v.dados === 3 && v.ev === 'igual' && prob(v).favorables === Math.max(...[...Array(16).keys()].map(k => prob({ dados: 3, ev: 'igual', s: k + 3 }).favorables)),
+        bien: '10 y 11 empatan con 27 de 216: el medio se arma de más maneras.',
+        pista: 'Las sumas del medio salen de más maneras. Prueba cerca de 10.' },
+      { texto: 'Encuentra una suma de tres dados que salga de una sola manera.',
+        logrado: v => v.dados === 3 && v.ev === 'igual' && prob(v).favorables === 1,
+        bien: 'Un solo cubito, en una esquina: 1 + 1 + 1 o 6 + 6 + 6.',
+        pista: 'Mira las esquinas de la caja: la suma más chica o la más grande.' },
+      { texto: 'Con tres dados, arma un evento de probabilidad exacta 1/2.',
+        logrado: v => v.dados === 3 && prob(v).p.num === 1 && prob(v).p.den === 2,
+        bien: 'Suma 11 o más: la mitad justa, porque la caja es simétrica.',
+        pista: 'Usa «Suma de al menos» con un valor del medio.' },
+      { texto: 'Guarda la suma 7 con dos dados y con tres. ¿Cuál es más probable?',
+        logrado: (v, g) => g.some(x => x.dados === 2 && x.ev === 'igual' && x.s === 7) && g.some(x => x.dados === 3 && x.ev === 'igual' && x.s === 7),
+        bien: 'Con dos, 7 es la más probable: 1/6. Con tres, apenas 15 de 216.',
+        pista: 'Deja la suma en 7 y guarda una vez con cada cantidad de dados.' },
+      { texto: 'Con tres dados, guarda «al menos un 6» y «ningún 6».',
+        logrado: (v, g) => g.some(x => x.dados === 3 && x.ev === 'seis') && g.some(x => x.dados === 3 && x.ev === 'sinSeis'),
+        bien: '91 + 125 = 216: un evento es el complemento del otro.',
+        pista: 'Elige tres dados y guarda un caso con cada evento.' },
+    ],
+  };
+
   return {
     unidad: 'aritmetica.probabilidades',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-tiras.js'],
+    requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-tiras.js', '/plantillas/probabilidad-dados/motor.js', '/nucleo/kit/piezas/ari-cubitos-3d.js'],
     // Glosario por tema (docs/teoria.md, 4d). Unión, complemento y universo vienen de conjuntos; frecuencia relativa,
     // de estadística; «independiente», de análisis combinatorio (etapas independientes).
     glosario: [
@@ -551,6 +619,7 @@
     // Laboratorio: juego libre, sin preguntas. Los dados con condición juntan las ideas 1 y 3 (evento y universo a la
     // vez); la fábrica libre deja probar porcentajes de 0 a 50 y una máquina que no falla; la tercera es la ruleta.
     laboratorio: [
+      mesaDados,
       {
         id: 'dados-condicion', titulo: 'Dos dados y lo que sabes', pieza: 'arit-tabla',
         consigna: 'Elige el evento con la suma y lo que sabes del primer dado. Lleva el marcador a una casilla o la flecha a una fila.',

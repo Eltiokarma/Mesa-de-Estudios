@@ -15,10 +15,13 @@
  * la suma S verde (c-d).
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El motor de plantillas/sucesiones da la suma notable de los cuadrados de la mesa 3D (regla 1).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/sucesiones/motor.js'))
+    : fabrica(root.Kit, root.MotorSucesiones);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MS) {
   'use strict';
   const f = (x, d = 2) => Kit.formatear(x, d);
   const a1 = { sub: [{ v: 'c-o', t: 'a' }, '1'] }, an = { sub: [{ v: 'c-o', t: 'a' }, 'n'] };
@@ -507,11 +510,59 @@
   const MAXPG = sumaPG(Object.fromEntries(pg.juega.controles.map(c => [c.id, c.max])));
   const mismo = (g, v, ks) => g.some(x => ks.every(k => x[k] === v[k]));
 
+  // Mesa 3D (ronda 4, docs/3d.md): la suma de los cuadrados, que en el plano «no sale del rectángulo», es el volumen de
+  // una pirámide escalonada. Cambia: n y si se mira dentro del cubo n³ · Permanece: cada capa es un cuadrado de cubitos ·
+  // Progresa: la pirámide, una capa por lugar · Se reserva: el rojo, para la última capa n² · Debe verse: S crece como
+  // un volumen (cerca de n³/3). La suma la da MS.sumaNotable (regla 1); la pieza solo apila las capas.
+  const sumaCuad = n => (n >= 1 ? MS.sumaNotable('cuadrados', n).S : 0);
+  function datosPiramide(v) {
+    const bloques = [];
+    for (let k = v.n; k >= 1; k--) for (let j = 0; j < k; j++) for (let i = 0; i < k; i++) bloques.push({ x: i, y: j, z: v.n - k, g: k === v.n ? 1 : 0 });
+    const S = sumaCuad(v.n);
+    return {
+      bloques,
+      grupos: [
+        { nombre: 'capas de arriba', color: 'c-d', dice: `Las capas de arriba: ${sumaCuad(v.n - 1)} cubitos` },
+        { nombre: `capa de ${v.n}²`, color: 'c-h', rotulo: `${v.n}²`, rotuloEn: [v.n / 2, -0.9 - 0.1 * v.n, 0], dice: `La última capa: ${v.n}² = ${v.n * v.n} cubitos` },
+      ],
+      marco: v.cubo === 1 ? { x: 0, y: 0, z: 0, w: v.n, h: v.n, d: v.n, rotulo: `${v.n}³ = ${v.n ** 3}` } : undefined,
+      alt: `Pirámide escalonada de ${v.n} capas cuadradas, de 1² arriba a ${v.n}² abajo: ${S} cubitos` + (v.cubo === 1 ? ` dentro de un cubo de ${v.n ** 3}.` : '.'),
+    };
+  }
+  const mesaPiramide = {
+    id: 'piramide-cuadrados', titulo: 'La pirámide de cuadrados', pieza: 'ari-cubitos-3d',
+    consigna: 'Cada capa es un cuadrado: 1², 2², …, n². Gira la pirámide, sube n y métela en su cubo.',
+    controles: [
+      { id: 'n', etiqueta: 'n', color: 'c-h', min: 1, max: 10, paso: 1, inicio: 6, decimales: 0 },
+      { id: 'cubo', etiqueta: 'Cubo n³', opciones: [{ valor: 0, texto: 'Sin cubo' }, { valor: 1, texto: 'Con el cubo' }] },
+    ],
+    dibujo: v => ({ datos: datosPiramide(v), estado: {} }),
+    lectura: v => [`1² + … + ${v.n}² = `, { v: 'c-d', t: String(sumaCuad(v.n)) }, v.cubo === 1 ? ` de ${v.n ** 3}` : ''],
+    invitaciones: [
+      { texto: 'Arma una pirámide de 55 cubitos.',
+        logrado: v => sumaCuad(v.n) === 55,
+        bien: '1 + 4 + 9 + 16 + 25 = 55: cada capa es un cuadrado.',
+        pista: 'Baja n de uno en uno y resta la capa roja.' },
+      { texto: 'Logra que la capa roja tenga más cubitos que todas las de arriba juntas.',
+        logrado: v => v.n > 1 && v.n * v.n > sumaCuad(v.n - 1),
+        bien: 'Hasta n = 4 gana la de abajo: 16 contra 14. Desde 5, ganan las de arriba.',
+        pista: 'Baja n y compara la capa roja con el resto.' },
+      { texto: 'Mete la pirámide en su cubo y haz que ocupe menos del 40 %.',
+        logrado: v => v.cubo === 1 && sumaCuad(v.n) / v.n ** 3 < 0.4,
+        bien: 'Se acerca a un tercio del cubo: S es casi n³/3 cuando n crece.',
+        pista: 'Elige «Con el cubo» y sube n mirando la lectura.' },
+      { texto: 'Guarda una pirámide de n capas y otra del doble de capas.',
+        logrado: (v, g) => g.some(x => g.some(y => y.n === 2 * x.n)),
+        bien: 'Con el doble de capas hay casi ocho veces más: crece como un volumen.',
+        pista: 'Guarda n = 3 y después n = 6.' },
+    ],
+  };
+
   return {
     unidad: 'aritmetica.sucesiones-y-series',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/arit-tiras.js', '/nucleo/kit/piezas/arit-tabla.js', '/plantillas/sucesiones/motor.js', '/nucleo/kit/piezas/ari-cubitos-3d.js'],
     glosario: [
       { termino: 'sucesión', formas: ['sucesión', 'sucesiones'],
         def: 'Lista ordenada de números que siguen una regla; cada uno ocupa un lugar: primero, segundo…',
@@ -544,6 +595,7 @@
     // Laboratorio: juego libre, sin preguntas. La escalera con su copia junta las ideas 1 y 2 para cualquier progresión
     // (también d = 0); la suma sin fin usa una sola escala para comparar razones; la tercera es el juego de la idea 3.
     laboratorio: [
+      mesaPiramide,
       {
         id: 'escalera-suma', titulo: 'Escalera y su copia', pieza: 'arit-fichas',
         consigna: 'Arma cualquier progresión aritmética, también con d = 0. Pon la copia al revés y cuenta el rectángulo.',

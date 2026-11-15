@@ -28,6 +28,8 @@
  * MCD y MCM
  *   factores(n) · textoFactores(n)   descomposición en primos
  *   mcd(ns) · mcm(ns)                por descomposición (exponentes menores o mayores) y por Euclides
+ *   llenarCaja(a, b, c, m)           la caja a × b × c llena de cubos de lado m: cuántos caben, si llena justo (MCD)
+ *   cuboDeLadrillos(a, b, c, L)      ladrillos a × b × c para un cubo de lado L: cuántos por arista, si cierra (MCM)
  *   euclides(a, b)                   las divisiones sucesivas [dividendo, divisor, cociente, resto]
  *   cintas(a, b)                     cortar dos cintas en trozos iguales lo más largos posible (MCD)
  *   coinciden(a, b)                  dos buses que salen juntos cada a y b minutos: vuelven a coincidir (MCM)
@@ -396,7 +398,36 @@
     return { x: 0, tramo: 'llego', recorrido: r.distancia };
   }
 
-  return { fr, crudo, texto, valor, igual, simplificar, equivalentes, comparar, sumar, restar, multiplicar, dividir,
+  // MCD y MCM en el espacio (15 nov 2026, mesas 3D de la teoría de MCD y MCM).
+  // llenarCaja(a, b, c, m): la caja a × b × c se llena con cubos de lado m desde una esquina. Caben ⌊a/m⌋ · ⌊b/m⌋ · ⌊c/m⌋;
+  // llena justo si m divide a los tres lados, y el cubo más grande que llena justo es el de lado mcd(a, b, c).
+  function llenarCaja(a, b, c, m) {
+    [a, b, c].forEach((x, k) => entero(x, 'abc'[k], { positivo: true })); entero(m, 'm', { positivo: true });
+    const lados = [a, b, c], porLado = lados.map(x => Math.floor(x / m)), sobra = lados.map(x => x % m);
+    const g = mcd([a, b, c]).valor, cubos = [];
+    for (let z = 0; z < porLado[2]; z++) for (let y = 0; y < porLado[1]; y++) for (let x = 0; x < porLado[0]; x++) cubos.push({ x: x * m, y: y * m, z: z * m });
+    const justo = sobra.every(r => r === 0);
+    return { lados, m, porLado, sobra, cantidad: cubos.length, justo, mcd: g, esMcd: justo && m === g, cantidadMcd: (a / g) * (b / g) * (c / g), cubos };
+  }
+  // cuboDeLadrillos(a, b, c, L): ladrillos a × b × c, todos en la misma posición, para armar un cubo de lado L. Cada arista
+  // del cubo lleva L/a, L/b y L/c ladrillos; cierra justo si L es múltiplo de los tres, y el cubo más chico es el de lado
+  // mcm(a, b, c). aristas: los ladrillos de las tres aristas que salen de una esquina (el de la esquina va una sola vez).
+  function cuboDeLadrillos(a, b, c, L) {
+    [a, b, c].forEach((x, k) => entero(x, 'abc'[k], { positivo: true })); entero(L, 'L', { positivo: true });
+    const lados = [a, b, c], porArista = lados.map(x => Math.floor(L / x)), sobra = lados.map(x => L % x);
+    const justo = sobra.every(r => r === 0), M = mcm([a, b, c]).valor;
+    const aristas = [];
+    if (porArista.every(n => n >= 1)) {
+      aristas.push({ x: 0, y: 0, z: 0, eje: -1 });
+      for (let k = 1; k < porArista[0]; k++) aristas.push({ x: k * a, y: 0, z: 0, eje: 0 });
+      for (let k = 1; k < porArista[1]; k++) aristas.push({ x: 0, y: k * b, z: 0, eje: 1 });
+      for (let k = 1; k < porArista[2]; k++) aristas.push({ x: 0, y: 0, z: k * c, eje: 2 });
+    }
+    return { lados, L, porArista, sobra, justo, mcm: M, esMcm: justo && L === M,
+      ladrillos: justo ? (L / a) * (L / b) * (L / c) : null, ladrillosMcm: (M / a) * (M / b) * (M / c), aristas };
+  }
+
+  return { llenarCaja, cuboDeLadrillos, fr, crudo, texto, valor, igual, simplificar, equivalentes, comparar, sumar, restar, multiplicar, dividir,
     fraccionDe, parteQueFalta, deLoQueQueda, partes, cuchillo, decimal, cifras, generatriz, compararDecimales, lupa,
     factores, textoFactores, euclides, mcd, mcm, divisores, cintas, coinciden, cortar,
     aritmetico, ponderado, armonico, momento, idaVuelta, posicionViaje };

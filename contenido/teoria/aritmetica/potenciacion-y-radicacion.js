@@ -16,10 +16,13 @@
  * el tramo de cuadrados); la idea 1 es una tabla de exponentes que se eligen, sin lugar que agarrar. Llaves y laboratorio.
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El motor de plantillas/potenciacion arma el cubo de cubitos y su residuo de la mesa 3D (regla 1).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/potenciacion/motor.js'))
+    : fabrica(root.Kit, root.MotorPotenciacion);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MP) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const N = { v: 'c-o', t: 'N' }, q = { v: 'c-i', t: 'q' }, r = { v: 'c-h', t: 'r' };
@@ -429,7 +432,59 @@
   const residuo = Nv => Nv - isqrt(Nv) ** 2;
   const mismo = (g, v, ks) => g.some(x => ks.every(k => x[k] === v[k]));
   const NMAX = 200;
+  const R = r;                                      // el residuo, con su color (r queda tapado dentro de las funciones)
+  // Mesa 3D (ronda 4, docs/3d.md): la raíz cúbica entera, que en fichas planas no se puede ver.
+  // Cambia: N y si la cáscara va aparte · Permanece: el cubo punteado de (k + 1)³ · Progresa: el residuo, que llena
+  // caras, después aristas, después la esquina · Se reserva: el residuo 0 (no queda ningún cubito rojo) · Debe verse:
+  // la raíz cúbica es el lado del cubo más grande que cabe. Todo lo cuenta MP.cuboConResto (regla 1).
+  const cubo = v => MP.cuboConResto(v.N, v.sep === 1);
+  const alCubo = k => `${k}³`;
+  function datosCubo(v) {
+    const r = cubo(v), K = r.k, abre = v.sep === 1 ? 1.5 : 0;
+    return {
+      bloques: r.cubo.map(c => ({ x: c.x, y: c.y, z: c.z, g: 0 })).concat(r.resto.map(c => ({ x: c.x, y: c.y, z: c.z, g: 1 }))),
+      grupos: [
+        { nombre: `cubitos del cubo ${alCubo(K)}`, color: 'c-i', rotulo: K ? alCubo(K) : '', rotuloEn: [K / 2, -0.9, 0], dice: `${K}³ = ${r.potencia} cubitos: el cubo más grande que cabe` },
+        { nombre: 'cubitos del residuo', color: 'c-h', rotulo: r.r ? `r = ${r.r}` : '', dice: `Residuo: ${r.r} ${r.r === 1 ? 'cubito' : 'cubitos'} sobre ${K}³` },
+      ],
+      marco: { x: 0, y: 0, z: 0, w: K + 1 + abre, h: K + 1 + abre, d: K + 1 + abre, color: 'c-d', rotulo: `${K + 1}³` },
+      alt: `${r.N} cubitos: el cubo ${K}³ = ${r.potencia} en turquesa y ${r.r} de residuo en rojo; faltan ${r.falta} para ${K + 1}³ = ${r.siguiente}.`,
+    };
+  }
+  const mesaCubo = {
+    id: 'cubo-de-cubitos', titulo: 'El cubo de cubitos', pieza: 'ari-cubitos-3d',
+    consigna: 'Gira el cubo con el dedo. Cambia N: los cubitos que no caben en el cubo turquesa quedan en rojo.',
+    controles: [
+      { id: 'N', etiqueta: 'N', color: 'c-o', min: 1, max: 250, paso: 1, inicio: 50, unidad: 'cubitos', decimales: 0 },
+      { id: 'sep', etiqueta: 'Cáscara', opciones: [{ valor: 0, texto: 'Pegada' }, { valor: 1, texto: 'Aparte' }] },
+    ],
+    dibujo: v => ({ datos: datosCubo(v), estado: {} }),
+    lectura: v => { const r = cubo(v); return [N, ` = ${v.N}: ${r.k}³ = ${r.potencia}, `, R, ` = ${r.r}, faltan ${r.falta}`]; },
+    invitaciones: [
+      { texto: 'Arma un cubo perfecto de más de 100 cubitos.',
+        logrado: v => cubo(v).exacto && v.N > 100,
+        bien: 'Residuo 0: no sobra ningún cubito y la raíz cúbica es exacta.',
+        pista: 'Busca un N sin cubitos rojos: 5 · 5 · 5 o 6 · 6 · 6.' },
+      { texto: 'Pon la cáscara aparte y llena justo sus tres caras grandes.',
+        logrado: v => v.sep === 1 && cubo(v).k > 1 && cubo(v).r === 3 * cubo(v).k ** 2,
+        bien: 'Tres caras de k · k: el primer paso para crecer al cubo siguiente.',
+        pista: 'Con raíz 3, las tres caras piden 3 · 9 = 27 cubitos.' },
+      { texto: 'Haz que falte un solo cubito para el cubo siguiente.',
+        logrado: v => cubo(v).falta === 1,
+        bien: 'Falta la esquina: el residuo llegó a 3k² + 3k, el mayor posible.',
+        pista: 'Pon la cáscara aparte y busca la esquina vacía.' },
+      { texto: 'Encuentra un N mayor que 1 que sea cuadrado y cubo perfecto a la vez.',
+        logrado: v => v.N > 1 && cubo(v).exacto && MP.esCuadrado(v.N),
+        bien: '64 = 8² = 4³: es una sexta potencia, 2⁶.',
+        pista: 'Revisa los cubos perfectos uno por uno: ¿cuál tiene raíz cuadrada exacta?' },
+      { texto: 'Guarda dos N con la misma raíz cúbica y distinto residuo.',
+        logrado: (v, g) => g.some(x => g.some(y => cubo(x).k === cubo(y).k && cubo(x).r !== cubo(y).r)),
+        bien: 'La misma raíz sirve desde k³ hasta (k + 1)³ − 1.',
+        pista: 'Guarda 30 y después 50: los dos tienen raíz 3.' },
+    ],
+  };
   const laboratorio = [
+    mesaCubo,
     {
       id: 'raiz-grande', titulo: 'Raíz entera hasta 200 fichas', pieza: 'arit-fichas',
       consigna: 'Elige N hasta 200. Arrastra el primer hueco: cada lugar que avanzas es una ficha más en el residuo.',
@@ -519,7 +574,7 @@
     unidad: 'aritmetica.potenciacion-y-radicacion',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/recta.js'],
+    requiere: ['/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/recta.js', '/plantillas/potenciacion/motor.js', '/nucleo/kit/piezas/ari-cubitos-3d.js'],
     glosario: [
       { termino: 'cuadrado perfecto', formas: ['cuadrado perfecto', 'cuadrados perfectos'],
         def: 'Entero que resulta de multiplicar otro entero por sí mismo: sus primos tienen exponentes pares.',

@@ -13,10 +13,13 @@
  * Colores (regla 4): la base b naranja (c-o), las cifras turquesa (c-i), los restos rojo (c-h), el valor en base 10 verde (c-d).
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El motor de plantillas/numeracion dice cuánto valen las piezas y si ya forman un numeral (mesa 3D, regla 1).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/numeracion/motor.js'))
+    : fabrica(root.Kit, root.MotorNumeracion);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MN) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const b = { v: 'c-o', t: 'b' }, d = { v: 'c-i', t: 'd' }, N = { v: 'c-d', t: 'N' }, r = { v: 'c-h', t: 'r' };
@@ -441,11 +444,81 @@
     return { bloques: [{ n, columnas: base, color: 'i', marcoFilas: true, rotulo: `${n} = ${nb(enBase(n, base), base)}`, tramos: s ? [{ de: n - s, a: n - 1, color: 'h' }] : [] }], altoMax: 160, ficha: 16, alt: `${n} fichas en filas de ${base}: ${q} grupos completos y ${s} sueltas` };
   };
 
+  // Mesa 3D (ronda 4, docs/3d.md, 3D de contexto): los bloques de base b. Una barra son b cubitos, una placa son b
+  // barras y un cubo son b placas: el tercer lugar ya no cabe en el plano.
+  // Cambia: la base y cuántas piezas hay de cada clase · Permanece: cada pieza armada con b piezas de la anterior ·
+  // Progresa: el valor en base 10 · Se reserva: el naranja, para una clase con b piezas o más (se puede canjear) ·
+  // Debe verse: un numeral es lo que queda cuando ya no se puede canjear nada. Cuánto vale y si es numeral: MN.estado.
+  const sub = subi;
+  const PIEZAS = [['u', 'unidades', 'unidad'], ['d', 'barras', 'barra'], ['c', 'placas', 'placa'], ['m', 'cubos', 'cubo']];
+  const bloquesDe = v => MN.estado([v.u, v.d, v.c, v.m], v.b);
+  function datosBloques(v) {
+    const b = v.b, e = bloquesDe(v), bloques = [], grupos = [], rot = [];
+    let x0 = 0;
+    // De la clase más grande a la más chica, de izquierda a derecha; cada una en una pila.
+    [3, 2, 1, 0].forEach(k => {
+      const n = v[PIEZAS[k][0]];
+      if (!n) return;
+      const g = grupos.length, lleno = n >= b;
+      grupos.push({ nombre: PIEZAS[k][1], color: lleno ? 'c-o' : 'c-i', rotulo: String(n), rotuloEn: [x0 + (k ? b : 1) / 2, -1.2, 0],
+        dice: `${n} ${n === 1 ? PIEZAS[k][2] : PIEZAS[k][1]} de ${b ** k} cada ${k === 2 || k === 0 ? 'una' : 'uno'}` + (lleno ? `: con ${b} se canjea` : '') });
+      for (let j = 0; j < n; j++) {
+        if (k === 3) for (let t = 0; t < b; t++) bloques.push({ x: x0 + j * (b + 0.6), y: 0, z: t, w: b, h: b, d: 1, g });
+        else if (k === 2) for (let t = 0; t < b; t++) bloques.push({ x: x0, y: t, z: j, w: b, h: 1, d: 1, g });
+        else if (k === 1) for (let t = 0; t < b; t++) bloques.push({ x: x0 + t, y: 0, z: j, g });
+        else bloques.push({ x: x0 + (j % 4) * 1.2, y: Math.floor(j / 4) * 1.2, z: 0, g });
+      }
+      x0 += (k === 3 ? n * (b + 0.6) : k === 0 ? 4.8 : b) + 1.2;
+    });
+    if (!bloques.length) { bloques.push({ x: 0, y: 0, z: 0, w: 0.2, h: 0.2, d: 0.2, g: 0 }); grupos.push({ nombre: 'nada', dice: 'No hay piezas' }); }
+    return { bloques, grupos, hueco: 0.12,
+      alt: `Bloques de base ${b}: ${PIEZAS.map(([id, pl]) => `${v[id]} ${pl}`).reverse().join(', ')}; valen ${e.fichas}` + (e.normal ? `, el numeral (${e.texto})${sub(b)}.` : '; todavía se puede canjear.') };
+  }
+  const mesaBloques = {
+    id: 'bloques-base', titulo: 'Bloques de base b', pieza: 'ari-cubitos-3d',
+    consigna: 'Una barra son b cubitos; una placa, b barras; un cubo, b placas. Gira las piezas y canjea las que lleguen a b.',
+    // 9 · 3 · 9 · 9 · 9 = 19 683 casos: «Muéstrame» recorre toda la grilla (con más de 20 000 solo mira una muestra).
+    controles: [
+      { id: 'b', etiqueta: 'b', color: 'c-o', min: 2, max: 10, paso: 1, inicio: 4, decimales: 0 },
+      { id: 'm', etiqueta: 'cubos', color: 'c-i', min: 0, max: 2, paso: 1, inicio: 0, decimales: 0 },
+      { id: 'c', etiqueta: 'placas', color: 'c-i', min: 0, max: 8, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'd', etiqueta: 'barras', color: 'c-i', min: 0, max: 8, paso: 1, inicio: 2, decimales: 0 },
+      { id: 'u', etiqueta: 'unidades', color: 'c-i', min: 0, max: 8, paso: 1, inicio: 5, decimales: 0 },
+    ],
+    dibujo: v => ({ datos: datosBloques(v), estado: {} }),
+    lectura: v => { const e = bloquesDe(v); return e.normal ? [`(${e.texto})${sub(v.b)} = `, { v: 'c-d', t: String(e.fichas) }] : [`Valen `, { v: 'c-d', t: String(e.fichas) }, ': aún se puede canjear']; },
+    invitaciones: [
+      { texto: 'En base 4, arma 23 sin que ninguna clase llegue a 4 piezas.',
+        logrado: v => v.b === 4 && bloquesDe(v).normal && bloquesDe(v).fichas === 23,
+        testigo: [{ b: 4, m: 0, c: 1, d: 1, u: 3 }],
+        bien: '23 = (113)₄: una placa, una barra y tres unidades.',
+        pista: 'Junta 4 unidades en una barra y 4 barras en una placa.' },
+      { texto: 'Arma el mayor número de tres cifras en base 5.',
+        logrado: v => v.b === 5 && v.m === 0 && bloquesDe(v).texto === '444',
+        bien: '(444)₅ = 124: con una unidad más se completa el cubo, 5³ = 125.',
+        pista: 'En base 5 ninguna cifra llega a 5: pon 4 de cada pieza.' },
+      { texto: 'En base 2, arma 13 con un cubo.',
+        logrado: v => v.b === 2 && v.m === 1 && bloquesDe(v).normal && bloquesDe(v).fichas === 13,
+        testigo: [{ b: 2, m: 1, c: 1, d: 0, u: 1 }],
+        bien: '13 = 8 + 4 + 1 = (1101)₂: cada pieza va una vez o no va.',
+        pista: 'El cubo vale 8. ¿Qué piezas de 4, 2 y 1 faltan para 13?' },
+      { texto: 'En base 10, arma un numeral de tres cifras que copie la cantidad.',
+        logrado: v => v.b === 10 && bloquesDe(v).normal && bloquesDe(v).fichas >= 100 && bloquesDe(v).texto === String(bloquesDe(v).fichas),
+        bien: 'Solo en base 10 las cifras copian la cantidad: (100)₄ es apenas 16.',
+        pista: 'Sube b a 10 y pon al menos una placa.' },
+      { texto: 'Guarda la misma cantidad dos veces: como numeral y sin canjear.',
+        logrado: (v, g) => g.some(x => g.some(y => x.b === y.b && bloquesDe(x).fichas === bloquesDe(y).fichas && bloquesDe(x).normal && !bloquesDe(y).normal)),
+        testigo: [{ b: 4, m: 0, c: 1, d: 3, u: 1 }, { b: 4, m: 0, c: 1, d: 2, u: 5 }],
+        bien: 'Canjear no cambia cuánto hay: cambia cuántas piezas lo dicen.',
+        pista: 'Guarda un numeral; luego abre una barra en b unidades y guarda otra vez.' },
+    ],
+  };
+
   return {
     unidad: 'aritmetica.numeracion',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-tiras.js'],
+    requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-tiras.js', '/plantillas/numeracion/motor.js', '/nucleo/kit/piezas/ari-cubitos-3d.js'],
     // Glosario: las palabras que esta unidad estrena en el curso (docs/teoria.md §4d).
     glosario: [
       { termino: 'sistema de numeración', def: 'Conjunto de símbolos y reglas para escribir y leer cualquier número.',
@@ -468,6 +541,7 @@
     // Laboratorio: juego libre, sin preguntas. «Canje amplio» abre la base de 4 a 10 (incluye base 10, el caso que
     // el juego no deja) y hasta 40 fichas; «Libros largos» llega a 1500 páginas, con el bloque de cuatro cifras.
     laboratorio: [
+      mesaBloques,
       {
         id: 'canje-amplio', titulo: 'Canje amplio', pieza: 'arit-fichas',
         consigna: 'Hasta 40 fichas y bases de 4 a 10. Tira del borde de la fila para cambiar la base.',

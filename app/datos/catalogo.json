@@ -2821,10 +2821,12 @@
       "archivo": "/contenido/teoria/aritmetica/analisis-combinatorio.js",
       "requiere": [
        "/nucleo/kit/piezas/arit-tabla.js",
-       "/nucleo/kit/piezas/arit-fichas.js"
+       "/nucleo/kit/piezas/arit-fichas.js",
+       "/plantillas/probabilidad-dados/motor.js",
+       "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 5,
-      "terminos": 11
+      "terminos": 12
      }
     },
     {
@@ -2862,7 +2864,9 @@
       "archivo": "/contenido/teoria/aritmetica/probabilidades.js",
       "requiere": [
        "/nucleo/kit/piezas/arit-tabla.js",
-       "/nucleo/kit/piezas/arit-tiras.js"
+       "/nucleo/kit/piezas/arit-tiras.js",
+       "/plantillas/probabilidad-dados/motor.js",
+       "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 5,
       "terminos": 24
@@ -2901,7 +2905,9 @@
       "requiere": [
        "/nucleo/kit/piezas/arit-fichas.js",
        "/nucleo/kit/piezas/arit-tabla.js",
-       "/nucleo/kit/piezas/arit-tiras.js"
+       "/nucleo/kit/piezas/arit-tiras.js",
+       "/plantillas/numeracion/motor.js",
+       "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 4,
       "terminos": 10
@@ -3024,10 +3030,12 @@
       "archivo": "/contenido/teoria/aritmetica/numeros-primos-y-divisores.js",
       "requiere": [
        "/nucleo/kit/piezas/arit-fichas.js",
-       "/nucleo/kit/piezas/arit-tabla.js"
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/plantillas/divisores/motor.js",
+       "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 6,
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -3064,7 +3072,9 @@
       "requiere": [
        "/nucleo/kit/piezas/arit-tiras.js",
        "/nucleo/kit/piezas/recta.js",
-       "/nucleo/kit/piezas/arit-tabla.js"
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/plantillas/fracciones/motor.js",
+       "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 5,
       "terminos": 23
@@ -3145,7 +3155,9 @@
       "requiere": [
        "/nucleo/kit/piezas/arit-tabla.js",
        "/nucleo/kit/piezas/arit-fichas.js",
-       "/nucleo/kit/piezas/recta.js"
+       "/nucleo/kit/piezas/recta.js",
+       "/plantillas/potenciacion/motor.js",
+       "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 4,
       "terminos": 23
@@ -3186,10 +3198,12 @@
        "/nucleo/kit/piezas/arit-fichas.js",
        "/nucleo/kit/piezas/recta.js",
        "/nucleo/kit/piezas/arit-tiras.js",
-       "/nucleo/kit/piezas/arit-tabla.js"
+       "/nucleo/kit/piezas/arit-tabla.js",
+       "/plantillas/sucesiones/motor.js",
+       "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 5,
-      "terminos": 17
+      "terminos": 18
      }
     },
     {
