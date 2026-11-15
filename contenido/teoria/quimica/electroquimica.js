@@ -402,6 +402,8 @@
 
   // ---------- Laboratorio ----------
   const TODOS = ['Mg', 'Zn', 'Fe', 'Ni', 'Pb', 'Cu', 'Ag'];
+  const eLab = val => MET[val.ion].e0 - MET[val.met].e0;   // el E° que rotula la flecha
+  const DEPOSITA = ['Cu', 'Ag', 'Zn', 'Ni', 'Pb'];
   const FILA_LAB = { Mg: 2, Zn: 1, Fe: 2, Ni: 3, Pb: 4, Cu: 1, Ag: 3 };
   // Los siete pares (con Ni, que la escala de la idea no trae), repartidos en tres filas para que no choquen los rótulos.
   const escalaLab = val => Object.assign(ESCALA([...TODOS.map((x, i) => ({ tipo: 'punto', x: MET[x].e0, rotulo: `${MET[x].ion}/${x}`, fila: FILA_LAB[x], abierto: true })), { tipo: 'salto', a: MET[val.met].e0, b: MET[val.ion].e0, color: 'd', rotulo: val.met === val.ion ? '0 V' : fv(MET[val.ion].e0 - MET[val.met].e0), fila: 0 }], false),
@@ -431,6 +433,42 @@
       pregunta: '¿Cómo medirías cuánta materia transforma una corriente?',
       fuente: { titulo: 'OpenStax, Chemistry 2e, §17.2 y §17.7', url: 'https://openstax.org/books/chemistry-2e/pages/17-7-electrolysis' },
     },
+    // Glosario (docs/teoria.md §4d): las palabras que la unidad estrena en el curso. Los ejemplos se calculan aquí.
+    glosario: [
+      { termino: 'pila galvánica', formas: ['pila galvánica', 'pilas galvánicas', 'pila', 'pilas'],
+        def: 'Dispositivo que saca corriente eléctrica de una redox espontánea, con la oxidación y la reducción en vasos separados.',
+        ejemplo: `Zinc y cobre: ${fv(MET.Cu.e0 - MET.Zn.e0)}.`, ver: ['ánodo', 'cátodo', 'puente salino'] },
+      { termino: 'electrodo', def: 'Pieza conductora, casi siempre un metal, donde ocurre la oxidación o la reducción.',
+        ver: ['ánodo', 'cátodo'] },
+      { termino: 'ánodo', def: 'Electrodo donde ocurre la oxidación; de ahí salen los electrones hacia el alambre.',
+        ejemplo: 'En la pila de zinc y cobre: Zn → Zn²⁺ + 2e⁻.', ver: ['cátodo', 'oxidación'] },
+      { termino: 'cátodo', def: 'Electrodo donde ocurre la reducción: ahí llegan los electrones y una especie los toma.',
+        ejemplo: 'Cu²⁺ + 2e⁻ → Cu: el cobre se deposita.', ver: ['ánodo', 'reducción'] },
+      { termino: 'puente salino', formas: ['puente salino', 'puente'],
+        def: 'Tubo con una sal disuelta que une los dos vasos: por él viajan iones y se cierra el circuito.',
+        ver: ['pila galvánica'] },
+      { termino: 'potencial de reducción', simbolo: 'E°', medida: 'V', formas: ['potencial de reducción', 'potenciales de reducción', 'potencial', 'potenciales'],
+        def: 'Tendencia de un par a tomar electrones, en voltios, comparada con el hidrógeno. Mientras más alto, más fácil se reduce.',
+        ejemplo: `Cu²⁺/Cu: ${fv(MET.Cu.e0)}; Zn²⁺/Zn: ${fv(MET.Zn.e0)}.`, ver: ['fuerza electromotriz'] },
+      { termino: 'fuerza electromotriz', formas: ['fuerza electromotriz', 'fem'],
+        def: 'Diferencia de potencial de una pila: el del cátodo menos el del ánodo.',
+        ejemplo: `${f(MET.Cu.e0)} − (${f(MET.Zn.e0)}) = ${fv(MET.Cu.e0 - MET.Zn.e0)}.`, ver: ['potencial de reducción'] },
+      { termino: 'reacción espontánea', formas: ['reacción espontánea', 'espontánea', 'espontáneas', 'espontáneo'],
+        def: 'La que ocurre sola, sin que una fuente la empuje. En una redox, pasa cuando E° es positivo.',
+        ver: ['energía libre'] },
+      { termino: 'energía libre', simbolo: 'ΔG°', medida: 'kJ/mol', def: 'Energía disponible para hacer trabajo; si baja durante la reacción, esta ocurre sola.',
+        ver: ['reacción espontánea'] },
+      { termino: 'metal noble', formas: ['metal noble', 'metales nobles', 'noble', 'nobles'],
+        def: 'Metal que se oxida con dificultad, como la plata o el oro: su potencial de reducción es alto.',
+        ver: ['potencial de reducción'] },
+      { termino: 'electrólisis', def: 'Uso de una corriente externa para forzar una redox que no ocurriría sola.',
+        ejemplo: `2 A durante 30 min depositan ${f(mDep('Cu', 2, 30))} g de cobre.`, ver: ['faraday'] },
+      { termino: 'faraday', simbolo: 'F', medida: 'C/mol', def: 'Carga eléctrica de un mol de electrones: unos 96 485 coulomb.',
+        ejemplo: `2 mol de electrones llevan ${f(2 * F, 0)} C.`, ver: ['electrólisis'] },
+      { termino: 'diagrama de Pourbaix', formas: ['diagrama de Pourbaix', 'Pourbaix'],
+        def: 'Mapa de potencial contra pH que muestra qué especie es estable en cada zona.',
+        ver: ['potencial de reducción'] },
+    ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera abre la escala a los siete pares, en los dos
     // sentidos (la idea 2 solo deja metales activos contra iones nobles). La segunda deposita cinco metales con más
     // corriente y más tiempo, con la recta del cobre de fondo. La tercera pone un metal sobre el mapa del agua: se ve que
@@ -446,6 +484,22 @@
         dibujo: val => ({ datos: escalaLab(val), estado: {} }),
         lectura: val => { const e = MET[val.ion].e0 - MET[val.met].e0; return [`${val.met} en ${MET[val.ion].ion} → `, E0, ` = ${fv(e)}: ${e > 0 ? 'ocurre' : 'no ocurre'}`]; },
         arrastres: flechaEsc(TODOS, TODOS, escalaLab),
+        // Retos (docs/teoria.md §4d): los comprueba eLab, el mismo E° que rotula la flecha.
+        invitaciones: [
+          { texto: 'Pon un metal en una disolución con la que no reaccione.',
+            logrado: val => eLab(val) < 0,
+            bien: 'El ion está más abajo que el metal: no toma sus electrones.' },
+          { texto: 'Busca un par que dé exactamente +1,10 V.',
+            logrado: val => Math.abs(eLab(val) - 1.1) < 1e-9,
+            bien: 'Zinc en Cu²⁺: la misma pila de los dos vasos.' },
+          { texto: 'Busca el par que reacciona solo con la menor fem posible.',
+            logrado: val => eLab(val) > 0 && TODOS.every(a => TODOS.every(b => MET[b].e0 - MET[a].e0 <= 0 || MET[b].e0 - MET[a].e0 >= eLab(val) - 1e-9)),
+            bien: 'Muy poco, pero positivo: igual ocurre. Lo que manda es el signo.' },
+          { texto: 'Guarda un par y el mismo par al revés.',
+            logrado: (val, guardados) => val.met !== val.ion && guardados.some(g => g.met === val.ion && g.ion === val.met)
+              && guardados.some(g => g.met === val.met && g.ion === val.ion),
+            bien: 'Mismo número con otro signo: solo un sentido es una reacción espontánea.' },
+        ],
       },
       {
         id: 'deposito-libre', titulo: 'Deposita cualquier metal', pieza: 'ejes',
@@ -465,6 +519,23 @@
             donde: val => { const g = Kit.piezas.ejes.geometria(depLab(val)); return { x: g.X(120), y: g.Y(mDep(val.x, val.i, 120)) }; },
             mover: (pt, val) => { const g = Kit.piezas.ejes.geometria(depLab(val)), mm = (pt.y - g.Y(0)) * 50 / (g.Y(50) - g.Y(0)); return { i: mm / mDep(val.x, 1, 120) }; } },
         ],
+        // Retos: los comprueba mDep, la misma ley de Faraday que traza las rectas.
+        invitaciones: [
+          { texto: 'Con 5 A, busca el menor tiempo que deposita al menos 10 g de cobre.',
+            logrado: val => val.x === 'Cu' && val.i === 5 && mDep('Cu', 5, val.t) >= 10 && mDep('Cu', 5, val.t - 5) < 10,
+            bien: 'Más de hora y media para 10 g. ¿Cuánto tardaría la plata?' },
+          { texto: 'Busca el metal que menos masa deposita con la misma corriente y tiempo.',
+            logrado: val => DEPOSITA.every(x => mDep(val.x, val.i, val.t) <= mDep(x, val.i, val.t) + 1e-12),
+            bien: 'El níquel: masa molar baja y dos electrones por átomo.' },
+          { texto: 'Guarda plata y cobre con la misma corriente y el mismo tiempo.',
+            logrado: (val, guardados) => (val.x === 'Ag' || val.x === 'Cu') && guardados.some(g => (g.x === 'Ag' || g.x === 'Cu') && g.x !== val.x && g.i === val.i && g.t === val.t)
+              && guardados.some(g => g.x === val.x && g.i === val.i && g.t === val.t),
+            bien: 'Misma carga, pero la plata pesa más del triple: un electrón por átomo, no dos.' },
+          { texto: 'Guarda dos casos del mismo metal, igual masa y distinta corriente.',
+            logrado: (val, guardados) => guardados.some(g => g.x === val.x && g.i !== val.i && Math.abs(mDep(g.x, g.i, g.t) - mDep(val.x, val.i, val.t)) < 1e-9)
+              && guardados.some(g => g.x === val.x && g.i === val.i && g.t === val.t),
+            bien: 'La masa sigue a la carga, corriente por tiempo, no a la corriente sola.' },
+        ],
       },
       {
         id: 'metal-en-el-mapa', titulo: 'Un metal en el mapa', pieza: 'ejes',
@@ -479,6 +550,21 @@
         arrastres: [{ id: 'punto', etiqueta: 'punto (pH, potencial)', color: 'c-d',
           donde: val => { const g = Kit.piezas.ejes.geometria(ejesP()); return { x: g.X(val.p), y: g.Y(val.e) }; },
           mover: pt => { const g = Kit.piezas.ejes.geometria(ejesP()); return { p: (pt.x - g.X(0)) * 14 / (g.X(14) - g.X(0)), e: -1 + (pt.y - g.Y(-1)) * 2.5 / (g.Y(1.5) - g.Y(-1)) }; } }],
+        // Retos: los comprueban eO2, eH2 y el E° del metal, las mismas líneas del mapa.
+        invitaciones: [
+          { texto: 'Lleva el punto a donde el agua se reduce y suelta H₂.',
+            logrado: val => val.e < eH2(val.p),
+            bien: 'Bajo la línea de abajo, el agua gana electrones. ¿Qué pasa si subes el pH?' },
+          { texto: 'Busca un punto donde el agua y el metal estén estables a la vez.',
+            logrado: val => zonaCorta(val.p, val.e) === 'estable' && val.e <= MET[val.x].e0,
+            bien: 'Entre las dos líneas y bajo la del metal: ahí no se corroe.' },
+          { texto: 'En pH 14, pon el punto justo sobre la línea del H₂.',
+            logrado: val => val.p === 14 && Math.abs(val.e - eH2(14)) < 0.025,
+            bien: `A pH 14 esa línea bajó a ${fv(eH2(14))}. La del metal no se movió.` },
+          { texto: 'Con plata, haz que el metal se oxide sin que el agua suelte O₂.',
+            logrado: val => val.x === 'Ag' && val.e > MET.Ag.e0 && zonaCorta(val.p, val.e) !== 'se oxida',
+            bien: 'En medio ácido o neutro, la plata se oxida antes que el agua.' },
+        ],
       },
     ],
     ideas: [celda, espont, faraday, pourbaix],
