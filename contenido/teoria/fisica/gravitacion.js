@@ -120,13 +120,13 @@
         textos: [{ en: [1.75, 0.15], texto: '1000 N', color: 'o', paso: 1 }, { en: [2.4, 1.0], texto: '250 N', color: 'o', paso: 2 }, { en: [3.15, 1.65], texto: '111 N', color: 'o', paso: 3 }],
       },
       pasos: [
-        { estado: { paso: 1 }, texto: 'En la superficie, a 1 R del centro, 100 kg pesan 1000 N.', ecuacion: [F, ' = ', { frac: ['G M m', { sup: ['R', '2'] }] }, ' = 1000 N'] },
+        { estado: { paso: 1 }, texto: 'G: constante de gravitación universal. A 1 R, 100 kg pesan 1000 N.', ecuacion: [F, ' = ', { frac: ['G M m', { sup: ['R', '2'] }] }, ' = 1000 N'] },
         { estado: { paso: 2 }, texto: 'A 2 R del centro, r² es 4 veces mayor.', ecuacion: [F, ' = ', { frac: ['1000', cuad('2')] }, ' = 250 N'] },
         { estado: { paso: 3 }, texto: 'A 3 R, la novena parte. Se cuenta desde el centro.', ecuacion: [F, ' = ', { frac: ['1000', cuad('3')] }, ' ≈ 111 N'] },
       ],
     },
     regla: {
-      texto: 'Dos masas se atraen con una fuerza proporcional a sus masas e inversa al cuadrado de la distancia entre sus centros.',
+      texto: 'Ley de gravitación universal: dos masas se atraen con una fuerza proporcional a sus masas e inversa al cuadrado de la distancia entre sus centros.',
       ecuacion: [F, ' = G ', { frac: ['M m', { llave: [{ sup: [r_, '2'] }], nota: 'centro a centro', color: 'c-i' }] }, '   ·   ', 'G = 6,67 × ', { sup: ['10', '−11'] }, ' N·m²/kg²'],
       condicion: 'r va de centro a centro, fuera de un cuerpo esférico. Altura h sobre la superficie: r = R + h.',
     },
@@ -289,7 +289,7 @@
       ],
     },
     regla: {
-      texto: 'En una órbita circular, la gravedad hace de fuerza centrípeta. Cuanto más lejos, menor rapidez y vuelta más larga.',
+      texto: 'En una órbita circular, la gravedad hace de fuerza centrípeta. Cuanto más lejos, menor velocidad orbital y vuelta más larga.',
       ecuacion: [{ llave: [v], nota: 'en órbita', color: 'c-h' }, ' = ', { raiz: ['G M / ', r_] }, '   ·   ', 'T = ', { frac: [['2π ', r_], v] }],
       condicion: 'órbita circular alrededor de un planeta esférico. Con otra rapidez la órbita es una elipse, también cerrada.',
     },
@@ -371,10 +371,10 @@
     mira: {
       datos: elipse(0.6, { marcas: 2, areas: 3, textos: [{ en: [-3.4, 2.2], texto: 'lento', color: 'h', paso: 2 }, { en: [1.4, 1.8], texto: 'rápido', color: 'h', paso: 2 }] }),
       pasos: [
-        { estado: { paso: 1 }, texto: 'Primera ley: una elipse con el Sol en un foco, no al centro.', ecuacion: ['Sol en un foco'] },
+        { estado: { paso: 1 }, texto: 'Primera ley de Kepler: elipse con el Sol en un foco, no al centro.', ecuacion: ['Sol en un foco'] },
         { estado: { paso: 2 }, texto: 'Las marcas van a tiempos iguales: cerca del Sol, más separadas.', ecuacion: ['cerca: más rápido'] },
-        { estado: { paso: 3 }, texto: 'Segunda ley: en tiempos iguales barre áreas iguales.', ecuacion: [{ sub: ['A', 'cerca'] }, ' = ', { sub: ['A', 'lejos'] }] },
-        { estado: { paso: 3 }, texto: 'Tercera ley: T² entre a³ es igual para todos los planetas del Sol.', ecuacion: [{ frac: [{ sup: ['T', '2'] }, { sup: [a_, '3'] }] }, ' = constante'] },
+        { estado: { paso: 3 }, texto: 'Segunda ley de Kepler: en tiempos iguales barre áreas iguales.', ecuacion: [{ sub: ['A', 'cerca'] }, ' = ', { sub: ['A', 'lejos'] }] },
+        { estado: { paso: 3 }, texto: 'Tercera ley de Kepler: T² entre a³ es igual para los planetas del Sol.', ecuacion: [{ frac: [{ sup: ['T', '2'] }, { sup: [a_, '3'] }] }, ' = constante'] },
       ],
     },
     regla: {
@@ -429,12 +429,47 @@
     { id: 'r2', etiqueta: 'r de B', color: 'c-i', min: 1, max: 4, paso: 0.25, inicio: 4, unidad: 'R', decimales: 2 },
   ];
   const ELIPSE_LIBRE = { id: 'e', etiqueta: 'e', min: 0, max: 0.75, paso: 0.05, inicio: 0.5, unidad: '', decimales: 2 };
+  // Lo que miden las mesas del laboratorio (las mismas cuentas de orbita, elipse y atraccion); lo usan la lectura y los retos.
+  const vOrb = rr => V0 / Math.sqrt(rr);                  // km/s
+  const tOrb = rr => 1.4 * rr ** 1.5;                     // h (vuelta rasante ≈ 1,4 h)
+  const cercaLejos = e => (1 + e) / (1 - e);              // cuántas veces más rápido cerca del Sol que lejos
+  const fAtraccion = val => val.m * G0 / (val.r * val.r);  // N
 
   return {
     unidad: 'fisica.gravitacion',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-lienzo.js'],
+    // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. Período, MCU y
+    // aceleración centrípeta vienen del movimiento circular; fuerza centrípeta, de dinámica.
+    glosario: [
+      { termino: 'ley de gravitación universal', def: 'Dos masas se atraen con una fuerza proporcional a ellas e inversa al cuadrado de su distancia.',
+        ejemplo: 'A doble distancia del centro, la cuarta parte: 800 N pasan a 200 N.', ver: ['constante de gravitación universal', 'campo gravitatorio'] },
+      { termino: 'constante de gravitación universal', simbolo: 'G', medida: 'N·m²/kg²',
+        def: 'Número fijo de la ley de atracción entre masas; vale lo mismo en todo el universo.',
+        ejemplo: 'G ≈ 6,67 × 10⁻¹¹ N·m²/kg²: por eso dos personas casi no se atraen.', ver: ['ley de gravitación universal'] },
+      { termino: 'campo gravitatorio', simbolo: 'g', medida: 'N/kg', def: 'Fuerza de gravedad por cada kilogramo en un punto; lo crea la masa que atrae.',
+        ejemplo: 'A 2 R del centro de la Tierra: g = 10 / 2² = 2,5 N/kg.', ver: ['gravedad', 'peso'] },
+      { termino: 'órbita', def: 'Camino cerrado que sigue un cuerpo alrededor de otro que lo atrae.',
+        ejemplo: 'La Luna da una vuelta a la Tierra en unos 27 días.', ver: ['satélite', 'elipse'] },
+      { termino: 'satélite', def: 'Cuerpo que gira alrededor de un planeta, atraído por él, como la Luna o una estación espacial.',
+        ver: ['órbita', 'velocidad orbital'] },
+      { termino: 'velocidad orbital', simbolo: 'v', medida: 'km/s', formas: ['velocidad orbital', 'rapidez orbital'],
+        def: 'Rapidez que necesita un satélite para girar en círculo a cierta distancia del centro: v = √(GM/r).',
+        ejemplo: 'Rasante a la Tierra, 8 km/s; a 4 R del centro, 4 km/s.', ver: ['fuerza centrípeta'] },
+      { termino: 'elipse', def: 'Curva cerrada y ovalada; la suma de las distancias de cada punto a dos puntos fijos es constante.',
+        ver: ['primera ley de Kepler', 'semieje mayor'] },
+      { termino: 'semieje mayor', simbolo: 'a', def: 'La mitad del diámetro más largo de una elipse; en un círculo, es el radio.',
+        ejemplo: 'Órbita de la Tierra alrededor del Sol: a = 1 UA.', ver: ['tercera ley de Kepler'] },
+      { termino: 'unidad astronómica', simbolo: 'UA', def: 'Distancia media entre la Tierra y el Sol, unos 150 millones de km; sirve para medir órbitas.',
+        ejemplo: 'Un planeta a 4 UA está cuatro veces más lejos del Sol que la Tierra.' },
+      { termino: 'primera ley de Kepler', def: 'Cada planeta gira en una elipse con el Sol en uno de sus dos puntos especiales, no al centro.',
+        ejemplo: 'Con e = 0 la elipse es un círculo y el Sol queda al centro.', ver: ['elipse'] },
+      { termino: 'segunda ley de Kepler', def: 'La línea Sol–planeta barre áreas iguales en tiempos iguales: cerca del Sol, el planeta va más rápido.',
+        ejemplo: 'Con e = 0,4, cerca del Sol va 1,4 / 0,6 ≈ 2,33 veces más rápido.', ver: ['primera ley de Kepler'] },
+      { termino: 'tercera ley de Kepler', def: 'El período al cuadrado es proporcional al cubo del semieje mayor, igual para todo lo que gira al mismo astro.',
+        ejemplo: 'A 4 UA: T² = 4³ = 64, así que T = 8 años.', ver: ['semieje mayor', 'período'] },
+    ],
     // Laboratorio: juego libre, sin preguntas. Dos órbitas a la vez para comparar (la idea muestra una sola); la
     // elipse libre deja cualquier excentricidad de 0 a 0,75 y cuenta cuánto más lento va lejos del Sol.
     laboratorio: [
@@ -443,7 +478,18 @@
         consigna: 'Arrastra los satélites A y B a órbitas distintas. Compara sus rapideces y cuánto tarda cada vuelta.',
         controles: DOS,
         dibujo: val => ({ datos: dosOrbitas(val.r1, val.r2), estado: {} }),
-        lectura: val => [`A: ${f(V0 / Math.sqrt(val.r1), 2)} km/s, ${f(1.4 * val.r1 ** 1.5, 1)} h · B: ${f(V0 / Math.sqrt(val.r2), 2)} km/s, ${f(1.4 * val.r2 ** 1.5, 1)} h`],
+        lectura: val => [`A: ${f(vOrb(val.r1), 2)} km/s, ${f(tOrb(val.r1), 1)} h · B: ${f(vOrb(val.r2), 2)} km/s, ${f(tOrb(val.r2), 1)} h`],
+        invitaciones: [
+          { texto: 'Haz que los dos satélites vayan igual de rápido.',
+            logrado: val => Math.abs(vOrb(val.r1) - vOrb(val.r2)) < 1e-9,
+            bien: 'Misma órbita, misma rapidez: la masa del satélite no entra en la cuenta.' },
+          { texto: 'Haz que B sea lo más rápido posible.',
+            logrado: val => vOrb(val.r2) >= vOrb(DOS[1].min) - 1e-9,
+            bien: 'A 1 R va a 8 km/s: la órbita más baja es la más rápida.' },
+          { texto: 'Haz que una vuelta de A dure 8 veces lo que una de B.',
+            logrado: val => Math.abs(tOrb(val.r1) / tOrb(val.r2) - 8) < 1e-9,
+            bien: 'Cuatro veces más lejos, ocho veces más tiempo: T² crece como r³.' },
+        ],
         arrastres: [
           { id: 'sat-a', etiqueta: 'radio de la órbita de A', color: 'c-i',
             donde: val => radial(dosOrbitas(val.r1, val.r2), 90).donde(val.r1),
@@ -458,12 +504,37 @@
         consigna: 'Estira la órbita arrastrando su punto más lejano del Sol. Las marcas rojas van a tiempos iguales.',
         controles: [ELIPSE_LIBRE],
         dibujo: val => ({ datos: elipse(val.e), estado: {} }),
-        lectura: val => [val.e === 0 ? 'e = 0: la misma rapidez en toda la vuelta' : `e = ${f(val.e, 2)}: cerca del Sol va ${f((1 + val.e) / (1 - val.e), 2)} veces más rápido que lejos`],
+        lectura: val => [val.e === 0 ? 'e = 0: la misma rapidez en toda la vuelta' : `e = ${f(val.e, 2)}: cerca del Sol va ${f(cercaLejos(val.e), 2)} veces más rápido que lejos`],
+        invitaciones: [
+          { texto: 'Haz que cerca del Sol vaya justo 4 veces más rápido que lejos.',
+            logrado: val => Math.abs(cercaLejos(val.e) - 4) < 1e-9,
+            bien: 'Con e = 0,6 corre cuatro veces más cerca del Sol: la segunda ley de Kepler.' },
+          { texto: 'Deja las marcas rojas igual de separadas en toda la vuelta.',
+            logrado: val => Math.abs(cercaLejos(val.e) - 1) < 1e-9,
+            bien: 'Sin estirar, la elipse es un círculo: rapidez constante, como en el MCU.' },
+          { texto: 'Estira la órbita todo lo que se pueda.',
+            logrado: val => val.e >= ELIPSE_LIBRE.max - 1e-9,
+            bien: 'Al máximo, cerca del Sol va siete veces más rápido que lejos.' },
+          { texto: 'Guarda dos órbitas de distinta forma y compara dónde se juntan las marcas.',
+            logrado: (val, guardados) => guardados.some(x => Math.abs(x.e - val.e) > 1e-9) && guardados.some(x => Math.abs(x.e - val.e) < 1e-9),
+            bien: 'Cuanto más alargada, más se juntan lejos del Sol: allá va más lento.' },
+        ],
         arrastres: [{ id: 'afelio', etiqueta: 'punto más lejano del Sol (forma de la órbita)',
           donde: val => afelio(val.e),
           mover: (pt, val) => { const g = LZ(elipse(val.e)); return { e: -g.Xi(pt.x) / A4 - 1 }; } }],
       },
-      Object.assign({ id: 'atraccion', titulo: 'Atracción y distancia', pieza: 'fis-lienzo' }, inversa.juega),
+      Object.assign({ id: 'atraccion', titulo: 'Atracción y distancia', pieza: 'fis-lienzo',
+        invitaciones: [
+          { texto: 'Haz que la atracción sea la cuarta parte de la que hay en la superficie.',
+            logrado: val => Math.abs(fAtraccion(val) - fAtraccion({ r: 1, m: val.m }) / 4) < 1e-9,
+            bien: 'Doble distancia, cuarta parte: la atracción baja con el cuadrado de r.' },
+          { texto: 'Busca la menor atracción que permiten los controles.',
+            logrado: val => { const [cr, cm] = inversa.juega.controles; return fAtraccion(val) <= fAtraccion({ r: cr.max, m: cm.min }) + 1e-9; },
+            bien: 'Lejos y con poca masa: la Tierra igual lo atrae, nunca llega a 0.' },
+          { texto: 'Guarda dos casos a la misma distancia y con distinta masa.',
+            logrado: (val, guardados) => guardados.some(x => x.r === val.r && x.m !== val.m) && guardados.some(x => x.r === val.r && x.m === val.m),
+            bien: 'La fuerza cambió con la masa, pero g no: el campo es del lugar.' },
+        ] }, inversa.juega),
     ],
     historia: {
       texto: 'Kepler trabajó con años de registros de Tycho Brahe y publicó sus dos primeras leyes en 1609; la tercera, en 1619. Describían cómo se mueven los planetas sin explicar por qué. En 1687, Newton mostró que una sola atracción, que se debilita con el cuadrado de la distancia, explicaba las tres.',
