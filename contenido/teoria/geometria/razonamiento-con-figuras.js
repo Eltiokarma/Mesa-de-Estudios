@@ -788,11 +788,49 @@
     ],
   };
 
+  // ---------- El cubo pintado que se abre (laboratorio 3D, ronda 4: exploración libre, sin predicciones) ----------
+  // Clases y caras pintadas las calcula nucleo/solidos3d.js (cubitos, porClase) a través de la pieza geo-cubitos-3d:
+  // los retos cuentan lo mismo que se dibuja (regla 1). Abrir es un control, no una animación.
+  const S3 = () => (typeof module === 'object' && module.exports ? require('../../../nucleo/solidos3d.js') : self.Solidos3D);
+  const clases3 = n => S3().porClase(n);
+  const mesaAbre3d = {
+    id: 'cubo-abierto-3d', titulo: 'El cubo pintado que se abre', pieza: 'geo-cubitos-3d',
+    consigna: 'Gira el cubo con el dedo y ábrelo para ver los cubitos de adentro. Deja una sola clase y cuéntala.',
+    controles: [
+      // Sin color: los cuatro colores ya nombran las cuatro clases de cubitos (regla 4).
+      { id: 'n', etiqueta: 'lado del cubo', min: 2, max: 5, paso: 1, inicio: 3, decimales: 0 },
+      { id: 'abrir', etiqueta: 'abrir', min: 0, max: 100, paso: 25, inicio: 0, unidad: '%', decimales: 0 },
+      { id: 'ver', etiqueta: 'A la vista', opciones: [{ valor: 'todas', texto: 'todo' }, { valor: '3', texto: '3 caras' }, { valor: '2', texto: '2 caras' }, { valor: '1', texto: '1 cara' }, { valor: '0', texto: 'ninguna' }] },
+    ],
+    dibujo: v => ({ datos: { n: v.n, abrir: v.abrir / 100, ver: v.ver }, estado: {} }),
+    lectura: v => {
+      const c = clases3(v.n), col = k => `c-${CLASE[k].color}`;
+      return v.ver === 'todas' ? [`${v.n ** 3} = `, ...[3, 2, 1, 0].flatMap((k, i) => [...(i ? [' + '] : []), { v: col(k), t: `${c[k]}` }])]
+        : [{ v: col(+v.ver), t: `${CLASE[v.ver].texto}: ${c[+v.ver]}` }, SEP, `de ${v.n ** 3} cubitos`];
+    },
+    invitaciones: [
+      { texto: 'Abre el cubo de lado 3 y encuentra el cubito que no tiene pintura.',
+        logrado: v => v.n === 3 && v.abrir >= 50 && (v.ver === '0' || v.ver === 'todas'),
+        bien: 'Uno solo, en el centro: cerrado no se ve. Se cuenta abriendo o razonando.',
+        pista: 'Deja el lado en 3 y abre el cubo al menos a la mitad.' },
+      { texto: 'En el cubo de lado 5, deja a la vista solo los de dos caras pintadas.',
+        logrado: v => v.n === 5 && v.ver === '2',
+        bien: '36: tres por cada una de las 12 aristas. ¿Vale 12(n − 2) para todo lado?' },
+      { texto: 'Busca un lado con más cubitos sin pintar que esquinas.',
+        logrado: v => clases3(v.n)[0] > clases3(v.n)[3],
+        bien: 'Lado 5: 27 contra 8. El interior crece al cubo; las esquinas no cambian.',
+        pista: 'Sube el lado y compara los números verde y rojo de la lectura.' },
+      { texto: 'Guarda dos cubos abiertos de distinto lado mostrando solo las esquinas.',
+        logrado: (v, guardados) => v.ver === '3' && v.abrir > 0 && guardados.some(g => g.ver === '3' && g.abrir > 0 && g.n !== v.n),
+        bien: 'Siempre 8: un cubo tiene 8 vértices, sea cual sea su lado.' },
+    ],
+  };
+
   return {
     unidad: 'geometria.razonamiento-con-figuras',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/geo-figura.js'],
+    requiere: ['/nucleo/kit/piezas/geo-figura.js', '/nucleo/solidos3d.js', '/nucleo/kit/piezas/geo-cubitos-3d.js'],
     historia: {
       texto: 'Los puentes de Königsberg planteaban cruzar cada puente una sola vez. Euler reformuló el problema atendiendo solo a las conexiones entre regiones y puentes, y dejó de lado las medidas. Ese cambio ayudó a abrir lo que hoy llamamos teoría de grafos. La lección: decidir qué información importa antes de contar.',
       pregunta: '¿Qué detalles de una figura puedes ignorar sin cambiar la respuesta?',
@@ -823,7 +861,7 @@
     ],
     // Laboratorio: las tres mesas son más ricas que sus ideas (muesca con esquinas libres, rutas con la calle cerrada
     // que se arrastra, cubo pintado de lado 2 a 5 por clases).
-    laboratorio: [mesaMuesca, mesaRutas, mesaPintado],
+    laboratorio: [mesaAbre3d, mesaMuesca, mesaRutas, mesaPintado],
     ideas: [perimetro, series, distribucion, conteo, rutas, cubos],
   };
 });

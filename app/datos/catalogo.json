@@ -3883,7 +3883,9 @@
      "teoria": {
       "archivo": "/contenido/teoria/geometria/razonamiento-con-figuras.js",
       "requiere": [
-       "/nucleo/kit/piezas/geo-figura.js"
+       "/nucleo/kit/piezas/geo-figura.js",
+       "/nucleo/solidos3d.js",
+       "/nucleo/kit/piezas/geo-cubitos-3d.js"
       ],
       "ideas": 6,
       "terminos": 22
