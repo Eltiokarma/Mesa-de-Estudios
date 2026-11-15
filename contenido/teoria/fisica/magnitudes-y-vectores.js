@@ -74,11 +74,18 @@
   // Debe verse: el mismo segmento con otro número; convertir es multiplicar por un factor que vale 1.
   const UNIDADES = { m: { k: 1, max: 3, paso: 0.5, cada: 2 }, dm: { k: 10, max: 30, paso: 5, cada: 2 }, cm: { k: 100, max: 300, paso: 50, cada: 2 } };
   const LAPIZ = 2.5;
-  const reglaEn = un => {
-    const U = UNIDADES[un], L = LAPIZ * U.k;
+  // Decimales con que se lee el largo en cada unidad: la misma precisión (1 cm) en las tres.
+  const DEC_UN = { m: 2, dm: 1, cm: 0 };
+  // largo: el del lápiz en metros (el juego lo hace crecer y encoger solo; la regla de cada unidad llega a 3 m).
+  const reglaEn = (un, largo = LAPIZ) => {
+    const U = UNIDADES[un], L = largo * U.k;
     return { datos: { min: 0, max: U.max, paso: U.paso, cada: U.cada, sufijo: ` ${un}`, decimales: 1, variable: un, color: 'o', filas: 1,
-      elementos: [{ tipo: 'distancia', a: 0, b: L, color: 'o', rotulo: `L = ${f(L, 1)} ${un}` }] }, estado: {} };
+      elementos: [{ tipo: 'distancia', a: 0, b: L, color: 'o', rotulo: `L = ${f(L, DEC_UN[un])} ${un}` }] }, estado: {} };
   };
+  // El mismo largo dicho en la unidad elegida y en otra (metros, o centímetros si la regla ya está en metros).
+  const mismoLargo = (un, largo) => (un === 'm'
+    ? `${f(largo, 2)} m = ${f(largo * 100, 0)} cm`
+    : `${f(largo * UNIDADES[un].k, DEC_UN[un])} ${un} = ${f(largo, 2)} m`);
   // Lo que avanza en cada segundo a 72 km/h: saltos de 20 m (se calcula: 72 · 1000 / 3600).
   const V_KMH = 72, V_MS = V_KMH * 1000 / 3600;
   const saltos = (n, conRotulo) => Array.from({ length: n }, (_, i) => ({ tipo: 'salto', a: i * V_MS, b: (i + 1) * V_MS, color: 'o', rotulo: conRotulo && i === 0 ? '1 s' : undefined, desde: i + 2 }));
@@ -90,11 +97,16 @@
     temas: ['Magnitudes fundamentales y derivadas', 'Sistema Internacional'],
     pieza: 'recta',
     juega: {
-      consigna: 'El lápiz mide siempre lo mismo. Cambia la unidad de la regla y mira qué número aparece.',
+      consigna: 'El lápiz crece y se encoge solo. Mira los dos números de un mismo largo; cambia la unidad de la regla.',
       voz: '¿Qué cambia: el lápiz o el número que lo mide?',
-      controles: [{ id: 'un', etiqueta: 'Unidad', opciones: [{ valor: 'm', texto: 'metro' }, { valor: 'dm', texto: 'decímetro' }, { valor: 'cm', texto: 'centímetro' }] }],
-      dibujo: val => reglaEn(val.un),
-      lectura: val => [`El mismo largo: ${f(LAPIZ * UNIDADES[val.un].k, 1)} ${val.un}`],
+      // L barre de 0,5 m a 3 m y vuelve: el largo es uno solo, cada unidad le pone su número (× 10, × 100).
+      controles: [
+        { id: 'un', etiqueta: 'Unidad', opciones: [{ valor: 'm', texto: 'metro' }, { valor: 'dm', texto: 'decímetro' }, { valor: 'cm', texto: 'centímetro' }] },
+        { id: 'L', etiqueta: 'L', color: 'c-o', min: 0.5, max: 3, paso: 0.05, inicio: LAPIZ, unidad: 'm', decimales: 2,
+          auto: { velocidad: 0.5, modo: 'rebota' } },
+      ],
+      dibujo: val => reglaEn(val.un, val.L),
+      lectura: val => [`El mismo largo: ${mismoLargo(val.un, val.L)}`],
       minimo: 3,
     },
     predice: {
@@ -195,6 +207,7 @@
     const ps = ['M', 'L', 'T'].map((x, i) => (e[i] ? (e[i] === 1 ? x : x + String(e[i]).split('').map(c => SUPS[c]).join('')) : '')).filter(Boolean);
     return ps.length ? ps.join(' ') : '1';
   };
+  const expsDe = val => [val.m, val.l, val.t].map(x => Math.round(x) || 0);
   const suma = (a, b, n = 1) => a.map((x, i) => x + n * b[i]);
   const dimEj = (oculta) => ({ datos: { columnas: [
     { nombre: 'x', exps: DIM.L },
@@ -208,16 +221,19 @@
     temas: ['Análisis dimensional', 'Magnitudes fundamentales y derivadas'],
     pieza: 'fis-dimensiones',
     juega: {
-      consigna: 'Arma una magnitud con fichas de masa (M), longitud (L) y tiempo (T). Las huecas dividen.',
+      consigna: 'Las fichas de tiempo cambian solas: mira aparecer la velocidad y la aceleración en la lectura. Las huecas dividen.',
       voz: 'Busca la fuerza: masa por aceleración.',
       controles: [
         { id: 'm', etiqueta: 'M', min: 0, max: 1, paso: 1, inicio: 0, decimales: 0 },
         { id: 'l', etiqueta: 'L', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0 },
-        { id: 't', etiqueta: 'T', min: -3, max: 1, paso: 1, inicio: -1, decimales: 0 },
+        // El exponente de T barre de 1 a −3 y vuelve (cada paso, una ficha de tiempo más o menos). Va rápido a propósito:
+        // cada magnitud dura poco más de medio segundo; «⏸ Pausa» deja leerla.
+        { id: 't', etiqueta: 'T', min: -3, max: 1, paso: 1, inicio: -1, decimales: 0, auto: { velocidad: 1.8, modo: 'rebota' } },
       ],
-      dibujo: val => ({ datos: { columnas: [{ nombre: dimTxt([val.m, val.l, val.t]), exps: [val.m, val.l, val.t] }] }, estado: {} }),
+      // Las fichas son enteras: mientras el exponente barre, se toma el entero más cercano.
+      dibujo: val => { const e = expsDe(val); return { datos: { columnas: [{ nombre: dimTxt(e), exps: e }] }, estado: {} }; },
       lectura: val => {
-        const e = [val.m, val.l, val.t], n = NOMBRES.find(([d]) => d.every((x, i) => x === e[i]));
+        const e = expsDe(val), n = NOMBRES.find(([d]) => d.every((x, i) => x === e[i]));
         return [`${dimTxt(e)}: ${n ? n[1] : 'sin nombre en el SI'}`];
       },
       minimo: 3,
@@ -317,14 +333,14 @@
     temas: ['Suma de vectores por el método gráfico'],
     pieza: 'flechas',
     juega: {
-      consigna: 'B empieza donde termina A. Cambia el ángulo y el largo de B. R va de la cola de A a la punta de B.',
+      consigna: 'B gira sola sobre la punta de A. Mira cómo R se estira hasta A + B y se encoge hasta A − B.',
       voz: 'Mira entre qué valores se mueve R.',
       controles: [
-        { id: 'g', etiqueta: 'θ', color: 'c-h', min: 0, max: 180, paso: 30, inicio: 60, unidad: '°', decimales: 0 },
+        { id: 'g', etiqueta: 'θ', color: 'c-h', min: 0, max: 180, paso: 30, inicio: 60, unidad: '°', decimales: 0, auto: { velocidad: 30, modo: 'rebota' } },
         { id: 'b', etiqueta: 'B', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 4, decimales: 0 },
       ],
       dibujo: val => { const c = juegoR(val); return { datos: c.datos, estado: c.estado }; },
-      lectura: val => [R, ` = ${f(colaPunta(6, val.b, val.g).r, 2)}  (A + B = ${f(6 + val.b, 0)})`],
+      lectura: val => [th, ` = ${f(val.g, 0)}° → `, R, ` = ${f(colaPunta(6, val.b, val.g).r, 2)}  (A + B = ${f(6 + val.b, 0)})`],
       minimo: 4,
       // Arrastra la punta de B: su giro es θ y su distancia a la punta de A es el largo de B.
       arrastres: [
@@ -409,16 +425,16 @@
     temas: ['Componentes y vector unitario'],
     pieza: 'flechas',
     juega: {
-      consigna: 'Elige cuánto avanza A en x y cuánto en y. La flecha verde es su unitario: misma dirección, largo 1.',
+      consigna: 'Aₓ va y viene sola. Mira la flecha verde, el unitario: gira con A, pero siempre mide 1.',
       voz: 'Prueba también A = 0. ¿Hacia dónde apuntaría su unitario?',
       controles: [
-        { id: 'ax', etiqueta: 'Ax', color: 'c-o', min: -4, max: 4, paso: 1, inicio: 3, decimales: 0 },
+        { id: 'ax', etiqueta: 'Ax', color: 'c-o', min: -4, max: 4, paso: 1, inicio: 3, decimales: 0, auto: { velocidad: 1.5, modo: 'rebota' } },
         { id: 'ay', etiqueta: 'Ay', color: 'c-o', min: -4, max: 4, paso: 1, inicio: 2, decimales: 0 },
       ],
       dibujo: val => compA(val.ax, val.ay, { unitario: true, valor: true }),
       lectura: val => {
         const m = Math.hypot(val.ax, val.ay);
-        return m ? ['|', A, `| = ${f(m, 2)} · `, u, ` = (${f(val.ax / m, 2)}; ${f(val.ay / m, 2)})`] : [A, ' = 0: no apunta a ningún lado; no tiene ', u];
+        return m > 1e-9 ? ['|', A, `| = ${f(m, 2)} · `, u, ` = (${f(val.ax / m, 2)}; ${f(val.ay / m, 2)})`] : [A, ' = 0: no apunta a ningún lado; no tiene ', u];
       },
       minimo: 3,
       // Arrastra la punta de A: su sombra en x es Aₓ y su sombra en y es Aᵧ (los ejes de −4 a 4 fijan la escala).
@@ -515,9 +531,9 @@
     temas: ['Producto escalar y vectorial'],
     pieza: 'flechas',
     juega: {
-      consigna: 'A = 4 y B = 3. Gira B. La sombra de B sobre A da el producto escalar; el paralelogramo, el vectorial.',
+      consigna: 'A = 4 y B = 3. B gira sola. Mira la sombra de B sobre A (escalar) y el área del paralelogramo (vectorial).',
       voz: 'Busca dónde la sombra desaparece y dónde el área es mayor.',
-      controles: [{ id: 'g', etiqueta: 'θ', color: 'c-h', min: 0, max: 180, paso: 30, inicio: 60, unidad: '°', decimales: 0 }],
+      controles: [{ id: 'g', etiqueta: 'θ', color: 'c-h', min: 0, max: 180, paso: 30, inicio: 60, unidad: '°', decimales: 0, auto: { velocidad: 30, modo: 'rebota' } }],
       dibujo: val => prod(4, 3, val.g, { marco: MARCO_P }),
       lectura: val => [vA, '·', vB, ` = ${f(12 * cosG(val.g), 2)} · |`, vA, '×', vB, `| = ${f(12 * senG(val.g), 2)}`],
       minimo: 3,
@@ -603,18 +619,20 @@
   const casi = (a, b) => Math.abs(a - b) < 1e-9;
   const mesaEspacio = {
     id: 'flechas-espacio', titulo: 'Flechas en el espacio', pieza: 'fis-espacio-3d',
-    consigna: 'Gira el espacio con el dedo. Arma A con sus tres componentes; después mira A × B.',
+    consigna: 'Az sube y baja sola: mira cómo cambia el largo de A. Gira el espacio con el dedo; después mira A × B.',
     controles: [
       { id: 'ver', etiqueta: 'Mirar', opciones: [{ valor: 'comp', texto: 'Componentes' }, { valor: 'cruz', texto: 'A × B' }] },
       { id: 'ax', etiqueta: 'Ax', color: 'c-o', min: -2, max: 2, paso: 1, inicio: 2, decimales: 0 },
       { id: 'ay', etiqueta: 'Ay', color: 'c-o', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0 },
-      { id: 'az', etiqueta: 'Az', color: 'c-o', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0 },
+      // Az barre de −2 a 2 y vuelve; los cuadros casi nunca caen justo en 0, así la flecha de Az no desaparece y la
+      // escena 3D se mueve sin rearmarse (fis-espacio-3d, forma y mover). Los retos piden valores que el alumno fija.
+      { id: 'az', etiqueta: 'Az', color: 'c-o', min: -2, max: 2, paso: 1, inicio: 1, decimales: 0, auto: { velocidad: 1, modo: 'rebota' } },
       { id: 'b', etiqueta: 'B', color: 'c-i', opciones: ['x', 'y', 'z', 'xy'].map(k => ({ valor: k, texto: F3.BNOMBRE[k] })) },
     ],
     dibujo: val => ({ datos: esp(val).datos, estado: {} }),
     lectura: val => {
       const e = esp(val);
-      return val.ver === 'cruz' ? [A, ' · ', B, ` = ${f(e.punto)} · |`, A, ' × ', B, `| = ${f(e.modCruz)}`] : ['|', A, `| = √(${[val.ax, val.ay, val.az].map(x => x * x).join(' + ')}) = ${f(e.modA)}`];
+      return val.ver === 'cruz' ? [A, ' · ', B, ` = ${f(e.punto)} · |`, A, ' × ', B, `| = ${f(e.modCruz)}`] : ['|', A, `| = √(${[val.ax, val.ay, val.az].map(x => f(x * x)).join(' + ')}) = ${f(e.modA)}`];
     },
     invitaciones: [
       { texto: 'Arma una A que mida justo 3 sin ponerla sobre un eje.',
