@@ -95,6 +95,29 @@
     }
     return Object.assign(EJE_TIRO(o.xmax, o.ymax), { curvas: [{ puntos: curva, color: 'i', desde: o.curva || 0 }], puntos }, extra);
   }
+  // Animación (15 nov, docs/3d.md §6): la pelota sale una y otra vez con el reloj t (en tiempo real). La curva se
+  // dibuja hasta t sobre el camino entero en discontinua; cada medio segundo ya pasado queda una marca con sus dos
+  // sombras (en el piso y en el eje y), y la pelota del momento lleva las guías hasta los ejes. Llegada al piso, espera
+  // ahí hasta que t vuelve a 0. Las mismas cuentas de tiro (x = vx t, y = vy0 t − 5 t²).
+  const T_TIRO = 4.5;
+  function tiroVivo(vi, ang, tt) {
+    const ux = vi * COS[ang], uy = vi * SEN[ang], T = 2 * uy / G, tc = Math.min(tt, T);
+    const pos = q => [ux * q, Math.max(0, uy * q - G * q * q / 2)];
+    const puntos = [];
+    for (let k = 0; k * 0.5 <= tc + 1e-9; k++) {
+      const [px, py] = pos(k * 0.5);
+      puntos.push({ x: px, y: py, color: 'i' }, { x: px, y: 0, color: 'i', abierto: true }, { x: 0, y: py, color: 'i', abierto: true });
+    }
+    const [bx, by] = pos(tc);
+    // La pelota va en tinta (como en la mesa 3D); sus dos sombras, en el color de x e y.
+    puntos.push({ x: bx, y: by, guias: true }, { x: bx, y: 0, color: 'i' }, { x: 0, y: by, color: 'i' });
+    const datos = Object.assign(EJE_TIRO(), {
+      curvas: [{ puntos: Array.from({ length: 41 }, (_, k) => pos(T * k / 40)), color: 'i', discontinua: true },
+        { puntos: Array.from({ length: 41 }, (_, k) => pos(tc * k / 40)), color: 'i' }],
+      puntos,
+    });
+    return { datos, x: bx, y: by, t: tc };
+  }
   const cimaTiro = (vi, ang) => { const g_ = EJ(tiro(vi, ang)), ux = vi * COS[ang], uy = vi * SEN[ang]; return { x: g_.X(ux * uy / G), y: g_.Y(uy * uy / (2 * G)) }; };
   const tiroIdea = {
     id: 'un-reloj-dos-ejes',
@@ -102,14 +125,16 @@
     temas: ['Movimiento en dos dimensiones', 'Tiro parabólico'],
     pieza: 'ejes',
     juega: {
-      consigna: 'Elige la rapidez y el ángulo de salida. Cada medio segundo queda una marca y su sombra en el piso.',
+      consigna: 'La pelota sale una y otra vez. Mira sus sombras: la del piso avanza pareja; la del eje y, no.',
       voz: 'Mira las sombras del piso: ¿cómo están separadas?',
       controles: [
         { id: 'v0', etiqueta: 'v₀', color: 'c-o', min: 10, max: 25, paso: 5, inicio: 20, unidad: 'm/s', decimales: 0 },
         { id: 'ang', etiqueta: 'Ángulo', opciones: [30, 37, 45, 53, 60].map(k => ({ valor: k, texto: `${k}°` })), inicio: 45 },
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: T_TIRO, paso: 0.05, inicio: 0, unidad: 's', decimales: 2,
+          auto: { velocidad: 1, modo: 'repite' } },
       ],
-      dibujo: val => ({ datos: tiro(val.v0, val.ang), estado: {} }),
-      lectura: val => [vx, ` = ${f(val.v0 * COS[val.ang], 1)} m/s siempre · vuelo ${f(2 * val.v0 * SEN[val.ang] / G, 2)} s`],
+      dibujo: val => ({ datos: tiroVivo(val.v0, val.ang, val.t).datos, estado: {} }),
+      lectura: val => { const d = tiroVivo(val.v0, val.ang, val.t); return [x, ` = ${f(d.x, 1)} m · `, y, ` = ${f(d.y, 1)} m · `, vx, ` = ${f(val.v0 * COS[val.ang], 1)} m/s`]; },
       minimo: 3,
       // Arrastra la cima de la parábola: más alta o más lejos elige la rapidez y el ángulo que la ponen ahí.
       arrastres: [{ id: 'cima', etiqueta: 'cima de la parábola (rapidez y ángulo)', color: 'c-o',
@@ -216,11 +241,13 @@
     temas: ['Magnitudes angulares'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Elige el radio de la rueda y cuánto gira. Mira el arco que recorre el punto del borde.',
+      consigna: 'La rueda gira sola. Cambia el radio y mira el arco que recorre el punto del borde mientras crece el ángulo.',
       voz: 'Duplica el radio sin cambiar el ángulo. ¿Qué pasa con el arco?',
       controles: [
         { id: 'r', etiqueta: 'r', min: 1, max: 4, paso: 0.5, inicio: 2, unidad: 'm', decimales: 1 },
-        { id: 'deg', etiqueta: 'Gira', min: 30, max: 360, paso: 30, inicio: 90, unidad: '°', decimales: 0 },
+        // Animación (15 nov): el ángulo girado crece solo, 60° por segundo; al completar la vuelta vuelve a 30°.
+        { id: 'deg', etiqueta: 'Gira', min: 30, max: 360, paso: 30, inicio: 90, unidad: '°', decimales: 0,
+          auto: { velocidad: 60, modo: 'repite' } },
       ],
       dibujo: val => ({ datos: arcoRueda(val.r, val.deg), estado: {} }),
       lectura: val => [`θ = ${f(rad(val.deg), 2)} rad · `, s_, ` = ${f(val.r * rad(val.deg), 2)} m`],
@@ -310,30 +337,47 @@
       ],
     };
   }
-  const cuerpoMCU = (vv, rr) => { const g_ = LZ(mcu(vv, rr)), q = enCirculo(rr, 60); return { x: g_.X(q[0]), y: g_.Y(q[1]) }; };
+  // Animación (15 nov): el cuerpo da vueltas solo, en tiempo real. Sale de 60° y gira ω = v/r rad cada segundo: el
+  // ángulo del momento es 60° + (v/r)·t. Las manijas siguen al cuerpo; tomarlas pausa el giro y deja el cuerpo donde
+  // estaba (t se recalcula para el ángulo de ese momento con la v y el r nuevos).
+  const T_MCU = 60;
+  const angMCU = val => 60 + (val.v / val.r) * val.t * 180 / Math.PI;
+  const cuerpoMCU = (vv, rr, d = 60) => { const g_ = LZ(mcu(vv, rr)), q = enCirculo(rr, d); return { x: g_.X(q[0]), y: g_.Y(q[1]) }; };
+  const enRejilla = (c, n) => Math.min(c.max, Math.max(c.min, c.min + Math.round((n - c.min) / c.paso) * c.paso));
+  const tPara = (val, vv, rr) => (angMCU(val) - 60) * Math.PI / 180 * rr / vv;
   const mcuIdea = {
     id: 'rapidez-constante-acelera',
     titulo: 'Rapidez constante, velocidad que gira',
     temas: ['MCU', 'Aceleración tangencial y centrípeta'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Elige la rapidez y el radio del giro. La flecha verde es la aceleración del cuerpo.',
+      consigna: 'El cuerpo gira solo, con rapidez fija. Elige v y r, y mira hacia dónde apuntan la flecha naranja y la verde, su aceleración.',
       voz: 'Prueba la misma rapidez en un círculo más chico.',
       controles: [
         { id: 'v', etiqueta: 'v', color: 'c-o', min: 2, max: 4, paso: 0.5, inicio: 3, unidad: 'm/s', decimales: 1 },
         { id: 'r', etiqueta: 'r', min: 2, max: 4, paso: 1, inicio: 2, unidad: 'm', decimales: 0 },
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: T_MCU, paso: 0.1, inicio: 0, unidad: 's', decimales: 1,
+          auto: { velocidad: 1, modo: 'repite' } },
       ],
-      dibujo: val => ({ datos: mcu(val.v, val.r), estado: {} }),
-      lectura: val => [v, ` = ${f(val.v)} m/s fija · `, ac, ` = ${f(val.v * val.v / val.r, 2)} m/s²`],
+      dibujo: val => ({ datos: mcu(val.v, val.r, { angs: [angMCU(val)] }), estado: {} }),
+      lectura: val => [t, ` = ${f(val.t, 1)} s · `, v, ` = ${f(val.v)} m/s fija · `, ac, ` = ${f(val.v * val.v / val.r, 2)} m/s²`],
       minimo: 3,
       // Arrastra la punta de v a lo largo de la tangente (rapidez) o el cuerpo hacia afuera (radio). La flecha verde responde.
       arrastres: [
         { id: 'rapidez', etiqueta: 'rapidez (punta de v)', color: 'c-o',
-          donde: val => { const q = cuerpoMCU(val.v, val.r); return { x: q.x - Math.sin(rad(60)) * val.v * KV, y: q.y - Math.cos(rad(60)) * val.v * KV }; },
-          mover: (pt, val) => { const q = cuerpoMCU(val.v, val.r); return { v: ((pt.x - q.x) * -Math.sin(rad(60)) + (pt.y - q.y) * -Math.cos(rad(60))) / KV }; } },
+          donde: val => { const d = angMCU(val), q = cuerpoMCU(val.v, val.r, d); return { x: q.x - Math.sin(rad(d)) * val.v * KV, y: q.y - Math.cos(rad(d)) * val.v * KV }; },
+          mover: (pt, val) => {
+            const d = angMCU(val), q = cuerpoMCU(val.v, val.r, d);
+            const vv = enRejilla(mcuIdea.juega.controles[0], ((pt.x - q.x) * -Math.sin(rad(d)) + (pt.y - q.y) * -Math.cos(rad(d))) / KV);
+            return { v: vv, t: tPara(val, vv, val.r) };
+          } },
         { id: 'radio', etiqueta: 'radio del giro (el cuerpo)',
-          donde: val => cuerpoMCU(val.v, val.r),
-          mover: (pt, val) => { const g_ = LZ(mcu(val.v, val.r)); return { r: g_.Xi(pt.x) * Math.cos(rad(60)) + g_.Yi(pt.y) * Math.sin(rad(60)) }; } },
+          donde: val => cuerpoMCU(val.v, val.r, angMCU(val)),
+          mover: (pt, val) => {
+            const d = angMCU(val), g_ = LZ(mcu(val.v, val.r));
+            const rr = enRejilla(mcuIdea.juega.controles[1], g_.Xi(pt.x) * Math.cos(rad(d)) + g_.Yi(pt.y) * Math.sin(rad(d)));
+            return { r: rr, t: tPara(val, val.v, rr) };
+          } },
       ],
     },
     predice: {
@@ -411,19 +455,21 @@
   // Debe verse: a_T y a_c son perpendiculares y la total sale por Pitágoras.
   const RR = 2, ANG = 40;
   function mcuv(at, tt, o = {}) {
-    const vv = at * tt, acc = vv * vv / RR, P = enCirculo(RR, ANG);
-    const tg = [-Math.sin(rad(ANG)), Math.cos(rad(ANG))], ce = [-Math.cos(rad(ANG)), -Math.sin(rad(ANG))];
+    // o.gira: el punto avanza por el borde desde ANG (la animación del juego): θ = ½ α t², con α = aT/r.
+    const th = o.gira ? ANG + (at / RR) * tt * tt / 2 * 180 / Math.PI : ANG;
+    const vv = at * tt, acc = vv * vv / RR, P = enCirculo(RR, th);
+    const tg = [-Math.sin(rad(th)), Math.cos(rad(th))], ce = [-Math.cos(rad(th)), -Math.sin(rad(th))];
     const tot = [tg[0] * at + ce[0] * acc, tg[1] * at + ce[1] * acc];
     return {
       vista: VISTA_RUEDA, escalaF: KA,
       alt: `Punto de una rueda de 2 m que arranca: aT = ${f(at)} m/s², ac = ${f(acc, 2)} m/s² y la total ${f(Math.hypot(at, acc), 2)} m/s².`,
-      arcos: [{ c: [0, 0], r: RR, de: 0, a: 360, grosor: 'fino' }],
+      arcos: [{ c: [0, 0], r: RR, de: 0, a: 360, grosor: 'fino' }, ...(o.gira && th > ANG + 0.5 ? [{ c: [0, 0], r: RR, de: ANG, a: th, color: 'i' }] : [])],
       discos: [{ c: [0, 0], r: 0.06 }, { c: P, r: 0.2 }],
       flechas: [
         { de: P, d: [tg[0] * vv, tg[1] * vv], escala: KV, color: 'o', rotulo: vv > 0.4 ? 'v' : undefined, hasta: o.sinV ? -1 : undefined },
         { de: P, d: [tg[0] * at, tg[1] * at], color: 'd', rotulo: 'aT', discontinua: true, paso: o.p1 || 0 },
         { de: P, d: [ce[0] * acc, ce[1] * acc], color: 'd', rotulo: acc > 0.6 ? 'ac' : undefined, discontinua: true, paso: o.p2 || 0 },
-        { de: P, d: tot, color: 'd', rotulo: 'a', paso: o.p3 || 0 },
+        { de: P, d: tot, color: 'd', rotulo: o.gira && acc < 1 ? undefined : 'a', paso: o.p3 || 0 },   // casi encima de aT: sin rótulo
       ],
     };
   }
@@ -433,13 +479,15 @@
     temas: ['MCUV', 'Aceleración tangencial y centrípeta'],
     pieza: 'fis-lienzo',
     juega: {
-      consigna: 'Una rueda de 2 m de radio arranca del reposo. Elige su aceleración tangencial y avanza el reloj.',
+      consigna: 'Una rueda de 2 m arranca del reposo, una y otra vez, en cámara lenta. Elige aT y mira qué hace cada flecha discontinua.',
       voz: 'Mira las dos flechas discontinuas: ¿cuál cambia con el tiempo?',
       controles: [
         { id: 'at', etiqueta: 'aT', color: 'c-d', min: 1, max: 2, paso: 0.5, inicio: 1, unidad: 'm/s²', decimales: 1 },
-        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 2, paso: 0.5, inicio: 0.5, unidad: 's', decimales: 1 },
+        // Animación (15 nov): t corre solo a la mitad del tiempo real (cámara lenta) y vuelve a 0 al llegar a 2 s.
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 2, paso: 0.5, inicio: 0.5, unidad: 's', decimales: 1,
+          auto: { velocidad: 0.5, modo: 'repite' } },
       ],
-      dibujo: val => ({ datos: mcuv(val.at, val.t), estado: {} }),
+      dibujo: val => ({ datos: mcuv(val.at, val.t, { gira: true }), estado: {} }),
       lectura: val => [v, ` = ${f(val.at * val.t, 1)} m/s · `, ac, ` = ${f((val.at * val.t) ** 2 / RR, 2)} m/s²`],
       minimo: 3,
       // Sin manija: las flechas de aceleración miden 10 a 20 px a la escala fija de la unidad y la manija las tapaba;
@@ -513,6 +561,9 @@
   const arcoDe = val => val.r * rad(val.deg);
   const acDe = val => val.v * val.v / val.r;
   const periodoDe = val => 2 * Math.PI * val.r / val.v;
+  // El menor giro de la grilla de «Gira» cuyo arco pasa de s (con la animación pausada, el ángulo puede quedar entre dos
+  // pasos de la grilla: el reto pide justo el de la grilla).
+  const menorGiro = (r, s) => { const c = angulares.juega.controles[1]; for (let d = c.min; d <= c.max; d += c.paso) if (arcoDe({ r, deg: d }) > s) return d; return NaN; };
 
   // La pelota y sus dos sombras (laboratorio 3D de contexto, 15 nov: exploración libre, sin predicciones). Una luz desde
   // arriba deja la sombra en el suelo (x, MRU) y otra desde el frente la deja en la pared (y, MRUV): el mismo reloj t,
@@ -523,11 +574,14 @@
   const igual3 = (p, q) => Math.abs(p - q) < 1e-9;
   const mesaSombras = {
     id: 'dos-sombras-3d', titulo: 'La pelota y sus dos sombras', pieza: 'fis-espacio-3d',
-    consigna: 'Gira la escena con el dedo. Arrastra t y compara las marcas de la sombra del suelo con las de la pared.',
+    consigna: 'La pelota sale una y otra vez. Gira la escena y compara las marcas de la sombra del suelo con las de la pared.',
     controles: [
       { id: 'v0', etiqueta: 'v₀', color: 'c-o', min: 10, max: 30, paso: 5, inicio: 20, unidad: 'm/s', decimales: 0 },
       { id: 'ang', etiqueta: 'Ángulo', opciones: ANGS3.map(a => ({ valor: a, texto: `${a}°` })), inicio: 45 },
-      { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 6, paso: 0.25, inicio: 1.5, unidad: 's', decimales: 2 },
+      // Animación (15 nov): t corre solo en tiempo real; F3.tiro arma siempre los mismos objetos (la escena se mueve sin
+      // rearmarse) y, al caer, la pelota espera en el suelo hasta que t vuelve a 0.
+      { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 6, paso: 0.25, inicio: 1.5, unidad: 's', decimales: 2,
+        auto: { velocidad: 1, modo: 'repite' } },
     ],
     dibujo: val => ({ datos: tiro3(val).datos, estado: {} }),
     lectura: val => { const r = tiro3(val); return [t, ` = ${f(r.t, 2)} s · `, x, ` = ${f(r.x, 1)} m · `, y, ` = ${f(r.y, 1)} m`]; },
@@ -535,7 +589,7 @@
       { texto: 'Detén la pelota justo en lo más alto de su camino.',
         logrado: val => tiro3(val).enAire && igual3(tiro3(val).t, tiro3(val).tSubida),
         bien: 'En la cima, la sombra de la pared se detiene; la del suelo sigue igual.',
-        pista: 'Mira la flecha vy y avanza t hasta que desaparezca.' },
+        pista: 'Pausa cerca de la cima y ajusta t con − y + hasta que la flecha vy desaparezca.' },
       { texto: 'Logra que la sombra del suelo pase los 40 m con la pelota en el aire.',
         logrado: val => tiro3(val).enAire && tiro3(val).x >= 40,
         bien: 'La sombra del suelo avanza lo mismo cada medio segundo: vx no cambia.' },
@@ -632,7 +686,7 @@
             logrado: val => Math.abs(arcoDe(val) - 2 * Math.PI) < 1e-9,
             bien: 'Radio 2 y media vuelta, o radio 4 y un cuarto: s = r θ.' },
           { texto: 'Con radio 4 m, busca el menor giro que recorra más de 10 m.',
-            logrado: val => val.r === 4 && arcoDe(val) > 10 && arcoDe({ r: 4, deg: val.deg - 30 }) <= 10,
+            logrado: val => val.r === 4 && Math.abs(val.deg - menorGiro(4, 10)) < 1e-9,
             bien: 'Con 150° el arco ya mide más de dos radios y medio.' },
           { texto: 'Guarda dos casos con el mismo arco y distinto radio.',
             logrado: (val, guardados) => guardados.some(x => x.r !== val.r && Math.abs(arcoDe(x) - arcoDe(val)) < 1e-9)
