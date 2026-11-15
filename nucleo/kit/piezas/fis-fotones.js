@@ -16,7 +16,10 @@
  *   electrones: 0..6,          // cuántos electrones salen
  *   k: 0..1,                   // energía cinética relativa (largo de la flecha)
  *   rotulos: { foton: 'hf = 2,9 eV', placa: 'φ = 2,3 eV', e: 'Kmax = 0,6 eV', nota: 'no salen electrones' },
- *   colores: { f: 'h', K: 'o', phi: 'i', N: 'd' }
+ *   colores: { f: 'h', K: 'o', phi: 'i', N: 'd' },
+ *   avance: px                 // opcional (ronda 5, animación): cuánto corrió el haz; cada paquete avanza esos px hacia
+ *                              // la placa y, al llegar, vuelve a salir de la lámpara (sin azar: la figura sigue pura).
+ *                              // Un avance múltiplo de 128 px deja los paquetes donde estaban. Sin avance, como siempre.
  * }
  * estado = { paso }: 1 fotones · 2 placa · 3 electrones. Sin paso, todo a la vista. Pura.
  */
@@ -51,7 +54,8 @@
     for (let k = -2; k <= 2; k++) { const a = k * 0.35; s += T.linea(LX + 20 * Math.cos(a), LY + 20 * Math.sin(a), LX + 27 * Math.cos(a), LY + 27 * Math.sin(a), { grosor: 2 }); }
     s += T.rotulo(LX, LY + 36, 'lámpara', { ancla: 'middle' });
     if (ve(1)) {
-      for (let i = 0; i < n; i++) s += paquete(LUGAR[i][0], LUGAR[i][1], onda, C.f);
+      const corre = x => (d.avance === undefined ? x : 78 + (((x - 78 + d.avance) % 128) + 128) % 128);
+      for (let i = 0; i < n; i++) s += paquete(corre(LUGAR[i][0]), LUGAR[i][1], onda, C.f);
       if (R.foton) s += T.rotulo(LX - 20, 30, R.foton, { color: C.f, peso: 700 });
     }
     if (d.placa !== false && ve(2)) {

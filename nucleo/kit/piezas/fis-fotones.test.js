@@ -32,3 +32,15 @@ test('sin NaN ni hex; texto de 14 o más; alto fijo; puro', () => {
   }
   assert.equal(altos.size, 1);
 });
+
+// Ronda 5 (animación): `avance` es opcional; sin él (o con 0, o 128) la figura es la de siempre; con él el haz corre.
+test('avance: los paquetes corren hacia la placa y vuelven a salir de la lámpara', () => {
+  const D0 = { fotones: 8, onda: 14, placa: false };
+  const con = a => P.dibujar(Object.assign({}, D0, { avance: a }), {});
+  assert.equal(con(0), P.dibujar(D0, {}));
+  assert.equal(con(128), P.dibujar(D0, {}));
+  assert.notEqual(con(20), P.dibujar(D0, {}));
+  assert.ok(!/NaN|undefined/.test(con(-37.5)));
+  // Cada tren de onda (trazo de 2,5) empieza 15 px antes de su centro, que va de 78 a 206 px.
+  for (const m of con(300).matchAll(/<path d="M([\d.]+) [^"]*" fill="none" [^>]*stroke-width="2.5"/g)) assert.ok(+m[1] >= 62 && +m[1] <= 192, 'dentro del haz');
+});
