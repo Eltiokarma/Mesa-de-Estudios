@@ -693,7 +693,24 @@
         donde: v => { const g = lienzo(-3, 8, -3, 8); return { x: g.X(v.x), y: g.Y(enPlano(v.b ** v.x, -3, 8)) }; },
         mover: pt => ({ x: lienzo(-3, 8, -3, 8).aX(pt.x) }) },
     ],
+    // Retos comprobados (docs/teoria.md §4d): calculan bˣ como la curva verde, y los cruces con y = x en la misma malla.
+    invitaciones: [
+      { texto: 'Haz que la curva sea una recta horizontal.',
+        logrado: v => Math.abs(v.b - 1) < 1e-9,
+        bien: 'Con b = 1, 1ˣ = 1 siempre: no hay logaritmo en base 1.' },
+      { texto: 'Consigue que bˣ valga exactamente 8.',
+        logrado: v => Math.abs(v.b ** v.x - 8) < 1e-9,
+        bien: '2³ = 8, pero también 4 a la 1,5: el exponente depende de la base.' },
+      { texto: 'Con una base menor que 1, haz que bˣ pase de 4.',
+        logrado: v => v.b < 1 && v.b ** v.x > 4,
+        bien: 'Base menor que 1 y x negativo: la salida crece hacia la izquierda.' },
+      { texto: 'Haz que la curva toque a su reflejo, con base mayor que 1.',
+        logrado: v => v.b > 1 + 1e-9 && tocaDiagonal(v.b),
+        bien: 'Ahí bˣ = x. Con b > 1 solo pasa si la base es chica.' },
+    ],
   };
+  // ¿La curva y = bˣ corta o toca la recta y = x en [−3, 8]? Se busca un cambio de signo de bˣ − x, o un mínimo que llegue a 0.
+  const tocaDiagonal = B => { const g = u => B ** u - u; let min = Infinity; for (let i = 0; i <= 1100; i++) { const u = -3 + i * 0.01; min = Math.min(min, g(u)); } return min <= 1e-9; };
   // Mesa 2: la carrera entre bˣ y xᵏ (la idea 1 solo la pregunta con 2ˣ y x²).
   const EJE_CARRERA = { x: { min: 0, max: 8, paso: 1, nombre: 'x', color: 'o', decimales: 0 }, y: { min: 0, max: 100, paso: 20, nombre: 'y', color: 'i', decimales: 0 } };
   const mesaCarrera = {
@@ -719,7 +736,25 @@
     arrastres: [{ id: 'entrada', etiqueta: 'entrada x', color: 'c-o',
       donde: v => { const g = lienzoDe(EJE_CARRERA); return { x: g.X(v.x), y: g.Y(enPlano(Math.min(v.b ** v.x, v.x ** v.k), 0, 100)) }; },
       mover: pt => ({ x: lienzoDe(EJE_CARRERA).aX(pt.x) }) }],
+    invitaciones: [
+      { texto: 'Con 2ˣ y x², busca un x donde empaten.',
+        logrado: v => v.b === 2 && v.k === 2 && Math.abs(v.b ** v.x - v.x ** v.k) < 1e-9,
+        bien: 'Empatan en 2 y en 4; después, 2ˣ ya no se deja alcanzar.' },
+      { texto: 'Con k = 3, haz que la exponencial gane después de x = 4.',
+        logrado: v => v.k === 3 && v.x > 4 && v.b ** v.x > v.x ** v.k,
+        bien: 'Con base 3 empatan en x = 3; después, la exponencial va adelante.' },
+      { texto: 'Busca la mayor ventaja de x³ sobre 1,5ˣ.',
+        logrado: v => v.b === 1.5 && v.k === 3 && v.x ** 3 - 1.5 ** v.x === Math.max(...XS_CARRERA.map(u => u ** 3 - 1.5 ** u)),
+        bien: 'En esta mesa, x³ gana más en x = 8. Más allá, la exponencial remonta.' },
+      { texto: 'Con 2ˣ y x², guarda un x con cada una adelante.',
+        logrado: (v, guardados) => {
+          const lado = w => Math.sign(w.b ** w.x - w.x ** w.k), es22 = w => w.b === 2 && w.k === 2;
+          return es22(v) && lado(v) !== 0 && guardados.some(g => es22(g) && lado(g) === -lado(v)) && guardados.some(g => es22(g) && g.x === v.x);
+        },
+        bien: 'Entre 2 y 4 gana x²; fuera de ese tramo, 2ˣ.' },
+    ],
   };
+  const XS_CARRERA = Array.from({ length: 17 }, (_, k) => k / 2);
   // Mesa 3: la inecuación con cualquier base, también menor que 1 (la que la idea 6 reserva para predecir).
   const BASES_INEC = { '1/3': 1 / 3, '1/2': 0.5, '2': 2, '3': 3 };
   const mesaInecuacion = {
@@ -745,7 +780,23 @@
     arrastres: [{ id: 'corte', etiqueta: 'punto de corte', color: 'c-o',
       donde: v => { const g = lienzo(-3, 3, -1, 10); return { x: g.X(v.c), y: g.Y(BASES_INEC[v.b] ** v.c) }; },
       mover: pt => ({ c: lienzo(-3, 3, -1, 10).aX(pt.x) }) }],
+    invitaciones: [
+      { texto: 'Con una base menor que 1, deja el tramo verde a la derecha.',
+        logrado: v => BASES_INEC[v.b] < 1 && aLaDerecha(v),
+        bien: 'Base menor que 1: pedir menor da los x mayores. El orden se invierte.' },
+      { texto: 'Con base 3, consigue que cumplan los x menores que −1.',
+        logrado: v => v.b === '3' && !aLaDerecha(v) && v.c === -1,
+        bien: 'Base mayor que 1: pedir menor da los x menores.' },
+      { texto: 'Con base 2, pon la recta roja a altura 1/4.',
+        logrado: v => v.b === '2' && Math.abs(BASES_INEC[v.b] ** v.c - 0.25) < 1e-12,
+        bien: '2⁻² = 1/4: un exponente negativo da una fracción.' },
+      { texto: 'Guarda dos casos con el mismo sentido y el mismo c, pero tramos opuestos.',
+        logrado: (v, guardados) => guardados.some(g => g.sentido === v.sentido && g.c === v.c && aLaDerecha(g) !== aLaDerecha(v))
+          && guardados.some(g => g.b === v.b && g.sentido === v.sentido && g.c === v.c),
+        bien: 'Solo cambió la base, de un lado del 1 al otro: el tramo se volteó.' },
+    ],
   };
+  const aLaDerecha = v => (BASES_INEC[v.b] > 1) === (v.sentido === '>');
 
   return {
     unidad: 'algebra.exponenciales-y-logaritmos',
@@ -754,6 +805,19 @@
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-tabla.js'],
     // Laboratorio: tres mesas propias con gesto directo, más amplias que los juegos (base continua, carrera, base < 1).
     laboratorio: [mesaBase, mesaCarrera, mesaInecuacion],
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'función exponencial', formas: ['función exponencial', 'funciones exponenciales', 'exponencial', 'exponenciales'],
+        def: 'y = bˣ con b > 0, b ≠ 1: si x sube 1, la salida se multiplica por b.',
+        ejemplo: '2ˣ: 1, 2, 4, 8, 16…', ver: ['logaritmo'] },
+      { termino: 'logaritmo', formas: ['logaritmo', 'logaritmos'], simbolo: 'log_b N',
+        def: 'El exponente al que hay que elevar la base para obtener un número.', ejemplo: 'log₂ 8 = 3, porque 2³ = 8.', ver: ['argumento', 'base'] },
+      { termino: 'argumento', formas: ['argumento', 'argumentos'], def: 'El número del que se saca el logaritmo; tiene que ser positivo.', ejemplo: 'En log₃ (x − 1), es x − 1.' },
+      { termino: 'número e', simbolo: 'e', def: 'Constante cercana a 2,71828: el límite de (1 + 1/n)ⁿ cuando n crece sin fin.', ver: ['logaritmo natural'] },
+      { termino: 'logaritmo natural', formas: ['logaritmo natural', 'logaritmos naturales'], simbolo: 'ln', def: 'El de base e.', ejemplo: 'ln e = 1 y ln 1 = 0.' },
+      { termino: 'asíntota', formas: ['asíntota', 'asíntotas'], def: 'Recta a la que una gráfica se acerca cada vez más sin llegar a tocarla.',
+        ejemplo: 'y = 2ˣ se acerca a y = 0 por la izquierda.' },
+    ],
     historia: {
       texto: 'En 1614, John Napier publicó sus logaritmos para aliviar multiplicaciones, divisiones y raíces largas, donde un error era fácil. Su escala no es la escolar de hoy; las conversaciones con Briggs llevaron a formas más cómodas para calcular. La idea que perdura es convertir productos en sumas. La definición moderna, como inversa de la exponencial, llegó después y trae sus condiciones.',
       pregunta: '¿Cómo convertirías una multiplicación larga en una suma?',
