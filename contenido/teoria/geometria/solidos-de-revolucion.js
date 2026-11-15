@@ -558,7 +558,7 @@
     temas: ['Teorema de Pappus-Guldin'],
     pieza: 'geo-figura',
     juega: {
-      consigna: 'Un cuadrado de área 4 gira alrededor del eje y forma un anillo. Aleja o acerca su centro G del eje y mira el volumen.',
+      consigna: 'Un cuadrado de área 4 gira alrededor del eje y engendra un sólido de revolución: un anillo. Aleja o acerca G y mira el volumen.',
       voz: 'Aleja la región. ¿Por qué crece el volumen si el área es la misma?',
       controles: [{ id: 'd', etiqueta: 'distancia de G al eje', min: 1, max: 3.5, paso: 0.5, inicio: 2, unidad: '', decimales: 1, color: 'c-h' }],
       dibujo: v => ({ datos: pappFig(v.d, { d: f(v.d), A: 'A = 4', pasos: { g: 0 } }), estado: {} }),
@@ -631,7 +631,11 @@
   // ---------- Laboratorio: juego libre, sin preguntas ----------
   // Mesa 1, más rica que las ideas 2 y 3: radio y altura libres a la vez (en la idea el radio queda en 3), con la
   // generatriz, el área lateral, el volumen y el ángulo del desarrollo en una sola lectura.
+  // Medidas del cono de la mesa: generatriz, área lateral y volumen (en múltiplos de π) y ángulo del desarrollo.
+  const conoMedidas = v => { const g = Math.hypot(v.r, v.h); return { g, lateral: v.r * g, V: v.r * v.r * v.h / 3, sector: 360 * v.r / g }; };
   const conoLibre = v => conoFig(v.r, v.h, { r: f(v.r), h: f(v.h), g: f(Math.hypot(v.r, v.h)) });
+  // El menor radio de la mesa cuyo volumen pasa de 20π con la mayor altura (se calcula, no se escribe).
+  const CONO_RMIN = (() => { for (let r = 1; r <= 3.5; r += 0.5) if (conoMedidas({ r, h: 7 }).V > 20) return r; return null; })();
   const mesaCono = {
     id: 'cono-libre', titulo: 'Cono con radio y altura', pieza: 'geo-figura',
     consigna: 'Arrastra la punta V y el borde de la base. Haz un cono chato y uno alto: compara g, lateral y volumen.',
@@ -648,12 +652,33 @@
         donde: v => enPantalla(conoLibre(v), [0.55 * v.r, -1.7, 0]),
         mover: (p, v) => ({ r: sobre(conoLibre(v), [0, -1.7, 0], [0.55, -1.7, 0], p) }) },
     ],
-    lectura: v => { const g = Math.hypot(v.r, v.h); return [nb(`g = ${f(g)}`), SEP, nb(`lateral ${pi(v.r * g)}`), SEP, nb(`V = ${pi(v.r * v.r * v.h / 3)}`), SEP, nb(`sector ${f(360 * v.r / g, 0)}°`)]; },
+    lectura: v => { const m = conoMedidas(v); return [nb(`g = ${f(m.g)}`), SEP, nb(`lateral ${pi(m.lateral)}`), SEP, nb(`V = ${pi(m.V)}`), SEP, nb(`sector ${f(m.sector, 0)}°`)]; },
+    // Retos: cada uno se comprueba con conoMedidas, la misma cuenta de la lectura (lateral y V en múltiplos de π).
+    invitaciones: [
+      { texto: 'Arma un cono cuya generatriz mida justo 6,5.',
+        logrado: v => Math.abs(conoMedidas(v).g - 6.5) < 1e-9,
+        bien: 'Radio 2,5 y altura 6: un triángulo 5, 12, 13 a la mitad.' },
+      { texto: 'Haz un cono tan alto que su sector desarrollado mida menos de 90°.',
+        logrado: v => conoMedidas(v).sector < 90,
+        bien: 'El sector se cierra porque g crece y r no. ¿Llega a 0°?' },
+      { texto: 'Busca el menor radio con el que el volumen pase de 20π.',
+        // El menor radio de la grilla que lo logra, con la altura más grande de la mesa.
+        logrado: v => conoMedidas(v).V > 20 && v.r === CONO_RMIN,
+        bien: 'Con menos radio no alcanza ni con la altura máxima: el radio va al cuadrado.' },
+      { texto: 'Guarda dos conos con el mismo volumen y distinta altura.',
+        logrado: (v, guardados) => guardados.some(g => g.h !== v.h && Math.abs(conoMedidas(g).V - conoMedidas(v).V) < 1e-9),
+        bien: 'Mismo volumen, otra altura: compara ahora sus áreas laterales.' },
+    ],
   };
   // Mesa 2, más rica que la idea 6: cuadrado o círculo, de tamaño libre, y el caso que la idea no deja probar: si la
   // región cruza el eje, Pappus ya no vale (las dos mitades barren el mismo anillo).
   const pappLibre = v => pappFig(v.d, { a: v.a, circulo: v.forma === 'circulo', d: f(v.d), pasos: { g: 0 },
     alt: `Región ${v.forma === 'circulo' ? 'circular de diámetro' : 'cuadrada de lado'} ${f(v.a)} con su centro a ${f(v.d)} del eje${v.d < v.a / 2 ? '; cruza el eje' : ''}` });
+  // Área (en el círculo, coeficiente de π: A = π · a²/4), volumen por Pappus (coeficiente de π o de π²) y si cruza el eje.
+  const pappMedidas = v => { const circ = v.forma === 'circulo', A = circ ? v.a * v.a / 4 : v.a * v.a; return { circ, A, V: 2 * A * v.d, cruza: v.d < v.a / 2 }; };
+  const volReal = v => { const m = pappMedidas(v); return m.V * (m.circ ? Math.PI * Math.PI : Math.PI); };
+  // El mayor volumen con el círculo en la mesa: se busca en la grilla de a y d (no se escribe a mano).
+  const PAPP_MAX_CIRC = (() => { let m = 0; for (let a = 0.5; a <= 2.5 + 1e-9; a += 0.5) for (let d = 0.5; d <= 3.5 + 1e-9; d += 0.25) { const v = { forma: 'circulo', a, d }; if (!pappMedidas(v).cruza) m = Math.max(m, volReal(v)); } return m; })();
   const mesaPappus = {
     id: 'pappus-libre', titulo: 'Pappus con cualquier región', pieza: 'geo-figura',
     consigna: 'Elige la forma. Arrastra G y el borde de arriba. Acerca la región hasta que cruce el eje.',
@@ -672,12 +697,35 @@
         mover: (p, v) => ({ a: 2 * alPlano(pappLibre(v), p)[1] }) },
     ],
     lectura: v => {
-      const circ = v.forma === 'circulo', A = circ ? v.a * v.a / 4 : v.a * v.a;   // en el círculo, A = π · a²/4
-      if (v.d < v.a / 2) return [nb(`A = ${circ ? pi(A) : f(A)}`), SEP, nb('cruza el eje: Pappus no vale')];
-      return [nb(`A = ${circ ? pi(A) : f(A)}`), SEP, nb(`V = ${circ ? pi2(2 * A * v.d) : pi(2 * A * v.d)}`)];
+      const m = pappMedidas(v);
+      if (m.cruza) return [nb(`A = ${m.circ ? pi(m.A) : f(m.A)}`), SEP, nb('cruza el eje: Pappus no vale')];
+      return [nb(`A = ${m.circ ? pi(m.A) : f(m.A)}`), SEP, nb(`V = ${m.circ ? pi2(m.V) : pi(m.V)}`)];
     },
+    // Retos: se comprueban con pappMedidas, la misma cuenta de la lectura. V es el coeficiente de π (cuadrado) o de
+    // π² (círculo); para comparar las dos formas se pasa a número con volReal.
+    invitaciones: [
+      { texto: 'Acerca la región hasta que toque el eje sin cruzarlo.',
+        logrado: v => Math.abs(v.d - v.a / 2) < 1e-9,
+        bien: 'Tocando el eje, el agujero del anillo se cierra. ¿Y si la región cruza?' },
+      { texto: 'Guarda dos cuadrados de distinto lado que engendren el mismo volumen.',
+        logrado: (v, guardados) => v.forma === 'cuadrado' && !pappMedidas(v).cruza && guardados.some(g => g.forma === 'cuadrado'
+          && g.a !== v.a && !pappMedidas(g).cruza && Math.abs(pappMedidas(g).V - pappMedidas(v).V) < 1e-9),
+        bien: 'Menos área, más lejos del eje: el camino del centro compensa.' },
+      { texto: 'Guarda un cuadrado y un círculo de igual medida y distancia. ¿Cuál engendra más?',
+        logrado: (v, guardados) => !pappMedidas(v).cruza && guardados.some(g => g.forma !== v.forma && g.a === v.a && g.d === v.d),
+        bien: 'El círculo cabe dentro del cuadrado: menos área, menos volumen.' },
+      { texto: 'Con el círculo, arma el toro de mayor volumen que permite la mesa.',
+        logrado: v => v.forma === 'circulo' && !pappMedidas(v).cruza && volReal(v) >= PAPP_MAX_CIRC - 1e-9,
+        bien: 'Diámetro y distancia al máximo: área grande y camino largo.' },
+    ],
   };
   // Mesa 3, más rica que la idea 5: el espesor también cambia y la franja llega a los polos (casquete).
+  // La franja de la mesa (esfera de radio 5): toca un polo si su plano bajo está en −5 o el alto en 5.
+  const esCasquete = v => v.y === -5 || v.y + v.h === 5;
+  const cruzaEcuador = v => v.y < 0 && v.y + v.h > 0;
+  const zonaArea = v => 10 * v.h;   // 2π · 5 · h, en múltiplos de π
+  // El mayor casquete de la mesa: se busca en la grilla de y y h.
+  const ZONA_MAX_CASQUETE = (() => { let m = 0; for (let y = -5; y <= 1; y++) for (let h = 1; h <= 4; h++) if (esCasquete({ y, h })) m = Math.max(m, zonaArea({ y, h })); return m; })();
   const mesaZona = {
     id: 'zona-libre', titulo: 'Franja de espesor libre', pieza: 'geo-figura',
     consigna: 'Arrastra los dos planos: el de abajo mueve la franja, el de arriba cambia el espesor. Llega a un polo: casquete.',
@@ -689,7 +737,22 @@
     arrastres: [zonaArrastre('y', 'h'), { id: 'plano-alto', etiqueta: 'plano de arriba de la franja', color: 'c-i',
       donde: v => enPantalla(zonaFig(v.y, v.h), [2.7, (v.y + v.h) * EZ]),
       mover: (p, v) => ({ h: alPlano(zonaFig(v.y, v.h), p)[1] / EZ - v.y }) }],
-    lectura: v => [nb(`${v.y === -5 || v.y + v.h === 5 ? 'casquete' : 'zona'} = 2π · 5 · ${v.h} = ${pi(10 * v.h)}`)],
+    lectura: v => [nb(`${esCasquete(v) ? 'casquete' : 'zona'} = 2π · 5 · ${v.h} = ${pi(zonaArea(v))}`)],
+    // Retos: se comprueban con esCasquete y zonaArea, las mismas cuentas de la lectura (el área en múltiplos de π).
+    invitaciones: [
+      { texto: 'Lleva la franja hasta un polo para que sea un casquete.',
+        logrado: v => esCasquete(v),
+        bien: 'Un solo plano corta el casquete. Su área sigue siendo 2πRh.' },
+      { texto: 'Consigue una zona de área 30π sin tocar los polos.',
+        logrado: v => !esCasquete(v) && Math.abs(zonaArea(v) - 30) < 1e-9,
+        bien: 'Espesor 3, esté donde esté: solo importan R y h.' },
+      { texto: 'Arma el casquete de mayor área que permite la mesa.',
+        logrado: v => esCasquete(v) && zonaArea(v) === ZONA_MAX_CASQUETE,
+        bien: 'El mayor espesor da la mayor área. ¿Qué pasaría con espesor 10?' },
+      { texto: 'Guarda una franja junto a un polo y otra en el ecuador, del mismo espesor.',
+        logrado: (v, guardados) => guardados.some(g => g.h === v.h && ((esCasquete(g) && cruzaEcuador(v)) || (esCasquete(v) && cruzaEcuador(g)))),
+        bien: 'Una ancha y baja, otra angosta e inclinada: la misma área.' },
+    ],
   };
 
   return {
@@ -702,6 +765,46 @@
       pregunta: '¿Qué fracción del cilindro ocupa la esfera?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Archimedes», MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Archimedes/' },
     },
+    // Glosario: las palabras que este tema estrena en el curso (docs/teoria.md, 4d). Los ejemplos salen de las mismas
+    // fórmulas de las ideas y se comprobaron con node.
+    glosario: [
+      { termino: 'sólido de revolución', formas: ['sólido de revolución', 'sólidos de revolución'],
+        def: 'Cuerpo que engendra una región plana al dar una vuelta completa alrededor de una recta, el eje.',
+        ejemplo: 'Un rectángulo que gira sobre uno de sus lados engendra un cilindro.', ver: ['cilindro', 'cono', 'esfera'] },
+      { termino: 'cilindro', def: 'Sólido con dos bases circulares iguales y paralelas, unidas por una superficie curva. Lo engendra un rectángulo que gira.',
+        ejemplo: 'Radio 2 y altura 5: V = π · 2² · 5 = 20π.', ver: ['tronco de cilindro', 'generatriz'] },
+      { termino: 'cono', def: 'Sólido de base circular que se cierra en un vértice; sale de girar un triángulo rectángulo sobre un cateto.',
+        ejemplo: 'Radio 3 y altura 4: V = π · 3² · 4 / 3 = 12π.', ver: ['generatriz', 'tronco de cono'] },
+      { termino: 'generatriz', simbolo: 'g', formas: ['generatriz', 'generatrices'],
+        def: 'Segmento recto sobre la superficie lateral: une las bases o, en el cono, el vértice con la base.',
+        ejemplo: 'Cono de radio 3 y altura 4: g = √(3² + 4²) = 5.', ver: ['superficie lateral'] },
+      { termino: 'superficie lateral', def: 'Lo que cubre al sólido sin contar sus bases: en el cono y el cilindro, la parte curva.',
+        ejemplo: 'Cono de radio 3 y g = 5: su área lateral es π · 3 · 5 = 15π.', ver: ['generatriz'] },
+      { termino: 'tronco de cilindro', formas: ['tronco de cilindro', 'troncos de cilindro'],
+        def: 'Parte de un cilindro entre su base y un corte inclinado; sus generatrices miden distinto.',
+        ejemplo: 'Radio 3, generatrices 4 y 10: V = 9π · 7 = 63π.', ver: ['cilindro'] },
+      { termino: 'tronco de cono', formas: ['tronco de cono', 'troncos de cono'],
+        def: 'Lo que queda de un cono al cortarle la punta con un plano paralelo a la base.',
+        ejemplo: 'Radios 2 y 1, altura 3: V = π · 3/3 · (4 + 2 + 1) = 7π.', ver: ['cono'] },
+      { termino: 'esfera', def: 'Sólido formado por los puntos cuya distancia al centro es menor o igual que el radio.',
+        ejemplo: 'Radio 3: V = 4/3 · π · 3³ = 36π, y su área es 4π · 3² = 36π.', ver: ['círculo máximo', 'zona esférica'] },
+      { termino: 'círculo máximo', formas: ['círculo máximo', 'círculos máximos'],
+        def: 'Corte de la esfera por un plano que pasa por su centro: el círculo más grande que cabe en ella.',
+        ejemplo: 'Esfera de radio 5: su círculo máximo tiene área π · 5² = 25π.', ver: ['esfera'] },
+      { termino: 'zona esférica', formas: ['zona esférica', 'zonas esféricas', 'zona', 'zonas'],
+        def: 'Parte de la superficie de una esfera comprendida entre dos planos paralelos que la cortan.',
+        ejemplo: 'Radio 5, planos separados 2: área 2π · 5 · 2 = 20π.', ver: ['casquete'] },
+      { termino: 'casquete', formas: ['casquete', 'casquetes'],
+        def: 'Lo que un solo plano le corta a una esfera, como una tapa. Su área es 2πRh.',
+        ejemplo: 'Radio 5 y altura 2: área 2π · 5 · 2 = 20π.', ver: ['zona esférica'] },
+      { termino: 'centroide', def: 'Punto de equilibrio de una región plana, su centro de gravedad. En un cuadrado o un círculo, su centro.',
+        ver: ['Pappus-Guldin'] },
+      { termino: 'Pappus-Guldin', formas: ['Pappus-Guldin', 'Pappus'],
+        def: 'Teorema: el volumen que engendra una región al girar es su área por el camino que recorre su centroide.',
+        ejemplo: 'Cuadrado de área 4 con centro a 3 del eje: V = 4 · 2π · 3 = 24π.', ver: ['centroide', 'toro'] },
+      { termino: 'toro', def: 'Sólido con forma de rosquilla: lo engendra un círculo que gira alrededor de un eje que no lo corta.',
+        ejemplo: 'Círculo de radio 1 a 3 del eje: V = π · 1² · 2π · 3 = 6π².', ver: ['Pappus-Guldin'] },
+    ],
     // Laboratorio: las tres mesas son más ricas que sus ideas (dos medidas libres, otra forma, el caso límite).
     laboratorio: [mesaCono, mesaPappus, mesaZona],
     ideas: [cilIdea, conoIdea, desIdea, esfIdea, zonaIdea, pappIdea],
