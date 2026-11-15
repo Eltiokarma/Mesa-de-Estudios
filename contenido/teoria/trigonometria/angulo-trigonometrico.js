@@ -607,9 +607,6 @@
         dibujo: val => ({ datos: arcoRad(val.r, arcoDe(val)), estado: {} }),
         lectura: val => [s, ' = ', th, ' · ', r, ` = ${f(val.t)} · ${f(val.r)} = ${f(arcoDe(val))} cm · ${f(val.t * 180 / Math.PI, 1)}°`],
         invitaciones: [
-          { texto: 'Guarda dos casos con el mismo ángulo, uno con el doble de radio.',
-            logrado: (val, guardados) => guardados.some(a => guardados.some(b => a.t === b.t && Math.abs(b.r - 2 * a.r) < 1e-9)),
-            bien: 'Radio doble, arco doble: el ángulo en radianes es el cociente y no cambió.' },
           { texto: 'Haz que el arco mida justo 3 cm con un radio de 2 cm.',
             logrado: val => val.r === 2 && Math.abs(arcoDe(val) - 3) < 1e-9,
             bien: 'θ = 1,5 rad: el arco cabe una vez y media en el radio.' },
@@ -619,6 +616,9 @@
           { texto: 'Lleva el arco casi a la vuelta completa, sin cerrarla.',
             logrado: val => val.t < 2 * Math.PI && 2 * Math.PI - val.t < 0.5,
             bien: 'Con 6 radios de arco falta un pedacito: la vuelta mide 2π ≈ 6,28 radios.' },
+          { texto: 'Guarda dos casos con el mismo ángulo, uno con el doble de radio.',
+            logrado: (val, guardados) => guardados.some(a => guardados.some(b => a.t === b.t && Math.abs(b.r - 2 * a.r) < 1e-9)),
+            bien: 'Radio doble, arco doble: el ángulo en radianes es el cociente y no cambió.' },
         ],
         arrastres: [
           { id: 'fin-arco', etiqueta: 'fin del arco: cambia θ', color: 'c-o',
