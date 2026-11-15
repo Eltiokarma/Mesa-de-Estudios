@@ -14,6 +14,8 @@
  *   desarrollo(poli, t) → { caras: [[puntos]], raiz }   t = 0: el desarrollo plano; t = 1: el sólido armado
  *   region(id, d) → { perfil: [[r, y]], area, rc, yc, nombre }   (rc, yc: centroide de la región)   región del plano meridiano a distancia d del eje
  *   revolucion(id, d, grados) → { volumen, completo, solido, ... }   Pappus-Guldin: V = área · ángulo · rc
+ *   tresPiramides(a, b, c) → las tres pirámides de cúspide común que llenan una caja, con su volumen
+ *   volumen(poli) → volumen de un poliedro convexo
  *   cubitos(n) → [{ p: [i, j, k], pintadas: [caras], clase }]   cubo de lado n pintado por fuera
  *   porClase(n) → { 3, 2, 1, 0 }             cuántos cubitos tienen 3, 2, 1 y 0 caras pintadas
  *   varilla(a, L, giro) → A, B, H, sombra, altura (la varilla AB apoyada en el piso, su sombra AH y su ángulo a)
@@ -205,6 +207,26 @@
       recorrido: g.rc * th, solido: SOLIDO[id](d), entero: grados >= 360 });
   }
 
+  // ---------- Tres pirámides que llenan una caja ----------
+  // Volumen de un poliedro convexo: tetraedros desde su primer vértice hasta cada triángulo de sus caras.
+  function volumen(poli) {
+    const V = poli.vertices, O = V[0];
+    let vol = 0;
+    for (const f of poli.caras) for (let k = 1; k + 1 < f.length; k++) vol += punto(resta(V[f[0]], O), cruz(resta(V[f[k]], O), resta(V[f[k + 1]], O))) / 6;
+    return Math.abs(vol);
+  }
+  // Caja de lados a (x), b (y), c (z) centrada en el origen. Las tres pirámides comparten la cúspide en la esquina
+  // (−a/2, −b/2, −c/2) y tienen por base las tres caras que no la tocan (x = a/2, y = b/2, z = c/2).
+  function tresPiramides(a, b, c) {
+    const A = [-a / 2, -b / 2, -c / 2], h = [a / 2, b / 2, c / 2], ejes = [[0, 1, 2], [1, 2, 0], [2, 0, 1]];
+    const piezas = ejes.map(([i, j, k]) => {
+      const base = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([u, w]) => { const p = [0, 0, 0]; p[i] = h[i]; p[j] = u * h[j]; p[k] = w * h[k]; return p; });
+      const vertices = [A, ...base].map(p => p.map(limpio)), poli = { vertices, caras: casco(vertices) };
+      return { vertices, caras: poli.caras, volumen: volumen(poli), base: centro(base), altura: [a, b, c][i] };
+    });
+    return { piezas, caja: a * b * c, cuspide: A };
+  }
+
   // ---------- Cubo pintado ----------
   function cubitos(n) {
     const lista = [];
@@ -251,7 +273,7 @@
     normalDe, reflejar, esPlanoSimetria, planosSimetria,
     desarrollo, apoyar, rotar,
     region, revolucion, REGIONES: Object.keys(REGIONES),
-    cubitos, porClase, varilla, diedro, proyectar,
+    cubitos, porClase, varilla, diedro, proyectar, volumen, tresPiramides,
     util: { resta, suma, por, punto, cruz, largo, unit, centro },
   };
 });

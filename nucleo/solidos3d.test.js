@@ -141,3 +141,16 @@ test('proyectar conserva el largo (girar no cambia la figura)', () => {
   const p = [0.4, -1.3, 2.2], q = S.proyectar(p, { giro: 33, inclinacion: -18 });
   assert.ok(casi(largo(q), largo(p), 1e-12));
 });
+
+test('tres pirámides llenan la caja: cada una abc/3, aunque tengan formas distintas', () => {
+  for (const [a, b, c] of [[2, 2, 2], [3, 1.6, 2], [1, 2, 4]]) {
+    const r = S.tresPiramides(a, b, c);
+    assert.equal(r.piezas.length, 3);
+    for (const p of r.piezas) { assert.ok(casi(p.volumen, a * b * c / 3, 1e-9)); assert.equal(p.caras.length, 5); }
+    assert.ok(casi(r.piezas.reduce((s, p) => s + p.volumen, 0), r.caja, 1e-9));
+  }
+  // El volumen de un poliedro sale igual que el de libro: cubo de arista 2 y tetraedro regular.
+  assert.ok(casi(S.volumen(S.poliedro('cubo')), 8, 1e-9));
+  const t = S.poliedro('tetraedro'), a = largo(resta(t.vertices[0], t.vertices[1]));
+  assert.ok(casi(S.volumen(t), a ** 3 / (6 * Math.SQRT2), 1e-9));
+});
