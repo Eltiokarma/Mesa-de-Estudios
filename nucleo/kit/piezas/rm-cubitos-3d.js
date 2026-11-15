@@ -178,7 +178,7 @@
     const cuerpo = pl.poligonos.map(g => {
       if (g.tipo !== 'cara') return `<polygon points="${pts(g.ps)}" fill="var(${g.tipo === 'frente' ? '--c-i, #08807a' : '--c-d, #4f7a17'})" fill-opacity="0.4" stroke="none"/>`;
       const r = Math.max(1.5, R_PUNTO * pl.E);
-      const relleno = /^c-[a-z]$/.test(g.tono) ? `fill="color-mix(in srgb, var(--${g.tono}) 38%, var(--card, #fffaf6))"` : RELLENO[g.tono] || RELLENO.cubo;
+      const relleno = /^c-[a-z]$/.test(g.tono) ? `fill="color-mix(in srgb, var(--${g.tono}) 50%, var(--card, #fffaf6))"` : RELLENO[g.tono] || RELLENO.cubo;
       return `<polygon points="${pts(g.ps)}" ${relleno} stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"${g.tono === 'tenue' ? ' stroke-opacity="0.35"' : ''}/>`
         + g.puntos.map(p => `<circle cx="${n(p.x)}" cy="${n(p.y)}" r="${n(r)}" fill="currentColor"/>`).join('');
     }).join('');
@@ -196,12 +196,14 @@
     clave: d => JSON.stringify(d.vista || null),
     distancia: 8.4, distMin: 4.2, distMax: 14,
     construir(T, grupo, d, e, h) {
-      const b = caja(d), escala = 3 / b.lado, osc = h.oscuro();
+      const b = caja(d), osc = h.oscuro();
+      // Cabe en el cuadro: por la esfera que lo envuelve (un cubo) o por su lado más largo (una pila alta).
+      const radio = Math.hypot(...b.mx.map((v, i) => v - b.mn[i])) / 2, escala = Math.min(2.6 / radio, 4.2 / b.lado);
       grupo.scale.setScalar(escala);
       const t3 = p => new T.Vector3(p[0] - b.centro[0], p[2] - b.centro[2], -(p[1] - b.centro[1]));
       const tinta = h.varCss('--ink', '#2d2340'), naranja = h.varCss('--c-o', '#b85a06');
       const colorTono = k => {
-        if (/^c-[a-z]$/.test(k)) return new T.Color(h.varCss(`--${k}`, '#b85a06')).lerp(new T.Color(osc ? '#2a2135' : '#fffaf6'), 0.62).getStyle();
+        if (/^c-[a-z]$/.test(k)) return new T.Color(h.varCss(`--${k}`, '#b85a06')).lerp(new T.Color(osc ? '#2a2135' : '#fffaf6'), 0.5).getStyle();
         const t = TONOS[k] || TONOS.cubo;
         if (t.fijo) return osc && t.oscuro ? t.oscuro : t.fijo;
         const c = new T.Color(naranja);

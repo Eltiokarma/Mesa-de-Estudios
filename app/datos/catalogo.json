@@ -4850,10 +4850,12 @@
       "archivo": "/contenido/teoria/razonamiento-matematico/juegos-recreativos.js",
       "requiere": [
        "/nucleo/kit/piezas/rm-fichas.js",
-       "/nucleo/kit/piezas/rm-plano.js"
+       "/nucleo/kit/piezas/rm-plano.js",
+       "/plantillas/dados-caras/motor.js",
+       "/nucleo/kit/piezas/rm-cubitos-3d.js"
       ],
       "ideas": 3,
-      "terminos": 10
+      "terminos": 12
      }
     },
     {
