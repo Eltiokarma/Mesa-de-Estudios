@@ -1053,7 +1053,7 @@
        "/nucleo/kit/piezas/quim-cadena.js"
       ],
       "ideas": 5,
-      "terminos": 30
+      "terminos": 32
      }
     },
     {
@@ -1096,7 +1096,7 @@
        "/nucleo/kit/piezas/quim-composicion.js"
       ],
       "ideas": 5,
-      "terminos": 28
+      "terminos": 30
      }
     },
     {
@@ -1137,7 +1137,7 @@
        "/nucleo/kit/piezas/quim-fichas.js"
       ],
       "ideas": 5,
-      "terminos": 28
+      "terminos": 30
      }
     },
     {
@@ -1180,7 +1180,7 @@
        "/nucleo/kit/piezas/quim-fichas.js"
       ],
       "ideas": 4,
-      "terminos": 21
+      "terminos": 24
      }
     },
     {
@@ -1222,7 +1222,7 @@
        "/nucleo/kit/piezas/quim-cadena.js"
       ],
       "ideas": 5,
-      "terminos": 23
+      "terminos": 24
      }
     },
     {
@@ -1302,7 +1302,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 25
+      "terminos": 27
      }
     },
     {
@@ -1340,7 +1340,7 @@
        "/nucleo/kit/piezas/quim-particulas.js"
       ],
       "ideas": 5,
-      "terminos": 27
+      "terminos": 28
      }
     },
     {
@@ -1418,7 +1418,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 13
+      "terminos": 28
      }
     },
     {
@@ -1460,7 +1460,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 16
+      "terminos": 17
      }
     },
     {
@@ -1503,7 +1503,7 @@
        "/nucleo/kit/piezas/quim-molecula.js"
       ],
       "ideas": 6,
-      "terminos": 14
+      "terminos": 15
      }
     },
     {
@@ -1546,7 +1546,7 @@
        "/nucleo/kit/piezas/quim-molecula.js"
       ],
       "ideas": 6,
-      "terminos": 12
+      "terminos": 13
      }
     },
     {
@@ -1592,7 +1592,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 12
+      "terminos": 13
      }
     },
     {
@@ -1679,7 +1679,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
-      "terminos": 14
+      "terminos": 15
      }
     }
    ]
