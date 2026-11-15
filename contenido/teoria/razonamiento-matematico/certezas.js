@@ -147,8 +147,10 @@
   function palomar(N, cas, extra = {}) {
     const filas = Array.from({ length: cas }, (_, i) => ({ rotulo: `Casillero ${i + 1}`, fichas: [] }));
     for (let i = 0; i < N; i++) filas[i % cas].fichas.push({ color: 'o', t: '', forma: 'circulo', resalto: extra.ultima && i === N - 1 ? 'd' : undefined });
-    return { filas: filas.slice(0, 5), tam: 22, pie: extra.pie || `Alguno tiene al menos ${Math.ceil(N / cas)}` };
+    return { filas: filas.slice(0, 5), tam: 22, pie: extra.pie || `Alguno tiene al menos ${alMenos(N, cas)}` };
   }
+  // Lo que el palomar garantiza: N objetos en k casilleros dejan alguno con ⌈N/k⌉ o más.
+  const alMenos = (N, cas) => Math.ceil(N / cas);
   // Manija del palomar: el último objeto repartido (casillero (N − 1) mod k, capa ⌊(N − 1)/k⌋). Al moverla, la fila
   // más cercana y la capa dan el nuevo N.
   function manijaPalomar(datosDe, kDe, id) {
@@ -197,7 +199,7 @@
       datos: palomar(9, 4, { ultima: true }),
       pasos: [
         { estado: { corte: 0 }, texto: 'Con 8 objetos en 4 casilleros puede haber 2 en cada uno.', ecuacion: ['4 · 2 = 8'] },
-        { estado: { corte: 0 }, texto: 'El objeto 9 cae en alguno que ya tiene 2.', ecuacion: ['⌈9 / 4⌉ = 3'] },
+        { estado: { corte: 0 }, texto: 'Principio del palomar: el objeto 9 cae en alguno que ya tiene 2.', ecuacion: ['⌈9 / 4⌉ = 3'] },
         { estado: { corte: 0 }, texto: 'Para meses: 12 · 2 = 24; la persona 25 obliga a 3.', ecuacion: [Nn, ' = 12 · 2 + 1 = 25'] },
       ],
     },
@@ -235,9 +237,11 @@
     return {
       columnas: Array.from({ length: n }, (_, j) => `C${j + 1}`), filas: Array.from({ length: n }, (_, i) => `L${i + 1}`), ancho: 40,
       celdas: Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (j < i ? '' : j === i ? { marca: 'si', color: 'd', tenue: true } : { marca: 'no', color: 'h' }))),
-      notas: [{ t: extra.nota || `Pruebas: ${n * (n - 1) / 2}` }],
+      notas: [{ t: extra.nota || `Pruebas: ${pruebas(n)}` }],
     };
   }
+  // Pruebas del peor caso con n llaves: (n − 1) + (n − 2) + … + 1.
+  const pruebas = n => n * (n - 1) / 2;
   // La manija es la última casilla de la diagonal (la llave que no se prueba); bajar una fila agrega una llave.
   function manijaLlaves(datosDe, id) {
     return {
@@ -347,6 +351,9 @@
       pie: cumple(val.meta, sac) ? 'Meta cumplida aun con la peor suerte' : 'La peor suerte todavía la evita',
     };
   }
+  const urnaDe = val => ({ R: val.R, A: val.A, V: val.V });
+  // La urna que más sacadas pide para «una de cada color», buscada con el mismo motor en todas las urnas de la mesa.
+  const MAX_CADA = (() => { let m = 0; for (let R = 1; R <= 6; R++) for (let A = 1; A <= 6; A++) for (let V = 1; V <= 6; V++) m = Math.max(m, certeza({ R, A, V }, 'cada')); return m; })();
   const mesaUrna = {
     id: 'urna-libre', titulo: 'Arma tu urna', pieza: 'rm-fichas',
     consigna: 'Elige cuántas fichas de cada color hay y la meta. Arrastra la última sacada: la urna saca siempre la peor.',
@@ -364,6 +371,23 @@
       if (N === null) return [`Con ${f0(n)} sacadas: meta imposible con esta urna`];
       return [`Con ${f0(n)}: `, cumple(val.meta, q.slice(0, n)) ? 'segura' : 'puede fallar', ' · certeza con ', Nn, ` = ${f0(N)}`];
     },
+    // Retos: todos los mide certeza(), el mismo motor que saca la peor secuencia del dibujo.
+    invitaciones: [
+      { texto: 'Saca justo las fichas que aseguran la meta: ni una menos ni una más.',
+        logrado: val => val.n === certeza(urnaDe(val), val.meta),
+        bien: 'Con una menos, la peor suerte todavía gana. Esta es la que obliga.' },
+      { texto: 'Arma una urna donde la meta no se pueda asegurar nunca.',
+        logrado: val => certeza(urnaDe(val), val.meta) === null,
+        bien: 'Ni sacando todo se cumple. Antes de contar, pregunta si es posible.' },
+      { texto: 'Con la meta «una de cada color», arma la urna que pida más sacadas.',
+        logrado: val => val.meta === 'cada' && certeza(urnaDe(val), 'cada') === MAX_CADA,
+        bien: 'Manda el color más escaso: en el peor caso sale al final.' },
+      { texto: 'Guarda dos urnas distintas que pidan la misma certeza para la misma meta.',
+        logrado: (val, guardados) => guardados.some((a, i) => guardados.some((b, j) => j > i && a.meta === b.meta
+          && (a.R !== b.R || a.A !== b.A || a.V !== b.V) && certeza(urnaDe(a), a.meta) !== null
+          && certeza(urnaDe(a), a.meta) === certeza(urnaDe(b), b.meta))),
+        bien: 'Otra urna, la misma respuesta: cuenta lo que sale sin cumplir.' },
+    ],
     arrastres: [{ id: 'sacadas', etiqueta: 'cuántas fichas se sacan', color: 'c-o',
       donde: val => {
         const d = urnaLibre(val), n = Math.min(val.n, d.filas[3].fichas.length + d.filas[4].fichas.length);
@@ -387,7 +411,22 @@
       { id: 'N', etiqueta: 'Objetos', color: 'c-o', min: 1, max: 20, paso: 1, inicio: 5, decimales: 0 },
     ],
     dibujo: val => ({ datos: palomar(val.N, val.k), estado: {} }),
-    lectura: val => [Nn, ` = ${f0(val.N)}, `, k, ` = ${f0(val.k)}: alguno tiene ${f0(Math.ceil(val.N / val.k))} o más`],
+    lectura: val => [Nn, ` = ${f0(val.N)}, `, k, ` = ${f0(val.k)}: alguno tiene ${f0(alMenos(val.N, val.k))} o más`],
+    invitaciones: [
+      { texto: 'Reparte el mínimo de objetos que obliga a 3 en algún casillero.',
+        logrado: val => alMenos(val.N, val.k) >= 3 && alMenos(val.N - 1, val.k) < 3,
+        bien: 'Con 2 en cada uno, el siguiente hace 3. ¿Y para obligar a 4?' },
+      { texto: 'Con 5 casilleros, reparte los más objetos posibles sin que alguno pase de 3.',
+        logrado: val => val.k === 5 && alMenos(val.N, 5) === 3 && alMenos(val.N + 1, 5) === 4,
+        bien: '15 caben de a 3; el objeto 16 ya obliga a 4.' },
+      { texto: 'Haz que todos los casilleros queden iguales, con 3 o más cada uno.',
+        logrado: val => val.N % val.k === 0 && alMenos(val.N, val.k) >= 3,
+        bien: 'Reparto exacto: aquí lo garantizado es justo N entre k.' },
+      { texto: 'Guarda dos casos con distintos casilleros que garanticen lo mismo, 3 o más.',
+        logrado: (val, guardados) => guardados.some((a, i) => guardados.some((b, j) => j > i && a.k !== b.k
+          && alMenos(a.N, a.k) >= 3 && alMenos(a.N, a.k) === alMenos(b.N, b.k))),
+        bien: 'Más casilleros piden más objetos para la misma garantía.' },
+    ],
     arrastres: [Object.assign({ id: 'objetos', etiqueta: 'cuántos objetos se reparten', color: 'c-o' }, manijaPalomar((N, val) => palomar(N, val.k), 'k', 'N'))],
   };
   // Mesa 3: las llaves, hasta 7, con la cuenta escrita.
@@ -396,7 +435,18 @@
     consigna: 'Agrega llaves y candados hasta 7. Mira cómo crece el triángulo de pruebas del peor caso.',
     controles: [{ id: 'n', etiqueta: 'Llaves', color: 'c-o', min: 2, max: 7, paso: 1, inicio: 3, decimales: 0 }],
     dibujo: val => ({ datos: llaves(val.n), estado: {} }),
-    lectura: val => [`${pl(val.n, 'llave', 'llaves')}: ${pl(val.n * (val.n - 1) / 2, 'prueba', 'pruebas')} en el peor caso`],
+    lectura: val => [`${pl(val.n, 'llave', 'llaves')}: ${pl(pruebas(val.n), 'prueba', 'pruebas')} en el peor caso`],
+    invitaciones: [
+      { texto: 'Encuentra cuántas llaves piden exactamente 15 pruebas en el peor caso.',
+        logrado: val => pruebas(val.n) === 15,
+        bien: '5 + 4 + 3 + 2 + 1 = 15: la sexta llave no se prueba.' },
+      { texto: 'Busca el menor número de llaves que pida más de 5 pruebas.',
+        logrado: val => pruebas(val.n) > 5 && pruebas(val.n - 1) <= 5,
+        bien: 'Con 4 llaves ya son 6. El triángulo crece cada vez más rápido.' },
+      { texto: 'Guarda dos casos seguidos y compara cuántas pruebas se sumaron.',
+        logrado: (val, guardados) => guardados.some((a, i) => guardados.some((b, j) => j > i && Math.abs(a.n - b.n) === 1)),
+        bien: 'La llave número n suma n − 1 pruebas: una fila más.' },
+    ],
     arrastres: [Object.assign({ id: 'llaves', etiqueta: 'cuántas llaves y candados', color: 'c-o' }, manijaLlaves(n => llaves(n), 'n'))],
   };
 
@@ -405,6 +455,32 @@
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/rm-fichas.js', '/nucleo/kit/piezas/rm-tablero.js'],
+    // Glosario: las palabras que este tema estrena en el curso (docs/teoria.md, 4d). «Certeza» sale antes en
+    // razonamiento deductivo («¿qué se concluye con certeza?»): se define allá.
+    glosario: [
+      { termino: 'peor caso', formas: ['peor caso', 'peores casos', 'peor suerte', 'peor extracción'],
+        def: 'La forma más desfavorable en que pueden salir las cosas; si la meta se cumple ahí, se cumple siempre.',
+        ejemplo: 'Para 3 rojas, primero salen las 4 azules y las 3 verdes.', ver: ['extracción'] },
+      { termino: 'extracción', formas: ['extracción', 'extracciones'],
+        def: 'Sacar objetos de un recipiente uno tras otro, sin ver cuál sale.',
+        ejemplo: 'Sacar fichas de una bolsa con los ojos cerrados.', ver: ['urna', 'sin devolver'] },
+      { termino: 'urna', def: 'Recipiente cerrado del que se sacan fichas o bolillas sin mirar.',
+        ejemplo: '5 rojas, 4 azules y 3 verdes: 12 fichas en total.', ver: ['extracción'] },
+      { termino: 'sin devolver', def: 'Lo que se saca no vuelve al recipiente: cada vez quedan menos para elegir.',
+        ejemplo: 'De 12 fichas, tras sacar 3, quedan 9.', ver: ['extracción'] },
+      { termino: 'principio del palomar', def: 'Si hay más objetos que lugares donde ponerlos, algún lugar recibe por lo menos dos.',
+        ejemplo: '13 personas y 12 meses: dos cumplen años en el mismo mes.', ver: ['casillero'] },
+      { termino: 'casillero', def: 'Cada lugar donde caen los objetos que se reparten: un mes, un color, un salón.',
+        ejemplo: 'Para cumpleaños hay 12, uno por mes.', ver: ['principio del palomar'] },
+      { termino: 'redondear hacia arriba', simbolo: '⌈ ⌉', formas: ['redondeado hacia arriba', 'redondear hacia arriba'],
+        def: 'Tomar el entero siguiente si hay decimales; si la división es exacta, el número queda igual.',
+        ejemplo: '9 entre 4 da 2,25, que sube a 3.', ver: ['principio del palomar'] },
+      { termino: 'deducir', formas: ['deducir', 'deduce', 'deducen'],
+        def: 'Sacar una conclusión segura de lo que ya se sabe, sin tener que probarla.',
+        ejemplo: 'Si 3 de 4 candados ya tienen su llave, la última abre el cuarto.' },
+      { termino: 'probabilidad', def: 'Qué tan posible es un resultado: casos a favor entre casos posibles, de 0 a 1.',
+        ejemplo: '5 rojas entre 12 fichas: sacar roja tiene 5/12.', ver: ['peor caso'] },
+    ],
     // Laboratorio: la urna que arma el alumno con cuatro metas, el palomar con casilleros variables y más llaves.
     laboratorio: [mesaUrna, mesaPalomar, mesaLlaves],
     historia: {
