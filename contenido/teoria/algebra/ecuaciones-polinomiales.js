@@ -156,7 +156,7 @@
       ],
     },
     regla: {
-      texto: 'Un polinomio de grado n ≥ 1 tiene exactamente n raíces complejas, si cada una se cuenta tantas veces como se repite. La gráfica solo muestra las reales.',
+      texto: 'Teorema fundamental del álgebra: un polinomio de grado n ≥ 1 tiene exactamente n raíces complejas, contando cada una tantas veces como se repite. La gráfica solo muestra las reales.',
       ecuacion: ['P(', z, ') = a', { llave: ['(', z, ' − ', { sub: ['r', '1'] }, ')(', z, ' − ', { sub: ['r', '2'] }, ')…(', z, ' − ', { sub: ['r', 'n'] }, ')'], nota: 'n factores', color: 'c-d' }],
       condicion: 'grado n ≥ 1 y coeficiente principal a ≠ 0; una raíz doble cuenta dos veces.',
     },
@@ -593,15 +593,15 @@
         { estado: { corte: 1 }, texto: 'En x⁴ − 5x² + 4 = 0 solo hay x⁴ y x².', ecuacion: [u, ' = ', x, '²  ⇒  ', u, '² − 5', u, ' + 4 = 0'] },
         { estado: { corte: 2 }, texto: 'La cuadrática en u da dos valores.', ecuacion: [u, ' = 1', '   ·   ', u, ' = 4'] },
         { estado: { corte: 3 }, texto: 'Cada u positiva da dos x: ±√u.', ecuacion: [x, ' = ±1', '   ·   ', x, ' = ±2'] },
-        { estado: { corte: 4 }, texto: 'Recíproca: x⁴ − 5x³ + 8x² − 5x + 1 = 0. Coeficientes simétricos.', ecuacion: ['1, −5, 8, −5, 1'] },
+        { estado: { corte: 4 }, texto: 'Ecuación recíproca: x⁴ − 5x³ + 8x² − 5x + 1 = 0, de coeficientes simétricos.', ecuacion: ['1, −5, 8, −5, 1'] },
         { estado: { corte: 5 }, texto: 'x = 0 no es raíz: se divide entre x² con t = x + 1/x.', ecuacion: [t, '² − 5', t, ' + 6 = 0  ⇒  ', t, ' = 2  o  ', t, ' = 3'] },
         { estado: { corte: 6 }, texto: 't = 2 da x = 1 (doble); t = 3 da dos raíces más.', ecuacion: [x, ' = 1 (doble)', '   ·   ', x, ' = ', { frac: ['3 ± √5', '2'] }] },
       ],
     },
     regla: {
-      texto: 'Con solo x⁴ y x², u = x² da una cuadrática; cada u > 0 da x = ±√u. Con coeficientes simétricos, se divide entre x² y se usa t = x + 1/x.',
+      texto: 'En la ecuación bicuadrada, u = x² da una cuadrática; cada u > 0 da x = ±√u. En la ecuación recíproca se divide entre x² y se usa t = x + 1/x.',
       ecuacion: [x, '² + ', { frac: ['1', [x, '²']] }, ' = ', { llave: [t], nota: 'x + 1/x', color: 'c-i' }, '² − 2'],
-      condicion: 'u < 0 no da x reales; u = 0 da x = 0. En la recíproca se divide porque x = 0 no es raíz.',
+      condicion: 'u < 0 no da x reales; u = 0 da x = 0. En la ecuación recíproca, x = 0 nunca es raíz.',
     },
     ahoraTu: {
       pieza: 'recta',
@@ -777,6 +777,11 @@
     }, estado: {} };
   };
   const ANG = (pt, g, corte) => { let a = Math.atan2(g.Y(0) - pt.y, pt.x - g.X(0)) * 180 / Math.PI; if (a < corte) a += 360; return a; };
+  const raicesW = v => binLibre(v).datos.flechas.slice(1).map(fl => fl.a);
+  // Cambios de signo de un polinomio en [−3, 3], con la misma malla que realesConRepeticion (cuenta los cruces, no los toques).
+  const cambiosDeSigno = coefs => { let n = 0; for (let i = 0; i < 4000; i++) { const xa = -3.0001 + i * 6 / 4000; if ((valor(coefs, xa) < 0) !== (valor(coefs, xa + 6 / 4000) < 0)) n++; } return n; };
+  // El mayor término independiente de la cúbica libre (raíces de −3 a 3, a = 1, 2 o −1): se calcula, no se escribe.
+  const MAX_D = (() => { let m = -Infinity; const R = [-3, -2, -1, 0, 1, 2, 3]; for (const a of [1, 2, -1]) for (const p of R) for (const q of R) for (const r of R) m = Math.max(m, desdeRaices([p, q, r], a)[3]); return m; })();
   const laboratorio = [
     {
       id: 'cubica-libre', titulo: 'Cúbica con raíces y a libres', pieza: 'ejes',
@@ -790,6 +795,24 @@
       dibujo: v => ({ datos: cubicaLibre(v), estado: {} }),
       lectura: v => { const c = desdeRaices([v.r1, v.r2, v.r3], v.a); return [{ frac: ['−b', 'a'] }, ` = ${f(-c[1] / v.a)}`, '   ·   ', { frac: ['c', 'a'] }, ` = ${f(c[2] / v.a)}`, '   ·   ', { frac: ['−d', 'a'] }, ` = ${f(-c[3] / v.a)}`]; },
       arrastres: manijasRaices(cubicaLibre),
+      // Retos comprobados (docs/teoria.md §4d): leen los coeficientes de desdeRaices(), los mismos que dibujan la curva.
+      invitaciones: [
+        { texto: 'Haz que la suma de las raíces sea 0.',
+          logrado: v => -desdeRaices([v.r1, v.r2, v.r3], v.a)[1] / v.a === 0,
+          bien: 'Suma cero: el polinomio queda sin término en x².' },
+        { texto: 'Consigue que el producto de las raíces sea 6.',
+          logrado: v => -desdeRaices([v.r1, v.r2, v.r3], v.a)[3] / v.a === 6,
+          bien: '−d/a = 6, elijas el a que elijas: el producto lo deciden las raíces.' },
+        { texto: 'Busca el mayor término independiente d de la mesa.',
+          logrado: v => desdeRaices([v.r1, v.r2, v.r3], v.a)[3] === MAX_D,
+          bien: 'a = 2 y tres raíces en −3: d = −2 · (−27) = 54.' },
+        { texto: 'Guarda dos casos con la misma suma de raíces y distinto producto.',
+          logrado: (v, guardados) => {
+            const sp = w => { const c = desdeRaices([w.r1, w.r2, w.r3], w.a); return [-c[1] / w.a, -c[3] / w.a]; }, [s0, p0] = sp(v);
+            return guardados.some(g => sp(g)[0] === s0 && sp(g)[1] !== p0) && guardados.some(g => ['r1', 'r2', 'r3', 'a'].every(k => g[k] === v[k]));
+          },
+          bien: 'Misma −b/a, distinto −d/a: la suma sola no decide el polinomio.' },
+      ],
     },
     {
       id: 'sube-baja', titulo: 'Tres grados que suben y bajan', pieza: 'ejes',
@@ -805,6 +828,21 @@
         donde: v => { const g = EJES().geometria(EJES1); return { x: g.X(0), y: g.Y(valor(conC(v.g, v.c), 0)) }; },
         mover: pt => ({ c: inversa(EJES().geometria(EJES1).Y, -8, 8)(pt.y) }),
       }],
+      invitaciones: [
+        { texto: 'Con grado 4, haz que no haya ninguna raíz real.',
+          logrado: v => v.g === 4 && realesConRepeticion(conC(v.g, v.c)) === 0,
+          bien: 'Las cuatro raíces son complejas, en dos pares conjugados.' },
+        { texto: 'Con grado 3, busca un c donde la curva solo toque el eje en un punto.',
+          logrado: v => v.g === 3 && realesConRepeticion(conC(v.g, v.c)) > cambiosDeSigno(conC(v.g, v.c)),
+          bien: 'Ahí hay una raíz doble: toca sin cruzar y cuenta dos veces.' },
+        { texto: 'Con grado 5, consigue las cinco raíces reales.',
+          logrado: v => v.g === 5 && realesConRepeticion(conC(v.g, v.c)) === 5,
+          bien: 'Cinco cortes para grado 5: ninguna compleja.' },
+        { texto: 'Guarda dos casos del mismo grado con distinto número de raíces reales.',
+          logrado: (v, guardados) => guardados.some(g => g.g === v.g && realesConRepeticion(conC(g.g, g.c)) !== realesConRepeticion(conC(v.g, v.c)))
+            && guardados.some(g => g.g === v.g && g.c === v.c),
+          bien: 'El total sigue siendo el grado: las que faltan son complejas.' },
+      ],
     },
     {
       id: 'w-libre', titulo: 'zⁿ = w con w libre', pieza: 'flechas',
@@ -824,6 +862,20 @@
           donde: v => { const g = FL().geometria(binLibre(v).datos), q = binLibre(v).datos.flechas[2].a; return { x: g.X(q[0]), y: g.Y(q[1]) }; },
           mover: (pt, v) => ({ n: (v.tw + 360) / ANG(pt, FL().geometria(binLibre(v).datos), 0.5) }) },
       ],
+      invitaciones: [
+        { texto: 'Haz que una raíz caiga sobre el eje x, a la derecha del origen.',
+          logrado: v => raicesW(v).some(q => Math.abs(q[1]) < 1e-9 && q[0] > 0),
+          bien: 'Esa raíz es real y positiva: su ángulo es 0°.' },
+        { texto: 'Consigue que todas las raíces tengan módulo 1.',
+          logrado: v => Math.abs(v.rw ** (1 / v.n) - 1) < 1e-9,
+          bien: 'Si |w| = 1, todas quedan en la circunferencia de radio 1.' },
+        { texto: 'Forma un hexágono con un vértice en 1.',
+          logrado: v => v.n === 6 && raicesW(v).some(q => Math.abs(q[0] - 1) < 1e-9 && Math.abs(q[1]) < 1e-9),
+          bien: 'Son las seis raíces de z⁶ = 1, separadas 60°.' },
+        { texto: 'Busca las raíces más pegadas al origen.',
+          logrado: v => v.rw ** (1 / v.n) === Math.min(...[2, 3, 4, 5, 6].map(n => 0.5 ** (1 / n))),
+          bien: 'Con |w| < 1, la raíz cuadrada achica más que la sexta.' },
+      ],
     },
   ];
 
@@ -831,6 +883,23 @@
     unidad: 'algebra.ecuaciones-polinomiales',
     version: '0.2.0',
     laboratorio,
+    // Glosario por tema (docs/teoria.md §4d): las palabras que esta unidad estrena en álgebra.
+    glosario: [
+      { termino: 'teorema fundamental del álgebra', def: 'Un polinomio de grado n ≥ 1 tiene n raíces complejas, contando las repetidas.',
+        ejemplo: 'x³ − x tiene 3: −1, 0 y 1.', ver: ['número complejo', 'multiplicidad'] },
+      { termino: 'número complejo', formas: ['número complejo', 'números complejos', 'complejo', 'complejos', 'compleja', 'complejas'],
+        def: 'Número de la forma a + bi, con i² = −1. Los reales son los que tienen b = 0.',
+        ejemplo: 'x² + 4 = 0 tiene raíces 2i y −2i.' },
+      { termino: 'coeficiente principal', def: 'El número que multiplica a la potencia más alta de un polinomio.', ejemplo: 'En 2x³ − x + 5, es 2.' },
+      { termino: 'raíz racional', formas: ['raíz racional', 'raíces racionales'], def: 'Raíz que se escribe como fracción p/q de enteros.',
+        ejemplo: '2x² − x − 1 = 0 tiene la raíz −1/2.', ver: ['coeficiente principal', 'término independiente'] },
+      { termino: 'cambio de variable', def: 'Llamar con una letra nueva a una expresión repetida para obtener una ecuación más simple.',
+        ejemplo: 'En x⁴ − 5x² + 4 = 0, u = x² da u² − 5u + 4 = 0.' },
+      { termino: 'ecuación bicuadrada', formas: ['ecuación bicuadrada', 'ecuaciones bicuadradas', 'bicuadrada', 'bicuadradas'],
+        def: 'Ecuación de la forma ax⁴ + bx² + c = 0: solo tiene potencias pares.', ver: ['cambio de variable'] },
+      { termino: 'ecuación recíproca', formas: ['ecuación recíproca', 'ecuaciones recíprocas'],
+        def: 'Ecuación cuyos coeficientes se leen igual de izquierda a derecha que al revés.', ejemplo: 'x⁴ − 5x³ + 8x² − 5x + 1 = 0.' },
+    ],
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/flechas.js'],
     historia: {
