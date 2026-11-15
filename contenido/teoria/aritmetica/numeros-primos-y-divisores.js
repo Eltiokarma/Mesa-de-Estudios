@@ -14,10 +14,13 @@
  * Colores (regla 4): n naranja (c-o), los primos p turquesa (c-i), los exponentes a, b rojo (c-h), el resultado verde (c-d).
  */
 (function (root, fabrica) {
-  const def = fabrica(typeof module === 'object' && module.exports ? require('../../../nucleo/kit/kit.js') : root.Kit);
-  if (typeof module === 'object' && module.exports) module.exports = def;
+  const nodo = typeof module === 'object' && module.exports;
+  // El motor de plantillas/divisores arma la caja 3D de divisores de la mesa «La caja de los divisores» (regla 1).
+  const def = nodo ? fabrica(require('../../../nucleo/kit/kit.js'), require('../../../plantillas/divisores/motor.js'))
+    : fabrica(root.Kit, root.MotorDivisores);
+  if (nodo) module.exports = def;
   else root.Teoria.unidad(def);
-})(typeof self !== 'undefined' ? self : this, function (Kit) {
+})(typeof self !== 'undefined' ? self : this, function (Kit, MD) {
   'use strict';
   const f = (n, d = 2) => Kit.formatear(n, d);
   const n_ = { v: 'c-o', t: 'n' }, p = { v: 'c-i', t: 'p' }, q = { v: 'c-i', t: 'q' }, ea = { v: 'c-h', t: 'a' }, eb = { v: 'c-h', t: 'b' };
@@ -574,11 +577,70 @@
     filasMax: 4, cabeza: true, alt: `Divisores de 2 a la ${a} por ${qq} a la ${b}: una tabla de ${a + 1} columnas por ${b + 1} filas`,
   });
 
+  // Mesa 3D (ronda 4, docs/3d.md): la tabla de exponentes de la idea 4 con un tercer primo, que la vuelve caja.
+  // Cambia: los exponentes y lo resaltado · Permanece: un cubito por divisor, los ejes ×2, ×3 y ×5 · Progresa: la caja de
+  // plana (dos primos) a sólida (tres) · Se reserva: el resaltado verde, solo para lo que se cuenta · Debe verse:
+  // la cantidad de divisores es el volumen (a + 1)(b + 1)(c + 1). La caja la arma MD.cajaDivisores (regla 1).
+  const RESALTA = { todos: 'divisores', pares: 'divisores pares', impares: 'divisores impares', cuadrados: 'cuadrados perfectos', multiplos: 'múltiplos de 15' };
+  const caja = v => MD.cajaDivisores([v.a, v.b, v.c], [2, 3, 5], v.res);
+  const lados = r => r.lados.slice().sort((x, y) => x - y).join('×');
+  function datosCaja(v) {
+    const r = caja(v), [a, b, c] = r.exps;
+    const otros = r.cantidad - r.resaltados;
+    return {
+      bloques: r.cubitos.map(x => ({ x: x.x, y: x.y, z: x.z, g: x.resaltado ? 0 : 1 })),
+      grupos: [
+        { nombre: RESALTA[v.res], color: 'c-d', dice: `${r.resaltados} ${RESALTA[v.res]} de ${f(r.n, 0)}` },
+        { nombre: 'divisores sin resaltar', dice: `${otros} ${otros === 1 ? 'divisor queda' : 'divisores quedan'} sin resaltar` },
+      ],
+      marcas: [
+        { p: [a + 1.4, -0.4, 0.5], texto: '×2', color: 'c-i' },
+        { p: [-0.4, b + 1.4, 0.5], texto: '×3', color: 'c-i' },
+        { p: [-0.5, -0.5, c + 2], texto: '×5', color: 'c-i' },
+      ],
+      alt: `Caja de ${r.lados.join(' por ')} cubitos para ${r.texto} = ${f(r.n, 0)}: ${r.cantidad} divisores, ${r.resaltados} ${RESALTA[v.res]} en verde.`,
+    };
+  }
+  const mesaCaja = {
+    id: 'caja-divisores', titulo: 'La caja de los divisores', pieza: 'ari-cubitos-3d',
+    consigna: 'Gira la caja con el dedo: cada cubito es un divisor de n. Sube los exponentes y mira crecer cada lado.',
+    controles: [
+      { id: 'a', etiqueta: 'exponente de 2', color: 'c-h', min: 0, max: 4, paso: 1, inicio: 3, decimales: 0 },
+      { id: 'b', etiqueta: 'exponente de 3', color: 'c-h', min: 0, max: 3, paso: 1, inicio: 1, decimales: 0 },
+      { id: 'c', etiqueta: 'exponente de 5', color: 'c-h', min: 0, max: 3, paso: 1, inicio: 0, decimales: 0 },
+      { id: 'res', etiqueta: 'Resalta', opciones: Object.keys(RESALTA).map(k => ({ valor: k, texto: k === 'todos' ? 'Todos' : RESALTA[k][0].toUpperCase() + RESALTA[k].slice(1) })) },
+    ],
+    dibujo: v => ({ datos: datosCaja(v), estado: {} }),
+    lectura: v => { const r = caja(v); return [n_, ` = ${f(r.n, 0)}: ${r.cantidad} divisores` + (v.res === 'todos' ? '' : `, ${r.resaltados} en verde`)]; },
+    invitaciones: [
+      { texto: 'Usa los tres primos y arma un n con exactamente 12 divisores.',
+        logrado: v => v.a > 0 && v.b > 0 && v.c > 0 && caja(v).cantidad === 12,
+        bien: 'Lado por lado por lado da 12. Cuéntalos: ninguno se repite.',
+        pista: 'Cuenta los cubitos de cada lado: (a + 1)(b + 1)(c + 1) tiene que dar 12.' },
+      { texto: 'Haz que la caja sea un cubo de 27 cubitos.',
+        logrado: v => caja(v).lados.every(x => x === 3),
+        bien: '900 = 2² · 3² · 5²: tres cubitos por lado, 27 divisores.',
+        pista: 'Un cubo tiene los tres lados iguales. ¿Qué exponente da 3 cubitos?' },
+      { texto: 'Resalta los cuadrados perfectos y logra que sean 8.',
+        logrado: v => v.res === 'cuadrados' && caja(v).resaltados === 8,
+        bien: 'Cada primo elige exponente 0 o 2: dos opciones por lado, 2 · 2 · 2 = 8.',
+        pista: 'Un cuadrado perfecto usa exponentes pares. Dale a cada primo al menos 2.' },
+      { texto: 'Resalta los pares con los tres primos y busca la capa apagada.',
+        logrado: v => v.res === 'pares' && v.a > 0 && v.b > 0 && v.c > 0,
+        bien: 'Queda apagada la capa sin el 2: los impares son (b + 1)(c + 1).',
+        pista: 'Elige «Divisores pares» y dale exponente 1 o más al 2, al 3 y al 5.' },
+      { texto: 'Guarda dos n con la misma cantidad de divisores y cajas de distinta forma.',
+        logrado: (v, g) => g.some(x => g.some(y => caja(x).cantidad === caja(y).cantidad && lados(caja(x)) !== lados(caja(y)))),
+        bien: 'La cantidad es el volumen de la caja; la forma puede cambiar.',
+        pista: 'Prueba 2³ · 3 y después 2 · 3 · 5. Guarda los dos.' },
+    ],
+  };
+
   return {
     unidad: 'aritmetica.numeros-primos-y-divisores',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/arit-tabla.js'],
+    requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/arit-tabla.js', '/plantillas/divisores/motor.js', '/nucleo/kit/piezas/ari-cubitos-3d.js'],
     // Glosario: las palabras que esta unidad estrena en el curso (docs/teoria.md §4d). «máximo común divisor» se
     // estrena en divisibilidad; «número primo», en lógica proposicional. «compuesto» suelto no es forma: en interés
     // es el interés compuesto.
@@ -609,6 +671,7 @@
     // Laboratorio: juego libre, sin preguntas. «Filas de c» prueba un ancho a la vez y deja ver el sobrante (el gesto de
     // la idea 1); «Divisores con otro primo» cambia el 3 por 5 o 7; la criba hasta 100 deja probar el 11, que no tacha nada.
     laboratorio: [
+      mesaCaja,
       {
         id: 'filas-de-c', titulo: 'Filas de c fichas', pieza: 'arit-fichas',
         consigna: 'Acomoda n fichas en filas de c. Estira el ancho de las filas hasta que no sobre ninguna ficha.',

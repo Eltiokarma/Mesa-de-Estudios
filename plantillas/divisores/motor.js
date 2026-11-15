@@ -28,6 +28,7 @@
  *   restosPotenciales(b, n)            b¹, b², … entre n: la parte que no se repite y el ciclo
  *   restoPotencia(b, e, n)             el resto de bᵉ entre n con el ciclo, y los errores típicos
  *   reloj(b, n, pasos)                 las posiciones de la aguja en el reloj de n horas
+ *   cajaDivisores(exps, primos, filtro) la caja 3D de divisores de p^a·q^b·r^c: un cubito por divisor, con los resaltados
  *   diofantica(a, b, c, minimo)        ax + by = c en enteros ≥ minimo: todas las soluciones
  *   mcd(a, b)
  *
@@ -360,7 +361,34 @@
       }, cantidad) };
   }
 
-  return { mcd, factores, textoFactores, esPrimo, arbol, rectangulo, rectangulos, divisores, tabla, sumaDivisores,
+  // La caja de divisores (15 nov 2026, mesa 3D de la teoría): N = p^a · q^b · r^c con los primos fijos en los ejes
+  // (x = exponente de p, y = de q, z = de r). Cada cubito es un divisor; la caja tiene (a + 1)(b + 1)(c + 1).
+  // filtro: 'todos', 'pares' (múltiplos del primer primo), 'impares', 'cuadrados' (cuadrados perfectos) o 'multiplos'
+  // (múltiplos de q · r, el producto de los dos últimos primos). Devuelve cada cubito con su divisor y si se resalta.
+  const FILTROS_CAJA = {
+    todos: () => true,
+    pares: (e) => e[0] >= 1,
+    impares: (e) => e[0] === 0,
+    cuadrados: (e) => e.every(x => x % 2 === 0),
+    multiplos: (e) => e[1] >= 1 && e[2] >= 1,
+  };
+  function cajaDivisores(exps, primos, filtro) {
+    primos = primos || [2, 3, 5];
+    if (!Array.isArray(exps) || exps.length !== 3 || primos.length !== 3) throw new Error('la caja usa tres exponentes y tres primos');
+    exps.forEach((e, k) => entero(e, `exponente ${k + 1}`, 0));
+    primos.forEach(p => { if (!esPrimo(p)) throw new Error(`${p} no es primo`); });
+    const F = FILTROS_CAJA[filtro || 'todos'];
+    if (!F) throw new Error(`filtro desconocido: ${filtro}`);
+    const n = primos.reduce((a, p, k) => a * Math.pow(p, exps[k]), 1);
+    const cubitos = [];
+    for (let k = 0; k <= exps[2]; k++) for (let j = 0; j <= exps[1]; j++) for (let i = 0; i <= exps[0]; i++)
+      cubitos.push({ x: i, y: j, z: k, valor: Math.pow(primos[0], i) * Math.pow(primos[1], j) * Math.pow(primos[2], k), resaltado: F([i, j, k]) });
+    const resaltados = cubitos.filter(c => c.resaltado).length;
+    return { n, exps: exps.slice(), primos: primos.slice(), lados: exps.map(e => e + 1), cantidad: cubitos.length, filtro: filtro || 'todos',
+      resaltados, capas: exps[2] + 1, plana: exps.filter(e => e > 0).length < 3, cubitos, texto: textoFactores(n) };
+  }
+
+  return { cajaDivisores, mcd, factores, textoFactores, esPrimo, arbol, rectangulo, rectangulos, divisores, tabla, sumaDivisores,
     divisoresMultiplosDe, numeroConDivisores, criba, pesi, parejasPesi, euler, wilson,
     criterio, cifrasNueve, cifraFaltante, resto, restoProducto, restoSuma, restosPotenciales, restoPotencia, reloj, diofantica, sup };
 });
