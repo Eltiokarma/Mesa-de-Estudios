@@ -62,23 +62,33 @@
     escalaV: 40, escalaA: 4, colores: { x: 'i', v: 'o', a: 'd' },
     textoA: o.sinA ? undefined : `a = ${f(-W1 * W1 * xx, 0)} m/s²`, marcas: o.marcas,
   });
+  // Animación (decisión de Gerson, 15 nov: física se mueve sola). El bloque oscila en cámara lenta: un período (0,63 s)
+  // cada 4 s de pantalla. x, v y a salen de x = A cos(ωt), con ω = √(k/m) = 10 rad/s (regla 1).
+  const PASO_T1 = Math.round(2 * PI / W1 / 24 * 1e4) / 1e4, T1 = PASO_T1 * 24;
+  const r0 = n => (Math.abs(n) < 5e-3 ? 0 : n);
+  const xT = tt => A1 * Math.cos(W1 * tt), vT = tt => -A1 * W1 * Math.sin(W1 * tt);
+  const bloqueT = tt => Object.assign(bloque(xT(tt)), { v: r0(vT(tt)), a: r0(-W1 * W1 * xT(tt)), textoA: `a = ${f(r0(-W1 * W1 * xT(tt)), 0)} m/s²` });
   const centro = {
     id: 'aceleracion-al-centro',
     titulo: 'La aceleración apunta al centro',
     temas: ['Movimiento periódico y oscilatorio'],
     pieza: 'fis-resorte',
     juega: {
-      consigna: 'El bloque oscila entre −0,2 m y +0,2 m, y ahora va hacia la izquierda. Detenlo en distintas posiciones y mira sus flechas.',
+      consigna: 'El bloque oscila solo, en cámara lenta, entre −0,2 m y +0,2 m. Mira la flecha verde en cada lado. Para detenerlo, pausa o arrástralo.',
       voz: 'Fíjate hacia dónde apunta la flecha verde en cada lado.',
-      controles: [{ id: 'x', etiqueta: 'x', color: 'c-i', min: -0.15, max: 0.15, paso: 0.05, inicio: 0.1, unidad: 'm', decimales: 2 }],
-      dibujo: val => ({ datos: bloque(val.x), estado: {} }),
-      lectura: val => [a, ` = ${f(-W1 * W1 * val.x, 0)} m/s² · rapidez ${f(W1 * Math.sqrt(A1 * A1 - val.x * val.x), 2)} m/s`],
-      minimo: 3,
-      // Arrastra el bloque: su lugar es x; las flechas de v y a responden.
+      controles: [{ id: 't', etiqueta: 't', color: 'c-h', min: 0, max: T1, paso: PASO_T1, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: T1 / 4 } }],
+      dibujo: val => ({ datos: bloqueT(val.t), estado: {} }),
+      lectura: val => [x, ` = ${f(r0(xT(val.t)))} m · `, a, ` = ${f(r0(-W1 * W1 * xT(val.t)), 0)} m/s²`],
+      minimo: 2,
+      // Arrastra el bloque: lo detiene ahí (la animación se pausa) y las flechas de v y a responden.
       arrastres: [
         { id: 'bloque', etiqueta: 'bloque', color: 'c-i',
-          donde: val => ({ x: PZ('fis-resorte').escala(bloque(val.x), val.x), y: PZ('fis-resorte').constantes.centroY }),
-          mover: (pt, val) => ({ x: inversa(q => PZ('fis-resorte').escala(bloque(val.x), q), -A1, A1)(pt.x) }) },
+          donde: val => ({ x: PZ('fis-resorte').escala(bloqueT(val.t), xT(val.t)), y: PZ('fis-resorte').constantes.centroY }),
+          mover: (pt, val) => {
+            const q = inversa(qq => PZ('fis-resorte').escala(bloqueT(val.t), qq), -A1, A1)(pt.x);
+            const ang = Math.acos(Math.max(-1, Math.min(1, q / A1))) / W1;      // en la primera mitad va a la izquierda
+            return { t: val.t > T1 / 2 ? T1 - ang : ang };
+          } },
       ],
     },
     predice: {
@@ -143,7 +153,10 @@
     y: { min: -0.3, max: 0.3, paso: 0.1, nombre: 'x', unidad: 'm', decimales: 1, color: 'i' },
     curvas: [{ puntos: muestras(tt => A * Math.cos(2 * PI * tt / P), 0, 4, 81), color: 'i' }],
   }, extra);
-  const xtJuego = val => ejeXt(val.A, val.P, { puntos: [{ x: val.P, y: val.A, color: 'h', rotulo: `T = ${f(val.P, 1)} s`, guias: true }] });
+  // El punto azul recorre la curva con el tiempo (t avanza solo, a velocidad real): x(t) se lee en vivo.
+  const xDe = val => r0(val.A * Math.cos(2 * PI * (val.t || 0) / val.P));
+  const xtJuego = val => ejeXt(val.A, val.P, { puntos: [{ x: val.P, y: val.A, color: 'h', rotulo: `T = ${f(val.P, 1)} s` },
+    { x: val.t || 0, y: xDe(val), color: 'i', guias: true }] });
   const vmaxXt = val => val.A * 2 * PI / val.P;
   const graficas = {
     id: 'graficas-mas',
@@ -156,9 +169,10 @@
       controles: [
         { id: 'A', etiqueta: 'A', color: 'c-i', min: 0.1, max: 0.3, paso: 0.05, inicio: 0.2, unidad: 'm', decimales: 2 },
         { id: 'P', etiqueta: 'T', color: 'c-h', min: 1, max: 4, paso: 0.5, inicio: 2, unidad: 's', decimales: 1 },
+        { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 4, paso: 0.05, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 1 } },
       ],
       dibujo: val => ({ datos: xtJuego(val), estado: {} }),
-      lectura: val => [{ sub: [v, 'máx'] }, ` = Aω = ${f(vmaxXt(val))} m/s`],
+      lectura: val => [x, ` = ${f(xDe(val))} m · `, { sub: [v, 'máx'] }, ` = ${f(vmaxXt(val))} m/s`],
       minimo: 3,
       // Arrastra la cresta marcada: hacia el lado cambia el período; hacia arriba, la amplitud.
       arrastres: [
@@ -472,6 +486,43 @@
   // ---------- Laboratorio ----------
   // Resorte libre: el mismo bloque con otro resorte u otra masa. Las flechas usan una escala fija en todas las
   // combinaciones, para que dos casos guardados se comparen a ojo.
+  // Mesa 3D… no: 2D animada (15 nov). El resorte que oscila: A, k y m se eligen; t avanza solo en cámara lenta.
+  const wViva = val => Math.sqrt(val.k / val.m), perViva = val => 2 * PI / wViva(val);
+  const xViva = val => r0(val.A * Math.cos(wViva(val) * val.t));
+  const resorteViva = val => {
+    const w = wViva(val), xx = xViva(val), vv = r0(-val.A * w * Math.sin(w * val.t)), aa = r0(-w * w * xx);
+    return { A: 0.2, unidad: 'm', x: xx, v: vv, a: aa, escalaV: 20, escalaA: 1.2, colores: { x: 'i', v: 'o', a: 'd' },
+      textoA: `a = ${f(aa, 0)} m/s²`, extremos: true };
+  };
+  const mesaResorteVivo = {
+    id: 'resorte-vivo', titulo: 'El resorte que oscila', pieza: 'fis-resorte',
+    consigna: 'El bloque oscila solo, en cámara lenta. Cambia la amplitud, el resorte y la masa, y mira el período.',
+    controles: [
+      { id: 'A', etiqueta: 'A', color: 'c-i', min: 0.05, max: 0.2, paso: 0.05, inicio: 0.2, unidad: 'm', decimales: 2 },
+      { id: 'k', etiqueta: 'k', min: 20, max: 80, paso: 20, inicio: 40, unidad: 'N/m', decimales: 0 },
+      { id: 'm', etiqueta: 'm', min: 0.25, max: 1, paso: 0.25, inicio: 1, unidad: 'kg', decimales: 2 },
+      { id: 't', etiqueta: 't', color: 'c-h', min: 0, max: 2, paso: 0.01, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: 0.25 } },
+    ],
+    dibujo: val => ({ datos: resorteViva(val), estado: {} }),
+    lectura: val => [T, ` = ${f(perViva(val))} s · `, x, ` = ${f(xViva(val))} m`],
+    invitaciones: [
+      { texto: 'Consigue el período más largo que permite la mesa.',
+        logrado: val => perViva(val) >= perViva({ k: 20, m: 1 }) - 1e-9,
+        bien: 'Mucha masa y un resorte blando: oscila lento.',
+        pista: 'Prueba con más masa y un resorte más blando.' },
+      { texto: 'Que oscile el doble de rápido que con k = 20 N/m y 1 kg.',
+        logrado: val => Math.abs(wViva(val) - 2 * wViva({ k: 20, m: 1 })) < 1e-9,
+        bien: 'Para el doble de ω, k/m tiene que ser cuatro veces mayor.',
+        pista: 'ω = √(k/m): ¿cuánto tiene que crecer k/m para duplicarse?' },
+      { texto: 'Pausa el bloque justo en el centro, donde va más rápido.',
+        logrado: val => Math.abs(xViva(val)) <= 0.005,
+        bien: 'En el centro la fuerza es cero, pero la rapidez es la mayor.',
+        pista: 'Pausa cuando el bloque pase por x = 0; ajusta t con − y +.' },
+      { texto: 'Guarda dos casos con distinta amplitud y el mismo resorte y masa.',
+        logrado: (val, guardados) => guardados.some(p => guardados.some(q => p.A !== q.A && p.k === q.k && p.m === q.m)),
+        bien: 'Mismo período con otra amplitud: T no depende de A.' },
+    ],
+  };
   const resLibre = val => {
     const w = Math.sqrt(val.k / val.m), ac = -w * w * val.x;
     return { A: A1, unidad: 'm', x: val.x, v: -w * Math.sqrt(Math.max(0, A1 * A1 - val.x * val.x)), a: ac,
@@ -521,6 +572,7 @@
     // Laboratorio: juego libre, sin preguntas. El resorte libre suelta k y m (la idea los deja fijos); el péndulo pone
     // tres lugares juntos; la tercera mesa es el juego de la gráfica x–t con su cresta arrastrable.
     laboratorio: [
+      mesaResorteVivo,
       {
         id: 'resorte-libre', titulo: 'Otro resorte, otra masa', pieza: 'fis-resorte',
         consigna: 'Arrastra el bloque y cambia el resorte y la masa. Guarda el mismo lugar con dos resortes y compara las flechas.',
