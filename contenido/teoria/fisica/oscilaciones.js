@@ -107,11 +107,11 @@
         { estado: { corte: 1 }, texto: 'En x = 0,1 m el resorte tira con F = −k x = −5 N.', ecuacion: [a, ' = ', { frac: ['−5', '0,5'] }, ' = −10 m/s²'] },
         { estado: { corte: 2 }, texto: 'a es proporcional a x y de signo contrario: una recta.', ecuacion: [a, ' = −', { frac: ['k', 'm'] }, ' ', x, ' = −100 ', x] },
         { estado: { corte: 3 }, texto: 'En el centro a = 0; en los extremos, la mayor.', ecuacion: [{ sub: [a, 'máx'] }, ' = 100 · 0,2 = 20 m/s²'] },
-        { estado: { corte: 3 }, texto: 'Una fuerza que siempre vuelve al centro produce un vaivén: un MAS.', ecuacion: ['ω = √(k/m) = 10 rad/s'] },
+        { estado: { corte: 3 }, texto: 'Una fuerza recuperadora, que siempre apunta al centro, produce un vaivén: un MAS.', ecuacion: ['ω = √(k/m) = 10 rad/s'] },
       ],
     },
     regla: {
-      texto: 'En un movimiento armónico simple la aceleración apunta siempre al equilibrio y es proporcional a la distancia a él.',
+      texto: 'En un movimiento armónico simple la aceleración apunta siempre a la posición de equilibrio y es proporcional a la elongación x, que mide cuánto se apartó de ella.',
       ecuacion: [a, ' = ', { llave: ['−', { sup: ['ω', '2'] }, ' ', x], nota: 'hacia el centro', color: 'c-d' }, '   ·   ', { sup: ['ω', '2'] }, ' = ', { frac: ['k', 'm'] }],
       condicion: 'x se mide desde el equilibrio; resorte ideal y sin rozamiento.',
     },
@@ -144,6 +144,7 @@
     curvas: [{ puntos: muestras(tt => A * Math.cos(2 * PI * tt / P), 0, 4, 81), color: 'i' }],
   }, extra);
   const xtJuego = val => ejeXt(val.A, val.P, { puntos: [{ x: val.P, y: val.A, color: 'h', rotulo: `T = ${f(val.P, 1)} s`, guias: true }] });
+  const vmaxXt = val => val.A * 2 * PI / val.P;
   const graficas = {
     id: 'graficas-mas',
     titulo: 'La posición sigue un coseno',
@@ -157,7 +158,7 @@
         { id: 'P', etiqueta: 'T', color: 'c-h', min: 1, max: 4, paso: 0.5, inicio: 2, unidad: 's', decimales: 1 },
       ],
       dibujo: val => ({ datos: xtJuego(val), estado: {} }),
-      lectura: val => [{ sub: [v, 'máx'] }, ` = Aω = ${f(val.A * 2 * PI / val.P)} m/s`],
+      lectura: val => [{ sub: [v, 'máx'] }, ` = Aω = ${f(vmaxXt(val))} m/s`],
       minimo: 3,
       // Arrastra la cresta marcada: hacia el lado cambia el período; hacia arriba, la amplitud.
       arrastres: [
@@ -184,13 +185,13 @@
         { estado: { corte: 1 }, texto: 'En t = 0 está en +A: la curva es plana, v = 0.', ecuacion: [x, ' = A cos(ω', t, ')'] },
         { estado: { corte: 2 }, texto: 'En T/4 cruza el centro con la pendiente más grande.', ecuacion: [{ sub: [v, 'máx'] }, ' = A ω'] },
         { estado: { corte: 3 }, texto: 'En T/2 llega a −A y se detiene otra vez.', ecuacion: [x, ' = −A'] },
-        { estado: { corte: 4 }, texto: 'En T vuelve al inicio: el movimiento se repite.', ecuacion: ['ω = ', { frac: ['2π', T] }, ' = π rad/s'] },
+        { estado: { corte: 4 }, texto: 'En T vuelve al inicio: es un movimiento periódico.', ecuacion: ['ω = ', { frac: ['2π', T] }, ' = π rad/s'] },
       ],
     },
     regla: {
-      texto: 'En el MAS la posición es un coseno del tiempo. La rapidez es máxima en el centro y la aceleración, en los extremos.',
+      texto: 'En el MAS la posición es un coseno del tiempo; ω es su frecuencia angular. La rapidez es máxima en el centro y la aceleración, en los extremos.',
       ecuacion: [x, ' = A cos(ω', t, ' + φ)', '   ·   ', { sub: [v, 'máx'] }, ' = ', { llave: ['Aω'], nota: 'en el centro', color: 'c-o' }, '   ·   ', { sub: [a, 'máx'] }, ' = ', { llave: ['A', { sup: ['ω', '2'] }], nota: 'en los extremos', color: 'c-d' }, '   ·   ', 'ω = ', { frac: ['2π', T] }],
-      condicion: 'φ fija dónde empieza; con φ = 0 sale del extremo +A en t = 0.',
+      condicion: 'φ, la fase inicial, fija dónde empieza; con φ = 0 sale del extremo +A en t = 0.',
     },
     ahoraTu: {
       generar(s) {
@@ -359,7 +360,7 @@
       ],
     },
     regla: {
-      texto: 'Para oscilaciones pequeñas, el período de un péndulo depende solo del largo del hilo y de la gravedad del lugar.',
+      texto: 'Para oscilaciones pequeñas, el período de un péndulo simple depende solo del largo del hilo y de la gravedad del lugar.',
       ecuacion: [T, ' = 2π ', { raiz: [{ frac: ['L', 'g'] }] }],
       condicion: 'ángulos pequeños (menos de unos 10°), hilo sin masa e inextensible; L va del punto de giro al centro de la bolita.',
     },
@@ -485,11 +486,38 @@
     puntos: [{ x: val.L, y: periodoP(val.L, val.g), color: 'h', rotulo: `${f(periodoP(val.L, val.g))} s`, guias: true }],
   });
 
+  // Para los retos: `guardado` dice si el caso actual ya se guardó entre los de la mesa.
+  const guardado = (val, gs, claves) => gs.some(g => claves.every(c => g[c] === val[c]));
+
   return {
     unidad: 'fisica.oscilaciones',
     version: '0.2.0',
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/fis-resorte.js', '/nucleo/kit/piezas/ejes.js'],
+    // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso. «Fase» a secas no se
+    // define (en calor es «cambio de fase»): aquí va «fase inicial».
+    glosario: [
+      { termino: 'MAS', formas: ['MAS', 'movimiento armónico simple'], def: 'Vaivén en el que la aceleración apunta siempre al centro y es proporcional a cuánto se apartó de él.',
+        ver: ['fuerza recuperadora', 'frecuencia angular'] },
+      { termino: 'oscilación', formas: ['oscilación', 'oscilaciones'], def: 'Un vaivén completo: ir de un extremo al otro y volver al punto de partida.',
+        ejemplo: 'Un péndulo de 1 m, en la Tierra, tarda unos 2 s en cada una.', ver: ['MAS'] },
+      { termino: 'movimiento periódico', def: 'Movimiento que se repite igual, una y otra vez, cada cierto tiempo fijo.',
+        ejemplo: 'Un reloj de péndulo: cada vaivén dura lo mismo.', ver: ['oscilación'] },
+      { termino: 'amplitud', simbolo: 'A', medida: 'm', def: 'Lo más que se aparta algo de su posición de equilibrio al oscilar.',
+        ejemplo: 'Si va de −0,2 m a +0,2 m: A = 0,2 m.', ver: ['elongación'] },
+      { termino: 'posición de equilibrio', def: 'Lugar donde la fuerza neta sobre el cuerpo es cero: el centro del vaivén.',
+        ver: ['fuerza recuperadora'] },
+      { termino: 'elongación', simbolo: 'x', medida: 'm', def: 'Cuánto se apartó el cuerpo de la posición de equilibrio en un instante, con signo.',
+        ejemplo: 'Bloque 0,1 m a la izquierda del centro: x = −0,1 m.', ver: ['amplitud'] },
+      { termino: 'fuerza recuperadora', def: 'Fuerza que siempre apunta hacia la posición de equilibrio y crece cuanto más se aparta el cuerpo.',
+        ejemplo: 'Resorte de 50 N/m estirado 0,1 m: F = −50 · 0,1 = −5 N.', ver: ['MAS'] },
+      { termino: 'frecuencia angular', simbolo: 'ω', medida: 'rad/s', def: 'Cuánto avanza por segundo el ángulo del coseno del MAS: 2π entre el período.',
+        ejemplo: 'T = 2 s: ω = 2π / 2 = π rad/s.' },
+      { termino: 'fase inicial', simbolo: 'φ', medida: 'rad', def: 'Ángulo que fija en qué punto del vaivén empieza el movimiento, en t = 0.',
+        ejemplo: 'φ = 0: sale del extremo +A.' },
+      { termino: 'péndulo simple', formas: ['péndulo simple', 'péndulos simples'], def: 'Bolita pequeña colgada de un hilo liviano que oscila abriéndose poco.',
+        ejemplo: 'L = 1 m en la Tierra: T = 2π √(1/10) ≈ 1,99 s.' },
+    ],
     // Laboratorio: juego libre, sin preguntas. El resorte libre suelta k y m (la idea los deja fijos); el péndulo pone
     // tres lugares juntos; la tercera mesa es el juego de la gráfica x–t con su cresta arrastrable.
     laboratorio: [
@@ -508,6 +536,21 @@
             donde: val => ({ x: PZ('fis-resorte').escala(resLibre(val), val.x), y: PZ('fis-resorte').constantes.centroY }),
             mover: (pt, val) => ({ x: inversa(q => PZ('fis-resorte').escala(resLibre(val), q), -A1, A1)(pt.x) }) },
         ],
+        invitaciones: [
+          { texto: 'Haz que las flechas de v y de a apunten en sentidos opuestos.',
+            logrado: val => { const q = resLibre(val); return Math.abs(q.v) > 1e-9 && q.v * q.a < 0; },
+            bien: 'Va hacia la izquierda, pero ya lo frenan: a siempre mira al centro.' },
+          { texto: 'Consigue la mayor aceleración posible hacia la derecha.',
+            logrado: val => resLibre(val).a >= resLibre({ x: -0.2, k: 80, m: 0.25 }).a - 1e-9,
+            bien: 'Para tirar a la derecha, el bloque tuvo que estar lejos, a la izquierda.' },
+          { texto: 'Haz que ω sea el doble que con k = 20 N/m y 1 kg.',
+            logrado: val => Math.abs(Math.sqrt(val.k / val.m) - 2 * Math.sqrt(20 / 1)) < 1e-9,
+            bien: 'El doble de ω pidió cuatro veces k/m. ¿Cuál cambiaste?' },
+          { texto: 'Guarda el mismo lugar con dos resortes distintos y la misma aceleración.',
+            logrado: (val, guardados) => val.x !== 0 && guardado(val, guardados, ['x', 'k', 'm'])
+              && guardados.some(g => g.x === val.x && g.k !== val.k && Math.abs(resLibre(g).a - resLibre(val).a) < 1e-9),
+            bien: 'Manda k/m: doble resorte con doble masa da la misma aceleración.' },
+        ],
       },
       {
         id: 'pendulo-libre', titulo: 'Péndulo en tres lugares', pieza: 'ejes',
@@ -523,8 +566,33 @@
             donde: val => enEjes(penLibre(val), val.L, periodoP(val.L, val.g)),
             mover: (pt, val) => ({ L: PZ('ejes').geometria(penLibre(val)).Xi(pt.x) }) },
         ],
+        invitaciones: [
+          { texto: 'Guarda un péndulo de Marte y uno de la Tierra que tarden casi igual.',
+            // «Casi»: la grilla de L va de 0,25 en 0,25 m; la mejor pareja difiere en unas centésimas de segundo.
+            logrado: (val, guardados) => guardado(val, guardados, ['L', 'g'])
+              && guardados.some(g => [g.g, val.g].sort().join() === '10,3.7' && Math.abs(periodoP(g.L, g.g) - periodoP(val.L, val.g)) < 0.05),
+            bien: 'Con menos gravedad, Marte pidió un hilo mucho más corto.' },
+          { texto: 'En la Tierra, haz que tarde el doble que un péndulo de 0,5 m.',
+            logrado: val => val.g === 10 && Math.abs(periodoP(val.L, 10) - 2 * periodoP(0.5, 10)) < 1e-9,
+            bien: 'El doble de período pidió cuatro veces el hilo: T va con √L.' },
+          { texto: 'Busca el péndulo más lento de los tres lugares.',
+            logrado: val => periodoP(val.L, val.g) >= periodoP(2, 1.6) - 1e-9,
+            bien: 'Hilo largo y poca gravedad: el vaivén más lento de todos.' },
+        ],
       },
-      Object.assign({ id: 'coseno', titulo: 'La curva x–t', pieza: 'ejes' }, graficas.juega),
+      Object.assign({ id: 'coseno', titulo: 'La curva x–t', pieza: 'ejes',
+        invitaciones: [
+          { texto: 'Consigue la mayor rapidez máxima que permite la curva.',
+            logrado: val => vmaxXt(val) >= vmaxXt({ A: 0.3, P: 1 }) - 1e-9,
+            bien: 'Amplitud grande y período corto: más camino en menos tiempo.' },
+          { texto: 'Haz que en los 4 s de la gráfica quepan justo cuatro oscilaciones.',
+            logrado: val => Math.abs(4 / val.P - 4) < 1e-9,
+            bien: 'Cuatro vaivenes en 4 s: cada uno dura 1 s.' },
+          { texto: 'Guarda dos curvas de distinta amplitud con la misma rapidez máxima.',
+            logrado: (val, guardados) => guardado(val, guardados, ['A', 'P'])
+              && guardados.some(g => g.A !== val.A && Math.abs(vmaxXt(g) - vmaxXt(val)) < 1e-9),
+            bien: 'Más amplitud y más período: Aω quedó igual. ¿Y la aceleración máxima?' },
+        ] }, graficas.juega),
     ],
     historia: {
       texto: 'Huygens construyó relojes de péndulo en la década de 1650 y publicó su estudio matemático en 1673. Para medir bien había que reconocer un límite: un péndulo que se abre mucho no repite exactamente el período de uno que se abre poco. Un vaivén regular se volvió una forma de medir el tiempo.',
