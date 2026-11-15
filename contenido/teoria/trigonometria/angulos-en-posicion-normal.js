@@ -560,32 +560,60 @@
   const manijaP = dib => ({ id: 'punto-p', etiqueta: 'punto P',
     donde: val => TP().enPx(dib(val), val.x, val.y),
     mover: (pt, val) => { const q = TP().delPx(dib(val), pt); return { x: q.x, y: q.y }; } });
+  // Numerador y denominador de la razón fn para P(x, y): los mismos que muestra la lectura (y que miran los retos).
+  const parDe = (x, y, fn) => { const r = Math.hypot(x, y), [num, den] = DEF[fn], vale = { x, y, r }; return [vale[num.t], vale[den.t]]; };
+  const razonDe = (x, y, fn) => { const [p, q] = parDe(x, y, fn); return q === 0 ? null : p / q; };   // null: no definida
+  const cuadP = (x, y) => cuadrante(Math.atan2(y, x) * 180 / Math.PI);
+  const CTR_SEIS = [coord('x', 'x', 'c-i', -3), coord('y', 'y', 'c-h', 4)];
+  const valoresDe = c => Array.from({ length: Math.round((c.max - c.min) / c.paso) + 1 }, (_, k) => c.min + k * c.paso);
+  // La tangente más negativa del cuadrante II que da la cuadrícula de la mesa (para el reto del extremo).
+  const TAN_II_MIN = Math.min(...valoresDe(CTR_SEIS[0]).flatMap(x => valoresDe(CTR_SEIS[1]).filter(y => x < 0 && y > 0).map(y => razonDe(x, y, 'tan'))));
+  const CTR_LADO = [coord('x', 'x de P', 'c-i', 3, 3), coord('y', 'y de P', 'c-h', 2, 3),     // con |k| ≤ 2, Q no sale de la ventana
+    { id: 'k', etiqueta: 'k', color: 'c-f', min: -2, max: 2, paso: 0.5, inicio: -1, decimales: 1 }];
+  // La Q más lejana posible: |k| y |P| en su tope.
+  const Q_MAX = CTR_LADO[2].max * Math.hypot(CTR_LADO[0].max, CTR_LADO[1].max);
+  const CTR_GIRO = [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: -720, max: 720, paso: 15, inicio: 135, unidad: '°', decimales: 0 }];
+  const iguales = (a, b) => (a === null ? b === null : b !== null && Math.abs(a - b) < 1e-9);
   const laboratorio = [
     {
       id: 'seis-razones', titulo: 'Las seis razones de P', pieza: 'trig-plano',
       consigna: 'Arrastra P a cualquier punto, también sobre un eje, y elige la razón. Busca cuándo vale 0 y cuándo no está definida.',
       controles: [
-        coord('x', 'x', 'c-i', -3), coord('y', 'y', 'c-h', 4),
+        CTR_SEIS[0], CTR_SEIS[1],
         { id: 'fn', etiqueta: 'razón', opciones: FN.map(v => ({ valor: v, texto: v })) },
       ],
       dibujo: val => ({ datos: seis(val), estado: {} }),
       lectura: val => {
         if (!val.x && !val.y) return ['P en el origen: no hay lado final'];
         const r = Math.hypot(val.x, val.y), r2 = val.x * val.x + val.y * val.y, exacta = Number.isInteger(r);
-        const [num, den] = DEF[val.fn], vale = { x: val.x, y: val.y, r };
-        const p = vale[num.t], q = vale[den.t];
+        const [num, den] = DEF[val.fn], [p, q] = parDe(val.x, val.y, val.fn);
         const txt = q === 0 ? ': no definida' : exacta ? ` = ${fr(p, q)}` : ` ≈ ${f(p / q)}`;
         return [`P(${f(val.x)}, ${f(val.y)}) · `, R, ` = ${exacta ? f(r) : '√' + r2} · ${val.fn} `, th, ` = ${num.t}/${den.t}${txt}`];
       },
       arrastres: [manijaP(seis)],
+      invitaciones: [
+        { texto: 'Pon P sobre un eje y elige una razón que no esté definida.',
+          logrado: val => (val.x !== 0 || val.y !== 0) && parDe(val.x, val.y, val.fn)[1] === 0,
+          bien: 'El cero quedó abajo del cociente. ¿Qué pasa si eliges su recíproca?' },
+        { texto: 'Consigue que la razón elegida valga 0, con P fuera del origen.',
+          logrado: val => (val.x !== 0 || val.y !== 0) && razonDe(val.x, val.y, val.fn) === 0,
+          bien: 'Aquí el cero está arriba: vale 0, que sí es un valor.' },
+        { texto: 'Pon P en el cuadrante IV y elige una razón positiva.',
+          logrado: val => cuadP(val.x, val.y) === 4 && razonDe(val.x, val.y, val.fn) > 0,
+          bien: 'En el IV solo x es positiva: por eso ganan coseno y secante.' },
+        { texto: 'Con la tangente, busca el P del cuadrante II con la tangente más negativa.',
+          logrado: val => val.fn === 'tan' && cuadP(val.x, val.y) === 2 && Math.abs(razonDe(val.x, val.y, 'tan') - TAN_II_MIN) < 1e-9,
+          bien: 'Lado final casi vertical: x pequeña abajo del cociente, tangente enorme.' },
+        { texto: 'Guarda dos puntos distintos con las seis razones iguales.',
+          logrado: (val, guardados) => (val.x !== 0 || val.y !== 0) && guardados.some(g => (g.x !== val.x || g.y !== val.y) && (g.x !== 0 || g.y !== 0)
+            && FN.every(fn => iguales(razonDe(g.x, g.y, fn), razonDe(val.x, val.y, fn)))),
+          bien: 'Mismo lado final, distinto r: las razones no dependen de lo lejos.' },
+      ],
     },
     {
       id: 'mismo-lado', titulo: 'Más lejos o al revés', pieza: 'trig-plano',
       consigna: 'Q está en la recta de P, a k veces su distancia. Con k positivo comparten lado final; con k negativo, mira qué razón cambia.',
-      controles: [
-        coord('x', 'x de P', 'c-i', 3, 3), coord('y', 'y de P', 'c-h', 2, 3),     // con |k| ≤ 2, Q no sale de la ventana
-        { id: 'k', etiqueta: 'k', color: 'c-f', min: -2, max: 2, paso: 0.5, inicio: -1, decimales: 1 },
-      ],
+      controles: CTR_LADO,
       dibujo: val => ({ datos: dosPuntos(val), estado: {} }),
       lectura: val => {
         const r = Math.hypot(val.x, val.y);
@@ -603,16 +631,48 @@
             return n2 ? { k: (q.x * val.x + q.y * val.y) / n2 } : {};
           } },
       ],
+      invitaciones: [
+        { texto: 'Pon Q en el lado final de P, pero más cerca del origen.',
+          logrado: val => (val.x !== 0 || val.y !== 0) && val.k > 0 && val.k < 1,
+          bien: 'Más cerca, mismo lado final: las razones de Q son las de P.' },
+        { texto: 'Con k negativo, logra que Q tenga el mismo seno que P.',
+          logrado: val => { const r = Math.hypot(val.x, val.y); return r > 0 && val.k < 0 && Math.abs(val.k * val.y / (Math.abs(val.k) * r) - val.y / r) < 1e-9; },
+          bien: 'Con P sobre el eje x, el seno vale 0 en los dos.' },
+        { texto: 'Haz que P quede en el cuadrante II y Q en el IV.',
+          logrado: val => val.k !== 0 && cuadP(val.x, val.y) === 2 && cuadP(val.k * val.x, val.k * val.y) === 4,
+          bien: 'k negativo voltea x e y a la vez: salta al cuadrante opuesto.' },
+        { texto: 'Busca la Q más lejana del origen que comparta lado final con P.',
+          logrado: val => val.k > 0 && Math.abs(Math.hypot(val.k * val.x, val.k * val.y) - Q_MAX) < 1e-9,
+          bien: 'r creció al tope y el seno no se movió. ¿Qué pasa con k = −2?' },
+      ],
     },
     {
       id: 'giro-y-opuesto', titulo: 'Un giro y su opuesto', pieza: 'trig-plano',
       consigna: 'Gira P hasta dos vueltas en cualquier sentido. P′ es el punto de −θ: compara sus senos y sus cosenos.',
-      controles: [{ id: 'g', etiqueta: 'θ', color: 'c-o', min: -720, max: 720, paso: 15, inicio: 135, unidad: '°', decimales: 0 }],
+      controles: CTR_GIRO,
       dibujo: val => ({ datos: opuestos(val.g), estado: {} }),
       lectura: val => ['sen ', th, ` = ${f(Math.sin(rad(val.g)))} · sen(−`, th, `) = ${f(-Math.sin(rad(val.g)))} · cos igual: ${f(Math.cos(rad(val.g)))}`],
       arrastres: [{ id: 'punta', etiqueta: 'punto P del giro θ', color: 'c-o',
         donde: val => enUno(opuestos(val.g), val.g),
         mover: (pt, val) => ({ g: TP().anguloDe(opuestos(val.g), pt, { cerca: val.g }) }) }],
+      invitaciones: [
+        { texto: 'Haz que P y P′ coincidan sin dejar θ en 0°.',
+          logrado: val => val.g !== 0 && Math.abs(Math.sin(rad(val.g))) < 1e-9,
+          bien: 'Sobre el eje x, el reflejo cae en el mismo sitio: seno 0.' },
+        { texto: 'Busca un θ de más de una vuelta con el mismo lado final que 135°.',
+          logrado: val => val.g > 360 && mod360(val.g) === mod360(CTR_GIRO[0].inicio),
+          bien: 'Son coterminales: una vuelta más no cambia ni P ni sus razones.' },
+        { texto: 'Haz que P′, el punto de −θ, quede en el cuadrante II.',
+          logrado: val => cuadrante(-val.g) === 2,
+          bien: 'P quedó en el III: el reflejo en el eje x cambia el cuadrante.' },
+        { texto: 'Busca el giro más negativo de la mesa con sen θ = 1.',
+          logrado: val => val.g < 0 && Math.abs(Math.sin(rad(val.g)) - 1) < 1e-9 && val.g - 360 < CTR_GIRO[0].min,
+          bien: 'Casi dos vueltas horarias y termina arriba, como 90°.' },
+        { texto: 'Guarda dos giros de signo contrario con el mismo coseno y distinto seno.',
+          logrado: (val, guardados) => guardados.some(g => g.g * val.g < 0 && Math.abs(Math.cos(rad(g.g)) - Math.cos(rad(val.g))) < 1e-9
+            && Math.abs(Math.sin(rad(g.g)) - Math.sin(rad(val.g))) > 1e-9),
+          bien: 'x se conserva y y cambia de signo: el seno cambia, el coseno no.' },
+      ],
     },
   ];
 
@@ -623,6 +683,34 @@
     requiere: ['/nucleo/kit/piezas/trig-plano.js'],
     // Laboratorio: P libre con las seis razones (también sobre los ejes), dos puntos de una misma recta (k > 0
     // conserva las razones, k < 0 voltea seno y coseno pero no la tangente) y un giro de hasta dos vueltas con su opuesto.
+    // Glosario del tema (docs/teoria.md, 4d): lo que estrena la posición normal. Ángulo, lado inicial, seno, coseno y
+    // tangente vienen de unidades anteriores del curso.
+    glosario: [
+      { termino: 'posición normal', def: 'Manera de ubicar un ángulo: vértice en el origen y lado inicial sobre el eje x positivo.',
+        ejemplo: '120° así ubicado gira desde el eje x positivo y termina en el cuadrante II.', ver: ['lado final', 'cuadrante'] },
+      { termino: 'lado final', def: 'Semirrecta donde termina el giro de un ángulo. Cualquier punto suyo sirve para calcular las razones.',
+        formas: ['lado final', 'lados finales'], ejemplo: '30° y 390° terminan en la misma semirrecta: la vuelta completa no la mueve.', ver: ['posición normal', 'radio vector'] },
+      { termino: 'radio vector', simbolo: 'r', def: 'Distancia del origen al punto P del lado final. Siempre es positiva.',
+        ejemplo: 'P(−3, 4): r = √(9 + 16) = 5.', ver: ['abscisa', 'ordenada'] },
+      { termino: 'abscisa', simbolo: 'x', def: 'Primera coordenada de un punto: cuánto se aleja del eje y, a la derecha (+) o a la izquierda (−).',
+        ejemplo: 'P(−3, 4): x = −3, tres unidades a la izquierda del eje y.', ver: ['ordenada'] },
+      { termino: 'ordenada', simbolo: 'y', def: 'Segunda coordenada de un punto: cuánto sube (+) o baja (−) respecto del eje x.',
+        ejemplo: 'P(−3, 4): y = 4, cuatro unidades arriba del eje x.', ver: ['abscisa'] },
+      { termino: 'cuadrante', def: 'Cada una de las cuatro regiones en que los ejes dividen el plano: I, II, III y IV.',
+        ejemplo: '225° termina en el III, donde x e y son negativas.', ver: ['posición normal'] },
+      { termino: 'cotangente', simbolo: 'cot', def: 'Razón que divide la abscisa entre la ordenada, x/y. Es la recíproca de la tangente.',
+        ejemplo: 'P(−3, 4): cot θ = −3/4.', ver: ['secante', 'cosecante'] },
+      { termino: 'secante', simbolo: 'sec', def: 'Razón que divide el radio vector entre la abscisa, r/x. Es la recíproca del coseno.',
+        ejemplo: 'P(−3, 4): sec θ = 5/(−3) = −5/3.', ver: ['cotangente', 'cosecante'] },
+      { termino: 'cosecante', simbolo: 'csc', def: 'Razón que divide el radio vector entre la ordenada, r/y. Es la recíproca del seno.',
+        ejemplo: 'P(−3, 4): csc θ = 5/4.', ver: ['cotangente', 'secante'] },
+      { termino: 'ángulo cuadrantal', formas: ['ángulos cuadrantales', 'ángulo cuadrantal', 'cuadrantales', 'cuadrantal'],
+        def: 'Ángulo cuyo lado final cae sobre un eje, como 0°, 90°, 180° o 270°.',
+        ejemplo: '−90° y 450° también lo son: terminan sobre el eje y.', ver: ['no definida'] },
+      { termino: 'no definida', formas: ['no está definida', 'no está definido', 'no definidas', 'no definida', 'no definido'],
+        def: 'Se dice de una razón que no tiene valor, porque su cociente pide dividir entre cero.',
+        ejemplo: 'tan 90° = 1/0 no da un número; en cambio, cot 90° = 0/1 = 0.', ver: ['ángulo cuadrantal'] },
+    ],
     laboratorio,
     historia: {
       texto: 'Las primeras tablas de cuerdas y senos servían a la astronomía y miraban ángulos de triángulos. Tradiciones griegas, indias y de lengua árabe las fueron transformando hasta hablar de funciones. Al salir del triángulo, el ángulo puede girar más de una vuelta o hacia atrás, y entonces importan los signos. La posición normal es una organización moderna: pone el giro sobre coordenadas.',

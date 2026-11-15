@@ -3840,7 +3840,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 4,
-      "terminos": 13
+      "terminos": 15
      }
     },
     {
@@ -3977,7 +3977,8 @@
       "requiere": [
        "/nucleo/kit/piezas/trig-plano.js"
       ],
-      "ideas": 6
+      "ideas": 6,
+      "terminos": 1
      }
     },
     {
@@ -4013,7 +4014,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 4,
-      "terminos": 6
+      "terminos": 17
      }
     },
     {
@@ -4049,7 +4050,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 4,
-      "terminos": 3
+      "terminos": 7
      }
     },
     {
@@ -4089,7 +4090,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
-      "terminos": 7
+      "terminos": 13
      }
     },
     {
@@ -4127,7 +4128,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 3
+      "terminos": 8
      }
     },
     {
@@ -4203,7 +4204,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 1
+      "terminos": 3
      }
     },
     {
@@ -4280,7 +4281,7 @@
        "/nucleo/kit/piezas/trig-onda.js"
       ],
       "ideas": 5,
-      "terminos": 2
+      "terminos": 6
      }
     },
     {
@@ -4318,7 +4319,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
-      "terminos": 3
+      "terminos": 5
      }
     },
     {
@@ -4355,7 +4356,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 5
+      "terminos": 6
      }
     },
     {
@@ -4496,7 +4497,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
-      "terminos": 7
+      "terminos": 8
      }
     }
    ]
