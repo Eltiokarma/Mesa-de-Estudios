@@ -62,6 +62,9 @@
     return out.length ? out : ['0'];
   }
   const poliTxt = coefs => Kit.plano(poli(coefs, 'x'));
+  const par = v => (v < 0 ? `(${f(v)})` : f(v));   // un negativo entre paréntesis, para multiplicarlo o elevarlo
+  // Cuadrática [1, B, C] evaluada en v, término a término: «2² + 2 · 2 − 8». La usa «Así se resuelve».
+  const enCuadratica = ([, B, C], v) => `${par(v)}²${B ? ` ${B < 0 ? '−' : '+'} ${Math.abs(B) === 1 ? '' : `${f(Math.abs(B))} · `}${par(v)}` : ''}${C ? ` ${C < 0 ? '−' : '+'} ${f(Math.abs(C))}` : ''} = ${f(valor([1, B, C], v))}`;
   // Producto de (x − r) para raíces enteras: coeficientes de mayor a menor grado.
   const desdeRaices = (rs, a = 1) => rs.reduce((c, r) => [...c, 0].map((v, i) => v - (i ? r * c[i - 1] : 0)), [a]);
   const valor = (coefs, v) => coefs.reduce((acc, c) => acc * v + c, 0);
@@ -111,6 +114,16 @@
     titulo: 'Tantas raíces como el grado',
     temas: ['Teorema fundamental del álgebra'],
     pieza: 'ejes',
+    // Lee (fase 2): raíz, grado y multiplicidad; no dice cuántas raíces tiene un polinomio ni dónde están las que faltan (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Qué es una raíz', texto: 'Un terreno cuadrado en Juliaca tiene 25 m². Su lado cumple x² − 25 = 0, que tiene dos raíces: 5 y −5. Para el terreno solo sirve 5, porque un lado no es negativo.' },
+        { titulo: 'El grado', texto: 'El grado de un polinomio es su mayor exponente: x³ − 3x + 1 es de grado 3, y x⁵ + x, de grado 5. El de 2x⁴ − x + 7 es 4.' },
+        { titulo: 'Raíces repetidas', texto: 'En (x − 2)²(x + 1) = 0, el factor x − 2 aparece dos veces. Se dice que 2 es una raíz doble, o de multiplicidad 2.',
+          ecuacion: ['(', x, ' − 2)(', x, ' − 2)(', x, ' + 1) = 0'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, sube y baja la curva con c. Cuenta los puntos verdes en cada posición y fíjate qué cuenta se mantiene igual.' },
+      ],
+    },
     juega: {
       consigna: 'Mueve c en y = x³ − 3x + c. Los puntos verdes son raíces reales; una raíz doble solo toca el eje.',
       voz: 'Cuenta los cortes al subir y bajar la curva.',
@@ -159,6 +172,45 @@
       texto: 'Teorema fundamental del álgebra: un polinomio de grado n ≥ 1 tiene exactamente n raíces complejas, contando cada una tantas veces como se repite. La gráfica solo muestra las reales.',
       ecuacion: ['P(', z, ') = a', { llave: ['(', z, ' − ', { sub: ['r', '1'] }, ')(', z, ' − ', { sub: ['r', '2'] }, ')…(', z, ' − ', { sub: ['r', 'n'] }, ')'], nota: 'n factores', color: 'c-d' }],
       condicion: 'grado n ≥ 1 y coeficiente principal a ≠ 0; una raíz doble cuenta dos veces.',
+    },
+    // Así se resuelve (fase 2): el mismo P = (x − a)^m (x + b)^n (x² + c) de «Ahora tú», con otras semillas y la misma
+    // pregunta según la semilla; la gráfica (calculada con valor() y desdeRaices()) muestra que solo se ven las reales.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const a = r.ent(1, 4), m = r.ent(1, 3), bq = r.ent(1, 4), n2 = r.ent(1, 2), cc = r.uno([1, 4, 9]);
+        const grado = m + n2 + 2, pide = s % 3, rc = Math.sqrt(cc), im = rc === 1 ? 'i' : `${f(rc)}i`;
+        const fx = v => (v > 0 ? `x − ${f(v)}` : `x + ${f(-v)}`);
+        // (x² + c) multiplicado por (x − rr) para cada raíz real, con la misma cuenta de desdeRaices().
+        const coefs = [...Array(m).fill(a), ...Array(n2).fill(-bq)].reduce((c, rr) => [...c, 0].map((v, i) => v - (i ? rr * c[i - 1] : 0)), [1, 0, cc]);
+        const p = v => valor(coefs, v), lo = -bq - 1.5, hi = a + 1.5;
+        let tope = 0; for (let i = 0; i <= 80; i++) tope = Math.max(tope, Math.abs(p(-bq + (a + bq) * i / 80)));
+        const ymax = Math.max(4, Math.ceil(tope * 1.3)), pasoY = Math.max(1, Math.ceil(ymax / 2));
+        const graf = conPuntos => ({ datos: { x: { min: Math.floor(lo), max: Math.ceil(hi), paso: 1, nombre: 'x', decimales: 0, color: 'o' }, y: { min: -ymax, max: ymax, paso: pasoY, nombre: 'y', decimales: 0 },
+          curvas: [{ puntos: curva(p, Math.floor(lo), Math.ceil(hi), -ymax, ymax), color: 'i' }],
+          puntos: conPuntos ? [{ x: a, y: 0, color: 'd', rotulo: f(a) }, { x: -bq, y: 0, color: 'd', rotulo: f(-bq) }] : [],
+          alt: `Gráfica de P: corta el eje x solo en ${f(a)} y ${f(-bq)}` }, estado: {} });
+        const fac = ['(', x, ` − ${a})${m > 1 ? SUP[m] : ''}(`, x, ` + ${bq})${n2 > 1 ? SUP[n2] : ''}(`, x, `² + ${cc})`];
+        const PREG = ['¿cuántas raíces complejas hay en total, contando repeticiones?', '¿cuántas raíces reales distintas hay?', '¿cuántas raíces no reales hay?'];
+        const PIDE = ['Piden todas las raíces, reales y no reales, contando cada repetición.', 'Piden las raíces reales, contando una sola vez cada valor.', 'Piden las raíces que no son números reales.'];
+        const cuentas = [
+          { tipo: 'cuentas', texto: 'Sumo los grados de los tres factores.', ecuacion: [`${m} + ${n2} + 2 = ${grado}`] },
+          { tipo: 'cuentas', texto: `Las reales salen de ${fx(a)} = 0 y ${fx(-bq)} = 0. El factor x² + ${cc} no se anula con x real.`, ecuacion: [x, ` = ${f(a)}`, '   ·   ', x, ` = ${f(-bq)}`], dibujo: graf(true) },
+          { tipo: 'cuentas', texto: `x² + ${cc} = 0 da x² = −${cc}: dos raíces no reales. Los otros factores dan raíces reales.`, ecuacion: [x, ` = ${im}`, '   ·   ', x, ` = −${im}`] },
+        ][pide];
+        return {
+          enunciado: ['Para P(', x, ') = ', ...fac, ', ', PREG[pide]],
+          dibujo: graf(false),
+          pasos: [
+            { tipo: 'pide', texto: PIDE[pide] },
+            { tipo: 'datos', texto: `P ya está factorizado: ${fx(a)} con exponente ${m}, ${fx(-bq)} con exponente ${n2} y x² + ${cc}.` },
+            { tipo: 'regla', texto: `Cada factor aporta tantas raíces como su grado, y el total es el grado de P. Un factor como x² + ${cc} no da raíces reales.` },
+            cuentas,
+            { tipo: 'sentido', texto: `Comprueba con el grado: ${m + n2} raíces reales contando repeticiones, más 2 no reales, dan ${grado}. La gráfica solo llega al eje en ${f(a)} y ${f(-bq)}.` },
+          ],
+          respuesta: [`${pide === 0 ? grado : 2} raíces`, ['', ' reales distintas', ' no reales'][pide], pide === 0 ? ' en total' : ''],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -235,6 +287,17 @@
     titulo: 'Los coeficientes delatan las raíces',
     temas: ['Relaciones entre raíces y coeficientes'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): los nombres a, b, c, d y qué son los productos de a dos; no dice cómo se leen las raíces en ellos (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Los coeficientes', texto: 'En 3x³ − x² + 5x − 7 = 0, los números 3, −1, 5 y −7 son los coeficientes. Se llaman a, b, c y d, de la potencia más alta a la más baja.',
+          ecuacion: ['a', x, '³ + b', x, '² + c', x, ' + d = 0'] },
+        { titulo: 'Dos con nombre propio', texto: 'a, el que va con x³, es el coeficiente principal. d, el que va solo, es el término independiente. Si falta un término, su coeficiente es 0.' },
+        { titulo: 'Productos de a dos', texto: 'Con tres raíces r₁, r₂ y r₃ hay tres parejas: r₁r₂, r₁r₃ y r₂r₃. Su suma se llama suma de productos de a dos.',
+          ecuacion: [{ sub: ['r', '1'] }, { sub: ['r', '2'] }, ' + ', { sub: ['r', '1'] }, { sub: ['r', '3'] }, ' + ', { sub: ['r', '2'] }, { sub: ['r', '3'] }] },
+        { titulo: 'Qué mirar', texto: 'En el juego, arrastra las raíces verdes. Compara la suma, los productos de a dos y el producto con los números del polinomio escrito sobre la curva.' },
+      ],
+    },
     juega: {
       consigna: 'Arrastra las tres raíces por el eje. Sobre la curva va (x − r₁)(x − r₂)(x − r₃) desarrollado; compáralo con sus sumas y productos.',
       voz: 'Mira los signos de cada coeficiente.',
@@ -284,6 +347,50 @@
       ecuacion: [{ llave: [{ sub: ['r', '1'] }, ' + ', { sub: ['r', '2'] }, ' + ', { sub: ['r', '3'] }], nota: 'suma de raíces', color: 'c-d' }, ' = ', { frac: ['−b', 'a'] }],
       condicion: 'primero se divide entre a; un término que falta tiene coeficiente 0. Los signos alternan: −, +, −.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (polinomio armado con desdeRaices y la pregunta según la
+    // semilla), con otras semillas; la comprobación usa las raíces con que se armó, con vieteFila().
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900), a = r.ent(1, 3);
+        const rs = [r.ent(-3, 3), r.ent(-3, 3), r.ent(-3, 3)];
+        if (rs.every(v => v === 0)) rs[0] = 2;
+        const c = desdeRaices(rs, a), V = vieteFila(rs), pide = ['suma', 'dos', 'producto', 'cuadrados'][s % 4];
+        const R = [1, 2, 3].map(i => ({ sub: ['r', String(i)] })), par = v => (v < 0 ? `(${f(v)})` : f(v));
+        const NOM = { suma: '¿Cuánto vale su suma?', dos: '¿Cuánto vale la suma de sus productos de a dos?', producto: '¿Cuánto vale su producto?', cuadrados: '¿Cuánto vale la suma de sus cuadrados?' };
+        const QUE = { suma: 'la suma de las tres raíces', dos: 'la suma de los productos de a dos de las raíces', producto: 'el producto de las tres raíces', cuadrados: 'la suma de los cuadrados de las raíces' };
+        const S1 = -c[1] / a, S2 = c[2] / a, S3 = -c[3] / a, bien = { suma: S1, dos: S2, producto: S3, cuadrados: S1 * S1 - 2 * S2 }[pide];
+        const tabla = (extra, fila) => ({ datos: { columnas: ['a', 'b', 'c', 'd', ...extra], filas: [[f(c[0]), f(c[1]), f(c[2]), f(c[3]), ...fila]] }, estado: {} });
+        const REGLA = {
+          suma: ['La suma de las raíces es −b/a: el coeficiente de x², con el signo cambiado, dividido entre a.', [{ frac: ['−b', 'a'] }]],
+          dos: ['La suma de los productos de a dos es c/a: el coeficiente de x, dividido entre a, sin cambiar el signo.', [{ frac: ['c', 'a'] }]],
+          producto: ['En grado 3, el producto de las raíces es −d/a: el término independiente, con el signo cambiado, entre a.', [{ frac: ['−d', 'a'] }]],
+          cuadrados: ['Los cuadrados salen de elevar la suma al cuadrado y quitar el doble de los productos de a dos.', ['r₁² + r₂² + r₃² = (−b/a)² − 2 · c/a']],
+        }[pide];
+        const CUENTA = {
+          suma: [`−${par(c[1])} ÷ ${a} = ${f(S1)}`],
+          dos: [`${f(c[2])} ÷ ${a} = ${f(S2)}`],
+          producto: [`−${par(c[3])} ÷ ${a} = ${f(S3)}`],
+          cuadrados: [`suma = ${f(S1)}`, '   ·   ', `de a dos = ${f(S2)}`, '   ·   ', `${par(S1)}² − 2 · ${par(S2)} = ${f(bien)}`],
+        }[pide];
+        const conRaices = { suma: rs.map(par).join(' + '), dos: `${par(rs[0])}·${par(rs[1])} + ${par(rs[0])}·${par(rs[2])} + ${par(rs[1])}·${par(rs[2])}`, producto: rs.map(par).join(' · '), cuadrados: rs.map(v => `${par(v)}²`).join(' + ') }[pide];
+        const directo = { suma: V.S1, dos: V.S2, producto: V.S3, cuadrados: rs.reduce((t, v) => t + v * v, 0) }[pide];
+        return {
+          enunciado: ['Las raíces de ', ...poli(c), ' = 0 son ', R[0], ', ', R[1], ' y ', R[2], '. ', NOM[pide]],
+          dibujo: tabla([], []),
+          pasos: [
+            { tipo: 'pide', texto: `Piden ${QUE[pide]}, sin hallar las raíces.` },
+            { tipo: 'datos', texto: `Es de grado 3, con a = ${f(c[0])}, b = ${f(c[1])}, c = ${f(c[2])} y d = ${f(c[3])}.` },
+            { tipo: 'regla', texto: REGLA[0], ecuacion: REGLA[1] },
+            { tipo: 'cuentas', texto: pide === 'cuadrados' ? 'Primero leo la suma y los productos de a dos; después los combino.' : `Leo el coeficiente y divido entre a = ${a}.`,
+              ecuacion: CUENTA, dibujo: tabla([pide === 'cuadrados' ? 'suma de cuadrados' : { suma: 'suma', dos: 'de a dos', producto: 'producto' }[pide]], [{ t: f(bien), color: 'd', fuerte: true }]) },
+            { tipo: 'sentido', texto: `Comprueba: este polinomio se armó con las raíces ${rs.map(v => f(v)).join(', ')}. Hago la cuenta con ellas y sale lo mismo.`,
+              ecuacion: [`${conRaices} = ${f(directo)}`] },
+          ],
+          respuesta: [`${{ suma: 'La suma', dos: 'La suma de productos de a dos', producto: 'El producto', cuadrados: 'La suma de cuadrados' }[pide]} vale ${f(bien)}.`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), a = r.ent(1, 3);
@@ -318,6 +425,8 @@
   // ---------- Idea 3: candidatas racionales p/q ----------
   // Cambia: la candidata que se prueba · Permanece: 2x³ − 3x² − 3x + 2 · Progresa: la lista ±p/q y los ceros que
   // aparecen · Se reserva: 3/2 en un polinomio que empieza en 3 · Debe verse: p divide a d y q divide a a.
+  // (qx − p)(x − r₂)(x − r₃) desarrollado: lo usa la comprobación de «Así se resuelve».
+  const mult3 = (q, p, r2, r3) => { const b = desdeRaices([r2, r3]); return [q * b[0], q * b[1] - p * b[0], q * b[2] - p * b[1], -p * b[2]]; };
   const P3 = [2, -3, -3, 2];
   const CANDS = [[1, 1], [-1, 1], [2, 1], [-2, 1], [1, 2], [-1, 2]];
   // Se agarra la candidata sobre el eje x: salta a la candidata más cercana y la curva muestra la altura P(p/q).
@@ -337,6 +446,15 @@
     titulo: 'Candidatas racionales: p entre q',
     temas: ['Raíces racionales'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): fracción reducida y lista de candidatas; no dice qué divide a qué (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Fracciones de enteros', texto: 'Un número racional se escribe como p/q, con p y q enteros: 1/2, −3 o 2/3. La fracción está reducida si p y q no tienen divisores comunes: 4/6 se reduce a 2/3.' },
+        { titulo: 'Una lista corta', texto: 'Probar todos los números en un polinomio no termina nunca. Por eso, antes de evaluar, se arma una lista corta de candidatas: números que podrían ser raíces.' },
+        { titulo: 'Candidata no es raíz', texto: 'Una candidata solo es raíz si, al reemplazarla, el polinomio vale 0. Si no da 0, se tacha y se prueba la siguiente.' },
+        { titulo: 'Qué mirar', texto: 'En el juego hay seis candidatas para 2x³ − 3x² − 3x + 2. Arrastra el punto por el eje y fíjate en cuáles la curva pasa justo por el eje.' },
+      ],
+    },
     juega: {
       consigna: 'P(x) = 2x³ − 3x² − 3x + 2. Arrastra la candidata por el eje: el punto marca P en ella. Una raíz da cero.',
       voz: 'Busca las tres que dan cero.',
@@ -387,6 +505,60 @@
       texto: 'Si p/q, reducida, es raíz de un polinomio de coeficientes enteros, p divide al término independiente y q divide al coeficiente principal.',
       ecuacion: [{ frac: ['p', 'q'] }, ':  p | ', { llave: [{ sub: ['a', '0'] }], nota: 'el independiente' }, '   ·   ', 'q | ', { llave: [{ sub: ['a', 'n'] }], nota: 'el principal' }],
       condicion: 'coeficientes enteros. La lista da candidatas, no raíces: cada una se comprueba en el polinomio.',
+    },
+    // Así se resuelve (fase 2): el mismo P = (qx − p)(x − r₂)(x − r₃) de «Ahora tú», con otras semillas; con semilla par
+    // se busca la raíz no entera p/q, y con impar se decide si una fracción puede ser raíz. valorFrac() hace las cuentas.
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        const q = r.uno([2, 3]), p = r.uno([1, -1, 2, -2].filter(v => mcd(Math.abs(v), q) === 1));
+        const r2 = r.uno([-3, -2, -1, 1, 2, 3]), r3 = r.uno([-3, -1, 1, 3, 2].filter(v => v !== r2));
+        const base = desdeRaices([r2, r3]);
+        const coefs = [q * base[0], q * base[1] - p * base[0], q * base[2] - p * base[1], -p * base[2]];
+        const an = coefs[0], a0 = coefs[3];
+        const divisores = n => { const out = []; for (let d = 1; d <= Math.abs(n); d++) if (n % d === 0) out.push(d); return out; };
+        const P = ['P(', x, ') = ', ...poli(coefs)], Pv = (pp, qq) => fr(valorFrac(coefs, pp, qq), qq ** 3);
+        const datos = { tipo: 'datos', texto: `Los coeficientes son enteros. El término independiente es ${f(a0)} y el coeficiente principal es ${f(an)}.` };
+        const regla = { tipo: 'regla', texto: `Si una fracción reducida p/q es raíz, p tiene que dividir a ${f(Math.abs(a0))} y q tiene que dividir a ${f(an)}. Después se comprueba en P.` };
+        const listas = { tipo: 'datos', texto: `Divisores de ${f(Math.abs(a0))}: ${divisores(a0).join(', ')}. Divisores de ${f(an)}: ${divisores(an).join(', ')}.` };
+        if (s % 2 === 0) {
+          const cand = []; for (const pp of divisores(a0)) for (const qq of divisores(an)) for (const sg of [1, -1]) if (qq > 1 && mcd(pp, qq) === 1) cand.push([sg * pp, qq]);
+          const fallan = cand.filter(([pp, qq]) => valorFrac(coefs, pp, qq) !== 0);
+          const mala = fallan.length ? fallan.sort((u, v) => Math.abs(u[0] / u[1]) - Math.abs(v[0] / v[1]))[0] : null;
+          const tabla = filas => ({ datos: { columnas: ['p/q', 'P(p/q)', '¿raíz?'], filas: filas.map(([pp, qq]) => [{ t: fr(pp, qq), color: 'o' }, Pv(pp, qq), { t: valorFrac(coefs, pp, qq) === 0 ? '✓' : '✗', color: valorFrac(coefs, pp, qq) === 0 ? 'd' : 'h', fuerte: true }]) }, estado: {} });
+          const pasos = [
+            { tipo: 'pide', texto: 'Piden una raíz racional que no sea un número entero.' },
+            datos, regla,
+          ];
+          if (mala) pasos.push({ tipo: 'cuentas', texto: `Con q = ${mala[1]} pruebo ${fr(...mala)}: no da cero, así que no es raíz.`, ecuacion: [`P(${fr(...mala)}) = ${Pv(...mala)}`], dibujo: tabla([mala]) });
+          pasos.push({ tipo: 'cuentas', texto: `Pruebo ${fr(p, q)}: da cero. Es raíz.`, ecuacion: [`P(${fr(p, q)}) = ${Pv(p, q)}`], dibujo: tabla(mala ? [mala, [p, q]] : [[p, q]]) });
+          pasos.push({ tipo: 'sentido', texto: `Comprueba: como ${fr(p, q)} es raíz, ${poliTxt([q, -p])} es factor. Multiplicado por los otros dos factores, vuelve P.`,
+            ecuacion: [`(${poliTxt([q, -p])})(${poliTxt([1, -r2])})(${poliTxt([1, -r3])}) = ${poliTxt(mult3(q, p, r2, r3))}`] });
+          return {
+            enunciado: ['Halla una raíz racional no entera de ', ...poli(coefs), ' = 0.'],
+            dibujo: { datos: { columnas: ['p/q', 'P(p/q)', '¿raíz?'], filas: [['?', '?', '?']] }, estado: {} },
+            pasos,
+            respuesta: [x, ` = ${fr(p, q)} es raíz.`],
+          };
+        }
+        const imposible = [[q * 2 + 1, an], [an, Math.abs(a0) + 1]].find(([pp, qq]) => mcd(pp, qq) === 1 && (a0 % pp !== 0 || an % qq !== 0)) || [Math.abs(a0) + 1, 1];
+        const [ip, iq] = imposible, pDiv = a0 % ip === 0, qDiv = an % iq === 0;
+        const vistas = new Set(), lista = [];
+        for (const qq of divisores(an)) for (const pp of divisores(a0)) { const t = fr(pp, qq); if (!vistas.has(t)) { vistas.add(t); lista.push(`±${t}`); } }
+        return {
+          enunciado: ['Por el criterio p/q, ¿puede ', fr(ip, iq), ' ser raíz racional de ', ...poli(coefs), ' = 0?'],
+          dibujo: { datos: { columnas: ['p divide a ' + f(Math.abs(a0)), 'q divide a ' + f(an)], filas: [['?', '?']] }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden decidir si ${fr(ip, iq)} entra en la lista de candidatas, sin evaluar.` },
+            datos, regla, listas,
+            { tipo: 'cuentas', texto: `En ${fr(ip, iq)}, p = ${ip} ${pDiv ? 'sí' : 'no'} divide a ${f(Math.abs(a0))} y q = ${iq} ${qDiv ? 'sí' : 'no'} divide a ${f(an)}. ${pDiv || qDiv ? 'Falla una condición.' : 'Fallan las dos condiciones.'}`,
+              dibujo: { datos: { columnas: ['p divide a ' + f(Math.abs(a0)), 'q divide a ' + f(an)], filas: [[divisores(a0).join(', '), divisores(an).join(', ')]], pie: `${fr(ip, iq)}: p = ${ip}, q = ${iq}` }, estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: armo todas las candidatas ±p/q con esos divisores. ${fr(ip, iq)} no aparece entre ellas.`, ecuacion: [`candidatas: ${lista.join(', ')}`] },
+          ],
+          respuesta: `No: ${fr(ip, iq)} no puede ser raíz racional.`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'alg-tabla',
@@ -442,6 +614,15 @@
     titulo: 'La raíz no real viene acompañada',
     temas: ['Paridad de raíces irracionales y complejas'],
     pieza: 'ejes',
+    // Lee (fase 2): por qué aparece i y cómo se dibuja a + bi; no dice qué otra raíz llega con una no real (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cuando no alcanza', texto: 'x² + 4 = 0 no tiene solución real: ningún número real al cuadrado da −4. Para resolverla se usa i, con i² = −1, y aparecen números como 2i o 1 + 3i.' },
+        { titulo: 'Dos partes', texto: 'En a + bi, a es la parte real y b, la parte imaginaria. En 2 + 3i, la parte real es 2 y la imaginaria es 3.' },
+        { titulo: 'Un plano para dibujarlos', texto: 'a + bi se dibuja como un punto: a se lee en el eje horizontal y b en el vertical. Los números reales quedan sobre el eje horizontal.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, sube c poco a poco. Mira qué pasa con los dos puntos verdes cuando se juntan y dejan el eje horizontal.' },
+      ],
+    },
     juega: {
       consigna: 'Mueve b y c en x² + bx + c = 0. El plano muestra sus raíces: horizontal la parte real, vertical la imaginaria.',
       voz: 'Sube c hasta que las raíces dejen el eje.',
@@ -493,6 +674,64 @@
       texto: 'Con coeficientes reales, si a + bi es raíz también lo es a − bi. Con coeficientes racionales, si a + b√d es raíz, también a − b√d.',
       ecuacion: ['a + bi  →  ', { llave: ['a − bi'], nota: 'su conjugada', color: 'c-d' }],
       condicion: 'las hipótesis importan: √d irracional y a, b, d racionales. Con coeficientes irracionales, la pareja no está garantizada.',
+    },
+    // Así se resuelve (fase 2): los tres tipos de «Ahora tú» según la semilla (menor grado con una raíz no real, producto
+    // de la pareja irracional y la hipótesis de los coeficientes), con otras semillas; el plano marca la pareja.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3, par = v => (v < 0 ? `(${f(v)})` : f(v));
+        const plano = (puntos, ancho = 5) => ({ datos: Object.assign({}, PLANO, { x: Object.assign({}, PLANO.x, { min: -ancho, max: ancho }), puntos, alt: `Raíces en el plano: ${puntos.map(q => q.rotulo).join(' y ')}` }), estado: {} });
+        if (tipo === 0) {
+          const a = r.ent(-3, 3), b = r.ent(1, 4), m = r.ent(1, 3);
+          const raiz = imag(a, b), conj = imag(a, -b);
+          return {
+            enunciado: [`Un polinomio de coeficientes reales tiene la raíz ${raiz} y ${m === 1 ? 'una raíz real' : `${m} raíces reales`}. ¿Cuál es el menor grado posible?`],
+            dibujo: plano([{ x: a, y: b, color: 'd', rotulo: raiz }]),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el grado más chico que puede tener ese polinomio.' },
+              { tipo: 'datos', texto: `Coeficientes reales, una raíz no real, ${raiz}, y ${m === 1 ? 'una raíz real' : `${m} raíces reales`}.` },
+              { tipo: 'regla', texto: 'Con coeficientes reales, cada raíz no real llega con su conjugada: la misma parte real y la parte imaginaria con el signo cambiado.' },
+              { tipo: 'cuentas', texto: `La conjugada de ${raiz} es ${conj}. Cuento las reales y las dos no reales.`, ecuacion: [`${m} + 2 = ${m + 2}`],
+                dibujo: plano([{ x: a, y: b, color: 'd', rotulo: raiz, guias: true }, { x: a, y: -b, color: 'd', rotulo: conj, guias: true }]) },
+              { tipo: 'sentido', texto: 'Comprueba: la raíz y su conjugada forman un factor de grado 2 con coeficientes reales. Sin la conjugada, no lo serían.',
+                ecuacion: ['(', x, ` − (${raiz}))(`, x, ` − (${conj})) = `, ...poli([1, -2 * a, a * a + b * b])] },
+            ],
+            respuesta: `El menor grado es ${m + 2}.`,
+          };
+        }
+        if (tipo === 1) {
+          const a = r.ent(-3, 3), b = r.ent(1, 3), d = r.uno([2, 3, 5]);
+          const bd = `${b === 1 ? '' : b}√${d}`, raiz = `${a ? f(a) + ' + ' : ''}${bd}`, otra = `${a ? f(a) + ' − ' : '−'}${bd}`;
+          const S = 2 * a, P = a * a - b * b * d, v = b * Math.sqrt(d), ancho = Math.ceil(Math.abs(a) + v + 0.5);
+          return {
+            enunciado: [`Un polinomio de coeficientes racionales tiene la raíz ${raiz}. Esa raíz y su pareja segura suman S y multiplican P. ¿Cuánto vale P?`],
+            dibujo: plano([{ x: a + v, y: 0, color: 'd', rotulo: raiz }], ancho),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden P, el producto de la raíz dada por su pareja.' },
+              { tipo: 'datos', texto: `La raíz es ${raiz}, con √${d} irracional, y los coeficientes son racionales.` },
+              { tipo: 'regla', texto: `Con coeficientes racionales, una raíz con √${d} llega con su pareja: la misma, con la raíz cuadrada restada. Su producto es una diferencia de cuadrados.` },
+              { tipo: 'cuentas', texto: `La pareja es ${otra}. Multiplico: el primero al cuadrado menos (${bd})².`, ecuacion: [`P = ${par(a)}² − ${b * b} · ${d} = ${f(P)}`],
+                dibujo: plano([{ x: a + v, y: 0, color: 'd', rotulo: raiz }, { x: a - v, y: 0, color: 'd', rotulo: otra }], ancho) },
+              { tipo: 'sentido', texto: `Comprueba: la suma es S = ${f(S)}, y la pareja da un factor con coeficientes racionales.`, ecuacion: ['(', x, ` − (${raiz}))(`, x, ` − (${otra})) = `, ...poli([1, -S, P])] },
+            ],
+            respuesta: `P = ${f(P)}`,
+          };
+        }
+        const a = r.ent(1, 3), v = a + Math.SQRT2;
+        return {
+          enunciado: [`Un polinomio de coeficientes reales, pero no todos racionales, tiene la raíz ${a} + √2. ¿Es seguro que ${a} − √2 también es raíz?`],
+          dibujo: plano([{ x: v, y: 0, color: 'd', rotulo: `${a} + √2` }]),
+          pasos: [
+            { tipo: 'pide', texto: `Piden si ${a} − √2 tiene que ser raíz en todos los casos.` },
+            { tipo: 'datos', texto: 'Los coeficientes son reales, pero no todos son racionales.' },
+            { tipo: 'regla', texto: 'La pareja con √2 solo está garantizada si los coeficientes son racionales. Si no lo son, basta un ejemplo en contra.' },
+            { tipo: 'cuentas', texto: `Pruebo el polinomio más simple con esa raíz: uno de grado 1. Sus coeficientes son 1 y −(${a} + √2), reales y no racionales.`,
+              ecuacion: [x, ` − (${a} + √2) = 0  ⇒  `, x, ` = ${a} + √2`] },
+            { tipo: 'sentido', texto: `Comprueba: un polinomio de grado 1 tiene una sola raíz. No cabe ${a} − √2, así que no es seguro.` },
+          ],
+          respuesta: 'No es seguro.',
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -550,6 +789,16 @@
     titulo: 'Un cambio de variable',
     temas: ['Ecuaciones bicuadradas y recíprocas'],
     pieza: 'recta',
+    // Lee (fase 2): qué es una bicuadrada y una recíproca y qué hace el cambio de variable; no dice qué u dan x reales (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Solo potencias pares', texto: 'En x⁴ − 13x² + 36 = 0 solo aparecen x⁴, x² y un número. Una ecuación así se llama bicuadrada, porque x⁴ es el cuadrado de x².' },
+        { titulo: 'Otro nombre', texto: 'Si llamas u a x², la ecuación se vuelve u² − 13u + 36 = 0: una cuadrática, que ya sabes resolver. Eso es un cambio de variable.',
+          ecuacion: [u, ' = ', x, '²'] },
+        { titulo: 'Al derecho y al revés', texto: 'En x⁴ − 5x³ + 8x² − 5x + 1 = 0, los coeficientes 1, −5, 8, −5, 1 se leen igual desde los dos lados. Es una ecuación recíproca, con su propio cambio de variable.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, arriba van los valores de u y abajo los de x. Prueba u positivas, u = 0 y u negativas, y cuenta los puntos de abajo.' },
+      ],
+    },
     juega: {
       consigna: 'Elige dos valores de u = x². Arriba van los valores de u; abajo, los x reales que salen de cada uno.',
       voz: 'Prueba una u negativa.',
@@ -602,6 +851,57 @@
       texto: 'En la ecuación bicuadrada, u = x² da una cuadrática; cada u > 0 da x = ±√u. En la ecuación recíproca se divide entre x² y se usa t = x + 1/x.',
       ecuacion: [x, '² + ', { frac: ['1', [x, '²']] }, ' = ', { llave: [t], nota: 'x + 1/x', color: 'c-i' }, '² − 2'],
       condicion: 'u < 0 no da x reales; u = 0 da x = 0. En la ecuación recíproca, x = 0 nunca es raíz.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» según la semilla (cuántas soluciones reales tiene la
+    // bicuadrada, o qué ecuación en t deja la recíproca), con otras semillas; la recta usa xDeU(), como el juego.
+    resuelve: {
+      pieza: 'recta',
+      generar(s) {
+        const r = azar(s + 900);
+        const ancho = { min: -10, max: 10, paso: 2 };
+        if (s % 3 === 2) {
+          const t1 = r.ent(2, 4), t2 = r.ent(-3, 5), A = -(t1 + t2), B = t1 * t2 + 2;
+          const coefs = [1, A, B, A, 1], enT = [1, A, B - 2];
+          const agrupa = ['(', x, '² + 1/', x, '²)', ...(A ? [A < 0 ? ' − ' : ' + ', Math.abs(A) === 1 ? '' : f(Math.abs(A)), '(', x, ' + 1/', x, ')'] : []), ...(B ? [B < 0 ? ' − ' : ' + ', f(Math.abs(B))] : []), ' = 0'];
+          return {
+            enunciado: ['En ', ...poli(coefs), ' = 0 se divide entre ', x, '² y se usa ', t, ' = ', x, ' + 1/', x, '. ¿Qué ecuación queda en ', t, '?'],
+            dibujo: { datos: RECTA5([], Object.assign({ variable: 't', color: 'i', filas: 1 }, ancho)), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la ecuación que queda al escribirlo todo con t.' },
+              { tipo: 'datos', texto: `Los coeficientes ${coefs.map(c => f(c)).join(', ')} se leen igual desde los dos lados: es recíproca, y x = 0 no es raíz.` },
+              { tipo: 'regla', texto: 'Divido entre x² y junto los términos que se parecen. Como t² = x² + 2 + 1/x², se cumple x² + 1/x² = t² − 2.',
+                ecuacion: [x, '² + ', { frac: ['1', [x, '²']] }, ' = ', t, '² − 2'] },
+              { tipo: 'cuentas', texto: 'Al dividir entre x² y agrupar, cada paréntesis se cambia por su valor en t.',
+                ecuacion: [...agrupa, '  ⇒  ', ...poli(enT, t), ' = 0'] },
+              { tipo: 'sentido', texto: `Comprueba: esta ecuación sale de ${t1 === t2 ? `t = ${f(t1)}, raíz doble` : `t = ${f(t1)} y t = ${f(t2)}`}. Al reemplazar t = ${f(t1)}, da cero.`,
+                ecuacion: [enCuadratica(enT, t1)],
+                dibujo: { datos: RECTA5([t1, t2].map(v => ({ tipo: 'punto', x: v, color: 'i', rotulo: `t = ${f(v)}` })), Object.assign({ variable: 't', color: 'i', filas: 1 }, ancho)), estado: {} } },
+            ],
+            respuesta: [...poli(enT, t), ' = 0'],
+          };
+        }
+        const u1 = r.uno([1, 4, 9, -1, -4]), u2 = r.uno([1, 4, 9, 2, 3, -9].filter(v => v !== u1));
+        const S = u1 + u2, P = u1 * u2, xs = [u1, u2].flatMap(xDeU), n = xs.length, pos = [u1, u2].filter(v => v > 0);
+        const raizTxt = v => (Number.isInteger(v) ? f(v) : `${v < 0 ? '−' : ''}√${Math.round(v * v)}`);
+        const fig = conX => ({ datos: RECTA5([u1, u2].map((uu, i) => ({ tipo: 'punto', x: uu, color: 'i', abierto: uu < 0, rotulo: ['u₁', 'u₂'][i], fila: 1 })).concat(conX ? xs.map(v => ({ tipo: 'punto', x: v, color: 'd' })) : []),
+          Object.assign({ alt: `u = ${u1} y ${u2}; x reales: ${xs.map(raizTxt).join(', ') || 'ninguno'}` }, ancho)), estado: {} });
+        return {
+          enunciado: ['¿Cuántas soluciones reales tiene ', ...poli([1, 0, -S, 0, P]), ' = 0?'],
+          dibujo: { datos: RECTA5([], ancho), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden cuántos números reales x cumplen la ecuación.' },
+            { tipo: 'datos', texto: 'Solo aparecen x⁴, x² y un número: es una ecuación bicuadrada.' },
+            { tipo: 'regla', texto: 'Cambio u = x² y resuelvo la cuadrática en u. Después vuelvo a x: cada u positiva da dos x, ±√u, y una u negativa no da ninguna.' },
+            { tipo: 'cuentas', texto: 'La cuadrática en u se factoriza y da dos valores.',
+              ecuacion: [...poli([1, -S, P], u), ' = (', ...poli([1, -u1], u), ')(', ...poli([1, -u2], u), ') = 0  ⇒  ', u, ` = ${f(u1)}`, '   ·   ', u, ` = ${f(u2)}`], dibujo: fig(false) },
+            { tipo: 'cuentas', texto: pos.length === 2 ? 'Las dos u son positivas: cada una da dos valores de x.' : pos.length === 1 ? 'Solo una u es positiva; la negativa no da x reales.' : 'Las dos u son negativas: ningún real al cuadrado da un negativo.',
+              ecuacion: [x, ` = ${xs.length ? [...xs].sort((p, q) => p - q).map(raizTxt).join('; ') : 'ninguno'}`], dibujo: fig(true) },
+            { tipo: 'sentido', texto: pos.length ? `Comprueba con u = ${f(pos[0])}, que es x² para esas x: la cuadrática en u da cero.` : `Comprueba: x⁴, ${poliTxt([-S, 0, 0])} y ${f(P)} nunca son negativos y ${f(P)} es positivo, así que la suma nunca vale cero.`,
+              ecuacion: pos.length ? [enCuadratica([1, -S, P], pos[0])] : undefined },
+          ],
+          respuesta: `${n} ${n === 1 ? 'solución real' : 'soluciones reales'}`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'recta',
@@ -660,6 +960,16 @@
     titulo: 'zⁿ = w: un polígono regular',
     temas: ['Ecuación binómica'],
     pieza: 'flechas',
+    // Lee (fase 2): qué es una ecuación binómica y cómo se dibuja un complejo como flecha; no dice cuántas soluciones
+    // hay ni dónde quedan (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos términos', texto: 'Ecuaciones como z³ = 8 o z⁴ = 1 tienen solo dos términos: una potencia de z y un número. Por eso se llaman ecuaciones binómicas.',
+          ecuacion: [z, 'ⁿ = w'] },
+        { titulo: 'Un número, una flecha', texto: 'Un número complejo se dibuja como una flecha que sale del origen. Su largo es el módulo y su giro, medido desde el eje horizontal, es su ángulo.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, cambia n y w. Cuenta las flechas verdes, compara su largo con la circunferencia y mira cuántos grados hay entre dos vecinas.' },
+      ],
+    },
     juega: {
       consigna: 'Elige n y w en zⁿ = w. Cada flecha verde es una solución: mira su largo y el ángulo entre flechas vecinas.',
       voz: 'Cuenta las flechas para cada n.',
@@ -706,6 +1016,46 @@
       texto: 'zⁿ = w, con w ≠ 0, tiene n soluciones: todas con módulo ⁿ√|w|, separadas 360°/n. Son los vértices de un polígono regular centrado en el origen.',
       ecuacion: [{ llave: [{ sub: ['θ', 'k'] }], nota: 'ángulo de zₖ', color: 'c-d' }, ' = ', { frac: ['θ + 360° · k', 'n'] }],
       condicion: 'w ≠ 0; θ es el ángulo de w y k = 0, 1, …, n − 1. Solo una o dos soluciones pueden ser reales.',
+    },
+    // Así se resuelve (fase 2): las tres preguntas de «Ahora tú» según la semilla (ángulo entre vecinas, módulo o
+    // cuántas son reales), con otras semillas; raicesBin() y planoBin() hacen las cuentas y el dibujo.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(3, 6), m = s % 4 === 2 ? r.ent(2, 3) : r.ent(1, 3), w = (s % 2 ? -1 : 1) * m ** n, pide = s % 4;
+        const raices = raicesBin(n, w), th = w < 0 ? 180 : 0, ang = 360 / n;
+        const reales = raices.filter(q => Math.abs(q.p[1]) < 1e-9);
+        const ec = [z, `${SUP[n]} = ${f(w)}`];
+        const PREG = [
+          ['Las soluciones de ', ...ec, ' forman un polígono regular. ¿Cuántos grados separan a dos soluciones vecinas?'],
+          ['¿A qué distancia del origen están las soluciones de ', ...ec, '?'],
+          ['¿Cuántas de las soluciones de ', ...ec, ' son números reales?'],
+        ];
+        const cual = pide === 2 ? 1 : pide === 3 ? 2 : 0;
+        const cuentas = [
+          { tipo: 'cuentas', texto: `Son ${n} soluciones repartidas en una vuelta completa, de 360°.`, ecuacion: [`360° ÷ ${n} = ${f(ang, 1)}°`], dibujo: { datos: planoBin(n, w), estado: {} } },
+          { tipo: 'cuentas', texto: `El módulo de z es la raíz ${{ 3: 'cúbica', 4: 'cuarta', 5: 'quinta', 6: 'sexta' }[n]} de |w| = ${f(Math.abs(w))}.`, ecuacion: [`${SUP[n]}√${f(Math.abs(w))} = ${f(m)}`], dibujo: { datos: planoBin(n, w), estado: {} } },
+          { tipo: 'cuentas', texto: `El ángulo de w es ${th}°. Calculo los ${n} ángulos y busco los que valen 0° o 180°.`,
+            ecuacion: [`θ = ${raices.map(q => `${f(q.g, 0)}°`).join(', ')}`], dibujo: { datos: planoBin(n, w), estado: {} } },
+        ][cual];
+        const sentido = [
+          { tipo: 'sentido', texto: `Comprueba: ${n} vecinas separadas ${f(ang, 1)}° completan la vuelta.`, ecuacion: [`${n} · ${f(ang, 1)}° = ${f(n * ang, 0)}°`] },
+          { tipo: 'sentido', texto: `Comprueba: si z mide ${f(m)}, z${SUP[n]} mide ${f(m)}${SUP[n]}, que es |w|.`, ecuacion: [`${f(m)}${SUP[n]} = ${f(m ** n)}`] },
+          { tipo: 'sentido', texto: reales.length ? `Comprueba: ${reales.map(q => f(q.p[0])).join(' y ')} ${reales.length === 1 ? 'cae' : 'caen'} sobre el eje horizontal, y elevado a ${n} da ${f(w)}.` : 'Comprueba: ningún ángulo es 0° ni 180°, así que ninguna flecha cae sobre el eje horizontal.',
+            ecuacion: reales.length ? [`(${f(reales[0].p[0])})${SUP[n]} = ${f(reales[0].p[0] ** n)}`] : undefined },
+        ][cual];
+        return {
+          enunciado: PREG[cual],
+          dibujo: { datos: planoBin(n, w, false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', ['el ángulo entre dos soluciones vecinas', 'el módulo de las soluciones', 'cuántas soluciones son reales'][cual], '.'] },
+            { tipo: 'datos', texto: `Exponente n = ${n} y w = ${f(w)}, cuyo módulo es ${f(Math.abs(w))} y cuyo ángulo es ${th}°.` },
+            { tipo: 'regla', texto: `zⁿ = w tiene n soluciones, todas con el mismo módulo, ⁿ√|w|, y repartidas en partes iguales de la vuelta: cada 360°/n.` },
+            cuentas,
+            sentido,
+          ],
+          respuesta: [`${f(ang, 1)}°`, `A distancia ${f(m)} del origen`, reales.length ? `${reales.length} ${reales.length === 1 ? 'es real' : 'son reales'}` : 'Ninguna es real'][cual],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -899,6 +1249,8 @@
         def: 'Ecuación de la forma ax⁴ + bx² + c = 0: solo tiene potencias pares.', ver: ['cambio de variable'] },
       { termino: 'ecuación recíproca', formas: ['ecuación recíproca', 'ecuaciones recíprocas'],
         def: 'Ecuación cuyos coeficientes se leen igual de izquierda a derecha que al revés.', ejemplo: 'x⁴ − 5x³ + 8x² − 5x + 1 = 0.' },
+      { termino: 'ecuación binómica', formas: ['ecuación binómica', 'ecuaciones binómicas'],
+        def: 'Ecuación de dos términos, zⁿ = w: una potencia de la incógnita igualada a un número.', ejemplo: 'z³ = 8 tiene tres soluciones.', ver: ['raíz n-ésima', 'módulo'] },
     ],
     estado: 'completa',
     requiere: ['/nucleo/kit/piezas/ejes.js', '/nucleo/kit/piezas/alg-tabla.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/flechas.js'],
