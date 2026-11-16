@@ -32,6 +32,9 @@
   const escribir = fs => fs.map(([b, e]) => (e > 1 ? `${b}${sup(e)}` : String(b))).join(' · ');
   const phi = x => { let c = 0; for (let k = 1; k <= x; k++) if (mcd(k, x) === 1) c++; return c; };
   const powmod = (b, e, k) => { let x = 1; for (let i = 0; i < e; i++) x = (x * b) % k; return x; };
+  // «Así se resuelve»: una lista con «y» al final (2, 3 y 5) y un número pintado como n (naranja).
+  const yLista = xs => (xs.length > 1 ? `${xs.slice(0, -1).join(', ')} y ${xs[xs.length - 1]}` : String(xs[0]));
+  const nO = x => ({ v: 'c-o', t: String(x) });
   function azar(s) {
     let z0 = (s * 2654435761 + 12345) >>> 0;
     const g = () => { z0 = (z0 + 0x6D2B79F5) >>> 0; let z = z0; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
@@ -77,6 +80,15 @@
     titulo: 'Primo: una sola fila',
     temas: ['Primos y compuestos'],
     pieza: 'arit-fichas',
+    // Lee (fase 2): fichas en rectángulos y la palabra divisor, sin decir qué pasa con el 1 (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Fichas en filas', texto: 'Imagina a una vendedora de la feria de Juliaca que acomoda 12 naranjas en filas iguales. Puede hacer 2 filas de 6, 3 filas de 4 o una sola fila de 12. Cada forma es un rectángulo.' },
+        { titulo: 'Divisores', texto: 'Un divisor de un número lo divide exacto, sin que sobre nada. Cada rectángulo te da dos divisores: la cantidad de filas y la de columnas. Con 3 filas de 4, el 3 y el 4 dividen a 12.',
+          ecuacion: ['12 = 3 × 4'] },
+        { titulo: 'Qué mirar', texto: 'Mueve n y cuenta cuántos rectángulos distintos se arman con las fichas. Algunos números se acomodan de varias formas y otros de muy pocas. Anota cuántos divisores tiene cada uno.' },
+      ],
+    },
     juega: {
       consigna: 'Elige cuántas fichas hay. Se dibujan los rectángulos que se pueden armar con todas, sin que sobre ninguna.',
       voz: 'Busca números que solo se acomoden en una fila.',
@@ -112,6 +124,30 @@
       texto: 'Un primo es un entero mayor que 1 con exactamente dos divisores positivos: 1 y él mismo. Si tiene más, es un número compuesto.',
       ecuacion: [p, ' primo  ⇔  ', p, ' > 1 y sus divisores son ', { llave: ['{1, ', p, '}'], nota: 'solo dos' }],
       condicion: 'el 1 no es primo ni compuesto. Para descartar un primo, basta probar divisores hasta su raíz cuadrada.',
+    },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (las mismas listas), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), primosL = [53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113];
+        const engañosos = [51, 57, 87, 91, 93, 111, 119, 117, 133, 143].filter(x => !esPrimo(x));
+        const c = r.de(primosL), ds = [];
+        while (ds.length < 3) { const x = r.de(engañosos); if (!ds.includes(x)) ds.push(x); }
+        const lista = [c, ...ds].sort((x, y) => x - y), raiz = Math.floor(Math.sqrt(c));
+        const chicos = [2, 3, 5, 7, 11].filter(x => x <= raiz);
+        const partes = ds.slice().sort((x, y) => x - y).map(x => { const fx = factores(x)[0][0]; return `${x} = ${fx} · ${x / fx}`; });
+        return {
+          enunciado: `De los números ${yLista(lista)}, solo uno es primo. ¿Cuál es?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el único número de la lista que tiene exactamente dos divisores: el 1 y él mismo.' },
+            { tipo: 'datos', texto: `Son cuatro números entre ${lista[0]} y ${lista[3]}. Todos son impares y ninguno termina en 5: a simple vista, cualquiera parece primo.` },
+            { tipo: 'regla', texto: 'Si un número se parte en una multiplicación de dos números mayores que 1, es compuesto. Para descartarlo, basta probar primos hasta su raíz cuadrada.' },
+            { tipo: 'cuentas', texto: `Pruebo ${c} con los primos ${yLista(chicos)}: ninguna división es exacta. No sigo, porque ${raiz + 1}² = ${(raiz + 1) ** 2} ya pasa de ${c}.`,
+              ecuacion: [chicos.map(x => `${c} ÷ ${x}: resto ${c % x}`).join('   ·   ')] },
+            { tipo: 'sentido', texto: 'Los otros tres sí se parten, y al multiplicar de vuelta sale el mismo número: son compuestos.', ecuacion: [partes.join('   ·   ')] },
+          ],
+          respuesta: `El primo es ${c}.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -164,6 +200,14 @@
     titulo: 'La criba tacha múltiplos',
     temas: ['Criba de Eratóstenes'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): qué es una criba y qué es tachar múltiplos, sin decir hasta dónde basta tachar.
+    lee: {
+      tarjetas: [
+        { titulo: 'Un colador de números', texto: 'Criba quiere decir colador, como el que se usa para cernir la harina. Hace más de 2000 años, Eratóstenes, un sabio griego, inventó uno para separar los primos de los demás números.' },
+        { titulo: 'Tachar múltiplos', texto: 'Los múltiplos de 3 son 3, 6, 9, 12… Un múltiplo de un primo, distinto del propio primo, no puede ser primo: se tacha. El primo mismo se queda.' },
+        { titulo: 'Qué mirar', texto: 'Sube el último primo que tacha, de uno en uno, y cuenta cuántos números nuevos se apagan cada vez. Fíjate si cada primo nuevo apaga muchos números o pocos.' },
+      ],
+    },
     juega: {
       consigna: 'Elige hasta qué primo se tachan múltiplos. Los tachados se apagan; los primos ya usados se resaltan.',
       voz: 'Mira qué tacha cada primo nuevo.',
@@ -204,6 +248,27 @@
       ecuacion: [p, ' tacha desde ', { sup: [p, '2'] }, '   ·   ', 'se usan los ', p, ' ≤ ', { llave: ['√N'], nota: 'raíz del límite' }],
       condicion: 'los menores que p² ya fueron tachados por un primo más chico. Lo que queda sin tachar, menos el 1, son primos.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú», con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), N = r.ent(40, 400), PR = [2, 3, 5, 7, 11, 13, 17, 19, 23];
+        const ps = PR.slice(0, 8).filter(x => x * x <= N), c = ps[ps.length - 1], sig = PR[ps.length];
+        const raiz = Math.sqrt(N), exacta = Number.isInteger(raiz);
+        return {
+          enunciado: `Quieres hallar con la criba todos los primos de 1 a ${N}. ¿Hasta qué primo basta tachar múltiplos?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el último primo que todavía tacha algún número nuevo de la lista.' },
+            { tipo: 'datos', texto: `La lista va de 1 a ${N}. Los primeros primos son ${PR.slice(0, ps.length + 1).join(', ')}…` },
+            { tipo: 'regla', texto: 'Cada primo empieza a tachar en su cuadrado: los múltiplos más chicos ya los tachó un primo menor. Si el cuadrado pasa del límite, ese primo no tacha nada.' },
+            { tipo: 'cuentas', texto: `Elevo al cuadrado cada primo hasta pasar ${N}.`,
+              ecuacion: [ps.map(x => `${x}² = ${x * x}`).join(' · ') + `   ·   ${sig}² = ${sig * sig} > ${N}`] },
+            { tipo: 'sentido', texto: `La raíz de ${N} ${exacta ? 'es' : 'es más o menos'} ${f(raiz, 1)}: queda entre ${c} y ${sig}. Se tacha con los primos hasta la raíz, como dice la regla.`,
+              ecuacion: [`${c} ≤ √${N} < ${sig}`] },
+          ],
+          respuesta: `Basta tachar hasta el ${c}.`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const g = azar(s), N = g.ent(40, 400), ps = [2, 3, 5, 7, 11, 13, 17, 19].filter(x => x * x <= N), c = ps[ps.length - 1];
@@ -240,6 +305,15 @@
     titulo: 'Una sola factorización',
     temas: ['Teorema fundamental de la aritmética', 'Números PESI'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): partir en primos y escribir exponentes; PESI solo se nombra (Predice pregunta qué significa).
+    lee: {
+      tarjetas: [
+        { titulo: 'Desarmar un número', texto: 'Un número compuesto se puede partir en una multiplicación. 36 es 6 · 6, y cada 6 es 2 · 3. Cuando ya nada se puede partir, quedan solo primos: esa es la factorización de 36.',
+          ecuacion: ['36 = 2 · 2 · 3 · 3'] },
+        { titulo: 'Exponentes', texto: 'Si un primo se repite, se escribe una vez con un exponente que cuenta las veces: 2 · 2 = 2². Así, 36 = 2² · 3² se lee «dos al cuadrado por tres al cuadrado».' },
+        { titulo: 'Una sigla nueva', texto: 'En los exámenes aparece la sigla PESI, que quiere decir «primos entre sí». Antes de ver su regla, juega: cambia n y mira qué primos salen en la columna turquesa.' },
+      ],
+    },
     juega: {
       consigna: 'Elige n. La tabla lo divide siempre entre el menor primo posible hasta llegar a 1.',
       voz: 'La columna turquesa es la factorización.',
@@ -272,6 +346,48 @@
       texto: 'Teorema fundamental de la aritmética: todo entero mayor que 1 es producto de primos de una sola manera, salvo el orden. Dos números son PESI si no comparten primos.',
       ecuacion: [n_, ' = ', { llave: [{ sup: [p, ea] }], nota: 'potencia' }, ' · ', { sup: [q, eb] }, ' · …', '   ·   ', 'PESI ⇔ mcd = 1'],
       condicion: 'PESI es una propiedad de la pareja: dos compuestos pueden serlo, y dos números iguales mayores que 1 nunca lo son.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (factorizar o decidir PESI), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const nv = r.de([2, 4, 8, 3, 9, 6, 12]) * r.de([5, 7, 25, 35, 11]), fs = factores(nv), tabla = tablaFact(nv, true);
+          const suelto = fs.flatMap(([b, e]) => Array.from({ length: e }, () => b)).join(' · ');
+          const vuelta = fs.reduce((u, [b, e]) => u * b ** e, 1);
+          return {
+            enunciado: ['Escribe ', nO(nv), ' como producto de primos, con exponentes para los que se repiten.'],
+            dibujo: { datos: tabla, estado: { paso: 0 } },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la factorización de ', nO(nv), ': la multiplicación de primos que lo da.'] },
+              { tipo: 'datos', texto: ['El número es ', nO(nv), nv % 2 === 0 ? '. Es par, así que el 2 entra al menos una vez.' : '. Es impar, así que el 2 no entra.'] },
+              { tipo: 'regla', texto: 'Todo número mayor que 1 se parte en primos de una sola manera. Divido entre el menor primo posible hasta llegar a 1.' },
+              { tipo: 'cuentas', texto: `Divido ${tabla.filas.length} veces hasta llegar a 1. Junto los primos iguales con un exponente.`,
+                ecuacion: [nO(nv), ` = ${suelto} = `, { v: 'c-i', t: escribir(fs) }], dibujo: { datos: tabla, estado: { paso: tabla.filas.length } } },
+              { tipo: 'sentido', texto: `Multiplico de vuelta y sale ${vuelta}, el número del inicio. Y cada factor es primo: ya no se parte más.`,
+                ecuacion: [fs.map(([b, e]) => String(b ** e)).join(' · ') + ` = ${vuelta}`] },
+            ],
+            respuesta: [nO(nv), ' = ', { v: 'c-i', t: escribir(fs) }],
+          };
+        }
+        const pares = [[8, 15], [9, 16], [14, 25], [12, 35], [21, 22], [10, 21], [6, 15], [12, 18], [14, 21], [22, 33], [26, 39], [27, 49]];
+        const [av, bv] = pares[r.ent(0, pares.length - 1)], m = mcd(av, bv), si = m === 1;
+        const comunes = factores(av).map(x => x[0]).filter(x => bv % x === 0);
+        return {
+          enunciado: ['¿Son ', nO(av), ' y ', nO(bv), ' primos entre sí (PESI)?'],
+          dibujo: { datos: tablaPesi(av, bv), estado: { paso: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden saber si los dos números no comparten ningún factor primo.' },
+            { tipo: 'datos', texto: ['La pareja es ', nO(av), ' y ', nO(bv), '. Primero parto cada uno en primos.'] },
+            { tipo: 'regla', texto: 'Dos números son PESI cuando no tienen ningún primo en común; es decir, cuando su máximo común divisor es 1.' },
+            { tipo: 'cuentas', texto: si ? 'Comparo los primos de los dos: ninguno se repite.' : `Comparo los primos de los dos: los dos tienen el ${yLista(comunes)}.`,
+              ecuacion: [`${av} = ${escribir(factores(av))}   ·   ${bv} = ${escribir(factores(bv))}`], dibujo: { datos: tablaPesi(av, bv), estado: { paso: 1 } } },
+            { tipo: 'sentido', texto: si ? 'El máximo común divisor da 1: el único número que divide a los dos es el 1.' : `El máximo común divisor da ${m}, que divide exacto a los dos.`,
+              ecuacion: si ? ['mcd = 1'] : [`${av} = ${m} · ${av / m}   ·   ${bv} = ${m} · ${bv / m}`] },
+          ],
+          respuesta: si ? 'Sí: no comparten ningún primo.' : `No: los dos son múltiplos de ${m}.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -333,6 +449,15 @@
     titulo: 'Elegir exponentes cuenta divisores',
     temas: ['Cantidad, suma y producto de divisores'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): qué es un divisor y la potencia 0, sin dar la fórmula (a + 1)(b + 1) que pide Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Bolsas iguales', texto: 'En el mercado, 12 huevos se pueden repartir en bolsas iguales de 1, 2, 3, 4, 6 o 12 huevos sin que sobre ninguno. Esos números son los divisores de 12: lo dividen exacto.' },
+        { titulo: 'La potencia cero', texto: 'Todo número distinto de 0, elevado a 0, vale 1: 2⁰ = 1 y 3⁰ = 1. Por eso el 1 también se puede escribir como 2⁰ · 3⁰.',
+          ecuacion: ['2⁰ · 3⁰ = 1 · 1 = 1'] },
+        { titulo: 'Qué mirar', texto: 'Cambia a y b, y cuenta las columnas y las filas de la tabla. Cada número de adentro es un divisor de n. Anota cuántos salen cada vez y busca cómo se relacionan con a y b.' },
+      ],
+    },
     juega: {
       consigna: 'n = 2ᵃ · 3ᵇ. Elige a y b. Cada celda junta una potencia de 2 con una de 3: es un divisor.',
       voz: 'Cuenta columnas y filas; no olvides el exponente 0.',
@@ -371,6 +496,44 @@
       texto: 'Si n = pᵃ · qᵇ, cada divisor elige un exponente de 0 a a y otro de 0 a b. La suma multiplica las sumas de potencias.',
       ecuacion: [{ llave: ['d(', n_, ')'], nota: 'cantidad' }, ' = (', ea, ' + 1)(', eb, ' + 1)', '   ·   ', { llave: ['σ(', n_, ')'], nota: 'suma' }, ' = (1 + … + ', { sup: [p, ea] }, ') · (1 + … + ', { sup: [q, eb] }, ')'],
       condicion: 'p y q son primos distintos. El producto de todos los divisores es n elevado a d(n)/2.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (cantidad o suma de divisores), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), a = r.ent(1, 4), b = r.ent(1, 3), c = r.ent(0, 1), nv = 2 ** a * 3 ** b * 5 ** c;
+        const fs = factores(nv), fsT = escribir(fs), ds = divisores(nv);
+        const exps = ['Los exponentes son '];
+        fs.forEach(([pb, e], i) => exps.push({ v: 'c-h', t: String(e) }, ` para el ${pb}`, i < fs.length - 2 ? ', ' : i === fs.length - 2 ? ' y ' : '.'));
+        if (s % 2 === 0) {
+          const d = (a + 1) * (b + 1) * (c + 1);
+          return {
+            enunciado: ['¿Cuántos divisores positivos tiene ', nO(nv), ` = ${fsT}?`],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden cuántos números dividen exacto a ', nO(nv), ', contando el 1 y el propio número.'] },
+              { tipo: 'datos', texto: exps },
+              { tipo: 'regla', texto: 'Cada divisor elige cuántas veces entra cada primo: desde 0 veces hasta su exponente. Las elecciones de los distintos primos se multiplican.' },
+              { tipo: 'cuentas', texto: 'Sumo 1 a cada exponente, por la elección de 0 veces, y multiplico.',
+                ecuacion: [fs.map(([, e]) => `(${e} + 1)`).join(''), ' = ', { v: 'c-d', t: String(d) }] },
+              { tipo: 'sentido', texto: `Si los cuento uno por uno, del 1 al ${nv}, también salen ${ds.length}.`, ecuacion: ds.length <= 12 ? [ds.join(', ')] : undefined },
+            ],
+            respuesta: [nO(nv), ' tiene ', { v: 'c-d', t: String(d) }, ' divisores.'],
+          };
+        }
+        const sg = (pp, e) => (pp ** (e + 1) - 1) / (pp - 1), sigma = sg(2, a) * sg(3, b) * (c ? 6 : 1);
+        const suma = ds.reduce((u, z) => u + z, 0);
+        return {
+          enunciado: ['¿Cuánto suman los divisores positivos de ', nO(nv), ` = ${fsT}?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la suma de todos los divisores de ', nO(nv), ', con el 1 y el propio número.'] },
+            { tipo: 'datos', texto: exps },
+            { tipo: 'regla', texto: 'Cada divisor junta una potencia de cada primo. Si multiplico las sumas de potencias de cada primo, salen todos los divisores, sumados una vez cada uno.' },
+            { tipo: 'cuentas', texto: 'Sumo las potencias de cada primo, desde la potencia 0, y multiplico esas sumas.',
+              ecuacion: [fs.map(([pb, e]) => `(${Array.from({ length: e + 1 }, (_, i) => pb ** i).join(' + ')})`).join(' · ') + ` = ${fs.map(([pb, e]) => sg(pb, e)).join(' · ')} = `, { v: 'c-d', t: f(sigma) }] },
+            { tipo: 'sentido', texto: `Sumando la lista de divisores uno por uno también da ${f(suma)}. Y pasa de ${nv}, porque incluye al propio ${nv}.` },
+          ],
+          respuesta: ['Los divisores de ', nO(nv), ' suman ', { v: 'c-d', t: f(sigma) }, '.'],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -419,6 +582,14 @@
     titulo: 'φ(n) cuenta los coprimos',
     temas: ['Función de Euler'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): qué es no compartir primos y cómo se lee φ(n), sin la fórmula del producto.
+    lee: {
+      tarjetas: [
+        { titulo: 'Puestos numerados', texto: 'Imagina los puestos de una feria en Puno, numerados del 1 al 15. ¿Cuáles no comparten ningún factor primo con 15 = 3 · 5? El 2 y el 4 cumplen; el 3, el 5 y el 6, no.' },
+        { titulo: 'La letra fi', texto: 'Leonhard Euler, un matemático suizo, usó la letra griega φ (fi) para este conteo: φ(n) es cuántos números de 1 a n no comparten ningún primo con n. Se lee «fi de n».' },
+        { titulo: 'Qué mirar', texto: 'Cambia n y cuenta las celdas resaltadas. Compara un n primo, como 13 o 17, con uno que tiene varios primos, como 24 o 30. ¿Cuál deja más celdas apagadas?' },
+      ],
+    },
     juega: {
       consigna: 'Elige n. Se resaltan los números de 1 a n que no comparten ningún primo con n.',
       voz: 'Compara un n primo con un n compuesto.',
@@ -456,6 +627,32 @@
       ecuacion: [{ llave: ['φ(', n_, ')'], nota: 'coprimos' }, ' = ', n_, ' · (1 − ', { frac: ['1', { sub: [p, '1'] }] }, ') · (1 − ', { frac: ['1', { sub: [p, '2'] }] }, ') · …'],
       condicion: 'se usan los primos distintos de n, cada uno una vez. Si n es primo, φ(n) = n − 1.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú», con otras semillas. La grilla sale si n ≤ 30 (cabe).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), nv = r.de([10, 14, 15, 18, 20, 21, 24, 28, 30, 36, 40, 45, 50, 60, 72]), v = phi(nv);
+        const ps = factores(nv).map(x => x[0]), tramos = [];
+        let x = nv;
+        for (const pp of ps) { const y = x / pp * (pp - 1); tramos.push(`${x} · (1 − 1/${pp}) = ${y}`); x = y; }
+        const cabe = nv <= 30, g0 = grillaPhi(nv);
+        const sinMarcar = { datos: Object.assign({}, g0, { filas: g0.filas.map(fl => fl.map(c => (c ? { t: c.t } : ''))), alt: `Números del 1 al ${nv}` }), estado: {} };
+        const coprimos = Array.from({ length: nv }, (_, i) => i + 1).filter(k => mcd(k, nv) === 1);
+        return {
+          enunciado: ['¿Cuánto vale φ(', nO(nv), '), la cantidad de números de 1 a ', nO(nv), ' que no comparten ningún primo con él?'],
+          dibujo: cabe ? sinMarcar : undefined,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden cuántos números de 1 a ', nO(nv), ' no tienen ningún factor primo en común con ', nO(nv), '.'] },
+            { tipo: 'datos', texto: [nO(nv), ` = ${escribir(factores(nv))}: sus primos distintos son ${yLista(ps)}.`] },
+            { tipo: 'regla', texto: 'De cada p números seguidos, uno es múltiplo de p. Cada primo distinto de n deja la fracción (1 − 1/p), y se usa una sola vez.' },
+            { tipo: 'cuentas', texto: 'Aplico la fracción de cada primo, uno detrás de otro.',
+              ecuacion: [tramos.join('   →   ')], dibujo: cabe ? { datos: g0, estado: {} } : undefined },
+            { tipo: 'sentido', texto: cabe ? `En la grilla quedan ${coprimos.length} números resaltados. Contados uno por uno, cuadra.` : `Si reviso uno por uno los números de 1 a ${nv}, también quedan ${v} sin primos en común.`,
+              ecuacion: coprimos.length <= 12 ? [coprimos.join(', ')] : undefined },
+          ],
+          respuesta: ['φ(', nO(nv), ') = ', { v: 'c-d', t: String(x) }],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const g = azar(s), nv = g.de([10, 14, 15, 18, 20, 21, 24, 28, 30, 36, 40, 45, 50, 60, 72]), v = phi(nv);
@@ -492,6 +689,15 @@
     titulo: 'Fermat y Wilson con un primo',
     temas: ['Teoremas de Fermat y Wilson'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): restos y factorial, sin decir qué resto deja la potencia (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Restos que vuelven', texto: 'Si hoy es domingo de feria en Juliaca, dentro de 14 días vuelve a ser domingo: 14 deja resto 0 entre 7. Al dividir entre 7 solo hay siete restos posibles, del 0 al 6.' },
+        { titulo: 'Factorial', texto: 'El producto 1 · 2 · 3 · … · a se escribe a! y se lee «a factorial». Crece muy rápido, pero su resto entre p se puede ir sacando paso a paso, sin la cuenta completa.',
+          ecuacion: ['4! = 1 · 2 · 3 · 4 = 24'] },
+        { titulo: 'Qué mirar', texto: 'Elige un primo p. La columna del medio da el resto de a elevado a p − 1; la última, el resto del factorial. Recorre las dos columnas y prueba los tres primos.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un primo p. La tabla da el resto de aᵖ⁻¹ y del producto 1 · 2 · … · a entre p.',
       voz: 'Mira la columna del medio y la última fila.',
@@ -525,6 +731,43 @@
       texto: 'Si p es primo y no divide a a, aᵖ⁻¹ deja resto 1 (teorema de Fermat). Además, (p − 1)! deja p − 1 (teorema de Wilson).',
       ecuacion: [{ llave: [{ sup: [ea, [p, ' − 1']] }, ' ≡ 1'], nota: 'Fermat' }, '  (mód ', p, ')', '   ·   ', { llave: ['(', p, ' − 1)! ≡ −1'], nota: 'Wilson' }, '  (mód ', p, ')'],
       condicion: 'Wilson vale solo si p es primo. Euler generaliza Fermat: a elevado a φ(n) ≡ 1 si mcd(a, n) = 1.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (Wilson o Fermat), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), pp = r.de([7, 11, 13, 17, 19, 23]), tipo = s % 3, P = { v: 'c-i', t: String(pp) };
+        if (tipo === 2) {
+          let fac = 1, entero = 1; for (let k = 1; k <= pp - 2; k++) { fac = (fac * k) % pp; entero *= k; }
+          return {
+            enunciado: ['¿Qué resto deja ', `(${pp - 2})!`, ' al dividirlo entre ', P, '?'],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el resto de multiplicar 1 · 2 · … · ', String(pp - 2), ' y dividir entre ', P, '.'] },
+              { tipo: 'datos', texto: [P, ` es primo. A este producto le falta un factor para ser (${pp - 1})!: el ${pp - 1}.`] },
+              { tipo: 'regla', texto: 'Si p es primo, el producto de 1 hasta p − 1 deja resto p − 1, que hace de −1. Es el teorema de Wilson.' },
+              { tipo: 'cuentas', texto: `Escribo (${pp - 1})! con el factor que falta. Como ${pp - 1} deja −1, el otro factor tiene que dejar 1.`,
+                ecuacion: [`(${pp - 1})! = ${pp - 1} · (${pp - 2})!   →   −1 ≡ (−1) · (${pp - 2})!   →   (${pp - 2})! ≡ 1  (mód ${pp})`] },
+              { tipo: 'sentido', texto: pp <= 11 ? `Con la cuenta completa: (${pp - 2})! = ${f(entero)}, y al dividir entre ${pp} sobra ${fac}.` : `Multiplicando de uno en uno y quedándome solo con el resto, también sale ${fac}.`,
+                ecuacion: pp <= 11 ? [`${f(entero)} = ${pp} · ${f(Math.floor(entero / pp))} + ${entero % pp}`] : undefined },
+            ],
+            respuesta: `Deja resto ${fac}.`,
+          };
+        }
+        const a = r.ent(2, pp - 1), e = r.ent(30, 200), v = powmod(a, e, pp), red = e % (pp - 1), q = Math.floor(e / (pp - 1)), vr = powmod(a, red, pp);
+        const chica = red >= 2 && a ** red >= pp && a ** red < 1e6;
+        return {
+          enunciado: ['¿Qué resto deja ', { sup: [nO(a), String(e)] }, ' al dividirlo entre ', P, '?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el resto de ', nO(a), ` elevado a ${e} entre `, P, ', sin calcular la potencia entera.'] },
+            { tipo: 'datos', texto: [P, ' es primo y ', nO(a), ` no es múltiplo de ${pp}. El exponente es ${e}.`] },
+            { tipo: 'regla', texto: 'Si p es primo y no divide a la base, la base elevada a p − 1 deja resto 1 (Fermat). Cada bloque de p − 1 en el exponente vale 1.' },
+            { tipo: 'cuentas', texto: `Divido el exponente entre ${pp - 1}: ${q === 1 ? 'el único bloque deja' : `los ${q} bloques dejan`} 1 y queda el exponente ${red}.`,
+              ecuacion: [`${e} = ${pp - 1} · ${q} + ${red}   →   `, { sup: [String(a), String(e)] }, ' ≡ ', { sup: [String(a), String(red)] }, ` ≡ ${vr}  (mód ${pp})`] },
+            { tipo: 'sentido', texto: `Multiplicando por ${a} una y otra vez, ${e} veces, y quedándome con el resto, también sale ${v}.`,
+              ecuacion: chica ? [{ sup: [String(a), String(red)] }, ` = ${f(a ** red)} = ${pp} · ${f(Math.floor(a ** red / pp))} + ${a ** red % pp}`] : undefined },
+          ],
+          respuesta: `Deja resto ${v}.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
