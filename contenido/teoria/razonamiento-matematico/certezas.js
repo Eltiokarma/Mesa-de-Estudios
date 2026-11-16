@@ -70,6 +70,14 @@
     titulo: 'Prepara la peor suerte',
     temas: ['Peor caso', 'Extracción de objetos'],
     pieza: 'rm-fichas',
+    // Lee (fase 2): extracción, suerte contra certeza y qué mirar; no cuenta la meta «3 rojas» (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Sacar sin mirar', texto: 'En una kermés del colegio, sacas fichas de una urna con los ojos cerrados. Eso es una extracción: no eliges qué sale y lo que sacas no vuelve.' },
+        { titulo: 'Suerte o certeza', texto: 'Con buena suerte, las primeras fichas ya sirven. Pero «con certeza» pide más: que la meta se cumpla salga lo que salga, en cualquier orden.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, la figura saca las fichas con la peor suerte posible, una por una. Fíjate en qué ficha la meta deja de depender de la suerte.' },
+      ],
+    },
     juega: {
       consigna: 'Se sacan fichas sin mirar. La meta: dos del mismo color. Avanza la peor suerte posible, ficha por ficha, hasta que la meta sea obligada.',
       voz: 'La peor suerte evita repetir color mientras puede.',
@@ -106,6 +114,48 @@
       texto: 'Para tener certeza se imagina la peor extracción: se saca todo lo que se pueda sin cumplir la meta. Una ficha más obliga a cumplirla.',
       ecuacion: [Nn, ' = ', { llave: ['peor caso'], nota: 'sin cumplir', color: 'c-h' }, ' + ', { llave: ['1'], nota: 'la que obliga', color: 'c-o' }],
       condicion: 'se saca sin mirar y sin devolver, y la urna tiene suficientes fichas para que la meta sea posible.',
+    },
+    // Así se resuelve (fase 2): la misma urna y las mismas cuentas de «Ahora tú», con la semilla + 900.
+    resuelve: {
+      pieza: 'rm-fichas',
+      generar(s) {
+        const t = s + 900, r = azar(t), cu = { R: r.ent(3, 8), A: r.ent(3, 8), V: r.ent(3, 8) }, tipo = t % 3;
+        const tot = cu.R + cu.A + cu.V, colores = ['R', 'A', 'V'];
+        const urnaTxt = `Una urna tiene ${cu.R} rojas, ${cu.A} azules y ${cu.V} verdes.`;
+        let bien, meta, cuenta, ec, seq;
+        if (tipo === 0) {
+          const kk = r.ent(2, 3), tope = colores.map(c => Math.min(cu[c], kk - 1));
+          bien = tope.reduce((m, x) => m + x, 0) + 1; meta = `${kk} del mismo color`;
+          cuenta = `Sin cumplir, saco hasta ${kk - 1} de cada color.`;
+          ec = `${tope.join(' + ')} = ${bien - 1}`;
+          seq = []; for (let v = 0; v < kk - 1; v++) for (const c of colores) if (v < cu[c]) seq.push(c); seq.push('R');
+        } else if (tipo === 1) {
+          const c = colores[r.ent(0, 2)], kk = r.ent(2, cu[c]), otros = colores.filter(x => x !== c);
+          bien = tot - cu[c] + kk; meta = `${kk} ${COL[c].nombre[1]}`;
+          cuenta = `Sin cumplir, saco todas las que no son ${COL[c].nombre[1]} y ${kk - 1} ${kk - 1 === 1 ? COL[c].nombre[0] : COL[c].nombre[1]}.`;
+          ec = `${otros.map(x => cu[x]).join(' + ')} + ${kk - 1} = ${bien - 1}`;
+          seq = otros.flatMap(x => Array(cu[x]).fill(x)).concat(Array(kk).fill(c));
+        } else {
+          const orden = colores.slice().sort((x, y) => cu[y] - cu[x]), menos = orden[2];
+          bien = tot - cu[menos] + 1; meta = 'una de cada color';
+          cuenta = `Sin cumplir, saco todas las de los dos colores que más hay: ${COL[orden[0]].nombre[1]} y ${COL[orden[1]].nombre[1]}.`;
+          ec = `${cu[orden[0]]} + ${cu[orden[1]]} = ${bien - 1}`;
+          seq = orden.slice(0, 2).flatMap(x => Array(cu[x]).fill(x)).concat([menos]);
+        }
+        return {
+          enunciado: `${urnaTxt} ¿Cuántas hay que sacar, como mínimo, para tener con certeza ${meta}?`,
+          dibujo: { datos: urna(cu, []), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden el menor número de fichas que asegura ${meta}, aunque la suerte juegue en contra.` },
+            { tipo: 'datos', texto: `En la urna hay ${tot} fichas: ${cu.R} rojas, ${cu.A} azules y ${cu.V} verdes.`, ecuacion: [`${cu.R} + ${cu.A} + ${cu.V} = ${tot}`] },
+            { tipo: 'regla', texto: 'Imagino la peor suerte: saco todas las fichas que pueda sin cumplir la meta. La ficha siguiente ya obliga a cumplirla.' },
+            { tipo: 'cuentas', texto: `${cuenta} La que sigue obliga.`, ecuacion: [ec, '   →   ', Nn, ` = ${bien - 1} + 1 = ${bien}`],
+              dibujo: { datos: urna(cu, seq, { ultima: true, pie: `${bien - 1} sin cumplir + 1 que obliga` }), estado: {} } },
+            { tipo: 'sentido', texto: `Con ${bien - 1} la peor suerte todavía no cumple; con ${bien}, sí. Y ${bien} no pasa de las ${tot} fichas de la urna.` },
+          ],
+          respuesta: [Nn, ` = ${bien} fichas`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-fichas',
@@ -173,6 +223,15 @@
     titulo: 'Más objetos que casilleros',
     temas: ['Extracción de objetos', 'Peor caso'],
     pieza: 'rm-fichas',
+    // Lee (fase 2): casilleros y reparto parejo; no hace la cuenta de los 12 meses (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Objetos y casilleros', texto: 'Muchos problemas de certeza son repartos. Los casilleros son los lugares posibles: los meses del año, los días de la semana o los salones de un colegio. Cada objeto cae en uno.' },
+        { titulo: 'Personas que caen en un mes', texto: 'Si hablamos de cumpleaños, cada persona es un objeto y cae en el casillero de su mes. Nadie elige dónde cae: se piensa en el reparto más desfavorable.' },
+        { titulo: 'Lo más parejo', texto: 'Repartir lo más parejo es llenar de a uno: primero un objeto en cada casillero, después el segundo en cada uno, y así. En el juego hay 4 casilleros.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Agrega objetos uno por uno. Fíjate con cuántos el casillero más lleno pasa a tener uno más.' },
+      ],
+    },
     juega: {
       consigna: 'Reparte objetos en 4 casilleros de la forma más pareja posible. Agrega objetos y mira cuánto tiene, como mínimo, el casillero más lleno.',
       voz: 'El quinto objeto ya no encuentra casillero vacío.',
@@ -207,6 +266,29 @@
       texto: 'Si N objetos se reparten en k casilleros, alguno recibe al menos N/k redondeado hacia arriba. Para obligar a m en uno, se necesitan k(m − 1) + 1.',
       ecuacion: [Nn, ' = ', { llave: [k], nota: 'casilleros', color: 'c-d' }, { llave: ['(m − 1)'], nota: 'meta menos uno', color: 'c-o' }, ' + 1'],
       condicion: 'cada objeto va a un solo casillero y no importa en cuál; se habla de algún casillero, no de uno elegido.',
+    },
+    // Así se resuelve (fase 2): los mismos casilleros y la misma cuenta k(m − 1) + 1 de «Ahora tú», con la semilla + 900.
+    resuelve: {
+      pieza: 'rm-fichas',
+      generar(s) {
+        const t = s + 900, r = azar(t), [cosa, kk] = [['meses', 12], ['días de la semana', 7], ['colores de polo (5)', 5], ['salones (4)', 4]][t % 4], m = r.ent(2, 5);
+        const nombre = cosa.replace(/ \(\d+\)/, ''), lleno = kk * (m - 1), bien = lleno + 1, vis = Math.min(kk, 5);
+        const pie = n => (kk > vis ? `${n} · se ven ${vis} de ${kk}` : n);
+        return {
+          enunciado: `Con ${kk} ${nombre} posibles, ¿cuántas personas hacen falta, como mínimo, para asegurar que ${m} coincidan en uno de ellos?`,
+          dibujo: { datos: palomar(0, vis, { pie: pie(`${kk} casilleros`) }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden el menor número de personas que asegura ${m} en un mismo casillero, sin importar en cuál.` },
+            { tipo: 'datos', texto: `Los ${kk} ${nombre} son ${kk} casilleros; cada persona cae en uno. La meta es ${m}.` },
+            { tipo: 'regla', texto: 'Peor caso: lleno todos los casilleros con uno menos que la meta. Así nadie cumple todavía; la persona siguiente obliga.' },
+            { tipo: 'cuentas', texto: `En cada casillero caben ${m - 1} sin cumplir la meta. Después llega una persona más.`,
+              ecuacion: [`${kk} · ${m - 1} = ${lleno}`, '   →   ', Nn, ` = ${lleno} + 1 = ${bien}`],
+              dibujo: { datos: palomar(vis * (m - 1) + 1, vis, { ultima: true, pie: pie(`${lleno} + 1`) }), estado: {} } },
+            { tipo: 'sentido', texto: `Con ${lleno} personas puede haber justo ${m - 1} en cada casillero: no basta. Con ${bien}, alguno llega a ${m}.` },
+          ],
+          respuesta: [Nn, ` = ${bien} personas`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-fichas',
@@ -254,6 +336,14 @@
     titulo: 'Identificar llaves en el peor caso',
     temas: ['Identificación de objetos'],
     pieza: 'rm-tablero',
+    // Lee (fase 2): identificar, qué es una prueba y cómo leer el cuadro; no suma las pruebas (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Identificar', texto: 'Imagina un manojo de llaves sin etiqueta y varios candados, y cada llave abre uno solo. Identificar es saber con certeza qué llave abre cada candado.' },
+        { titulo: 'Una prueba', texto: 'Una prueba es meter una llave en un candado: abre o no abre. En el cuadro del juego, las filas son llaves (L1, L2…) y las columnas, candados (C1, C2…).' },
+        { titulo: 'Qué mirar al jugar', texto: 'Cada ✗ es una prueba que falla. Cambia cuántas llaves hay, cuenta las ✗ de cada fila y mira cómo cambia ese número de una fila a la siguiente.' },
+      ],
+    },
     juega: {
       consigna: 'n llaves y n candados; cada llave abre uno. En el peor caso, cada llave falla en todos los libres menos uno. Cuenta las ✗.',
       voz: 'La última opción no se prueba: se deduce.',
@@ -288,6 +378,27 @@
       texto: 'Para identificar n llaves con n candados, en el peor caso cada llave falla en todos los candados libres menos uno, que se deduce.',
       ecuacion: [{ llave: ['(n − 1) + … + 1'], nota: 'fallas posibles', color: 'c-h' }, ' = ', { frac: ['n(n − 1)', '2'] }],
       condicion: 'cada llave abre exactamente un candado y un candado identificado ya no se vuelve a probar.',
+    },
+    // Así se resuelve (fase 2): la misma cuenta n(n − 1)/2 de «Ahora tú» (pruebas()), con la semilla + 900.
+    resuelve: {
+      pieza: 'rm-tablero',
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(5, 15), bien = pruebas(n), vis = Math.min(n, 5);
+        return {
+          enunciado: `Hay ${n} llaves y ${n} candados; cada llave abre uno solo. ¿Cuántas pruebas aseguran saber qué llave abre cada candado?`,
+          dibujo: { datos: llaves(vis, { nota: `Así con ${vis} llaves` }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuántas pruebas aseguran identificar las ${n} llaves, aun con la peor suerte.` },
+            { tipo: 'datos', texto: `${n} llaves y ${n} candados. Cada llave abre un solo candado.` },
+            { tipo: 'regla', texto: 'Peor caso: cada llave falla en todos los candados libres menos uno. Ese último no se prueba: se deduce. El candado abierto sale del juego.' },
+            { tipo: 'cuentas', texto: `La llave 1 falla hasta ${n - 1} veces, la 2 hasta ${n - 2}, y así hasta la penúltima, que falla 1 vez.`,
+              ecuacion: [`${n - 1} + ${n - 2} + … + 1 = `, { frac: [`${n} · ${n - 1}`, '2'] }, ` = ${bien}`],
+              dibujo: { datos: llaves(vis, { nota: vis < n ? `Con ${vis}: ${pruebas(vis)} · con ${n}: ${bien}` : `Pruebas: ${bien}` }), estado: {} } },
+            { tipo: 'sentido', texto: `Probar todas con todas serían ${n * n}. Son menos porque cada candado abierto y cada última opción ya no se prueban.` },
+          ],
+          respuesta: `${bien} pruebas`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-tablero',
@@ -475,6 +586,9 @@
       { termino: 'redondear hacia arriba', simbolo: '⌈ ⌉', formas: ['redondeado hacia arriba', 'redondear hacia arriba'],
         def: 'Tomar el entero siguiente si hay decimales; si la división es exacta, el número queda igual.',
         ejemplo: '9 entre 4 da 2,25, que sube a 3.', ver: ['principio del palomar'] },
+      { termino: 'identificar', formas: ['identificar', 'identifica', 'identificación'],
+        def: 'Saber con certeza qué objeto corresponde a cada otro, por ejemplo qué llave abre cada candado.',
+        ejemplo: 'Con 3 llaves y 3 candados, en el peor caso se identifican con 3 pruebas.', ver: ['peor caso', 'deducir'] },
       { termino: 'deducir', formas: ['deducir', 'deduce', 'deducen'],
         def: 'Sacar una conclusión segura de lo que ya se sabe, sin tener que probarla.',
         ejemplo: 'Si 3 de 4 candados ya tienen su llave, la última abre el cuarto.' },

@@ -64,6 +64,16 @@
     titulo: 'La suma mágica sale del total',
     temas: ['Cuadrados mágicos'],
     pieza: 'rm-tablero',
+    // Lee (fase 2): qué es un cuadrado mágico, la suma mágica, los números seguidos y qué mirar. No dice cómo se
+    // halla la suma ni el centro (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un tablero que cuadra', texto: 'Un cuadrado mágico es un tablero de números en el que cada fila, cada columna y cada diagonal suman lo mismo. Se conocen desde hace siglos y siguen en los exámenes de admisión.' },
+        { titulo: 'La suma mágica', texto: 'Lo que suma cada línea se llama suma mágica. Un tablero de 4 × 4 tiene 4 filas, 4 columnas y 2 diagonales: diez líneas que dan el mismo número.' },
+        { titulo: 'Números seguidos', texto: 'Casi siempre se usan números seguidos, una vez cada uno: del 1 al 9 en el 3 × 3, del 1 al 16 en el 4 × 4. Si se suman todos, se obtiene el total del tablero.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego cambias desde qué número empieza el 4 × 4. Compara la suma de una fila con el total de los 16 números.' },
+      ],
+    },
     juega: {
       consigna: 'Un cuadrado mágico 4 × 4 usa 16 números seguidos, una vez cada uno. Cambia desde qué número empieza y mira la suma de cada fila.',
       voz: 'Compara la suma de una fila con el total de los 16.',
@@ -102,6 +112,34 @@
       texto: 'En un cuadrado mágico, cada fila se lleva la misma parte del total: se divide la suma de todos los números entre el número de filas.',
       ecuacion: [{ llave: [S], nota: 'cada fila', color: 'c-o' }, ' = ', { frac: [Tt, 'n'] }, '   ·   ', 'de 1 a ', { sup: ['n', '2'] }, ': ', S, ' = ', { frac: [['n(', { sup: ['n', '2'] }, ' + 1)'], '2'] }],
       condicion: 'cada número se usa una vez. «Centro = S / 3» vale solo en el 3 × 3, donde cuatro líneas pasan por el centro.',
+    },
+    // Así se resuelve (fase 2): el 3 × 3 en progresión de «Ahora tú» (mismos rangos y cuentas), con otra semilla.
+    // La figura final es el cuadrado de Lo Shu pasado a esos números, el mismo que arma la mesa del laboratorio.
+    resuelve: {
+      pieza: 'rm-tablero',
+      generar(s) {
+        const r = azar(s + 900), a = r.ent(1, 12), d = r.ent(1, 3), pide = s % 2 ? 'centro' : 'suma';
+        const nums = Array.from({ length: 9 }, (_, k) => a + d * k), T = suma(nums), Sm = T / 3, cen = Sm / 3;
+        const lleno = tableroMagico({ a, d }), vacio = { datos: cuadrado([[null, null, null], [null, null, null], [null, null, null]], { nota: `Números del ${a} al ${nums[8]}` }), estado: {} };
+        const pasos = [
+          { tipo: 'pide', texto: pide === 'suma' ? 'Piden la suma de cada fila: la suma mágica.' : 'Piden el número que va en la casilla del centro.' },
+          { tipo: 'datos', texto: `Son nueve números, del ${a} al ${nums[8]}, de ${d} en ${d}. Sumo todos para tener el total.`,
+            ecuacion: [Tt, ` = ${nums[0]} + ${nums[1]} + … + ${nums[8]} = ${T}`] },
+          { tipo: 'regla', texto: 'Las tres filas usan cada número una sola vez y suman lo mismo. Entonces cada fila se lleva la tercera parte del total.' },
+        ];
+        if (pide === 'suma') pasos.push(
+          { tipo: 'cuentas', texto: 'Reparto el total entre las tres filas.', ecuacion: [S, ` = ${T} ÷ 3 = ${Sm}`], dibujo: { datos: cuadrado(lleno, { sumas: 0 }), estado: {} } },
+          { tipo: 'sentido', texto: `Comprueba: tres filas de ${Sm} dan ${3 * Sm}, que es el total. En el tablero, cada fila suma ${Sm}.` });
+        else pasos.push(
+          { tipo: 'cuentas', texto: `Cada fila suma ${T} ÷ 3 = ${Sm}. Por el centro pasan 4 líneas: cubren las nueve casillas y el centro tres veces más.`,
+            ecuacion: [`4 · ${Sm} = ${T} + 3`, c, '  ⇒  ', c, ` = ${cen}`], dibujo: { datos: cuadrado(lleno, { centro: true, sumas: 0 }), estado: {} } },
+          { tipo: 'sentido', texto: `Comprueba: ${cen} es justo el número del medio de la lista, el quinto. Y es la tercera parte de ${Sm}.` });
+        return {
+          enunciado: `Un cuadrado mágico 3 × 3 usa una vez cada número: ${nums.join(', ')}. ¿Cuánto ${pide === 'suma' ? 'suma cada fila' : 'vale la casilla del centro'}?`,
+          dibujo: vacio, pasos,
+          respuesta: pide === 'suma' ? [S, ` = ${Sm}`] : [c, ` = ${cen}`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-tablero',
@@ -168,6 +206,16 @@
     titulo: 'Los vértices cuentan dos veces',
     temas: ['Arreglos en polígonos'],
     pieza: 'rm-plano',
+    // Lee (fase 2): el acertijo del triángulo, esquinas y lados, y qué anotar. No dice que las esquinas cuentan dos
+    // veces ni cuál es la mayor suma del cuadrado (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un acertijo de examen', texto: 'Aparece mucho: un triángulo con casillas en las esquinas y a mitad de cada lado. Hay que poner números, sin repetir ninguno, para que los tres lados sumen lo mismo.' },
+        { titulo: 'Esquinas y lados', texto: 'Cada lado tiene tres casillas: dos esquinas y la del medio. La suma por lado es lo que dan esas tres. En el acertijo, debe ser igual en los tres lados.' },
+        { titulo: 'Probar con orden', texto: 'Probar al azar toma mucho tiempo. Ayuda anotar dos números: cuánto suman todos los números del acertijo y cuánto suman los que pusiste en las esquinas.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego eliges qué números van en las esquinas rojas. Mira cómo cambia la suma por lado cuando las esquinas son grandes o chicas.' },
+      ],
+    },
     juega: {
       consigna: 'Los números del 1 al 6 van en el triángulo y cada lado debe sumar lo mismo. Elige qué números van en las esquinas.',
       voz: 'Fíjate en la suma de las esquinas y en la suma por lado.',
@@ -200,6 +248,29 @@
       texto: 'Al sumar todos los lados de un polígono, los números de las esquinas aparecen dos veces. Eso fija la suma por lado y cuáles son posibles.',
       ecuacion: ['lados · ', S, ' = ', { llave: [Tt], nota: 'total', color: 'c-d' }, ' + ', { llave: [Vv], nota: 'esquinas', color: 'c-h' }],
       condicion: 'cada número se usa una vez, cada esquina está en dos lados y la suma por lado tiene que ser entera.',
+    },
+    // Así se resuelve (fase 2): el triángulo de «Ahora tú» (mismos números y el mismo arregloTri), con otra semilla.
+    resuelve: {
+      pieza: 'rm-plano',
+      generar(s) {
+        const r = azar(s + 900), a0 = r.ent(1, 5), nums = [0, 1, 2, 3, 4, 5].map(k => a0 + k), Tn = suma(nums);
+        let V = null, A = null;
+        while (!A) { V = r.barajar(nums).slice(0, 3).sort((p, q) => p - q); A = arregloTri(V, nums); }
+        const Vs = suma(V), bien = (Tn + Vs) / 3;
+        return {
+          enunciado: `Los números del ${a0} al ${a0 + 5} van en un triángulo, con ${V.join(', ')} en las esquinas. Si cada lado suma lo mismo, ¿cuánto suma cada lado?`,
+          dibujo: { datos: dibujoTri({ v: V, m: ['', '', ''], S: 0 }, { pie: ' ' }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la suma de cada lado, que es la misma en los tres.' },
+            { tipo: 'datos', texto: `Los seis números suman ${Tn}. Las esquinas son ${V.join(', ')} y suman ${Vs}.`, ecuacion: [Tt, ` = ${Tn}   ·   `, Vv, ` = ${Vs}`] },
+            { tipo: 'regla', texto: 'Si sumo los tres lados juntos, cada número entra una vez, pero cada esquina entra dos veces, porque está en dos lados.' },
+            { tipo: 'cuentas', texto: `Los tres lados suman ${Tn} más las esquinas otra vez. Divido entre los 3 lados.`,
+              ecuacion: ['3', S, ` = ${Tn} + ${Vs} = ${Tn + Vs}  ⇒  `, S, ` = ${bien}`], dibujo: { datos: dibujoTri(A), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba un lado del dibujo: ${A.v[0]} + ${A.m[0]} + ${A.v[1]} = ${A.v[0] + A.m[0] + A.v[1]}. Los otros dos lados también dan ${bien}.` },
+          ],
+          respuesta: [S, ` = ${bien}`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-plano',
@@ -263,6 +334,16 @@
     titulo: 'Repartir en dos sumas iguales',
     temas: ['Distribución de números con condiciones'],
     pieza: 'rm-fichas',
+    // Lee (fase 2): repartir parejo, total y mitad, par e impar, y qué anotar. No dice que el total par no basta
+    // (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Repartir parejo', texto: 'Dos hermanos se reparten sacos de papa de 1, 2, 3… kilos en la feria de Juliaca, sin abrirlos. ¿Puede llevar cada uno el mismo peso? Es repartir números en dos grupos de igual suma.' },
+        { titulo: 'Total y mitad', texto: 'Si los dos grupos suman igual, cada uno se lleva la mitad del total. Por eso conviene empezar sumando todos los números.' },
+        { titulo: 'Par e impar', texto: 'Un número es par si se parte en dos enteros iguales, como 14 = 7 + 7. Uno impar, como 9, no se parte así: quedaría 4,5.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego cambias hasta qué número se reparte. Anota en qué casos sale el reparto y si el total era par o impar.' },
+      ],
+    },
     juega: {
       consigna: 'Se reparten los números del 1 al n en dos grupos que sumen lo mismo. Cambia n y mira cuándo se puede.',
       voz: 'Mira si el total es par o impar.',
@@ -298,6 +379,37 @@
       texto: 'Para repartir en dos grupos de igual suma, el total debe ser par y cada grupo suma la mitad. Además, esa mitad se tiene que poder armar con los números.',
       ecuacion: ['cada grupo = ', { frac: [Tt, '2'] }],
       condicion: 'el total par es necesario pero no suficiente: hay que mostrar un reparto que cumpla.',
+    },
+    // Así se resuelve (fase 2): la lista de «Ahora tú» (mismo banco de números y la misma particion), con otra semilla.
+    resuelve: {
+      pieza: 'rm-fichas',
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(4, 6);
+        const nums = r.barajar([1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 15, 20]).slice(0, n).sort((p, q) => p - q);
+        const T = suma(nums), g = particion(nums), mitad = T / 2, mayor = nums[nums.length - 1];
+        const resto = g ? nums.filter(x => !g.includes(x)) : [];
+        const bien = g ? 'Sí se puede' : T % 2 ? 'No: el total es impar' : 'No, aunque el total es par';
+        const cuentas = g ? { tipo: 'cuentas', texto: `Cada grupo debe sumar ${T} ÷ 2 = ${mitad}. Busco números que lleguen justo a ${mitad}.`, ecuacion: [`${g.join(' + ')} = ${mitad}`] }
+          : T % 2 ? { tipo: 'cuentas', texto: `El total ${T} es impar: al partirlo en dos no salen enteros.`, ecuacion: [Tt, ` = ${T}  ⇒  ${T} ÷ 2 no es entero`] }
+          : { tipo: 'cuentas', texto: `Cada grupo debería sumar ${mitad}. Pruebo las combinaciones y ninguna llega justo a ${mitad}.`, ecuacion: [`cada grupo = ${T} ÷ 2 = ${mitad}`] };
+        cuentas.dibujo = { datos: grupos(nums), estado: {} };
+        const sentido = g ? `Comprueba el otro grupo: ${resto.join(' + ')} = ${suma(resto)}. Los dos suman ${mitad}.`
+          : T % 2 ? 'Dos grupos con la misma suma darían un total par, el doble de un entero. Este total es impar: no puede ser.'
+          : mayor > mitad ? `El ${mayor} solo ya pasa de ${mitad}: el grupo que lo tenga suma de más. El total par no bastaba.`
+          : `El total es par, pero ningún grupo llega justo a ${mitad}. Ser par no bastaba: había que armar la mitad.`;
+        return {
+          enunciado: `¿Se pueden repartir ${nums.join(', ')} en dos grupos que sumen lo mismo?`,
+          dibujo: { datos: { filas: [{ rotulo: 'Números', caja: true, fichas: nums.map(x => ({ t: String(x), forma: 'cuadrado' })) }, { rotulo: ' ', fichas: [] }], tam: 28, pie: ' ' }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden decidir si los números, usados una vez cada uno, se parten en dos grupos de igual suma.' },
+            { tipo: 'datos', texto: `Son ${n} números. Primero los sumo todos.`, ecuacion: [Tt, ` = ${nums.join(' + ')} = ${T}`] },
+            { tipo: 'regla', texto: 'Cada grupo tendría que sumar la mitad del total. Si el total es impar, no hay mitad entera; si es par, falta encontrar el grupo.' },
+            cuentas,
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: bien,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-fichas',

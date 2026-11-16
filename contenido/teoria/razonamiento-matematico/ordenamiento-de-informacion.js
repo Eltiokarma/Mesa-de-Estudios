@@ -74,13 +74,51 @@
       notas: [{ t: extra.nota || (ords.length > 4 ? `Órdenes posibles: ${ords.length} (se ven 4)` : `Órdenes posibles: ${ords.length}`) }],
     };
   }
+  // El caso de la fila: lo usan «Ahora tú» (semilla s) y «Así se resuelve» (semilla s + 900), con las mismas cuentas.
+  function casoLineal(r) {
+    const gente = r.barajar(['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito']).slice(0, 4);
+    const sol = r.barajar(gente), P = (p, x) => p.indexOf(x);
+    const pool = [];
+    for (const a of gente) for (const b of gente) if (a !== b) {
+      if (P(sol, a) < P(sol, b)) pool.push({ t: `${a} está a la izquierda de ${b}`, ok: p => P(p, a) < P(p, b) });
+      if (P(sol, a) + 1 === P(sol, b)) pool.push({ t: `${a} está inmediatamente a la izquierda de ${b}`, ok: p => P(p, a) + 1 === P(p, b) });
+    }
+    for (const a of gente) {
+      if ([0, 3].includes(P(sol, a))) pool.push({ t: `${a} está en un extremo`, ok: p => [0, 3].includes(P(p, a)) });
+      else pool.push({ t: `${a} no está en un extremo`, ok: p => ![0, 3].includes(P(p, a)) });
+    }
+    const puesto = r.ent(0, 3);
+    let usadas = null;
+    for (let t = 0; t < 40 && !usadas; t++) {
+      const us = [];
+      for (const c of r.barajar(pool)) {
+        us.push(c);
+        const v = permutaciones(gente).filter(p => us.every(x => x.ok(p)));
+        if (v.every(p => p[puesto] === v[0][puesto])) break;
+      }
+      if (us.length <= 3 || t === 39) usadas = us;
+    }
+    const vivos = permutaciones(gente).filter(p => usadas.every(x => x.ok(p)));
+    const quien = vivos[0][puesto];
+    return { gente, usadas, puesto, vivos, quien };
+  }
   const lineal = {
     id: 'orden-lineal',
     titulo: 'Antes no es junto',
     temas: ['Ordenamiento lineal'],
     pieza: 'rm-tablero',
+    // Lee (fase 2): contexto y vocabulario; no dice si «a la izquierda» obliga a estar juntos (eso lo decide Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una fila para la foto', texto: 'En la promoción de un colegio de Juliaca, cuatro amigos posan en fila para la foto. Las pistas dicen algo de dónde va cada uno, pero casi nunca lo dicen todo de una vez.' },
+        { titulo: 'Los puestos', texto: 'Los puestos se cuentan de izquierda a derecha: 1.º, 2.º, 3.º y 4.º. Izquierda y derecha se miran siempre desde el mismo lado de la fila.' },
+        { titulo: 'Un orden', texto: 'Cada manera de ubicar a los cuatro es un orden. Sin pistas hay 24. Cada pista tacha los órdenes que no la cumplen.',
+          ecuacion: ['4 · 3 · 2 · 1 = 24 órdenes'] },
+        { titulo: 'Qué mirar al jugar', texto: 'Agrega las pistas una a una. Cuenta cuántos órdenes quedan en el tablero y fíjate qué puesto se pinta de verde.' },
+      ],
+    },
     juega: {
-      consigna: 'Cuatro amigos en una fila de cuatro asientos. Agrega pistas una a una: el tablero muestra los órdenes que todavía cumplen todo.',
+      consigna: 'Cuatro amigos en una fila de cuatro puestos: las columnas del tablero. Agrega pistas una a una y mira los órdenes que todavía cumplen todo.',
       voz: 'En verde, el puesto que ya es igual en todos los órdenes.',
       controles: [{ id: 'n', etiqueta: 'Pistas', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0 }],
       dibujo: val => ({ datos: filaOrdenes(ordenesL(val.n)), estado: {} }),
@@ -88,9 +126,9 @@
       minimo: 4,
     },
     predice: {
-      pregunta: 'Otra fila: solo se sabe que Eva está a la izquierda de Fito, entre cinco asientos. ¿Eva y Fito están juntos?',
+      pregunta: 'Otra fila: solo se sabe que Eva está a la izquierda de Fito, en una fila de cinco puestos. ¿Eva y Fito están juntos?',
       opciones: [
-        { id: 'si', texto: 'Sí, siempre', error: 'RMT-ORD-1', siFuera: 'Sería cierto si dijera «inmediatamente a la izquierda». «A la izquierda» deja asientos de por medio.' },
+        { id: 'si', texto: 'Sí, siempre', error: 'RMT-ORD-1', siFuera: 'Sería cierto si dijera «inmediatamente a la izquierda». «A la izquierda» deja puestos de por medio.' },
         { id: 'c', texto: 'Puede que sí o que no', correcta: true },
         { id: 'no', texto: 'No, nunca', error: 'RMT-ORD-2', siFuera: 'Hay órdenes donde sí quedan juntos; no se puede negar.' },
       ],
@@ -117,34 +155,30 @@
       ecuacion: [{ llave: ['a < b'], nota: 'a la izquierda', color: 'c-o' }, ' y b < c  ⇒  a < c'],
       condicion: 'izquierda y derecha se miran desde el mismo lado de la fila y cada asiento es para una sola persona.',
     },
+    // Así se resuelve (fase 2): el mismo caso de «Ahora tú», con otra semilla, resuelto paso a paso.
+    resuelve: {
+      generar(s) {
+        const { gente, usadas, puesto, vivos, quien } = casoLineal(azar(s + 900));
+        const todos = vivos.length === 1 ? 'el único orden que queda' : `los ${vivos.length} órdenes que quedan`;
+        return {
+          enunciado: `Cuatro amigos en fila. ${usadas.map(c => c.t).join('. ')}. ¿Quién está en el puesto ${puesto + 1} desde la izquierda?`,
+          dibujo: { datos: filaOrdenes([], { nota: 'Escribe los órdenes posibles' }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden quién ocupa el puesto ${puesto + 1}, contando desde la izquierda.` },
+            { tipo: 'datos', texto: `Son cuatro: ${gente.join(', ')}. Hay ${plural(usadas.length, 'pista', 'pistas')}. Sin pistas caben ${permutaciones(gente).length} órdenes.` },
+            { tipo: 'regla', texto: 'Escribo todos los órdenes que cumplen todas las pistas. Solo es seguro lo que se repite en todos ellos.' },
+            { tipo: 'aplica', texto: `Tacho cada orden que falla alguna pista. ${vivos.length === 1 ? 'Queda un solo orden, el del tablero' : `Quedan ${vivos.length} órdenes, los del tablero`}.`,
+              dibujo: { datos: filaOrdenes(vivos), estado: {} } },
+            { tipo: 'sentido', texto: `En ${todos}, el puesto ${puesto + 1} es de ${quien}. Si cambiara de un orden a otro, no se podría saber.` },
+          ],
+          respuesta: `${quien}, en el puesto ${puesto + 1}`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Escribe los órdenes posibles y tacha con cada pista.',
       generar(s) {
-        const r = azar(s);
-        const gente = r.barajar(['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito']).slice(0, 4);
-        const sol = r.barajar(gente), P = (p, x) => p.indexOf(x);
-        const pool = [];
-        for (const a of gente) for (const b of gente) if (a !== b) {
-          if (P(sol, a) < P(sol, b)) pool.push({ t: `${a} está a la izquierda de ${b}`, ok: p => P(p, a) < P(p, b) });
-          if (P(sol, a) + 1 === P(sol, b)) pool.push({ t: `${a} está inmediatamente a la izquierda de ${b}`, ok: p => P(p, a) + 1 === P(p, b) });
-        }
-        for (const a of gente) {
-          if ([0, 3].includes(P(sol, a))) pool.push({ t: `${a} está en un extremo`, ok: p => [0, 3].includes(P(p, a)) });
-          else pool.push({ t: `${a} no está en un extremo`, ok: p => ![0, 3].includes(P(p, a)) });
-        }
-        const puesto = r.ent(0, 3);
-        let usadas = null;
-        for (let t = 0; t < 40 && !usadas; t++) {
-          const us = [];
-          for (const c of r.barajar(pool)) {
-            us.push(c);
-            const v = permutaciones(gente).filter(p => us.every(x => x.ok(p)));
-            if (v.every(p => p[puesto] === v[0][puesto])) break;
-          }
-          if (us.length <= 3 || t === 39) usadas = us;
-        }
-        const vivos = permutaciones(gente).filter(p => usadas.every(x => x.ok(p)));
-        const quien = vivos[0][puesto];
+        const { gente, usadas, puesto, vivos, quien } = casoLineal(azar(s));
         return {
           pregunta: `Cuatro amigos en fila. ${usadas.map(c => c.t).join('. ')}. ¿Quién está en el puesto ${puesto + 1} desde la izquierda?`,
           dibujo: { datos: filaOrdenes([], { nota: 'Escribe los órdenes posibles' }), estado: {} },
@@ -179,11 +213,51 @@
     const nombres = Array.from({ length: 5 }, (_, k) => NOM5[((k - val.g) % 5 + 5) % 5]);
     return mesa(5, nombres, { colores: { [val.g % 5]: 'i', [(val.g + 1) % 5]: 'o' } });
   };
+  // El caso de la mesa redonda: lo usan «Ahora tú» (semilla s) y «Así se resuelve» (r de s + 900); n sale de s.
+  function casoCircular(s, r) {
+    const n = s % 2 ? 6 : 5;
+    const gente = r.barajar(['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito', 'Gina']).slice(0, n);
+    const ref = gente[0], sol = [ref].concat(r.barajar(gente.slice(1)));
+    const P = (p, x) => p.indexOf(x), der = (p, x) => p[(P(p, x) + 1) % n], izq = (p, x) => p[(P(p, x) + n - 1) % n];
+    const pool = [];
+    for (const a of gente) {
+      pool.push({ t: `${der(sol, a)} está a la derecha de ${a}`, ok: p => der(p, a) === der(sol, a) });
+      if (n === 6 && a < sol[(P(sol, a) + 3) % 6]) pool.push({ t: `${a} está frente a ${sol[(P(sol, a) + 3) % 6]}`, ok: p => p[(P(p, a) + 3) % 6] === sol[(P(sol, a) + 3) % 6] });
+      for (const b of gente) if (a < b && der(sol, a) !== b && izq(sol, a) !== b) pool.push({ t: `${a} no está junto a ${b}`, ok: p => der(p, a) !== b && izq(p, a) !== b });
+    }
+    const todos = permutaciones(gente.slice(1)).map(q => [ref].concat(q));
+    const palabras = t => (t.match(/[\p{L}\p{N}]+/gu) || []).length;
+    let usadas = null, blanco = null;
+    for (let t = 0; t < 300 && !usadas; t++) {
+      const bl = r.elegir(gente.slice(1)), us = [];
+      for (const c of r.barajar(pool)) {
+        if (c.t === `${der(sol, bl)} está a la derecha de ${bl}`) continue;
+        us.push(c);
+        const v = todos.filter(p => us.every(x => x.ok(p)));
+        if (v.every(p => der(p, bl) === der(v[0], bl))) break;
+        if (us.length > 3) break;
+      }
+      const v = todos.filter(p => us.every(x => x.ok(p)));
+      if (v.every(p => der(p, bl) === der(v[0], bl)) && palabras(us.map(c => c.t).join(" ")) <= 25) { usadas = us; blanco = bl; }
+    }
+    const vivos = todos.filter(p => usadas.every(x => x.ok(p)));
+    const bien = der(vivos[0], blanco), mal = izq(vivos[0], blanco);
+    return { n, gente, ref, P, usadas, blanco, vivos, bien, mal };
+  }
   const circular = {
     id: 'orden-circular',
     titulo: 'En la mesa redonda, una referencia',
     temas: ['Ordenamiento circular'],
     pieza: 'rm-plano',
+    // Lee (fase 2): vocabulario de la mesa redonda; no cuenta cuántos órdenes distintos hay (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Alrededor de la mesa', texto: 'En un almuerzo familiar en Puno, cinco personas se sientan alrededor de una mesa redonda. Todos miran hacia el centro de la mesa.' },
+        { titulo: 'Derecha e izquierda', texto: 'Si miras al centro, tu derecha va en sentido contrario a las agujas del reloj, visto desde arriba. Tu izquierda va en el sentido del reloj.' },
+        { titulo: 'Junto a y frente a', texto: '«Junto a» es la silla pegada, de un lado o del otro. Cuando las sillas son pares, «frente a» es la que queda cruzando la mesa.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Gira a todos juntos arrastrando la silla de Ana. Fíjate si alguien cambia de vecino.' },
+      ],
+    },
     juega: {
       consigna: 'Cinco amigos en una mesa redonda, mirando al centro. Gira a todos juntos y mira quién queda a la derecha de Ana.',
       voz: 'Girar la mesa entera no cambia quién está junto a quién.',
@@ -220,37 +294,31 @@
       ecuacion: ['n personas en círculo: ', { llave: ['(n − 1)!'], nota: 'una queda fija', color: 'c-i' }, ' órdenes'],
       condicion: 'todos miran al centro; así, la derecha de cada uno va en sentido antihorario visto desde arriba.',
     },
+    // Así se resuelve (fase 2): el mismo caso de «Ahora tú», con otra semilla, resuelto paso a paso.
+    resuelve: {
+      pieza: 'rm-plano',
+      generar(s) {
+        const { n, ref, P, usadas, blanco, vivos, bien, mal } = casoCircular(s, azar(s + 900));
+        return {
+          enunciado: `Mesa redonda de ${n}, todos miran al centro. ${usadas.map(c => c.t).join('. ')}. ¿Quién está a la derecha de ${blanco}?`,
+          dibujo: { datos: mesa(n, [ref].concat(Array(n - 1).fill('')), { colores: { 0: 'i' }, flecha: true }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden quién está a la derecha de ${blanco}, con todos mirando al centro.` },
+            { tipo: 'datos', texto: `Son ${n} en la mesa y ${plural(usadas.length, 'pista', 'pistas')}. Siento a ${ref} en la silla de abajo.` },
+            { tipo: 'regla', texto: 'En la mesa redonda no hay primera silla: dejo a una persona fija y ubico a los demás desde ella. Mirando al centro, la derecha va contra el reloj.' },
+            { tipo: 'aplica', texto: `Pruebo dónde va cada uno y tacho lo que falla una pista. ${vivos.length === 1 ? 'Queda una sola mesa' : `Quedan ${vivos.length} mesas, y en todas ${bien} sigue a ${blanco}`}.`,
+              dibujo: { datos: mesa(n, vivos[0], { colores: { [P(vivos[0], blanco)]: 'i', [P(vivos[0], bien)]: 'o' } }), estado: {} } },
+            { tipo: 'sentido', texto: `${bien} está en la silla que sigue a ${blanco} contra el reloj. ${vivos.length === 1 ? `${mal}, al otro lado, es su izquierda` : `La silla del otro lado es su izquierda`}: no confundirlas.` },
+          ],
+          respuesta: `${bien} está a la derecha de ${blanco}`,
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'rm-plano',
       voz: 'Sienta primero a quien tenga más pistas.',
       generar(s) {
-        const r = azar(s), n = s % 2 ? 6 : 5;
-        const gente = r.barajar(['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito', 'Gina']).slice(0, n);
-        const ref = gente[0], sol = [ref].concat(r.barajar(gente.slice(1)));
-        const P = (p, x) => p.indexOf(x), der = (p, x) => p[(P(p, x) + 1) % n], izq = (p, x) => p[(P(p, x) + n - 1) % n];
-        const pool = [];
-        for (const a of gente) {
-          pool.push({ t: `${der(sol, a)} está a la derecha de ${a}`, ok: p => der(p, a) === der(sol, a) });
-          if (n === 6 && a < sol[(P(sol, a) + 3) % 6]) pool.push({ t: `${a} está frente a ${sol[(P(sol, a) + 3) % 6]}`, ok: p => p[(P(p, a) + 3) % 6] === sol[(P(sol, a) + 3) % 6] });
-          for (const b of gente) if (a < b && der(sol, a) !== b && izq(sol, a) !== b) pool.push({ t: `${a} no está junto a ${b}`, ok: p => der(p, a) !== b && izq(p, a) !== b });
-        }
-        const todos = permutaciones(gente.slice(1)).map(q => [ref].concat(q));
-        const palabras = t => (t.match(/[\p{L}\p{N}]+/gu) || []).length;
-        let usadas = null, blanco = null;
-        for (let t = 0; t < 300 && !usadas; t++) {
-          const bl = r.elegir(gente.slice(1)), us = [];
-          for (const c of r.barajar(pool)) {
-            if (c.t === `${der(sol, bl)} está a la derecha de ${bl}`) continue;
-            us.push(c);
-            const v = todos.filter(p => us.every(x => x.ok(p)));
-            if (v.every(p => der(p, bl) === der(v[0], bl))) break;
-            if (us.length > 3) break;
-          }
-          const v = todos.filter(p => us.every(x => x.ok(p)));
-          if (v.every(p => der(p, bl) === der(v[0], bl)) && palabras(us.map(c => c.t).join(" ")) <= 25) { usadas = us; blanco = bl; }
-        }
-        const vivos = todos.filter(p => usadas.every(x => x.ok(p)));
-        const bien = der(vivos[0], blanco), mal = izq(vivos[0], blanco);
+        const { n, gente, ref, P, usadas, blanco, vivos, bien, mal } = casoCircular(s, azar(s));
         return {
           pregunta: `Mesa redonda de ${n}, todos miran al centro. ${usadas.map(c => c.t).join('. ')}. ¿Quién está a la derecha de ${blanco}?`,
           dibujo: { datos: mesa(n, [ref].concat(Array(n - 1).fill('')), { colores: { 0: 'i' }, flecha: true }), estado: {} },
@@ -293,6 +361,14 @@
     titulo: 'Frente a frente, mesa cuadrada',
     temas: ['Ordenamiento poligonal'],
     pieza: 'rm-plano',
+    // Lee (fase 2): qué cambia con una mesa con lados; no dice qué silla queda frente a la 1 (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Mesas con lados', texto: 'En un compartir del aula, juntan carpetas y forman una mesa cuadrada. Así, cada silla queda en un borde: arriba, abajo, a la izquierda o a la derecha.' },
+        { titulo: 'Numerar primero', texto: 'Antes de ubicar a nadie, se numeran las sillas en orden, dando la vuelta a la mesa. Con dos sillas por lado, la mesa cuadrada tiene ocho.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, la mesa todavía es redonda, con 8 sillas. Mueve a Ana y mira qué número tiene la silla que queda frente a ella.' },
+      ],
+    },
     juega: {
       consigna: 'Mesa redonda de 8 sillas numeradas en orden. Elige la silla de Ana y mira quién queda frente a ella.',
       voz: 'En la redonda, frente es la silla que está a mitad de vuelta.',
@@ -332,6 +408,29 @@
       texto: 'En una mesa con lados, «frente a» y «a su lado» dependen de qué borde ocupa cada silla. Antes de ubicar, se dibuja la mesa y se numeran las sillas.',
       ecuacion: ['redonda: ', { llave: ['n/2'], nota: 'media vuelta', color: 'c-o' }, ' sillas más allá', '   ·   ', 'cuadrada: el lado opuesto'],
       condicion: 'se sabe cuántas sillas hay por lado y que todas miran hacia la mesa.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (frente o mismo lado), con otra semilla.
+    resuelve: {
+      pieza: 'rm-plano',
+      generar(s) {
+        const r = azar(s + 900), i = r.ent(0, 7), pide = s % 2 ? 'frente' : 'lado';
+        const bien = pide === 'frente' ? frente(i) : mismoLado(i);
+        const vueltaEsq = i % 2 ? (i + 1) % 8 : (i + 7) % 8;
+        const BORDE = ['de arriba', 'de la derecha', 'de abajo', 'de la izquierda'], borde = k => BORDE[Math.floor(k / 2)];
+        return {
+          enunciado: pide === 'frente' ? `Mesa cuadrada, dos sillas por lado, numeradas del 1 al 8. ¿Qué silla queda frente a la ${i + 1}?` : `Mesa cuadrada, dos sillas por lado, numeradas del 1 al 8. ¿Qué silla comparte lado con la ${i + 1}?`,
+          dibujo: { datos: cuadrada({ [i]: 'i' }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: pide === 'frente' ? `Piden la silla que mira a la ${i + 1} cruzando la mesa.` : `Piden la otra silla que está en el mismo borde que la ${i + 1}.` },
+            { tipo: 'datos', texto: 'Dos sillas por borde, numeradas en orden: 1 y 2 arriba, 3 y 4 a la derecha, 5 y 6 abajo, 7 y 8 a la izquierda.' },
+            { tipo: 'regla', texto: 'En una mesa con lados, primero miro en qué borde está la silla. Frente a ella está el borde opuesto; a su lado, el mismo borde.' },
+            { tipo: 'aplica', texto: pide === 'frente' ? `La ${i + 1} está en el borde ${borde(i)}. Cruzo al borde ${borde(bien)} y tomo la silla alineada con ella: la ${bien + 1}.` : `La ${i + 1} está en el borde ${borde(i)}. La otra silla de ese borde es la ${bien + 1}.`,
+              dibujo: { datos: cuadrada({ [i]: 'i', [bien]: 'o' }, { aristas: [{ de: 'q' + i, a: 'q' + bien, color: 'o', grosor: 'variable' }] }), estado: {} } },
+            { tipo: 'sentido', texto: pide === 'frente' ? `La ${OPU(i) + 1}, cuatro sillas más allá, sería frente en una mesa redonda. Aquí no queda alineada con la ${i + 1}.` : `La ${vueltaEsq + 1} también está pegada a la ${i + 1}, pero al doblar la esquina: es otro borde.` },
+          ],
+          respuesta: `La silla ${bien + 1}`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-plano',
