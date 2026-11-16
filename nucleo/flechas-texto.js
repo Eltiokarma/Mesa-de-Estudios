@@ -2,7 +2,7 @@
  * Flecha de vector dibujada por la app (16 nov 2026). Los textos de los generadores escriben un vector con el carácter
  * combinante U+20D7 detrás del nombre («A⃗», «AB⃗»; punto 5 del contrato, docs/plan-calidad.md). Las fuentes del
  * sistema no lo traen: en Chrome se veía un cuadradito vacío. Este archivo lo reemplaza en toda la página:
- *   - en HTML, el nombre va en <span class="ec-vec"> (la flecha la pone el CSS, como en la teoría);
+ *   - en HTML, el nombre va en <span class="fl-vec"> y la flecha la pone una regla de CSS que este archivo agrega;
  *   - en un <text> de SVG, el nombre queda y encima va una flechita «→» chica, centrada sobre él.
  * Mira la página con un MutationObserver: lo que se pinte después (pasos, preguntas, figuras) también se arregla.
  * Solo en el navegador; sin dependencias. Flechas.reemplazar(texto) devuelve las partes, para probarlo en Node.
@@ -23,10 +23,12 @@
   const SVG = 'http://www.w3.org/2000/svg';
 
   function enHTML(nodo) {
-    const frag = doc.createDocumentFragment();
+    // Todo va dentro de un solo <span>: si el padre es flex, los pedazos sueltos se apilaban («|», «a», «|»).
+    // display en línea, en el elemento mismo: hay páginas con «.lectura span{display:block}».
+    const frag = doc.createElement('span'); frag.style.display = 'inline';
     for (const p of reemplazar(nodo.nodeValue)) {
       if (p.t !== undefined) frag.append(p.t);
-      else { const s = doc.createElement('span'); s.className = 'ec-vec'; s.textContent = p.vec; frag.append(s); }
+      else { const s = doc.createElement('span'); s.className = 'fl-vec'; s.textContent = p.vec; frag.append(s); }
     }
     nodo.replaceWith(frag);
   }
@@ -68,10 +70,10 @@
     if (p.namespaceURI === SVG) enSVG(n); else enHTML(n);
   }
   const iniciar = () => {
-    // Las escenas de plantillas/ no cargan los estilos de la app: la regla de la flecha va aquí también.
-    if (!doc.getElementById('estilo-ec-vec')) {
-      const st = doc.createElement('style'); st.id = 'estilo-ec-vec';
-      st.textContent = ".ec-vec{display:inline-block;position:relative}.ec-vec::before{content:'→';position:absolute;left:0;right:0;top:-.85em;font-size:.7em;text-align:center}";
+    // La regla de la flecha va aquí: así sirve también en las escenas de plantillas/, que no cargan los estilos de la app.
+    if (!doc.getElementById('estilo-fl-vec')) {
+      const st = doc.createElement('style'); st.id = 'estilo-fl-vec';
+      st.textContent = ".fl-vec{display:inline-block!important;position:relative;padding-top:.42em;line-height:1}.fl-vec::before{content:'→';position:absolute;left:0;right:0;top:-.12em;font-size:.72em;line-height:1;text-align:center}";
       doc.head.appendChild(st);
     }
     recorrer(doc.body);
