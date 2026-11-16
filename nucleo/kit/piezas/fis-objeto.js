@@ -123,7 +123,7 @@
       return s;
     },
     comparar(d) {
-      const bs = (d.barras || []).slice(0, 3), max = Math.max(1, ...bs.map(b => b.valor || 0)), x0 = 20, L = 220;
+      const bs = (d.barras || []).slice(0, 3), max = Math.max(1, ...bs.map(b => b.valor || 0)), x0 = 20, L = 190;   // deja lugar para el número a la derecha
       let s = d.titulo ? T.rotulo(x0, 28, d.titulo, { tam: 14, peso: 700 }) : '';
       bs.forEach((b, k) => {
         const y = 50 + k * 54, w = L * (b.valor || 0) / max;
