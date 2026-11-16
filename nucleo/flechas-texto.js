@@ -68,6 +68,12 @@
     if (p.namespaceURI === SVG) enSVG(n); else enHTML(n);
   }
   const iniciar = () => {
+    // Las escenas de plantillas/ no cargan los estilos de la app: la regla de la flecha va aquí también.
+    if (!doc.getElementById('estilo-ec-vec')) {
+      const st = doc.createElement('style'); st.id = 'estilo-ec-vec';
+      st.textContent = ".ec-vec{display:inline-block;position:relative}.ec-vec::before{content:'→';position:absolute;left:0;right:0;top:-.85em;font-size:.7em;text-align:center}";
+      doc.head.appendChild(st);
+    }
     recorrer(doc.body);
     new MutationObserver(ms => { for (const m of ms) { if (m.type === 'characterData') recorrer(m.target); else m.addedNodes.forEach(recorrer); } })
       .observe(doc.body, { childList: true, subtree: true, characterData: true });
