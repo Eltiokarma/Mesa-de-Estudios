@@ -76,11 +76,23 @@
   const arrastreVerde = (dib, nAt, id) => ({ id: 'estado', etiqueta: 'final de las cargas del átomo verde', color: 'c-d',
     donde: val => { const k = Math.round(val[id] * nAt(val)), g = PF().geometria(dib(val).datos); return k === 0 ? { x: 30, y: 127 } : g.cuadrito(Math.abs(k) - 1, k > 0 ? '+' : '−'); },
     mover: (pt, val) => { const k = (pt.x - 47) / 17 + 1; return { [id]: (pt.y < 127 ? k : -k) / nAt(val) }; } });
+  // Casos de «Ahora tú» y de «Así se resuelve»: [fórmula, átomo que falta, cuántos hay, carga, conocidos [el, ω, n]].
+  const CASOS_OX = [['H₂SO₄', 'S', 1, 0, [['H', 1, 2], ['O', -2, 4]]], ['HNO₃', 'N', 1, 0, [['H', 1, 1], ['O', -2, 3]]], ['KMnO₄', 'Mn', 1, 0, [['K', 1, 1], ['O', -2, 4]]],
+    ['NH₄⁺', 'N', 1, 1, [['H', 1, 4]]], ['SO₃²⁻', 'S', 1, -2, [['O', -2, 3]]], ['ClO₄⁻', 'Cl', 1, -1, [['O', -2, 4]]], ['HClO', 'Cl', 1, 0, [['H', 1, 1], ['O', -2, 1]]],
+    ['K₂Cr₂O₇', 'Cr', 2, 0, [['K', 1, 2], ['O', -2, 7]]], ['PO₄³⁻', 'P', 1, -3, [['O', -2, 4]]], ['NaH', 'H', 1, 0, [['Na', 1, 1]]], ['Fe₂O₃', 'Fe', 2, 0, [['O', -2, 3]]]];
   const oxidacion = {
     id: 'estados-oxidacion',
     titulo: 'La suma da la carga',
     temas: ['Estados de oxidación'],
     pieza: 'quim-fichas',
+    lee: {
+      tarjetas: [
+        { titulo: 'Una cuenta, no una carga', texto: ['Cada átomo de un compuesto lleva un número con signo: su estado de oxidación, ', w, '. No es una carga que se pueda medir. Es una cuenta que se hace como si todos los enlaces fueran iónicos.'] },
+        { titulo: 'Neutro o con carga', texto: ['El agua es neutra: su carga ', z, ' es 0. El amonio, NH₄⁺, tiene carga +1 y el carbonato, CO₃²⁻, carga −2. La carga de un ion se escribe arriba, a la derecha.'] },
+        { titulo: 'En la lejía', texto: 'La lejía de casa tiene hipoclorito de sodio, NaClO, y la sal de mesa es cloruro de sodio, NaCl. Con esta idea vas a poder hallar el estado de oxidación del cloro en cada una.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el átomo verde es el que falta. Sus cuadritos se alinean con los de los demás átomos: cada + busca un −. Mira cuántos quedan sin pareja.' },
+      ],
+    },
     juega: {
       consigna: 'El estado de oxidación del átomo verde sube y baja solo. Pausa, o ajústalo tú, cuando la suma de estados sea igual a la carga.',
       voz: 'Ajusta el verde y mira cuánto queda sin pareja.',
@@ -128,13 +140,35 @@
       condicion: 'es una cuenta formal, no la carga real. En peróxidos el O vale −1; en hidruros metálicos, el H vale −1.',
       voz: 'Primero los conocidos; el que falta cierra la cuenta.',
     },
+    resuelve: {
+      pieza: 'quim-fichas',
+      generar(s) {
+        const r = azar(s + 900), [fo, x, nx, q, fijos] = r.de(CASOS_OX);
+        const suma = fijos.reduce((a, [, c, n]) => a + c * n, 0), wx = (q - suma) / nx;
+        const conocidos = fijos.map(([el, c, n]) => `${n} ${el} a ${sg(c)}`).join(' y ');
+        const comprueba = [`${nx} · (${sg(wx)})`, ...fijos.map(([, c, n]) => `${n} · (${sg(c)})`)].join(' + ');
+        return {
+          enunciado: ['¿Qué estado de oxidación ', w, ` tiene el ${x} en ${fo}?`],
+          dibujo: fichas([{ t: `${x} ?`, carga: 0, n: nx, color: 'd' }, ...fijos.map(grupo)], { neta: 'suma conocida' }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el estado de oxidación ', w, ` ${nx > 1 ? `de cada uno de los ${nx} átomos` : 'del átomo'} de ${x} en ${fo}.`] },
+            { tipo: 'datos', texto: [`Conocidos: ${conocidos}. La carga de la especie es `, z, ` = ${sg(q)}.`] },
+            { tipo: 'regla', texto: 'Pongo los valores que ya sé. El que falta tiene que hacer que todos juntos sumen la carga de la especie.',
+              ecuacion: ['Σ n · ', w, ' = ', z] },
+            { tipo: 'cuentas', texto: [`Los conocidos suman ${sg(suma)}. Lo que falta para llegar a ${sg(q)} lo aporta${nx > 1 ? `n los ${nx} átomos` : ' el átomo'} de ${x}.`],
+              ecuacion: [nx > 1 ? `${nx}` : '', w, ` + (${sg(suma)}) = ${sg(q)}   →   `, w, ` = ${sg(wx)}`],
+              dibujo: fichas([{ t: `${x} ${sg(wx)}`, carga: wx, n: nx, color: 'd' }, ...fijos.map(grupo)], { neta: 'suma de estados' }) },
+            { tipo: 'sentido', texto: [`Compruebo con todos los átomos: la suma da ${sg(nx * wx + suma)}, que es la carga de ${fo}. Cuadra.`], ecuacion: [`${comprueba} = ${sg(nx * wx + suma)}`] },
+          ],
+          respuesta: [w, ` = ${sg(wx)} para el ${x}`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'quim-fichas',
       voz: 'Suma los conocidos y compara con la carga.',
       generar(s) {
-        const C = [['H₂SO₄', 'S', 1, 0, [['H', 1, 2], ['O', -2, 4]]], ['HNO₃', 'N', 1, 0, [['H', 1, 1], ['O', -2, 3]]], ['KMnO₄', 'Mn', 1, 0, [['K', 1, 1], ['O', -2, 4]]],
-          ['NH₄⁺', 'N', 1, 1, [['H', 1, 4]]], ['SO₃²⁻', 'S', 1, -2, [['O', -2, 3]]], ['ClO₄⁻', 'Cl', 1, -1, [['O', -2, 4]]], ['HClO', 'Cl', 1, 0, [['H', 1, 1], ['O', -2, 1]]],
-          ['K₂Cr₂O₇', 'Cr', 2, 0, [['K', 1, 2], ['O', -2, 7]]], ['PO₄³⁻', 'P', 1, -3, [['O', -2, 4]]], ['NaH', 'H', 1, 0, [['Na', 1, 1]]], ['Fe₂O₃', 'Fe', 2, 0, [['O', -2, 3]]]];
+        const C = CASOS_OX;
         const [fo, x, nx, q, fijos] = C[s % C.length];
         const suma = fijos.reduce((a, [, c, n]) => a + c * n, 0), wx = (q - suma) / nx;
         return {
@@ -171,11 +205,22 @@
   const SISTEMAS = ['Sistemática', 'Stock', 'Tradicional'], cualNombre = t => Math.min(2, Math.floor(t / 2));
   const nombresT = (k, t) => { const d = nombres(k); d.datos.columnas[0].nodos.forEach((n, i) => { if (i !== cualNombre(t)) n.tenue = true; }); return d; };
   const NOMBRE_DE = (k, i) => [OXIDOS[k].sis, OXIDOS[k].stock, OXIDOS[k].trad][i];
+  // Casos de «Ahora tú» y de «Así se resuelve»: [fórmula, elemento, átomos del elemento, átomos de O].
+  const CASOS_OXIDO = [['FeO', 'hierro', 1, 1], ['Fe₂O₃', 'hierro', 2, 3], ['CuO', 'cobre', 1, 1], ['Cu₂O', 'cobre', 2, 1], ['PbO₂', 'plomo', 1, 2], ['SnO', 'estaño', 1, 1],
+    ['SO₂', 'azufre', 1, 2], ['SO₃', 'azufre', 1, 3], ['N₂O₅', 'nitrógeno', 2, 5], ['Cl₂O₇', 'cloro', 2, 7]];
   const tipos = {
     id: 'tres-nombres',
     titulo: 'Un compuesto, tres nombres',
     temas: ['Tipos de nomenclatura'],
     pieza: 'quim-cadena',
+    lee: {
+      tarjetas: [
+        { titulo: 'Nombres de la casa', texto: 'Muchos compuestos tienen un nombre común. La cal viva que se usa en construcción es óxido de calcio, CaO, y el óxido rojizo de un clavo viejo es, sobre todo, óxido de hierro.' },
+        { titulo: 'Tres sistemas', texto: 'Hay tres maneras de nombrar un compuesto: la nomenclatura sistemática, la Stock y la nomenclatura tradicional. Cada una se fija en un dato distinto de la fórmula. En el examen te pueden pedir cualquiera.' },
+        { titulo: 'Prefijos y sufijos', texto: 'Los prefijos mono, di, tri, tetra y penta quieren decir 1, 2, 3, 4 y 5. Los sufijos -oso e -ico vienen del latín: ferroso y férrico, de ferrum, el hierro.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, los tres nombres de un óxido se encienden por turnos. Pasa de FeO a Fe₂O₃ y mira qué palabra o qué número cambia en cada nombre.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un óxido: sus tres nombres se leen solos, uno por uno. Busca qué dato usa cada sistema: cuántos átomos o qué estado de oxidación.',
       voz: 'Tres nombres, una sola fórmula. Compáralos uno por uno.',
@@ -212,11 +257,32 @@
       condicion: 'el romano es el estado de oxidación, no un conteo de átomos; se omite si hay un solo estado (óxido de sodio).',
       voz: 'Antes de nombrar, decide qué sistema te piden.',
     },
+    resuelve: {
+      pieza: 'quim-cadena',
+      generar(s) {
+        const r = azar(s + 900), [fo, el, nx, no] = r.de(CASOS_OXIDO), wx = 2 * no / nx, stock = `óxido de ${el}(${ROM[wx]})`;
+        const cadena = nodos => ({ datos: { columnas: [{ titulo: fo, color: 'd', nodos, flechas: [] }] }, estado: {} });
+        return {
+          enunciado: `¿Cuál es el nombre Stock de ${fo}?`,
+          dibujo: cadena([{ texto: `${nx} de ${el} y ${no} O` }, { texto: 'Stock: ¿?', color: 'd' }]),
+          pasos: [
+            { tipo: 'pide', texto: `Piden el nombre Stock de ${fo}: «óxido de ${el}» y, entre paréntesis, un número romano.` },
+            { tipo: 'datos', texto: [`La fórmula tiene ${nx} ${nx > 1 ? 'átomos' : 'átomo'} de ${el} y ${no} de oxígeno. Cada O vale −2 y el óxido es neutro: `, z, ' = 0.'] },
+            { tipo: 'regla', texto: ['En Stock, el romano no cuenta átomos: es el estado de oxidación ', w, ' del elemento. Lo saco de que la suma de estados dé cero.'],
+              ecuacion: [nx > 1 ? `${nx}` : '', w, ` + ${no} · (−2) = 0`] },
+            { tipo: 'cuentas', texto: [`Los ${no} O suman ${sg(-2 * no)}. ${nx > 1 ? `Los ${nx} átomos` : 'El átomo'} de ${el} ${nx > 1 ? 'deben' : 'debe'} aportar ${sg(2 * no)}${nx > 1 ? ', repartido entre ellos' : ''}.`],
+              ecuacion: [...(nx > 1 ? [`${nx}`, w, ` = +${2 * no}   →   `] : []), w, ` = ${sg(wx)}   →   (${ROM[wx]})`],
+              dibujo: cadena([{ texto: `${nx} de ${el} y ${no} O` }, { texto: `${el}: ${sg(wx)}; O: −2` }, { texto: `Stock: ${stock}`, color: 'd' }]) },
+            { tipo: 'sentido', texto: `Compruebo: ${nx} · (${sg(wx)}) + ${no} · (−2) = ${sg(nx * wx - 2 * no)}. El óxido queda neutro, así que el romano está bien.` },
+          ],
+          respuesta: stock,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Halla el estado y después el romano.',
       generar(s) {
-        const C = [['FeO', 'hierro', 1, 1], ['Fe₂O₃', 'hierro', 2, 3], ['CuO', 'cobre', 1, 1], ['Cu₂O', 'cobre', 2, 1], ['PbO₂', 'plomo', 1, 2], ['SnO', 'estaño', 1, 1],
-          ['SO₂', 'azufre', 1, 2], ['SO₃', 'azufre', 1, 3], ['N₂O₅', 'nitrógeno', 2, 5], ['Cl₂O₇', 'cloro', 2, 7]];
+        const C = CASOS_OXIDO;
         const [fo, el, nx, no] = C[s % C.length], wx = 2 * no / nx;
         return {
           pregunta: `¿Cuál es el nombre Stock de ${fo}?`,
@@ -246,7 +312,7 @@
     const g = mcd(2, wx), ne = 2 / g, no = wx / g;                 // óxido E_ne O_no
     let h = 2, e = ne, o = no + 1;                                  // + H₂O
     const d = mcd(mcd(h, e), o); h /= d; e /= d; o /= d;
-    return { f: formula([['H', h], [s, e], ['O', o]]), sin: formula([['H', 2], [s, ne], ['O', no + 1]]), simplificable: d > 1 };
+    return { f: formula([['H', h], [s, e], ['O', o]]), sin: formula([['H', 2], [s, ne], ['O', no + 1]]), simplificable: d > 1, h, e, o, d };
   }
   const hidroxido = (s, wx) => formula([[s, 1], ['OH', wx, true]]);
   const HIDR = { Na: 'NaH (hidruro, H −1)', Ca: 'CaH₂ (hidruro, H −1)', Fe: 'sin hidruro común', C: 'CH₄ (hidruro)', S: 'H₂S: en agua, ácido sulfhídrico', N: 'NH₃ (hidruro)' };
@@ -268,11 +334,21 @@
     if (p === 3) return e.metal ? `con agua, el hidróxido ${hidroxido(s, e.w)}` : `con agua, el oxácido ${oxacido(s, e.w).f}`;
     return `con hidrógeno: ${HIDR[k]}`;
   }
+  // Casos de «Ahora tú» y de «Así se resuelve»: [elemento, ω, nombre del ácido o «hidróxido»].
+  const CASOS_FUN = [['S', 4, 'sulfuroso'], ['S', 6, 'sulfúrico'], ['N', 5, 'nítrico'], ['N', 3, 'nitroso'], ['C', 4, 'carbónico'], ['Cl', 7, 'perclórico'], ['Cl', 5, 'clórico'], ['Cl', 1, 'hipocloroso'],
+    ['Fe', 3, 'hidróxido'], ['Al', 3, 'hidróxido'], ['Mg', 2, 'hidróxido'], ['K', 1, 'hidróxido']];
   const funciones = {
     id: 'arbol-funciones',
     titulo: 'El árbol de las funciones',
     temas: ['Óxidos e hidruros', 'Hidróxidos', 'Ácidos oxácidos e hidrácidos', 'Peróxidos'],
     pieza: 'quim-cadena',
+    lee: {
+      tarjetas: [
+        { titulo: 'Familias de compuestos', texto: 'Los compuestos inorgánicos se agrupan en familias llamadas funciones: óxidos, hidróxidos, ácidos, sales e hidruros. Cada familia tiene una forma de fórmula que se reconoce a simple vista.' },
+        { titulo: 'En la casa y el carro', texto: 'La soda cáustica que destapa desagües es hidróxido de sodio, NaOH. La batería de un carro lleva ácido sulfúrico, H₂SO₄. Los dos son compuestos inorgánicos de familias distintas.' },
+        { titulo: 'Metal o no metal', texto: 'Para ubicar un compuesto en su familia, primero se mira si el elemento es metal o no metal: la tabla periódica lo dice. En el juego, compara el camino de un metal con el de un no metal.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un elemento con su estado de oxidación. El árbol se arma solo: con oxígeno y después agua; y con hidrógeno.',
       voz: 'Compara un metal con un no metal en el mismo camino.',
@@ -312,11 +388,52 @@
       condicion: 'el peróxido (O₂²⁻, O a −1) no se simplifica: Na₂O₂ no es NaO. HCl y H₂S son ácidos disueltos en agua.',
       voz: 'Cada paso suma átomos enteros; el estado no cambia.',
     },
+    resuelve: {
+      pieza: 'quim-cadena',
+      generar(s) {
+        const r = azar(s + 900), [x, wx, tipo] = r.de(CASOS_FUN), metal = tipo === 'hidróxido', ox = oxido(x, wx);
+        const camino = final => ({ datos: { columnas: [{ titulo: `${x} con ω = +${wx}`, color: metal ? 'o' : 'i', nodos: [
+          { texto: `${x} + O₂` }, { texto: `óxido ${metal ? 'básico' : 'ácido'}: ${final ? ox : '¿?'}`, color: metal ? 'o' : 'i' },
+          { texto: `${metal ? 'hidróxido' : 'oxácido'}: ${final || '¿?'}`, color: metal ? 'o' : 'i' }],
+          flechas: [{ de: 0, a: 1 }, { de: 1, a: 2, texto: '+ H₂O' }] }] }, estado: {} });
+        if (metal) {
+          const bien = hidroxido(x, wx);
+          return {
+            enunciado: ['¿Cuál es la fórmula del hidróxido de ', x, ' con ', w, ` = +${wx}?`],
+            dibujo: camino(null),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la fórmula del hidróxido de ', x, ': el metal con iones OH⁻.'] },
+              { tipo: 'datos', texto: [`El ${x} es un metal con `, w, ` = +${wx}. El ion hidróxido, OH⁻, tiene carga −1 y va entero.`] },
+              { tipo: 'regla', texto: 'Un metal con oxígeno da un óxido básico; con agua, un hidróxido. Lleva tantos OH⁻ como hagan falta para que la carga quede en cero.',
+                ecuacion: ['óxido básico + H₂O → hidróxido'] },
+              { tipo: 'cuentas', texto: `Cada OH⁻ compensa una carga positiva. Para +${wx} hacen falta ${wx} OH⁻${wx > 1 ? ', entre paréntesis porque se repiten' : ''}.`,
+                ecuacion: [`+${wx} + ${wx} · (−1) = 0   →   ${bien}`], dibujo: camino(bien) },
+              { tipo: 'sentido', texto: `Compruebo: el ${x} aporta +${wx} y los OH⁻ suman −${wx}; queda neutro. El óxido del camino, ${ox}, tiene el mismo estado +${wx}.` },
+            ],
+            respuesta: bien,
+          };
+        }
+        const o = oxacido(x, wx);
+        return {
+          enunciado: ['¿Cuál es la fórmula del ácido ', tipo, ' (oxácido de ', x, ' con ', w, ` = +${wx})?`],
+          dibujo: camino(null),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la fórmula del ácido ', tipo, ': un oxácido, con hidrógeno, ', x, ' y oxígeno.'] },
+            { tipo: 'datos', texto: [`El ${x} es un no metal con `, w, ` = +${wx}. El oxígeno vale −2.`] },
+            { tipo: 'regla', texto: 'Un no metal con oxígeno da un óxido ácido. Si le sumo una molécula de agua, sale el oxácido. Al final simplifico, si se puede.',
+              ecuacion: ['óxido ácido + H₂O → oxácido'] },
+            { tipo: 'cuentas', texto: `Primero el óxido que suma cero: ${ox}. Le sumo los átomos de H₂O${o.simplificable ? ` y divido todos los subíndices entre ${o.d}` : ''}.`,
+              ecuacion: [`${ox} + H₂O → ${o.sin}${o.simplificable ? `   →   ${o.f}` : ''}`], dibujo: camino(o.f) },
+            { tipo: 'sentido', texto: `Compruebo los estados en ${o.f}: los H suman +${o.h}, el ${x} aporta +${o.e * wx} y los O, −${2 * o.o}. Total: ${sg(o.h + o.e * wx - 2 * o.o)}.` },
+          ],
+          respuesta: o.f,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Escribe primero el óxido y suma el agua.',
       generar(s) {
-        const C = [['S', 4, 'sulfuroso'], ['S', 6, 'sulfúrico'], ['N', 5, 'nítrico'], ['N', 3, 'nitroso'], ['C', 4, 'carbónico'], ['Cl', 7, 'perclórico'], ['Cl', 5, 'clórico'], ['Cl', 1, 'hipocloroso'],
-          ['Fe', 3, 'hidróxido'], ['Al', 3, 'hidróxido'], ['Mg', 2, 'hidróxido'], ['K', 1, 'hidróxido']];
+        const C = CASOS_FUN;
         const [x, wx, tipo] = C[s % C.length];
         if (tipo === 'hidróxido') {
           const bien = hidroxido(x, wx);
@@ -379,6 +496,14 @@
     titulo: 'Fichas enteras hasta carga cero',
     temas: ['Sales oxisales y haloideas'],
     pieza: 'quim-fichas',
+    lee: {
+      tarjetas: [
+        { titulo: 'No solo la de mesa', texto: 'La sal de Maras, en el Cusco, es cloruro de sodio. Pero en química, «sal» es toda una familia: el yeso, el mármol y el salitre también son sales.' },
+        { titulo: 'Catión y anión', texto: 'Una sal es un compuesto iónico: tiene un catión, un ion positivo, y un anión, un ion negativo. El catión suele venir de una base y el anión, de un ácido.' },
+        { titulo: 'Se nombra al revés', texto: 'La sal se nombra empezando por el anión: cloruro de sodio, sulfato de calcio. La fórmula se escribe al revés, con el catión primero: NaCl, CaSO₄.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, las fichas entran de una en una. Cuenta cuántas fichas de cada ion hacen falta para que la carga neta llegue a cero.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un catión y un anión. Las fichas entran solas, enteras, hasta que cada carga + tenga su − enfrente. Lee la fórmula.',
       voz: 'Las fichas no se parten: se agregan enteras.',
@@ -421,6 +546,30 @@
       ecuacion: ['Σ n · ', z, ' = 0   →   Al₂', { llave: ['(SO₄)₃'], nota: 'ion entero' }],
       condicion: 'el ion poliatómico no se rompe: va entre paréntesis si se repite. Haloidea: anión sin oxígeno (cloruro); oxisal: con oxígeno.',
       voz: 'Primero los iones y sus cargas; después la proporción.',
+    },
+    resuelve: {
+      pieza: 'quim-fichas',
+      generar(s) {
+        const r = azar(s + 900), c = r.de(['Na', 'K', 'Ca', 'Mg', 'Al', 'Fe', 'NH4']);
+        // Sin NaNO₃: el validador de nucleo/teoria.js lo toma por «NaN» (igual que en «Ahora tú»).
+        const a = r.de(['Cl', 'Br', 'S', 'NO3', 'SO4', 'CO3', 'PO4'].filter(k => !(c === 'Na' && k === 'NO3')));
+        const x = sal(c, a), C = CAT[c], A = AN[a], tope = x.nc * C[2];
+        const poli = [C, A].filter(i => i[4]).map(i => i[0]);
+        return {
+          enunciado: `¿Cuál es la fórmula del ${x.nombre}?`,
+          dibujo: fichas([{ t: C[0], carga: C[2], n: 1, color: 'o' }, { t: A[0], carga: -A[2], n: 1, color: 'i' }]),
+          pasos: [
+            { tipo: 'pide', texto: `Piden la fórmula del ${x.nombre}: cuántos iones de cada clase y cómo se escriben.` },
+            { tipo: 'datos', texto: `El catión es ${C[0]}, con +${C[2]}, y el anión es ${A[0]}, con −${A[2]}.${poli.length ? ` ${poli.join(' y ')} ${poli.length > 1 ? 'son iones de varios átomos' : 'es un ion de varios átomos'}.` : ''}` },
+            { tipo: 'regla', texto: 'Junto iones enteros, la menor cantidad posible, hasta que las cargas positivas y negativas se anulen. Un ion de varios átomos que se repite va entre paréntesis.',
+              ecuacion: ['Σ n · ', z, ' = 0'] },
+            { tipo: 'cuentas', texto: `Busco el menor número al que llegan las dos cargas: ${tope}. Hacen falta ${x.nc} ${C[0]} y ${x.na} ${A[0]}.`,
+              ecuacion: [`${x.nc} · (+${C[2]}) + ${x.na} · (−${A[2]}) = ${sg(x.nc * C[2] - x.na * A[2])}   →   ${x.fo}`], dibujo: x.dib },
+            { tipo: 'sentido', texto: `Las cargas se anulan: +${x.nc * C[2]} y −${x.na * A[2]}. Y ${x.nc} : ${x.na} ya no se puede simplificar más: es la proporción mínima.` },
+          ],
+          respuesta: x.fo,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Iones enteros hasta carga cero.',
@@ -465,11 +614,32 @@
     const lista = []; for (const x of todas.slice(0, n)) { const u = lista.find(y => y.t === x.t); if (u) u.n += 1; else lista.push(Object.assign({}, x, { n: 1 })); }
     return { n, total: todas.length, q: todas.slice(0, n).reduce((a, x) => a + x.carga, 0), dib: fichas(lista) };
   }
+  // «Así se resuelve»: las sales de «Ahora tú» separadas en sus partes [texto, carga, cuántas, papel]; papel: c catión,
+  // a anión, oh ion hidróxido aparte, agua agua de cristalización.
+  const SALES_RES = [
+    ['NaHSO₄', 'ácida', [['Na⁺', 1, 1, 'c'], ['HSO₄⁻', -1, 1, 'a']]],
+    ['KHCO₃', 'ácida', [['K⁺', 1, 1, 'c'], ['HCO₃⁻', -1, 1, 'a']]],
+    ['Ca(HCO₃)₂', 'ácida', [['Ca²⁺', 2, 1, 'c'], ['HCO₃⁻', -1, 2, 'a']]],
+    ['Mg(OH)Cl', 'básica', [['Mg²⁺', 2, 1, 'c'], ['OH⁻', -1, 1, 'oh'], ['Cl⁻', -1, 1, 'a']]],
+    ['Cu₂(OH)₂CO₃', 'básica', [['Cu²⁺', 2, 2, 'c'], ['OH⁻', -1, 2, 'oh'], ['CO₃²⁻', -2, 1, 'a']]],
+    ['Al(OH)SO₄', 'básica', [['Al³⁺', 3, 1, 'c'], ['OH⁻', -1, 1, 'oh'], ['SO₄²⁻', -2, 1, 'a']]],
+    ['Na₂CO₃·10H₂O', 'hidratada', [['Na⁺', 1, 2, 'c'], ['CO₃²⁻', -2, 1, 'a'], ['H₂O', 0, 10, 'agua']]],
+    ['CaSO₄·2H₂O', 'hidratada', [['Ca²⁺', 2, 1, 'c'], ['SO₄²⁻', -2, 1, 'a'], ['H₂O', 0, 2, 'agua']]],
+    ['NaCl', 'neutra', [['Na⁺', 1, 1, 'c'], ['Cl⁻', -1, 1, 'a']]],
+    ['K₂SO₄', 'neutra', [['K⁺', 1, 2, 'c'], ['SO₄²⁻', -2, 1, 'a']]],
+  ];
   const especiales = {
     id: 'sales-acidas-basicas-hidratadas',
     titulo: 'Sales con H, OH o agua',
     temas: ['Sales ácidas, básicas e hidratadas'],
     pieza: 'quim-fichas',
+    lee: {
+      tarjetas: [
+        { titulo: 'El bicarbonato', texto: 'El bicarbonato de la cocina, NaHCO₃, es una sal que conserva un hidrógeno del ácido carbónico. Por eso se le llama sal ácida, aunque se pueda comer.' },
+        { titulo: 'Más que catión y anión', texto: 'Una sal neutra solo tiene catión y anión, como el NaCl. Otras sales traen algo más en su fórmula, y ese algo más decide su nombre de familia: ácida, básica o hidratada.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, compara cada sal con la neutra, Na₂CO₃. Busca la ficha que no aparece en la neutra y fíjate en su carga.' },
+      ],
+    },
     juega: {
       consigna: 'Elige una sal: sus fichas entran solas. Busca la que la distingue de una sal neutra: un H en el anión, un OH⁻ o agua.',
       voz: 'Busca la ficha que sobra respecto de una sal neutra.',
@@ -506,6 +676,34 @@
       ecuacion: [{ llave: ['NaHCO₃'], nota: 'ácida' }, '   ·   ', { llave: ['Mg(OH)Cl'], nota: 'básica' }, '   ·   ', { llave: ['CuSO₄·5H₂O'], nota: 'hidratada' }],
       condicion: 'el agua de cristalización no tiene carga ni se mezcla con los OH de un hidróxido; se nombra con prefijos: pentahidrato.',
       voz: 'Una ficha distinta decide la clase.',
+    },
+    resuelve: {
+      pieza: 'quim-fichas',
+      generar(s) {
+        const r = azar(s + 900), [fo, cl, iones] = r.de(SALES_RES);
+        const parte = rol => iones.filter(i => i[3] === rol), cat = parte('c')[0], an = parte('a')[0], oh = parte('oh')[0], agua = parte('agua')[0];
+        const lista = iones.map(([t, , n]) => `${n} ${t}`).join(', ');
+        const suma = iones.reduce((a, [, q, n]) => a + q * n, 0);
+        const cuenta = iones.map(([, q, n]) => `${n} · (${sg(q)})`).join(' + ');
+        const aplica = {
+          ácida: () => `El anión ${an[0]} conserva un H del ácido. Es una sal ácida.`,
+          básica: () => `Además del anión ${an[0]}, hay ${oh[2]} OH⁻ aparte. Es una sal básica.`,
+          hidratada: () => `Después del punto hay ${agua[2]} H₂O enteras, sin carga. Es una sal hidratada.`,
+          neutra: () => `Solo hay ${cat[0]} y ${an[0]}, sin H en el anión, sin OH⁻ y sin agua. Es una sal neutra.`,
+        }[cl]();
+        return {
+          enunciado: `¿Qué clase de sal es ${fo}: ácida, básica, hidratada o neutra?`,
+          dibujo: fichas(iones.map(([t, carga, n, rol]) => Object.assign({ t, carga, n }, rol === 'c' ? { color: 'o' } : rol === 'a' ? { color: 'i' } : {}))),
+          pasos: [
+            { tipo: 'pide', texto: `Piden la clase de sal de ${fo}. Hay que ver qué trae además del catión y el anión.` },
+            { tipo: 'datos', texto: `Separo ${fo} en sus partes: ${lista}.` },
+            { tipo: 'regla', texto: 'Una sal neutra solo tiene catión y anión. Si el anión guarda un H, es ácida; si lleva OH⁻ aparte, básica; si trae agua tras el punto, hidratada.' },
+            { tipo: 'aplica', texto: aplica },
+            { tipo: 'sentido', texto: `Las cargas se anulan, como en toda sal: la suma da ${sg(suma)}.${agua ? ' El agua no cambia la cuenta.' : ''}`, ecuacion: [`${cuenta} = ${sg(suma)}`] },
+          ],
+          respuesta: `${fo}: sal ${cl}`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Busca el H del anión, el OH o el agua.',
@@ -567,6 +765,9 @@
       { termino: 'nomenclatura Stock', formas: ['nomenclatura Stock', 'Stock'],
         def: 'Nombra con el estado de oxidación del metal en números romanos, entre paréntesis.',
         ejemplo: 'Fe₂O₃: 2ω = 6, óxido de hierro(III).', ver: ['estado de oxidación'] },
+      { termino: 'nomenclatura tradicional', formas: ['nomenclatura tradicional'],
+        def: 'Nombra con sufijos: -oso para el estado de oxidación menor del elemento e -ico para el mayor.',
+        ejemplo: 'FeO: óxido ferroso; Fe₂O₃: óxido férrico.', ver: ['nomenclatura Stock', 'estado de oxidación'] },
       { termino: 'óxido básico', formas: ['óxido básico', 'óxidos básicos'], def: 'Compuesto de un metal con oxígeno. Con agua forma un hidróxido.',
         ejemplo: 'CaO + H₂O → Ca(OH)₂.', ver: ['hidróxido', 'óxido ácido'] },
       { termino: 'óxido ácido', formas: ['óxido ácido', 'óxidos ácidos'], def: 'Compuesto de un no metal con oxígeno; también se llama anhídrido. Con agua forma un oxácido.',
