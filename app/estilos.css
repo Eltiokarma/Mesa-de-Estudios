@@ -826,7 +826,10 @@ input[type=file]{font:inherit;max-width:100%}
   /* La figura va a la derecha y ocupa todo el alto; lo demás, apilado a la izquierda. Antes la consigna compartía fila
      con la figura y se estiraba hasta su alto: un cuadro enorme con dos líneas (captura de Gerson, 16 nov). */
   .te-idea>.te-figcaja{grid-column:2;grid-row:3/span 8}
-  .te-idea>:not(h2):not(.te-momentos):not(.te-figcaja){grid-column:1}}
+  .te-idea>:not(h2):not(.te-momentos):not(.te-figcaja){grid-column:1}
+  /* Sin figura («Lee» y los pasos sin dibujo), la columna derecha quedaba vacía y las tarjetas se cortaban a la mitad
+     de la pantalla (captura de Gerson, 16 nov): todo ocupa el ancho, con un tope para que las líneas se lean. */
+  .te-idea:has(>.te-figcaja .te-fig:empty)>:not(h2):not(.te-momentos):not(.te-figcaja){grid-column:1/-1;width:100%;max-width:760px}}
 
 /* ---------- Teoría, segunda tanda (14 nov, pedido de Gerson): gesto directo, lupa, llaves, tipografía y laboratorio ---------- */
 /* La figura llega al borde de la tarjeta: a 360 px el texto del SVG (14 en un lienzo de 320) se ve a ~14 px, no a 12,6. */
