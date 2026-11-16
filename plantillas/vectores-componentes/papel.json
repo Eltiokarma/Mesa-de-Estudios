@@ -6,13 +6,13 @@
     {
       "id": "p1",
       "nivel": "básico",
-      "enunciado": "Se tienen los vectores A = 6 u (150° con +x), B = 6 u (90° con +x) y C = 6 u (330° con +x). ¿Cuánto mide |A + 2B + C|? Alternativas: A) 12 u   B) 6 u   C) 144 u   D) 12√3 u   E) 24 u",
+      "enunciado": "Se tienen los vectores A = 6 u (150° con +x), B = 6 u (90° con +x) y C = 6 u (330° con +x). ¿Cuánto mide |A⃗ + 2B⃗ + C⃗|? Alternativas: A) 12 u   B) 6 u   C) 144 u   D) 12√3 u   E) 24 u",
       "respuesta": "A) 12 u",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
-        "A: x = −3√3, y = 3",
-        "2B: x = 0, y = 12",
-        "C: x = 3√3, y = −3",
+        "A⃗: x = −3√3, y = 3",
+        "2B⃗: x = 0, y = 12",
+        "C⃗: x = 3√3, y = −3",
         "Se suman por componentes: Rx = 0 y Ry = 12.",
         "|R| = √(Rx² + Ry²) = √144 = 12 u."
       ]
@@ -24,9 +24,9 @@
       "respuesta": "B) 300°",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (cos 60° = 1/2, sen 60° = √3/2).",
-        "A: x = 4, y = 0",
-        "B: x = 4, y = −4√3",
-        "C: x = −2, y = −2√3",
+        "A⃗: x = 4, y = 0",
+        "B⃗: x = 4, y = −4√3",
+        "C⃗: x = −2, y = −2√3",
         "Se suman por componentes: Rx = 6 y Ry = −6√3.",
         "tan α = |Ry|/|Rx| da el ángulo de referencia α = 60°; con los signos de Rx y Ry, la resultante forma 300° con +x."
       ]
@@ -38,11 +38,11 @@
       "respuesta": "B) 2 N",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (cos 60° = 1/2, sen 60° = √3/2).",
-        "A: x = −3, y = −3√3",
-        "B: x = −3, y = 3√3",
-        "C: x = 4, y = 0",
+        "A⃗: x = −3, y = −3√3",
+        "B⃗: x = −3, y = 3√3",
+        "C⃗: x = 4, y = 0",
         "Se suman por componentes: Rx = −2 y Ry = 0.",
-        "La fuerza que falta es −R: mide lo mismo que R. |R| = √(Rx² + Ry²) = √4 = 2 N."
+        "La fuerza que falta es −R⃗: mide lo mismo que R⃗. |R| = √(Rx² + Ry²) = √4 = 2 N."
       ]
     },
     {
@@ -52,8 +52,8 @@
       "respuesta": "D) 330°",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
-        "A: x = −√3, y = 1",
-        "B: x = 3√3, y = −3",
+        "A⃗: x = −√3, y = 1",
+        "B⃗: x = 3√3, y = −3",
         "Se suman por componentes: Rx = 2√3 y Ry = −2.",
         "tan α = |Ry|/|Rx| da el ángulo de referencia α = 30°; con los signos de Rx y Ry, la resultante forma 330° con +x."
       ]
@@ -65,9 +65,9 @@
       "respuesta": "E) 7√5 m",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 37° = 3/5, cos 37° = 4/5); norte = +y, este = +x.",
-        "A: x = 10, y = 0",
-        "B: x = 4, y = −3",
-        "C: x = 0, y = 10",
+        "A⃗: x = 10, y = 0",
+        "B⃗: x = 4, y = −3",
+        "C⃗: x = 0, y = 10",
         "Se suman por componentes: Rx = 14 y Ry = 7.",
         "|R| = √(Rx² + Ry²) = √245 = 7√5 m."
       ]
@@ -79,9 +79,9 @@
       "respuesta": "D) 4√5 m",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (cos 45° = sen 45° = √2/2); norte = +y, este = +x.",
-        "A: x = 6, y = 6",
-        "B: x = 4, y = −4",
-        "C: x = −6, y = 6",
+        "A⃗: x = 6, y = 6",
+        "B⃗: x = 4, y = −4",
+        "C⃗: x = −6, y = 6",
         "Se suman por componentes: Rx = 4 y Ry = 8.",
         "|R| = √(Rx² + Ry²) = √80 = 4√5 m."
       ]
@@ -93,8 +93,8 @@
       "respuesta": "B) 240°",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
-        "A: x = 0, y = −8",
-        "B: x = −4√3, y = −4",
+        "A⃗: x = 0, y = −8",
+        "B⃗: x = −4√3, y = −4",
         "Se suman por componentes: Rx = −4√3 y Ry = −12.",
         "tan α = |Ry|/|Rx| da el ángulo de referencia α = 60°; con los signos de Rx y Ry, la resultante forma 240° con +x."
       ]
@@ -106,12 +106,12 @@
       "respuesta": "A) 6√3 N",
       "pasos": [
         "Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x (sen 30° = 1/2, cos 30° = √3/2).",
-        "A: x = 3√3, y = 3",
-        "B: x = −3√3, y = 3",
-        "C: x = 0, y = 6",
-        "D: x = −3√3, y = −3",
+        "A⃗: x = 3√3, y = 3",
+        "B⃗: x = −3√3, y = 3",
+        "C⃗: x = 0, y = 6",
+        "D⃗: x = −3√3, y = −3",
         "Se suman por componentes: Rx = −3√3 y Ry = 9.",
-        "La fuerza que falta es −R: mide lo mismo que R. |R| = √(Rx² + Ry²) = √108 = 6√3 N."
+        "La fuerza que falta es −R⃗: mide lo mismo que R⃗. |R| = √(Rx² + Ry²) = √108 = 6√3 N."
       ]
     }
   ]

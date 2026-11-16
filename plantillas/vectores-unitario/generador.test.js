@@ -40,3 +40,51 @@ test('salen los cinco tipos, y el unitario de la suma muestra la suma de unitari
   }
   assert.equal(tipos.size, 5); assert.ok(sumaUnit > 0);
 });
+
+test('notación: A⃗ con flecha, î ĵ k̂ con sombrerito y |A| sin flecha', () => {
+  const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? String(x.t) : String(x));
+  for (let s = 0; s < 300; s++) {
+    const p = gen.generar(s);
+    const visto = [p.enunciado, p.pregunta, p.solucion, p.alternativas.map(a => a.texto), p.alternativas.filter(a => a.error).map(a => a.error.explicacion), (p.pasos || []).map(q => [q.texto, q.ecuacion])].map(plano).join(' ');
+    assert.ok(!/\d[ijk](?![\p{L}\p{M}])|[ +−(·][ijk](?![\p{L}\p{M}])/u.test(visto), `semilla ${s}: unitario sin sombrerito en «${visto}»`);
+    assert.ok(!/(?<![\p{L}\p{M}|])[AB](?![\p{L}\p{M}|²])(?! =)/u.test(visto.replace(/\|[^|]*\|/g, '')), `semilla ${s}: vector sin flecha en «${visto}»`);
+    assert.ok(!/\|[AB]⃗\|/.test(visto), `semilla ${s}: el módulo lleva flecha`);
+  }
+});
+
+// ---------- Escena viva (docs/escena-viva.md): A⃗ a escala con î y ĵ, sus componentes y û de largo 1 ----------
+const { probarViva } = require('../../nucleo/kit/piezas/probar-viva.js');
+const conEscena = p => ['unitario', 'constante', 'unitario-suma'].includes(p._datos.tipo) && (!p._datos.c || p._datos.c.length === 2);
+probarViva(gen, {
+  semillas: 300, pieza: 'flechas', conEscena, presupuestoSoloEscena: true,
+  final: (p, fin, s) => {
+    const d = p.escena.datos, dd = p._datos;
+    assert.ok(d.ejes && fin.includes('>î<') && fin.includes('>ĵ<'), 'los ejes llevan î y ĵ');
+    const c = dd.tipo === 'unitario-suma' ? [dd.a[0] + dd.b[0], dd.a[1] + dd.b[1]] : dd.c;
+    // Fidelidad: A⃗ (o A⃗ + B⃗) mide su módulo; û sale del origen, mide 1 y apunta igual.
+    const dividido = d.flechas.find(f => !f.discontinua && f.de[0] === 0 && f.de[1] === 0 && f.a[0] === c[0] && f.a[1] === c[1]);
+    assert.ok(dividido, `semilla ${s}: falta el vector que se divide`);
+    assert.ok(Math.abs(Math.hypot(...dividido.a) - moduloEntero(c)) < 1e-9);
+    const u = d.flechas.find(f => f.rotulo === 'û');
+    assert.ok(u && u.de[0] === 0 && u.de[1] === 0, `semilla ${s}: û no sale del origen`);
+    assert.ok(Math.abs(Math.hypot(...u.a) - 1) < 1e-12, `semilla ${s}: û no mide 1`);
+    assert.ok(Math.abs(u.a[0] * c[1] - u.a[1] * c[0]) < 1e-9 && u.a[0] * c[0] + u.a[1] * c[1] > 0, `semilla ${s}: û no apunta como el vector`);
+    assert.ok(fin.includes('>û<'), `semilla ${s}: el final no rotula û`);
+    // Las componentes llegan a la punta: una sobre x y otra paralela a y.
+    const comp = d.flechas.filter(f => f.discontinua && f.color !== 'i');
+    if (c[0] && c[1]) assert.ok(comp.some(f => f.a[1] === 0 && f.a[0] === c[0]) && comp.some(f => f.a[0] === c[0] && f.a[1] === c[1]), `semilla ${s}: faltan las componentes`);
+    // Los pasos: módulo, dividir y comprobar (la suma empieza sumando).
+    const textos = p.pasos.map(q => q.texto.map(x => (typeof x === 'object' ? x.t : x)).join(''));
+    assert.ok(/módulo/.test(textos[textos.length - 3]) && /Comprobación/.test(textos[textos.length - 1]), `semilla ${s}: ${textos}`);
+  },
+});
+
+test('escena viva: los tres tipos del plano la llevan; 3D, la recta y «con módulo», no', () => {
+  const con = new Set(), sin = new Set();
+  for (let s = 0; s < 300; s++) {
+    const p = gen.generar(s), k = p._datos.tipo + (p._datos.c ? p._datos.c.length : '');
+    (p.escena ? con : sin).add(k);
+  }
+  assert.deepEqual([...con].sort(), ['constante2', 'unitario-suma', 'unitario2']);
+  assert.ok(sin.has('unitario3') && sin.has('constante3') && sin.has('recta') && sin.has('con-modulo2'));
+});

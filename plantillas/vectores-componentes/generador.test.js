@@ -63,7 +63,9 @@ probarViva(gen, {
   semillas: 300, pieza: 'flechas',
   final: (p, fin, s) => {
     const d = p.escena.datos, res = d.resultante;
-    assert.ok(fin.includes(`R = ${res.valor}`), `semilla ${s}: el final no rotula la resultante`);
+    assert.ok(fin.includes(`${res.rotulo} = ${res.valor}`), `semilla ${s}: el final no rotula la resultante`);
+    // Notación: con el ángulo, el rótulo es el vector (R⃗ = 8î − 6ĵ); con el módulo, el largo (R = 10 u).
+    assert.equal(res.rotulo, p._datos.tipo === 'angulo' ? 'R\u20D7' : 'R', `semilla ${s}: rótulo de R`);
     assert.ok(fin.includes('>î<') && fin.includes('>ĵ<'), 'los ejes llevan î y ĵ');
     // Fidelidad: cada vector dado mide su módulo, y R es la suma con coeficientes.
     const dados = d.flechas.filter(f => !f.paso && !f.discontinua);

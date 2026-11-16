@@ -13,6 +13,8 @@
  *
  * Convención de academia: cos 37° = 4/5 y cos 53° = 3/5. Errores: hipótesis nuestras.
  * Necesita la opción negativos de nucleo/predicciones.js (respuestas con signo).
+ * Notación (docs/plan-calidad.md, contrato, punto 5): el vector lleva flecha (A⃗·B⃗, |A⃗ × B⃗|, PQ⃗) y su módulo no
+ * (|A|, |B|); los unitarios de los ejes, sombrerito (î, ĵ, k̂).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -29,17 +31,12 @@
   const raizDe = n => { const t = P.radical(Math.sqrt(n)); return t === `√${n}` ? t : `√${n} = ${t}`; };
   const TIPOS = ['escalar', 'angulo', 'perpendicular', 'vectorial-z', 'modulo-cruz', 'area'];
 
-  // Vector con i, j, k: (2, −3, 1) → "2i − 3j + k".
-  function ijk(c) {
-    const ej = ['i', 'j', 'k'];
-    let s = '';
-    c.forEach((n, q) => {
-      if (n === 0) return;
-      const abs = Math.abs(n), t = (abs === 1 ? '' : abs) + ej[q];
-      s += s === '' ? (n < 0 ? '−' : '') + t : (n < 0 ? ' − ' : ' + ') + t;
-    });
-    return s || '0';
-  }
+  // Vector con î, ĵ, k̂: (2, −3, 1) → «2î − 3ĵ + k̂».
+  const ijk = P.ijk;
+  const A_ = P.vec('A'), B_ = P.vec('B'), AyB = `${A_} y ${B_}`;
+  const AB = `${A_}·${B_}`, AxB = `${A_} × ${B_}`, BxA = `${B_} × ${A_}`;
+  const I = P.unitarios('i'), J = P.unitarios('j'), K = P.unitarios('k');
+  const PQ = P.vec('PQ'), PS = P.vec('PS');
   const par = c => `(${c.map(n => f(n)).join('; ')})`;
   const dot = (a, b) => a.reduce((s, x, q) => s + x * b[q], 0);
   const norma2 = a => dot(a, a);
@@ -88,7 +85,7 @@
 
   function construir(rng, semilla, tipo) {
     const v = P.v;
-    const variables = { A: { nombre: 'vector A', color: 'o' }, B: { nombre: 'vector B', color: 'i' }, t: { nombre: 'ángulo entre A y B', color: 'h' }, X: { nombre: 'lo que se pide', color: 'd' } };
+    const variables = { A: { nombre: `vector ${A_}`, color: 'o' }, B: { nombre: `vector ${B_}`, color: 'i' }, t: { nombre: `ángulo entre ${AyB}`, color: 'h' }, X: { nombre: 'lo que se pide', color: 'd' } };
     let enunciado, pregunta, correcta, errores, solucion, texto = x => f(x), unidad = '', datos;
 
     if (tipo === 'escalar') {
@@ -97,8 +94,8 @@
       correcta = dot(a, b);
       const prods = a.map((x, q) => x * b[q]).slice(0, dim);
       const cruzado = dim === 2 ? a[0] * b[1] + a[1] * b[0] : a[0] * b[1] + a[1] * b[2] + a[2] * b[0];
-      enunciado = ['Se tienen los vectores ', v('A', `A = ${ijk(a)}`), ' y ', v('B', `B = ${ijk(b)}`), '.'];
-      pregunta = ['¿Cuánto vale el producto escalar A·B?'];
+      enunciado = ['Se tienen los vectores ', v('A', `${A_} = ${ijk(a)}`), ' y ', v('B', `${B_} = ${ijk(b)}`), '.'];
+      pregunta = [`¿Cuánto vale el producto escalar ${AB}?`];
       errores = [
         h('VE-escalar-sin-signos', prods.reduce((s, x) => s + Math.abs(x), 0), 'Sumaste los productos sin sus signos. Cada producto aᵢbᵢ conserva su signo: (−2)·3 = −6 resta.'),
         h('VE-escalar-cruzado', cruzado, 'Multiplicaste componentes cruzadas (x con y). El producto escalar junta x con x, y con y, z con z.'),
@@ -106,9 +103,9 @@
         h('VE-escalar-signo-final', -correcta, 'Cambiaste el signo del resultado al sumar los productos.'),
       ];
       solucion = [
-        ['El producto escalar multiplica componente por componente y suma: A·B = AₓBₓ + A_yB_y', dim === 3 ? ' + A_zB_z.' : '.'],
-        ['A·B = ', a.slice(0, dim).map((x, q) => `(${f(x)})(${f(b[q])})`).join(' + '), ` = ${prods.map(f).join(' + ').replace(/\+ −/g, '− ')}.`],
-        ['A·B = ', v('X', f(correcta)), correcta === 0 ? ': A y B son perpendiculares.' : correcta < 0 ? ': es negativo, así que el ángulo entre A y B es obtuso.' : ': es positivo, así que el ángulo entre A y B es agudo.'],
+        [`El producto escalar multiplica componente por componente y suma: ${AB} = AₓBₓ + A_yB_y`, dim === 3 ? ' + A_zB_z.' : '.'],
+        [`${AB} = `, a.slice(0, dim).map((x, q) => `(${f(x)})(${f(b[q])})`).join(' + '), ` = ${prods.map(f).join(' + ').replace(/\+ −/g, '− ')}.`],
+        [`${AB} = `, v('X', f(correcta)), correcta === 0 ? `: ${AyB} son perpendiculares.` : correcta < 0 ? `: es negativo, así que el ángulo entre ${AyB} es obtuso.` : `: es positivo, así que el ángulo entre ${AyB} es agudo.`],
       ];
       datos = { tipo, a, b };
     } else if (tipo === 'angulo') {
@@ -116,17 +113,17 @@
       const a = p.a, b = p.b;
       correcta = p.t; texto = x => `${f(x)}°`; unidad = '°';
       const ab = dot(a, b), na = norma2(a), nb = norma2(b);
-      enunciado = ['Se tienen los vectores ', v('A', `A = ${ijk(a)}`), ' y ', v('B', `B = ${ijk(b)}`), '.'];
-      pregunta = ['¿Qué ángulo forman A y B?'];
+      enunciado = ['Se tienen los vectores ', v('A', `${A_} = ${ijk(a)}`), ' y ', v('B', `${B_} = ${ijk(b)}`), '.'];
+      pregunta = [`¿Qué ángulo forman ${AyB}?`];
       errores = [
-        h('VE-signo-del-escalar', 180 - p.t, `Tomaste A·B sin su signo. ${ab < 0 ? 'A·B es negativo: el ángulo es obtuso.' : 'A·B es positivo: el ángulo es agudo.'}`),
-        h('VE-escalar-por-vectorial', Math.abs(90 - p.t), 'Usaste el resultado como seno en vez de coseno. A·B = |A||B|·cos θ; el seno va con |A × B|.'),
-        h('VE-perpendicular-sin-escalar-cero', 90, `Dos vectores son perpendiculares solo si A·B = 0, y aquí A·B = ${f(ab)}.`),
+        h('VE-signo-del-escalar', 180 - p.t, `Tomaste ${AB} sin su signo. ${ab < 0 ? `${AB} es negativo: el ángulo es obtuso.` : `${AB} es positivo: el ángulo es agudo.`}`),
+        h('VE-escalar-por-vectorial', Math.abs(90 - p.t), `Usaste el resultado como seno en vez de coseno. ${AB} = |A||B|·cos θ; el seno va con |${AxB}|.`),
+        h('VE-perpendicular-sin-escalar-cero', 90, `Dos vectores son perpendiculares solo si ${AB} = 0, y aquí ${AB} = ${f(ab)}.`),
       ];
       const c = ab / Math.sqrt(na * nb);
       solucion = [
-        ['De A·B = |A||B|·cos θ: cos θ = A·B / (|A||B|).'],
-        ['A·B = ', `${f(ab)}; |A| = ${raizDe(na)}; |B| = ${raizDe(nb)}.`],
+        [`De ${AB} = |A||B|·cos θ: cos θ = ${AB} / (|A||B|).`],
+        [`${AB} = `, `${f(ab)}; |A| = ${raizDe(na)}; |B| = ${raizDe(nb)}.`],
         [`cos θ = ${f(ab)} / ${P.radical(Math.sqrt(na * nb))} = ${P.radical(c)}${c < 0 ? ' (negativo: obtuso)' : ''}.`],
         ['θ = ', v('t', `${p.t}°`), p.t === 37 || p.t === 53 || p.t === 127 || p.t === 143 ? ' (triángulo 3-4-5 de academia).' : '.'],
       ];
@@ -141,18 +138,18 @@
       if (resto === 0 || resto % b2 !== 0 || a1 === 0 || b1 === 0 || (dim === 3 && (a3 === 0 || b3 === 0))) return null;
       correcta = -resto / b2;
       variables.X = { nombre: 'm', color: 'd' };
-      const A = dim === 3 ? `${ijk([a1, 0, 0])} + mj ${a3 < 0 ? '−' : '+'} ${Math.abs(a3) === 1 ? '' : Math.abs(a3)}k` : `${ijk([a1, 0, 0])} + mj`;
-      enunciado = ['Los vectores ', v('A', `A = ${A}`), ' y ', v('B', `B = ${ijk([b1, b2, b3])}`), ' son perpendiculares.'];
+      const A = dim === 3 ? `${ijk([a1, 0, 0])} + m${J} ${a3 < 0 ? '−' : '+'} ${Math.abs(a3) === 1 ? '' : Math.abs(a3)}${K}` : `${ijk([a1, 0, 0])} + m${J}`;
+      enunciado = ['Los vectores ', v('A', `${A_} = ${A}`), ' y ', v('B', `${B_} = ${ijk([b1, b2, b3])}`), ' son perpendiculares.'];
       pregunta = ['¿Cuánto vale m?'];
       errores = [
         h('VE-despeje-signo', resto / b2, 'Al pasar los términos al otro lado no les cambiaste el signo.'),
-        h('VE-despeje-multiplica', -resto * b2, `Multiplicaste por ${b2} en vez de dividir.`),
-        h('VE-despeje-sin-coeficiente', -resto, `Olvidaste que m va multiplicado por ${b2} (la componente y de B).`),
-        h('VE-escalar-uno', (1 - resto) / b2, 'Igualaste A·B a 1. Perpendiculares quiere decir A·B = 0.'),
+        h('VE-despeje-multiplica', -resto * b2, `Multiplicaste por ${f(b2)} en vez de dividir.`),
+        h('VE-despeje-sin-coeficiente', -resto, `Olvidaste que m va multiplicado por ${f(b2)} (la componente y de ${B_}).`),
+        h('VE-escalar-uno', (1 - resto) / b2, `Igualaste ${AB} a 1. Perpendiculares quiere decir ${AB} = 0.`),
       ];
       solucion = [
-        ['Perpendiculares ⇔ A·B = 0.'],
-        ['A·B = ', `(${f(a1)})(${f(b1)}) + m·(${f(b2)})${dim === 3 ? ` + (${f(a3)})(${f(b3)})` : ''} = ${f(resto)} + ${f(b2)}m = 0.`.replace('+ −', '− ')],
+        [`Perpendiculares ⇔ ${AB} = 0.`],
+        [`${AB} = `, `(${f(a1)})(${f(b1)}) + m·(${f(b2)})${dim === 3 ? ` + (${f(a3)})(${f(b3)})` : ''} = ${f(resto)} + ${f(b2)}m = 0.`.replace('+ −', '− ')],
         ['m = ', `${f(-resto)} / ${f(b2)} = `, v('X', f(correcta)), '.'],
       ];
       datos = { tipo, a: [a1, null, a3], b: [b1, b2, b3] };
@@ -161,18 +158,18 @@
       correcta = a[0] * b[1] - a[1] * b[0];
       if (correcta === 0) return null;
       variables.X = { nombre: 'c', color: 'd' };
-      enunciado = ['En el plano xy se tienen ', v('A', `A = ${ijk(a)}`), ' y ', v('B', `B = ${ijk(b)}`), '. Su producto vectorial es A × B = ', v('X', 'c'), 'k.'];
+      enunciado = ['En el plano xy se tienen ', v('A', `${A_} = ${ijk(a)}`), ' y ', v('B', `${B_} = ${ijk(b)}`), `. Su producto vectorial es ${AxB} = `, v('X', 'c'), `${K}.`];
       pregunta = ['¿Cuánto vale c?'];
       errores = [
-        h('VE-mano-derecha-invertida', -correcta, 'Calculaste B × A, que apunta al revés: A × B = −(B × A). Con i × j = k, la componente es AₓB_y − A_yBₓ, en ese orden.'),
+        h('VE-mano-derecha-invertida', -correcta, `Calculaste ${BxA}, que apunta al revés: ${AxB} = −(${BxA}). Con ${I} × ${J} = ${K}, la componente es AₓB_y − A_yBₓ, en ese orden.`),
         h('VE-signo-determinante', a[0] * b[1] + a[1] * b[0], 'Sumaste los dos productos cruzados. En el determinante se restan: AₓB_y − A_yBₓ.'),
         h('VE-escalar-por-vectorial', a[0] * b[0] + a[1] * b[1], 'Calculaste el producto escalar (x con x, y con y). El vectorial cruza: x con y.'),
         h('VE-vectorial-modulos', Math.abs(a[0] * b[1]) + Math.abs(a[1] * b[0]), 'Sumaste los productos cruzados sin sus signos.'),
       ];
       solucion = [
-        ['Con i × j = k y j × i = −k (y i × i = j × j = 0), A × B = (AₓB_y − A_yBₓ) k.'],
+        [`Con ${I} × ${J} = ${K} y ${J} × ${I} = −${K} (y ${I} × ${I} = ${J} × ${J} = 0${P.FLECHA}), ${AxB} = (AₓB_y − A_yBₓ) ${K}.`],
         [`c = (${f(a[0])})(${f(b[1])}) − (${f(a[1])})(${f(b[0])}) = ${f(a[0] * b[1])} − (${f(a[1] * b[0])}).`],
-        ['c = ', v('X', f(correcta)), correcta > 0 ? ': A × B sale de la pantalla (+k); de A a B se gira en sentido antihorario.' : ': A × B entra en la pantalla (−k); de A a B se gira en sentido horario.'],
+        ['c = ', v('X', f(correcta)), correcta > 0 ? `: ${AxB} sale de la pantalla (+${K}); de ${A_} a ${B_} se gira en sentido antihorario.` : `: ${AxB} entra en la pantalla (−${K}); de ${A_} a ${B_} se gira en sentido horario.`],
       ];
       datos = { tipo, a, b };
     } else if (tipo === 'modulo-cruz') {
@@ -190,18 +187,18 @@
       correcta = Math.sqrt(Math.max(0, A * A * B * B - ab * ab));
       texto = x => P.radical(x);
       const abT = op.t === 30 ? P.radical(ab) : f(ab);
-      enunciado = ['Dos vectores tienen módulos ', v('A', `|A| = ${A}`), ' y ', v('B', `|B| = ${B}`), ', y su producto escalar es A·B = ', abT, '.'];
-      pregunta = ['¿Cuánto mide |A × B|?'];
+      enunciado = ['Dos vectores tienen módulos ', v('A', `|A| = ${A}`), ' y ', v('B', `|B| = ${B}`), `, y su producto escalar es ${AB} = `, abT, '.'];
+      pregunta = [`¿Cuánto mide |${AxB}|?`];
       errores = [
-        h('VE-escalar-por-vectorial', Math.abs(ab), 'Creíste que |A × B| es igual a A·B. Uno lleva el coseno del ángulo y el otro el seno.'),
+        h('VE-escalar-por-vectorial', Math.abs(ab), `Creíste que |${AxB}| es igual a ${AB}. Uno lleva el coseno del ángulo y el otro el seno.`),
         h('VE-producto-modulos', A * B, 'Multiplicaste los módulos: eso solo vale si son perpendiculares. Falta el seno del ángulo.'),
-        h('VE-identidad-con-mas', Math.sqrt(A * A * B * B + ab * ab), 'Usaste |A × B|² = |A|²|B|² + (A·B)². La identidad lleva signo menos, porque sen² θ = 1 − cos² θ.'),
-        h('VE-sin-raiz', A * A * B * B - ab * ab, 'Calculaste |A × B|² y olvidaste sacar la raíz cuadrada.'),
+        h('VE-identidad-con-mas', Math.sqrt(A * A * B * B + ab * ab), `Usaste |${AxB}|² = |A|²|B|² + (${AB})². La identidad lleva signo menos, porque sen² θ = 1 − cos² θ.`),
+        h('VE-sin-raiz', A * A * B * B - ab * ab, `Calculaste |${AxB}|² y olvidaste sacar la raíz cuadrada.`),
       ];
       solucion = [
-        ['A·B = |A||B|·cos θ y |A × B| = |A||B|·sen θ, con sen² θ + cos² θ = 1: |A × B|² = |A|²|B|² − (A·B)².'],
-        ['|A × B|² = ', v('A', `${A}`), '²·', v('B', `${B}`), `² − (${abT})² = ${A * A * B * B} − ${f(ab * ab)} = ${f(A * A * B * B - ab * ab)}.`],
-        ['|A × B| = ', v('X', P.radical(correcta)), `. (Con cos θ = ${P.radical(cs)}, θ = `, v('t', `${op.t}°`), '.)'],
+        [`${AB} = |A||B|·cos θ y |${AxB}| = |A||B|·sen θ, con sen² θ + cos² θ = 1: |${AxB}|² = |A|²|B|² − (${AB})².`],
+        [`|${AxB}|² = `, v('A', `${A}`), '²·', v('B', `${B}`), `² − (${abT})² = ${A * A * B * B} − ${f(ab * ab)} = ${f(A * A * B * B - ab * ab)}.`],
+        [`|${AxB}| = `, v('X', P.radical(correcta)), `. (Con cos θ = ${P.radical(cs)}, θ = `, v('t', `${op.t}°`), '.)'],
       ];
       datos = { tipo, A, B, t: op.t };
     } else {
@@ -211,20 +208,20 @@
       const cruz = u[0] * w[1] - u[1] * w[0];
       if (cruz === 0) return null;
       correcta = Math.abs(cruz) / 2; unidad = 'u²'; texto = x => `${f(x)} u²`;
-      variables.A = { nombre: 'vector PQ', color: 'o' }; variables.B = { nombre: 'vector PS', color: 'i' };
+      variables.A = { nombre: `vector ${PQ}`, color: 'o' }; variables.B = { nombre: `vector ${PS}`, color: 'i' };
       const pt = q => `(${f(q[0])}; ${f(q[1])})`;
       enunciado = ['Un triángulo tiene vértices P', pt(pts[0]), ', Q', pt(pts[1]), ' y S', pt(pts[2]), ' (en unidades de la cuadrícula).'];
       pregunta = ['¿Cuánto mide su área?'];
       errores = [
-        h('VE-area-sin-mitad', Math.abs(cruz), '|PQ × PS| es el área del paralelogramo que forman los dos lados. El triángulo es la mitad.'),
+        h('VE-area-sin-mitad', Math.abs(cruz), `|${PQ} × ${PS}| es el área del paralelogramo que forman los dos lados. El triángulo es la mitad.`),
         h('VE-signo-determinante', Math.abs(u[0] * w[1] + u[1] * w[0]) / 2, 'Sumaste los dos productos cruzados. En el determinante se restan.'),
-        h('VE-escalar-por-vectorial', Math.abs(dot(u, w)) / 2, 'Usaste el producto escalar. El área sale del producto vectorial: |u × w| = |u||w|·sen θ.'),
+        h('VE-escalar-por-vectorial', Math.abs(dot(u, w)) / 2, `Usaste el producto escalar. El área sale del producto vectorial: |${P.vec('u')} × ${P.vec('w')}| = |u||w|·sen θ.`),
         h('VE-vertices-sin-restar', Math.abs(pts[1][0] * pts[2][1] - pts[1][1] * pts[2][0]) / 2, 'Usaste las coordenadas de Q y S como si fueran los lados. Los lados son vectores que salen de un mismo vértice: final menos inicio.'),
       ];
       solucion = [
-        ['Dos lados desde P (final menos inicio): ', v('A', `PQ = ${par(u)}`), ' y ', v('B', `PS = ${par(w)}`), '.'],
-        [`PQ × PS = (${f(u[0])}·${f(w[1])} − ${f(u[1])}·${f(w[0])}) k = ${f(cruz)} k: el paralelogramo mide ${f(Math.abs(cruz))} u².`.replace(/− −/g, '+ ')],
-        ['Área del triángulo = |PQ × PS| / 2 = ', v('X', `${f(correcta)} u²`), '.'],
+        ['Dos lados desde P (final menos inicio): ', v('A', `${PQ} = ${par(u)}`), ' y ', v('B', `${PS} = ${par(w)}`), '.'],
+        [`${PQ} × ${PS} = (${f(u[0])}·${f(w[1])} − ${f(u[1])}·${f(w[0])}) ${K} = ${f(cruz)} ${K}: el paralelogramo mide ${f(Math.abs(cruz))} u².`.replace(/− −/g, '+ ')],
+        [`Área del triángulo = |${PQ} × ${PS}| / 2 = `, v('X', `${f(correcta)} u²`), '.'],
       ];
       datos = { tipo, pts };
     }

@@ -109,12 +109,61 @@
   // Texto con coma de exámenes peruanos y signo menos tipográfico: «2/3», «−1/2», «5».
   const textoFraccion = q => { const f = frac(q); return (f.n < 0 ? '−' : '') + Math.abs(f.n) + (f.d === 1 ? '' : '/' + f.d); };
 
+  // ---------- Notación de vectores (docs/plan-calidad.md, contrato, punto 5) ----------
+  // Un vector lleva flecha (U+20D7, combinante, detrás de la letra); su módulo no: «A⃗ = 3î + 4ĵ», «|A| = 5».
+  const FLECHA = '\u20D7';
+  const SOMBRERO = { i: '\u00EE', j: '\u0135', k: 'k\u0302' }; // î, ĵ y k̂ (k + U+0302)
   /*
-   * combinacion(coefs, nombres) → { clave, texto }: la expresión c₁A + c₂B + … con coeficientes exactos.
+   * vec(nombre) → el nombre con flecha: «A» → «A⃗», «−B» → «−B⃗», «2A» → «2A⃗», «v₁» → «v⃗₁» (la flecha va sobre
+   * la última letra, antes de subíndices y primas), «AB» → «AB⃗». Si ya la tiene, no se repite.
+   */
+  function vec(nombre) {
+    const t = String(nombre);
+    if (t.includes(FLECHA)) return t;
+    const m = t.match(/^(.*\p{L})([^\p{L}]*)$/u);
+    return m ? m[1] + FLECHA + m[2] : t;
+  }
+  const escaparRe = t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  /*
+   * flechas(texto, nombres) → el texto con flecha en cada nombre suelto: flechas('2A − B', ['A', 'B']) → «2A⃗ − B⃗».
+   * Un nombre pegado a otra letra no cuenta («AB» no es A ni B). Solo para expresiones: en una frase,
+   * «a» o «y» también son palabras.
+   */
+  function flechas(texto, nombres) {
+    const lista = [...new Set(nombres.map(String))].filter(Boolean).sort((a, b) => b.length - a.length);
+    if (!lista.length) return String(texto);
+    const re = new RegExp(`(?<![\\p{L}\\p{M}])(?:${lista.map(escaparRe).join('|')})(?![\\p{L}\\p{M}])`, 'gu');
+    return String(texto).replace(re, n => vec(n));
+  }
+  // unitarios('2i − 3j + k') → «2î − 3ĵ + k̂»: i, j y k sueltos (no dentro de una palabra) llevan su sombrerito.
+  const unitarios = texto => String(texto).replace(/(?<![\p{L}\p{M}])[ijk](?![\p{L}\p{M}])/gu, c => SOMBRERO[c]);
+  /*
+   * ijk([2, −3, 1]) → «2î − 3ĵ + k̂»: componentes numéricas con los unitarios; los ceros no se escriben y el
+   * coeficiente 1 tampoco. Todo cero: «0⃗».
+   */
+  function ijk(comps) {
+    const ej = [SOMBRERO.i, SOMBRERO.j, SOMBRERO.k];
+    let s = '';
+    comps.forEach((n, q) => {
+      if (!n) return;
+      const abs = Math.abs(n), t = (abs === 1 ? '' : formatear(abs)) + ej[q];
+      s += s === '' ? (n < 0 ? '−' : '') + t : (n < 0 ? ' − ' : ' + ') + t;
+    });
+    return s || '0' + FLECHA;
+  }
+
+  /*
+   * combinacion(coefs, nombres, { flecha }) → { clave, texto }: la expresión c₁A + c₂B + … con coeficientes exactos.
    * Con denominador común d > 1 se escribe como en la academia: «(2A + B)/3»; si no, «2A − B».
    * Todos cero: «0» (el vector nulo). La clave es canónica: dos formas iguales tienen la misma clave.
+   * Con flecha: true, el texto lleva la notación de vectores («(2A⃗ + B⃗)/3», «0⃗») y la clave no cambia.
    */
-  function combinacion(coefs, nombres) {
+  function combinacion(coefs, nombres, { flecha = false } = {}) {
+    if (flecha) {
+      // Misma clave (los valores no cambian); solo el texto lleva la flecha: «2A⃗ − B⃗», «(u⃗ + w⃗)/3», «0⃗».
+      const r = combinacion(coefs, nombres);
+      return { clave: r.clave, texto: r.texto === '0' ? '0' + FLECHA : flechas(r.texto, nombres) };
+    }
     const fs = coefs.map(c => frac(c));
     const clave = 'comb:' + fs.map((f, i) => `${nombres[i]}=${f.n}/${f.d}`).join(',');
     const D = fs.reduce((a, f) => a * f.d / mcd(a, f.d), 1);
@@ -181,5 +230,6 @@
     return r >= (1 / t) * (1 - m) && r <= t * (1 + m);
   }
 
-  return { formatear, radical, pi, v, armar, LETRAS, frac, textoFraccion, combinacion, vector, armarTexto, xml, CODIGO_UNIDADES, esUnidades, enEscala };
+  return { formatear, radical, pi, v, armar, LETRAS, frac, textoFraccion, combinacion, vector, armarTexto, xml, CODIGO_UNIDADES, esUnidades, enEscala,
+    FLECHA, vec, flechas, unitarios, ijk };
 });

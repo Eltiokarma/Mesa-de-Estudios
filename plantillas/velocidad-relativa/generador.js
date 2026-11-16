@@ -35,6 +35,9 @@
  * Errores: REL-V-* (trampa 12, docs/clasificacion/trampas-admision-unmsm/fisica.md; K1 del informe de
  * cinemática es lo más cercano, sin cifra para este caso), hipótesis nuestras; U1 (hipótesis,
  * docs/investigacion/fisica-calculo-transversal-ideas-erroneas.md); CHO-* (hipótesis).
+ * Notación (docs/plan-calidad.md, contrato, punto 5): en el bote, donde las velocidades se suman como vectores en el
+ * plano, la suma lleva flecha (v⃗ = u⃗ + c⃗) y las rapideces no (u = 4 m/s, √(u² − c²)). En una recta (combis, placas,
+ * cruces, botes con sacos) las velocidades son números con signo y quedan como están.
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -345,6 +348,7 @@
   const direccion = (g, sentido) => (g === 0 ? { clave: 'proa:0', texto: 'Perpendicular a la orilla (0°)' }
     : { clave: `proa:${g}:${sentido}`, texto: `${g}° río ${sentido} de la perpendicular` });
   const RIO = ['Un bote cruza el río Ramis', 'Un bote cruza el Rímac', 'Una lancha cruza el Ucayali', 'Un bote cruza el Madre de Dios'];
+  const U_ = P.vec('u'), C_ = P.vec('c'), V_ = P.vec('v');
   const SENOS = 'Ángulo desde la perpendicular a la orilla. Usa sen 16° = 7/25, sen 30° = 1/2, sen 37° = 3/5, sen 53° = 4/5 y sen 74° = 24/25.';
 
   function bote(rng, semilla, sub) {
@@ -434,7 +438,7 @@
         h('REL-V-suma-pitagoras', Math.sqrt(Math.abs(u * u - c * c)), 'Restaste los cuadrados. Son catetos: se suman sus cuadrados.'),
       ];
       const solucion = [
-        ['Respecto a tierra: ', v('u', f(u)), ' perpendicular y ', v('c', f(c)), ' paralela a la orilla.'],
+        ['Respecto a tierra: ', v('x', V_), ' = ', v('u', U_), ' + ', v('c', C_), '; ', v('u', f(u)), ' perpendicular y ', v('c', f(c)), ' paralela a la orilla.'],
         [v('x', 'v'), ` = √(${f(u)}² + ${f(c)}²) = `, v('x', `${f(R)} m/s`), '.'],
       ];
       return cerrar(rng, semilla, { correcta: R, errores, texto: con('m/s'), unidad: 'm/s', variables: VAR_B, enunciado,
@@ -459,15 +463,15 @@
       ' respecto al agua. Quiere llegar al embarcadero ', v('W', `${d} m`), ` río ${lado} del punto de enfrente.`];
     const correcta = direccion(g, g === 0 ? '' : (arriba ? 'arriba' : 'abajo'));
     const errores = [
-      { id: 'REL-V-apunta-destino', ...direccion(phi[0], lado), explicacion: 'Apuntaste la proa al embarcadero. Lo que debe ir hacia allá es bote + corriente.' },
+      { id: 'REL-V-apunta-destino', ...direccion(phi[0], lado), explicacion: `Apuntaste la proa al embarcadero. Lo que debe ir hacia allá es ${U_} + ${C_}: bote más corriente.` },
       g ? { id: 'REL-V-ignora-corriente', ...direccion(0), explicacion: 'Apuntaste perpendicular. Así la corriente lo lleva a otro punto.' } : null,
       g ? { id: 'REL-V-sentido', ...direccion(g, arriba ? 'abajo' : 'arriba'), explicacion: 'El ángulo está bien, pero hacia el otro lado.' } : null,
-      { id: 'REL-V-sentido', ...direccion(phi[0], lado === 'abajo' ? 'arriba' : 'abajo'), explicacion: 'Usaste el ángulo del embarcadero y hacia el otro lado. Bote + corriente debe ir al embarcadero.' },
+      { id: 'REL-V-sentido', ...direccion(phi[0], lado === 'abajo' ? 'arriba' : 'abajo'), explicacion: `Usaste el ángulo del embarcadero y hacia el otro lado. ${U_} + ${C_} (bote más corriente) debe ir al embarcadero.` },
       { id: 'REL-V-angulo-desde-orilla', ...direccion(90 - phi[0], lado), explicacion: 'Mediste desde la orilla y apuntaste al embarcadero. Se mide desde la perpendicular.' },
     ].filter(e => e && e.clave !== correcta.clave).map(e => ({ ...e, respaldo: 'hipotesis', fuente: TRA }));
     const ux2 = Math.abs(ux);
     const solucion = [
-      ['Bote + corriente apunta al embarcadero: ', v('W', `${d} m`), ` río ${lado} cada `, v('W', `${W} m`), '.'],
+      [v('u', U_), ' + ', v('c', C_), ' apunta al embarcadero: ', v('W', `${d} m`), ` río ${lado} cada `, v('W', `${W} m`), '.'],
       g === 0
         ? ['Proa perpendicular: cruza a ', v('u', `${f(u)} m/s`), ' y baja a ', v('c', `${f(c)} m/s`), '.']
         : [`Proa a ${g}°: `, v('u', `${f(uy)} m/s`), ' para cruzar y ', v('u', `${f(ux2)} m/s`), ` río ${arriba ? 'arriba' : 'abajo'}.`],

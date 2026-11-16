@@ -144,3 +144,44 @@ test('enEscala: 20 veces en general y 1000 para las trampas de unidades', () => 
   assert.ok(!P.enEscala(NaN, 1, 'U2') && !P.enEscala(1, 0, 'U2'));
   assert.ok(P.esUnidades('U8-sumar-273') && P.esUnidades('RU1') && !P.esUnidades('U9') && !P.esUnidades('U12') && !P.esUnidades('RMP3') && !P.esUnidades(undefined));
 });
+
+test('notación de vectores: vec pone la flecha (U+20D7) detrás de la letra y no la repite', () => {
+  assert.equal(P.FLECHA, '⃗');
+  assert.equal(P.vec('A'), 'A⃗');
+  assert.equal(P.vec('−B'), '−B⃗');
+  assert.equal(P.vec('2A'), '2A⃗');
+  assert.equal(P.vec('v₁'), 'v⃗₁');           // la flecha va sobre la letra, no sobre el subíndice
+  assert.equal(P.vec('AB'), 'AB⃗');
+  assert.equal(P.vec(P.vec('A')), 'A⃗');
+  assert.equal(P.vec('3'), '3');                   // sin letra no hay vector que marcar
+});
+
+test('notación de vectores: flechas marca los nombres sueltos de una expresión', () => {
+  assert.equal(P.flechas('2A − B', ['A', 'B']), '2A⃗ − B⃗');
+  assert.equal(P.flechas('(u + w)/3', ['u', 'w']), '(u⃗ + w⃗)/3');
+  assert.equal(P.flechas('|A + B|', ['A', 'B']), '|A⃗ + B⃗|');
+  assert.equal(P.flechas('AB + A', ['A', 'B']), 'AB + A⃗');      // AB es otro nombre
+  assert.equal(P.flechas('AB + A', ['A', 'AB']), 'AB⃗ + A⃗');
+  assert.equal(P.flechas(P.flechas('A − B', ['A', 'B']), ['A', 'B']), 'A⃗ − B⃗');
+});
+
+test('notación de vectores: unitarios î, ĵ, k̂ desde texto o desde componentes', () => {
+  assert.equal(P.unitarios('2i − 3j + k'), '2î − 3ĵ + k̂');
+  assert.equal(P.unitarios('k'), 'k̂');
+  assert.equal(P.unitarios('i × j = k'), 'î × ĵ = k̂');
+  assert.equal(P.unitarios('mj'), 'mj');                          // pegada a otra letra: no es un unitario
+  assert.equal(P.ijk([2, -3, 1]), '2î − 3ĵ + k̂');
+  assert.equal(P.ijk([-1, 0, 5]), '−î + 5k̂');
+  assert.equal(P.ijk([0, 12]), '12ĵ');
+  assert.equal(P.ijk([0, 0, 0]), '0⃗');
+});
+
+test('combinacion con flecha: el texto lleva la notación y la clave no cambia', () => {
+  const plana = P.combinacion([[2, 3], [1, 3]], ['A', 'B']), con = P.combinacion([[2, 3], [1, 3]], ['A', 'B'], { flecha: true });
+  assert.equal(con.texto, '(2A⃗ + B⃗)/3');
+  assert.equal(con.clave, plana.clave);
+  assert.equal(P.combinacion([2, -1], ['A', 'B'], { flecha: true }).texto, '2A⃗ − B⃗');
+  assert.equal(P.combinacion([[-1, 6], [-1, 6]], ['u', 'w'], { flecha: true }).texto, '−(u⃗ + w⃗)/6');
+  assert.equal(P.combinacion([[-1, 2], 1], ['a', 'b'], { flecha: true }).texto, '(2b⃗ − a⃗)/2');
+  assert.equal(P.combinacion([0, 0], ['A', 'B'], { flecha: true }).texto, '0⃗');
+});

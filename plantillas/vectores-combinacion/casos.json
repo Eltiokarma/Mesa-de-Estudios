@@ -1,7 +1,7 @@
 {
   "plantilla": "vectores-combinacion",
   "tolerancia": 0.000001,
-  "nota": "Respuesta tal como la escribió el verificador; el generador la escribe igual.",
+  "nota": "Respuesta tal como la escribió el verificador; el generador la escribe igual. Notación cambiada el 16 nov 2026: los vectores de la respuesta llevan flecha («2A⃗ + B⃗»). Solo cambió el formato del texto; los valores son los mismos.",
   "verificacion": "Verificado aparte (subagente, 8 nov 2026) sin ver el generador ni el núcleo: paralelismo por determinante nulo, A = (S + D)/2 desde la suma y la diferencia, y C = mA + nB por Cramer. Los 5 casos coinciden.",
   "casos": [
     {
@@ -52,7 +52,7 @@
         ]
       },
       "esperado": {
-        "respuesta": "2A + B"
+        "respuesta": "2A⃗ + B⃗"
       }
     },
     {

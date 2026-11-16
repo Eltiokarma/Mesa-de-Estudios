@@ -1,7 +1,7 @@
 {
   "plantilla": "vectores-division",
   "tolerancia": 0.000001,
-  "nota": "Respuesta tal como la escribió el verificador; el generador la escribe igual.",
+  "nota": "Respuesta tal como la escribió el verificador; el generador la escribe igual. Notación cambiada el 16 nov 2026: los vectores de la respuesta llevan flecha («(2a⃗ + b⃗)/3»). Solo cambió el formato del texto; los valores son los mismos.",
   "verificacion": "Verificado aparte (subagente, 8 nov 2026) sin ver el generador ni el núcleo, con coordenadas concretas (triángulo, paralelogramo y trapecio no simétricos) y resolviendo x·a + y·b por determinantes con fracciones exactas; se revisó el orden de los vértices y el sentido de cada vector. Los 13 casos coinciden.",
   "casos": [
     {
@@ -11,7 +11,7 @@
         "variante": "GM"
       },
       "esperado": {
-        "respuesta": "(u + w)/6"
+        "respuesta": "(u⃗ + w⃗)/6"
       }
     },
     {
@@ -21,7 +21,7 @@
         "variante": "AG"
       },
       "esperado": {
-        "respuesta": "(u + w)/3"
+        "respuesta": "(u⃗ + w⃗)/3"
       }
     },
     {
@@ -31,7 +31,7 @@
         "caso": "AM-BC"
       },
       "esperado": {
-        "respuesta": "(2a + b)/2"
+        "respuesta": "(2a⃗ + b⃗)/2"
       }
     },
     {
@@ -42,7 +42,7 @@
         "n": 2
       },
       "esperado": {
-        "respuesta": "(2a + 3b)/5"
+        "respuesta": "(2a⃗ + 3b⃗)/5"
       }
     },
     {
@@ -52,7 +52,7 @@
         "diagonales": true
       },
       "esperado": {
-        "respuesta": "(a − b)/2"
+        "respuesta": "(a⃗ − b⃗)/2"
       }
     },
     {
@@ -62,7 +62,7 @@
         "caso": "DM-BC"
       },
       "esperado": {
-        "respuesta": "(2a − b)/2"
+        "respuesta": "(2a⃗ − b⃗)/2"
       }
     },
     {
@@ -72,7 +72,7 @@
         "caso": "BM-CD"
       },
       "esperado": {
-        "respuesta": "(2b − a)/2"
+        "respuesta": "(2b⃗ − a⃗)/2"
       }
     },
     {
@@ -82,7 +82,7 @@
         "variante": "AM"
       },
       "esperado": {
-        "respuesta": "(u + w)/2"
+        "respuesta": "(u⃗ + w⃗)/2"
       }
     },
     {
@@ -92,7 +92,7 @@
         "diagonales": false
       },
       "esperado": {
-        "respuesta": "(a + b)/2"
+        "respuesta": "(a⃗ + b⃗)/2"
       }
     },
     {
@@ -102,7 +102,7 @@
         "caso": "AM-tercio"
       },
       "esperado": {
-        "respuesta": "(3a + b)/3"
+        "respuesta": "(3a⃗ + b⃗)/3"
       }
     },
     {
@@ -112,7 +112,7 @@
         "caso": "AM-CD"
       },
       "esperado": {
-        "respuesta": "(a + 2b)/2"
+        "respuesta": "(a⃗ + 2b⃗)/2"
       }
     },
     {
@@ -122,7 +122,7 @@
         "caso": "DM-BC"
       },
       "esperado": {
-        "respuesta": "(2a − b)/2"
+        "respuesta": "(2a⃗ − b⃗)/2"
       }
     },
     {
@@ -132,7 +132,7 @@
         "variante": "AG"
       },
       "esperado": {
-        "respuesta": "(u + w)/3"
+        "respuesta": "(u⃗ + w⃗)/3"
       }
     }
   ]

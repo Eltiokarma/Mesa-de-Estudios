@@ -18,6 +18,8 @@
  *   F60  60°, 120°, 240°, 300° con módulos pares, más 0° y 180°: x entero, y = s√3
  * Las componentes se guardan como enteros (x = px·√qx, y = py·√qy) y R² sale entero.
  * Errores: hipótesis nuestras salvo sumar módulos (parcial: E8 de docs/investigacion/).
+ * Notación (docs/plan-calidad.md, contrato, punto 5): el vector lleva flecha (A⃗, |2A⃗ − B⃗|, R⃗ = 8î − 6ĵ) y su
+ * módulo no (A = 10 u, |R|); los unitarios de los ejes, sombrerito (î, ĵ).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -133,7 +135,7 @@
     const u = cardinal ? 'm' : (equilibrio ? 'N' : 'u');
     const v = P.v;
     const variables = {};
-    vs.forEach((w, i) => { variables[NOMBRES[i]] = { nombre: `vector ${NOMBRES[i]}`, color: COLORES[i] }; });
+    vs.forEach((w, i) => { variables[NOMBRES[i]] = { nombre: `vector ${P.vec(NOMBRES[i])}`, color: COLORES[i] }; });
     if (n < 4) variables.R = { nombre: 'resultante', color: 'd' };
 
     // Cómo se nombra cada dirección.
@@ -151,7 +153,7 @@
       if (i > 0) listaVectores.push(i === n - 1 ? ' y ' : ', ');
       listaVectores.push(v(NOMBRES[i], `${NOMBRES[i]} = ${w.texto} ${u}`), ` (${dirTexto(w.t)})`);
     });
-    const expr = coef.map((c, i) => (i === 0 ? (c === 1 ? '' : c) + NOMBRES[i] : (c < 0 ? ' − ' : ' + ') + (Math.abs(c) === 1 ? '' : Math.abs(c)) + NOMBRES[i])).join('');
+    const expr = coef.map((c, i) => (i === 0 ? (c === 1 ? '' : c) + P.vec(NOMBRES[i]) : (c < 0 ? ' − ' : ' + ') + (Math.abs(c) === 1 ? '' : Math.abs(c)) + P.vec(NOMBRES[i]))).join('');
 
     let enunciado, pregunta, correcta, errores, angular = false;
     // Errores de cálculo comunes, como vectores alternativos.
@@ -188,8 +190,8 @@
         const [SX, SY] = (() => { let x = 0, y = 0; vs.forEach((w, i) => { x += Math.abs(coef[i]) * w.x; y += Math.abs(coef[i]) * w.y; }); return [x, y]; })();
         const [UX, UY] = (() => { let x = 0, y = 0; vs.forEach((w, i) => { x += Math.sign(coef[i]) * w.x; y += Math.sign(coef[i]) * w.y; }); return [x, y]; })();
         errores.splice(1, 0,
-          h('VE-resta-como-suma', Math.hypot(SX, SY), 'Bien sumar por componentes; −B es B al revés: sus componentes cambian de signo.'),
-          h('VE-coeficiente-olvidado', Math.hypot(UX, UY), 'Bien sumar por componentes; falta el coeficiente: 2A tiene el doble de cada componente de A.'));
+          h('VE-resta-como-suma', Math.hypot(SX, SY), `Bien sumar por componentes; −${P.vec('B')} es ${P.vec('B')} al revés: sus componentes cambian de signo.`),
+          h('VE-coeficiente-olvidado', Math.hypot(UX, UY), `Bien sumar por componentes; falta el coeficiente: 2${P.vec('A')} tiene el doble de cada componente de ${P.vec('A')}.`));
       }
     } else {
       const an = anguloNotable(X, Y);
@@ -213,7 +215,7 @@
     const filaComp = (w, i) => {
       const c = coef[i], nom = (Math.abs(c) === 1 ? '' : Math.abs(c)) + NOMBRES[i];
       const sx = comp(c * w.px, F.qx), sy = comp(c * w.py, F.qy);
-      return [v(NOMBRES[i], `${c < 0 ? '−' : ''}${nom}`), `: x = ${sx}, y = ${sy}`];
+      return [v(NOMBRES[i], P.vec(`${c < 0 ? '−' : ''}${nom}`)), `: x = ${sx}, y = ${sy}`];
     };
     const solucion = [
       [`Cada vector se pasa a componentes: x = módulo·cos θ e y = módulo·sen θ, con θ medido desde +x${fam === 'F37' ? ' (sen 37° = 3/5, cos 37° = 4/5)' : fam === 'F45' ? ' (cos 45° = sen 45° = √2/2)' : fam === 'F30' ? ' (sen 30° = 1/2, cos 30° = √3/2)' : ' (cos 60° = 1/2, sen 60° = √3/2)'}${cardinal ? '; norte = +y, este = +x' : ''}.`],
@@ -221,7 +223,7 @@
       [`Se suman por componentes: Rx = ${comp(PX, F.qx)} y Ry = ${comp(PY, F.qy)}.`],
       angular
         ? [`tan α = |Ry|/|Rx| da el ángulo de referencia α = ${anguloNotable(X, Y).ref}°; con los signos de Rx y Ry, la resultante forma `, `${correcta}°`, ' con +x.']
-        : [`${equilibrio ? 'La fuerza que falta es −R: mide lo mismo que R. ' : ''}|R| = √(Rx² + Ry²) = ${P.radical(R) === `√${f(r2)}` ? '' : `√${f(r2)} = `}`, n < 4 ? v('R', `${P.radical(R)} ${u}`) : `${P.radical(R)} ${u}`, '.'],
+        : [`${equilibrio ? `La fuerza que falta es −${P.vec('R')}: mide lo mismo que ${P.vec('R')}. ` : ''}|R| = √(Rx² + Ry²) = ${P.radical(R) === `√${f(r2)}` ? '' : `√${f(r2)} = `}`, n < 4 ? v('R', `${P.radical(R)} ${u}`) : `${P.radical(R)} ${u}`, '.'],
     ];
 
     const texto = angular ? (x => `${f(x)}°`) : (x => `${P.radical(x)} ${u}`);
@@ -262,7 +264,8 @@
   function escenaViva(e, alternativas, correcta) {
     const v = P.v, { vs, coef, F, X, Y, PX, PY, u, cardinal, equilibrio, angular, R } = e;
     const n = vs.length;
-    const nom = i => `${coef[i] < 0 ? '−' : ''}${Math.abs(coef[i]) === 1 ? '' : Math.abs(coef[i])}${NOMBRES[i]}`;
+    const nom = i => P.vec(`${coef[i] < 0 ? '−' : ''}${Math.abs(coef[i]) === 1 ? '' : Math.abs(coef[i])}${NOMBRES[i]}`);
+    const R_ = P.vec('R');
     const colorR = n < 4 ? 'd' : null;
     const flechas = [], guias = [], angulos = [];
     vs.forEach((w, i) => {
@@ -284,7 +287,8 @@
     });
     const textoR = angular ? `${correcta}°` : `${P.radical(R)} ${u}`;
     const datos = { unidad: u, ejes: true, flechas, guias, angulos,
-      resultante: { de: [0, 0], a: [X, Y], color: colorR, rotulo: 'R', valor: angular ? conIJ(PX, PY, F) : textoR } };
+      // Con el ángulo, el rótulo dice el vector (R⃗ = 8î − 6ĵ); con el módulo, el largo (R = 10 u).
+      resultante: { de: [0, 0], a: [X, Y], color: colorR, rotulo: angular ? R_ : 'R', valor: angular ? conIJ(PX, PY, F) : textoR } };
     if (angular) angulos.push({ en: [0, 0], de: 0, a: correcta, texto: `${correcta}°`, color: colorR, radio: 22 + 12 * n, paso: 3 });
     if (equilibrio) flechas.push({ de: [0, 0], a: [-X, -Y], rotulo: 'F', valor: textoR, discontinua: true, grosor: 'contorno', paso: 3 });
     const compo = [];
@@ -292,7 +296,7 @@
     const tabla = cardinal ? 'norte = +ĵ, este = +î' : F === FAMILIAS.F37 ? 'sen 37° = 3/5, cos 37° = 4/5' : F === FAMILIAS.F45 ? 'cos 45° = sen 45° = √2/2' : F === FAMILIAS.F30 ? 'sen 30° = 1/2, cos 30° = √3/2' : 'cos 60° = 1/2, sen 60° = √3/2';
     const pasos = [
       { estado: { paso: 1 }, texto: ['Cada vector se parte en sus componentes sobre x e y.'], ecuacion: [`(${tabla}) `, ...compo] },
-      { estado: { paso: 2 }, texto: ['Puestos cola con punta, llegan al extremo de R.'], ecuacion: ['R = ', colorR ? v('R', conIJ(PX, PY, F)) : conIJ(PX, PY, F)] },
+      { estado: { paso: 2 }, texto: [`Puestos cola con punta, llegan al extremo de ${R_}.`], ecuacion: [`${R_} = `, colorR ? v('R', conIJ(PX, PY, F)) : conIJ(PX, PY, F)] },
     ];
     const vR = x => (colorR ? v('R', x) : x);
     const r2 = R * R;
@@ -300,7 +304,7 @@
       const an = anguloNotable(X, Y);
       pasos.push({ estado: { paso: 3, final: true }, texto: ['tan α = |Ry| ÷ |Rx|; los signos de Rx y Ry dan el cuadrante.'], ecuacion: [`α = ${an.ref}° → θ = `, vR(`${correcta}°`)] });
     } else {
-      pasos.push({ estado: { paso: 3, final: true }, texto: [equilibrio ? 'La fuerza que falta es −R: mide lo mismo que R.' : 'El módulo sale con Pitágoras sobre Rx y Ry.'],
+      pasos.push({ estado: { paso: 3, final: true }, texto: [equilibrio ? `La fuerza que falta es −${R_}: mide lo mismo que ${R_}.` : 'El módulo sale con Pitágoras sobre Rx y Ry.'],
         ecuacion: ['|R| = √(Rx² + Ry²) = ', P.radical(R) === `√${f(r2)}` ? '' : `√${f(r2)} = `, vR(textoR)] });
     }
     let respuesta = { valor: correcta, unidad: angular ? '°' : u };

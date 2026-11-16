@@ -11,6 +11,9 @@
  *   paralelogramo   ABCD con AB = a y AD = b; M punto medio de un lado (o que lo divide en 1 : 2)
  * Internamente cada vector es una combinación [coef de a, coef de b] con fracciones exactas, y la
  * respuesta sale de restar posiciones (final menos inicio). Errores: hipótesis nuestras.
+ * Notación (docs/plan-calidad.md, contrato, punto 5): el vector lleva flecha, también el que va entre dos puntos
+ * (OA⃗ = a⃗, «(2a⃗ + b⃗)/3»); un segmento o una razón de largos, no (el segmento AB, AP : PB = 1 : 2). La clave de
+ * cada expresión se arma sin flechas, así que los valores no cambian.
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -30,7 +33,10 @@
   const mas = (u, w) => [sumF(u[0], w[0]), sumF(u[1], w[1])];
   const por = (k, u) => [mulF(u[0], k), mulF(u[1], k)];
   const menos = (u, w) => mas(u, por(F(-1), w));
-  const expr = (c, n) => P.combinacion(c, n);
+  const expr = (c, n) => P.combinacion(c, n, { flecha: true });
+  // Nombres con flecha («a⃗», «OA⃗», «AM⃗»), uno por uno: en una frase, «a» también es una palabra.
+  const V = P.vec;
+  const a_ = V('a'), b_ = V('b'), u_ = V('u'), w_ = V('w'), d_ = V('d');
 
   function generar(semilla) {
     const rng = Azar.crear('vectores-division|' + semilla);
@@ -44,7 +50,7 @@
 
   function construir(rng, semilla, tipo) {
     const v = P.v;
-    const variables = { a: { nombre: 'vector a', color: 'o' }, b: { nombre: 'vector b', color: 'i' }, r: { nombre: 'razón o punto', color: 'h' }, X: { nombre: 'lo que se pide', color: 'd' } };
+    const variables = { a: { nombre: `vector ${a_}`, color: 'o' }, b: { nombre: `vector ${b_}`, color: 'i' }, r: { nombre: 'razón o punto', color: 'h' }, X: { nombre: 'lo que se pide', color: 'd' } };
     let enunciado, pregunta, correcta, errores, solucion, datos;
     const N = ['a', 'b'];
 
@@ -55,20 +61,20 @@
       const A = comb(1, 0), B = comb(0, 1);
       const Pp = mas(A, por(F(m, s), menos(B, A)));
       correcta = expr(Pp, N);
-      enunciado = ['Desde un punto O salen ', v('a', 'OA = a'), ' y ', v('b', 'OB = b'), '. El punto P está en el segmento AB y cumple ', v('r', `AP : PB = ${m} : ${n}`), '.'];
-      pregunta = ['¿Cuánto vale OP en función de a y b?'];
+      enunciado = ['Desde un punto O salen ', v('a', `${V('OA')} = ${a_}`), ' y ', v('b', `${V('OB')} = ${b_}`), '. El punto P está en el segmento AB y cumple ', v('r', `AP : PB = ${m} : ${n}`), '.'];
+      pregunta = [`¿Cuánto vale ${V('OP')} en función de ${a_} y ${b_}?`];
       errores = [
-        h('VE-pesos-derechos', m !== n ? expr([F(m, s), F(n, s)], N) : null, `Pusiste a cada extremo el peso de su propio trozo. P está más cerca de ${m < n ? 'A' : 'B'}, así que ${m < n ? 'a' : 'b'} pesa más: los pesos van cruzados.`),
-        h('VE-pesos-mitades', m !== n ? expr([F(1, 2), F(1, 2)], N) : null, `(a + b)/2 es el punto medio. P divide AB en ${m} : ${n}, no en partes iguales.`),
-        h('VE-pesos-sin-dividir', expr([F(n), F(m)], N), `Faltó dividir entre ${s}: los pesos de a y de b tienen que sumar 1.`),
-        h('VE-vector-equivocado', expr(menos(Pp, A), N), 'Ese es AP (desde A), no OP (desde O). OP = OA + AP.'),
-        h('VE-sentido-opuesto', expr(por(F(-1), Pp), N), 'Ese es PO: apunta al revés.'),
+        h('VE-pesos-derechos', m !== n ? expr([F(m, s), F(n, s)], N) : null, `Pusiste a cada extremo el peso de su propio trozo. P está más cerca de ${m < n ? 'A' : 'B'}, así que ${m < n ? a_ : b_} pesa más: los pesos van cruzados.`),
+        h('VE-pesos-mitades', m !== n ? expr([F(1, 2), F(1, 2)], N) : null, `(${a_} + ${b_})/2 es el punto medio. P divide AB en ${m} : ${n}, no en partes iguales.`),
+        h('VE-pesos-sin-dividir', expr([F(n), F(m)], N), `Faltó dividir entre ${s}: los pesos de ${a_} y de ${b_} tienen que sumar 1.`),
+        h('VE-vector-equivocado', expr(menos(Pp, A), N), `Ese es ${V('AP')} (desde A), no ${V('OP')} (desde O). ${V('OP')} = ${V('OA')} + ${V('AP')}.`),
+        h('VE-sentido-opuesto', expr(por(F(-1), Pp), N), `Ese es ${V('PO')}: apunta al revés.`),
         h('VE-pesos-derechos', m === n ? expr([F(1, 3), F(2, 3)], N) : null, 'Repartiste el segmento en tercios, pero AP : PB = 1 : 1 pone P en el medio.'),
       ];
       solucion = [
-        [`AP es ${m}/${s} de AB, y AB = OB − OA = b − a.`],
-        [`OP = OA + AP = a + (${m}/${s})(b − a).`],
-        ['OP = ', v('X', correcta.texto), `. Los pesos van cruzados: ${n}/${s} para a y ${m}/${s} para b.`],
+        [`${V('AP')} es ${m}/${s} de ${V('AB')}, y ${V('AB')} = ${V('OB')} − ${V('OA')} = ${b_} − ${a_}.`],
+        [`${V('OP')} = ${V('OA')} + ${V('AP')} = ${a_} + (${m}/${s})(${b_} − ${a_}).`],
+        [`${V('OP')} = `, v('X', correcta.texto), `. Los pesos van cruzados: ${n}/${s} para ${a_} y ${m}/${s} para ${b_}.`],
       ];
       datos = { tipo, m, n };
     } else if (tipo === 'baricentro') {
@@ -79,21 +85,22 @@
       const pide = variante === 'AG' ? G : variante === 'GM' ? menos(M, G) : M;
       const n2 = ['u', 'w'];
       correcta = expr(pide, n2);
-      variables.a.nombre = 'vector u = AB'; variables.b.nombre = 'vector w = AC';
-      enunciado = ['En el triángulo ABC, ', v('a', 'AB = u'), ' y ', v('b', 'AC = w'), '. M es el punto medio de BC y ', v('r', 'G'), ' es el baricentro.'];
-      pregunta = [variante === 'AG' ? '¿Cuánto vale AG en función de u y w?' : variante === 'GM' ? '¿Cuánto vale GM en función de u y w?' : '¿Cuánto vale AM en función de u y w?'];
+      const AG = V('AG'), GM = V('GM'), AM = V('AM');
+      variables.a.nombre = `vector ${u_} = ${V('AB')}`; variables.b.nombre = `vector ${w_} = ${V('AC')}`;
+      enunciado = ['En el triángulo ABC, ', v('a', `${V('AB')} = ${u_}`), ' y ', v('b', `${V('AC')} = ${w_}`), '. M es el punto medio de BC y ', v('r', 'G'), ' es el baricentro.'];
+      pregunta = [`¿Cuánto vale ${V(variante)} en función de ${u_} y ${w_}?`];
       errores = [
-        h('VE-baricentro-invertido', expr(variante === 'AG' ? por(F(1, 3), M) : variante === 'GM' ? por(F(2, 3), M) : G, n2), variante === 'AM' ? 'Ese es AG. M es el punto medio de BC: AM es la mediana entera.' : 'Cambiaste 2/3 por 1/3. El baricentro está a 2/3 de la mediana contando desde el vértice: AG = (2/3)AM y GM = (1/3)AM.'),
-        h('VE-baricentro-mitad', variante !== 'AM' ? expr(M, n2) : null, 'Esa es la mediana AM entera. G no está en M: está a 2/3 del camino desde A.'),
-        h('VE-baricentro-sin-mitad', expr(por(F(variante === 'AG' ? 2 : variante === 'GM' ? 1 : 3, 3), mas(u, w)), n2), 'Aplicaste la fracción a u + w, que es el doble de la mediana. AM = (u + w)/2.'),
-        h('VE-sin-mitad', expr(mas(u, w), n2), 'u + w es la diagonal del paralelogramo de lados u y w, que es el doble de la mediana.'),
+        h('VE-baricentro-invertido', expr(variante === 'AG' ? por(F(1, 3), M) : variante === 'GM' ? por(F(2, 3), M) : G, n2), variante === 'AM' ? `Ese es ${AG}. M es el punto medio de BC: ${AM} es la mediana entera.` : `Cambiaste 2/3 por 1/3. El baricentro está a 2/3 de la mediana contando desde el vértice: ${AG} = (2/3)${AM} y ${GM} = (1/3)${AM}.`),
+        h('VE-baricentro-mitad', variante !== 'AM' ? expr(M, n2) : null, `Esa es la mediana ${AM} entera. G no está en M: está a 2/3 del camino desde A.`),
+        h('VE-baricentro-sin-mitad', expr(por(F(variante === 'AG' ? 2 : variante === 'GM' ? 1 : 3, 3), mas(u, w)), n2), `Aplicaste la fracción a ${u_} + ${w_}, que es el doble de la mediana. ${AM} = (${u_} + ${w_})/2.`),
+        h('VE-sin-mitad', expr(mas(u, w), n2), `${u_} + ${w_} es la diagonal del paralelogramo de lados ${u_} y ${w_}, que es el doble de la mediana.`),
         h('VE-sentido-opuesto', expr(por(F(-1), pide), n2), 'Ese vector apunta al revés.'),
-        h('VE-diferencia-por-suma', expr(por(F(1, 2), menos(w, u)), n2), '(w − u)/2 es la mitad de BC, que va de B a C. La mediana va de A al punto medio de BC.'),
+        h('VE-diferencia-por-suma', expr(por(F(1, 2), menos(w, u)), n2), `(${w_} − ${u_})/2 es la mitad de ${V('BC')}, que va de B a C. La mediana va de A al punto medio de BC.`),
       ];
       solucion = [
-        ['M es el punto medio de BC: AM = (AB + AC)/2 = (u + w)/2.'],
-        ['El baricentro está a 2/3 de la mediana desde el vértice: AG = (2/3)AM y GM = (1/3)AM.'],
-        [`${variante} = `, v('X', correcta.texto), '.'],
+        [`M es el punto medio de BC: ${AM} = (${V('AB')} + ${V('AC')})/2 = (${u_} + ${w_})/2.`],
+        [`El baricentro está a 2/3 de la mediana desde el vértice: ${AG} = (2/3)${AM} y ${GM} = (1/3)${AM}.`],
+        [`${V(variante)} = `, v('X', correcta.texto), '.'],
       ];
       datos = { tipo, variante };
     } else if (tipo === 'trapecio') {
@@ -110,19 +117,19 @@
       if (MN[1].n !== 0) throw new Error('el vector auxiliar no se canceló');
       const res = [MN[0], MN[2]];
       correcta = expr(res, N);
-      enunciado = ['En el trapecio ABCD, las bases son ', v('a', 'AB = a'), ' y ', v('b', 'DC = b'), ' (paralelas y del mismo sentido, con AB más larga). ',
+      enunciado = ['En el trapecio ABCD, las bases son ', v('a', `${V('AB')} = ${a_}`), ' y ', v('b', `${V('DC')} = ${b_}`), ' (paralelas y del mismo sentido, con AB más larga). ',
         diagonales ? 'M y N son los puntos medios de las diagonales AC y BD.' : 'M y N son los puntos medios de los lados no paralelos AD y BC.'];
-      pregunta = ['¿Cuánto vale MN en función de a y b?'];
+      pregunta = [`¿Cuánto vale ${V('MN')} en función de ${a_} y ${b_}?`];
       const otro = diagonales ? [F(1, 2), F(1, 2)] : [F(1, 2), F(-1, 2)];
       errores = [
-        h('VE-semisuma-por-semidiferencia', expr(otro, N), diagonales ? '(a + b)/2 es la base media, que une los puntos medios de los lados no paralelos. Entre los puntos medios de las diagonales queda la semidiferencia.' : '(a − b)/2 es el segmento entre los puntos medios de las diagonales. La base media es la semisuma.'),
+        h('VE-semisuma-por-semidiferencia', expr(otro, N), diagonales ? `(${a_} + ${b_})/2 es la base media, que une los puntos medios de los lados no paralelos. Entre los puntos medios de las diagonales queda la semidiferencia.` : `(${a_} − ${b_})/2 es el segmento entre los puntos medios de las diagonales. La base media es la semisuma.`),
         h('VE-sin-mitad', expr(res.map(x => mulF(x, F(2))), N), 'Faltó la mitad: el teorema de los puntos medios da la mitad del lado paralelo.'),
-        h('VE-sentido-opuesto', expr(res.map(x => mulF(x, F(-1))), N), 'Ese es NM: apunta al revés.'),
+        h('VE-sentido-opuesto', expr(res.map(x => mulF(x, F(-1))), N), `Ese es ${V('NM')}: apunta al revés.`),
         h('VE-mitad-de-una-base', expr([F(1, 2), F(0)], N), 'Usaste solo la mitad de la base mayor. Hay que considerar las dos bases.'),
       ];
       solucion = diagonales
-        ? [['Con A como origen y AD = d: M = (AC)/2 = (d + b)/2 y N = (AB + AD)/2 = (a + d)/2.'], ['MN = N − M = (a + d)/2 − (d + b)/2: d se cancela.'], ['MN = ', v('X', correcta.texto), ': la semidiferencia de las bases.']]
-        : [['Con A como origen y AD = d: M = d/2 y N = (AB + AC)/2 = (a + d + b)/2.'], ['MN = N − M = (a + d + b)/2 − d/2: d se cancela.'], ['MN = ', v('X', correcta.texto), ': la base media es la semisuma de las bases.']];
+        ? [[`Con A como origen y ${V('AD')} = ${d_}: M = (${V('AC')})/2 = (${d_} + ${b_})/2 y N = (${V('AB')} + ${V('AD')})/2 = (${a_} + ${d_})/2.`], [`${V('MN')} = N − M = (${a_} + ${d_})/2 − (${d_} + ${b_})/2: ${d_} se cancela.`], [`${V('MN')} = `, v('X', correcta.texto), ': la semidiferencia de las bases.']]
+        : [[`Con A como origen y ${V('AD')} = ${d_}: M = ${d_}/2 y N = (${V('AB')} + ${V('AC')})/2 = (${a_} + ${d_} + ${b_})/2.`], [`${V('MN')} = N − M = (${a_} + ${d_} + ${b_})/2 − ${d_}/2: ${d_} se cancela.`], [`${V('MN')} = `, v('X', correcta.texto), ': la base media es la semisuma de las bases.']];
       datos = { tipo, diagonales };
     } else {
       // Paralelogramo ABCD (A abajo a la izquierda, B, C, D en sentido antihorario): AB = a, AD = b.
@@ -135,20 +142,20 @@
       else if (caso === 'DM-BC') { M = por(F(1, 2), mas(B, C)); pide = menos(M, D); texto = ['M es el punto medio de BC.', 'DM']; }
       else { M = mas(B, por(F(1, 3), menos(C, B))); pide = menos(M, A); texto = ['M está en BC y cumple BM : MC = 1 : 2.', 'AM']; }
       correcta = expr(pide, N);
-      enunciado = ['En el paralelogramo ABCD (los vértices en ese orden), ', v('a', 'AB = a'), ' y ', v('b', 'AD = b'), '. ', v('r', texto[0])];
-      pregunta = [`¿Cuánto vale ${texto[1]} en función de a y b?`];
+      enunciado = ['En el paralelogramo ABCD (los vértices en ese orden), ', v('a', `${V('AB')} = ${a_}`), ' y ', v('b', `${V('AD')} = ${b_}`), '. ', v('r', texto[0])];
+      pregunta = [`¿Cuánto vale ${V(texto[1])} en función de ${a_} y ${b_}?`];
       const sw = [pide[1], pide[0]];
       errores = [
         h('VE-mitad-equivocada', expr(sw, N), 'Pusiste la fracción en el vector equivocado. Mira qué lado del paralelogramo se recorre entero y cuál solo en parte.'),
-        h('VE-sentido-opuesto', expr(por(F(-1), pide), N), `Ese vector va al revés: es el que llega al punto de partida de ${texto[1]}.`),
+        h('VE-sentido-opuesto', expr(por(F(-1), pide), N), `Ese vector va al revés: es el que llega al punto de partida de ${V(texto[1])}.`),
         h('VE-signo-de-un-coeficiente', expr([pide[0], mulF(pide[1], F(-1))], N), 'Un tramo tiene el sentido cambiado. Recorre la figura siguiendo las flechas: si vas contra una, lleva signo menos.'),
-        h('VE-pesos-mitades', expr([F(1, 2), F(1, 2)], N), '(a + b)/2 es la mitad de la diagonal AC (llega al centro del paralelogramo), no a M.'),
+        h('VE-pesos-mitades', expr([F(1, 2), F(1, 2)], N), `(${a_} + ${b_})/2 es la mitad de la diagonal ${V('AC')} (llega al centro del paralelogramo), no a M.`),
         h('VE-sin-mitad', expr(pide.map(x => (x.d === 1 ? x : F(x.n > 0 ? 1 : -1))), N), 'Recorriste el lado entero donde solo va una parte.'),
       ];
       solucion = [
-        ['Se va de un punto al otro siguiendo los lados: en un paralelogramo, BC = AD = b y DC = AB = a.'],
-        [`${texto[1]} = `, v('X', correcta.texto), '.'],
-        ['Comprobación: final menos inicio, con A en el origen, B = a, D = b y C = a + b.'],
+        [`Se va de un punto al otro siguiendo los lados: en un paralelogramo, ${V('BC')} = ${V('AD')} = ${b_} y ${V('DC')} = ${V('AB')} = ${a_}.`],
+        [`${V(texto[1])} = `, v('X', correcta.texto), '.'],
+        [`Comprobación: final menos inicio, con A en el origen, B = ${a_}, D = ${b_} y C = ${a_} + ${b_}.`],
       ];
       datos = { tipo, caso };
     }
