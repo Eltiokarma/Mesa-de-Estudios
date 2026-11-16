@@ -199,7 +199,8 @@
     // Calibración (prueba de entrada del tema, Teoria.entrada): las ideas acertadas ahí empiezan por la regla.
     const sabidas = new Set((((ctx.est.temas || {})[u.id] || {}).entrada || {}).sabidas || []);
     const primeraPendiente = ideas.find(i => !hecha(st, i.id) && !sabidas.has(i.id)) || ideas.find(i => !hecha(st, i.id)) || ideas[ideas.length - 1];
-    const ficha = sub === 'ficha', lab = sub === 'laboratorio', glosa = sub === 'glosario';
+    // Sin idea en la ruta, la teoría abre en el Resumen (Gerson, 16 nov: «que sea la primera pantalla de teoría»).
+    const ficha = sub === 'ficha' || !sub, lab = sub === 'laboratorio', glosa = sub === 'glosario';
     const idea = ficha || lab || glosa ? null : ideas.find(i => i.id === sub) || primeraPendiente;
 
     // ---------- Glosario: términos tocables y hoja con la definición ----------
@@ -298,7 +299,7 @@
           <p class="te-dice" role="status"><b>${esc(per.nombre)}</b> <span></span></p>
         </div>`;
 
-    if (ficha) { $app.innerHTML = cab + vistaFicha(); conectarLupas($app); vigilar($app.querySelector('.te-fichas')); return; }
+    if (ficha) { $app.innerHTML = cab + vistaFicha(); conectarLupas($app); conectarFicha(); vigilar($app.querySelector('.te-fichas')); return; }
     if (glosa) { $app.innerHTML = cab + vistaGlosario(); return conectarGlosario(); }
     if (lab) { $app.innerHTML = cab + `<section class="card te-idea te-labo" aria-labelledby="te-titulo" data-m="juega">
         <h2 id="te-titulo">Laboratorio</h2>
@@ -749,14 +750,30 @@
       } catch { /* si el juego no se puede dibujar quieto, va la figura de «Mira» */ }
       return Kit.piezas[i.mira.pieza || i.pieza].dibujar(i.mira.datos, Object.assign({}, i.mira.base || {}, i.mira.pasos[i.mira.pasos.length - 1].estado || {}));
     }
+    // Es un mapa, no una hoja de respuestas (Gerson, 16 nov): cada idea con su figura y la pregunta que responde. La regla
+    // se ve al terminar la idea; antes, solo si el alumno la abre («Ver la regla», con su evento), porque leerla antes de
+    // jugar le quita sentido a la predicción (regla 3).
+    function preguntaDe(i) { return i.pregunta || (i.juega && /\?/.test(i.juega.voz || '') ? i.juega.voz : ''); }
     function vistaFicha() {
-      return `<h2 class="te-fichas-tit">Resumen de la unidad</h2><p class="sub te-fichas-intro">Las reglas de las ${ideas.length} ideas, para repasar. Para entender por qué valen, juega cada idea.</p>
-        <section class="te-fichas">${ideas.map((i, k) => `<article class="card te-fic${hecha(st, i.id) ? ' hecha' : ''}">
-            <div class="te-fic-cab"><span class="te-fic-n" aria-hidden="true">${hecha(st, i.id) ? '✓' : k + 1}</span><h2>${esc(i.titulo)}</h2></div>
+      const hechas = ideas.filter(i => hecha(st, i.id)).length, sig = ideas.find(i => !hecha(st, i.id));
+      const k0 = sig ? ideas.indexOf(sig) : -1;
+      const boton = sig ? `<a class="btn morado ancho te-fic-seguir" href="#/unidad/${esc(u.id)}/teoria/${esc(sig.id)}">${hechas ? `Seguir con la idea ${k0 + 1}: ${esc(sig.titulo)}` : `Empezar por la idea 1: ${esc(sig.titulo)}`} ›</a>`
+        : `<p class="te-fic-listo">Terminaste las ${ideas.length} ideas. Repasa las reglas o da la <a href="#/unidad/${esc(u.id)}/entrada">prueba del tema</a>.</p>`;
+      return `<h2 class="te-fichas-tit">Resumen de la unidad</h2><p class="sub te-fichas-intro">Lo que vas a aprender, idea por idea. La regla de cada una se muestra cuando la terminas.</p>
+        ${boton}
+        <section class="te-fichas">${ideas.map((i, k) => { const h = hecha(st, i.id), q = preguntaDe(i);
+          return `<article class="card te-fic${h ? ' hecha' : ''}">
+            <div class="te-fic-cab"><span class="te-fic-n" aria-hidden="true">${h ? '✓' : k + 1}</span><h2>${esc(i.titulo)}</h2></div>
+            ${q ? `<p class="te-fic-preg">${esc(q)}</p>` : ''}
             <div class="te-figcaja"><figure class="kit-figura te-fig te-fig-chica">${figuraResumen(i)}</figure>
             <div class="te-figbarra"><button type="button" class="te-zoom" aria-label="Ampliar la figura de ${esc(i.titulo)}">${ICONO_LUPA}</button></div></div>
-            ${reglaHTML(i.regla)}
-            ${hecha(st, i.id) ? '' : `<a class="btn borde te-fic-ir" href="#/unidad/${esc(u.id)}/teoria/${esc(i.id)}">Jugar esta idea ›</a>`}</article>`).join('')}</section>`;
+            ${h ? reglaHTML(i.regla) : `<details class="te-fic-regla" data-idea="${esc(i.id)}"><summary>Ver la regla</summary>${reglaHTML(i.regla)}</details>
+              <a class="btn borde te-fic-ir" href="#/unidad/${esc(u.id)}/teoria/${esc(i.id)}">Jugar esta idea ›</a>`}</article>`; }).join('')}</section>`;
+    }
+    function conectarFicha() {
+      $app.querySelectorAll('.te-fic-regla').forEach(d => d.addEventListener('toggle', () => {
+        if (d.open && !d.dataset.vista) { d.dataset.vista = '1'; ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: d.dataset.idea, momento: 'resumen-regla' }); }
+      }));
     }
 
     // Laboratorio: elegir una mesa, jugar sin preguntas y guardar hasta 4 casos para compararlos lado a lado.

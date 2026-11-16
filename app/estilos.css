@@ -991,6 +991,11 @@ body.con-lupa{overflow:hidden}
 .te-fichas-tit{margin:4px 0 2px;font-size:20px}
 .te-fichas-intro{margin:0 0 10px}
 .te-fic-cab{display:flex;align-items:center;gap:10px}
+.te-fic-seguir{margin:2px 0 14px}
+.te-fic-listo{margin:2px 0 14px;font-weight:600}
+.te-fic-preg{margin:6px 0 4px;font-size:16px;font-weight:600;color:var(--brand)}
+.te-fic-regla{margin:8px 0}
+.te-fic-regla>summary{min-height:44px;display:flex;align-items:center;font-weight:700;color:var(--brand)}
 .te-fic-cab h2{margin:0;font-size:19px}
 .te-fic-n{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:color-mix(in srgb,var(--c-i) 18%,var(--card));color:var(--c-i);font-weight:800}
 .te-fic.hecha .te-fic-n{background:var(--ok);color:#fff}

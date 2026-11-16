@@ -198,6 +198,9 @@
 
     function revisarContrato(d, idea, exige) {
       const j = idea.juega;
+      // pregunta: la que responde la idea; la muestra el Resumen (16 nov) sin adelantar la regla.
+      if (idea.pregunta !== undefined) { tope(d, 'voz', idea.pregunta); if (!/\?\s*$/.test(idea.pregunta)) mal(d, 'pregunta: debe terminar en «?»'); }
+      else if (exige) mal(d, 'sin pregunta: la que responde la idea, para el Resumen');
       if (idea.aprendizaje !== undefined) tope(d, 'aprendizaje', idea.aprendizaje);
       else if (exige) mal(d, 'sin aprendizaje: la frase que el alumno debe poder decir al terminar el juego');
       if (j.mision !== undefined) {

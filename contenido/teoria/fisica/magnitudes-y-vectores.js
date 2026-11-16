@@ -87,6 +87,7 @@
   const unidades = {
     id: 'unidades',
     titulo: 'Otra unidad, otro número',
+    pregunta: '¿Qué cambia cuando mides lo mismo en otra unidad?',
     temas: ['Magnitudes fundamentales y derivadas', 'Sistema Internacional'],
     pieza: 'recta',
     aprendizaje: 'El poste mide lo mismo en cualquier unidad; cambia el número: en decímetros es 10 veces más y en centímetros, 100 veces más.',
@@ -221,6 +222,7 @@
   const dimensiones = {
     id: 'homogeneidad',
     titulo: 'Las dimensiones deben cuadrar',
+    pregunta: '¿Cómo sabes si una fórmula de física puede estar bien escrita?',
     temas: ['Análisis dimensional', 'Magnitudes fundamentales y derivadas'],
     pieza: 'fis-dimensiones',
     juega: {
@@ -333,6 +335,7 @@
   const resultante = {
     id: 'resultante',
     titulo: 'La resultante depende del ángulo',
+    pregunta: '¿Por qué 3 + 4 no siempre da 7 cuando sumas flechas?',
     temas: ['Suma de vectores por el método gráfico'],
     pieza: 'flechas',
     juega: {
@@ -425,6 +428,7 @@
   const componentes = {
     id: 'componentes',
     titulo: 'Componentes y vector unitario',
+    pregunta: '¿Cómo se parte una flecha en dos, y qué flecha mide 1?',
     temas: ['Componentes y vector unitario'],
     pieza: 'flechas',
     juega: {
@@ -531,6 +535,7 @@
   const productos = {
     id: 'productos',
     titulo: 'Producto escalar y vectorial',
+    pregunta: '¿De qué dos maneras se multiplican dos flechas?',
     temas: ['Producto escalar y vectorial'],
     pieza: 'flechas',
     juega: {

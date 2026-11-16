@@ -324,7 +324,12 @@ juega: {
   - no bloquea nada: el único bloqueo sigue siendo la predicción (regla 3);
   - el validador exige que no esté cumplida al abrir y que alguien la pueda lograr.
 - **`leyenda`:** cada símbolo de la figura y de la lectura, dicho en palabras. Va debajo de la lectura.
+- **`pregunta`** (por idea, ≤ 16 palabras, termina en «?»): la que responde la idea. La muestra el Resumen.
 - **Lector en frío:** sus respuestas quedan en `rutinas/frio/<unidad>.md`.
+
+**El Resumen es la primera pantalla de la teoría (Gerson, 16 nov).** Antes se llamaba «Reglas» y parecía otra sección de teoría.
+- Entrar a `#/unidad/<id>/teoria` sin idea abre el Resumen: un botón grande («Empezar por la idea 1…» o «Seguir con la idea N…») y una tarjeta por idea, con su pregunta y la figura de su juego.
+- **Es un mapa, no una hoja de respuestas.** La regla de una idea se ve cuando el alumno la termina; antes, solo si toca «Ver la regla», y eso se registra (`momento: 'resumen-regla'`). Leer la regla antes de jugar le quita sentido a la predicción (regla 3); Gerson eligió esta forma el 16 nov.
 
 ## 5. Topes de texto (los vigila `contenido/teoria/teoria.test.js`)
 
