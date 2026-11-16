@@ -77,8 +77,17 @@
     titulo: 'De gramos a gramos, por moles',
     temas: ['Relaciones masa-masa, mol-mol y volumen-volumen'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): receta, mol y masa molar; no dice si la receta se lee en gramos o en moles (eso pide «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una receta', texto: 'Una receta de sopa de quinua dice cuánto va de cada cosa. Una ecuación balanceada también es una receta: N₂ + 3 H₂ → 2 NH₃ dice en qué proporción toman parte las sustancias.' },
+        { titulo: 'El amoniaco', texto: 'El NH₃ es amoniaco. Con él se fabrica buena parte de los fertilizantes que se usan en el campo. Por eso conviene saber cuánto nitrógeno e hidrógeno hacen falta.' },
+        { titulo: 'Paquetes de moléculas', texto: ['Las moléculas son tan pequeñas que se cuentan por paquetes: un mol son 6,02 · 10²³. La masa molar dice cuánto pesa un mol.'], ecuacion: [n, ' = ', { frac: [m, 'M'] }] },
+        { titulo: 'Qué mirar', texto: 'En el juego, cada molécula dibujada vale 1 mol. Mira cuántas de H₂ y de NH₃ aparecen cada vez que cambia el N₂.' },
+      ],
+    },
     juega: {
-      consigna: 'Cada bolita es 1 mol de moléculas. Los moles de N₂ suben y bajan solos: mira cuánto H₂ pide la receta y cuánto NH₃ sale.',
+      consigna: 'Cada molécula dibujada vale 1 mol. Los moles de N₂ suben y bajan solos: mira cuánto H₂ pide la receta y cuánto NH₃ sale.',
       voz: 'La receta cuenta moléculas. Comprueba que se repite igual.',
       controles: [{ id: 'k', etiqueta: 'N₂', color: 'c-i', min: 1, max: 3, paso: 1, inicio: 1, unidad: 'mol', decimales: 0, auto: { velocidad: 0.6, modo: 'rebota' } }],
       dibujo: val => receta(Math.round(val.k)),
@@ -128,6 +137,36 @@
       ecuacion: [{ sub: [n, 'B'] }, ' = ', { sub: [n, 'A'] }, ' · ', { llave: [{ frac: [{ sub: ['ν', 'B'] }, { sub: ['ν', 'A'] }] }], nota: 'coeficientes' }, '   ·   ', n, ' = ', { frac: [m, { llave: ['M'], nota: 'masa molar' }] }],
       condicion: 'entre gases, los volúmenes siguen la misma razón que los moles solo si se miden a igual presión y temperatura.',
       voz: 'Primero a moles. La receta no lee gramos.',
+    },
+    // Así se resuelve: el mismo problema de «Ahora tú» (masa de B que reacciona con una masa de A), con azar(s + 900).
+    // La figura es la cadena de «Mira»: masa → moles → receta → masa, que se completa en el paso de las cuentas.
+    resuelve: {
+      pieza: 'quim-cadena',
+      generar(s) {
+        const r = azar(s + 900), R = r.de(REACCIONES);
+        const [a, na, Ma] = R.A, [b, nb, Mb] = R.B;
+        const nA = r.ent(1, 6), mA = nA * Ma, nB = nA * nb / na, mB = nB * Mb;
+        const cadena = corte => ({ datos: { columnas: [{ titulo: 'Masa → masa', color: 'o', nodos: [
+          { texto: `${f(mA, 0)} g de ${a}`, color: 'o', desde: 1 },
+          { texto: `${f(mA, 0)} ÷ ${Ma} g/mol = ${f(nA)} mol de ${a}`, color: 'i', desde: 2 },
+          { texto: `${f(nA)} mol · ${nb}/${na} = ${f(nB)} mol de ${b}`, color: 'i', desde: 3 },
+          { texto: `${f(nB)} mol · ${Mb} g/mol = ${f(mB)} g de ${b}`, color: 'o', desde: 4 },
+        ] }] }, estado: { corte } });
+        return {
+          enunciado: [`En ${R.ec}, ¿qué masa de ${b} reacciona con `, m, ` = ${f(mA, 0)} g de ${a}? (${a}: ${Ma} g/mol; ${b}: ${Mb} g/mol)`],
+          dibujo: cadena(1),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la masa ', m, ` de ${b} que reacciona con lo que hay de ${a}.`] },
+            { tipo: 'datos', texto: [m, ` = ${f(mA, 0)} g de ${a}. La receta pone ${nb} de ${b} por cada ${na} de ${a}.`] },
+            { tipo: 'regla', texto: 'Los coeficientes cuentan moles, no gramos. Paso los gramos a moles, uso la receta y recién al final vuelvo a gramos.' },
+            { tipo: 'cuentas', texto: 'Gramos a moles, la receta y otra vez a gramos:',
+              ecuacion: [{ sub: [n, a] }, ` = ${f(mA, 0)} ÷ ${Ma} = ${f(nA)}   →   `, { sub: [n, b] }, ` = ${f(nA)} · ${nb}/${na} = ${f(nB)}   →   `, m, ` = ${f(nB)} · ${Mb} = ${f(mB)} g`],
+              dibujo: cadena(4) },
+            { tipo: 'sentido', texto: `De vuelta: ${f(mB)} g ÷ ${Mb} g/mol = ${f(nB)} mol de ${b}, que con ${f(nA)} mol de ${a} guarda la razón ${nb} a ${na}. Cuadra.` },
+          ],
+          respuesta: [m, ` = ${f(mB)} g de ${b}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Escribe el camino: masa, moles, receta, masa.',
@@ -182,6 +221,15 @@
     titulo: 'El que se acaba primero',
     temas: ['Reactivo limitante y en exceso'],
     pieza: 'quim-particulas',
+    // Lee: los nombres (limitante, en exceso) y un caso real; no dice cómo se decide cuál limita (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que se acaba', texto: 'En una reacción real casi nunca se ponen las cantidades justas. Uno de los reactivos se acaba primero y la reacción se detiene. Del otro queda un sobrante.' },
+        { titulo: 'Dos nombres', texto: 'El que se acaba primero es el reactivo limitante: decide cuánto producto sale. El que sobra está en exceso.' },
+        { titulo: 'Aire de sobra', texto: 'En la cocina, el gas del balón arde con aire de sobra, para que se queme completo y no dé humo negro. Ahí el oxígeno está en exceso a propósito.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, la receta 2 H₂ + O₂ → 2 H₂O se arma paquete por paquete. Mira cuál se acaba primero y cuántas moléculas quedan con aro.' },
+      ],
+    },
     juega: {
       consigna: 'Elige cuántas moléculas de H₂ y de O₂ hay. La receta 2 H₂ + O₂ → 2 H₂O ocurre sola, paquete por paquete. Lo sobrante lleva aro.',
       voz: 'Arma paquetes de la receta hasta que algo se acabe.',
@@ -230,6 +278,40 @@
       ecuacion: ['recetas = mín ', { par: [{ frac: [{ sub: [n, 'A'] }, { sub: ['ν', 'A'] }] }, '; ', { frac: [{ sub: [n, 'B'] }, { sub: ['ν', 'B'] }] }] }],
       condicion: 'se comparan moles divididos entre coeficientes, no masas ni moles sueltos; el exceso se calcula después de consumir en proporción.',
       voz: 'Divide antes de comparar. Así cada uno habla en recetas.',
+    },
+    // Así se resuelve: el mismo problema de «Ahora tú», con las dos recetas que la lupa sabe dibujar (cada molécula,
+    // 1 mol) y solo casos con moles enteros, para que la figura cuente exactamente lo que dicen las cuentas.
+    resuelve: {
+      pieza: 'quim-particulas',
+      generar(s) {
+        const r = azar(s + 900), CLAVE = { 'N₂': 'N2', 'H₂': 'H2', 'O₂': 'O2', 'NH₃': 'NH3', 'H₂O': 'H2O' };
+        let R, nA, nB, rec, prod, sobA, sobB;
+        for (let i = 0; i < 100; i++) {
+          R = REACCIONES[r.ent(0, 1)]; nA = r.ent(1, 6); nB = r.ent(1, 9);
+          if (nA / R.A[1] === nB / R.B[1]) nB += 1;
+          rec = Math.min(nA / R.A[1], nB / R.B[1]); prod = rec * R.C[1]; sobA = nA - rec * R.A[1]; sobB = nB - rec * R.B[1];
+          if ([prod, sobA, sobB].every(Number.isInteger)) break;
+        }
+        const [a, na] = R.A, [b, nb] = R.B, [c, nc] = R.C, lim = sobA === 0 ? a : b, exc = lim === a ? b : a, sobra = sobA || sobB;
+        const usado = rec * (exc === a ? na : nb);
+        const antes = { titulo: 'Antes', forma: 'caja', particulas: [{ e: CLAVE[a], n: nA }, { e: CLAVE[b], n: nB }], cuenta: [{ e: CLAVE[a], texto: `${nA}` }, { e: CLAVE[b], texto: `${nB}` }] };
+        const despues = conProducto => ({ titulo: 'Después', forma: 'caja', particulas: conProducto ? [{ e: CLAVE[c], n: prod }, { e: CLAVE[exc], n: sobra, resalta: true }] : [],
+          cuenta: conProducto ? [{ e: CLAVE[c], texto: `${prod}` }, { e: CLAVE[exc], texto: `${sobra}` }] : undefined });
+        const dib = conProducto => lupa([antes, despues(conProducto)], { separacion: 20 });
+        return {
+          enunciado: [`En ${R.ec} hay ${nA} mol de ${a} y ${nB} mol de ${b}. ¿Cuántos moles de ${c} se forman como máximo?`],
+          dibujo: dib(false),
+          pasos: [
+            { tipo: 'pide', texto: [`Piden los moles de ${c} que salen como máximo: los que permite el reactivo que se acaba primero.`] },
+            { tipo: 'datos', texto: [{ sub: [n, a] }, ` = ${nA} y `, { sub: [n, b] }, ` = ${nB}. La receta pide ${na} de ${a} por cada ${nb} de ${b}.`] },
+            { tipo: 'regla', texto: 'Divido los moles de cada reactivo entre su coeficiente: así sé para cuántas recetas alcanza. Manda el menor; del otro sobra.' },
+            { tipo: 'cuentas', texto: `Con ${a} alcanza para ${f(nA / na)} recetas; con ${b}, para ${f(nB / nb)}. Limita ${lim}.`,
+              ecuacion: [`${f(rec)} · ${nc} = ${f(prod)} mol de ${c}`], dibujo: dib(true) },
+            { tipo: 'sentido', texto: `El ${lim} se gasta entero. Del ${exc} ${usado === 1 ? 'se usa' : 'se usan'} ${f(usado)} mol y ${sobra === 1 ? 'sobra' : 'sobran'} ${f(sobra)}: lo que sobra no da más producto.` },
+          ],
+          respuesta: `${f(prod)} mol de ${c}; limita el ${lim}.`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Calcula cuántas recetas permite cada reactivo.',
@@ -281,6 +363,15 @@
     titulo: 'Pureza y rendimiento recortan',
     temas: ['Rendimiento de una reacción', 'Reactivos impuros'],
     pieza: 'barra-porcentaje',
+    // Lee: la caliza, qué es pureza y qué es rendimiento; no dice cómo se combinan los dos porcentajes (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'La piedra caliza', texto: 'La caliza es una roca con mucho carbonato de calcio, CaCO₃, mezclado con arcilla y arena. Al calentarla fuerte en un horno da cal viva, CaO, y suelta CO₂. Con ella se hace cemento.' },
+        { titulo: 'Pureza', texto: ['La pureza ', P, ' dice qué porcentaje de la muestra es la sustancia que reacciona. Si una caliza tiene 90 % de CaCO₃, en cada 100 g hay 90 g que reaccionan.'] },
+        { titulo: 'Rendimiento', texto: ['Ningún horno es perfecto: parte del producto no se forma o se pierde. El rendimiento ', eta, ' compara lo que se obtiene con el máximo que permitía la receta, el producto teórico.'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, la barra entera es el CaO que daría la caliza si fuera pura. Mira qué pedazo quita la pureza y qué pedazo quita el rendimiento.' },
+      ],
+    },
     juega: {
       consigna: '100 g de caliza puros darían 56 g de CaO (CaCO₃ → CaO + CO₂). La pureza de la muestra cambia sola; elige el rendimiento del horno.',
       voz: 'Mira qué parte de la barra recorta cada porcentaje.',
@@ -325,6 +416,28 @@
       condicion: 'la masa teórica sale de la parte pura del reactivo limitante; el rendimiento no cambia la ecuación balanceada.',
       voz: 'Cada porcentaje tiene su lugar. No los juntes.',
     },
+    resuelve: {
+      pieza: 'barra-porcentaje',
+      generar(s) {
+        // Las mismas cuentas de «Ahora tú» (100 g/mol de CaCO₃, 56 g/mol de CaO, receta 1 a 1), por la vía de los moles.
+        const r = azar(s + 900), mm = 50 * r.ent(2, 8), pur = 5 * r.ent(12, 19), ren = 5 * r.ent(12, 19);
+        const puro = mm * pur / 100, nCa = puro / 100, teo = nCa * 56, real = teo * ren / 100, siPura = mm * 0.56;
+        return {
+          enunciado: [`Una muestra de ${mm} g de caliza tiene ${pur} % de CaCO₃ y el rendimiento es ${ren} %. ¿Qué `, m, ' de CaO se obtiene? (CaCO₃ → CaO + CO₂; 100 y 56 g/mol)'],
+          dibujo: { datos: barra(siPura, pur, ren), estado: { corte: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la masa ', m, ' de CaO que de verdad sale del horno.'] },
+            { tipo: 'datos', texto: [`${mm} g de caliza, con `, P, ` = ${pur} % de CaCO₃ y `, eta, ` = ${ren} %. La receta: 1 mol de CaCO₃ da 1 mol de CaO.`] },
+            { tipo: 'regla', texto: 'Solo reacciona la parte pura: con ella saco el producto teórico. Después, el rendimiento se aplica a ese teórico, no a la muestra.' },
+            { tipo: 'cuentas', texto: 'Parte pura, a moles, a gramos de CaO, y al final el rendimiento:',
+              ecuacion: [`${mm} · ${f(pur / 100)} = ${f(puro, 1)} g → ${f(nCa, 2)} mol → ${f(teo, 1)} g`, '   ·   ', m, ` = ${f(teo, 1)} · ${f(ren / 100)} = ${f(real, 1)} g`],
+              dibujo: { datos: barra(siPura, pur, ren), estado: { corte: 2, final: true } } },
+            { tipo: 'sentido', texto: `Cada recorte achica lo anterior: ${f(siPura, 1)} g si fuera pura, ${f(teo, 1)} g con la pureza y ${f(real, 1)} g al final.` },
+          ],
+          respuesta: [m, ` = ${f(real, 1)} g de CaO`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'barra-porcentaje',
       voz: 'Primero la parte pura; después el rendimiento.',
@@ -365,6 +478,14 @@
     titulo: 'Equivalente: lo que se intercambia',
     temas: ['Equivalente químico y masa equivalente'],
     pieza: 'quim-fichas',
+    // Lee: ácido, base, neutralización y θ como conteo; no dice que θ cambia según la reacción (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Ácidos y bases', texto: 'Un ácido entrega iones H⁺ y una base entrega iones OH⁻. Cuando se juntan, cada H⁺ con un OH⁻ forma una molécula de agua: eso es una neutralización.' },
+        { titulo: 'La leche de magnesia', texto: 'La leche de magnesia, Mg(OH)₂, calma la acidez del estómago: sus OH⁻ neutralizan parte del ácido clorhídrico, HCl, del jugo gástrico.' },
+        { titulo: 'Contar lo que se va', texto: 'En el juego, cuenta cuántos H⁺ u OH⁻ se van de cada sustancia al neutralizarse. A ese número se le llama θ.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un ácido o una base: al neutralizarse, sus H⁺ u OH⁻ se van solos, de a uno. Cuenta cuántos entrega: ese número es θ.',
       voz: 'Cuenta las fichas que se intercambian; las demás se quedan.',
@@ -406,6 +527,43 @@
       ecuacion: [{ sub: ['M', 'eq'] }, ' = ', { frac: ['M', { llave: ['θ'], nota: 'lo intercambiado' }] }, '   ·   ', '#eq = ', { frac: [m, { sub: ['M', 'eq'] }] }],
       condicion: 'θ lo fija la reacción, no la fórmula sola: el H₂SO₄ tiene θ = 2 o θ = 1 según cuántos H⁺ cede.',
       voz: 'Antes de dividir, pregunta qué se intercambia aquí.',
+    },
+    resuelve: {
+      pieza: 'quim-fichas',
+      generar(s) {
+        // [fórmula, átomos, qué intercambia, cuántos tiene, cuántos intercambia aquí (θ), lo que queda sin ellos, lo que
+        // queda después]. La masa molar sale de las masas atómicas de academia.
+        const MA = { H: 1, C: 12, N: 14, O: 16, Mg: 24, P: 31, S: 32, K: 39 };
+        const C = [
+          ['HNO₃', { H: 1, N: 1, O: 3 }, 'H⁺', 1, 1, 'NO₃⁻', 'NO₃⁻'],
+          ['H₂SO₄', { H: 2, S: 1, O: 4 }, 'H⁺', 2, 2, 'SO₄²⁻', 'SO₄²⁻'],
+          ['KOH', { K: 1, O: 1, H: 1 }, 'OH⁻', 1, 1, 'K⁺', 'K⁺'],
+          ['H₃PO₄', { H: 3, P: 1, O: 4 }, 'H⁺', 3, 2, 'PO₄³⁻', 'HPO₄²⁻'],
+          ['Mg(OH)₂', { Mg: 1, O: 2, H: 2 }, 'OH⁻', 2, 2, 'Mg²⁺', 'Mg²⁺'],
+          ['H₂SO₄', { H: 2, S: 1, O: 4 }, 'H⁺', 2, 1, 'SO₄²⁻', 'HSO₄⁻'],
+          ['H₂C₂O₄', { H: 2, C: 2, O: 4 }, 'H⁺', 2, 2, 'C₂O₄²⁻', 'C₂O₄²⁻'],
+        ];
+        const [fo, at, ion, tiene, th, resto, queda] = C[(s + 900) % C.length];
+        const M = Object.keys(at).reduce((t, e) => t + at[e] * MA[e], 0), Meq = M / th, q = ion === 'H⁺' ? 1 : -1;
+        const verbo = q > 0 ? 'cede' : 'entrega', cuanto = th === tiene ? (th === 1 ? `su ${ion}` : `sus ${th} ${ion}`) : `${th} de sus ${tiene} ${ion}`;
+        const Mq = { sub: ['M', 'eq'] };
+        const fichasDe = cedidos => ({ datos: { fichas: cedidos
+          ? [{ t: `${ion} ${q > 0 ? 'cedido' : 'entregado'}`, carga: q, n: th, color: 'h' }, { t: queda, carga: -q * th, n: 1 }]
+          : [{ t: ion, carga: q, n: tiene }, { t: resto, carga: -q * tiene, n: 1 }], neta: 'carga total' }, estado: {} });
+        const suma = Object.keys(at).map(e => (at[e] === 1 ? `${MA[e]}` : `${at[e]} · ${MA[e]}`)).join(' + ');
+        return {
+          enunciado: `¿Cuál es la masa equivalente del ${fo} en una reacción donde ${verbo} ${cuanto}? (masas atómicas: ${Object.keys(at).map(e => `${e} ${MA[e]}`).join(', ')})`,
+          dibujo: fichasDe(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la masa equivalente, ', Mq, `: cuánto ${fo} intercambia 1 mol de ${ion}.`] },
+            { tipo: 'datos', texto: `En esta reacción ${verbo} ${th} ${ion}: θ = ${th}. La masa molar sale de sus átomos.`, ecuacion: [`M = ${suma} = ${f(M, 1)} g/mol`] },
+            { tipo: 'regla', texto: 'Divido la masa molar entre θ: lo que la sustancia intercambia en esta reacción, no lo que tiene en la fórmula.' },
+            { tipo: 'cuentas', texto: 'Divido la masa molar entre θ.', ecuacion: [Mq, ` = ${f(M, 1)} / ${th} = ${f(Meq)} g`], dibujo: fichasDe(true) },
+            { tipo: 'sentido', texto: `1 mol de ${fo} ${th === 1 ? 'es 1 equivalente' : `son ${th} equivalentes`}: ${th} · ${f(Meq)} g = ${f(M, 1)} g, su masa molar. Cuadra.` },
+          ],
+          respuesta: [Mq, ` = ${f(Meq)} g`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Cuenta θ en la reacción indicada.',
@@ -497,7 +655,7 @@
     laboratorio: [
       {
         id: 'limitante-libre', titulo: 'Dos recetas, un limitante', pieza: 'quim-particulas',
-        consigna: 'Elige la receta y los moles del primer reactivo; los del segundo cambian solos. Cada bolita es 1 mol. Pausa cuando no sobre nada.',
+        consigna: 'Elige la receta y los moles del primer reactivo; los del segundo cambian solos. Cada molécula dibujada es 1 mol. Pausa cuando no sobre nada.',
         controles: [
           { id: 'r', etiqueta: 'Receta', opciones: Object.keys(RECETAS).map(k => ({ valor: k, texto: RECETAS[k].ec })) },
           { id: 'x', etiqueta: 'primer reactivo', color: 'c-i', min: 0, max: 8, paso: 1, inicio: 3, unidad: 'mol', decimales: 0 },
