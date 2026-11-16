@@ -70,11 +70,23 @@
     const lado = (x, X, anodo) => ({ electrodo: x, disolucion: X.ion, rol: anodo ? 'ánodo' : 'cátodo', proceso: anodo ? 'oxidación' : 'reducción', color: anodo ? 'h' : 'i' });
     return { datos: { izq: lado(a, A, izqAnodo), der: lado(b, B, !izqAnodo), electrones: izqAnodo ? 'der' : 'izq', iones: true, medidor: fv(Math.abs(B.e0 - A.e0)).replace('+', ''), desde }, estado: {} };
   }
+  // La celda armada sin papeles (Lee y el enunciado de «Así se resuelve»): metales, disoluciones y voltímetro sin lectura.
+  const celdaSola = (a, b) => ({ datos: { izq: { electrodo: a, disolucion: MET[a].ion }, der: { electrodo: b, disolucion: MET[b].ion }, electrones: null, iones: false, medidor: '? V',
+    alt: `Pila sin resolver: ${a} en ${MET[a].ion} a la izquierda y ${b} en ${MET[b].ion} a la derecha, unidos por un alambre con voltímetro y por el puente salino.` }, estado: {} });
   const celda = {
     id: 'pila-galvanica',
     titulo: 'Electrones por el alambre',
     temas: ['Semirreacciones y potenciales de reducción', 'Celdas galvánicas y fem'],
     pieza: 'quim-celda',
+    // Lee (fase 2): contexto, vocabulario y qué mirar. No dice qué lleva la carga en el puente (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Pilas por todas partes', texto: 'La pila de una linterna o la batería de tu celular sacan corriente de una reacción química. Por dentro, una sustancia pierde electrones y otra los gana.' },
+        { titulo: 'Ánodo y cátodo', texto: 'El electrodo donde una sustancia pierde electrones, la oxidación, se llama ánodo. Donde otra los gana, la reducción, se llama cátodo. El nombre sale de lo que pasa, no del lado del dibujo.' },
+        { titulo: 'Las partes de la celda', texto: 'En la figura hay dos vasos, cada uno con su metal en una disolución de sus iones. Un alambre con un voltímetro une los metales, y un tubo, el puente salino, une los vasos.', dibujo: celdaSola('Zn', 'Cu') },
+        { titulo: 'Qué mirar', texto: 'Prueba varios pares de metales. Fíjate qué electrodo se pinta de rojo, hacia dónde corren los puntos turquesa y cuánto marca el voltímetro.' },
+      ],
+    },
     juega: {
       consigna: 'Electrones (puntos turquesa) por el alambre e iones por el puente, a rapidez de dibujo. Arma la pila y mira hacia dónde van.',
       voz: 'Ubica primero dónde ocurre la oxidación.',
@@ -125,6 +137,32 @@
       condicion: 'a 1 M, 1 atm y 25 °C. Si se multiplica una semirreacción por 2, su potencial no cambia.',
       voz: 'Primero el papel de cada electrodo; la fem sale después.',
     },
+    // Así se resuelve (fase 2): la misma cuenta de «Ahora tú» (MET y pila), con otras semillas.
+    resuelve: {
+      pieza: 'quim-celda',
+      generar(s) {
+        const r = azar(s + 900), ks = ['Mg', 'Zn', 'Fe', 'Pb', 'Ni', 'Cu', 'Ag'];
+        const a = r.de(ks), b = r.de(ks.filter(x => x !== a));
+        const an = MET[a].e0 < MET[b].e0 ? a : b, ca = an === a ? b : a, e = MET[ca].e0 - MET[an].e0;
+        const sinV = x => fv(x).replace(' V', '');
+        const igualar = MET[ca].z !== MET[an].z;
+        return {
+          enunciado: [`Una pila tiene un electrodo de ${a} en ${MET[a].ion} y otro de ${b} en ${MET[b].ion}, a 1 M y 25 °C. ¿Cuál es su `, E0, ' y cuál es el ánodo?'],
+          dibujo: celdaSola(a, b),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la fem ', E0, ': lo que marcaría el voltímetro. Y cuál electrodo se oxida.'] },
+            { tipo: 'datos', texto: 'Los potenciales de reducción de los dos pares, de la tabla.', ecuacion: [`${MET[a].ion}/${a}: ${fv(MET[a].e0)}   ·   ${MET[b].ion}/${b}: ${fv(MET[b].e0)}`] },
+            { tipo: 'regla', texto: 'El par de potencial más bajo cede electrones: ese es el ánodo. El otro los toma y es el cátodo. La fem es cátodo menos ánodo.' },
+            { tipo: 'cuentas', texto: `${an} tiene el potencial más bajo: es el ánodo. ${ca} es el cátodo.`,
+              ecuacion: [E0, ` = ${sinV(MET[ca].e0)} − (${sinV(MET[an].e0)}) = ${fv(e)}`], dibujo: pila(a, b) },
+            { tipo: 'sentido', texto: igualar
+              ? `Salió positiva, como en toda pila bien armada. Aunque ${MET.Ag.ion} toma un solo electrón y hay que duplicarlo, su potencial no se multiplica.`
+              : 'Salió positiva, como en toda pila bien armada. Si salía negativa, habrías restado al revés: el ánodo estaba mal elegido.' },
+          ],
+          respuesta: [E0, ` = ${fv(e)}; ánodo de ${an}, cátodo de ${ca}`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'quim-celda',
       voz: 'Decide cuál se oxida antes de restar.',
@@ -172,8 +210,19 @@
     titulo: 'Espontánea si E es positivo',
     temas: ['Espontaneidad redox', 'Semirreacciones y potenciales de reducción'],
     pieza: 'recta',
+    // Lee (fase 2): sin decir qué pasa con el cobre en Zn²⁺ (eso se predice); la escala se presenta sin leer su orden.
+    lee: {
+      tarjetas: [
+        { titulo: 'El clavo que se cobrea', texto: 'Si dejas un clavo de hierro en una disolución azul de sulfato de cobre, sale cubierto de una capa rojiza. El hierro pasó a la disolución y los iones Cu²⁺ se volvieron cobre metálico.',
+          ecuacion: ['Fe + Cu²⁺ → Fe²⁺ + Cu'] },
+        { titulo: 'Reacción espontánea', texto: 'Una reacción espontánea ocurre sola, sin una pila ni un enchufe que la empuje. Espontánea no quiere decir rápida: algunas tardan días en notarse.' },
+        { titulo: 'La escala', texto: 'Cada par, como Cu²⁺/Cu, tiene su potencial de reducción, en voltios. La escala de la figura pone los seis pares en orden, del más negativo al más positivo.',
+          dibujo: { datos: ESCALA(), estado: {} } },
+        { titulo: 'Qué mirar', texto: 'Elige un metal y una disolución. La flecha va del metal al ion: fíjate hacia dónde apunta y qué signo tiene el número que marca.' },
+      ],
+    },
     juega: {
-      consigna: 'Una barra de metal en otra disolución. La flecha mide sola del metal al ion: si sube en la escala, el ion se reduce.',
+      consigna: 'Elige metal y disolución. La flecha mide sola, en la escala, del metal al ion: si apunta a la derecha, el ion se reduce.',
       voz: 'Compara las dos posiciones en la escala.',
       // Animación (ronda 5): la flecha crece del metal al ion en 3 s (es una regla que mide la resta, no una reacción
       // que avanza) y queda 1 s con su E°; luego vuelve a medir.
@@ -196,7 +245,7 @@
       arrastres: flechaEsc(['Mg', 'Zn', 'Fe'], ['Pb', 'Cu', 'Ag']),
     },
     predice: {
-      pregunta: 'Ahora metes una cuchara de cobre en una disolución de Zn²⁺. ¿Se cubre la cuchara de zinc?',
+      pregunta: 'Ahora pones cobre metálico en una disolución de Zn²⁺. ¿Se cubre el cobre de zinc?',
       voz: 'Ubica los dos pares en la escala antes de responder.',
       opciones: [
         { id: 'c', texto: `No: E° = ${fv(MET.Zn.e0 - MET.Cu.e0)}, no es espontánea`, correcta: true },
@@ -226,6 +275,32 @@
       ecuacion: ['Δ', { sup: ['G', '°'] }, ' = −', { llave: ['n'], nota: 'mol de e⁻' }, ' ', { llave: ['F'], nota: 'de Faraday' }, ' ', E0, '   ·   ', E0, ' > 0 →\u00a0espontánea'],
       condicion: 'en condiciones estándar; con otras concentraciones el potencial cambia (ecuación de Nernst) y puede invertir el sentido.',
       voz: 'Ubica, resta y mira el signo.',
+    },
+    // Así se resuelve (fase 2): el mismo caso de «Ahora tú» (metal en la disolución de otro ion), con otras semillas.
+    // La escala trae los siete pares, Ni incluido, como la mesa «Cualquier metal, cualquier ion».
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), ks = ['Mg', 'Zn', 'Fe', 'Pb', 'Ni', 'Cu', 'Ag'];
+        const met = r.de(ks), ion = r.de(ks.filter(x => x !== met));
+        const e = MET[ion].e0 - MET[met].e0, si = e > 0, sinV = x => fv(x).replace(' V', '');
+        const sieteSin = { datos: Object.assign(ESCALA(TODOS.map(x => ({ tipo: 'punto', x: MET[x].e0, rotulo: `${MET[x].ion}/${x}`, fila: FILA_LAB[x], abierto: true })), false),
+          { filas: 4, alt: 'Escala de potenciales estándar de reducción: Mg −2,37; Zn −0,76; Fe −0,45; Ni −0,26; Pb −0,13; Cu +0,34; Ag +0,80 V.' }), estado: {} };
+        return {
+          enunciado: [`Pones ${met} metálico en una disolución 1 M de ${MET[ion].ion}. ¿Ocurre sola la redox? ¿Cuánto vale su `, E0, '?'],
+          dibujo: sieteSin,
+          pasos: [
+            { tipo: 'pide', texto: [`Piden si el ${MET[ion].ion} le quita electrones al ${met} sin ayuda, y el `, E0, ' de esa reacción.'] },
+            { tipo: 'datos', texto: 'Los potenciales de reducción de los dos pares, de la tabla.', ecuacion: [`${MET[ion].ion}/${ion}: ${fv(MET[ion].e0)}   ·   ${MET[met].ion}/${met}: ${fv(MET[met].e0)}`] },
+            { tipo: 'regla', texto: ['El ion que se reduciría va primero: ', E0, ' es su potencial menos el del metal. Si sale positivo, la reacción ocurre sola.'] },
+            { tipo: 'cuentas', texto: `La flecha va del ${met} al ${MET[ion].ion} y ${si ? 'apunta a la derecha' : 'apunta a la izquierda'}.`,
+              ecuacion: [E0, ` = ${sinV(MET[ion].e0)} − (${sinV(MET[met].e0)}) = ${fv(e)}`], dibujo: { datos: escalaLab({ met, ion }), estado: {} } },
+            { tipo: 'sentido', texto: si
+              ? `Positivo: el ${met} se disuelve y se deposita ${ion}. La cantidad de metal no cambia ese signo.`
+              : `Negativo: no pasa nada. Al revés, ${ion} metálico en ${MET[met].ion}, sí ocurriría: ${fv(-e)}.` },
+          ],
+          respuesta: [`${si ? 'Sí ocurre sola' : 'No ocurre'}: `, E0, ` = ${fv(e)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Ubica el metal y el ion en la escala.',
@@ -260,8 +335,18 @@
     titulo: 'La carga decide la masa',
     temas: ['Electrólisis', 'Leyes de Faraday'],
     pieza: 'ejes',
+    // Lee (fase 2): carga y faraday como vocabulario. No compara metales (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Metal puesto con corriente', texto: 'Muchas piezas se platean o se cobrean con corriente: se cuelgan en una disolución con iones del metal, y una fuente los va depositando encima, capa por capa. Eso es una electrólisis.' },
+        { titulo: 'La carga que pasa', texto: 'La carga Q que pasa por la celda es la corriente por el tiempo, con el tiempo en segundos. Se mide en coulomb: 2 A durante un minuto son 120 C.',
+          ecuacion: ['Q = ', I, ' · t'] },
+        { titulo: 'Un mol de electrones', texto: 'Un mol de electrones lleva unos 96 485 C. Esa carga se llama faraday, F. Contar coulomb es una manera de contar electrones.' },
+        { titulo: 'Qué mirar', texto: 'La recta turquesa es la masa de cobre depositada con el tiempo. Sube la corriente y fíjate cómo cambia su inclinación.' },
+      ],
+    },
     juega: {
-      consigna: 'Una fuente deposita cobre del Cu²⁺ en el cátodo; una hora pasa en 6 s. Elige la corriente y mira crecer la masa.',
+      consigna: 'La gráfica muestra el cobre que una fuente deposita en el cátodo; una hora pasa en 6 s. Elige la corriente y mira la masa.',
       voz: 'Mira cómo cambia la recta al subir la corriente.',
       // Animación (ronda 5): t corre solo de 0 a 60 min (10 min por segundo); la recta se dibuja llena hasta t y
       // punteada después.
@@ -319,6 +404,26 @@
       condicion: 't en segundos y eficiencia del 100 %; en agua pueden competir otras reacciones, como formar H₂ en vez del metal.',
       voz: 'Carga primero; después, cuántos electrones pide cada ion.',
     },
+    // Así se resuelve (fase 2): la misma ley de «Ahora tú» (mDep), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), x = r.de(['Cu', 'Ag', 'Zn', 'Ni']), i = r.ent(1, 6), t = 5 * r.ent(2, 12), X = MET[x];
+        const q = i * t * 60, ne = q / F, mm = mDep(x, i, t);
+        return {
+          enunciado: [`Una corriente `, I, ` = ${f(i, 0)} A pasa ${f(t, 0)} min por una disolución de ${X.ion}. ¿Qué masa `, m, ` de ${x} se deposita? (M = ${f(X.M)} g/mol)`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la masa ', m, ` de ${x} que se deposita en el cátodo.`] },
+            { tipo: 'datos', texto: `La corriente, el tiempo pasado a segundos, la masa molar y los electrones que toma cada ${X.ion}.`,
+              ecuacion: [I, ` = ${f(i, 0)} A · t = ${f(t, 0)} · 60 = ${f(t * 60, 0)} s · M = ${f(X.M)} g/mol · z = ${X.z}`] },
+            { tipo: 'regla', texto: 'Primero la carga: corriente por tiempo. Cada 96 485 C es un mol de electrones, y cada mol de metal pide z moles de electrones.' },
+            { tipo: 'cuentas', texto: 'Carga, después moles de electrones, después masa.',
+              ecuacion: [`Q = ${f(i, 0)} · ${f(t * 60, 0)} = ${f(q, 0)} C → ${f(ne, 4)} mol e⁻ → `, m, ` = ${f(ne, 4)} ÷ ${X.z} · ${f(X.M)} = ${f(mm)} g`] },
+            { tipo: 'sentido', texto: `Unos pocos amperios durante minutos depositan gramos, no kilos. Si usabas minutos en vez de segundos, salía 60 veces menos: ${f(mm / 60)} g.` },
+          ],
+          respuesta: [m, ` = ${f(mm)} g de ${x}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Pasa el tiempo a segundos.',
       generar(s) {
@@ -352,8 +457,17 @@
     titulo: 'Potencial y pH en un mapa',
     temas: ['Diagrama de Pourbaix (solo San Marcos)'],
     pieza: 'ejes',
+    // Lee (fase 2): qué es el mapa y sus ejes. No dice dónde están las líneas ni cómo cambian con el pH (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Rejas que se oxidan', texto: 'En Puno, las rejas y los techos de calamina se corroen con la lluvia y la humedad. Para saber qué es estable en el agua, los químicos usan un mapa de dos datos.' },
+        { titulo: 'Los ejes del mapa', texto: ['En el eje horizontal va el pH, de 0, muy ácido, a 14, muy básico. En el vertical va el potencial ', E, ' del electrodo, en voltios: más arriba, más oxidante.'] },
+        { titulo: 'Las dos líneas del agua', texto: 'El agua puede oxidarse y soltar oxígeno, O₂, o reducirse y soltar hidrógeno, H₂. Cada cambio tiene su línea en el mapa, y cada punto cae arriba, abajo o entre ellas.' },
+        { titulo: 'Qué mirar', texto: 'El punto sube y baja solo. Cambia el pH y fíjate en qué potencial cruza el punto cada línea del agua.' },
+      ],
+    },
     juega: {
-      consigna: 'El potencial del electrodo sube y baja solo. Elige el pH y mira qué zonas cruza el punto: qué le pasa al agua.',
+      consigna: 'El punto sube y baja solo: es el potencial. Elige el pH y mira qué zonas cruza: qué le pasa al agua.',
       voz: 'Busca los bordes de la zona donde el agua no cambia.',
       // Animación (ronda 5): E barre de −1 a 1,5 V y vuelve (0,5 V por segundo); el punto cruza las dos líneas del agua.
       controles: [
@@ -400,6 +514,27 @@
       ecuacion: [E, ' = 1,23\u00a0−\u00a00,0592\u00a0pH', '   ·   ', E, ' = −0,0592\u00a0pH'],
       condicion: 'a 25 °C y gases a 1 atm. Es termodinámica: no dice la rapidez de un proceso, por ejemplo de la corrosión.',
       voz: 'Ubica el punto y lee la zona.',
+    },
+    // Así se resuelve (fase 2): la misma línea de «Ahora tú» (eO2 o eH2), con otras semillas; la línea alterna al revés.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), p = r.ent(1, 13), arriba = s % 2 === 1;
+        const e = arriba ? eO2(p) : eH2(p), otra = arriba ? eH2(p) : eO2(p);
+        return {
+          enunciado: ['A pH ', `${f(p, 0)} y 25 °C, ¿a qué potencial `, E, ` está la línea donde el agua ${arriba ? 'empieza a oxidarse a O₂' : 'empieza a reducirse a H₂'}?`],
+          dibujo: { datos: ejesP(), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el potencial ', E, ` de la línea ${arriba ? 'de arriba, O₂/H₂O' : 'de abajo, H₂O/H₂'}, justo en pH ${f(p, 0)}.`] },
+            { tipo: 'datos', texto: `El pH es ${f(p, 0)} y la temperatura, 25 °C. A pH 0, esa línea está en ${arriba ? '1,23 V' : '0 V'}.` },
+            { tipo: 'regla', texto: 'Las dos líneas del agua bajan 0,0592 V por cada unidad de pH. Se parte del valor a pH 0 y se resta.' },
+            { tipo: 'cuentas', texto: `Reemplazo pH = ${f(p, 0)} en la ecuación de la línea.`,
+              ecuacion: [E, ` = ${arriba ? '1,23' : '0'} − 0,0592 · ${f(p, 0)} = ${fv(e)}`],
+              dibujo: { datos: ejesP({ puntos: [{ x: p, y: e, color: 'd', rotulo: fv(e), guias: true }] }), estado: {} } },
+            { tipo: 'sentido', texto: `Quedó por debajo de su valor a pH 0, porque la línea baja. La otra línea va siempre 1,23 V ${arriba ? 'más abajo' : 'más arriba'}: aquí, ${fv(otra)}.` },
+          ],
+          respuesta: [E, ` = ${fv(e)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Reemplaza el pH en la ecuación de la línea.',
@@ -503,6 +638,8 @@
         ejemplo: `2 A durante 30 min depositan ${f(mDep('Cu', 2, 30))} g de cobre.`, ver: ['faraday'] },
       { termino: 'faraday', simbolo: 'F', medida: 'C/mol', def: 'Carga eléctrica de un mol de electrones: unos 96 485 coulomb.',
         ejemplo: `2 mol de electrones llevan ${f(2 * F, 0)} C.`, ver: ['electrólisis'] },
+      { termino: 'coulomb', simbolo: 'C', def: 'Unidad de carga eléctrica: la que lleva una corriente de 1 A en 1 s.',
+        ejemplo: `2 A durante 1 min: 2 · 60 = ${f(2 * 60, 0)} C.`, ver: ['faraday'] },
       { termino: 'diagrama de Pourbaix', formas: ['diagrama de Pourbaix', 'Pourbaix'],
         def: 'Mapa de potencial contra pH que muestra qué especie es estable en cada zona.',
         ver: ['potencial de reducción'] },

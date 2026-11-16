@@ -36,7 +36,7 @@ fs.mkdirSync(sal, { recursive: true });
   await foto(p, 'lee-1');
   const vis = async () => p.evaluate(() => { const f = document.querySelector('.te-lee'); const w = f.firstElementChild.getBoundingClientRect().width; return Math.round(f.scrollLeft / (w + 12)); });
   for (let k = 1; k < nT; k++) {
-    await p.locator('.te-sig').click(); await p.waitForTimeout(400);
+    await p.locator(".te-sig").click(); await p.waitForTimeout(700);
     marca(await vis() === k, `el botón pasa a la tarjeta ${k + 1}`);
   }
   await foto(p, 'lee-fin');
