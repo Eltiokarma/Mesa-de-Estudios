@@ -43,6 +43,15 @@
   const ctx = t => ({ v: 'c-i', t }), deic = t => ({ v: 'c-o', t }), res = t => ({ v: 'c-d', t }), inv = t => ({ v: 'c-h', t });
   const opciones = (c, malas) => [{ id: 'c', texto: c, correcta: true }, ...malas.map(([texto, error, siFuera], k) => ({ id: `e${k}`, texto, error, siFuera }))];
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
+  // Azar con semilla (el mismo de aritmetica/razones-y-proporciones.js): «Así se resuelve» elige con azar(s + 900).
+  function azar(s) {
+    let q = (s * 2654435761 + 12345) >>> 0;
+    const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+    return r;
+  }
+  // Se descarta la primera salida de azar: con semillas vecinas varía poco y repetiría casi siempre el mismo ítem.
+  const elegir = (xs, s) => { const r = azar(s + 900); r(); return xs[Math.floor(r() * xs.length)]; };
+  const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
   const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'setiembre', 'octubre', 'noviembre', 'diciembre'];
   const DIAS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   // El día siguiente a (d, m), calculado (año no bisiesto).
@@ -81,8 +90,16 @@
     titulo: 'Aquí, mañana y nosotros',
     temas: ['Situación comunicativa'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué es un deíctico y qué mirar; no dice desde qué día se cuenta «mañana» (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'La misma palabra, dos lugares', texto: ['Tu amiga te escribe «estoy ', deic('aquí'), '» desde la plaza de Juliaca, y tu primo te escribe lo mismo desde Lima. La palabra es igual, pero cada «aquí» nombra un lugar distinto.'] },
+        { titulo: 'Se llaman deícticos', texto: ['Palabras como ', deic('yo'), ', ', deic('nosotros'), ', ', deic('aquí'), ', ', deic('este'), ' u ', deic('hoy'), ' se llaman deícticos. Solas no dicen de quién, de dónde ni de cuándo hablan: necesitan los datos de la situación.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['El mensaje de arriba no cambia. Abajo cambia el ', ctx('contexto'), ': quién escribe, la fecha y el lugar. Elige una palabra y mira qué dato la llena. Prueba también «sin datos».'] },
+      ],
+    },
     juega: {
-      consigna: 'El mensaje no cambia. Cambia la tarjeta de contexto y mira qué significan «nosotros», «mañana» y «esta oficina».',
+      consigna: 'El mensaje no cambia. Cambia el contexto de abajo y mira qué significan «nosotros», «mañana» y «esta oficina».',
       voz: 'Estas palabras se llenan con la situación.',
       controles: [
         { id: 'k', etiqueta: 'Contexto', opciones: [{ valor: 'a', texto: 'A' }, { valor: 'b', texto: 'B' }, { valor: 'c', texto: 'sin datos' }] },
@@ -143,6 +160,36 @@
       },
     },
   };
+  // Así se resuelve (fase 2): el mismo problema de «Ahora tú» con mensajes propios; las fechas las calcula siguiente().
+  const RES_DEIC = [
+    { m: 'Mañana sale la combi a Puno a las seis.', c: ['Lo escribe tu tío por WhatsApp', 'Enviado el 31 de agosto'], d: 31, mes: 7 },
+    { m: 'Mañana traigan su chompa para el desfile.', c: ['Nota de la tutora de 4.° A', 'Fecha de la nota: 23 de junio'], d: 23, mes: 5 },
+    { m: 'Mañana abrimos el puesto desde temprano.', c: ['Cartel de un puesto del mercado', 'Fecha del cartel: 9 de octubre'], d: 9, mes: 9 },
+    { m: 'Mañana es la final del campeonato interescolar.', c: ['Publicación del colegio', 'Fecha: 30 de setiembre'], d: 30, mes: 8 },
+  ];
+  deicticos.resuelve = {
+    pieza: 'rv-texto',
+    generar(s) {
+      const b = elegir(RES_DEIC, s), [d1, m1] = siguiente(b.d, b.mes);
+      const lec = [(b.d + 3) % 28 + 1, (b.mes + 1) % 12], trampa = siguiente(...lec);
+      const fig = estado => ({ datos: figura([['a', b.m]], b.c.map((t, k) => [`q${k + 1}`, t])), estado });
+      const cambiaMes = m1 !== b.mes;
+      return {
+        enunciado: `Lees este mensaje el ${fecha(...lec)}. ¿Qué día es el «mañana» del mensaje?`,
+        dibujo: fig({}),
+        pasos: [
+          { tipo: 'pide', texto: ['Piden la fecha a la que apunta «', deic('mañana'), '» dentro del mensaje.'] },
+          { tipo: 'datos', texto: ['El mensaje se escribió el ', ctx(fecha(b.d, b.mes)), `. Tú lo lees el ${fecha(...lec)}.`], dibujo: fig({ marcas: { q2: 'i' } }) },
+          { tipo: 'regla', texto: ['«Mañana» es un deíctico: el día siguiente al momento en que alguien escribió, no al momento en que yo leo.'] },
+          { tipo: 'aplica', texto: cambiaMes ? [`El ${b.d} es el último día de ${MESES[b.mes]}, así que un día después ya es el `, res(fecha(d1, m1)), '.'] : ['Un día después del ', ctx(fecha(b.d, b.mes)), ' es el ', res(fecha(d1, m1)), '.'],
+            ecuacion: [ctx(fecha(b.d, b.mes)), ' + 1 día = ', res(fecha(d1, m1))],
+            dibujo: fig({ marcas: { a: 'o', q2: 'i' }, sellos: { c: { t: `mañana = ${fecha(d1, m1)}`, c: 'd' } }, nuevo: ['c'] }) },
+          { tipo: 'sentido', texto: [`No es el ${fecha(...trampa)}: ese sería «mañana» si el mensaje se hubiera escrito el día en que lo lees.`] },
+        ],
+        respuesta: ['El ', res(fecha(d1, m1))],
+      };
+    },
+  };
 
   // ---------- Idea 2: emisor y destinatario ----------
   // Cambia: el destinatario. Permanece: el pedido (cambiar la fecha de una exposición). Progresa: las marcas del
@@ -165,6 +212,14 @@
     titulo: 'Quién habla y a quién',
     temas: ['Relación entre emisor y destinatario'],
     pieza: 'rv-texto',
+    // Lee (fase 2): emisor, destinatario, trato y registro; no dice cómo separar a quien se habla de quien se nombra.
+    lee: {
+      tarjetas: [
+        { titulo: 'Quién y a quién', texto: 'Todo mensaje tiene un emisor, quien lo escribe, y un destinatario, la persona o el grupo al que se dirige. Una nota en la puerta del aula, un audio de tu mamá o un oficio del municipio tienen los dos.' },
+        { titulo: 'Usted o tú', texto: ['No le escribes igual a la directora que a tu mejor amiga. A una la tratas de ', ctx('usted'), ' y la saludas con «estimada»; a la otra, de ', ctx('tú'), ' y con su apodo. Ese grado de formalidad es el registro.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['Lucía pide siempre lo mismo. Cambia a quién le escribe y pasa el círculo naranja por el saludo, el pedido, el ', res('contenido'), ' y la firma. Fíjate qué cambia y qué se queda igual.'] },
+      ],
+    },
     juega: {
       consigna: 'Lucía pide lo mismo a tres personas distintas. Cambia el destinatario y mira qué marcas cambian en el mensaje.',
       voz: 'Lo que pide es igual; cambia cómo se dirige.',
@@ -222,6 +277,38 @@
       },
     },
   };
+  // Así se resuelve (fase 2): mensajes propios con el saludo (s) aparte del resto (x), para marcarlo en «Lo aplico».
+  const RES_DEST = [
+    { quien: 'Una alumna de 5.° B', s: 'Señora bibliotecaria:', x: 'mi profesor de Historia nos pidió un libro sobre los uros. ¿Podría prestármelo hasta el viernes?', ok: 'A la bibliotecaria', marcas: '«Señora bibliotecaria» y «podría prestármelo»', trato: 'de usted, a una persona', menc: 'al profesor de Historia y a los uros',
+      m2: [['Al profesor de Historia', 'RV50', 'Se menciona como quien pidió el libro; no se le habla.'], ['A los uros', 'RV51', 'Son el tema del libro, no el destinatario.'], ['A toda la clase', 'RV51', 'El saludo nombra a una persona y la trata de usted.']] },
+    { quien: 'El presidente de la junta vecinal', s: 'Vecinos del jirón Lima:', x: 'el municipio vendrá el martes a arreglar el desagüe. Dejen libre la vereda, por favor.', ok: 'A los vecinos del jirón Lima', marcas: '«Vecinos del jirón Lima» y «dejen»', trato: 'a varias personas a la vez', menc: 'al municipio',
+      m2: [['Al municipio', 'RV50', 'Se menciona como quien hará el arreglo; no se le habla.'], ['Al alcalde', 'RV51', 'Nadie lo nombra; el tema es municipal, nada más.'], ['A un solo vecino', 'RV51', '«Dejen» habla a varios.']] },
+    { quien: 'Ximena', s: 'Tía Elsa:', x: 'dice mi papá que el sábado llega a Juliaca. ¿Le guardas un plato de chairo?', ok: 'A la tía Elsa', marcas: '«Tía Elsa» y «¿le guardas?»', trato: 'de tú, con cercanía', menc: 'a su papá y el chairo',
+      m2: [['Al papá de Ximena', 'RV50', 'Se menciona porque él llega; no se le habla.'], ['A toda la familia', 'RV51', 'El saludo nombra a una sola persona.'], ['A una cocinera', 'RV51', 'Nada la nombra; el chairo es el tema.']] },
+    { quien: 'El delegado de 4.° C', s: 'Profesora Carmen:', x: 'los compañeros le pedimos mover la práctica de Química al jueves, porque el miércoles es el desfile.', ok: 'A la profesora Carmen', marcas: '«Profesora Carmen» y «le pedimos»', trato: 'de usted, a una persona', menc: 'a los compañeros y el desfile',
+      m2: [['A los compañeros de 4.° C', 'RV50', 'Piden junto al delegado; no se les habla.'], ['A quien organiza el desfile', 'RV51', 'El desfile es el motivo, no el destinatario.'], ['A todos los profesores', 'RV51', 'El saludo nombra a una sola profesora.']] },
+  ];
+  emisorDest.resuelve = {
+    pieza: 'rv-texto',
+    generar(s) {
+      const b = elegir(RES_DEST, s), [trampa, , porque] = b.m2[0];
+      const fig = estado => ({ datos: { secciones: [{ id: 'm', titulo: 'Mensaje', modo: 'tarjeta', fragmentos: [{ id: 's', t: b.s }, { id: 'x', t: b.x }] }, { id: 'c', titulo: 'Para', modo: 'tarjeta', fragmentos: [] }] }, estado });
+      return {
+        enunciado: `${b.quien} escribe este mensaje. ¿A quién va dirigido?`,
+        dibujo: fig({}),
+        pasos: [
+          { tipo: 'pide', texto: ['Piden el ', res('destinatario'), ': a quién le habla el mensaje, no de quién habla.'] },
+          { tipo: 'datos', texto: [`Escribe ${b.quien.replace(/^(Una|El) /, x => x.toLowerCase())}. Además, el mensaje menciona ${b.menc}.`] },
+          { tipo: 'regla', texto: ['Para hallar el destinatario miro las marcas del ', ctx('trato'), ': a quién saluda, si usa usted o tú y a quién le pide algo.'] },
+          { tipo: 'aplica', texto: [ctx(b.marcas), ` hablan ${b.trato}: el mensaje va ${minus(b.ok)}.`],
+            ecuacion: [ctx('saludo + trato'), ' → ', res(minus(b.ok))],
+            dibujo: fig({ marcas: { s: 'i' }, sellos: { c: { t: b.ok, c: 'i' } }, nuevo: ['s', 'c'] }) },
+          { tipo: 'sentido', texto: [`Descarto «${trampa}»: ${minus(porque)}`] },
+        ],
+        respuesta: [res(b.ok)],
+      };
+    },
+  };
 
   // ---------- Idea 3: la misma frase, distinta acción ----------
   // Cambia: la situación. Permanece: la frase «Hace frío aquí». Progresa: lo que hace la frase (pedir, informar,
@@ -237,6 +324,14 @@
     titulo: 'La misma frase, otra acción',
     temas: ['Contexto y situación'],
     pieza: 'rv-texto',
+    // Lee (fase 2): hablar también es hacer; no dice que una pregunta pueda ser un pedido (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Hablar es hacer', texto: 'Cuando dices «te prometo llegar temprano», no describes nada: prometes. Con palabras también se saluda, se avisa, se agradece o se advierte. A esas acciones que se hacen al hablar se les llama actos de habla.' },
+        { titulo: 'Alrededor de la frase', texto: ['En la feria del domingo oyes muchas frases cortas. Para entender qué hace cada una, conviene mirar la ', ctx('situación'), ': quién la dice, a quién, dónde y qué está pasando en ese momento.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['La frase «Hace frío aquí» no cambia. Cambia la ', ctx('situación'), ' de abajo y lee el sello ', res('verde'), ': dice qué acción cumple la frase en cada caso.'] },
+      ],
+    },
     juega: {
       consigna: 'La frase es siempre «Hace frío aquí». Cambia la situación y mira qué hace la frase en cada una.',
       voz: 'Una frase también es una acción: pedir, avisar, informar.',
@@ -288,6 +383,38 @@
       },
     },
   };
+  // Así se resuelve (fase 2): frases y situaciones propias; `pista` es el dato de la situación que decide la acción.
+  const RES_ACCION = [
+    { f: 'La puerta está abierta.', c: 'Lo dice la abuela a su nieto que acaba de entrar, mientras sopla un viento helado.', pista: 'el viento helado y el nieto que acaba de entrar', ok: 'Le pide que cierre la puerta', sello: 'Pedido',
+      m: [['Le informa cómo está la puerta', 'RV49', 'Literalmente describe, pero ante el viento pide algo.'], ['Le pregunta por la puerta', 'RV49', 'No es una pregunta.'], ['Lo felicita por llegar', 'RV33', 'Nada en la situación lo indica.']] },
+    { f: 'Hay perro bravo.', c: 'Letrero colgado en la reja de una chacra, a la entrada del camino.', pista: 'el letrero en la reja de la entrada', ok: 'Advierte que no entren sin cuidado', sello: 'Advertencia',
+      m: [['Describe cómo es el perro', 'RV49', 'Describe, pero un letrero en la reja advierte.'], ['Invita a conocer al perro', 'RV33', 'Nada en la situación lo indica.'], ['Pide comida para el perro', 'RV33', 'Nada en la situación lo indica.']] },
+    { f: '¿Puedes bajar el volumen?', c: 'Lo dice una vecina a un joven, con la música muy alta a las once de la noche.', pista: 'la música muy alta a las once de la noche', ok: 'Le pide que baje la música', sello: 'Pedido',
+      m: [['Le pregunta si es capaz de bajarlo', 'RV49', 'Tiene forma de pregunta, pero a esa hora es un pedido.'], ['Le informa la hora', 'RV49', 'La frase no informa nada.'], ['Lo felicita por su música', 'RV33', 'Nada en la situación lo indica.']] },
+    { f: 'El bus sale en cinco minutos.', c: 'Lo dice la profesora a los alumnos que siguen comprando recuerdos en la plaza de Puno.', pista: 'los alumnos que siguen comprando', ok: 'Les avisa que se apuren a subir', sello: 'Aviso',
+      m: [['Les informa el horario del bus', 'RV49', 'Informa, pero con los alumnos aún comprando, los apura.'], ['Les pregunta por el bus', 'RV49', 'No es una pregunta.'], ['Critica los recuerdos', 'RV33', 'Nada en la situación lo indica.']] },
+  ];
+  accion.resuelve = {
+    pieza: 'rv-texto',
+    generar(s) {
+      const b = elegir(RES_ACCION, s), [trampa, , porque] = b.m[0];
+      const fig = estado => ({ datos: figura([['f', b.f]], [['q1', b.c]], 'Situación'), estado });
+      return {
+        enunciado: `En esta situación, ¿qué hace la frase «${b.f.replace(/\.$/, '')}»?`,
+        dibujo: fig({ marcas: { f: 'o' } }),
+        pasos: [
+          { tipo: 'pide', texto: ['Piden la acción que cumple la ', deic('frase'), ' en esa situación: pedir, avisar, advertir o informar.'] },
+          { tipo: 'datos', texto: [`La frase es «${b.f.replace(/\.$/, '')}». En la situación pesa `, ctx(b.pista), '.'] },
+          { tipo: 'regla', texto: ['Lo que hace una frase no está solo en sus palabras: se lee juntándola con quién la dice, a quién y ante qué.'] },
+          { tipo: 'aplica', texto: ['Con ', ctx(b.pista), ', la frase no se queda en describir: ', res(minus(b.ok)), '.'],
+            ecuacion: [deic('frase'), ' + ', ctx('situación'), ' → ', res(b.sello.toLowerCase())],
+            dibujo: fig({ marcas: { f: 'o', q1: 'i' }, sellos: { c: { t: b.sello, c: 'd' } }, nuevo: ['q1', 'c'] }) },
+          { tipo: 'sentido', texto: [`Descarto «${trampa}»: ${minus(porque)}`] },
+        ],
+        respuesta: [res(b.ok)],
+      };
+    },
+  };
 
   // ---------- Laboratorio: el calendario del mensaje ----------
   // Más rica que la idea 1: cuatro palabras de tiempo (ayer, hoy, mañana, pasado mañana) y la fecha del mensaje libre,
@@ -300,7 +427,7 @@
   const figLab = (d, m) => figura(MSG_LAB, [['q2', `Fecha del mensaje: ${fecha(diaReal(d, m), m)}`]]);
   const mesaCalendario = {
     id: 'calendario', titulo: 'El calendario del mensaje', pieza: 'rv-texto',
-    consigna: 'Elige la fecha del mensaje y arrastra el marcador a una palabra de tiempo. Prueba fines de mes y de año.',
+    consigna: 'Elige la fecha del mensaje y arrastra el círculo naranja a una palabra de tiempo. Prueba fines de mes y de año.',
     voz: 'Se cuenta desde el día en que se escribió.',
     controles: [
       { id: 'd', etiqueta: 'Día', color: 'c-i', min: 1, max: 31, paso: 1, inicio: 28, decimales: 0 },
