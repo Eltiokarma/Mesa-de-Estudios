@@ -1008,6 +1008,7 @@ body.con-lupa{overflow:hidden}
 .te-atajo:hover{color:var(--ink)}
 .te-atajo.on{color:var(--brand);border-bottom-color:var(--brand)}
 .te-atajo:focus-visible{outline:2px solid var(--brand);outline-offset:-2px;border-radius:6px}
+@media (max-width:420px){.te-atajo{font-size:14px;padding:6px 2px}}
 /* Ficha de repaso abierta: cada regla en su tarjeta, numerada. */
 .te-fichas{list-style:none;margin:0;padding:0}
 .te-fic-cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -1201,3 +1202,28 @@ body.con-lupa{overflow:hidden}
 /* Hay más debajo del botón fijo: un desvanecido arriba de la barra lo sugiere (lector en frío, 16 nov). */
 @media (max-width:899px){ .te-accion::before{content:'';position:absolute;left:-14px;right:-14px;bottom:100%;height:28px;background:linear-gradient(to bottom,transparent,var(--card));pointer-events:none} }
 
+
+/* ---------- Ejemplos resueltos (pestaña «Ejemplos», 16 nov) ----------
+   Del más simple al tipo examen, resueltos enteros: enunciado, «Resuelto» con el texto en colores y la respuesta; el
+   dibujo a la derecha en pantalla grande y debajo en el celular. */
+.te-ej-intro{margin:0 0 10px}
+.te-ej-ideas{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px}
+.te-ej-niv{margin:18px 0 0}
+.te-ej-niv>h3{margin:0 0 10px;font-size:18px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.te-ej-niv>h3 span{font-size:13px;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--brand-soft);color:var(--brand)}
+.te-ej{margin:0 0 12px;display:flex;flex-direction:column;gap:8px}
+.te-ej-cab{display:flex;align-items:center;gap:10px}
+.te-ej-cab h4{margin:0;font-size:17px}
+.te-ej-n{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:color-mix(in srgb,var(--c-i) 18%,var(--card));color:var(--c-i);font-weight:800;font-size:14px}
+.te-ej-enun{margin:0;font-size:16px;font-weight:600;line-height:1.5}
+.te-ej-sol{border-left:4px solid var(--c-d);padding:4px 0 4px 12px;background:color-mix(in srgb,var(--c-d) 6%,var(--card));border-radius:0 12px 12px 0}
+.te-ej-sol p{margin:6px 0;line-height:1.5}
+.te-ej-et{font-size:13px;font-weight:800;color:var(--c-d);margin:2px 0 4px!important}
+.te-ej-resp{margin:4px 0 0;font-size:16px}
+.te-ej-fig .te-fig svg{max-width:340px;margin:0 auto;display:block}
+@media (min-width:900px){
+  .te-ej{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,300px);gap:6px 24px;align-items:start}
+  .te-ej>.te-ej-cab{grid-column:1/-1}
+  .te-ej>.te-ej-enun,.te-ej>.te-ej-sol,.te-ej>.te-ej-resp{grid-column:1}
+  .te-ej>.te-ej-fig{grid-column:2;grid-row:2/span 3}
+}

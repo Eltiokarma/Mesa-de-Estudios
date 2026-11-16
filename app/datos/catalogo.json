@@ -93,6 +93,7 @@
      "teoria": {
       "archivo": "/contenido/teoria/fisica/magnitudes-y-vectores.js",
       "requiere": [
+       "/nucleo/kit/piezas/fis-objeto.js",
        "/nucleo/kit/piezas/recta.js",
        "/nucleo/kit/piezas/fis-medida.js",
        "/nucleo/kit/piezas/fis-combi.js",
@@ -100,7 +101,7 @@
        "/nucleo/kit/piezas/fis-balanza-dim.js"
       ],
       "ideas": 3,
-      "terminos": 23
+      "terminos": 24
      }
     },
     {

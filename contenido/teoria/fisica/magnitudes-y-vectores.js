@@ -79,6 +79,122 @@
   const V_KMH = 72, V_MS = V_KMH * 1000 / 3600;
   // La combi en su pista (pieza fis-combi): dónde está en cada segundo. segundos: 0 la deja en la partida.
   const pista = (segundos, v = V_MS) => ({ v, segundos, max: Math.max(100, Math.ceil(5 * v / 20) * 20), paso: 10, numero: 20, color: 'o' });
+  // Ejemplos resueltos de «Cambiar de unidad» (pestaña «Ejemplos», Gerson 16 nov): 3 niveles × 5, resueltos enteros.
+  // Colores: el dato, naranja (c-o); el factor que vale 1, verde (c-d); el resultado, turquesa (c-i). Cada enunciado
+  // da su equivalencia («Dato: …»). Cuentas comprobadas a mano: 105/1000, 3,4·1000, 45/60, 17,5·10, 12·1000, 90/3,6,
+  // 10·3,6, 24·3600, 3·3600/1000, 72·60, 30·3,6, 3·10⁸·60, 70·10⁻⁶, 72/3,6·900, 340·3,6.
+  const dO = t => ({ v: 'c-o', t }), dF = t => ({ v: 'c-d', t }), dR = t => ({ v: 'c-i', t });
+  const fo = datos => ({ pieza: 'fis-objeto', datos, estado: {} });
+  const EJEMPLOS_UNIDADES = [
+    { nivel: 1, titulo: 'El largo de una cancha', figura: fo({ objeto: 'cancha', largo: '105 m' }),
+      enunciado: ['Una cancha de fútbol mide ', dO('105 m'), ' de largo. ¿Cuántos kilómetros son? Dato: 1 km = 1000 m.'],
+      solucion: [
+        { texto: ['El kilómetro es más grande que el metro: el número tiene que ', dR('bajar'), '.'] },
+        { texto: ['Se multiplica por el factor que tiene km arriba y m abajo; los metros se tachan.'], ecuacion: [dO('105'), ' ', { tacha: 'm' }, ' × ', { frac: [dF('1 km'), ['1000 ', { tacha: 'm' }]] }, ' = ', dR('0,105 km')] },
+      ],
+      respuesta: [dR('0,105 km')] },
+    { nivel: 1, titulo: 'Un bebé en la balanza', figura: fo({ objeto: 'bebe', pantalla: '3,4 kg' }),
+      enunciado: ['Un bebé recién nacido tiene una masa de ', dO('3,4 kg'), '. ¿Cuántos gramos son? Dato: 1 kg = 1000 g.'],
+      solucion: [
+        { texto: ['El gramo es más chico: caben muchos en un kilogramo. El número tiene que ', dR('subir'), '.'] },
+        { texto: ['Factor con g arriba y kg abajo.'], ecuacion: [dO('3,4'), ' ', { tacha: 'kg' }, ' × ', { frac: [dF('1000 g'), ['1 ', { tacha: 'kg' }]] }, ' = ', dR('3400 g')] },
+      ],
+      respuesta: [dR('3400 g')] },
+    { nivel: 1, titulo: 'Un viaje en fracción de hora', figura: fo({ objeto: 'reloj', minutos: 45, texto: '45 min' }),
+      enunciado: ['El viaje de Juliaca a Puno dura ', dO('45 min'), '. ¿Cuántas horas son? Dato: 1 h = 60 min.'],
+      solucion: [
+        { texto: ['En el reloj, 45 minutos son tres cuartos de la vuelta: menos de una hora.'] },
+        { texto: ['Factor con h arriba y min abajo.'], ecuacion: [dO('45'), ' ', { tacha: 'min' }, ' × ', { frac: [dF('1 h'), ['60 ', { tacha: 'min' }]] }, ' = ', dR('0,75 h')] },
+      ],
+      respuesta: [dR('0,75 h'), ', tres cuartos de hora'] },
+    { nivel: 1, titulo: 'Un lápiz en milímetros', figura: fo({ objeto: 'lapiz', cm: 17.5 }),
+      enunciado: ['Un lápiz mide ', dO('17,5 cm'), '. ¿Cuántos milímetros son? Dato: 1 cm = 10 mm.'],
+      solucion: [
+        { texto: ['En la regla, cada centímetro tiene 10 rayitas de milímetro.'] },
+        { texto: ['Factor con mm arriba y cm abajo.'], ecuacion: [dO('17,5'), ' ', { tacha: 'cm' }, ' × ', { frac: [dF('10 mm'), ['1 ', { tacha: 'cm' }]] }, ' = ', dR('175 mm')] },
+      ],
+      respuesta: [dR('175 mm')] },
+    { nivel: 1, titulo: 'La carga de un camión', figura: fo({ objeto: 'camion', carga: '12 t' }),
+      enunciado: ['Un camión lleva ', dO('12 t'), ' de papa a la feria. ¿Cuántos kilogramos son? Dato: 1 t = 1000 kg.'],
+      solucion: [
+        { texto: ['La tonelada, t, es una unidad grande de masa: mil kilogramos.'] },
+        { texto: ['Factor con kg arriba y t abajo.'], ecuacion: [dO('12'), ' ', { tacha: 't' }, ' × ', { frac: [dF('1000 kg'), ['1 ', { tacha: 't' }]] }, ' = ', dR('12 000 kg')] },
+      ],
+      respuesta: [dR('12 000 kg')] },
+    { nivel: 2, titulo: 'Una combi en m/s', figura: { pieza: 'fis-combi', datos: pista(2, 25), estado: {} },
+      enunciado: ['Una combi va a ', dO('90 km/h'), '. ¿Cuántos metros avanza en cada segundo? Dato: 1 km = 1000 m y 1 h = 3600 s.'],
+      solucion: [
+        { texto: ['Hay que cambiar dos unidades: los km a m y las horas a segundos. Dos factores.'] },
+        { texto: ['Los km se tachan arriba con abajo, y las h también.'], ecuacion: [{ frac: [[dO('90 '), { tacha: 'km' }], ['1 ', { tacha: 'h' }]] }, ' × ', { frac: [dF('1000 m'), ['1 ', { tacha: 'km' }]] }, ' × ', { frac: [['1 ', { tacha: 'h' }], dF('3600 s')] }, ' = ', dR('25 m/s')] },
+        { texto: ['Atajo: por 1000 y entre 3600 es lo mismo que entre 3,6.'], ecuacion: ['90 ÷ 3,6 = ', dR('25')] },
+      ],
+      respuesta: [dR('25 m/s')] },
+    { nivel: 2, titulo: 'Un corredor en km/h', figura: fo({ objeto: 'atleta', distancia: '100 m', tiempo: '10 s' }),
+      enunciado: ['Un corredor hace los ', dO('100 m'), ' en ', dO('10 s'), '. ¿A cuántos km/h corre? Dato: 1 km = 1000 m y 1 h = 3600 s.'],
+      solucion: [
+        { texto: ['Primero su rapidez en m/s: metros entre segundos.'], ecuacion: ['100 m ÷ 10 s = ', dO('10 m/s')] },
+        { texto: ['Luego a km/h: el camino de vuelta, por 3,6.'], ecuacion: [{ frac: [dO('10 m'), '1 s'] }, ' × ', { frac: [dF('1 km'), '1000 m'] }, ' × ', { frac: [dF('3600 s'), '1 h'] }, ' = ', dR('36 km/h')] },
+      ],
+      respuesta: [dR('36 km/h')] },
+    { nivel: 2, titulo: 'Los segundos de un día', figura: fo({ objeto: 'reloj', minutos: 60, texto: '1 día = 24 vueltas de 1 h' }),
+      enunciado: ['¿Cuántos segundos tiene ', dO('1 día'), '? Dato: 1 día = 24 h, 1 h = 60 min y 1 min = 60 s.'],
+      solucion: [
+        { texto: ['Se encadenan tres factores: de días a horas, de horas a minutos y de minutos a segundos.'] },
+        { texto: ['Cada unidad de arriba se tacha con la de abajo del factor siguiente.'], ecuacion: [dO('1 día'), ' × ', { frac: [dF('24 h'), '1 día'] }, ' × ', { frac: [dF('60 min'), '1 h'] }, ' × ', { frac: [dF('60 s'), '1 min'] }, ' = ', dR('86 400 s')] },
+      ],
+      respuesta: [dR('86 400 s')] },
+    { nivel: 2, titulo: 'Un caracol lento', figura: fo({ objeto: 'caracol', texto: '3 mm en cada segundo' }),
+      enunciado: ['Un caracol avanza ', dO('3 mm/s'), '. ¿Cuántos metros avanza en una hora? Dato: 1 m = 1000 mm y 1 h = 3600 s.'],
+      solucion: [
+        { texto: ['En una hora hay 3600 segundos: avanza 3 mm en cada uno.'], ecuacion: [dO('3 mm/s'), ' × ', dF('3600 s'), ' = 10 800 mm'] },
+        { texto: ['Y los milímetros a metros: entre 1000.'], ecuacion: ['10 800 mm × ', { frac: [dF('1 m'), '1000 mm'] }, ' = ', dR('10,8 m')] },
+      ],
+      respuesta: [dR('10,8 m'), ' en una hora: ', dR('10,8 m/h')] },
+    { nivel: 2, titulo: 'Latidos en una hora', figura: fo({ objeto: 'corazon', texto: '72 latidos en un minuto' }),
+      enunciado: ['Un corazón late ', dO('72 veces por minuto'), '. ¿Cuántas veces late en una hora? Dato: 1 h = 60 min.'],
+      solucion: [
+        { texto: ['Una hora tiene 60 minutos, y en cada uno late 72 veces.'] },
+        { texto: ['Los minutos se tachan.'], ecuacion: [{ frac: [dO('72 latidos'), ['1 ', { tacha: 'min' }]] }, ' × ', { frac: [['60 ', { tacha: 'min' }], dF('1 h')] }, ' = ', dR('4320 latidos/h')] },
+      ],
+      respuesta: [dR('4320'), ' latidos'] },
+    { nivel: 3, titulo: '¿Guepardo o auto?', figura: fo({ objeto: 'comparar', titulo: 'Las dos en km/h', barras: [{ nombre: 'Guepardo', valor: 108, texto: '108 km/h', color: 'o' }, { nombre: 'Auto', valor: 100, texto: '100 km/h', color: 'i' }] }),
+      enunciado: ['Un guepardo corre a ', dO('30 m/s'), ' y un auto va a ', dR('100 km/h'), '. ¿Cuál es más rápido? Dato: 1 km = 1000 m y 1 h = 3600 s.'],
+      solucion: [
+        { texto: ['Para comparar, las dos rapideces tienen que estar en la misma unidad. Se pasa la del guepardo a km/h.'] },
+        { texto: ['De m/s a km/h se multiplica por 3,6.'], ecuacion: [dO('30 m/s'), ' × 3,6 = ', dO('108 km/h')] },
+        { texto: ['108 km/h es más que 100 km/h.'] },
+      ],
+      respuesta: ['El ', dO('guepardo'), ', por 8 km/h'] },
+    { nivel: 3, titulo: 'La luz en un minuto', figura: fo({ objeto: 'sol', texto: '300 000 000 m en cada segundo' }),
+      enunciado: ['La luz viaja a ', dO('3 × 10⁸ m/s'), '. ¿Cuántos kilómetros recorre en ', dO('1 min'), '? Dato: 1 min = 60 s y 1 km = 10³ m.'],
+      solucion: [
+        { texto: ['En un minuto hay 60 segundos: se multiplica.'], ecuacion: [dO('3 × 10⁸ m/s'), ' × ', dF('60 s'), ' = 180 × 10⁸ m = 1,8 × 10¹⁰ m'] },
+        { texto: ['De metros a kilómetros se divide entre 10³: los exponentes se restan.'], ecuacion: ['1,8 × 10¹⁰ m × ', { frac: [dF('1 km'), '10³ m'] }, ' = ', dR('1,8 × 10⁷ km')] },
+      ],
+      respuesta: [dR('1,8 × 10⁷ km'), ': dieciocho millones de kilómetros'] },
+    { nivel: 3, titulo: 'El grosor de un cabello', figura: fo({ objeto: 'cabello', texto: '70 μm' }),
+      enunciado: ['Un cabello tiene ', dO('70 μm'), ' de grosor. ¿Cuántos metros son? Dato: 1 μm = 10⁻⁶ m (μ se lee «micro»).'],
+      solucion: [
+        { texto: ['El prefijo micro, μ, quiere decir una millonésima: 10⁻⁶.'] },
+        { texto: ['Se multiplica y se escribe en notación científica.'], ecuacion: [dO('70'), ' ', { tacha: 'μm' }, ' × ', { frac: [dF('10⁻⁶ m'), ['1 ', { tacha: 'μm' }]] }, ' = 70 × 10⁻⁶ m = ', dR('7 × 10⁻⁵ m')] },
+      ],
+      respuesta: [dR('7 × 10⁻⁵ m'), ', o 0,00007 m'] },
+    { nivel: 3, titulo: 'Cuánto avanza en 15 minutos', figura: { pieza: 'fis-combi', datos: pista(3, 20), estado: {} },
+      enunciado: ['Un auto va a ', dO('72 km/h'), ' durante ', dO('15 min'), '. ¿Cuántos metros recorre? Dato: 1 km = 1000 m, 1 h = 3600 s y 1 min = 60 s.'],
+      solucion: [
+        { texto: ['Antes de multiplicar, todo al SI: la rapidez en m/s y el tiempo en s.'], ecuacion: [dO('72 km/h'), ' ÷ 3,6 = ', dO('20 m/s'), ',   ', dO('15 min'), ' × 60 = ', dO('900 s')] },
+        { texto: ['Distancia es rapidez por tiempo; los segundos se tachan.'], ecuacion: [{ frac: [dO('20 m'), ['1 ', { tacha: 's' }]] }, ' × ', dO('900 '), { tacha: 's' }, ' = ', dR('18 000 m')] },
+      ],
+      respuesta: [dR('18 000 m'), ', o 18 km'] },
+    { nivel: 3, titulo: '¿Un avión supera al sonido?', figura: fo({ objeto: 'comparar', titulo: 'Las dos en km/h', barras: [{ nombre: 'Sonido', valor: 1224, texto: '1224 km/h', color: 'o' }, { nombre: 'Avión', valor: 900, texto: '900 km/h', color: 'i' }] }),
+      enunciado: ['El sonido viaja en el aire a ', dO('340 m/s'), '. Un avión de pasajeros va a ', dR('900 km/h'), '. ¿Va más rápido que el sonido? Dato: 1 km = 1000 m y 1 h = 3600 s.'],
+      solucion: [
+        { texto: ['Se pasa la rapidez del sonido a km/h, para comparar en la misma unidad.'], ecuacion: [dO('340 m/s'), ' × 3,6 = ', dO('1224 km/h')] },
+        { texto: ['900 km/h es menos que 1224 km/h.'] },
+      ],
+      respuesta: ['No: el sonido es más rápido, por ', dO('324 km/h')] },
+  ];
+
   const unidades = {
     id: 'unidades',
     titulo: 'Cambiar de unidad',
@@ -94,6 +210,7 @@
       ],
     },
     actividad: 'Medir un poste de luz con tres reglas a la vez: en metros, decímetros y centímetros.',
+    ejemplos: EJEMPLOS_UNIDADES,
     aprendizaje: 'El poste mide lo mismo en cualquier unidad; cambia el número: en decímetros es 10 veces más y en centímetros, 100 veces más.',
     juega: {
       pieza: 'fis-medida',
@@ -666,7 +783,7 @@
     // Pasó por el contrato «se entiende sin profesor» (16 nov): el validador exige misión, leyenda, aprendizaje, pregunta
     // y 3 ejemplos por término del glosario.
     calidad: 2,
-    requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/fis-medida.js', '/nucleo/kit/piezas/fis-combi.js', '/nucleo/kit/piezas/fis-area.js', '/nucleo/kit/piezas/fis-balanza-dim.js'],
+    requiere: ['/nucleo/kit/piezas/fis-objeto.js', '/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/fis-medida.js', '/nucleo/kit/piezas/fis-combi.js', '/nucleo/kit/piezas/fis-area.js', '/nucleo/kit/piezas/fis-balanza-dim.js'],
     // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso (es la primera).
     glosario: [
       { termino: 'medir', formas: ['medir', 'mide', 'mides', 'medimos', 'medido'], simple: 'Contar cuántas veces cabe algo chico, que tomas de patrón, en algo grande.',

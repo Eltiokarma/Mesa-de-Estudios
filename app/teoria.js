@@ -209,8 +209,9 @@
     const sabidas = new Set((((ctx.est.temas || {})[u.id] || {}).entrada || {}).sabidas || []);
     const primeraPendiente = ideas.find(i => !hecha(st, i.id) && !sabidas.has(i.id)) || ideas.find(i => !hecha(st, i.id)) || ideas[ideas.length - 1];
     // Sin idea en la ruta, la teoría abre en el Resumen (Gerson, 16 nov: «que sea la primera pantalla de teoría»).
-    const ficha = sub === 'ficha' || !sub, lab = sub === 'laboratorio', glosa = sub === 'glosario';
-    const idea = ficha || lab || glosa ? null : ideas.find(i => i.id === sub) || primeraPendiente;
+    const ficha = sub === 'ficha' || !sub, lab = sub === 'laboratorio', glosa = sub === 'glosario', ejem = sub === 'ejemplos';
+    const idea = ficha || lab || glosa || ejem ? null : ideas.find(i => i.id === sub) || primeraPendiente;
+    const conEjemplos = ideas.filter(i => Array.isArray(i.ejemplos) && i.ejemplos.length);
 
     // ---------- Glosario: términos tocables y hoja con la definición ----------
     const G = window.Glosario;
@@ -324,13 +325,13 @@
     // una idea, ninguno decía dónde estaba el alumno). «Ideas» es el mapa del tema y queda marcada también dentro de una
     // idea; la tira de ideas solo aparece ahí, para saltar entre ellas. El título es el tema; «Teoría» y el avance van en
     // la línea chica. Al alumno se le dice «tema», nunca «unidad» (en Magnitudes, «unidad» es el metro).
-    const enIdeas = !glosa && !lab;
+    const enIdeas = !glosa && !lab && !ejem;
     const atajo = (k, txt, on) => `<a class="te-atajo${on ? ' on' : ''}" href="#/unidad/${esc(u.id)}/teoria/${k}"${on ? ' aria-current="page"' : ''}>${txt}</a>`;
     // Corto, para que entre en una línea del celular (con el curso delante se cortaba: «0 t…»).
     // «terminadas»: «1 de 4 ideas» se leía como «estás en la idea 1» (lector en frío, 16 nov).
     const avance = `${n} de ${ideas.length} terminadas${n === ideas.length ? ' ✓' : ''}`;
     const cab = ctx.muestra ? ctx.cab() : `${ctx.cab(u.nombre, { arriba: `Teoría · ${avance}` })}
-      <nav class="te-atajos" aria-label="Partes de la teoría">${atajo('ficha', idea ? '‹ Ideas' : 'Ideas', enIdeas)}${aqui.length ? atajo('glosario', 'Glosario', glosa) : ''}${atajo('laboratorio', 'Laboratorio', lab)}</nav>
+      <nav class="te-atajos" aria-label="Partes de la teoría">${atajo('ficha', idea ? '‹ Ideas' : 'Ideas', enIdeas)}${conEjemplos.length ? atajo('ejemplos', 'Ejemplos', ejem) : ''}${aqui.length ? atajo('glosario', 'Glosario', glosa) : ''}${atajo('laboratorio', 'Laboratorio', lab)}</nav>
       ${idea ? `<nav class="te-ideas" aria-label="Ideas de este tema">${ideas.map(chip).join('')}</nav>` : ''}`;
     // La tira de ideas: en el celular, las otras ideas van solo con su número (estilos), así caben todas; si aun así no
     // cabe, se desvanece del lado donde hay más.
@@ -353,6 +354,7 @@
 
     if (ficha) { $app.innerHTML = cab + vistaFicha(); conectarLupas($app); conectarFicha(); vigilar($app.querySelector('.te-fichas')); return; }
     if (glosa) { $app.innerHTML = cab + vistaGlosario(); return conectarGlosario(); }
+    if (ejem) return vistaEjemplos();
     if (lab) { $app.innerHTML = cab + `<section class="card te-idea te-labo" aria-labelledby="te-titulo" data-m="juega">
         <h2 id="te-titulo">Laboratorio</h2>
         <p class="sub te-labo-sub">Juega libre: nada se califica. Guarda casos para compararlos.</p>
@@ -852,6 +854,45 @@
               <button type="button" class="te-fic-verfig" aria-expanded="false" aria-controls="te-fig-${k}">Ver la figura</button>
               <details class="te-fic-regla" data-idea="${esc(i.id)}"><summary>Ver la regla</summary>${reglaHTML(i.regla)}</details>
             </div></li>`; }).join('')}</ol>`;
+    }
+    // Ejemplos resueltos (pestaña «Ejemplos»; Gerson, 16 nov: «ejercicios resueltos que no se hagan paso a paso, sino
+    // que estén resueltos, explicados con texto en colores y/o imágenes»; 3 niveles y 5 por nivel en cada idea).
+    // Arriba se elige la idea; debajo, los tres niveles, cada ejemplo con su dibujo y la solución entera a la vista.
+    function vistaEjemplos() {
+      const NIVEL = { 1: ['Nivel 1', 'Base: un solo paso'], 2: ['Nivel 2', 'Intermedio: dos pasos o unidades compuestas'], 3: ['Nivel 3', 'Tipo examen'] };
+      let actual = (conEjemplos.find(i => i.id === st.ejIdea) || conEjemplos[0]);
+      const tarjeta = (e, k) => {
+        let fig = '';
+        if (e.figura) { try { const P = Kit.piezas[e.figura.pieza]; fig = P ? P.dibujar(e.figura.datos, e.figura.estado || {}) : ''; } catch (err) { fig = ''; } }
+        return `<article class="card te-ej" data-nivel="${e.nivel}">
+          <div class="te-ej-cab"><span class="te-ej-n" aria-hidden="true">${k + 1}</span><h4>${esc(e.titulo)}</h4></div>
+          <p class="te-ej-enun">${E.html(e.enunciado)}</p>
+          ${fig ? `<div class="te-ej-fig"><div class="te-figcaja"><figure class="kit-figura te-fig">${fig}</figure>
+            <div class="te-figbarra"><button type="button" class="te-zoom" aria-label="Ampliar el dibujo del ejemplo ${k + 1}">${ICONO_LUPA}</button></div></div></div>` : ''}
+          <div class="te-ej-sol"><p class="te-ej-et">Resuelto</p>${e.solucion.map(x => `<p>${E.html(x.texto)}</p>${x.ecuacion ? `<p class="te-ec">${E.html(x.ecuacion)}</p>` : ''}`).join('')}</div>
+          <p class="te-ej-resp"><b>Respuesta:</b> ${E.html(e.respuesta)}</p>
+        </article>`;
+      };
+      const cuerpo = () => [1, 2, 3].map(nv => {
+        const es = actual.ejemplos.filter(e => e.nivel === nv);
+        const base = actual.ejemplos.indexOf(es[0]);
+        return `<section class="te-ej-niv" aria-labelledby="te-ej-n${nv}"><h3 id="te-ej-n${nv}"><span>${NIVEL[nv][0]}</span> ${NIVEL[nv][1]}</h3>
+          ${es.map((e, j) => tarjeta(e, base + j)).join('')}</section>`;
+      }).join('');
+      const pintarE = () => {
+        $app.innerHTML = cab + `<section class="te-ejs">
+          <h2 class="lector">Ejemplos resueltos</h2>
+          <p class="sub te-ej-intro">Problemas ya resueltos, del más simple al tipo examen. Léelos con calma: el color de cada dato es el mismo en el texto, en el dibujo y en las cuentas.</p>
+          ${conEjemplos.length > 1 ? `<nav class="te-ej-ideas" aria-label="Ejemplos de qué idea">${conEjemplos.map(i => `<button type="button" class="te-ficha-op" data-ej="${esc(i.id)}" aria-pressed="${i === actual}">${ideas.indexOf(i) + 1}. ${esc(i.titulo)}</button>`).join('')}</nav>` : ''}
+          <div class="te-ej-cuerpo">${cuerpo()}</div></section>`;
+        $app.querySelectorAll('[data-ej]').forEach(b => b.onclick = () => {
+          actual = conEjemplos.find(i => i.id === b.dataset.ej); st.ejIdea = actual.id; ctx.guardar(); pintarE();
+          ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: actual.id, momento: 'ejemplos' });
+        });
+        conectarLupas($app); vigilar($app.querySelector('.te-ejs'));
+      };
+      pintarE();
+      ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: actual.id, momento: 'ejemplos' });
     }
     function conectarFicha() {
       // «Ver la figura» (celular): abre y cierra la figura de la idea, sin salir del mapa.

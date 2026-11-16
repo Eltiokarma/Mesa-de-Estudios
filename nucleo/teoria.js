@@ -412,6 +412,31 @@
         if (!r.condicion) mal(d, 'regla sin condición (cuándo vale)'); else tope(`${d} regla`, 'condicion', r.condicion);
       }
 
+      // 4c. Ejemplos resueltos (opcional; pestaña «Ejemplos», Gerson 16 nov): 3 niveles × 5, resueltos enteros (no paso a
+      // paso), con texto en colores y su dibujo. Cada uno: { nivel, titulo, enunciado, figura?, solucion: [{ texto, ecuacion? }],
+      // respuesta }. Se escriben a mano, con los números ya comprobados; el validador mira forma, topes y dibujos.
+      if (idea.ejemplos !== undefined) {
+        const EJ = idea.ejemplos;
+        if (!Array.isArray(EJ) || EJ.length !== 15) mal(d, 'ejemplos: 15 (5 por nivel, niveles 1, 2 y 3)');
+        else {
+          for (const nv of [1, 2, 3]) if (EJ.filter(e => e && e.nivel === nv).length !== 5) mal(d, `ejemplos: el nivel ${nv} necesita 5`);
+          const vistos = new Set();
+          EJ.forEach((e, k) => {
+            const de = `${d} ejemplo ${k + 1}`;
+            if (!e || ![1, 2, 3].includes(e.nivel)) { mal(de, 'nivel 1, 2 o 3'); return; }
+            if (!e.titulo) mal(de, 'sin título'); else tope(de, 'titulo', e.titulo);
+            if (!e.enunciado) mal(de, 'sin enunciado'); else { tope(de, 'enunciado', e.enunciado); ecuacion(de, Array.isArray(e.enunciado) ? e.enunciado : [e.enunciado]); }
+            if (e.figura) dibujaCon(`${de} figura`, e.figura, e.figura.pieza);
+            if (!Array.isArray(e.solucion) || e.solucion.length < 1 || e.solucion.length > 4) mal(de, 'solucion: de 1 a 4 líneas');
+            else e.solucion.forEach((x, i) => { if (!x || !x.texto) mal(`${de} línea ${i + 1}`, 'sin texto'); else tope(`${de} línea ${i + 1}`, 'resuelto', x.texto); if (x && x.ecuacion) ecuacion(`${de} línea ${i + 1}`, x.ecuacion); });
+            if (!e.respuesta) mal(de, 'sin respuesta'); else tope(de, 'respuesta', e.respuesta);
+            const todo = plano(e.enunciado) + (e.solucion || []).map(x => plano(x && x.texto) + plano((x && x.ecuacion) || '')).join(' ') + plano(e.respuesta || '');
+            if (/NaN|undefined|Infinity/.test(todo)) mal(de, 'muestra NaN o undefined');
+            if (vistos.has(plano(e.enunciado))) mal(de, 'enunciado repetido'); vistos.add(plano(e.enunciado));
+          });
+        }
+      }
+
       // 4b. Así se resuelve (opcional): un ejercicio resuelto paso a paso, generado y calculado por el motor.
       if (idea.resuelve !== undefined) {
         const R = idea.resuelve;

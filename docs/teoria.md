@@ -352,6 +352,22 @@ juega: {
   - Siete mesas quedaron sin idea, porque su tema no lo enseña ninguna idea: `dobles-y-color` (biomoléculas), `enlace-que-gira` (hidrocarburos), `piramide-cuadrados` (sucesiones de aritmética), `prisma-corte` (prisma y pirámide), `dos-giros` (ángulo trigonométrico), `cono-corte` (cónicas) y `cuantificadores` (lectura en inglés). Al rehacer esas unidades hay que decidir si el tema merece su propia idea o si sobra la mesa.
 - **`ejemplos`** (en un término del glosario): una lista de 2 a 4 ejemplos, de 20 palabras o menos cada uno, que reemplaza a `ejemplo`. El lector muestra «Ver 3 ejemplos». Una unidad con `calidad: 2` pide 3 ejemplos o más por término propio.
 
+## 4h. Ejemplos resueltos (pestaña «Ejemplos», Gerson 16 nov)
+
+Gerson: «hay un gap entre los ejercicios y la teoría. Debería haber ejercicios resueltos que no se hagan paso a paso,
+sino que estén resueltos, explicados con texto en colores y/o imágenes». Eligió una pestaña aparte del tema y 3 niveles
+con 5 ejemplos por nivel en cada idea.
+- **`ejemplos`** (en una idea): 15 objetos `{ nivel: 1|2|3, titulo, enunciado, figura?, solucion: [{ texto, ecuacion? }], respuesta }`.
+  - Nivel 1, base: un solo paso. Nivel 2, intermedio: dos pasos o unidades compuestas. Nivel 3, tipo examen.
+  - Se escriben a mano, con los números comprobados (el comentario de la constante dice qué cuentas se revisaron).
+  - Texto y ecuaciones en el formato de `nucleo/ecuacion.js`, con un color por dato (el mismo del dibujo).
+  - `figura`: `{ pieza, datos, estado }` de cualquier pieza del kit; para objetos de la vida real, `fis-objeto`.
+  - Si el problema cambia de unidad, el enunciado da la equivalencia («Dato: 1 km = 1000 m»; Gerson, 16 nov).
+  - El validador exige 5 por nivel, topes (título 6 palabras, enunciado 40, cada línea 30, respuesta 14), dibujos puros y nada de NaN.
+- La pestaña «Ejemplos» aparece entre «Ideas» y «Glosario» cuando alguna idea los trae. Arriba se elige la idea; debajo
+  van los tres niveles. Cada tarjeta: enunciado, dibujo, «Resuelto» (todo a la vista, sin pasos que se revelan) y la
+  respuesta. Se registra `momento: 'ejemplos'`.
+
 ## 5. Topes de texto (los vigila `contenido/teoria/teoria.test.js`)
 
 | Campo | Palabras |
