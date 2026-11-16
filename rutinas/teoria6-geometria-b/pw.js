@@ -36,9 +36,12 @@ const ok = (c, m) => { if (!c) fallas.push(m); };
     await p.click('.te-sig'); await p.waitForTimeout(700);
     const desp = await p.$eval('.te-lee', e => e.scrollLeft);
     ok(desp > antes, `Lee: el botón no pasó a la tarjeta ${k + 1}`);
-    if (k === n - 1) await p.screenshot({ path: path.join(salida, `${tag}-lee-${k + 1}.png`), fullPage: true });
+    // El texto del botón se lee antes de la captura: la captura de página completa puede mover el carrusel.
+    if (k === n - 1) {
+      ok(/Juega/.test(await p.$eval('.te-sig', e => e.textContent)), 'Lee: el botón no dice «Siguiente: Juega» al final');
+      await p.screenshot({ path: path.join(salida, `${tag}-lee-${k + 1}.png`), fullPage: true });
+    }
   }
-  ok(/Juega/.test(await p.$eval('.te-sig', e => e.textContent)), 'Lee: el botón no dice «Siguiente: Juega» al final');
   await ctx.close();
   ({ ctx, p } = await abrir(null));
   await p.click('.te-lee-saltar'); await p.waitForTimeout(500);
