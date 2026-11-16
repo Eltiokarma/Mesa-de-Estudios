@@ -57,6 +57,53 @@
   }
   const evid = d => Object.fromEntries(d.secciones[0].fragmentos.filter(f => /^e/.test(f.id)).map(f => [f.id, 'i']));
 
+  // Bancos de «Ahora tú» (sin cambios); «Así se resuelve» toma de aquí otro caso que el de la misma semilla.
+  const BANCO_TIPO = [
+    { o: 'El cóndor andino tiene alas de más de tres metros, plumas negras y un collar blanco en el cuello.', ok: 'Descriptivo', m: [['Narrativo', 'RV41', 'No cuenta sucesos: muestra rasgos del ave.'], ['Expositivo', 'RV41', 'Da datos, pero no explica causas ni procesos: describe.'], ['Argumentativo', 'RV13', 'No defiende ninguna postura.']] },
+    { o: 'Cuando la luna pasa entre el sol y la Tierra, tapa la luz del sol: por eso se produce un eclipse solar.', ok: 'Expositivo', m: [['Narrativo', 'RV41', 'No cuenta lo que le pasó a alguien: explica un fenómeno.'], ['Descriptivo', 'RV13', 'No muestra cómo se ve: explica por qué ocurre.'], ['Argumentativo', 'RV14', 'No propone nada: explica.']] },
+    { o: 'El colegio debería tener un huerto: los alumnos aprenderían ciencias y comerían mejor.', ok: 'Argumentativo', m: [['Expositivo', 'RV33', 'Da razones, pero para defender una propuesta: «debería».'], ['Descriptivo', 'RV13', 'No muestra cómo es un huerto: propone tenerlo.'], ['Narrativo', 'RV41', 'No cuenta sucesos.']] },
+    { o: 'El lunes, Mateo perdió el bus; corrió tres cuadras y llegó justo cuando cerraban la puerta.', ok: 'Narrativo', m: [['Descriptivo', 'RV41', 'No muestra cómo es Mateo: cuenta lo que hizo.'], ['Expositivo', 'RV13', 'No explica un fenómeno: cuenta sucesos en orden.'], ['Argumentativo', 'RV14', 'No defiende ninguna postura.']] },
+    { o: 'En 2023, el 40 % de los jóvenes leyó menos de un libro. Hay que llevar bibliotecas a los barrios.', ok: 'Argumentativo', m: [['Expositivo', 'RV41', 'Trae una cifra, pero para sostener «hay que llevar».'], ['Narrativo', 'RV41', 'Tiene un año, pero no cuenta una historia.'], ['Descriptivo', 'RV13', 'No muestra cómo es algo.']] },
+    { o: 'La quinua se lava para quitarle la saponina, una sustancia amarga; luego se cocina como el arroz.', ok: 'Expositivo', m: [['Narrativo', 'RV41', 'Tiene pasos en orden, pero no cuenta lo que le pasó a alguien: explica un proceso.'], ['Descriptivo', 'RV13', 'No se detiene en cómo es la quinua: explica qué se hace y por qué.'], ['Argumentativo', 'RV14', 'No defiende ninguna postura.']] },
+  ];
+  const BANCO_TEXTO = [
+    { o: 'Mi perro es marrón. El Misti es un volcán. Ayer comí ceviche.', ok: 'No: las oraciones no forman un todo con sentido', m: [['Sí: cada oración está bien escrita', 'RVT1', 'La corrección de cada una no basta: no tratan un mismo asunto.'], ['Sí: tiene tres oraciones', 'RVT1', 'El número de oraciones no decide si hay un texto.'], ['No: le falta un título', 'RVT1', 'Con título seguiría sin sentido de conjunto.']] },
+    { o: 'Silencio, por favor. Sala de lectura.', ok: 'Sí: en su lugar, comunica un pedido completo', m: [['No: es demasiado corto', 'RVT1', 'El largo no decide: cumple su propósito.'], ['No: no tiene verbo', 'RVC3', 'Se entiende igual: el lugar completa el sentido.'], ['No: no tiene conectores', 'RVC3', 'Un texto breve puede no necesitarlos.']] },
+    { o: 'Lleven sus libros. Mañana a las nueve.', ok: 'Solo con su situación: falta saber quién y a quién', m: [['Sí: siempre es un texto completo', 'RV49', 'Sin saber quién lo dice ni a quién, no se sabe qué libros ni dónde.'], ['No: le falta un título', 'RVT1', 'El título no es lo que falta: falta la situación.'], ['No: tiene dos oraciones', 'RVT1', 'El número de oraciones no decide.']] },
+    { o: 'Se vende bicicleta en buen estado. Llamar al 951 000 000. Puno.', ok: 'Sí: tiene sentido, propósito y destinatario', m: [['No: no tiene conectores', 'RVC3', 'Un aviso breve no los necesita para tener sentido.'], ['No: tiene un número', 'RV41', 'Los números son parte del aviso: dicen cómo responder.'], ['No: no cuenta una historia', 'RV13', 'Un texto no tiene que narrar: este anuncia.']] },
+    { o: 'Feliz cumpleaños, abuela. Te queremos mucho. Tus nietos.', ok: 'Sí: tiene emisor, destinatario y propósito', m: [['No: es muy corto', 'RVT1', 'El largo no decide.'], ['No: no da información nueva', 'RVT1', 'Su propósito es saludar, no informar: lo cumple.'], ['No: no tiene argumentos', 'RV13', 'No todo texto argumenta.']] },
+  ];
+  const BANCO_NIVEL = [
+    { p: '¿En qué año empezó la feria?', ok: 'Literal', m: [['Inferencial', 'RVT2', 'No hay que unir nada: el año está escrito.'], ['Crítico', 'RVT2', 'No pide juzgar: pide un dato.'], ['No se puede responder', 'RV34', 'Sí se puede: dice 1990.']] },
+    { p: '¿El crecimiento de la feria fue bueno para el pueblo?', ok: 'Crítico', m: [['Literal', 'RVT2', 'El texto no lo dice escrito: pide evaluar.'], ['Inferencial', 'RVT2', 'Deducir no basta: hay que juzgar con razones.'], ['No se puede responder', 'RV34', 'Se puede, dando razones con lo que dice el texto.']] },
+    { p: '¿Qué temen algunos vecinos?', ok: 'Literal', m: [['Inferencial', 'RVT2', 'Está escrito: que suban los precios.'], ['Crítico', 'RVT2', 'No pide juzgar el temor: pide cuál es.'], ['No se puede responder', 'RV34', 'Sí: el texto lo dice.']] },
+    { p: '¿Por qué podrían subir los precios, según el texto?', ok: 'Inferencial', m: [['Literal', 'RVT2', 'La causa no está escrita: se deduce de que llegan más compradores.'], ['Crítico', 'RVT2', 'No pide juzgar: pide deducir una causa.'], ['No se puede responder', 'RV34', 'Se puede unir el crecimiento con la llegada de compradores.']] },
+    { p: '¿Es justo que los productores pequeños compitan con los grandes?', ok: 'Crítico', m: [['Literal', 'RVT2', 'No está escrito: pide una valoración.'], ['Inferencial', 'RVT2', 'No basta deducir: pide juzgar si es justo.'], ['No se puede responder', 'RV34', 'Se puede, con razones.']] },
+    { p: '¿Qué tienen en común Juliaca y Puno en el texto?', ok: 'Inferencial', m: [['Literal', 'RVT2', 'El texto no lo dice: se deduce que de allí vienen compradores.'], ['Crítico', 'RVT2', 'No pide juzgar nada.'], ['No se puede responder', 'RV34', 'Se puede: de ambos llegan compradores.']] },
+  ];
+  // Así se resuelve (fase 2): azar con semilla, el índice del caso (nunca el de «Ahora tú» en la misma semilla), las
+  // opciones barajadas y la figura: el texto y debajo la lista de opciones; en «Lo aplico» la correcta se marca (i)
+  // y las demás se tachan. Todo sale del mismo banco que «Ahora tú» (regla 1).
+  function azar(s) {
+    let q = (s * 2654435761 + 12345) >>> 0;
+    return () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+  }
+  const otroIndice = (s, n) => (s % n + 1 + Math.floor(azar(s + 900)() * (n - 1))) % n;
+  const barajar = (b, s) => {
+    const r = azar(s + 900), malas = b.m.slice(); r(); if (r() < 0.5) malas.reverse();
+    const ops = opciones(b.ok, malas), c = ops.shift(), k = Math.floor(r() * (ops.length + 1));
+    ops.splice(k, 0, c); return ops;
+  };
+  const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
+  // Las primeras palabras de un texto, para nombrarlo en el enunciado (el texto entero va en la figura).
+  const empieza = t => { const ps = t.split(' '); return ps.length > 4 ? `${ps.slice(0, 4).join(' ').replace(/[.,:;]$/, '')}…` : t.replace(/[.]$/, ''); };
+  const figResuelve = (secciones, ops, resuelto, marcas = {}) => {
+    const datos = { secciones: [...secciones, { id: 'ops', titulo: 'Opciones', modo: 'lista', fragmentos: ops.map((o, k) => ({ id: `a${k}`, t: o.texto })) }] };
+    if (!resuelto) return { datos, estado: { marcas } };
+    const k = ops.findIndex(o => o.correcta);
+    return { datos, estado: { marcas: Object.assign({}, marcas, { [`a${k}`]: 'i' }), tachar: ops.map((o, j) => `a${j}`).filter(id => id !== `a${k}`), nuevo: [`a${k}`] } };
+  };
+
   // ---------- Idea 1: el propósito decide el tipo ----------
   // Cambia: la versión del texto (narra, describe, explica, argumenta). Permanece: el tema (la helada en la puna).
   // Progresa: la evidencia que marca cada propósito. Se reserva: el texto con cifras que en verdad argumenta
@@ -75,6 +122,14 @@
     titulo: 'El propósito decide el tipo',
     temas: ['Textos expositivos', 'Textos narrativos y descriptivos', 'Textos argumentativos'],
     pieza: 'rv-texto',
+    // Lee (fase 2): los cuatro propósitos y el tema de la helada, sin decir para qué sirven las cifras (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cuatro maneras de escribir', texto: 'Un texto puede contar lo que pasó, mostrar cómo es algo, explicar por qué ocurre o defender lo que debería hacerse. Cada manera es un tipo de texto.' },
+        { titulo: 'Un mismo tema', texto: 'La helada llega a la puna de Puno en junio y julio. Sobre ella se puede escribir un cuento, una nota que la describa, un informe o una carta al alcalde.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el tema es siempre la helada. Cambia la versión y busca la palabra que delata qué busca cada texto.' },
+      ],
+    },
     juega: {
       consigna: 'El tema es siempre la helada. Cambia la versión y arrastra el marcador a las palabras que delatan lo que busca.',
       voz: 'Busca la palabra que delata el propósito.',
@@ -120,16 +175,30 @@
       ecuacion: [{ llave: [prop('propósito dominante')], nota: 'lo que organiza', color: 'c-d' }, ' → tipo', '   ·   ', mal('tema'), ' no decide el tipo'],
       condicion: 'se mira qué organiza todo el texto; un texto puede mezclar tipos y uno domina.',
     },
+    // Así se resuelve (fase 2): otro texto del banco de «Ahora tú», resuelto por el propósito que lo organiza.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'No mires el tema: pregunta para qué está escrito.',
+      generar(s) {
+        const b = BANCO_TIPO[otroIndice(s, BANCO_TIPO.length)], ops = barajar(b, s), sec = texto('Texto', [[b.o]]).secciones;
+        const busca = { Narrativo: 'cuenta sucesos en orden', Descriptivo: 'muestra cómo es algo, rasgo por rasgo', Expositivo: 'explica por qué ocurre algo o cómo se hace', Argumentativo: 'defiende lo que debería hacerse' }[b.ok];
+        const trampa = b.m.find(m => m[1] === 'RV41') || b.m[0];
+        return {
+          enunciado: `En el texto que empieza «${empieza(b.o)}», ¿qué tipo de texto domina, según su propósito?`,
+          dibujo: figResuelve(sec, ops, false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el tipo de texto. No importa de qué trata, sino para qué se escribió todo el texto.' },
+            { tipo: 'regla', texto: 'El propósito decide el tipo: contar sucesos, mostrar cómo es algo, explicar por qué ocurre o defender una postura.', ecuacion: [prop('propósito'), ' → tipo'] },
+            { tipo: 'aplica', texto: ['Leo el texto entero: ', corto(ev, busca), '. Ese propósito organiza todo el texto.'], dibujo: figResuelve(sec, ops, true, { t0: 'i' }) },
+            { tipo: 'sentido', texto: `Descarto «${trampa[0]}». ${trampa[2]}` },
+          ],
+          respuesta: b.ok,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { o: 'El cóndor andino tiene alas de más de tres metros, plumas negras y un collar blanco en el cuello.', ok: 'Descriptivo', m: [['Narrativo', 'RV41', 'No cuenta sucesos: muestra rasgos del ave.'], ['Expositivo', 'RV41', 'Da datos, pero no explica causas ni procesos: describe.'], ['Argumentativo', 'RV13', 'No defiende ninguna postura.']] },
-          { o: 'Cuando la luna pasa entre el sol y la Tierra, tapa la luz del sol: por eso se produce un eclipse solar.', ok: 'Expositivo', m: [['Narrativo', 'RV41', 'No cuenta lo que le pasó a alguien: explica un fenómeno.'], ['Descriptivo', 'RV13', 'No muestra cómo se ve: explica por qué ocurre.'], ['Argumentativo', 'RV14', 'No propone nada: explica.']] },
-          { o: 'El colegio debería tener un huerto: los alumnos aprenderían ciencias y comerían mejor.', ok: 'Argumentativo', m: [['Expositivo', 'RV33', 'Da razones, pero para defender una propuesta: «debería».'], ['Descriptivo', 'RV13', 'No muestra cómo es un huerto: propone tenerlo.'], ['Narrativo', 'RV41', 'No cuenta sucesos.']] },
-          { o: 'El lunes, Mateo perdió el bus; corrió tres cuadras y llegó justo cuando cerraban la puerta.', ok: 'Narrativo', m: [['Descriptivo', 'RV41', 'No muestra cómo es Mateo: cuenta lo que hizo.'], ['Expositivo', 'RV13', 'No explica un fenómeno: cuenta sucesos en orden.'], ['Argumentativo', 'RV14', 'No defiende ninguna postura.']] },
-          { o: 'En 2023, el 40 % de los jóvenes leyó menos de un libro. Hay que llevar bibliotecas a los barrios.', ok: 'Argumentativo', m: [['Expositivo', 'RV41', 'Trae una cifra, pero para sostener «hay que llevar».'], ['Narrativo', 'RV41', 'Tiene un año, pero no cuenta una historia.'], ['Descriptivo', 'RV13', 'No muestra cómo es algo.']] },
-          { o: 'La quinua se lava para quitarle la saponina, una sustancia amarga; luego se cocina como el arroz.', ok: 'Expositivo', m: [['Narrativo', 'RV41', 'Tiene pasos en orden, pero no cuenta lo que le pasó a alguien: explica un proceso.'], ['Descriptivo', 'RV13', 'No se detiene en cómo es la quinua: explica qué se hace y por qué.'], ['Argumentativo', 'RV14', 'No defiende ninguna postura.']] },
-        ];
+        const B = BANCO_TIPO;
         const b = B[s % B.length];
         return {
           pregunta: '¿Qué tipo de texto es, según su propósito dominante?',
@@ -161,6 +230,14 @@
     titulo: 'Qué hace que algo sea texto',
     temas: ['Texto y normas de textualidad'],
     pieza: 'rv-texto',
+    // Lee (fase 2): oración contra conjunto y la palabra «textualidad», sin decir si un texto breve cuenta (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Oraciones y conjunto', texto: 'Una oración puede estar bien escrita y, aun así, no decir nada junto a las otras. Aquí no se mira cada oración por separado: se mira el conjunto.' },
+        { titulo: 'Una palabra nueva', texto: 'Textualidad es lo que hace que unas palabras funcionen como texto. Se estudia con normas: por ejemplo, la coherencia, el propósito y la situación en que se lee.' },
+        { titulo: 'Qué mirar', texto: 'En el juego hay tres versiones de un aviso sobre un corte de agua. Pasa el marcador por cada trozo y mira qué aporta o qué le falta.' },
+      ],
+    },
     juega: {
       consigna: 'Compara tres versiones del aviso del agua. Arrastra el marcador por cada trozo: mira qué aporta o qué le falta.',
       voz: 'Que cada oración esté bien escrita no basta.',
@@ -203,15 +280,29 @@
       ecuacion: [ev('sentido'), ' + ', prop('propósito'), ' + ', { llave: [op('situación')], nota: 'quién y dónde', color: 'c-o' }, ' → texto'],
       condicion: 'se juzga la textualidad del conjunto en su situación; el largo o la corrección de cada oración no deciden.',
     },
+    // Así se resuelve (fase 2): otro caso del banco de «Ahora tú», juzgado por el conjunto (sentido, propósito, situación).
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Juzga el conjunto, no cada oración.',
+      generar(s) {
+        const b = BANCO_TEXTO[otroIndice(s, BANCO_TEXTO.length)], ops = barajar(b, s), sec = texto('¿Texto?', [[b.o]]).secciones;
+        const porque = b.ok.slice(b.ok.indexOf(': ') + 2);
+        return {
+          enunciado: `¿Funciona como un texto el escrito que empieza «${empieza(b.o)}»?`,
+          dibujo: figResuelve(sec, ops, false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden decidir si estas palabras funcionan como un texto, y por qué.' },
+            { tipo: 'regla', texto: 'Miro el conjunto: ¿tiene sentido, un propósito y una situación clara? El largo, el título o los conectores no deciden.', ecuacion: [ev('sentido'), ' + ', prop('propósito'), ' + ', op('situación')] },
+            { tipo: 'aplica', texto: ['Reviso las tres cosas en el conjunto: ', corto(ev, porque), '.'], dibujo: figResuelve(sec, ops, true, { t0: 'd' }) },
+            { tipo: 'sentido', texto: `Descarto «${b.m[0][0]}». ${b.m[0][2]}` },
+          ],
+          respuesta: b.ok,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { o: 'Mi perro es marrón. El Misti es un volcán. Ayer comí ceviche.', ok: 'No: las oraciones no forman un todo con sentido', m: [['Sí: cada oración está bien escrita', 'RVT1', 'La corrección de cada una no basta: no tratan un mismo asunto.'], ['Sí: tiene tres oraciones', 'RVT1', 'El número de oraciones no decide si hay un texto.'], ['No: le falta un título', 'RVT1', 'Con título seguiría sin sentido de conjunto.']] },
-          { o: 'Silencio, por favor. Sala de lectura.', ok: 'Sí: en su lugar, comunica un pedido completo', m: [['No: es demasiado corto', 'RVT1', 'El largo no decide: cumple su propósito.'], ['No: no tiene verbo', 'RVC3', 'Se entiende igual: el lugar completa el sentido.'], ['No: no tiene conectores', 'RVC3', 'Un texto breve puede no necesitarlos.']] },
-          { o: 'Lleven sus libros. Mañana a las nueve.', ok: 'Solo con su situación: falta saber quién y a quién', m: [['Sí: siempre es un texto completo', 'RV49', 'Sin saber quién lo dice ni a quién, no se sabe qué libros ni dónde.'], ['No: le falta un título', 'RVT1', 'El título no es lo que falta: falta la situación.'], ['No: tiene dos oraciones', 'RVT1', 'El número de oraciones no decide.']] },
-          { o: 'Se vende bicicleta en buen estado. Llamar al 951 000 000. Puno.', ok: 'Sí: tiene sentido, propósito y destinatario', m: [['No: no tiene conectores', 'RVC3', 'Un aviso breve no los necesita para tener sentido.'], ['No: tiene un número', 'RV41', 'Los números son parte del aviso: dicen cómo responder.'], ['No: no cuenta una historia', 'RV13', 'Un texto no tiene que narrar: este anuncia.']] },
-          { o: 'Feliz cumpleaños, abuela. Te queremos mucho. Tus nietos.', ok: 'Sí: tiene emisor, destinatario y propósito', m: [['No: es muy corto', 'RVT1', 'El largo no decide.'], ['No: no da información nueva', 'RVT1', 'Su propósito es saludar, no informar: lo cumple.'], ['No: no tiene argumentos', 'RV13', 'No todo texto argumenta.']] },
-        ];
+        const B = BANCO_TEXTO;
         const b = B[s % B.length];
         return {
           pregunta: '¿Esto funciona como un texto?',
@@ -238,6 +329,14 @@
     titulo: 'Tres niveles de lectura',
     temas: ['Niveles de comprensión lectora'],
     pieza: 'rv-texto',
+    // Lee (fase 2): los tres niveles por su nombre y el contexto de las ferias, sin clasificar la pregunta de Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Tres niveles', texto: 'Una lectura se puede hacer en tres niveles: literal, inferencial y crítico. En el examen te preguntan de los tres, muchas veces sobre el mismo texto.' },
+        { titulo: 'Ferias de la región', texto: 'En Puno y Juliaca hay ferias semanales donde se vende papa, chuño, ropa y animales. El texto del juego cuenta cómo creció la feria de un pueblo.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, elige cada pregunta y mira qué frases del texto se marcan para responderla: una sola, varias o todas.' },
+      ],
+    },
     juega: {
       consigna: 'Elige una pregunta sobre el texto de la feria. Mira dónde está su respuesta: en una frase, uniendo frases o juzgando.',
       voz: 'El nivel depende de dónde está la respuesta.',
@@ -270,16 +369,29 @@
       ecuacion: [{ llave: [prop('literal')], nota: 'está escrito', color: 'c-d' }, ' → ', { llave: [prop('inferencial')], nota: 'se une', color: 'c-d' }, ' → ', { llave: [prop('crítico')], nota: 'se juzga', color: 'c-d' }],
       condicion: 'el nivel lo fija dónde está la respuesta, no qué tan difícil parece la pregunta.',
     },
+    // Así se resuelve (fase 2): otra pregunta del banco de «Ahora tú», clasificada por dónde está su respuesta.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Busca dónde está la respuesta, no qué tan difícil suena.',
+      generar(s) {
+        const b = BANCO_NIVEL[otroIndice(s, BANCO_NIVEL.length)], ops = barajar(b, s), sec = FERIA.secciones;
+        const donde = { Literal: 'está escrita en una frase del texto', Inferencial: 'no está escrita: se deduce uniendo frases', 'Crítico': 'hay que juzgar con razones si algo es bueno o justo' }[b.ok];
+        return {
+          enunciado: `Sobre el texto de la feria: «${b.p}». ¿De qué nivel es esta pregunta?`,
+          dibujo: figResuelve(sec, ops, false),
+          pasos: [
+            { tipo: 'pide', texto: `Piden el nivel de la pregunta «${b.p}», no su respuesta.` },
+            { tipo: 'regla', texto: 'Me fijo dónde está la respuesta: escrita en una frase, deducida uniendo frases o juzgada con razones.', ecuacion: [prop('literal'), ' → ', prop('inferencial'), ' → ', prop('crítico')] },
+            { tipo: 'aplica', texto: ['Busco la respuesta en el texto: ', corto(ev, donde), '.'], dibujo: figResuelve(sec, ops, true) },
+            { tipo: 'sentido', texto: `Descarto «${b.m[0][0]}». ${b.m[0][2]}` },
+          ],
+          respuesta: b.ok,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { p: '¿En qué año empezó la feria?', ok: 'Literal', m: [['Inferencial', 'RVT2', 'No hay que unir nada: el año está escrito.'], ['Crítico', 'RVT2', 'No pide juzgar: pide un dato.'], ['No se puede responder', 'RV34', 'Sí se puede: dice 1990.']] },
-          { p: '¿El crecimiento de la feria fue bueno para el pueblo?', ok: 'Crítico', m: [['Literal', 'RVT2', 'El texto no lo dice escrito: pide evaluar.'], ['Inferencial', 'RVT2', 'Deducir no basta: hay que juzgar con razones.'], ['No se puede responder', 'RV34', 'Se puede, dando razones con lo que dice el texto.']] },
-          { p: '¿Qué temen algunos vecinos?', ok: 'Literal', m: [['Inferencial', 'RVT2', 'Está escrito: que suban los precios.'], ['Crítico', 'RVT2', 'No pide juzgar el temor: pide cuál es.'], ['No se puede responder', 'RV34', 'Sí: el texto lo dice.']] },
-          { p: '¿Por qué podrían subir los precios, según el texto?', ok: 'Inferencial', m: [['Literal', 'RVT2', 'La causa no está escrita: se deduce de que llegan más compradores.'], ['Crítico', 'RVT2', 'No pide juzgar: pide deducir una causa.'], ['No se puede responder', 'RV34', 'Se puede unir el crecimiento con la llegada de compradores.']] },
-          { p: '¿Es justo que los productores pequeños compitan con los grandes?', ok: 'Crítico', m: [['Literal', 'RVT2', 'No está escrito: pide una valoración.'], ['Inferencial', 'RVT2', 'No basta deducir: pide juzgar si es justo.'], ['No se puede responder', 'RV34', 'Se puede, con razones.']] },
-          { p: '¿Qué tienen en común Juliaca y Puno en el texto?', ok: 'Inferencial', m: [['Literal', 'RVT2', 'El texto no lo dice: se deduce que de allí vienen compradores.'], ['Crítico', 'RVT2', 'No pide juzgar nada.'], ['No se puede responder', 'RV34', 'Se puede: de ambos llegan compradores.']] },
-        ];
+        const B = BANCO_NIVEL;
         const b = B[s % B.length];
         return {
           pregunta: `Sobre el texto de la feria: «${b.p}». ¿De qué nivel es esta pregunta?`,
