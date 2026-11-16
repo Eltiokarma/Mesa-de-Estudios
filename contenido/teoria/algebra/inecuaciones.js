@@ -128,6 +128,15 @@
     titulo: 'Un negativo voltea el sentido',
     temas: ['Inecuaciones lineales'],
     pieza: 'recta',
+    // Lee (fase 2): contexto y vocabulario de los signos, sin decir qué pasa al dividir entre un negativo (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Muchos valores a la vez', texto: 'En Juliaca, en las madrugadas de junio, la temperatura baja de 0 °C. «Menor que 0» no es un solo número: son muchos. Una inecuación es así: pide todos los valores que cumplen una condición.' },
+        { titulo: 'Cuatro signos', texto: 'El signo < se lee «menor que», y >, «mayor que». Con una raya debajo, ≤ y ≥, también vale la igualdad. La punta del signo siempre señala al lado más chico.',
+          ecuacion: ['3 < 5,   5 > 3,   4 ≤ 4'] },
+        { titulo: 'Qué mirar al jugar', texto: ['En el juego, el tramo verde marca los ', x, ' que cumplen a·', x, ' ≤ 6. Cambia el signo de a y mira hacia qué lado queda el tramo. Arrastra el valor de prueba para confirmarlo.'] },
+      ],
+    },
     juega: {
       consigna: 'Resuelve a·x ≤ 6 para distintos valores de a. En verde, los x que la cumplen. Arrastra un valor de prueba para comprobarlo.',
       voz: 'Prueba a positivo, negativo y cero.',
@@ -176,6 +185,40 @@
       texto: 'Una inecuación describe un conjunto. Sumar o restar lo conserva; multiplicar o dividir por un positivo, también. Por un negativo, el sentido se invierte.',
       ecuacion: [{ llave: ['−2', x], nota: 'negativo', color: 'c-h' }, ' > 8  ⇒  ', { llave: [x, ' < −4'], nota: 'se invierte', color: 'c-h' }],
       condicion: 'el número por el que se multiplica tiene signo conocido. Una frontera con ≤ o ≥ entra; con < o >, no.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (a·x + b rel c), con otras semillas, resuelto paso a paso.
+    resuelve: {
+      pieza: 'recta',
+      generar(s) {
+        const r = azar(s + 900);
+        const a = r.uno([-5, -4, -3, -2, 2, 3, 4, 5]) * (s % 3 === 0 ? 1 : -1) * (r() < 0.5 ? 1 : -1), b = r.ent(-6, 6), k = r.ent(-4, 4), c = b + a * k;
+        const rel = r.uno(['<', '>', '≤', '≥']);
+        const vuelta = { '<': '>', '>': '<', '≤': '≥', '≥': '≤' };
+        const rf = a > 0 ? rel : vuelta[rel], menor = rf === '<' || rf === '≤';
+        const iv = (rr, v) => (rr === '<' || rr === '≤' ? `(−∞, ${f(v)}${rr === '≤' ? ']' : ')'}` : `${rr === '≥' ? '[' : '('}${f(v)}, +∞)`);
+        const suelto = b ? ` ${b > 0 ? '+' : '−'} ${f(Math.abs(b))}` : '';
+        const exp = [f(a), x, suelto];
+        const t = menor ? k - 1 : k + 1, vt = a * t + b;   // un valor de prueba dentro del tramo solución
+        const recta = (sol, prueba) => ({ datos: { min: k - 6, max: k + 6, paso: 1, cada: 2, decimales: 0, variable: 'x', color: 'o', filas: 2, elementos: [
+          ...(sol ? [{ tipo: 'intervalo', a: menor ? null : k, b: menor ? k : null, ca: rf === '≥', cb: rf === '≤', color: 'd', fila: 1, rotulo: 'solución' }] : []),
+          ...(prueba ? [{ tipo: 'punto', x: t, color: 'd', fila: 2, rotulo: `${f(vt)} ${rel} ${f(c)} ✓` }] : []),
+        ], alt: sol ? `Tramo solución de la inecuación: x ${rf} ${f(k)}${prueba ? `; con x = ${f(t)} se cumple` : ''}` : 'Recta de x sin marcar' }, estado: {} });
+        return {
+          enunciado: ['Resuelve ', ...exp, ` ${rel} ${f(c)}.`],
+          dibujo: recta(false, false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden todos los ', x, ' que cumplen la desigualdad, escritos como intervalo.'] },
+            { tipo: 'datos', texto: ['El número que multiplica a ', x, ` es ${f(a)}: ${a < 0 ? 'negativo' : 'positivo'}. ${b ? `Al lado va el número suelto ${f(b)}.` : 'No hay número suelto.'}`],
+              ecuacion: [...exp, ` ${rel} ${f(c)}`] },
+            { tipo: 'regla', texto: 'Sumar o restar lo mismo a los dos lados no cambia el sentido. Dividir entre un positivo, tampoco. Dividir entre un negativo lo da vuelta.' },
+            { tipo: 'cuentas', texto: [`${b ? `${b > 0 ? 'Resto' : 'Sumo'} ${f(Math.abs(b))} a los dos lados y divido` : 'Divido'} entre ${f(a)}${a < 0 ? ': es negativo, así que el sentido se invierte' : ': es positivo, el sentido se queda'}.`],
+              ecuacion: [...(b ? [f(a), x, ` ${rel} ${f(c - b)}  ⇒  `] : []), x, ` ${rf} `, { frac: [f(c - b), f(a)] }, ` = ${f(k)}`], dibujo: recta(true, false) },
+            { tipo: 'sentido', texto: ['Compruebo con ', x, ` = ${f(t)}, un valor del tramo verde: la desigualdad se cumple.`],
+              ecuacion: [`${f(a)}(${f(t)})${suelto} = ${f(vt)} ${rel} ${f(c)} ✓`], dibujo: recta(true, true) },
+          ],
+          respuesta: [x, ` ${rf} ${f(k)}, o sea ${iv(rf, k)}`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'recta',
@@ -226,6 +269,14 @@
     titulo: 'La parábola decide los signos',
     temas: ['Inecuaciones cuadráticas'],
     pieza: 'ejes',
+    // Lee (fase 2): qué es una raíz y cómo se lee el signo en la gráfica; no dice dónde queda la curva bajo el eje.
+    lee: {
+      tarjetas: [
+        { titulo: 'Una curva conocida', texto: 'Cuando lanzas una pelota en la cancha, su camino dibuja una parábola que abre hacia abajo. Las de este juego son de la forma y = (x − r₁)(x − r₂) y abren hacia arriba.' },
+        { titulo: 'Raíces y signo', texto: 'Las raíces son los x donde la curva corta el eje x: ahí y vale 0. Donde la curva está por encima del eje, y es positivo; donde está por debajo, es negativo.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Mueve r₁ y r₂ y cambia el sentido entre < 0 y > 0. Mira qué parte del eje x se pinta de verde en cada caso.' },
+      ],
+    },
     juega: {
       consigna: 'La curva es y = (x − r₁)(x − r₂). Mueve las raíces y elige el sentido. En verde, sobre el eje, los x que cumplen.',
       voz: 'Mira dónde la curva queda debajo del eje.',
@@ -267,6 +318,38 @@
       texto: 'Si a > 0 y hay dos raíces r₁ < r₂, ax² + bx + c es negativo entre las raíces y positivo fuera de ellas.',
       ecuacion: ['(', x, ' − r₁)(', x, ' − r₂) < 0  ⇔  ', { llave: ['r₁ < ', x, ' < r₂'], nota: 'entre raíces', color: 'c-d' }],
       condicion: 'si a < 0, los signos se invierten. Si no hay raíces reales, el signo es el de a en toda la recta.',
+    },
+    // Así se resuelve: la cuadrática con dos raíces de «Ahora tú» (abre hacia arriba o hacia abajo), con raíces de −4 a 4
+    // para que la parábola quepa en el plano de la idea.
+    resuelve: {
+      pieza: 'ejes',
+      generar(s) {
+        const r = azar(s + 900);
+        const r1 = r.ent(-4, 1), r2 = r1 + r.ent(1, Math.min(6, 4 - r1)), sg = s % 4 === 1 ? -1 : 1, rel = r.uno(['<', '>', '≤', '≥']);
+        const F = [{ r: r1, m: 1 }, { r: r2, m: 1 }], S = conjunto(resolver(F, [], sg, rel));
+        const b = -(r1 + r2), c = r1 * r2;
+        const poli = [sg < 0 ? '−' : '', { sup: [x, '2'] }, b ? ` ${(sg * b) > 0 ? '+' : '−'} ${Math.abs(b) === 1 ? '' : f(Math.abs(b))}` : '', b ? x : '', c ? ` ${(sg * c) > 0 ? '+' : '−'} ${f(Math.abs(c))}` : ''];
+        const tm = r2 - r1 >= 2 ? r1 + 1 : (r1 + r2) / 2, v = sg * (tm - r1) * (tm - r2);
+        const dentro = REL[rel](v), iguales = rel === '≤' || rel === '≥';
+        const pf = q => (q === 0 ? `(${f(tm)})` : `(${f(tm)} ${q > 0 ? '−' : '+'} ${f(Math.abs(q))})`);
+        const plano = { x: { min: -5, max: 5, paso: 1, nombre: 'x', decimales: 0, color: 'o' }, y: { min: -12, max: 12, paso: 4, nombre: 'y', decimales: 0 }, alt: 'Plano de x e y, todavía sin curva' };
+        return {
+          enunciado: ['Resuelve ', ...poli, ` ${rel} 0.`],
+          dibujo: { datos: plano, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden todos los ', x, ` que hacen la expresión ${rel} 0: un conjunto de valores, no uno solo.`] },
+            { tipo: 'datos', texto: `Es una cuadrática. El número que acompaña a x² es ${sg > 0 ? '1, positivo: la parábola abre hacia arriba' : '−1, negativo: la parábola abre hacia abajo'}.` },
+            { tipo: 'regla', texto: 'Busco las raíces, donde la expresión vale 0. Si abre hacia arriba, entre las raíces queda bajo el eje y afuera, sobre el eje. Si abre hacia abajo, al revés.' },
+            { tipo: 'cuentas', texto: `Factorizo y leo las raíces: ${f(r1)} y ${f(r2)}. Parten la recta en tres tramos.`,
+              ecuacion: [...poli, ' = ', ...producto(F, sg)], dibujo: { datos: ejesParabola(r1, r2, null, { ymax: 12, signo: sg }), estado: {} } },
+            { tipo: 'cuentas', texto: `Pide ${rel} 0: me quedo con lo de ${dentro ? 'adentro' : 'afuera'} de las raíces. Las raíces ${iguales ? 'entran, porque hay igual' : 'no entran: la desigualdad es estricta'}.`,
+              ecuacion: [S], dibujo: { datos: ejesParabola(r1, r2, rel, { ymax: 12, signo: sg }), estado: {} } },
+            { tipo: 'sentido', texto: ['Compruebo con ', x, ` = ${f(tm)}, entre las raíces: la expresión vale ${f(v)}, ${v < 0 ? 'negativa' : 'positiva'}. Ese valor ${dentro ? 'está' : 'no está'} en la respuesta.`],
+              ecuacion: [`${sg < 0 ? '−' : ''}${pf(r1)}${pf(r2)} = ${f(v)}`] },
+          ],
+          respuesta: ['S = ', S],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -312,6 +395,14 @@
     titulo: 'Raíz impar cambia, raíz par no',
     temas: ['Método de los puntos críticos', 'Inecuaciones de grado superior'],
     pieza: 'recta',
+    // Lee (fase 2): vocabulario (factor, punto crítico, tramo) y la ley de signos; no dice qué hace un exponente par.
+    lee: {
+      tarjetas: [
+        { titulo: 'Un producto de factores', texto: ['En (', x, ' + 2)(', x, ' − 1)(', x, ' − 3) se multiplican tres factores. Cada uno vale 0 en un número: −2, 1 y 3. Esos números se llaman puntos críticos.'] },
+        { titulo: 'Tramos y signos', texto: 'Los puntos críticos cortan la recta en pedazos llamados tramos. Para el signo de un producto, recuerda: menos por menos da más, y más por menos da menos.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Arrastra el punto de prueba t por la recta. Mira el signo de cada factor y el del producto. Fíjate qué pasa dentro de un tramo y al cruzar un punto crítico.' },
+      ],
+    },
     juega: {
       consigna: 'P(x) = (x + 2)(x − 1)(x − 3). Mueve el punto de prueba t y mira el signo de cada factor y del producto.',
       voz: 'Mira si el signo cambia dentro de un mismo tramo.',
@@ -358,6 +449,37 @@
       ecuacion: [{ llave: ['(', x, ' − 1)²'], nota: 'exponente par', color: 'c-o' }, ' ≥ 0'],
       condicion: 'la expresión está factorizada en reales y se conoce el signo del coeficiente principal.',
     },
+    // Así se resuelve: tres factores, uno quizá con exponente 2 o 3, como en «Ahora tú»; signos con tramos() y conjunto con resolver().
+    resuelve: {
+      pieza: 'recta',
+      generar(s) {
+        const r = azar(s + 900);
+        const rs = r.mezclar([-4, -3, -2, -1, 0, 1, 2, 3, 4]).slice(0, 3).sort((p, q) => p - q);
+        const ms = rs.map(() => 1); const j = r.ent(0, 2); ms[j] = s % 3 === 0 ? 1 : r.uno([2, 3]);
+        const num = rs.map((v, i) => ({ r: v, m: ms[i] })), rel = r.uno(['<', '>', '≤', '≥']);
+        const S = conjunto(resolver(num, [], 1, rel)), T = tramos(num, [], 1);
+        const signos = T.map((tr, i) => (tr.mas ? '+' : '−') + (i < rs.length ? `  │ ${f(rs[i])} │  ` : '')).join('');
+        const menor = rel === '<' || rel === '≤', iguales = rel === '≤' || rel === '≥', especial = ms[j] > 1;
+        const t = rs[2] + 1, vt = valor(num, [], 1, t);
+        const conPrueba = ms.map((m, i) => (m > 1 ? { sup: [`(${f(t - rs[i])})`, String(m)] } : `(${f(t - rs[i])})`));
+        return {
+          enunciado: ['Resuelve ', ...producto(num), ` ${rel} 0.`],
+          dibujo: { datos: rectaSignos(num, [], 1, null, { signosDesde: 1 }), estado: { corte: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden los ', x, ` que hacen el producto ${rel} 0.`] },
+            { tipo: 'datos', texto: `Los puntos críticos son ${f(rs[0])}, ${f(rs[1])} y ${f(rs[2])}. ${especial ? `El factor que se anula en ${f(rs[j])} tiene exponente ${ms[j]}, ${ms[j] % 2 ? 'impar' : 'par'}; los otros, exponente 1.` : 'Los tres factores tienen exponente 1, impar.'}` },
+            { tipo: 'regla', texto: 'A la derecha del último punto crítico todos los factores son positivos. Hacia la izquierda, el signo cambia en cada raíz de exponente impar; si es par, se mantiene.' },
+            { tipo: 'cuentas', texto: `Voy de derecha a izquierda, empezando con +.${especial && ms[j] % 2 === 0 ? ` En ${f(rs[j])} el signo no cambia: su exponente es par.` : ' En cada punto crítico el signo cambia.'}`,
+              ecuacion: [signos], dibujo: { datos: rectaSignos(num, [], 1, null), estado: {} } },
+            { tipo: 'cuentas', texto: `Pide ${rel} 0: tomo los tramos con ${menor ? '−' : '+'}${iguales ? ' y también los puntos críticos, donde el producto vale 0' : '. Los puntos críticos no entran: ahí el producto vale 0'}.`,
+              ecuacion: [S], dibujo: { datos: rectaSignos(num, [], 1, rel, { solucion: true }), estado: {} } },
+            { tipo: 'sentido', texto: ['Compruebo con ', x, ` = ${f(t)}: todos los factores son positivos y el producto vale ${f(vt)}. Ese valor ${menor ? 'no está' : 'está'} en la respuesta, como debe.`],
+              ecuacion: [...conPrueba, ` = ${f(vt)}`] },
+          ],
+          respuesta: ['S = ', S],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'recta',
       generar(s) {
@@ -394,6 +516,15 @@
     titulo: 'El denominador nunca entra',
     temas: ['Inecuaciones fraccionarias'],
     pieza: 'recta',
+    // Lee (fase 2): numerador, denominador y signo de un cociente; no dice qué pasa con el cero del denominador.
+    lee: {
+      tarjetas: [
+        { titulo: 'Arriba y abajo', texto: 'En la fracción (x − 1)/(x + 2), lo de arriba es el numerador y lo de abajo, el denominador. Los dos cambian cuando cambia x, y cada uno tiene su propio signo.' },
+        { titulo: 'El signo de un cociente', texto: 'Dividir sigue la misma ley de signos que multiplicar. Si arriba y abajo tienen el mismo signo, el cociente es positivo; si tienen signos distintos, es negativo.',
+          ecuacion: [{ frac: ['−6', '−3'] }, ' = 2,   ', { frac: ['6', '−3'] }, ' = −2'] },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, a es el cero de arriba y b, el de abajo. Muévelos, mira el signo de cada tramo y fíjate en cómo se dibuja cada punto.' },
+      ],
+    },
     juega: {
       consigna: 'Mira los signos de (x − a)/(x − b) por tramos. Mueve a, el cero de arriba, y b, el que anula el denominador.',
       voz: 'Fíjate qué punto queda hueco y en rojo.',
@@ -436,6 +567,39 @@
       ecuacion: [{ frac: [['N(', x, ')'], ['D(', x, ')']] }, ' ≥ 0  con  ', { llave: ['D(', x, ') ≠ 0'], nota: 'nunca entra', color: 'c-h' }],
       condicion: 'no se multiplica por el denominador sin conocer su signo, y simplificar un factor no devuelve el punto excluido.',
       voz: 'Ese valor queda fuera del dominio. Revisemos cuándo apareció.',
+    },
+    // Así se resuelve: el cociente de «Ahora tú» (uno o dos factores arriba, uno abajo), con resolver() y tramos().
+    resuelve: {
+      pieza: 'recta',
+      generar(s) {
+        const r = azar(s + 900);
+        const vals = r.mezclar([-4, -3, -2, -1, 0, 1, 2, 3, 4]);
+        const dos = s % 2 === 1;
+        const num = dos ? [{ r: Math.min(vals[0], vals[1]), m: 1 }, { r: Math.max(vals[0], vals[1]), m: 1 }] : [{ r: vals[0], m: 1 }];
+        const den = [{ r: vals[2], m: 1 }], rel = r.uno(['<', '>', '≤', '≥']);
+        const S = conjunto(resolver(num, den, 1, rel)), T = tramos(num, den, 1);
+        const C = [...num, ...den].map(k => k.r).sort((p, q) => p - q);
+        const signos = T.map((tr, i) => (tr.mas ? '+' : '−') + (i < C.length ? `  │ ${f(C[i])} │  ` : '')).join('');
+        const menor = rel === '<' || rel === '≤', iguales = rel === '≤' || rel === '≥';
+        const ceros = num.map(k => f(k.r)).join(' y '), d0 = f(vals[2]);
+        const t = C[C.length - 1] + 1, Nt = num.reduce((p, k) => p * (t - k.r), 1), Dt = t - vals[2];
+        return {
+          enunciado: ['Resuelve ', { frac: [producto(num), producto(den)] }, ` ${rel} 0.`],
+          dibujo: { datos: rectaSignos(num, den, 1, null, { signosDesde: 1, rotular: true }), estado: { corte: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden los ', x, ` que hacen la fracción ${rel} 0.`] },
+            { tipo: 'datos', texto: `El numerador se anula en ${ceros}; el denominador, en ${d0}. Son los puntos críticos.` },
+            { tipo: 'regla', texto: 'Los ceros de arriba y de abajo parten la recta en tramos de signo fijo. Los de arriba entran con igual; el de abajo, nunca: no se divide entre 0.' },
+            { tipo: 'cuentas', texto: 'A la derecha de todos los puntos críticos, arriba y abajo son positivos: +. Cada factor tiene exponente 1, así que el signo cambia en cada punto.',
+              ecuacion: [signos], dibujo: { datos: rectaSignos(num, den, 1, null, { rotular: true }), estado: {} } },
+            { tipo: 'cuentas', texto: `Pide ${rel} 0: tomo los tramos con ${menor ? '−' : '+'}. ${iguales ? `${dos ? `Entran ${ceros}` : `Entra ${ceros}`}, donde la fracción vale 0; el ${d0}, no.` : `Ningún punto crítico entra: la desigualdad es estricta.`}`,
+              ecuacion: [S], dibujo: { datos: rectaSignos(num, den, 1, rel, { solucion: true, rotular: true }), estado: {} } },
+            { tipo: 'sentido', texto: ['Compruebo con ', x, ` = ${f(t)}: la fracción vale ${fr(Nt, Dt)}, positiva. Ese valor ${menor ? 'no está' : 'está'} en la respuesta, como debe.`],
+              ecuacion: [{ frac: [f(Nt), f(Dt)] }, ` = ${fr(Nt, Dt)}`] },
+          ],
+          respuesta: ['S = ', S],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'recta',
