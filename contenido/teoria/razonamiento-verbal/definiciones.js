@@ -109,6 +109,7 @@
     ops.splice(k, 0, c); return ops;
   };
   const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
+  const largo = x => Object.assign(x, { largo: true });  // trozo de color que puede partir línea (nucleo/ecuacion.js)
 
   // ---------- Idea 1: clase cercana más rasgo que separa ----------
   // Cambia: el género y la diferencia de la definición. Permanece: los seis casos y su orden.
@@ -210,7 +211,7 @@
             { tipo: 'pide', texto: `Piden la definición de «${b.c}»: no debe dejar fuera ningún caso ni dejar entrar a un vecino.` },
             { tipo: 'datos', texto: `Los vecinos son ${b.v.replace(', ', ' y ')}: se parecen a «${b.c}», pero no lo son.` },
             { tipo: 'regla', texto: 'Primero busco la clase más cercana que lo contiene. Después, el rasgo que tiene todo caso y ningún vecino.', ecuacion: [gen('clase'), ' + ', dif('rasgo que separa')] },
-            { tipo: 'aplica', texto: ['Clase: ', gen(b.g), '. Rasgo: ', dif(b.d), '. Solo una opción trae las dos piezas; los ejemplos no cuentan.'], dibujo: figResuelve(tarjeta, ops, true) },
+            { tipo: 'aplica', texto: ['Clase: ', largo(gen(b.g)), '. Rasgo: ', largo(dif(b.d)), '. Solo una opción trae las dos piezas; los ejemplos no cuentan.'], dibujo: figResuelve(tarjeta, ops, true) },
             { tipo: 'sentido', texto: `Compruebo con la opción parecida, «${parecida[0]}»: ${minus(parecida[2])}` },
           ],
           respuesta: `«${b.ok}»`,
@@ -324,8 +325,8 @@
           pasos: [
             { tipo: 'pide', texto: `Piden un rasgo que esté en todos los casos de «${b.c}» y en nada más.` },
             { tipo: 'regla', texto: 'Hago dos pruebas. ¿Lo tienen todos los casos, también los raros? ¿Lo tiene algo que no es del grupo?', ecuacion: [bien('todos los casos'), '   ·   ', mal('ningún vecino')] },
-            { tipo: 'aplica', texto: [`«${frecuente[0]}» falla la primera prueba: `, mal(minus(frecuente[2]))] },
-            { tipo: 'aplica', texto: [`«${amplio[0]}» falla la segunda: `, mal(minus(amplio[2]))], dibujo: figResuelve(tarjeta, ops, true) },
+            { tipo: 'aplica', texto: [`«${frecuente[0]}» falla la primera prueba: `, largo(mal(minus(frecuente[2])))] },
+            { tipo: 'aplica', texto: [`«${amplio[0]}» falla la segunda: `, largo(mal(minus(amplio[2])))], dibujo: figResuelve(tarjeta, ops, true) },
             { tipo: 'sentido', texto: `«${b.ok}» pasa las dos pruebas. La opción que nombra un caso no da ningún rasgo: se descarta.` },
           ],
           respuesta: `«${b.ok}»`,
