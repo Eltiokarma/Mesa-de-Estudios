@@ -67,7 +67,7 @@
   const t1 = 7 * Math.cos(U.rad(40)) - Math.sqrt(49 * Math.cos(U.rad(40)) ** 2 - 24), t2 = 7 * Math.cos(U.rad(40)) + Math.sqrt(49 * Math.cos(U.rad(40)) ** 2 - 24);
   const C1 = U.polar([0, 0], t1, 40), C2 = U.polar([0, 0], t2, 40);
   const lla = (paso, o = {}) => ({
-    alt: o.alt || 'AB = 7, ángulo A = 40° y BC = 5: el compás con centro B corta el lado de A en dos puntos, C₁ y C₂',
+    alt: o.alt || 'AB = 7, ángulo A = 40° y BC = 5: la circunferencia de centro B y radio 5 corta el lado de A en dos puntos, C₁ y C₂',
     vista: { x: [-0.8, 12.2], y: [-0.8, 6] },
     puntos: [{ id: 'A', x: 0, y: 0, rotulo: 'A', lado: -120 }, { id: 'B', x: 7, y: 0, rotulo: 'B', lado: -60 }, { id: 'R', x: 7.6 * Math.cos(U.rad(40)) + 1.3, y: 7.6 * Math.sin(U.rad(40)) + 1.1, sinPunto: true },
       { id: 'C1', x: C1[0], y: C1[1], rotulo: 'C₁', color: 'h', lado: 130, desde: paso.c || 0 }, { id: 'C2', x: C2[0], y: C2[1], rotulo: 'C₂', color: 'h', lado: 100, desde: paso.c || 0 }],
@@ -83,11 +83,64 @@
     LLA: { nombre: 'No basta', datos: (d) => [`AB = PQ = ${d.a}`, `BC = QR = ${d.c}`, `∠A = ∠P = ${d.g}°`] },
     AAA: { nombre: 'No basta', datos: (d) => [`∠A = ∠P = ${d.g}°`, `∠B = ∠Q = ${d.h}°`, `∠C = ∠R = ${180 - d.g - d.h}°`] },
   };
+  // Así se resuelve (idea 1): el mismo tipo de caso de «Ahora tú» (tipos[k].datos), con otra semilla. Solo se ajusta lo
+  // que hace falta para que el triángulo exista y se pueda dibujar: LLL cumple la desigualdad triangular y LLA da dos cortes.
+  const casoCriterio = s => {
+    const r = azar(s + 900), k = ['LAL', 'ALA', 'LLL', 'LLA', 'AAA'][s % 5];
+    const d = { a: r.ent(4, 9), b: r.ent(4, 9), c: r.ent(4, 9), g: 5 * r.ent(8, 16), h: 5 * r.ent(6, 12) };
+    if (k === 'LLL') d.c = Math.min(Math.max(d.c, Math.abs(d.a - d.b) + 1), d.a + d.b - 1);
+    if (k === 'LLA') { d.g = 5 * r.ent(6, 10); d.a = r.ent(6, 9); d.c = r.ent(Math.ceil(d.a * Math.sin(U.rad(d.g)) + 0.2), d.a - 1); }
+    return { k, d };
+  };
+  // LLA: dónde corta la circunferencia de centro B y radio BC al lado que sale de A (distancias AC₁ y AC₂).
+  const cortesLLA = d => {
+    const q = Math.sqrt(d.c * d.c - (d.a * Math.sin(U.rad(d.g))) ** 2), m = d.a * Math.cos(U.rad(d.g));
+    return [m - q, m + q];
+  };
+  // El triángulo ABC armado con los datos: lo dado lleva su medida (AB verde, AC turquesa, BC rojo, ángulos naranja).
+  const figCriterio = (k, d, o = {}) => {
+    const A = [0, 0], B = [d.a, 0];
+    let C;
+    if (k === 'LAL') C = U.polar(A, d.b, d.g);
+    else if (k === 'LLL') { const x = (d.a * d.a + d.b * d.b - d.c * d.c) / (2 * d.a); C = [x, Math.sqrt(d.b * d.b - x * x)]; }
+    else if (k === 'LLA') C = U.polar(A, cortesLLA(d)[1], d.g);
+    else C = U.corte(A, U.polar(A, 1, d.g), B, U.polar(B, 1, 180 - d.h));
+    const C1 = k === 'LLA' && o.dos ? U.polar(A, cortesLLA(d)[0], d.g) : null;
+    const dado = { LAL: ['AB', 'AC', 'A'], ALA: ['AB', 'A', 'B'], LLL: ['AB', 'BC', 'AC'], LLA: ['AB', 'BC', 'A'], AAA: ['A', 'B', 'C'] }[k];
+    const ve = x => dado.includes(x);
+    const pts = [A, B, C].concat(C1 ? [C1, [d.a - d.c, 0], [d.a + d.c, d.c]] : []);
+    const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+    return {
+      alt: o.dos ? `La circunferencia de centro B y radio ${d.c} corta dos veces el lado que sale de A: hay dos triángulos ABC`
+        : `Triángulo ABC con los datos marcados: ${tipos[k].datos(d).map(t => t.split(' = ')[0]).join(', ')}`,
+      vista: { x: [Math.min(...xs) - 1.6, Math.max(...xs) + 1.6], y: [Math.min(...ys, 0) - 1.2, Math.max(...ys) + 1.2] },
+      puntos: [{ id: 'A', x: 0, y: 0, rotulo: 'A', lado: -135 }, { id: 'B', x: d.a, y: 0, rotulo: 'B', lado: -45 },
+        { id: 'C', x: C[0], y: C[1], rotulo: C1 ? 'C₂' : 'C', lado: 90 }, ...(C1 ? [{ id: 'C1', x: C1[0], y: C1[1], rotulo: 'C₁', color: 'h', lado: 150 }] : [])],
+      regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', opacidad: 0.08 }],
+      circulos: C1 ? [{ centro: 'B', r: d.c, color: 'i', discontinua: true }] : [],
+      segmentos: [{ de: 'A', a: 'B', color: ve('AB') ? 'd' : undefined, grosor: 'variable', texto: ve('AB') ? `${d.a}` : undefined },
+        { de: 'A', a: 'C', color: ve('AC') ? 'i' : undefined, texto: ve('AC') ? `${d.b}` : undefined },
+        { de: 'B', a: 'C', color: ve('BC') ? 'h' : undefined, texto: ve('BC') ? `${d.c}` : undefined },
+        ...(C1 ? [{ de: 'B', a: 'C1', color: 'h', discontinua: true, texto: `${d.c}` }] : [])],
+      angulos: [{ en: 'A', de: 'B', a: 'C', color: ve('A') ? 'o' : undefined, texto: ve('A') ? `${d.g}°` : undefined },
+        ...(ve('B') ? [{ en: 'B', de: 'C', a: 'A', color: 'o', texto: `${d.h}°` }] : []),
+        ...(ve('C') ? [{ en: 'C', de: 'A', a: 'B', color: 'o', texto: `${180 - d.g - d.h}°` }] : [])],
+    };
+  };
   const criterios = {
     id: 'criterios',
     titulo: 'Qué datos fijan un triángulo',
     temas: ['Criterios LAL, ALA y LLL'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es congruente y cómo se leen las letras, sin decir cuántos triángulos da LLA (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Igual forma y tamaño', texto: 'Las ventanas de una misma fila en un edificio de Juliaca suelen salir del mismo molde: una calza exacto sobre la otra. En geometría, dos figuras así se llaman congruentes.' },
+        { titulo: 'Seis piezas', texto: 'Un triángulo tiene seis piezas: tres lados y tres ángulos. La pregunta del tema es cuántas piezas hay que conocer, y en qué lugar, para que el triángulo salga de una sola manera.' },
+        { titulo: 'Letras que se leen', texto: 'Un criterio se nombra con letras: L por lado y A por ángulo. LAL se lee «lado, ángulo, lado», en ese orden: el ángulo va en medio de los dos lados.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, los lados de 7 y 5 quedan fijos y tú cambias el ángulo A. Para cada ángulo, fíjate si el tercer lado podría tomar otra medida.' },
+      ],
+    },
     juega: {
       consigna: 'Los lados AB = 7 y AC = 5 están fijos. Cambia el ángulo A, que queda entre ellos, y mira el tercer lado.',
       voz: 'Para cada ángulo, cuenta cuántos triángulos puedes armar.',
@@ -102,7 +155,7 @@
     },
     predice: {
       pregunta: 'Ahora el ángulo no queda entre los lados: AB = 7, ∠A = 40° y BC = 5, opuesto a A. ¿Cuántos triángulos distintos cumplen esos datos?',
-      voz: 'El ángulo cambió de lugar. Piensa antes de usar el compás.',
+      voz: 'El ángulo cambió de lugar. Piensa antes de trazar la circunferencia.',
       opciones: [
         { id: 'c', texto: 'Dos', correcta: true },
         { id: 'uno', texto: 'Uno: dos lados y un ángulo lo fijan', error: 'GE-CON1', siFuera: 'Uno solo sería cierto con el ángulo entre los dos lados (LAL). Aquí el ángulo es opuesto.' },
@@ -110,13 +163,13 @@
       ],
       dibujo: { datos: lla({}, { compas: false, alt: 'AB = 7 y un lado que sale de A con 40°; falta ubicar C a 5 de B' }), estado: {} },
       revelar: { datos: lla({}), estado: {} },
-      coincide: 'Coincide: el compás de radio 5 corta dos veces. LLA no fija el triángulo.',
+      coincide: 'Coincide: la circunferencia de radio 5 corta dos veces. LLA no fija el triángulo.',
     },
     // Hallazgo 9: «Mira» usa el dibujo de la predicción (LLA con el compás), no el del juego (LAL): explica el caso que
     // el alumno acaba de predecir. El juego ya mostró que con el ángulo entre los lados sale un solo triángulo.
     mira: {
       datos: lla({ compas: 1, c: 2 }),
-      voz: 'Usa el compás como lo haría con lápiz y papel.',
+      voz: 'Sigue la circunferencia punteada: en ella está C.',
       pasos: [
         { estado: { corte: 1 }, texto: 'C está a 5 de B: en la circunferencia de centro B.', ecuacion: ['BC = 5'] },
         { estado: { corte: 2 }, texto: 'La circunferencia corta al lado de A en dos puntos.', ecuacion: [`A${'C'}₁ ≈ ${f(t1)}`, '   ·   ', `A${'C'}₂ ≈ ${f(t2)}`] },
@@ -127,6 +180,42 @@
       texto: 'Dos triángulos son congruentes si coinciden en LAL (ángulo entre los dos lados), ALA (lado entre los dos ángulos) o LLL. Con LLA o AAA no basta.',
       condicion: 'los elementos iguales se corresponden en el mismo orden. AAA solo asegura la misma forma, no el tamaño.',
       voz: 'Antes de nombrar el criterio, ubica dónde está el ángulo.',
+    },
+    // Así se resuelve (fase 2): el caso de «Ahora tú» (mismos tipos y datos) con otra semilla, resuelto paso a paso.
+    resuelve: {
+      generar(s) {
+        const { k, d } = casoCriterio(s);
+        const hay = { LAL: 'Dos lados y un ángulo', ALA: 'Dos ángulos y un lado', LLL: 'Los tres lados', LLA: 'Dos lados y un ángulo', AAA: 'Los tres ángulos y ningún lado' }[k];
+        const aplica = {
+          LAL: 'El ángulo A lo forman los lados AB y AC, que son justo los lados dados. Queda en medio: es LAL.',
+          ALA: 'El lado AB va del vértice A al vértice B: queda entre los dos ángulos dados. Es ALA.',
+          LLL: 'Me dan los tres lados, cada uno igual a su pareja del otro triángulo. Es LLL.',
+          LLA: 'El ángulo A lo forman AB y AC, pero el otro lado dado es BC. El ángulo no queda entre los lados dados.',
+          AAA: 'Son tres ángulos y ningún lado: ningún dato fija el tamaño del triángulo.',
+        }[k];
+        const [t1, t2] = k === 'LLA' ? cortesLLA(d) : [0, 0];
+        const lados = [d.a, d.b, d.c].sort((x, y) => y - x);
+        const sentido = {
+          LAL: { texto: 'Comprueba: con esos datos el tercer lado sale de una sola medida. No hay otro triángulo posible.', ecuacion: [{ v: 'c-h', t: 'BC' }, ` ≈ ${f(U.dist(U.polar([0, 0], d.b, d.g), [d.a, 0]))}`] },
+          ALA: { texto: 'Comprueba: el tercer ángulo queda fijo, y los lados que salen de A y de B se cortan en un solo punto.', ecuacion: [`∠C = 180° − ${d.g}° − ${d.h}° = ${180 - d.g - d.h}°`] },
+          LLL: { texto: 'Comprueba que el triángulo se puede armar: el lado mayor es menor que la suma de los otros dos.', ecuacion: [`${lados[0]} < ${lados[1]} + ${lados[2]} = ${lados[1] + lados[2]}`] },
+          LLA: { texto: `Comprueba con la circunferencia de centro B y radio ${d.c}: corta dos veces el lado que sale de A. Salen dos triángulos.`,
+            ecuacion: [`AC₁ ≈ ${f(t1)}`, '   ·   ', `AC₂ ≈ ${f(t2)}`], dibujo: { datos: figCriterio(k, d, { dos: true }), estado: {} } },
+          AAA: { texto: 'Comprueba: si doblas los tres lados, los ángulos no cambian. Misma forma, otro tamaño.', ecuacion: [`${d.g}° + ${d.h}° + ${180 - d.g - d.h}° = 180°`] },
+        }[k];
+        return {
+          enunciado: [`En △ABC y △PQR se sabe: ${tipos[k].datos(d).join('; ')}. ¿Qué criterio asegura que son congruentes?`],
+          dibujo: { datos: figCriterio(k, d), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el criterio que asegura △ABC ≅ △PQR, o decir que esos datos no bastan.' },
+            { tipo: 'datos', texto: `${hay}, iguales en los dos triángulos.`, ecuacion: [tipos[k].datos(d).join('   ·   ')] },
+            { tipo: 'regla', texto: 'Miro dónde queda la pieza del medio: un ángulo entre dos lados (LAL), un lado entre dos ángulos (ALA), o tres lados (LLL). Otra cosa no basta.' },
+            { tipo: 'aplica', texto: aplica },
+            Object.assign({ tipo: 'sentido' }, sentido),
+          ],
+          respuesta: { LAL: 'Son congruentes por LAL.', ALA: 'Son congruentes por ALA.', LLL: 'Son congruentes por LLL.', LLA: 'No basta: es LLA y puede haber dos triángulos.', AAA: 'No basta: AAA no fija el tamaño.' }[k],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Ordena los datos: ¿el ángulo está entre los lados o no?',
@@ -175,11 +264,33 @@
         { en: 'H1', de: 'O', a: 'P', color: 'o' }, { en: 'H2', de: 'P', a: 'O', color: 'i', desde: k.d2 || 0 }],
     };
   };
+  // Así se resuelve (idea 2): la misma expresión «ax ± b» que escribe «Ahora tú».
+  const exLineal = (a, b) => `${a}x ${b < 0 ? '−' : '+'} ${Math.abs(b)}`;
+  // La figura del ejercicio: la de la mediatriz (P sobre la línea verde) o la de la bisectriz, con las distancias rotuladas.
+  const figLugar = (med, t1, t2, alt) => {
+    if (med) {
+      const d = mediatriz(0, 3);
+      d.segmentos.find(sg => sg.de === 'P' && sg.a === 'A').texto = t1;
+      d.segmentos.find(sg => sg.de === 'P' && sg.a === 'B').texto = t2;
+      d.alt = alt;
+      return d;
+    }
+    return Object.assign(bisec({ d1: t1, d2: t2 }), { alt });
+  };
   const lugares = {
     id: 'mediatriz-bisectriz',
     titulo: 'Puntos que equidistan',
     temas: ['Teorema de la mediatriz y de la bisectriz'],
     pieza: 'geo-figura',
+    // Lee (fase 2): distancia a una recta, los nombres de las dos líneas y «equidistar», sin decir qué pasa en la bisectriz.
+    lee: {
+      tarjetas: [
+        { titulo: 'La distancia a una recta', texto: 'Para ir de tu casa a la avenida recta más cercana, el camino más corto la cruza en ángulo recto. Esa es tu distancia a la avenida: se mide en perpendicular.' },
+        { titulo: 'Dos líneas con nombre', texto: 'La mediatriz de un segmento AB es la recta perpendicular a AB que pasa por su punto medio. La bisectriz de un ángulo es la línea que lo parte en dos ángulos iguales.' },
+        { titulo: 'Equidistar', texto: 'Equidistar es estar a la misma distancia de dos cosas. Si un paradero de Puno queda igual de lejos de dos colegios, el paradero equidista de ellos.' },
+        { titulo: 'Qué mirar', texto: 'En el juego mueves P cerca de la línea verde, que es la mediatriz de AB. Compara PA y PB sobre la línea y fuera de ella.' },
+      ],
+    },
     juega: {
       consigna: 'Mueve el punto P. Compara sus distancias a A y a B, sobre la línea verde y fuera de ella.',
       voz: 'Sube y corre P. Comprueba cuándo PA y PB coinciden.',
@@ -225,6 +336,36 @@
       condicion: 'la distancia a un lado se mide en perpendicular. Y al revés: quien equidista está en la mediatriz o en la bisectriz.',
       voz: 'Equidistar se mide con perpendiculares, no a ojo.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» (mismas cuentas) con otra semilla, resuelto paso a paso.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), x = r.ent(2, 9), a1 = r.ent(2, 6);
+        let a2 = r.ent(2, 7); if (a2 === a1) a2 += 1;
+        const v = r.ent(8, 20) + Math.max(a1, a2) * x;
+        const b1 = v - a1 * x, b2 = v - a2 * x;
+        const med = s % 2 === 0;
+        const e1 = exLineal(a1, b1), e2 = exLineal(a2, b2);
+        const D1 = med ? PA : { v: 'c-o', t: 'PH' }, D2 = med ? PB : { v: 'c-i', t: 'PK' };
+        const [ga, gb] = a1 > a2 ? [a1 - a2, b2 - b1] : [a2 - a1, b1 - b2];
+        const alt = (t1, t2) => med ? `P en la mediatriz de AB: PA = ${t1} y PB = ${t2}` : `P en la bisectriz del ángulo O: sus distancias a los lados miden ${t1} y ${t2}`;
+        return {
+          enunciado: med ? ['P está en la mediatriz de AB, con ', PA, ` = ${e1} y `, PB, ` = ${e2}. ¿Cuánto mide `, PA, '?']
+            : ['P está en la bisectriz del ángulo O. Sus distancias a los lados miden ', D1, ` = ${e1} y `, D2, ` = ${e2}. ¿Cuánto mide cada una?`],
+          dibujo: { datos: figLugar(med, e1, e2, alt(e1, e2)), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: med ? ['Piden ', PA, ', la distancia de P a A. Hallar x es solo el camino.'] : 'Piden cuánto mide cada distancia de P a los lados del ángulo O.' },
+            { tipo: 'datos', texto: [D1, ` = ${e1} y `, D2, ` = ${e2}, con P en la ${med ? 'mediatriz de AB' : 'bisectriz del ángulo O'}.`] },
+            { tipo: 'regla', texto: med ? 'Un punto de la mediatriz está igual de lejos de A que de B. Entonces las dos expresiones valen lo mismo y puedo igualarlas.'
+              : 'Un punto de la bisectriz está igual de lejos de los dos lados, medido en perpendicular. Entonces puedo igualar las dos expresiones.' },
+            { tipo: 'cuentas', texto: 'Igualo, junto las x en un lado y despejo. Después reemplazo x en la primera expresión.',
+              ecuacion: [`${e1} = ${e2}   →   ${ga === 1 ? '' : `${ga}x = ${gb}   →   `}x = ${x}   ·   `, D1, ` = ${a1} · ${x} + ${b1} = ${v}`],
+              dibujo: { datos: figLugar(med, `${v}`, `${v}`, alt(v, v)), estado: {} } },
+            { tipo: 'sentido', texto: 'Comprueba con la otra expresión: tiene que dar lo mismo, porque P equidista.', ecuacion: [D2, ` = ${a2} · ${x} + ${b2} = ${v}`] },
+          ],
+          respuesta: med ? [PA, ` = ${v}`] : `Cada distancia mide ${v}.`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Iguala las dos distancias y despeja.',
       generar(s) {
@@ -266,11 +407,34 @@
         ...(k.D !== undefined ? [{ de: 'N', a: 'D', color: 'o', discontinua: true, desde: k.D }, { de: 'C', a: 'D', color: 'h', grosor: 'variable', desde: k.CD }] : [])],
     };
   };
+  // Así se resuelve (idea 3): el triángulo de lados a = BC, b = AC y c = AB con el triángulo de sus puntos medios.
+  const figMedio = (a, b, c, conMedio) => {
+    const x = (a * a + c * c - b * b) / (2 * a), A = [x, Math.sqrt(c * c - x * x)], M = U.medio(A, [0, 0]), N = U.medio(A, [a, 0]), P = [a / 2, 0];
+    return {
+      alt: `Triángulo de lados ${a}, ${b} y ${c}; al unir los puntos medios de sus lados sale un triángulo${conMedio ? ` de lados ${f(a / 2)}, ${f(b / 2)} y ${f(c / 2)}` : ''}`,
+      vista: { x: [Math.min(0, x) - 1.6, Math.max(a, x) + 1.6], y: [-1.4, A[1] + 1.2] },
+      puntos: [{ id: 'A', x: A[0], y: A[1], rotulo: 'A', lado: 90 }, { id: 'B', x: 0, y: 0, rotulo: 'B', lado: -135 }, { id: 'C', x: a, y: 0, rotulo: 'C', lado: -45 },
+        { id: 'M', x: M[0], y: M[1], rotulo: 'M', lado: 160 }, { id: 'N', x: N[0], y: N[1], rotulo: 'N', lado: 20 }, { id: 'P', x: P[0], y: P[1], rotulo: 'P', lado: -90 }],
+      regiones: [{ puntos: ['M', 'N', 'P'], color: 'o', opacidad: 0.1 }],
+      segmentos: [{ de: 'B', a: 'C', color: 'd', texto: `${a}` }, { de: 'C', a: 'A', color: 'd', texto: `${b}` }, { de: 'A', a: 'B', color: 'd', texto: `${c}` },
+        { de: 'M', a: 'N', color: 'o', grosor: 'variable', texto: conMedio ? f(a / 2) : undefined }, { de: 'N', a: 'P', color: 'o', grosor: 'variable', texto: conMedio ? f(c / 2) : undefined },
+        { de: 'P', a: 'M', color: 'o', grosor: 'variable', texto: conMedio ? f(b / 2) : undefined }],
+    };
+  };
   const baseMedia = {
     id: 'base-media',
     titulo: 'La base media mide la mitad',
     temas: ['Teorema de la base media'],
     pieza: 'geo-figura',
+    // Lee (fase 2): punto medio y base media como nombres, sin decir dónde corta la paralela (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'El punto medio', texto: 'El punto medio de un lado lo parte en dos tramos iguales. En las figuras de este tema, dos tramos con las mismas rayitas miden lo mismo.' },
+        { titulo: 'La base media', texto: 'Si unes los puntos medios de dos lados de un triángulo, obtienes un segmento llamado base media. El tercer lado, el que no tocaste, es la base con la que se compara.' },
+        { titulo: 'En un techo', texto: 'En un techo a dos aguas de Puno, el carpintero clava un listón que une la mitad de una viga inclinada con la mitad de la otra. Ese listón es una base media.' },
+        { titulo: 'Qué mirar', texto: 'En el juego mueves el vértice A, y los puntos medios M y N lo siguen. Mira el largo de MN y su dirección frente a la base BC.' },
+      ],
+    },
     juega: {
       consigna: 'M y N son los puntos medios de AB y AC. Mueve el vértice A y compara MN con la base BC.',
       voz: 'Mueve A. Busca lo que no cambia en MN.',
@@ -313,6 +477,47 @@
       ecuacion: [{ llave: [{ v: 'c-o', t: 'MN' }], nota: 'base media', color: 'c-o' }, ' = ', { frac: [{ v: 'c-d', t: 'BC' }, '2'] }, '   ·   ', 'MN ∥ BC'],
       condicion: 'M y N son puntos medios de dos lados del mismo triángulo; MN se compara con el tercer lado.',
       voz: 'La prueba usa congruencia. El dibujo solo la sugiere.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (base media y triángulo de los puntos medios), con otra semilla.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 2;
+        const MN = { v: 'c-o', t: 'MN' }, BC = { v: 'c-d', t: 'BC' };
+        if (tipo === 0) {
+          const bc = 2 * r.ent(3, 14), ax = r.ent(1, 7), ay = r.ent(3, 5);
+          const fig = con => {
+            const d = base(ax, ay, { sinMN: !con, bc: `${bc}`, alt: `M y N son puntos medios de AB y AC; BC mide ${bc}${con ? ` y MN, ${f(bc / 2)}` : ''}` });
+            if (con) d.segmentos.find(sg => sg.de === 'M' && sg.a === 'N').texto = f(bc / 2);
+            return { datos: d, estado: {} };
+          };
+          return {
+            enunciado: ['En el triángulo ABC, M y N son puntos medios de AB y AC, y ', BC, ` = ${bc}. ¿Cuánto mide `, MN, '?'],
+            dibujo: fig(false),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', MN, ', el segmento que une los puntos medios de AB y AC.'] },
+              { tipo: 'datos', texto: ['M y N son puntos medios, y el lado que no tocan, ', BC, `, mide ${bc}.`] },
+              { tipo: 'regla', texto: 'Un segmento que une los puntos medios de dos lados va paralelo al tercer lado y mide la mitad de él.', ecuacion: [MN, ' = ', { frac: [BC, '2'] }] },
+              { tipo: 'cuentas', texto: ['Parto ', BC, ' en dos.'], ecuacion: [MN, ` = ${bc} ÷ 2 = ${f(bc / 2)}`], dibujo: fig(true) },
+              { tipo: 'sentido', texto: ['Comprueba al revés: el doble de ', MN, ' tiene que dar ', BC, '.'], ecuacion: [`2 · ${f(bc / 2)} = ${bc}`] },
+            ],
+            respuesta: [MN, ` = ${f(bc / 2)}`],
+          };
+        }
+        const a = r.ent(5, 14), b = r.ent(5, 14), c = r.ent(Math.abs(a - b) + 1, a + b - 1);
+        const p = a + b + c;
+        return {
+          enunciado: [`Un triángulo tiene lados ${a}, ${b} y ${c}. Unimos los puntos medios de sus tres lados. ¿Cuál es el perímetro del triángulo que se forma?`],
+          dibujo: { datos: figMedio(a, b, c, false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el perímetro del triángulo MNP, el que forman los tres puntos medios.' },
+            { tipo: 'datos', texto: `El triángulo grande tiene lados ${a}, ${b} y ${c}.` },
+            { tipo: 'regla', texto: 'Cada lado del triángulo MNP une dos puntos medios: es una base media y mide la mitad del lado grande que tiene enfrente.' },
+            { tipo: 'cuentas', texto: 'Sumo las tres mitades.', ecuacion: [`${a}/2 + ${b}/2 + ${c}/2 = ${f(a / 2)} + ${f(b / 2)} + ${f(c / 2)} = ${f(p / 2)}`], dibujo: { datos: figMedio(a, b, c, true), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: el perímetro grande es ${p}, y el pequeño debe ser su mitad.`, ecuacion: [`${p} ÷ 2 = ${f(p / 2)}`] },
+          ],
+          respuesta: `El perímetro mide ${f(p / 2)}.`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Ubica los puntos medios y el lado que les corresponde.',
@@ -367,11 +572,30 @@
       angulos: [{ en: 'C', de: 'A', a: 'B', color: 'o', texto: o.C ? `${f(U.angulo(C, [-5, 0], [5, 0]), 0)}°` : undefined }],
     };
   };
+  // Así se resuelve (idea 4): el triángulo recto en C con ∠A = a. Con M en el origen, C = polar(5, 2a) deja el arco CB
+  // en 2a y el ángulo inscrito en A en a.
+  const figMediana = (a, o = {}) => {
+    const C = U.polar([0, 0], 5, 2 * a);
+    const d = semi(0, { C, sinCM: true, circulo: false, sinAB: true, alt: o.alt || `Triángulo rectángulo en C con ∠A = ${a}° y la mediana CM` });
+    d.angulos = [{ en: 'C', de: 'A', a: 'B', color: 'o' }, { en: 'A', de: 'B', a: 'C', color: 'i', texto: `${a}°` }];
+    if (o.copia === 'A') d.angulos.push({ en: 'C', de: 'A', a: 'M', color: 'h', texto: `${a}°`, radio: 30 });
+    if (o.copia === 'B') d.angulos.push({ en: 'C', de: 'M', a: 'B', color: 'h', texto: `${90 - a}°`, radio: 30 }, { en: 'B', de: 'C', a: 'A', color: 'i', texto: `${90 - a}°` });
+    return d;
+  };
   const medianaHip = {
     id: 'mediana-hipotenusa',
     titulo: 'La mediana a la hipotenusa',
     temas: ['Mediana relativa a la hipotenusa'],
     pieza: 'geo-figura',
+    // Lee (fase 2): hipotenusa, cateto y mediana, sin decir cuánto mide CM ni qué pasa si C sale del arco.
+    lee: {
+      tarjetas: [
+        { titulo: 'Esquinas rectas', texto: 'Las esquinas de una hoja de cuaderno o de una losa en Juliaca miden 90°. Un triángulo con una esquina así es rectángulo; en este tema, su esquina recta está en C.' },
+        { titulo: 'Hipotenusa y catetos', texto: 'En un triángulo rectángulo, el lado frente al ángulo de 90° es la hipotenusa, y es el más largo. Los otros dos, los que forman la esquina recta, son los catetos.' },
+        { titulo: 'La mediana', texto: 'Una mediana une un vértice con el punto medio del lado de enfrente. Aquí importa la que sale de C, la esquina recta, y llega a M, la mitad de la hipotenusa.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, C corre por la semicircunferencia de diámetro AB = 10. Mira dos lecturas, el ángulo en C y el largo de CM, y fíjate cuáles cambian.' },
+      ],
+    },
     juega: {
       consigna: 'C se mueve por la semicircunferencia de diámetro AB = 10. Mira el ángulo en C y la mediana CM.',
       voz: 'Corre C por el arco. Comprueba qué medidas permanecen.',
@@ -411,12 +635,34 @@
       condicion: 'el ángulo en C es recto. Y al revés: si CM es la mitad de AB, el ángulo en C es recto.',
       voz: 'Sin ángulo recto, la igualdad se pierde. Verifícalo siempre.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» (mismo rango de ∠A y mismas dos preguntas) con otra semilla.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), a = 5 * r.ent(4, 14), pide = s % 2;
+        const CM = { v: 'c-h', t: 'CM' }, nom = pide ? '∠MCB' : '∠MCA', bien = pide ? 90 - a : a;
+        return {
+          enunciado: [`En el triángulo ABC, recto en C, M es el punto medio de la hipotenusa AB y ∠A = ${a}°. ¿Cuánto mide ${nom}?`],
+          dibujo: { datos: figMediana(a), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', nom, ': el ángulo entre la mediana ', CM, ` y el cateto ${pide ? 'CB' : 'CA'}.`] },
+            { tipo: 'datos', texto: `El triángulo es recto en C y ∠A = ${a}°. M es el punto medio de la hipotenusa AB.` },
+            { tipo: 'regla', texto: ['En un triángulo rectángulo, la mediana a la hipotenusa mide la mitad de ella. Así ', CM, ' es igual a MA y a MB.'], ecuacion: [CM, ' = MA = MB'] },
+            pide ? { tipo: 'cuentas', texto: ['Como ', CM, ' = MB, el triángulo MCB es isósceles y copia el ángulo B. Primero saco ∠B.'],
+              ecuacion: [`∠B = 90° − ${a}° = ${90 - a}°   →   ∠MCB = ${90 - a}°`], dibujo: { datos: figMediana(a, { copia: 'B', alt: `MC = MB: el ángulo MCB copia al ángulo B, de ${90 - a}°` }), estado: {} } }
+              : { tipo: 'cuentas', texto: ['Como ', CM, ' = MA, el triángulo MCA es isósceles: sus ángulos en A y en C son iguales.'],
+                ecuacion: [`∠MCA = ∠A = ${a}°`], dibujo: { datos: figMediana(a, { copia: 'A', alt: `MC = MA: el ángulo MCA copia al ángulo A, de ${a}°` }), estado: {} } },
+            { tipo: 'sentido', texto: 'Comprueba: los dos trozos en que la mediana parte el ángulo C deben sumar 90°.', ecuacion: [`∠MCA + ∠MCB = ${a}° + ${90 - a}° = 90°`] },
+          ],
+          respuesta: `${nom} = ${bien}°`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'MC = MB forma un triángulo isósceles. Úsalo.',
       generar(s) {
         const r = azar(s), a = 5 * r.ent(4, 14), pide = s % 2;
-        const fi = 2 * a; // con M en el origen, ∠A = a cuando C = polar(5, 180 − 2a)… se dibuja C con ∠CAB = a
-        const C = U.polar([0, 0], 5, 180 - fi);
+        // Con M en el origen y A = (−5, 0), ∠A es inscrito sobre el arco CB: C = polar(5, 2a) deja ∠CAB = a.
+        const C = U.polar([0, 0], 5, 2 * a);
         const d = semi(0, { C, sinCM: true, circulo: false, sinAB: true, alt: `Triángulo rectángulo en C con ∠A = ${a}° y la mediana CM` });
         d.angulos = [{ en: 'C', de: 'A', a: 'B', color: 'o' }, { en: 'A', de: 'B', a: 'C', color: 'i', texto: `${a}°` }];
         const bien = pide ? 90 - a : a;
@@ -461,11 +707,23 @@
       angulos: [{ en: 'B', de: 'A', a: 'C' }, { en: 'A', de: 'C', a: 'B', color: 'd', texto: `${datos.ang[0]}°` }, { en: 'C', de: 'B', a: 'A', color: 'd', texto: `${datos.ang[1]}°`, radio: 22 }],
     };
   };
+  // Así se resuelve (idea 5): los lados de cada notable como múltiplos de k (los de «Ahora tú», sin el valor de k).
+  const FORMA = { '30-60': ['k√3', 'k', '2k'], '45-45': ['k', 'k', 'k√2'], '37-53': ['4k', '3k', '5k'] };
+  const LADO = [{ v: 'c-o', t: 'AB' }, { v: 'c-i', t: 'BC' }, { v: 'c-h', t: 'AC' }];
   const notables = {
     id: 'notables',
     titulo: 'Los rectángulos notables',
     temas: ['Triángulos rectángulos notables'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es un notable y la letra k, sin dar los lados del de 45° (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Las escuadras', texto: 'Las dos escuadras del juego de geometría tienen ángulos de 30°, 60° y 90°, y de 45°, 45° y 90°. Son triángulos rectángulos notables: sus lados guardan razones fijas.' },
+        { titulo: 'La letra k', texto: 'En un notable, cada lado se escribe como un múltiplo de un mismo número k. Si el triángulo crece al doble, k también se duplica.' },
+        { titulo: 'En una obra', texto: 'Un albañil de Juliaca saca una esquina recta con una cinta: marca 3 m en una pared, 4 m en la otra y comprueba que de punta a punta haya 5 m.' },
+        { titulo: 'Qué mirar', texto: 'En el juego eliges los ángulos y cambias k. Mira qué múltiplo de k es cada lado y cuál de los tres es el más largo.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un triángulo rectángulo notable y cambia su tamaño k. Mira qué múltiplo de k es cada lado.',
       voz: 'Cambia k. La razón entre los lados permanece.',
@@ -506,6 +764,42 @@
       condicion: 'el triángulo es rectángulo. El de 37° y 53° es aproximado: tan 37° no es exactamente 3/4.',
       voz: 'Reconoce el notable por sus ángulos, no por su posición.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» (mismo notable, mismos lados L) con otra semilla.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = ['30-60', '45-45', '37-53'][s % 3], k = r.ent(2, 6), cual = r.ent(0, 2);
+        const L = {
+          '30-60': [[k, 3], [k, 1], [2 * k, 1]],
+          '45-45': [[k, 1], [k, 1], [k, 2]],
+          '37-53': [[4 * k, 1], [3 * k, 1], [5 * k, 1]],
+        }[tipo];
+        const dado = (cual + 1) % 3, pide = cual, F = FORMA[tipo];
+        const nombreLado = ['el cateto AB', 'el cateto BC', 'la hipotenusa AC'];
+        const txt = ([a, m]) => rd(a, m), cuad = ([a, m]) => a * a * m;
+        const al2 = l => (l[1] === 1 ? `${txt(l)}²` : `(${txt(l)})²`);
+        const fig = todo => {
+          const d = notable(tipo, k, todo ? {} : { sin: pide });
+          if (!todo) d.segmentos.forEach((sg, i) => { if (i !== dado && i !== pide && i < 3) sg.texto = undefined; });
+          return { datos: d, estado: {} };
+        };
+        const ang = tipo.replace('-', '° y ') + '°';
+        return {
+          enunciado: [`En el triángulo rectángulo de la figura, ${nombreLado[dado]} mide ${txt(L[dado])}. ¿Cuánto mide ${nombreLado[pide]}?`],
+          dibujo: fig(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', pide === 2 ? 'la hipotenusa ' : 'el cateto ', LADO[pide], '.'] },
+            { tipo: 'datos', texto: [`Los ángulos agudos miden ${ang}, y `, LADO[dado], ` = ${txt(L[dado])}.`] },
+            { tipo: 'regla', texto: `Por los ángulos reconozco el notable de ${ang}. Escribo sus tres lados con la misma k.`,
+              ecuacion: [LADO[0], ` = ${F[0]}   ·   `, LADO[1], ` = ${F[1]}   ·   `, LADO[2], ` = ${F[2]}`] },
+            { tipo: 'cuentas', texto: ['Igualo el lado dado a su forma con k y despejo k. Después armo ', LADO[pide], '.'],
+              ecuacion: [`${F[dado] === 'k' ? '' : `${F[dado]} = ${txt(L[dado])}   →   `}k = ${k}   →   `, LADO[pide], ` = ${F[pide]} = ${txt(L[pide])}`], dibujo: fig(true) },
+            { tipo: 'sentido', texto: 'Comprueba con Pitágoras: los cuadrados de los catetos suman el cuadrado de la hipotenusa.',
+              ecuacion: [`${al2(L[0])} + ${al2(L[1])} = ${cuad(L[0])} + ${cuad(L[1])} = ${cuad(L[2])} = ${al2(L[2])}`] },
+          ],
+          respuesta: [LADO[pide], ` = ${txt(L[pide])}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Identifica el notable y el lado que te dan.',
       generar(s) {
@@ -545,7 +839,7 @@
     const L = Math.min(11, 9.4 / Math.sin(U.rad(g)), g > 90 ? 3.4 / Math.abs(c) : Infinity), R = U.polar([0, 0], L, g);
     const Cs = sol.map(t => U.polar([0, 0], t, g));
     return {
-      alt: `AB = 7, ángulo A de ${g}° y BC = ${f(a)}: ${sol.length === 0 ? 'el compás no alcanza el lado, no hay triángulo' : sol.length === 1 ? 'un solo triángulo' : 'dos triángulos distintos'}`,
+      alt: `AB = 7, ángulo A de ${g}° y BC = ${f(a)}: ${sol.length === 0 ? 'la circunferencia no alcanza el lado, no hay triángulo' : sol.length === 1 ? 'un solo triángulo' : 'dos triángulos distintos'}`,
       vista: VLLA,
       puntos: [{ id: 'A', x: 0, y: 0, rotulo: 'A', lado: -120 }, { id: 'B', x: 7, y: 0, rotulo: 'B', lado: -60 }, { id: 'R', x: R[0], y: R[1], sinPunto: true },
         ...Cs.map((C, i) => ({ id: `C${i}`, x: C[0], y: C[1], rotulo: Cs.length > 1 ? `C${'₁₂'[i]}` : 'C', color: 'h', lado: g + 90 }))],
@@ -558,8 +852,8 @@
   };
   const cuantos = (g, a) => llaLibre(g, a).puntos.length - 3;
   const mesaLLA = {
-    id: 'compas-lla', titulo: 'El compás de LLA', pieza: 'geo-figura',
-    consigna: 'Gira el lado de A y abre el compás en B. Busca cero, uno y dos triángulos con los mismos datos.',
+    id: 'compas-lla', titulo: 'La circunferencia de LLA', pieza: 'geo-figura',
+    consigna: 'Gira el lado de A y abre la circunferencia punteada de centro B. Busca cero, uno y dos triángulos con los mismos datos.',
     controles: [
       { id: 'g', etiqueta: '∠A', min: 20, max: 120, paso: 5, inicio: 40, unidad: '°', decimales: 0, color: 'c-o' },
       { id: 'a', etiqueta: 'BC', min: 2, max: 9, paso: 0.5, inicio: 5, unidad: '', decimales: 1, color: 'c-i' },
@@ -570,8 +864,8 @@
       { id: 'lado-a', etiqueta: 'lado que sale de A', color: 'c-o',
         donde: v => enPantalla(llaLibre(v.g, v.a), U.polar([0, 0], 5, v.g)),
         mover: (pt, v) => { const q = alPlano(llaLibre(v.g, v.a), pt); return { g: U.grados(Math.atan2(Math.max(q[1], 0.01), q[0])) }; } },
-      // Se agarra el compás por su punto más alto: alejarlo de B lo abre.
-      { id: 'compas', etiqueta: 'abertura del compás', color: 'c-i',
+      // Se agarra la circunferencia de centro B por su punto más alto: alejarlo de B la agranda.
+      { id: 'compas', etiqueta: 'radio de la circunferencia', color: 'c-i',
         donde: v => enPantalla(llaLibre(v.g, v.a), [7, v.a]),
         mover: (pt, v) => { const q = alPlano(llaLibre(v.g, v.a), pt); return { a: Math.hypot(q[0] - 7, q[1]) }; } },
     ],
@@ -581,18 +875,18 @@
     },
     // Retos comprobados con cuantos(), que cuenta los cortes del compás que dibuja llaLibre().
     invitaciones: [
-      { texto: 'Abre el compás tan poco que no alcance el lado: ningún triángulo.',
+      { texto: 'Achica la circunferencia hasta que no alcance el lado: ningún triángulo.',
         logrado: v => cuantos(v.g, v.a) === 0,
         bien: 'BC no llega al lado de A: con esos datos no hay triángulo.' },
-      { texto: 'Busca el caso en que el compás apenas toca el lado: un solo triángulo.',
+      { texto: 'Busca el caso en que la circunferencia apenas toca el lado: un solo triángulo.',
         logrado: v => cuantos(v.g, v.a) === 1 && v.a < 7,
         bien: 'Lo toca en un punto: ahí LLA da uno solo. ¿Y si lo abres un poco?' },
       { texto: 'Con ∠A = 40°, busca el BC más corto que ya da dos triángulos.',
         logrado: v => v.g === 40 && cuantos(v.g, v.a) === 2 && v.a === BC_DOS_40,
-        bien: 'Apenas pasa la distancia de B al lado: el compás corta dos veces.' },
+        bien: 'Apenas pasa la distancia de B al lado: la circunferencia corta dos veces.' },
       { texto: 'Haz obtuso el ángulo A y consigue un triángulo.',
         logrado: v => v.g > 90 && cuantos(v.g, v.a) === 1,
-        bien: 'Con A obtuso el compás corta una sola vez: ahí LLA sí fija el triángulo.' },
+        bien: 'Con A obtuso la circunferencia corta una sola vez: ahí LLA sí fija el triángulo.' },
       { texto: 'Guarda dos casos con el mismo ∠A y distinto número de triángulos.',
         logrado: (v, gs) => gs.some(c => c.g === v.g && cuantos(c.g, c.a) !== cuantos(v.g, v.a)) && gs.some(c => c.g === v.g && c.a === v.a),
         bien: 'Mismo ángulo, otro BC, otro final: LLA no es criterio.' },
