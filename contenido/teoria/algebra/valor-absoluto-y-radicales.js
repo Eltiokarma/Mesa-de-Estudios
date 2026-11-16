@@ -55,6 +55,14 @@
   const deX = (datos, px) => inversa(EJES().geometria(datos).X, datos.x.min, datos.x.max)(px);
   const deY = (datos, py) => inversa(EJES().geometria(datos).Y, datos.y.min, datos.y.max)(py);
   const rectaBase = (min, max, filas, elementos, alt) => ({ min, max, paso: 1, decimales: 0, variable: 'x', color: 'o', filas, elementos, alt });
+  // Para «Así se resuelve»: « + 3», « − 2» o nada; una curva muestreada que se corta (null) fuera del plano; y un plano
+  // que se ajusta al caso, con un paso de rejilla que deja leer los números en 360 px.
+  const mas = n => (n ? ` ${n > 0 ? '+' : '−'} ${f(Math.abs(n))}` : '');
+  const muestra = (fn, x0, x1, y0, y1, n = 60) => Array.from({ length: n + 1 }, (_, i) => { const u = x0 + (x1 - x0) * i / n, w = fn(u); return Number.isFinite(w) && w >= y0 - 1e-9 && w <= y1 + 1e-9 ? [u, w] : null; });
+  const pasoDe = largo => (largo <= 10 ? 1 : largo <= 20 ? 2 : 5);
+  const plano = (x0, x1, y0, y1) => ({ x: { min: x0, max: x1, paso: pasoDe(x1 - x0), cada: 2, nombre: 'x', decimales: 0, color: 'o' },
+    y: { min: y0, max: y1, paso: pasoDe(y1 - y0), cada: 2, nombre: 'y', decimales: 0 } });
+  const CUMPLE = { '<': (u, v) => u < v, '≤': (u, v) => u <= v, '>': (u, v) => u > v, '≥': (u, v) => u >= v, '=': (u, v) => u === v };
 
   // ---------- Idea 1: valor absoluto es distancia ----------
   // Cambia: el centro a y el radio r (se arrastran el centro y el punto a + r) · Permanece: la recta · Progresa: los dos puntos a distancia r
@@ -78,6 +86,14 @@
     titulo: 'Valor absoluto es distancia',
     temas: ['Valor absoluto y distancia', 'Ecuaciones e inecuaciones con valor absoluto'],
     pieza: 'recta',
+    // Lee (fase 2): la distancia no tiene signo y |x − a| se lee como distancia al centro; no dice qué tramo da «≤».
+    lee: {
+      tarjetas: [
+        { titulo: 'Distancia sin signo', texto: 'De Juliaca a Puno hay unos 45 km por carretera, y de Puno a Juliaca, los mismos 45 km. Una distancia no tiene signo: nunca es negativa, vayas hacia donde vayas.' },
+        { titulo: 'Las barras', texto: ['|−5| = 5 y |5| = 5: las barras dan la distancia de un número al cero. Del mismo modo, ', { abs: [x, ' − ', a] }, ' es la distancia entre ', x, ' y el número ', a, ', al que llamamos centro.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['Mueve el centro ', a, ' y la distancia ', r, '. Cuenta cuántos puntos verdes aparecen y dónde quedan respecto al centro. Prueba también ', r, ' = 0.'] },
+      ],
+    },
     juega: {
       consigna: '|x − a| = r pide los x que están a distancia r del centro a. Mueve el centro y la distancia.',
       voz: 'Prueba también r = 0.',
@@ -130,6 +146,46 @@
       ecuacion: [{ llave: [{ abs: [x, ' − ', a] }], nota: 'distancia al centro', color: 'c-i' }, ' ≤ ', r, '   ·   ', '⇔  ', a, ' − ', r, ' ≤ ', x, ' ≤ ', a, ' + ', r],
       condicion: 'r ≥ 0. Si r < 0, «= r» y «≤ r» no tienen solución, y «≥ r» vale para todo x.',
     },
+    // Así se resuelve (fase 2): |x − c| rel r, como «Ahora tú», con otras semillas; el conjunto lo da conjuntoAbs().
+    resuelve: {
+      pieza: 'recta',
+      generar(s) {
+        const rr = azar(s + 900);
+        const c = rr.ent(-4, 4), rad = s % 7 === 6 ? -rr.ent(1, 3) : rr.ent(1, 5), rel = ['≤', '≥', '=', '<', '>'][s % 5];
+        const bien = conjuntoAbs(c, rad, rel), lo = c - rad, hi = c + rad, menor = rel === '≤' || rel === '<', bordes = rel === '≤' || rel === '≥';
+        const ancho = Math.max(rad, 1) + 3, R0 = c - ancho, R1 = c + ancho;
+        // Valor de prueba: un borde con «=», el centro con «<» o «≤», uno de afuera con «>» o «≥»; con r < 0, el centro.
+        const t = rad < 0 ? c : rel === '=' ? hi : menor ? c : hi + 1, d = Math.abs(t - c), ok = CUMPLE[rel](d, rad);
+        const solEls = rad < 0 ? (ok ? [{ tipo: 'intervalo', a: null, b: null, color: 'd', fila: 2, rotulo: 'todos cumplen' }] : [])
+          : rel === '=' ? [{ tipo: 'punto', x: lo, color: 'd', fila: 2 }, { tipo: 'punto', x: hi, color: 'd', fila: 2 }]
+            : menor ? [{ tipo: 'intervalo', a: lo, b: hi, ca: bordes, cb: bordes, color: 'd', fila: 2, rotulo: 'cumplen' }]
+              : [{ tipo: 'intervalo', a: null, b: lo, cb: bordes, color: 'd', fila: 2, rotulo: 'cumplen' }, { tipo: 'intervalo', a: hi, b: null, ca: bordes, color: 'd', fila: 2 }];
+        const centro = { tipo: 'punto', x: c, color: 'o', rotulo: 'centro', fila: 0 };
+        const tramos = rad > 0 ? [{ tipo: 'distancia', a: lo, b: c, color: 'i', rotulo: f(rad), fila: 1 }, { tipo: 'distancia', a: c, b: hi, color: 'i', rotulo: f(rad), fila: 1 }] : [];
+        const recta = (els, alt) => ({ datos: rectaBase(R0, R1, 3, els, alt), estado: {} });
+        const absT = { abs: [c === 0 ? f(t) : `${f(t)} ${c > 0 ? '−' : '+'} ${f(Math.abs(c))}`] };
+        const pide = rel === '=' ? 'exactamente a' : rel === '<' ? 'a menos de' : rel === '≤' ? 'a lo más a' : rel === '>' ? 'a más de' : 'por lo menos a';
+        return {
+          enunciado: ['Resuelve ', ...absX(c), ` ${rel} ${f(rad)}.`],
+          dibujo: recta([centro], `Recta con el centro ${f(c)} marcado`),
+          pasos: [
+            { tipo: 'pide', texto: rad < 0 ? ['Piden todos los ', x, ' que cumplen la desigualdad, escritos como conjunto.'] : ['Piden todos los ', x, ` que están ${pide} ${f(rad)} del centro, escritos como conjunto.`] },
+            { tipo: 'datos', texto: rad < 0 ? `El centro es ${f(c)}, y el lado derecho es ${f(rad)}: un número negativo.`
+              : `El centro es ${f(c)} y la distancia es ${f(rad)}.${c < 0 ? ` Ojo: «+ ${f(-c)}» quiere decir «− (${f(c)})».` : ''}`,
+              ecuacion: [...absX(c), ' = distancia de ', x, ` a ${f(c)}`] },
+            { tipo: 'regla', texto: 'Las barras miden cuánto se aleja x del centro, sin importar el lado. «=» da dos puntos; «menor», el tramo entre ellos; «mayor», lo de afuera.' },
+            rad < 0
+              ? { tipo: 'cuentas', texto: `Una distancia vale 0 o más. Así que nunca es ${menor || rel === '=' ? `${rel === '=' ? 'igual a' : 'menor que'} ${f(rad)}: no hay solución` : `menor que ${f(rad)}: todos los x cumplen`}.`,
+                ecuacion: [...absX(c), ` ≥ 0 > ${f(rad)}`], dibujo: recta([centro, ...solEls], `Centro ${f(c)}; con r negativo, ${bien}`) }
+              : { tipo: 'cuentas', texto: `A distancia ${f(rad)} del centro hay dos puntos. ${rel === '=' ? 'Son la respuesta.' : `Pide ${menor ? 'el tramo entre ellos' : 'lo de afuera'}, ${bordes ? 'con' : 'sin'} los bordes.`}`,
+                ecuacion: [`${f(c)} − ${f(rad)} = ${f(lo)}   y   ${f(c)} + ${f(rad)} = ${f(hi)}`], dibujo: recta([centro, ...tramos, ...solEls], `Centro ${f(c)} y distancia ${f(rad)}: ${bien}`) },
+            { tipo: 'sentido', texto: ['Compruebo con ', x, ` = ${f(t)}: está a ${f(d)} del centro, y «${f(d)} ${rel} ${f(rad)}» es ${ok ? 'cierto' : 'falso'}. ${ok ? `${rad < 0 ? 'Cualquier x cumple' : 'Está en la respuesta'}, como debe.` : 'Ni el centro cumple: no hay solución.'}`],
+              ecuacion: [absT, ` = ${f(d)}`] },
+          ],
+          respuesta: ['S = ', bien],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'recta',
       generar(s) {
@@ -181,6 +237,14 @@
     titulo: 'Cada candidato se comprueba',
     temas: ['Ecuaciones e inecuaciones con valor absoluto'],
     pieza: 'ejes',
+    // Lee (fase 2): por qué hay dos casos y cómo se lee la V; no dice qué hacer con un candidato (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos posibilidades', texto: '|A| = 5 dice que A está a distancia 5 del cero. Eso pasa con A = 5 y con A = −5. Por eso una ecuación con valor absoluto se parte en dos casos.' },
+        { titulo: 'La V', texto: 'La gráfica de y = |2x − 1| tiene forma de V: sus dos brazos rectos se juntan en el punto (1/2; 0), sobre el eje x.' },
+        { titulo: 'Qué mirar al jugar', texto: 'La recta y = x + c sube y baja cuando cambias c. Cada corte con la V resuelve |2x − 1| = x + c. Cuenta los cortes para distintos valores de c.' },
+      ],
+    },
     juega: {
       consigna: 'La V es y = |2x − 1|; la recta, y = x + c. Cada corte es una solución de |2x − 1| = x + c. Mueve c.',
       voz: 'Busca un c con dos cortes y otro sin ninguno.',
@@ -219,6 +283,54 @@
       ecuacion: [{ abs: ['A'] }, ' = B  ⇔  ', { llave: ['B ≥ 0'], nota: 'se comprueba', color: 'c-d' }, '   ·   ', 'A = B  o  A = −B'],
       condicion: 'si B depende de x, los casos dan candidatos, no soluciones: solo quedan los que hacen B ≥ 0.',
       voz: 'Yo había comprimido ese paso. Abrámoslo: B no puede ser negativo.',
+    },
+    // Así se resuelve: |p x + q| = m x + c, el mismo tipo y las mismas cuentas de «Ahora tú», con otras semillas; la
+    // figura muestra la V y la recta, con cada candidato sobre la recta.
+    resuelve: {
+      pieza: 'ejes',
+      generar(s) {
+        const rr = azar(s + 900);
+        for (let k = 0; k < 100; k++) {
+          const quiere = s % 3; // 0: uno es extraño · 1: los dos sirven · 2: ninguno sirve
+          const p = quiere === 0 ? 1 : rr.uno([2, 3]), m = quiere === 0 ? 2 : 1, q = rr.ent(-5, 5), c = rr.ent(-6, 4);
+          const z1 = Q(c - q, p - m), z2 = Q(-c - q, p + m);
+          const ok = z => m * val(z) + c >= -1e-12 && Math.abs(Math.abs(p * val(z) + q) - (m * val(z) + c)) < 1e-9;
+          const cand = [z1, z2], sol = cand.filter(ok);
+          if ((quiere === 0 && sol.length !== 1) || (quiere === 1 && sol.length !== 2) || (quiere === 2 && sol.length !== 0)) continue;
+          if (fr(z1) === fr(z2)) continue;
+          const A = [p === 1 ? '' : f(p), x, mas(q)], B = [m === 1 ? '' : f(m), x, mas(c)];
+          const At = `${p === 1 ? '' : f(p)}x${mas(q)}`, Bt = `${m === 1 ? '' : f(m)}x${mas(c)}`;
+          const lado = z => fr(Q(m * z.p + c * z.q, z.q));
+          // Plano que encierra los dos candidatos y el vértice de la V.
+          const xs = [val(z1), val(z2), -q / p], ys = cand.map(z => m * val(z) + c);
+          let x0 = Math.floor(Math.min(...xs)) - 2, x1 = Math.ceil(Math.max(...xs)) + 2;
+          if (x1 - x0 < 8) { const e = Math.ceil((8 - (x1 - x0)) / 2); x0 -= e; x1 += e; }
+          const y0 = Math.min(-2, Math.floor(Math.min(...ys)) - 2), y1 = Math.max(4, Math.ceil(Math.max(...ys.map(Math.abs))) + 2);
+          const vpts = muestra(u => Math.abs(p * u + q), x0, x1, y0, y1), lpts = muestra(u => m * u + c, x0, x1, y0, y1);
+          const pv = vpts.find(Boolean), pl = lpts.slice().reverse().find(Boolean);
+          const figura = marcas => ({ datos: Object.assign(plano(x0, x1, y0, y1), {
+            curvas: [{ puntos: vpts, color: 'i', rotulo: `y = |${At}|`, en: [pv[0] + 0.2, pv[1]] }, { puntos: lpts, color: 'o', rotulo: `y = ${Bt}`, en: [pl[0] - 0.2, pl[1]] }],
+            puntos: marcas === 'candidatos' ? cand.map(z => ({ x: val(z), y: m * val(z) + c, color: 'o', rotulo: fr(z) }))
+              : marcas === 'prueba' ? cand.map(z => ({ x: val(z), y: m * val(z) + c, color: ok(z) ? 'd' : 'h', abierto: !ok(z), rotulo: `${fr(z)} ${ok(z) ? '✓' : '✗'}` })) : [],
+            alt: `La V y = |${At}| y la recta y = ${Bt}${marcas ? `; candidatos ${fr(z1)} y ${fr(z2)}, ${sol.length === 2 ? 'los dos sirven' : sol.length ? `solo sirve ${fr(sol[0])}` : 'ninguno sirve'}` : ''}`,
+          }), estado: {} });
+          const cierre = sol.length === 2 ? 'Los dos sirven.' : sol.length ? `Solo sirve ${fr(sol[0])}: el otro da negativo.` : 'Ninguno sirve: los dos dan negativo.';
+          return {
+            enunciado: ['Resuelve ', { abs: A }, ' = ', ...B, '.'],
+            dibujo: figura(null),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden los ', x, ' que cumplen la igualdad. Cada caso dará un candidato, y cada candidato se prueba.'] },
+              { tipo: 'datos', texto: ['Dentro de las barras está ', ...A, '. El lado derecho, ', ...B, ', depende de ', x, ': puede salir negativo.'] },
+              { tipo: 'regla', texto: 'Lo de adentro es igual al lado derecho o a su opuesto. Resuelvo los dos casos y me quedo con los candidatos que hacen el lado derecho 0 o más.' },
+              { tipo: 'cuentas', texto: 'Resuelvo cada caso como una ecuación lineal.',
+                ecuacion: [...A, ' = ', ...B, '  ⇒  ', x, ` = ${fr(z1)}`, '   y   ', ...A, ' = −(', ...B, ')  ⇒  ', x, ` = ${fr(z2)}`], dibujo: figura('candidatos') },
+              { tipo: 'sentido', texto: ['Pruebo el lado derecho: con ', x, ` = ${fr(z1)} vale ${lado(z1)}, y con `, x, ` = ${fr(z2)}, ${lado(z2)}. ${cierre}`], dibujo: figura('prueba') },
+            ],
+            respuesta: ['S = ', llaves(sol)],
+          };
+        }
+        throw new Error('sin caso');
+      },
     },
     ahoraTu: {
       pieza: 'ejes',
@@ -278,6 +390,14 @@
     titulo: 'Cuadrar trae candidatos de más',
     temas: ['Ecuaciones con radicales'],
     pieza: 'ejes',
+    // Lee (fase 2): qué es una ecuación irracional y qué es una solución; no dice qué pasa al elevar al cuadrado.
+    lee: {
+      tarjetas: [
+        { titulo: 'Una raíz en la ecuación', texto: 'En √(x + 2) = x la letra está dentro de una raíz cuadrada: es una ecuación irracional. Para quitar la raíz, lo usual es elevar al cuadrado los dos lados.' },
+        { titulo: 'Qué es una solución', texto: 'Un número es solución si, al reemplazarlo, el lado izquierdo y el derecho dan lo mismo. Al elevar al cuadrado, los dos lados cambian a la vez.' },
+        { titulo: 'Qué mirar al jugar', texto: 'El punto turquesa marca cuánto vale √(x + 2), y el naranja, cuánto vale x. Para cada x, compara los dos lados y después sus cuadrados.' },
+      ],
+    },
     juega: {
       consigna: 'Para √(x + 2) = x, prueba valores de x. Compara los dos lados y luego sus cuadrados.',
       voz: 'Busca un x con cuadrados iguales y lados distintos.',
@@ -315,6 +435,59 @@
       texto: 'En una ecuación irracional, elevar al cuadrado no es reversible: junta √u = v con −√u = v. Cada candidato se comprueba en la ecuación original.',
       ecuacion: [{ raiz: ['u'] }, ' = v  ⇔  u = ', { sup: ['v', '2'] }, '   ·   ', 'y  ', { llave: ['v ≥ 0'], nota: 'descarta extraños', color: 'c-h' }],
       condicion: 'u ≥ 0 y v ≥ 0 en la original. Además √(x²) = |x|, no x.',
+    },
+    // Así se resuelve: √(x + K) = x + m, el mismo tipo y las mismas cuentas de «Ahora tú», con otras semillas. La figura
+    // muestra la curva, la recta y, al comprobar, la rama −√(x + K) donde cae el candidato extraño.
+    resuelve: {
+      pieza: 'ejes',
+      generar(s) {
+        const rr = azar(s + 900);
+        for (let k = 0; k < 200; k++) {
+          const m = rr.ent(-3, 3), r1 = rr.ent(-5, 6), r2 = 1 - 2 * m - r1, K = m * m - r1 * r2;
+          if (r1 === r2 || K < -6 || K > 12) continue;
+          const ok = z => z + K >= 0 && z + m >= 0 && Math.abs(Math.sqrt(z + K) - (z + m)) < 1e-9;
+          const cand = [r1, r2].sort((u, v) => u - v), sol = cand.filter(ok);
+          const quiere = s % 3; // 0 y 2: uno es extraño · 1: los dos sirven o ninguno
+          if ((quiere !== 1 && sol.length !== 1) || (quiere === 1 && sol.length === 1)) continue;
+          const L = l => (l.length ? `{${l.map(z => f(z)).join('; ')}}` : '∅');
+          const b2 = 2 * m - 1, c2 = m * m - K;   // x + K = (x + m)²  ⇒  x² + b2 x + c2 = 0
+          const cuad = [{ sup: [x, '2'] }, b2 ? ` ${b2 > 0 ? '+' : '−'} ${Math.abs(b2) === 1 ? '' : f(Math.abs(b2))}` : '', b2 ? x : '', mas(c2), ' = 0'];
+          const der = m ? ['(', x, mas(m), { sup: [')', '2'] }] : [{ sup: [x, '2'] }];
+          // Plano que encierra el inicio de la raíz y los dos candidatos (sobre la recta y = x + m).
+          let x0 = Math.min(-K, ...cand) - 1, x1 = Math.max(...cand, -K + 4) + 2;
+          if (x1 - x0 < 8) x1 = x0 + 8;
+          const ys = cand.map(z => z + m);
+          const y0 = Math.min(-2, Math.min(...ys) - 1), y1 = Math.max(3, Math.max(...ys.map(Math.abs)) + 1, Math.ceil(Math.sqrt(x1 + K)));
+          const pos = muestra(u => Math.sqrt(u + K), x0, x1, y0, y1), neg = muestra(u => -Math.sqrt(u + K), x0, x1, y0, y1), lin = muestra(u => u + m, x0, x1, y0, y1);
+          const uR = Math.max(-K, x0) + 0.12 * (x1 - Math.max(-K, x0)), yL = y0 + 0.65 * (y1 - y0);   // rótulos lejos de los candidatos
+          const raizTxt = `√(x${mas(K)})`, rectaTxt = `y = x${mas(m)}`;
+          const figura = marcas => ({ datos: Object.assign(plano(x0, x1, y0, y1), {
+            curvas: [{ puntos: pos, color: 'i', rotulo: `y = ${raizTxt}`, en: [uR, Math.sqrt(uR + K) + 0.1 * (y1 - y0)] }, { puntos: lin, color: 'o', rotulo: rectaTxt, en: [yL - m + 0.06 * (x1 - x0), yL] },
+              ...(marcas === 'prueba' ? [{ puntos: neg, color: 'h', discontinua: true, rotulo: `y = −${raizTxt}`, en: [x0 + 0.3, y0 + 0.6] }] : [])],
+            puntos: marcas === 'candidatos' ? cand.map(z => ({ x: z, y: z + m, color: 'o', rotulo: f(z) }))
+              : marcas === 'prueba' ? cand.map(z => ({ x: z, y: z + m, color: ok(z) ? 'd' : 'h', abierto: !ok(z), rotulo: `${f(z)} ${ok(z) ? '✓' : '✗'}` })) : [],
+            alt: `La curva y = ${raizTxt} y la recta ${rectaTxt}${marcas ? `; candidatos ${f(cand[0])} y ${f(cand[1])}, ${sol.length === 2 ? 'los dos cumplen' : sol.length ? `solo cumple ${f(sol[0])}` : 'ninguno cumple'}` : ''}`,
+          }), estado: {} });
+          const prueba = z => [{ raiz: [`${f(z)}${mas(K)}`] }, ok(z) ? ` = ${f(Math.sqrt(z + K))}, igual al lado derecho ✓` : ` = ${f(Math.sqrt(z + K))}, pero el lado derecho es ${f(z + m)} ✗`];
+          const cierre = sol.length === 2 ? 'Los dos cumplen.' : sol.length ? `Solo cumple ${f(sol[0])}; el otro da un lado derecho negativo.` : 'Ninguno cumple: los dos dan un lado derecho negativo.';
+          return {
+            enunciado: ['Resuelve ', { raiz: [x, mas(K)] }, ' = ', x, mas(m), '.'],
+            dibujo: figura(null),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden los ', x, ' que cumplen la ecuación. Lo que salga al elevar al cuadrado serán solo candidatos.'] },
+              { tipo: 'datos', texto: ['La raíz pide ', x, `${mas(K)} ≥ 0. Y como una raíz no es negativa, el lado derecho también: `, x, `${mas(m)} ≥ 0.`],
+                ecuacion: [x, ` ≥ ${f(-K)}`, '   y   ', x, ` ≥ ${f(-m)}`] },
+              { tipo: 'regla', texto: 'Elevo al cuadrado para quitar la raíz. Ese paso no se deshace: también resuelve la ecuación con −√. Por eso pruebo cada candidato en la original.' },
+              { tipo: 'cuentas', texto: 'Elevo los dos lados al cuadrado, paso todo a un lado y factorizo.',
+                ecuacion: [x, mas(K), ' = ', ...der, '  ⇒  ', ...cuad, '  ⇒  ', x, ` = ${f(cand[0])} o `, x, ` = ${f(cand[1])}`], dibujo: figura('candidatos') },
+              { tipo: 'sentido', texto: `Pruebo cada candidato en la original: la raíz y el lado derecho tienen que dar lo mismo. ${cierre}`,
+                ecuacion: [...prueba(cand[0]), '   ·   ', ...prueba(cand[1])], dibujo: figura('prueba') },
+            ],
+            respuesta: ['S = ', L(sol)],
+          };
+        }
+        throw new Error('sin caso');
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -368,6 +541,15 @@
     titulo: 'Primero el dominio, después cuadrar',
     temas: ['Inecuaciones con radicales'],
     pieza: 'ejes',
+    // Lee (fase 2): el radicando no puede ser negativo y la desigualdad se lee como «curva bajo la recta»; no dice
+    // qué pasa con un lado derecho negativo (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Raíces que no existen', texto: 'Ningún número real multiplicado por sí mismo da un negativo. Por eso √(−4) no es un número real: lo que va dentro de la raíz, el radicando, no puede ser negativo.' },
+        { titulo: 'Comparar con un nivel', texto: 'Resolver √(x − 1) < 2 es buscar los x donde la curva y = √(x − 1) queda por debajo de la recta horizontal y = 2.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Sube y baja la recta roja punteada y = k, también por debajo del eje x. Mira dónde empieza y dónde termina el tramo verde.' },
+      ],
+    },
     juega: {
       consigna: 'Resuelve √(x − 1) < k mirando dónde la curva queda bajo la recta y = k. En verde, los x que cumplen.',
       voz: 'Prueba un k negativo también.',
@@ -403,6 +585,49 @@
       texto: 'Primero el dominio: lo de adentro de la raíz es 0 o más. Si los dos lados son no negativos, cuadrar conserva la desigualdad.',
       ecuacion: [{ raiz: ['u'] }, ' < k  ⇔  ', { llave: ['0 ≤ u'], nota: 'dominio', color: 'c-o' }, ' < ', { sup: ['k', '2'] }],
       condicion: 'k ≥ 0. Con lado derecho negativo no se cuadra: √u < negativo no tiene solución; √u ≥ negativo vale en todo el dominio.',
+    },
+    // Así se resuelve: √(x + p) rel k, como «Ahora tú» (k negativo en una de cada cuatro semillas), con otras semillas.
+    resuelve: {
+      pieza: 'ejes',
+      generar(s) {
+        const rr = azar(s + 900);
+        const p = rr.ent(-3, 3), k = s % 4 === 3 ? -rr.ent(1, 2) : rr.ent(1, 4), rel = ['<', '≥', '≤', '>'][s % 4];
+        const ini = -p, fin = k * k - p, menor = rel === '<' || rel === '≤';
+        let bien, tramo;   // tramo: [desde, hasta] del conjunto solución sobre el eje x (null = sin solución; Infinity = sin fin)
+        if (k < 0) { bien = menor ? '∅' : iv(ini, true, null, false); tramo = menor ? null : [ini, Infinity]; }
+        else if (menor) { bien = iv(ini, true, fin, rel === '≤'); tramo = [ini, fin]; }
+        else { bien = iv(fin, rel === '≥', null, false); tramo = [fin, Infinity]; }
+        const ra = { raiz: [x, mas(p)] };
+        // Valor de prueba: el inicio del dominio con «<» o «≤» (y con k < 0), y un x con raíz k + 1 con «>» o «≥».
+        const t = k < 0 || menor ? ini : (k + 1) * (k + 1) - p, raizT = Math.sqrt(t + p), okT = CUMPLE[rel](raizT, k);
+        const x0 = ini - 1, x1 = Math.max(fin, ini) + 3, y0 = Math.min(-1, k) - 1, y1 = Math.ceil(Math.max(k, Math.sqrt(x1 + p))) + 1;
+        const curva = muestra(u => Math.sqrt(u + p), x0, x1, y0, y1);
+        const figura = conSol => ({ datos: Object.assign(plano(x0, x1, y0, y1), {
+          curvas: [{ puntos: curva, color: 'i', rotulo: `y = √(x${mas(p)})`, en: [x1 - 0.2, Math.sqrt(x1 + p) + 0.5] }, { puntos: [[x0, k], [x1, k]], color: 'h', discontinua: true, rotulo: `y = ${f(k)}`, en: [x0 + 0.2, k + 0.4] },
+            ...(conSol && tramo ? [{ puntos: [[tramo[0], 0], [Math.min(tramo[1], x1), 0]], color: 'd' }] : [])],
+          puntos: [{ x: ini, y: 0, color: 'd', rotulo: 'empieza el dominio' }],
+          alt: `y = √(x${mas(p)}) frente a y = ${f(k)}${conSol ? `: solución ${bien}` : ''}`,
+        }), estado: {} });
+        return {
+          enunciado: ['¿Qué valores de ', x, ' cumplen ', ra, ` ${rel} ${f(k)}?`],
+          dibujo: figura(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden todos los ', x, ` que hacen la raíz ${rel} ${f(k)}, escritos como intervalo${menor && k < 0 ? ' o conjunto vacío' : ''}.`] },
+            { tipo: 'datos', texto: ['La raíz existe si lo de adentro es 0 o más: ', x, `${mas(p)} ≥ 0. El lado derecho, ${f(k)}, es ${k < 0 ? 'negativo' : 'positivo'}.`],
+              ecuacion: ['dominio: ', x, ` ≥ ${f(ini)}`] },
+            { tipo: 'regla', texto: k < 0 ? 'Primero el dominio. Una raíz vale 0 o más: con un negativo a la derecha no se eleva al cuadrado, se compara directo.'
+              : 'Primero el dominio. Si los dos lados son 0 o más, elevar al cuadrado no cambia el sentido de la desigualdad.' },
+            k < 0
+              ? { tipo: 'cuentas', texto: menor ? `La raíz nunca baja de 0, así que nunca es ${rel} ${f(k)}: no hay solución.` : `La raíz vale 0 o más, y eso ya es mayor que ${f(k)}: sirve todo el dominio.`,
+                ecuacion: [ra, ` ≥ 0 > ${f(k)}`], dibujo: figura(true) }
+              : { tipo: 'cuentas', texto: 'Elevo los dos lados al cuadrado y despejo. Después junto lo que sale con el dominio.',
+                ecuacion: [x, `${mas(p)} ${rel} ${f(k * k)}  ⇒  `, x, ` ${rel} ${f(fin)}`, '   y   ', x, ` ≥ ${f(ini)}`], dibujo: figura(true) },
+            { tipo: 'sentido', texto: ['Compruebo con ', x, ` = ${f(t)}: la raíz vale ${f(raizT)}, y «${f(raizT)} ${rel} ${f(k)}» es ${okT ? 'cierto' : 'falso'}. ${okT ? 'Ese valor está en la respuesta, como debe.' : 'Ni el inicio del dominio cumple.'}`],
+              ecuacion: [{ raiz: [`${f(t)}${mas(p)}`] }, ` = ${f(raizT)}`] },
+          ],
+          respuesta: ['S = ', bien],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
