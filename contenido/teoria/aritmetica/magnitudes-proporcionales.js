@@ -76,11 +76,31 @@
     puntos: [{ x: 12, y: 15, color: 'd', rotulo: '15 días', guias: true, desde: corte.a1 || 0 }, { x: 20, y: 9, color: 'h', rotulo: '9 días', guias: true, desde: corte.a2 === undefined ? 0 : corte.a2 }],
     compacto: true,
   });
+  // Los casos de «Ahora tú» y «Así se resuelve» (los mismos textos y cuentas). Credibilidad (ronda 6): la «combi» a
+  // 2–12 km/h por hasta 180 horas pasó a una tortuga en metros por minuto; el «auto» de 2 km por litro, a un camión.
+  const CASOS_DI = [
+    { tipo: 'inversa', a: 'obreros', b: 'días', t: (p, q) => `${p} obreros hacen una obra en ${q} días. Al mismo ritmo, ¿en cuántos días la hacen `,
+      regla: 'Con más obreros la obra se termina antes: obreros y días son inversamente proporcionales. Su producto, la obra, no cambia.' },
+    { tipo: 'inversa', a: 'm por minuto', b: 'minutos', t: (p, q) => `Una tortuga avanza ${p} m por minuto y tarda ${q} minutos. Por el mismo camino, ¿cuántos minutos tarda a `,
+      regla: 'Más rápido se llega antes: rapidez y tiempo son inversamente proporcionales. Su producto, el largo del camino, no cambia.' },
+    { tipo: 'directa', a: 'kg', b: 'soles', t: (p, q) => `${p} kg de papa cuestan ${q} soles. Al mismo precio, ¿cuántos soles cuestan `,
+      regla: 'Al mismo precio, el doble de kilos cuesta el doble: kilos y soles son directamente proporcionales. Su cociente, el precio del kilo, no cambia.' },
+    { tipo: 'directa', a: 'litros', b: 'km', t: (p, q) => `Con ${p} litros un camión recorre ${q} km. Al mismo rendimiento, ¿cuántos km recorre con `,
+      regla: 'Con el mismo rendimiento, el doble de litros alcanza para el doble de km: son directamente proporcionales. Su cociente no cambia.' },
+  ];
   const directaInversa = {
     id: 'directa-inversa',
     titulo: 'Cociente fijo o producto fijo',
     temas: ['Magnitudes directa e inversamente proporcionales', 'Gráficas de proporcionalidad'],
     pieza: 'ejes',
+    // Lee: qué es una magnitud y los dos nombres, sin decir de qué tipo son obreros y días (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cosas que se miden', texto: 'Los kilos de papa que compras en el mercado, los soles que pagas, las horas de viaje de Juliaca a Puno: todo eso se mide y puede cambiar. Cada una es una magnitud.' },
+        { titulo: 'Dos maneras de ir juntas', texto: 'Si al duplicar una magnitud la otra también se duplica, son directamente proporcionales. Si la otra queda en la mitad, son inversamente proporcionales. Hay pares que no son ni lo uno ni lo otro.' },
+        { titulo: 'Qué mirar', texto: ['Elige la relación y mueve ', x, '. Sigue el punto turquesa por su gráfica. En la directa, fíjate en la forma de la gráfica; en la inversa, en el área del rectángulo verde.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige el tipo de relación y mueve x. En la directa mira el cociente; en la inversa, el rectángulo verde.',
       voz: 'Compara la forma de las dos gráficas.',
@@ -124,16 +144,35 @@
       ecuacion: ['directa: ', { llave: [{ frac: [y, x] }], nota: 'cociente' }, ' = ', k, '   ·   ', 'inversa: ', { llave: [x, ' · ', y], nota: 'producto' }, ' = ', k],
       condicion: 'crecer juntas no basta: y = 2x + 3 crece y no es proporcional. En la inversa, x no puede ser 0.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), c = CASOS_DI[s % 4];
+        const usa = [2, 3, 4, 5, 6, 8, 10, 12];
+        const p1 = r.de(usa), p2 = r.de(usa.filter(v => v !== p1));
+        const P = r.de([120, 240, 360]), u = r.ent(2, 9);         // las mismas cuentas de «Ahora tú»
+        const dir = c.tipo === 'directa';
+        const q1v = dir ? u * p1 : P / p1, res = dir ? u * p2 : P / p2;
+        const sube = p2 > p1;
+        return {
+          enunciado: c.t(f(p1), f(q1v)) + `${f(p2)} ${c.a}?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden los ${c.b} que corresponden a ${f(p2)} ${c.a}.` },
+            { tipo: 'datos', texto: `Primer caso: ${f(p1)} ${c.a} con ${f(q1v)} ${c.b}. Segundo caso: ${f(p2)} ${c.a}, y no sé los ${c.b}.` },
+            { tipo: 'regla', texto: c.regla, ecuacion: dir ? [{ frac: [y, x] }, ' = ', k] : [x, ' · ', y, ' = ', k] },
+            { tipo: 'cuentas', texto: dir ? ['Saco ', k, ' del primer caso y lo multiplico por lo nuevo.'] : ['Saco ', k, ' del primer caso y lo divido entre lo nuevo.'],
+              ecuacion: dir ? [k, ` = ${f(q1v)} ÷ ${f(p1)} = ${f(u)}   →   `, y, ` = ${f(u)} · ${f(p2)} = ${f(res)}`]
+                : [k, ` = ${f(p1)} · ${f(q1v)} = ${f(P)}   →   `, y, ` = ${f(P)} ÷ ${f(p2)} = ${f(res)}`] },
+            { tipo: 'sentido', texto: dir ? `Comprueba: ${f(res)} ÷ ${f(p2)} = ${f(u)}, el mismo cociente. Las dos magnitudes ${sube ? 'subieron' : 'bajaron'} juntas.`
+              : `Comprueba: ${f(p2)} · ${f(res)} = ${f(P)}, el mismo producto. Una magnitud ${sube ? 'subió' : 'bajó'} y la otra ${sube ? 'bajó' : 'subió'}.` },
+          ],
+          respuesta: `${f(res)} ${c.b}`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
-        const casos = [
-          { tipo: 'inversa', a: 'obreros', b: 'días', t: (p, q) => `${p} obreros hacen una obra en ${q} días. Al mismo ritmo, ¿en cuántos días la hacen ` },
-          { tipo: 'inversa', a: 'km/h', b: 'horas', t: (p, q) => `Una combi va a ${p} km/h y tarda ${q} horas. Por la misma ruta, ¿cuántas horas tarda a ` },
-          { tipo: 'directa', a: 'kg', b: 'soles', t: (p, q) => `${p} kg de papa cuestan ${q} soles. Al mismo precio, ¿cuántos soles cuestan ` },
-          { tipo: 'directa', a: 'litros', b: 'km', t: (p, q) => `Con ${p} litros un auto recorre ${q} km. Al mismo rendimiento, ¿cuántos km recorre con ` },
-        ];
-        const c = casos[s % 4];
+        const c = CASOS_DI[s % 4];
         const usa = [2, 3, 4, 5, 6, 8, 10, 12];
         const p1 = r.de(usa), p2 = r.de(usa.filter(v => v !== p1));
         const P = r.de([120, 240, 360]), u = r.ent(2, 9);         // inversa: x · y = P; directa: y = u · x
@@ -179,6 +218,15 @@
     titulo: 'La obra se reparte en días',
     temas: ['Regla de tres simple y compuesta'],
     pieza: 'arit-tiras',
+    // Lee: la obra como cantidad fija y su unidad, sin decir cómo entran las horas en los días (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una obra que no cambia', texto: 'Pintar las aulas de un colegio o levantar un muro: en estos problemas la obra es siempre la misma, aunque cambien los obreros o las horas que trabajan cada día.' },
+        { titulo: 'Cómo se mide el trabajo', texto: 'Si 3 obreros trabajan 4 horas, hicieron 12 horas-obrero de trabajo. Con esa unidad se mide toda la obra, como los metros miden un largo.',
+          ecuacion: ['3 obreros · 4 h = 12 horas-obrero'] },
+        { titulo: 'Qué mirar', texto: 'La tira verde de arriba es la obra entera. La de abajo está cortada en pedazos: cada pedazo es lo que se avanza en un día. Cambia obreros y horas, y cuenta los pedazos.' },
+      ],
+    },
     juega: {
       consigna: 'Una obra necesita 120 horas-obrero. Elige cuántos obreros y cuántas horas al día. Mira en cuántos días se corta la obra.',
       voz: 'Cada pedazo es lo que se avanza en un día.',
@@ -220,6 +268,28 @@
       texto: 'En la regla de tres compuesta, si la obra es la misma, obreros por horas diarias por días da lo mismo. Cada magnitud que trabaja es inversa a los días.',
       ecuacion: [{ llave: [{ sub: ['o', '1'] }, { sub: ['h', '1'] }, { sub: ['d', '1'] }], nota: 'la obra' }, ' = ', { llave: [{ sub: ['o', '2'] }, { sub: ['h', '2'] }, { sub: ['d', '2'] }], nota: 'la misma obra' }],
       condicion: 'todos rinden igual y la obra no cambia. Si la obra se duplica, los días se duplican: obra y días son directas.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), o1 = r.de([4, 6, 8, 10, 12]), h1 = r.de([4, 6, 8]), d1 = r.de([6, 9, 10, 12, 15]);
+        const o2 = r.de([3, 4, 5, 6, 8, 12, 15, 16, 20].filter(v => v !== o1)), h2 = r.de([4, 5, 6, 8, 10].filter(v => v !== h1));
+        const W = o1 * h1 * d1, D = o2 * h2, res = W / D;
+        return {
+          enunciado: `${o1} obreros, a ${h1} horas diarias, hacen una obra en ${d1} días. ¿En cuántos días la harían ${o2} obreros a ${h2} horas diarias?`,
+          dibujo: { datos: obraDatos(W, D, { paso: 9, rotObra: `obra: ${o1} · ${h1} · ${d1}`, rotDias: `un día: ${o2} · ${h2}` }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden los días que tardan ${o2} obreros si trabajan ${h2} horas cada día.` },
+            { tipo: 'datos', texto: `Antes: ${o1} obreros, ${h1} horas al día, ${d1} días. Ahora: ${o2} obreros, ${h2} horas al día. La obra es la misma.` },
+            { tipo: 'regla', texto: 'La obra se mide en horas-obrero: obreros por horas de cada día por días. Como es la misma obra, ese producto da igual en los dos casos.',
+              ecuacion: [{ sub: ['o', '1'] }, { sub: ['h', '1'] }, { sub: ['d', '1'] }, ' = ', { sub: ['o', '2'] }, { sub: ['h', '2'] }, { sub: ['d', '2'] }] },
+            { tipo: 'cuentas', texto: 'Mido la obra, mido lo que se avanza en un día nuevo y divido.',
+              ecuacion: [`${o1} · ${h1} · ${d1} = ${f(W)}   ·   ${o2} · ${h2} = ${f(D)}   →   d = ${f(W)} ÷ ${f(D)} = ${f(res)}`],
+              dibujo: { datos: obraDatos(W, D, { rotObra: `obra: ${f(W)} horas-obrero`, rotDias: `un día = ${f(D)} horas-obrero` }), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: ${o2} · ${h2} · ${f(res)} = ${f(D * res)} horas-obrero, la misma obra. ${D > o1 * h1 ? 'Se avanza más por día: menos días.' : 'Se avanza menos por día: más días.'}` },
+          ],
+          respuesta: `${f(res)} días`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -272,9 +342,17 @@
     titulo: 'Repartir según pesos',
     temas: ['Reparto proporcional'],
     pieza: 'arit-tiras',
+    // Lee: qué es un peso y los dos nombres; no dice a quién favorece el inverso (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'No siempre en partes iguales', texto: 'Tres primos ayudan en la cosecha de papa y reciben S/ 90. No lo parten en tres partes iguales: lo reparten según las horas que trabajó cada uno. Esas horas son los pesos del reparto.' },
+        { titulo: 'Directo o inverso', texto: 'En un reparto directo, cada peso dice cuántas partes iguales del total recibe cada uno. En un reparto inverso, la cuenta usa los pesos de otra manera. Descúbrela en el juego.' },
+        { titulo: 'Qué mirar', texto: 'La tira verde es el total de S/ 240. La de abajo está cortada en dos tramos, uno por peso. Deja los mismos pesos, cambia de directo a inverso y mira cómo se mueve el corte.' },
+      ],
+    },
     juega: {
       consigna: 'Reparte S/ 240 entre dos personas según sus pesos. Cambia los pesos y el modo: directo o inverso.',
-      voz: 'En el inverso, mira quién recibe la parte más grande.',
+      voz: 'En el inverso, mira qué peso se lleva el tramo más grande.',
       controles: [
         { id: 'modo', etiqueta: 'Reparto', opciones: [{ valor: 'directo', texto: 'Directo' }, { valor: 'inverso', texto: 'Inverso' }] },
         { id: 'p', etiqueta: 'Peso 1', color: 'c-o', min: 1, max: 5, paso: 1, inicio: 1, decimales: 0 },
@@ -314,6 +392,35 @@
       texto: 'En el reparto directo, a cada uno le toca el total por su peso entre la suma de pesos. El reparto inverso usa como pesos los inversos.',
       ecuacion: [{ sub: ['x', 'i'] }, ' = ', { llave: [T], nota: 'total', color: 'c-d' }, ' · ', { llave: [{ frac: [wi, ['Σ', 'w']] }], nota: 'su fracción' }, '   ·   ', 'inverso: ', wi, ' → ', { frac: ['1', wi] }],
       condicion: 'los pesos son positivos. Multiplicar todos los pesos por el mismo número no cambia el reparto.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), inverso = s % 2 === 1;
+        const pesos = r.de([[2, 3], [3, 4], [2, 3, 6], [1, 2, 3], [3, 6], [2, 5], [4, 6, 12]]);
+        const w = inverso ? pesos.map(p => 1 / p) : pesos, sw = w.reduce((a, b) => a + b, 0);
+        const mcm = pesos.reduce((m, v) => { const g = (p, q) => (q ? g(q, p % q) : p); return m * v / g(m, v); }, 1);
+        const enteros = inverso ? pesos.map(p => mcm / p) : pesos, S = enteros.reduce((a, b) => a + b, 0);
+        const T2 = r.de([10, 12, 20, 30, 50]) * S, parte = T2 * w[0] / sw, u = T2 / S;
+        const lista = xs => xs.join(', ').replace(/, ([^,]*)$/, ' y $1');
+        return {
+          enunciado: `Se reparten S/ ${f(T2)} en forma ${inverso ? 'inversamente' : 'directamente'} proporcional a ${lista(pesos)}. ¿Cuánto le toca a la parte del ${pesos[0]}?`,
+          dibujo: { datos: repartoDatos(T2, pesos, inverso, { sinMontos: true }), estado: { paso: 9 } },
+          pasos: [
+            { tipo: 'pide', texto: `Piden lo que le toca a la parte del ${pesos[0]}.` },
+            { tipo: 'datos', texto: `Total: ${sol(T2)}. Pesos: ${lista(pesos)}. El reparto es ${inverso ? 'inverso' : 'directo'}.`, ecuacion: [T, ` = ${sol(T2)}`] },
+            inverso
+              ? { tipo: 'regla', texto: `En el reparto inverso, los pesos que cuentan son los inversos. Para no repartir con fracciones, los multiplico todos por ${mcm}, su MCM.`,
+                ecuacion: [...pesos.flatMap((p, j) => [j ? ' : ' : '', { frac: ['1', String(p)] }]), `   →   · ${mcm}   →   ${enteros.join(' : ')}`] }
+              : { tipo: 'regla', texto: 'En el reparto directo, cada peso dice cuántas partes iguales del total recibe cada uno.',
+                ecuacion: [`${enteros.join(' : ')}   →   ${enteros.join(' + ')} = ${S} partes`] },
+            { tipo: 'cuentas', texto: `Son ${S} partes iguales. Divido el total entre ${S}, y la parte del ${pesos[0]} se lleva ${enteros[0]} de ellas.`,
+              ecuacion: [T, ` ÷ ${S} = ${f(u)}   →   ${enteros[0]} · ${f(u)} = ${sol(parte)}`],
+              dibujo: { datos: repartoDatos(T2, pesos, inverso), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: ${enteros.map(e => f(e * u)).join(' + ')} = ${f(T2)}. ${inverso ? 'Al peso menor le toca la parte mayor, como en todo reparto inverso.' : 'Al peso menor le toca la parte menor, como en todo reparto directo.'}` },
+          ],
+          respuesta: sol(parte),
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -362,6 +469,14 @@
     titulo: 'Capital por tiempo',
     temas: ['Regla de compañía'],
     pieza: 'arit-tiras',
+    // Lee: socios, capital y ganancia; no dice cómo se combinan dinero y meses (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un negocio entre dos', texto: 'Dos amigas abren una juguería en Juliaca. Cada una pone dinero, su capital, y lo deja en el negocio cierto número de meses. Al cerrar las cuentas, reparten la ganancia.' },
+        { titulo: '¿Qué es justo?', texto: '¿Le toca más a quien puso más dinero o a quien lo dejó más tiempo? Para repartir la ganancia hay que decidir qué cuenta. El reparto entre socios se llama regla de compañía.' },
+        { titulo: 'Qué mirar', texto: 'Cada tira es un socio: su rótulo dice su capital y sus meses, y su tramo de color es lo que recibe. B queda fijo. Cambia el capital y los meses de A, y compara los dos tramos.' },
+      ],
+    },
     juega: {
       consigna: 'Dos socios reparten S/ 6000 de ganancia. B puso 3 mil soles durante 12 meses. Cambia el capital y los meses de A.',
       voz: 'Busca un caso donde A pone más y recibe menos.',
@@ -403,6 +518,31 @@
       texto: 'En la regla de compañía la ganancia se reparte en forma directa al producto de capital por tiempo de cada socio.',
       ecuacion: [{ sub: ['G', 'A'] }, ' = G · ', { llave: [{ frac: [[{ sub: ['C', 'A'] }, ' · ', { sub: ['t', 'A'] }], 'Σ C · t'] }], nota: 'peso de A' }],
       condicion: 'vale si así lo acordaron y los tiempos se miden en la misma unidad. Si el tiempo es igual, basta el capital.',
+    },
+    resuelve: {
+      generar(s) {
+        let r, ca, ta, cb, tb;
+        for (let t = s + 900; ; t += 501) {      // como «Ahora tú»: pesos distintos
+          r = azar(t); ca = r.ent(2, 8); ta = r.de([3, 4, 6, 8, 12]); cb = r.ent(2, 8); tb = r.de([3, 4, 6, 8, 12]);
+          if (ca * ta !== cb * tb) break;
+        }
+        const wa = ca * ta, wb = cb * tb, G = (wa + wb) * r.de([50, 100, 150, 200]), res = G * wa / (wa + wb);
+        return {
+          enunciado: `A puso S/ ${f(ca * 1000)} durante ${ta} meses y B, S/ ${f(cb * 1000)} durante ${tb} meses. Ganaron S/ ${f(G)}. ¿Cuánto le toca a A?`,
+          dibujo: { datos: compDatos(ca, ta, cb, tb, G, { sin: true }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden la parte de A en una ganancia de ${sol(G)}.` },
+            { tipo: 'datos', texto: `A: S/ ${f(ca * 1000)} durante ${ta} meses. B: S/ ${f(cb * 1000)} durante ${tb} meses.` },
+            { tipo: 'regla', texto: 'Cuentan el dinero y el tiempo a la vez: el peso de cada socio es su capital por sus meses. La ganancia se reparte en forma directa a esos pesos.',
+              ecuacion: [{ sub: ['G', 'A'] }, ' = G · ', { frac: [[{ sub: ['C', 'A'] }, ' · ', { sub: ['t', 'A'] }], 'Σ C · t'] }] },
+            { tipo: 'cuentas', texto: `Pesos, con el capital en miles: A, ${ca} · ${ta} = ${wa}; B, ${cb} · ${tb} = ${wb}. A se lleva ${wa} de cada ${wa + wb} partes.`,
+              ecuacion: [`${f(G)} · `, { frac: [String(wa), `${wa} + ${wb}`] }, ` = ${sol(res)}`],
+              dibujo: { datos: compDatos(ca, ta, cb, tb, G), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: B recibe ${sol(G - res)}, y ${f(res)} + ${f(G - res)} = ${f(G)}. ${wa > wb ? 'A tiene el peso mayor y recibe más.' : 'A tiene el peso menor y recibe menos.'}` },
+          ],
+          respuesta: `A recibe ${sol(res)}`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -486,6 +626,8 @@
       { termino: 'reparto inverso', formas: ['reparto inverso', 'repartos inversos'],
         def: 'Repartir un total usando como pesos los inversos 1/2, 1/3…: el número mayor recibe menos.',
         ejemplo: 'S/ 240 en forma inversa a 2 y 3: S/ 144 y S/ 96.', ver: ['peso', 'reparto directo'] },
+      { termino: 'inversos', formas: ['inversos'], def: 'De un número distinto de 0: 1 dividido entre ese número. Multiplicados por él, dan 1.',
+        ejemplo: 'Los de 2 y 3 son 1/2 y 1/3.', ver: ['reparto inverso'] },
       { termino: 'regla de compañía', def: 'Reparto de la ganancia entre socios en forma directa a capital por tiempo de cada uno.',
         ejemplo: 'A: S/ 4000 por 6 meses (24); B: S/ 3000 por 12 (36). Se reparte 2 : 3.', ver: ['capital', 'reparto directo'] },
       { termino: 'capital', formas: ['capital', 'capitales'], def: 'Dinero que alguien pone en un negocio, o presta, para que produzca ganancia.',
