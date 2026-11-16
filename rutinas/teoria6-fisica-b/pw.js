@@ -29,7 +29,10 @@ const espera = ms => new Promise(r => setTimeout(r, ms));
       const errores = [];
       p.on('pageerror', e => errores.push(e.message));
       p.on('console', m => { if (m.type() === 'error') errores.push(m.text()); });
-      await p.goto(`http://localhost:${puerto}/app/#/unidad/${unidad}/teoria/${idea.id}`); await espera(900);
+      await p.goto(`http://localhost:${puerto}/app/#/unidad/${unidad}/teoria/${idea.id}`);
+      // Espera a que el lector pinte el momento (con la máquina cargada, 900 ms fijos no alcanzaban).
+      await p.waitForSelector(momento === 'lee' ? '.te-lee-t' : '.te-res-enun', { timeout: 10000 }).catch(() => {});
+      await espera(300);
       const nombre = `${corto}/${idea.id}/${momento}`;
       const sig = () => p.$eval('.te-sig', e => e.textContent.trim());
       if (momento === 'lee') {
