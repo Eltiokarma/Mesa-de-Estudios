@@ -44,7 +44,7 @@ async function vista(ctx) {
     $app.innerHTML = `${cab}<div class="card rp-fin" style="margin-top:16px">${window.Ilus ? Ilus.gatoDormido('width="120"') : ''}
       <h2>Hoy no te toca repasar</h2>
       <p>${prox ? `Tu próximo repaso es el <b>${esc(fechaBonita(prox))}</b>.`
-        : 'Cuando termines ejercicios de una unidad, aquí te vamos a preguntar de ella otros días, para que no se te olvide.'}</p>
+        : 'Cuando termines ejercicios de un tema, aquí te vamos a preguntar de él otros días, para que no se te olvide.'}</p>
       <a class="btn morado" href="#/inicio">Ir al inicio</a></div>`;
   };
   const elegidas = R.elegir(est, hoy, id => (cursoDeUnidad(id) || {}).id).filter(id => unidad(id) && fuentesDe(unidad(id).u).hay);

@@ -267,8 +267,8 @@ function vInicio() {
       ${conEscena.u.teoria ? `<a class="btn tinta" href="#/unidad/${esc(conEscena.u.id)}/teoria">Estudiar la teoría ›</a>`
         : conEscena.u.plantillas.length
         ? `<a class="btn tinta" href="${esc(enlace(cat.plantillas[conEscena.u.plantillas[0]], conEscena.u.id))}" data-abrir="${esc(conEscena.u.id)}">${VERBO[cat.plantillas[conEscena.u.plantillas[0]].formato] || 'Abrir'} ›</a>`
-        : `<a class="btn tinta" href="#/unidad/${esc(conEscena.u.id)}">Ver unidad ›</a>`}
-    </div>` : `<div class="reto">${Ilus.gatoDormido('class="reto-gato"')}<h3>Estudiaste todas las unidades</h3><p>Ahora toca recordarlas: el repaso de hoy te espera.</p></div>`;
+        : `<a class="btn tinta" href="#/unidad/${esc(conEscena.u.id)}">Ver tema ›</a>`}
+    </div>` : `<div class="reto">${Ilus.gatoDormido('class="reto-gato"')}<h3>Estudiaste todos los temas</h3><p>Ahora toca recordarlos: el repaso de hoy te espera.</p></div>`;
   // Lo que sigue: solo unidades con módulo (las demás no tienen nada que abrir todavía), una por curso primero
   // para que no salgan cuatro del mismo curso, y luego el resto en el orden del temario.
   const conModulo = pend.filter(x => x !== conEscena && cat.plantillas[x.u.plantillas[0]]);
@@ -311,11 +311,11 @@ function vInicio() {
     <h2>Hoy</h2>
     <div class="stats aparece">
       <div class="stat rosa"><div class="ic" style="background:#fff">${Ilus.mini.llama}</div><div class="n">${racha()}</div><div class="l">${racha() === 1 ? 'día seguido' : 'días seguidos'}</div></div>
-      <div class="stat lav"><div class="ic" style="background:#fff">${Ilus.mini.libro}</div><div class="n">${hechas}</div><div class="l">unidades estudiadas</div></div>
+      <div class="stat lav"><div class="ic" style="background:#fff">${Ilus.mini.libro}</div><div class="n">${hechas}</div><div class="l">temas estudiados</div></div>
       <div class="stat menta"><div class="ic" style="background:#fff">${Ilus.mini.meta}</div><div class="n">${totalU ? Math.round(100 * hechas / totalU) : 0}<span style="font-size:16px">%</span></div><div class="l">del temario ${esc(UNI_CORTA[est.uni] || '')}</div></div>
     </div>
     <h2>Lo que sigue</h2>
-    <div class="lista aparece">${sig || `<div class="vacio">${Ilus.gatoDormido('width="140"')}<p>${pend.length > 1 ? 'Ya abriste todas las unidades con escena. El resto del temario está en Cursos.' : 'No hay más unidades pendientes.'}</p></div>`}</div></div><div>
+    <div class="lista aparece">${sig || `<div class="vacio">${Ilus.gatoDormido('width="140"')}<p>${pend.length > 1 ? 'Ya abriste todos los temas con escena. El resto del temario está en Cursos.' : 'No hay más temas pendientes.'}</p></div>`}</div></div><div>
     <h2>Tus cursos <a href="#/cursos">Ver todos ›</a></h2>
     <div class="carrusel aparece">${carrusel}</div></div></div>`;
 }
@@ -326,7 +326,7 @@ function vCursos() {
     const p = avance(c, est.uni), escenas = us.filter(u => u.plantillas.length).length;
     return `<a class="curso tinte" style="${Ilus.tinte(c.id)}" href="#/curso/${esc(c.id)}">${Ilus.viñeta(c.id, 'class="vin"')}
       <span class="t">${esc(c.nombre)}</span>
-      <span class="d">${us.length} unidades${escenas ? ` · ${escenas} con escena` : ''}</span>
+      <span class="d">${us.length} temas${escenas ? ` · ${escenas} con escena` : ''}</span>
       <span class="barra" aria-label="${Math.round(p * 100)} % estudiado"><i style="width:${Math.round(p * 100)}%"></i></span></a>`;
   }).join('');
   $app.innerHTML = `<h1>Cursos</h1><p class="sub">Ordenados según el temario de ${esc(cat.universidades[est.uni]?.nombre || '')}.</p>
@@ -403,9 +403,9 @@ function vCurso(id) {
       <span>${sig.dentro.length || sig.fuera.length ? 'Ya tienes lo que necesita antes.' : 'No necesita ningún tema antes.'}</span></span><span class="ms-ir" aria-hidden="true">›</span></a>` : '';
   $app.innerHTML = `<header class="curso-hero tinte" style="${Ilus.tinte(c.id)}">${Ilus.viñeta(c.id, 'class="vin vineta-flota"')}
     <a class="volver" href="#/cursos" aria-label="Volver">‹</a>
-    <h1>${esc(c.nombre)}</h1><p class="sub">${esc(AREA_TXT[c.area])} · ${us.length} unidades · ${pc} % estudiado</p>
+    <h1>${esc(c.nombre)}</h1><p class="sub">${esc(AREA_TXT[c.area])} · ${us.length} temas · ${pc} % estudiado</p>
     <span class="barra" aria-hidden="true"><i style="width:${pc}%"></i></span>
-    <div class="chips"><button class="chip${todas ? '' : ' on'}" data-todas="0">${esc(UNI_CORTA[est.uni] || 'Mi universidad')}</button><button class="chip${todas ? ' on' : ''}" data-todas="1">Todas las unidades</button></div></header>
+    <div class="chips"><button class="chip${todas ? '' : ' on'}" data-todas="0">${esc(UNI_CORTA[est.uni] || 'Mi universidad')}</button><button class="chip${todas ? ' on' : ''}" data-todas="1">Todos los temas</button></div></header>
     ${sigue}
     <p class="mapa-guia">Cada rama va <b>de lo básico a lo complejo</b>: un tema se apoya en el que tiene arriba, unido por la línea. Un tema con candado <b>se abre</b> cuando estudias el de arriba o apruebas su prueba del tema. Lo que viene de otro curso es un consejo: no cierra nada.</p>
     <div class="mapa" style="${Ilus.tinte(c.id)}">${ramas}</div>
@@ -546,27 +546,28 @@ function vUnidad(id, sub) {
 }
 
 // Cabecera de las páginas dentro de una unidad: volver a la unidad, su dibujo chico y el título de la sección.
-const cabUnidad = (c, u, titulo) => `<header class="unidad-cab tinte" style="${Ilus.tinte(c.id)}">
+// o.arriba: la línea chica (la teoría pone ahí curso, «Teoría» y el avance, y el tema va de título).
+const cabUnidad = (c, u, titulo, o = {}) => `<header class="unidad-cab tinte" style="${Ilus.tinte(c.id)}">
     <a class="volver" href="#/unidad/${esc(u.id)}" aria-label="Volver a ${esc(u.nombre)}">‹</a>
-    <span class="lamina">${dibujo(c, u)}</span><div><p class="sub">${esc(c.nombre)} · ${esc(u.nombre)}</p><h1>${esc(titulo)}</h1></div></header>`;
+    <span class="lamina">${dibujo(c, u)}</span><div><p class="sub">${esc(o.arriba || `${c.nombre} · ${u.nombre}`)}</p><h1>${esc(titulo)}</h1></div></header>`;
 
 // Prueba de entrada del tema (app/teoria.js, Teoria.entrada): pendiente si la unidad tiene teoría y aún no la hizo.
 function vEntradaTema(c, u) {
   if (!u.teoria) return ir(`#/unidad/${u.id}`);
-  cuandoListo(modulo('teoria'), () => Teoria.entrada({ $app, cat, est, esc, guardar, registrar, marcarDia, cab: t => cabUnidad(c, u, t) }, u));
+  cuandoListo(modulo('teoria'), () => Teoria.entrada({ $app, cat, est, esc, guardar, registrar, marcarDia, cab: (t, o) => cabUnidad(c, u, t, o) }, u));
 }
 
 // Teoría (docs/teoria.md): si la unidad del catálogo trae `teoria` ({ archivo, requiere }, lo pone construir-catalogo.js
 // cuando existe contenido/teoria/<curso>/<unidad>.js), app/teoria.js la muestra. Si no, esta pantalla dice qué vendrá
 // y manda a lo que sí hay.
 function vTeoria(c, u) {
-  if (u.teoria) return cuandoListo(modulo('teoria'), () => Teoria.vista({ $app, cat, est, esc, guardar, registrar, marcarDia, cab: t => cabUnidad(c, u, t) }, u));
+  if (u.teoria) return cuandoListo(modulo('teoria'), () => Teoria.vista({ $app, cat, est, esc, guardar, registrar, marcarDia, cab: (t, o) => cabUnidad(c, u, t, o) }, u));
   const n = modulosDe(u).length;
   $app.innerHTML = `${cabUnidad(c, u, 'Teoría')}
     <div class="card prep-teoria">${Ilus.gatoDormido('class="prep-gato" width="120"')}
       <span class="tag gris">En preparación</span>
       <h2>Estamos escribiendo esta teoría</h2>
-      <p>Van a ser lecciones cortas, de dos o tres minutos, con un dibujo que se mueve. Esta unidad tendrá:</p>
+      <p>Van a ser lecciones cortas, de dos o tres minutos, con un dibujo que se mueve. Este tema tendrá:</p>
       <ul class="temas-l">${u.temas.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
       <p class="sub">Mientras tanto, ${n ? 'los ejercicios te muestran la idea paso a paso y te explican cada error.' : 'puedes dejarle una pregunta a tu profesor.'}</p>
       ${n ? `<a class="btn morado" href="#/unidad/${esc(u.id)}/ejercicios">Ir a los ejercicios ›</a>` : `<a class="btn morado" href="#/unidad/${esc(u.id)}/pregunta">Dejar una pregunta ›</a>`}
@@ -594,7 +595,7 @@ function vEjercicios(c, u) {
     </article>`;
   $app.innerHTML = `${cabUnidad(c, u, 'Ejercicios')}
     ${pl.length ? `<div class="lista ejercicios aparece">${pl.map(fila).join('')}</div>`
-      : `<div class="vacio">${Ilus.gatoDormido('width="140"')}<p>Esta unidad todavía no tiene ejercicios. Estamos haciéndolos; mientras, puedes dejarle una pregunta a tu profesor.</p>
+      : `<div class="vacio">${Ilus.gatoDormido('width="140"')}<p>Este tema todavía no tiene ejercicios. Estamos haciéndolos; mientras, puedes dejarle una pregunta a tu profesor.</p>
         <a class="btn morado" href="#/unidad/${esc(u.id)}/pregunta">Dejar una pregunta ›</a></div>`}`;
 }
 
@@ -641,7 +642,7 @@ async function vExamen(c, u) {
 
   function intro() {
     $app.innerHTML = `${cabUnidad(c, u, 'Exámenes')}
-      <div class="card ex-intro"><span class="etq-p">Simulacro de la unidad${reg.intentos ? ` · intento ${intento}` : ''}</span>
+      <div class="card ex-intro"><span class="etq-p">Simulacro del tema${reg.intentos ? ` · intento ${intento}` : ''}</span>
         <h2>${preguntas.length} preguntas como las del examen de admisión</h2>
         <ul class="temas-l"><li>Sin pistas: la corrección llega al final, con la explicación de cada error.</li>
           <li>Puedes dejar preguntas en blanco y volver a ellas antes de terminar.</li>
@@ -696,7 +697,7 @@ async function vExamen(c, u) {
     $app.innerHTML = `${cabUnidad(c, u, 'Exámenes')}
       <div class="card ex-nota"><div class="n">${aciertos}<span> de ${preguntas.length}</span></div><div class="l">correctas${blancos ? ` · ${blancos} en blanco` : ''} · ${min} min</div>
         ${antes ? `<p class="sub">La vez anterior: ${antes.aciertos} de ${antes.total}. ${aciertos > antes.aciertos ? 'Mejoraste.' : aciertos === antes.aciertos ? 'Igual que antes.' : 'Esta vez fueron menos; revisa abajo qué preguntas cambiaron.'}</p>` : ''}
-        <div class="acciones-prueba"><a class="btn morado" href="#/unidad/${esc(u.id)}/examen" id="otro">Otro simulacro</a><a class="btn borde" href="#/unidad/${esc(u.id)}">Volver a la unidad</a></div></div>
+        <div class="acciones-prueba"><a class="btn morado" href="#/unidad/${esc(u.id)}/examen" id="otro">Otro simulacro</a><a class="btn borde" href="#/unidad/${esc(u.id)}">Volver al tema</a></div></div>
       <h2>Revisa cada pregunta</h2>
       <div class="lista">${preguntas.map(({ p }, k) => {
         const a = resp[k] && p.alternativas.find(x => x.letra === resp[k]), ok = p.alternativas.find(x => x.correcta);
@@ -723,7 +724,7 @@ function vPregunta(c, u) {
   const descargado = localStorage.getItem(CLAVE_EXPORTADO) || '';
   const estadoDe = e => (esAlumnoCuenta() ? (ses.info().pendientes ? 'Guardada en este equipo, por enviar' : 'Enviada')
     : String(e.t) <= descargado ? 'Entregada en la descarga para el profesor' : 'Guardada en este equipo');
-  const lista = () => { const l = mias(); return l.length ? `<h2>Tus preguntas de esta unidad</h2><div class="lista">${l.map(e => `<article class="card preg-hecha">
+  const lista = () => { const l = mias(); return l.length ? `<h2>Tus preguntas de este tema</h2><div class="lista">${l.map(e => `<article class="card preg-hecha">
       <p>${esc(e.texto)}</p><span class="sub">${esc(new Date(e.t).toLocaleDateString('es-PE', { day: 'numeric', month: 'short' }))} · ${esc(estadoDe(e))}</span></article>`).join('')}</div>` : ''; };
   $app.innerHTML = `${cabUnidad(c, u, 'Dejar una pregunta')}
     <form class="card form-preg" id="fPreg" novalidate>
@@ -845,9 +846,9 @@ function vProgreso() {
       <div class="anillo"><svg width="180" height="100" viewBox="0 0 180 100" role="img" aria-label="${Math.round(p * 100)} % del temario">
         <path d="M20 90a70 70 0 0 1 140 0" fill="none" stroke="var(--brand-soft)" stroke-width="18" stroke-linecap="round"/>
         <path d="M20 90a70 70 0 0 1 140 0" fill="none" stroke="var(--brand)" stroke-width="18" stroke-linecap="round" stroke-dasharray="${L}" stroke-dashoffset="${L * (1 - p)}"/></svg>
-        <div style="margin-top:-46px;text-align:center"><div class="n">${Math.round(p * 100)}<span style="font-size:20px">%</span></div><div class="l">${hechas} de ${q.length} unidades estudiadas</div></div></div>
+        <div style="margin-top:-46px;text-align:center"><div class="n">${Math.round(p * 100)}<span style="font-size:20px">%</span></div><div class="l">${hechas} de ${q.length} temas estudiados</div></div></div>
       <ul class="niveles-resumen">${['Visitadas', 'La estudié', 'Con ayuda', 'Sin ayuda', 'La recuerdo'].map((t, k) => `<li><b>${porNivel[k]}</b> ${t}</li>`).join('')}</ul>
-      <div class="aviso">${hechas ? `🍫 Llevas ${hechas} ${hechas === 1 ? 'unidad estudiada' : 'unidades estudiadas'}. Sigue a tu ritmo.` : '🍫 Cuando termines la teoría de una unidad, aparece aquí.'}</div>
+      <div class="aviso">${hechas ? `🍫 Llevas ${hechas} ${hechas === 1 ? 'tema estudiado' : 'temas estudiados'}. Sigue a tu ritmo.` : '🍫 Cuando termines la teoría de un tema, aparece aquí.'}</div>
     </div>
     ${repasoProgreso()}
     <h2>Últimos 7 días</h2>
@@ -857,7 +858,7 @@ function vProgreso() {
         <span class="sub" style="font-size:12px">${esc(d.l)}</span></div>`).join('')}
     </div></div>
     <div class="racha">${Ilus.taza('class="racha-taza"')}<div><div class="etq">Racha de estudio</div><div class="n">${racha()} <span>${racha() === 1 ? 'día' : 'días'}</span></div>
-      <p>${racha() ? 'Una taza de chocolate por cada día que vuelves.' : 'Abre una unidad hoy y empieza tu racha.'}</p></div></div></div><div>
+      <p>${racha() ? 'Una taza de chocolate por cada día que vuelves.' : 'Abre un tema hoy y empieza tu racha.'}</p></div></div></div><div>
     <h2 class="primero">Por curso</h2>
     <div class="lista">${cat.cursos.filter(c => unidadesDe(c, est.uni).length).map(c => { const a = avance(c, est.uni);
       return `<a class="item" style="${Ilus.tinte(c.id)}" href="#/curso/${esc(c.id)}">${icono(c.id)}<span class="tx"><span class="t">${esc(c.nombre)}</span>
@@ -868,7 +869,7 @@ function vProgreso() {
 function repasoProgreso() {
   const r = Object.values(est.repaso || {}); if (!r.length) return '';
   const hechos = r.reduce((a, x) => a + (Number(x.hechos) || 0), 0), bien = r.reduce((a, x) => a + (Number(x.aciertos) || 0), 0);
-  return `<h2>Repaso</h2><div class="card"><p style="margin:0"><b>${r.length}</b> ${r.length === 1 ? 'unidad está' : 'unidades están'} en tu repaso.
+  return `<h2>Repaso</h2><div class="card"><p style="margin:0"><b>${r.length}</b> ${r.length === 1 ? 'tema está' : 'temas están'} en tu repaso.
     ${hechos ? `En los repasos recordaste <b>${bien} de ${hechos}</b>.` : 'El primero llega dos días después de tu primer ejercicio.'}</p>${tarjetaRepaso()}</div>`;
 }
 
@@ -887,7 +888,7 @@ function resumenHTML() {
 // valores exactos (el laboratorio lo reconstruye con el motor).
 function coleccionHTML() {
   const col = Array.isArray(est.coleccion) ? est.coleccion.slice().reverse() : [];
-  if (!col.length) return '<h2>Tu colección</h2><p class="sub">Aún no guardas casos. En el laboratorio de cada unidad, «Guardar este caso» los deja aquí.</p>';
+  if (!col.length) return '<h2>Tu colección</h2><p class="sub">Aún no guardas casos. En el laboratorio de cada tema, «Guardar este caso» los deja aquí.</p>';
   return `<h2>Tu colección · ${col.length}</h2><div class="lista">${col.slice(0, 20).map(cs => { const cu = cursoDeUnidad(cs.unidad), un = cu && cu.unidades.find(x => x.id === cs.unidad);
     return un ? `<a class="item" style="${Ilus.tinte(cu.id)}" href="#/unidad/${esc(cs.unidad)}/teoria/laboratorio" data-caso="${esc(cs.id)}">${icono(cu.id)}<span class="tx"><span class="t">${esc(cs.nombre)}</span><br><span class="d">${esc(un.nombre)} · ${esc(cs.fecha)}</span></span><span class="ir">Abrir ›</span></a>` : ''; }).join('')}</div>`;
 }
@@ -1159,7 +1160,7 @@ async function vPanel() {
       const cursos = Object.entries(todas).filter(([, x]) => x && (x.entrada || x.salida));
       return `<tr><th scope="row">${esc(a.nombre)}</th><td>${esc(a.usuario)}</td><td>${esc(a.dias_activos ?? a.dias ?? 0)}</td><td>${esc(a.unidades_vistas ?? a.modulos ?? 0)}</td>
         <td class="pruebas-al">${cursos.length ? cursos.map(([c, x]) => `<span>${esc(nombreCurso(c))}: ${pr(x.entrada)} → ${pr(x.salida)}</span>`).join('') : '<span class="sub">Sin pruebas</span>'}</td>
-        <td>${a.repaso && a.repaso.hechos ? `${esc(a.repaso.aciertos)}/${esc(a.repaso.hechos)}<br><span class="sub">${esc(a.repaso.unidades)} ${a.repaso.unidades == 1 ? 'unidad' : 'unidades'}</span>` : a.repaso && a.repaso.unidades ? `<span class="sub">${esc(a.repaso.unidades)} en cola</span>` : '—'}</td>
+        <td>${a.repaso && a.repaso.hechos ? `${esc(a.repaso.aciertos)}/${esc(a.repaso.hechos)}<br><span class="sub">${esc(a.repaso.unidades)} ${a.repaso.unidades == 1 ? 'tema' : 'temas'}</span>` : a.repaso && a.repaso.unidades ? `<span class="sub">${esc(a.repaso.unidades)} en cola</span>` : '—'}</td>
         <td><button class="btn borde chico" data-reiniciar="${esc(a.usuario)}">Reiniciar contraseña</button></td></tr>`; }).join('');
     $app.innerHTML = `<header class="panel-cab"><div><p class="sub">${esc(admin ? 'Administración del colegio' : 'Panel del profesor')}</p><h1>Hola, ${esc(u.nombre || '')}</h1></div>
         <span class="panel-acc"><a class="btn borde chico" href="#/contrasena">Cambiar contraseña</a><a class="btn morado chico" href="#/salir">Cerrar sesión</a></span></header>

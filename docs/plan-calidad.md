@@ -172,6 +172,10 @@ Lo que el contrato no cubra en estos tres casos se corrige en el contrato, no co
    - El catálogo tiene ahora 153 unidades.
 4. **Alumnos para probar:** sin respuesta todavía. Mientras tanto valen el lector en frío y Gerson.
 
+### Navegación de la teoría (16 nov, auditoría con Norman)
+
+- Gerson: «no me convence la sección», «se usa la palabra Unidad, se termina sintiendo más el desorden», «tampoco me gusta toda la disposición de las ideas». Se aprobó la propuesta entera: el tema como título, un solo menú (Ideas · Glosario · Laboratorio) siempre marcado, el mapa de ideas compacto con un solo botón principal, «tema» en vez de «unidad» en toda la app y nombres cortos para las ideas (`docs/teoria.md`, 4f).
+
 ## 10. Riesgos
 
 - **El lector en frío no es un alumno.** Filtra lo que está claramente mal; lo demás solo lo dicen personas.

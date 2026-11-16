@@ -327,8 +327,11 @@ juega: {
 - **`pregunta`** (por idea, ≤ 16 palabras, termina en «?»): la que responde la idea. La muestra el Resumen.
 - **Lector en frío:** sus respuestas quedan en `rutinas/frio/<unidad>.md`.
 
-**El Resumen es la primera pantalla de la teoría (Gerson, 16 nov).** Antes se llamaba «Reglas» y parecía otra sección de teoría.
-- Entrar a `#/unidad/<id>/teoria` sin idea abre el Resumen: un botón grande («Empezar por la idea 1…» o «Seguir con la idea N…») y una tarjeta por idea, con su pregunta y la figura de su juego.
+**El mapa de ideas es la primera pantalla de la teoría (Gerson, 16 nov).** Antes se llamó «Reglas» y después «Resumen».
+- **Navegación (auditoría con Norman, 16 nov; Gerson: «dale, con todo»).** El título es el tema; la línea chica dice «Teoría · N de M ideas». Debajo, un solo menú de pestañas finas, **Ideas · Glosario · Laboratorio**, siempre con una marcada: dentro de una idea queda marcada y dice «‹ Ideas», con la flecha de volver (el lector en frío no sabía cómo volver al mapa). La tira de ideas (los números) solo aparece dentro de una idea, para saltar entre ellas; en el celular las otras ideas van solo con su número.
+- Al alumno se le dice **«tema»**, nunca «unidad» (en Magnitudes, «unidad» es el metro). En el código y en las rutas sigue siendo `unidad`.
+- Entrar a `#/unidad/<id>/teoria` sin idea abre el mapa: una tarjeta por idea con su número o ✓, su nombre, «Sigue aquí» o «Terminada», la pregunta y lo que sigue abajo. Un solo botón principal, en la idea que sigue («Empezar» o «Seguir»); las demás llevan «Jugar» o «Repasar». La figura va a la derecha en pantalla grande y se abre con «Ver la figura» en el celular.
+- **Nombres de las ideas:** cortos, del tema que enseñan («Cambiar de unidad», «Suma de vectores»); la pregunta hace de gancho. Nada de frases ingeniosas en el nombre.
 - **Cada tarjeta da de dónde agarrarse (Gerson, 16 nov: sin definiciones, «se sienten que caen en nada»).** Debajo de la pregunta van:
   - «Vas a…»: el campo **`actividad`** de la idea (≤ 16 palabras), qué se hace en el juego sin adelantar lo que se descubre;
   - «Palabras de esta idea»: los términos del glosario que la idea estrena (el primero que los usa) y traen **`simple`**: una aproximación de todos los días, de 14 palabras o menos, sin repetir el término («Unidad: el pedazo con el que mides: un metro, un segundo, una cuchara»). Tocarlos abre la hoja del glosario con la definición y los ejemplos. La hoja y las tarjetas del glosario también muestran «En simple:»;

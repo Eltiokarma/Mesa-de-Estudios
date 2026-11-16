@@ -413,7 +413,7 @@ async function vista(ctx, id, unidad) {
   // y en la semilla del barajado, así al repetir un texto cambia el orden de las alternativas.
   async function practica() {
     const lista = L().lista(b.indice, b.items, unidadAbierta);
-    if (!lista.length) { $app.innerHTML = `${volver}<p class="vacio">Todavía no hay textos para esta unidad.</p>`; return; }
+    if (!lista.length) { $app.innerHTML = `${volver}<p class="vacio">Todavía no hay textos para este tema.</p>`; return; }
     st.intentos = st.intentos || {};
     let ec = st.enCurso && lista.find(x => x.id === st.enCurso.id) ? st.enCurso : null;
     if (!ec) {

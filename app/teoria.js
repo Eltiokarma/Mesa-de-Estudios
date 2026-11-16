@@ -69,7 +69,7 @@
       if (location.hash !== h) return;
       $app.innerHTML = `<div class="card"><h2>No se pudo abrir la teoría</h2>
         <p>Revisa tu conexión y vuelve a intentarlo. Si ya la habías abierto antes, funciona sin internet.</p>
-        <a class="btn morado" href="#/unidad/${esc(u.id)}">Volver a la unidad</a></div>`;
+        <a class="btn morado" href="#/unidad/${esc(u.id)}">Volver al tema</a></div>`;
     });
   }
 
@@ -320,12 +320,27 @@
       return `<a class="te-chip${on ? ' on' : ''}${hecha(st, i.id) ? ' hecha' : sabidas.has(i.id) ? ' sabida' : ''}" href="#/unidad/${esc(u.id)}/teoria/${esc(i.id)}"${on ? ' aria-current="step"' : ''}>
         <span class="te-num" aria-hidden="true">${hecha(st, i.id) ? '✓' : k + 1}</span><span>${esc(i.titulo)}</span>${hecha(st, i.id) ? '<span class="lector"> (terminada)</span>' : sabidas.has(i.id) ? '<span class="lector"> (la acertaste en la prueba de entrada)</span>' : ''}</a>`;
     };
-    // Atajos siempre a la vista (antes quedaban escondidos al final de la tira de ideas): ficha, glosario y laboratorio.
-    const atajo = (k, txt, ic, on) => `<a class="te-atajo te-atajo-${k}${on ? ' on' : ''}" href="#/unidad/${esc(u.id)}/teoria/${k}"${on ? ' aria-current="page"' : ''}><span class="te-atajo-ic" aria-hidden="true">${ic}</span><span>${txt}</span></a>`;
-    const cab = ctx.muestra ? ctx.cab() : `${ctx.cab('Teoría')}
-      <nav class="te-atajos" aria-label="Para hojear y jugar">${atajo('ficha', 'Resumen', '≡', ficha)}${aqui.length ? atajo('glosario', 'Glosario', 'Aa', glosa) : ''}${atajo('laboratorio', 'Laboratorio', '⚗', lab)}</nav>
-      <nav class="te-ideas" aria-label="Ideas de esta unidad">${ideas.map(chip).join('')}</nav>
-      <p class="sub te-avance">${n} de ${ideas.length} ideas terminadas${sabidas.size ? ` · en la prueba de entrada acertaste ${sabidas.size}` : ''}</p>`;
+    // Un solo menú, siempre con una pestaña marcada (auditoría con Norman, 16 nov: había tres menús apilados y, dentro de
+    // una idea, ninguno decía dónde estaba el alumno). «Ideas» es el mapa del tema y queda marcada también dentro de una
+    // idea; la tira de ideas solo aparece ahí, para saltar entre ellas. El título es el tema; «Teoría» y el avance van en
+    // la línea chica. Al alumno se le dice «tema», nunca «unidad» (en Magnitudes, «unidad» es el metro).
+    const enIdeas = !glosa && !lab;
+    const atajo = (k, txt, on) => `<a class="te-atajo${on ? ' on' : ''}" href="#/unidad/${esc(u.id)}/teoria/${k}"${on ? ' aria-current="page"' : ''}>${txt}</a>`;
+    // Corto, para que entre en una línea del celular (con el curso delante se cortaba: «0 t…»).
+    // «terminadas»: «1 de 4 ideas» se leía como «estás en la idea 1» (lector en frío, 16 nov).
+    const avance = `${n} de ${ideas.length} terminadas${n === ideas.length ? ' ✓' : ''}`;
+    const cab = ctx.muestra ? ctx.cab() : `${ctx.cab(u.nombre, { arriba: `Teoría · ${avance}` })}
+      <nav class="te-atajos" aria-label="Partes de la teoría">${atajo('ficha', idea ? '‹ Ideas' : 'Ideas', enIdeas)}${aqui.length ? atajo('glosario', 'Glosario', glosa) : ''}${atajo('laboratorio', 'Laboratorio', lab)}</nav>
+      ${idea ? `<nav class="te-ideas" aria-label="Ideas de este tema">${ideas.map(chip).join('')}</nav>` : ''}`;
+    // La tira de ideas: en el celular, las otras ideas van solo con su número (estilos), así caben todas; si aun así no
+    // cabe, se desvanece del lado donde hay más.
+    if (idea) requestAnimationFrame(() => {
+      const t = $app.querySelector('.te-ideas'); if (!t) return;
+      const on = t.querySelector('.te-chip.on');
+      if (on && on.offsetLeft + on.offsetWidth > t.clientWidth) t.scrollLeft = on.offsetLeft + on.offsetWidth - t.clientWidth + 24;
+      const mirar = () => { t.classList.toggle('mas-der', t.scrollLeft + t.clientWidth < t.scrollWidth - 4); t.classList.toggle('mas-izq', t.scrollLeft > 4); };
+      mirar(); t.addEventListener('scroll', mirar, { passive: true });
+    });
 
     // La consigna del juego va arriba de la figura (15 nov): con la figura fija al bajar, debajo quedaba tapada.
     const figuraHTML = `<p class="te-consigna te-consigna-arriba" hidden></p><div class="te-figcaja"><figure class="te-fig kit-figura" aria-describedby="te-alt"></figure>
@@ -813,27 +828,37 @@
       return ley.filter(x => esta(E.texto([x.s]).trim()));
     }
     function preguntaDe(i) { return i.pregunta || (i.juega && /\?/.test(i.juega.voz || '') ? i.juega.voz : ''); }
+    // El mapa de ideas (auditoría con Norman, 16 nov): la estructura primero y el detalle cuando se pide. Cada idea dice
+    // su estado, su nombre, la pregunta que responde, qué vas a hacer y sus palabras; la figura se ve a la derecha en
+    // pantalla grande y se abre con «Ver la figura» en el celular. Un solo botón principal, en la idea que sigue.
     function vistaFicha() {
-      const hechas = ideas.filter(i => hecha(st, i.id)).length, sig = ideas.find(i => !hecha(st, i.id));
-      const k0 = sig ? ideas.indexOf(sig) : -1, palabrasIdea = palabrasDe();
-      const boton = sig ? `<a class="btn morado ancho te-fic-seguir" href="#/unidad/${esc(u.id)}/teoria/${esc(sig.id)}">${hechas ? `Seguir con la idea ${k0 + 1}: ${esc(sig.titulo)}` : `Empezar por la idea 1: ${esc(sig.titulo)}`} ›</a>`
-        : `<p class="te-fic-listo">Terminaste las ${ideas.length} ideas. Repasa las reglas o da la <a href="#/unidad/${esc(u.id)}/entrada">prueba del tema</a>.</p>`;
-      return `<h2 class="te-fichas-tit">Resumen de la unidad</h2><p class="sub te-fichas-intro">Lo que vas a aprender, idea por idea. La regla de cada una aparece cuando terminas la idea; si quieres verla antes, toca «Ver la regla».</p>
-        ${boton}
-        <section class="te-fichas">${ideas.map((i, k) => { const h = hecha(st, i.id), q = preguntaDe(i), pal = (palabrasIdea[k] || []).filter(e => e.simple);
-          const fig = figuraResumen(i), ley = leyendaFigura(i.juega && i.juega.leyenda, fig);
-          return `<article class="card te-fic${h ? ' hecha' : ''}">
-            <div class="te-fic-cab"><span class="te-fic-n" aria-hidden="true">${h ? '✓' : k + 1}</span><h2>${esc(i.titulo)}</h2></div>
+      const sig = ideas.find(i => !hecha(st, i.id)), palabrasIdea = palabrasDe();
+      const listo = sig ? '' : `<p class="card te-fic-listo">Terminaste las ${ideas.length} ideas. Repasa las reglas o da la <a href="#/unidad/${esc(u.id)}/entrada">prueba del tema</a>.</p>`;
+      return `<h2 class="lector">Las ideas de este tema</h2>${listo}
+        <ol class="te-fichas">${ideas.map((i, k) => { const h = hecha(st, i.id), q = preguntaDe(i), pal = (palabrasIdea[k] || []).filter(e => e.simple);
+          const esSig = i === sig, fig = figuraResumen(i), ley = leyendaFigura(i.juega && i.juega.leyenda, fig);
+          const ir = `#/unidad/${esc(u.id)}/teoria/${esc(i.id)}`;
+          return `<li class="card te-fic${h ? ' hecha' : ''}${esSig ? ' sigue' : ''}">
+            <div class="te-fic-cab"><span class="te-fic-n" aria-hidden="true">${h ? '✓' : k + 1}</span><h3>${esc(i.titulo)}</h3>
+              ${esSig ? '<span class="te-fic-estado">Sigue aquí</span>' : h ? '<span class="te-fic-estado ok">Terminada</span>' : ''}</div>
             <div class="te-fic-txt">${q ? `<p class="te-fic-preg">${esc(q)}</p>` : ''}
             ${i.actividad ? `<p class="te-fic-act"><b>Vas a</b> ${esc(i.actividad.charAt(0).toLowerCase() + i.actividad.slice(1))}</p>` : ''}
-            ${pal.length ? `<div class="te-fic-pal"><h3>Palabras de esta idea</h3><dl>${pal.map(e => `<div><dt><button type="button" class="te-fic-term" data-glosa="${esc(G.clave(e.termino))}" aria-label="${esc(e.termino)}: ver qué significa y sus ejemplos">${esc(e.termino)}</button></dt><dd>${esc(e.simple).replace(/(\d) (?=\p{L})/gu, '$1&nbsp;')}</dd></div>`).join('')}</dl></div>` : ''}</div>
-            <div class="te-fic-fig"><div class="te-figcaja"><figure class="kit-figura te-fig te-fig-chica">${fig}</figure>
+            ${pal.length ? `<dl class="te-fic-pal" aria-label="Palabras de esta idea">${pal.map(e => `<div><dt><button type="button" class="te-fic-term" data-glosa="${esc(G.clave(e.termino))}" aria-label="${esc(e.termino)}: ver qué significa y sus ejemplos">${esc(e.termino)}</button></dt><dd>${esc(e.simple).replace(/(\d) (?=\p{L})/gu, '$1&nbsp;')}</dd></div>`).join('')}</dl>` : ''}</div>
+            <div class="te-fic-fig" id="te-fig-${k}"><div class="te-figcaja"><figure class="kit-figura te-fig te-fig-chica">${fig}</figure>
             <div class="te-figbarra"><button type="button" class="te-zoom" aria-label="Ampliar la figura de ${esc(i.titulo)}">${ICONO_LUPA}</button></div></div>
             ${ley.length ? `<dl class="te-leyenda" aria-label="Qué es cada símbolo de la figura">${ley.map(x => `<div><dt>${E.html([x.s])}</dt><dd>${esc(x.t)}</dd></div>`).join('')}</dl>` : ''}</div>
-            ${h ? `<div class="te-fic-acc">${reglaHTML(i.regla)}</div>` : `<div class="te-fic-acc"><a class="btn borde te-fic-ir" href="#/unidad/${esc(u.id)}/teoria/${esc(i.id)}">Jugar esta idea ›</a>
-              <details class="te-fic-regla" data-idea="${esc(i.id)}"><summary>Ver la regla</summary>${reglaHTML(i.regla)}</details></div>`}</article>`; }).join('')}</section>`;
+            <div class="te-fic-acc">
+              <a class="btn ${esSig ? 'morado' : 'borde'} te-fic-ir" href="${ir}">${h ? 'Repasar' : esSig && !k ? 'Empezar' : esSig ? 'Seguir' : 'Abrir'} ›</a>
+              <button type="button" class="te-fic-verfig" aria-expanded="false" aria-controls="te-fig-${k}">Ver la figura</button>
+              <details class="te-fic-regla" data-idea="${esc(i.id)}"><summary>Ver la regla</summary>${reglaHTML(i.regla)}</details>
+            </div></li>`; }).join('')}</ol>`;
     }
     function conectarFicha() {
+      // «Ver la figura» (celular): abre y cierra la figura de la idea, sin salir del mapa.
+      $app.querySelectorAll('.te-fic-verfig').forEach(b => b.addEventListener('click', () => {
+        const li = b.closest('.te-fic'), abre = !li.classList.contains('abierta');
+        li.classList.toggle('abierta', abre); b.setAttribute('aria-expanded', String(abre)); b.textContent = abre ? 'Ocultar la figura' : 'Ver la figura';
+      }));
       $app.querySelectorAll('.te-fic-regla').forEach(d => d.addEventListener('toggle', () => {
         if (d.open && !d.dataset.vista) { d.dataset.vista = '1'; ctx.registrar({ tipo: 'teoria', unidad: u.id, idea: d.dataset.idea, momento: 'resumen-regla' }); }
       }));
@@ -1320,7 +1345,7 @@
     $app.innerHTML = `<div class="card te-cargando" role="status">Preparando la prueba del tema…</div>`;
     const h = location.hash;
     cargarUnidad(u).then(def => { if (location.hash === h) pintarEntrada(ctx, c, u, def); },
-      () => { if (location.hash === h) $app.innerHTML = `<div class="card"><h2>No se pudo abrir la prueba</h2><p>Revisa tu conexión y vuelve a intentarlo.</p><a class="btn morado" href="#/unidad/${esc(u.id)}">Volver a la unidad</a></div>`; });
+      () => { if (location.hash === h) $app.innerHTML = `<div class="card"><h2>No se pudo abrir la prueba</h2><p>Revisa tu conexión y vuelve a intentarlo.</p><a class="btn morado" href="#/unidad/${esc(u.id)}">Volver al tema</a></div>`; });
   }
 
   function pintarEntrada(ctx, c, u, def) {
@@ -1421,7 +1446,7 @@
         ${aciertos / preguntas.length >= ((window.Mapa && Mapa.APRUEBA) || 0.8) - 1e-9 ? `<p class="te-abre">Con este resultado, este tema ya abre lo que sigue en el mapa del curso.</p>` : ''}
         <div class="acciones-prueba"><a class="btn morado" href="#/unidad/${esc(u.id)}/teoria">${hechas >= def.ideas.length ? 'Repasar la teoría' : 'Ir a la teoría'}</a>
           <a class="btn borde" href="#/curso/${esc(c.id)}">Ver el mapa del curso</a>
-          <a class="btn borde" href="#/unidad/${esc(u.id)}">Volver a la unidad</a></div></section>`;
+          <a class="btn borde" href="#/unidad/${esc(u.id)}">Volver al tema</a></div></section>`;
     }
     if ((tm.entrada || tm.intentos.length) && !(tm.enCurso && (tm.enCurso.i || tm.enCurso.resp.some(Boolean)))) resumen(); else intro();
   }

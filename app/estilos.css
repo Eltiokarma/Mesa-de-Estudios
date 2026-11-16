@@ -743,7 +743,16 @@ input[type=file]{font:inherit;max-width:100%}
 /* ---------- Teoría interactiva (app/teoria.js, docs/teoria.md) ----------
    Una idea por tarjeta: figura del kit arriba, la zona del momento debajo, el compañero del curso en un lugar fijo y
    la acción principal siempre en el mismo sitio. Los colores de la figura y de las ecuaciones son los de las variables. */
-.te-ideas{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 8px;margin:0 -2px;scrollbar-width:none}
+.te-ideas{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 8px;margin:0 -2px 6px;scrollbar-width:none}
+/* Si la tira no cabe, se desvanece del lado donde hay más ideas (en el celular la idea 3 quedaba escondida). */
+.te-ideas.mas-der{-webkit-mask-image:linear-gradient(to right,#000 82%,transparent);mask-image:linear-gradient(to right,#000 82%,transparent)}
+.te-ideas.mas-izq{-webkit-mask-image:linear-gradient(to left,#000 82%,transparent);mask-image:linear-gradient(to left,#000 82%,transparent)}
+.te-ideas.mas-izq.mas-der{-webkit-mask-image:linear-gradient(to right,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(to right,transparent,#000 14%,#000 86%,transparent)}
+/* Celular: las otras ideas, solo con su número; la actual, con su nombre. Así caben todas sin deslizar. */
+@media (max-width:600px){
+  .te-chip:not(.on){padding:6px;gap:0}
+  .te-chip:not(.on)>span:not(.te-num):not(.lector){position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}
 .te-ideas::-webkit-scrollbar{display:none}
 .te-chip{position:relative;flex:none;scroll-snap-align:start;display:flex;align-items:center;gap:8px;min-height:44px;max-width:220px;padding:6px 14px 6px 6px;border:2px solid var(--line);border-radius:999px;background:var(--card);text-decoration:none;font-size:14px;font-weight:600;line-height:1.2}
 .te-chip.on{border-color:var(--brand);background:var(--brand-soft)}
@@ -991,20 +1000,22 @@ body.con-lupa{overflow:hidden}
 
 /* ---- Fase 1 (15 nov): teoría ordenada ---- */
 /* Atajos de la teoría: una fila fija de tres botones de color, siempre visible (antes al final de una tira deslizable). */
-.te-atajos{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px;margin:12px 0 10px}
-.te-atajo{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:56px;padding:6px 4px;border-radius:16px;border:2px solid transparent;text-decoration:none;font-weight:700;font-size:14px;color:var(--ink);text-align:center}
-.te-atajo-ic{font-size:18px;line-height:1}
-.te-atajo-ficha{background:color-mix(in srgb,var(--c-i) 16%,var(--card))}
-.te-atajo-glosario{background:color-mix(in srgb,var(--c-d) 16%,var(--card))}
-.te-atajo-laboratorio{background:color-mix(in srgb,var(--c-o) 16%,var(--card))}
-.te-atajo.on{border-color:currentColor}
-.te-atajo-ficha.on{color:var(--c-i)}.te-atajo-glosario.on{color:var(--c-d)}.te-atajo-laboratorio.on{color:var(--c-o)}
+/* Un solo menú de pestañas finas, con una siempre marcada (auditoría con Norman, 16 nov). Antes eran tres bloques de
+   color del mismo peso que el botón principal. */
+.te-atajos{display:flex;gap:4px;margin:12px 0 12px;border-bottom:2px solid var(--line)}
+.te-atajo{flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;padding:6px 8px;margin-bottom:-2px;border-bottom:3px solid transparent;
+  text-decoration:none;font-weight:700;font-size:15px;color:var(--muted);text-align:center}
+.te-atajo:hover{color:var(--ink)}
+.te-atajo.on{color:var(--brand);border-bottom-color:var(--brand)}
+.te-atajo:focus-visible{outline:2px solid var(--brand);outline-offset:-2px;border-radius:6px}
 /* Ficha de repaso abierta: cada regla en su tarjeta, numerada. */
-.te-fichas-tit{margin:4px 0 2px;font-size:20px}
-.te-fichas-intro{margin:0 0 10px}
-.te-fic-cab{display:flex;align-items:center;gap:10px}
-.te-fic-seguir{margin:2px 0 14px}
-.te-fic-listo{margin:2px 0 14px;font-weight:600}
+.te-fichas{list-style:none;margin:0;padding:0}
+.te-fic-cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.te-fic-cab h3{margin:0;font-size:19px;flex:1;min-width:0}
+.te-fic-estado{font-size:13px;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--brand-soft);color:var(--brand)}
+.te-fic-estado.ok{background:color-mix(in srgb,var(--ok) 16%,var(--card));color:var(--ok)}
+.te-fic.sigue{border-color:var(--brand);box-shadow:0 0 0 2px var(--brand-soft)}
+.te-fic-listo{margin:0 0 14px;font-weight:600}
 .te-fic-preg{margin:6px 0 4px;font-size:16px;font-weight:600;color:var(--brand)}
 .te-fic-regla{margin:8px 0}
 .te-fic-regla>summary{min-height:44px;display:flex;align-items:center;font-weight:700;color:var(--brand)}
@@ -1017,26 +1028,32 @@ body.con-lupa{overflow:hidden}
    izquierda y figura a la derecha; en celular, apilado. */
 .te-fic-act{margin:4px 0 8px;font-size:15px}
 .te-fic-act b{color:var(--ink)}
-.te-fic-pal{margin:10px 0 4px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--c-d) 9%,var(--card))}
-.te-fic-pal h3{margin:0 0 6px;font-size:13px;letter-spacing:.02em;color:var(--muted);font-weight:700}
-.te-fic-pal dl{margin:0;display:grid;grid-template-columns:minmax(0,max-content) minmax(0,1fr);gap:6px 14px;align-items:baseline}
-.te-fic-pal dl>div{display:contents}
+.te-fic-pal{margin:8px 0 4px;padding:8px 12px;border-radius:14px;background:color-mix(in srgb,var(--c-d) 9%,var(--card));
+  display:grid;grid-template-columns:minmax(0,max-content) minmax(0,1fr);gap:4px 14px;align-items:baseline}
+.te-fic-pal>div{display:contents}
 .te-fic-pal dt{white-space:nowrap}
 .te-fic-pal dd{margin:0;font-size:15px;line-height:1.4}
 .te-fic-term{min-height:32px;padding:2px 0;border:0;background:none;font:inherit;font-weight:800;color:var(--c-d);text-align:left;
   text-decoration:underline dotted 2px;text-underline-offset:4px;cursor:pointer}
 .te-fic-term:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
 .te-fic-fig .te-leyenda{justify-content:center}
-.te-fic-acc{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin-top:6px}
+.te-fic-acc{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;margin-top:8px}
 .te-fic-acc .te-fic-regla{margin:0}
 .te-fic-acc .te-fic-regla[open]{flex-basis:100%}
-.te-fic-acc>.te-regla{flex-basis:100%}
-@media (max-width:420px){.te-fic-pal dl{grid-template-columns:minmax(0,1fr);row-gap:0}.te-fic-pal dd{margin-bottom:8px}}
+.te-fic-hecha{margin-top:8px}
+.te-fic-verfig{min-height:44px;padding:0 4px;border:0;background:none;font:inherit;font-weight:700;color:var(--brand);cursor:pointer}
+.te-fic-verfig:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:6px}
+/* Celular: la figura se abre con «Ver la figura»; así cada idea ocupa poco y el mapa se ve entero. */
+.te-fic-fig{display:none}
+.te-fic.abierta .te-fic-fig{display:block;margin-top:8px}
+@media (max-width:420px){.te-fic-pal{grid-template-columns:minmax(0,1fr);row-gap:0}.te-fic-pal dd{margin-bottom:6px}}
+/* Pantalla grande: texto a la izquierda y la figura siempre a la derecha, en chico. */
 @media (min-width:900px){
-  .te-fic{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:4px 24px;align-items:start}
-  .te-fic>.te-fic-cab,.te-fic>.te-fic-acc{grid-column:1/-1}
+  .te-fic{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,280px);gap:4px 24px;align-items:start}
+  .te-fic>.te-fic-cab,.te-fic>.te-fic-acc,.te-fic>.te-fic-hecha{grid-column:1/-1}
   .te-fic>.te-fic-txt{grid-column:1}
-  .te-fic>.te-fic-fig{grid-column:2;grid-row:2/span 2}
+  .te-fic>.te-fic-fig{display:block;grid-column:2;grid-row:2/span 2}
+  .te-fic-verfig{display:none}
 }
 .glo-simple,.te-glosa-s{margin:4px 0 6px;font-size:15px}
 .glo-simple b,.te-glosa-s b{color:var(--muted);font-weight:700}
