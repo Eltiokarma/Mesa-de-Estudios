@@ -801,6 +801,13 @@
           logrado: (v, gs) => gs.some(c => c.b !== v.b && 180 - c.b - c.c === 180 - v.b - v.c) && gs.some(c => c.b === v.b && c.c === v.c),
           bien: 'Mismo A, mismo BIC: solo cuenta A, no cómo se reparten B y C.' },
       ] }, bisectrices.juega)],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'triangulo-libre': ['lineas-notables'],
+      'bisagra-libre': ['desigualdad'],
+      'bisectrices': ['angulo-de-bisectrices'],
+    },
     ideas: [suma, desigualdad, lineas, bisectrices],
   };
 });

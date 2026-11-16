@@ -1217,6 +1217,13 @@
       pregunta: '¿Qué tienen en común todos los puntos de una misma recta?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Pierre de Fermat», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Fermat/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'dos-puntos': ['pendiente'],
+      'recta-y-punto': ['paralelas-perpendiculares'],
+      'triangulo-libre': ['baricentro-area'],
+    },
     ideas: [distancia, division, area, pendiente, ecuaciones, perpendicular],
   };
 });

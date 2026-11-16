@@ -1058,6 +1058,13 @@
       pregunta: '¿Se puede sumar algo que nunca termina?',
       fuente: { titulo: 'O’Connor y Robertson, Augustin-Louis Cauchy — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Cauchy/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'banda': ['limite'],
+      'razon': ['serie-geometrica'],
+      'aritmetica': ['progresiones'],
+    },
     ideas: [progresiones, limite, recurrentes, gauss, telescopica, geometrica],
   };
 });

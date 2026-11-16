@@ -1023,6 +1023,13 @@
         ],
       },
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'molecula-gira': ['forma-polaridad'],
+      'dos-dipolos': ['forma-polaridad'],
+      'resonancia-libre': ['resonancia'],
+    },
     ideas: [tres, lewisSolo, res, geo, fuerzas],
   };
 });

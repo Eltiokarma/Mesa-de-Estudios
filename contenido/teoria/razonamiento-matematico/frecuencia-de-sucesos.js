@@ -419,6 +419,13 @@
       pregunta: '¿Se cuentan los golpes o los espacios entre ellos?',
       fuente: { titulo: 'A Walk Through Time - Early Clocks · NIST', url: 'https://www.nist.gov/pml/time-and-frequency-division/popular-links/walk-through-time/walk-through-time-early-clocks' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'receta-libre': ['tomas-cada-t'],
+      'tres-ritmos': ['turnos-mcm'],
+      'tramo-del-dia': ['campanadas-del-dia'],
+    },
     ideas: [pastillas, coinciden, total],
   };
 });

@@ -800,6 +800,12 @@
         ],
       },
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'tres-propiedades': ['radio-atomico-ionico', 'energia-ionizacion', 'electronegatividad'],
+      'dos-elementos': ['radio-atomico-ionico', 'energia-ionizacion', 'electronegatividad'],
+    },
     ideas: [ley, ubicacion, radio, ionizacion, electroneg],
   };
 });

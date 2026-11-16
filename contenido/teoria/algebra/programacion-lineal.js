@@ -910,6 +910,14 @@
       { termino: 'recta de nivel', formas: ['recta de nivel', 'rectas de nivel'], def: 'Los puntos donde Z vale un mismo número k: px + qy = k.', ver: ['función objetivo'] },
       { termino: 'óptimo', formas: ['óptimo', 'óptimos', 'óptima'], def: 'El mejor valor posible de Z en la región: el máximo o el mínimo buscado.' },
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'techo-z': ['recta-de-nivel'],
+      'nivel-libre': ['recta-de-nivel'],
+      'region-movil': ['region-factible'],
+      'semiplano-libre': ['semiplano'],
+    },
     ideas: [semiplano, factible, nivelIdea, especiales],
   };
 });

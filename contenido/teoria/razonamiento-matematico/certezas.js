@@ -602,6 +602,13 @@
       pregunta: '¿Qué es estar seguro aunque la suerte juegue en contra?',
       fuente: { titulo: 'The Pigeonhole Principle · University of Lethbridge', url: 'https://opentext.uleth.ca/Ramsey/sec_Pigeon.html' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'urna-libre': ['peor-caso'],
+      'palomar-libre': ['palomar'],
+      'llaves-libre': ['llaves'],
+    },
     ideas: [peor, palo, ident],
   };
 });

@@ -961,6 +961,14 @@
         ejemplo: 'z = 0 es el piso: todos los puntos de altura 0.' },
       { termino: 'tangente', formas: ['tangente', 'tangentes'], def: 'Recta que toca a una curva en un punto sin atravesarla allí.' },
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'tres-planos': ['rouche'],
+      'rectas-libres': ['dos-rectas', 'cramer'],
+      'parabola-recta': ['no-lineal'],
+      'rangos': ['rouche'],
+    },
     ideas: [dosRectas, gauss, cramer, rouche, noLineal],
   };
 });

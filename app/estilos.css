@@ -874,7 +874,13 @@ body.con-lupa{overflow:hidden}
 .te-dice{font-size:16px;line-height:1.4}
 /* Laboratorio */
 .te-labo-sub{margin:-4px 0 0}
-.te-mesas{display:flex;flex-wrap:wrap;gap:8px}
+.te-mesas{display:flex;flex-direction:column;gap:12px}
+.te-mesas-g{display:flex;flex-direction:column;gap:6px}
+.te-mesas-idea{margin:0;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--muted)}
+.te-mesas-n{width:22px;height:22px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:inline-grid;place-items:center;font-size:12px;flex:none}
+.te-mesas-b{display:flex;flex-wrap:wrap;gap:8px}
+.te-mesa-de{margin:12px 0 0;font-size:14px;font-weight:700;color:var(--brand)}
+.te-mesa-de:empty{display:none}
 .te-registro:empty{display:none}
 .te-casos-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:6px}
 .te-caso{position:relative;margin:0;border:2px solid var(--line);border-radius:14px;padding:6px;background:var(--bg)}
@@ -1133,4 +1139,5 @@ body.con-lupa{overflow:hidden}
 .te-leyenda>div{display:flex;align-items:baseline;gap:6px}
 .te-leyenda dt{font-weight:800;min-width:1.2em}
 .te-leyenda dd{margin:0;color:var(--muted)}
-
+.glo-ejs{margin:4px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.glo-ejs li{line-height:1.4}

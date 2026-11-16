@@ -83,8 +83,17 @@
   const hecha = (st, id) => !!(st.ideas[id] && st.ideas[id].hecha);
 
   // Mesas del laboratorio: las que trae la unidad o, si no trae, el juego de cada idea (sin mínimo ni preguntas).
-  const mesasDe = def => (def.laboratorio && def.laboratorio.length ? def.laboratorio
-    : def.ideas.map(i => Object.assign({ id: i.id, titulo: i.titulo, pieza: i.juega.pieza || i.pieza }, i.juega)));
+  // Mesas del laboratorio agrupadas por idea (Gerson, 16 nov: «el chico no sabe si eso es de magnitudes o de
+  // unidades»). Cada mesa dice sus ideas (def.laboratorioIdeas). Una idea sin mesa propia aporta su juego, para que
+  // cada idea tenga su laboratorio; ahí no va la misión, porque en el laboratorio nada se califica.
+  const juegoComoMesa = (i, id) => Object.assign({ id, titulo: `El juego: ${i.titulo}`, pieza: i.juega.pieza || i.pieza }, i.juega, { mision: undefined, ideas: [i.id] });
+  const mesasDe = def => {
+    if (!(def.laboratorio && def.laboratorio.length)) return def.ideas.map(i => Object.assign(juegoComoMesa(i, i.id), { titulo: i.titulo }));
+    const mapa = def.laboratorioIdeas || {};
+    const mesas = def.laboratorio.map(m => Object.assign({}, m, { ideas: mapa[m.id] || [] }));
+    for (const i of def.ideas) if (!mesas.some(m => m.ideas.includes(i.id))) mesas.push(juegoComoMesa(i, `juego-${i.id}`));
+    return mesas;
+  };
 
   // ---------- Lupa de una pieza viva (3D): el mismo lienzo pasa a pantalla completa y se acerca con − y + ----------
   // No se abre un segundo lienzo WebGL (el navegador admite pocos): se mueve el que ya está y al cerrar vuelve a su sitio.
@@ -205,6 +214,13 @@
 
     // ---------- Glosario: términos tocables y hoja con la definición ----------
     const G = window.Glosario;
+    // Los ejemplos de un término (uno o varios; Gerson, 16 nov: «más ejemplos por cada término»).
+    function listaEjemplos(e, clase) {
+      const xs = G ? G.ejemplosDe(e) : [];
+      if (!xs.length) return '';
+      return xs.length === 1 ? `<p class="${clase}"><span>Ejemplo</span> ${esc(xs[0])}</p>`
+        : `<div class="${clase}"><span>Ejemplos</span><ul class="glo-ejs">${xs.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`;
+    }
     const entradas = (G && glos && glos.entradas) || [];
     // Una definición local (local: true) vale solo en su unidad y ahí gana a la del curso.
     const porClave = new Map();
@@ -268,7 +284,7 @@
         <h3 class="te-glosa-t" tabindex="-1">${esc(e.termino)}</h3>
         ${e.simbolo || e.medida ? `<p class="te-glosa-sm">${e.simbolo ? `Símbolo <b class="ec-letra">${esc(e.simbolo)}</b>` : ''}${e.simbolo && e.medida ? ' · ' : ''}${e.medida ? `se mide en <b>${esc(e.medida)}</b>` : ''}</p>` : ''}
         <p class="te-glosa-d">${esc(e.def)}</p>
-        ${e.ejemplo ? `<p class="te-glosa-e"><span>Ejemplo</span> ${esc(e.ejemplo)}</p>` : ''}
+        ${listaEjemplos(e, 'te-glosa-e')}
         ${ver.length ? `<p class="te-glosa-ver"><span>Ver también</span> ${ver.map(v => `<button type="button" class="te-ficha-op" data-glosa="${esc(G.clave(v.termino))}">${esc(v.termino)}</button>`).join(' ')}</p>` : ''}
         ${glosa ? '' : `<a class="te-glosa-todo" href="#/unidad/${esc(u.id)}/teoria/glosario">Todo el glosario del tema ›</a>`}`;
       capa.hidden = false;
@@ -304,7 +320,8 @@
     if (lab) { $app.innerHTML = cab + `<section class="card te-idea te-labo" aria-labelledby="te-titulo" data-m="juega">
         <h2 id="te-titulo">Laboratorio</h2>
         <p class="sub te-labo-sub">Juega libre: nada se califica. Guarda casos para compararlos.</p>
-        <nav class="te-mesas" aria-label="Mesas del laboratorio"></nav>
+        <nav class="te-mesas" aria-label="Mesas del laboratorio, por idea"></nav>
+        <p class="te-mesa-de"></p>
         ${figuraHTML}<div class="te-lectura" aria-live="polite"></div><div class="te-zona"></div>
         <div class="te-registro" aria-label="Casos guardados"></div>${vozHTML}</section>`;
       return laboratorio();
@@ -648,7 +665,7 @@
           <h3>${esc(e.termino)}</h3>
           ${e.simbolo || e.medida ? `<p class="glo-sm">${e.simbolo ? `<b class="ec-letra">${esc(e.simbolo)}</b>` : ''}${e.simbolo && e.medida ? ' · ' : ''}${e.medida ? `en ${esc(e.medida)}` : ''}</p>` : ''}
           <p class="glo-def">${esc(e.def)}</p>
-          ${e.ejemplo ? `<details class="glo-ej"><summary>Ver ejemplo</summary><p>${esc(e.ejemplo)}</p></details>` : ''}
+          ${(() => { const xs = G.ejemplosDe(e); return xs.length ? `<details class="glo-ej"><summary>${xs.length > 1 ? `Ver ${xs.length} ejemplos` : 'Ver ejemplo'}</summary><ul class="glo-ejs">${xs.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''; })()}
           <div class="glo-acc"><button type="button" class="glo-b glo-sabe" data-sabe="${esc(k)}" aria-pressed="${m === 'sabe'}">${m === 'sabe' ? 'La repaso otra vez' : 'Ya me la sé'}</button>
             ${idea ? `<a class="glo-b glo-ver" href="#/unidad/${esc(u.id)}/teoria/${esc(idea)}">Verla en la teoría</a>` : e.en !== u.id ? `<a class="glo-b glo-ver" href="#/unidad/${esc(e.en)}/teoria/glosario">Ir a su tema</a>` : ''}</div>
         </article>`;
@@ -723,7 +740,7 @@
         const e = lista[i];
         capa.innerHTML = `<div class="glo-rep-barra"><span>${i + 1} de ${lista.length}</span><button type="button" class="btn borde glo-rep-cerrar">Cerrar</button></div>
           <div class="glo-rep-carta${volteada ? ' volteada' : ''}">
-            ${volteada ? `<p class="glo-tipo">${esc(e.termino)}</p><p class="glo-def">${esc(e.def)}</p>${e.ejemplo ? `<p class="glo-rep-ej"><b>Ejemplo:</b> ${esc(e.ejemplo)}</p>` : ''}`
+            ${volteada ? `<p class="glo-tipo">${esc(e.termino)}</p><p class="glo-def">${esc(e.def)}</p>${listaEjemplos(e, 'glo-rep-ej')}`
               : `<p class="glo-tipo">¿Qué significa?</p><h2>${esc(e.termino)}</h2>${e.simbolo ? `<p class="glo-sm"><b class="ec-letra">${esc(e.simbolo)}</b></p>` : ''}<p class="sub">Dilo en voz alta o piénsalo, y voltea la tarjeta.</p>`}
           </div>
           <div class="glo-rep-acc">${volteada ? `<button type="button" class="btn glo-b glo-rep-no">Repasar otra vez</button><button type="button" class="btn morado glo-rep-si">La sabía</button>`
@@ -808,7 +825,15 @@
       const deMesa = () => est.coleccion.filter(x => x.unidad === u.id && x.mesa === actual.id);
       const lecturaDe = v => { try { return actual.lectura ? E.html(actual.lectura(v)) : ''; } catch (e) { return ''; } };
       const dibujoDe = v => { const P = Kit.piezas[actual.pieza]; const d = actual.dibujo(v); return P.dibujar(d.datos, d.estado || {}); };
-      const pintarNav = () => { nav.innerHTML = mesas.map(m => `<button type="button" class="te-ficha-op" data-mesa="${esc(m.id)}" aria-pressed="${m === actual}">${esc(m.titulo)}</button>`).join(''); };
+      const boton = m => `<button type="button" class="te-ficha-op" data-mesa="${esc(m.id)}" aria-pressed="${m === actual}">${esc(m.titulo)}</button>`;
+      const pintarNav = () => {
+        const sueltas = mesas.filter(m => !m.ideas.length);
+        nav.innerHTML = ideas.map((i, k) => { const ms = mesas.filter(m => m.ideas.includes(i.id)); if (!ms.length) return '';
+          return `<div class="te-mesas-g"><p class="te-mesas-idea"><span class="te-mesas-n" aria-hidden="true">${k + 1}</span>${esc(i.titulo)}</p><div class="te-mesas-b">${ms.map(boton).join('')}</div></div>`; }).join('')
+          + (sueltas.length ? `<div class="te-mesas-g"><p class="te-mesas-idea">Más mesas del tema</p><div class="te-mesas-b">${sueltas.map(boton).join('')}</div></div>` : '');
+        const de = q('.te-mesa-de'), is = actual.ideas.map(id => ideas.findIndex(i => i.id === id)).filter(k => k >= 0);
+        if (de) de.textContent = is.length ? `${is.length > 1 ? 'De las ideas' : 'De la idea'} ${is.map(k => `${k + 1}: ${ideas[k].titulo}`).join(' · ')}` : '';
+      };
       // Invitaciones: un reto a la vez; su `logrado(valores, guardados)` lo comprueba el motor de la mesa (regla 1).
       const logradas = () => st.lab.logradas[actual.id] || (st.lab.logradas[actual.id] = []);
       // Ayuda del reto (15 nov, docs/dos-entradas.md: «pedir ayuda»): primero una pista; si no basta, «Muéstrame» pone un

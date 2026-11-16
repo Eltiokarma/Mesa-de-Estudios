@@ -995,6 +995,13 @@
     // Laboratorio: las tres mesas son más ricas que sus ideas: D y E libres (corte inclinado), la bisectriz con el ángulo
     // A libre y el rectángulo estirado con dos escalas.
     laboratorio: [mesaThales, mesaBisectriz, mesaEstirar],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'corte-libre': ['thales'],
+      'bisectriz-libre': ['bisectriz'],
+      'estirar': ['area-y-escala'],
+    },
     ideas: [thalesIdea, bisectriz, cevaIdea, semejanza, areaEscala],
   };
 });

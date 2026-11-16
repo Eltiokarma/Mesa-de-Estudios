@@ -1259,6 +1259,13 @@
       pregunta: '¿Dónde están las raíces que la gráfica no muestra?',
       fuente: { titulo: 'O’Connor y Robertson, The fundamental theorem of algebra — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Fund_theorem_of_algebra/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cubica-libre': ['viete'],
+      'sube-baja': ['grado-raices'],
+      'w-libre': ['binomica'],
+    },
     ideas: [tfa, vieta, racionales, conjugadas, cambio, binomica],
   };
 });

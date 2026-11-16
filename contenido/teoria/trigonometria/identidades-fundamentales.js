@@ -701,6 +701,12 @@
       pregunta: '¿Para qué sirve una relación entre las seis líneas de un arco?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Mohammad Abu’l-Wafa al-Buzjani», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Abul-Wafa/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'tres-triangulos': ['pitagoricas'],
+      'dos-miembros': ['simplificar-demostrar'],
+    },
     ideas: [pitagoricas, reciprocas, auxiliares, demostrar],
   };
 });

@@ -528,6 +528,13 @@
         ],
       }, debate.juega),
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'debate-armado': ['cuestion-y-posturas'],
+      'tesis-razones': ['tesis-razones'],
+      'cuestion': ['cuestion-y-posturas'],
+    },
     ideas: [tesisRazones, debate, dialectica],
   };
 });

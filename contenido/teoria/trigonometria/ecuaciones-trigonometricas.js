@@ -1015,6 +1015,13 @@
       pregunta: '¿Cuántas soluciones puede ocultar una sola ecuación?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «François Viète», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Viete/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'tres-funciones': ['cortes-recta'],
+      'franja-libre': ['extremos', 'cortes-recta'],
+      'factor-fuera': ['factorizar'],
+    },
     ideas: [cuantas, familias, extremos, factores, sistemas],
   };
 });

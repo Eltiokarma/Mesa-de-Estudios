@@ -948,6 +948,13 @@
       pregunta: '¿Qué ganas al escribir una letra en vez de un número?',
       fuente: { titulo: 'O’Connor y Robertson, François Viète — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Viete/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'curva-cubica': ['valor-numerico'],
+      'dos-curvas': ['igualdad', 'valor-numerico'],
+      'producto-libre': ['operaciones'],
+    },
     ideas: [grados, valor, especiales, igualdad, operaciones],
   };
 });

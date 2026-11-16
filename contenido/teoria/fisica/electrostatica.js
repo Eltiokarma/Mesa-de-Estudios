@@ -817,6 +817,13 @@
       pregunta: '¿Cómo medirías una fuerza que no puedes sentir?',
       fuente: { titulo: 'National MagLab — Torsion balance (1785)', url: 'https://nationalmaglab.org/magnet-academy/history-of-electricity-magnetism/museum/torsion-balance-1785/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'coulomb-libre': ['coulomb'],
+      'campo-y-potencial': ['campo-potencial'],
+      'placas': ['campo-uniforme'],
+    },
     ideas: [contacto, coulomb, superposicion, uniforme, condensadores, energia],
   };
 });

@@ -902,6 +902,14 @@
       pregunta: '¿Puede una suma sin fin dar un número?',
       fuente: { titulo: 'Arquímedes, prefacio a Quadrature of the parabola, traducción reproducida por MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Extras/Archimedes_parabola/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'piramide-cuadrados': [],
+      'escalera-suma': ['progresion-aritmetica', 'suma-rectangulo'],
+      'suma-sin-fin': ['suma-infinita'],
+      'tiras-geometricas': ['progresion-geometrica'],
+    },
     ideas: [pa, suma, pg, orden, infinita],
   };
 });

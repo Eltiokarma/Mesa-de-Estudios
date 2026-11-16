@@ -759,6 +759,13 @@
       pregunta: '¿Qué tiene que ver multiplicar con girar?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Abraham de Moivre», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/De_Moivre/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'radio-negativo': ['polar-punto'],
+      'cuatro-cuadrantes': ['argumento'],
+      'producto-cociente': ['multiplicar'],
+    },
     ideas: [polares, argumento, multiplicar, demoivre, exponencial],
   };
 });

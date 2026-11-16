@@ -736,6 +736,13 @@
     // Laboratorio: sector con segmento, corona con trapecio y lúnulas con catetos libres; las tres abren rangos o casos
     // que las ideas no dejan probar (α > 180°, r ≥ R, cualquier triángulo rectángulo).
     laboratorio: [mesaSector, mesaTrapecio, mesaLunulas],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'sector-y-segmento': ['arco-y-sector', 'segmento-y-corona'],
+      'corona-y-trapecio': ['segmento-y-corona', 'trapecio-circular-y-lunulas'],
+      'lunulas-libres': ['trapecio-circular-y-lunulas'],
+    },
     ideas: [piIdea, areaCirc, sectorIdea, coronaIdea, lunIdea],
   };
 });

@@ -866,6 +866,13 @@
     // Laboratorio: las tres mesas son más ricas que sus ideas (P libre con tangente, A y C libres con el signo de 2am,
     // y D suelto de la circunferencia).
     laboratorio: [mesaPotencia, mesaEuclides, mesaPtolomeo],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'potencia-libre': ['potencia'],
+      'euclides-libre': ['euclides'],
+      'ptolomeo-libre': ['ptolomeo'],
+    },
     ideas: [rectIdea, euclides, stewart, heron, potencia, ptolomeo],
   };
 });

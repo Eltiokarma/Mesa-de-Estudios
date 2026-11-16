@@ -747,6 +747,12 @@
       pregunta: '¿Cómo sabrías que una regla funciona en todos los casos?',
       fuente: { titulo: 'O’Connor y Robertson, George Boole — MacTutor, Universidad de St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Boole/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'dos-formulas': ['de-morgan'],
+      'dominio-grande': ['cuantificadores'],
+    },
     ideas: [conectivos, condicional, tipos, leyes, cuanti],
   };
 });

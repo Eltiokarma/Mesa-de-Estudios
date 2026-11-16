@@ -468,6 +468,13 @@
         ],
       }, ideaPrincipal.juega),
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cuantificadores': ['cuatro-casillas'],
+      'casillas': ['cuatro-casillas'],
+      'idea-principal': ['idea-principal'],
+    },
     ideas: [casillas, ideaPrincipal],
   };
 });

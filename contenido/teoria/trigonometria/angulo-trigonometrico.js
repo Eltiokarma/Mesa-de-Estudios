@@ -830,6 +830,13 @@
       pregunta: '¿Por qué una vuelta tendría 360 partes y no 100?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Babylonian numerals», MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Babylonian_numerals/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'dos-giros': [],
+      'tres-escalas': ['tres-sistemas'],
+      'arco-sale': ['radian'],
+    },
     ideas: [sentido, escalas, radian, minutos],
   };
 });

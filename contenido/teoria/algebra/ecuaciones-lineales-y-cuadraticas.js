@@ -1035,6 +1035,13 @@
       { termino: 'completar el cuadrado', formas: ['completar el cuadrado', 'completando el cuadrado', 'completando cuadrados'],
         def: 'Sumar lo que falta para escribir x² + bx como parte de (x + b/2)².', ejemplo: 'x² + 6x = (x + 3)² − 9.' },
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'parabola-libre': ['discriminante'],
+      'dos-lados': ['balanza'],
+      'raices-libres': ['suma-producto'],
+    },
     ideas: [primerGrado, dividirX, discriminante, vieta, planteo],
   };
 });

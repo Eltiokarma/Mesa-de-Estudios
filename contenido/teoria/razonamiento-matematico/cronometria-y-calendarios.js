@@ -572,6 +572,13 @@
       pregunta: '¿Por qué no todos los años divisibles entre 4 son bisiestos?',
       fuente: { titulo: 'Leap Years · US Naval Observatory', url: 'https://aa.usno.navy.mil/faq/leap_years' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'reloj-libre': ['angulo-agujas'],
+      'reloj-que-gana': ['adelantos'],
+      'calendario': ['dia-de-la-semana'],
+    },
     ideas: [ang, adelanto, camp, bisiesto, semana],
   };
 });

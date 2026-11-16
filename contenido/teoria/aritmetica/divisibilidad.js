@@ -778,6 +778,13 @@
       pregunta: '¿Se puede saber lo que sobra sin dividir todo?',
       fuente: { titulo: 'O’Connor y Robertson, Carl Friedrich Gauss — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Gauss/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'filas-grandes': ['filas-de-m'],
+      'juntar-sobrantes': ['restos-suman'],
+      'ciclos-largos': ['restos-potenciales'],
+    },
     ideas: [multiplos, teoremas, potencias, criterios, diofanticas],
   };
 });

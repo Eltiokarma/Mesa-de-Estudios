@@ -806,6 +806,14 @@
       pregunta: '¿Cuándo dos resultados son en realidad el mismo?',
       fuente: { titulo: 'O’Connor y Robertson, Blaise Pascal — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Pascal/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'menu-con-postre': ['principios'],
+      'casilleros-libres': ['variaciones'],
+      'grupos-ordenes': ['combinaciones'],
+      'menu': ['principios'],
+    },
     ideas: [principios, variaciones, circular, repeticion, combis],
   };
 });

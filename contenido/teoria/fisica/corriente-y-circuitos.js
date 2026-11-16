@@ -1046,6 +1046,13 @@
       pregunta: '¿Qué cambió cuando la electricidad pudo durar?',
       fuente: { titulo: 'Museo Galileo — La pila de Volta', url: 'https://catalogo.museogalileo.it/approfondimento/Pila.html' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'pila-reostato': ['fem-y-medidores'],
+      'dos-ramas': ['kirchhoff'],
+      'recta-vi': ['ohm-resistividad'],
+    },
     ideas: [corriente, ohm, fem, seriePar, nudos, potencia],
   };
 });

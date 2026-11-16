@@ -1002,6 +1002,15 @@
       pregunta: '¿Qué medida cabe exacta en dos cintas distintas?',
       fuente: { titulo: 'Euclides, Elementos VII.2; edición y comentario de David E. Joyce — Clark University', url: 'https://mathcs.clarku.edu/~djoyce/elements/bookVII/propVII2.html' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'caja-que-se-llena': ['mcd-cintas'],
+      'ladrillos-cubo': ['mcm-coinciden'],
+      'cintas-libres': ['mcd-cintas'],
+      'tres-combis': ['mcm-coinciden'],
+      'euclides': ['euclides'],
+    },
     ideas: [trozo, buses, euclidesIdea, relacion, fcIdea],
   };
 });

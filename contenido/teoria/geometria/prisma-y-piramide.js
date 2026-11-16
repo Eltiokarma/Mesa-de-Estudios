@@ -914,6 +914,15 @@
         logrado: (v, guardados) => guardados.some(g => casi(v.t, 2 * g.t) || casi(g.t, 2 * v.t)) && guardados.some(g => g.t === v.t),
         bien: 'Doble de k, ocho veces el volumen: 2³ = 8.' },
     ] }, semIdea.juega)],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'prisma-corte': [],
+      'tres-piramides-3d': ['piramide'],
+      'piramide-en-prisma': ['piramide', 'prisma'],
+      'tronco-libre': ['tronco-de-piramide'],
+      'escala': ['semejanza-de-solidos'],
+    },
     ideas: [prismaIdea, cajaIdea, pirIdea, troncoIdea, tpIdea, semIdea],
   };
 });

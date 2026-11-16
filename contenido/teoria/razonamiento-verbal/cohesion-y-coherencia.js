@@ -483,6 +483,13 @@
             bien: 'Compáralos: lo nuevo de la 3 es lo conocido de la 4.' },
         ] }, progresion.juega),
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'concordar-no-basta': ['referente'],
+      'referente': ['referente'],
+      'hilo': ['conocido-y-nuevo'],
+    },
     ideas: [referencia, recursos, progresion, noContradiccion],
   };
 });

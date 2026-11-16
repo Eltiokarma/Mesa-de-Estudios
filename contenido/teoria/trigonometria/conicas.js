@@ -894,6 +894,14 @@
       pregunta: '¿Cómo saber que una condición y una ecuación describen la misma curva?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Apollonius of Perga», MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Apollonius/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cono-corte': [],
+      'foco-y-directriz': ['lugar-parabola'],
+      'cuerda-libre': ['elipse'],
+      'recta-y-parabola': ['recta-tangente'],
+    },
     ideas: [parabola, elipseIdea, hiperbolaIdea, tangenteIdea, rotacion],
   };
 });

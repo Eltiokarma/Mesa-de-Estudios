@@ -790,6 +790,13 @@
       pregunta: 'Si conoces sen 3°, ¿cómo encontrarías sen 1°?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Ghiyath al-Din Jamshid al-Kashi», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Al-Kashi/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'doble-y-mitad': ['angulo-doble', 'angulo-mitad'],
+      'punto-a-punto': ['degradacion'],
+      'tres-candidatos': ['angulo-triple'],
+    },
     ideas: [doblar, deg2, mitadIdea, triple],
   };
 });

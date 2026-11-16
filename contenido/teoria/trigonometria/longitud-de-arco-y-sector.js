@@ -973,6 +973,13 @@
       pregunta: '¿Por qué el radio aparecería una vez en el arco y dos en el área?',
       fuente: { titulo: 'Arquímedes, Medida del círculo, proposición 1; traducción y discusión del seminario de Harvard (2009)', url: 'https://people.math.harvard.edu/archive/archimedes09/pdf/Measurement.of.the.Circle.pdf' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'sector-completo': ['arco', 'sector'],
+      'rodea': ['vueltas-rueda'],
+      'faja-libre': ['faja-y-eje'],
+    },
     ideas: [arco, area, trapecio, vueltas, poleasIdea],
     // Glosario (docs/teoria.md §4d): las palabras que esta unidad estrena en el curso. «Ángulo», «radián», «arco»,
     // «radio», «vuelta» y «circunferencia» vienen de «Ángulo trigonométrico».

@@ -815,6 +815,13 @@
       pregunta: '¿Toda operación se puede deshacer sin perder nada?',
       fuente: { titulo: 'O’Connor y Robertson, Rafael Bombelli — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Bombelli/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'distancia-libre': ['distancia'],
+      'v-y-recta': ['casos-absoluto'],
+      'raiz-nivel': ['radical-inecuacion'],
+    },
     ideas: [distancia, casos, rext, rinec],
   };
 });

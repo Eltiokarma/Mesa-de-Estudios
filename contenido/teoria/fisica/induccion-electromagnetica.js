@@ -748,6 +748,14 @@
       pregunta: '¿Por qué la aguja quedaba quieta con la corriente encendida?',
       fuente: { titulo: 'Royal Institution — Faraday’s ring-coil apparatus', url: 'https://www.rigb.org/explore-science/explore/collection/michael-faradays-ring-coil-apparatus' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'espira-sombra-3d': ['flujo'],
+      'barra-libre': ['barra-movil', 'lenz'],
+      'espira-gira': ['flujo'],
+      'flujo-tiempo': ['faraday'],
+    },
     ideas: [flujo, faraday, lenzIdea, barraIdea, generador, trafo],
   };
 });

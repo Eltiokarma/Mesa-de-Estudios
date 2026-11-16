@@ -938,6 +938,13 @@
       pregunta: '¿Cuándo un buen intento se puede corregir con una regla?',
       fuente: { titulo: 'Egyptian mathematics, 1.1.2 Egyptian calculation — The Open University', url: 'https://www.open.edu/openlearn/science-maths-technology/mathematics-statistics/egyptian-mathematics/content-section-1.1.2' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'canje-libre': ['falsa-suposicion'],
+      'persecucion': ['moviles'],
+      'edades-libre': ['edades'],
+    },
     ideas: [falsa, regresivo, edades, moviles, cripto, unicidad],
   };
 });

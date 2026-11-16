@@ -465,6 +465,13 @@
             bien: 'Compara los dos: uno es frecuente, el otro está en todas.' },
         ] }, rasgoNecesario.juega),
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'dos-rasgos': ['rasgo-necesario'],
+      'silla': ['genero-diferencia'],
+      'un-rasgo': ['rasgo-necesario'],
+    },
     ideas: [generoDiferencia, rasgoNecesario],
   };
 });

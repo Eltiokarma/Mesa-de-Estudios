@@ -331,6 +331,17 @@ juega: {
 - Entrar a `#/unidad/<id>/teoria` sin idea abre el Resumen: un botón grande («Empezar por la idea 1…» o «Seguir con la idea N…») y una tarjeta por idea, con su pregunta y la figura de su juego.
 - **Es un mapa, no una hoja de respuestas.** La regla de una idea se ve cuando el alumno la termina; antes, solo si toca «Ver la regla», y eso se registra (`momento: 'resumen-regla'`). Leer la regla antes de jugar le quita sentido a la predicción (regla 3); Gerson eligió esta forma el 16 nov.
 
+## 4g. Laboratorio por idea y glosario con varios ejemplos (Gerson, 16 nov)
+
+- **`laboratorioIdeas`** (en la unidad): `{ 'id-de-mesa': ['id-de-idea', …] }`. Dice qué idea practica cada mesa.
+  - El laboratorio se muestra agrupado por idea, y cada mesa dice «De la idea N: …».
+  - Una idea sin mesa propia aporta su juego («El juego: …»), sin la misión: en el laboratorio nada se califica.
+  - Una lista vacía significa que la mesa no practica ninguna idea de la unidad: va en «Más mesas del tema».
+  - El validador exige una entrada por mesa, con ideas que existan.
+  - Las 475 mesas se asignaron el 16 nov leyendo título, consigna y controles de mesas e ideas.
+  - Siete mesas quedaron sin idea, porque su tema no lo enseña ninguna idea: `dobles-y-color` (biomoléculas), `enlace-que-gira` (hidrocarburos), `piramide-cuadrados` (sucesiones de aritmética), `prisma-corte` (prisma y pirámide), `dos-giros` (ángulo trigonométrico), `cono-corte` (cónicas) y `cuantificadores` (lectura en inglés). Al rehacer esas unidades hay que decidir si el tema merece su propia idea o si sobra la mesa.
+- **`ejemplos`** (en un término del glosario): una lista de 2 a 4 ejemplos, de 20 palabras o menos cada uno, que reemplaza a `ejemplo`. El lector muestra «Ver 3 ejemplos». Una unidad con `calidad: 2` pide 3 ejemplos o más por término propio.
+
 ## 5. Topes de texto (los vigila `contenido/teoria/teoria.test.js`)
 
 | Campo | Palabras |

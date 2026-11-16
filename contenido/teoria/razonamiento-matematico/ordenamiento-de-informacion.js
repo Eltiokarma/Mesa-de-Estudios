@@ -616,6 +616,13 @@
       pregunta: '¿Cuántos órdenes deja vivos una sola pista?',
       fuente: { titulo: 'George Boole · Stanford Encyclopedia of Philosophy', url: 'https://plato.stanford.edu/archives/sum2021/entries/boole/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'mesa-redonda': ['orden-circular', 'mesa-cuadrada'],
+      'mesa-cuadrada-libre': ['mesa-cuadrada'],
+      'pistas-a-elegir': ['orden-lineal'],
+    },
     ideas: [lineal, circular, poligonal],
   };
 });

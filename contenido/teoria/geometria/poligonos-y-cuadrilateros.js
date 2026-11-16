@@ -1136,6 +1136,13 @@
     // Laboratorio: las tres mesas son más ricas que sus ideas (cuadrilátero cóncavo y cruzado, paralelogramo con las
     // diagonales medidas y trapecio con los dos extremos de la base menor libres).
     laboratorio: [mesaCuad, mesaPara, mesaTrap],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cuadrilatero-libre': ['trapezoides'],
+      'paralelogramo-libre': ['paralelogramos'],
+      'trapecio-libre': ['trapecios'],
+    },
     ideas: [sumaIdea, diagonales, paralelogramos, trapecios, trapezoides],
   };
 });

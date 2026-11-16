@@ -880,6 +880,13 @@
       pregunta: '¿Toda tabla de valores describe una función?',
       fuente: { titulo: 'O’Connor y Robertson, The function concept — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Functions/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'trasladar': ['traslaciones'],
+      'parabola': ['cuadratica'],
+      'polinomio': ['polinomial'],
+    },
     ideas: [dominioRango, cuadratica, especiales, composicion, traslaciones, polinomial],
   };
 });

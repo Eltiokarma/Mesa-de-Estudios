@@ -592,6 +592,14 @@
     // Laboratorio: primero los planos que parten el sólido, en 3D (exploración libre); después, el espejo que gira y los dos espejos son más ricos que sus ideas; la tercera mesa es el juego del
     // reflejo en un plano, con sus dos manijas en 3D.
     laboratorio: [mesaPlanos3d, mesaEspejo, mesaDos, Object.assign({ id: 'reflejo-plano', titulo: 'Reflejo en un plano', pieza: 'geo-figura', invitaciones: retosPlano }, planoIdea.juega)],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'planos-3d': ['simetria-plano'],
+      'espejo-que-gira': ['simetria-axial'],
+      'dos-espejos': ['simetria-axial'],
+      'reflejo-plano': ['simetria-plano'],
+    },
     ideas: [axialIdea, centralIdea, planoIdea],
   };
 });

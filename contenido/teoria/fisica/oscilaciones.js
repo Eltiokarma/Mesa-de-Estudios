@@ -866,6 +866,14 @@
       pregunta: '¿Por qué un reloj de péndulo puede contar segundos?',
       fuente: { titulo: 'APS News — Huygens patents the first pendulum clock', url: 'https://www.aps.org/apsnews/2017/06/huygens-patents-first-pendulum-clock' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'resorte-vivo': ['periodo-resorte'],
+      'resorte-libre': ['aceleracion-al-centro'],
+      'pendulo-libre': ['pendulo'],
+      'coseno': ['graficas-mas'],
+    },
     ideas: [centro, graficas, resorteT, pendulo, energia],
   };
 });

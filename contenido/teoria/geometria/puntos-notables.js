@@ -692,6 +692,13 @@
     // Laboratorio: los cuatro centros juntos con A libre, Euler con los nueve puntos y obtusángulos, y las seis áreas
     // del baricentro: las tres son más ricas que sus ideas.
     laboratorio: [mesaCuatro, mesaEuler, mesaSeis],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cuatro-centros': ['centros'],
+      'euler-libre': ['euler'],
+      'seis-areas': ['baricentro'],
+    },
     ideas: [baricentro, centrosIdea, eulerIdea],
   };
 });

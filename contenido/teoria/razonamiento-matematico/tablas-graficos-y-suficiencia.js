@@ -465,6 +465,13 @@
       pregunta: '¿Puede un gráfico decir la verdad y aun así engañar?',
       fuente: { titulo: 'Florence Nightingale’s Statistical Diagrams · Hugh Small, University of York', url: 'https://www.york.ac.uk/depts/maths/histstat/small.htm' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'eje-libre': ['leer-con-escala'],
+      'liga-libre': ['puntos-de-una-liga'],
+      'casos-en-el-plano': ['suficiencia'],
+    },
     ideas: [leer, deportes, suficiencia],
   };
 });

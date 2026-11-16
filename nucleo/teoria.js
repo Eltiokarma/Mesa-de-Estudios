@@ -257,6 +257,25 @@
       let a = 987654321; const r = () => { a = (Math.imul(a, 1103515245) + 12345) >>> 0; return a / 4294967296; };
       return Array.from({ length: n }, () => casos[Math.floor(r() * casos.length)]);
     }
+    // Con calidad: 2, cada término propio del glosario trae 3 ejemplos o más (Gerson, 16 nov: «más ejemplos por término»).
+    if (def.calidad >= 2) for (const g of def.glosario || []) {
+      const n = Array.isArray(g.ejemplos) ? g.ejemplos.length : g.ejemplo ? 1 : 0;
+      if (n < 3) mal(`glosario «${g.termino}»`, `${n} ejemplo(s): con calidad 2 van 3 o más`);
+    }
+    // A qué idea pertenece cada mesa (Gerson, 16 nov): el laboratorio se agrupa por idea. laboratorioIdeas = { mesa: [ideas] }.
+    if (def.laboratorio !== undefined) {
+      const L = def.laboratorioIdeas, idsIdeas = new Set((def.ideas || []).map(i => i && i.id));
+      const idsMesas = new Set((Array.isArray(def.laboratorio) ? def.laboratorio : []).map(m => m && m.id));
+      if (!L || typeof L !== 'object') mal(def.unidad, 'laboratorioIdeas: a qué idea pertenece cada mesa ({ mesa: [ideas] })');
+      else {
+        // Lista vacía: la mesa no practica ninguna idea de la unidad (va en «Más mesas del tema»).
+        for (const m of idsMesas) if (!Array.isArray(L[m])) mal(def.unidad, `laboratorioIdeas: la mesa «${m}» no dice su idea`);
+        for (const [m, is] of Object.entries(L)) {
+          if (!idsMesas.has(m)) mal(def.unidad, `laboratorioIdeas: «${m}» no es una mesa`);
+          for (const i of Array.isArray(is) ? is : []) if (!idsIdeas.has(i)) mal(def.unidad, `laboratorioIdeas: «${i}» no es una idea`);
+        }
+      }
+    }
     // Laboratorio: mesas de juego libre, sin preguntas. Si la unidad no trae, el lector usa el juego de cada idea.
     if (def.laboratorio !== undefined) {
       if (!Array.isArray(def.laboratorio) || !def.laboratorio.length || def.laboratorio.length > 5) mal(def.unidad, 'laboratorio: de 1 a 5 mesas (una puede ser la mesa 3D)');

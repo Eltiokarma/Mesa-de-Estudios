@@ -416,6 +416,13 @@
           bien: 'La locución es la misma; el final decide si la relación se sostiene.' },
       ] }, locuciones.juega),
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'tablero': ['clases'],
+      'relacion': ['relacion-primero'],
+      'locuciones': ['locuciones'],
+    },
     ideas: [relacion, clases, locuciones],
   };
 });

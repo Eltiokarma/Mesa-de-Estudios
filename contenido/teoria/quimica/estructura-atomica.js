@@ -967,6 +967,13 @@
         ],
       },
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'nube-orbital': ['numeros-cuanticos'],
+      'arma-ion': ['nucleo-identidad'],
+      'cajas-ion': ['configuracion-electronica', 'desapareados-isoelectronicos'],
+    },
     ideas: [nucleo, modelos, cuanticos, configuracion, desapareados],
   };
 });

@@ -408,6 +408,12 @@
       pregunta: '¿Qué comparten dos ruedas que se tocan?',
       fuente: { titulo: 'Freeth et al. (2006), Decoding the Antikythera Mechanism · Nature', url: 'https://www.nature.com/articles/nature05357' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'tren-de-engranajes': ['engranajes'],
+      'faja-libre': ['faja'],
+    },
     ideas: [contacto, fajas, eje],
   };
 });

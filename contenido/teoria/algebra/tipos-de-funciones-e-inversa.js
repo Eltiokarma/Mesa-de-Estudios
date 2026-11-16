@@ -748,6 +748,13 @@
       pregunta: '¿Se puede deshacer toda correspondencia?',
       fuente: { titulo: 'O’Connor y Robertson, The function concept — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Functions/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'espejo': ['inversa', 'inyectiva'],
+      'recta-horizontal': ['inyectiva'],
+      'dos-tanques': ['modelacion'],
+    },
     ideas: [paridad, monotona, inyectiva, inversa, modelacion],
   };
 });

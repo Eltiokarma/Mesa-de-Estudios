@@ -950,6 +950,13 @@
           logrado: (v, gs) => gs.some(c => c.a !== v.a && quiebreX(c) === quiebreX(v)) && gs.some(c => c.a === v.a && c.b === v.b),
           bien: 'El mismo x por dos caminos: solo cuenta la suma a + b.' },
       ] }, quiebreIdea.juega)],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'secante-y-giro': ['paralelas'],
+      'punto-libre': ['suma-de-segmentos'],
+      'quiebre': ['quiebre'],
+    },
     ideas: [fuera, aberturaIdea, bisectriz, paralelas, quiebreIdea],
   };
 });

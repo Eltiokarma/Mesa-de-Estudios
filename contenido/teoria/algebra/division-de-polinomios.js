@@ -893,6 +893,13 @@
       pregunta: '¿Por qué ordenar los coeficientes ahorra operaciones?',
       fuente: { titulo: 'O’Connor y Robertson, William Horner — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Horner/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'resto-libre': ['teorema-resto'],
+      'ruffini-libre': ['ruffini', 'teorema-resto'],
+      'notable-con-mas': ['cocientes-notables'],
+    },
     ideas: [algoritmo, ruffiniIdea, divisorK, resto, notables],
   };
 });

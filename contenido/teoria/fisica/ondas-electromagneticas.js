@@ -577,6 +577,14 @@
       pregunta: '¿Qué tendría que medir alguien para saber que la luz es una onda de campos?',
       fuente: { titulo: 'Maxwell, A dynamical theory of the electromagnetic field (1865)', url: 'https://doi.org/10.1098/rstl.1865.0008' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'onda-3d': ['campos-cruzados'],
+      'regla-continua': ['espectro'],
+      'onda-larga': ['campos-cruzados'],
+      'cambio-medio': ['cambio-de-medio'],
+    },
     ideas: [campos, rapidez, espectro, medioIdea],
   };
 });

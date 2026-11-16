@@ -969,6 +969,14 @@
       pregunta: '¿Por qué la aguja no apunta hacia el cable?',
       fuente: { titulo: 'NASA — Oersted and the discovery of electromagnetism', url: 'https://pwg.gsfc.nasa.gov/earthmag/oersted.htm' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'mano-derecha-3d': ['fuerza-carga'],
+      'cable-que-gira': ['fuerza-cable'],
+      'cables-distintos': ['cables-paralelos'],
+      'brujula': ['oersted'],
+    },
     ideas: [oerstedIdea, solenoideIdea, cargaIdea, cableIdea, paralelosIdea],
   };
 });

@@ -1032,6 +1032,13 @@
       pregunta: '¿Cómo multiplicarías solo duplicando y sumando?',
       fuente: { titulo: 'O’Connor y Robertson, Egyptian Papyri — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Egyptian_papyri/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'escaleras-a-z': ['sumatorias'],
+      'restos-grandes': ['defecto-exceso'],
+      'dos-productos': ['multiplicar-partes'],
+    },
     ideas: [sumatorias, complemento, division, otrasBases, multiplicacion, cotas],
   };
 });

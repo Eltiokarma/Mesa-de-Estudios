@@ -1032,6 +1032,13 @@
       pregunta: '¿Qué dice una fuerza: hacia dónde vas o cómo cambias?',
       fuente: { titulo: 'The Newton Project — introducción', url: 'https://newtonproject.ox.ac.uk/texts/introduction' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'bloque-libre': ['rozamiento-en-movimiento'],
+      'ascensor-libre': ['ascensor-y-marcos'],
+      'loma': ['centripeta-es-resultante'],
+    },
     ideas: [segunda, masaPeso, roceMov, planoIdea, circular, ascensorIdea],
   };
 });

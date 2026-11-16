@@ -830,6 +830,13 @@
     ],
     // Laboratorio: el reparto libre, la recta con el punto y la elipse con semiejes libres son más ricos que sus ideas.
     laboratorio: [mesaReparto, mesaRecta, mesaElipse],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'reparto-libre': ['distancia-y-division'],
+      'recta-y-punto': ['distancia-punto-recta'],
+      'elipse-libre': ['elipse'],
+    },
     ideas: [divIdea, rectaIdea, distIdea, circIdea, parIdea, elIdea],
   };
 });

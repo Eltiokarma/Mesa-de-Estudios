@@ -736,6 +736,14 @@
       pregunta: '¿Cómo medirías algo que pasa demasiado rápido?',
       fuente: { titulo: 'Museo Galileo — Science of Motion', url: 'https://catalogue.museogalileo.it/section/ScienceOfMotion.html' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'pista-libre': ['pendiente-aceleracion'],
+      'ida-vuelta': ['desplazamiento-distancia'],
+      'recta-vt': ['pendiente-aceleracion'],
+      'encuentro-libre': ['encuentro'],
+    },
     ideas: [mru, distancia, mruv, caida, encuentro],
   };
 });

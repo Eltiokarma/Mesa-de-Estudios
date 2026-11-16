@@ -1028,6 +1028,13 @@
       pregunta: '¿Por qué una puerta se abre más fácil empujando lejos de las bisagras?',
       fuente: { titulo: 'NYU — Archimedes, The Law of the Lever', url: 'https://math.nyu.edu/Archimedes/Lever/LeverLaw.html' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'palanca-libre': ['torque-y-brazo'],
+      'caja-con-masa': ['rozamiento-se-ajusta'],
+      'nudo-libre': ['nudo-en-equilibrio'],
+    },
     ideas: [dcl, nudo, roce, elastica, torque, maquina],
   };
 });

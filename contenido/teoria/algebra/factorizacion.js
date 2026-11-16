@@ -994,6 +994,13 @@
       pregunta: '¿Qué cambia si lees la misma igualdad al revés?',
       fuente: { titulo: 'Euclides, Elementos II.4; edición y comentario de David E. Joyce — Clark University', url: 'https://mathcs.clarku.edu/~djoyce/elements/bookII/propII4.html' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'aspa-con-coeficientes': ['aspa-simple'],
+      'raices-que-se-arrastran': ['teorema-factor'],
+      'mcd-mcm-libre': ['mcd-mcm'],
+    },
     ideas: [comun, aspa, doble, factorTeo, mcdmcm],
   };
 });

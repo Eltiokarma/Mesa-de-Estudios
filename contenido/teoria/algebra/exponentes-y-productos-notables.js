@@ -983,6 +983,14 @@
         def: 'La misma pareja de términos con el signo del medio cambiado: √a − √b y √a + √b.',
         ejemplo: '(√5 − √3)(√5 + √3) = 5 − 3 = 2.', ver: ['racionalizar', 'diferencia de cuadrados'] },
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cubo-se-abre': ['cuadrado-suma'],
+      'rectangulo-x-p-q': ['cuadrado-suma'],
+      'raiz-de-la-potencia': ['radicales'],
+      'exponentes-con-signo': ['leyes-exponentes'],
+    },
     ideas: [leyes, radicales, notables, dobles, racionalizar],
   };
 });

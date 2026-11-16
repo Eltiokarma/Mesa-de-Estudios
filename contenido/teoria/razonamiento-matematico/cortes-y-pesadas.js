@@ -518,6 +518,13 @@
       pregunta: '¿Cuánta información da una sola pesada?',
       fuente: { titulo: 'The Counterfeit Coin Problem · The Mathematical Gazette', url: 'https://www.cambridge.org/core/journals/mathematical-gazette/article/abs/counterfeit-coin-problem/9492ED055B1AF7EBDDFE6D4A9137363C' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cortes-libre': ['cortes'],
+      'reparte-monedas': ['minimo-de-pesadas'],
+      'pesas-libre': ['pesas-en-dos-platillos'],
+    },
     ideas: [cortes, equilibrio, pesasIdea, minimo],
   };
 });

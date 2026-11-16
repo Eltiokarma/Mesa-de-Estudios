@@ -675,6 +675,13 @@
       pregunta: '¿Por qué se podría tabular un seno, pero no el largo de un lado?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Aryabhata I», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Aryabhata_I/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'tres-razones': ['razon-cociente'],
+      'semejantes': ['razon-cociente'],
+      'complemento-libre': ['complementarias'],
+    },
     ideas: [definicion, notables, aproximados, complementarias],
     // Glosario (docs/teoria.md §4d): las palabras que esta unidad estrena en el curso. «Cotangente», «secante» y
     // «cosecante» se definen en «Ángulos en posición normal» (mapa del curso); aquí solo salen como cot, sec y csc.

@@ -825,6 +825,13 @@
       pregunta: '¿Ganarías más si te pagaran interés cada minuto?',
       fuente: { titulo: 'O’Connor y Robertson, The number e — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/e/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'tres-montos': ['simple-compuesto', 'tasas'],
+      'descuento-largo': ['descuento'],
+      'tres-letras': ['vencimiento-comun'],
+    },
     ideas: [simpleCompuesto, tasas, presente, descuento, vencimiento],
   };
 });

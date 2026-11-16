@@ -571,6 +571,13 @@
       pregunta: '¿Qué no cambia aunque cambies los números de lugar?',
       fuente: { titulo: 'Magic Squares · ETH Library', url: 'https://library.ethz.ch/en/collections-and-archives/platforms/virtual-exhibitions/Its-all-math-and-games/magic-squares.html' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'reparto-libre': ['reparto-parejo'],
+      'magico-libre': ['suma-magica'],
+      'triangulo-libre': ['vertices-dos-veces'],
+    },
     ideas: [magico, poligono, reparto],
   };
 });

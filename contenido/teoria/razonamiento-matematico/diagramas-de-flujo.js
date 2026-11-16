@@ -453,6 +453,13 @@
       pregunta: '¿Qué cambia si dos instrucciones se cambian de lugar?',
       fuente: { titulo: 'The Electronic Computer Project · archivo del Institute for Advanced Study', url: 'https://www.ias.edu/ideas/electronic-computer-project' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'bucle-libre': ['seguir-un-bucle'],
+      'umbral': ['contador-y-acumulador'],
+      'operadores-libres': ['operadores'],
+    },
     ideas: [bucle, contadores, operadores],
   };
 });

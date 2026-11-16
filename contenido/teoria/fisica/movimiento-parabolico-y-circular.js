@@ -796,6 +796,14 @@
       pregunta: '¿Se puede acelerar sin ir más rápido?',
       fuente: { titulo: 'Museo Galileo — aparato de la trayectoria parabólica', url: 'https://catalogue.museogalileo.it/object/ApparatusToDemonstrateParabolicTrajectoryProjectiles.html' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'dos-sombras-3d': ['un-reloj-dos-ejes'],
+      'tiro-libre': ['un-reloj-dos-ejes'],
+      'rueda': ['arco-y-radian'],
+      'giro': ['rapidez-constante-acelera'],
+    },
     ideas: [tiroIdea, angulares, mcuIdea, mcuvIdea],
   };
 });

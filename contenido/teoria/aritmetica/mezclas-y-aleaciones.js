@@ -700,6 +700,13 @@
       pregunta: '¿Cómo sabrías cuánto oro tiene una joya sin separarlo?',
       fuente: { titulo: 'O’Connor y Robertson, Yang Hui — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Yang_Hui/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'tres-cafes': ['precio-medio'],
+      'aspa-libre': ['aspa'],
+      'dos-alcoholes': ['alcohol'],
+    },
     ideas: [precioMedio, aspa, alcohol, quilates],
   };
 });

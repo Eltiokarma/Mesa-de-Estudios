@@ -1089,6 +1089,14 @@
     ],
     // Laboratorio: las tres mesas son más ricas que sus ideas (rango completo, caso límite y un control más).
     laboratorio: [mesaEspacio3d, mesaSombra, mesaTres, mesaDiedro],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'varilla-diedro-3d': ['proyeccion-y-angulo', 'diedro'],
+      'sombra-libre': ['proyeccion-y-angulo'],
+      'tres-perpendiculares-libre': ['tres-perpendiculares'],
+      'diedro-abierto': ['diedro'],
+    },
     ideas: [perpIdea, proyIdea, tresIdea, diedroIdea, cruzIdea, trIdea],
   };
 });

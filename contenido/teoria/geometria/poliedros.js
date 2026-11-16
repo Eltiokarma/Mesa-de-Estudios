@@ -535,6 +535,14 @@
           && guardados.some(g => +g.n === +v.n && g.q === v.q),
         bien: 'El triángulo arma tres regulares distintos: cambia cuántos van por vértice.' },
     ] }, regIdea.juega), mesaPlaton],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'desarrollo-3d': ['elementos'],
+      'familias': ['euler'],
+      'vertice': ['regulares'],
+      'cinco-regulares': ['regulares'],
+    },
     ideas: [elemIdea, eulerIdea, regIdea],
   };
 });

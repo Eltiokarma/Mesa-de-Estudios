@@ -630,6 +630,13 @@
       pregunta: '¿Por qué un viaje largo puede acabar cerca de casa?',
       fuente: { titulo: 'Navigational Arts · Whipple Museum, Cambridge', url: 'https://www.whipplemuseum.cam.ac.uk/explore-whipple-collections/astronomy-and-empire/navigational-arts' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'paseo-de-cuatro-tramos': ['camino-y-flecha'],
+      'mudanza-paso-a-paso': ['torre-que-se-muda'],
+      'pasar-dos-numeros': ['pasar-un-numero'],
+    },
     ideas: [desplaza, hanoi, numeros],
   };
 });

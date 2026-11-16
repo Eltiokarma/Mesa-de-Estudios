@@ -961,6 +961,14 @@
       pregunta: '¿Tres datos bastan siempre para dibujar un solo triángulo?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Nasir al-Din al-Tusi», MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Al-Tusi_Nasir/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'torre-rumbos': ['rumbos', 'ley-de-cosenos'],
+      'cosenos-libre': ['ley-de-cosenos'],
+      'compas-libre': ['caso-ambiguo'],
+      'viaje-libre': ['rumbos', 'ley-de-cosenos'],
+    },
     ideas: [senos, ambiguo, cosenos, proyecciones, rumbos],
   };
 });

@@ -827,6 +827,13 @@
       pregunta: '¿Cuándo una conclusión no puede fallar?',
       fuente: { titulo: 'Aristotle’s Logic · Stanford Encyclopedia of Philosophy', url: 'https://plato.stanford.edu/entries/aristotle-logic/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'venn-libre': ['conclusion-necesaria'],
+      'cualquier-pariente': ['parentesco'],
+      'pistas-a-eleccion': ['doble-entrada'],
+    },
     ideas: [ideaVenn, ideaSi, ideaCuadro, ideaFamilia],
   };
 });

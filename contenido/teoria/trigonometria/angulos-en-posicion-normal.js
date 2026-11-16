@@ -863,6 +863,13 @@
       pregunta: '¿Qué gana un ángulo cuando deja de vivir dentro de un triángulo?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Trigonometric functions», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Trigonometric_functions/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'seis-razones': ['razones-coordenadas', 'cuadrantales'],
+      'mismo-lado': ['razones-coordenadas', 'signos-cuadrante'],
+      'giro-y-opuesto': ['coterminales-negativos'],
+    },
     ideas: [razones, signos, cuadrantales, coterminales],
   };
 });

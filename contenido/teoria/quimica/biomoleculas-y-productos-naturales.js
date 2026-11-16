@@ -977,6 +977,13 @@
         ],
       },
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'polimero': ['unir-azucares', 'peptidos-plegado'],
+      'grasa-mixta': ['grasas-trigliceridos'],
+      'dobles-y-color': [],
+    },
     ideas: [azucares, lipidos, proteinas, vitaminas, naturales],
   };
 });

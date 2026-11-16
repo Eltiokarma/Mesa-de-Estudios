@@ -1079,6 +1079,14 @@
       pregunta: '¿Qué cambia si piensas el seno como algo que se mueve?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Leonhard Euler», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Euler/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'helice-sombra': ['altura-desenrollada', 'amplitud-periodo'],
+      'onda-completa': ['amplitud-periodo'],
+      'cuatro-funciones': ['tangente-ramas', 'secante-copas'],
+      'suma-de-ondas': ['periodo-general'],
+    },
     ideas: [senCos, amplitud, tanIdea, secIdea, general],
   };
 });

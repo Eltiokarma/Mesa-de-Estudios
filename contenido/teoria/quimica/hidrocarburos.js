@@ -1394,6 +1394,14 @@
         ],
       },
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'enlace-que-gira': [],
+      'espejo-no-encaja': ['cis-trans-optica'],
+      'cadena-que-crece': ['carbono-enlaces', 'formulas-cadenas'],
+      'a-contra-b': ['isomeros-estructurales'],
+    },
     ideas: [carbono, formulas, aromatico, isomeros, geometrica, reacciones],
   };
 });

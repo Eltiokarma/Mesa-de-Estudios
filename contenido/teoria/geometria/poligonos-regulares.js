@@ -756,6 +756,13 @@
     // Laboratorio: las tres mesas son más ricas que sus ideas (n hasta 24 con radio libre, inscritos con radio libre y
     // el corte áureo en todo el segmento).
     laboratorio: [mesaPoligono, mesaInscritos, mesaCorte],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'poligono-libre': ['dos-n-lados'],
+      'inscritos-con-radio': ['inscritos-notables'],
+      'corte-libre': ['seccion-aurea'],
+    },
     ideas: [central, notIdea, dobleIdea, aurea],
   };
 });

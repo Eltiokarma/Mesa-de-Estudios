@@ -6,6 +6,8 @@
  *   { termino: 'aceleración', def: 'Cuánto cambia la velocidad en cada segundo.',   ≤ 20 palabras, sin repetir el término
  *     simbolo: 'a', medida: 'm/s²',                                                  opcionales
  *     ejemplo: 'Un carro que pasa de 0 a 10 m/s en 5 s tiene a = 2 m/s².',          opcional, ≤ 20 palabras
+ *     ejemplos: ['…', '…', '…'],      varios ejemplos (Gerson, 16 nov: «más ejemplos por término»); de 2 a 4, ≤ 20 palabras
+ *                                     cada uno; si va, reemplaza a `ejemplo`. Una unidad con calidad: 2 pide 3 o más.
  *     ver: ['velocidad'],                                                            otros términos del curso (opcional)
  *     formas: ['aceleración', 'aceleraciones'] }                                     cómo aparece en el texto (opcional)
  * Un término se define una sola vez por curso, en la unidad que lo estrena. En las demás unidades del curso donde
@@ -121,6 +123,11 @@
         if (aparece(e.def, e)) mal(t, 'la definición usa el mismo término: dilo con otras palabras');
       }
       if (e.ejemplo !== undefined && palabras(e.ejemplo) > TOPES.ejemplo) mal(t, `ejemplo de ${palabras(e.ejemplo)} palabras (tope ${TOPES.ejemplo})`);
+      if (e.ejemplos !== undefined) {
+        if (e.ejemplo !== undefined) mal(t, 'ejemplo y ejemplos a la vez: deja solo ejemplos');
+        if (!Array.isArray(e.ejemplos) || e.ejemplos.length < 2 || e.ejemplos.length > 4) mal(t, 'ejemplos: lista de 2 a 4');
+        else for (const x of e.ejemplos) if (typeof x !== 'string' || !x.trim() || palabras(x) > TOPES.ejemplo) mal(t, `ejemplos: cada uno es un texto de hasta ${TOPES.ejemplo} palabras`);
+      }
       for (const c of ['simbolo', 'medida']) if (e[c] !== undefined && (typeof e[c] !== 'string' || !e[c].trim() || e[c].length > 16)) mal(t, `${c}: texto corto`);
       if (e.ver !== undefined && (!Array.isArray(e.ver) || e.ver.some(x => typeof x !== 'string' || !x.trim()))) mal(t, 'ver: lista de términos');
       if (e.formas !== undefined && (!Array.isArray(e.formas) || !e.formas.length)) mal(t, 'formas: lista de cómo aparece en el texto');
@@ -136,7 +143,7 @@
     const entradas = [], porClave = new Map(), locales = [], problemas = [];
     const ficha = (u, e) => {
       const x = { termino: e.termino, def: e.def, formas: formasDe(e), en: u.id, enNombre: u.nombre, aparece: [] };
-      for (const c of ['simbolo', 'medida', 'ejemplo', 'ver']) if (e[c] !== undefined) x[c] = e[c];
+      for (const c of ['simbolo', 'medida', 'ejemplo', 'ejemplos', 'ver']) if (e[c] !== undefined) x[c] = e[c];
       return x;
     };
     for (const u of unidades) for (const e of ((u.def && u.def.glosario) || [])) {
@@ -162,5 +169,8 @@
     return { entradas: entradas.concat(locales), problemas };
   }
 
-  return { clave, plural, formasDe, texto, buscador, marcas, aparece, revisar, indice, TOPES, MAX };
+  // Los ejemplos de una entrada, con la forma vieja (un solo `ejemplo`) o la nueva (`ejemplos`).
+  const ejemplosDe = e => (e && Array.isArray(e.ejemplos) ? e.ejemplos : e && e.ejemplo ? [e.ejemplo] : []);
+
+  return { ejemplosDe, clave, plural, formasDe, texto, buscador, marcas, aparece, revisar, indice, TOPES, MAX };
 });

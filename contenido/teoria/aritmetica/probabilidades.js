@@ -703,6 +703,14 @@
       pregunta: '¿Cómo repartirías un premio si el juego se corta a la mitad?',
       fuente: { titulo: 'O’Connor y Robertson, Blaise Pascal — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Pascal/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'tres-dados': ['espacio'],
+      'dados-condicion': ['condicional'],
+      'fabrica-libre': ['bayes'],
+      'ruleta': ['esperanza'],
+    },
     ideas: [espacio, union, condicional, bayes, esperanza],
   };
 });

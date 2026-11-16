@@ -521,6 +521,14 @@
       pregunta: '¿Qué reglas cambian un mismo acertijo?',
       fuente: { titulo: 'Henry Ernest Dudeney · MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Dudeney/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'dados-que-se-separan': ['dados'],
+      'domino-marcado': ['domino'],
+      'pila-dados': ['dados'],
+      'rectangulo-cerillas': ['cerillas'],
+    },
     ideas: [dom, dados, fichas],
   };
 });

@@ -540,6 +540,13 @@
             bien: 'Una informa y la otra pide. Unidas, dicen qué busca el aviso.' },
         ] }, intencion.juega),
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'tapa-premisa': ['necesaria-probable'],
+      'implicito': ['implicito'],
+      'intencion': ['intencion-global'],
+    },
     ideas: [deduccion, implicito, intencion],
   };
 });

@@ -845,6 +845,14 @@
     ],
     // Laboratorio: las tres mesas son más ricas que sus ideas (dos medidas libres, otra forma, el caso límite).
     laboratorio: [mesaGira3d, mesaCono, mesaPappus, mesaZona],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'region-gira-3d': ['pappus'],
+      'cono-libre': ['cono', 'desarrollo'],
+      'pappus-libre': ['pappus'],
+      'zona-libre': ['zona-y-casquete'],
+    },
     ideas: [cilIdea, conoIdea, desIdea, esfIdea, zonaIdea, pappIdea],
   };
 });

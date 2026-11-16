@@ -616,6 +616,12 @@
       pregunta: '¿Cuántos valores de seno necesitarías calcular para cubrir toda la vuelta?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Georg Joachim Rheticus», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Rheticus/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cualquier-giro': ['mayores-negativos', 'angulo-referencia'],
+      'siete-relaciones': ['suplementarios-vuelta', 'cofuncion'],
+    },
     ideas: [referenciaIdea, cofuncion, vueltas, suplementarios],
   };
 });

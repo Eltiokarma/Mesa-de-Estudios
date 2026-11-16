@@ -683,6 +683,13 @@
       pregunta: '¿Cómo acordarían dos personas lejanas qué es «20 grados»?',
       fuente: { titulo: 'NIST — Kelvin: History', url: 'https://www.nist.gov/si-redefinition/kelvin/kelvin-history' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'mezcla-libre': ['equilibrio-mezcla'],
+      'curva-calentamiento': ['cambio-de-fase'],
+      'varilla': ['dilatacion'],
+    },
     ideas: [escalas, mezcla, especifico, fase, dilatacion, transferencia],
   };
 });

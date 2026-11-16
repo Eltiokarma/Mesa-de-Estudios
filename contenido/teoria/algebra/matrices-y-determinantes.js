@@ -1045,6 +1045,14 @@
           bien: 'Un número cambiado basta para que la fila deje de depender.' },
       ] }, rangoIdea.juega, { minimo: undefined }),
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'caja-columnas': ['determinante-area'],
+      'columnas-libres': ['determinante-area'],
+      'adjunta-inversa': ['inversa-adjunta'],
+      'rango-libre': ['rango'],
+    },
     ideas: [producto, transpuesta, determinante, inversa, rangoIdea],
   };
 });

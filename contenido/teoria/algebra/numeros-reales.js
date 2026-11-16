@@ -911,6 +911,13 @@
       pregunta: '¿Hay un número justo antes del 1?',
       fuente: { titulo: 'O’Connor y Robertson, The real numbers: Stevin to Hilbert — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Real_numbers_2/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'dos-intervalos': ['intervalos'],
+      'supremo-infimo': ['acotados'],
+      'tabla-libre': ['tabla-operacion'],
+    },
     ideas: [orden, intervalos, acotados, operaciones],
   };
 });

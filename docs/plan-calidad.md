@@ -49,6 +49,7 @@ Una idea está bien cuando un alumno de 5.º, solo y con el celular, puede respo
 8. **¿La pantalla está bien usada?** Ningún cuadro ocupa más espacio que su texto. La figura es lo más grande. En pantalla ancha, el espacio libre se usa para comparar dos casos.
 9. **¿El orden es el correcto?** Ninguna idea usa un concepto que una idea posterior presenta. Lo mismo entre unidades: lo que la unidad da por sabido está en su `requiere`.
 10. **¿Es creíble?** Las medidas y las situaciones son posibles (un lápiz de 2,5 m no lo es).
+11. **¿Sé de qué idea es cada cosa?** Cada mesa del laboratorio dice qué idea practica, y cada término del glosario trae 3 ejemplos o más (Gerson, 16 nov).
 
 El público es 5.º y preuniversitario. La unidad parte de la base, porque muchos llegan con huecos, pero «Así se resuelve» y «Ahora tú» terminan en el nivel de un examen de admisión.
 

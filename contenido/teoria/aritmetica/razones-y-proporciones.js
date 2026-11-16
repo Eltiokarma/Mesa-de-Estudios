@@ -695,6 +695,13 @@
       pregunta: '¿Cómo compararías dos largos sin una regla común?',
       fuente: { titulo: 'O’Connor y Robertson, Eudoxus — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Eudoxus/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'antes-despues': ['restar-dividir'],
+      'tres-medias': ['medias'],
+      'serie': ['serie'],
+    },
     ideas: [comparar, proporcion, medias, serie],
   };
 });

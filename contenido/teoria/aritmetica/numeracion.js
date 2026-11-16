@@ -791,6 +791,13 @@
       pregunta: '¿Qué cambia si contamos de cinco en cinco?',
       fuente: { titulo: 'O’Connor y Robertson, Arabic numerals — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/HistTopics/Arabic_numerals/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'bloques-base': ['agrupar', 'descomposicion'],
+      'canje-amplio': ['agrupar'],
+      'libros-largos': ['conteo-cifras'],
+    },
     ideas: [agrupar, descomposicion, cambio, conteo],
   };
 });

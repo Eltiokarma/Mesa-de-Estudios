@@ -782,6 +782,14 @@
       pregunta: '¿Cómo comprobarías una raíz sin calculadora?',
       fuente: { titulo: 'MCT 042 YBC 07289, P255048 — Cuneiform Digital Library Initiative', url: 'https://cdli.earth/artifacts/255048' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cubo-de-cubitos': ['raiz-entera'],
+      'raiz-grande': ['raiz-entera'],
+      'cuatro-primos': ['perfectos'],
+      'encerrar': ['aproximadas'],
+    },
     ideas: [perfectos, exclusion, raiz, aprox],
   };
 });

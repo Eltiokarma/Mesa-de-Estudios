@@ -743,6 +743,13 @@
       pregunta: '¿Qué importa más: el largo o las conexiones?',
       fuente: { titulo: 'Euler, Solutio problematis ad geometriam situs pertinentis · texto original y traducción', url: 'https://www.cantab.net/users/michael.behrend/repubs/maze_maths/pages/euler_en.html' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'lineas-sueltas': ['un-solo-trazo'],
+      'escalera-con-entrante': ['deslizar-lados'],
+      'arcos-arriba-y-abajo': ['arcos-que-suman'],
+    },
     ideas: [unTrazo, minimo, perimetro, circular],
   };
 });

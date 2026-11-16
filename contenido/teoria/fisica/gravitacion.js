@@ -617,6 +617,14 @@
       pregunta: '¿Por qué la Luna no se cae a la Tierra?',
       fuente: { titulo: 'NASA — Orbits and Kepler’s Laws', url: 'https://science.nasa.gov/solar-system/orbits-and-keplers-laws/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'orbita-plano-3d': ['orbita-circular'],
+      'dos-orbitas': ['orbita-circular'],
+      'elipse-libre': ['leyes-de-kepler'],
+      'atraccion': ['cuadrado-inverso'],
+    },
     ideas: [inversa, campoIdea, orbitaIdea, keplerIdea],
   };
 });

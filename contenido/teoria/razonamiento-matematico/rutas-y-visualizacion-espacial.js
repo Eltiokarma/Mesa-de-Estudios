@@ -644,6 +644,15 @@
       pregunta: '¿Qué no se puede repetir: puntos o caminos?',
       fuente: { titulo: 'Hamilton, The Icosian Calculus · Trinity College Dublin', url: 'https://www.maths.tcd.ie/pub/HistMath/People/Hamilton/Icosian/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'pila-que-gira': ['vistas'],
+      'caja-que-gira': ['rutas-en-el-espacio'],
+      'dos-cierres': ['rutas-en-el-plano'],
+      'caja-que-crece': ['rutas-en-el-espacio'],
+      'arma-la-pila': ['vistas'],
+    },
     ideas: [plano, espacio, vistas],
   };
 });

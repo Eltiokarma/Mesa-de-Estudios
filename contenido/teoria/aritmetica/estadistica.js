@@ -1004,6 +1004,13 @@
       pregunta: '¿Qué se pierde cuando todo un salón se resume en un promedio?',
       fuente: { titulo: 'John Graunt, Natural and political observations… (1662) — Wellcome Collection', url: 'https://wellcomecollection.org/works/sds578rr' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cinco-datos': ['centrales'],
+      'cuatro-barras': ['graficos'],
+      'poblacion-muestra': ['dispersion'],
+    },
     ideas: [tabla, graficos, centrales, ponderada, cuartiles, dispersion],
   };
 });

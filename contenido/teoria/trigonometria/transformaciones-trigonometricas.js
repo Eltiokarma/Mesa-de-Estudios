@@ -804,6 +804,13 @@
       pregunta: '¿Por qué sumar sería más fácil que multiplicar?',
       fuente: { titulo: 'Adam Mosley, «Tycho Brahe and Mathematical Techniques», Starry Messenger, University of Cambridge', url: 'https://www.sites.hps.cam.ac.uk/starry/tychomaths.html' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'rombo-entero': ['flechas-rombo'],
+      'cadena-larga': ['cadena-flechas'],
+      'muchos-dobles': ['doblar-y-doblar'],
+    },
     ideas: [sumaProducto, productoSuma, sumatoria, productoria],
   };
 });

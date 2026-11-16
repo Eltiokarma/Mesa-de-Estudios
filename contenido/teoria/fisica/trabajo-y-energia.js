@@ -870,6 +870,13 @@
       pregunta: '¿Adónde se va la energía que «se pierde» por rozamiento?',
       fuente: { titulo: 'Science Museum Group — réplica del calorímetro de Joule', url: 'https://collection.sciencemuseumgroup.org.uk/objects/co8404682/replica-of-calorimeter-used-by-james-joule' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cuerda-libre': ['trabajo-y-angulo'],
+      'rampa': ['conservacion-energia'],
+      'empujon': ['trabajo-energia-cinetica'],
+    },
     ideas: [trabajo, teorema, potencial, conservacion, potencia],
   };
 });

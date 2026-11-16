@@ -632,6 +632,14 @@
       pregunta: '¿Cuántos casos hacen falta para estar seguro?',
       fuente: { titulo: 'The Problem of Induction · Stanford Encyclopedia of Philosophy', url: 'https://plato.stanford.edu/entries/induction-problem/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cubo-que-crece': ['figuras-que-crecen'],
+      'palitos-libres': ['figuras-que-crecen'],
+      'seis-puntos': ['tres-casos-no-prueban'],
+      'impares-desde': ['impares-y-cuadrados'],
+    },
     ideas: [figuras, tresCasos, impares],
   };
 });

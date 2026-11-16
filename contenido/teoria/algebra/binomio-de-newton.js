@@ -825,6 +825,14 @@
       pregunta: '¿Qué pasa con el desarrollo si el exponente no es natural?',
       fuente: { titulo: 'Isaac Newton, History of the Method of Fluxions, transcripción diplomática — The Newton Project, Universidad de Oxford', url: 'https://newtonproject.ox.ac.uk/view/texts/diplomatic/NATP00356' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'piezas-elegidas': ['pascal-elecciones'],
+      'pascal-colores': ['pascal-elecciones'],
+      'termino-libre': ['termino-general'],
+      'serie-alfa': ['exponente-no-natural'],
+    },
     ideas: [pascal, general, serie, multinomio],
   };
 });

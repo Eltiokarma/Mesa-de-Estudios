@@ -1072,6 +1072,13 @@
       pregunta: '¿Cómo convertirías una multiplicación larga en una suma?',
       fuente: { titulo: 'O’Connor y Robertson, John Napier — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Napier/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'base-libre': ['exponencial'],
+      'carrera': ['exponencial'],
+      'inecuacion': ['inecuaciones'],
+    },
     ideas: [exponencial, logaritmo, numeroE, logaritmica, ecuaciones, inecuaciones],
   };
 });

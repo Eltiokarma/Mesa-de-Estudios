@@ -750,6 +750,13 @@
     // Laboratorio: triángulo con base y altura libres, cuadrilátero libre con sus puntos medios y P dentro y fuera del
     // paralelogramo; las tres abren casos que las ideas no dejan probar.
     laboratorio: [mesaTri, mesaVarignon, mesaP],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'triangulo-libre': ['area-del-triangulo'],
+      'puntos-medios-libres': ['relaciones-cuadrilateros'],
+      'punto-p-libre': ['relaciones-cuadrilateros'],
+    },
     ideas: [triIdea, razon, paraIdea, trapIdea, relIdea],
   };
 });

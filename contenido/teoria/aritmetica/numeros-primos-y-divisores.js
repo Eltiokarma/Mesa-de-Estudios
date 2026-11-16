@@ -1005,6 +1005,14 @@
       pregunta: '¿Se acabarán alguna vez los primos?',
       fuente: { titulo: 'Euclides, Elementos IX.20; edición y comentario de David E. Joyce — Clark University', url: 'https://mathcs.clarku.edu/~djoyce/elements/bookIX/propIX20.html' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'caja-divisores': ['divisores'],
+      'filas-de-c': ['rectangulos'],
+      'otro-primo': ['divisores'],
+      'criba-100': ['criba'],
+    },
     ideas: [primos, criba, fact, cantidad, euler, fermat],
   };
 });

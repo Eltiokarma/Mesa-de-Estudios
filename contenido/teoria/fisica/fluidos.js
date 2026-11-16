@@ -743,6 +743,13 @@
       pregunta: '¿Qué altura tendría la columna en Juliaca?',
       fuente: { titulo: 'Museo Galileo — Barometer', url: 'https://catalogue.museogalileo.it/indepth/Barometer.html' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'presion-total': ['presion-profundidad'],
+      'bloque-libre': ['empuje'],
+      'prensa': ['prensa-hidraulica'],
+    },
     ideas: [hidrostatica, comunicantes, pascal, arquimedes, tension, bernoulli],
   };
 });

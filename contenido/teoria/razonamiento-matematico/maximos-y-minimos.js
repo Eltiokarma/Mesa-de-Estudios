@@ -587,6 +587,13 @@
       pregunta: '¿Cómo se demuestra que no hay nada mejor?',
       fuente: { titulo: 'George Dantzig · entrevista de historia oral, INFORMS', url: 'https://www.informs.org/Explore/History-of-O.R.-Excellence/Oral-Histories/George-Dantzig' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cuarta-recta': ['regiones-con-rectas'],
+      'rio-libre': ['reflejo'],
+      'precio-libre': ['precio-que-mas-recauda'],
+    },
     ideas: [personas, precios, regionesIdea, reflejo],
   };
 });

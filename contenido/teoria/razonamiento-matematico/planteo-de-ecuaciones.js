@@ -501,6 +501,13 @@
       pregunta: '¿Cómo escribirías una ecuación solo con palabras?',
       fuente: { titulo: 'Al-Khwarizmi · MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Al-Khwarizmi/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'veces-o-mas': ['traducir'],
+      'edades-libres': ['edades'],
+      'corral': ['cabezas-y-patas'],
+    },
     ideas: [traducir, edad, cuadratica, sistema],
   };
 });

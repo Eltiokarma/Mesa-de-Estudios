@@ -718,6 +718,13 @@
       pregunta: '¿Qué experimento mostrarías para convencer a alguien de que la luz llega en paquetes?',
       fuente: { titulo: 'Max Planck Society — What did Max Planck discover?', url: 'https://www.mpg.de/19252749/what-did-max-planck-discover' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'dos-metales': ['fotoelectrico'],
+      'lampara-libre': ['fotoelectrico'],
+      'horno-estrella': ['cuerpo-negro'],
+    },
     ideas: [fotoelectrico, fotones, cuerpo, rayosX, relatividad, incertidumbre],
   };
 });

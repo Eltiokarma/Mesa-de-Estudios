@@ -862,6 +862,14 @@
     // Laboratorio: las tres mesas son más ricas que sus ideas (muesca con esquinas libres, rutas con la calle cerrada
     // que se arrastra, cubo pintado de lado 2 a 5 por clases).
     laboratorio: [mesaAbre3d, mesaMuesca, mesaRutas, mesaPintado],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cubo-abierto-3d': ['cubos-ocultos'],
+      'muesca-libre': ['perimetro'],
+      'rutas-con-cierre': ['rutas'],
+      'cubo-pintado': ['cubos-ocultos'],
+    },
     ideas: [perimetro, series, distribucion, conteo, rutas, cubos],
   };
 });

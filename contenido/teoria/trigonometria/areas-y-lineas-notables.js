@@ -916,6 +916,13 @@
       pregunta: '¿Bastan los cuatro lados para saber el área de un cuadrilátero?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Brahmagupta», MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Brahmagupta/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'lados-y-angulo': ['area-dos-lados'],
+      'heron-sin-cierre': ['heron-semiangulos'],
+      'bisectriz-o-mediana': ['cevianas'],
+    },
     ideas: [lal, heronIdea, tresRadios, cevianas, cuadrilatero],
   };
 });

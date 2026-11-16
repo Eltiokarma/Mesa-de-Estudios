@@ -843,6 +843,13 @@
       pregunta: '¿Cómo compararías dos colecciones sin contarlas?',
       fuente: { titulo: 'O’Connor y Robertson, Georg Cantor — MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Cantor/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'tres-conjuntos': ['operaciones'],
+      'conteo-universo': ['conteo'],
+      'pares-orden': ['cartesiano'],
+    },
     ideas: [pertenencia, operaciones, conteo, pot, cartesiano],
   };
 });

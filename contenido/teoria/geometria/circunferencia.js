@@ -1184,6 +1184,13 @@
     // Laboratorio: dos circunferencias con radios libres, el arco libre con P suelto y el cuadrilátero con D libre son
     // más ricos que sus ideas (más controles y los casos borde que las ideas no dejan probar).
     laboratorio: [mesaDos, mesaInscrito, mesaCiclico],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'dos-libres': ['posiciones'],
+      'inscrito-libre': ['inscrito'],
+      'cuadrilatero-libre': ['cuadrilatero-inscrito'],
+    },
     ideas: [tangentes, posiciones, inscrito, intExt, pitot, ciclico],
   };
 });

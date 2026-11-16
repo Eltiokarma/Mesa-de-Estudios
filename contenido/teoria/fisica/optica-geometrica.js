@@ -703,6 +703,13 @@
       pregunta: '¿Cómo probarías que la luz va del objeto al ojo y no al revés?',
       fuente: { titulo: 'UNESCO — Ibn al-Haytham’s scientific method', url: 'https://www.unesco.org/en/articles/ibn-al-haythams-scientific-method' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'frontera-libre': ['snell', 'reflexion-total'],
+      'banco-libre': ['lente-delgada', 'espejo-concavo'],
+      'fabricante': ['fabricante'],
+    },
     ideas: [snell, totalIdea, planoIdea, concavo, lenteIdea, fab],
   };
 });

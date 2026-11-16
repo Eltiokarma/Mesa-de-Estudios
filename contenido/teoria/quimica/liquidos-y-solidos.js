@@ -729,6 +729,13 @@
         ],
       },
     ],
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'celda-se-repite': ['orden-y-libertad'],
+      'dos-liquidos': ['presion-vapor'],
+      'mapa-co2': ['diagrama-fases'],
+    },
     ideas: [estados, capilar, vapor, diagrama, humedad],
   };
 });

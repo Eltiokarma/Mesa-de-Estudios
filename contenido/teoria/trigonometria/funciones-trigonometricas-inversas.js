@@ -1006,6 +1006,13 @@
       pregunta: '¿Por qué un mismo símbolo puede significar dos cosas?',
       fuente: { titulo: 'Jeff Miller, «Earliest Uses of Symbols for Trigonometric and Hyperbolic Functions», MacTutor', url: 'https://mathshistory.st-andrews.ac.uk/Miller/mathsym/trigonometry/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'cuatro-ramas': ['tres-ramas'],
+      'cancela-o-no': ['componer'],
+      'tres-reflejos': ['grafica-reflejo'],
+    },
     ideas: [ramaSeno, tres, componer, grafica, otras],
   };
 });

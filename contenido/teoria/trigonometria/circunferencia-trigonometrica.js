@@ -810,6 +810,13 @@
       pregunta: '¿Qué gana una tabla si el radio vale exactamente 1?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Regiomontanus», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Regiomontanus/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'seis-lineas': ['lineas-seno-coseno', 'lineas-tangente-cotangente', 'lineas-secante-cosecante'],
+      'dos-arcos': ['variacion-cuadrantes'],
+      'numero-sin-tope': ['arcos-reales'],
+    },
     ideas: [arcos, senoCoseno, tangente, secante, variacion],
   };
 });

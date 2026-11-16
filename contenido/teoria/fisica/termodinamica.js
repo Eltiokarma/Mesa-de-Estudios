@@ -786,6 +786,13 @@
       pregunta: '¿Por qué un motor necesita también un lugar frío?',
       fuente: { titulo: 'APS News — Sadi Carnot and heat engines', url: 'https://www.aps.org/apsnews/2009/05/sadi-carnot-heat-engines' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'camino-libre': ['trabajo-area'],
+      'primera-ley': ['primera-ley'],
+      'gas-ideal': ['gas-ideal'],
+    },
     ideas: [gas, primera, area, procesos, cpcv, carnot],
   };
 });

@@ -669,6 +669,14 @@
       pregunta: '¿Cómo medirías la altura de un edificio sin subir a él?',
       fuente: { titulo: 'J. J. O’Connor y E. F. Robertson, «Abu Rayhan al-Biruni», MacTutor, University of St Andrews', url: 'https://mathshistory.st-andrews.ac.uk/Biographies/Al-Biruni/' },
     },
+    // A qué idea pertenece cada mesa del laboratorio (Gerson, 16 nov: el laboratorio se agrupa por idea). Una lista vacía:
+    // la mesa no practica ninguna idea de la unidad y va en «Más mesas del tema».
+    laboratorioIdeas: {
+      'torre-campo': ['elevacion-depresion'],
+      'instrumento': ['elevacion-depresion'],
+      'faro': ['elevacion-depresion'],
+      'letrero-cerca': ['angulo-observacion'],
+    },
     ideas: [unLado, elevacion, observacion],
     // Glosario (docs/teoria.md §4d): las palabras que esta unidad estrena en el curso. Catetos, hipotenusa, seno y
     // las demás razones vienen de «Razones trigonométricas de ángulos agudos».
