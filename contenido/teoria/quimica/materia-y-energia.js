@@ -140,6 +140,14 @@
     titulo: 'Sustancia o mezcla: mira dentro',
     temas: ['Qué estudia la química', 'Sustancias y mezclas'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): contexto y vocabulario. No dice cómo se clasifica una muestra que se ve uniforme (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: '¿De qué está hecho?', texto: 'La química estudia de qué está hecha la materia y cómo se transforma. El cobre de Toquepala, el gas de un balón o la chicha del mercado: todo está formado por partículas diminutas.' },
+        { titulo: 'Especie y fase', texto: 'En la lupa, cada dibujo de átomos que se repite igual es una especie de partícula. Una fase es una zona que se ve igual en todos sus puntos: el agua y el aceite forman dos fases, una sobre otra.' },
+        { titulo: 'Qué mirar', texto: 'Cuando juegues, cuenta dos cosas en cada muestra: cuántas especies distintas hay y si forman una capa o dos. Después compara lo que contaste con el aspecto de la muestra.' },
+      ],
+    },
     juega: {
       consigna: 'Las partículas se mueven solas, en cámara lenta. Elige una muestra y cuenta cuántas especies hay y si forman una o dos capas.',
       voz: 'Mira primero cuántas clases de partícula hay. El aspecto viene después.',
@@ -181,6 +189,54 @@
       ecuacion: ['homogénea: una fase', '   ·   ', 'heterogénea: varias fases'],
       condicion: 'se decide por las partículas y las fases, no por el aspecto: algo transparente y uniforme puede ser una mezcla.',
       voz: 'Cuenta especies, después fases. En ese orden.',
+    },
+    // Así se resuelve (fase 2): una muestra de «Ahora tú» con otra semilla, armada igual (mismas especies y rejilla).
+    // Los elementos de cada especie los cuenta ESPECIES, la misma lista que dibuja la lupa.
+    resuelve: {
+      pieza: 'quim-particulas',
+      generar(s) {
+        const r = azar(s + 900);
+        const tipo = ['elemento', 'compuesto', 'homogenea', 'heterogenea'][s % 4];
+        let parts, n;
+        if (tipo === 'elemento') { const e = r.de(['O2', 'N2', 'He', 'H2']); n = r.ent(6, 11); parts = [{ e, n }]; }
+        else if (tipo === 'compuesto') { const e = r.de(['H2O', 'CO2']); n = r.ent(6, 11); parts = [{ e, n }]; }
+        else if (tipo === 'homogenea') { const a = r.de([['N2', 'O2'], ['H2O', 'azucar'], ['O2', 'CO2'], ['H2O', 'Na']]); const na = r.ent(5, 8), nb = r.ent(2, 4); n = na + nb; parts = [{ e: a[0], n: na }, { e: a[1], n: nb }]; }
+        else { const na = 3 * r.ent(1, 2), nb = 3 * r.ent(2, 3); n = na + nb; parts = [...rejilla('aceite', na, 3, 0.18, 0.82, 0.1, na > 3 ? 0.35 : 0.2), ...rejilla('H2O', nb, 3, 0.15, 0.85, 0.55, 0.92)]; }
+        const forma = tipo === 'elemento' || (tipo === 'homogenea' && parts[0].e === 'N2') || (tipo === 'homogenea' && parts[0].e === 'O2') ? 'cilindro' : 'vaso';
+        const NOM = { O2: 'oxígeno (O₂)', N2: 'nitrógeno (N₂)', He: 'helio (He)', H2: 'hidrógeno (H₂)', H2O: 'agua (H₂O)', CO2: 'dióxido de carbono (CO₂)', azucar: 'azúcar', Na: 'sodio (Na)', aceite: 'aceite' };
+        const especies = [...new Set(parts.map(p => p.e))];
+        const cuenta = e => parts.filter(p => p.e === e).reduce((a, p) => a + p.n, 0);
+        const clases = e => new Set(ESPECIES[e].map(x => x[0])).size;     // clases de átomo de una especie
+        const fases = tipo === 'heterogenea' ? 2 : 1;
+        const lista = especies.map(e => `${cuenta(e)} de ${NOM[e]}`).join(' y ');
+        const nombres = { elemento: 'Sustancia simple (elemento)', compuesto: 'Compuesto', homogenea: 'Mezcla homogénea', heterogenea: 'Mezcla heterogénea' };
+        const e0 = especies[0];
+        const aplica = {
+          elemento: `Hay una sola especie, ${NOM[e0]}, y ${clases(e0) === 1 ? 'todos sus átomos son de la misma clase' : `tiene ${clases(e0)} clases de átomo`}: es una sustancia simple.`,
+          compuesto: `Hay una sola especie, ${NOM[e0]}, pero con ${clases(e0)} clases de átomo unidas: es un compuesto.`,
+          homogenea: `Hay ${especies.length} especies sueltas, repartidas en ${fases === 1 ? 'una sola fase' : `${fases} fases`}: es una mezcla homogénea.`,
+          heterogenea: `Hay ${especies.length} especies, cada una en su capa: ${fases} fases. Es una mezcla heterogénea.`,
+        }[tipo];
+        const sentido = {
+          elemento: 'Comprobación: si apareciera otra especie sería mezcla, y si sus átomos fueran de dos clases, compuesto.',
+          compuesto: 'Comprobación: todas las partículas son iguales entre sí; por eso no es mezcla, aunque lleve dos elementos.',
+          homogenea: 'Comprobación: no hay capas ni bordes dentro de la muestra; si los hubiera, sería heterogénea.',
+          heterogenea: 'Comprobación: se ve un borde entre las dos capas; con una sola fase sería homogénea.',
+        }[tipo];
+        const dib = { datos: lupa([{ titulo: 'Muestra', forma, nivel: 0.9, particulas: parts }]).datos, estado: {} };
+        return {
+          enunciado: `Con la lupa se ven ${n} partículas en la muestra. ¿Cómo se clasifica?`,
+          dibujo: dib,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden clasificar la muestra: elemento, compuesto, mezcla homogénea o mezcla heterogénea.' },
+            { tipo: 'datos', texto: `En la lupa cuento ${lista}: ${especies.length} ${especies.length === 1 ? 'especie' : 'especies'} en ${fases} ${fases === 1 ? 'fase' : 'fases'}.` },
+            { tipo: 'regla', texto: 'Primero cuento especies: una sola es sustancia; varias, mezcla. Después miro cuántas clases de átomo tiene la especie, o cuántas fases forma la mezcla.' },
+            { tipo: 'aplica', texto: aplica, ecuacion: [nombres[tipo]] },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: nombres[tipo],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'quim-particulas',
@@ -241,6 +297,15 @@
     titulo: '¿Qué partícula cambia?',
     temas: ['Estados de agregación', 'Propiedades físicas y químicas', 'Fenómenos físicos, químicos y nucleares'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): vocabulario de estados y propiedades. No dice qué hay dentro de las burbujas del hervor.
+    lee: {
+      tarjetas: [
+        { titulo: 'Por fuera no basta', texto: 'Algunas cosas cambian solo de forma o de estado; otras se vuelven sustancias nuevas; en unas pocas cambia el núcleo del átomo. Para saber cuál pasó, no basta mirar por fuera: hay que mirar las partículas.' },
+        { titulo: 'Estados de agregación', texto: 'Sólido, líquido y gas son los estados de agregación. En el sólido las partículas vibran en su sitio; en el líquido se deslizan unas junto a otras; en el gas vuelan separadas y chocan con las paredes.' },
+        { titulo: 'Propiedades', texto: 'Una propiedad física se mide sin cambiar la sustancia, como la densidad. Una propiedad química aparece solo al transformarla: que el gas del balón arda o que el cobre se ponga verde con los años.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, la caja de la izquierda es el antes y la de la derecha, el después. Compara si las partículas de después son las mismas de antes o son otras.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un proceso: antes a la izquierda, después a la derecha. Las partículas se mueven en cámara lenta. Compara las dos cajas.',
       voz: 'Una observación no es una explicación: mira qué partículas hay después.',
@@ -250,7 +315,7 @@
       minimo: 3,
     },
     predice: {
-      pregunta: 'Hierves agua pura en una olla y suben burbujas grandes desde el fondo. ¿Qué hay dentro de esas burbujas?',
+      pregunta: 'Hierves agua pura y suben burbujas grandes desde el fondo. ¿Qué hay dentro de esas burbujas?',
       voz: 'Piensa en qué le pasa a cada molécula de agua.',
       opciones: [
         { id: 'c', texto: 'Moléculas de agua en estado gaseoso', correcta: true },
@@ -281,6 +346,42 @@
       ecuacion: ['2 H₂ + O₂ → 2 H₂O'],
       condicion: 'las propiedades físicas (fusión, densidad) se miden sin cambiar la sustancia; las químicas (arder, oxidarse) solo al transformarla.',
       voz: 'Primero el inventario de partículas; el aspecto puede engañar.',
+    },
+    // Así se resuelve (fase 2): un caso de «Ahora tú» elegido con otra semilla. El caso y su tipo salen del mismo
+    // generar de «Ahora tú»; aquí solo se cuenta qué pasa con las partículas en cada caso.
+    resuelve: {
+      generar(s) {
+        const at = cambios.ahoraTu.generar(azar(s + 900).ent(0, 9));
+        const caso = String(at.pregunta).replace(/\. ¿Qué tipo de cambio es\?$/, '');
+        const nom = at.opciones.find(o => o.correcta).texto, tipo = nom.toLowerCase();
+        const PARTICULAS = {
+          'Un cubo de hielo se derrite en la mesa': 'Antes y después hay moléculas de H₂O enteras: solo pasan de sólido a líquido.',
+          'Un clavo de hierro se oxida al aire': 'El hierro se une al oxígeno del aire y forma óxido de hierro, una sustancia que antes no estaba.',
+          'La leña arde en la cocina': 'La madera y el oxígeno se transforman en dióxido de carbono, agua y ceniza: sustancias nuevas.',
+          'El azúcar se disuelve en el té': 'Las moléculas de azúcar siguen enteras; solo se reparten entre las moléculas del agua.',
+          'El alcohol se evapora de un algodón': 'Las moléculas de alcohol pasan de líquido a gas sin romperse.',
+          'Un núcleo de uranio-235 se parte en dos': 'El núcleo de uranio se divide en dos núcleos más livianos, de otros elementos.',
+          'La leche se agria con el tiempo': 'Las bacterias transforman el azúcar de la leche en ácido láctico, otra sustancia.',
+          'Un vidrio se rompe en pedazos': 'Los pedazos son del mismo vidrio: cambia la forma, no las partículas.',
+          'Un átomo de radio-226 emite una partícula alfa y pasa a radón': 'El núcleo suelta dos protones y dos neutrones: el radio pasa a ser otro elemento, radón.',
+          'El vinagre y el bicarbonato hacen burbujas de CO₂': 'El ácido del vinagre y el bicarbonato forman CO₂, una sustancia nueva.',
+        };
+        const sentido = {
+          físico: 'Comprobación: si las partículas de después son las mismas de antes, no apareció ninguna sustancia nueva. Es físico.',
+          químico: 'Comprobación: los átomos son los mismos antes y después, solo reordenados; por eso no es nuclear.',
+          nuclear: 'Comprobación: después hay átomos de otro elemento; en un cambio químico el elemento nunca cambia.',
+        }[tipo];
+        return {
+          enunciado: at.pregunta,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden decidir si el cambio es físico, químico o nuclear.' },
+            { tipo: 'regla', texto: 'Miro las partículas: si son las mismas, es físico; si se forman sustancias nuevas, químico; si cambia el núcleo y el elemento, nuclear.' },
+            { tipo: 'aplica', texto: PARTICULAS[caso] || at.solucion.texto, ecuacion: [`Cambio ${tipo}`] },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: `Cambio ${tipo}`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Decide por las partículas, no por lo que se ve.',
@@ -341,6 +442,15 @@
     titulo: 'Calor que no sube temperatura',
     temas: ['Calor sensible y latente'],
     pieza: 'ejes',
+    // Lee (fase 2): calor, temperatura y cambios de fase. No dice qué hace la temperatura mientras el hielo se funde.
+    lee: {
+      tarjetas: [
+        { titulo: 'Calor y temperatura', texto: 'El calor es energía que pasa de un cuerpo caliente a uno más frío, y se mide en joules (J). La temperatura dice qué tan caliente está algo, y se mide en grados Celsius. No son lo mismo.' },
+        { titulo: 'Cada sustancia pide lo suyo', texto: 'Para subir 1 °C, cada gramo de una sustancia pide su propio calor: es su calor específico. El agua pide mucho; por eso el lago Titicaca tarda en calentarse y en enfriarse, y suaviza el frío de sus orillas.' },
+        { titulo: 'Cambios de fase', texto: 'Fundir es pasar de sólido a líquido; hervir, de líquido a gas. En las heladas de Puno, el agua de los charcos se congela de noche y se funde con el sol de la mañana.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el punto avanza a la derecha cuando entra calor y sube cuando sube la temperatura. Fíjate en qué tramos hace las dos cosas y en cuáles solo una.' },
+      ],
+    },
     juega: {
       consigna: 'El calor entra solo, a ritmo fijo, a 10 g de hielo que empiezan a −20 °C. Mira el tramo donde el punto no sube.',
       voz: 'Fíjate en el tramo donde el punto avanza sin subir.',
@@ -354,7 +464,7 @@
         mover: (pt, val) => ({ q: inversa(EJES().geometria(dibCalor(val).datos).X, 0, 8)(pt.x) }) }],
     },
     predice: {
-      pregunta: ['Un cubo de 10 g de hielo a 0 °C recibe 1 kJ y todavía no termina de fundirse. ¿Cuánto subió su ', Tm, '?'],
+      pregunta: ['Una muestra de 10 g de hielo a 0 °C recibe 1 kJ y todavía no termina de fundirse. ¿Cuánto subió su ', Tm, '?'],
       voz: 'Tómate tu tiempo; es una pregunta sobre la meseta.',
       opciones: [
         { id: 'c', texto: 'Nada: sigue a 0 °C', correcta: true },
@@ -386,6 +496,55 @@
       ecuacion: [Q, ' = ', m, { llave: ['c'], nota: 'específico' }, ...dT, '   ·   ', Q, ' = ', m, { llave: ['L'], nota: 'latente' }],
       condicion: 'solo para una sustancia pura a presión fija. A 1 atm el agua hierve a 100 °C; en Juliaca, a 87 °C.',
       voz: 'Antes de usar una fórmula, pregunta en qué tramo estás.',
+    },
+    // Así se resuelve (fase 2): los dos casos de «Ahora tú» (agua que se calienta o hielo que se funde), con otras
+    // semillas y las mismas cuentas (C_AGUA, LF). La figura es el tramo de la curva que recorre ese calor.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        // Tope del eje: el menor múltiplo de un paso «redondo» que deja el valor con 5 marcas o menos.
+        const tope = v => { const p = [1, 2, 5, 10, 20, 50].find(k => Math.ceil(v / k) <= 5) || 100; return { max: Math.ceil(v / p) * p, paso: p }; };
+        if (s % 2) {
+          const mm = 10 * r.ent(2, 30), dt = 5 * r.ent(2, 12), q = mm * C_AGUA * dt;
+          const ex = tope(q / 1000), ey = tope(dt);
+          const ejes = extra => ({ datos: Object.assign({ x: { min: 0, max: ex.max, paso: ex.paso, nombre: 'Q', unidad: 'kJ', decimales: 0, color: 'o' },
+            y: { min: 0, max: ey.max, paso: ey.paso, nombre: 'ΔT', unidad: '°C', decimales: 0, color: 'h' }, curvas: [],
+            alt: `Calor entregado contra lo que sube la temperatura de ${f(mm, 0)} g de agua líquida.` }, extra), estado: {} });
+          return {
+            enunciado: ['¿Cuánto calor necesitan ', m, ` = ${f(mm, 0)} g de agua líquida para subir `, ...dT, ` = ${f(dt, 0)} °C? (c = 4,18 J/g·°C)`],
+            dibujo: ejes({ puntos: [{ x: 0, y: 0, color: 'h' }] }),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el calor ', Q, ' que sube la temperatura del agua. Sigue líquida: no hay cambio de fase.'] },
+              { tipo: 'datos', texto: [m, ` = ${f(mm, 0)} g, `, ...dT, ` = ${f(dt, 0)} °C y c = ${f(C_AGUA)} J/(g·°C), el calor específico del agua líquida.`] },
+              { tipo: 'regla', texto: 'Sin cambio de fase, el calor sube la temperatura: se multiplica la masa por el calor específico y por lo que sube.',
+                ecuacion: [Q, ' = ', m, 'c', ...dT] },
+              { tipo: 'cuentas', texto: 'Reemplazo los tres datos.', ecuacion: [Q, ` = ${f(mm, 0)} · ${f(C_AGUA)} · ${f(dt, 0)} = ${f(q, 0)} J`],
+                dibujo: ejes({ curvas: [{ puntos: [[0, 0], [q / 1000, dt]], color: 'h' }], puntos: [{ x: q / 1000, y: dt, color: 'h', rotulo: `${f(q / 1000, 1)} kJ`, guias: true }] }) },
+              { tipo: 'sentido', texto: `Unidades: g · J/(g·°C) · °C deja joules. Y de vuelta: ${f(q, 0)} J entre ${f(mm, 0)} g y ${f(dt, 0)} °C da ${f(q / (mm * dt))} J/(g·°C), el dato de c.` },
+            ],
+            respuesta: [Q, ` = ${f(q, 0)} J`],
+          };
+        }
+        const mm = 5 * r.ent(2, 40), q = mm * LF;
+        const ex = tope(q / 1000);
+        const ejes = extra => ({ datos: Object.assign({ x: { min: 0, max: ex.max, paso: ex.paso, nombre: 'Q', unidad: 'kJ', decimales: 0, color: 'o' },
+          y: { min: -10, max: 10, paso: 5, nombre: 'T', unidad: '°C', decimales: 0, color: 'h' }, curvas: [],
+          alt: `Calor entregado a ${f(mm, 0)} g de hielo a 0 °C mientras se funde: la temperatura se queda en 0 °C.` }, extra), estado: {} });
+        return {
+          enunciado: ['¿Cuánto calor necesitan ', m, ` = ${f(mm, 0)} g de hielo a 0 °C para fundirse por completo? (L = 334 J/g)`],
+          dibujo: ejes({ puntos: [{ x: 0, y: 0, color: 'h', rotulo: '0 °C' }] }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el calor ', Q, ' que funde todo el hielo. Ya está a 0 °C: solo falta el cambio de fase.'] },
+            { tipo: 'datos', texto: [m, ` = ${f(mm, 0)} g de hielo y L = ${f(LF, 0)} J/g, el calor latente de fusión.`] },
+            { tipo: 'regla', texto: 'Mientras se funde, la temperatura se queda en 0 °C y cada gramo pide su calor latente: masa por L.',
+              ecuacion: [Q, ' = ', m, 'L'] },
+            { tipo: 'cuentas', texto: 'Reemplazo la masa y el calor latente.', ecuacion: [Q, ` = ${f(mm, 0)} · ${f(LF, 0)} = ${f(q, 0)} J`],
+              dibujo: ejes({ curvas: [{ puntos: [[0, 0], [q / 1000, 0]], color: 'h' }], puntos: [{ x: q / 1000, y: 0, color: 'h', rotulo: `${f(q / 1000, 2)} kJ`, guias: true }] }) },
+            { tipo: 'sentido', texto: `Unidades: g · J/g deja joules. Y de vuelta: ${f(q, 0)} J entre ${f(mm, 0)} g da ${f(q / mm, 0)} J por gramo, el dato de L.` },
+          ],
+          respuesta: [Q, ` = ${f(q, 0)} J`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Decide primero si hay cambio de fase.',
@@ -436,6 +595,15 @@
     titulo: 'La energía nuclear pierde masa',
     temas: ['Equivalencia masa-energía'],
     pieza: 'ejes',
+    // Lee (fase 2): contexto y unidades. No da la fórmula ni la cuenta de un gramo (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Masa y energía', texto: 'En 1905, Einstein propuso que la masa y la energía están ligadas: cuando un sistema suelta energía, su masa baja un poquito. En la cuenta entra la rapidez de la luz, que es enorme.' },
+        { titulo: 'Químico y nuclear', texto: 'Al quemar el gas de Camisea en una cocina se libera energía por una reacción química: los átomos se reordenan. En un reactor nuclear, en cambio, se transforman los núcleos. Las dos cosas sueltan energía.' },
+        { titulo: 'Las unidades', texto: 'La masa que desaparece se mide aquí en miligramos (mg): mil miligramos hacen un gramo. La energía sale en joules (J); un terajoule (TJ) es un billón de joules.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el eje de abajo es la masa que desaparece y el de la izquierda, la energía que sale. Mira qué le pasa a la energía cuando la masa se duplica.' },
+      ],
+    },
     juega: {
       consigna: 'La masa que desaparece en un proceso nuclear sube y baja sola. Lee cuánta energía sale; pausa o arrastra el punto.',
       voz: 'Mira qué tan empinada es esta recta.',
@@ -482,6 +650,26 @@
       ecuacion: [E, ' = ', { llave: dm, nota: 'masa perdida', color: 'c-i' }, ' · ', { llave: [{ sup: ['c', '2'] }], nota: 'c: la luz' }],
       condicion: 'Δm es la diferencia de masa del sistema antes y después, en kg, no la masa total; c = 3 × 10⁸ m/s.',
       voz: 'La masa no se vuelve calor entera: solo la diferencia.',
+    },
+    // Así se resuelve (fase 2): el caso de «Ahora tú» con otra semilla, con las mismas cuentas (mg → kg y C2).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), mg = r.ent(2, 90) * 10, kg = mg * 1e-6, e = kg * C2;
+        return {
+          enunciado: ['En un proceso nuclear desaparecen ', ...dm, ` = ${f(mg, 0)} mg. ¿Cuánta energía `, E, ' se libera? (c = 3 × 10⁸ m/s)'],
+          dibujo: { datos: ejesMasa(1000), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la energía ', E, ' que sale cuando desaparece esa masa en el proceso nuclear.'] },
+            { tipo: 'datos', texto: [...dm, ` = ${f(mg, 0)} mg. Paso a kilogramos: 1 mg es 10⁻⁶ kg.`], ecuacion: [...dm, ` = ${f(mg, 0)} · 10⁻⁶ = ${cien(kg)} kg`] },
+            { tipo: 'regla', texto: 'La energía que sale es la masa perdida, en kilogramos, por la rapidez de la luz al cuadrado.',
+              ecuacion: [E, ' = ', ...dm, ' · c², con c² = (3 × 10⁸)² = 9 × 10¹⁶ m²/s²'] },
+            { tipo: 'cuentas', texto: 'Multiplico la masa en kilogramos por c².', ecuacion: [E, ` = ${cien(kg)} · 9 × 10¹⁶ = ${cien(e, 2)} J`],
+              dibujo: { datos: ejesMasa(1000, { puntos: [{ x: mg, y: mg * 0.09, color: 'd', rotulo: `${f(mg * 0.09, 1)} TJ`, guias: true }] }), estado: {} } },
+            { tipo: 'sentido', texto: `Unidades: kg · m²/s² es un joule. Y ${cien(e, 2)} J son ${f(e / 1e12, 1)} TJ, lo que marca la recta en ${f(mg, 0)} mg.` },
+          ],
+          respuesta: [E, ` = ${cien(e, 2)} J`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Pasa la masa a kilogramos primero.',
@@ -580,6 +768,15 @@
       { termino: 'calor específico', simbolo: 'c', medida: 'J/(g·°C)',
         def: 'Calor que necesita un gramo de una sustancia para subir 1 °C.', ejemplo: 'Agua líquida: 4,18 J/(g·°C); hielo: 2,1 J/(g·°C).',
         ver: ['calor sensible'] },
+      { termino: 'especie', formas: ['especie', 'especies'], def: 'Cada clase de partícula de una muestra: todas las de una misma clase son iguales entre sí.',
+        ejemplo: 'Agua con azúcar: dos especies, las moléculas de agua y las de azúcar.', ver: ['sustancia', 'mezcla'] },
+      { termino: 'estado de agregación', formas: ['estado de agregación', 'estados de agregación'],
+        def: 'Forma en que se juntan las partículas: sólido (vibran en su sitio), líquido (se deslizan) o gas (vuelan separadas).',
+        ver: ['cambio físico', 'fase'] },
+      { termino: 'propiedad física', formas: ['propiedad física', 'propiedades físicas'],
+        def: 'Rasgo de una sustancia que se mide sin transformarla en otra.', ejemplo: 'La densidad o la temperatura de fusión.', ver: ['propiedad química'] },
+      { termino: 'propiedad química', formas: ['propiedad química', 'propiedades químicas'],
+        def: 'Rasgo de una sustancia que solo se ve cuando se transforma en otra.', ejemplo: 'Que el gas de un balón arda.', ver: ['propiedad física', 'cambio químico'] },
     ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera lleva el hielo hasta vapor, con la meseta de
     // hervir que la idea 3 no alcanza; la segunda llega a un gramo y lo traduce a carbón quemado. Las lecturas dicen

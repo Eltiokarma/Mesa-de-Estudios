@@ -98,6 +98,15 @@
     titulo: 'El núcleo decide el elemento',
     temas: ['Partículas subatómicas', 'Número atómico y de masa', 'Isótopos'],
     pieza: 'quim-atomo',
+    // Lee (fase 2): tamaño, partes y nombres de los números. No dice qué decide el elemento (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Muy, muy pequeño', texto: 'Un átomo es tan pequeño que en el grosor de una hoja de papel caben cientos de miles, uno junto a otro. Aun así, por dentro tiene partes.' },
+        { titulo: 'Tres partículas', texto: 'Los protones, con carga positiva, y los neutrones, sin carga, forman el núcleo, al centro. Los electrones, con carga negativa, se mueven en la zona de afuera. Casi toda la masa está en el núcleo.' },
+        { titulo: 'Dos números', texto: 'El número atómico Z cuenta los protones del núcleo. El número de masa A cuenta protones y neutrones juntos. El cobre que sale de Cuajone, por ejemplo, tiene Z = 29.' },
+        { titulo: 'Qué mirar', texto: 'En el juego cambia una sola cosa a la vez: neutrones, protones o carga. Mira con cuál de las tres cambia el símbolo del átomo y con cuáles no.' },
+      ],
+    },
     juega: {
       consigna: 'Los neutrones suben y bajan solos: mira si cambia el nombre. Después cambia los protones y la carga.',
       voz: 'Mueve una sola cosa a la vez y mira el nombre.',
@@ -143,6 +152,45 @@
       ecuacion: [A, ' = ', { llave: [Z], nota: 'protones', color: 'c-h' }, ' + ', { llave: [N], nota: 'neutrones', color: 'c-d' }, '   ·   ', 'carga = ', Z, ' − ', { llave: [e], nota: 'electrones', color: 'c-i' }],
       condicion: 'isótopos: mismo Z y distinto N. Iones: mismo Z y distinto número de electrones; el elemento no cambia.',
       voz: 'Primero el núcleo, después los electrones.',
+    },
+    // Así se resuelve (fase 2): el ion de «Ahora tú» con otra semilla y las mismas cuentas (e = Z − carga, N = A − Z).
+    // Solo los iones hasta Z = 20 de la lista de «Ahora tú», porque la figura de capas de quim-atomo llega al calcio.
+    // La figura es el ion entero, con su núcleo contado: el ejemplo resuelto la usa para comprobar.
+    resuelve: {
+      generar(s) {
+        const LISTA = [[8, 16, -2], [11, 23, 1], [12, 24, 2], [13, 27, 3], [16, 32, -2], [17, 35, -1], [17, 37, -1], [19, 39, 1], [20, 40, 2], [9, 19, -1], [7, 14, -3]];
+        const r = azar(s + 900), [z, a, q] = LISTA[r.ent(0, LISTA.length - 1)];
+        const sim = `${SIMB[z]}${carga(q)}`, masa = sup(a), el = z - q, n = a - z;
+        const dib = atomoDe({ z, n, q });
+        if (s % 2) {
+          return {
+            enunciado: ['El ion ', `${masa}${sim}`, ' tiene ', Z, ` = ${z}. ¿Cuántos electrones tiene?`],
+            dibujo: dib,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden los electrones del ion: las partículas de carga negativa que están afuera del núcleo.' },
+              { tipo: 'datos', texto: [Z, ` = ${z} protones en el núcleo. La carga del símbolo es ${signo(q)}.`] },
+              { tipo: 'regla', texto: 'La carga es protones menos electrones. Despejo: los electrones son los protones menos la carga, con su signo.',
+                ecuacion: [e, ' = ', Z, ' − carga'] },
+              { tipo: 'cuentas', texto: `Carga ${signo(q)}: ${q > 0 ? 'perdió' : 'ganó'} ${Math.abs(q)} respecto del átomo neutro.`, ecuacion: [e, ` = ${z} − (${signo(q)}) = ${el}`] },
+              { tipo: 'sentido', texto: `De vuelta: ${z} protones y ${el} electrones dan ${z} − ${el} = ${signo(z - el)}, la carga del símbolo. ${q > 0 ? 'Un catión tiene menos electrones que protones.' : 'Un anión tiene más electrones que protones.'}` },
+            ],
+            respuesta: `${el} electrones`,
+          };
+        }
+        return {
+          enunciado: ['El ion ', `${masa}${sim}`, ' tiene ', Z, ` = ${z}. ¿Cuántos neutrones tiene su núcleo?`],
+          dibujo: dib,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden los neutrones: las partículas sin carga del núcleo.' },
+            { tipo: 'datos', texto: ['El número de arriba del símbolo es ', A, ` = ${a}; además, `, Z, ` = ${z}. La carga ${signo(q)} no hace falta.`] },
+            { tipo: 'regla', texto: 'El número de masa junta protones y neutrones. Le quito los protones y quedan los neutrones; la carga viene de los electrones y no toca el núcleo.',
+              ecuacion: [N, ' = ', A, ' − ', Z] },
+            { tipo: 'cuentas', texto: 'Resto los protones del número de masa.', ecuacion: [N, ` = ${a} − ${z} = ${n}`] },
+            { tipo: 'sentido', texto: `De vuelta: ${z} protones + ${n} neutrones = ${z + n}, el número de masa del símbolo.` },
+          ],
+          respuesta: `${n} neutrones`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Separa lo que está en el núcleo de lo que está afuera.',
@@ -195,6 +243,14 @@
     titulo: 'Cada modelo respondió a una evidencia',
     temas: ['Modelos atómicos de Dalton a Bohr', 'Modelo actual'],
     pieza: 'quim-cadena',
+    // Lee (fase 2): qué es un modelo y cómo se lee la cadena. No dice qué concluyó Rutherford (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Saber sin ver', texto: 'Nadie ha visto un átomo a simple vista. Lo que sabemos de él salió de experimentos: se observa algo, se propone una explicación y se pone a prueba con observaciones nuevas.' },
+        { titulo: 'Qué es un modelo', texto: 'Un modelo es una explicación simplificada, como un mapa de Juliaca: no es la ciudad, pero sirve para ubicarse. Cuando una observación nueva no encaja, el modelo se corrige o se cambia por otro.' },
+        { titulo: 'Qué mirar', texto: 'Cada cadena del juego tiene tres partes: arriba, lo que se observó; al medio, el modelo; abajo, lo que ese modelo no podía explicar. Compara el límite de un modelo con la evidencia del siguiente.' },
+      ],
+    },
     juega: {
       consigna: 'La cadena se recorre sola: arriba lo que se observó, al medio el modelo que lo explicaba, abajo lo que no explicaba. Elige un modelo.',
       voz: 'Lee cada cadena de arriba abajo: evidencia, modelo, límite.',
@@ -240,6 +296,34 @@
       condicion: 'el modelo de Bohr sirve para el hidrógeno y para contar niveles; no es una foto del átomo.',
       voz: 'Un modelo vale por lo que explica, no por lo bonito del dibujo.',
     },
+    // Así se resuelve (fase 2): una evidencia de «Ahora tú» elegida con otra semilla. La evidencia, el modelo y lo
+    // que propuso salen del mismo generar de «Ahora tú»; la cadena los dibuja como en el juego.
+    resuelve: {
+      generar(s) {
+        const at = modelos.ahoraTu.generar(azar(s + 900).ent(0, 4));
+        const ev = String(at.pregunta).match(/«(.+)»/)[1], mod = at.opciones.find(o => o.correcta).texto;
+        const ENCAJA = {
+          Dalton: 'Encaja con la historia: en 1808 todavía no se conocían partículas con carga; bastaba con átomos de masa propia.',
+          Thomson: 'Encaja con la historia: los átomos de Dalton no tenían partes con carga; Thomson, en 1904, puso electrones dentro.',
+          Rutherford: 'Encaja con la historia: con la carga repartida de Thomson, ninguna alfa rebotaría; Rutherford, en 1911, propuso el núcleo.',
+          Bohr: 'Encaja con la historia: el núcleo de Rutherford no explicaba los colores del hidrógeno; Bohr, en 1913, propuso niveles.',
+          'El modelo actual (orbitales)': 'Encaja con la historia: Bohr solo funcionaba bien con el hidrógeno; desde 1926 el electrón se describe con orbitales.',
+        };
+        const cadena = modelo => ({ datos: { columnas: [{ titulo: 'Evidencia y modelo', nodos: [{ texto: ev.replace(/\.$/, ''), color: 'd' },
+          modelo ? { texto: modelo, color: 'o' } : { texto: '¿?', tenue: true }] }] }, estado: {} });
+        return {
+          enunciado: at.pregunta,
+          dibujo: cadena(null),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el modelo atómico que se propuso para explicar esa observación.' },
+            { tipo: 'regla', texto: 'Cada modelo nació para explicar una evidencia que el anterior no podía. Busco qué tendría que haber en el átomo para que pase lo observado.' },
+            { tipo: 'aplica', texto: at.solucion.texto, ecuacion: [mod], dibujo: cadena(at.solucion.texto.replace(/ para explicarlo\.$/, '')) },
+            { tipo: 'sentido', texto: ENCAJA[mod] || 'Encaja con la historia: cada modelo llegó cuando el anterior dejó de explicar algo.' },
+          ],
+          respuesta: mod,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Relaciona la evidencia con el modelo que la explicó.',
       generar(s) {
@@ -278,6 +362,14 @@
     titulo: 'Niveles, subniveles y orbitales',
     temas: ['Números cuánticos y orbitales'],
     pieza: 'quim-cajas',
+    // Lee (fase 2): la dirección del electrón y las letras. No cuenta cuántos electrones caben en un nivel.
+    lee: {
+      tarjetas: [
+        { titulo: 'Una dirección', texto: 'Para ubicar un electrón se usan cuatro números cuánticos, como una dirección: el nivel n es el barrio, el subnivel l la calle, el orbital mₗ la casa y el espín mₛ dice cuál de los dos que viven ahí.' },
+        { titulo: 'Las letras', texto: 'Los subniveles se nombran con letras: l = 0 es s, l = 1 es p, l = 2 es d y l = 3 es f. En el diagrama, cada caja es un orbital y cada flecha, un electrón.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, n sube y baja solo. Cuenta cuántas filas, cuántas cajas y cuántas flechas aparecen en cada nivel, y busca cómo crecen.' },
+      ],
+    },
     juega: {
       consigna: 'El número cuántico n sube y baja solo. Cuenta las cajas (orbitales) y las flechas (electrones) que caben; cambia también l.',
       voz: 'Prueba también un l igual o mayor que n.',
@@ -325,6 +417,58 @@
       ecuacion: ['orbitales = 2', { llave: ['l'], nota: 'subnivel' }, ' + 1', '   ·   ', 'electrones = 2', { llave: [{ sup: ['n', '2'] }], nota: 'nivel' }],
       condicion: 'cada orbital admite dos electrones de espín opuesto (Pauli); un orbital es una región de probabilidad, no una órbita.',
       voz: 'Cuenta cajas y después flechas.',
+    },
+    // Así se resuelve (fase 2): los tres casos de «Ahora tú» (orbitales de un subnivel, electrones de un subnivel,
+    // electrones de un nivel), con otras semillas y las mismas cuentas (2l + 1 y 2n²). El nivel llega hasta n = 4
+    // porque las letras de la figura llegan a f.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3, menos = k => (k < 0 ? `−${-k}` : k > 0 ? `+${k}` : '0');
+        if (tipo === 2) {
+          const n = r.ent(1, 4), subs = Array.from({ length: n }, (_, l) => `${n}${LETRA[l]}`), orbs = Array.from({ length: n }, (_, l) => 2 * l + 1);
+          const tot = orbs.reduce((a, b) => a + b, 0);
+          return {
+            enunciado: `¿Cuántos electrones caben, como máximo, en el nivel n = ${n}?`,
+            dibujo: { datos: nivel(n, -1, false), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: `Piden cuántos electrones caben en todo el nivel ${n}, con todos sus subniveles llenos.` },
+              { tipo: 'datos', texto: `Con n = ${n}, l va de 0 a ${n - 1}: ${n === 1 ? 'un solo subnivel' : 'los subniveles'} ${subs.join(', ')}.` },
+              { tipo: 'regla', texto: 'Sumo los orbitales de cada subnivel (2l + 1 cada uno) y pongo dos electrones de espín opuesto en cada orbital.' },
+              { tipo: 'cuentas', texto: 'Cuento cajas por subnivel y después las flechas.', ecuacion: [`orbitales = ${orbs.join(' + ')} = ${tot}   ·   electrones = 2 · ${tot} = ${2 * tot}`],
+                dibujo: { datos: Object.assign(nivel(n, -1), { rotulo: `nivel ${n}: ${tot} orbitales, ${2 * tot} e⁻` }), estado: {} } },
+              { tipo: 'sentido', texto: `De vuelta, con la regla corta: 2n² = 2 · ${n}² = ${2 * n * n}. Coincide con la suma subnivel por subnivel.` },
+            ],
+            respuesta: `${2 * tot} electrones`,
+          };
+        }
+        const n = r.ent(2, 5), l = r.ent(0, Math.min(3, n - 1)), sub = `${n}${LETRA[l]}`, orb = 2 * l + 1;
+        const ml = Array.from({ length: orb }, (_, k) => menos(k - l)).join(', ');
+        const vacio = { datos: { filas: [{ nombre: sub, e: 0, cajas: orb }] }, estado: {} }, lleno = { datos: { filas: [{ nombre: sub, e: 2 * orb, cajas: orb }] }, estado: {} };
+        const datos = { tipo: 'datos', texto: `En ${sub}, el ${n} es el nivel y la letra ${LETRA[l]} dice el subnivel: l = ${l}.` };
+        if (tipo === 0) return {
+          enunciado: `¿Cuántos orbitales tiene el subnivel ${sub}?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuántos orbitales, es decir, cuántas cajas, tiene el subnivel ${sub}.` },
+            datos,
+            { tipo: 'regla', texto: 'Hay un orbital por cada valor de mₗ, que va de −l a +l pasando por 0.', ecuacion: ['orbitales = 2l + 1'] },
+            { tipo: 'cuentas', texto: `Con l = ${l}, mₗ toma ${orb === 1 ? 'un solo valor' : `${orb} valores`}.`, ecuacion: [`mₗ = ${ml}   ·   2 · ${l} + 1 = ${orb}`], dibujo: vacio },
+            { tipo: 'sentido', texto: `De vuelta: la figura tiene ${orb} ${orb === 1 ? 'caja' : 'cajas'}. Y el nivel no cambia la cuenta: todo subnivel ${LETRA[l]} tiene ${orb}.` },
+          ],
+          respuesta: `${orb} ${orb === 1 ? 'orbital' : 'orbitales'}`,
+        };
+        return {
+          enunciado: `¿Cuántos electrones caben, como máximo, en el subnivel ${sub}?`,
+          dibujo: vacio,
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuántos electrones caben en el subnivel ${sub} cuando está lleno.` },
+            datos,
+            { tipo: 'regla', texto: 'Primero cuento los orbitales, uno por cada valor de mₗ; en cada orbital caben dos electrones de espín opuesto.', ecuacion: ['electrones = 2 · (2l + 1)'] },
+            { tipo: 'cuentas', texto: `Con l = ${l} hay ${orb} ${orb === 1 ? 'orbital' : 'orbitales'}; cada uno lleva dos flechas.`, ecuacion: [`2 · (2 · ${l} + 1) = 2 · ${orb} = ${2 * orb}`], dibujo: lleno },
+            { tipo: 'sentido', texto: `De vuelta: ${orb} ${orb === 1 ? 'caja' : 'cajas'} con dos flechas son ${2 * orb}. Es menos que los ${2 * n * n} del nivel ${n} entero, como debe ser.` },
+          ],
+          respuesta: `${2 * orb} electrones`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Primero el subnivel, después las cajas.',
@@ -382,6 +526,16 @@
     titulo: 'Dónde va cada electrón',
     temas: ['Configuración electrónica de átomos e iones'],
     pieza: 'quim-cajas',
+    // Lee (fase 2): cómo se escribe una configuración y qué es un ion. No dice de dónde salen los electrones de un
+    // catión (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'De abajo hacia arriba', texto: 'Los electrones ocupan primero los subniveles de menor energía, como el agua que llena un balde desde el fondo. Cada subnivel tiene un tope: el s se llena con 2 y el p, con 6.' },
+        { titulo: 'Cómo se escribe', texto: `La configuración se escribe con cada subnivel y un superíndice que cuenta sus electrones. ${textoConfig(config(7))} es el nitrógeno: ${config(7).map(x => x[1]).join(' + ')} = ${config(7).reduce((a, x) => a + x[1], 0)} electrones.` },
+        { titulo: 'Átomos e iones', texto: 'Un ion es un átomo que ganó o perdió electrones. Antes de escribir su configuración, cuenta cuántos electrones tiene de verdad: no siempre son tantos como protones.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, los electrones entran de uno en uno. Mira el orden de las filas y fíjate en qué subnivel cae el electrón número 19.' },
+      ],
+    },
     juega: {
       consigna: 'Los electrones entran solos, uno por uno, del hidrógeno al calcio. Mira en qué subnivel entra cada uno; pausa o arrastra el último.',
       voz: 'Fíjate qué pasa al llegar a 19.',
@@ -426,6 +580,29 @@
       ecuacion: [e, ' = ', Z, ' − ', { llave: ['carga'], nota: 'positiva: perdió' }],
       condicion: 'en estado fundamental. Hay excepciones verificadas: el Cr y el Cu pasan un electrón del 4s al 3d.',
       voz: 'Cuenta los electrones antes de escribir la configuración.',
+    },
+    // Así se resuelve (fase 2): una especie de la lista de «Ahora tú», elegida con otra semilla, con las mismas
+    // cuentas (electrones = Z − carga y config, el orden de llenado). Las cajas vacías son las del orden hasta 4s.
+    resuelve: {
+      generar(s) {
+        const LISTA = [[7, 0], [8, 0], [11, 0], [13, 0], [15, 0], [16, 0], [19, 0], [20, 0], [11, 1], [12, 2], [13, 3], [8, -2], [9, -1], [16, -2], [17, -1], [19, 1], [20, 2], [7, -3]];
+        const [z, q] = LISTA[azar(s + 900).ent(0, LISTA.length - 1)], el = z - q, sim = `${SIMB[z]}${carga(q)}`, c = config(el);
+        const vacias = { datos: { filas: filasConfig(config(20)).map(x => Object.assign(x, { e: 0 })) }, estado: {} };
+        return {
+          enunciado: ['¿Cuál es la configuración electrónica del ', sim, ' (', Z, ` = ${z})?`],
+          dibujo: vacias,
+          pasos: [
+            { tipo: 'pide', texto: `Piden la configuración del ${sim}: cómo se reparten sus electrones entre los subniveles.` },
+            { tipo: 'datos', texto: q ? [Z, ` = ${z} y carga ${signo(q)}: ${q > 0 ? 'perdió' : 'ganó'} ${Math.abs(q)} ${Math.abs(q) === 1 ? 'electrón' : 'electrones'}.`] : [Z, ` = ${z} y sin carga: tiene tantos electrones como protones.`],
+              ecuacion: q ? [e, ` = ${z} − (${signo(q)}) = ${el}`] : [e, ' = ', Z, ` = ${el}`] },
+            { tipo: 'regla', texto: 'Lleno los subniveles en orden de energía, 1s 2s 2p 3s 3p 4s, sin pasar el tope de cada uno: 2 en un s y 6 en un p.' },
+            { tipo: 'cuentas', texto: `Reparto los ${el} electrones hasta que se acaban.`, ecuacion: [`${sim}: ${textoConfig(c)}`],
+              dibujo: { datos: { filas: filasConfig(c) }, estado: {} } },
+            { tipo: 'sentido', texto: `De vuelta: sumo los superíndices, ${c.map(x => x[1]).join(' + ')} = ${c.reduce((a, x) => a + x[1], 0)}, los electrones del ${sim}.` },
+          ],
+          respuesta: `${sim}: ${textoConfig(c)}`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Cuenta primero los electrones de la especie.',
@@ -488,6 +665,15 @@
     titulo: 'Electrones solos e isoelectrónicos',
     temas: ['Paramagnetismo y especies isoelectrónicas'],
     pieza: 'quim-cajas',
+    // Lee (fase 2): electrones como imanes, Hund y la palabra isoelectrónico. No compara tamaños (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Imanes diminutos', texto: 'Cada electrón se porta como un imán muy pequeño. Si dos comparten un orbital con espín opuesto, sus efectos se anulan. Un electrón solo, en cambio, hace que un imán atraiga un poco a la sustancia.' },
+        { titulo: 'Primero una por caja', texto: 'Al llenar un subnivel, los electrones ocupan primero las cajas vacías, uno en cada una, y recién después se aparean. Es como en una combi: nadie se sienta junto a otro si todavía hay filas libres.' },
+        { titulo: 'Isoelectrónicos', texto: 'Dos especies son isoelectrónicas si tienen la misma cantidad de electrones, aunque sus núcleos sean distintos. El Na⁺ y el átomo de neón, por ejemplo, tienen los mismos electrones.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, espera a que terminen de entrar los electrones y cuenta las cajas con una sola flecha: la figura las marca.' },
+      ],
+    },
     juega: {
       consigna: 'Los electrones de valencia entran solos, uno por uno: primero uno en cada caja. Elige una especie y cuenta las cajas marcadas.',
       voz: 'Cuenta solo las cajas marcadas.',
@@ -528,6 +714,29 @@
       texto: 'Con electrones desapareados, la especie es paramagnética; con todos apareados, diamagnética. Isoelectrónicas: mismos electrones; la de más protones es la más pequeña.',
       condicion: 'Hund: los electrones ocupan cajas vacías antes de aparearse. Los radios se comparan en una misma escala (aquí, Shannon).',
       voz: 'Cajas con una flecha sola: ahí está el paramagnetismo.',
+    },
+    // Así se resuelve (fase 2): el caso de las cajas de valencia de «Ahora tú» (la variante de los radios usa otra
+    // figura), con otra semilla. Los desapareados los cuenta hund(), el mismo llenado de la animación del juego.
+    resuelve: {
+      generar(s) {
+        const k = azar(s + 900).de(Object.keys(VALENCIA)), filas = VALENCIA[k].filas;
+        const totalE = filas.reduce((a, x) => a + x[1], 0), solosDe = filas.map(([, e_, cj]) => hund(e_, cj)), d = solosDe.reduce((a, b) => a + b, 0);
+        const imán = d ? 'paramagnético' : 'diamagnético';
+        const cajas = marca => ({ datos: Object.assign({ filas: filas.map(([nombre, e_, cj]) => ({ nombre, e: e_, cajas: cj })) }, marca ? { desapareados: true, rotulo: `${d} ${d === 1 ? 'desapareado' : 'desapareados'} · ${imán}` } : {}), estado: {} });
+        return {
+          enunciado: `Estas son las cajas de valencia del ${k}. ¿Cuántos electrones desapareados tiene y cómo responde a un imán?`,
+          dibujo: cajas(false),
+          pasos: [
+            { tipo: 'pide', texto: `Piden los electrones solos del ${k}, uno por caja sin pareja, y si un imán lo atrae.` },
+            { tipo: 'datos', texto: `Sus subniveles de valencia: ${filas.map(([nom, e_]) => `${nom}${sup(e_)}`).join(' ')}, con ${totalE} electrones en total.` },
+            { tipo: 'regla', texto: 'Por Hund, pongo una flecha en cada caja vacía antes de aparear. Si queda alguna sola, es paramagnético; si todas tienen pareja, diamagnético.' },
+            { tipo: 'cuentas', texto: 'Subnivel por subnivel: electrones, cajas y las que quedan con una sola flecha.',
+              ecuacion: [filas.map(([nom, e_, cj], i) => `${nom}: ${e_} en ${cj} → ${solosDe[i]}`).join('   ·   '), `   ·   total: ${d}`], dibujo: cajas(true) },
+            { tipo: 'sentido', texto: `De vuelta: ${totalE - d} electrones en pareja y ${d} ${d === 1 ? 'solo' : 'solos'} suman ${totalE}, los de valencia.` },
+          ],
+          respuesta: `${d} ${d === 1 ? 'desapareado' : 'desapareados'}: ${imán}`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Cuenta las cajas con una sola flecha.',
@@ -642,6 +851,16 @@
       { termino: 'radio de Bohr', formas: ['radio de Bohr', 'radios de Bohr'], simbolo: 'a₀', medida: 'pm',
         def: 'Unidad de distancia dentro del átomo de hidrógeno: 52,9 pm. En un milímetro caben unos 19 millones.',
         ver: ['orbital'] },
+      { termino: 'subnivel', formas: ['subnivel', 'subniveles'], def: 'Parte de un nivel con orbitales del mismo tipo; se nombra con una letra: s, p, d o f.',
+        ejemplo: 'El 3p tiene 3 orbitales.', ver: ['orbital', 'números cuánticos'] },
+      { termino: 'espín', simbolo: 'mₛ', def: 'Propiedad del electrón que se dibuja como una flecha hacia arriba o hacia abajo: vale +½ o −½.',
+        ver: ['orbital', 'electrón desapareado'] },
+      { termino: 'regla de Hund', formas: ['regla de Hund', 'Hund'], def: 'En un subnivel, los electrones ocupan primero orbitales vacíos, uno en cada uno, y después se aparean.',
+        ejemplo: 'El nitrógeno pone sus 3 electrones 2p en 3 cajas distintas.', ver: ['electrón desapareado'] },
+      { termino: 'paramagnético', formas: ['paramagnético', 'paramagnética', 'paramagnéticos', 'paramagnetismo'],
+        def: 'Dicho de una especie con electrones desapareados: un imán la atrae un poco.', ver: ['diamagnético', 'electrón desapareado'] },
+      { termino: 'diamagnético', formas: ['diamagnético', 'diamagnética', 'diamagnéticos'],
+        def: 'Dicho de una especie con todos sus electrones en pareja: un imán no la atrae.', ver: ['paramagnético'] },
     ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La 3D (la nube del orbital) va primera. La segunda abre los rangos de la idea 1 (hasta Z = 20 y
     // cargas de ±3); la tercera junta la configuración de un ion con sus desapareados. La lectura dice la especie y

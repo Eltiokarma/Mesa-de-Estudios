@@ -108,12 +108,22 @@
     covalente: { nombre: 'Covalente', si: 'Sería covalente si solo hubiera no metales compartiendo pares de electrones.', porque: 'Solo no metales: comparten pares de electrones.' },
     metalico: { nombre: 'Metálico', si: 'Sería metálico si fuera un metal solo: cationes en un mar de electrones.', porque: 'Un metal solo: cationes en un mar de electrones móviles.' },
   };
+  // Metales de los casos de «Ahora tú» y «Así se resuelve» de la idea 1 (la escalera de la tabla periódica).
+  const METALES = new Set(['K', 'Mg', 'Fe', 'Al', 'Ca', 'Cu']);
   // Sin arrastre: el control elige entre tres sólidos distintos; no hay una magnitud que agarrar en la lupa.
   const tres = {
     id: 'tres-enlaces',
     titulo: 'Tres maneras de unirse',
     temas: ['Enlace iónico', 'Enlace metálico'],
     pieza: 'quim-particulas',
+    lee: {
+      tarjetas: [
+        { titulo: 'Metales y no metales', texto: 'En la tabla periódica, los metales están a la izquierda de la escalera y los no metales a la derecha. El cobre que sale de Cuajone es un metal; el cloro y el oxígeno son no metales.' },
+        { titulo: 'Cationes y aniones', texto: 'Un átomo que pierde electrones queda como catión, con carga positiva. Uno que los gana queda como anión, con carga negativa. Cargas contrarias se atraen.' },
+        { titulo: 'Una lupa imaginaria', texto: 'Cada caja es una lupa que agranda millones de veces. Las bolitas son un modelo, no una foto: con punto, huecas o llenas, distinguen partículas distintas.' },
+        { titulo: 'Qué mirar', texto: 'Todo vibra en cámara lenta. En cada sólido, fíjate qué partícula se repite y si hay algo que se mueve libre entre las demás.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un sólido y míralo con la lupa, en cámara lenta: todo vibra. Fíjate qué partícula se repite y qué se mueve libre.',
       voz: 'Primero el inventario: qué partícula se repite en cada sólido.',
@@ -156,6 +166,39 @@
       ecuacion: ['metal + no metal: iónico', '   ·   ', 'solo no metales: covalente'],
       condicion: 'metal con no metal es una guía, no una ley: hay casos intermedios, y no todo sólido está hecho de moléculas.',
       voz: 'Mira qué elementos hay antes de decidir.',
+    },
+    // Así se resuelve: el problema de «Ahora tú» (qué enlace une las partículas), con los mismos CASOS y TIPOS. El tipo
+    // se deduce de los elementos de la fórmula y se comprueba contra el de la lista.
+    resuelve: {
+      generar(s) {
+        const CASOS = [['KBr', 'ionico', 'bromuro de potasio'], ['Fe', 'metalico', 'hierro'], ['CO₂', 'covalente', 'dióxido de carbono'], ['MgO', 'ionico', 'óxido de magnesio'],
+          ['Al', 'metalico', 'aluminio'], ['NH₃', 'covalente', 'amoniaco'], ['CaF₂', 'ionico', 'fluoruro de calcio'], ['Cl₂', 'covalente', 'cloro'], ['Cu', 'metalico', 'cobre'], ['CH₄', 'covalente', 'metano']];
+        const r = azar(s + 900), [fo, tipo, nom] = r.de(CASOS);
+        const els = [...new Set(fo.match(/[A-Z][a-z]?/g))], met = els.filter(e => METALES.has(e)), nom2 = els.filter(e => !METALES.has(e));
+        const deduce = met.length && nom2.length ? 'ionico' : met.length ? 'metalico' : 'covalente';
+        if (deduce !== tipo) throw new Error(`${fo}: los elementos dicen ${deduce}`);
+        const aplica = {
+          ionico: `Se unen un metal y un no metal: el ${met[0]} cede electrones al ${nom2[0]}. Quedan cationes y aniones en una red.`,
+          covalente: nom2.length > 1 ? `Solo hay no metales, ${nom2.join(' y ')}: sus átomos comparten pares de electrones y forman moléculas.` : `Solo hay ${nom2[0]}, un no metal: sus átomos comparten pares de electrones y forman moléculas.`,
+          metalico: `Solo hay ${met[0]}, un metal: sus cationes quedan ordenados en un mar de electrones móviles.`,
+        }[tipo];
+        const sentido = {
+          ionico: `Cuadra con una propiedad: un sólido iónico como el ${nom} conduce la corriente fundido, pero no en estado sólido.`,
+          covalente: `Cuadra: en el ${nom} se repite una molécula, ${fo}, y no hay iones sueltos.`,
+          metalico: `Cuadra con una propiedad: el ${nom} conduce la corriente en estado sólido, gracias a sus electrones móviles.`,
+        }[tipo];
+        return {
+          enunciado: `¿Qué tipo de enlace une las partículas del ${nom} (${fo})? Decide por los elementos que lo forman.`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden el tipo de enlace del ${nom}: iónico, covalente o metálico.` },
+            { tipo: 'datos', texto: els.length === 1 ? `El ${nom} tiene un solo elemento: ${els[0]}, ${METALES.has(els[0]) ? 'un metal' : 'un no metal'}.` : `En ${fo} hay ${els.map(e => `${e} (${METALES.has(e) ? 'metal' : 'no metal'})`).join(' y ')}.` },
+            { tipo: 'regla', texto: 'Miro qué elementos se unen. Metal con no metal: iónico. Solo no metales: covalente. Un metal solo: metálico.' },
+            { tipo: 'aplica', texto: aplica, ecuacion: [`${fo}: enlace ${TIPOS[tipo].nombre.toLowerCase()}`] },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: `Enlace ${TIPOS[tipo].nombre.toLowerCase()}.`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Decide por los elementos que se unen.',
@@ -214,6 +257,14 @@
     titulo: 'Primero contar, después dibujar',
     temas: ['Regla del octeto', 'Enlace covalente y estructuras de Lewis'],
     pieza: 'quim-molecula',
+    lee: {
+      tarjetas: [
+        { titulo: 'Una cuenta dibujada', texto: 'Una estructura de Lewis es la cuenta de los electrones de valencia de una molécula, puesta en un dibujo: cada raya es un par compartido y cada par de puntos, un par libre.' },
+        { titulo: 'Lo que aporta cada átomo', texto: `Cada átomo aporta sus electrones de valencia: el H, ${VAL.H}; el C, ${VAL.C}; el N, ${VAL.N}; el O, ${VAL.O}. El gas de Camisea es sobre todo metano, CH₄: ${VAL.C} + 4 · ${VAL.H} = ${VAL.C + 4 * VAL.H}.` },
+        { titulo: 'La meta de ocho', texto: 'Al unirse, la mayoría de los átomos queda con 8 electrones alrededor: es la regla del octeto. El hidrógeno se conforma con 2. Hay excepciones, como el boro.' },
+        { titulo: 'Qué mirar', texto: 'Los electrones se colocan solos, de a dos. Cuenta cuántos se usan en cada molécula y revisa que cada átomo llegue a su meta.' },
+      ],
+    },
     juega: {
       consigna: 'Elige una molécula. Los electrones se colocan solos, de a dos: enlaces y después pares libres. Comprueba que se usan todos.',
       voz: 'Cada línea son dos electrones; cada par de puntos, también.',
@@ -254,6 +305,27 @@
       ecuacion: [{ llave: [Nv], nota: 'a repartir', color: 'c-i' }, ' = Σ valencias − ', { llave: [z], nota: 'carga', color: 'c-h' }],
       condicion: 'el octeto es una regularidad útil, no una ley: el boro del BF₃ queda con 6; el azufre del SF₆, con 12.',
       voz: 'Cuenta, reparte y revisa cada átomo.',
+    },
+    // Así se resuelve: el problema de «Ahora tú» (N_val de una especie), con los mismos CASOS y la misma cuenta.
+    resuelve: {
+      generar(s) {
+        const CASOS = [['CO₃²⁻', [4, 6, 6, 6], -2], ['NO₃⁻', [5, 6, 6, 6], -1], ['SO₄²⁻', [6, 6, 6, 6, 6], -2], ['H₃O⁺', [6, 1, 1, 1], 1], ['CN⁻', [4, 5], -1],
+          ['PO₄³⁻', [5, 6, 6, 6, 6], -3], ['OH⁻', [6, 1], -1], ['HCN', [1, 4, 5], 0], ['ClO⁻', [7, 6], -1], ['NH₄⁺', [5, 1, 1, 1, 1], 1]];
+        const r = azar(s + 900), [fo, vs, q] = r.de(CASOS), suma = vs.reduce((a, b) => a + b, 0), nv = suma - q;
+        const qt = q === 0 ? '0' : `${q > 0 ? '+' : '−'}${f(Math.abs(q), 0)}`;
+        const carga = q === 0 ? 'Es una molécula neutra: carga 0.' : q < 0 ? `Es un anión de carga ${qt}: ganó ${f(-q, 0)} electrón${q === -1 ? '' : 'es'}.` : `Es un catión de carga ${qt}: perdió ${f(q, 0)} electrón${q === 1 ? '' : 'es'}.`;
+        return {
+          enunciado: ['¿Cuántos electrones de valencia ', Nv, ` hay que repartir en ${fo}? Ten en cuenta su carga.`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', Nv, `: cuántos electrones de valencia se reparten en la estructura de ${fo}.`] },
+            { tipo: 'datos', texto: `Sus átomos aportan ${vs.map(v => f(v, 0)).join(' + ')}. ${carga}`, ecuacion: [z, ` = ${qt}`] },
+            { tipo: 'regla', texto: 'Sumo lo que aporta cada átomo. Si es anión, sumo los electrones que ganó; si es catión, resto los que perdió.' },
+            { tipo: 'cuentas', texto: 'Primero la suma de valencias; después le quito la carga, con su signo.', ecuacion: [Nv, ` = ${f(suma, 0)} − (${qt}) = ${f(nv, 0)}`] },
+            { tipo: 'sentido', texto: nv % 2 === 0 ? `${f(nv, 0)} es par: alcanza justo para ${f(nv / 2, 0)} pares, entre enlaces y pares libres.` : `${f(nv, 0)} es impar: queda un electrón solo, sin pareja.` },
+          ],
+          respuesta: [Nv, ` = ${f(nv, 0)} electrones.`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Primero la suma; después la carga.',
@@ -308,6 +380,14 @@
     titulo: 'Un dibujo no alcanza',
     temas: ['Resonancia'],
     pieza: 'quim-molecula',
+    lee: {
+      tarjetas: [
+        { titulo: 'El ozono', texto: 'En lo alto de la atmósfera, el ozono, O₃, absorbe parte de la luz ultravioleta del Sol, que en el altiplano quema fuerte. Su estructura de Lewis se puede dibujar de más de una manera.' },
+        { titulo: 'Orden de enlace', texto: 'El orden de enlace cuenta cuántos pares comparten dos átomos: 1 en un enlace simple, 2 en uno doble y 3 en uno triple. Un enlace doble es más corto que uno simple.' },
+        { titulo: 'Varios dibujos', texto: 'Cuando hay varias estructuras de Lewis válidas para la misma especie, se llaman estructuras de resonancia. Entre una y otra cambia dónde va un par de electrones.' },
+        { titulo: 'Qué mirar', texto: ['Lleva el doble enlace a cada oxígeno y cuenta los electrones de cada dibujo: ', Nv, '. Fíjate qué se mueve y qué se queda quieto.'] },
+      ],
+    },
     juega: {
       consigna: 'Ion nitrato, NO₃⁻. Elige a qué oxígeno va el doble enlace. Los electrones se colocan solos, de a dos: cuéntalos en cada dibujo.',
       voz: 'Mira qué se mueve entre un dibujo y otro.',
@@ -357,6 +437,32 @@
       ecuacion: ['orden promedio = ', { frac: ['enlaces totales', 'posiciones equivalentes'] }],
       condicion: 'las estructuras de resonancia mueven electrones, nunca átomos; la molécula no alterna entre dibujos.',
       voz: 'Varios dibujos, una sola especie.',
+    },
+    // Así se resuelve: el problema de «Ahora tú» (orden de enlace en el híbrido), con los mismos CASOS. El nitrato y el
+    // carbonato se dibujan con triangular(), el mismo armado del juego; las demás especies van sin figura.
+    resuelve: {
+      generar(s) {
+        const CASOS = [['NO₃⁻', 'N–O', 4, 3], ['CO₃²⁻', 'C–O', 4, 3], ['O₃', 'O–O', 3, 2], ['NO₂⁻', 'N–O', 3, 2], ['SO₃', 'S–O', 4, 3], ['HCOO⁻', 'C–O', 3, 2]];
+        const r = azar(s + 900), [fo, enl, tot, pos] = r.de(CASOS);
+        const fr = (a, b) => (a === 4 && b === 3 ? '1⅓' : a === 3 && b === 2 ? '1½' : `${a}/${b}`);
+        const sumaDibujo = (pos - 1) * 1 + 2;
+        if (sumaDibujo !== tot) throw new Error(`${fo}: un doble y ${pos - 1} simples suman ${sumaDibujo}, no ${tot}`);
+        const TRI = { 'NO₃⁻': ['N', -1], 'CO₃²⁻': ['C', -2] }[fo];
+        return {
+          enunciado: `${fo} tiene ${f(pos, 0)} estructuras de resonancia equivalentes. ¿Qué orden tiene cada enlace ${enl} en la especie real?`,
+          dibujo: TRI ? triangular(TRI[0], 0, TRI[1]) : undefined,
+          pasos: [
+            { tipo: 'pide', texto: `Piden el orden de cada enlace ${enl} en el híbrido de resonancia, la especie real.` },
+            { tipo: 'datos', texto: `Hay ${f(pos, 0)} posiciones equivalentes. En cada dibujo, una es doble y ${pos - 1 === 1 ? 'la otra es simple' : `las otras ${f(pos - 1, 0)} son simples`}.`,
+              ecuacion: [`enlaces ${enl} en un dibujo: ${Array(pos - 1).fill('1').join(' + ')} + 2 = ${f(tot, 0)}`] },
+            { tipo: 'regla', texto: 'En la especie real el doble enlace no está fijo: se reparte por igual. Divido el total de enlaces entre las posiciones equivalentes.' },
+            { tipo: 'cuentas', texto: `Reparto ${f(tot, 0)} enlaces entre ${f(pos, 0)} posiciones iguales.`, ecuacion: ['orden = ', { frac: [String(tot), String(pos)] }, ` = ${fr(tot, pos)} ≈ ${f(tot / pos)}`],
+              dibujo: TRI ? triangular(TRI[0], null, TRI[1]) : undefined },
+            { tipo: 'sentido', texto: `Queda entre 1 (simple) y 2 (doble), como debe ser: cada enlace ${enl} tiene un poco del doble.`, ecuacion: [`1 < ${fr(tot, pos)} < 2`] },
+          ],
+          respuesta: `Cada enlace ${enl} tiene orden ${fr(tot, pos)}.`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Cuenta los enlaces y repártelos.',
@@ -437,6 +543,14 @@
     titulo: 'La forma decide la polaridad',
     temas: ['Hibridación y geometría molecular', 'Polaridad'],
     pieza: 'quim-molecula',
+    lee: {
+      tarjetas: [
+        { titulo: 'Regiones de electrones', texto: 'Alrededor del átomo central, cada enlace (simple, doble o triple) y cada par libre cuenta como una región de electrones. Las regiones se repelen y se alejan lo más que pueden.' },
+        { titulo: 'Flechas de dipolo', texto: 'En un enlace polar, el par compartido se corre hacia el átomo más electronegativo. Se dibuja con una flecha naranja que apunta hacia ese átomo, con una cruz en la cola.' },
+        { titulo: 'El microondas', texto: 'El horno microondas calienta la comida porque hace girar, una y otra vez, a las moléculas de agua: tienen un extremo algo positivo y otro algo negativo.' },
+        { titulo: 'Qué mirar', texto: 'Elige una molécula y espera a que se encienda el campo: mira si gira o se queda inclinada. Después cuenta sus flechas naranjas y mira hacia dónde apuntan.' },
+      ],
+    },
     juega: {
       consigna: 'Elige una molécula: mira su forma y sus dipolos (flechas naranjas). Un campo eléctrico se enciende solo: ¿la molécula gira?',
       voz: 'Cuenta las regiones de electrones alrededor del átomo central.',
@@ -495,6 +609,37 @@
       ecuacion: ['2 regiones: lineal, sp', '   ·   ', '3: trigonal, sp²', '   ·   ', '4: tetraédrica, sp³'],
       condicion: 'los pares libres cuentan para la forma electrónica, pero la forma molecular se nombra solo por los átomos: el agua es angular.',
       voz: 'Primero la forma, después la suma de flechas.',
+    },
+    // Así se resuelve: la pregunta de polaridad de «Ahora tú», con la misma lista T. Las regiones, la hibridación y la
+    // polaridad las da el motor de plantillas/enlace (regla 1); se comprueba que coincidan con la lista. Las moléculas
+    // que también dibuja el juego (GEOM) llevan su figura.
+    resuelve: {
+      generar(s) {
+        const T = [['CO₂', 'lineal', 0], ['BeCl₂', 'lineal', 0], ['BF₃', 'trigonal plana', 0], ['SO₃', 'trigonal plana', 0], ['SO₂', 'angular', 1], ['CH₄', 'tetraédrica', 0],
+          ['CCl₄', 'tetraédrica', 0], ['CHCl₃', 'tetraédrica', 1], ['NH₃', 'piramidal', 1], ['PCl₃', 'piramidal', 1], ['H₂O', 'angular', 1], ['H₂S', 'angular', 1]];
+        const r = azar(s + 900), [fo, fm, pol] = r.de(T);
+        const k = fo.replace(/[₀-₉]/g, d => '₀₁₂₃₄₅₆₇₈₉'.indexOf(d)), x = M.molecula(k);
+        const n = x.vsepr.n, m = x.vsepr.m, reg = n + m, hib = x.vsepr.hibridacion.replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
+        if (x.polaridad.polar !== !!pol) throw new Error(`${fo}: el motor y la lista no coinciden en la polaridad`);
+        const fig = GEOM[k] ? formaDib(k) : null;
+        const sinDip = fig ? { datos: Object.assign({}, fig.datos, { enlaces: fig.datos.enlaces.map(e => Object.assign({}, e, { dipolo: undefined })), textos: [], flechas: [] }), estado: {} } : undefined;
+        const sentido = !pol ? `Los ${n} enlaces son iguales y están repartidos con simetría: sus dipolos suman cero.`
+          : m ? `${m === 1 ? 'El par libre rompe' : 'Los pares libres rompen'} la simetría: los dipolos no se anulan y queda una flecha total.`
+            : `Los enlaces no son todos iguales (${[...new Set(x.ligandos)].map(l => `${x.central}–${l}`).join(' y ')}): sus dipolos no se anulan.`;
+        return {
+          enunciado: `¿Es polar la molécula de ${fo}? Empieza por las regiones de electrones del átomo central.`,
+          dibujo: sinDip,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden si ', fo, ' es polar: si los dipolos de sus enlaces dejan una flecha total, ', mu, '.'] },
+            { tipo: 'datos', texto: `El átomo central, ${x.central}, tiene ${n} enlace${n === 1 ? '' : 's'} y ${m === 0 ? 'ningún par libre' : m === 1 ? 'un par libre' : `${m} pares libres`}.`, ecuacion: [`regiones = ${n} + ${m} = ${reg}`] },
+            { tipo: 'regla', texto: 'Primero la forma, contando todas las regiones. Después sumo las flechas de dipolo: si se anulan por simetría, la molécula es apolar.' },
+            { tipo: 'cuentas', texto: m ? `${reg} regiones se reparten en forma ${x.vsepr.geometriaDominios}. Sin contar los pares libres, la forma molecular es ${fm}.` : `${reg} regiones se reparten lo más lejos posible: la forma molecular es ${fm}.`,
+              ecuacion: [`${reg} regiones → ${hib}   ·   ${fm}`], dibujo: fig || undefined },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: [`${pol ? 'Polar' : 'Apolar'}, de forma ${fm}: `, mu, pol ? ' ≠ 0.' : ' = 0.'],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Regiones, forma y después dipolos.',
@@ -568,6 +713,14 @@
     titulo: 'Lo que une a las moléculas',
     temas: ['Fuerzas intermoleculares'],
     pieza: 'quim-molecula',
+    lee: {
+      tarjetas: [
+        { titulo: 'Hervir en Juliaca', texto: 'En Juliaca el agua hierve a unos 87 °C, porque arriba hay menos aire empujando. Por eso los puntos de ebullición se comparan siempre a la misma presión: 1 atm.' },
+        { titulo: 'Adentro y afuera', texto: 'Los enlaces unen a los átomos dentro de una molécula. Las fuerzas intermoleculares son atracciones entre moléculas vecinas, mucho más débiles que los enlaces.' },
+        { titulo: 'Tres atracciones', texto: 'Hay tres atracciones entre moléculas: las fuerzas de London o de dispersión, que tienen todas; la dipolo-dipolo, entre moléculas polares; y el puente de hidrógeno.' },
+        { titulo: 'Qué mirar', texto: 'La temperatura sube y baja sola. En cada sustancia, anota a qué temperatura se separan las dos moléculas y qué atracción las unía.' },
+      ],
+    },
     juega: {
       consigna: 'Elige una sustancia: mira las fuerzas intermoleculares entre dos vecinas (línea punteada). La temperatura sube y baja sola: ¿cuándo se separan?',
       voz: 'La línea punteada no es un enlace: es una atracción entre moléculas.',
@@ -611,6 +764,28 @@
       ecuacion: ['ion-dipolo > puente de H > dipolo-dipolo > dispersión'],
       condicion: 'vale para moléculas de tamaño parecido; el puente de hidrógeno es una atracción, mucho más débil que el enlace O–H.',
       voz: 'Compara la atracción entre moléculas, no los enlaces de adentro.',
+    },
+    // Así se resuelve: el problema de «Ahora tú» (cuál hierve más alto), con los mismos casos C y sus datos a 1 atm.
+    resuelve: {
+      generar(s) {
+        const C = [
+          ['H₂O', 100, 'H₂S', -60, 'forma puentes de hidrógeno'], ['NH₃', -33, 'PH₃', -88, 'forma puentes de hidrógeno'],
+          ['HF', 20, 'HCl', -85, 'forma puentes de hidrógeno'], ['CH₃OH', 65, 'CH₄', -162, 'forma puentes de hidrógeno'],
+          ['etanol (C₂H₅OH)', 78, 'éter dimetílico (CH₃OCH₃)', -24, 'forma puentes de hidrógeno; el éter no'],
+          ['Br₂', 59, 'Cl₂', -34, 'es más grande: más dispersión'], ['n-pentano', 36, 'neopentano', 10, 'es alargado: más contacto y dispersión'],
+        ];
+        const r = azar(s + 900), [a, ea, b, eb, razon] = C[r.ent(0, C.length - 1)], [x, y] = s % 2 ? [b, a] : [a, b];
+        return {
+          enunciado: `¿Cuál hierve a mayor temperatura, a 1 atm: ${x} o ${y}?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden cuál de las dos sustancias necesita más temperatura para hervir, a la misma presión.' },
+            { tipo: 'regla', texto: 'Al hervir se separan moléculas. Hierve más alto la de más atracción: primero el puente de hidrógeno; a igual atracción, la molécula más grande o alargada.' },
+            { tipo: 'cuentas', texto: `El ${a} ${razon}. Sus moléculas se atraen más que las del ${b}, y los datos a 1 atm lo confirman.`, ecuacion: [`${a}: ${f(ea, 0)} °C   ·   ${b}: ${f(eb, 0)} °C   →   ${f(ea, 0)} − ${eb < 0 ? `(${f(eb, 0)})` : f(eb, 0)} = ${f(ea - eb, 0)} °C`] },
+            { tipo: 'sentido', texto: `Cuadra: al hervir, los enlaces de adentro siguen enteros. Los ${f(ea - eb, 0)} °C de diferencia vienen de la atracción entre moléculas.` },
+          ],
+          respuesta: `El ${a}: ${f(ea, 0)} °C, frente a ${f(eb, 0)} °C del ${b}.`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'quim-molecula',
@@ -717,6 +892,9 @@
         ejemplo: 'El O del agua tiene dos.', ver: ['forma molecular'] },
       { termino: 'resonancia', def: 'Caso en que varias estructuras de Lewis válidas solo difieren en dónde va un par de electrones.',
         ver: ['híbrido'] },
+      { termino: 'orden de enlace', formas: ['orden de enlace', 'órdenes de enlace'],
+        def: 'Cuántos pares de electrones comparten dos átomos unidos: 1 en el simple, 2 en el doble, 3 en el triple.',
+        ejemplo: 'En el híbrido del NO₃⁻ vale 4/3.', ver: ['resonancia', 'híbrido'] },
       { termino: 'híbrido', formas: ['híbrido de resonancia', 'híbrido'],
         def: 'La especie real cuando hay resonancia: los electrones repartidos entre todas las estructuras, con enlaces iguales.',
         ejemplo: 'NO₃⁻: tres enlaces N–O de orden 4/3.', ver: ['resonancia'] },
@@ -729,6 +907,9 @@
       { termino: 'forma molecular', formas: ['forma molecular', 'formas moleculares'],
         def: 'Figura que dibujan los átomos alrededor del átomo central; se nombra sin contar los pares libres.',
         ejemplo: 'El NH₃ tiene 4 regiones y forma piramidal.', ver: ['par libre'] },
+      { termino: 'región de electrones', formas: ['región de electrones', 'regiones de electrones'],
+        def: 'Cada enlace (simple, doble o triple) o par libre alrededor del átomo central. Se repelen entre sí.',
+        ejemplo: 'El O del agua tiene 4: dos enlaces y dos pares libres.', ver: ['forma molecular', 'par libre'] },
       { termino: 'fuerzas intermoleculares', formas: ['fuerzas intermoleculares', 'fuerza intermolecular'],
         def: 'Atracciones entre moléculas vecinas, mucho más débiles que los enlaces de dentro de cada una.',
         ver: ['puente de hidrógeno', 'fuerzas de London'] },
@@ -738,6 +919,8 @@
       { termino: 'fuerzas de London', formas: ['fuerzas de London', 'fuerza de London'],
         def: 'Atracción débil entre dipolos pasajeros; la tienen todas las moléculas y crece con su tamaño.',
         ver: ['fuerzas intermoleculares'] },
+      { termino: 'dipolo-dipolo', formas: ['dipolo-dipolo'], def: 'Atracción entre moléculas polares: el extremo algo positivo de una jala el extremo algo negativo de la vecina.',
+        ejemplo: 'HCl con HCl.', ver: ['molécula polar', 'fuerzas intermoleculares'] },
     ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera deja girar los dos enlaces de una molécula
     // angular y cambiar su polaridad, de 60° a 180° (el caso lineal, que anula todo). La segunda junta dos iones y el
