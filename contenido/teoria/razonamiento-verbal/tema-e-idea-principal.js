@@ -51,6 +51,51 @@
     return Object.assign({ marcas, sellos: { p: { t: `Cubre ${lista.length} de ${n}`, c: lista.length === n ? 'i' : 'h' } } }, extra);
   }
 
+  // Bancos de «Ahora tú» (sin cambios); «Así se resuelve» toma de aquí otro caso que el de la misma semilla.
+  const BANCO_IDEA = [
+    { tema: 'las abejas', o: ['Las abejas llevan polen de flor en flor.', 'Sin ellas, muchos cultivos no darían frutos.', 'Hoy su número baja por el uso de pesticidas.'], ok: 'Las abejas son clave para los cultivos y están en peligro', m: [['Las abejas llevan polen de flor en flor', 'RV4', 'Es la primera oración: deja fuera el peligro.'], ['Los pesticidas', 'RV1', 'Es un detalle y además no afirma nada.'], ['Los insectos son importantes', 'RV2', 'Es demasiado amplia: el texto habla de abejas.']] },
+    { tema: 'el reciclaje', o: ['En el colegio se juntaron mil botellas en un mes.', 'Con su venta se compraron libros para la biblioteca.', 'Ahora los alumnos separan la basura sin que se los pidan.'], ok: 'Reciclar en el colegio dio libros y creó un hábito', m: [['Se juntaron mil botellas en un mes', 'RV1', 'Es un dato; no dice qué produjo el reciclaje.'], ['El reciclaje', 'RV2', 'Nombra el tema, pero no afirma nada.'], ['Se compraron libros', 'RV3', 'Cubre una parte; deja fuera el hábito.']] },
+    { tema: 'el sueño', o: ['Dormir poco baja la atención en clase.', 'También dificulta recordar lo estudiado.', 'Por eso, dormir ocho horas ayuda a aprender.'], ok: 'Dormir lo suficiente ayuda a atender y recordar', m: [['Dormir poco baja la atención', 'RV4', 'Es la primera oración; deja fuera la memoria.'], ['El sueño', 'RV2', 'Nombra el tema, pero no afirma nada.'], ['La salud depende de muchos hábitos', 'RV2', 'Es tan amplia que habla de otro texto.']] },
+    { tema: 'la papa nativa', o: ['La papa nativa tiene cientos de variedades.', 'Muchas resisten heladas y plagas.', 'Sin embargo, se cultivan cada vez menos.'], ok: 'La papa nativa es valiosa, pero se cultiva cada vez menos', m: [['Tiene cientos de variedades', 'RV1', 'Es un dato: deja fuera el problema.'], ['Muchas resisten heladas', 'RV3', 'Cubre una parte: falta que se cultivan menos.'], ['La agricultura andina', 'RV2', 'Es demasiado amplia y no afirma nada.']] },
+    { tema: 'el celular en clase', o: ['El celular distrae cuando se usa para jugar.', 'Pero sirve para buscar datos o grabar experimentos.', 'Todo depende de cómo se use en la clase.'], ok: 'El celular en clase ayuda o distrae según cómo se use', m: [['El celular distrae', 'RV4', 'Es la primera idea; el texto también dice que sirve.'], ['Sirve para grabar experimentos', 'RV1', 'Es un ejemplo de su uso útil.'], ['La tecnología cambió el mundo', 'RV2', 'Es tan amplia que habla de otro texto.']] },
+  ];
+  const BANCO_PAPEL = [
+    { o: ['El ejercicio mejora el ánimo.', 'Al moverse, el cuerpo libera sustancias que dan bienestar.', 'Por ejemplo, una caminata de veinte minutos reduce la tensión.'], k: 2, ok: 'Una razón que sostiene la principal', m: [['La idea principal', 'RV42', 'La principal es la 1; la 2 explica por qué.'], ['Un ejemplo', 'RV42', 'El ejemplo es la 3, la caminata.'], ['Un dato aparte', 'RV30', 'Sí sostiene la idea: explica cómo mejora el ánimo.']] },
+    { o: ['El lago Titicaca está contaminado en algunas bahías.', 'Llegan desagües sin tratar de varias ciudades.', 'Por ejemplo, la bahía interior de Puno tiene agua verde.'], k: 3, ok: 'Un ejemplo de la principal', m: [['La idea principal', 'RV42', 'La principal es la 1; la 3 la muestra en un lugar.'], ['La causa del problema', 'RV42', 'La causa está en la 2: los desagües.'], ['Un dato aparte', 'RV30', 'Muestra la contaminación: sí la sostiene.']] },
+    { o: ['Leer en voz alta ayuda a los niños pequeños.', 'Escuchan palabras nuevas y aprenden a pronunciarlas.', 'Mi tío lee el periódico cada mañana.'], k: 3, ok: 'Un dato que no sostiene la principal', m: [['Un ejemplo de la principal', 'RV30', 'Habla de leer, pero no de niños ni de leer en voz alta.'], ['La idea principal', 'RV42', 'La principal es la 1.'], ['Una razón de la principal', 'RV30', 'No explica por qué leer en voz alta ayuda.']] },
+    { o: ['Muchos estudiantes se cansan al leer en pantalla.', 'Sin embargo, leer en papel ayuda a recordar mejor.', 'Por eso, para estudiar conviene imprimir los textos clave.'], k: 3, ok: 'La idea principal: lo que el texto propone', m: [['Un ejemplo', 'RV42', 'No es un caso: es la conclusión que organiza el texto.'], ['Un dato aparte', 'RV30', 'Es lo que el texto quiere decir.'], ['Una razón', 'RV42', 'Las razones son la 1 y la 2; la 3 es a donde llevan.']] },
+    { o: ['La papa se puede guardar años si se vuelve chuño.', 'Las heladas la congelan y luego se le saca el agua.', 'Sin agua, no se pudre.'], k: 2, ok: 'Una explicación de cómo se logra', m: [['La idea principal', 'RV42', 'La principal es la 1: que se guarda años.'], ['Un dato aparte', 'RV30', 'Sí sostiene la principal: explica el proceso.'], ['La conclusión', 'RV42', 'La 3 es la razón final; la 2 es el proceso.']] },
+  ];
+  const BANCO_MAPA = [
+    { t: 'La lluvia llena los ríos, y los ríos riegan los valles.', ok: 'ríos → riegan → valles', m: [['valles → riegan → ríos', 'RVM2', 'Tiene las palabras, pero la flecha va al revés.'], ['ríos · valles · lluvia', 'RVM1', 'Son las palabras clave, pero sin enlaces no dice nada.'], ['lluvia → seca → ríos', 'RV7', 'El texto dice lo contrario: la lluvia llena los ríos.']] },
+    { t: 'El sol calienta el agua del mar y la convierte en vapor.', ok: 'sol → calienta → agua del mar', m: [['agua del mar → calienta → sol', 'RVM2', 'La relación va al revés.'], ['sol · agua · vapor', 'RVM1', 'Palabras sueltas: falta la relación.'], ['vapor → enfría → sol', 'RV7', 'El texto no dice eso.']] },
+    { t: 'Las vacunas protegen al cuerpo contra algunas enfermedades.', ok: 'vacunas → protegen contra → enfermedades', m: [['enfermedades → protegen contra → vacunas', 'RVM2', 'La relación va al revés.'], ['vacunas · cuerpo · enfermedades', 'RVM1', 'Faltan los enlaces.'], ['vacunas → causan → enfermedades', 'RV7', 'Dice lo contrario del texto.']] },
+    { t: 'Los árboles sujetan el suelo con sus raíces y evitan los huaicos.', ok: 'raíces → sujetan → suelo', m: [['suelo → sujeta → raíces', 'RVM2', 'La relación va al revés.'], ['árboles · raíces · huaicos', 'RVM1', 'Palabras sueltas: falta qué hace cada una.'], ['árboles → causan → huaicos', 'RV7', 'El texto dice que los evitan.']] },
+    { t: 'La totora sirve a los uros para construir sus islas.', ok: 'uros → construyen con → totora', m: [['totora → construye → uros', 'RVM2', 'La relación va al revés: los uros construyen.'], ['totora · uros · islas', 'RVM1', 'Faltan los enlaces.'], ['uros → venden → islas', 'RV7', 'El texto no dice eso.']] },
+  ];
+  // Así se resuelve (fase 2): azar con semilla, el índice del caso (nunca el de «Ahora tú» en la misma semilla), las
+  // opciones barajadas y la figura: el texto y debajo la lista de opciones; en «Lo aplico» la correcta se marca (i)
+  // y las demás se tachan. Todo sale del mismo banco que «Ahora tú» (regla 1).
+  function azar(s) {
+    let q = (s * 2654435761 + 12345) >>> 0;
+    return () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+  }
+  const otroIndice = (s, n) => (s % n + 1 + Math.floor(azar(s + 900)() * (n - 1))) % n;
+  const barajar = (b, s) => {
+    const r = azar(s + 900), malas = b.m.slice(); r(); if (r() < 0.5) malas.reverse();
+    const ops = opciones(b.ok, malas), c = ops.shift(), k = Math.floor(r() * (ops.length + 1));
+    ops.splice(k, 0, c); return ops;
+  };
+  const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
+  // Las primeras palabras de un texto, para nombrarlo en el enunciado (el texto entero va en la figura).
+  const empieza = t => { const ps = t.split(' '); return ps.length > 4 ? `${ps.slice(0, 4).join(' ').replace(/[.,:;]$/, '')}…` : t.replace(/[.]$/, ''); };
+  const figResuelve = (secciones, ops, resuelto, marcas = {}) => {
+    const datos = { secciones: [...secciones, { id: 'ops', titulo: 'Opciones', modo: 'lista', fragmentos: ops.map((o, k) => ({ id: `a${k}`, t: o.texto })) }] };
+    if (!resuelto) return { datos, estado: { marcas } };
+    const k = ops.findIndex(o => o.correcta);
+    return { datos, estado: { marcas: Object.assign({}, marcas, { [`a${k}`]: 'i' }), tachar: ops.map((o, j) => `a${j}`).filter(id => id !== `a${k}`), nuevo: [`a${k}`] } };
+  };
+
   // ---------- Idea 1: tema no es idea principal ----------
   // Cambia: la propuesta. Permanece: el texto de la biblioteca. Progresa: cuántas oraciones cubre y si afirma algo.
   // Se reserva: la idea principal implícita (predicción). Debe verse: que «la biblioteca» cubre todo pero no afirma nada.
@@ -67,6 +112,15 @@
     titulo: 'El tema no es la idea',
     temas: ['Tema central', 'Idea principal e ideas secundarias'],
     pieza: 'rv-texto',
+    // Lee (fase 2): las dos preguntas (de qué trata y qué dice) con un caso cercano, sin decir que la idea principal
+    // puede no estar escrita en una sola oración (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos preguntas al leer', texto: 'Al leer, hazte dos preguntas. ¿De qué trata el texto? Esa respuesta es el tema. ¿Qué dice el texto sobre eso? Esa respuesta es la idea principal.' },
+        { titulo: 'Un caso cercano', texto: 'Un texto sobre el mercado de Juliaca tiene un tema: el mercado. Su idea principal podría ser que el mercado creció y ahora atrae compradores de otras regiones.' },
+        { titulo: 'Qué mirar', texto: 'En el juego pruebas cuatro propuestas para un texto sobre la biblioteca del barrio. Mira cuántas oraciones cubre cada una y si afirma algo.' },
+      ],
+    },
     juega: {
       consigna: 'Prueba cuatro propuestas para el texto de la biblioteca. Mira cuántas oraciones cubre cada una y si dice algo del tema.',
       voz: 'Nombrar el asunto no es decir algo sobre él.',
@@ -100,15 +154,30 @@
       ecuacion: [{ llave: [tema('tema')], nota: 'de qué trata', color: 'c-d' }, ' + ', { llave: [cubre('afirmación')], nota: 'qué dice de él', color: 'c-i' }],
       condicion: 'cubre todas las partes sin agregar algo que el texto no dice; puede no estar escrita en una sola oración.',
     },
+    // Así se resuelve (fase 2): otro texto del banco de «Ahora tú», con la propuesta que afirma algo y cubre todo.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Primero el tema; después, qué dice el texto de él.',
+      generar(s) {
+        const b = BANCO_IDEA[otroIndice(s, BANCO_IDEA.length)], ops = barajar(b, s), sec = [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: b.o.map((t, k) => ({ id: `o${k + 1}`, t })) }];
+        const todas = Object.fromEntries(b.o.map((t, k) => [`o${k + 1}`, 'i']));
+        return {
+          enunciado: `¿Cuál es la idea principal del texto sobre ${b.tema}?`,
+          dibujo: figResuelve(sec, ops, false),
+          pasos: [
+            { tipo: 'pide', texto: `Piden la idea principal: lo más importante que el texto dice sobre ${b.tema}, no solo de qué trata.` },
+            { tipo: 'datos', texto: ['El tema es ', tema(b.tema), `. El texto tiene ${b.o.length} oraciones, y la idea debe cubrirlas todas.`] },
+            { tipo: 'regla', texto: 'La idea principal afirma algo sobre el tema y cubre todas las oraciones: no se queda en una ni se va a otro tema.', ecuacion: [tema('tema'), ' + ', cubre('lo que afirma')] },
+            { tipo: 'aplica', texto: [`Solo una opción afirma algo y cubre las ${b.o.length} oraciones: `, corto(cubre, b.ok), '.'], dibujo: figResuelve(sec, ops, true, todas) },
+            { tipo: 'sentido', texto: `Descarto «${b.m[0][0]}». ${b.m[0][2]}` },
+          ],
+          respuesta: b.ok,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { tema: 'las abejas', o: ['Las abejas llevan polen de flor en flor.', 'Sin ellas, muchos cultivos no darían frutos.', 'Hoy su número baja por el uso de pesticidas.'], ok: 'Las abejas son clave para los cultivos y están en peligro', m: [['Las abejas llevan polen de flor en flor', 'RV4', 'Es la primera oración: deja fuera el peligro.'], ['Los pesticidas', 'RV1', 'Es un detalle y además no afirma nada.'], ['Los insectos son importantes', 'RV2', 'Es demasiado amplia: el texto habla de abejas.']] },
-          { tema: 'el reciclaje', o: ['En el colegio se juntaron mil botellas en un mes.', 'Con su venta se compraron libros para la biblioteca.', 'Ahora los alumnos separan la basura sin que se los pidan.'], ok: 'Reciclar en el colegio dio libros y creó un hábito', m: [['Se juntaron mil botellas en un mes', 'RV1', 'Es un dato; no dice qué produjo el reciclaje.'], ['El reciclaje', 'RV2', 'Nombra el tema, pero no afirma nada.'], ['Se compraron libros', 'RV3', 'Cubre una parte; deja fuera el hábito.']] },
-          { tema: 'el sueño', o: ['Dormir poco baja la atención en clase.', 'También dificulta recordar lo estudiado.', 'Por eso, dormir ocho horas ayuda a aprender.'], ok: 'Dormir lo suficiente ayuda a atender y recordar', m: [['Dormir poco baja la atención', 'RV4', 'Es la primera oración; deja fuera la memoria.'], ['El sueño', 'RV2', 'Nombra el tema, pero no afirma nada.'], ['La salud depende de muchos hábitos', 'RV2', 'Es tan amplia que habla de otro texto.']] },
-          { tema: 'la papa nativa', o: ['La papa nativa tiene cientos de variedades.', 'Muchas resisten heladas y plagas.', 'Sin embargo, se cultivan cada vez menos.'], ok: 'La papa nativa es valiosa, pero se cultiva cada vez menos', m: [['Tiene cientos de variedades', 'RV1', 'Es un dato: deja fuera el problema.'], ['Muchas resisten heladas', 'RV3', 'Cubre una parte: falta que se cultivan menos.'], ['La agricultura andina', 'RV2', 'Es demasiado amplia y no afirma nada.']] },
-          { tema: 'el celular en clase', o: ['El celular distrae cuando se usa para jugar.', 'Pero sirve para buscar datos o grabar experimentos.', 'Todo depende de cómo se use en la clase.'], ok: 'El celular en clase ayuda o distrae según cómo se use', m: [['El celular distrae', 'RV4', 'Es la primera idea; el texto también dice que sirve.'], ['Sirve para grabar experimentos', 'RV1', 'Es un ejemplo de su uso útil.'], ['La tecnología cambió el mundo', 'RV2', 'Es tan amplia que habla de otro texto.']] },
-        ];
+        const B = BANCO_IDEA;
         const b = B[s % B.length];
         return {
           pregunta: `¿Cuál es la idea principal del texto sobre ${b.tema}?`,
@@ -133,6 +202,14 @@
     titulo: 'Principal, secundarias y subrayado',
     temas: ['Jerarquía textual', 'Subrayado'],
     pieza: 'rv-texto',
+    // Lee (fase 2): los papeles de las oraciones con un aviso de colegio, sin decir qué subrayar (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cada oración, un papel', texto: 'En un texto, las oraciones no pesan igual. Una dice la idea principal; otras dan razones, ejemplos o datos. Cada oración cumple un papel.' },
+        { titulo: 'Un aviso del colegio', texto: '«Hoy no hay clases. Hubo una fuga de agua en el colegio. Por ejemplo, el baño del segundo piso se inundó.» La primera es la noticia; las otras la explican.' },
+        { titulo: 'Qué mirar', texto: 'En el juego subrayas una oración a la vez en un texto sobre la quinua. Mira qué papel cumple cada una y cuál no sostiene a las demás.' },
+      ],
+    },
     juega: {
       consigna: 'Subraya una oración a la vez. Mira qué papel cumple: idea principal, razón, ejemplo o dato aparte.',
       voz: 'Subrayar es elegir: no todo pesa igual.',
@@ -170,15 +247,30 @@
       ecuacion: [tema('principal'), ' ← ', { llave: [cubre('apoyos')], nota: 'razones y ejemplos', color: 'c-i' }],
       condicion: 'se pregunta de cada oración qué hace con las otras; si todo se subraya, no se ve la jerarquía.',
     },
+    // Así se resuelve (fase 2): otra oración del banco de «Ahora tú», con su papel frente a la idea principal.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Pregunta qué hace esa oración con las otras.',
+      generar(s) {
+        const b = BANCO_PAPEL[otroIndice(s, BANCO_PAPEL.length)], ops = barajar(b, s), sec = [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: b.o.map((t, k) => ({ id: `o${k + 1}`, t })) }];
+        const ella = `o${b.k}`;
+        return {
+          enunciado: `En el texto que empieza «${empieza(b.o[0])}», ¿qué papel cumple la oración ${b.k}?`,
+          dibujo: figResuelve(sec, ops, false, { [ella]: 'o' }),
+          pasos: [
+            { tipo: 'pide', texto: `Piden el papel de la oración ${b.k}: qué hace con la idea principal del texto.` },
+            { tipo: 'datos', texto: [`La oración ${b.k} dice: `, corto(prop, b.o[b.k - 1])] },
+            { tipo: 'regla', texto: 'Hallo la idea principal y pregunto qué hace la oración con ella: la explica, la muestra con un caso, la concluye o no la sostiene.', ecuacion: [prop(`oración ${b.k}`), ' → ', tema('principal')] },
+            { tipo: 'aplica', texto: [`Comparo la oración ${b.k} con las otras. Su papel: `, corto(cubre, minus(b.ok)), '.'], dibujo: figResuelve(sec, ops, true, { [ella]: 'i' }) },
+            { tipo: 'sentido', texto: `Descarto «${b.m[0][0]}». ${b.m[0][2]}` },
+          ],
+          respuesta: b.ok,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { o: ['El ejercicio mejora el ánimo.', 'Al moverse, el cuerpo libera sustancias que dan bienestar.', 'Por ejemplo, una caminata de veinte minutos reduce la tensión.'], k: 2, ok: 'Una razón que sostiene la principal', m: [['La idea principal', 'RV42', 'La principal es la 1; la 2 explica por qué.'], ['Un ejemplo', 'RV42', 'El ejemplo es la 3, la caminata.'], ['Un dato aparte', 'RV30', 'Sí sostiene la idea: explica cómo mejora el ánimo.']] },
-          { o: ['El lago Titicaca está contaminado en algunas bahías.', 'Llegan desagües sin tratar de varias ciudades.', 'Por ejemplo, la bahía interior de Puno tiene agua verde.'], k: 3, ok: 'Un ejemplo de la principal', m: [['La idea principal', 'RV42', 'La principal es la 1; la 3 la muestra en un lugar.'], ['La causa del problema', 'RV42', 'La causa está en la 2: los desagües.'], ['Un dato aparte', 'RV30', 'Muestra la contaminación: sí la sostiene.']] },
-          { o: ['Leer en voz alta ayuda a los niños pequeños.', 'Escuchan palabras nuevas y aprenden a pronunciarlas.', 'Mi tío lee el periódico cada mañana.'], k: 3, ok: 'Un dato que no sostiene la principal', m: [['Un ejemplo de la principal', 'RV30', 'Habla de leer, pero no de niños ni de leer en voz alta.'], ['La idea principal', 'RV42', 'La principal es la 1.'], ['Una razón de la principal', 'RV30', 'No explica por qué leer en voz alta ayuda.']] },
-          { o: ['Muchos estudiantes se cansan al leer en pantalla.', 'Sin embargo, leer en papel ayuda a recordar mejor.', 'Por eso, para estudiar conviene imprimir los textos clave.'], k: 3, ok: 'La idea principal: lo que el texto propone', m: [['Un ejemplo', 'RV42', 'No es un caso: es la conclusión que organiza el texto.'], ['Un dato aparte', 'RV30', 'Es lo que el texto quiere decir.'], ['Una razón', 'RV42', 'Las razones son la 1 y la 2; la 3 es a donde llevan.']] },
-          { o: ['La papa se puede guardar años si se vuelve chuño.', 'Las heladas la congelan y luego se le saca el agua.', 'Sin agua, no se pudre.'], k: 2, ok: 'Una explicación de cómo se logra', m: [['La idea principal', 'RV42', 'La principal es la 1: que se guarda años.'], ['Un dato aparte', 'RV30', 'Sí sostiene la principal: explica el proceso.'], ['La conclusión', 'RV42', 'La 3 es la razón final; la 2 es el proceso.']] },
-        ];
+        const B = BANCO_PAPEL;
         const b = B[s % B.length];
         return {
           pregunta: `En este texto, ¿qué papel cumple la oración ${b.k}?`,
@@ -212,6 +304,14 @@
     titulo: 'El mapa muestra relaciones',
     temas: ['Mapas conceptuales'],
     pieza: 'rv-texto',
+    // Lee (fase 2): para qué sirve un mapa y qué es un concepto, sin decir qué le falta al mapa del alumno (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un tema en una hoja', texto: 'Muchos postulantes resumen cada tema en un mapa: una sola hoja con las ideas clave. Sirve para repasar todo de un vistazo la noche antes del examen.' },
+        { titulo: 'Conceptos', texto: 'Un concepto es una idea que se nombra con una o pocas palabras: «plantas», «luz del sol», «oxígeno». Esos tres conceptos están en el texto del juego.' },
+        { titulo: 'Qué mirar', texto: 'En el juego completas una parte del mapa. Compara cada opción con lo que dice el texto, palabra por palabra.' },
+      ],
+    },
     juega: {
       consigna: 'Completa la segunda proposición del mapa con un enlace. Compara con el texto: ¿el mapa dice lo mismo?',
       voz: 'En un mapa, la flecha y el verbo también afirman.',
@@ -244,15 +344,30 @@
       ecuacion: [cubre('A'), ' → ', { llave: [prop('enlace')], nota: 'el verbo', color: 'c-o' }, ' → ', cubre('B')],
       condicion: 'el enlace dice la relación que el texto afirma, en su dirección; palabras sueltas sin enlace no son un mapa.',
     },
+    // Así se resuelve (fase 2): otro texto del banco de «Ahora tú», con la proposición fiel (enlace y dirección).
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Mira el enlace y hacia dónde va la flecha.',
+      generar(s) {
+        const b = BANCO_MAPA[otroIndice(s, BANCO_MAPA.length)], ops = barajar(b, s);
+        const sec = [{ id: 't', titulo: 'Texto', modo: 'tarjeta', fragmentos: [{ id: 't1', t: b.t }] }];
+        const [c1, en, c2] = b.ok.split(' → ');
+        return {
+          enunciado: `¿Qué proposición de un mapa conceptual es fiel al texto «${empieza(b.t)}»?`,
+          dibujo: figResuelve(sec, ops, false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la proposición del mapa que dice lo mismo que el texto.' },
+            { tipo: 'regla', texto: 'Una proposición es concepto, enlace y concepto. El enlace dice la relación que afirma el texto, en su misma dirección.', ecuacion: [cubre('A'), ' → ', prop('enlace'), ' → ', cubre('B')] },
+            { tipo: 'aplica', texto: ['Busco la relación que afirma el texto: el enlace es ', prop(en), '. La flecha va del concepto que actúa al que recibe la acción.'], ecuacion: [cubre(c1), ' → ', prop(en), ' → ', cubre(c2)], dibujo: figResuelve(sec, ops, true, { t1: 'd' }) },
+            { tipo: 'sentido', texto: `Descarto «${b.m[0][0]}». ${b.m[0][2]}` },
+          ],
+          respuesta: b.ok,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { t: 'La lluvia llena los ríos, y los ríos riegan los valles.', ok: 'ríos → riegan → valles', m: [['valles → riegan → ríos', 'RVM2', 'Tiene las palabras, pero la flecha va al revés.'], ['ríos · valles · lluvia', 'RVM1', 'Son las palabras clave, pero sin enlaces no dice nada.'], ['lluvia → seca → ríos', 'RV7', 'El texto dice lo contrario: la lluvia llena los ríos.']] },
-          { t: 'El sol calienta el agua del mar y la convierte en vapor.', ok: 'sol → calienta → agua del mar', m: [['agua del mar → calienta → sol', 'RVM2', 'La relación va al revés.'], ['sol · agua · vapor', 'RVM1', 'Palabras sueltas: falta la relación.'], ['vapor → enfría → sol', 'RV7', 'El texto no dice eso.']] },
-          { t: 'Las vacunas protegen al cuerpo contra algunas enfermedades.', ok: 'vacunas → protegen contra → enfermedades', m: [['enfermedades → protegen contra → vacunas', 'RVM2', 'La relación va al revés.'], ['vacunas · cuerpo · enfermedades', 'RVM1', 'Faltan los enlaces.'], ['vacunas → causan → enfermedades', 'RV7', 'Dice lo contrario del texto.']] },
-          { t: 'Los árboles sujetan el suelo con sus raíces y evitan los huaicos.', ok: 'raíces → sujetan → suelo', m: [['suelo → sujeta → raíces', 'RVM2', 'La relación va al revés.'], ['árboles · raíces · huaicos', 'RVM1', 'Palabras sueltas: falta qué hace cada una.'], ['árboles → causan → huaicos', 'RV7', 'El texto dice que los evitan.']] },
-          { t: 'La totora sirve a los uros para construir sus islas.', ok: 'uros → construyen con → totora', m: [['totora → construye → uros', 'RVM2', 'La relación va al revés: los uros construyen.'], ['totora · uros · islas', 'RVM1', 'Faltan los enlaces.'], ['uros → venden → islas', 'RV7', 'El texto no dice eso.']] },
-        ];
+        const B = BANCO_MAPA;
         const b = B[s % B.length];
         return {
           pregunta: '¿Qué proposición de un mapa conceptual es fiel al texto?',
