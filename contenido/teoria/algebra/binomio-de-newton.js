@@ -87,6 +87,15 @@
     titulo: 'Cada coeficiente cuenta elecciones',
     temas: ['Desarrollo del binomio'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): qué es desarrollar y qué es un coeficiente. No dice cómo se cuenta el de a⁵b² («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Multiplicar paréntesis', texto: 'Desarrollar (a + b)ⁿ es multiplicar n paréntesis iguales y juntar los términos parecidos. Con n = 2 se hace rápido a mano. Con n = 7, multiplicar uno por uno toma mucho tiempo.',
+          ecuacion: ['(', a, ' + ', b, ')² = ', a, '² + 2', a, b, ' + ', b, '²'] },
+        { titulo: 'El coeficiente', texto: 'En 2ab, el 2 es el coeficiente: dice cuántas veces aparece ab después de juntar los términos parecidos. Los exponentes dicen cuántas a y cuántas b lleva cada término.' },
+        { titulo: 'Qué mirar al jugar', texto: 'El triángulo de Pascal ya se conocía en China siglos antes de Pascal. Al jugar, baja la fila verde y mira cómo nace cada número a partir de los dos que tiene encima.' },
+      ],
+    },
     juega: {
       consigna: 'Elige el exponente n. La fila verde del triángulo de Pascal da los coeficientes de (a + b)ⁿ; cada número suma los dos de arriba.',
       voz: 'Suma los números de cada fila.',
@@ -138,6 +147,44 @@
       ecuacion: ['(', a, ' + ', b, ')ⁿ = Σ ', { llave: ['C(n, ', k, ')'], nota: 'formas de elegir', color: 'c-d' }, ' ', { sup: [a, ['n − ', k]] }, ' ', { sup: [b, k] }],
       condicion: 'n es entero no negativo; hay n + 1 términos y los coeficientes de la fila n suman 2ⁿ.',
     },
+    // Así se resuelve: el mismo problema de «Ahora tú» (un coeficiente de (a + b)ⁿ o de (x + c)ⁿ), con azar(s + 900) y C().
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(4, 8), j = r.ent(2, n - 2), cnj = C(n, j);
+        const baja = Array.from({ length: j }, (_, i) => n - i).join(' · '), sube = Array.from({ length: j }, (_, i) => j - i).join(' · ');
+        const cuenta = `C(${n}, ${j}) = (${baja}) ÷ (${sube}) = ${f(cnj, 0)}`;
+        const tri = marca => ({ datos: triangulo(n, marca ? { resaltes: [{ f: n, c: j, color: 'd' }] } : {}), estado: {} });
+        if (s % 2 === 0) {
+          const term = `${pot('a', n - j)}${pot('b', j)}`;
+          return {
+            enunciado: ['En (', a, ' + ', b, `)${sup(n)}, ¿qué coeficiente acompaña a ${term}?`],
+            dibujo: tri(false),
+            pasos: [
+              { tipo: 'pide', texto: `Piden el número que va delante de ${term} cuando se desarrolla todo el binomio.` },
+              { tipo: 'datos', texto: [`Son ${n} paréntesis iguales. El término lleva `, b, ` en ${j} de ellos y `, a, ` en los otros ${n - j}.`] },
+              { tipo: 'regla', texto: ['De cada paréntesis sale una letra. El coeficiente cuenta de cuántas maneras se eligen los paréntesis que dan ', b, '.'], ecuacion: ['C(n, ', k, ')'] },
+              { tipo: 'cuentas', texto: `Se eligen ${j} paréntesis entre ${n}, sin importar el orden.`, ecuacion: [cuenta], dibujo: tri(true) },
+              { tipo: 'sentido', texto: `En el triángulo, la fila ${n} trae ${f(cnj, 0)} en el lugar ${j + 1}. Contar las ${n - j} letras a da lo mismo: C(${n}, ${n - j}) = ${f(C(n, n - j), 0)}.` },
+            ],
+            respuesta: `El término es ${f(cnj, 0)}${term}.`,
+          };
+        }
+        const c = r.uno([2, 3]), bien = cnj * c ** j, xs = pot('x', n - j);
+        return {
+          enunciado: `En (x + ${c})${sup(n)}, ¿qué coeficiente acompaña a ${xs}?`,
+          dibujo: tri(false),
+          pasos: [
+            { tipo: 'pide', texto: `Piden el número que va delante de ${xs} en el desarrollo de (x + ${c})${sup(n)}.` },
+            { tipo: 'datos', texto: `Son ${n} paréntesis. Para tener ${xs}, la x sale de ${n - j} de ellos y el ${c}, de los otros ${j}.` },
+            { tipo: 'regla', texto: `Se cuentan las maneras de elegir los paréntesis que dan el ${c}. Además, el ${c} se multiplica tantas veces como paréntesis lo dan.` },
+            { tipo: 'cuentas', texto: `Primero el número combinatorio y después la potencia del ${c}.`,
+              ecuacion: [cuenta, `   →   ${f(cnj, 0)} · ${c}${sup(j)} = ${f(cnj, 0)} · ${f(c ** j, 0)} = ${f(bien, 0)}`], dibujo: tri(true) },
+            { tipo: 'sentido', texto: `Comprueba: sin el ${c}, el coeficiente sería solo ${f(cnj, 0)}. Como ${c}${sup(j)} = ${f(c ** j, 0)}, tenía que salir ${f(c ** j, 0)} veces más grande, y así sale.` },
+          ],
+          respuesta: `El coeficiente es ${f(bien, 0)}: el término es ${f(bien, 0)}${xs}.`,
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'alg-tabla',
       generar(s) {
@@ -182,6 +229,14 @@
     titulo: 'El término k + 1 lleva bᵏ',
     temas: ['Término general'],
     pieza: 'alg-tabla',
+    // Lee: el término general como atajo. No dice cómo se halla el término independiente de (x² + 1/x)⁶ («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un solo término', texto: 'En un examen pueden pedirte solo un término de (x + 2)⁶, por ejemplo el cuarto. Escribir los siete términos para usar uno quita tiempo; conviene saber ir directo al que piden.' },
+        { titulo: 'Lugar y exponentes', texto: 'Los términos se cuentan desde el primero, de izquierda a derecha. De uno al siguiente, el exponente de x baja de uno en uno y el del 2 sube. La fórmula que da cualquiera se llama término general.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Mueve la fila marcada y compara dos números del mismo término: el lugar que ocupa en el desarrollo y el exponente que lleva el 2.' },
+      ],
+    },
     juega: {
       consigna: 'En (x + 2)⁶, elige k. La fila marcada es el término que lleva 2 elevado a k. Mira qué lugar ocupa.',
       voz: 'Compara el lugar con k.',
@@ -226,6 +281,57 @@
       texto: 'El término de lugar k + 1 lleva b elevado a k. Para el término independiente se iguala a cero el exponente total de x.',
       ecuacion: [{ llave: ['T', { sub: ['', [k, ' + 1']] }], nota: 'lugar k + 1', color: 'c-i' }, ' = C(n, ', k, ') ', { sup: [a, ['n − ', k]] }, ' ', { llave: [{ sup: [b, k] }], nota: 'k veces b', color: 'c-i' }],
       condicion: 'k es entero entre 0 y n; si la ecuación del exponente no da un k así, no hay término independiente.',
+    },
+    // Así se resuelve: las dos ramas de «Ahora tú» (término de un lugar dado y término independiente), con azar(s + 900).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const n = r.ent(5, 8), t = r.ent(2, n), j = t - 1, c = r.uno([1, 2, 3]);
+          const coef = j2 => C(n, j2) * c ** j2, mon = j2 => `${coef(j2) === 1 && n - j2 > 0 ? '' : f(coef(j2), 0)}${pot('x', n - j2)}`;
+          const tabla = lleno => ({
+            columnas: ['lugar', 'k', `C(${n}, k)`, 'x', `${c}ᵏ`, 'término'], colorCol: [null, 'i', null, 'o', 'i', 'd'],
+            filas: Array.from({ length: n + 1 }, (_, i) => [lugar(i + 1), String(i), ...(lleno ? [f(C(n, i), 0), pot('x', n - i) || '1', f(c ** i, 0), { t: mon(i), color: 'd', fuerte: i === j }] : ['?', '?', '?', '?'])]),
+            resaltes: lleno ? [{ f: j, c: 0, ancho: 6, color: 'i' }] : [],
+            alt: `Los ${n + 1} términos de (x + ${c}) a la ${n}; el de lugar ${t} lleva k = ${j}`,
+          });
+          return {
+            enunciado: `En (x + ${c})${sup(n)}, ¿cuál es el término de lugar ${lugar(t)}?`,
+            dibujo: { datos: tabla(false), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: `Piden el término que ocupa el lugar ${lugar(t)} del desarrollo, con su número y su potencia de x.` },
+              { tipo: 'datos', texto: `El primer sumando es x, el segundo es ${c} y el exponente es ${n}. El lugar pedido es el ${lugar(t)}.` },
+              { tipo: 'regla', texto: ['El término de lugar ', k, ' + 1 lleva el segundo sumando elevado a ', k, '. Para hallar ', k, ', se le resta 1 al lugar.'] },
+              { tipo: 'cuentas', texto: ['Con ', k, ` = ${j}, el término lleva C(${n}, ${j}), ${c}${sup(j)} y ${pot('x', n - j) || 'ninguna x'}.`],
+                ecuacion: [k, ` = ${t} − 1 = ${j}   →   ${f(C(n, j), 0)} · ${f(c ** j, 0)} · ${pot('x', n - j) || '1'} = ${mon(j)}`], dibujo: { datos: tabla(true), estado: {} } },
+              { tipo: 'sentido', texto: `Comprueba los exponentes: la x lleva ${n - j} y el ${c} lleva ${j}. Suman ${n}, como en todo término de este binomio.` },
+            ],
+            respuesta: `El término de lugar ${lugar(t)} es ${mon(j)}.`,
+          };
+        }
+        let p, q, n, j;
+        do { p = r.ent(1, 3); q = r.ent(1, 3); n = r.ent(3, 9); j = p * n / (p + q); } while (!Number.isInteger(j) || j === 0 || j === n || p === q);
+        const bien = C(n, j), pp = p === 1 ? '' : String(p), qq = q === 1 ? '' : String(q);
+        const tabla = lleno => ({
+          columnas: ['lugar', 'k', 'exponente de x'], colorCol: [null, 'i', 'o'],
+          filas: Array.from({ length: n + 1 }, (_, i) => [lugar(i + 1), String(i), lleno ? { t: f(p * (n - i) - q * i, 0), color: p * (n - i) - q * i === 0 ? 'd' : null, fuerte: i === j } : '?']),
+          resaltes: lleno ? [{ f: j, c: 0, ancho: 3, color: 'd' }] : [],
+          alt: `Exponente de x en cada término; vale 0 en el lugar ${j + 1}`,
+        });
+        return {
+          enunciado: ['¿Cuánto vale el término independiente de (', pot('x', p), ' + ', { frac: ['1', pot('x', q)] }, `)${sup(n)}?`],
+          dibujo: { datos: tabla(false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el término independiente: el que no lleva x, es decir, el que tiene exponente 0.' },
+            { tipo: 'datos', texto: `El primer sumando es ${pot('x', p)}; el segundo, 1/${pot('x', q)}, que quita ${q} al exponente cada vez que sale. El exponente es ${n}.` },
+            { tipo: 'regla', texto: ['En el término de lugar ', k, ' + 1, el segundo sumando sale ', k, ' veces. Se suma el exponente total de x y se iguala a cero.'] },
+            { tipo: 'cuentas', texto: ['Se escribe el exponente de x en función de ', k, ' y se despeja.'],
+              ecuacion: [`${pp}(${n} − `, k, `) − ${qq}`, k, ' = 0   →   ', k, ` = ${j}   →   C(${n}, ${j}) = ${f(bien, 0)}`], dibujo: { datos: tabla(true), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba con k = ${j}: ${pot('x', p)} aporta ${pot('x', p * (n - j))} y 1/${pot('x', q)} quita ${q * j} de exponente. Se cancelan.` },
+          ],
+          respuesta: `Es el término de lugar ${lugar(j + 1)} y vale ${f(bien, 0)}.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -284,6 +390,14 @@
     titulo: 'Con exponente no natural, no termina',
     temas: ['Binomio con exponente no natural'],
     pieza: 'ejes',
+    // Lee: qué es una serie y para qué sirve. No dice para qué x converge («Predice» pregunta por x = 3).
+    lee: {
+      tarjetas: [
+        { titulo: 'Raíces sin calculadora', texto: '¿Cuánto vale √1,2? Sin calculadora, se puede aproximar con una suma de pocos términos. Newton encontró cómo hacerlo con exponentes como 1/2, que no son números naturales.' },
+        { titulo: 'Una suma que no termina', texto: 'Con exponente natural n, el desarrollo de (1 + x)ⁿ tiene n + 1 términos y se acaba. Con exponente 1/2, los términos siguen sin fin. Esa suma infinita es una serie, y en la práctica se suman solo algunos.' },
+        { titulo: 'Qué mirar al jugar', texto: 'La curva verde es el valor exacto; la roja punteada suma pocos términos. Cambia x y el número de términos, y mira en qué zona se pegan las dos curvas y en cuál se separan.' },
+      ],
+    },
     juega: {
       consigna: '√(1 + x), es decir (1 + x) elevado a 1/2, se escribe como una suma infinita. Elige x y cuántos términos sumas; compara las curvas.',
       voz: 'Prueba x cerca de 0 y lejos de 0.',
@@ -337,6 +451,39 @@
       ecuacion: ['(1 + x)', { sup: ['', 'α'] }, ' = 1 + αx + ', { llave: [{ frac: ['α(α − 1)', '2!'] }], nota: 'baja de uno', color: 'c-d' }, 'x² + …'],
       condicion: 'α es real y |x| < 1; en |x| = 1 hace falta otro análisis. Con α natural, la suma termina.',
     },
+    // Así se resuelve: el mismo problema de «Ahora tú» (coeficiente de x² o x³ con α no natural), con coefGen y azar(s + 900).
+    // La tabla de factores es la misma pieza de «Predice» y «Mira» de esta idea.
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        const [p, q] = r.uno([[1, 2], [-1, 1], [-2, 1], [1, 3], [-1, 2], [3, 2], [2, 3]]);
+        const j = s % 3 === 2 ? 3 : 2, bien = coefGen(p, q, j);
+        const al = q === 1 ? f(p, 0) : `${p < 0 ? '−' : ''}${Math.abs(p)}/${q}`;
+        const factores = Array.from({ length: j }, (_, i) => fr(p - i * q, q));
+        const prod = fr(factores.reduce((m, x) => m * x[0], 1), q ** j);
+        const neg = factores.filter(x => x[0] < 0).length;
+        const tabla = lleno => ({
+          columnas: ['', ...factores.map((_, i) => (i ? `α − ${i}` : 'α'))], colorCol: [null, ...factores.map(() => 'd')],
+          filas: [['factor', ...factores.map(x => (lleno ? { t: frTxt(x), color: 'd', fuerte: true } : '?'))]],
+          pie: lleno ? `producto ${frTxt(prod)} ÷ ${j}! = ${frTxt(bien)}` : `después se divide entre ${j}! = ${fact(j)}`,
+          alt: `Los ${j} factores del coeficiente de x a la ${j} con α = ${al}`,
+        });
+        return {
+          enunciado: `En el desarrollo de (1 + x) elevado a ${al}, ¿qué coeficiente acompaña a ${pot('x', j)}?`,
+          dibujo: { datos: tabla(false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden el número que acompaña a ${pot('x', j)} en la serie de (1 + x) elevado a ${al}.` },
+            { tipo: 'datos', texto: `El exponente es α = ${al}, que no es natural, y la potencia buscada es ${pot('x', j)}.` },
+            { tipo: 'regla', texto: `Para ${pot('x', j)} se multiplican ${j} factores: el primero es α y cada uno baja 1 respecto del anterior. Luego se divide entre ${j}!.` },
+            { tipo: 'cuentas', texto: 'Se escriben los factores, se multiplican y el producto se divide entre el factorial.',
+              ecuacion: [`(${factores.map(frTxt).join(') · (')}) ÷ ${j}! = ${frTxt(prod)} ÷ ${fact(j)} = ${frTxt(bien)}`], dibujo: { datos: tabla(true), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba el signo: ${neg === 0 ? 'ningún factor es negativo' : neg === 1 ? 'hay un factor negativo' : `hay ${neg} factores negativos`}, así que el coeficiente sale ${bien[0] < 0 ? 'negativo' : 'positivo'}.` },
+          ],
+          respuesta: `El coeficiente de ${pot('x', j)} es ${frTxt(bien)}.`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -375,6 +522,14 @@
     titulo: 'Un trinomio también cuenta órdenes',
     temas: ['Potencia de un polinomio'],
     pieza: 'alg-tabla',
+    // Lee: trinomio y órdenes con letras repetidas. No cuenta los órdenes de abc («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Tres sumandos', texto: 'Un trinomio tiene tres términos, como a + b + c. Al elevarlo, de cada paréntesis sale una de las tres letras, igual que en el binomio salía a o b.' },
+        { titulo: 'Cómo es cada término', texto: 'En (a + b + c)⁴, cada término junta las tres letras con exponentes que suman 4, como a²bc o b⁴. Una letra que no aparece lleva exponente 0. El número de delante es el coeficiente.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Reparte el exponente 4 entre a, b y c. Mira cómo cambia el coeficiente cuando los exponentes quedan parejos y cuando uno solo se lleva casi todo.' },
+      ],
+    },
     juega: {
       consigna: 'En (a + b + c)⁴, elige los exponentes de a y de b; el de c completa 4. La tabla calcula el coeficiente del término.',
       voz: 'Mira qué pasa cuando los exponentes se reparten parejo.',
@@ -415,6 +570,36 @@
       texto: 'En (a + b + c)ⁿ, el coeficiente de aⁱbʲcᵏ cuenta los órdenes de las letras: n! entre el factorial de cada exponente.',
       ecuacion: [{ llave: [{ frac: ['n!', 'i! · j! · k!'] }], nota: 'órdenes distintos', color: 'c-d' }, '   ·   ', 'i + j + k = n'],
       condicion: 'i, j y k son enteros no negativos que suman n. Si una letra lleva un número delante, también se eleva.',
+    },
+    // Así se resuelve: el mismo problema de «Ahora tú» (coeficiente de (cx + y + z)ⁿ), con fact() y azar(s + 900).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(3, 6);
+        let i, j;
+        do { i = r.ent(1, n); j = r.ent(1, n); } while (n - i - j < 1);
+        const kk = n - i - j, c = s % 3 === 1 ? 2 : 1;
+        const den = fact(i) * fact(j) * fact(kk), base = fact(n) / den, bien = base * c ** i;
+        const term = `${pot('x', i)}${pot('y', j)}${pot('z', kk)}`, bin = `(${c === 1 ? '' : c}x + y + z)${sup(n)}`;
+        const tabla = lleno => ({
+          columnas: ['', 'x', 'y', 'z'], colorCol: [null, 'o', 'i', 'd'],
+          filas: [['exponente', String(i), String(j), String(kk)], ['factorial', ...[i, j, kk].map(e => (lleno ? f(fact(e), 0) : '?'))]],
+          pie: lleno ? `${n}!/(${i}! · ${j}! · ${kk}!) = ${f(base, 0)}` : `${n}! = ${f(fact(n), 0)}`,
+          alt: `Exponentes ${i}, ${j} y ${kk} de x, y y z en la potencia ${n} del trinomio`,
+        });
+        const cuentas = [`${n}!/(${i}! · ${j}! · ${kk}!) = ${f(fact(n), 0)} ÷ ${f(den, 0)} = ${f(base, 0)}`, c > 1 ? `   →   ${f(base, 0)} · ${c}${sup(i)} = ${f(bien, 0)}` : ''];
+        return {
+          enunciado: `En ${bin}, ¿qué coeficiente acompaña a ${term}?`,
+          dibujo: { datos: tabla(false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden el número que acompaña a ${term} cuando se desarrolla ${bin}.` },
+            { tipo: 'datos', texto: `Los exponentes de x, y y z son ${i}, ${j} y ${kk}; suman ${n}.${c > 1 ? ` La x lleva un ${c} delante.` : ''}` },
+            { tipo: 'regla', texto: `El coeficiente cuenta los órdenes de las letras: n! dividido entre el factorial de cada exponente.${c > 1 ? ' El número de la x se eleva a su exponente.' : ''}` },
+            { tipo: 'cuentas', texto: `Se calculan los factoriales y se divide${c > 1 ? `; después se multiplica por ${c}${sup(i)}` : ''}.`, ecuacion: [cuentas.join('')], dibujo: { datos: tabla(true), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba de otro modo: se ubican las x con C(${n}, ${i}) = ${f(C(n, i), 0)} y las y entre el resto con C(${n - i}, ${j}) = ${f(C(n - i, j), 0)}. Su producto es ${f(C(n, i) * C(n - i, j), 0)}.` },
+          ],
+          respuesta: `El coeficiente es ${f(bien, 0)}: el término es ${f(bien, 0)}${term}.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
