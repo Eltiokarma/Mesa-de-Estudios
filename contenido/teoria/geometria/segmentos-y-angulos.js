@@ -80,6 +80,14 @@
     titulo: 'La suma exacta exige «entre»',
     temas: ['Punto, recta y plano', 'Segmentos y su medida'],
     pieza: 'geo-figura',
+    // Lee (fase 2): vocabulario de segmento y «entre». No dice qué pasa con B fuera de la recta (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un trozo de recta', texto: 'Imagina la carretera de Juliaca a Puno como si fuera una recta. Un tramo de recta entre dos puntos se llama segmento. El segmento se nombra con esos dos puntos: AB.' },
+        { titulo: 'Qué quiere decir «entre»', texto: 'Si viajas de Juliaca a Puno, pasas por Caracoto: queda entre las dos ciudades. En geometría, B está entre A y C cuando está en la recta AC y en el tramo que va de A a C.' },
+        { titulo: 'Qué mirar', texto: ['Al jugar, mueve B y compara dos números: la suma ', AB, ' + ', BC, ' y la medida ', AC, '. Lleva B también más allá de C y antes de A.'] },
+      ],
+    },
     juega: {
       consigna: 'Mueve el punto B por la recta, también fuera del tramo entre A y C. Compara la suma AB + BC con AC.',
       voz: 'Mueve B y compara las tres medidas, no solo el dibujo.',
@@ -134,6 +142,30 @@
       ecuacion: [{ llave: [AB, ' + ', BC], nota: 'camino por B', color: 'c-o' }, ' ≥ ', { llave: [AC], nota: 'directo', color: 'c-d' }],
       condicion: 'B está en la recta AC, entre A y C.',
       voz: 'El dibujo sugiere; la condición «entre A y C» lo garantiza.',
+    },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con la semilla s + 900. Las mismas cuentas y la misma figura
+    // (fuera.ahoraTu.generar(s + 900) sortea a, b y c en el mismo orden).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), a = r.ent(2, 8), b = r.ent(2, 8), c = r.ent(2, 8);
+        const p = a + b, q = b + c, t = a + b + c, BD = { v: 'c-o', t: 'BD' };
+        const at = fuera.ahoraTu.generar(s + 900);
+        return {
+          enunciado: ['A, B, C y D están en ese orden sobre una recta. ', AC, ` = ${p} cm, `, BD, ` = ${q} cm y AD = ${t} cm. ¿Cuánto mide `, BC, '?'],
+          dibujo: at.dibujo,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', BC, ', el tramo del medio, entre B y C.'] },
+            { tipo: 'datos', texto: ['Tengo tres medidas. ', AC, ' y ', BD, ' se enciman en el medio; AD va de punta a punta.'],
+              ecuacion: [AC, ` = ${p}   ·   `, BD, ` = ${q}   ·   AD = ${t}`] },
+            { tipo: 'regla', texto: ['Como los puntos están en orden, cada medida larga es la suma de sus tramos. ', AC, ' y ', BD, ' juntos cubren AD y repiten ', BC, '.'],
+              ecuacion: [AC, ' + ', BD, ' = AD + ', BC] },
+            { tipo: 'cuentas', texto: ['Sumo ', AC, ' y ', BD, ', y le quito AD: lo que sobra es el tramo contado dos veces.'],
+              ecuacion: [BC, ` = ${p} + ${q} − ${t} = ${b} cm`], dibujo: at.solucion.dibujo },
+            { tipo: 'sentido', texto: [`Compruebo: AB = ${p} − ${b} = ${a} y CD = ${q} − ${b} = ${c}. Los tres tramos suman ${a} + ${b} + ${c} = ${t}, que es AD.`] },
+          ],
+          respuesta: [BC, ` = ${b} cm`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Ubica cada medida en la recta antes de operar.',
@@ -203,6 +235,14 @@
     titulo: 'El ángulo mide la abertura',
     temas: ['Clases de ángulos'],
     pieza: 'geo-figura',
+    // Lee (fase 2): partes del ángulo, grados y nombres. No dice si el largo de los lados cuenta (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos rayos y un vértice', texto: 'Un ángulo se forma con dos rayos que salen del mismo punto, el vértice. En ∠AOB, la letra del medio, O, es el vértice; OA y OB son sus lados.' },
+        { titulo: 'Se mide en grados', texto: 'Una vuelta completa son 360°. Si giras en tu sitio hasta mirar al lado contrario, das media vuelta: 180°. En Juliaca, doblar en la esquina de dos calles que se cruzan derechas es un cuarto de vuelta: 90°.' },
+        { titulo: 'Cada medida, un nombre', texto: 'Según cuántos grados mide, un ángulo es agudo, recto, obtuso, llano o no convexo. Al jugar, gira OB y fíjate en qué medida cambia el nombre.' },
+      ],
+    },
     juega: {
       consigna: 'Gira el lado OB. Mira cómo cambian la medida y el nombre del ángulo AOB, incluso cuando pasa de 180°.',
       voz: 'Gira OB y fíjate en el nombre que toma cada medida.',
@@ -242,6 +282,27 @@
       texto: 'Un ángulo mide la abertura entre sus lados, no su largo. Es agudo si mide menos de 90°, recto con 90°, obtuso entre 90° y 180°, y llano con 180°.',
       condicion: 'los lados son rayos: prolongarlos no cambia la medida. Más de 180° es un ángulo no convexo.',
       voz: 'Al alargar los lados, la medida permanece. Esa es la clave.',
+    },
+    // Así se resuelve (fase 2): consecutivos que se suman y se nombran, como «Ahora tú», con la semilla s + 900.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), a = 5 * r.ent(3, 20), b = 5 * r.ent(2, 22), t = a + b, bien = clase(t);
+        const at = aberturaIdea.ahoraTu.generar(s + 900);
+        const ubica = { agudo: 'Queda por debajo de 90°: es agudo.', recto: 'Es justo 90°: es recto.', obtuso: 'Queda entre 90° y 180°: es obtuso.',
+          llano: 'Es justo 180°: es llano.', 'no convexo': 'Pasa de 180°: es no convexo.' }[bien];
+        return {
+          enunciado: [`Los ángulos AOB = ${a}° y BOC = ${b}° son consecutivos: OB queda entre OA y OC. ¿Qué clase de ángulo es AOC?`],
+          dibujo: at.dibujo,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la clase de ∠AOC: su nombre según cuántos grados mide.' },
+            { tipo: 'datos', texto: `∠AOB mide ${a}° y ∠BOC mide ${b}°. Comparten el lado OB, que queda en medio.` },
+            { tipo: 'regla', texto: 'Si OB está entre OA y OC, la abertura de AOC es la de los dos ángulos juntos. Después comparo el total con 90° y con 180°.' },
+            { tipo: 'cuentas', texto: `Sumo las dos aberturas. ${ubica}`, ecuacion: [`∠AOC = ${a}° + ${b}° = ${t}°`], dibujo: at.solucion.dibujo },
+            { tipo: 'sentido', texto: `Compruebo al revés: ${t}° − ${b}° = ${a}°, que es ∠AOB. La suma cuadra.` },
+          ],
+          respuesta: [`∠AOC = ${t}°: ${bien}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Junta las dos aberturas y nombra el resultado.',
@@ -302,6 +363,14 @@
     titulo: 'Mitades que suman noventa',
     temas: ['Bisectriz', 'Ángulos complementarios y suplementarios'],
     pieza: 'geo-figura',
+    // Lee (fase 2): complemento, suplemento y bisectriz. No dice qué forman las dos bisectrices (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que falta para 90°', texto: 'En la esquina de una cancha de fulbito, las líneas forman 90°. Si una raya sale de esa esquina y abre 30° con un lado, al otro le quedan 60°. Esos 60° son el complemento de 30°.' },
+        { titulo: 'Lo que falta para 180°', texto: 'Una recta es media vuelta: 180°. Si un rayo sale de un punto de la recta, la parte en dos ángulos. Lo que a uno le falta para llegar a 180° es su suplemento.' },
+        { titulo: 'Partir en dos', texto: ['La bisectriz es el rayo que parte un ángulo en dos ángulos iguales. Al jugar, mueve ', al, ' y sigue a ', be, ': mira qué le pasa a uno cuando el otro crece.'] },
+      ],
+    },
     juega: {
       consigna: 'Cambia α. El ángulo β completa la recta AC. Observa qué le pasa a β cuando α crece.',
       voz: 'Mueve α y sigue a β: cambian juntos.',
@@ -341,6 +410,56 @@
       ecuacion: [{ llave: ['C(', x, ')'], nota: 'complemento', color: 'c-o' }, ' = 90° − ', x, '   ·   ', { llave: ['S(', x, ')'], nota: 'suplemento', color: 'c-o' }, ' = 180° − ', x],
       condicion: 'el complemento existe si x < 90° y el suplemento si x < 180°; el resultado de 90° pide ángulos adyacentes.',
       voz: 'Deshaz las operaciones desde afuera hacia adentro.',
+    },
+    // Así se resuelve (fase 2): los tres tipos de «Ahora tú» (s % 3, y 900 es múltiplo de 3), con las mismas cuentas.
+    // La figura es la del juego (par): x en naranja y su suplemento en turquesa; en las cuentas aparecen sus medidas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3;
+        const fig = (v, medidas) => {
+          const d = par(v, false);
+          if (medidas) d.alt = `x = ${v}° y su suplemento, ${180 - v}°, comparten el lado OB sobre la recta AC`;
+          else {
+            d.alt = 'El ángulo x y su suplemento comparten el lado OB sobre la recta AC';
+            d.angulos = d.angulos.map((an, i) => Object.assign({}, an, { texto: i === 0 ? 'x' : 'S(x)' }));
+          }
+          return { datos: d, estado: {} };
+        };
+        const restas = ['C(', x, ') = 90° − ', x, '   ·   S(', x, ') = 180° − ', x];
+        const regla = { tipo: 'regla', texto: 'El complemento es lo que falta para 90°; el suplemento, lo que falta para 180°. Escribo cada uno como una resta.', ecuacion: restas };
+        const pide = { tipo: 'pide', texto: ['Piden ', x, ', el ángulo del que parten las operaciones.'] };
+        let v, enunciado, datos, cuentas, sentido;
+        if (tipo === 0) {
+          v = 5 * r.ent(2, 16); const k = 90 + v;
+          enunciado = ['El suplemento del complemento de ', x, ` mide ${k}°. ¿Cuánto mide `, x, '?'];
+          datos = `Primero se toma el complemento de x; después, el suplemento de ese resultado. Al final da ${k}°.`;
+          cuentas = { texto: ['Pongo el complemento dentro del suplemento, simplifico y despejo ', x, '.'],
+            ecuacion: ['180° − (90° − ', x, ') = 90° + ', x, ` = ${k}°  →  `, x, ` = ${v}°`] };
+          sentido = `Compruebo: el complemento de ${v}° es ${90 - v}°, y el suplemento de ${90 - v}° es ${180 - (90 - v)}°. Cuadra.`;
+        } else if (tipo === 1) {
+          v = 5 * r.ent(2, 16); const k = 270 - 2 * v;
+          enunciado = ['El complemento de ', x, ' más el suplemento de ', x, ` suman ${k}°. ¿Cuánto mide `, x, '?'];
+          datos = `El complemento de x y el suplemento de x, juntos, suman ${k}°.`;
+          cuentas = { texto: ['Sumo las dos restas: ', x, ' aparece dos veces, restando.'],
+            ecuacion: ['270° − 2', x, ` = ${k}°  →  2`, x, ` = ${270 - k}°  →  `, x, ` = ${v}°`] };
+          sentido = `Compruebo: el complemento de ${v}° es ${90 - v}° y el suplemento, ${180 - v}°. Suman ${(90 - v) + (180 - v)}°. Cuadra.`;
+        } else {
+          const m = r.de([3, 4, 7, 10]); v = (90 * m - 180) / (m - 1);
+          enunciado = ['El suplemento de ', x, ` es ${m} veces su complemento. ¿Cuánto mide `, x, '?'];
+          datos = `El suplemento de x es ${m} veces su complemento.`;
+          cuentas = { texto: ['Escribo las dos restas, reparto el ', String(m), ' y despejo ', x, '.'],
+            ecuacion: ['180° − ', x, ` = ${m}(90° − `, x, `)  →  ${m - 1}`, x, ` = ${90 * m - 180}°  →  `, x, ` = ${gr(v)}`] };
+          sentido = `Compruebo: el suplemento de ${gr(v)} es ${gr(180 - v)} y el complemento, ${gr(90 - v)}. Y ${m} · ${gr(90 - v)} = ${gr(m * (90 - v))}. Cuadra.`;
+        }
+        return {
+          enunciado,
+          dibujo: fig(v, false),
+          pasos: [pide, { tipo: 'datos', texto: datos }, regla,
+            Object.assign({ tipo: 'cuentas', dibujo: fig(v, true) }, cuentas),
+            { tipo: 'sentido', texto: sentido }],
+          respuesta: [x, ` = ${gr(v)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Escribe cada operación como una resta y despeja.',
@@ -423,6 +542,16 @@
     titulo: 'Paralelas: ángulos iguales y suplementarios',
     temas: ['Rectas paralelas y una secante'],
     pieza: 'geo-figura',
+    // Lee (fase 2): paralelas, secante y los nombres de los pares. No dice qué pares son iguales ni qué pasa si una
+    // recta gira (eso lo descubre al jugar y en «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Rieles que no se juntan', texto: 'Los rieles del tren que sale de Juliaca hacia Cusco van siempre a la misma distancia: nunca se cruzan. Dos rectas así, en el mismo plano, se llaman rectas paralelas.' },
+        { titulo: 'La recta que corta', texto: 'Una recta que corta a las dos paralelas es una secante. En cada cruce se forman cuatro ángulos; en total, ocho. Cada par de ángulos tiene un nombre según dónde está.' },
+        { titulo: 'Los nombres de cada par', texto: 'Los correspondientes ocupan el mismo lugar en cada cruce. Los alternos internos están entre las rectas y a distinto lado de la secante. Los conjugados internos están entre las rectas y del mismo lado.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, inclina la secante y sigue a los ángulos naranjas y al turquesa. Fíjate cuáles cambian juntos y cuáles no.' },
+      ],
+    },
     juega: {
       consigna: 'Inclina la secante que corta las dos rectas paralelas. Mira qué ángulos naranjas siguen iguales y cuál turquesa los acompaña.',
       voz: 'Inclina la secante. Comprueba qué pares permanecen iguales.',
@@ -460,6 +589,41 @@
       ecuacion: [{ llave: [th], nota: 'correspondiente', color: 'c-o' }, ' = ', { llave: [th], nota: 'alterno', color: 'c-o' }, '   ·   ', th, ' + ', { llave: [{ v: 'c-i', t: 'β' }], nota: 'conjugado', color: 'c-i' }, ' = 180°'],
       condicion: 'las rectas son paralelas. Al revés también vale: si dos correspondientes son iguales, las rectas son paralelas.',
       voz: 'Primero la condición de paralelas; después las igualdades.',
+    },
+    // Así se resuelve (fase 2): alternos (s par) o conjugados (s impar), como «Ahora tú»; 900 es par, así que
+    // paralelas.ahoraTu.generar(s + 900) es el mismo caso y da la figura. En las cuentas, la figura pasa a grados.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), conj = s % 2 === 1, v = r.ent(8, 28), a1 = r.ent(2, 5);
+        let a2 = r.ent(1, 4); if (a2 === a1) a2 = a1 + 1;
+        const t1 = conj ? 5 * r.ent(8, 26) : 5 * r.ent(8, 28);
+        const ang2 = conj ? 180 - t1 : t1, b1 = t1 - a1 * v, b2 = ang2 - a2 * v;
+        const ex = (a, b) => `${a}x ${b < 0 ? '−' : '+'} ${Math.abs(b)}°`, cx_ = k => (k === 1 ? 'x' : `${k}x`);
+        const e1 = ex(a1, b1), e2 = ex(a2, b2), nombre = conj ? 'conjugados internos' : 'alternos internos';
+        const at = paralelas.ahoraTu.generar(s + 900);
+        const enGrados = { datos: Object.assign({}, at.dibujo.datos, {
+          alt: `Con x = ${v}: los ${nombre} miden ${t1}° y ${ang2}°`,
+          angulos: at.dibujo.datos.angulos.map((an, i) => Object.assign({}, an, { texto: `${i === 0 ? t1 : ang2}°` })) }), estado: {} };
+        let despeje;
+        if (conj) despeje = [`${e1} + ${e2} = 180°  →  ${cx_(a1 + a2)} = ${180 - b1 - b2}°  →  x = ${v}`];
+        else if (a1 > a2) despeje = [`${e1} = ${e2}  →  ${cx_(a1 - a2)} = ${b2 - b1}°  →  x = ${v}`];
+        else despeje = [`${e1} = ${e2}  →  ${cx_(a2 - a1)} = ${b1 - b2}°  →  x = ${v}`];
+        return {
+          enunciado: [`Las dos rectas son paralelas. Los ángulos marcados son ${nombre}: ${e1} y ${e2}. ¿Cuánto vale x?`],
+          dibujo: at.dibujo,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden x, el número que hace verdaderas las dos expresiones a la vez.' },
+            { tipo: 'datos', texto: `Las rectas son paralelas. El ángulo naranja mide ${e1} y el turquesa, ${e2}: son ${nombre}.` },
+            { tipo: 'regla', texto: conj ? 'Entre paralelas, los conjugados internos completan media vuelta: juntos suman 180°.'
+              : 'Entre paralelas, los alternos internos tienen la misma abertura: igualo las dos expresiones.',
+              ecuacion: conj ? ['conjugados: ', th, ' + ', { v: 'c-i', t: 'β' }, ' = 180°'] : ['alternos internos: ', th, ' = ', th] },
+            { tipo: 'cuentas', texto: conj ? 'Sumo las dos expresiones, igualo a 180° y despejo x.' : 'Igualo las dos expresiones, junto las x a un lado y despejo.',
+              ecuacion: despeje, dibujo: enGrados },
+            { tipo: 'sentido', texto: `Reemplazo x = ${v}: el naranja mide ${a1 * v + b1}° y el turquesa, ${a2 * v + b2}°. ${conj ? `Suman ${a1 * v + b1 + a2 * v + b2}°, como deben.` : 'Son iguales, como deben.'}` },
+          ],
+          respuesta: [`x = ${v}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Decide si el par es igual o suplementario, y plantea.',
@@ -533,6 +697,15 @@
     titulo: 'El quiebre entre paralelas',
     temas: ['Rectas paralelas y una secante'],
     pieza: 'geo-figura',
+    // Lee (fase 2): línea quebrada y qué ángulo es cada letra. No dice en qué partes deja la paralela auxiliar el
+    // quiebre (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una línea que dobla', texto: 'El camino que sube en zigzag a un cerro de Juliaca va derecho, dobla y sigue derecho. En geometría, el punto donde una línea así cambia de dirección se llama vértice.' },
+        { titulo: 'Entre dos paralelas', texto: ['Aquí la línea TVB empieza en una paralela, dobla en V y termina en la otra. El tramo de arriba forma ', ca, ' con su paralela; el de abajo, ', cb, '. El ángulo en V es el quiebre, ', cx, '.'] },
+        { titulo: 'Qué mirar', texto: ['Al jugar, cambia ', ca, ' y ', cb, ' por separado. Mira cuánto mide ', cx, ' en cada caso y busca qué cuenta con ', ca, ' y ', cb, ' da ese número.'] },
+      ],
+    },
     juega: {
       consigna: 'La línea TVB se quiebra entre dos paralelas. Cambia los ángulos a y b, y compara el quiebre x con su suma.',
       voz: 'Cambia a y b. Mira cómo responde x.',
@@ -573,6 +746,37 @@
       ecuacion: [{ llave: [cx], nota: 'quiebre', color: 'c-h' }, ' = ', { llave: [ca], nota: 'arriba', color: 'c-o' }, ' + ', { llave: [cb], nota: 'abajo', color: 'c-i' }],
       condicion: 'las rectas son paralelas y a y b se miden del lado donde está el vértice del quiebre.',
       voz: 'Una paralela auxiliar convierte el quiebre en dos alternos.',
+    },
+    // Así se resuelve (fase 2): pide x (s par) o b (s impar), como «Ahora tú»; la figura es la de
+    // quiebreIdea.ahoraTu.generar(s + 900) y, en las cuentas, aparece la paralela auxiliar por V.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), a = 5 * r.ent(4, 14), b = 5 * r.ent(4, 14), pideX = s % 2 === 0, xx = quiebreX({ a, b });
+        const at = quiebreIdea.ahoraTu.generar(s + 900);
+        const regla = { tipo: 'regla', texto: 'Por V trazo una paralela auxiliar. Parte el quiebre en dos alternos internos: uno copia a y el otro copia b.',
+          ecuacion: [cx, ' = ', ca, ' + ', cb] };
+        const conAux = { datos: quiebre(a, b, pideX ? { aux: 1, x: true } : { aux: 1 }), estado: {} };
+        return {
+          enunciado: pideX ? [`Las rectas son paralelas. Si a = ${a}° y b = ${b}°, ¿cuánto mide el quiebre `, cx, '?']
+            : [`Las rectas son paralelas. Si a = ${a}° y el quiebre mide `, cx, ` = ${xx}°, ¿cuánto mide b?`],
+          // La figura de «Ahora tú» nombra b en su texto alternativo; aquí, cuando se pide b, no se adelanta.
+          dibujo: pideX ? at.dibujo : { datos: Object.assign({}, at.dibujo.datos, { alt: `Quiebre V entre dos paralelas: a = ${a}°, b sin medida y x = ${xx}°` }), estado: {} },
+          pasos: pideX ? [
+            { tipo: 'pide', texto: ['Piden ', cx, ', el ángulo del quiebre en V.'] },
+            { tipo: 'datos', texto: ['Las rectas son paralelas. El tramo de arriba forma ', ca, ` = ${a}° con su recta y el de abajo, `, cb, ` = ${b}°.`] },
+            regla,
+            { tipo: 'cuentas', texto: 'El quiebre reúne las dos partes: las sumo.', ecuacion: [cx, ` = ${a}° + ${b}° = ${xx}°`], dibujo: conAux },
+            { tipo: 'sentido', texto: `${xx}° es mayor que ${a}° y que ${b}°, porque el quiebre contiene a los dos. Y es menor que 180°: la línea sí dobla.` },
+          ] : [
+            { tipo: 'pide', texto: ['Piden ', cb, ', el ángulo que el tramo de abajo forma con su paralela.'] },
+            { tipo: 'datos', texto: ['Las rectas son paralelas. Arriba, ', ca, ` = ${a}°; el quiebre completo mide `, cx, ` = ${xx}°.`] },
+            regla,
+            { tipo: 'cuentas', texto: ['Como ', cx, ' es la suma, ', cb, ' es lo que queda al quitarle ', ca, '.'], ecuacion: [cb, ` = ${xx}° − ${a}° = ${xx - a}°`], dibujo: conAux },
+            { tipo: 'sentido', texto: `Compruebo: ${a}° + ${xx - a}° = ${xx}°, el quiebre completo.` },
+          ],
+          respuesta: pideX ? [cx, ` = ${xx}°`] : [cb, ` = ${xx - a}°`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Ubica a, b y x antes de operar.',
