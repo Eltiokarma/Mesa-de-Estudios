@@ -69,11 +69,42 @@
   const TRES = ['Ana', 'Beto', 'Ciro'];
   const FR3 = [{ t: 'Ana: «Beto miente»', valor: v => !v[1] }, { t: 'Beto: «Ciro miente»', valor: v => !v[2] }, { t: 'Ciro: «Ana y Beto mienten»', valor: v => !v[0] && !v[1] }];
   const SOL3 = asignaciones(3).filter(v => coherente(FR3, v));
+  // El acertijo de tres: lo usan «Ahora tú» (semilla s) y «Así se resuelve» (semilla s + 900), con la misma prueba.
+  function casoSup(r) {
+    const N = r.barajar(['Ana', 'Beto', 'Ciro', 'Dina', 'Eva']).slice(0, 3);
+    const plantilla = (i) => {
+      const otros = [0, 1, 2].filter(j => j !== i), x = r.elegir(otros), y = otros.find(j => j !== x);
+      return r.elegir([
+        { t: `«${N[x]} miente»`, valor: v => !v[x] },
+        { t: `«${N[x]} dice la verdad»`, valor: v => v[x] },
+        { t: `«${N[x]} y ${N[y]} mienten»`, valor: v => !v[x] && !v[y] },
+        { t: `«${N[x]} o ${N[y]} miente»`, valor: v => !v[x] || !v[y] },
+        { t: '«Solo uno de nosotros dice la verdad»', valor: v => v.filter(Boolean).length === 1 },
+      ]);
+    };
+    let fr = null, sol = null;
+    for (let t = 0; t < 400 && !sol; t++) {
+      const prueba = [0, 1, 2].map(plantilla);
+      const v = asignaciones(3).filter(a => coherente(prueba, a));
+      if (v.length === 1 && palabras(prueba.map(p => p.t).join(' ')) <= 20) { fr = prueba; sol = v[0]; }
+    }
+    return { N, fr, sol };
+  }
+  const veracesDe = (N, v) => { const q = N.filter((_, i) => v[i]); return q.length === 0 ? 'Nadie' : q.length === 3 ? 'Los tres' : q.length === 1 ? `Solo ${q[0]}` : `${q[0]} y ${q[1]}`; };
   const suposicion = {
     id: 'suposicion',
     titulo: 'Suponer y comprobar',
     temas: ['Método de suposición', 'Personajes que siempre mienten o dicen la verdad'],
     pieza: 'rm-tablero',
+    // Lee (fase 2): vocabulario y método; no resuelve el acertijo de tres de Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Veraces y mentirosos', texto: 'En estos acertijos, cada persona es veraz o mentirosa. El veraz siempre dice la verdad. El mentiroso siempre miente, en todo lo que dice.' },
+        { titulo: 'Dos cosas por frase', texto: 'Ante cada frase hay dos preguntas distintas: quién la dice y si lo que dice es cierto. Un veraz solo dice cosas ciertas; un mentiroso, solo falsas.' },
+        { titulo: 'Suponer', texto: 'Como un detective, das un caso por cierto, por ejemplo «Ana es veraz», y revisas si todo lo demás encaja. Si algo choca, ese caso se descarta.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Cambia a Ana y a Beto entre veraz y miente. Mira la columna «Encaja» y busca la suposición en la que encajan las dos filas.' },
+      ],
+    },
     juega: {
       consigna: 'Cada uno siempre miente o siempre dice la verdad. Ana dice: «Beto miente». Beto dice: «Los dos mentimos». Prueba cada suposición.',
       voz: 'Un veraz dice algo cierto; un mentiroso, algo falso.',
@@ -128,27 +159,38 @@
       ecuacion: [{ llave: ['veraz'], nota: 'quién habla', color: 'c-d' }, '  ⇔  ', { llave: ['su frase es cierta'], nota: 'lo que dice', color: 'c-i' }],
       condicion: 'cada persona miente siempre o dice siempre la verdad, en todas sus frases.',
     },
+    // Así se resuelve (fase 2): el mismo acertijo de «Ahora tú», con otra semilla: se descarta una suposición y se confirma otra.
+    resuelve: {
+      generar(s) {
+        const { N, fr, sol } = casoSup(azar(s + 900));
+        const desc = v => { const si = N.filter((_, i) => v[i]), no = N.filter((_, i) => !v[i]);
+          return si.length === 0 ? 'que los tres mienten' : no.length === 0 ? 'que los tres son veraces'
+            : `que ${si.join(' y ')} ${si.length === 1 ? 'es veraz' : 'son veraces'} y ${no.join(' y ')} ${no.length === 1 ? 'miente' : 'mienten'}`; };
+        // La suposición descartada: la que menos se aleja de la buena, y la primera fila donde choca.
+        const otra = asignaciones(3).filter(a => a.join() !== sol.join()).sort((p, q) => p.filter((x, i) => x !== sol[i]).length - q.filter((x, i) => x !== sol[i]).length)[0];
+        const k = fr.findIndex((x, i) => x.valor(otra) !== otra[i]);
+        const ve = veracesDe(N, sol);
+        return {
+          enunciado: `Cada uno siempre miente o siempre dice la verdad. ${N.map((n, i) => `${n}: ${fr[i].t}.`).join(' ')} ¿Quiénes dicen la verdad?`,
+          dibujo: { datos: { columnas: ['Es', 'Su frase', 'Encaja'], filas: N, ancho: 82, celdas: N.map(() => ['', '', '']), notas: [{ t: 'Supón y comprueba' }] }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden quiénes dicen la verdad: de cada uno hay que decidir si es veraz o miente.' },
+            { tipo: 'datos', texto: `Son tres: ${N.join(', ')}. Cada uno puede ser veraz o mentiroso, así que hay 8 suposiciones.`, ecuacion: ['2 · 2 · 2 = 8 suposiciones'] },
+            { tipo: 'regla', texto: 'Supongo quién es veraz y reviso fila por fila: el veraz debe decir algo cierto y el mentiroso, algo falso. Si una fila choca, descarto.' },
+            { tipo: 'aplica', texto: `Pruebo ${desc(otra)}. La frase de ${N[k]} sale ${fr[k].valor(otra) ? 'cierta' : 'falsa'}, pero ${N[k]} ${otra[k] ? 'es veraz' : 'miente'}: choca.`,
+              dibujo: { datos: tablaSup(N, fr, otra), estado: {} } },
+            { tipo: 'aplica', texto: `Pruebo ${desc(sol)}. Las tres frases encajan con quien las dice.`, dibujo: { datos: tablaSup(N, fr, sol), estado: {} } },
+            { tipo: 'sentido', texto: 'Las otras siete suposiciones chocan en alguna fila. Como solo una encaja, la respuesta no depende de por dónde empecé a suponer.' },
+          ],
+          respuesta: `${ve} ${ve.startsWith('Solo') || ve === 'Nadie' ? 'dice' : 'dicen'} la verdad`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Supón el caso de una persona y sigue la cadena.',
       generar(s) {
         const r = azar(s);
-        const N = r.barajar(['Ana', 'Beto', 'Ciro', 'Dina', 'Eva']).slice(0, 3);
-        const plantilla = (i) => {
-          const otros = [0, 1, 2].filter(j => j !== i), x = r.elegir(otros), y = otros.find(j => j !== x);
-          return r.elegir([
-            { t: `«${N[x]} miente»`, valor: v => !v[x] },
-            { t: `«${N[x]} dice la verdad»`, valor: v => v[x] },
-            { t: `«${N[x]} y ${N[y]} mienten»`, valor: v => !v[x] && !v[y] },
-            { t: `«${N[x]} o ${N[y]} miente»`, valor: v => !v[x] || !v[y] },
-            { t: '«Solo uno de nosotros dice la verdad»', valor: v => v.filter(Boolean).length === 1 },
-          ]);
-        };
-        let fr = null, sol = null;
-        for (let t = 0; t < 400 && !sol; t++) {
-          const prueba = [0, 1, 2].map(plantilla);
-          const v = asignaciones(3).filter(a => coherente(prueba, a));
-          if (v.length === 1 && palabras(prueba.map(p => p.t).join(' ')) <= 20) { fr = prueba; sol = v[0]; }
-        }
+        const { N, fr, sol } = casoSup(r);
         const nombre = v => { const q = N.filter((_, i) => v[i]); return q.length === 0 ? 'Nadie' : q.length === 3 ? 'Los tres' : q.length === 1 ? `Solo ${q[0]}` : `${q[0]} y ${q[1]}`; };
         const otras = asignaciones(3).filter(a => a.join() !== sol.join()).map(a => ({ a, d: a.filter((x, i) => x !== sol[i]).length })).sort((p, q) => p.d - q.d || r() - 0.5);
         return {
@@ -180,13 +222,46 @@
       notas: [{ t: c === null ? (extra.nota || 'Supón un culpable') : extra.nota || `Si fue ${sosp[c]}: ${ciertas} ${ciertas === 1 ? 'cierta' : 'ciertas'} y ${falsas(decl.length - ciertas)}` }],
     };
   }
+  // El acertijo del culpable: lo usan «Ahora tú» (semilla s) y «Así se resuelve» (r de s + 900); la condición sale de s.
+  function casoCulpa(s, r) {
+    const sosp = r.barajar(['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito']).slice(0, 4);
+    const culp = r.ent(0, 3), unoVeraz = s % 3 === 2;
+    // Frases de tipo «fue X», «no fue X», «yo no fui», «X miente» (sobre «fue Y» de X). Se buscan con una sola respuesta.
+    const tipos = (i) => {
+      const x = r.elegir([0, 1, 2, 3].filter(j => j !== i));
+      return r.elegir([
+        { t: `«Fue ${sosp[x]}»`, valor: c => c === x },
+        { t: `«No fue ${sosp[x]}»`, valor: c => c !== x },
+        { t: '«Yo no fui»', valor: c => c !== i },
+        { t: '«Yo fui»', valor: c => c === i },
+      ]);
+    };
+    let decl = null;
+    for (let t = 0; t < 500 && !decl; t++) {
+      const d = [0, 1, 2, 3].map(tipos);
+      const meta = unoVeraz ? 1 : 3;
+      const val = [0, 1, 2, 3].filter(c => d.filter(x => x.valor(c)).length === meta);
+      if (val.length === 1 && val[0] === culp) decl = d;
+    }
+    if (!decl) decl = [0, 1, 2, 3].map(i => (i === culp ? { t: '«Yo no fui»', valor: c => c !== i } : { t: `«Fue ${sosp[culp]}»`, valor: c => c === culp }));
+    return { sosp, culp, unoVeraz, decl };
+  }
   const contradictorias = {
     id: 'contradictorias',
     titulo: 'Dos frases que chocan',
     temas: ['Afirmaciones contradictorias'],
     pieza: 'rm-tablero',
+    // Lee (fase 2): cómo se lee un acertijo de culpables; no dice qué pasa con un par de frases opuestas (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: '¿Quién fue?', texto: 'Hay cuatro sospechosos y cada uno dice una frase. El enunciado da un dato clave: cuántos de ellos mienten, o cuántos dicen la verdad.' },
+        { titulo: 'Suponer un culpable', texto: 'Una forma segura de empezar: supón que fue uno de ellos y revisa cada frase. Cuenta cuántas salen falsas y compáralo con el dato.' },
+        { titulo: 'De qué habla cada frase', texto: 'Algunas frases hablan del culpable, como «Fue Ana» o «Yo no fui». Otras hablan de lo que dijo alguien, como «Ciro miente». Fíjate a quién apunta cada una.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Cambia de culpable y mira la tabla: en cada caso, cuenta las frases falsas. Busca el culpable que deja justo una.' },
+      ],
+    },
     juega: {
-      consigna: 'Uno de los cuatro rompió el vaso y solo uno de ellos miente. Supón cada culpable y cuenta cuántas frases son falsas.',
+      consigna: 'Uno de los cuatro es el culpable y solo uno de ellos miente. Supón cada culpable y cuenta en la tabla cuántas frases son falsas.',
       voz: 'Busca el culpable que deja exactamente una frase falsa.',
       controles: [{ id: 'c', etiqueta: 'Supón que fue', opciones: SOSP.map((n, k) => ({ valor: k, texto: n })) }],
       dibujo: val => ({ datos: tablaCulpa(val.c), estado: {} }),
@@ -225,32 +300,39 @@
       ecuacion: [{ llave: ['p'], nota: 'una frase', color: 'c-i' }, ' y ', { llave: ['no p'], nota: 'su contraria', color: 'c-o' }, ': exactamente una es cierta'],
       condicion: 'las dos frases hablan de lo mismo y una es la negación completa de la otra, no solo una frase distinta.',
     },
+    // Así se resuelve (fase 2): el mismo acertijo de «Ahora tú», con otra semilla: se supone cada culpable y se cuentan las falsas.
+    resuelve: {
+      generar(s) {
+        const { sosp, culp, unoVeraz, decl } = casoCulpa(s, azar(s + 900));
+        const pide = unoVeraz ? 3 : 1, fal = c => decl.filter(d => !d.valor(c)).length;
+        const conNombre = decl.map((d, i) => Object.assign({ quien: sosp[i] }, d));
+        // Atajo: un par de frases que nunca valen lo mismo (una es la contraria de la otra).
+        let par = null;
+        for (let i = 0; i < 4 && !par; i++) for (let j = i + 1; j < 4 && !par; j++) if ([0, 1, 2, 3].every(c => decl[i].valor(c) !== decl[j].valor(c))) par = [i, j];
+        const cond = unoVeraz ? 'solo uno dice la verdad' : 'solo uno miente';
+        return {
+          enunciado: `Uno de los cuatro es el culpable. ${unoVeraz ? 'Solo uno dice la verdad' : 'Solo uno miente'}. ${sosp.map((n, i) => `${n}: ${decl[i].t}.`).join(' ')} ¿Quién fue?`,
+          dibujo: { datos: tablaCulpa(null, conNombre, sosp), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden quién es el culpable, entre ${sosp.slice(0, 3).join(', ')} y ${sosp[3]}.` },
+            { tipo: 'datos', texto: `Cada uno dice una frase y se sabe que ${cond}. Con cuatro frases, eso deja ${falsas(pide)}.`, ecuacion: [`frases falsas = ${pide}`] },
+            { tipo: 'regla', texto: 'Supongo un culpable a la vez y reviso cada frase. Sirve el culpable que deja tantas frases falsas como pide el dato.' },
+            { tipo: 'cuentas', texto: 'Cuento las frases falsas con cada culpable posible.',
+              ecuacion: [sosp.map((n, c) => `${n}: ${fal(c)}`).join('   ·   ')], dibujo: { datos: tablaCulpa(culp, conNombre, sosp), estado: {} } },
+            { tipo: 'sentido', texto: par
+              ? `Atajo: las frases de ${sosp[par[0]]} y ${sosp[par[1]]} se contradicen, así que entre ellas hay una cierta y una falsa. Con ${sosp[culp]}, cuadra.`
+              : `Solo con ${sosp[culp]} ${pide === 1 ? 'sale una falsa' : `salen ${pide} falsas`}. Si dos culpables cuadraran, el acertijo no tendría respuesta única.` },
+          ],
+          respuesta: `Fue ${sosp[culp]}`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Busca primero el par de frases que chocan.',
       generar(s) {
-        const r = azar(s);
-        const sosp = r.barajar(['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito']).slice(0, 4);
-        const culp = r.ent(0, 3), unoVeraz = s % 3 === 2;
-        // Frases de tipo «fue X», «no fue X», «yo no fui», «X miente» (sobre «fue Y» de X). Se buscan con una sola respuesta.
-        const tipos = (i) => {
-          const x = r.elegir([0, 1, 2, 3].filter(j => j !== i));
-          return r.elegir([
-            { t: `«Fue ${sosp[x]}»`, valor: c => c === x },
-            { t: `«No fue ${sosp[x]}»`, valor: c => c !== x },
-            { t: '«Yo no fui»', valor: c => c !== i },
-            { t: '«Yo fui»', valor: c => c === i },
-          ]);
-        };
-        let decl = null;
-        for (let t = 0; t < 500 && !decl; t++) {
-          const d = [0, 1, 2, 3].map(tipos);
-          const meta = unoVeraz ? 1 : 3;
-          const val = [0, 1, 2, 3].filter(c => d.filter(x => x.valor(c)).length === meta);
-          if (val.length === 1 && val[0] === culp) decl = d;
-        }
-        if (!decl) decl = [0, 1, 2, 3].map(i => (i === culp ? { t: '«Yo no fui»', valor: c => c !== i } : { t: `«Fue ${sosp[culp]}»`, valor: c => c === culp }));
+        const { sosp, culp, unoVeraz, decl } = casoCulpa(s, azar(s));
         return {
-          pregunta: `Uno de los cuatro rompió el vaso. ${unoVeraz ? 'Solo uno dice la verdad' : 'Solo uno miente'}. ${sosp.map((n, i) => `${n}: ${decl[i].t}.`).join(' ')} ¿Quién fue?`,
+          pregunta: `Uno de los cuatro es el culpable. ${unoVeraz ? 'Solo uno dice la verdad' : 'Solo uno miente'}. ${sosp.map((n, i) => `${n}: ${decl[i].t}.`).join(' ')} ¿Quién fue?`,
           dibujo: { datos: tablaCulpa(null, decl.map((d, i) => Object.assign({ quien: sosp[i] }, d)), sosp), estado: {} },
           opciones: opcionesTexto(sosp[culp], sosp.filter((_, k) => k !== culp).map((n, k) => ({ id: 'n' + k, texto: n, error: 'RMT-VYM-5', siFuera: `Si fuera ${n}, el número de frases falsas no sería el que pide el enunciado.` }))),
           solucion: { texto: `Solo con ${sosp[culp]} culpable se cumple «${unoVeraz ? 'solo uno dice la verdad' : 'solo uno miente'}».`, dibujo: { datos: tablaCulpa(culp, decl, sosp), estado: {} } },
@@ -271,11 +353,35 @@
       notas: [{ t: extra.nota || `«Todos aprobaron»: ${todos ? 'cierta' : 'falsa'}` }, { t: extra.nota2 || `«Ninguno aprobó»: ${ninguno ? 'cierta' : 'falsa'}` }],
     };
   }
+  // La frase que dice un mentiroso: la usan «Ahora tú» (semilla s) y «Así se resuelve» (r de s + 900); el tipo sale de s.
+  function casoNegar(s, r) {
+    const [a, b] = r.barajar(['Ana', 'Beto', 'Ciro', 'Dina', 'Eva']).slice(0, 2);
+    const grupo = r.elegir([['mis primos', 'son altos', 'es alto', 'no es alto', 'son altos'], ['los alumnos', 'llegaron temprano', 'llegó temprano', 'no llegó temprano', 'llegaron temprano'], ['las cajas', 'están llenas', 'está llena', 'no está llena', 'están llenas']]);
+    const [g, pl, sg, nosg] = grupo;
+    const tipo = s % 4;
+    // Concordancia: «las cajas» pide «todas», «ninguna» y «una».
+    const fem = g.startsWith('las '), Todos = fem ? 'Todas' : 'Todos', Ninguno = fem ? 'Ninguna' : 'Ninguno', uno = fem ? 'una' : 'uno';
+    const casos = [
+      { dice: `${Todos} ${g} ${pl}`, ok: `Al menos ${uno} ${nosg}`, mal: [`${Ninguno} ${sg}`, `${Todos} ${g} no ${pl}`, `La mitad ${pl}`] },
+      { dice: `${Ninguno} de ${g} ${sg}`, ok: `Al menos ${uno} ${sg}`, mal: [`${Todos} ${g} ${pl}`, `${Ninguno} ${nosg}`, `Solo ${uno} ${sg}`] },
+      { dice: `${a} y ${b} aprobaron`, ok: `${a} o ${b} no aprobó`, mal: [`${a} y ${b} desaprobaron`, `${a} aprobó y ${b} no`, `Solo ${b} aprobó`] },
+      { dice: `${a} o ${b} aprobó`, ok: `Ni ${a} ni ${b} aprobaron`, mal: [`${a} no aprobó y ${b} sí`, `Uno de los dos no aprobó`, `${a} y ${b} aprobaron`] },
+    ][tipo];
+    return { a, b, g, pl, sg, nosg, uno, tipo, casos };
+  }
   const negar = {
     id: 'negar-bien',
     titulo: 'Lo contrario de «todos»',
     temas: ['Personajes que siempre mienten o dicen la verdad', 'Afirmaciones contradictorias'],
     pieza: 'rm-tablero',
+    // Lee (fase 2): las palabras «todos», «ninguno», «alguno» y qué es negar; no dice cuál es la negación de «todos» (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Palabras pequeñas', texto: 'Después del examen bimestral se oyen frases como «todos aprobaron» o «ninguno aprobó». Palabras como todos, ninguno y alguno cambian mucho lo que se afirma.' },
+        { titulo: 'Negar', texto: 'La negación de una frase es otra que es falsa cuando la primera es cierta, y cierta cuando la primera es falsa. Si un mentiroso habla, lo seguro es la negación.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Cambia cuántos de los cuatro aprobaron. Mira en qué casos es cierta «todos aprobaron» y en cuáles lo es «ninguno aprobó».' },
+      ],
+    },
     juega: {
       consigna: 'Elige cuántos de los cuatro aprobaron y mira si son ciertas las frases «todos aprobaron» y «ninguno aprobó».',
       voz: 'Busca un caso donde las dos frases fallen a la vez.',
@@ -317,20 +423,39 @@
       ecuacion: ['no (p y q) = ', { llave: ['no p o no q'], nota: 'basta una', color: 'c-o' }, '   ·   ', 'no (p o q) = ', { llave: ['no p y no q'], nota: 'fallan las dos', color: 'c-h' }],
       condicion: 'la negación tiene que fallar exactamente cuando la frase original se cumple, en todos los casos.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de frase de «Ahora tú», con otra semilla.
+    resuelve: {
+      generar(s) {
+        const { a, b, sg, nosg, uno, tipo, casos } = casoNegar(s, azar(s + 900));
+        const regla = [
+          { texto: 'Una frase con «todos» se rompe con un solo caso que no cumple. Por eso su negación es «al menos uno no».', ecuacion: ['no (todos) = al menos uno no'] },
+          { texto: 'Una frase con «ninguno» se rompe con un solo caso que sí cumple. Por eso su negación es «al menos uno sí».', ecuacion: ['no (ninguno) = al menos uno sí'] },
+          { texto: '«p y q» falla en cuanto falla cualquiera de las dos. Por eso su negación es «no p o no q».', ecuacion: ['no (p y q) = no p o no q'] },
+          { texto: '«p o q» falla solo si fallan las dos. Por eso su negación es «no p y no q».', ecuacion: ['no (p o q) = no p y no q'] },
+        ][tipo];
+        const prueba = [
+          `Compruebo: si solo ${uno} ${nosg}, «${casos.dice}» ya es falsa y «${casos.ok}» se cumple. No hace falta que fallen ${uno === 'una' ? 'todas' : 'todos'}.`,
+          `Compruebo: si solo ${uno} ${sg}, «${casos.dice}» ya es falsa y «${casos.ok}» se cumple. No hace falta que cumplan ${uno === 'una' ? 'todas' : 'todos'}.`,
+          `Compruebo: si solo ${b} no aprobó, la frase dicha ya es falsa y «${casos.ok}» se cumple. No hace falta que fallen los dos.`,
+          `Compruebo: si ${a} o ${b} hubiera aprobado, la frase dicha sería cierta. Como es falsa, no aprobó ninguno de los dos.`,
+        ][tipo];
+        return {
+          enunciado: `Alguien que siempre miente dice: «${casos.dice}». ¿Qué es seguro?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden lo que es seguro cuando un mentiroso dice «${casos.dice}».` },
+            { tipo: 'datos', texto: 'Quien habla siempre miente: su frase es falsa. Lo seguro es lo que vale en todos los casos en que esa frase falla.' },
+            { tipo: 'regla', texto: regla.texto, ecuacion: regla.ecuacion },
+            { tipo: 'aplica', texto: `Niego la frase dicha: lo contrario de «${casos.dice}» es «${casos.ok}».` },
+            { tipo: 'sentido', texto: prueba },
+          ],
+          respuesta: `Es seguro: «${casos.ok}»`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Piensa en el caso más pequeño que rompe la frase.',
       generar(s) {
-        const r = azar(s);
-        const [a, b] = r.barajar(['Ana', 'Beto', 'Ciro', 'Dina', 'Eva']).slice(0, 2);
-        const grupo = r.elegir([['mis primos', 'son altos', 'es alto', 'no es alto', 'son altos'], ['los alumnos', 'llegaron temprano', 'llegó temprano', 'no llegó temprano', 'llegaron temprano'], ['las cajas', 'están llenas', 'está llena', 'no está llena', 'están llenas']]);
-        const [g, pl, sg, nosg] = grupo;
-        const tipo = s % 4;
-        const casos = [
-          { dice: `Todos ${g} ${pl}`, ok: `Al menos uno ${nosg}`, mal: [`Ninguno ${sg}`, `Todos ${g} no ${pl}`, `La mitad ${pl}`] },
-          { dice: `Ninguno de ${g} ${sg}`, ok: `Al menos uno ${sg}`, mal: [`Todos ${g} ${pl}`, `Ninguno ${nosg}`, `Solo uno ${sg}`] },
-          { dice: `${a} y ${b} aprobaron`, ok: `${a} o ${b} no aprobó`, mal: [`${a} y ${b} desaprobaron`, `${a} aprobó y ${b} no`, `Solo ${b} aprobó`] },
-          { dice: `${a} o ${b} aprobó`, ok: `Ni ${a} ni ${b} aprobaron`, mal: [`${a} no aprobó y ${b} sí`, `Uno de los dos no aprobó`, `${a} y ${b} aprobaron`] },
-        ][tipo];
+        const { tipo, casos } = casoNegar(s, azar(s));
         return {
           pregunta: `Alguien que siempre miente dice: «${casos.dice}». ¿Qué es seguro?`,
           opciones: opcionesTexto(casos.ok, casos.mal.map((t, k) => ({ id: 'm' + k, texto: t, error: k === 0 ? 'RMT-VYM-6' : 'RMT-VYM-7', siFuera: 'Es un caso posible, pero la frase también falla en otros casos.' }))),
@@ -396,7 +521,7 @@
     return Object.assign(tablaCulpa(val.c), { notas: [{ t: `Fue ${SOSP[val.c]}: ${falsas(fal)}; se piden ${pide}` }] });
   };
   const mesaCulpa = {
-    id: 'quien-fue', titulo: '¿Quién rompió el vaso?', pieza: 'rm-tablero',
+    id: 'quien-fue', titulo: '¿Quién fue el culpable?', pieza: 'rm-tablero',
     consigna: 'Señala al sospechoso y cambia la condición. Cuenta las frases falsas que deja cada culpable.',
     controles: [
       { id: 'cond', etiqueta: 'Condición', opciones: [{ valor: 'miente', texto: 'Solo uno miente' }, { valor: 'veraz', texto: 'Solo uno dice la verdad' }] },
