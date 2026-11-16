@@ -76,11 +76,30 @@
   ] });
   const mejor = filas => filas.reduce((m, c) => (pct(c.ap, c.tot) > pct(m.ap, m.tot) ? c : m));
   const masAprob = filas => filas.reduce((m, c) => (c.ap > m.ap ? c : m));
+  // «Así se resuelve»: las mismas cuentas de «Ahora tú» (pct, mejor, masAprob), otras semillas y otras tablas de la región.
+  const CTX_TABLA = [
+    { titulo: 'Vacunados por barrio', fila: 'Barrio', el: 'el', parte: 'vacunados', todo: 'vecinos' },
+    { titulo: 'Asistencia por taller', fila: 'Taller', el: 'el', parte: 'asistentes', todo: 'inscritos' },
+    { titulo: 'Aprobados por sección', fila: 'Sección', el: 'la', parte: 'aprobados', todo: 'alumnos' },
+    { titulo: 'Votos por comité', fila: 'Comité', el: 'el', parte: 'votantes', todo: 'socios' },
+  ];
+  const tablaRes = (filas, x) => ({ secciones: [
+    { id: 't', titulo: x.titulo, modo: 'lista', fragmentos: filas.map(c => ({ id: c.id, t: `${x.fila} ${c.id}: ${f(c.ap)} ${x.parte} de ${f(c.tot)} ${x.todo}` })) },
+    { id: 'r', titulo: 'Lo que miras', modo: 'tarjeta', fragmentos: [] },
+  ] });
   const tablaIdea = {
     id: 'tabla',
     titulo: 'Cada dato con su total',
     temas: ['Tablas y cuadros'],
     pieza: 'rv-texto',
+    // Lee (fase 2): dónde se ven tablas y cómo se recorren, sin decir con qué se compara cada colegio.
+    lee: {
+      tarjetas: [
+        { titulo: 'Tablas de todos los días', texto: 'El horario de las combis en el paradero, la lista de precios del mercado y la libreta de notas son tablas. No se leen de corrido: se busca la fila y la columna que interesan.' },
+        { titulo: 'Fila, columna y total', texto: 'Cada fila es un caso, como un colegio, y cada columna, un tipo de dato. El total de una fila cuenta a todos los de ese caso: en un colegio, aprobados y desaprobados juntos.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Verás tres colegios. Elige uno y alterna entre «cantidad» y «proporción». Después pasa a otro colegio y fíjate qué colegio queda arriba en cada forma de mirar.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un colegio de la tabla y mira su cantidad de aprobados o su proporción sobre el total de alumnos.',
       voz: 'Una cantidad sola no dice si es mucho o poco.',
@@ -119,6 +138,40 @@
       ecuacion: ['proporción = ', { frac: [{ llave: [dato('parte')], nota: 'lo que cuentas', color: 'c-i', arriba: true }, { llave: [total('total de su fila')], nota: 'su propio total', color: 'c-d' }] }],
       condicion: 'los totales son distintos; si fueran iguales, comparar cantidades daría lo mismo.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú», con azar(s + 900) y las mismas cuentas.
+    resuelve: {
+      pieza: 'rv-texto',
+      generar(s) {
+        const r = azar(s + 900), x = CTX_TABLA[r.ent(0, CTX_TABLA.length - 1)];
+        // Como en «Ahora tú»: el de más cantidad no es el de mayor proporción; además, los porcentajes redondeados difieren.
+        let filas;
+        for (let k = 0; k < 80; k++) {
+          filas = ['A', 'B', 'C'].map(id => { const tot = [20, 25, 40, 50, 80, 100][r.ent(0, 5)]; return { id, tot, ap: r.ent(Math.ceil(tot * 0.2), Math.floor(tot * 0.9)) }; });
+          const m = mejor(filas), n = masAprob(filas), ps = filas.map(c => Math.round(pct(c.ap, c.tot)));
+          if (m !== n && new Set(ps).size === 3 && filas.filter(c => c.ap === n.ap).length === 1) break;
+        }
+        const m = mejor(filas), n = masAprob(filas), P = c => f(pct(c.ap, c.tot));
+        const fig = estado => ({ datos: tablaRes(filas, x), estado });
+        const nombre = c => `${x.fila} ${c.id}`;
+        return {
+          enunciado: `Mira la tabla «${x.titulo}». ¿Qué ${x.fila.toLowerCase()} tuvo la mayor proporción de ${x.parte}?`,
+          dibujo: fig({}),
+          pasos: [
+            { tipo: 'pide', texto: `Piden ${x.el} ${x.fila.toLowerCase()} con la mayor proporción de ${x.parte}, no ${x.el} que tiene más ${x.parte}.` },
+            { tipo: 'datos', texto: `Cada fila trae los ${x.parte} y su total de ${x.todo}. Los totales son distintos: ${filas.map(c => f(c.tot)).join(', ')}.`,
+              dibujo: fig({ marcas: Object.fromEntries(filas.map(c => [c.id, 'd'])) }) },
+            { tipo: 'regla', texto: 'Si los grupos tienen distinto tamaño, comparo cada cantidad con su propio total: divido y multiplico por 100.',
+              ecuacion: [{ frac: [dato(x.parte), total(x.todo)] }, ' × 100'] },
+            { tipo: 'aplica', texto: `Divido cada fila entre su total. ${nombre(m)} queda arriba: ${f(m.ap)} de ${f(m.tot)} es el ${P(m)} %.`,
+              ecuacion: [{ frac: [dato(f(m.ap)), total(f(m.tot))] }, ` × 100 = ${P(m)} %`],
+              dibujo: fig({ marcas: { [m.id]: 'i' }, sellos: { r: { t: filas.map(c => `${c.id} ${P(c)} %`).join(' · '), c: 'i' } }, nuevo: [m.id] }) },
+            { tipo: 'sentido', texto: `Tienta ${nombre(n)}, con más ${x.parte} (${f(n.ap)}). Pero son de ${f(n.tot)}: su proporción es ${P(n)} %, menor que ${P(m)} %.`,
+              dibujo: fig({ marcas: { [m.id]: 'i', [n.id]: 'h' }, sellos: { r: { t: `${n.id}: ${f(n.ap)} de ${f(n.tot)} = ${P(n)} %`, c: 'h' } }, nuevo: [n.id] }) },
+          ],
+          respuesta: `${nombre(m)}, con el ${P(m)} %`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -150,11 +203,26 @@
   const FER = { titulo: 'Venta de quinua en 2025', barras: [{ id: 'p', nombre: 'Puno', valor: 82 }, { id: 'j', nombre: 'Juliaca', valor: 88 }], max: 90, unidad: ' t', fuente: 'Datos inventados' };
   const grafico = min => Object.assign({}, FER, { min });
   const seVe = (a, b, min) => (b - min) / (a - min);
+  // «Así se resuelve»: otros gráficos de dos barras, con las mismas cuentas de «Ahora tú» (pct y seVe).
+  const CTX_BARRAS = [
+    { titulo: 'Visitantes de dos museos', a: 'Museo A', b: 'Museo B' },
+    { titulo: 'Votos de dos listas', a: 'Lista A', b: 'Lista B' },
+    { titulo: 'Pasajeros de dos rutas', a: 'Ruta A', b: 'Ruta B' },
+    { titulo: 'Socios de dos clubes', a: 'Club A', b: 'Club B' },
+  ];
   const escala = {
     id: 'escala',
     titulo: 'La escala cambia la imagen',
     temas: ['Gráficos'],
     pieza: 'rv-barras',
+    // Lee (fase 2): qué es un gráfico de barras y su eje, sin decir cómo se compara cuando el eje está cortado.
+    lee: {
+      tarjetas: [
+        { titulo: 'Gráficos por todas partes', texto: 'En los noticieros, en los afiches de la municipalidad y en los libros del colegio aparecen gráficos de barras. Cada barra representa un dato: ventas, votos, asistentes o lo que se esté contando.' },
+        { titulo: 'El eje y su escala', texto: 'El eje es la línea con números que acompaña a las barras. La escala dice qué valor corresponde a cada marca. Cada marca del eje lleva su número escrito.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, las ventas de Puno y Juliaca no cambian: tú eliges dónde empieza el eje. Mira cómo cambia el largo de las barras y qué dice la lectura de abajo.' },
+      ],
+    },
     juega: {
       consigna: 'Cambia dónde empieza el eje del gráfico. Los datos no cambian; mira cuánto más larga se ve la barra de Juliaca.',
       voz: 'Mira primero el número donde empieza el eje.',
@@ -193,6 +261,32 @@
       ecuacion: [{ frac: [[prueba('B'), ' − ', dato('A')], { llave: [dato('A')], nota: 'la base', color: 'c-i' }] }, ' × 100'],
       condicion: 'se mira primero el número donde empieza el eje; un corte en el eje avisa que no es cero.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú», con azar(s + 900) y las mismas cuentas.
+    resuelve: {
+      pieza: 'rv-barras',
+      generar(s) {
+        const r = azar(s + 900), x = CTX_BARRAS[r.ent(0, CTX_BARRAS.length - 1)];
+        const a = r.ent(40, 90), b = a + r.ent(2, 8), min = a - r.ent(2, 5);
+        const real = pct(b - a, a), parece = seVe(a, b, min);
+        const datos = desde => ({ titulo: x.titulo, barras: [{ id: 'a', nombre: x.a, valor: a }, { id: 'b', nombre: x.b, valor: b }], min: desde, max: b + 2, unidad: '', fuente: 'Datos inventados' });
+        return {
+          enunciado: `En el gráfico «${x.titulo}», ¿cuánto más es el valor de ${x.b} que el de ${x.a}?`,
+          dibujo: { datos: datos(min), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuánto más es ${x.b} que ${x.a}, en porcentaje: la diferencia comparada con ${x.a}.` },
+            { tipo: 'datos', texto: `El eje empieza en ${f(min)}, no en cero. Los valores escritos son ${f(a)} para ${x.a} y ${f(b)} para ${x.b}.`,
+              dibujo: { datos: datos(min), estado: { marcas: { a: 'i', b: 'o' } } } },
+            { tipo: 'regla', texto: 'Si el eje no arranca en cero, el largo de las barras engaña. Uso los números escritos: la diferencia entre la base, por 100.',
+              ecuacion: [{ frac: [[prueba('B'), ' − ', dato('A')], dato('A')] }, ' × 100'] },
+            { tipo: 'aplica', texto: `Resto ${f(b)} − ${f(a)} = ${f(b - a)} y lo divido entre ${f(a)}, el valor de ${x.a}.`,
+              ecuacion: [{ frac: [[prueba(f(b)), ' − ', dato(f(a))], dato(f(a))] }, ` × 100 ≈ ${f(real)} %`],
+              dibujo: { datos: datos(0), estado: { marcas: { a: 'i', b: 'o' } } } },
+            { tipo: 'sentido', texto: `Con el eje en ${f(min)}, ${x.b} parece unas ${f(parece, 1)} veces ${x.a}. Con el eje en cero, la diferencia se ve de su tamaño real: ${f(real)} % es creíble.` },
+          ],
+          respuesta: `Cerca de ${f(real)} % más`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), a = r.ent(40, 90), b = a + r.ent(2, 8), min = a - r.ent(2, 5);
@@ -221,6 +315,11 @@
     barras: [{ id: 'p24', nombre: 'Puno 24', valor: 70 }, { id: 'p25', nombre: 'Puno 25', valor: 82 }, { id: 'j24', nombre: 'Juliaca 24', valor: 75 }, { id: 'j25', nombre: 'Juliaca 25', valor: 88 }],
     min: 0, max: 100, unidad: ' t', fuente: 'Datos inventados',
   };
+  // «Así se resuelve»: otras ciudades y productos, con las mismas cuentas de «Ahora tú» (una resta de dos barras).
+  const CTX_MIXTO = [
+    { c: ['Ayaviri', 'Lampa'], prod: 'queso' }, { c: ['Yunguyo', 'Pomata'], prod: 'papa' },
+    { c: ['Ilave', 'Acora'], prod: 'lana' }, { c: ['Putina', 'Moho'], prod: 'quinua' },
+  ];
   const AFIRMA = {
     juliaca: { texto: 'Juliaca vendió más en 2025', estado: { marcas: { j25: 'i', p25: 'd' } }, dice: 'Lo respalda el gráfico: 88 > 82', ok: true },
     ambas: { texto: 'Las dos ferias crecieron', estado: { texto: 'i', marcas: { p24: 'd', p25: 'i', j24: 'd', j25: 'i' } }, dice: 'Lo respaldan el texto y el gráfico', ok: true },
@@ -231,6 +330,14 @@
     titulo: 'Texto y gráfico se leen juntos',
     temas: ['Textos mixtos', 'Infografías'],
     pieza: 'rv-barras',
+    // Lee (fase 2): qué es un texto mixto y una infografía, sin decir qué parte trae la cifra que pide la predicción.
+    lee: {
+      tarjetas: [
+        { titulo: 'Texto con gráfico', texto: 'Un afiche de la posta sobre la anemia trae un título, unas frases y un gráfico. Es un texto mixto: una parte va en párrafo y otra se muestra en barras o en una tabla.' },
+        { titulo: 'La infografía', texto: 'Una infografía junta título, texto breve, cifras y dibujos para explicar un tema de un vistazo. Se usan mucho en periódicos, campañas de salud y libros escolares.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Verás una infografía de las ferias de quinua. Elige cada afirmación y mira qué se marca: el título, el texto, unas barras o nada. El color dice si la respalda.' },
+      ],
+    },
     juega: {
       consigna: 'Pon a prueba cada afirmación con la infografía. Mira qué parte la respalda: el texto, el gráfico, los dos o ninguno.',
       voz: 'Que dos cosas aparezcan juntas no dice que una cause la otra.',
@@ -263,6 +370,32 @@
       texto: 'En un texto mixto o una infografía, texto, título y gráfico se completan: cada afirmación se respalda con la parte que la dice o con ambas.',
       ecuacion: [{ llave: [total('título')], nota: 'qué y cuándo', color: 'c-d' }, ' + ', { llave: [dato('datos')], nota: 'texto y gráfico', color: 'c-i' }],
       condicion: 'se responde con los datos y no solo con el título; dos datos que suben juntos no prueban una causa.',
+    },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú», con azar(s + 900) y las mismas cuentas.
+    resuelve: {
+      pieza: 'rv-barras',
+      generar(s) {
+        const r = azar(s + 900), x = CTX_MIXTO[r.ent(0, CTX_MIXTO.length - 1)], ciudades = x.c;
+        const a1 = r.ent(40, 70), a2 = a1 + r.ent(5, 15), b1 = r.ent(40, 70), b2 = b1 + r.ent(5, 15);
+        const cual = r.ent(0, 1), [x1, x2, nom] = cual ? [b1, b2, ciudades[1]] : [a1, a2, ciudades[0]];
+        const otraC = ciudades[1 - cual], ids = cual ? ['b1', 'b2'] : ['a1', 'a2'];
+        const datos = { titulo: `Venta de ${x.prod}: ${ciudades[0]} y ${ciudades[1]}`, texto: `En 2025 hubo más ferias en la región. Las dos ciudades vendieron más ${x.prod} que en 2024.`, barras: [{ id: 'a1', nombre: `${ciudades[0]} 24`, valor: a1 }, { id: 'a2', nombre: `${ciudades[0]} 25`, valor: a2 }, { id: 'b1', nombre: `${ciudades[1]} 24`, valor: b1 }, { id: 'b2', nombre: `${ciudades[1]} 25`, valor: b2 }], min: 0, max: 90, unidad: ' t', fuente: 'Datos inventados' };
+        return {
+          enunciado: `Mira la infografía. ¿Cuántas toneladas más de ${x.prod} vendió ${nom} en 2025 que en 2024?`,
+          dibujo: { datos, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuánto creció la venta de ${nom}: la diferencia entre sus dos años, en toneladas.` },
+            { tipo: 'datos', texto: 'El texto dice que las dos ciudades vendieron más, pero no da cifras. El título dice qué y cuándo; las cifras están en las barras.',
+              dibujo: { datos, estado: { titulo: 'd', texto: 'i' } } },
+            { tipo: 'regla', texto: 'En una infografía, título, texto y gráfico se completan. Busco qué parte trae el dato que piden y lo leo ahí.' },
+            { tipo: 'aplica', texto: `Leo las dos barras de ${nom}: ${f(x2)} t en 2025 y ${f(x1)} t en 2024. Las resto.`,
+              ecuacion: [prueba(f(x2)), ' − ', dato(f(x1)), ` = ${f(x2 - x1)} t`],
+              dibujo: { datos, estado: { marcas: { [ids[0]]: 'i', [ids[1]]: 'o' } } } },
+            { tipo: 'sentido', texto: `No son ${f(x2)} t: eso es solo lo de 2025. Tampoco sirve comparar con ${otraC}. El crecimiento de ${nom} es ${f(x2 - x1)} t.` },
+          ],
+          respuesta: `${f(x2 - x1)} toneladas más`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
