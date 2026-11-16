@@ -417,7 +417,7 @@ Cada semilla se rehízo aparte, con la fórmula química (`node -e` o calculador
   - Juliaca a unos 3825 m y 0,62 atm;
   - el permanganato para desinfectar verduras;
   - la leche de magnesia.
-- **Playwright no recorrió todas las ideas:** solo una o dos por unidad en la integración, y varias más en las copias de los subagentes. La lista está en «Verificación final». Las ideas que no se recorrieron pasaron el validador, que revisa 12 semillas de `resuelve` por idea.
+- **Capturas:** Playwright recorrió las 48 ideas (ver «Verificación final»), pero las capturas se miraron a ojo solo en una muestra.
 
 ## Verificación final (rama integrada)
 - **Pruebas:** `npm test` completo dio 8788 de 8788 en verde.
@@ -427,5 +427,3 @@ Cada semilla se rehízo aparte, con la fórmula química (`node -e` o calculador
   - en «Así se resuelve», los pasos se revelan uno por uno, sale la respuesta y «Otro ejemplo» cambia el enunciado;
   - no hay errores de consola.
 - **Capturas revisadas a ojo:** una muestra, no las 48. Entre ellas: radio-atomico-ionico, forma-polaridad, calor-sensible-latente, modelos-atomicos, estados-oxidacion, relaciones-en-formula, tanteo y capilaridad. La figura y el texto se ven bien.
-
-Con esto, la nota de «Lo no verificado» sobre Playwright queda corregida: se recorrieron todas las ideas. Lo que no se miró una por una son las capturas.
