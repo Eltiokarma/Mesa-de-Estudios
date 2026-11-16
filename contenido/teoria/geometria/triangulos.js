@@ -91,6 +91,15 @@
     titulo: 'Tres ángulos caben en una recta',
     temas: ['Suma de ángulos internos y ángulo externo', 'Clasificación'],
     pieza: 'geo-figura',
+    // Lee (fase 2): contexto y vocabulario. No dice cuánto mide el exterior: eso lo decide el alumno en Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Triángulos en el techo', texto: 'Las vigas que sostienen un techo de calamina en Juliaca suelen formar triángulos. Si sus tres lados no cambian, el triángulo no se deforma. Por eso los carpinteros lo usan tanto.' },
+        { titulo: 'Adentro y afuera', texto: 'Cada vértice tiene un ángulo interior, entre sus dos lados. Si prolongas un lado más allá del vértice, aparece un ángulo exterior, por fuera de la figura.' },
+        { titulo: 'Dos maneras de nombrarlo', texto: 'Por sus ángulos, un triángulo es acutángulo, rectángulo u obtusángulo. Por sus lados, es escaleno, isósceles o equilátero. La lectura del juego te dice cuál tienes.' },
+        { titulo: 'Qué mirar', texto: 'Mueve A muy lejos y muy cerca de la base. Anota los tres ángulos de dos triángulos bien distintos y compara lo que suman.' },
+      ],
+    },
     juega: {
       consigna: 'Mueve el vértice A con la base BC fija. Mira los tres ángulos, su suma y cómo se llama el triángulo.',
       voz: 'Estira el triángulo. Busca qué permanece igual.',
@@ -139,6 +148,29 @@
       condicion: 'el triángulo está en un plano. Por ángulos es acutángulo, rectángulo u obtusángulo; por lados, escaleno, isósceles o equilátero.',
       voz: 'La paralela es la condición que garantiza los 180°.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (mismas cuentas y figura), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), a = 5 * r.ent(6, 16), b = 5 * r.ent(6, 16), c = 180 - a - b, pideExt = s % 2 === 0;
+        const t = porAngulos(b, c), ext = a + b;
+        const fig = sol => ({ datos: triA(t.A[0], t.A[1], { exterior: true, sinC: true, extTexto: sol ? `${ext}°` : (pideExt ? '?' : `${ext}°`), sinB: !pideExt && !sol }), estado: {} });
+        return {
+          enunciado: pideExt ? ['En el triángulo ABC, ', cA, ` = ${a}° y `, cB, ` = ${b}°. ¿Cuánto mide el ángulo exterior en C?`]
+            : ['En el triángulo ABC, ', cA, ` = ${a}° y el exterior en C mide ${ext}°. ¿Cuánto mide el ángulo `, cB, '?'],
+          dibujo: fig(false),
+          pasos: [
+            { tipo: 'pide', texto: pideExt ? 'Piden el ángulo exterior en C: el de afuera, entre el lado CA y la prolongación de BC.' : ['Piden el ángulo interior ', cB, '.'] },
+            { tipo: 'datos', texto: pideExt ? ['Tengo dos interiores: ', cA, ` = ${a}° y `, cB, ` = ${b}°.`] : ['Tengo ', cA, ` = ${a}° y el exterior en C, que mide ${ext}°.`] },
+            { tipo: 'regla', texto: 'El exterior en C vale lo mismo que los dos interiores que no lo tocan, A y B, sumados.',
+              ecuacion: ['exterior en C = ', cA, ' + ', cB] },
+            pideExt ? { tipo: 'cuentas', texto: 'Sumo los dos interiores lejanos.', ecuacion: [`exterior en C = ${a}° + ${b}° = ${ext}°`], dibujo: fig(true) }
+              : { tipo: 'cuentas', texto: ['Al exterior le quito ', cA, ' y queda ', cB, '.'], ecuacion: [cB, ` = ${ext}° − ${a}° = ${b}°`], dibujo: fig(true) },
+            { tipo: 'sentido', texto: `Compruebo con los 180°: el interior en C es 180° − ${ext}° = ${c}°, y ${a}° + ${b}° + ${c}° = 180°. Cuadra.` },
+          ],
+          respuesta: pideExt ? `El exterior en C mide ${ext}°.` : ['El ángulo ', cB, ` mide ${b}°.`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Ubica cuál es interior y cuál exterior antes de operar.',
       generar(s) {
@@ -181,11 +213,34 @@
         ...(o.extremos ? [{ de: 'A1', a: 'C', color: 'h', discontinua: true, desde: o.extremos[1] }] : [])],
     };
   };
+  // La bisagra de «Así se resuelve»: lados m ≤ M que se dan, ángulo de 70° en B; con extremos, los dos casos aplastados.
+  const bisagraPQ = (m, M, o = {}) => {
+    const A = U.polar([0, 0], m, 70), lo = M - m, hi = M + m;
+    return {
+      alt: o.extremos ? `Lados de ${m} y ${M}: cerrada, x mide ${lo}; abierta del todo, ${hi}. En los dos casos queda un segmento`
+        : `Dos lados de ${m} y ${M} unidos en B; el tercer lado x está entre las puntas`,
+      vista: { x: [-m - 1, M + 1], y: [-1, m + 1] },
+      puntos: [{ id: 'B', x: 0, y: 0, rotulo: 'B', lado: -90 }, { id: 'C', x: M, y: 0, rotulo: 'C', lado: -90 }, { id: 'A', x: A[0], y: A[1], rotulo: 'A', color: 'o', lado: 90 },
+        ...(o.extremos && lo > 0 ? [{ id: 'A0', x: m, y: 0, color: 'h', rotulo: `x = ${lo}`, lado: 90 }] : []),
+        ...(o.extremos ? [{ id: 'A1', x: -m, y: 0, color: 'h', rotulo: `x = ${hi}`, lado: -90 }] : [])],
+      segmentos: [{ de: 'B', a: 'C', texto: String(M), grosor: 'variable', color: 'i' }, { de: 'B', a: 'A', texto: String(m), grosor: 'variable', color: 'o' },
+        { de: 'A', a: 'C', color: 'h', texto: 'x' },
+        ...(o.extremos ? [{ de: 'A1', a: 'C', color: 'h', discontinua: true }] : [])],
+    };
+  };
   const desigualdad = {
     id: 'desigualdad',
     titulo: 'El tercer lado tiene límites',
     temas: ['Desigualdad triangular'],
     pieza: 'geo-figura',
+    // Lee (fase 2): contexto y qué mirar. No da los límites ni dice qué pasa en ellos: eso es la predicción.
+    lee: {
+      tarjetas: [
+        { titulo: 'Tres palitos', texto: 'Corta tres palitos de distinto largo y trata de armar un triángulo con ellos, punta con punta. Con algunos tríos la figura se cierra y con otros no. El juego te deja ver por qué.' },
+        { titulo: 'La bisagra', texto: 'En el juego, los lados de 5 y 8 se unen en B, como las dos hojas de una bisagra. Al abrir el ángulo en B, cambia la distancia entre las puntas: ese es el tercer lado, x.' },
+        { titulo: 'Qué mirar', texto: 'Abre y cierra la bisagra hasta los topes. Anota el x más corto y el más largo que ves, y fíjate en la forma de la figura cerca de esos topes.' },
+      ],
+    },
     juega: {
       consigna: 'Dos lados de 5 y 8 giran en B como bisagra. Abre y cierra el ángulo y mira cómo cambia el tercer lado x.',
       voz: 'Abre y cierra la bisagra. Fíjate en el x más corto y el más largo.',
@@ -225,6 +280,28 @@
       ecuacion: [{ llave: [{ abs: ['a − b'] }], nota: 'la diferencia', color: 'c-i' }, ' < ', { v: 'c-h', t: 'x' }, ' < ', { llave: ['a + b'], nota: 'la suma', color: 'c-o' }],
       condicion: 'las desigualdades son estrictas: con igualdad, los tres puntos quedan alineados y no hay triángulo.',
       voz: 'Los extremos no cuentan: ahí la figura es un segmento.',
+    },
+    // Así se resuelve (fase 2): el conteo de enteros de «Ahora tú», con otras semillas y la bisagra de esos lados.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), p = r.ent(3, 12), q = r.ent(3, 12);
+        const lo = Math.abs(p - q), hi = p + q, n = hi - lo - 1, m = Math.min(p, q), M = Math.max(p, q);
+        const x = { v: 'c-h', t: 'x' };
+        return {
+          enunciado: [`Dos lados de un triángulo miden ${p} y ${q}. ¿Cuántos valores enteros puede tomar el tercer lado `, x, '?'],
+          dibujo: { datos: bisagraPQ(m, M), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden cuántos números enteros puede valer el tercer lado ', x, '.'] },
+            { tipo: 'datos', texto: `Los otros dos lados miden ${p} y ${q}. El ángulo entre ellos no lo dan: puede ser cualquiera.` },
+            { tipo: 'regla', texto: ['El tercer lado es más largo que la resta de los otros dos y más corto que su suma. Los bordes no valen.'],
+              ecuacion: [{ abs: ['a − b'] }, ' < ', x, ' < a + b'] },
+            { tipo: 'cuentas', texto: 'Calculo los dos bordes y cuento los enteros que quedan entre ellos, sin los bordes.',
+              ecuacion: [`${lo} < `, x, ` < ${hi}   →   de ${lo + 1} a ${hi - 1}: ${n} enteros`], dibujo: { datos: bisagraPQ(m, M, { extremos: true }), estado: {} } },
+            { tipo: 'sentido', texto: `Si x valiera ${hi}, el triángulo se aplastaría en un segmento: ${p} + ${q} = ${hi}. Por eso ${hi} no entra${lo > 0 ? `, ni ${lo}` : ''}.` },
+          ],
+          respuesta: [x, ` puede tomar ${n} valores enteros.`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Primero los dos límites; después cuenta los enteros entre ellos.',
@@ -282,6 +359,14 @@
     titulo: 'Cada línea, por su condición',
     temas: ['Líneas notables'],
     pieza: 'geo-figura',
+    // Lee (fase 2): vocabulario y marcas. No dice dónde cae la altura en un obtusángulo: eso es la predicción.
+    lee: {
+      tarjetas: [
+        { titulo: 'Cuatro líneas con nombre', texto: 'En un triángulo se trazan cuatro líneas especiales: la altura, la mediana, la bisectriz y la mediatriz. Se llaman líneas notables, y cada una cumple una condición distinta.' },
+        { titulo: 'Las marcas', texto: 'En los dibujos de examen, dos rayitas iguales dicen «estos dos tramos miden lo mismo». Dos arcos iguales en un vértice dicen «estos ángulos son iguales». Un cuadradito marca un ángulo recto.' },
+        { titulo: 'Qué mirar', texto: 'Mueve A de un lado a otro y sigue los tres pies sobre BC: el rojo de la altura, el turquesa de la mediana y el naranja de la bisectriz. Busca cuándo se juntan.' },
+      ],
+    },
     juega: {
       consigna: 'Desde A salen tres líneas: altura (roja), mediana (turquesa) y bisectriz (naranja). Mueve A y mira dónde cae cada pie.',
       voz: 'Mueve A. Busca cuándo las tres líneas coinciden.',
@@ -321,6 +406,41 @@
       texto: 'Altura: perpendicular a la recta del lado opuesto. Mediana: llega a su punto medio. Bisectriz: parte el ángulo en dos iguales. Mediatriz: perpendicular en el punto medio.',
       condicion: 'cada altura llega a la recta de su lado: en el obtusángulo, dos caen fuera del triángulo.',
       voz: 'Nombra cada línea por su marca, no por cómo luce.',
+    },
+    // Así se resuelve (fase 2): reconocer la línea por su marca, como en «Ahora tú», con la misma figura y otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), ax = r.de([-1.5, -1, 0.5, 1, 1.5, 2, 4, 4.5, 5, 6.5]), ay = r.de([2.5, 3, 3.5, 4]);
+        const tipos = ['h', 'm', 'b', 'z'], t = tipos[s % 4];
+        const nom = { h: 'altura', m: 'mediana', b: 'bisectriz', z: 'mediatriz' };
+        const d = notables(ax, ay, { ver: { [t]: 1 } });
+        d.alt = `Triángulo con una línea marcada: ${t === 'h' ? 'forma 90° con la recta del lado opuesto' : t === 'm' ? 'llega al punto medio del lado opuesto' : t === 'b' ? 'parte el ángulo del vértice en dos iguales' : 'es perpendicular a un lado en su punto medio'}`;
+        if (t === 'h' && ax < 0) d.puntos.find(p => p.id === 'B').lado = -60;
+        const nombres = r.de(['ABC', 'PQR', 'RST', 'XYZ', 'JKL', 'UVW']);
+        d.puntos.forEach(p => { const k = 'ABC'.indexOf(p.id); if (k >= 0 && p.id.length === 1) p.rotulo = nombres[k]; });
+        const [V, P, Q] = nombres, lado = P + Q;
+        const fuera = t === 'h' && (ax < 0 || ax > 6);
+        const marca = { h: `un cuadradito de ángulo recto donde llega a la recta ${lado}`, m: 'una rayita igual a cada lado de su pie', b: `dos arcos iguales en el vértice ${V}`, z: `un cuadradito de ángulo recto en el punto medio de ${lado}` };
+        const descarte = {
+          h: `No llega al punto medio ni parte el ángulo en dos. Es la altura${fuera ? ', aunque su pie caiga fuera del lado' : ''}.`,
+          m: 'No forma un ángulo recto ni parte el ángulo del vértice: solo llega al punto medio. Es la mediana.',
+          b: 'Su pie no está en el punto medio ni forma 90°: solo reparte el ángulo. Es la bisectriz.',
+          z: `Forma 90° como una altura, pero no sale de ${V}: nace en el punto medio de ${lado}. Es la mediatriz.`,
+        }[t];
+        return {
+          enunciado: `En el triángulo ${nombres}, mira las marcas de la línea de color. ¿Qué línea notable es?`,
+          dibujo: { datos: d, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el nombre de la línea de color: altura, mediana, bisectriz o mediatriz.' },
+            { tipo: 'datos', texto: `En la figura, la línea tiene ${marca[t]}.` },
+            { tipo: 'regla', texto: 'Cada línea notable se reconoce por su condición, no por su aspecto. Por eso busco su marca: ángulo recto, rayitas iguales o arcos iguales.' },
+            { tipo: 'aplica', texto: `Esa marca dice que la línea ${t === 'h' ? `forma 90° con la recta ${lado}` : t === 'm' ? `llega al punto medio de ${lado}` : t === 'b' ? `parte el ángulo ${V} en dos iguales` : `es perpendicular a ${lado} en su punto medio`}.`,
+              ecuacion: [t === 'h' ? `altura ⟂ ${lado}` : t === 'm' ? `pie en el punto medio de ${lado}` : t === 'b' ? `dos ángulos iguales en ${V}` : `mediatriz ⟂ ${lado} en su punto medio`] },
+            { tipo: 'sentido', texto: descarte },
+          ],
+          respuesta: `Es la ${nom[t]}.`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Busca la marca: ángulo recto, rayitas o arcos iguales.',
@@ -384,6 +504,15 @@
     titulo: 'El ángulo entre dos bisectrices',
     temas: ['Ángulos formados por bisectrices'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es una bisectriz y cuál es la exterior. No dice cuánto mide ∠BEC: eso es la predicción.
+    lee: {
+      tarjetas: [
+        { titulo: 'Partir a la mitad', texto: 'Una bisectriz parte un ángulo en dos iguales. Si recortas un triángulo de papel y lo doblas juntando dos lados, el doblez marca la bisectriz del ángulo entre ellos.' },
+        { titulo: 'Dos bisectrices que se cruzan', texto: 'Si trazas la bisectriz de B y la de C, se cortan dentro del triángulo en un punto llamado I, el incentro. Entre ellas se forma el ángulo BIC.' },
+        { titulo: 'Adentro y afuera', texto: 'Cada vértice tiene dos bisectrices: la interior, que parte el ángulo de adentro, y la exterior, que parte el ángulo exterior, entre un lado y la prolongación del otro.' },
+        { titulo: 'Qué mirar', texto: 'Cambia B y C, y fíjate en tres números a la vez: el ángulo A, el ángulo BIC y cómo se mueve uno cuando cambia el otro.' },
+      ],
+    },
     juega: {
       consigna: 'Las bisectrices de B y C se cortan en I. Cambia los ángulos B y C y compara el ángulo BIC con el ángulo A.',
       voz: 'Cambia B y C. Busca una relación entre BIC y A.',
@@ -427,6 +556,32 @@
       ecuacion: ['∠BIC = 90° + ', { llave: [{ frac: [cA, '2'] }], nota: 'mitad de A', color: 'c-o' }, '   ·   ∠BEC = ', { frac: [cA, '2'] }],
       condicion: 'I está en las bisectrices interiores de B y C; E, en la interior de B y la exterior de C.',
       voz: 'Antes de aplicar, revisa qué bisectrices se cortan.',
+    },
+    // Así se resuelve (fase 2): el mismo corte de bisectrices de «Ahora tú», con la misma figura y otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), a = 10 * r.ent(3, 10), conE = s % 2 === 1;
+        const b = 10 * r.ent(3, Math.min(10, (170 - a) / 10 - 3)), c = 180 - a - b;
+        const d = bis(b, c, { E: conE, sinBIC: true, sinE: true });
+        if (conE) d.angulos = d.angulos.filter(an => !(an.en === 'I'));
+        const bien = conE ? a / 2 : 90 + a / 2, ang = conE ? '∠BEC' : '∠BIC';
+        return {
+          enunciado: conE ? ['En el triángulo ABC, ', cA, ` = ${a}°. La bisectriz interior de B y la exterior de C se cortan en E. ¿Cuánto mide ∠BEC?`]
+            : ['En el triángulo ABC, ', cA, ` = ${a}°. Las bisectrices interiores de B y C se cortan en I. ¿Cuánto mide ∠BIC?`],
+          dibujo: { datos: d, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: conE ? 'Piden ∠BEC. E está en la bisectriz interior de B y en la exterior de C.' : 'Piden ∠BIC. I está en las dos bisectrices interiores, la de B y la de C.' },
+            { tipo: 'datos', texto: ['Solo conozco ', cA, ` = ${a}°. Los ángulos B y C no los dan.`] },
+            { tipo: 'regla', texto: conE ? 'Cuando se cruzan una bisectriz interior y una exterior, el ángulo entre ellas es la mitad de A.' : 'Cuando se cruzan las dos bisectrices interiores, el ángulo entre ellas es 90° más la mitad de A.',
+              ecuacion: conE ? ['∠BEC = ', { frac: [cA, '2'] }] : ['∠BIC = 90° + ', { frac: [cA, '2'] }] },
+            { tipo: 'cuentas', texto: conE ? ['Saco la mitad de ', cA, '.'] : ['Saco la mitad de ', cA, ' y le sumo 90°.'],
+              ecuacion: conE ? ['∠BEC = ', { frac: [`${a}°`, '2'] }, ` = ${bien}°`] : ['∠BIC = 90° + ', { frac: [`${a}°`, '2'] }, ` = 90° + ${a / 2}° = ${bien}°`] },
+            { tipo: 'sentido', texto: conE ? `Pruebo con un caso: B = ${b}° y C = ${c}°. En el triángulo BEC, B da ${b / 2}° y C da ${c}° + ${(180 - c) / 2}°: queda 180° − ${b / 2}° − ${c + (180 - c) / 2}° = ${bien}°.`
+              : `Pruebo con un caso: B = ${b}° y C = ${c}°. En el triángulo BIC quedan ${b / 2}° y ${c / 2}°: 180° − ${b / 2}° − ${c / 2}° = ${bien}°.` },
+          ],
+          respuesta: `${ang} = ${bien}°`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Mira qué bisectrices se cortan antes de elegir la fórmula.',

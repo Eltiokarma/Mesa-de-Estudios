@@ -55,8 +55,10 @@
   const sep = '   ·   ';
   // Polígono convexo de n lados, irregular a propósito (no prototípico), siempre igual para el mismo n.
   const vertices = n => Array.from({ length: n }, (_, k) => U.polar([0, 0], 3 + 0.3 * Math.cos(k * 1.7 + n), 100 + 360 * k / n + 6 * Math.sin(k * 2.3 + n)));
+  // o.regular: los n vértices sobre la misma circunferencia, a la misma distancia (para los problemas de polígono regular).
+  const regulares = n => Array.from({ length: n }, (_, k) => U.polar([0, 0], 3, 100 + 360 * k / n));
   const poli = (n, o = {}) => {
-    const V = vertices(n);
+    const V = o.regular ? regulares(n) : vertices(n);
     const P = V.map((p, k) => ({ id: LETRAS[k], x: p[0], y: p[1], rotulo: LETRAS[k], lado: 100 + 360 * k / n }));
     const seg = [];
     for (let k = 0; k < n; k++) seg.push({ de: LETRAS[k], a: LETRAS[(k + 1) % n] });
@@ -69,7 +71,8 @@
       const v = o.diagDe;
       for (let k = 0; k < n; k++) if (k !== v && k !== (v + 1) % n && k !== (v + n - 1) % n) seg.push({ de: LETRAS[v], a: LETRAS[k], color: 'o', grosor: 'variable' });
     }
-    if (o.todas) for (let i = 0; i < n; i++) for (let j = i + 2; j < n; j++) if (!(i === 0 && j === n - 1)) seg.push({ de: LETRAS[i], a: LETRAS[j], color: 'i', grosor: 'fino', desde: o.todas });
+    // todas: el corte desde el que aparecen; todas: 0 las muestra desde el inicio (antes, el 0 no dibujaba ninguna).
+    if (o.todas !== undefined) for (let i = 0; i < n; i++) for (let j = i + 2; j < n; j++) if (!(i === 0 && j === n - 1)) seg.push({ de: LETRAS[i], a: LETRAS[j], color: 'i', grosor: 'fino', desde: o.todas });
     if (o.exteriores) for (let k = 0; k < n; k++) {
       const a = V[k], b = V[(k + 1) % n], e = [b[0] + (b[0] - a[0]) * 0.4, b[1] + (b[1] - a[1]) * 0.4];
       P.push({ id: 'e' + k, x: e[0], y: e[1], sinPunto: true });
@@ -83,6 +86,10 @@
     };
   };
 
+  // Las cuentas de «Así se resuelve» en las ideas 1 y 2 (las mismas de «Ahora tú»).
+  const sumaInterior = n => (n - 2) * 180;
+  const numDiagonales = n => n * (n - 3) / 2;
+
   // ---------- Idea 1: suma de ángulos interiores y exteriores ----------
   // Cambia: el número de lados n · Permanece: la triangulación desde A · Progresa: los triángulos (n − 2) ·
   // Se reserva: el giro completo de los exteriores · Debe verse: cada triángulo aporta 180°; los exteriores, una vuelta.
@@ -92,6 +99,14 @@
     titulo: 'Triángulos dentro del polígono',
     temas: ['Suma de ángulos internos y externos'],
     pieza: 'geo-figura',
+    // Lee (fase 2): vocabulario y qué mirar. No dice cuánto suman los exteriores (la pregunta de «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Polígonos en la calle', texto: 'La señal de «Pare» tiene ocho lados: es un octógono. Una figura cerrada de lados rectos es un polígono, y se nombra por sus lados: el pentágono tiene 5; el hexágono, 6; el octógono, 8.' },
+        { titulo: 'Rincón y giro', texto: 'Cada vértice tiene un ángulo interior: el rincón de adentro, entre dos lados. Si caminas por el borde, en cada vértice giras para seguir por el lado siguiente: ese giro es el ángulo exterior.' },
+        { titulo: 'Qué mirar al jugar', texto: ['Desde el vértice A, unas diagonales parten el polígono en triángulos. Cambia el número de lados ', n_, ' y cuenta los triángulos cada vez. Compara cuántos salen con ', n_, '.'] },
+      ],
+    },
     juega: {
       consigna: 'Cambia el número de lados. Desde el vértice A, las diagonales parten el polígono en triángulos. Cuenta los triángulos.',
       voz: 'Cambia n y cuenta triángulos. Compara con n.',
@@ -128,6 +143,60 @@
       ecuacion: [{ sub: ['S', 'i'] }, ' = ', { llave: ['(', n_, ' − 2)'], nota: 'triángulos', color: 'c-o' }, ' · 180°', sep, { sub: ['S', 'e'] }, ' = 360°'],
       condicion: 'el polígono es convexo y se toma un solo ángulo exterior en cada vértice.',
       voz: 'Los triángulos explican el número; no hace falta memorizarlo.',
+    },
+    // Así se resuelve (fase 2): los tres casos de «Ahora tú» (suma, exterior del regular, número de lados) con otras
+    // semillas y las mismas cuentas. n llega hasta 10 para que el polígono se pueda dibujar (vértices A a J).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3, Si = { sub: ['S', 'i'] }, Se = { sub: ['S', 'e'] };
+        const regla = { tipo: 'regla', texto: 'Desde un vértice, las diagonales parten el polígono en triángulos. Cada triángulo aporta 180°, y salen dos triángulos menos que lados.',
+          ecuacion: [Si, ' = (', n_, ' − 2) · 180°'] };
+        if (tipo === 0) {
+          const n = r.ent(5, 10), S = sumaInterior(n), prom = S / n;
+          return {
+            enunciado: ['¿Cuánto suman los ángulos interiores de un polígono convexo de ', n_, ` = ${n} lados?`],
+            dibujo: { datos: poli(n, { alt: `Polígono convexo de ${n} lados` }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la suma de todos los ángulos de adentro, no uno solo.' },
+              { tipo: 'datos', texto: ['El polígono es convexo y tiene ', n_, ` = ${n} lados.`] },
+              regla,
+              { tipo: 'cuentas', texto: `Desde A salen ${n - 2} triángulos, de 180° cada uno.`, ecuacion: [Si, ` = (${n} − 2) · 180° = ${n - 2} · 180° = ${S}°`],
+                dibujo: { datos: poli(n, { triangulos: true }), estado: {} } },
+              { tipo: 'sentido', texto: `Comprueba: ${S}° ÷ ${n} ${Number.isInteger(prom) ? '=' : '≈'} ${gr(prom)} por ángulo, en promedio. Es menos de 180°, como en todo polígono convexo.` },
+            ],
+            respuesta: [Si, ` = ${S}°`],
+          };
+        }
+        if (tipo === 1) {
+          const n = r.de([5, 6, 8, 9, 10]), e = 360 / n;
+          return {
+            enunciado: ['Un polígono regular tiene ', n_, ` = ${n} lados. ¿Cuánto mide cada ángulo exterior?`],
+            dibujo: { datos: poli(n, { regular: true, alt: `Polígono regular de ${n} lados` }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden un solo ángulo exterior: lo que se gira en un vértice para seguir por el lado siguiente.' },
+              { tipo: 'datos', texto: ['Es regular: sus ', n_, ` = ${n} ángulos exteriores miden lo mismo.`] },
+              { tipo: 'regla', texto: 'Al recorrer todo el borde y volver al inicio, los giros suman una vuelta entera, tenga los lados que tenga.', ecuacion: [Se, ' = 360°'] },
+              { tipo: 'cuentas', texto: `Reparto la vuelta en ${n} giros iguales.`, ecuacion: [`360° ÷ ${n} = ${gr(e)}`],
+                dibujo: { datos: poli(n, { regular: true, exteriores: true, alt: `Polígono regular de ${n} lados con su ángulo exterior en cada vértice` }), estado: {} } },
+              { tipo: 'sentido', texto: `Comprueba: cada interior mide 180° − ${gr(e)} = ${gr(180 - e)}, y ${n} · ${gr(180 - e)} = ${sumaInterior(n)}°, la suma de ${n - 2} triángulos.` },
+            ],
+            respuesta: ['cada exterior mide ', gr(e)],
+          };
+        }
+        const n = r.ent(5, 10), S = sumaInterior(n);
+        return {
+          enunciado: [`Los ángulos interiores de un polígono convexo suman ${S}°. ¿Cuántos lados tiene?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el número de lados ', n_, '.'] },
+            { tipo: 'datos', texto: `Los ángulos interiores suman ${S}°.` },
+            regla,
+            { tipo: 'cuentas', texto: 'Divido entre 180° para contar los triángulos y sumo 2, porque hay dos triángulos menos que lados.', ecuacion: [`${S}° ÷ 180° = ${n - 2}`, '   →   ', n_, ` = ${n - 2} + 2 = ${n}`] },
+            { tipo: 'sentido', texto: `Comprueba en el dibujo: ${n} lados, ${n - 2} triángulos desde A, y ${n - 2} · 180° = ${S}°.`,
+              dibujo: { datos: poli(n, { triangulos: true }), estado: {} } },
+          ],
+          respuesta: [n_, ` = ${n} lados`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Decide si te piden un interior, un exterior o el número de lados.',
@@ -179,6 +248,14 @@
     titulo: 'Cada diagonal se cuenta dos veces',
     temas: ['Número de diagonales'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es una diagonal y por qué no va a los vecinos. No dice cómo se corrige la repetición.
+    lee: {
+      tarjetas: [
+        { titulo: 'De punta a punta', texto: 'Una diagonal une dos vértices que no son vecinos. Los dos palitos que cruzan una cometa van de punta a punta: son las diagonales de esa figura de cuatro lados.' },
+        { titulo: 'Un lado no es diagonal', texto: 'El segmento entre dos vértices vecinos ya es un lado. Por eso, desde un vértice no sale diagonal hacia él mismo ni hacia sus dos vecinos.' },
+        { titulo: 'Qué mirar al jugar', texto: ['Elige ', n_, ' y cuenta las diagonales que salen del vértice marcado. Después pasa a otro vértice: ¿salen las mismas? Prueba con varios valores de ', n_, '.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige n y un vértice. Mira las diagonales que salen de ese vértice: no van a sí mismo ni a sus dos vecinos.',
       voz: 'Cuenta desde un vértice. Prueba otro vértice: ¿cambia?',
@@ -221,6 +298,42 @@
       ecuacion: ['D = ', { frac: [{ llave: [n_, '(', n_, ' − 3)'], nota: 'desde cada vértice', color: 'c-o', arriba: true }, '2'] }],
       condicion: 'se excluyen el propio vértice y sus dos vecinos, porque esos segmentos son lados.',
       voz: 'Dos extremos por diagonal: por eso se divide entre 2.',
+    },
+    // Así se resuelve (fase 2): los dos casos de «Ahora tú» (diagonales de n lados, lados con D diagonales), con otras
+    // semillas y la misma cuenta n(n − 3)/2. n llega hasta 10 para que el polígono se pueda dibujar.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(5, 10), D = numDiagonales(n);
+        const regla = { tipo: 'regla', texto: 'Cuento las diagonales que salen de cada vértice. Así, cada diagonal aparece dos veces, una por cada extremo: divido entre 2.',
+          ecuacion: ['D = ', { frac: [[n_, '(', n_, ' − 3)'], '2'] }] };
+        if (s % 2) return {
+          enunciado: [`Un polígono convexo tiene ${D} diagonales. ¿Cuántos lados tiene?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el número de lados ', n_, '.'] },
+            { tipo: 'datos', texto: `El polígono tiene ${D} diagonales en total.` },
+            regla,
+            { tipo: 'cuentas', texto: `Busco dos números que se diferencien en 3 y que, multiplicados, den el doble del dato: ${2 * D}.`,
+              ecuacion: [n_, '(', n_, ` − 3) = 2 · ${D} = ${2 * D} = ${n} · ${n - 3}`, '   →   ', n_, ` = ${n}`] },
+            { tipo: 'sentido', texto: `Comprueba en el dibujo: desde A salen ${n - 3} diagonales, y ${n} · ${n - 3} ÷ 2 = ${D}.`,
+              dibujo: { datos: poli(n, { diagDe: 0 }), estado: {} } },
+          ],
+          respuesta: [n_, ` = ${n} lados`],
+        };
+        return {
+          enunciado: ['¿Cuántas diagonales tiene un polígono convexo de ', n_, ` = ${n} lados?`],
+          dibujo: { datos: poli(n, { alt: `Polígono convexo de ${n} lados` }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden todas las diagonales del polígono, cada una contada una sola vez.' },
+            { tipo: 'datos', texto: [n_, ` = ${n} vértices. Desde A no sale diagonal hacia A ni hacia sus dos vecinos.`], ecuacion: ['desde A: ', n_, ` − 3 = ${n - 3}`],
+              dibujo: { datos: poli(n, { diagDe: 0 }), estado: {} } },
+            regla,
+            { tipo: 'cuentas', texto: `${n} vértices por ${n - 3} diagonales dan ${n * (n - 3)} extremos. Cada diagonal tiene dos: la mitad.`, ecuacion: [`D = ${n} · ${n - 3} ÷ 2 = ${D}`],
+              dibujo: { datos: poli(n, { todas: 0, alt: `Polígono convexo de ${n} lados con sus ${D} diagonales` }), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: ${n} vértices forman ${n * (n - 1) / 2} parejas. Son ${n} lados más ${D} diagonales: ${n} + ${D} = ${n + D}.` },
+          ],
+          respuesta: `D = ${D} diagonales`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Cuenta desde un vértice; después corrige la repetición.',
@@ -285,6 +398,14 @@
     titulo: 'Nombres que se ganan con condiciones',
     temas: ['Paralelogramos'],
     pieza: 'geo-figura',
+    // Lee (fase 2): paralelas y nombres por condiciones. No dice qué nombres gana un cuadrado (la pregunta de «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Lados paralelos', texto: 'Dos lados son paralelos si, aunque los prolongues, nunca se cruzan, como los dos rieles del tren que llega a Juliaca. Un paralelogramo tiene dos pares de lados opuestos paralelos.' },
+        { titulo: 'Un nombre, una lista', texto: 'En geometría, cada nombre trae una lista de condiciones sobre los lados, los ángulos o las diagonales. La figura que cumple toda la lista gana ese nombre.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Cambia el ángulo A y el lado b. La lectura muestra el nombre de la figura: fíjate en qué valores cambia y qué cambió en la figura en ese momento.' },
+      ],
+    },
     juega: {
       consigna: 'Los lados opuestos siempre son paralelos. Cambia el ángulo A y el lado b, y mira qué nombre recibe la figura.',
       voz: 'Deforma la figura. Revisa qué condición gana o pierde.',
@@ -327,6 +448,57 @@
       texto: 'Paralelogramo: dos pares de lados paralelos; sus diagonales se bisecan. Rectángulo: además, ángulos rectos. Rombo: además, lados iguales. Cuadrado: las dos cosas.',
       condicion: 'las clases se incluyen: todo cuadrado es rectángulo y rombo, y todos son paralelogramos. El nombre no depende de la posición.',
       voz: 'Nombra por las propiedades, no por cómo está apoyada la figura.',
+    },
+    // Así se resuelve (fase 2): los dos casos de «Ahora tú» (∠C con ángulos en x, nombre por las diagonales), con otras
+    // semillas y las mismas cuentas. Si ∠B queda de 10° o menos se prueba la semilla s + 2, como en «Ahora tú».
+    resuelve: {
+      pieza: 'geo-figura',
+      generar(s) {
+        if (s % 2 === 0) {
+          let k = s, r, x, a1, b1, A, B;
+          for (;;) { r = azar(k + 900); x = r.ent(10, 25); a1 = r.ent(2, 4); b1 = r.ent(5, 30); A = a1 * x + b1; B = 180 - A; if (B > 10) break; k += 2; }
+          const a2 = r.ent(1, 3), b2 = B - a2 * x, a = a1 + a2, b = b1 + b2;
+          const ex = (p, q) => `${p === 1 ? '' : p}x${q === 0 ? '' : ` ${q < 0 ? '−' : '+'} ${Math.abs(q)}`}°`;
+          const fig = conAng => ({ datos: para(A, 3, { sinAng: !conAng, alt: `Paralelogramo ABCD con ∠A = ${conAng ? `${A}°` : ex(a1, b1)}` }), estado: {} });
+          return {
+            enunciado: [`En el paralelogramo ABCD, ∠A = ${ex(a1, b1)} y ∠B = ${ex(a2, b2)}. ¿Cuánto mide ∠C?`],
+            dibujo: fig(false),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden ∠C, el ángulo del vértice opuesto a A.' },
+              { tipo: 'datos', texto: '∠A y ∠B vienen en función de x. Son vecinos: comparten el lado AB.', ecuacion: [`∠A = ${ex(a1, b1)}`, sep, `∠B = ${ex(a2, b2)}`] },
+              { tipo: 'regla', texto: 'Como los lados opuestos son paralelos, dos ángulos vecinos suman 180°. Y los ángulos opuestos miden lo mismo.', ecuacion: ['∠A + ∠B = 180°', sep, '∠C = ∠A'] },
+              { tipo: 'cuentas', texto: 'Sumo ∠A y ∠B, igualo a 180° y despejo x. Después reemplazo x en ∠A.',
+                ecuacion: [`${ex(a, b)} = 180°   →   x = ${x}   →   ∠A = ${a1} · ${x} + ${b1} = ${A}°`], dibujo: fig(true) },
+              { tipo: 'sentido', texto: `Comprueba: ∠B = ${a2} · ${x} ${b2 < 0 ? '−' : '+'} ${Math.abs(b2)} = ${B}°, y ${A}° + ${B}° = 180°. ∠C copia a ∠A.` },
+            ],
+            respuesta: `∠C = ${A}°`,
+          };
+        }
+        const r = azar(s + 900);
+        const casos = [['iguales', 'perpendiculares', 'cuadrado'], ['iguales', 'no perpendiculares', 'rectángulo'], ['distintas', 'perpendiculares', 'rombo'], ['distintas', 'no perpendiculares', 'paralelogramo']];
+        const [c1, c2, bien] = casos[r.ent(0, 3)], lado = r.ent(4, 12);
+        const iguales = c1 === 'iguales', perp = c2 === 'perpendiculares';
+        // La figura dibuja los datos: diagonales con la misma marca si son iguales y el ángulo recto en O si se cruzan a 90°.
+        const fig = para(iguales ? 90 : 60, perp ? 5 : 3, { giro: 15, sinAng: true, diagIguales: iguales, perp, alt: `Paralelogramo ABCD con diagonales ${c1} y ${c2}` });
+        const sentido = {
+          cuadrado: 'También es rectángulo y rombo, pero «cuadrado» dice más: incluye las dos condiciones a la vez.',
+          'rectángulo': 'No es cuadrado: le faltan diagonales perpendiculares. Y «rectángulo» dice más que «paralelogramo».',
+          rombo: 'No es cuadrado: le faltan diagonales iguales. Y «rombo» dice más que «paralelogramo».',
+          paralelogramo: 'No cumple ninguna condición extra: ni ángulos rectos ni lados iguales. Queda «paralelogramo».',
+        }[bien];
+        return {
+          enunciado: [`Un paralelogramo de lado mayor ${lado} cm tiene diagonales ${c1} y ${c2}. ¿Cuál es el nombre más preciso para él?`],
+          dibujo: { datos: fig, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el nombre más preciso: el que dice más propiedades de la figura.' },
+            { tipo: 'datos', texto: `Es paralelogramo, así que sus diagonales se cortan en su punto medio. Además, son ${c1} y ${c2}.` },
+            { tipo: 'regla', texto: 'Diagonales iguales delatan ángulos rectos: rectángulo. Diagonales perpendiculares delatan lados iguales: rombo. Con las dos, cuadrado.' },
+            { tipo: 'aplica', texto: `Diagonales ${c1}: ${iguales ? 'tiene' : 'no tiene'} ángulos rectos. Diagonales ${c2}: ${perp ? 'tiene' : 'no tiene'} cuatro lados iguales.`, ecuacion: [`${c1} y ${c2}   →   ${bien}`] },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: `Es un ${bien}.`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Lee las condiciones y decide qué nombre ganan.',
@@ -383,11 +555,29 @@
         ...(o.diag ? [{ de: 'P', a: 'Q', color: 'h', grosor: 'variable', texto: o.sinPQ ? undefined : `${f((10 - b) / 2)}`, desde: k.pq || 0 }] : [])],
     };
   };
+  // Trapecio de bases B y b para «Así se resuelve»: el de la idea (base mayor de 10) con la menor a escala, 10b/B, y
+  // centrada. Los rótulos son los del problema: B, b, la mediana (mn) y el tramo PQ (pq).
+  const trapEscala = (B, b, o = {}) => {
+    const bd = 10 * b / B, rb = o.b || `b = ${b}`;
+    const datos = trap(bd, (10 - bd) / 2, { diag: o.diag, B: `B = ${B}`, b: rb,
+      alt: `Trapecio de bases B = ${B} y ${rb}, con su mediana MN${o.mn ? ` = ${o.mn}` : ''}${o.diag ? `, sus diagonales y el tramo PQ${o.pq ? ` = ${o.pq}` : ''}` : ''}` });
+    datos.segmentos = datos.segmentos.map(g => (g.de === 'M' && g.a === 'N' ? Object.assign({}, g, { texto: o.mn })
+      : g.de === 'P' && g.a === 'Q' ? Object.assign({}, g, { texto: o.pq }) : g));
+    return { datos, estado: {} };
+  };
   const trapecios = {
     id: 'trapecios',
     titulo: 'La mediana del trapecio',
     temas: ['Trapecios'],
     pieza: 'geo-figura',
+    // Lee (fase 2): bases y mediana. No dice cuánto mide PQ (la pregunta de «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un balde de costado', texto: ['Visto de costado, un balde dibuja un trapecio: la boca y el fondo son paralelos y de distinto largo. Esos dos lados son las bases: la mayor se llama ', { v: 'c-d', t: 'B' }, ' y la menor, ', { v: 'c-i', t: 'b' }, '.'] },
+        { titulo: 'La mediana', texto: ['Los lados no paralelos tienen cada uno su punto medio: M y N. El segmento ', { v: 'c-o', t: 'MN' }, ' es la mediana del trapecio y cruza la figura de un lado al otro.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['Haz dos pruebas por separado. Primero corre la base menor de lado a lado, sin cambiar su largo. Después cambia su largo ', { v: 'c-i', t: 'b' }, '. Mira cuál de las dos mueve la medida de ', { v: 'c-o', t: 'MN' }, '.'] },
+      ],
+    },
     juega: {
       consigna: 'La base mayor mide 10. Cambia la base menor b y córrela. M y N son puntos medios de los lados no paralelos.',
       voz: 'Corre la base menor. Comprueba de qué depende MN.',
@@ -432,6 +622,54 @@
       ecuacion: [{ v: 'c-o', t: 'MN' }, ' = ', { llave: [{ frac: [[{ v: 'c-d', t: 'B' }, ' + ', { v: 'c-i', t: 'b' }], '2'] }], nota: 'semisuma', color: 'c-o' }, sep, { v: 'c-h', t: 'PQ' }, ' = ', { llave: [{ frac: [[{ v: 'c-d', t: 'B' }, ' − ', { v: 'c-i', t: 'b' }], '2'] }], nota: 'semidiferencia', color: 'c-h' }],
       condicion: 'el trapecio tiene exactamente un par de lados paralelos (las bases) y M, N son puntos medios de los otros dos.',
       voz: 'Todo sale de la base media del triángulo.',
+    },
+    // Así se resuelve (fase 2): los tres casos de «Ahora tú» (mediana, tramo PQ, base menor), con otras semillas y las
+    // mismas cuentas. El dibujo es el trapecio de la idea con la base menor a escala (b/B) y los rótulos del problema.
+    resuelve: {
+      pieza: 'geo-figura',
+      generar(s) {
+        const r = azar(s + 900), B = 2 * r.ent(5, 15), b = 2 * r.ent(1, B / 2 - 1), tipo = s % 3, m = (B + b) / 2, p = (B - b) / 2;
+        const MN = { v: 'c-o', t: 'MN' }, PQ = { v: 'c-h', t: 'PQ' }, Bv = { v: 'c-d', t: 'B' }, bv = { v: 'c-i', t: 'b' };
+        const fig = o => trapEscala(B, b, o);
+        if (tipo === 0) return {
+          enunciado: [`Un trapecio tiene bases ${B} y ${b}. ¿Cuánto mide su mediana `, MN, '?'],
+          dibujo: fig({ mn: '?' }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la mediana ', MN, ': el segmento entre los puntos medios de los lados no paralelos.'] },
+            { tipo: 'datos', texto: ['Base mayor ', Bv, ` = ${B} y base menor `, bv, ` = ${b}.`] },
+            { tipo: 'regla', texto: 'La mediana va entre las dos bases, a media altura: mide el promedio de las dos.', ecuacion: [MN, ' = ', { frac: [[Bv, ' + ', bv], '2'] }] },
+            { tipo: 'cuentas', texto: 'Sumo las bases y saco la mitad.', ecuacion: [MN, ` = (${B} + ${b}) ÷ 2 = ${f(m)}`], dibujo: fig({ mn: f(m) }) },
+            { tipo: 'sentido', texto: `Comprueba: ${f(m)} queda entre ${b} y ${B}, a la misma distancia de las dos: ${f(B - m)} de cada una.` },
+          ],
+          respuesta: [MN, ` = ${f(m)}`],
+        };
+        if (tipo === 1) return {
+          enunciado: [`Un trapecio tiene bases ${B} y ${b}. ¿Cuánto mide el segmento `, PQ, ' que une los puntos medios de sus diagonales?'],
+          dibujo: fig({ diag: true, pq: '?' }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', PQ, ', el tramo de la mediana que queda entre los puntos medios de las diagonales.'] },
+            { tipo: 'datos', texto: ['Bases ', Bv, ` = ${B} y `, bv, ` = ${b}. P es el punto medio de AC, y Q, el de BD.`] },
+            { tipo: 'regla', texto: 'Cada diagonal arma un triángulo con una base. Su base media mide la mitad de esa base, y PQ es la diferencia de las dos mitades.',
+              ecuacion: [PQ, ' = ', { frac: [[Bv, ' − ', bv], '2'] }] },
+            { tipo: 'cuentas', texto: 'MQ es la mitad de la base mayor y MP, la mitad de la menor. Resto.', ecuacion: [PQ, ` = MQ − MP = ${f(B / 2)} − ${f(b / 2)} = ${f(p)}`],
+              dibujo: fig({ diag: true, pq: f(p) }) },
+            { tipo: 'sentido', texto: ['Comprueba: ', MN, ` = MP + PQ + QN = ${f(b / 2)} + ${f(p)} + ${f(b / 2)} = ${f(m)}, la semisuma de las bases.`] },
+          ],
+          respuesta: [PQ, ` = ${f(p)}`],
+        };
+        return {
+          enunciado: ['La mediana de un trapecio mide ', MN, ` = ${f(m)} y su base mayor, ${B}. ¿Cuánto mide la base menor?`],
+          dibujo: fig({ mn: f(m), b: 'b = ?' }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la base menor ', bv, '.'] },
+            { tipo: 'datos', texto: ['La mediana ', MN, ` = ${f(m)} y la base mayor `, Bv, ` = ${B}.`] },
+            { tipo: 'regla', texto: 'La mediana es la mitad de la suma de las bases. Entonces, las dos bases juntas suman el doble de la mediana.', ecuacion: [Bv, ' + ', bv, ' = 2 · ', MN] },
+            { tipo: 'cuentas', texto: 'Duplico la mediana y le quito la base mayor.', ecuacion: [bv, ` = 2 · ${f(m)} − ${B} = ${f(2 * m)} − ${B} = ${b}`], dibujo: fig({ mn: f(m) }) },
+            { tipo: 'sentido', texto: `Comprueba: (${B} + ${b}) ÷ 2 = ${f(m)}, la mediana del dato. Y ${b} es menor que ${B}, como toda base menor.` },
+          ],
+          respuesta: [bv, ` = ${b}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Identifica bases, mediana y tramo central antes de operar.',
@@ -496,6 +734,14 @@
     titulo: 'Puntos medios de cualquier cuadrilátero',
     temas: ['Trapezoides'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es un trapezoide y cómo se arma la figura de adentro. No dice cuánto mide su perímetro.
+    lee: {
+      tarjetas: [
+        { titulo: 'Ningún par paralelo', texto: 'Un trapezoide es un cuadrilátero sin lados paralelos. Muchas chacras del altiplano tienen esa forma: cuatro bordes rectos y ninguno paralelo a otro.' },
+        { titulo: 'Cuatro puntos medios', texto: 'Marca el punto medio de cada lado y llámalos M, N, P y Q. Unidos en orden, forman otro cuadrilátero, dentro del primero.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Mueve el vértice D lejos y cerca. La lectura compara los lados opuestos de la figura de adentro: fíjate si alguna vez dejan de medir lo mismo.' },
+      ],
+    },
     juega: {
       consigna: 'ABCD es un trapezoide: ningún par de lados paralelos. Mueve D y mira la figura que forman los puntos medios de sus lados.',
       voz: 'Deforma el cuadrilátero. Comprueba qué forma permanece adentro.',
@@ -539,6 +785,54 @@
       ecuacion: ['perímetro = ', { llave: ['AC + BD'], nota: 'las diagonales', color: 'c-d' }, sep, 'A + B + C + D = 360°'],
       condicion: 'el cuadrilátero es trapezoide, trapecio o paralelogramo: solo se usa la base media de los triángulos de cada diagonal.',
       voz: 'Una diagonal convierte el problema en dos triángulos conocidos.',
+    },
+    // Así se resuelve (fase 2): los dos casos de «Ahora tú» (perímetro con las diagonales, cuarto ángulo), con otras
+    // semillas y las mismas cuentas. Si el cuarto ángulo sale de 20° o menos, o de 180° o más, se prueba s + 2.
+    // Las figuras no van a escala: llevan los rótulos del problema.
+    resuelve: {
+      pieza: 'geo-figura',
+      generar(s) {
+        const AC = { v: 'c-d', t: 'AC' }, BD = { v: 'c-i', t: 'BD' };
+        if (s % 2 === 0) {
+          const r = azar(s + 900), p = 2 * r.ent(3, 12), q = 2 * r.ent(3, 12);
+          const datos = varig(1, 5, { letras: true, diag: true, d1: `AC = ${p}`, d2: `BD = ${q}`, pasos: { par: 1 },
+            alt: `Cuadrilátero ABCD con diagonales AC = ${p} y BD = ${q}; sus puntos medios M, N, P y Q forman un paralelogramo` });
+          return {
+            enunciado: [`Las diagonales de un cuadrilátero miden ${p} y ${q}. ¿Cuál es el perímetro del paralelogramo de los puntos medios?`],
+            dibujo: { datos, estado: { corte: 0 } },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el perímetro de MNPQ, la figura que forman los puntos medios de los cuatro lados.' },
+              { tipo: 'datos', texto: ['Las diagonales miden ', AC, ` = ${p} y `, BD, ` = ${q}.`] },
+              { tipo: 'regla', texto: 'Cada diagonal parte el cuadrilátero en dos triángulos. En cada uno, el lado de adentro es base media: mide la mitad de la diagonal.',
+                ecuacion: ['MN = PQ = ', { frac: [AC, '2'] }, sep, 'NP = QM = ', { frac: [BD, '2'] }] },
+              { tipo: 'cuentas', texto: 'Hay dos lados por cada diagonal. Sumo los cuatro.', ecuacion: [`2 · ${p / 2} + 2 · ${q / 2} = ${p} + ${q} = ${p + q}`], dibujo: { datos, estado: { corte: 1 } } },
+              { tipo: 'sentido', texto: `Comprueba: el perímetro salió igual a la suma de las diagonales, ${p} + ${q}. No hizo falta saber cuánto miden los lados de ABCD.` },
+            ],
+            respuesta: `El perímetro es ${p + q}.`,
+          };
+        }
+        let k = s, r, a, b, c, d;
+        for (;;) { r = azar(k + 900); a = 5 * r.ent(10, 22); b = 5 * r.ent(10, 22); c = 5 * r.ent(10, 22); d = 360 - a - b - c; if (d > 20 && d < 180) break; k += 2; }
+        const fig = txt => {
+          const base = varig(2, 6), letras = ['A', 'B', 'C', 'D'];
+          return { datos: { alt: `Trapezoide ABCD con ángulos A = ${a}°, B = ${b}°, C = ${c}° y D = ${txt}`, vista: base.vista,
+            puntos: base.puntos.filter(x => letras.includes(x.id)), regiones: base.regiones.slice(0, 1), segmentos: base.segmentos.slice(0, 4),
+            angulos: [{ en: 'A', de: 'B', a: 'D', texto: `${a}°`, color: 'i' }, { en: 'B', de: 'C', a: 'A', texto: `${b}°`, color: 'i' },
+              { en: 'C', de: 'D', a: 'B', texto: `${c}°`, color: 'i' }, { en: 'D', de: 'A', a: 'C', texto: txt, color: 'h' }] }, estado: {} };
+        };
+        return {
+          enunciado: [`Un trapezoide tiene ángulos de ${a}°, ${b}° y ${c}°. ¿Cuánto mide el cuarto ángulo?`],
+          dibujo: fig('?'),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el ángulo que falta; en el dibujo, el del vértice D.' },
+            { tipo: 'datos', texto: `Los otros tres miden ${a}°, ${b}° y ${c}°. Juntos suman ${a + b + c}°.` },
+            { tipo: 'regla', texto: 'Una diagonal parte cualquier cuadrilátero en dos triángulos de 180°: sus cuatro ángulos suman 360°.', ecuacion: ['A + B + C + D = 360°'] },
+            { tipo: 'cuentas', texto: 'A los 360° les quito lo que ya suman los otros tres.', ecuacion: [`D = 360° − ${a + b + c}° = ${d}°`], dibujo: fig(`${d}°`) },
+            { tipo: 'sentido', texto: `Comprueba: ${a}° + ${b}° + ${c}° + ${d}° = 360°. Y ${d}° es menor que 180°: el trapezoide no tiene entrantes.` },
+          ],
+          respuesta: `El cuarto ángulo mide ${d}°.`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Ubica qué triángulo y qué diagonal usa cada lado.',
@@ -834,6 +1128,7 @@
         ejemplo: 'Semidiferencia de 10 y 4: (10 − 4)/2 = 3.', ver: ['semisuma'] },
       { termino: 'perímetro', def: 'Suma de las longitudes de todos los lados de una figura.',
         ejemplo: 'Lados 5, 3, 5 y 3: 5 + 3 + 5 + 3 = 16.' },
+      { termino: 'pentágono', def: 'Polígono de cinco lados.', ejemplo: 'Sus ángulos interiores suman (5 − 2) · 180° = 540°.' },
       { termino: 'hexágono', def: 'Polígono de seis lados.', ejemplo: 'Sus ángulos interiores suman (6 − 2) · 180° = 720°.' },
       { termino: 'octógono', def: 'Polígono de ocho lados.', ejemplo: 'Sus ángulos interiores suman (8 − 2) · 180° = 1080°.' },
       { termino: 'decágono', def: 'Polígono de diez lados.', ejemplo: 'Tiene 10 · (10 − 3)/2 = 35 diagonales.' },

@@ -82,6 +82,16 @@
     titulo: 'Radio, apotema y ángulo central',
     temas: ['Ángulo central y apotema'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es regular, el centro, radio y apotema. No dice que el hexágono tenga radio igual al lado
+    // ni cómo sale su apotema (eso lo pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Lados y ángulos iguales', texto: 'Una señal de PARE tiene ocho lados iguales y ocho ángulos iguales: es un polígono regular. Un rombo tiene sus cuatro lados iguales, pero sus ángulos no lo son; por eso no es regular.' },
+        { titulo: 'Un centro para todo', texto: 'Todo polígono regular tiene un centro O que está a la misma distancia de todos sus vértices. Si unes O con cada vértice, el polígono queda partido en triángulos con la punta en O.' },
+        { titulo: 'Radio y apotema', texto: ['El radio ', cR, ' va de O a un vértice. La apotema ', cA, ' va de O al punto medio de un lado y cae perpendicular a él. Los dos salen del centro, pero no llegan al mismo lugar.'] },
+        { titulo: 'Qué mirar', texto: ['Al jugar, cambia el número de lados n. Mira el triángulo sombreado, el ángulo rojo en O y cómo cambia la apotema ', cA, ' frente al radio ', cR, '.'] },
+      ],
+    },
     juega: {
       consigna: 'El polígono regular se parte en n triángulos iguales desde el centro O. Cambia n y compara el radio con la apotema.',
       voz: 'Sube n. Mira cómo la apotema se acerca al radio.',
@@ -118,6 +128,64 @@
       ecuacion: [cL, ' = 2', cR, ' sen ', { llave: [frac('180°', 'n')], nota: 'medio central', color: 'c-h' }, sep, cA, ' = ', cR, ' cos ', frac('180°', 'n'), sep, 'S = ', frac(['P · ', cA], '2')],
       condicion: 'el polígono tiene lados y ángulos iguales. R llega al vértice y a llega perpendicular al punto medio del lado.',
       voz: 'Radio al vértice, apotema al medio del lado.',
+    },
+    // Así se resuelve (fase 2): los tres tipos de «Ahora tú» (ángulo central, apotema del hexágono y área), con otras
+    // semillas y las mismas cuentas (lado, apot y 2a·tan(180°/n)).
+    resuelve: {
+      voz: 'Primero ubica el triángulo central. Lo demás sale de ahí.',
+      generar(s) {
+        const r = azar(s + 900), t = s % 3, k = r.ent(2, 10);
+        if (t === 0) {
+          const n = r.de([5, 8, 9, 10, 12, 15, 18, 20, 24, 36]), c = 360 / n;
+          return {
+            enunciado: [`¿Cuánto mide el ángulo central de un polígono regular de ${n} lados?`],
+            dibujo: { datos: reg(n, 3, { central: true, alt: `Polígono regular de ${n} lados con su centro O y el ángulo central en rojo` }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el ángulo central: el que forman en O los radios de dos vértices seguidos.' },
+              { tipo: 'datos', texto: `El polígono es regular y tiene ${n} lados.`, ecuacion: [`n = ${n}`] },
+              { tipo: 'regla', texto: 'Desde O, el polígono se parte en n triángulos iguales. Sus ángulos en O son iguales y juntos dan una vuelta completa.' },
+              { tipo: 'cuentas', texto: 'Reparto la vuelta de 360° entre los n ángulos iguales.', ecuacion: [`central = 360° ÷ ${n} = ${f(c, 1)}°`],
+                dibujo: { datos: reg(n, 3, { tri: true, central: true, alt: `Polígono regular de ${n} lados partido en ${n} triángulos iguales desde O; cada ángulo en O mide ${f(c, 1)}°` }), estado: {} } },
+              { tipo: 'sentido', texto: `Compruebo de vuelta: ${n} ángulos de ${f(c, 1)}° suman ${f(n * c, 1)}°, una vuelta. Cuadra.` },
+            ],
+            respuesta: [`El ángulo central mide ${f(c, 1)}°.`],
+          };
+        }
+        if (t === 1) {
+          const l = 2 * k, a = k * Math.sqrt(3);
+          return {
+            enunciado: ['Un hexágono regular tiene lado ', cL, ` = ${l}. ¿Cuánto mide su apotema?`],
+            dibujo: { datos: reg(6, 3, { l: `${l}` }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la apotema ', cA, ': va de O al punto medio de un lado.'] },
+              { tipo: 'datos', texto: ['Es un hexágono regular de lado ', cL, ` = ${l}; medio lado mide ${k}.`] },
+              { tipo: 'regla', texto: ['La apotema es la altura de un triángulo central. Con el radio ', cR, ' y medio lado arma un triángulo rectángulo.'],
+                ecuacion: [sup2(cA), ' = ', sup2(cR), ' − ', sup2('(ℓ/2)')] },
+              { tipo: 'cuentas', texto: ['En el hexágono el ángulo central mide 60°: cada triángulo es equilátero y ', cR, ` = ${l}. Uso Pitágoras.`],
+                ecuacion: [cA, ` = √(${l}² − ${k}²) = √${3 * k * k} = ${k}√3 ≈ ${f(a)}`],
+                dibujo: { datos: reg(6, 3, { tri: true, l: `${l}`, R: `${l}`, a: `${k}√3` }), estado: {} } },
+              { tipo: 'sentido', texto: ['La apotema, ', f(a), ', es un cateto: sale menor que el radio, ', `${l}`, ', que es la hipotenusa. Cuadra.'] },
+            ],
+            respuesta: [cA, ` = ${k}√3 ≈ ${f(a)}`],
+          };
+        }
+        const n = r.de([4, 6, 8, 10, 12]), a = k, l = 2 * a * Math.tan(Math.PI / n), P = n * l, S = n * l * a / 2;
+        return {
+          enunciado: [`Un polígono regular de ${n} lados tiene lado ${f(l)} y apotema ${a}. ¿Cuál es su área?`],
+          dibujo: { datos: reg(n, 3, { l: f(l), a: `${a}` }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el área S del polígono regular.' },
+            { tipo: 'datos', texto: [`Tiene n = ${n} lados, `, cL, ` = ${f(l)} y `, cA, ` = ${a}.`] },
+            { tipo: 'regla', texto: ['Desde O salen n triángulos iguales. Cada uno tiene base ', cL, ' y altura ', cA, '; sumo sus áreas.'],
+              ecuacion: ['S = n · ', frac([cL, ' · ', cA], '2'), ' = ', frac(['P · ', cA], '2')] },
+            { tipo: 'cuentas', texto: 'Primero el perímetro; después, perímetro por apotema entre 2.',
+              ecuacion: [`P = ${n} · ${f(l)} = ${f(P)}   →   S = ${f(P)} · ${a} / 2 = ${f(S)}`],
+              dibujo: { datos: reg(n, 3, { tri: true, l: f(l), a: `${a}` }), estado: {} } },
+            { tipo: 'sentido', texto: `Compruebo con un triángulo: ${f(l)} · ${a} / 2 = ${f(l * a / 2)}; por ${n} triángulos da ${f(S)}. Cuadra.` },
+          ],
+          respuesta: [`S = ${f(S)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Arma el triángulo central: radio, apotema y medio lado.',
@@ -173,6 +241,16 @@
     titulo: 'Triángulo, cuadrado y hexágono inscritos',
     temas: ['Polígonos regulares inscritos notables'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es inscrito y qué quiere decir «en función de R». No da la apotema del triángulo (la pregunta
+    // de «Predice») ni el baricentro.
+    lee: {
+      tarjetas: [
+        { titulo: 'Vértices en la circunferencia', texto: ['Un polígono está inscrito cuando todos sus vértices tocan la circunferencia. Entonces el radio ', cR, ' de la circunferencia es también el radio del polígono: va del centro a cada vértice.'] },
+        { titulo: 'En función de R', texto: ['Escribir el lado «en función de ', cR, '» es dejarlo como ', cR, ' por un número fijo. Así, si el radio se duplica, el lado también se duplica, y la apotema igual.'] },
+        { titulo: 'Tres que vuelven siempre', texto: 'En los exámenes de admisión aparecen una y otra vez el triángulo equilátero, el cuadrado y el hexágono regular inscritos. Reconocer su lado y su apotema ahorra cuentas largas.' },
+        { titulo: 'Qué mirar', texto: ['Al jugar, cambia de polígono y lee su lado ', cL, ' y su apotema ', cA, ' en función de ', cR, '. En el triángulo, la apotema sale con un signo de pregunta: guárdala para después.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige el polígono regular inscrito en la circunferencia de radio R. Mira su lado y su apotema escritos en función de R.',
       voz: 'Cambia de polígono. Compara cada lado con R.',
@@ -208,6 +286,37 @@
       ecuacion: [{ sub: [cL, '3'] }, ' = R√3', sep, { sub: [cL, '4'] }, ' = R√2', sep, { sub: [cL, '6'] }, ' = R'],
       condicion: 'los polígonos son regulares y sus vértices están en la circunferencia de radio R.',
       voz: 'Tres polígonos, tres pares que conviene reconocer.',
+    },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con otras semillas, calculado con lado y apot.
+    resuelve: {
+      voz: 'Reconoce el polígono y fíjate si piden lado o apotema.',
+      generar(s) {
+        const r = azar(s + 900), R = 2 * r.ent(1, 8), n = [3, 4, 6][s % 3], pideL = (s >> 1) % 2 === 0;
+        const val = pideL ? lado(n, R) : apot(n, R), forma = NOT[n][pideL ? 0 : 1], h = R / 2;
+        // R es par: R√2/2 y R√3/2 se simplifican a (R/2)√2 y (R/2)√3.
+        const conR = { 'R√3': `${R}√3`, 'R√2': `${R}√2`, R: `${R}`, 'R/2': `${h}`, 'R√2/2': `${h === 1 ? '' : h}√2`, 'R√3/2': `${h === 1 ? '' : h}√3` }[forma];
+        // Igualdades seguidas sin repetir: «16√3/2 = 8√3 ≈ 13,86», «14/2 = 7», «6».
+        const exacto = Math.abs(val - Math.round(val)) < 1e-9;
+        const cadena = xs => { const u = [...new Set([...xs, f(val)])]; return u.map((x, i) => i === 0 ? x : `${i === u.length - 1 && !exacto ? '≈' : '='} ${x}`).join(' '); };
+        const nom = { 3: 'triángulo equilátero', 4: 'cuadrado', 6: 'hexágono regular' }[n], que = pideL ? 'lado' : 'apotema';
+        const sim = pideL ? cL : cA, circ = { circulos: [{ centro: 'O', r: 3, grosor: 'fino', discontinua: true }] };
+        const fig = (rot, alt) => ({ datos: Object.assign(reg(n, 3, Object.assign({ R: `R = ${R}`, alt }, pideL ? { l: rot } : { a: rot })), circ), estado: {} });
+        return {
+          enunciado: [`En una circunferencia de radio R = ${R} se inscribe un ${nom}. ¿Cuánto mide su ${que}?`],
+          dibujo: fig(pideL ? 'ℓ' : 'a', `${nom[0].toUpperCase()}${nom.slice(1)} inscrito en una circunferencia de radio ${R}; se pide su ${que}`),
+          pasos: [
+            { tipo: 'pide', texto: [`Piden ${pideL ? 'el lado ' : 'la apotema '}`, sim, ` del ${nom}: ${pideL ? 'une dos vértices seguidos' : 'va del centro al punto medio de un lado'}.`] },
+            { tipo: 'datos', texto: ['Está inscrito: sus vértices tocan la circunferencia, así que ', cR, ` = ${R} llega a cada vértice.`] },
+            { tipo: 'regla', texto: [`En los inscritos notables, lado y apotema son el radio por un número fijo. Para el ${nom}:`], ecuacion: [sim, ` = ${forma}`] },
+            { tipo: 'cuentas', texto: ['Reemplazo ', cR, ` = ${R} en la fórmula.`],
+              ecuacion: [sim, ` = ${cadena([forma.replace('R', `${R}`), conR])}`],
+              dibujo: fig(`${que === 'lado' ? 'ℓ' : 'a'} = ${conR}`, `${nom[0].toUpperCase()}${nom.slice(1)} inscrito en una circunferencia de radio ${R}: su ${que} mide ${conR}`) },
+            { tipo: 'sentido', texto: pideL ? `El lado, ${f(val)}, no pasa del diámetro, ${2 * R}: ninguna cuerda es más larga que el diámetro.`
+              : `La apotema, ${f(val)}, es menor que el radio, ${R}: llega al medio del lado, no al vértice.` },
+          ],
+          respuesta: [sim, ` = ${cadena([conR])}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Identifica el polígono y si te piden lado o apotema.',
@@ -259,6 +368,15 @@
     titulo: 'De n lados a 2n lados',
     temas: ['Polígono de 2n lados'],
     pieza: 'geo-figura',
+    // Lee (fase 2): Arquímedes y qué es partir cada arco. No da el triángulo pequeño ni la fórmula del lado de 2n,
+    // ni compara cuerda con arco (son las opciones de «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Arquímedes y π', texto: 'Hace más de 2000 años, Arquímedes estimó el número π con polígonos regulares inscritos en una circunferencia. Empezó con un hexágono y fue duplicando sus lados: 12, 24, 48 y 96.' },
+        { titulo: 'Partir cada arco', texto: 'Cada lado de un polígono inscrito tiene encima un arco de la circunferencia. Si marcas el punto medio de cada arco, aparecen vértices nuevos y el polígono pasa a tener el doble de lados.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, sube n y compara el perímetro del polígono naranja con la circunferencia. Fíjate cuánto falta cada vez que los lados se duplican.' },
+      ],
+    },
     juega: {
       consigna: 'Cada arco del polígono de n lados se parte en dos: aparece el de 2n lados (naranja). Compara su perímetro con la circunferencia.',
       voz: 'Duplica los lados. Mira qué tanto se acerca a la circunferencia.',
@@ -297,6 +415,31 @@
       condicion: 'los dos polígonos son regulares e inscritos en la misma circunferencia; aₙ es la apotema del de n lados.',
       voz: 'Más lados se acercan al círculo, pero no lo igualan.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con otras semillas: apot del polígono de n y la fórmula de 2n.
+    resuelve: {
+      voz: 'Dos pasos: la apotema del de n lados y luego la fórmula.',
+      generar(s) {
+        const r = azar(s + 900), R = r.ent(1, 10), n = [3, 4, 6][s % 3], a = apot(n, R), l2 = Math.sqrt(2 * R * R - 2 * R * a), ln = lado(n, R);
+        const nom = { 3: 'hexágono', 4: 'octógono', 6: 'dodecágono' }[n], viejo = { 3: 'triángulo equilátero', 4: 'cuadrado', 6: 'hexágono' }[n];
+        const aN = { sub: [cA, `${n}`] };
+        return {
+          enunciado: [`En una circunferencia de radio ${R}, ¿cuánto mide el lado del ${nom} regular inscrito? (Parte del polígono de ${n} lados.)`],
+          dibujo: { datos: doble(n, 3, { alt: `${viejo[0].toUpperCase()}${viejo.slice(1)} y ${nom} regulares inscritos en la misma circunferencia de radio ${R}` }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden el lado del ${nom} regular inscrito en la circunferencia de radio ${R}.` },
+            { tipo: 'datos', texto: `El ${nom} tiene ${2 * n} lados: sale de partir cada arco del ${viejo} inscrito, de ${n} lados.`, ecuacion: [cR, ` = ${R}`, sep, `n = ${n}`] },
+            { tipo: 'regla', texto: 'El lado nuevo es la hipotenusa de un triángulo rectángulo: un cateto es medio lado viejo; el otro, el tramo del medio del lado al arco. Desarrollado:',
+              ecuacion: [sup2('ℓ₂ₙ'), ' = 2', sup2('R'), ' − 2R · ', { sub: [cA, 'n'] }] },
+            { tipo: 'cuentas', texto: `Primero la apotema del ${viejo}, con los inscritos notables.`, ecuacion: [aN, ` = ${NOT[n][1]} = ${f(a)}`] },
+            { tipo: 'cuentas', texto: 'Reemplazo el radio y esa apotema en la fórmula y saco la raíz.',
+              ecuacion: [`ℓ = √(2 · ${R}² − 2 · ${R} · ${f(a)}) = ${f(l2)}`],
+              dibujo: { datos: doble(n, 3, { letras: true, zoom: true, l2: `${Math.abs(l2 - Math.round(l2)) < 1e-9 ? '' : '≈ '}${f(l2)}`, alt: `Detalle de un lado del ${viejo}: el lado del ${nom} es la hipotenusa y mide unos ${f(l2)}` }), estado: {} } },
+            { tipo: 'sentido', texto: `El lado nuevo, ${f(l2)}, es menor que el del ${viejo} (${f(ln)}) y mayor que su mitad (${f(ln / 2)}). Cuadra.` },
+          ],
+          respuesta: [`El lado del ${nom} mide ${Math.abs(l2 - Math.round(l2)) < 1e-9 ? '' : 'unos '}${f(l2)}.`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Calcula la apotema del de n lados; después el lado de 2n.',
       generar(s) {
@@ -318,23 +461,24 @@
   // ---------- Idea 4: la sección áurea ----------
   // Cambia: dónde se corta el segmento · Permanece: AB · Progresa: AB/AP frente a AP/PB ·
   // Se reserva: la diagonal del pentágono · Debe verse: φ cumple φ² = φ + 1 y aparece como diagonal/lado.
-  const corteFig = t => {
+  // L (opcional, 10 por defecto) solo cambia los rótulos: «Así se resuelve» corta segmentos de otro largo.
+  const corteFig = (t, L = 10) => {
     const Pp = [10 * t, 0], r1 = 10 / (10 * t), r2 = (10 * t) / (10 - 10 * t);
     return {
-      alt: `Segmento AB de 10 cortado en P a ${f(10 * t)}: AB/AP = ${f(r1)} y AP/PB = ${f(r2)}`,
+      alt: `Segmento AB de ${f(L)} cortado en P a ${f(L * t)}: AB/AP = ${f(r1)} y AP/PB = ${f(r2)}`,
       vista: { x: [-0.6, 10.6], y: [-1.6, 1.6] },
       puntos: [pt('A', [0, 0], { rotulo: 'A', lado: 90 }), pt('B', [10, 0], { rotulo: 'B', lado: 90 }), pt('P', Pp, { rotulo: 'P', color: 'h', lado: 90 })],
-      segmentos: [{ de: 'A', a: 'P', color: 'o', grosor: 'variable', texto: f(10 * t), lado: -1 }, { de: 'P', a: 'B', color: 'i', grosor: 'variable', texto: f(10 - 10 * t), lado: -1 }],
+      segmentos: [{ de: 'A', a: 'P', color: 'o', grosor: 'variable', texto: f(L * t), lado: -1 }, { de: 'P', a: 'B', color: 'i', grosor: 'variable', texto: f(L - L * t), lado: -1 }],
     };
   };
   const penta = (o = {}) => {
     const V = vert(5, 3).map(p => [p[0], p[1] + 0.3]), k = o.pasos || {};
     return {
-      alt: o.alt || 'Pentágono regular de lado 1 con una diagonal',
+      alt: o.alt || `Pentágono regular de lado ${o.l || '1'} con una diagonal`,
       vista: { x: [-3.6, 3.6], y: [-3.2, 3.8] },
       puntos: V.map((p, i) => pt('V' + i, p, { rotulo: 'ABCDE'[i], lado: 270 - 36 - 72 * i })),
       regiones: [{ puntos: V.map((_, i) => 'V' + i), color: 'd', opacidad: 0.06 }, ...(o.tri ? [{ puntos: ['V0', 'V2', 'V3'], color: 'o', opacidad: 0.18, desde: k.tri || 0 }] : [])],
-      segmentos: [...V.map((_, i) => ({ de: 'V' + i, a: 'V' + ((i + 1) % 5), texto: i === 0 ? '1' : undefined, color: i === 0 ? 'd' : undefined, grosor: i === 0 ? 'variable' : undefined })),
+      segmentos: [...V.map((_, i) => ({ de: 'V' + i, a: 'V' + ((i + 1) % 5), texto: i === 0 ? (o.l || '1') : undefined, color: i === 0 ? 'd' : undefined, grosor: i === 0 ? 'variable' : undefined })),
         { de: 'V0', a: 'V2', color: 'h', grosor: 'variable', texto: o.d || 'd' }, ...(o.tri ? [{ de: 'V0', a: 'V3', color: 'h', grosor: 'fino', desde: k.tri || 0 }] : [])],
       angulos: o.tri ? [{ en: 'V0', de: 'V2', a: 'V3', color: 'o', texto: '36°', radio: 30, desde: k.tri || 0 }, { en: 'V2', de: 'V3', a: 'V0', color: 'o', texto: '72°', radio: 20, desde: k.ang || 0 }] : [],
     };
@@ -346,6 +490,16 @@
     titulo: 'La razón áurea del pentágono',
     temas: ['Sección áurea'],
     pieza: 'geo-figura',
+    // Lee (fase 2): el corte y sus dos razones, con nombre. No da el valor de φ ni dice que aparece en el pentágono
+    // (eso lo pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cortar en dos partes', texto: 'Si cortas en dos una cinta de 10 m para adornar la fiesta de la Candelaria, en Puno, te queda una parte mayor y una menor. Puedes comparar el total con la mayor, y la mayor con la menor.' },
+        { titulo: 'Dos razones', texto: 'Cada comparación es una razón: total entre mayor, y mayor entre menor. Casi siempre dan números distintos. Si cortas justo en la mitad, la primera da 2 y la segunda, 1.' },
+        { titulo: 'Un corte con nombre', texto: 'Hay un corte especial en que las dos razones dan lo mismo. Se llama sección áurea, y a esa razón común se le llama razón áurea. Se escribe con la letra griega φ (fi).' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, corre el punto P por el segmento AB y lee las dos razones. Busca dónde se acercan lo más posible y anota ese valor.' },
+      ],
+    },
     juega: {
       consigna: 'AB mide 10. Corre P y compara el total entre la parte mayor (AB/AP) con la mayor entre la menor (AP/PB).',
       voz: 'Busca el punto donde las dos razones casi coinciden.',
@@ -385,6 +539,49 @@
       ecuacion: [{ llave: ['φ'], nota: 'razón áurea', color: 'c-h' }, ' = ', frac('1 + √5', '2'), ' ≈ 1,618', sep, { sup: ['φ', '2'] }, ' = φ + 1', sep, frac('diagonal', 'lado'), ' = φ'],
       condicion: 'el pentágono es regular: entonces diagonal entre lado da exactamente φ, para cualquier tamaño.',
       voz: 'φ no es una medida: es una razón. Úsala con su lado.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (diagonal del pentágono y parte mayor), con otras semillas
+    // y la misma cuenta con PHI.
+    resuelve: {
+      voz: 'Decide si la parte pedida es mayor o menor que el dato.',
+      generar(s) {
+        const r = azar(s + 900), L = r.ent(2, 20), t = s % 2;
+        if (t === 0) {
+          const d = L * PHI;
+          return {
+            enunciado: [`Un pentágono regular tiene lado ${L}. ¿Cuánto mide cada diagonal?`],
+            dibujo: { datos: penta({ l: `${L}`, alt: `Pentágono regular de lado ${L} con una diagonal d` }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la diagonal d: el segmento que une dos vértices que no son seguidos.' },
+              { tipo: 'datos', texto: `El pentágono es regular y su lado mide ${L}.` },
+              { tipo: 'regla', texto: 'En todo pentágono regular, la diagonal entre el lado da la razón áurea φ, sea del tamaño que sea.',
+                ecuacion: [frac('d', 'lado'), ' = φ = ', frac('1 + √5', '2'), ' ≈ 1,618'] },
+              { tipo: 'cuentas', texto: 'La diagonal es φ veces el lado: multiplico.', ecuacion: [`d = ${L} · 1,618 = ${f(d)}`],
+                dibujo: { datos: penta({ l: `${L}`, d: `d ≈ ${f(d)}`, alt: `Pentágono regular de lado ${L}: su diagonal mide unos ${f(d)}` }), estado: {} } },
+              { tipo: 'sentido', texto: `La diagonal, ${f(d)}, es mayor que un lado (${L}) y menor que dos lados juntos (${2 * L}). Cuadra.` },
+            ],
+            respuesta: [`Cada diagonal mide unos ${f(d)}.`],
+          };
+        }
+        const M = L / PHI, m = L - M;
+        return {
+          enunciado: [`Un segmento de ${L} se divide en sección áurea. ¿Cuánto mide la parte mayor?`],
+          dibujo: { datos: { alt: `Segmento AB de ${L}, que se va a cortar en sección áurea`, vista: { x: [-0.6, 10.6], y: [-1.6, 1.6] },
+            puntos: [pt('A', [0, 0], { rotulo: 'A', lado: 90 }), pt('B', [10, 0], { rotulo: 'B', lado: 90 })],
+            segmentos: [{ de: 'A', a: 'B', grosor: 'variable', texto: `${L}`, lado: -1 }] }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la parte mayor ', { v: 'c-o', t: 'AP' }, ' del segmento cortado en sección áurea.'] },
+            { tipo: 'datos', texto: `El segmento total AB mide ${L}.` },
+            { tipo: 'regla', texto: 'En la sección áurea, el total entre la parte mayor da φ ≈ 1,618, y la mayor entre la menor da lo mismo.',
+              ecuacion: [frac('AB', 'AP'), ' = ', frac('AP', 'PB'), ' = φ'] },
+            { tipo: 'cuentas', texto: 'La parte mayor es el total dividido entre φ; la menor es lo que sobra.',
+              ecuacion: [{ v: 'c-o', t: 'AP' }, ` = ${L} ÷ 1,618 = ${f(M)}`, sep, { v: 'c-i', t: 'PB' }, ` = ${L} − ${f(M)} = ${f(m)}`],
+              dibujo: { datos: corteFig(1 / PHI, L), estado: {} } },
+            { tipo: 'sentido', texto: `Compruebo la otra razón: ${f(M)} ÷ ${f(m)} ≈ ${f(M / m, 3)}, también φ. Cuadra.` },
+          ],
+          respuesta: [`La parte mayor mide unos ${f(M)}.`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Multiplica o divide por φ según la parte que te pidan.',

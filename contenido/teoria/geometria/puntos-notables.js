@@ -90,6 +90,14 @@
     titulo: 'El baricentro parte en 2 : 1',
     temas: ['Baricentro, incentro, circuncentro, ortocentro y excentro', 'Propiedades de los puntos notables'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es una mediana y dónde se cortan, sin adelantar las seis áreas (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Qué es una mediana', texto: 'Una mediana une un vértice del triángulo con el punto medio del lado de enfrente. Imagina un terreno triangular en Juliaca: la mediana es el camino recto de una esquina a la mitad del cerco opuesto.' },
+        { titulo: 'Tres caminos, un cruce', texto: 'Cada triángulo tiene tres medianas, una por vértice, y las tres pasan por un mismo punto: el baricentro G. Un triángulo de cartón recortado se sostiene en equilibrio sobre un dedo puesto justo en G.' },
+        { titulo: 'Qué mirar al jugar', texto: ['En la figura, la mediana AM queda partida en dos tramos: ', { v: 'c-o', t: 'AG' }, ', en naranja, y ', { v: 'c-i', t: 'GM' }, ', en turquesa. Mueve A y compara sus largos en la lectura.'] },
+      ],
+    },
     juega: {
       consigna: 'Las tres medianas se cortan en G, el baricentro. Mueve el vértice A y compara AG con GM en la mediana AM.',
       voz: 'Mueve A. Comprueba la razón entre los dos tramos.',
@@ -129,6 +137,44 @@
       ecuacion: [{ llave: [{ v: 'c-o', t: 'AG' }], nota: 'tramo largo', color: 'c-o' }, ' = 2 · ', { llave: [{ v: 'c-i', t: 'GM' }], nota: 'tramo corto', color: 'c-i' }, '   ·   ', { v: 'c-o', t: 'AG' }, ' = ', { frac: ['2', '3'] }, ' AM'],
       condicion: 'M es el punto medio del lado opuesto a A. Vale para cualquier triángulo: G siempre queda dentro.',
       voz: 'Dos tercios desde el vértice, uno hasta el lado.',
+    },
+    // Así se resuelve (fase 2): los mismos tres tipos de «Ahora tú» (AG, GM o un sexto del área), con azar(s + 900).
+    resuelve: {
+      pieza: 'geo-figura',
+      generar(s) {
+        const r = azar(s + 900), tipoP = s % 3;
+        if (tipoP === 2) {
+          const S = 6 * r.ent(3, 20), Ap = [r.ent(0, 6), r.ent(3, 5)];
+          return {
+            enunciado: `Un triángulo tiene área ${S}. Sus tres medianas lo parten en seis triangulitos. ¿Cuál es el área de uno de ellos?`,
+            dibujo: { datos: bari(Ap, { seis: true }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el área de uno de los seis triangulitos que forman las tres medianas.' },
+              { tipo: 'datos', texto: `El triángulo entero tiene área ${S}, y las tres medianas se cortan en G.` },
+              { tipo: 'regla', texto: 'Las medianas reparten el área en seis triangulitos que miden lo mismo, aunque tengan formas distintas.', ecuacion: ['cada uno = ', { frac: ['[ABC]', '6'] }] },
+              { tipo: 'cuentas', texto: 'Reparto el área del triángulo entre los seis.', ecuacion: [`${S} ÷ 6 = ${f(S / 6)}`] },
+              { tipo: 'sentido', texto: `Seis triangulitos de ${f(S / 6)} dan 6 · ${f(S / 6)} = ${S}: todo el triángulo, sin que sobre nada.` },
+            ],
+            respuesta: `Cada triangulito mide ${f(S / 6)}.`,
+          };
+        }
+        const m = 3 * r.ent(2, 12), pideAG = tipoP === 0, Ap = [r.ent(0, 6), r.ent(3, 5)];
+        const AG = { v: 'c-o', t: 'AG' }, GM = { v: 'c-i', t: 'GM' }, k = m / 3;
+        return {
+          enunciado: [`La mediana AM de un triángulo mide ${m}. G es el baricentro. ¿Cuánto mide `, pideAG ? AG : GM, '?'],
+          dibujo: { datos: bari(Ap), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: pideAG ? ['Piden ', AG, ', el tramo que va del vértice A hasta G.'] : ['Piden ', GM, ', el tramo que va de G hasta el punto medio M.'] },
+            { tipo: 'datos', texto: `La mediana completa AM mide ${m}, y G está sobre ella.`, ecuacion: [AG, ' + ', GM, ` = ${m}`] },
+            { tipo: 'regla', texto: 'El tramo del vértice es el doble del tramo del lado. Así, la mediana queda en tres pedazos iguales de largo k.', ecuacion: [AG, ' = 2k   ·   ', GM, ' = k'] },
+            { tipo: 'cuentas', texto: 'Parto la mediana en tres pedazos iguales y tomo los que piden.',
+              ecuacion: [`k = ${m} ÷ 3 = ${f(k)}   →   `, ...(pideAG ? [AG, ` = 2 · ${f(k)} = ${f(2 * k)}`] : [GM, ` = ${f(k)}`])],
+              dibujo: { datos: bari(Ap, { num: true }), estado: {} } },
+            { tipo: 'sentido', texto: [AG, ' + ', GM, ` = ${f(2 * k)} + ${f(k)} = ${m}: es la mediana completa, y el tramo largo queda junto al vértice.`] },
+          ],
+          respuesta: [pideAG ? AG : GM, ` = ${f(pideAG ? 2 * k : k)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Ubica el tramo largo: siempre el del vértice.',
@@ -201,11 +247,59 @@
       angulos: [{ en: 'B', de: 'C', a: 'A', color: o.marcas ? 'h' : undefined }],
     };
   };
+  // Ángulo BXC según el centro X (las mismas cuentas de «Ahora tú» de la idea 2).
+  const anguloBXC = (A, cual) => ({ O: 2 * A, H: 180 - A, I: 90 + A / 2, E: 90 - A / 2 }[cual]);
+  // Vértice A sobre el arco capaz de BC: el ángulo en A mide justo «grados» y el triángulo queda acutángulo (|t| < 3).
+  const verticeCon = (grados, t) => { const cy = 3 / Math.tan(U.rad(grados)), R = 3 / Math.sin(U.rad(grados)); return [3 + t, cy + Math.sqrt(R * R - t * t)]; };
+  // Marco que encierra todos los puntos (y sus circunferencias), con margen.
+  const marco = d => {
+    const xs = [], ys = [];
+    d.puntos.forEach(p => { xs.push(p.x); ys.push(p.y); });
+    (d.circulos || []).forEach(c => { const q = typeof c.centro === 'string' ? d.puntos.find(p => p.id === c.centro) : { x: c.centro[0], y: c.centro[1] }; xs.push(q.x - c.r, q.x + c.r); ys.push(q.y - c.r, q.y + c.r); });
+    return { x: [Math.min(...xs) - 1.2, Math.max(...xs) + 1.2], y: [Math.min(...ys) - 1.2, Math.max(...ys) + 1.2] };
+  };
+  // Figura del ejercicio resuelto: el triángulo con ∠A marcado y, si se pide, el centro X con su ángulo BXC.
+  const figBXC = (Ap, cual, A, conCentro) => {
+    const angA = { en: 'A', de: 'B', a: 'C', texto: gr(A), color: 'o' };
+    let d;
+    if (!conCentro) d = { alt: `Triángulo acutángulo ABC con ∠A = ${gr(A)}`, puntos: [pt('A', Ap, { rotulo: 'A', lado: 90 }), pt('B', B, { rotulo: 'B', lado: -120 }), pt('C', C, { rotulo: 'C', lado: -60 })],
+      regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', opacidad: 0.08 }], segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }], angulos: [angA] };
+    else if (cual !== 'E') d = centroFig(Ap, cual);
+    else {
+      const c = centros(Ap), w = -c.a + c.b + c.c, E = [(-c.a * Ap[0] + c.b * B[0] + c.c * C[0]) / w, (-c.a * Ap[1] + c.b * B[1] + c.c * C[1]) / w];
+      d = { alt: 'Triángulo acutángulo con su excentro E relativo a BC, fuera del triángulo, al otro lado de BC',
+        puntos: [pt('A', Ap, { rotulo: 'A', lado: 90 }), pt('B', B, { rotulo: 'B', lado: 150 }), pt('C', C, { rotulo: 'C', lado: 30 }), pt('P', E, { rotulo: 'E', color: 'h', lado: -90 })],
+        regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', opacidad: 0.08 }],
+        segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'A' }, { de: 'B', a: 'P', color: 'o', grosor: 'fino' }, { de: 'C', a: 'P', color: 'o', grosor: 'fino' }, { de: 'A', a: 'P', color: 'o', grosor: 'fino', discontinua: true }],
+        angulos: [] };
+    }
+    if (conCentro) d.angulos = d.angulos.concat([angA, { en: 'P', de: 'B', a: 'C', texto: gr(anguloBXC(A, cual)), color: 'h' }]);
+    d.vista = marco(d);
+    return { datos: d, estado: {} };
+  };
+  const RESUELVE_BXC = {
+    O: { nombre: 'el circuncentro O', regla: 'O es el centro de la circunferencia por A, B y C. ∠BOC es central y ∠A, inscrito, sobre el mismo arco BC: el central mide el doble.',
+      ecuacion: ['∠BOC = 2 · ∠A'], cuenta: A => `2 · ${gr(A)}` },
+    H: { nombre: 'el ortocentro H', regla: 'Las alturas desde B y C llegan perpendiculares a los lados. Forman con A y H un cuadrilátero con dos ángulos rectos: ∠A y ∠BHC suman 180°.',
+      ecuacion: ['∠BHC = 180° − ∠A'], cuenta: A => `180° − ${gr(A)}` },
+    I: { nombre: 'el incentro I', regla: 'BI y CI parten a B y a C por la mitad. En el triángulo BIC los tres ángulos suman 180°, y eso deja 90° más la mitad de A.',
+      ecuacion: ['∠BIC = 90° + ', { frac: ['∠A', '2'] }], cuenta: A => `90° + ${gr(A)} ÷ 2` },
+    E: { nombre: 'el excentro E relativo a BC', regla: 'E es el cruce de las bisectrices exteriores de B y C. En el triángulo BEC, eso deja 90° menos la mitad de A.',
+      ecuacion: ['∠BEC = 90° − ', { frac: ['∠A', '2'] }], cuenta: A => `90° − ${gr(A)} ÷ 2` },
+  };
   const centrosIdea = {
     id: 'centros',
     titulo: 'Cada centro y sus líneas',
     temas: ['Baricentro, incentro, circuncentro, ortocentro y excentro', 'Propiedades de los puntos notables'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué líneas dan cada centro y para qué sirve equidistar, sin decir dónde caen en el rectángulo.
+    lee: {
+      tarjetas: [
+        { titulo: 'Un punto, tres líneas', texto: 'Cada punto notable es el cruce de tres líneas del mismo tipo. Las medianas dan el baricentro G; las bisectrices, el incentro I; las mediatrices, el circuncentro O; y las alturas, el ortocentro H.' },
+        { titulo: 'A la misma distancia', texto: 'Tres comunidades cerca de Puno quieren un pozo a igual distancia de las tres. Ese lugar se halla con mediatrices: es el circuncentro. Si buscan igual distancia a tres caminos rectos, sirve el incentro.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Elige un centro y lleva el vértice A de un extremo al otro. La lectura dice qué tipo de triángulo es y si el centro está dentro o fuera. Fíjate cuándo cambia.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un centro y mueve el vértice A hasta que un ángulo quede obtuso. Mira qué centros salen del triángulo.',
       voz: 'Lleva A a los extremos. Revisa dónde queda cada centro.',
@@ -249,6 +343,30 @@
       texto: 'Incentro: bisectrices; equidista de los lados. Circuncentro: mediatrices; equidista de los vértices. Ortocentro: alturas. Baricentro: medianas. Excentro: una bisectriz interior y dos exteriores.',
       condicion: 'el triángulo es cualquiera. O y H quedan dentro solo si es acutángulo; I y G, siempre.',
       voz: 'Nombra el centro por sus líneas, no por su lugar.',
+    },
+    // Así se resuelve (fase 2): el ∠BXC de «Ahora tú» (O, H, I o E según la semilla), con azar(s + 900).
+    resuelve: {
+      pieza: 'geo-figura',
+      generar(s) {
+        const r = azar(s + 900), A = 2 * r.ent(18, 40), cual = ['O', 'H', 'I', 'E'][s % 4], val = anguloBXC(A, cual), x = RESUELVE_BXC[cual];
+        const Ap = verticeCon(A, s % 2 ? 1 : -1);
+        return {
+          enunciado: `En un triángulo acutángulo ABC, ∠A = ${A}°. ¿Cuánto mide el ángulo B${cual}C, donde ${cual} es ${x.nombre.replace(/ [OHIE]( |$)/, '$1')}?`,
+          dibujo: figBXC(Ap, cual, A, false),
+          pasos: [
+            { tipo: 'pide', texto: `Piden ∠B${cual}C: el ángulo con vértice en ${x.nombre}, abierto hacia B y C.` },
+            { tipo: 'datos', texto: `El triángulo es acutángulo y ∠A = ${gr(A)}. Con eso basta: B y C no hacen falta por separado.` },
+            { tipo: 'regla', texto: x.regla, ecuacion: x.ecuacion },
+            { tipo: 'cuentas', texto: 'Reemplazo ∠A en la relación de este centro.', ecuacion: [`∠B${cual}C = ${x.cuenta(A)} = ${gr(val)}`], dibujo: figBXC(Ap, cual, A, true) },
+            { tipo: 'sentido', texto: {
+              O: `El central (${gr(val)}) y el inscrito (${gr(A)}) abren el mismo arco BC, y el central es el mayor. Cuadra.`,
+              H: `Como ∠A es agudo, ∠BHC sale obtuso, y ${gr(A)} + ${gr(val)} = 180°. Cuadra.`,
+              I: `${gr(val)} está entre 90° y 180°: el incentro siempre ve a BC con un ángulo obtuso.`,
+              E: `Con el incentro: ${gr(val)} + ${gr(anguloBXC(A, 'I'))} = 180°. I y E ven a BC con ángulos suplementarios.` }[cual] },
+          ],
+          respuesta: `∠B${cual}C = ${gr(val)}`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Ubica qué centro es y qué ángulo forma con B y C.',
@@ -294,6 +412,14 @@
     titulo: 'Recta y círculo de Euler',
     temas: ['Recta y circunferencia de Euler'],
     pieza: 'geo-figura',
+    // Lee (fase 2): los tres centros y la recta de Euler, sin decir cuánto mide la circunferencia de nueve puntos.
+    lee: {
+      tarjetas: [
+        { titulo: 'Tres centros conocidos', texto: 'Ya conoces el circuncentro O, el baricentro G y el ortocentro H. En un triángulo equilátero los tres caen en el mismo punto. En cualquier otro se separan, y aquí vas a ver cómo.' },
+        { titulo: 'La recta de Euler', texto: 'Leonhard Euler, matemático suizo, probó en 1765 que O, G y H siempre quedan sobre una misma recta. En la figura es la recta verde, y lleva su nombre: la recta de Euler.' },
+        { titulo: 'Qué mirar al jugar', texto: ['Mueve A y lee las dos distancias: ', { v: 'c-i', t: 'OG' }, ', en turquesa, y ', { v: 'c-h', t: 'GH' }, ', en rojo. Las dos cambian. Busca qué se mantiene entre ellas.'] },
+      ],
+    },
     juega: {
       consigna: 'Mueve el vértice A. Mira el circuncentro O, el baricentro G y el ortocentro H, y compara las distancias OG y GH.',
       voz: 'Mueve A. Busca qué se mantiene entre O, G y H.',
@@ -335,6 +461,45 @@
       ecuacion: [{ v: 'c-h', t: 'GH' }, ' = 2 · ', { v: 'c-i', t: 'OG' }, '   ·   ', { llave: ['r₉'], nota: 'nueve puntos', color: 'c-d' }, ' = ', { llave: [{ frac: ['R', '2'] }], nota: 'mitad de R', color: 'c-d' }],
       condicion: 'el triángulo no es equilátero: en él los tres centros coinciden y no hay recta. R es el radio de la circunscrita.',
       voz: 'Tres puntos alineados, en razón 1 : 2. Comprueba el orden O, G, H.',
+    },
+    // Así se resuelve (fase 2): los tres tipos de «Ahora tú» (GH, OH o el radio de nueve puntos), con azar(s + 900).
+    resuelve: {
+      pieza: 'geo-figura',
+      generar(s) {
+        const r = azar(s + 900), d = r.ent(1, 9), t = s % 3;
+        const OG = { v: 'c-i', t: 'OG' }, GH = { v: 'c-h', t: 'GH' };
+        if (t === 2) {
+          const R = 2 * r.ent(3, 15);
+          return {
+            enunciado: `El circunradio de un triángulo mide ${R}. ¿Cuánto mide el radio de su circunferencia de nueve puntos?`,
+            dibujo: { datos: euler(AE, { nueve: true }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el radio de la circunferencia que pasa por los medios de los lados, los pies de las alturas y los medios de AH, BH y CH.' },
+              { tipo: 'datos', texto: `La circunscrita, la que pasa por A, B y C, tiene radio R = ${R}.` },
+              { tipo: 'regla', texto: 'La de nueve puntos es una copia de la circunscrita a escala 1/2: su radio es la mitad de R, sea cual sea la forma del triángulo.', ecuacion: ['r₉ = ', { frac: ['R', '2'] }] },
+              { tipo: 'cuentas', texto: 'Divido el circunradio entre 2.', ecuacion: [`r₉ = ${R} ÷ 2 = ${f(R / 2)}`] },
+              { tipo: 'sentido', texto: `${f(R / 2)} es menor que ${R}: la de nueve puntos es más chica que la circunscrita, como en la figura.` },
+            ],
+            respuesta: `El radio mide ${f(R / 2)}.`,
+          };
+        }
+        const pideGH = t === 0;
+        return {
+          enunciado: pideGH ? ['En la recta de Euler de un triángulo, ', OG, ` = ${d}. ¿Cuánto mide `, GH, '?']
+            : ['En la recta de Euler de un triángulo, ', GH, ` = ${2 * d}. ¿Cuánto mide OH?`],
+          dibujo: { datos: euler(AE), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: pideGH ? ['Piden ', GH, ', la distancia del baricentro al ortocentro.'] : 'Piden OH, la distancia completa del circuncentro al ortocentro.' },
+            { tipo: 'datos', texto: pideGH ? ['Sobre la recta de Euler, ', OG, ` = ${d}: del circuncentro al baricentro.`] : ['Sobre la recta de Euler, ', GH, ` = ${2 * d}: del baricentro al ortocentro.`] },
+            { tipo: 'regla', texto: 'Los tres centros van en el orden O, G, H, y el tramo de G a H es el doble del tramo de O a G.', ecuacion: [GH, ' = 2 · ', OG] },
+            pideGH
+              ? { tipo: 'cuentas', texto: ['Duplico ', OG, '.'], ecuacion: [GH, ` = 2 · ${d} = ${2 * d}`], dibujo: { datos: euler(AE, { num: true }), estado: {} } }
+              : { tipo: 'cuentas', texto: ['Hallo ', OG, ' como la mitad de ', GH, ' y sumo los dos tramos.'], ecuacion: [OG, ` = ${2 * d} ÷ 2 = ${d}   →   OH = ${d} + ${2 * d} = ${3 * d}`], dibujo: { datos: euler(AE, { num: true }), estado: {} } },
+            { tipo: 'sentido', texto: pideGH ? `Entonces OH = ${d} + ${2 * d} = ${3 * d}, y G queda a un tercio del camino de O a H.` : `Comprueba: ${2 * d} es el doble de ${d}, y los dos tramos suman ${3 * d}. Cuadra.` },
+          ],
+          respuesta: pideGH ? [GH, ` = ${2 * d}`] : `OH = ${3 * d}`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Ubica el orden O, G, H y las razones 1 : 2.',
