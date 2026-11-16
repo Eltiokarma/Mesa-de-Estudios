@@ -111,6 +111,15 @@
     titulo: 'La altura, desenrollada',
     temas: ['Funciones seno y coseno'],
     pieza: 'trig-onda',
+    // Lee (fase 2): de dónde sale la onda y cómo se lee el eje x, sin decir qué pasa después de 2π (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Del círculo a la onda', texto: 'En la circunferencia trigonométrica, el seno de un ángulo es la altura del punto que gira, y el coseno, su avance de lado. Si anotas la altura para cada ángulo, una al lado de otra, sale una gráfica.' },
+        { titulo: 'El eje x mide ángulos', texto: ['Aquí ', x_, ' es un ángulo en radianes, puesto a lo ancho. π es media vuelta, unos 3,14 en el eje; π/2 es un cuarto de vuelta y 2π, la vuelta entera.'],
+          ecuacion: ['π ≈ 3,14', '   ·   ', '2π ≈ 6,28'] },
+        { titulo: 'Qué mirar', texto: 'Avanza x y sigue el punto rojo: su altura es el valor de la función. Mira también las dos líneas rojas, en 1 y en −1, y cambia entre seno y coseno.' },
+      ],
+    },
     juega: {
       consigna: 'Avanza x y mira cómo la curva roja registra la altura de seno o de coseno. Las líneas rojas marcan 1 y −1.',
       voz: 'Sigue el punto: ¿alguna vez sale de las líneas rojas?',
@@ -166,6 +175,36 @@
       condicion: 'x en radianes; con grados, el periodo es 360°.',
       voz: 'Primero el dominio, después el rango, al final el periodo.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (quitar vueltas y usar el valor notable), con otra semilla.
+    resuelve: {
+      generar(s) {
+        const rr = azar(s + 900);
+        const base = rr.uno([30, 45, 60, 120, 135, 150, 210, 225, 240, 300, 315, 330]);
+        const k = rr.uno([1, 2, -1, 3]), g = base + 360 * k, fn = s % 2 ? 'sen' : 'cos', F = FN[fn];
+        const bien = exacto(fn, g), xb = base * PI / 180;
+        const cuad = ['primer', 'segundo', 'tercer', 'cuarto'][Math.floor(base / 90)];
+        const signo = F(xb) > 0 ? 'positivo' : 'negativo';
+        const vueltas = Math.abs(k) === 1 ? 'una vuelta' : `${Math.abs(k)} vueltas`;
+        const paso = k > 0 ? ` − ${piQ(2 * k, 1)}` : ` + ${piQ(-2 * k, 1)}`;
+        const onda = { puntos: muestra(F, 0, 2 * PI), color: 'h' };
+        return {
+          enunciado: [`Halla el valor exacto de ${fn}(${piQ(g, 180)}).`],
+          dibujo: { datos: onda1(fn, 360, { curvas: [onda], puntos: [], alt: `Gráfica de ${fn} x en una vuelta, de 0 a 2π` }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden el valor exacto de ${fn} en ${piQ(g, 180)}, un ángulo ${k > 0 ? 'que pasa de una vuelta' : 'negativo'}.` },
+            { tipo: 'datos', texto: ['El ángulo es ', x_, ` = ${piQ(g, 180)}. Una vuelta completa mide 2π.`] },
+            { tipo: 'regla', texto: 'Dar vueltas completas deja al punto del círculo en el mismo lugar: sumar o restar 2π no cambia ni el seno ni el coseno.',
+              ecuacion: [`${fn}(`, x_, ' ± 2π) = ', `${fn} `, x_] },
+            { tipo: 'cuentas', texto: `${k > 0 ? 'Quito' : 'Sumo'} ${vueltas} para caer entre 0 y 2π, y uso el valor notable de ${piQ(base, 180)}.`,
+              ecuacion: [`${piQ(g, 180)}${paso} = ${piQ(base, 180)}   →   ${fn}(${piQ(base, 180)}) = ${bien}`],
+              dibujo: { datos: onda1(fn, base, { curvas: [onda, { puntos: [[xb, 0], [xb, F(xb)]], color: 'o' }],
+                puntos: [{ x: xb, y: F(xb), color: 'h', rotulo: bien, lado: xb > 4 ? 'no' : 'ne' }] }), estado: {} } },
+            { tipo: 'sentido', texto: `${piQ(base, 180)} está en el ${cuad} cuadrante, donde ${fn} es ${signo}; y ${bien} queda entre −1 y 1.` },
+          ],
+          respuesta: [`${fn}(${piQ(g, 180)}) = ${bien}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Quita vueltas completas antes de buscar el valor.',
       generar(sem) {
@@ -205,6 +244,14 @@
     titulo: 'Alto y ancho de la onda',
     temas: ['Amplitud, periodo y frecuencia'],
     pieza: 'trig-onda',
+    // Lee: qué es la altura y qué es el ancho de una onda, sin decir cómo los cambia B (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Ondas de todos los días', texto: 'La corriente de los enchufes de tu casa y el sonido de una quena suben y bajan una y otra vez. Para describir cada una basta decir qué tan alta es y cada cuánto se repite.' },
+        { titulo: 'Alto y ancho', texto: ['La amplitud es la altura de la cresta medida desde el eje. El periodo ', T_, ' es el largo de una onda completa, medido sobre el eje x: en el juego lo marca la llave verde.'] },
+        { titulo: 'Qué mirar', texto: ['En y = ', A_, ' sen(', B_, 'x) hay dos números. Mueve primero ', A_, ' y fíjate en la cresta; después mueve ', B_, ' y fíjate en la llave verde.'] },
+      ],
+    },
     juega: {
       consigna: 'Mueve A y B en y = A sen(Bx). La discontinua es sen x. Mira qué cambia la altura y qué cambia la llave verde.',
       voz: 'Mueve uno solo a la vez.',
@@ -261,6 +308,54 @@
       ecuacion: ['amplitud = |', A_, '|', '   ·   ', { llave: [T_], nota: 'periodo', color: 'c-d' }, ' = ', { frac: ['2π', ['|', B_, '|']] }, '   ·   ', { llave: ['f'], nota: 'frecuencia', color: 'c-d' }, ' = ', { frac: ['1', T_] }],
       condicion: 'A ≠ 0 y B ≠ 0, con x en radianes.',
       voz: 'Alto por un lado, ancho por el otro.',
+    },
+    // Así se resuelve: periodo o rango de A sen(Bx), como en «Ahora tú» (semilla par: periodo; impar: rango).
+    resuelve: {
+      generar(s) {
+        const rr = azar(s + 900);
+        const [p, q] = rr.uno([[2, 1], [3, 1], [4, 1], [1, 2], [1, 3], [2, 3], [3, 2], [1, 4], [6, 1], [5, 2]]);
+        const A = rr.uno([1, 2, 3, 4, 5, -2, -3]), fn = rr.uno(['sen', 'cos']);
+        const Bt = q === 1 ? `${p}x` : p === 1 ? `x/${q}` : `${p}x/${q}`;
+        const expr = `y = ${A === 1 ? '' : A === -1 ? '−' : qt(A) + ' '}${fn}(${Bt})`;
+        const B = p / q, T = 2 * PI * q / p, Tt = piQ(2 * q, p), aA = Math.abs(A), F = fn === 'sen' ? Math.sin : Math.cos;
+        const xmax = Math.max(2 * PI, T), ym = aA + 1;
+        const onda = extra => ({ datos: Object.assign({
+          x: { min: 0, max: xmax, cada: xmax > 4 * PI ? 1 : 2 }, y: { min: -ym, max: ym, paso: 1 },
+          curvas: [{ puntos: muestra(F, 0, xmax), color: null, discontinua: true }, { puntos: muestra(x => A * F(B * x), 0, xmax, 240), color: 'h' }],
+          alt: `Onda ${expr}, con ${fn} x discontinua de referencia`,
+        }, extra), estado: {} });
+        if (s % 2 === 0) {
+          return {
+            enunciado: [`¿Cuál es el periodo de ${expr}?`],
+            dibujo: onda({}),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el periodo ', T_, ': cuánto debe avanzar x para que la onda vuelva a empezar igual.'] },
+              { tipo: 'datos', texto: [`Es una onda de ${fn} con `, A_, ` = ${qt(A)} adelante y `, B_, ` = ${qt(p, q)} multiplicando a x.`] },
+              { tipo: 'regla', texto: ['Una onda de seno o coseno se completa cuando su ángulo avanza 2π. Aquí el ángulo es ', B_, 'x, así que divido 2π entre ', B_, '. La altura ', A_, ' no cuenta.'],
+                ecuacion: [B_, ' ', x_, ' = 2π  ⇒  ', x_, ' = ', { frac: ['2π', B_] }] },
+              { tipo: 'cuentas', texto: 'Divido 2π entre B. Dividir entre una fracción es multiplicar por la fracción volteada.',
+                ecuacion: [T_, ' = ', { frac: ['2π', qt(p, q)] }, ` = ${Tt}`],
+                dibujo: onda({ periodos: [{ de: 0, a: T, y: -ym + 0.45, color: 'd', rotulo: `T = ${Tt}` }] }) },
+              { tipo: 'sentido', texto: B > 1 ? `B = ${qt(p, q)} es mayor que 1: la onda se aprieta, y ${Tt} es menos que 2π.` : `B = ${qt(p, q)} es menor que 1: la onda se estira, y ${Tt} es más que 2π.` },
+            ],
+            respuesta: [T_, ` = ${Tt}`],
+          };
+        }
+        return {
+          enunciado: [`¿Entre qué valores se mueve ${expr}?`],
+          dibujo: onda({}),
+          pasos: [
+            { tipo: 'pide', texto: `Piden el valor más bajo y el más alto que toma ${expr}.` },
+            { tipo: 'datos', texto: [A_, ` = ${qt(A)} multiplica al ${fn}; `, B_, ` = ${qt(p, q)} va dentro, junto a x.`] },
+            { tipo: 'regla', texto: [`El ${fn} de cualquier ángulo va de −1 a 1. Multiplicar por `, A_, ' estira ese tramo hasta |', A_, '|; ', B_, ' solo cambia el ancho.'] },
+            { tipo: 'cuentas', texto: A === 1 ? 'Con A = 1 no hay nada que estirar: los extremos siguen en −1 y 1.' : `Multiplico los extremos −1 y 1 por ${qt(A)}${A < 0 ? ' y ordeno: el signo menos solo los intercambia' : ''}.`,
+              ecuacion: [`−1 ≤ ${fn}(${Bt}) ≤ 1   →   −${aA} ≤ ${expr.slice(4)} ≤ ${aA}`],
+              dibujo: onda({ rectas: [{ y: aA, color: 'h', rotulo: `${aA}` }, { y: -aA, color: 'h', rotulo: `−${aA}` }] }) },
+            { tipo: 'sentido', texto: `La onda sube ${aA} y baja ${aA} desde el eje: el tramo mide ${2 * aA}, el doble de la amplitud.` },
+          ],
+          respuesta: [`de −${aA} a ${aA}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Separa los dos números: cada uno decide una cosa.',
@@ -321,6 +416,15 @@
     titulo: 'Ramas entre asíntotas',
     temas: ['Funciones tangente y cotangente'],
     pieza: 'trig-onda',
+    // Lee: la tangente como cociente y el vocabulario de la gráfica, sin decir hasta dónde llega (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un cociente', texto: 'La tangente es el seno dividido entre el coseno; la cotangente, el coseno entre el seno. Dividir pide una condición: el número de abajo, el denominador, no puede valer cero.',
+          ecuacion: ['tan ', x_, ' = ', { frac: [['sen ', x_], ['cos ', x_]] }, '   ·   ', 'cot ', x_, ' = ', { frac: [['cos ', x_], ['sen ', x_]] }] },
+        { titulo: 'Ramas', texto: 'La gráfica de la tangente no es una sola curva: está partida en trozos que se llaman ramas. Entre una rama y la siguiente hay una línea vertical discontinua.' },
+        { titulo: 'Qué mirar', texto: 'Mueve x de 30° en 30° y lee el valor de abajo. Fíjate en el punto naranja cuando x se acerca a una línea discontinua; luego cambia a cot x.' },
+      ],
+    },
     juega: {
       consigna: 'Elige tangente o cotangente y mueve x. Donde la curva no existe hay una asíntota discontinua.',
       voz: 'Mira qué pasa con el punto cerca de cada asíntota.',
@@ -376,6 +480,42 @@
       condicion: 'k entero; x en radianes. La tangente crece en cada rama y la cotangente decrece.',
       voz: 'Una rama por intervalo; entre ramas, una asíntota.',
     },
+    // Así se resuelve: qué x no está en el dominio de tan x o cot x, como en «Ahora tú» (semilla par: tan; impar: cot).
+    resuelve: {
+      generar(s) {
+        const rr = azar(s + 900), fn = s % 2 ? 'cot' : 'tan', esTan = fn === 'tan';
+        const k = rr.ent(-2, 4);
+        const malo = esTan ? piQ(2 * k + 1, 2) : piQ(k, 1);
+        const buenos = esTan ? [piQ(k, 1), piQ(4 * k + 1, 4), piQ(3 * k + 1, 3)] : [piQ(2 * k + 1, 2), piQ(4 * k + 1, 4), piQ(6 * k + 1, 6)];
+        const xm = esTan ? (2 * k + 1) * PI / 2 : k * PI;
+        const xb = esTan ? [k * PI, (4 * k + 1) * PI / 4, (3 * k + 1) * PI / 3] : [(2 * k + 1) * PI / 2, (4 * k + 1) * PI / 4, (6 * k + 1) * PI / 6];
+        const pos = rr.ent(0, 3), lista = buenos.slice(0, pos).concat([malo], buenos.slice(pos));
+        const den = esTan ? 'cos' : 'sen', F = esTan ? tanF : cotF, asi = [xm, xm + PI];
+        const ini = piQ(esTan ? 2 * k : 2 * k - 1, 2), fin = piQ(esTan ? 2 * k + 3 : 2 * k + 2, 2);
+        const plano = extra => ({ datos: Object.assign({
+          x: { min: xm - PI / 2, max: xm + PI, cada: 2 }, y: { min: -3, max: 3, paso: 1 },
+          asintotas: asi.map(a => ({ x: a })),
+          curvas: [{ puntos: ramas(F, xm - PI / 2, xm + PI, asi), color: 'h' }],
+          alt: `Gráfica de ${fn} x entre ${ini} y ${fin}, con asíntotas en ${malo} y ${fin}`,
+        }, extra), estado: {} });
+        return {
+          enunciado: [`¿Cuál de estos valores de x no está en el dominio de y = ${fn} x: ${lista.join('; ')}?`],
+          dibujo: plano({}),
+          pasos: [
+            { tipo: 'pide', texto: `Piden el único de los cuatro valores donde ${fn} x no existe.` },
+            { tipo: 'datos', texto: `${fn} x es un cociente: ${esTan ? 'seno entre coseno' : 'coseno entre seno'}. El denominador es ${den} x.`,
+              ecuacion: [`${fn} `, x_, ' = ', { frac: [[esTan ? 'sen ' : 'cos ', x_], [`${den} `, x_]] }] },
+            { tipo: 'regla', texto: `Un cociente no existe si su denominador vale 0. ${esTan ? 'El coseno se anula en π/2 más un múltiplo de π' : 'El seno se anula en los múltiplos de π'}: ahí hay asíntotas.`,
+              ecuacion: [x_, esTan ? ' ≠ π/2 + kπ' : ' ≠ kπ'] },
+            { tipo: 'cuentas', texto: `Pruebo ${den} x en cada valor. Solo en ${malo} da 0; en los otros tres no se anula.`,
+              ecuacion: [`${den}(${malo}) = 0`, '   ·   ', `${den}(${buenos[1]}) = ${exacto(den, (4 * k + 1) * 45)}`],
+              dibujo: plano({ puntos: xb.map(x => ({ x, y: F(x), color: 'o' })) }) },
+            { tipo: 'sentido', texto: `${malo} es ${esTan ? 'un múltiplo impar de π/2' : 'un múltiplo entero de π'}: cae justo sobre una línea discontinua, donde no hay curva.` },
+          ],
+          respuesta: [`x = ${malo}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Busca dónde se anula el denominador.',
       generar(sem) {
@@ -419,6 +559,15 @@
     titulo: 'Copas fuera de la franja',
     temas: ['Funciones secante y cosecante'],
     pieza: 'trig-onda',
+    // Lee: secante y cosecante como recíprocos y la forma de su gráfica, sin decir qué valores no toman (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Uno entre la base', texto: 'La secante es 1 dividido entre el coseno, y la cosecante es 1 dividido entre el seno. Son recíprocos: el coseno es la base de la secante, y el seno, la de la cosecante.',
+          ecuacion: ['sec ', x_, ' = ', { frac: ['1', ['cos ', x_]] }, '   ·   ', 'csc ', x_, ' = ', { frac: ['1', ['sen ', x_]] }] },
+        { titulo: 'Una fila de copas', texto: 'Su gráfica parece una fila de copas: unas boca arriba y otras boca abajo, separadas por líneas verticales discontinuas. En el juego, la onda discontinua es su base.' },
+        { titulo: 'Qué mirar', texto: 'Cambia entre sec x y cos x, y entre csc x y sen x. Mira en qué puntos la copa toca a su base y qué hay donde la base vale cero.' },
+      ],
+    },
     juega: {
       consigna: 'Elige secante o cosecante. La discontinua es su base: sec x = 1/cos x y csc x = 1/sen x. Mira dónde nacen las copas.',
       voz: 'Compara cada copa con la onda de su base.',
@@ -463,6 +612,40 @@
       ecuacion: ['Ran = ', { llave: ['⟨−∞, −1] ∪ [1, +∞⟩'], nota: 'sin la franja', color: 'c-h' }, '   ·   ', T_, ' = 2π', '   ·   ', 'sec: ', x_, ' ≠ π/2 + kπ', '   ·   ', 'csc: ', x_, ' ≠ kπ'],
       condicion: 'k entero; x en radianes.',
       voz: 'La franja entre −1 y 1 queda vacía.',
+    },
+    // Así se resuelve: rango de A sec x + D o A csc x + D, como en «Ahora tú» (semilla par: sec; impar: csc).
+    resuelve: {
+      generar(s) {
+        const rr = azar(s + 900);
+        const A = rr.uno([1, 2, 3, 4, 5]), D = rr.uno([0, 1, 2, -1, -2, 3]), fn = s % 2 ? 'csc' : 'sec';
+        const expr = `y = ${A === 1 ? '' : A + ' '}${fn} x${D ? ` ${D < 0 ? '−' : '+'} ${Math.abs(D)}` : ''}`;
+        const Rg = (a, b) => `⟨−∞, ${qt(a)}] ∪ [${qt(b)}, +∞⟩`;
+        const D_ = { v: 'c-f', t: 'D' }, base = fn === 'sec' ? 'cos' : 'sen', F = fn === 'sec' ? secF : cscF;
+        const lo = D - A, hi = D + A, mas = D < 0 ? `− ${-D}` : `+ ${D}`;
+        const plano = franja => ({ datos: {
+          x: { min: -PI / 2, max: 2 * PI, cada: 2 }, y: { min: lo - 3, max: hi + 3, paso: hi - lo + 6 > 10 ? 2 : 1 },
+          asintotas: ASI2[fn].map(a => ({ x: a })),
+          rectas: franja ? [{ y: hi, color: 'h', rotulo: qt(hi) }, { y: lo, color: 'h', rotulo: qt(lo) }] : [],
+          franjas: franja ? [{ eje: 'y', de: lo, a: hi, color: 'h' }] : [],
+          curvas: [{ puntos: ramas(x => A * F(x) + D, -PI / 2, 2 * PI, ASI2[fn]), color: 'h' }],
+          alt: `Gráfica de ${expr}: copas con asíntotas donde ${base} x vale cero${franja ? `; entre ${qt(lo)} y ${qt(hi)} no hay curva` : ''}`,
+        }, estado: {} });
+        return {
+          enunciado: [`¿Cuál es el rango de ${expr}?`],
+          dibujo: plano(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el rango: todos los valores que puede tomar ', y_, '.'] },
+            { tipo: 'datos', texto: D ? [A_, ` = ${A} multiplica a ${fn} x y `, D_, ` = ${qt(D)} se suma al final.`] : [A_, ` = ${A} multiplica a ${fn} x; no se suma nada (`, D_, ' = 0).'] },
+            { tipo: 'regla', texto: `${fn} x es 1 entre ${base} x, y ${base} x va de −1 a 1. Por eso ${fn} x nunca cae entre −1 y 1.`,
+              ecuacion: [`${fn} `, x_, ' ≤ −1  o  ', `${fn} `, x_, ' ≥ 1'] },
+            { tipo: 'cuentas', texto: ['Multiplico por ', A_, ' y después sumo ', D_, ': así se mueven los dos bordes de la franja vacía.'],
+              ecuacion: [`${A}(−1) ${mas} = ${qt(lo)}`, '   ·   ', `${A}(1) ${mas} = ${qt(hi)}`],
+              dibujo: plano(true) },
+            { tipo: 'sentido', texto: `Pruebo x = ${fn === 'sec' ? '0' : 'π/2'}: ahí ${fn} x vale 1 e y = ${qt(hi)}, justo el borde de arriba. Entre ${qt(lo)} y ${qt(hi)} no hay curva.` },
+          ],
+          respuesta: [`Ran = ${Rg(lo, hi)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Las copas empiezan en ±|A|; luego se suma D.',
@@ -510,6 +693,14 @@
     titulo: 'El periodo depende de la función',
     temas: ['Periodo de funciones generalizadas'],
     pieza: 'trig-onda',
+    // Lee: el trabajo de cada número en la forma general, sin decir cómo sale el periodo de una suma (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'La forma del examen', texto: 'En el examen aparecen funciones como y = 3 sen(2x + π/4) − 1. Cada número tiene su trabajo: uno estira la altura, otro cambia el ancho, otro corre la onda de lado y otro la sube o la baja.' },
+        { titulo: 'Tres familias', texto: 'Aquí comparas tres formas: sen Bx, tan Bx y |sen Bx|. Las barras del valor absoluto toman el seno y voltean hacia arriba todo lo que estaba debajo del eje.' },
+        { titulo: 'Qué mirar', texto: 'Deja el mismo B y cambia de forma. Mira dónde termina la llave verde en cada caso: ahí la gráfica vuelve a empezar igual por primera vez.' },
+      ],
+    },
     juega: {
       consigna: 'Elige la forma y el coeficiente B. La llave verde mide un periodo. Compara seno, tangente y valor absoluto con el mismo B.',
       voz: 'Con el mismo B, ¿todas se repiten igual?',
@@ -561,6 +752,67 @@
       ecuacion: ['sen, cos:  ', T_, ' = ', { llave: [{ frac: ['2π', ['|', B_, '|']] }], nota: 'solo B cuenta', color: 'c-d' }, '   ·   ', 'tan, cot:  ', T_, ' = ', { frac: ['π', ['|', B_, '|']] }],
       condicion: 'A ≠ 0 y B ≠ 0; C y el desplazamiento vertical D no cambian el periodo. Sin múltiplo común, no hay periodo.',
       voz: 'Ni la altura ni el corrimiento cambian el periodo.',
+    },
+    // Así se resuelve: el periodo de una forma general o de una suma, como en «Ahora tú» (tres tipos según la semilla).
+    resuelve: {
+      generar(s) {
+        const rr = azar(s + 900), tipo = s % 3;
+        const D_ = { v: 'c-f', t: 'D' };
+        if (tipo === 2) {
+          const [m, n] = rr.uno([[2, 3], [2, 4], [4, 6], [3, 6], [2, 5], [6, 9], [4, 10], [3, 4]]);
+          const g = mcd(m, n), [f1, f2] = rr.uno([['sen', 'sen'], ['sen', 'cos'], ['cos', 'cos']]);
+          const F1 = f1 === 'sen' ? Math.sin : Math.cos, F2 = f2 === 'sen' ? Math.sin : Math.cos;
+          const plano = extra => ({ datos: Object.assign({
+            x: { min: 0, max: 2 * PI, cada: 2 }, y: { min: -2.5, max: 2.5, paso: 1 },
+            curvas: [{ puntos: muestra(x => F1(m * x), 0, 2 * PI, 240), color: 'i', discontinua: true },
+              { puntos: muestra(x => F2(n * x), 0, 2 * PI, 240), color: null, discontinua: true },
+              { puntos: muestra(x => F1(m * x) + F2(n * x), 0, 2 * PI, 360), color: 'h' }],
+            alt: `Suma de ${f1} ${m}x y ${f2} ${n}x entre 0 y 2π`,
+          }, extra), estado: {} });
+          return {
+            enunciado: [`¿Cuál es el periodo de y = ${f1} ${m}x + ${f2} ${n}x?`],
+            dibujo: plano({}),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el periodo ', T_, ' de la suma: el primer avance de x en que las dos ondas vuelven a empezar juntas.'] },
+              { tipo: 'datos', texto: `${f1} ${m}x se repite cada ${piQ(2, m)}, y ${f2} ${n}x, cada ${piQ(2, n)}.` },
+              { tipo: 'regla', texto: 'Una suma se repite cuando sus dos partes se repiten a la vez: busco el menor múltiplo común de los dos periodos.' },
+              { tipo: 'cuentas', texto: 'Cuento cuántas veces cabe cada periodo hasta que los dos coinciden.',
+                ecuacion: [`${m / g} · ${piQ(2, m)} = ${n / g} · ${piQ(2, n)} = ${piQ(2, g)}`],
+                dibujo: plano({ periodos: [{ de: 0, a: 2 * PI / g, y: -2.2, color: 'd', rotulo: `T = ${piQ(2, g)}` }] }) },
+              { tipo: 'sentido', texto: `${piQ(2, g)} es múltiplo de los dos periodos. ${piQ(2, Math.max(m, n))}, el más corto, solo le sirve a una de las ondas.` },
+            ],
+            respuesta: [T_, ` = ${piQ(2, g)}`],
+          };
+        }
+        const B = rr.uno([2, 3, 4, 5, 6]), A = rr.uno([2, 3, 5, -2, -4]), C = rr.uno(['π/3', 'π/4', 'π/6', 'π/2']), D = rr.uno([1, 2, -1, -3]);
+        const fn = tipo === 0 ? rr.uno(['sen', 'cos']) : rr.uno(['tan', 'cot']), base = tipo === 0 ? 2 : 1;
+        const expr = `y = ${qt(A)} ${fn}(${B}x + ${C}) ${D < 0 ? '−' : '+'} ${Math.abs(D)}`;
+        const Cn = { 'π/3': PI / 3, 'π/4': PI / 4, 'π/6': PI / 6, 'π/2': PI / 2 }[C];
+        const Fb = { sen: Math.sin, cos: Math.cos, tan: tanF, cot: cotF }[fn], Fx = x => A * Fb(B * x + Cn) + D;
+        const asi = [];
+        if (tipo === 1) for (let j = -2; j <= 2 * B + 2; j++) { const a = ((fn === 'tan' ? PI / 2 : 0) + j * PI - Cn) / B; if (a > 1e-6 && a < 2 * PI - 1e-6) asi.push(a); }
+        const ylo = tipo === 0 ? D - Math.abs(A) - 1 : D - 4, yhi = tipo === 0 ? D + Math.abs(A) + 1 : D + 4;
+        const plano = extra => ({ datos: Object.assign({
+          x: { min: 0, max: 2 * PI, cada: 2 }, y: { min: ylo, max: yhi, paso: yhi - ylo > 10 ? 2 : 1 },
+          asintotas: asi.map(a => ({ x: a })),
+          curvas: [{ puntos: tipo === 1 ? ramas(Fx, 0, 2 * PI, asi, 30) : muestra(Fx, 0, 2 * PI, 300), color: 'h' }],
+          alt: `Gráfica de ${expr} entre 0 y 2π`,
+        }, extra), estado: {} });
+        return {
+          enunciado: [`¿Cuál es el periodo de ${expr}?`],
+          dibujo: plano({}),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el periodo ', T_, ': el ancho de una onda completa, medido sobre el eje x.'] },
+            { tipo: 'datos', texto: [`La función es ${fn}, con `, A_, ` = ${qt(A)}, `, B_, ` = ${B}, C = ${C} y `, D_, ` = ${qt(D)}.`] },
+            { tipo: 'regla', texto: ['Seno y coseno se repiten cada 2π; tangente y cotangente, cada π. Ese periodo base se divide entre |', B_, '|. ', A_, ', C y ', D_, ' no cambian el ancho.'] },
+            { tipo: 'cuentas', texto: `Uso el periodo base de ${fn}, ${piQ(base, 1)}, y lo divido entre ${B}.`,
+              ecuacion: [T_, ' = ', { frac: [piQ(base, 1), `${B}`] }, ` = ${piQ(base, B)}`],
+              dibujo: plano({ periodos: [{ de: 0, a: base * PI / B, y: ylo + 0.4, color: 'd', rotulo: `T = ${piQ(base, B)}` }] }) },
+            { tipo: 'sentido', texto: `Con ${B}x la gráfica se repite ${B} veces más rápido: en ${piQ(base, 1)} caben justo ${B} periodos de ${piQ(base, B)}.` },
+          ],
+          respuesta: [T_, ` = ${piQ(base, B)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Identifica la función antes de dividir.',
