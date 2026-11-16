@@ -45,6 +45,14 @@
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
   const texto = (frs, extra = []) => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Texto', modo: 'tarjeta', fragmentos: frs.map(([id, t]) => ({ id, t })) }, ...extra] });
   const conclusion = t => ({ id: 'c', titulo: 'Conclusión', modo: 'tarjeta', fragmentos: [{ id: 'c1', t }] });
+  // Azar con semilla (el mismo de aritmetica/razones-y-proporciones.js): «Así se resuelve» elige con azar(s + 900).
+  function azar(s) {
+    let q = (s * 2654435761 + 12345) >>> 0;
+    const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+    return r;
+  }
+  // El primer valor de semillas seguidas cae casi siempre en el mismo tramo: se descarta para que salgan todos los ítems.
+  const elegir = (banco, s) => { const r = azar(s + 900); r(); return banco[Math.floor(r() * banco.length)]; };
 
   // ---------- Idea 1: necesaria o probable ----------
   // Cambia: la conclusión que se prueba. Permanece: el texto de la inscripción. Progresa: la fuerza del respaldo
@@ -71,11 +79,44 @@
     if (!usa(k, f)) return [impl(`La ${n} no la sostiene`), ' · busca otra'];
     return [corto(CON[k].sello[1] === 'd' ? impl : ev, CON[k].dice), otras.length ? ` · con la ${otras.join(' y la ')}` : ''];
   }
+  // Banco de «Así se resuelve» (propio, distinto del de «Ahora tú»): frases, conclusión, fuerza, frases que la sostienen
+  // y el razonamiento de cada paso.
+  const RES_FUERZA = [
+    { frs: [['a', 'Todas las tiendas del jirón Lima cierran a las nueve.'], ['b', 'La librería Puno es una tienda del jirón Lima.']],
+      c: 'La librería Puno cierra a las nueve.', ok: 'Necesaria', marcas: { a: 'i', b: 'i' }, por: 'las dos frases juntas la obligan.',
+      datos: 'Dos frases: una regla para todas las tiendas del jirón y el dato de que la librería es una de ellas.',
+      aplica: 'Si todas cierran a las nueve y la librería es una de esas tiendas, no hay forma de que cierre a otra hora.',
+      sentido: '¿Y si fuera solo probable? No: «todas» no deja excepciones. Ningún patrón puede cambiar aquí; la conclusión no puede fallar.' },
+    { frs: [['a', 'Los últimos seis años, el río Coata se desbordó en marzo.']],
+      c: 'El próximo marzo, el río Coata se desbordará.', ok: 'Probable', marcas: { a: 'i' }, por: 'seis marzos seguidos la hacen esperable, no segura.',
+      datos: 'Una sola frase: lo que pasó con el río en seis marzos seguidos. Nada dice qué pasará después.',
+      aplica: 'Seis casos iguales forman un patrón, y el patrón hace esperable el séptimo. Pero un año con menos lluvia lo rompería.',
+      sentido: '¿Y si fuera necesaria? No: el texto habla del pasado. Un patrón da buenas razones, pero no garantiza el próximo año.' },
+    { frs: [['a', 'Todos los socios de la cooperativa venden quinua.'], ['b', 'Marta vende quinua.']],
+      c: 'Marta es socia de la cooperativa.', ok: 'Sin respaldo', marcas: { a: 'd', b: 'd' }, por: 'vender quinua no prueba ser socia.',
+      datos: 'Dos frases: los socios venden quinua, y Marta vende quinua. La conclusión va en sentido contrario.',
+      aplica: 'La 1 dice que los socios venden quinua, no que solo ellos la venden. Marta puede venderla sin ser socia.',
+      sentido: 'Parece necesaria porque usa las dos frases, pero las usa al revés. Muchas personas venden quinua fuera de la cooperativa.' },
+    { frs: [['a', 'Jorge entrena fútbol tres veces por semana.']],
+      c: 'Jorge jugará en la selección de Puno.', ok: 'Sin respaldo', marcas: { a: 'd' }, por: 'el texto no habla de ninguna selección.',
+      datos: 'Una frase: cuántas veces entrena Jorge. No dice qué tan bien juega ni si alguien lo eligió.',
+      aplica: 'Entrenar seguido no lleva a la selección: el texto no trae ningún patrón ni regla que conecte las dos cosas.',
+      sentido: '¿Y si fuera probable? Para eso haría falta un patrón en el texto, como otros que entrenaron así y entraron. No lo hay.' },
+  ];
   const deduccion = {
     id: 'necesaria-probable',
     titulo: 'Necesaria, probable o sin respaldo',
     temas: ['Inferencia deductiva e inductiva'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué es inferir, premisa y conclusión, y qué mirar. No dice qué hace probable a una conclusión
+    // (eso lo descubre en Predice, con la laguna).
+    lee: {
+      tarjetas: [
+        { titulo: 'Sacar lo que no se dice', texto: 'Subes a la combi en Juliaca y todos traen el paraguas mojado. Nadie te dice nada, pero piensas: «afuera llueve». Eso es inferir: sacar una idea nueva a partir de lo que sí ves o lees.' },
+        { titulo: 'Premisas y conclusión', texto: 'Las frases de las que partes se llaman premisas. Lo que sacas de ellas es la conclusión. En el examen, el texto trae las premisas y te preguntan qué conclusión aguantan y cuánto.' },
+        { titulo: 'Qué mirar', texto: 'En el juego hay tres conclusiones y un texto de tres frases. Lleva el círculo turquesa por cada frase y mira cuáles se marcan con cada conclusión y qué sello recibe.' },
+      ],
+    },
     juega: {
       consigna: 'Prueba tres conclusiones con el texto. Mira qué frases usa cada una y qué tan segura es.',
       voz: 'Señala qué frase permite sostenerla.',
@@ -114,6 +155,28 @@
       ecuacion: [{ llave: [ev('premisas'), ' ⇒ ', concl('necesaria')], nota: 'deducción', color: 'c-o' }, '   ·   ', { llave: [ev('casos'), ' → ', impl('probable')], nota: 'inducción', color: 'c-d' }],
       condicion: 'se señala qué frase la sostiene; que algo pudiera ser cierto no basta.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (qué tan respaldada está una conclusión), con un banco
+    // propio para no regalar sus casos. Los pasos se arman con los campos de cada ítem.
+    resuelve: {
+      pieza: 'rv-texto',
+      generar(s) {
+        const b = elegir(RES_FUERZA, s), fig = estado => ({ datos: texto(b.frs, [conclusion(b.c)]), estado });
+        const color = { Necesaria: ev, Probable: impl, 'Sin respaldo': sin }[b.ok], sello = { Necesaria: 'i', Probable: 'd', 'Sin respaldo': 'h' }[b.ok];
+        return {
+          enunciado: `¿Qué tan respaldada está por el texto la conclusión «${b.c.replace(/\.$/, '')}»?`,
+          dibujo: fig({ marcas: { c1: 'o' } }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la fuerza de la conclusión: ', ev('necesaria'), ', ', impl('probable'), ' o ', sin('sin respaldo'), '.'] },
+            { tipo: 'datos', texto: b.datos },
+            { tipo: 'regla', texto: 'Me pregunto si podría fallar con el texto verdadero. Si no puede, es necesaria; si un patrón la vuelve esperable, probable; si ninguna frase la sostiene, no tiene respaldo.' },
+            { tipo: 'aplica', texto: b.aplica, ecuacion: [ev('texto'), ' → ', color(b.ok.toLowerCase())],
+              dibujo: fig({ marcas: Object.assign({ c1: sello === 'h' ? 'h' : 'o' }, b.marcas), sellos: { c: { t: b.ok, c: sello } }, nuevo: ['c'] }) },
+            { tipo: 'sentido', texto: b.sentido },
+          ],
+          respuesta: [color(b.ok), `: ${b.por}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const B = [
@@ -147,11 +210,39 @@
   // El juego y «Mira» usan la misma figura: la oración y, debajo, el banco de palabras (hallazgo 9).
   const BANCO = [['nada', 'sin palabra'], ['volvio', 'volvió a'], ['siempre', 'como siempre']];
   const figVari = k => texto(VARI[k].frs, [{ id: 'banco', titulo: 'Prueba con', modo: 'parrafo', fragmentos: BANCO.map(([v, t]) => ({ id: `p-${v}`, t })) }]);
+  // Banco de «Así se resuelve» (propio, distinto del de «Ahora tú»): oración, palabra que carga lo supuesto y pasos.
+  const RES_IMPL = [
+    { o: 'Mi prima sigue trabajando en el mercado Túpac Amaru.', w: 'sigue', ok: 'Que ya trabajaba allí desde antes',
+      datos: 'Lo explícito: hoy mi prima trabaja en el mercado. La palabra que carga algo más es «sigue».',
+      aplica: '«Sigue» solo tiene sentido si ya trabajaba allí antes. Eso es lo que la oración da por cierto.',
+      sentido: '¿Y «que le gusta su trabajo»? Podría ser, pero ninguna palabra lo supone: la oración tiene sentido sin eso.' },
+    { o: 'Otra vez se fue la luz en el barrio.', w: 'Otra vez', ok: 'Que la luz ya se había ido antes',
+      datos: 'Lo explícito: hoy se fue la luz en el barrio. La palabra que carga algo más es «otra vez».',
+      aplica: '«Otra vez» necesita al menos una vez anterior. La oración da por cierto que la luz ya se había ido antes.',
+      sentido: '¿Y «que se va todos los días»? Es agregar de más: «otra vez» pide una vez antes, no una costumbre diaria.' },
+    { o: 'Mi hermano ya sabe manejar.', w: 'ya', ok: 'Que antes no sabía manejar',
+      datos: 'Lo explícito: hoy mi hermano sabe manejar. La palabra que carga algo más es «ya».',
+      aplica: '«Ya» marca un cambio: ahora sabe, y antes no. La oración da por cierto que hubo un tiempo en que no sabía.',
+      sentido: '¿Y «que tiene carro propio»? Saber manejar no supone tener carro. Ninguna palabra de la oración lo carga.' },
+    { o: 'Rosa tampoco fue a la reunión de padres.', w: 'tampoco', ok: 'Que alguien más no fue a la reunión',
+      datos: 'Lo explícito: Rosa no fue a la reunión de padres. La palabra que carga algo más es «tampoco».',
+      aplica: '«Tampoco» suma a Rosa a otros que ya faltaron. La oración da por cierto que alguien más no fue.',
+      sentido: '¿Y «que la reunión se canceló»? Si se hubiera cancelado, nadie habría ido; la oración no lo supone. Solo cuenta quién faltó.' },
+  ];
   const implicito = {
     id: 'implicito',
     titulo: 'Lo que se dice sin decir',
     temas: ['Información implícita'],
     pieza: 'rv-texto',
+    // Lee (fase 2): explícito e implícito, dónde se esconde lo implícito y qué mirar. No dice qué supone «ya no»
+    // (eso lo descubre en Predice, con doña Elena).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dicho y no dicho', texto: 'Cuando alguien habla, no lo escribe todo. Una parte de lo que comunica va en sus palabras: es lo explícito. Otra parte se da por cierta sin decirla: es lo implícito.' },
+        { titulo: 'Palabras chiquitas', texto: 'En el examen, lo implícito suele estar en palabras cortas que se leen de corrido, sin pensar. Por eso conviene leer despacio cada palabra de la oración, no solo los nombres y los verbos.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, una oración sobre Juan cambia según la palabra que entra. Lleva el círculo naranja a cada palabra de «Prueba con» y mira si cambia el sello, aunque el hecho de hoy sea el mismo.' },
+      ],
+    },
     juega: {
       consigna: 'Cambia una palabra de la oración. Mira qué da por supuesto el texto aunque no lo diga.',
       voz: 'Una sola palabra puede cargar información.',
@@ -186,6 +277,27 @@
       ecuacion: [ev('lo escrito'), ' + ', { llave: [impl('lo supuesto')], nota: 'no está escrito', color: 'c-d' }, ' = lo que comunica'],
       condicion: 'lo implícito sale de una palabra o frase concreta del texto; si no hay de dónde sacarlo, no está.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (qué da por supuesto una oración), con un banco propio.
+    resuelve: {
+      pieza: 'rv-texto',
+      generar(s) {
+        const b = elegir(RES_IMPL, s), [antes, despues] = b.o.split(b.w);
+        const fig = estado => ({ datos: texto([...(antes.trim() ? [['a', antes.trim()]] : []), ['w', b.w], ['b', despues.trim()]]), estado });
+        return {
+          enunciado: `¿Qué da por supuesto la oración «${b.o.replace(/\.$/, '')}», aunque no lo diga?`,
+          dibujo: fig({}),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden lo ', impl('implícito'), ': lo que la oración da por cierto sin escribirlo.'] },
+            { tipo: 'datos', texto: b.datos, dibujo: fig({ marcas: { b: 'i' } }) },
+            { tipo: 'regla', texto: 'Busco la palabra que carga algo más que el hecho. Lo supuesto sale de esa palabra; no le agrego nada que la oración no necesite.' },
+            { tipo: 'aplica', texto: b.aplica, ecuacion: [impl(b.w), ' → ', ev('lo supuesto')],
+              dibujo: fig({ marcas: { b: 'i', w: 'd' }, sellos: { o: { t: 'Hay algo implícito', c: 'd' } }, nuevo: ['w', 'o'] }) },
+            { tipo: 'sentido', texto: b.sentido },
+          ],
+          respuesta: [impl(b.ok)],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const B = [
@@ -213,11 +325,43 @@
   // Debe verse: que la intención (convocar) solo se ve uniendo las partes.
   const AVI = [['p1', 'Vecinos: el parque se llenó de basura después de la fiesta.'], ['p2', 'Los niños ya no pueden jugar allí.'], ['p3', 'Los esperamos el sábado a las 8 con escobas y bolsas.']];
   const PARTE = { p1: 'Presenta el problema', p2: 'Muestra por qué importa', p3: 'Pide una acción: ahí está la intención' };
+  // Banco de «Así se resuelve» (propio, distinto del de «Ahora tú»): tres partes, la intención y los pasos.
+  const RES_INTENCION = [
+    { tema: 'las vacunas', partes: ['Este mes, la posta vacuna gratis contra el sarampión.', 'Muchos niños del barrio aún no tienen su dosis.', 'Lleve a sus hijos antes del 30.'],
+      ok: 'Que los padres lleven a vacunar a sus hijos', corto: 'vacunar', sello: 'Pide vacunar',
+      datos: 'Tres partes: la 1 da una oferta, la 2 un problema y la 3 se dirige a los padres con un pedido.',
+      aplica: 'La oferta y el problema preparan el cierre: «lleve a sus hijos». Unidas, las tres piden vacunarlos.',
+      sentido: '¿Y «informar que la vacuna es gratis»? Eso hace la parte 1 sola. El texto completo no se queda en informar: pide llevarlos.' },
+    { tema: 'el equipo de vóley', partes: ['El equipo de vóley del colegio ganó el torneo regional.', 'Entrenó cada tarde durante seis meses.', 'Este viernes lo recibimos en el patio: ¡no faltes!'],
+      ok: 'Invitar a recibir al equipo el viernes', corto: 'invitar', sello: 'Convoca',
+      datos: 'Tres partes: la 1 cuenta un triunfo, la 2 el esfuerzo detrás y la 3 habla directo al lector: «¡no faltes!».',
+      aplica: 'El triunfo y el esfuerzo dan motivos para ir. El cierre los convierte en una invitación al patio el viernes.',
+      sentido: '¿Y «contar cómo ganó el torneo»? Las partes 1 y 2 cuentan, pero el texto termina llamando a ir. Ese llamado le da el sentido.' },
+    { tema: 'las botellas', partes: ['Una botella de plástico tarda siglos en desaparecer.', 'En el lago, muchas quedan atrapadas entre la totora.', 'Lleva tu tomatodo y deja la botella descartable.'],
+      ok: 'Convencer de dejar las botellas descartables', corto: 'convencer', sello: 'Busca convencer',
+      datos: 'Tres partes: la 1 da un dato, la 2 un daño cercano y la 3 le dice al lector qué hacer.',
+      aplica: 'El dato y el daño son razones; el cierre pide un cambio de costumbre. Unidas, buscan convencer de dejar la botella.',
+      sentido: '¿Y «informar cuánto dura el plástico»? Solo es la parte 1. Leído entero, el texto usa ese dato para convencer.' },
+    { tema: 'la helada', partes: ['En junio llegan las heladas al altiplano.', 'Este año se esperan noches de diez grados bajo cero.', 'Abrigue a niños y ancianos, y cubra a sus animales.'],
+      ok: 'Pedir que se protejan de la helada', corto: 'protegerse', sello: 'Pide protegerse',
+      datos: 'Tres partes: la 1 dice qué llega, la 2 qué tan fuerte será y la 3 da órdenes: «abrigue», «cubra».',
+      aplica: 'Las dos primeras avisan del peligro; la tercera dice qué hacer. Unidas, piden protegerse de la helada.',
+      sentido: '¿Y «informar la temperatura de junio»? Es solo la parte 2. Los verbos del cierre muestran que el texto pide actuar.' },
+  ];
   const intencion = {
     id: 'intencion-global',
     titulo: 'La intención sale del todo',
     temas: ['Inferencia de la intención', 'Inferencia holística'],
     pieza: 'rv-texto',
+    // Lee (fase 2): para qué se escribe un texto, el sentido global y qué mirar. No dice dónde se lee la intención
+    // (eso lo descubre en Predice, con el texto de la vecina).
+    lee: {
+      tarjetas: [
+        { titulo: 'Para qué se escribe', texto: 'Todo texto se escribe para algo. El afiche de la feria de la Candelaria quiere que vayas; una receta, que cocines; una noticia, que te enteres. Ese para qué es la intención del texto.' },
+        { titulo: 'El sentido global', texto: 'El sentido global es lo que comunica el texto entero, leído de principio a fin. Es como decir en una línea qué quiso lograr quien lo escribió con la gente que lo lee.' },
+        { titulo: 'Qué mirar', texto: 'En el juego hay un aviso de vecinos con tres partes. Lleva el círculo turquesa a cada una y lee qué aporta. Recién después decide qué busca el aviso completo.' },
+      ],
+    },
     juega: {
       consigna: 'Marca cada parte del aviso. Mira qué aporta cada una y qué busca el texto completo.',
       voz: 'Ninguna parte sola dice todo lo que busca.',
@@ -251,6 +395,27 @@
       ecuacion: [ev('partes'), ' integradas → ', { llave: [impl('intención')], nota: 'lo que busca', color: 'c-d' }],
       condicion: 'se apoya en señales del texto (a quién habla, qué pide, cómo cierra); sin ellas, es una suposición.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (qué busca un texto leído completo), con un banco propio.
+    // El texto va partido en sus tres partes para marcar qué aporta cada una.
+    resuelve: {
+      pieza: 'rv-texto',
+      generar(s) {
+        const b = elegir(RES_INTENCION, s), fig = estado => ({ datos: texto(b.partes.map((t, k) => [`p${k + 1}`, t])), estado });
+        return {
+          enunciado: `Leído completo, ¿qué busca el texto sobre ${b.tema}?`,
+          dibujo: fig({}),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la ', impl('intención'), `: lo que el texto sobre ${b.tema} busca lograr en quien lo lee.`] },
+            { tipo: 'datos', texto: b.datos, dibujo: fig({ marcas: { p1: 'i', p2: 'i' } }) },
+            { tipo: 'regla', texto: 'Una frase sola no basta. Junto todas las partes y miro a quién le habla el texto, qué pide o propone y cómo cierra.' },
+            { tipo: 'aplica', texto: b.aplica, ecuacion: [ev('1'), ' + ', ev('2'), ' + ', impl('3'), ' → ', concl(b.corto)],
+              dibujo: fig({ marcas: { p1: 'i', p2: 'i', p3: 'd' }, sellos: { o: { t: b.sello, c: 'd' } }, nuevo: ['p3', 'o'] }) },
+            { tipo: 'sentido', texto: b.sentido },
+          ],
+          respuesta: [impl(b.ok)],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const B = [
@@ -272,14 +437,14 @@
   };
 
   // ---------- Laboratorio: tapa una premisa ----------
-  // Más que el juego de la idea 1: una cinta tapa una frase del texto y se recalcula la fuerza de cada conclusión. El
+  // Más que el juego de la idea 1: el círculo rojo tapa una frase del texto con una banda gris y se recalcula la fuerza de cada conclusión. El
   // caso que la idea no deja ver: a una deducción le basta perder una premisa para quedarse sin respaldo. La fuerza
   // sale de qué frases necesita cada conclusión (CON[k].marcas): si falta alguna, queda sin respaldo.
-  const figTapa = k => texto(INS, [conclusion(CON[k].t), { id: 'bandeja', titulo: 'Cinta', modo: 'parrafo', fragmentos: [{ id: 'cinta', t: 'sin usar' }] }]);
+  const figTapa = k => texto(INS, [conclusion(CON[k].t), { id: 'bandeja', titulo: 'Tapar', modo: 'parrafo', fragmentos: [{ id: 'cinta', t: 'nada' }] }]);
   const fuerza = (k, t) => (Object.keys(CON[k].marcas).length && !Object.keys(CON[k].marcas).includes(t) ? CON[k].sello : ['Sin respaldo', 'h']);
   const mesaTapa = {
     id: 'tapa-premisa', titulo: 'Tapa una premisa', pieza: 'rv-texto',
-    consigna: 'Elige una conclusión y arrastra la cinta para tapar una frase del texto. Mira qué conclusión resiste sin ella.',
+    consigna: 'Elige una conclusión y arrastra el círculo rojo a una frase del texto: una banda gris la tapa. Mira qué conclusión resiste sin ella.',
     voz: 'Una deducción necesita todas sus premisas.',
     controles: [
       { id: 'k', etiqueta: 'Conclusión', opciones: [{ valor: 'nec', texto: 'el código' }, { valor: 'prob', texto: 'la hora' }, { valor: 'sin', texto: 'aprobar' }] },
@@ -294,7 +459,7 @@
       const s = fuerza(val.k, val.t), quita = val.t === 'no' ? 'Sin tapar' : `Sin la ${{ a: 1, b: 2, d: 3 }[val.t]}`;
       return [quita, ': ', (s[1] === 'h' ? sin : s[1] === 'd' ? impl : ev)(s[0].toLowerCase())];
     },
-    arrastres: [marcador('t', val => figTapa(val.k), ['a', 'b', 'd', 'cinta'], 'cinta que tapa una frase', 'c-h', v => (v === 'no' ? 'cinta' : v), id => (id === 'cinta' ? 'no' : id))],
+    arrastres: [marcador('t', val => figTapa(val.k), ['a', 'b', 'd', 'cinta'], 'círculo que tapa una frase', 'c-h', v => (v === 'no' ? 'cinta' : v), id => (id === 'cinta' ? 'no' : id))],
     // Retos: cada logrado usa fuerza, la misma cuenta que pone el sello de la conclusión.
     invitaciones: [
       { texto: 'Tapa una sola frase y deja sin respaldo la conclusión del código.',
@@ -341,6 +506,8 @@
         ejemplo: '«Hoy, Juan llegó tarde» lo dice escrito.', formas: ['explícito', 'explícita', 'explícitos'], ver: ['implícito'] },
       { termino: 'implícito', def: 'Lo que el texto no escribe pero da por cierto; lo cargan palabras como «ya no» o «también».',
         formas: ['implícito', 'implícita', 'implícitos'], ver: ['explícito', 'supuesto'] },
+      { termino: 'sentido global', def: 'Lo que comunica un texto leído entero, de principio a fin, y no una frase suelta.',
+        ejemplo: 'Un aviso que cuenta un problema y cierra pidiendo ayuda, en conjunto, convoca.', ver: ['implícito'] },
       { termino: 'supuesto', def: 'Lo que hay que dar por cierto para que una frase tenga sentido, aunque no se diga.',
         ejemplo: '«Volvió a llegar tarde» supone que antes ya llegó tarde.', formas: ['supuesto', 'supuestos', 'supuesta'], ver: ['implícito'] },
     ],
