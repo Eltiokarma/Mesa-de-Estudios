@@ -46,6 +46,34 @@
   const dice = t => ({ v: 'c-i', t }), version = t => ({ v: 'c-o', t }), rel = t => ({ v: 'c-d', t }), cambia = t => ({ v: 'c-h', t });
   const opciones = (c, malas) => [{ id: 'c', texto: c, correcta: true }, ...malas.map(([texto, error, siFuera], k) => ({ id: `e${k}`, texto, error, siFuera }))];
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
+  function azar(s) {
+    let q = (s * 2654435761 + 12345) >>> 0;
+    const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+    r.ent = (lo, hi) => lo + Math.floor(r() * (hi - lo + 1));
+    return r;
+  }
+  // «Así se resuelve» (docs/teoria.md, 4e): cada banco RES_* trae ítems propios con la misma forma que el de «Ahora tú»
+  // (la correcta y tres distractores con su error y por qué; el primero es el más tentador). Las opciones van en la
+  // figura, numeradas, en un orden que da la semilla; el paso «aplica» marca la elegida (o) y tacha las demás, y el
+  // paso «sentido» marca en rojo la más tentadora (h).
+  // El ítem sale del segundo número de azar(s + 900) (el primero gira las opciones): así salen los cuatro en 12 semillas.
+  const elegir = (B, s) => { const r = azar(s + 900); r(); return B[Math.floor(r() * B.length)]; };
+  const resolver = (b, s, fuentes) => {
+    const r = azar(s + 900), giro = r.ent(0, 3);
+    const ops = [['ok', b.ok], ...b.m.map(([t], k) => [`m${k}`, t])];
+    const orden = ops.slice(giro).concat(ops.slice(0, giro));
+    const fig = { secciones: fuentes.concat([{ id: 'ops', titulo: 'Opciones', modo: 'lista', fragmentos: orden.map(([id, t]) => ({ id, t })) }]) };
+    const otras = ops.map(([id]) => id).filter(id => id !== 'ok');
+    const ver = estado => ({ datos: fig, estado });
+    const deFuente = Object.fromEntries(fuentes.flatMap(x => x.fragmentos.map(fr => [fr.id, 'i'])));
+    return {
+      dibujo: ver({}),
+      datos: ver({ marcas: deFuente }),
+      eligo: ver({ marcas: Object.assign({}, deFuente, { ok: 'o' }), tachar: otras, sellos: { ops: { t: 'Fiel', c: 'i' } }, nuevo: ['ok'] }),
+      tienta: ver({ marcas: Object.assign({}, deFuente, { ok: 'o', m0: 'h' }), tachar: otras.filter(id => id !== 'm0'), nuevo: ['m0'] }),
+      sentido: `Tienta «${b.m[0][0]}», pero no sirve: ${b.m[0][2]}`,
+    };
+  };
   // Original arriba (fragmentos marcables) y la versión abajo; la versión puede tener trozos que cambian (h).
   const figura = (original, versionFrs, tituloV = 'Resumen') => ({ secciones: [
     { id: 'o', titulo: 'Original', modo: 'tarjeta', fragmentos: original.map(([id, t]) => ({ id, t })) },
@@ -71,11 +99,42 @@
     causa: { a: ['Conserva: el taller', 'i'], b: ['Lo pierde: «algunos»', 'h'], c: ['Lo pierde: mejoraron', 'h'], d: ['Lo invierte: es causa', 'h'], e: ['Lo pierde', 'h'] },
   };
   const IDS_T = TALLER.map(([id]) => id);
+  // Banco propio de «Así se resuelve» (misma forma que el de «Ahora tú», casos nuevos). m[0] es el distractor que más tienta.
+  const RES_ALCANCE = [
+    { tema: 'el lago Titicaca', t: 'En los años secos, el nivel del lago Titicaca baja varios centímetros. En los años de lluvias abundantes, se recupera en parte.',
+      ok: 'El Titicaca baja en años secos y se recupera en parte con lluvias',
+      m: [['El Titicaca se está secando sin remedio', 'RV11', 'exagera, porque el texto dice que se recupera en parte.'], ['Lago, nivel, lluvias, años secos', 'RV43', 'Es una lista de palabras: no dice qué las une.'], ['El lago baja porque la gente saca mucha agua', 'RV44', 'Inventa una causa: el texto habla de años secos.']],
+      datos: 'El texto une dos hechos: el lago baja en años secos y se recupera «en parte» con las lluvias. «En parte» marca el alcance.',
+      aplica: 'Busco la opción que guarda los dos hechos y el «en parte», sin causas nuevas. Solo una lo hace.' },
+    { tema: 'el comedor popular', t: 'La mayoría de las socias del comedor popular cocina dos veces por semana. Unas pocas, que no trabajan fuera, ayudan casi todos los días.',
+      ok: 'La mayoría cocina dos veces por semana; unas pocas ayudan casi a diario',
+      m: [['Todas las socias cocinan todos los días', 'RV11', 'cambia el alcance, porque solo unas pocas ayudan casi a diario.'], ['Socias, comedor, cocina, semana', 'RV43', 'Es una lista sin relaciones.'], ['Unas pocas ayudan a diario porque las demás no quieren', 'RV44', 'Inventa una causa: el texto dice que esas pocas no trabajan fuera.']],
+      datos: 'Hay dos grupos, cada uno con su cantidad: «la mayoría» cocina dos veces por semana y «unas pocas» ayudan casi a diario.',
+      aplica: 'La opción fiel conserva «la mayoría» y «unas pocas», con lo que hace cada grupo. Las otras cambian cuántas, hacen una lista o inventan.' },
+    { tema: 'los simulacros', t: 'Muchos postulantes que practicaron con simulacros mejoraron su puntaje. Algunos que no practicaron también mejoraron, aunque menos.',
+      ok: 'Muchos que practicaron con simulacros mejoraron; algunos sin práctica, menos',
+      m: [['Solo mejoraron los que practicaron con simulacros', 'RV11', '«solo» borra a los que mejoraron sin practicar.'], ['Postulantes, simulacros, puntaje, práctica', 'RV43', 'Es una lista sin relaciones.'], ['Los que no practicaron mejoraron porque estudiaron más horas', 'RV44', 'Inventa una causa que el texto no da.']],
+      datos: 'El texto compara dos grupos: «muchos» que practicaron mejoraron, y «algunos» que no practicaron mejoraron «menos».',
+      aplica: 'Comparo cada opción con los dos grupos. La fiel guarda «muchos», «algunos» y «menos»; ninguna otra conserva a los dos grupos.' },
+    { tema: 'las crías de alpaca', t: 'En las heladas fuertes, varias crías de alpaca enferman. Los criadores que usan cobertizos pierden menos crías.',
+      ok: 'En heladas fuertes, varias crías enferman; con cobertizos se pierden menos',
+      m: [['En las heladas mueren todas las crías de alpaca', 'RV11', 'exagera, porque el texto dice «varias» y que con cobertizos se pierden menos.'], ['Heladas, alpacas, crías, cobertizos', 'RV43', 'Es una lista sin relaciones.'], ['Los criadores usan cobertizos porque se los regalan', 'RV44', 'Inventa un hecho y una causa que el texto no menciona.']],
+      datos: 'El texto dice «varias crías», no todas, y une los cobertizos con perder menos crías.',
+      aplica: 'Busco la opción que conserve «varias» y la relación con los cobertizos. Solo una lo hace sin exagerar ni inventar.' },
+  ];
   const alcance = {
     id: 'alcance',
     titulo: 'Resumir sin cambiar el alcance',
     temas: ['Resumen literal', 'Resumen interpretativo'],
     pieza: 'rv-texto',
+    // Lee (fase 2): para qué sirve un resumen y sus dos nombres, sin decir cuál de los resúmenes de la helada es fiel.
+    lee: {
+      tarjetas: [
+        { titulo: 'Contarlo en corto', texto: 'Cuando tu prima te pregunta qué pasó en la reunión de la comunidad, no le repites todo. Le cuentas lo importante en pocas frases. Eso es un resumen: el texto en corto, con lo que no se puede quitar.' },
+        { titulo: 'Dos maneras', texto: 'Un resumen literal junta frases del propio texto. Un resumen interpretativo lo cuenta con tus palabras. El examen de admisión pide los dos, y en los dos se puede fallar.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Verás el texto de un taller de lectura y cuatro resúmenes. Arrastra el círculo por cada frase del original y lee qué hizo el resumen con ella: la conserva, la omite o la cambia.' },
+      ],
+    },
     juega: {
       consigna: 'Compara cuatro resúmenes del texto del taller. Mira qué conserva cada uno y qué cambia sin que el texto lo diga.',
       voz: 'Fíjate en palabras como «algunos» o «todos».',
@@ -118,6 +177,26 @@
       ecuacion: [{ llave: [rel('relaciones')], nota: 'qué une', color: 'c-d' }, ' + ', { llave: [dice('alcance')], nota: 'cuántos', color: 'c-i' }],
       condicion: 'se mantienen cuantificadores (algunos, todos), negaciones y causas tal como el texto los dice.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú», con un banco propio y el orden de opciones de azar(s + 900).
+    resuelve: {
+      pieza: 'rv-texto',
+      generar(s) {
+        const b = elegir(RES_ALCANCE, s);
+        const F = resolver(b, s, [{ id: 'o', titulo: 'Original', modo: 'tarjeta', fragmentos: [{ id: 'a', t: b.t }] }]);
+        return {
+          enunciado: `Lee el texto sobre ${b.tema}. ¿Qué resumen conserva lo que dice, con su alcance?`,
+          dibujo: F.dibujo,
+          pasos: [
+            { tipo: 'pide', texto: `Piden el resumen del texto sobre ${b.tema} que no cambie su alcance: cuántos, cuánto y qué relación.` },
+            { tipo: 'datos', texto: b.datos, dibujo: F.datos },
+            { tipo: 'regla', texto: 'Resumir es acortar sin traicionar: dejo lo esencial y no toco palabras como «algunos», «muchos» o «en parte», ni la relación entre los hechos.' },
+            { tipo: 'aplica', texto: b.aplica, ecuacion: [version('resumen'), ' = ', dice('lo esencial'), ' + ', dice('alcance')], dibujo: F.eligo },
+            { tipo: 'sentido', texto: F.sentido, dibujo: F.tienta },
+          ],
+          respuesta: b.ok,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const B = [
@@ -157,11 +236,38 @@
   };
   const parteDe = (k, f) => (PAR[k].frs.length > 1 ? f : 'p1');
   const figPar = k => figura(ORI, PAR[k].frs, 'Versión');
+  // Banco propio de «Así se resuelve»: oraciones nuevas, misma forma que «Ahora tú». m[0] es el distractor que más tienta.
+  const RES_PARAF = [
+    { o: 'El tren a Cusco sale de Juliaca los lunes y los jueves.', ok: 'Los lunes y jueves hay salida del tren de Juliaca a Cusco',
+      m: [['El tren va lleno porque sale solo dos días', 'RV58', 'agrega una consecuencia que el original no dice.'], ['El tren a Cusco sale todos los días', 'RV11', 'Cambia el alcance: solo sale dos días.'], ['Hay un tren a Cusco', 'RV3', 'Pierde los días y desde dónde sale: dice menos.']],
+      datos: 'El original dice tres cosas: qué (el tren a Cusco), desde dónde (Juliaca) y cuándo (los lunes y los jueves).',
+      aplica: 'La versión fiel repite el qué, el desde dónde y el cuándo con otras palabras. Las demás agregan, cambian los días o quitan datos.' },
+    { o: 'La mayoría de vecinos no asistió a la asamblea del sábado.', ok: 'Más de la mitad de los vecinos faltó a la asamblea del sábado',
+      m: [['La asamblea se suspendió por falta de vecinos', 'RV58', 'agrega un hecho, porque el original no dice que se suspendiera.'], ['Ningún vecino fue a la asamblea', 'RV10', '«La mayoría» no es «ninguno».'], ['Hubo una asamblea el sábado', 'RV3', 'Pierde cuántos faltaron: dice menos.']],
+      datos: 'El original dice quiénes faltaron («la mayoría de vecinos»), a qué (la asamblea) y cuándo (el sábado).',
+      aplica: '«Más de la mitad» es otra forma de decir «la mayoría», y «faltó» equivale a «no asistió». Esa versión no suma ni quita nada.' },
+    { o: 'Si el puente se termina en mayo, las combis cambiarán de ruta.', ok: 'Con el puente listo en mayo, las combis cambiarán de ruta',
+      m: [['Los pasajeros llegarán más rápido a su destino', 'RV58', 'agrega una consecuencia que el original no menciona.'], ['El puente se terminará en mayo', 'RV55', 'Cambia una condición por un hecho seguro.'], ['Las combis cambiarán de ruta', 'RV3', 'Pierde la condición: dice menos.']],
+      datos: 'El original es una condición: el cambio de ruta depende de que el puente se termine en mayo. No asegura que se termine.',
+      aplica: '«Con el puente listo en mayo» conserva la condición con otras palabras. Las otras versiones agregan un efecto, la vuelven un hecho o la borran.' },
+    { o: 'Desde enero, la biblioteca municipal presta libros por quince días.', ok: 'Desde enero, los préstamos de la biblioteca municipal duran quince días',
+      m: [['Ahora la gente lee más que antes', 'RV58', 'agrega un efecto que el original no menciona.'], ['La biblioteca presta libros por un mes', 'RV11', 'Cambia cuánto: son quince días.'], ['La biblioteca presta libros', 'RV3', 'Pierde desde cuándo y por cuánto: dice menos.']],
+      datos: 'El original dice quién presta (la biblioteca municipal), desde cuándo (enero) y por cuánto tiempo (quince días).',
+      aplica: 'La versión fiel cambia «presta por quince días» por «los préstamos duran quince días» y conserva enero. Nada se agrega ni se pierde.' },
+  ];
   const parafrasis = {
     id: 'parafrasis',
     titulo: 'Parafrasear no es inferir',
     temas: ['Paráfrasis'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué es parafrasear y dónde se pide, sin hablar de lo que convierte una versión en otra cosa.
+    lee: {
+      tarjetas: [
+        { titulo: 'Con otras palabras', texto: 'Cuando le explicas a tu abuela lo que dijo el profesor, cambias las palabras para que se entienda mejor. Eso es parafrasear: el mensaje es el mismo, las palabras son otras.' },
+        { titulo: 'Por qué la piden', texto: 'En el examen, muchas preguntas piden la opción que «dice lo mismo» que una oración. Las opciones se parecen mucho entre sí, y la diferencia suele estar en una sola parte.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Verás la oración de Rosa y cuatro versiones. Arrastra el círculo por cada parte de la versión y lee qué hace con el original. Fíjate en quién, qué y por qué.' },
+      ],
+    },
     juega: {
       consigna: 'Compara versiones de la oración de Rosa. Mira cuál dice lo mismo con otras palabras y cuál dice más o menos.',
       voz: 'Una paráfrasis no suma ni quita información.',
@@ -204,6 +310,26 @@
       texto: 'Una paráfrasis dice lo mismo que el original con otras palabras: no agrega, no quita y no cambia. Si suma una consecuencia o una causa nueva, ya es una inferencia.',
       ecuacion: [version('paráfrasis'), ' = ', dice('original'), '   ·   ', { llave: [dice('original'), ' + ', cambia('algo')], nota: 'ya es inferencia', color: 'c-h' }],
       condicion: 'se compara parte por parte: quién, qué, cuándo, por qué y cuánto deben quedar igual.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú», con un banco propio y el orden de opciones de azar(s + 900).
+    resuelve: {
+      pieza: 'rv-texto',
+      generar(s) {
+        const b = elegir(RES_PARAF, s);
+        const F = resolver(b, s, [{ id: 'o', titulo: 'Original', modo: 'tarjeta', fragmentos: [{ id: 'a', t: b.o }] }]);
+        return {
+          enunciado: `Original: «${b.o}» ¿Qué versión es una paráfrasis fiel?`,
+          dibujo: F.dibujo,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la versión que diga lo mismo que el original con otras palabras: ni más, ni menos, ni otra cosa.' },
+            { tipo: 'datos', texto: b.datos, dibujo: F.datos },
+            { tipo: 'regla', texto: 'Comparo parte por parte. Una paráfrasis cambia las palabras, pero deja intacta la información. Si a una versión le sobra o le falta algo, la descarto.' },
+            { tipo: 'aplica', texto: b.aplica, ecuacion: [version('paráfrasis'), ' = ', dice('original')], dibujo: F.eligo },
+            { tipo: 'sentido', texto: F.sentido, dibujo: F.tienta },
+          ],
+          respuesta: b.ok,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -249,12 +375,35 @@
     una: { a1: ['La omite', 'h'], b1: ['La omite', 'h'], a2: ['La recoge', 'i'], b2: ['La borra', 'h'] },
   };
   const IDS_AB = ['a1', 'a2', 'b1', 'b2'];
+  // Banco propio de «Así se resuelve»: pares A/B nuevos, misma forma que «Ahora tú». m[0] es el distractor que más tienta.
+  const RES_SIN = [
+    { tema: 'el celular en clase', a: 'El celular en clase ayuda a buscar información.', b: 'El celular en clase distrae a los alumnos.',
+      ok: 'Para A el celular ayuda a buscar información; para B, distrae',
+      m: [['A y B quieren prohibir el celular en clase', 'RVR1', 'A le ve una ventaja y nadie pide prohibirlo.'], ['A dice que el celular distrae', 'RV59', 'Eso lo dice B.'], ['El celular ayuda a buscar información', 'RV3', 'Deja fuera a B.']] },
+    { tema: 'la carretera nueva', a: 'La carretera nueva acorta el viaje a Puno.', b: 'La carretera nueva pasa por terrenos de cultivo.',
+      ok: 'A destaca que la carretera acorta el viaje; B, que pasa por cultivos',
+      m: [['A y B celebran la carretera nueva', 'RVR1', 'B señala un costo, así que no la celebra.'], ['B dice que acorta el viaje a Puno', 'RV59', 'Eso lo dice A.'], ['La carretera pasa por terrenos de cultivo', 'RV3', 'Deja fuera a A.']] },
+    { tema: 'las clases virtuales', a: 'Las clases virtuales ahorran el pasaje.', b: 'Sin buena señal, las clases virtuales se cortan.',
+      ok: 'A ve un ahorro en las clases virtuales; B, cortes sin buena señal',
+      m: [['A y B rechazan las clases virtuales', 'RVR1', 'A les ve un ahorro.'], ['A dice que se cortan sin señal', 'RV59', 'Eso lo dice B.'], ['Las clases virtuales ahorran el pasaje', 'RV3', 'Deja fuera a B.']] },
+    { tema: 'la fiesta de la Candelaria', a: 'La Candelaria atrae a miles de turistas a Puno.', b: 'En la Candelaria se junta mucha basura en las calles.',
+      ok: 'Para A la Candelaria atrae turistas; para B, deja mucha basura',
+      m: [['A y B se quejan de la Candelaria', 'RVR1', 'A destaca algo bueno, los turistas.'], ['B dice que atrae turistas', 'RV59', 'Eso lo dice A.'], ['La Candelaria deja basura en las calles', 'RV3', 'Deja fuera a A.']] },
+  ];
   const malasSin = k => IDS_AB.filter(id => RASTRO[k][id][1] === 'h').length;
   const sintesis = {
     id: 'sintesis',
     titulo: 'Sintetizar sin borrar diferencias',
     temas: ['Síntesis'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué es sintetizar y qué es una fuente, sin decir qué síntesis del huerto es la fiel.
+    lee: {
+      tarjetas: [
+        { titulo: 'Varias voces', texto: 'En la asamblea del barrio hablaron cinco vecinos. Al día siguiente, alguien te pregunta qué se dijo. Juntar en pocas palabras lo que dijeron varias personas es sintetizar.' },
+        { titulo: 'Las fuentes', texto: 'Cada texto o autor del que sale una idea es una fuente. En el examen suelen venir dos textos, A y B, sobre el mismo tema, y una pregunta pide la síntesis de ambos.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Verás dos textos sobre el tráfico del centro y cuatro síntesis. Arrastra el círculo por cada frase de A y de B, y lee qué hizo la síntesis con ella.' },
+      ],
+    },
     juega: {
       consigna: 'Dos textos opinan sobre el tráfico. Prueba cuatro síntesis y mira cuál conserva lo que comparten, en qué difieren y quién dice qué.',
       voz: 'Sintetizar no es poner de acuerdo a los autores.',
@@ -292,6 +441,26 @@
       ecuacion: [{ llave: [dice('acuerdo')], nota: 'lo común', color: 'c-i' }, ' + ', { llave: [rel('diferencia')], nota: 'quién dice qué', color: 'c-d' }],
       condicion: 'cada afirmación de la síntesis se puede rastrear hasta la fuente que la dice.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú», con un banco propio y el orden de opciones de azar(s + 900).
+    resuelve: {
+      pieza: 'rv-texto',
+      generar(s) {
+        const b = elegir(RES_SIN, s);
+        const F = resolver(b, s, [{ id: 'A', titulo: 'Texto A', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: b.a }] }, { id: 'B', titulo: 'Texto B', modo: 'tarjeta', fragmentos: [{ id: 'b1', t: b.b }] }]);
+        return {
+          enunciado: `Los textos A y B hablan sobre ${b.tema}. ¿Qué síntesis de los dos es fiel?`,
+          dibujo: F.dibujo,
+          pasos: [
+            { tipo: 'pide', texto: `Piden una síntesis fiel: una sola idea que junte lo que dicen A y B sobre ${b.tema}.` },
+            { tipo: 'datos', texto: `A dice: «${b.a}» B dice: «${b.b}»`, dibujo: F.datos },
+            { tipo: 'regla', texto: 'Una síntesis junta las dos fuentes en una idea. Deja lo que dice cada una, con su autor, y no las pone de acuerdo si no lo están.' },
+            { tipo: 'aplica', texto: `Rastreo cada parte hasta su fuente. Solo «${b.ok}» guarda a A y a B con lo suyo.`, ecuacion: [rel('A'), ' + ', rel('B'), ' → ', version('síntesis')], dibujo: F.eligo },
+            { tipo: 'sentido', texto: F.sentido, dibujo: F.tienta },
+          ],
+          respuesta: b.ok,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const B = [
@@ -328,7 +497,7 @@
   const figArma = (q, r) => figura(TALLER, [['r1', `${CUANT[q].t} alumnos del taller mejoraron su comprensión${RELA[r].t ? ';' : '.'}`]].concat(RELA[r].t ? [['r2', RELA[r].t]] : []), 'Tu resumen');
   const mesaArma = {
     id: 'arma-resumen', titulo: 'Arma tu resumen', pieza: 'rv-texto',
-    consigna: 'Arma el resumen con sus dos piezas y pasa el marcador por el original: mira qué conserva y qué cambia.',
+    consigna: 'Arma el resumen con sus dos piezas y arrastra el círculo por el original: mira qué conserva y qué cambia.',
     voz: 'Una palabra de cantidad cambia todo el resumen.',
     controles: [
       { id: 'q', etiqueta: 'Cuántos', opciones: Object.entries(CUANT).map(([valor, x]) => ({ valor, texto: x.t.toLowerCase() })) },
@@ -353,7 +522,7 @@
       { texto: 'Busca el resumen que cambia más frases del original.',
         logrado: val => fielesLab(val) === Math.min(...Object.keys(CUANT).flatMap(q => Object.keys(RELA).map(r => fielesLab({ q, r })))),
         bien: 'Cantidad y relación cambiadas a la vez: casi nada del original queda en pie.' },
-      { texto: 'Deja fiel todo salvo una frase y pon el marcador sobre ella.',
+      { texto: 'Deja fiel todo salvo una frase y pon el círculo sobre ella.',
         logrado: val => fielesLab(val) === IDS_T.length - 1 && tratoLab(val.q, val.r)[val.f][1] === 'h',
         bien: 'Una sola pieza basta para que el resumen ya no sea fiel.' },
       { texto: 'Guarda dos resúmenes igual de fieles, pero con distinta relación.',
@@ -399,7 +568,7 @@
       Object.assign({ id: 'parafrasis', titulo: 'Paráfrasis o inferencia', pieza: 'rv-texto',
         // Retos: se comprueban con PARTES y PAR, las mismas tablas que marcan cada parte y ponen el sello.
         invitaciones: [
-          { texto: 'Pon el marcador en la parte que agrega algo que el original no dice.',
+          { texto: 'Pon el círculo en la parte que agrega algo que el original no dice.',
             logrado: val => PARTES[val.k][val.f][0].startsWith('Agrega'),
             bien: 'Puede ser cierto, pero el original no lo dice: ya es una inferencia.' },
           { texto: 'Busca la versión que dice lo contrario del original.',

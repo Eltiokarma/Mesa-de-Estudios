@@ -46,6 +46,15 @@
   const dato = t => ({ v: 'c-i', t }), concl = t => ({ v: 'c-o', t }), marco = t => ({ v: 'c-d', t }), excede = t => ({ v: 'c-h', t });
   const opciones = (c, malas) => [{ id: 'c', texto: c, correcta: true }, ...malas.map(([texto, error, siFuera], k) => ({ id: `e${k}`, texto, error, siFuera }))];
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
+  // Azar con semilla (el mismo de aritmetica/razones-y-proporciones.js): «Así se resuelve» elige con azar(s + 900).
+  function azar(s) {
+    let q = (s * 2654435761 + 12345) >>> 0;
+    const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+    return r;
+  }
+  // Se descarta la primera salida de azar: con semillas vecinas varía poco y repetiría casi siempre el mismo ítem.
+  const elegir = (xs, s) => { const r = azar(s + 900); r(); return xs[Math.floor(r() * xs.length)]; };
+  const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
   const lista = (titulo, ors) => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo, modo: 'lista', fragmentos: ors.map((t, k) => ({ id: `o${k + 1}`, t })) }] });
 
   // ---------- Idea 1: dato, método, explicación y límite ----------
@@ -59,8 +68,16 @@
     titulo: 'Dato, método, explicación y límite',
     temas: ['Rasgos del texto científico'],
     pieza: 'rv-texto',
+    // Lee (fase 2): las cuatro piezas de un informe; no dice nada de «van juntos» contra «causa» (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un informe por dentro', texto: 'Imagina que unos profesores de Puno estudian si sus alumnos llegan más cansados en invierno. Su informe contará qué observaron, cómo lo midieron, qué creen que lo explica y qué no alcanzaron a revisar.' },
+        { titulo: 'Cuatro piezas', texto: ['Lo observado es el ', dato('dato'), '. Cómo se obtuvo es el ', marco('método'), '. Lo que se propone para explicarlo es una ', concl('hipótesis'), '. Y lo que el estudio no cubrió es su ', marco('límite'), '.'] },
+        { titulo: 'Qué mirar al jugar', texto: 'Pasa el círculo naranja por cada oración del informe de los huertos. Antes de leer el sello, adivina qué pieza es y fíjate en qué palabra te dio la pista.' },
+      ],
+    },
     juega: {
-      consigna: 'Arrastra el marcador por el informe y mira qué función cumple cada oración: dato, método, explicación o límite.',
+      consigna: 'Arrastra el círculo naranja por el informe y mira qué función cumple cada oración: dato, método, explicación o límite.',
       voz: 'Lo observado y lo que se propone para explicarlo no pesan igual.',
       controles: [{ id: 'k', etiqueta: 'Marca', opciones: [1, 2, 3, 4].map(k => ({ valor: k, texto: `${k}` })) }],
       dibujo: val => ({ datos: lista('Informe', EST), estado: { marcas: { [`o${val.k}`]: PARTE[val.k][1] }, sellos: { o: { t: PARTE[val.k][0].split(':')[0], c: PARTE[val.k][1] } } } }),
@@ -113,6 +130,53 @@
       },
     },
   };
+  // Así se resuelve (fase 2): informes propios; cada uno trae qué es cada oración (datos), cómo se razona (aplica)
+  // y las marcas del paso «Lo aplico». La opción tentadora es la primera de m.
+  const RES_CIEN = [
+    { tema: 'del celular y el sueño', lleva: 'van juntos', o: ['En una encuesta a 60 alumnos de Juliaca, los que usaban más el celular de noche dormían menos.', 'No se registró a qué hora se acostaban.'],
+      ok: 'Usar más el celular de noche y dormir menos aparecen juntos',
+      datos: [dato('La 1'), ' es lo observado en una encuesta; ', marco('la 2'), ' es un límite: no se registró la hora de acostarse.'],
+      aplica: 'La encuesta solo vio que las dos cosas van juntas. No probó qué causa qué, y deja fuera la hora de acostarse.',
+      marcas: { o1: 'i', o2: 'd' }, sello: { t: 'Van juntos', c: 'i' },
+      m: [['El celular causa que duerman menos', 'RV47', 'Van juntos, pero una encuesta no prueba qué causa qué.'], ['Está comprobado que el celular quita el sueño', 'RV52', 'Nada se comprobó; solo se observó.'], ['El celular no tiene relación con el sueño', 'RV34', 'La encuesta sí encontró que van juntos.']] },
+    { tema: 'de la quinua y el granizo', lleva: 'vale en esa prueba', o: ['En la parcela con malla, el granizo dañó menos plantas de quinua que en la parcela sin malla.', 'Solo se probó en una campaña, en una comunidad de Puno.'],
+      ok: 'En esa prueba, con malla hubo menos plantas dañadas',
+      datos: [dato('La 1'), ' es un dato que compara una parcela con malla y otra sin malla; ', marco('la 2'), ' es el límite.'],
+      aplica: 'La comparación respalda lo que pasó en esa prueba. El límite, una campaña y una comunidad, impide extenderlo a todo el país.',
+      marcas: { o1: 'i', o2: 'd' }, sello: { t: 'En esa prueba', c: 'i' },
+      m: [['La malla protege la quinua en todo el Perú', 'RV7', 'Solo se probó en una comunidad y en una campaña.'], ['El granizo no daña la quinua', 'RV34', 'Sí la dañó, aunque menos con malla.'], ['Está probado que la malla duplica la cosecha', 'RV52', 'El informe no midió la cosecha.']] },
+    { tema: 'de las truchas de un río', lleva: 'hipótesis', o: ['Este año se contaron menos truchas que el año anterior en un tramo del río.', 'Una explicación posible es que el agua bajó más turbia.'],
+      ok: 'Que el agua turbia explique la baja es una hipótesis',
+      datos: [dato('La 1'), ' es lo que se contó; ', concl('la 2'), ' propone una causa con «una explicación posible».'],
+      aplica: 'La baja de truchas se observó; su causa solo se propone. Lo respaldado es que el agua turbia queda como hipótesis.',
+      marcas: { o1: 'i', o2: 'o' }, sello: { t: 'Hipótesis', c: 'o' },
+      m: [['Está comprobado que el agua turbia mató a las truchas', 'RV52', '«Una explicación posible» marca una hipótesis, no un hecho.'], ['Se midió la turbidez cada día', 'RV7', 'El informe no dice que se midiera.'], ['Hubo más truchas que el año anterior', 'RV34', 'Se contaron menos.']] },
+    { tema: 'del desayuno y la atención', lleva: 'van juntos', o: ['Los alumnos que desayunan en casa atienden más en la primera hora.', 'También son los que viven más cerca del colegio y duermen más.'],
+      ok: 'Desayunar y atender más van juntos; la causa no está clara',
+      datos: [dato('La 1'), ' es lo observado; ', marco('la 2'), ' muestra otras diferencias entre esos mismos alumnos.'],
+      aplica: 'Desayunar y atender van juntos, pero dormir más o vivir cerca también podrían explicarlo. La causa queda abierta.',
+      marcas: { o1: 'i', o2: 'd' }, sello: { t: 'Van juntos', c: 'i' },
+      m: [['Desayunar causa que atiendan más', 'RV47', 'El informe da otras diferencias: viven cerca y duermen más.'], ['Está probado que el desayuno mejora la atención', 'RV52', 'Nada se probó; solo se observó.'], ['Desayunar no tiene relación con atender', 'RV34', 'Sí aparecen juntos.']] },
+  ];
+  cientifico.resuelve = {
+    pieza: 'rv-texto',
+    generar(s) {
+      const b = elegir(RES_CIEN, s), [trampa, , porque] = b.m[0];
+      return {
+        enunciado: `Este informe trata ${b.tema}. ¿Qué conclusión respalda de verdad?`,
+        dibujo: { datos: lista('Informe', b.o), estado: {} },
+        pasos: [
+          { tipo: 'pide', texto: 'Piden la conclusión que el informe respalda, sin ir más allá de lo que observó.' },
+          { tipo: 'datos', texto: b.datos },
+          { tipo: 'regla', texto: ['Separo lo que se observó de lo que se propone. Si dos cosas solo aparecen juntas, eso no prueba que una cause la otra.'] },
+          { tipo: 'aplica', texto: b.aplica, ecuacion: [dato('lo observado'), ' → ', concl(b.lleva)],
+            dibujo: { datos: lista('Informe', b.o), estado: { marcas: b.marcas, sellos: { o: b.sello }, nuevo: Object.keys(b.marcas).concat('o') } } },
+          { tipo: 'sentido', texto: [`Descarto «${trampa}»: ${minus(porque)}`] },
+        ],
+        respuesta: [dato(b.ok)],
+      };
+    },
+  };
 
   // ---------- Idea 2: pregunta, término, tesis y objeción ----------
   // Cambia: la parte marcada. Permanece: el texto sobre la amistad. Progresa: la pregunta, el término definido, la
@@ -125,8 +189,16 @@
     titulo: 'Pregunta, término, tesis y objeción',
     temas: ['Rasgos del texto filosófico'],
     pieza: 'rv-texto',
+    // Lee (fase 2): pregunta, tesis y objeción; no dice cómo reconoce el autor su definición (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Preguntas grandes', texto: '¿Qué es ser justo? ¿Vale más la verdad o la amistad? Un texto filosófico parte de preguntas así, que no se responden midiendo en un laboratorio, sino razonando con cuidado.' },
+        { titulo: 'Tesis y objeción', texto: ['La ', concl('tesis'), ' es lo que el autor defiende. Una ', excede('objeción'), ' es lo que alguien podría decir en contra. Un buen texto filosófico no esconde las objeciones: las presenta y les responde.'] },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego hay un texto sobre la amistad con cinco oraciones. Pasa el círculo naranja por cada una y lee su sello. Fíjate con qué palabras empieza cada oración.' },
+      ],
+    },
     juega: {
-      consigna: 'Arrastra el marcador por el texto sobre la amistad: pregunta, término, tesis, objeción o respuesta.',
+      consigna: 'Arrastra el círculo naranja por el texto sobre la amistad: pregunta, término, tesis, objeción o respuesta.',
       voz: 'Un texto filosófico razona: no solo opina.',
       controles: [{ id: 'k', etiqueta: 'Marca', opciones: [1, 2, 3, 4, 5].map(k => ({ valor: k, texto: `${k}` })) }],
       dibujo: val => ({ datos: lista('Texto', FIL), estado: { marcas: { [`o${val.k}`]: PFIL[val.k][1] }, sellos: { o: { t: PFIL[val.k][0].split(':')[0], c: PFIL[val.k][1] } } } }),
@@ -177,6 +249,44 @@
           solucion: { texto: 'Se busca la frase con «llamaremos», «entenderé por» o «aquí será».', ecuacion: [marco('definición del autor'), ' ≠ ', excede('idea común')] },
         };
       },
+    },
+  };
+  // Así se resuelve (fase 2): textos propios; comun y def son los números de la oración con la idea común y la de la
+  // definición del autor; marca, las palabras que la anuncian. La opción tentadora es la primera de m.
+  const RES_FIL = [
+    { termino: 'respeto', o: ['Muchos creen que respetar es no contradecir a nadie.', 'Aquí llamaremos respeto a escuchar al otro aunque pensemos distinto.'], comun: 1, def: 2, marca: '«aquí llamaremos»',
+      ok: 'Escuchar al otro aunque pensemos distinto',
+      m: [['No contradecir a nadie', 'RV53', 'Es lo que «muchos creen»; el autor propone otra cosa.'], ['Saludar a los mayores', 'RV56', 'Es un caso posible, no su definición.'], ['Obedecer siempre', 'RV7', 'El texto no lo dice.']] },
+    { termino: 'trabajo', o: ['Suele pensarse que trabajar es solo lo que se hace por un sueldo.', 'Aquí entenderé por trabajo toda actividad que cuida o transforma algo para otros.', 'Por eso, cocinar en casa también es trabajo.'], comun: 1, def: 2, marca: '«aquí entenderé por»',
+      ok: 'Toda actividad que cuida o transforma algo para otros',
+      m: [['Lo que se hace por un sueldo', 'RV53', 'Es lo que «suele pensarse»; el autor lo amplía.'], ['Cocinar en casa', 'RV56', 'Es un ejemplo que sale de su definición, no la definición.'], ['Cualquier cosa que canse', 'RV7', 'El texto no lo dice.']] },
+    { termino: 'sabio', o: ['¿Quién es sabio?', 'Se dice que sabio es quien sabe muchas cosas.', 'Aquí llamaremos sabio a quien sabe qué no sabe y sigue preguntando.'], comun: 2, def: 3, marca: '«aquí llamaremos»',
+      ok: 'Quien sabe qué no sabe y sigue preguntando',
+      m: [['Quien sabe muchas cosas', 'RV53', 'Es lo que «se dice»; el autor lo discute.'], ['Un profesor universitario', 'RV56', 'Es un caso posible, no su definición.'], ['Quien nunca se equivoca', 'RV7', 'El texto no lo dice.']] },
+    { termino: 'generoso', o: ['Para muchos, generoso es quien regala cosas caras.', 'En este texto, generoso será quien da de lo suyo sin esperar nada a cambio.'], comun: 1, def: 2, marca: '«en este texto… será»',
+      ok: 'Quien da de lo suyo sin esperar nada a cambio',
+      m: [['Quien regala cosas caras', 'RV53', 'Es lo que piensan «muchos»; el autor da otra definición.'], ['Quien invita en la fiesta patronal', 'RV56', 'Es un caso posible, no la definición.'], ['Quien tiene mucho dinero', 'RV7', 'El texto no lo dice.']] },
+  ];
+  filosofico.resuelve = {
+    pieza: 'rv-texto',
+    generar(s) {
+      const b = elegir(RES_FIL, s), [trampa, , porque] = b.m[0];
+      const fig = estado => ({ datos: lista('Texto', b.o), estado });
+      return {
+        enunciado: `En este texto, ¿qué entiende el autor por «${b.termino}»?`,
+        dibujo: fig({}),
+        pasos: [
+          { tipo: 'pide', texto: [`Piden qué significa «${b.termino}» para el autor, no para la gente en general.`] },
+          { tipo: 'datos', texto: [excede(`La ${b.comun}`), ' cuenta lo que otros piensan; ', marco(`la ${b.def}`), ` usa ${b.marca} para fijar el sentido.`],
+            dibujo: fig({ marcas: { [`o${b.comun}`]: 'h' } }) },
+          { tipo: 'regla', texto: ['Lo que el autor entiende por una palabra está en su propia definición, no en la idea común que cita ni en un ejemplo.'] },
+          { tipo: 'aplica', texto: ['En la ', marco(`oración ${b.def}`), `, para el autor, «${b.termino}» es esto: ${minus(b.ok)}.`],
+            ecuacion: [marco('definición del autor'), ' ≠ ', excede('idea común')],
+            dibujo: fig({ marcas: { [`o${b.comun}`]: 'h', [`o${b.def}`]: 'd' }, sellos: { o: { t: `Definición: la ${b.def}`, c: 'd' } }, nuevo: [`o${b.def}`, 'o'] }) },
+          { tipo: 'sentido', texto: [`Descarto «${trampa}»: ${minus(porque)}`] },
+        ],
+        respuesta: [marco(b.ok)],
+      };
     },
   };
 
