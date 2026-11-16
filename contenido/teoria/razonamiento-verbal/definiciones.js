@@ -76,6 +76,40 @@
   }
   const opciones = (c, malas) => [{ id: 'c', texto: c, correcta: true }, ...malas.map(([texto, error, siFuera], k) => ({ id: `e${k}`, texto, error, siFuera }))];
 
+  // Bancos de «Ahora tú» (sin cambios); «Así se resuelve» toma de aquí otro caso que el de la misma semilla.
+  const BANCO_DEF = [
+    { c: 'bicicleta', g: 'vehículo de dos ruedas', d: 'con pedales', v: 'moto, triciclo', ok: 'Vehículo de dos ruedas que se mueve con pedales', m: [['Vehículo de dos ruedas', 'RVD2', 'Es la clase correcta, pero también entra la moto: falta «con pedales».'], ['Vehículo que se mueve con pedales', 'RVD2', 'Separa de la moto, pero también entra el triciclo.'], ['Como la que uso para ir al colegio', 'RV56', 'Un ejemplo no dice qué rasgos tiene toda bicicleta.']] },
+    { c: 'lápiz', g: 'instrumento para escribir', d: 'con grafito', v: 'lapicero, plumón', ok: 'Instrumento para escribir con una barra de grafito', m: [['Instrumento para escribir', 'RVD2', 'Es su clase, pero también entran el lapicero y el plumón.'], ['Objeto amarillo y largo', 'RVD1', 'Muchos lápices lo son, pero no todos: ese rasgo es frecuente, no necesario.'], ['El que se usa en la clase de dibujo', 'RV56', 'Eso es un uso de ejemplo, no los rasgos que lo separan.']] },
+    { c: 'río', g: 'corriente de agua', d: 'continua, desemboca', v: 'lago, arroyo de una semana de lluvia', ok: 'Corriente de agua continua que desemboca en otra', m: [['Agua que hay en la sierra', 'RVD1', 'Hay ríos en la sierra, pero también en la costa y la selva.'], ['Masa de agua', 'RVD2', 'Es su clase, pero también entra el lago.'], ['Como el Amazonas', 'RV56', 'El Amazonas es un caso; no dice qué tienen todos los ríos.']] },
+    { c: 'reloj', g: 'instrumento que mide el tiempo', d: 'muestra la hora', v: 'calendario, cronómetro', ok: 'Instrumento que mide y muestra la hora del día', m: [['Instrumento que mide el tiempo', 'RVD2', 'Es su clase, pero también entra el cronómetro, que no da la hora.'], ['Objeto redondo con agujas', 'RVD1', 'Muchos relojes lo son, pero los digitales no tienen agujas.'], ['Lo que llevo en la muñeca', 'RV56', 'Es un ejemplo de reloj; no dice qué rasgos tienen todos.']] },
+    { c: 'cuaderno', g: 'hojas unidas', d: 'en blanco, para escribir', v: 'libro, hoja suelta', ok: 'Conjunto de hojas en blanco unidas para escribir', m: [['Conjunto de hojas unidas', 'RVD2', 'Es su clase, pero también entra el libro, que ya viene escrito.'], ['Objeto de tapa azul', 'RVD1', 'Algunos cuadernos son azules; ese rasgo no está en todos.'], ['El de matemática de mi mochila', 'RV56', 'Es un caso concreto; no dice qué tienen todos los cuadernos.']] },
+    { c: 'puente', g: 'construcción para pasar', d: 'por encima', v: 'túnel, carretera', ok: 'Construcción que permite pasar por encima de un río o un vacío', m: [['Construcción para pasar de un lado a otro', 'RVD2', 'Es su clase, pero también entra el túnel, que pasa por debajo.'], ['Construcción de piedra antigua', 'RVD1', 'Algunos puentes lo son; hay puentes de acero y de madera.'], ['Como el de mi pueblo', 'RV56', 'Es un caso; no dice qué rasgo comparten todos los puentes.']] },
+  ];
+  const BANCO_RASGO = [
+    { c: 'pez', casos: 'sardina, caballito de mar, pez payaso', ok: 'Respira por branquias', m: [['Vive en el mar', 'RVD1', 'Muchos peces son de mar, pero la trucha vive en ríos y lagos.'], ['Nada', 'RVD3', 'Todos los peces nadan, pero también el delfín, que no es pez.'], ['Es como la sardina', 'RV56', 'La sardina es un caso; no dice qué rasgo tienen todos.']] },
+    { c: 'triángulo', casos: 'equilátero, rectángulo, obtusángulo', ok: 'Tiene exactamente tres lados', m: [['Tiene un ángulo recto', 'RVD1', 'Algunos triángulos lo tienen; el equilátero no.'], ['Es una figura con lados rectos', 'RVD3', 'Todo triángulo la cumple, pero también el cuadrado.'], ['Es como una tajada de pizza', 'RV56', 'Es un ejemplo que se le parece; no dice el rasgo.']] },
+    { c: 'mamífero', casos: 'perro, ballena, murciélago', ok: 'Alimenta a sus crías con leche', m: [['Tiene cuatro patas', 'RVD1', 'Muchos las tienen; la ballena y el murciélago, no.'], ['Respira aire', 'RVD3', 'Todos respiran aire, pero también las aves y los reptiles.'], ['Es como el perro', 'RV56', 'El perro es un caso; no dice qué comparten todos.']] },
+    { c: 'insecto', casos: 'hormiga, mariposa, escarabajo', ok: 'Tiene seis patas y el cuerpo en tres partes', m: [['Tiene alas', 'RVD1', 'Muchos insectos vuelan; la hormiga obrera no tiene alas.'], ['Es un animal pequeño', 'RVD3', 'Los insectos lo son, pero también la lagartija.'], ['Es como la mosca', 'RV56', 'La mosca es un caso; no da el rasgo que comparten.']] },
+    { c: 'fruta', casos: 'mango, tomate, palta', ok: 'Parte de la planta que nace de la flor y guarda semillas', m: [['Es dulce', 'RVD1', 'Muchas lo son; la palta y el tomate, no.'], ['Es una parte de la planta que se come', 'RVD3', 'Las frutas lo son, pero también la papa, que es tallo.'], ['Es como la manzana', 'RV56', 'Es un caso; no dice el rasgo de todas.']] },
+    { c: 'instrumento musical', casos: 'quena, charango, cajón', ok: 'Objeto hecho para producir sonidos musicales', m: [['Tiene cuerdas', 'RVD1', 'El charango las tiene; la quena y el cajón, no.'], ['Hace ruido', 'RVD3', 'Todos suenan, pero también una puerta que se cierra.'], ['Es como la guitarra', 'RV56', 'La guitarra es un caso; no dice qué tienen todos.']] },
+  ];
+  // Índice de «Así se resuelve»: sale de azar(s + 900) y nunca coincide con el de «Ahora tú» (s % n).
+  const otroIndice = (s, n) => (s % n + 1 + Math.floor(azar(s + 900)() * (n - 1))) % n;
+
+  // Así se resuelve: una tarjeta (los vecinos o los casos) y la lista de las cuatro opciones; en el paso «Lo aplico»
+  // la correcta se marca (i) y las demás se tachan. Las opciones salen del mismo banco que «Ahora tú» (regla 1).
+  const tarjetaDe = (id, titulo, lista) => ({ id, titulo, modo: 'tarjeta', fragmentos: lista.split(', ').map((t, k, a) => ({ id: `${id}${k}`, t: k < a.length - 1 ? `${t},` : t })) });
+  const figResuelve = (tarjeta, ops, resuelto) => ({
+    datos: { secciones: [tarjeta, { id: 'ops', titulo: 'Opciones', modo: 'lista', fragmentos: ops.map((o, k) => ({ id: `o${k}`, t: o.texto })) }] },
+    estado: resuelto ? { marcas: Object.fromEntries(ops.map((o, k) => [`o${k}`, o.correcta ? 'i' : undefined]).filter(x => x[1])), tachar: ops.map((o, k) => (o.correcta ? null : `o${k}`)).filter(Boolean), nuevo: ops.map((o, k) => (o.correcta ? `o${k}` : null)).filter(Boolean) } : {},
+  });
+  const barajar = (b, s) => {
+    const r = azar(s + 900), malas = b.m.slice(); r(); if (r() < 0.5) malas.reverse();
+    const ops = opciones(b.ok, malas), c = ops.shift(), k = Math.floor(r() * (ops.length + 1));
+    ops.splice(k, 0, c); return ops;
+  };
+  const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
+
   // ---------- Idea 1: clase cercana más rasgo que separa ----------
   // Cambia: el género y la diferencia de la definición. Permanece: los seis casos y su orden.
   // Progresa: cuántos casos clasifica bien (de 6). Se reserva: el caso que solo la diferencia completa separa
@@ -107,6 +141,14 @@
     titulo: 'Clase cercana y rasgo que separa',
     temas: ['Género próximo', 'Diferencia específica'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué pide el examen y qué es un vecino, sin adelantar la definición del taburete (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Definir en el examen', texto: 'En el examen te dan una palabra y cuatro frases. Solo una dice qué es esa cosa y la separa de todo lo demás. Las otras se quedan cortas o se pasan de largas.' },
+        { titulo: 'Los vecinos', texto: 'Una combi y un bus llevan pasajeros por las calles de Juliaca. Se parecen, pero no son lo mismo. Una buena definición de «combi» deja fuera al bus: el bus es un vecino.' },
+        { titulo: 'Qué mirar', texto: 'En el juego armas la definición de «silla» con dos piezas: una clase y un rasgo. Mira qué casos se pintan de rojo cada vez que cambias una pieza.' },
+      ],
+    },
     juega: {
       consigna: 'Arma la definición de «silla»: elige la clase y el rasgo. Mira qué casos entran y cuáles quedan fuera.',
       voz: 'Fíjate en los casos rojos: entran sin ser sillas o quedan fuera siéndolo.',
@@ -154,17 +196,31 @@
       condicion: 'la clase es la más cercana que lo contiene, y los rasgos están en todos sus casos y en ningún vecino.',
       voz: 'Comprueba siempre con un vecino: si se cuela, falta un rasgo.',
     },
+    // Así se resuelve (fase 2): un caso del banco de «Ahora tú» distinto del de la misma semilla, resuelto paso a paso.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Primero los vecinos; después, la clase y el rasgo.',
+      generar(s) {
+        const b = BANCO_DEF[otroIndice(s, BANCO_DEF.length)], ops = barajar(b, s), tarjeta = tarjetaDe('v', `Vecinos de «${b.c}»`, b.v);
+        const parecida = b.m.find(m => m[1] === 'RVD2');
+        return {
+          enunciado: `¿Qué definición de «${b.c}» deja dentro todos sus casos y fuera a sus vecinos?`,
+          dibujo: figResuelve(tarjeta, ops, false),
+          pasos: [
+            { tipo: 'pide', texto: `Piden la definición de «${b.c}»: no debe dejar fuera ningún caso ni dejar entrar a un vecino.` },
+            { tipo: 'datos', texto: `Los vecinos son ${b.v.replace(', ', ' y ')}: se parecen a «${b.c}», pero no lo son.` },
+            { tipo: 'regla', texto: 'Primero busco la clase más cercana que lo contiene. Después, el rasgo que tiene todo caso y ningún vecino.', ecuacion: [gen('clase'), ' + ', dif('rasgo que separa')] },
+            { tipo: 'aplica', texto: ['Clase: ', gen(b.g), '. Rasgo: ', dif(b.d), '. Solo una opción trae las dos piezas; los ejemplos no cuentan.'], dibujo: figResuelve(tarjeta, ops, true) },
+            { tipo: 'sentido', texto: `Compruebo con la opción parecida, «${parecida[0]}»: ${minus(parecida[2])}` },
+          ],
+          respuesta: `«${b.ok}»`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Busca el vecino que se colaría con cada opción.',
       generar(s) {
-        const B = [
-          { c: 'bicicleta', g: 'vehículo de dos ruedas', d: 'con pedales', v: 'moto, triciclo', ok: 'Vehículo de dos ruedas que se mueve con pedales', m: [['Vehículo de dos ruedas', 'RVD2', 'Es la clase correcta, pero también entra la moto: falta «con pedales».'], ['Vehículo que se mueve con pedales', 'RVD2', 'Separa de la moto, pero también entra el triciclo.'], ['Como la que uso para ir al colegio', 'RV56', 'Un ejemplo no dice qué rasgos tiene toda bicicleta.']] },
-          { c: 'lápiz', g: 'instrumento para escribir', d: 'con grafito', v: 'lapicero, plumón', ok: 'Instrumento para escribir con una barra de grafito', m: [['Instrumento para escribir', 'RVD2', 'Es su clase, pero también entran el lapicero y el plumón.'], ['Objeto amarillo y largo', 'RVD1', 'Muchos lápices lo son, pero no todos: ese rasgo es frecuente, no necesario.'], ['El que se usa en la clase de dibujo', 'RV56', 'Eso es un uso de ejemplo, no los rasgos que lo separan.']] },
-          { c: 'río', g: 'corriente de agua', d: 'continua, desemboca', v: 'lago, arroyo de una semana de lluvia', ok: 'Corriente de agua continua que desemboca en otra', m: [['Agua que hay en la sierra', 'RVD1', 'Hay ríos en la sierra, pero también en la costa y la selva.'], ['Masa de agua', 'RVD2', 'Es su clase, pero también entra el lago.'], ['Como el Amazonas', 'RV56', 'El Amazonas es un caso; no dice qué tienen todos los ríos.']] },
-          { c: 'reloj', g: 'instrumento que mide el tiempo', d: 'muestra la hora', v: 'calendario, cronómetro', ok: 'Instrumento que mide y muestra la hora del día', m: [['Instrumento que mide el tiempo', 'RVD2', 'Es su clase, pero también entra el cronómetro, que no da la hora.'], ['Objeto redondo con agujas', 'RVD1', 'Muchos relojes lo son, pero los digitales no tienen agujas.'], ['Lo que llevo en la muñeca', 'RV56', 'Es un ejemplo de reloj; no dice qué rasgos tienen todos.']] },
-          { c: 'cuaderno', g: 'hojas unidas', d: 'en blanco, para escribir', v: 'libro, hoja suelta', ok: 'Conjunto de hojas en blanco unidas para escribir', m: [['Conjunto de hojas unidas', 'RVD2', 'Es su clase, pero también entra el libro, que ya viene escrito.'], ['Objeto de tapa azul', 'RVD1', 'Algunos cuadernos son azules; ese rasgo no está en todos.'], ['El de matemática de mi mochila', 'RV56', 'Es un caso concreto; no dice qué tienen todos los cuadernos.']] },
-          { c: 'puente', g: 'construcción para pasar', d: 'por encima', v: 'túnel, carretera', ok: 'Construcción que permite pasar por encima de un río o un vacío', m: [['Construcción para pasar de un lado a otro', 'RVD2', 'Es su clase, pero también entra el túnel, que pasa por debajo.'], ['Construcción de piedra antigua', 'RVD1', 'Algunos puentes lo son; hay puentes de acero y de madera.'], ['Como el de mi pueblo', 'RV56', 'Es un caso; no dice qué rasgo comparten todos los puentes.']] },
-        ];
+        const B = BANCO_DEF;
         const b = B[s % B.length], r = azar(s)();
         const malas = b.m.slice();
         if (r < 0.5) malas.reverse();
@@ -212,6 +268,14 @@
     titulo: 'Necesario, no solo frecuente',
     temas: ['Rasgos mínimos de significado'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué es un rasgo y las dos preguntas que se le hacen, sin decir qué pasa con «pone huevos» (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Qué es un rasgo', texto: 'Un rasgo es algo que una cosa tiene. El cóndor que vuela sobre el Colca tiene plumas, pico y alas. Para definir «ave», buscas rasgos así.' },
+        { titulo: 'Casi siempre no es siempre', texto: 'Que algo pase casi siempre no quiere decir que pase siempre. Casi todos los estudiantes de tu salón usan celular, pero alguno no lo usa.' },
+        { titulo: 'Qué mirar', texto: 'En el juego defines «ave» con un solo rasgo. Con cada rasgo, cuenta qué aves quedan fuera y qué animales que no son aves se cuelan.' },
+      ],
+    },
     juega: {
       consigna: 'Define «ave» con un solo rasgo. Prueba cada uno y mira qué aves quedan fuera y qué animales se cuelan.',
       voz: 'Un rasgo puede ser común y aun así fallar.',
@@ -247,17 +311,31 @@
       ecuacion: [{ llave: [bien('todos los casos'), ' lo tienen'], nota: 'necesario', color: 'c-i' }, '   ·   ', { llave: [mal('ningún vecino'), ' lo tiene'], nota: 'suficiente', color: 'c-h' }],
       condicion: 'se prueba contra un caso raro del concepto (el pingüino) y contra un vecino parecido (la tortuga).',
     },
+    // Así se resuelve (fase 2): otro caso del banco de «Ahora tú», resuelto con las dos pruebas (caso raro y vecino).
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Prueba cada rasgo con un caso raro y con un vecino.',
+      generar(s) {
+        const b = BANCO_RASGO[otroIndice(s, BANCO_RASGO.length)], ops = barajar(b, s), tarjeta = tarjetaDe('k', `Algunos casos de «${b.c}»`, b.casos);
+        const frecuente = b.m.find(m => m[1] === 'RVD1'), amplio = b.m.find(m => m[1] === 'RVD3');
+        return {
+          enunciado: `¿Qué rasgo tienen todos los casos de «${b.c}» y, además, lo separa de lo que no es ${b.c}?`,
+          dibujo: figResuelve(tarjeta, ops, false),
+          pasos: [
+            { tipo: 'pide', texto: `Piden un rasgo que esté en todos los casos de «${b.c}» y en nada más.` },
+            { tipo: 'regla', texto: 'Hago dos pruebas. ¿Lo tienen todos los casos, también los raros? ¿Lo tiene algo que no es del grupo?', ecuacion: [bien('todos los casos'), '   ·   ', mal('ningún vecino')] },
+            { tipo: 'aplica', texto: [`«${frecuente[0]}» falla la primera prueba: `, mal(minus(frecuente[2]))] },
+            { tipo: 'aplica', texto: [`«${amplio[0]}» falla la segunda: `, mal(minus(amplio[2]))], dibujo: figResuelve(tarjeta, ops, true) },
+            { tipo: 'sentido', texto: `«${b.ok}» pasa las dos pruebas. La opción que nombra un caso no da ningún rasgo: se descarta.` },
+          ],
+          respuesta: `«${b.ok}»`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Piensa en un caso raro y en un vecino parecido.',
       generar(s) {
-        const B = [
-          { c: 'pez', casos: 'sardina, caballito de mar, pez payaso', ok: 'Respira por branquias', m: [['Vive en el mar', 'RVD1', 'Muchos peces son de mar, pero la trucha vive en ríos y lagos.'], ['Nada', 'RVD3', 'Todos los peces nadan, pero también el delfín, que no es pez.'], ['Es como la sardina', 'RV56', 'La sardina es un caso; no dice qué rasgo tienen todos.']] },
-          { c: 'triángulo', casos: 'equilátero, rectángulo, obtusángulo', ok: 'Tiene exactamente tres lados', m: [['Tiene un ángulo recto', 'RVD1', 'Algunos triángulos lo tienen; el equilátero no.'], ['Es una figura con lados rectos', 'RVD3', 'Todo triángulo la cumple, pero también el cuadrado.'], ['Es como una tajada de pizza', 'RV56', 'Es un ejemplo que se le parece; no dice el rasgo.']] },
-          { c: 'mamífero', casos: 'perro, ballena, murciélago', ok: 'Alimenta a sus crías con leche', m: [['Tiene cuatro patas', 'RVD1', 'Muchos las tienen; la ballena y el murciélago, no.'], ['Respira aire', 'RVD3', 'Todos respiran aire, pero también las aves y los reptiles.'], ['Es como el perro', 'RV56', 'El perro es un caso; no dice qué comparten todos.']] },
-          { c: 'insecto', casos: 'hormiga, mariposa, escarabajo', ok: 'Tiene seis patas y el cuerpo en tres partes', m: [['Tiene alas', 'RVD1', 'Muchos insectos vuelan; la hormiga obrera no tiene alas.'], ['Es un animal pequeño', 'RVD3', 'Los insectos lo son, pero también la lagartija.'], ['Es como la mosca', 'RV56', 'La mosca es un caso; no da el rasgo que comparten.']] },
-          { c: 'fruta', casos: 'mango, tomate, palta', ok: 'Parte de la planta que nace de la flor y guarda semillas', m: [['Es dulce', 'RVD1', 'Muchas lo son; la palta y el tomate, no.'], ['Es una parte de la planta que se come', 'RVD3', 'Las frutas lo son, pero también la papa, que es tallo.'], ['Es como la manzana', 'RV56', 'Es un caso; no dice el rasgo de todas.']] },
-          { c: 'instrumento musical', casos: 'quena, charango, cajón', ok: 'Objeto hecho para producir sonidos musicales', m: [['Tiene cuerdas', 'RVD1', 'El charango las tiene; la quena y el cajón, no.'], ['Hace ruido', 'RVD3', 'Todos suenan, pero también una puerta que se cierra.'], ['Es como la guitarra', 'RV56', 'La guitarra es un caso; no dice qué tienen todos.']] },
-        ];
+        const B = BANCO_RASGO;
         const b = B[s % B.length];
         const malas = s % 3 ? b.m.slice().reverse() : b.m.slice();
         return {
