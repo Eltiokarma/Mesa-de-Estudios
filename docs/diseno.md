@@ -212,7 +212,15 @@ La forma de la página la decide la clase `con-nav` y el atributo `data-ruta` de
 
 Pedido de Gerson: que den ganas de tocar los cursos.
 
-- **El curso** muestra sus unidades como tarjetas con dibujo, en filas deslizables por grado: primero la del alumno («Tu grado»), luego las de grados anteriores («Repaso») y al final los adelantos («Adelanto»). Cada fila es scroll nativo con imán (`scroll-snap`). Tiene flechas de 44 px y ← → como alternativa al dedo. En el celular la tarjeta mide 152 px y la siguiente se asoma. Ya no hay ejercicios en la página del curso.
+- **El curso es un mapa en ramas (16 nov 2026, pedido de Gerson).** Antes eran filas deslizables por grado, y Gerson se perdía: los grados salían mezclados, los temas parecían una secuencia y no se veía qué tema se apoya en cuál.
+  - **Ramas.** Cada curso se divide en ramas (Mecánica, Ondas y luz…), y cada rama es un árbol de pisos: arriba lo básico, debajo lo que se apoya en eso.
+  - **Líneas.** Unen cada tema con lo que necesita antes. Se dibujan en SVG midiendo la pantalla, así sirven con cualquier ancho. La línea es de color si el requisito ya está hecho y punteada si no.
+  - **Cabecera de la rama.** Dice si se puede empezar por ella («No necesita otra rama», o «Puedes empezar por aquí. Algunos temas se apoyan en…») o qué conviene ver antes.
+  - **Tarjetas.** Lo que un tema necesita de otra rama o de otro curso va escrito en la tarjeta («Antes: Razones trigonométricas (Trigonometría)»), con enlace. Cada tarjeta muestra su grado; el del alumno va resaltado.
+  - **Todo se puede abrir.** Los temas cuyos requisitos faltan se ven más suaves (borde punteado), pero no se bloquean.
+  - **«Lo que sigue».** Arriba del mapa va la tarjeta con el primer tema sin hacer que ya tiene sus requisitos (de su grado, si hay).
+  - **Tamaños.** En el celular entran dos tarjetas por piso. En PC las ramas van en dos columnas.
+  - **Datos y cálculo.** Los datos están en `catalogo/cursos` (`ramas`, `requiere`) y el cálculo en `nucleo/mapa.js`. Ya no hay ejercicios en la página del curso.
 - **La unidad** (`#/unidad/<id>`) tiene el dibujo, el nombre, los temas y «Marcar como estudiada», y cuatro puertas: Teoría, Ejercicios, Exámenes y Dejar una pregunta. La principal (tinta llena) es Ejercicios. Nada se deshabilita sin explicar: lo que falta dice «En preparación» y lleva a lo que sí hay.
 - **Teoría:** hoy es un estado honesto. Para enchufar las micro-lecciones:
   1. agregar el campo `teoria` en la unidad del catálogo (y sumarlo a la lista de campos que copia `herramientas/construir-catalogo.js`);

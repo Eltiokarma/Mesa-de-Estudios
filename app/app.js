@@ -345,64 +345,86 @@ function cargarDibujos(curso) {
 const dibujo = (c, u) => (window.Dibujos && Dibujos.svg(c.id, u.id)) || Ilus.viñeta(c.id, 'class="dib-resp"');
 const modulosDe = u => u.plantillas.map(p => cat.plantillas[p]).filter(Boolean);
 const textoEjercicios = n => (n ? `${n} ${n === 1 ? 'ejercicio' : 'ejercicios'}` : 'En preparación');
-const reducido = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Página del curso: las unidades son tarjetas con su dibujo, en filas deslizables por grado (3.º, 4.º y 5.º: cada unidad
-// trae su grado en el catálogo y así el alumno ve primero lo de su año). Dentro de cada fila, el orden del temario de su
-// universidad. Las filas son scroll nativo con imán (sigue al dedo y frena solo, también en gama baja); sin arrastrar,
-// las flechas de cada fila y, con teclado, Tab o ← → entre tarjetas.
+// Página del curso: el mapa del curso (16 nov 2026, pedido de Gerson). Las unidades van en ramas (Mecánica, Ondas y
+// luz…), y cada rama es un árbol que se abre de lo básico a lo complejo: una unidad va debajo de lo que necesita, con
+// una línea que las une (nucleo/mapa.js; los datos están en catalogo/cursos). Lo que necesita de otra rama o de otro
+// curso va escrito en la tarjeta («Antes: …»). Una rama que no se apoya en otra dice que se puede empezar por ella.
+// Se puede entrar a cualquier unidad; las que todavía no tienen sus requisitos se ven más suaves.
+const COLOR_RAMA = ['c-i', 'c-o', 'c-d', 'c-f', 'c-h'];
+const nombreUnidad = id => { const c = cursoDeUnidad(id), u = c && c.unidades.find(x => x.id === id); return u ? { c, u } : null; };
 function vCurso(id) {
   const c = cat.cursos.find(x => x.id === id); if (!c) return ir('#/cursos');
   if (llevarAEntrada(c)) return;
   const PC = window.PruebaCurso, lec = lecturaConPrueba(c);
   const todas = sessionStorage.getItem('todas') === '1';
   const us = todas ? c.unidades : unidadesDe(c, est.uni);
-  const ord = [...us].sort((a, b) => Math.min(...(ubic(a, est.uni) || [99])) - Math.min(...(ubic(b, est.uni) || [99])));
-  // Orden de las filas: su grado primero; luego los anteriores, del más cercano (repaso); al final los adelantos.
-  const mio = Number(est.grado) || 0, peso = g => (!mio ? g : g === mio ? 0 : g < mio ? 10 - g : 20 + g);
-  const grados = [...new Set(ord.map(u => u.grado))].sort((a, b) => peso(a) - peso(b));
-  const tarjeta = u => `<a class="unidad-t${estudiada(u) ? ' hecha' : ''}" href="#/unidad/${esc(u.id)}" data-unidad="${esc(u.id)}">
-      <span class="lamina">${dibujo(c, u)}${estudiada(u) ? `<span class="hecho" title="${esc(nivelDe(u).nombre)}">✓<span class="lector"> ${esc(nivelDe(u).nombre)}</span></span>` : ''}</span>
-      <span class="t">${esc(u.nombre)}</span><span class="d">${u.teoria ? esc(textoTeoriaCorto(u)) : textoEjercicios(modulosDe(u).length)}</span></a>`;
-  const filas = grados.map(g => { const del = ord.filter(u => u.grado === g);
-    const marca = g === mio ? '<span class="tag acento">Tu grado</span>' : mio && g > mio ? '<span class="tag gris">Adelanto</span>' : mio ? '<span class="tag gris">Repaso</span>' : '';
-    return `<section class="fila-u" aria-labelledby="fg-${g}">
-      <div class="fila-cab"><h2 id="fg-${g}">${g}.º de secundaria ${marca}</h2>
-        <span class="flechas"><button type="button" class="flecha" data-mover="-1" aria-label="Unidades anteriores de ${g}.º">‹</button><button type="button" class="flecha" data-mover="1" aria-label="Más unidades de ${g}.º">›</button></span></div>
-      <div class="pista-u" data-pista>${del.map(tarjeta).join('')}</div></section>`; }).join('');
+  const hecha = uid => { const x = nombreUnidad(uid); return !!x && estudiada(x.u); };
+  const m = Mapa.armar(c, { incluir: u => us.includes(u), hecha });
+  const sig = Mapa.siguiente(m.ramas, u => !adelanto(u));
+  const mio = Number(est.grado) || 0;
+  const antes = n => n.fuera.length ? `<span class="nodo-antes">Antes: ${n.fuera.map(p => { const x = nombreUnidad(p); if (!x) return '';
+    return `<a href="#/unidad/${esc(p)}"${hecha(p) ? ' class="ok"' : ''}>${esc(x.u.nombre)}${x.c.id !== c.id ? ` <small>(${esc(x.c.nombre)})</small>` : ''}</a>`; }).join(', ')}</span>` : '';
+  const nodo = n => { const u = n.unidad;
+    return `<div class="nodo${n.hecha ? ' hecha' : ''}${n.lista || n.hecha ? '' : ' espera'}${sig && sig.id === n.id ? ' sigue' : ''}" data-unidad="${esc(u.id)}" data-dentro="${esc(n.dentro.join(' '))}">
+      <span class="lamina">${dibujo(c, u)}${n.hecha ? `<span class="hecho" title="${esc(nivelDe(u).nombre)}">✓<span class="lector"> ${esc(nivelDe(u).nombre)}</span></span>` : ''}</span>
+      <a class="t nodo-ir" href="#/unidad/${esc(u.id)}">${esc(u.nombre)}</a>
+      <span class="nodo-g"><span class="tag ${u.grado === mio ? 'acento' : 'gris'}">${u.grado}.º</span>${sig && sig.id === n.id ? '<span class="tag">Sigue aquí</span>' : ''}</span>
+      <span class="d">${u.teoria ? esc(textoTeoriaCorto(u)) : textoEjercicios(modulosDe(u).length)}</span>${antes(n)}</div>`; };
+  const ramas = m.ramas.map((r, k) => {
+    const otras = r.necesita.map(j => `«${esc(c.ramas[j].nombre)}»`).join(' y ');
+    const dep = r.independiente ? '<span class="rama-dep libre">No necesita otra rama: puedes empezar por aquí</span>'
+      : r.conEntrada ? `<span class="rama-dep"><b class="libre">Puedes empezar por aquí.</b> Algunos temas se apoyan en ${otras}.</span>`
+        : `<span class="rama-dep">Antes, conviene ver ${otras}.</span>`;
+    return `<details class="rama" open style="--rama:var(--${COLOR_RAMA[r.i % COLOR_RAMA.length]})">
+      <summary><span class="rama-cab"><span class="rama-n">Rama ${k + 1}</span><span class="rama-t">${esc(r.nombre)}</span>
+        <span class="rama-av">${r.hechas} de ${r.nodos.length}</span></span>${dep}</summary>
+      <div class="rama-arbol"><svg class="rama-lineas" aria-hidden="true"></svg>
+        ${r.pisos.map(f => `<div class="rama-piso">${f.map(nodo).join('')}</div>`).join('')}</div></details>`; }).join('');
   const pc = Math.round(avance(c, todas ? '' : est.uni) * 100);
+  const sigue = sig ? `<a class="card mapa-sigue" href="#/unidad/${esc(sig.id)}"><span class="lamina">${dibujo(c, sig.unidad)}</span>
+      <span class="ms-tx"><span class="etq-p">${pc ? 'Lo que sigue' : 'Empieza aquí'}</span><b>${esc(sig.unidad.nombre)}</b>
+      <span>${sig.dentro.length || sig.fuera.length ? 'Ya tienes lo que necesita antes.' : 'No necesita ningún tema antes.'}</span></span><span class="ms-ir" aria-hidden="true">›</span></a>` : '';
   $app.innerHTML = `<header class="curso-hero tinte" style="${Ilus.tinte(c.id)}">${Ilus.viñeta(c.id, 'class="vin vineta-flota"')}
     <a class="volver" href="#/cursos" aria-label="Volver">‹</a>
     <h1>${esc(c.nombre)}</h1><p class="sub">${esc(AREA_TXT[c.area])} · ${us.length} unidades · ${pc} % estudiado</p>
     <span class="barra" aria-hidden="true"><i style="width:${pc}%"></i></span>
     <div class="chips"><button class="chip${todas ? '' : ' on'}" data-todas="0">${esc(UNI_CORTA[est.uni] || 'Mi universidad')}</button><button class="chip${todas ? ' on' : ''}" data-todas="1">Todas las unidades</button></div></header>
-    <div class="filas-u" style="${Ilus.tinte(c.id)}">${filas}</div>
+    ${sigue}
+    <p class="mapa-guia">Cada rama va <b>de lo básico a lo complejo</b>: un tema se apoya en el que tiene arriba, unido por la línea. Puedes entrar a cualquiera; los que se ven más suaves te costarán menos si antes ves lo de arriba.</p>
+    <div class="mapa" style="${Ilus.tinte(c.id)}">${ramas}</div>
     ${PC || lec ? `<div class="pruebas-curso">${PC ? PC.tarjeta(ctxPrueba(), c.id) : ''}${lec ? tarjetaLectura(lec, c) : ''}</div>` : ''}`;
   $app.querySelectorAll('[data-todas]').forEach(b => b.onclick = () => { sessionStorage.setItem('todas', b.dataset.todas); vCurso(id); });
-  $app.querySelectorAll('.fila-u').forEach(armarFila);
-  // Al volver de una unidad, su tarjeta queda a la vista y con el foco (sin mover la página de golpe al entrar).
-  const ult = sessionStorage.getItem('ultima-unidad'), t = ult && $app.querySelector(`[data-unidad="${CSS.escape(ult)}"]`);
-  if (t) { const p = t.parentElement; p.scrollLeft = t.offsetLeft - p.offsetLeft - 16; t.focus({ preventScroll: true }); t.scrollIntoView({ block: 'center' }); }
+  const mapa = $app.querySelector('.mapa');
+  lineasMapa(mapa);
+  mapa.querySelectorAll('.rama').forEach(d => d.addEventListener('toggle', () => lineasMapa(mapa)));
+  vigilarAncho(mapa, () => lineasMapa(mapa));
+  // Al volver de una unidad, su tarjeta queda a la vista y con el foco.
+  const ult = sessionStorage.getItem('ultima-unidad'), t = ult && mapa.querySelector(`[data-unidad="${CSS.escape(ult)}"] .nodo-ir`);
+  if (t) { t.focus({ preventScroll: true }); t.closest('.nodo').scrollIntoView({ block: 'center' }); }
 }
 
-// Una fila deslizable: flechas que avanzan una pantalla de tarjetas y se apagan en los extremos, y ← → con teclado.
-function armarFila(fila) {
-  const pista = fila.querySelector('[data-pista]'), [ant, sig] = fila.querySelectorAll('[data-mover]');
-  const paso = () => { const t = pista.querySelector('.unidad-t'); const w = t ? t.getBoundingClientRect().width + 12 : 160;
-    return Math.max(w, Math.floor(pista.clientWidth / w) * w); };
-  const extremos = () => { const fin = pista.scrollWidth - pista.clientWidth - 2;
-    ant.disabled = pista.scrollLeft <= 2; sig.disabled = pista.scrollLeft >= fin;
-    fila.classList.toggle('sin-flechas', fin <= 0); };
-  let pend = false;
-  pista.addEventListener('scroll', () => { if (!pend) { pend = true; requestAnimationFrame(() => { pend = false; extremos(); }); } }, { passive: true });
-  [ant, sig].forEach(b => b.onclick = () => pista.scrollBy({ left: Number(b.dataset.mover) * paso(), behavior: reducido() ? 'auto' : 'smooth' }));
-  pista.addEventListener('keydown', e => {
-    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-    const ts = [...pista.querySelectorAll('.unidad-t')], i = ts.indexOf(document.activeElement); if (i < 0) return;
-    const j = Math.min(ts.length - 1, Math.max(0, i + (e.key === 'ArrowRight' ? 1 : -1)));
-    e.preventDefault(); ts[j].focus({ preventScroll: true }); ts[j].scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: reducido() ? 'auto' : 'smooth' });
+// Las líneas del árbol: de cada unidad a las que necesita en su rama (abajo de una al centro de arriba de la otra).
+// Se miden en la pantalla, así sirven con cualquier ancho; la línea es de color si el requisito ya está hecho.
+function lineasMapa(mapa) {
+  mapa.querySelectorAll('.rama[open] .rama-arbol').forEach(a => {
+    const svg = a.querySelector('.rama-lineas'), r0 = a.getBoundingClientRect(), caja = id => a.querySelector(`[data-unidad="${CSS.escape(id)}"]`);
+    svg.setAttribute('viewBox', `0 0 ${r0.width} ${r0.height}`); svg.setAttribute('width', r0.width); svg.setAttribute('height', r0.height);
+    svg.innerHTML = [...a.querySelectorAll('.nodo[data-dentro]')].flatMap(n => n.dataset.dentro.split(' ').filter(Boolean).map(p => {
+      const de = caja(p); if (!de) return '';
+      const a1 = de.getBoundingClientRect(), b1 = n.getBoundingClientRect();
+      const x1 = a1.left + a1.width / 2 - r0.left, y1 = a1.bottom - r0.top, x2 = b1.left + b1.width / 2 - r0.left, y2 = b1.top - r0.top, ym = (y1 + y2) / 2;
+      return `<path class="${de.classList.contains('hecha') ? 'ok' : ''}" d="M${x1.toFixed(1)} ${y1.toFixed(1)} C${x1.toFixed(1)} ${ym.toFixed(1)} ${x2.toFixed(1)} ${ym.toFixed(1)} ${x2.toFixed(1)} ${(y2 - 4).toFixed(1)}"/>`;
+    })).join('');
   });
-  extremos();
+}
+// Vuelve a dibujar cuando cambia el ancho (girar el celular, achicar la ventana); deja de mirar al salir de la página.
+function vigilarAncho(el, fn) {
+  if (!window.ResizeObserver) return;
+  let w = el.clientWidth, pend = false;
+  const ro = new ResizeObserver(() => { if (!el.isConnected) return ro.disconnect();
+    if (el.clientWidth === w || pend) return; w = el.clientWidth; pend = true; requestAnimationFrame(() => { pend = false; fn(); }); });
+  ro.observe(el);
 }
 
 // Tarjeta de las pruebas del módulo de lectura en la página del curso (como la de PruebaCurso).

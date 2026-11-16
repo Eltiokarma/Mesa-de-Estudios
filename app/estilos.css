@@ -572,24 +572,45 @@ input[type=file]{font:inherit;max-width:100%}
 .lamina{background:var(--cf);border:2px solid var(--borde);border-radius:16px;overflow:hidden}
 .dib-resp{display:block;width:100%;height:auto}
 
-/* ---------- Página del curso: unidades en filas deslizables por grado (13 nov 2026) ----------
-   Scroll nativo con imán: sigue al dedo y frena solo. Sin arrastrar: flechas de 44 px por fila y ← → con teclado.
-   La tarjeta se asoma a la derecha (152 px en 390): así se nota que la fila sigue. */
-.filas-u{margin-top:6px}
-.fila-u{margin-top:20px}
-.fila-cab{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.fila-cab h2{margin:0;flex:1;justify-content:flex-start;align-items:center;gap:8px;flex-wrap:wrap}
-.fila-cab h2 .tag{font-family:var(--font);font-size:12px;padding:3px 9px}
-.flechas{display:flex;gap:8px;flex:none}
-.flecha{width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:var(--card);box-shadow:0 3px 0 var(--borde);font-size:24px;line-height:1;display:grid;place-items:center;padding:0 0 3px;color:var(--ink)}
-.flecha:disabled{opacity:.4;box-shadow:none;cursor:default}
-.sin-flechas .flechas{visibility:hidden}
-.pista-u{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 16px;padding:4px 16px 14px;margin:0 -16px;scrollbar-width:none;overscroll-behavior-x:contain}
-.pista-u::-webkit-scrollbar{display:none}
-.unidad-t{flex:0 0 152px;scroll-snap-align:start;display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--ink);background:var(--card);border:2px solid var(--borde);border-radius:22px;box-shadow:0 5px 0 var(--cb);padding:7px 7px 12px}
-.unidad-t .lamina{position:relative;display:block}
-.unidad-t .t{font-family:var(--font-r);font-weight:800;font-size:15px;line-height:1.2;padding:0 4px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
-.unidad-t .d{font-size:13px;color:var(--muted);padding:0 4px;margin-top:auto}
+/* ---------- Página del curso: el mapa en ramas (16 nov 2026) ----------
+   Cada rama es un árbol de pisos: arriba lo básico, abajo lo que se apoya en eso, unidos por líneas (SVG medido en
+   pantalla). El color de la rama es su borde y sus líneas; una línea de color es un requisito ya hecho. */
+.mapa-sigue{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:12px;align-items:center;margin-top:14px;text-decoration:none;color:var(--ink);border:2px solid var(--borde);box-shadow:0 5px 0 var(--cb);padding:8px 12px 8px 8px}
+.mapa-sigue .ms-tx{display:flex;flex-direction:column;gap:2px;font-size:14px;color:var(--muted)}
+.mapa-sigue b{font-family:var(--font-r);font-size:18px;line-height:1.2;color:var(--ink)}
+.mapa-sigue .ms-ir{font-size:30px;font-weight:800;color:var(--brand)}
+.mapa-guia{font-size:14px;color:var(--muted);margin:16px 2px 4px;line-height:1.45}
+.rama{margin-top:16px;border:2px solid var(--borde);border-left:6px solid var(--rama);border-radius:22px;background:color-mix(in srgb,var(--rama) 6%,var(--card));padding:0 8px}
+.rama>summary{list-style:none;cursor:pointer;padding:12px 4px;display:flex;flex-direction:column;gap:4px}
+.rama>summary::-webkit-details-marker{display:none}
+.rama-cab{display:flex;align-items:baseline;gap:8px}
+.rama-n{font-size:12px;font-weight:800;color:var(--rama);text-transform:uppercase;letter-spacing:.04em;flex:none}
+.rama-t{font-family:var(--font-r);font-weight:800;font-size:19px;flex:1;min-width:0;color:var(--ink)}
+.rama-av{font-size:13px;color:var(--muted);flex:none}
+.rama-av::after{content:' ▾';display:inline-block;transition:transform .15s}
+.rama:not([open]) .rama-av::after{transform:rotate(-90deg)}
+.rama-dep{font-size:13px;color:var(--muted)}
+.rama-dep.libre,.rama-dep .libre{color:var(--rama);font-weight:700}
+.rama-arbol{position:relative;padding:4px 0 16px}
+.rama-lineas{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.rama-lineas path{fill:none;stroke:var(--borde);stroke-width:2.5;stroke-dasharray:6 5;opacity:.55}
+.rama-lineas path.ok{stroke:var(--rama);stroke-dasharray:none;opacity:1;stroke-width:3}
+.rama-piso{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 12px;position:relative}
+.rama-piso+.rama-piso{margin-top:34px}
+.nodo{position:relative;width:min(152px,calc(50% - 6px));display:flex;flex-direction:column;gap:5px;color:var(--ink);background:var(--card);border:2px solid var(--borde);border-radius:22px;box-shadow:0 5px 0 var(--cb);padding:7px 7px 10px}
+.nodo .lamina{position:relative;display:block}
+.nodo .t{font-family:var(--font-r);font-weight:800;font-size:15px;line-height:1.2;padding:0 4px;color:inherit;text-decoration:none}
+.nodo-ir::after{content:'';position:absolute;inset:0;border-radius:20px}
+.nodo-ir:focus-visible{outline:none}.nodo:has(.nodo-ir:focus-visible){outline:3px solid var(--brand);outline-offset:3px}
+.nodo-g{padding:0 4px}.nodo-g .tag{font-size:11px}
+.nodo .d{font-size:12.5px;color:var(--muted);padding:0 4px;margin-top:auto}
+.nodo-antes{font-size:12px;line-height:1.3;color:var(--muted);padding:0 4px}
+.nodo-antes a{position:relative;z-index:1;color:var(--ink);font-weight:700;text-decoration-color:var(--rama)}
+.nodo-antes a.ok{color:var(--muted);font-weight:400}
+.nodo.espera{border-style:dashed;box-shadow:0 3px 0 var(--cb)}
+.nodo.espera .lamina{opacity:.6}
+.nodo.sigue{border-color:var(--rama);box-shadow:0 5px 0 var(--rama)}
+.nodo.hecha{background:color-mix(in srgb,var(--ok) 7%,var(--card))}
 .hecho{position:absolute;right:6px;top:6px;width:28px;height:28px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;font-weight:800;font-size:15px;border:2px solid var(--borde)}
 
 /* ---------- Página de la unidad: dibujo, nombre y cuatro puertas ---------- */
@@ -672,14 +693,15 @@ input[type=file]{font:inherit;max-width:100%}
 .temas-l{margin:8px 0 14px;padding-left:20px;display:grid;gap:4px}
 
 @media (prefers-reduced-motion:no-preference){
-  .unidad-t,.puerta,.ej{transition:transform .12s,box-shadow .12s}
-  .unidad-t:active,.ej:active{transform:translateY(4px);box-shadow:0 1px 0 var(--cb)}
+  .nodo,.puerta,.ej{transition:transform .12s,box-shadow .12s}
+  .nodo:active,.ej:active{transform:translateY(4px);box-shadow:0 1px 0 var(--cb)}
   .puerta:active{transform:translateY(4px);box-shadow:0 1px 0 var(--plataforma)}.puerta.principal:active{box-shadow:0 1px 0 var(--brand)}
 }
-@media (hover:hover) and (pointer:fine){ .unidad-t:hover,.puerta:hover,.ej:hover{transform:translateY(-2px)} }
+@media (hover:hover) and (pointer:fine){ .nodo:hover,.puerta:hover,.ej:hover{transform:translateY(-2px)} }
 @media (min-width:900px){
-  .pista-u{margin:0;padding:4px 2px 14px;scroll-padding:0 2px}
-  .unidad-t{flex-basis:176px}
+  .nodo{width:176px}
+  .mapa{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px;align-items:start}
+  .mapa-sigue{max-width:560px}
   .uh-cuerpo{grid-template-columns:220px minmax(0,1fr)}
   .unidad-hero h1{font-size:30px}
   .puertas{grid-template-columns:repeat(4,minmax(0,1fr))}
