@@ -78,6 +78,56 @@
   const conclusionPrimero = c => [c[c.length - 1], ...c.slice(0, -1)];
   const cambiar = (c, a, b) => { const x = c.slice(); [x[a], x[b]] = [x[b], x[a]]; return x; };
 
+  // Bancos de «Ahora tú» (sin cambios); «Así se resuelve» toma de aquí otro caso que el de la misma semilla.
+  const BANCO_ABRE = [
+    { tema: 'la totora', o: [{ t: 'La totora es una planta que crece en el lago Titicaca.' }, { t: 'Con ella, los uros construyen sus islas.', necesita: [0] }, { t: 'También fabrican balsas con sus tallos secos.', necesita: [1] }, { t: 'Por eso, la totora es la base de su vida diaria.', necesita: [2] }], vista: [2, 0, 3, 1], porque: 'Abre la que presenta la totora; «ella» y «también» retoman; «por eso» cierra.', malos: (c) => [[conclusionPrimero(c), 'RV37', '«Por eso» necesita antes la razón.'], [cambiar(c, 0, 1), 'RV28', '«Con ella» no tiene a quién referirse si va primero.'], [cambiar(c, 1, 2), 'RV28', '«También» suma a algo dicho: va después de las islas.']] },
+    { tema: 'el sol', o: [{ t: 'El sol es la estrella más cercana a la Tierra.' }, { t: 'Su luz tarda unos ocho minutos en llegarnos.', necesita: [0] }, { t: 'Esa energía permite que las plantas fabriquen su alimento.', necesita: [1] }, { t: 'Sin el sol, por tanto, no habría vida en el planeta.', necesita: [2] }], vista: [1, 3, 0, 2], porque: 'Abre la que presenta el sol; «su luz» y «esa energía» retoman; «por tanto» cierra.', malos: (c) => [[conclusionPrimero(c), 'RV37', '«Por tanto» cierra: necesita sus razones antes.'], [cambiar(c, 1, 2), 'RV28', '«Esa energía» retoma la luz: va después de ella.'], [cambiar(c, 0, 1), 'RV28', '«Su luz» necesita saber de quién es.']] },
+    { tema: 'los andenes', o: [{ t: 'Los andenes son terrazas de cultivo en las laderas.' }, { t: 'Estas terrazas evitan que la lluvia arrastre la tierra.', necesita: [0] }, { t: 'Además, guardan el calor del día para la noche.', necesita: [1] }, { t: 'Así, permiten sembrar en zonas muy empinadas.', necesita: [2] }], vista: [3, 1, 0, 2], porque: 'Abre la definición; «estas terrazas» y «además» retoman; «así» concluye.', malos: (c) => [[conclusionPrimero(c), 'RV37', '«Así» concluye: va al final.'], [cambiar(c, 0, 1), 'RV28', '«Estas terrazas» necesita antes saber cuáles.'], [cambiar(c, 2, 3), 'RV37', '«Así» resume lo anterior: no va antes de «además».']] },
+    { tema: 'la anemia', o: [{ t: 'La anemia es la falta de glóbulos rojos sanos en la sangre.' }, { t: 'Quien la tiene se cansa con facilidad.', necesita: [0] }, { t: 'Una causa frecuente es comer poco hierro.', necesita: [0] }, { t: 'Por eso, conviene comer hígado, sangrecita o menestras.', necesita: [2] }], vista: [3, 2, 1, 0], porque: 'Abre la definición; «la tiene» retoma; la causa va antes del «por eso».', malos: (c) => [[conclusionPrimero(c), 'RV37', '«Por eso» necesita la causa antes.'], [cambiar(c, 0, 1), 'RV28', '«Quien la tiene» necesita saber qué es «la».'], [[0, 1, 3, 2], 'RV28', '«Por eso» quedaría antes de su causa, el poco hierro.']] },
+    { tema: 'el río Amazonas', o: [{ t: 'El Amazonas es el río más caudaloso del mundo.' }, { t: 'Nace en los Andes del sur del Perú.', necesita: [0] }, { t: 'Desde allí, recorre miles de kilómetros hasta el Atlántico.', necesita: [1] }, { t: 'En ese recorrido recibe más de mil afluentes.', necesita: [2] }], vista: [2, 0, 3, 1], porque: 'Abre la presentación; «desde allí» y «ese recorrido» retoman lo anterior.', malos: (c) => [[cambiar(c, 1, 2), 'RV28', '«Desde allí» necesita saber de dónde.'], [cambiar(c, 2, 3), 'RV28', '«Ese recorrido» necesita el recorrido antes.'], [conclusionPrimero(c), 'RV28', '«Ese recorrido» no puede abrir el texto.']] },
+  ];
+  const BANCO_TIEMPO = [
+    { tema: 'un experimento', o: [{ t: 'Primero, llenamos dos vasos con la misma agua.' }, { t: 'Después, pusimos sal solo en uno de ellos.', necesita: [0] }, { t: 'Luego, metimos un huevo en cada vaso.', necesita: [1] }, { t: 'El huevo flotó solo en el agua con sal.', necesita: [2] }], vista: [3, 1, 0, 2], porque: 'Los marcadores ordenan los pasos; el resultado va al final.', malos: c => [[cambiar(c, 1, 2), 'RV29', '«Después» y «luego» quedarían cruzados: la sal va antes del huevo.'], [conclusionPrimero(c), 'RV37', 'El resultado no puede ir antes del experimento.'], [cambiar(c, 0, 1), 'RV29', 'No se pone sal antes de llenar los vasos.']] },
+    { tema: 'la deforestación', o: [{ t: 'Se talaron los árboles de la ladera.' }, { t: 'Sin raíces, la tierra quedó suelta.', necesita: [0] }, { t: 'Las lluvias arrastraron esa tierra hacia el río.', necesita: [1] }, { t: 'Por eso, el agua del río bajó turbia.', necesita: [2] }], vista: [2, 0, 3, 1], porque: 'Cada hecho causa el siguiente: tala, tierra suelta, arrastre, agua turbia.', malos: c => [[conclusionPrimero(c), 'RV37', '«Por eso» necesita su causa antes.'], [cambiar(c, 1, 2), 'RV28', '«Esa tierra» necesita antes la tierra suelta.'], [cambiar(c, 0, 1), 'RV29', 'Sin raíces porque se talaron: la tala va primero.']] },
+    { tema: 'la vida de Arguedas', o: [{ t: 'José María Arguedas nació en Andahuaylas en 1911.' }, { t: 'De niño, vivió entre familias que hablaban quechua.', necesita: [0] }, { t: 'En 1958 publicó su novela «Los ríos profundos».', necesita: [1] }, { t: 'Murió en Lima en 1969.', necesita: [2] }], vista: [1, 3, 0, 2], porque: 'Las fechas y la vida (niñez, obra, muerte) dan el orden.', malos: c => [[cambiar(c, 1, 2), 'RV29', 'La niñez va antes de 1958.'], [conclusionPrimero(c), 'RV29', '1969 es el último año: no abre.'], [cambiar(c, 2, 3), 'RV29', '1969 va después de 1958.']] },
+    { tema: 'la fotosíntesis', o: [{ t: 'La hoja absorbe la luz del sol.' }, { t: 'Con esa energía, transforma agua y dióxido de carbono.', necesita: [0] }, { t: 'Así produce azúcar para la planta.', necesita: [1] }, { t: 'Como resultado, también libera oxígeno al aire.', necesita: [2] }], vista: [3, 0, 2, 1], porque: '«Esa energía», «así» y «como resultado» encadenan causas y efectos.', malos: c => [[cambiar(c, 0, 1), 'RV28', '«Esa energía» necesita antes la luz.'], [conclusionPrimero(c), 'RV37', '«Como resultado» necesita lo anterior.'], [cambiar(c, 1, 2), 'RV28', '«Así» resume la transformación: va después.']] },
+    { tema: 'una helada', o: [{ t: 'Anoche la temperatura bajó a diez grados bajo cero.' }, { t: 'El agua de los cultivos se congeló.', necesita: [0] }, { t: 'Las hojas de la papa se quemaron con el hielo.', necesita: [1] }, { t: 'Por eso, la cosecha de este año será menor.', necesita: [2] }], vista: [2, 3, 1, 0], porque: 'La causa va antes que su efecto: frío, hielo, daño, menos cosecha.', malos: c => [[conclusionPrimero(c), 'RV37', '«Por eso» necesita la causa antes.'], [cambiar(c, 1, 2), 'RV29', 'Las hojas se queman por el hielo: el hielo va antes.'], [cambiar(c, 0, 1), 'RV29', 'El agua se congela porque bajó la temperatura.']] },
+  ];
+  const BANCO_COMPARAR = [
+    { tema: 'la costa y la sierra', o: [{ t: 'La costa y la sierra tienen climas muy distintos.' }, { t: 'En la costa casi no llueve en todo el año.', necesita: [0] }, { t: 'En la sierra, en cambio, llueve mucho de diciembre a marzo.', necesita: [1] }, { t: 'Por eso, cada región siembra en épocas distintas.', necesita: [2] }], vista: [2, 3, 0, 1], porque: 'Se presentan las dos, se contrastan con «en cambio» y se concluye.', malos: c => [[cambiar(c, 1, 2), 'RV28', '«En cambio» necesita antes lo de la costa.'], [conclusionPrimero(c), 'RV37', '«Por eso» necesita antes las diferencias.'], [[0, 2, 3, 1], 'RV28', 'La costa quedaría al final, después de la conclusión.']] },
+    { tema: 'la bicicleta', o: [{ t: 'Una bicicleta tiene tres sistemas básicos.' }, { t: 'El cuadro sostiene todas las piezas.', necesita: [0] }, { t: 'Los pedales y la cadena mueven la rueda trasera.', necesita: [0] }, { t: 'Los frenos detienen las dos ruedas.', necesita: [0] }], vista: [3, 1, 0, 2], porque: 'Primero el todo («tres sistemas»), luego cada parte.', malos: c => [[[1, 0, 2, 3], 'RV28', 'El cuadro no puede ir antes de anunciar los sistemas.'], [[3, 2, 1, 0], 'RV37', 'El todo va primero; las partes después.'], [[2, 3, 0, 1], 'RV28', 'Las partes no van antes de presentar el todo.']] },
+    { tema: 'el loro y la lechuza', o: [{ t: 'El loro y la lechuza son aves muy distintas.' }, { t: 'El loro está activo de día y come frutas.', necesita: [0] }, { t: 'La lechuza, por el contrario, caza de noche.', necesita: [1] }, { t: 'Las dos, sin embargo, tienen un pico curvo.', necesita: [1, 2] }], vista: [3, 0, 2, 1], porque: 'Se presentan las dos aves, se contrastan y al final se dice en qué se parecen.', malos: c => [[cambiar(c, 1, 2), 'RV28', '«Por el contrario» necesita antes lo del loro.'], [conclusionPrimero(c), 'RV28', '«Las dos» necesita antes a las dos aves.'], [[0, 3, 1, 2], 'RV28', '«Las dos» va cuando ya se presentó a cada una.']] },
+    { tema: 'un volcán', o: [{ t: 'Un volcán tiene tres partes visibles.' }, { t: 'El cráter es la abertura de la cima.', necesita: [0] }, { t: 'La chimenea une el cráter con el interior.', necesita: [1] }, { t: 'El cono se forma con la lava que se enfría.', necesita: [0] }], vista: [2, 0, 3, 1], porque: 'Primero el todo; la chimenea va tras el cráter, porque lo menciona.', malos: c => [[cambiar(c, 1, 2), 'RV28', 'La chimenea menciona el cráter: va después de él.'], [[3, 0, 1, 2], 'RV28', 'El cono no puede ir antes de anunciar las partes.'], [[1, 2, 3, 0], 'RV37', 'El todo va primero, no al final.']] },
+    { tema: 'dos mercados', o: [{ t: 'El mercado del centro y el de la feria son muy diferentes.' }, { t: 'El del centro abre todos los días y tiene techo.', necesita: [0] }, { t: 'El de la feria, en cambio, se arma solo los domingos al aire libre.', necesita: [1] }, { t: 'Ambos, sin embargo, venden productos de la zona.', necesita: [1, 2] }], vista: [1, 3, 2, 0], porque: 'Presentar los dos, contrastar y luego decir en qué coinciden.', malos: c => [[cambiar(c, 1, 2), 'RV28', '«En cambio» necesita antes el mercado del centro.'], [conclusionPrimero(c), 'RV28', '«Ambos» necesita antes a los dos mercados.'], [[0, 3, 1, 2], 'RV28', '«Ambos» va cuando ya se describió a cada uno.']] },
+  ];
+  function azar(s) {
+    let q = (s * 2654435761 + 12345) >>> 0;
+    return () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+  }
+  // Índice de «Así se resuelve»: sale de azar(s + 900) y nunca coincide con el de «Ahora tú» (s % n).
+  const otroIndice = (s, n) => (s % n + 1 + Math.floor(azar(s + 900)() * (n - 1))) % n;
+  const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
+  // Así se resuelve: el mismo caso que arma «Ahora tú» (orden correcto, vista y distractores calculados por `caso`),
+  // resuelto paso a paso. La figura empieza con las oraciones en el orden de la vista; en «Lo aplico» se marca la que
+  // abre y después se muestra el orden correcto con el sello de `estado`. «¿Tiene sentido?» prueba un distractor.
+  function resuelto(b, s, regla, abre) {
+    const c = caso(b, s, ''), n = b.o.length, num = j => b.vista.indexOf(j) + 1;
+    const correcto = b.o.map((_, j) => j), sec = correcto.map(num).join(' – '), mala = c.opciones[1];
+    const vista = figura(`Tema: ${b.tema}`, b.o, b.vista);
+    return {
+      enunciado: `¿Qué orden es coherente para el texto sobre ${b.tema}?`,
+      dibujo: { datos: vista, estado: {} },
+      pasos: [
+        { tipo: 'pide', texto: `Piden el orden de las ${n} oraciones en que cada una tiene antes lo que necesita.` },
+        { tipo: 'regla', texto: regla.texto, ecuacion: regla.ecuacion },
+        { tipo: 'aplica', texto: `Abre la ${num(0)}: ${abre}.`, ecuacion: [marca(`${num(0)}`), ' abre'], dibujo: { datos: vista, estado: { marcas: { s0: 'd' }, nuevo: ['s0'] } } },
+        { tipo: 'aplica', texto: `El orden completo queda así: ${minus(b.porque)}`, ecuacion: [bien(sec)], dibujo: { datos: figura(`Tema: ${b.tema}`, b.o, correcto), estado: estado(b.o, correcto) } },
+        { tipo: 'sentido', texto: `Pruebo otro orden, ${mala.texto}, y falla. ${mala.siFuera}` },
+      ],
+      respuesta: ['El orden ', bien(sec)],
+    };
+  }
+
   // ---------- Idea 1: lo que abre y lo que retoma ----------
   // Cambia: la oración que abre (las demás siguen en su orden). Permanece: las cuatro oraciones.
   // Progresa: cuántas quedan sin lo que necesitan. Se reserva: abrir con la conclusión en otro texto (predicción).
@@ -94,6 +144,14 @@
     titulo: 'Qué abre y qué retoma',
     temas: ['Tema y subtemas'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué pide el examen y que hay palabras que señalan algo, sin decir qué oración abre (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Plan de redacción', texto: 'En el examen te dan cuatro o cinco oraciones desordenadas y varias propuestas de orden. Eliges el orden en que el texto se lee de corrido, sin saltos.' },
+        { titulo: 'Palabras que señalan', texto: 'Si en el grupo de WhatsApp del salón alguien escribe solo «ella ya llegó», todos preguntan: ¿quién? Algunas palabras señalan algo que el lector ya debería conocer.' },
+        { titulo: 'Qué mirar', texto: 'En el juego eliges con qué oración empieza un texto sobre las abejas. Mira qué oraciones se pintan de rojo cuando cambias la que abre.' },
+      ],
+    },
     juega: {
       consigna: 'Elige con qué oración empieza el texto; las demás siguen en su orden. Mira qué oraciones quedan sin lo que necesitan.',
       voz: 'Busca palabras como «ellas» o «por eso»: piden algo antes.',
@@ -141,15 +199,15 @@
       ecuacion: [marca('tema'), ' → ', bien('subtemas'), ' → ', { llave: [pide('lo que retoma')], nota: 'ellas, este…', color: 'c-o' }, ' → cierre'],
       condicion: 'cada palabra que remite a algo ya dicho encuentra su referente en una oración anterior.',
     },
+    // Así se resuelve (fase 2): otro texto del banco de «Ahora tú», ordenado paso a paso con las mismas cuentas.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Primero busca la que abre; después, lo que retoma cada una.',
+      generar: s => resuelto(BANCO_ABRE[otroIndice(s, BANCO_ABRE.length)], s + 900, { texto: 'Busco la oración que no necesita nada antes: esa abre. Después, cada palabra que retoma va tras lo que retoma.', ecuacion: [marca('tema'), ' → ', pide('lo que retoma')] }, 'presenta el tema y no retoma nada'),
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { tema: 'la totora', o: [{ t: 'La totora es una planta que crece en el lago Titicaca.' }, { t: 'Con ella, los uros construyen sus islas.', necesita: [0] }, { t: 'También fabrican balsas con sus tallos secos.', necesita: [1] }, { t: 'Por eso, la totora es la base de su vida diaria.', necesita: [2] }], vista: [2, 0, 3, 1], porque: 'Abre la que presenta la totora; «ella» y «también» retoman; «por eso» cierra.', malos: (c) => [[conclusionPrimero(c), 'RV37', '«Por eso» necesita antes la razón.'], [cambiar(c, 0, 1), 'RV28', '«Con ella» no tiene a quién referirse si va primero.'], [cambiar(c, 1, 2), 'RV28', '«También» suma a algo dicho: va después de las islas.']] },
-          { tema: 'el sol', o: [{ t: 'El sol es la estrella más cercana a la Tierra.' }, { t: 'Su luz tarda unos ocho minutos en llegarnos.', necesita: [0] }, { t: 'Esa energía permite que las plantas fabriquen su alimento.', necesita: [1] }, { t: 'Sin el sol, por tanto, no habría vida en el planeta.', necesita: [2] }], vista: [1, 3, 0, 2], porque: 'Abre la que presenta el sol; «su luz» y «esa energía» retoman; «por tanto» cierra.', malos: (c) => [[conclusionPrimero(c), 'RV37', '«Por tanto» cierra: necesita sus razones antes.'], [cambiar(c, 1, 2), 'RV28', '«Esa energía» retoma la luz: va después de ella.'], [cambiar(c, 0, 1), 'RV28', '«Su luz» necesita saber de quién es.']] },
-          { tema: 'los andenes', o: [{ t: 'Los andenes son terrazas de cultivo en las laderas.' }, { t: 'Estas terrazas evitan que la lluvia arrastre la tierra.', necesita: [0] }, { t: 'Además, guardan el calor del día para la noche.', necesita: [1] }, { t: 'Así, permiten sembrar en zonas muy empinadas.', necesita: [2] }], vista: [3, 1, 0, 2], porque: 'Abre la definición; «estas terrazas» y «además» retoman; «así» concluye.', malos: (c) => [[conclusionPrimero(c), 'RV37', '«Así» concluye: va al final.'], [cambiar(c, 0, 1), 'RV28', '«Estas terrazas» necesita antes saber cuáles.'], [cambiar(c, 2, 3), 'RV37', '«Así» resume lo anterior: no va antes de «además».']] },
-          { tema: 'la anemia', o: [{ t: 'La anemia es la falta de glóbulos rojos sanos en la sangre.' }, { t: 'Quien la tiene se cansa con facilidad.', necesita: [0] }, { t: 'Una causa frecuente es comer poco hierro.', necesita: [0] }, { t: 'Por eso, conviene comer hígado, sangrecita o menestras.', necesita: [2] }], vista: [3, 2, 1, 0], porque: 'Abre la definición; «la tiene» retoma; la causa va antes del «por eso».', malos: (c) => [[conclusionPrimero(c), 'RV37', '«Por eso» necesita la causa antes.'], [cambiar(c, 0, 1), 'RV28', '«Quien la tiene» necesita saber qué es «la».'], [[0, 1, 3, 2], 'RV28', '«Por eso» quedaría antes de su causa, el poco hierro.']] },
-          { tema: 'el río Amazonas', o: [{ t: 'El Amazonas es el río más caudaloso del mundo.' }, { t: 'Nace en los Andes del sur del Perú.', necesita: [0] }, { t: 'Desde allí, recorre miles de kilómetros hasta el Atlántico.', necesita: [1] }, { t: 'En ese recorrido recibe más de mil afluentes.', necesita: [2] }], vista: [2, 0, 3, 1], porque: 'Abre la presentación; «desde allí» y «ese recorrido» retoman lo anterior.', malos: (c) => [[cambiar(c, 1, 2), 'RV28', '«Desde allí» necesita saber de dónde.'], [cambiar(c, 2, 3), 'RV28', '«Ese recorrido» necesita el recorrido antes.'], [conclusionPrimero(c), 'RV28', '«Ese recorrido» no puede abrir el texto.']] },
-        ];
+        const B = BANCO_ABRE;
         return caso(B[s % B.length], s, `¿Qué orden es coherente para el texto sobre ${B[s % B.length].tema}?`);
       },
     },
@@ -171,6 +229,14 @@
     titulo: 'El tiempo y la causa ordenan',
     temas: ['Secuencia cronológica', 'Secuencia causa-efecto'],
     pieza: 'rv-texto',
+    // Lee (fase 2): marcadores de tiempo y contexto del chuño, sin tocar el texto del huaico (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Marcadores de tiempo', texto: 'Palabras como «primero», «luego», «después» y «finalmente» dicen en qué momento va cada acción. Se llaman marcadores de tiempo y son pistas para ordenar.' },
+        { titulo: 'El chuño', texto: 'En el altiplano, muchas familias hacen chuño en junio y julio, cuando hiela de noche. Es papa deshidratada que se guarda durante años sin malograrse.' },
+        { titulo: 'Qué mirar', texto: 'En el juego pruebas tres planes para el texto del chuño. Mira en qué renglón cae cada marcador de tiempo y dónde queda el «por eso».' },
+      ],
+    },
     juega: {
       consigna: 'Prueba tres planes para el texto del chuño. Mira los marcadores de tiempo y dónde queda el «por eso».',
       voz: 'Los marcadores de tiempo son pistas de orden.',
@@ -204,15 +270,15 @@
       ecuacion: [{ llave: [marca('antes'), ' → ', marca('después')], nota: 'orden del tiempo', color: 'c-d' }, '   ·   ', { llave: [bien('causa'), ' → ', pide('efecto')], nota: 'orden lógico', color: 'c-o' }],
       condicion: 'las fechas, los marcadores y los conectores del texto mandan sobre la costumbre de ir de lo general a lo particular.',
     },
+    // Así se resuelve (fase 2): otro texto del banco de «Ahora tú», ordenado paso a paso con las mismas cuentas.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Primero busca la que abre; después, lo que retoma cada una.',
+      generar: s => resuelto(BANCO_TIEMPO[otroIndice(s, BANCO_TIEMPO.length)], s + 900, { texto: 'Busco las fechas y los marcadores de tiempo, y pongo cada causa antes de lo que produce.', ecuacion: [marca('antes'), ' → ', marca('después'), '   ·   ', bien('causa'), ' → ', pide('efecto')] }, 'es el primer hecho; no necesita nada antes'),
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { tema: 'un experimento', o: [{ t: 'Primero, llenamos dos vasos con la misma agua.' }, { t: 'Después, pusimos sal solo en uno de ellos.', necesita: [0] }, { t: 'Luego, metimos un huevo en cada vaso.', necesita: [1] }, { t: 'El huevo flotó solo en el agua con sal.', necesita: [2] }], vista: [3, 1, 0, 2], porque: 'Los marcadores ordenan los pasos; el resultado va al final.', malos: c => [[cambiar(c, 1, 2), 'RV29', '«Después» y «luego» quedarían cruzados: la sal va antes del huevo.'], [conclusionPrimero(c), 'RV37', 'El resultado no puede ir antes del experimento.'], [cambiar(c, 0, 1), 'RV29', 'No se pone sal antes de llenar los vasos.']] },
-          { tema: 'la deforestación', o: [{ t: 'Se talaron los árboles de la ladera.' }, { t: 'Sin raíces, la tierra quedó suelta.', necesita: [0] }, { t: 'Las lluvias arrastraron esa tierra hacia el río.', necesita: [1] }, { t: 'Por eso, el agua del río bajó turbia.', necesita: [2] }], vista: [2, 0, 3, 1], porque: 'Cada hecho causa el siguiente: tala, tierra suelta, arrastre, agua turbia.', malos: c => [[conclusionPrimero(c), 'RV37', '«Por eso» necesita su causa antes.'], [cambiar(c, 1, 2), 'RV28', '«Esa tierra» necesita antes la tierra suelta.'], [cambiar(c, 0, 1), 'RV29', 'Sin raíces porque se talaron: la tala va primero.']] },
-          { tema: 'la vida de Arguedas', o: [{ t: 'José María Arguedas nació en Andahuaylas en 1911.' }, { t: 'De niño, vivió entre familias que hablaban quechua.', necesita: [0] }, { t: 'En 1958 publicó su novela «Los ríos profundos».', necesita: [1] }, { t: 'Murió en Lima en 1969.', necesita: [2] }], vista: [1, 3, 0, 2], porque: 'Las fechas y la vida (niñez, obra, muerte) dan el orden.', malos: c => [[cambiar(c, 1, 2), 'RV29', 'La niñez va antes de 1958.'], [conclusionPrimero(c), 'RV29', '1969 es el último año: no abre.'], [cambiar(c, 2, 3), 'RV29', '1969 va después de 1958.']] },
-          { tema: 'la fotosíntesis', o: [{ t: 'La hoja absorbe la luz del sol.' }, { t: 'Con esa energía, transforma agua y dióxido de carbono.', necesita: [0] }, { t: 'Así produce azúcar para la planta.', necesita: [1] }, { t: 'Como resultado, también libera oxígeno al aire.', necesita: [2] }], vista: [3, 0, 2, 1], porque: '«Esa energía», «así» y «como resultado» encadenan causas y efectos.', malos: c => [[cambiar(c, 0, 1), 'RV28', '«Esa energía» necesita antes la luz.'], [conclusionPrimero(c), 'RV37', '«Como resultado» necesita lo anterior.'], [cambiar(c, 1, 2), 'RV28', '«Así» resume la transformación: va después.']] },
-          { tema: 'una helada', o: [{ t: 'Anoche la temperatura bajó a diez grados bajo cero.' }, { t: 'El agua de los cultivos se congeló.', necesita: [0] }, { t: 'Las hojas de la papa se quemaron con el hielo.', necesita: [1] }, { t: 'Por eso, la cosecha de este año será menor.', necesita: [2] }], vista: [2, 3, 1, 0], porque: 'La causa va antes que su efecto: frío, hielo, daño, menos cosecha.', malos: c => [[conclusionPrimero(c), 'RV37', '«Por eso» necesita la causa antes.'], [cambiar(c, 1, 2), 'RV29', 'Las hojas se queman por el hielo: el hielo va antes.'], [cambiar(c, 0, 1), 'RV29', 'El agua se congela porque bajó la temperatura.']] },
-        ];
+        const B = BANCO_TIEMPO;
         return caso(B[s % B.length], s, `¿Qué orden es coherente para el texto sobre ${B[s % B.length].tema}?`);
       },
     },
@@ -234,6 +300,14 @@
     titulo: 'Presentar antes de comparar',
     temas: ['Secuencias de análisis y comparación'],
     pieza: 'rv-texto',
+    // Lee (fase 2): contexto de las dos flautas y palabras que comparan, sin hablar del análisis de la célula (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos flautas', texto: 'En la fiesta de la Candelaria, en Puno, suenan quenas y zampoñas. Las dos son flautas andinas, pero no se fabrican igual ni se tocan igual.' },
+        { titulo: 'Palabras que comparan', texto: '«Ambas» y «las dos» juntan dos cosas en una misma idea. «En cambio» y «por el contrario» marcan una diferencia entre ellas.' },
+        { titulo: 'Qué mirar', texto: 'En el juego pruebas tres planes para comparar la quena y la zampoña. Mira en qué renglón cae «ambas» y en cuál «en cambio» en cada plan.' },
+      ],
+    },
     juega: {
       consigna: 'Prueba tres planes para comparar la quena y la zampoña. Mira dónde puede ir «ambas» y dónde «en cambio».',
       voz: 'Para comparar, primero deben estar las dos cosas.',
@@ -267,15 +341,15 @@
       ecuacion: [{ llave: [marca('todo'), ' → ', bien('partes')], nota: 'analizar', color: 'c-d' }, '   ·   ', { llave: [bien('A'), ' + ', bien('B'), ' → ', pide('comparación')], nota: 'comparar', color: 'c-o' }],
       condicion: '«ambas», «en cambio» o «esta parte» solo van cuando ya se nombró lo que retoman.',
     },
+    // Así se resuelve (fase 2): otro texto del banco de «Ahora tú», ordenado paso a paso con las mismas cuentas.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Primero busca la que abre; después, lo que retoma cada una.',
+      generar: s => resuelto(BANCO_COMPARAR[otroIndice(s, BANCO_COMPARAR.length)], s + 900, { texto: 'Primero va lo que presenta el todo o las dos cosas. Después, las partes, las diferencias y las semejanzas.', ecuacion: [marca('todo o A + B'), ' → ', pide('partes o comparación')] }, 'presenta el todo o las dos cosas'),
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { tema: 'la costa y la sierra', o: [{ t: 'La costa y la sierra tienen climas muy distintos.' }, { t: 'En la costa casi no llueve en todo el año.', necesita: [0] }, { t: 'En la sierra, en cambio, llueve mucho de diciembre a marzo.', necesita: [1] }, { t: 'Por eso, cada región siembra en épocas distintas.', necesita: [2] }], vista: [2, 3, 0, 1], porque: 'Se presentan las dos, se contrastan con «en cambio» y se concluye.', malos: c => [[cambiar(c, 1, 2), 'RV28', '«En cambio» necesita antes lo de la costa.'], [conclusionPrimero(c), 'RV37', '«Por eso» necesita antes las diferencias.'], [[0, 2, 3, 1], 'RV28', 'La costa quedaría al final, después de la conclusión.']] },
-          { tema: 'la bicicleta', o: [{ t: 'Una bicicleta tiene tres sistemas básicos.' }, { t: 'El cuadro sostiene todas las piezas.', necesita: [0] }, { t: 'Los pedales y la cadena mueven la rueda trasera.', necesita: [0] }, { t: 'Los frenos detienen las dos ruedas.', necesita: [0] }], vista: [3, 1, 0, 2], porque: 'Primero el todo («tres sistemas»), luego cada parte.', malos: c => [[[1, 0, 2, 3], 'RV28', 'El cuadro no puede ir antes de anunciar los sistemas.'], [[3, 2, 1, 0], 'RV37', 'El todo va primero; las partes después.'], [[2, 3, 0, 1], 'RV28', 'Las partes no van antes de presentar el todo.']] },
-          { tema: 'el loro y la lechuza', o: [{ t: 'El loro y la lechuza son aves muy distintas.' }, { t: 'El loro está activo de día y come frutas.', necesita: [0] }, { t: 'La lechuza, por el contrario, caza de noche.', necesita: [1] }, { t: 'Las dos, sin embargo, tienen un pico curvo.', necesita: [1, 2] }], vista: [3, 0, 2, 1], porque: 'Se presentan las dos aves, se contrastan y al final se dice en qué se parecen.', malos: c => [[cambiar(c, 1, 2), 'RV28', '«Por el contrario» necesita antes lo del loro.'], [conclusionPrimero(c), 'RV28', '«Las dos» necesita antes a las dos aves.'], [[0, 3, 1, 2], 'RV28', '«Las dos» va cuando ya se presentó a cada una.']] },
-          { tema: 'un volcán', o: [{ t: 'Un volcán tiene tres partes visibles.' }, { t: 'El cráter es la abertura de la cima.', necesita: [0] }, { t: 'La chimenea une el cráter con el interior.', necesita: [1] }, { t: 'El cono se forma con la lava que se enfría.', necesita: [0] }], vista: [2, 0, 3, 1], porque: 'Primero el todo; la chimenea va tras el cráter, porque lo menciona.', malos: c => [[cambiar(c, 1, 2), 'RV28', 'La chimenea menciona el cráter: va después de él.'], [[3, 0, 1, 2], 'RV28', 'El cono no puede ir antes de anunciar las partes.'], [[1, 2, 3, 0], 'RV37', 'El todo va primero, no al final.']] },
-          { tema: 'dos mercados', o: [{ t: 'El mercado del centro y el de la feria son muy diferentes.' }, { t: 'El del centro abre todos los días y tiene techo.', necesita: [0] }, { t: 'El de la feria, en cambio, se arma solo los domingos al aire libre.', necesita: [1] }, { t: 'Ambos, sin embargo, venden productos de la zona.', necesita: [1, 2] }], vista: [1, 3, 2, 0], porque: 'Presentar los dos, contrastar y luego decir en qué coinciden.', malos: c => [[cambiar(c, 1, 2), 'RV28', '«En cambio» necesita antes el mercado del centro.'], [conclusionPrimero(c), 'RV28', '«Ambos» necesita antes a los dos mercados.'], [[0, 3, 1, 2], 'RV28', '«Ambos» va cuando ya se describió a cada uno.']] },
-        ];
+        const B = BANCO_COMPARAR;
         return caso(B[s % B.length], s, `¿Qué orden es coherente para el texto sobre ${B[s % B.length].tema}?`);
       },
     },
