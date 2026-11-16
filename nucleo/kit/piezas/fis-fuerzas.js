@@ -64,7 +64,7 @@
   const OBJETOS = {
     caja: {
       forma(d) {
-        if (!Number.isFinite(d.rampa)) return { ext: [-34, -24, 34, 24], puntos: {} };
+        if (!Number.isFinite(d.rampa)) return { ext: [-34, -24, 34, 24], puntos: {}, piso: 24 };
         const r = rampa(d.rampa);
         return { ext: [Math.min(-30, r.bi[0]), Math.min(-30, r.ar[1]), Math.max(30, r.ar[0]), Math.max(30, r.bi[1] + 4)], puntos: {} };
       },
@@ -169,7 +169,7 @@
       nombre: () => 'una llave que gira una tuerca',
     },
     carretilla: {
-      forma: () => ({ ext: [-78, -22, 58, 34], puntos: { manijas: [-74, -16], piso: [-30, 52] } }),
+      forma: () => ({ ext: [-78, -22, 58, 34], puntos: { manijas: [-74, -16], piso: [-30, 52] }, piso: 32 }),
       fondo: (d, g) => `<line class="kit-piso" x1="4" y1="${n(g.ay + 32)}" x2="${W - 4}" y2="${n(g.ay + 32)}" ${tinta()}/>`
         + `<line x1="4" y1="${n(g.ay + 36)}" x2="${W - 4}" y2="${n(g.ay + 36)}" stroke="currentColor" stroke-opacity="0.2" stroke-width="4"/>`,
       cuerpo(d, g) {
@@ -293,6 +293,8 @@
     const cajas = [], obst = [];
     const [ex0, ey0, ex1, ey1] = F.ext;
     obst.push({ x0: ex0 + 4, y0: ey0 + 4, x1: ex1 - 4, y1: ey1 - 4 });
+    // El piso (caja sin rampa y carretilla): una franja que ningún rótulo pisa.
+    if (Number.isFinite(F.piso)) obst.push({ x0: -W, y0: F.piso - 3, x1: W, y1: F.piso + 3 });
     // Ángulos: el arco y su rótulo en la bisectriz, afuera del arco.
     const ang = (d.angulos || []).map(a => {
       const c = a.desde ? (() => { const b = desdePx(a.desde, P), u = aPx(a.en || [0, 0], s); return [b[0] + u[0], b[1] + u[1]]; })() : punto(a.en, P, s), r = a.radio || 24;
@@ -325,13 +327,14 @@
       if (x.f.lado === -1) { nx = -nx; ny = -ny; }
       const cand = [];
       const ts = x.f.rotuloEn === undefined ? [t0, 0.35, 0.75, 0.2, 0.9] : [t0, Math.max(0.1, t0 - 0.2), Math.min(0.95, t0 + 0.2)];
-      for (const lado of x.f.lado ? [1] : [1, -1]) for (const tt of ts) {
+      // Primero pegado al trazo (12 px); si nada queda libre, un poco más afuera (24 px), antes de rendirse.
+      for (const dist of [12, 24]) for (const lado of x.f.lado ? [1] : [1, -1]) for (const tt of ts) {
         const mx = x.p0[0] + (x.p1[0] - x.p0[0]) * tt, my = x.p0[1] + (x.p1[1] - x.p0[1]) * tt, kx = nx * lado, ky = ny * lado;
         const ancla = Math.abs(kx) < 0.35 ? 'middle' : kx > 0 ? 'start' : 'end';
-        cand.push(caja(mx + kx * 12, my + ky * 12 + 5 + (ky > 0.35 ? 6 : ky < -0.35 ? -3 : 0), t, ancla));
+        cand.push(caja(mx + kx * dist, my + ky * dist + 5 + (ky > 0.35 ? 6 : ky < -0.35 ? -3 : 0), t, ancla));
       }
       const libre = c => !cajas.some(b => choca(b, c)) && !obst.some(b => choca(b, c, 0)) && !fl.some(y => sobreTramo(c, y.p0, y.p1));
-      const elegido = cand.find(libre) || cand.find(c => !cajas.some(b => choca(b, c))) || cand[0];
+      const elegido = cand.find(libre) || cand.find(c => !cajas.some(b => choca(b, c)) && !obst.some(b => choca(b, c, 0))) || cand.find(c => !cajas.some(b => choca(b, c))) || cand[0];
       cajas.push(elegido);
       return Object.assign({ color: x.f.color }, elegido);
     });

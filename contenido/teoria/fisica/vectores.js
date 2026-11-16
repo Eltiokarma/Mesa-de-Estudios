@@ -423,7 +423,7 @@
   // Las figuras de flechas sueltas salen de colaPunta, la misma de «Mira»: el largo y el ángulo dibujados son los datos.
   const cp = (a, b, g, o = {}) => { const c = colaPunta(a, b, g, Object.assign({ circulo: false }, o)); return flx(c.datos, o.final === false ? c.estado : { final: true }); };
   const EJEMPLOS_SUMA = [
-    { nivel: 1, titulo: 'Dos jalan hacia el mismo lado', figura: ff({ objeto: 'caja', flechas: [{ ang: 0, mod: 30, desde: [34, -10], color: 'o', rotulo: 'A', valor: '30 N' }, { ang: 0, mod: 20, desde: [34, 8], color: 'i', rotulo: 'B', valor: '20 N' }] }),
+    { nivel: 1, titulo: 'Dos jalan hacia el mismo lado', figura: ff({ objeto: 'caja', flechas: [{ ang: 0, mod: 30, desde: [34, -20], color: 'o', rotulo: 'A', valor: '30 N' }, { ang: 0, mod: 20, desde: [34, 8], color: 'i', rotulo: 'B', valor: '20 N', lado: -1 }] }),
       enunciado: ['Dos personas jalan una caja hacia el este con cuerdas: una con ', A, ' = 30 N y la otra con ', B, ' = 20 N. ¿Cuánto mide la fuerza resultante?'],
       solucion: [
         { texto: ['Apuntan hacia el mismo lado, ', th, ' = 0°: los módulos se suman.'], ecuacion: [R, ' = ', A, ' + ', B, ' = 30 N + 20 N = 50 N'] },
@@ -489,7 +489,7 @@
       ],
       respuesta: [R, ' = 5 m'] },
     { nivel: 2, titulo: 'Dos lanchas y una balsa',
-      figura: ff({ objeto: 'bote', rumbo: 36.87, largo: 170, flechas: [{ ang: 0, mod: 700, color: 'o', rotulo: 'A', valor: '700 N' }, { ang: 53.13, mod: 1500, color: 'i', rotulo: 'B', valor: '1500 N' }, { a: [1600, 1200], color: 'd', rotulo: 'R', valor: '2000 N' }], angulos: [{ de: 0, a: 53.13, texto: '53°', radio: 30 }] }),
+      figura: ff({ objeto: 'bote', rumbo: 36.87, largo: 170, flechas: [{ ang: 0, mod: 700, color: 'o', rotulo: 'A', valor: '700 N', rotuloEn: 0.8 }, { ang: 53.13, mod: 1500, color: 'i', rotulo: 'B', valor: '1500 N' }, { a: [1600, 1200], color: 'd', rotulo: 'R', valor: '2000 N' }], angulos: [{ de: 0, a: 53.13, texto: '53°', radio: 30 }] }),
       enunciado: ['Dos lanchas jalan una balsa de totora con ', A, ' = 700 N y ', B, ' = 1500 N. Las cuerdas forman ', th, ' = 53°. ¿Cuánto mide la resultante? Dato: cos 53° = 3/5.'],
       solucion: [
         { texto: ['Ley de cosenos con θ = 53°.'], ecuacion: [{ sup: [R, '2'] }, ' = 700² + 1500² + 2 · 700 · 1500 · cos 53°'] },
@@ -720,7 +720,7 @@
   const R2 = Math.SQRT2;
   const EJEMPLOS_COMPONENTES = [
     { nivel: 1, titulo: 'Una cuerda a 37°',
-      figura: ff({ objeto: 'caja', flechas: [{ ang: 37, mod: 50, color: 'o', rotulo: 'A', valor: '50 N' }, { ang: 0, mod: 40, color: 'o', rotulo: 'Aₓ', valor: '40 N', discontinua: true }, { de: [40, 0], ang: 90, mod: 30, color: 'o', rotulo: 'Aᵧ', valor: '30 N', discontinua: true }], angulos: [{ de: 0, a: 37, texto: '37°', radio: 30 }] }),
+      figura: ff({ objeto: 'caja', flechas: [{ ang: 37, mod: 50, desde: [0, -12], color: 'o', rotulo: 'A', valor: '50 N' }, { ang: 0, mod: 40, desde: [0, -12], color: 'o', rotulo: 'Aₓ', valor: '40 N', discontinua: true }, { de: [40, 0], ang: 90, mod: 30, desde: [0, -12], color: 'o', rotulo: 'Aᵧ', valor: '30 N', discontinua: true }], angulos: [{ desde: [0, -12], de: 0, a: 37, texto: '37°', radio: 30 }] }),
       enunciado: ['Una cuerda jala una caja con una fuerza de ', A, ' = 50 N, a ', th, ' = 37° del piso. ¿Cuánto jala en horizontal y cuánto hacia arriba? Dato: cos 37° = 4/5 y sen 37° = 3/5.'],
       solucion: [
         { texto: ['Con el ángulo medido desde el piso, el coseno da lo que jala en horizontal y el seno, lo que jala hacia arriba.'],
@@ -802,7 +802,7 @@
       ],
       respuesta: [A, ' = 50 N, a ', th, ' = 37° por debajo de la horizontal'] },
     { nivel: 3, titulo: 'Tres cuerdas en un nudo',
-      figura: ff({ objeto: 'nudo', largo: 210, flechas: [{ ang: 37, mod: 50, color: 'o', rotulo: 'A', valor: '50 N' }, { ang: 143.13, mod: 10, color: 'i', rotulo: 'B', valor: '10 N' }, { ang: 270, mod: 12, color: 'f', rotulo: 'C', valor: '12 N' }],
+      figura: ff({ objeto: 'nudo', largo: 210, flechas: [{ ang: 37, mod: 50, color: 'o', rotulo: 'A', valor: '50 N' }, { ang: 143.13, mod: 10, color: 'i', rotulo: 'B', valor: '10 N', lado: -1 }, { ang: 270, mod: 12, color: 'f', rotulo: 'C', valor: '12 N', lado: -1 }],
         angulos: [{ de: 0, a: 36.87, texto: '37°', radio: 28 }, { de: 143.13, a: 180, texto: '37°', radio: 28 }], guias: [{ de: [-30, 0], a: [42, 0] }] }),
       enunciado: ['Sobre un nudo jalan tres cuerdas: ', A, ' = 50 N a 37°, ', B, ' = 10 N a 143° y ', C, ' = 12 N a 270°, desde el eje +x. Halla la fuerza total. Dato: cos 37° = 4/5 y sen 37° = 3/5.'],
       solucion: [
