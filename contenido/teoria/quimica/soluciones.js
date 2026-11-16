@@ -95,11 +95,24 @@
     return lupa([{ titulo: `${S.texto}, ${f(tt, 0)} min quieto`, forma: 'vaso', nivel: 0.9, particulas: parts }], { separacion: 26, agita: enFondo(k, tt) ? undefined : tt / 10, agitaAmp: 2 });
   };
   const leeReposo = (k, tt) => (k === 'suspension' ? (enFondo(k, tt) ? 'Los grumos ya están en el fondo.' : 'Los grumos van cayendo al fondo.') : k === 'coloide' ? 'Los grupitos siguen repartidos: no caen.' : 'Los iones siguen repartidos: no caen.');
+  // El tamaño de lo disperso, por sistema: lo usan «Ahora tú» y «Así se resuelve» (mismas listas, otras semillas).
+  const TAM = { solucion: [0.2, 0.3, 0.5, 0.8], coloide: [5, 20, 50, 200, 500], suspension: [2000, 5000, 10000, 50000] };
+  const NOM_SIS = { solucion: 'Solución', coloide: 'Coloide', suspension: 'Suspensión' };
+  const LIMITES = ['solución < 1 nm', '   ·   ', 'coloide 1–1000 nm', '   ·   ', 'suspensión > 1000 nm'];
   const dispersos = {
     id: 'sistemas-dispersos',
     titulo: 'Solución, coloide o suspensión',
     temas: ['Sistemas dispersos: soluciones, coloides y suspensiones'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): contexto y la escala de tamaños, sin decir qué pasa por el filtro (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Mezclas de todos los días', texto: 'En una mañana en Juliaca hay de todo: el té con azúcar, la leche del desayuno y el agua del río Coata, que baja turbia después de la lluvia. Las tres son agua con algo repartido dentro.' },
+        { titulo: 'Tamaños muy pequeños', texto: 'Lo repartido puede ser tan pequeño como un ion o tan grande como un grano de arena fina. Para medirlo se usa el nanómetro: un millón de nanómetros caben en un milímetro.',
+          ecuacion: [`1 nm = ${f(1e-6, 6)} mm`] },
+        { titulo: 'Qué mirar', texto: 'En el juego, el vaso se queda quieto una hora en pocos segundos. Elige cada sistema y mira si lo repartido baja al fondo o sigue en su sitio.' },
+      ],
+    },
     juega: {
       consigna: 'El vaso queda en reposo: una hora pasa en 6 segundos. Elige un sistema y mira si lo disperso cae al fondo.',
       voz: 'Mira el tamaño de lo que flota. Eso decide el nombre.',
@@ -145,12 +158,35 @@
       condicion: 'transparente no significa sin soluto: lo disuelto sigue en el agua aunque no se vea.',
       voz: 'Que no se vea no quiere decir que no esté.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (clasificar por tamaño), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = ['solucion', 'coloide', 'suspension'][s % 3], tam = r.de(TAM[tipo]);
+        const comp = tipo === 'solucion' ? `${f(tam, 1)} nm < 1 nm` : tipo === 'coloide' ? `1 nm < ${f(tam, 1)} nm < 1000 nm` : `${f(tam, 1)} nm > 1000 nm`;
+        const sentido = {
+          solucion: 'Menos de 1 nm es el tamaño de iones y moléculas sueltas: por eso se ve transparente y no se asienta en reposo.',
+          coloide: 'Son grupitos de muchas moléculas: no caen al fondo, pero un haz de luz que los cruza se ve como una franja.',
+          suspension: `${f(tam, 1)} nm son ${f(tam / 1000, 0)} µm: grumos que en reposo caen al fondo y que el filtro retiene.`,
+        }[tipo];
+        return {
+          enunciado: `Lo disperso en un líquido mide unos ${f(tam, 1)} nm. ¿Es una solución, un coloide o una suspensión?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el nombre del sistema disperso: solución, coloide o suspensión.' },
+            { tipo: 'datos', texto: `Lo disperso mide unos ${f(tam, 1)} nm. No dicen el color ni si es transparente, y no hace falta.` },
+            { tipo: 'regla', texto: 'El nombre lo decide el tamaño de lo repartido. Hay dos límites: 1 nm y 1000 nm.', ecuacion: LIMITES },
+            { tipo: 'aplica', texto: `Comparo ${f(tam, 1)} nm con los dos límites.`, ecuacion: [comp] },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: `Es ${tipo === 'solucion' ? 'una solución' : tipo === 'coloide' ? 'un coloide' : 'una suspensión'}.`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Usa el tamaño de las partículas.',
       generar(s) {
         const r = azar(s), tipo = ['solucion', 'coloide', 'suspension'][s % 3];
-        const tam = tipo === 'solucion' ? r.de([0.2, 0.3, 0.5, 0.8]) : tipo === 'coloide' ? r.de([5, 20, 50, 200, 500]) : r.de([2000, 5000, 10000, 50000]);
-        const nom = { solucion: 'Solución', coloide: 'Coloide', suspension: 'Suspensión' };
+        const tam = r.de(TAM[tipo]);
+        const nom = NOM_SIS;
         const si = { solucion: 'Sería solución si lo disperso midiera menos de 1 nm.', coloide: 'Sería coloide si midiera entre 1 y 1000 nm.', suspension: 'Sería suspensión si midiera más de 1000 nm.' };
         return {
           pregunta: `Lo disperso en un líquido mide unos ${f(tam, 1)} nm. ¿Qué sistema es?`,
@@ -185,11 +221,28 @@
       alt: `Curvas de solubilidad; a ${f(val.T, 0)} °C caben ${f(sT, 1)} g de KNO₃ en 100 g de agua y se echaron ${f(val.m, 0)} g${sobra ? `: sobran ${f(val.m - sT, 1)} g` : ''}.`,
     });
   };
+  // Los casos de «Ahora tú» y «Así se resuelve»: con q impar se echa una masa que pasa la curva; con q par, una solución
+  // saturada se enfría. Las mismas cuentas para los dos momentos (regla 1).
+  const TS = [10, 20, 30, 40, 50, 60, 70];
+  const casoKNO3 = (r, q) => {
+    const T = TS[q % TS.length], sT = KNO3[T];
+    if (q % 2) return { sobra: true, T, sT, mm: 10 * Math.ceil((sT + r.ent(5, 40)) / 10) };
+    const bajas = TS.filter(x => x < T), T2 = bajas[r.ent(0, bajas.length - 1)] || 0;
+    return { sobra: false, T, sT, T2, s2: KNO3[T2] };
+  };
   const solubilidad = {
     id: 'curva-solubilidad',
     titulo: 'Cuánto cabe en el agua',
     temas: ['Solubilidad y curvas de solubilidad'],
     pieza: 'ejes',
+    // Lee (fase 2): qué es la solubilidad y cómo se lee la gráfica, sin decir qué pasa al enfriar (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Hasta dónde cabe', texto: 'Si echas cucharadas de azúcar a una taza de agua, llega un momento en que ya no se disuelve más y el resto se queda en el fondo. Esa cantidad máxima se llama solubilidad.' },
+        { titulo: 'Cómo se lee la gráfica', texto: 'El eje vertical da los gramos que caben en 100 g de agua; el horizontal, la temperatura. Hay una curva para cada sustancia: aquí, el KNO₃, que se usa como fertilizante, y la sal común.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el punto verde es lo que echaste. Una solución que ya tiene todo lo que cabe está saturada. Mira de qué lado de la curva queda el punto en cada temperatura.' },
+      ],
+    },
     juega: {
       consigna: 'El agua con KNO₃ se calienta y se enfría sola. Mira cuándo el punto cruza la curva: la raya roja es lo que sobra.',
       voz: 'Bajo la curva cabe más; encima, sobra.',
@@ -243,14 +296,51 @@
       condicion: 'es un límite de equilibrio: agitar o moler acelera la disolución pero no cambia el máximo.',
       voz: 'Agitar apura, pero no hace caber más.',
     },
+    resuelve: {
+      pieza: 'ejes',
+      generar(s) {
+        const q = s + 900, C = casoKNO3(azar(q), q), T = C.T, sT = C.sT;
+        if (C.sobra) {
+          const mm = C.mm, x = mm - sT;
+          return {
+            enunciado: ['Echas ', m, ` = ${f(mm, 0)} g de KNO₃ en 100 g de agua a ${f(T, 0)} °C y agitas hasta que nada cambia. ¿Cuánto queda sin disolver?`],
+            dibujo: { datos: ejesSol({ puntos: [{ x: T, y: mm, color: 'd', rotulo: `${f(mm, 0)} g`, guias: true }] }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la masa de KNO₃ que se queda sólida en el fondo.' },
+              { tipo: 'datos', texto: [m, ` = ${f(mm, 0)} g echados en 100 g de agua, a ${f(T, 0)} °C.`] },
+              { tipo: 'regla', texto: 'La curva marca lo máximo que cabe a cada temperatura. Lo que echo por encima de la curva queda sólido, por más que agite.' },
+              { tipo: 'cuentas', texto: `Leo la curva a ${f(T, 0)} °C: caben ${f(sT, 1)} g. Resto lo echado menos lo que cabe.`,
+                ecuacion: [m, ` − ${f(sT, 1)} = ${f(mm, 0)} − ${f(sT, 1)} = ${f(x, 1)} g`],
+                dibujo: { datos: ejesSol({ puntos: [{ x: T, y: mm, color: 'd', rotulo: `${f(mm, 0)} g` }, { x: T, y: sT, color: 'd', rotulo: `${f(sT, 1)} g` }], curvas: [...ejesSol().curvas, { puntos: [[T, sT], [T, mm]], color: 'h' }] }), estado: {} } },
+              { tipo: 'sentido', texto: `Lo disuelto más lo sólido devuelve lo echado: ${f(sT, 1)} + ${f(x, 1)} = ${f(sT + x, 0)} g. Y sobra menos de lo que eché.` },
+            ],
+            respuesta: `Quedan ${f(x, 1)} g de KNO₃ sin disolver.`,
+          };
+        }
+        const T2 = C.T2, s2 = C.s2, x = sT - s2;
+        return {
+          enunciado: `100 g de agua están saturados de KNO₃ a ${f(T, 0)} °C. Se enfrían hasta ${f(T2, 0)} °C. ¿Cuánto sólido aparece?`,
+          dibujo: { datos: ejesSol({ puntos: [{ x: T, y: sT, color: 'd', rotulo: `saturada a ${f(T, 0)} °C`, guias: true }] }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la masa de KNO₃ que se separa como sólido al enfriar.' },
+            { tipo: 'datos', texto: `Saturada a ${f(T, 0)} °C: tiene disuelto justo lo que marca la curva ahí. Después baja a ${f(T2, 0)} °C.` },
+            { tipo: 'regla', texto: 'Al enfriar, el máximo baja con la curva. Lo que ya no cabe a la temperatura baja se separa como sólido.' },
+            { tipo: 'cuentas', texto: `Leo la curva dos veces: ${f(sT, 1)} g a ${f(T, 0)} °C y ${f(s2, 1)} g a ${f(T2, 0)} °C. Resto.`,
+              ecuacion: [`${f(sT, 1)} − ${f(s2, 1)} = ${f(x, 1)} g`],
+              dibujo: { datos: ejesSol({ puntos: [{ x: T, y: sT, color: 'd', rotulo: `${f(sT, 1)} g` }, { x: T2, y: sT, color: 'd', abierto: true }, { x: T2, y: s2, color: 'd', rotulo: `${f(s2, 1)} g` }], curvas: [...ejesSol().curvas, { puntos: [[T2, s2], [T2, sT]], color: 'h' }] }), estado: {} } },
+            { tipo: 'sentido', texto: `Lo que sigue disuelto más lo sólido da lo de antes: ${f(s2, 1)} + ${f(x, 1)} = ${f(s2 + x, 1)} g. No sale todo: algo cabe en frío.` },
+          ],
+          respuesta: `Aparecen ${f(x, 1)} g de KNO₃ sólido.`,
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'ejes',
       voz: 'Lee el máximo en la curva antes de restar.',
       generar(s) {
-        const r = azar(s), Ts = [10, 20, 30, 40, 50, 60, 70];
-        const T = Ts[s % Ts.length], sT = KNO3[T];
-        if (s % 2) {
-          const mm = 10 * Math.ceil((sT + r.ent(5, 40)) / 10);
+        const r = azar(s), C = casoKNO3(r, s), T = C.T, sT = C.sT;
+        if (C.sobra) {
+          const mm = C.mm;
           return {
             pregunta: ['Echas ', m, ` = ${f(mm, 0)} g de KNO₃ en 100 g de agua a ${f(T, 0)} °C y agitas mucho. ¿Cuánto queda sin disolver?`],
             dibujo: { datos: ejesSol({ puntos: [{ x: T, y: mm, color: 'd', rotulo: `${f(mm, 0)} g`, guias: true }] }), estado: {} },
@@ -262,7 +352,7 @@
             solucion: { texto: `A ${f(T, 0)} °C caben ${f(sT, 1)} g; sobra el resto.`, ecuacion: [`${f(mm, 0)} − ${f(sT, 1)} = ${f(mm - sT, 1)} g`], dibujo: { datos: ejesSol({ puntos: [{ x: T, y: mm, color: 'd', rotulo: `${f(mm, 0)} g` }, { x: T, y: sT, color: 'd', rotulo: `${f(sT, 1)} g` }] }), estado: {} } },
           };
         }
-        const T2 = Ts.filter(x => x < T)[r.ent(0, Ts.filter(x => x < T).length - 1)] || 0, s1 = sT, s2 = KNO3[T2];
+        const T2 = C.T2, s1 = sT, s2 = C.s2;
         return {
           pregunta: [`100 g de agua están saturados de KNO₃ a ${f(T, 0)} °C. Se enfrían a ${f(T2, 0)} °C. ¿Cuánto sólido aparece?`],
           dibujo: { datos: ejesSol(), estado: {} },
@@ -283,11 +373,30 @@
   // densidad de bolitas, no su número.
   // Animación: el volumen sube y baja solo (las mismas bolitas en más o menos solución); las bolitas tiemblan.
   const vasoConc = val => lupa([{ titulo: 'Solución', forma: 'vaso', nivel: val.v / 500, rotulo: `${f(val.v, 0)} mL`, particulas: [{ e: 'ion', n: val.k }] }], { agita: val.v / 60, agitaAmp: 2 });
+  // Los datos de los cuatro tipos de «Ahora tú» (molaridad, %m/m, molalidad y normalidad); «Así se resuelve» los usa
+  // con otras semillas.
+  const casoConc = (r, tipo) => {
+    if (tipo === 0) { const g = 4 * r.ent(1, 10), v = 50 * r.ent(2, 10); return { g, v, mol: g / 40 }; }
+    if (tipo === 1) { const g = r.ent(2, 30), agua = 10 * r.ent(5, 30); return { g, agua, tot: g + agua }; }
+    if (tipo === 2) return { mol: fijo(r.ent(1, 8) * 0.1, 1), kg: fijo(r.ent(2, 10) * 0.1, 1) };
+    return { M: fijo(r.ent(1, 10) * 0.05, 2) };
+  };
   const concentracion = {
     id: 'concentracion',
     titulo: 'Concentración: cantidad entre volumen',
     temas: ['Concentración: porcentajes, molaridad, normalidad y molalidad'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): la palabra, el mol y los litros. No compara dos soluciones (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cargado o suave', texto: 'Cuando preparas refresco de maracuyá en casa, unos lo quieren cargado y otros suave. Eso que cambia de una jarra a otra es la concentración, y en química se mide con números.' },
+        { titulo: 'Contar en moles', texto: 'El soluto se cuenta en moles. Un mol es un paquete fijo de partículas, como una docena, pero enorme. Con la masa molar pasas de gramos a moles.',
+          ecuacion: [n, ' = ', { frac: [m, 'M'] }, '   ·   ', '1 mol ≈ 6,02 · ', { sup: ['10', '23'] }, ' partículas'] },
+        { titulo: 'Litros y mililitros', texto: `Un litro tiene 1000 mL. En las fórmulas de concentración el volumen casi siempre va en litros: 250 mL son ${f(250 / 1000, 2)} L.`,
+          ecuacion: ['1 L = 1000 mL'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, cada bolita es 0,01 mol de soluto y el volumen sube y baja solo. Cambia el número de bolitas y mira qué tan juntas quedan.' },
+      ],
+    },
     juega: {
       consigna: 'Cada bolita es 0,01 mol de soluto. El volumen sube y baja solo; cambia cuántas bolitas hay. Mira qué tan juntas quedan.',
       voz: 'Fíjate en cuántas bolitas hay por cada parte del vaso.',
@@ -335,12 +444,77 @@
       condicion: 'V es el volumen final de la solución, no el del agua añadida; θ son los H⁺ u OH⁻ que intercambia.',
       voz: 'Primero el numerador y el denominador; después el número.',
     },
+    resuelve: {
+      generar(s) {
+        const tipo = s % 4, C = casoConc(azar(s + 900), tipo);
+        if (tipo === 0) {
+          const L = C.v / 1000, cc = C.mol / L;
+          return {
+            enunciado: ['Disuelves ', m, ` = ${f(C.g, 0)} g de NaOH (M = 40 g/mol) en agua hasta `, V, ` = ${f(C.v, 0)} mL de solución. ¿Cuál es su molaridad?`],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la molaridad ', c, ': cuántos moles de soluto hay en cada litro de solución.'] },
+              { tipo: 'datos', texto: [m, ` = ${f(C.g, 0)} g de NaOH, que tiene 40 g/mol, y `, V, ` = ${f(C.v, 0)} mL de solución.`] },
+              { tipo: 'regla', texto: 'Arriba van los moles de soluto y abajo los litros de solución. Antes, la masa se pasa a moles con la masa molar.',
+                ecuacion: [n, ' = ', { frac: [m, 'M'] }, '   ·   ', c, ' = ', { frac: [n, V] }] },
+              { tipo: 'cuentas', texto: 'Paso gramos a moles y mililitros a litros; después divido.',
+                ecuacion: [n, ` = ${f(C.g, 0)} / 40 = ${f(C.mol, 3)} mol   ·   `, V, ` = ${f(L, 3)} L   →   `, c, ` = ${f(cc, 3)} mol/L`] },
+              { tipo: 'sentido', texto: [`Mol entre litro da mol/L. De vuelta: `, c, ' · ', V, ` = ${f(cc, 3)} · ${f(L, 3)} = ${f(cc * L, 3)} mol, los moles del inicio.`] },
+            ],
+            respuesta: [c, ` = ${f(cc, 3)} mol/L`],
+          };
+        }
+        if (tipo === 1) {
+          const p = 100 * C.g / C.tot;
+          return {
+            enunciado: ['Disuelves ', m, ` = ${f(C.g, 0)} g de azúcar en ${f(C.agua, 0)} g de agua. ¿Cuál es el porcentaje en masa de azúcar?`],
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el porcentaje en masa: cuántos gramos de azúcar hay en cada 100 g de solución.' },
+              { tipo: 'datos', texto: [m, ` = ${f(C.g, 0)} g de azúcar (soluto) y ${f(C.agua, 0)} g de agua (solvente).`] },
+              { tipo: 'regla', texto: 'Se divide la masa del soluto entre la masa de toda la solución, que es soluto más solvente, y se multiplica por 100.',
+                ecuacion: ['%m/m = ', { frac: [m, 'masa de solución'] }, ' · 100'] },
+              { tipo: 'cuentas', texto: 'Primero sumo para tener la masa de la solución; después divido.',
+                ecuacion: [`${f(C.g, 0)} + ${f(C.agua, 0)} = ${f(C.tot, 0)} g   →   ${f(C.g, 0)} / ${f(C.tot, 0)} · 100 = ${f(p, 1)} %`] },
+              { tipo: 'sentido', texto: `Queda por debajo de ${f(100 * C.g / C.agua, 1)} %, lo que daría dividir solo entre el agua: la solución pesa más que el agua sola.` },
+            ],
+            respuesta: `${f(p, 1)} % en masa de azúcar`,
+          };
+        }
+        if (tipo === 2) {
+          const b = C.mol / C.kg;
+          return {
+            enunciado: `Disuelves ${f(C.mol, 1)} mol de glucosa en ${f(C.kg, 1)} kg de agua. ¿Cuál es la molalidad de la solución?`,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la molalidad b: moles de soluto por cada kilogramo de solvente.' },
+              { tipo: 'datos', texto: `${f(C.mol, 1)} mol de glucosa y ${f(C.kg, 1)} kg de agua, que es el solvente.` },
+              { tipo: 'regla', texto: 'La molalidad no mira el volumen ni la solución entera: divide los moles entre los kilogramos de solvente.',
+                ecuacion: ['b = ', { frac: [n, 'kg de solvente'] }] },
+              { tipo: 'cuentas', texto: 'Los datos ya están en mol y en kg: divido directo.', ecuacion: [`b = ${f(C.mol, 1)} / ${f(C.kg, 1)} = ${f(b, 2)} mol/kg`] },
+              { tipo: 'sentido', texto: `Mol entre kg da mol/kg. De vuelta: ${f(b, 2)} · ${f(C.kg, 1)} ≈ ${f(b * C.kg, 1)} mol, la glucosa del inicio.` },
+            ],
+            respuesta: `b = ${f(b, 2)} mol/kg`,
+          };
+        }
+        const N = 2 * C.M;
+        return {
+          enunciado: ['Una solución de H₂SO₄ tiene ', c, ` = ${f(C.M, 2)} mol/L. En una neutralización, cada H₂SO₄ entrega 2 H⁺. ¿Cuál es su normalidad?`],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la normalidad N: los equivalentes, aquí los H⁺ que se pueden entregar, en cada litro.' },
+            { tipo: 'datos', texto: [c, ` = ${f(C.M, 2)} mol/L de H₂SO₄, y cada unidad entrega 2 H⁺.`] },
+            { tipo: 'regla', texto: 'La normalidad cuenta lo que intercambia cada unidad: multiplico la molaridad por los H⁺ que da cada una, θ.',
+              ecuacion: ['N = θ · ', c] },
+            { tipo: 'cuentas', texto: 'Aquí θ = 2.', ecuacion: [`N = 2 · ${f(C.M, 2)} = ${f(N, 2)} eq/L`] },
+            { tipo: 'sentido', texto: `Cada litro tiene ${f(C.M, 2)} mol de ácido y el doble de H⁺ para entregar: ${f(N, 2)} mol. Por eso N es el doble de c.` },
+          ],
+          respuesta: `N = ${f(N, 2)} eq/L`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Escribe qué va arriba y qué va abajo.',
       generar(s) {
-        const r = azar(s), tipo = s % 4;
+        const r = azar(s), tipo = s % 4, C = casoConc(r, tipo);
         if (tipo === 0) {
-          const g = 4 * r.ent(1, 10), v = 50 * r.ent(2, 10), mol = g / 40;
+          const g = C.g, v = C.v, mol = C.mol;
           return {
             pregunta: ['Disuelves ', m, ` = ${f(g, 0)} g de NaOH (M = 40 g/mol) en agua hasta `, V, ` = ${f(v, 0)} mL de solución. ¿Cuál es su molaridad?`],
             opciones: opciones(mol / (v / 1000), [
@@ -352,7 +526,7 @@
           };
         }
         if (tipo === 1) {
-          const g = r.ent(2, 30), agua = 10 * r.ent(5, 30), tot = g + agua;
+          const g = C.g, agua = C.agua, tot = C.tot;
           return {
             pregunta: ['Disuelves ', m, ` = ${f(g, 0)} g de azúcar en ${f(agua, 0)} g de agua. ¿Cuál es el porcentaje en masa?`],
             opciones: opciones(100 * g / tot, [
@@ -363,7 +537,7 @@
           };
         }
         if (tipo === 2) {
-          const mol = fijo(r.ent(1, 8) * 0.1, 1), kg = fijo(r.ent(2, 10) * 0.1, 1);
+          const mol = C.mol, kg = C.kg;
           return {
             pregunta: [`Disuelves ${f(mol, 1)} mol de glucosa en ${f(kg, 1)} kg de agua. ¿Cuál es la molalidad?`],
             opciones: opciones(mol / kg, [
@@ -373,7 +547,7 @@
             solucion: { texto: 'Moles de soluto entre kilogramos de solvente.', ecuacion: [`b = ${f(mol, 1)} / ${f(kg, 1)} = ${f(mol / kg, 2)} mol/kg`] },
           };
         }
-        const M = fijo(r.ent(1, 10) * 0.05, 2);
+        const M = C.M;
         return {
           pregunta: ['Una solución de H₂SO₄ tiene ', c, ` = ${f(M, 2)} mol/L. En una neutralización cada unidad entrega 2 H⁺. ¿Cuál es su normalidad?`],
           opciones: opciones(2 * M, [
@@ -394,11 +568,27 @@
   const vaso = (titulo, v, k, extra = {}) => Object.assign({ titulo, forma: 'vaso', nivel: v / 260, rotulo: `${f(v, 0)} mL`, particulas: [{ e: 'ion', n: k }] }, extra);
   // Animación: el agua entra sola en el segundo vaso, de 100 a 250 mL, una y otra vez; las bolitas se reparten.
   const conAgua = val => lupa([vaso('Inicio', 100, 10), vaso('Con agua', val.v, 10)], { flechas: true, alto: 190, separacion: 16, agita: val.v / 40, agitaAmp: 1.5 });
+  // Los datos de los tres tipos de «Ahora tú» (diluir, retirar, mezclar); «Así se resuelve» los usa con otras semillas.
+  const casoDil = (r, tipo) => {
+    if (tipo === 0) { const ci = fijo(r.ent(2, 10) * 0.1, 1), vi = 50 * r.ent(1, 4), vf = vi + 50 * r.ent(1, 6); return { ci, vi, vf, cf: ci * vi / vf }; }
+    if (tipo === 1) { const ci = fijo(r.ent(1, 9) * 0.1, 1), vi = 100 * r.ent(2, 5), vr = 10 * r.ent(2, Math.floor(vi / 10) - 2); return { ci, vi, vr, queda: vi - vr }; }
+    const ca = fijo(r.ent(1, 5) * 0.1, 1), cb = fijo(r.ent(6, 10) * 0.1, 1), va = 100 * r.ent(1, 3), vb = 100 * r.ent(1, 3);
+    return { ca, cb, va, vb, cm: (ca * va + cb * vb) / (va + vb) };
+  };
   const dilucion = {
     id: 'diluir-y-retirar',
     titulo: 'Diluir no es retirar',
     temas: ['Dilución y mezcla de soluciones'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): qué es diluir y las dos preguntas (n y c). No dice qué pasa al retirar una parte (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Diluir en casa', texto: 'Cuando un jugo de botella viene muy concentrado, le echas agua y queda más suave. Eso es diluir: añadir solvente a una solución, sin añadir soluto.' },
+        { titulo: 'Dos preguntas', texto: ['De una solución se pueden preguntar dos cosas: cuánto soluto tiene en total, ', n, ' en moles, y qué tan concentrada está, ', c, ' en mol/L. El volumen ', V, ' las une.'],
+          ecuacion: [n, ' = ', c, ' · ', V] },
+        { titulo: 'Qué mirar', texto: 'En el juego, el agua entra sola en el segundo vaso. Cuenta las bolitas de los dos vasos y lee n y c en cada momento.' },
+      ],
+    },
     juega: {
       consigna: 'Tienes 100 mL de solución con 0,020 mol de soluto. El agua entra sola: cuenta las bolitas y lee n y c.',
       voz: 'Cuenta las bolitas antes y después de añadir agua.',
@@ -445,12 +635,64 @@
       condicion: 'sin reacción, pérdidas ni evaporación. Al mezclar se suman moles; sumar volúmenes es una aproximación que no siempre vale.',
       voz: 'Dos preguntas distintas: cuánto soluto hay y qué tan junto está.',
     },
+    resuelve: {
+      generar(s) {
+        const tipo = s % 3, C = casoDil(azar(s + 900), tipo);
+        if (tipo === 0) {
+          const { ci, vi, vf, cf } = C;
+          return {
+            enunciado: ['Diluyes ', V1, ` = ${f(vi, 0)} mL de solución de `, c1, ` = ${f(ci, 1)} mol/L con agua hasta `, V2, ` = ${f(vf, 0)} mL. ¿Cuál es la nueva concentración?`],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', c2, ', la concentración después de añadir agua.'] },
+              { tipo: 'datos', texto: ['Antes: ', V1, ` = ${f(vi, 0)} mL y `, c1, ` = ${f(ci, 1)} mol/L. Después, el volumen final es `, V2, ` = ${f(vf, 0)} mL.`] },
+              { tipo: 'regla', texto: 'Al añadir solo agua, los moles de soluto no cambian: se reparten en más volumen. Por eso c · V antes es igual a c · V después.',
+                ecuacion: [c1, V1, ' = ', c2, V2] },
+              { tipo: 'cuentas', texto: ['Despejo ', c2, '. Los mililitros se cancelan entre sí, así que no hace falta pasar a litros.'],
+                ecuacion: [c2, ` = ${f(ci, 1)} · ${f(vi, 0)} / ${f(vf, 0)} = ${f(cf, 3)} mol/L`] },
+              { tipo: 'sentido', texto: `Bajó, como debe al diluir. Los moles cuadran: ${f(ci * vi / 1000, 4)} mol antes y ${f(cf * vf / 1000, 4)} mol después.` },
+            ],
+            respuesta: [c2, ` = ${f(cf, 3)} mol/L`],
+          };
+        }
+        if (tipo === 1) {
+          const { ci, vi, vr, queda } = C, nq = ci * queda / 1000, ns = ci * vr / 1000;
+          return {
+            enunciado: ['De ', V1, ` = ${f(vi, 0)} mL de solución de `, c1, ` = ${f(ci, 1)} mol/L, bien mezclada, sacas ${f(vr, 0)} mL. ¿Cuántos moles de soluto quedan?`],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', n, ', los moles de soluto que quedan después de sacar una parte.'] },
+              { tipo: 'datos', texto: ['Había ', V1, ` = ${f(vi, 0)} mL a `, c1, ` = ${f(ci, 1)} mol/L. Saco ${f(vr, 0)} mL: quedan ${f(queda, 0)} mL.`] },
+              { tipo: 'regla', texto: 'Sacar una parte de una solución bien mezclada no cambia su concentración. Lo que queda tiene la misma c, en menos volumen.',
+                ecuacion: [n, ' = ', c, ' · ', V] },
+              { tipo: 'cuentas', texto: `Paso ${f(queda, 0)} mL a litros y multiplico por la concentración.`,
+                ecuacion: [n, ` = ${f(ci, 1)} · ${f(queda / 1000, 3)} = ${f(nq, 3)} mol`] },
+              { tipo: 'sentido', texto: `Lo que queda más lo que saqué da lo de antes: ${f(nq, 3)} + ${f(ns, 3)} = ${f(nq + ns, 3)} mol, que es ${f(ci, 1)} · ${f(vi / 1000, 1)}.` },
+            ],
+            respuesta: [n, ` = ${f(nq, 3)} mol de soluto`],
+          };
+        }
+        const { ca, cb, va, vb, cm } = C, nt = (ca * va + cb * vb) / 1000;
+        const cerca = va === vb ? 'Queda justo en la mitad, porque los volúmenes son iguales.' : `Queda más cerca de ${f(va > vb ? ca : cb, 1)} mol/L, la que puso más volumen.`;
+        return {
+          enunciado: `Mezclas ${f(va, 0)} mL de NaCl ${f(ca, 1)} mol/L con ${f(vb, 0)} mL de NaCl ${f(cb, 1)} mol/L. Si los volúmenes se suman, ¿cuál es la concentración final?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la concentración de la mezcla, cuando ya está pareja.' },
+            { tipo: 'datos', texto: `A: ${f(va, 0)} mL a ${f(ca, 1)} mol/L. B: ${f(vb, 0)} mL a ${f(cb, 1)} mol/L. Es el mismo soluto.` },
+            { tipo: 'regla', texto: 'Las concentraciones no se suman. Se suman los moles de las dos y se dividen entre el volumen total.',
+              ecuacion: [c, ' = ', { frac: [[c1, V1, ' + ', c2, V2], [V1, ' + ', V2]] }] },
+            { tipo: 'cuentas', texto: 'Saco los moles de cada una, en litros, y divido entre el volumen total.',
+              ecuacion: [n, ` = ${f(ca, 1)} · ${f(va / 1000, 1)} + ${f(cb, 1)} · ${f(vb / 1000, 1)} = ${f(nt, 2)} mol   →   `, c, ` = ${f(nt, 2)} / ${f((va + vb) / 1000, 1)} = ${f(cm, 3)} mol/L`] },
+            { tipo: 'sentido', texto: `Sale entre ${f(ca, 1)} y ${f(cb, 1)} mol/L, como debe. ${cerca}` },
+          ],
+          respuesta: [c, ` = ${f(cm, 3)} mol/L`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Decide primero qué se conserva: n o c.',
       generar(s) {
-        const r = azar(s), tipo = s % 3;
+        const r = azar(s), tipo = s % 3, C = casoDil(r, tipo);
         if (tipo === 0) {
-          const ci = fijo(r.ent(2, 10) * 0.1, 1), vi = 50 * r.ent(1, 4), vf = vi + 50 * r.ent(1, 6), cf = ci * vi / vf;
+          const { ci, vi, vf, cf } = C;
           return {
             pregunta: [`Diluyes `, V1, ` = ${f(vi, 0)} mL de solución de `, c1, ` = ${f(ci, 1)} mol/L con agua hasta `, V2, ` = ${f(vf, 0)} mL. ¿Cuál es la nueva concentración?`],
             opciones: opciones(cf, [
@@ -462,7 +704,7 @@
           };
         }
         if (tipo === 1) {
-          const ci = fijo(r.ent(1, 9) * 0.1, 1), vi = 100 * r.ent(2, 5), vr = 10 * r.ent(2, Math.floor(vi / 10) - 2), queda = vi - vr;
+          const { ci, vi, vr, queda } = C;
           return {
             pregunta: [`De `, V1, ` = ${f(vi, 0)} mL de solución de `, c1, ` = ${f(ci, 1)} mol/L, bien mezclada, sacas ${f(vr, 0)} mL. ¿Cuántos moles de soluto quedan?`],
             opciones: opciones(ci * queda / 1000, [
@@ -473,7 +715,7 @@
             solucion: { texto: `La concentración sigue igual; quedan ${f(queda, 0)} mL.`, ecuacion: [n, ` = ${f(ci, 1)} · ${f(queda / 1000, 3)} = ${f(ci * queda / 1000, 3)} mol`] },
           };
         }
-        const ca = fijo(r.ent(1, 5) * 0.1, 1), cb = fijo(r.ent(6, 10) * 0.1, 1), va = 100 * r.ent(1, 3), vb = 100 * r.ent(1, 3), cm = (ca * va + cb * vb) / (va + vb);
+        const { ca, cb, va, vb, cm } = C;
         return {
           pregunta: [`Mezclas ${f(va, 0)} mL de NaCl ${f(ca, 1)} mol/L con ${f(vb, 0)} mL de NaCl ${f(cb, 1)} mol/L. Suponiendo que los volúmenes se suman, ¿cuál es la concentración final?`],
           opciones: opciones(cm, [
@@ -494,24 +736,46 @@
     const nH = 2, nOH = 0.1 * vb, quedaH = Math.max(0, nH - nOH), sobraOH = Math.max(0, nOH - nH), agua = Math.min(nH, nOH);
     // Las bolitas son pares enteros de 0,5 mmol: se cuentan con floor para que un par aparezca recién cuando se completa.
     const kH = Math.round(nH / BOL), kAgua = Math.floor(agua / BOL + 1e-9), kOH = Math.floor(sobraOH / BOL + 1e-9);
-    return { nOH, quedaH, sobraOH, agua, dib: lupa([{ titulo: 'Matraz', forma: 'vaso', nivel: (20 + vb) / 60, rotulo: `${f(20 + vb, 0)} mL`,
+    return { nOH, quedaH, sobraOH, agua, dib: lupa([{ titulo: 'Vaso', forma: 'vaso', nivel: (20 + vb) / 60, rotulo: `${f(20 + vb, 0)} mL`,
       particulas: [{ e: 'H', n: kH - kAgua }, { e: 'OH', n: kOH }, { e: 'agua', n: kAgua }],
       cuenta: [{ e: 'H', texto: `${f(quedaH, 1)}` }, { e: 'OH', texto: `${f(sobraOH, 1)}` }, { e: 'agua', texto: `${f(agua, 1)}` }] }], { separacion: 24, agita: vb / 8, agitaAmp: 1.5 }) };
+  };
+  // Los pares ácido-base y los datos de «Ahora tú»; «Así se resuelve» los usa con otras semillas.
+  const PARES = [
+    { acido: 'HCl', base: 'NaOH', a: 1, b: 1, ec: 'HCl + NaOH → NaCl + H₂O' },
+    { acido: 'H₂SO₄', base: 'NaOH', a: 1, b: 2, ec: 'H₂SO₄ + 2 NaOH → Na₂SO₄ + 2 H₂O' },
+    { acido: 'HCl', base: 'Ca(OH)₂', a: 2, b: 1, ec: '2 HCl + Ca(OH)₂ → CaCl₂ + 2 H₂O' },
+    { acido: 'HNO₃', base: 'KOH', a: 1, b: 1, ec: 'HNO₃ + KOH → KNO₃ + H₂O' },
+  ];
+  const casoNeutra = (r, k) => {
+    const P = PARES[k % PARES.length], ca = fijo(r.ent(1, 5) * 0.1, 1), va = 5 * r.ent(2, 8), cb = fijo(r.ent(1, 5) * 0.1, 1);
+    const na = ca * va, nb = na * P.b / P.a;
+    return { P, ca, va, cb, na, nb, vb: nb / cb };
   };
   const esteq = {
     id: 'estequiometria-solucion',
     titulo: 'Reaccionar en solución: n = c·V',
     temas: ['Estequiometría en soluciones'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): neutralizar, milimoles y titular. No dice cómo entran los coeficientes (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Neutralizar', texto: 'Cuando un ácido y una base se juntan, reaccionan y forman una sal y agua: es una neutralización. En las chacras del altiplano, echar cal a un suelo ácido hace algo parecido.' },
+        { titulo: 'Milimoles', texto: 'En el laboratorio los volúmenes son chicos, y conviene contar en milimoles. Un milimol es la milésima parte de un mol. Si c está en mol/L y V en mL, el producto da milimoles.',
+          ecuacion: ['1 mmol = 0,001 mol'] },
+        { titulo: 'Titular', texto: 'Para saber cuánto ácido hay en una muestra, se le añade poco a poco una base de concentración conocida hasta que el ácido se acaba. Eso se llama titulación.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, la base entra sola al vaso con ácido; cada bolita es 0,5 mmol. Mira cuántas bolitas de H⁺ quedan y cuándo empieza a sobrar OH⁻.' },
+      ],
+    },
     juega: {
-      consigna: 'Al matraz con 20 mL de HCl 0,10 mol/L le cae NaOH 0,10 mol/L solo. Cada bolita es 0,5 mmol. Mira qué queda.',
+      consigna: 'Al vaso con 20 mL de HCl 0,10 mol/L le entra NaOH 0,10 mol/L solo. Cada bolita es 0,5 mmol. Mira qué queda.',
       voz: 'Cada OH⁻ se lleva un H⁺. Cuenta los pares.',
       controles: [{ id: 'v', etiqueta: 'NaOH', color: 'c-i', min: 0, max: 40, paso: 5, inicio: 5, unidad: 'mL', decimales: 0, auto: { velocidad: 6 } }],
       dibujo: val => neutra(val.v).dib,
       lectura: val => { const x = neutra(val.v); return [`${f(val.v, 1)} mL · `, n, `(OH⁻) = ${f(x.nOH, 1)} mmol · queda H⁺ ${f(x.quedaH, 1)}\u00a0mmol`]; },
       minimo: 3,
-      // El nivel del matraz se agarra y se sube: es añadir base (20 mL de ácido + lo agregado). Los pares responden.
-      arrastres: [{ id: 'base', etiqueta: 'nivel del matraz: más arriba, más NaOH', color: 'c-i',
+      // El nivel del vaso se agarra y se sube: es añadir base (20 mL de ácido + lo agregado). Los pares responden.
+      arrastres: [{ id: 'base', etiqueta: 'nivel del vaso: más arriba, más NaOH', color: 'c-i',
         donde: val => superficie(neutra(val.v).dib),
         mover: (pt, val) => ({ v: nivelEn(neutra(val.v).dib, pt.y) * 60 - 20 }) }],
     },
@@ -543,18 +807,29 @@
       condicion: 'c en mol/L y V en L (o mmol/mL y mL); la reacción es completa y sigue la ecuación escrita.',
       voz: 'Los coeficientes mandan sobre los volúmenes.',
     },
+    resuelve: {
+      generar(s) {
+        const { P, ca, va, cb, na, nb, vb } = casoNeutra(azar(s + 900), s);
+        const coef = P.a === P.b ? 'van 1 a 1' : P.b > P.a ? `cada ${P.acido} pide ${P.b} ${P.base}` : `cada ${P.base} gasta ${P.a} ${P.acido}`;
+        return {
+          enunciado: `¿Qué volumen de ${P.base} ${f(cb, 1)} mol/L neutraliza ${f(va, 0)} mL de ${P.acido} ${f(ca, 1)} mol/L? (${P.ec})`,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', V, ` de ${P.base}: el volumen que gasta todo el ácido sin que sobre base.`] },
+            { tipo: 'datos', texto: `${f(va, 0)} mL de ${P.acido} a ${f(ca, 1)} mol/L, y la base a ${f(cb, 1)} mol/L. En la ecuación, ${coef}.`, ecuacion: [P.ec] },
+            { tipo: 'regla', texto: 'Paso cada volumen a moles con n = c · V. La ecuación balanceada dice cuántos moles de base van por cada mol de ácido.',
+              ecuacion: [n, ' = ', c, ' · ', V, '   ·   ', { frac: [{ sub: [n, 'ácido'] }, String(P.a)] }, ' = ', { frac: [{ sub: [n, 'base'] }, String(P.b)] }] },
+            { tipo: 'cuentas', texto: 'Moles de ácido, después moles de base con los coeficientes, y al final el volumen de base.',
+              ecuacion: [{ sub: [n, 'ácido'] }, ` = ${f(ca, 1)} · ${f(va, 0)} = ${f(na, 2)} mmol   →   `, { sub: [n, 'base'] }, ` = ${f(na, 2)} · ${P.b}/${P.a} = ${f(nb, 2)} mmol   →   `, V, ` = ${f(nb, 2)} / ${f(cb, 1)} = ${f(vb, 1)} mL`] },
+            { tipo: 'sentido', texto: `Milimoles entre mol/L da mililitros. De vuelta: ${f(cb, 1)} · ${f(vb, 1)} ≈ ${f(cb * vb, 2)} mmol de base, lo que pide la ecuación.` },
+          ],
+          respuesta: [V, ` = ${f(vb, 1)} mL de ${P.base}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'De volumen a moles, y los coeficientes en el medio.',
       generar(s) {
-        const r = azar(s);
-        const pares = [
-          { acido: 'HCl', base: 'NaOH', a: 1, b: 1, ec: 'HCl + NaOH → NaCl + H₂O' },
-          { acido: 'H₂SO₄', base: 'NaOH', a: 1, b: 2, ec: 'H₂SO₄ + 2 NaOH → Na₂SO₄ + 2 H₂O' },
-          { acido: 'HCl', base: 'Ca(OH)₂', a: 2, b: 1, ec: '2 HCl + Ca(OH)₂ → CaCl₂ + 2 H₂O' },
-          { acido: 'HNO₃', base: 'KOH', a: 1, b: 1, ec: 'HNO₃ + KOH → KNO₃ + H₂O' },
-        ];
-        const P = pares[s % pares.length], ca = fijo(r.ent(1, 5) * 0.1, 1), va = 5 * r.ent(2, 8), cb = fijo(r.ent(1, 5) * 0.1, 1);
-        const na = ca * va, nb = na * P.b / P.a, vb = nb / cb;
+        const { P, ca, va, cb, na, nb, vb } = casoNeutra(azar(s), s);
         return {
           pregunta: [`¿Qué volumen de ${P.base} ${f(cb, 1)} mol/L neutraliza ${f(va, 0)} mL de ${P.acido} ${f(ca, 1)} mol/L? (${P.ec})`],
           opciones: opciones(vb, [
@@ -646,6 +921,8 @@
         ejemplo: `H₂SO₄ 0,10 mol/L da dos H⁺: N = ${f(2 * 0.1, 2)} eq/L.`, ver: ['molaridad'] },
       { termino: 'dilución', def: 'Añadir solvente: la cantidad de soluto se conserva y la concentración baja.',
         ejemplo: `100 mL a 0,20 mol/L llevados a 250 mL: ${f(0.2 * 100 / 250, 3)} mol/L.`, ver: ['concentración'] },
+      { termino: 'milimol', simbolo: 'mmol', formas: ['milimol', 'milimoles'], def: 'La milésima parte de un mol. Conviene con volúmenes chicos, medidos en mL.',
+        ejemplo: `0,10 mol/L por 25 mL da ${f(0.1 * 25, 1)} mmol.`, ver: ['molaridad'] },
       { termino: 'porcentaje en masa', simbolo: '%m/m', def: 'Gramos de soluto por cada 100 g de solución.',
         ejemplo: `10 g de soluto en 520 g de solución: ${f(1000 / 520, 2)} %.`, ver: ['concentración'] },
     ],
