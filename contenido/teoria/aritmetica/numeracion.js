@@ -67,11 +67,21 @@
     const q = Math.floor(n / base), s = n % base;
     return { bloques: [{ n, columnas: base, color: 'i', marcoFilas: true, rotulo: `${n} = ${nb(enBase(n, base), base)}`, tramos: s ? [{ de: n - s, a: n - 1, color: 'h' }] : [] }], altoMax: 150, ficha: 30, alt: `${n} fichas en filas de ${base}: ${q} grupos completos y ${s} sueltas` };
   };
+  // Las mismas fichas sin el numeral en el rótulo: el enunciado de «Así se resuelve» no regala la respuesta.
+  const fichasSinNumeral = (n, base) => { const x = fichasBase(n, base); x.bloques[0].rotulo = `${n} fichas`; return x; };
   const agrupar = {
     id: 'agrupar',
     titulo: 'Agrupar de b en b',
     temas: ['Base de un sistema'],
     pieza: 'arit-fichas',
+    // Lee (fase 2): contar por grupos y el nombre «base», sin decir qué cifra no existe (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Contar de a montones', texto: 'En la feria de Juliaca nadie cuenta los huevos uno por uno: se venden por docenas. Hacer grupos iguales ayuda a contar rápido y a decir cuánto hay con pocas palabras.' },
+        { titulo: 'La base', texto: 'El tamaño de cada grupo se llama base de numeración. Nosotros contamos en base 10: diez monedas de un sol se cambian por un billete de diez soles.' },
+        { titulo: 'Qué mirar', texto: ['En el juego, cada fila llena es un grupo y las fichas rojas son las sueltas. Cambia la base ', b, ' y mira cómo cambia el numeral escrito debajo de las fichas.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige cuántas fichas hay y la base de numeración. Cada fila llena es un grupo; las rojas quedan sueltas.',
       voz: 'Cuenta los grupos y las sueltas antes de leer el numeral.',
@@ -116,6 +126,46 @@
       texto: 'En base b, cada b unidades de un orden se canjean por una del orden siguiente. Por eso cada cifra va de 0 a b − 1.',
       ecuacion: ['0 ≤ ', d, ' ≤ ', { llave: [b, ' − 1'], nota: 'la cifra mayor', color: 'c-o' }],
       condicion: 'b es un entero de 2 o más. En un numeral de varias cifras, la primera no es 0.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (menor base y fichas a numeral), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const q = azar(s + 900);
+        if (s % 2 === 0) {
+          const base = q.ent(4, 9), c = [q.ent(1, base - 1), q.ent(0, base - 1), q.ent(0, base - 1)];
+          c[q.ent(0, 2) || 1] = base - 1;
+          const txt = c.join(''), mayor = Math.max(...c), min = mayor + 1;
+          return {
+            enunciado: ['¿Cuál es la menor base en la que el numeral ', { v: 'c-i', t: txt }, ' está bien escrito?'],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la base más chica en la que ', { v: 'c-i', t: txt }, ' se puede escribir.'] },
+              { tipo: 'datos', texto: ['Las cifras son ', { v: 'c-i', t: c.join(', ') }, `. La mayor de ellas es ${mayor}.`] },
+              { tipo: 'regla', texto: ['En base ', b, ', con ', b, ' fichas sueltas ya se arma un grupo. Por eso toda cifra tiene que ser menor que la base.'],
+                ecuacion: ['0 ≤ ', d, ' ≤ ', b, ' − 1'] },
+              { tipo: 'cuentas', texto: 'La base tiene que pasar a la cifra mayor. La más chica que lo logra es una más que ella.',
+                ecuacion: [b, ` > ${mayor}   →   `, b, ` = ${mayor} + 1 = `, { v: 'c-o', t: String(min) }] },
+              { tipo: 'sentido', texto: `En base ${min} la cifra más grande posible es ${min - 1}, justo la mayor del numeral. En base ${mayor}, la cifra ${mayor} ya no existiría.` },
+            ],
+            respuesta: ['La menor base es ', { v: 'c-o', t: String(min) }, '.'],
+          };
+        }
+        const base = q.ent(3, 8), n = q.ent(base + 1, base * base - 1);
+        const qq = Math.floor(n / base), ss = n % base, cifras = enBase(n, base), B = { v: 'c-o', t: String(base) };
+        return {
+          enunciado: [`Hay ${n} fichas. Se agrupan de `, B, ' en ', B, '. ¿Cómo se escribe la cantidad en esa base?'],
+          dibujo: { datos: fichasSinNumeral(n, base), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: [`Piden escribir las ${n} fichas como un numeral en base `, B, '.'] },
+            { tipo: 'datos', texto: [`Hay ${n} fichas, y cada fila llena tiene `, B, ' fichas: es un grupo.'] },
+            { tipo: 'regla', texto: 'Los grupos completos van en el lugar de la izquierda. Las fichas que sobran van en el lugar de las unidades.' },
+            { tipo: 'cuentas', texto: `Divido ${n} entre ${base}: salen ${qq} ${qq === 1 ? 'fila llena' : 'filas llenas'} y ${ss} ${ss === 1 ? 'ficha suelta' : 'fichas sueltas'}.`,
+              ecuacion: [`${n} = ${qq} · `, B, ` + ${ss}   →   `, { sub: [{ v: 'c-i', t: `(${cifras})` }, B] }],
+              dibujo: { datos: fichasBase(n, base), estado: {} } },
+            { tipo: 'sentido', texto: `De vuelta: ${qq} ${qq === 1 ? 'grupo' : 'grupos'} de ${base} son ${qq * base} fichas, más ${ss} sueltas, dan ${qq * base + ss}. Y las dos cifras son menores que ${base}.` },
+          ],
+          respuesta: [`${n} = `, { sub: [{ v: 'c-i', t: `(${cifras})` }, B] }],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -176,6 +226,14 @@
     titulo: 'Cada cifra vale según su lugar',
     temas: ['Descomposición polinómica'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): valor posicional en base 10 y cómo se escribe la base, sin calcular (132)₄ (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'El lugar manda', texto: 'En 555 hay tres cincos, pero no valen igual: el de la izquierda vale quinientos, el del centro cincuenta y el de la derecha, cinco. A eso se le llama valor posicional.' },
+        { titulo: 'Dónde va la base', texto: 'La base se escribe chiquita, abajo y a la derecha. (213)₅ se lee «dos, uno, tres en base cinco», no «doscientos trece». Si no lleva ese número chico, la base es 10.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el numeral 132 no cambia; solo cambia la base. Mira la columna del lugar y el total cada vez que subes o bajas la base.' },
+      ],
+    },
     juega: {
       consigna: 'El numeral 132 se queda quieto. Cambia la base y mira cuánto vale cada cifra y el total.',
       voz: 'Las cifras no cambian; mira la columna del lugar.',
@@ -210,6 +268,32 @@
       // A 360 px no cabe en una línea: el separador la parte en el «=» (sin él se partía entre «+» y d₀).
       ecuacion: [{ sub: [['(', { sub: [d, 'k'] }, '…', { sub: [d, '1'] }, { sub: [d, '0'] }, ')'], b] }, ' =', '   ·   ', { sub: [d, 'k'] }, ' ', { sup: [b, 'k'] }, ' + … + ', { sub: [d, '1'] }, ' ', b, ' + ', { sub: [d, '0'] }],
       condicion: 'cada cifra cumple 0 ≤ d < b. El lugar de la derecha es b⁰ = 1.',
+    },
+    // Así se resuelve (fase 2): el mismo numeral a base 10 de «Ahora tú», con otras semillas.
+    resuelve: {
+      generar(s) {
+        const q = azar(s + 900), base = q.ent(2, 9), k = base === 2 ? q.ent(4, 5) : q.ent(3, 4);
+        let c = String(q.ent(1, base - 1));
+        for (let i = 1; i < k; i++) c += String(q.ent(0, base - 1));
+        const v = valor(c, base), B = { v: 'c-o', t: String(base) }, num = { sub: [{ v: 'c-i', t: `(${c})` }, B] };
+        const terminos = c.split('').map((x, i) => `${x}·${base}${sup(k - 1 - i)}`).join(' + ');
+        const aportes = c.split('').map((x, i) => f(+x * base ** (k - 1 - i))).join(' + ');
+        const desde = base ** (k - 1), hasta = base ** k;
+        return {
+          enunciado: ['¿Cuánto vale ', num, ' en base 10?'],
+          dibujo: { datos: tablaPolinomio(c, base, 0), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el valor en base 10 de ', num, ', un numeral escrito en base ', B, '.'] },
+            { tipo: 'datos', texto: `Tiene ${k} cifras: ${c.split('').join(', ')}. La de la derecha está en el lugar de las unidades.` },
+            { tipo: 'regla', texto: 'Cada cifra se multiplica por lo que vale su lugar: 1, la base, la base al cuadrado… contando desde la derecha. Después se suma todo.' },
+            { tipo: 'cuentas', texto: 'Multiplico cada cifra por la potencia de su lugar y sumo los aportes.',
+              ecuacion: [`${terminos} = ${aportes} = `, { v: 'c-d', t: f(v) }],
+              dibujo: { datos: tablaPolinomio(c, base), estado: {} } },
+            { tipo: 'sentido', texto: `Un numeral de ${k} cifras en base ${base} vale por lo menos ${f(desde)} y menos de ${f(hasta)}. El ${f(v)} está en ese rango.` },
+          ],
+          respuesta: [num, ' = ', { v: 'c-d', t: f(v) }],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -252,6 +336,16 @@
     titulo: 'Restos leídos de abajo arriba',
     temas: ['Cambio de base'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): misma cantidad con otra escritura y la división con resto, sin decir en qué orden se leen los
+    // restos (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'La misma plata', texto: 'Treinta soles pueden ser tres billetes de diez o seis monedas de cinco. La plata es la misma; cambia cómo la juntas. En un cambio de base pasa igual: el número no cambia, su escritura sí.' },
+        { titulo: 'Dividir con resto', texto: 'Si repartes 17 chuños en bolsas de 5, llenas 3 bolsas y te sobran 2. El 3 es el cociente y el 2 es el resto, que siempre es menor que 5.',
+          ecuacion: ['17 = 5 · 3 + ', { v: 'c-h', t: '2' }] },
+        { titulo: 'Qué mirar', texto: 'En la tabla, cada fila divide entre la base lo que salió de cociente en la fila anterior. Fíjate en la columna roja y en cuándo se detiene la tabla.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un número y una base. La tabla lo divide entre la base hasta que el cociente es 0.',
       voz: 'Mira la columna roja: ahí están las cifras.',
@@ -288,6 +382,51 @@
       texto: 'Cambio de base: para pasar de base 10 a base b se divide entre b hasta que el cociente es 0. Los restos, del último al primero, son las cifras.',
       ecuacion: [N, ' = ', b, ' · q + ', { llave: [r], nota: 'una cifra', color: 'c-h' }, '   ·   ', '0 ≤ ', r, ' < ', b],
       condicion: 'el número no cambia, solo su escritura. Entre dos bases que no son 10, se pasa primero por base 10.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (de base 10 a base b, y entre dos bases), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const q = azar(s + 900);
+        // Las divisiones sucesivas de n entre la base: el resto de cada una y la descomposición de vuelta.
+        const divisiones = (n, base) => { const out = []; for (let x = n; x > 0; x = Math.floor(x / base)) out.push({ x, c: Math.floor(x / base), r: x % base }); return out; };
+        const vuelta = (cifras, base) => cifras.split('').map((x, i) => `${x}·${base}${sup(cifras.length - 1 - i)}`).join(' + ');
+        if (s % 3 === 2) {
+          const a = q.de([3, 4, 5]), c = q.de([2, 6, 7].filter(x => x !== a)), n = q.ent(a * a, a * a * a - 1);
+          const na = enBase(n, a), nc = enBase(n, c), C = { v: 'c-o', t: String(c) };
+          const restos = divisiones(n, c).map(x => x.r);
+          return {
+            enunciado: ['Escribe ', { sub: [`(${na})`, String(a)] }, ' en base ', C, '.'],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden escribir ', { sub: [`(${na})`, String(a)] }, ' en base ', C, '.'] },
+              { tipo: 'datos', texto: `El numeral está en base ${a} y hay que llevarlo a base ${c}. Ninguna de las dos bases es 10.` },
+              { tipo: 'regla', texto: 'Entre dos bases que no son 10, primero paso a base 10 con la descomposición. Después divido entre la nueva base.' },
+              { tipo: 'cuentas', texto: `Primero a base 10. Luego divido ${n} entre ${c} hasta que el cociente sea 0: los restos salen ${restos.join(', ')}.`,
+                ecuacion: [`${vuelta(na, a)} = `, { v: 'c-d', t: String(n) }, '   →   ', { sub: [`(${nc})`, C] }] },
+              { tipo: 'sentido', texto: `Leo los restos desde el último y compruebo de vuelta: da ${valor(nc, c)} otra vez. Las dos escrituras valen lo mismo.`,
+                ecuacion: [`${vuelta(nc, c)} = `, { v: 'c-d', t: String(valor(nc, c)) }] },
+            ],
+            respuesta: [{ sub: [`(${na})`, String(a)] }, ' = ', { sub: [`(${nc})`, C] }],
+          };
+        }
+        const base = q.ent(2, 8), n = q.ent(base * base + 1, Math.min(200, base * base * base - 1));
+        const cifras = enBase(n, base), B = { v: 'c-o', t: String(base) }, divs = divisiones(n, base);
+        const cuentas = [];
+        divs.forEach((x, i) => { if (i) cuentas.push('   ·   '); cuentas.push(`${x.x} = ${base} · ${x.c} + `, { v: 'c-h', t: String(x.r) }); });
+        return {
+          enunciado: ['Escribe ', { v: 'c-d', t: String(n) }, ' en base ', B, '.'],
+          dibujo: { datos: tablaDivisiones(n, base, true), estado: { paso: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden escribir ', { v: 'c-d', t: String(n) }, ' en base ', B, '.'] },
+            { tipo: 'datos', texto: `El número está en base 10. En base ${base} las cifras van de 0 a ${base - 1}.` },
+            { tipo: 'regla', texto: 'Divido entre la base una y otra vez, hasta que el cociente sea 0. Los restos son las cifras, leídas desde el último.' },
+            { tipo: 'cuentas', texto: `Cada fila divide entre ${base} el cociente de la fila anterior. Leo los restos rojos de abajo arriba.`,
+              ecuacion: cuentas, dibujo: { datos: tablaDivisiones(n, base, true), estado: { paso: divs.length } } },
+            { tipo: 'sentido', texto: `De vuelta, con la descomposición: da ${valor(cifras, base)}. Cuadra.`,
+              ecuacion: [`${vuelta(cifras, base)} = `, { v: 'c-d', t: String(valor(cifras, base)) }] },
+          ],
+          respuesta: [{ v: 'c-d', t: String(n) }, ' = ', { sub: [`(${cifras})`, B] }],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -360,7 +499,7 @@
     ] };
   }
   const MAX_P = 1100;   // escala común del juego: las cifras de 1 a 400 (1092) caben a lo ancho
-  const finLibro = (P, max) => ({ id: 'fin', etiqueta: 'última página del libro',
+  const finLibro = (P, max) => ({ id: 'fin', etiqueta: 'final de la tira de páginas',
     donde: v => { const g = TIRAS().geometria(tirasPaginas(v[P], max)); return { x: g.x(v[P]), y: g.tiraY(0) }; },   // en el borde de arriba: no tapa el número del final
     mover: (pt, v) => ({ [P]: TIRAS().geometria(tirasPaginas(v[P], max)).deX(pt.x) }) });
   const conteo = {
@@ -370,8 +509,18 @@
     // Hallazgo 9: dos representaciones a propósito. El juego usa las dos tiras (se ve que el bloque de tres cifras se
     // estira el triple); «Mira» y «Ahora tú» usan la tabla, que es como se cuenta en papel, con los mismos bloques.
     pieza: 'arit-tiras',
+    // Lee (fase 2): cuántas cifras tiene una página y cómo contar de a hasta z, sin sumar los bloques de 1 a 100
+    // (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cifras de una página', texto: 'Al numerar un cuaderno de la feria se escribe cada número de página. La página 7 gasta una cifra; la 45, dos cifras, y la 300, tres cifras.' },
+        { titulo: 'Contar de a hasta z', texto: 'Del 20 al 30, ¿cuántos números hay? No son 10 sino 11, porque se cuentan los dos de las puntas.',
+          ecuacion: ['de a hasta z: z − a + 1   ·   30 − 20 + 1 = 11'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, la tira de arriba son las páginas y la de abajo, las cifras que gastan. Arrastra el final y compara cuánto se estira cada bloque abajo.' },
+      ],
+    },
     juega: {
-      consigna: 'Un libro se numera desde la página 1. Arrastra el final del libro y mira cuántas cifras gasta cada bloque.',
+      consigna: 'Las páginas de un libro se numeran desde la 1. Arrastra el final de la tira de páginas y mira cuántas cifras gasta cada bloque.',
       voz: 'Compara el bloque de dos cifras con el de tres.',
       controles: [{ id: 'P', etiqueta: 'Última página', min: 120, max: 400, paso: 20, inicio: 200, decimales: 0 }],
       dibujo: v => ({ datos: tirasPaginas(v.P, MAX_P), estado: {} }),
@@ -405,6 +554,46 @@
       texto: 'Los números de k cifras en base b van de bᵏ⁻¹ a bᵏ − 1. Se cuenta cada bloque por separado: cantidad por cifras.',
       ecuacion: [{ llave: ['(', b, ' − 1) · ', { sup: [b, 'k−1'] }], nota: 'los de k cifras', color: 'c-o' }, '   ·   ', 'de a hasta z: z − a + 1'],
       condicion: 'la primera cifra no es 0. Un bloque cortado se cuenta desde su primer número hasta la última página.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (cifras de un libro y numerales de k cifras), con otras
+    // semillas y la misma tabla de bloques.
+    resuelve: {
+      pieza: 'arit-tabla',
+      generar(s) {
+        const q = azar(s + 900);
+        if (s % 2 === 1) {
+          const base = q.ent(2, 9), k = q.ent(2, 4), n = (base - 1) * base ** (k - 1), B = { v: 'c-o', t: String(base) };
+          const menor = '1' + '0'.repeat(k - 1), mayor = String(base - 1).repeat(k), a = valor(menor, base), z = valor(mayor, base);
+          return {
+            enunciado: ['¿Cuántos números de ', `${k} cifras hay en base `, B, '?'],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden cuántos numerales distintos de ', `${k} cifras se pueden escribir en base `, B, '.'] },
+              { tipo: 'datos', texto: `En base ${base} las cifras van de 0 a ${base - 1}: hay ${base} cifras para elegir en cada lugar.` },
+              { tipo: 'regla', texto: 'La primera cifra no puede ser 0; las demás sí. Multiplico cuántas opciones tiene cada lugar.' },
+              { tipo: 'cuentas', texto: `La primera cifra tiene ${base - 1} ${base === 2 ? "opción" : "opciones"}, y ${k === 2 ? "la otra" : `cada una de las otras ${k - 1}`} tiene ${base}.`,
+                ecuacion: ['(', B, ` − 1) · ${base}${sup(k - 1)} = ${base - 1} · ${f(base ** (k - 1))} = `, { v: 'c-d', t: f(n) }] },
+              { tipo: 'sentido', texto: `De vuelta, contando de a hasta z: van de (${menor})${subi(base)} = ${f(a)} hasta (${mayor})${subi(base)} = ${f(z)}.`,
+                ecuacion: [`${f(z)} − ${f(a)} + 1 = `, { v: 'c-d', t: f(z - a + 1) }] },
+            ],
+            respuesta: ['Hay ', { v: 'c-d', t: f(n) }, ` números de ${k} cifras.`],
+          };
+        }
+        const P = q.ent(110, 600), bl = bloques(P), t = totalCifras(P);
+        return {
+          enunciado: `¿Cuántas cifras se usan para numerar las páginas de un libro de 1 a ${P}?`,
+          dibujo: { datos: tablaBloques(P, 0), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuántas cifras se escriben en total al numerar de la página 1 a la ${P}.` },
+            { tipo: 'datos', texto: `La última página, ${P}, tiene tres cifras. Entonces hay páginas de una, de dos y de tres cifras.` },
+            { tipo: 'regla', texto: 'Separo las páginas en bloques según cuántas cifras tienen. En cada bloque multiplico cuántas páginas hay por las cifras de cada una.' },
+            { tipo: 'cuentas', texto: bl.map(x => `de ${x.a} a ${x.z} hay ${x.cuantos}`).join('; ').replace(/^d/, 'D') + '.',
+              ecuacion: [bl.map(x => `${x.cuantos}·${x.k}`).join(' + '), ' = ', bl.map(x => f(x.cifras)).join(' + '), ' = ', { v: 'c-d', t: f(t) }],
+              dibujo: { datos: tablaBloques(P), estado: {} } },
+            { tipo: 'sentido', texto: `Si todas tuvieran tres cifras serían 3 · ${P} = ${f(3 * P)}. Da menos porque las 99 primeras gastan menos. Cuadra.` },
+          ],
+          respuesta: ['Se usan ', { v: 'c-d', t: f(t) }, ' cifras.'],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'arit-tabla',
@@ -575,7 +764,7 @@
       },
       {
         id: 'libros-largos', titulo: 'Libros largos', pieza: 'arit-tiras',
-        consigna: 'Libros de hasta 1500 páginas. Arrastra el final del libro y mira el bloque de cuatro cifras.',
+        consigna: 'Libros de hasta 1500 páginas. Arrastra el final de la tira de páginas y mira el bloque de cuatro cifras.',
         controles: [{ id: 'P', etiqueta: 'Última página', min: 5, max: 1500, paso: 5, inicio: 1200, decimales: 0 }],
         dibujo: v => ({ datos: tirasPaginas(v.P, 4900), estado: {} }),
         lectura: v => [`De 1 a ${v.P}: `, { v: 'c-d', t: String(totalCifras(v.P)) }, ' cifras'],
