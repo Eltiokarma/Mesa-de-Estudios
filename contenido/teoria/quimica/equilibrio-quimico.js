@@ -82,6 +82,16 @@
     titulo: 'Equilibrio: dos rapideces iguales',
     temas: ['Reacciones reversibles y equilibrio dinámico'],
     pieza: 'ejes',
+    // Lee (fase 2): contexto y vocabulario. No dice cómo quedan las concentraciones (eso pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Ida y vuelta', texto: 'El amoniaco de los abonos que llegan a las chacras del altiplano se fabrica con una reacción que va en los dos sentidos: parte del amoniaco vuelve a separarse. Es una reacción reversible.',
+          ecuacion: ['N₂ + 3 H₂ ⇌ 2 NH₃'] },
+        { titulo: 'Dos rapideces', texto: 'En A ⇌ B hay dos sentidos. La rapidez directa cuenta cuánto A pasa a B en cada minuto; la inversa, cuánto B vuelve a A. Cada una depende de cuánto hay de lo que reacciona.',
+          ecuacion: [{ sub: [r, 'directa'] }, ': A → B', '   ·   ', { sub: [r, 'inversa'] }, ': B → A'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, el tiempo corre solo desde que hay puro A. Fíjate en los dos números de rapidez de la lectura: ¿qué les pasa mientras avanzan los minutos?' },
+      ],
+    },
     juega: {
       consigna: 'A ⇌ B empieza solo con A y avanza sola (10 min en 5 s). Compara la rapidez directa (A → B) con la inversa (B → A).',
       voz: 'Mira las dos rapideces, no solo las curvas.',
@@ -124,6 +134,24 @@
       ecuacion: [{ llave: [{ sub: [r, 'directa'] }], nota: 'A → B', color: 'c-h' }, ' = ', { llave: [{ sub: [r, 'inversa'] }], nota: 'B → A', color: 'c-h' }],
       condicion: 'en un sistema cerrado y a temperatura constante; se llega igual empezando desde los reactivos o desde los productos.',
       voz: 'Quieto por fuera, en movimiento por dentro.',
+    },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (las mismas cuentas), con otra semilla.
+    resuelve: {
+      generar(s) {
+        const R = azar(s + 900), k = R.de([1, 2, 3, 4, 9]), c0 = fijo(R.ent(2, 10) * 0.1, 1), b = c0 * k / (1 + k), a = c0 - b;
+        return {
+          enunciado: ['En A ⇌ B, ', K, ` = ${f(k, 0)}. Empiezas solo con A, a ${f(c0, 1)} mol/L. ¿Cuánto vale `, cc('B'), ' en el equilibrio?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', cc('B'), ' cuando la mezcla ya llegó al equilibrio.'] },
+            { tipo: 'datos', texto: [`Al inicio hay ${f(c0, 1)} mol/L de A y nada de B. La constante es `, K, ` = ${f(k, 0)}.`], ecuacion: [cc('A'), ' + ', cc('B'), ` = ${f(c0, 1)} mol/L`] },
+            { tipo: 'regla', texto: ['En el equilibrio, B entre A da siempre K. Y lo que A pierde lo gana B: la suma no cambia.'], ecuacion: [K, ' = ', { frac: [cc('B'), cc('A')] }, '   →   ', cc('B'), ' = ', K, ' · ', cc('A')] },
+            { tipo: 'cuentas', texto: ['Reemplazo ', cc('B'), ' en la suma: A más ', K, ' veces A da lo que había al inicio.'],
+              ecuacion: [cc('A'), ` = ${f(c0, 1)} / ${f(1 + k, 0)} = ${f(a, 3)}   →   `, cc('B'), ` = ${f(k, 0)} · ${f(a, 3)} = ${f(b, 3)} mol/L`] },
+            { tipo: 'sentido', texto: ['Compruebo: la suma da lo del inicio y el cociente da K. Queda algo de A: no se acabó.'], ecuacion: [`${f(a, 3)} + ${f(b, 3)} = ${f(a + b, 1)}   ·   ${f(b, 3)} / ${f(a, 3)} = ${f(b / a, 0)}`] },
+          ],
+          respuesta: [cc('B'), ` = ${f(b, 3)} mol/L`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Escribe K con las concentraciones de equilibrio.',
@@ -173,6 +201,17 @@
     titulo: 'La constante: Kc y Kp',
     temas: ['Kc y Kp'],
     pieza: 'quim-particulas',
+    // Lee: corchetes, K y presiones. No dice cómo se pasa de Kc a Kp (eso pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'El gas pardo', texto: 'El NO₂ es el gas pardo que se forma con el humo de los tubos de escape y tiñe el aire de las ciudades con mucho tráfico. Dos NO₂ pueden juntarse en un N₂O₄, que no tiene color.',
+          ecuacion: ['2 NO₂ ⇌ N₂O₄'] },
+        { titulo: 'Los corchetes', texto: 'Una concentración en mol/L se escribe entre corchetes: [NO₂] se lee «concentración de NO₂». En el juego, cada bolita vale 0,1 mol/L.',
+          ecuacion: [cc('NO₂'), ' = 0,3 mol/L'] },
+        { titulo: 'Concentración o presión', texto: 'Con gases, también se puede decir cuánto hay con su presión parcial, en atmósferas. Por eso hay dos constantes: Kc, con concentraciones, y Kp, con presiones parciales.' },
+        { titulo: 'Qué mirar', texto: 'Cada mezcla llega sola a su equilibrio, con concentraciones distintas. Compara la cuenta de la lectura en las tres mezclas y fíjate qué hace el exponente 2.' },
+      ],
+    },
     juega: {
       consigna: 'Cada mezcla empieza solo con NO₂ y llega sola al equilibrio de 2 NO₂ ⇌ N₂O₄ (12 min en 5 s). Compara el cociente final.',
       voz: 'Prueba con y sin el exponente 2.',
@@ -213,6 +252,54 @@
       ecuacion: [{ llave: [Kp], nota: 'presiones', color: 'c-d' }, ' = ', { llave: [Kc], nota: 'en mol/L', color: 'c-d' }, ' · ', { sup: ['(RT)', 'Δn'] }],
       condicion: 'Δn: moles de gas de productos menos reactivos; R = 0,082 atm·L/(mol·K), T en kelvin. K solo cambia con T.',
       voz: 'Coeficientes como exponentes; sólidos fuera.',
+    },
+    // Así se resuelve: los tres tipos de «Ahora tú» (Kc del HI, Kc con sólidos, Kp desde Kc), con las mismas cuentas.
+    resuelve: {
+      generar(s) {
+        const R = azar(s + 900), tipo = s % 3;
+        if (tipo === 0) {
+          const h2 = fijo(R.ent(1, 5) * 0.1, 1), i2 = fijo(R.ent(1, 5) * 0.1, 1), hi = fijo(R.ent(4, 12) * 0.1, 1), k = hi * hi / (h2 * i2);
+          return {
+            enunciado: [`En H₂ + I₂ ⇌ 2 HI, en equilibrio: [H₂] = ${f(h2, 1)}, [I₂] = ${f(i2, 1)} y [HI] = ${f(hi, 1)} mol/L. ¿Cuánto vale `, Kc, '?'],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', Kc, ', la constante con concentraciones.'] },
+              { tipo: 'datos', texto: ['Tres concentraciones de equilibrio. El HI tiene coeficiente 2; el H₂ y el I₂, coeficiente 1.'], ecuacion: [cc('H₂'), ` = ${f(h2, 1)}   ·   `, cc('I₂'), ` = ${f(i2, 1)}   ·   `, cc('HI'), ` = ${f(hi, 1)}`] },
+              { tipo: 'regla', texto: ['Arriba van los productos y abajo los reactivos. Cada concentración sube a su coeficiente.'], ecuacion: [Kc, ' = ', { sup: [cc('HI'), '2'] }, ' / (', cc('H₂'), ' · ', cc('I₂'), ')'] },
+              { tipo: 'cuentas', texto: ['Elevo [HI] al cuadrado y divido entre el producto de los reactivos.'], ecuacion: [Kc, ` = ${f(hi * hi, 2)} / ${f(h2 * i2, 2)} = ${f(k, 2)}`] },
+              { tipo: 'sentido', texto: ['Aquí K no tiene unidades: mol²/L² arriba y abajo. De vuelta, K por los reactivos da [HI]².'], ecuacion: [`${f(k, 2)} · ${f(h2 * i2, 2)} = ${f(k * h2 * i2, 2)} = ${f(hi, 1)}²`] },
+            ],
+            respuesta: [Kc, ` = ${f(k, 2)}`],
+          };
+        }
+        if (tipo === 1) {
+          const co2 = fijo(R.ent(1, 9) * 0.01, 2), g = R.ent(5, 50);
+          return {
+            enunciado: [`En CaCO₃(s) ⇌ CaO(s) + CO₂(g), en equilibrio hay [CO₂] = ${f(co2, 2)} mol/L y ${f(g, 0)} g de cada sólido. ¿Cuánto vale `, Kc, '?'],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', Kc, ' de la descomposición del CaCO₃, la caliza.'] },
+              { tipo: 'datos', texto: [`Hay un gas, el CO₂, a ${f(co2, 2)} mol/L, y dos sólidos, con ${f(g, 0)} g de cada uno.`] },
+              { tipo: 'regla', texto: ['Los sólidos puros no entran en K: su concentración no cambia aunque haya más o menos gramos. Solo queda el gas.'], ecuacion: [Kc, ' = ', cc('CO₂')] },
+              { tipo: 'cuentas', texto: ['No hay nada que dividir: K es la concentración del CO₂.'], ecuacion: [Kc, ` = ${f(co2, 2)}`] },
+              { tipo: 'sentido', texto: [`Los ${f(g, 0)} g no aparecen en la cuenta. K queda con las unidades del CO₂, mol/L.`] },
+            ],
+            respuesta: [Kc, ` = ${f(co2, 2)} (en mol/L)`],
+          };
+        }
+        const T = R.de([300, 400, 500]), kcv = R.ent(2, 9);
+        const [prod, reac, eq] = R.de([[1, 2, '2 NO₂ ⇌ N₂O₄'], [2, 1, 'PCl₅ ⇌ PCl₃ + Cl₂'], [2, 4, 'N₂ + 3 H₂ ⇌ 2 NH₃']]), dn = prod - reac;
+        const rt = 0.082 * T, kp = kcv * rt ** dn, fk = x => (x >= 0.01 ? f(x, 3) : cien(x));
+        return {
+          enunciado: [`Para ${eq} (todos gases), `, Kc, ` = ${f(kcv, 0)} a ${f(T, 0)} K. ¿Cuánto vale `, Kp, '? (R = 0,082)'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', Kp, ', la constante con presiones parciales.'] },
+            { tipo: 'datos', texto: [Kc, ` = ${f(kcv, 0)} y T = ${f(T, 0)} K. A la derecha hay ${prod} ${prod === 1 ? 'mol' : 'moles'} de gas; a la izquierda, ${reac}.`] },
+            { tipo: 'regla', texto: ['De Kc a Kp se multiplica por RT elevado a Δn: los moles de gas de productos menos los de reactivos.'], ecuacion: [Kp, ' = ', Kc, ' · ', { sup: ['(RT)', 'Δn'] }] },
+            { tipo: 'cuentas', texto: ['Primero Δn y RT; después, la potencia.'], ecuacion: [`Δn = ${prod} − ${reac} = ${f(dn, 0)}   ·   RT = 0,082 · ${f(T, 0)} = ${f(rt, 1)}   →   `, Kp, ` = ${f(kcv, 0)} · `, { sup: [f(rt, 1), f(dn, 0)] }, ` = ${fk(kp)}`] },
+            { tipo: 'sentido', texto: [dn < 0 ? 'Δn es negativo: RT queda dividiendo, así que Kp sale menor que Kc. Cuadra.' : 'Δn es positivo: RT multiplica, así que Kp sale mayor que Kc. Cuadra.'], ecuacion: [Kp, ` = ${fk(kp)} ${kp < kcv ? '<' : '>'} `, Kc, ` = ${f(kcv, 0)}`] },
+          ],
+          respuesta: [Kp, ` = ${fk(kp)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Escribe primero la expresión de K.',
@@ -265,6 +352,16 @@
     titulo: 'El grado de reacción α',
     temas: ['Grado de reacción'],
     pieza: 'quim-particulas',
+    // Lee: α y la tabla. No dice qué pasa con el total de moléculas (eso pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'El color que avisa', texto: 'El N₂O₄ casi no tiene color y el NO₂ es pardo. Si una mezcla cerrada de los dos se oscurece al calentarla, es que más N₂O₄ se partió en NO₂.' },
+        { titulo: 'Qué fracción reacciona', texto: 'El grado de reacción α dice qué fracción del reactivo llegó a reaccionar. α = 0,2 quiere decir que reaccionó el 20 %; α = 1, que reaccionó todo.',
+          ecuacion: ['α = 0,2   →   20 %'] },
+        { titulo: 'Tres filas', texto: 'Para no perderse, se arma una tabla: lo que había al inicio, lo que cambió y lo que queda en el equilibrio, con una columna por sustancia.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, α sube y baja solo. Cuenta cuántas N₂O₄ quedan en la caja «Equilibrio» y cuántos NO₂ aparecen por cada una que se rompe.' },
+      ],
+    },
     juega: {
       consigna: 'Empiezas con 10 moléculas de N₂O₄ ⇌ 2 NO₂. La fracción α que se disocia sube y baja sola: cuenta qué hay en el equilibrio.',
       voz: 'Por cada una que se rompe, aparecen dos.',
@@ -309,6 +406,37 @@
       ecuacion: ['α = ', { frac: ['lo que reacciona', 'lo que había'] }],
       condicion: 'el cambio de cada especie sigue sus coeficientes; el número total de moléculas puede cambiar aunque los átomos se conserven.',
       voz: 'Inicio, cambio, equilibrio: una fila por especie.',
+    },
+    // Así se resuelve: los dos tipos de «Ahora tú» (Kc del PCl₅ con α y [NO₂] con α), con las mismas cuentas.
+    resuelve: {
+      generar(s) {
+        const R = azar(s + 900), c0 = fijo(R.ent(2, 20) * 0.1, 1), a = fijo(R.ent(1, 9) * 0.1, 1), x = c0 * a, queda = c0 * (1 - a);
+        if (s % 2) {
+          const k = c0 * a * a / (1 - a);
+          return {
+            enunciado: [`PCl₅ ⇌ PCl₃ + Cl₂ empieza con ${f(c0, 1)} mol/L de PCl₅ y se disocia con α = ${f(a, 1)}. ¿Cuánto vale `, Kc, '?'],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', Kc, '. No dan las concentraciones de equilibrio: hay que hallarlas primero.'] },
+              { tipo: 'datos', texto: [`Al inicio, c = ${f(c0, 1)} mol/L de PCl₅ y nada de productos. Se rompe la fracción α = ${f(a, 1)}.`] },
+              { tipo: 'regla', texto: ['Lo que reacciona es α por lo que había. El PCl₅ pierde eso y cada producto gana lo mismo, porque sus coeficientes son 1.'], ecuacion: ['PCl₅: c(1 − α)   ·   PCl₃: cα   ·   Cl₂: cα'] },
+              { tipo: 'cuentas', texto: ['Saco las tres concentraciones y las pongo en K.'], ecuacion: [`cα = ${f(c0, 1)} · ${f(a, 1)} = ${f(x, 2)}   ·   c(1 − α) = ${f(queda, 2)}   →   `, Kc, ` = ${f(x, 2)}² / ${f(queda, 2)} = ${f(k, 3)}`] },
+              { tipo: 'sentido', texto: ['Compruebo los átomos de P: lo que queda de PCl₅ más el PCl₃ formado da lo del inicio.'], ecuacion: [`${f(queda, 2)} + ${f(x, 2)} = ${f(queda + x, 1)} mol/L`] },
+            ],
+            respuesta: [Kc, ` = ${f(k, 3)}`],
+          };
+        }
+        return {
+          enunciado: [`N₂O₄ ⇌ 2 NO₂ empieza con ${f(c0, 1)} mol/L de N₂O₄ y se disocia con α = ${f(a, 1)}. ¿Cuánto vale [NO₂] en el equilibrio?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', cc('NO₂'), ' en el equilibrio.'] },
+            { tipo: 'datos', texto: [`Al inicio, c = ${f(c0, 1)} mol/L de N₂O₄ y nada de NO₂. Se rompe la fracción α = ${f(a, 1)}.`] },
+            { tipo: 'regla', texto: ['Lo que reacciona es α por lo que había. Cada N₂O₄ que se rompe da dos NO₂: el coeficiente 2 multiplica.'], ecuacion: ['N₂O₄: c(1 − α)   ·   NO₂: 2cα'] },
+            { tipo: 'cuentas', texto: ['Primero lo que reacciona; después, el doble.'], ecuacion: [`cα = ${f(c0, 1)} · ${f(a, 1)} = ${f(x, 2)}   →   `, cc('NO₂'), ` = 2 · ${f(x, 2)} = ${f(2 * x, 2)} mol/L`] },
+            { tipo: 'sentido', texto: ['Compruebo los átomos de N: dos por cada N₂O₄ que queda y uno por cada NO₂. Debe dar 2c.'], ecuacion: [`2 · ${f(queda, 2)} + ${f(2 * x, 2)} = ${f(2 * queda + 2 * x, 1)} = 2 · ${f(c0, 1)}`] },
+          ],
+          respuesta: [cc('NO₂'), ` = ${f(2 * x, 2)} mol/L`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Arma la tabla antes de reemplazar.',
@@ -374,11 +502,38 @@
     if (yaEn(x.q, x.k)) base.elementos = [{ tipo: 'punto', x: x.k, color: 'd', rotulo: `Q = K = ${f(x.k, 0)}`, fila: 2 }];
     return base;
   };
+  // Casos de «Ahora tú» y «Así se resuelve»: el sistema, el cambio y las concentraciones que quedan justo después
+  // (`tras`). Q se calcula de `tras` con la expresión de cada reacción; así las dos partes usan la misma cuenta.
+  const NO2 = { sis: '2 NO₂ ⇌ N₂O₄ (K = 10), con [NO₂] = 0,3 y [N₂O₄] = 0,9 mol/L', k: 10, r: 'no2' };
+  const HI = { sis: 'H₂ + I₂ ⇌ 2 HI (K = 4), con [H₂] = [I₂] = 0,5 y [HI] = 1 mol/L', k: 4, r: 'hi' };
+  const qLC = C => (C.r === 'no2' ? qDe(C.tras.no2, C.tras.n2o4) : C.tras.hi ** 2 / (C.tras.h2 * C.tras.i2));
+  const CASOS_LC = [
+    Object.assign({ acc: 'Añades NO₂ hasta 0,5 mol/L', tras: { no2: 0.5, n2o4: 0.9 } }, NO2),
+    Object.assign({ acc: 'Añades N₂O₄ hasta 1,5 mol/L', tras: { no2: 0.3, n2o4: 1.5 } }, NO2),
+    Object.assign({ acc: 'Agregas un catalizador', tras: { no2: 0.3, n2o4: 0.9 }, nota: 'El catalizador no cambia ninguna concentración.' }, NO2),
+    Object.assign({ acc: 'Reduces el volumen a la mitad', tras: { h2: 1, i2: 1, hi: 2 }, nota: 'Con la mitad del volumen, cada concentración se duplica.' }, HI),
+    Object.assign({ acc: 'Retiras HI hasta 0,5 mol/L', tras: { h2: 0.5, i2: 0.5, hi: 0.5 } }, HI),
+    Object.assign({ acc: 'Añades HI hasta 2 mol/L', tras: { h2: 0.5, i2: 0.5, hi: 2 } }, HI),
+    Object.assign({ acc: 'Duplicas el volumen', tras: { no2: 0.15, n2o4: 0.45 }, nota: 'Con el doble de volumen, cada concentración queda a la mitad.' }, NO2),
+  ].map(C => Object.assign(C, { q: qLC(C) }));
+  const dirLC = C => (Math.abs(C.q - C.k) < 1e-9 ? 'nada' : C.q < C.k ? 'prod' : 'reac');
+  const NOM_LC = { prod: 'Avanza hacia productos', reac: 'Retrocede hacia reactivos', nada: 'No se desplaza' };
+  const SI_LC = { prod: 'Avanzaría hacia productos si Q quedara menor que K.', reac: 'Retrocedería si Q quedara mayor que K.', nada: 'No se desplazaría si Q siguiera igual a K.' };
   const chatelier = {
     id: 'le-chatelier',
     titulo: 'Le Chatelier: compara Q con K',
     temas: ['Principio de Le Chatelier'],
     pieza: 'recta',
+    // Lee: Q, un equilibrio cercano (la sangre en la altura) y qué mirar. No habla de gases inertes ni de presión total
+    // (eso pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un equilibrio en la sangre', texto: 'En la sangre, la hemoglobina se une al oxígeno en un equilibrio. En Juliaca, a 3800 m, el aire trae menos oxígeno y ese equilibrio cambia: por eso al llegar uno se cansa más rápido.' },
+        { titulo: 'El cociente de este momento', texto: 'Q es la misma cuenta que K, pero con las concentraciones que hay ahora. Cuando la mezcla está en equilibrio, Q vale lo mismo que K.',
+          ecuacion: [Q, ' = ', { frac: [cc('N₂O₄'), { sup: [cc('NO₂'), '2'] }] }] },
+        { titulo: 'Qué mirar', texto: 'En el juego, elige un cambio y mira la recta: el punto naranja es Q y el verde es K. Fíjate de qué lado de K cae Q y hacia dónde viaja.' },
+      ],
+    },
     juega: {
       consigna: 'Equilibrio 2 NO₂ ⇌ N₂O₄ (0,3 y 0,9 mol/L, exotérmica). Elige un cambio: Q o K saltan y, en cámara rápida, Q vuelve hasta K.',
       voz: 'La flecha va de Q hacia K. Eso dice hacia dónde avanza.',
@@ -430,25 +585,43 @@
       condicion: 'un gas inerte a volumen fijo no cambia Q; el catalizador acelera la llegada al equilibrio sin cambiar K.',
       voz: 'El sistema no decide nada: lo dice la comparación.',
     },
+    // Así se resuelve: los mismos casos de «Ahora tú» (CASOS_LC, con Q calculado de las concentraciones de después),
+    // corridos 900 lugares para que el caso de la misma semilla no sea el de «Ahora tú». La recta, como en su solución.
+    resuelve: {
+      pieza: 'recta',
+      generar(s) {
+        const C = CASOS_LC[(s + 900) % CASOS_LC.length], dir = dirLC(C), t = C.tras;
+        const signo = dir === 'nada' ? '=' : dir === 'prod' ? '<' : '>';
+        const ahora = C.r === 'no2' ? [cc('NO₂'), ` = ${f(t.no2, 2)}   ·   `, cc('N₂O₄'), ` = ${f(t.n2o4, 2)}`]
+          : [cc('H₂'), ` = ${f(t.h2, 2)}   ·   `, cc('I₂'), ` = ${f(t.i2, 2)}   ·   `, cc('HI'), ` = ${f(t.hi, 2)}`];
+        const cuenta = C.r === 'no2' ? [Q, ` = ${f(t.n2o4, 2)} / ${f(t.no2, 2)}² = ${f(C.q, 2)}`]
+          : [Q, ` = ${f(t.hi, 2)}² / (${f(t.h2, 2)} · ${f(t.i2, 2)}) = ${f(C.q, 2)}`];
+        const vuelve = { prod: `Al avanzar hacia productos, Q sube hasta llegar a K = ${f(C.k, 0)}. La flecha de la recta va de Q hacia K.`,
+          reac: `Al retroceder hacia reactivos, Q baja hasta llegar a K = ${f(C.k, 0)}. La flecha de la recta va de Q hacia K.`,
+          nada: 'Q ya es igual a K: no hay nada que corregir y las concentraciones se quedan como están.' }[dir];
+        return {
+          enunciado: `${C.sis}. ${C.acc}. ¿Hacia dónde evoluciona la mezcla?`,
+          dibujo: { datos: rectaQK(C.k, C.k, { elementos: [{ tipo: 'punto', x: C.k, color: 'd', rotulo: `K = ${f(C.k, 0)}`, fila: 2 }] }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden hacia dónde se mueve la mezcla después del cambio: hacia productos, hacia reactivos o a ningún lado.' },
+            { tipo: 'datos', texto: [K, ` = ${f(C.k, 0)}. ${C.nota || 'Justo después del cambio, las concentraciones son estas.'}`], ecuacion: ahora },
+            { tipo: 'regla', texto: 'Calculo Q con las concentraciones de ahora y lo comparo con K. Si Q es menor, faltan productos; si es mayor, sobran; si es igual, nada cambia.' },
+            { tipo: 'cuentas', texto: ['Productos arriba, reactivos abajo, con sus exponentes. Después, comparo con ', K, '.'], ecuacion: [...cuenta, `   ${signo}   `, K, ` = ${f(C.k, 0)}`],
+              dibujo: { datos: rectaQK(Math.min(25, C.q), C.k), estado: {} } },
+            { tipo: 'sentido', texto: vuelve },
+          ],
+          respuesta: [NOM_LC[dir], ': ', Q, ` ${signo} `, K],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'recta',
       voz: 'Calcula Q después del cambio y compáralo con K.',
       generar(s) {
-        const CASOS = [
-          { sis: '2 NO₂ ⇌ N₂O₄ (K = 10), con [NO₂] = 0,3 y [N₂O₄] = 0,9 mol/L', acc: 'Añades NO₂ hasta 0,5 mol/L', q: qDe(0.5, 0.9), k: 10 },
-          { sis: '2 NO₂ ⇌ N₂O₄ (K = 10), con [NO₂] = 0,3 y [N₂O₄] = 0,9 mol/L', acc: 'Añades N₂O₄ hasta 1,5 mol/L', q: qDe(0.3, 1.5), k: 10 },
-          { sis: '2 NO₂ ⇌ N₂O₄ (K = 10), con [NO₂] = 0,3 y [N₂O₄] = 0,9 mol/L', acc: 'Agregas un catalizador', q: 10, k: 10 },
-          { sis: 'H₂ + I₂ ⇌ 2 HI (K = 4), con [H₂] = [I₂] = 0,5 y [HI] = 1 mol/L', acc: 'Reduces el volumen a la mitad', q: 4, k: 4 },
-          { sis: 'H₂ + I₂ ⇌ 2 HI (K = 4), con [H₂] = [I₂] = 0,5 y [HI] = 1 mol/L', acc: 'Retiras HI hasta 0,5 mol/L', q: 0.25 / 0.25, k: 4 },
-          { sis: 'H₂ + I₂ ⇌ 2 HI (K = 4), con [H₂] = [I₂] = 0,5 y [HI] = 1 mol/L', acc: 'Añades HI hasta 2 mol/L', q: 4 / 0.25, k: 4 },
-          { sis: '2 NO₂ ⇌ N₂O₄ (K = 10), con [NO₂] = 0,3 y [N₂O₄] = 0,9 mol/L', acc: 'Duplicas el volumen', q: qDe(0.15, 0.45), k: 10 },
-        ];
-        const C = CASOS[s % CASOS.length], dir = Math.abs(C.q - C.k) < 1e-9 ? 'nada' : C.q < C.k ? 'prod' : 'reac';
-        const nom = { prod: 'Avanza hacia productos', reac: 'Retrocede hacia reactivos', nada: 'No se desplaza' };
-        const si = { prod: 'Avanzaría hacia productos si Q quedara menor que K.', reac: 'Retrocedería si Q quedara mayor que K.', nada: 'No se desplazaría si Q siguiera igual a K.' };
+        const C = CASOS_LC[s % CASOS_LC.length], dir = dirLC(C);
         return {
           pregunta: `${C.sis}. ${C.acc}. ¿Hacia dónde evoluciona la mezcla?`,
-          opciones: Object.keys(nom).map(k => (k === dir ? { id: 'c', texto: nom[k], correcta: true } : { id: k, texto: nom[k], error: k === 'nada' ? 'EQ14' : 'QM-QK', siFuera: si[k] })),
+          opciones: Object.keys(NOM_LC).map(k => (k === dir ? { id: 'c', texto: NOM_LC[k], correcta: true } : { id: k, texto: NOM_LC[k], error: k === 'nada' ? 'EQ14' : 'QM-QK', siFuera: SI_LC[k] })),
           solucion: { texto: `Después del cambio, Q = ${f(C.q, 2)} y K = ${f(C.k, 0)}.`, ecuacion: [Q, ` = ${f(C.q, 2)} ${dir === 'nada' ? '=' : dir === 'prod' ? '<' : '>'} `, K, ` = ${f(C.k, 0)}`], dibujo: { datos: rectaQK(Math.min(25, C.q), C.k), estado: {} } },
         };
       },
@@ -524,6 +697,8 @@
       { termino: 'principio de Le Châtelier', formas: ['principio de Le Châtelier', 'Le Châtelier'],
         def: 'Si se altera un equilibrio, la mezcla se desplaza en el sentido que contrarresta, en parte, ese cambio.',
         ver: ['cociente de reacción'] },
+      { termino: 'hemoglobina', def: 'Proteína de la sangre que se une al oxígeno en los pulmones y lo suelta en el resto del cuerpo.',
+        ver: ['equilibrio químico'] },
     ],
     // Laboratorio (docs/teoria.md §4b): mesas sin preguntas. La primera deja armar cualquier mezcla de NO₂ y N₂O₄ (y
     // calentar): el punto Q se arrastra por la recta y, desde la 0.2.0, la mezcla viaja sola hasta K. La segunda cambia las dos
