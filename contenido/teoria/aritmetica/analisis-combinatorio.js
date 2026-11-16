@@ -92,6 +92,14 @@
     titulo: '«Y» multiplica, «o» suma',
     temas: ['Principios de adición y multiplicación'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): contexto y qué mirar, sin decir qué cuenta va con cada palabra (eso se descubre en Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Contar sin listar', texto: 'En un restaurante de Juliaca, el menú trae una entrada y un segundo. Escribir todos los menús posibles cansa. En esta unidad aprendes a contarlos sin escribirlos uno por uno.' },
+        { titulo: 'Lee cómo está dicho', texto: 'Los problemas de conteo usan palabras pequeñas con mucho peso, como «y» y «o». Antes de contar, fíjate qué palabra une las opciones y cuántas cosas se eligen.' },
+        { titulo: 'Qué mirar', texto: 'En la tabla, cada fila es una entrada y cada columna, un segundo. Cada punto verde es un menú distinto. Cambia los números y cuenta los puntos.' },
+      ],
+    },
     juega: {
       consigna: 'Un menú tiene una entrada y un segundo. Elige cuántos hay de cada uno: cada punto es un menú distinto.',
       voz: 'Cuenta los puntos: filas por columnas.',
@@ -141,6 +149,40 @@
       ecuacion: ['«y»: m · k', '   ·   ', '«o»: m + k'],
       condicion: 'en «o», ninguna opción está en los dos grupos; si alguna se repite, se resta. En «y», las etapas son independientes.',
     },
+    // Así se resuelve (fase 2): los mismos tres tipos de «Ahora tú» (caminos, plato, uniforme), con otras semillas.
+    resuelve: {
+      pieza: 'arit-fichas',
+      generar(s) {
+        const r = azar(s + 900), m = r.ent(2, 7), k = r.ent(2, 6), t = r.ent(2, 4), tipo = s % 3;
+        if (tipo === 2) return {
+          enunciado: `Un uniforme lleva un polo (${m} colores), un short (${k} colores) y unas medias (${t} colores). ¿Cuántos uniformes distintos hay?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden cuántos uniformes distintos se pueden armar.' },
+            { tipo: 'datos', texto: `Hay ${m} colores de polo, ${k} de short y ${t} de medias.` },
+            { tipo: 'regla', texto: 'Un uniforme lleva un polo, un short y unas medias: son tres etapas seguidas. Las etapas seguidas multiplican sus formas.' },
+            { tipo: 'cuentas', texto: 'Cada polo va con cada short, y cada pareja va con cada color de medias.', ecuacion: [`${m} · ${k} · ${t} = ${f(m * k * t)}`] },
+            { tipo: 'sentido', texto: `Con un solo polo habría ${k} · ${t} = ${f(k * t)} uniformes. Con ${m} polos hay ${m} veces más: ${m} · ${f(k * t)} = ${f(m * k * t)}.` },
+          ],
+          respuesta: `${f(m * k * t)} uniformes distintos`,
+        };
+        const y = tipo === 0, total = y ? m * k : m + k;
+        return {
+          enunciado: y ? `Hay ${m} caminos de A a B y ${k} de B a C. ¿De cuántas formas se va de A a C pasando por B?` : `Para el almuerzo eliges un plato: ${m} de carne o ${k} vegetarianos. ¿Cuántas opciones tienes?`,
+          dibujo: { datos: dos(m, k, [String(m), String(k)]), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: y ? 'Piden cuántos recorridos distintos hay de A a C.' : 'Piden cuántos platos distintos puedes elegir.' },
+            { tipo: 'datos', texto: y ? `${m} caminos en el primer tramo y ${k} en el segundo. Se recorren los dos tramos.` : `${m} platos de carne y ${k} vegetarianos. Se come un solo plato.` },
+            { tipo: 'regla', texto: y ? 'Ir de A a B y después de B a C son dos etapas seguidas: sus formas se multiplican.' : 'Elijo una sola cosa entre dos grupos que no comparten platos: sus formas se suman.' },
+            y
+              ? { tipo: 'cuentas', texto: 'Cada camino del primer tramo sigue con cada camino del segundo.', ecuacion: [`${m} · ${k} = ${f(total)}`],
+                dibujo: { datos: { bloques: [{ n: m * k, columnas: k, color: 'd', rotulo: `${m} · ${k}`, marcoFilas: true }], ficha: 22, altoMax: 160 }, estado: {} } }
+              : { tipo: 'cuentas', texto: 'Junto los dos grupos de platos en una sola lista.', ecuacion: [`${m} + ${k} = ${f(total)}`] },
+            { tipo: 'sentido', texto: y ? `Con un solo camino de A a B habría ${k} recorridos. Con ${m} caminos hay ${m} veces más: ${f(total)}.` : `Cada plato se cuenta una vez. No son ${f(m * k)}: eso sería comer uno de carne y también uno vegetariano.` },
+          ],
+          respuesta: y ? `${f(total)} formas de ir de A a C` : `${f(total)} opciones de plato`,
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'arit-fichas',
       generar(s) {
@@ -186,6 +228,13 @@
     titulo: 'Cada puesto, una opción menos',
     temas: ['Factorial', 'Variaciones', 'Permutaciones lineales y circulares'],
     pieza: 'arit-tabla',
+    lee: {
+      tarjetas: [
+        { titulo: 'Puestos con orden', texto: 'En un concurso de matemática en Puno, quedar primero no es lo mismo que quedar segundo. Cuando los puestos tienen orden, cambiar de lugar a dos personas da otro resultado.' },
+        { titulo: '¿Se puede repetir?', texto: 'Una persona no puede ocupar dos puestos a la vez. En cambio, en la clave de un celular el mismo dígito sí puede aparecer dos veces. Antes de contar, pregúntate si se repite.' },
+        { titulo: 'Qué mirar', texto: 'En la tabla, cada columna es un puesto y debajo está cuántas opciones le quedan. Agrega puestos y mira cómo cambia ese número de un puesto al siguiente.' },
+      ],
+    },
     juega: {
       consigna: 'Hay n personas distintas y r puestos en fila. Mira cuántas opciones quedan para cada puesto.',
       voz: 'Quien ya se sentó no vuelve a estar disponible.',
@@ -223,6 +272,42 @@
       texto: 'Ordenar r de n objetos distintos da n(n − 1)… con r factores: es la variación. Si se ordenan todos, es una permutación: n factorial.',
       ecuacion: [{ sub: ['V', [N, ',', R]] }, ' = ', { frac: [[N, '!'], [{ llave: ['(', N, ' − ', R, ')!'], nota: 'los que sobran' }]] }, '   ·   ', { sub: ['P', N] }, ' = ', N, '!'],
       condicion: 'objetos distintos, sin repetir y el orden importa. 0! = 1. Si se puede repetir, cada puesto tiene n opciones: nʳ.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(5, 9), k = r.ent(2, 4);
+        if (s % 3 === 2) {
+          const d = r.de([3, 4]), total = 10 ** d;
+          return {
+            enunciado: `¿Cuántas claves de ${d} dígitos (del 0 al 9) hay si los dígitos se pueden repetir?`,
+            dibujo: { datos: casilleros(10, d, true), estado: { paso: 0 } },
+            pasos: [
+              { tipo: 'pide', texto: `Piden cuántas claves distintas de ${d} dígitos hay.` },
+              { tipo: 'datos', texto: [`La clave tiene ${d} casilleros. Cada uno puede ser cualquier dígito del 0 al 9: `, N, ' = 10 opciones.'] },
+              { tipo: 'regla', texto: 'Los casilleros se llenan uno tras otro, así que sus opciones se multiplican. Como se puede repetir, ningún casillero pierde opciones.' },
+              { tipo: 'cuentas', texto: `Son ${d} casilleros con 10 opciones cada uno.`, ecuacion: [Array(d).fill('10').join(' · '), ' = ', { sup: ['10', String(d)] }, ` = ${f(total)}`],
+                dibujo: { datos: casilleros(10, d, true), estado: { paso: d } } },
+              { tipo: 'sentido', texto: `Las claves van de ${'0'.repeat(d)} a ${'9'.repeat(d)}: son los números de 0 a ${f(total - 1)}, justo ${f(total)}.` },
+            ],
+            respuesta: `${f(total)} claves`,
+          };
+        }
+        const premio = k === 2 ? 'el 1.º y el 2.º puesto' : k === 3 ? 'oro, plata y bronce' : 'los 4 primeros puestos';
+        const factores = Array.from({ length: k }, (_, j) => n - j).join(' · ');
+        return {
+          enunciado: `En un concurso con ${n} participantes, ¿de cuántas formas se reparten ${premio}?`,
+          dibujo: { datos: casilleros(n, k), estado: { paso: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: `Piden de cuántas formas se reparten ${k} puestos distintos.` },
+            { tipo: 'datos', texto: [N, ` = ${n} participantes y `, R, ` = ${k} puestos. Nadie gana dos puestos.`] },
+            { tipo: 'regla', texto: 'Lleno los puestos en orden. El primero tiene todas las opciones; cada puesto siguiente tiene una menos, porque quien ya ganó no vuelve a contar.' },
+            { tipo: 'cuentas', texto: `${k} casilleros, de ${n} opciones para abajo.`, ecuacion: [{ sub: ['V', [N, ',', R]] }, ` = ${factores} = ${f(V(n, k))}`],
+              dibujo: { datos: casilleros(n, k), estado: { paso: k } } },
+            { tipo: 'sentido', texto: `Es menos que ${n} elevado a ${k}, ${f(n ** k)}, que dejaría a alguien ganar dos puestos. Cuadra.` },
+          ],
+          respuesta: `${f(V(n, k))} formas`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -267,8 +352,15 @@
     titulo: 'En ronda, girar no cambia nada',
     temas: ['Permutaciones lineales y circulares'],
     pieza: 'arit-tabla',
+    lee: {
+      tarjetas: [
+        { titulo: 'Una mesa redonda', texto: 'En un almuerzo familiar, todos se sientan alrededor de una mesa redonda. Ahí no hay cabecera ni primer asiento: lo que se nota es quién queda al lado de quién.' },
+        { titulo: 'Fila o ronda', texto: 'En una banca del parque sí hay una punta izquierda y una derecha. Por eso sentarse en fila y sentarse en ronda son dos problemas distintos, aunque sean las mismas personas.' },
+        { titulo: 'Qué mirar', texto: 'En la tabla, cada letra es una persona y cada columna, una silla. Cada fila corre a todos una silla. Fíjate si alguien cambia de vecinos.' },
+      ],
+    },
     juega: {
-      consigna: 'n amigos se sientan en una mesa redonda. Cada fila corre a todos una silla: los vecinos de cada uno no cambian.',
+      consigna: 'Las letras son n amigos en una mesa redonda. Cada fila corre a todos una silla: los vecinos de cada uno no cambian.',
       voz: 'Fíjate: todas las filas son la misma ronda.',
       controles: [{ id: 'n', etiqueta: 'n', color: 'c-o', min: 3, max: 5, paso: 1, inicio: 4, decimales: 0 }],
       dibujo: v => ({ datos: giros(v.n), estado: {} }),
@@ -304,6 +396,28 @@
       ecuacion: [{ sub: ['P', ['c', '(', N, ')']] }, ' = ', { llave: ['(', N, ' − 1)!'], nota: 'los demás en fila', color: 'c-o' }],
       condicion: 'personas distintas y solo los giros se toman como iguales. Si también reflejar es igual (un collar), se divide entre 2.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(4, 8), ronda = s % 3 !== 2;
+        const fila = fact(n), mesa = fact(n - 1);
+        const factores = j => Array.from({ length: j }, (_, i) => j - i).join(' · ');
+        return {
+          enunciado: ronda ? `¿De cuántas formas se sientan ${n} personas alrededor de una mesa redonda?` : `¿De cuántas formas se sientan ${n} personas en una banca de ${n} asientos?`,
+          dibujo: { datos: giros(Math.min(n, 5)), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ronda ? `Piden cuántas rondas distintas forman ${n} personas.` : `Piden de cuántas formas se ordenan ${n} personas en la banca.` },
+            { tipo: 'datos', texto: ronda ? [N, ` = ${n} personas distintas en una mesa redonda: no hay primer asiento.`] : [N, ` = ${n} personas distintas y ${n} asientos: la banca tiene una punta.`] },
+            { tipo: 'regla', texto: ronda ? 'Si todos se corren una silla, la ronda es la misma. Por eso fijo a una persona en su silla y ordeno a las demás en fila.' : 'En la banca, correr a todos un asiento cambia quién está en la punta. Es una fila: se ordenan todos.' },
+            ronda
+              ? { tipo: 'cuentas', texto: `Fijo a A y ordeno a las otras ${n - 1}.`, ecuacion: [{ sub: ['P', ['c', '(', N, ')']] }, ` = (${n} − 1)! = ${factores(n - 1)} = ${f(mesa)}`],
+                dibujo: { datos: giros(Math.min(n, 5)), estado: { columna: 1 } } }
+              : { tipo: 'cuentas', texto: `Ordeno a las ${n} personas en los ${n} asientos.`, ecuacion: [`${n}! = ${factores(n)} = ${f(fila)}`] },
+            { tipo: 'sentido', texto: ronda ? `En fila serían ${n}! = ${f(fila)}. Cada ronda aparece ${n} veces girada: ${f(fila)} ÷ ${n} = ${f(fila / n)}. Cuadra.` : `Son ${n} veces más que en una mesa redonda, ${f(mesa)}: en la banca, cada giro cuenta aparte. ${n} · ${f(mesa)} = ${f(fila)}.` },
+          ],
+          respuesta: `${f(ronda ? mesa : fila)} formas`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), n = r.ent(4, 8), ronda = s % 3 !== 2;
@@ -337,6 +451,13 @@
     titulo: 'Letras iguales, palabras iguales',
     temas: ['Permutaciones con repetición'],
     pieza: 'arit-tabla',
+    lee: {
+      tarjetas: [
+        { titulo: 'Anagramas', texto: 'Con las letras de ROMA se escriben AMOR, MORA o RAMO. Cada orden que usa todas las letras de una palabra es un anagrama, tenga sentido o no.' },
+        { titulo: 'Letras gemelas', texto: 'En OSO hay dos letras O. Si cada una tuviera su color, podrías distinguirlas. Escritas iguales, nadie sabe cuál O está adelante y cuál atrás.' },
+        { titulo: 'Qué mirar', texto: 'La tabla muestra cada palabra distinta una sola vez. Compara cuántas salen con una palabra de letras distintas y con otra del mismo largo que repite una letra.' },
+      ],
+    },
     juega: {
       consigna: 'Elige una palabra y mira todos sus ordenamientos distintos. Compara las que repiten una letra con las que no.',
       voz: 'Compara SOL con OSO: mismo largo, distinta cuenta.',
@@ -370,6 +491,27 @@
       ecuacion: [{ frac: [[N, '!'], [{ llave: ['a! · b! ⋯'], nota: 'órdenes repetidos', color: 'c-h' }]] }],
       condicion: 'se usan todos los objetos y los iguales no se distinguen. Si todos son distintos, queda n!.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), pal = r.de(['PERU', 'PUNO', 'LLAMA', 'CUSCO', 'COCA', 'PAPAYA', 'TACNA', 'CALLAO', 'AMAZONAS', 'ARRAS']);
+        const rs = repes(pal), div = rs.reduce((x, k) => x * fact(k), 1), todos = fact(pal.length), bien = todos / div;
+        const cuantas = {}; for (const x of pal) cuantas[x] = (cuantas[x] || 0) + 1;
+        const iguales = Object.keys(cuantas).filter(x => cuantas[x] > 1).map(x => `${cuantas[x]} ${x}`);
+        const lista = iguales.length > 1 ? `${iguales.slice(0, -1).join(', ')} y ${iguales[iguales.length - 1]}` : iguales[0];
+        return {
+          enunciado: `¿Cuántas palabras distintas se forman con todas las letras de ${pal}?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuántos órdenes distintos de las letras de ${pal} hay, tengan sentido o no.` },
+            { tipo: 'datos', texto: rs.length ? [`${pal} tiene `, N, ` = ${pal.length} letras. Se repiten: ${lista}.`] : [`${pal} tiene `, N, ` = ${pal.length} letras, todas distintas.`] },
+            { tipo: 'regla', texto: rs.length ? ['Si las letras iguales fueran distintas, habría ', N, '! órdenes. Cambiar de lugar dos letras iguales no da otra palabra: divido entre los órdenes de cada grupo de iguales.'] : ['Si ninguna letra se repite, cada orden es una palabra distinta. Cuento los órdenes de todas las letras: ', N, '!.'] },
+            { tipo: 'cuentas', texto: rs.length ? `${f(todos)} órdenes entre ${f(div)}, las veces que se repite cada palabra.` : `Ordeno las ${pal.length} letras.`,
+              ecuacion: rs.length ? [{ frac: [`${pal.length}!`, rs.map(k => `${k}!`).join(' · ')] }, ' = ', { frac: [f(todos), f(div)] }, ` = ${f(bien)}`] : [`${pal.length}! = ${f(bien)}`] },
+            { tipo: 'sentido', texto: rs.length ? `Comprueba: ${f(bien)} palabras, cada una repetida ${f(div)} veces, dan ${f(bien * div)} órdenes. Cuadra.` : `Con letras distintas no hay nada que dividir: ${f(bien)} palabras.` },
+          ],
+          respuesta: `${f(bien)} palabras distintas`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), pal = r.de(['PERU', 'PUNO', 'LLAMA', 'CUSCO', 'COCA', 'PAPAYA', 'TACNA', 'CALLAO', 'AMAZONAS', 'ARRAS']);
@@ -401,6 +543,13 @@
     titulo: 'Elegir no es ordenar',
     temas: ['Combinaciones y números combinatorios'],
     pieza: 'arit-tabla',
+    lee: {
+      tarjetas: [
+        { titulo: 'Elegir un grupo', texto: 'Para la feria de ciencias de tu colegio en Juliaca, el profesor elige a algunos estudiantes del aula. Un grupo se nombra por quiénes están en él.' },
+        { titulo: 'Con cargo o sin cargo', texto: 'A veces cada elegido recibe un cargo, como presidente o tesorero. Otras veces todos van con el mismo encargo. Lee bien el problema para saber en cuál de los dos casos estás.' },
+        { titulo: 'Qué mirar', texto: 'En la tabla, cada fila es un grupo, escrito con letras. A su lado está cuántos órdenes distintos tiene ese grupo. Cambia cuántos se eligen y mira esa columna.' },
+      ],
+    },
     juega: {
       consigna: 'De n amigos se elige un grupo de r, sin cargos. Cada fila es un grupo; al lado, cuántos órdenes junta.',
       voz: 'Un grupo es el mismo, lo nombres en el orden que sea.',
@@ -436,6 +585,25 @@
       texto: 'Una combinación es un grupo sin orden. Se cuentan los órdenes y se divide entre los r! de cada grupo: da el número combinatorio.',
       ecuacion: [{ sub: ['C', [N, ',', R]] }, ' = ', { frac: [[N, '!'], [{ llave: [R, '!'], nota: 'por grupo', color: 'c-h' }, ' (', N, ' − ', R, ')!']] }, '   ·   ', { sub: ['C', [N, ',', R]] }, ' = ', { sub: ['C', [N, ',', N, ' − ', R]] }],
       condicion: 'objetos distintos y el orden no importa. Si los puestos tienen roles distintos, no se divide: es una variación.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(5, 10), k = r.ent(2, 4), cargos = s % 3 === 1;
+        const ord = V(n, k), grupos = C(n, k), factores = Array.from({ length: k }, (_, j) => n - j).join(' · ');
+        return {
+          enunciado: cargos ? `De ${n} postulantes se eligen ${k} para ${k} cargos distintos. ¿De cuántas formas?` : `De ${n} postulantes se elige una comisión de ${k}, sin cargos. ¿De cuántas formas?`,
+          pasos: [
+            { tipo: 'pide', texto: cargos ? `Piden de cuántas formas se reparten ${k} cargos distintos entre ${n} personas.` : `Piden cuántas comisiones distintas de ${k} personas hay.` },
+            { tipo: 'datos', texto: [N, ` = ${n} postulantes, `, R, ` = ${k} elegidos. ${cargos ? 'Cada elegido tiene un cargo distinto.' : 'Todos tienen el mismo encargo.'}`] },
+            { tipo: 'regla', texto: cargos ? 'Con cargos, el orden importa: ser presidente no es ser tesorero. Cuento los órdenes, cada cargo con una opción menos.' : 'En una comisión el orden no importa. Cuento como si hubiera cargos y divido entre los órdenes de cada grupo.' },
+            cargos
+              ? { tipo: 'cuentas', texto: `${k} cargos, de ${n} opciones para abajo.`, ecuacion: [{ sub: ['V', [N, ',', R]] }, ` = ${factores} = ${f(ord)}`] }
+              : { tipo: 'cuentas', texto: `Con orden serían ${f(ord)}. Cada comisión aparece ${k}! = ${f(fact(k))} veces.`, ecuacion: [{ sub: ['C', [N, ',', R]] }, ' = ', { frac: [f(ord), `${k}!`] }, ` = ${f(grupos)}`] },
+            { tipo: 'sentido', texto: cargos ? `Sin cargos serían ${f(ord)} ÷ ${k}! = ${f(grupos)} comisiones. Con cargos hay más, porque cada grupo se reparte de ${f(fact(k))} formas.` : `Elegir a los ${k} que entran es elegir a los ${n - k} que se quedan: C(${n}, ${n - k}) también da ${f(C(n, n - k))}.` },
+          ],
+          respuesta: `${f(cargos ? ord : grupos)} formas`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -548,6 +716,8 @@
       { termino: 'permutación con repetición', formas: ['permutación con repetición', 'permutaciones con repetición'],
         def: 'Orden de objetos donde algunos son iguales: n! se divide entre el factorial de cada grupo de iguales.',
         ejemplo: 'Las letras de CASA: 4! ÷ 2! = 12 palabras.', ver: ['permutación', 'factorial'] },
+      { termino: 'anagrama', formas: ['anagrama', 'anagramas'], def: 'Palabra que sale al cambiar de orden todas las letras de otra, tenga sentido o no.',
+        ejemplo: 'AMOR y RAMO salen de las letras de ROMA.', ver: ['permutación con repetición'] },
       { termino: 'combinación', def: 'Grupo de r objetos elegidos entre n, sin importar el orden: A con B es igual a B con A.',
         ejemplo: 'Comisión de 2 entre 5 personas: 20 ÷ 2 = 10.', ver: ['variación', 'número combinatorio'] },
       { termino: 'independiente', formas: ['independiente', 'independientes'],

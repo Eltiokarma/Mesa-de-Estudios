@@ -82,6 +82,15 @@
     titulo: 'Cada porcentaje tiene una base',
     temas: ['Tanto por cuanto'],
     pieza: 'barra-porcentaje',
+    // Lee (fase 2): vocabulario y contexto; no dice cómo se halla qué porcentaje es una parte (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Por cada cien', texto: 'En una tienda de Juliaca ves el cartel «20 % menos». Por ciento quiere decir «por cada cien»: de cada S/ 100 del precio te quitan S/ 20. El símbolo % se lee «por ciento».' },
+        { titulo: 'De qué es', texto: 'Todo porcentaje se toma de una cantidad: esa es la base del porcentaje, y vale el 100 %. El 10 % de una propina y el 10 % del precio de una moto no son lo mismo.',
+          ecuacion: [B, ' = 100 %'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, la barra naranja es la base. Cambia la base sin tocar el porcentaje y mira cuánto mide el pedazo turquesa que se separa.' },
+      ],
+    },
     juega: {
       consigna: 'Elige la base del porcentaje (lo que vale 100 %) y el porcentaje. Mira qué pedazo de la barra se separa.',
       voz: 'Cambia la base sin tocar el porcentaje, y mira el pedazo.',
@@ -121,6 +130,57 @@
       texto: 'Un porcentaje siempre es de una base: p % de B es p centésimos de B. Para saber qué porcentaje es una parte, se divide entre la base.',
       ecuacion: [p, ' % de ', { llave: [B], nota: 'vale 100 %', color: 'c-o' }, ' = ', { frac: [p, '100'] }, ' · ', B, '   ·   ', p, ' = ', { frac: ['parte', B] }, ' · 100'],
       condicion: 'la base es la cantidad que vale 100 %; «a por cada b» es lo mismo que a/b de la base.',
+    },
+    // Así se resuelve (fase 2): los tres tipos de «Ahora tú», con otras semillas (azar(s + 900)).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3;
+        if (tipo === 0) {
+          const Bv = r.de([40, 60, 80, 120, 150, 200, 250, 300]), pv = r.de([5, 10, 15, 20, 25, 30, 40]);
+          const parte = Bv * pv / 100;
+          return {
+            enunciado: ['¿Cuánto es el ', { v: 'c-i', t: `${pv} %` }, ' de ', { v: 'c-o', t: sol(Bv) }, '?'],
+            dibujo: { datos: barra(Bv, [des(pv)]), estado: { corte: 0 } },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el pedazo que es el ', p, ` = ${pv} % de una base de ${sol(Bv)}.`] },
+              { tipo: 'datos', texto: ['La base vale el 100 %: es ', B, ` = ${sol(Bv)}. El porcentaje es `, p, ` = ${pv} %.`] },
+              { tipo: 'regla', texto: [`Un porcentaje se cuenta en centésimos de la base: ${pv} % quiere decir ${pv} de cada 100 partes de `, B, '.'], ecuacion: [p, ' % de ', B, ' = ', { frac: [p, '100'] }, ' · ', B] },
+              { tipo: 'cuentas', texto: 'Multiplico los centésimos por la base.', ecuacion: [{ frac: [String(pv), '100'] }, ` · ${f(Bv)} = ${sol(parte)}`], dibujo: { datos: barra(Bv, [des(pv)]), estado: { corte: 1 } } },
+              { tipo: 'sentido', texto: pv === 10 ? `Por otro camino: el 10 % es la décima parte, ${f(Bv)} ÷ 10 = ${f(parte)}. Cuadra.` : `Por otro camino: el 10 % es ${sol(Bv / 10)}, y ${pv} % es ${f(pv / 10)} veces eso: ${f(pv / 10)} · ${f(Bv / 10)} = ${f(parte)}. Cuadra.` },
+            ],
+            respuesta: [`${pv} % de ${sol(Bv)} = `, { v: 'c-i', t: sol(parte) }],
+          };
+        }
+        if (tipo === 1) {
+          const Bv = r.de([40, 50, 80, 120, 160, 200]), pv = r.de([10, 20, 25, 40, 50, 75]);
+          const parte = Bv * pv / 100;
+          return {
+            enunciado: ['Una parte de ', { v: 'c-i', t: sol(parte) }, ' sale de una base de ', { v: 'c-o', t: sol(Bv) }, '. ¿Qué porcentaje de la base es?'],
+            dibujo: { datos: barra(Bv, [des(pv)]), estado: { corte: 0 } },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden qué porcentaje ', p, ` de la base es la parte de ${sol(parte)}.`] },
+              { tipo: 'datos', texto: ['La base es ', B, ` = ${sol(Bv)}: vale el 100 %. La parte es ${sol(parte)}.`] },
+              { tipo: 'regla', texto: 'Para saber qué porcentaje es, comparo la parte con la base: divido la parte entre la base y lo paso a cientos.', ecuacion: [p, ' = ', { frac: ['parte', B] }, ' · 100'] },
+              { tipo: 'cuentas', texto: 'Divido y multiplico por 100.', ecuacion: [{ frac: [f(parte), f(Bv)] }, ` · 100 = ${f(pv)} %`], dibujo: { datos: barra(Bv, [des(pv)]), estado: { corte: 1 } } },
+              { tipo: 'sentido', texto: `De vuelta: el ${pv} % de ${sol(Bv)} es ${f(pv / 100)} · ${f(Bv)} = ${sol(parte)}, la parte del enunciado. Cuadra.` },
+            ],
+            respuesta: [p, ` = ${f(pv)} %`],
+          };
+        }
+        const b = r.de([4, 5, 8, 10, 20, 25]), a = r.ent(2, b - 1), grupos = r.ent(4, 12), Bv = b * grupos;
+        const parte = Bv * a / b;
+        return {
+          enunciado: [`De cada ${b} soles de una base de `, { v: 'c-o', t: sol(Bv) }, `, ${a} se separan. ¿Cuántos soles se separan?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden cuántos soles se separan de la base ', B, ` = ${sol(Bv)}.`] },
+            { tipo: 'datos', texto: `De cada ${b} soles se separan ${a}. La base es ${sol(Bv)}.` },
+            { tipo: 'regla', texto: `«${a} por cada ${b}» es un tanto por cuanto: la fracción ${a}/${b} de la base, como un porcentaje es «tanto por cada 100».`, ecuacion: [{ frac: [String(a), String(b)] }, ' · ', B] },
+            { tipo: 'cuentas', texto: `En ${sol(Bv)} hay ${grupos} grupos de ${b} soles; de cada grupo salen ${a}.`, ecuacion: [{ frac: [String(a), String(b)] }, ` · ${f(Bv)} = ${sol(parte)}`] },
+            { tipo: 'sentido', texto: `Comprueba: ${grupos} grupos por ${a} soles dan ${f(parte)}. Es menos que la base, porque ${a} es menos que ${b}.` },
+          ],
+          respuesta: `Se separan ${sol(parte)}.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -177,6 +237,15 @@
     titulo: 'El segundo muerde lo que quedó',
     temas: ['Aumentos y descuentos sucesivos'],
     pieza: 'barra-porcentaje',
+    // Lee: no dice sobre qué base cae el segundo descuento (eso se descubre al jugar y en Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos rebajas', texto: 'En las ferias de fin de temporada ves carteles como «20 % + 10 %». Son dos descuentos seguidos: primero se aplica uno y después el otro.' },
+        { titulo: 'Lo que pagas', texto: 'Quitar el 20 % de un precio es pagar el 80 % de ese precio. Por eso un descuento se puede escribir como una multiplicación: por 0,80.',
+          ecuacion: ['100 % − 20 % = 80 % → · 0,80'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, cada descuento deja su pedazo en una fila: turquesa el primero, rojo el segundo. La cota de arriba dice de qué base sale cada uno.' },
+      ],
+    },
     juega: {
       consigna: 'Un precio de S/ 200 recibe dos descuentos seguidos. Elige cada uno y mira qué base usa el segundo.',
       voz: 'Fíjate en la cota de arriba: es la base del segundo descuento.',
@@ -223,6 +292,29 @@
       ecuacion: [Pf, ' = ', { llave: [P0], nota: 'precio inicial', color: 'c-o' }, ' ', { llave: ['(1 − ', r1, ')(1 − ', r2, ')'], nota: 'factor por cambio', color: 'c-i' }],
       condicion: 'cada porcentaje se aplica sobre el resultado anterior. El orden de los descuentos no cambia el final, sí cada cantidad.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), P = r.de([200, 300, 400, 500, 600, 800, 1000]);
+        const a = r.de([10, 20, 25, 30, 40]), b = r.de([10, 20, 25, 30, 50]);
+        const sube = s % 4 === 3;
+        const t1 = sube ? aum(a) : des(a), t2 = des(b, 'h');
+        const fa = sube ? 1 + a / 100 : 1 - a / 100, fb = 1 - b / 100, m1 = P * fa, fin = m1 * fb;
+        return {
+          enunciado: ['Un precio de ', { v: 'c-o', t: sol(P) }, sube ? ' sube ' : ' baja ', { v: 'c-i', t: `${a} %` }, ' y después baja ', { v: 'c-h', t: `${b} %` }, '. ¿Cuál es el precio final?'],
+          dibujo: { datos: barra(P, [t1, t2]), estado: { corte: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el precio final ', Pf, ', después de los dos cambios.'] },
+            { tipo: 'datos', texto: ['Precio inicial ', P0, ` = ${sol(P)}. Primero ${sube ? 'sube' : 'baja'} `, r1, ` = ${a} %; luego baja `, r2, ` = ${b} %.`] },
+            { tipo: 'regla', texto: 'Cada cambio se aplica a lo que dejó el anterior. Multiplico el precio por el factor de cada cambio, uno tras otro.',
+              ecuacion: [Pf, ' = ', P0, ` (1 ${sube ? '+' : '−'} `, r1, ')(1 − ', r2, ')'] },
+            { tipo: 'cuentas', texto: `Primer cambio: ${f(P)} · ${f(fa)} = ${f(m1)}. El segundo se calcula sobre ${sol(m1)}.`,
+              ecuacion: [`${f(m1)} · ${f(fb)} = ${sol(fin)}`], dibujo: { datos: barra(P, [t1, t2]), estado: { corte: 2, final: true } } },
+            { tipo: 'sentido', texto: `De vuelta: ${f(fin)} ÷ ${f(fb)} = ${f(m1)}, y ${f(m1)} ÷ ${f(fa)} = ${f(P)}, el precio inicial. Cuadra.` },
+          ],
+          respuesta: [Pf, ` = ${sol(fin)}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), P = r.de([200, 300, 400, 500, 600, 800, 1000]);
@@ -258,6 +350,14 @@
     titulo: 'Subir y bajar no se anulan',
     temas: ['Variación porcentual'],
     pieza: 'barra-porcentaje',
+    // Lee: vocabulario y signo; no dice contra qué valor se mide el cambio (eso decide Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Sube y baja', texto: 'El pasaje, el precio de la papa o un sueldo cambian todo el tiempo. Ese cambio, dicho en porcentaje, se llama variación porcentual.' },
+        { titulo: 'Con signo', texto: 'Una variación de +10 % es una subida; una de −10 %, una bajada. Si un precio termina justo donde empezó, su variación total es 0 %.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, la barra sube r % y después baja el mismo r %. El contorno punteado marca dónde estaba el inicio. Compara el final con ese contorno.' },
+      ],
+    },
     juega: {
       consigna: 'Un precio de S/ 500 sube r % y después baja el mismo r %. Elige r y compara el final con el inicio.',
       voz: 'Mira dónde termina la barra frente al contorno del inicio.',
@@ -285,7 +385,7 @@
     mira: {
       datos: barra(400, [aum(25), des(20, 'h')]),
       pasos: [
-        { estado: { corte: 0 }, texto: 'Tomemos un sueldo de S/ 400 como ejemplo.', ecuacion: [P0, ' = S/ 400'] },
+        { estado: { corte: 0 }, texto: 'Tomemos S/ 400 de ejemplo: con cualquier sueldo pasa igual.', ecuacion: [P0, ' = S/ 400'] },
         { estado: { corte: 1 }, texto: 'Sube 25 % de 400: S/ 100. Ahora es S/ 500.', ecuacion: ['400 · 1,25 = 500'] },
         { estado: { corte: 2 }, texto: 'Para volver hay que quitar los mismos S/ 100, pero de S/ 500.', ecuacion: [{ frac: ['100', '500'] }, ' = 20 %'] },
       ],
@@ -294,6 +394,45 @@
       texto: 'La variación porcentual compara el cambio con el valor inicial. Por eso subir y bajar el mismo r deja 1 − r² del inicio.',
       ecuacion: ['variación = ', { frac: [['final − ', P0], { llave: [P0], nota: 'el inicio', color: 'c-o' }] }, ' · 100', '   ·   ', '(1 + ', rr, ')(1 − ', rr, ') = ', { llave: ['1 − ', { sup: [rr, '2'] }], nota: 'menos que 1', color: 'c-i' }],
       condicion: 'el valor inicial no es cero. Para deshacer un cambio se divide entre su factor, no se resta el mismo porcentaje.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const reglaPaso = { tipo: 'regla', texto: 'Cada cambio multiplica lo que hay. La variación compara el cambio total con el valor del inicio, no con uno de en medio.',
+          ecuacion: ['variación = ', { frac: [['final − ', P0], P0] }, ' · 100'] };
+        if (s % 2 === 0) {
+          const P = r.de([200, 400, 500, 800, 1000]), rv = r.de([10, 20, 30, 40, 50]);
+          const sub = P * (1 + rv / 100), fin = sub * (1 - rv / 100), v = 100 * (fin - P) / P;
+          return {
+            enunciado: ['Un precio de ', { v: 'c-o', t: sol(P) }, ' sube ', { v: 'c-i', t: `${rv} %` }, ' y luego baja ', { v: 'c-h', t: `${rv} %` }, '. ¿Cuál es la variación porcentual total?'],
+            dibujo: { datos: barra(P, [aum(rv), des(rv, 'h')]), estado: { corte: 0 } },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la variación porcentual total: cuánto cambió el precio, en porcentaje del inicio.' },
+              { tipo: 'datos', texto: ['Inicio ', P0, ` = ${sol(P)}; sube ${rv} % y luego baja ${rv} %.`] },
+              reglaPaso,
+              { tipo: 'cuentas', texto: `Sube: ${f(P)} · ${f(1 + rv / 100)} = ${f(sub)}. Baja: ${f(sub)} · ${f(1 - rv / 100)} = ${f(fin)}.`,
+                ecuacion: [{ frac: [`${f(fin)} − ${f(P)}`, f(P)] }, ` · 100 = ${f(v)} %`], dibujo: { datos: barra(P, [aum(rv), des(rv, 'h')]), estado: { corte: 2, final: true } } },
+              { tipo: 'sentido', texto: `Sale negativa: la bajada se toma de ${sol(sub)}, que es más que el inicio. Comprueba con los factores.`,
+                ecuacion: [`(1 + ${f(rv / 100)})(1 − ${f(rv / 100)}) = ${f(1 - rv * rv / 10000, 4)}`] },
+            ],
+            respuesta: `Variación total: ${f(v)} %`,
+          };
+        }
+        const P = r.de([200, 250, 400, 500, 800]), fin = P * r.de([0.6, 0.75, 0.8, 1.2, 1.25, 1.5]);
+        const v = 100 * (fin - P) / P, sube = fin > P;
+        return {
+          enunciado: ['Un precio pasó de ', { v: 'c-o', t: sol(P) }, ' a ', { v: 'c-d', t: sol(fin) }, '. ¿Cuál es la variación porcentual?'],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la variación porcentual: el cambio del precio comparado con el precio de antes.' },
+            { tipo: 'datos', texto: ['Antes ', P0, ` = ${sol(P)}; después ${sol(fin)}.`] },
+            reglaPaso,
+            { tipo: 'cuentas', texto: `El cambio es ${f(fin)} − ${f(P)} = ${f(fin - P)} soles. Lo divido entre el precio de antes.`,
+              ecuacion: [{ frac: [`${f(fin)} − ${f(P)}`, f(P)] }, ` · 100 = ${f(v)} %`] },
+            { tipo: 'sentido', texto: `De vuelta: ${f(P)} · ${f(fin / P)} = ${f(fin)}. El signo dice que el precio ${sube ? 'subió' : 'bajó'}, y así fue.` },
+          ],
+          respuesta: `Variación: ${sube ? '+' : ''}${f(v)} %`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -336,6 +475,15 @@
     titulo: 'Costo, lista, venta y ganancia',
     temas: ['Precio de costo, de lista y de venta', 'Ganancia y pérdida'],
     pieza: 'barra-porcentaje',
+    // Lee: los tres precios y las palabras ganancia y pérdida; no dice sobre qué base va el porcentaje (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Tres precios', texto: 'Una tienda de Juliaca compra zapatillas al mayorista: ese es el precio de costo. En la vitrina les pone el precio de lista. Lo que pagas al final, con la rebaja, es el precio de venta.' },
+        { titulo: 'Ganar o perder', texto: 'Si el precio de venta pasa al costo, la tienda tiene ganancia; si queda por debajo, tiene pérdida. En soles, las dos salen de una resta.',
+          ecuacion: ['G = ', { sub: ['P', 'v'] }, ' − ', Pc] },
+        { titulo: 'Qué mirar', texto: 'En el juego el costo es S/ 200. Sube el precio de lista, ponle una rebaja y mira si la barra final queda más corta o más larga que el costo.' },
+      ],
+    },
     juega: {
       consigna: 'Un producto cuesta S/ 200. Se le sube un porcentaje para el precio de lista y luego se rebaja. Busca una pérdida.',
       voz: 'El contorno punteado es el costo. ¿La venta lo pasa?',
@@ -382,6 +530,39 @@
       ecuacion: ['G = ', { sub: ['P', 'v'] }, ' − ', Pc, '   ·   ', 'G % = ', { frac: ['G', { llave: [Pc], nota: 'la base', color: 'c-o' }] }, ' · 100'],
       condicion: 'si G sale negativa es pérdida. La rebaja se calcula sobre el precio de lista, que es otra base.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), C = r.de([100, 200, 250, 400, 500]), m = r.de([20, 25, 40, 50, 60]), d = r.de([10, 20, 25]);
+        const L = C * (1 + m / 100), V = L * (1 - d / 100), G = V - C;
+        if (s % 2 === 0) return {
+          enunciado: ['Cuesta ', { v: 'c-o', t: sol(C) }, ', se lista ', { v: 'c-i', t: `${m} %` }, ' más caro y se vende con rebaja del ', { v: 'c-h', t: `${d} %` }, '. ¿A cuánto se vende?'],
+          dibujo: { datos: barra(C, [aum(m), des(d, 'h')]), estado: { corte: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el precio de venta: lo que paga el cliente después de la rebaja.' },
+            { tipo: 'datos', texto: ['Costo ', Pc, ` = ${sol(C)}; la lista es ${m} % más cara; la rebaja es de ${d} %.`] },
+            { tipo: 'regla', texto: 'Aquí hay dos bases: la subida se toma del costo y la rebaja, del precio de lista. Multiplico por cada factor, en orden.' },
+            { tipo: 'cuentas', texto: `Lista: ${f(C)} · ${f(1 + m / 100)} = ${f(L)}. Venta: ${f(L)} · ${f(1 - d / 100)} = ${f(V)}.`,
+              ecuacion: [{ sub: ['P', 'v'] }, ` = ${sol(V)}`], dibujo: { datos: barra(C, [aum(m), des(d, 'h')]), estado: { corte: 2, final: true } } },
+            { tipo: 'sentido', texto: `De vuelta: ${f(V)} ÷ ${f(1 - d / 100)} = ${f(L)}, la lista. Frente al costo, ${G >= 0 ? 'gana' : 'pierde'} ${sol(Math.abs(G))}.` },
+          ],
+          respuesta: `Se vende a ${sol(V)}.`,
+        };
+        const Vv = C * r.de([0.8, 0.9, 1.1, 1.2, 1.25, 1.5]), Gv = Vv - C, gp = 100 * Gv / C;
+        return {
+          enunciado: ['Se compra a ', { v: 'c-o', t: sol(C) }, ' y se vende a ', { v: 'c-d', t: sol(Vv) }, '. ¿Qué porcentaje del costo se gana o se pierde?'],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden qué porcentaje del costo se gana o se pierde.' },
+            { tipo: 'datos', texto: ['Costo ', Pc, ` = ${sol(C)}; venta ${sol(Vv)}.`] },
+            { tipo: 'regla', texto: 'Lo que se gana o se pierde es venta menos costo. En porcentaje, lo comparo con el costo, que es la base.',
+              ecuacion: ['G % = ', { frac: ['G', Pc] }, ' · 100'] },
+            { tipo: 'cuentas', texto: `${Gv >= 0 ? 'Gana' : 'Pierde'} ${f(Math.abs(Gv))} soles. Lo divido entre el costo.`,
+              ecuacion: [{ frac: [`${f(Vv)} − ${f(C)}`, f(C)] }, ` · 100 = ${f(gp)} %`] },
+            { tipo: 'sentido', texto: `De vuelta: el ${f(Math.abs(gp))} % de ${sol(C)} es ${sol(Math.abs(Gv))}. La venta es ${Gv > 0 ? 'mayor' : 'menor'} que el costo: es ${Gv > 0 ? 'ganancia' : 'pérdida'}.` },
+          ],
+          respuesta: `${Gv > 0 ? 'Gana' : 'Pierde'} el ${f(Math.abs(gp))} % del costo.`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), C = r.de([100, 200, 250, 400, 500]), m = r.de([20, 25, 40, 50, 60]), d = r.de([10, 20, 25]);
@@ -419,6 +600,15 @@
     titulo: 'El impuesto se quita dividiendo',
     temas: ['IGV'],
     pieza: 'barra-porcentaje',
+    // Lee: qué es el IGV y qué partes trae un precio; no dice cómo se recupera la base desde el total (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'El IGV', texto: 'En el Perú casi todo lo que compras lleva IGV, el Impuesto General a las Ventas. En una factura de una tienda de Puno verás tres números: el precio sin impuesto, el IGV y el total.' },
+        { titulo: 'La tasa', texto: 'La tasa del IGV es 18 %. Otros problemas usan otra tasa para otro impuesto: siempre se toma la que da el enunciado.',
+          ecuacion: [tau, ' = 18 % = 0,18'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, la barra naranja es el precio sin impuesto y el pedazo turquesa que se agrega es el impuesto. Cambia la tasa y mira cuánto crece el total.' },
+      ],
+    },
     juega: {
       consigna: 'Elige la base sin impuesto y la tasa que da el problema. Mira cuánto se agrega y el total.',
       voz: 'La tasa siempre se toma de la base, no del total.',
@@ -459,6 +649,38 @@
       ecuacion: ['total = ', B, ' (1 + ', tau, ')', '   ·   ', B, ' = ', { frac: ['total', { llave: ['1 + ', tau], nota: 'el factor', color: 'c-i' }] }],
       condicion: 'τ es la tasa que da el enunciado. Quitar τ % del total no devuelve la base.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), Bv = r.de([100, 150, 200, 250, 300, 400, 500, 1000]), tv = r.de([18, 18, 10, 20]);
+        const total = Bv * (1 + tv / 100), imp = Bv * tv / 100;
+        if (s % 2 === 0) return {
+          enunciado: ['Un precio con impuesto del ', { v: 'c-i', t: `${tv} %` }, ' incluido es ', { v: 'c-d', t: sol(total) }, '. ¿Cuál es el precio sin impuesto?'],
+          dibujo: { datos: barra(Bv, [aum(tv)]), estado: { corte: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el precio sin impuesto: la base ', B, '.'] },
+            { tipo: 'datos', texto: [`El total con impuesto es ${sol(total)} y la tasa es `, tau, ` = ${tv} %.`] },
+            { tipo: 'regla', texto: 'El total es la base más su impuesto: la base multiplicada por 1 + tasa. Para volver a la base, deshago esa multiplicación dividiendo.',
+              ecuacion: [B, ' = ', { frac: ['total', ['1 + ', tau]] }] },
+            { tipo: 'cuentas', texto: `El factor es 1 + ${f(tv / 100)} = ${f(1 + tv / 100)}.`, ecuacion: [B, ' = ', { frac: [f(total), f(1 + tv / 100)] }, ` = ${sol(Bv)}`],
+              dibujo: { datos: barra(Bv, [aum(tv)]), estado: { corte: 1, final: true } } },
+            { tipo: 'sentido', texto: `De vuelta: el ${tv} % de ${sol(Bv)} es ${sol(imp)}, y ${f(Bv)} + ${f(imp)} = ${f(total)}, el total. Cuadra.` },
+          ],
+          respuesta: [B, ` = ${sol(Bv)}`],
+        };
+        return {
+          enunciado: ['Un producto vale ', { v: 'c-o', t: sol(Bv) }, ' sin impuesto. Con un impuesto del ', { v: 'c-i', t: `${tv} %` }, ', ¿cuánto es el impuesto?'],
+          dibujo: { datos: barra(Bv, [aum(tv)]), estado: { corte: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden solo el impuesto, no el total que se paga.' },
+            { tipo: 'datos', texto: ['Sin impuesto vale ', B, ` = ${sol(Bv)}; la tasa es `, tau, ` = ${tv} %.`] },
+            { tipo: 'regla', texto: 'El impuesto se calcula sobre el precio sin impuesto: es la tasa, en centésimos, por esa base.', ecuacion: ['impuesto = ', tau, ' · ', B] },
+            { tipo: 'cuentas', texto: `${tv} % son ${f(tv / 100)} de la base.`, ecuacion: [`${f(tv / 100)} · ${f(Bv)} = ${sol(imp)}`], dibujo: { datos: barra(Bv, [aum(tv)]), estado: { corte: 1 } } },
+            { tipo: 'sentido', texto: tv === 10 ? `Por otro camino: el 10 % es la décima parte, ${f(Bv)} ÷ 10 = ${f(imp)}. El total queda en ${sol(total)}.` : `Por otro camino: el 10 % es ${sol(Bv / 10)}, y ${tv} % es ${f(tv / 10)} veces eso. El total queda en ${sol(total)}.` },
+          ],
+          respuesta: `El impuesto es ${sol(imp)}.`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), Bv = r.de([100, 150, 200, 250, 300, 400, 500, 1000]), tv = r.de([18, 18, 10, 20]);
@@ -496,6 +718,8 @@
     glosario: [
       { termino: 'porcentaje', simbolo: '%', def: 'Parte de una cantidad contada por cada cien: p % son p centésimos de la base.',
         ejemplo: '20 % de S/ 200 = 0,20 · 200 = S/ 40.', ver: ['base del porcentaje'] },
+      { termino: 'tanto por cuanto', def: 'Parte tomada «a por cada b» de una cantidad: es la fracción a/b de ella.',
+        ejemplo: '3 por cada 4 de S/ 80: 3/4 · 80 = S/ 60.', ver: ['porcentaje'] },
       { termino: 'base del porcentaje', def: 'La cantidad que vale el 100 %: de ella se toma cada porcentaje.',
         ejemplo: 'S/ 20 de una base de S/ 80: 20/80 = 25 %.', ver: ['porcentaje'] },
       { termino: 'descuento', formas: ['descuento', 'descuentos'], def: 'Lo que se le quita a un precio. Si es r %, queda el (100 − r) % del precio.',

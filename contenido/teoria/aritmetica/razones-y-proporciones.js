@@ -317,6 +317,16 @@
     titulo: 'Tres medias para dos números',
     temas: ['Medias aritmética, geométrica y armónica'],
     pieza: 'recta',
+    // Lee: vocabulario de las tres medias, sin decir cuál sirve para un viaje de ida y vuelta (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'El promedio de siempre', texto: 'Si sacas 12 y 16 en dos prácticas, tu promedio es 14: sumas las notas y divides entre 2. Ese número se llama media aritmética y queda entre las dos notas.',
+          ecuacion: [A, ' = ', { frac: ['12 + 16', '2'] }, ' = 14'] },
+        { titulo: 'Hay más medias', texto: ['Dos números positivos tienen otras medias. La media geométrica, ', G, ', es el número que multiplicado por sí mismo da su producto: para 4 y 9 es 6. La media armónica, H, sale de otra cuenta.'],
+          ecuacion: [G, ' · ', G, ' = 4 · 9 = 36   →   ', G, ' = 6'] },
+        { titulo: 'Qué mirar', texto: 'Los dos puntos sobre la recta son tus números; los tres de más arriba son sus medias. Mueve los números y fíjate en qué orden quedan las medias y cuándo se juntan.' },
+      ],
+    },
     juega: {
       consigna: 'Elige dos números. En la recta ves sus tres medias: aritmética, geométrica y armónica. Mira su orden.',
       voz: 'Prueba también dos números iguales.',
@@ -362,6 +372,40 @@
       ecuacion: [{ llave: [A], nota: 'aritmética', color: 'c-h' }, ' = ', { frac: [[a, ' + ', b], '2'] }, '   ·   ', { llave: [G], nota: 'geométrica', color: 'c-d' }, ' = ', { raiz: [a, b] }, '   ·   ', { llave: ['H'], nota: 'armónica' }, ' = ', { frac: [['2', a, b], [a, ' + ', b]] }],
       condicion: 'tiempos iguales piden la aritmética; distancias iguales en cada tramo piden la armónica; factores que se multiplican, la geométrica.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), [x, y] = r.de([[4, 9], [2, 8], [4, 16], [9, 16], [3, 12], [5, 20], [8, 18], [6, 24], [1, 9]]);
+        const { A: Av, G: Gv, H: Hv } = mediasDe(x, y);
+        const pide = ['A', 'G', 'H'][s % 3];
+        const valor = { A: Av, G: Gv, H: Hv }[pide], nombre = { A: 'aritmética', G: 'geométrica', H: 'armónica' }[pide];
+        const sim = { A, G, H: 'H' }[pide];
+        const xo = { v: 'c-o', t: f(x) }, yi = { v: 'c-i', t: f(y) };
+        const regla = {
+          A: { texto: 'La aritmética reparte la suma en dos partes iguales: sumo los dos números y divido entre 2.', ecuacion: [A, ' = ', { frac: [[a, ' + ', b], '2'] }] },
+          G: { texto: 'La geométrica es el número que, multiplicado por sí mismo, da el producto de los dos: la raíz cuadrada del producto.', ecuacion: [G, ' = ', { raiz: [a, b] }] },
+          H: { texto: 'La armónica es el doble del producto dividido entre la suma de los dos números.', ecuacion: ['H = ', { frac: [['2', a, b], [a, ' + ', b]] }] },
+        }[pide];
+        const cuenta = {
+          A: [A, ` = (${f(x)} + ${f(y)}) ÷ 2 = ${f(x + y)} ÷ 2 = ${f(Av)}`],
+          G: [G, ` = √(${f(x)} · ${f(y)}) = √${f(x * y)} = ${f(Gv)}`],
+          H: [`H = 2 · ${f(x * y)} ÷ ${f(x + y)} = ${f(2 * x * y)} ÷ ${f(x + y)} = ${f(Hv)}`],
+        }[pide];
+        const solo = { A: { dG: 9, dH: 9 }, G: { dA: 9, dH: 9 }, H: { dA: 9, dG: 9 } }[pide];
+        return {
+          enunciado: [`¿Cuál es la media ${nombre} de `, xo, ' y ', yi, '?'],
+          dibujo: { datos: rectaMedias(x, y, { dA: 9, dG: 9, dH: 9 }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden la media ${nombre} de ${f(x)} y ${f(y)}: un solo número que los representa a los dos.` },
+            { tipo: 'datos', texto: ['Los números son ', xo, ' y ', yi, `. Su suma es ${f(x + y)} y su producto, ${f(x * y)}.`] },
+            { tipo: 'regla', texto: regla.texto, ecuacion: regla.ecuacion },
+            { tipo: 'cuentas', texto: `Reemplazo los dos números en la fórmula de la media ${nombre}.`, ecuacion: cuenta,
+              dibujo: { datos: rectaMedias(x, y, solo), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: ${f(valor)} queda entre ${f(x)} y ${f(y)}, y se cumple H ≤ G ≤ A: ${f(Hv)} ≤ ${f(Gv)} ≤ ${f(Av)}.` },
+          ],
+          respuesta: [sim, ` = ${f(valor)}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), [x, y] = r.de([[4, 9], [2, 8], [4, 16], [9, 16], [3, 12], [5, 20], [8, 18], [6, 24], [1, 9]]);
@@ -406,6 +450,15 @@
     titulo: 'Razones iguales: la suma también',
     temas: ['Serie de razones geométricas equivalentes'],
     pieza: 'arit-tiras',
+    // Lee: vocabulario de la serie y qué comparar en el juego, sin decir que la suma conserva la razón.
+    lee: {
+      tarjetas: [
+        { titulo: 'La misma receta, más grande', texto: 'Para cocinar quinua se usa 1 taza de quinua por cada 2 de agua. Para más gente, 2 por 4 o 3 por 6. Todas esas razones valen lo mismo.',
+          ecuacion: [{ frac: ['1', '2'] }, ' = ', { frac: ['2', '4'] }, ' = ', { frac: ['3', '6'] }] },
+        { titulo: 'Una serie de razones', texto: ['Cuando escribes juntas varias razones iguales, tienes una serie de razones. Los números de arriba son los antecedentes y los de abajo, los consecuentes. El valor que todas comparten se llama ', k, '.'] },
+        { titulo: 'Qué mirar', texto: 'Las tres tiras de arriba son los antecedentes. Abajo, una tira junta los consecuentes 2, 3 y 5, y la otra junta los antecedentes. Cambia k y compara esas dos tiras largas.' },
+      ],
+    },
     juega: {
       consigna: 'Tres razones iguales: cada antecedente es k veces su consecuente 2, 3 y 5. Cambia k y compara las sumas.',
       voz: 'Divide la suma de arriba entre la suma de abajo.',
@@ -446,6 +499,33 @@
       texto: 'En una serie de razones iguales a k, la suma de los antecedentes entre la suma de los consecuentes también es k.',
       ecuacion: [{ frac: [a, '3'] }, ' = ', { frac: [b, '5'] }, ' = … = ', k, '   ·   ', { frac: [[a, ' + ', b, ' + …'], '3 + 5 + …'] }, ' = ', { llave: [k], nota: 'la misma razón', color: 'c-d' }],
       condicion: 'ningún consecuente es cero y su suma tampoco. Con n razones, el producto de antecedentes entre el de consecuentes es kⁿ.',
+    },
+    resuelve: {
+      generar(s) {
+        let r, bs, kk;
+        for (let t = s + 900; ; t += 977) {      // como «Ahora tú»: tres consecuentes distintos
+          r = azar(t); bs = [r.ent(1, 4), r.ent(2, 6), r.ent(3, 8)]; kk = r.ent(2, 6);
+          if (bs[0] !== bs[1] && bs[1] !== bs[2] && bs[0] !== bs[2]) break;
+        }
+        const i = s % 3, suma = bs.reduce((u, z) => u + z, 0), total = suma * kk, res = bs[i] * kk;
+        const v = t => ({ v: 'c-o', t }), noms = ['a', 'b', 'c'], nom = v(noms[i]);
+        const serieEc = [{ frac: [v('a'), String(bs[0])] }, ' = ', { frac: [v('b'), String(bs[1])] }, ' = ', { frac: [v('c'), String(bs[2])] }];
+        return {
+          enunciado: ['Se cumple ', ...serieEc, ` y a + b + c = ${f(total)}. ¿Cuánto vale `, nom, '?'],
+          dibujo: { datos: serieDatos(bs, kk, { sinTexto: true }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', nom, `, el antecedente que va sobre ${bs[i]}.`] },
+            { tipo: 'datos', texto: `Las tres razones son iguales y los antecedentes suman ${f(total)}. Los consecuentes son ${bs[0]}, ${bs[1]} y ${bs[2]}.`, ecuacion: [...serieEc, ' = ', k] },
+            { tipo: 'regla', texto: ['Si varias razones valen lo mismo, la suma de los de arriba entre la suma de los de abajo da ese mismo valor ', k, '.'],
+              ecuacion: [{ frac: [[v('a'), ' + ', v('b'), ' + ', v('c')], `${bs[0]} + ${bs[1]} + ${bs[2]}`] }, ' = ', k] },
+            { tipo: 'cuentas', texto: ['Los consecuentes suman ', String(suma), '. Hallo ', k, ` y lo multiplico por ${bs[i]}.`],
+              ecuacion: [k, ` = ${f(total)} ÷ ${suma} = ${f(kk)}   →   `, nom, ` = ${bs[i]} · ${f(kk)} = ${f(res)}`],
+              dibujo: { datos: serieDatos(bs, kk), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: los antecedentes son ${f(bs[0] * kk)}, ${f(bs[1] * kk)} y ${f(bs[2] * kk)}, y suman ${f(total)}. Cuadra.` },
+          ],
+          respuesta: [nom, ` = ${f(res)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {

@@ -85,6 +85,14 @@
     titulo: 'El interés que gana interés',
     temas: ['Interés simple', 'Interés compuesto y continuo'],
     pieza: 'arit-tiras',
+    // Lee (fase 2): capital, interés, tasa y monto; no dice en qué se diferencian simple y compuesto (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Prestar cuesta', texto: 'Si depositas tus ahorros en una caja municipal de Puno, la caja usa tu dinero y te paga por eso. Ese pago es el interés. Lo que depositas al inicio se llama capital.' },
+        { titulo: 'Tasa y tiempo', texto: ['La tasa ', i, ' dice qué porcentaje se gana en cada período: un mes, un semestre o un año. «10 % anual» quiere decir 10 % por cada año que pasa.'] },
+        { titulo: 'Qué mirar', texto: 'Lo que hay al final, capital más intereses, es el monto. Hay interés simple y compuesto. En el juego, mira el largo de cada capa nueva en las dos tiras.' },
+      ],
+    },
     juega: {
       consigna: 'Se depositan S/ 1000 a una tasa por período. Las tiras muestran solo los intereses: una capa por período. Compara las dos.',
       voz: 'Mira el largo de cada capa nueva en las dos tiras.',
@@ -128,6 +136,34 @@
       ecuacion: [F, ' = ', P, { llave: ['(1 + ', i, t, ')'], nota: 'simple' }, '   ·   ', F, ' = ', P, { llave: [{ sup: [['(1 + ', i, ')'], n] }], nota: 'compuesto', color: 'c-h' }, '   ·   ', F, ' = ', P, { llave: [{ sup: ['e', [i, t]] }], nota: 'continuo' }],
       condicion: 'i y t en la misma unidad de tiempo. El continuo es el límite cuando se capitaliza en cada instante.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú», con otras semillas (azar(s + 900)).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), cap = r.de([500, 1000, 2000, 4000, 5000]), tasa = r.de([5, 10, 20]) / 100, per = r.ent(2, 4);
+        const comp = cap * Math.pow(1 + tasa, per), simp = cap * (1 + tasa * per), simple = s % 3 === 2;
+        const saldos = Array.from({ length: per + 1 }, (_, k) => cap * Math.pow(1 + tasa, k));
+        return {
+          enunciado: ['Se depositan ', { v: 'c-o', t: sol(cap) }, ' al ', { v: 'c-i', t: `${f(tasa * 100)} %` }, ` anual con interés ${simple ? 'simple' : 'compuesto'}. ¿Cuál es el monto al cabo de `, { v: 'c-h', t: `${per} años` }, '?'],
+          dibujo: { datos: dosTiras(cap, tasa, per, { sinFin: true }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el monto ', F, `: lo que hay al cabo de ${per} años, capital más intereses.`] },
+            { tipo: 'datos', texto: ['Capital ', P, ` = ${sol(cap)}, tasa `, i, ` = ${f(tasa * 100)} % anual, `, n, ` = ${per} años, interés ${simple ? 'simple' : 'compuesto'}.`] },
+            simple
+              ? { tipo: 'regla', texto: 'Con interés simple, cada año gana lo mismo: la tasa por el capital. Sumo al capital esas ganancias iguales.', ecuacion: [F, ' = ', P, '(1 + ', i, t, ')'] }
+              : { tipo: 'regla', texto: 'Con interés compuesto, cada año gana sobre lo que ya hay. El saldo se multiplica por 1 + i una vez por año.', ecuacion: [F, ' = ', P, { sup: [['(1 + ', i, ')'], n] }] },
+            simple
+              ? { tipo: 'cuentas', texto: `Cada año gana ${f(tasa)} · ${f(cap)} = ${f(cap * tasa)}; en ${per} años, ${f(cap * tasa * per)}.`,
+                ecuacion: [`${f(cap)} (1 + ${f(tasa)} · ${per}) = ${sol(simp)}`], dibujo: { datos: dosTiras(cap, tasa, per), estado: {} } }
+              : { tipo: 'cuentas', texto: `Año por año: ${saldos.map(x => f(x)).join(' → ')}.`,
+                ecuacion: [`${f(cap)} · `, { sup: [f(1 + tasa), String(per)] }, ` = ${sol(comp)}`], dibujo: { datos: dosTiras(cap, tasa, per), estado: {} } },
+            simple
+              ? { tipo: 'sentido', texto: `El interés, ${f(simp - cap)}, es ${per} veces ${f(cap * tasa)}. Con interés compuesto saldría algo más, ${sol(comp)}.` }
+              : { tipo: 'sentido', texto: `Con interés simple serían ${sol(simp)}. El compuesto da ${f(comp - simp)} más: lo que ganó el interés de los años anteriores.` },
+          ],
+          respuesta: [F, ` = ${sol(simple ? simp : comp)}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), cap = r.de([500, 1000, 2000, 4000, 5000]), tasa = r.de([5, 10, 20]) / 100, per = r.ent(2, 4);
@@ -170,6 +206,14 @@
     titulo: 'Nominal, efectiva y continua',
     temas: ['Tasas nominal, efectiva y equivalentes', 'Interés compuesto y continuo'],
     pieza: 'arit-tiras',
+    // Lee: qué es una tasa nominal y qué es capitalizar; no dice si la efectiva queda arriba o abajo (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que anuncian', texto: ['Las cajas y los bancos anuncian tasas como «12 % anual capitalizable cada mes». Ese 12 % es la tasa nominal ', j, ': un número anual que se reparte entre los meses.'] },
+        { titulo: 'Capitalizar', texto: 'Capitalizar es sumar al saldo el interés ganado. Puede hacerse una vez al año, cada semestre, cada trimestre, cada mes o cada día.' },
+        { titulo: 'Qué mirar', texto: 'En el juego hay tres tiras: la nominal, la efectiva en verde y la continua. Sube m, las veces que se capitaliza en el año, y mira la tira verde.' },
+      ],
+    },
     juega: {
       consigna: 'S/ 100 durante un año a una tasa nominal j, capitalizada m veces. Las tiras miden el interés del año.',
       voz: 'Sube m de a poco y mira la tira verde.',
@@ -206,6 +250,44 @@
       texto: 'La nominal j se divide entre m para la tasa de cada período. La efectiva es lo que de verdad crece en el año. Tasas equivalentes dan el mismo factor.',
       ecuacion: [{ sub: ['i', 'ef'] }, ' = ', { sup: [['(1 + ', { llave: [{ frac: [j, m] }], nota: 'por período', color: 'c-i' }, ')'], m] }, ' − 1'],
       condicion: 'una tasa efectiva anual no se divide entre 12: la tasa equivalente mensual es la raíz doceava del factor, menos 1.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const jj = r.de([8, 12, 16, 20, 24]) / 100, mm = r.de([2, 4]);
+          const ef = 100 * (Math.pow(1 + jj / mm, mm) - 1), cont = 100 * (Math.exp(jj) - 1);
+          return {
+            enunciado: ['Una tasa nominal del ', { v: 'c-i', t: `${f(jj * 100)} %` }, ` anual se capitaliza ${mm === 2 ? 'cada semestre' : 'cada trimestre'}. ¿Cuál es la tasa efectiva anual?`],
+            dibujo: { datos: tasasDatos(jj, mm, { sinEf: true }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la tasa efectiva anual: cuánto crece de verdad el dinero en un año.' },
+              { tipo: 'datos', texto: ['Nominal ', j, ` = ${f(jj * 100)} % anual, capitalizable `, m, ` = ${mm} veces al año.`] },
+              { tipo: 'regla', texto: 'La nominal se reparte entre las veces que se capitaliza. Esa tasa de cada período se compone tantas veces como períodos tiene el año.',
+                ecuacion: [{ sub: ['i', 'ef'] }, ' = ', { sup: [['(1 + ', { frac: [j, m] }, ')'], m] }, ' − 1'] },
+              { tipo: 'cuentas', texto: `Tasa por período: ${f(jj * 100)} % ÷ ${mm} = ${f(jj * 100 / mm)} %. La compongo ${mm} veces.`,
+                ecuacion: [{ sup: [`(1 + ${f(jj / mm, 4)})`, String(mm)] }, ` − 1 = ${f(ef)} %`], dibujo: { datos: tasasDatos(jj, mm), estado: {} } },
+              { tipo: 'sentido', texto: `Sale un poco más que la nominal, ${f(jj * 100)} %, y no pasa la continua, ${f(cont)} %. Queda entre las dos.` },
+            ],
+            respuesta: `Tasa efectiva anual: ${f(ef)} %`,
+          };
+        }
+        const ief = r.de([0.1, 0.12, 0.15, 0.2, 0.25, 0.3]), per = r.de([2, 4]);
+        const eq = 100 * (Math.pow(1 + ief, 1 / per) - 1), fac = Math.round(10000 * (1 + eq / 100)) / 10000;
+        const nombre = per === 2 ? 'semestral' : 'trimestral';
+        return {
+          enunciado: ['Una tasa efectiva anual es ', { v: 'c-i', t: `${f(ief * 100)} %` }, `. ¿Cuál es la tasa equivalente ${nombre}?`],
+          pasos: [
+            { tipo: 'pide', texto: `Piden la tasa ${nombre} que, en un año, hace crecer el dinero igual que ${f(ief * 100)} % anual.` },
+            { tipo: 'datos', texto: `La efectiva anual es ${f(ief * 100)} %: el factor del año es ${f(1 + ief)}. El año tiene ${per} ${per === 2 ? 'semestres' : 'trimestres'}.` },
+            { tipo: 'regla', texto: `Tasas equivalentes dan el mismo factor en el año. El factor ${nombre}, compuesto ${per} veces, debe dar el anual: saco la raíz.`,
+              ecuacion: [{ sup: [['(1 + ', i, ')'], String(per)] }, ` = ${f(1 + ief)}`] },
+            { tipo: 'cuentas', texto: `Saco la raíz de índice ${per} del factor anual y le resto 1.`, ecuacion: [i, ' = ', { raiz: f(1 + ief), indice: String(per) }, ` − 1 = ${f(eq)} %`] },
+            { tipo: 'sentido', texto: `De vuelta: ${f(fac, 4)} elevado a ${per} da ${f(Math.pow(fac, per))}, el factor anual. Es menos que ${f(ief * 100)} % ÷ ${per}, porque se compone.` },
+          ],
+          respuesta: `Tasa ${nombre}: ${f(eq)} %`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -258,6 +340,14 @@
     titulo: 'Traer el dinero al presente',
     temas: ['Valor presente y futuro'],
     pieza: 'arit-tiras',
+    // Lee: dinero de hoy y dinero de después; no dice cómo se trae el futuro al presente (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Hoy y después', texto: 'Tu familia quiere juntar S/ 1210 para la academia preuniversitaria dentro de dos años. ¿Cuánto debe guardar hoy? Esa pregunta compara dinero de hoy con dinero de después.' },
+        { titulo: 'Dos nombres', texto: ['Lo que vale hoy es el valor presente ', P, '; lo que llegará a valer, el valor futuro ', F, '. Con interés compuesto, el dinero de hoy crece año tras año hasta el futuro.'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, la tira de abajo es lo que quieres tener. La de arriba, lo que depositas hoy. Cambia los años y la tasa, y mira cómo cambia la tira de hoy.' },
+      ],
+    },
     juega: {
       consigna: 'Quieres tener S/ 1210 dentro de unos años. Elige cuántos años y la tasa compuesta. ¿Cuánto debes depositar hoy?',
       voz: 'Con más años, ¿hoy necesitas más o menos?',
@@ -300,6 +390,26 @@
       ecuacion: [F, ' = ', P, { llave: [{ sup: [['(1 + ', i, ')'], n] }], nota: 'hacia adelante' }, '   ·   ', P, ' = ', { llave: [{ frac: [F, { sup: [['(1 + ', i, ')'], n] }] }], nota: 'hacia atrás' }],
       condicion: 'con interés compuesto y la tasa del mismo período que n. Con interés simple, P = F ÷ (1 + it).',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), Pv = r.de([500, 800, 1000, 2000, 2500]), tasa = r.de([0.1, 0.2, 0.05]), per = r.ent(2, 3);
+        const fac = Math.pow(1 + tasa, per), Fv = Pv * fac;
+        return {
+          enunciado: ['¿Cuánto hay que depositar hoy, al ', { v: 'c-i', t: `${f(tasa * 100)} %` }, ' anual compuesto, para tener ', { v: 'c-d', t: sol(Fv) }, ' dentro de ', { v: 'c-h', t: `${per} años` }, '?'],
+          dibujo: { datos: pfDatos(Fv, tasa, per, { sinP: true }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el valor presente ', P, ': lo que hay que depositar hoy.'] },
+            { tipo: 'datos', texto: ['Quiero ', F, ` = ${sol(Fv)} dentro de `, n, ` = ${per} años, al `, i, ` = ${f(tasa * 100)} % anual compuesto.`] },
+            { tipo: 'regla', texto: 'Para ir al futuro, el dinero se multiplica por 1 + i cada año. Para volver al presente hago lo contrario: divido entre ese factor.',
+              ecuacion: [P, ' = ', { frac: [F, { sup: [['(1 + ', i, ')'], n] }] }] },
+            { tipo: 'cuentas', texto: [`El factor de ${per} años es `, { sup: [f(1 + tasa), String(per)] }, ` = ${f(fac, 4)}.`],
+              ecuacion: [P, ' = ', { frac: [f(Fv), f(fac, 4)] }, ` = ${sol(Pv)}`], dibujo: { datos: pfDatos(Fv, tasa, per), estado: {} } },
+            { tipo: 'sentido', texto: `De vuelta: ${f(Pv)} · ${f(fac, 4)} = ${f(Fv)}, el valor futuro. Y hoy hace falta menos que ${sol(Fv)}, como debe ser.` },
+          ],
+          respuesta: [P, ` = ${sol(Pv)}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), Pv = r.de([500, 800, 1000, 2000, 2500]), tasa = r.de([0.1, 0.2, 0.05]), per = r.ent(2, 3);
@@ -337,6 +447,14 @@
     titulo: 'Descuento comercial y racional',
     temas: ['Descuento comercial y racional'],
     pieza: 'arit-tiras',
+    // Lee: letra, valor nominal y cobrar antes; no dice cómo se calcula cada descuento (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'La letra de cambio', texto: 'Cuando una ferretería vende a plazos, el cliente firma una letra de cambio: promete pagar, por ejemplo, S/ 1200 en una fecha. Esos S/ 1200 son el valor nominal.' },
+        { titulo: 'Cobrar antes', texto: 'Si la ferretería necesita el dinero ya, lleva la letra al banco. El banco le paga hoy un poco menos: esa rebaja por cobrar antes es el descuento.' },
+        { titulo: 'Qué mirar', texto: 'Hay dos maneras de calcular esa rebaja: el descuento comercial y el descuento racional. En el juego, la parte de color de cada tira es lo que se pierde. Compara las dos.' },
+      ],
+    },
     juega: {
       consigna: 'Una letra de cambio de S/ 1200 se cobra antes de vencer. Elige los meses que faltan y la tasa anual. Compara los dos descuentos.',
       voz: 'La parte de color es lo que se pierde por cobrar antes.',
@@ -380,6 +498,31 @@
       ecuacion: [{ sub: ['D', 'c'] }, ' = ', { llave: [F], nota: 'el nominal', color: 'c-d' }, d, t, '   ·   ', { sub: ['D', 'r'] }, ' = ', { llave: [P], nota: 'lo recibido', color: 'c-o' }, i, t, '   ·   ', P, ' = ', { frac: [F, ['1 + ', i, t]] }],
       condicion: 'la tasa y el tiempo en la misma unidad. No se cambia una tasa de descuento por una de interés.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), Fv = r.de([600, 1200, 2400, 3000, 6000]), tasa = r.de([0.12, 0.24, 0.36]), meses = r.de([2, 3, 4, 5, 6, 10]);
+        const tt = meses / 12, tp = tasa * tt, Dc = Fv * tp, Pr = Fv / (1 + tp), comercial = s % 2 === 0;
+        const res = comercial ? Fv - Dc : Pr;
+        return {
+          enunciado: ['Una letra de ', { v: 'c-d', t: sol(Fv) }, ' vence en ', { v: 'c-h', t: `${meses} meses` }, `. Con descuento ${comercial ? 'comercial' : 'racional'} al `, { v: 'c-i', t: `${f(tasa * 100)} %` }, ' anual, ¿cuánto se recibe hoy?'],
+          dibujo: { datos: descDatos(Fv, tasa, meses, { oculta: comercial ? 'c' : 'r' }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden lo que se recibe hoy por la letra, con descuento ${comercial ? 'comercial' : 'racional'}.` },
+            { tipo: 'datos', texto: ['Valor nominal ', F, ` = ${sol(Fv)}; faltan `, t, ` = ${meses} meses; tasa ${f(tasa * 100)} % anual.`] },
+            comercial
+              ? { tipo: 'regla', texto: 'El descuento comercial toma la tasa del plazo sobre lo escrito en la letra, el valor nominal, y se lo resta.', ecuacion: [{ sub: ['D', 'c'] }, ' = ', F, d, t] }
+              : { tipo: 'regla', texto: 'Con el racional, lo que recibo hoy más su interés simple del plazo debe llegar al valor nominal. Por eso divido.', ecuacion: [P, ' = ', { frac: [F, ['1 + ', i, t]] }] },
+            { tipo: 'cuentas', texto: `Tasa del plazo: ${f(tasa)} · ${meses}/12 = ${f(tp, 4)}.`,
+              ecuacion: comercial ? [`${f(Fv)} − ${f(Fv)} · ${f(tp, 4)} = ${sol(res)}`] : [P, ' = ', { frac: [f(Fv), f(1 + tp, 4)] }, ` = ${sol(res)}`],
+              dibujo: { datos: descDatos(Fv, tasa, meses), estado: {} } },
+            comercial
+              ? { tipo: 'sentido', texto: `El descuento es ${sol(Dc)}. Con el racional se recibiría ${sol(Pr)}, un poco más, porque su base es menor.` }
+              : { tipo: 'sentido', texto: `De vuelta: ${sol(Pr)} más su ${f(tp * 100)} % llega a ${sol(Fv)}. Con el comercial se recibiría ${sol(Fv - Dc)}, un poco menos.` },
+          ],
+          respuesta: `Se recibe ${sol(res)}.`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), Fv = r.de([600, 1200, 2400, 3000, 6000]), tasa = r.de([0.12, 0.24, 0.36]), meses = r.de([2, 3, 4, 5, 6, 10]);
@@ -419,9 +562,17 @@
     titulo: 'Varias letras, una fecha',
     temas: ['Letras de cambio y vencimiento común'],
     pieza: 'recta',
+    // Lee: juntar letras en una sola; no dice cómo pesa cada letra en la fecha (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Juntar deudas', texto: 'Un comerciante de Juliaca debe dos letras con fechas distintas. Prefiere cambiarlas por una sola letra, que vale la suma de las dos. Falta decidir en qué fecha vence.' },
+        { titulo: 'Vencimiento común', texto: 'Esa fecha única se llama vencimiento común. Se busca que con el cambio nadie salga perdiendo: ni quien debe ni quien cobra.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, cada letra es un punto sobre la recta del tiempo, con su valor encima. El punto verde es la letra nueva. Mueve el punto de la segunda y cambia su valor.' },
+      ],
+    },
     juega: {
-      consigna: 'Dos letras se cambian por una sola que vale su suma. La primera es de S/ 1000 a 3 meses. Mueve la segunda.',
-      voz: 'Mira hacia qué letra se corre el punto verde.',
+      consigna: 'Dos letras se cambian por una sola que vale su suma. La primera es de S/ 1000 a 3 meses. Mueve el otro punto.',
+      voz: 'Mira hacia qué punto se corre el punto verde.',
       controles: [
         { id: 'F', etiqueta: 'Valor (S/)', color: 'c-i', min: 1000, max: 4000, paso: 1000, inicio: 3000, decimales: 0 },
         { id: 't', etiqueta: 'Vence en', color: 'c-h', min: 5, max: 11, paso: 1, inicio: 7, unidad: 'meses', decimales: 0 },
@@ -460,6 +611,35 @@
       texto: 'Varias letras se cambian por una sola que vale su suma; su vencimiento común es el promedio de los plazos pesado por el valor de cada letra.',
       ecuacion: [{ sub: [t, 'c'] }, ' = ', { llave: [{ frac: [['Σ ', { sub: [F, 'k'] }, ' ', { sub: [t, 'k'] }], ['Σ ', { sub: [F, 'k'] }]] }], nota: 'pesado por valor' }],
       condicion: 'vale con descuento comercial simple a la misma tasa para todas, y la letra nueva vale la suma de las anteriores.',
+    },
+    resuelve: {
+      generar(s) {
+        const k = s % 3 === 2 ? 3 : 2;
+        let letras, semilla = s + 900;
+        do {
+          const r = azar(semilla);
+          letras = Array.from({ length: k }, () => ({ F: r.de([1000, 2000, 3000, 4000, 5000]), t: r.ent(2, 11) }));
+          semilla += 313;
+        } while (new Set(letras.map(l => l.t)).size < k);
+        const v = vcDatos(letras), num = letras.reduce((a, l) => a + l.F * l.t, 0);
+        const ts = letras.map(l => l.t), iguales = new Set(letras.map(l => l.F)).size === 1;
+        return {
+          enunciado: `Las letras ${letras.map(l => `de ${sol(l.F)} a ${l.t} meses`).join(', ').replace(/, ([^,]*)$/, ' y $1')} se cambian por una sola de ${sol(v.S)}. ¿En cuántos meses vence?`,
+          dibujo: { datos: vcDatos(letras, { sinT: true }).datos, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden en cuántos meses vence la letra única que reemplaza a las ${k}.` },
+            { tipo: 'datos', texto: `Hay ${k} letras con plazos de ${ts.join(', ').replace(/, ([^,]*)$/, ' y $1')} meses. La nueva vale la suma: ${sol(v.S)}.` },
+            { tipo: 'regla', texto: 'Cada plazo pesa según el dinero de su letra: multiplico valor por plazo, sumo y divido entre el total. Es un promedio pesado.',
+              ecuacion: [{ sub: [t, 'c'] }, ' = ', { frac: [['Σ ', { sub: [F, 'k'] }, ' ', { sub: [t, 'k'] }], ['Σ ', { sub: [F, 'k'] }]] }] },
+            { tipo: 'cuentas', texto: `Multiplico cada valor por su plazo y sumo: ${f(num)}. Divido entre ${f(v.S)}.`,
+              ecuacion: [{ frac: [letras.map(l => `${f(l.F)} · ${l.t}`).join(' + '), f(v.S)] }, ` = ${f(v.tbar)}`], dibujo: { datos: v.datos, estado: {} } },
+            { tipo: 'sentido', texto: iguales
+              ? `Queda entre ${Math.min(...ts)} y ${Math.max(...ts)} meses. Como las letras valen igual, coincide con el promedio simple.`
+              : `Queda entre ${Math.min(...ts)} y ${Math.max(...ts)} meses, como debe. El promedio simple daría ${f(v.prom)}: olvida que las letras pesan distinto.` },
+          ],
+          respuesta: `Vence en ${f(v.tbar)} meses.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
