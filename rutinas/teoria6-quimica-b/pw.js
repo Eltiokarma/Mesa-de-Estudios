@@ -39,8 +39,8 @@ fs.mkdirSync(sal, { recursive: true });
     await p.locator(".te-sig").click(); await p.waitForTimeout(700);
     marca(await vis() === k, `el botón pasa a la tarjeta ${k + 1}`);
   }
+  marca(await p.waitForFunction(() => /Juega/.test(document.querySelector('.te-sig').innerText), null, { timeout: 3000 }).then(() => true, () => false), 'en la última tarjeta el botón dice «Siguiente: Juega»');
   await foto(p, 'lee-fin');
-  marca(/Juega/.test(await p.locator('.te-sig').innerText()), 'en la última tarjeta el botón dice «Siguiente: Juega»');
   await p.locator('.te-lee-saltar').click(); await p.waitForTimeout(600);
   marca(await p.locator('.te-lee').count() === 0 && await p.evaluate(() => document.querySelector('[data-m]')?.dataset.m) === 'juega', '«Ir directo a jugar» salta al juego');
   await foto(p, 'juega');

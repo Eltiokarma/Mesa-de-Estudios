@@ -129,11 +129,28 @@
     if (k === 'lewis') return [s + (t < LLEGA ? `el ${da} acerca su par al ${recibe}` : fin)];
     return [s + (t < SALE ? `el ${da} tiene el H⁺` : t < LLEGA ? `el H⁺ va del ${da} al ${recibe}` : fin)];
   };
+  // [especie, papel, correcta, sin carga (H quitado como átomo), otro sentido o dos H⁺]: la usan «Así se resuelve» y «Ahora tú».
+  const CONJ = [
+    ['HCl', 'ácido', 'Cl⁻', 'Cl', 'H₂Cl⁺'], ['HNO₃', 'ácido', 'NO₃⁻', 'NO₃', 'H₂NO₃⁺'], ['H₂SO₄', 'ácido', 'HSO₄⁻', 'HSO₄', 'SO₄²⁻'],
+    ['HCO₃⁻', 'ácido', 'CO₃²⁻', 'CO₃⁻', 'H₂CO₃'], ['NH₄⁺', 'ácido', 'NH₃', 'NH₄', 'NH₂⁻'], ['HF', 'ácido', 'F⁻', 'F', 'H₂F⁺'],
+    ['CH₃COOH', 'ácido', 'CH₃COO⁻', 'CH₃COO', 'CH₃COOH₂⁺'], ['NH₃', 'base', 'NH₄⁺', 'NH₄', 'NH₂⁻'], ['OH⁻', 'base', 'H₂O', 'HOH⁻', 'O²⁻'],
+    ['CO₃²⁻', 'base', 'HCO₃⁻', 'HCO₃²⁻', 'H₂CO₃'], ['H₂O', 'base', 'H₃O⁺', 'H₃O', 'OH⁻'],
+  ];
   const proton = {
     id: 'acido-da-proton',
     titulo: 'El ácido da, la base recibe',
     temas: ['Teorías de Arrhenius, Brønsted-Lowry y Lewis', 'Pares conjugados y fuerza relativa'],
     pieza: 'quim-molecula',
+    // Lee (fase 2): vocabulario (protón, ácido, base, conjugado) sin decir qué papel hace el agua con el NH₃ (es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo agrio y lo resbaloso', texto: 'El jugo de limón es agrio y el jabón se siente resbaloso. Hace siglos se llamó ácidas a las sustancias agrias y álcalis, o bases, a las resbalosas como la lejía. Hoy se mira algo más pequeño: un protón que cambia de dueño.' },
+        { titulo: 'El protón que viaja', texto: 'Un átomo de hidrógeno sin su electrón es solo un protón, H⁺. En muchas reacciones ese H⁺ pasa de una sustancia a otra. A quien lo entrega se le llama ácido; a quien lo recibe, base.' },
+        { titulo: 'Lo que queda', texto: 'Cuando el HCl suelta su H⁺, queda Cl⁻. Los dos se diferencian en un solo H⁺: son un par conjugado. La carga baja en una unidad porque el protón se llevó su carga positiva.',
+          ecuacion: ['HCl − H⁺ → Cl⁻'] },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, sigue al H⁺ naranja: de quién sale y a quién llega. Cambia de par y anota, en cada caso, quién lo da y quién lo recibe.' },
+      ],
+    },
     juega: {
       consigna: 'En cámara lenta, el H⁺ naranja salta de una sustancia a otra. Elige el par y mira quién lo da y quién lo recibe.',
       voz: 'Sigue al protón; el nombre de la sustancia viene después.',
@@ -175,16 +192,30 @@
       condicion: 'el papel depende de la reacción: el agua es base frente al HCl y ácido frente al NH₃.',
       voz: 'Primero ubica el protón; el nombre de cada papel sale solo.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (conjugado de una especie), con la misma tabla CONJ.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), [esp, papel, bien] = CONJ[r.ent(0, CONJ.length - 1)];
+        const acido = papel === 'ácido', pide = acido ? 'la base conjugada' : 'el ácido conjugado';
+        return {
+          enunciado: `¿Cuál es ${pide} de ${esp}?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden ${pide} de ${esp}: la especie que queda al otro lado del traspaso del H⁺.` },
+            { tipo: 'datos', texto: `${esp} hace de ${papel}: ${acido ? 'entrega' : 'recibe'} un H⁺.` },
+            { tipo: 'regla', texto: 'Los dos miembros de un par conjugado se diferencian en un solo H⁺. Al quitar un H⁺, la carga baja en 1; al ponerlo, sube en 1.' },
+            { tipo: 'cuentas', texto: `${acido ? 'Le quito' : 'Le agrego'} un H⁺ a ${esp}: cambia un H en la fórmula y la carga ${acido ? 'baja' : 'sube'} en una unidad.`,
+              ecuacion: [`${esp} ${acido ? '− H⁺' : '+ H⁺'} → ${bien}`] },
+            { tipo: 'sentido', texto: `De vuelta: si a ${bien} le ${acido ? 'pongo' : 'quito'} el H⁺, vuelvo a ${esp}. Forman un par.`,
+              ecuacion: [`${bien} ${acido ? '+ H⁺' : '− H⁺'} → ${esp}`] },
+          ],
+          respuesta: `${pide[0].toUpperCase()}${pide.slice(1)} de ${esp} es ${bien}.`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Quita o pon un solo H⁺, con su carga.',
       generar(s) {
-        // [especie, papel, correcta, sin carga (H quitado como átomo), otro sentido o dos H⁺]
-        const T = [
-          ['HCl', 'ácido', 'Cl⁻', 'Cl', 'H₂Cl⁺'], ['HNO₃', 'ácido', 'NO₃⁻', 'NO₃', 'H₂NO₃⁺'], ['H₂SO₄', 'ácido', 'HSO₄⁻', 'HSO₄', 'SO₄²⁻'],
-          ['HCO₃⁻', 'ácido', 'CO₃²⁻', 'CO₃⁻', 'H₂CO₃'], ['NH₄⁺', 'ácido', 'NH₃', 'NH₄', 'NH₂⁻'], ['HF', 'ácido', 'F⁻', 'F', 'H₂F⁺'],
-          ['CH₃COOH', 'ácido', 'CH₃COO⁻', 'CH₃COO', 'CH₃COOH₂⁺'], ['NH₃', 'base', 'NH₄⁺', 'NH₄', 'NH₂⁻'], ['OH⁻', 'base', 'H₂O', 'HOH⁻', 'O²⁻'],
-          ['CO₃²⁻', 'base', 'HCO₃⁻', 'HCO₃²⁻', 'H₂CO₃'], ['H₂O', 'base', 'H₃O⁺', 'H₃O', 'OH⁻'],
-        ];
+        const T = CONJ;
         const [esp, papel, bien, sinCarga, otro] = T[s % T.length];
         const pide = papel === 'ácido' ? 'la base conjugada' : 'el ácido conjugado';
         const verbo = papel === 'ácido' ? 'quitarle' : 'agregarle';
@@ -215,11 +246,25 @@
   }
   const lupaAcido = (cajas, extra = {}) => ({ datos: Object.assign({ atomos: ATOMOS, especies: ESPECIES, alto: 150, separacion: 20, cajas,
     alt: `Lupa (modelo; el agua no se dibuja): ${cajas.map(c => `${c.titulo}, ${c.particulas[0].n} moléculas enteras y ${c.particulas[1].n} pares de iones`).join('; ')}.` }, extra), estado: {} });
+  // Casos de «Así se resuelve» y «Ahora tú»: Ka de ácidos débiles (acético, HF, HCN, HNO₂, benzoico; OpenStax 2e, ap. H),
+  // los dos débiles con nombre y sus concentraciones.
+  const KA_DEBILES = [1.8e-5, 7.2e-4, 6.2e-10, 4.5e-4, 6.3e-5];
+  const DEBILES = [['CH₃COOH', KA.acetico], ['HF', KA.hf]], C_DEBILES = [0.1, 0.05, 0.2, 0.5];
   const fuerza = {
     id: 'fuerte-no-es-concentrado',
     titulo: 'Fuerte no es concentrado',
     temas: ['Pares conjugados y fuerza relativa', 'Ka, Kb y Kw'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): concentración, ionización y Ka como vocabulario; no compara un fuerte diluido con un débil concentrado.
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos palabras distintas', texto: 'En la casa decimos que un vinagre es «fuerte» si pica mucho. En química, fuerte y concentrado no son sinónimos: concentrado dice cuánto ácido hay en cada litro; fuerte, qué parte de él se separa en iones.' },
+        { titulo: 'Separarse en iones', texto: 'Al disolverse, una molécula de ácido HA puede darle su H⁺ al agua: quedan H₃O⁺ y A⁻. El ácido muriático (HCl) lo hace casi entero; el ácido acético del vinagre, solo una parte.',
+          ecuacion: ['HA + H₂O ⇌ H₃O⁺ + A⁻'] },
+        { titulo: 'Un número para cada ácido', texto: ['Cada ácido débil tiene su constante de acidez, ', Ka, '. Mientras mayor es, más se ioniza. El HF tiene ', Ka, ` = ${cien(KA.hf)}; el CH₃COOH, ${cien(KA.acetico)}.`] },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, cuenta en el vaso las moléculas enteras y los pares de iones. Compara el HCl con el HF y el CH₃COOH cuando marquen la misma concentración.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un ácido: su concentración sube y baja sola. La lupa muestra 24 moléculas (sin el agua): cuenta las que se separan en iones.',
       voz: 'Compara el fuerte con los débiles a la misma concentración.',
@@ -266,12 +311,47 @@
       condicion: 'a 25 °C (Kw = 1,0 × 10⁻¹⁴) y en disolución diluida; Ka y Kw cambian con la temperatura.',
       voz: 'Dos preguntas distintas: qué tanto se ioniza y cuánto hay.',
     },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (Kb de la base conjugada o pH de un débil), con hAcido.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2) {
+          const ka = r.de(KA_DEBILES), kb = KW / ka;
+          return {
+            enunciado: ['Un ácido débil tiene ', Ka, ` = ${cien(ka)}. ¿Cuánto vale `, Kb, ' de su base conjugada a 25 °C?'],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', Kb, ': qué tanto toma H⁺ del agua la base conjugada de ese ácido.'] },
+              { tipo: 'datos', texto: ['Tengo ', Ka, ` = ${cien(ka)} y, a 25 °C, `, Kw, ' = 1,0 × 10⁻¹⁴.'] },
+              { tipo: 'regla', texto: ['El ácido y su base conjugada se reparten ', Kw, ': si multiplico sus dos constantes, siempre sale la del agua.'], ecuacion: [Ka, ' · ', Kb, ' = ', Kw] },
+              { tipo: 'cuentas', texto: ['Despejo ', Kb, ' dividiendo ', Kw, ' entre ', Ka, '.'], ecuacion: [Kb, ' = ', { frac: ['1,0 × 10⁻¹⁴', cien(ka)] }, ` = ${cien(kb)}`] },
+              { tipo: 'sentido', texto: ['De vuelta: ', Ka, ' · ', Kb, ` = ${cien(ka * kb)}, que es `, Kw, '. ',
+                kb < ka ? 'Kb sale menor que Ka: la base conjugada es más débil que el ácido.' : 'Kb sale mayor que Ka: el ácido es tan débil que su base conjugada gana.'] },
+            ],
+            respuesta: [Kb, ` = ${cien(kb)}`],
+          };
+        }
+        const [nom, ka] = r.de(DEBILES), c = r.de(C_DEBILES);
+        const p = pHde(hAcido(c, ka)), h0 = Math.sqrt(ka * c), pct = 100 * h0 / c;
+        return {
+          enunciado: [`¿Qué pH tiene una disolución de ${nom} con `, C, ` = ${f(c)} M? (`, Ka, ` = ${cien(ka)})`],
+          pasos: [
+            { tipo: 'pide', texto: [`Piden el `, pH, ` de ${nom}, un ácido débil.`] },
+            { tipo: 'datos', texto: ['Tengo ', C, ` = ${f(c)} M y `, Ka, ` = ${cien(ka)}. Como es débil, no se ioniza entero.`] },
+            { tipo: 'regla', texto: ['Si se ioniza poco, casi todo el ácido sigue entero y la ', Ka, ' se simplifica: el cuadrado de [H₃O⁺] es Ka por C.'], ecuacion: ['[H₃O⁺]² ≈ ', Ka, ' · ', C] },
+            { tipo: 'cuentas', texto: ['Saco la raíz y después el logaritmo.'],
+              ecuacion: ['[H₃O⁺] ≈ ', { raiz: [`${cien(ka)} · ${f(c)}`] }, ` = ${cien(h0, 2)} M → `, pH, ` ≈ ${fp(pHde(h0))}`] },
+            { tipo: 'sentido', texto: [`Con ese valor, se ionizó el ${f(pct, 1)} % del ácido: ${pct < 5 ? 'poco, la aproximación vale' : 'más del 5 %, la aproximación se queda corta'}. Sin aproximar, con el agua incluida, sale `, pH, ` = ${fp(p)}.`] },
+          ],
+          respuesta: [pH, ` = ${fp(p)}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Decide primero si el ácido es fuerte o débil.',
       generar(s) {
         const r = azar(s);
         if (s % 2) {
-          const ka = r.de([1.8e-5, 7.2e-4, 6.2e-10, 4.5e-4, 6.3e-5]), kb = KW / ka;
+          const ka = r.de(KA_DEBILES), kb = KW / ka;
           return {
             pregunta: ['Un ácido débil tiene ', Ka, ` = ${cien(ka)}. ¿Cuánto vale `, Kb, ' de su base conjugada a 25 °C?'],
             opciones: opciones(kb, [
@@ -282,7 +362,7 @@
             solucion: { texto: 'En un par conjugado, Ka·Kb = Kw.', ecuacion: [Kb, ' = ', { frac: ['1,0 × 10⁻¹⁴', cien(ka)] }, ` = ${cien(kb)}`] },
           };
         }
-        const [nom, ka] = r.de([['CH₃COOH', KA.acetico], ['HF', KA.hf]]), c = r.de([0.1, 0.05, 0.2, 0.5]);
+        const [nom, ka] = r.de(DEBILES), c = r.de(C_DEBILES);
         const p = pHde(hAcido(c, ka));
         return {
           pregunta: [`¿Qué pH tiene una disolución de ${nom} con `, C, ` = ${f(c)} M? (`, Ka, ` = ${cien(ka)})`],
@@ -308,6 +388,16 @@
     titulo: 'El pH al diluir',
     temas: ['pH y pOH'],
     pieza: 'recta',
+    // Lee (fase 2): por qué existe el pH, la escala y qué es diluir; no dice cuánto sube el pH de cada ácido al diluir.
+    lee: {
+      tarjetas: [
+        { titulo: 'Números con muchos ceros', texto: 'En el agua pura, a 25 °C, la concentración de H₃O⁺ es 0,0000001 mol/L. Con tantos ceros es fácil equivocarse. Por eso se usa el pH: menos el logaritmo de esa concentración.',
+          ecuacion: [pH, ' = −log[H₃O⁺]'] },
+        { titulo: 'La escala', texto: 'A 25 °C, bajo 7 es ácido, 7 es neutro y sobre 7 es básico. El jugo de limón ronda pH 2 y la lejía, 12 o más. Cada unidad de pH es un factor 10 en [H₃O⁺].' },
+        { titulo: 'Diluir', texto: 'Diluir es agregar agua sin agregar ácido: la misma cantidad queda repartida en más volumen. Si el volumen se hace 10 veces mayor, la concentración del ácido queda en un décimo.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, cada segundo el volumen se multiplica por 10. Mira cuánto avanza el punto rojo en cada dilución, primero con el ácido fuerte y después con el débil.' },
+      ],
+    },
     juega: {
       consigna: 'Empiezas con 0,1 M de un ácido. El agua pura entra sola: cada segundo, el volumen se multiplica por 10. Mira el pH.',
       voz: 'Prueba muchas diluciones seguidas con el ácido fuerte.',
@@ -374,6 +464,31 @@
       condicion: 'a 25 °C y en disolución diluida; −log de la concentración es una aproximación de la actividad.',
       voz: 'Antes de sumar 1, pregunta si es fuerte y si estás lejos de 7.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (pH de un ácido o una base fuertes), con las mismas cuentas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), a = r.de([1, 2, 5]), n = r.ent(1, 4), c = a * 10 ** -n, base = s % 2 === 1;
+        const pOH = base ? -Math.log10(c) : 14 + Math.log10(c), p = 14 - pOH, cTxt = `${f(a, 0)} × 10${exp(-n)}`;
+        const que = base ? 'NaOH (base fuerte)' : 'HCl (ácido fuerte)';
+        return {
+          enunciado: [`¿Qué pH tiene ${que} con `, C, ` = ${cTxt} M a 25 °C?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el ', pH, ` de una disolución de ${base ? 'NaOH' : 'HCl'}.`] },
+            { tipo: 'datos', texto: [C, ` = ${cTxt} M, a 25 °C. Es ${base ? 'una base fuerte' : 'un ácido fuerte'}: se separa en iones por completo.`] },
+            base
+              ? { tipo: 'regla', texto: 'Cada NaOH suelta un OH⁻, así que [OH⁻] es la concentración. Con ella saco el pOH, y el pH es lo que le falta para llegar a 14.', ecuacion: [pH, ' = 14 − pOH'] }
+              : { tipo: 'regla', texto: 'Cada HCl le da un H⁺ al agua, así que [H₃O⁺] es la concentración. El pH es menos su logaritmo.', ecuacion: [pH, ' = −log[H₃O⁺]'] },
+            base
+              ? { tipo: 'cuentas', texto: 'Primero el pOH con [OH⁻]; después resto de 14.', ecuacion: [`pOH = −log(${cTxt}) = ${fp(pOH)} → `, pH, ` = 14 − ${fp(pOH)} = ${fp(p)}`] }
+              : { tipo: 'cuentas', texto: 'Saco menos el logaritmo de la concentración.', ecuacion: [pH, ` = −log(${cTxt}) = ${fp(p)}`] },
+            { tipo: 'sentido', texto: base
+              ? [`La concentración está entre 10${exp(-n)} y 10${exp(1 - n)} M: el pOH queda entre ${n - 1} y ${n}, y el `, pH, ` sale mayor que 7, básico.`]
+              : [`La concentración está entre 10${exp(-n)} y 10${exp(1 - n)} M: el `, pH, ` queda entre ${n - 1} y ${n}, menor que 7, ácido.`] },
+          ],
+          respuesta: [pH, ` = ${fp(p)}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Calcula primero [H₃O⁺] o [OH⁻].',
       generar(s) {
@@ -414,6 +529,17 @@
     titulo: 'Neutralizar no siempre da 7',
     temas: ['Neutralización y titulación'],
     pieza: 'ejes',
+    // Lee (fase 2): neutralizar, titular y equivalencia como vocabulario; no dice qué pH queda en la equivalencia.
+    lee: {
+      tarjetas: [
+        { titulo: 'Neutralizar', texto: 'Cuando arde el estómago, la leche de magnesia reacciona con el ácido del jugo gástrico. Eso es una neutralización: un ácido y una base reaccionan y forman agua y una sal.',
+          ecuacion: ['HCl + NaOH → NaCl + H₂O'] },
+        { titulo: 'Titular', texto: 'En el laboratorio se agrega una base de concentración conocida, poco a poco, hasta gastar todo el ácido. Midiendo cuánta base se usó, se sabe cuánto ácido había. Eso es una titulación.' },
+        { titulo: 'El punto de equivalencia', texto: 'Es el momento en que los moles de base agregados igualan a los moles de ácido que había. Los moles de una disolución salen de multiplicar su concentración por su volumen.',
+          ecuacion: ['moles = ', C, ' · ', V] },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, la curva roja sube despacio y de pronto da un salto. Busca con qué volumen de NaOH ocurre el salto y qué pH marca ahí el punto naranja.' },
+      ],
+    },
     juega: {
       consigna: 'Titulación en cámara rápida: cae NaOH 0,1 M sobre 25 mL de HCl 0,1 M, 50 mL en 10 s. Mira dónde salta el pH.',
       voz: 'Busca el volumen donde la curva salta.',
@@ -466,6 +592,27 @@
       ecuacion: [{ llave: [{ sub: [C, 'a'] }, { sub: [V, 'a'] }], nota: 'moles de ácido' }, ' = ', { llave: [{ sub: [C, 'b'] }, { sub: [V, 'b'] }], nota: 'moles de base' }],
       condicion: 'ácido monoprótico con base fuerte a 25 °C; el indicador marca el punto final, que debe caer cerca de la equivalencia.',
       voz: 'Cuenta moles primero; el pH viene después.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (volumen de base en la equivalencia), con las mismas cuentas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), va = 5 * r.ent(2, 10), ca = r.de([0.1, 0.2, 0.05, 0.15]), cb = r.de([0.1, 0.2, 0.25, 0.5]);
+        const na = ca * va, vb = na / cb;
+        const Va = { sub: [V, 'a'] }, Vb = { sub: [V, 'b'] }, Ca = { sub: [C, 'a'] }, Cb = { sub: [C, 'b'] };
+        return {
+          enunciado: ['Titulas ', Va, ` = ${f(va, 0)} mL de HCl `, Ca, ` = ${f(ca)} M con NaOH `, Cb, ` = ${f(cb)} M. ¿Cuánta base llega a la equivalencia?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', Vb, ', el volumen de NaOH que hace falta para llegar al punto de equivalencia.'] },
+            { tipo: 'datos', texto: ['Ácido: ', Va, ` = ${f(va, 0)} mL y `, Ca, ` = ${f(ca)} M. Base: `, Cb, ` = ${f(cb)} M. Un HCl reacciona con un NaOH.`] },
+            { tipo: 'regla', texto: 'En la equivalencia hay tantos moles de base como moles de ácido había. Los moles son concentración por volumen.', ecuacion: [Ca, Va, ' = ', Cb, Vb] },
+            { tipo: 'cuentas', texto: 'Primero los milimoles de ácido (M por mL da mmol); después, el volumen de base que trae esos mismos milimoles.',
+              ecuacion: [`n = ${f(ca)} · ${f(va, 0)} = ${f(na)} mmol → `, Vb, ` = ${f(na)} ÷ ${f(cb)} = ${f(vb)} mL`] },
+            { tipo: 'sentido', texto: [`De vuelta: ${f(cb)} M · ${f(vb)} mL = ${f(cb * vb)} mmol, los mismos del ácido. `,
+              cb > ca ? 'La base es más concentrada, por eso basta menos volumen que el del ácido.' : cb < ca ? 'La base es más diluida, por eso hace falta más volumen que el del ácido.' : 'Las dos tienen la misma concentración: los volúmenes salen iguales.'] },
+          ],
+          respuesta: [Vb, ` = ${f(vb)} mL de NaOH`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Iguala moles de ácido y de base.',
