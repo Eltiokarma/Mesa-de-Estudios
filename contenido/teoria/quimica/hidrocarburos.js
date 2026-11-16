@@ -165,11 +165,25 @@
     if (angulos) extra.angulos = [{ en: 'c', de: 'b', a: 'h3', texto: '109,5°', color: 'd' }, { en: 'a', de: 'b', a: 'ha', texto: '120°', color: 'd' }];
     return figura([mover({ n, e }, 0, 0, '')], extra);
   }
+  // Fórmula de una cadena abierta con un solo enlace múltiple: la usan «Ahora tú» y «Así se resuelve».
+  const EXTRA_FAM = { alcano: 0, alqueno: 1, alquino: 2 };
+  const hFamilia = (tipo, n) => 2 * n + 2 - 2 * EXTRA_FAM[tipo];
+  const DESC_FAM = { alcano: 'solo enlaces simples', alqueno: 'un solo enlace doble', alquino: 'un solo enlace triple' };
+  const ecFamilia = tipo => ['C', { sub: ['', [nC]] }, 'H', { sub: ['', { alcano: ['2', nC, ' + 2'], alqueno: ['2', nC], alquino: ['2', nC, ' − 2'] }[tipo]] }];
   const carbono = {
     id: 'carbono-enlaces',
     titulo: 'Cuatro enlaces por carbono',
     temas: ['El carbono e hibridación', 'Alcanos, alquenos y alquinos'],
     pieza: 'quim-molecula',
+    // Lee (fase 2): contexto y vocabulario. No dice qué forma toma cada carbono del propeno (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que arde en casa', texto: 'El gas del balón de cocina es sobre todo propano y butano. Son hidrocarburos: compuestos hechos solo de carbono e hidrógeno. El petróleo y el gas natural también lo son.' },
+        { titulo: 'Líneas que se cuentan', texto: 'En el dibujo, cada línea es un enlace. Dos líneas entre los mismos átomos forman un enlace doble, y tres, un enlace triple. El doble cuenta como dos enlaces al sumar.',
+          ecuacion: ['C–C · C=C · C≡C'] },
+        { titulo: 'Qué mirar al jugar', texto: 'El conteo recorre un carbono a la vez. Cambia el enlace C–C y fíjate en dos cosas: cuántos H quedan y qué pasa con el ángulo verde.' },
+      ],
+    },
     juega: {
       consigna: 'El conteo recorre los enlaces de cada carbono solo. Cambia el enlace C–C y mira: siempre llega a 4, y el ángulo se abre.',
       voz: 'Cuenta los enlaces de un carbono: el doble vale dos.',
@@ -224,12 +238,33 @@
       condicion: 'las fórmulas generales valen para cadenas abiertas con un solo doble o triple. La hibridación se decide carbono por carbono.',
       voz: 'Primero los enlaces de cada carbono; la forma viene sola.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (fórmula de una cadena abierta), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(3, 9), tipo = ['alcano', 'alqueno', 'alquino'][r.ent(0, 2)];
+        const h = hFamilia(tipo, n), desc = DESC_FAM[tipo], extra = EXTRA_FAM[tipo], u = n - 1 + extra;
+        const cuenta = { alcano: `2 · ${n} + 2`, alqueno: `2 · ${n}`, alquino: `2 · ${n} − 2` }[tipo];
+        return {
+          enunciado: ['Una cadena abierta de ', nC, ` = ${n} carbonos tiene ${desc}. ¿Cuál es su fórmula molecular?`],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la fórmula molecular: cuántos átomos de C y cuántos de H tiene la cadena.' },
+            { tipo: 'datos', texto: ['Hay ', nC, ` = ${n} carbonos en cadena abierta, con ${desc}.`] },
+            { tipo: 'regla', texto: 'Cada carbono forma cuatro enlaces. Con solo simples, la cadena lleva 2n + 2 H. Cada línea extra entre carbonos ocupa dos lugares y quita dos H.',
+              ecuacion: ecFamilia(tipo) },
+            { tipo: 'cuentas', texto: ['Es un ', tipo, ': reemplazo ', nC, ` = ${n} en su fórmula.`], ecuacion: [`H = ${cuenta} = ${h}   →   ${formula(n, h)}`] },
+            { tipo: 'sentido', texto: `Compruebo con los enlaces: los ${n} carbonos ponen 4 cada uno. Los H usan ${h} y las ${u} líneas entre carbonos usan dos lugares cada una.`,
+              ecuacion: [`4 · ${n} = ${h} + 2 · ${u} = ${4 * n}`] },
+          ],
+          respuesta: `${formula(n, h)}, un ${tipo}`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Cuenta los carbonos y fíjate en el enlace.',
       generar(s) {
         const r = azar(s), n = r.ent(3, 9), tipo = ['alcano', 'alqueno', 'alquino'][s % 3];
-        const h = { alcano: 2 * n + 2, alqueno: 2 * n, alquino: 2 * n - 2 }[tipo];
-        const desc = { alcano: 'solo enlaces simples', alqueno: 'un solo enlace doble', alquino: 'un solo enlace triple' }[tipo];
+        const h = hFamilia(tipo, n);
+        const desc = DESC_FAM[tipo];
         return {
           pregunta: ['Una cadena abierta de ', nC, ` = ${n} carbonos tiene ${desc}. ¿Cuál es su fórmula molecular?`],
           opciones: opciones(h, [
@@ -302,11 +337,30 @@
     if (!p.fin) fig.datos.resaltos = [{ atomos: p.atomos, color: 'f' }];
     return { fig, p };
   }
+  // Estructura al azar de la idea 2 (la usan «Ahora tú» y «Así se resuelve»): anillo de CH₂, cadena con una rama
+  // en el carbono 2 o cadena lineal, de 3 a 6 carbonos.
+  function cadenaAzar(r, cic) {
+    const n = r.ent(3, 6);
+    let est, h, ram = false;
+    if (cic) { est = anillo(Array(n).fill('CH₂')); h = 2 * n; }
+    else if (n >= 4 && r() < 0.5) { const ts = ['CH₃', 'CH', ...Array(n - 4).fill('CH₂'), 'CH₃']; est = zig(ts); est.n.push(['m', 'CH₃', 1.15, 1.6]); est.e.push(['k1', 'm']); h = 2 * n + 2; ram = true; }
+    else { est = zig(['CH₃', ...Array(n - 2).fill('CH₂'), 'CH₃']); h = 2 * n + 2; }
+    return { n, est, h, ram };
+  }
   const formulas = {
     id: 'formulas-cadenas',
     titulo: 'Una molécula, varias fórmulas',
     temas: ['Tipos de fórmulas y cadenas', 'Cicloalcanos'],
     pieza: 'quim-molecula',
+    // Lee (fase 2): los tres tipos de fórmula y de cadena. No dice cuántos H tiene un anillo (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Tres maneras de escribir', texto: 'El butano del encendedor se puede escribir C₄H₁₀, que solo cuenta átomos. También CH₃–CH₂–CH₂–CH₃, que muestra los grupos, o con cada enlace dibujado.',
+          ecuacion: ['molecular · semidesarrollada · desarrollada'] },
+        { titulo: 'Tres formas de cadena', texto: 'Los carbonos pueden ir en fila, en una cadena lineal; con ramas que cuelgan, en una cadena ramificada; o cerrados en anillo. Al anillo se le pone «ciclo» delante: ciclobutano.' },
+        { titulo: 'Qué mirar al jugar', texto: 'El conteo suma los H grupo por grupo. Cambia de fórmula y mira si el total cambia. Después compara la cadena abierta con el anillo.' },
+      ],
+    },
     juega: {
       consigna: 'El conteo suma los H carbono por carbono, solo. Elige cadena y fórmula: ¿el total cambia al escribirla de otra forma? ¿Y en el anillo?',
       voz: 'Las dos fórmulas dicen lo mismo; una lo dice más corto.',
@@ -365,14 +419,32 @@
       condicion: 'anillos con solo enlaces simples. La fórmula molecular sola no distingue un anillo de un doble enlace: C₄H₈ puede ser ambos.',
       voz: 'Cuenta los H de cada carbono y súmalos.',
     },
+    // Así se resuelve (fase 2): la misma estructura al azar de «Ahora tú» (cadenaAzar), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), cic = s % 3 === 1, { n, est, h, ram } = cadenaAzar(r, cic);
+        const hs = est.n.map(x => hDeGrupo(x[1])), dib = figura([mover(est, 0, 0, '')], { escala: 42, alto: 190 });
+        const forma = cic ? 'cerrados en anillo' : ram ? 'en cadena abierta con una rama' : 'en cadena abierta, sin ramas';
+        return {
+          enunciado: `¿Cuál es la fórmula molecular de esta estructura de ${n} carbonos ${cic ? 'en anillo' : 'en cadena abierta'}?`,
+          dibujo: dib,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la fórmula molecular: el total de átomos de C y de H de la estructura.' },
+            { tipo: 'datos', texto: ['Hay ', nC, ` = ${n} grupos con carbono, ${forma}.`] },
+            { tipo: 'regla', texto: 'Cada grupo trae sus H escritos: CH₃ tiene 3, CH₂ tiene 2 y CH tiene 1. La fórmula molecular junta todos los C y todos los H.' },
+            { tipo: 'cuentas', texto: 'Sumo los H grupo por grupo, en el orden del dibujo.', ecuacion: [`H = ${hs.join(' + ')} = ${h}   →   ${formula(n, h)}`],
+              dibujo: figura([mover(est, 0, 0, '')], { escala: 42, alto: 190, resaltos: [{ atomos: est.n.map(x => x[0]), color: 'o' }] }) },
+            { tipo: 'sentido', texto: cic ? ['Con la fórmula del anillo, 2 · ', nC, ` = ${2 * n} H: coincide con la suma.`] : ['Con la fórmula de la cadena abierta, 2 · ', nC, ` + 2 = ${2 * n + 2} H: coincide con la suma.`],
+              ecuacion: [cic ? 'CₙH₂ₙ' : 'CₙH₂ₙ₊₂', ` → ${formula(n, h)}`] },
+          ],
+          respuesta: formula(n, h),
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Suma los H de cada grupo.',
       generar(s) {
-        const r = azar(s), n = r.ent(3, 6), cic = s % 2 === 1;
-        let est, h;
-        if (cic) { est = anillo(Array(n).fill('CH₂')); h = 2 * n; }
-        else if (n >= 4 && r() < 0.5) { const ts = ['CH₃', 'CH', ...Array(n - 4).fill('CH₂'), 'CH₃']; est = zig(ts); est.n.push(['m', 'CH₃', 1.15, 1.6]); est.e.push(['k1', 'm']); h = 2 * n + 2; }
-        else { est = zig(['CH₃', ...Array(n - 2).fill('CH₂'), 'CH₃']); h = 2 * n + 2; }
+        const r = azar(s), cic = s % 2 === 1, { n, est, h } = cadenaAzar(r, cic);
         return {
           pregunta: '¿Cuál es la fórmula molecular de esta estructura?',
           dibujo: figura([mover(est, 0, 0, '')], { escala: 42, alto: 190 }),
@@ -415,6 +487,14 @@
     titulo: 'El benceno y sus dobles repartidos',
     temas: ['Aromáticos'],
     pieza: 'quim-molecula',
+    // Lee (fase 2): contexto y vocabulario del anillo. No dice cómo son los enlaces del benceno real (la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un anillo famoso', texto: 'El benceno, C₆H₆, es un anillo de seis carbonos que viene en el petróleo. De él se fabrican plásticos como el tecnopor, tintes y medicinas. Es tóxico: no hay que respirarlo.' },
+        { titulo: 'Aromático no es perfume', texto: 'La palabra «aromático» nació porque los primeros compuestos de este tipo tenían olor fuerte. Hoy, en química, nombra un tipo especial de anillo, no un olor.' },
+        { titulo: 'Qué mirar al jugar', texto: 'El conteo da la vuelta al anillo enlace por enlace. En cada anillo, fíjate cuántos dobles hay y si cada doble queda entre dos simples.' },
+      ],
+    },
     juega: {
       consigna: 'El conteo da la vuelta al anillo, enlace por enlace. Compara anillos: ¿cada doble va entre dos simples en toda la vuelta?',
       voz: 'Compara dónde van los dobles, no la forma del anillo.',
@@ -458,6 +538,28 @@
       ecuacion: [{ llave: ['154'], nota: 'simple' }, ' > ', { llave: ['140'], nota: 'benceno', color: 'c-h' }, ' > ', { llave: ['134'], nota: 'doble' }, '\u00a0pm'],
       condicion: 'aromático exige un anillo plano con dobles alternados en todo el ciclo. No significa «con olor» ni vale para cualquier anillo.',
       voz: 'Un anillo no basta: mira si los dobles alternan en toda la vuelta.',
+    },
+    // Así se resuelve (fase 2): el mismo caso de «Ahora tú» (¿es aromático?), recorriendo el anillo con vueltaAnillo.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), ks = ['kekule-a', 'tolueno', 'ciclohexano', 'ciclohexeno', 'kekule-b'], k = ks[r.ent(0, ks.length - 1)], a = ANILLOS[k];
+        const vuelta = vueltaAnillo(k).filter(p => !p.fin), dobles = vuelta.filter(p => p.doble).length, alterna = vuelta.every(p => p.alterna);
+        const seguidos = vuelta.filter(p => !p.doble && !p.alterna).length, [fm] = a.lee.split(/[,:]/);
+        const anilloIds = a.est.n.filter(x => /^r/.test(x[0])).map(x => x[0]);
+        return {
+          enunciado: `¿El ${a.nombre}, ${fm}, es aromático?`,
+          dibujo: vistaAnillo(k),
+          pasos: [
+            { tipo: 'pide', texto: `Piden decidir si el ${a.nombre} es aromático.` },
+            { tipo: 'datos', texto: `Es un anillo de seis carbonos ${dobles === 0 ? 'sin enlaces dobles' : 'con '}${dobles === 0 ? '' : dobles === 1 ? 'un enlace doble' : `${dobles} enlaces dobles`}${k === 'tolueno' ? ' y un CH₃ unido afuera' : ''}.` },
+            { tipo: 'regla', texto: 'Tener anillo no basta. Es aromático si, al dar la vuelta completa, cada doble queda entre dos simples, como en el benceno.' },
+            { tipo: 'aplica', texto: alterna ? 'Doy la vuelta enlace por enlace: los seis alternan, doble y simple, sin cortarse.' : `Doy la vuelta enlace por enlace: hay ${seguidos} ${seguidos === 1 ? 'simple que sigue' : 'simples que siguen'} a otro simple. La alternancia se corta.`,
+              ecuacion: [vuelta.map(p => (p.doble ? '=' : '–')).join(' ')], dibujo: vistaAnillo(k, { resaltos: [{ atomos: anilloIds, color: 'f' }] }) },
+            { tipo: 'sentido', texto: alterna ? `Cuadra: tiene tres dobles en seis enlaces, como el benceno${k === 'tolueno' ? '; el CH₃ va afuera y no corta la vuelta' : ''}.` : `Cuadra: un anillo aromático de seis carbonos lleva tres dobles, y este ${dobles === 0 ? 'no tiene ninguno' : 'tiene solo uno'}.` },
+          ],
+          respuesta: `${alterna ? 'Sí' : 'No'}: el ${a.nombre} ${alterna ? 'es' : 'no es'} aromático`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Recorre el anillo enlace por enlace.',
@@ -508,11 +610,44 @@
     if (k < fila.length) fig.datos.resaltos = [{ atomos: fila.slice(0, k + 1), color: 'f' }];
     return { fig, k, fila };
   }
+  // Pares de «Ahora tú» y «Así se resuelve»: A, B y la relación esperada (resuelve la recalcula con las cuentas).
+  const PARES_ISO = [
+    ['butano', 'butano-doblado', 'misma'], ['butano', 'isobutano', 'isomeros'], ['pentano', 'metilbutano', 'isomeros'],
+    ['pentano', 'pentano-doblado', 'misma'], ['propano', 'butano', 'distinta'], ['1-cloropropano', '2-cloropropano', 'isomeros'],
+    ['metilbutano', 'metilbutano-espejo', 'misma'], ['isobutano', 'dimetilpropano', 'distinta'],
+  ];
+  // Inventario de una estructura: suma los átomos de cada rótulo (CH₃, CH₂Cl, Cl…).
+  const inventarioEst = est => est.n.reduce((acc, [, t]) => { for (const [el, k] of Object.entries(atomosDe(t))) acc[el] = (acc[el] || 0) + k; return acc; }, {});
+  const formulaAt = inv => ['C', 'H', 'Cl'].filter(e => inv[e]).map(e => e + (inv[e] > 1 ? sb(inv[e]) : '')).join('');
+  // La fila de carbonos más larga (camino simple en el grafo de los carbonos) y dónde va el Cl, si hay.
+  const esC = t => /^C(?!l)/.test(t);
+  function filaIds(est) {
+    const cs = est.n.filter(x => esC(x[1])).map(x => x[0]), vec = id => est.e.filter(e => e.includes(id)).map(e => (e[0] === id ? e[1] : e[0])).filter(o => cs.includes(o));
+    let mejor = [];
+    const anda = camino => { if (camino.length > mejor.length) mejor = camino; for (const o of vec(camino[camino.length - 1])) if (!camino.includes(o)) anda([...camino, o]); };
+    cs.forEach(c => anda([c]));
+    return mejor;
+  }
+  function clEn(est) {
+    const cs = est.n.filter(x => esC(x[1])).map(x => x[0]), conCl = est.n.find(x => /Cl/.test(x[1]));
+    if (!conCl) return null;
+    const c = esC(conCl[1]) ? conCl[0] : est.e.filter(e => e.includes(conCl[0])).map(e => (e[0] === conCl[0] ? e[1] : e[0]))[0];
+    const vecinosC = est.e.filter(e => e.includes(c)).map(e => (e[0] === c ? e[1] : e[0])).filter(o => cs.includes(o)).length;
+    return vecinosC === 1 ? 'a un carbono del extremo' : 'al carbono del medio';
+  }
   const isomeros = {
     id: 'isomeros-estructurales',
     titulo: 'Mismos átomos, otras uniones',
     temas: ['Isomería estructural y geométrica'],
     pieza: 'quim-molecula',
+    // Lee (fase 2): qué es un isómero y qué es la fila de carbonos. No dice si doblar el dibujo cambia la molécula.
+    lee: {
+      tarjetas: [
+        { titulo: 'Misma fórmula, otra sustancia', texto: 'El gas de los encendedores puede traer butano o isobutano. Los dos son C₄H₁₀, pero el butano hierve cerca de 0 °C y el isobutano, cerca de −12 °C. Se llaman isómeros.' },
+        { titulo: 'La fila y las ramas', texto: 'En una estructura, la fila es la cadena de carbonos unidos uno tras otro. Lo que cuelga de un carbono de la fila es una rama: CH₃ es una rama de un carbono.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Las tres estructuras del juego son C₅H₁₂. El conteo sigue la fila más larga carbono por carbono: mira cuántos carbonos tiene en cada una.' },
+      ],
+    },
     juega: {
       consigna: 'Las tres son C₅H₁₂. El conteo sigue sola la fila de carbonos más larga: mira cómo se acorta al cambiar las uniones.',
       voz: 'Sigue las uniones con el dedo, carbono por carbono.',
@@ -559,14 +694,41 @@
       condicion: 'se comparan uniones, no la forma del dibujo. Para nombrar, la cadena principal sigue reglas IUPAC, no solo su largo.',
       voz: 'Si las uniones coinciden, es la misma molécula.',
     },
+    // Así se resuelve (fase 2): un par de «Ahora tú» (PARES_ISO), resuelto contando átomos (inventarioEst) y
+    // comparando uniones (mismasUniones, filaIds). La relación sale de esas cuentas, no de la tabla.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), [a, b] = PARES_ISO[r.ent(0, PARES_ISO.length - 1)], A = EST[a], B = EST[b];
+        const ia = inventarioEst(A), ib = inventarioEst(B), fa = formulaAt(ia), fb = formulaAt(ib);
+        const rel = fa !== fb ? 'distinta' : mismasUniones(A, B) ? 'misma' : 'isomeros';
+        const la = filaIds(A).length, lb = filaIds(B).length, dondeA = clEn(A), dondeB = clEn(B);
+        const dib = (extra = {}) => figura([mover(A, 0, 0, 'a'), mover(B, 0, 2.7, 'b')], Object.assign({ escala: 42, alto: 270, textos: [{ x: -1.0, y: 0.3, t: 'A', peso: 700 }, { x: -1.0, y: 3.0, t: 'B', peso: 700 }] }, extra));
+        const aplica = rel === 'distinta' ? `Las fórmulas no coinciden: B tiene ${ib.C > ia.C ? 'más' : 'menos'} carbonos que A. No hace falta mirar uniones.`
+          : rel === 'misma' ? `Sigo las uniones: las dos tienen una fila de ${la} carbonos ${ia.C > la ? 'con la misma rama en el mismo carbono' : 'sin ramas'}. Solo cambió el dibujo.`
+            : la !== lb ? `Sigo las uniones: la fila más larga de A tiene ${la} carbonos y la de B, ${lb}. Las uniones cambian.`
+              : `Las dos filas tienen ${la} carbonos, pero el Cl va unido ${dondeA} en A y ${dondeB} en B. Las uniones cambian.`;
+        const sentido = { misma: `Cuadra: misma fórmula, ${fa}, y mismas uniones. Doblar o voltear el dibujo no rompe ningún enlace.`,
+          isomeros: `Cuadra: los dos son ${fa}. Mismos átomos con otras uniones: eso es un isómero, no otro dibujo.`,
+          distinta: `Cuadra: los isómeros tienen los mismos átomos, y ${fa} no es ${fb}. Son compuestos distintos.` }[rel];
+        return {
+          enunciado: `Compara la estructura A, de ${ia.C} carbonos, con la B, de ${ib.C}. ¿Son la misma molécula, isómeros o compuestos con distinta fórmula?`,
+          dibujo: dib(),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la relación entre A y B: misma molécula, isómeros o compuestos con distinta fórmula.' },
+            { tipo: 'datos', texto: 'Cuento los átomos de cada grupo, en A y en B.', ecuacion: [`A: ${fa}   ·   B: ${fb}`] },
+            { tipo: 'regla', texto: 'Primero comparo fórmulas: si cambian, son compuestos distintos. Si coinciden, sigo las uniones: mismas uniones, misma molécula; otras uniones, isómeros.' },
+            { tipo: 'aplica', texto: aplica, ecuacion: [rel === 'distinta' ? `${fa} ≠ ${fb}` : `fila de A: ${la}   ·   fila de B: ${lb}`],
+              dibujo: dib({ resaltos: [{ atomos: filaIds(A).map(id => `a${id}`), color: 'i' }, { atomos: filaIds(B).map(id => `b${id}`), color: 'i' }] }) },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: { misma: 'La misma molécula, dibujada de otra forma', isomeros: 'Son isómeros estructurales', distinta: 'Compuestos con distinta fórmula molecular' }[rel],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Cuenta átomos primero; después compara uniones.',
       generar(s) {
-        const PARES = [
-          ['butano', 'butano-doblado', 'misma'], ['butano', 'isobutano', 'isomeros'], ['pentano', 'metilbutano', 'isomeros'],
-          ['pentano', 'pentano-doblado', 'misma'], ['propano', 'butano', 'distinta'], ['1-cloropropano', '2-cloropropano', 'isomeros'],
-          ['metilbutano', 'metilbutano-espejo', 'misma'], ['isobutano', 'dimetilpropano', 'distinta'],
-        ];
+        const PARES = PARES_ISO;
         const r = azar(s), [a, b, rel] = PARES[s % PARES.length];
         const textos = {
           misma: ['La misma molécula', 'Las uniones de A y B son las mismas; solo cambia el dibujo.'],
@@ -627,11 +789,27 @@
     const s = izq ? 1 : -1;
     return { n: [['c', 'C', 0, 0], ['h', 'H', 0, -1.0], ['oh', 'OH', s * 1.1, 0], ['m', 'CH₃', 0, 1.0], ['e', 'CH₂CH₃', -s * 1.7, 0]], e: [['c', 'h'], ['c', 'oh'], ['c', 'm'], ['c', 'e']] };
   };
+  // Alquenos de «Ahora tú» y «Así se resuelve»: nombre, grupos [arriba-izq, abajo-izq, arriba-der, abajo-der] y si
+  // tiene cis/trans (resuelve lo recalcula comparando los grupos).
+  const ALQS_CT = [
+    ['but-2-eno', ['CH₃', 'H', 'CH₃', 'H'], true], ['but-1-eno', ['H', 'H', 'CH₂CH₃', 'H'], false], ['propeno', ['H', 'H', 'CH₃', 'H'], false],
+    ['pent-2-eno', ['CH₃', 'H', 'CH₂CH₃', 'H'], true], ['2-metilbut-2-eno', ['CH₃', 'CH₃', 'CH₃', 'H'], false], ['1,2-dicloroeteno', ['Cl', 'H', 'Cl', 'H'], true],
+    ['1,1-dicloroeteno', ['Cl', 'Cl', 'H', 'H'], false],
+  ];
   const geometrica = {
     id: 'cis-trans-optica',
     titulo: 'Cis, trans y el espejo',
     temas: ['Isomería estructural y geométrica', 'Isomería óptica (solo San Marcos)'],
     pieza: 'quim-molecula',
+    // Lee (fase 2): qué significan cis y trans, y el espejo. No dice si el doble enlace deja girar (la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Arriba y abajo', texto: 'En el dibujo de un alqueno, cada carbono del doble enlace lleva dos grupos: uno arriba y otro abajo. Así se ve de qué lado queda cada grupo.' },
+        { titulo: 'Dos palabras del latín', texto: '«Cis» quiere decir «de este lado» y «trans», «al otro lado», como en «transandino», lo que cruza los Andes. En química dicen dónde quedan dos grupos iguales.' },
+        { titulo: 'Tu mano en el espejo', texto: 'Tu mano izquierda es la imagen en el espejo de la derecha, y no encajan una sobre otra. Algunas moléculas son así: se llaman quirales.' },
+        { titulo: 'Qué mirar al jugar', texto: 'El conteo revisa los dos grupos de cada carbono del doble. Fíjate si son distintos o iguales, y de qué lado quedan los CH₃.' },
+      ],
+    },
     juega: {
       consigna: 'El conteo revisa solo los dos grupos de cada carbono del doble enlace. Cambia la molécula y mira dónde quedan los CH₃.',
       voz: 'Mira los dos grupos de cada carbono del doble enlace.',
@@ -679,15 +857,34 @@
       condicion: '«cuatro grupos distintos» es una guía, no un criterio universal: decide que la molécula y su espejo no se superpongan.',
       voz: 'Revisa los dos grupos de cada carbono antes de decidir.',
     },
+    // Así se resuelve (fase 2): un alqueno de «Ahora tú» (ALQS_CT); la respuesta sale de comparar sus grupos.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), [nom, g] = ALQS_CT[r.ent(0, ALQS_CT.length - 1)], izq = g[0] !== g[1], der = g[2] !== g[3], tiene = izq && der;
+        const dib = (extra = {}) => figura([mover(alqueno(g), 0, 0, '')], Object.assign({ escala: 48, alto: 170 }, extra));
+        const cual = !izq ? 'izquierdo' : 'derecho', rep = !izq ? g[0] : g[2];
+        return {
+          enunciado: `¿El ${nom} tiene isómeros cis y trans?`,
+          dibujo: dib(),
+          pasos: [
+            { tipo: 'pide', texto: `Piden saber si el ${nom} puede existir como cis y como trans.` },
+            { tipo: 'datos', texto: `El carbono izquierdo del doble lleva ${g[0]} y ${g[1]}; el derecho, ${g[2]} y ${g[3]}.` },
+            { tipo: 'regla', texto: 'Hay cis y trans solo si los dos carbonos del doble llevan, cada uno, dos grupos distintos. Basta un carbono con dos grupos iguales para que no haya.' },
+            { tipo: 'aplica', texto: tiene ? 'El izquierdo tiene dos grupos distintos, y el derecho también: se cumple en los dos carbonos.' : `El carbono ${cual} lleva dos ${rep} iguales: la condición falla ahí.`,
+              ecuacion: [`${g[0]} ${izq ? '≠' : '='} ${g[1]}   ·   ${g[2]} ${der ? '≠' : '='} ${g[3]}`],
+              dibujo: dib({ resaltos: [{ atomos: ['g0', 'g1'], color: 'f' }, { atomos: ['g2', 'g3'], color: 'f' }] }) },
+            { tipo: 'sentido', texto: tiene ? 'Compruebo: si cambio de lado los dos grupos de un carbono, sale otra molécula, que no se superpone con esta.'
+              : `Compruebo: si cambio de lado los dos grupos del carbono ${cual}, el dibujo queda igual. Es la misma molécula.` },
+          ],
+          respuesta: tiene ? `Sí: el ${nom} tiene cis y trans` : `No: el ${nom} no tiene cis ni trans`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Revisa los grupos de cada carbono.',
       generar(s) {
         const r = azar(s);
-        const ALQS = [
-          ['but-2-eno', ['CH₃', 'H', 'CH₃', 'H'], true], ['but-1-eno', ['H', 'H', 'CH₂CH₃', 'H'], false], ['propeno', ['H', 'H', 'CH₃', 'H'], false],
-          ['pent-2-eno', ['CH₃', 'H', 'CH₂CH₃', 'H'], true], ['2-metilbut-2-eno', ['CH₃', 'CH₃', 'CH₃', 'H'], false], ['1,2-dicloroeteno', ['Cl', 'H', 'Cl', 'H'], true],
-          ['1,1-dicloroeteno', ['Cl', 'Cl', 'H', 'H'], false],
-        ];
+        const ALQS = ALQS_CT;
         const [nom, g, tiene] = ALQS[s % ALQS.length];
         const si = { id: 'si', texto: 'Sí: cada C del doble tiene dos grupos distintos' };
         const no = { id: 'no', texto: 'No: un C del doble tiene dos grupos iguales' };
@@ -781,11 +978,45 @@
     const pasos = inventario(val.k), p = pasos[fase(val.r, pasos.length)];
     return { fig: reaccion(val.k, true, p.resaltos.length ? { resaltos: p.resaltos } : {}), p };
   };
+  // Casos de «Ahora tú» y «Así se resuelve»: la ecuación y su tipo.
+  const CASOS_REAC = [
+    ['CH₂=CH₂ + Br₂ → CH₂Br–CH₂Br', 'adicion'], ['C₂H₆ + Cl₂ → C₂H₅Cl + HCl', 'sustitucion'],
+    ['CH₃–CH₂Br + KOH → CH₂=CH₂ + KBr + H₂O', 'eliminacion'], ['C₃H₈ + 5 O₂ → 3 CO₂ + 4 H₂O', 'combustion'],
+    ['HC≡CH + 2 H₂ → CH₃–CH₃', 'adicion'], ['C₆H₆ + Br₂ → C₆H₅Br + HBr', 'sustitucion'],
+    ['CH₃–CH(OH)–CH₃ → CH₂=CH–CH₃ + H₂O', 'eliminacion'], ['CH₂=CH₂ + H₂O → CH₃–CH₂OH', 'adicion'],
+    ['2 C₄H₁₀ + 13 O₂ → 8 CO₂ + 10 H₂O', 'combustion'],
+  ];
+  const NOM_REAC = { adicion: 'Adición', sustitucion: 'Sustitución', eliminacion: 'Eliminación', combustion: 'Combustión' };
+  const PORQUE_REAC = {
+    adicion: 'Un enlace múltiple se abre y los átomos que llegan quedan en el producto.',
+    sustitucion: 'Un H sale con el halógeno y otro átomo ocupa su lugar.',
+    eliminacion: 'Salen dos grupos de carbonos vecinos y aparece un enlace doble.',
+    combustion: 'Con O₂ suficiente, el carbono pasa a CO₂ y el hidrógeno a agua.',
+  };
+  // Inventario de un lado de una ecuación escrita: «2 C₄H₁₀ + 13 O₂», «CH₃–CH(OH)–CH₃». Los guiones, los
+  // dobles y los paréntesis sin subíndice no cambian la cuenta.
+  function ladoEc(txt) {
+    const tot = {}; let mol = 0;
+    for (const term of txt.split(' + ')) {
+      const m = /^(\d+)\s+(.*)$/.exec(term.trim()), k = m ? +m[1] : 1, limpio = (m ? m[2] : term.trim()).replace(/[=–≡()]/g, '');
+      mol += k;
+      for (const [, el, n] of limpio.matchAll(/([A-Z][a-z]?)([₀-₉]*)/g)) tot[el] = (tot[el] || 0) + k * (n ? DIG(n) : 1);
+    }
+    return { tot, mol };
+  }
   const reacciones = {
     id: 'reacciones-organicas',
     titulo: 'Qué enlace cambia en la reacción',
     temas: ['Tipos de reacciones orgánicas'],
     pieza: 'quim-molecula',
+    // Lee (fase 2): contexto y nombres de las reacciones. No dice qué sale en cada una (la predicción es la adición de agua).
+    lee: {
+      tarjetas: [
+        { titulo: 'Reacciones de todos los días', texto: 'Cuando prendes la cocina, el gas se quema con el oxígeno del aire. Y en una fábrica, millones de moléculas de eteno se unen para formar el plástico de las bolsas.' },
+        { titulo: 'Cuatro nombres', texto: 'Las reacciones de los hidrocarburos se agrupan por lo que les pasa a sus enlaces: adición, sustitución, eliminación y combustión. En el juego hay un ejemplo de cada una.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Arriba van los reactivos y abajo, los productos. El conteo compara los dos lados átomo por átomo; al final, fíjate si abajo queda una molécula o varias.' },
+      ],
+    },
     juega: {
       consigna: 'Arriba, los reactivos; abajo, los productos. El conteo hace solo el inventario, átomo por átomo. Elige una reacción: ¿qué enlace cambia y qué sale?',
       voz: 'Haz el inventario: ¿los productos son una molécula o varias?',
@@ -838,30 +1069,38 @@
       condicion: 'la ecuación da el balance global, no el camino; necesita condiciones (calor, luz o catalizador). La combustión es una oxidación completa.',
       voz: 'Mira qué entra, qué sale y qué enlace cambia.',
     },
+    // Así se resuelve (fase 2): una ecuación de «Ahora tú» (CASOS_REAC), con el inventario calculado de la ecuación.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), [ec, tipo] = CASOS_REAC[r.ent(0, CASOS_REAC.length - 1)], [izq, der] = ec.split(' → ');
+        const L = ladoEc(izq), R = ladoEc(der), els = ['C', 'H', 'O', 'Cl', 'Br', 'K'].filter(e => L.tot[e] || R.tot[e]);
+        const conO2 = /\bO₂/.test(izq) && !/H₂O/.test(izq);
+        return {
+          enunciado: `¿Qué tipo de reacción es ${ec}?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el tipo de reacción: qué les pasa a los enlaces del compuesto orgánico.' },
+            { tipo: 'datos', texto: `Entran ${L.mol} ${L.mol === 1 ? 'molécula' : 'moléculas'} y salen ${R.mol}${conO2 ? '. Entre los reactivos hay O₂' : ''}.`, ecuacion: [ec] },
+            { tipo: 'regla', texto: 'Si un doble o triple se abre y todo queda junto, es adición. Si un átomo cambia por otro, sustitución. Si aparece un doble, eliminación. Con O₂, combustión.' },
+            { tipo: 'aplica', texto: PORQUE_REAC[tipo], ecuacion: [`→ ${NOM_REAC[tipo]}`] },
+            { tipo: 'sentido', texto: 'Hago el inventario de los dos lados: ningún átomo aparece ni desaparece.', ecuacion: [els.map(e => `${e}: ${L.tot[e] || 0} = ${R.tot[e] || 0}`).join('   ·   ')] },
+          ],
+          respuesta: `Es una ${NOM_REAC[tipo].toLowerCase()}`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Compara reactivos y productos.',
       generar(s) {
-        const CASOS = [
-          ['CH₂=CH₂ + Br₂ → CH₂Br–CH₂Br', 'adicion'], ['C₂H₆ + Cl₂ → C₂H₅Cl + HCl', 'sustitucion'],
-          ['CH₃–CH₂Br + KOH → CH₂=CH₂ + KBr + H₂O', 'eliminacion'], ['C₃H₈ + 5 O₂ → 3 CO₂ + 4 H₂O', 'combustion'],
-          ['HC≡CH + 2 H₂ → CH₃–CH₃', 'adicion'], ['C₆H₆ + Br₂ → C₆H₅Br + HBr', 'sustitucion'],
-          ['CH₃–CH(OH)–CH₃ → CH₂=CH–CH₃ + H₂O', 'eliminacion'], ['CH₂=CH₂ + H₂O → CH₃–CH₂OH', 'adicion'],
-          ['2 C₄H₁₀ + 13 O₂ → 8 CO₂ + 10 H₂O', 'combustion'],
-        ];
+        const CASOS = CASOS_REAC;
         const r = azar(s), [ec, tipo] = CASOS[s % CASOS.length];
-        const nom = { adicion: 'Adición', sustitucion: 'Sustitución', eliminacion: 'Eliminación', combustion: 'Combustión' };
+        const nom = NOM_REAC;
         const si = {
           adicion: 'Sería adición si un doble o triple se abriera y todo quedara en una molécula.',
           sustitucion: 'Sería sustitución si un átomo saliera y otro tomara su lugar.',
           eliminacion: 'Sería eliminación si salieran átomos vecinos y se formara un doble.',
           combustion: 'Sería combustión si reaccionara con O₂ y diera CO₂ y agua.',
         };
-        const porque = {
-          adicion: 'Un enlace múltiple se abre y los átomos que llegan quedan en el producto.',
-          sustitucion: 'Un H sale con el halógeno y otro átomo ocupa su lugar.',
-          eliminacion: 'Salen dos grupos de carbonos vecinos y aparece un enlace doble.',
-          combustion: 'Con O₂ suficiente, el carbono pasa a CO₂ y el hidrógeno a agua.',
-        };
+        const porque = PORQUE_REAC;
         const ops = r.mezcla(Object.keys(nom).map(k => (k === tipo ? { id: 'c', texto: nom[k], correcta: true } : { id: k, texto: nom[k], error: k === 'adicion' && tipo === 'eliminacion' ? 'QM-AGUA' : 'QM-REACCION', siFuera: si[k] })));
         return {
           pregunta: `¿Qué tipo de reacción es ${ec}?`,
@@ -997,6 +1236,8 @@
         ejemplo: 'Eteno + H₂ → etano: C₂H₄ gana dos H.', ver: ['sustitución'] },
       { termino: 'sustitución', def: 'Reacción en que un átomo de la molécula sale y otro ocupa su lugar.',
         ejemplo: 'CH₄ + Cl₂ → CH₃Cl + HCl: un H cambia por Cl.', ver: ['adición'] },
+      { termino: 'eliminación', def: 'Reacción en que salen dos grupos de carbonos vecinos y entre esos carbonos queda un enlace doble.',
+        ejemplo: 'CH₃–CH₂Br + KOH → CH₂=CH₂ + KBr + H₂O.', ver: ['adición'] },
       { termino: 'conformación', formas: ['conformación', 'conformaciones'],
         def: 'Cada forma que toma una molécula al girar sus enlaces simples, sin romper ninguno.',
         ejemplo: 'El butano anti y el gauche son la misma molécula.', ver: ['isómero'] },

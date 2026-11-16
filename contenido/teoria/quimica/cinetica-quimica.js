@@ -69,11 +69,25 @@
     return { datos: ejesVel({ curvas: [{ puntos: muestra(conc, 0, b), color: 'o' }, { puntos: muestra(conc, b, 10, 20), color: 'o', discontinua: true }, cuerda(val.a, b)],
       puntos: [{ x: val.a, y: conc(val.a), color: 'o' }, { x: b, y: conc(b), color: 'o' }] }), estado: {} };
   };
+  // Los datos de «Ahora tú» y «Así se resuelve»: a A → B, [A] de c1 a c2 en T segundos (mismas cuentas, otras semillas).
+  const casoRapidez = R => {
+    const a = R.de([1, 2, 3]), c1 = R.ent(6, 10) / 10, c2 = R.ent(1, 5) / 10, T = R.ent(2, 5) * 10;
+    return { a, c1, c2, T, v: (c1 - c2) / T / a };
+  };
   const velocidad = {
     id: 'rapidez-pendiente',
     titulo: 'La rapidez es una pendiente',
     temas: ['Velocidad de reacción'],
     pieza: 'ejes',
+    // Lee (fase 2): qué estudia la cinética y cómo se lee Δ. No dice cómo entra el coeficiente (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Rápido y lento', texto: 'Un fósforo arde en un segundo; la calamina de un techo se oxida en meses. Las dos son reacciones químicas, pero van a ritmos muy distintos. La cinética química estudia ese ritmo.' },
+        { titulo: 'La letra delta', texto: ['Δ es la letra griega delta y se lee «cambio de». ', dA, ' es cuánto cambió la concentración de A, en mol/L; ', dt, ', cuánto tiempo pasó mientras tanto.'],
+          ecuacion: [dA, ' = final − inicial'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, la curva naranja es [A] y la recta roja une dos instantes separados por 2 min. Mira si la recta queda igual de inclinada mientras la reacción avanza.' },
+      ],
+    },
     juega: {
       consigna: 'La reacción avanza sola (8 min en 5 s). La recta roja une [A] en los extremos de 2 min: mira cómo se aplana.',
       voz: 'Mira qué tan inclinada queda la recta roja.',
@@ -116,11 +130,31 @@
       condicion: 'es una rapidez media en un intervalo; no es la cantidad de producto final ni dice si la reacción es espontánea.',
       voz: 'Una rapidez siempre lleva su intervalo.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú», con otras semillas.
+    resuelve: {
+      generar(s) {
+        const { a, c1, c2, T, v } = casoRapidez(azar(s + 900)), cambio = c1 - c2, ritmoA = cambio / T;
+        return {
+          enunciado: [`En ${a === 1 ? '' : a + ' '}A → B, la concentración de A baja de ${f(c1, 1)} a ${f(c2, 1)} mol/L en ${f(T, 0)} s. ¿Cuál es la rapidez media de la reacción?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la rapidez media ', r, ' de la reacción: una sola, que vale para todas sus sustancias.'] },
+            { tipo: 'datos', texto: [A, ` pasa de ${f(c1, 1)} a ${f(c2, 1)} mol/L en `, t, ` = ${f(T, 0)} s. El coeficiente de A es ${a}.`] },
+            { tipo: 'regla', texto: 'Mido cuánto baja la concentración en cada segundo y divido ese ritmo entre el coeficiente de la sustancia.',
+              ecuacion: [r, ' = −', { frac: ['1', 'a'] }, ' ', { frac: [dA, dt] }] },
+            { tipo: 'cuentas', texto: 'Primero el cambio de concentración; después lo divido entre el tiempo y el coeficiente.',
+              ecuacion: [dA, ` = ${f(c2, 1)} − ${f(c1, 1)} = −${f(cambio, 1)} mol/L   →   `, r, ` = ${f(cambio, 1)} / (${a} · ${f(T, 0)}) = ${f(v, 5)} mol/(L·s)`] },
+            { tipo: 'sentido', texto: a === 1
+              ? 'Mol/L entre segundos da mol/(L·s). Con coeficiente 1, la rapidez de la reacción es el mismo ritmo al que se gasta A.'
+              : `Mol/L entre segundos da mol/(L·s). A se gasta a ${f(ritmoA, 5)} mol/(L·s): ${a} veces la rapidez de la reacción.` },
+          ],
+          respuesta: [r, ` = ${f(v, 5)} mol/(L·s)`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Divide el cambio entre el tiempo y entre el coeficiente.',
       generar(s) {
-        const R = azar(s), a = R.de([1, 2, 3]), c1 = R.ent(6, 10) / 10, c2 = R.ent(1, 5) / 10, T = R.ent(2, 5) * 10;
-        const v = (c1 - c2) / T / a;
+        const { a, c1, c2, T, v } = casoRapidez(azar(s));
         return {
           pregunta: [`En ${a === 1 ? '' : a + ' '}A → B, la concentración de A baja de ${f(c1, 1)} a ${f(c2, 1)} mol/L en ${f(T, 0)} s. ¿Cuál es la rapidez media de la reacción?`],
           opciones: opciones(v, [
@@ -152,11 +186,22 @@
   }
   const flechaEa = (ea, extra = {}) => Object.assign({ puntos: [[1.2, R0 + ea], [5, R0 + ea], null, [1.2, R0], [1.2, R0 + ea]], color: 'd', discontinua: true, rotulo: `Eₐ = ${f(ea, 0)}`, en: [1.2, R0 + ea / 2] }, extra);
   const flechaDH = (dh, extra = {}) => Object.assign({ puntos: [[5.5, R0], [9.6, R0], null, [9.6, R0], [9.6, R0 + dh]], discontinua: true, rotulo: `ΔH = ${f(dh, 0)}`, en: [9.6, R0 + dh] }, extra);
+  // Los datos y la figura de «Ahora tú»; «Así se resuelve» los usa con otras semillas.
+  const casoPerfil = R => ({ ea: 10 * R.ent(3, 9), dh: 10 * R.de([-6, -5, -4, -3, -2, 2, 3, 4, 5]) });
+  const dibPerfil = (ea, dh, curvas) => ({ datos: perfil(ea, dh, Object.assign({ puntos: [{ x: 0.4, y: R0, rotulo: `${f(R0, 0)}` }, { x: 5, y: R0 + ea, color: 'd', rotulo: `${f(R0 + ea, 0)}` }, { x: 9.6, y: R0 + dh, rotulo: `${f(R0 + dh, 0)}` }] }, curvas ? { curvas: [perfil(ea, dh).curvas[0], ...curvas] } : {})), estado: {} });
   const perfilEnergia = {
     id: 'perfil-energia',
     titulo: 'La cima del perfil de energía',
     temas: ['Teoría de colisiones y complejo activado', 'Perfil de energía de una reacción'],
     pieza: 'ejes',
+    // Lee (fase 2): el empujón inicial y las palabras exotérmica y endotérmica. No habla de la reacción inversa (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'El empujón inicial', texto: 'Un fósforo no se prende solo dentro de su caja: hay que frotarlo. Ese empujón es la energía que la reacción necesita para arrancar, aunque después libere mucho calor.' },
+        { titulo: 'Libera o absorbe', texto: 'Si una reacción libera calor, como el gas que arde en la cocina, es exotérmica. Si lo absorbe, como la piedra caliza que se vuelve cal en un horno, es endotérmica.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el eje horizontal es el avance de la reacción y el vertical, la energía en kJ/mol. Mueve las dos perillas y mira qué parte del perfil cambia con cada una.' },
+      ],
+    },
     juega: {
       consigna: 'La cima sube y baja sola: es la energía de activación. Cambia ΔH y mira qué parte del perfil mueve cada uno.',
       voz: 'Una perilla mueve la cima; la otra, el final.',
@@ -212,13 +257,55 @@
       condicion: 'Eₐ y ΔH son independientes; el complejo activado no es un producto que se pueda guardar en un frasco.',
       voz: 'Dos medidas distintas: la barrera y el desnivel.',
     },
+    resuelve: {
+      pieza: 'ejes',
+      generar(s) {
+        // Se vuelve a sortear si la cima no queda por encima de los productos: un perfil así no tiene barrera de vuelta.
+        const R = azar(s + 900);
+        let C = casoPerfil(R);
+        while (C.ea <= C.dh) C = casoPerfil(R);
+        const { ea, dh } = C, cima = R0 + ea, P = R0 + dh, inv = ea - dh;
+        const niveles = `Los reactivos están a ${f(R0, 0)} kJ/mol, la cima a ${f(cima, 0)} y los productos a ${f(P, 0)}.`;
+        if (s % 2 === 0) return {
+          enunciado: `${niveles} ¿Cuánto vale ΔH, el calor de reacción?`,
+          dibujo: dibPerfil(ea, dh),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden ΔH: el desnivel de energía entre los productos y los reactivos.' },
+            { tipo: 'datos', texto: `Tres niveles: reactivos a ${f(R0, 0)}, cima a ${f(cima, 0)} y productos a ${f(P, 0)} kJ/mol.` },
+            { tipo: 'regla', texto: 'ΔH compara solo los dos extremos: energía de los productos menos la de los reactivos. La cima no entra en esta cuenta.',
+              ecuacion: ['ΔH = ', { sub: ['E', 'productos'] }, ' − ', { sub: ['E', 'reactivos'] }] },
+            { tipo: 'cuentas', texto: 'Resto en ese orden: productos menos reactivos.', ecuacion: [`ΔH = ${f(P, 0)} − ${f(R0, 0)} = ${f(dh, 0)} kJ/mol`],
+              dibujo: dibPerfil(ea, dh, [flechaDH(dh)]) },
+            { tipo: 'sentido', texto: dh < 0
+              ? 'Sale negativo porque los productos quedaron más abajo: la reacción libera calor, es exotérmica.'
+              : 'Sale positivo porque los productos quedaron más arriba: la reacción absorbe calor, es endotérmica.' },
+          ],
+          respuesta: `ΔH = ${f(dh, 0)} kJ/mol`,
+        };
+        return {
+          enunciado: [`${niveles} ¿Cuánto vale la `, Ea, ' de la reacción inversa?'],
+          dibujo: dibPerfil(ea, dh),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la ', Ea, ' de la inversa: la barrera para volver de los productos a los reactivos.'] },
+            { tipo: 'datos', texto: `Reactivos a ${f(R0, 0)}, cima a ${f(cima, 0)} y productos a ${f(P, 0)} kJ/mol. La cima es la misma de ida y de vuelta.` },
+            { tipo: 'regla', texto: 'Cada barrera se mide desde donde se parte hasta la cima. La reacción inversa parte de los productos.' },
+            { tipo: 'cuentas', texto: 'Resto la cima menos los productos.', ecuacion: [Ea, `(inversa) = ${f(cima, 0)} − ${f(P, 0)} = ${f(inv, 0)} kJ/mol`],
+              dibujo: dibPerfil(ea, dh, [flechaEa(ea), { puntos: [[7.4, P], [7.4, cima], null, [5, cima], [7.4, cima]], color: 'h', discontinua: true, rotulo: `inversa: ${f(inv, 0)}`, en: [7.4, (P + cima) / 2] }]) },
+            { tipo: 'sentido', texto: dh < 0
+              ? `Los productos están más abajo que los reactivos, así que la vuelta es más larga que la ida: ${f(inv, 0)} contra ${f(ea, 0)} kJ/mol.`
+              : `Los productos están más arriba que los reactivos, así que la vuelta es más corta que la ida: ${f(inv, 0)} contra ${f(ea, 0)} kJ/mol.` },
+          ],
+          respuesta: [Ea, `(inversa) = ${f(inv, 0)} kJ/mol`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'ejes',
       voz: 'Ubica tres niveles: reactivos, cima y productos.',
       generar(s) {
-        const R = azar(s), ea = 10 * R.ent(3, 9), dh = 10 * R.de([-6, -5, -4, -3, -2, 2, 3, 4, 5]);
+        const R = azar(s), { ea, dh } = casoPerfil(R);
         const pide = s % 2 ? 'inversa' : 'dh';
-        const dib = { datos: perfil(ea, dh, { puntos: [{ x: 0.4, y: R0, rotulo: `${f(R0, 0)}` }, { x: 5, y: R0 + ea, color: 'd', rotulo: `${f(R0 + ea, 0)}` }, { x: 9.6, y: R0 + dh, rotulo: `${f(R0 + dh, 0)}` }] }), estado: {} };
+        const dib = dibPerfil(ea, dh);
         if (pide === 'dh') return {
           pregunta: 'Los reactivos están a 100 kJ/mol, la cima y los productos donde marca la figura. ¿Cuánto vale ΔH?',
           dibujo: dib,
@@ -274,11 +361,30 @@
     return out;
   };
   const zinc = polvo => ({ datos: { atomos: ATOMOS, especies: {}, alto: 150, separacion: 18, cajas: [{ titulo: polvo ? 'Zinc en polvo' : 'Un trozo de zinc', forma: 'vaso', nivel: 0.95, particulas: [...bloque(polvo), { e: 'H', n: 8 }], cuenta: [{ e: 'Zn', texto: polvo ? '16 expuestos' : '12 expuestos' }] }] }, estado: {} });
+  // Los casos de «Ahora tú» y «Así se resuelve»: [cambio, efecto, porqué, qué mueve, comprobación de la vida diaria].
+  const CASOS_F = [
+    ['Enfrías la mezcla de reacción', 'lenta', 'Menos moléculas superan Eₐ.', 'fraccion', 'Por eso los alimentos duran más dentro del refrigerador.'],
+    ['Diluyes con agua el ácido que reacciona con un metal', 'lenta', 'Menos choques por segundo.', 'choques', 'Con el ácido diluido, las burbujas de hidrógeno salen más despacio.'],
+    ['Agregas un catalizador adecuado', 'rapida', 'Otro camino con menor Eₐ.', 'fraccion', 'El catalizador no se gasta: al final se recupera igual que entró.'],
+    ['Calientas la mezcla de reacción', 'rapida', 'Más moléculas superan Eₐ.', 'fraccion', 'Por eso la olla a presión, más caliente, cocina más rápido.'],
+    ['Usas magnesio en polvo en vez de una cinta', 'rapida', 'Más superficie: más choques por segundo.', 'choques', 'Es la misma masa de magnesio, pero mucho más de ella queda al alcance del ácido.'],
+    ['Agregas un gas que no reacciona, con el recipiente cerrado y del mismo volumen', 'igual', 'Las concentraciones de los reactivos no cambian.', 'ninguno', 'Sube la presión total, pero cada reactivo sigue con la misma cantidad en el mismo volumen.'],
+    ['Aumentas la concentración de un reactivo en solución', 'rapida', 'Más choques por segundo.', 'choques', 'Con más partículas en el mismo volumen, se encuentran más a menudo.'],
+  ];
+  const NOM_F = { rapida: 'Va más rápido', lenta: 'Va más lento', igual: 'No cambia la rapidez' };
   const factores = {
     id: 'factores-velocidad',
     titulo: 'Qué acelera una reacción',
     temas: ['Factores que afectan la velocidad'],
     pieza: 'ejes',
+    // Lee (fase 2): temperatura y catalizador en la vida diaria. No habla de moler ni de superficie (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'En la cocina', texto: 'La leche se corta antes si queda fuera del refrigerador, y la olla a presión cocina más rápido porque el agua hierve más caliente. En Juliaca, donde el agua hierve a unos 87 °C, eso se nota.' },
+        { titulo: 'Catalizador', texto: 'Un catalizador acelera una reacción y al final sale igual que entró. En los autos, el convertidor catalítico cambia gases tóxicos del escape por otros menos dañinos.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, la curva reparte las moléculas según su energía y la línea marca Eₐ. Mira cómo cambia el área sombreada al calentar y al poner el catalizador.' },
+      ],
+    },
     juega: {
       consigna: 'La temperatura sube y baja sola; la curva reparte las moléculas por energía. Pon el catalizador: el área sombreada son las que pueden reaccionar.',
       voz: 'Mira el área a la derecha de la línea de Eₐ.',
@@ -335,20 +441,34 @@
       condicion: 'moler o agitar ayuda cuando la reacción ocurre en una superficie o la frena la mezcla; el catalizador no cambia ΔH.',
       voz: 'Pregunta siempre cuál de las dos cosas cambió.',
     },
+    resuelve: {
+      generar(s) {
+        const R = azar(s + 900), [caso, efecto, porque, mueve, vida] = CASOS_F[R.ent(0, CASOS_F.length - 1)];
+        const aplica = {
+          choques: `Este cambio mueve los choques por segundo, no su energía. ${porque}`,
+          fraccion: `Este cambio mueve la fracción de choques que superan Eₐ. ${porque}`,
+          ninguno: `${porque} Ni los choques por segundo ni la fracción que supera Eₐ cambian.`,
+        }[mueve];
+        return {
+          enunciado: `${caso}. ¿La reacción va más rápido, más lento o igual?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden si la rapidez sube, baja o se queda igual después del cambio.' },
+            { tipo: 'datos', texto: `El cambio: ${caso.charAt(0).toLowerCase() + caso.slice(1)}. Todo lo demás se mantiene.` },
+            { tipo: 'regla', texto: 'La rapidez depende de dos cosas: cuántos choques hay por segundo y qué fracción de ellos supera la barrera Eₐ.',
+              ecuacion: [r, ' ∝ ', { llave: ['Z'], nota: 'choques por segundo' }, ' · ', { llave: ['f'], nota: 'superan la barrera', color: 'c-d' }] },
+            { tipo: 'aplica', texto: aplica },
+            { tipo: 'sentido', texto: vida },
+          ],
+          respuesta: `${NOM_F[efecto]}.`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Decide si cambian los choques o la fracción que alcanza.',
       generar(s) {
-        const CASOS = [
-          ['Enfrías la mezcla de reacción', 'lenta', 'Menos moléculas superan Eₐ.'],
-          ['Diluyes con agua el ácido que reacciona con un metal', 'lenta', 'Menos choques por segundo.'],
-          ['Agregas un catalizador adecuado', 'rapida', 'Otro camino con menor Eₐ.'],
-          ['Calientas la mezcla de reacción', 'rapida', 'Más moléculas superan Eₐ.'],
-          ['Usas magnesio en polvo en vez de una cinta', 'rapida', 'Más superficie: más choques por segundo.'],
-          ['Agregas un gas que no reacciona, con el recipiente cerrado y del mismo volumen', 'igual', 'Las concentraciones de los reactivos no cambian.'],
-          ['Aumentas la concentración de un reactivo en solución', 'rapida', 'Más choques por segundo.'],
-        ];
+        const CASOS = CASOS_F;
         const [caso, efecto, porque] = CASOS[s % CASOS.length];
-        const nom = { rapida: 'Va más rápido', lenta: 'Va más lento', igual: 'No cambia la rapidez' };
+        const nom = NOM_F;
         const si = { rapida: 'Sería más rápido si hubiera más choques o más choques con E ≥ Eₐ.', lenta: 'Sería más lento si bajaran los choques o los que superan Eₐ.', igual: 'No cambiaría si ni los choques ni la fracción que alcanza variaran.' };
         return {
           pregunta: `${caso}. ¿Qué pasa con la rapidez?`,
@@ -370,11 +490,25 @@
     alt: `Rapidez contra concentración para orden ${mm}: r = ${f(K, 1)}·[A]${['⁰', '', '²'][mm]}.`,
   }, extra);
   const ORDEN = { 0: 'cero', 1: 'uno', 2: 'dos' };
+  // Los datos de «Ahora tú» y «Así se resuelve»: con q impar se busca el orden; con q par, la nueva rapidez.
+  const casoOrden = (R, q) => {
+    const mm = q % 3, x = R.de([2, 3]), y = x ** mm;
+    return q % 2 ? { busca: true, mm, x, y } : { busca: false, mm, x, y, r0: R.ent(2, 9) / 1000 };
+  };
   const orden = {
     id: 'orden-reaccion',
     titulo: 'El orden sale de los datos',
     temas: ['Leyes de velocidad y orden de reacción'],
     pieza: 'ejes',
+    // Lee (fase 2): la ley de velocidad y cómo se hacen los experimentos. No dice de dónde sale el orden (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una fórmula para la rapidez', texto: ['La ley de velocidad dice cómo depende la rapidez de las concentraciones. Cada concentración va elevada a un número, el orden respecto a esa sustancia. ', 'k es la constante de velocidad.'],
+          ecuacion: [r, ' = k', { sup: [A, 'm'] }] },
+        { titulo: 'Un cambio a la vez', texto: 'En el laboratorio se repite la misma reacción varias veces, cambiando una sola concentración y dejando igual todo lo demás, también la temperatura. Así se ve el efecto de esa sustancia sola.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el segundo punto siempre tiene el doble de [A] que el primero. Elige cada orden y cuenta cuántas veces más arriba queda el segundo punto.' },
+      ],
+    },
     juega: {
       consigna: '[A] sube y baja sola; el segundo punto queda siempre en el doble. Elige el orden y compara las dos rapideces.',
       voz: 'Cuenta cuántas veces sube r cuando [A] se duplica.',
@@ -425,18 +559,56 @@
       condicion: 'los órdenes no se copian de los coeficientes de la ecuación global; las unidades de k dependen del orden total.',
       voz: 'El exponente lo dicen los datos.',
     },
+    resuelve: {
+      generar(s) {
+        const q = s + 900, { busca, mm, x, y, r0 } = casoOrden(azar(q), q);
+        const pot = { sup: [`${f(x, 0)}`, `${f(mm, 0)}`] };
+        if (busca) {
+          const sentido = ['Orden cero: la rapidez no cambió aunque hubiera más A. Esa concentración no la afecta.',
+            'Orden uno: la rapidez creció lo mismo que [A].',
+            `Orden dos: la rapidez creció más que [A], porque ${f(x, 0)} · ${f(x, 0)} = ${f(y, 0)}.`][mm];
+          return {
+            enunciado: ['Al multiplicar ', A, ` por ${f(x, 0)} (con lo demás fijo), la rapidez se multiplica por ${f(y, 0)}. ¿Cuál es el orden respecto a A?`],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el orden m: el exponente de ', A, ' en la ley de velocidad.'] },
+              { tipo: 'datos', texto: [A, ` se multiplica por ${f(x, 0)} y `, r, ` por ${f(y, 0)}; lo demás no cambia.`] },
+              { tipo: 'regla', texto: ['Si solo cambia ', A, ', la rapidez queda multiplicada por el factor de ', A, ' elevado al orden.'],
+                ecuacion: [{ sup: [`${f(x, 0)}`, 'm'] }, ` = ${f(y, 0)}`] },
+              { tipo: 'cuentas', texto: `Busco a qué número hay que elevar ${f(x, 0)} para que dé ${f(y, 0)}.`, ecuacion: [pot, ` = ${f(x ** mm, 0)}   →   m = ${f(mm, 0)}`] },
+              { tipo: 'sentido', texto: sentido },
+            ],
+            respuesta: `Orden ${ORDEN[mm]} respecto a A.`,
+          };
+        }
+        const nuevo = r0 * y;
+        return {
+          enunciado: ['Una reacción es de orden ', ORDEN[mm], ` respecto a A y va a ${f(r0, 3)} mol/(L·s). ¿A qué rapidez va si `, A, ` se multiplica por ${f(x, 0)}?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la nueva rapidez ', r, ' cuando ', A, ` crece ${f(x, 0)} veces.`] },
+            { tipo: 'datos', texto: [`Orden ${ORDEN[mm]} respecto a A; `, r, ` = ${f(r0, 3)} mol/(L·s) al inicio; `, A, ` por ${f(x, 0)}.`] },
+            { tipo: 'regla', texto: ['La rapidez se multiplica por el factor de ', A, ' elevado al orden. Lo demás de la ley no cambia.'],
+              ecuacion: [r, ' = k', { sup: [A, 'm'] }] },
+            { tipo: 'cuentas', texto: `Elevo ${f(x, 0)} al orden y multiplico la rapidez de antes.`, ecuacion: [r, ` = ${f(r0, 3)} · `, pot, ` = ${f(r0, 3)} · ${f(y, 0)} = ${f(nuevo, 3)} mol/(L·s)`] },
+            { tipo: 'sentido', texto: mm === 0
+              ? 'Con orden cero no cambia, aunque haya más A. Las unidades siguen en mol/(L·s).'
+              : `Creció ${f(y, 0)} veces, ${mm === 1 ? 'lo mismo que [A]' : 'más que [A]'}. Las unidades siguen en mol/(L·s).` },
+          ],
+          respuesta: [r, ` = ${f(nuevo, 3)} mol/(L·s)`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Escribe la razón de rapideces como potencia.',
       generar(s) {
-        const R = azar(s), mm = s % 3, x = R.de([2, 3]), y = x ** mm;
-        if (s % 2) {
+        const R = azar(s), C = casoOrden(R, s), mm = C.mm, x = C.x, y = C.y;
+        if (C.busca) {
           return {
             pregunta: ['Al multiplicar ', A, ` por ${f(x, 0)} (con lo demás fijo), la rapidez se multiplica por ${f(y, 0)}. ¿Cuál es el orden respecto a A?`],
             opciones: [0, 1, 2, 3].filter(k => k !== mm).slice(0, 3).map(k => ({ id: `m${k}`, texto: `Orden ${ORDEN[k] || 'tres'}`, error: k === y ? 'QM-ORDEN' : 'CI9', siFuera: `Con orden ${k}, r se multiplicaría por ${f(x ** k, 0)}.` })).concat([{ id: 'c', texto: `Orden ${ORDEN[mm]}`, correcta: true }]),
             solucion: { texto: `${f(x, 0)} elevado al orden da ${f(y, 0)}.`, ecuacion: [{ sup: [`${f(x, 0)}`, 'm'] }, ` = ${f(y, 0)}  →  m = ${f(mm, 0)}`] },
           };
         }
-        const r0 = R.ent(2, 9) / 1000;
+        const r0 = C.r0;
         return {
           pregunta: ['Una reacción es de orden ', ORDEN[mm], ` respecto a A y va a ${f(r0, 3)} mol/(L·s). ¿A qué rapidez va si `, A, ` se multiplica por ${f(x, 0)}?`],
           opciones: opciones(r0 * y, [
@@ -479,11 +651,23 @@
       puntos: [...pasadas.map(([x, y]) => ({ x, y, color: 'i', guias: true })), { x: tt, y: v.cf(tt), color: 'o', rotulo: f(v.cf(tt), 2) }],
       alt: `Concentración contra tiempo, ${val.o === 1 ? 'primer' : 'segundo'} orden, desde ${f(val.a0, 1)} mol/L: a los ${f(tt, 1)} min quedan ${f(v.cf(tt), 2)} mol/L y van ${pasadas.length} mitades.` }) };
   };
+  // Los datos de «Ahora tú» y «Así se resuelve»: vida media th, nn vidas medias y masa inicial m0.
+  const casoVida = R => { const th = R.ent(2, 12) * 5, nn = R.ent(1, 4), m0 = 2 ** nn * R.ent(3, 12); return { th, nn, m0, tiempo: nn * th }; };
   const vidaMedia = {
     id: 'vida-media',
     titulo: 'La mitad en tiempos iguales',
     temas: ['Vida media'],
     pieza: 'ejes',
+    // Lee (fase 2): sustancias que se descomponen, primer orden y ln 2. No cuenta mitades (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que se acaba', texto: 'El agua oxigenada del botiquín se descompone poco a poco en agua y oxígeno, aunque el frasco esté cerrado. Muchas sustancias se gastan así, con el tiempo. La pregunta es cuánto queda después de un rato.' },
+        { titulo: 'Primer orden', texto: 'Una reacción es de primer orden cuando su rapidez es proporcional a la concentración de un solo reactivo: con el doble de reactivo, va el doble de rápido.' },
+        { titulo: 'El número ln 2', texto: `En las fórmulas de esta idea aparece ln 2, el logaritmo natural de 2. Es un número fijo, cerca de ${f(Math.log(2), 3)}; la calculadora lo da con la tecla ln.`,
+          ecuacion: [`ln 2 ≈ ${f(Math.log(2), 3)}`] },
+        { titulo: 'Qué mirar', texto: 'En el juego, cada punto turquesa aparece cuando la concentración llega a la mitad de la anterior. Mide el tiempo entre puntos seguidos y después cambia el orden.' },
+      ],
+    },
     juega: {
       consigna: 'La reacción corre sola (12 min en 6 s). Cada punto turquesa marca una mitad: mide cuánto los separa y cambia el orden.',
       voz: 'Mide la distancia entre puntos seguidos.',
@@ -537,10 +721,41 @@
       condicion: 'solo para primer orden; en segundo orden cada vida media dura más que la anterior.',
       voz: 'Mitad, mitad, mitad: cuenta los pasos.',
     },
+    resuelve: {
+      generar(s) {
+        const { th, nn, m0, tiempo } = casoVida(azar(s + 900)), tMedia = { sub: [t, '½'] };
+        if (s % 2) {
+          const cadena = Array.from({ length: nn + 1 }, (_, k) => f(m0 / 2 ** k, 2)).join(' → '), queda = m0 / 2 ** nn;
+          return {
+            enunciado: [`Primer orden, vida media de ${f(th, 0)} min. Empiezas con ${f(m0, 0)} g. ¿Cuánto queda a los `, t, ` = ${f(tiempo, 0)} min?`],
+            pasos: [
+              { tipo: 'pide', texto: `Piden la masa que todavía no se descompone a los ${f(tiempo, 0)} min.` },
+              { tipo: 'datos', texto: [tMedia, ` = ${f(th, 0)} min, ${f(m0, 0)} g al inicio y `, t, ` = ${f(tiempo, 0)} min.`] },
+              { tipo: 'regla', texto: 'En primer orden, cada vida media deja la mitad de lo que había, sin importar cuánto quede.' },
+              { tipo: 'cuentas', texto: `Cuento vidas medias: ${f(tiempo, 0)} ÷ ${f(th, 0)} = ${f(tiempo / th, 0)}. Parto a la mitad ${nn === 1 ? "una vez" : f(nn, 0) + " veces"}.`, ecuacion: [`${cadena} g`] },
+              { tipo: 'sentido', texto: `De vuelta: ${f(queda, 2)} · ${f(2 ** nn, 0)} = ${f(queda * 2 ** nn, 0)} g, lo del inicio. Nunca llega a cero de golpe.` },
+            ],
+            respuesta: `Quedan ${f(queda, 2)} g.`,
+          };
+        }
+        const k = Math.log(2) / th;
+        return {
+          enunciado: `Una reacción de primer orden tiene vida media de ${f(th, 0)} min. ¿Cuánto vale su constante k?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la constante de velocidad k de una reacción de primer orden.' },
+            { tipo: 'datos', texto: [tMedia, ` = ${f(th, 0)} min.`] },
+            { tipo: 'regla', texto: 'En primer orden, la vida media y k están amarradas por ln 2. Despejo k de esa fórmula.', ecuacion: [tMedia, ' = ', { frac: ['ln 2', 'k'] }, '   →   k = ', { frac: ['ln 2', tMedia] }] },
+            { tipo: 'cuentas', texto: 'Divido ln 2 entre la vida media.', ecuacion: [`k = ${f(Math.log(2), 4)} / ${f(th, 0)} = ${f(k, 4)} min⁻¹`] },
+            { tipo: 'sentido', texto: `Uno entre minutos da min⁻¹. De vuelta: ln 2 / ${f(k, 4)} ≈ ${f(Math.log(2) / k, 0)} min, la vida media del dato.` },
+          ],
+          respuesta: `k = ${f(k, 4)} min⁻¹`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Cuenta vidas medias antes de calcular.',
       generar(s) {
-        const R = azar(s), th = R.ent(2, 12) * 5, nn = R.ent(1, 4), m0 = 2 ** nn * R.ent(3, 12), tiempo = nn * th;
+        const R = azar(s), { th, nn, m0, tiempo } = casoVida(R);
         if (s % 2) {
           return {
             pregunta: [`Primer orden, vida media de ${f(th, 0)} min. Empiezas con ${f(m0, 0)} g. ¿Cuánto queda a los `, t, ` = ${f(tiempo, 0)} min?`],
@@ -597,6 +812,10 @@
     },
     // Glosario (docs/teoria.md §4d): las palabras que la unidad estrena en el curso. Los ejemplos se calculan aquí.
     glosario: [
+      { termino: 'cinética química', def: 'Parte de la química que estudia qué tan rápido ocurren las reacciones y qué las acelera.',
+        ver: ['rapidez de reacción'] },
+      { termino: 'logaritmo natural', simbolo: 'ln', def: 'Logaritmo en base e, el número 2,718…; la calculadora lo da con la tecla ln.',
+        ejemplo: `ln 2 ≈ ${f(Math.log(2), 3)}: aparece en la vida media de primer orden.`, ver: ['vida media'] },
       { termino: 'rapidez de reacción', simbolo: 'r', medida: 'mol/(L·s)', formas: ['rapidez de reacción', 'velocidad de reacción', 'rapidez', 'rapideces'],
         def: 'Cuánto cambia la concentración de una sustancia en cada unidad de tiempo, dividido entre su coeficiente.',
         ejemplo: `[A] baja de 0,80 a ${f(conc(2), 2)} mol/L en 2 min: r = ${f((conc(0) - conc(2)) / 2, 2)} mol/(L·min).`, ver: ['ley de velocidad'] },

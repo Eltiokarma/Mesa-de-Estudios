@@ -115,6 +115,15 @@
     titulo: 'Cada unión de azúcares suelta agua',
     temas: ['Carbohidratos'],
     pieza: 'quim-molecula',
+    // Lee (fase 2): contexto y vocabulario. No dice qué pasa con la masa al unir (eso se predice con la sacarosa).
+    lee: {
+      tarjetas: [
+        { titulo: 'Azúcares de todos los días', texto: 'La glucosa le da energía a tus células. El azúcar de mesa, el almidón de la papa y del chuño, y la celulosa de las plantas están hechos de azúcares simples unidos entre sí.' },
+        { titulo: 'Monosacáridos', texto: 'Un monosacárido es un azúcar simple, como la glucosa o la fructosa. Las dos tienen la fórmula C₆H₁₂O₆ y masa 180 u, aunque sus átomos están ordenados de otra manera.',
+          ecuacion: ['6 · 12 + 12 · 1 + 6 · 16 = 180 u'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, cada bloque Glc es una glucosa y la línea verde que une dos bloques es un enlace glucosídico. Cuenta bloques y enlaces, y sigue la masa en la lectura.' },
+      ],
+    },
     juega: {
       consigna: 'En cámara lenta, las glucosas bajan y se unen una por una. Con cada enlace sale un agua y la masa baja 18 u.',
       voz: 'Cuenta enlaces y aguas; compáralos con el número de glucosas.',
@@ -163,6 +172,24 @@
       condicion: 'para glucosas (C₆H₁₂O₆, 180 u) unidas en una cadena. La hidrólisis hace lo inverso: consume una agua por enlace.',
       voz: 'Cada unión, un agua menos.',
     },
+    // Así se resuelve (fase 2): la misma cuenta de «Ahora tú» (masaPoli), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(3, 12), m = masaPoli(n);
+        return {
+          enunciado: ['Un oligosacárido tiene ', nV, ` = ${n} glucosas unidas en una cadena abierta. ¿Cuál es su masa molecular `, MV, '?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la masa molecular ', MV, ` de la cadena de ${n} glucosas.`] },
+            { tipo: 'datos', texto: ['Hay ', nV, ` = ${n} glucosas de 180 u cada una. Cada agua pesa 18 u.`] },
+            { tipo: 'regla', texto: 'Cada unión entre dos glucosas suelta un agua. En una cadena abierta hay una unión menos que bloques.' },
+            { tipo: 'cuentas', texto: `${n} glucosas en fila: ${n - 1} uniones y ${n - 1} aguas que salen.`,
+              ecuacion: [MV, ` = 180 · ${n} − 18 · ${n - 1} = ${f(180 * n)} − ${f(18 * (n - 1))} = ${f(m)} u`] },
+            { tipo: 'sentido', texto: `Otra forma: la primera glucosa pesa 180 u y cada una que se agrega suma 180 − 18 = 162 u. 180 + 162 · ${n - 1} = ${f(GLU + (GLU - AGUA) * (n - 1))} u.` },
+          ],
+          respuesta: [MV, ` = ${f(m)} u`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Cuenta las uniones primero.',
       generar(s) {
@@ -207,6 +234,9 @@
     return { atomos: at, enlaces: en, textos: tx };
   }
   const masaGrasa = k => GLIC + 3 * ACIDOS[k].M - 3 * AGUA;
+  // Masa de una cadena CₓHᵧ escrita con subíndices (C₁₅H₃₁ → 15 · 12 + 31 · 1), para comprobar la grasa con su fórmula.
+  const SUB = '₀₁₂₃₄₅₆₇₈₉';
+  const masaCadena = cad => { const n = t => Number([...t].map(c => SUB.indexOf(c)).join('')); const [, c, h] = cad.match(/^C([₀-₉]+)H([₀-₉]+)$/); return 12 * n(c) + n(h); };
   // Animación de la grasa: los tres ácidos llegan por la derecha, uno por uno (la misma línea de tiempo que la cadena).
   // Mientras su unión avanza, el ácido (C, su C=O y su cadena) está corrido hasta 1 unidad a la derecha; al tocarse,
   // aparece la unión éster verde y su agua sale hacia la derecha. Un ancla invisible fija el ancho del encuadre.
@@ -226,6 +256,15 @@
     titulo: 'Una grasa: glicerol y tres ácidos',
     temas: ['Lípidos'],
     pieza: 'quim-molecula',
+    // Lee (fase 2): las piezas de una grasa, sin decir cuántas aguas salen (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Grasas y aceites', texto: 'La manteca y el sebo son sólidos; el aceite de cocina es líquido. Todos son lípidos: no se mezclan con el agua y guardan mucha energía en poco espacio.' },
+        { titulo: 'Las piezas', texto: 'Una grasa se arma con dos tipos de piezas: un glicerol, C₃H₈O₃, que tiene tres grupos OH, y ácidos grasos, cadenas largas de carbono con un grupo COOH en la punta.' },
+        { titulo: 'Saturado o no', texto: 'Un ácido graso saturado solo tiene enlaces simples entre sus carbonos. Si tiene un doble enlace cis, su cadena hace un codo y se acomoda peor junto a las otras.' },
+        { titulo: 'Qué mirar', texto: 'Cambia el ácido graso y sigue la lectura: cuántos ésteres se forman, si la grasa es sólida o líquida y cuánto cambia la masa.' },
+      ],
+    },
     juega: {
       consigna: 'En cámara lenta, cada ácido graso se une a un OH del glicerol y suelta un agua. Cambia el ácido: ¿trae doble enlace?',
       voz: 'Cuenta las uniones del glicerol.',
@@ -271,6 +310,28 @@
       condicion: 'los lípidos son diversos: ceras, fosfolípidos y colesterol no son triglicéridos. Una grasa no es un polímero.',
       voz: 'Glicerol, tres ácidos, tres aguas.',
     },
+    // Así se resuelve (fase 2): la misma cuenta de «Ahora tú» (masaGrasa), con otras semillas. El sentido la rehace con
+    // la fórmula: C₃H₅ más tres grupos COO–cadena, con la cadena de ACIDOS leída átomo por átomo.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), k = r.de(Object.keys(ACIDOS)), a = ACIDOS[k], mm = masaGrasa(k);
+        const cad = masaCadena(a.cad), coo = 12 + 2 * 16, c3h5 = 3 * 12 + 5;
+        const figura = aguas => mol(Object.assign(grasa(k, { aguas }), { escala: 32, alto: 240 }));
+        return {
+          enunciado: ['Una grasa se forma con glicerol (92 u) y tres moléculas de ácido ', `${a.nombre} (${f(a.M)} u). ¿Cuál es su masa molecular `, MV, '?'],
+          dibujo: figura(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la masa molecular ', MV, ` de la grasa: glicerol con tres ácidos ${a.nombre}s.`] },
+            { tipo: 'datos', texto: `Glicerol: 92 u. Cada ácido ${a.nombre}: ${f(a.M)} u. Cada agua: 18 u.` },
+            { tipo: 'regla', texto: 'Cada OH del glicerol se une a un ácido por un enlace éster, y cada unión suelta un agua. Tres uniones, tres aguas.' },
+            { tipo: 'cuentas', texto: 'Sumo las cuatro piezas y resto las tres aguas.',
+              ecuacion: [MV, ` = 92 + 3 · ${f(a.M)} − 3 · 18 = ${f(GLIC + 3 * a.M)} − 54 = ${f(mm)} u`], dibujo: figura(true) },
+            { tipo: 'sentido', texto: `Con la fórmula: C₃H₅ pesa ${f(c3h5)} u y cada grupo COO–${a.cad}, ${f(coo + cad)} u. ${f(c3h5)} + 3 · ${f(coo + cad)} = ${f(c3h5 + 3 * (coo + cad))} u. Cuadra.` },
+          ],
+          respuesta: [MV, ` = ${f(mm)} u`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Suma, y resta una agua por unión.',
       generar(s) {
@@ -308,6 +369,15 @@
     titulo: 'Desplegar no es cortar',
     temas: ['Aminoácidos y proteínas'],
     pieza: 'quim-molecula',
+    // Lee (fase 2): contexto, bloques y plegado. No dice qué hace el calor con la cadena (eso se predice con el huevo).
+    lee: {
+      tarjetas: [
+        { titulo: 'Proteínas en tu plato', texto: 'La quinua, el huevo, el queso y el cuy son ricos en proteínas. Tu cuerpo las usa para armar músculos, enzimas y defensas.' },
+        { titulo: 'Bloques y enlaces', texto: 'Una proteína es una cadena de aminoácidos. Entre dos aminoácidos vecinos hay un enlace peptídico: en el juego es la línea verde entre dos bloques.' },
+        { titulo: 'La forma importa', texto: 'Una proteína larga no queda estirada: se pliega en una forma propia. De esa forma depende el trabajo que hace en el cuerpo.' },
+        { titulo: 'Qué mirar', texto: 'Cambia el número de aminoácidos y cuenta, en cada caso, cuántos bloques, cuántos enlaces verdes y cuántas aguas hay.' },
+      ],
+    },
     juega: {
       consigna: 'En cámara lenta, los aminoácidos se unen uno por uno. Cuenta los enlaces peptídicos (verdes) y las aguas que salen.',
       voz: 'Compara el número de bloques con el de enlaces.',
@@ -354,6 +424,39 @@
       ecuacion: ['enlaces = ', nV, ' − 1', '   ·   ', MV, ' = ', { llave: ['suma'], nota: 'los aminoácidos' }, ' − ', { llave: ['18 · (', nV, ' − 1)'], nota: 'aguas que salen', color: 'c-h' }],
       condicion: 'una sola cadena lineal; los puentes disulfuro no son enlaces peptídicos. Desnaturalizada no significa digerida ni sin valor.',
       voz: 'Forma y cadena son dos preguntas distintas.',
+    },
+    // Así se resuelve (fase 2): los mismos dos casos de «Ahora tú» (contar enlaces o la masa de un tripéptido), con
+    // otras semillas y en el orden contrario.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const n = r.ent(3, 40);
+          return {
+            enunciado: ['Una cadena lineal tiene ', nV, ` = ${n} aminoácidos. ¿Cuántos enlaces peptídicos tiene?`],
+            pasos: [
+              { tipo: 'pide', texto: `Piden cuántos enlaces peptídicos hay en una cadena lineal de ${n} aminoácidos.` },
+              { tipo: 'datos', texto: ['Hay ', nV, ` = ${n} bloques en fila, sin cerrarse en anillo.`] },
+              { tipo: 'regla', texto: 'Cada enlace peptídico une dos aminoácidos vecinos. En una fila abierta hay una unión menos que bloques.' },
+              { tipo: 'cuentas', texto: 'Resto uno al número de aminoácidos.', ecuacion: [`enlaces = ${n} − 1 = ${n - 1}`] },
+              { tipo: 'sentido', texto: `Pruébalo chico: 3 aminoácidos en fila tienen 2 enlaces. Con ${n}, salen también ${n - 1} aguas al formarse.` },
+            ],
+            respuesta: `${n - 1} enlaces peptídicos`,
+          };
+        }
+        const sec = r.mezcla(Object.keys(AA)).slice(0, 3), suma = sec.reduce((x, k) => x + AA[k], 0), mm = suma - 2 * AGUA;
+        return {
+          enunciado: ['El tripéptido ', `${sec.join('–')} se forma con ${sec.map(k => `${k} (${AA[k]} u)`).join(', ')}. ¿Cuál es su masa molecular `, MV, '?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la masa molecular ', MV, ` del tripéptido ${sec.join('–')}.`] },
+            { tipo: 'datos', texto: `Las masas de los tres aminoácidos: ${sec.map(k => `${k}, ${AA[k]} u`).join('; ')}. Cada agua: 18 u.` },
+            { tipo: 'regla', texto: 'Tres aminoácidos en fila forman dos enlaces peptídicos, y cada enlace suelta un agua. Se suma todo y se restan las aguas.' },
+            { tipo: 'cuentas', texto: 'Sumo los tres y resto dos aguas.', ecuacion: [MV, ` = ${sec.map(k => AA[k]).join(' + ')} − 2 · 18 = ${suma} − 36 = ${f(mm)} u`] },
+            { tipo: 'sentido', texto: `De vuelta: si se hidroliza, entran dos aguas. ${f(mm)} + 36 = ${f(mm + 2 * AGUA)} u, justo la suma de los tres.` },
+          ],
+          respuesta: [MV, ` = ${f(mm)} u`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Cuenta aminoácidos y uniones.',
@@ -437,6 +540,15 @@
     titulo: 'Vitaminas: en grasa o en agua',
     temas: ['Vitaminas'],
     pieza: 'quim-cadena',
+    // Lee (fase 2): qué es una vitamina y las dos palabras de la idea. No dice si dan energía (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Qué son', texto: 'Las vitaminas son moléculas orgánicas que el cuerpo necesita y no fabrica, o fabrica poco. Las sacamos de frutas, verduras, carnes, huevos y lácteos.' },
+        { titulo: '¿Agua o aceite?', texto: 'Algunas sustancias se mezclan con el agua y otras con el aceite: piensa en las gotas de aceite que flotan en la sopa. A una vitamina le pasa lo mismo, según su estructura.' },
+        { titulo: 'Dos palabras', texto: 'Liposoluble quiere decir que se disuelve en grasa; hidrosoluble, que se disuelve en agua. El camu camu de la selva es una de las frutas más ricas en vitamina C.' },
+        { titulo: 'Qué mirar', texto: 'Elige una vitamina y espera: mira a qué caja, la del aceite o la del agua, se van sus moléculas.' },
+      ],
+    },
     juega: {
       consigna: 'Agitamos la vitamina con aceite y agua. En reposo, cada molécula se va a la capa que la disuelve (modelo, cámara lenta).',
       voz: 'La estructura decide dónde se disuelve.',
@@ -476,6 +588,23 @@
       ecuacion: [{ llave: ['A, D, E, K'], nota: 'en grasa', color: 'c-o' }, '   ·   ', { llave: ['C y grupo B'], nota: 'en agua', color: 'c-i' }],
       condicion: 'la solubilidad sale de la estructura: más zonas polares, más afinidad por el agua. Natural no significa inocuo en exceso.',
       voz: 'Dónde se disuelve dice dónde se guarda.',
+    },
+    // Así se resuelve (fase 2): la misma clasificación de «Ahora tú» (VIT), con otras semillas. Sin cuentas: «Lo aplico».
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), k = r.de(Object.keys(VIT)), [nom, tipo] = VIT[k], lipo = tipo === 'lipo';
+        return {
+          enunciado: `¿La vitamina ${nom} es liposoluble o hidrosoluble? ¿Dónde se guarda su exceso?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden si la vitamina ${nom} se disuelve en grasa o en agua, y qué pasa con lo que sobra.` },
+            { tipo: 'datos', texto: lipo ? `La vitamina ${nom} es casi toda cadenas de carbono e hidrógeno: poco polar.` : `La vitamina ${nom} tiene varios grupos OH o N: es polar.` },
+            { tipo: 'regla', texto: 'Lo parecido disuelve a lo parecido: lo poco polar, en grasa; lo polar, en agua. Así, A, D, E y K son liposolubles; C y el grupo B, hidrosolubles.' },
+            { tipo: 'aplica', texto: lipo ? `La ${nom} es una de las A, D, E y K: es liposoluble.` : k === 'C' ? 'La C es polar: es hidrosoluble, como todo el grupo B.' : `La ${nom} es del grupo B, como la C: es hidrosoluble.`, dibujo: columnas(k) },
+            { tipo: 'sentido', texto: lipo ? 'Cuadra con el cuerpo: lo que se disuelve en grasa se guarda en el tejido graso, y su exceso se acumula.' : 'Cuadra con el cuerpo: lo que se disuelve en agua no se guarda mucho, y el exceso sale con la orina.' },
+          ],
+          respuesta: lipo ? 'Liposoluble: el exceso se guarda en la grasa' : 'Hidrosoluble: el exceso sale con la orina',
+        };
+      },
     },
     ahoraTu: {
       voz: 'Ubícala en una de las dos columnas.',
@@ -552,11 +681,28 @@
     const resaltos = (d.resaltos || []).map(r => Object.assign({}, r, { texto: undefined }));
     return { datos: Object.assign({}, d, { atomos: d.atomos.map(rot), textos: [...(d.textos || []), ...nombres].map(rot), resaltos, escala: Math.min(d.escala, 32), alto: 250 }), estado: {} };
   };
+  // Los casos de «Ahora tú» y «Así se resuelve»: qué rasgo tiene cada sustancia y su familia.
+  const CASOS = [
+    ['La cafeína del café tiene N dentro de sus anillos.', 'alcaloide'], ['La quinina de la cascarilla tiene un N en un anillo.', 'alcaloide'],
+    ['La nicotina del tabaco tiene N en dos anillos.', 'alcaloide'], ['La quercetina de la cebolla tiene varios OH en anillos aromáticos.', 'polifenol'],
+    ['La catequina del té tiene varios OH sobre anillos aromáticos.', 'polifenol'], ['Las antocianinas del maíz morado tienen varios OH en anillos aromáticos.', 'polifenol'],
+    ['La bixina del achiote tiene una cadena larga de dobles alternados.', 'colorante'], ['El licopeno del tomate tiene una cadena larga de dobles alternados.', 'colorante'],
+  ];
+  const NOM_FAM = { alcaloide: 'Alcaloide', polifenol: 'Polifenol', colorante: 'Carotenoide (colorante de cadena)' };
   const naturales = {
     id: 'productos-naturales',
     titulo: 'Familias por estructura, no por origen',
     temas: ['Alcaloides y polifenoles', 'Colorantes naturales'],
     pieza: 'quim-molecula',
+    // Lee (fase 2): qué es un producto natural y cómo se agrupan. No dice qué molécula tiene color (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Química de las plantas', texto: 'Las plantas fabrican miles de sustancias: la cafeína del café, el rojo del achiote, el morado del maíz de la chicha morada. Se llaman productos naturales.' },
+        { titulo: 'Familias por estructura', texto: 'Los químicos no los agrupan por la planta de donde salen, sino por un rasgo de su estructura: un átomo, un grupo o una forma que se repite en toda la familia.' },
+        { titulo: 'Dobles alternados', texto: 'En una cadena de dobles alternados, los enlaces van doble, simple, doble, simple… En el juego, cada doble enlace se ve como dos rayas entre dos átomos.' },
+        { titulo: 'Qué mirar', texto: 'Elige cada familia y busca el rasgo marcado en el dibujo. La molécula gira, pero su rasgo sigue en su sitio.' },
+      ],
+    },
     juega: {
       consigna: 'Cada familia tiene un rasgo de estructura. La molécula gira sola: el dibujo cambia, la molécula no. Elige una familia.',
       voz: 'Busca el rasgo que comparten, no de dónde vienen.',
@@ -600,17 +746,34 @@
       condicion: 'son familias por estructura, no por origen. Natural no significa inocuo: la nicotina es un alcaloide tóxico.',
       voz: 'Primero el rasgo de estructura; el origen no clasifica.',
     },
+    // Así se resuelve (fase 2): la misma clasificación de «Ahora tú» (CASOS y RASGO), con otras semillas. «Lo aplico».
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), [txt, fam] = CASOS[r.ent(0, CASOS.length - 1)];
+        const sust = txt.split(/ tienen? /)[0], varias = /^Las /.test(sust);
+        const cual = (sust[0].toLowerCase() + sust.slice(1)).replace(/^el /, 'del ').replace(/^(la|las) /, 'de $1 ');
+        const rasgo = { alcaloide: 'N dentro de un anillo', polifenol: 'varios OH sobre anillos aromáticos', colorante: 'una cadena larga de dobles alternados' }[fam];
+        const cuadra = { alcaloide: 'Cuadra: como otros alcaloides, tiene un efecto fuerte en el cuerpo, aunque venga de una planta.',
+          polifenol: 'Cuadra: como muchos polifenoles, da color o un sabor astringente. El origen no decidió la familia.',
+          colorante: 'Cuadra: tiene color, como el β-caroteno de la zanahoria. El origen no decidió la familia.' }[fam];
+        return {
+          enunciado: `${txt} ¿A qué familia de productos naturales pertenece?`,
+          dibujo: RASGO[fam].fig(),
+          pasos: [
+            { tipo: 'pide', texto: `Piden la familia ${cual}: alcaloide, polifenol o carotenoide.` },
+            { tipo: 'datos', texto: `El rasgo que da el enunciado: ${rasgo}.` },
+            { tipo: 'regla', texto: 'La familia la decide un rasgo de estructura: N en un anillo es alcaloide; varios OH en anillos aromáticos, polifenol; muchos dobles alternados, carotenoide.' },
+            { tipo: 'aplica', texto: `${varias ? 'Tienen' : 'Tiene'} ${rasgo}: ${varias ? 'son' : 'es'} ${NOM_FAM[fam].toLowerCase()}.` },
+            { tipo: 'sentido', texto: cuadra },
+          ],
+          respuesta: NOM_FAM[fam],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Busca el rasgo de su familia.',
       generar(s) {
-        const CASOS = [
-          ['La cafeína del café tiene N dentro de sus anillos.', 'alcaloide'], ['La quinina de la cascarilla tiene un N en un anillo.', 'alcaloide'],
-          ['La nicotina del tabaco tiene N en dos anillos.', 'alcaloide'], ['La quercetina de la cebolla tiene varios OH en anillos aromáticos.', 'polifenol'],
-          ['La catequina del té tiene varios OH sobre anillos aromáticos.', 'polifenol'], ['Las antocianinas del maíz morado tienen varios OH en anillos aromáticos.', 'polifenol'],
-          ['La bixina del achiote tiene una cadena larga de dobles alternados.', 'colorante'], ['El licopeno del tomate tiene una cadena larga de dobles alternados.', 'colorante'],
-        ];
-        const r = azar(s), [txt, fam] = CASOS[s % CASOS.length];
-        const nom = { alcaloide: 'Alcaloide', polifenol: 'Polifenol', colorante: 'Carotenoide (colorante de cadena)' };
+        const r = azar(s), [txt, fam] = CASOS[s % CASOS.length], nom = NOM_FAM;
         const si = { alcaloide: 'Sería alcaloide si tuviera N, casi siempre en un anillo.', polifenol: 'Sería polifenol si tuviera varios OH sobre anillos aromáticos.', colorante: 'Sería carotenoide si su rasgo fuera una cadena larga de dobles alternados.' };
         return {
           pregunta: `${txt} ¿A qué familia pertenece?`,
@@ -698,6 +861,10 @@
         formas: ['ácido graso', 'ácidos grasos'], ejemplo: 'Ácido palmítico, C₁₅H₃₁COOH: 256 u.', ver: ['ácido carboxílico', 'triglicérido'] },
       { termino: 'triglicérido', def: 'Grasa formada por glicerol unido a tres ácidos grasos; cada unión suelta un agua.',
         formas: ['triglicérido', 'triglicéridos'], ejemplo: 'Glicerol y tres esteáricos: 92 + 3 · 284 − 3 · 18 = 890 u.', ver: ['ácido graso', 'éster'] },
+      { termino: 'glicerol', def: 'Alcohol de tres carbonos con tres grupos OH, C₃H₈O₃; es la base de las grasas.',
+        ejemplo: '3 · 12 + 8 · 1 + 3 · 16 = 92 u.', ver: ['triglicérido', 'alcohol'] },
+      { termino: 'lípido', formas: ['lípido', 'lípidos'], def: 'Biomolécula que no se mezcla con el agua, como las grasas, los aceites, las ceras y el colesterol.',
+        ver: ['triglicérido', 'ácido graso'] },
       { termino: 'aminoácido', def: 'Molécula con un grupo amino, NH₂, y un grupo ácido, COOH: el bloque de las proteínas.',
         formas: ['aminoácido', 'aminoácidos'], ejemplo: 'Glicina, NH₂CH₂COOH: 75 u.', ver: ['enlace peptídico'] },
       { termino: 'enlace peptídico', def: 'Unión C(=O)–NH entre dos aminoácidos; al formarse suelta una molécula de agua.',

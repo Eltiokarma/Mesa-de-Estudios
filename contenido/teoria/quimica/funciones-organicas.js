@@ -167,6 +167,30 @@
       solucion: { texto: porque[m.fam], ecuacion: [NOMBRE_FAM[m.fam]] },
     };
   }
+  // «Así se resuelve» de las ideas 1, 2 y 4: la misma lista de «Ahora tú», corrida 900 lugares. `mirar` lee la
+  // estructura (el átomo clave y sus vecinos) y devuelve qué se mira, qué se ve y la familia que eso da; la respuesta
+  // usa esa familia, y la prueba revisa que coincida con la de MOL.
+  const ART = { alcohol: 'un alcohol', fenol: 'un fenol', eter: 'un éter', aldehido: 'un aldehído', cetona: 'una cetona', amina: 'una amina', amida: 'una amida', nitrilo: 'un nitrilo' };
+  const yO = l => (l.length > 1 ? `${l.slice(0, -1).join(', ')} o ${l[l.length - 1]}` : l[0]);
+  // Artículo según el nombre: la propanona, la etanamida; el etanol, el metanal (los de esta unidad terminan en -a o no).
+  const elDe = nom => (/a$/.test(nom) ? 'la' : 'el'), delDe = nom => (/a$/.test(nom) ? 'de la' : 'del');
+  const may = x => x[0].toUpperCase() + x.slice(1);
+  function resolverClase(s, lista, familias, mirar, regla) {
+    const k = lista[(s + 900) % lista.length], m = MOL[k], v = mirar(m.m, k);
+    return {
+      enunciado: `¿A qué familia pertenece ${elDe(m.nombre)} ${m.nombre}: ${yO(familias.map(fm => NOMBRE_FAM[fm].toLowerCase()))}?`,
+      dibujo: una(m.m, null),
+      pasos: [
+        { tipo: 'pide', texto: `Piden la familia ${delDe(m.nombre)} ${m.nombre}. Para eso hay que hallar su grupo funcional.` },
+        { tipo: 'datos', texto: v.datos, dibujo: una(m.m, null, null, { resaltos: [{ atomos: v.at, color: 'f' }] }) },
+        { tipo: 'regla', texto: regla.texto, ecuacion: regla.ecuacion },
+        { tipo: 'aplica', texto: `${v.aplica} Es ${ART[v.fam]}.`, dibujo: vista(k) },
+        { tipo: 'sentido', texto: v.sentido },
+      ],
+      respuesta: `${may(elDe(m.nombre))} ${m.nombre} es ${ART[v.fam]}.`,
+    };
+  }
+  const plural = (n, uno, varios) => `${n === 1 ? 'un' : n} ${n === 1 ? uno : varios}`;
 
   // ---------- Idea 1: el OH y el O se leen con sus vecinos ----------
   // Cambia: dónde está el oxígeno · Permanece: el resalto del grupo y la escala · Progresa: OH en cadena, OH en anillo
@@ -182,12 +206,40 @@
     for (const v of vecinos(m, O)) pasos.push({ at: [O, v.id], lee: `Vecino del O: ${v.t}, carbono ${/^r/.test(v.id) ? 'de anillo aromático' : 'de cadena'}.` });
     return pasos.concat({ fin: true, lee: GRUPO_O[k] });
   }
+  const LISTA_O = ['metanol', 'propan-2-ol', 'metoxietano', '4-metilfenol', 'ciclohexanol', 'metoxibenceno', 'propan-1-ol', 'etoxietano', 'fenol'];
   const vistaOViva = val => conMarca(val.k, pasosO(val.k), val.r, { alto: 230 });
+  // «Así se resuelve» de la idea 1: el O, si lleva H y qué carbonos tiene al lado (de cadena, de anillo aromático o de
+  // anillo con solo simples), leídos de la estructura.
+  function mirarO(m) {
+    const O = m.n.find(a => /^(O|OH|HO)$/.test(a.t)), conH = /H/.test(O.t), vs = vecinos(m, O.id);
+    const tipo = v => (!/^r/.test(v.id) ? 'cadena' : vecinos(m, v.id).some(w => w.orden === 2) ? 'aromatico' : 'anillo');
+    const dice = { cadena: ['un carbono de cadena', 'dos carbonos de cadena'], aromatico: ['un carbono de anillo aromático', 'dos carbonos de anillo aromático'], anillo: ['un carbono de anillo con solo enlaces simples', 'dos carbonos de anillo con solo simples'] };
+    const fam = !conH && vs.length === 2 ? 'eter' : vs.some(v => tipo(v) === 'aromatico') ? 'fenol' : 'alcohol';
+    const nO = elementos(m).O, tipos = vs.map(tipo);
+    const unido = tipos.length === 2 && tipos[0] === tipos[1] ? dice[tipos[0]][1] : tipos.map(x => dice[x][0]).join(' y a ');
+    return {
+      at: [O.id, ...vs.map(v => v.id)], fam,
+      datos: `El O ${conH ? 'lleva un H: es un OH' : 'no lleva H'}. Está unido a ${unido}.`,
+      aplica: { eter: 'El O está entre dos carbonos y no tiene H.', fenol: 'El OH está pegado a un anillo aromático.',
+        alcohol: tipo(vs[0]) === 'anillo' ? 'El OH está en un anillo, pero ese anillo no es aromático: solo tiene simples.' : 'El OH está en un carbono de cadena, con solo enlaces simples.' }[fam],
+      sentido: `Compruebo que no haya otro grupo: ${cuentaMol(m)} tiene ${nO === 1 ? 'un solo oxígeno' : `${nO} oxígenos`}, así que la familia sale de ${nO === 1 ? 'ese O' : 'sus O'}.`,
+    };
+  }
   const oxigeno = {
     id: 'alcohol-fenol-eter',
     titulo: 'El oxígeno y sus vecinos',
     temas: ['Grupos funcionales', 'Alcoholes, fenoles y éteres'],
     pieza: 'quim-molecula',
+    // Lee (fase 2): familias, cómo se lee el dibujo y qué mirar. No dice qué hace aromático a un anillo ni qué familia
+    // da un OH en un anillo (eso pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Familias de moléculas', texto: 'Las moléculas orgánicas se agrupan en familias según su grupo funcional: unos pocos átomos que deciden cómo reacciona la molécula. El alcohol de la farmacia, el etanol, es de la familia de los alcoholes.' },
+        { titulo: 'Cómo se lee el dibujo', texto: 'Cada rayita es un enlace: una sola, enlace simple; dos, enlace doble. CH₃ es un carbono con tres hidrógenos, y OH, un oxígeno con su hidrógeno.',
+          ecuacion: ['CH₃–CH₂–OH'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, el conteo violeta revisa solo el oxígeno y después cada vecino. Cambia de molécula y fíjate a qué está unido el O en cada una.' },
+      ],
+    },
     juega: {
       consigna: 'Las tres tienen oxígeno. El conteo revisa solo a qué está unido el O. Elige otra molécula: los vecinos deciden la familia.',
       voz: 'No basta ver un O: revisa sus dos vecinos.',
@@ -233,10 +285,19 @@
       condicion: 'se mira todo el entorno del oxígeno, no solo que esté. R es una cadena de carbonos; Ar, un anillo aromático.',
       voz: 'Primero el O, después sus dos vecinos.',
     },
+    // Así se resuelve (fase 2): una molécula de la lista de «Ahora tú», clasificada mirando el O como en el juego.
+    resuelve: {
+      generar(s) {
+        return resolverClase(s, LISTA_O, ['alcohol', 'fenol', 'eter'], mirarO, {
+          texto: 'Busco el O y miro sus vecinos. OH en un carbono con solo simples: alcohol. OH en anillo aromático: fenol. O entre dos carbonos, sin H: éter.',
+          ecuacion: ['R–OH   ·   Ar–OH   ·   R–O–R′'],
+        });
+      },
+    },
     ahoraTu: {
       voz: 'Busca el O y revisa sus vecinos.',
       generar(s) {
-        return clasificar(s, ['metanol', 'propan-2-ol', 'metoxietano', '4-metilfenol', 'ciclohexanol', 'metoxibenceno', 'propan-1-ol', 'etoxietano', 'fenol'], ['alcohol', 'fenol', 'eter'], {
+        return clasificar(s, LISTA_O, ['alcohol', 'fenol', 'eter'], {
           alcohol: 'Sería alcohol si el OH estuviera en un carbono con solo simples.',
           fenol: 'Sería fenol si el OH estuviera en un anillo aromático.',
           eter: 'Sería éter si el O estuviera entre dos carbonos, sin H.',
@@ -260,11 +321,34 @@
     for (const v of vecinos(m, C).filter(x => x.id !== O)) pasos.push({ at: [C, v.id], lee: `Vecino del C=O: ${v.t}, ${QUE(v)}.` });
     return pasos.concat({ fin: true, lee: fin[k] });
   }
+  // «Así se resuelve» de la idea 2: el carbono del C=O, cuántos H lleva (en su rótulo y como vecinos) y cuántos
+  // carbonos tiene al lado, leídos de la estructura.
+  const LISTA_CO = ['etanal', 'propanona', 'butanal', 'butanona', 'pentan-2-ona', 'metanal', 'pentan-3-ona', 'propanal'];
+  function mirarCO(m, k) {
+    const O = oDe(k), C = vecinos(m, O)[0].id, t = rotulo(m, C), otros = vecinos(m, C).filter(v => v.id !== O);
+    const nH = (/^CH/.test(t) ? 1 : 0) + otros.filter(v => v.t === 'H').length, nC = otros.filter(v => /^C/.test(v.t)).length;
+    const fam = nH ? 'aldehido' : 'cetona', suf = MOL[k].nombre.endsWith('al') ? '-al' : '-ona';
+    return {
+      at: [C, O, ...otros.map(v => v.id)], fam,
+      datos: `El carbono del C=O ${nH ? `lleva ${plural(nH, 'H', 'H')}` : 'no lleva H'} y ${nC ? `tiene ${plural(nC, 'carbono vecino', 'carbonos vecinos')}` : 'no tiene carbonos vecinos'}.`,
+      aplica: fam === 'aldehido' ? 'Su carbono lleva H: el C=O está en el extremo de la cadena.' : 'Su carbono está entre dos carbonos: el C=O está en medio de la cadena.',
+      sentido: `El nombre lo confirma: ${MOL[k].nombre} termina en «${suf}», el sufijo ${suf === '-al' ? 'de los aldehídos' : 'de las cetonas'}.`,
+    };
+  }
   const carbonilo = {
     id: 'aldehido-cetona',
     titulo: 'El C=O: extremo o medio',
     temas: ['Aldehídos y cetonas'],
     pieza: 'quim-molecula',
+    // Lee: el carbonilo, los sufijos y qué mirar. No dice qué familia da el C=O en medio (eso pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'El carbonilo', texto: 'Un carbono unido a un oxígeno con enlace doble, C=O, se llama carbonilo. Lo tiene la acetona del quitaesmalte y lo tienen muchas moléculas del olor de las frutas.',
+          ecuacion: ['C=O'] },
+        { titulo: 'Nombres que avisan', texto: 'El sufijo del nombre avisa la familia. Propanal termina en «-al» y propanona, en «-ona». Al jugar, verás qué estructura le toca a cada terminación.' },
+        { titulo: 'Qué mirar', texto: 'El conteo revisa qué más tiene el carbono del C=O, además del oxígeno. Corre el C=O por la cadena y cuenta lo que tiene al lado ese carbono.' },
+      ],
+    },
     juega: {
       consigna: 'El conteo revisa solo qué más tiene el carbono del C=O: un H o dos carbonos. Corre el C=O y compara.',
       voz: 'Mira los vecinos del carbono del C=O.',
@@ -309,10 +393,19 @@
       condicion: 'el C=O no debe tener un O o un N unidos al mismo carbono: eso ya sería ácido, éster o amida.',
       voz: 'Cuenta qué rodea al carbono del C=O.',
     },
+    // Así se resuelve: una molécula de la lista de «Ahora tú», clasificada por el carbono del C=O.
+    resuelve: {
+      generar(s) {
+        return resolverClase(s, LISTA_CO, ['aldehido', 'cetona', 'alcohol'], mirarCO, {
+          texto: 'Busco el C=O y miro su carbono. Si ese carbono lleva un H, es aldehído; si está entre dos carbonos, es cetona.',
+          ecuacion: ['R–CHO   ·   R–CO–R′'],
+        });
+      },
+    },
     ahoraTu: {
       voz: 'Mira los vecinos del carbono del C=O.',
       generar(s) {
-        return clasificar(s, ['etanal', 'propanona', 'butanal', 'butanona', 'pentan-2-ona', 'metanal', 'pentan-3-ona', 'propanal'], ['aldehido', 'cetona', 'alcohol'], {
+        return clasificar(s, LISTA_CO, ['aldehido', 'cetona', 'alcohol'], {
           aldehido: 'Sería aldehído si el carbono del C=O llevara un H.',
           cetona: 'Sería cetona si el carbono del C=O tuviera dos carbonos vecinos.',
           alcohol: 'Sería alcohol si hubiera un OH con enlace simple, no un C=O.',
@@ -335,11 +428,33 @@
     if (conProductos) extra.textos.push({ x: 5.75, y: 3.4, t: '+', peso: 700 });
     return figura(lista, extra);
   }
+  // Pares de «Ahora tú» y «Así se resuelve»: el nombre del ácido y su «-ato»; el del alcohol y su «-ilo». El orden es
+  // el largo de la cadena (1, 2, 3, 4 carbonos), y cadenasEster arma con él las tres estructuras.
+  const ACIDOS = [['metanoico', 'metanoato'], ['etanoico', 'etanoato'], ['propanoico', 'propanoato'], ['butanoico', 'butanoato']];
+  const ALCS = [['metanol', 'metilo'], ['etanol', 'etilo'], ['propan-1-ol', 'propilo']];
+  function cadenasEster(n, m) {
+    const ac = n === 1 ? ['H', 'C'] : ['CH₃', ...Array(n - 2).fill('CH₂'), 'C'], iC = ac.length - 1;
+    const al = Array.from({ length: m }, (_, k) => (k === m - 1 ? 'CH₃' : 'CH₂'));
+    return {
+      acido: est({ fila: [...ac, 'OH'], arriba: { [iC]: ['O', 2] } }),
+      alcohol: est({ fila: [...al.slice().reverse(), 'OH'] }),
+      ester: { m: est({ fila: [...ac, 'O', ...al], arriba: { [iC]: ['O', 2] } }), g: [`f${iC}`, `a${iC}`, `f${iC + 1}`] },
+    };
+  }
   const acidos = {
     id: 'acido-ester',
     titulo: 'Ácido, éster y el agua',
     temas: ['Ácidos carboxílicos y ésteres'],
     pieza: 'quim-molecula',
+    // Lee: vinagre, olores de fruta y qué mirar. No dice qué sale cuando se forma un éster (eso pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'El ácido del vinagre', texto: 'El vinagre de la cocina lleva ácido etanoico, que también se llama ácido acético. Es de la familia de los ácidos carboxílicos, como el ácido que huele en la mantequilla rancia.',
+          ecuacion: ['CH₃COOH'] },
+        { titulo: 'Olor a fruta', texto: 'Mucho del olor del plátano o de la piña viene de ésteres. La industria los fabrica para dar aroma a caramelos y refrescos.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el conteo revisa qué está unido al carbono del C=O. Compara ese vecino en las tres moléculas: ahí está la diferencia.' },
+      ],
+    },
     juega: {
       consigna: 'El conteo revisa solo qué está unido al carbono del C=O: un OH, un O que sigue a otro carbono, o solo carbonos.',
       voz: 'El vecino del C=O decide la familia.',
@@ -387,11 +502,30 @@
       condicion: 'es un equilibrio con catalizador ácido y no llega al 100 %. Esta unión suelta agua; una adición, no.',
       voz: 'Al nombrar el éster, el ácido va primero.',
     },
+    // Así se resuelve: el mismo par ácido + alcohol de «Ahora tú» (las mismas listas), corrido 900 lugares. Las tres
+    // estructuras salen de los largos de cadena; las fórmulas las cuenta cuentaMol, para comprobar que sale agua.
+    resuelve: {
+      generar(s) {
+        const t = s + 900, i = t % 4, j = Math.floor(t / 4) % 3, [ac, sal] = ACIDOS[i], [alc, ilo] = ALCS[j], n = i + 1, m = j + 1;
+        const e = cadenasEster(n, m), fa = cuentaMol(e.acido), fb = cuentaMol(e.alcohol), fe = cuentaMol(e.ester.m);
+        const carb = x => (x === 1 ? 'un carbono' : `${x} carbonos`);
+        return {
+          enunciado: `El ácido ${ac} reacciona con el ${alc} y forma un éster y agua. ¿Cómo se llama el éster?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden el nombre del éster que forman el ácido ${ac} y el ${alc}.` },
+            { tipo: 'datos', texto: `El ácido ${ac} tiene ${carb(n)} y el ${alc}, ${carb(m)}. Al unirse, sueltan una molécula de agua.`, ecuacion: [`ácido ${ac} + ${alc} → éster + H₂O`] },
+            { tipo: 'regla', texto: 'El éster lleva dos palabras. Primero va la del ácido, con «-ato» en vez de «-ico». Después, «de» y el alcohol como grupo, con «-ilo».' },
+            { tipo: 'aplica', texto: `El ácido ${ac} da «${sal}». El ${alc} da «${ilo}». Se juntan en ese orden.`, ecuacion: [`${sal} de ${ilo}`],
+              dibujo: una(e.ester.m, e.ester.g, 'éster', { escala: 32, alto: 170 }) },
+            { tipo: 'sentido', texto: `Compruebo con los átomos: el éster tiene ${carb(n + m)}, los del ácido más los del alcohol, y entre los dos sueltan H₂O.`, ecuacion: [`${fa} + ${fb} → ${fe} + H₂O`] },
+          ],
+          respuesta: `${sal} de ${ilo}`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'El ácido da la primera palabra; el alcohol, la segunda.',
       generar(s) {
-        const ACIDOS = [['metanoico', 'metanoato'], ['etanoico', 'etanoato'], ['propanoico', 'propanoato'], ['butanoico', 'butanoato']];
-        const ALCS = [['metanol', 'metilo'], ['etanol', 'etilo'], ['propan-1-ol', 'propilo']];
         const r = azar(s), [ac, sal] = ACIDOS[s % 4], [alc, ilo] = ALCS[Math.floor(s / 4) % 3];
         const raiz = x => x.replace(/(anoato|anoico)$/, '').replace(/ilo$/, '');
         const alAcido = { metilo: 'metanoato', etilo: 'etanoato', propilo: 'propanoato' }[ilo], alAlc = { metanoato: 'metilo', etanoato: 'etilo', propanoato: 'propilo', butanoato: 'butilo' }[sal];
@@ -426,11 +560,37 @@
     else pasos.push({ at: [N, c.id], lee: `Su carbono: ${c.t}, de cadena, sin C=O.` });
     return pasos.concat({ fin: true, lee: NIT[k] });
   }
+  // «Así se resuelve» de la idea 4: el N, sus carbonos vecinos, con qué enlace y si alguno lleva un C=O.
+  const LISTA_N = ['metilamina', 'etanamida', 'etanonitrilo', 'dimetilamina', 'propanamida', 'propanonitrilo', 'n-metiletanamida', 'etilamina'];
+  function mirarN(m) {
+    const N = m.n.find(a => /N/.test(a.t)), cs = vecinos(m, N.id).filter(v => /^C/.test(v.t));
+    const triple = cs.some(v => v.orden === 3), co = cs.find(v => conCO(m, v.id));
+    const fam = triple ? 'nitrilo' : co ? 'amida' : 'amina', f = cuentaMol(m);
+    const ese = cs.length === 1 ? 'Ese carbono' : 'Uno de ellos';
+    return {
+      at: [N.id, ...cs.map(v => v.id), ...(co ? [vecinos(m, co.id).find(v => v.t === 'O').id] : [])], fam,
+      datos: `El N${N.t === 'N' ? '' : ` (${N.t})`} está unido a ${plural(cs.length, 'carbono', 'carbonos')}${triple ? ' con enlace triple' : ''}. ${triple ? 'No lleva H.' : co ? `${ese} lleva un C=O.` : cs.length === 1 ? 'Ese carbono no lleva C=O.' : 'Ninguno lleva C=O.'}`,
+      aplica: { nitrilo: 'El N tiene triple enlace con su carbono: C≡N.', amida: 'El N está unido al carbono de un C=O.', amina: 'El N está unido a carbonos de cadena, sin C=O al lado.' }[fam],
+      sentido: { nitrilo: `Compruebo: ${f} no tiene O, y al N no le queda lugar para un H. Solo puede ser el triple enlace.`,
+        amida: `Compruebo: el único O de ${f} está en el C=O pegado al N. Por eso no es amina, aunque tenga ${N.t}.`,
+        amina: `Compruebo: ${f} no tiene oxígeno, así que no puede haber un C=O junto al N.` }[fam],
+    };
+  }
   const nitrogeno = {
     id: 'amina-amida-nitrilo',
     titulo: 'El nitrógeno y su carbono',
     temas: ['Aminas, amidas y nitrilos'],
     pieza: 'quim-molecula',
+    // Lee: aminas en el mercado, nitrilos en los guantes y qué mirar. No dice qué hace al NH₂ de una amida (eso
+    // pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Olor a pescado', texto: 'El olor del pescado que ya no está fresco viene de aminas: moléculas con nitrógeno que se parecen al amoniaco. En el mercado de Puno, con la trucha del lago, ese olor avisa rápido.' },
+        { titulo: 'Guantes de nitrilo', texto: 'Los guantes de nitrilo de las farmacias y postas se fabrican con una molécula que tiene C≡N: un carbono y un nitrógeno unidos por enlace triple.',
+          ecuacion: ['C≡N'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, el conteo mira el N, después su carbono vecino y con qué enlace se unen. Cambia de molécula y compara lo que tiene ese carbono.' },
+      ],
+    },
     juega: {
       consigna: 'Las tres tienen nitrógeno. El conteo revisa solo a qué carbono está unido el N, con qué enlace y si ese carbono lleva C=O.',
       voz: 'Revisa el carbono vecino del N.',
@@ -472,10 +632,19 @@
       condicion: 'se mira el carbono vecino del N. Una amida y una amina con NH₂ no se comportan igual.',
       voz: 'NH₂ no basta: mira el carbono de al lado.',
     },
+    // Así se resuelve: una molécula de la lista de «Ahora tú», clasificada por el carbono vecino del N.
+    resuelve: {
+      generar(s) {
+        return resolverClase(s, LISTA_N, ['amina', 'amida', 'nitrilo'], mirarN, {
+          texto: 'Busco el N y miro su carbono. Triple enlace: nitrilo. Si ese carbono lleva un C=O: amida. Si solo hay carbonos de cadena: amina.',
+          ecuacion: ['R–NH₂   ·   R–CO–NH₂   ·   R–C≡N'],
+        });
+      },
+    },
     ahoraTu: {
       voz: 'Encuentra el N y revisa su carbono vecino.',
       generar(s) {
-        return clasificar(s, ['metilamina', 'etanamida', 'etanonitrilo', 'dimetilamina', 'propanamida', 'propanonitrilo', 'n-metiletanamida', 'etilamina'], ['amina', 'amida', 'nitrilo'], {
+        return clasificar(s, LISTA_N, ['amina', 'amida', 'nitrilo'], {
           amina: 'Sería amina si el N estuviera unido solo a carbonos de cadena o a H.',
           amida: 'Sería amida si el carbono vecino del N tuviera un C=O.',
           nitrilo: 'Sería nitrilo si el N tuviera triple enlace con el carbono.',
@@ -522,11 +691,36 @@
     if (conPuentes) d.textos = [{ x: 4.4, y: 1.55, t: 'puente de H', color: 'i' }];
     return { datos: d, estado: {} };
   }
+  // Casos de «Ahora tú» y «Así se resuelve»: [molécula, su fórmula, isómero de función, otro, otro].
+  const CASOS_ISO = [
+    ['etanol', 'C₂H₆O', 'metoximetano', 'metanol', 'etanal'],
+    ['propanal', 'C₃H₆O', 'propanona', 'propan-1-ol', 'etanal'],
+    ['ácido propanoico', 'C₃H₆O₂', 'etanoato de metilo', 'ácido etanoico', 'propanal'],
+    ['propanona', 'C₃H₆O', 'propanal', 'butanona', 'propan-2-ol'],
+    ['butanal', 'C₄H₈O', 'butanona', 'propanal', 'butan-1-ol'],
+    ['ácido etanoico', 'C₂H₄O₂', 'metanoato de metilo', 'ácido propanoico', 'etanol'],
+    ['propan-1-ol', 'C₃H₈O', 'metoxietano', 'propan-2-ol', 'propanal'],
+  ];
+  // Para «Así se resuelve», cada nombre se busca en MOL (o aquí, el butan-1-ol, que no se dibuja en otro lado) y su
+  // fórmula se cuenta de la estructura: así el paso de las cuentas no usa fórmulas escritas a mano.
+  const EXTRA_ISO = { 'butan-1-ol': { m: est({ fila: ['CH₃', 'CH₂', 'CH₂', 'CH₂', 'OH'] }), fam: 'alcohol' } };
+  const porNombre = nom => EXTRA_ISO[nom] || MOL[Object.keys(MOL).find(k => MOL[k].nombre === nom)];
+  const famDe = nom => NOMBRE_FAM[porNombre(nom).fam].toLowerCase();
   const isomeria = {
     id: 'isomeria-funcion',
     titulo: 'Misma fórmula, otra familia',
     temas: ['Isomería de función'],
     pieza: 'quim-molecula',
+    // Lee: fórmula molecular, isómeros y qué mirar. No habla de ebullición ni de cómo se atraen las moléculas (eso
+    // pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que dice la fórmula', texto: 'La fórmula molecular solo cuenta átomos. C₂H₆O dice dos carbonos, seis hidrógenos y un oxígeno, pero no dice cómo están unidos.',
+          ecuacion: ['C₂H₆O'] },
+        { titulo: 'Mismas piezas', texto: 'Con las mismas piezas de un juego de armar salen figuras distintas. Con los mismos átomos pasa igual: salen moléculas distintas, que se llaman isómeros.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el conteo compara los átomos de las dos moléculas, elemento por elemento. Al final, mira qué grupo funcional quedó resaltado en cada una.' },
+      ],
+    },
     juega: {
       consigna: 'El conteo cuenta solo los átomos de las dos, elemento por elemento. Elige otro par: mismo inventario, ¿mismo grupo funcional?',
       voz: 'Mismo inventario de átomos; mira dónde están.',
@@ -567,19 +761,33 @@
       condicion: 'la comparación vale si el resto de la estructura es parecido. El grupo funcional no decide solo todas las propiedades.',
       voz: 'Misma fórmula no es misma sustancia.',
     },
+    // Así se resuelve: un caso de «Ahora tú» (CASOS_ISO), corrido 900 lugares. Las fórmulas se cuentan de las
+    // estructuras y cada candidato se descarta por su fórmula o por su familia.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), [mol, , bien, otro, mal] = CASOS_ISO[(s + 900) % CASOS_ISO.length];
+        const fm = nom => cuentaMol(porNombre(nom).m), meta = fm(mol), cands = r.mezcla([bien, otro, mal]);
+        const por = nom => (fm(nom) !== meta ? 'otra fórmula' : famDe(nom) === famDe(mol) ? `misma fórmula, pero también es ${famDe(nom)}` : `misma fórmula y es ${famDe(nom)}`);
+        const A = porNombre(mol), B = porNombre(bien);
+        return {
+          enunciado: `¿Cuál es un isómero de función ${delDe(mol)} ${mol}: ${cands.map(x => `${elDe(x)} ${x}`).join(', ').replace(/, ([^,]*)$/, ' o $1')}?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuál de los tres tiene los mismos átomos que ${elDe(mol)} ${mol}, pero otro grupo funcional.` },
+            { tipo: 'datos', texto: `Cuento los átomos de cada estructura. ${may(elDe(mol))} ${mol} es ${famDe(mol)}.`, ecuacion: [[mol, ...cands].map(x => `${x}: ${fm(x)}`).join('   ·   ')] },
+            { tipo: 'regla', texto: 'Un isómero de función tiene exactamente los mismos átomos y otro grupo funcional. Si sobra o falta un átomo, ya no es isómero.' },
+            { tipo: 'cuentas', texto: `Comparo con ${meta}. ${[mal, otro, bien].map(x => `${may(elDe(x))} ${x}: ${por(x)}.`).join(' ')}`,
+              dibujo: figura([[A.m, 0, 0, 'a'], [B.m, 0, 2.6, 'b']], { escala: 40, alto: 250,
+                resaltos: [{ atomos: A.g.map(x => 'a' + x), color: 'i', texto: famDe(mol) }, { atomos: B.g.map(x => 'b' + x), color: 'i', texto: famDe(bien) }] }) },
+            { tipo: 'sentido', texto: `Compruebo: ${elDe(mol)} ${mol} y ${elDe(bien)} ${bien} son los dos ${meta}, pero uno es ${famDe(mol)} y el otro, ${famDe(bien)}.` },
+          ],
+          respuesta: `${may(elDe(bien))} ${bien}, que también es ${meta}.`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Busca la misma fórmula con otro grupo.',
       generar(s) {
-        const CASOS = [
-          ['etanol', 'C₂H₆O', 'metoximetano', 'metanol', 'etanal'],
-          ['propanal', 'C₃H₆O', 'propanona', 'propan-1-ol', 'etanal'],
-          ['ácido propanoico', 'C₃H₆O₂', 'etanoato de metilo', 'ácido etanoico', 'propanal'],
-          ['propanona', 'C₃H₆O', 'propanal', 'butanona', 'propan-2-ol'],
-          ['butanal', 'C₄H₈O', 'butanona', 'propanal', 'butan-1-ol'],
-          ['ácido etanoico', 'C₂H₄O₂', 'metanoato de metilo', 'ácido propanoico', 'etanol'],
-          ['propan-1-ol', 'C₃H₈O', 'metoxietano', 'propan-2-ol', 'propanal'],
-        ];
-        const r = azar(s), [mol, fm, bien, otro, mal] = CASOS[s % CASOS.length];
+        const r = azar(s), [mol, fm, bien, otro, mal] = CASOS_ISO[s % CASOS_ISO.length];
         const posicion = mol === 'propan-1-ol';
         return {
           pregunta: `¿Cuál es un isómero de función del ${mol} (${fm})?`,
@@ -619,6 +827,15 @@
     titulo: 'Cadena, número y sufijo',
     temas: ['Nomenclatura de compuestos monofuncionales'],
     pieza: 'quim-molecula',
+    // Lee: cómo se lee un nombre, las raíces y qué mirar. No dice qué cadena es la principal (eso pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un nombre que se lee', texto: 'El alcohol isopropílico de los limpiadores de pantallas se llama propan-2-ol. «Prop» dice tres carbonos, «-ol» dice alcohol y el 2, en qué carbono está el OH: es el localizador.',
+          ecuacion: ['prop · an · ', { v: 'c-d', t: '2' }, ' · ol'] },
+        { titulo: 'Las raíces', texto: 'Met, et, prop, but, pent y hex dicen 1, 2, 3, 4, 5 y 6 carbonos. Las reglas para armar los nombres las fija la IUPAC, la unión internacional de químicos.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el OH recorre la cadena solo. Cambia el extremo desde el que se numera y compara el número verde que le toca al OH.' },
+      ],
+    },
     juega: {
       consigna: 'El OH recorre la cadena solo. Elige desde qué extremo numerar y mira: el nombre siempre usa el número menor.',
       voz: 'Prueba los dos extremos y compara el número del OH.',
@@ -669,6 +886,30 @@
       ecuacion: [{ llave: ['2-etilbutan-', { v: 'c-d', t: '1' }, '-ol'], nota: 'rama, cadena, sufijo' }],
       condicion: 'para un solo grupo funcional (IUPAC). Con varios grupos, dobles o empates hay reglas extra; la cadena más larga no basta.',
       voz: 'Primero el grupo, después el largo.',
+    },
+    // Así se resuelve: el mismo alcohol de «Ahora tú» (cadena de 3 a 6 y OH en cualquier carbono), con la semilla
+    // corrida 900. La cadena se arma igual que allá; los números verdes van desde el extremo más cercano al OH.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = 3 + (s % 4), p = r.ent(1, n), q = n + 1 - p, menor = Math.min(p, q);
+        const fila = Array.from({ length: n }, (_, i) => (i === 0 || i === n - 1 ? (i + 1 === p ? 'CH₂' : 'CH₃') : (i + 1 === p ? 'CH' : 'CH₂')));
+        const m = est({ fila, abajo: { [p - 1]: ['OH'] } }), izq = p <= q;
+        const numeros = Array.from({ length: n }, (_, i) => ({ x: i * 1.25, y: -0.95, t: String(izq ? i + 1 : n - i), color: 'd' }));
+        const L = { v: 'c-d', t: String(menor) };
+        return {
+          enunciado: `Este alcohol tiene una cadena de ${n} carbonos, sin ramas, y un solo OH. ¿Cuál es su nombre IUPAC?`,
+          dibujo: figura([[m, 0, 0, '']], { escala: 42, alto: 180 }),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el nombre: la raíz por los carbonos, el localizador del OH y el sufijo de la familia.' },
+            { tipo: 'datos', texto: `Cadena de ${n} carbonos con un OH. Contando desde la izquierda, el OH está en el ${p}; desde la derecha, en el ${q}.` },
+            { tipo: 'regla', texto: 'La cadena principal es la que lleva el OH. Se numera desde el extremo que le da al OH el número más chico, y se termina en «-ol».' },
+            { tipo: 'cuentas', texto: [`Raíz de ${n} carbonos: «${sufijo(n)}». El localizador es el menor de ${p} y ${q}: `, L, '.'],
+              ecuacion: [`mín(${p}, ${q}) = `, L, `   →   ${sufijo(n)}-`, L, '-ol'], dibujo: figura([[m, 0, 0, '']], { escala: 42, alto: 180, textos: numeros }) },
+            { tipo: 'sentido', texto: `Compruebo: ${p} + ${q} = ${p + q}, uno más que los carbonos, como debe ser al contar desde los dos lados. Me quedo con el menor.` },
+          ],
+          respuesta: [`${sufijo(n)}-`, L, '-ol'],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Numera desde el extremo más cercano al OH.',
@@ -777,6 +1018,8 @@
         ejemplo: 'Propanona: la terminación -ona avisa que es cetona.', ver: ['localizador'] },
       { termino: 'localizador', def: 'Número del nombre que dice en qué carbono está el grupo; se usa el menor posible.',
         ejemplo: 'Butan-2-ol: el OH está en el carbono 2.', formas: ['localizador', 'localizadores'], ver: ['sufijo'] },
+      { termino: 'IUPAC', def: 'Unión Internacional de Química Pura y Aplicada: fija las reglas para nombrar las sustancias en todo el mundo.',
+        ejemplo: 'Su nombre para la acetona es propanona.', ver: ['sufijo', 'localizador'] },
     ],
     laboratorio: [
       {

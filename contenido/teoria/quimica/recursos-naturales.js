@@ -68,14 +68,39 @@
   const GR = () => Kit.piezas.recta.geometria(torre());
   const tDeX = x => { const g = GR(); return 400 * (x - g.x(0)) / (g.x(400) - g.x(0)); };
   const hierven = t => FRAC.filter(x => (x.a === null || t >= x.a) && (x.b === null || t <= x.b)).map(x => x.n);
+  // Procesos de «Ahora tú» y «Así se resuelve»: el caso, su tipo y, para el resuelto, qué entra, qué sale y por qué.
+  const CASOS_DEST = [
+    ['Calentar el crudo y recoger lo que se condensa entre 150 y 275 °C', 'separa', 'crudo caliente', 'lo que hierve entre 150 y 275 °C',
+      'Solo se calienta y se recoge lo que hierve en ese tramo: son moléculas que el crudo ya traía.'],
+    ['Romper moléculas de C₁₂H₂₆ en otras más cortas con un catalizador', 'transforma', 'C₁₂H₂₆', 'moléculas más cortas',
+      'Cada C₁₂H₂₆ se rompe en dos moléculas más chicas: se rompen enlaces y salen sustancias que no estaban.'],
+    ['Reacomodar heptano en moléculas ramificadas para subir el octanaje', 'transforma', 'heptano en cadena', 'moléculas ramificadas',
+      'Los carbonos del heptano cambian de vecinos: las uniones son otras, así que son sustancias nuevas.'],
+    ['Separar el agua y la sal que vienen con el crudo', 'separa', 'crudo con agua y sal', 'crudo, agua y sal por separado',
+      'El agua, la sal y el crudo salen tal como estaban; ninguna molécula se rompe.'],
+    ['Recoger los gases que salen por arriba de la torre', 'separa', 'crudo caliente', 'los gases que ya traía',
+      'Los gases ya venían en el crudo; la torre solo los deja salir por arriba.'],
+    ['Calentar un residuo pesado hasta partirlo en gasolina y gases', 'transforma', 'residuo pesado', 'gasolina y gases',
+      'Las moléculas grandes del residuo se parten en otras más cortas: hay reacción química.'],
+  ];
   const destilar = {
     id: 'destilar-separa',
     titulo: 'Destilar separa, craquear transforma',
     temas: ['Petróleo y refinación'],
     pieza: 'recta',
+    // Lee (fase 2): contexto peruano y vocabulario (volátil, fracción). No dice si la torre cambia las moléculas.
+    lee: {
+      tarjetas: [
+        { titulo: 'Del pozo a la refinería', texto: 'En el Perú se saca petróleo en la costa de Piura y en la selva de Loreto. El crudo que sale del pozo es un líquido oscuro que todavía no sirve como combustible.' },
+        { titulo: 'Más y menos volátil', texto: 'Una sustancia volátil pasa a vapor con facilidad. La gasolina es más volátil que el aceite de motor: por eso su olor llega lejos y el aceite casi no huele.' },
+        { titulo: 'La torre y sus platos', texto: 'Una refinería calienta el crudo en una torre alta con platos a distintas alturas. Lo que se recoge en cada tramo de la torre se llama una fracción.' },
+        { titulo: 'Qué mirar al jugar', texto: 'El punto rojo es la temperatura de un plato y se mueve solo. Fíjate qué fracciones hierven a cada temperatura y dónde se pisan dos tramos.' },
+      ],
+    },
     juega: {
       // Animación (decisión de Gerson, 15 nov): la temperatura recorre la torre de 0 a 400 °C y vuelve, en 8 s por tramo.
-      consigna: 'La temperatura del plato sube y baja sola por la torre. Mira qué fracciones hierven en cada momento: los tramos se traslapan.',
+      // La figura es una recta, no una torre: la consigna nombra el punto rojo que se ve (pedido de Gerson, 16 nov).
+      consigna: 'El punto rojo es la temperatura de un plato de la torre y se mueve solo. Mira qué fracciones hierven: los tramos se traslapan.',
       voz: 'Fíjate en que cada fracción ocupa un tramo, no un punto.',
       controles: [{ id: 't', etiqueta: 'T', color: 'c-h', min: 0, max: 400, paso: 25, inicio: 100, unidad: '°C', decimales: 0, auto: { velocidad: 50, modo: 'rebota' } }],
       dibujo: val => ({ datos: torre([{ tipo: 'punto', x: val.t, color: 'h', rotulo: `${f(val.t, 0)} °C`, fila: 0 }]), estado: {} }),
@@ -124,17 +149,28 @@
       condicion: 'cada fracción es una mezcla de muchos hidrocarburos; sus intervalos dependen del crudo y se traslapan.',
       voz: 'Pregunta siempre: ¿cambió alguna molécula?',
     },
+    // Así se resuelve (fase 2): un proceso de «Ahora tú» (CASOS_DEST), con qué entra, qué sale y por qué.
+    resuelve: {
+      generar(s) {
+        const x = azar(s + 900), [caso, tipo, entra, sale, razon] = CASOS_DEST[x.ent(0, CASOS_DEST.length - 1)], separa = tipo === 'separa';
+        return {
+          enunciado: `${caso}. ¿Este proceso separa o transforma?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden decidir si el proceso solo separa lo que había o si fabrica moléculas nuevas.' },
+            { tipo: 'datos', texto: `Lo que entra: ${entra}. Lo que sale: ${sale}.` },
+            { tipo: 'regla', texto: 'Separar reparte moléculas que ya estaban, sin romper enlaces. Transformar rompe o reacomoda enlaces: al final hay moléculas que antes no había.' },
+            { tipo: 'aplica', texto: razon, ecuacion: [separa ? 'mismas moléculas → separa' : 'moléculas nuevas → transforma'] },
+            { tipo: 'sentido', texto: separa ? 'Compruebo: si junto otra vez todo lo que salió, vuelvo a tener lo que entró.'
+              : 'Compruebo: si junto todo lo que salió, no vuelvo a tener lo que entró, porque sus moléculas ya cambiaron.' },
+          ],
+          respuesta: separa ? 'Separa: las moléculas no cambian' : 'Transforma: aparecen moléculas nuevas',
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Decide si alguna molécula cambió.',
       generar(s) {
-        const CASOS = [
-          ['Calentar el crudo y recoger lo que se condensa entre 150 y 275 °C', 'separa'],
-          ['Romper moléculas de C₁₂H₂₆ en otras más cortas con un catalizador', 'transforma'],
-          ['Reacomodar heptano en moléculas ramificadas para subir el octanaje', 'transforma'],
-          ['Separar el agua y la sal que vienen con el crudo', 'separa'],
-          ['Recoger los gases que salen por arriba de la torre', 'separa'],
-          ['Calentar un residuo pesado hasta partirlo en gasolina y gases', 'transforma'],
-        ];
+        const CASOS = CASOS_DEST;
         const [caso, tipo] = CASOS[s % CASOS.length];
         return {
           pregunta: `${caso}. ¿Este proceso separa o transforma?`,
@@ -165,6 +201,15 @@
     titulo: 'El octanaje es una comparación',
     temas: ['Gasolina y octanaje'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): el grifo, la detonación y las dos moléculas patrón. No dice qué mide el octanaje y qué no.
+    lee: {
+      tarjetas: [
+        { titulo: 'En el grifo', texto: 'En los grifos del Perú ves números como 90, 95 o 97 junto a cada gasolina. Ese número es el octanaje, y el manual de cada auto dice cuál le conviene.' },
+        { titulo: 'Cuando el motor golpea', texto: 'Si la mezcla de gasolina y aire se enciende sola antes de tiempo, golpea el pistón y suena como un cascabeleo. Eso se llama detonación y gasta el motor.' },
+        { titulo: 'Dos moléculas patrón', texto: 'Para medir el octanaje se usan dos hidrocarburos: el isooctano, de ocho carbonos y ramificado, y el heptano, de siete carbonos en cadena. Uno vale 100 y el otro, 0.' },
+        { titulo: 'Qué mirar al jugar', texto: 'La caja tiene 20 moléculas: isooctano en naranja y heptano en turquesa. Mientras el octanaje cambia solo, cuenta cuántas son naranjas.' },
+      ],
+    },
     juega: {
       // Animación: el octanaje sube y baja solo (80 a 100); cada 5 octanos, una molécula de heptano cambia por isooctano.
       // Las moléculas tiemblan (agitación térmica, solo para dar vida: el temblor no es un dato).
@@ -207,6 +252,23 @@
       ecuacion: ['octanaje = % de isooctano en la ', { llave: ['mezcla patrón'], nota: 'isooctano + heptano' }, ' que detona igual'],
       condicion: 'se mide con un método normalizado de motor; no es el porcentaje de octano de la gasolina ni su energía por litro.',
       voz: 'Es una comparación, no una receta.',
+    },
+    // Así se resuelve (fase 2): el caso de «Ahora tú» (octanaje → mezcla patrón), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const x = azar(s + 900), o = x.ent(81, 99), hep = 100 - o;
+        return {
+          enunciado: `Una gasolina de ${f(o, 0)} octanos detona en el motor de prueba igual que una mezcla de isooctano y heptano. ¿Qué mezcla patrón es?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la mezcla patrón: qué porcentaje de isooctano y qué porcentaje de heptano detonan igual que esa gasolina.' },
+            { tipo: 'datos', texto: `El octanaje es ${f(o, 0)}. El isooctano vale 100 y el heptano vale 0.` },
+            { tipo: 'regla', texto: 'El octanaje es el porcentaje de isooctano que tiene la mezcla patrón que detona igual. Lo que falta para el 100 % es heptano.' },
+            { tipo: 'cuentas', texto: 'El número da el isooctano; el heptano completa el 100 %.', ecuacion: [`isooctano = ${f(o, 0)} %   ·   heptano = 100 − ${f(o, 0)} = ${f(hep, 0)} %`] },
+            { tipo: 'sentido', texto: `Compruebo: ${f(o, 0)} % + ${f(hep, 0)} % = 100 %. Y como ${f(o, 0)} está cerca de 100, la mezcla es casi toda isooctano.` },
+          ],
+          respuesta: `${f(o, 0)} % isooctano y ${f(hep, 0)} % heptano`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Piensa en la mezcla patrón.',
@@ -266,6 +328,16 @@
     titulo: 'Con poco oxígeno sale CO',
     temas: ['Combustión completa e incompleta', 'Gas natural y carbón'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): gas natural y carbón, y cómo se reparte el oxígeno. No dice qué sale cuando el oxígeno falta.
+    lee: {
+      tarjetas: [
+        { titulo: 'Gas por tubería', texto: 'En Lima e Ica muchas casas cocinan con gas natural que llega por tubería desde Camisea, en Cusco. Ese gas es casi todo metano, CH₄.' },
+        { titulo: 'El carbón', texto: 'El carbón mineral es una roca negra que arde y es casi todo carbono. En la sierra también se cocina con leña y bosta, que tienen mucho carbono.' },
+        { titulo: 'Quemar es repartir oxígeno', texto: 'Al quemarse el metano, su carbono y su hidrógeno se unen al oxígeno. Cada molécula de O₂ trae dos átomos de oxígeno para repartir.',
+          ecuacion: ['CH₄ + 2 O₂ → CO₂ + 2 H₂O'] },
+        { titulo: 'Qué mirar al jugar', texto: 'Dos moléculas de combustible se queman una tras otra, en cámara lenta. Sigue a los átomos de carbono: ¿en qué molécula termina cada uno?' },
+      ],
+    },
     juega: {
       consigna: 'En cámara lenta, dos moléculas de combustible se queman una tras otra. Elige el oxígeno y mira qué sobra y qué sale.',
       voz: 'Sigue a los átomos de carbono: ¿dónde terminan?',
@@ -308,11 +380,29 @@
       condicion: 'el gas natural es sobre todo metano y el carbón, sobre todo carbono; ambos tienen impurezas que dan otros productos.',
       voz: 'Reparte el oxígeno átomo por átomo.',
     },
+    // Así se resuelve (fase 2): el caso de «Ahora tú» (O₂ para quemar 1 mol de un alcano), con las mismas cuentas.
+    resuelve: {
+      generar(s) {
+        const x = azar(s + 900), n = x.ent(1, 8), h = 2 * n + 2, o2 = (3 * n + 1) / 2, nom = ALCANOS[n - 1], fm = `C${n > 1 ? sub(n) : ''}H${sub(h)}`;
+        return {
+          enunciado: `¿Cuántos mol de O₂ necesita 1 mol de ${nom}, ${fm}, para quemarse por completo?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden los mol de O₂ que hacen falta para quemar por completo 1 mol de ${nom}.` },
+            { tipo: 'datos', texto: `1 mol de ${fm} trae ${n} mol de átomos de C y ${h} mol de átomos de H.` },
+            { tipo: 'regla', texto: 'Si la combustión es completa, cada C termina en un CO₂ y cada dos H en un H₂O. Cuento los oxígenos que piden y los junto de dos en dos.' },
+            { tipo: 'cuentas', texto: `${n} CO₂ piden ${2 * n} O, y ${n + 1} H₂O piden ${n + 1} O. Cada O₂ trae dos.`, ecuacion: [`O₂ = (${2 * n} + ${n + 1}) ÷ 2 = ${f(o2, 1)} mol`] },
+            { tipo: 'sentido', texto: `Con la ecuación balanceada: ${fm} + ${f(o2, 1)} O₂ → ${n} CO₂ + ${n + 1} H₂O. Hay ${3 * n + 1} oxígenos a cada lado.`,
+              ecuacion: [`2 · ${f(o2, 1)} = ${2 * n} + ${n + 1} = ${3 * n + 1}`] },
+          ],
+          respuesta: `${f(o2, 1)} mol de O₂`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Cuenta los oxígenos que piden el C y el H.',
       generar(s) {
         const n = (s % 8) + 1, h = 2 * n + 2, o2 = (3 * n + 1) / 2;
-        const nom = ['metano', 'etano', 'propano', 'butano', 'pentano', 'hexano', 'heptano', 'octano'][n - 1];
+        const nom = ALCANOS[n - 1];
         return {
           pregunta: `¿Cuántos mol de O₂ necesita 1 mol de ${nom}, C${n > 1 ? sub(n) : ''}H${sub(h)}, para quemarse por completo?`,
           opciones: opciones(o2, [
@@ -326,6 +416,7 @@
     },
   };
   const SUBS = '₀₁₂₃₄₅₆₇₈₉';
+  const ALCANOS = ['metano', 'etano', 'propano', 'butano', 'pentano', 'hexano', 'heptano', 'octano'];
   function sub(n) { return String(n).split('').map(c => SUBS[+c]).join(''); }
 
   // ---------- Idea 4: mena, ley y metal ----------
@@ -336,11 +427,21 @@
     { texto: `1 000 kg de mena (${METAL[met].mineral} y roca)` },
     { texto: `ley ${f(ley, 0)} %: ${f(10 * ley, 1)} kg de ${METAL[met].nombre} en la roca`, color: 'o' },
     { texto: `recuperación ${f(rec, 0)} %: salen ${f(10 * ley * rec / 100, 1)} kg`, color: 'd' }] }] }, estado: {} });
+  // Mena al azar (la usan «Ahora tú» y «Así se resuelve»): kilos, ley, recuperación y metal que sale.
+  const menaAzar = x => { const mt = 100 * x.ent(2, 50), ley = x.de([0.5, 0.8, 1.2, 2, 3, 5]), rec = 5 * x.ent(16, 19); return { mt, ley, rec, mm: mt * ley / 100 * rec / 100 }; };
   const mena = {
     id: 'mena-ley-metal',
     titulo: 'La ley no es la pureza',
     temas: ['Recursos minerales del Perú (solo San Marcos)', 'Metalurgia del Fe, Cu, Pb, Zn, Au y Ag (solo San Marcos)'],
     pieza: 'quim-cadena',
+    // Lee (fase 2): minería peruana, mineral y mena. No dice qué pureza tiene el metal refinado (la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cobre del sur', texto: 'El Perú es uno de los mayores productores de cobre del mundo. Hay grandes minas en Arequipa, Moquegua, Cusco y Apurímac.' },
+        { titulo: 'Mineral y mena', texto: 'El mineral es el compuesto que trae el metal, como la calcopirita, CuFeS₂. La mena es la roca que conviene explotar: trae ese mineral mezclado con mucha roca sin valor.' },
+        { titulo: 'Qué mirar al jugar', texto: 'El juego parte de 1 000 kg de mena. El tramo naranja es la ley y el verde, la recuperación: mira cuántos kilos de metal quedan al final.' },
+      ],
+    },
     juega: {
       // Animación: la ley sube y baja sola (1 a 8 %). El juego usa las dos barras de la mesa «La mena en dos barras»
       // (quim-composicion): el tramo naranja crece con la ley; «Mira» y la predicción siguen con la cadena de pasos.
@@ -401,10 +502,29 @@
       condicion: 'w y r como fracciones; la ruta (fundición, lixiviación o electrólisis) depende del mineral y del metal.',
       voz: 'La ley habla de la roca; la pureza, del metal.',
     },
+    // Así se resuelve (fase 2): el caso de «Ahora tú» (menaAzar: mena, ley y recuperación), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const x = azar(s + 900), { mt, ley, rec, mm } = menaAzar(x), met = ['cobre', 'zinc', 'plomo'][x.ent(0, 2)], roca = mt * ley / 100;
+        return {
+          enunciado: ['De ', { sub: [m, 'mena'] }, ` = ${f(mt, 0)} kg de mena de ${met} con ley `, w, ` = ${f(ley, 1)} % y recuperación `, r, ` = ${f(rec, 0)} %, ¿cuánto ${met} se obtiene?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', { sub: [m, 'metal'] }, `: los kilos de ${met} que salen de la mena.`] },
+            { tipo: 'datos', texto: [{ sub: [m, 'mena'] }, ` = ${f(mt, 0)} kg, `, w, ` = ${f(ley, 1)} % y `, r, ` = ${f(rec, 0)} %.`] },
+            { tipo: 'regla', texto: 'La ley dice qué parte de la mena es metal; la recuperación, qué parte de ese metal se logra sacar. Multiplico la mena por las dos, en fracción.',
+              ecuacion: [{ sub: [m, 'metal'] }, ' = ', { sub: [m, 'mena'] }, ' · ', w, ' · ', r] },
+            { tipo: 'cuentas', texto: 'Paso los porcentajes a fracción y multiplico en dos pasos: primero el metal de la roca, después lo que se recupera.',
+              ecuacion: [`${f(mt, 0)} · ${f(ley / 100, 3)} = ${f(roca, 1)} kg   →   ${f(roca, 1)} · ${f(rec / 100, 2)} = ${f(mm, 1)} kg`] },
+            { tipo: 'sentido', texto: `Tiene sentido: ${f(mm, 1)} kg es un poco menos que los ${f(roca, 1)} kg de ${met} de la roca, y muchísimo menos que la mena entera.` },
+          ],
+          respuesta: [{ sub: [m, 'metal'] }, ` = ${f(mm, 1)} kg de ${met}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Pasa los porcentajes a fracción.',
       generar(s) {
-        const x = azar(s), mt = 100 * x.ent(2, 50), ley = x.de([0.5, 0.8, 1.2, 2, 3, 5]), rec = 5 * x.ent(16, 19), mm = mt * ley / 100 * rec / 100;
+        const x = azar(s), { mt, ley, rec, mm } = menaAzar(x);
         const met = ['cobre', 'zinc', 'plomo'][s % 3];
         return {
           pregunta: [`De `, { sub: [m, 'mena'] }, ` = ${f(mt, 0)} kg de mena de ${met} con ley `, w, ` = ${f(ley, 1)} % y recuperación `, r, ` = ${f(rec, 0)} %, ¿cuánto ${met} se obtiene?`],
@@ -456,6 +576,8 @@
         ver: ['hidrocarburo', 'destilación fraccionada'] },
       { termino: 'destilación fraccionada', def: 'Separación de una mezcla de líquidos en una torre, según el intervalo de temperatura en que hierve cada parte.',
         ejemplo: 'La gasolina se recoge entre 30 y 200 °C.', ver: ['petróleo', 'refinación'] },
+      { termino: 'volátil', def: 'Que pasa a vapor con facilidad, a menor temperatura que otras sustancias.',
+        ejemplo: 'La gasolina es más volátil que el aceite de motor.', formas: ['volátil', 'volátiles', 'volatilidad'], ver: ['destilación fraccionada'] },
       { termino: 'refinación', def: 'Procesos que convierten el petróleo crudo en productos útiles: separar, romper y limpiar sus moléculas.',
         ver: ['destilación fraccionada', 'craqueo'] },
       { termino: 'craqueo', def: 'Ruptura de moléculas grandes del petróleo en otras más chicas, con calor o catalizador, para obtener más gasolina.',
@@ -486,7 +608,7 @@
       {
         id: 'dos-platos', titulo: 'Dos platos de la torre', pieza: 'recta',
         // Animación: el plato 2 recorre la torre solo (0 a 400 °C y vuelve); el tramo y lo que recoge cambian con él.
-        consigna: 'El plato 2 recorre la torre solo. Entre los dos platos se recoge lo que hierve en ese tramo. Corre los platos y prueba.',
+        consigna: 'El punto 2 recorre la recta solo. Los dos puntos son platos de la torre: entre ellos se recoge lo que hierve. Muévelos y prueba.',
         controles: [
           { id: 'a', etiqueta: 'plato 1', color: 'c-h', min: 0, max: 400, paso: 25, inicio: 150, unidad: '°C', decimales: 0 },
           { id: 'b', etiqueta: 'plato 2', color: 'c-h', min: 0, max: 400, paso: 25, inicio: 250, unidad: '°C', decimales: 0, auto: { velocidad: 40, modo: 'rebota' } },
