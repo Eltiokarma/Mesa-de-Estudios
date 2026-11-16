@@ -67,6 +67,16 @@
     titulo: 'Cada fila agrega lo mismo',
     temas: ['Progresión aritmética y cantidad de términos'],
     pieza: 'arit-fichas',
+    // Lee (fase 2): vocabulario y contexto, sin adelantar cómo se cuentan los términos (eso se descubre en Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una lista con orden', texto: 'Una sucesión es una lista de números en orden. Cada número es un término, y su lugar se cuenta: primero, segundo, tercero… El lugar se escribe con la letra n.',
+          ecuacion: [a1, ', ', { sub: [{ v: 'c-o', t: 'a' }, '2'] }, ', ', { sub: [{ v: 'c-o', t: 'a' }, '3'] }, ', …, ', an] },
+        { titulo: 'Sumar siempre lo mismo', texto: 'Si en tu alcancía tienes S/ 3 y cada semana echas S/ 5, la alcancía marca 3, 8, 13, 18… Cuando se suma siempre lo mismo, la lista es una progresión aritmética.' },
+        { titulo: 'La diferencia común', texto: ['Lo que se suma en cada paso es la diferencia común, ', d, '. Se halla restando un término menos el anterior: en 3, 8, 13, 18 es 8 − 3 = 5.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['Cada fila de fichas es un término: la primera tiene ', a1, ' fichas. Cambia ', a1, ', ', d, ' y ', n, ', y mira cómo crece la escalera fila por fila.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige con cuántas fichas empieza la escalera, cuántas agrega cada fila y cuántas filas tiene.',
       voz: 'Cuenta cuántas veces se agregó d hasta la última fila.',
@@ -119,6 +129,38 @@
       ecuacion: [an, ' = ', a1, ' + ', { llave: ['(', n, ' − 1)'], nota: 'saltos', color: 'c-h' }, ' ', d, '   ·   ', n, ' = ', { frac: [[an, ' − ', a1], d] }, ' + 1'],
       condicion: 'la diferencia d es la misma entre todos los términos consecutivos y no es cero.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de problema de «Ahora tú», con otras semillas, resuelto paso a paso.
+    resuelve: {
+      generar(s) {
+        const x = azar(s + 900), p = x.ent(2, 15), q = x.ent(2, 9), k = x.ent(8, 30), u = p + (k - 1) * q;
+        const ak = { sub: [{ v: 'c-o', t: 'a' }, String(k)] };
+        if (s % 2 === 0) return {
+          enunciado: ['¿Cuántos términos tiene la progresión ', { v: 'c-o', t: `${p}, ${p + q}, ${p + 2 * q}, …, ${u}` }, '?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', n, `, cuántos términos hay desde el ${p} hasta el ${u}.`] },
+            { tipo: 'datos', texto: 'El primero, la diferencia que se repite y el último.', ecuacion: [a1, ` = ${p}`, '   ·   ', d, ` = ${p + q} − ${p} = ${q}`, '   ·   ', an, ` = ${u}`] },
+            { tipo: 'regla', texto: ['Del primero al último se avanza con saltos iguales de ', d, '. Cuento los saltos y sumo uno: los términos son uno más que los saltos.'],
+              ecuacion: [n, ' = ', { frac: [[an, ' − ', a1], d] }, ' + 1'] },
+            { tipo: 'cuentas', texto: 'Primero la distancia del primero al último, luego los saltos, luego los términos.',
+              ecuacion: [`${u} − ${p} = ${u - p}`, '   →   ', `${u - p} ÷ ${q} = ${(u - p) / q} saltos`, '   →   ', n, ` = ${(u - p) / q} + 1 = ${k}`] },
+            { tipo: 'sentido', texto: `Comprueba hacia adelante: ${p} + (${k} − 1) · ${q} = ${p} + ${(k - 1) * q} = ${p + (k - 1) * q}, justo el último término. Cuadra.` },
+          ],
+          respuesta: [n, ` = ${k} términos`],
+        };
+        return {
+          enunciado: ['En la progresión ', { v: 'c-o', t: `${p}, ${p + q}, ${p + 2 * q}, …` }, ', ¿cuál es el término de lugar ', { v: 'c-h', t: String(k) }, '?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', ak, `, el término que ocupa el lugar ${k}.`] },
+            { tipo: 'datos', texto: 'El primer término y lo que se suma en cada paso.', ecuacion: [a1, ` = ${p}`, '   ·   ', d, ` = ${p + q} − ${p} = ${q}`, '   ·   ', n, ` = ${k}`] },
+            { tipo: 'regla', texto: ['Del lugar 1 al lugar ', n, ' se dan saltos de ', d, ': uno menos que el lugar, porque el primero ya está puesto.'],
+              ecuacion: [an, ' = ', a1, ' + (', n, ' − 1) ', d] },
+            { tipo: 'cuentas', texto: `Del lugar 1 al ${k} hay ${k - 1} saltos de ${q}.`, ecuacion: [ak, ` = ${p} + (${k} − 1) · ${q} = ${p} + ${(k - 1) * q} = ${u}`] },
+            { tipo: 'sentido', texto: `Comprueba hacia atrás: (${u} − ${p}) ÷ ${q} = ${(u - p) / q} saltos, y ${(u - p) / q} + 1 = ${(u - p) / q + 1}, el lugar pedido. Cuadra.` },
+          ],
+          respuesta: [ak, ` = ${u}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const x = azar(s), p = x.ent(2, 15), q = x.ent(2, 9), k = x.ent(8, 30), u = p + (k - 1) * q;
@@ -156,6 +198,14 @@
     titulo: 'La suma es medio rectángulo',
     temas: ['Sumas notables'],
     pieza: 'arit-fichas',
+    // Lee: qué es una serie y qué sumas tienen nombre; no dice cómo se suma rápido (eso lo descubre el juego).
+    lee: {
+      tarjetas: [
+        { titulo: 'Sumar la lista', texto: 'Una serie es lo que da sumar los términos de una sucesión. Si un puesto de la feria vende 2, 4, 6 y 8 kilos de quinua en cuatro días, la serie 2 + 4 + 6 + 8 dice cuánto vendió.' },
+        { titulo: 'Sumas con nombre', texto: 'Algunas sumas salen tanto en los exámenes que tienen nombre propio: la de los primeros números, 1 + 2 + 3 + …, la de los impares y la de los cuadrados. Son las sumas notables.' },
+        { titulo: 'Qué mirar al jugar', texto: ['La escalera naranja es la suma 1 + 2 + … + ', n, '. La turquesa es la misma escalera, volteada. Mira qué forma arman juntas y cuántas fichas tiene cada fila.'] },
+      ],
+    },
     juega: {
       consigna: 'La escalera naranja es la suma 1 + 2 + … + n. La turquesa es la misma suma al revés. Elige n.',
       voz: 'Cuenta las fichas de una fila completa.',
@@ -197,6 +247,69 @@
       texto: 'En una progresión aritmética, la suma es el número de términos por el promedio del primero y el último. Con 1 + 2 + … + n, cada fila mide n + 1.',
       ecuacion: [Sn, ' = ', { frac: [[{ llave: [n], nota: 'filas', color: 'c-h' }, ' ', { llave: ['(', a1, ' + ', an, ')'], nota: 'una fila', color: 'c-o' }], '2'] }, '   ·   ', '1 + 2 + … + ', n, ' = ', { frac: [[n, ' (', n, ' + 1)'], '2'] }],
       condicion: 'la diferencia es constante. Las sumas de impares y de cuadrados del último paso no salen del rectángulo: se comprueban.',
+    },
+    resuelve: {
+      generar(s) {
+        const x = azar(s + 900), tipo = s % 4, k = x.ent(6, 25);
+        if (tipo === 0) {
+          const p = x.ent(1, 9), q = x.ent(2, 6), u = p + (k - 1) * q, S = k * (p + u) / 2;
+          return {
+            enunciado: ['Suma los ', { v: 'c-h', t: String(k) }, ' términos de ', { v: 'c-o', t: `${p} + ${p + q} + ${p + 2 * q} + … + ${u}` }, '.'],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', Sn, `, la suma de los ${k} términos.`] },
+              { tipo: 'datos', texto: `Es una progresión aritmética: se suma ${q} cada vez.`, ecuacion: [a1, ` = ${p}`, '   ·   ', an, ` = ${u}`, '   ·   ', n, ` = ${k}`] },
+              { tipo: 'regla', texto: 'Junto la lista con su copia al revés: cada pareja suma el primero más el último. Sale un rectángulo, y la suma es su mitad.',
+                ecuacion: [Sn, ' = ', { frac: [[n, ' (', a1, ' + ', an, ')'], '2'] }] },
+              { tipo: 'cuentas', texto: `Cada fila mide ${p} + ${u} = ${p + u}, y hay ${k} filas.`, ecuacion: [Sn, ` = ${k} · ${p + u} ÷ 2 = ${f(k * (p + u))} ÷ 2 = ${f(S)}`] },
+              { tipo: 'sentido', texto: `La suma queda entre ${k} · ${p} = ${f(k * p)} y ${k} · ${u} = ${f(k * u)}: lo que darían si todos valieran como el primero o como el último. Cuadra.` },
+            ],
+            respuesta: [Sn, ` = ${f(S)}`],
+          };
+        }
+        if (tipo === 1) {
+          const N = 2 * k, S = N * (N + 1) / 2;
+          return {
+            enunciado: ['¿Cuánto es 1 + 2 + 3 + … + ', { v: 'c-h', t: String(N) }, '?'],
+            pasos: [
+              { tipo: 'pide', texto: `Piden la suma de todos los números del 1 al ${N}.` },
+              { tipo: 'datos', texto: ['Hay ', n, ` = ${N} términos; el primero es 1 y el último, ${N}.`] },
+              { tipo: 'regla', texto: ['Con su copia al revés, cada fila mide ', n, ' + 1 y hay ', n, ' filas. La suma es la mitad de ese rectángulo.'],
+                ecuacion: ['1 + 2 + … + ', n, ' = ', { frac: [[n, ' (', n, ' + 1)'], '2'] }] },
+              { tipo: 'cuentas', texto: `${N} filas de ${N + 1} fichas, a la mitad.`, ecuacion: [`${N} · ${N + 1} ÷ 2 = ${f(N * (N + 1))} ÷ 2 = ${f(S)}`] },
+              { tipo: 'sentido', texto: `Comprueba por parejas: 1 + ${N} = 2 + ${N - 1} = ${N + 1}, y hay ${N / 2} parejas. ${N / 2} · ${N + 1} = ${f(N / 2 * (N + 1))}. Cuadra.` },
+            ],
+            respuesta: f(S),
+          };
+        }
+        if (tipo === 2) {
+          const ult = 2 * k - 1, cuantos = (ult + 1) / 2;
+          return {
+            enunciado: ['¿Cuánto es 1 + 3 + 5 + … + ', { v: 'c-o', t: String(ult) }, '?'],
+            pasos: [
+              { tipo: 'pide', texto: `Piden la suma de los impares seguidos, del 1 al ${ult}.` },
+              { tipo: 'datos', texto: `Empieza en 1, cada impar suma 2 al anterior y el último es ${ult}.` },
+              { tipo: 'regla', texto: 'Primero cuento cuántos impares hay. La suma de los primeros impares es esa cantidad al cuadrado.',
+                ecuacion: ['1 + 3 + … + (2', n, ' − 1) = ', { sup: [n, '2'] }] },
+              { tipo: 'cuentas', texto: 'Cuántos impares hay y después el cuadrado.', ecuacion: [n, ` = (${ult} + 1) ÷ 2 = ${cuantos}`, '   ·   ', `${cuantos}² = ${f(cuantos * cuantos)}`] },
+              { tipo: 'sentido', texto: `Comprueba con el rectángulo de la progresión: ${cuantos} · (1 + ${ult}) ÷ 2 = ${f(cuantos * (1 + ult) / 2)}. Da lo mismo.` },
+            ],
+            respuesta: f(cuantos * cuantos),
+          };
+        }
+        const m = x.ent(4, 15), S = m * (m + 1) * (2 * m + 1) / 6;
+        return {
+          enunciado: ['¿Cuánto es ', { sup: ['1', '2'] }, ' + ', { sup: ['2', '2'] }, ' + … + ', { sup: [{ v: 'c-h', t: String(m) }, '2'] }, '?'],
+          pasos: [
+            { tipo: 'pide', texto: `Piden la suma de los cuadrados de los números del 1 al ${m}.` },
+            { tipo: 'datos', texto: ['Son ', n, ` = ${m} términos: 1, 4, 9, 16, … hasta ${m}² = ${m * m}.`] },
+            { tipo: 'regla', texto: 'Los cuadrados no suman siempre lo mismo: el rectángulo no sirve. Uso la suma notable de los cuadrados.',
+              ecuacion: [{ sup: ['1', '2'] }, ' + … + ', { sup: [n, '2'] }, ' = ', { frac: [[n, '(', n, ' + 1)(2', n, ' + 1)'], '6'] }] },
+            { tipo: 'cuentas', texto: `Reemplazo n por ${m}.`, ecuacion: [`${m} · ${m + 1} · ${2 * m + 1} ÷ 6 = ${f(m * (m + 1) * (2 * m + 1))} ÷ 6 = ${f(S)}`] },
+            { tipo: 'sentido', texto: `Orden de magnitud: la pirámide de cuadrados llena cerca de un tercio de su cubo. ${m}³ ÷ 3 ≈ ${f(m ** 3 / 3, 0)}, y la suma es algo mayor: ${f(S)}. Cuadra.` },
+          ],
+          respuesta: f(S),
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -260,6 +373,16 @@
     titulo: 'Cada término multiplica por r',
     temas: ['Progresión geométrica'],
     pieza: 'arit-tiras',
+    // Lee: qué es multiplicar siempre por lo mismo y cómo se halla r; no dice cuántas veces se multiplica hasta el lugar n.
+    lee: {
+      tarjetas: [
+        { titulo: 'Multiplicar siempre por lo mismo', texto: 'En un grupo del colegio, un aviso lo manda 1 alumno a 3, cada uno de ellos a otros 3, y así. Las cantidades 1, 3, 9, 27 crecen multiplicando: es una progresión geométrica.' },
+        { titulo: 'La razón', texto: ['El número por el que se multiplica es la razón, ', r, '. Se halla dividiendo un término entre el anterior: en 1, 3, 9, 27 cada división da 3.'],
+          ecuacion: [r, ' = ', { frac: ['9', '3'] }, ' = ', { frac: ['27', '9'] }, ' = 3'] },
+        { titulo: 'Restar no sirve aquí', texto: 'En 1, 3, 9, 27 las restas dan 2, 6 y 18: cambian cada vez. Lo que se repite no es lo que se suma, sino por cuánto se multiplica.' },
+        { titulo: 'Qué mirar al jugar', texto: ['Cada tira es la anterior multiplicada por ', r, '. Prueba ', r, ' = 1, 2 y 3, y compara cuánto se alarga la última tira.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige el primer término, la razón y cuántos términos. Cada tira es la anterior multiplicada por r.',
       voz: 'Compara cuánto crece cada tira respecto de la anterior. Prueba también r = 1.',
@@ -301,6 +424,39 @@
       texto: 'En una progresión geométrica cada término es el anterior por r. Hasta el lugar n se multiplica n − 1 veces.',
       ecuacion: [an, ' = ', a1, ' · ', { llave: [{ sup: [r, [n, ' − 1']] }], nota: 'n − 1 factores', color: 'c-i' }, '   ·   ', Sn, ' = ', a1, ' · ', { frac: [[{ sup: [r, n] }, ' − 1'], [r, ' − 1']] }],
       condicion: 'r es la misma entre términos consecutivos. Si r = 1, todos son iguales y la suma es n · a₁.',
+    },
+    resuelve: {
+      generar(s) {
+        const x = azar(s + 900), p = x.ent(1, 5), q = x.de([2, 3, 4, 5]), k = x.ent(4, 7);
+        const t = terminos(p, q, k, true), u = t[k - 1], S = t.reduce((z, w) => z + w, 0);
+        const ak = { sub: [{ v: 'c-o', t: 'a' }, String(k)] };
+        const datos = { tipo: 'datos', texto: 'El primer término y la razón, que sale de dividir un término entre el anterior.',
+          ecuacion: [a1, ` = ${p}`, '   ·   ', r, ` = ${p * q} ÷ ${p} = ${q}`, '   ·   ', n, ` = ${k}`] };
+        if (s % 2 === 0) return {
+          enunciado: ['En la progresión ', { v: 'c-o', t: `${p}, ${p * q}, ${p * q * q}, …` }, ', ¿cuál es el término de lugar ', { v: 'c-h', t: String(k) }, '?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', ak, `, el término del lugar ${k}.`] },
+            datos,
+            { tipo: 'regla', texto: ['Desde el primero, multiplico por ', r, ' una vez por cada salto. Hasta el lugar ', n, ' hay un salto menos que el lugar.'],
+              ecuacion: [an, ' = ', a1, ' · ', { sup: [r, [n, ' − 1']] }] },
+            { tipo: 'cuentas', texto: `Se multiplica ${k - 1} veces por ${q}.`, ecuacion: [ak, ` = ${p} · `, { sup: [String(q), String(k - 1)] }, ` = ${p} · ${f(q ** (k - 1), 0)} = ${f(u, 0)}`] },
+            { tipo: 'sentido', texto: `Comprueba escribiendo la lista hasta el lugar ${k}: el último es ${f(u, 0)}. Cuadra.`, ecuacion: [lista(t)] },
+          ],
+          respuesta: [ak, ` = ${f(u, 0)}`],
+        };
+        return {
+          enunciado: ['¿Cuánto suman los ', { v: 'c-h', t: String(k) }, ' primeros términos de ', { v: 'c-o', t: `${p}, ${p * q}, ${p * q * q}, …` }, '?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', Sn, `, la suma de los ${k} primeros términos.`] },
+            datos,
+            { tipo: 'regla', texto: 'Sumar uno por uno es largo. La suma geométrica lo hace de una vez: el primero por r a la n menos 1, entre r menos 1.',
+              ecuacion: [Sn, ' = ', a1, ' · ', { frac: [[{ sup: [r, n] }, ' − 1'], [r, ' − 1']] }] },
+            { tipo: 'cuentas', texto: `Reemplazo con r = ${q} y n = ${k}.`, ecuacion: [Sn, ` = ${p} · (`, { sup: [String(q), String(k)] }, ` − 1) ÷ (${q} − 1) = ${p} · ${f(q ** k - 1, 0)} ÷ ${q - 1} = ${f(S, 0)}`] },
+            { tipo: 'sentido', texto: 'Comprueba sumando la lista término a término: da lo mismo.', ecuacion: [t.map(z => f(z, 0)).join(' + '), ` = ${f(S, 0)}`] },
+          ],
+          respuesta: [Sn, ` = ${f(S, 0)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -351,6 +507,15 @@
     titulo: 'Diferencias que se vuelven constantes',
     temas: ['Sucesiones de orden superior'],
     pieza: 'arit-tabla',
+    // Lee: cómo se arman las filas de diferencias y qué es un polinomio; no dice nada sobre si el siguiente término es único.
+    lee: {
+      tarjetas: [
+        { titulo: 'Restar vecinos', texto: 'Con 1, 4, 9, 16, resta cada término menos el anterior: 3, 5, 7. Esa fila son las primeras diferencias. Si vuelves a restar, salen las segundas diferencias: 2 y 2.',
+          ecuacion: ['Δ: 3, 5, 7   ·   Δ²: 2, 2'] },
+        { titulo: 'Un polinomio detrás', texto: 'Una regla como n² + 1 es un polinomio: con n = 1, 2 y 3 da 2, 5 y 10. Su grado es el mayor exponente de n; en n² + 1, el grado es 2.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego eliges a, b y c de la regla an² + bn + c. Mira en qué fila de la tabla los números se vuelven todos iguales, y qué pasa si a = 0.' },
+      ],
+    },
     juega: {
       consigna: 'Elige a, b y c de la regla an² + bn + c. Mira en qué fila de diferencias aparece un valor que se repite.',
       voz: 'Prueba a = 0: ¿en qué fila se repite el valor?',
@@ -387,6 +552,31 @@
       texto: 'Si las diferencias de orden k son constantes, la sucesión se modela con un polinomio de grado k. El modelo se declara: pocos términos no fijan una sola regla.',
       ecuacion: [{ sub: ['t', n] }, ' = a', { sup: [n, '2'] }, ' + b', n, ' + c', '   ·   ', 'Δ² = 2a'],
       condicion: 'se supone que el patrón de diferencias sigue igual; la lista finita por sí sola no lo garantiza.',
+    },
+    resuelve: {
+      generar(s) {
+        const x = azar(s + 900), A = x.ent(1, 3), B = x.ent(-3, 4), C = x.ent(-2, 6);
+        const t = cuad(A, B, C, 6), sig = t[5], ult = t[4];
+        const d1 = t.slice(1, 5).map((z, i) => z - t[i]), d2 = d1.slice(1).map((z, i) => z - d1[i]);
+        const nueva = d1[3] + d2[2];
+        const sg = z => (z < 0 ? ` − ${-z}` : ` + ${z}`);
+        const regla = `${A === 1 ? '' : A}n²${B ? (B < 0 ? ` − ${B === -1 ? '' : -B}n` : ` + ${B === 1 ? '' : B}n`) : ''}${C ? sg(C) : ''}`;
+        return {
+          enunciado: ['Con diferencias segundas constantes, ¿qué término sigue en ', { v: 'c-o', t: lista(t.slice(0, 5)) }, '?'],
+          dibujo: { datos: tablaDif(t.slice(0, 5)), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden el sexto término, el que sigue al ${f(ult, 0)}, con el modelo declarado: segundas diferencias constantes.` },
+            { tipo: 'datos', texto: 'Resto cada término menos el anterior, y luego otra vez.', ecuacion: [`Δ: ${lista(d1)}`, '   ·   ', `Δ²: ${lista(d2)}`] },
+            { tipo: 'regla', texto: 'Si la fila de abajo no cambia, la fila Δ crece siempre lo mismo. El siguiente se arma de abajo hacia arriba.' },
+            { tipo: 'cuentas', texto: `La nueva diferencia es ${f(d1[3], 0)} más ${f(d2[2], 0)}; se la sumo al último término.`,
+              ecuacion: [`${f(d1[3], 0)} + ${f(d2[2], 0)} = ${f(nueva, 0)}`, '   →   ', `${f(ult, 0)} + ${f(nueva, 0)} = ${f(ult + nueva, 0)}`],
+              dibujo: { datos: tablaDif(t, true), estado: { columna: 6 } } },
+            { tipo: 'sentido', texto: `La lista sale de la regla ${regla}. Con n = 6 da ${f(sig, 0)}, lo mismo que la tabla. Cuadra.`,
+              ecuacion: [`${A} · 36${B ? `${sg(B)} · 6` : ''}${C ? sg(C) : ''} = ${f(sig, 0)}`] },
+          ],
+          respuesta: `El término que sigue es ${f(ult + nueva, 0)}.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -429,6 +619,14 @@
     titulo: 'Sumar sin fin sin pasarse',
     temas: ['Sumas infinitas'],
     pieza: 'arit-tiras',
+    // Lee: la pregunta y el vocabulario (límite, lo que falta); no dice a qué valor llega ninguna suma.
+    lee: {
+      tarjetas: [
+        { titulo: 'Una suma que no termina', texto: 'Imagina que caminas hacia la orilla del lago y cada paso mide la mitad del anterior. Agregas pasos sin parar. ¿Llegas a alguna parte? Preguntas así llevan a las sumas infinitas.' },
+        { titulo: 'Acercarse a un valor', texto: 'Cuando una suma se acerca tanto como quieras a un número sin pasarlo, ese número es su límite. Hay sumas sin fin que tienen límite y otras que crecen sin tope.' },
+        { titulo: 'Qué mirar al jugar', texto: ['En la tira, cada pedazo naranja o turquesa es un término de 1 + ', r, ' + ', { sup: [r, '2'] }, ' + …, y el hueco del final es lo que falta. Agrega términos y mira el hueco.'] },
+      ],
+    },
     juega: {
       consigna: 'Se suma 1 + r + r² + … término a término. Elige la razón y cuántos términos. Mira el hueco que queda.',
       voz: 'Fíjate si el hueco desaparece o solo se achica.',
@@ -466,6 +664,31 @@
       texto: 'Una suma geométrica infinita con |r| < 1 se acerca a a₁/(1 − r). Si |r| ≥ 1, no tiene límite.',
       ecuacion: [Sinf, ' = ', { frac: [a1, ['1 − ', r]] }, '   si   |', r, '| < 1'],
       condicion: 'vale para progresiones geométricas. Que los términos se achiquen no basta en cualquier serie.',
+    },
+    resuelve: {
+      generar(s) {
+        const x = azar(s + 900), p = x.ent(1, 12);
+        const [qn, qd] = x.de([[1, 2], [1, 3], [1, 4], [2, 3], [3, 4], [1, 5], [3, 2]]);
+        const q = qn / qd, conv = q < 1, S = conv ? p / (1 - q) : NaN;
+        const S5 = terminos(p, q, 5, true).reduce((z, w) => z + w, 0);
+        return {
+          enunciado: ['¿A qué valor se acerca la suma infinita ', { v: 'c-o', t: String(p) }, ` + ${f(p * q, 3)} + ${f(p * q * q, 3)} + …?`],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el valor al que se acerca la suma si se agregan términos sin parar, si es que ese valor existe.' },
+            { tipo: 'datos', texto: 'El primer término y la razón, que sale de dividir el segundo entre el primero.', ecuacion: [a1, ` = ${p}`, '   ·   ', r, ` = ${f(p * q, 3)} ÷ ${p} ${Math.abs(p * q * 1000 - Math.round(p * q * 1000)) > 1e-6 ? '≈' : '='} ${qn}/${qd}`] },
+            { tipo: 'regla', texto: 'Si la razón está entre −1 y 1, los términos se achican tan rápido que la suma se acerca a un valor. Si no, crece sin parar.',
+              ecuacion: [Sinf, ' = ', { frac: [a1, ['1 − ', r]] }, '   si   |', r, '| < 1'] },
+            conv
+              ? { tipo: 'cuentas', texto: `La razón ${qn}/${qd} es menor que 1: hay límite. Divido el primer término entre 1 − r.`,
+                ecuacion: [Sinf, ` = ${p} ÷ (1 − ${qn}/${qd}) = ${p} ÷ ${qd - qn}/${qd} = ${p} · ${qd - qn === 1 ? qd : `${qd}/${qd - qn}`} = ${f(S)}`] }
+              : { tipo: 'cuentas', texto: `La razón ${qn}/${qd} es mayor que 1: cada término es más grande que el anterior.`, ecuacion: [`|r| = ${f(q)} ≥ 1`, '   →   ', 'no tiene límite'] },
+            conv
+              ? { tipo: 'sentido', texto: `Con 5 términos ya van ${f(S5, 3)}, un poco menos que ${f(S)}. Cada término nuevo acerca la suma, sin pasarse. Cuadra.` }
+              : { tipo: 'sentido', texto: `Con 5 términos ya van ${f(S5, 3)}, y cada término nuevo suma más que el anterior: no hay tope.` },
+          ],
+          respuesta: conv ? [Sinf, ` = ${f(S)}`] : 'No tiene límite: la suma crece sin parar.',
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
