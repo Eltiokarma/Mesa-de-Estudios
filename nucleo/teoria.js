@@ -68,6 +68,8 @@
   // Los pasos de un ejercicio resuelto: cómo se ataca un problema, en este orden (docs/teoria.md, 4e).
   const PASOS_RESUELTO = {
     pide: '¿Qué me piden?', datos: '¿Qué tengo?', regla: '¿Qué regla uso?', cuentas: 'Las cuentas', sentido: '¿Tiene sentido?',
+    // Donde no hay cuentas (razonamiento verbal, algunas ideas de lógica o de clasificación), «aplica» reemplaza a «cuentas».
+    aplica: 'Lo aplico',
   };
   // Texto plano de un texto con partes de ecuación (variables, subíndices, fracciones), para contar y revisar.
   const plano = x => Ecuacion.texto(x === undefined || x === null ? '' : x);
@@ -363,7 +365,7 @@
             if (!Array.isArray(c.pasos) || c.pasos.length < 3 || c.pasos.length > 6) { mal(dd, 'de 3 a 6 pasos'); continue; }
             const tipos = c.pasos.map(x => x && x.tipo);
             if (tipos[0] !== 'pide') mal(dd, 'el primer paso es «pide» (qué me piden)');
-            if (!tipos.includes('cuentas')) mal(dd, 'falta el paso «cuentas»');
+            if (!tipos.includes('cuentas') && !tipos.includes('aplica')) mal(dd, 'falta el paso «cuentas» (o «aplica», si no hay cuentas)');
             if (!tipos.includes('regla')) mal(dd, 'falta el paso «regla» (qué regla uso)');
             for (const [i, x] of c.pasos.entries()) {
               const di = `${dd} paso ${i + 1}`;

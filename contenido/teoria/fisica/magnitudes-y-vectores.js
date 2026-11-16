@@ -69,14 +69,14 @@
   }
 
   // ---------- Idea 1: cambiar de unidad cambia el número, no la magnitud ----------
-  // Cambia: la unidad de la regla · Permanece: el largo dibujado del lápiz (2,5 m) ·
+  // Cambia: la unidad de la regla · Permanece: el largo dibujado de la barra (2,5 m) ·
   // Progresa: el número que lo mide (2,5 → 25 → 250) · Se reserva: la conversión de km/h a m/s, en saltos de 20 m ·
   // Debe verse: el mismo segmento con otro número; convertir es multiplicar por un factor que vale 1.
   const UNIDADES = { m: { k: 1, max: 3, paso: 0.5, cada: 2 }, dm: { k: 10, max: 30, paso: 5, cada: 2 }, cm: { k: 100, max: 300, paso: 50, cada: 2 } };
   const LAPIZ = 2.5;
   // Decimales con que se lee el largo en cada unidad: la misma precisión (1 cm) en las tres.
   const DEC_UN = { m: 2, dm: 1, cm: 0 };
-  // largo: el del lápiz en metros (el juego lo hace crecer y encoger solo; la regla de cada unidad llega a 3 m).
+  // largo: el de la barra en metros (el juego lo hace crecer y encoger solo; la regla de cada unidad llega a 3 m).
   const reglaEn = (un, largo = LAPIZ) => {
     const U = UNIDADES[un], L = largo * U.k;
     return { datos: { min: 0, max: U.max, paso: U.paso, cada: U.cada, sufijo: ` ${un}`, decimales: 1, variable: un, color: 'o', filas: 1,
@@ -97,8 +97,8 @@
     temas: ['Magnitudes fundamentales y derivadas', 'Sistema Internacional'],
     pieza: 'recta',
     juega: {
-      consigna: 'El lápiz crece y se encoge solo. Mira los dos números de un mismo largo; cambia la unidad de la regla.',
-      voz: '¿Qué cambia: el lápiz o el número que lo mide?',
+      consigna: 'La barra naranja crece y se encoge sola. Mira los dos números de un mismo largo; cambia la unidad de la regla.',
+      voz: '¿Qué cambia: la barra o el número que la mide?',
       // L barre de 0,5 m a 3 m y vuelve: el largo es uno solo, cada unidad le pone su número (× 10, × 100).
       controles: [
         { id: 'un', etiqueta: 'Unidad', opciones: [{ valor: 'm', texto: 'metro' }, { valor: 'dm', texto: 'decímetro' }, { valor: 'cm', texto: 'centímetro' }] },
@@ -121,7 +121,7 @@
       revelar: { datos: rectaV(5, true), estado: {} },
       coincide: `Coincide: 72 000 m repartidos en 3600 s dan ${f(V_MS, 0)} m cada segundo.`,
     },
-    // Hallazgo 9: el juego mide el lápiz y «Mira» mide la combi de la predicción. Es la misma regla graduada (pieza
+    // Hallazgo 9: el juego mide la barra y «Mira» mide la combi de la predicción. Es la misma regla graduada (pieza
     // recta) con otro objeto: lo que se repite es la idea de cambiar el número sin cambiar la magnitud.
     mira: {
       datos: rectaV(5, true, true),
@@ -667,7 +667,7 @@
     // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso (es la primera).
     glosario: [
       { termino: 'magnitud', def: 'Propiedad de algo que se puede medir y decir con un número y una unidad.',
-        ejemplo: 'El largo de un lápiz: 2,5 m, que también son 250 cm.', ver: ['magnitud fundamental', 'magnitud derivada'] },
+        ejemplo: 'El largo de una mesa: 2,5 m, que también son 250 cm.', ver: ['magnitud fundamental', 'magnitud derivada'] },
       { termino: 'magnitud fundamental', formas: ['magnitud fundamental', 'magnitudes fundamentales'],
         def: 'Una de las siete que el SI toma como base, como la masa, la longitud y el tiempo.',
         ejemplo: 'La longitud se mide en metros y el tiempo, en segundos.', ver: ['magnitud derivada', 'Sistema Internacional'] },

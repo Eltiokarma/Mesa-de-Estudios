@@ -287,14 +287,14 @@ lee: { tarjetas: [   // de 2 a 4
 ```js
 resuelve: { pieza?, generar(semilla) → {
   enunciado, dibujo?,
-  pasos: [ { tipo: 'pide' | 'datos' | 'regla' | 'cuentas' | 'sentido', texto, ecuacion?, dibujo? } ],   // de 3 a 6
+  pasos: [ { tipo: 'pide' | 'datos' | 'regla' | 'cuentas' | 'aplica' | 'sentido', texto, ecuacion?, dibujo? } ],   // de 3 a 6
   respuesta,
 } }
 ```
 
 - Es un problema **del mismo tipo que «Ahora tú»** (el efecto del ejemplo resuelto: estudiar uno resuelto y después resolver uno parecido; ver `docs/fundacional.md`), con otras semillas (`azar(semilla + 900)`) para no regalar el caso de «Ahora tú».
 - **Los números los calcula el mismo motor o las mismas cuentas** que «Ahora tú» (regla 1): nada escrito a mano.
-- Los pasos tienen nombre fijo y un color cada uno: **¿Qué me piden?** (`pide`, siempre el primero) · **¿Qué tengo?** (`datos`) · **¿Qué regla uso?** (`regla`, obligatorio) · **Las cuentas** (`cuentas`, obligatorio) · **¿Tiene sentido?** (`sentido`: unidades, orden de magnitud o comprobación).
+- Los pasos tienen nombre fijo y un color cada uno: **¿Qué me piden?** (`pide`, siempre el primero) · **¿Qué tengo?** (`datos`) · **¿Qué regla uso?** (`regla`, obligatorio) · **Las cuentas** (`cuentas`, obligatorio; donde no hay cuentas, como en razonamiento verbal, va **Lo aplico**, `aplica`) · **¿Tiene sentido?** (`sentido`: unidades, orden de magnitud o comprobación).
 - El lector los revela uno por uno con el botón grande («Paso 2: ¿Qué tengo? ›»); «Ver todos los pasos» los muestra de golpe; al final, la respuesta y «Otro ejemplo». Si un paso trae `dibujo`, la figura cambia en ese paso.
 - Evento `{ momento: 'resuelve', semilla, pasos }`.
 - El validador revisa 12 semillas: pasos y tipos, topes, ecuaciones, sin NaN y al menos 3 enunciados distintos. El glosario cuenta su texto (semillas 0 a 2).
