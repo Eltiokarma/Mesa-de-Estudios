@@ -3,6 +3,12 @@
   "nombre": "Física",
   "area": "ciencias",
   "formato_principal": "escena",
+  "ramas": [
+    {"nombre": "Mecánica", "unidades": ["fisica.magnitudes-y-vectores", "fisica.movimiento-rectilineo", "fisica.movimiento-parabolico-y-circular", "fisica.estatica", "fisica.dinamica", "fisica.trabajo-y-energia", "fisica.impulso-y-choques", "fisica.gravitacion", "fisica.oscilaciones"]},
+    {"nombre": "Fluidos y calor", "unidades": ["fisica.fluidos", "fisica.temperatura-y-calor", "fisica.termodinamica"]},
+    {"nombre": "Electricidad y magnetismo", "unidades": ["fisica.electrostatica", "fisica.corriente-y-circuitos", "fisica.magnetismo", "fisica.induccion-electromagnetica"]},
+    {"nombre": "Ondas y luz", "unidades": ["fisica.ondas-mecanicas", "fisica.ondas-electromagneticas", "fisica.optica-geometrica", "fisica.fisica-moderna"]}
+  ],
   "unidades": [
     {
       "id": "fisica.magnitudes-y-vectores",
@@ -18,6 +24,7 @@
       "universidades": {"uni": {"semanas": [0]}, "unmsm": {"temas": [1, 2]}},
       "potencial_visual": "alto",
       "grado": 3,
+      "requiere": ["trigonometria.razones-trigonometricas-agudas"],
       "plantillas": ["vectores", "vectores-ley-cosenos", "vectores-componentes", "vectores-productos", "vectores-unitario", "vectores-combinacion", "vectores-division", "vectores-poligono", "velocidad-relativa", "analisis-dimensional"],
       "investigacion": null
     },
@@ -36,6 +43,7 @@
       "universidades": {"uni": {"semanas": [1, 2]}, "unmsm": {"temas": [2, 3]}},
       "potencial_visual": "alto",
       "grado": 3,
+      "requiere": ["fisica.magnitudes-y-vectores"],
       "plantillas": ["mruv", "cinematica-medias", "velocidad-relativa"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
@@ -53,6 +61,7 @@
       "universidades": {"uni": {"semanas": [3]}, "unmsm": {"temas": [4]}},
       "potencial_visual": "alto",
       "grado": 4,
+      "requiere": ["fisica.movimiento-rectilineo"],
       "plantillas": ["tiro-parabolico", "movimiento-circular", "circular-transmision", "circular-mcuv", "circular-enesimo-segundo", "circular-encuentros", "circular-mcu", "circular-horaria", "circular-grafica", "circular-aceleracion-total", "circular-giro-combinado", "cinematica-medias"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
@@ -72,6 +81,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [6]}},
       "potencial_visual": "alto",
       "grado": 4,
+      "requiere": ["fisica.magnitudes-y-vectores"],
       "plantillas": ["estatica", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/estatica-energia-ideas-erroneas.md"
     },
@@ -89,6 +99,7 @@
       "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
       "grado": 4,
+      "requiere": ["fisica.estatica", "fisica.movimiento-rectilineo"],
       "plantillas": ["dinamica", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/dinamica-ideas-erroneas.md"
     },
@@ -104,6 +115,7 @@
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "medio",
       "grado": 4,
+      "requiere": ["fisica.dinamica", "fisica.movimiento-parabolico-y-circular"],
       "plantillas": ["gravitacion", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
@@ -120,6 +132,7 @@
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7]}},
       "potencial_visual": "alto",
       "grado": 4,
+      "requiere": ["fisica.dinamica"],
       "plantillas": ["energia", "energia-potencia"],
       "investigacion": "docs/investigacion/estatica-energia-ideas-erroneas.md"
     },
@@ -137,6 +150,7 @@
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "alto",
       "grado": 4,
+      "requiere": ["fisica.trabajo-y-energia"],
       "plantillas": ["choques", "velocidad-relativa", "impulso-grafica"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
@@ -153,6 +167,7 @@
       "universidades": {"uni": {"semanas": [8]}, "unmsm": {"temas": [16]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["fisica.trabajo-y-energia", "fisica.movimiento-parabolico-y-circular", "trigonometria.funciones-trigonometricas"],
       "plantillas": ["mas", "mas-horaria"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
@@ -170,6 +185,7 @@
       "universidades": {"uni": {"semanas": [9]}, "unmsm": {"temas": [16]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["fisica.oscilaciones"],
       "plantillas": ["ondas", "ondas-llegadas"],
       "investigacion": "docs/investigacion/momento-gravitacion-ondas-ideas-erroneas.md"
     },
@@ -188,6 +204,7 @@
       "universidades": {"uni": {"semanas": [10]}, "unmsm": {"temas": [9]}},
       "potencial_visual": "alto",
       "grado": 4,
+      "requiere": ["fisica.estatica"],
       "plantillas": ["fluidos", "fluidos-hidrodinamica"],
       "investigacion": "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md"
     },
@@ -206,6 +223,7 @@
       "universidades": {"uni": {"semanas": [11]}, "unmsm": {"temas": [10]}},
       "potencial_visual": "alto",
       "grado": 4,
+      "requiere": ["fisica.magnitudes-y-vectores"],
       "plantillas": ["calorimetria", "calor-escalas"],
       "investigacion": "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md"
     },
@@ -224,6 +242,7 @@
       "universidades": {"uni": {"semanas": [12, 13]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["fisica.temperatura-y-calor", "fisica.trabajo-y-energia"],
       "plantillas": ["termodinamica"],
       "investigacion": "docs/investigacion/fluidos-calor-termodinamica-ideas-erroneas.md"
     },
@@ -243,6 +262,7 @@
       "universidades": {"uni": {"semanas": [13, 14, 15]}, "unmsm": {"temas": [11, 12]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["fisica.dinamica", "fisica.trabajo-y-energia"],
       "plantillas": ["electrostatica", "condensadores", "cargas-sistema"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
@@ -262,6 +282,7 @@
       "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [13]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["fisica.electrostatica"],
       "plantillas": ["circuitos-cc", "circuitos-mallas", "circuitos-joule"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
@@ -278,6 +299,7 @@
       "universidades": {"uni": {"semanas": [17]}, "unmsm": {"temas": [14]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["fisica.corriente-y-circuitos", "fisica.movimiento-parabolico-y-circular"],
       "plantillas": ["magnetismo", "carga-en-campo"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
@@ -295,6 +317,7 @@
       "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [15]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["fisica.magnetismo"],
       "plantillas": ["induccion", "induccion-flujo"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     },
@@ -310,6 +333,7 @@
       "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "bajo",
       "grado": 5,
+      "requiere": ["fisica.ondas-mecanicas"],
       "plantillas": ["ondas-electromagneticas", "refraccion-snell"],
       "investigacion": "docs/investigacion/ondas-electromagneticas-ideas-erroneas.md"
     },
@@ -327,6 +351,7 @@
       "universidades": {"uni": {"semanas": [19]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["fisica.magnitudes-y-vectores"],
       "plantillas": ["optica-lente-delgada", "optica-espejo-esferico", "refraccion-snell", "ondas-electromagneticas"],
       "investigacion": "docs/investigacion/optica-ideas-erroneas.md"
     },
@@ -345,6 +370,7 @@
       "universidades": {"uni": {"semanas": [20]}, "unmsm": {"temas": [18]}},
       "potencial_visual": "medio",
       "grado": 5,
+      "requiere": ["fisica.ondas-electromagneticas", "fisica.trabajo-y-energia"],
       "plantillas": ["fisica-moderna", "relatividad"],
       "investigacion": "docs/investigacion/electromagnetismo-moderna-ideas-erroneas.md"
     }

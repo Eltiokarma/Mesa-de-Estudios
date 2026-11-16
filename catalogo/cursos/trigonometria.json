@@ -3,6 +3,13 @@
   "nombre": "Trigonometría",
   "area": "matematica",
   "formato_principal": "escena",
+  "ramas": [
+    {"nombre": "Ángulos y razones", "unidades": ["trigonometria.angulo-trigonometrico", "trigonometria.longitud-de-arco-y-sector", "trigonometria.razones-trigonometricas-agudas", "trigonometria.triangulos-rectangulos"]},
+    {"nombre": "Ángulos de cualquier medida", "unidades": ["trigonometria.angulos-en-posicion-normal", "trigonometria.reduccion-al-primer-cuadrante", "trigonometria.circunferencia-trigonometrica", "trigonometria.funciones-trigonometricas", "trigonometria.funciones-trigonometricas-inversas", "trigonometria.ecuaciones-trigonometricas"]},
+    {"nombre": "Identidades", "unidades": ["trigonometria.identidades-fundamentales", "trigonometria.arcos-compuestos", "trigonometria.arcos-multiples", "trigonometria.transformaciones-trigonometricas"]},
+    {"nombre": "Resolución de triángulos", "unidades": ["trigonometria.triangulos-oblicuangulos", "trigonometria.areas-y-lineas-notables"]},
+    {"nombre": "Plano cartesiano", "unidades": ["trigonometria.recta-en-el-plano", "trigonometria.conicas", "trigonometria.coordenadas-polares-y-complejos"]}
+  ],
   "unidades": [
     {
       "id": "trigonometria.angulo-trigonometrico",
@@ -16,6 +23,7 @@
       "universidades": {"uni": {"semanas": [0]}, "unmsm": {"temas": [1]}},
       "potencial_visual": "alto",
       "grado": 3,
+      "requiere": ["geometria.segmentos-y-angulos"],
       "plantillas": ["cinta-radio"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -31,6 +39,7 @@
       "universidades": {"uni": {"semanas": [2]}, "unmsm": {"temas": [2]}},
       "potencial_visual": "alto",
       "grado": 3,
+      "requiere": ["trigonometria.angulo-trigonometrico"],
       "plantillas": ["cinta-radio", "geo-areas-circulares"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -46,6 +55,7 @@
       "universidades": {"uni": {"semanas": [1]}, "unmsm": {"temas": [3, 4]}},
       "potencial_visual": "alto",
       "grado": 3,
+      "requiere": ["trigonometria.angulo-trigonometrico", "geometria.triangulos"],
       "plantillas": ["circunferencia-trig"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -56,6 +66,7 @@
       "universidades": {"uni": {"semanas": [1]}, "unmsm": {"temas": [3, 12]}},
       "potencial_visual": "alto",
       "grado": 3,
+      "requiere": ["trigonometria.razones-trigonometricas-agudas"],
       "plantillas": ["circunferencia-trig", "trig-angulos-verticales"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -73,6 +84,7 @@
       "universidades": {"uni": {"semanas": [3]}},
       "potencial_visual": "alto",
       "grado": 4,
+      "requiere": ["trigonometria.razones-trigonometricas-agudas", "algebra.ecuaciones-lineales-y-cuadraticas"],
       "plantillas": ["geometria-analitica"],
       "investigacion": null
     },
@@ -89,6 +101,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
       "grado": 4,
+      "requiere": ["trigonometria.razones-trigonometricas-agudas"],
       "plantillas": ["circunferencia-trig"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -104,6 +117,7 @@
       "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [6]}},
       "potencial_visual": "alto",
       "grado": 4,
+      "requiere": ["trigonometria.angulos-en-posicion-normal"],
       "plantillas": ["circunferencia-trig", "trig-oblicuangulos"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -121,6 +135,7 @@
       "universidades": {"uni": {"semanas": [5, 6]}, "unmsm": {"temas": [13, 14]}},
       "potencial_visual": "alto",
       "grado": 4,
+      "requiere": ["trigonometria.reduccion-al-primer-cuadrante"],
       "plantillas": ["circunferencia-trig", "trig-extremos"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -136,6 +151,7 @@
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7]}},
       "potencial_visual": "medio",
       "grado": 4,
+      "requiere": ["trigonometria.angulos-en-posicion-normal"],
       "plantillas": ["identidades-trig", "trig-extremos", "trig-identidades"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -146,6 +162,7 @@
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "medio",
       "grado": 5,
+      "requiere": ["trigonometria.identidades-fundamentales"],
       "plantillas": ["identidades-trig", "trig-angulos-verticales", "trig-identidades"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -156,6 +173,7 @@
       "universidades": {"uni": {"semanas": [7, 8]}, "unmsm": {"temas": [9]}},
       "potencial_visual": "medio",
       "grado": 5,
+      "requiere": ["trigonometria.arcos-compuestos"],
       "plantillas": ["identidades-trig", "trig-identidades"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -166,6 +184,7 @@
       "universidades": {"uni": {"semanas": [8, 9]}, "unmsm": {"temas": [10]}},
       "potencial_visual": "bajo",
       "grado": 5,
+      "requiere": ["trigonometria.arcos-multiples"],
       "plantillas": ["transformaciones-trig"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -182,6 +201,7 @@
       "universidades": {"uni": {"semanas": [9, 10, 11]}, "unmsm": {"temas": [15, 16]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["trigonometria.circunferencia-trigonometrica", "algebra.funciones"],
       "plantillas": ["circunferencia-trig", "trig-extremos"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -197,6 +217,7 @@
       "universidades": {"uni": {"semanas": [11, 12]}, "unmsm": {"temas": [17, 18]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["trigonometria.funciones-trigonometricas", "algebra.tipos-de-funciones-e-inversa"],
       "plantillas": ["funciones-trig-inversas", "trig-inversas"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -212,6 +233,7 @@
       "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [11]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["trigonometria.circunferencia-trigonometrica", "trigonometria.identidades-fundamentales"],
       "plantillas": ["circunferencia-trig", "trig-ecuaciones"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -227,6 +249,7 @@
       "universidades": {"uni": {"semanas": [14]}, "unmsm": {"temas": [12]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["trigonometria.triangulos-rectangulos", "trigonometria.reduccion-al-primer-cuadrante"],
       "plantillas": ["caso-ambiguo", "trig-oblicuangulos"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -243,6 +266,7 @@
       "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [3]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["trigonometria.triangulos-oblicuangulos"],
       "plantillas": ["caso-ambiguo", "trig-oblicuangulos"],
       "investigacion": "docs/investigacion/trigonometria-ideas-erroneas.md"
     },
@@ -261,6 +285,7 @@
       "universidades": {"uni": {"semanas": [17, 18, 19]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["trigonometria.recta-en-el-plano"],
       "plantillas": ["conicas"],
       "investigacion": null
     },
@@ -276,6 +301,7 @@
       "universidades": {"uni": {"semanas": [20]}},
       "potencial_visual": "medio",
       "grado": 5,
+      "requiere": ["trigonometria.circunferencia-trigonometrica", "algebra.numeros-complejos"],
       "plantillas": ["coordenadas-polares", "trig-polares"],
       "investigacion": null
     }

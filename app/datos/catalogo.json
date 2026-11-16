@@ -19,6 +19,48 @@
    "nombre": "Física",
    "area": "ciencias",
    "formato_principal": "escena",
+   "ramas": [
+    {
+     "nombre": "Mecánica",
+     "unidades": [
+      "fisica.magnitudes-y-vectores",
+      "fisica.movimiento-rectilineo",
+      "fisica.movimiento-parabolico-y-circular",
+      "fisica.estatica",
+      "fisica.dinamica",
+      "fisica.trabajo-y-energia",
+      "fisica.impulso-y-choques",
+      "fisica.gravitacion",
+      "fisica.oscilaciones"
+     ]
+    },
+    {
+     "nombre": "Fluidos y calor",
+     "unidades": [
+      "fisica.fluidos",
+      "fisica.temperatura-y-calor",
+      "fisica.termodinamica"
+     ]
+    },
+    {
+     "nombre": "Electricidad y magnetismo",
+     "unidades": [
+      "fisica.electrostatica",
+      "fisica.corriente-y-circuitos",
+      "fisica.magnetismo",
+      "fisica.induccion-electromagnetica"
+     ]
+    },
+    {
+     "nombre": "Ondas y luz",
+     "unidades": [
+      "fisica.ondas-mecanicas",
+      "fisica.ondas-electromagneticas",
+      "fisica.optica-geometrica",
+      "fisica.fisica-moderna"
+     ]
+    }
+   ],
    "unidades": [
     {
      "id": "fisica.magnitudes-y-vectores",
@@ -46,6 +88,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "trigonometria.razones-trigonometricas-agudas"
+     ],
      "plantillas": [
       "vectores",
       "vectores-ley-cosenos",
@@ -100,6 +145,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "fisica.magnitudes-y-vectores"
+     ],
      "plantillas": [
       "mruv",
       "cinematica-medias",
@@ -141,6 +189,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "fisica.movimiento-rectilineo"
+     ],
      "plantillas": [
       "tiro-parabolico",
       "movimiento-circular",
@@ -195,6 +246,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "fisica.magnitudes-y-vectores"
+     ],
      "plantillas": [
       "estatica",
       "dinamica-fuerzas"
@@ -234,6 +288,10 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "fisica.estatica",
+      "fisica.movimiento-rectilineo"
+     ],
      "plantillas": [
       "dinamica",
       "dinamica-fuerzas"
@@ -271,6 +329,10 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
+     "requiere": [
+      "fisica.dinamica",
+      "fisica.movimiento-parabolico-y-circular"
+     ],
      "plantillas": [
       "gravitacion",
       "dinamica-fuerzas"
@@ -311,6 +373,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "fisica.dinamica"
+     ],
      "plantillas": [
       "energia",
       "energia-potencia"
@@ -350,6 +415,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "fisica.trabajo-y-energia"
+     ],
      "plantillas": [
       "choques",
       "velocidad-relativa",
@@ -391,6 +459,11 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "fisica.trabajo-y-energia",
+      "fisica.movimiento-parabolico-y-circular",
+      "trigonometria.funciones-trigonometricas"
+     ],
      "plantillas": [
       "mas",
       "mas-horaria"
@@ -430,6 +503,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "fisica.oscilaciones"
+     ],
      "plantillas": [
       "ondas",
       "ondas-llegadas"
@@ -469,6 +545,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "fisica.estatica"
+     ],
      "plantillas": [
       "fluidos",
       "fluidos-hidrodinamica"
@@ -509,6 +588,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "fisica.magnitudes-y-vectores"
+     ],
      "plantillas": [
       "calorimetria",
       "calor-escalas"
@@ -544,6 +626,10 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "fisica.temperatura-y-calor",
+      "fisica.trabajo-y-energia"
+     ],
      "plantillas": [
       "termodinamica"
      ],
@@ -587,6 +673,10 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "fisica.dinamica",
+      "fisica.trabajo-y-energia"
+     ],
      "plantillas": [
       "electrostatica",
       "condensadores",
@@ -631,6 +721,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "fisica.electrostatica"
+     ],
      "plantillas": [
       "circuitos-cc",
       "circuitos-mallas",
@@ -670,6 +763,10 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "fisica.corriente-y-circuitos",
+      "fisica.movimiento-parabolico-y-circular"
+     ],
      "plantillas": [
       "magnetismo",
       "carga-en-campo"
@@ -711,6 +808,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "fisica.magnetismo"
+     ],
      "plantillas": [
       "induccion",
       "induccion-flujo"
@@ -752,6 +852,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
+     "requiere": [
+      "fisica.ondas-mecanicas"
+     ],
      "plantillas": [
       "ondas-electromagneticas",
       "refraccion-snell"
@@ -795,6 +898,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "fisica.magnitudes-y-vectores"
+     ],
      "plantillas": [
       "optica-lente-delgada",
       "optica-espejo-esferico",
@@ -837,6 +943,10 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
+     "requiere": [
+      "fisica.ondas-electromagneticas",
+      "fisica.trabajo-y-energia"
+     ],
      "plantillas": [
       "fisica-moderna",
       "relatividad"
@@ -859,6 +969,53 @@
    "nombre": "Química",
    "area": "ciencias",
    "formato_principal": "predicciones",
+   "ramas": [
+    {
+     "nombre": "Materia y átomo",
+     "unidades": [
+      "quimica.materia-y-energia",
+      "quimica.estructura-atomica",
+      "quimica.tabla-periodica",
+      "quimica.enlace-quimico",
+      "quimica.nomenclatura-inorganica"
+     ]
+    },
+    {
+     "nombre": "Cálculos químicos",
+     "unidades": [
+      "quimica.mol-y-composicion",
+      "quimica.reacciones-y-balance",
+      "quimica.estequiometria",
+      "quimica.gases",
+      "quimica.liquidos-y-solidos",
+      "quimica.soluciones"
+     ]
+    },
+    {
+     "nombre": "Reacciones y equilibrio",
+     "unidades": [
+      "quimica.cinetica-quimica",
+      "quimica.equilibrio-quimico",
+      "quimica.acidos-y-bases",
+      "quimica.electroquimica"
+     ]
+    },
+    {
+     "nombre": "Química orgánica",
+     "unidades": [
+      "quimica.hidrocarburos",
+      "quimica.funciones-organicas",
+      "quimica.biomoleculas-y-productos-naturales"
+     ]
+    },
+    {
+     "nombre": "Química y ambiente",
+     "unidades": [
+      "quimica.recursos-naturales",
+      "quimica.ambiente-y-quimica-aplicada"
+     ]
+    }
+   ],
    "unidades": [
     {
      "id": "quimica.materia-y-energia",
@@ -886,6 +1043,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "materia-energia",
       "configuracion-ubicacion",
@@ -931,6 +1089,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [
+      "quimica.materia-y-energia"
+     ],
      "plantillas": [
       "atomo-y-tabla",
       "configuracion-ubicacion",
@@ -978,6 +1139,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [
+      "quimica.estructura-atomica"
+     ],
      "plantillas": [
       "atomo-y-tabla",
       "configuracion-ubicacion",
@@ -1021,6 +1185,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [
+      "quimica.tabla-periodica"
+     ],
      "plantillas": [
       "enlace",
       "quimica-conceptos"
@@ -1067,6 +1234,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "quimica.enlace-quimico"
+     ],
      "plantillas": [
       "nomenclatura-inorganica",
       "quimica-conceptos"
@@ -1109,6 +1279,10 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "quimica.estructura-atomica",
+      "quimica.nomenclatura-inorganica"
+     ],
      "plantillas": [
       "mol-composicion"
      ],
@@ -1149,6 +1323,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
+     "requiere": [
+      "quimica.nomenclatura-inorganica"
+     ],
      "plantillas": [
       "balance-reacciones",
       "clasificar-reacciones"
@@ -1189,6 +1366,11 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "quimica.mol-y-composicion",
+      "quimica.reacciones-y-balance",
+      "aritmetica.magnitudes-proporcionales"
+     ],
      "plantillas": [
       "estequiometria-limitante",
       "limitante-particulas",
@@ -1236,6 +1418,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "quimica.mol-y-composicion"
+     ],
      "plantillas": [
       "gases"
      ],
@@ -1276,6 +1461,10 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
+     "requiere": [
+      "quimica.enlace-quimico",
+      "quimica.gases"
+     ],
      "plantillas": [
       "liquidos-y-solidos",
       "quimica-conceptos",
@@ -1317,6 +1506,10 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "quimica.mol-y-composicion",
+      "aritmetica.porcentajes"
+     ],
      "plantillas": [
       "soluciones",
       "soluciones-meq-ppm",
@@ -1357,6 +1550,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "quimica.estequiometria"
+     ],
      "plantillas": [
       "cinetica"
      ],
@@ -1393,6 +1589,10 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
+     "requiere": [
+      "quimica.cinetica-quimica",
+      "quimica.soluciones"
+     ],
      "plantillas": [
       "equilibrio-quimico",
       "quimica-conceptos"
@@ -1432,6 +1632,10 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
+     "requiere": [
+      "quimica.equilibrio-quimico",
+      "algebra.exponenciales-y-logaritmos"
+     ],
      "plantillas": [
       "acidos-bases",
       "quimica-conceptos"
@@ -1473,6 +1677,10 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
+     "requiere": [
+      "quimica.reacciones-y-balance",
+      "quimica.soluciones"
+     ],
      "plantillas": [
       "celda-galvanica",
       "quimica-conceptos",
@@ -1518,6 +1726,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 4,
+     "requiere": [
+      "quimica.enlace-quimico"
+     ],
      "plantillas": [
       "hidrocarburos",
       "molecula-grande",
@@ -1564,6 +1775,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 4,
+     "requiere": [
+      "quimica.hidrocarburos"
+     ],
      "plantillas": [
       "funciones-organicas",
       "molecula-grande",
@@ -1607,6 +1821,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
+     "requiere": [
+      "quimica.funciones-organicas"
+     ],
      "plantillas": [
       "biomoleculas",
       "quimica-conceptos",
@@ -1651,6 +1868,10 @@
      },
      "potencial_visual": "bajo",
      "grado": 4,
+     "requiere": [
+      "quimica.hidrocarburos",
+      "quimica.reacciones-y-balance"
+     ],
      "plantillas": [
       "quimica-ambiente",
       "quimica-conceptos",
@@ -1697,6 +1918,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 4,
+     "requiere": [
+      "quimica.reacciones-y-balance"
+     ],
      "plantillas": [
       "quimica-ambiente",
       "quimica-conceptos"
@@ -1720,6 +1944,47 @@
    "nombre": "Álgebra",
    "area": "matematica",
    "formato_principal": "predicciones",
+   "ramas": [
+    {
+     "nombre": "Lógica y números reales",
+     "unidades": [
+      "algebra.logica-y-conjuntos",
+      "algebra.numeros-reales"
+     ]
+    },
+    {
+     "nombre": "Expresiones algebraicas",
+     "unidades": [
+      "algebra.exponentes-y-productos-notables",
+      "algebra.polinomios",
+      "algebra.division-de-polinomios",
+      "algebra.factorizacion",
+      "algebra.ecuaciones-polinomiales",
+      "algebra.binomio-de-newton"
+     ]
+    },
+    {
+     "nombre": "Ecuaciones e inecuaciones",
+     "unidades": [
+      "algebra.ecuaciones-lineales-y-cuadraticas",
+      "algebra.inecuaciones",
+      "algebra.valor-absoluto-y-radicales",
+      "algebra.sistemas-de-ecuaciones",
+      "algebra.matrices-y-determinantes",
+      "algebra.programacion-lineal",
+      "algebra.numeros-complejos"
+     ]
+    },
+    {
+     "nombre": "Funciones",
+     "unidades": [
+      "algebra.funciones",
+      "algebra.tipos-de-funciones-e-inversa",
+      "algebra.exponenciales-y-logaritmos",
+      "algebra.sucesiones-y-series"
+     ]
+    }
+   ],
    "unidades": [
     {
      "id": "algebra.logica-y-conjuntos",
@@ -1744,6 +2009,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "conjuntos",
       "logica"
@@ -1784,6 +2050,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [
+      "algebra.logica-y-conjuntos"
+     ],
      "plantillas": [
       "numeros-reales",
       "inecuaciones-planteo"
@@ -1824,6 +2093,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "aritmetica.potenciacion-y-radicacion"
+     ],
      "plantillas": [
       "cuadrado-crece",
       "sistemas-ecuaciones"
@@ -1865,6 +2137,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [
+      "algebra.exponentes-y-productos-notables"
+     ],
      "plantillas": [
       "traductor-enunciados",
       "sistemas-ecuaciones"
@@ -1906,6 +2181,10 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
+     "requiere": [
+      "algebra.ecuaciones-lineales-y-cuadraticas",
+      "algebra.numeros-reales"
+     ],
      "plantillas": [
       "grafica-perillas",
       "inecuaciones-planteo"
@@ -1945,6 +2224,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
+     "requiere": [
+      "algebra.inecuaciones"
+     ],
      "plantillas": [
       "grafica-perillas",
       "sistemas-ecuaciones",
@@ -1984,6 +2266,10 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "algebra.exponentes-y-productos-notables",
+      "aritmetica.cuatro-operaciones"
+     ],
      "plantillas": [
       "polinomios"
      ],
@@ -2022,6 +2308,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "algebra.polinomios"
+     ],
      "plantillas": [
       "polinomios",
       "division-polinomios"
@@ -2060,6 +2349,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "algebra.division-de-polinomios"
+     ],
      "plantillas": [
       "cuadrado-crece",
       "division-polinomios",
@@ -2103,6 +2395,10 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
+     "requiere": [
+      "algebra.factorizacion",
+      "algebra.ecuaciones-lineales-y-cuadraticas"
+     ],
      "plantillas": [
       "polinomios",
       "ecuaciones-polinomiales"
@@ -2146,6 +2442,10 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "algebra.numeros-reales",
+      "algebra.ecuaciones-lineales-y-cuadraticas"
+     ],
      "plantillas": [
       "grafica-perillas",
       "funciones-dominio-rango"
@@ -2186,6 +2486,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "algebra.funciones"
+     ],
      "plantillas": [
       "grafica-perillas",
       "exponenciales-logaritmos",
@@ -2225,6 +2528,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "algebra.tipos-de-funciones-e-inversa"
+     ],
      "plantillas": [
       "exponenciales-logaritmos",
       "funciones-dominio-rango"
@@ -2264,6 +2570,10 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "algebra.ecuaciones-lineales-y-cuadraticas",
+      "trigonometria.razones-trigonometricas-agudas"
+     ],
      "plantillas": [
       "numeros-complejos",
       "ecuaciones-polinomiales"
@@ -2305,6 +2615,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
+     "requiere": [
+      "algebra.sistemas-de-ecuaciones"
+     ],
      "plantillas": [
       "matrices",
       "sistemas-ecuaciones"
@@ -2347,6 +2660,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "algebra.ecuaciones-lineales-y-cuadraticas"
+     ],
      "plantillas": [
       "traductor-enunciados",
       "matrices",
@@ -2389,6 +2705,10 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "algebra.sistemas-de-ecuaciones",
+      "algebra.inecuaciones"
+     ],
      "plantillas": [
       "programacion-lineal",
       "inecuaciones-planteo"
@@ -2426,6 +2746,10 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
+     "requiere": [
+      "algebra.funciones",
+      "aritmetica.sucesiones-y-series"
+     ],
      "plantillas": [
       "sucesiones"
      ],
@@ -2462,6 +2786,10 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
+     "requiere": [
+      "algebra.exponentes-y-productos-notables",
+      "aritmetica.analisis-combinatorio"
+     ],
      "plantillas": [
       "binomio-newton"
      ],
@@ -2484,6 +2812,47 @@
    "nombre": "Aritmética",
    "area": "matematica",
    "formato_principal": "predicciones",
+   "ramas": [
+    {
+     "nombre": "Números y operaciones",
+     "unidades": [
+      "aritmetica.numeracion",
+      "aritmetica.cuatro-operaciones",
+      "aritmetica.divisibilidad",
+      "aritmetica.numeros-primos-y-divisores",
+      "aritmetica.mcd-y-mcm",
+      "aritmetica.numeros-racionales",
+      "aritmetica.potenciacion-y-radicacion",
+      "aritmetica.sucesiones-y-series",
+      "aritmetica.razonamiento-numerico"
+     ]
+    },
+    {
+     "nombre": "Razones y comercio",
+     "unidades": [
+      "aritmetica.razones-y-proporciones",
+      "aritmetica.magnitudes-proporcionales",
+      "aritmetica.porcentajes",
+      "aritmetica.interes-y-descuento",
+      "aritmetica.mezclas-y-aleaciones"
+     ]
+    },
+    {
+     "nombre": "Lógica y conjuntos",
+     "unidades": [
+      "aritmetica.logica-proposicional",
+      "aritmetica.conjuntos"
+     ]
+    },
+    {
+     "nombre": "Datos, conteo y azar",
+     "unidades": [
+      "aritmetica.estadistica",
+      "aritmetica.analisis-combinatorio",
+      "aritmetica.probabilidades"
+     ]
+    }
+   ],
    "unidades": [
     {
      "id": "aritmetica.logica-proposicional",
@@ -2505,6 +2874,7 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "logica"
      ],
@@ -2540,6 +2910,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "aritmetica.logica-proposicional"
+     ],
      "plantillas": [
       "conjuntos",
       "porcentajes-planteo"
@@ -2578,6 +2951,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [
+      "aritmetica.numeros-racionales"
+     ],
      "plantillas": [
       "regla-de-tres",
       "porcentajes-planteo"
@@ -2617,6 +2993,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "aritmetica.razones-y-proporciones"
+     ],
      "plantillas": [
       "regla-de-tres",
       "porcentajes-planteo"
@@ -2656,6 +3035,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [
+      "aritmetica.razones-y-proporciones"
+     ],
      "plantillas": [
       "porcentajes-sucesivos",
       "porcentajes-planteo"
@@ -2695,6 +3077,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
+     "requiere": [
+      "aritmetica.porcentajes"
+     ],
      "plantillas": [
       "interes"
      ],
@@ -2731,6 +3116,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
+     "requiere": [
+      "aritmetica.razones-y-proporciones"
+     ],
      "plantillas": [
       "mezclas",
       "porcentajes-planteo"
@@ -2773,6 +3161,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "aritmetica.porcentajes"
+     ],
      "plantillas": [
       "fracciones",
       "estadistica-datos"
@@ -2814,6 +3205,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
+     "requiere": [
+      "aritmetica.cuatro-operaciones"
+     ],
      "plantillas": [
       "probabilidad-dados",
       "probabilidad-conteo"
@@ -2857,6 +3251,10 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
+     "requiere": [
+      "aritmetica.analisis-combinatorio",
+      "aritmetica.conjuntos"
+     ],
      "plantillas": [
       "probabilidad-dados",
       "probabilidad-conteo"
@@ -2897,6 +3295,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "numeracion",
       "numeros-sucesiones"
@@ -2942,6 +3341,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "aritmetica.numeracion"
+     ],
      "plantillas": [
       "cuatro-operaciones"
      ],
@@ -2982,6 +3384,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "aritmetica.cuatro-operaciones"
+     ],
      "plantillas": [
       "divisores",
       "numeros-sucesiones"
@@ -3023,6 +3428,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "aritmetica.divisibilidad"
+     ],
      "plantillas": [
       "divisores",
       "numeros-sucesiones"
@@ -3064,6 +3472,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [
+      "aritmetica.numeros-primos-y-divisores"
+     ],
      "plantillas": [
       "fracciones",
       "fracciones-problemas"
@@ -3109,6 +3520,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [
+      "aritmetica.mcd-y-mcm"
+     ],
      "plantillas": [
       "fracciones",
       "fracciones-problemas"
@@ -3147,6 +3561,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "aritmetica.numeros-primos-y-divisores"
+     ],
      "plantillas": [
       "potenciacion",
       "numeros-sucesiones"
@@ -3188,6 +3605,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
+     "requiere": [
+      "aritmetica.cuatro-operaciones"
+     ],
      "plantillas": [
       "sucesiones",
       "estadistica-datos",
@@ -3228,6 +3648,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
+     "requiere": [
+      "aritmetica.cuatro-operaciones"
+     ],
      "plantillas": [
       "razonamiento-numerico"
      ],
@@ -3249,6 +3672,51 @@
    "nombre": "Geometría",
    "area": "matematica",
    "formato_principal": "escena",
+   "ramas": [
+    {
+     "nombre": "Geometría plana",
+     "unidades": [
+      "geometria.segmentos-y-angulos",
+      "geometria.triangulos",
+      "geometria.congruencia",
+      "geometria.poligonos-y-cuadrilateros",
+      "geometria.circunferencia",
+      "geometria.proporcionalidad-y-semejanza",
+      "geometria.puntos-notables",
+      "geometria.relaciones-metricas",
+      "geometria.poligonos-regulares"
+     ]
+    },
+    {
+     "nombre": "Áreas",
+     "unidades": [
+      "geometria.areas-poligonales",
+      "geometria.longitud-y-areas-circulares"
+     ]
+    },
+    {
+     "nombre": "Figuras y simetría",
+     "unidades": [
+      "geometria.razonamiento-con-figuras",
+      "geometria.simetria"
+     ]
+    },
+    {
+     "nombre": "Geometría del espacio",
+     "unidades": [
+      "geometria.geometria-del-espacio",
+      "geometria.poliedros",
+      "geometria.prisma-y-piramide",
+      "geometria.solidos-de-revolucion"
+     ]
+    },
+    {
+     "nombre": "Geometría analítica",
+     "unidades": [
+      "geometria.geometria-analitica"
+     ]
+    }
+   ],
    "unidades": [
     {
      "id": "geometria.segmentos-y-angulos",
@@ -3277,6 +3745,7 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "segmentos-angulos"
      ],
@@ -3314,6 +3783,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "geometria.segmentos-y-angulos"
+     ],
      "plantillas": [
       "triangulo-estira",
       "geo-triangulos-notables"
@@ -3352,6 +3824,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "geometria.triangulos"
+     ],
      "plantillas": [
       "congruencia"
      ],
@@ -3389,6 +3864,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "geometria.triangulos"
+     ],
      "plantillas": [
       "poligonos",
       "geo-poligonos"
@@ -3428,6 +3906,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "geometria.triangulos"
+     ],
      "plantillas": [
       "angulo-inscrito",
       "geo-circunferencia-metrica"
@@ -3465,6 +3946,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "geometria.congruencia"
+     ],
      "plantillas": [
       "ampliadora",
       "geo-proporcionalidad"
@@ -3501,6 +3985,10 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "geometria.congruencia",
+      "geometria.circunferencia"
+     ],
      "plantillas": [
       "triangulo-estira",
       "geo-triangulos-notables"
@@ -3541,6 +4029,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "geometria.proporcionalidad-y-semejanza"
+     ],
      "plantillas": [
       "triangulo-estira",
       "geo-circunferencia-metrica",
@@ -3579,6 +4070,11 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "geometria.poligonos-y-cuadrilateros",
+      "geometria.circunferencia",
+      "geometria.relaciones-metricas"
+     ],
      "plantillas": [
       "poligonos",
       "geo-poligonos"
@@ -3610,6 +4106,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "geometria.congruencia"
+     ],
      "plantillas": [
       "simetria"
      ],
@@ -3650,6 +4149,10 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "geometria.poligonos-y-cuadrilateros",
+      "geometria.relaciones-metricas"
+     ],
      "plantillas": [
       "ampliadora",
       "triangulo-estira",
@@ -3689,6 +4192,10 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "geometria.circunferencia",
+      "geometria.areas-poligonales"
+     ],
      "plantillas": [
       "ampliadora",
       "angulo-inscrito",
@@ -3731,6 +4238,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "geometria.relaciones-metricas"
+     ],
      "plantillas": [
       "geometria-espacio",
       "geo-proporcionalidad"
@@ -3769,6 +4279,10 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "geometria.geometria-del-espacio",
+      "geometria.poligonos-regulares"
+     ],
      "plantillas": [
       "solidos"
      ],
@@ -3811,6 +4325,10 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "geometria.poliedros",
+      "geometria.areas-poligonales"
+     ],
      "plantillas": [
       "ampliadora",
       "solidos",
@@ -3856,6 +4374,10 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "geometria.prisma-y-piramide",
+      "geometria.longitud-y-areas-circulares"
+     ],
      "plantillas": [
       "ampliadora",
       "solidos",
@@ -3894,6 +4416,10 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "geometria.relaciones-metricas",
+      "algebra.ecuaciones-lineales-y-cuadraticas"
+     ],
      "plantillas": [
       "geometria-analitica",
       "conicas",
@@ -3929,6 +4455,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "razonamiento-figuras"
      ],
@@ -3950,6 +4477,52 @@
    "nombre": "Trigonometría",
    "area": "matematica",
    "formato_principal": "escena",
+   "ramas": [
+    {
+     "nombre": "Ángulos y razones",
+     "unidades": [
+      "trigonometria.angulo-trigonometrico",
+      "trigonometria.longitud-de-arco-y-sector",
+      "trigonometria.razones-trigonometricas-agudas",
+      "trigonometria.triangulos-rectangulos"
+     ]
+    },
+    {
+     "nombre": "Ángulos de cualquier medida",
+     "unidades": [
+      "trigonometria.angulos-en-posicion-normal",
+      "trigonometria.reduccion-al-primer-cuadrante",
+      "trigonometria.circunferencia-trigonometrica",
+      "trigonometria.funciones-trigonometricas",
+      "trigonometria.funciones-trigonometricas-inversas",
+      "trigonometria.ecuaciones-trigonometricas"
+     ]
+    },
+    {
+     "nombre": "Identidades",
+     "unidades": [
+      "trigonometria.identidades-fundamentales",
+      "trigonometria.arcos-compuestos",
+      "trigonometria.arcos-multiples",
+      "trigonometria.transformaciones-trigonometricas"
+     ]
+    },
+    {
+     "nombre": "Resolución de triángulos",
+     "unidades": [
+      "trigonometria.triangulos-oblicuangulos",
+      "trigonometria.areas-y-lineas-notables"
+     ]
+    },
+    {
+     "nombre": "Plano cartesiano",
+     "unidades": [
+      "trigonometria.recta-en-el-plano",
+      "trigonometria.conicas",
+      "trigonometria.coordenadas-polares-y-complejos"
+     ]
+    }
+   ],
    "unidades": [
     {
      "id": "trigonometria.angulo-trigonometrico",
@@ -3974,6 +4547,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "geometria.segmentos-y-angulos"
+     ],
      "plantillas": [
       "cinta-radio"
      ],
@@ -4010,6 +4586,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "trigonometria.angulo-trigonometrico"
+     ],
      "plantillas": [
       "cinta-radio",
       "geo-areas-circulares"
@@ -4047,6 +4626,10 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "trigonometria.angulo-trigonometrico",
+      "geometria.triangulos"
+     ],
      "plantillas": [
       "circunferencia-trig"
      ],
@@ -4082,6 +4665,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "trigonometria.razones-trigonometricas-agudas"
+     ],
      "plantillas": [
       "circunferencia-trig",
       "trig-angulos-verticales"
@@ -4117,6 +4703,10 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "trigonometria.razones-trigonometricas-agudas",
+      "algebra.ecuaciones-lineales-y-cuadraticas"
+     ],
      "plantillas": [
       "geometria-analitica"
      ],
@@ -4153,6 +4743,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "trigonometria.razones-trigonometricas-agudas"
+     ],
      "plantillas": [
       "circunferencia-trig"
      ],
@@ -4188,6 +4781,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "trigonometria.angulos-en-posicion-normal"
+     ],
      "plantillas": [
       "circunferencia-trig",
       "trig-oblicuangulos"
@@ -4228,6 +4824,9 @@
      },
      "potencial_visual": "alto",
      "grado": 4,
+     "requiere": [
+      "trigonometria.reduccion-al-primer-cuadrante"
+     ],
      "plantillas": [
       "circunferencia-trig",
       "trig-extremos"
@@ -4264,6 +4863,9 @@
      },
      "potencial_visual": "medio",
      "grado": 4,
+     "requiere": [
+      "trigonometria.angulos-en-posicion-normal"
+     ],
      "plantillas": [
       "identidades-trig",
       "trig-extremos",
@@ -4301,6 +4903,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
+     "requiere": [
+      "trigonometria.identidades-fundamentales"
+     ],
      "plantillas": [
       "identidades-trig",
       "trig-angulos-verticales",
@@ -4341,6 +4946,9 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
+     "requiere": [
+      "trigonometria.arcos-compuestos"
+     ],
      "plantillas": [
       "identidades-trig",
       "trig-identidades"
@@ -4379,6 +4987,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 5,
+     "requiere": [
+      "trigonometria.arcos-multiples"
+     ],
      "plantillas": [
       "transformaciones-trig"
      ],
@@ -4419,6 +5030,10 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "trigonometria.circunferencia-trigonometrica",
+      "algebra.funciones"
+     ],
      "plantillas": [
       "circunferencia-trig",
       "trig-extremos"
@@ -4459,6 +5074,10 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "trigonometria.funciones-trigonometricas",
+      "algebra.tipos-de-funciones-e-inversa"
+     ],
      "plantillas": [
       "funciones-trig-inversas",
       "trig-inversas"
@@ -4495,6 +5114,10 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "trigonometria.circunferencia-trigonometrica",
+      "trigonometria.identidades-fundamentales"
+     ],
      "plantillas": [
       "circunferencia-trig",
       "trig-ecuaciones"
@@ -4532,6 +5155,10 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "trigonometria.triangulos-rectangulos",
+      "trigonometria.reduccion-al-primer-cuadrante"
+     ],
      "plantillas": [
       "caso-ambiguo",
       "trig-oblicuangulos"
@@ -4573,6 +5200,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "trigonometria.triangulos-oblicuangulos"
+     ],
      "plantillas": [
       "caso-ambiguo",
       "trig-oblicuangulos"
@@ -4609,6 +5239,9 @@
      },
      "potencial_visual": "alto",
      "grado": 5,
+     "requiere": [
+      "trigonometria.recta-en-el-plano"
+     ],
      "plantillas": [
       "conicas"
      ],
@@ -4641,6 +5274,10 @@
      },
      "potencial_visual": "medio",
      "grado": 5,
+     "requiere": [
+      "trigonometria.circunferencia-trigonometrica",
+      "algebra.numeros-complejos"
+     ],
      "plantillas": [
       "coordenadas-polares",
       "trig-polares"
@@ -4661,6 +5298,47 @@
    "nombre": "Razonamiento matemático",
    "area": "razonamiento",
    "formato_principal": "escena",
+   "ramas": [
+    {
+     "nombre": "Lógica",
+     "unidades": [
+      "razonamiento-matematico.razonamiento-deductivo",
+      "razonamiento-matematico.ordenamiento-de-informacion",
+      "razonamiento-matematico.verdades-y-mentiras",
+      "razonamiento-matematico.certezas"
+     ]
+    },
+    {
+     "nombre": "Números y patrones",
+     "unidades": [
+      "razonamiento-matematico.razonamiento-inductivo",
+      "razonamiento-matematico.arreglos-numericos",
+      "razonamiento-matematico.planteo-de-ecuaciones",
+      "razonamiento-matematico.maximos-y-minimos",
+      "razonamiento-matematico.cortes-y-pesadas",
+      "razonamiento-matematico.juegos-recreativos"
+     ]
+    },
+    {
+     "nombre": "Tiempo y datos",
+     "unidades": [
+      "razonamiento-matematico.cronometria-y-calendarios",
+      "razonamiento-matematico.frecuencia-de-sucesos",
+      "razonamiento-matematico.tablas-graficos-y-suficiencia",
+      "razonamiento-matematico.diagramas-de-flujo"
+     ]
+    },
+    {
+     "nombre": "Figuras y espacio",
+     "unidades": [
+      "razonamiento-matematico.trazos-y-perimetros",
+      "razonamiento-matematico.transformaciones-de-figuras",
+      "razonamiento-matematico.traslados-y-puntos-cardinales",
+      "razonamiento-matematico.rutas-y-visualizacion-espacial",
+      "razonamiento-matematico.ruedas-poleas-engranajes"
+     ]
+    }
+   ],
    "unidades": [
     {
      "id": "razonamiento-matematico.razonamiento-deductivo",
@@ -4682,6 +5360,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "orden-informacion",
       "rm-deduccion",
@@ -4718,6 +5397,7 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "trazos-rutas",
       "cuadricula-piezas",
@@ -4750,6 +5430,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "razonamiento-matematico.razonamiento-deductivo"
+     ],
      "plantillas": [
       "orden-informacion",
       "rm-parentesco"
@@ -4781,6 +5464,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [
+      "razonamiento-matematico.razonamiento-deductivo"
+     ],
      "plantillas": [
       "orden-informacion"
      ],
@@ -4810,6 +5496,7 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "traslados-sucesos",
       "rm-trasvases",
@@ -4843,6 +5530,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "arreglos-giros",
       "rm-arreglos"
@@ -4875,6 +5563,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "sucesiones",
       "rm-ciclos",
@@ -4909,6 +5598,7 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "probabilidad-dados",
       "dados-caras",
@@ -4949,6 +5639,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "relojes-calendarios",
       "rm-relojes"
@@ -4981,6 +5672,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "orden-informacion",
       "rm-deduccion",
@@ -5013,6 +5705,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "traslados-sucesos",
       "rm-ciclos"
@@ -5045,6 +5738,7 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "regla-de-tres",
       "poleas-giros"
@@ -5076,6 +5770,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "maximos-minimos",
       "rm-planteo",
@@ -5112,6 +5807,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "razonamiento-matematico.certezas"
+     ],
      "plantillas": [
       "cortes-pesadas",
       "rm-cortes",
@@ -5146,6 +5844,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "traductor-enunciados",
       "rm-planteo",
@@ -5183,6 +5882,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "razonamiento-matematico.trazos-y-perimetros"
+     ],
      "plantillas": [
       "arreglos-giros",
       "ampliadora",
@@ -5218,6 +5920,9 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [
+      "razonamiento-matematico.traslados-y-puntos-cardinales"
+     ],
      "plantillas": [
       "trazos-rutas",
       "rutas-tramos",
@@ -5257,6 +5962,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "tablas-graficos",
       "rm-planteo"
@@ -5288,6 +5994,7 @@
      },
      "potencial_visual": "alto",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "rm-diagramas-flujo"
      ],
@@ -5308,6 +6015,46 @@
    "nombre": "Razonamiento verbal",
    "area": "razonamiento",
    "formato_principal": "lectura",
+   "ramas": [
+    {
+     "nombre": "Palabras",
+     "unidades": [
+      "razonamiento-verbal.definiciones",
+      "razonamiento-verbal.analogias",
+      "razonamiento-verbal.sentido-contextual"
+     ]
+    },
+    {
+     "nombre": "Oraciones y orden",
+     "unidades": [
+      "razonamiento-verbal.conectores",
+      "razonamiento-verbal.cohesion-y-coherencia",
+      "razonamiento-verbal.plan-de-redaccion",
+      "razonamiento-verbal.eliminacion-de-oraciones"
+     ]
+    },
+    {
+     "nombre": "Comprensión de lectura",
+     "unidades": [
+      "razonamiento-verbal.tipologia-textual",
+      "razonamiento-verbal.tema-e-idea-principal",
+      "razonamiento-verbal.resumen-y-sintesis",
+      "razonamiento-verbal.inferencias",
+      "razonamiento-verbal.compatibilidad",
+      "razonamiento-verbal.extrapolacion",
+      "razonamiento-verbal.textos-discontinuos",
+      "razonamiento-verbal.texto-y-contexto"
+     ]
+    },
+    {
+     "nombre": "Textos especiales",
+     "unidades": [
+      "razonamiento-verbal.textos-argumentativos-y-dialecticos",
+      "razonamiento-verbal.textos-filosoficos-y-cientificos",
+      "razonamiento-verbal.lectura-en-ingles"
+     ]
+    }
+   ],
    "unidades": [
     {
      "id": "razonamiento-verbal.definiciones",
@@ -5327,6 +6074,7 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "lectura-verbal"
      ],
@@ -5358,6 +6106,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "razonamiento-verbal.definiciones"
+     ],
      "plantillas": [
       "lectura-verbal"
      ],
@@ -5396,6 +6147,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "razonamiento-verbal.definiciones"
+     ],
      "plantillas": [
       "lectura-verbal"
      ],
@@ -5425,6 +6179,7 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "lectura-verbal"
      ],
@@ -5454,6 +6209,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "razonamiento-verbal.tema-e-idea-principal"
+     ],
      "plantillas": [
       "lectura-verbal"
      ],
@@ -5484,6 +6242,9 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [
+      "razonamiento-verbal.cohesion-y-coherencia"
+     ],
      "plantillas": [
       "lectura-verbal"
      ],
@@ -5522,6 +6283,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "razonamiento-verbal.conectores"
+     ],
      "plantillas": [
       "lectura-verbal"
      ],
@@ -5560,6 +6324,7 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "tipologia-textual"
      ],
@@ -5597,6 +6362,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "lectura-verbal"
      ],
@@ -5632,6 +6398,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "razonamiento-verbal.tema-e-idea-principal"
+     ],
      "plantillas": [
       "resumen-sintesis"
      ],
@@ -5669,6 +6438,7 @@
      },
      "potencial_visual": "medio",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "textos-discontinuos"
      ],
@@ -5706,6 +6476,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "razonamiento-verbal.tema-e-idea-principal"
+     ],
      "plantillas": [
       "lectura-verbal"
      ],
@@ -5740,6 +6513,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "razonamiento-verbal.inferencias"
+     ],
      "plantillas": [
       "lectura-verbal"
      ],
@@ -5774,6 +6550,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "razonamiento-verbal.inferencias"
+     ],
      "plantillas": [
       "lectura-verbal"
      ],
@@ -5811,6 +6590,10 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "razonamiento-verbal.tema-e-idea-principal",
+      "razonamiento-verbal.tipologia-textual"
+     ],
      "plantillas": [
       "lectura-verbal",
       "textos-dialecticos"
@@ -5846,6 +6629,7 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [],
      "plantillas": [
       "texto-contexto"
      ],
@@ -5874,6 +6658,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "razonamiento-verbal.tipologia-textual"
+     ],
      "plantillas": [
       "textos-filosoficos-cientificos"
      ],
@@ -5906,6 +6693,9 @@
      },
      "potencial_visual": "bajo",
      "grado": 3,
+     "requiere": [
+      "razonamiento-verbal.tema-e-idea-principal"
+     ],
      "plantillas": [
       "lectura-ingles"
      ],

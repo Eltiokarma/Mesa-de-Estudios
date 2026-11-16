@@ -16,6 +16,9 @@ Aquí se declara **qué** enseña la app: cursos, unidades y temas, en qué univ
   "nombre": "Física",
   "area": "ciencias",
   "formato_principal": "escena",
+  "ramas": [
+    {"nombre": "Ondas y luz", "unidades": ["fisica.ondas-mecanicas", "fisica.optica-geometrica"]}
+  ],
   "unidades": [
     {
       "id": "fisica.optica-geometrica",
@@ -27,6 +30,7 @@ Aquí se declara **qué** enseña la app: cursos, unidades y temas, en qué univ
       },
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["fisica.magnitudes-y-vectores", "trigonometria.razones-trigonometricas-agudas"],
       "plantillas": ["optica-lente-delgada"],
       "investigacion": "docs/investigacion/optica-ideas-erroneas.md"
     }
@@ -38,12 +42,14 @@ Aquí se declara **qué** enseña la app: cursos, unidades y temas, en qué univ
 | --- | --- |
 | `id` (curso) | En minúsculas, sin tildes ni espacios, con guiones. Igual al nombre del archivo. |
 | `area` | `ciencias`, `matematica`, `razonamiento` o `letras`. |
+| `ramas` | Las ramas del mapa del curso, de lo básico a lo complejo: cada una con `nombre` y la lista de sus `unidades`. Cada unidad del curso va en una sola rama. |
 | `formato_principal` | Cómo se enseña sobre todo ese curso: `escena` (simulación con predicción), `predicciones` (preguntas rápidas con errores típicos y explicación, sin escena), `lectura` (textos con preguntas). |
 | `unidades[].id` | `<curso>.<unidad>`, único en todo el catálogo. No se cambia nunca una vez publicado: el progreso de los alumnos se guarda con este id. |
 | `temas` | Lista corta de subtemas, en palabras propias. |
 | `universidades` | Dónde entra la unidad. `uni.semanas`: semanas del sílabo CEPRE-UNI 2026-2. `unmsm.temas`: números de tema del temario CEPRE-UNMSM 2026-I. Si una universidad no la pide, se omite. Se agregan `una`, `unsa`, `unsaac` cuando haya temario. |
 | `potencial_visual` | `alto`, `medio` o `bajo`. |
 | `grado` | Desde qué grado de secundaria (3, 4 o 5) se puede estudiar la unidad. A un alumno de un grado menor se le muestra como "adelanto" y va al final de su cola; no se le oculta. Es una estimación: ver "Grados" más abajo. |
+| `requiere` | Ids de las unidades que conviene estudiar antes, también de otro curso. Lista vacía si no necesita nada. Solo los requisitos directos: si B necesita A y C necesita B, C dice solo B. Ver "Mapa del curso". |
 | `plantillas` | Ids de plantillas que existen en `plantillas/`. Vacío si todavía no hay. |
 | `investigacion` | Ruta al informe de errores típicos, o `null`. |
 
@@ -97,3 +103,21 @@ El lanzamiento es con 3.º, 4.º y 5.º de secundaria, y no todos han visto lo m
 - **Razonamiento matemático y verbal:** desde 3.º, porque son habilidades y no temas de un grado.
 
 Cuando el colegio pase su programación anual, se corrige este campo; no hace falta tocar código.
+
+## Mapa del curso (16 nov 2026)
+
+Gerson pidió una vista en árbol, de lo básico a lo complejo, en la que se vea qué tema se apoya en cuál y qué rutas no necesitan otra. Con `ramas` y `requiere`, la página del curso dibuja cada rama como un árbol: un tema va debajo de lo que necesita, unido por una línea (`nucleo/mapa.js`).
+
+`npm test` revisa que el mapa esté bien armado:
+- cada unidad está en una rama;
+- los requisitos existen;
+- no hay ciclos;
+- ninguna unidad necesita algo de un grado mayor que el suyo.
+
+Como `grado`, **los requisitos son una estimación** y hay que confirmarlos con los profesores. Sigue el orden de los temas en los ciclos preuniversitarios y lo que cada tema usa de otro. Por ejemplo:
+- vectores antes de movimiento;
+- razones trigonométricas antes de vectores;
+- las cuatro operaciones antes de polinomios;
+- logaritmos antes de pH.
+
+En razonamiento matemático y verbal casi todos los temas son independientes, y así se ven.

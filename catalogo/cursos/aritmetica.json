@@ -3,6 +3,12 @@
   "nombre": "Aritmética",
   "area": "matematica",
   "formato_principal": "predicciones",
+  "ramas": [
+    {"nombre": "Números y operaciones", "unidades": ["aritmetica.numeracion", "aritmetica.cuatro-operaciones", "aritmetica.divisibilidad", "aritmetica.numeros-primos-y-divisores", "aritmetica.mcd-y-mcm", "aritmetica.numeros-racionales", "aritmetica.potenciacion-y-radicacion", "aritmetica.sucesiones-y-series", "aritmetica.razonamiento-numerico"]},
+    {"nombre": "Razones y comercio", "unidades": ["aritmetica.razones-y-proporciones", "aritmetica.magnitudes-proporcionales", "aritmetica.porcentajes", "aritmetica.interes-y-descuento", "aritmetica.mezclas-y-aleaciones"]},
+    {"nombre": "Lógica y conjuntos", "unidades": ["aritmetica.logica-proposicional", "aritmetica.conjuntos"]},
+    {"nombre": "Datos, conteo y azar", "unidades": ["aritmetica.estadistica", "aritmetica.analisis-combinatorio", "aritmetica.probabilidades"]}
+  ],
   "unidades": [
     {
       "id": "aritmetica.logica-proposicional",
@@ -24,6 +30,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": [],
       "plantillas": ["logica"],
       "investigacion": null
     },
@@ -49,6 +56,7 @@
       },
       "potencial_visual": "alto",
       "grado": 3,
+      "requiere": ["aritmetica.logica-proposicional"],
       "plantillas": ["conjuntos", "porcentajes-planteo"],
       "investigacion": null
     },
@@ -76,6 +84,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
+      "requiere": ["aritmetica.numeros-racionales"],
       "plantillas": ["regla-de-tres", "porcentajes-planteo"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
@@ -104,6 +113,7 @@
       },
       "potencial_visual": "alto",
       "grado": 3,
+      "requiere": ["aritmetica.razones-y-proporciones"],
       "plantillas": ["regla-de-tres", "porcentajes-planteo"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
@@ -132,6 +142,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
+      "requiere": ["aritmetica.razones-y-proporciones"],
       "plantillas": [
         "porcentajes-sucesivos",
         "porcentajes-planteo"
@@ -164,6 +175,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
+      "requiere": ["aritmetica.porcentajes"],
       "plantillas": ["interes"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
@@ -190,6 +202,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
+      "requiere": ["aritmetica.razones-y-proporciones"],
       "plantillas": ["mezclas", "porcentajes-planteo"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
@@ -221,6 +234,7 @@
       },
       "potencial_visual": "alto",
       "grado": 4,
+      "requiere": ["aritmetica.porcentajes"],
       "plantillas": ["fracciones", "estadistica-datos"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
@@ -250,6 +264,7 @@
       },
       "potencial_visual": "medio",
       "grado": 5,
+      "requiere": ["aritmetica.cuatro-operaciones"],
       "plantillas": ["probabilidad-dados", "probabilidad-conteo"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
@@ -280,6 +295,7 @@
       },
       "potencial_visual": "medio",
       "grado": 5,
+      "requiere": ["aritmetica.analisis-combinatorio", "aritmetica.conjuntos"],
       "plantillas": ["probabilidad-dados", "probabilidad-conteo"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
@@ -307,6 +323,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
+      "requiere": [],
       "plantillas": ["numeracion", "numeros-sucesiones"],
       "investigacion": null
     },
@@ -338,6 +355,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["aritmetica.numeracion"],
       "plantillas": ["cuatro-operaciones"],
       "investigacion": null
     },
@@ -366,6 +384,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["aritmetica.cuatro-operaciones"],
       "plantillas": ["divisores", "numeros-sucesiones"],
       "investigacion": null
     },
@@ -396,6 +415,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["aritmetica.divisibilidad"],
       "plantillas": ["divisores", "numeros-sucesiones"],
       "investigacion": null
     },
@@ -424,6 +444,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
+      "requiere": ["aritmetica.numeros-primos-y-divisores"],
       "plantillas": ["fracciones", "fracciones-problemas"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
@@ -455,6 +476,7 @@
       },
       "potencial_visual": "medio",
       "grado": 3,
+      "requiere": ["aritmetica.mcd-y-mcm"],
       "plantillas": ["fracciones", "fracciones-problemas"],
       "investigacion": "docs/investigacion/aritmetica-razonamiento-ideas-erroneas.md"
     },
@@ -481,6 +503,7 @@
       },
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["aritmetica.numeros-primos-y-divisores"],
       "plantillas": ["potenciacion", "numeros-sucesiones"],
       "investigacion": null
     },
@@ -508,6 +531,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
+      "requiere": ["aritmetica.cuatro-operaciones"],
       "plantillas": ["sucesiones", "estadistica-datos", "numeros-sucesiones"],
       "investigacion": null
     },
@@ -532,6 +556,7 @@
       },
       "potencial_visual": "medio",
       "grado": 4,
+      "requiere": ["aritmetica.cuatro-operaciones"],
       "plantillas": ["razonamiento-numerico"],
       "investigacion": null
     }

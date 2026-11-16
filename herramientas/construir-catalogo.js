@@ -67,10 +67,10 @@ function construir() {
     .map(f => leer(path.join(dirCursos, f)))
     .sort((a, b) => ORDEN_AREAS.indexOf(a.area) - ORDEN_AREAS.indexOf(b.area) || a.nombre.localeCompare(b.nombre, 'es'))
     .map(c => ({
-      id: c.id, nombre: c.nombre, area: c.area, formato_principal: c.formato_principal,
+      id: c.id, nombre: c.nombre, area: c.area, formato_principal: c.formato_principal, ramas: c.ramas,
       unidades: c.unidades.map(u => Object.assign({
         id: u.id, nombre: u.nombre, temas: u.temas, universidades: u.universidades,
-        potencial_visual: u.potencial_visual, grado: u.grado, plantillas: u.plantillas,
+        potencial_visual: u.potencial_visual, grado: u.grado, requiere: u.requiere, plantillas: u.plantillas,
       }, teoriaDe(u))),
     }));
   // Cuántos términos del glosario del curso aparecen en cada unidad (los propios y los que vienen de otra): la app

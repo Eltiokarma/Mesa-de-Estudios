@@ -3,6 +3,12 @@
   "nombre": "Álgebra",
   "area": "matematica",
   "formato_principal": "predicciones",
+  "ramas": [
+    {"nombre": "Lógica y números reales", "unidades": ["algebra.logica-y-conjuntos", "algebra.numeros-reales"]},
+    {"nombre": "Expresiones algebraicas", "unidades": ["algebra.exponentes-y-productos-notables", "algebra.polinomios", "algebra.division-de-polinomios", "algebra.factorizacion", "algebra.ecuaciones-polinomiales", "algebra.binomio-de-newton"]},
+    {"nombre": "Ecuaciones e inecuaciones", "unidades": ["algebra.ecuaciones-lineales-y-cuadraticas", "algebra.inecuaciones", "algebra.valor-absoluto-y-radicales", "algebra.sistemas-de-ecuaciones", "algebra.matrices-y-determinantes", "algebra.programacion-lineal", "algebra.numeros-complejos"]},
+    {"nombre": "Funciones", "unidades": ["algebra.funciones", "algebra.tipos-de-funciones-e-inversa", "algebra.exponenciales-y-logaritmos", "algebra.sucesiones-y-series"]}
+  ],
   "unidades": [
     {
       "id": "algebra.logica-y-conjuntos",
@@ -19,6 +25,7 @@
       "universidades": {"uni": {"semanas": [1, 2, 18]}},
       "potencial_visual": "medio",
       "grado": 3,
+      "requiere": [],
       "plantillas": ["conjuntos", "logica"],
       "investigacion": null
     },
@@ -35,6 +42,7 @@
       "universidades": {"uni": {"semanas": [2, 3]}, "unmsm": {"temas": [1]}},
       "potencial_visual": "medio",
       "grado": 3,
+      "requiere": ["algebra.logica-y-conjuntos"],
       "plantillas": ["numeros-reales", "inecuaciones-planteo"],
       "investigacion": null
     },
@@ -51,6 +59,7 @@
       "universidades": {"uni": {"semanas": [2, 7]}, "unmsm": {"temas": [2, 5]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["aritmetica.potenciacion-y-radicacion"],
       "plantillas": ["cuadrado-crece", "sistemas-ecuaciones"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
@@ -67,6 +76,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [3]}},
       "potencial_visual": "medio",
       "grado": 3,
+      "requiere": ["algebra.exponentes-y-productos-notables"],
       "plantillas": ["traductor-enunciados", "sistemas-ecuaciones"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
@@ -83,6 +93,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [3, 12]}},
       "potencial_visual": "medio",
       "grado": 4,
+      "requiere": ["algebra.ecuaciones-lineales-y-cuadraticas", "algebra.numeros-reales"],
       "plantillas": ["grafica-perillas", "inecuaciones-planteo"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
@@ -98,6 +109,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [4, 11, 12]}},
       "potencial_visual": "medio",
       "grado": 4,
+      "requiere": ["algebra.inecuaciones"],
       "plantillas": ["grafica-perillas", "sistemas-ecuaciones", "inecuaciones-planteo"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
@@ -114,6 +126,7 @@
       "universidades": {"uni": {"semanas": [5]}, "unmsm": {"temas": [6]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["algebra.exponentes-y-productos-notables", "aritmetica.cuatro-operaciones"],
       "plantillas": ["polinomios"],
       "investigacion": null
     },
@@ -130,6 +143,7 @@
       "universidades": {"uni": {"semanas": [6]}, "unmsm": {"temas": [7, 10]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["algebra.polinomios"],
       "plantillas": ["polinomios", "division-polinomios"],
       "investigacion": null
     },
@@ -146,6 +160,7 @@
       "universidades": {"uni": {"semanas": [7]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["algebra.division-de-polinomios"],
       "plantillas": ["cuadrado-crece", "division-polinomios", "ecuaciones-polinomiales"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
@@ -163,6 +178,7 @@
       "universidades": {"uni": {"semanas": [4, 10]}, "unmsm": {"temas": [9, 11]}},
       "potencial_visual": "medio",
       "grado": 4,
+      "requiere": ["algebra.factorizacion", "algebra.ecuaciones-lineales-y-cuadraticas"],
       "plantillas": ["polinomios", "ecuaciones-polinomiales"],
       "investigacion": null
     },
@@ -180,6 +196,7 @@
       "universidades": {"uni": {"semanas": [8, 9, 10]}, "unmsm": {"temas": [13]}},
       "potencial_visual": "alto",
       "grado": 4,
+      "requiere": ["algebra.numeros-reales", "algebra.ecuaciones-lineales-y-cuadraticas"],
       "plantillas": ["grafica-perillas", "funciones-dominio-rango"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
@@ -196,6 +213,7 @@
       "universidades": {"uni": {"semanas": [8, 10]}, "unmsm": {"temas": [14]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["algebra.funciones"],
       "plantillas": ["grafica-perillas", "exponenciales-logaritmos", "funciones-dominio-rango"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
@@ -213,6 +231,7 @@
       "universidades": {"uni": {"semanas": [11]}, "unmsm": {"temas": [15]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["algebra.tipos-de-funciones-e-inversa"],
       "plantillas": ["exponenciales-logaritmos", "funciones-dominio-rango"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
@@ -230,6 +249,7 @@
       "universidades": {"uni": {"semanas": [12]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["algebra.ecuaciones-lineales-y-cuadraticas", "trigonometria.razones-trigonometricas-agudas"],
       "plantillas": ["numeros-complejos", "ecuaciones-polinomiales"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
@@ -247,6 +267,7 @@
       "universidades": {"uni": {"semanas": [13, 14, 16]}, "unmsm": {"temas": [16]}},
       "potencial_visual": "bajo",
       "grado": 5,
+      "requiere": ["algebra.sistemas-de-ecuaciones"],
       "plantillas": ["matrices", "sistemas-ecuaciones"],
       "investigacion": null
     },
@@ -264,6 +285,7 @@
       "universidades": {"uni": {"semanas": [15, 16]}, "unmsm": {"temas": [17]}},
       "potencial_visual": "alto",
       "grado": 4,
+      "requiere": ["algebra.ecuaciones-lineales-y-cuadraticas"],
       "plantillas": ["traductor-enunciados", "matrices", "sistemas-ecuaciones"],
       "investigacion": "docs/investigacion/algebra-funciones-ideas-erroneas.md"
     },
@@ -280,6 +302,7 @@
       "universidades": {"uni": {"semanas": [16, 17]}, "unmsm": {"temas": [18]}},
       "potencial_visual": "alto",
       "grado": 5,
+      "requiere": ["algebra.sistemas-de-ecuaciones", "algebra.inecuaciones"],
       "plantillas": ["programacion-lineal", "inecuaciones-planteo"],
       "investigacion": null
     },
@@ -297,6 +320,7 @@
       "universidades": {"uni": {"semanas": [18, 19, 20]}},
       "potencial_visual": "medio",
       "grado": 5,
+      "requiere": ["algebra.funciones", "aritmetica.sucesiones-y-series"],
       "plantillas": ["sucesiones"],
       "investigacion": null
     },
@@ -312,6 +336,7 @@
       "universidades": {"uni": {"semanas": [20]}, "unmsm": {"temas": [10]}},
       "potencial_visual": "bajo",
       "grado": 5,
+      "requiere": ["algebra.exponentes-y-productos-notables", "aritmetica.analisis-combinatorio"],
       "plantillas": ["binomio-newton"],
       "investigacion": null
     }

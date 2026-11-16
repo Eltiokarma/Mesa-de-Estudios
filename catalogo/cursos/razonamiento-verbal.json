@@ -3,6 +3,12 @@
   "nombre": "Razonamiento verbal",
   "area": "razonamiento",
   "formato_principal": "lectura",
+  "ramas": [
+    {"nombre": "Palabras", "unidades": ["razonamiento-verbal.definiciones", "razonamiento-verbal.analogias", "razonamiento-verbal.sentido-contextual"]},
+    {"nombre": "Oraciones y orden", "unidades": ["razonamiento-verbal.conectores", "razonamiento-verbal.cohesion-y-coherencia", "razonamiento-verbal.plan-de-redaccion", "razonamiento-verbal.eliminacion-de-oraciones"]},
+    {"nombre": "Comprensión de lectura", "unidades": ["razonamiento-verbal.tipologia-textual", "razonamiento-verbal.tema-e-idea-principal", "razonamiento-verbal.resumen-y-sintesis", "razonamiento-verbal.inferencias", "razonamiento-verbal.compatibilidad", "razonamiento-verbal.extrapolacion", "razonamiento-verbal.textos-discontinuos", "razonamiento-verbal.texto-y-contexto"]},
+    {"nombre": "Textos especiales", "unidades": ["razonamiento-verbal.textos-argumentativos-y-dialecticos", "razonamiento-verbal.textos-filosoficos-y-cientificos", "razonamiento-verbal.lectura-en-ingles"]}
+  ],
   "unidades": [
     {
       "id": "razonamiento-verbal.definiciones",
@@ -11,6 +17,7 @@
       "universidades": {"uni": {"semanas": [0, 1]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": [],
       "plantillas": ["lectura-verbal"],
       "investigacion": null
     },
@@ -21,6 +28,7 @@
       "universidades": {"uni": {"semanas": [2]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["razonamiento-verbal.definiciones"],
       "plantillas": ["lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -37,6 +45,7 @@
       "universidades": {"uni": {"semanas": [3, 4, 16]}, "unmsm": {"temas": [3]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["razonamiento-verbal.definiciones"],
       "plantillas": ["lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -47,6 +56,7 @@
       "universidades": {"uni": {"semanas": [5]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": [],
       "plantillas": ["lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -57,6 +67,7 @@
       "universidades": {"uni": {"semanas": [6]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["razonamiento-verbal.tema-e-idea-principal"],
       "plantillas": ["lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -72,6 +83,7 @@
       "universidades": {"uni": {"semanas": [7]}},
       "potencial_visual": "medio",
       "grado": 3,
+      "requiere": ["razonamiento-verbal.cohesion-y-coherencia"],
       "plantillas": ["lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -88,6 +100,7 @@
       "universidades": {"uni": {"semanas": [8, 9]}, "unmsm": {"temas": [6, 7]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["razonamiento-verbal.conectores"],
       "plantillas": ["lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -104,6 +117,7 @@
       "universidades": {"uni": {"semanas": [10, 12]}, "unmsm": {"temas": [1, 2]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": [],
       "plantillas": ["tipologia-textual"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -120,6 +134,7 @@
       "universidades": {"uni": {"semanas": [11, 14]}, "unmsm": {"temas": [4]}},
       "potencial_visual": "medio",
       "grado": 3,
+      "requiere": [],
       "plantillas": ["lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -130,6 +145,7 @@
       "universidades": {"uni": {"semanas": [15]}, "unmsm": {"temas": [5]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["razonamiento-verbal.tema-e-idea-principal"],
       "plantillas": ["resumen-sintesis"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -140,6 +156,7 @@
       "universidades": {"uni": {"semanas": [13]}, "unmsm": {"temas": [1, 9, 15]}},
       "potencial_visual": "medio",
       "grado": 3,
+      "requiere": [],
       "plantillas": ["textos-discontinuos"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -155,6 +172,7 @@
       "universidades": {"uni": {"semanas": [17]}, "unmsm": {"temas": [10, 11]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["razonamiento-verbal.tema-e-idea-principal"],
       "plantillas": ["lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -169,6 +187,7 @@
       "universidades": {"uni": {"semanas": [18]}, "unmsm": {"temas": [8]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["razonamiento-verbal.inferencias"],
       "plantillas": ["lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -179,6 +198,7 @@
       "universidades": {"uni": {"semanas": [19]}, "unmsm": {"temas": [13]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["razonamiento-verbal.inferencias"],
       "plantillas": ["lectura-verbal"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -194,6 +214,7 @@
       "universidades": {"uni": {"semanas": [12]}, "unmsm": {"temas": [2, 12, 14]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["razonamiento-verbal.tema-e-idea-principal", "razonamiento-verbal.tipologia-textual"],
       "plantillas": ["lectura-verbal", "textos-dialecticos"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -204,6 +225,7 @@
       "universidades": {"uni": {"semanas": [16]}, "unmsm": {"temas": [18]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": [],
       "plantillas": ["texto-contexto"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -214,6 +236,7 @@
       "universidades": {"uni": {"semanas": [20]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["razonamiento-verbal.tipologia-textual"],
       "plantillas": ["textos-filosoficos-cientificos"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     },
@@ -224,6 +247,7 @@
       "universidades": {"unmsm": {"temas": [2, 16, 17]}},
       "potencial_visual": "bajo",
       "grado": 3,
+      "requiere": ["razonamiento-verbal.tema-e-idea-principal"],
       "plantillas": ["lectura-ingles"],
       "investigacion": "docs/investigacion/razonamiento-verbal-ideas-erroneas.md"
     }

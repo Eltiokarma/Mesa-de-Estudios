@@ -67,6 +67,41 @@ test('las unidades tienen ids únicos y campos válidos', () => {
   }
 });
 
+// Mapa del curso (16 nov 2026): cada curso se divide en ramas, y cada unidad dice qué unidades necesita antes
+// (`requiere`, también de otro curso). La app dibuja con esto el árbol del curso, de lo básico a lo complejo.
+test('las ramas y los requisitos forman un mapa sin ciclos', () => {
+  const todas = new Map(cursos.flatMap(c => c.unidades.map(u => [u.id, u])));
+  for (const c of cursos) {
+    assert.ok(Array.isArray(c.ramas) && c.ramas.length > 0, `${c.id}: faltan las ramas del mapa del curso`);
+    const vistas = new Set();
+    for (const r of c.ramas) {
+      assert.ok(r.nombre && Array.isArray(r.unidades) && r.unidades.length, `${c.id}: rama sin nombre o sin unidades`);
+      for (const id of r.unidades) {
+        assert.ok(c.unidades.some(u => u.id === id), `${c.id}: la rama «${r.nombre}» cita ${id}, que no es del curso`);
+        assert.ok(!vistas.has(id), `${c.id}: ${id} está en dos ramas`); vistas.add(id);
+      }
+    }
+    for (const u of c.unidades) {
+      assert.ok(vistas.has(u.id), `${u.id}: no está en ninguna rama`);
+      assert.ok(Array.isArray(u.requiere), `${u.id}: falta requiere (lista, vacía si no necesita nada antes)`);
+      for (const p of u.requiere) {
+        assert.ok(todas.has(p), `${u.id}: requiere ${p}, que no existe`);
+        assert.notEqual(p, u.id, `${u.id}: se requiere a sí misma`);
+        assert.ok(todas.get(p).grado <= u.grado, `${u.id} (${u.grado}.º) requiere ${p}, que es de ${todas.get(p).grado}.º`);
+      }
+    }
+  }
+  const estado = new Map();
+  const visitar = (id, camino) => {
+    if (estado.get(id) === 'listo') return;
+    assert.notEqual(estado.get(id), 'abierto', `ciclo en requiere: ${[...camino, id].join(' → ')}`);
+    estado.set(id, 'abierto');
+    for (const p of todas.get(id).requiere) visitar(p, [...camino, id]);
+    estado.set(id, 'listo');
+  };
+  for (const id of todas.keys()) visitar(id, []);
+});
+
 test('las unidades citan plantillas que existen', () => {
   for (const [id, { unidad }] of unidades) {
     for (const p of unidad.plantillas) {
