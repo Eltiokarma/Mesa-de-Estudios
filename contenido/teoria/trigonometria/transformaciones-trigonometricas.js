@@ -96,6 +96,16 @@
     titulo: 'Dos flechas, un rombo',
     temas: ['Suma a producto'],
     pieza: 'trig-plano',
+    // Lee (fase 2): sumar flechas, sombra y altura, semisuma y semidiferencia. No dice hacia dónde apunta R cuando
+    // A y B se separan mucho (eso lo descubre en Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Sumar flechas', texto: 'Si caminas una cuadra en una dirección y otra cuadra en otra, el atajo del inicio al final es la flecha suma. Para sumar flechas, la segunda empieza donde termina la primera.' },
+        { titulo: 'Altura y sombra', texto: ['Una flecha de largo 1 que apunta al ángulo ', A_, ' sube sen ', A_, ' y avanza cos ', A_, '. Por eso la altura de la flecha suma es sen ', A_, ' + sen ', B_, '.'] },
+        { titulo: 'Dos ángulos nuevos', texto: 'Con 80° y 20°, la semisuma es (80° + 20°)/2 = 50° y la semidiferencia es (80° − 20°)/2 = 30°. Esos dos ángulos aparecen en todas las fórmulas de esta idea.' },
+        { titulo: 'Qué mirar', texto: ['En el juego, la flecha roja ', R_, ' es la diagonal del rombo. Abre y cierra el ángulo entre ', A_, ' y ', B_, ', y mira qué le pasa al largo de ', R_, '.'] },
+      ],
+    },
     juega: {
       consigna: 'Gira las flechas A y B, de largo 1. La roja R es su suma: la diagonal del rombo. La discontinua marca la semisuma.',
       voz: 'Abre y cierra el ángulo entre A y B; mira el largo de R.',
@@ -164,6 +174,37 @@
       condicion: 'cos(semidiferencia) conserva su signo: si es negativo, R apunta al revés. Restas: sen A − sen B = 2 cos(semisuma) sen(semidiferencia).',
       voz: 'Semisuma para la dirección; semidiferencia para el largo y el signo.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (suma o resta de razones → producto), otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900);
+        let s = 0, d = 0;
+        do { s = 10 * rr.ent(3, 8); d = 10 * rr.ent(1, 3); } while (s + d === 90 || s === d || s === 90);
+        const a = s + d, b = s - d, tipo = sem % 4;
+        const T = [
+          { op: `sen ${a}° + sen ${b}°`, bien: `2 sen ${s}° cos ${d}°`, izq: sen(a) + sen(b), der: 2 * sen(s) * cos(d),
+            regla: 'Suma de senos: dos veces el seno de la semisuma por el coseno de la semidiferencia.', ec: ['sen ', A_, ' + sen ', B_, ' = 2 sen ', semis, ' cos ', semid] },
+          { op: `cos ${a}° + cos ${b}°`, bien: `2 cos ${s}° cos ${d}°`, izq: cos(a) + cos(b), der: 2 * cos(s) * cos(d),
+            regla: 'Suma de cosenos: dos veces el coseno de la semisuma por el coseno de la semidiferencia.', ec: ['cos ', A_, ' + cos ', B_, ' = 2 cos ', semis, ' cos ', semid] },
+          { op: `sen ${a}° − sen ${b}°`, bien: `2 cos ${s}° sen ${d}°`, izq: sen(a) - sen(b), der: 2 * cos(s) * sen(d),
+            regla: 'Resta de senos: las funciones se cruzan. Dos veces el coseno de la semisuma por el seno de la semidiferencia.', ec: ['sen ', A_, ' − sen ', B_, ' = 2 cos ', semis, ' sen ', semid] },
+          { op: `cos ${a}° − cos ${b}°`, bien: `−2 sen ${s}° sen ${d}°`, izq: cos(a) - cos(b), der: -2 * sen(s) * sen(d),
+            regla: 'Resta de cosenos: menos dos veces el seno de la semisuma por el seno de la semidiferencia.', ec: ['cos ', A_, ' − cos ', B_, ' = −2 sen ', semis, ' sen ', semid] },
+        ][tipo];
+        return {
+          enunciado: [`Escribe ${T.op} como un producto de razones trigonométricas.`],
+          pasos: [
+            { tipo: 'pide', texto: [`Piden cambiar ${T.op} por un producto: suma a producto.`] },
+            { tipo: 'datos', texto: ['Los dos ángulos son ', A_, ` = ${a}° y `, B_, ` = ${b}°. Saco su semisuma y su semidiferencia.`],
+              ecuacion: [semis, ` = ${s}°`, '   ·   ', semid, ` = ${d}°`] },
+            { tipo: 'regla', texto: T.regla, ecuacion: T.ec },
+            { tipo: 'cuentas', texto: `Pongo ${s}° donde va la semisuma y ${d}° donde va la semidiferencia.`, ecuacion: [`${T.op} = ${T.bien}`] },
+            { tipo: 'sentido', texto: 'Comprueba con la calculadora: los dos lados dan el mismo número.', ecuacion: [`${T.op} ≈ ${f(T.izq, 3)}   ·   ${T.bien} ≈ ${f(T.der, 3)}`] },
+          ],
+          respuesta: [`${T.op} = ${T.bien}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Calcula semisuma y semidiferencia antes de escribir.',
       generar(sem) {
@@ -203,6 +244,16 @@
     titulo: 'Un producto, dos ondas',
     temas: ['Producto a suma'],
     pieza: 'ejes',
+    // Lee (fase 2): dos ritmos, qué dice el número de cos mx y qué es multiplicar ondas. No dice qué ángulos salen
+    // al pasar el producto a suma (eso lo descubre en Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos ritmos', texto: 'En una banda de sikuris, el bombo marca un ritmo lento y las zampoñas uno rápido. Tocados juntos, se escucha una sola música hecha de dos ritmos.' },
+        { titulo: 'El número de la onda', texto: 'En cos mx, el número m es la frecuencia: dice cuántas veces se repite la onda en una vuelta de 360°. cos 2x se repite dos veces; cos 5x, cinco.' },
+        { titulo: 'Multiplicar ondas', texto: 'Multiplicar dos ondas es multiplicar sus alturas punto por punto. Escribir ese producto como una suma de ondas se llama producto a suma. Así se simplifica en el examen.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, la onda roja es el producto. Las curvas turquesa punteadas son 2 cos x y −2 cos x. Cuenta cuántas crestas tiene la roja dentro de ellas.' },
+      ],
+    },
     juega: {
       consigna: 'Elige m. La onda roja es 2 cos(mx) · cos x. Busca dentro de ella un ritmo rápido y uno lento.',
       voz: 'Cuenta cuántas crestas tiene la roja en una vuelta.',
@@ -250,6 +301,34 @@
       ecuacion: ['2 cos ', al, ' cos ', be, ' = ', { llave: ['cos(', al, ' + ', be, ')'], nota: 'ritmo rápido', color: 'c-h' }, ' + ', { llave: ['cos(', al, ' − ', be, ')'], nota: 'ritmo lento', color: 'c-d' }, '   ·   ', '2 sen ', al, ' cos ', be, ' = sen(', al, ' + ', be, ') + sen(', al, ' − ', be, ')'],
       condicion: 'α y β en la misma unidad. Con dos senos: 2 sen α sen β = cos(α − β) − cos(α + β).',
       voz: 'Multiplicar ondas es sumar sus ángulos y restarlos.',
+    },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (producto de razones → suma), otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900);
+        const a = 10 * rr.ent(4, 8), b = 10 * rr.ent(1, 3), s = a + b, d = a - b;
+        const tipo = sem % 3;
+        const T = [
+          { op: `2 cos ${a}° cos ${b}°`, bien: `cos ${s}° + cos ${d}°`, izq: 2 * cos(a) * cos(b), der: cos(s) + cos(d),
+            regla: 'Dos cosenos multiplicados dan cosenos: el del ángulo suma más el del ángulo diferencia.', ec: ['2 cos ', al, ' cos ', be, ' = cos(', al, ' + ', be, ') + cos(', al, ' − ', be, ')'] },
+          { op: `2 sen ${a}° cos ${b}°`, bien: `sen ${s}° + sen ${d}°`, izq: 2 * sen(a) * cos(b), der: sen(s) + sen(d),
+            regla: 'Seno por coseno da senos: el del ángulo suma más el del ángulo diferencia.', ec: ['2 sen ', al, ' cos ', be, ' = sen(', al, ' + ', be, ') + sen(', al, ' − ', be, ')'] },
+          { op: `2 sen ${a}° sen ${b}°`, bien: `cos ${d}° − cos ${s}°`, izq: 2 * sen(a) * sen(b), der: cos(d) - cos(s),
+            regla: 'Dos senos multiplicados dan cosenos, y se restan: el de la diferencia menos el de la suma.', ec: ['2 sen ', al, ' sen ', be, ' = cos(', al, ' − ', be, ') − cos(', al, ' + ', be, ')'] },
+        ][tipo];
+        return {
+          enunciado: [`Escribe ${T.op} como una suma o resta de dos razones trigonométricas.`],
+          pasos: [
+            { tipo: 'pide', texto: [`Piden cambiar el producto ${T.op} por una suma o una resta: producto a suma.`] },
+            { tipo: 'datos', texto: ['Los ángulos son ', al, ` = ${a}° y `, be, ` = ${b}°. Saco el ángulo suma y el ángulo diferencia.`],
+              ecuacion: [al, ' + ', be, ` = ${s}°`, '   ·   ', al, ' − ', be, ` = ${d}°`] },
+            { tipo: 'regla', texto: T.regla, ecuacion: T.ec },
+            { tipo: 'cuentas', texto: `Pongo ${s}° y ${d}° en la fórmula.`, ecuacion: [`${T.op} = ${T.bien}`] },
+            { tipo: 'sentido', texto: 'Comprueba con la calculadora: el producto y la expresión nueva dan el mismo número.', ecuacion: [`${T.op} ≈ ${f(T.izq, 3)}   ·   ${T.bien} ≈ ${f(T.der, 3)}`] },
+          ],
+          respuesta: [`${T.op} = ${T.bien}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Primero el ángulo suma y el ángulo diferencia.',
@@ -325,6 +404,15 @@
     titulo: 'Una cadena de flechas',
     temas: ['Sumatorias de senos y cosenos'],
     pieza: 'trig-plano',
+    // Lee (fase 2): qué es una sumatoria y su paso, y la cadena de flechas. No dice qué pasa cuando la cadena da
+    // la vuelta completa (eso lo descubre en Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una suma larga', texto: 'Una sumatoria es una suma de muchos términos que siguen una regla, como sen 10° + sen 20° + sen 30° + sen 40°. Aquí los ángulos avanzan siempre lo mismo: 10°. Ese avance es el paso.' },
+        { titulo: 'Cada seno, una flecha', texto: 'Cada término es la altura de una flecha de largo 1. Si las pones una detrás de otra, girando el paso cada vez, sus alturas se van sumando.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, la roja une el inicio con la punta de la última flecha. Pon más flechas, cambia el paso y mira cómo se dobla la cadena y qué altura tiene la roja.' },
+      ],
+    },
     juega: {
       consigna: 'Pon n flechas de largo 1, cada una girada x más que la anterior. La roja une el inicio con el final.',
       voz: 'La altura de la roja es la suma de todos los senos.',
@@ -378,6 +466,32 @@
       condicion: 'sen(r/2) ≠ 0, es decir, r no es múltiplo de 360°. Con cosenos, el último factor es cos((P + U)/2).',
       voz: 'Cuerda por seno del medio; y nunca dividas entre cero.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (n términos con paso r → fórmula), otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900);
+        const r = 2 * rr.ent(2, 10), n = rr.ent(4, 9), P = 2 * rr.ent(1, 20), U = P + (n - 1) * r;
+        const esSen = sem % 2 === 0, fn = esSen ? 'sen' : 'cos', g = esSen ? sen : cos;
+        const nr2 = n * r / 2, r2 = r / 2, m = (P + U) / 2;
+        const directa = Array.from({ length: n }, (_, k) => g(P + k * r)).reduce((t, v) => t + v, 0);
+        const formula = sen(nr2) / sen(r2) * g(m);
+        return {
+          enunciado: [`¿Cuánto vale ${fn} ${P}° + ${fn} ${P + r}° + … + ${fn} ${U}°, con ${n} términos? Exprésalo con la fórmula.`],
+          pasos: [
+            { tipo: 'pide', texto: `Piden una sumatoria de ${n} ${esSen ? 'senos' : 'cosenos'} escrita como un solo producto, sin sumar término por término.` },
+            { tipo: 'datos', texto: `Los ángulos avanzan ${r}° cada vez. El primero es ${P}° y el último, ${U}°.`,
+              ecuacion: [`n = ${n}   ·   r = ${r}°   ·   P = ${P}°   ·   U = ${U}°`] },
+            { tipo: 'regla', texto: `La suma es la cuerda de la cadena de flechas por el ${esSen ? 'seno' : 'coseno'} del ángulo medio entre el primero y el último.`,
+              ecuacion: [{ frac: [['sen ', { frac: ['n r', '2'] }], ['sen ', { frac: ['r', '2'] }]] }, ` · ${fn} `, { frac: ['P + U', '2'] }] },
+            { tipo: 'cuentas', texto: `Mitades: nr/2 = ${nr2}° y r/2 = ${r2}°. El ángulo medio es (${P}° + ${U}°)/2 = ${m}°.`,
+              ecuacion: [{ frac: [`sen ${nr2}°`, `sen ${r2}°`] }, ` · ${fn} ${m}°`] },
+            { tipo: 'sentido', texto: `Comprueba: el último es ${P}° + ${n - 1} · ${r}° = ${U}°. Sumando uno por uno sale lo mismo que con la fórmula.`,
+              ecuacion: [`término a término ≈ ${f(directa, 3)}   ·   fórmula ≈ ${f(formula, 3)}`] },
+          ],
+          respuesta: [`sen ${nr2}° · ${fn} ${m}° / sen ${r2}°`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Cuenta primero cuántos términos hay.',
       generar(sem) {
@@ -422,6 +536,15 @@
     titulo: 'Doblar y doblar',
     temas: ['Productorias trigonométricas'],
     pieza: 'trig-plano',
+    // Lee (fase 2): qué es una productoria y de dónde viene el doble. No da el truco de multiplicar por sen x ni el
+    // valor 1/8 (eso lo descubre en Predice y en Mira).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una multiplicación larga', texto: 'Una productoria multiplica muchos factores que siguen una regla. En cos x · cos 2x · cos 4x, cada ángulo es el doble del anterior: x, 2x, 4x, 8x, y así.' },
+        { titulo: 'Vuelve el doble', texto: 'Aquí vuelve el ángulo doble de la unidad «Ángulo doble, mitad y triple». En el juego, cada rayo gira el doble que el rayo anterior.' },
+        { titulo: 'Qué mirar', texto: 'El rayo naranja es x y el rojo es el último doble. Cambia x y la cantidad de factores, y compara el producto con las dos alturas: la naranja y la roja.' },
+      ],
+    },
     juega: {
       consigna: 'Elige x y cuántos cosenos multiplicar: cos x · cos 2x · cos 4x… Cada rayo dobla al anterior. Compara el producto con las alturas.',
       voz: 'Mira la primera altura y la del último doble.',
@@ -468,6 +591,35 @@
       ecuacion: ['cos ', x_, ' · cos 2', x_, ' ⋯ cos ', { sup: ['2', 'n−1'] }, x_, ' = ', { frac: [[{ llave: ['sen ', { sup: ['2', 'n'] }, x_], nota: 'último doble', color: 'c-h' }], [{ sup: ['2', 'n'] }, ' sen ', x_]] }],
       condicion: 'sen x ≠ 0. Si sen x = 0, la fórmula divide entre cero: se multiplica directamente.',
       voz: 'Un factor, un doble y una mitad.',
+    },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (productoria de cosenos que se doblan), otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900);
+        const [p, q, n] = rr.uno([[1, 5, 2], [2, 5, 2], [1, 3, 2], [1, 9, 3], [2, 9, 3], [1, 7, 3], [2, 7, 3], [1, 15, 4], [1, 17, 4], [2, 17, 4]]);
+        const x = p * 180 / q, val = prodCos(x, n), den = potencia(n), sg = val > 0 ? 1 : -1;
+        const mcd = (u, v) => (v ? mcd(v, u % v) : u);
+        const piTxt = k => { const a = k * p, g = mcd(a, q), nu = a / g, de = q / g; return `${nu === 1 ? '' : nu}π${de === 1 ? '' : '/' + de}`; };
+        const factores = Array.from({ length: n }, (_, k) => `cos ${piTxt(potencia(k))}`).join(' · ');
+        const fr = (s2, d) => `${s2 < 0 ? '−' : ''}1/${d}`;
+        // El último doble es jπ ± x: de ahí sale si su seno es igual u opuesto a sen x.
+        const j = (den * p - p) % q === 0 ? (den * p - p) / q : (den * p + p) / q, mas = (den * p - p) % q === 0;
+        return {
+          enunciado: [`¿Cuánto vale ${factores}?`],
+          pasos: [
+            { tipo: 'pide', texto: `Piden el producto de ${n} cosenos. Cada ángulo es el doble del anterior.` },
+            { tipo: 'datos', texto: `El primer ángulo es x = ${piTxt(1)} y hay ${n} factores, así que el último doble es ${den}x.`,
+              ecuacion: [`x = ${piTxt(1)}   ·   ${den}x = ${piTxt(den)}`] },
+            { tipo: 'regla', texto: `Multiplico y divido entre sen x. Cada seno por coseno junta un doble y deja un 2 abajo: con ${n} factores, ${den}.`,
+              ecuacion: [factores, ' = ', { frac: [`sen ${den}x`, `${den} sen x`] }] },
+            { tipo: 'cuentas', texto: `Como ${piTxt(den)} = ${j === 1 ? '' : j}π ${mas ? '+' : '−'} x, sen ${den}x ${sg > 0 ? 'es igual a' : 'es opuesto a'} sen x y se cancela.`,
+              ecuacion: [{ frac: [`sen ${piTxt(den)}`, `${den} sen ${piTxt(1)}`] }, ` = ${fr(sg, den)}`] },
+            { tipo: 'sentido', texto: 'Comprueba con la calculadora, en radianes: el producto da lo mismo que la fracción.',
+              ecuacion: [`${factores} ≈ ${f(val, 4)}   ·   ${fr(sg, den)} = ${f(sg / den, 4)}`] },
+          ],
+          respuesta: [`${factores} = ${fr(sg, den)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Cuenta los factores: cada uno aporta un 2.',

@@ -111,6 +111,15 @@
     titulo: 'Cuántas veces corta la recta',
     temas: ['Ecuaciones elementales'],
     pieza: 'trig-plano',
+    // Lee (fase 2): qué es resolver y el seno como altura. No dice cuántos cortes hay con k = 1 (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Buscar ángulos', texto: ['En una ecuación trigonométrica, la incógnita es un ángulo ', th, '. Resolver sen ', th, ' = 1/2 es encontrar todos los ángulos cuyo seno vale 1/2, no solo el primero que se te ocurra.'] },
+        { titulo: 'El seno es una altura', texto: ['En la circunferencia de radio 1, cada ángulo marca un punto. El seno de ese ángulo es la altura del punto: positiva arriba del eje x y negativa abajo.'],
+          ecuacion: ['sen ', th, ' = altura del punto'] },
+        { titulo: 'Qué mirar', texto: ['En el juego, la recta turquesa está a la altura ', k, '. Súbela y bájala, y cuenta cuántos puntos de la circunferencia tienen justo esa altura.'] },
+      ],
+    },
     juega: {
       consigna: 'Mueve k. Resolver sen θ = k es buscar los puntos de la circunferencia que tienen altura k: están donde la recta turquesa la corta.',
       voz: 'Conservemos el origen y miremos cada corte como un ángulo.',
@@ -161,6 +170,39 @@
       condicion: 'se cuenta en una sola vuelta, por ejemplo en [0°, 360°). En k = 0 también hay dos: 0° y 180°.',
       voz: 'Antes de calcular, mira si la altura cabe en la circunferencia.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» (contar soluciones en una vuelta) con otras semillas,
+    // con la misma cuenta independiente `soluciones` y la misma figura de la recta y sus cortes.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900), fn = sem % 2 ? 'cos' : 'sen';
+        const v = rr.uno([0.5, -0.5, Math.SQRT2 / 2, -Math.sqrt(3) / 2, 1, -1, 0, 1.5, -2, 1.2]);
+        const sols = soluciones(fn, v), m = sols.length, vt = kTxt(v), eje = fn === 'sen' ? 'y' : 'x';
+        const lejos = Math.abs(v) > 1.25, vent = lejos ? { ventana: { x: [-2.2, 2.2], y: [-2.2, 2.2] } } : {};
+        const recta = Object.assign({ color: 'i', rotulo: fn === 'sen' ? `y = ${vt}` : undefined }, fn === 'sen' ? { y: v } : { x: v });
+        const rotulos = fn === 'sen' ? [] : [nombreX(v, `x = ${vt}`, 'i', lejos ? { y: v > 0 ? 2.1 : -2.1 } : {})];
+        const fig = con => ({ datos: plano(Object.assign({ rectas: [recta], rotulos, rayos: con ? sols.map(g => rayo(g)) : [], puntos: con ? sols.map(g => pto(g)) : [],
+          alt: con ? `La recta ${eje} = ${vt} y sus ${m} cortes con la circunferencia` : `La recta ${eje} = ${vt} y la circunferencia de radio 1` }, vent)), estado: {} });
+        const nom = fn === 'sen' ? 'seno' : 'coseno';
+        const sentido = m === 2 ? `Comprueba: ${fnTxt[fn]} ${f(sols[0])}° y ${fnTxt[fn]} ${f(sols[1])}° valen ${kTxt(FN[fn](sols[1]))}, y los dos están entre 0° y 360°.`
+          : m === 1 ? `Comprueba: ${fnTxt[fn]} ${f(sols[0])}° = ${kTxt(FN[fn](sols[0]))}. Es el único ángulo de la vuelta con ese valor.`
+            : `Ningún ${nom} pasa de 1 en valor absoluto. Por eso la calculadora marca error con arc${fnTxt[fn]}(${vt}).`;
+        return {
+          enunciado: ['En [0°, 360°), ¿cuántas soluciones tiene ', `${fnTxt[fn]} `, th, ' = ', k, ` = ${vt}?`],
+          dibujo: fig(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden cuántos ángulos de una sola vuelta, de 0° a 360°, cumplen ', `${fnTxt[fn]} `, th, ` = ${vt}.`] },
+            { tipo: 'datos', texto: fn === 'sen' ? ['El seno es la altura del punto. Busco los puntos de la circunferencia con altura ', k, ` = ${vt}.`]
+              : ['El coseno es la abscisa del punto. Busco los puntos de la circunferencia con abscisa ', k, ` = ${vt}.`] },
+            { tipo: 'regla', texto: 'Cuento los cortes de la recta: con |k| < 1 hay dos; con |k| = 1 solo toca, en uno; con |k| > 1, ninguno.',
+              ecuacion: [{ abs: [k] }, ` = ${kTxt(Math.abs(v))}`] },
+            { tipo: 'cuentas', texto: m ? `La recta corta la circunferencia en ${m === 1 ? 'un solo punto' : 'dos puntos'}.` : 'La recta queda fuera de la circunferencia: no la corta.',
+              ecuacion: m ? [th, ` = ${lista(sols)}`] : [{ abs: [k] }, ` = ${kTxt(Math.abs(v))} > 1`], dibujo: fig(true) },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: m ? [`${m} ${m === 1 ? 'solución' : 'soluciones'}: `, th, ` = ${lista(sols)}`] : ['Ninguna solución'],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'trig-plano',
       voz: 'Ubica la recta antes de contar.',
@@ -210,6 +252,16 @@
     titulo: 'La calculadora da un valor',
     temas: ['Solución general y particular', 'Ecuaciones elementales'],
     pieza: 'trig-plano',
+    // Lee (fase 2): el valor principal y las vueltas. No dice dónde está el otro corte ni qué pasa con k negativo.
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que da la calculadora', texto: ['La tecla sen⁻¹ de la calculadora devuelve un solo ángulo, el valor principal ', al, '. Para el seno, ese ángulo siempre cae entre −90° y 90°.'],
+          ecuacion: [al, ' = arcsen ', k] },
+        { titulo: 'Una vuelta más', texto: ['Si a un ángulo le sumas una vuelta entera, 360°, llegas al mismo punto de la circunferencia. Cuántas vueltas das lo dice ', n, ', un número entero.'],
+          ecuacion: [th, ' + 360° · ', n] },
+        { titulo: 'Qué mirar', texto: ['En el juego, el rayo discontinuo es lo que da la calculadora. Mueve ', k, ' y ', n, ', y mira dónde terminan los dos arcos naranjas.'] },
+      ],
+    },
     juega: {
       consigna: 'Mueve k y la vuelta n. El rayo discontinuo α es lo que da la calculadora; los arcos llegan a las dos soluciones.',
       voz: 'La calculadora muestra un valor principal; revisemos las soluciones del intervalo.',
@@ -265,6 +317,44 @@
       condicion: '|k| ≤ 1, α = arcsen k entre −90° y 90°, n entero. Coseno: θ = ±α + 360°n. Tangente: θ = α + 180°n.',
       voz: 'Una familia por cada corte; las vueltas las pone n.',
     },
+    // Así se resuelve (fase 2): el de «Ahora tú» (del valor principal a las soluciones de una vuelta), otras semillas.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900), fn = ['sen', 'cos', 'tan'][sem % 3];
+        const v = fn === 'tan' ? rr.uno([1, -1, Math.sqrt(3), -Math.sqrt(3), Math.sqrt(3) / 3, -Math.sqrt(3) / 3])
+          : rr.uno([0.5, -0.5, Math.SQRT2 / 2, -Math.SQRT2 / 2, Math.sqrt(3) / 2, -Math.sqrt(3) / 2]);
+        const a = Math.round(deg(fn === 'sen' ? Math.asin(v) : fn === 'cos' ? Math.acos(v) : Math.atan(v)));
+        const sols = soluciones(fn, v), vt = kTxt(v), nombre = fnTxt[fn];
+        // La figura: la recta del valor (y = k, x = k o la recta de la tangente por el origen) y el rayo de la calculadora.
+        const linea = fn === 'sen' ? { rectas: [{ y: v, color: 'i', rotulo: `y = ${vt}` }] }
+          : fn === 'cos' ? { rectas: [{ x: v, color: 'i' }], rotulos: [nombreX(v, `x = ${vt}`, 'i')] }
+            : { segmentos: [{ de: [-1.25 * Math.cos(rad(a)), -1.25 * Math.sin(rad(a))], a: [1.25 * Math.cos(rad(a)), 1.25 * Math.sin(rad(a))], color: 'i', discontinua: true }] };
+        const fig = con => ({ datos: plano(Object.assign({}, linea, {
+          rayos: [rayo(a, { grosor: undefined, discontinua: true, largo: 1.12 }), ...(con ? sols.map(g => rayo(g)) : [])],
+          puntos: con ? sols.map(g => pto(g)) : [],
+          alt: con ? `${nombre} θ = ${vt}: el valor principal ${f(a)} grados y las soluciones ${lista(sols)}` : `${nombre} θ = ${vt} y el rayo del valor principal, ${f(a)} grados`,
+        })), estado: {} });
+        const regla = {
+          sen: { texto: ['El seno repite su valor en 180° − ', al, '. A cada familia le sumo vueltas de 360° hasta caer en el intervalo.'], ecuacion: [th, ' = ', al, ' + 360°', n, '  o  ', th, ' = 180° − ', al, ' + 360°', n] },
+          cos: { texto: ['El coseno repite su valor en −', al, ': el otro corte es el reflejo de ', al, ' en el eje x. Después sumo vueltas de 360°.'], ecuacion: [th, ' = ±', al, ' + 360°', n] },
+          tan: { texto: ['La tangente repite su valor cada media vuelta: a ', al, ' le sumo 180° las veces que haga falta.'], ecuacion: [th, ' = ', al, ' + 180°', n] },
+        }[fn];
+        return {
+          enunciado: ['La calculadora da ', al, ` = arc${nombre}(${vt}) = ${f(a)}°. ¿Qué soluciones tiene ${nombre} `, th, ` = ${vt} en [0°, 360°)?`],
+          dibujo: fig(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden todas las soluciones de ', `${nombre} `, th, ` = ${vt} en una vuelta, [0°, 360°).`] },
+            { tipo: 'datos', texto: 'La calculadora da un solo ángulo: el valor principal.', ecuacion: [al, ` = ${f(a)}°`] },
+            Object.assign({ tipo: 'regla' }, regla),
+            { tipo: 'cuentas', texto: ['Doy valores enteros a ', n, ' y me quedo con los ángulos de [0°, 360°).'],
+              ecuacion: [th, ' = ', fn === 'tan' ? `${f(a)}° + 180°` : fn === 'sen' ? `${f(a)}° + 360°` : `±${f(a)}° + 360°`, n, fn === 'sen' ? `  o  ${f(180 - a)}° + 360°` : '', fn === 'sen' ? n : '', `  ⇒  ${lista(sols)}`],
+              dibujo: fig(true) },
+            { tipo: 'sentido', texto: `Comprueba: ${nombre} ${f(sols[0])}° y ${nombre} ${f(sols[1])}° valen ${kTxt(FN[fn](sols[0]))}, y los dos están en la vuelta.` },
+          ],
+          respuesta: [th, ` = ${lista(sols)}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Primero el valor principal; después, los cortes de la vuelta.',
       generar(sem) {
@@ -317,6 +407,14 @@
     titulo: 'Los extremos del intervalo cuentan',
     temas: ['Solución general y particular'],
     pieza: 'ejes',
+    // Lee (fase 2): el intervalo y sus bordes. No dice qué signo deja entrar el extremo (eso decide «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Más de una vuelta', texto: ['Un examen puede pedir soluciones en media vuelta, en una o en dos. Si 30° cumple sen ', th, ' = 1/2, también cumple 390°, una vuelta más allá. Por eso el intervalo es parte de la pregunta.'] },
+        { titulo: 'Los bordes', texto: 'Un intervalo se escribe con sus dos extremos, como [0°, 180°]. Cada extremo lleva un signo, corchete o paréntesis, y ese signo dice si el borde entra o no en la cuenta.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, la franja verde es el intervalo [0°, b] sobre la gráfica del seno. Corre su borde derecho y fíjate en lo que pasa cuando cae justo sobre un corte.' },
+      ],
+    },
     juega: {
       consigna: 'Ecuación: sen θ = 1/2. Mueve el final b del intervalo [0°, b] y cuenta los cortes dentro de la franja verde.',
       voz: 'Fíjate en lo que pasa justo cuando b cae en un corte.',
@@ -366,6 +464,38 @@
       ecuacion: [{ llave: ['[0°'], nota: 'entra' }, ', ', { llave: ['360°)'], nota: 'queda fuera' }],
       condicion: 'el intervalo es parte de la ecuación. 0° y 360° son coterminales, pero son números distintos.',
       voz: 'Revisemos los extremos antes de dar la lista.',
+    },
+    // Así se resuelve (fase 2): el de «Ahora tú» (contar soluciones en un intervalo con sus bordes), otras semillas.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900), fn = sem % 2 ? 'cos' : 'sen';
+        const v = rr.uno([0, 1, -1, 0.5, -0.5]);
+        const b = rr.uno([180, 360, 540, 720]), cerrado = rr.ent(0, 1) === 1;
+        const sols = soluciones(fn, v, 0, b, cerrado), m = sols.length, vt = kTxt(v);
+        const I = `[0°, ${f(b)}°${cerrado ? ']' : ')'}`, borde = Math.abs(FN[fn](b) - v) < 1e-9;
+        const curva = fn === 'sen' ? curvaSen : { puntos: Array.from({ length: 145 }, (_, i) => [i * 5, Math.cos(rad(i * 5))]), color: 'o' };
+        const marcas = sols.map(g => ({ x: g, y: v, color: 'o' })).concat(borde && !cerrado ? [{ x: b, y: v, color: 'o', abierto: true, rotulo: 'fuera' }] : []);
+        const fig = con => ({ datos: grafica(b, v, con ? marcas : [], {
+          curvas: [curva, { puntos: [[0, v], [720, v]], color: 'i', discontinua: true }],
+          alt: `Gráfica de ${fnTxt[fn]} θ, la recta y = ${vt} y el intervalo ${I}${con ? `: ${m} soluciones` : ''}`,
+        }), estado: {} });
+        const largo = { 180: 'media vuelta', 360: 'una vuelta', 540: 'una vuelta y media', 720: 'dos vueltas' }[b], signo = cerrado ? '«]»' : '«)»';
+        const quedan = m === 1 ? 'Queda 1' : `Quedan ${m}`;
+        return {
+          enunciado: ['¿Cuántas soluciones tiene ', `${fnTxt[fn]} `, th, ` = ${vt} en el intervalo ${I}?`],
+          dibujo: fig(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden cuántos ángulos del intervalo cumplen ', `${fnTxt[fn]} `, th, ` = ${vt}.`] },
+            { tipo: 'datos', texto: `El intervalo va de 0° a ${f(b)}°: ${largo}. Empieza con «[» y termina con ${signo}.` },
+            { tipo: 'regla', texto: 'De la solución general tomo cada ángulo que cae en la franja. En los bordes, el corchete deja entrar el extremo; el paréntesis, no.' },
+            { tipo: 'cuentas', texto: m ? `Recorro la gráfica de 0° a ${f(b)}° y anoto cada corte con la recta.` : 'Dentro de la franja, la recta no toca la gráfica.',
+              ecuacion: m ? [th, ` = ${lista(sols)}`] : ['ningún ángulo cumple'], dibujo: fig(true) },
+            { tipo: 'sentido', texto: borde ? `${f(b)}° cumple la ecuación, y el ${signo} lo ${cerrado ? 'deja entrar' : 'deja fuera'}. ${quedan}.`
+              : `${f(b)}° no cumple la ecuación: el signo del borde no cambia la cuenta. ${quedan}.` },
+          ],
+          respuesta: `${m} ${m === 1 ? 'solución' : 'soluciones'}`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Cuenta en la gráfica y revisa los dos extremos.',
@@ -418,6 +548,15 @@
     titulo: 'Factorizar, no dividir',
     temas: ['Ecuaciones no elementales'],
     pieza: 'trig-plano',
+    // Lee (fase 2): qué es un factor y qué recta dibuja cada uno. No dice qué se pierde al dividir (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Partes que se multiplican', texto: 'En sen θ · (cos θ − c) hay dos factores: las dos partes que se multiplican. Factorizar es reescribir una expresión como un producto de factores.',
+          ecuacion: [{ llave: ['sen ', th], nota: 'factor 1', color: 'c-i' }, ' · ', { llave: ['(cos ', th, ' − ', c, ')'], nota: 'factor 2', color: 'c-d' }] },
+        { titulo: 'Una recta por factor', texto: ['Cada factor se vuelve una ecuación sencilla con su recta. sen ', th, ' = 0 es la recta turquesa y = 0; cos ', th, ' = ', c, ' es la recta verde x = ', c, '.'] },
+        { titulo: 'Qué mirar', texto: ['En el juego, mueve ', c, ' y cuenta los puntos marcados en la circunferencia. Fíjate de qué recta sale cada uno.'] },
+      ],
+    },
     juega: {
       consigna: 'Ecuación: sen θ · (cos θ − c) = 0. Mueve c. Cada factor que se anula aporta sus cortes: y = 0 y x = c.',
       voz: 'Conservemos los dos factores; cada uno aporta sus ángulos.',
@@ -467,6 +606,41 @@
       ecuacion: [{ llave: ['A'], nota: 'factor 1' }, ' · ', { llave: ['B'], nota: 'factor 2' }, ' = 0', '   ·   ', '⇔  A = 0  o  B = 0'],
       condicion: 'cada factor está definido en ese ángulo. Si elevas al cuadrado, comprueba cada solución en la ecuación original.',
       voz: 'Cada factor merece su propia revisión.',
+    },
+    // Así se resuelve (fase 2): el de «Ahora tú» (factor común sin dividir), otras semillas, con la misma `soluciones`.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900), tipo = sem % 2 ? 'cuad' : 'mixto';
+        const fa = rr.uno(['sen', 'cos']), fb = fa === 'sen' ? 'cos' : 'sen';
+        const [B, Btxt] = rr.uno([[1, '1'], [-1, '−1'], [Math.SQRT2, '√2'], [Math.sqrt(3), '√3'], [-Math.sqrt(3), '−√3']]);
+        const f2 = tipo === 'cuad' ? fa : fb, v = B / 2, coef = Btxt === '1' ? '' : Btxt === '−1' ? '−' : Btxt + ' ';
+        const s1 = soluciones(fa, 0), s2 = soluciones(f2, v), todo = orden([...s1, ...s2]), vt = kTxt(v);
+        const ecu = tipo === 'cuad'
+          ? ['2 ', { sup: [fnTxt[fa], '2'] }, ' ', th, ` = ${coef}${fnTxt[fa]} `, th]
+          : ['2 ', `${fnTxt[fa]} `, th, ` ${fnTxt[fb]} `, th, ` = ${coef}${fnTxt[fa]} `, th];
+        // Cada factor, su recta: sen = valor es horizontal (turquesa el primero, verde el segundo); cos = valor, vertical.
+        const recta = (fx, val, col) => Object.assign({ color: col }, fx === 'sen' ? { y: val } : { x: val });
+        const rot2 = f2 === 'sen' ? [] : [Object.assign(nombreX(v, `x = ${vt}`, 'd'), v > 0.5 ? { x: v - 0.07, ancla: 'end' } : {})];
+        const fig = con => ({ datos: plano(con ? {
+          rectas: [recta(fa, 0, 'i'), Object.assign(recta(f2, v, 'd'), f2 === 'sen' ? { rotulo: `y = ${vt}` } : {})], rotulos: rot2,
+          puntos: [...s1.map(g => pto(g, { color: 'i' })), ...s2.map(g => pto(g, { color: 'd' }))],
+          alt: `Los cortes de ${fnTxt[fa]} θ = 0 (${lista(s1)}) y de ${fnTxt[f2]} θ = ${vt} (${lista(s2)}) con la circunferencia`,
+        } : { alt: 'Circunferencia de radio 1, sin cortes marcados' }), estado: {} });
+        return {
+          enunciado: ['¿Qué soluciones tiene ', ...ecu, ' en [0°, 360°)?'],
+          dibujo: fig(false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden todos los ángulos de [0°, 360°) que cumplen la ecuación, sin perder ninguno.' },
+            { tipo: 'regla', texto: [`No divido entre ${fnTxt[fa]} `, th, ', porque puede valer cero. Paso todo a un lado, saco el factor común e igualo a cero cada factor.'] },
+            { tipo: 'cuentas', texto: 'Paso todo al lado izquierdo y saco el factor común.',
+              ecuacion: [`${fnTxt[fa]} `, th, ` · (2 ${fnTxt[f2]} `, th, `${B < 0 ? ' + ' + Btxt.slice(1) : ' − ' + Btxt}) = 0`] },
+            { tipo: 'cuentas', texto: [`Primer factor: ${fnTxt[fa]} `, th, ` = 0. Segundo factor: ${fnTxt[f2]} `, th, ` = ${vt}.`],
+              ecuacion: [th, ` = ${lista(s1)}`, '   ·   ', th, ` = ${lista(s2)}`], dibujo: fig(true) },
+            { tipo: 'sentido', texto: `Comprueba con ${f(s1[0])}°: ${fnTxt[fa]} ${f(s1[0])}° = ${kTxt(FN[fa](s1[0]))}, y los dos lados valen 0. Son ${todo.length} soluciones.` },
+          ],
+          respuesta: [th, ` = ${lista(todo)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Saca el factor común antes de simplificar.',
@@ -521,6 +695,14 @@
     titulo: 'Un sistema pide ambas',
     temas: ['Sistemas de ecuaciones trigonométricas'],
     pieza: 'trig-plano',
+    // Lee (fase 2): qué es un sistema y cómo leer los puntos. No dice cómo se juntan las dos listas (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos ecuaciones juntas', texto: ['Un sistema de ecuaciones junta dos o más igualdades con la misma incógnita. Aquí la incógnita es un ángulo ', th, ', y cada ecuación tiene su propia lista de soluciones.'] },
+        { titulo: 'Dos colores', texto: ['En la figura, sen ', th, ' = ', k, ' va con la recta turquesa y cos ', th, ' = ', c, ', con la verde. Cada recta marca sus cortes con la circunferencia.'] },
+        { titulo: 'Qué mirar', texto: ['Mueve ', k, ' y ', c, '. Fíjate cuándo un corte de una recta cae justo sobre un corte de la otra, y qué ángulo es ese.'] },
+      ],
+    },
     juega: {
       consigna: 'Sistema: sen θ = k y cos θ = c. Mueve k y c. Los huecos cumplen una sola ecuación; un punto lleno cumple las dos.',
       voz: 'Busca valores que hagan coincidir un corte de cada recta.',
@@ -578,6 +760,37 @@
       ecuacion: ['S = ', { llave: [{ sub: ['S', '1'] }], nota: 'ecuación 1', color: 'c-i' }, ' ∩ ', { llave: [{ sub: ['S', '2'] }], nota: 'ecuación 2', color: 'c-d' }],
       condicion: 'los dos conjuntos se calculan en el mismo intervalo. Si no comparten ningún ángulo, el sistema no tiene solución.',
       voz: 'La unión junta; el sistema exige las dos.',
+    },
+    // Así se resuelve (fase 2): el de «Ahora tú» (sistema de dos ecuaciones en una vuelta), otras semillas. Con seno y
+    // coseno se dibujan las dos rectas (la figura de la idea); con tangente no hay recta que dibujar y va sin figura.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900), par = [['sen', 'cos'], ['sen', 'tan'], ['cos', 'tan']][sem % 3];
+        const t0 = rr.uno([30, 45, 60, 120, 135, 150, 210, 225, 240, 300, 315, 330]);
+        const incompatible = rr.ent(0, 4) === 0;
+        const t1 = incompatible ? rr.uno([30, 45, 60, 120, 135, 150, 210, 225, 240, 300, 315, 330].filter(g => soluciones(par[1], FN[par[1]](g)).every(h => !soluciones(par[0], FN[par[0]](t0)).includes(h)))) : t0;
+        const v1 = FN[par[0]](t0), v2 = FN[par[1]](t1);
+        const S1 = soluciones(par[0], v1), S2 = soluciones(par[1], v2), S = S1.filter(g => S2.includes(g));
+        const llaves = xs => (xs.length ? `{${xs.map(g => g + '°').join(', ')}}` : '∅');
+        const conFigura = par[0] === 'sen' && par[1] === 'cos';
+        const figura = conFigura ? { datos: plano({ rectas: [{ y: v1, color: 'i', rotulo: `y = ${kTxt(v1)}` }, { x: v2, color: 'd' }], rotulos: [nombreX(v2, `x = ${kTxt(v2)}`, 'd')], alt: `Las rectas y = ${kTxt(v1)} y x = ${kTxt(v2)} sobre la circunferencia` }), estado: {} } : undefined;
+        const cuentas2 = { tipo: 'cuentas', texto: 'Comparo las dos listas y me quedo con lo que está en ambas.', ecuacion: [{ sub: ['S', '1'] }, ' ∩ ', { sub: ['S', '2'] }, ` = ${llaves(S)}`] };
+        if (conFigura) cuentas2.dibujo = { datos: sistema(v1, v2), estado: {} };
+        const caso = {
+          enunciado: ['Sistema en [0°, 360°): ', `${fnTxt[par[0]]} `, th, ` = ${kTxt(v1)} y ${fnTxt[par[1]]} `, th, ` = ${kTxt(v2)}. ¿Qué ángulos cumplen las dos?`],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden los ángulos de [0°, 360°) que cumplen las dos ecuaciones a la vez.' },
+            { tipo: 'regla', texto: 'Resuelvo cada ecuación en la misma vuelta. Sirven solo los ángulos que aparecen en las dos listas: su intersección.' },
+            { tipo: 'cuentas', texto: 'Cada ecuación da su lista de ángulos.', ecuacion: [{ sub: ['S', '1'] }, ` = ${llaves(S1)}`, '   ·   ', { sub: ['S', '2'] }, ` = ${llaves(S2)}`] },
+            cuentas2,
+            { tipo: 'sentido', texto: S.length ? `Comprueba ${S[0]}°: ${fnTxt[par[0]]} ${S[0]}° = ${kTxt(FN[par[0]](S[0]))} y ${fnTxt[par[1]]} ${S[0]}° = ${kTxt(FN[par[1]](S[0]))}. Cumple las dos.`
+              : 'Ningún ángulo de la primera lista está en la segunda: el sistema no tiene solución.' },
+          ],
+          respuesta: S.length ? [th, ` = ${lista(S)}`] : 'Ninguno: el conjunto solución es vacío',
+        };
+        if (figura) caso.dibujo = figura;
+        return caso;
+      },
     },
     ahoraTu: {
       voz: 'Resuelve cada ecuación por separado y compara.',
@@ -666,6 +879,8 @@
       { termino: 'ecuación trigonométrica', def: 'Igualdad con una incógnita que solo se cumple para algunos valores; aquí la incógnita es un ángulo.',
         ejemplo: 'sen θ = 1/2 se cumple con θ = 30° y con θ = 150° en una vuelta.',
         formas: ['ecuación trigonométrica', 'ecuaciones trigonométricas', 'ecuación', 'ecuaciones'], ver: ['solución', 'conjunto solución'] },
+      { termino: 'incógnita', def: 'Lo que se busca en una ecuación; aquí, el ángulo θ que hace verdadera la igualdad.',
+        ejemplo: 'En sen θ = 1/2, la incógnita es θ.', formas: ['incógnita', 'incógnitas'], ver: ['ecuación trigonométrica'] },
       { termino: 'solución', def: 'Valor de la incógnita que hace verdadera la igualdad.',
         ejemplo: 'θ = 30° cumple sen θ = 1/2, porque sen 30° = 1/2.', formas: ['solución', 'soluciones'] },
       { termino: 'solución general', def: 'Fórmula con un entero n que reúne todos los ángulos que cumplen la igualdad, en todas las vueltas.',

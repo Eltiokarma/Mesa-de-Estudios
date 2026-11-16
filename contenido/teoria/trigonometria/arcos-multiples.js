@@ -76,7 +76,7 @@
 
   // ---------- Idea 1: doblar el ángulo no dobla el seno ----------
   // Cambia: θ, de 20° en 20°. · Permanece: la circunferencia de radio 1 y el lado inicial.
-  // Progresa: la torre 2 sen θ, que se aleja de la altura real del rayo 2θ. · Se reserva: θ = 30° (la predicción).
+  // Progresa: el segmento naranja 2 sen θ, que se aleja de la altura real del rayo 2θ. · Se reserva: θ = 30° (la predicción).
   // Debe verse: que la altura de 2θ se arma con dos piezas iguales, sen θ cos θ.
   const V1 = { x: [-1.1, 1.75], y: [-0.3, 2.05] }, V1m = { x: [-0.75, 1.3], y: [-0.3, 1.25] };
   const semi = { de: -17, a: 197, r: 1, espiral: 0, flecha: false, color: null, grosor: 'contorno' };
@@ -97,8 +97,17 @@
     titulo: 'El doble del ángulo',
     temas: ['Identidades del ángulo doble'],
     pieza: 'trig-plano',
+    // Lee (fase 2): vocabulario del giro doble y qué comparar, sin decir cuánto vale la altura del doble (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Girar dos veces', texto: ['Si giras un ángulo ', th, ' y desde ahí giras otra vez lo mismo, en total giraste ', dos, '. A ese giro se le llama ángulo doble.'],
+          ecuacion: [th, ' + ', th, ' = ', dos] },
+        { titulo: 'Seno y coseno', texto: 'En la circunferencia de radio 1, el seno de un ángulo es la altura de la punta de su rayo. El coseno es cuánto avanza esa punta hacia la derecha.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el rayo rojo sale del rayo naranja y gira θ más. Compara la línea roja, que marca su altura, con el segmento naranja, que mide dos veces sen θ.' },
+      ],
+    },
     juega: {
-      consigna: 'Elige θ. El rayo rojo gira θ dos veces. Compara su altura, la línea roja, con la torre naranja 2 sen θ.',
+      consigna: 'Elige θ. El rayo rojo gira θ dos veces. Compara su altura, la línea roja, con el segmento naranja 2 sen θ.',
       voz: 'Conservemos el origen: el segundo θ sale del rayo naranja.',
       controles: [{ id: 't', etiqueta: 'θ', color: 'c-o', min: 20, max: 80, paso: 20, inicio: 20, unidad: '°', decimales: 0 }],
       dibujo: val => ({ datos: doble(val.t), estado: {} }),
@@ -121,7 +130,7 @@
       dibujo: { datos: doble(30, { rectas: [], segmentos: [{ de: [1.3, 0], a: [1.3, 1], color: 'o', rotulo: '2 sen θ' }] }), estado: {} },
       revelar: { datos: doble(30, { rotulos: [{ x: -0.55, y: sen(60) + 0.13, texto: `sen 60° ≈ ${f(sen(60))}`, color: 'h' }] }), estado: {} },
       coincide: 'Coincide: la altura real es 0,87; el doble de sen 30° da 1.',
-      noCoincide: 'Revisemos las dos alturas: la torre y la línea roja están dibujadas.',
+      noCoincide: 'Revisemos las dos alturas: el segmento naranja y la línea roja están dibujados.',
     },
     // «Mira» es la figura del juego detenida en θ = 30°, con la ventana más cerca y las dos piezas de la altura.
     mira: {
@@ -159,6 +168,42 @@
       ecuacion: ['sen ', dos, ' = ', { llave: ['2 sen ', th, ' cos ', th], nota: 'dos piezas iguales', color: 'c-h' }, '   ·   ', 'cos ', dos, ' = ', { sup: ['cos', '2'] }, th, ' − ', { sup: ['sen', '2'] }, th, '   ·   ', 'tan ', dos, ' = ', { frac: [['2 tan ', th], ['1 − ', { sup: ['tan', '2'] }, th]] }],
       condicion: 'θ real. En la tangente, tan θ debe existir y tan² θ ≠ 1.',
       voz: 'Un solo ángulo, dos razones: las dos entran en el doble.',
+    },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (sen θ y cuadrante → razón del doble), otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900);
+        const [p, q, r] = rr.uno([[3, 4, 5], [4, 3, 5], [5, 12, 13], [12, 5, 13], [8, 15, 17], [15, 8, 17], [7, 24, 25]]);
+        const k = rr.ent(0, 3), S = p * (k < 2 ? 1 : -1), C = q * (k === 0 || k === 3 ? 1 : -1), D = r * r;
+        const pide = sem % 3, fn = ['sen', 'cos', 'tan'][pide];
+        const s2 = Q(2 * S * C, D), c2 = Q(C * C - S * S, D), t2 = Q(2 * S * C, C * C - S * S);
+        const bien = [s2, c2, t2][pide];
+        const regla = [
+          { texto: 'El seno del doble no es el doble del seno: se multiplican el seno y el coseno de θ, y eso por 2.', ecuacion: ['sen ', dos, ' = 2 sen ', th, ' cos ', th] },
+          { texto: 'El coseno del doble resta los cuadrados. Con la forma de senos no hace falta el coseno.', ecuacion: ['cos ', dos, ' = 1 − 2', { sup: ['sen', '2'] }, ' ', th] },
+          { texto: 'La tangente del doble usa la tangente de θ: dos veces ella, entre uno menos su cuadrado.', ecuacion: ['tan ', dos, ' = ', { frac: [['2 tan ', th], ['1 − ', { sup: ['tan', '2'] }, th]] }] },
+        ][pide];
+        const cuentas = [
+          ['sen ', dos, ` = 2 · ${qp(Q(S, r))} · ${qp(Q(C, r))} = ${qt(s2)}`],
+          ['cos ', dos, ` = 1 − 2 · (${qt(Q(S, r))})² = 1 − ${qt(Q(2 * S * S, D))} = ${qt(c2)}`],
+          ['tan ', dos, ' = ', { frac: [`2 · ${qp(Q(S, C))}`, `1 − (${qt(Q(S, C))})²`] }, ` = ${qt(t2)}`],
+        ][pide];
+        const sentido = pide === 2
+          ? { tipo: 'sentido', texto: 'Comprueba con el seno y el coseno del doble: la tangente es su cociente.', ecuacion: ['tan ', dos, ` = ${qt(s2)} ÷ ${qp(c2)} = ${qt(t2)}`] }
+          : { tipo: 'sentido', texto: 'Comprueba: el valor está entre −1 y 1, y el seno y el coseno del doble cumplen la pitagórica.', ecuacion: [`(${qt(s2)})² + (${qt(c2)})² = 1`] };
+        return {
+          enunciado: ['Si sen ', th, ` = ${qt(Q(S, r))} y θ está en el ${CUAD[k]} cuadrante, ¿cuánto vale ${fn} `, dos, '?'],
+          pasos: [
+            { tipo: 'pide', texto: [`Piden ${fn} `, dos, ': la razón del ángulo doble, no el doble de una razón.'] },
+            { tipo: 'datos', texto: ['Tengo sen ', th, `. En el ${CUAD[k]} cuadrante el coseno es ${C > 0 ? 'positivo' : 'negativo'}; con Pitágoras sale cos `, th, '.'],
+              ecuacion: ['cos ', th, ` = ${C > 0 ? '+' : '−'}`, { raiz: [`1 − (${qt(Q(S, r))})²`] }, ` = ${qt(Q(C, r))}`] },
+            { tipo: 'regla', texto: regla.texto, ecuacion: regla.ecuacion },
+            { tipo: 'cuentas', texto: 'Reemplazo los valores de θ en la fórmula y simplifico la fracción.', ecuacion: cuentas },
+            sentido,
+          ],
+          respuesta: [`${fn} `, dos, ` = ${qt(bien)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Ubica el cuadrante: él decide el signo del coseno.',
@@ -227,6 +272,15 @@
     titulo: 'Bajar la potencia',
     temas: ['Degradación de potencias'],
     pieza: 'ejes',
+    // Lee (fase 2): qué es un cuadrado de seno y qué datos tiene una onda, sin dar el centro ni la altura de cos² x.
+    lee: {
+      tarjetas: [
+        { titulo: 'Un seno al cuadrado', texto: 'sen² x quiere decir sen x multiplicado por sí mismo. El 2 chiquito no toca al ángulo: x sigue igual, lo que se eleva es el valor del seno.',
+          ecuacion: [{ sup: ['sen', '2'] }, ' ', x_, ' = (sen ', x_, ') · (sen ', x_, ')'] },
+        { titulo: 'Bajar la potencia', texto: 'En el examen aparecen sumas largas de cuadrados de senos y cosenos. Cambiar cada cuadrado por una expresión sin cuadrados se llama degradación, o bajar la potencia. Simplifica mucho.' },
+        { titulo: 'Qué mirar', texto: 'Toda onda tiene un centro, una amplitud sobre ese centro y un periodo, que dice cada cuánto se repite. En el juego, compara esos tres datos en sen x y en sen² x.' },
+      ],
+    },
     juega: {
       consigna: 'Elige qué graficar. La onda naranja sen x queda de referencia. Mira entre qué valores va cada una y cada cuánto se repite.',
       voz: 'Fíjate en el centro de cada onda, no solo en su forma.',
@@ -273,6 +327,29 @@
       condicion: 'x real. A la derecha va el ángulo doble, 2x, no x.',
       voz: 'Menos potencia, más ángulo; el valor no cambia.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (cos 2x → sen² x o cos² x), otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900);
+        const r = rr.uno([[1, 3], [-1, 3], [1, 5], [-3, 5], [7, 25], [-7, 25], [1, 9], [-5, 13], [2, 7], [-1, 4]]);
+        const esSen = sem % 2 === 0, R = Q(r[0], r[1]), fn = esSen ? 'sen' : 'cos', otroFn = esSen ? 'cos' : 'sen';
+        const bien = esSen ? Q(R[1] - R[0], 2 * R[1]) : Q(R[1] + R[0], 2 * R[1]);
+        const otro = esSen ? Q(R[1] + R[0], 2 * R[1]) : Q(R[1] - R[0], 2 * R[1]);
+        const num = esSen ? Q(R[1] - R[0], R[1]) : Q(R[1] + R[0], R[1]);
+        return {
+          enunciado: ['Si cos ', dosx, ` = ${qt(R)}, ¿cuánto vale `, { sup: [fn, '2'] }, ' ', x_, '? No hace falta hallar x.'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', { sup: [fn, '2'] }, ' ', x_, ', un cuadrado, y solo tengo el coseno del ángulo doble.'] },
+            { tipo: 'datos', texto: ['El dato es cos ', dosx, '. El ángulo del dato es el doble del ángulo que piden.'], ecuacion: ['cos ', dosx, ` = ${qt(R)}`] },
+            { tipo: 'regla', texto: `Un cuadrado se cambia por el coseno del doble: uno ${esSen ? 'menos' : 'más'} ese coseno, y todo entre 2. Con seno se resta; con coseno, se suma.`,
+              ecuacion: [{ sup: [fn, '2'] }, ' ', x_, ' = ', { frac: [[`1 ${esSen ? '−' : '+'} cos `, dosx], '2'] }] },
+            { tipo: 'cuentas', texto: 'Reemplazo el dato y divido entre 2.', ecuacion: [{ sup: [fn, '2'] }, ' ', x_, ' = ', { frac: [`1 ${esSen ? '−' : '+'} ${qp(R)}`, '2'] }, ' = ', { frac: [qt(num), '2'] }, ` = ${qt(bien)}`] },
+            { tipo: 'sentido', texto: [`Un cuadrado queda entre 0 y 1. Además, ${otroFn}² x sale ${qt(otro)} con la otra fórmula, y los dos suman 1.`], ecuacion: [`${qt(bien)} + ${qt(otro)} = 1`] },
+          ],
+          respuesta: [{ sup: [fn, '2'] }, ' ', x_, ` = ${qt(bien)}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Escribe primero la fórmula con el ángulo doble.',
       generar(sem) {
@@ -314,6 +391,16 @@
     titulo: 'El signo de la mitad',
     temas: ['Ángulo mitad'],
     pieza: 'trig-plano',
+    // Lee (fase 2): la mitad de un giro con vueltas, el signo por cuadrante y qué es un candidato. No usa θ = 300°
+    // ni dice quién elige el signo de la raíz (eso lo descubre en Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'La mitad de un giro', texto: ['Si un rayo gira 500°, su mitad gira 250°. Se parte el giro completo, con sus vueltas: no se le quitan antes los 360°. Ese giro a la mitad es el ángulo mitad, ', mit, '.'] },
+        { titulo: 'Signos por cuadrante', texto: 'El seno es positivo cuando la punta del rayo está arriba del eje x, en los cuadrantes I y II. El coseno es positivo cuando está a la derecha, en los cuadrantes I y IV.' },
+        { titulo: 'Dos candidatos', texto: 'Si un número al cuadrado da 9/25, el número puede ser 3/5 o −3/5. A cada valor que cumple la cuenta, pero que aún hay que revisar, lo llamamos candidato.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el rayo naranja es θ y el turquesa es su mitad. Pasa de una vuelta y fíjate en qué cuadrante queda la punta de cada rayo.' },
+      ],
+    },
     juega: {
       consigna: 'Gira θ hasta dos vueltas. El rayo turquesa marca la mitad del giro. Compara el signo de las dos alturas.',
       voz: 'Conservemos el giro completo: la mitad de 315° no es la mitad de −45°.',
@@ -363,6 +450,33 @@
       condicion: 'se elige un solo signo: el del cuadrante de θ/2, no el de θ. Hay que conocer el giro θ.',
       voz: 'La raíz da dos candidatos; el cuadrante de la mitad decide.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (cos θ e intervalo → razón de la mitad), otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900);
+        const [a, b] = rr.uno([[1, 2], [3, 5], [4, 5], [1, 3], [2, 3], [5, 13], [12, 13], [1, 4], [3, 4]]);
+        const k = rr.ent(0, 3), esSen = sem % 2 === 0;
+        const cosT = esSen ? Q(b * b - 2 * a * a, b * b) : Q(2 * a * a - b * b, b * b);
+        const sgMitad = esSen ? (k < 2 ? 1 : -1) : (k === 0 || k === 3 ? 1 : -1);
+        const lo = 180 * k, hi = 180 * (k + 1), fn = esSen ? 'sen' : 'cos', bien = Q(sgMitad * a, b);
+        const dentro = Q(a * a, b * b), signo = esSen ? '−' : '+';
+        return {
+          enunciado: ['Si cos ', th, ` = ${qt(cosT)} y ${lo}° < `, th, ` < ${hi}°, ¿cuánto vale ${fn}(`, mit, ')?'],
+          pasos: [
+            { tipo: 'pide', texto: [`Piden ${fn}(`, mit, '): un solo valor, con su signo.'] },
+            { tipo: 'datos', texto: ['Tengo cos ', th, ' y dónde está ', th, '. Al partir el intervalo entre 2, sé dónde queda la mitad.'],
+              ecuacion: [`${lo / 2}° < `, mit, ` < ${hi / 2}°   ·   cuadrante ${ROMANO[k]}`] },
+            { tipo: 'regla', texto: 'Bajo la potencia con el coseno de θ y saco raíz. La raíz da dos candidatos; el cuadrante donde cae la mitad elige uno.',
+              ecuacion: [`${fn} `, mit, ' = ±', { raiz: [`(1 ${signo} cos `, th, ')/2'] }] },
+            { tipo: 'cuentas', texto: [`En el cuadrante ${ROMANO[k]} el ${esSen ? 'seno' : 'coseno'} es ${sgMitad > 0 ? 'positivo' : 'negativo'}: me quedo con el signo ${sgMitad > 0 ? 'más' : 'menos'}.`],
+              ecuacion: [`${fn} `, mit, ` = ${sgMitad > 0 ? '+' : '−'}`, { raiz: [`(1 ${signo} ${qp(cosT)})/2`] }, ` = ${sgMitad > 0 ? '+' : '−'}`, { raiz: [qt(dentro)] }, ` = ${qt(bien)}`] },
+            { tipo: 'sentido', texto: ['Comprueba con el dato de vuelta: el coseno del doble de la mitad debe dar cos ', th, '.'],
+              ecuacion: esSen ? [`1 − 2 · (${qt(bien)})² = ${qt(cosT)}`] : [`2 · (${qt(bien)})² − 1 = ${qt(cosT)}`] },
+          ],
+          respuesta: [`${fn}(`, mit, `) = ${qt(bien)}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Primero divide el intervalo de θ entre dos.',
       generar(sem) {
@@ -407,6 +521,15 @@
     titulo: 'El triple y su cubo',
     temas: ['Ángulo triple'],
     pieza: 'ejes',
+    // Lee (fase 2): qué es el triple, qué es un polinomio y un cubo, y qué mirar; no usa sen θ = 1/3 ni 3s − 4s³.
+    lee: {
+      tarjetas: [
+        { titulo: 'Girar tres veces', texto: ['Girar ', th, ' tres veces seguidas da el ángulo triple, ', tri, '. Si θ = 40°, el triple es 120°: la punta del rayo ya pasó al cuadrante II.'],
+          ecuacion: [th, ' + ', th, ' + ', th, ' = ', tri] },
+        { titulo: 'Polinomio y cubo', texto: 'Un polinomio suma potencias de una letra, cada una con su número, como 2s + 5s². El cubo de s es s · s · s: con s = 1/2, da 1/8.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el punto verde tiene abscisa sen θ y altura sen 3θ. La recta punteada naranja es 3 sen θ. Mira si el punto sigue la recta o se aparta de ella.' },
+      ],
+    },
     juega: {
       consigna: 'Elige θ. El punto verde tiene abscisa sen θ y altura sen 3θ. Mira sobre qué curva cae; compáralo con la recta 3 sen θ.',
       voz: 'Sigue el punto: ¿se queda en la recta o en la curva?',
@@ -450,6 +573,30 @@
       ecuacion: ['sen ', tri, ' = 3 sen ', th, { llave: [' − 4', { sup: ['sen', '3'] }, th], nota: 'el cubo resta', color: 'c-d' }, '   ·   ', 'cos ', tri, ' = 4', { sup: ['cos', '3'] }, th, ' − 3 cos ', th],
       condicion: 'θ real; sen³ θ es (sen θ)³. Conocido sen 3θ, hay hasta tres valores de sen θ: el intervalo elige.',
       voz: 'Tres veces el ángulo; un cubo en la fórmula.',
+    },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (razón de θ → razón de 3θ), otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900);
+        const v = rr.uno([[1, 2], [-1, 2], [1, 3], [-1, 3], [2, 3], [-2, 3], [1, 4], [-1, 4], [3, 4], [-3, 4], [2, 5], [-3, 5], [1, 5]]);
+        const esSen = sem % 2 === 0, [n, d] = v, fn = esSen ? 'sen' : 'cos';
+        const bien = esSen ? Q(3 * n * d * d - 4 * n * n * n, d * d * d) : Q(4 * n * n * n - 3 * n * d * d, d * d * d);
+        const cubo = Q(n * n * n, d * d * d), ingenuo = Q(3 * n, d);
+        return {
+          enunciado: [`Si ${fn} `, th, ` = ${qt(v)}, ¿cuánto vale ${fn} `, tri, '?'],
+          pasos: [
+            { tipo: 'pide', texto: [`Piden ${fn} `, tri, `, la razón del ángulo triple, conociendo ${fn} `, th, '.'] },
+            { tipo: 'datos', texto: [`Tengo ${fn} `, th, '. Me conviene sacar antes su cubo, que entra en la fórmula.'], ecuacion: [`${fn} `, th, ` = ${qt(v)}   ·   (${qt(v)})³ = ${qt(cubo)}`] },
+            esSen
+              ? { tipo: 'regla', texto: 'El seno del triple es tres veces el seno menos cuatro veces su cubo. Triplicar el valor no basta.', ecuacion: ['sen ', tri, ' = 3 sen ', th, ' − 4', { sup: ['sen', '3'] }, th] }
+              : { tipo: 'regla', texto: 'El coseno del triple es cuatro veces el cubo del coseno menos tres veces el coseno. El cubo va primero.', ecuacion: ['cos ', tri, ' = 4', { sup: ['cos', '3'] }, th, ' − 3 cos ', th] },
+            { tipo: 'cuentas', texto: 'Reemplazo el valor y su cubo, y resto con denominador común.',
+              ecuacion: esSen ? ['sen ', tri, ` = 3 · ${qp(v)} − 4 · ${qp(cubo)} = ${qt(bien)}`] : ['cos ', tri, ` = 4 · ${qp(cubo)} − 3 · ${qp(v)} = ${qt(bien)}`] },
+            { tipo: 'sentido', texto: [`Comprueba: ${qt(bien)} está entre −1 y 1, como todo ${esSen ? 'seno' : 'coseno'}. Triplicar el valor habría dado ${qt(ingenuo)}, otro número.`] },
+          ],
+          respuesta: [`${fn} `, tri, ` = ${qt(bien)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Escribe la fórmula y cuida el cubo.',

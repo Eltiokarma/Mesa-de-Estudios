@@ -4352,7 +4352,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 24
+      "terminos": 33
      }
     },
     {
@@ -4389,7 +4389,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 23
+      "terminos": 28
      }
     },
     {
@@ -4431,7 +4431,7 @@
        "/nucleo/kit/piezas/trig-helice-3d.js"
       ],
       "ideas": 5,
-      "terminos": 32
+      "terminos": 36
      }
     },
     {
@@ -4469,7 +4469,7 @@
        "/nucleo/kit/piezas/trig-plano.js"
       ],
       "ideas": 5,
-      "terminos": 29
+      "terminos": 35
      }
     },
     {
@@ -4506,7 +4506,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 31
+      "terminos": 35
      }
     },
     {
