@@ -362,7 +362,12 @@ con 5 ejemplos por nivel en cada idea.
   - Se escriben a mano, con los números comprobados (el comentario de la constante dice qué cuentas se revisaron).
   - Texto y ecuaciones en el formato de `nucleo/ecuacion.js`, con un color por dato (el mismo del dibujo).
   - `figura`: `{ pieza, datos, estado }` de cualquier pieza del kit; para objetos de la vida real, `fis-objeto`.
-  - Si el problema cambia de unidad, el enunciado da la equivalencia («Dato: 1 km = 1000 m»; Gerson, 16 nov).
+  - **`datos`**: todo lo que el alumno necesita y no está en el enunciado, una línea por dato: equivalencias
+    (1 km = 1000 m), valores de academia (cos 37° = 4/5), constantes y **también la fórmula** (W = F·d·cos θ). Se ven en un
+    recuadro «Datos» bajo el enunciado. Nunca un «Dato:» dentro del enunciado: el validador lo rechaza. Lo mismo vale para
+    los casos de «Ahora tú» y de «Así se resuelve» (contrato, punto 13; Gerson, 16 nov: «criterio, no memoria»).
+  - **`fuente`**: un dato real del mundo (Titicaca, lluvia de Juliaca) es real y dice de dónde sale («ILEC, World Lake
+    Database»). Se muestra en letra chica bajo la respuesta.
   - El validador exige 5 por nivel, topes (título 6 palabras, enunciado 40, cada línea 30, respuesta 14), dibujos puros y nada de NaN.
 - La pestaña «Ejemplos» aparece entre «Ideas» y «Glosario» cuando alguna idea los trae. Arriba se elige la idea; debajo
   van los tres niveles. Cada tarjeta: enunciado, dibujo, «Resuelto» (todo a la vista, sin pasos que se revelan) y la
@@ -388,6 +393,7 @@ con 5 ejemplos por nivel en cada idea.
 | Paso de «Así se resuelve» | 30, más su ecuación |
 | Enunciado de «Así se resuelve» | 40 |
 | Respuesta de «Así se resuelve» | 14 |
+| Línea de `datos` | 22, más su ecuación |
 
 Como en `escena-viva.md`: el tope no se cumple a costa de entender. Si no cabe con frases completas, la figura carga más o la idea se parte en dos. En razonamiento verbal, el texto de lectura es el objeto de estudio y no cuenta para el tope; sí cuentan la consigna, las preguntas y las opciones.
 
