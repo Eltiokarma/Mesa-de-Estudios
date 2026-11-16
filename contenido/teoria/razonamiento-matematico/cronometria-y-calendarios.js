@@ -39,6 +39,7 @@
   const angulo = (h, m) => { const d = Math.abs((30 * (h % 12) + 0.5 * m) - 6 * m) % 360; return Math.min(d, 360 - d); };
   const grados = x => `${f(x, 1)}°`;
   const plural = (n, uno, varios) => `${f(n, 0)} ${n === 1 ? uno : varios}`;
+  const tarde = h => (h >= 13 ? ' de la tarde' : h === 12 ? ' del mediodía' : '');
 
   // Gesto directo (docs/teoria.md §4b): las manijas viven en la geometría que exportan las piezas.
   const RELOJ = () => Kit.piezas['rm-reloj'], RECTA = () => Kit.piezas.recta, TAB = () => Kit.piezas['rm-tablero'];
@@ -60,6 +61,16 @@
     titulo: 'El horario también camina',
     temas: ['Ángulo entre las agujas del reloj'],
     pieza: 'rm-reloj',
+    // Lee (fase 2): las dos agujas, los grados entre números y el ángulo menor, sin decir cuánto avanza el horario por minuto.
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos agujas', texto: 'El reloj del dibujo tiene dos agujas. La larga, naranja, es el minutero y marca los minutos. La corta, turquesa, es el horario y marca las horas.' },
+        { titulo: 'Grados en el reloj', texto: 'Una vuelta entera son 360°. Como hay 12 números repartidos por igual, de un número al siguiente hay 360° entre 12: 30°.',
+          ecuacion: [{ frac: ['360°', '12'] }, ' = 30°'] },
+        { titulo: 'El ángulo menor', texto: 'Las dos agujas dejan dos ángulos que juntos dan la vuelta entera. El examen suele pedir el menor, el que no pasa de 180°.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Pon una hora en punto y luego súmale minutos. Sigue con la vista la aguja corta: ¿se queda quieta sobre su número?' },
+      ],
+    },
     juega: {
       consigna: 'Mueve la hora y los minutos. Mira dónde queda el horario: no se queda sobre el número de la hora.',
       voz: 'Fíjate en el horario cuando pasan 30 minutos.',
@@ -101,6 +112,28 @@
       ecuacion: [A, ' = | ', { llave: ['30', H], nota: 'horas', color: 'c-i' }, ' − ', { llave: ['5,5', Mi], nota: 'minutos', color: 'c-o' }, ' |', '   ·   ', 'si pasa de 180°: 360° − ', A],
       condicion: 'H es la hora de 1 a 12 y M los minutos pasados de esa hora; las agujas se mueven sin saltos.',
     },
+    // Así se resuelve (fase 2): el ángulo menor a una hora dada, como en «Ahora tú», con otras semillas y angulo().
+    resuelve: {
+      pieza: 'rm-reloj',
+      generar(s) {
+        const r = azar(s + 900), h = r.ent(1, 12), m = 2 * r.ent(1, 29);
+        const gH = 30 * (h % 12) + 0.5 * m, gM = 6 * m, dif = Math.abs(gH - gM), bien = angulo(h, m);
+        return {
+          enunciado: `¿Qué ángulo menor forman las agujas del reloj a las ${hhmm(h, m)}?`,
+          dibujo: { datos: { relojes: [{ h, m, rotulo: hhmm(h, m) }] }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el ángulo menor ', A, ' entre el horario y el minutero, el que no pasa de 180°.'] },
+            { tipo: 'datos', texto: ['Son las ', hhmm(h, m), ': ', H, ` = ${h % 12 || 12} y `, Mi, ` = ${m} minutos.`] },
+            { tipo: 'regla', texto: 'Ubico cada aguja en grados desde las 12. El minutero corre 6° por minuto; el horario, 30° por hora y medio grado por cada minuto.' },
+            { tipo: 'cuentas', texto: 'Resto las dos posiciones.' + (dif > 180 ? ' Pasa de 180°: tomo 360° menos esa diferencia.' : ''),
+              ecuacion: [H, ` = 30 · ${h % 12} + 0,5 · ${m} = ${f(gH, 1)}°   ·   `, Mi, ` = 6 · ${m} = ${gM}°   ·   `, A, ` = ${dif > 180 ? `360 − ${f(dif, 1)}` : `|${f(gH, 1)} − ${gM}|`} = ${grados(bien)}`],
+              dibujo: { datos: { relojes: [{ h, m, arco: true, texto: grados(bien), rotulo: hhmm(h, m) }] }, estado: {} } },
+            { tipo: 'sentido', texto: `El ángulo queda entre 0° y 180°. Los dos ángulos suman la vuelta: ${grados(bien)} + ${grados(360 - bien)} = 360°.` },
+          ],
+          respuesta: ['El ángulo menor es ', A, ` = ${grados(bien)}.`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'rm-reloj',
       voz: 'Ubica cada aguja en grados desde las 12.',
@@ -136,6 +169,14 @@
     titulo: 'El adelanto va por hora real',
     temas: ['Adelantos y atrasos'],
     pieza: 'rm-reloj',
+    // Lee (fase 2): hora real y hora marcada, sin dar la proporción 63 a 60 que resuelve la predicción.
+    lee: {
+      tarjetas: [
+        { titulo: 'Relojes que fallan', texto: 'Un reloj barato o con la pila gastada puede ganar o perder minutos. Si gana, va adelantado; si pierde, va atrasado.' },
+        { titulo: 'Real y marcada', texto: 'La hora real es la de un reloj exacto. La hora marcada es la que muestra el reloj que falla. En el dibujo, el reloj de la izquierda es el real.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Los dos relojes se ponen iguales a las 8:00. Deja pasar horas reales y mira cómo crece la distancia entre los dos minuteros.' },
+      ],
+    },
     juega: {
       consigna: 'A las 8:00 se pone en hora un reloj que adelanta 3 minutos por cada hora real. Deja pasar horas y compara ambos relojes.',
       voz: 'El de la izquierda es el tiempo real.',
@@ -171,6 +212,43 @@
       texto: 'Un reloj que gana g minutos por hora real marca 60 + g minutos por cada 60 reales. El adelanto acumulado es g por cada hora real que pasó.',
       ecuacion: [{ frac: ['marcado', 'real'] }, ' = ', { llave: [{ frac: ['60 + g', '60'] }], nota: 'g: ganancia horaria', color: 'c-h' }],
       condicion: 'el reloj gana siempre lo mismo y se sabe si g es por hora real o por hora marcada.',
+    },
+    // Así se resuelve (fase 2): el reloj que adelanta o atrasa de «Ahora tú» (directo o al revés), con otras semillas.
+    resuelve: {
+      pieza: 'rm-reloj',
+      generar(s) {
+        const r = azar(s + 900), g = r.elegir([2, 3, 4, 5, 6]), h0 = r.ent(6, 10), t = r.ent(3, 8), atrasa = s % 4 === 3, inversa = s % 2 === 1;
+        const gg = atrasa ? -g : g, marca = sumaMin(h0 + t, 0, gg * t), real = [h0 + t, 0];
+        const txt = ([hh, mm]) => hhmm(hh, mm) + tarde(hh), uno = x => hhmm(x[0], x[1]).startsWith('1:'),
+          las = x => `${uno(x) ? 'la' : 'las'} ${txt(x)}`, es = x => `${uno(x) ? 'es' : 'son'} ${las(x)}`, verbo = atrasa ? 'atrasa' : 'adelanta';
+        const marcado = t * (60 + gg), ambos = { datos: relojes(real[0], real[1], marca[0], marca[1]), estado: {} };
+        const datosP = { tipo: 'datos', texto: `Se puso en hora a las ${h0}:00 y ${verbo} ${g} minutos por cada hora real.`, ecuacion: [`por hora real marca 60 ${atrasa ? '−' : '+'} ${g} = ${60 + gg} min`] };
+        const regla = { tipo: 'regla', texto: `El ajuste se cuenta por hora real: cada hora real que pasa, el reloj ${atrasa ? 'pierde' : 'gana'} ${g} minutos más.` };
+        return inversa ? {
+          enunciado: `A las ${h0}:00 se pone en hora un reloj que ${verbo} ${g} min por hora real. Marca ${las(marca)}. ¿Qué hora es en realidad?`,
+          dibujo: { datos: { relojes: [{ h: h0, m: 0, rotulo: `Puesto a las ${h0}:00` }] }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden la hora real cuando el reloj marca ${las(marca)}.` },
+            datosP, regla,
+            { tipo: 'cuentas', texto: `Desde las ${h0}:00 el reloj marcó ${marcado} minutos. Cada ${60 + gg} marcados son 60 reales.`,
+              ecuacion: [`real = ${marcado} · `, { frac: ['60', String(60 + gg)] }, ` = ${60 * t} min = ${t} h   →   ${txt(real)}`], dibujo: ambos },
+            { tipo: 'sentido', texto: `Comprueba: en ${t} horas reales el reloj ${verbo} ${g * t} minutos, y ${atrasa ? 'por eso marca antes' : 'por eso marca después'} de la hora real.`,
+              ecuacion: [`${txt(real)} ${atrasa ? '−' : '+'} ${g * t} min = ${txt(marca)}`] },
+          ],
+          respuesta: `En realidad ${es(real)}.`,
+        } : {
+          enunciado: `A las ${h0}:00 se pone en hora un reloj que ${verbo} ${g} min por hora real. ¿Qué marca cuando en realidad ${es(real)}?`,
+          dibujo: { datos: { relojes: [{ h: h0, m: 0, rotulo: `Puesto a las ${h0}:00` }] }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden la hora que marca el reloj cuando en realidad ${es(real)}.` },
+            datosP, regla,
+            { tipo: 'cuentas', texto: `De las ${h0}:00 a ${las(real)} pasan ${t} horas reales. ${atrasa ? 'El atraso' : 'El adelanto'} se acumula hora por hora.`,
+              ecuacion: [`${g} · ${t} = ${g * t} min   →   ${txt(real)} ${atrasa ? '−' : '+'} ${g * t} min = ${txt(marca)}`], dibujo: ambos },
+            { tipo: 'sentido', texto: `El reloj ${verbo}: su hora queda ${atrasa ? 'antes' : 'después'} de la real, como sale. Y ${g * t} minutos en ${t} horas es creíble para un reloj que falla.` },
+          ],
+          respuesta: `Marca ${las(marca)}.`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-reloj',
@@ -214,8 +292,16 @@
     titulo: 'Campanadas: se cuentan intervalos',
     temas: ['Campanadas'],
     pieza: 'recta',
+    // Lee (fase 2): qué es una campanada en la recta del tiempo, sin decir cuántos intervalos deja.
+    lee: {
+      tarjetas: [
+        { titulo: 'Golpes que se cuentan', texto: 'Hay relojes de torre que suenan una vez por cada hora: a las 6, seis golpes. Cada golpe se llama campanada.' },
+        { titulo: 'La recta del tiempo', texto: 'En el dibujo no hay reloj: hay una recta que mide segundos. Cada punto rojo es una campanada, puesta en el segundo en que suena.' },
+        { titulo: 'Qué mirar al jugar', texto: 'La duración se mide de la primera campanada a la última. Agrega campanadas y compara cuántas hay con cuánto dura todo.' },
+      ],
+    },
     juega: {
-      consigna: 'Un reloj da campanadas separadas por 2 segundos. Cambia cuántas da y mira cuánto dura, de la primera a la última.',
+      consigna: 'Cada punto rojo de la recta es una campanada, cada 2 segundos. Cambia cuántas hay y mira cuánto dura, de la primera a la última.',
       voz: 'Cuenta los espacios entre puntos, no los puntos.',
       controles: [{ id: 'n', etiqueta: 'Campanadas', min: 2, max: 7, paso: 1, inicio: 2, decimales: 0, color: 'c-h' }],
       dibujo: val => ({ datos: campanas(val.n, 2, { max: 12 }), estado: { corte: 1 } }),
@@ -247,6 +333,27 @@
       texto: 'Entre n campanadas hay n − 1 intervalos. Primero se halla el intervalo con los datos y luego se multiplica por los intervalos pedidos.',
       ecuacion: ['duración = ', { llave: ['(', N, ' − 1)'], nota: 'intervalos', color: 'c-h' }, ' · ', { llave: ['τ'], nota: 'cada uno', color: 'c-d' }],
       condicion: 'el tiempo se mide de la primera a la última campanada y los intervalos son iguales.',
+    },
+    // Así se resuelve (fase 2): campanadas de «Ahora tú», con otras semillas; la recta cambia en el paso de las cuentas.
+    resuelve: {
+      pieza: 'recta',
+      generar(s) {
+        const r = azar(s + 900), n1 = r.ent(3, 8), tau = r.ent(1, 4), T1 = (n1 - 1) * tau, n2 = r.ent(n1 + 2, 13);
+        const bien = (n2 - 1) * tau;
+        return {
+          enunciado: `Un reloj da ${n1} campanadas en ${T1} segundos. ¿Cuántos segundos tarda en dar ${n2} campanadas?`,
+          dibujo: { datos: campanas(n1, tau), estado: { corte: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuánto dura, de la primera a la última, una serie de ${n2} campanadas.` },
+            { tipo: 'datos', texto: [N, ` = ${n1} campanadas duran ${T1} s, todas igual de separadas.`] },
+            { tipo: 'regla', texto: 'Las campanadas son puntos y el tiempo está en los espacios entre ellos. Entre varios puntos en fila hay un espacio menos que puntos.' },
+            { tipo: 'cuentas', texto: `${n1} campanadas dejan ${n1 - 1} espacios; así sale cuánto dura cada uno. ${n2} campanadas dejan ${n2 - 1}.`,
+              ecuacion: [`τ = ${T1} ÷ ${n1 - 1} = ${tau} s   →   ${n2 - 1} · ${tau} = ${bien} s`], dibujo: { datos: campanas(n2, tau), estado: { corte: 1 } } },
+            { tipo: 'sentido', texto: `Comprueba con el dato: ${n1 - 1} espacios de ${tau} s dan los ${T1} s del enunciado.`, ecuacion: [`${n1 - 1} · ${tau} = ${T1} s`] },
+          ],
+          respuesta: `Tarda ${bien} segundos.`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'recta',
@@ -287,6 +394,16 @@
     titulo: 'Cuándo un año es bisiesto',
     temas: ['Años normales y bisiestos'],
     pieza: 'rm-tablero',
+    // Lee (fase 2): por qué existe el 29 de febrero y qué es «divisible», sin decir la excepción de los años en 00.
+    lee: {
+      tarjetas: [
+        { titulo: 'Un cuarto de día', texto: 'La Tierra tarda casi 365 días y un cuarto en dar la vuelta al Sol. Ese cuarto de día sobra cada año y se va juntando.' },
+        { titulo: 'El 29 de febrero', texto: 'Para no desfasarse del Sol, ciertos años suman un día: el 29 de febrero. Esos años tienen 366 días y se llaman bisiestos.' },
+        { titulo: 'Divisible', texto: 'Un número es divisible entre otro si al dividir no sobra nada. 2024 es divisible entre 4; 2026, no, porque sobran 2.',
+          ecuacion: ['2024 = 4 · 506   ·   2026 = 4 · 506 + 2'] },
+        { titulo: 'Qué mirar al jugar', texto: 'La tabla prueba tres divisiones: entre 4, entre 100 y entre 400. Elige varios años y fíjate en cuál de las tres decide.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un año y mira si es divisible entre 4, 100 y 400, y cuántos días tiene.',
       voz: 'Compara 2000 con 2024.',
@@ -318,6 +435,32 @@
       texto: 'En el calendario gregoriano, un año es bisiesto si es divisible entre 4, salvo los divisibles entre 100 que no lo son entre 400.',
       ecuacion: ['bisiesto  ⇔  ', { llave: ['(÷4 y no ÷100)'], nota: 'la regla común', color: 'c-d' }, ' o ', { llave: ['÷400'], nota: 'la excepción', color: 'c-o' }],
       condicion: 'se usa el calendario gregoriano; antes de su adopción, cada lugar usaba otro calendario.',
+    },
+    // Así se resuelve (fase 2): ¿es bisiesto?, como en «Ahora tú», con otras semillas y la misma bis().
+    resuelve: {
+      pieza: 'rm-tablero',
+      generar(s) {
+        const r = azar(s + 900), y = s % 3 === 0 ? 100 * r.ent(16, 30) : r.ent(1890, 2200), es = bis(y);
+        const resto = k => `${y} = ${k} · ${Math.floor(y / k)}${y % k ? ` + ${y % k}` : ''}`;
+        const cuentas = !div(y, 4)
+          ? { texto: `Al dividir ${y} entre 4 sobran ${y % 4}: no es divisible. Ya no hace falta seguir.`, ecuacion: [resto(4)] }
+          : !div(y, 100)
+            ? { texto: `${y} es divisible entre 4 y no termina en 00: vale la regla común.`, ecuacion: [resto(4), '   ·   ', resto(100)] }
+            : { texto: `${y} termina en 00, así que también pruebo entre 400: ${div(y, 400) ? 'sí' : 'no'} es divisible.`, ecuacion: [resto(100), '   ·   ', resto(400)] };
+        const ult = y % 100, prim = Math.floor(y / 100);
+        return {
+          enunciado: `¿El año ${y} es bisiesto?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden si ${y} tiene 366 días, es decir, si es bisiesto.` },
+            { tipo: 'regla', texto: 'Pruebo en orden: si se divide entre 4, casi siempre es bisiesto. Pero si termina en 00, además debe dividirse entre 400.' },
+            Object.assign({ tipo: 'cuentas', dibujo: { datos: tablaAnios([y]), estado: {} } }, cuentas),
+            { tipo: 'sentido', texto: ult
+              ? `Atajo para comprobar: basta mirar las dos últimas cifras. ${ult} ${ult % 4 ? 'no es' : 'es'} múltiplo de 4.`
+              : `Atajo para comprobar: termina en 00, así que miro ${prim}. ${prim} ${prim % 4 ? 'no es' : 'es'} múltiplo de 4.` },
+          ],
+          respuesta: es ? `Sí, ${y} es bisiesto: tiene 366 días.` : `No, ${y} es normal: tiene 365 días.`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-tablero',
@@ -374,6 +517,15 @@
     titulo: 'Las semanas completas no cuentan',
     temas: ['Día de la semana de una fecha'],
     pieza: 'rm-tablero',
+    // Lee (fase 2): columnas del calendario y residuo, sin decir si el día de partida se cuenta (eso lo pone a prueba Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'La semana se repite', texto: 'Los nombres de los días vuelven cada 7 días. Si la feria de los domingos fue hoy, la próxima cae otra vez domingo, una semana después.' },
+        { titulo: 'Columnas del calendario', texto: 'En el calendario del dibujo, cada columna es un día de la semana, de lunes a domingo. Las fechas de una misma columna caen el mismo día.' },
+        { titulo: 'El residuo', texto: 'Al dividir 23 entre 7 sin decimales, el 7 cabe 3 veces y sobran 2. Ese 2 es el residuo.', ecuacion: ['23 = 7 · 3 + 2'] },
+        { titulo: 'Qué mirar al jugar', texto: 'Mueve la marca naranja por el mes y mira cuántos días pasaron desde el 1 y en qué columna cae.' },
+      ],
+    },
     juega: {
       consigna: 'El 1 de un mes cae lunes. Cambia cuántos días pasan y mira en qué día de la semana caes.',
       voz: 'Cada 7 días vuelves al mismo día de la semana.',
@@ -407,6 +559,30 @@
       texto: 'Se cuentan los días transcurridos desde una fecha de día conocido (sin contarla), se divide entre 7 y se avanza el residuo.',
       ecuacion: ['día final = día inicial + ', { llave: ['(', N, ' mód 7)'], nota: 'días que sobran', color: 'c-h' }],
       condicion: 'si el intervalo cruza febrero, se revisa si el año es bisiesto para contar el 29.',
+    },
+    // Así se resuelve (fase 2): el día de la semana de otra fecha del mismo mes, como en «Ahora tú», con otras semillas.
+    resuelve: {
+      pieza: 'rm-tablero',
+      generar(s) {
+        const r = azar(s + 900), ini = r.ent(0, 6), d1 = r.ent(1, 6), d2 = r.ent(d1 + 8, 31);
+        const Nd = d2 - d1, q = Math.floor(Nd / 7), res = Nd % 7, bien = DIAS[(ini + res) % 7];
+        // Día de la semana del 1, para dibujar el mes entero con el d1 en su columna.
+        const uno = ((ini - (d1 - 1)) % 7 + 7) % 7;
+        const cal = (marca, nota) => { const d = mesCompleto(uno, marca); d.notas = [{ t: nota }]; return { datos: d, estado: {} }; };
+        return {
+          enunciado: `El ${d1} de un mes cae ${DIAS[ini]}. ¿Qué día de la semana es el ${d2} del mismo mes?`,
+          dibujo: cal(d1, `El ${d1} cae ${DIAS[ini]}`),
+          pasos: [
+            { tipo: 'pide', texto: `Piden en qué día de la semana cae el ${d2}.` },
+            { tipo: 'datos', texto: `Se sabe que el ${d1} cae ${DIAS[ini]}, y las dos fechas son del mismo mes.` },
+            { tipo: 'regla', texto: 'Cuento los días que pasan desde la fecha conocida, sin contarla. Las semanas completas no cambian el día: solo avanzo lo que sobra.' },
+            { tipo: 'cuentas', texto: `Del ${d1} al ${d2} pasan ${Nd} días: ${q === 1 ? '1 semana completa' : `${q} semanas completas`} y ${plural(res, 'día', 'días')} que sobran.`,
+              ecuacion: [N, ` = ${d2} − ${d1} = ${Nd} = 7 · ${q} + ${res}   →   ${DIAS[ini]} + ${res} = ${bien}`], dibujo: cal(d2, `${DIAS[ini]} + ${res} = ${bien}`) },
+            { tipo: 'sentido', texto: `Comprueba en el calendario: el ${d2} está en la columna del ${bien}.` },
+          ],
+          respuesta: `El ${d2} cae ${bien}.`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-tablero',
