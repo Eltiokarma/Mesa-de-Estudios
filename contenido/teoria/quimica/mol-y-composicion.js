@@ -18,7 +18,7 @@
  * N número de entidades rojo c-h. En las barras de composición y en la lupa, cada elemento lleva un color propio
  * (C tinta, H turquesa, O rojo, N naranja, S verde): esas ideas no escriben m, n, M ni N con color.
  * Datos: masas isotópicas y abundancias del cloro (NIST / IUPAC): ³⁵Cl 34,969 u, 75,76 %; ³⁷Cl 36,966 u, 24,24 %.
- * Masas atómicas redondeadas, como en el examen: H 1, C 12, N 14, O 16, Na 23, Al 27, S 32, Cl 35,5, Ca 40.
+ * Masas atómicas redondeadas, como en el examen: H 1, C 12, N 14, O 16, Na 23, Al 27, S 32, Cl 35,5, Ca 40, P 31, Fe 56.
  * NA = 6,022 × 10²³ mol⁻¹ (exacto: 6,02214076 × 10²³, BIPM). La lupa no es a escala ni cuenta 10²³: el alt lo dice.
  * Fuentes (no van al alumno): BIPM, el mol; OpenStax Chemistry 2e §3.1 y §3.2; Proust, Dalton y Lavoisier.
  */
@@ -62,7 +62,7 @@
   const NAV = 6.022e23;
 
   // ---------- Masas atómicas (redondeadas) y fórmulas ----------
-  const MA = { H: 1, C: 12, N: 14, O: 16, Na: 23, Al: 27, S: 32, Cl: 35.5, Ca: 40, Mg: 24, K: 39 };
+  const MA = { H: 1, C: 12, N: 14, O: 16, Na: 23, Al: 27, S: 32, Cl: 35.5, Ca: 40, Mg: 24, K: 39, P: 31, Fe: 56 };
   // Fórmula como lista de [elemento, átomos por unidad].
   const FORM = {
     'H₂O': [['H', 2], ['O', 1]], 'CO₂': [['C', 1], ['O', 2]], 'NH₃': [['N', 1], ['H', 3]], 'CH₄': [['C', 1], ['H', 4]],
@@ -88,6 +88,14 @@
     titulo: 'Masa atómica: un promedio',
     temas: ['Unidad de masa atómica y masa atómica promedio'],
     pieza: 'quim-particulas',
+    lee: {
+      tarjetas: [
+        { titulo: 'Átomos hermanos', texto: 'Los átomos de un mismo elemento tienen todos el mismo número de protones, pero pueden tener distinto número de neutrones. Esos átomos hermanos se llaman isótopos, y no pesan lo mismo.' },
+        { titulo: 'Una unidad diminuta', texto: 'Un átomo pesa tan poco que en gramos sale un número ridículo. Por eso se usa la unidad de masa atómica, u: un átomo de carbono-12 pesa 12 u justas.' },
+        { titulo: 'La abundancia', texto: 'La abundancia de un isótopo dice cuántos de cada 100 átomos del elemento son de ese isótopo. En el cloro de la sal de mesa o del mar hay más cloro-35 que cloro-37.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, la lupa muestra 25 átomos de cloro de dos clases. Mira cuántos hay de cada clase y hacia qué masa se mueve el promedio.' },
+      ],
+    },
     juega: {
       consigna: 'El cloro tiene dos isótopos: cloro-35 (34,969 u) y cloro-37 (36,966 u). Cuántos hay de cada uno cambia solo: lee la masa promedio.',
       voz: 'Mira hacia qué masa se acerca el promedio.',
@@ -125,6 +133,33 @@
       condicion: 'las abundancias son las naturales y suman 100 %; ningún átomo concreto pesa el promedio.',
       voz: 'Promedio pesado: cuenta más el isótopo más abundante.',
     },
+    resuelve: {
+      pieza: 'quim-particulas',
+      generar(s) {
+        const r = azar(s + 900), a = r.ent(20, 80), b = a + 2, p = 5 * r.ent(3, 17), prom = (p * a + (100 - p) * b) / 100;
+        const fa = p / 100, fb = (100 - p) / 100, na = p / 5;
+        const lupa = { datos: { atomos: { a: { color: 'h', estilo: 'lleno', r: 6 }, b: { color: 'i', estilo: 'hueco', r: 7.5 } }, especies: { liviano: [['a', 0, 0]], pesado: [['b', 0, 0]] },
+          separacion: 26, alto: 150, cajas: [{ titulo: '20 átomos del elemento', forma: 'caja', particulas: [{ e: 'liviano', n: na }, { e: 'pesado', n: 20 - na }],
+            cuenta: [{ e: 'liviano', texto: `${a} u: ${na}` }, { e: 'pesado', texto: `${b} u: ${20 - na}` }] }],
+          alt: `Lupa (modelo, no a escala) con 20 átomos: ${na} de ${a} u y ${20 - na} de ${b} u.` }, estado: {} };
+        const comun = p === 50 ? 'justo a la mitad: los dos son igual de abundantes' : `más cerca de ${p > 50 ? a : b} u, el isótopo más abundante`;
+        return {
+          enunciado: `Un elemento tiene dos isótopos: ${p} % de masa ${a} u y ${100 - p} % de masa ${b} u. ¿Cuál es su masa atómica promedio?`,
+          dibujo: lupa,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la masa atómica promedio: la que va en la tabla periódica para este elemento.' },
+            { tipo: 'datos', texto: `De cada 100 átomos, ${p} pesan ${a} u y ${100 - p} pesan ${b} u. En la lupa, ${na} de cada 20.`,
+              ecuacion: [`fracciones: ${f(fa)} y ${f(fb)}`] },
+            { tipo: 'regla', texto: 'Es un promedio pesado: cada masa cuenta según cuántos átomos la tienen. Multiplico cada masa por su fracción y sumo.',
+              ecuacion: ['masa promedio = Σ (masa del isótopo × fracción)'] },
+            { tipo: 'cuentas', texto: 'Lo que aporta cada isótopo, y después la suma.',
+              ecuacion: [`${f(fa)} · ${a} + ${f(fb)} · ${b} = ${f(fa * a, 2)} + ${f(fb * b, 2)} = ${f(prom, 2)} u`] },
+            { tipo: 'sentido', texto: `El promedio, ${f(prom, 2)} u, cae entre ${a} y ${b} u, ${comun}.` },
+          ],
+          respuesta: `${f(prom, 2)} u`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Multiplica cada masa por su fracción y suma.',
       generar(s) {
@@ -153,6 +188,14 @@
     titulo: 'Un mol cuenta, no pesa',
     temas: ['Número de Avogadro y mol', 'Masa molar'],
     pieza: 'balanza',
+    lee: {
+      tarjetas: [
+        { titulo: 'Contar pesando', texto: 'En el mercado de Juliaca nadie cuenta los granos de quinua: se venden por kilo. Si sabes cuánto pesa un grano, el peso te dice cuántos granos hay sin contarlos.' },
+        { titulo: 'Una unidad nueva', texto: ['La química hace algo parecido con los átomos. Su unidad para contar es el mol, de la cantidad de sustancia ', n_, ', como el metro es la unidad de la longitud.'] },
+        { titulo: 'La masa molar', texto: ['Cada sustancia tiene su masa molar ', M_, ', en gramos por mol. Se calcula sumando las masas atómicas de la fórmula. Para el agua, H₂O, es 2 · 1 + 16 = 18 g/mol.'] },
+        { titulo: 'Qué mirar', texto: 'En la balanza, el saco de la izquierda tiene la sustancia y la pesa de la derecha dice sus gramos. Mira cómo cambian los gramos si cambias de sustancia con los mismos moles.' },
+      ],
+    },
     juega: {
       consigna: 'Elige una sustancia. Los moles en la balanza suben y bajan solos: lee cuántos gramos pesa cada cantidad.',
       voz: 'Compara 1 mol de una sustancia con 1 mol de otra.',
@@ -193,6 +236,46 @@
       ecuacion: [N_, ' = ', n_, ' · ', { llave: [NA], nota: 'entidades por mol' }, '   ·   ', m_, ' = ', n_, ' · ', { llave: [M_], nota: 'gramos por mol', color: 'c-d' }],
       condicion: 'se dice qué entidad se cuenta; M sale de sumar las masas atómicas de la fórmula, en g/mol.',
       voz: 'Contar y pesar son dos cosas: el mol las une.',
+    },
+    resuelve: {
+      pieza: 'balanza',
+      generar(s) {
+        const r = azar(s + 900), k = r.de(['H₂O', 'CO₂', 'NaCl', 'CH₄', 'NH₃', 'CaCO₃', 'H₂SO₄']), M = masaMolar(k);
+        const suma = FORM[k].map(([el, c]) => (c > 1 ? `${c} · ${f(MA[el], 1)}` : f(MA[el], 1))).join(' + ');
+        const masas = FORM[k].map(([el]) => `${el} = ${f(MA[el], 1)}`).join(', ');
+        if (s % 2) {
+          const n = r.de([0.5, 1.5, 2, 2.5, 3, 4]), m = n * M;
+          return {
+            enunciado: ['¿Cuántos moles hay en ', m_, ` = ${f(m, 1)} g de ${k}? Masas atómicas: ${masas}.`],
+            dibujo: { datos: { unidad: 'g', balanzas: [{ izq: { saco: m }, der: { pesa: m }, estado: 'equilibrio' }], alt: `Balanza en equilibrio: ${f(m, 1)} g de ${k}.` }, estado: { rastros: { 0: [`${f(m, 1)} g de ${k}`] } } },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la cantidad de sustancia ', n_, `: cuántos moles de ${k} hay en esos gramos.`] },
+              { tipo: 'datos', texto: ['La masa es ', m_, ` = ${f(m, 1)} g. La masa molar no está: la saco de la fórmula ${k}.`] },
+              { tipo: 'regla', texto: 'La masa molar dice cuántos gramos pesa un mol. Para saber cuántos moles hay, divido los gramos entre la masa molar.',
+                ecuacion: [n_, ' = ', { frac: [m_, M_] }] },
+              { tipo: 'cuentas', texto: 'Primero sumo las masas atómicas de la fórmula; después divido.',
+                ecuacion: [M_, ` = ${suma} = ${f(M, 1)} g/mol   →   `, n_, ` = ${f(m, 1)} / ${f(M, 1)} = ${f(n, 3)} mol`], dibujo: pesar(k, n) },
+              { tipo: 'sentido', texto: ['Unidades: g entre g/mol da mol. Y de vuelta: ', `${f(n, 3)} mol · ${f(M, 1)} g/mol = ${f(n * M, 1)} g, la masa del enunciado.`] },
+            ],
+            respuesta: [n_, ` = ${f(n, 3)} mol de ${k}`],
+          };
+        }
+        const n = r.de([0.5, 2, 3, 0.25, 1.5]), N = n * NAV, ent = k === 'NaCl' || k === 'CaCO₃' ? 'unidades fórmula' : 'moléculas';
+        return {
+          enunciado: [`¿Cuántas ${ent} hay en `, n_, ` = ${f(n, 2)} mol de ${k}?`],
+          dibujo: pesar(k, n),
+          pasos: [
+            { tipo: 'pide', texto: [`Piden el número de ${ent}, `, N_, `: cuántas hay, contadas una por una.`] },
+            { tipo: 'datos', texto: ['La cantidad de sustancia es ', n_, ` = ${f(n, 2)} mol. La masa de la balanza no hace falta.`] },
+            { tipo: 'regla', texto: 'Cada mol trae siempre el número de Avogadro de entidades. Multiplico los moles por ese número.',
+              ecuacion: [N_, ' = ', n_, ' · ', NA, '   ·   ', NA, ' = 6,022 × 10²³ mol⁻¹'] },
+            { tipo: 'cuentas', texto: `Cada mol aporta 6,022 × 10²³ ${ent}; con ${f(n, 2)} mol, multiplico.`,
+              ecuacion: [N_, ` = ${f(n, 2)} · 6,022 × 10²³ = ${cien(N, 3)}`] },
+            { tipo: 'sentido', texto: `${n < 1 ? 'Hay menos de un mol: el resultado tiene que ser menor' : 'Hay más de un mol: el resultado tiene que ser mayor'} que 6,022 × 10²³. Lo es.` },
+          ],
+          respuesta: [N_, ` = ${cien(N, 3)} ${ent}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Escribe primero la masa molar.',
@@ -245,6 +328,13 @@
     titulo: 'Los subíndices son una receta',
     temas: ['Relaciones molares en una fórmula'],
     pieza: 'quim-particulas',
+    lee: {
+      tarjetas: [
+        { titulo: 'Una fórmula es una receta', texto: 'La fórmula H₂O dice qué átomos forman una molécula de agua y cuántos de cada uno: dos de hidrógeno y uno de oxígeno. El número pequeño de abajo es el subíndice; si no hay, vale 1.' },
+        { titulo: 'Moléculas o unidades fórmula', texto: 'El agua y el azúcar están hechos de moléculas. La sal y el mármol no: son redes de iones. Su fórmula describe una unidad fórmula, la proporción entre sus iones.' },
+        { titulo: 'Qué mirar', texto: 'En la lupa, cada molécula se dibuja con sus bolitas. Cuando cambie el número de moléculas, compara la cuenta de abajo con los subíndices de la fórmula.' },
+      ],
+    },
     juega: {
       consigna: 'Elige una fórmula. Las moléculas de la lupa suben y bajan solas; debajo se cuentan los átomos de cada elemento.',
       voz: 'Compara la cuenta con los subíndices de la fórmula.',
@@ -288,6 +378,34 @@
       condicion: 'se cuenta la entidad pedida; en un compuesto iónico no hay moléculas, hay unidades fórmula.',
       voz: 'Primero los átomos de una unidad, después por los moles.',
     },
+    resuelve: {
+      // La lupa solo dibuja moléculas sueltas; aquí hay compuestos iónicos y paréntesis: la receta va en barras.
+      pieza: 'quim-composicion',
+      generar(s) {
+        const r = azar(s + 900), k = r.de(['H₂SO₄', 'CaCO₃', 'Al₂(SO₄)₃', 'C₆H₁₂O₆', 'Ca(OH)₂', 'NH₃', 'C₂H₆O']), fo = FORM[k];
+        const [el, c] = r.de(fo), n = r.de([0.5, 2, 3, 4, 1.5]);
+        // Átomos del elemento dentro del paréntesis (los mismos que usa «Ahora tú» para su distractor).
+        const dentro = k.includes('(') ? (k === 'Al₂(SO₄)₃' ? { O: 4, S: 1 }[el] : { O: 1, H: 1 }[el]) : null;
+        const unidad = k === 'CaCO₃' || k === 'Al₂(SO₄)₃' || k === 'Ca(OH)₂' ? 'unidad fórmula' : 'molécula';
+        const fila = (factor, titulo) => ({ titulo, tramos: fo.map(([e, q]) => ({ valor: q * factor, texto: `${f(q * factor, 1)} ${e}`, color: COLOR_EL[e] })) });
+        const receta = dentro ? `Dentro del paréntesis hay ${dentro} ${el}; el ${c / dentro} de afuera lo multiplica: ${c / dentro} · ${dentro} = ${c}.` : `El subíndice del ${el} en ${k} es ${c}.`;
+        return {
+          enunciado: ['¿Cuántos moles de átomos de ', el, ' hay en ', n_, ` = ${f(n, 1)} mol de ${k}?`],
+          dibujo: { datos: { filas: [fila(1, `átomos en una ${unidad} de ${k} (no es masa)`)] }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden los moles de átomos de ', el, ` que hay dentro de ${f(n, 1)} mol de ${k}.`] },
+            { tipo: 'datos', texto: `Primero, cuántos ${el} trae una ${unidad}. ${receta}` },
+            { tipo: 'regla', texto: 'La fórmula es una receta por unidad: los moles de un elemento son los moles de compuesto por los átomos que trae cada unidad.',
+              ecuacion: [n_, `(${el}) = `, n_, '(compuesto) × átomos por unidad'] },
+            { tipo: 'cuentas', texto: `${f(n, 1)} mol de ${k}, y cada unidad con ${c} ${el}.`,
+              ecuacion: [n_, `(${el}) = ${f(n, 1)} · ${c} = ${f(n * c, 1)} mol`],
+              dibujo: { datos: { escala: 'comun', filas: [fila(1, `una ${unidad}: átomos`), fila(n, `${f(n, 1)} mol de ${k}: moles de átomos`)] }, estado: {} } },
+            { tipo: 'sentido', texto: c === 1 ? `Hay un ${el} por unidad: sus moles son los mismos que los del compuesto, ${f(n, 1)} mol.` : `Hay ${c} ${el} por unidad: sus moles son ${c} veces los del compuesto. ${f(n * c, 1)} es ${c} · ${f(n, 1)}.` },
+          ],
+          respuesta: [n_, `(${el}) = ${f(n * c, 1)} mol`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Cuenta los átomos de una unidad y multiplica.',
       generar(s) {
@@ -327,6 +445,14 @@
     titulo: 'De porcentajes a fórmula',
     temas: ['Composición centesimal', 'Fórmula empírica y molecular'],
     pieza: 'quim-composicion',
+    lee: {
+      tarjetas: [
+        { titulo: 'Qué hay en 100 g', texto: 'La composición centesimal dice cuántos gramos de cada elemento hay en 100 g de un compuesto. Se parece a la etiqueta de un alimento, que dice cuánta proteína trae cada 100 g.' },
+        { titulo: 'Del análisis a la fórmula', texto: 'Quien analiza un compuesto nuevo en el laboratorio mide primero cuánto pesa cada elemento. Con esos porcentajes deduce la fórmula empírica: la razón de átomos más simple.' },
+        { titulo: 'Empírica y molecular', texto: 'El gas de Camisea es sobre todo metano, pero trae algo de etano, C₂H₆. La fórmula empírica del etano es CH₃: la misma razón 1 : 3, con los números más pequeños.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, la barra entera es la masa molar y cada tramo es lo que pesa un elemento. Compara el largo de cada tramo con el número de átomos de la fórmula.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un compuesto. La barra es su masa molar entera; se llena sola, elemento por elemento, con lo que pesa cada uno.',
       voz: 'Compara el largo de cada tramo con cuántos átomos hay.',
@@ -369,6 +495,54 @@
       ecuacion: ['% = 100 · ', { frac: ['átomos × masa atómica', 'masa molar'] }, '   ·   ', 'molecular = ', { llave: ['k'], nota: 'un entero' }, ' × empírica'],
       condicion: 'para hallar la molecular hace falta la masa molar; k es un entero.',
       voz: 'Gramos, luego moles, luego la razón entera.',
+    },
+    resuelve: {
+      pieza: 'quim-composicion',
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 3 === 2) {
+          // Las mismas empíricas y factores de «Ahora tú»; aquí las masas y la fórmula molecular salen de MA.
+          const [emp, k] = r.de([[[['C', 1], ['H', 2], ['O', 1]], 6], [[['C', 1], ['H', 1]], 6], [[['C', 1], ['H', 2]], 4], [[['N', 1], ['O', 2]], 2], [[['C', 1], ['H', 2], ['O', 1]], 2], [[['P', 2], ['O', 5]], 2]]);
+          const escribe = (lista, x) => lista.map(([e, q]) => e + sub(q * x)).join(''), te = escribe(emp, 1), tm = escribe(emp, k);
+          const Me = emp.reduce((a, [e, q]) => a + MA[e] * q, 0), Mm = Me * k, kk = Mm / Me;
+          const suma = emp.map(([e, q]) => (q > 1 ? `${q} · ${f(MA[e], 0)}` : f(MA[e], 0))).join(' + ');
+          const fila = (x, titulo, oculta) => ({ titulo, tramos: oculta ? [{ valor: Mm, texto: '¿?', tenue: true }] : emp.map(([e, q]) => ({ valor: MA[e] * q * x, texto: `${e} ${f(MA[e] * q * x, 0)} g`, color: COLOR_EL[e] })) });
+          return {
+            enunciado: `Un compuesto tiene fórmula empírica ${te} y masa molar ${f(Mm, 0)} g/mol. ¿Cuál es su fórmula molecular? Masas atómicas: ${emp.map(([e]) => `${e} = ${f(MA[e], 0)}`).join(', ')}.`,
+            dibujo: { datos: { escala: 'comun', filas: [fila(1, `${te}: ${f(Me, 0)} g/mol`), fila(kk, `molécula: ${f(Mm, 0)} g/mol`, true)] }, estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la fórmula molecular: cuántos átomos de cada elemento tiene de verdad una molécula.' },
+              { tipo: 'datos', texto: `La razón más simple es ${te}, y un mol del compuesto pesa ${f(Mm, 0)} g.` },
+              { tipo: 'regla', texto: 'La molecular es la empírica repetida un número entero de veces. Ese número sale de dividir la masa molar entre la masa de la empírica.',
+                ecuacion: ['molecular = ', { llave: ['k'], nota: 'un entero' }, ' × empírica'] },
+              { tipo: 'cuentas', texto: `Peso la empírica, divido y multiplico todos los subíndices por ese entero.`,
+                ecuacion: [`${te}: ${suma} = ${f(Me, 0)} g/mol   →   k = ${f(Mm, 0)} / ${f(Me, 0)} = ${f(kk, 0)}   →   ${tm}`],
+                dibujo: { datos: { escala: 'comun', filas: [fila(1, `${te}: ${f(Me, 0)} g/mol`), fila(kk, `${tm}: ${f(Mm, 0)} g/mol`)] }, estado: {} } },
+              { tipo: 'sentido', texto: `De vuelta: ${f(kk, 0)} · ${f(Me, 0)} = ${f(kk * Me, 0)} g/mol, la masa molar dada. Y ${tm} guarda la razón de ${te}.` },
+            ],
+            respuesta: `${tm}`,
+          };
+        }
+        const k = r.de(['H₂O', 'CO₂', 'NH₃', 'CH₄', 'CaCO₃', 'NaCl', 'H₂SO₄', 'C₂H₆O']), fo = FORM[k], [el, c] = r.de(fo);
+        const M = masaMolar(k), p = 100 * MA[el] * c / M, atomos = 100 * c / fo.reduce((a, x) => a + x[1], 0);
+        const suma = fo.map(([e, q]) => (q > 1 ? `${q} · ${f(MA[e], 1)}` : f(MA[e], 1))).join(' + ');
+        const compara = Math.abs(p - atomos) < 0.05 ? 'pesa lo mismo que el promedio de sus átomos' : `cada ${el} pesa ${p > atomos ? 'más' : 'menos'} que el promedio de los átomos de la fórmula`;
+        return {
+          enunciado: `¿Qué porcentaje de la masa del ${k} corresponde al ${el}? Masas atómicas: ${fo.map(([e]) => `${e} = ${f(MA[e], 1)}`).join(', ')}.`,
+          dibujo: { datos: { filas: [{ titulo: `${k}: 100 % de su masa`, tramos: [{ valor: 100, texto: '¿?' }] }] }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden el porcentaje en masa del ${el}: cuántos gramos de ${el} hay en cada 100 g de ${k}.` },
+            { tipo: 'datos', texto: `Una unidad de ${k} tiene ${c} ${c > 1 ? 'átomos' : 'átomo'} de ${el}, de ${f(MA[el], 1)} u cada uno.` },
+            { tipo: 'regla', texto: 'Comparo lo que pesa el elemento en la fórmula con lo que pesa la fórmula entera, la masa molar. Contar átomos no basta.',
+              ecuacion: ['% = 100 · ', { frac: ['átomos × masa atómica', 'masa molar'] }] },
+            { tipo: 'cuentas', texto: ['Primero la masa molar ', M_, '; después la parte del ', el, '.'],
+              ecuacion: [M_, ` = ${suma} = ${f(M, 1)} g/mol   →   % = 100 · ${f(c * MA[el], 1)} / ${f(M, 1)} = ${f(p, 1)} %`],
+              dibujo: { datos: { filas: [barra(k)] }, estado: {} } },
+            { tipo: 'sentido', texto: `El ${el} es el ${f(atomos, 1)} % de los átomos y el ${f(p, 1)} % de la masa: ${compara}.` },
+          ],
+          respuesta: `${f(p, 1)} % de ${el}`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'quim-composicion',
@@ -414,6 +588,14 @@
     titulo: 'Lo que la balanza siempre cumple',
     temas: ['Leyes ponderales'],
     pieza: 'quim-composicion',
+    lee: {
+      tarjetas: [
+        { titulo: 'Nada se pierde', texto: 'Cuando se quema leña, parece que la masa desaparece. No es así: buena parte se va al aire como gases. Si se pesara todo, también los gases, la masa de antes sería la de después.' },
+        { titulo: 'Siempre la misma receta', texto: 'El agua purificada del Titicaca y la de un nevado tienen la misma composición en masa. Un compuesto puro no cambia su receta según de dónde venga.' },
+        { titulo: 'Los mismos elementos', texto: 'El carbono y el oxígeno forman más de un compuesto. El CO es un gas tóxico que sale de una cocina a gas mal ventilada; el CO₂ es el que exhalamos al respirar.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, las dos barras están a la misma escala. Mira cómo crecen juntos los tramos de hidrógeno y de oxígeno cuando cambia la masa de agua.' },
+      ],
+    },
     juega: {
       consigna: 'La masa de agua que se forma crece y baja sola. Las barras están a la misma escala: compara el hidrógeno y el oxígeno.',
       voz: 'Divide el oxígeno entre el hidrógeno en cada caso.',
@@ -461,6 +643,65 @@
       condicion: 'en un sistema cerrado y para sustancias puras; una mezcla puede tener cualquier proporción.',
       voz: 'Antes de calcular, revisa que la masa cuadre.',
     },
+    resuelve: {
+      pieza: 'quim-composicion',
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3;
+        if (tipo === 0) {
+          const g = 9 * r.ent(2, 9), parte = g / 9, o = 8 * parte;
+          return {
+            enunciado: `El agua tiene siempre 8 g de oxígeno por cada 1 g de hidrógeno. ¿Cuántos gramos de oxígeno hay en ${g} g de agua?`,
+            dibujo: { datos: { filas: [{ titulo: `${g} g de agua`, tramos: [{ valor: g, texto: '¿H? · ¿O?' }] }] }, estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: `Piden la masa de oxígeno que hay dentro de ${g} g de agua.` },
+              { tipo: 'datos', texto: 'En el agua, O : H = 8 : 1 en masa. De cada 9 g de agua, 8 g son de oxígeno y 1 g de hidrógeno.' },
+              { tipo: 'regla', texto: 'Un compuesto puro tiene siempre la misma razón de masas (ley de Proust). Reparto el agua en 9 partes iguales: 8 para el O y 1 para el H.' },
+              { tipo: 'cuentas', texto: 'Primero cuánto vale una parte; el oxígeno se lleva ocho.',
+                ecuacion: [`una parte = ${g} / 9 = ${f(parte, 1)} g   →   O = 8 · ${f(parte, 1)} = ${f(o, 1)} g`], dibujo: { datos: { filas: [agua(g)] }, estado: {} } },
+              { tipo: 'sentido', texto: `Compruebo: ${f(o, 1)} g de O + ${f(parte, 1)} g de H = ${f(o + parte, 1)} g de agua, y ${f(o, 1)} : ${f(parte, 1)} = ${f(o / parte, 0)} : 1.` },
+            ],
+            respuesta: `${f(o, 1)} g de oxígeno`,
+          };
+        }
+        if (tipo === 1) {
+          const c = 3 * r.ent(1, 6), o2 = 8 * c / 3, co2 = c + o2;
+          const antes = { titulo: 'antes', tramos: [{ valor: c, texto: `C ${c} g` }, { valor: o2, texto: `O₂ ${f(o2, 0)} g`, color: 'h' }] };
+          return {
+            enunciado: `En un sistema cerrado se queman ${c} g de carbono con ${f(o2, 0)} g de oxígeno y no sobra nada. ¿Cuánto CO₂ se forma?`,
+            dibujo: { datos: { escala: 'comun', filas: [antes, { titulo: 'después', tramos: [{ valor: co2, texto: 'CO₂ ¿?', color: 'o', tenue: true }] }] }, estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la masa de CO₂ que se forma al quemar todo el carbono.' },
+              { tipo: 'datos', texto: `Antes hay ${c} g de carbono y ${f(o2, 0)} g de oxígeno. No sobra nada de ninguno.` },
+              { tipo: 'regla', texto: 'En un sistema cerrado la masa se conserva (ley de Lavoisier): lo que pesan los reactivos es lo que pesan los productos.',
+                ecuacion: ['masa antes = masa después'] },
+              { tipo: 'cuentas', texto: 'Como no sobra nada, todo lo de antes termina en el CO₂.',
+                ecuacion: [`${c} + ${f(o2, 0)} = ${f(co2, 0)} g de CO₂`],
+                dibujo: { datos: { escala: 'comun', filas: [antes, { titulo: 'después', tramos: [{ valor: co2, texto: `CO₂ ${f(co2, 0)} g`, color: 'o' }] }] }, estado: {} } },
+              { tipo: 'sentido', texto: `El CO₂ pesa más que el carbono solo: lleva también el oxígeno. Y ${f(o2, 0)} / ${c} = ${f(o2 / c, 2)}, lo mismo que ${2 * MA.O} / ${MA.C} en el CO₂.` },
+            ],
+            respuesta: `${f(co2, 0)} g de CO₂`,
+          };
+        }
+        // Mismos pares de «Ahora tú», escritos como átomos: [fórmula, átomos del primer elemento, átomos de O].
+        const [el, [a, ea, oa], [b, eb, ob]] = r.de([['N', ['N₂O', 2, 1], ['NO', 1, 1]], ['N', ['NO', 1, 1], ['NO₂', 1, 2]], ['Fe', ['FeO', 1, 1], ['Fe₂O₃', 2, 3]], ['S', ['SO₂', 1, 2], ['SO₃', 1, 3]], ['C', ['CO', 1, 1], ['CO₂', 1, 2]]]);
+        const mcd = (x, y) => (y ? mcd(y, x % y) : x), L = ea * eb / mcd(ea, eb), xa = oa * L / ea, xb = ob * L / eb, d = mcd(xa, xb);
+        const fila = (fo, x, oculta) => ({ titulo: `${fo}, con ${L} ${el}`, tramos: [{ valor: L * MA[el], texto: `${el} ${f(L * MA[el], 0)} g` }, { valor: x * MA.O, texto: oculta ? 'O ¿?' : `O ${f(x * MA.O, 0)} g`, color: 'h', tenue: oculta }] });
+        return {
+          enunciado: `Para la misma masa del primer elemento, ¿en qué razón están las masas de oxígeno en ${a} y ${b}?`,
+          dibujo: { datos: { escala: 'comun', filas: [fila(a, xa, true), fila(b, xb, true)] }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden comparar el oxígeno de ${a} y de ${b} cuando los dos tienen la misma masa de ${el}.` },
+            { tipo: 'datos', texto: `${a}: ${ea} ${el} y ${oa} O. ${b}: ${eb} ${el} y ${ob} O.` },
+            { tipo: 'regla', texto: 'Si dos elementos forman varios compuestos, el oxígeno unido a una misma masa del otro elemento va en razón de enteros pequeños (Dalton).' },
+            { tipo: 'cuentas', texto: `Igualo el ${el}: tomo ${L} ${el} en los dos, ${f(L * MA[el], 0)} g. Cuento el oxígeno que va con ellos.`,
+              ecuacion: [`O: ${f(xa * MA.O, 0)} g y ${f(xb * MA.O, 0)} g   →   ${f(xa * MA.O, 0)} : ${f(xb * MA.O, 0)} = ${xa / d} : ${xb / d}`],
+              dibujo: { datos: { escala: 'comun', filas: [fila(a, xa), fila(b, xb)] }, estado: {} } },
+            { tipo: 'sentido', texto: `${xa / d} : ${xb / d} es una razón de enteros pequeños, como dice la ley. Si diera 1 : 1, serían el mismo compuesto.` },
+          ],
+          respuesta: `O en ${a} : O en ${b} = ${xa / d} : ${xb / d}`,
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'quim-composicion',
       voz: 'Busca qué razón no cambia.',
@@ -481,10 +722,10 @@
         if (tipo === 1) {
           const c = 3 * r.ent(1, 6), o2 = 8 * c / 3, co2 = c + o2;
           return {
-            pregunta: `En un frasco cerrado se queman ${c} g de carbono con ${f(o2, 0)} g de oxígeno y no sobra nada. ¿Cuánto CO₂ se forma?`,
+            pregunta: `En un sistema cerrado se queman ${c} g de carbono con ${f(o2, 0)} g de oxígeno y no sobra nada. ¿Cuánto CO₂ se forma?`,
             opciones: opciones(co2, [
               { id: 'gas', valor: c, error: 'ES13', siFuera: 'El CO₂ también pesa: lleva el carbono y el oxígeno.' },
-              { id: 'resta', valor: o2 - c, error: 'ES15', siFuera: 'En un frasco cerrado no se pierde masa; se suma.' },
+              { id: 'resta', valor: o2 - c, error: 'ES15', siFuera: 'En un sistema cerrado no se pierde masa; se suma.' },
               { id: 'o', valor: o2, error: 'ES15', siFuera: 'Ese es solo el oxígeno; el carbono también queda en el CO₂.' },
             ], x => `${f(x, 0)} g`),
             solucion: { texto: 'Sistema cerrado y sin sobrantes: masa antes = masa después.', ecuacion: [`${c} + ${f(o2, 0)} = ${f(co2, 0)} g`], dibujo: { datos: { escala: 'comun', filas: [{ titulo: 'antes', tramos: [{ valor: c, texto: `C ${c} g` }, { valor: o2, texto: `O₂ ${f(o2, 0)} g`, color: 'h' }] }, { titulo: 'después', tramos: [{ valor: co2, texto: `CO₂ ${f(co2, 0)} g`, color: 'o' }] }] }, estado: {} } },
@@ -547,6 +788,9 @@
         formas: ['número de Avogadro', 'Avogadro'], ver: ['mol'] },
       { termino: 'entidad', def: 'Cada cosa que se cuenta en química: un átomo, una molécula, un ion o una unidad de fórmula.',
         formas: ['entidad', 'entidades'], ver: ['mol'] },
+      { termino: 'unidad fórmula', formas: ['unidad fórmula', 'unidades fórmula'],
+        def: 'El grupo mínimo de iones que muestra la fórmula de un compuesto iónico, que no forma moléculas sueltas.',
+        ejemplo: 'Una unidad fórmula de NaCl: un Na⁺ y un Cl⁻.', ver: ['entidad'] },
       { termino: 'cantidad de sustancia', simbolo: 'n', medida: 'mol', def: 'Magnitud que dice cuántas entidades hay, contadas en moles; no es la masa.',
         ver: ['mol'] },
       { termino: 'masa molar', simbolo: 'M', medida: 'g/mol', def: 'Cuántos gramos pesa un mol de una sustancia. Se obtiene sumando las masas atómicas de su fórmula.',
@@ -557,6 +801,8 @@
         ver: ['masa atómica'] },
       { termino: 'abundancia', medida: '%', def: 'De cada 100 átomos de un elemento en la naturaleza, cuántos son de un isótopo dado.',
         ejemplo: 'El 75,76 % del cloro es cloro-35.', ver: ['masa atómica'] },
+      { termino: 'composición centesimal', def: 'Lo que aporta cada elemento a la masa de un compuesto: cuántos gramos de cada uno hay en 100 g.',
+        ejemplo: 'H₂O: 11,1 % de H y 88,9 % de O.', ver: ['fórmula empírica', 'masa molar'] },
       { termino: 'fórmula empírica', def: 'La razón de enteros más simple entre los átomos de un compuesto.',
         ejemplo: 'C₆H₁₂O₆ → CH₂O, razón 1 : 2 : 1.', ver: ['fórmula molecular'] },
       { termino: 'fórmula molecular', def: 'Cuántos átomos de cada elemento tiene de verdad una molécula: un múltiplo entero de la empírica.',
