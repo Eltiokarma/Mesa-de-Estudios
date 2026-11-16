@@ -44,12 +44,15 @@
   function platillo(x, y, lado, color, colorOculta) {
     const c = T.color(color), yp = y + CUERDA;
     const dim = lado.oculta ? '?' : texto(lado.exps);
-    let g = `<line x1="${n(x - 40)}" y1="${n(yp)}" x2="${n(x)}" y2="${n(y)}" stroke="currentColor" stroke-width="1.5"/>`
-      + `<line x1="${n(x + 40)}" y1="${n(yp)}" x2="${n(x)}" y2="${n(y)}" stroke="currentColor" stroke-width="1.5"/>`;
-    g += `<rect x="${n(x - 38)}" y="${n(yp - 50)}" width="76" height="48" rx="8" fill="var(--card)" stroke="${c}" stroke-width="2"/>`;
-    g += T.rotulo(x, yp - 31, lado.nombre || '', { ancla: 'middle', tam: 15, peso: 700, min: x - 37, max: x + 37 });
-    g += T.rotulo(x, yp - 10, dim, { ancla: 'middle', tam: 16, peso: 700, color: lado.oculta ? colorOculta : color, min: x - 37, max: x + 37 });
-    g += `<path d="M${n(x - 46)} ${n(yp)}Q${n(x)} ${n(yp + 18)} ${n(x + 46)} ${n(yp)}Z" fill="${c}" fill-opacity="0.12" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    // La caja se ensancha con lo que lleva: «M L⁻¹ T⁻²» no cabía en 76 (16 nov). Medio ancho entre 38 y 50: con el
+    // brazo inclinado 9°, el borde del platillo izquierdo queda en x ≥ 160 − 96·cos 9° − 50 − 8 ≈ 7.
+    const h = Math.min(50, Math.max(38, T.ancho(dim, 16, 700) / 2 + 7, T.ancho(lado.nombre || '', 15, 700) / 2 + 7));
+    let g = `<line x1="${n(x - h - 2)}" y1="${n(yp)}" x2="${n(x)}" y2="${n(y)}" stroke="currentColor" stroke-width="1.5"/>`
+      + `<line x1="${n(x + h + 2)}" y1="${n(yp)}" x2="${n(x)}" y2="${n(y)}" stroke="currentColor" stroke-width="1.5"/>`;
+    g += `<rect x="${n(x - h)}" y="${n(yp - 50)}" width="${n(2 * h)}" height="48" rx="8" fill="var(--card)" stroke="${c}" stroke-width="2"/>`;
+    g += T.rotulo(x, yp - 31, lado.nombre || '', { ancla: 'middle', tam: 15, peso: 700, min: x - h + 1, max: x + h - 1 });
+    g += T.rotulo(x, yp - 10, dim, { ancla: 'middle', tam: 16, peso: 700, color: lado.oculta ? colorOculta : color, min: x - h + 1, max: x + h - 1 });
+    g += `<path d="M${n(x - h - 8)} ${n(yp)}Q${n(x)} ${n(yp + 18)} ${n(x + h + 8)} ${n(yp)}Z" fill="${c}" fill-opacity="0.12" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"/>`;
     return g;
   }
 
