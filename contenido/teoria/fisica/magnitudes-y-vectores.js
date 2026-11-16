@@ -5,6 +5,9 @@
  * áreas y volúmenes (aprobada por Gerson el 16 nov).
  * Colores (regla 4): el alto h del poste (no L: L es la dimensión longitud de la idea 3) y la rapidez, naranja (c-o); el factor que vale 1, verde (c-d); en la idea de
  * dimensiones, la incógnita k va en rojo (c-h).
+ * Toda pregunta de conversión da la equivalencia que necesita («Dato: 1 km = 1000 m y 1 h = 3600 s»; Gerson, 16 nov:
+ * «no te dan el cambio de unidades respectivo. Tienen que darlo»). En áreas se da la equivalencia de largo (1 m = 100 cm):
+ * elevarla al cuadrado es lo que se aprende.
  * Códigos de error (hipótesis, sin dato empírico propio; matriz: «confundir dimensiones con unidades»):
  *   DIM-UNIDAD toma la unidad por la dimensión · DIM-INVERSA invierte el despeje · DIM-TERMINO copia la del otro lado
  *   DIM-EXPONENTE olvida que una potencia repite las fichas
@@ -115,7 +118,7 @@
       minimo: 3,
     },
     predice: {
-      pregunta: `Una combi va a ${f(V_KMH, 0)} km/h. ¿Cuántos metros avanza en cada segundo?`,
+      pregunta: `Una combi va a ${f(V_KMH, 0)} km/h. ¿Cuántos metros avanza en cada segundo? Dato: 1 km = 1000 m y 1 h = 3600 s.`,
       opciones: [
         { id: 'c', texto: `${f(V_MS, 0)} m`, correcta: true },
         { id: 'solo-km', texto: `${f(V_KMH * 1000, 0)} m`, error: 'CONV-UNO', siFuera: 'Eso pasa bien los km a metros, pero son los metros de una hora entera.' },
@@ -158,7 +161,7 @@
           // Sin 72 km/h: ese es el caso de «Predice» y «Mira».
           const n = r.de([36, 54, 90, 108]), ms = n * 1000 / 3600;
           return {
-            enunciado: `Una combi va a ${f(n, 0)} km/h. ¿Cuántos metros avanza en cada segundo?`,
+            enunciado: `Una combi va a ${f(n, 0)} km/h. ¿Cuántos metros avanza en cada segundo? Dato: 1 km = 1000 m y 1 h = 3600 s.`,
             dibujo: { datos: pista(0, ms), estado: {} },
             pasos: [
               { tipo: 'pide', texto: 'Piden la rapidez en metros por segundo: cuántos metros avanza en un segundo.' },
@@ -173,7 +176,7 @@
         if (tipo === 1) {
           const o = r.de(LARGOS);
           return {
-            enunciado: `${o.que} mide ${f(o.m, 2)} m. ¿Cuántos centímetros son?`,
+            enunciado: `${o.que} mide ${f(o.m, 2)} m. ¿Cuántos centímetros son? Dato: 1 m = 100 cm.`,
             pasos: [
               { tipo: 'pide', texto: 'Piden el mismo largo en centímetros.' },
               { tipo: 'datos', texto: `Mide ${f(o.m, 2)} m.` },
@@ -187,7 +190,7 @@
         if (tipo === 2) {
           const mn = r.ent(2, 12) * 5, sg = mn * 60;
           return {
-            enunciado: `Una clase dura ${f(mn, 0)} minutos. ¿Cuántos segundos son?`,
+            enunciado: `Una clase dura ${f(mn, 0)} minutos. ¿Cuántos segundos son? Dato: 1 min = 60 s.`,
             pasos: [
               { tipo: 'pide', texto: 'Piden el mismo tiempo en segundos, la unidad del Sistema Internacional.' },
               { tipo: 'datos', texto: `La clase dura ${f(mn, 0)} min.` },
@@ -200,7 +203,7 @@
         }
         const v = r.de([5, 10, 15, 25]), kmh = v * 3.6;
         return {
-          enunciado: `${v <= 10 ? 'Un ciclista' : 'Un carro'} va a ${f(v, 0)} m/s. ¿Cuántos km/h son?`,
+          enunciado: `${v <= 10 ? 'Un ciclista' : 'Un carro'} va a ${f(v, 0)} m/s. ¿Cuántos km/h son? Dato: 1 km = 1000 m y 1 h = 3600 s.`,
           dibujo: { datos: pista(0, v), estado: {} },
           pasos: [
             { tipo: 'pide', texto: 'Piden la misma rapidez en kilómetros por hora.' },
@@ -219,7 +222,7 @@
         if (tipo === 0) {
           const n = r.de([36, 54, 90, 108]), ms = n * 1000 / 3600;   // velocidades creíbles; sin 72, el caso de «Predice»
           return {
-            pregunta: `Un bus va a ${f(n, 0)} km/h. ¿Cuánto es eso en m/s?`,
+            pregunta: `Un bus va a ${f(n, 0)} km/h. ¿Cuánto es eso en m/s? Dato: 1 km = 1000 m y 1 h = 3600 s.`,
             opciones: opciones(ms, [
               { id: 'por', valor: n * 3.6, error: 'CONV-INVERSO', siFuera: 'Multiplicar por 3,6 agranda el número; de km/h a m/s, el número baja.' },
               { id: 'km', valor: n * 1000, error: 'CONV-UNO', siFuera: 'Pasaste los km a metros; falta pasar la hora a segundos.' },
@@ -231,7 +234,7 @@
         if (tipo === 1) {
           const o = r.de(LARGOS);
           return {
-            pregunta: `${o.que} mide ${f(o.m, 2)} m. ¿Cuántos centímetros son?`,
+            pregunta: `${o.que} mide ${f(o.m, 2)} m. ¿Cuántos centímetros son? Dato: 1 m = 100 cm.`,
             opciones: opciones(o.m * 100, [
               { id: 'dm', valor: o.m * 10, error: 'CONV-UNO', siFuera: 'Por 10 da decímetros; en un metro caben 100 cm.' },
               { id: 'inverso', valor: o.m / 100, error: 'CONV-INVERSO', siFuera: 'Dividir achica el número; el centímetro es más chico, el número sube.' },
@@ -243,7 +246,7 @@
         if (tipo === 2) {
           const mn = r.ent(2, 12) * 5, sg = mn * 60;
           return {
-            pregunta: `Una clase dura ${f(mn, 0)} minutos. ¿Cuántos segundos son, la unidad del SI para el tiempo?`,
+            pregunta: `Una clase dura ${f(mn, 0)} minutos. ¿Cuántos segundos son, la unidad del SI para el tiempo? Dato: 1 min = 60 s.`,
             opciones: opciones(sg, [
               { id: 'div', valor: mn / 60, error: 'CONV-INVERSO', siFuera: 'Dividir da horas: el segundo es más chico, el número sube.' },
               { id: 'cien', valor: mn * 100, error: 'CONV-UNO', siFuera: 'Un minuto tiene 60 segundos, no 100.' },
@@ -254,7 +257,7 @@
         }
         const v = r.de([5, 10, 15, 25]);
         return {
-          pregunta: `${v <= 10 ? 'Un ciclista' : 'Un carro'} va a ${f(v, 0)} m/s. ¿Cuántos km/h son?`,
+          pregunta: `${v <= 10 ? 'Un ciclista' : 'Un carro'} va a ${f(v, 0)} m/s. ¿Cuántos km/h son? Dato: 1 km = 1000 m y 1 h = 3600 s.`,
           opciones: opciones(v * 3.6, [
             { id: 'entre', valor: v / 3.6, error: 'CONV-INVERSO', siFuera: 'Entre 3,6 es para ir de km/h a m/s; aquí es el camino de vuelta.' },
             { id: 'sesenta', valor: v * 60, error: 'CONV-UNO', siFuera: 'Eso son metros por minuto; falta pasar a km y a horas.' },
@@ -357,7 +360,7 @@
         if (tipo === 0) {
           const ha = r.de(CHACRAS);
           return {
-            enunciado: `Una chacra en Puno mide ${f(ha, 1)} hectáreas. ¿Cuántos m² son?`,
+            enunciado: `Una chacra en Puno mide ${f(ha, 1)} hectáreas. ¿Cuántos m² son? Dato: 1 ha = 10 000 m².`,
             dibujo: { datos: { cuadros: [{ lado: 100, celdas: 0.1, arriba: '100 m', abajo: '1 ha = 10 000 m²', nombre: 'cada cuadro: 10 m × 10 m = 100 m²' }] }, estado: {} },
             pasos: [
               { tipo: 'pide', texto: 'Piden la misma área en metros cuadrados.' },
@@ -372,7 +375,7 @@
         if (tipo === 1) {
           const m2 = r.de([1.5, 2, 2.4, 3]);
           return {
-            enunciado: `Una pizarra tiene ${f(m2, 1)} m² de área. ¿Cuántos cm² son?`,
+            enunciado: `Una pizarra tiene ${f(m2, 1)} m² de área. ¿Cuántos cm² son? Dato: 1 m = 100 cm.`,
             pasos: [
               { tipo: 'pide', texto: 'Piden la misma área en centímetros cuadrados.' },
               { tipo: 'datos', texto: `La pizarra tiene ${f(m2, 1)} m².` },
@@ -386,7 +389,7 @@
         if (tipo === 2) {
           const L = r.de(TANQUES);
           return {
-            enunciado: `Un tanque de agua del techo guarda ${f(L, 0)} L. ¿Cuántos m³ son?`,
+            enunciado: `Un tanque de agua del techo guarda ${f(L, 0)} L. ¿Cuántos m³ son? Dato: 1 m³ = 1000 L.`,
             dibujo: { datos: VISTAS_AREA[2], estado: {} },
             pasos: [
               { tipo: 'pide', texto: 'Piden el mismo volumen en metros cúbicos.' },
@@ -400,7 +403,7 @@
         }
         const cm3 = r.de(BOTELLAS);
         return {
-          enunciado: `Una botella tiene ${f(cm3, 0)} cm³ de gaseosa. ¿Cuántos litros son?`,
+          enunciado: `Una botella tiene ${f(cm3, 0)} cm³ de gaseosa. ¿Cuántos litros son? Dato: 1 L = 1000 cm³.`,
           pasos: [
             { tipo: 'pide', texto: 'Piden el mismo volumen en litros.' },
             { tipo: 'datos', texto: `La botella tiene ${f(cm3, 0)} cm³.` },
@@ -419,7 +422,7 @@
         if (tipo === 0) {
           const ha = r.de(CHACRAS);
           return {
-            pregunta: `Una chacra mide ${f(ha, 1)} hectáreas. ¿Cuántos m² son? (1 ha es un cuadrado de 100 m de lado)`,
+            pregunta: `Una chacra mide ${f(ha, 1)} hectáreas. ¿Cuántos m² son? Dato: 1 ha = 10 000 m².`,
             opciones: opciones(ha * 10000, [
               { id: 'cien', valor: ha * 100, error: 'CONV-CUADRADO', siFuera: 'Por 100 es un solo lado; la hectárea es 100 m por 100 m.' },
               { id: 'mil', valor: ha * 1000, error: 'CONV-CUADRADO', siFuera: 'Mil no sale de ningún lado: son 100 × 100 = 10 000.' },
@@ -431,7 +434,7 @@
         if (tipo === 1) {
           const m2 = r.de([1.5, 2, 2.4, 3]);
           return {
-            pregunta: `Una pizarra tiene ${f(m2, 1)} m². ¿Cuántos cm² son?`,
+            pregunta: `Una pizarra tiene ${f(m2, 1)} m². ¿Cuántos cm² son? Dato: 1 m = 100 cm.`,
             opciones: opciones(m2 * 10000, [
               { id: 'cien', valor: m2 * 100, error: 'CONV-CUADRADO', siFuera: 'Por 100 pasa un largo a cm; un área lleva el factor al cuadrado.' },
               { id: 'millon', valor: m2 * 1e6, error: 'CONV-CUBO', siFuera: 'Un millón es para m³; en un área el factor va dos veces.' },
@@ -443,7 +446,7 @@
         if (tipo === 2) {
           const L = r.de(TANQUES);
           return {
-            pregunta: `Un tanque de agua guarda ${f(L, 0)} L. ¿Cuántos m³ son?`,
+            pregunta: `Un tanque de agua guarda ${f(L, 0)} L. ¿Cuántos m³ son? Dato: 1 m³ = 1000 L.`,
             opciones: opciones(L / 1000, [
               { id: 'por', valor: L * 1000, error: 'CONV-INVERSO', siFuera: 'Multiplicar agranda el número; el m³ es mucho más grande que el litro.' },
               { id: 'cien', valor: L / 100, error: 'CONV-CUADRADO', siFuera: 'Entre 100 sería si 1 m³ fueran 100 L; son 10 × 10 × 10 = 1000.' },
@@ -454,7 +457,7 @@
         }
         const cm3 = r.de(BOTELLAS);
         return {
-          pregunta: `Una botella tiene ${f(cm3, 0)} cm³. ¿Cuántos litros son?`,
+          pregunta: `Una botella tiene ${f(cm3, 0)} cm³. ¿Cuántos litros son? Dato: 1 L = 1000 cm³.`,
           opciones: opciones(cm3 / 1000, [
             { id: 'cien', valor: cm3 / 100, error: 'CONV-CUADRADO', siFuera: 'Entre 100 sería si un litro fueran 100 cm³; son 1000.' },
             { id: 'por', valor: cm3 * 1000, error: 'CONV-INVERSO', siFuera: 'Multiplicar agranda el número; el litro es más grande que el cm³.' },
