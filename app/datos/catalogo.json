@@ -101,7 +101,7 @@
        "/nucleo/kit/piezas/fis-balanza-dim.js"
       ],
       "ideas": 3,
-      "terminos": 24
+      "terminos": 27
      }
     },
     {
@@ -148,12 +148,13 @@
       "requiere": [
        "/nucleo/kit/piezas/fis-dron.js",
        "/nucleo/kit/piezas/flechas.js",
+       "/nucleo/kit/piezas/fis-fuerzas.js",
        "/plantillas/vectores/motor.js",
        "/nucleo/fisica3d.js",
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
       "ideas": 4,
-      "terminos": 21
+      "terminos": 31
      }
     },
     {
