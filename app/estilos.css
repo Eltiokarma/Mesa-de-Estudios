@@ -1011,7 +1011,35 @@ body.con-lupa{overflow:hidden}
 .te-fic-cab h2{margin:0;font-size:19px}
 .te-fic-n{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:color-mix(in srgb,var(--c-i) 18%,var(--card));color:var(--c-i);font-weight:800}
 .te-fic.hecha .te-fic-n{background:var(--ok);color:#fff}
-.te-fic-ir{margin-top:10px}
+.te-fic-ir{margin-top:0}
+/* Resumen como mapa con anclas (Gerson, 16 nov: «se sienten que caen en nada»): qué vas a hacer, las palabras de la idea
+   dichas en simple (se tocan y abren la hoja del glosario) y la leyenda de la figura. En pantalla grande, texto a la
+   izquierda y figura a la derecha; en celular, apilado. */
+.te-fic-act{margin:4px 0 8px;font-size:15px}
+.te-fic-act b{color:var(--ink)}
+.te-fic-pal{margin:10px 0 4px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--c-d) 9%,var(--card))}
+.te-fic-pal h3{margin:0 0 6px;font-size:13px;letter-spacing:.02em;color:var(--muted);font-weight:700}
+.te-fic-pal dl{margin:0;display:grid;grid-template-columns:minmax(0,max-content) minmax(0,1fr);gap:6px 14px;align-items:baseline}
+.te-fic-pal dl>div{display:contents}
+.te-fic-pal dt{white-space:nowrap}
+.te-fic-pal dd{margin:0;font-size:15px;line-height:1.4}
+.te-fic-term{min-height:32px;padding:2px 0;border:0;background:none;font:inherit;font-weight:800;color:var(--c-d);text-align:left;
+  text-decoration:underline dotted 2px;text-underline-offset:4px;cursor:pointer}
+.te-fic-term:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+.te-fic-fig .te-leyenda{justify-content:center}
+.te-fic-acc{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin-top:6px}
+.te-fic-acc .te-fic-regla{margin:0}
+.te-fic-acc .te-fic-regla[open]{flex-basis:100%}
+.te-fic-acc>.te-regla{flex-basis:100%}
+@media (max-width:420px){.te-fic-pal dl{grid-template-columns:minmax(0,1fr);row-gap:0}.te-fic-pal dd{margin-bottom:8px}}
+@media (min-width:900px){
+  .te-fic{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:4px 24px;align-items:start}
+  .te-fic>.te-fic-cab,.te-fic>.te-fic-acc{grid-column:1/-1}
+  .te-fic>.te-fic-txt{grid-column:1}
+  .te-fic>.te-fic-fig{grid-column:2;grid-row:2/span 2}
+}
+.glo-simple,.te-glosa-s{margin:4px 0 6px;font-size:15px}
+.glo-simple b,.te-glosa-s b{color:var(--muted);font-weight:700}
 /* Puertas de la unidad con el color de su función (15 nov): leer en turquesa, jugar en naranja, ejercitar en morado,
    comprobar en verde, examen en rojo. La teoría es la principal: llena de color. */
 .puerta{--fn:var(--line)}

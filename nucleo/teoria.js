@@ -63,6 +63,8 @@
     tarjeta: 45, resuelto: 30, respuesta: 14,
     // Contrato «se entiende sin profesor» (16 nov): qué debe poder decir el alumno y qué es cada símbolo.
     aprendizaje: 25, leyenda: 8,
+    // Resumen (16 nov): qué va a hacer el alumno en el juego, dicho antes de jugar.
+    actividad: 16,
   };
   // Los siete momentos posibles, en orden. «Lee» y «Así se resuelve» van solo si la idea los trae (momentosDe).
   const MOMENTOS = ['lee', 'juega', 'predice', 'mira', 'regla', 'resuelve', 'ahora-tu'];
@@ -203,12 +205,20 @@
       else if (exige) mal(d, 'sin pregunta: la que responde la idea, para el Resumen');
       if (idea.aprendizaje !== undefined) tope(d, 'aprendizaje', idea.aprendizaje);
       else if (exige) mal(d, 'sin aprendizaje: la frase que el alumno debe poder decir al terminar el juego');
+      // actividad: qué va a hacer en el juego, sin adelantar lo que va a descubrir; la muestra el Resumen.
+      if (idea.actividad !== undefined) tope(d, 'actividad', idea.actividad);
+      else if (exige) mal(d, 'sin actividad: qué vas a hacer en el juego, para el Resumen');
       if (j.mision !== undefined) {
         const m = j.mision;
         // La misión se revisa como un reto del laboratorio: el motor la comprueba y alguien la puede lograr.
         revisarInvitacion(`${d} misión`, j, Object.assign({}, m, { texto: m.texto }));
         if (m.logrado && m.logrado.length >= 2) mal(`${d} misión`, 'logrado(valores) mira solo el caso actual');
       } else if (exige) mal(d, 'sin misión en el juego: una meta que el motor comprueba («Haz que…»)');
+      // resumen: los valores del juego con que el Resumen dibuja su figura (si no, el inicio del juego).
+      if (j.resumen !== undefined) {
+        const ids = new Set((j.controles || []).map(c => c.id));
+        if (!j.resumen || typeof j.resumen !== 'object' || Object.keys(j.resumen).some(x => !ids.has(x))) mal(d, 'resumen: valores de los controles del juego ({ id: valor })');
+      }
       if (j.leyenda !== undefined) {
         if (!Array.isArray(j.leyenda) || !j.leyenda.length) mal(d, 'leyenda: lista de { s, t } (símbolo y qué es)');
         else for (const x of j.leyenda) {
@@ -262,6 +272,12 @@
       const n = Array.isArray(g.ejemplos) ? g.ejemplos.length : g.ejemplo ? 1 : 0;
       if (n < 3) mal(`glosario «${g.termino}»`, `${n} ejemplo(s): con calidad 2 van 3 o más`);
     }
+    // Con calidad: 2, cada idea estrena de 2 a 4 términos con su aproximación (`simple`), que el Resumen muestra como
+    // «Palabras de esta idea» (Gerson, 16 nov: el Resumen «se siente que cae en nada» sin definiciones).
+    if (def.calidad >= 2 && Glosario && Array.isArray(def.ideas)) Glosario.porIdea(def).forEach((es, k) => {
+      const n = es.filter(e => e.simple).length, i = def.ideas[k];
+      if (n < 2 || n > 4) mal(`idea «${i && i.id}»`, `${n} palabra(s) con simple en el Resumen: con calidad 2 van de 2 a 4 (términos que la idea estrena)`);
+    });
     // A qué idea pertenece cada mesa (Gerson, 16 nov): el laboratorio se agrupa por idea. laboratorioIdeas = { mesa: [ideas] }.
     if (def.laboratorio !== undefined) {
       const L = def.laboratorioIdeas, idsIdeas = new Set((def.ideas || []).map(i => i && i.id));

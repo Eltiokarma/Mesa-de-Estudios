@@ -138,3 +138,20 @@ Se rehízo sobre una balanza (pieza nueva `fis-balanza-dim`): a cada lado de una
   - no sabía qué pasa con L² ÷ L²: ahora dice que lo que queda con 0 desaparece;
   - «Prueba 3 valores» no calzaba cuando son opciones: ahora dice «casos».
 - **Pendiente:** fórmulas con sumas (d = v t + ½ a t²), donde cada término debe cuadrar por separado. Se puede agregar como un tipo de ejercicio más.
+
+## Ronda del Resumen (16 nov, tarde): «Palabras de esta idea»
+
+Capturas del Resumen en celular (360 × 780) y de la hoja al tocar «unidad» y «dimensión». Lector nuevo, sin el código.
+
+- **Veredicto:** «Sí. La idea 1 se entiende sola con el dibujo del poste y las tres reglas. Para la idea 2 y la idea 3 llegaría con dudas».
+- Explicó con sus palabras medir, unidad, magnitud, factor de conversión, área, litro, dimensión, fórmula y constante.
+- Hallazgos corregidos en la misma ronda:
+  - la leyenda nombraba símbolos que no estaban en la figura (la A del área; a, T⁻¹ y [ ] en la balanza): el Resumen muestra solo los que se ven;
+  - la pregunta de áreas hablaba de cm² y la figura de dm²: ahora «¿Por qué un metro cuadrado no son 10 decímetros cuadrados?»;
+  - la balanza del Resumen mostraba d contra v / t sin explicar por qué no cuadra: ahora va con d = v · t (`juega.resumen`);
+  - L era el alto del poste en la idea 1 y la longitud en la idea 3: el alto del poste pasa a llamarse h;
+  - el aviso decía que la regla aparece al terminar, junto a un botón «Ver la regla»: el aviso ahora dice que se puede ver antes;
+  - la hoja abierta desde la caja repetía la misma aproximación: ahí ya no la repite;
+  - «se mida en m/s» y «sin mirar la unidad» en «dimensión»: reescritos;
+  - los subrayados del glosario dentro de la leyenda recargaban: la leyenda ya no se marca.
+- Pendiente: volumen y hectárea no tienen dibujo en el Resumen; el factor de conversión dice qué es, no cómo se usa (eso lo enseña la idea 1).

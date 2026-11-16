@@ -8,6 +8,9 @@
  *     ejemplo: 'Un carro que pasa de 0 a 10 m/s en 5 s tiene a = 2 m/s².',          opcional, ≤ 20 palabras
  *     ejemplos: ['…', '…', '…'],      varios ejemplos (Gerson, 16 nov: «más ejemplos por término»); de 2 a 4, ≤ 20 palabras
  *                                     cada uno; si va, reemplaza a `ejemplo`. Una unidad con calidad: 2 pide 3 o más.
+ *     simple: 'Qué tan rápido cambia la velocidad.',  aproximación de todos los días, ≤ 14 palabras (Gerson, 16 nov:
+ *                                     «no la definición de la RAE ni la técnica, un simple acercamiento»). La muestra el
+ *                                     Resumen, en «Palabras de esta idea». Una unidad con calidad: 2 pide de 2 a 4 por idea.
  *     ver: ['velocidad'],                                                            otros términos del curso (opcional)
  *     formas: ['aceleración', 'aceleraciones'] }                                     cómo aparece en el texto (opcional)
  * Un término se define una sola vez por curso, en la unidad que lo estrena. En las demás unidades del curso donde
@@ -24,7 +27,7 @@
   else root.Glosario = api;
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  const TOPES = { termino: 4, def: 20, ejemplo: 20 };
+  const TOPES = { termino: 4, def: 20, ejemplo: 20, simple: 14 };
   const MAX = 24;
   const palabras = s => String(s || '').trim().split(/\s+/).filter(Boolean).length;
   // Clave de un término: minúsculas y sin tildes («Aceleración» y «aceleracion» son el mismo).
@@ -122,6 +125,13 @@
         if (palabras(e.def) > TOPES.def) mal(t, `definición de ${palabras(e.def)} palabras (tope ${TOPES.def})`);
         if (aparece(e.def, e)) mal(t, 'la definición usa el mismo término: dilo con otras palabras');
       }
+      if (e.simple !== undefined) {
+        if (typeof e.simple !== 'string' || !e.simple.trim()) mal(t, 'simple: un texto');
+        else {
+          if (palabras(e.simple) > TOPES.simple) mal(t, `simple de ${palabras(e.simple)} palabras (tope ${TOPES.simple})`);
+          if (aparece(e.simple, e)) mal(t, 'simple usa el mismo término: dilo con otras palabras');
+        }
+      }
       if (e.ejemplo !== undefined && palabras(e.ejemplo) > TOPES.ejemplo) mal(t, `ejemplo de ${palabras(e.ejemplo)} palabras (tope ${TOPES.ejemplo})`);
       if (e.ejemplos !== undefined) {
         if (e.ejemplo !== undefined) mal(t, 'ejemplo y ejemplos a la vez: deja solo ejemplos');
@@ -143,7 +153,7 @@
     const entradas = [], porClave = new Map(), locales = [], problemas = [];
     const ficha = (u, e) => {
       const x = { termino: e.termino, def: e.def, formas: formasDe(e), en: u.id, enNombre: u.nombre, aparece: [] };
-      for (const c of ['simbolo', 'medida', 'ejemplo', 'ejemplos', 'ver']) if (e[c] !== undefined) x[c] = e[c];
+      for (const c of ['simbolo', 'medida', 'simple', 'ejemplo', 'ejemplos', 'ver']) if (e[c] !== undefined) x[c] = e[c];
       return x;
     };
     for (const u of unidades) for (const e of ((u.def && u.def.glosario) || [])) {
@@ -169,8 +179,20 @@
     return { entradas: entradas.concat(locales), problemas };
   }
 
+  // porIdea(def) → una lista por idea con los términos propios de la unidad que esa idea estrena: cada término va en la
+  // primera idea cuyo texto lo usa (lo mismo que agrupa los mazos del glosario). Lo usan el Resumen y el validador.
+  function porIdea(def) {
+    const libres = new Set(((def && def.glosario) || []).map(e => clave(e.termino)));
+    return ((def && def.ideas) || []).map(idea => {
+      const txt = texto({ ideas: [idea] });
+      const es = ((def && def.glosario) || []).filter(e => libres.has(clave(e.termino)) && aparece(txt, e));
+      es.forEach(e => libres.delete(clave(e.termino)));
+      return es;
+    });
+  }
+
   // Los ejemplos de una entrada, con la forma vieja (un solo `ejemplo`) o la nueva (`ejemplos`).
   const ejemplosDe = e => (e && Array.isArray(e.ejemplos) ? e.ejemplos : e && e.ejemplo ? [e.ejemplo] : []);
 
-  return { ejemplosDe, clave, plural, formasDe, texto, buscador, marcas, aparece, revisar, indice, TOPES, MAX };
+  return { ejemplosDe, porIdea, clave, plural, formasDe, texto, buscador, marcas, aparece, revisar, indice, TOPES, MAX };
 });

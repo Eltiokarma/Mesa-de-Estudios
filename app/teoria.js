@@ -230,7 +230,7 @@
     const origen = e => (e.en === u.id ? 'Nuevo en este tema'
       : (ctx.est.teoria || {})[e.en] ? `Lo viste en «${e.enNombre}»` : `Se explica en «${e.enNombre}»`);
     // No se marca dentro de botones, opciones, ecuaciones, títulos, la lectura en vivo ni lo que dice el compañero.
-    const NO_MARCAR = 'button,a,input,textarea,select,label,output,svg,h1,h2,h3,.alts,.var,[class*="ec-"],.te-term,.te-momentos,.te-dice,.te-lectura,.te-glosa,.te-casos';
+    const NO_MARCAR = 'button,a,input,textarea,select,label,output,svg,h1,h2,h3,.alts,.var,.te-leyenda,[class*="ec-"],.te-term,.te-momentos,.te-dice,.te-lectura,.te-glosa,.te-casos';
     function marcarTerminos(el) {
       if (!buscadorG || !el) return;
       // Un término se marca una vez por pantalla: la primera vez que sale entre lo que se ve ahora.
@@ -303,6 +303,7 @@
           <button type="button" class="te-glosa-x" aria-label="Cerrar">×</button></div>
         <h3 class="te-glosa-t" tabindex="-1">${esc(e.termino)}</h3>
         ${e.simbolo || e.medida ? `<p class="te-glosa-sm">${e.simbolo ? `Símbolo <b class="ec-letra">${esc(e.simbolo)}</b>` : ''}${e.simbolo && e.medida ? ' · ' : ''}${e.medida ? `se mide en <b>${esc(e.medida)}</b>` : ''}</p>` : ''}
+        ${e.simple && !(desde && desde.classList && desde.classList.contains('te-fic-term')) ? `<p class="te-glosa-s"><b>En simple:</b> ${esc(e.simple)}</p>` : ''}
         <p class="te-glosa-d">${esc(e.def)}</p>
         ${listaEjemplos(e, 'te-glosa-e')}
         ${ver.length ? `<p class="te-glosa-ver"><span>Ver también</span> ${ver.map(v => `<button type="button" class="te-ficha-op" data-glosa="${esc(G.clave(v.termino))}">${esc(v.termino)}</button>`).join(' ')}</p>` : ''}
@@ -690,6 +691,7 @@
           <div class="glo-carta-cab"><span class="glo-tipo">${e.en === u.id ? 'Palabra nueva' : esc(origen(e))}</span>${m === 'sabe' ? '<span class="glo-ok">✓ Me la sé</span>' : m === 'repasa' ? '<span class="glo-rep">Repasar</span>' : ''}</div>
           <h3>${esc(e.termino)}</h3>
           ${e.simbolo || e.medida ? `<p class="glo-sm">${e.simbolo ? `<b class="ec-letra">${esc(e.simbolo)}</b>` : ''}${e.simbolo && e.medida ? ' · ' : ''}${e.medida ? `en ${esc(e.medida)}` : ''}</p>` : ''}
+          ${e.simple ? `<p class="glo-simple"><b>En simple:</b> ${esc(e.simple)}</p>` : ''}
           <p class="glo-def">${esc(e.def)}</p>
           ${(() => { const xs = G.ejemplosDe(e); return xs.length ? `<details class="glo-ej"><summary>${xs.length > 1 ? `Ver ${xs.length} ejemplos` : 'Ver ejemplo'}</summary><ul class="glo-ejs">${xs.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''; })()}
           <div class="glo-acc"><button type="button" class="glo-b glo-sabe" data-sabe="${esc(k)}" aria-pressed="${m === 'sabe'}">${m === 'sabe' ? 'La repaso otra vez' : 'Ya me la sé'}</button>
@@ -788,7 +790,7 @@
     // jugaron lo dicen y llevan a la idea.
     function figuraResumen(i) {
       try {
-        const j = i.juega, d = j && typeof j.dibujo === 'function' ? j.dibujo(T.inicio(j)) : null, P = d && Kit.piezas[j.pieza || i.pieza];
+        const j = i.juega, d = j && typeof j.dibujo === 'function' ? j.dibujo(Object.assign(T.inicio(j), j.resumen || {})) : null, P = d && Kit.piezas[j.pieza || i.pieza];
         if (P && !P.montar) return P.dibujar(d.datos, d.estado || {});
       } catch { /* si el juego no se puede dibujar quieto, va la figura de «Mira» */ }
       return Kit.piezas[i.mira.pieza || i.pieza].dibujar(i.mira.datos, Object.assign({}, i.mira.base || {}, i.mira.pasos[i.mira.pasos.length - 1].estado || {}));
@@ -796,22 +798,40 @@
     // Es un mapa, no una hoja de respuestas (Gerson, 16 nov): cada idea con su figura y la pregunta que responde. La regla
     // se ve al terminar la idea; antes, solo si el alumno la abre («Ver la regla», con su evento), porque leerla antes de
     // jugar le quita sentido a la predicción (regla 3).
+    // «Palabras de esta idea» (Gerson, 16 nov: sin definiciones, el Resumen «se siente que cae en nada»): los términos que
+    // estrena cada idea y traen su aproximación de todos los días (`simple`); tocarlos abre la hoja con la definición y
+    // los ejemplos.
+    function palabrasDe() { return G.porIdea ? G.porIdea(def) : []; }
+    // La leyenda del juego, solo con los símbolos que se ven en la figura del Resumen (lector en frío, 16 nov: «A, el área
+    // del piso», sin ninguna A en el dibujo, «cae en nada»). Un símbolo cuenta si es una palabra de algún rótulo, o su
+    // comienzo seguido de un exponente («T» en «T⁻²»).
+    function leyendaFigura(ley, svg) {
+      if (!ley) return [];
+      const toks = new Set();
+      for (const m of String(svg).match(/<text[\s\S]*?<\/text>/g) || []) m.replace(/<[^>]+>/g, ' ').split(/[\s/=·×:,()]+/).forEach(x => x && toks.add(x));
+      const esta = s => [...toks].some(x => x === s || (x.startsWith(s) && /^[⁻⁰¹²³⁴⁵⁶⁷⁸⁹]/.test(x.slice(s.length))));
+      return ley.filter(x => esta(E.texto([x.s]).trim()));
+    }
     function preguntaDe(i) { return i.pregunta || (i.juega && /\?/.test(i.juega.voz || '') ? i.juega.voz : ''); }
     function vistaFicha() {
       const hechas = ideas.filter(i => hecha(st, i.id)).length, sig = ideas.find(i => !hecha(st, i.id));
-      const k0 = sig ? ideas.indexOf(sig) : -1;
+      const k0 = sig ? ideas.indexOf(sig) : -1, palabrasIdea = palabrasDe();
       const boton = sig ? `<a class="btn morado ancho te-fic-seguir" href="#/unidad/${esc(u.id)}/teoria/${esc(sig.id)}">${hechas ? `Seguir con la idea ${k0 + 1}: ${esc(sig.titulo)}` : `Empezar por la idea 1: ${esc(sig.titulo)}`} ›</a>`
         : `<p class="te-fic-listo">Terminaste las ${ideas.length} ideas. Repasa las reglas o da la <a href="#/unidad/${esc(u.id)}/entrada">prueba del tema</a>.</p>`;
-      return `<h2 class="te-fichas-tit">Resumen de la unidad</h2><p class="sub te-fichas-intro">Lo que vas a aprender, idea por idea. La regla de cada una se muestra cuando la terminas.</p>
+      return `<h2 class="te-fichas-tit">Resumen de la unidad</h2><p class="sub te-fichas-intro">Lo que vas a aprender, idea por idea. La regla de cada una aparece cuando terminas la idea; si quieres verla antes, toca «Ver la regla».</p>
         ${boton}
-        <section class="te-fichas">${ideas.map((i, k) => { const h = hecha(st, i.id), q = preguntaDe(i);
+        <section class="te-fichas">${ideas.map((i, k) => { const h = hecha(st, i.id), q = preguntaDe(i), pal = (palabrasIdea[k] || []).filter(e => e.simple);
+          const fig = figuraResumen(i), ley = leyendaFigura(i.juega && i.juega.leyenda, fig);
           return `<article class="card te-fic${h ? ' hecha' : ''}">
             <div class="te-fic-cab"><span class="te-fic-n" aria-hidden="true">${h ? '✓' : k + 1}</span><h2>${esc(i.titulo)}</h2></div>
-            ${q ? `<p class="te-fic-preg">${esc(q)}</p>` : ''}
-            <div class="te-figcaja"><figure class="kit-figura te-fig te-fig-chica">${figuraResumen(i)}</figure>
+            <div class="te-fic-txt">${q ? `<p class="te-fic-preg">${esc(q)}</p>` : ''}
+            ${i.actividad ? `<p class="te-fic-act"><b>Vas a</b> ${esc(i.actividad.charAt(0).toLowerCase() + i.actividad.slice(1))}</p>` : ''}
+            ${pal.length ? `<div class="te-fic-pal"><h3>Palabras de esta idea</h3><dl>${pal.map(e => `<div><dt><button type="button" class="te-fic-term" data-glosa="${esc(G.clave(e.termino))}" aria-label="${esc(e.termino)}: ver qué significa y sus ejemplos">${esc(e.termino)}</button></dt><dd>${esc(e.simple).replace(/(\d) (?=\p{L})/gu, '$1&nbsp;')}</dd></div>`).join('')}</dl></div>` : ''}</div>
+            <div class="te-fic-fig"><div class="te-figcaja"><figure class="kit-figura te-fig te-fig-chica">${fig}</figure>
             <div class="te-figbarra"><button type="button" class="te-zoom" aria-label="Ampliar la figura de ${esc(i.titulo)}">${ICONO_LUPA}</button></div></div>
-            ${h ? reglaHTML(i.regla) : `<details class="te-fic-regla" data-idea="${esc(i.id)}"><summary>Ver la regla</summary>${reglaHTML(i.regla)}</details>
-              <a class="btn borde te-fic-ir" href="#/unidad/${esc(u.id)}/teoria/${esc(i.id)}">Jugar esta idea ›</a>`}</article>`; }).join('')}</section>`;
+            ${ley.length ? `<dl class="te-leyenda" aria-label="Qué es cada símbolo de la figura">${ley.map(x => `<div><dt>${E.html([x.s])}</dt><dd>${esc(x.t)}</dd></div>`).join('')}</dl>` : ''}</div>
+            ${h ? `<div class="te-fic-acc">${reglaHTML(i.regla)}</div>` : `<div class="te-fic-acc"><a class="btn borde te-fic-ir" href="#/unidad/${esc(u.id)}/teoria/${esc(i.id)}">Jugar esta idea ›</a>
+              <details class="te-fic-regla" data-idea="${esc(i.id)}"><summary>Ver la regla</summary>${reglaHTML(i.regla)}</details></div>`}</article>`; }).join('')}</section>`;
     }
     function conectarFicha() {
       $app.querySelectorAll('.te-fic-regla').forEach(d => d.addEventListener('toggle', () => {

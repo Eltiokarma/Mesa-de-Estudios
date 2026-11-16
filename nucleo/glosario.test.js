@@ -85,3 +85,23 @@ test('el texto no cuenta códigos de error ni datos internos, y sí las pregunta
   assert.doesNotMatch(t, /INVERSA|inversa|Plano complejo|intervalo/);
   assert.match(t, /pendiente/);
 });
+
+test('simple: la aproximación de todos los días, con tope y sin repetir el término', () => {
+  const base = { ideas: [{ lee: { tarjetas: [{ texto: 'Medir es contar con una unidad.' }] } }] };
+  const ok = G.revisar(Object.assign({ glosario: [{ termino: 'unidad', def: 'Patrón fijo para comparar.', simple: 'El pedazo con el que mides: un metro, una cuchara.' }] }, base));
+  assert.deepEqual(ok, []);
+  const largo = G.revisar(Object.assign({ glosario: [{ termino: 'unidad', def: 'Patrón fijo.', simple: 'uno dos tres cuatro cinco seis siete ocho nueve diez once doce trece catorce quince' }] }, base));
+  assert.match(largo.join('\n'), /simple de 15 palabras/);
+  const repite = G.revisar(Object.assign({ glosario: [{ termino: 'unidad', def: 'Patrón fijo.', simple: 'Una unidad cualquiera.' }] }, base));
+  assert.match(repite.join('\n'), /simple usa el mismo término/);
+  const { entradas } = G.indice([{ id: 'c.a', nombre: 'A', def: { glosario: [{ termino: 'unidad', def: 'Patrón.', simple: 'El pedazo con que mides.' }] }, texto: 'unidad' }]);
+  assert.equal(entradas[0].simple, 'El pedazo con que mides.');
+});
+
+test('porIdea: cada término va en la primera idea que lo usa', () => {
+  const def = {
+    glosario: [{ termino: 'área', def: 'Superficie.' }, { termino: 'unidad', def: 'Patrón.' }, { termino: 'masa', def: 'Materia.' }],
+    ideas: [{ lee: { tarjetas: [{ texto: 'La unidad mide.' }] } }, { lee: { tarjetas: [{ texto: 'El área y la unidad.' }] } }, { voz: 'Nada nuevo.' }],
+  };
+  assert.deepEqual(G.porIdea(def).map(es => es.map(e => e.termino)), [['unidad'], ['área'], []]);
+});

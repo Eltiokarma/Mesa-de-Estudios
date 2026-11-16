@@ -329,6 +329,13 @@ juega: {
 
 **El Resumen es la primera pantalla de la teoría (Gerson, 16 nov).** Antes se llamaba «Reglas» y parecía otra sección de teoría.
 - Entrar a `#/unidad/<id>/teoria` sin idea abre el Resumen: un botón grande («Empezar por la idea 1…» o «Seguir con la idea N…») y una tarjeta por idea, con su pregunta y la figura de su juego.
+- **Cada tarjeta da de dónde agarrarse (Gerson, 16 nov: sin definiciones, «se sienten que caen en nada»).** Debajo de la pregunta van:
+  - «Vas a…»: el campo **`actividad`** de la idea (≤ 16 palabras), qué se hace en el juego sin adelantar lo que se descubre;
+  - «Palabras de esta idea»: los términos del glosario que la idea estrena (el primero que los usa) y traen **`simple`**: una aproximación de todos los días, de 14 palabras o menos, sin repetir el término («Unidad: el pedazo con el que mides: un metro, un segundo, una cuchara»). Tocarlos abre la hoja del glosario con la definición y los ejemplos. La hoja y las tarjetas del glosario también muestran «En simple:»;
+  - la leyenda del juego debajo de la figura, para que la figura se lea sola; solo los símbolos que se ven en esa figura.
+  - La figura es el juego en su inicio, o con los valores de **`juega.resumen`** (`{ id: valor }`) si el inicio confunde (en Magnitudes, la balanza va con d = v · t y no con la fórmula que no cuadra).
+  - En pantalla grande, texto a la izquierda y figura a la derecha.
+  - Con `calidad: 2`, el validador exige `actividad` y de 2 a 4 palabras con `simple` por idea (`Glosario.porIdea`).
 - **Es un mapa, no una hoja de respuestas.** La regla de una idea se ve cuando el alumno la termina; antes, solo si toca «Ver la regla», y eso se registra (`momento: 'resumen-regla'`). Leer la regla antes de jugar le quita sentido a la predicción (regla 3); Gerson eligió esta forma el 16 nov.
 
 ## 4g. Laboratorio por idea y glosario con varios ejemplos (Gerson, 16 nov)

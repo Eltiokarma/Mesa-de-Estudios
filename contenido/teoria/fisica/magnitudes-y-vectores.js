@@ -3,7 +3,7 @@
  * se partió en dos y los vectores pasaron a fisica/vectores.js). Molde de docs/teoria.md y contrato «se entiende sin
  * profesor» (docs/plan-calidad.md). Ideas: cambiar de unidad (hecha con el contrato) y dimensiones; falta la idea de
  * áreas y volúmenes (aprobada por Gerson el 16 nov).
- * Colores (regla 4): el alto L del poste y la rapidez, naranja (c-o); el factor que vale 1, verde (c-d); en la idea de
+ * Colores (regla 4): el alto h del poste (no L: L es la dimensión longitud de la idea 3) y la rapidez, naranja (c-o); el factor que vale 1, verde (c-d); en la idea de
  * dimensiones, la incógnita k va en rojo (c-h).
  * Códigos de error (hipótesis, sin dato empírico propio; matriz: «confundir dimensiones con unidades»):
  *   DIM-UNIDAD toma la unidad por la dimensión · DIM-INVERSA invierte el despeje · DIM-TERMINO copia la del otro lado
@@ -69,8 +69,8 @@
   const LARGOS = [{ que: 'Una puerta', m: 2.1 }, { que: 'Una pizarra', m: 2.4 }, { que: 'Un poste de luz', m: 8.5 },
     { que: 'Una cancha de vóley', m: 18 }, { que: 'Un estudiante', m: 1.65 }];
   const MISION = 6.5;
-  const Lp = { v: 'c-o', t: 'L' };
-  const medida = L => ({ datos: { objeto: 'poste', alto: L, max: 10, color: 'o', variable: 'L' }, estado: {} });
+  const Lp = { v: 'c-o', t: 'h' };
+  const medida = L => ({ datos: { objeto: 'poste', alto: L, max: 10, color: 'o', variable: 'h' }, estado: {} });
   // Lo que avanza en cada segundo a 72 km/h: tramos de 20 m (se calcula: 72 · 1000 / 3600).
   const V_KMH = 72, V_MS = V_KMH * 1000 / 3600;
   // La combi en su pista (pieza fis-combi): dónde está en cada segundo. segundos: 0 la deja en la partida.
@@ -83,12 +83,13 @@
     pieza: 'recta',
     lee: {
       tarjetas: [
-        { titulo: 'Medir es contar', texto: 'Medir algo es contar cuántas veces cabe en él una unidad: el metro, el decímetro o el centímetro. El número que sale depende de la unidad que elijas.' },
+        { titulo: 'Medir es contar', texto: 'Medir algo es contar cuántas veces cabe en él una unidad: el metro, el decímetro o el centímetro. Lo que se mide, como el largo, es una magnitud. El número que sale depende de la unidad que elijas.' },
         { titulo: 'Las unidades de la ciencia', texto: 'La ciencia usa el Sistema Internacional: el metro para el largo y el segundo para el tiempo. Así cualquiera, en cualquier país, mide igual.' },
         { titulo: 'Unidades que se juntan', texto: 'Una rapidez junta dos unidades. 60 km/h dice cuántos kilómetros se avanzan en una hora; en metros por segundo, m/s, dice cuántos metros en un segundo.' },
         { titulo: 'Qué mirar al jugar', texto: 'Vas a medir un poste de luz con tres reglas a la vez. Cambia su alto y mira las tres reglas juntas: ¿marcan la misma altura?' },
       ],
     },
+    actividad: 'Medir un poste de luz con tres reglas a la vez: en metros, decímetros y centímetros.',
     aprendizaje: 'El poste mide lo mismo en cualquier unidad; cambia el número: en decímetros es 10 veces más y en centímetros, 100 veces más.',
     juega: {
       pieza: 'fis-medida',
@@ -106,7 +107,7 @@
         { s: 'cm', t: 'centímetro: 100 caben en un metro' },
       ],
       controles: [
-        { id: 'L', etiqueta: 'Alto del poste, L', color: 'c-o', min: 4, max: 10, paso: 0.1, inicio: POSTE, unidad: 'm', decimales: 1 },
+        { id: 'L', etiqueta: 'Alto del poste, h', color: 'c-o', min: 4, max: 10, paso: 0.1, inicio: POSTE, unidad: 'm', decimales: 1 },
       ],
       dibujo: val => medida(val.L),
       lectura: val => [Lp, ` = ${f(val.L, 1)} m = ${f(val.L * 10, 0)} dm = ${f(val.L * 100, 0)} cm`],
@@ -287,7 +288,7 @@
   const areas = {
     id: 'areas-volumenes',
     titulo: 'Áreas y volúmenes',
-    pregunta: '¿Por qué un metro cuadrado no son 100 centímetros cuadrados?',
+    pregunta: '¿Por qué un metro cuadrado no son 10 decímetros cuadrados?',
     temas: ['Conversión de unidades'],
     pieza: 'fis-area',
     lee: {
@@ -298,6 +299,7 @@
         { titulo: 'Qué mirar al jugar', texto: 'Vas a cubrir el mismo piso con cuadros de 1 m y con cuadros de 1 dm, que miden 10 cm de lado. Compara los dos números.' },
       ],
     },
+    actividad: 'Cubrir el mismo piso con cuadros de 1 m y de 1 dm, y contarlos.',
     aprendizaje: 'De m² a dm², el número se multiplica por 100 y no por 10: el factor 10 entra una vez por cada lado.',
     juega: {
       consigna: 'El piso de un cuarto cuadrado, cubierto dos veces: con cuadros de 1 m y con cuadros de 1 dm.',
@@ -504,6 +506,7 @@
         { titulo: 'Qué mirar al jugar', texto: 'Vas a hacer análisis dimensional: poner fórmulas de una distancia en una balanza y mirar cuándo queda derecha.' },
       ],
     },
+    actividad: 'Poner fórmulas en una balanza, un lado en cada platillo, y ver cuáles la dejan derecha.',
     aprendizaje: 'Una fórmula solo puede estar bien si sus dos lados tienen la misma dimensión; las dimensiones se multiplican y dividen como letras.',
     juega: {
       consigna: 'Alguien anota fórmulas para la distancia d que recorre una combi. La balanza compara de qué está hecho cada lado.',
@@ -513,6 +516,9 @@
         bien: 'Esa es: ½ a t² es una longitud, como d. El ½ no tiene dimensión.',
       },
       voz: '¿Qué fórmulas dejan la balanza derecha?',
+      // En el Resumen, la balanza con d = v · t, la fórmula que trae el glosario (el inicio del juego, v / t, no cuadra y
+      // ahí no se explica por qué: lector en frío, 16 nov).
+      resumen: { f: 'vt' },
       leyenda: [
         { s: 'd', t: 'distancia: L' }, { s: 'v', t: 'rapidez: L T⁻¹' }, { s: 'a', t: 'aceleración: L T⁻²' }, { s: 't', t: 'tiempo: T' },
         { s: 'L', t: 'una longitud (metros)' }, { s: 'T', t: 'un tiempo (segundos)' }, { s: 'T⁻¹', t: '«entre un tiempo»: por segundo' },
@@ -529,7 +535,7 @@
       minimo: 3,
     },
     predice: {
-      pregunta: ['En la fórmula x = ', k, ' · t², x es una distancia y t un tiempo. ¿Qué dimensión debe tener ', k, '?'],
+      pregunta: ['En la fórmula x = ', k, ' · t², x es una distancia, t un tiempo y ', k, ' una constante. ¿Qué dimensión debe tener ', k, '?'],
       opciones: [
         { id: 'c', texto: 'L T⁻², como una aceleración', correcta: true },
         { id: 'igual', texto: 'L, igual que x', error: 'DIM-TERMINO', siFuera: 'L es lo que debe tener todo el lado k · t², no k sola: falta quitar el T².' },
@@ -617,20 +623,26 @@
     requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/fis-medida.js', '/nucleo/kit/piezas/fis-combi.js', '/nucleo/kit/piezas/fis-area.js', '/nucleo/kit/piezas/fis-balanza-dim.js'],
     // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso (es la primera).
     glosario: [
-      { termino: 'factor de conversión', formas: ['factor de conversión', 'factores de conversión', 'factor', 'factores'],
+      { termino: 'medir', formas: ['medir', 'mide', 'mides', 'medimos', 'medido'], simple: 'Contar cuántas veces cabe algo chico, que tomas de patrón, en algo grande.',
+        def: 'Comparar algo con un patrón fijo y contar cuántas veces cabe en él.',
+        ejemplos: ['El largo de una puerta con una wincha: cabe 2,1 veces el metro.', 'El patio a pasos: 30 pasos de largo.', 'Una clase con el reloj: 45 veces un minuto.'], ver: ['unidad', 'magnitud'] },
+      { termino: 'unidad', formas: ['unidad', 'unidades'], simple: 'El pedazo con el que mides: un metro, un segundo, una cuchara.',
+        def: 'Cantidad fija que se toma como patrón para medir, como el metro o el segundo.',
+        ejemplos: ['El metro es la unidad de largo del SI.', 'El segundo es la unidad de tiempo.', 'La vara y el paso fueron unidades antiguas para medir largos.'], ver: ['medir', 'Sistema Internacional'] },
+      { termino: 'factor de conversión', simple: 'La equivalencia que usas para cambiar de unidad, como 1 m = 100 cm.', formas: ['factor de conversión', 'factores de conversión', 'factor', 'factores'],
         def: 'Fracción que vale 1 y cambia la unidad: arriba y abajo dice lo mismo, como 100 cm sobre 1 m.',
         ejemplos: ['De m a cm: 100 cm sobre 1 m.', 'De horas a segundos: 3600 s sobre 1 h.', 'De m² a cm²: el de m a cm, al cuadrado, 10 000.'], ver: ['magnitud'] },
-      { termino: 'área', formas: ['área', 'áreas'], def: 'Cuánta superficie ocupa algo: cuántos cuadros de una medida caben en él.',
+      { termino: 'área', simple: 'Cuántos cuadraditos caben en una superficie, como las losetas de un piso.', formas: ['área', 'áreas'], def: 'Cuánta superficie ocupa algo: cuántos cuadros de una medida caben en él.',
         ejemplos: ['El piso de un aula de 7 m por 8 m: 56 m².', 'Una cancha de fútbol: unos 7000 m².', 'Una hoja A4: unos 620 cm².'], ver: ['volumen', 'hectárea'] },
-      { termino: 'volumen', formas: ['volumen', 'volúmenes'], def: 'Cuánto espacio ocupa algo: cuántos cubos de una medida caben dentro.',
+      { termino: 'volumen', simple: 'Cuántos cubitos caben dentro de algo, como el agua en un tanque.', formas: ['volumen', 'volúmenes'], def: 'Cuánto espacio ocupa algo: cuántos cubos de una medida caben dentro.',
         ejemplos: ['Un tanque de agua del techo: 1100 L, que es 1,1 m³.', 'Una botella personal: 500 cm³, medio litro.', 'Un cubo de 1 m de lado: 1 m³, que son 1000 L.'], ver: ['área', 'litro'] },
-      { termino: 'hectárea', simbolo: 'ha', formas: ['hectárea', 'hectáreas'], def: 'Medida de terrenos: un cuadrado de 100 m de lado, o sea 10 000 m².',
+      { termino: 'hectárea', simple: 'Un terreno cuadrado de 100 m por lado: así se miden las chacras.', simbolo: 'ha', formas: ['hectárea', 'hectáreas'], def: 'Medida de terrenos: un cuadrado de 100 m de lado, o sea 10 000 m².',
         ejemplos: ['Una chacra de 2 ha mide 20 000 m².', 'Una cancha de fútbol ocupa unas tres cuartas partes de una hectárea.', 'Media hectárea son 5000 m².'], ver: ['área'] },
-      { termino: 'litro', simbolo: 'L', formas: ['litro', 'litros'], def: 'Medida de volumen: lo que cabe en un cubo de 10 cm de lado, 1 dm³.',
+      { termino: 'litro', simple: 'Lo que cabe en una caja de 10 cm por lado.', simbolo: 'L', formas: ['litro', 'litros'], def: 'Medida de volumen: lo que cabe en un cubo de 10 cm de lado, 1 dm³.',
         ejemplos: ['Una botella grande de gaseosa: 3 L.', 'Un balde: unos 10 L.', '1000 L llenan un cubo de 1 m de lado.'], ver: ['volumen'] },
-      { termino: 'magnitud', def: 'Propiedad de algo que se puede medir y decir con un número y una unidad.',
+      { termino: 'magnitud', simple: 'Lo que se puede medir: el largo, el tiempo, la masa. La alegría, no.', def: 'Propiedad de algo que se puede medir y decir con un número y una unidad.',
         ejemplos: ['El largo de una mesa: 2,5 m, que también son 250 cm.', 'La temperatura de Juliaca una mañana de julio: −8 °C.', 'La masa de una pelota de fútbol: unos 0,43 kg.'], ver: ['magnitud fundamental', 'magnitud derivada'] },
-      { termino: 'magnitud fundamental', formas: ['magnitud fundamental', 'magnitudes fundamentales'],
+      { termino: 'magnitud fundamental', simple: 'Las medidas de base, como largo, masa y tiempo; las demás salen de ellas.', formas: ['magnitud fundamental', 'magnitudes fundamentales'],
         def: 'Una de las siete que el SI toma como base, como la masa, la longitud y el tiempo.',
         ejemplos: ['La longitud se mide en metros y el tiempo, en segundos.', 'La masa de un saco de quinua se mide en kilogramos.', 'La corriente de un foco se mide en amperios, otra de las siete.'], ver: ['magnitud derivada', 'Sistema Internacional'] },
       { termino: 'magnitud derivada', formas: ['magnitud derivada', 'magnitudes derivadas'],
@@ -638,9 +650,15 @@
         ejemplos: ['[F] = M L T⁻²: la fuerza sale de masa, longitud y tiempo.', 'La rapidez de una combi: metros entre segundos, m/s.', 'El área de un terreno: metro por metro, m².'], ver: ['magnitud fundamental', 'dimensión'] },
       { termino: 'Sistema Internacional', simbolo: 'SI', def: 'Acuerdo mundial de unidades: metro, kilogramo, segundo y otras cuatro de base.',
         ejemplos: ['72 km/h, en unidades del SI, son 20 m/s.', 'La masa va en kilogramos, no en libras ni en arrobas.', 'Un viaje de 2 h, en segundos del SI, son 7200 s.'], ver: ['magnitud fundamental'] },
-      { termino: 'dimensión', simbolo: '[ ]', formas: ['dimensión', 'dimensiones'],
-        def: 'Cómo se arma una magnitud con masa (M), longitud (L) y tiempo (T), sin mirar la unidad.',
-        ejemplos: ['[v] = L T⁻¹, se mida en m/s o en km/h.', 'Un área tiene dimensión L², se mida en m² o en hectáreas.', 'La aceleración es L T⁻², se mida en m/s² o en km/h².'], ver: ['análisis dimensional'] },
+      { termino: 'dimensión', simple: 'De qué está hecha una medida: de largo (L), tiempo (T) o masa (M).', simbolo: '[ ]', formas: ['dimensión', 'dimensiones'],
+        def: 'Cómo se arma una magnitud con masa (M), longitud (L) y tiempo (T); no depende de la unidad elegida.',
+        ejemplos: ['[v] = L T⁻¹, tanto en m/s como en km/h.', 'Un área tiene dimensión L², tanto en m² como en hectáreas.', 'La aceleración es L T⁻², tanto en m/s² como en km/h².'], ver: ['análisis dimensional'] },
+      { termino: 'fórmula', formas: ['fórmula', 'fórmulas'], simple: 'Una receta con letras: d = v · t dice cómo sacar la distancia.',
+        def: 'Igualdad con letras que dice cómo calcular una magnitud a partir de otras.',
+        ejemplos: ['d = v · t: la distancia es rapidez por tiempo.', 'A = L · L: el área de un cuadrado de lado L.', 'F = m · a: la segunda ley de Newton.'], ver: ['dimensión', 'constante'] },
+      { termino: 'constante', formas: ['constante', 'constantes'], simple: 'Un número que no cambia dentro de una fórmula, como ½ o k.',
+        def: 'Valor fijo dentro de una fórmula; puede ser solo un número o traer dimensión.',
+        ejemplos: ['En d = ½ a t², el ½ no tiene dimensión.', 'En x = k t², k tiene dimensión L T⁻².', 'En P = m g, la g de 9,8 m/s² trae unidades.'], ver: ['fórmula', 'dimensión'] },
       { termino: 'análisis dimensional', def: 'Comprobar con M, L y T que cada término de una ecuación tenga la misma dimensión, o despejar una.',
         ejemplos: ['Si x = k t², entonces [k] = L T⁻².', 'En d = v t los dos lados son L: la fórmula puede estar bien.', 'En v = d + t se suma longitud con tiempo: la fórmula está mal.'], ver: ['dimensión'] },
       { termino: 'masa', simbolo: 'm', medida: 'kg', def: 'Cuánta materia tiene un cuerpo. Es fundamental en el SI y no cambia de un lugar a otro.',

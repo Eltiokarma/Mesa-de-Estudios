@@ -50,6 +50,7 @@ Una idea está bien cuando un alumno de 5.º, solo y con el celular, puede respo
 9. **¿El orden es el correcto?** Ninguna idea usa un concepto que una idea posterior presenta. Lo mismo entre unidades: lo que la unidad da por sabido está en su `requiere`.
 10. **¿Es creíble?** Las medidas y las situaciones son posibles (un lápiz de 2,5 m no lo es).
 11. **¿Sé de qué idea es cada cosa?** Cada mesa del laboratorio dice qué idea practica, y cada término del glosario trae 3 ejemplos o más (Gerson, 16 nov).
+12. **¿El Resumen me da de dónde agarrarme?** Cada idea dice qué voy a hacer en el juego y estrena de 2 a 4 palabras con una aproximación de todos los días, no la definición técnica (Gerson, 16 nov: «se sienten que caen en nada»). La figura lleva su leyenda.
 
 El público es 5.º y preuniversitario. La unidad parte de la base, porque muchos llegan con huecos, pero «Así se resuelve» y «Ahora tú» terminan en el nivel de un examen de admisión.
 
@@ -63,6 +64,7 @@ Lo que una máquina puede comprobar entra en `nucleo/teoria.js` y corre con `npm
 
 - cada «Juega» tiene `mision` con `logrado`, y un testigo la cumple;
 - cada idea declara `aprendizaje`: una frase con lo que el alumno debe poder decir al terminar el juego (la usa el filtro 2; no se muestra);
+- cada idea declara `actividad` (qué va a hacer en el juego) y estrena de 2 a 4 términos del glosario con `simple` (su aproximación de todos los días); el Resumen los muestra;
 - cada símbolo de la lectura y de la figura está en la `leyenda` de la idea;
 - en física, las magnitudes declaradas como vector se escriben con `{ vec }` en ecuaciones y rótulos;
 - la figura de la primera pantalla incluye al menos un objeto del kit de objetos (M4), o la idea declara `sinObjeto` con el motivo (por ejemplo, lógica proposicional).
