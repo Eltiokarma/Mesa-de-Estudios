@@ -48,6 +48,9 @@
   const txtFr = (x, y) => (y === 1 ? String(x) : `${x}/${y}`);
   const primos = n => { const out = []; for (let p = 2; p <= n; p++) if (n % p === 0) { out.push(p); while (n % p === 0) n /= p; } return out; };
   const DIG = '0123456789ABCDEF';
+  // Factorización escrita con exponentes: 40 → «2³ · 5». La usa «Así se resuelve» de la idea 3.
+  const SUP = { 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶' };
+  const factoriza = n => primos(n).map(p => { let e = 0; while (n % p === 0) { n /= p; e++; } return e > 1 ? `${p}${SUP[e] || `^${e}`}` : String(p); }).join(' · ');
   // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la pieza; mover la convierte en valores
   // con la inversa de su escala, y el lector ajusta al paso y al rango de cada control.
   const TIRAS = () => Kit.piezas['arit-tiras'], RECTA = () => Kit.piezas.recta;
@@ -95,6 +98,15 @@
     titulo: 'Partir distinto, misma cantidad',
     temas: ['Racionales como clases de equivalencia'],
     pieza: 'arit-tiras',
+    // Lee (fase 2): qué es una fracción y sus nombres, sin decir qué cambio conserva la cantidad (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Partes de un todo', texto: 'En la feria de Juliaca, una señora parte un queso en 5 trozos iguales y te vende 2. Lo que llevas se escribe 2/5: dos de cinco partes iguales.' },
+        { titulo: 'Arriba y abajo', texto: 'El número de abajo es el denominador: en cuántas partes iguales se partió la unidad. El de arriba es el numerador: cuántas de esas partes se toman.',
+          ecuacion: [{ frac: [{ v: 'c-o', t: 'numerador' }, { v: 'c-i', t: 'denominador' }] }] },
+        { titulo: 'Qué mirar', texto: 'La tira de arriba muestra tu fracción. La de abajo es la misma unidad, con cada pedazo cortado otra vez. Fíjate dónde termina lo naranja en cada una y cuántos pedazos tiene.' },
+      ],
+    },
     juega: {
       consigna: 'Elige una fracción y en cuántas partes se vuelve a cortar cada pedazo. Compara las dos tiras.',
       voz: 'Mira dónde termina lo pintado en las dos tiras.',
@@ -142,6 +154,31 @@
       ecuacion: [{ frac: [a, b] }, ' = ', { frac: [c, d] }, '   ⇔   ', { llave: [a, ' · ', d, ' = ', b, ' · ', c], nota: 'productos cruzados' }],
       condicion: 'b y d no son cero. Sumar o restar lo mismo arriba y abajo sí cambia la cantidad.',
     },
+    // Así se resuelve (fase 2): el recuadro de «Ahora tú», con otras semillas, resuelto paso a paso.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        let x = r.ent(1, 7), y = r.ent(x + 1, 9);
+        [x, y] = red(x, y);
+        let k = r.ent(2, 5); const m = r.ent(2, 4);
+        if (k === m) k = m + 1;
+        const tiras = ver => ({ datos: { max: 1, filas: 2, tiras: [unidad(x * m, y * m, `${x * m}/${y * m}`), ...(ver ? [unidad(x * k, y * k, `${x * k}/${y * k}`)] : [])] }, estado: {} });
+        return {
+          enunciado: ['¿Qué número va en el recuadro? ', fr(x * m, y * m), ' = ', { frac: ['□', { v: 'c-i', t: String(y * k) }] }],
+          dibujo: tiras(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el ', { v: 'c-o', t: 'numerador' }, ' que falta para que las dos fracciones valgan lo mismo.'] },
+            { tipo: 'datos', texto: ['La primera fracción es ', fr(x * m, y * m), '. La segunda tiene ', { v: 'c-i', t: 'denominador' }, ` ${y * k}.`] },
+            { tipo: 'regla', texto: 'La cantidad no cambia si multiplico o divido arriba y abajo por el mismo número. Sumar lo mismo sí la cambia.' },
+            { tipo: 'cuentas', texto: `Simplifico dividiendo entre ${m}. Para llegar a ${y * k} abajo multiplico por ${k}, y arriba también por ${k}.`,
+              ecuacion: [fr(x * m, y * m), ' = ', fr(x, y), ' = ', fr(x * k, y * k)], dibujo: tiras(true) },
+            { tipo: 'sentido', texto: 'Compruebo con los productos cruzados: salen iguales, y en la figura lo pintado termina en el mismo lugar.',
+              ecuacion: [`${x * m} · ${y * k} = ${x * m * y * k}`, '   ·   ', `${y * m} · ${x * k} = ${y * m * x * k}`] },
+          ],
+          respuesta: `En el recuadro va ${x * k}.`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -186,6 +223,14 @@
     titulo: 'Dónde cae la fracción',
     temas: ['Clases de fracciones', 'Orden entre fracciones'],
     pieza: 'recta',
+    // Lee (fase 2): la recta y las clases de fracciones, sin decir cómo se comparan dos fracciones (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un lugar para cada número', texto: 'En la recta, cada número tiene su lugar: cuanto más a la derecha, mayor. Las fracciones también caben ahí, entre los enteros, como las marcas de una wincha.' },
+        { titulo: 'Más de un kilo', texto: 'En el mercado pides un kilo y medio de quinua: son 3/2 kg, más de un kilo. Una fracción así, mayor que 1, se llama impropia. Si vale menos que 1, es propia.' },
+        { titulo: 'Qué mirar', texto: 'Mueve el numerador y el denominador. Mira en qué lugar cae el punto naranja, en qué casos pasa del 1 y cuándo cae justo sobre un entero.' },
+      ],
+    },
     juega: {
       consigna: 'Elige numerador y denominador. Mira dónde cae la fracción en la recta y qué clase es.',
       voz: 'Prueba un numerador mayor que el denominador, y uno que sea múltiplo.',
@@ -230,6 +275,29 @@
       ecuacion: [{ frac: [a, b] }, ' < ', { frac: [c, d] }, '   ⇔   ', a, ' · ', d, ' < ', b, ' · ', c],
       condicion: 'b y d positivos. Una impropia se escribe como número mixto: 7/3 = 2 y 1/3.',
     },
+    // Así se resuelve (fase 2): comparar dos fracciones de «Ahora tú», con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        let x1, y1, x2, y2;
+        do { y1 = r.ent(3, 9); y2 = r.ent(3, 9); x1 = r.ent(1, y1 - 1); x2 = r.ent(1, y2 - 1); } while (y1 === y2 || x1 * y2 === x2 * y1 || (x1 > x2) === (x1 * y2 > x2 * y1));
+        const mayor = x1 * y2 > x2 * y1 ? [x1, y1] : [x2, y2];
+        const puntos = { datos: rectaFr([{ tipo: 'punto', x: x1 / y1, color: 'o', fila: 1, rotulo: `${x1}/${y1}` }, { tipo: 'punto', x: x2 / y2, color: 'i', fila: 2, rotulo: `${x2}/${y2}` }], { max: 1, paso: 0.1, cada: 5 }), estado: {} };
+        return {
+          enunciado: ['¿Cuál es mayor: ', fr(x1, y1), ' o ', fr(x2, y2), '?'],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden cuál de las dos fracciones es mayor, es decir, cuál queda más a la derecha en la recta.' },
+            { tipo: 'datos', texto: `Los denominadores son ${y1} y ${y2}: las partes de cada fracción tienen distinto tamaño. Mirar solo el numerador no basta.` },
+            { tipo: 'regla', texto: 'Para comparar sin dibujar, multiplico en cruz: cada numerador por el denominador de la otra. Gana la fracción del producto mayor.' },
+            { tipo: 'cuentas', texto: 'Multiplico en cruz y comparo los dos productos.',
+              ecuacion: [`${x1} · ${y2} = ${x1 * y2}`, '   ·   ', `${y1} · ${x2} = ${y1 * x2}`], dibujo: puntos },
+            { tipo: 'sentido', texto: `Con el denominador común ${y1 * y2} se ve igual: gana la que tiene más partes. En la recta, ${txtFr(...mayor)} queda a la derecha.`,
+              ecuacion: [fr(x1, y1), ' = ', fr(x1 * y2, y1 * y2), '   ·   ', fr(x2, y2), ' = ', fr(x2 * y1, y1 * y2)] },
+          ],
+          respuesta: `Es mayor ${txtFr(...mayor)}.`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -270,6 +338,14 @@
     titulo: 'Exacto o periódico',
     temas: ['Decimales exactos y periódicos', 'Racionales e irracionales'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): qué es un decimal exacto o periódico, sin decir qué denominadores terminan (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'De fracción a decimal', texto: 'Para escribir 3/4 como decimal se divide 3 entre 4 y sale 0,75. Lo ves en el mercado: tres cuartos de sol son 75 céntimos.' },
+        { titulo: 'Las que no terminan', texto: 'Algunas divisiones no terminan nunca: 1/3 = 0,333… El bloque de cifras que se repite se llama período, y el decimal es periódico. Si la división termina, es un decimal exacto.' },
+        { titulo: 'Qué mirar', texto: 'En la tabla, cada fila trae el resto en rojo y la cifra que sale en verde. Sigue la columna de los restos: ¿llega a 0 o aparece uno que ya salió?' },
+      ],
+    },
     juega: {
       consigna: 'Elige a y b. La tabla hace la división: cada resto por 10 da la cifra siguiente. Mira si un resto vuelve.',
       voz: 'Cuando un resto se repite, todo lo que sigue se repite.',
@@ -306,6 +382,32 @@
       texto: 'Toda fracción da un decimal exacto o periódico. Es exacto si, ya simplificada, su denominador solo tiene los primos 2 y 5. Un decimal infinito sin período es irracional.',
       ecuacion: [{ frac: [a, b] }, ' exacto   ⇔   ', b, ' = ', { llave: [{ sup: ['2', 'm'] }, ' · ', { sup: ['5', 'n'] }], nota: 'solo 2 y 5', color: 'c-i' }],
       condicion: 'la fracción está simplificada. Irracionales como √2 o π no son cociente de enteros.',
+    },
+    // Así se resuelve (fase 2): qué decimal da una fracción, como en «Ahora tú», con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        let x, y;
+        do { y = r.de([4, 6, 8, 9, 11, 12, 14, 15, 16, 20, 22, 24, 25, 30, 40]); x = r.ent(1, y - 1); } while (mcd(x, y) !== 1);
+        const t = tipoDec(x, y), v = division(x, y), ps = primos(y);
+        const otros = ps.filter(p => p !== 2 && p !== 5);
+        const como = t === 'exacto' ? 'solo tiene los primos 2 y 5' : t === 'periódico puro' ? 'no tiene ni 2 ni 5' : `tiene ${ps.filter(p => p === 2 || p === 5).join(' y ')} y también ${otros.join(' y ')}`;
+        const ante = v.inicio;
+        return {
+          enunciado: ['¿Qué decimal da ', fr(x, y), ': exacto, periódico puro o periódico mixto?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden si la división de ', fr(x, y), ' termina, se repite desde la coma o se repite después de unas cifras.'] },
+            { tipo: 'datos', texto: `La fracción ya está simplificada: ${x} y ${y} no tienen divisor común mayor que 1.` },
+            { tipo: 'regla', texto: 'Miro los primos del denominador. Solo 2 y 5: termina. Ni 2 ni 5: se repite desde la coma. Mezclados: hay cifras antes del período.' },
+            { tipo: 'cuentas', texto: `Descompongo el denominador: ${y} = ${factoriza(y)}, que ${como}.`,
+              ecuacion: [fr(x, y), ` = ${decimal(x, y)}`], dibujo: { datos: tablaDiv(x, y), estado: {} } },
+            { tipo: 'sentido', texto: t === 'exacto' ? `En la tabla, el resto llega a 0 después de ${v.cifras.length} ${v.cifras.length === 1 ? 'cifra' : 'cifras'}: la división termina.`
+              : t === 'periódico puro' ? `En la tabla, el primer resto, ${v.restos[0]}, vuelve a salir: todo se repite desde la primera cifra.`
+                : `En la tabla, el resto que vuelve es ${v.ultimo}, y antes de él ${ante === 1 ? 'sale 1 cifra que no se repite' : `salen ${ante} cifras que no se repiten`}.` },
+          ],
+          respuesta: `${x}/${y} = ${decimal(x, y)}: ${t}.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -357,6 +459,14 @@
     titulo: 'Alinear las colas y restar',
     temas: ['Fracción generatriz'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): generatriz, puro y mixto, sin la regla de los nueves (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cada decimal tiene su fracción', texto: 'Todo decimal periódico sale de una fracción, su generatriz. Si sabes que 0,333… es 1/3, puedes hacer cuentas exactas en vez de cortar cifras y perder un poquito en cada paso.' },
+        { titulo: 'Puro y mixto', texto: 'En 0,4545… el período empieza justo después de la coma: es periódico puro. En 0,8333… hay un 8 antes del período: es periódico mixto.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, x se multiplica por 10, 100 o 1000. Mira las dos primeras filas de la tabla: cuando las colas quedan iguales, fíjate qué queda al restarlas.' },
+      ],
+    },
     juega: {
       consigna: 'Elige el período y si hay una cifra antes. Se multiplica x hasta que las dos colas queden alineadas.',
       voz: 'Las colas que se repiten se restan y desaparecen.',
@@ -394,6 +504,33 @@
       ecuacion: ['0,1666… = ', { llave: [{ frac: ['16 − 1', '90'] }], nota: 'nueves y ceros' }, ' = ', { frac: ['1', '6'] }],
       condicion: 'el decimal es periódico. Un período de 9 da un número exacto: 0,999… = 1.',
     },
+    // Así se resuelve (fase 2): la generatriz de «Ahora tú», armada igual, con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), mixto = s % 2 === 1;
+        let ante = mixto ? String(r.ent(1, 8)) : '';
+        let per = String(r.ent(1, 8));
+        if (s % 3 === 0) per = String(r.ent(10, 98)).replace(/(\d)\1/, '$12');
+        if (ante && per[0] === ante) per = String((+per[0] % 8) + 1) + per.slice(1);
+        if (ante && per.endsWith(ante)) ante = String((+ante % 8) + 1);
+        const g = generatriz(ante, per), [n, m] = g.red, cifras = q => `${q} ${q === 1 ? 'cifra' : 'cifras'}`;
+        const arriba = `${10 ** (g.k + g.p)}x`, abajo = g.k ? `${10 ** g.k}x` : 'x';
+        return {
+          enunciado: `¿Qué fracción es x = ${g.xs}? Escríbela simplificada.`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden la generatriz de x = ${g.xs}, ya simplificada.` },
+            { tipo: 'datos', texto: mixto ? `El período es ${per}, de ${cifras(g.p)}, y antes de él hay ${cifras(g.k)} que no se repite: ${ante}.`
+              : `El período es ${per}, de ${cifras(g.p)}, y empieza justo después de la coma.` },
+            { tipo: 'regla', texto: 'Multiplico x por 10, 100… hasta tener dos filas con la misma cola después de la coma. Al restarlas, la cola desaparece.' },
+            { tipo: 'cuentas', texto: `Resto ${arriba} − ${abajo} = ${g.den}x: queda el entero ${g.num}. Despejo x${g.num === n ? '' : ' y simplifico'}.`,
+              ecuacion: ['x = ', { frac: [String(g.num), String(g.den)] }, ...(g.num === n ? [] : [' = ', { frac: [String(n), String(m)] }])],
+              dibujo: { datos: tablaGen(ante, per), estado: { paso: 1 } } },
+            { tipo: 'sentido', texto: `Compruebo dividiendo: ${n} entre ${m} da ${decimal(n, m)}, el mismo x del enunciado.` },
+          ],
+          respuesta: `x = ${txtFr(n, m)}`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), mixto = s % 2 === 1;
@@ -426,6 +563,15 @@
     titulo: 'Exacto según la base',
     temas: ['Números en otras bases'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): qué es otra base y cómo se marca, sin decir qué fracciones terminan en ella (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'De diez en diez', texto: 'Los khipus incas guardaban números en base 10: cada fila de nudos valía diez veces la anterior. Pero se puede agrupar de otra forma; en base 6, de seis en seis, con las cifras 0 a 5.' },
+        { titulo: 'Cómo se marca', texto: 'Para no confundir, la base se escribe abajo y a la derecha. 13 en base 6 es un grupo de seis más tres: vale 9. Sin esa marca, se entiende base 10.',
+          ecuacion: [{ sub: ['13', '6'] }, ' = 1 · 6 + 3 = 9'] },
+        { titulo: 'Qué mirar', texto: 'En la tabla, cada resto rojo se multiplica por la base para sacar la cifra verde. Deja n fijo, cambia la base y mira cuándo la tabla se corta en 0.' },
+      ],
+    },
     juega: {
       consigna: 'Elige la fracción 1/n y la base. La tabla multiplica cada resto por la base para sacar la cifra siguiente.',
       voz: 'Compara los primos de n con los primos de la base.',
@@ -461,6 +607,30 @@
       texto: 'Una fracción simplificada tiene expansión exacta en base B si cada primo de su denominador divide a B. Las cifras salen multiplicando el resto por B.',
       ecuacion: [{ sub: ['0,xy', 'B'] }, ' = ', { llave: [{ frac: ['x', 'B'] }], nota: 'cifra 1' }, ' + ', { llave: [{ frac: ['y', { sup: ['B', '2'] }] }], nota: 'cifra 2' }],
       condicion: 'la fracción está simplificada y B es un entero mayor que 1. En base 10 los primos son 2 y 5.',
+    },
+    // Así se resuelve (fase 2): ¿1/n termina en base B?, como en «Ahora tú», con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const B = r.de([2, 3, 4, 5, 6, 7, 8, 9, 12]);
+        let n;
+        do { n = r.ent(2, 15); } while (n === B);
+        const exacto = primos(n).every(p => B % p === 0), falta = primos(n).filter(p => B % p !== 0);
+        const v = division(1, n, B), dec = decimal(1, n, B);
+        return {
+          enunciado: `¿La fracción 1/${n} tiene expansión exacta en base ${B}, o es periódica?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden si la división de 1 entre ${n}, hecha en base ${B}, termina o se repite.` },
+            { tipo: 'datos', texto: `Primos de ${n}: ${primos(n).join(' y ')}. Primos de la base ${B}: ${primos(B).join(' y ')}.` },
+            { tipo: 'regla', texto: 'La división termina en una base solo si cada primo del denominador también divide a la base. Si sobra un primo, algún resto vuelve.' },
+            { tipo: 'cuentas', texto: exacto ? `Cada primo de ${n} divide a ${B}: la división termina.` : `${falta.length === 1 ? `El primo ${falta[0]} no divide` : `Los primos ${falta.join(' y ')} no dividen`} a ${B}: la división se repite.`,
+              ecuacion: [fr(1, n), ' = ', { sub: [dec, String(B)] }], dibujo: { datos: tablaDiv(1, n, B), estado: {} } },
+            { tipo: 'sentido', texto: exacto ? `En la tabla, cada resto se multiplica por ${B} y el resto llega a 0 después de ${v.cifras.length} ${v.cifras.length === 1 ? 'cifra' : 'cifras'}.`
+              : `En la tabla, el resto ${v.ultimo} vuelve a salir: desde ahí las cifras se repiten sin fin.` },
+          ],
+          respuesta: exacto ? `Sí, es exacta: ${dec} en base ${B}.` : `No, es periódica: ${dec} en base ${B}.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -649,6 +819,9 @@
       { termino: 'decimal periódico', formas: ['decimal periódico', 'decimales periódicos', 'periódico', 'periódicos'],
         def: 'Decimal infinito en que un bloque de cifras, el período, se repite sin fin.',
         ejemplo: '1/6 = 0,1666…: el 6 se repite porque vuelve el resto 4.', ver: ['periódico puro', 'periódico mixto'] },
+      { termino: 'período', formas: ['período', 'períodos'], local: true,
+        def: 'Bloque de cifras que se repite sin fin, siempre igual, en un decimal infinito.',
+        ejemplo: 'En 0,2424… el bloque es 24.', ver: ['decimal periódico'] },
       { termino: 'periódico puro', def: 'Decimal que se repite desde la primera cifra después de la coma.',
         ejemplo: '0,2424… = 24/99 = 8/33.', ver: ['periódico mixto', 'generatriz'] },
       { termino: 'periódico mixto', def: 'Decimal con cifras que no se repiten entre la coma y el bloque que sí se repite.',
