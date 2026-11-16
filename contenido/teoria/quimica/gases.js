@@ -68,6 +68,15 @@
     titulo: 'Cambia una condición a la vez',
     temas: ['Presión y temperatura', 'Leyes de Boyle, Charles y Gay-Lussac'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): qué es la presión y por qué kelvin, sin decir qué le pasa a P cuando V baja (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Qué mide la presión', texto: ['Las partículas de un gas chocan sin parar contra las paredes. La presión, ', P, ', mide qué tan fuerte empujan esos choques en cada pedazo de pared. En Juliaca el aire empuja con unos 0,62 atm; en Lima, con casi 1 atm.'] },
+        { titulo: 'Temperatura en kelvin', texto: ['Las leyes de los gases cuentan la temperatura desde el cero absoluto, en kelvin. Se suman 273 a los grados Celsius: una tarde de 17 °C en Puno son ', T, ' = 290 K.'],
+          ecuacion: [T, ' = t + 273'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, el cilindro tiene siempre las mismas 8 partículas. Mira la altura del émbolo y la presión que se lee abajo. Cambia una sola cosa a la vez: primero el volumen, después la temperatura.' },
+      ],
+    },
     juega: {
       consigna: 'El cilindro tiene siempre el mismo gas. El émbolo sube y baja solo: lee la presión. Cambia también la temperatura en kelvin.',
       voz: 'Cambia una sola cosa y mira qué pasa con la presión.',
@@ -126,6 +135,56 @@
       condicion: 'T en kelvin (T = t + 273) y P absoluta; cada ley vale solo si las otras dos variables no cambian.',
       voz: 'Primero anota qué queda fijo. Después elige la ley.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» (Boyle, Charles o Gay-Lussac según s % 3), con azar(s + 900)
+    // y las mismas cuentas. La figura: el cilindro antes y después, a la misma escala.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3;
+        const cil = (rot, nivel, tit) => ({ titulo: tit, forma: 'cilindro', nivel, particulas: [{ e: 'N2', n: 8 }], rotulo: rot });
+        const par = (a, b) => lupa([a, b], { flechas: true });
+        if (tipo === 0) {
+          const p1 = r.de([0.5, 0.8, 1, 1.5, 2]), v1 = r.ent(2, 12), v2 = r.de([1, 2, 3, 4, 6].filter(x => x !== v1)), p2 = p1 * v1 / v2;
+          const tope = Math.max(v1, v2), sube = v2 < v1;
+          const antes = cil(`${v1} L · ${f(p1, 1)} atm`, v1 / tope, 'antes');
+          return {
+            enunciado: ['Un gas a temperatura fija pasa de ', V, ` = ${v1} L a ${v2} L. Si estaba a `, P, ` = ${f(p1, 1)} atm, ¿cuál es la nueva presión?`],
+            dibujo: par(antes, cil(`${v2} L · ¿P?`, v2 / tope, 'después')),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la presión final, ', { sub: [P, '2'] }, ', después de cambiar el volumen sin cambiar la temperatura.'] },
+              { tipo: 'datos', texto: ['Antes: ', P, ` = ${f(p1, 1)} atm y `, V, ` = ${v1} L. Después: `, V, ` = ${v2} L. El gas y la temperatura no cambian.`] },
+              { tipo: 'regla', texto: ['Con el mismo gas a temperatura fija, si el volumen se achica la presión crece en la misma proporción. El producto ', P, V, ' se mantiene.'],
+                ecuacion: [{ sub: [P, '1'] }, { sub: [V, '1'] }, ' = ', { sub: [P, '2'] }, { sub: [V, '2'] }] },
+              { tipo: 'cuentas', texto: ['Despejo ', { sub: [P, '2'] }, ': multiplico la presión por el volumen de antes y divido entre el volumen nuevo.'],
+                ecuacion: [{ sub: [P, '2'] }, ` = ${f(p1, 1)} · ${v1} / ${v2} = ${f(p2, 2)} atm`], dibujo: par(antes, cil(`${v2} L · ${f(p2, 2)} atm`, v2 / tope, 'después')) },
+              { tipo: 'sentido', texto: [`El volumen ${sube ? 'bajó' : 'subió'}, así que la presión tenía que ${sube ? 'subir' : 'bajar'}: de ${f(p1, 1)} a ${f(p2, 2)} atm. Y `, P, V, ` da ${f(p1 * v1, 2)} atm·L antes y después.`] },
+            ],
+            respuesta: [{ sub: [P, '2'] }, ` = ${f(p2, 2)} atm`],
+          };
+        }
+        const t1 = r.de([7, 17, 27, 37, 47]), t2 = t1 + r.de([50, 100, 150]), x1 = r.ent(2, 9);
+        const K1 = t1 + 273, K2 = t2 + 273, x2 = x1 * K2 / K1;
+        const charles = tipo === 1, var1 = charles ? V : P, u = charles ? 'L' : 'atm', fijo = charles ? 'presión' : 'volumen';
+        const v1_ = { sub: [var1, '1'] }, v2_ = { sub: [var1, '2'] };
+        // Charles: el émbolo sube con V. Gay-Lussac: el émbolo queda quieto (V fijo) y cambia la presión del rótulo.
+        const nivel = x => (charles ? x / x2 : 0.75);
+        const antes = cil(`${x1} ${u} · ${K1} K`, nivel(x1), 'antes');
+        return {
+          enunciado: [`Un gas a ${charles ? 'presión fija' : 'volumen fijo'} se calienta de ${t1} °C a ${t2} °C. Si `, var1, ` = ${x1} ${u}, ¿cuánto vale al final?`],
+          dibujo: par(antes, cil(`¿${charles ? 'V' : 'P'}? · ${K2} K`, charles ? nivel(x1) : 0.75, 'después')),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', v2_, `, el valor final, cuando el gas se calienta sin cambiar su ${fijo}.`] },
+            { tipo: 'datos', texto: ['Empieza con ', var1, ` = ${x1} ${u} a ${t1} °C y termina a ${t2} °C. Paso las dos temperaturas a kelvin.`],
+              ecuacion: [{ sub: [T, '1'] }, ` = ${t1} + 273 = ${K1} K   ·   `, { sub: [T, '2'] }, ` = ${t2} + 273 = ${K2} K`] },
+            { tipo: 'regla', texto: [`Si ${charles ? 'la presión' : 'el volumen'} no cambia, `, var1, ' crece en la misma proporción que la temperatura en kelvin. El cociente entre los dos se mantiene.'],
+              ecuacion: [{ frac: [v1_, { sub: [T, '1'] }] }, ' = ', { frac: [v2_, { sub: [T, '2'] }] }] },
+            { tipo: 'cuentas', texto: ['Multiplico el valor inicial por la razón de las temperaturas en kelvin, nunca en grados Celsius.'],
+              ecuacion: [v2_, ` = ${x1} · ${K2} / ${K1} = ${f(x2, 2)} ${u}`], dibujo: par(antes, cil(`${f(x2, 2)} ${u} · ${K2} K`, nivel(x2), 'después')) },
+            { tipo: 'sentido', texto: [`Se calentó, así que `, var1, ` debía crecer: de ${x1} a ${f(x2, 2)} ${u}. Creció tantas veces como la temperatura en kelvin: ${K2}/${K1} = ${f(K2 / K1, 2)}.`] },
+          ],
+          respuesta: [v2_, ` = ${f(x2, 2)} ${u}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Anota qué queda fijo antes de calcular.',
       generar(s) {
@@ -168,6 +227,15 @@
     titulo: 'Cuánto ocupa un mol',
     temas: ['Ecuación de estado', 'Densidad y masa molar de un gas', 'Volumen molar y condiciones normales'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): los cuatro datos de un gas y la presión en la altura. No despeja V ni dice dónde vale 22,4 L («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cuatro datos', texto: ['Para describir un gas bastan cuatro datos: la presión ', P, ', el volumen ', V, ', la temperatura ', T, ' y la cantidad ', n, ', en moles. La ecuación de estado los une; R es una constante.'],
+          ecuacion: [P, V, ' = ', n, 'R', T, '   ·   R = 0,082 atm·L/(mol·K)'] },
+        { titulo: 'Un gas en la altura', texto: 'Juliaca está a unos 3825 m sobre el mar. Encima hay menos aire que en Lima, así que la presión del ambiente es de unos 0,62 atm, frente a casi 1 atm en la costa.' },
+        { titulo: 'Qué mirar', texto: 'En el juego hay siempre 1 mol de gas. Mira hasta dónde llega el émbolo mientras la presión cambia sola, y después cambia la temperatura. El volumen se lee abajo.' },
+      ],
+    },
     juega: {
       consigna: 'Hay 1 mol de gas. La presión sube y baja sola; el émbolo se mueve hasta que el volumen cumple PV = nRT. Cambia la temperatura.',
       voz: 'Busca en qué condiciones el volumen da 22,4 L.',
@@ -226,6 +294,66 @@
       condicion: 'gas ideal (presión baja, lejos de condensar), T en kelvin, P absoluta y R = 0,082 atm·L/(mol·K).',
       voz: 'El 22,4 trae sus condiciones pegadas. Revísalas.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» (volumen, densidad o masa molar según s % 3), con azar(s + 900)
+    // y las mismas cuentas. La figura: el cilindro del gas; en las cuentas, lo que ocupa a esas P y T.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3;
+        const p = r.de([0.5, 0.62, 0.8, 1.5, 2]), t = r.de([273, 283, 300, 320, 350]);
+        const cond = [P, ` = ${f(p, 2)} atm y `, T, ` = ${t} K`];
+        if (tipo === 0) {
+          const nn = r.de([0.5, 1, 2, 3]), v = nn * R * t / p, vcn = nn * R * 273, tope = Math.max(v, vcn) * 1.1;
+          const cilV = (tit, rot, vol) => ({ titulo: tit, forma: 'cilindro', nivel: vol / tope, particulas: [{ e: 'N2', n: 6 }], rotulo: rot });
+          return {
+            enunciado: [`¿Qué volumen ${nn === 1 ? 'ocupa' : 'ocupan'} `, n, ` = ${f(nn, 1)} mol de gas a `, ...cond, '?'],
+            dibujo: lupa([cilV(`${f(nn, 1)} mol`, `${f(p, 2)} atm · ${t} K`, v)]),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el volumen ', V, ` que ${nn === 1 ? 'ocupa' : 'ocupan'} ${f(nn, 1)} mol de gas a esa presión y esa temperatura.`] },
+              { tipo: 'datos', texto: [n, ` = ${f(nn, 1)} mol, `, ...cond, '. La temperatura ya está en kelvin.'] },
+              { tipo: 'regla', texto: ['La ecuación de estado une los cuatro datos. Para hallar el volumen, la presión pasa a dividir.'],
+                ecuacion: [P, V, ' = ', n, 'R', T, '   →   ', V, ' = ', { frac: [[n, 'R', T], P] }] },
+              { tipo: 'cuentas', texto: ['Reemplazo con R = 0,082 atm·L/(mol·K).'],
+                ecuacion: [V, ` = ${f(nn, 1)} · 0,082 · ${t} / ${f(p, 2)} = ${f(v, 1)} L`],
+                dibujo: lupa([cilV('a 273 K y 1 atm', `${f(vcn, 1)} L`, vcn), cilV('a estas P y T', `${f(v, 1)} L`, v)]) },
+              { tipo: 'sentido', texto: [`A 273 K y 1 atm ${nn === 1 ? 'ocuparía' : 'ocuparían'} ${f(vcn, 1)} L. Aquí, ${f(v, 1)} L: atm·L entre atm da litros, y las condiciones cambian el volumen.`] },
+            ],
+            respuesta: [V, ` = ${f(v, 1)} L`],
+          };
+        }
+        const gas = r.de([['CO₂', 44], ['O₂', 32], ['N₂', 28], ['CH₄', 16], ['He', 4]]), rho = p * gas[1] / (R * t), vm = R * t / p;
+        const SUMA = { 'CO₂': 'con 12 + 2 · 16 = 44', 'O₂': 'con 2 · 16 = 32', 'N₂': 'con 2 · 14 = 28', 'CH₄': 'con 12 + 4 · 1 = 16', 'He': 'que tiene un solo átomo de masa 4' };
+        const cilM = rot => lupa([{ titulo: `1 mol de ${gas[0]}`, forma: 'cilindro', nivel: 0.7, particulas: [{ e: gas[0], n: 6 }], rotulo: rot }]);
+        if (tipo === 1) return {
+          enunciado: [`¿Cuál es la densidad del ${gas[0]} (${gas[1]} g/mol) a `, ...cond, '?'],
+          dibujo: cilM(`${f(p, 2)} atm · ${t} K`),
+          pasos: [
+            { tipo: 'pide', texto: [`Piden la densidad del ${gas[0]}: cuántos gramos hay en cada litro a esa presión y esa temperatura.`] },
+            { tipo: 'datos', texto: [`M = ${gas[1]} g/mol, `, ...cond, '.'] },
+            { tipo: 'regla', texto: ['Si en la ecuación de estado cambio los moles por masa entre masa molar, sale la densidad. Crece con la presión y con la masa molar.'],
+              ecuacion: ['ρ = ', { frac: [[P, 'M'], ['R', T]] }] },
+            { tipo: 'cuentas', texto: ['Reemplazo los datos, con la temperatura en kelvin.'],
+              ecuacion: [`ρ = ${f(p, 2)} · ${gas[1]} / (0,082 · ${t}) = ${f(rho, 2)} g/L`], dibujo: cilM(`${f(vm, 1)} L · ${gas[1]} g`) },
+            { tipo: 'sentido', texto: [`Compruebo de otra forma: 1 mol ocupa RT/P = ${f(vm, 1)} L y pesa ${gas[1]} g. Gramos entre litros: ${gas[1]} / ${f(vm, 1)} = ${f(gas[1] / vm, 2)} g/L.`] },
+          ],
+          respuesta: [`ρ = ${f(rho, 2)} g/L`],
+        };
+        const rho3 = Math.round(rho * 1000) / 1000, M = rho3 * R * t / p;
+        return {
+          enunciado: [`Un gas tiene densidad ${f(rho, 3)} g/L a `, ...cond, '. ¿Cuál es su masa molar?'],
+          dibujo: cilM(`${f(rho, 3)} g/L`),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la masa molar M del gas: cuántos gramos pesa un mol.'] },
+            { tipo: 'datos', texto: [`ρ = ${f(rho, 3)} g/L, `, ...cond, '.'] },
+            { tipo: 'regla', texto: ['La densidad de un gas sale de la ecuación de estado. Despejo la masa molar: la presión pasa a dividir.'],
+              ecuacion: ['ρ = ', { frac: [[P, 'M'], ['R', T]] }, '   →   M = ', { frac: [['ρR', T], P] }] },
+            { tipo: 'cuentas', texto: ['Reemplazo con R = 0,082 atm·L/(mol·K).'],
+              ecuacion: [`M = ${f(rho, 3)} · 0,082 · ${t} / ${f(p, 2)} = ${f(M, 1)} g/mol`], dibujo: cilM(`${f(vm, 1)} L · ${f(M, 1)} g`) },
+            { tipo: 'sentido', texto: [`Las unidades dan g/mol. Y ${f(M, 0)} g/mol es la masa de un gas conocido: el ${gas[0]}, ${SUMA[gas[0]]}.`] },
+          ],
+          respuesta: [`M = ${f(M, 1)} g/mol (${gas[0]})`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Despeja primero, reemplaza después.',
       generar(s) {
@@ -278,6 +406,15 @@
     titulo: 'Cada gas empuja por su cuenta',
     temas: ['Mezclas: Dalton y Amagat'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): el aire como mezcla y la fracción molar. No dice qué pasa con la presión del N₂ si llega otro gas.
+    lee: {
+      tarjetas: [
+        { titulo: 'El aire es una mezcla', texto: 'El aire que respiras en Puno es una mezcla de gases. De cada 100 partículas, unas 78 son de nitrógeno, N₂, y unas 21 de oxígeno, O₂. Todas chocan contra las paredes del recipiente.' },
+        { titulo: 'Fracción molar', texto: ['La fracción molar dice qué parte de las partículas de una mezcla es de un gas: sus moles entre los moles totales. En el aire, la del O₂ es 0,21.'],
+          ecuacion: [{ sub: ['y', 'i'] }, ' = ', { frac: [{ sub: [n, 'i'] }, { sub: [n, 'total'] }] }] },
+        { titulo: 'Qué mirar', texto: 'En el juego, la caja es rígida y la temperatura no cambia. Debajo de la caja se lee la presión de cada gas. Agrega O₂ y mira qué número cambia y cuál no.' },
+      ],
+    },
     juega: {
       consigna: 'En esta caja rígida, a T fija, cada partícula aporta 0,1 atm. El N₂ entra y sale solo; agrega O₂ y lee cada presión.',
       voz: 'Compara lo que aporta una partícula de N₂ con una de O₂.',
@@ -319,6 +456,35 @@
       condicion: 'gases ideales que no reaccionan, a la misma T y en el mismo volumen. Amagat suma volúmenes a igual P y T.',
       voz: 'Cada gas se cuenta por separado y después se suma.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con azar(s + 900) y la misma cuenta (fracción molar por la
+    // total). La figura: la caja con una partícula por mol de cada gas; en las cuentas, la presión de cada uno.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), a = r.ent(1, 6), b = r.ent(1, 6), pt = r.de([1, 1.5, 2, 3, 4]);
+        const gases = r.de([['N₂', 'O₂'], ['CH₄', 'CO₂'], ['He', 'Ar'], ['H₂', 'N₂']]), pa = a / (a + b) * pt, pb = b / (a + b) * pt;
+        // Partículas: las especies de la unidad y, para CH₄, CO₂ y Ar, sus átomos con los mismos estilos (C y Ar en tinta).
+        const CLAVE = { 'N₂': 'N2', 'O₂': 'O2', 'He': 'He', 'H₂': 'H2', 'CH₄': 'CH4', 'CO₂': 'CO2', 'Ar': 'Ar' };
+        const extra = { atomos: Object.assign({}, ATOMOS, { C: { estilo: 'lleno', r: 5 }, Ar: { estilo: 'hueco', r: 5.5 } }),
+          especies: Object.assign({}, ESPECIES, { CH4: [['C', 0, 0], ['H', -5, -5], ['H', 5, -5], ['H', -5, 5], ['H', 5, 5]], CO2: [['O', -7, 0], ['C', 0, 0], ['O', 7, 0]], Ar: [['Ar', 0, 0]] }) };
+        const caja = (ta, tb, rot) => ({ datos: Object.assign(lupa([{ titulo: `${a} mol + ${b} mol`, forma: 'caja', particulas: [{ e: CLAVE[gases[0]], n: a }, { e: CLAVE[gases[1]], n: b }],
+          cuenta: [{ e: CLAVE[gases[0]], texto: ta }, { e: CLAVE[gases[1]], texto: tb }], rotulo: rot }]).datos, extra), estado: {} });
+        const Pa = { sub: [P, gases[0]] }, Pt = { sub: [P, 'total'] };
+        return {
+          enunciado: [`Una mezcla tiene ${a} mol de ${gases[0]} y ${b} mol de ${gases[1]} a `, Pt, ` = ${f(pt, 1)} atm. ¿Cuál es la presión parcial del ${gases[0]}?`],
+          dibujo: caja(`${a} mol`, `${b} mol`, `${f(pt, 1)} atm en total`),
+          pasos: [
+            { tipo: 'pide', texto: [`Piden la presión parcial del ${gases[0]}: la parte de la presión total que ponen sus partículas.`] },
+            { tipo: 'datos', texto: [`Hay ${a} mol de ${gases[0]} y ${b} mol de ${gases[1]}: ${a + b} mol en total, con `, Pt, ` = ${f(pt, 1)} atm.`] },
+            { tipo: 'regla', texto: ['En una mezcla, cada gas aporta presión según cuántas partículas pone. Su parte de la presión es su parte de los moles.'],
+              ecuacion: [{ sub: [P, 'i'] }, ' = ', { sub: ['y', 'i'] }, ' · ', Pt] },
+            { tipo: 'cuentas', texto: [`La fracción molar del ${gases[0]} es ${a} de ${a + b}; la multiplico por la presión total.`],
+              ecuacion: [Pa, ' = ', { frac: [String(a), String(a + b)] }, ` · ${f(pt, 1)} = ${f(pa, 2)} atm`], dibujo: caja(`${f(pa, 2)} atm`, `${f(pb, 2)} atm`, `${f(pt, 1)} atm en total`) },
+            { tipo: 'sentido', texto: [`El ${gases[1]} aporta ${f(pb, 2)} atm. Las fracciones ${a}/${a + b} y ${b}/${a + b} suman 1, así que las dos parciales suman los ${f(pt, 1)} atm. Cuadra.`] },
+          ],
+          respuesta: [Pa, ` = ${f(pa, 2)} atm`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Calcula la fracción molar primero.',
       generar(s) {
@@ -341,6 +507,8 @@
   // Cambia: el gas · Permanece: el O₂ como referencia, misma P y T · Progresa: la rapidez relativa baja con la raíz de M ·
   // Se reserva: que la rapidez no es inversa a M sino a √M · Debe verse: la curva que no es recta.
   const GASES = { H2: ['H₂', 2], He: ['He', 4], CH4: ['CH₄', 16], N2: ['N₂', 28], O2: ['O₂', 32], CO2: ['CO₂', 44] };
+  // Pares de «Ahora tú» y de «Así se resuelve»: el primero es el más liviano.
+  const PARES = [['H₂', 2, 'O₂', 32], ['He', 4, 'CH₄', 16], ['He', 4, 'O₂', 32], ['CH₄', 16, 'SO₂', 64], ['H₂', 2, 'CH₄', 16], ['He', 4, 'SO₃', 80], ['O₂', 32, 'HI', 128]];
   const curvaGraham = Array.from({ length: 48 }, (_, k) => { const M = 2 + k; return [M, Math.sqrt(32 / M)]; });
   const ejesGraham = extra => Object.assign({
     x: { min: 0, max: 50, paso: 10, nombre: 'M', unidad: 'g/mol', decimales: 0 },
@@ -353,6 +521,14 @@
     titulo: 'El más liviano escapa primero',
     temas: ['Difusión y efusión: Graham'],
     pieza: 'ejes',
+    // Lee (fase 2): efusión y difusión con ejemplos de casa, y cómo leer la curva. No dice cuánto cambia la rapidez.
+    lee: {
+      tarjetas: [
+        { titulo: 'Efusión', texto: 'Un globo de fiesta inflado con helio se desinfla en uno o dos días. El gas se escapa partícula por partícula por poros muy pequeños del globo: eso se llama efusión.' },
+        { titulo: 'Difusión', texto: 'Si alguien abre un frasco de perfume en un rincón, el olor llega poco a poco al otro lado del salón. Sus partículas avanzan chocando con las del aire: eso es difusión.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el eje de abajo es la masa molar del gas y el de la izquierda, cuántas veces más rápido sale que el O₂. Elige dos gases y compara cuánto cambia la masa con cuánto cambia la rapidez.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un gas y compara qué tan rápido sale por un agujero pequeño frente al O₂. Un punto recorre solo la curva: mira cómo baja.',
       voz: 'Mira cuánto cambia la rapidez entre gases livianos y pesados.',
@@ -404,10 +580,37 @@
       condicion: 'efusión por un orificio pequeño, a la misma P y T; la difusión real también depende de choques y corrientes.',
       voz: 'La raíz no se olvida: masa cuatro veces, rapidez dos.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con un par elegido por azar(s + 900) y la misma cuenta
+    // (raíz de la razón de masas). La figura: los dos gases sobre el eje de masas; en las cuentas, sobre la curva.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), [a, Ma, b, Mb] = r.de(PARES), raz = Math.sqrt(Mb / Ma), q = Mb / Ma;
+        // La curva va contra el O₂; si un gas pasa de 50 g/mol, el eje se alarga.
+        const xmax = Math.max(50, Math.ceil(Mb / 10) * 10 + 10), ymax = Math.max(4.5, Math.ceil(Math.sqrt(32 / Ma)) + 0.5);
+        const ejes = extra => ejesGraham(Object.assign({ x: { min: 0, max: xmax, paso: xmax > 50 ? 20 : 10, nombre: 'M', unidad: 'g/mol', decimales: 0 },
+          y: { min: 0, max: ymax, paso: 1, nombre: 'rapidez frente al O₂', decimales: 0 },
+          curvas: [{ puntos: Array.from({ length: 60 }, (_, k) => { const M = 1.6 + k * (xmax - 1.6) / 59; return [M, Math.sqrt(32 / M)]; }), color: 'd' }],
+          alt: `Rapidez de efusión frente al O₂ contra la masa molar. El ${a} (${Ma} g/mol) sale ${f(Math.sqrt(32 / Ma), 2)} veces lo que el O₂; el ${b} (${Mb} g/mol), ${f(Math.sqrt(32 / Mb), 2)} veces.` }, extra));
+        return {
+          enunciado: [`A igual P y T, ¿cuántas veces más rápido escapa el ${a} (${Ma} g/mol) que el ${b} (${Mb} g/mol)?`],
+          dibujo: { datos: ejes({ curvas: [], puntos: [{ x: Ma, y: 0.2, color: 'd', rotulo: a }, { x: Mb, y: 0.2, color: 'd', rotulo: b }] }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: [`Piden cuántas veces más rápido escapa el ${a} que el ${b}: la razón entre sus rapideces de efusión.`] },
+            { tipo: 'datos', texto: [`Masas molares: ${a}, ${Ma} g/mol; ${b}, ${Mb} g/mol. Los dos están a la misma presión y temperatura.`] },
+            { tipo: 'regla', texto: ['Con igual presión y temperatura, el gas más liviano escapa más rápido, pero no en proporción a la masa: en proporción a la raíz de la masa.'],
+              ecuacion: [{ frac: [{ sub: ['v', '1'] }, { sub: ['v', '2'] }] }, ' = ', { raiz: { frac: [{ sub: ['M', '2'] }, { sub: ['M', '1'] }] } }] },
+            { tipo: 'cuentas', texto: [`La masa del ${b}, el más pesado, va arriba dentro de la raíz, porque el ${a} es el más rápido.`],
+              ecuacion: [{ frac: [{ sub: ['v', a] }, { sub: ['v', b] }] }, ' = ', { raiz: { frac: [String(Mb), String(Ma)] } }, ' = ', { raiz: [f(q, 0)] }, ` = ${f(raz, 2)}`],
+              dibujo: { datos: ejes({ puntos: [{ x: Ma, y: Math.sqrt(32 / Ma), color: 'd', rotulo: `${a}: ${f(Math.sqrt(32 / Ma), 2)}`, guias: true }, { x: Mb, y: Math.sqrt(32 / Mb), color: 'd', rotulo: `${b}: ${f(Math.sqrt(32 / Mb), 2)}`, guias: true }] }), estado: {} } },
+            { tipo: 'sentido', texto: [`La masa cambia ${f(q, 0)} veces y la rapidez solo ${f(raz, 2)}: la raíz achica el cambio. De vuelta, ${f(raz, 2)} al cuadrado da ${f(raz * raz, 0)}.`] },
+          ],
+          respuesta: [`El ${a} escapa ${f(raz, 2)} veces más rápido.`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Arma la razón con la raíz.',
       generar(s) {
-        const PARES = [['H₂', 2, 'O₂', 32], ['He', 4, 'CH₄', 16], ['He', 4, 'O₂', 32], ['CH₄', 16, 'SO₂', 64], ['H₂', 2, 'CH₄', 16], ['He', 4, 'SO₃', 80], ['O₂', 32, 'HI', 128]];
         const [a, Ma, b, Mb] = PARES[s % PARES.length], raz = Math.sqrt(Mb / Ma);
         return {
           pregunta: [`A igual P y T, ¿cuántas veces más rápido escapa el ${a} (${Ma} g/mol) que el ${b} (${Mb} g/mol)?`],
@@ -442,6 +645,14 @@
     titulo: 'El gas de una reacción',
     temas: ['Estequiometría con gases'],
     pieza: 'quim-cadena',
+    // Lee (fase 2): gases que nacen de reacciones y la receta. No dice qué volumen usar en Juliaca («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Gas que nace', texto: 'Si echas vinagre sobre bicarbonato, salen burbujas: es CO₂ que nace de la reacción. En el laboratorio, el zinc con ácido clorhídrico desprende otro gas, el hidrógeno, H₂.' },
+        { titulo: 'La receta', texto: 'Los coeficientes de la ecuación balanceada son la receta: dicen cuántos moles de cada sustancia reaccionan o se forman. En Zn + 2 HCl → ZnCl₂ + H₂, cada mol de zinc da un mol de H₂.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, la cadena va de gramos de zinc a moles, de moles de zinc a moles de H₂ y al final a litros. Cambia los gramos y las condiciones, y sigue cada eslabón.' },
+      ],
+    },
     juega: {
       consigna: 'El zinc reacciona con ácido y desprende H₂. Los gramos de Zn suben y bajan solos: sigue la cadena. Elige dónde se mide el gas.',
       voz: 'Sigue la cadena: gramos, moles, receta, litros.',
@@ -482,6 +693,41 @@
       ecuacion: [{ sub: [n, 'gas'] }, ' = ', { sub: [n, 'A'] }, ' · ', { llave: [{ frac: [{ sub: ['ν', 'gas'] }, { sub: ['ν', 'A'] }] }], nota: 'coeficientes' }, '   ·   ', V, ' = ', { frac: [[n, 'R', T], P] }],
       condicion: '22,4 L/mol solo si el gas se mide a 273 K y 1 atm; si no, la ecuación de estado.',
       voz: 'Separa la cantidad que se forma del espacio que ocupa.',
+    },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con azar(s + 900) y las mismas cuentas (masa → mol → receta
+    // → PV = nRT). La figura: la misma cadena del juego, que se completa en el paso de las cuentas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const RX = [['CaCO₃ → CaO + CO₂', 'CaCO₃', 100, 'CO₂', 1], ['Zn + 2 HCl → ZnCl₂ + H₂', 'Zn', 65, 'H₂', 1], ['2 KClO₃ → 2 KCl + 3 O₂', 'KClO₃', 122.5, 'O₂', 1.5]][s % 3];
+        const [ec, a, Ma, gas, raz] = RX, k = r.ent(1, 4), mA = Ma * k / (RX[4] === 1.5 ? 1 : 2);
+        const nA = mA / Ma, ng = nA * raz, ck = r.de(['amb', 'jul', 'cn']), [txt, t, p] = COND[ck], v = ng * R * t / p, vcn = ng * 22.4;
+        const receta = raz === 1 ? '1 : 1' : '2 : 3';
+        const cad = lleno => ({ datos: { columnas: [{ titulo: ec, nodos: [
+          { texto: `${f(mA, 1)} g de ${a}`, color: 'o' },
+          { texto: lleno ? `÷ ${f(Ma, 1)} g/mol = ${f(nA, 2)} mol de ${a}` : `¿mol de ${a}?`, color: 'd' },
+          { texto: lleno ? `${receta} → ${f(ng, 2)} mol de ${gas}` : `¿mol de ${gas}?`, color: 'd' },
+          { texto: `a ${txt}: ${lleno ? `${f(v, 2)} L` : '¿V?'}`, color: 'i' },
+        ] }] }, estado: {} });
+        const nG = { sub: [n, gas] }, donde = ck === 'jul' ? 'en Juliaca, a 283 K y 0,62 atm' : `a ${txt}`;
+        return {
+          enunciado: [`En ${ec}, reaccionan ${f(mA, 1)} g de ${a} (${f(Ma, 1)} g/mol). ¿Qué volumen de ${gas} se recoge ${donde}?`],
+          dibujo: cad(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el volumen ', V, ` del ${gas} que se forma, medido ${donde}.`] },
+            { tipo: 'datos', texto: [`Reaccionan ${f(mA, 1)} g de ${a}, de ${f(Ma, 1)} g/mol. La ecuación balanceada es ${ec}.`] },
+            { tipo: 'regla', texto: ['Los coeficientes dan los moles de gas que se forman. Recién con esos moles uso la ecuación de estado, en las condiciones donde se mide el gas.'],
+              ecuacion: [nG, ' = ', { sub: [n, a] }, ' · ', { frac: [{ sub: ['ν', gas] }, { sub: ['ν', a] }] }, '   ·   ', V, ' = ', { frac: [[n, 'R', T], P] }] },
+            { tipo: 'cuentas', texto: [`Gramos a moles, la receta ${receta} para los moles de ${gas}, y la ecuación de estado para el volumen.`],
+              ecuacion: [{ sub: [n, a] }, ` = ${f(mA, 1)} / ${f(Ma, 1)} = ${f(nA, 2)} mol   →   `, nG, ` = ${f(ng, 2)} mol   →   `, V, ` = ${f(ng, 2)} · 0,082 · ${t} / ${f(p, 2)} = ${f(v, 2)} L`],
+              dibujo: cad(true) },
+            { tipo: 'sentido', texto: [ck === 'cn'
+              ? `Con 22,4 L por mol saldría ${f(vcn, 2)} L: casi lo mismo, porque estas sí son condiciones normales.`
+              : `En condiciones normales serían ${f(vcn, 2)} L. Aquí hay ${ck === 'jul' ? 'menos presión y algo más de temperatura' : 'más temperatura'}, así que el gas ocupa más: ${f(v, 2)} L.`] },
+          ],
+          respuesta: [V, ` = ${f(v, 2)} L de ${gas}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Primero los moles de gas, después el volumen.',
@@ -544,6 +790,8 @@
         formas: ['presión', 'presiones'], ejemplo: '0,2 mol en 4 L a 300 K: P = 1,23 atm.', ver: ['presión parcial'] },
       { termino: 'kelvin', simbolo: 'K', def: 'Unidad de temperatura que cuenta desde el cero absoluto: T = t + 273. Las leyes de gases la piden.',
         formas: ['kelvin', 'temperatura absoluta'], ejemplo: '27 °C = 300 K.' },
+      { termino: 'cero absoluto', simbolo: '0 K', def: 'La temperatura más baja posible, unos −273 °C. Desde ahí empieza a contar la escala kelvin.',
+        ver: ['kelvin'] },
       { termino: 'ley de Boyle', def: 'Con temperatura y moles fijos, P·V no cambia: si el volumen baja a la mitad, la presión se duplica.',
         formas: ['ley de Boyle', 'Boyle'], ejemplo: '0,6 atm en 4 L → 1,2 atm en 2 L.', ver: ['presión'] },
       { termino: 'ley de Charles', def: 'Con presión y moles fijos, el volumen crece en proporción a la temperatura en kelvin.',
