@@ -58,3 +58,19 @@ test('avance: migrar deja las visitas, crea marcadas y se hace una sola vez', ()
   assert.deepEqual(est.marcadas, {});
   assert.equal(A.migrar(est), false);
 });
+
+test('al partir «Magnitudes y vectores», el avance de los vectores pasa a fisica.vectores', () => {
+  const est = { avanceV: 1, vistas: { 'fisica.magnitudes-y-vectores': '2026-11-10' }, marcadas: { 'fisica.magnitudes-y-vectores': '2026-11-11' },
+    teoria: { 'fisica.magnitudes-y-vectores': { idea: 'resultante', ideas: { unidades: { hecha: true }, resultante: { hecha: true }, componentes: { casos: 2 } } } },
+    coleccion: [{ id: 'c1', unidad: 'fisica.magnitudes-y-vectores', mesa: 'suma-libre' }, { id: 'c2', unidad: 'fisica.magnitudes-y-vectores', mesa: 'otra' }] };
+  assert.equal(A.migrar(est), true);
+  assert.deepEqual(Object.keys(est.teoria['fisica.magnitudes-y-vectores'].ideas), ['unidades']);
+  assert.deepEqual(est.teoria['fisica.vectores'].ideas, { resultante: { hecha: true }, componentes: { casos: 2 } });
+  assert.equal(est.teoria['fisica.vectores'].idea, 'resultante');
+  assert.equal(est.coleccion[0].unidad, 'fisica.vectores');
+  assert.equal(est.coleccion[1].unidad, 'fisica.magnitudes-y-vectores');
+  assert.equal(est.vistas['fisica.vectores'], '2026-11-10');
+  assert.equal(est.marcadas['fisica.vectores'], '2026-11-11', '«Ya la estudié» incluía los vectores');
+  assert.equal(A.migrar(est), false, 'la segunda vez no cambia nada');
+});
+

@@ -4,7 +4,7 @@
   "formato": "predicciones",
   "unidades": [
     "fisica.movimiento-rectilineo",
-    "fisica.magnitudes-y-vectores",
+    "fisica.vectores",
     "fisica.impulso-y-choques"
   ],
   "estado": "borrador",

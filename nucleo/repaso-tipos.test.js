@@ -84,7 +84,7 @@ test('cobertura: generador o papel en todas las unidades que no son de razonamie
   assert.ok(!RT.papelCubre(cat.plantillas['tipologia-textual'], 'razonamiento-verbal.tipologia-textual'));
 });
 
-test('cobertura del repaso: las 152 unidades tienen de dónde sacar una pregunta', () => {
+test('cobertura del repaso: todas las unidades del catálogo tienen de dónde sacar una pregunta', () => {
   const fs = require('fs');
   const L = require('./lectura.js');
   const unidadesVerbal = new Set();
@@ -106,5 +106,5 @@ test('cobertura del repaso: las 152 unidades tienen de dónde sacar una pregunta
   }
   const sin = Object.keys(fuente).filter(u => !fuente[u]);
   assert.deepEqual(sin, []);
-  assert.equal(Object.keys(fuente).length, 152);
+  assert.equal(Object.keys(fuente).length, cat.cursos.reduce((n, c) => n + c.unidades.length, 0));   // 153 desde que se partió magnitudes y vectores (16 nov)
 });

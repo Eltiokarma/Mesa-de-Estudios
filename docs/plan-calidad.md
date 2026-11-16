@@ -162,7 +162,12 @@ Lo que el contrato no cubra en estos tres casos se corrige en el contrato, no co
    - Un tema cerrado no se esconde: se ve en el mapa con su candado, y al tocarlo dice qué falta, con dos caminos («Estudiar…» o «Ya lo sé: dar la prueba de…»).
    - Esto reemplaza, solo para el mapa, la decisión del 15 nov de que nada bloquea. La prueba del tema sigue siendo opcional y nunca se impone.
 2. **La bienvenida ya no pregunta el grado.** Pregunta «5.º de secundaria» o «Academia o egresado». Sirve solo para la medición; no cambia lo que se ve. Las etiquetas «Tu grado», «Repaso» y «Adelanto» se van.
-3. **El orden de las ideas de magnitudes y vectores**, y si se parte en dos unidades: llega como propuesta en la etapa 1, paso 2.
+3. **Magnitudes y vectores se parte en dos unidades** (16 nov):
+   - **«Magnitudes y unidades»** conserva el id `fisica.magnitudes-y-vectores`, porque el avance se guarda con él. Sus ideas: cambiar de unidad (hecha), áreas y volúmenes (nueva) y dimensiones.
+   - **«Vectores»** es una unidad nueva, `fisica.vectores`. Sus ideas: escalar o vector (nueva), unitario y componentes, resultante y productos.
+   - En el mapa quedan Magnitudes → Vectores → Movimiento rectilíneo y Estática. Vectores pide las razones trigonométricas; Magnitudes ya no pide nada.
+   - `Avance.migrar` pasa a la unidad nueva lo que el alumno ya había hecho en las ideas y mesas de vectores, su visita y su «Ya la estudié».
+   - El catálogo tiene ahora 153 unidades.
 4. **Alumnos para probar:** sin respuesta todavía. Mientras tanto valen el lector en frío y Gerson.
 
 ## 10. Riesgos

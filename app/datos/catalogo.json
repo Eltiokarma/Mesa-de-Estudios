@@ -24,6 +24,7 @@
      "nombre": "Mecánica",
      "unidades": [
       "fisica.magnitudes-y-vectores",
+      "fisica.vectores",
       "fisica.movimiento-rectilineo",
       "fisica.movimiento-parabolico-y-circular",
       "fisica.estatica",
@@ -64,13 +65,49 @@
    "unidades": [
     {
      "id": "fisica.magnitudes-y-vectores",
-     "nombre": "Magnitudes y vectores",
+     "nombre": "Magnitudes y unidades",
      "temas": [
       "Magnitudes fundamentales y derivadas",
       "Sistema Internacional",
-      "Análisis dimensional",
-      "Suma de vectores por el método gráfico",
+      "Conversión de unidades",
+      "Análisis dimensional"
+     ],
+     "universidades": {
+      "uni": {
+       "semanas": [
+        0
+       ]
+      },
+      "unmsm": {
+       "temas": [
+        1
+       ]
+      }
+     },
+     "potencial_visual": "alto",
+     "grado": 3,
+     "requiere": [],
+     "plantillas": [
+      "analisis-dimensional"
+     ],
+     "teoria": {
+      "archivo": "/contenido/teoria/fisica/magnitudes-y-vectores.js",
+      "requiere": [
+       "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/fis-medida.js",
+       "/nucleo/kit/piezas/fis-combi.js",
+       "/nucleo/kit/piezas/fis-dimensiones.js"
+      ],
+      "ideas": 2,
+      "terminos": 15
+     }
+    },
+    {
+     "id": "fisica.vectores",
+     "nombre": "Vectores",
+     "temas": [
       "Componentes y vector unitario",
+      "Suma de vectores por el método gráfico",
       "Producto escalar y vectorial"
      ],
      "universidades": {
@@ -89,6 +126,7 @@
      "potencial_visual": "alto",
      "grado": 3,
      "requiere": [
+      "fisica.magnitudes-y-vectores",
       "trigonometria.razones-trigonometricas-agudas"
      ],
      "plantillas": [
@@ -100,23 +138,18 @@
       "vectores-combinacion",
       "vectores-division",
       "vectores-poligono",
-      "velocidad-relativa",
-      "analisis-dimensional"
+      "velocidad-relativa"
      ],
      "teoria": {
-      "archivo": "/contenido/teoria/fisica/magnitudes-y-vectores.js",
+      "archivo": "/contenido/teoria/fisica/vectores.js",
       "requiere": [
-       "/nucleo/kit/piezas/recta.js",
-       "/nucleo/kit/piezas/fis-medida.js",
-       "/nucleo/kit/piezas/fis-combi.js",
-       "/nucleo/kit/piezas/fis-dimensiones.js",
        "/nucleo/kit/piezas/flechas.js",
        "/plantillas/vectores/motor.js",
        "/nucleo/fisica3d.js",
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
-      "ideas": 5,
-      "terminos": 24
+      "ideas": 3,
+      "terminos": 10
      }
     },
     {
@@ -148,7 +181,7 @@
      "potencial_visual": "alto",
      "grado": 3,
      "requiere": [
-      "fisica.magnitudes-y-vectores"
+      "fisica.vectores"
      ],
      "plantillas": [
       "mruv",
@@ -249,7 +282,7 @@
      "potencial_visual": "alto",
      "grado": 4,
      "requiere": [
-      "fisica.magnitudes-y-vectores"
+      "fisica.vectores"
      ],
      "plantillas": [
       "estatica",
@@ -10150,7 +10183,7 @@
    "estado": "borrador",
    "version": "0.2.0",
    "unidades": [
-    "fisica.magnitudes-y-vectores"
+    "fisica.vectores"
    ],
    "url": "/plantillas/vectores/index.html",
    "papel": "/plantillas/vectores/papel.json",
@@ -10167,7 +10200,7 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "fisica.magnitudes-y-vectores"
+    "fisica.vectores"
    ],
    "url": "#/practica/vectores-combinacion",
    "papel": "/plantillas/vectores-combinacion/papel.json",
@@ -10183,7 +10216,7 @@
    "estado": "borrador",
    "version": "0.2.0",
    "unidades": [
-    "fisica.magnitudes-y-vectores"
+    "fisica.vectores"
    ],
    "url": "#/practica/vectores-componentes",
    "papel": "/plantillas/vectores-componentes/papel.json",
@@ -10199,7 +10232,7 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "fisica.magnitudes-y-vectores"
+    "fisica.vectores"
    ],
    "url": "#/practica/vectores-division",
    "papel": "/plantillas/vectores-division/papel.json",
@@ -10215,7 +10248,7 @@
    "estado": "borrador",
    "version": "0.2.0",
    "unidades": [
-    "fisica.magnitudes-y-vectores"
+    "fisica.vectores"
    ],
    "url": "#/practica/vectores-ley-cosenos",
    "papel": "/plantillas/vectores-ley-cosenos/papel.json",
@@ -10231,7 +10264,7 @@
    "estado": "borrador",
    "version": "0.2.0",
    "unidades": [
-    "fisica.magnitudes-y-vectores"
+    "fisica.vectores"
    ],
    "url": "#/practica/vectores-poligono",
    "papel": "/plantillas/vectores-poligono/papel.json",
@@ -10247,7 +10280,7 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "fisica.magnitudes-y-vectores"
+    "fisica.vectores"
    ],
    "url": "#/practica/vectores-productos",
    "papel": "/plantillas/vectores-productos/papel.json",
@@ -10263,7 +10296,7 @@
    "estado": "borrador",
    "version": "0.1.0",
    "unidades": [
-    "fisica.magnitudes-y-vectores"
+    "fisica.vectores"
    ],
    "url": "#/practica/vectores-unitario",
    "papel": "/plantillas/vectores-unitario/papel.json",
@@ -10280,7 +10313,7 @@
    "version": "0.2.0",
    "unidades": [
     "fisica.movimiento-rectilineo",
-    "fisica.magnitudes-y-vectores",
+    "fisica.vectores",
     "fisica.impulso-y-choques"
    ],
    "url": "#/practica/velocidad-relativa",

@@ -13,8 +13,14 @@ const onda = (P, x1, y1, x2, y2, amp, vueltas) => {
 };
 
 D.registrar('fisica', {
+  // Un poste de luz junto a una regla: lo mismo medido, otro número según la unidad (16 nov).
+  'fisica.magnitudes-y-vectores': P => {
+    let r = P.l([[14, 104], [146, 104]]) + P.p('M46 104L49 28L53 28L56 104Z', 'b') + P.p('M51 32Q53 22 70 24', '') + P.c(72, 26, 4, 'tn');
+    for (let k = 0; k <= 8; k++) r += P.l([[100, 104 - k * 9.5], [k % 2 ? 106 : 112, 104 - k * 9.5]]);
+    return r + P.p('M100 22h20v82h-20z', '') + P.ac('M58 28L98 28') + P.t(132, 34, 'm', 15);
+  },
   // Dos vectores se suman punta con cola: la resultante cierra el triángulo.
-  'fisica.magnitudes-y-vectores': P =>
+  'fisica.vectores': P =>
     P.l([[22, 98], [86, 98]]) + P.punta(92, 98, 0) + P.l([[92, 98], [128, 40]]) + P.punta(132, 34, ang(92, 98, 132, 34))
     + P.ac('M22 98L124 38') + P.punta(132, 34, ang(22, 98, 132, 34)) + P.c(22, 98, 5, 'tn')
     + P.t(56, 116, 'A', 16) + P.t(124, 76, 'B', 16) + P.t(64, 56, 'R', 16),

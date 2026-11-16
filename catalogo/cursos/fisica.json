@@ -4,7 +4,7 @@
   "area": "ciencias",
   "formato_principal": "escena",
   "ramas": [
-    {"nombre": "Mecánica", "unidades": ["fisica.magnitudes-y-vectores", "fisica.movimiento-rectilineo", "fisica.movimiento-parabolico-y-circular", "fisica.estatica", "fisica.dinamica", "fisica.trabajo-y-energia", "fisica.impulso-y-choques", "fisica.gravitacion", "fisica.oscilaciones"]},
+    {"nombre": "Mecánica", "unidades": ["fisica.magnitudes-y-vectores", "fisica.vectores", "fisica.movimiento-rectilineo", "fisica.movimiento-parabolico-y-circular", "fisica.estatica", "fisica.dinamica", "fisica.trabajo-y-energia", "fisica.impulso-y-choques", "fisica.gravitacion", "fisica.oscilaciones"]},
     {"nombre": "Fluidos y calor", "unidades": ["fisica.fluidos", "fisica.temperatura-y-calor", "fisica.termodinamica"]},
     {"nombre": "Electricidad y magnetismo", "unidades": ["fisica.electrostatica", "fisica.corriente-y-circuitos", "fisica.magnetismo", "fisica.induccion-electromagnetica"]},
     {"nombre": "Ondas y luz", "unidades": ["fisica.ondas-mecanicas", "fisica.ondas-electromagneticas", "fisica.optica-geometrica", "fisica.fisica-moderna"]}
@@ -12,20 +12,33 @@
   "unidades": [
     {
       "id": "fisica.magnitudes-y-vectores",
-      "nombre": "Magnitudes y vectores",
+      "nombre": "Magnitudes y unidades",
       "temas": [
         "Magnitudes fundamentales y derivadas",
         "Sistema Internacional",
-        "Análisis dimensional",
-        "Suma de vectores por el método gráfico",
+        "Conversión de unidades",
+        "Análisis dimensional"
+      ],
+      "universidades": {"uni": {"semanas": [0]}, "unmsm": {"temas": [1]}},
+      "potencial_visual": "alto",
+      "grado": 3,
+      "requiere": [],
+      "plantillas": ["analisis-dimensional"],
+      "investigacion": null
+    },
+    {
+      "id": "fisica.vectores",
+      "nombre": "Vectores",
+      "temas": [
         "Componentes y vector unitario",
+        "Suma de vectores por el método gráfico",
         "Producto escalar y vectorial"
       ],
       "universidades": {"uni": {"semanas": [0]}, "unmsm": {"temas": [1, 2]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "requiere": ["trigonometria.razones-trigonometricas-agudas"],
-      "plantillas": ["vectores", "vectores-ley-cosenos", "vectores-componentes", "vectores-productos", "vectores-unitario", "vectores-combinacion", "vectores-division", "vectores-poligono", "velocidad-relativa", "analisis-dimensional"],
+      "requiere": ["fisica.magnitudes-y-vectores", "trigonometria.razones-trigonometricas-agudas"],
+      "plantillas": ["vectores", "vectores-ley-cosenos", "vectores-componentes", "vectores-productos", "vectores-unitario", "vectores-combinacion", "vectores-division", "vectores-poligono", "velocidad-relativa"],
       "investigacion": null
     },
     {
@@ -43,7 +56,7 @@
       "universidades": {"uni": {"semanas": [1, 2]}, "unmsm": {"temas": [2, 3]}},
       "potencial_visual": "alto",
       "grado": 3,
-      "requiere": ["fisica.magnitudes-y-vectores"],
+      "requiere": ["fisica.vectores"],
       "plantillas": ["mruv", "cinematica-medias", "velocidad-relativa"],
       "investigacion": "docs/investigacion/cinematica-ideas-erroneas.md"
     },
@@ -81,7 +94,7 @@
       "universidades": {"uni": {"semanas": [4]}, "unmsm": {"temas": [6]}},
       "potencial_visual": "alto",
       "grado": 4,
-      "requiere": ["fisica.magnitudes-y-vectores"],
+      "requiere": ["fisica.vectores"],
       "plantillas": ["estatica", "dinamica-fuerzas"],
       "investigacion": "docs/investigacion/estatica-energia-ideas-erroneas.md"
     },

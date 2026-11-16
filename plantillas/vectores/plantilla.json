@@ -3,7 +3,7 @@
   "titulo": "Flechas que se suman: vectores y análisis dimensional",
   "formato": "escena",
   "unidades": [
-    "fisica.magnitudes-y-vectores"
+    "fisica.vectores"
   ],
   "estado": "borrador",
   "version": "0.2.0",

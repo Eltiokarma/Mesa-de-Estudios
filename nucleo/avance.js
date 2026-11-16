@@ -73,11 +73,39 @@
    * las respuestas y los eventos no cambian. est.avanceV marca que ya se migró.
    */
   function migrar(est) {
-    if (est.avanceV >= 1) return false;
-    est.vistas = est.vistas && typeof est.vistas === 'object' ? est.vistas : {};
-    est.marcadas = est.marcadas && typeof est.marcadas === 'object' ? est.marcadas : {};
-    est.avanceV = 1;
-    return true;
+    let cambio = false;
+    if (!(est.avanceV >= 1)) {
+      est.vistas = est.vistas && typeof est.vistas === 'object' ? est.vistas : {};
+      est.marcadas = est.marcadas && typeof est.marcadas === 'object' ? est.marcadas : {};
+      est.avanceV = 1;
+      cambio = true;
+    }
+    if (partirVectores(est)) cambio = true;
+    return cambio;
+  }
+  // 16 nov: «Magnitudes y vectores» se partió (Gerson). Las ideas de vectores, sus casos del laboratorio y la visita
+  // pasan a fisica.vectores; quien ya había empezado no pierde nada ni encuentra la unidad nueva cerrada.
+  const MAG = 'fisica.magnitudes-y-vectores', VEC = 'fisica.vectores';
+  const IDEAS_VEC = ['componentes', 'resultante', 'productos'];
+  const MESAS_VEC = ['flechas-espacio', 'suma-libre', 'componentes', 'productos-libre'];
+  function partirVectores(est) {
+    if (est.partidoV >= 1) return false;
+    est.partidoV = 1;
+    let cambio = true;
+    const t = est.teoria && est.teoria[MAG];
+    if (t && t.ideas) for (const id of IDEAS_VEC) if (t.ideas[id]) {
+      const n = est.teoria[VEC] = est.teoria[VEC] || { ideas: {} };
+      n.ideas = n.ideas || {};
+      if (!n.ideas[id]) n.ideas[id] = t.ideas[id];
+      delete t.ideas[id];
+      if (t.idea === id) { t.idea = undefined; n.idea = id; }
+    }
+    for (const c of Array.isArray(est.coleccion) ? est.coleccion : []) {
+      if (c && c.unidad === MAG && MESAS_VEC.includes(c.mesa)) c.unidad = VEC;
+    }
+    // «Ya la estudié» en la unidad vieja incluía los vectores: la marca y la visita también valen para la nueva.
+    for (const k of ['vistas', 'marcadas']) if (est[k] && est[k][MAG] && !est[k][VEC]) est[k][VEC] = est[k][MAG];
+    return cambio;
   }
 
   return { NIVELES, MIN_AYUDA, MIN_SOLO, indice, nivel, estudiadas, teoriaCompleta, migrar };

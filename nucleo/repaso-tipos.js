@@ -86,7 +86,7 @@
     'trig-identidades': { ...todo(T + 'arcos-multiples', ['triple-producto', 'reduccion-doble', 'triangulo-doble', 'maximo', 'acotar', 'cadena']),
       ...todo(T + 'arcos-compuestos', ['condicional', 'terreno']), ...todo(T + 'identidades-fundamentales', ['suma-k', 'cofuncion']) },
     'trig-oblicuangulos': { ...todo(T + 'triangulos-oblicuangulos', ['circunradio', 'faro', 'ley-tangentes']), ...todo(T + 'areas-y-lineas-notables', ['lado-minimo', 'ceviana', 'areas']) },
-    'velocidad-relativa': { ...todo(F + 'movimiento-rectilineo', ['cruce', 'marco', 'idavuelta']), botes: F + 'impulso-y-choques', bote: F + 'magnitudes-y-vectores' },
+    'velocidad-relativa': { ...todo(F + 'movimiento-rectilineo', ['cruce', 'marco', 'idavuelta']), botes: F + 'impulso-y-choques', bote: F + 'vectores' },
   };
 
   /*

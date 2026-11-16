@@ -2,7 +2,7 @@
  * Generador «La balanza de dimensiones»: principio de homogeneidad. Amplía la balanza de
  * plantillas/vectores/ (que trabaja una constante en d = P·t + Q·t², los exponentes de un tiempo de
  * caída y ω dentro de un seno) con fórmulas nuevas, constantes en ecuaciones inventadas pero
- * coherentes, cocientes de constantes y proposiciones teóricas. Unidad fisica.magnitudes-y-vectores.
+ * coherentes, cocientes de constantes y proposiciones teóricas. Unidad fisica.magnitudes-y-vectores («Magnitudes y unidades» desde el 16 nov).
  * Formato "predicciones" (docs/arquitectura.md). Funciona en el navegador
  * (window.Generadores['analisis-dimensional']) y en Node (require). No usa ningún motor.
  *
