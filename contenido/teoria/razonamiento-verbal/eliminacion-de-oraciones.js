@@ -61,6 +61,55 @@
     };
   }
 
+  // Bancos de «Ahora tú» (sin cambios); «Así se resuelve» toma de aquí otro caso que el de la misma semilla.
+  const BANCO_REDUNDANCIA = [
+    { tema: 'la papa', o: ['El Perú tiene más de tres mil variedades de papa.', 'Muchas se cultivan sobre los tres mil metros.', 'Existen más de tres mil tipos distintos de papa en el país.', 'Algunas se convierten en chuño con las heladas.'], sobra: 3, porque: 'La 3 repite con otras palabras lo que dice la 1.', por: { 1: ['RV38', 'La 1 presenta el tema; la 3 la repite. Se quita la que llega después.'], 2: ['RV30', 'La 2 da un dato nuevo: la altura de los cultivos.'], 4: ['RV30', 'La 4 da un dato nuevo: el chuño.'] } },
+    { tema: 'el reciclaje', o: ['Reciclar reduce la basura que llega a los botaderos.', 'El plástico tarda siglos en degradarse.', 'Separar los residuos en casa facilita el reciclaje.', 'Los botaderos reciben menos desechos cuando reciclamos.'], sobra: 4, porque: 'La 4 repite la 1 con otras palabras.', por: { 1: ['RV38', 'La 1 abre el tema; la 4 es la que la repite después.'], 2: ['RV30', 'La 2 explica por qué el plástico es un problema: aporta.'], 3: ['RV30', 'La 3 dice cómo ayudar en casa: es nueva.'] } },
+    { tema: 'el cóndor', o: ['El cóndor andino puede volar sin aletear durante horas.', 'Aprovecha las corrientes de aire caliente que suben.', 'Sus alas abiertas miden más de tres metros.', 'Es capaz de planear largo rato sin mover las alas.'], sobra: 4, porque: 'La 4 dice lo mismo que la 1.', por: { 1: ['RV38', 'La 1 presenta la idea; la 4 la repite.'], 2: ['RV30', 'La 2 explica cómo lo logra: es nueva.'], 3: ['RV30', 'La 3 da la medida de las alas: es nueva.'] } },
+    { tema: 'el agua potable', o: ['Muchas comunidades rurales no tienen agua potable.', 'Sus familias deben hervir el agua antes de tomarla.', 'En numerosos pueblos del campo falta el agua apta para beber.', 'Algunas municipalidades instalan cloradores en los reservorios.'], sobra: 3, porque: 'La 3 repite la 1 con otras palabras.', por: { 1: ['RV38', 'La 1 presenta el problema; la 3 lo repite.'], 2: ['RV30', 'La 2 dice qué hacen las familias: aporta.'], 4: ['RV30', 'La 4 trae una solución: es nueva.'] } },
+    { tema: 'la alpaca', o: ['La alpaca se cría por su fibra fina y abrigadora.', 'Con esa fibra se tejen chompas y chalinas.', 'Su lana es delgada y protege muy bien del frío.', 'Puno es la región con más alpacas del país.'], sobra: 3, porque: 'La 3 repite la 1: fina y abrigadora.', por: { 1: ['RV38', 'La 1 abre el tema; la 3 es la repetición.'], 2: ['RV30', 'La 2 dice para qué se usa: aporta.'], 4: ['RV30', 'La 4 da un dato nuevo: dónde hay más.'] } },
+  ];
+  const BANCO_IMPERTINENCIA = [
+    { tema: 'el lago Titicaca', o: ['El Titicaca está a más de 3800 metros de altura.', 'Lo comparten el Perú y Bolivia.', 'En sus orillas crece la totora.', 'Bolivia también tiene el salar de Uyuni.'], sobra: 4, porque: 'La 4 nombra a Bolivia, pero habla del salar, no del lago.', por: { 1: ['RV38', 'La 1 presenta el lago con su altura.'], 2: ['RV30', 'La 2 dice qué países lo comparten: es del tema.'], 3: ['RV30', 'La 3 habla de sus orillas: es del tema.'] } },
+    { tema: 'la vacuna', o: ['Una vacuna enseña al cuerpo a reconocer un microbio.', 'Así, el cuerpo se defiende más rápido si lo encuentra.', 'Las vacunas se guardan en frío para que no se dañen.', 'El frío de la puna puede causar resfríos.'], sobra: 4, porque: 'La 4 repite «frío», pero habla del clima, no de vacunas.', por: { 1: ['RV38', 'La 1 dice qué es una vacuna: presenta el tema.'], 2: ['RV30', 'La 2 dice para qué sirve: es del tema.'], 3: ['RV30', 'La 3 es un dato nuevo, pero de las vacunas.'] } },
+    { tema: 'el sueño', o: ['Dormir bien ayuda a recordar lo estudiado.', 'Durante el sueño, el cerebro ordena lo aprendido.', 'Los murciélagos duermen colgados de cabeza.', 'Por eso, trasnocharse antes de un examen no conviene.'], sobra: 3, porque: 'La 3 habla de murciélagos, no del sueño y el estudio.', por: { 1: ['RV38', 'La 1 presenta la idea del texto.'], 2: ['RV30', 'La 2 explica por qué: es del tema.'], 4: ['RV30', 'La 4 es la conclusión del tema.'] } },
+    { tema: 'el maíz morado', o: ['El maíz morado se cultiva en los valles andinos.', 'Con él se prepara la chicha morada.', 'Su color se debe a unos pigmentos llamados antocianinas.', 'La chicha de jora se hace con maíz amarillo germinado.'], sobra: 4, porque: 'La 4 habla de otra chicha y de otro maíz.', por: { 1: ['RV38', 'La 1 presenta el maíz morado.'], 2: ['RV30', 'La 2 dice para qué se usa: es del tema.'], 3: ['RV30', 'La 3 explica su color: es un dato del tema.'] } },
+    { tema: 'los terremotos', o: ['El Perú está sobre una zona de muchos terremotos.', 'Allí, una placa del océano se mete bajo el continente.', 'Las casas de adobe sin refuerzo resisten poco.', 'El adobe se hace con barro y paja secados al sol.'], sobra: 4, porque: 'La 4 explica el adobe, no los terremotos.', por: { 1: ['RV38', 'La 1 presenta el tema.'], 2: ['RV30', 'La 2 explica la causa: es del tema.'], 3: ['RV30', 'La 3 habla del daño de los terremotos: es del tema.'] } },
+  ];
+  const BANCO_INCOMPATIBILIDAD = [
+    { tema: 'el viaje a Arequipa', o: ['El bus a Arequipa salió puntual a las ocho.', 'Sin embargo, llegó con una hora de retraso.', 'El bus partió casi a mediodía.', 'Los pasajeros descansaron en el camino.'], sobra: 3, porque: 'La 3 contradice la 1: no pudo salir a las ocho y a mediodía.', por: { 1: ['RV38', 'La 1 da el hecho; la 3 es la que lo niega.'], 2: ['RVE1', 'La 2 contrasta, pero es compatible: salir puntual y llegar tarde.'], 4: ['RV30', 'La 4 añade un dato compatible.'] } },
+    { tema: 'la biblioteca', o: ['La biblioteca del barrio abre todos los días.', 'Los domingos atiende solo por la mañana.', 'Tiene una sala con computadoras.', 'Los domingos permanece cerrada todo el día.'], sobra: 4, porque: 'La 4 contradice la 1 y la 2: los domingos sí abre en la mañana.', por: { 1: ['RV38', 'La 1 da el hecho principal.'], 2: ['RVE1', 'La 2 precisa el horario; no contradice la 1.'], 3: ['RV30', 'La 3 añade un dato compatible.'] } },
+    { tema: 'la cosecha', o: ['Este año la cosecha de papa fue abundante.', 'Las heladas llegaron tarde y no dañaron las plantas.', 'Aun así, el precio en el mercado bajó.', 'Las heladas destruyeron casi toda la cosecha.'], sobra: 4, porque: 'La 4 contradice la 1 y la 2.', por: { 1: ['RV38', 'La 1 da el hecho principal.'], 2: ['RV30', 'La 2 explica la buena cosecha: es compatible.'], 3: ['RVE1', 'La 3 contrasta, pero no niega: hay mucha papa y baja el precio.'] } },
+    { tema: 'el equipo de vóley', o: ['El equipo del colegio nunca ha perdido un partido este año.', 'Ganó los seis partidos del campeonato.', 'Su capitana es la más baja del grupo.', 'En marzo, el equipo perdió la final por un punto.'], sobra: 4, porque: 'La 4 contradice la 1: si perdió en marzo, sí perdió este año.', por: { 1: ['RV38', 'La 1 da el hecho principal.'], 2: ['RV30', 'La 2 lo confirma con un dato.'], 3: ['RVE1', 'La 3 sorprende, pero no contradice nada.'] } },
+    { tema: 'la tienda de Rosa', o: ['Rosa abrió su tienda en enero.', 'Al comienzo vendía poco, pero luego ganó clientes.', 'Hoy vende frutas y verduras de la zona.', 'Rosa todavía no ha abierto su tienda.'], sobra: 4, porque: 'La 4 contradice la 1: la tienda ya está abierta.', por: { 1: ['RV38', 'La 1 da el hecho principal.'], 2: ['RVE1', 'La 2 contrasta dos momentos; es compatible.'], 3: ['RV30', 'La 3 añade un dato compatible.'] } },
+  ];
+  function azar(s) {
+    let q = (s * 2654435761 + 12345) >>> 0;
+    return () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+  }
+  // Índice de «Así se resuelve»: sale de azar(s + 900) y nunca coincide con el de «Ahora tú» (s % n).
+  const otroIndice = (s, n) => (s % n + 1 + Math.floor(azar(s + 900)() * (n - 1))) % n;
+  const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
+  // Así se resuelve: el texto del banco, resuelto con la prueba de tapar. Lo que se dice de cada oración sale del
+  // banco de «Ahora tú» (porque y por), igual que su solución: nada nuevo escrito a mano por caso.
+  function resuelto(banco, s, criterio, regla) {
+    const b = banco[otroIndice(s, banco.length)], fig = estado => ({ datos: lista(`Tema: ${b.tema}`, b.o), estado });
+    // Para la comprobación se elige una oración que no sobra y que no es la que presenta el tema (RV38).
+    const [k, [, siFuera]] = Object.entries(b.por).find(([, x]) => x[0] !== 'RV38') || Object.entries(b.por)[0];
+    return {
+      enunciado: `En el texto sobre ${b.tema}, ¿qué oración se debe eliminar por ${criterio}?`,
+      dibujo: fig({}),
+      pasos: [
+        { tipo: 'pide', texto: `Piden la oración que sobra por ${criterio}, no cualquier oración que parezca de más.` },
+        { tipo: 'datos', texto: ['Tema: ', tema(b.tema), `. Son ${b.o.length} oraciones; leo qué aporta cada una al tema.`], dibujo: fig({ sellos: { o: { t: b.tema, c: 'd' } } }) },
+        { tipo: 'regla', texto: regla.texto, ecuacion: regla.ecuacion },
+        { tipo: 'aplica', texto: ['Sobra la ', sobra(`oración ${b.sobra}`), `. ${b.porque}`], dibujo: fig({ marcas: { [`o${b.sobra}`]: 'h' }, nuevo: [`o${b.sobra}`] }) },
+        { tipo: 'sentido', texto: `Tapo la ${b.sobra} y releo: el texto no pierde nada. En cambio, ${minus(siFuera)}`, dibujo: fig(tapar(b.sobra, true, { [`o${k}`]: 'i' }, { nuevo: [`o${b.sobra}`] })) },
+      ],
+      respuesta: [sobra(`Oración ${b.sobra}`)],
+    };
+  }
+
   // ---------- Idea 1: repetir con otras palabras ----------
   // Cambia: la oración tapada. Permanece: el texto del cuy. Progresa: qué se pierde con cada una.
   // Se reserva: la redundancia por paráfrasis en otro texto (predicción). Debe verse: que la 4 tapada no deja hueco.
@@ -77,6 +126,14 @@
     titulo: 'Lo que repite sin aportar',
     temas: ['Redundancia'],
     pieza: 'rv-texto',
+    // Lee (fase 2): cómo es la pregunta y qué es repetir, sin señalar cuál oración del colibrí sobra (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'La pregunta del examen', texto: 'En el examen te dan cinco o seis oraciones sobre un tema. Una sobra y hay que eliminarla. El reto es saber por qué sobra, no solo cuál.' },
+        { titulo: 'Decir dos veces', texto: 'A veces se dice lo mismo dos veces sin notarlo, como en «subir para arriba» o «salir afuera». En un texto, eso se llama redundancia.' },
+        { titulo: 'Qué mirar', texto: 'En el juego tapas una oración del texto sobre el cuy y relees sin ella. Mira si el texto pierde algo o sigue diciendo lo mismo.' },
+      ],
+    },
     juega: {
       consigna: 'Tapa una oración y relee el texto sin ella. Busca la que puedes quitar sin que se pierda nada.',
       voz: 'Relee todo el texto después de tapar.',
@@ -114,15 +171,17 @@
       ecuacion: [prueba('oración'), ' redundante si ', { llave: [queda('texto sin ella')], nota: 'tapándola', color: 'c-i' }, ' = ', { llave: [queda('texto con ella')], nota: 'el original', color: 'c-i' }],
       condicion: 'se quita la que repite, no la que otra necesita (la razón de un «por eso» o la que presenta el tema).',
     },
+    // Así se resuelve (fase 2): otro texto del banco de «Ahora tú», resuelto con la prueba de tapar y releer.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Busca dos oraciones que digan lo mismo.',
+      generar: s => resuelto(BANCO_REDUNDANCIA, s, 'redundancia', {
+        texto: 'Busco dos oraciones que digan lo mismo, aunque usen otras palabras. Se quita la que llega después y no aporta nada.',
+        ecuacion: [prueba('oración'), ' ≈ ', queda('otra ya dicha'), ' → ', sobra('se quita')] }),
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { tema: 'la papa', o: ['El Perú tiene más de tres mil variedades de papa.', 'Muchas se cultivan sobre los tres mil metros.', 'Existen más de tres mil tipos distintos de papa en el país.', 'Algunas se convierten en chuño con las heladas.'], sobra: 3, porque: 'La 3 repite con otras palabras lo que dice la 1.', por: { 1: ['RV38', 'La 1 presenta el tema; la 3 la repite. Se quita la que llega después.'], 2: ['RV30', 'La 2 da un dato nuevo: la altura de los cultivos.'], 4: ['RV30', 'La 4 da un dato nuevo: el chuño.'] } },
-          { tema: 'el reciclaje', o: ['Reciclar reduce la basura que llega a los botaderos.', 'El plástico tarda siglos en degradarse.', 'Separar los residuos en casa facilita el reciclaje.', 'Los botaderos reciben menos desechos cuando reciclamos.'], sobra: 4, porque: 'La 4 repite la 1 con otras palabras.', por: { 1: ['RV38', 'La 1 abre el tema; la 4 es la que la repite después.'], 2: ['RV30', 'La 2 explica por qué el plástico es un problema: aporta.'], 3: ['RV30', 'La 3 dice cómo ayudar en casa: es nueva.'] } },
-          { tema: 'el cóndor', o: ['El cóndor andino puede volar sin aletear durante horas.', 'Aprovecha las corrientes de aire caliente que suben.', 'Sus alas abiertas miden más de tres metros.', 'Es capaz de planear largo rato sin mover las alas.'], sobra: 4, porque: 'La 4 dice lo mismo que la 1.', por: { 1: ['RV38', 'La 1 presenta la idea; la 4 la repite.'], 2: ['RV30', 'La 2 explica cómo lo logra: es nueva.'], 3: ['RV30', 'La 3 da la medida de las alas: es nueva.'] } },
-          { tema: 'el agua potable', o: ['Muchas comunidades rurales no tienen agua potable.', 'Sus familias deben hervir el agua antes de tomarla.', 'En numerosos pueblos del campo falta el agua apta para beber.', 'Algunas municipalidades instalan cloradores en los reservorios.'], sobra: 3, porque: 'La 3 repite la 1 con otras palabras.', por: { 1: ['RV38', 'La 1 presenta el problema; la 3 lo repite.'], 2: ['RV30', 'La 2 dice qué hacen las familias: aporta.'], 4: ['RV30', 'La 4 trae una solución: es nueva.'] } },
-          { tema: 'la alpaca', o: ['La alpaca se cría por su fibra fina y abrigadora.', 'Con esa fibra se tejen chompas y chalinas.', 'Su lana es delgada y protege muy bien del frío.', 'Puno es la región con más alpacas del país.'], sobra: 3, porque: 'La 3 repite la 1: fina y abrigadora.', por: { 1: ['RV38', 'La 1 abre el tema; la 3 es la repetición.'], 2: ['RV30', 'La 2 dice para qué se usa: aporta.'], 4: ['RV30', 'La 4 da un dato nuevo: dónde hay más.'] } },
-        ];
+        const B = BANCO_REDUNDANCIA;
         return caso(B[s % B.length], s, 'redundancia');
       },
     },
@@ -141,6 +200,14 @@
     titulo: 'Lo que habla de otro asunto',
     temas: ['Impertinencia'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué es el tema y que una palabra repetida no basta, sin señalar cuál oración del puente sobra (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Todo texto tiene tema', texto: 'Un texto habla de un asunto, su tema. En una conversación, si alguien cambia de asunto sin aviso, te pierdes. En un texto pasa lo mismo.' },
+        { titulo: 'Palabras que engañan', texto: '«El banco de la plaza» y «el banco donde ahorras» usan la misma palabra, pero hablan de cosas distintas. Repetir una palabra no asegura hablar del mismo tema.' },
+        { titulo: 'Qué mirar', texto: 'En el juego tapas cada oración del texto sobre la quena. Antes de tapar, di con tus palabras de qué trata todo el texto.' },
+      ],
+    },
     juega: {
       consigna: 'Tapa cada oración del texto sobre la quena. Busca la que no dice nada de la quena.',
       voz: 'Compartir una palabra no es hablar del mismo tema.',
@@ -175,15 +242,17 @@
       ecuacion: [prueba('oración'), ' impertinente si no habla de ', { llave: [tema('el tema')], nota: 'del conjunto', color: 'c-d' }],
       condicion: 'primero se nombra el tema del conjunto; un dato nuevo que sí habla del tema no es impertinente.',
     },
+    // Así se resuelve (fase 2): otro texto del banco de «Ahora tú»: primero el tema, después la oración que se aparta.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Nombra el tema antes de mirar cada oración.',
+      generar: s => resuelto(BANCO_IMPERTINENCIA, s, 'impertinencia', {
+        texto: 'Nombro el tema del conjunto. Después busco la oración que habla de otro asunto, aunque repita una palabra del texto.',
+        ecuacion: [prueba('oración'), ' se aparta de ', tema('el tema'), ' → ', sobra('se quita')] }),
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { tema: 'el lago Titicaca', o: ['El Titicaca está a más de 3800 metros de altura.', 'Lo comparten el Perú y Bolivia.', 'En sus orillas crece la totora.', 'Bolivia también tiene el salar de Uyuni.'], sobra: 4, porque: 'La 4 nombra a Bolivia, pero habla del salar, no del lago.', por: { 1: ['RV38', 'La 1 presenta el lago con su altura.'], 2: ['RV30', 'La 2 dice qué países lo comparten: es del tema.'], 3: ['RV30', 'La 3 habla de sus orillas: es del tema.'] } },
-          { tema: 'la vacuna', o: ['Una vacuna enseña al cuerpo a reconocer un microbio.', 'Así, el cuerpo se defiende más rápido si lo encuentra.', 'Las vacunas se guardan en frío para que no se dañen.', 'El frío de la puna puede causar resfríos.'], sobra: 4, porque: 'La 4 repite «frío», pero habla del clima, no de vacunas.', por: { 1: ['RV38', 'La 1 dice qué es una vacuna: presenta el tema.'], 2: ['RV30', 'La 2 dice para qué sirve: es del tema.'], 3: ['RV30', 'La 3 es un dato nuevo, pero de las vacunas.'] } },
-          { tema: 'el sueño', o: ['Dormir bien ayuda a recordar lo estudiado.', 'Durante el sueño, el cerebro ordena lo aprendido.', 'Los murciélagos duermen colgados de cabeza.', 'Por eso, trasnocharse antes de un examen no conviene.'], sobra: 3, porque: 'La 3 habla de murciélagos, no del sueño y el estudio.', por: { 1: ['RV38', 'La 1 presenta la idea del texto.'], 2: ['RV30', 'La 2 explica por qué: es del tema.'], 4: ['RV30', 'La 4 es la conclusión del tema.'] } },
-          { tema: 'el maíz morado', o: ['El maíz morado se cultiva en los valles andinos.', 'Con él se prepara la chicha morada.', 'Su color se debe a unos pigmentos llamados antocianinas.', 'La chicha de jora se hace con maíz amarillo germinado.'], sobra: 4, porque: 'La 4 habla de otra chicha y de otro maíz.', por: { 1: ['RV38', 'La 1 presenta el maíz morado.'], 2: ['RV30', 'La 2 dice para qué se usa: es del tema.'], 3: ['RV30', 'La 3 explica su color: es un dato del tema.'] } },
-          { tema: 'los terremotos', o: ['El Perú está sobre una zona de muchos terremotos.', 'Allí, una placa del océano se mete bajo el continente.', 'Las casas de adobe sin refuerzo resisten poco.', 'El adobe se hace con barro y paja secados al sol.'], sobra: 4, porque: 'La 4 explica el adobe, no los terremotos.', por: { 1: ['RV38', 'La 1 presenta el tema.'], 2: ['RV30', 'La 2 explica la causa: es del tema.'], 3: ['RV30', 'La 3 habla del daño de los terremotos: es del tema.'] } },
-        ];
+        const B = BANCO_IMPERTINENCIA;
         return caso(B[s % B.length], s, 'impertinencia');
       },
     },
@@ -202,6 +271,14 @@
     titulo: 'Contradecir no es contrastar',
     temas: ['Incompatibilidad'],
     pieza: 'rv-texto',
+    // Lee (fase 2): un texto debe sostener lo que dice; se mira el mismo asunto y el mismo momento (sin la feria de Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un texto que se sostiene', texto: 'Cuando lees una noticia, confías en que lo que dice al inicio sigue siendo cierto al final. Si a mitad cambia su versión, ya no le crees.' },
+        { titulo: 'Mismo asunto, mismo momento', texto: '«Ayer llovió en Juliaca» y «hoy hay sol en Juliaca» hablan de días distintos: las dos pueden ser ciertas. Al comparar oraciones, mira el asunto, el lugar y el tiempo.' },
+        { titulo: 'Qué mirar', texto: 'En el juego tapas cada oración del texto sobre la laguna. Lee bien qué da por cierto la primera y compárala con las demás.' },
+      ],
+    },
     juega: {
       consigna: 'Tapa cada oración del texto de la laguna. Busca la que choca con lo que el texto ya dio por cierto.',
       voz: 'Un «sin embargo» no siempre es una contradicción.',
@@ -237,15 +314,17 @@
       ecuacion: [{ llave: [queda('A')], nota: 'ya afirmado', color: 'c-i' }, ' y ', { llave: [sobra('no A')], nota: 'lo niega', color: 'c-h' }, ' no pueden ser verdaderas a la vez'],
       condicion: 'las dos oraciones hablan de lo mismo, en el mismo tiempo y lugar; si no, quizá solo contrastan.',
     },
+    // Así se resuelve (fase 2): otro texto del banco de «Ahora tú»: la oración que niega lo afirmado, no la que contrasta.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Busca la oración que no puede ser cierta junto a otra.',
+      generar: s => resuelto(BANCO_INCOMPATIBILIDAD, s, 'incompatibilidad', {
+        texto: 'Busco la oración que niega algo que el texto ya dio por cierto, sobre lo mismo y en el mismo momento. Un contraste no basta.',
+        ecuacion: [queda('A'), ' y ', sobra('no A'), ' no pueden ser ciertas a la vez'] }),
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { tema: 'el viaje a Arequipa', o: ['El bus a Arequipa salió puntual a las ocho.', 'Sin embargo, llegó con una hora de retraso.', 'El bus partió casi a mediodía.', 'Los pasajeros descansaron en el camino.'], sobra: 3, porque: 'La 3 contradice la 1: no pudo salir a las ocho y a mediodía.', por: { 1: ['RV38', 'La 1 da el hecho; la 3 es la que lo niega.'], 2: ['RVE1', 'La 2 contrasta, pero es compatible: salir puntual y llegar tarde.'], 4: ['RV30', 'La 4 añade un dato compatible.'] } },
-          { tema: 'la biblioteca', o: ['La biblioteca del barrio abre todos los días.', 'Los domingos atiende solo por la mañana.', 'Tiene una sala con computadoras.', 'Los domingos permanece cerrada todo el día.'], sobra: 4, porque: 'La 4 contradice la 1 y la 2: los domingos sí abre en la mañana.', por: { 1: ['RV38', 'La 1 da el hecho principal.'], 2: ['RVE1', 'La 2 precisa el horario; no contradice la 1.'], 3: ['RV30', 'La 3 añade un dato compatible.'] } },
-          { tema: 'la cosecha', o: ['Este año la cosecha de papa fue abundante.', 'Las heladas llegaron tarde y no dañaron las plantas.', 'Aun así, el precio en el mercado bajó.', 'Las heladas destruyeron casi toda la cosecha.'], sobra: 4, porque: 'La 4 contradice la 1 y la 2.', por: { 1: ['RV38', 'La 1 da el hecho principal.'], 2: ['RV30', 'La 2 explica la buena cosecha: es compatible.'], 3: ['RVE1', 'La 3 contrasta, pero no niega: hay mucha papa y baja el precio.'] } },
-          { tema: 'el equipo de vóley', o: ['El equipo del colegio nunca ha perdido un partido este año.', 'Ganó los seis partidos del campeonato.', 'Su capitana es la más baja del grupo.', 'En marzo, el equipo perdió la final por un punto.'], sobra: 4, porque: 'La 4 contradice la 1: si perdió en marzo, sí perdió este año.', por: { 1: ['RV38', 'La 1 da el hecho principal.'], 2: ['RV30', 'La 2 lo confirma con un dato.'], 3: ['RVE1', 'La 3 sorprende, pero no contradice nada.'] } },
-          { tema: 'la tienda de Rosa', o: ['Rosa abrió su tienda en enero.', 'Al comienzo vendía poco, pero luego ganó clientes.', 'Hoy vende frutas y verduras de la zona.', 'Rosa todavía no ha abierto su tienda.'], sobra: 4, porque: 'La 4 contradice la 1: la tienda ya está abierta.', por: { 1: ['RV38', 'La 1 da el hecho principal.'], 2: ['RVE1', 'La 2 contrasta dos momentos; es compatible.'], 3: ['RV30', 'La 3 añade un dato compatible.'] } },
-        ];
+        const B = BANCO_INCOMPATIBILIDAD;
         return caso(B[s % B.length], s, 'incompatibilidad');
       },
     },
