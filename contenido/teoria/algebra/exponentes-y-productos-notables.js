@@ -66,6 +66,16 @@
     titulo: 'El exponente cuenta factores',
     temas: ['Leyes de exponentes'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): contexto y vocabulario; no toca los exponentes negativos, que son la pregunta de «Predice».
+    lee: {
+      tarjetas: [
+        { titulo: 'Cajas en un almacén', texto: 'En un almacén de Juliaca, las cajas se apilan en 2 filas, 2 columnas y 2 pisos. Son 2 · 2 · 2 = 8 cajas. Para no repetir tanto, se escribe 2³ y se lee «2 al cubo».',
+          ecuacion: ['2 · 2 · 2 = ', { sup: ['2', '3'] }, ' = 8'] },
+        { titulo: 'Base y exponente', texto: ['En la potencia ', { sup: [a, m] }, ', la base ', a, ' es el número que se repite. El exponente ', m, ' dice cuántas veces aparece como factor, es decir, cuántas veces se multiplica.'],
+          ecuacion: [{ sup: [a, m] }, ' = ', { llave: [a, ' · ', a, ' · … · ', a], nota: 'm factores', color: 'c-o' }] },
+        { titulo: 'Qué mirar al jugar', texto: 'La tabla escribe cada potencia como factores sueltos. Junta las dos primeras filas, cuenta los factores de la última y compara ese número con m y n.' },
+      ],
+    },
     juega: {
       consigna: 'Elige la base y dos exponentes. La tabla escribe cada potencia como factores y junta los dos productos.',
       voz: 'Cuenta los factores de la última fila.',
@@ -123,6 +133,42 @@
       condicion: 'a ≠ 0 cuando el exponente es cero o negativo; 0⁰ y 0⁻¹ no se definen. Las leyes piden la misma base.',
       voz: 'Misma base, exponentes que se suman. Revisemos la base primero.',
     },
+    // Así se resuelve (fase 2): los tres tipos de «Ahora tú», con las mismas cuentas y otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), B = r.uno([2, 3, 5, 10]);
+        const p = r.uno([-2, -1, 1, 2, 3, 4, 5]), q = r.uno([-3, -2, -1, 2, 3, 4]), w = r.ent(1, 4), tipo = s % 3;
+        const g = e => f(e, 0), par = e => (e < 0 ? `(${g(e)})` : g(e));
+        let expr, bien, cuenta, datos, regla, sentido;
+        if (tipo === 0) {
+          expr = `${pot(B, p)} · ${pot(B, q)} ÷ ${pot(B, w)}`; bien = p + q - w; cuenta = `${g(p)} + ${par(q)} − ${w}`;
+          datos = `Hay un producto de dos potencias de ${B} y una división entre ${pot(B, w)}.`;
+          regla = 'Con la misma base, al multiplicar se suman los exponentes y al dividir se resta el exponente del divisor.';
+          sentido = `Lo reviso al revés: ${pot(B, bien)} · ${pot(B, w)} = ${pot(B, bien + w)}, que es justo ${pot(B, p)} · ${pot(B, q)}. Cuadra.`;
+        } else if (tipo === 1) {
+          expr = `(${pot(B, p)})${sup(w)} · ${pot(B, q)}`; bien = p * w + q; cuenta = `${g(p)} · ${w} + ${par(q)}`;
+          datos = `Una potencia de ${B} está elevada a ${w}, y después se multiplica por ${pot(B, q)}.`;
+          regla = 'Elevar una potencia multiplica los exponentes. Después, multiplicar por otra potencia de la misma base suma los exponentes.';
+          sentido = `(${pot(B, p)})${sup(w)} multiplica ${w} ${w === 1 ? 'vez' : 'veces'} ${pot(B, p)}: el exponente ${g(p)}, sumado ${w} ${w === 1 ? 'vez' : 'veces'}, da ${g(p * w)}. Con ${par(q)} más, queda ${g(bien)}.`;
+        } else {
+          expr = `${pot(B, p)} · ${pot(B, q)} · ${pot(B, -w)}`; bien = p + q - w; cuenta = `${g(p)} + ${par(q)} + (−${w})`;
+          datos = `Son tres potencias de ${B} multiplicadas; la última tiene exponente negativo, −${w}.`;
+          regla = 'Con la misma base, en un producto se suman los exponentes, cada uno con su signo.';
+          sentido = `Lo reviso al revés: ${pot(B, bien)} · ${pot(B, w)} = ${pot(B, p + q)}, igual que ${pot(B, p)} · ${pot(B, q)}. ${pot(B, -w)} y ${pot(B, w)} se anulan.`;
+        }
+        return {
+          enunciado: `Escribe ${expr} como una sola potencia de ${B}.`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden una sola potencia de ${B}: hay que hallar su exponente.` },
+            { tipo: 'datos', texto: datos },
+            { tipo: 'regla', texto: regla },
+            { tipo: 'cuentas', texto: 'Junto todos los exponentes en una sola cuenta, sin perder ningún signo.', ecuacion: [`${cuenta} = ${g(bien)}   →   ${pot(B, bien)}`] },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: `${pot(B, bien)}${Math.abs(bien) <= 3 ? ` = ${valorPot(B, bien)}` : ''}`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), B = r.uno([2, 3, 5, 10]);
@@ -169,6 +215,15 @@
     titulo: 'La raíz principal nunca es negativa',
     temas: ['Propiedades de radicales'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): la raíz como lado de un cuadrado y sus nombres; no habla de negativos bajo el cuadrado («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'El lado de un terreno', texto: 'Un terreno cuadrado en Puno tiene 400 m² de área. Su lado es el número que, multiplicado por sí mismo, da 400: mide 20 m. Ese número es la raíz cuadrada de 400.',
+          ecuacion: ['√400 = 20, porque 20 · 20 = 400'] },
+        { titulo: 'Las partes', texto: 'En √a, el signo √ es el radical y lo que está debajo es el radicando. Si no lleva un número chico, el índice es 2 y se trata de la raíz cuadrada.' },
+        { titulo: 'Qué mirar al jugar', texto: 'La tabla compara dos caminos: sumar primero y sacar la raíz después, o sacar las raíces y sumar. Lo mismo con el producto. Fíjate en qué filas sale verde y en cuáles rojo.' },
+      ],
+    },
     juega: {
       consigna: 'Elige a y b. Compara la raíz de la suma con la suma de raíces, y la raíz del producto con el producto de raíces.',
       voz: 'Mira cuándo coinciden y cuándo no.',
@@ -224,6 +279,53 @@
       texto: 'El símbolo √ da la raíz principal, que nunca es negativa; por eso √(x²) = |x|. La raíz se reparte sobre un producto de no negativos, nunca sobre una suma.',
       ecuacion: [{ raiz: ['x²'] }, ' = ', { llave: [{ abs: ['x'] }], nota: 'nunca negativo', color: 'c-d' }, '   ·   ', { raiz: [a, ' · ', b] }, ' = ', { raiz: [a] }, ' · ', { raiz: [b] }],
       condicion: 'en los reales, la raíz de índice par pide radicando no negativo (a, b ≥ 0); la impar admite negativos: ∛(−8) = −2.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3;
+        if (tipo === 0) {
+          const k = r.ent(2, 12), neg = r() < 0.5, xv = neg ? -k : k;
+          return {
+            enunciado: `Si x = ${f(xv, 0)}, ¿cuánto vale √(x²)?`,
+            pasos: [
+              { tipo: 'pide', texto: `Piden √(x²) cuando x vale ${f(xv, 0)}.` },
+              { tipo: 'datos', texto: `x = ${f(xv, 0)}. Primero se eleva al cuadrado y después se saca la raíz.` },
+              { tipo: 'regla', texto: 'El símbolo √ da el número no negativo que, al cuadrado, da lo de adentro. Por eso √(x²) es la distancia de x al cero.',
+                ecuacion: [{ raiz: ['x²'] }, ' = ', { abs: ['x'] }] },
+              { tipo: 'cuentas', texto: 'Elevo al cuadrado y saco la raíz.', ecuacion: [{ raiz: [`(${f(xv, 0)})²`] }, ` = √${k * k} = ${k}`] },
+              { tipo: 'sentido', texto: `${k} no es negativo y ${k} · ${k} = ${k * k}: es la raíz principal. ${neg ? `Da ${k}, no ${f(xv, 0)}.` : `Aquí coincide con x.`}` },
+            ],
+            respuesta: `√(x²) = ${k}`,
+          };
+        }
+        if (tipo === 1) {
+          const c = r.ent(2, 6), t = r.uno([2, 3, 5, 6, 7]), N = c * c * t;
+          return {
+            enunciado: `Simplifica √${N} sacando de la raíz todo lo que se pueda.`,
+            pasos: [
+              { tipo: 'pide', texto: `Piden escribir √${N} con el número más chico posible bajo la raíz.` },
+              { tipo: 'datos', texto: `El radicando es ${N}. Busco el mayor cuadrado perfecto que lo divide: ${N} = ${c * c} · ${t}.` },
+              { tipo: 'regla', texto: 'La raíz de un producto de números no negativos es el producto de las raíces. Así, la raíz del cuadrado sale entera.',
+                ecuacion: [{ raiz: [a, ' · ', b] }, ' = ', { raiz: [a] }, ' · ', { raiz: [b] }] },
+              { tipo: 'cuentas', texto: `Separo ${c * c} y ${t}, y saco la raíz de ${c * c}.`, ecuacion: [`√${N} = √${c * c} · √${t} = ${c}√${t}`] },
+              { tipo: 'sentido', texto: `Lo reviso al revés: (${c}√${t})² = ${c * c} · ${t} = ${N}. Y ${t} ya no tiene ningún cuadrado adentro.` },
+            ],
+            respuesta: `√${N} = ${c}√${t}`,
+          };
+        }
+        const [p, q, h] = r.uno([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15], [12, 16, 20]]);
+        return {
+          enunciado: ['Si ', a, ` = ${p} y `, b, ` = ${q}, ¿cuánto vale `, { raiz: [a, '² + ', b, '²'] }, '?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la raíz de la suma ', a, '² + ', b, '².'] },
+            { tipo: 'datos', texto: [a, ` = ${p} y `, b, ` = ${q}.`] },
+            { tipo: 'regla', texto: 'La raíz no se reparte sobre una suma. Primero se hace todo lo de adentro y al final se saca la raíz.' },
+            { tipo: 'cuentas', texto: 'Elevo al cuadrado, sumo bajo la raíz y saco la raíz.', ecuacion: [`√(${p}² + ${q}²) = √(${p * p} + ${q * q}) = √${h * h} = ${h}`] },
+            { tipo: 'sentido', texto: `${h} · ${h} = ${h * h}: cuadra. Y ${h} es menor que ${p} + ${q} = ${p + q}: repartir la raíz habría dado de más.` },
+          ],
+          respuesta: ['√(', a, '² + ', b, `²) = ${h}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -294,6 +396,15 @@
     titulo: 'El cuadrado de una suma',
     temas: ['Productos notables'],
     pieza: 'alg-baldosas',
+    // Lee (fase 2): el área de un cuadrado de lado a + b y el nombre «producto notable»; no dice qué falta («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un patio cuadrado', texto: 'En una casa de Juliaca, un patio cuadrado mide a metros hasta una columna y b metros más hasta la pared. Su lado es a + b, y su área es el lado por el lado.',
+          ecuacion: ['(', a, ' + ', b, ')(', a, ' + ', b, ') = (', a, ' + ', b, ')²'] },
+        { titulo: 'Productos notables', texto: 'Algunas multiplicaciones salen tanto en los exámenes que conviene saber su resultado sin hacer toda la cuenta. Se llaman productos notables, y el cuadrado de una suma es el primero de la lista.' },
+        { titulo: 'Qué mirar al jugar', texto: 'El cuadrado grande ya trae dos piezas: a² en una esquina y b² en la opuesta. Cambia a y b, y fíjate si esas dos piezas alcanzan a cubrir todo el cuadrado.' },
+      ],
+    },
     juega: {
       consigna: 'Elige los largos a y b. El cuadrado mide a + b de lado; adentro ya están las piezas a² y b².',
       voz: 'Mira lo que queda sin cubrir.',
@@ -345,6 +456,58 @@
       ecuacion: ['(', a, ' + ', b, ')² = ', a, '² + ', { llave: ['2', a, b], nota: 'huecos', color: 'c-d' }, ' + ', b, '²', '   ·   ',
         '(', a, ' + ', b, ')(', a, ' − ', b, ') = ', a, '² − ', b, '²'],
       condicion: 'valen para todo par de números reales a y b; la figura de áreas solo ilustra el caso de lados positivos.',
+    },
+    resuelve: {
+      pieza: 'alg-baldosas',
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3;
+        if (tipo === 0) {
+          const va = r.ent(2, 7), vb = r.ent(1, 5), Sv = va + vb, Pv = va * vb, bien = Sv * Sv - 2 * Pv;
+          return {
+            enunciado: ['Si ', a, ' + ', b, ` = ${Sv} y `, a, b, ` = ${Pv}, ¿cuánto vale `, a, '² + ', b, '²?'],
+            dibujo: { datos: cuadrado(va, vb, false), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', a, '² + ', b, '², sin conocer ', a, ' ni ', b, ' por separado.'] },
+              { tipo: 'datos', texto: ['La suma ', a, ' + ', b, ` vale ${Sv} y el producto `, a, b, ` vale ${Pv}.`] },
+              { tipo: 'regla', texto: 'El cuadrado de lado a + b tiene cuatro piezas: a², b² y dos rectángulos ab. Si le quito los dos rectángulos, quedan a² y b².',
+                ecuacion: ['(', a, ' + ', b, ')² = ', a, '² + 2', a, b, ' + ', b, '²'] },
+              { tipo: 'cuentas', texto: ['Al cuadrado de la suma le resto dos veces el producto.'], ecuacion: [a, '² + ', b, `² = ${Sv}² − 2 · ${Pv} = ${Sv * Sv} − ${2 * Pv} = ${bien}`],
+                dibujo: { datos: cuadrado(va, vb, true), estado: {} } },
+              { tipo: 'sentido', texto: `Los números ${va} y ${vb} suman ${Sv} y multiplican ${Pv}. Con ellos: ${va * va} + ${vb * vb} = ${bien}. Cuadra.` },
+            ],
+            respuesta: [a, '² + ', b, `² = ${bien}`],
+          };
+        }
+        if (tipo === 1) {
+          const k = r.ent(2, 9), mas = r() < 0.5, signo = mas ? '+' : '−', c = mas ? 2 * k : -2 * k;
+          const des = `x² ${c < 0 ? '−' : '+'} ${Math.abs(c)}x + ${k * k}`, uno = (1 + (mas ? k : -k)) ** 2, seg = mas ? `${k}` : `(−${k})`;
+          return {
+            enunciado: `Al desarrollar (x ${signo} ${k})², ¿qué coeficiente acompaña a x?`,
+            pasos: [
+              { tipo: 'pide', texto: `Piden el número que multiplica a x cuando se desarrolla (x ${signo} ${k})².` },
+              { tipo: 'datos', texto: `Es el cuadrado de un binomio: el primer término es x y el segundo es ${signo === '+' ? '' : '−'}${k}.` },
+              { tipo: 'regla', texto: 'Al cuadrado de una suma salen los dos cuadrados y dos veces el producto de los términos, con su signo.',
+                ecuacion: ['(', a, ' + ', b, ')² = ', a, '² + 2', a, b, ' + ', b, '²'] },
+              { tipo: 'cuentas', texto: `El término del medio es 2 · x · ${seg}, y el último, ${k}² = ${k * k}.`, ecuacion: [`(x ${signo} ${k})² = x² + 2 · ${seg} · x + ${k}² = ${des}`] },
+              { tipo: 'sentido', texto: `Pruebo con x = 1: (1 ${signo} ${k})² = ${uno}, y 1 ${c < 0 ? '−' : '+'} ${Math.abs(c)} + ${k * k} = ${1 + c + k * k}. Cuadra.` },
+            ],
+            respuesta: `El coeficiente de x es ${f(c, 0)}.`,
+          };
+        }
+        const M = r.uno([20, 30, 40, 50, 60, 70]), d = r.ent(1, 4);
+        return {
+          enunciado: `Calcula ${M + d} · ${M - d} como (m + d)(m − d), con m = ${M}.`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden el producto ${M + d} · ${M - d} sin hacer la multiplicación larga.` },
+            { tipo: 'datos', texto: `Los dos números están a ${d} de ${M}: uno es ${M} + ${d} y el otro, ${M} − ${d}.` },
+            { tipo: 'regla', texto: 'La suma por la diferencia de dos números da la diferencia de sus cuadrados: los productos cruzados se anulan.',
+              ecuacion: ['(', a, ' + ', b, ')(', a, ' − ', b, ') = ', a, '² − ', b, '²'] },
+            { tipo: 'cuentas', texto: `Elevo ${M} y ${d} al cuadrado y resto.`, ecuacion: [`${M}² − ${d}² = ${M * M} − ${d * d} = ${M * M - d * d}`] },
+            { tipo: 'sentido', texto: `Queda un poco menos que ${M}² = ${M * M}: un factor subió ${d} y el otro bajó ${d}, y eso resta solo ${d * d}.` },
+          ],
+          respuesta: `${M + d} · ${M - d} = ${M * M - d * d}`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'alg-baldosas',
@@ -402,6 +565,14 @@
     titulo: 'Dos números que suman y multiplican',
     temas: ['Radicales dobles'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): qué es un radical doble y de dónde sale; el par que lo desarma lo busca el juego.
+    lee: {
+      tarjetas: [
+        { titulo: 'Una raíz con otra adentro', texto: 'A veces una raíz trae otra raíz adentro, como √(8 + 2√15). Eso es un radical doble. En los exámenes piden escribirlo con raíces sueltas, que son más fáciles de sumar y comparar.' },
+        { titulo: 'De dónde sale', texto: 'Si elevas al cuadrado una suma de dos raíces, como (√x + √y)², sale un número más otra raíz: un radical doble. Simplificarlo es recorrer ese camino al revés.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En la tabla, cada fila trae dos números x e y que suman A. Mira la última columna: el producto cambia de fila en fila, aunque la suma sea la misma.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un radical doble √(A + 2√B). La tabla lista los pares que suman A y su producto. Busca el producto B.',
       voz: 'La suma ya está; el producto decide.',
@@ -440,6 +611,30 @@
         { llave: [{ v: 'c-o', t: 'x' }, ' + ', { v: 'c-i', t: 'y' }], nota: 'suman A', color: 'c-d' }, ' = A', '   ·   ', { llave: [{ v: 'c-o', t: 'x' }, ' · ', { v: 'c-i', t: 'y' }], nota: 'multiplican B', color: 'c-d' }, ' = B'],
       condicion: 'x ≥ y ≥ 0, y con el signo menos va primero el mayor: así nada queda negativo.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        let xv, yv;
+        do { xv = r.ent(3, 11); yv = r.ent(1, xv - 1); } while (esCuad(xv * yv) || xv + yv > 15 || xv + yv < 5);
+        const A = xv + yv, B = xv * yv, sg = s % 2 ? '−' : '+';
+        const X = { v: 'c-o', t: 'x' }, Y = { v: 'c-i', t: 'y' };
+        const simple = `√${xv} ${sg} √${yv}${esCuad(xv) || esCuad(yv) ? ` = ${rz(xv)} ${sg} ${rz(yv)}` : ''}`;
+        return {
+          enunciado: `¿A qué es igual √(${A} ${sg} 2√${B})?`,
+          dibujo: { datos: tablaPares(A, B, true), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden escribir √(${A} ${sg} 2√${B}) con dos raíces simples.` },
+            { tipo: 'datos', texto: `Es un radical doble: bajo la raíz grande está ${A}, y bajo la raíz chica, después del 2, está ${B}.` },
+            { tipo: 'regla', texto: ['Busco dos números ', X, ' e ', Y, ` que sumen ${A} y se multipliquen ${B}. Si existen, el radical doble es √x ${sg} √y, con el mayor primero.`] },
+            { tipo: 'cuentas', texto: `De los pares que suman ${A}, solo ${xv} y ${yv} multiplican ${B}.`,
+              ecuacion: [X, ' + ', Y, ` = ${xv} + ${yv} = ${A}`, '   ·   ', X, ' · ', Y, ` = ${xv} · ${yv} = ${B}`],
+              dibujo: { datos: tablaPares(A, B), estado: {} } },
+            { tipo: 'sentido', texto: `Elevo al cuadrado: (√${xv} ${sg} √${yv})² = ${xv} + ${yv} ${sg} 2√${B} = ${A} ${sg} 2√${B}. Vuelve el radical de partida.${sg === '−' ? ` Y como ${xv} > ${yv}, no sale negativo.` : ''}` },
+          ],
+          respuesta: `√(${A} ${sg} 2√${B}) = ${simple}`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -472,6 +667,14 @@
     titulo: 'Racionalizar es multiplicar por uno',
     temas: ['Racionalización'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): por qué molesta una raíz abajo y el nombre «racionalizar»; el conjugado queda para «Predice».
+    lee: {
+      tarjetas: [
+        { titulo: 'Cifras que no terminan', texto: '√2 vale 1,4142… y sus cifras siguen sin fin. Dividir entre un número así es incómodo, por eso en los exámenes piden fracciones sin raíces en el denominador, el número de abajo.' },
+        { titulo: 'Racionalizar', texto: 'Cambiar una fracción por otra del mismo valor, pero sin raíces abajo, se llama racionalizar. Arriba pueden quedar raíces: lo que importa es que el denominador quede limpio.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En la tabla, la primera fila es la fracción de partida y la última, la nueva. Compara sus valores decimales y mira qué se hace en la fila del medio.' },
+      ],
+    },
     juega: {
       consigna: 'Elige el número bajo la raíz y la forma del denominador. Mira la expresión que resulta y su valor decimal en cada fila.',
       voz: 'Compara los valores de la primera y la última fila.',
@@ -511,6 +714,35 @@
       texto: 'Racionalizar es multiplicar por una expresión igual a 1 que deja el denominador sin raíces. Con √a − √b se usa su conjugado √a + √b.',
       ecuacion: [{ frac: ['1', ['√', a, ' − √', b]] }, ' = ', { frac: [{ llave: ['√', a, ' + √', b], nota: 'el conjugado', color: 'c-d', arriba: true }, { llave: [a, ' − ', b], nota: 'sin raíces', color: 'c-d' }] }],
       condicion: 'a ≠ b y el denominador no vale cero; el valor de la expresión y sus restricciones no cambian.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        let A, B;
+        do { A = r.ent(3, 15); B = r.ent(2, A - 1); } while (esCuad(A) || esCuad(B));
+        const K = r.uno([1, 2, 3, 4, 6]), sg = s % 2 ? '+' : '−', inv = sg === '+' ? '−' : '+';
+        const Dv = A - B, g = mcd(K, Dv), c = K / g, den = Dv / g;
+        const arriba = (signo, coef) => (coef === 1 ? `√${A} ${signo} √${B}` : `${coef}(√${A} ${signo} √${B})`);
+        const escribe = (signo, coef, d) => (d === 1 ? arriba(signo, coef) : [{ frac: [arriba(signo, coef), String(d)] }]);
+        const orig = K / (Math.sqrt(A) + (sg === '+' ? 1 : -1) * Math.sqrt(B)), fin = c * (Math.sqrt(A) + (inv === '+' ? 1 : -1) * Math.sqrt(B)) / den;
+        const tabla = conFin => ({ datos: { columnas: ['expresión', '≈ valor'], filas: [[`${K}/(√${A} ${sg} √${B})`, f(orig, 3)],
+          conFin ? [`× (√${A} ${inv} √${B})/(√${A} ${inv} √${B})`, 'por 1'] : ['× ?', ''], conFin ? [{ t: `${c === 1 ? '' : c}(√${A} ${inv} √${B})${den === 1 ? '' : `/${den}`}`, color: 'd', fuerte: true }, { t: f(fin, 3), color: 'd' }] : ['?', '']],
+          alt: 'La fracción de partida, el factor que vale 1 y la fracción sin raíces abajo, con su valor decimal' }, estado: {} });
+        return {
+          enunciado: ['Racionaliza ', { frac: [String(K), `√${A} ${sg} √${B}`] }, '.'],
+          dibujo: tabla(false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden otra fracción del mismo valor, sin raíces en el denominador.' },
+            { tipo: 'datos', texto: `Arriba está ${K}. Abajo hay dos raíces con un signo ${sg} en medio: √${A} ${sg} √${B}.` },
+            { tipo: 'regla', texto: `Multiplico arriba y abajo por el conjugado, que cambia el signo del medio a ${inv}. Abajo queda una diferencia de cuadrados, sin raíces.` },
+            { tipo: 'cuentas', texto: `Abajo: (√${A} ${sg} √${B})(√${A} ${inv} √${B}) = ${A} − ${B} = ${Dv}.${g > 1 ? ` Después simplifico entre ${g}.` : ''}`,
+              ecuacion: [{ frac: [String(K), `√${A} ${sg} √${B}`] }, ' = ', { frac: [arriba(inv, K), String(Dv)] }, ...(g > 1 || den === 1 ? [' = ', ...[].concat(escribe(inv, c, den))] : [])],
+              dibujo: tabla(true) },
+            { tipo: 'sentido', texto: `Comparo los valores decimales: la de partida vale ≈ ${f(orig, 3)} y la nueva, ≈ ${f(fin, 3)}. Son iguales: solo cambió la forma.` },
+          ],
+          respuesta: [].concat(escribe(inv, c, den)),
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -735,6 +967,8 @@
         ejemplo: 'Un cubo de arista 3 tiene volumen 3³ = 27.', ver: ['volumen'] },
       { termino: 'volumen', formas: ['volumen', 'volúmenes'], def: 'Cuánto espacio ocupa un cuerpo: en una caja, largo por ancho por alto.',
         ejemplo: 'Una caja de 2 por 1 por 1 tiene volumen 2.', ver: ['arista'] },
+      { termino: 'área', formas: ['área', 'áreas'], def: 'Cuánta superficie cubre una figura plana: en un rectángulo, largo por ancho.',
+        ejemplo: 'Un cuadrado de 20 m de lado tiene 400 m² de área.', ver: ['volumen'] },
       { termino: 'identidad', def: 'Igualdad que se cumple con cualquier valor de las letras, no solo con algunos.',
         ejemplo: '(a + b)² = a² + 2ab + b² vale para todo a y b.' },
       { termino: 'distributiva', formas: ['distributiva', 'distributividad'], def: 'Propiedad que reparte un producto sobre una suma: a(b + c) = ab + ac.',
