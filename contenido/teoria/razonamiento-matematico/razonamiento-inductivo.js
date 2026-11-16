@@ -99,6 +99,14 @@
     titulo: 'La regla sale de construir',
     temas: ['Inducción con figuras'],
     pieza: 'rm-plano',
+    // Lee (fase 2): sucesión de figuras y término general, sin dar cuántos palitos agrega cada cuadrado.
+    lee: {
+      tarjetas: [
+        { titulo: 'Figuras con palitos', texto: 'En los exámenes de admisión aparecen figuras armadas con palitos iguales, como fósforos sobre una mesa. Se dibujan la figura 1, la 2, la 3… y te preguntan por una figura lejana.' },
+        { titulo: 'Sucesión y término general', texto: ['Una lista ordenada de figuras es una sucesión. El término general es una fórmula con ', n, ' que da los palitos de la figura ', n, ' sin dibujar las anteriores.'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, el primer cuadrado sale en turquesa y lo nuevo de cada paso, en naranja. Fíjate qué palitos pone cada cuadrado nuevo y cuáles ya estaban.' },
+      ],
+    },
     juega: {
       consigna: 'Una fila de cuadrados hecha con palitos. Agrega cuadrados y cuenta: el primero va en turquesa; lo que agrega cada uno nuevo, en naranja.',
       voz: 'Cuenta solo los palitos naranjas que trae cada cuadrado.',
@@ -133,6 +141,26 @@
       texto: 'Una fórmula, el término general, vale para todas las figuras cuando sale de cómo se construyen: lo que pone la primera más lo que agrega cada paso.',
       ecuacion: [P, ' = (primera) + (lo que agrega) · ', { llave: ['(', n, ' − 1)'], nota: 'pasos dados', color: 'c-d' }],
       condicion: 'cada figura se arma desde la anterior siempre de la misma manera; ver tres casos no basta sin conocer la construcción.',
+    },
+    // Así se resuelve (fase 2): la misma fila de figuras de «Ahora tú» (cuenta), con otras semillas.
+    resuelve: {
+      pieza: 'rm-plano',
+      generar(s) {
+        const r = azar(s + 900), forma = ['cuadrado', 'triangulo', 'doble'][s % 3], k = r.ent(10, 40), F = FORMAS[forma];
+        const bien = cuenta(forma, k), c3 = cuenta(forma, 3);
+        return {
+          enunciado: `Una figura de ${F.nombre}, hecha con palitos. ¿Cuántos palitos tiene la figura ${k}?`,
+          dibujo: { datos: palitos(3, forma, { pie: `Figuras 1 a 3: ${cuenta(forma, 1)}, ${cuenta(forma, 2)}, ${c3} palitos` }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden los palitos ', P, ` de la figura ${k}, sin dibujarla.`] },
+            { tipo: 'datos', texto: 'Las tres primeras figuras, contadas en el dibujo.', ecuacion: [`${cuenta(forma, 1)}, ${cuenta(forma, 2)}, ${c3}`] },
+            { tipo: 'regla', texto: `Veo cómo se arma: la primera figura pone ${F.primero} palitos y cada figura nueva comparte un borde, así que agrega solo ${F.agrega}.` },
+            { tipo: 'cuentas', texto: `De la figura 1 a la ${k} hay ${k - 1} pasos, y cada paso agrega ${F.agrega}.`, ecuacion: [P, ` = ${F.primero} + ${F.agrega} · ${k - 1} = ${bien}`] },
+            { tipo: 'sentido', texto: `Pruebo la misma cuenta con la figura 3: ${F.primero} + ${F.agrega} · 2 = ${F.primero + 2 * F.agrega}, igual que en el dibujo.` },
+          ],
+          respuesta: `${bien} palitos`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-plano',
@@ -187,6 +215,14 @@
     titulo: 'Tres casos no prueban',
     temas: ['Inducción verbal', 'Inducción numérica'],
     pieza: 'rm-plano',
+    // Lee (fase 2): inducción, hipótesis, cuerda y región; no dice qué pasa con 6 puntos (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Adivinar la regla', texto: 'Si ves 2, 4, 6, piensas que sigue 8. Pasar de unos casos a una regla se llama inducción. La regla que propones así es una hipótesis: una idea que todavía falta probar.' },
+        { titulo: 'Cuerdas y regiones', texto: 'Una cuerda es un segmento que une dos puntos de una circunferencia. Al trazar cuerdas, el círculo queda partido en regiones: cada parte separada por las líneas.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, une todos los puntos con todos y cuenta las regiones con cada punto nuevo. Anota los números y di con tus palabras qué parece pasar.' },
+      ],
+    },
     juega: {
       consigna: 'Pon puntos en una circunferencia y únelos todos con todos. Cuenta en cuántas regiones queda partido el círculo.',
       voz: 'Escribe con palabras qué parece pasar con cada punto nuevo.',
@@ -220,6 +256,44 @@
       texto: 'Lo que se ve en algunos casos es una hipótesis. Se acepta como regla solo si se explica por qué vale siempre; si un caso la contradice, se descarta.',
       ecuacion: ['casos que cumplen ⇏ regla', '   ·   ', { llave: ['un caso que no cumple'], nota: 'contraejemplo', color: 'c-h' }, ' ⇒ no hay regla'],
       condicion: 'para afirmar la regla hace falta un argumento, por ejemplo cómo se construye cada caso desde el anterior.',
+    },
+    // Así se resuelve (fase 2): los mismos tres tipos de «Ahora tú» (regiones y sucesiones), con otras semillas.
+    resuelve: {
+      pieza: 'rm-plano',
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3;
+        if (tipo === 0) {
+          const k = r.ent(6, 8), bien = regiones(k), cu = k * (k - 1) / 2, cr = bien - 1 - cu;
+          const c = {
+            enunciado: `Con puntos en una circunferencia unidos todos con todos (sin tres cuerdas que se crucen en un punto), ¿cuántas regiones hay con ${k} puntos?`,
+            pasos: [
+              { tipo: 'pide', texto: `Piden las regiones del círculo con ${k} puntos unidos todos con todos.` },
+              { tipo: 'datos', texto: `${k} puntos. Con 1, 2, 3, 4 y 5 puntos salen 1, 2, 4, 8 y 16 regiones.` },
+              { tipo: 'regla', texto: '«Se duplica» es solo una hipótesis. Uso cómo se construye: cada cuerda y cada cruce de dos cuerdas agregan una región.', ecuacion: ['regiones = 1 + cuerdas + cruces'] },
+              { tipo: 'cuentas', texto: 'Cada par de puntos da una cuerda; cada grupo de 4 puntos da un cruce.', ecuacion: [`cuerdas = ${cu}   ·   cruces = ${cr}   ·   1 + ${cu} + ${cr} = ${bien}`] },
+              { tipo: 'sentido', texto: `Con 5 puntos la misma cuenta da 1 + 10 + 5 = 16, como en el juego. Duplicar daría ${2 ** (k - 1)}: la hipótesis falla.` },
+            ],
+            respuesta: `${bien} regiones`,
+          };
+          if (k === 6) c.dibujo = { datos: cuerdas(6), estado: {} };
+          return c;
+        }
+        const a = r.ent(1, 5), seq = [a, 2 * a, 4 * a], regla = tipo === 1 ? 'duplica' : 'suma';
+        const sig = regla === 'duplica' ? 8 * a : 4 * a + 3 * a, otra = regla === 'duplica' ? 7 * a : 8 * a;
+        return {
+          enunciado: `La sucesión empieza ${seq.join(', ')}. Si ${regla === 'duplica' ? 'cada término es el doble del anterior' : 'las diferencias entre términos aumentan de ' + a + ' en ' + a}, ¿cuál es el cuarto término?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden el cuarto término de ${seq.join(', ')}.` },
+            { tipo: 'datos', texto: regla === 'duplica' ? 'El enunciado fija la regla: cada término es el doble del anterior.' : `El enunciado fija la regla: las diferencias crecen de ${a} en ${a}.`,
+              ecuacion: regla === 'duplica' ? [`${a} → ${2 * a} → ${4 * a} → ?`] : [`diferencias: ${a}, ${2 * a}, ?`] },
+            { tipo: 'regla', texto: 'Tres términos aceptan más de una regla. No elijo la que me parece: uso la que dice el enunciado.' },
+            { tipo: 'cuentas', texto: regla === 'duplica' ? 'Duplico el tercer término.' : `La diferencia que sigue es ${3 * a}; la sumo al tercer término.`,
+              ecuacion: [regla === 'duplica' ? `${4 * a} · 2 = ${sig}` : `${4 * a} + ${3 * a} = ${sig}`] },
+            { tipo: 'sentido', texto: `Con la otra regla saldría ${otra}. Por eso el enunciado tenía que decir cuál usar.` },
+          ],
+          respuesta: `El cuarto término es ${sig}.`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Prueba la regla en un caso más antes de creerla.',
@@ -277,6 +351,15 @@
     titulo: 'Impares que arman cuadrados',
     temas: ['Inducción numérica'],
     pieza: 'rm-tablero',
+    // Lee (fase 2): impares y la L de casillas; no dice qué figura arman juntas (eso se descubre al jugar).
+    lee: {
+      tarjetas: [
+        { titulo: 'Los impares', texto: 'Los impares son los números que no se parten en dos grupos iguales: 1, 3, 5, 7… Van de dos en dos. El impar que ocupa el lugar n es 2n − 1: el décimo es 19.',
+          ecuacion: ['impar ', n, ' = 2', n, ' − 1'] },
+        { titulo: 'Un impar como una L', texto: 'En el tablero, cada impar es una L de casillas: una fila y una columna que comparten la esquina. La L del 5 tiene 3 casillas abajo y 3 al costado, con una compartida.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, agrega impares uno por uno. Fíjate en la forma que arman las L juntas y cuenta las casillas de cada lado.' },
+      ],
+    },
     juega: {
       consigna: 'Cada número impar es una «L» de casillas. Agrega impares y mira qué figura forman juntas.',
       voz: 'Cuenta las casillas de cada lado del cuadrado.',
@@ -311,6 +394,27 @@
       texto: 'La suma de los primeros n impares es n²: cada impar es la L que convierte un cuadrado en el siguiente. El dibujo explica por qué vale para todo n.',
       ecuacion: ['1 + 3 + … + ', { llave: ['(2', n, ' − 1)'], nota: 'el impar n', color: 'c-d' }, ' = ', { sup: [n, '2'] }],
       condicion: 'se suman impares seguidos desde 1; si se empieza en otro impar, se resta el cuadrado que falta.',
+    },
+    // Así se resuelve (fase 2): la misma suma de impares de «Ahora tú», con otras semillas.
+    resuelve: {
+      pieza: 'rm-tablero',
+      generar(s) {
+        const r = azar(s + 900), k = r.ent(8, 30), ultimo = 2 * k - 1, tipo = s % 2;
+        return {
+          enunciado: tipo ? `¿Cuánto suman 1 + 3 + 5 + … + ${ultimo}?` : `¿Cuánto suman los primeros ${k} números impares?`,
+          dibujo: { datos: lCuadrado(3, { nota: '1 + 3 + 5 = 3 × 3' }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: tipo ? `Piden la suma de los impares desde 1 hasta ${ultimo}.` : `Piden la suma de los primeros ${k} impares: 1 + 3 + 5 + …` },
+            { tipo: 'datos', texto: tipo ? `Empieza en 1 y termina en ${ultimo}. Cuento cuántos impares hay.` : `Son ${k} impares seguidos desde 1. El último es 2 · ${k} − 1 = ${ultimo}.`,
+              ecuacion: tipo ? [n, ` = (${ultimo} + 1) / 2 = ${k}`] : [n, ` = ${k}`] },
+            { tipo: 'regla', texto: ['Cada impar es una L que agranda el cuadrado en una fila y una columna. Con ', n, ' impares desde 1 se arma un cuadrado de ', n, ' por ', n, '.'] },
+            { tipo: 'cuentas', texto: `Las ${k} L forman un cuadrado de ${k} por ${k}.`, ecuacion: [{ sup: [String(k), '2'] }, ` = ${k} × ${k} = ${k * k}`],
+              dibujo: { datos: lCuadrado(4, { nota: `… hasta ${k} × ${k} = ${k * k}` }), estado: {} } },
+            { tipo: 'sentido', texto: `Otra forma: el promedio de los impares es (1 + ${ultimo}) / 2 = ${k}. Son ${k} términos, y ${k} por ${k} da lo mismo.` },
+          ],
+          respuesta: `La suma es ${k * k}.`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-tablero',
