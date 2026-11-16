@@ -84,6 +84,14 @@
     titulo: 'Filas de m sin sobrante',
     temas: ['Múltiplos y divisores'],
     pieza: 'arit-fichas',
+    lee: {
+      tarjetas: [
+        { titulo: 'Repartir sin que sobre', texto: 'En la feria de Juliaca, una vendedora acomoda 24 panes en bolsas de 6 y no le queda ninguno suelto. Con bolsas de 5, le quedarían 4 panes sueltos. De eso trata esta idea: de lo que sobra.' },
+        { titulo: 'Divisor y múltiplo', texto: ['Si las fichas se reparten en filas de ', m, ' sin sobrante, decimos que ', m, ' divide a ', n_, '. También se dice que ', m, ' es divisor de ', n_, ' y que ', n_, ' es múltiplo de ', m, '.'],
+          ecuacion: [m, ' | ', n_, '   se lee   «', m, ' divide a ', n_, '»'] },
+        { titulo: 'Qué mirar', texto: 'Al jugar, cambia el largo de la fila y mira las fichas rojas: son las que no completan una fila. Busca un número de fichas que se llene con varios largos distintos.' },
+      ],
+    },
     juega: {
       consigna: 'Elige cuántas fichas hay y el largo de cada fila. Las rojas son las que sobran.',
       voz: 'Busca un largo de fila que no deje rojas.',
@@ -125,6 +133,28 @@
       ecuacion: [{ llave: [m, ' | ', n_], nota: 'm divide n', color: 'c-i' }, '  ⇔  ', n_, ' = ', m, ' · k', '   ·   ', 'k entero'],
       condicion: 'm ≠ 0. Que un número «parezca primo» no prueba nada: se prueba dividiendo.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de problema de «Ahora tú», con otras semillas, resuelto paso a paso.
+    resuelve: {
+      generar(s) {
+        const g = azar(s + 900), mv = g.ent(3, 13), k = g.ent(8, 30), rv = s % 3 === 0 ? 0 : g.ent(1, mv - 1), nv = mv * k + rv;
+        const N = { v: 'c-o', t: String(nv) }, M = { v: 'c-i', t: String(mv) }, R = { v: 'c-h', t: String(rv) };
+        return {
+          enunciado: ['Se acomodan ', N, ' fichas en filas de ', M, '. ¿Cuántas fichas sobran?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden cuántas fichas quedan sueltas, sin completar una fila de ', M, '.'] },
+            { tipo: 'datos', texto: ['Hay ', N, ' fichas en total y cada fila lleva ', M, '.'] },
+            { tipo: 'regla', texto: ['Lo que sobra es el resto de dividir entre el largo de la fila. Siempre es menor que ese largo. Si sale 0, ', m, ' divide a ', n_, '.'],
+              ecuacion: [n_, ' = ', m, ' · k + ', r, '   ·   ', '0 ≤ ', r, ' < ', m] },
+            { tipo: 'cuentas', texto: ['Busco cuántas filas llenas caben: el mayor múltiplo de ', M, ` que no pasa de ${nv} es ${mv} · ${k} = ${mv * k}.`],
+              ecuacion: [N, ' = ', M, ` · ${k} + `, R] },
+            { tipo: 'sentido', texto: rv === 0
+              ? [`Compruebo: ${mv} · ${k} = ${mv * k}, justo el total. No sobra nada: `, M, ' divide a ', N, '.']
+              : [`Compruebo: ${mv} · ${k} + ${rv} = ${mv * k + rv}, el total. Y `, R, ' es menor que ', M, ': no alcanza para otra fila.'] },
+          ],
+          respuesta: rv === 0 ? 'No sobra ninguna ficha' : rv === 1 ? 'Sobra 1 ficha' : `Sobran ${rv} fichas`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const g = azar(s), mv = g.ent(3, 13), k = g.ent(8, 30), rv = s % 3 === 0 ? 0 : g.ent(1, mv - 1), nv = mv * k + rv;
@@ -165,6 +195,15 @@
     titulo: 'Los restos se suman y multiplican',
     temas: ['Teoremas de la divisibilidad'],
     pieza: 'arit-fichas',
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que queda suelto', texto: 'En el mercado de Puno, los huevos se venden por docenas. Con 30 huevos se arman 2 docenas y quedan 6 sueltos. Ese 6 es el resto de dividir 30 entre 12.',
+          ecuacion: ['30 = 12 · 2 + ', { v: 'c-h', t: '6' }] },
+        { titulo: 'Congruentes', texto: 'Dos números que dejan el mismo resto al dividirlos entre m son congruentes. El 17 y el 2 dejan resto 2 entre 5. Se lee «17 es congruente con 2, módulo 5».',
+          ecuacion: ['17 ≡ 2  (mód 5)'] },
+        { titulo: 'Qué mirar', texto: 'Al jugar, sigue solo las fichas rojas de a y de b. El bloque de la derecha las junta en filas de 5. Compara lo que le sobra a ese bloque con el resto de a + b.' },
+      ],
+    },
     juega: {
       consigna: 'Dos montones, a y b, en filas de 5. A la derecha se juntan solo sus sobrantes.',
       voz: 'Compara el sobrante de a + b con los dos sobrantes juntos.',
@@ -201,6 +240,27 @@
       texto: 'Si m divide a dos números, divide a cualquier suma de sus múltiplos. Por eso, para el resto de una suma o producto, basta operar los restos.',
       ecuacion: [a, ' ≡ ', { llave: [r], nota: 'resto de a', color: 'c-h' }, ',  b ≡ s  (mód ', m, ')', '   ·   ', 'a + b ≡ ', r, ' + s', '   ·   ', 'ab ≡ ', r, 's'],
       condicion: 'al final se reduce otra vez entre m. No se puede dividir una congruencia entre cualquier número.',
+    },
+    resuelve: {
+      generar(s) {
+        const g = azar(s + 900), mv = g.ent(5, 13), ra = g.ent(2, mv - 1), rb = g.ent(2, mv - 1), prod = s % 2 === 0;
+        const op = prod ? ra * rb : ra + rb, v = op % mv, signo = prod ? ' · ' : ' + ', que = prod ? 'a · b' : 'a + b';
+        const M = { v: 'c-i', t: String(mv) }, RA = { v: 'c-h', t: String(ra) }, RB = { v: 'c-h', t: String(rb) }, V = { v: 'c-h', t: String(v) };
+        // Dato de vuelta: dos números concretos con esos restos.
+        const aa = mv + ra, bb = 2 * mv + rb, val = prod ? aa * bb : aa + bb;
+        return {
+          enunciado: ['Un número a deja resto ', RA, ' y otro, b, deja resto ', RB, ' al dividirlos entre ', M, `. ¿Qué resto deja ${que} entre `, M, '?'],
+          pasos: [
+            { tipo: 'pide', texto: [`Piden el resto de ${que} entre `, M, '. No conozco a ni b, solo sus restos.'] },
+            { tipo: 'datos', texto: ['Sé lo que sobra de cada uno al hacer filas de ', M, '.'], ecuacion: [a, ' ≡ ', RA, ',   b ≡ ', RB, '   (mód ', M, ')'] },
+            { tipo: 'regla', texto: `Las filas llenas no cambian el resto. Por eso opero solo los restos, ${prod ? 'multiplicándolos' : 'sumándolos'}, y lo que salga lo vuelvo a dividir entre ${mv}.` },
+            { tipo: 'cuentas', texto: [`Opero los restos: ${ra}${signo}${rb} = ${op}. ${op >= mv ? `Como ${op} pasa de ${mv}, lo reduzco.` : `Como ${op} es menor que ${mv}, ya es el resto.`}`],
+              ecuacion: [RA, signo, RB, ` = ${op} = `, M, ` · ${Math.floor(op / mv)} + `, V] },
+            { tipo: 'sentido', texto: [`Pruebo con a = ${aa} y b = ${bb}, que dejan esos restos: ${aa}${signo}${bb} = ${val}, y ${val} entre ${mv} deja `, { v: 'c-h', t: String(val % mv) }, '. Cuadra.'] },
+          ],
+          respuesta: [`${que} deja resto `, V],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -242,6 +302,14 @@
     titulo: 'Los restos de potencias se repiten',
     temas: ['Restos potenciales'],
     pieza: 'arit-tabla',
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que se repite', texto: 'Hoy es lunes. ¿Qué día será dentro de 100 días? Nadie cuenta día por día: la semana se repite cada 7 días. Con los restos de las potencias pasa algo parecido.' },
+        { titulo: 'Base y exponente', texto: 'En 3⁴ = 81, el 3 es la base y el 4 es el exponente: el 3 se multiplica cuatro veces. Los restos de 3, 3², 3³… entre un mismo divisor se llaman restos potenciales.',
+          ecuacion: [{ sup: [{ v: 'c-o', t: '3' }, '4'] }, ' = 3 · 3 · 3 · 3 = 81'] },
+        { titulo: 'Qué mirar', texto: 'Al jugar, baja por la tabla y mira la columna roja. Busca el primer resto que vuelve a salir y cuenta cuántas filas hay entre una vez y la otra.' },
+      ],
+    },
     juega: {
       consigna: 'Elige la base y el divisor. La tabla da el resto de cada potencia; los resaltados forman el ciclo.',
       voz: 'Busca dónde empieza a repetirse la columna roja.',
@@ -280,6 +348,31 @@
       texto: 'Los restos potenciales de a, a², a³, … entre m se repiten en un ciclo. Para aⁿ, se busca el lugar del ciclo con el resto de n entre su largo.',
       ecuacion: [{ sup: [a, 'n'] }, ' ≡ ', { llave: [{ sup: [a, 'n mód L'] }], nota: 'lugar del ciclo', color: 'c-o' }, '  (mód ', m, ')'],
       condicion: 'si n mód L es 0, toca el último del ciclo. El ciclo se comprueba en la tabla, no se supone.',
+    },
+    resuelve: {
+      generar(s) {
+        const g = azar(s + 900), b = g.ent(2, 9), k = g.de([5, 7, 9, 11, 13].filter(x => mcd(x, b) === 1));
+        const c = ciclo(b, k), L = c.xs.length - c.ini, e = g.ent(20, 99), v = powmod(b, e, k);
+        const p = e % L, lugar = p === 0 ? L : p, filasT = Math.min(8, L + 1);
+        const B = { v: 'c-o', t: String(b) }, K = { v: 'c-i', t: String(k) }, V = { v: 'c-h', t: String(v) };
+        const tabla = fila => ({ datos: tablaPot(b, k, filasT), estado: fila === undefined ? {} : { fila } });
+        return {
+          enunciado: ['¿Qué resto deja ', { sup: [B, String(e)] }, ' al dividirlo entre ', K, '?'],
+          dibujo: tabla(),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el resto de ', { sup: [B, String(e)] }, ' entre ', K, '. Es un número enorme: no lo voy a calcular entero.'] },
+            { tipo: 'datos', texto: ['La base es ', B, `, el exponente es ${e} y el divisor es `, K, '.'] },
+            { tipo: 'regla', texto: 'Cada resto sale del anterior por la base, así que se repiten en ciclo. Cambio el exponente por lo que sobra al dividirlo entre el largo del ciclo.' },
+            { tipo: 'cuentas', texto: [`Los restos son ${c.xs.slice(c.ini).join(', ')} y vuelven a empezar: el ciclo mide ${L}. ${p === 0 ? `${e} es múltiplo de ${L}: toca el último.` : `${e} entre ${L} deja ${p}.`}`],
+              ecuacion: [`${e} = ${L} · ${Math.floor(e / L)} + ${p}   →   `, { sup: [B, String(e)] }, ' ≡ ', { sup: [B, String(lugar)] }, ' ≡ ', V],
+              dibujo: lugar <= filasT ? tabla(lugar - 1) : tabla() },
+            { tipo: 'sentido', texto: lugar === L
+              ? ['Compruebo: ', { sup: [B, String(L)] }, ` deja ${powmod(b, L, k)}, y cada vuelta del ciclo multiplica por algo que deja 1: el resto no cambia.`]
+              : ['Compruebo: ', { sup: [B, String(L)] }, ` deja ${powmod(b, L, k)}, así que cada vuelta del ciclo no cambia el resto. Queda `, { sup: [B, String(lugar)] }, `, que deja ${powmod(b, lugar, k)}.`] },
+          ],
+          respuesta: [{ sup: [B, String(e)] }, ' deja resto ', V, ' entre ', K],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -320,6 +413,14 @@
     titulo: 'Los criterios salen de 10',
     temas: ['Criterios de divisibilidad'],
     pieza: 'arit-tabla',
+    lee: {
+      tarjetas: [
+        { titulo: 'Cifras en su lugar', texto: 'Un número como 5 877 está hecho de cifras puestas en lugares: 5 millares, 8 centenas, 7 decenas y 7 unidades. Cada lugar vale una potencia de 10.',
+          ecuacion: [{ v: 'c-o', t: '5 877' }, ' = 5 · 1 000 + 8 · 100 + 7 · 10 + 7'] },
+        { titulo: 'Un atajo con nombre', texto: 'Un criterio de divisibilidad es un atajo: mirando solo las cifras, sabes qué resto deja el número sin hacer la división larga. Cada divisor tiene el suyo.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, mira la columna turquesa: dice qué resto deja cada lugar, 1, 10 o 100, al dividirlo entre el divisor elegido. Cambia el divisor y compara cómo cambia esa columna.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un número y un divisor. Cada lugar deja un resto al dividirlo entre ese divisor; la tabla suma los aportes.',
       voz: 'Mira la columna turquesa con 9 y con 11.',
@@ -356,6 +457,41 @@
       ecuacion: [{ llave: ['10 ≡ 1'], nota: 'cada lugar' }, ' (mód 9)', '   ·   ', { v: 'c-o', t: 'N' }, ' ≡ suma de cifras'],
       condicion: 'vale para numerales en base 10. En base b, la suma de cifras sirve para b − 1.',
     },
+    resuelve: {
+      generar(s) {
+        const g = azar(s + 900), d = g.de([3, 9, 11, 4]), N = g.ent(1000, 9999), v = N % d;
+        const cs = String(N).split('').map(Number), suma = cs.reduce((x, y) => x + y, 0);
+        const desdeDer = cs.slice().reverse(), alt = desdeDer.reduce((acc, c, i) => acc + (i % 2 ? -c : c), 0), dos = N % 100;
+        const Nn = { v: 'c-o', t: f(N) }, D = { v: 'c-i', t: String(d) }, V = { v: 'c-h', t: String(v) };
+        // Lleva un valor x a su resto entre d, con la cuenta a la vista (también si x es negativo).
+        const reduce = x => (x < 0 ? [` ${f(x)} + ${-Math.floor(x / d) * d} = `, V] : x < d ? [' → resto ', V] : [` = ${d} · ${Math.floor(x / d)} + `, V]);
+        const regla = {
+          3: 'Entre 3, el 10 deja resto 1, y también 100 y 1 000. Cada cifra aporta lo que vale: el número deja el resto de la suma de sus cifras.',
+          9: 'Entre 9, el 10 deja resto 1, y también 100 y 1 000. Cada cifra aporta lo que vale: el número deja el resto de la suma de sus cifras.',
+          11: 'Entre 11, el 10 deja resto −1, porque 10 = 11 − 1. Por eso, desde la derecha, las cifras se suman y se restan alternando.',
+          4: 'El 100 es múltiplo de 4, y también 1 000. Los millares y las centenas no dejan nada: solo cuentan las dos últimas cifras.',
+        }[d];
+        const cuentas = d === 11
+          ? { texto: 'Desde las unidades: sumo la cifra de las unidades, resto la de las decenas, sumo la de las centenas y resto la de los millares.',
+            ecuacion: [desdeDer.map((c, i) => (i ? (i % 2 ? ` − ${c}` : ` + ${c}`) : String(c))).join(''), ` = ${f(alt)}`, ...reduce(alt)] }
+          : d === 4
+            ? { texto: `Miro solo las dos últimas cifras: ${String(dos).padStart(2, '0')}. Lo de adelante es un múltiplo de 100 y no deja resto.`, ecuacion: [String(dos), ...reduce(dos)] }
+            : { texto: 'Sumo las cifras y reduzco la suma entre el divisor.', ecuacion: [cs.join(' + '), ` = ${suma}`, ...reduce(suma)] };
+        cuentas.dibujo = { datos: tablaCriterio(N, d), estado: {} };
+        return {
+          enunciado: ['Sin hacer la división larga, ¿qué resto deja ', Nn, ' al dividirlo entre ', D, '?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el resto de ', Nn, ' entre ', D, ', usando solo sus cifras.'] },
+            { tipo: 'datos', texto: [`Las cifras son ${cs.join(', ')}, de los millares a las unidades. El divisor es `, D, '.'] },
+            { tipo: 'regla', texto: regla },
+            Object.assign({ tipo: 'cuentas' }, cuentas),
+            { tipo: 'sentido', texto: ['Compruebo con la división completa: da el mismo resto, que es menor que ', D, '.'],
+              ecuacion: [Nn, ` = ${d} · ${f(Math.floor(N / d))} + `, V] },
+          ],
+          respuesta: [Nn, ' deja resto ', V, ' entre ', D],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const g = azar(s), d = g.de([3, 9, 11, 4]), N = g.ent(1000, 9999), v = N % d;
@@ -391,6 +527,14 @@
     titulo: 'Soluciones enteras: manda el mcd',
     temas: ['Ecuaciones diofánticas lineales'],
     pieza: 'arit-tabla',
+    lee: {
+      tarjetas: [
+        { titulo: 'Solo cantidades enteras', texto: 'En la feria de Juliaca, un juego cuesta 4 soles y otro, 6. ¿Se puede gastar justo 22 soles? Nadie compra medio juego: solo valen cantidades enteras.',
+          ecuacion: ['4', { v: 'c-o', t: 'x' }, ' + 6', { v: 'c-i', t: 'y' }, ' = 22'] },
+        { titulo: 'Un nombre antiguo', texto: 'Una ecuación como 4x + 6y = 22, donde x e y tienen que ser enteros, se llama ecuación diofántica. El nombre viene de Diofanto de Alejandría, que estudió problemas así hace más de 1 700 años.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, la tabla prueba x = 0, 1, 2… y calcula y. Cambia c de uno en uno y mira cuándo aparece una fila resaltada y cuándo no aparece ninguna.' },
+      ],
+    },
     juega: {
       consigna: 'Elige a, b y c en ax + by = c. La tabla prueba x = 0, 1, 2… y resalta cuando y sale entero.',
       voz: 'Compara el mcd de a y b con c.',
@@ -428,6 +572,52 @@
       // En tres líneas: a 360 px «hay enteros con ax + by = c» se partía antes de la c.
       ecuacion: [{ llave: ['mcd(', a, ', b) | c'], nota: 'la condición' }, ' ⇔', '   ·   ', a, 'x + by = c', '   ·   ', 'tiene x, y enteros'],
       condicion: 'para x, y naturales o acotados se revisan los límites: el mcd asegura enteros, no positivos.',
+    },
+    resuelve: {
+      generar(s) {
+        const g = azar(s + 900), av = g.ent(2, 9), bv = g.ent(av + 1, 12), cv = g.ent(20, 80), dm = mcd(av, bv);
+        const A = { v: 'c-o', t: String(av) }, B = { v: 'c-i', t: String(bv) };
+        const ec = [A, 'x + ', B, `y = ${cv}`];
+        if (s % 2 === 0) {
+          const hay = cv % dm === 0;
+          // Una solución entera (y puede salir negativa): x de 0 a b − 1 basta, porque x se repite cada b.
+          let x0 = null; for (let x = 0; x < bv && x0 === null; x++) if ((cv - av * x) % bv === 0) x0 = x;
+          const y0 = x0 === null ? null : (cv - av * x0) / bv, py = y0 < 0 ? `(${f(y0)})` : String(y0);
+          return {
+            enunciado: ['¿Tiene soluciones enteras la ecuación ', ...ec, '?'],
+            pasos: [
+              { tipo: 'pide', texto: 'Piden decidir si hay enteros x e y que la cumplan. No hace falta hallarlos todos.' },
+              { tipo: 'datos', texto: ['Los coeficientes son ', A, ' y ', B, `, y el término de la derecha es ${cv}.`] },
+              { tipo: 'regla', texto: 'Todo divisor común de los coeficientes divide al lado izquierdo, sean cuales sean x e y. Hay enteros solo si su mcd divide al número de la derecha.' },
+              { tipo: 'cuentas', texto: `Hallo el mcd y divido ${cv} entre él. ${hay ? 'No sobra nada: lo divide.' : 'Sobra algo: no lo divide.'}`,
+                ecuacion: [`mcd(${av}, ${bv}) = ${dm}`, '   ·   ', `${cv} = ${dm} · ${Math.floor(cv / dm)} + ${cv % dm}`] },
+              hay
+                ? { tipo: 'sentido', texto: `Lo compruebo con una solución: x = ${x0}, y = ${y0}.`, ecuacion: [A, ` · ${x0} + `, B, ` · ${py} = ${av * x0 + bv * y0}`] }
+                : { tipo: 'sentido', texto: `El lado izquierdo siempre es múltiplo de ${dm}, con enteros positivos o negativos. ${cv} no lo es: ninguna pareja sirve.`,
+                  ecuacion: [A, 'x + ', B, `y = ${dm}(${av / dm === 1 ? '' : av / dm}x + ${bv / dm}y)`] },
+            ],
+            respuesta: hay ? 'Sí tiene soluciones enteras' : 'No tiene soluciones enteras',
+          };
+        }
+        const sols = []; for (let x = 0; av * x <= cv; x++) if ((cv - av * x) % bv === 0) sols.push([x, (cv - av * x) / bv]);
+        const cnt = sols.length, xmax = Math.floor(cv / av);
+        const lista = (cnt > 4 ? [...sols.slice(0, 3), null, sols[cnt - 1]] : sols).map(p => (p ? `(${p[0]}, ${p[1]})` : '…')).join('  ');
+        return {
+          enunciado: [`Entradas de ${av} y de ${bv} soles suman ${cv} soles. ¿Cuántas formas hay de comprar, contando también cero de un tipo?`],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden cuántas parejas de cantidades enteras, desde cero, gastan justo el total.' },
+            { tipo: 'datos', texto: [`Si compro x entradas de ${av} soles e y de ${bv} soles, se cumple `, ...ec, '.'] },
+            { tipo: 'regla', texto: `Solo valen enteros desde cero. Pruebo cada x, de 0 hasta que ${av}x pase de ${cv}; sirve si lo que queda es múltiplo de ${bv}.` },
+            cnt
+              ? { tipo: 'cuentas', texto: `Pruebo x de 0 a ${xmax}. ${cnt === 1 ? 'Solo una pareja (x, y) sirve' : `Sirven ${cnt} parejas (x, y)`}.`, ecuacion: [lista] }
+              : { tipo: 'cuentas', texto: `Pruebo x de 0 a ${xmax}. Con ninguna x lo que queda es múltiplo de ${bv}.` },
+            cnt
+              ? { tipo: 'sentido', texto: `Compruebo la primera pareja: ${av} · ${sols[0][0]} + ${bv} · ${sols[0][1]} = ${av * sols[0][0] + bv * sols[0][1]} soles, justo el total.` }
+              : { tipo: 'sentido', texto: `Revisé ${xmax + 1} valores de x, del 0 al ${xmax}, y en todos sobra algo al dividir entre ${bv}.` },
+          ],
+          respuesta: cnt === 0 ? 'Ninguna forma' : cnt === 1 ? '1 forma' : `${cnt} formas`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -476,7 +666,9 @@
       { termino: 'divisible', def: 'Que se puede repartir entre otro número sin que sobre nada.',
         formas: ['divisible', 'divisibles'], ejemplo: '91 lo es entre 7: 91 = 7 · 13.', ver: ['divisor', 'división exacta'] },
       { termino: 'congruencia', simbolo: '≡', def: 'Relación entre dos números que dejan el mismo resto al dividirlos entre m. Se escribe con ≡.',
-        ejemplo: '17 ≡ 2 (mód 5): los dos dejan resto 2.', ver: ['resto'] },
+        formas: ['congruencia', 'congruencias', 'congruente', 'congruentes'], ejemplo: '17 ≡ 2 (mód 5): los dos dejan resto 2.', ver: ['resto', 'módulo'] },
+      { termino: 'módulo', simbolo: 'mód', def: 'El divisor fijo con el que se comparan restos. En 17 ≡ 2 (mód 5) es el 5.',
+        formas: ['módulo'], ejemplo: '17 y 2, con módulo 5, dejan el mismo resto: 2.', ver: ['congruencia'] },
       { termino: 'restos potenciales', def: 'Los restos de a, a², a³… al dividir entre un mismo número; sirven para hallar el de aⁿ.',
         formas: ['restos potenciales', 'resto potencial'], ejemplo: 'Entre 7, los de 2, 2², 2³ son 2, 4 y 1.', ver: ['ciclo', 'potencia'] },
       { termino: 'ciclo', simbolo: 'L', def: 'Tramo de restos que se repite siempre igual. Su largo permite reducir exponentes grandes.',
@@ -488,7 +680,9 @@
       { termino: 'máximo común divisor', simbolo: 'MCD', def: 'El mayor número que divide exacto a la vez a dos o más números.',
         formas: ['máximo común divisor', 'MCD'], ejemplo: 'MCD(6, 9) = 3.', ver: ['divisor'] },
       { termino: 'ecuación diofántica', def: 'Ecuación como ax + by = c en la que solo valen soluciones enteras.',
-        formas: ['ecuación diofántica', 'ecuaciones diofánticas'], ejemplo: '6x + 9y = 21 tiene x = 2, y = 1; 6x + 9y = 20 no tiene.', ver: ['máximo común divisor'] },
+        formas: ['ecuación diofántica', 'ecuaciones diofánticas', 'diofántica'], ejemplo: '6x + 9y = 21 tiene x = 2, y = 1; 6x + 9y = 20 no tiene.', ver: ['máximo común divisor'] },
+      { termino: 'coeficiente', def: 'Número que multiplica a una letra en una ecuación.',
+        formas: ['coeficiente', 'coeficientes'], ejemplo: 'En 4x + 6y = 22, son 4 y 6.', ver: ['ecuación diofántica'] },
     ],
     // Laboratorio: juego libre, sin preguntas. «Filas grandes» abre n hasta 48 y filas hasta 12; «Juntar sobrantes»
     // deja elegir el divisor (el juego lo fija en 5); «Ciclos largos» llega a la potencia 9 y a la base 12, con divisores que

@@ -92,6 +92,15 @@
     titulo: 'El trozo común más largo',
     temas: ['Máximo común divisor', 'Problemas de aplicación'],
     pieza: 'arit-tiras',
+    // Lee (fase 2): contexto y vocabulario; no dice qué trozo gana en la predicción (24 y 36).
+    lee: {
+      tarjetas: [
+        { titulo: 'Sin retazos', texto: 'En la feria de Juliaca, una vendedora corta cintas de tela para hacer moños. Quiere trozos iguales y que no le quede ningún retazo. Así empiezan muchos problemas de esta idea.' },
+        { titulo: 'Divisor común', texto: 'Un número es divisor común de dos si divide exacto a los dos. Por ejemplo, 3 es divisor común de 9 y de 15: entra 3 veces en 9 y 5 veces en 15.',
+          ecuacion: ['9 = 3 · 3', '   ·   ', '15 = 5 · 3'] },
+        { titulo: 'Qué mirar', texto: 'En el juego eliges el largo del trozo, y se corta en las dos cintas a la vez. Mira lo que sobra en cada cinta: un trozo puede medir exacto una y dejar sobrante en la otra.' },
+      ],
+    },
     juega: {
       consigna: 'Elige dos cintas y el largo del trozo. Busca un trozo que corte las dos sin que sobre nada.',
       voz: 'Comprueba cada trozo en las dos cintas, no solo en una.',
@@ -137,6 +146,47 @@
       texto: 'El MCD es el mayor número que divide a los dos. Responde a «cortar en partes iguales lo más grandes posible».',
       ecuacion: [{ llave: [mcdab], nota: 'trozo más largo', color: 'c-d' }, ' = producto de los primos comunes con su menor exponente'],
       condicion: 'a y b son enteros positivos. Si no tienen primos comunes, el MCD es 1.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (lotes o total de trozos), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), g = r.de([2, 3, 4, 5, 6, 8, 9, 10, 12, 15]);
+        let m = r.ent(2, 7), n = r.ent(2, 9);
+        while (mcd(m, n) !== 1 || m === n) n = n % 9 + 2;
+        const a = g * m, b = g * n, d = mcd(a, b), u = s % 2 === 0 ? 'm' : 'cm';
+        const tiras = cortadas => ({ datos: { max: Math.max(a, b) * 1.15, filas: 2, tiras: [
+          { rotulo: 'a', color: 'o', fin: `${a} ${u}`, tramos: [cortadas ? { valor: a, partes: a / d, color: 'o' } : { valor: a }] },
+          { rotulo: 'b', color: 'i', fin: `${b} ${u}`, tramos: [cortadas ? { valor: b, partes: b / d, color: 'i' } : { valor: b }] }] }, estado: {} });
+        const ca = { v: 'c-o', t: `${a} ${u}` }, cb = { v: 'c-i', t: `${b} ${u}` };
+        const cuentas = { tipo: 'cuentas', texto: 'Descompongo los dos en primos y tomo los comunes con su menor exponente.',
+          ecuacion: [`${a} = `, ...potencia(factores(a)), '   ·   ', `${b} = `, ...potencia(factores(b)), '   ·   ', MCD, ' = ', ...potencia(factores(d)), ` = ${d}`],
+          dibujo: tiras(true) };
+        if (s % 2 === 0) return {
+          enunciado: ['Dos terrenos de ', ca, ' y ', cb, ' de frente se dividen en lotes iguales, lo más anchos posible, sin que sobre. ¿Cuánto mide cada lote de frente?'],
+          dibujo: tiras(false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el frente de un lote: el más ancho que entre exacto en los dos terrenos.' },
+            { tipo: 'datos', texto: ['Los frentes miden ', ca, ' y ', cb, '. En ninguno puede sobrar nada.'] },
+            { tipo: 'regla', texto: 'Si entra exacto en los dos, es un divisor común. Como lo quiero lo más grande posible, busco el MCD.' },
+            cuentas,
+            { tipo: 'sentido', texto: `Comprueba: ${a} ÷ ${d} = ${a / d} lotes y ${b} ÷ ${d} = ${b / d} lotes, exactos. ${a / d} y ${b / d} no comparten divisores, así que no hay lote más ancho.` },
+          ],
+          respuesta: ['Cada lote mide ', { v: 'c-d', t: `${d} m` }, ' de frente.'],
+        };
+        return {
+          enunciado: ['Dos cintas de ', ca, ' y ', cb, ' se cortan en trozos iguales, lo más largos posible, sin que sobre. ¿Cuántos trozos salen en total?'],
+          dibujo: tiras(false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden cuántos trozos salen en total, no cuánto mide cada uno.' },
+            { tipo: 'datos', texto: ['Las cintas miden ', ca, ' y ', cb, '. Los trozos son iguales y no sobra nada.'] },
+            { tipo: 'regla', texto: 'El trozo más largo que mide exacto a las dos cintas es su MCD. Después cuento cuántos caben en cada cinta.' },
+            cuentas,
+            { tipo: 'cuentas', texto: `Con trozos de ${d} cm, cuento los de cada cinta y los sumo.`, ecuacion: [`${a} ÷ ${d} + ${b} ÷ ${d} = ${a / d} + ${b / d} = ${a / d + b / d}`] },
+            { tipo: 'sentido', texto: `Comprueba: ${a / d + b / d} trozos de ${d} cm suman ${(a / d + b / d) * d} cm, igual que ${a} + ${b}. No sobra nada.` },
+          ],
+          respuesta: `Salen ${a / d + b / d} trozos de ${d} cm.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -187,8 +237,17 @@
     titulo: 'La primera vez que coinciden',
     temas: ['Mínimo común múltiplo', 'Problemas de aplicación'],
     pieza: 'recta',
+    // Lee (fase 2): contexto y vocabulario; no dice cuándo coinciden las alarmas de la predicción.
+    lee: {
+      tarjetas: [
+        { titulo: 'Cosas que se repiten', texto: 'En un paradero de Puno, una combi sale cada pocos minutos y otra, cada tantos más. Si salen juntas a las 7:00, ¿cuándo vuelven a salir juntas? Esa pregunta se repite en muchos problemas.' },
+        { titulo: 'Múltiplos en fila', texto: 'Los múltiplos de 4 se arman sumando 4 una y otra vez: 4, 8, 12, 16… Un múltiplo común de dos números aparece en la lista de los dos.',
+          ecuacion: ['4, 8, 12, 16, 20, 24, …'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, cada fila de puntos marca las salidas de una combi: naranja cada a minutos y turquesa cada b. Busca los minutos que tienen punto en las dos filas.' },
+      ],
+    },
     juega: {
-      consigna: 'Dos combis salen juntas del paradero, una cada a minutos y otra cada b. Mira cuándo vuelven a salir juntas.',
+      consigna: 'Los puntos naranjas son salidas de una combi, cada a minutos; los turquesa, de otra, cada b. Mira cuándo coinciden.',
       voz: 'Busca el primer punto que está en las dos filas.',
       controles: [
         { id: 'a', etiqueta: 'a', color: 'c-o', min: 2, max: 9, paso: 1, inicio: 6, unidad: 'min', decimales: 0 },
@@ -231,6 +290,32 @@
       ecuacion: [{ llave: [mcmab], nota: 'primer encuentro', color: 'c-h' }, ' = producto de todos los primos con su mayor exponente'],
       condicion: 'a y b son enteros positivos y los dos sucesos parten juntos del instante 0.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (combis o pilas de cajas), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), g = r.de([2, 3, 4, 5, 6]);
+        let m = r.ent(2, 5), n = r.ent(2, 7);
+        while (mcd(m, n) !== 1 || m === n) n = n % 7 + 2;
+        const a = g * m, b = g * n, c = mcm(a, b), combis = s % 2 === 0, u = combis ? 'min' : 'cm';
+        const max = Math.max(c, a * b > 90 ? 90 : a * b) * 1.1 + 2;
+        const ca = { v: 'c-o', t: String(a) }, cb = { v: 'c-i', t: String(b) };
+        const fac = [`${a} = `, ...potencia(factores(a)), '   ·   ', `${b} = `, ...potencia(factores(b)), '   ·   ', MCM, ' = ', ...potencia(factores(c)), ` = ${c}`];
+        return {
+          enunciado: combis
+            ? ['Dos combis salen juntas; una cada ', ca, ' min y otra cada ', cb, ' min. ¿En cuántos minutos vuelven a salir juntas?']
+            : ['Se apilan cajas de ', ca, ' cm y, al lado, cajas de ', cb, ' cm. ¿A qué altura mínima coinciden las dos pilas?'],
+          dibujo: { datos: rectaBuses(a, b, max, false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: combis ? 'Piden el primer minuto, después de la salida, en que las dos vuelven a salir juntas.' : 'Piden la menor altura en que las dos pilas miden lo mismo.' },
+            { tipo: 'datos', texto: ['En la recta, los puntos naranjas van cada ', ca, ` ${u} y los turquesa, cada `, cb, ` ${u}. Busco el primer punto que está en las dos filas.`] },
+            { tipo: 'regla', texto: 'Coinciden en los múltiplos comunes, y la primera vez es el menor de ellos: el MCM. Tomo todos los primos con su mayor exponente.' },
+            { tipo: 'cuentas', texto: 'Descompongo los dos en primos y armo el MCM.', ecuacion: fac, dibujo: { datos: rectaBuses(a, b, max), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: ${c} ÷ ${a} = ${c / a} y ${c} ÷ ${b} = ${c / b}, exactos. El producto ${a * b} también es común, pero llega después.` },
+          ],
+          respuesta: combis ? ['Vuelven a salir juntas a los ', { v: 'c-h', t: `${c} minutos` }, '.'] : ['Las pilas coinciden a ', { v: 'c-h', t: `${c} cm` }, ' de altura.'],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), g = r.de([2, 3, 4, 5, 6]);
@@ -270,6 +355,15 @@
     titulo: 'Euclides: medir con el resto',
     temas: ['Algoritmo de Euclides'],
     pieza: 'arit-tiras',
+    // Lee (fase 2): las partes de una división y quién fue Euclides; no dice qué par conserva el MCD.
+    lee: {
+      tarjetas: [
+        { titulo: 'Las partes de una división', texto: 'En el mercado, 23 papas se reparten en bolsas de 5: salen 4 bolsas y sobran 3. Ahí 23 es el dividendo, 5 el divisor, 4 el cociente y 3 el resto.',
+          ecuacion: ['23 = 4 · 5 + 3'] },
+        { titulo: 'Un método muy antiguo', texto: 'Hace más de 2000 años, Euclides buscaba la mayor medida que cabe exacta en dos segmentos. Su método, el algoritmo de Euclides, usa solo divisiones, una detrás de otra.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, cada fila es una división. Fíjate en el tramo rojo de cada fila y en lo que pasa en la fila de abajo. Mira también cuándo ya no aparece.' },
+      ],
+    },
     juega: {
       consigna: 'Elige a y b. Cada fila mide la tira anterior con la medida que sobró. Mira cuándo ya no sobra nada.',
       voz: 'El resto rojo pasa a ser la medida de la fila siguiente.',
@@ -310,6 +404,42 @@
       texto: 'Si a = q · b + r, los divisores comunes de a y b son los mismos que los de b y r. Repetirlo hasta resto 0 es el algoritmo de Euclides.',
       ecuacion: [mcdab, ' = ', MCD, '(', Bv, ', ', 'r', ')', '   ·   ', A, ' = ', { llave: ['q'], nota: 'cociente' }, ' · ', Bv, ' + ', { llave: ['r'], nota: 'resto' }],
       condicion: 'a y b enteros positivos y 0 ≤ r < b. El MCD es el último divisor, el que da resto 0.',
+    },
+    // Así se resuelve (fase 2): el MCD por divisiones sucesivas o el par menor con el mismo MCD, como «Ahora tú».
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), g = r.de([3, 4, 6, 7, 8, 9, 11, 12]);
+        let m = r.ent(5, 13), n = r.ent(2, m - 1);
+        while (mcd(m, n) !== 1) n = n > 2 ? n - 1 : m - 1;
+        const a = g * m, b = g * n, ps = euclides(a, b), p0 = ps[0], d = ps[ps.length - 1].b;
+        const ca = { v: 'c-o', t: String(a) }, cb = { v: 'c-i', t: String(b) };
+        const dibujo = { datos: tirasEuclides(a, b, 1), estado: { paso: 0 } };
+        if (s % 2 === 0) return {
+          enunciado: ['Usa divisiones sucesivas para hallar el MCD de ', ca, ' y ', cb, '.'],
+          dibujo,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el MCD de ', ca, ' y ', cb, ' sin factorizar, con divisiones sucesivas.'] },
+            { tipo: 'datos', texto: ['El mayor es ', ca, '. Empiezo dividiéndolo entre ', cb, '.'], ecuacion: [`${a} = ${p0.q} · ${b} + ${p0.r}`] },
+            { tipo: 'regla', texto: 'Si cambio el par por el divisor y el resto, el MCD no cambia. Repito hasta que el resto sea 0; el último divisor es el MCD.' },
+            { tipo: 'cuentas', texto: `Hago ${ps.length} divisiones; cada resto pasa a ser el divisor de la siguiente.`, ecuacion: juntas(ps.map(p => `${p.a} = ${p.q} · ${p.b} + ${p.r}`)),
+              dibujo: { datos: tirasEuclides(a, b), estado: { paso: 4 } } },
+            { tipo: 'sentido', texto: `Comprueba: ${d} divide a los dos, ${a} = ${a / d} · ${d} y ${b} = ${b / d} · ${d}, y ${a / d} y ${b / d} ya no comparten divisores.` },
+          ],
+          respuesta: [MCD, `(${a}, ${b}) = ${d}`],
+        };
+        return {
+          enunciado: ['Al dividir ', ca, ' entre ', cb, ` el cociente es ${p0.q} y el resto ${p0.r}. ¿Qué par tiene el mismo MCD y es menor?`],
+          dibujo,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden un par de números más chicos que ', ca, ' y ', cb, ', con el mismo MCD.'] },
+            { tipo: 'datos', texto: `La división ya está hecha: cociente ${p0.q} y resto ${p0.r}.`, ecuacion: [`${a} = ${p0.q} · ${b} + ${p0.r}`] },
+            { tipo: 'regla', texto: 'Todo número que divide al dividendo y al divisor divide también al resto. Por eso el par divisor y resto conserva el MCD.' },
+            { tipo: 'cuentas', texto: ['Dejo el divisor ', cb, ` y pongo el resto ${p0.r} en lugar de `, ca, '. El cociente no entra.'], ecuacion: [MCD, `(${a}, ${b}) = `, MCD, `(${b}, ${p0.r})`] },
+            { tipo: 'sentido', texto: `Comprueba: los dos pares tienen MCD ${mcd(b, p0.r)}, y ${b} y ${p0.r} son menores que ${a}.`, ecuacion: [MCD, `(${a}, ${b}) = ${mcd(a, b)}`, '   ·   ', MCD, `(${b}, ${p0.r}) = ${mcd(b, p0.r)}`] },
+          ],
+          respuesta: `El par (${b}, ${p0.r}).`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -362,6 +492,15 @@
     titulo: 'MCD por MCM, con dos números',
     temas: ['Relación entre MCD y MCM'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): factores primos y cómo se lee la tabla; no dice qué pasa con tres números.
+    lee: {
+      tarjetas: [
+        { titulo: 'Números hechos de primos', texto: 'Todo número mayor que 1 se escribe como producto de primos. El número chico de arriba es el exponente: dice cuántas veces se repite ese primo.',
+          ecuacion: ['20 = 2 · 2 · 5 = ', { sup: ['2', '2'] }, ' · 5'] },
+        { titulo: 'La tabla de exponentes', texto: 'En la tabla, cada fila es un primo y cada columna, un número. El 20 lleva un 2 en la fila del 2, un 0 en la del 3 y un 1 en la del 5.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, compara en cada fila las columnas «menor» y «mayor» con los exponentes de a y de b. Después revisa la fila de abajo, la del valor.' },
+      ],
+    },
     juega: {
       consigna: 'Elige a y b. La tabla muestra sus exponentes; el MCD toma el menor de cada fila y el MCM, el mayor.',
       voz: 'Compara, en cada fila, el menor más el mayor con los dos exponentes.',
@@ -397,6 +536,40 @@
       texto: 'Para dos números, el MCD y el MCM se reparten los exponentes de cada primo sin perder ninguno. Por eso su producto es a · b.',
       ecuacion: [{ llave: [mcdab], nota: 'los menores', color: 'c-d' }, ' · ', { llave: [mcmab], nota: 'los mayores', color: 'c-h' }, ' = ', A, ' · ', Bv],
       condicion: 'vale solo con dos enteros positivos. Con tres o más, el producto de todos no es MCD · MCM.',
+    },
+    // Así se resuelve (fase 2): hallar el MCM o el otro número con MCD · MCM = a · b, como «Ahora tú».
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), g = r.de([2, 3, 4, 5, 6, 7, 8, 9, 12]);
+        let m = r.ent(2, 7), n = r.ent(2, 9);
+        while (mcd(m, n) !== 1 || m === n) n = n % 9 + 2;
+        const a = g * m, b = g * n, c = mcm(a, b), P = a * b;
+        const cg = { v: 'c-d', t: String(g) }, cc = { v: 'c-h', t: String(c) }, ca = { v: 'c-o', t: String(a) };
+        const regla = { tipo: 'regla', texto: 'Con dos números, el MCD se lleva los menores exponentes y el MCM, los mayores. Juntos dan el producto de los dos.',
+          ecuacion: [MCD, ' · ', MCM, ' = ', A, ' · ', Bv] };
+        if (s % 2 === 0) return {
+          enunciado: ['Dos números positivos tienen producto ', String(P), ' y su MCD es ', cg, '. ¿Cuál es su MCM?'],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el MCM de dos números que no conozco; solo sé su producto y su MCD.' },
+            { tipo: 'datos', texto: ['El producto es ', String(P), ' y el MCD es ', cg, '.'] },
+            regla,
+            { tipo: 'cuentas', texto: 'Despejo el MCM: divido el producto entre el MCD.', ecuacion: [MCM, ` = ${P} ÷ ${g} = ${P / g}`] },
+            { tipo: 'sentido', texto: `Comprueba: ${g} · ${c} = ${g * c}, el producto. Y ${c} es múltiplo de ${g}: ${c} ÷ ${g} = ${c / g}, como debe ser.` },
+          ],
+          respuesta: [MCM, ' = ', cc],
+        };
+        return {
+          enunciado: ['El MCD de ', ca, ' y otro número es ', cg, ' y su MCM es ', cc, '. ¿Cuál es el otro número?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el otro número, ', Bv, ', que va con ', ca, '.'] },
+            { tipo: 'datos', texto: ['Conozco ', A, ' = ', ca, '. El MCD es ', cg, ' y el MCM es ', cc, '.'] },
+            regla,
+            { tipo: 'cuentas', texto: ['Multiplico MCD por MCM y divido entre ', A, '.'], ecuacion: [A, ' · ', Bv, ` = ${g} · ${c} = ${g * c}   →   `, Bv, ` = ${g * c} ÷ ${a} = ${g * c / a}`] },
+            { tipo: 'sentido', texto: `Comprueba con ${a} y ${g * c / a}: su MCD es ${mcd(a, g * c / a)} y su MCM es ${mcm(a, g * c / a)}, los datos del problema.` },
+          ],
+          respuesta: ['El otro número es ', Bv, ` = ${g * c / a}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -449,6 +622,16 @@
     titulo: 'Los cocientes arman una fracción',
     temas: ['Fracciones continuas'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): qué es una fracción continua y cómo se anota; no calcula ningún corte.
+    lee: {
+      tarjetas: [
+        { titulo: 'Una fracción en escalones', texto: 'Una fracción continua escribe un número como un entero más 1 sobre otro número. Ese otro número, a su vez, es un entero más 1 sobre otro, y así baja en escalones.',
+          ecuacion: [{ frac: ['7', '3'] }, ' = 2 + ', { frac: ['1', '3'] }] },
+        { titulo: 'Cómo se escribe', texto: 'Para no dibujar toda la escalera, se anotan solo sus términos entre corchetes. El primero va separado con punto y coma: es la parte entera.',
+          ecuacion: ['[2; 3]'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, la tabla repite las divisiones de Euclides. La columna «corte» dice cuánto vale la escalera si la detienes en esa fila. Compárala con tu fracción.' },
+      ],
+    },
     juega: {
       consigna: 'Elige la fracción. Las divisiones de Euclides dan los cocientes, que se leen en orden como fracción continua.',
       voz: 'Mira la columna del corte: se acerca, pero solo la última es igual.',
@@ -487,6 +670,48 @@
       texto: 'Los cocientes de Euclides son los términos de la fracción continua de a/b. Cada corte da un convergente; solo el último es igual a a/b.',
       ecuacion: [{ frac: [A, Bv] }, ' = ', { sub: ['q', '0'] }, ' + ', { frac: ['1', [{ sub: ['q', '1'] }, ' + ', { frac: ['1', [{ sub: ['q', '2'] }, ' + …']] }]] }],
       condicion: 'a y b son enteros positivos, así que la fracción continua es finita. Los cortes intermedios son aproximaciones.',
+    },
+    // Así se resuelve (fase 2): la fracción continua de a/b o su valor sin el último término, como «Ahora tú».
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        let a, b, ps;
+        do { b = r.ent(5, 19); a = r.ent(b + 1, 3 * b + 9); ps = euclides(a, b); } while (mcd(a, b) !== 1 || ps.length < 2 || ps.length > 4);
+        const qs = ps.map(p => p.q), cv = convergentes(qs);
+        const lista = xs => `[${xs[0]}${xs.length > 1 ? '; ' + xs.slice(1).join(', ') : ''}]`;
+        const fab = { frac: [{ v: 'c-o', t: String(a) }, { v: 'c-i', t: String(b) }] };
+        const tabla = fila => ({ datos: tablaFC(a, b), estado: fila === undefined ? { paso: 6 } : { paso: 6, fila } });
+        if (s % 2 === 0) return {
+          enunciado: ['¿Cuál es la fracción continua de ', fab, '?'],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la fracción continua: la lista de sus términos, en orden.' },
+            { tipo: 'datos', texto: ['La fracción es ', fab, '. Empiezo dividiendo el numerador entre el denominador.'] },
+            { tipo: 'regla', texto: 'Los términos son los cocientes de las divisiones de Euclides, en el orden en que salen. El primero es la parte entera.' },
+            { tipo: 'cuentas', texto: `Divido hasta que el resto sea 0; los cocientes son ${qs.join(', ')}.`, ecuacion: juntas(ps.map(p => `${p.a} = ${p.q} · ${p.b} + ${p.r}`)), dibujo: tabla() },
+            { tipo: 'sentido', texto: 'Comprueba: si calculo la lista completa de abajo hacia arriba, vuelve a dar la fracción.', ecuacion: [`${lista(qs)} = ${fr(cv[cv.length - 1])} = `, fab] },
+          ],
+          respuesta: [fab, ` = ${lista(qs)}`],
+        };
+        const corto = qs.slice(0, -1), corte = cv[cv.length - 2];
+        // De abajo hacia arriba: cada escalón es q + 1/(lo de abajo); el resultado se compara con el convergente del motor.
+        const sube = [];
+        let [h, k] = [corto[corto.length - 1], 1];
+        for (let i = corto.length - 2; i >= 0; i--) { const nh = corto[i] * h + k; sube.push([`${corto[i]} + `, { frac: ['1', fr([h, k])] }, ` = ${fr([nh, h])}`]); [h, k] = [nh, h]; }
+        if (h * corte[1] !== k * corte[0]) throw new Error('el escalón no da el convergente');
+        return {
+          enunciado: [fab, ` = ${lista(qs)}. ¿Qué fracción da si se quita el último término?`],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el valor de la fracción continua cortada antes del último término.' },
+            { tipo: 'datos', texto: `Quito el ${qs[qs.length - 1]} del final: queda ${lista(corto)}.` },
+            { tipo: 'regla', texto: 'Se calcula de abajo hacia arriba: el último término que queda va abajo, y cada término de arriba suma 1 sobre lo de abajo.' },
+            sube.length
+              ? { tipo: 'cuentas', texto: 'Subo escalón por escalón.', ecuacion: juntas(sube).reduce((acc, x) => acc.concat(x), []), dibujo: tabla(qs.length - 2) }
+              : { tipo: 'cuentas', texto: 'Queda un solo término: el corte es la parte entera.', ecuacion: [`${lista(corto)} = ${fr(corte)}`], dibujo: tabla(qs.length - 2) },
+            { tipo: 'sentido', texto: `Comprueba: ${fr(corte)} ≈ ${f(corte[0] / corte[1], 3)} y ${a}/${b} ≈ ${f(a / b, 3)}. Están cerca, pero no son iguales: es una aproximación.` },
+          ],
+          respuesta: `Sin el último término da ${fr(corte)}.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {

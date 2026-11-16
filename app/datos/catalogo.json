@@ -2911,7 +2911,7 @@
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 4,
-      "terminos": 10
+      "terminos": 12
      }
     },
     {
@@ -2954,7 +2954,7 @@
        "/nucleo/kit/piezas/arit-tiras.js"
       ],
       "ideas": 6,
-      "terminos": 20
+      "terminos": 25
      }
     },
     {
@@ -2993,7 +2993,7 @@
        "/nucleo/kit/piezas/arit-tabla.js"
       ],
       "ideas": 5,
-      "terminos": 19
+      "terminos": 23
      }
     },
     {
@@ -3036,7 +3036,7 @@
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 6,
-      "terminos": 26
+      "terminos": 28
      }
     },
     {
@@ -3078,7 +3078,7 @@
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 5,
-      "terminos": 23
+      "terminos": 25
      }
     },
     {
@@ -3121,7 +3121,7 @@
        "/nucleo/kit/piezas/arit-tabla.js"
       ],
       "ideas": 5,
-      "terminos": 26
+      "terminos": 30
      }
     },
     {
@@ -3161,7 +3161,7 @@
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 4,
-      "terminos": 23
+      "terminos": 26
      }
     },
     {
@@ -3204,7 +3204,7 @@
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 5,
-      "terminos": 18
+      "terminos": 19
      }
     },
     {
@@ -3239,7 +3239,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 6,
-      "terminos": 20
+      "terminos": 25
      }
     }
    ]

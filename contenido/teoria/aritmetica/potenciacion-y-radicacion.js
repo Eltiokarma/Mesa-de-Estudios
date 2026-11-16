@@ -72,6 +72,17 @@
     titulo: 'Los exponentes deciden',
     temas: ['Cuadrados y cubos perfectos'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): vocabulario y contexto; no dice qué factor falta (eso lo descubre en Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una caja de la feria', texto: 'En la feria de Juliaca, una caja trae 3 filas de 3 bolsas de chuño, en 3 pisos: 3 · 3 · 3 = 27 bolsas. Se escribe 3³: el 3 pequeño de arriba es el exponente y dice cuántas veces se multiplica.',
+          ecuacion: ['3 · 3 · 3 = ', { sup: ['3', '3'] }, ' = 27'] },
+        { titulo: 'Cuadrados y cubos', texto: '49 es un cuadrado perfecto porque es 7 · 7: con 49 fichas se arma un cuadrado de 7 por 7. 27 es un cubo perfecto porque es 3 · 3 · 3, como la caja de chuño.' },
+        { titulo: 'Partir en primos', texto: 'Todo entero mayor que 1 se escribe como producto de primos, y cada primo lleva su exponente. Esa es su factorización en primos.',
+          ecuacion: ['360 = ', { sup: ['2', '3'] }, ' · ', { sup: ['3', '2'] }, ' · 5'] },
+        { titulo: 'Qué mirar', texto: 'En el juego eliges los exponentes de 2, de 3 y de 5. Mira las columnas «¿par?» y «¿de a 3?» de la tabla, y lo que dice la lectura cuando cambias uno solo.' },
+      ],
+    },
     juega: {
       consigna: 'Arma un número con sus exponentes de 2, 3 y 5. La tabla dice si cada exponente es par o múltiplo de 3.',
       voz: 'Busca un número que sea cuadrado y cubo a la vez.',
@@ -108,6 +119,35 @@
       texto: 'Un entero positivo es cuadrado perfecto si todos los exponentes de sus primos son pares, y cubo perfecto si todos son múltiplos de 3.',
       ecuacion: [N, ' = ', { llave: [{ sup: ['p', '2a'] }, ' · ', { sup: ['s', '2b'] }], nota: 'exponentes pares' }, ' = ', { sup: [{ par: [{ sup: ['p', 'a'] }, ' · ', { sup: ['s', 'b'] }] }, '2'] }],
       condicion: 'se mira la factorización en primos completa; un solo exponente impar basta para que no sea cuadrado.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú», con otras semillas, resuelto paso a paso.
+    resuelve: {
+      generar(s) {
+        const rr = azar(s + 900), cubo = s % 3 === 2;
+        let es;
+        do { es = [rr.ent(0, 5), rr.ent(0, 4), rr.ent(0, 2)]; } while (valor(es) < 6 || (cubo ? es.every(e => e % 3 === 0) : es.every(e => e % 2 === 0)));
+        const k = cubo ? 3 : 2, nombre = cubo ? 'cubo' : 'cuadrado';
+        const sube = es.map(e => (k - e % k) % k), nuevos = es.map((e, i) => e + sube[i]);
+        const falta = PR.reduce((acc, p, i) => acc * p ** sube[i], 1), Nv = valor(es), lado = PR.reduce((acc, p, i) => acc * p ** (nuevos[i] / k), 1);
+        const faltan = PR.map((p, i) => [p, sube[i]]).filter(([, e]) => e > 0);
+        const dice = faltan.map(([p, e]) => `al ${p} le ${e === 1 ? 'falta' : 'faltan'} ${e}`).join(', ');
+        return {
+          enunciado: ['¿Por qué número mínimo hay que multiplicar ', { v: 'c-o', t: f(Nv, 0) }, ` para obtener un ${nombre} perfecto?`],
+          dibujo: { datos: { columnas: [{ t: 'primo' }, { t: 'exponente', color: 'o' }], filas: PR.map(p => [String(p), '?']), filasMax: 3, cabeza: true }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el factor más chico que convierte a ', { v: 'c-o', t: f(Nv, 0) }, ` en un ${nombre} perfecto.`] },
+            { tipo: 'datos', texto: 'Primero lo parto en primos y anoto el exponente de cada uno.', ecuacion: [{ v: 'c-o', t: f(Nv, 0) }, ` = ${escribir(PR.map((p, i) => [p, es[i]]))}`],
+              dibujo: { datos: tablaExp(es), estado: {} } },
+            { tipo: 'regla', texto: cubo ? 'Un cubo perfecto necesita que cada exponente sea múltiplo de 3. Subo cada exponente hasta el múltiplo de 3 más cercano hacia arriba.'
+              : 'Un cuadrado perfecto necesita que cada exponente sea par. Solo toco los exponentes impares, y les sumo 1.' },
+            { tipo: 'cuentas', texto: `Miro la tabla: ${dice}. Multiplico solo esos primos.`,
+              ecuacion: (escribir(faltan) === String(falta) ? [] : [`${escribir(faltan)} = ${f(falta, 0)}`, '   ·   ']).concat([`${f(Nv, 0)} · ${f(falta, 0)} = ${f(Nv * falta, 0)}`]),
+              dibujo: { datos: tablaExp(es, cubo ? { cubo: true } : { par: true }), estado: {} } },
+            { tipo: 'sentido', texto: `Compruebo: ${f(Nv * falta, 0)} = ${escribir(PR.map((p, i) => [p, nuevos[i]]))} = ${pot(lado, k)}. Con un factor menor, algún exponente quedaría sin completar.` },
+          ],
+          respuesta: `Hay que multiplicar por ${f(falta, 0)}.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -146,6 +186,14 @@
     titulo: 'Descartar no es confirmar',
     temas: ['Criterios de inclusión y exclusión'],
     pieza: 'arit-tabla',
+    // Lee: vocabulario (última cifra, criterio) sin decir si pasar el filtro confirma (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'La cifra de las unidades', texto: 'La última cifra de un número es la de las unidades: en 2 021 es 1, y en 169 es 9. Muchos atajos de examen miran solo esa cifra, sin hacer toda la cuenta.' },
+        { titulo: 'Pruebas rápidas', texto: 'Un criterio de exclusión es una prueba rápida que mira un rasgo del número, como su última cifra, para sacar de la lista a los que no pueden ser cuadrados perfectos.' },
+        { titulo: 'Qué mirar', texto: 'En el juego eliges n y la tabla marca en qué cifra termina n². Recorre las diez filas: anota qué cifras salen en la columna de la derecha y cuáles no salen nunca.' },
+      ],
+    },
     juega: {
       consigna: 'Elige n. Mira en qué cifra termina n². Busca las cifras en que nunca termina un cuadrado.',
       voz: 'Revisa la columna de la derecha completa antes de concluir.',
@@ -187,6 +235,31 @@
       texto: 'Un criterio de exclusión solo descarta: si falla, no es cuadrado. Si se cumple, todavía hay que comprobar con la raíz o la factorización.',
       ecuacion: ['termina en 2, 3, 7 u 8   ⇒   ', N, ' no es cuadrado'],
       condicion: 'la condición es necesaria, no suficiente. Los cubos pueden terminar en cualquier cifra.',
+    },
+    resuelve: {
+      generar(s) {
+        const rr = azar(s + 900), k = rr.ent(12, 60);
+        const Nv = k * k + rr.de([2, 6, 4 * k - 1]);
+        const c = isqrt(Nv), cifra = Nv % 10, descarta = [2, 3, 7, 8].includes(cifra);
+        const vecinos = `${c}² = ${f(c * c, 0)} < ${f(Nv, 0)} < ${f((c + 1) ** 2, 0)} = ${c + 1}²`;
+        return {
+          enunciado: ['¿Es ', { v: 'c-o', t: f(Nv, 0) }, ' un cuadrado perfecto?'],
+          dibujo: { datos: tablaCifras(null), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden decidir si ', { v: 'c-o', t: f(Nv, 0) }, ' es un entero multiplicado por sí mismo.'] },
+            { tipo: 'datos', texto: `El número termina en ${cifra}. Busco esa cifra en la columna de la derecha de la tabla.` },
+            { tipo: 'regla', texto: 'Primero el filtro rápido: si termina en 2, 3, 7 u 8, ya no es cuadrado. Si el filtro no lo saca, comparo con los cuadrados vecinos.' },
+            descarta
+              ? { tipo: 'cuentas', texto: `En la columna de la derecha no sale ningún ${cifra}: ningún cuadrado termina así. Queda descartado sin más cuentas.`, ecuacion: [`termina en ${cifra}   ⇒   no es cuadrado`] }
+              : { tipo: 'cuentas', texto: `El ${cifra} sí sale en la columna de la derecha (filas marcadas), así que el filtro no decide. Busco los dos cuadrados que lo rodean.`, ecuacion: [vecinos],
+                dibujo: { datos: tablaCifras(null), estado: { fila: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].filter(j => (j * j) % 10 === cifra) } } },
+            descarta
+              ? { tipo: 'sentido', texto: 'Lo confirmo con los cuadrados vecinos: queda entre los dos, y entre dos enteros seguidos no hay otro entero.', ecuacion: [vecinos] }
+              : { tipo: 'sentido', texto: `Entre ${c} y ${c + 1} no hay otro entero, así que ningún entero al cuadrado da ${f(Nv, 0)}.` },
+          ],
+          respuesta: descarta ? `No: ningún cuadrado termina en ${cifra}.` : `No: está entre ${c}² y ${c + 1}².`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -249,6 +322,15 @@
     titulo: 'El cuadrado más grande que cabe',
     temas: ['Raíz cuadrada y cúbica entera'],
     pieza: 'arit-fichas',
+    // Lee: contexto y vocabulario (raíz, residuo); no hace la cuenta de un caso (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un piso cuadrado', texto: 'Imagina que tienes 50 losetas iguales para el patio de tu casa en Puno y quieres un piso cuadrado. ¿De qué tamaño sale el más grande? Esa pregunta, con números, es una raíz entera.' },
+        { titulo: 'Raíz y residuo', texto: 'La raíz cuadrada es la operación inversa de elevar al cuadrado: como 6² = 36, √36 = 6. Si el número no es cuadrado perfecto, se habla de raíz entera y de residuo, lo que sobra.',
+          ecuacion: [{ sup: ['6', '2'] }, ' = 36   ⇔   √36 = 6'] },
+        { titulo: 'Qué mirar', texto: 'En el juego eliges cuántas fichas hay. Mira el cuadrado turquesa, las fichas rojas que sobran y los huecos punteados: son las que faltan para el cuadrado siguiente.' },
+      ],
+    },
     juega: {
       consigna: 'Elige cuántas fichas hay. Se arma el cuadrado más grande posible; mira las que sobran y las que faltan para el siguiente.',
       voz: 'Fíjate cuántas faltan cuando el cuadrado está recién completo.',
@@ -282,6 +364,44 @@
       texto: 'La raíz cuadrada entera de N es el mayor q con q² ≤ N; el residuo es N − q². La raíz cúbica entera usa q³ ≤ N < (q + 1)³.',
       ecuacion: [{ sup: [q, '2'] }, ' ≤ ', N, ' < ', { sup: [q1, '2'] }, '   ·   ', r, ' = ', { llave: [N, ' − ', { sup: [q, '2'] }], nota: 'lo que sobra', color: 'c-h' }, ' ≤ 2', q],
       condicion: 'N es entero no negativo. Si el residuo pasara de 2q, cabría un cuadrado más grande.',
+    },
+    resuelve: {
+      generar(s) {
+        const rr = azar(s + 900), cub = s % 3 === 2;
+        if (cub) {
+          const k = rr.ent(3, 12), Nv = k ** 3 + rr.ent(1, 3 * k * k + 3 * k);
+          const c = icbrt(Nv), rv = Nv - c ** 3;
+          return {
+            enunciado: ['¿Cuál es la raíz cúbica entera de ', { v: 'c-o', t: f(Nv, 0) }, ' y su residuo?'],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la raíz cúbica entera de ', N, ' y lo que sobra, el residuo.'] },
+              { tipo: 'datos', texto: ['Tengo ', N, ` = ${f(Nv, 0)}. Busco el mayor entero cuyo cubo no pase de ese número.`] },
+              { tipo: 'regla', texto: 'La raíz cúbica entera es el mayor número que, multiplicado tres veces por sí mismo, cabe en N. Lo que queda afuera es el residuo.' },
+              { tipo: 'cuentas', texto: [`Pruebo cubos cercanos: ${c}³ cabe y ${c + 1}³ ya se pasa. Después resto para hallar `, r, '.'],
+                ecuacion: [`${c}³ = ${f(c ** 3, 0)} ≤ ${f(Nv, 0)} < ${f((c + 1) ** 3, 0)} = ${c + 1}³`, '   ·   ', r, ` = ${f(Nv, 0)} − ${f(c ** 3, 0)} = ${f(rv, 0)}`] },
+              { tipo: 'sentido', texto: `Compruebo: ${f(c ** 3, 0)} + ${f(rv, 0)} = ${f(Nv, 0)}. Y el residuo ${f(rv, 0)} no llega a ${f((c + 1) ** 3 - c ** 3, 0)}, lo que separa ${c}³ de ${c + 1}³.` },
+            ],
+            respuesta: [q, ` = ${c}`, '   ·   ', r, ` = ${f(rv, 0)}`],
+          };
+        }
+        const k = rr.ent(6, 40), Nv = k * k + rr.ent(1, 2 * k);
+        const c = isqrt(Nv), rv = Nv - c * c, conFichas = Nv <= 120;
+        return {
+          enunciado: ['¿Cuál es la raíz cuadrada entera de ', { v: 'c-o', t: f(Nv, 0) }, ' y su residuo?'],
+          dibujo: conFichas ? { datos: { altoMax: 150, bloques: [{ n: Nv, columnas: c + 1, color: 'o', rotulo: `${Nv} fichas` }] }, estado: {} } : undefined,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la raíz cuadrada entera de ', N, ' y lo que sobra, el residuo.'] },
+            { tipo: 'datos', texto: conFichas ? ['Hay ', N, ` = ${Nv} fichas. Busco el lado del cuadrado más grande que se arma con ellas.`]
+              : ['Tengo ', N, ` = ${f(Nv, 0)}. Busco el mayor entero cuyo cuadrado no pase de ese número.`] },
+            { tipo: 'regla', texto: 'La raíz entera es el mayor número que, multiplicado por sí mismo, cabe en N. Lo que queda afuera es el residuo.' },
+            { tipo: 'cuentas', texto: [`Pruebo cuadrados cercanos: ${c}² cabe y ${c + 1}² ya se pasa. Después resto para hallar `, r, '.'],
+              ecuacion: [`${c}² = ${f(c * c, 0)} ≤ ${f(Nv, 0)} < ${f((c + 1) ** 2, 0)} = ${c + 1}²`, '   ·   ', r, ` = ${f(Nv, 0)} − ${f(c * c, 0)} = ${rv}`],
+              dibujo: conFichas ? { datos: fichasRaiz(Nv), estado: { paso: 1 } } : undefined },
+            { tipo: 'sentido', texto: `Compruebo: ${f(c * c, 0)} + ${rv} = ${f(Nv, 0)}. Y el residuo ${rv} no pasa de 2 · ${c} = ${2 * c}; si pasara, cabría un cuadrado más grande.` },
+          ],
+          respuesta: [q, ` = ${c}`, '   ·   ', r, ` = ${rv}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -331,6 +451,14 @@
     titulo: 'Encerrar la raíz por pasos',
     temas: ['Raíces aproximadas'],
     pieza: 'recta',
+    // Lee: vocabulario (décima, centésima, aproximación) sin dar cifras de √2 (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Raíces que no se acaban', texto: 'La raíz de 2 no tiene decimales que terminen ni que se repitan: es un número irracional. En el examen no hay calculadora, así que hay que acercarse a mano.' },
+        { titulo: 'Décimas y centésimas', texto: 'Una décima es 0,1 y una centésima es 0,01. Entre 3,2 y 3,3 caben 3,21, 3,22, 3,23 y así. Cada paso más fino da una aproximación mejor.' },
+        { titulo: 'Qué mirar', texto: 'En el juego eliges x y se dibuja el tramo de los cuadrados, de x² al cuadrado de la décima siguiente. Mira de qué lado del punto naranja queda cada borde.' },
+      ],
+    },
     juega: {
       consigna: 'Busca √2 probando décimas: se dibuja el tramo entre x² y el cuadrado de la décima siguiente. Encierra el 2.',
       voz: 'Comprueba elevando al cuadrado, no a ojo.',
@@ -376,6 +504,48 @@
       texto: 'Aproximar √N es encerrarla: se busca a con a² ≤ N < (a + h)², con h = 0,1, 0,01… Cada paso se comprueba elevando al cuadrado.',
       ecuacion: [{ sup: ['a', '2'] }, ' ≤ ', N, ' < ', { llave: [{ sup: [{ par: ['a + h'] }, '2'] }], nota: 'ya se pasa' }, '   ·   ', '⇒  a ≤ ', { raiz: N }, ' < a + h'],
       condicion: '√N es la raíz no negativa. La raíz no se reparte en una suma: √(9 + 16) = 5, no 7.',
+    },
+    resuelve: {
+      generar(s) {
+        const rr = azar(s + 900);
+        if (s % 3 === 2) {
+          const [a2, b2] = rr.de([[9, 16], [36, 64], [25, 144], [64, 225], [81, 144]]);
+          const c = Math.sqrt(a2 + b2), reparte = Math.sqrt(a2) + Math.sqrt(b2);
+          return {
+            enunciado: `¿Cuánto vale √(${a2} + ${b2})?`,
+            pasos: [
+              { tipo: 'pide', texto: `Piden la raíz de toda la suma ${a2} + ${b2}.` },
+              { tipo: 'datos', texto: `Dentro de la raíz hay una suma de dos números: ${a2} y ${b2}.` },
+              { tipo: 'regla', texto: 'La raíz no se reparte en una suma. Primero hago la suma de adentro y después saco la raíz.' },
+              { tipo: 'cuentas', texto: 'Sumo y busco el número que, al cuadrado, da el total.', ecuacion: [`√(${a2} + ${b2}) = √${a2 + b2} = ${f(c)}`] },
+              { tipo: 'sentido', texto: `Compruebo: ${f(c)}² = ${f(c * c, 0)}. Repartir daría ${f(reparte)}, y ${f(reparte)}² = ${f(reparte * reparte, 0)}, que no es ${a2 + b2}.` },
+            ],
+            respuesta: `√(${a2} + ${b2}) = ${f(c)}`,
+          };
+        }
+        let Nv;
+        do { Nv = rr.ent(2, 99); } while (isqrt(Nv) ** 2 === Nv);
+        const a = isqrt(Nv), x = Math.sqrt(Nv);
+        const d = Math.floor(x * 10 + 1e-9) / 10;
+        const porDecima = s % 3 === 1;
+        const lo = porDecima ? d : a, h = porDecima ? 0.1 : 1;
+        return {
+          enunciado: ['¿Entre qué ', porDecima ? 'décimas' : 'enteros consecutivos', ' está ', { raiz: { v: 'c-o', t: String(Nv) } }, '?'],
+          pasos: [
+            { tipo: 'pide', texto: `Piden dos ${porDecima ? 'décimas seguidas' : 'enteros seguidos'} que encierren la raíz de ${Nv}.` },
+            porDecima
+              ? { tipo: 'datos', texto: `Primero los enteros: ${a}² = ${a * a} y ${a + 1}² = ${(a + 1) ** 2}. La raíz está entre ${a} y ${a + 1}.` }
+              : { tipo: 'datos', texto: `${Nv} no es cuadrado perfecto, así que su raíz no es un entero: cae entre dos.` },
+            { tipo: 'regla', texto: `Encierro la raíz: busco un número cuyo cuadrado no pase de ${Nv}, y el siguiente, cuyo cuadrado ya se pasa.` },
+            { tipo: 'cuentas', texto: `Elevo al cuadrado: ${f(lo)}² todavía cabe y ${f(lo + h)}² ya se pasa.`,
+              ecuacion: [`${f(lo)}² = ${f(lo * lo)} ≤ ${Nv} < ${f((lo + h) ** 2)} = ${f(lo + h)}²`] },
+            porDecima
+              ? { tipo: 'sentido', texto: `Cuadra con los enteros: ${f(lo)} y ${f(lo + h)} no salen del tramo de ${a} a ${a + 1}, y están a una décima.` }
+              : { tipo: 'sentido', texto: `Cuadra: ${a} y ${a + 1} son seguidos, y ${Nv} queda entre sus cuadrados, ${a * a} y ${(a + 1) ** 2}.` },
+          ],
+          respuesta: `Entre ${f(lo)} y ${f(lo + h)}.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {

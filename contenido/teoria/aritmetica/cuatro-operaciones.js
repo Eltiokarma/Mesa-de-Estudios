@@ -75,6 +75,15 @@
     titulo: 'Dos escaleras, un rectángulo',
     temas: ['Adición y sumatorias'],
     pieza: 'arit-fichas',
+    // Lee (fase 2): contexto y vocabulario; no dice cómo se calcula la suma (eso se descubre en Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Latas en escalera', texto: 'En la feria de Juliaca, las latas de leche se apilan en escalera: 1 arriba, 2 debajo, 3 más abajo. Contarlas una por una cansa cuando la escalera es alta.' },
+        { titulo: 'Sumandos consecutivos', texto: 'Cada número de una suma es un sumando. Si van de 1 en 1, sin saltarse ninguno, son consecutivos. Una suma larga que sigue una regla se llama sumatoria.',
+          ecuacion: ['1 + 2 + 3 + … + ', n_] },
+        { titulo: 'Qué mirar', texto: 'A la izquierda verás la escalera de fichas. A la derecha, dos escaleras iguales juntas. Cambia n y cuenta las filas y las columnas de lo que forman.' },
+      ],
+    },
     juega: {
       consigna: 'Elige n. A la izquierda, la escalera 1 + 2 + … + n. A la derecha, dos escaleras iguales juntas.',
       voz: 'Cuenta las filas y las columnas del rectángulo.',
@@ -115,6 +124,54 @@
       texto: 'La sumatoria de 1 a n es la mitad de un rectángulo de n por n + 1. Para consecutivos de a hasta z: primero más último, por cuántos, entre 2.',
       ecuacion: ['1 + 2 + … + ', n_, ' = ', { llave: [{ frac: [[n_, '(', n_, ' + 1)'], '2'] }], nota: 'medio rectángulo', color: 'c-o' }, '   ·   ', 'a + … + z = ', { frac: ['(a + z)(z − a + 1)', '2'] }],
       condicion: 'los sumandos son consecutivos (suben de 1 en 1). Con pares 2 + 4 + … + 2n, la suma es n(n + 1).',
+    },
+    // Así se resuelve (fase 2): los tres tipos de «Ahora tú», con las mismas cuentas y otras semillas.
+    resuelve: {
+      generar(s) {
+        const g = azar(s + 900), tipo = s % 3;
+        if (tipo === 0) {
+          const k = g.ent(12, 60), v = k * (k + 1) / 2;
+          return {
+            enunciado: `En la feria apilan latas en escalera: 1 arriba, 2 debajo, y así hasta ${k} en la fila de abajo. ¿Cuántas latas hay?`,
+            pasos: [
+              { tipo: 'pide', texto: `Piden el total de latas: la suma 1 + 2 + … + ${k}.` },
+              { tipo: 'datos', texto: `Las filas tienen 1, 2, 3, … hasta ${k} latas: son ${k} sumandos consecutivos que empiezan en 1.` },
+              { tipo: 'regla', texto: 'Si pongo otra escalera igual, girada, las dos llenan un rectángulo de n filas y n + 1 columnas. Una sola escalera es la mitad.',
+                ecuacion: ['1 + … + ', n_, ' = ', { frac: [[n_, '(', n_, ' + 1)'], '2'] }] },
+              { tipo: 'cuentas', texto: `El rectángulo es de ${k} por ${k + 1}; tomo la mitad.`, ecuacion: [{ frac: [`${k} · ${k + 1}`, '2'] }, ` = ${f(k * (k + 1))} ÷ 2 = `, { v: 'c-d', t: f(v) }] },
+              { tipo: 'sentido', texto: `Hay ${k} filas y, en promedio, cada una tiene ${f((k + 1) / 2, 1)} latas: ${k} · ${f((k + 1) / 2, 1)} = ${f(v)}. Cuadra.` },
+            ],
+            respuesta: [`Hay ${f(v)} latas.`],
+          };
+        }
+        if (tipo === 1) {
+          const lo = g.ent(10, 40), hi = lo + g.ent(9, 40), c = hi - lo + 1, v = (lo + hi) * c / 2;
+          return {
+            enunciado: `En una rifa se venden los boletos del ${lo} al ${hi}. Si sumas todos sus números, ¿cuánto da?`,
+            pasos: [
+              { tipo: 'pide', texto: `Piden la suma ${lo} + ${lo + 1} + … + ${hi}.` },
+              { tipo: 'datos', texto: `El primero es ${lo} y el último, ${hi}. Contando los dos extremos, hay ${hi} − ${lo} + 1 = ${c} sumandos.` },
+              { tipo: 'regla', texto: 'La escalera y su copia girada forman un rectángulo: primero más último, por cuántos sumandos hay, y la mitad.',
+                ecuacion: ['a + … + z = ', { frac: ['(a + z)(z − a + 1)', '2'] }] },
+              { tipo: 'cuentas', texto: `Junto primero y último, multiplico por los ${c} sumandos y divido entre 2.`, ecuacion: [{ frac: [`(${lo} + ${hi}) · ${c}`, '2'] }, ` = ${f((lo + hi) * c)} ÷ 2 = `, { v: 'c-d', t: f(v) }] },
+              { tipo: 'sentido', texto: `El sumando del medio vale ${f((lo + hi) / 2, 1)}; ${c} sumandos de ese tamaño dan ${f(v)}. Cuadra.` },
+            ],
+            respuesta: [`La suma da ${f(v)}.`],
+          };
+        }
+        const k = g.ent(10, 40), v = k * (k + 1);
+        return {
+          enunciado: `¿Cuánto es 2 + 4 + 6 + … + ${2 * k}?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden la suma de los pares desde 2 hasta ${2 * k}.` },
+            { tipo: 'datos', texto: `Cada sumando es el doble de 1, 2, 3, … hasta ${k}. Son ${k} sumandos.` },
+            { tipo: 'regla', texto: 'Si cada sumando es el doble, la suma también es el doble. Y la suma de 1 a n es medio rectángulo de n por n + 1.' },
+            { tipo: 'cuentas', texto: `Duplico la suma de 1 a ${k}: el 2 y la mitad se cancelan.`, ecuacion: ['2 · ', { frac: [`${k} · ${k + 1}`, '2'] }, ` = ${k} · ${k + 1} = `, { v: 'c-d', t: f(v) }] },
+            { tipo: 'sentido', texto: `Hay ${k} pares y el del medio vale ${k + 1}: ${k} · ${k + 1} = ${f(v)}. Cuadra.` },
+          ],
+          respuesta: [`2 + 4 + … + ${2 * k} = ${f(v)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -181,9 +238,18 @@
     titulo: 'Lo que falta para la potencia',
     temas: ['Sustracción y complemento aritmético'],
     pieza: 'recta',
+    // Lee (fase 2): el vuelto como contexto y el vocabulario; no da el atajo ni la meta de 3 400.
+    lee: {
+      tarjetas: [
+        { titulo: 'El vuelto', texto: 'Compras algo de 37 soles en el mercado y pagas con un billete de 100. El vuelto es lo que le falta a 37 para llegar a 100.' },
+        { titulo: 'Un nombre para eso', texto: 'Lo que le falta a un número para llegar a 10, 100, 1 000 o más se llama complemento aritmético. Se escribe CA.',
+          ecuacion: ['CA(', N, ')'] },
+        { titulo: 'Qué mirar', texto: 'En la recta, el punto naranja es N y el turquesa es la meta. La cota verde mide lo que falta. Mueve N y mira dónde cae la meta cuando N gana una cifra.' },
+      ],
+    },
     juega: {
       consigna: 'Elige N. Su complemento aritmético es lo que le falta para llegar a 10, 100 o 1 000, según sus cifras.',
-      voz: 'Mira dónde termina la recta cuando N gana una cifra.',
+      voz: 'Mira dónde cae la meta turquesa cuando N gana una cifra.',
       controles: [{ id: 'N', etiqueta: 'N', color: 'c-o', min: 20, max: 980, paso: 20, inicio: 80, decimales: 0 }],
       dibujo: v => ({ datos: rectaCA(v.N, true, true), estado: {} }),
       lectura: v => ['CA(', N, `) = ${f(10 ** cifras(v.N))} − ${f(v.N)} = `, { v: 'c-d', t: f(ca(v.N)) }],
@@ -216,6 +282,28 @@
       texto: 'El complemento aritmético de N es lo que le falta para la potencia de 10 con tantos ceros como cifras tiene N.',
       ecuacion: ['CA(', N, ') = ', { llave: [{ sup: ['10', 'k'] }], nota: 'la meta' }, ' − ', N, '   ·   ', N, ' tiene k cifras'],
       condicion: 'k son las cifras de N. En base b la potencia es bᵏ: se resta de b − 1 y de b.',
+    },
+    // Así se resuelve (fase 2): el mismo número de «Ahora tú» (con s impar, redondeado a centenas), otra semilla.
+    resuelve: {
+      generar(s) {
+        const g = azar(s + 900), k = g.ent(3, 5);
+        let Nv = g.ent(10 ** (k - 1), 10 ** k - 1);
+        if (s % 2) Nv = Math.floor(Nv / 100) * 100 || 10 ** (k - 1) * 2;
+        const P = 10 ** k, v = ca(Nv);
+        return {
+          enunciado: ['¿Cuál es el complemento aritmético de ', { v: 'c-o', t: f(Nv) }, '?'],
+          dibujo: { datos: rectaCA(Nv, false), estado: { corte: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden CA(', N, '): lo que le falta a ', N, ' para llegar a su potencia de 10.'] },
+            { tipo: 'datos', texto: ['Cuento las cifras: ', { v: 'c-o', t: f(Nv) }, ` tiene ${k}. Entonces la meta es un 1 seguido de ${k} ceros.`], ecuacion: [{ sup: ['10', String(k)] }, ` = ${f(P)}`] },
+            { tipo: 'regla', texto: 'El complemento es la distancia en la recta desde el número hasta esa meta: la meta menos el número.',
+              ecuacion: ['CA(', N, ') = ', { sup: ['10', 'k'] }, ' − ', N] },
+            { tipo: 'cuentas', texto: 'Resto el número de la meta.', ecuacion: [`CA(${f(Nv)}) = ${f(P)} − ${f(Nv)} = `, { v: 'c-d', t: f(v) }], dibujo: { datos: rectaCA(Nv, false), estado: { corte: 1 } } },
+            { tipo: 'sentido', texto: 'Compruebo sumando: el número más su complemento da justo la meta.', ecuacion: [{ v: 'c-o', t: f(Nv) }, ' + ', { v: 'c-d', t: f(v) }, ` = ${f(P)}`] },
+          ],
+          respuesta: [`CA(${f(Nv)}) = `, { v: 'c-d', t: f(v) }],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -265,6 +353,16 @@
     titulo: 'Resto por defecto y por exceso',
     temas: ['División entera por defecto y por exceso'],
     pieza: 'recta',
+    // Lee (fase 2): vocabulario de la división y qué quiere decir «defecto» y «exceso»; no calcula ningún resto por exceso.
+    lee: {
+      tarjetas: [
+        { titulo: 'Maples de huevos', texto: 'En el mercado, los huevos se venden en maples de 30. Con 100 huevos llenas 3 maples y sobran 10. Repartir en grupos iguales es dividir.' },
+        { titulo: 'Los nombres', texto: ['En una división, ', a, ' es el dividendo, el que se reparte, y ', dd, ' es el divisor. El cociente entero ', q, ' cuenta los grupos completos.'],
+          ecuacion: [a, ' ÷ ', dd] },
+        { titulo: 'Quedarse corto o pasarse', texto: 'Defecto quiere decir quedarse corto; exceso, pasarse. Por eso una división entera se puede mirar de dos maneras: desde el múltiplo de abajo o desde el de arriba.' },
+        { titulo: 'Qué mirar', texto: ['En la recta, los puntos turquesa son múltiplos de ', dd, ' y el naranja es ', a, '. Mide la distancia de ', a, ' a cada múltiplo vecino.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige el dividendo a y el divisor d. La recta marca los múltiplos de d que rodean a a.',
       voz: 'Mide la distancia de a a cada múltiplo vecino.',
@@ -301,6 +399,37 @@
       texto: 'Por defecto, a = dq + r. Por exceso, el cociente sube uno y se resta lo que falta. Los dos restos suman el divisor.',
       ecuacion: [a, ' = ', dd, q, ' + ', { llave: [r], nota: 'lo que pasa', color: 'c-h' }, '   ·   ', a, ' = ', dd, '(', q, ' + 1) − ', { llave: [re], nota: 'lo que falta', color: 'c-h' }, '   ·   ', r, ' + ', re, ' = ', dd],
       condicion: 'd > 0 y 0 < r < d. Si la división es exacta, el resto es 0 y hay un solo cociente.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (hallar rₑ o hallar a), con las mismas cuentas.
+    resuelve: {
+      generar(s) {
+        const g = azar(s + 900), dv = g.ent(4, 15), qv = g.ent(5, 30), rv = g.ent(1, dv - 1), av = dv * qv + rv;
+        const abajo = dv * qv, arriba = dv * (qv + 1), rev = dv - rv;
+        if (s % 2 === 0) return {
+          enunciado: ['Divide ', { v: 'c-o', t: String(av) }, ' entre ', { v: 'c-i', t: String(dv) }, ' por exceso. ¿Cuánto vale el resto por exceso?'],
+          dibujo: { datos: rectaDiv(av, dv, false), estado: { corte: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', re, ': lo que le falta al dividendo ', a, ' para llegar al múltiplo de ', dd, ' que queda encima.'] },
+            { tipo: 'datos', texto: ['Busco los múltiplos de ', dd, ' que rodean al dividendo ', a, '.'], ecuacion: [`${dv} · ${qv} = ${abajo} < `, { v: 'c-o', t: String(av) }, ` < ${arriba} = ${dv} · ${qv + 1}`] },
+            { tipo: 'regla', texto: 'Por exceso me paso al múltiplo de arriba: el cociente sube uno y el resto es lo que falta. Los dos restos juntos dan el divisor.' },
+            { tipo: 'cuentas', texto: 'Resto el dividendo del múltiplo de arriba.', ecuacion: [`${arriba} − ${av} = `, { v: 'c-h', t: String(rev) }], dibujo: { datos: rectaDiv(av, dv, false), estado: { corte: 1 } } },
+            { tipo: 'sentido', texto: `Por defecto sobran ${av} − ${abajo} = ${rv}. Los dos restos suman el divisor, y ${rev} es menor que ${dv}. Cuadra.`, ecuacion: [`${rv} + ${rev} = ${dv}`] },
+          ],
+          respuesta: [re, ` = ${rev}`],
+        };
+        return {
+          enunciado: ['En una división, el divisor es ', { v: 'c-i', t: String(dv) }, `, el cociente por defecto es ${qv} y el resto por exceso es ${rev}. ¿Cuál es el dividendo?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el dividendo ', a, ', el número que se reparte.'] },
+            { tipo: 'datos', texto: ['El divisor ', dd, ` es ${dv}, el cociente por defecto es ${qv} y el resto por exceso es ${rev}.`] },
+            { tipo: 'regla', texto: 'Por exceso, el cociente es uno más que por defecto. El dividendo es ese múltiplo de arriba menos lo que le falta.',
+              ecuacion: [a, ' = ', dd, '(', q, ' + 1) − ', re] },
+            { tipo: 'cuentas', texto: `El cociente por exceso es ${qv} + 1 = ${qv + 1}.`, ecuacion: [a, ` = ${dv} · ${qv + 1} − ${rev} = ${arriba} − ${rev} = `, { v: 'c-o', t: String(av) }], dibujo: { datos: rectaDiv(av, dv), estado: { corte: 1 } } },
+            { tipo: 'sentido', texto: `Vuelvo a dividir ${av} entre ${dv}: cabe ${qv} veces y sobran ${rv}. Los dos restos suman ${rv} + ${rev} = ${dv}. Cuadra.`, ecuacion: [`${av} = ${dv} · ${qv} + ${rv}`] },
+          ],
+          respuesta: [a, ` = ${av}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -349,6 +478,14 @@
     titulo: 'Llevar cuando se llega a b',
     temas: ['Operaciones en otras bases'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): cómo se lee un número en otra base y qué columnas tiene la tabla; no dice cuándo se lleva.
+    lee: {
+      tarjetas: [
+        { titulo: 'Otras maneras de agrupar', texto: 'En base 10 agrupamos de diez en diez. En base 5 se agrupa de cinco en cinco, como quien cuenta con los dedos de una mano.' },
+        { titulo: 'Cómo se escribe', texto: 'El número pequeño de abajo es la base: (34)₅ se lee «tres cuatro en base cinco». Si no lleva ese número, se entiende que está en base 10.' },
+        { titulo: 'Qué mirar', texto: 'La tabla suma columna por columna: el lugar, la suma, lo que se escribe y la llevada. Cambia la base y fíjate cuándo aparece un 1 en «lleva».' },
+      ],
+    },
     juega: {
       consigna: 'Se suman (34) y (23) en la base que elijas. La tabla suma columna por columna.',
       voz: 'Fíjate cuándo aparece un 1 en la columna «lleva».',
@@ -381,6 +518,46 @@
       texto: 'En base b se opera columna por columna como en base 10, pero cada b unidades de una columna se llevan como 1 a la siguiente.',
       ecuacion: ['suma de la columna = ', { llave: [bb, ' · lleva'], nota: 'a la siguiente', color: 'c-i' }, ' + escribe'],
       condicion: 'todas las cifras son menores que b. Al restar, cada préstamo trae b unidades, no 10.',
+    },
+    // Así se resuelve (fase 2): la suma (con la tabla) o la resta (pasando por base 10), como «Ahora tú».
+    resuelve: {
+      generar(s) {
+        const g = azar(s + 900), base = g.ent(3, 8);
+        const x = enBase(g.ent(base * base, base * base * base - 1), base), y = enBase(g.ent(base, base * base - 1), base);
+        const vx = valor(x, base), vy = valor(y, base), sm = vx + vy, res = enBase(sm, base);
+        const B = { v: 'c-i', t: String(base) }, num = c => ({ sub: [`(${c})`, B] });
+        // Descomposición por lugares, para mostrar el valor en base 10 de cada número.
+        const POT = ['', '', '²', '³'];
+        const poli = c => c.split('').map((d, i, xs) => { const e = xs.length - 1 - i; return e === 0 ? d : e === 1 ? `${d} · ${base}` : `${d} · ${base}${POT[e]}`; }).join(' + ');
+        const datos = { tipo: 'datos', texto: ['Los dos números están en base ', B, `: sus cifras van de 0 a ${base - 1}.`] };
+        if (s % 3 === 2 && vx > vy) {
+          const df = vx - vy, rd = enBase(df, base);
+          return {
+            enunciado: ['¿Cuánto es ', num(x), ' − ', num(y), '?'],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la diferencia, escrita en base ', B, '.'] },
+              datos,
+              { tipo: 'regla', texto: ['El valor de un número no depende de cómo se escribe. Paso los dos a base 10, resto ahí y escribo el resultado en base ', B, '.'] },
+              { tipo: 'cuentas', texto: 'Cada cifra vale según su lugar. Después resto en base 10.', ecuacion: [num(x), ` = ${poli(x)} = ${vx}   ·   `, num(y), ` = ${poli(y)} = ${vy}   ·   ${vx} − ${vy} = ${df}`] },
+              { tipo: 'cuentas', texto: ['Escribo la diferencia en base ', B, ', agrupando de ', B, ' en ', B, '.'], ecuacion: [`${df} = ${poli(rd)} = `, { v: 'c-d', t: nb(rd, base) }] },
+              { tipo: 'sentido', texto: 'Compruebo al revés: la diferencia más el número que resté debe dar el primero.', ecuacion: [`${df} + ${vy} = ${df + vy} = `, num(x)] },
+            ],
+            respuesta: [num(x), ' − ', num(y), ' = ', { v: 'c-d', t: nb(rd, base) }],
+          };
+        }
+        return {
+          enunciado: ['¿Cuánto es ', num(x), ' + ', num(y), '?'],
+          dibujo: { datos: { columnas: [{ t: 'lugar' }, { t: 'suma' }, { t: 'escribe', color: 'd' }, { t: 'lleva', color: 'h' }], filas: [], filasMax: 4 }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la suma, escrita en base ', B, '.'] },
+            datos,
+            { tipo: 'regla', texto: ['Sumo por columnas, de derecha a izquierda. Cuando una columna junta ', B, ' o más, cada grupo de ', B, ' pasa como 1 a la columna siguiente.'] },
+            { tipo: 'cuentas', texto: 'La tabla suma cada columna, escribe lo que sobra y lleva lo que forma grupo.', ecuacion: [num(x), ' + ', num(y), ' = ', { v: 'c-d', t: nb(res, base) }], dibujo: { datos: sumaBase(x, y, base).datos, estado: {} } },
+            { tipo: 'sentido', texto: 'Compruebo pasando todo a base 10: los dos sumandos y el resultado.', ecuacion: [`${vx} + ${vy} = ${sm}   ·   `, { v: 'c-d', t: nb(res, base) }, ` = ${poli(res)} = ${valor(res, base)}`] },
+          ],
+          respuesta: [num(x), ' + ', num(y), ' = ', { v: 'c-d', t: nb(res, base) }],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -430,6 +607,14 @@
     titulo: 'Multiplicar es sumar por partes',
     temas: ['Multiplicación'],
     pieza: 'arit-tiras',
+    // Lee (fase 2): vocabulario (factores, producto) y cómo se parte la tira; no dice cuánto sube el producto.
+    lee: {
+      tarjetas: [
+        { titulo: 'Factores y producto', texto: 'En 24 × 7, los números 24 y 7 son los factores, y lo que resulta es el producto. Multiplicar es juntar varios grupos del mismo tamaño.' },
+        { titulo: 'De cabeza, en el mercado', texto: 'Para cobrar 12 kilos de papa a 3 soles, muchas caseras piensan 10 kilos y 2 kilos por separado: 30 más 6. Partir un factor ayuda a multiplicar sin papel.' },
+        { titulo: 'Qué mirar', texto: 'La tira tiene un pedazo naranja, las decenas por b, y uno turquesa, las unidades por b. Suma los dos pedazos y compara con el número del final.' },
+      ],
+    },
     juega: {
       consigna: 'Elige los dos factores. La tira del producto se parte en decenas por b y unidades por b.',
       voz: 'Suma los dos pedazos y compara con el total.',
@@ -469,6 +654,44 @@
       texto: 'Propiedad distributiva: multiplicar reparte sobre la suma. Si un factor aumenta k, el producto aumenta k veces el otro factor.',
       ecuacion: ['(m + n) · ', bb, ' = m · ', bb, ' + n · ', bb, '   ·   ', '(a + k) · ', bb, ' = a · ', bb, ' + ', { llave: ['k · ', bb], nota: 'lo que sube', color: 'c-h' }],
       condicion: 'el otro factor no cambia. Si los dos cambian, se suman los dos aportes y el de k por el otro cambio.',
+    },
+    // Así se resuelve (fase 2): cuánto cambia el producto (s par) o el producto por partes (s impar), como «Ahora tú».
+    resuelve: {
+      generar(s) {
+        const g = azar(s + 900), av = g.ent(12, 60), bv = g.ent(4, 15), k = g.ent(2, 9);
+        const B = { v: 'c-i', t: String(bv) };
+        if (s % 2 === 0) {
+          const baja = s % 4 !== 0, nuevo = baja ? av - k : av + k, max = (av + k) * bv;
+          const mayor = Math.max(av, nuevo), menor = Math.min(av, nuevo);
+          return {
+            enunciado: [`En ${av} × `, B, `, el primer factor ${baja ? 'disminuye' : 'aumenta'} en ${k}. ¿En cuánto cambia el producto?`],
+            dibujo: { datos: tirasProd(av, bv, 0, max), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden cuánto cambia el producto, no cuánto vale el producto nuevo.' },
+              { tipo: 'datos', texto: ['El segundo factor, ', B, `, no cambia. El primero pasa de ${av} a ${nuevo}.`] },
+              { tipo: 'regla', texto: ['Multiplicar por ', B, ' es juntar grupos de ', B, `. Si el primer factor cambia en ${k}, cambian ${k} grupos de `, B, '; lo demás queda igual.'] },
+              { tipo: 'cuentas', texto: [`El pedazo rojo son los ${k} grupos de `, B, baja ? ' que se quitan.' : ' que se agregan.'], ecuacion: [`${k} · ${bv} = `, { v: 'c-h', t: String(k * bv) }],
+                dibujo: { datos: tirasProd(menor, bv, k, max), estado: { paso: 1 } } },
+              { tipo: 'sentido', texto: 'Compruebo con los dos productos completos: su diferencia da lo mismo.', ecuacion: [`${mayor} · ${bv} − ${menor} · ${bv} = ${f(mayor * bv)} − ${f(menor * bv)} = ${f(mayor * bv - menor * bv)}`] },
+            ],
+            respuesta: [`El producto ${baja ? 'disminuye' : 'aumenta'} en `, { v: 'c-h', t: String(k * bv) }, '.'],
+          };
+        }
+        const dec = Math.floor(av / 10) * 10, uni = av - dec, cerca = Math.round(av / 10) * 10;
+        return {
+          enunciado: [`¿Cuánto es ${av} × `, B, '? Hazlo por partes.'],
+          dibujo: { datos: tirasProd(av, bv, 0, av * bv), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el producto, partiendo el primer factor en decenas y unidades.' },
+            { tipo: 'datos', texto: [`${av} es ${dec} + ${uni}, y el otro factor es `, B, '.'] },
+            { tipo: 'regla', texto: 'Multiplicar una suma es multiplicar cada parte y sumar los resultados: decenas por b más unidades por b.' },
+            { tipo: 'cuentas', texto: uni ? 'El pedazo naranja son las decenas; el turquesa, las unidades.' : 'No hay unidades: la tira es un solo pedazo naranja, el de las decenas.',
+              ecuacion: [`${dec} · ${bv} + ${uni} · ${bv} = ${f(dec * bv)} + ${f(uni * bv)} = `, { v: 'c-d', t: f(av * bv) }] },
+            { tipo: 'sentido', texto: `Orden de magnitud: ${av} está cerca de ${cerca}, y ${cerca} · ${bv} = ${f(cerca * bv)}, cerca de ${f(av * bv)}. Cuadra.` },
+          ],
+          respuesta: [`${av} × ${bv} = `, { v: 'c-d', t: f(av * bv) }],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -515,6 +738,14 @@
     titulo: 'Cuántas cifras tendrá',
     temas: ['Cantidad de cifras de un producto o cociente'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): para qué sirve estimar las cifras y qué es acotar; no dice cuántas cifras salen.
+    lee: {
+      tarjetas: [
+        { titulo: 'Antes de multiplicar', texto: 'Si en la feria se venden 48 sacos de chuño de 52 kilos cada uno, ¿son cientos o miles de kilos? Saberlo sin hacer la cuenta ayuda a descartar respuestas.' },
+        { titulo: 'Acotar', texto: 'Acotar es encerrar un número entre un menor y un mayor posibles. Si no conoces un número, pero sabes cuántas cifras tiene, ya puedes acotarlo.' },
+        { titulo: 'Qué mirar', texto: 'La tabla multiplica el menor A por el menor B, y el mayor A por el mayor B. Cambia las cifras y compara cuántas cifras tienen esos dos productos.' },
+      ],
+    },
     juega: {
       consigna: 'Elige cuántas cifras tienen A y B. La tabla multiplica los menores y los mayores posibles.',
       voz: 'Compara las cifras del menor y del mayor producto.',
@@ -550,6 +781,45 @@
       texto: 'Si A tiene m cifras y B tiene n, A · B tiene m + n − 1 o m + n. El cociente entero A ÷ B tiene m − n o m − n + 1.',
       ecuacion: ['m + n − 1 ≤ c ≤ m + n', '   ·   ', 'c: cifras de A·B'],
       condicion: 'A y B son enteros positivos y, en el cociente, A ≥ B. Para decidir entre los dos, se miran las primeras cifras.',
+    },
+    // Así se resuelve (fase 2): cifras del producto (s par, con la tabla) o del cociente (s impar), como «Ahora tú».
+    resuelve: {
+      generar(s) {
+        const g = azar(s + 900), m = s % 2 === 0 ? g.ent(3, 5) : g.ent(4, 9), n = g.ent(2, m - 1);
+        const loA = 10 ** (m - 1), hiA = 10 ** m - 1, loB = 10 ** (n - 1), hiB = 10 ** n - 1;
+        const A = { v: 'c-o', t: 'A' }, Bv = { v: 'c-i', t: 'B' };
+        const pide = que => ({ tipo: 'pide', texto: `Piden cuántas cifras puede tener ${que}.` });
+        const datos = { tipo: 'datos', texto: [A, ` tiene ${m} cifras: va de ${f(loA)} a ${f(hiA)}. `, Bv, ` tiene ${n}: va de ${f(loB)} a ${f(hiB)}.`] };
+        const cif = x => `${cifras(x)} ${cifras(x) === 1 ? 'cifra' : 'cifras'}`;
+        if (s % 2 === 0) {
+          const lo = loA * loB, hi = hiA * hiB;
+          return {
+            enunciado: [A, ' tiene ', { v: 'c-o', t: String(m) }, ' cifras y ', Bv, ' tiene ', { v: 'c-i', t: String(n) }, ' cifras. ¿Cuántas cifras puede tener A × B?'],
+            dibujo: { datos: tablaCotas(m, n, 0), estado: { paso: 0 } },
+            pasos: [
+              pide('el producto A × B'),
+              datos,
+              { tipo: 'regla', texto: 'No conozco A ni B, así que acoto: el producto queda entre el de los dos menores y el de los dos mayores.' },
+              { tipo: 'cuentas', texto: `El menor producto tiene ${cif(lo)} y el mayor, ${cif(hi)}.`, ecuacion: [`${f(lo)} ≤ A · B ≤ ${f(hi)}`], dibujo: { datos: tablaCotas(m, n, 0), estado: { paso: 2 } } },
+              { tipo: 'sentido', texto: `Cuadra con la cuenta corta: ${m} + ${n} − 1 = ${m + n - 1} y ${m} + ${n} = ${m + n}.` },
+            ],
+            respuesta: [{ v: 'c-d', t: `${cifras(lo)} o ${cifras(hi)}` }, ' cifras'],
+          };
+        }
+        const qlo = Math.floor(loA / hiB), qhi = Math.floor(hiA / loB);
+        return {
+          enunciado: [A, ' tiene ', { v: 'c-o', t: String(m) }, ' cifras y ', Bv, ' tiene ', { v: 'c-i', t: String(n) }, ' cifras. ¿Cuántas cifras puede tener el cociente entero de A entre B?'],
+          pasos: [
+            pide('el cociente entero de A entre B'),
+            datos,
+            { tipo: 'regla', texto: 'Acoto el cociente: es más chico con el menor A y el mayor B, y más grande con el mayor A y el menor B.' },
+            { tipo: 'cuentas', texto: `El cociente entero más chico tiene ${cif(qlo)} y el más grande, ${cif(qhi)}.`,
+              ecuacion: [`${f(loA)} ÷ ${f(hiB)} → ${f(qlo)}   ·   ${f(hiA)} ÷ ${f(loB)} → ${f(qhi)}`] },
+            { tipo: 'sentido', texto: `Cuadra con la cuenta corta: ${m} − ${n} = ${m - n} y ${m} − ${n} + 1 = ${m - n + 1}.` },
+          ],
+          respuesta: [{ v: 'c-d', t: `${cifras(qlo)} o ${cifras(qhi)}` }, ' cifras'],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -655,6 +925,8 @@
         formas: ['división es exacta', 'división exacta', 'divisiones exactas'], ejemplo: '48 ÷ 6 = 8 y no sobra nada.', ver: ['divisor'] },
       { termino: 'préstamo', def: 'Al restar por columnas, la unidad que se pide a la columna de la izquierda cuando la cifra no alcanza.',
         ejemplo: 'En base 10 trae 10 unidades; en base 5, trae 5.', ver: ['base de numeración'] },
+      { termino: 'acotar', def: 'Encerrar un número desconocido entre un valor menor y otro mayor que sí se conocen.',
+        formas: ['acotar', 'acoto', 'acotarlo', 'acota'], ejemplo: 'Si A tiene 3 cifras, 100 ≤ A ≤ 999.' },
       { termino: 'propiedad distributiva', def: 'Multiplicar una suma da lo mismo que multiplicar cada parte y sumar los resultados.',
         ejemplo: '24 · 7 = 20 · 7 + 4 · 7 = 140 + 28 = 168.' },
     ],
