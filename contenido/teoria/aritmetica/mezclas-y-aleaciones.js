@@ -76,6 +76,14 @@
     titulo: 'El precio medio pesa',
     temas: ['Precio medio'],
     pieza: 'recta',
+    // Lee: contexto y vocabulario; no dice hacia dónde se corre el precio medio (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Juntar para vender', texto: 'En un mercado de Juliaca, una vendedora junta café de dos calidades en un solo saco. Quiere ponerle precio al kilo de esa mezcla sin ganar ni perder.' },
+        { titulo: 'Precio medio', texto: ['El precio justo de un kilo de la mezcla se llama precio medio, ', pm, '. Siempre queda entre el precio del café más barato y el del más caro.'] },
+        { titulo: 'Qué mirar', texto: 'En la recta, cada punto turquesa es un café y su rótulo dice sus kilos. El punto verde es la mezcla. Cambia los kilos de cada café y mira dónde cae el punto verde.' },
+      ],
+    },
     juega: {
       consigna: 'Se mezcla café de S/ 12 y de S/ 20 el kilo. Elige los kilos de cada uno y mira el precio de la mezcla.',
       voz: 'Pon muchos kilos de uno y pocos del otro.',
@@ -121,13 +129,38 @@
       ecuacion: [pm, ' = ', { llave: [{ frac: [[s(q, '1'), s(p, '1'), ' + ', s(q, '2'), s(p, '2')], [s(q, '1'), ' + ', s(q, '2')]] }], nota: 'dinero entre kilos' }],
       condicion: 'las cantidades están en la misma unidad y no hay pérdidas. El promedio simple solo vale si las cantidades son iguales.',
     },
+    resuelve: {
+      generar(sem) {
+        let r, p1, p2, q1, q2;
+        for (let t = sem + 900; ; t += 701) {      // como «Ahora tú»: kilos distintos
+          r = azar(t); p1 = r.ent(5, 12); p2 = p1 + r.ent(3, 10); q1 = r.ent(1, 6); q2 = r.ent(1, 6);
+          if (q1 !== q2) break;
+        }
+        const dinero = p1 * q1 + p2 * q2, kilos = q1 + q2, med = dinero / kilos;
+        return {
+          enunciado: `Se mezclan ${q1} kg de quinua de S/ ${p1} el kilo con ${q2} kg de S/ ${p2} el kilo. ¿Cuánto vale un kilo de la mezcla?`,
+          dibujo: { datos: rectaPrecios(p1, q1, p2, q2, { sinMedio: true }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el precio de un kilo de la mezcla, sin ganar ni perder.' },
+            { tipo: 'datos', texto: [`${q1} kg a S/ ${p1} y ${q2} kg a S/ ${p2}.`], ecuacion: [s(q, '1'), ` = ${q1}, `, s(p, '1'), ` = ${p1}   ·   `, s(q, '2'), ` = ${q2}, `, s(p, '2'), ` = ${p2}`] },
+            { tipo: 'regla', texto: 'Al mezclar no cambian el dinero total ni los kilos totales. Un kilo de mezcla vale el dinero total repartido entre todos los kilos.',
+              ecuacion: [pm, ' = ', { frac: ['dinero total', 'kilos totales'] }] },
+            { tipo: 'cuentas', texto: 'Sumo lo que vale cada parte, sumo los kilos y divido.',
+              ecuacion: [`${q1} · ${p1} + ${q2} · ${p2} = ${f(dinero)}   ·   ${q1} + ${q2} = ${kilos}   →   `, pm, ` = ${f(dinero)} ÷ ${kilos} = ${sol(med)}`],
+              dibujo: { datos: rectaPrecios(p1, q1, p2, q2), estado: {} } },
+            { tipo: 'sentido', texto: `${sol(med)} queda entre S/ ${p1} y S/ ${p2}, y más cerca de S/ ${q1 > q2 ? p1 : p2}, que es la parte con más kilos.` },
+          ],
+          respuesta: [pm, ` = ${sol(med)} el kilo`],
+        };
+      },
+    },
     ahoraTu: {
       generar(sem) {
         const r = azar(sem), p1 = r.ent(5, 12), p2 = p1 + r.ent(3, 10), q1 = r.ent(1, 6), q2 = r.ent(1, 6);
         if (q1 === q2) return this.generar(sem + 701);
         const med = (p1 * q1 + p2 * q2) / (q1 + q2);
         return {
-          pregunta: `Se mezclan ${q1} kg de arroz de S/ ${p1} el kilo con ${q2} kg de S/ ${p2} el kilo. ¿Cuánto vale un kilo de la mezcla?`,
+          pregunta: `Se mezclan ${q1} kg de quinua de S/ ${p1} el kilo con ${q2} kg de S/ ${p2} el kilo. ¿Cuánto vale un kilo de la mezcla?`,
           dibujo: { datos: rectaPrecios(p1, q1, p2, q2, { sinMedio: true }), estado: {} },
           opciones: opciones(med, [
             { id: 'promedio', valor: (p1 + p2) / 2, error: 'AR15', siFuera: 'Ese es el promedio simple; las cantidades son distintas.' },
@@ -149,6 +182,15 @@
     titulo: 'El aspa: distancias cruzadas',
     temas: ['Regla del aspa'],
     pieza: 'recta',
+    // Lee: el problema al revés y qué es una distancia en la recta; no dice cómo van los kilos (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'El problema al revés', texto: 'A veces ya sabes a cuánto quieres vender el kilo de la mezcla y tienes dos cafés: uno más barato y otro más caro. Lo que falta saber es cuánto poner de cada uno.' },
+        { titulo: 'Distancias en la recta', texto: 'La distancia entre dos precios es su resta: de S/ 12 a S/ 15 hay 3 soles. Con esas distancias trabaja un atajo que se llama regla del aspa.',
+          ecuacion: ['15 − 12 = 3'] },
+        { titulo: 'Qué mirar', texto: 'Mueve el punto verde: es el precio que buscas. Las cotas naranjas son sus distancias a cada precio. Compáralas con los kilos que dicen los rótulos de los puntos turquesa.' },
+      ],
+    },
     juega: {
       consigna: 'Quieres una mezcla de café de 12 y de 20 soles con un precio dado. Mueve el precio y mira las dos distancias.',
       voz: 'Compara cada distancia con los kilos que salen.',
@@ -188,6 +230,33 @@
       ecuacion: [{ frac: [s(q, '1'), s(q, '2')] }, ' = ', { llave: [{ frac: [[s(p, '2'), ' − ', pm], [pm, ' − ', s(p, '1')]] }], nota: 'distancias cruzadas' }],
       condicion: 'el precio buscado está entre los dos precios. Si no está entre ellos, la mezcla es imposible.',
     },
+    resuelve: {
+      generar(sem) {
+        let r, p1, p2, m0, a, b;
+        for (let t = sem + 900; ; t += 211) {      // como «Ahora tú»: distancias distintas
+          r = azar(t); p1 = r.ent(4, 10); p2 = p1 + r.de([4, 6, 8, 10]); m0 = p1 + r.ent(1, p2 - p1 - 1);
+          a = p2 - m0; b = m0 - p1;
+          if (a !== b) break;
+        }
+        const d = mcd(a, b), total = (a + b) / d * r.de([2, 3, 4, 5]);
+        const q1 = total * a / (a + b), q2 = total - q1;
+        return {
+          enunciado: `Se quieren ${f(total)} kg de una mezcla de S/ ${m0} el kilo, con quinua de S/ ${p1} y de S/ ${p2}. ¿Cuántos kilos de la de S/ ${p1} se usan?`,
+          dibujo: { datos: rectaPrecios(p1, a / d, p2, b / d, { sinKg: true, objetivo: m0 }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden los kilos de la quinua de S/ ${p1} que entran en los ${f(total)} kg.` },
+            { tipo: 'datos', texto: `Precios: S/ ${p1} y S/ ${p2}. Precio buscado: S/ ${m0}. Total: ${f(total)} kg.` },
+            { tipo: 'regla', texto: 'Los kilos van cruzados: los de un precio son proporcionales a la distancia que hay entre el otro precio y el buscado.',
+              ecuacion: [{ frac: [s(q, '1'), s(q, '2')] }, ' = ', { frac: [[s(p, '2'), ' − ', pm], [pm, ' − ', s(p, '1')]] }] },
+            { tipo: 'cuentas', texto: `Las distancias son ${a} y ${b}. La quinua de S/ ${p1} se lleva ${a} de cada ${a + b} partes del total.`,
+              ecuacion: [`${p2} − ${m0} = ${a}   ·   ${m0} − ${p1} = ${b}   →   ${f(total)} · `, { frac: [String(a), `${a} + ${b}`] }, ` = ${f(q1)} kg`],
+              dibujo: { datos: rectaPrecios(p1, q1, p2, q2, { distancias: 0 }), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba el precio: (${f(q1)} · ${p1} + ${f(q2)} · ${p2}) ÷ ${f(total)} = S/ ${f((q1 * p1 + q2 * p2) / total)}, el buscado.` },
+          ],
+          respuesta: `${f(q1)} kg de la quinua de S/ ${p1}`,
+        };
+      },
+    },
     ahoraTu: {
       generar(sem) {
         const r = azar(sem), p1 = r.ent(4, 10), p2 = p1 + r.de([4, 6, 8, 10]), m0 = p1 + r.ent(1, p2 - p1 - 1);
@@ -196,7 +265,7 @@
         const d = mcd(a, b), total = (a + b) / d * r.de([2, 3, 4, 5]);
         const q1 = total * a / (a + b);
         return {
-          pregunta: `Se quieren ${f(total)} kg de una mezcla de S/ ${m0} el kilo, con arroz de S/ ${p1} y de S/ ${p2}. ¿Cuántos kilos del de S/ ${p1} se usan?`,
+          pregunta: `Se quieren ${f(total)} kg de una mezcla de S/ ${m0} el kilo, con quinua de S/ ${p1} y de S/ ${p2}. ¿Cuántos kilos de la de S/ ${p1} se usan?`,
           dibujo: { datos: rectaPrecios(p1, a / d, p2, b / d, { sinKg: true, objetivo: m0 }), estado: {} },
           opciones: opciones(q1, [
             { id: 'invertido', valor: total * b / (a + b), error: 'AT-ASPA-INVERTIDA', siFuera: 'Eso pone la distancia propia en vez de la del otro precio.' },
@@ -223,15 +292,23 @@
       rotulo: o.sinFin ? `mezcla: ${f(VT)} L, ? grados` : `mezcla: ${f(VT)} L a ${f(100 * alc / VT)}°`, color: 'd', paso: o.paso,
       tramos: [{ valor: alc, color: 'i', relleno: 0.4, texto: `${f(alc)} L` }, { valor: VT - alc, color: 'd', relleno: 0.05 }],
     });
-    return { max: VT, filas: partes.length + 1, tiras, alt: `Recipientes de ${partes.map(x => `${f(x.V)} L a ${f(x.g)}°`).join(' y ')}; la parte de color es alcohol puro` };
+    return { max: VT, filas: partes.length + 1, tiras, alt: `Tiras de alcohol de ${partes.map(x => `${f(x.V)} L a ${f(x.g)}°`).join(' y ')}; la parte de color es alcohol puro` };
   };
   const alcohol = {
     id: 'alcohol',
     titulo: 'Grados: litros de alcohol puro',
     temas: ['Mezclas alcohólicas'],
     pieza: 'arit-tiras',
+    // Lee: qué dice el grado de una etiqueta; no dice qué hace el agua con el grado (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que dice la etiqueta', texto: 'El frasco de alcohol de la farmacia dice 70° en la etiqueta. Ese número es su grado alcohólico: cuenta qué tan concentrado está el alcohol.' },
+        { titulo: 'De 0° a 100°', texto: 'El alcohol puro, sin nada de agua, sería de 100°. El agua sola es de 0°. Un alcohol de 70° tiene 70 mL de alcohol puro en cada 100 mL.' },
+        { titulo: 'Qué mirar', texto: 'Cada tira es un alcohol: su parte de color es alcohol puro y la parte clara, el resto. La última tira es la mezcla. Cambia los litros y compara los tramos de color.' },
+      ],
+    },
     juega: {
-      consigna: 'Se juntan dos recipientes: uno de alcohol a 60° y otro a 20°. La parte de color es alcohol puro. Elige los litros.',
+      consigna: 'Cada tira es un alcohol: uno de 60° y otro de 20°. La parte de color es alcohol puro. Elige los litros de cada uno.',
       voz: 'Suma los tramos de color y compáralos con la tira entera.',
       controles: [
         { id: 'a', etiqueta: 'Litros a 60°', color: 'c-o', min: 1, max: 6, paso: 1, inicio: 3, decimales: 0 },
@@ -240,10 +317,10 @@
       dibujo: v => ({ datos: vasos([{ V: v.a, g: 60 }, { V: v.b, g: 20 }]), estado: {} }),
       // Arrastra el final de cada recipiente: la tira entera es el volumen de la mezcla.
       arrastres: [
-        { id: 'litros-60', etiqueta: 'final del recipiente a 60 grados', color: 'c-o',
+        { id: 'litros-60', etiqueta: 'final de la tira de 60 grados', color: 'c-o',
           donde: v => { const g = TIRAS().geometria(vasos([{ V: v.a, g: 60 }, { V: v.b, g: 20 }])); return { x: g.x(v.a), y: g.centroY(0) }; },
           mover: (pt, v) => ({ a: porFraccion(TIRAS().geometria(vasos([{ V: v.a, g: 60 }, { V: v.b, g: 20 }])).deX(pt.x) / (v.a + v.b), v.b) }) },
-        { id: 'litros-20', etiqueta: 'final del recipiente a 20 grados', color: 'c-o',
+        { id: 'litros-20', etiqueta: 'final de la tira de 20 grados', color: 'c-o',
           donde: v => { const g = TIRAS().geometria(vasos([{ V: v.a, g: 60 }, { V: v.b, g: 20 }])); return { x: g.x(v.b), y: g.centroY(1) }; },
           mover: (pt, v) => ({ b: porFraccion(TIRAS().geometria(vasos([{ V: v.a, g: 60 }, { V: v.b, g: 20 }])).deX(pt.x) / (v.a + v.b), v.a) }) },
       ],
@@ -274,6 +351,33 @@
       texto: 'El grado alcohólico de una mezcla es el porcentaje de alcohol puro en el volumen total. Se suman los litros de alcohol y los litros totales.',
       ecuacion: [gm, ' = ', { llave: [{ frac: [[s(V, '1'), s(g, '1'), ' + ', s(V, '2'), s(g, '2')], [s(V, '1'), ' + ', s(V, '2')]] }], nota: 'alcohol entre volumen' }],
       condicion: 'se supone que los volúmenes se suman; en la realidad alcohol y agua se contraen un poco. El agua tiene 0°.',
+    },
+    resuelve: {
+      generar(sem) {
+        let r, g1, g2, V1, V2;
+        for (let t = sem + 900; ; t += 89) {      // como «Ahora tú»: volúmenes distintos
+          r = azar(t); g1 = r.de([40, 50, 60, 70, 80, 90]); g2 = r.de([0, 10, 20, 30]); V1 = r.ent(2, 8); V2 = r.ent(1, 6);
+          if (V1 !== V2) break;
+        }
+        const alc = (V1 * g1 + V2 * g2) / 100, VT = V1 + V2, res = 100 * alc / VT;
+        const nom2 = g2 === 0 ? 'agua' : `alcohol de ${g2}°`;
+        const partes = [{ V: V1, g: g1 }, { V: V2, g: g2, nombre: g2 === 0 ? 'agua' : undefined }];
+        return {
+          enunciado: `Se mezclan ${V1} L de alcohol de ${g1}° con ${V2} L de ${nom2}. ¿De cuántos grados queda la mezcla, si los volúmenes se suman?`,
+          dibujo: { datos: vasos(partes, { sinFin: true }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el grado de la mezcla: qué porcentaje de su volumen es alcohol puro.' },
+            { tipo: 'datos', texto: `${V1} L a ${g1}° y ${V2} L ${g2 === 0 ? 'de agua, a 0°' : `a ${g2}°`}.`, ecuacion: [s(V, '1'), ` = ${V1} L, `, s(g, '1'), ` = ${g1}°   ·   `, s(V, '2'), ` = ${V2} L, `, s(g, '2'), ` = ${g2}°`] },
+            { tipo: 'regla', texto: 'Junto el alcohol puro de las dos partes y lo comparo con el volumen total, que también incluye lo que no es alcohol.',
+              ecuacion: [gm, ' = ', { frac: ['litros de alcohol puro', 'litros totales'] }, ' · 100'] },
+            { tipo: 'cuentas', texto: `Cada parte aporta su porcentaje en alcohol puro. Después divido entre los ${VT} L.`,
+              ecuacion: [`${V1} · ${f(g1 / 100)} + ${V2} · ${f(g2 / 100)} = ${f(alc)} L   →   `, gm, ` = ${f(alc)} ÷ ${VT} · 100 = ${f(res)}°`],
+              dibujo: { datos: vasos(partes), estado: {} } },
+            { tipo: 'sentido', texto: `${f(res)}° queda entre ${g2}° y ${g1}°, más cerca de ${V1 > V2 ? g1 : g2}°, la parte con más litros.` },
+          ],
+          respuesta: [gm, ` = ${f(res)}°`],
+        };
+      },
     },
     ahoraTu: {
       generar(sem) {
@@ -310,8 +414,17 @@
     titulo: 'Quilates: oro de cada 24 partes',
     temas: ['Aleaciones y ley del oro en quilates'],
     pieza: 'arit-tiras',
+    // Lee: aleación y quilate; no dice cómo se combinan las dos piezas (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Oro de joyería', texto: 'Las joyas casi nunca son de oro puro: el oro puro es muy blando y se raya. Se funde con cobre o plata, y esa mezcla de metales se llama aleación.' },
+        { titulo: 'Partes de 24', texto: 'La pureza del oro se mide en quilates, sobre 24. Una pieza de 24 quilates sería oro puro. Una de 18 quilates tiene 18 partes de oro de cada 24 partes de masa.',
+          ecuacion: ['18 K = ', { frac: ['18', '24'] }, ' de oro'] },
+        { titulo: 'Qué mirar', texto: 'Cada tira es una pieza: su tramo de color es el oro puro. La tira de abajo es la aleación nueva. Cambia los gramos y mira el tramo de oro de abajo.' },
+      ],
+    },
     juega: {
-      consigna: 'Se funden dos piezas: una de 18 quilates y otra de 12. La parte de color es oro puro. Elige los gramos.',
+      consigna: 'Cada tira es una pieza de oro: una de 18 quilates y otra de 12. La parte de color es oro puro. Elige los gramos.',
       voz: '24 quilates sería una tira toda de color.',
       controles: [
         { id: 'a', etiqueta: 'g de 18 K', color: 'c-o', min: 6, max: 30, paso: 6, inicio: 12, decimales: 0 },
@@ -320,10 +433,10 @@
       dibujo: v => ({ datos: piezas([{ m: v.a, K: 18 }, { m: v.b, K: 12 }]), estado: {} }),
       // Arrastra el final de cada pieza: la tira entera es la masa de la aleación.
       arrastres: [
-        { id: 'gramos-18', etiqueta: 'final de la pieza de 18 quilates', color: 'c-o',
+        { id: 'gramos-18', etiqueta: 'final de la tira de 18 quilates', color: 'c-o',
           donde: v => { const g = TIRAS().geometria(piezas([{ m: v.a, K: 18 }, { m: v.b, K: 12 }])); return { x: g.x(v.a), y: g.centroY(0) }; },
           mover: (pt, v) => ({ a: porFraccion(TIRAS().geometria(piezas([{ m: v.a, K: 18 }, { m: v.b, K: 12 }])).deX(pt.x) / (v.a + v.b), v.b) }) },
-        { id: 'gramos-12', etiqueta: 'final de la pieza de 12 quilates', color: 'c-o',
+        { id: 'gramos-12', etiqueta: 'final de la tira de 12 quilates', color: 'c-o',
           donde: v => { const g = TIRAS().geometria(piezas([{ m: v.a, K: 18 }, { m: v.b, K: 12 }])); return { x: g.x(v.b), y: g.centroY(1) }; },
           mover: (pt, v) => ({ b: porFraccion(TIRAS().geometria(piezas([{ m: v.a, K: 18 }, { m: v.b, K: 12 }])).deX(pt.x) / (v.a + v.b), v.a) }) },
       ],
@@ -354,6 +467,47 @@
       texto: 'La ley de una aleación es la fracción de oro puro en su masa. En quilates se mide sobre 24: 24 K es oro puro.',
       ecuacion: ['ley = ', { frac: [['masa de oro'], ['masa total']] }, '   ·   ', K, ' = ', { llave: ['24 · ley'], nota: 'partes de 24', color: 'c-i' }],
       condicion: 'aquí el quilate es una fracción de pureza (1/24), no el quilate de masa de las piedras preciosas.',
+    },
+    resuelve: {
+      generar(sem) {
+        let r, K1, K2, m1, m2;
+        for (let t = sem + 900; ; t += 37) {      // como «Ahora tú»; aquí las dos masas siempre distintas
+          r = azar(t); K1 = r.de([18, 20, 21, 22]); K2 = r.de([10, 12, 14, 16]); m1 = r.de([10, 20, 30, 40, 60]); m2 = r.de([10, 20, 30, 40]);
+          if (m1 !== m2) break;
+        }
+        if (sem % 3 === 2) {     // la rama de la cadena: oro puro de una sola pieza
+          const oro = m1 * K1 / 24;
+          return {
+            enunciado: `¿Cuántos gramos de oro puro tiene una cadena de ${m1} g de ${K1} quilates?`,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la masa de oro puro que hay dentro de la cadena.' },
+              { tipo: 'datos', texto: `La cadena tiene ${m1} g y es de ${K1} quilates.`, ecuacion: [mm, ` = ${m1} g   ·   `, K, ` = ${K1}`] },
+              { tipo: 'regla', texto: `${K1} quilates quiere decir ${K1} partes de oro de cada 24 partes de masa. Los quilates no son gramos ni porcentaje.`,
+                ecuacion: ['oro = ', mm, ' · ', { frac: [K, '24'] }] },
+              { tipo: 'cuentas', texto: `Tomo ${K1} veinticuatroavos de la masa.`, ecuacion: [`${m1} · `, { frac: [String(K1), '24'] }, ` = ${f(oro)} g`] },
+              { tipo: 'sentido', texto: `${f(oro)} g es menos que ${m1} g, como debe ser. Los ${f(m1 - oro)} g que faltan son de otro metal.` },
+            ],
+            respuesta: `${f(oro)} g de oro puro`,
+          };
+        }
+        const oro = (K1 * m1 + K2 * m2) / 24, MT = m1 + m2, res = 24 * oro / MT;
+        const partes = [{ m: m1, K: K1 }, { m: m2, K: K2 }];
+        return {
+          enunciado: `Se funden ${m1} g de oro de ${K1} quilates con ${m2} g de ${K2} quilates. ¿De cuántos quilates queda la aleación?`,
+          dibujo: { datos: piezas(partes, { sinFin: true }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden los quilates de la aleación nueva.' },
+            { tipo: 'datos', texto: `${m1} g de ${K1} quilates y ${m2} g de ${K2} quilates.`, ecuacion: [s(mm, '1'), ` = ${m1} g, `, s(K, '1'), ` = ${K1}   ·   `, s(mm, '2'), ` = ${m2} g, `, s(K, '2'), ` = ${K2}`] },
+            { tipo: 'regla', texto: 'Junto el oro puro de las dos piezas y lo divido entre la masa total. Esa fracción, por 24, da los quilates.',
+              ecuacion: [K, ' = 24 · ', { frac: ['masa de oro', 'masa total'] }] },
+            { tipo: 'cuentas', texto: `El oro de cada pieza es su masa por sus quilates entre 24. Al multiplicar otra vez por 24, ese 24 se va: queda dividir entre ${MT} g.`,
+              ecuacion: [K, ` = (${m1} · ${K1} + ${m2} · ${K2}) ÷ ${MT} = ${f(K1 * m1 + K2 * m2)} ÷ ${MT} = ${f(res)}`],
+              dibujo: { datos: piezas(partes), estado: {} } },
+            { tipo: 'sentido', texto: `${f(res)} K queda entre ${K2} K y ${K1} K, más cerca de los ${m1 > m2 ? K1 : K2} K de la pieza más pesada.` },
+          ],
+          respuesta: [K, ` = ${f(res)} quilates`],
+        };
+      },
     },
     ahoraTu: {
       generar(sem) {
@@ -476,7 +630,7 @@
     },
     {
       id: 'dos-alcoholes', titulo: 'Dos alcoholes de cualquier grado', pieza: 'arit-tiras',
-      consigna: 'Elige el grado y los litros de cada recipiente; la escala es fija, de 0 a 20 litros. Arrastra el final de cada uno.',
+      consigna: 'Elige el grado y los litros de cada alcohol; la escala es fija, de 0 a 20 litros. Arrastra el final de cada tira.',
       controles: [
         { id: 'g1', etiqueta: 'Grado 1', color: 'c-i', min: 0, max: 100, paso: 10, inicio: 90, unidad: '°', decimales: 0 },
         { id: 'a', etiqueta: 'Litros 1', color: 'c-o', min: 1, max: 10, paso: 1, inicio: 4, decimales: 0 },
@@ -500,10 +654,10 @@
           bien: 'El grado no dice cuánto hay: mide qué parte del total es alcohol.' },
       ],
       arrastres: [
-        { id: 'litros-1', etiqueta: 'final del recipiente 1', color: 'c-o',
+        { id: 'litros-1', etiqueta: 'final de la tira 1', color: 'c-o',
           donde: v => { const g = TIRAS().geometria(dosAlcoholes(v).datos); return { x: g.x(v.a), y: g.centroY(0) }; },
           mover: (pt, v) => ({ a: TIRAS().geometria(dosAlcoholes(v).datos).deX(pt.x) }) },
-        { id: 'litros-2', etiqueta: 'final del recipiente 2', color: 'c-o',
+        { id: 'litros-2', etiqueta: 'final de la tira 2', color: 'c-o',
           donde: v => { const g = TIRAS().geometria(dosAlcoholes(v).datos); return { x: g.x(v.b), y: g.centroY(1) }; },
           mover: (pt, v) => ({ b: TIRAS().geometria(dosAlcoholes(v).datos).deX(pt.x) }) },
       ],
