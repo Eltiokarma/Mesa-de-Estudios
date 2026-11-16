@@ -1,8 +1,8 @@
 /*
  * Teoría de «Magnitudes y unidades» (fisica.magnitudes-y-vectores; el id es el de antes del 16 nov, cuando la unidad
  * se partió en dos y los vectores pasaron a fisica/vectores.js). Molde de docs/teoria.md y contrato «se entiende sin
- * profesor» (docs/plan-calidad.md). Ideas: cambiar de unidad (hecha con el contrato) y dimensiones; falta la idea de
- * áreas y volúmenes (aprobada por Gerson el 16 nov).
+ * profesor» (docs/plan-calidad.md). Ideas: cambiar de unidad, áreas y volúmenes (aprobada por Gerson el 16 nov) y
+ * dimensiones; las tres con 15 ejemplos resueltos (pestaña «Ejemplos»).
  * Colores (regla 4): el alto h del poste (no L: L es la dimensión longitud de la idea 3) y la rapidez, naranja (c-o); el factor que vale 1, verde (c-d); en la idea de
  * dimensiones, la incógnita k va en rojo (c-h).
  * Toda pregunta de conversión da la equivalencia que necesita («Dato: 1 km = 1000 m y 1 h = 3600 s»; Gerson, 16 nov:
@@ -406,6 +406,131 @@
   const CHACRAS = [0.5, 1.5, 2, 2.5, 3];
   const TANQUES = [600, 1100, 2500];
   const BOTELLAS = [250, 500, 625, 750];
+  // Ejemplos resueltos de «Áreas y volúmenes» (pestaña «Ejemplos», 16 nov): 3 niveles × 5, con el molde de
+  // EJEMPLOS_UNIDADES (dato naranja, factor que vale 1 verde, resultado turquesa) y objetos de fis-objeto. En áreas y
+  // volúmenes el enunciado da la equivalencia de largo cuando el ejemplo enseña a elevarla (1 m = 100 cm).
+  // Cuentas recalculadas con un script aparte, fuera del repo: 2,5·10 000 = 250·100, 2,5·1000,
+  // 1,1·1000, 2,5 mL = 2,5 cm³, 893·10⁹ = 8,93·10¹¹; 624/10 000; 8·6 = 48, 0,4² = 0,16, 48/0,16 = 300 = 20·15;
+  // 12·6·1,5 = 108, 108·1000; 0,92·10⁶/1000 = 920; 12·60/1000 = 0,72; √10 000 = 100, 4·100·4 = 1600; 2³ = 8;
+  // 40·20·10 = 8000, 8000·1,6 = 12 800, /1000 = 12,8; 8·50 = 400, 6·50 = 300, 4·3 = 12, 48·2500 = 120 000 = 12·10⁴;
+  // 12/1000 = 0,012, 10·8·0,012 = 0,96, 0,96·1000 = 960. Datos reales: el Titicaca guarda unos 893 km³; un adobe de
+  // 40 × 20 × 10 cm con densidad de 1,6 g/cm³; hielo a 0,92 g/cm³; tanques de techo de 1100 L.
+  const EJEMPLOS_AREAS = [
+    { nivel: 1, titulo: 'Una chacra en metros cuadrados', figura: fo({ objeto: 'terreno', largo: '250 m', ancho: '100 m', texto: '2,5 ha' }),
+      enunciado: ['Una chacra de quinua en Cabana mide ', dO('2,5 ha'), '. ¿Cuántos metros cuadrados son? Dato: 1 ha = 10 000 m².'],
+      solucion: [
+        { texto: ['Una hectárea es un cuadrado de 100 m de lado: en ella caben 10 000 cuadros de 1 m².'] },
+        { texto: ['Factor con m² arriba y ha abajo; las hectáreas se tachan.'], ecuacion: [dO('2,5'), ' ', { tacha: 'ha' }, ' × ', { frac: [dF('10 000 m²'), ['1 ', { tacha: 'ha' }]] }, ' = ', dR('25 000 m²')] },
+        { texto: ['Se comprueba con el dibujo: la chacra mide 250 m por 100 m.'], ecuacion: ['250 m × 100 m = ', dR('25 000 m²')] },
+      ],
+      respuesta: [dR('25 000 m²')] },
+    { nivel: 1, titulo: 'Una botella en mililitros', figura: fo({ objeto: 'botella', texto: '2,5 L' }),
+      enunciado: ['Una botella de agua dice ', dO('2,5 L'), '. ¿Cuántos mililitros son? Dato: 1 L = 1000 mL.'],
+      solucion: [
+        { texto: ['El mililitro es mil veces más chico que el litro: el número tiene que ', dR('subir'), '.'] },
+        { texto: ['Factor con mL arriba y L abajo.'], ecuacion: [dO('2,5'), ' ', { tacha: 'L' }, ' × ', { frac: [dF('1000 mL'), ['1 ', { tacha: 'L' }]] }, ' = ', dR('2500 mL')] },
+      ],
+      respuesta: [dR('2500 mL')] },
+    { nivel: 1, titulo: 'El tanque del techo', figura: fo({ objeto: 'tanque', texto: '1,1 m³' }),
+      enunciado: ['El tanque de agua de una casa en Juliaca guarda ', dO('1,1 m³'), '. ¿Cuántos litros son? Dato: 1 m³ = 1000 L.'],
+      solucion: [
+        { texto: ['Un metro cúbico es un cubo de 1 m de lado: dentro caben 1000 botellas de un litro.'] },
+        { texto: ['Factor con L arriba y m³ abajo.'], ecuacion: [dO('1,1'), ' ', { tacha: 'm³' }, ' × ', { frac: [dF('1000 L'), ['1 ', { tacha: 'm³' }]] }, ' = ', dR('1100 L')] },
+      ],
+      respuesta: [dR('1100 L')] },
+    { nivel: 1, titulo: 'Una vacuna en la jeringa', figura: fo({ objeto: 'jeringa', ml: 2.5, max: 5, texto: '2,5 mL' }),
+      enunciado: ['En la posta, una enfermera pone ', dO('2,5 mL'), ' de vacuna en una jeringa. ¿Cuántos centímetros cúbicos son? Dato: 1 mL = 1 cm³.'],
+      solucion: [
+        { texto: ['Un mililitro es lo que cabe en un cubito de 1 cm de lado: es la misma medida con dos nombres.'] },
+        { texto: ['El factor vale 1 y el número no cambia.'], ecuacion: [dO('2,5'), ' ', { tacha: 'mL' }, ' × ', { frac: [dF('1 cm³'), ['1 ', { tacha: 'mL' }]] }, ' = ', dR('2,5 cm³')] },
+      ],
+      respuesta: [dR('2,5 cm³')] },
+    { nivel: 1, titulo: 'El agua del lago Titicaca', figura: fo({ objeto: 'lago', nombre: 'Lago Titicaca', texto: '893 km³' }),
+      enunciado: ['El lago Titicaca guarda unos ', dO('893 km³'), ' de agua. ¿Cuántos metros cúbicos son? Dato: 1 km³ = 10⁹ m³.'],
+      solucion: [
+        { texto: ['Un km³ es un cubo de 1 km de lado: caben mil millones de cubos de 1 m. El número sube mucho.'] },
+        { texto: ['Se multiplica y se escribe en notación científica.'], ecuacion: [dO('893'), ' ', { tacha: 'km³' }, ' × ', { frac: [dF('10⁹ m³'), ['1 ', { tacha: 'km³' }]] }, ' = 893 × 10⁹ m³ = ', dR('8,93 × 10¹¹ m³')] },
+      ],
+      respuesta: [dR('8,93 × 10¹¹ m³')] },
+    { nivel: 2, titulo: 'Una hoja en metros cuadrados', figura: fo({ objeto: 'hoja', ancho: '21 cm', alto: '29,7 cm', texto: '624 cm²' }),
+      enunciado: ['Una hoja A4 cubre unos ', dO('624 cm²'), ' de la carpeta. ¿Cuántos metros cuadrados son? Dato: 1 m = 100 cm.'],
+      solucion: [
+        { texto: ['El dato es de largo y aquí hay un área: el factor se eleva al cuadrado.'], ecuacion: [dF('1 m²'), ' = (100 cm)² = ', dF('10 000 cm²')] },
+        { texto: ['Ahora sí, el factor con m² arriba y cm² abajo.'], ecuacion: [dO('624'), ' ', { tacha: 'cm²' }, ' × ', { frac: [dF('1 m²'), ['10 000 ', { tacha: 'cm²' }]] }, ' = ', dR('0,0624 m²')] },
+        { texto: ['Dividir solo entre 100 daría 6,24 m²: más que una pizarra. No puede ser una hoja.'] },
+      ],
+      respuesta: [dR('0,0624 m²'), ', no 6,24 m²'] },
+    { nivel: 2, titulo: 'Losetas para el aula', figura: fo({ objeto: 'piso', largo: '8 m', ancho: '6 m', loseta: '40 cm', nx: 20, ny: 15 }),
+      enunciado: ['El aula mide ', dO('8 m'), ' por ', dO('6 m'), '. Se cubre con losetas cuadradas de ', dO('40 cm'), ' de lado. ¿Cuántas losetas hacen falta? Dato: 1 m = 100 cm.'],
+      solucion: [
+        { texto: ['Todo en metros: 40 cm = 0,4 m. El área de una loseta:'], ecuacion: ['0,4 m × 0,4 m = ', dO('0,16 m²')] },
+        { texto: ['El área del aula, y cuántas losetas caben en ella:'], ecuacion: ['8 m × 6 m = 48 m²,   48 m² ÷ ', dO('0,16 m²'), ' = ', dR('300')] },
+        { texto: ['Se comprueba por lados: caben 20 losetas a lo largo y 15 a lo ancho.'], ecuacion: ['20 × 15 = ', dR('300')] },
+      ],
+      respuesta: [dR('300 losetas')] },
+    { nivel: 2, titulo: 'La piscina en litros', figura: fo({ objeto: 'piscina', largo: '12 m', ancho: '6 m', hondo: '1,5 m' }),
+      enunciado: ['La piscina del colegio mide ', dO('12 m'), ' de largo, ', dO('6 m'), ' de ancho y ', dO('1,5 m'), ' de hondo. ¿Cuántos litros de agua le caben? Dato: 1 m³ = 1000 L.'],
+      solucion: [
+        { texto: ['El agua llena una caja: su volumen es largo por ancho por hondo.'], ecuacion: [dO('12 m'), ' × ', dO('6 m'), ' × ', dO('1,5 m'), ' = ', dO('108 m³')] },
+        { texto: ['De m³ a litros, factor con L arriba.'], ecuacion: [dO('108'), ' ', { tacha: 'm³' }, ' × ', { frac: [dF('1000 L'), ['1 ', { tacha: 'm³' }]] }, ' = ', dR('108 000 L')] },
+      ],
+      respuesta: [dR('108 000 L')] },
+    { nivel: 2, titulo: 'El hielo en kg/m³', figura: fo({ objeto: 'bloque', material: 'hielo', texto: '0,92 g/cm³', nombre: 'hielo' }),
+      enunciado: ['En las mañanas de julio, el agua de los charcos de Puno se congela. El hielo tiene una densidad de ', dO('0,92 g/cm³'), '. ¿Cuánto es en kg/m³? Dato: 1 kg = 1000 g y 1 m = 100 cm.'],
+      solucion: [
+        { texto: ['Del dato de largo sale el de volumen: el factor va al cubo.'], ecuacion: [dF('1 m³'), ' = (100 cm)³ = ', dF('1 000 000 cm³')] },
+        { texto: ['Dos factores: los g se tachan con los g, y los cm³ con los cm³.'], ecuacion: [{ frac: [[dO('0,92 '), { tacha: 'g' }], ['1 ', { tacha: 'cm³' }]] }, ' × ', { frac: [dF('1 kg'), ['1000 ', { tacha: 'g' }]] }, ' × ', { frac: [['1 000 000 ', { tacha: 'cm³' }], dF('1 m³')] }, ' = ', dR('920 kg/m³')] },
+        { texto: ['Atajo: de g/cm³ a kg/m³ siempre se multiplica por 1000.'] },
+      ],
+      respuesta: [dR('920 kg/m³')] },
+    { nivel: 2, titulo: 'Un caño en m³ por hora', figura: fo({ objeto: 'cano', texto: '12 L/min' }),
+      enunciado: ['De un caño salen ', dO('12 L/min'), ' de agua. ¿Cuántos metros cúbicos echa en una hora? Dato: 1 m³ = 1000 L y 1 h = 60 min.'],
+      solucion: [
+        { texto: ['Hay dos unidades que cambiar: los litros a m³ y los minutos a horas. Dos factores.'] },
+        { texto: ['Los L y los min se tachan.'], ecuacion: [{ frac: [[dO('12 '), { tacha: 'L' }], ['1 ', { tacha: 'min' }]] }, ' × ', { frac: [dF('1 m³'), ['1000 ', { tacha: 'L' }]] }, ' × ', { frac: [['60 ', { tacha: 'min' }], dF('1 h')] }, ' = ', dR('0,72 m³/h')] },
+      ],
+      respuesta: [dR('0,72 m³'), ' en una hora, o 720 L'] },
+    { nivel: 3, titulo: 'La cerca de una hectárea', figura: fo({ objeto: 'terreno', cuadrado: true, largo: 'lado: ?', texto: '1 ha' }),
+      enunciado: ['Don Teófilo cerca un terreno cuadrado de ', dO('1 ha'), ' con 4 vueltas de alambre. ¿Cuántos metros de alambre necesita? Dato: 1 ha = 10 000 m².'],
+      solucion: [
+        { texto: ['El área de un cuadrado es lado por lado. ¿Qué número, por sí mismo, da 10 000?'], ecuacion: ['lado = ', { raiz: '10 000 m²' }, ' = ', dO('100 m')] },
+        { texto: ['Una vuelta rodea los 4 lados; y son 4 vueltas.'], ecuacion: ['4 × ', dO('100 m'), ' = 400 m,   4 × 400 m = ', dR('1600 m')] },
+        { texto: ['Ojo: el lado no es 10 000 ÷ 4. Eso confunde el área con el perímetro.'] },
+      ],
+      respuesta: [dR('1600 m'), ' de alambre'] },
+    { nivel: 3, titulo: 'Una caja de 2 dm', figura: { pieza: 'fis-area', datos: { color: 'o', cubo: { n: 2, arriba: '2 dm', abajo: '2 × 2 × 2 = 8 dm³ = 8 L', nombre: 'cada cubo: 1 dm³ = 1 L' } }, estado: {} },
+      enunciado: ['Una caja cúbica de cartón mide ', dO('2 dm'), ' de lado. ¿Cuántos litros de agua le caben? Dato: 1 L = 1 dm³.'],
+      solucion: [
+        { texto: ['Error típico: responder 2 L. Un volumen lleva el lado tres veces: largo, ancho y alto.'] },
+        { texto: ['En el dibujo caben 2 × 2 × 2 cubos de 1 dm, y cada uno es un litro.'], ecuacion: ['(', dO('2 dm'), ')³ = 2 × 2 × 2 dm³ = ', dR('8 dm³'), ' = ', dR('8 L')] },
+      ],
+      respuesta: [dR('8 L'), ', no 2 L'] },
+    { nivel: 3, titulo: 'La masa de un adobe', figura: fo({ objeto: 'bloque', material: 'adobe', largo: '40 cm', ancho: '20 cm', alto: '10 cm', texto: '1,6 g/cm³' }),
+      enunciado: ['Un adobe mide ', dO('40 cm'), ' × ', dO('20 cm'), ' × ', dO('10 cm'), ' y su densidad es ', dO('1,6 g/cm³'), '. ¿Cuál es su masa en kilogramos? Dato: 1 kg = 1000 g.'],
+      solucion: [
+        { texto: ['Primero su volumen: largo por ancho por alto.'], ecuacion: [dO('40 cm'), ' × ', dO('20 cm'), ' × ', dO('10 cm'), ' = ', dO('8000 cm³')] },
+        { texto: ['La densidad dice cuántos gramos hay en cada cm³: se multiplica.'], ecuacion: [dO('8000 '), { tacha: 'cm³' }, ' × ', { frac: [dO('1,6 g'), ['1 ', { tacha: 'cm³' }]] }, ' = 12 800 g'] },
+        { texto: ['Y a kilogramos, con el factor que tiene kg arriba.'], ecuacion: ['12 800 ', { tacha: 'g' }, ' × ', { frac: [dF('1 kg'), ['1000 ', { tacha: 'g' }]] }, ' = ', dR('12,8 kg')] },
+      ],
+      respuesta: [dR('12,8 kg')] },
+    { nivel: 3, titulo: 'El plano de un dormitorio', figura: fo({ objeto: 'plano', ancho: '8 cm', alto: '6 cm', escala: '1 : 50' }),
+      enunciado: ['En un plano a escala ', dO('1 : 50'), ', un dormitorio mide ', dO('8 cm'), ' por ', dO('6 cm'), '. ¿Cuál es su área real en m²? Dato: 1 m = 100 cm.'],
+      solucion: [
+        { texto: ['Escala 1 : 50 quiere decir que cada largo real es 50 veces el del plano.'], ecuacion: [dO('8 cm'), ' × 50 = 400 cm = 4 m,   ', dO('6 cm'), ' × 50 = 300 cm = 3 m'] },
+        { texto: ['El área real es largo por ancho.'], ecuacion: ['4 m × 3 m = ', dR('12 m²')] },
+        { texto: ['Ojo: el área no creció 50 veces, sino 50 × 50 = 2500. En el plano eran 48 cm².'], ecuacion: ['48 cm² × 2500 = 120 000 cm² = ', dR('12 m²')] },
+      ],
+      respuesta: [dR('12 m²')] },
+    { nivel: 3, titulo: 'La lluvia sobre un techo', figura: fo({ objeto: 'techo', largo: '10 m', ancho: '8 m', lluvia: '12 mm' }),
+      enunciado: ['Una tarde de febrero, en Juliaca, caen ', dO('12 mm'), ' de lluvia sobre un techo plano de ', dO('10 m'), ' por ', dO('8 m'), '. ¿Cuántos litros de agua recibe? Dato: 1 m = 1000 mm y 1 m³ = 1000 L.'],
+      solucion: [
+        { texto: ['12 mm de lluvia es una capa de agua de 12 mm de alto sobre todo el techo. En metros:'], ecuacion: [dO('12 mm'), ' ÷ 1000 = ', dO('0,012 m')] },
+        { texto: ['El volumen de esa capa es área por alto.'], ecuacion: [dO('10 m'), ' × ', dO('8 m'), ' × ', dO('0,012 m'), ' = 0,96 m³'] },
+        { texto: ['Y a litros, por 1000.'], ecuacion: ['0,96 ', { tacha: 'm³' }, ' × ', { frac: [dF('1000 L'), ['1 ', { tacha: 'm³' }]] }, ' = ', dR('960 L')] },
+      ],
+      respuesta: [dR('960 L'), ': casi lo que guarda un tanque de techo'] },
+  ];
+
   const areas = {
     id: 'areas-volumenes',
     titulo: 'Áreas y volúmenes',
@@ -421,6 +546,7 @@
       ],
     },
     actividad: 'Cubrir el mismo piso con cuadros de 1 m y de 1 dm, y contarlos.',
+    ejemplos: EJEMPLOS_AREAS,
     aprendizaje: 'De m² a dm², el número se multiplica por 100 y no por 10: el factor 10 entra una vez por cada lado.',
     juega: {
       consigna: 'El piso de un cuarto cuadrado, cubierto dos veces: con cuadros de 1 m y con cuadros de 1 dm.',
@@ -623,6 +749,134 @@
     { f: 'v² = v₀² + 2·a·d', izq: ['v²', V2], terminos: [['v₀²', V2], ['2·a·d', V2]], datos: 'v y v₀ son rapideces, a una aceleración y d una distancia.' },
     { f: 'x = v·t + d/t', izq: ['x', L1], terminos: [['v·t', L1], ['d/t', V1]], datos: 'x y d son distancias, v una rapidez y t un tiempo.' },
   ];
+  // Ejemplos resueltos de «Análisis dimensional» (pestaña «Ejemplos», 16 nov): 3 niveles × 5, con el molde de
+  // EJEMPLOS_UNIDADES. Colores: la dimensión de un dato, naranja (c-o); la que resulta, turquesa (c-i); la incógnita
+  // (una constante o un exponente), roja (c-h), como la k de esta idea. Notación de la app: [v] = L T⁻¹.
+  // Exponentes recalculados con un script aparte, fuera del repo, como vectores (M, L, T):
+  // v = (0,1,−1), A = (0,2,0), ρ = (1,−3,0), F = (1,1,−2), P = (1,−1,−2); v·t y ½·a·t² = (0,1,0); m·g·h = (1,2,−2);
+  // m·v = (1,1,−1) ≠ F; v², v₀² y 2·a·d = (0,2,−2); ρ·g = (1,−2,−2) ≠ P; péndulo: x + y = 0, −2y = 1 → x = ½, y = −½;
+  // [A] = E/v² = M, [B] = E/P = L³; [A/B] = (0,1,−2) − (0,1,−1) = T⁻¹; [G] = F·L²/M² = (−1,3,−2);
+  // aire: (1,−3+2x+y,−y) = (1,1,−2) → y = 2, x = 1.
+  const dH = t => ({ v: 'c-h', t });
+  const bal = (iz, ie, de, ee) => ({ pieza: 'fis-balanza-dim', datos: { izq: { nombre: iz, exps: ie }, der: { nombre: de, exps: ee } }, estado: {} });
+  const EJEMPLOS_DIM = [
+    { nivel: 1, titulo: 'La dimensión de una rapidez', figura: fo({ objeto: 'atleta', distancia: '100 m', tiempo: '10 s' }),
+      enunciado: ['Un corredor hace ', dO('100 m'), ' en ', dO('10 s'), '. La rapidez es distancia entre tiempo: v = d / t. ¿Cuál es la dimensión de la rapidez?'],
+      solucion: [
+        { texto: ['Una distancia es una longitud, L, y un tiempo es T. Los números no cuentan.'], ecuacion: ['[d] = ', dO('L'), ',   [t] = ', dO('T')] },
+        { texto: ['Se dividen las letras: L entre T se escribe L T⁻¹.'], ecuacion: ['[v] = ', { frac: [dO('L'), dO('T')] }, ' = ', dR('L T⁻¹')] },
+      ],
+      respuesta: ['[v] = ', dR('L T⁻¹'), ', en m/s o en km/h'] },
+    { nivel: 1, titulo: 'La dimensión de un área', figura: fo({ objeto: 'terreno', largo: '120 m', ancho: '80 m', texto: 'A' }),
+      enunciado: ['Una chacra rectangular mide ', dO('120 m'), ' por ', dO('80 m'), '. Su área es A = largo × ancho. ¿Cuál es la dimensión de un área?'],
+      solucion: [
+        { texto: ['Cada lado es una longitud: L.'] },
+        { texto: ['Se multiplican las letras: L por L es L².'], ecuacion: ['[A] = ', dO('L'), ' × ', dO('L'), ' = ', dR('L²')] },
+        { texto: ['Por eso un área va en m² o en hectáreas: siempre es una longitud al cuadrado.'] },
+      ],
+      respuesta: ['[A] = ', dR('L²')] },
+    { nivel: 1, titulo: 'La dimensión de una densidad', figura: fo({ objeto: 'bloque', material: 'adobe', largo: '40 cm', ancho: '20 cm', alto: '10 cm', texto: '12,8 kg' }),
+      enunciado: ['La densidad es masa entre volumen: ρ = m / V. Un adobe tiene ', dO('12,8 kg'), ' y mide ', dO('40 cm'), ' × ', dO('20 cm'), ' × ', dO('10 cm'), '. ¿Cuál es la dimensión de una densidad?'],
+      solucion: [
+        { texto: ['La masa es M. El volumen es largo por ancho por alto: L tres veces.'], ecuacion: ['[m] = ', dO('M'), ',   [V] = L × L × L = ', dO('L³')] },
+        { texto: ['Dividir entre L³ se escribe L⁻³.'], ecuacion: ['[ρ] = ', { frac: [dO('M'), dO('L³')] }, ' = ', dR('M L⁻³')] },
+      ],
+      respuesta: ['[ρ] = ', dR('M L⁻³'), ', en kg/m³ o en g/cm³'] },
+    { nivel: 1, titulo: 'La dimensión de una fuerza', figura: fo({ objeto: 'caja', masa: '40 kg', fuerza: 'F', aceleracion: 'a' }),
+      enunciado: ['Un estudiante empuja una caja de ', dO('40 kg'), ' y la acelera. La fuerza es F = m · a. ¿Cuál es la dimensión de la fuerza?'],
+      solucion: [
+        { texto: ['La aceleración dice cuánto cambia la rapidez en cada segundo: L T⁻¹ entre T.'], ecuacion: ['[a] = L T⁻¹ ÷ T = ', dO('L T⁻²')] },
+        { texto: ['La masa es M. Se multiplican las letras.'], ecuacion: ['[F] = ', dO('M'), ' × ', dO('L T⁻²'), ' = ', dR('M L T⁻²')] },
+      ],
+      respuesta: ['[F] = ', dR('M L T⁻²'), '; en el SI, el newton'] },
+    { nivel: 1, titulo: 'La dimensión de una presión', figura: fo({ objeto: 'presion', fuerza: 'F', area: 'A', texto: 'la presión' }),
+      enunciado: ['La presión es fuerza entre área: P = F / A. Si [F] = M L T⁻² y [A] = L², ¿cuál es la dimensión de la presión?'],
+      solucion: [
+        { texto: ['Se dividen las letras, como en una fracción.'], ecuacion: ['[P] = ', { frac: [dO('M L T⁻²'), dO('L²')] }] },
+        { texto: ['Las L se restan: 1 − 2 = −1. Las demás letras quedan igual.'], ecuacion: ['[P] = M L¹⁻² T⁻² = ', dR('M L⁻¹ T⁻²')] },
+      ],
+      respuesta: ['[P] = ', dR('M L⁻¹ T⁻²')] },
+    { nivel: 2, titulo: '¿Cuadra la fórmula del MRUV?', figura: bal('v · t', [0, 1, 0], '½ a t²', [0, 1, 0]),
+      enunciado: ['¿Puede estar bien escrita d = v·t + ½·a·t²? Aquí d es una distancia, v una rapidez, a una aceleración y t un tiempo.'],
+      solucion: [
+        { texto: ['En una suma, cada término debe tener la dimensión del otro lado: [d] = L.'] },
+        { texto: ['Primer término:'], ecuacion: ['[v·t] = ', dO('L T⁻¹'), ' × ', dO('T'), ' = ', dR('L')] },
+        { texto: ['Segundo término: el ½ es un número y no tiene dimensión.'], ecuacion: ['[½·a·t²] = ', dO('L T⁻²'), ' × ', dO('T²'), ' = ', dR('L')] },
+      ],
+      respuesta: ['Sí: los dos términos son ', dR('L'), ', como d'] },
+    { nivel: 2, titulo: 'La energía para subir agua', figura: fo({ objeto: 'tanque', texto: 'masa m', altura: 'h' }),
+      enunciado: ['Para subir agua de masa m al tanque, a una altura h, hace falta la energía E = m·g·h, con g la aceleración de la gravedad. Si [E] = M L² T⁻², ¿cuadra?'],
+      solucion: [
+        { texto: ['Cada letra con su dimensión: m es una masa, g una aceleración y h una longitud.'], ecuacion: ['[m] = ', dO('M'), ',   [g] = ', dO('L T⁻²'), ',   [h] = ', dO('L')] },
+        { texto: ['Se multiplican, y las L se juntan: L × L = L².'], ecuacion: ['[m·g·h] = M × L T⁻² × L = ', dR('M L² T⁻²')] },
+      ],
+      respuesta: ['Sí: los dos lados son ', dR('M L² T⁻²')] },
+    { nivel: 2, titulo: 'Una fórmula que no cuadra', figura: bal('F', [1, 1, -2], 'm · v', [1, 1, -1]),
+      enunciado: ['Un compañero escribe F = m·v para la fuerza, con m una masa y v una rapidez. Si [F] = M L T⁻², ¿puede estar bien?'],
+      solucion: [
+        { texto: ['El lado derecho es masa por rapidez.'], ecuacion: ['[m·v] = ', dO('M'), ' × ', dO('L T⁻¹'), ' = ', dR('M L T⁻¹')] },
+        { texto: ['Le falta un T⁻¹: la fuerza lleva T⁻². La balanza se inclina.'] },
+        { texto: ['Lo correcto es F = m·a: la aceleración trae el T⁻² que falta.'] },
+      ],
+      respuesta: [dR('No'), ': a m·v le falta un T⁻¹'] },
+    { nivel: 2, titulo: 'La rapidez al frenar', figura: bal('v²', [0, 2, -2], '2 a d', [0, 2, -2]),
+      enunciado: ['Una combi frena. ¿Puede estar bien escrita v² = v₀² + 2·a·d? Aquí v y v₀ son rapideces, a una aceleración y d una distancia.'],
+      solucion: [
+        { texto: ['A la izquierda hay una rapidez al cuadrado: el L T⁻¹ dos veces. v₀² es igual.'], ecuacion: ['[v²] = [v₀²] = (L T⁻¹)² = ', dO('L² T⁻²')] },
+        { texto: ['El último término: el 2 es un número y no cuenta.'], ecuacion: ['[2·a·d] = ', dO('L T⁻²'), ' × ', dO('L'), ' = ', dR('L² T⁻²')] },
+      ],
+      respuesta: ['Sí: los tres términos son ', dR('L² T⁻²')] },
+    { nivel: 2, titulo: 'La presión en el fondo', figura: fo({ objeto: 'deposito', altura: 'h', texto: 'P', superficie: 'P₀', colorAltura: 'h' }),
+      enunciado: ['Para la presión en el fondo de un tanque, alguien escribe P = P₀ + ρ·g. P y P₀ son presiones, ρ una densidad y g una aceleración. ¿Cuadra?'],
+      solucion: [
+        { texto: ['Las presiones son M L⁻¹ T⁻². El otro término es densidad por aceleración:'], ecuacion: ['[ρ·g] = ', dO('M L⁻³'), ' × ', dO('L T⁻²'), ' = ', dR('M L⁻² T⁻²')] },
+        { texto: ['L⁻² no es L⁻¹: ese término no es una presión y no se puede sumar.'] },
+        { texto: ['Falta multiplicar por una longitud: la profundidad ', dH('h'), ' del dibujo. P = P₀ + ρ·g·', dH('h'), ' sí cuadra.'] },
+      ],
+      respuesta: [dR('No'), ': ρ·g no es una presión; falta la ', dH('h')] },
+    { nivel: 3, titulo: 'Los exponentes del péndulo', figura: fo({ objeto: 'pendulo', largo: 'ℓ', g: 'g', texto: 't: el tiempo de una ida y vuelta' }),
+      enunciado: ['El tiempo t de una ida y vuelta de un péndulo depende de su largo ℓ y de la gravedad g: t = k·', { sup: ['ℓ', dH('x')] }, '·', { sup: ['g', dH('y')] }, ', con k un número. Halla ', dH('x'), ' e ', dH('y'), '.'],
+      solucion: [
+        { texto: ['Cada letra con M, L y T; el número k no cuenta.'], ecuacion: ['[t] = T,   [ℓ] = L,   [g] = L T⁻²'] },
+        { texto: ['Se reemplaza y se juntan los exponentes de cada letra.'], ecuacion: ['T = ', { sup: ['L', dH('x')] }, ' · ', { sup: [{ par: 'L T⁻²' }, dH('y')] }, ' = ', { sup: ['L', [dH('x'), ' + ', dH('y')]] }, ' ', { sup: ['T', ['−2', dH('y')]] }] },
+        { texto: ['A la izquierda no hay L, exponente 0, y la T tiene exponente 1.'], ecuacion: [dH('x'), ' + ', dH('y'), ' = 0,   −2', dH('y'), ' = 1   →   ', dH('y'), ' = ', dR('−½'), ',   ', dH('x'), ' = ', dR('½')] },
+        { texto: ['El exponente ½ es una raíz cuadrada.'], ecuacion: ['t = k·', { raiz: 'ℓ / g' }] },
+      ],
+      respuesta: [dH('x'), ' = ', dR('½'), ' e ', dH('y'), ' = ', dR('−½'), ': t = k·√(ℓ/g)'] },
+    { nivel: 3, titulo: 'Dos constantes en una suma', figura: bal('A · v²', [1, 2, -2], 'B · P', [1, 2, -2]),
+      enunciado: ['En E = ', dH('A'), '·v² + ', dH('B'), '·P, E es una energía, v una rapidez y P una presión. Si [E] = M L² T⁻², ¿qué dimensiones tienen ', dH('A'), ' y ', dH('B'), '?'],
+      solucion: [
+        { texto: ['Cada término de la suma debe ser una energía. Para despejar, se divide.'] },
+        { texto: ['Se divide entre [v²] = L² T⁻²:'], ecuacion: ['[', dH('A'), '] = ', { frac: ['M L² T⁻²', 'L² T⁻²'] }, ' = ', dR('M')] },
+        { texto: ['Se divide entre [P] = M L⁻¹ T⁻²; las L se restan: 2 − (−1) = 3.'], ecuacion: ['[', dH('B'), '] = ', { frac: ['M L² T⁻²', 'M L⁻¹ T⁻²'] }, ' = ', dR('L³')] },
+        { texto: [dH('A'), ' es una masa y ', dH('B'), ', un volumen.'] },
+      ],
+      respuesta: ['[', dH('A'), '] = ', dR('M'), ' y [', dH('B'), '] = ', dR('L³')] },
+    { nivel: 3, titulo: 'El cociente de dos constantes', figura: bal('A · t²', [0, 1, 0], 'B · t', [0, 1, 0]),
+      enunciado: ['La posición de una combi que arranca es x = ', dH('A'), '·t² + ', dH('B'), '·t, con x una distancia y t un tiempo. ¿Qué dimensión tiene ', dH('A'), ' / ', dH('B'), '?'],
+      solucion: [
+        { texto: ['Cada término debe ser una longitud, como x: L. Se despeja cada constante.'], ecuacion: ['[', dH('A'), '] = L ÷ T² = ', dO('L T⁻²'), ',   [', dH('B'), '] = L ÷ T = ', dO('L T⁻¹')] },
+        { texto: ['Se dividen: las L se van y los exponentes de T se restan, −2 − (−1) = −1.'], ecuacion: ['[', dH('A'), ' / ', dH('B'), '] = ', { frac: [dO('L T⁻²'), dO('L T⁻¹')] }, ' = ', dR('T⁻¹')] },
+      ],
+      respuesta: ['[', dH('A'), ' / ', dH('B'), '] = ', dR('T⁻¹'), ': algo «por segundo»'] },
+    { nivel: 3, titulo: 'La constante de la gravitación', figura: fo({ objeto: 'planetas', m1: 'm₁', m2: 'm₂', d: 'd', fuerza: 'F' }),
+      enunciado: ['Dos masas, m₁ y m₂, se atraen con la fuerza F = ', dH('G'), '·m₁·m₂ / d², donde d es la distancia entre ellas. ¿Qué dimensión tiene la constante ', dH('G'), '?'],
+      solucion: [
+        { texto: ['Se despeja ', dH('G'), ': pasa multiplicando lo que dividía y dividiendo lo que multiplicaba.'], ecuacion: [dH('G'), ' = ', { frac: ['F · d²', 'm₁ · m₂'] }] },
+        { texto: ['Cada parte con M, L y T.'], ecuacion: ['[F] = ', dO('M L T⁻²'), ',   [d²] = ', dO('L²'), ',   [m₁ · m₂] = ', dO('M²')] },
+        { texto: ['Las M se restan, 1 − 2 = −1, y las L se suman, 1 + 2 = 3.'], ecuacion: ['[', dH('G'), '] = ', { frac: ['M L T⁻² · L²', 'M²'] }, ' = ', dR('M⁻¹ L³ T⁻²')] },
+      ],
+      respuesta: ['[', dH('G'), '] = ', dR('M⁻¹ L³ T⁻²')] },
+    { nivel: 3, titulo: 'El aire que frena una combi', figura: fo({ objeto: 'viento', v: 'v', fuerza: 'F', area: 'A: el frente', aire: 'aire, ρ' }),
+      enunciado: ['El aire frena a una combi con F = k·ρ·', { sup: ['A', dH('x')] }, '·', { sup: ['v', dH('y')] }, ': ρ es la densidad del aire, A el área del frente, v la rapidez y k un número. Halla ', dH('x'), ' e ', dH('y'), '.'],
+      solucion: [
+        { texto: ['Cada letra con M, L y T.'], ecuacion: ['[F] = M L T⁻²,   [ρ] = M L⁻³,   [A] = L²,   [v] = L T⁻¹'] },
+        { texto: ['Se juntan los exponentes de cada letra del lado derecho.'], ecuacion: ['M L T⁻² = M · ', { sup: ['L', ['−3 + 2', dH('x'), ' + ', dH('y')]] }, ' · ', { sup: ['T', ['−', dH('y')]] }] },
+        { texto: ['La T da ', dH('y'), ' = 2. La L da −3 + 2', dH('x'), ' + 2 = 1, así que ', dH('x'), ' = 1.'], ecuacion: [dH('x'), ' = ', dR('1'), ',   ', dH('y'), ' = ', dR('2'), '   →   F = k·ρ·A·v²'] },
+      ],
+      respuesta: [dH('x'), ' = ', dR('1'), ' e ', dH('y'), ' = ', dR('2')] },
+  ];
+
   const dimensiones = {
     id: 'homogeneidad',
     titulo: 'Análisis dimensional',
@@ -638,6 +892,7 @@
       ],
     },
     actividad: 'Poner fórmulas en una balanza, un lado en cada platillo, y ver cuáles la dejan derecha.',
+    ejemplos: EJEMPLOS_DIM,
     aprendizaje: 'Una fórmula solo puede estar bien si sus dos lados tienen la misma dimensión; las dimensiones se multiplican y dividen como letras.',
     juega: {
       consigna: 'Alguien anota fórmulas para la distancia d que recorre una combi. La balanza compara de qué está hecho cada lado.',
