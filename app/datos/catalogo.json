@@ -107,6 +107,7 @@
      "id": "fisica.vectores",
      "nombre": "Vectores",
      "temas": [
+      "Escalares y vectores",
       "Componentes y vector unitario",
       "Suma de vectores por el método gráfico",
       "Producto escalar y vectorial"
@@ -144,13 +145,14 @@
      "teoria": {
       "archivo": "/contenido/teoria/fisica/vectores.js",
       "requiere": [
+       "/nucleo/kit/piezas/fis-dron.js",
        "/nucleo/kit/piezas/flechas.js",
        "/plantillas/vectores/motor.js",
        "/nucleo/fisica3d.js",
        "/nucleo/kit/piezas/fis-espacio-3d.js"
       ],
-      "ideas": 3,
-      "terminos": 13
+      "ideas": 4,
+      "terminos": 20
      }
     },
     {

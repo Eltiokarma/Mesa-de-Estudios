@@ -642,10 +642,8 @@
     glosario: [
       { termino: 'posición', simbolo: 'x', medida: 'm', def: 'Dónde está el móvil, contado desde el cero de la recta, con signo.',
         ejemplo: 'x = −2 m: dos metros a la izquierda del cero.', ver: ['desplazamiento'] },
-      { termino: 'desplazamiento', simbolo: 'Δx', medida: 'm', def: 'Cambio de posición: dónde terminó menos dónde empezó. Puede ser negativo.',
-        ejemplo: 'De x = 5 m a x = 2 m: Δx = −3 m.', ver: ['distancia recorrida'] },
-      { termino: 'distancia recorrida', medida: 'm', def: 'Todo el camino hecho, sumando idas y vueltas. Nunca es negativa.',
-        ejemplo: 'Ir 4 m y volver 4 m: recorriste 8 m, aunque Δx = 0.', ver: ['desplazamiento'] },
+      // «desplazamiento» y «distancia recorrida» se estrenan en Vectores (16 nov: Vectores va antes en el mapa); aquí el
+      // lector las marca igual, con «Viene de Vectores».
       { termino: 'velocidad', simbolo: 'v', medida: 'm/s', def: 'Cuánto cambia la posición en cada segundo. Su signo dice hacia dónde va.',
         ejemplo: 'v = −3 m/s: va hacia la izquierda, 3 m cada segundo.', ver: ['rapidez', 'aceleración'] },
       { termino: 'rapidez', medida: 'm/s', def: 'Qué tan rápido va, sin importar el sentido: la velocidad sin su signo.',

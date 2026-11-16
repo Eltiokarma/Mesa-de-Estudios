@@ -650,7 +650,7 @@
       datos: ejeE({ puntos: [{ x: 0.2, y: 1, rotulo: 'U', desde: 1 }, { x: 0, y: 1, rotulo: 'todo K', desde: 2 }, { x: 0.1414, y: 0.5, rotulo: 'mitad y mitad', guias: true, desde: 3 }] }),
       pasos: [
         { estado: { corte: 1 }, texto: 'En el extremo, v = 0: toda la energía es del resorte.', ecuacion: ['E = ½ k ', { sup: ['A', '2'] }, ' = ½ · 50 · ', { sup: ['0,2', '2'] }, ' = 1 J'] },
-        { estado: { corte: 2 }, texto: 'En el centro el resorte no está estirado: toda es cinética.', ecuacion: ['½ m ', { sup: [{ sub: [v, 'máx'] }, '2'] }, ' = 1 J'] },
+        { estado: { corte: 2 }, texto: 'En el centro el resorte no está estirado: toda es cinética.', ecuacion: ['½ m ', { sub: [v, 'máx'] }, '²', ' = 1 J'] },
         { estado: { corte: 3 }, texto: 'U crece con x²: la mitad de la energía está a 0,14 m.', ecuacion: ['½ · 50 · ', { sup: [x, '2'] }, ' = 0,5   →   ', x, ' = ', { frac: ['A', '√2'] }] },
       ],
     },

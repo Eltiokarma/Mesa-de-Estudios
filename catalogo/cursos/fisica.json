@@ -30,6 +30,7 @@
       "id": "fisica.vectores",
       "nombre": "Vectores",
       "temas": [
+        "Escalares y vectores",
         "Componentes y vector unitario",
         "Suma de vectores por el método gráfico",
         "Producto escalar y vectorial"

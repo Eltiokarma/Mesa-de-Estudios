@@ -10,6 +10,11 @@
  *   V-SUMA suma módulos · V-RESTA resta módulos · V-PITAGORAS usa Pitágoras sin ángulo recto · V-COS signo del coseno
  *   U-SUMA divide entre la suma de componentes · U-CAMBIO cruza componentes · U-UNOS toma î + ĵ como unitario
  *   PE-MODULOS producto sin ángulo · PE-VECTOR confunde escalar con vectorial · PE-ORDEN orden del producto cruz
+ *   ESC-IGUAL mismo número, mismo lugar · ESC-NADA cree que no se sabe ni la distancia · ESC-OPUESTO siempre opuestos
+ *   ESC-SINRUMBO ignora el «hacia dónde» · ESC-UNIDAD cree que la unidad decide · ESC-SUBEBAJA toma subir o bajar por
+ *   dirección · ESC-DISTANCIA da la distancia recorrida por desplazamiento · ESC-SENTIDO invierte el sentido ·
+ *   ESC-ULTIMO toma solo el último tramo · ESC-MOVIMIENTO cree que moverse vuelve vector a la distancia ·
+ *   ESC-PESO confunde masa con peso · ESC-TIEMPO cree que el tiempo apunta
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -57,6 +62,195 @@
     }
     return ops.slice(0, 4);
   }
+
+  // ---------- Idea 1: ¿basta un número? Escalar o vector (16 nov, contrato «se entiende sin profesor») ----------
+  // Pieza fis-dron: un dron sale de la plaza y vuela en línea recta. Cambia: cuánto vuela y hacia dónde · Permanece:
+  // la plaza y los lugares del mapa · Progresa: el círculo punteado de los puntos a la misma distancia pasa por el
+  // colegio y por el mercado · Se reserva: el nombre «vector» hasta «Mira» · Debe verse: mismo número, otro lugar.
+  const DR = () => Kit.piezas['fis-dron'];
+  const LUGARES = [
+    { nombre: 'Colegio', largo: 300, rumbo: 'NE' },
+    { nombre: 'Mercado', largo: 300, rumbo: 'NO' },
+    { nombre: 'Paradero', largo: 150, rumbo: 'S' },
+  ];
+  const RUMBO_TXT = { E: 'Este', NE: 'Noreste', N: 'Norte', NO: 'Noroeste', O: 'Oeste', SO: 'Suroeste', S: 'Sur', SE: 'Sureste' };
+  const RUMBO_DE = { 0: 'E', 45: 'NE', 90: 'N', 135: 'NO', 180: 'O', 225: 'SO', 270: 'S', 315: 'SE' };
+  const hacia = r => `hacia el ${RUMBO_TXT[r].toLowerCase()}`;
+  const vuelo = (largo, rumbo, o = {}) => ({ datos: { lugares: LUGARES, drones: [{ largo, rumbo, valor: `${f(largo, 0)} m` }],
+    circulo: o.circulo === false ? null : largo, textoCirculo: o.circulo === false ? '' : `Todos a ${f(largo, 0)} m de la plaza` }, estado: {} });
+  const VISTAS_V = [
+    { lugares: LUGARES, drones: [{ largo: 300, rumbo: 'NE', valor: '300 m' }] },
+    { lugares: LUGARES, drones: [{ largo: 300, rumbo: 'NE', valor: '300 m' }, { largo: 300, rumbo: 'NO', valor: '300 m', color: 'i' }] },
+    { lugares: LUGARES, circulo: 300, textoCirculo: 'Con solo «300 m»: cualquiera de estos puntos' },
+    { lugares: LUGARES, drones: [{ largo: 300, rumbo: 'NO', valor: '300 m', color: 'i' }], circulo: 300, textoCirculo: '«300 m hacia el noroeste»: un solo punto' },
+  ];
+  // Magnitudes para clasificar. El enunciado no dice «hacia dónde» (lector en frío, 16 nov: con «hacia Puno» en el texto
+  // se contestaba por la palabra); las escalares traen la trampa que hace pensar que apuntan (bajar, ser negativa…).
+  const DATOS_EV = [
+    { q: 'Una combi va a 40 km/h. ¿Qué clase de magnitud es su velocidad?', es: 'v', mag: 'la velocidad' },
+    { q: 'Empujas una puerta con 20 N. ¿Qué clase de magnitud es esa fuerza?', es: 'v', mag: 'la fuerza' },
+    { q: 'Un dron se desplazó 300 m. ¿Qué clase de magnitud es su desplazamiento?', es: 'v', mag: 'el desplazamiento' },
+    { q: 'Una piedra cae con 9,8 m/s². ¿Qué clase de magnitud es su aceleración?', es: 'v', mag: 'la aceleración' },
+    { q: 'En la noche, la temperatura baja a −8 °C. ¿Qué clase de magnitud es la temperatura?', es: 'e', mag: 'la temperatura',
+      trampa: { id: 'baja', texto: 'Vectorial: baja y hasta es negativa', error: 'ESC-SUBEBAJA', siFuera: 'Bajar es cambiar de valor, y el signo de −8 °C no apunta a ningún lado.' },
+      nota: 'Bajar o ser negativa no es apuntar hacia un lado: sigue siendo escalar.' },
+    { q: 'Un ciclista recorre 700 m entre ida y vuelta. ¿Qué clase de magnitud es la distancia recorrida?', es: 'e', mag: 'la distancia recorrida',
+      trampa: { id: 'mueve', texto: 'Vectorial: el ciclista se movió', error: 'ESC-MOVIMIENTO', siFuera: 'Se movió, pero la distancia suma todo el camino sin mirar hacia dónde. La flecha es el desplazamiento.' },
+      nota: 'Suma todo el camino sin mirar hacia dónde: es escalar. La flecha sería el desplazamiento.' },
+    { q: 'Un saco de quinua tiene 50 kg. ¿Qué clase de magnitud es su masa?', es: 'e', mag: 'la masa',
+      trampa: { id: 'cae', texto: 'Vectorial: si lo sueltas, cae', error: 'ESC-PESO', siFuera: 'Lo que tira hacia abajo es el peso, una fuerza. La masa solo dice cuánta materia hay.' },
+      nota: 'Lo que tira hacia abajo es el peso, una fuerza; la masa no apunta.' },
+    { q: 'El viaje a Puno dura 45 min. ¿Qué clase de magnitud es el tiempo?', es: 'e', mag: 'el tiempo',
+      trampa: { id: 'avanza', texto: 'Vectorial: el tiempo avanza', error: 'ESC-TIEMPO', siFuera: 'Que el tiempo pase no es apuntar en el espacio: 45 min no tiene rumbo.' },
+      nota: 'Que el tiempo pase no es apuntar hacia un lado: es escalar.' },
+  ];
+  const QUIEN_EV = ['Un ciclista', 'Una vicuña', 'Una alumna', 'Un perro'];
+  const escalarOVector = {
+    id: 'escalar-vector',
+    titulo: '¿Basta un número?',
+    pregunta: '¿Basta con decir «300 m» para saber dónde aterrizó un dron?',
+    temas: ['Escalares y vectores'],
+    pieza: 'fis-dron',
+    lee: {
+      tarjetas: [
+        { titulo: 'Datos con número y unidad', texto: 'Muchos datos se dicen con un número y su unidad: una masa de 50 kg, una clase de 45 min. Con otros, como un vuelo de 300 m, vale la pena preguntarse si basta con el número.' },
+        { titulo: 'El rumbo', texto: 'En un mapa, el rumbo dice hacia dónde se va: norte, sur, este, oeste, o entre dos, como noreste. El norte va arriba.' },
+        { titulo: 'Distancia y desplazamiento', texto: 'La distancia recorrida es todo el camino que haces. El desplazamiento solo mira de dónde saliste y a dónde llegaste.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a mover un dron que sale de la plaza. Cambia cuánto vuela y hacia dónde, y mira el círculo punteado: ¿por dónde pasa?' },
+      ],
+    },
+    actividad: 'Volar un dron desde la plaza y cambiar cuánto vuela y hacia dónde.',
+    aprendizaje: 'Con solo «300 m», el dron puede estar en cualquier punto de un círculo; con el rumbo, en uno solo: eso es un vector.',
+    juega: {
+      pieza: 'fis-dron',
+      consigna: 'Un dron sale de la plaza y vuela en línea recta. Tú decides cuánto vuela y hacia dónde.',
+      mision: {
+        texto: 'Lleva el dron al mercado.',
+        logrado: val => val.largo === 300 && val.rumbo === 'NO',
+        bien: 'Llegaste: 300 m hacia el noroeste. Hacia el noreste habrías caído en el colegio.',
+      },
+      voz: '¿Por qué lugares pasa el círculo punteado?',
+      leyenda: [
+        { s: 'N', t: 'el norte: arriba en el mapa' },
+        { s: '→', t: 'el vuelo, de la plaza al dron' },
+        { s: '100 m', t: 'cada cuadro del mapa' },
+      ],
+      controles: [
+        { id: 'largo', etiqueta: 'Cuánto vuela', color: 'c-o', min: 100, max: 400, paso: 50, inicio: 200, unidad: 'm', decimales: 0 },
+        { id: 'rumbo', etiqueta: 'Hacia dónde', opciones: ['E', 'NE', 'N', 'NO', 'O', 'SO', 'S', 'SE'].map(r => ({ valor: r, texto: RUMBO_TXT[r] })) },
+      ],
+      // Gesto directo: el dron se arrastra; el largo se ajusta a 50 m y el rumbo, al más cercano de los ocho.
+      arrastres: [
+        { id: 'dron', etiqueta: 'el dron', color: 'c-o',
+          donde: val => { const p = DR().punto({}, val.largo, val.rumbo); return { x: p[0], y: p[1] }; },
+          mover: pt => {
+            const c = DR().constantes, dx = pt.x - c.CX, dy = c.CY - pt.y;
+            const g = ((Math.round(Math.atan2(dy, dx) * 180 / Math.PI / 45) * 45) % 360 + 360) % 360;
+            return { largo: Math.hypot(dx, dy) / c.RPX * 400, rumbo: RUMBO_DE[g] };
+          } },
+      ],
+      dibujo: val => vuelo(val.largo, val.rumbo),
+      lectura: val => [`Voló ${f(val.largo, 0)} m ${hacia(val.rumbo)}`],
+      minimo: 3,
+    },
+    predice: {
+      pregunta: 'Dos drones salen de la plaza y cada uno vuela 300 m en línea recta. ¿Dónde aterrizan?',
+      opciones: [
+        { id: 'c', texto: 'Depende de hacia dónde vuela cada uno', correcta: true },
+        { id: 'igual', texto: 'En el mismo lugar: los dos volaron 300 m', error: 'ESC-IGUAL', siFuera: 'Sería cierto si volaran hacia el mismo lado. 300 m al noreste y 300 m al noroeste terminan lejos.' },
+        { id: 'nada', texto: 'No se sabe ni a qué distancia de la plaza quedan', error: 'ESC-NADA', siFuera: 'Eso sí se sabe: los dos quedan a 300 m de la plaza. Lo que falta es el rumbo.' },
+        { id: 'opuestos', texto: 'Siempre en lados opuestos de la plaza', error: 'ESC-OPUESTO', siFuera: 'Solo si vuelan en sentidos contrarios; pueden ir hacia cualquier lado.' },
+      ],
+      dibujo: { datos: { lugares: LUGARES }, estado: {} },
+      revelar: { datos: VISTAS_V[1], estado: {} },
+      coincide: 'Coincide: los dos quedan a 300 m de la plaza, pero cada uno donde lo llevó su rumbo.',
+    },
+    mira: {
+      datos: { vistas: VISTAS_V },
+      pasos: [
+        { estado: { vista: 0 }, texto: 'Un dron vuela 300 m hacia el noreste y aterriza en el colegio.' },
+        { estado: { vista: 1 }, texto: 'Otro vuela también 300 m, pero hacia el noroeste: llega al mercado.' },
+        { estado: { vista: 2 }, texto: 'Con solo «300 m», el dron podría estar en cualquier punto del círculo.' },
+        { estado: { vista: 3 }, texto: 'Con «300 m hacia el noroeste» queda un solo punto: eso es un vector.' },
+        { estado: { vista: 3 }, texto: 'Su largo es el módulo, 300 m; hacia dónde apunta, su dirección y sentido.' },
+        { estado: { vista: 3 }, texto: 'Distancia recorrida: escalar. Desplazamiento, de la salida a la llegada: vector.' },
+      ],
+    },
+    regla: {
+      texto: 'Una magnitud escalar queda dicha con un número y su unidad, como 5 kg. Una vectorial necesita además hacia dónde: es una flecha, y su largo es el módulo.',
+      condicion: 'el «hacia dónde» puede ser un rumbo o «hacia arriba»; sin él, un dato vectorial queda incompleto.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 700);
+        if (s % 2 === 0) {
+          // La semilla 0, la primera que se ve, es una vectorial sin «hacia dónde» en el texto (lector en frío, ronda 2:
+          // solo había visto resuelto el caso escalar y dudaba con el peso).
+          const d = DATOS_EV[s === 0 ? 3 : (s / 2 + r.ent(0, 7)) % DATOS_EV.length];
+          const v = d.es === 'v';
+          return {
+            enunciado: d.q,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden saber si esa magnitud necesita un «hacia dónde» para quedar completa.' },
+              { tipo: 'datos', texto: `La magnitud es ${d.mag}. El enunciado no dice hacia dónde: eso no decide.` },
+              { tipo: 'regla', texto: 'Escalar: basta un número y su unidad. Vectorial: además, hacia dónde. Se mira la magnitud misma, no si el texto lo escribe.' },
+              { tipo: 'aplica', texto: v ? `${d.mag.charAt(0).toUpperCase() + d.mag.slice(1)} siempre va hacia algún lado; si no lo dicen, el dato está incompleto.` : `No tiene sentido preguntar hacia dónde apunta ${d.mag}.` },
+              { tipo: 'sentido', texto: v ? 'Se puede dibujar como una flecha: es un vector.' : d.nota },
+            ],
+            respuesta: v ? 'Vectorial.' : 'Escalar.',
+          };
+        }
+        const a = r.ent(3, 9) * 100, b = r.ent(1, a / 100 - 1) * 100, q = r.de(QUIEN_EV);
+        return {
+          enunciado: `${q} avanza ${f(a, 0)} m hacia el este y luego regresa ${f(b, 0)} m hacia el oeste. ¿Cuál es su desplazamiento?`,
+          dibujo: { datos: { drones: [{ largo: a - b, rumbo: 'E', valor: `${f(a - b, 0)} m` }], max: 900, paso: 300 }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el desplazamiento: la flecha de donde salió a donde terminó.' },
+            { tipo: 'datos', texto: `Ida: ${f(a, 0)} m al este. Vuelta: ${f(b, 0)} m al oeste.` },
+            { tipo: 'regla', texto: 'El desplazamiento solo mira el inicio y el final; la vuelta deshace parte de la ida.' },
+            { tipo: 'cuentas', texto: 'Como van en sentidos contrarios, se restan.', ecuacion: [`${f(a, 0)} m − ${f(b, 0)} m = ${f(a - b, 0)} m`] },
+            { tipo: 'sentido', texto: `Es un vector: módulo ${f(a - b, 0)} m, hacia el este. La distancia recorrida, un escalar, suma todo: ${f(a + b, 0)} m.` },
+          ],
+          respuesta: `${f(a - b, 0)} m hacia el este`,
+        };
+      },
+    },
+    ahoraTu: {
+      generar(s) {
+        const r = azar(s + 11);
+        if (s % 2 === 0) {
+          const d = DATOS_EV[(Math.floor(s / 2) + r.ent(0, 7)) % DATOS_EV.length], v = d.es === 'v';
+          const ops = v ? [
+            { id: 'c', texto: 'Vectorial: siempre va hacia algún lado', correcta: true },
+            { id: 'sin', texto: 'Escalar: el dato no dice hacia dónde', error: 'ESC-SINRUMBO', siFuera: `Que aquí no lo digan no cambia qué es: ${d.mag} siempre va hacia algún lado. El dato está incompleto.` },
+            { id: 'unidad', texto: 'Escalar: se dice con número y unidad', error: 'ESC-UNIDAD', siFuera: 'Todo lo que se mide tiene número y unidad. Lo que decide es si además necesita un hacia dónde.' },
+          ] : [
+            { id: 'c', texto: 'Escalar: no apunta hacia ningún lado', correcta: true },
+            d.trampa,
+            { id: 'unidad', texto: 'Vectorial: tiene número y unidad', error: 'ESC-UNIDAD', siFuera: 'Todo lo que se mide tiene número y unidad. Vectorial es lo que además necesita un hacia dónde.' },
+          ];
+          return {
+            pregunta: d.q,
+            opciones: ops,
+            solucion: { texto: v ? `${d.mag.charAt(0).toUpperCase() + d.mag.slice(1)} siempre va hacia algún lado: es un vector, aunque el dato no lo diga.` : d.nota },
+          };
+        }
+        const a = r.ent(3, 9) * 100, q = r.de(QUIEN_EV);
+        let b = r.ent(1, a / 100 - 1) * 100;
+        if (2 * b === a) b -= 100;   // si la vuelta es la mitad, dos opciones dirían lo mismo
+        return {
+          pregunta: `${q} avanza ${f(a, 0)} m hacia el norte y regresa ${f(b, 0)} m hacia el sur. ¿Cuál es su desplazamiento?`,
+          opciones: [
+            { id: 'c', texto: `${f(a - b, 0)} m hacia el norte`, correcta: true },
+            { id: 'dist', texto: `${f(a + b, 0)} m hacia el norte`, error: 'ESC-DISTANCIA', siFuera: 'Eso es la distancia recorrida: suma la ida y la vuelta. El desplazamiento solo mira inicio y final.' },
+            { id: 'sentido', texto: `${f(a - b, 0)} m hacia el sur`, error: 'ESC-SENTIDO', siFuera: 'Regresó menos de lo que avanzó: terminó al norte de donde salió.' },
+            { id: 'vuelta', texto: `${f(b, 0)} m hacia el sur`, error: 'ESC-ULTIMO', siFuera: 'Eso es solo el último tramo. El desplazamiento va del inicio al final.' },
+          ],
+          solucion: { texto: 'Ida y vuelta en sentidos contrarios: se restan.', ecuacion: [`${f(a, 0)} m − ${f(b, 0)} m = ${f(a - b, 0)} m`] },
+        };
+      },
+    },
+  };
 
   // ---------- Idea 3: la resultante depende del ángulo ----------
   // Cambia: el ángulo θ entre A y B · Permanece: los módulos (A = 6, B = 4) y el círculo donde puede caer la punta de B ·
@@ -184,12 +378,34 @@
     pregunta: '¿Cómo se parte una flecha en dos, y qué flecha mide 1?',
     temas: ['Componentes y vector unitario'],
     pieza: 'flechas',
+    // Contrato «se entiende sin profesor» (16 nov): Lee, misión, leyenda, Así se resuelve y las palabras del Resumen.
+    lee: {
+      tarjetas: [
+        { titulo: 'Los ejes', texto: 'En un plano, el eje x va hacia la derecha y el eje y hacia arriba. Cada punto se dice con dos números: cuánto avanzar y cuánto subir.' },
+        { titulo: 'Partir una flecha', texto: 'Una flecha que sale del origen avanza algo en x y sube algo en y. Esos dos números son sus componentes, Aₓ y Aᵧ. Si son negativos, va hacia la izquierda o hacia abajo.' },
+        { titulo: 'î y ĵ', texto: 'î es una flecha de largo 1 hacia la derecha, y ĵ, una de largo 1 hacia arriba. A = 3î + 2ĵ quiere decir: avanza 3 y sube 2.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a cambiar cuánto avanza y cuánto sube A. Mira cuánto mide A y la flechita verde que sale con ella: ¿cuánto mide siempre?' },
+      ],
+    },
+    actividad: 'Cambiar cuánto avanza y cuánto sube una flecha, y mirar su largo y su flechita verde.',
+    aprendizaje: 'A se parte en lo que avanza en x y lo que sube en y; su largo sale por Pitágoras; el unitario es A ÷ |A|.',
     juega: {
-      consigna: 'Aₓ va y viene sola. Mira la flecha verde, el unitario: gira con A, pero siempre mide 1.',
+      consigna: 'Aₓ va y viene sola; tú cambias Aᵧ o arrastras la punta de A. La flecha verde es su unitario.',
+      mision: {
+        texto: 'Haz que A mida justo 5.',
+        logrado: val => Math.abs(Math.hypot(val.ax, val.ay) - 5) < 1e-9,
+        bien: 'Avanza 3 y sube 4: 3² + 4² = 25, y √25 = 5.',
+      },
       voz: 'Prueba también A = 0. ¿Hacia dónde apuntaría su unitario?',
+      leyenda: [
+        { s: [{ sub: [A, 'x'] }], t: 'cuánto avanza A en x' },
+        { s: [{ sub: [A, 'y'] }], t: 'cuánto sube A en y' },
+        { s: [u], t: 'el unitario: apunta como A y mide 1' },
+        { s: ['|', A, '|'], t: 'el módulo: cuánto mide A' },
+      ],
       controles: [
-        { id: 'ax', etiqueta: 'Ax', color: 'c-o', min: -4, max: 4, paso: 1, inicio: 3, decimales: 0, auto: { velocidad: 1.5, modo: 'rebota' } },
-        { id: 'ay', etiqueta: 'Ay', color: 'c-o', min: -4, max: 4, paso: 1, inicio: 2, decimales: 0 },
+        { id: 'ax', etiqueta: 'Aₓ', color: 'c-o', min: -4, max: 4, paso: 1, inicio: 3, decimales: 0, auto: { velocidad: 1.5, modo: 'rebota' } },
+        { id: 'ay', etiqueta: 'Aᵧ', color: 'c-o', min: -4, max: 4, paso: 1, inicio: 2, decimales: 0 },
       ],
       dibujo: val => compA(val.ax, val.ay, { unitario: true, valor: true }),
       lectura: val => {
@@ -227,8 +443,56 @@
     },
     regla: {
       texto: 'Un vector se escribe con sus componentes sobre î y ĵ. Su módulo sale de Pitágoras, y el unitario es el vector dividido entre su módulo.',
-      ecuacion: [vA, ' = ', { sub: [A, 'x'] }, 'î + ', { sub: [A, 'y'] }, 'ĵ', '   ·   ', '|', A, '| = ', { llave: [{ raiz: [[{ sup: [{ sub: [A, 'x'] }, '2'] }, ' + ', { sup: [{ sub: [A, 'y'] }, '2'] }]] }], nota: 'el módulo', color: 'c-o' }, '   ·   ', u, ' = ', { llave: [{ frac: [vA, ['|', A, '|']] }], nota: 'mide 1', color: 'c-d' }],
+      ecuacion: [vA, ' = ', { sub: [A, 'x'] }, 'î + ', { sub: [A, 'y'] }, 'ĵ', '   ·   ', '|', A, '| = ', { llave: [{ raiz: [[{ sub: [A, 'x'] }, '²', ' + ', { sub: [A, 'y'] }, '²']] }], nota: 'el módulo', color: 'c-o' }, '   ·   ', u, ' = ', { llave: [{ frac: [vA, ['|', A, '|']] }], nota: 'mide 1', color: 'c-d' }],
       condicion: 'los ejes x e y son perpendiculares; el vector nulo no tiene unitario.',
+    },
+    resuelve: {
+      pieza: 'flechas',
+      generar(s) {
+        const r = azar(s + 300), tipo = s % 3;
+        const [p, q, m] = r.de([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [12, 5, 13], [8, 6, 10]]);
+        const esc = Math.max(p, q) / 4;
+        if (tipo === 0) return {
+          enunciado: ['¿Cuánto mide el vector ', vA, ` = ${f(p, 0)}î + ${f(q, 0)}ĵ?`],
+          dibujo: compA(p / esc, q / esc, { paso: 0 }),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el módulo de A: cuánto mide la flecha.' },
+            { tipo: 'datos', texto: `A avanza ${f(p, 0)} en x y sube ${f(q, 0)} en y.`, ecuacion: [{ sub: [A, 'x'] }, ` = ${f(p, 0)},   `, { sub: [A, 'y'] }, ` = ${f(q, 0)}`] },
+            { tipo: 'regla', texto: 'Las componentes y la flecha forman un triángulo rectángulo: Pitágoras.', ecuacion: ['|', A, '| = ', { raiz: [[{ sub: [A, 'x'] }, '²', ' + ', { sub: [A, 'y'] }, '²']] }] },
+            { tipo: 'cuentas', texto: 'Se reemplaza y se saca la raíz.', ecuacion: ['|', A, `| = √(${f(p * p, 0)} + ${f(q * q, 0)}) = √${f(m * m, 0)} = ${f(m, 0)}`] },
+            { tipo: 'sentido', texto: `${f(m, 0)} es más que cada componente y menos que su suma, ${f(p + q, 0)}: la diagonal es un atajo.` },
+          ],
+          respuesta: `|A| = ${f(m, 0)}`,
+        };
+        if (tipo === 1) {
+          // Ángulos notables de 37° y 53° (triángulo 3, 4, 5), como en el examen.
+          const k = r.de([2, 5, 10, 20]), mod = 5 * k, g = r.de([37, 53]), ax = (g === 37 ? 4 : 3) * k, ay = (g === 37 ? 3 : 4) * k;
+          return {
+            enunciado: ['Un vector ', vA, ` mide ${f(mod, 0)} y forma ${g}° con el eje x. ¿Cuáles son sus componentes?`],
+            dibujo: compA(ax / (mod / 4), ay / (mod / 4), { paso: 0 }),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden cuánto avanza A en x y cuánto sube en y.' },
+              { tipo: 'datos', texto: `|A| = ${f(mod, 0)} y el ángulo con el eje x es ${g}°.` },
+              { tipo: 'regla', texto: 'Con el ángulo medido desde el eje x: el coseno da lo que avanza; el seno, lo que sube.', ecuacion: [{ sub: [A, 'x'] }, ' = |', A, '| cos θ,   ', { sub: [A, 'y'] }, ' = |', A, '| sen θ'] },
+              { tipo: 'cuentas', texto: `En el triángulo de 37° y 53°, cos ${g}° = ${g === 37 ? '4/5' : '3/5'} y sen ${g}° = ${g === 37 ? '3/5' : '4/5'}.`, ecuacion: [{ sub: [A, 'x'] }, ` = ${f(mod, 0)} · ${g === 37 ? '4/5' : '3/5'} = ${f(ax, 0)},   `, { sub: [A, 'y'] }, ` = ${f(mod, 0)} · ${g === 37 ? '3/5' : '4/5'} = ${f(ay, 0)}`] },
+              { tipo: 'sentido', texto: `Con ${g}°, ${g === 37 ? 'menos de 45°, avanza más de lo que sube' : 'más de 45°, sube más de lo que avanza'}: ${f(ax, 0)} y ${f(ay, 0)} cuadran.` },
+            ],
+            respuesta: [vA, ` = ${f(ax, 0)}î + ${f(ay, 0)}ĵ`],
+          };
+        }
+        return {
+          enunciado: ['¿Cuál es el vector unitario de ', vA, ` = ${f(p, 0)}î + ${f(q, 0)}ĵ?`],
+          dibujo: compA(p / esc, q / esc, { paso: 0 }),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden una flecha que apunte igual que A y mida 1.' },
+            { tipo: 'datos', texto: `A avanza ${f(p, 0)} y sube ${f(q, 0)}.` },
+            { tipo: 'regla', texto: 'El unitario es A dividido entre su módulo: cada componente entre |A|.', ecuacion: [u, ' = ', { frac: [vA, ['|', A, '|']] }] },
+            { tipo: 'cuentas', texto: `Primero el módulo, con Pitágoras: ${f(m, 0)}. Luego se divide.`, ecuacion: [u, ` = ${f(p, 0)}/${f(m, 0)} î + ${f(q, 0)}/${f(m, 0)} ĵ = ${f(p / m, 2)}î + ${f(q / m, 2)}ĵ`] },
+            { tipo: 'sentido', texto: `Comprobación: ${f(p / m, 2)}² + ${f(q / m, 2)}² = 1. Mide 1, como debe.` },
+          ],
+          respuesta: [u, ` = ${f(p / m, 2)}î + ${f(q / m, 2)}ĵ`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'flechas',
@@ -425,21 +689,28 @@
     // tal cual; las ideas nuevas (escalar o vector) y el contrato «se entiende sin profesor» vienen después, una por una.
     version: '0.1.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/flechas.js', '/plantillas/vectores/motor.js', '/nucleo/fisica3d.js', '/nucleo/kit/piezas/fis-espacio-3d.js'],
+    requiere: ['/nucleo/kit/piezas/fis-dron.js', '/nucleo/kit/piezas/flechas.js', '/plantillas/vectores/motor.js', '/nucleo/fisica3d.js', '/nucleo/kit/piezas/fis-espacio-3d.js'],
     glosario: [
-      { termino: 'magnitud escalar', formas: ['magnitud escalar', 'magnitudes escalares'],
+      { termino: 'magnitud escalar', formas: ['magnitud escalar', 'magnitudes escalares', 'escalar', 'escalares'],
+        simple: 'Queda dicha con un número y su unidad: 5 kg, 20 °C, 45 min.',
         def: 'La que queda dicha del todo con un número y su unidad, sin dirección.',
         ejemplos: ['Una masa de 3 kg o un tiempo de 10 s.', 'La temperatura de un vaso de agua: 20 °C.', 'El volumen de una botella: 0,5 L. No apunta a ningún lado.'], ver: ['vector'] },
-      { termino: 'vector', formas: ['vector', 'vectores', 'magnitud vectorial', 'magnitudes vectoriales'],
+      { termino: 'vector', formas: ['vector', 'vectores', 'magnitud vectorial', 'magnitudes vectoriales', 'vectorial', 'vectoriales'],
+        simple: 'Un dato con cuánto y hacia dónde: 300 m hacia el noroeste.',
         def: 'Flecha con tamaño, dirección y sentido; representa magnitudes como el desplazamiento o la fuerza.',
         ejemplos: ['Una fuerza de 4 N hacia arriba.', 'El desplazamiento de una combi: 3 km hacia el norte.', 'La velocidad del viento: 5 m/s hacia el este.'], ver: ['módulo', 'magnitud escalar', 'componente'] },
-      { termino: 'módulo', simbolo: '|A|', def: 'El tamaño de un vector: el largo de su flecha. Nunca es negativo.',
+      { termino: 'módulo', simbolo: '|A|', simple: 'Cuánto mide la flecha, sin importar hacia dónde apunta.', def: 'El tamaño de un vector: el largo de su flecha. Nunca es negativo.',
         ejemplos: ['A = 3î + 4ĵ mide |A| = 5.', 'Una fuerza de 10 N hacia abajo tiene módulo 10 N.', 'Caminar 3 m al este y 4 m al norte: el desplazamiento mide 5 m.'], ver: ['vector'] },
+      { termino: 'desplazamiento', simbolo: 'Δx', medida: 'm', simple: 'La flecha de donde saliste a donde llegaste, sin contar el camino.',
+        def: 'Cambio de posición: va de donde empezó a donde terminó. En una recta, su signo da el sentido.',
+        ejemplos: ['Ir a la tienda y volver a casa: el desplazamiento es 0.', 'Un dron que vuela 300 m hacia el noroeste: 300 m al noroeste.', 'De x = 5 m a x = 2 m: Δx = −3 m, hacia atrás.'], ver: ['distancia recorrida', 'vector'] },
+      { termino: 'distancia recorrida', medida: 'm', def: 'Todo el camino hecho, sumando idas y vueltas. Nunca es negativa.',
+        ejemplos: ['Ir 4 m y volver 4 m: recorriste 8 m, aunque Δx = 0.', 'Dar una vuelta de 400 m a la pista: 400 m recorridos.', 'Ir 600 m al este y volver 200 m: 800 m recorridos.'], ver: ['desplazamiento'] },
       { termino: 'resultante', simbolo: 'R', def: 'Vector que reemplaza a varios: va de la cola del primero a la punta del último.',
         ejemplos: ['A = 3 y B = 4 a 90°: R = 5.', 'Dos personas jalan una caja con 30 N cada una, hacia el mismo lado: R = 60 N.', 'Con 30 N y 20 N en sentidos opuestos: R = 10 N.'], ver: ['vector'] },
-      { termino: 'componente', def: 'Lo que un vector avanza a lo largo de un eje, con su signo.',
+      { termino: 'componente', simple: 'Lo que una flecha avanza de lado o sube; sus dos «sombras».', def: 'Lo que un vector avanza a lo largo de un eje, con su signo.',
         ejemplos: ['A = 3î + 4ĵ: Aₓ = 3 y Aᵧ = 4.', 'Una flecha de 10 a 37° del eje x tiene Aₓ = 8 y Aᵧ = 6.', 'Una flecha que apunta al oeste tiene componente x negativa.'], ver: ['vector unitario', 'módulo'] },
-      { termino: 'vector unitario', simbolo: 'û', formas: ['vector unitario', 'vectores unitarios', 'unitario', 'unitarios'],
+      { termino: 'vector unitario', simbolo: 'û', simple: 'Una flechita de largo 1 que apunta igual que la otra.', formas: ['vector unitario', 'vectores unitarios', 'unitario', 'unitarios'],
         def: 'Flecha de largo 1 que apunta igual que otra; sale de dividirla entre su módulo.',
         ejemplos: ['A = 6î + 8ĵ: û = 0,6î + 0,8ĵ.', 'î es el unitario del eje x: mide 1 y apunta a la derecha.', 'Una fuerza de 5 N hacia arriba es 5 veces el unitario ĵ.'], ver: ['componente'] },
       { termino: 'producto escalar', simbolo: 'A · B', def: 'Número que sale de multiplicar un largo por la sombra del otro: A B cos θ.',
@@ -549,6 +820,6 @@
       'productos-libre': ['productos'],
     },
     // El vector unitario y las componentes van antes de sumar (Gerson, 16 nov).
-    ideas: [componentes, resultante, productos],
+    ideas: [escalarOVector, componentes, resultante, productos],
   };
 });
