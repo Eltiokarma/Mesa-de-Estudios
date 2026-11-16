@@ -71,6 +71,66 @@
   }
   const texto = (titulo, t) => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo, modo: 'tarjeta', fragmentos: partir(t) }] });
 
+  // Bancos de «Ahora tú» (sin cambios); «Así se resuelve» toma de aquí otro caso que el de la misma semilla.
+  const BANCO_REFERENTE = [
+    { t: 'El perro persiguió al gato hasta el techo. Allí, este se quedó quieto, a salvo.', w: 'este', ok: 'El gato', m: [['El perro', 'RVC2', 'El perro perseguía; «a salvo» y «allí, en el techo» apuntan al gato.'], ['El techo', 'RV27', 'Es el último sustantivo, pero un techo no se queda a salvo.'], ['Lo que viene después', 'RVC1', 'Aquí «este» retoma algo dicho antes, no anuncia.']] },
+    { t: 'Ana le prestó su casaca a Lucía porque ella tenía frío.', w: 'ella', ok: 'Lucía', m: [['Ana', 'RV27', 'Concuerda, pero si Ana tuviera frío no prestaría su casaca.'], ['La casaca', 'RV27', 'Concuerda, pero una casaca no tiene frío.'], ['Nadie: es ambiguo', 'RVC1', 'Concuerda con dos, pero solo una lectura tiene sentido.']] },
+    { t: 'Solo te pido esto: llega temprano mañana.', w: 'esto', ok: 'Lo que sigue: llega temprano', m: [['A ti', 'RV27', '«Te» eres tú; «esto» es lo que se pide.'], ['Mañana', 'RV27', 'Es la palabra más cercana, pero «esto» es el pedido completo.'], ['A algo dicho antes', 'RVC1', 'No hay nada antes: «esto» anuncia lo que viene.']] },
+    { t: 'Los vecinos limpiaron la plaza. Después, la llenaron de flores.', w: 'la', ok: 'La plaza', m: [['Los vecinos', 'RV27', 'No concuerda: «la» es femenino singular.'], ['Las flores', 'RV27', 'No concuerda y además se llena con flores, no a las flores.'], ['Lo que viene después', 'RVC1', '«La» retoma lo ya dicho: la plaza.']] },
+    { t: 'Carlos visitó a su abuelo en el hospital. Lo encontró mucho mejor.', w: 'Lo', ok: 'El abuelo', m: [['Carlos', 'RVC2', 'Carlos es quien encontró; no se encontró a sí mismo.'], ['El hospital', 'RV27', 'Concuerda, pero un hospital no está mejor de salud.'], ['Lo que viene después', 'RVC1', 'Aquí «lo» retoma a alguien ya nombrado.']] },
+    { t: 'Te lo advierto con claridad: no toques ese cable.', w: 'lo', ok: 'Lo que sigue: no toques ese cable', m: [['A ti', 'RV27', '«Te» eres tú; «lo» es la advertencia.'], ['Ese cable', 'RV27', 'Es el último sustantivo, pero lo que se advierte es la orden completa.'], ['Algo dicho antes', 'RVC1', 'No hay nada antes: «lo» anuncia lo que viene.']] },
+  ];
+  const BANCO_RECURSO = [
+    { o: 'Lima es la capital del Perú. La ciudad tiene más de diez millones de habitantes.', w: 'La ciudad', ok: 'Sustitución', m: [['Repetición', 'RVC2', 'Sería repetición si dijera otra vez «Lima».'], ['Elipsis', 'RVC2', 'Sería elipsis si no la nombrara: «Tiene más de diez millones…».'], ['Catáfora', 'RVC1', 'No anuncia algo que viene: retoma a Lima.']] },
+    { o: 'Los niños jugaron toda la tarde. Después, cenaron y se durmieron temprano.', w: 'cenaron', ok: 'Elipsis', m: [['Repetición', 'RVC2', 'No se repite «los niños»: se calla y el verbo lo indica.'], ['Sustitución', 'RVC2', 'No hay otra palabra en lugar de «los niños».'], ['Catáfora', 'RVC1', 'No anuncia algo que viene después.']] },
+    { o: 'El agua es vital. El agua limpia, además, previene muchas enfermedades.', w: 'El agua', ok: 'Repetición', m: [['Sustitución', 'RVC2', 'Sería sustitución si dijera «este líquido».'], ['Elipsis', 'RVC2', 'Sería elipsis si callara el sujeto.'], ['Anáfora con pronombre', 'RVC2', 'No hay pronombre: se repite la misma palabra.']] },
+    { o: 'Mi abuela cocina un ají de gallina delicioso. Ella aprendió la receta de su madre.', w: 'Ella', ok: 'Sustitución', m: [['Repetición', 'RVC2', 'Sería repetición si dijera «mi abuela».'], ['Elipsis', 'RVC2', 'Sería elipsis si dijera solo «Aprendió…».'], ['Catáfora', 'RVC1', '«Ella» retoma a la abuela, no anuncia nada.']] },
+    { o: 'Unos llevaron la comida; otros, las bebidas.', w: 'otros, las bebidas', ok: 'Elipsis', m: [['Repetición', 'RVC2', 'El verbo «llevaron» no se repite: se calla.'], ['Sustitución', 'RVC2', 'No hay otra palabra en lugar del verbo.'], ['Catáfora', 'RVC1', 'No anuncia nada: retoma el verbo dicho antes.']] },
+  ];
+  const BANCO_HILO = [
+    { o: ['El cacao crece en la selva del Perú.', null, 'Con esas semillas se fabrica el chocolate.'], ok: 'Sus frutos guardan unas semillas amargas.', m: [['El chocolate es muy dulce.', 'RV28', 'Adelanta el chocolate, pero la 3 necesita antes las semillas.'], ['La selva tiene mucha lluvia.', 'RV28', 'Habla de la selva y deja sin referente «esas semillas».'], ['El café también crece en la selva.', 'RV28', 'Cambia de tema y la 3 queda sin enlace.']] },
+    { o: ['El volcán Misti está junto a Arequipa.', null, 'Por eso, la ciudad tiene planes de evacuación.'], ok: 'Todavía está activo y podría hacer erupción.', m: [['Su cima tiene nieve en invierno.', 'RV28', 'Habla del Misti, pero no da la razón del «por eso».'], ['Arequipa es la ciudad blanca.', 'RV28', 'Habla de la ciudad, no de un peligro que exija evacuar.'], ['Los planes se practican cada año.', 'RV28', 'Adelanta los planes antes de su razón.']] },
+    { o: ['Las ballenas jorobadas llegan a Piura en invierno.', null, 'En esas aguas cálidas nacen sus crías.'], ok: 'Vienen desde el sur buscando aguas más cálidas.', m: [['Las crías toman leche.', 'RV28', 'Adelanta las crías y deja sin referente «esas aguas».'], ['Piura es famosa por su ceviche.', 'RV28', 'Cambia de tema: la 3 queda sin enlace.'], ['Las ballenas son mamíferos.', 'RV28', 'Es verdad, pero no presenta las aguas que la 3 retoma.']] },
+    { o: ['El quechua es una lengua que se habla en los Andes.', null, 'Esas palabras, como «cancha» o «papa», usamos todos los días.'], ok: 'El castellano tomó muchas palabras de ella.', m: [['El quechua tiene varias variedades.', 'RV28', 'Habla del quechua, pero no presenta las palabras que la 3 retoma.'], ['La papa es originaria de los Andes.', 'RV28', 'Adelanta un ejemplo sin presentar el préstamo de palabras.'], ['Muchos peruanos hablan castellano.', 'RV28', 'No dice que el castellano tomara palabras del quechua.']] },
+    { o: ['En 1911, Hiram Bingham llegó a Machu Picchu.', null, 'Desde entonces, el lugar se volvió famoso en el mundo.'], ok: 'Publicó fotos que mostraron la ciudadela al mundo.', m: [['Machu Picchu está en Cusco.', 'RV28', 'Es un dato del lugar, pero no explica el «desde entonces».'], ['Hoy llegan miles de turistas.', 'RV28', 'Adelanta el efecto antes de su causa.'], ['Bingham era profesor.', 'RV28', 'Habla de Bingham, pero no de lo que lo hizo famoso.']] },
+  ];
+  const BANCO_COHERENTE = [
+    { o: 'Nunca he salido de Puno. El año pasado conocí el mar en Lima.', ok: 'No: si conoció Lima, sí salió de Puno', m: [['Sí: cuenta dos recuerdos', 'RVC3', 'Tienen relación de tema, pero lo segundo niega lo primero.'], ['Sí: las dos están bien escritas', 'RVC3', 'Cada una es correcta sola; juntas se contradicen.'], ['No: falta un «sin embargo»', 'RVC3', 'Un conector no arregla que una niegue a la otra.']] },
+    { o: 'La tienda abre solo los sábados. Por eso, fuimos un martes y estaba abierta.', ok: 'No: si abre solo sábados, el martes estaría cerrada', m: [['Sí: tiene un conector de causa', 'RVC3', 'El conector no da sentido: el martes contradice «solo los sábados».'], ['Sí: dice cuándo fueron', 'RVC3', 'Dar un día no basta: ese día choca con lo anterior.'], ['No: falta decir la hora', 'RVC3', 'La hora no importa: el día ya contradice lo dicho.']] },
+    { o: 'Algunos pájaros no vuelan. Por ejemplo, el pingüino nada pero no vuela.', ok: 'Sí: el ejemplo confirma lo dicho', m: [['No: los pájaros vuelan', 'RV8', 'Eso es una idea propia; el texto no lo afirma, y el pingüino lo desmiente.'], ['No: «por ejemplo» está mal usado', 'RVC3', 'Está bien: el pingüino es un caso de pájaro que no vuela.'], ['No: el pingüino no es un pájaro', 'RV8', 'Sí es un ave; y el texto así lo trata.']] },
+    { o: 'El examen duró dos horas. Terminé en diez minutos y salí antes que todos.', ok: 'Sí: un alumno puede terminar antes', m: [['No: si duró dos horas, nadie sale antes', 'RVC3', 'Lo que dura es el tiempo dado; alguien puede terminar antes.'], ['No: falta un conector', 'RVC3', 'Sin conector, el sentido se sostiene igual.'], ['No: diez minutos es muy poco', 'RV8', 'Eso es una opinión; no es una contradicción del texto.']] },
+    { o: 'Todos los asientos del bus estaban ocupados. Por eso, me senté al lado de la ventana.', ok: 'No: si todos estaban ocupados, no pudo sentarse', m: [['Sí: tiene un conector de consecuencia', 'RVC3', '«Por eso» no arregla que no hubiera asientos libres.'], ['Sí: dice dónde se sentó', 'RVC3', 'Precisar el lugar no quita la contradicción.'], ['No: debía decir «además»', 'RVC3', 'Cambiar el conector no resuelve el choque.']] },
+  ];
+  function azar(s) {
+    let q = (s * 2654435761 + 12345) >>> 0;
+    return () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+  }
+  // Índice de «Así se resuelve»: sale de azar(s + 900) y nunca coincide con el de «Ahora tú» (s % n).
+  const otroIndice = (s, n) => (s % n + 1 + Math.floor(azar(s + 900)() * (n - 1))) % n;
+  const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
+  // Así se resuelve: la figura de «Ahora tú» con una lista de las opciones debajo (mismo banco, mismo `voltear`);
+  // en el paso «Lo aplico» la correcta se marca (i) y las demás se tachan.
+  const conOpciones = (datos, ops) => ({ esquinaLibre: true, secciones: datos.secciones.concat([{ id: 'ops', titulo: 'Opciones', modo: 'lista', fragmentos: ops.map((o, k) => ({ id: `p${k}`, t: o.texto })) }]) });
+  const marcarOps = (ops, estado = {}) => Object.assign({}, estado, {
+    marcas: Object.assign({}, estado.marcas, ...ops.map((o, k) => (o.correcta ? { [`p${k}`]: 'i' } : {}))),
+    tachar: ops.map((o, k) => (o.correcta ? null : `p${k}`)).filter(Boolean),
+    nuevo: ops.map((o, k) => (o.correcta ? `p${k}` : null)).filter(Boolean),
+  });
+  // Opciones en el orden de «Ahora tú» para esa semilla, con la correcta en un lugar que da azar(s + 900).
+  const ordenar = (b, s) => { const ops = opciones(b.ok, voltear(b.m, s)), c = ops.shift(); ops.splice(Math.floor(azar(s + 900)() * 4), 0, c); return ops; };
+  // Texto partido en la palabra marcada, como en «Ahora tú».
+  // Texto partido en la palabra marcada. Se toma su última aparición: en «limpiaron la plaza… la llenaron» o «El agua…
+  // El agua limpia», la marcada es la que vuelve a nombrar, no el referente.
+  const partirEn = (t, w) => {
+    const re = new RegExp(`(^|[^\\wáéíóúñ])(${w})(?![\\wáéíóúñ])`, 'g');
+    let k = -1, x;
+    while ((x = re.exec(t))) k = x.index + x[1].length;
+    const antes = t.slice(0, k).trim(), despues = t.slice(k + w.length).trim();
+    return [...(antes ? [['a', antes]] : []), ['w', w], ...(despues ? [['b', despues]] : [])];
+  };
+  // En minúscula solo si empieza con artículo («La plaza» → «la plaza»); los nombres propios quedan igual.
+  const minusArt = t => (/^(El|La|Los|Las|Un|Una) /.test(t) ? minus(t) : t);
+
   // ---------- Idea 1: a quién se refiere (anáfora y catáfora) ----------
   // Cambia: el pronombre que se mira y el referente que se le une. Permanece: el texto de Marta.
   // Progresa: de la unión gramatical a la que tiene sentido. Se reserva: la catáfora, que mira hacia adelante
@@ -88,6 +148,14 @@
     titulo: 'A quién se refiere',
     temas: ['Anáfora y catáfora'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué es un referente y por qué importa, sin decir hacia dónde mira «lo» en la profesora (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Palabras que señalan', texto: 'Palabras como «él», «lo», «ella» o «este» no dicen nada solas: señalan otra parte del texto. A eso que señalan lo llamamos su referente.' },
+        { titulo: 'Sin referente claro', texto: 'Si en el grupo de WhatsApp del salón alguien escribe «ya lo traje», todos preguntan: ¿qué cosa? Sin un referente claro, el mensaje no se entiende.' },
+        { titulo: 'Qué mirar', texto: 'En el juego unes «él» o «lo» con una palabra del texto de Marta. Mira cuándo la unión, además de sonar bien, tiene sentido.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un pronombre del texto y únelo con un referente. Mira cuándo el texto sigue teniendo sentido.',
       voz: 'Que concuerde no basta: tiene que tener sentido.',
@@ -126,16 +194,32 @@
       ecuacion: [ref('referente'), ' ← ', { llave: [remite('anáfora')], nota: 'mira atrás', color: 'c-o' }, '   ·   ', { llave: [remite('catáfora')], nota: 'mira adelante', color: 'c-o' }, ' → ', ref('referente')],
       condicion: 'se reemplaza la palabra por su referente: si la oración se lee bien y tiene sentido, es ese.',
     },
+    // Así se resuelve (fase 2): otro texto del banco de «Ahora tú»; se prueba cada candidato en lugar de la palabra.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Pon cada candidato en lugar de la palabra y lee.',
+      generar(s) {
+        const b = BANCO_REFERENTE[otroIndice(s, BANCO_REFERENTE.length)], ops = ordenar(b, s);
+        const datos = conOpciones(tarjeta('Texto', partirEn(b.t, b.w)), ops);
+        const cerca = b.m.find(x => x[1] === 'RV27'), cata = b.ok.startsWith('Lo que sigue'), refe = b.ok.replace('Lo que sigue: ', '');
+        return {
+          enunciado: `En este texto, ¿a qué se refiere «${b.w}»?`,
+          dibujo: { datos, estado: { marcas: { w: 'o' } } },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el referente de ', remite(b.w), ': la parte del texto que esa palabra señala.'] },
+            { tipo: 'regla', texto: 'Pongo cada candidato en lugar de la palabra. Me quedo con el que concuerda y, además, deja una oración con sentido.' },
+            { tipo: 'aplica', texto: `Pruebo «${cerca[0]}»: ${minus(cerca[2])}`, ecuacion: [remite(b.w), ' ≠ ', mal(minusArt(cerca[0]))] },
+            { tipo: 'aplica', texto: [`Con «${minusArt(refe)}», la oración se lee bien y tiene sentido.`], ecuacion: [remite(b.w), ' = ', ref(minusArt(refe))],
+              dibujo: { datos, estado: marcarOps(ops, { marcas: { w: 'o' } }) } },
+            { tipo: 'sentido', texto: cata ? [remite(b.w), ' mira hacia adelante: anuncia lo que viene. Es una catáfora.'] : [remite(b.w), ' mira hacia atrás: retoma algo ya dicho. Es una anáfora.'] },
+          ],
+          respuesta: `«${b.ok}»`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { t: 'El perro persiguió al gato hasta el techo. Allí, este se quedó quieto, a salvo.', w: 'este', ok: 'El gato', m: [['El perro', 'RVC2', 'El perro perseguía; «a salvo» y «allí, en el techo» apuntan al gato.'], ['El techo', 'RV27', 'Es el último sustantivo, pero un techo no se queda a salvo.'], ['Lo que viene después', 'RVC1', 'Aquí «este» retoma algo dicho antes, no anuncia.']] },
-          { t: 'Ana le prestó su casaca a Lucía porque ella tenía frío.', w: 'ella', ok: 'Lucía', m: [['Ana', 'RV27', 'Concuerda, pero si Ana tuviera frío no prestaría su casaca.'], ['La casaca', 'RV27', 'Concuerda, pero una casaca no tiene frío.'], ['Nadie: es ambiguo', 'RVC1', 'Concuerda con dos, pero solo una lectura tiene sentido.']] },
-          { t: 'Solo te pido esto: llega temprano mañana.', w: 'esto', ok: 'Lo que sigue: llega temprano', m: [['A ti', 'RV27', '«Te» eres tú; «esto» es lo que se pide.'], ['Mañana', 'RV27', 'Es la palabra más cercana, pero «esto» es el pedido completo.'], ['A algo dicho antes', 'RVC1', 'No hay nada antes: «esto» anuncia lo que viene.']] },
-          { t: 'Los vecinos limpiaron la plaza. Después, la llenaron de flores.', w: 'la', ok: 'La plaza', m: [['Los vecinos', 'RV27', 'No concuerda: «la» es femenino singular.'], ['Las flores', 'RV27', 'No concuerda y además se llena con flores, no a las flores.'], ['Lo que viene después', 'RVC1', '«La» retoma lo ya dicho: la plaza.']] },
-          { t: 'Carlos visitó a su abuelo en el hospital. Lo encontró mucho mejor.', w: 'Lo', ok: 'El abuelo', m: [['Carlos', 'RVC2', 'Carlos es quien encontró; no se encontró a sí mismo.'], ['El hospital', 'RV27', 'Concuerda, pero un hospital no está mejor de salud.'], ['Lo que viene después', 'RVC1', 'Aquí «lo» retoma a alguien ya nombrado.']] },
-          { t: 'Te lo advierto con claridad: no toques ese cable.', w: 'lo', ok: 'Lo que sigue: no toques ese cable', m: [['A ti', 'RV27', '«Te» eres tú; «lo» es la advertencia.'], ['Ese cable', 'RV27', 'Es el último sustantivo, pero lo que se advierte es la orden completa.'], ['Algo dicho antes', 'RVC1', 'No hay nada antes: «lo» anuncia lo que viene.']] },
-        ];
+        const B = BANCO_REFERENTE;
         const b = B[s % B.length];
         const [antes, despues] = b.t.split(new RegExp(`\\b${b.w}\\b`));
         return {
@@ -164,6 +248,14 @@
     titulo: 'Repetir, sustituir o callar',
     temas: ['Repetición, sustitución y elipsis'],
     pieza: 'rv-texto',
+    // Lee (fase 2): para qué se vuelve a nombrar algo y contexto de la vicuña, sin hablar del verbo que se calla (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Volver a nombrar', texto: 'Cuando un texto habla de algo varias veces, necesita volver a nombrarlo. Si usa siempre la misma palabra, la lectura se vuelve pesada.' },
+        { titulo: 'La vicuña', texto: 'La vicuña vive en las punas de Puno y Ayacucho. Es pariente de la llama, pero más pequeña y silvestre, y su fibra se vende muy cara.' },
+        { titulo: 'Qué mirar', texto: 'En el juego eliges tres formas de nombrar otra vez a la vicuña en la segunda oración. Mira qué nombre recibe cada forma en la lectura.' },
+      ],
+    },
     juega: {
       consigna: 'Elige cómo nombrar de nuevo a la vicuña en la segunda oración. Mira qué recurso usa el texto en cada caso.',
       voz: 'Los tres caminos llevan al mismo referente.',
@@ -198,15 +290,30 @@
       ecuacion: [ref('referente'), ' → ', remite('repetición'), '   ·   ', remite('sustitución'), '   ·   ', remite('elipsis')],
       condicion: 'el lector puede recuperar el referente sin dudar; si dos candidatos encajan, conviene repetir.',
     },
+    // Así se resuelve (fase 2): otro texto del banco de «Ahora tú»; se descartan los recursos que no son.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Mira cómo vuelve a nombrar: igual, con otras palabras o callando.',
+      generar(s) {
+        const b = BANCO_RECURSO[otroIndice(s, BANCO_RECURSO.length)], ops = ordenar(b, s);
+        const datos = conOpciones(tarjeta('Texto', partirEn(b.o, b.w)), ops), [m1, m2] = b.m;
+        return {
+          enunciado: `¿Qué recurso usa el texto en la parte marcada («${b.w}») para no perder el hilo?`,
+          dibujo: { datos, estado: { marcas: { w: 'o' } } },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden cómo vuelve a nombrar algo la parte marcada, ', remite(b.w), '.'] },
+            { tipo: 'regla', texto: 'Si usa la misma palabra, repite. Si usa otra expresión o un pronombre, sustituye. Si la calla y se entiende, es elipsis.', ecuacion: [remite('repetición'), ' · ', remite('sustitución'), ' · ', remite('elipsis')] },
+            { tipo: 'aplica', texto: `No es ${minus(m1[0])}: ${minus(m1[2])}` },
+            { tipo: 'aplica', texto: `Tampoco es ${minus(m2[0])}: ${minus(m2[2])}`, dibujo: { datos, estado: marcarOps(ops, { marcas: { w: 'o' } }) } },
+            { tipo: 'sentido', texto: ['Queda ', ref(minus(b.ok)), ': el lector recupera sin dudar lo que se vuelve a nombrar.'] },
+          ],
+          respuesta: b.ok,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { o: 'Lima es la capital del Perú. La ciudad tiene más de diez millones de habitantes.', w: 'La ciudad', ok: 'Sustitución', m: [['Repetición', 'RVC2', 'Sería repetición si dijera otra vez «Lima».'], ['Elipsis', 'RVC2', 'Sería elipsis si no la nombrara: «Tiene más de diez millones…».'], ['Catáfora', 'RVC1', 'No anuncia algo que viene: retoma a Lima.']] },
-          { o: 'Los niños jugaron toda la tarde. Después, cenaron y se durmieron temprano.', w: 'cenaron', ok: 'Elipsis', m: [['Repetición', 'RVC2', 'No se repite «los niños»: se calla y el verbo lo indica.'], ['Sustitución', 'RVC2', 'No hay otra palabra en lugar de «los niños».'], ['Catáfora', 'RVC1', 'No anuncia algo que viene después.']] },
-          { o: 'El agua es vital. El agua limpia, además, previene muchas enfermedades.', w: 'El agua', ok: 'Repetición', m: [['Sustitución', 'RVC2', 'Sería sustitución si dijera «este líquido».'], ['Elipsis', 'RVC2', 'Sería elipsis si callara el sujeto.'], ['Anáfora con pronombre', 'RVC2', 'No hay pronombre: se repite la misma palabra.']] },
-          { o: 'Mi abuela cocina un ají de gallina delicioso. Ella aprendió la receta de su madre.', w: 'Ella', ok: 'Sustitución', m: [['Repetición', 'RVC2', 'Sería repetición si dijera «mi abuela».'], ['Elipsis', 'RVC2', 'Sería elipsis si dijera solo «Aprendió…».'], ['Catáfora', 'RVC1', '«Ella» retoma a la abuela, no anuncia nada.']] },
-          { o: 'Unos llevaron la comida; otros, las bebidas.', w: 'otros, las bebidas', ok: 'Elipsis', m: [['Repetición', 'RVC2', 'El verbo «llevaron» no se repite: se calla.'], ['Sustitución', 'RVC2', 'No hay otra palabra en lugar del verbo.'], ['Catáfora', 'RVC1', 'No anuncia nada: retoma el verbo dicho antes.']] },
-        ];
+        const B = BANCO_RECURSO;
         const b = B[s % B.length];
         const [antes, despues] = b.o.split(b.w);
         return {
@@ -240,6 +347,14 @@
     titulo: 'Lo conocido trae lo nuevo',
     temas: ['Progresión temática: tópico y comento', 'Inclusión de enunciado'],
     pieza: 'rv-texto',
+    // Lee (fase 2): contexto de los caminos incas y qué hace una oración que falta, sin tocar el texto del ichu (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Los caminos incas', texto: 'El Qhapaq Ñan fue la red de caminos de los incas. Unía el Cusco con lugares tan lejanos como Quito y el norte de Chile.' },
+        { titulo: 'Una oración que falta', texto: 'En el examen aparece un texto con un espacio en blanco y varias oraciones para llenarlo. Solo una deja que el texto se lea de corrido.' },
+        { titulo: 'Qué mirar', texto: 'En el juego falta la oración 3. Prueba cada candidata y mira si la oración 4 encuentra a quién nombra.' },
+      ],
+    },
     juega: {
       consigna: 'Falta la oración 3. Prueba cada candidata y mira si la 4 encuentra lo que necesita.',
       voz: 'Cada oración parte de algo ya dicho y agrega algo.',
@@ -275,15 +390,33 @@
       ecuacion: [{ llave: [ref('tópico')], nota: 'lo conocido', color: 'c-i' }, ' + ', { llave: [nuevo('comento')], nota: 'lo nuevo', color: 'c-d' }, ' → ', ref('tópico siguiente')],
       condicion: 'la oración que se incluye retoma lo anterior y deja lo que la siguiente necesita (un nombre, una razón).',
     },
+    // Así se resuelve (fase 2): otro texto del banco de «Ahora tú»; la oración del espacio se elige mirando la siguiente.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Mira primero la oración que viene después del espacio.',
+      generar(s) {
+        const b = BANCO_HILO[otroIndice(s, BANCO_HILO.length)], ops = ordenar(b, s), mala = b.m[0];
+        const sec = llena => ({ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: b.o.map((t, k) => (t ? { id: `o${k + 1}`, t } : llena ? { id: `o${k + 1}`, t: b.ok } : { id: `o${k + 1}`, hueco: true, reserva: '¿?' })) });
+        const hueco = b.o.indexOf(null) + 1, sigue = b.o[hueco];
+        return {
+          enunciado: `El texto empieza: «${b.o[0].replace(/\.$/, '')}». ¿Qué oración debe ir en el espacio para que mantenga su hilo?`,
+          dibujo: { datos: conOpciones({ secciones: [sec(false)] }, ops), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden la oración ${hueco}: la que mantiene el hilo entre la oración de antes y la de después.` },
+            { tipo: 'datos', texto: `Después del espacio viene «${sigue.replace(/\.$/, '')}». Esa oración necesita algo dicho antes.` },
+            { tipo: 'regla', texto: 'La oración que falta parte de lo ya dicho y presenta lo que la siguiente retoma.', ecuacion: [ref('lo dicho'), ' + ', nuevo('lo que viene')] },
+            { tipo: 'aplica', texto: `Descarto «${mala[0].replace(/\.$/, '')}»: ${minus(mala[2])}` },
+            { tipo: 'aplica', texto: `Queda «${b.ok.replace(/\.$/, '')}». Retoma la ${hueco - 1} y prepara la ${hueco + 1}.`, ecuacion: [ref(`${hueco - 1}`), ' → ', nuevo(`${hueco}`), ' → ', ref(`${hueco + 1}`)],
+              dibujo: { datos: conOpciones({ secciones: [sec(true)] }, ops), estado: marcarOps(ops, { marcas: { [`o${hueco}`]: 'o' }, sellos: { o: { t: 'El hilo sigue', c: 'i' } } }) } },
+            { tipo: 'sentido', texto: 'Leo las tres oraciones seguidas: cada una parte de lo anterior y el texto no da saltos.' },
+          ],
+          respuesta: `«${b.ok}»`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { o: ['El cacao crece en la selva del Perú.', null, 'Con esas semillas se fabrica el chocolate.'], ok: 'Sus frutos guardan unas semillas amargas.', m: [['El chocolate es muy dulce.', 'RV28', 'Adelanta el chocolate, pero la 3 necesita antes las semillas.'], ['La selva tiene mucha lluvia.', 'RV28', 'Habla de la selva y deja sin referente «esas semillas».'], ['El café también crece en la selva.', 'RV28', 'Cambia de tema y la 3 queda sin enlace.']] },
-          { o: ['El volcán Misti está junto a Arequipa.', null, 'Por eso, la ciudad tiene planes de evacuación.'], ok: 'Todavía está activo y podría hacer erupción.', m: [['Su cima tiene nieve en invierno.', 'RV28', 'Habla del Misti, pero no da la razón del «por eso».'], ['Arequipa es la ciudad blanca.', 'RV28', 'Habla de la ciudad, no de un peligro que exija evacuar.'], ['Los planes se practican cada año.', 'RV28', 'Adelanta los planes antes de su razón.']] },
-          { o: ['Las ballenas jorobadas llegan a Piura en invierno.', null, 'En esas aguas cálidas nacen sus crías.'], ok: 'Vienen desde el sur buscando aguas más cálidas.', m: [['Las crías toman leche.', 'RV28', 'Adelanta las crías y deja sin referente «esas aguas».'], ['Piura es famosa por su ceviche.', 'RV28', 'Cambia de tema: la 3 queda sin enlace.'], ['Las ballenas son mamíferos.', 'RV28', 'Es verdad, pero no presenta las aguas que la 3 retoma.']] },
-          { o: ['El quechua es una lengua que se habla en los Andes.', null, 'Esas palabras, como «cancha» o «papa», usamos todos los días.'], ok: 'El castellano tomó muchas palabras de ella.', m: [['El quechua tiene varias variedades.', 'RV28', 'Habla del quechua, pero no presenta las palabras que la 3 retoma.'], ['La papa es originaria de los Andes.', 'RV28', 'Adelanta un ejemplo sin presentar el préstamo de palabras.'], ['Muchos peruanos hablan castellano.', 'RV28', 'No dice que el castellano tomara palabras del quechua.']] },
-          { o: ['En 1911, Hiram Bingham llegó a Machu Picchu.', null, 'Desde entonces, el lugar se volvió famoso en el mundo.'], ok: 'Publicó fotos que mostraron la ciudadela al mundo.', m: [['Machu Picchu está en Cusco.', 'RV28', 'Es un dato del lugar, pero no explica el «desde entonces».'], ['Hoy llegan miles de turistas.', 'RV28', 'Adelanta el efecto antes de su causa.'], ['Bingham era profesor.', 'RV28', 'Habla de Bingham, pero no de lo que lo hizo famoso.']] },
-        ];
+        const B = BANCO_HILO;
         const b = B[s % B.length];
         const datos = { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: b.o.map((t, k) => (t ? { id: `o${k + 1}`, t } : { id: `o${k + 1}`, hueco: true, reserva: '¿?' })) }] };
         return {
@@ -309,6 +442,14 @@
     titulo: 'Conectores no garantizan sentido',
     temas: ['Principio de no contradicción'],
     pieza: 'rv-texto',
+    // Lee (fase 2): las dos palabras del tema y las de cantidad, sin juzgar el texto del río seco (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos palabras', texto: 'La cohesión es cómo se unen las oraciones: conectores, pronombres, repeticiones. La coherencia es que el texto entero tenga sentido.' },
+        { titulo: 'Palabras de cantidad', texto: 'Palabras como «todos», «la mayoría», «algunos» o «ninguno» dicen cuántos. Son pequeñas, pero cambian por completo lo que afirma una oración.' },
+        { titulo: 'Qué mirar', texto: 'En el juego cambias la cantidad de la primera oración; la segunda queda igual. Mira cuándo las dos pueden ser verdad al mismo tiempo.' },
+      ],
+    },
     juega: {
       consigna: 'Cambia la cantidad en la primera oración. Mira cuándo las dos oraciones pueden ser verdad al mismo tiempo.',
       voz: 'El «sin embargo» está bien puesto; mira lo que dicen.',
@@ -347,15 +488,33 @@
       ecuacion: [ref('A'), ' y ', { llave: [mal('no A')], nota: 'lo niega', color: 'c-h' }, ' no pueden ser verdad a la vez'],
       condicion: 'se comparan las afirmaciones con su cantidad (todos, algunos), su tiempo y su lugar: si cambian, quizá no chocan.',
     },
+    // Así se resuelve (fase 2): otro texto del banco de «Ahora tú»; se comparan las dos afirmaciones.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Olvida los conectores un momento: compara lo que dicen.',
+      generar(s) {
+        const b = BANCO_COHERENTE[otroIndice(s, BANCO_COHERENTE.length)], ops = ordenar(b, s);
+        const k = b.o.indexOf('. '), a1 = b.o.slice(0, k + 1), a2 = b.o.slice(k + 2), si = b.ok.startsWith('Sí');
+        const [veredicto, razon] = b.ok.split(': '), conector = b.m.find(x => x[1] === 'RVC3');
+        const datos = conOpciones(tarjeta('Texto', [['a', a1], ['b', a2]]), ops);
+        return {
+          enunciado: `«${b.o}» ¿Este texto es coherente?`,
+          dibujo: { datos, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden decidir si el texto es coherente: si sus afirmaciones pueden ser verdad al mismo tiempo.' },
+            { tipo: 'datos', texto: `Primera afirmación: «${a1}» Segunda: «${a2}»`, ecuacion: [ref('A'), ' · ', ref('B')] },
+            { tipo: 'regla', texto: 'Un conector bien puesto no basta. Me pregunto si una oración niega lo que afirma la otra.', ecuacion: [ref('A'), ' y ', ref('B'), ' ¿a la vez?'] },
+            { tipo: 'aplica', texto: `${veredicto}: ${razon}.`, ecuacion: [ref('A'), ' y ', (si ? ref : mal)('B'), si ? ': posible a la vez' : ': no a la vez'],
+              dibujo: { datos, estado: marcarOps(ops, { marcas: { a: si ? 'i' : 'h', b: si ? 'i' : 'h' }, sellos: { o: si ? { t: 'Coherente', c: 'i' } : { t: 'Se contradice', c: 'h' } } }) } },
+            { tipo: 'sentido', texto: `Descarto «${conector[0].replace(/«/g, "“").replace(/»/g, "”")}». ${conector[2]}` },
+          ],
+          respuesta: b.ok,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { o: 'Nunca he salido de Puno. El año pasado conocí el mar en Lima.', ok: 'No: si conoció Lima, sí salió de Puno', m: [['Sí: cuenta dos recuerdos', 'RVC3', 'Tienen relación de tema, pero lo segundo niega lo primero.'], ['Sí: las dos están bien escritas', 'RVC3', 'Cada una es correcta sola; juntas se contradicen.'], ['No: falta un «sin embargo»', 'RVC3', 'Un conector no arregla que una niegue a la otra.']] },
-          { o: 'La tienda abre solo los sábados. Por eso, fuimos un martes y estaba abierta.', ok: 'No: si abre solo sábados, el martes estaría cerrada', m: [['Sí: tiene un conector de causa', 'RVC3', 'El conector no da sentido: el martes contradice «solo los sábados».'], ['Sí: dice cuándo fueron', 'RVC3', 'Dar un día no basta: ese día choca con lo anterior.'], ['No: falta decir la hora', 'RVC3', 'La hora no importa: el día ya contradice lo dicho.']] },
-          { o: 'Algunos pájaros no vuelan. Por ejemplo, el pingüino nada pero no vuela.', ok: 'Sí: el ejemplo confirma lo dicho', m: [['No: los pájaros vuelan', 'RV8', 'Eso es una idea propia; el texto no lo afirma, y el pingüino lo desmiente.'], ['No: «por ejemplo» está mal usado', 'RVC3', 'Está bien: el pingüino es un caso de pájaro que no vuela.'], ['No: el pingüino no es un pájaro', 'RV8', 'Sí es un ave; y el texto así lo trata.']] },
-          { o: 'El examen duró dos horas. Terminé en diez minutos y salí antes que todos.', ok: 'Sí: un alumno puede terminar antes', m: [['No: si duró dos horas, nadie sale antes', 'RVC3', 'Lo que dura es el tiempo dado; alguien puede terminar antes.'], ['No: falta un conector', 'RVC3', 'Sin conector, el sentido se sostiene igual.'], ['No: diez minutos es muy poco', 'RV8', 'Eso es una opinión; no es una contradicción del texto.']] },
-          { o: 'Todos los asientos del bus estaban ocupados. Por eso, me senté al lado de la ventana.', ok: 'No: si todos estaban ocupados, no pudo sentarse', m: [['Sí: tiene un conector de consecuencia', 'RVC3', '«Por eso» no arregla que no hubiera asientos libres.'], ['Sí: dice dónde se sentó', 'RVC3', 'Precisar el lugar no quita la contradicción.'], ['No: debía decir «además»', 'RVC3', 'Cambiar el conector no resuelve el choque.']] },
-        ];
+        const B = BANCO_COHERENTE;
         const b = B[s % B.length];
         return {
           pregunta: '¿Este texto es coherente?',
