@@ -26,6 +26,9 @@
   const x = { v: 'c-o', t: 'x' }, fr = { v: 'c-i', t: 'f' }, xb = { v: 'c-d', t: 'x̄' }, Me = { v: 'c-h', t: 'Me' };
   const h = { v: 'c-i', t: 'h' }, Fa = { v: 'c-i', t: 'F' }, w = { v: 'c-i', t: 'w' };
   const sub = (b, i) => ({ sub: [b, i] });
+  // «=» si el valor sale exacto con dos decimales; «≈» si se redondea (lo usan los ejemplos resueltos).
+  const igual = (v, d = 2) => (Math.abs(v * 10 ** d - Math.round(v * 10 ** d)) < 1e-9 ? ' = ' : ' ≈ ');
+  const hermanos = k => (k === 1 ? '1 hermano' : `${k} hermanos`);
   // Gesto directo (docs/teoria.md §4b): la manija vive en las coordenadas de la pieza; el lector ajusta al paso y al rango.
   const RECTA = () => Kit.piezas.recta, EJES = () => Kit.piezas.ejes;
   const inversa = (escala, lo, hi) => px => lo + (px - escala(lo)) * (hi - lo) / (escala(hi) - escala(lo));
@@ -76,6 +79,13 @@
     titulo: 'Contar, dividir, acumular',
     temas: ['Población, muestra y variables', 'Tablas de frecuencias'],
     pieza: 'arit-tabla',
+    lee: {
+      tarjetas: [
+        { titulo: 'Preguntar a una parte', texto: 'Un colegio de Juliaca quiere saber cuántos hermanos tienen sus 600 alumnos. No pregunta a todos: elige a 20. Los 600 son la población; los 20 que responden son la muestra.' },
+        { titulo: 'Qué se anota', texto: 'Lo que se anota de cada alumno es la variable. Si es una cualidad, como el color favorito, es cualitativa. Si es un número, es cuantitativa: discreta si se cuenta, continua si se mide.' },
+        { titulo: 'Cómo se lee la tabla', texto: ['La columna ', x, ' da las respuestas posibles: 0, 1, 2 hermanos… La columna ', fr, ' dice cuántos alumnos dieron cada respuesta. Al jugar, cambia una ', fr, ' y mira qué columnas se mueven.'] },
+      ],
+    },
     juega: {
       consigna: 'Se preguntó a una muestra de alumnos de un colegio cuántos hermanos tienen. Cambia cuántos dijeron 2 y mira las columnas.',
       voz: 'Mira qué columnas cambian y cuál siempre suma 1.',
@@ -108,6 +118,64 @@
       texto: 'La población es todo el grupo que interesa; la muestra, la parte que se observa. La tabla cuenta f, divide h = f/n y acumula F.',
       ecuacion: ['Σ', fr, ' = n', '   ·   ', h, ' = ', { llave: [{ frac: [fr, 'n'] }], nota: 'parte del total', color: 'c-i' }, '   ·   ', 'Σ', h, ' = 1'],
       condicion: 'la variable es cualitativa (colores) o cuantitativa: discreta (se cuenta) o continua (se mide). F pide valores ordenables.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3;
+        if (tipo === 2) {
+          const casos = [
+            ['el distrito donde vive cada alumno', 'Cualitativa', 'La respuesta es un nombre, como Juliaca o Caracoto: una cualidad, no un número.'],
+            ['la estatura de cada alumno, en cm', 'Cuantitativa continua', 'Es un número que se mide con cinta métrica y puede tener decimales: 158,5 cm.'],
+            ['cuántos libros leyó cada alumno este año', 'Cuantitativa discreta', 'Es un número que se cuenta: 0, 1, 2… No hay 2,5 libros leídos.'],
+            ['el deporte favorito de cada alumno', 'Cualitativa', 'La respuesta es una palabra, como fútbol o vóley: una cualidad.'],
+            ['la temperatura de cada mañana, en °C', 'Cuantitativa continua', 'Es un número que se mide con termómetro y puede tener decimales.'],
+            ['cuántas personas viven en cada casa', 'Cuantitativa discreta', 'Es un número que se cuenta: personas enteras.'],
+          ];
+          const [que, bien, porque] = casos[r.ent(0, casos.length - 1)];
+          return {
+            enunciado: `En una encuesta se anota ${que}. ¿Qué tipo de variable es?`,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el tipo de variable: qué clase de respuesta se anota de cada uno.' },
+              { tipo: 'datos', texto: `De cada uno se anota ${que}.` },
+              { tipo: 'regla', texto: 'Si la respuesta es una palabra, la variable es cualitativa. Si es un número, es cuantitativa: discreta cuando se cuenta, continua cuando se mide.' },
+              { tipo: 'aplica', texto: porque },
+              { tipo: 'sentido', texto: 'Prueba: ¿tiene sentido sacar un promedio de las respuestas? Si no, es cualitativa. ¿Tiene sentido un valor con decimales? Si sí, es continua.' },
+            ],
+            respuesta: bien,
+          };
+        }
+        const fs = [r.ent(1, 6), r.ent(2, 8), r.ent(2, 8), r.ent(1, 6), r.ent(1, 4)], n = suma(fs), k = r.ent(1, 3);
+        const F = suma(fs.slice(0, k + 1)), hk = fs[k] / n, hasta = Array.from({ length: k + 1 }, (_, i) => i);
+        const oculta = { datos: tablaHermanos(fs, { pasoH: 9, pasoF: 9 }), estado: {} };
+        if (tipo === 0) {
+          return {
+            enunciado: `En la tabla de hermanos, ¿cuántos alumnos tienen a lo más ${hermanos(k)}?`,
+            dibujo: oculta,
+            pasos: [
+              { tipo: 'pide', texto: `Piden cuántos alumnos tienen ${hermanos(k)} o menos: «a lo más ${k}» incluye al ${k}.` },
+              { tipo: 'datos', texto: ['La columna ', fr, ` da ${fs.slice(0, k + 1).join(', ')} alumnos para x de 0 a ${k}. En total son n = ${n}.`] },
+              { tipo: 'regla', texto: 'Contar hasta un valor es acumular: sumo los alumnos de ese valor y los de todos los valores anteriores.' },
+              { tipo: 'cuentas', texto: ['Sumo la columna ', fr, ` desde x = 0 hasta x = ${k}.`], ecuacion: [Fa, ` = ${fs.slice(0, k + 1).join(' + ')} = ${F}`],
+                dibujo: { datos: tablaHermanos(fs, { resalta: k }), estado: { fila: hasta } } },
+              { tipo: 'sentido', texto: `Los que tienen más de ${k} son ${n} − ${F} = ${n - F}. Juntos con los ${F} dan los ${n} alumnos: cuadra.` },
+            ],
+            respuesta: `${F} alumnos`,
+          };
+        }
+        return {
+          enunciado: `En la tabla de hermanos, ¿qué frecuencia relativa tiene x = ${k}?`,
+          dibujo: oculta,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', h, ` de x = ${k}: qué parte del total de alumnos tiene ${hermanos(k)}.`] },
+            { tipo: 'datos', texto: [`Con ${hermanos(k)} hay `, fr, ` = ${fs[k]} alumnos, y en total son n = ${n}.`] },
+            { tipo: 'regla', texto: 'La parte del total sale de dividir cuántos son entre todos los que respondieron.', ecuacion: [h, ' = ', { frac: [fr, 'n'] }] },
+            { tipo: 'cuentas', texto: `Divido ${fs[k]} entre ${n}.`, ecuacion: [h, ' = ', { frac: [String(fs[k]), String(n)] }, `${igual(hk, 3)}${fm(hk, 3)}`],
+              dibujo: { datos: tablaHermanos(fs, { pasoF: 9, resalta: k }), estado: { fila: k, columna: 2 } } },
+            { tipo: 'sentido', texto: `Una parte del total queda entre 0 y 1. De vuelta: ${fm(hk, 3)} · ${n} ≈ ${fm(hk * n)}, la f de x = ${k}.` },
+          ],
+          respuesta: ['La frecuencia relativa es ', h, `${igual(hk, 3)}${fm(hk, 3)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -172,6 +240,13 @@
     titulo: 'Barras y sectores',
     temas: ['Gráficos estadísticos'],
     pieza: 'ejes',
+    lee: {
+      tarjetas: [
+        { titulo: 'Cómo llegas al colegio', texto: 'En Juliaca, unos alumnos llegan en combi, otros a pie, en bici o en mototaxi. Cada forma de llegar es una categoría, y cuántos alumnos la eligen es su frecuencia.' },
+        { titulo: 'Barras', texto: 'En un gráfico de barras, cada categoría tiene su barra y la altura cuenta su frecuencia. Para comparar de forma honesta, todas las barras arrancan del mismo piso: el 0.' },
+        { titulo: 'Sectores', texto: 'Un gráfico de sectores reparte un círculo en tajadas, una por categoría. Lo verás en los resultados de una elección o en un informe del colegio. Al jugar, mira la barra de combi frente a las demás.' },
+      ],
+    },
     juega: {
       consigna: 'Cómo llegan los alumnos: combi, a pie, bici o mototaxi (barras 1 a 4). Cambia cuántos van en combi y compara las barras.',
       voz: 'Cada barra empieza en 0: su altura es la frecuencia.',
@@ -204,13 +279,36 @@
       pasos: [
         { estado: { corte: 1 }, texto: 'Las barras miden la frecuencia desde 0: a pie son 5.', ecuacion: [fr, ' = 5'] },
         { estado: { corte: 2 }, texto: 'En el total de 20, eso es la cuarta parte.', ecuacion: [h, ' = ', { frac: ['5', '20'] }, ' = 0,25'] },
-        { estado: { corte: 3 }, texto: 'El sector toma esa parte de los 360° del círculo.', ecuacion: ['0,25 · 360° = 90°'] },
+        { estado: { corte: 3 }, texto: 'El rótulo de la barra da esa parte de los 360° de un círculo.', ecuacion: ['0,25 · 360° = 90°'] },
       ],
     },
     regla: {
       texto: 'Barras para categorías o valores contados, con el eje desde 0; histograma, barras pegadas para datos medidos en intervalos; sectores, partes de un todo.',
       ecuacion: ['ángulo = ', h, ' · ', { llave: ['360°'], nota: 'todo el círculo' }, '   ·   ', h, ' = ', { frac: [fr, 'n'] }],
       condicion: 'un eje que no empieza en 0 exagera las diferencias. Los sectores solo sirven si las partes forman un todo.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = r.de([20, 24, 30, 36, 40, 60]), fs = [0, 0, 0, 0];
+        const div = [1, 2, 3, 4, 5, 6, 8, 9, 10, 12].filter(d => (360 * d) % n === 0 && d < n / 2);
+        fs[1] = r.de(div); fs[2] = r.ent(1, Math.floor((n - fs[1]) / 3)); fs[3] = r.ent(1, Math.floor((n - fs[1] - fs[2]) / 2)); fs[0] = n - fs[1] - fs[2] - fs[3];
+        const ang = 360 * fs[1] / n;
+        return {
+          enunciado: `De ${n} alumnos, ${fs[1]} ${fs[1] === 1 ? 'llega' : 'llegan'} a pie. En un gráfico de sectores, ¿qué ángulo le toca a «a pie»?`,
+          dibujo: { datos: barras(fs, NOMBRES, { marca: 1 }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden cuántos grados del círculo le tocan a la tajada de «a pie».' },
+            { tipo: 'datos', texto: `Son ${n} alumnos en total y ${fs[1]} ${fs[1] === 1 ? 'llega' : 'llegan'} a pie: la barra 2, en rojo.`, ecuacion: [fr, ` = ${fs[1]}`, '   ·   ', `n = ${n}`] },
+            { tipo: 'regla', texto: 'Cada categoría se queda con la misma parte del círculo que tiene del total de alumnos. El círculo entero mide 360°.',
+              ecuacion: ['ángulo = ', h, ' · 360°'] },
+            { tipo: 'cuentas', texto: 'Primero, qué parte del total son; después, esa parte de 360°.',
+              ecuacion: [h, ' = ', { frac: [String(fs[1]), String(n)] }, '   →   ', { frac: [String(fs[1]), String(n)] }, ` · 360° = ${fm(ang)}°`],
+              dibujo: { datos: barras(fs, NOMBRES, { grados: true, marca: 1 }), estado: {} } },
+            { tipo: 'sentido', texto: `Los otros ${n - fs[1]} alumnos se llevan 360° − ${fm(ang)}° = ${fm(360 - ang)}°. Juntos dan el círculo entero.` },
+          ],
+          respuesta: `${fm(ang)}° para «a pie»`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -248,6 +346,13 @@
     titulo: 'Media, mediana y moda',
     temas: ['Media, mediana y moda'],
     pieza: 'recta',
+    lee: {
+      tarjetas: [
+        { titulo: 'Un día típico', texto: 'La dueña de una tienda de Juliaca anota cuánto vende cada día. Cuando le preguntan «¿cuánto vendes en un día normal?», no lee toda la lista: busca un solo número que represente a todos.' },
+        { titulo: 'Tres candidatos', texto: 'Para ese número hay tres muy usados: la media, la mediana y la moda. Los tres buscan el centro de los datos, pero cada uno lo busca a su manera. A veces coinciden y a veces no.' },
+        { titulo: 'Qué mirar', texto: ['Cada dato es un punto naranja en la recta; si dos datos son iguales, se apilan. El punto verde es la media, ', xb, ', y el rojo, la mediana, ', Me, '. Al jugar, lleva el último dato lejos y sigue a los dos.'] },
+      ],
+    },
     juega: {
       consigna: 'Cinco datos: 2, 4, 4, 9 y uno que tú eliges. Muévelo lejos y mira qué pasa con la media y con la mediana.',
       voz: 'Lleva el último dato hasta el extremo derecho.',
@@ -286,6 +391,49 @@
       texto: 'La media es la suma entre n y se deja arrastrar por un dato extremo. La mediana es el dato central ordenado. La moda, el más frecuente.',
       ecuacion: [xb, ' = ', { llave: [{ frac: [['Σ', x], 'n'] }], nota: 'reparte la suma', color: 'c-d' }, '   ·   ', Me, ' = el dato central'],
       condicion: 'para la mediana primero se ordena; con n par, se promedian los dos del medio. Puede haber varias modas o ninguna.',
+    },
+    resuelve: {
+      generar(s, t = s + 900) {
+        const r = azar(t), n = r.de([5, 6, 7]);
+        const xs = Array.from({ length: n }, () => r.ent(1, 15));
+        xs[r.ent(0, n - 1)] = xs[0];               // al menos una repetición
+        const pide = ['media', 'mediana', 'moda'][s % 3];
+        const cuenta = {}; xs.forEach(v => { cuenta[v] = (cuenta[v] || 0) + 1; });
+        const maxc = Math.max(...Object.values(cuenta)), modas = Object.keys(cuenta).filter(k => cuenta[k] === maxc).map(Number);
+        if (pide === 'moda' && modas.length > 1) return this.generar(s, t + 600);
+        const o = ordenar(xs), m = media(xs), me = mediana(xs), mo = modas[0], sx = suma(xs);
+        const sim = { media: xb, mediana: Me, moda: 'moda' }[pide];
+        const regla = {
+          media: 'La media reparte la suma en partes iguales: sumo todos los datos y divido entre cuántos son.',
+          mediana: 'La mediana es el dato que queda al centro después de ordenar. Si son una cantidad par, promedio los dos del centro.',
+          moda: 'La moda es el valor que más veces aparece. En la recta, es la pila de puntos más alta.',
+        }[pide];
+        const centro = n % 2 ? `el dato número ${(n + 1) / 2}` : `los datos número ${n / 2} y ${n / 2 + 1}`;
+        const cuentas = {
+          media: { texto: `Sumo los ${n} datos y divido entre ${n}.`, ecuacion: [xb, ` = ${fm(sx)} ÷ ${n} = ${fm(m)}`] },
+          mediana: { texto: `Con ${n} datos ordenados, el centro es ${centro}.`,
+            ecuacion: n % 2 ? [`${o.join(', ')}   →   `, Me, ` = ${fm(me)}`] : [Me, ` = (${o[n / 2 - 1]} + ${o[n / 2]}) ÷ 2 = ${fm(me)}`] },
+          moda: { texto: 'Cuento cuántas veces aparece cada valor y me quedo con el que más se repite.', ecuacion: [`${mo} aparece ${maxc} veces`] },
+        }[pide];
+        const sentido = {
+          media: `Queda entre ${o[0]} y ${o[n - 1]}, el menor y el mayor dato. Y ${n} veces la media devuelve la suma, ${fm(sx)}.`,
+          mediana: `En la lista ordenada quedan ${Math.floor(n / 2)} datos antes del centro y ${Math.floor(n / 2)} después: ${fm(me)} está justo en medio.`,
+          moda: `Ningún otro valor aparece ${maxc} veces: en la recta, la pila del ${mo} es la más alta.`,
+        }[pide];
+        return {
+          enunciado: `Para los datos ${xs.join(', ')}, ¿cuál es la ${pide}?`,
+          dibujo: { datos: rectaCentrales(xs, { sinMedia: true, sinMediana: true }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden la ${pide} de estos ${n} datos.` },
+            { tipo: 'datos', texto: `Ordenados de menor a mayor quedan así.`, ecuacion: [x, `: ${o.join(', ')}`] },
+            { tipo: 'regla', texto: regla },
+            { tipo: 'cuentas', texto: cuentas.texto, ecuacion: cuentas.ecuacion,
+              dibujo: { datos: rectaCentrales(xs, { sinMedia: pide !== 'media', sinMediana: pide !== 'mediana' }), estado: {} } },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: [sim, ` = ${fm({ media: m, mediana: me, moda: mo }[pide])}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -333,6 +481,13 @@
     titulo: 'Cuando cada dato pesa distinto',
     temas: ['Medias ponderada, geométrica y armónica'],
     pieza: 'recta',
+    lee: {
+      tarjetas: [
+        { titulo: 'Cursos con créditos', texto: 'En la UNA Puno, como en otras universidades, cada curso tiene créditos: uno de 4 créditos tiene más horas de clase que uno de 2. Por eso el promedio del ciclo no se saca igual que en el colegio.' },
+        { titulo: 'El peso de cada dato', texto: ['El número que dice cuánto cuenta cada dato se llama peso, ', w, '. En las notas, el peso son los créditos. En un examen de admisión, puede ser cuántas preguntas tiene cada curso.'] },
+        { titulo: 'Qué mirar', texto: 'Los puntos naranjas son las notas 12 y 18, con sus créditos encima. El punto verde es el promedio ponderado. Al jugar, dale más créditos a un curso y mira hacia dónde se corre el verde.' },
+      ],
+    },
     juega: {
       consigna: 'Un alumno sacó 12 en un curso y 18 en otro. Cambia los créditos de cada curso y mira su promedio ponderado.',
       voz: 'Compara el punto verde con el punto medio 15.',
@@ -377,6 +532,42 @@
       texto: 'La media ponderada multiplica cada dato por su peso y divide entre la suma de pesos. La geométrica promedia factores; la armónica, rapideces con la misma distancia.',
       ecuacion: [sub(xb, 'p'), ' = ', { llave: [{ frac: [['Σ', w, x], ['Σ', w]] }], nota: 'pesa según w', color: 'c-i' }, '   ·   ', 'G = ', { raiz: [sub(x, '1'), '·…·', sub(x, 'n')], indice: 'n' }],
       condicion: 'los pesos son positivos y dicen cuánto cuenta cada dato. La geométrica pide datos positivos.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 3 === 2) {
+          const [a, b] = r.de([[1.2, 1.8], [1.1, 1.6], [0.9, 1.6], [1.25, 1.8], [2, 1.125]]), P = a * b, G = Math.sqrt(P), A = (a + b) / 2;
+          return {
+            enunciado: `Una población se multiplica por ${fm(a, 3)} el primer año y por ${fm(b, 3)} el segundo. ¿Qué factor anual igual, repetido dos años, da lo mismo?`,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden un solo factor G que, usado los dos años, deje la población igual que los dos factores reales.' },
+              { tipo: 'datos', texto: 'En dos años, la población queda multiplicada por el producto de los dos factores.', ecuacion: [`${fm(a, 3)} · ${fm(b, 3)} = ${fm(P, 4)}`] },
+              { tipo: 'regla', texto: 'Cuando los cambios se multiplican, el factor igual que los reemplaza es la media geométrica: la raíz del producto.' },
+              { tipo: 'cuentas', texto: 'G repetido dos años es G · G. Lo igualo al producto y saco raíz cuadrada.',
+                ecuacion: [`G · G = ${fm(P, 4)}   →   G = `, { raiz: fm(P, 4) }, `${igual(G, 4)}${fm(G, 4)}`] },
+              { tipo: 'sentido', texto: `Comprueba: ${fm(G, 4)} · ${fm(G, 4)}${igual(G, 4).trim() === '=' ? ' = ' : ' ≈ '}${fm(G * G, 4)}, el mismo producto. El promedio simple, ${fm(A, 4)}, daría ${fm(A * A, 4)}: se pasa.` },
+            ],
+            respuesta: `G${igual(G, 4)}${fm(G, 4)} cada año`,
+          };
+        }
+        const notas = [r.ent(8, 13), r.ent(12, 16), r.ent(15, 20)], pesos = [r.ent(1, 5), r.ent(1, 5), r.ent(1, 5)];
+        if (pesos[0] === pesos[1] && pesos[1] === pesos[2]) pesos[2] += 1;
+        const num = suma(notas.map((n, k) => n * pesos[k])), den = suma(pesos), p = num / den, ms = media(notas);
+        const lo = Math.min(...notas), hi = Math.max(...notas);
+        return {
+          enunciado: `Notas ${notas.join(', ')} en cursos de ${pesos.join(', ')} créditos, en ese orden. ¿Cuál es el promedio ponderado?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el promedio ponderado de las tres notas, donde cada curso pesa sus créditos.' },
+            { tipo: 'datos', texto: 'Tengo tres notas y los créditos de cada curso, en el mismo orden.', ecuacion: [x, `: ${notas.join(', ')}`, '   ·   ', w, `: ${pesos.join(', ')}`] },
+            { tipo: 'regla', texto: 'Cada nota cuenta tantas veces como créditos tiene: multiplico nota por créditos, sumo y divido entre el total de créditos.' },
+            { tipo: 'cuentas', texto: 'Arriba, cada nota por sus créditos; abajo, la suma de los créditos.',
+              ecuacion: [sub(xb, 'p'), ' = ', { frac: [notas.map((n, k) => `${n} · ${pesos[k]}`).join(' + '), pesos.join(' + ')] }, ' = ', { frac: [String(num), String(den)] }, ` = ${fm(p)}`] },
+            { tipo: 'sentido', texto: `Queda entre ${lo} y ${hi}, la nota menor y la mayor. ${Math.abs(p - ms) < 1e-9 ? 'Aquí coincide con el promedio simple.' : `El promedio simple daría ${fm(ms)}: la diferencia la ponen los créditos.`}` },
+          ],
+          respuesta: [sub(xb, 'p'), ` = ${fm(p)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -426,6 +617,14 @@
     titulo: 'Cortar los datos en cuartos',
     temas: ['Cuartiles y percentiles'],
     pieza: 'recta',
+    lee: {
+      tarjetas: [
+        { titulo: 'El cuarto de arriba', texto: 'Tras un examen de admisión, alguien puede decirte: «quedaste en el cuarto de arriba». Para saberlo, se ordenan todos los puntajes y se parten en cuatro grupos con la misma cantidad de postulantes.' },
+        { titulo: 'Tres cortes', texto: 'Para partir en cuatro hacen falta tres cortes: los cuartiles Q1, Q2 y Q3. El del medio, Q2, ya lo conoces con otro nombre de la idea anterior.' },
+        { titulo: 'Cien grupos', texto: 'Si en vez de cuatro grupos se hacen cien, los cortes se llaman percentiles. «Estás en el percentil 80» quiere decir que el 80 % de los puntajes quedó debajo del tuyo.' },
+        { titulo: 'Qué mirar', texto: 'Los datos naranjas ya están ordenados en la recta y los cuartiles salen en rojo. Al jugar, toma más o menos datos de la lista y cuenta cuántos quedan entre dos cortes.' },
+      ],
+    },
     juega: {
       consigna: 'Elige cuántos datos se toman de la lista. Mira dónde caen los tres cuartiles: cortan los datos ordenados en cuatro partes.',
       voz: 'Cuenta cuántos datos quedan entre dos cuartiles.',
@@ -468,6 +667,30 @@
       ecuacion: [sub('Q', 'k'), ' en ', { llave: [{ frac: [['k (n + 1)'], '4'] }], nota: 'posición, no valor', color: 'c-h' }, '   ·   ', sub('P', 'k'), ' en ', { frac: [['k (n + 1)'], '100'] }],
       condicion: 'hay varias convenciones; esta unidad usa (n + 1). Si la posición cae entre dos datos, se interpola entre ellos.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = r.de([7, 11, 15]);
+        const xs = []; let v = r.ent(1, 5);
+        for (let k = 0; k < n; k++) { xs.push(v); v += r.ent(1, 4); }
+        const k = s % 2 ? 3 : 1, pos = k * (n + 1) / 4, val = cuartil(xs, k);
+        const max = Math.ceil((Math.max(...xs) + 1) / 5) * 5;
+        return {
+          enunciado: `Datos ordenados: ${xs.join(', ')}. Con la posición k(n + 1)/4, ¿cuánto vale Q${k}?`,
+          dibujo: { datos: Object.assign(rectaCuartiles(xs, { sin: true }), { max }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', sub('Q', String(k)), `: el corte que deja debajo ${k === 1 ? 'la cuarta parte' : 'tres cuartas partes'} de los datos.`] },
+            { tipo: 'datos', texto: `Son n = ${n} datos, ya ordenados de menor a mayor, y k = ${k}.` },
+            { tipo: 'regla', texto: 'Primero hallo el lugar del cuartil en la lista ordenada; después leo qué dato está en ese lugar. El lugar no es la respuesta.',
+              ecuacion: ['lugar = ', { frac: [['k (n + 1)'], '4'] }] },
+            { tipo: 'cuentas', texto: `Cuento ${fm(pos)} lugares desde el menor: ahí está el ${fm(val)}.`,
+              ecuacion: ['lugar = ', { frac: [`${k} · (${n} + 1)`, '4'] }, ` = ${fm(pos)}   →   `, sub('Q', String(k)), ` = ${fm(val)}`],
+              dibujo: { datos: Object.assign(rectaCuartiles(xs), { max }), estado: {} } },
+            { tipo: 'sentido', texto: `${fm(val)} es un dato de la lista. Antes de él hay ${fm(pos - 1)} datos y después ${fm(n - pos)}: es el corte de ${k === 1 ? 'abajo' : 'arriba'}.` },
+          ],
+          respuesta: [sub('Q', String(k)), ` = ${fm(val)}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), n = r.de([7, 11, 15]);
@@ -504,6 +727,13 @@
     titulo: 'Qué tan lejos de la media',
     temas: ['Varianza, desviación estándar y coeficiente de variación'],
     pieza: 'recta',
+    lee: {
+      tarjetas: [
+        { titulo: 'Mismo promedio', texto: 'Dos salones de Puno tienen promedio 14. En uno, casi todos sacaron entre 13 y 15; en el otro hay notas de 6 y de 20. El promedio es el mismo, pero los salones no se parecen.' },
+        { titulo: 'Dispersión', texto: 'Cuánto se separan los datos de su centro se llama dispersión. Para medirla, se mira la distancia de cada dato a la media: si todas son cortas, los datos están juntos.' },
+        { titulo: 'Qué mirar', texto: 'Los puntos naranjas son los datos, el verde es la media y las cotas turquesa marcan cuánto se aleja cada dato. Al jugar, abre la separación a y mira la lectura mientras la media se queda en 10.' },
+      ],
+    },
     juega: {
       consigna: 'Cuatro datos con media 10: 10 − a, 10 − a/2, 10 + a/2 y 10 + a. Abre o cierra la separación a.',
       voz: 'La media no se mueve. ¿Qué cambia?',
@@ -543,6 +773,45 @@
       texto: 'La varianza promedia los cuadrados de las distancias a la media; la desviación estándar es su raíz. El coeficiente de variación (CV) compara la dispersión con la media.',
       ecuacion: ['σ² = ', { llave: [{ frac: [['Σ', { sup: [['(', x, ' − ', xb, ')'], '2'] }], 'N'] }], nota: 'promedio de cuadrados', color: 'c-i' }, '   ·   ', 'σ = ', { raiz: 'σ²' }, '   ·   ', 'CV = ', { frac: ['σ', xb] }],
       condicion: 'para toda la población se divide entre N; para una muestra, entre n − 1. El CV pide media positiva.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), m = r.ent(4, 12), d = [r.ent(1, 4), r.ent(1, 4)];
+        const xs = [m - d[0], m + d[0], m - d[1], m + d[1], m].slice(0, s % 2 ? 4 : 5), n = xs.length;
+        const muestral = s % 3 === 1, pob = varianza(xs), mu = varianza(xs, true);
+        const desv = xs.map(v => v - m), cuad = desv.map(e => e * e), sc = suma(cuad);
+        const conSigno = desv.map((e, i) => (i === 0 ? fm(e) : e < 0 ? `− ${fm(-e)}` : `+ ${fm(e)}`)).join(' ');
+        const dibujo = { datos: rectaDispersion(xs), estado: {} }, conCotas = { datos: rectaDispersion(xs, { distancias: true }), estado: { corte: 1 } };
+        if (s % 5 === 4) {
+          const sg = Math.sqrt(pob), cv = sg / m;
+          return {
+            enunciado: `Para la población ${xs.join(', ')} (media ${m}), σ = ${fm(sg)}. ¿Cuál es el coeficiente de variación?`,
+            dibujo,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el coeficiente de variación: qué tan grande es σ comparada con la media.' },
+              { tipo: 'datos', texto: `Son todos los datos, con media ${m}.`, ecuacion: ['σ = ', `${fm(sg)}`, '   ·   ', xb, ` = ${m}`] },
+              { tipo: 'regla', texto: 'Para comparar la dispersión con el tamaño de los datos, divido la desviación estándar entre la media.', ecuacion: ['CV = ', { frac: ['σ', xb] }] },
+              { tipo: 'cuentas', texto: `Divido ${fm(sg)} entre ${m}.`, ecuacion: [`CV = ${fm(sg)} ÷ ${m}${igual(cv, 3)}${fm(cv, 3)}`], dibujo: conCotas },
+              { tipo: 'sentido', texto: `De vuelta: ${fm(cv, 3)} · ${m} ≈ ${fm(cv * m)}, la σ. O sea, σ es el ${fm(100 * cv, 1)} % de la media.` },
+            ],
+            respuesta: `CV${igual(cv, 3)}${fm(cv, 3)}`,
+          };
+        }
+        const bien = muestral ? mu : pob, den = n - (muestral ? 1 : 0);
+        return {
+          enunciado: `${muestral ? 'Una muestra' : 'Toda la población'}: ${xs.join(', ')}, con media ${m}. ¿Cuál es su varianza ${muestral ? 'muestral' : 'poblacional'}?`,
+          dibujo,
+          pasos: [
+            { tipo: 'pide', texto: `Piden la varianza ${muestral ? 'muestral: los datos son solo una parte del grupo' : 'poblacional: están todos los datos del grupo'}.` },
+            { tipo: 'datos', texto: `Son ${n} datos con media ${m}.`, ecuacion: [x, `: ${xs.join(', ')}`, '   ·   ', xb, ` = ${m}`] },
+            { tipo: 'regla', texto: `Mido cuánto se aleja cada dato de la media, elevo esas distancias al cuadrado y las promedio, dividiendo entre ${muestral ? 'n − 1 porque es una muestra' : 'N porque son todos'}.` },
+            { tipo: 'cuentas', texto: `Distancias: ${desv.map(e => fm(Math.abs(e))).join(', ')}. Sus cuadrados suman ${fm(sc)}, y divido entre ${den}.`,
+              ecuacion: [{ frac: [cuad.map(c => fm(c)).join(' + '), String(den)] }, ' = ', { frac: [fm(sc), String(den)] }, `${igual(bien)}${fm(bien)}`], dibujo: conCotas },
+            { tipo: 'sentido', texto: `Con signo, las distancias se anulan: ${conSigno} = 0. Por eso se usan los cuadrados. La varianza sale en unidades al cuadrado.` },
+          ],
+          respuesta: `La varianza ${muestral ? 'muestral' : 'poblacional'} es${igual(bien) === ' = ' ? ' ' : ' ≈ '}${fm(bien)}`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -630,12 +899,12 @@
       dibujo: v => ({ datos: barrasLab(v), estado: {} }),
       lectura: v => { const n = suma([0, 1, 2, 3].map(k => v[`f${k}`])); return [`n = ${n}: ${angulosLab(v).map(a => `${fm(a, 0)}°`).join(', ')}`]; },
       invitaciones: [
-        { texto: 'Haz que combi ocupe justo medio círculo: 180°.',
+        { texto: 'Haz que el ángulo de combi en la lectura sea 180°.',
           logrado: v => Math.abs(angulosLab(v)[0] - 180) < 1e-9,
           bien: 'Medio círculo es la mitad de los alumnos: combi iguala a los otros tres juntos.' },
-        { texto: 'Consigue que las cuatro tajadas midan 90°.',
+        { texto: 'Consigue que los cuatro ángulos de la lectura midan 90°.',
           logrado: v => angulosLab(v).every(a => Math.abs(a - 90) < 1e-9),
-          bien: 'Barras iguales, tajadas iguales: cada una es la cuarta parte del total.' },
+          bien: 'Barras iguales, ángulos iguales: cada una es la cuarta parte del total.' },
         { texto: 'Haz que una barra sea el triple de otra y mira sus ángulos.',
           logrado: v => { const fs = [0, 1, 2, 3].map(k => v[`f${k}`]); return fs.some(a => fs.some(b => a === 3 * b)); },
           bien: 'El triple de alumnos da el triple de grados: el ángulo es proporcional.' },

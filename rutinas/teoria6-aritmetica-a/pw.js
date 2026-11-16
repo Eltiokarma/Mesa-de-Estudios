@@ -42,12 +42,12 @@ const ok = (cond, txt) => { console.log(`${cond ? 'ok ' : 'MAL'} ${txt}`); if (!
   ok(await p.$$eval('.te-lee-t', e => e.length) === nT, `${nT} tarjetas`);
   await foto(p, 'lee-1');
   for (let k = 1; k < nT; k++) {
-    await p.click('.te-sig'); await espera(700);
+    await p.click('.te-sig'); await espera(1200);
     const on = await p.$$eval('.te-lee-puntos span', es => es.findIndex(e => e.classList.contains('on')));
     ok(on === k, `botón pasa a la tarjeta ${k + 1} (punto ${on + 1})`);
   }
-  await foto(p, 'lee-fin');
   ok(/Juega/.test(await p.textContent('.te-sig')), 'en la última tarjeta el botón dice «Juega»');
+  await foto(p, 'lee-fin');   // después: la captura de página completa mueve el carrusel
   await p.click('.te-lee-saltar'); await espera(800);
   const t2 = await p.$eval('.te-zona h3', e => e.textContent).catch(() => '');
   ok(/Juega/i.test(t2) || !!(await p.$('.te-control, .te-controles, input[type=range]')), `«Ir directo a jugar» salta al juego (${t2.trim()})`);
