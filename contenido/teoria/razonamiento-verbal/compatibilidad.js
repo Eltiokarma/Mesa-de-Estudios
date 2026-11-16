@@ -48,6 +48,15 @@
     { id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: frs.map((t, k) => ({ id: `o${k + 1}`, t })) },
     { id: 'a', titulo: 'Afirmación', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: af }] },
   ] });
+  // Azar con semilla (el mismo de aritmetica/razones-y-proporciones.js): «Así se resuelve» elige con azar(s + 900).
+  // El primer valor de semillas seguidas cae casi siempre en el mismo tramo: se descarta para que salgan todos los ítems.
+  function azar(s) {
+    let q = (s * 2654435761 + 12345) >>> 0;
+    const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+    return r;
+  }
+  const elegir = (banco, s) => { const r = azar(s + 900); r(); return { b: banco[Math.floor(r() * banco.length)], r }; };
+  const COLOR = { Compatible: resp, Incompatible: contra, 'No se puede saber': nose };
   const CASILLA = { dice: ['Lo dice', 'i'], deduce: ['Se deduce', 'i'], contradice: ['Lo contradice', 'h'], contraImpl: ['Lo contradice (deduciendo)', 'h'], nose: ['No se puede saber', 'd'] };
 
   // ---------- Idea 1: cuatro casillas para cada afirmación ----------
@@ -75,11 +84,44 @@
     if (!decide(k, f)) return [nose(`La ${n} no habla de esto`), ' · busca otra'];
     return [corto(c[1] === 'h' ? contra : resp, AF[k].por)];
   }
+  // Banco de «Así se resuelve» (propio, distinto del de «Ahora tú»): texto, afirmación, casilla, frases que deciden
+  // y el razonamiento de cada paso.
+  const RES_CASILLA = [
+    { o: ['Todas las combis de la línea 12 pasan por el puente.', 'La combi de Iván es de la línea 12.'], a: 'La combi de Iván no pasa por el puente.',
+      ok: 'Incompatible', marcas: { o1: 'h', o2: 'h' }, por: 'las dos frases juntas la descartan.',
+      datos: 'Dos frases: una regla para todas las combis de la línea 12 y el dato de que la de Iván es una de ellas.',
+      aplica: 'Si todas pasan por el puente y la de Iván es de esa línea, la suya pasa. La afirmación dice lo contrario: choca.',
+      sentido: '¿Y si no se pudiera saber? Sí se puede: ninguna frase sola lo decide, pero las dos juntas no dejan otra salida.' },
+    { o: ['El concurso de danzas fue en febrero.', 'Llovió toda la mañana del concurso.'], a: 'Ese día hubo más público que el año pasado.',
+      ok: 'No se puede saber', marcas: { o1: 'd', o2: 'd' }, por: 'el texto no habla del público.',
+      datos: 'Dos frases: cuándo fue el concurso y qué tiempo hizo. Ninguna menciona al público ni al año pasado.',
+      aplica: 'Busco una frase sobre el público y no la hay. La lluvia hace pensar en poca gente, pero eso no lo dice ni lo niega.',
+      sentido: '¿Y si fuera incompatible? Para eso, el texto tendría que decir que hubo menos gente. Que no lo mencione no lo contradice.' },
+    { o: ['Algunas alumnas del taller tocan zampoña.'], a: 'Ninguna alumna del taller toca zampoña.',
+      ok: 'Incompatible', marcas: { o1: 'h' }, por: '«algunas sí» y «ninguna» no pueden ser verdad juntas.',
+      datos: 'Una frase con un cuantificador: «algunas». La afirmación habla de las mismas alumnas, pero con «ninguna».',
+      aplica: 'Si al menos una toca zampoña, es falso que ninguna la toque. La frase y la afirmación no pueden ser verdad a la vez: choca.',
+      sentido: '¿Y si no se pudiera saber? «Algunas» deja abierto si son todas, pero no si es ninguna: eso sí lo decide.' },
+    { o: ['La carrera de la feria empezó a las 8.', 'Ana llegó a la meta dos horas después de la partida.'], a: 'Ana llegó a la meta a las 10.',
+      ok: 'Compatible', marcas: { o1: 'i', o2: 'i' }, por: 'se deduce sumando las horas de las dos frases.',
+      datos: 'Dos frases: la hora de partida, las 8, y cuánto tardó Ana, dos horas. La afirmación da una hora de llegada.',
+      aplica: 'Uno las dos frases: 8 más 2 son 10. La afirmación sale del texto, aunque ninguna frase la diga así.',
+      sentido: '¿Y si no se pudiera saber? El texto no escribe «a las 10», pero lo obliga. Deducir también cuenta como compatible.' },
+  ];
   const casillas = {
     id: 'cuatro-casillas',
     titulo: 'Dice, deduce, contradice o no sabe',
     temas: ['Compatibilidad explícita e implícita', 'Incompatibilidad explícita e implícita'],
     pieza: 'rv-texto',
+    // Lee (fase 2): compatible e incompatible, las casillas y qué mirar. No dice qué pasa con «al menos uno» frente a
+    // «todas» (eso lo descubre en Predice, con las aves).
+    lee: {
+      tarjetas: [
+        { titulo: 'Pueden ir juntas', texto: 'Dos afirmaciones son compatibles si pueden ser verdad a la vez, como «hoy hay feria» y «hoy es domingo». Son incompatibles si una descarta a la otra: «Juan está ahora en Juliaca» y «Juan está ahora en Lima».' },
+        { titulo: 'Las casillas', texto: 'Frente a un texto, una afirmación puede estar dicha con sus palabras, salir uniendo frases, chocar con lo que dice o quedar sin decidir. En el juego, cada una de esas casillas tiene su sello.' },
+        { titulo: 'Qué mirar', texto: 'El texto del juego habla de la luz en Ccota. Lleva el círculo turquesa a cada frase y busca la que decide la afirmación. Fíjate en los años que menciona cada frase.' },
+      ],
+    },
     juega: {
       consigna: 'Pon cada afirmación junto al texto de Ccota. Mira qué frase la decide y en qué casilla cae.',
       voz: 'No mencionar algo no es contradecirlo.',
@@ -118,6 +160,28 @@
       ecuacion: [{ llave: [resp('dice | deduce')], nota: 'compatible', color: 'c-i' }, '   ·   ', { llave: [contra('contradice')], nota: 'incompatible', color: 'c-h' }, '   ·   ', nose('no se sabe')],
       condicion: 'se compara sujeto, tiempo y cuantificador (todos, algunos, ninguno); lo no mencionado no es incompatible.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (compatible, incompatible o no se sabe), con un banco propio
+    // para no regalar sus casos. Los pasos se arman con los campos de cada ítem.
+    resuelve: {
+      pieza: 'rv-texto',
+      generar(s) {
+        const { b } = elegir(RES_CASILLA, s), col = COLOR[b.ok];
+        const a1 = { Compatible: 'o', Incompatible: 'h', 'No se puede saber': 'o' }[b.ok], sello = { Compatible: 'i', Incompatible: 'h', 'No se puede saber': 'd' }[b.ok];
+        return {
+          enunciado: `¿La afirmación «${b.a.replace(/\.$/, '')}» es compatible con el texto, incompatible o no se puede saber?`,
+          dibujo: { datos: figura(b.o, b.a), estado: { marcas: { a1: 'o' } } },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la casilla de la afirmación: ', resp('compatible'), ', ', contra('incompatible'), ' o ', nose('no se puede saber'), '.'] },
+            { tipo: 'datos', texto: b.datos },
+            { tipo: 'regla', texto: 'Busco la frase que habla de lo mismo. Si la afirmación sale del texto, es compatible; si choca con él, incompatible; si nada la decide, no se sabe.' },
+            { tipo: 'aplica', texto: b.aplica, ecuacion: [afir('afirmación'), ' frente al ', resp('texto'), ' → ', col(b.ok.toLowerCase())],
+              dibujo: { datos: figura(b.o, b.a), estado: { marcas: Object.assign({ a1 }, b.marcas), sellos: { a: { t: b.ok, c: sello } }, nuevo: ['a'] } } },
+            { tipo: 'sentido', texto: b.sentido },
+          ],
+          respuesta: [col(b.ok), `: ${b.por}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const B = [
@@ -149,11 +213,33 @@
     frase: { t: 'La bicicleta contamina el aire.', marcas: { o1: 'h' }, sello: ['Choca con la 1', 'h'], dice: 'Choca con una frase, no con todo' },
     nose: { t: 'Las bicicletas son caras en Juliaca.', marcas: {}, sello: ['No se puede saber', 'd'], dice: 'No habla de lo que dice el texto' },
   };
+  // Banco de «Así se resuelve» (propio, distinto del de «Ahora tú»): texto, idea principal y tres afirmaciones (la que
+  // la niega, una compatible y una de otro asunto).
+  const RES_IDEA = [
+    { tema: 'caminar', o: ['Caminar media hora al día fortalece el corazón.', 'También ayuda a dormir mejor.', 'Caminar a diario, entonces, cuida la salud.'],
+      idea: 'caminar a diario cuida la salud', corto: 'no aporta nada', ok: 'Caminar a diario no aporta nada a la salud', comp: 'Caminar ayuda a dormir mejor', nose: 'Muchos prefieren caminar de mañana',
+      datos: 'La 3 trae la idea principal: caminar a diario cuida la salud. La 1 y la 2 dan las razones.' },
+    { tema: 'la totora', o: ['La totora sirve para hacer balsas y casas.', 'También alimenta al ganado de la orilla.', 'Por eso, la totora es valiosa para los pueblos del lago.'],
+      idea: 'la totora es valiosa', corto: 'no tiene valor', ok: 'La totora no tiene valor para los pueblos del lago', comp: 'La totora alimenta al ganado', nose: 'La totora crece más en verano',
+      datos: 'La 3 trae la idea principal: la totora es valiosa para los pueblos del lago. La 1 y la 2 dicen por qué.' },
+    { tema: 'el ahorro', o: ['Ahorrar parte de la propina ayuda a cumplir metas.', 'Además, prepara para gastos inesperados.', 'Ahorrar, por tanto, beneficia a los jóvenes.'],
+      idea: 'ahorrar beneficia a los jóvenes', corto: 'ningún beneficio', ok: 'Ahorrar no trae ningún beneficio a los jóvenes', comp: 'Ahorrar prepara para gastos inesperados', nose: 'Algunos jóvenes ahorran en una alcancía',
+      datos: 'La 3 trae la idea principal: ahorrar beneficia a los jóvenes. La 1 y la 2 son las razones.' },
+  ];
   const ideaPrincipal = {
     id: 'idea-principal',
     titulo: 'Chocar con la idea principal',
     temas: ['Incompatibilidad con la idea principal'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué es la idea principal, cómo aparece en el examen y qué mirar. No dice qué distingue chocar con
+    // la idea principal de chocar con un detalle (eso lo descubre en Predice, con el texto de la lectura).
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que sostiene el texto', texto: 'La idea principal es lo que el texto defiende de principio a fin. Las demás oraciones la apoyan con razones o ejemplos. A veces está escrita en una frase; otras veces hay que armarla.' },
+        { titulo: 'En el examen', texto: 'En la admisión aparece seguido esta pregunta: «Es incompatible con la idea principal…». Antes de mirar las opciones, conviene decir con tus palabras, en una línea, qué sostiene el texto.' },
+        { titulo: 'Qué mirar', texto: 'En el juego hay tres afirmaciones y un texto sobre la bicicleta. Lleva el círculo turquesa por cada oración y cuenta con cuántas choca cada afirmación.' },
+      ],
+    },
     juega: {
       consigna: 'Prueba tres afirmaciones con el texto de la bicicleta. Mira si chocan con una frase o con la idea de todo el texto.',
       voz: 'La idea principal se lee en el conjunto.',
@@ -197,6 +283,34 @@
       texto: 'Una afirmación es incompatible con la idea principal si niega lo que sostiene el texto completo, no solo un detalle. Para verlo, primero se reconstruye la idea principal.',
       ecuacion: [{ llave: [contra('afirmación')], nota: 'niega todo', color: 'c-h' }, ' ≠ ', { llave: [resp('idea principal')], nota: 'lo que sostiene', color: 'c-i' }],
       condicion: 'la afirmación habla del mismo asunto que la idea principal; si habla de otra cosa, no se puede saber.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (qué afirmación choca con la idea principal), con un banco
+    // propio. Las tres afirmaciones van en la figura, en un orden que cambia con la semilla.
+    resuelve: {
+      pieza: 'rv-texto',
+      generar(s) {
+        const { b, r } = elegir(RES_IDEA, s), orden = [['ok', b.ok], ['comp', b.comp], ['nose', b.nose]];
+        for (let i = orden.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [orden[i], orden[j]] = [orden[j], orden[i]]; }
+        const x = k => `x${orden.findIndex(([c]) => c === k) + 1}`;
+        const fig = estado => ({ datos: { secciones: [
+          { id: 'o', titulo: 'Texto', modo: 'lista', fragmentos: b.o.map((t, k) => ({ id: `o${k + 1}`, t })) },
+          { id: 'x', titulo: 'Afirmaciones', modo: 'lista', fragmentos: orden.map(([, t], k) => ({ id: `x${k + 1}`, t: `${t}.` })) },
+        ] }, estado });
+        return {
+          enunciado: `Lee el texto sobre ${b.tema}. ¿Cuál de las tres afirmaciones es incompatible con su idea principal?`,
+          dibujo: fig({}),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden una de las tres afirmaciones: la que ', contra('choca'), ' con la ', resp('idea principal'), ` del texto sobre ${b.tema}.`] },
+            { tipo: 'datos', texto: b.datos, ecuacion: [resp('idea principal'), `: ${b.idea}`], dibujo: fig({ marcas: { o1: 'i', o2: 'i', o3: 'i' } }) },
+            { tipo: 'regla', texto: 'Primero armo la idea principal. Choca con ella la afirmación que la niega entera; repetir un detalle o hablar de otra cosa no la contradice.' },
+            { tipo: 'aplica', texto: `«${b.ok}» niega la idea principal y sus razones a la vez: choca con todo el texto.`,
+              ecuacion: [contra(b.corto), ' ≠ ', resp(b.idea)],
+              dibujo: fig({ marcas: { o1: 'h', o2: 'h', o3: 'h', [x('ok')]: 'h', [x('comp')]: 'd', [x('nose')]: 'd' }, sellos: { x: { t: 'Choca con la idea principal', c: 'h' } }, nuevo: ['x'] }) },
+            { tipo: 'sentido', texto: `¿Y las otras? «${b.comp}» repite el texto: es compatible. «${b.nose}» trata otro asunto: no se sabe.` },
+          ],
+          respuesta: [contra(b.ok)],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -245,7 +359,7 @@
   const figCuantAf = av => ({ secciones: figCuant().secciones.concat([{ id: 'a', titulo: 'Afirmación', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: CUANT.find(q => q.valor === av).frase }] }]) });
   const mesaCuant = {
     id: 'cuantificadores', titulo: 'Todas, alguna, ninguna', pieza: 'rv-texto',
-    consigna: 'Arrastra el marcador a lo que dice el texto y elige la afirmación. Mira en qué casilla cae cada par.',
+    consigna: 'Arrastra el círculo turquesa a lo que dice el texto y elige la afirmación. Mira en qué casilla cae cada par.',
     voz: '«Al menos una» deja abierto si son todas.',
     controles: [
       { id: 't', etiqueta: 'Texto', opciones: CUANT.map(q => ({ valor: q.valor, texto: q.texto })) },
