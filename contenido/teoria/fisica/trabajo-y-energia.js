@@ -97,14 +97,26 @@
   };
   // Lectura del trabajo con el ángulo que se ve rotulado (entero), para que cos θ y W cuadren con la figura.
   const leerW = (Fv, ang) => { const A = Math.round(ang); return `W = ${f(Fv, 0)} · 5 · cos ${A}° = ${f(Fv * 5 * Math.cos(rad(A)), 1)} J`; };
+  // Caso de «Ahora tú» y de «Así se resuelve» (la misma cuenta): ángulos notables con su coseno y seno de tabla.
+  const COS1 = { 0: 1, 37: 0.8, 53: 0.6, 60: 0.5, 90: 0, 120: -0.5, 180: -1 }, SEN1 = { 0: 0, 37: 0.6, 53: 0.8, 60: Math.sqrt(3) / 2, 90: 1, 120: Math.sqrt(3) / 2, 180: 0 };
+  const casoTrabajo = r => { const Fv = r.de([10, 20, 25, 40, 50]), dd = r.de([2, 3, 4, 5, 10]), ang = r.de([0, 37, 53, 60, 90, 120, 180]); return { Fv, dd, ang, W: Fv * dd * COS1[ang] }; };
   const trabajo = {
     id: 'trabajo-y-angulo',
     titulo: 'Solo trabaja lo que acompaña',
     temas: ['Trabajo de fuerzas constantes y variables'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): contexto, el joule y qué mirar. No dice cuánto trabaja una fuerza perpendicular (la de «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Trabajo no es cansancio', texto: 'En la vida diaria, trabajo es esfuerzo: empujar una carretilla de papas en la feria de Juliaca. En física la palabra es más estrecha: mide lo que una fuerza aporta mientras el cuerpo avanza.' },
+        { titulo: 'Se mide en joules', texto: ['El trabajo se mide en joules (J). Un joule es lo que aporta una fuerza de 1 N que empuja a lo largo de 1 m, en el mismo sentido del avance.'],
+          ecuacion: ['1 J = 1 N · 1 m'] },
+        { titulo: 'Qué mirar', texto: ['En el juego, la flecha ', F, ' gira sola alrededor de la caja. La flecha punteada es la parte de la fuerza que va a lo largo del camino. Mira su largo mientras gira.'] },
+      ],
+    },
     juega: {
-      consigna: 'Una cuerda jala una caja con 20 N por 5 m y gira sola. Mira la parte punteada: la que acompaña al avance.',
-      voz: 'Mira qué pasa al cruzar 90°. ¿Cuánto ayuda la cuerda al avance?',
+      consigna: 'Una fuerza de 20 N jala la caja mientras avanza 5 m, y gira sola. Mira la parte punteada: la que acompaña al avance.',
+      voz: 'Mira qué pasa al cruzar 90°. ¿Cuánto ayuda la fuerza al avance?',
       // Animación: el ángulo barre de 0° a 180° y vuelve (30° por segundo); W = F d cos θ se recalcula en cada cuadro.
       controles: [{ id: 'ang', etiqueta: 'Ángulo', min: 0, max: 180, paso: 30, inicio: 30, unidad: '°', decimales: 0, auto: { velocidad: 30, modo: 'rebota' } }],
       dibujo: val => ({ datos: jalar(val.ang, { comp: 0 }), estado: {} }),
@@ -116,10 +128,10 @@
         mover: (pt, val) => ({ ang: anguloDe(pt, val.ang, 20).th }) }],
     },
     predice: {
-      pregunta: 'Caminas 10 m en horizontal, a velocidad constante, sosteniendo una mochila de 50 N. ¿Cuánto trabajo hace sobre la mochila la fuerza hacia arriba de tu mano?',
+      pregunta: 'Una caja de 50 N avanza 10 m en horizontal, a velocidad constante, sostenida por una fuerza vertical hacia arriba. ¿Cuánto trabajo hace esa fuerza sobre la caja?',
       opciones: [
         { id: 'c', texto: '0 J', correcta: true },
-        { id: 'todo', texto: '500 J', error: 'TR-PERP', siFuera: 'Sería cierto si la subieras 10 m. Tu fuerza es vertical y el camino horizontal.' },
+        { id: 'todo', texto: '500 J', error: 'TR-PERP', siFuera: 'Sería cierto si la caja subiera 10 m. La fuerza es vertical y el camino, horizontal.' },
         { id: 'neg', texto: '−500 J', error: 'TR-SIGNO', siFuera: 'Negativo sería si la fuerza fuera contra el avance. Aquí es perpendicular.' },
       ],
       dibujo: { datos: jalar(90, { alt: 'Caja que avanza 5 m con una fuerza vertical hacia arriba.' }), estado: {} },
@@ -147,11 +159,32 @@
       ecuacion: ['W = ', { llave: [F, ' cos θ'], nota: 'parte que acompaña', color: 'c-o' }, ' ', d, '   ·   ', 'W = área bajo ', F, '–', x],
       condicion: 'θ es el ángulo entre F y el desplazamiento. Contra el avance (θ > 90°), el trabajo es negativo.',
     },
+    // Así se resuelve: el trabajo de una fuerza inclinada, calculado igual que «Ahora tú» (casoTrabajo: W = F d cos θ
+    // con el coseno de tabla de los ángulos notables).
+    resuelve: {
+      generar(sm) {
+        const { Fv, dd, ang, W } = casoTrabajo(azar(sm + 900)), c = COS1[ang], tope = Fv * dd;
+        const sentido = W > 0 ? `Sale positivo: la fuerza va a favor del avance. Y no pasa de F · d = ${f(tope, 2)} J, el caso de la fuerza justo a lo largo del camino.`
+          : W < 0 ? `Sale negativo: con más de 90°, la fuerza va contra el avance y lo frena. Su tamaño no pasa de F · d = ${f(tope, 2)} J.`
+            : 'Sale cero: la fuerza es perpendicular al avance y no tiene parte a lo largo del camino. N · m da J.';
+        return {
+          enunciado: ['Una fuerza ', F, ` = ${Fv} N actúa sobre una caja que avanza `, d, ` = ${dd} m. El ángulo entre la fuerza y el avance es ${ang}°. ¿Cuánto trabajo hace?`],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el trabajo W de esa fuerza: cuánto aporta al avance de la caja, con su signo.' },
+            { tipo: 'datos', texto: [F, ` = ${Fv} N, `, d, ` = ${dd} m y ${ang}° entre la fuerza y el avance.`] },
+            { tipo: 'regla', texto: 'Solo cuenta la parte de la fuerza que va a lo largo del camino: la fuerza por el coseno del ángulo. Esa parte se multiplica por la distancia.',
+              ecuacion: ['W = ', F, ' cos θ · ', d] },
+            { tipo: 'cuentas', texto: `El coseno de ${ang}° es ${f(c, 2)}: la parte que acompaña al avance es ${f(Fv * c, 2)} N.`,
+              ecuacion: [`W = ${Fv} · ${c < 0 ? `(${f(c, 2)})` : f(c, 2)} · ${dd} = ${f(W, 2)} J`] },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: `W = ${f(W, 2)} J`,
+        };
+      },
+    },
     ahoraTu: {
       generar(sm) {
-        const r = azar(sm), Fv = r.de([10, 20, 25, 40, 50]), dd = r.de([2, 3, 4, 5, 10]), ang = r.de([0, 37, 53, 60, 90, 120, 180]);
-        const COS = { 0: 1, 37: 0.8, 53: 0.6, 60: 0.5, 90: 0, 120: -0.5, 180: -1 }, SEN = { 0: 0, 37: 0.6, 53: 0.8, 60: Math.sqrt(3) / 2, 90: 1, 120: Math.sqrt(3) / 2, 180: 0 };
-        const W = Fv * dd * COS[ang];
+        const { Fv, dd, ang, W } = casoTrabajo(azar(sm)), SEN = SEN1;
         return {
           pregunta: ['Una fuerza ', F, ` = ${Fv} N actúa sobre una caja que avanza `, d, ` = ${dd} m. El ángulo entre la fuerza y el avance es ${ang}°. ¿Cuánto trabajo hace?`],
           opciones: opciones(W, [
@@ -171,6 +204,8 @@
   const KJ2 = 0.028; // 80 J (lo más que da el juego) caben en 2,2 m de figura
   // Motor del empujón (lo mismo que dibuja): carrito de 2 kg desde el reposo, W = F d = K.
   const salida = (Fv, dd) => { const W = Fv * dd; return { W, v: Math.sqrt(2 * W / 2) }; };
+  // Caso de «Ahora tú» y de «Así se resuelve» (la misma cuenta): Wneto = ½ m (v² − v₀²).
+  const casoCinetica = r => { const m = r.de([1, 2, 4, 5]), vi = r.de([0, 1, 2, 3, 4]), vf = vi + r.de([1, 2, 3, 4]); return { m, vi, vf, Ki: m * vi * vi / 2, Kf: m * vf * vf / 2, W: m * (vf * vf - vi * vi) / 2 }; };
   // Escalas de la figura: 0,3 m de dibujo por metro recorrido y 2,5 px por newton. La fuerza empuja desde atrás: su
   // punta toca la espalda del carrito (x = −1,3 en la salida).
   const ME2 = 0.3, KF2 = 2.5, ATRAS = -1.3;
@@ -203,6 +238,15 @@
     titulo: 'El trabajo neto se vuelve rapidez',
     temas: ['Teorema trabajo-energía cinética'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): la energía de movimiento, el trabajo neto y qué mirar. No dice cómo crece K con la rapidez
+    // (lo que pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Energía de movimiento', texto: ['Todo lo que se mueve lleva energía cinética ', K, ': una combi en la avenida, una piedra que rueda cerro abajo. Si se detiene, esa energía se fue a otra parte, como al calor de los frenos.'] },
+        { titulo: 'Varias fuerzas a la vez', texto: 'Sobre un cuerpo suelen actuar varias fuerzas. El trabajo neto suma lo que aporta cada una, con su signo: lo que una empuja a favor y otra frena se compensa.' },
+        { titulo: 'Qué mirar', texto: ['En el juego, el carrito parte del reposo. Hay dos barras: el trabajo W y la energía cinética ', K, '. Compáralas mientras avanza, y fíjate en la rapidez que se lee arriba.'] },
+      ],
+    },
     juega: {
       consigna: 'Un carrito de 2 kg parte del reposo sin rozamiento. Avanza solo, punto a punto: mira crecer W y K con cada metro empujado.',
       voz: 'Busca dos maneras de darle la misma rapidez.',
@@ -251,10 +295,29 @@
       ecuacion: [{ sub: ['W', 'neto'] }, ' = ', { llave: ['Δ', K], nota: 'cambio de cinética', color: 'c-h' }, '   ·   ', 'Δ', K, ' = ½ m ', { sup: ['v', '2'] }, ' − ½ m ', { sup: [v0, '2'] }],
       condicion: 'W es el trabajo de todas las fuerzas sobre el cuerpo (la neta), no el de una sola.',
     },
+    // Así se resuelve: el trabajo neto que cambia la rapidez, calculado igual que «Ahora tú» (casoCinetica:
+    // Wneto = K − K₀).
+    resuelve: {
+      generar(sm) {
+        const { m, vi, vf, Ki, Kf, W } = casoCinetica(azar(sm + 900)), Wn = { sub: ['W', 'neto'] };
+        return {
+          enunciado: `Un carrito de ${m} kg pasa de ${vi} m/s a ${vf} m/s. ¿Cuánto trabajo neto se hizo sobre él?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el trabajo neto: lo que todas las fuerzas juntas aportaron para cambiar su rapidez.' },
+            { tipo: 'datos', texto: `La masa es ${m} kg; la rapidez inicial, ${vi} m/s, y la final, ${vf} m/s.` },
+            { tipo: 'regla', texto: 'El trabajo neto es lo que cambió la energía cinética: la del final menos la del inicio.',
+              ecuacion: [Wn, ' = ', K, ' − ', K0] },
+            { tipo: 'cuentas', texto: vi === 0 ? 'Parte del reposo: al inicio no tiene energía cinética. Calculo la del final.' : 'Calculo las dos energías cinéticas y las resto.',
+              ecuacion: [K0, ` = ½ · ${m} · `, { sup: [`${vi}`, '2'] }, ` = ${f(Ki, 2)} J   ·   `, K, ` = ½ · ${m} · `, { sup: [`${vf}`, '2'] }, ` = ${f(Kf, 2)} J   ·   `, Wn, ` = ${f(Kf, 2)} − ${f(Ki, 2)} = ${f(W, 2)} J`] },
+            { tipo: 'sentido', texto: 'Sale positivo: el carrito ganó rapidez, así que en total las fuerzas lo ayudaron. Y kg · (m/s)² es un joule.' },
+          ],
+          respuesta: [Wn, ` = ${f(W, 2)} J`],
+        };
+      },
+    },
     ahoraTu: {
       generar(sm) {
-        const r = azar(sm), m = r.de([1, 2, 4, 5]), v0 = r.de([0, 1, 2, 3, 4]), vv = v0 + r.de([1, 2, 3, 4]);
-        const W = m * (vv * vv - v0 * v0) / 2;
+        const { m, vi: v0, vf: vv, W } = casoCinetica(azar(sm));
         return {
           pregunta: `Un carrito de ${m} kg pasa de ${v0} m/s a ${vv} m/s. ¿Cuánto trabajo neto se hizo sobre él?`,
           opciones: opciones(W, [
@@ -279,13 +342,28 @@
     areas: xv > 0 ? [{ puntos: [[0, 0], [xv, K3 * xv]], color: 'd', rotulo: o.sinRot ? undefined : `${f(K3 * xv * xv / 2, 1)} J` }] : [],
     puntos: xv > 0 ? [{ x: xv, y: K3 * xv, color: 'o', guias: true }] : [],
   });
+  // Casos de «Ahora tú» y de «Así se resuelve» (la misma cuenta): el resorte (Ue = ½kx²) y la caja sobre la mesa
+  // (Ug = mg(h₁ − h₀), con la mesa de referencia).
+  const casoResorte = r => { const k = r.de([100, 200, 400, 500, 800]), xv = r.de([0.1, 0.2, 0.3, 0.05]); return { k, xv, E: k * xv * xv / 2 }; };
+  const casoAltura = r => { const m = r.de([2, 3, 5, 10]), h1 = r.de([2, 4, 5, 8]), h0 = r.de([1, 0.5]); return { m, h1, h0, E: m * G * (h1 - h0) }; };
   const potencial = {
     id: 'energia-potencial',
     titulo: 'Energía guardada en la posición',
     temas: ['Energía potencial gravitatoria y elástica'],
     pieza: 'ejes',
+    // Lee (fase 2): energía guardada, la constante k y la referencia, y qué mirar. No dice cómo crece la energía del
+    // resorte con x (lo que pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Energía guardada', texto: 'Una honda estirada, el resorte de un colchón, una piedra en lo alto de un cerro: todos pueden soltar energía más tarde. La que depende de la posición o de la forma se llama energía potencial.' },
+        { titulo: 'Duro o blando', texto: ['Cada resorte tiene su constante elástica k, en N/m: cuántos newtons pide por cada metro que se deforma. El resorte de un amortiguador es duro, de k grande; el de un lapicero, blando.'],
+          ecuacion: [F, ' = k ', x] },
+        { titulo: '¿Altura desde dónde?', texto: ['Para la energía de altura hay que elegir desde dónde se mide ', h, ': el piso, la mesa o el techo. Ese nivel elegido se llama referencia.'] },
+        { titulo: 'Qué mirar', texto: ['En el juego, la recta es la fuerza del resorte contra su compresión ', x, '. El área verde bajo la recta es la energía guardada. Mira su forma y su tamaño cuando ', x, ' crece.'] },
+      ],
+    },
     juega: {
-      consigna: 'Un resorte de k = 200 N/m se comprime y se suelta solo. El área verde bajo la recta es la energía potencial elástica.',
+      consigna: 'Recta F–x de un resorte de k = 200 N/m; la compresión x cambia sola. El área verde es su energía potencial elástica.',
       voz: 'Mira el área cuando x se duplica. ¿Cuántas veces crece?',
       // Animación: la compresión x va y vuelve de 0,05 m a 0,4 m (0,1 m por segundo); Ue = ½ k x² en cada cuadro.
       controles: [{ id: 'x', etiqueta: 'x', color: 'c-i', min: 0.05, max: 0.4, paso: 0.05, inicio: 0.1, unidad: 'm', decimales: 2, auto: { velocidad: 0.1, modo: 'rebota' } }],
@@ -314,13 +392,13 @@
       pieza: 'fis-lienzo',
       datos: {
         vista: { x0: -2.2, x1: 2.2, y0: -0.6, y1: 2.6 }, escalaF: 3,
-        alt: 'Libro de 2 kg sobre una mesa de 1 m: respecto al piso tiene 20 J; respecto a la mesa, 0 J; al caer al piso pierde 20 J con cualquier referencia.',
+        alt: 'Bloque de 2 kg sobre una mesa de 1 m: respecto al piso tiene 20 J; respecto a la mesa, 0 J; al caer al piso pierde 20 J con cualquier referencia.',
         poligonos: [{ puntos: [[-2.1, 0], [2.1, 0]], rayado: true }, { puntos: [[-1.2, 1], [0.6, 1]], grosor: 'variable' }, { puntos: [[-1, 1], [-1, 0]] }, { puntos: [[0.4, 1], [0.4, 0]] }, caja(-0.3, 1, 0.5, 0.25)],
         segmentos: [{ de: [1.2, 0], a: [1.2, 1.12], color: 'i', grosor: 'variable', texto: 'h = 1 m', paso: 1 }, { de: [-2.1, 1], a: [-1.25, 1], discontinua: true, paso: 2 }],
         textos: [{ en: [1.4, 1.75], texto: 'desde el piso: 20 J', color: 'd', paso: 1 }, { en: [-1.1, 2.05], texto: 'desde la mesa: 0 J', color: 'd', paso: 2 }, { en: [0, -0.45], texto: 'al caer al piso pierde 20 J', color: 'd', paso: 3 }],
       },
       pasos: [
-        { estado: { paso: 1 }, texto: 'Energía potencial gravitatoria de un libro de 2 kg a 1 m del piso.', ecuacion: [Ug, ' = m g ', h, ' = 2 · 10 · 1 = 20 J'] },
+        { estado: { paso: 1 }, texto: 'Energía potencial gravitatoria del bloque de 2 kg a 1 m del piso.', ecuacion: [Ug, ' = m g ', h, ' = 2 · 10 · 1 = 20 J'] },
         { estado: { paso: 2 }, texto: 'Si la referencia es la mesa, su altura es 0.', ecuacion: [Ug, ' = 0 J'] },
         { estado: { paso: 3 }, texto: 'Importa el cambio: al caer al piso pierde 20 J con ambas referencias.', ecuacion: ['Δ', Ug, ' = −20 J'] },
       ],
@@ -330,11 +408,48 @@
       ecuacion: [Ug, ' = m g ', { llave: [h], nota: 'sobre la referencia', color: 'c-i' }, '   ·   ', Ue, ' = ½ k ', { sup: [x, '2'] }],
       condicion: 'mgh vale cerca del suelo (g constante); x es la deformación desde el largo natural del resorte.',
     },
+    // Así se resuelve: la energía del resorte o la de la caja sobre la mesa, alternadas como en «Ahora tú» y calculadas
+    // igual (casoResorte y casoAltura).
+    resuelve: {
+      generar(sm) {
+        const r = azar(sm + 900);
+        if (sm % 2 === 0) {
+          const { k, xv, E } = casoResorte(r), Fx = k * xv;
+          return {
+            enunciado: ['Un resorte de k = ', `${k} N/m se comprime `, x, ` = ${f(xv, 2)} m. ¿Cuánta energía guarda?`],
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la energía potencial elástica: la que guarda el resorte mientras está comprimido.' },
+              { tipo: 'datos', texto: ['La constante es k = ', `${k} N/m y la compresión, `, x, ` = ${f(xv, 2)} m.`] },
+              { tipo: 'regla', texto: ['La energía del resorte es el área del triángulo bajo la recta F–x: base ', x, ', altura k', x, ', y la mitad.'],
+                ecuacion: [Ue, ' = ½ k ', { sup: [x, '2'] }] },
+              { tipo: 'cuentas', texto: ['Primero elevo ', x, ' al cuadrado; después multiplico por k y saco la mitad.'],
+                ecuacion: [Ue, ` = ½ · ${k} · `, { sup: [`${f(xv, 2)}`, '2'] }, ` = ½ · ${k} · ${f(xv * xv, 4)} = ${f(E, 3)} J`] },
+              { tipo: 'sentido', texto: ['Al final, la fuerza es k', x, ` = ${f(Fx, 0)} N. La mitad de ${f(Fx, 0)} N por ${f(xv, 2)} m da lo mismo, y N · m es un joule.`] },
+            ],
+            respuesta: [Ue, ` = ${f(E, 3)} J`],
+          };
+        }
+        const { m, h1, h0, E } = casoAltura(r), hh = h1 - h0;
+        return {
+          enunciado: ['Una caja de ', `${m} kg está en un estante a ${h1} m del piso. Si se toma como referencia una mesa de ${f(h0, 1)} m de alto, ¿cuánto vale su energía potencial?`],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la energía potencial gravitatoria de la caja, medida desde la mesa y no desde el piso.' },
+            { tipo: 'datos', texto: `La masa es ${m} kg; la caja está a ${h1} m del piso y la mesa mide ${f(h0, 1)} m. Uso g = 10 m/s².` },
+            { tipo: 'regla', texto: ['La energía de altura es el peso por la altura, y la altura ', h, ' se cuenta desde la referencia elegida.'],
+              ecuacion: [Ug, ' = m g ', h] },
+            { tipo: 'cuentas', texto: ['Sobre la mesa, ', h, ' es la diferencia de alturas; después multiplico.'],
+              ecuacion: [h, ` = ${h1} − ${f(h0, 1)} = ${f(hh, 1)} m   ·   `, Ug, ` = ${m} · 10 · ${f(hh, 1)} = ${f(E, 2)} J`] },
+            { tipo: 'sentido', texto: `Desde el piso serían ${f(m * G * h1, 2)} J: más, porque el piso está más abajo que la mesa. Y kg · m/s² · m es un joule.` },
+          ],
+          respuesta: [Ug, ` = ${f(E, 2)} J`],
+        };
+      },
+    },
     ahoraTu: {
       generar(sm) {
         const r = azar(sm);
         if (sm % 2 === 0) {
-          const k = r.de([100, 200, 400, 500, 800]), xv = r.de([0.1, 0.2, 0.3, 0.05]), E = k * xv * xv / 2;
+          const { k, xv, E } = casoResorte(r);
           return {
             pregunta: ['Un resorte de k = ', `${k} N/m se comprime `, x, ` = ${f(xv, 2)} m. ¿Cuánta energía guarda?`],
             opciones: opciones(E, [
@@ -345,7 +460,7 @@
             solucion: { texto: 'Es el área bajo la recta F–x hasta x.', ecuacion: [Ue, ` = ½ · ${k} · `, { sup: [`${f(xv, 2)}`, '2'] }, ` = ${f(E, 3)} J`] },
           };
         }
-        const m = r.de([2, 3, 5, 10]), h1 = r.de([2, 4, 5, 8]), h0 = r.de([1, 0.5]), E = m * G * (h1 - h0);
+        const { m, h1, h0, E } = casoAltura(r);
         return {
           pregunta: ['Una caja de ', `${m} kg está en un estante a ${h1} m del piso. Si se toma como referencia una mesa de ${f(h0, 1)} m de alto, ¿cuánto vale su energía potencial?`],
           opciones: opciones(E, [
@@ -378,7 +493,7 @@
     const b = barras([{ etq: 'U', val: Uv, color: 'd' }, { etq: 'K', val: Kv, color: 'h' }, { etq: 'calor', val: perd }], 0.9, 0.3, 0.38, KJ4);
     return {
       vista: { x0: -2.2, x1: 2.4, y0: -0.6, y1: 2.6 },
-      alt: o.alt || `Carrito de 2 kg que baja desde ${h0} m ${roce ? 'con rozamiento' : 'sin rozamiento'}: U = ${f(Uv, 0)} J, K = ${f(Kv, 0)} J${roce ? `, calor ${f(perd, 0)} J` : ''}; rapidez ${f(vv, 2)} m/s.`,
+      alt: o.alt || `Bolita de 2 kg que baja desde ${h0} m ${roce ? 'con rozamiento' : 'sin rozamiento'}: U = ${f(Uv, 0)} J, K = ${f(Kv, 0)} J${roce ? `, calor ${f(perd, 0)} J` : ''}; rapidez ${f(vv, 2)} m/s.`,
       poligonos: [{ puntos: curva, grosor: 'contorno', rayado: true }, { puntos: [[0.4, 0], [0.7, 0]], rayado: true }, ...b.pol],
       discos: [{ c: [pos[0], pos[1] + 0.12], r: 0.12 }],
       segmentos: frac === 0 || o.cota ? [{ de: [-2.1, 0], a: [-2.1, h0 * 0.36], color: 'i', grosor: 'variable', texto: `${h0} m`, lado: 1 }] : [],
@@ -386,13 +501,26 @@
     };
   }
   const bolita = (h0, frac) => { const g = LZ(rampa(h0, false, frac)), p = enRampa(h0, frac); return { x: g.X(p[0]), y: g.Y(p[1] + 0.12) }; };
+  // Caso de «Ahora tú» y de «Así se resuelve» (la misma cuenta): v = √(2gh) sin roce; con roce, K = mgh − calor.
+  const casoRampa = r => { const h0 = r.de([1.25, 1.8, 3.2, 5, 7.2, 20, 45]), m = r.de([1, 2, 5]); return { h0, vv: Math.sqrt(2 * G * h0), m }; };
+  const conRoce = (r, m, h0) => { const E = m * G * h0, perd = Math.round(E * r.de([0.2, 0.36, 0.5])); return { E, perd, Kv: E - perd }; };
   const conservacion = {
     id: 'conservacion-energia',
     titulo: 'La suma no cambia sin roce',
     temas: ['Conservación de la energía mecánica'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): la energía mecánica, el calor del rozamiento y qué mirar. No dice de qué depende la rapidez abajo
+    // (lo que pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Altura por rapidez', texto: ['Al bajar del Huajsapata o de cualquier cerro, un cuerpo cambia energía de altura ', U, ' por energía de movimiento ', K, '. La suma de las dos se llama energía mecánica.'],
+          ecuacion: ['energía mecánica = ', K, ' + ', U] },
+        { titulo: 'El rozamiento calienta', texto: 'Frota tus manos rápido: se calientan. El rozamiento hace eso con todo lo que desliza: convierte parte de la energía en calor, y ese calor ya no vuelve a ser rapidez.' },
+        { titulo: 'Qué mirar', texto: ['En el juego, la bolita baja por la rampa y las barras muestran ', U, ', ', K, ' y el calor. Mira la suma ', U, ' + ', K, ' en cada punto, primero sin rozamiento y después con él.'] },
+      ],
+    },
     juega: {
-      consigna: 'Un carrito de 2 kg baja solo por la rampa, punto a punto. Mira cómo U pasa a K. Cambia la altura y el rozamiento.',
+      consigna: 'Una bolita de 2 kg desliza sola por la rampa, punto a punto. Mira cómo U pasa a K. Cambia la altura y el rozamiento.',
       voz: 'Sin roce, mira la suma de U y K en cada punto.',
       controles: [
         { id: 'h', etiqueta: 'h', color: 'c-i', min: 2, max: 5, paso: 1, inicio: 4, unidad: 'm', decimales: 0 },
@@ -413,13 +541,13 @@
       minimo: 4,
     },
     predice: {
-      pregunta: 'Dos rampas sin roce tienen 5 m de alto: una es recta y la otra curva y más larga. ¿Cuál deja más rápido al carrito abajo?',
+      pregunta: 'Dos rampas sin roce tienen 5 m de alto: una es recta y la otra curva y más larga. ¿Cuál deja más rápida a la bolita abajo?',
       opciones: [
         { id: 'c', texto: 'Las dos, igual de rápido', correcta: true },
         { id: 'larga', texto: 'La curva: tiene más camino para acelerar', error: 'W1', siFuera: 'Más camino, sí, pero el peso hace el mismo trabajo: depende solo de cuánto baja.' },
         { id: 'recta', texto: 'La recta: es más directa', error: 'CE-CAMINO', siFuera: 'Llega antes, quizá. Pero la rapidez abajo solo depende de la altura sin roce.' },
       ],
-      dibujo: { datos: rampa(5, false, 0, { alt: 'Carrito de 2 kg arriba de una rampa curva de 5 m.' }), estado: {} },
+      dibujo: { datos: rampa(5, false, 0, { alt: 'Bolita de 2 kg arriba de una rampa curva de 5 m.' }), estado: {} },
       revelar: { datos: rampa(5, false, 1, { alt: 'Abajo de la rampa, sin roce, toda la energía potencial es cinética: 10 m/s por cualquier camino.' }), estado: {} },
       coincide: 'Coincide: los 100 J de altura se vuelven 100 J de K por cualquier camino: 10 m/s.',
     },
@@ -437,11 +565,47 @@
       ecuacion: [{ llave: [K0, ' + ', { sub: [U, '0'] }], nota: 'al salir', color: 'c-d' }, ' = ', K, ' + ', U, ' + calor', '   ·   ', 'v = ', { raiz: ['2 g ', h] }],
       condicion: 'v = √(2gh) supone partir del reposo, sin roce ni aire y un cuerpo que desliza, sin rodar.',
     },
+    // Así se resuelve: la bajada por la rampa, sin roce (rapidez) o con roce (energía cinética), alternadas como en
+    // «Ahora tú» y calculadas igual (casoRampa y conRoce).
+    resuelve: {
+      generar(sm) {
+        const r = azar(sm + 900), { h0, vv, m } = casoRampa(r), U0 = { sub: [U, '0'] };
+        if (sm % 3 === 2) {
+          const { E, perd, Kv } = conRoce(r, m, h0);
+          return {
+            enunciado: `Un bloque de ${m} kg baja desde ${f(h0, 2)} m de altura, partiendo del reposo. El rozamiento convierte ${perd} J en calor. ¿Con qué energía cinética llega abajo?`,
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la energía cinética ', K, ' del bloque al llegar abajo, con rozamiento.'] },
+              { tipo: 'datos', texto: [`La masa es ${m} kg y parte del reposo desde `, h, ` = ${f(h0, 2)} m. El rozamiento se lleva ${perd} J en calor.`] },
+              { tipo: 'regla', texto: 'La energía de arriba no desaparece: abajo se reparte entre energía cinética y calor.',
+                ecuacion: [U0, ' = ', K, ' + calor'] },
+              { tipo: 'cuentas', texto: 'Arriba está quieto: toda su energía es potencial. Le descuento el calor.',
+                ecuacion: [U0, ` = ${m} · 10 · ${f(h0, 2)} = ${f(E, 2)} J   ·   `, K, ` = ${f(E, 2)} − ${perd} = ${f(Kv, 2)} J`] },
+              { tipo: 'sentido', texto: `Llega con menos que los ${f(E, 2)} J que tendría sin rozamiento, y no falta nada: ${f(Kv, 2)} + ${perd} = ${f(E, 2)} J.` },
+            ],
+            respuesta: [K, ` = ${f(Kv, 2)} J`],
+          };
+        }
+        return {
+          enunciado: `Un bloque de ${m} kg se suelta desde ${f(h0, 2)} m de altura y baja por una rampa sin rozamiento. Con g = 10 m/s², ¿con qué rapidez llega abajo?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la rapidez del bloque al llegar al pie de la rampa.' },
+            { tipo: 'datos', texto: [`La masa es ${m} kg; parte del reposo desde `, h, ` = ${f(h0, 2)} m, sin rozamiento.`] },
+            { tipo: 'regla', texto: 'Sin rozamiento, toda la energía potencial que pierde al bajar se vuelve energía cinética.',
+              ecuacion: ['m g ', h, ' = ½ m ', { sup: ['v', '2'] }] },
+            { tipo: 'cuentas', texto: 'La masa está a los dos lados y se simplifica. Despejo v al cuadrado y saco la raíz.',
+              ecuacion: [{ sup: ['v', '2'] }, ` = 2 · 10 · ${f(h0, 2)} = ${f(2 * G * h0, 2)}   ·   v = `, { raiz: [`${f(2 * G * h0, 2)}`] }, ` = ${f(vv, 2)} m/s`] },
+            { tipo: 'sentido', texto: `De vuelta: ½ · ${m} · ${f(vv, 2)}² = ${f(m * vv * vv / 2, 2)} J, lo mismo que m g h = ${f(m * G * h0, 2)} J. Cuadra.` },
+          ],
+          respuesta: `v = ${f(vv, 2)} m/s`,
+        };
+      },
+    },
     ahoraTu: {
       generar(sm) {
-        const r = azar(sm), h0 = r.de([1.25, 1.8, 3.2, 5, 7.2, 20, 45]), vv = Math.sqrt(2 * G * h0), m = r.de([1, 2, 5]);
+        const r = azar(sm), { h0, vv, m } = casoRampa(r);
         if (sm % 3 === 2) {
-          const E = m * G * h0, perd = Math.round(E * r.de([0.2, 0.36, 0.5])), Kv = E - perd;
+          const { E, perd, Kv } = conRoce(r, m, h0);
           return {
             pregunta: `Un bloque de ${m} kg baja desde ${f(h0, 2)} m de altura, partiendo del reposo. El rozamiento convierte ${perd} J en calor. ¿Con qué energía cinética llega abajo?`,
             opciones: opciones(Kv, [
@@ -484,11 +648,27 @@
         { en: [-1.3, 2.68], texto: `sube a ${f(vs, 2)} m/s` }, { en: [-1.3, 3.05], texto: `${f(Pu, 0)} W útiles`, color: 'd' }],
     };
   }
+  // Caso de «Ahora tú» y de «Así se resuelve» (la misma cuenta): W = mgh, P útil = W/t y P que entra = P útil/η.
+  const casoMotor = r => {
+    const m = r.de([20, 40, 50, 80, 100]), hh = r.de([5, 10, 12, 15]), t = r.de([5, 10, 20, 25, 40]), ef = r.de([0.5, 0.75, 0.8, 1]);
+    const W = m * G * hh, Pu = W / t;
+    return { m, hh, t, ef, W, Pu, Pin: Pu / ef };
+  };
   const potencia = {
     id: 'potencia-y-eficiencia',
     titulo: 'Potencia: trabajo por segundo',
     temas: ['Potencia y eficiencia'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): el watt, la eficiencia y qué mirar. No dice si el trabajo cambia con el tiempo (lo que pregunta
+    // «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Se mide en watts', texto: 'La potencia se mide en watts (W): un watt es un joule en cada segundo. Un foco LED de la casa usa unos 10 W; una terma eléctrica, unos 1500 W.',
+          ecuacion: ['1 W = 1 J / 1 s'] },
+        { titulo: 'Nada sale gratis', texto: 'Un motor recibe energía eléctrica y entrega trabajo útil, pero una parte se le escapa como calor: por eso se calienta. La eficiencia dice qué fracción de lo que entra sale como útil.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el motor sube la caja de 50 kg y el tiempo de subida cambia solo. Mira las tres barras y los watts útiles mientras el tiempo cambia.' },
+      ],
+    },
     juega: {
       consigna: 'Un motor sube 50 kg a 10 m; el tiempo cambia solo, de 10 a 40 s. Mira la barra útil y la potencia.',
       voz: 'Mientras cambia el tiempo, ¿cambia la barra útil?',
@@ -502,15 +682,15 @@
       minimo: 4,
     },
     predice: {
-      pregunta: 'Ana sube una caja al segundo piso en 10 s; Beto sube la misma caja al mismo piso en 20 s. ¿Quién hace más trabajo sobre la caja?',
+      pregunta: 'Un motor sube la caja de 50 kg a 10 m en 10 s; otro motor sube la misma caja a la misma altura en 20 s. ¿Cuál hace más trabajo sobre la caja?',
       opciones: [
         { id: 'c', texto: 'Los dos hacen el mismo trabajo', correcta: true },
-        { id: 'ana', texto: 'Ana, porque lo hace más rápido', error: 'PO-TRABAJO', siFuera: 'Ana desarrolla más potencia. El trabajo es el mismo: misma caja, misma altura.' },
-        { id: 'beto', texto: 'Beto, porque tarda más', error: 'W15', siFuera: 'Tardar más no suma trabajo: el peso sube la misma altura.' },
+        { id: 'ana', texto: 'El de 10 s, porque lo hace más rápido', error: 'PO-TRABAJO', siFuera: 'El de 10 s desarrolla más potencia. El trabajo es el mismo: misma caja, misma altura.' },
+        { id: 'beto', texto: 'El de 20 s, porque tarda más', error: 'W15', siFuera: 'Tardar más no suma trabajo: el peso sube la misma altura.' },
       ],
       dibujo: { datos: motor(20, 1, { alt: 'Subir 50 kg a 10 m siempre cuesta 5000 J de trabajo útil.' }), estado: {} },
       revelar: { datos: motor(10, 1, { alt: 'En la mitad del tiempo, el mismo trabajo de 5000 J: el doble de potencia.' }), estado: {} },
-      coincide: 'Coincide: el trabajo es el mismo; Ana usa el doble de potencia.',
+      coincide: 'Coincide: el trabajo es el mismo; el motor de 10 s usa el doble de potencia.',
     },
     mira: {
       datos: motor(10, 0.8),
@@ -526,10 +706,44 @@
       ecuacion: ['P = ', { frac: ['W', 't'] }, ' = ', F, ' v', '   ·   ', { llave: ['η'], nota: 'eficiencia', color: 'c-d' }, ' = ', { frac: [{ sub: ['P', 'útil'] }, { sub: ['P', 'entra'] }] }],
       condicion: 'P = Fv con F en la dirección de v. η nunca pasa de 1: ninguna máquina entrega más de lo que recibe.',
     },
+    // Así se resuelve: la potencia útil o la que consume el motor, alternadas como en «Ahora tú» y calculadas igual
+    // (casoMotor: P = W/t y P que entra = P útil/η).
+    resuelve: {
+      generar(sm) {
+        const { m, hh, t, ef, W, Pu, Pin } = casoMotor(azar(sm + 900)), pideEntrada = ef < 1 && sm % 2 === 1;
+        const Pu_ = { sub: ['P', 'útil'] }, Pe = { sub: ['P', 'entra'] };
+        const trabajo = ['W = m g ', h, ` = ${m} · 10 · ${hh} = ${f(W, 0)} J   ·   `];
+        if (pideEntrada) return {
+          enunciado: `Un motor con eficiencia de ${f(ef * 100, 0)} % sube ${m} kg a ${hh} m en ${t} s. Con g = 10 m/s², ¿qué potencia consume?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la potencia que consume el motor: la que entra, no la que entrega.' },
+            { tipo: 'datos', texto: [`Sube ${m} kg a `, h, ` = ${hh} m en ${t} s, con eficiencia η = ${f(ef, 2)}.`] },
+            { tipo: 'regla', texto: 'La potencia útil es el trabajo entre el tiempo. Lo útil es solo una fracción de lo que entra: por eso se divide entre la eficiencia.',
+              ecuacion: [Pu_, ' = ', { frac: ['W', 't'] }, '   ·   ', Pe, ' = ', { frac: [Pu_, 'η'] }] },
+            { tipo: 'cuentas', texto: 'Primero el trabajo útil, después la potencia útil y al final la que entra.',
+              ecuacion: [...trabajo, Pu_, ` = ${f(W, 0)} / ${t} = ${f(Pu, 2)} W   ·   `, Pe, ` = ${f(Pu, 2)} / ${f(ef, 2)} = ${f(Pin, 2)} W`] },
+            { tipo: 'sentido', texto: `Consume más de lo que entrega, como debe ser. La diferencia, ${f(Pin - Pu, 2)} W, se vuelve calor en el motor.` },
+          ],
+          respuesta: [Pe, ` = ${f(Pin, 2)} W`],
+        };
+        return {
+          enunciado: `Una grúa sube ${m} kg a ${hh} m de altura en ${t} s, a velocidad constante. Con g = 10 m/s², ¿qué potencia útil desarrolla?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la potencia útil: cuánto trabajo hace la grúa en cada segundo.' },
+            { tipo: 'datos', texto: [`Sube ${m} kg a `, h, ` = ${hh} m en ${t} s, a velocidad constante.`] },
+            { tipo: 'regla', texto: 'La potencia es el trabajo dividido entre el tiempo. A velocidad constante, el trabajo útil es el peso por la altura.',
+              ecuacion: ['P = ', { frac: ['W', 't'] }, '   ·   ', 'W = m g ', h] },
+            { tipo: 'cuentas', texto: 'Primero el trabajo de subir la carga; después lo reparto entre los segundos.',
+              ecuacion: [...trabajo, `P = ${f(W, 0)} / ${t} = ${f(Pu, 2)} W`] },
+            { tipo: 'sentido', texto: `Un joule entre un segundo es un watt. Si tardara el doble, la potencia sería la mitad: ${f(Pu / 2, 2)} W.` },
+          ],
+          respuesta: `P = ${f(Pu, 2)} W`,
+        };
+      },
+    },
     ahoraTu: {
       generar(sm) {
-        const r = azar(sm), m = r.de([20, 40, 50, 80, 100]), hh = r.de([5, 10, 12, 15]), t = r.de([5, 10, 20, 25, 40]), ef = r.de([0.5, 0.75, 0.8, 1]);
-        const W = m * G * hh, Pu = W / t, Pin = Pu / ef, pideEntrada = ef < 1 && sm % 2 === 1;
+        const { m, hh, t, ef, W, Pu, Pin } = casoMotor(azar(sm)), pideEntrada = ef < 1 && sm % 2 === 1;
         return pideEntrada ? {
           pregunta: `Un motor con eficiencia de ${f(ef * 100, 0)} % sube ${m} kg a ${hh} m en ${t} s. Con g = 10 m/s², ¿qué potencia consume?`,
           opciones: opciones(Pin, [
@@ -622,7 +836,7 @@
       },
       Object.assign({ id: 'rampa', titulo: 'La rampa con y sin roce', pieza: 'fis-lienzo',
         invitaciones: [
-          { texto: 'Haz que el carrito llegue abajo con 60 J de energía cinética.',
+          { texto: 'Haz que la bolita llegue abajo con 60 J de energía cinética.',
             logrado: val => val.frac === 1 && Math.abs(energias(val.h, val.roce === 1, val.frac).Kv - 60) < 1e-9,
             bien: 'Hay dos maneras: 3 m sin roce o 4 m con roce. ¿Las hallaste?' },
           { texto: 'Con rozamiento, consigue la mayor rapidez posible.',

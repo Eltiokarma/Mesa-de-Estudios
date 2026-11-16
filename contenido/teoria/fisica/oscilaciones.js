@@ -73,6 +73,16 @@
     titulo: 'La aceleración apunta al centro',
     temas: ['Movimiento periódico y oscilatorio'],
     pieza: 'fis-resorte',
+    // Lee (fase 2): contexto y vocabulario (equilibrio, elongación, amplitud). No dice cuánto vale ni hacia dónde
+    // apunta la aceleración en el extremo de «Predice».
+    lee: {
+      tarjetas: [
+        { titulo: 'Cosas que van y vienen', texto: 'Un columpio en el parque, la cuerda de una guitarra, la suspensión de una combi en una calle con baches de Juliaca: todos van y vienen alrededor de un punto. Ese vaivén se llama oscilación.' },
+        { titulo: 'El centro y los extremos', texto: ['El punto donde el cuerpo podría quedarse quieto es la posición de equilibrio. La elongación ', x, ' dice cuánto se apartó de ahí, con signo: a la derecha es positiva; a la izquierda, negativa.'] },
+        { titulo: 'Hasta dónde llega', texto: 'Lo más que se aparta, a un lado o al otro, es la amplitud A. Si va de −0,2 m a +0,2 m, la amplitud es 0,2 m.' },
+        { titulo: 'Qué mirar', texto: ['Al jugar, la flecha naranja es la velocidad ', v, ' y la verde, la aceleración ', a, '. Mira hacia dónde apunta la verde a cada lado del centro.'] },
+      ],
+    },
     juega: {
       consigna: 'El bloque oscila solo, en cámara lenta, entre −0,2 m y +0,2 m. Mira la flecha verde en cada lado. Para detenerlo, pausa o arrástralo.',
       voz: 'Fíjate hacia dónde apunta la flecha verde en cada lado.',
@@ -125,6 +135,31 @@
       ecuacion: [a, ' = ', { llave: ['−', { sup: ['ω', '2'] }, ' ', x], nota: 'hacia el centro', color: 'c-d' }, '   ·   ', { sup: ['ω', '2'] }, ' = ', { frac: ['k', 'm'] }],
       condicion: 'x se mide desde el equilibrio; resorte ideal y sin rozamiento.',
     },
+    // Así se resuelve: aceleración en una posición, calculado igual que «Ahora tú» (a = −k x / m, mismos k, m y x).
+    resuelve: {
+      pieza: 'fis-resorte',
+      generar(sm) {
+        const r = azar(sm + 900), k = r.de([20, 40, 50, 80, 100]), m = r.de([0.2, 0.5, 1, 2]), xx = r.de([-0.15, -0.1, -0.05, 0.05, 0.1, 0.2]);
+        const F = -k * xx, ac = F / m, lado = xx > 0 ? 'derecha' : 'izquierda', haciaA = ac > 0 ? 'derecha' : 'izquierda';
+        const col = { x: 'i', v: 'o', a: 'd' };
+        return {
+          enunciado: ['Un bloque de ', f(m), ` kg oscila unido a un resorte de k = ${f(k)} N/m. ¿Qué aceleración tiene cuando está en `, x, ` = ${f(xx)} m?`],
+          dibujo: { datos: { A: 0.2, unidad: 'm', x: xx, colores: col }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la aceleración ', a, ' del bloque en ese lugar: cuánto vale y hacia dónde apunta.'] },
+            { tipo: 'datos', texto: ['La masa, la constante del resorte y la elongación, medida desde el centro.'],
+              ecuacion: [`m = ${f(m)} kg   ·   k = ${f(k)} N/m   ·   `, x, ` = ${f(xx)} m`] },
+            { tipo: 'regla', texto: 'El resorte tira hacia el centro, más fuerte cuanto más se apartó el bloque. La aceleración es esa fuerza dividida entre la masa.',
+              ecuacion: ['F = −k ', x, '   ·   ', a, ' = ', { frac: ['F', 'm'] }] },
+            { tipo: 'cuentas', texto: 'Primero la fuerza del resorte, con su signo; después la divido entre la masa.',
+              ecuacion: [`F = −${f(k)} · (${f(xx)}) = ${f(F, 1)} N   →   `, a, ` = ${f(F, 1)} / ${f(m)} = ${f(ac, 1)} m/s²`],
+              dibujo: { datos: { A: 0.2, unidad: 'm', x: xx, a: ac, escalaA: Math.min(4, 80 / Math.abs(ac)), textoA: `${f(ac, 1)} m/s²`, colores: col }, estado: {} } },
+            { tipo: 'sentido', texto: `El bloque está a la ${lado} del centro y la aceleración apunta a la ${haciaA}: hacia el centro, como debe ser. Y N entre kg da m/s².` },
+          ],
+          respuesta: [a, ` = ${f(ac, 1)} m/s², hacia la ${haciaA}`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'fis-resorte',
       generar(s) {
@@ -163,8 +198,18 @@
     titulo: 'La posición sigue un coseno',
     temas: ['Ecuaciones y gráficas del MAS'],
     pieza: 'ejes',
+    // Lee (fase 2): período, ω y cómo se lee la gráfica x–t. No dice dónde está ni qué rapidez lleva en T/4 («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que se repite', texto: ['El tiempo de una oscilación completa, ida y vuelta, es el período ', T, '. Un columpio de feria tarda unos 3 s; la cuerda de un charango, menos de una centésima de segundo.'] },
+        { titulo: 'Una vuelta en el reloj', texto: ['En cada período el ángulo del coseno avanza una vuelta entera, 2π rad. Lo que avanza por segundo es la frecuencia angular ω.'],
+          ecuacion: ['ω = ', { frac: ['2π', T] }] },
+        { titulo: 'Cómo leer la curva', texto: ['La altura de la curva es la posición ', x, '; el eje horizontal es el tiempo ', t, '. Una cresta es un extremo, +A; un valle, el otro, −A.'] },
+        { titulo: 'Qué mirar', texto: 'Al jugar, el punto recorre la curva con el tiempo. Cambia A y T, y mira en qué tramos la curva sube o baja más empinada.' },
+      ],
+    },
     juega: {
-      consigna: 'El bloque se suelta desde el extremo en t = 0. Cambia la amplitud y el período, y mira la gráfica de la posición.',
+      consigna: 'La curva es la posición x en el tiempo; en t = 0 parte de +A. Cambia la amplitud y el período, y mira la curva.',
       voz: 'Busca dónde la curva es más empinada.',
       controles: [
         { id: 'A', etiqueta: 'A', color: 'c-i', min: 0.1, max: 0.3, paso: 0.05, inicio: 0.2, unidad: 'm', decimales: 2 },
@@ -182,7 +227,7 @@
       ],
     },
     predice: {
-      pregunta: ['Con ', x, ' = A cos(ω', t, '), el bloque sale del extremo +A. Un cuarto de período después, en ', t, ' = T/4, ¿dónde está y cómo se mueve?'],
+      pregunta: ['Con ', x, ' = A cos(ω', t, '), el movimiento sale del extremo +A. Un cuarto de período después, en ', t, ' = T/4, ¿dónde está y cómo se mueve?'],
       opciones: [
         { id: 'c', texto: 'En x = 0, con la mayor rapidez', correcta: true },
         { id: 'lineal', texto: 'En x = A/2, a media rapidez', error: 'OS-LINEAL', siFuera: 'A/2 sería cierto si avanzara a velocidad constante. Empieza lento y acelera.' },
@@ -207,14 +252,45 @@
       ecuacion: [x, ' = A cos(ω', t, ' + φ)', '   ·   ', { sub: [v, 'máx'] }, ' = ', { llave: ['Aω'], nota: 'en el centro', color: 'c-o' }, '   ·   ', { sub: [a, 'máx'] }, ' = ', { llave: ['A', { sup: ['ω', '2'] }], nota: 'en los extremos', color: 'c-d' }, '   ·   ', 'ω = ', { frac: ['2π', T] }],
       condicion: 'φ, la fase inicial, fija dónde empieza; con φ = 0 sale del extremo +A en t = 0.',
     },
+    // Así se resuelve: rapidez o aceleración máxima, calculado igual que «Ahora tú» (ω = 2π/T; Aω o Aω²; mismo sm % 2).
+    resuelve: {
+      generar(sm) {
+        const r = azar(sm + 900), A = r.de([0.1, 0.2, 0.25, 0.3]), P = r.de([1, 2, 4]), w = 2 * PI / P, pide = sm % 2 ? 'v' : 'a';
+        const vmax = A * w, val = pide === 'v' ? vmax : A * w * w;
+        const vm = { sub: [v, 'máx'] }, am = { sub: [a, 'máx'] };
+        const marca = pide === 'v' ? { x: P / 4, y: 0, color: 'o', rotulo: 'v máx', guias: true } : { x: 0, y: A, color: 'd', rotulo: 'a máx', guias: true };
+        return {
+          enunciado: pide === 'v'
+            ? ['La gráfica muestra un MAS de amplitud ', f(A), ' m y período ', T, ` = ${f(P)} s. ¿Cuál es su rapidez máxima?`]
+            : ['La gráfica muestra un MAS de amplitud ', f(A), ' m y período ', T, ` = ${f(P)} s. ¿Cuál es el valor máximo de su aceleración?`],
+          dibujo: { datos: ejeXt(A, P), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: pide === 'v' ? ['Piden ', vm, ': la rapidez más grande del vaivén, la que lleva al cruzar el centro.']
+              : ['Piden ', am, ': la aceleración más grande del vaivén, la que tiene en los extremos.'] },
+            { tipo: 'datos', texto: ['La cresta da la amplitud y la distancia entre dos crestas da el período.'],
+              ecuacion: [`A = ${f(A)} m   ·   `, T, ` = ${f(P)} s`] },
+            { tipo: 'regla', texto: pide === 'v' ? 'Primero paso el período a frecuencia angular. La rapidez máxima es la amplitud por ω.'
+              : 'Primero paso el período a frecuencia angular. La aceleración máxima es la amplitud por ω al cuadrado.',
+              ecuacion: ['ω = ', { frac: ['2π', T] }, '   ·   ', pide === 'v' ? vm : am, pide === 'v' ? ' = A ω' : ' = A ω²'] },
+            { tipo: 'cuentas', texto: pide === 'v' ? 'Divido 2π entre el período y multiplico por la amplitud.' : 'Divido 2π entre el período, lo elevo al cuadrado y multiplico por la amplitud.',
+              ecuacion: [`ω = 2π / ${f(P)} = ${f(w)} rad/s   →   `, pide === 'v' ? vm : am, pide === 'v' ? ` = ${f(A)} · ${f(w)} = ${f(val)} m/s` : ` = ${f(A)} · ${f(w)}² = ${f(val)} m/s²`],
+              dibujo: { datos: ejeXt(A, P, { puntos: [marca] }), estado: {} } },
+            { tipo: 'sentido', texto: pide === 'v'
+              ? `En un período recorre 4A = ${f(4 * A)} m: su rapidez media es ${f(4 * A / P)} m/s. La máxima tiene que ser mayor, y lo es.`
+              : `Las unidades: m por (rad/s)² da m/s². Comprobación: la rapidez máxima es ${f(vmax)} m/s, y por ω da otra vez ${f(vmax * w)} m/s².` },
+          ],
+          respuesta: pide === 'v' ? [vm, ` = ${f(val)} m/s`] : [am, ` = ${f(val)} m/s²`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), A = r.de([0.1, 0.2, 0.25, 0.3]), P = r.de([1, 2, 4]), w = 2 * PI / P, pide = s % 2 ? 'v' : 'a';
         const val = pide === 'v' ? A * w : A * w * w;
         return {
           pregunta: pide === 'v'
-            ? ['Un bloque oscila con amplitud ', f(A), ' m y período ', T, ` = ${f(P)} s. ¿Cuál es su rapidez máxima?`]
-            : ['Un bloque oscila con amplitud ', f(A), ' m y período ', T, ` = ${f(P)} s. ¿Cuál es el valor máximo de su aceleración?`],
+            ? ['La gráfica muestra un MAS de amplitud ', f(A), ' m y período ', T, ` = ${f(P)} s. ¿Cuál es su rapidez máxima?`]
+            : ['La gráfica muestra un MAS de amplitud ', f(A), ' m y período ', T, ` = ${f(P)} s. ¿Cuál es el valor máximo de su aceleración?`],
           dibujo: { datos: ejeXt(A, P), estado: {} },
           opciones: opciones(val, pide === 'v' ? [
             { id: 'sin-2pi', valor: A / P, error: 'OS-OMEGA', siFuera: 'Eso usa 1/T en vez de ω = 2π/T.' },
@@ -247,8 +323,18 @@
     titulo: 'El período no depende de A',
     temas: ['Masa-resorte horizontal y vertical'],
     pieza: 'ejes',
+    // Lee (fase 2): resortes cercanos, la constante k y qué muestra la curva T–m. No dice qué pasa con el período al
+    // cambiar la amplitud («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Resortes por todos lados', texto: 'La balanza de resorte del mercado, el amortiguador de una mototaxi, el colchón de resortes: todos se estiran o se encogen y empujan de vuelta. Con algo de masa encima, se ponen a oscilar.' },
+        { titulo: 'Duro o blando', texto: 'La constante elástica k dice qué tan duro es el resorte. Con k = 80 N/m, hacen falta 80 N para estirarlo 1 m; con k = 20 N/m, solo 20 N.',
+          ecuacion: ['F = −k ', x] },
+        { titulo: 'Qué mirar', texto: ['Al jugar, la masa m crece sola y el punto marca el período ', T, ' en la curva. Mira cuánto crece ', T, ' cuando la masa se cuadruplica, y prueba los dos resortes.'] },
+      ],
+    },
     juega: {
-      consigna: 'La masa colgada crece y decrece sola. Mira el punto: el período sube cada vez menos. Pausa, cambia el resorte o arrastra el punto.',
+      consigna: 'La masa m crece y decrece sola. Mira el punto: el período sube cada vez menos. Pausa, cambia k o arrastra el punto.',
       voz: 'Mira cuánto crece T cuando la masa se cuadruplica.',
       // Animación (15 nov): la masa barre su rango ida y vuelta (5 s por tramo) y el punto recorre la curva T–m.
       controles: [
@@ -260,13 +346,13 @@
       minimo: 3,
       // Arrastra el punto por la curva: su lugar en el eje horizontal es la masa.
       arrastres: [
-        { id: 'masa', etiqueta: 'masa colgada', color: 'c-h',
+        { id: 'masa', etiqueta: 'masa m', color: 'c-h',
           donde: val => enEjes(tmJuego(val), val.m, periodoR(val.m, val.k)),
           mover: (pt, val) => ({ m: PZ('ejes').geometria(tmJuego(val)).Xi(pt.x) }) },
       ],
     },
     predice: {
-      pregunta: 'Un bloque unido a un resorte oscila con período de 1 s si se suelta desde 5 cm. Si se suelta desde 10 cm, ¿cuánto dura cada oscilación?',
+      pregunta: 'La curva muestra un MAS con resorte, de período 1 s, soltado desde 5 cm. Si se suelta desde 10 cm, ¿cuánto dura cada oscilación?',
       opciones: [
         { id: 'c', texto: '1 s, igual', correcta: true },
         { id: 'doble', texto: '2 s: recorre el doble', error: 'O1', siFuera: 'Recorre el doble, cierto. Pero también va más rápido: tarda lo mismo.' },
@@ -292,6 +378,45 @@
       texto: 'El período de un bloque unido a un resorte depende de la masa y de la rigidez del resorte, no de la amplitud ni de si está horizontal o colgado.',
       ecuacion: [T, ' = 2π ', { raiz: [{ frac: ['m', 'k'] }] }, '   ·   ', 'colgado: el equilibrio baja ', { frac: ['m g', 'k'] }],
       condicion: 'resorte ideal, sin masa propia y sin rozamiento. Colgado, x se mide desde el nuevo equilibrio.',
+    },
+    // Así se resuelve: período o estiramiento del resorte colgado, calculado igual que «Ahora tú» (periodoR y m g / k;
+    // mismo sm % 2).
+    resuelve: {
+      generar(sm) {
+        const r = azar(sm + 900), m = r.de([0.1, 0.4, 0.9, 1.6, 2.5]), k = r.de([10, 40, 90, 160]);
+        if (sm % 2 === 0) {
+          const P = periodoR(m, k), q = m / k, raiz = Math.sqrt(q);
+          return {
+            enunciado: ['Un bloque de ', f(m), ` kg oscila unido a un resorte de k = ${f(k)} N/m. ¿Cuál es su período? (usa π ≈ 3,14)`],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el período ', T, ': cuánto tarda el bloque en ir y volver una vez.'] },
+              { tipo: 'datos', texto: 'La masa del bloque y la constante del resorte. La amplitud no la dan, y no hace falta.',
+                ecuacion: [`m = ${f(m)} kg   ·   k = ${f(k)} N/m`] },
+              { tipo: 'regla', texto: 'Más masa hace el vaivén más lento; un resorte más duro, más rápido. El período es 2π por la raíz de la masa entre la constante.',
+                ecuacion: [T, ' = 2π ', { raiz: [{ frac: ['m', 'k'] }] }] },
+              { tipo: 'cuentas', texto: 'Divido la masa entre la constante, saco la raíz y multiplico por 2π.',
+                ecuacion: [`m/k = ${f(q, 6)}   →   √(${f(q, 6)}) = ${f(raiz, 4)}   →   `, T, ` = 2π · ${f(raiz, 4)} = ${f(P)} s`] },
+              { tipo: 'sentido', texto: `Las unidades: kg entre N/m es s², y su raíz da segundos. Vuelta: ω = 2π/T = ${f(2 * PI / P)} rad/s, y su cuadrado es k/m = ${f(k / m, 1)}.` },
+            ],
+            respuesta: [T, ` = ${f(P)} s`],
+          };
+        }
+        const peso = m * 10, dy = peso / k;
+        return {
+          enunciado: ['Se cuelga un bloque de ', f(m), ` kg de un resorte vertical de k = ${f(k)} N/m. ¿Cuánto baja hasta su nuevo equilibrio? (g = 10 m/s²)`],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden cuánto se estira el resorte hasta que el bloque queda quieto colgado: su nuevo equilibrio.' },
+            { tipo: 'datos', texto: 'La masa del bloque, la constante del resorte y la gravedad.',
+              ecuacion: [`m = ${f(m)} kg   ·   k = ${f(k)} N/m   ·   g = 10 m/s²`] },
+            { tipo: 'regla', texto: 'En el nuevo equilibrio el resorte sostiene todo el peso: lo que se estira, por k, iguala a m g.',
+              ecuacion: ['k Δy = m g'] },
+            { tipo: 'cuentas', texto: 'Calculo el peso y lo divido entre la constante. Después paso de metros a centímetros.',
+              ecuacion: [`m g = ${f(m)} · 10 = ${f(peso)} N   →   Δy = ${f(peso)} / ${f(k)} = ${f(dy, 4)} m = ${f(dy * 100, 1)} cm`] },
+            { tipo: 'sentido', texto: `Las unidades: N entre N/m da metros. Vuelta: ${f(k)} N/m · ${f(dy, 4)} m = ${f(k * dy)} N, justo el peso.` },
+          ],
+          respuesta: `Baja ${f(dy * 100, 1)} cm hasta el nuevo equilibrio.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -338,9 +463,19 @@
     titulo: 'El péndulo no mira la masa',
     temas: ['Péndulo simple'],
     pieza: 'ejes',
+    // Lee (fase 2): qué es un péndulo simple, cómo se mide L y la gravedad de la Luna. No dice nada de la masa de la
+    // bolita («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un hilo y una bolita', texto: 'La plomada del albañil, un columpio, la lámpara que se mece cuando tiembla: todos son péndulos. El más sencillo es el péndulo simple, una bolita pequeña en un hilo liviano.' },
+        { titulo: 'Dónde se mide L', texto: 'El largo L va desde el punto donde cuelga el hilo hasta el centro de la bolita. Y el ángulo tiene que ser pequeño: el péndulo se abre poco.' },
+        { titulo: 'Otra gravedad', texto: 'En la Luna la gravedad es de 1,6 m/s², unas seis veces menor que los 10 m/s² de la Tierra. Allá todo cae más despacio.' },
+        { titulo: 'Qué mirar', texto: ['Al jugar, el largo L crece solo y el punto marca el período ', T, ' en la curva. Compara un largo con su cuádruple, y después elige la Luna.'] },
+      ],
+    },
     juega: {
-      consigna: 'El hilo del péndulo se alarga y se acorta solo. Mira el punto subir por la curva; después pausa y llévalo a la Luna.',
-      voz: 'Compara un hilo de 0,5 m con uno de 2 m.',
+      consigna: 'El largo L crece y decrece solo. Mira el punto subir por la curva; después pausa y elige la Luna.',
+      voz: 'Compara L = 0,5 m con L = 2 m.',
       // Animación (15 nov): el largo barre su rango ida y vuelta (5 s por tramo) y el punto recorre la curva T–L.
       controles: [
         { id: 'L', etiqueta: 'L', min: 0.25, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2, auto: { velocidad: 0.35, modo: 'rebota' } },
@@ -379,6 +514,45 @@
       texto: 'Para oscilaciones pequeñas, el período de un péndulo simple depende solo del largo del hilo y de la gravedad del lugar.',
       ecuacion: [T, ' = 2π ', { raiz: [{ frac: ['L', 'g'] }] }],
       condicion: 'ángulos pequeños (menos de unos 10°), hilo sin masa e inextensible; L va del punto de giro al centro de la bolita.',
+    },
+    // Así se resuelve: período del péndulo o factor con un hilo más largo, calculado igual que «Ahora tú» (periodoP y
+    // √q; mismo sm % 2 y mismo orden de sorteo).
+    resuelve: {
+      generar(sm) {
+        const r = azar(sm + 900), L = r.de([0.4, 0.9, 1.6, 2.5, 3.6]), g = 10;
+        if (sm % 2 === 0) {
+          const P = periodoP(L, g), raiz = Math.sqrt(L / g), P1 = periodoP(1, g);
+          return {
+            enunciado: ['¿Cuál es el período de un péndulo de ', f(L), ' m de largo? (g = 10 m/s², π ≈ 3,14)'],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el período ', T, ': cuánto tarda el péndulo en ir y volver.'] },
+              { tipo: 'datos', texto: 'El largo del hilo y la gravedad de la Tierra. Oscilaciones pequeñas.',
+                ecuacion: [`L = ${f(L)} m   ·   g = 10 m/s²`] },
+              { tipo: 'regla', texto: 'Un hilo más largo hace el vaivén más lento; más gravedad lo apura. El período es 2π por la raíz del largo entre g.',
+                ecuacion: [T, ' = 2π ', { raiz: [{ frac: ['L', 'g'] }] }] },
+              { tipo: 'cuentas', texto: 'Divido el largo entre g, saco la raíz y multiplico por 2π.',
+                ecuacion: [`L/g = ${f(L / g)}   →   √(${f(L / g)}) = ${f(raiz)}   →   `, T, ` = 2π · ${f(raiz)} = ${f(P)} s`] },
+              { tipo: 'sentido', texto: `Un péndulo de 1 m tarda ${f(P1)} s. Este hilo es ${L > 1 ? 'más largo' : 'más corto'}, y tarda ${L > 1 ? 'más' : 'menos'}: ${f(P)} s. Las unidades dan segundos.` },
+            ],
+            respuesta: [T, ` = ${f(P)} s`],
+          };
+        }
+        const q = r.de([4, 9, 16]), n = Math.sqrt(q), P0 = periodoP(L, g), Pq = periodoP(q * L, g);
+        return {
+          enunciado: ['Un péndulo tiene período ', T, `. Si su hilo se hace ${f(q)} veces más largo, ¿cuál es su nuevo período?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el nuevo período, comparado con el de antes, ', T, '.'] },
+            { tipo: 'datos', texto: `El largo se multiplica por ${f(q)}. La gravedad es la misma.`,
+              ecuacion: [`L' = ${f(q)} L`] },
+            { tipo: 'regla', texto: 'El período va con la raíz cuadrada del largo: si el largo se multiplica por un número, el período se multiplica por su raíz.',
+              ecuacion: [T, ' = 2π ', { raiz: [{ frac: ['L', 'g'] }] }] },
+            { tipo: 'cuentas', texto: `Pongo ${f(q)} L en lugar de L; la raíz de ${f(q)} sale afuera.`,
+              ecuacion: [`T' = 2π √(${f(q)} L / g) = √${f(q)} · `, T, ` = ${f(n)} `, T] },
+            { tipo: 'sentido', texto: `Con L = ${f(L)} m: pasa de ${f(P0)} s a ${f(Pq)} s, y ${f(Pq)} / ${f(P0)} = ${f(Pq / P0)}. Más lento, pero no ${f(q)} veces.` },
+          ],
+          respuesta: [`T' = ${f(n)} `, T],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -433,8 +607,16 @@
     titulo: 'La energía se reparte, no cambia',
     temas: ['Energía en el MAS'],
     pieza: 'ejes',
+    // Lee (fase 2): las dos energías y cómo se lee la gráfica. No da la fórmula de U ni dice dónde K = U («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Energía que cambia de lugar', texto: 'En una cama elástica de feria pasa algo curioso: al hundirse, la lona guarda energía; al soltarla, esa energía vuelve como rapidez. En el MAS ocurre lo mismo una y otra vez.' },
+        { titulo: 'Dos formas', texto: ['La energía cinética K es la del movimiento: crece con la rapidez ', v, '. La energía potencial elástica U es la que guarda el resorte cuando está estirado o encogido.'] },
+        { titulo: 'Qué mirar', texto: ['Al jugar, la curva continua es U y la discontinua es K; la recta de arriba es la energía total. Mira los dos puntos mientras ', x, ' va y viene.'] },
+      ],
+    },
     juega: {
-      consigna: 'El resorte de k = 50 N/m oscila solo, en cámara lenta, con 1 J. Mira los dos puntos: uno sube si el otro baja.',
+      consigna: 'La posición x va y viene sola, en cámara lenta, con 1 J en total. Mira los dos puntos: uno sube si el otro baja.',
       voz: 'Lee las dos energías y súmalas en cada posición.',
       controles: [{ id: 't', etiqueta: 't', color: 'c-h', min: 0, max: T1, paso: PASO_T1, inicio: 0, unidad: 's', decimales: 2, auto: { velocidad: T1 / 4 } }],
       dibujo: val => ({ datos: eJuegoT(val), estado: {} }),
@@ -443,7 +625,7 @@
       // Arrastra el punto de U por la parábola: su lugar en el eje horizontal es la posición del bloque, que se convierte
       // en el instante de la oscilación (la animación se pausa).
       arrastres: [
-        { id: 'posicion', etiqueta: 'posición del bloque', color: 'c-i',
+        { id: 'posicion', etiqueta: 'posición x', color: 'c-i',
           donde: val => { const xx = xE(val.t); return enEjes(eJuegoT(val), xx, 0.5 * K5 * xx * xx); },
           mover: (pt, val) => {
             const q = Math.max(-A5, Math.min(A5, PZ('ejes').geometria(eJuegoT(val)).Xi(pt.x)));
@@ -453,7 +635,7 @@
       ],
     },
     predice: {
-      pregunta: ['El mismo bloque oscila entre −0,2 m y +0,2 m. ¿En qué posición su energía cinética es igual a su energía potencial?'],
+      pregunta: ['La posición va y viene entre −0,2 m y +0,2 m. ¿En qué posición la energía cinética es igual a la energía potencial?'],
       opciones: [
         { id: 'c', texto: 'x = ±0,14 m', correcta: true },
         { id: 'mitad', texto: 'x = ±0,1 m, a mitad de camino', error: 'OS-MITAD', siFuera: 'La mitad del camino sería cierta si U creciera en proporción a x. Crece con x².' },
@@ -467,7 +649,7 @@
     mira: {
       datos: ejeE({ puntos: [{ x: 0.2, y: 1, rotulo: 'U', desde: 1 }, { x: 0, y: 1, rotulo: 'todo K', desde: 2 }, { x: 0.1414, y: 0.5, rotulo: 'mitad y mitad', guias: true, desde: 3 }] }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'En el extremo el bloque está quieto: toda la energía es del resorte.', ecuacion: ['E = ½ k ', { sup: ['A', '2'] }, ' = ½ · 50 · ', { sup: ['0,2', '2'] }, ' = 1 J'] },
+        { estado: { corte: 1 }, texto: 'En el extremo, v = 0: toda la energía es del resorte.', ecuacion: ['E = ½ k ', { sup: ['A', '2'] }, ' = ½ · 50 · ', { sup: ['0,2', '2'] }, ' = 1 J'] },
         { estado: { corte: 2 }, texto: 'En el centro el resorte no está estirado: toda es cinética.', ecuacion: ['½ m ', { sup: [{ sub: [v, 'máx'] }, '2'] }, ' = 1 J'] },
         { estado: { corte: 3 }, texto: 'U crece con x²: la mitad de la energía está a 0,14 m.', ecuacion: ['½ · 50 · ', { sup: [x, '2'] }, ' = 0,5   →   ', x, ' = ', { frac: ['A', '√2'] }] },
       ],
@@ -476,6 +658,28 @@
       texto: 'En el MAS la energía total no cambia: se reparte entre la del resorte, que crece con x², y la cinética del bloque.',
       ecuacion: [{ llave: ['½ k ', { sup: ['A', '2'] }], nota: 'total' }, ' = ', { llave: ['½ k ', { sup: [x, '2'] }], nota: 'del resorte', color: 'c-i' }, ' + ', { llave: ['½ m ', { sup: [v, '2'] }], nota: 'del bloque', color: 'c-o' }],
       condicion: 'sin rozamiento ni ayuda externa; x desde el equilibrio. Con roce, la amplitud se apaga.',
+    },
+    // Así se resuelve: rapidez en una posición, calculado igual que «Ahora tú» (v = √(k/m · (A² − x²)), mismos k, m, A y x),
+    // contado como reparto de energía: E − U = K.
+    resuelve: {
+      generar(sm) {
+        const r = azar(sm + 900), k = r.de([20, 50, 80, 200]), m = r.de([0.2, 0.5, 2]), A = r.de([0.1, 0.2, 0.3]), xx = A * r.de([0.5, 0.6, 0.8]);
+        const vv = Math.sqrt(k / m * (A * A - xx * xx)), E = 0.5 * k * A * A, U = 0.5 * k * xx * xx, K = E - U, vmax = Math.sqrt(k / m) * A;
+        return {
+          enunciado: ['Un bloque de ', f(m), ` kg oscila con un resorte de k = ${f(k)} N/m y amplitud ${f(A)} m. ¿Qué rapidez tiene en `, x, ` = ${f(xx, 2)} m?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la rapidez ', v, ' del bloque cuando pasa por esa posición.'] },
+            { tipo: 'datos', texto: 'La masa, la constante del resorte, la amplitud y la posición pedida.',
+              ecuacion: [`m = ${f(m)} kg   ·   k = ${f(k)} N/m   ·   A = ${f(A)} m   ·   `, x, ` = ${f(xx, 2)} m`] },
+            { tipo: 'regla', texto: 'La energía total no cambia. En el extremo toda es del resorte; en cualquier otro punto, lo que no guarda el resorte es cinética.',
+              ecuacion: ['½ k ', { sup: ['A', '2'] }, ' = ½ k ', { sup: [x, '2'] }, ' + ½ m ', { sup: [v, '2'] }] },
+            { tipo: 'cuentas', texto: 'Calculo la energía total y la que guarda el resorte en esa posición. La diferencia es la cinética, y de ella saco v.',
+              ecuacion: [`E = ${f(E, 4)} J   ·   U = ${f(U, 4)} J   →   K = ${f(K, 4)} J   →   `, v, ` = √(2 · ${f(K, 4)} / ${f(m)}) = ${f(vv)} m/s`] },
+            { tipo: 'sentido', texto: `En el centro iría a ${f(vmax)} m/s, su rapidez máxima. Aquí va más lento, ${f(vv)} m/s, porque parte de la energía sigue en el resorte.` },
+          ],
+          respuesta: [v, ` = ${f(vv)} m/s`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -617,7 +821,7 @@
       },
       {
         id: 'pendulo-libre', titulo: 'Péndulo en tres lugares', pieza: 'ejes',
-        consigna: 'Arrastra el punto para cambiar el largo y elige el lugar. Busca un péndulo de Marte que tarde como uno de la Tierra.',
+        consigna: 'Arrastra el punto para cambiar el largo y elige el lugar. Busca un largo en Marte que tarde como uno de la Tierra.',
         controles: [
           { id: 'L', etiqueta: 'L', min: 0.25, max: 2, paso: 0.25, inicio: 1, unidad: 'm', decimales: 2 },
           { id: 'g', etiqueta: 'Lugar', opciones: LUGARES.map(q => ({ valor: q.g, texto: q.n })), inicio: 10 },
