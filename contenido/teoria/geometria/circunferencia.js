@@ -75,11 +75,25 @@
     };
   };
   const TRIPLES = [[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25], [20, 21, 29], [9, 12, 15], [6, 8, 10]];
+  // Datos de «Así se resuelve», con la misma cuenta de «Ahora tú»: un triple pitagórico por k; radio, tangente y PO.
+  const datosTang = s => { const r = azar(s), [a, b, c] = r.de(TRIPLES), k = r.ent(1, 2); return { radio: a * k, L: b * k, d: c * k, pideL: s % 2 === 0 }; };
+  // La figura a escala: tang() fija r = 2, así que P va a 2·PO/radio del centro.
+  const tangEsc = (radio, d, o = {}) => Object.assign(tang(2 * d / radio, Object.assign({ sinL: true }, o)), { alt: o.alt || `Circunferencia de radio ${radio} y punto P a ${d} del centro, con sus dos tangentes` });
+  const PT = { v: 'c-o', t: 'PT' };
   const tangentes = {
     id: 'tangentes',
     titulo: 'El radio y la tangente',
     temas: ['Elementos y teoremas de tangencia'],
     pieza: 'geo-figura',
+    // Lee (fase 2): vocabulario de la tangencia. No dice qué ángulo forma el radio con la tangente (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cortar, tocar o pasar lejos', texto: 'Una recta puede cortar una circunferencia en dos puntos, tocarla en uno solo o pasar sin tocarla. La que la toca en un solo punto se llama tangente.' },
+        { titulo: 'El punto de contacto', texto: 'El único punto que comparten la tangente y la circunferencia es el punto de contacto, o punto de tangencia. En el juego, esos puntos se llaman T y S.' },
+        { titulo: 'Desde afuera', texto: 'Imagina que estás parado fuera de una pileta redonda, en una plaza de Juliaca. Desde donde estás salen dos líneas rectas que apenas rozan el borde: son las dos tangentes desde ese punto.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, acerca y aleja el punto P. Compara cada vez los largos de PT y PS, y fíjate dónde toca cada una a la circunferencia.' },
+      ],
+    },
     juega: {
       consigna: 'Desde el punto P salen dos rectas que solo tocan la circunferencia: las tangentes PT y PS. Aleja o acerca P y compara sus largos.',
       voz: 'Mueve P. Compara las dos tangentes cada vez.',
@@ -120,6 +134,29 @@
       condicion: 'P está fuera de la circunferencia y T, S son los puntos de contacto.',
       voz: 'Ante una tangente, traza el radio al contacto.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con otras semillas (datosTang), resuelto paso a paso.
+    resuelve: {
+      generar(s) {
+        const { radio, L, d, pideL } = datosTang(s + 900), cat = pideL ? radio : L, res = pideL ? L : radio;
+        return {
+          enunciado: pideL ? [`Una circunferencia tiene radio ${radio} y el punto P está a ${d} de su centro. ¿Cuánto mide cada tangente trazada desde P?`]
+            : [`Desde P, a ${d} del centro de una circunferencia, la tangente `, PT, ` mide ${L}. ¿Cuánto mide el radio?`],
+          dibujo: { datos: tangEsc(radio, d), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: pideL ? ['Piden el largo de la tangente ', PT, ', desde P hasta el punto de contacto T.'] : 'Piden el radio r, que va del centro O al punto de contacto T.' },
+            { tipo: 'datos', texto: pideL ? `El radio mide ${radio} y PO mide ${d}.` : ['PO mide ', `${d}`, ' y la tangente ', PT, ` mide ${L}.`],
+              ecuacion: pideL ? [`r = ${radio}   ·   PO = ${d}`] : [`PO = ${d}   ·   `, PT, ` = ${L}`] },
+            { tipo: 'regla', texto: ['El radio que llega al punto de contacto es perpendicular a la tangente. Radio, ', PT, ' y PO forman un triángulo rectángulo, y PO es la hipotenusa.'],
+              ecuacion: ['OT ⟂ ', PT] },
+            { tipo: 'cuentas', texto: 'Pitágoras: al cuadrado de la hipotenusa PO le resto el cuadrado del cateto que conozco, y saco la raíz.',
+              ecuacion: [pideL ? PT : 'r', ' = ', { raiz: [{ sup: [`${d}`, '2'] }, ' − ', { sup: [`${cat}`, '2'] }] }, ` = √${d * d - cat * cat} = ${res}`],
+              dibujo: { datos: tangEsc(radio, d, { radios: true }), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: ${radio}² + ${L}² = ${radio * radio} + ${L * L} = ${d * d}, que es ${d}². Y el cateto, ${res}, sale menor que la hipotenusa, ${d}.` },
+          ],
+          respuesta: pideL ? ['Cada tangente mide ', PT, ` = ${L}.`] : `El radio mide ${radio}.`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Arma el triángulo rectángulo: radio, tangente y PO.',
       generar(s) {
@@ -151,11 +188,35 @@
     circulos: [{ centro: 'O1', r: r1, color: 'i' }, { centro: 'O2', r: r2, color: 'o' }],
     segmentos: d > 0 && !o.sinD ? [{ de: 'O1', a: 'O2', color: 'h', grosor: 'variable', texto: `d = ${f(d)}`, lado: 1 }] : [],
   });
+  // Datos de «Así se resuelve», con la misma cuenta de «Ahora tú»: dos radios y una d de cada una de las cinco posiciones.
+  const datosPos = s => {
+    const r = azar(s), r1 = r.ent(4, 12), r2 = r.ent(1, r1 - 1);
+    const cand = [r1 + r2 + r.ent(1, 5), r1 + r2, r1 - r2 + 1 + (r2 > 1 ? r.ent(0, 2 * r2 - 2) : 0), r1 - r2, r1 - r2 > 1 ? r.ent(1, r1 - r2 - 1) : r1 + r2 + 2];
+    return { r1, r2, d: cand[s % 5] };
+  };
+  // Figura a escala: la grande queda con radio 4; sin la chica (enunciado) o con ella (cuentas). d se rotula con su valor real.
+  const dosEsc = (d, r1, r2, conChica) => {
+    const k = 4 / r1, base = dos(d * k, 4, r2 * k, { sinD: true });
+    return Object.assign(base, {
+      alt: conChica ? `Radios ${r1} y ${r2} con centros a ${d}: ${posicion(d, r1, r2)}` : `Circunferencia de radio ${r1} y el centro O₂ a ${d} de su centro`,
+      vista: { x: [-4.8, Math.max(12, (d + r2) * k + 0.8)], y: [-4.8, 4.8] },
+      circulos: conChica ? base.circulos : [base.circulos[0]],
+      segmentos: [{ de: 'O1', a: 'O2', color: 'h', grosor: 'variable', texto: `d = ${d}`, lado: 1 }],
+    });
+  };
   const posiciones = {
     id: 'posiciones',
     titulo: 'Dos circunferencias: compara d',
     temas: ['Posiciones relativas de dos circunferencias'],
     pieza: 'geo-figura',
+    // Lee (fase 2): contexto y los nombres de las posiciones. No dice qué números marcan los bordes (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Ondas en el lago', texto: 'Si tiras dos piedritas al lago Titicaca, salen dos ondas redondas que crecen. A veces se cruzan, a veces una queda dentro de la otra y a veces ni se tocan.' },
+        { titulo: 'Los nombres', texto: 'Si se cortan en dos puntos, son secantes. Si se tocan en un solo punto, son tangentes: exteriores si una queda fuera de la otra, interiores si queda dentro. Con el mismo centro, son concéntricas.' },
+        { titulo: 'Qué mirar', texto: ['Lo que cambia en el juego es ', { v: 'c-h', t: 'd' }, ', la distancia entre los dos centros. Mueve ', { v: 'c-h', t: 'd' }, ' despacio y busca los valores exactos en que las circunferencias apenas se tocan.'] },
+      ],
+    },
     juega: {
       consigna: 'Los radios miden 4 y 2. Cambia la distancia d entre los centros y mira cómo se relacionan las dos circunferencias.',
       voz: 'Mueve d. Fíjate en el momento exacto en que se tocan.',
@@ -200,6 +261,34 @@
       condicion: 'r₁ ≥ r₂ y d es la distancia entre los centros. Con d = 0 son concéntricas.',
       voz: 'Dos números deciden todo: la suma y la diferencia.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con otras semillas (datosPos), resuelto paso a paso.
+    resuelve: {
+      generar(s) {
+        const { r1, r2, d } = datosPos(s + 900), su = r1 + r2, re = r1 - r2, bien = posicion(d, r1, r2), D = { v: 'c-h', t: 'd' };
+        const compara = { exteriores: [D, ` = ${d} > ${su}`], 'tangentes exteriores': [D, ` = ${d} = ${su}`], secantes: [`${re} < `, D, ` = ${d} < ${su}`],
+          'tangentes interiores': [D, ` = ${d} = ${re}`], interiores: [D, ` = ${d} < ${re}`] }[bien];
+        const sentido = {
+          exteriores: `Los centros están más lejos, ${d}, de lo que alcanzan los dos radios juntos, ${su}: no llegan a tocarse.`,
+          'tangentes exteriores': `Un radio tras otro, ${r1} + ${r2}, cubren justo la distancia ${d}: se tocan en un solo punto, por fuera.`,
+          secantes: `Con ${d} no alcanzan a separarse, porque harían falta ${su}, ni a meterse una en la otra, que pide ${re} o menos: se cortan.`,
+          'tangentes interiores': `La chica queda dentro y su borde llega justo al de la grande: ${d} + ${r2} = ${r1}.`,
+          interiores: `La chica queda dentro sin tocar el borde: ${d} + ${r2} = ${d + r2}, que no llega a ${r1}.`,
+        }[bien];
+        return {
+          enunciado: [`Dos circunferencias tienen radios ${r1} y ${r2}, y sus centros están a una distancia `, D, ` = ${d}. ¿Cuál es su posición?`],
+          dibujo: { datos: dosEsc(d, r1, r2, false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la posición: si las circunferencias se cortan, se tocan en un punto o no se tocan.' },
+            { tipo: 'datos', texto: ['Los radios miden ', `${r1} y ${r2}`, '; la distancia entre los centros es ', D, ` = ${d}.`] },
+            { tipo: 'regla', texto: ['Comparo ', D, ' con la suma y con la resta de los radios. Esos dos números son los momentos en que apenas se tocan, por fuera y por dentro.'] },
+            { tipo: 'cuentas', texto: [`La suma es ${su} y la resta es ${re}. Ubico `, D, ' frente a esos dos números.'],
+              ecuacion: compara, dibujo: { datos: dosEsc(d, r1, r2, true), estado: {} } },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: `Son ${bien}.`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Calcula la suma y la diferencia de radios primero.',
       generar(s) {
@@ -243,11 +332,39 @@
         ...(o.tangente ? [{ en: 'A', de: 'T1', a: 'B', color: 'h', texto: o.sinT ? undefined : `${ARCO / 2}°`, radio: 30, desde: k.t || 0 }] : [])],
     };
   };
+  // Figura de «Así se resuelve»: un arco AB cualquiera y el ángulo pedido (0 central, 1 inscrito, 2 semiinscrito), con
+  // los mismos colores de la idea: central verde, inscrito turquesa, semiinscrito rojo.
+  const arcoAng = (arco, tipo, conAng) => {
+    const ga = 270 - arco / 2, A = en(ga), B = en(270 + arco / 2), P = en(90), Tg = U.polar(A, 2.4, ga + 90);
+    const txt = conAng ? gr(tipo === 0 ? arco : arco / 2) : undefined;
+    const lados = [[{ de: 'O', a: 'A', color: 'd' }, { de: 'O', a: 'B', color: 'd' }], [{ de: 'P', a: 'A', color: 'i' }, { de: 'P', a: 'B', color: 'i' }],
+      [{ de: 'A', a: 'B', color: 'i' }, { de: 'A', a: 'Tg', color: 'h', grosor: 'variable' }]][tipo];
+    const ang = [{ en: 'O', de: 'A', a: 'B', color: 'd', texto: txt, radio: 20 }, { en: 'P', de: 'A', a: 'B', color: 'i', texto: txt, radio: 24 },
+      { en: 'A', de: 'Tg', a: 'B', color: 'h', texto: txt, radio: 28 }][tipo];
+    return {
+      alt: `Arco AB de ${arco}° y el ángulo ${['central AOB', 'inscrito APB', 'semiinscrito entre la tangente en A y la cuerda AB'][tipo]}${conAng ? `, que mide ${txt}` : ''}`,
+      vista: { x: [-4.4, 4.4], y: [-4.4, 4.4] },
+      puntos: [pt('O', O, { rotulo: tipo === 0 ? 'O' : undefined, sinPunto: tipo !== 0, lado: 90 }), pt('A', A, { rotulo: 'A', lado: ga }), pt('B', B, { rotulo: 'B', lado: 270 + arco / 2 }),
+        ...(tipo === 1 ? [pt('P', P, { rotulo: 'P', color: 'o', lado: 90 })] : []), pt('Tg', Tg, { sinPunto: true })],
+      circulos: [{ centro: 'O', r: R }],
+      arcos: [{ centro: O, r: R, de: ga, a: 270 + arco / 2, color: 'o', grosor: 'variable', texto: `${arco}°` }],
+      segmentos: lados,
+      angulos: [ang],
+    };
+  };
   const inscrito = {
     id: 'inscrito',
     titulo: 'Inscrito: la mitad del arco',
     temas: ['Ángulos central, inscrito, semiinscrito, interior y exterior'],
     pieza: 'geo-figura',
+    // Lee (fase 2): arcos en grados y dónde va el vértice. No dice cuánto mide el inscrito ni el semiinscrito.
+    lee: {
+      tarjetas: [
+        { titulo: 'Arcos en grados', texto: 'Una cuerda AB parte la circunferencia en dos arcos. Los arcos se miden en grados, como los ángulos: la vuelta entera tiene 360° y media vuelta, 180°.' },
+        { titulo: 'Dónde está el vértice', texto: 'Si el vértice de un ángulo está en el centro, es un ángulo central. Si está sobre la circunferencia y sus lados son dos cuerdas, es un ángulo inscrito. Cada uno tiene su arco que abarca.' },
+        { titulo: 'Qué mirar', texto: 'Imagina dos faroles, A y B, en el borde de una pileta redonda, y alguien que camina por el borde mirándolos. Al jugar, corre P y fíjate si el ángulo APB cambia.' },
+      ],
+    },
     juega: {
       consigna: 'La cuerda AB abarca un arco de 100°. Corre el punto P por el resto de la circunferencia y mira el ángulo APB.',
       voz: 'Corre P lejos y cerca de A. Comprueba si el ángulo cambia.',
@@ -288,6 +405,29 @@
       ecuacion: ['central = arco   ·   inscrito = semiinscrito = ', { llave: [{ frac: ['arco', '2'] }], nota: 'mitad del arco', color: 'c-o' }],
       condicion: 'el vértice del inscrito está en la circunferencia, fuera del arco que abarca; todos los inscritos en el mismo arco son iguales.',
       voz: 'Ubica el vértice antes de decidir si va el arco o su mitad.',
+    },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» (arco de 40° a 160° y uno de los tres ángulos), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), arco = 10 * r.ent(4, 16), tipo = s % 3;
+        const nom = ['central', 'inscrito', 'semiinscrito'][tipo], bien = tipo === 0 ? arco : arco / 2;
+        const ang = ['∠AOB', '∠APB', 'el ángulo en A'][tipo];
+        return {
+          enunciado: [`Un arco AB mide ${arco}°. ¿Cuánto mide el ángulo ${nom} que lo abarca${tipo === 2 ? ', formado por la tangente en A y la cuerda AB' : ''}?`],
+          dibujo: { datos: arcoAng(arco, tipo, false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden el ángulo ${nom}: ${['su vértice está en el centro O', 'su vértice P está sobre la circunferencia y sus lados son cuerdas', 'su vértice es A, entre la tangente y la cuerda AB'][tipo]}.` },
+            { tipo: 'datos', texto: `El arco AB que abarca mide ${arco}°.`, ecuacion: [{ v: 'c-o', t: `arco AB = ${arco}°` }] },
+            { tipo: 'regla', texto: tipo === 0 ? 'Con el vértice en el centro, el ángulo se abre lo mismo que su arco: mide igual que el arco.'
+              : 'Con el vértice sobre la circunferencia, con dos cuerdas o con cuerda y tangente, el ángulo mide la mitad del arco que abarca.' },
+            { tipo: 'cuentas', texto: tipo === 0 ? 'No hay que dividir: copio la medida del arco.' : 'Divido el arco entre 2.',
+              ecuacion: [`${ang} = `, tipo === 0 ? `${arco}°` : `${arco}° ÷ 2 = ${gr(bien)}`], dibujo: { datos: arcoAng(arco, tipo, true), estado: {} } },
+            { tipo: 'sentido', texto: tipo === 0 ? `Compara: un inscrito en el mismo arco mediría ${gr(arco / 2)}, la mitad. El central, con el vértice más cerca del arco, se abre más.`
+              : `Al revés: el doble de ${gr(bien)} es ${arco}°, el arco. Y el central sobre ese arco mediría ${arco}°, el doble.` },
+          ],
+          respuesta: `El ángulo ${nom} mide ${gr(bien)}.`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Mira dónde está el vértice: en el centro o en la circunferencia.',
@@ -334,6 +474,15 @@
     titulo: 'Dentro se suma, fuera se resta',
     temas: ['Ángulos central, inscrito, semiinscrito, interior y exterior'],
     pieza: 'geo-figura',
+    // Lee (fase 2): cuerdas, secantes y los dos arcos de cada ángulo. No dice cómo se combinan los arcos fuera del círculo.
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos veredas que se cruzan', texto: 'Imagina una plaza redonda en Puno con dos veredas rectas que la cruzan de borde a borde. Cada vereda es una cuerda, y el punto donde se cruzan, Q, queda dentro del círculo.' },
+        { titulo: 'Dos arcos por ángulo', texto: 'Los lados del ángulo en Q abarcan un arco. Si los prolongas al otro lado de Q, abarcan otro arco, el del ángulo opuesto. Este ángulo trabaja con los dos arcos.' },
+        { titulo: 'Secantes', texto: 'Una secante es una recta que corta la circunferencia en dos puntos. Dos secantes también pueden cruzarse fuera del círculo; entonces Q queda afuera, con un arco cercano y otro lejano.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, Q está dentro. Cambia un solo arco cada vez, de 10° en 10°, y anota cuánto cambia el ángulo en Q.' },
+      ],
+    },
     juega: {
       consigna: 'Dos cuerdas se cruzan en Q, dentro del círculo. Cambia los arcos que abarcan el ángulo en Q y su opuesto, y mira el ángulo.',
       voz: 'Cambia los arcos. Busca cómo se combinan en Q.',
@@ -385,6 +534,28 @@
         { frac: [[{ llave: [{ v: 'c-o', t: 'a' }], nota: 'lejano', color: 'c-o' }, ' − ', { llave: [{ v: 'c-i', t: 'b' }], nota: 'cercano', color: 'c-i' }], '2'] }],
       condicion: 'Q es el vértice del ángulo; fuera, sus lados son secantes o tangentes; a es el arco lejano y b el cercano.',
       voz: 'Dentro se suma; fuera se resta. Siempre entre 2.',
+    },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» (Q dentro o fuera, dos arcos), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), fuera = s % 2 === 1, a = 10 * r.ent(fuera ? 10 : 8, 16), b = 10 * r.ent(2, Math.min(7, a / 10 - (fuera ? 6 : 2)));
+        const bien = fuera ? (a - b) / 2 : (a + b) / 2, A = { v: 'c-o', t: `${a}°` }, B = { v: 'c-i', t: `${b}°` }, Q = { v: 'c-h', t: '∠Q' };
+        return {
+          enunciado: [`Dos ${fuera ? 'secantes salen de Q, fuera del círculo,' : 'cuerdas se cortan en Q, dentro del círculo,'} y abarcan arcos de `, A, ' y ', B, '. ¿Cuánto mide el ángulo en Q?'],
+          dibujo: { datos: cruce(a, b, fuera, { sinQ: true }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', Q, `, el ángulo donde se cruzan las dos ${fuera ? 'secantes, fuera' : 'cuerdas, dentro'} del círculo.`] },
+            { tipo: 'datos', texto: ['Los arcos miden ', A, ' y ', B, `. El vértice Q está ${fuera ? 'fuera' : 'dentro'}${fuera ? `: el arco de ${a}° es el lejano y el de ${b}°, el cercano` : ''}.`] },
+            { tipo: 'regla', texto: fuera ? 'Con el vértice fuera, el arco cercano le quita al lejano: resto lejano menos cercano y divido entre 2.'
+              : 'Con el vértice dentro, el ángulo junta los dos arcos: los sumo y divido entre 2.' },
+            { tipo: 'cuentas', texto: fuera ? 'Primero la resta de los arcos, después la mitad.' : 'Primero la suma de los arcos, después la mitad.',
+              ecuacion: [Q, ' = (', A, fuera ? ' − ' : ' + ', B, `) ÷ 2 = ${gr(fuera ? a - b : a + b)} ÷ 2 = ${gr(bien)}`], dibujo: { datos: cruce(a, b, fuera), estado: {} } },
+            { tipo: 'sentido', texto: fuera ? `Un inscrito sobre el arco lejano mediría ${gr(a / 2)}. Con Q más lejos, el ángulo se cierra: ${gr(bien)} es menos. Cuadra.`
+              : `Un inscrito sobre el arco grande mediría ${gr(a / 2)}. Con Q más cerca, el ángulo se abre: ${gr(bien)} es más. Cuadra.` },
+          ],
+          respuesta: [Q, ` = ${gr(bien)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Ubica Q: ¿dentro o fuera del círculo?',
@@ -440,11 +611,52 @@
       angulos: [{ en: 'C', de: 'A', a: 'B' }],
     };
   };
+  // Figuras de «Así se resuelve», a escala de sus datos.
+  // Poncelet: catetos ca y cb, hipotenusa hc y radio rr; el cateto mayor queda en 8 unidades.
+  const ponEsc = (ca, cb, hc, rr, conR) => {
+    const k = 8 / Math.max(ca, cb), A = [ca * k, 0], B = [0, cb * k], I = [rr * k, rr * k];
+    return {
+      alt: `Triángulo rectángulo de catetos ${ca} y ${cb} e hipotenusa ${hc} con su circunferencia inscrita${conR ? ` de radio ${f(rr)}` : ''}`,
+      vista: { x: [-1.4, A[0] + 1.6], y: [-1.2, B[1] + 1] },
+      puntos: [pt('C', O, { sinPunto: true }), pt('A', A, { sinPunto: true }), pt('B', B, { sinPunto: true }), pt('I', I, { sinPunto: !conR }),
+        pt('T1', [I[0], 0], { color: 'h', sinPunto: !conR }), pt('T2', [0, I[1]], { color: 'h', sinPunto: !conR })],
+      circulos: [{ centro: 'I', r: rr * k, color: 'd' }],
+      segmentos: [{ de: 'C', a: 'A', color: 'o', grosor: 'variable', texto: `${ca}` }, { de: 'C', a: 'B', color: 'i', grosor: 'variable', texto: `${cb}` }, { de: 'A', a: 'B', color: 'h', grosor: 'variable', texto: `${hc}` },
+        ...(conR ? [{ de: 'I', a: 'T1', color: 'd' }, { de: 'I', a: 'T2', color: 'd', texto: `r = ${f(rr)}` }] : [])],
+      angulos: [{ en: 'C', de: 'A', a: 'B' }],
+    };
+  };
+  // Pitot: tangentes t[0..3] desde A, B, C y D. El radio real sale de que los cuatro medios ángulos en O suman 180°
+  // (Σ atan(tᵢ / r) = π, por bisección); se dibuja con r = r5 y los lados se rotulan con su largo real.
+  const pitEsc = (t, conDA) => {
+    let lo = 1e-6, hi = 1e3;
+    for (let i = 0; i < 80; i++) { const m = (lo + hi) / 2; if (t.reduce((acc, x) => acc + Math.atan(x / m), 0) > Math.PI) lo = m; else hi = m; }
+    const rr = (lo + hi) / 2, e = r5 / rr, th = t.map(x => U.grados(Math.atan(x / rr)));
+    const dir = [], tg = []; let g = -90 - 2 * th[0];                                   // tangencia de DA; AB queda abajo
+    for (let i = 0; i < 4; i++) { tg.push(g); dir.push(g + th[i]); g += 2 * th[i]; }
+    const V = t.map((x, i) => U.polar(O, e * Math.hypot(rr, x), dir[i])), L = t.map((x, i) => x + t[(i + 1) % 4]), nombres = ['A', 'B', 'C', 'D'];
+    const xs = V.map(p => p[0]), ys = V.map(p => p[1]);
+    return {
+      alt: `Cuadrilátero con circunferencia inscrita: AB = ${L[0]}, BC = ${L[1]}, CD = ${L[2]}${conDA ? ` y DA = ${L[3]}` : ' y DA desconocido'}`,
+      vista: { x: [Math.min(...xs, -r5) - 1, Math.max(...xs, r5) + 1], y: [Math.min(...ys, -r5) - 1, Math.max(...ys, r5) + 1] },
+      puntos: V.map((p, i) => pt(nombres[i], p, { rotulo: nombres[i], lado: dir[i] })).concat(tg.map((a, i) => pt('T' + i, U.polar(O, r5, a), { color: 'h', sinPunto: !conDA }))).concat([pt('O', O, { sinPunto: true })]),
+      circulos: [{ centro: 'O', r: r5, color: 'd' }],
+      segmentos: V.map((p, i) => ({ de: nombres[i], a: nombres[(i + 1) % 4], color: i % 2 ? 'i' : 'o', grosor: 'variable', texto: i === 3 && !conDA ? '?' : `${L[i]}` })),
+    };
+  };
   const pitot = {
     id: 'poncelet-pitot',
     titulo: 'Tangentes iguales: Pitot y Poncelet',
     temas: ['Teoremas de Poncelet y Pitot'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es una circunferencia inscrita y de dónde vienen los nombres. No da la cuenta del radio inscrito.
+    lee: {
+      tarjetas: [
+        { titulo: 'Una circunferencia adentro', texto: 'Una circunferencia inscrita queda dentro de un polígono y toca cada lado en un solo punto. Imagina un plato redondo que entra justo en una bandeja de cuatro lados y roza los cuatro bordes.' },
+        { titulo: 'Lo que ya sabes', texto: 'De la primera idea: desde un punto exterior, las dos tangentes miden lo mismo. Aquí cada vértice es un punto exterior, y sus dos lados son tangentes a la circunferencia.' },
+        { titulo: 'Dos nombres franceses', texto: 'Esta idea lleva los nombres del ingeniero Henri Pitot, del siglo XVIII, y del matemático Jean-Victor Poncelet, del siglo XIX. Al jugar, deforma ABCD y compara AB + CD con BC + DA.' },
+      ],
+    },
     juega: {
       consigna: 'El cuadrilátero ABCD tiene sus cuatro lados tangentes a la circunferencia. Cambia su forma y compara AB + CD con BC + DA.',
       voz: 'Deforma el cuadrilátero. Comprueba qué sumas permanecen iguales.',
@@ -490,6 +702,47 @@
       ecuacion: [{ v: 'c-o', t: 'AB + CD' }, ' = ', { v: 'c-i', t: 'BC + DA' }, '   ·   a + b = ', { llave: ['c'], nota: 'hipotenusa', color: 'c-h' }, ' + ', { llave: ['2r'], nota: 'diámetro', color: 'c-d' }],
       condicion: 'para Pitot, el cuadrilátero es convexo y tiene circunferencia inscrita; para Poncelet, el triángulo es rectángulo y c es la hipotenusa.',
       voz: 'Los dos teoremas son tangentes iguales, nada más.',
+    },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» (Poncelet con semilla par, Pitot con impar), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const [a, b, c] = r.de(TRIPLES), k = r.ent(1, 3), A = a * k, B = b * k, C = c * k, rr = (A + B - C) / 2;
+          const cA = { v: 'c-o', t: `${A}` }, cB = { v: 'c-i', t: `${B}` }, cC = { v: 'c-h', t: `${C}` };
+          return {
+            enunciado: ['Un triángulo rectángulo tiene catetos ', cA, ' y ', cB, ' e hipotenusa ', cC, '. ¿Cuánto mide el radio de su circunferencia inscrita?'],
+            dibujo: { datos: ponEsc(A, B, C, rr, false), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el radio r de la circunferencia inscrita: la que toca los tres lados por dentro.' },
+              { tipo: 'datos', texto: ['Catetos ', cA, ' y ', cB, '; hipotenusa ', cC, '.'] },
+              { tipo: 'regla', texto: 'Desde cada vértice, las dos tangentes miden igual. Junto al ángulo recto miden r, así que los catetos suman la hipotenusa más dos radios.',
+                ecuacion: ['a + b = ', { v: 'c-h', t: 'c' }, ' + ', { v: 'c-d', t: '2r' }] },
+              { tipo: 'cuentas', texto: 'Reemplazo, despejo 2r y divido entre 2.',
+                ecuacion: [cA, ' + ', cB, ' = ', cC, ` + 2r   →   2r = ${A + B - C}   →   `, { v: 'c-d', t: `r = ${f(rr)}` }], dibujo: { datos: ponEsc(A, B, C, rr, true), estado: {} } },
+              { tipo: 'sentido', texto: `Comprueba: ${A} + ${B} = ${A + B} y ${C} + 2 · ${f(rr)} = ${f(C + 2 * rr)}. Y el radio sale menor que la mitad del cateto menor, ${f(Math.min(A, B) / 2)}.` },
+            ],
+            respuesta: ['El radio mide ', { v: 'c-d', t: `r = ${f(rr)}` }, '.'],
+          };
+        }
+        const t = [r.ent(1, 6), r.ent(1, 6), r.ent(1, 6), r.ent(1, 6)];
+        const L = [t[0] + t[1], t[1] + t[2], t[2] + t[3], t[3] + t[0]];
+        const AB = { v: 'c-o', t: 'AB' }, BC = { v: 'c-i', t: 'BC' }, CD = { v: 'c-o', t: 'CD' }, DA = { v: 'c-i', t: 'DA' };
+        return {
+          enunciado: [`Un cuadrilátero tiene una circunferencia inscrita. Sus lados consecutivos miden `, AB, ` = ${L[0]}, `, BC, ` = ${L[1]}, `, CD, ` = ${L[2]} y `, DA, '. ¿Cuánto mide ', DA, '?'],
+          dibujo: { datos: pitEsc(t, false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el lado ', DA, ', el que falta, en un cuadrilátero con circunferencia inscrita.'] },
+            { tipo: 'datos', texto: [AB, ` = ${L[0]}, `, BC, ` = ${L[1]} y `, CD, ` = ${L[2]}. `, AB, ' y ', CD, ' son opuestos; ', BC, ' y ', DA, ', también.'] },
+            { tipo: 'regla', texto: 'Cada lado se arma con dos tangentes, una desde cada vértice, y las dos de un mismo vértice miden igual. Por eso los lados opuestos suman lo mismo.',
+              ecuacion: [AB, ' + ', CD, ' = ', BC, ' + ', DA] },
+            { tipo: 'cuentas', texto: ['Sumo los opuestos que conozco y le resto ', BC, '.'],
+              ecuacion: [`${L[0]} + ${L[2]} = ${L[1]} + `, DA, '   →   ', DA, ` = ${L[0] + L[2]} − ${L[1]} = ${L[3]}`], dibujo: { datos: pitEsc(t, true), estado: {} } },
+            { tipo: 'sentido', texto: ['Comprueba: ', AB, ' + ', CD, ` = ${L[0] + L[2]} y `, BC, ' + ', DA, ` = ${L[1]} + ${L[3]} = ${L[1] + L[3]}. Las dos sumas coinciden.`] },
+          ],
+          respuesta: [DA, ` = ${L[3]}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Escribe cada lado como suma de dos tangentes.',
@@ -540,11 +793,54 @@
       angulos: [{ en: 'B', de: 'C', a: 'A', color: 'o', texto: o.sinB ? undefined : `${f(b, 0)}°`, desde: k.b || 0 }, { en: 'D', de: 'A', a: 'C', color: 'i', texto: o.sinD ? undefined : `${f(d, 0)}°`, desde: k.d || 0 }],
     };
   };
+  // Figuras de «Así se resuelve», a escala de sus datos.
+  // Inscrito con ∠A = a y ∠B = b: arcos AB, BC, CD y DA (α, β, γ, δ) con β + γ = 2a y γ + δ = 2b; γ va al medio de su rango.
+  const cuadAB = (a, b, conD) => {
+    const lo = Math.max(0, 2 * a + 2 * b - 360), hi = Math.min(2 * a, 2 * b), ga = (lo + hi) / 2, be = 2 * a - ga, al = 360 - 2 * a - 2 * b + ga;
+    const gB = 100, gA = gB + al, gC = gB - be, gD = gC - ga, P = { A: en(gA), B: en(gB), C: en(gC), D: en(gD) };
+    return {
+      alt: `Cuadrilátero ABCD inscrito con ∠A = ${a}° y ∠B = ${b}°${conD ? `; ∠D mide ${180 - b}°` : ''}`,
+      vista: { x: [-4.2, 4.2], y: [-4.2, 4.2] },
+      puntos: [pt('A', P.A, { rotulo: 'A', lado: gA }), pt('B', P.B, { rotulo: 'B', lado: gB }), pt('C', P.C, { rotulo: 'C', lado: gC }), pt('D', P.D, { rotulo: 'D', lado: gD }), pt('O', O, { sinPunto: true })],
+      circulos: [{ centro: 'O', r: R }],
+      regiones: [{ puntos: ['A', 'B', 'C', 'D'], color: 'd', opacidad: 0.06 }],
+      segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'D' }, { de: 'D', a: 'A' }],
+      angulos: [{ en: 'A', de: 'B', a: 'D', texto: `${a}°` }, { en: 'B', de: 'C', a: 'A', color: 'o', texto: `${b}°` }, { en: 'D', de: 'A', a: 'C', color: 'i', texto: conD ? `${180 - b}°` : undefined }],
+    };
+  };
+  // ¿Inscriptible? Cometa ABCD simétrica respecto de AC, con ∠A = a y ∠C = c; la circunferencia por A, B y C dice si D cae
+  // sobre ella (a + c = 180°), dentro o fuera; dD es la distancia de D a su centro.
+  const cometa = (a, c) => {
+    const A = [-2.4, 0], C = [2.4, 0], ta = Math.tan(U.rad(a / 2)), tc = Math.tan(U.rad(c / 2)), x = (C[0] * tc + A[0] * ta) / (ta + tc), y = (x - A[0]) * ta;
+    const B = [x, y], D = [x, -y], k = (x * x + y * y - 2.4 * 2.4) / (2 * y), rc = Math.hypot(2.4, k);
+    return { A, B, C, D, centro: [0, k], rc, dD: Math.hypot(D[0], D[1] - k) };
+  };
+  const cometaFig = (a, c, conCirc) => {
+    const K = cometa(a, c), pts = [K.A, K.B, K.C, K.D];
+    const xs = pts.map(p => p[0]).concat(conCirc ? [K.centro[0] - K.rc, K.centro[0] + K.rc] : []), ys = pts.map(p => p[1]).concat(conCirc ? [K.centro[1] - K.rc, K.centro[1] + K.rc] : []);
+    return {
+      alt: `Cuadrilátero ABCD con ∠A = ${a}° y ∠C = ${c}°${conCirc ? `; la circunferencia por A, B y C ${Math.abs(K.dD - K.rc) < 1e-9 ? 'pasa por D' : K.dD < K.rc ? 'deja a D dentro' : 'deja a D fuera'}` : ''}`,
+      vista: { x: [Math.min(...xs) - 0.8, Math.max(...xs) + 0.8], y: [Math.min(...ys) - 0.8, Math.max(...ys) + 0.8] },
+      puntos: [pt('A', K.A, { rotulo: 'A', lado: 180 }), pt('B', K.B, { rotulo: 'B', lado: 90 }), pt('C', K.C, { rotulo: 'C', lado: 0 }), pt('D', K.D, { rotulo: 'D', lado: -90 })],
+      circulos: conCirc ? [{ centro: K.centro, r: K.rc, discontinua: true }] : [],
+      regiones: [{ puntos: ['A', 'B', 'C', 'D'], color: 'd', opacidad: 0.06 }],
+      segmentos: [{ de: 'A', a: 'B' }, { de: 'B', a: 'C' }, { de: 'C', a: 'D' }, { de: 'D', a: 'A' }],
+      angulos: [{ en: 'A', de: 'B', a: 'D', texto: `${a}°` }, { en: 'C', de: 'D', a: 'B', texto: `${c}°` }],
+    };
+  };
   const ciclico = {
     id: 'cuadrilatero-inscrito',
     titulo: 'Opuestos que suman 180°',
     temas: ['Cuadrilátero inscrito e inscriptible'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es un cuadrilátero inscrito y cuáles son los opuestos. No dice qué pasa cuando D sale del borde.
+    lee: {
+      tarjetas: [
+        { titulo: 'Cuatro puntos en el borde', texto: 'Imagina cuatro bancas en el borde de una pileta redonda de Juliaca. Si las unes en orden con líneas rectas, formas un cuadrilátero inscrito: sus cuatro vértices están sobre la circunferencia.' },
+        { titulo: 'Los opuestos', texto: 'En ABCD, los vértices se nombran seguidos por el borde. Los ángulos opuestos son los que no comparten lado: A con C, y B con D.' },
+        { titulo: 'Qué mirar', texto: 'Cada ángulo del cuadrilátero tiene su vértice sobre la circunferencia, como un inscrito. Al jugar, corre D por su arco y anota ∠B y ∠D en tres posiciones distintas.' },
+      ],
+    },
     juega: {
       consigna: 'A, B, C y D están en la circunferencia. Corre D por su arco y compara los ángulos opuestos B y D.',
       voz: 'Corre D. Suma los dos ángulos opuestos cada vez.',
@@ -583,6 +879,44 @@
       ecuacion: [{ llave: [{ v: 'c-o', t: '∠B' }, ' + ', { v: 'c-i', t: '∠D' }], nota: 'opuestos', color: 'c-d' }, ' = 180°'],
       condicion: 'los cuatro vértices están en una circunferencia (cuadrilátero convexo); vale también para ∠A + ∠C.',
       voz: 'Antes de sumar 180°, comprueba que los cuatro estén en la circunferencia.',
+    },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» (hallar ∠D con semilla par, ¿inscriptible? con impar), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const a = 5 * r.ent(12, 26), b = 5 * r.ent(12, 26), Bv = { v: 'c-o', t: '∠B' }, Dv = { v: 'c-i', t: '∠D' };
+          return {
+            enunciado: [`El cuadrilátero ABCD está inscrito en una circunferencia. Si ∠A = ${a}° y `, Bv, ` = ${b}°, ¿cuánto mide `, Dv, '?'],
+            dibujo: { datos: cuadAB(a, b, false), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', Dv, ', un ángulo del cuadrilátero inscrito ABCD.'] },
+              { tipo: 'datos', texto: [`∠A = ${a}° y `, Bv, ` = ${b}°. Los vértices van seguidos: el opuesto de D es B, no A.`] },
+              { tipo: 'regla', texto: 'En un cuadrilátero inscrito, dos ángulos opuestos suman 180°: entre los dos abarcan la circunferencia entera, y cada uno mide la mitad de su arco.',
+                ecuacion: [Bv, ' + ', Dv, ' = 180°'] },
+              { tipo: 'cuentas', texto: ['Le resto ', Bv, ' a 180°. El dato de ∠A no entra en esta cuenta.'],
+                ecuacion: [Dv, ' = 180° − ', { v: 'c-o', t: `${b}°` }, ` = ${180 - b}°`], dibujo: { datos: cuadAB(a, b, true), estado: {} } },
+              { tipo: 'sentido', texto: `Comprueba: ${b}° + ${180 - b}° = 180°. Y ∠A sirve para el otro par: ∠C = 180° − ${a}° = ${180 - a}°. Los cuatro suman 360°.` },
+            ],
+            respuesta: [Dv, ` = ${180 - b}°`],
+          };
+        }
+        const a = 5 * r.ent(12, 26), si = r.ent(0, 1), c = si ? 180 - a : 180 - a + 5 * r.de([-3, -2, 2, 3]), K = cometa(a, c);
+        const donde = si ? 'sobre' : K.dD < K.rc ? 'dentro de' : 'fuera de';
+        return {
+          enunciado: [`En el cuadrilátero convexo ABCD, ∠A = ${a}° y ∠C = ${c}°. ¿Se puede inscribir en una circunferencia?`],
+          dibujo: { datos: cometaFig(a, c, false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden decidir si ABCD cabe en una circunferencia, con sus cuatro vértices sobre ella.' },
+            { tipo: 'datos', texto: `∠A = ${a}° y ∠C = ${c}°. A y C no comparten lado: son ángulos opuestos.` },
+            { tipo: 'regla', texto: 'Un cuadrilátero se puede inscribir solo si sus ángulos opuestos suman 180°. Si suman más o menos, un vértice queda dentro o fuera.' },
+            { tipo: 'cuentas', texto: 'Sumo los dos opuestos y comparo con 180°.',
+              ecuacion: [`${a}° + ${c}° = ${a + c}°${si ? ' = 180°' : ' ≠ 180°'}`], dibujo: { datos: cometaFig(a, c, true), estado: {} } },
+            { tipo: 'sentido', texto: `Lo ves en la figura: la circunferencia que pasa por A, B y C deja a D ${donde} ella.${si ? ' Los cuatro caben.' : ' No caben los cuatro.'}` },
+          ],
+          respuesta: si ? 'Sí se puede inscribir: A y C suman 180°.' : `No se puede: A y C suman ${a + c}°.`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Ubica los opuestos y decide si suman 180°.',
