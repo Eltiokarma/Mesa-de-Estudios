@@ -110,6 +110,14 @@
     titulo: 'La corriente hace girar la brújula',
     temas: ['Imanes y experimento de Oersted', 'Campo de un conductor recto, una espira y un solenoide'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): la brújula y el campo de la Tierra. No dice qué pasa al invertir la corriente («Predice» lo pregunta).
+    lee: {
+      tarjetas: [
+        { titulo: 'La brújula', texto: 'La aguja de una brújula es un pequeño imán que puede girar. Su polo norte apunta, más o menos, al norte geográfico, porque la Tierra entera se porta como un imán.' },
+        { titulo: 'El campo de la Tierra', texto: `En el Perú, el campo magnético de la Tierra mide unas ${BT} microteslas en horizontal. Es débil: cerca de un imán de refrigeradora, el campo es cientos de veces mayor.` },
+        { titulo: 'Qué mirar', texto: 'El punto rojo es el cable visto desde arriba. El círculo de abajo es la brújula y su flecha, la aguja. Mira cuánto se tuerce cuando la corriente crece.' },
+      ],
+    },
     juega: {
       consigna: 'Un cable vertical lleva corriente que sale de la pantalla; la brújula está al sur. La corriente sube y baja sola: mira la aguja.',
       voz: 'Sin corriente, la aguja mira al norte. Mira cuánto se tuerce.',
@@ -151,6 +159,46 @@
       texto: 'Una corriente crea un campo magnético en círculos alrededor del cable. Su sentido lo da la mano derecha y su valor baja con la distancia.',
       ecuacion: [B, ' = ', { frac: [['μ₀', I], ['2π ', { llave: ['r'], nota: 'distancia al cable' }]] }, '   ·   ', 'μ₀ = 4π × ', { sup: ['10', '−7'] }, ' T·m/A'],
       condicion: 'cable recto y largo comparado con la distancia r, medida desde el centro del cable.',
+    },
+    // Así se resuelve (fase 2): los dos casos de «Ahora tú» (B de un hilo y B a otra distancia) con otras semillas y las
+    // mismas cuentas (bHilo). Distancias de 2, 4 o 6 cm para que la brújula de la figura quepa en la vista.
+    resuelve: {
+      generar(sm) {
+        const x = azar(sm + 900), fig = (i, rc) => ({ datos: oersted(i, rc), estado: {} });
+        if (sm % 2) {
+          const i = x.de([2, 5, 10, 20]), rc = x.de([2, 4, 6]), b = bHilo(i, rc);
+          return {
+            enunciado: ['¿Qué campo magnético produce un cable recto con ', I, ` = ${f(i)} A a ${f(rc)} cm de él?`],
+            dibujo: fig(i, rc),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el campo magnético que crea el cable en el punto donde está la brújula.' },
+              { tipo: 'datos', texto: [I, ` = ${f(i)} A y r = ${f(rc)} cm, que en metros son ${f(rc / 100)} m.`] },
+              { tipo: 'regla', texto: 'El campo da vueltas alrededor del cable y se debilita al alejarse: crece con la corriente y va con uno entre la distancia.',
+                ecuacion: [B, ' = ', { frac: [['μ₀', I], '2π r'] }] },
+              { tipo: 'cuentas', texto: 'μ₀ entre 2π da 2 × 10⁻⁷. Multiplico por la corriente y divido entre la distancia en metros.',
+                ecuacion: [B, ...pot(` = 2×10⁻⁷ · ${f(i)} / ${f(rc / 100)} = ${cien(b * 1e-6, 2)} T = ${f(b, 1)} μT`)] },
+              { tipo: 'sentido', texto: `La Tierra da ${BT} μT; el cable, ${f(b, 1)} μT. Sumados como flechas, la aguja se tuerce ${f(giro(i, rc), 0)}° hacia el este.` },
+            ],
+            respuesta: [B, ` = ${f(b, 1)} μT`],
+          };
+        }
+        // Corrientes de 3, 6 o 12 A: a 2, 4 o 6 cm, B = 20·I/r μT sale entero.
+        const i = x.de([3, 6, 12]), r1 = x.de([2, 4, 6]), r2 = x.de([2, 4, 6].filter(r => r !== r1)), b0 = bHilo(i, r1), b1 = bHilo(i, r2);
+        return {
+          enunciado: ['A ', `${f(r1)} cm de un cable, `, B, ` = ${f(b0, 1)} μT. ¿Cuánto vale a ${f(r2)} cm del mismo cable?`],
+          dibujo: fig(i, r1),
+          pasos: [
+            { tipo: 'pide', texto: `Piden el campo del mismo cable a ${f(r2)} cm, sabiendo cuánto vale a ${f(r1)} cm.` },
+            { tipo: 'datos', texto: [B, ` = ${f(b0, 1)} μT a ${f(r1)} cm. La corriente no cambia; la distancia pasa de ${f(r1)} cm a ${f(r2)} cm.`] },
+            { tipo: 'regla', texto: 'El campo de un cable recto va con uno entre la distancia: si la distancia se multiplica por un número, el campo se divide entre ese número.',
+              ecuacion: [B, ' · r = ', { frac: [['μ₀', I], '2π'] }, ', que no cambia'] },
+            { tipo: 'cuentas', texto: 'Multiplico el campo por la distancia de antes y divido entre la nueva.', dibujo: fig(i, r2),
+              ecuacion: [B, ` = ${f(b0, 1)} · ${f(r1)} / ${f(r2)} = ${f(b1, 1)} μT`] },
+            { tipo: 'sentido', texto: `${r2 > r1 ? 'Más lejos, campo más débil' : 'Más cerca, campo más fuerte'}. De vuelta: ${f(b1, 1)} · ${f(r2)} = ${f(b0, 1)} · ${f(r1)} = ${f(b1 * r2, 0)}.` },
+          ],
+          respuesta: [B, ` = ${f(b1, 1)} μT`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -211,6 +259,17 @@
     titulo: 'Vueltas por metro deciden B',
     temas: ['Campo de un conductor recto, una espira y un solenoide'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): electroimanes, espira, solenoide y μ₀. No dice qué pasa si el solenoide es más grueso («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Imanes que se apagan', texto: 'Un alambre enrollado con corriente se porta como un imán que se prende y se apaga. Así funcionan el timbre de una casa y las grúas que levantan chatarra en los depósitos.' },
+        { titulo: 'Espira y solenoide', texto: 'Una espira es una sola vuelta de alambre. Un solenoide son muchas vueltas seguidas, como un resorte. Sus vueltas por metro, n, dicen qué tan apretado está el enrollado.',
+          ecuacion: ['n = ', { frac: ['N', 'L'] }] },
+        { titulo: 'Una constante', texto: 'En las fórmulas del campo aparece μ₀, la permeabilidad del vacío: dice cuánto campo crea una corriente en el aire o el vacío.',
+          ecuacion: ['μ₀ = 4π × ', { sup: ['10', '−7'] }, ' T·m/A'] },
+        { titulo: 'Qué mirar', texto: 'Las rayas rojas son las vueltas del alambre y las flechas de adentro, el campo. Mira las flechas cuando el solenoide se estira o cambian las vueltas.' },
+      ],
+    },
     juega: {
       consigna: 'Un solenoide con 2 A: un alambre de muchas vueltas. Se estira y se encoge solo: mira el campo de adentro. Cambia las vueltas.',
       voz: 'Compara las dos flechas de adentro: ¿miden lo mismo?',
@@ -251,6 +310,44 @@
       texto: 'Una espira concentra el campo en su centro. Un solenoide largo lo hace uniforme adentro, según sus vueltas por metro y su corriente.',
       ecuacion: ['espira: ', B, ' = ', { frac: [['μ₀', I], '2R'] }, '   ·   ', 'solenoide: ', B, ' = μ₀ ', { frac: ['N', 'L'] }, ' ', I],
       condicion: 'el solenoide es mucho más largo que grueso, y B se mide lejos de sus extremos.',
+    },
+    // Así se resuelve (fase 2): los dos casos de «Ahora tú» (solenoide y espira) con otras semillas y las mismas cuentas.
+    // El solenoide usa 10 a 30 vueltas y 2 A, como la figura (solenoide() dibuja cada vuelta); la espira no tiene figura.
+    resuelve: {
+      generar(sm) {
+        const x = azar(sm + 900);
+        if (sm % 2 === 0) {
+          const n = x.de([10, 20, 30]), Lc = x.de([10, 15, 20]), b = bSol(n, Lc), nm = n / (Lc / 100);
+          return {
+            enunciado: ['Un solenoide de ', `${f(n)} vueltas y ${f(Lc)} cm de largo lleva `, I, ` = ${IS} A. ¿Qué campo hay adentro? Usa μ₀ = 4π × `, { sup: ['10', '−7'] }, ' T·m/A.'],
+            dibujo: { datos: solenoide(n, Lc, 2.5, { b: 9 }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el campo magnético adentro del solenoide, lejos de sus extremos.' },
+              { tipo: 'datos', texto: [`N = ${f(n)} vueltas, L = ${f(Lc)} cm = ${f(Lc / 100, 2)} m e `, I, ` = ${IS} A.`] },
+              { tipo: 'regla', texto: 'Adentro se suman los campos de todas las vueltas. Cuentan las vueltas por metro de largo y la corriente.',
+                ecuacion: [B, ' = μ₀ ', { frac: ['N', 'L'] }, ' ', I] },
+              { tipo: 'cuentas', texto: 'Primero las vueltas por metro; después multiplico por μ₀ y por la corriente.', dibujo: { datos: solenoide(n, Lc), estado: {} },
+                ecuacion: [`n = ${f(n)} / ${f(Lc / 100, 2)} = ${f(nm, 0)} vueltas/m   →   `, B, ...pot(` = 4π×10⁻⁷ · ${f(nm, 0)} · ${IS} = ${f(b, 3)} mT`)] },
+              { tipo: 'sentido', texto: `Son ${f(b * 1000, 0)} μT: unas ${f(b * 1000 / BT, 0)} veces el campo de la Tierra en el Perú. Por eso el solenoide sirve de imán.` },
+            ],
+            respuesta: [B, ` = ${f(b, 3)} mT`],
+          };
+        }
+        const i = x.de([1, 2, 5, 10]), Rc = x.de([2, 5, 10]), b = MU * i / (2 * Rc / 100) * 1e6;
+        return {
+          enunciado: ['Una espira circular de ', `${f(Rc)} cm de radio lleva `, I, ` = ${f(i)} A. ¿Qué campo hay en su centro?`],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el campo magnético en el centro de la espira, el punto que el alambre rodea.' },
+            { tipo: 'datos', texto: [I, ` = ${f(i)} A y R = ${f(Rc)} cm, que en metros son ${f(Rc / 100, 2)} m.`] },
+            { tipo: 'regla', texto: 'En el centro, todo el alambre de la espira está a la misma distancia R y empuja el campo hacia el mismo lado.',
+              ecuacion: [B, ' = ', { frac: [['μ₀', I], '2R'] }] },
+            { tipo: 'cuentas', texto: 'Reemplazo con el radio en metros y paso el resultado a microteslas.',
+              ecuacion: [B, ...pot(` = 4π×10⁻⁷ · ${f(i)} / (2 · ${f(Rc / 100, 2)}) = ${cien(b * 1e-6, 2)} T = ${f(b, 1)} μT`)] },
+            { tipo: 'sentido', texto: `Las unidades: T·m/A por A entre m da T. Con el doble de radio, el campo sería la mitad: ${f(b / 2, 1)} μT.` },
+          ],
+          respuesta: [B, ` = ${f(b, 1)} μT`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -339,6 +436,14 @@
     titulo: 'La fuerza va de costado',
     temas: ['Fuerza magnética sobre una carga'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): el protón y cómo se dibuja un campo que entra. No dice qué pasa con una carga quieta («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'El protón', texto: `El protón es una de las partículas del núcleo de los átomos. Su carga es positiva, ${cien(QE, 1)} C, y su masa es de apenas ${cien(MP, 2)} kg.` },
+        { titulo: 'Un campo que entra', texto: 'Las × repetidas son un campo magnético que entra a la pantalla, como si vieras de atrás muchas flechas que se alejan. Un punto, •, sería un campo que sale.' },
+        { titulo: 'Qué mirar', texto: 'El círculo naranja con + es el protón. Mira el ángulo entre la flecha naranja de v y la flecha verde de F mientras da vueltas.' },
+      ],
+    },
     juega: {
       consigna: 'Un protón da vueltas, en cámara lenta, en un campo magnético que entra a la pantalla. Mira hacia dónde apunta F. Cambia su rapidez.',
       voz: 'Fíjate en el ángulo entre la flecha de v y la de F.',
@@ -382,6 +487,44 @@
       ecuacion: [F, ' = |q| ', v, B, ' ', { llave: ['sen θ'], nota: 'ángulo con B' }, '   ·   ', 'r = ', { frac: [['m', v], ['|q|', B]] }],
       condicion: 'θ es el ángulo entre v y B. Hay circunferencia si v es perpendicular a B uniforme. Carga negativa: F al revés.',
     },
+    // Así se resuelve (fase 2): los casos de «Ahora tú» (F = qvB sen θ y el electrón paralelo a B) con otras semillas.
+    // Con θ = 90° la figura es la del juego (rapidez hasta 4 × 10⁵ m/s, para que la vuelta quepa en la vista).
+    resuelve: {
+      generar(sm) {
+        const x = azar(sm + 900);
+        const regla = { tipo: 'regla', texto: 'El campo solo empuja la parte de la velocidad que lo cruza: la fuerza va con la carga, la rapidez, el campo y el seno del ángulo.',
+          ecuacion: [F, ' = |q| ', v, B, ' sen θ'] };
+        if (sm % 3 === 2) return {
+          enunciado: 'Un electrón se mueve en línea recta a lo largo de las líneas de un campo magnético uniforme, en el mismo sentido que B. ¿Qué fuerza magnética siente?',
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la fuerza magnética sobre un electrón que avanza en la misma dirección del campo.' },
+            { tipo: 'datos', texto: [v, ' y ', B, ' son paralelos y van en el mismo sentido: el ángulo entre ellos es 0°.'] },
+            regla,
+            { tipo: 'cuentas', texto: 'Reemplazo el ángulo: el seno de 0° es cero, así que todo el producto es cero.', ecuacion: [F, ` = e`, v, B, ` · sen 0° = e`, v, B, ` · ${f(Math.sin(0), 0)} = 0`] },
+            { tipo: 'sentido', texto: 'Sin fuerza, el electrón sigue recto y con la misma rapidez: avanza a lo largo de las líneas sin cruzar ninguna.' },
+          ],
+          respuesta: [F, ' = 0: no siente fuerza magnética'],
+        };
+        const v5 = x.de([1, 2, 3, 4]), bt = x.de([0.1, 0.2, 0.5]), th = x.de([90, 30]), sn = Math.sin(th * Math.PI / 180);
+        const fz = QE * v5 * 1e5 * bt * sn, fmax = QE * v5 * 1e5 * bt;
+        const dib = th === 90 ? { dibujo: { datos: proton(v5, bt, { f: 9 }), estado: {} } } : {};
+        return Object.assign({
+          enunciado: ['Un protón cruza un campo ', B, ` = ${f(bt, 1)} T a `, v, ` = ${f(v5)}×10⁵ m/s, formando ${f(th)}° con B. ¿Qué fuerza magnética siente?`],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la fuerza magnética sobre el protón: cuánto lo empuja el campo mientras lo cruza.' },
+            { tipo: 'datos', texto: ['q = ', ...pot(`${cien(QE, 1)} C, `), v, ...pot(` = ${f(v5)} × 10⁵ m/s, `), B, ` = ${f(bt, 1)} T y θ = ${f(th)}°.`] },
+            regla,
+            Object.assign({ tipo: 'cuentas', texto: `Multiplico todo; el seno de ${f(th)}° vale ${f(sn, 1)}.`,
+              ecuacion: [F, ...pot(` = 1,6×10⁻¹⁹ · ${f(v5)}×10⁵ · ${f(bt, 1)} · ${f(sn, 1)} = ${cien(fz, 1)} N`)] },
+            th === 90 ? { dibujo: { datos: proton(v5, bt), estado: {} } } : {}),
+            { tipo: 'sentido', texto: th === 90
+              ? `Es una fuerza diminuta, pero la masa del protón también: le basta para hacerlo girar en un círculo de ${f(radio(v5, bt), 1)} cm.`
+              : ['Inclinado a 30°, solo cruza el campo la mitad de la velocidad: la fuerza es la mitad de la de 90°, que sería ', ...pot(`${cien(fmax, 1)} N.`)] },
+          ],
+          respuesta: [F, ...pot(` = ${cien(fz, 1)} N`)],
+        }, dib);
+      },
+    },
     ahoraTu: {
       generar(s) {
         const x = azar(s);
@@ -417,9 +560,10 @@
   const BC = 0.2, LC = 0.5;
   const VISTA4 = { x0: -4.5, x1: 4.5, y0: -3.5, y1: 3.6 };
   const fCable = (i, th) => i * LC * BC * Math.sin(th * Math.PI / 180);
+  // o.L y o.B (opcionales, para «Así se resuelve»): otro largo y otro campo; por defecto, los de la idea.
   function cableEnB(i, th, o = {}) {
-    const a = th * Math.PI / 180, L2 = 2.6, c = Math.cos(a), s = Math.sin(a);
-    const fz = fCable(i, th);
+    const a = th * Math.PI / 180, L2 = 2.6, c = Math.cos(a), s = Math.sin(a), Lm = o.L || LC, Bt = o.B || BC;
+    const fz = i * Lm * Bt * Math.sin(a);
     return {
       vista: VISTA4,
       flechas: [
@@ -429,7 +573,7 @@
       arcos: th > 0 ? [{ c: [0, 0], rpx: 26, de: 0, a: th, rotulo: `${f(th, 0)}°`, paso: o.ang }] : [],
       discos: fz > 1e-9 ? [{ c: [0, 0], r: 0.35 + 0.35 * fz / 1, color: 'd', relleno: 0.25, rotulo: '•', paso: o.f }] : [],
       textos: [{ en: [0, -3.15], texto: fz > 1e-9 ? `F = ${f(fz, 2)} N, sale de la pantalla` : 'F = 0', color: 'd', peso: 700, paso: o.f }],
-      alt: `Campo B hacia la derecha y un cable de 0,5 m con ${f(i, 0)} A a ${f(th, 0)}° de B; la fuerza ${fz > 1e-9 ? `vale ${f(fz, 2)} N y sale de la pantalla` : 'es cero'}.`,
+      alt: `Campo B de ${f(Bt, 1)} T hacia la derecha y un cable de ${f(Lm, 1)} m con ${f(i, 0)} A a ${f(th, 0)}° de B; la fuerza ${fz > 1e-9 ? `vale ${f(fz, 2)} N y sale de la pantalla` : 'es cero'}.`,
     };
   }
   const cableIdea = {
@@ -437,6 +581,14 @@
     titulo: 'Solo empuja lo perpendicular',
     temas: ['Fuerza sobre un conductor'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): motores y cómo leer la figura. No dice qué pasa con el cable paralelo al campo («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Motores', texto: 'Dentro del motor de una licuadora o de un ventilador hay cables con corriente entre imanes. El campo empuja esos cables y el eje gira.' },
+        { titulo: 'Cómo leer la figura', texto: 'Las flechas turquesa son el campo B, hacia la derecha. La flecha roja es el cable con su corriente. El círculo verde con punto es la fuerza, que sale de la pantalla.' },
+        { titulo: 'Qué mirar', texto: 'Cambia el ángulo entre el cable y el campo: 90°, 60° o 30°. Mira el tamaño del círculo verde mientras la corriente sube y baja.' },
+      ],
+    },
     juega: {
       consigna: 'Un cable de 0,5 m en un campo de 0,2 T. Su corriente sube y baja sola: mira la fuerza. Cambia el ángulo.',
       voz: 'El círculo verde es la fuerza que sale de la pantalla. Mira cuándo crece.',
@@ -471,6 +623,30 @@
       texto: 'Un campo magnético empuja un cable con corriente con una fuerza perpendicular al cable y al campo. Es máxima a 90° y nula si son paralelos.',
       ecuacion: [F, ' = ', I, ' L ', B, ' ', { llave: ['sen θ'], nota: 'ángulo con B' }],
       condicion: 'tramo recto de largo L dentro de un campo uniforme; θ es el ángulo entre la corriente y B.',
+    },
+    // Así se resuelve (fase 2): F = ILB sen θ de «Ahora tú» con otras semillas; la figura recibe el largo y el campo.
+    resuelve: {
+      generar(sm) {
+        const x = azar(sm + 900), i = x.de([2, 3, 4, 5, 8]), L = x.de([0.2, 0.5, 1]), bt = x.de([0.1, 0.2, 0.4]), th = x.de([90, 30, 0, 90]);
+        const sn = Math.sin(th * Math.PI / 180), fz = i * L * bt * sn, fmax = i * L * bt;
+        const sentido = th === 90 ? 'A 90° el seno vale 1: es la mayor fuerza posible con estos datos. Las unidades: A por m por T da N.'
+          : th === 0 ? 'Con el cable a lo largo del campo, la corriente no cruza ninguna línea de B: no hay empuje, aunque haya corriente.'
+            : `Inclinado a ${f(th)}°, empuja la mitad que a 90°, que serían ${f(fmax, 2)} N. Las unidades: A por m por T da N.`;
+        return {
+          enunciado: ['Un cable de ', `${f(L, 1)} m con `, I, ` = ${f(i)} A forma ${f(th)}° con un campo `, B, ` = ${f(bt, 1)} T. ¿Qué fuerza recibe?`],
+          dibujo: { datos: cableEnB(i, th, { f: 9, L, B: bt }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la fuerza que el campo magnético hace sobre el tramo de cable.' },
+            { tipo: 'datos', texto: [I, ` = ${f(i)} A, L = ${f(L, 1)} m, `, B, ` = ${f(bt, 1)} T y un ángulo de ${f(th)}° entre el cable y el campo.`] },
+            { tipo: 'regla', texto: 'El campo empuja solo la parte del cable que lo cruza: la fuerza va con la corriente, el largo, el campo y el seno del ángulo.',
+              ecuacion: [F, ' = ', I, ' L ', B, ' sen θ'] },
+            { tipo: 'cuentas', texto: `Multiplico los cuatro factores; el seno de ${f(th)}° vale ${f(sn, 1)}.`, dibujo: { datos: cableEnB(i, th, { L, B: bt }), estado: {} },
+              ecuacion: [F, ` = ${f(i)} · ${f(L, 1)} · ${f(bt, 1)} · ${f(sn, 1)} = ${f(fz, 2)} N`] },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: [F, ` = ${f(fz, 2)} N`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -524,6 +700,15 @@
     titulo: 'Mismo sentido, se atraen',
     temas: ['Fuerza entre cables paralelos'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): Ampère y el ampere de antes. No dice nada de corrientes distintas («Predice» lo pregunta).
+    lee: {
+      tarjetas: [
+        { titulo: 'Ampère', texto: 'En 1820, pocas semanas después de conocer el experimento de Oersted, André-Marie Ampère mostró que dos cables con corriente se empujan o se jalan sin tocarse.' },
+        { titulo: 'El ampere de antes', texto: ['Hasta 2019, el ampere se definía con dos cables iguales separados 1 m: 1 A era la corriente que los jalaba con 2 × ', { sup: ['10', '−7'] }, ' N por cada metro.'] },
+        { titulo: 'Vista desde arriba', texto: 'Cada círculo rojo es un cable visto desde arriba. Un punto, •, es corriente que sale de la pantalla; una ×, corriente que entra.' },
+        { titulo: 'Qué mirar', texto: 'Cambia el sentido del segundo cable y mira hacia dónde apuntan las flechas verdes. Mira también su tamaño cuando los cables se acercan.' },
+      ],
+    },
     juega: {
       consigna: 'Dos cables paralelos, vistos desde arriba, con la misma corriente. Se acercan y se alejan solos: mira las fuerzas. Cambia el sentido del segundo.',
       voz: 'Mira hacia dónde apuntan las flechas al cambiar el sentido.',
@@ -561,6 +746,43 @@
       texto: 'Dos cables paralelos se atraen si sus corrientes van en el mismo sentido y se repelen si van opuestas, con fuerzas iguales sobre los dos.',
       ecuacion: [{ frac: [F, 'L'] }, ' = ', { frac: [['μ₀', { sub: [I, '1'] }, { sub: [I, '2'] }], ['2π ', { llave: ['d'], nota: 'separación' }]] }],
       condicion: 'cables rectos, largos y paralelos, separados una distancia d en metros.',
+    },
+    // Así se resuelve (fase 2): los dos casos de «Ahora tú» (qué hacen y cuánta fuerza por metro) con otras semillas y
+    // la misma cuenta (fPar). Separaciones de 4, 5 o 10 cm y corrientes chicas: las flechas caben y F/L sale entera.
+    resuelve: {
+      generar(sm) {
+        const x = azar(sm + 900), i1 = x.de([2, 4, 5, 10]), i2 = x.de([1, 2, 3]), dc = x.de([4, 5, 10]), mismo = sm % 2 === 0, fz = fPar(i1, i2, dc);
+        const sentido = mismo ? 'el mismo sentido' : 'sentidos opuestos', hacen = mismo ? 'se atraen' : 'se repelen';
+        const I1 = { sub: [I, '1'] }, I2 = { sub: [I, '2'] };
+        const regla = { tipo: 'regla', texto: 'Cada cable está en el campo del otro. Mismo sentido se atraen; opuestos se repelen. La fuerza lleva el producto de las corrientes.',
+          ecuacion: [{ frac: [F, 'L'] }, ' = ', { frac: [['μ₀', I1, I2], '2π d'] }] };
+        if (sm % 3 === 1) return {
+          enunciado: `Dos cables paralelos llevan ${f(i1)} A y ${f(i2)} A en sentidos ${mismo ? 'iguales' : 'opuestos'}. ¿Qué hacen?`,
+          dibujo: { datos: paralelos(i1, i2, 5, mismo, { f: 9 }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden si los cables se atraen o se repelen, y cómo son las fuerzas sobre cada uno.' },
+            { tipo: 'datos', texto: [I1, ` = ${f(i1)} A e `, I2, ` = ${f(i2)} A, en ${sentido}.`] },
+            regla,
+            { tipo: 'aplica', texto: `Van en ${sentido}: ${hacen}. Si cambio I₁ por I₂, el producto no cambia: cada cable recibe la misma fuerza.`,
+              ecuacion: [I1, ' · ', I2, ' = ', I2, ' · ', I1] },
+            { tipo: 'sentido', texto: 'Es la tercera ley de Newton: una sola interacción, con dos fuerzas iguales y opuestas, una en cada cable.' },
+          ],
+          respuesta: `${mismo ? 'Se atraen' : 'Se repelen'} con fuerzas iguales`,
+        };
+        return {
+          enunciado: ['Dos cables paralelos a ', `${f(dc)} cm llevan `, I1, ` = ${f(i1)} A e `, I2, ` = ${f(i2)} A en ${sentido}. ¿Qué fuerza por metro se ejercen?`],
+          dibujo: { datos: paralelos(i1, i2, dc, mismo, { f: 9 }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la fuerza por cada metro de largo que un cable hace sobre el otro.' },
+            { tipo: 'datos', texto: [I1, ` = ${f(i1)} A, `, I2, ` = ${f(i2)} A y d = ${f(dc)} cm, que en metros son ${f(dc / 100, 2)} m.`] },
+            regla,
+            { tipo: 'cuentas', texto: 'μ₀ entre 2π da 2 × 10⁻⁷. Multiplico las dos corrientes y divido entre d en metros.', dibujo: { datos: paralelos(i1, i2, dc, mismo), estado: {} },
+              ecuacion: [{ frac: [F, 'L'] }, ...pot(` = 2×10⁻⁷ · ${f(i1)} · ${f(i2)} / ${f(dc / 100, 2)} = ${cien(fz * 1e-6, 1)} N/m = ${f(fz, 0)} μN/m`)] },
+            { tipo: 'sentido', texto: `En ${sentido} ${hacen}, y los dos cables reciben ${f(fz, 0)} μN por metro${i1 === i2 ? '' : ', aunque sus corrientes sean distintas'}.` },
+          ],
+          respuesta: [{ frac: [F, 'L'] }, ` = ${f(fz, 0)} μN/m; ${hacen}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -640,6 +862,10 @@
         formas: ['campo magnético', 'campos magnéticos'], ejemplo: 'Un cable con 10 A, a 4 cm: B = 50 μT.', ver: ['tesla', 'fuerza magnética'] },
       { termino: 'tesla', simbolo: 'T', def: 'Unidad del campo magnético en el SI. El campo de la Tierra es de unas decenas de microteslas.',
         ejemplo: '1 T empuja con 1 N a 1 m de cable con 1 A, a 90°.', ver: ['campo magnético'] },
+      { termino: 'brújula', formas: ['brújula', 'brújulas'], def: 'Aguja imantada que gira libre: su polo norte apunta como el campo magnético del lugar donde está.',
+        ejemplo: 'Lejos de cables e imanes, señala el norte por el campo de la Tierra.', ver: ['imán', 'polo magnético'] },
+      { termino: 'permeabilidad del vacío', simbolo: 'μ₀', medida: 'T·m/A', def: 'Constante que dice cuánto campo magnético crea una corriente en el vacío o en el aire.',
+        ejemplo: 'μ₀ = 4π × 10⁻⁷ T·m/A; μ₀ / 2π = 2 × 10⁻⁷ T·m/A.', ver: ['campo magnético'] },
       { termino: 'experimento de Oersted', def: 'Prueba de 1820: una corriente cercana desvía una brújula. Mostró que la electricidad produce efectos magnéticos.',
         formas: ['experimento de Oersted', 'experimento de Ørsted'], ver: ['campo magnético'] },
       { termino: 'mano derecha', def: 'Truco para hallar sentidos: pulgar con la corriente; los dedos doblados dan el giro del campo.',
