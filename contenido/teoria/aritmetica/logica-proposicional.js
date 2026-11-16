@@ -81,6 +81,20 @@
   const inversa = (escala, a, b) => px => a + (px - escala(a)) * (b - a) / (escala(b) - escala(a));
   const manijaFila = (datos, i) => { const g = TABLA().geometria(datos); return { x: g.xs[g.xs.length - 1] - 12, y: g.filaY(i) + g.altoFila / 2 }; };
   const filaEn = (datos, y, hasta = 3) => { const g = TABLA().geometria(datos); return Math.max(0, Math.min(hasta, Math.floor((y - g.filaY(0)) / g.altoFila))); };
+  // Así se resuelve: reemplaza cada letra y resuelve de adentro hacia afuera; cada eslabón lo calcula el código.
+  const OPV = { '∧': (x, y) => x && y, '∨': (x, y) => x || y, '→': (x, y) => !x || y, '↔': (x, y) => x === y };
+  function sustituye(t, p, q) {
+    const pasos = [t.replace(/p/g, VF(p)).replace(/q/g, VF(q))];
+    const neg = x => x.replace(/~([VF])/g, (_, c) => (c === 'V' ? 'F' : 'V'));
+    const par = x => x.replace(/\(([VF]) ([∧∨→↔]) ([VF])\)/g, (_, a, o, b) => VF(OPV[o](a === 'V', b === 'V')));
+    let x = pasos[0];
+    for (let k = 0; k < 4; k++) { const y = neg(par(neg(x))); if (y === x) break; pasos.push(y); x = y; }
+    const fin = VF(FORM[t](p, q));
+    if (x !== fin) pasos.push(fin);
+    return pasos.join(' = ');
+  }
+  const filasV = t => columna(t).filter(Boolean).length;
+  const llaves = xs => (xs.length ? `{${xs.join(', ')}}` : '∅');
   const vfCtl = (id, color) => ({ id, etiqueta: id, color, opciones: [{ valor: 'V', texto: 'V' }, { valor: 'F', texto: 'F' }], inicio: 'V' });
 
   // ---------- Idea 1: los conectivos se definen por su tabla; ∨ es inclusiva ----------
@@ -92,6 +106,15 @@
     titulo: 'Cada conectivo tiene su tabla',
     temas: ['Proposiciones simples y compuestas', 'Conectivos lógicos'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): qué es una proposición y cómo se escriben los conectivos; no dice qué hace ∨ con V-V (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Frases que se revisan', texto: '«Juliaca está en Puno» es verdadera. «7 es par» es falsa. Una frase así, que es V o F, se llama proposición. «¿Vienes mañana?» no lo es: una pregunta no es verdadera ni falsa.' },
+        { titulo: 'Letras y conectivos', texto: 'Las proposiciones se nombran con letras, como p y q. Los conectivos las unen: ∧ se lee «y», ∨ se lee «o», ↔ se lee «si y solo si», y ~ se lee «no».',
+          ecuacion: [P, ' ∧ ', Q, '   ·   ', P, ' ∨ ', Q, '   ·   ', P, ' ↔ ', Q, '   ·   ~', P] },
+        { titulo: 'Qué mirar', texto: 'La tabla tiene cuatro filas: V-V, V-F, F-V y F-F. Elige una fila y un conectivo, y mira qué valor sale en la última columna.' },
+      ],
+    },
     juega: {
       consigna: 'Una proposición es una frase que es verdadera (V) o falsa (F). Elige p, q y el conectivo; mira la fila que se llena.',
       voz: 'Prueba las cuatro filas con un mismo conectivo.',
@@ -130,6 +153,32 @@
       texto: 'Una proposición compuesta une simples con conectivos, y su valor sale de la tabla del conectivo: ∧ pide las dos; ∨ pide al menos una.',
       ecuacion: [P, ' ∧ ', Q, ' = V solo en V-V', '   ·   ', P, ' ∨ ', Q, ' = F solo en F-F'],
       condicion: 'cada parte tiene valor de verdad. Una pregunta o «x + 2 = 5» sin fijar x no son proposiciones.',
+    },
+    // Así se resuelve (fase 2): el valor de una fórmula en una fila, como en «Ahora tú», con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), p = r.de([true, false]), q = r.de([true, false]);
+        const t = r.de(['p ∧ q', 'p ∨ q', 'p ↔ q', '~p ∨ q', 'p ∧ ~q', '~(p ∧ q)', '~p ∧ ~q']);
+        const v = FORM[t](p, q), i = fila(p, q), nV = filasV(t);
+        const regla = t.startsWith('~(') ? 'Primero resuelvo el paréntesis; después ~ cambia su valor: V pasa a F y F pasa a V.'
+          : t.includes('↔') ? 'Con ↔ el resultado es V cuando las dos partes valen lo mismo, las dos V o las dos F.'
+          : t.includes('∨') ? 'Con «o» (∨) basta que una parte sea V. Solo da F cuando las dos partes son F.'
+          : 'Con «y» (∧) el resultado es V solo si las dos partes son V. Si una es F, da F.';
+        return {
+          enunciado: ['Si ', P, ` = ${VF(p)} y `, Q, ` = ${VF(q)}, ¿cuánto vale ${t}?`],
+          dibujo: { datos: tabla([t], { solo: -1 }), estado: { fila: i } },
+          pasos: [
+            { tipo: 'pide', texto: `Piden el valor de verdad de ${t}: si es V o F.` },
+            { tipo: 'datos', texto: ['Tengo ', P, ` = ${VF(p)} y `, Q, ` = ${VF(q)}. Es la fila ${VF(p)}-${VF(q)} de la tabla.`] },
+            { tipo: 'regla', texto: regla },
+            { tipo: 'cuentas', texto: 'Reemplazo cada letra por su valor y resuelvo de adentro hacia afuera.', ecuacion: [sustituye(t, p, q)],
+              dibujo: { datos: tabla([t], { solo: i }), estado: { fila: i } } },
+            { tipo: 'sentido', texto: `En la tabla completa, ${t} sale V en ${nV} de las 4 filas, y la fila ${VF(p)}-${VF(q)} ${v ? 'es' : 'no es'} una de ellas. Cuadra.`,
+              dibujo: { datos: tabla([t], { falsaRoja: true }), estado: { fila: i } } },
+          ],
+          respuesta: `${t} = ${VF(v)}`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -173,6 +222,15 @@
     titulo: 'El condicional solo falla una vez',
     temas: ['Conectivos lógicos', 'Tablas de verdad'],
     pieza: 'arit-tabla',
+    // Lee: la promesa como condicional y el recíproco; no dice qué vale p → q cuando p es F (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una promesa', texto: 'Tu tío te dice: «Si apruebas el examen, te invito un helado». p es «apruebas» y q es «te invito». Se escribe p → q y se lee «si p, entonces q».',
+          ecuacion: [P, ' → ', Q] },
+        { titulo: '¿Cumplió o no?', texto: 'Para saber si el tío cumplió, hay que ver qué pasó con p y con q. Con dos letras hay cuatro casos posibles, y cada caso es una fila de la tabla.' },
+        { titulo: 'Dar la vuelta', texto: 'Si cambias el orden de la flecha sale otra frase: q → p, «si te invito, es que aprobaste». Se llama el recíproco. Al jugar, compara las dos flechas en la misma fila.' },
+      ],
+    },
     juega: {
       consigna: 'Una promesa: «si apruebas (p), te invito (q)». Aquí apruebas: p = V. Cambia q y el sentido de la flecha.',
       voz: 'Compara p → q con q → p en la misma fila.',
@@ -213,6 +271,29 @@
       ecuacion: [{ llave: [P, ' → ', Q], nota: 'si p, q', color: 'c-d' }, ' ≡ ', { llave: ['~', P, ' ∨ ', Q], nota: '~p, o q', color: 'c-d' }],
       condicion: 'p y q son proposiciones. La contrarrecíproca ~q → ~p sí tiene la misma tabla que p → q.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), p = r.de([true, false]), q = r.de([true, false]);
+        const t = r.de(['p → q', 'q → p', '~q → ~p', 'p → ~q', '~p ∨ q']);
+        const v = FORM[t](p, q), i = fila(p, q), nF = 4 - filasV(t);
+        const flecha = t.includes('→');
+        return {
+          enunciado: ['Si ', P, ` = ${VF(p)} y `, Q, ` = ${VF(q)}, ¿cuánto vale ${t}?`],
+          dibujo: { datos: tabla([t], { solo: -1 }), estado: { fila: i } },
+          pasos: [
+            { tipo: 'pide', texto: `Piden si ${t} es V o F en esta fila.` },
+            { tipo: 'datos', texto: ['Tengo ', P, ` = ${VF(p)} y `, Q, ` = ${VF(q)}.${flecha ? ' Miro qué queda a cada lado de la flecha.' : ''}`] },
+            { tipo: 'regla', texto: flecha ? 'Una flecha solo da F cuando a su izquierda hay V y a su derecha hay F. En los otros tres casos da V.'
+              : 'Con «o» (∨) basta que una parte sea V. Además, ~p ∨ q tiene la misma tabla que p → q.' },
+            { tipo: 'cuentas', texto: 'Reemplazo las letras, resuelvo las negaciones y aplico la regla.', ecuacion: [sustituye(t, p, q)],
+              dibujo: { datos: tabla([t], { solo: i, falsaRoja: true }), estado: { fila: i } } },
+            { tipo: 'sentido', texto: `${t} sale F en ${nF === 1 ? 'una sola fila' : `${nF} filas`} de las cuatro, y esta ${v ? 'no es' : 'es'} ${nF === 1 ? 'esa fila' : 'una de ellas'}. Cuadra.`,
+              dibujo: { datos: tabla([t], { falsaRoja: true }), estado: { fila: i } } },
+          ],
+          respuesta: `${t} = ${VF(v)}`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), p = r.de([true, false]), q = r.de([true, false]);
@@ -240,6 +321,14 @@
     titulo: 'Verdadera en todas las filas',
     temas: ['Tablas de verdad', 'Tautología, contradicción y contingencia'],
     pieza: 'arit-tabla',
+    // Lee: los tres nombres y cómo contar filas; no clasifica la fórmula de Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Siempre, nunca, a veces', texto: '«Mañana llueve o no llueve» es verdadera pase lo que pase. «Llueve y no llueve» no lo es nunca. Casi todas las demás frases dependen de cómo amanezca el día.' },
+        { titulo: 'Tres nombres', texto: 'Si una fórmula sale V en todas las filas de su tabla, es una tautología. Si sale F en todas, es una contradicción. Si depende de la fila, es una contingencia.' },
+        { titulo: 'Qué mirar', texto: 'Con dos letras, la tabla tiene cuatro filas. Al jugar, cuenta cuántas V salen en la última columna antes de ponerle nombre a la fórmula.' },
+      ],
+    },
     juega: {
       consigna: 'Elige una fórmula y mira su tabla completa. Cuenta en cuántas de las cuatro filas sale V.',
       voz: 'Busca una que siempre sea V y otra que nunca lo sea.',
@@ -273,6 +362,30 @@
       ecuacion: ['n variables → ', { llave: [{ sup: ['2', 'n'] }], nota: 'filas' }],
       condicion: 'se revisan todas las combinaciones de valores. Que salga V en las primeras filas no basta.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const t = r.de(['p ∨ ~p', 'p ∧ ~p', '(p ∧ q) → p', 'p → (p ∨ q)', '~(p → q) ∧ q', '(p ↔ q) ∧ (p ∧ ~q)', 'p ∨ (q ∧ ~q)', '(p ∧ q) ∨ ~q', '~p ∨ q', 'p ↔ q']);
+        const c = clase(t), col = columna(t), nV = filasV(t);
+        const nombre = i => `${VF(FILAS[i][0])}-${VF(FILAS[i][1])}`;
+        const iV = col.indexOf(true), iF = col.indexOf(false);
+        return {
+          enunciado: `¿Qué es ${t}: tautología, contradicción o contingencia?`,
+          dibujo: { datos: tabla([t], { solo: -1 }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden el tipo de ${t}, según lo que sale en su tabla.` },
+            { tipo: 'datos', texto: 'Se trabaja con las letras p y q: la tabla tiene 4 filas, V-V, V-F, F-V y F-F.', ecuacion: [{ sup: ['2', '2'] }, ' = 4 filas'] },
+            { tipo: 'regla', texto: 'Cuento las V de la columna: si son todas, es tautología; si no hay ninguna, contradicción; si hay algunas, contingencia.' },
+            { tipo: 'cuentas', texto: 'Calculo la fórmula fila por fila, en el orden de la tabla.', ecuacion: [`${t}: ${col.map(VF).join(' ')}`],
+              dibujo: { datos: tabla([t], { falsaRoja: true }), estado: {} } },
+            { tipo: 'sentido', texto: c === 'tautología' ? `Salen ${nV} V de 4: ninguna fila la hace falsa.`
+              : c === 'contradicción' ? 'Salen 0 V de 4: ninguna fila la hace verdadera.'
+              : `Salen ${nV} V de 4: la fila ${nombre(iV)} da V y la fila ${nombre(iF)} da F, así que depende de los valores.` },
+          ],
+          respuesta: `${t} es una ${c}.`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -297,6 +410,15 @@
     titulo: 'Equivalente es misma tabla',
     temas: ['Leyes lógicas'],
     pieza: 'arit-tabla',
+    // Lee: qué quiere decir equivalente y cómo se comprueba; no da la ley para ~(p ∨ q) (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Decir lo mismo', texto: 'Dos frases distintas pueden decir lo mismo con otras palabras. En lógica no se decide por cómo suenan: se comprueba con la tabla, fila por fila.' },
+        { titulo: 'Equivalentes', texto: 'Dos fórmulas son equivalentes si su columna es igual en las cuatro filas. Se escribe con ≡. Ya viste un caso: el condicional y «no p, o q».',
+          ecuacion: [P, ' → ', Q, ' ≡ ~', P, ' ∨ ', Q] },
+        { titulo: 'Qué mirar', texto: 'En el juego, la primera columna es ~(p ∧ q) y la segunda, una candidata. Prueba cada candidata y mira si queda alguna fila resaltada.' },
+      ],
+    },
     juega: {
       consigna: 'Compara ~(p ∧ q) con una candidata. Las filas resaltadas son donde no coinciden.',
       voz: 'Una sola fila distinta ya las separa.',
@@ -328,6 +450,31 @@
       texto: 'Dos fórmulas son equivalentes si tienen la misma tabla. Leyes de De Morgan: al negar, cada parte se niega y ∧ se cambia por ∨.',
       ecuacion: [{ llave: ['~(', P, ' ∧ ', Q, ')'], nota: 'negar el «y»' }, ' ≡ ', { llave: ['~', P, ' ∨ ~', Q], nota: 'cada parte negada' }, '   ·   ', '~(', P, ' ∨ ', Q, ') ≡ ~', P, ' ∧ ~', Q],
       condicion: 'se comparan todas las filas. Que dos frases suenen parecido no las hace equivalentes.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const t = r.de(['~(p ∧ q)', '~(p ∨ q)', 'p → q', '~p ∨ q', '~q → ~p']);
+        const todas = ['~p ∨ ~q', '~p ∧ ~q', '~p ∨ q', 'q → p', 'p ∧ ~q', 'p ∨ q', 'p → ~q', '~q → ~p', 'p → q'];
+        const buena = r.de(todas.filter(x => x !== t && iguales(x, t))), mala = r.de(todas.filter(x => !iguales(x, t)));
+        const [c1, c2] = r() < 0.5 ? [buena, mala] : [mala, buena];
+        const i = FILAS.findIndex((_, k) => columna(mala)[k] !== columna(t)[k]);
+        const col = x => `${x}: ${columna(x).map(VF).join(' ')}`;
+        return {
+          enunciado: `¿Cuál es equivalente a ${t}: ${c1} o ${c2}?`,
+          dibujo: { datos: tabla([t], { solo: -1 }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuál de las dos candidatas tiene la misma tabla que ${t}.` },
+            { tipo: 'datos', texto: `Las candidatas son ${c1} y ${c2}. Las tres fórmulas usan p y q: hay 4 filas para comparar.` },
+            { tipo: 'regla', texto: 'Dos fórmulas son equivalentes si coinciden en todas las filas. Con una sola fila distinta, ya no lo son.' },
+            { tipo: 'cuentas', texto: 'Escribo la columna de cada una, en el orden V-V, V-F, F-V, F-F.', ecuacion: [col(t), '   ·   ', col(c1), '   ·   ', col(c2)],
+              dibujo: { datos: tabla([t, buena], { distintas: true }), estado: {} } },
+            { tipo: 'sentido', texto: `${mala} no coincide en la fila p = ${VF(FILAS[i][0])}, q = ${VF(FILAS[i][1])}; ${buena} coincide en las cuatro.`,
+              dibujo: { datos: tabla([t, mala], { distintas: true }), estado: { fila: i } } },
+          ],
+          respuesta: `${buena} ≡ ${t}`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -369,6 +516,15 @@
     titulo: 'Para todo y existe',
     temas: ['Cuantificadores'],
     pieza: 'recta',
+    // Lee: qué dicen ∀ y ∃ y qué es el dominio; no dice cómo se niega un cuantificador (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Todos o alguno', texto: '«Todos en el aula viven en Juliaca» y «alguien en el aula vive en Puno» no piden lo mismo. La primera habla de cada uno; la segunda, de por lo menos uno.' },
+        { titulo: 'Símbolos', texto: '∀ se lee «para todo» y ∃ se lee «existe». Siempre se dice dónde se busca: el dominio, que es el conjunto de elementos que se revisan, como {1, 2, …, 8}.',
+          ecuacion: ['∀x P(x)   ·   ∃x P(x)'] },
+        { titulo: 'Qué mirar', texto: 'En la recta, los puntos llenos cumplen la propiedad y los huecos no. Cambia n y la propiedad, y cuenta cuántos puntos llenos y cuántos huecos quedan.' },
+      ],
+    },
     juega: {
       consigna: 'El dominio es {1, 2, …, n}. Elige n y una propiedad. Los puntos llenos la cumplen; los huecos, no.',
       voz: 'Busca un caso donde «para todo» sea verdadero.',
@@ -408,6 +564,36 @@
       texto: 'Cuantificadores: «para todo» es falso si un elemento no cumple (un contraejemplo); «existe» es verdadero si uno cumple. Al negar, ∀ se cambia por ∃ y se niega la propiedad.',
       ecuacion: ['~∀x P(x) ≡ ', { llave: ['∃x ~P(x)'], nota: 'un contraejemplo' }, '   ·   ', '~∃x P(x) ≡ ∀x ~P(x)'],
       condicion: 'el dominio está dicho. La misma frase puede ser V en un dominio y F en otro.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(4, 9), pr = r.de(Object.keys(PROP)), d = dominio(n);
+        const cual = r.de(['∀', '∃', '~∀']);
+        const todosC = d.every(PROP[pr]), alguno = d.some(PROP[pr]);
+        const v = cual === '∀' ? todosC : cual === '∃' ? alguno : !todosC;
+        const frase = cual === '∀' ? `para todo x, ${pr}` : cual === '∃' ? `existe x tal que ${pr}` : `no es cierto que para todo x, ${pr}`;
+        const si = d.filter(PROP[pr]), no = d.filter(x => !PROP[pr](x));
+        const regla = cual === '∀' ? '«Para todo» es V solo si cumplen todos. Un solo elemento que no cumple, un contraejemplo, ya la hace F.'
+          : cual === '∃' ? '«Existe» es V apenas un elemento cumple. Solo es F si no cumple ninguno.'
+          : '«No es cierto que para todo» equivale a «existe uno que no cumple».';
+        const sentido = cual === '∃'
+          ? (alguno ? `Basta un ejemplo: x = ${f(si[0])} cumple «${pr}».` : 'Ningún punto está lleno: no hay ejemplo que la haga V.')
+          : (no.length ? `x = ${f(no[0])} no cumple: ${cual === '∀' ? 'ese contraejemplo basta para que sea F' : '«para todo» es F, y su negación es V'}.`
+            : `No hay ningún hueco en la recta: ${cual === '∀' ? 'no existe contraejemplo' : '«para todo» es V, y su negación es F'}.`);
+        return {
+          enunciado: `En el dominio {1, 2, …, ${n}}, ¿es verdadera o falsa la frase «${frase}»?`,
+          dibujo: { datos: rectaD(n, pr, { elementos: d.map(x => ({ tipo: 'punto', x, color: 'o' })) }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden si «${frase}» es verdadera o falsa.` },
+            { tipo: 'datos', texto: `El dominio tiene ${n} elementos, del 1 al ${n}. La propiedad es «${pr}».` },
+            { tipo: 'regla', texto: regla },
+            { tipo: 'cuentas', texto: `Pruebo cada x del 1 al ${n} y separo los que cumplen de los que no.`,
+              ecuacion: [`cumplen: ${llaves(si)}   ·   no cumplen: ${llaves(no)}`], dibujo: { datos: rectaD(n, pr), estado: {} } },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: `La frase es ${v ? 'verdadera' : 'falsa'}.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
