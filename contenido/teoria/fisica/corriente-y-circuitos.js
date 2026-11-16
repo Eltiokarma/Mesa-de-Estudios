@@ -79,6 +79,15 @@
     titulo: 'La corriente no se gasta',
     temas: ['Intensidad y densidad de corriente', 'Modelo de Drude'],
     pieza: 'fis-circuito',
+    // Lee (fase 2): contexto y vocabulario. No dice qué tan rápido avanzan los electrones («Predice» lo pregunta).
+    lee: {
+      tarjetas: [
+        { titulo: 'La luz de la casa', texto: 'La electricidad llega a las casas de Juliaca por cables de cobre. Dentro del cobre hay electrones libres: no están amarrados a ningún átomo y pueden moverse por todo el metal.' },
+        { titulo: 'Contar la carga', texto: ['La corriente eléctrica cuenta cuánta carga cruza un corte del cable en cada segundo. Se mide en amperes: 1 A es 1 coulomb por segundo.'],
+          ecuacion: [I, ' = ', { frac: ['Δq', 'Δt'] }] },
+        { titulo: 'Qué mirar', texto: 'Hay un amperímetro antes del foco y otro después. Cambia la pila y el foco, y compara lo que marcan los dos.' },
+      ],
+    },
     juega: {
       consigna: 'Un foco entre dos amperímetros. Los puntos marcan la carga que pasa, no su rapidez real. Cambia la pila y el foco: compara los amperímetros.',
       voz: 'Si el foco se comiera corriente, el segundo marcaría menos.',
@@ -115,6 +124,58 @@
       texto: 'En un circuito de una sola malla, la misma corriente pasa por todos los puntos. El foco transforma energía; la carga sigue de largo.',
       ecuacion: [I, ' = ', { frac: ['Δq', 'Δt'] }, '   ·   ', 'J = ', { frac: [I, 'A'] }, '   ·   ', I, ' = ', { llave: ['n e'], nota: 'carga por m³' }, ' A ', { llave: [{ sub: ['v', 'd'] }], nota: 'rapidez media' }],
       condicion: 'corriente estable, sin ramas ni carga que se acumule. La corriente convencional va al revés que los electrones.',
+    },
+    // Así se resuelve (fase 2): los tres casos de «Ahora tú» con otras semillas, con las mismas cuentas (q/t, serie y vDeriva).
+    resuelve: {
+      generar(sm) {
+        const x = azar(sm + 900), tipo = sm % 3, vd_ = { sub: ['v', 'd'] };
+        if (tipo === 0) {
+          const qq = x.de([12, 30, 60, 90, 120]), t = x.de([4, 5, 6, 10, 20]), i = qq / t;
+          return {
+            enunciado: `Por un cable pasan ${f(qq)} C de carga en ${f(t)} s. ¿Cuál es la intensidad de corriente?`,
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la intensidad de corriente ', I, ': cuánta carga cruza el cable en cada segundo.'] },
+              { tipo: 'datos', texto: `Pasan ${f(qq)} C en ${f(t)} s.`, ecuacion: [`Δq = ${f(qq)} C   ·   Δt = ${f(t)} s`] },
+              { tipo: 'regla', texto: 'La corriente es la carga que pasa dividida entre el tiempo que tarda en pasar.', ecuacion: [I, ' = ', { frac: ['Δq', 'Δt'] }] },
+              { tipo: 'cuentas', texto: 'Divido la carga entre el tiempo.', ecuacion: [I, ` = ${f(qq)} / ${f(t)} = ${f(i, 2)} A`] },
+              { tipo: 'sentido', texto: `Coulombs entre segundos dan amperes. De vuelta: ${f(i, 2)} A durante ${f(t)} s son ${f(i * t)} C.` },
+            ],
+            respuesta: [I, ` = ${f(i, 2)} A`],
+          };
+        }
+        if (tipo === 1) {
+          const e = x.de([6, 9, 12]), r1 = x.de([2, 3]), r2 = x.de([1, 3, 6]), rt = r1 + r2, i = e / rt;
+          const fig = lee => ({ datos: { fuente: pila(e), serie: [resist(`${f(r1)} Ω`), resist(`${f(r2)} Ω`), A(lee)] }, estado: {} });
+          return {
+            enunciado: `Una pila de ${f(e)} V alimenta dos resistencias en serie, de ${f(r1)} Ω y ${f(r2)} Ω. Un amperímetro va después de las dos. ¿Qué marca?`,
+            dibujo: fig('?'),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden lo que marca el amperímetro: la corriente que sale de las dos resistencias.' },
+              { tipo: 'datos', texto: `Pila de ${f(e)} V. Resistencias de ${f(r1)} Ω y ${f(r2)} Ω, una detrás de otra, en un solo camino.` },
+              { tipo: 'regla', texto: 'En un solo camino ninguna resistencia se queda con carga: la misma corriente las cruza a todas. La hallo con la resistencia total.',
+                ecuacion: [I, ' = ', { frac: [EPS, [{ sub: [R, '1'] }, ' + ', { sub: [R, '2'] }]] }] },
+              { tipo: 'cuentas', texto: 'Sumo las dos resistencias y divido el voltaje de la pila entre esa suma.', dibujo: fig(`${f(i, 2)} A`),
+                ecuacion: [R, ` total = ${f(r1)} + ${f(r2)} = ${f(rt)} Ω   →   `, I, ` = ${f(e)} / ${f(rt)} = ${f(i, 2)} A`] },
+              { tipo: 'sentido', texto: `De vuelta: ${f(i, 2)} A por ${f(rt)} Ω dan ${f(i * rt)} V, justo el voltaje de la pila.` },
+            ],
+            respuesta: [I, ` = ${f(i, 2)} A, igual antes y después`],
+          };
+        }
+        const i = x.de([1, 2, 4, 5]), amm = x.de([1, 2, 4]), vd = vDeriva(i, amm);
+        return {
+          enunciado: [`Un cable de cobre de ${f(amm)} mm² lleva ${f(i)} A. Con n = 8,5 × `, diez('28'), ' electrones/m³ y e = 1,6 × ', diez('−19'), ' C, ¿qué rapidez media tienen los electrones?'],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la rapidez media de los electrones libres dentro del cable: la del modelo de Drude.' },
+            { tipo: 'datos', texto: [I, ` = ${f(i)} A. El área es ${f(amm)} mm², que en metros cuadrados es ${f(amm)} × `, diez('−6'), ' m².'] },
+            { tipo: 'regla', texto: 'La corriente sale de cuántos electrones libres hay por metro cúbico, su carga, el área del cable y su rapidez media.',
+              ecuacion: [I, ' = n e A ', vd_] },
+            { tipo: 'cuentas', texto: 'Despejo la rapidez, con el área en m². Sale en m/s y la paso a mm/s.',
+              ecuacion: [vd_, ` = ${f(i)} / (8,5×`, diez('28'), ' · 1,6×', diez('−19'), ` · ${f(amm)}×`, diez('−6'), `) = ${f(vd, 3)} mm/s`] },
+            { tipo: 'sentido', texto: 'Menos de un milímetro por segundo. La luz prende al instante porque la señal corre casi a la rapidez de la luz; cada electrón, no.' },
+          ],
+          respuesta: [vd_, ` = ${f(vd, 3)} mm/s`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -177,8 +238,18 @@
     titulo: 'La pendiente es la resistencia',
     temas: ['Resistencia, resistividad y ley de Ohm'],
     pieza: 'ejes',
+    // Lee (fase 2): contexto y vocabulario. No dice cómo cambia R con el largo ni con el área («Predice» lo pregunta).
+    lee: {
+      tarjetas: [
+        { titulo: 'Alambres que calientan', texto: 'La terma, la plancha y la ducha eléctrica llevan por dentro un alambre de nicromo que se calienta con la corriente. El cobre de las instalaciones de la casa, en cambio, casi no se calienta.' },
+        { titulo: 'Ohmios', texto: 'La resistencia eléctrica dice cuántos voltios pide un objeto por cada ampere que lo cruza. Se mide en ohmios, Ω, por Georg Ohm.',
+          ecuacion: [R, ' = ', { frac: [V, I] }] },
+        { titulo: 'La sección', texto: 'La sección es el área del corte de un alambre, como la cara de una rodaja. En las ferreterías del Perú, los cables se piden por su sección: 1,5 mm², 2,5 mm² o 4 mm².' },
+        { titulo: 'Qué mirar', texto: 'Aquí no se ve el alambre: se ve su gráfica. El punto sube y baja por la recta V contra I. Cambia el material y el largo, y mira qué tan empinada queda.' },
+      ],
+    },
     juega: {
-      consigna: 'Un alambre metálico en una fuente que sube y baja sola. Mira el punto en la recta V contra I. Cambia material y largo.',
+      consigna: 'La recta V contra I de un alambre metálico: el punto sube y baja solo, como si la fuente cambiara. Cambia material y largo.',
       voz: 'Más empinada quiere decir más voltaje para la misma corriente.',
       controles: [
         { id: 'm', etiqueta: 'Material', opciones: [{ valor: 'nicromo', texto: 'Nicromo' }, { valor: 'constantan', texto: 'Constantán' }] },
@@ -222,6 +293,49 @@
       texto: 'La resistencia eléctrica crece con el largo y baja con el área. Ley de Ohm: en un conductor óhmico, el voltaje es proporcional a la corriente: R es la pendiente.',
       ecuacion: [R, ' = ', { llave: ['ρ'], nota: 'el material' }, ' ', { frac: ['L', 'A'] }, '   ·   ', V, ' = ', I, R],
       condicion: 'conductor óhmico a temperatura fija. Un foco caliente no es óhmico: su R sube al calentarse.',
+    },
+    // Así se resuelve (fase 2): los dos casos de «Ahora tú» (factores de largo y área, o ρL/A) con otras semillas.
+    resuelve: {
+      generar(sm) {
+        const x = azar(sm + 900);
+        if (sm % 2) {
+          const kL = x.de([2, 3, 1 / 2]), kA = x.de([2, 3, 1 / 2]), r0 = x.de([4, 6, 12]), r1 = r0 * kL / kA;
+          const dL = kL >= 1 ? `${f(kL)} veces más largo` : 'la mitad de largo', dA = kA >= 1 ? `${f(kA)} veces el área` : 'la mitad del área';
+          const uno = rectaVI(r0, `${f(r0)} Ω`);
+          const sentido = r1 > r0 ? 'Creció: pesa más el factor del largo que el del área.' : r1 < r0 ? 'Bajó: pesa más el factor del área que el del largo.' : 'No cambió: los dos factores se cancelan.';
+          return {
+            enunciado: `Un alambre tiene ${f(r0)} Ω. Otro del mismo material es ${dL} y tiene ${dA}. ¿Qué resistencia tiene?`,
+            dibujo: { datos: Object.assign(EJE_VI(), { curvas: [uno] }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la resistencia del segundo alambre, comparada con la del primero.' },
+              { tipo: 'datos', texto: `El primero tiene ${f(r0)} Ω. El segundo es del mismo material: su largo se multiplica por ${f(kL, 2)} y su área, por ${f(kA, 2)}.` },
+              { tipo: 'regla', texto: 'Más largo es más camino que frena la corriente; más área es más espacio para pasar. El largo multiplica y el área divide.',
+                ecuacion: [R, ' = ρ ', { frac: ['L', 'A'] }] },
+              { tipo: 'cuentas', texto: 'Multiplico por el factor del largo y divido entre el del área. ρ no cambia.',
+                dibujo: { datos: Object.assign(EJE_VI(), { curvas: [uno, rectaVI(r1, r1 === r0 ? '' : `${f(r1, 2)} Ω`, { discontinua: true })] }), estado: {} },
+                ecuacion: [{ sub: [R, '2'] }, ` = ${f(r0)} · ${f(kL, 2)} / ${f(kA, 2)} = ${f(r1, 2)} Ω`] },
+              { tipo: 'sentido', texto: `${sentido} En la gráfica, la recta nueva es la punteada.` },
+            ],
+            respuesta: [R, ` = ${f(r1, 2)} Ω`],
+          };
+        }
+        const L = x.de([1, 2, 3, 5]), amm = x.de([0.5, 1, 2]), m = x.de(['nicromo', 'constantan']), rr = resistencia(m, L, amm);
+        const rho = m === 'nicromo' ? ['1,1 × ', diez('−6')] : ['4,9 × ', diez('−7')];
+        return {
+          enunciado: ['¿Qué resistencia tiene un alambre de ', m === 'nicromo' ? 'nicromo' : 'constantán', ' (ρ = ', ...rho, ` Ω·m) de ${f(L)} m de largo y ${f(amm, 1)} mm² de sección?`],
+          dibujo: { datos: EJE_VI(), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la resistencia eléctrica del alambre a partir de su material, su largo y su sección.' },
+            { tipo: 'datos', texto: ['ρ = ', ...rho, ` Ω·m, L = ${f(L)} m y A = ${f(amm, 1)} mm², que son ${f(amm, 1)} × `, diez('−6'), ' m².'] },
+            { tipo: 'regla', texto: 'La resistividad del material se multiplica por el largo y se divide entre el área del corte.', ecuacion: [R, ' = ρ ', { frac: ['L', 'A'] }] },
+            { tipo: 'cuentas', texto: 'Reemplazo con el área ya en metros cuadrados.',
+              dibujo: { datos: Object.assign(EJE_VI(), { curvas: [rectaVI(rr, `R = ${f(rr, 2)} Ω`)] }), estado: {} },
+              ecuacion: [R, ' = ', ...rho, ` · ${f(L)} / (${f(amm, 1)} × `, diez('−6'), `) = ${f(rr, 2)} Ω`] },
+            { tipo: 'sentido', texto: `Las unidades: Ω·m por m entre m² da Ω. Con 1 A, este alambre pediría ${f(rr, 2)} V: es la pendiente de la recta.` },
+          ],
+          respuesta: [R, ` = ${f(rr, 2)} Ω`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -276,6 +390,15 @@
     titulo: 'La pila también se resiste',
     temas: ['Fuerza electromotriz', 'Amperímetro y voltímetro'],
     pieza: 'fis-circuito',
+    // Lee (fase 2): contexto y vocabulario. No dice qué marca el voltímetro sin corriente («Predice» lo pregunta).
+    lee: {
+      tarjetas: [
+        { titulo: 'Pilas y baterías', texto: 'Una pila de linterna dice 1,5 V; la batería de una moto o de un auto, 12 V. Ese número es su fuerza electromotriz, o fem: la energía que da a cada coulomb.' },
+        { titulo: 'Los bornes', texto: 'Los bornes son los dos extremos de una pila o una batería, donde se conectan los cables: el positivo y el negativo.' },
+        { titulo: 'Dos medidores', texto: 'El amperímetro mide corriente y va en serie, en el mismo camino. El voltímetro mide voltaje entre dos puntos y va en paralelo, por fuera.' },
+        { titulo: 'Qué mirar', texto: 'El cursor del reóstato corre solo y cambia la resistencia de afuera. Mira lo que marcan el amperímetro y el voltímetro de la pila.' },
+      ],
+    },
     juega: {
       consigna: 'Pila real: 12 V de fem y 1 Ω adentro. El cursor del reóstato se mueve solo: mira el amperímetro y el voltímetro.',
       voz: 'Mira qué pasa con el voltímetro cuando la corriente crece.',
@@ -313,6 +436,34 @@
       texto: 'La fem es la energía que la pila da a cada coulomb. Con corriente, parte se pierde en su resistencia interna y el voltaje en bornes baja.',
       ecuacion: [{ llave: [V], nota: 'en bornes', color: 'c-o' }, ' = ', EPS, ' − ', { llave: [I, ' r'], nota: 'se pierde', color: 'c-o' }, '   ·   ', I, ' = ', { frac: [EPS, [R, ' + r']] }],
       condicion: 'pila con r constante. Amperímetro ideal en serie y voltímetro ideal en paralelo: así no cambian lo que miden.',
+    },
+    // Así se resuelve (fase 2): el caso de «Ahora tú» (amperímetro o voltímetro de una pila real) con otras semillas.
+    resuelve: {
+      pieza: 'fis-circuito',
+      generar(sm) {
+        const x = azar(sm + 900), e = x.de([6, 9, 12, 24]), r = x.de([0.5, 1, 2]), rx = x.de([2, 4, 5, 10]);
+        const i = e / (rx + r), vt = e - i * r, pideI = sm % 2 === 1;
+        const fig = (la, lv) => ({ datos: { fuente: { rotulo: `ε = ${f(e)} V`, r: `r = ${f(r, 1)} Ω`, voltimetro: pideI ? null : lv, color: 'o' }, serie: [A(la), resist(`R = ${f(rx)} Ω`)] }, estado: {} });
+        const ec = [I, ` = ${f(e)} / (${f(rx)} + ${f(r, 1)}) = ${f(i, 2)} A`];
+        return {
+          enunciado: ['Una pila de ', EPS, ` = ${f(e)} V con r = ${f(r, 1)} Ω alimenta una resistencia de ${f(rx)} Ω. ¿Qué marca ${pideI ? 'el amperímetro en serie' : 'el voltímetro en sus bornes'}?`],
+          dibujo: fig(pideI ? '?' : '', '?'),
+          pasos: [
+            { tipo: 'pide', texto: pideI ? 'Piden lo que marca el amperímetro: la corriente que da la pila.' : 'Piden lo que marca el voltímetro en los bornes de la pila mientras pasa corriente.' },
+            { tipo: 'datos', texto: [EPS, ` = ${f(e)} V, resistencia interna r = ${f(r, 1)} Ω y resistencia de afuera `, R, ` = ${f(rx)} Ω.`] },
+            { tipo: 'regla', texto: 'La fem empuja contra toda la resistencia del camino, la de afuera y la de adentro. Lo que se pierde adentro no llega a los bornes.',
+              ecuacion: [I, ' = ', { frac: [EPS, [R, ' + r']] }, '   ·   ', V, ' = ', EPS, ' − ', I, ' r'] },
+            pideI
+              ? { tipo: 'cuentas', texto: 'Sumo las dos resistencias y divido la fem entre esa suma.', ecuacion: ec, dibujo: fig(`${f(i, 2)} A`) }
+              : { tipo: 'cuentas', texto: 'Primero la corriente; después le resto a la fem lo que se pierde adentro.', dibujo: fig(`${f(i, 2)} A`, `${f(vt, 2)} V`),
+                ecuacion: [...ec, '   →   ', V, ` = ${f(e)} − ${f(i, 2)} · ${f(r, 1)} = ${f(vt, 2)} V`] },
+            { tipo: 'sentido', texto: pideI
+              ? `De vuelta: ${f(i, 2)} A por ${f(rx + r, 1)} Ω dan ${f(i * (rx + r))} V. Sin la r de adentro saldrían ${f(e / rx, 2)} A, un poco más.`
+              : `Marca menos que la fem, como pasa con corriente. De vuelta: ${f(vt, 2)} V son los ${f(i, 2)} A por los ${f(rx)} Ω de afuera.` },
+          ],
+          respuesta: pideI ? [I, ` = ${f(i, 2)} A`] : [V, ` = ${f(vt, 2)} V en bornes`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'fis-circuito',
@@ -357,6 +508,15 @@
     titulo: 'En paralelo, toda la pila',
     temas: ['Resistencias en serie y en paralelo'],
     pieza: 'fis-circuito',
+    // Lee (fase 2): las dos maneras de conectar y la resistencia equivalente. No dice qué pasa al quitar un foco en
+    // paralelo («Predice» lo pregunta).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos maneras de conectar', texto: 'En serie, los aparatos van uno detrás de otro, en un solo camino. En paralelo, cada uno va en su propio camino, entre los mismos dos puntos.' },
+        { titulo: 'Una sola que reemplaza', texto: 'La resistencia equivalente es una sola resistencia que, puesta en lugar de un grupo, haría que la pila entregue la misma corriente.' },
+        { titulo: 'Qué mirar', texto: 'Aquí los focos están en serie. Agrega focos y cambia la pila: mira el brillo de cada uno y la corriente en la lectura.' },
+      ],
+    },
     juega: {
       consigna: 'Focos iguales de 4 Ω en serie, uno detrás de otro. Agrega focos y cambia la pila: mira el brillo y cuánta carga pasa.',
       voz: 'En serie, cada foco nuevo apaga un poco a los demás.',
@@ -394,6 +554,42 @@
       texto: 'En serie, la corriente es la misma y los voltajes se suman. En paralelo, el voltaje es el mismo y las corrientes se suman.',
       ecuacion: ['serie: ', { sub: [R, 'eq'] }, ' = Σ', R, '   ·   ', 'paralelo: ', { frac: ['1', { sub: [R, 'eq'] }] }, ' = Σ', { frac: ['1', R] }],
       condicion: 'pila ideal (sin resistencia interna) y focos que se comportan como resistencias fijas.',
+    },
+    // Así se resuelve (fase 2): la resistencia equivalente de «Ahora tú» (reqDe) con otras semillas. En paralelo, la suma
+    // de inversas se escribe como fracción: mínimo común múltiplo de las R y simplificación.
+    resuelve: {
+      generar(sm) {
+        const x = azar(sm + 900), modo = sm % 2 ? 'paralelo' : 'serie', rs = [x.de([2, 3, 6]), x.de([3, 6, 12])];
+        if (sm % 3 === 0) rs.push(x.de([4, 6, 12]));
+        const req = reqDe(modo, rs), Rk = k => ({ sub: [R, String(k + 1)] }), Req = { sub: [R, 'eq'] };
+        const mcd = (p, q) => (q ? mcd(q, p % q) : p), mcm = rs.reduce((a, b) => a * b / mcd(a, b), 1);
+        const num = rs.reduce((a, b) => a + mcm / b, 0), g = mcd(mcm, num);
+        const frac = (p, q) => (q === 1 ? `${f(p)}` : `${f(p)}/${f(q)}`);
+        const lista = rs.map(r => `${f(r)} Ω`).join(', ');
+        const serie = modo === 'serie';
+        const fig = rr => ({ datos: serie ? { fuente: pila(12), serie: rr.map(v => resist(`${f(v)} Ω`)) } : { fuente: pila(12), ramas: rr.map(v => resist(`${f(v)} Ω`)) }, estado: {} });
+        return {
+          enunciado: `Resistencias de ${lista} se conectan en ${modo}. ¿Cuál es la resistencia equivalente?`,
+          dibujo: fig(rs),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la resistencia equivalente: una sola resistencia que, en lugar del grupo, deje pasar la misma corriente.' },
+            { tipo: 'datos', texto: `Son ${rs.length} resistencias, de ${lista}, ${serie ? 'una detrás de otra, en serie' : 'cada una en su rama, en paralelo'}.` },
+            serie
+              ? { tipo: 'regla', texto: 'En serie, la corriente cruza una resistencia tras otra: cada una suma freno. Se suman.', ecuacion: [Req, ' = ', ...rs.flatMap((_, k) => (k ? [' + ', Rk(k)] : [Rk(k)]))] }
+              : { tipo: 'regla', texto: 'En paralelo, cada rama abre otro camino. Se suman las inversas y al final se invierte.', ecuacion: [{ frac: ['1', Req] }, ' = ', ...rs.flatMap((_, k) => (k ? [' + ', { frac: ['1', Rk(k)] }] : [{ frac: ['1', Rk(k)] }]))] },
+            serie
+              ? { tipo: 'cuentas', texto: 'Sumo los valores.', ecuacion: [Req, ` = ${rs.map(r => f(r)).join(' + ')} = ${f(req, 2)} Ω`],
+                dibujo: { datos: { fuente: pila(12), serie: [resist(`Req = ${f(req, 2)} Ω`)] }, estado: {} } }
+              : { tipo: 'cuentas', texto: `Paso las fracciones a denominador ${f(mcm)}, sumo e invierto el resultado.`,
+                ecuacion: [{ frac: ['1', Req] }, ` = ${rs.map(r => `1/${f(r)}`).join(' + ')} = ${frac(num / g, mcm / g)}   →   `, Req, num / g === 1 ? ` = ${f(req, 2)} Ω` : ` = ${frac(mcm / g, num / g)} = ${f(req, 2)} Ω`],
+                dibujo: { datos: { fuente: pila(12), serie: [resist(`Req = ${f(req, 2)} Ω`)] }, estado: {} } },
+            { tipo: 'sentido', texto: serie
+              ? `Sale más que la mayor, ${f(Math.max(...rs))} Ω: en serie, cada resistencia agrega freno.`
+              : `Sale menos que la menor, ${f(Math.min(...rs))} Ω: cada rama nueva abre otro camino a la corriente.` },
+          ],
+          respuesta: [Req, ` = ${f(req, 2)} Ω`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -442,6 +638,14 @@
     titulo: 'Lo que entra al nudo sale',
     temas: ['Leyes de Kirchhoff'],
     pieza: 'fis-circuito',
+    // Lee (fase 2): nudos, mallas y quién fue Kirchhoff. No dice cómo se reparte la corriente («Predice» lo pregunta).
+    lee: {
+      tarjetas: [
+        { titulo: 'Nudos y mallas', texto: 'Un nudo es un punto donde se juntan tres o más cables. Una malla es un camino cerrado: sales de un punto y vuelves a él.' },
+        { titulo: 'Gustav Kirchhoff', texto: 'En 1845, con 21 años y todavía estudiante, el alemán Gustav Kirchhoff escribió dos reglas para resolver circuitos. Se siguen usando para diseñar los circuitos de un celular.' },
+        { titulo: 'Qué mirar', texto: 'Mira los puntos de carga al llegar al nudo: unos siguen por R₂ y otros por R₃. Corre el cursor de R₃ y compara las dos ramas.' },
+      ],
+    },
     juega: {
       consigna: 'R₁ en serie y después dos ramas en paralelo. Mira cómo la carga que llega al nudo se reparte. Cambia R₃.',
       voz: 'Las dos ramas comparten el mismo voltaje. Fíjate en eso.',
@@ -479,6 +683,33 @@
       ecuacion: ['Σ', { sub: [I, 'entran'] }, ' = Σ', { sub: [I, 'salen'] }, '   ·   ', { llave: ['Σ', EPS], nota: 'lo que sube', color: 'c-o' }, ' = ', { llave: ['Σ', I, R], nota: 'lo que baja', color: 'c-o' }],
       condicion: 'corrientes estables; los signos se fijan con un sentido de recorrido elegido antes de empezar.',
     },
+    // Así se resuelve (fase 2): el reparto en el nudo de «Ahora tú» con otras semillas, con las mismas cuentas.
+    resuelve: {
+      pieza: 'fis-circuito',
+      generar(sm) {
+        const x = azar(sm + 900), ra = x.de([2, 3, 4, 6]), rb0 = x.de([3, 6, 12]), rb = rb0 === ra ? 2 * ra : rb0, it = x.de([3, 6, 9, 12]);
+        const rp = ra * rb / (ra + rb), v = it * rp, ia = v / ra, ib = v / rb;
+        const mcd = (p, q) => (q ? mcd(q, p % q) : p), g = mcd(ra * rb, ra + rb), pq = (p, q) => (q === 1 ? f(p) : `${f(p)}/${f(q)}`);
+        const rpTxt = pq(ra * rb / g, (ra + rb) / g), exacto = (ra + rb) / g === 1;
+        const fig = o => ({ datos: { fuente: pila(12), serie: [A(`${f(it)} A`)], ramas: [
+          resist(`${f(ra)} Ω`, o ? { corriente: { texto: `${f(ia, 2)} A`, color: 'h' }, voltimetro: `${f(v, 2)} V` } : {}),
+          resist(`${f(rb)} Ω`, o ? { corriente: { texto: `${f(ib, 2)} A`, color: 'h' } } : {})] }, estado: {} });
+        return {
+          enunciado: `En un nudo entran ${f(it)} A y se reparten entre dos ramas en paralelo, de ${f(ra)} Ω y ${f(rb)} Ω. ¿Cuánta corriente va por la de ${f(ra)} Ω?`,
+          dibujo: fig(false),
+          pasos: [
+            { tipo: 'pide', texto: `Piden la corriente por la rama de ${f(ra)} Ω: una de las dos partes en que se divide la que llega al nudo.` },
+            { tipo: 'datos', texto: `Llegan ${f(it)} A al nudo. Las ramas tienen ${f(ra)} Ω y ${f(rb)} Ω y unen los mismos dos puntos.` },
+            { tipo: 'regla', texto: 'Las dos ramas unen los mismos dos puntos: tienen el mismo voltaje. Y lo que entra al nudo es lo que sale por las ramas.',
+              ecuacion: [V, ' = ', I, ' · ', { sub: [R, 'eq'] }, '   ·   ', { sub: [I, 'rama'] }, ' = ', { frac: [V, { sub: [R, 'rama'] }] }] },
+            { tipo: 'cuentas', texto: 'Primero la resistencia equivalente de las dos ramas; con ella, el voltaje común; con él, la corriente de la rama pedida.', dibujo: fig(true),
+              ecuacion: [{ sub: [R, 'eq'] }, ` = ${f(ra)} · ${f(rb)} / ${f(ra + rb)} = ${rpTxt}${exacto ? '' : ` ≈ ${f(rp, 2)}`} Ω   →   `, V, ` = ${f(it)} · ${rpTxt} = ${f(v, 2)} V   →   `, I, ` = ${f(v, 2)} / ${f(ra)} = ${f(ia, 2)} A`] },
+            { tipo: 'sentido', texto: `En el nudo: ${f(ia, 2)} A + ${f(ib, 2)} A = ${f(ia + ib, 2)} A, lo que entró. La rama de menos resistencia lleva más.` },
+          ],
+          respuesta: [I, ` = ${f(ia, 2)} A por la de ${f(ra)} Ω`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'fis-circuito',
       generar(s) {
@@ -515,6 +746,15 @@
     titulo: 'Qué foco brilla más',
     temas: ['Potencia y efecto Joule'],
     pieza: 'fis-circuito',
+    // Lee (fase 2): vatios y kilovatios hora de la casa. No dice qué foco brilla más en serie («Predice» lo pregunta).
+    lee: {
+      tarjetas: [
+        { titulo: 'Vatios en casa', texto: 'Un foco LED de la casa usa unos 9 W; una terma eléctrica, unos 1500 W. La potencia dice cuánta energía convierte un aparato en cada segundo.' },
+        { titulo: 'El recibo de luz', texto: 'El recibo cobra la energía en kilovatios hora, kWh: lo que gasta un aparato de 1000 W prendido una hora entera.',
+          ecuacion: ['1 kWh = 1000 W · 3600 s = ', `${f(1000 * 3600 / 1e6, 1)} × `, diez('6'), ' J'] },
+        { titulo: 'Qué mirar', texto: 'Los dos focos están en paralelo con la pila. Cambia la resistencia del primero y compara su brillo con el del segundo.' },
+      ],
+    },
     juega: {
       consigna: 'Dos focos en paralelo con una pila de 12 V; el segundo tiene 6 Ω. Cambia la resistencia del primero: compara brillo y corriente.',
       voz: 'En paralelo, ¿brilla más el de menos o el de más resistencia?',
@@ -548,6 +788,60 @@
       texto: 'La potencia eléctrica es voltaje por corriente. Con la misma corriente (serie) rinde más la R mayor; con el mismo voltaje (paralelo), la menor.',
       ecuacion: [P, ' = ', V, I, ' = ', { llave: [{ sup: [I, '2'] }, R], nota: 'misma I', color: 'c-h' }, ' = ', { llave: [{ frac: [{ sup: [V, '2'] }, R] }], nota: 'mismo V', color: 'c-o' }, '   ·   ', 'E = ', P, ' t'],
       condicion: 'resistencias fijas. El brillo de un foco sigue a su potencia, no a su corriente sola.',
+    },
+    // Así se resuelve (fase 2): los tres casos de «Ahora tú» (V²/R, kWh y I²R en serie) con otras semillas.
+    resuelve: {
+      generar(sm) {
+        const x = azar(sm + 900), tipo = sm % 3;
+        if (tipo === 0) {
+          const v = x.de([12, 24, 220]), rr = v === 220 ? x.de([44, 55, 110]) : x.de([4, 6, 12]), i = v / rr, p = v * v / rr;
+          const fig = lee => ({ datos: { fuente: pila(v), serie: [resist(`R = ${f(rr)} Ω`, lee ? { lectura: lee } : {})] }, estado: {} });
+          return {
+            enunciado: ['¿Qué potencia disipa una resistencia de ', R, ` = ${f(rr)} Ω conectada a `, V, ` = ${f(v)} V?`],
+            dibujo: fig(''),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la potencia: cuánta energía convierte la resistencia en calor en cada segundo.' },
+              { tipo: 'datos', texto: [V, ` = ${f(v)} V y `, R, ` = ${f(rr)} Ω. El voltaje está fijo.`] },
+              { tipo: 'regla', texto: 'Con el voltaje fijo, la corriente es V entre R, y la potencia es V por esa corriente: V al cuadrado entre R.',
+                ecuacion: [P, ' = ', V, I, ' = ', { frac: [{ sup: [V, '2'] }, R] }] },
+              { tipo: 'cuentas', texto: 'Elevo el voltaje al cuadrado y lo divido entre la resistencia.', dibujo: fig(`${f(p, 1)} W`),
+                ecuacion: [P, ' = ', { sup: [f(v), '2'] }, ` / ${f(rr)} = ${f(v * v)} / ${f(rr)} = ${f(p, 1)} W`] },
+              { tipo: 'sentido', texto: `De vuelta: pasan ${f(i, 2)} A, y ${f(v)} V por ${f(i, 2)} A dan ${f(v * i, 1)} W. V² entre Ω da vatios.` },
+            ],
+            respuesta: [P, ` = ${f(p, 1)} W`],
+          };
+        }
+        if (tipo === 1) {
+          const p = x.de([60, 100, 1000, 1500]), h = x.de([2, 3, 5, 8]), kw = p / 1000, kwh = kw * h;
+          return {
+            enunciado: `Un aparato de ${f(p)} W funciona ${f(h)} horas. ¿Cuánta energía consume, en kilovatios hora?`,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la energía que consume el aparato, en la unidad del recibo de luz: kilovatios hora.' },
+              { tipo: 'datos', texto: [P, ` = ${f(p)} W, que son ${f(kw, 2)} kW. Está prendido ${f(h)} horas.`] },
+              { tipo: 'regla', texto: 'La energía es la potencia por el tiempo que el aparato pasa prendido.', ecuacion: ['E = ', P, ' t'] },
+              { tipo: 'cuentas', texto: 'Paso los vatios a kilovatios y multiplico por las horas.', ecuacion: [`E = ${f(kw, 2)} kW · ${f(h)} h = ${f(kwh, 2)} kWh`] },
+              { tipo: 'sentido', texto: ['Kilovatios por horas dan kWh. En joules serían ', `${f(kwh * 3600 * 1000 / 1e6, 2)} × `, diez('6'), ' J: el kWh es una unidad grande.'] },
+            ],
+            respuesta: [`E = ${f(kwh, 2)} kWh`],
+          };
+        }
+        const ra = x.de([2, 3, 4]), rb = x.de([6, 8, 12]), e = x.de([12, 24]), i = e / (ra + rb), pa = i * i * ra, pb = i * i * rb;
+        const fig = o => ({ datos: { fuente: pila(e), serie: [resist(`${f(ra)} Ω`, o ? { lectura: `${f(pa, 2)} W` } : {}), resist(`${f(rb)} Ω`, o ? { lectura: `${f(pb, 2)} W` } : {})] }, estado: {} });
+        return {
+          enunciado: `Resistencias de ${f(ra)} Ω y ${f(rb)} Ω en serie con una pila de ${f(e)} V. ¿Qué potencia disipa la de ${f(rb)} Ω?`,
+          dibujo: fig(false),
+          pasos: [
+            { tipo: 'pide', texto: `Piden la potencia de la resistencia de ${f(rb)} Ω, que está en serie con otra.` },
+            { tipo: 'datos', texto: `Pila de ${f(e)} V; resistencias de ${f(ra)} Ω y ${f(rb)} Ω en un solo camino.` },
+            { tipo: 'regla', texto: 'En serie las dos comparten la corriente. Con esa corriente común, la potencia de cada una es I al cuadrado por su R.',
+              ecuacion: [I, ' = ', { frac: [EPS, [R, ' total']] }, '   ·   ', P, ' = ', { sup: [I, '2'] }, R] },
+            { tipo: 'cuentas', texto: 'Primero la corriente con la resistencia total; después, la potencia de la que piden.', dibujo: fig(true),
+              ecuacion: [I, ` = ${f(e)} / ${f(ra + rb)} = ${f(i, 2)} A   →   `, P, ' = ', { sup: [`(${f(e)}/${f(ra + rb)})`, '2'] }, ` · ${f(rb)} = ${f(pb, 2)} W`] },
+            { tipo: 'sentido', texto: `La otra disipa ${f(pa, 2)} W, menos, porque tiene menos R con la misma corriente. Juntas suman ${f(pa + pb, 2)} W, lo que da la pila: ${f(e)} V · ${f(i, 2)} A.` },
+          ],
+          respuesta: [P, ` = ${f(pb, 2)} W`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -659,6 +953,16 @@
         def: 'Dos reglas de circuitos: lo que entra a un nudo sale, y en cada malla los voltajes suman cero.',
         ejemplo: 'Entran 3 A a un nudo y salen 2 A y 1 A.', ver: ['malla'] },
       { termino: 'malla', def: 'Camino cerrado de un circuito que sale de un punto y vuelve a él.', ver: ['leyes de Kirchhoff'] },
+      { termino: 'electrón libre', formas: ['electrón libre', 'electrones libres'],
+        def: 'Electrón de un metal que no está amarrado a ningún átomo y puede moverse por todo el material.', ver: ['corriente eléctrica'] },
+      { termino: 'borne', formas: ['borne', 'bornes'], def: 'Cada uno de los dos extremos de una pila o batería donde se conectan los cables: positivo y negativo.',
+        ver: ['fuerza electromotriz', 'voltímetro'] },
+      { termino: 'resistencia equivalente', simbolo: 'Req', medida: 'Ω', formas: ['resistencia equivalente', 'resistencias equivalentes'],
+        def: 'Una sola resistencia que, puesta en lugar de un grupo, hace que la pila entregue la misma corriente.',
+        ejemplo: '3 Ω y 6 Ω en paralelo: 1/Req = 1/3 + 1/6 = 1/2, Req = 2 Ω.', ver: ['resistencia eléctrica'] },
+      { termino: 'kilovatio hora', simbolo: 'kWh', formas: ['kilovatio hora', 'kilovatios hora'],
+        def: 'Unidad de energía del recibo de luz: lo que consume un aparato de 1000 W prendido una hora.',
+        ejemplo: 'Un foco de 100 W durante 5 h: 0,1 kW · 5 h = 0,5 kWh.', ver: ['potencia'] },
       { termino: 'efecto Joule', def: 'Calentamiento de un conductor por el que pasa corriente: la energía eléctrica se vuelve calor.',
         ejemplo: '6 Ω con 2 A: P = 2² · 6 = 24 W de calor.', ver: ['resistencia eléctrica'] },
     ],
