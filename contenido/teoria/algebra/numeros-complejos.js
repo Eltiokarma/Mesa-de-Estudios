@@ -89,6 +89,15 @@
     titulo: 'Multiplicar por i gira 90°',
     temas: ['Unidad imaginaria'],
     pieza: 'flechas',
+    // Lee (fase 2): el plano y las dos partes de z, sin decir qué hace cada giro ni cuándo se repite (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'De la recta al plano', texto: 'Los números reales viven en una recta. Los números complejos necesitan un plano: cada a + bi es una flecha que avanza a unidades a la derecha y b unidades hacia arriba.' },
+        { titulo: 'Las dos partes', texto: 'En z = 2 + 3i, la parte real es 2 y la parte imaginaria es 3. El eje real va a lo ancho y el imaginario, hacia arriba: así se arma el plano complejo.',
+          ecuacion: [z, ' = 2 + 3', I] },
+        { titulo: 'Qué mirar al jugar', texto: 'La flecha naranja es z y la verde es z multiplicada por i. Multiplica una, dos, tres y cuatro veces, y mira cuánto gira la verde y si cambia su largo.' },
+      ],
+    },
     juega: {
       consigna: 'Elige z = a + bi y cuántas veces lo multiplicas por i. Mira hacia dónde va la flecha verde y si cambia su largo.',
       voz: 'Creo que hay un patrón en los giros. Prueba varias veces.',
@@ -141,6 +150,31 @@
       ecuacion: ['(a + b', I, ')·', I, ' = ', { llave: ['−b + a', I], nota: 'girada 90°', color: 'c-d' }, '   ·   ', { sup: [I, '4'] }, ' = 1'],
       condicion: 'a y b son reales, i es la unidad imaginaria; el eje real va a la derecha y el imaginario, arriba.',
     },
+    // Así se resuelve (fase 2): la rama de la flecha de «Ahora tú» (z · iᵏ), con los mismos sorteos y otras semillas.
+    // Los giros salen de porI, la misma cuenta que dibuja el juego.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        let a, b; do { a = r.ent(-4, 4); b = r.ent(-4, 4); } while (a === 0 || b === 0 || Math.abs(a) === Math.abs(b));
+        const k = r.ent(1, 3);
+        const ps = [[a, b]]; for (let j = 1; j <= 3; j++) ps.push(porI(ps[j - 1]));
+        const n0 = a * a + b * b, nk = ps[k][0] ** 2 + ps[k][1] ** 2, ang = Math.atan2(b, a) / RAD;
+        return {
+          enunciado: [z, ` = ${fc(a, b)}. ¿Cuánto vale `, z, ' · ', ...supI(k), '?'],
+          dibujo: { datos: plano(4.5, [fl([a, b], 'o', 'z')]), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', z, ` multiplicado por `, I, k === 1 ? ' una vez.' : ` ${k} veces seguidas.`] },
+            { tipo: 'datos', texto: [z, ` = ${fc(a, b)}: parte real ${f(a)} y parte imaginaria ${f(b)}.`] },
+            { tipo: 'regla', texto: ['Multiplicar por i gira la flecha un cuarto de vuelta, 90° en sentido antihorario, sin cambiar su largo. Cada factor i es un giro más.'] },
+            { tipo: 'cuentas', texto: [`Cada giro cambia a + bi por −b + ai. Lo hago ${k === 1 ? 'una vez' : `${k} veces`}.`],
+              ecuacion: [ps.slice(0, k + 1).map(p => fc(...p)).join('  →  ')],
+              dibujo: { datos: plano(4.5, [fl([a, b], 'o', 'z'), fl(ps[k], 'd', 'resultado')], { angulos: [{ en: [0, 0], de: red(ang), a: red(ang + 90 * k), texto: `${90 * k}°`, color: 'd', radio: 22 }] }), estado: {} } },
+            { tipo: 'sentido', texto: [`El largo no cambió: el cuadrado del módulo vale ${n0} en z y ${nk} en el resultado. Y la flecha giró ${90 * k}°.`] },
+          ],
+          respuesta: [z, ' · ', ...supI(k), ` = ${fc(...ps[k])}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -186,6 +220,15 @@
     titulo: 'Sumar partes, multiplicar distribuyendo',
     temas: ['Forma binómica y operaciones'],
     pieza: 'flechas',
+    // Lee (fase 2): la forma binómica y la suma, sin decir cómo se multiplica (el producto es la pregunta de Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos términos', texto: 'Escribir un complejo como a + bi es usar su forma binómica: un término real y otro con i. Así se dan las respuestas en el examen.' },
+        { titulo: 'Sumar es juntar', texto: 'Para sumar, se juntan las partes reales por un lado y las imaginarias por otro, como sumar soles con soles y céntimos con céntimos.',
+          ecuacion: ['(2 + i) + (1 + 3i) = 3 + 4i'] },
+        { titulo: 'Qué mirar al jugar', texto: 'La flecha naranja es z, la turquesa es w = 1 + i y la verde es el resultado. En la suma se arma un paralelogramo; compara hacia dónde apunta la verde en el producto.' },
+      ],
+    },
     juega: {
       consigna: 'Elige z = a + bi y la operación con w = 1 + i. Compara la flecha verde de la suma con la del producto.',
       voz: 'La suma arma un paralelogramo. Mira qué hace el producto.',
@@ -232,6 +275,31 @@
       ecuacion: ['(a + bi)(c + di) = ', { llave: ['(ac − bd)'], nota: 'parte real', color: 'c-d' }, ' + ', { llave: ['(ad + bc)i'], nota: 'parte imaginaria', color: 'c-d' }],
       condicion: 'a, b, c y d son reales; la parte imaginaria de a + bi es b, sin la i.',
     },
+    // Así se resuelve (fase 2): la rama del producto de «Ahora tú», con los mismos sorteos y otras semillas. El producto
+    // sale de mul, la misma cuenta del juego; la comprobación usa los módulos, una cuenta independiente.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        let A, B; do { A = [r.ent(-4, 4), r.ent(-4, 4)]; B = [r.ent(-3, 3), r.ent(-3, 3)]; } while (!A[1] || !B[1] || !B[0] || !A[0]);
+        const P = mul(A, B), pa = v => (v < 0 ? `(${f(v)})` : f(v));
+        const nA = A[0] ** 2 + A[1] ** 2, nB = B[0] ** 2 + B[1] ** 2, nP = P[0] ** 2 + P[1] ** 2;
+        const L = Math.max(...[...A, ...B, ...P].map(Math.abs)) + 0.5;
+        return {
+          enunciado: [z, ` = ${fc(...A)} y `, w, ` = ${fc(...B)}. ¿Cuánto vale `, z, ' · ', w, '?'],
+          dibujo: { datos: plano(L, [fl(A, 'o', 'z'), fl(B, 'i', 'w')]), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el producto ', z, ' · ', w, ', escrito como a + bi.'] },
+            { tipo: 'datos', texto: [z, ` = ${fc(...A)} y `, w, ` = ${fc(...B)}.`] },
+            { tipo: 'regla', texto: ['Multiplico cada término de z por cada término de w, como un producto de binomios, y donde aparece i² pongo −1.'] },
+            { tipo: 'cuentas', texto: ['Salen cuatro productos; el de las dos partes imaginarias lleva i², así que cambia de signo y pasa a la parte real.'],
+              ecuacion: [`(${pa(A[0])}·${pa(B[0])} − ${pa(A[1])}·${pa(B[1])}) + (${pa(A[0])}·${pa(B[1])} + ${pa(A[1])}·${pa(B[0])})i = ${fc(...P)}`],
+              dibujo: { datos: plano(L, [fl(A, 'o', 'z'), fl(B, 'i', 'w'), fl(P, 'd', 'z·w')]), estado: {} } },
+            { tipo: 'sentido', texto: [`Comprueba con los largos: |z|² · |w|² = ${nA} · ${nB} = ${nA * nB}, y |z·w|² = ${nP}. Cuadra.`] },
+          ],
+          respuesta: [z, ' · ', w, ` = ${fc(...P)}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -273,6 +341,15 @@
     titulo: 'Reflejo y largo de la flecha',
     temas: ['Conjugado y módulo'],
     pieza: 'flechas',
+    // Lee (fase 2): conjugado y módulo como nombres, sin decir qué da z por su conjugado (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'El reflejo', texto: 'El conjugado de z = a + bi se escribe z̄ y es a − bi: la misma parte real, con la parte imaginaria cambiada de signo. El de 3 + 2i es 3 − 2i.' },
+        { titulo: 'El largo de la flecha', texto: 'El módulo |z| es lo que mide la flecha desde el origen. Los números a y b son sus catetos, así que sale con el teorema de Pitágoras, como la diagonal de una cancha.',
+          ecuacion: [{ abs: [z] }, ' = ', { raiz: ['a² + b²'] }] },
+        { titulo: 'Qué mirar al jugar', texto: 'La flecha naranja es z y la roja, su conjugado. Mueve la punta de z y mira dónde queda la roja respecto del eje real.' },
+      ],
+    },
     juega: {
       consigna: 'Elige a y b. La flecha roja es el conjugado, a − bi. Las líneas punteadas son los catetos a y b.',
       voz: 'Mira dónde cae el conjugado respecto del eje real.',
@@ -317,6 +394,30 @@
       texto: 'El conjugado de a + bi es a − bi, su reflejo en el eje real. El módulo es el largo de la flecha; z por su conjugado da su cuadrado.',
       ecuacion: [{ abs: [z] }, ' = ', { llave: [{ raiz: ['a² + b²'] }], nota: 'largo', color: 'c-o' }, '   ·   ', z, '·', { llave: ['z̄'], nota: 'reflejo', color: 'c-h' }, ' = ', { sup: [{ abs: [z] }, '2'] }],
       condicion: 'para dividir entre w se multiplica arriba y abajo por w̄, y w tiene que ser distinto de 0.',
+    },
+    // Así se resuelve (fase 2): la rama de la división exacta de «Ahora tú» (el cociente q y el divisor v se sortean;
+    // el dividendo es q·v), con los mismos sorteos y otras semillas. Todo sale de mul.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        let q, v; do { q = [r.ent(-3, 3), r.ent(-3, 3)]; v = [r.ent(-2, 2), r.ent(1, 3)]; } while (!q[0] || !q[1] || !v[0]);
+        const u = mul(q, v), vb = [v[0], -v[1]], num = mul(u, vb), den = v[0] ** 2 + v[1] ** 2, vuelta = mul(q, v);
+        const L = Math.max(...[...u, ...v, ...q].map(Math.abs)) + 0.5;
+        return {
+          enunciado: ['¿Cuánto vale ', { frac: [fc(...u), fc(...v)] }, '?'],
+          dibujo: { datos: plano(L, [fl(u, 'o', 'z'), fl(v, 'i', 'w')]), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el cociente de ', z, ` = ${fc(...u)} entre `, w, ` = ${fc(...v)}, escrito como a + bi.`] },
+            { tipo: 'datos', texto: [`El divisor es ${fc(...v)}; su conjugado es ${fc(...vb)}.`] },
+            { tipo: 'regla', texto: ['Multiplico arriba y abajo por el conjugado del divisor. Abajo queda un número real, el módulo al cuadrado, y luego reparto entre él.'] },
+            { tipo: 'cuentas', texto: [`Abajo, ${fc(...v)} por ${fc(...vb)} da ${den}. Arriba se distribuye y se cambia i² por −1.`],
+              ecuacion: [{ frac: [`(${fc(...u)})(${fc(...vb)})`, String(den)] }, ' = ', { frac: [fc(...num), String(den)] }, ` = ${fc(...q)}`],
+              dibujo: { datos: plano(L, [fl(u, 'o', 'z'), fl(v, 'i', 'w'), fl(q, 'd', 'z ÷ w')]), estado: {} } },
+            { tipo: 'sentido', texto: [`Comprueba al revés: (${fc(...q)})(${fc(...v)}) = ${fc(...vuelta)}, que es el dividendo. Cuadra.`] },
+          ],
+          respuesta: [{ frac: [fc(...u), fc(...v)] }, ` = ${fc(...q)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -386,6 +487,15 @@
     titulo: 'Multiplicar estira y gira',
     temas: ['Forma polar y exponencial', 'Fórmula de De Moivre y raíces'],
     pieza: 'flechas',
+    // Lee (fase 2): largo, ángulo y forma polar, sin decir qué pasa con ellos al multiplicar (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Largo y ángulo', texto: 'Una flecha del plano también se describe con su largo r y su ángulo θ, medido desde el eje real en sentido antihorario. Ese ángulo se llama argumento, y así se escribe la forma polar.' },
+        { titulo: 'Ida y vuelta', texto: 'De la forma polar se vuelve a a + bi con a = r cos θ y b = r sen θ. Por ejemplo, largo 2 y ángulo 90° es la flecha 2i, que apunta hacia arriba.',
+          ecuacion: [z, ' = r(cos θ + ', I, ' sen θ)'] },
+        { titulo: 'Qué mirar al jugar', texto: 'La flecha turquesa w queda fija y el arco verde marca el ángulo del producto. Cambia el largo y el ángulo de z, y anota el largo y el ángulo que salen.' },
+      ],
+    },
     juega: {
       consigna: 'Elige el módulo r y el argumento θ de z. La flecha turquesa w tiene módulo 1,5 y argumento 60°. Mira el producto.',
       voz: 'Fíjate en el ángulo del producto. ¿Se suman o se multiplican?',
@@ -428,6 +538,30 @@
       ecuacion: [{ sup: [z, 'n'] }, ' = ', { llave: [{ sup: ['r', 'n'] }], nota: 'largo', color: 'c-o' }, { llave: ['(cos nθ + i sen nθ)'], nota: 'gira nθ', color: 'c-d' }],
       condicion: 'r = |z| > 0; el argumento vale salvo vueltas de 360°, y z = 0 no tiene argumento.',
     },
+    // Así se resuelve (fase 2): la potencia de «Ahora tú» (De Moivre), con los mismos sorteos y otras semillas. La flecha
+    // zⁿ se dibuja aparte, a su escala: junto a z no cabría a 360 px (3⁴ = 81).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const rr = r.uno([1, 2, 3]), t = r.uno([15, 30, 45, 60, 90, 120, 150]), n = r.ent(2, 4);
+        const M = rr ** n, A = red(n * t);
+        return {
+          enunciado: [z, ` = ${POLAR(rr, t)}. ¿Cómo es `, { sup: [z, String(n)] }, '?'],
+          dibujo: { datos: plano(rr * 1.25, [fl(cis(rr, t), 'o', 'z')], { angulos: [{ en: [0, 0], de: 0, a: t, texto: `${t}°`, color: 'o', radio: 24 }] }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el módulo y el argumento de ', { sup: [z, String(n)] }, '.'] },
+            { tipo: 'datos', texto: [z, ` tiene módulo ${f(rr)} y argumento ${t}°, y se eleva a ${n}.`] },
+            { tipo: 'regla', texto: [`Elevar a ${n} es multiplicar ${n} copias de z. Al multiplicar, los largos se multiplican y los ángulos se suman: largo ${f(rr)} elevado a ${n}, ángulo ${n} veces ${t}°.`] },
+            { tipo: 'cuentas', texto: ['Elevo el módulo y multiplico el argumento.'],
+              ecuacion: [`módulo ${f(rr)}${supTxt(n)} = ${f(M)}   ·   argumento ${n} · ${t}° = ${n * t}°${n * t >= 360 ? ` = ${f(A, 0)}°` : ''}`],
+              dibujo: { datos: plano(M * 1.25, [fl(cis(M, A), 'd', `z${supTxt(n)}`)], { angulos: A ? [{ en: [0, 0], de: 0, a: A, texto: `${f(A, 0)}°`, color: 'd', radio: 24 }] : [] }), estado: {} } },
+            { tipo: 'sentido', texto: [n * t >= 360 ? `${n * t}° pasa de una vuelta: se le quitan 360° y queda ${f(A, 0)}°, el mismo lugar.` : `${n * t}° no llega a una vuelta: no hay que quitar 360°.`,
+              rr === 1 ? ' Con módulo 1, el largo no cambia.' : ` El largo crece porque ${f(rr)} es mayor que 1.`] },
+          ],
+          respuesta: [`Módulo ${f(M)} y argumento ${f(A, 0)}°`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -464,6 +598,14 @@
     titulo: 'n raíces en un polígono',
     temas: ['Fórmula de De Moivre y raíces'],
     pieza: 'flechas',
+    // Lee (fase 2): qué es una raíz y qué dice el índice, sin decir cuántas raíces hay (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'La raíz deshace la potencia', texto: 'Una raíz cúbica de un número es otro que, elevado al cubo, lo devuelve. En los reales, la raíz cúbica de 27 es 3, porque 3 · 3 · 3 = 27.' },
+        { titulo: 'El índice', texto: 'En una raíz, el índice dice a qué potencia hay que elevar: 2 para la cuadrada, 3 para la cúbica, 4 para la cuarta. Con complejos se pregunta lo mismo, pero con flechas.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Cada flecha verde, elevada al índice n, da w. Cambia n y hacia dónde apunta w, cuenta las flechas y mide el ángulo entre dos vecinas.' },
+      ],
+    },
     juega: {
       consigna: 'Elige el índice n y hacia dónde apunta w. Las flechas verdes son todas las raíces n-ésimas de w, de módulo 2.',
       voz: 'Cuenta las flechas y mide el ángulo entre vecinas.',
@@ -515,6 +657,31 @@
       ecuacion: [{ sub: [z, 'k'] }, ' = ', { llave: [{ raiz: ['r'], indice: 'n' }], nota: 'mismo largo', color: 'c-d' }, '·(cos ', { frac: ['φ + 360°k', 'n'] }, ' + i sen ', { frac: ['φ + 360°k', 'n'] }, ')'],
       condicion: 'w = r(cos φ + i sen φ) y k = 0, 1, …, n − 1; con k = n se repite la primera raíz.',
     },
+    // Así se resuelve (fase 2): los argumentos de las raíces de «Ahora tú», con los mismos sorteos y otras semillas.
+    // Las flechas salen de raicesDe, la misma cuenta del juego.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const n = r.ent(2, 4), phi = r.uno([0, 60, 90, 120, 180, 240, 270].filter(g => g % n === 0 && g > 0 || s % 7 === 0 && g === 0));
+        const m = r.ent(2, 3), R = m ** n, sep = 360 / n;
+        const args = Array.from({ length: n }, (_, k) => red((phi + 360 * k) / n));
+        const lista = args.map(g => `${f(g, 0)}°`).join(', ');
+        return {
+          enunciado: [w, ` = ${POLAR(R, phi)}. ¿Qué argumentos tienen sus raíces de índice ${n}?`],
+          dibujo: { datos: plano(R * 1.2, [fl(cis(R, phi), 'i', 'w')]), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: [`Piden los argumentos de todas las raíces de índice ${n} de `, w, '.'] },
+            { tipo: 'datos', texto: [w, ` tiene módulo ${f(R)} y argumento ${f(phi, 0)}°. El índice es ${n}.`] },
+            { tipo: 'regla', texto: [`Hay ${n} raíces del mismo largo. La primera tiene el ángulo de w dividido entre ${n}; las demás se reparten la vuelta en partes de 360°/${n}.`] },
+            { tipo: 'cuentas', texto: [`Divido ${f(phi, 0)}° entre ${n} y sumo ${f(sep, 0)}° cada vez, con k de 0 a ${n - 1}.`],
+              ecuacion: [`θ = ${f(phi, 0)}°/${n} + ${f(sep, 0)}°·k  ⇒  θ = ${lista}`],
+              dibujo: { datos: plano(m * 1.2, raicesDe(m, phi, n).map((p, k) => fl(p, 'd', `${f(args[k], 0)}°`)), { contorno: n > 2 ? raicesDe(m, phi, n) : undefined }), estado: {} } },
+            { tipo: 'sentido', texto: [`Comprueba con la primera: ${n} · ${f(args[0], 0)}° = ${f(n * args[0], 0)}°, el ángulo de w. Y su largo ${m}, elevado a ${n}, da ${f(m ** n)}.`] },
+          ],
+          respuesta: [`Argumentos: ${lista}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -557,6 +724,16 @@
     titulo: 'El módulo mide distancias',
     temas: ['Regiones en el plano complejo'],
     pieza: 'ejes',
+    // Lee (fase 2): la distancia al origen y las condiciones con Re e Im, sin decir qué mide |z − z₀| ni dónde queda
+    // su centro (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Distancia al origen', texto: 'En el plano complejo, la distancia de un punto al origen es el módulo. Del 0 al punto 3 + 4i hay 5 unidades, porque 9 + 16 = 25.',
+          ecuacion: [{ abs: ['3 + 4i'] }, ' = ', { raiz: ['3² + 4²'] }, ' = 5'] },
+        { titulo: 'Partes que mandan', texto: 'Re(z) es la parte real de z, e Im(z), la imaginaria. Una condición como Re(z) ≥ 1 deja pasar los puntos que están sobre la recta vertical del 1 o a su derecha.' },
+        { titulo: 'Qué mirar al jugar', texto: 'La zona verde son los puntos que cumplen. El borde continuo entra y el discontinuo no. Mueve la medida y mira qué cambia en cada tipo de región.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un tipo de región del plano complejo y mueve su medida. El borde continuo está incluido; el discontinuo, no.',
       voz: 'Mira qué controla el número en cada región.',
@@ -610,6 +787,38 @@
       texto: '|z − z₀| es la distancia entre z y z₀: |z − z₀| ≤ r es un disco de centro z₀ y radio r. Re(z) ≥ k e Im(z) < k son semiplanos.',
       ecuacion: [{ llave: [{ abs: [z, ' − ', { sub: [z, '0'] }] }], nota: 'distancia a z₀', color: 'c-o' }, ' ≤ ', { llave: ['r'], nota: 'radio', color: 'c-d' }],
       condicion: '≤ incluye el borde y < lo deja fuera; el centro es z₀, con el signo contrario al que se ve sumado.',
+    },
+    // Así se resuelve (fase 2): la rama del punto de «Ahora tú» (¿está dentro del disco?), con los mismos sorteos y
+    // otras semillas. El disco y la distancia usan las mismas cuentas que el juego.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const c = [r.ent(-2, 2), r.ent(-1, 1)], R = r.ent(1, 3);
+        const term = (v, im) => (v === 0 ? '' : ` ${v > 0 ? '+' : '−'} ${im ? (Math.abs(v) === 1 ? 'i' : `${Math.abs(v)}i`) : Math.abs(v)}`);
+        const expr = 'z' + term(-c[0], false) + term(-c[1], true);
+        const quiere = s % 4 === 1 || s % 4 === 2;
+        let p; do { p = [r.ent(-4, 4), r.ent(-4, 4)]; } while (((p[0] - c[0]) ** 2 + (p[1] - c[1]) ** 2 <= R * R) !== quiere);
+        const origen = !c[0] && !c[1], dx = p[0] - c[0], dy = p[1] - c[1], d2 = dx * dx + dy * dy, adentro = d2 <= R * R, borde = d2 === R * R, ds = raizTxt(d2);
+        const figura = linea => ({ datos: Object.assign(EJE(-4), disco(c[0], c[1], R), {
+          curvas: [...disco(c[0], c[1], R).curvas, ...(linea ? [{ puntos: [c, p], color: 'h' }] : [])],
+          puntos: [{ x: c[0], y: c[1], color: 'i', rotulo: fc(...c) }, { x: p[0], y: p[1], color: 'o', rotulo: fc(...p) }],
+          alt: `Disco de centro ${fc(...c)} y radio ${R}, y el punto ${fc(...p)}${linea ? `, a distancia ${ds} del centro` : ''}`,
+        }), estado: {} });
+        return {
+          enunciado: ['¿El punto ', fc(...p), ' está en la región ', { abs: [expr] }, ` ≤ ${R}?`],
+          dibujo: figura(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden si el punto ', fc(...p), ' cumple la condición, es decir, si está dentro del disco o en su borde.'] },
+            origen ? { tipo: 'datos', texto: [`La región es |z| ≤ ${R}: el centro es el origen, 0, y el radio es ${R}.`] }
+              : { tipo: 'datos', texto: [`El centro es ${fc(...c)}, con los signos contrarios a los que acompañan a z, y el radio es ${R}.`], ecuacion: [{ abs: [expr] }, ' = ', { abs: [`z − (${fc(...c)})`] }] },
+            { tipo: 'regla', texto: ['El módulo de una resta es la distancia entre dos puntos. Mido cuánto separa al punto del centro y lo comparo con el radio.'] },
+            { tipo: 'cuentas', texto: ['Resto el centro y mido el largo de lo que queda.'],
+              ecuacion: [{ abs: [origen ? `(${fc(...p)}) − 0` : `(${fc(...p)}) − (${fc(...c)})`] }, ' = ', { abs: [fc(dx, dy)] }, ` = √${d2}${ds !== `√${d2}` ? ` = ${ds}` : ''}`], dibujo: figura(true) },
+            { tipo: 'sentido', texto: [`${ds} ${borde ? '=' : adentro ? '<' : '>'} ${R}: el punto queda ${borde ? 'justo en el borde, que entra por el ≤' : adentro ? 'dentro del disco' : 'fuera del disco'}.`] },
+          ],
+          respuesta: [adentro ? 'Sí, está en la región.' : 'No, está fuera de la región.'],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'ejes',
@@ -800,6 +1009,7 @@
       { termino: 'parte real', formas: ['parte real', 'partes reales'], simbolo: 'Re(z)', def: 'En z = a + bi, el número a: cuánto va a la derecha.', ejemplo: 'Re(3 − 2i) = 3.' },
       { termino: 'parte imaginaria', formas: ['parte imaginaria', 'partes imaginarias'], simbolo: 'Im(z)', def: 'En z = a + bi, el número b, sin la i: cuánto sube.',
         ejemplo: 'Im(3 − 2i) = −2.' },
+      { termino: 'forma binómica', def: 'Escribir un complejo como a + bi: un término real más otro con la i.', ejemplo: '3 − 2i, con a = 3 y b = −2.', ver: ['parte real', 'parte imaginaria'] },
       { termino: 'plano complejo', def: 'Plano con el eje real a lo ancho y el imaginario hacia arriba: cada a + bi es un punto.' },
       { termino: 'módulo', formas: ['módulo', 'módulos'], simbolo: '|z|', def: 'El largo de la flecha de un complejo: √(a² + b²).', ejemplo: '|3 + 4i| = 5.', ver: ['forma polar'] },
       { termino: 'forma polar', def: 'Escribir un complejo con su largo r y su ángulo θ: r(cos θ + i sen θ).', ejemplo: 'i = 1(cos 90° + i sen 90°).',
