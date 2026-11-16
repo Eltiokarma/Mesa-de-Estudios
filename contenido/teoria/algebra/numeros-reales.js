@@ -99,6 +99,14 @@
     titulo: 'Un negativo voltea el orden',
     temas: ['Axiomas de cuerpo y de orden', 'Desigualdades'],
     pieza: 'recta',
+    // Lee (fase 2): comparar en la recta y los signos; no dice qué pasa al restar el mismo número (eso pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Más frío, más a la izquierda', texto: 'Una madrugada de julio en Puno marca −8 °C y otra, −3 °C. La primera fue más fría. En la recta, el menor de dos números queda a la izquierda: −8 < −3.' },
+        { titulo: 'Los signos', texto: '< se lee «menor que» y > se lee «mayor que». ≤ es «menor o igual». Una comparación con esos signos se llama desigualdad.' },
+        { titulo: 'Qué mirar al jugar', texto: ['Abajo están ', a, ' y ', b, '; arriba, ', c, a, ' y ', c, b, '. Cambia el factor ', c, ' y mira si los puntos de arriba quedan en el mismo orden que los de abajo.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige a < b y un factor c. Arriba quedan c·a y c·b. Mira si siguen en el mismo orden.',
       voz: 'Prueba un c positivo, uno negativo y el cero.',
@@ -161,6 +169,40 @@
       ecuacion: [{ llave: [c, ' < 0'], nota: 'negativo', color: 'c-h' }, '   ·   ', a, ' < ', b, ' ⇒ ', { llave: [c, a, ' > ', c, b], nota: 'se invierte', color: 'c-h' }],
       condicion: 'c distinto de 0: con c = 0 los dos lados quedan iguales. El 0 tampoco tiene inverso: no se divide entre 0.',
     },
+    // Así se resuelve (fase 2): el tipo de «Ahora tú» (qué desigualdad sigue de x < y) con otras semillas: el mismo
+    // factor k de la lista y el mismo término m; la comprobación usa un par de números de ejemplo.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const k = r.uno([-4, -3, -2, 2, 3, 5]);
+        let m = r.ent(-5, 5); if (m === 0) m = 1;
+        const xv = r.ent(-3, 1), yv = xv + r.ent(1, 3);
+        const exp = v => [f(k), v, ` ${m > 0 ? '+' : '−'} ${f(Math.abs(m))}`];
+        const sig = k > 0 ? '<' : '>';
+        const fp = v => (v < 0 ? `(${f(v)})` : f(v));
+        const X = k * xv + m, Y = k * yv + m;
+        const lo = Math.min(xv, yv, X, Y), hi = Math.max(xv, yv, X, Y), pas = hi - lo > 20 ? 5 : 1;
+        const recta = conImagen => ({ datos: {
+          min: Math.floor((lo - 2) / pas) * pas, max: Math.ceil((hi + 2) / pas) * pas, paso: pas, cada: 2, decimales: 0, variable: 'x', color: 'o', filas: 3,
+          elementos: [{ tipo: 'punto', x: xv, color: 'o', rotulo: 'x', fila: 1 }, { tipo: 'punto', x: yv, color: 'i', rotulo: 'y', fila: 1 },
+            ...(conImagen ? [{ tipo: 'punto', x: X, color: 'o', rotulo: `${f(k)}x ${m > 0 ? '+' : '−'} ${f(Math.abs(m))}`, fila: 2 }, { tipo: 'punto', x: Y, color: 'i', rotulo: `${f(k)}y ${m > 0 ? '+' : '−'} ${f(Math.abs(m))}`, fila: 3 }] : [])],
+          alt: `Ejemplo x = ${f(xv)} < y = ${f(yv)}${conImagen ? `; ${f(k)}x ${m > 0 ? '+' : '−'} ${f(Math.abs(m))} = ${f(X)} y ${f(k)}y ${m > 0 ? '+' : '−'} ${f(Math.abs(m))} = ${f(Y)}` : ''}`,
+        }, estado: {} });
+        return {
+          enunciado: ['Si ', x, ' < ', y, ', ¿qué signo va entre ', ...exp(x), ' y ', ...exp(y), ': < o >?'],
+          dibujo: recta(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el signo que va entre ', ...exp(x), ' y ', ...exp(y), ', sabiendo solo que ', x, ' < ', y, '.'] },
+            { tipo: 'datos', texto: ['A los dos lados de ', x, ' < ', y, ` se les hace lo mismo: multiplicar por ${f(k)} y después ${m > 0 ? 'sumar' : 'restar'} ${f(Math.abs(m))}.`] },
+            { tipo: 'regla', texto: 'Sumar o restar lo mismo a los dos lados no cambia el sentido. Multiplicar por un positivo tampoco; por un negativo, lo voltea.' },
+            { tipo: 'cuentas', texto: `Primero multiplico por ${f(k)}, que es ${k > 0 ? 'positivo: el signo se queda' : 'negativo: el signo se voltea'}. Después ${m > 0 ? 'sumo' : 'resto'} ${f(Math.abs(m))}: el signo no cambia.`,
+              ecuacion: [x, ' < ', y, '   →   ', f(k), x, ` ${sig} `, f(k), y, '   →   ', ...exp(x), ` ${sig} `, ...exp(y)] },
+            { tipo: 'sentido', texto: ['Pruebo con ', x, ` = ${f(xv)} e `, y, ` = ${f(yv)}: queda ${f(k)} · ${fp(xv)} ${m > 0 ? '+' : '−'} ${f(Math.abs(m))} = ${f(X)} y ${f(k)} · ${fp(yv)} ${m > 0 ? '+' : '−'} ${f(Math.abs(m))} = ${f(Y)}. Y ${f(X)} ${sig} ${f(Y)}.`], dibujo: recta(true) },
+          ],
+          respuesta: [...exp(x), ` ${sig} `, ...exp(y)],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -197,6 +239,14 @@
     titulo: 'Cada extremo se decide aparte',
     temas: ['Intervalos y sus operaciones'],
     pieza: 'recta',
+    // Lee (fase 2): qué es un intervalo, la notación de sus extremos y los nombres ∪ y ∩; no resuelve (−1, 3] ∩ (3, 5).
+    lee: {
+      tarjetas: [
+        { titulo: 'Tramos de números', texto: '«Para mayores de 15 años» o «temperaturas entre −5 °C y 18 °C», como en Juliaca, describen tramos de números. Un tramo sin saltos de la recta se llama intervalo.' },
+        { titulo: 'Corchete o paréntesis', texto: ['[', a, ', ', b, ') va desde ', a, ', incluido, hasta ', b, ', sin incluir. El corchete mete al extremo y el paréntesis lo deja fuera. En la recta: punto lleno o punto hueco.'] },
+        { titulo: 'Unir y cruzar', texto: [A, ' ∪ ', B, ', la unión, junta los números de los dos. ', A, ' ∩ ', B, ', la intersección, deja los que están en los dos. Al jugar, mira cada extremo del resultado verde: lleno o hueco.'] },
+      ],
+    },
     juega: {
       consigna: 'A = (−1, 3] queda fijo. Mueve el inicio de B = [m, 5) y elige la operación. Abajo, en verde, el resultado.',
       voz: 'Mira qué pasa con cada extremo, lleno o hueco.',
@@ -246,6 +296,54 @@
       ecuacion: [{ llave: ['[', a], nota: 'entra', color: 'c-o' }, ', ', { llave: [b, ')'], nota: 'no entra', color: 'c-i' }, '   ·   ', a, ' ≤ ', x, ' < ', b],
       condicion: 'si el inicio queda después del final, o coinciden con un extremo abierto, la intersección es vacía.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con otras semillas; inter() y union() hacen la cuenta.
+    resuelve: {
+      pieza: 'recta',
+      generar(s) {
+        const r = azar(s + 900);
+        const intervalo = () => { const p = r.ent(-4, 3), q = p + r.ent(1, 4); return { a: p, b: q, ca: r() < 0.5, cb: r() < 0.5 }; };
+        let I, J;
+        do { I = intervalo(); J = intervalo(); } while (texto(I) === texto(J) || (s % 4 !== 1 && !inter(I, J)));
+        const op = s % 3 === 1 ? '∪' : '∩';
+        const lista = op === '∩' ? (inter(I, J) ? [inter(I, J)] : []) : union(I, J);
+        const bien = textoU(lista);
+        const borde = (v, c) => `${f(v)} ${c ? 'entra' : 'no entra'}`;
+        const dice = (N, K) => [N, ` va de ${f(K.a)} a ${f(K.b)}: ${borde(K.a, K.ca)} y ${borde(K.b, K.cb)}.`];
+        const esta = (v, K) => (v > K.a && v < K.b) || (v === K.a && K.ca) || (v === K.b && K.cb);
+        const en = v => `${esta(v, I) ? 'está en A' : 'no está en A'} y ${esta(v, J) ? 'está en B' : 'no está en B'}`;
+        let cuentas, sentido;
+        if (op === '∩') {
+          const ini = Math.max(I.a, J.a), fin = Math.min(I.b, J.b);
+          cuentas = { texto: 'Busco el mayor de los inicios y el menor de los finales. Luego reviso si cada borde entra en los dos.',
+            ecuacion: [`inicio: máx(${f(I.a)}, ${f(J.a)}) = ${f(ini)}   ·   final: mín(${f(I.b)}, ${f(J.b)}) = ${f(fin)}   →   `, A, ' ∩ ', B, ` = ${bien}`] };
+          sentido = lista.length && ini === fin
+            ? `Compruebo: el ${f(ini)} ${en(ini)}, y ningún otro número está en los dos. Por eso es un solo punto.`
+            : lista.length
+            ? `Compruebo: ${f((ini + fin) / 2)} ${en((ini + fin) / 2)}. El borde ${f(ini)} ${en(ini)}, así que ${lista[0].ca ? 'entra' : 'no entra'}.`
+            : `Compruebo: el inicio ${f(ini)} ${ini > fin ? `queda después del final ${f(fin)}` : 'coincide con el final, pero no entra en los dos'}. No hay números comunes.`;
+        } else {
+          const separados = lista.length === 2;
+          cuentas = { texto: separados ? 'Ordeno los tramos. No se tocan, así que la unión queda en dos trozos, cada uno con sus bordes.' : 'Ordeno los tramos. Se cruzan o se tocan, así que salen en un solo tramo, del menor inicio al mayor final.',
+            ecuacion: [A, ' ∪ ', B, ` = ${bien}`] };
+          const K = lista[0], g = Math.min(I.a, J.a);
+          sentido = `Compruebo el borde ${f(g)}: ${en(g)}, así que ${esta(g, I) || esta(g, J) ? 'entra' : 'no entra'}.${separados ? ` Y entre ${f(K.b)} y ${f(lista[1].a)} no hay nada de A ni de B.` : ''}`;
+        }
+        return {
+          enunciado: [A, ` = ${texto(I)} y `, B, ` = ${texto(J)}. ¿Cuál es `, A, ` ${op} `, B, '?'],
+          dibujo: { datos: { min: -5, max: 8, paso: 1, decimales: 0, variable: 'x', color: 'o', filas: 3, elementos: [elem(I, 'o', 3, 'A'), elem(J, 'i', 2, 'B')], alt: `A = ${texto(I)} y B = ${texto(J)}` }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: op === '∩' ? ['Piden ', A, ' ∩ ', B, ': los números que están en los dos intervalos a la vez.'] : ['Piden ', A, ' ∪ ', B, ': los números que están en al menos uno de los dos.'] },
+            { tipo: 'datos', texto: [...dice(A, I), ' ', ...dice(B, J)] },
+            { tipo: 'regla', texto: op === '∩'
+              ? 'Para estar en los dos, un número debe quedar tras los dos inicios y antes de los dos finales. Un borde es lleno solo si lo es en los dos.'
+              : 'Para la unión basta estar en uno. Un borde es lleno si es lleno en alguno; si los tramos no se tocan, quedan dos trozos.' },
+            Object.assign({ tipo: 'cuentas', dibujo: { datos: rectaOp(I, J, op), estado: {} } }, cuentas),
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: [A, ` ${op} `, B, ` = ${bien}`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'recta',
       generar(s) {
@@ -291,6 +389,14 @@
     titulo: 'Acotado no es tener máximo',
     temas: ['Conjuntos acotados y densidad'],
     pieza: 'recta',
+    // Lee (fase 2): qué es una cota superior y un conjunto acotado; no dice si (0, 1) tiene mayor elemento.
+    lee: {
+      tarjetas: [
+        { titulo: 'Topes de la vida diaria', texto: 'El ascensor de un edificio de Juliaca dice «carga: hasta 600 kg». Ese número es un tope: ninguna carga permitida lo pasa. En matemática, un tope así se llama cota superior.' },
+        { titulo: 'Muchas cotas', texto: 'Si ningún elemento de S pasa de 4, tampoco pasa de 5 ni de 100: todos esos números son cotas superiores. Un conjunto con cotas arriba y abajo es acotado.' },
+        { titulo: 'Qué mirar al jugar', texto: ['El tramo naranja es S y el turquesa, sus cotas superiores. Mueve ', { v: 'c-o', t: 'b' }, ', cambia si entra o no, y mira dónde empieza el tramo turquesa.'] },
+      ],
+    },
     juega: {
       consigna: 'S va de 0 a b. Elige b y si b entra. En turquesa, las cotas superiores: números que ningún elemento de S supera.',
       voz: 'Fíjate dónde empiezan las cotas superiores.',
@@ -340,6 +446,72 @@
       texto: 'Un conjunto acotado puede no tener máximo. En (0, 1), para cada x hay otro mayor, (x + 1)/2. La menor cota superior, el supremo, es 1.',
       ecuacion: [x, ' < ', { llave: [{ frac: [[x, ' + 1'], '2'] }], nota: 'otro mayor', color: 'c-d' }, ' < ', { llave: ['1'], nota: 'el supremo', color: 'c-i' }],
       condicion: 'el máximo tiene que pertenecer al conjunto; el supremo no. Entre dos reales distintos siempre hay otro: es la densidad.',
+    },
+    // Así se resuelve (fase 2): los tres tipos de «Ahora tú» (máximo, supremo, un número entre dos) con otras semillas.
+    resuelve: {
+      pieza: 'recta',
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3;
+        const p = r.ent(-3, 2), q = p + r.ent(2, 5), ca = r() < 0.5, cb = s % 2 === 0;
+        const S = `${ca ? '[' : '('}${f(p)}, ${f(q)}${cb ? ']' : ')'}`;
+        const recta = (extra = [], cotas = false) => ({ datos: { min: p - 1, max: q + 2, paso: 1, decimales: 0, variable: 'x', color: 'o', filas: 2, elementos: [
+          { tipo: 'intervalo', a: p, b: q, ca, cb, color: 'o', rotulo: 'S', fila: 1 },
+          ...(cotas ? [{ tipo: 'intervalo', a: q, b: null, ca: true, cb: false, color: 'i', rotulo: 'cotas superiores', fila: 2 }] : []), ...extra,
+        ], alt: `El intervalo S = ${S} en la recta${cotas ? `; sus cotas superiores van desde ${f(q)}` : ''}` }, estado: {} });
+        const datos = `S va de ${f(p)} a ${f(q)}. El ${f(q)} ${cb ? 'tiene corchete: entra en S' : 'tiene paréntesis: no entra en S'}.`;
+        if (tipo === 0) {
+          const x0 = q - 0.5, med = (x0 + q) / 2;
+          return {
+            enunciado: `¿Cuál es el mayor elemento de S = ${S}?`,
+            dibujo: recta(),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el mayor elemento de S: un número que esté en S y que ningún otro de S supere.' },
+              { tipo: 'datos', texto: datos },
+              { tipo: 'regla', texto: 'El mayor elemento tiene que estar dentro del conjunto. Si el borde de arriba no entra, siempre hay otro número de S más cerca de él.' },
+              cb ? { tipo: 'cuentas', texto: `El ${f(q)} está en S, y todo número de S es menor o igual que ${f(q)}.`, ecuacion: [`máx S = ${f(q)}`],
+                dibujo: recta([{ tipo: 'punto', x: q, color: 'd', rotulo: 'máx', fila: 2 }]) }
+                : { tipo: 'cuentas', texto: [`Pruebo un candidato, `, x, ` = ${f(x0)}. El punto medio entre `, x, ` y ${f(q)} está en S y es mayor.`],
+                  ecuacion: [{ frac: [`${f(x0)} + ${f(q)}`, '2'] }, ` = ${f(med)} > ${f(x0)}`],
+                  dibujo: recta([{ tipo: 'punto', x: x0, color: 'h', rotulo: f(x0), fila: 2 }, { tipo: 'punto', x: med, color: 'd', fila: 2 }]) },
+              { tipo: 'sentido', texto: cb ? `Comprueba: un número mayor que ${f(q)}, como ${f(q + 0.1)}, ya está fuera de S. Nada de S supera a ${f(q)}.`
+                : `Comprueba: con cualquier candidato pasa lo mismo, y el ${f(q)} no sirve porque no está en S. No hay mayor elemento.` },
+            ],
+            respuesta: cb ? `El mayor elemento es ${f(q)}.` : 'S no tiene mayor elemento.',
+          };
+        }
+        if (tipo === 1) {
+          return {
+            enunciado: `¿Cuál es el supremo de S = ${S}, es decir, la menor de sus cotas superiores?`,
+            dibujo: recta(),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el supremo de S: la menor de sus cotas superiores, los números que ningún elemento de S supera.' },
+              { tipo: 'datos', texto: datos },
+              { tipo: 'regla', texto: 'Una cota superior deja a todo S por debajo o a su altura. El supremo es la menor de ellas, y no necesita estar en S.' },
+              { tipo: 'cuentas', texto: `Ningún número de S pasa de ${f(q)}: las cotas superiores van desde ${f(q)} en adelante. La menor es ${f(q)}.`,
+                ecuacion: [`cotas: [${f(q)}, +∞)   →   sup S = ${f(q)}`], dibujo: recta([], true) },
+              { tipo: 'sentido', texto: `Comprueba: ${f(q - 0.5)} no es cota, porque ${f(q - 0.25)} está en S y lo supera. Ninguna cota es menor que ${f(q)}.` },
+            ],
+            respuesta: `sup S = ${f(q)}`,
+          };
+        }
+        const u = r.ent(10, 98) / 100, v = Math.round((u + 0.01) * 100) / 100, m = Math.round((u + v) / 2 * 1000) / 1000;
+        const zoom = extra => ({ datos: { min: Math.round((u - 0.005) * 1000) / 1000, max: Math.round((v + 0.005) * 1000) / 1000, paso: 0.005, decimales: 3, variable: 'x', color: 'o', filas: 2, elementos: [
+          { tipo: 'punto', x: u, color: 'o', rotulo: f(u), fila: 1 }, { tipo: 'punto', x: v, color: 'i', rotulo: f(v), fila: 1 }, ...extra,
+        ], alt: `Los números ${f(u)} y ${f(v)}, vistos de cerca${extra.length ? `; entre ellos, ${f(m, 3)}` : ''}` }, estado: {} });
+        return {
+          enunciado: `Halla un número que esté estrictamente entre ${f(u)} y ${f(v)}.`,
+          dibujo: zoom([]),
+          pasos: [
+            { tipo: 'pide', texto: `Piden un número mayor que ${f(u)} y menor que ${f(v)}, sin ser ninguno de los dos.` },
+            { tipo: 'datos', texto: 'Los dos números se diferencian en solo 0,01. Parece que no cabe nada entre ellos.' },
+            { tipo: 'regla', texto: 'Entre dos reales distintos siempre hay otro. El punto medio sirve: queda a la misma distancia de los dos.' },
+            { tipo: 'cuentas', texto: 'Sumo los dos números y divido entre 2.', ecuacion: [{ frac: [`${f(u)} + ${f(v)}`, '2'] }, ` = ${f(m, 3)}`],
+              dibujo: zoom([{ tipo: 'punto', x: m, color: 'd', rotulo: f(m, 3), fila: 2 }]) },
+            { tipo: 'sentido', texto: `Comprueba: ${f(u)} < ${f(m, 3)} < ${f(v)}. Y entre ${f(u)} y ${f(m, 3)} hay otro punto medio: la búsqueda no termina.` },
+          ],
+          respuesta: `${f(m, 3)}, por ejemplo`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -402,6 +574,15 @@
     titulo: 'Una tabla se comprueba',
     temas: ['Operaciones binarias y tablas', 'Axiomas de cuerpo y de orden'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): operaciones inventadas, cómo leer la tabla, neutro e inverso; no dice cuál es el neutro de a + b − 1.
+    lee: {
+      tarjetas: [
+        { titulo: 'Operaciones inventadas', texto: ['En el examen aparecen operaciones con símbolos nuevos, como ', a, ' ★ ', b, ' = 2', a, ' + ', b, '. No son la suma ni la resta: son reglas nuevas y se usan tal como están escritas.'] },
+        { titulo: 'Leer la tabla', texto: ['En la tabla, ', a, ' ★ ', b, ' está en la fila de ', a, ' y en la columna de ', b, '. Así, 3 ★ 1 está en la fila del 3 y en la columna del 1.'] },
+        { titulo: 'Neutro e inverso', texto: ['Un elemento neutro e deja igual a cualquier elemento: ', a, ' ★ e = ', a, '. El inverso de ', a, ' es el elemento que, operado con ', a, ', da el neutro.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['Arrastra la casilla verde; la roja marca el caso con ', a, ' y ', b, ' cambiados. Busca una regla en la que las dos casillas muestren números distintos.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige una regla para a ★ b y una casilla: fila a, columna b. Compara a ★ b con b ★ a.',
       voz: 'Busca una regla en la que el orden importe.',
@@ -449,6 +630,70 @@
       texto: 'Las propiedades de una operación binaria se comprueban. Es conmutativa si la tabla es simétrica respecto de la diagonal; e es neutro si deja igual a cada elemento.',
       ecuacion: [a, ' ★ ', { llave: ['e'], nota: 'el neutro', color: 'c-d' }, ' = e ★ ', a, ' = ', a],
       condicion: 'no se supone nada porque la regla se parezca a la suma. En los reales, el 0 no tiene inverso multiplicativo.',
+    },
+    // Así se resuelve (fase 2): los tres tipos de «Ahora tú» (evaluar, dos operaciones seguidas, el neutro) con otras
+    // semillas y la misma regla p·a + q·b + k. La tabla anota cada operación hecha.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3;
+        const p = r.uno([1, 2, 3]), q = r.uno([-1, 1, 2, 3].filter(v => v !== p)), k = r.ent(-3, 3);
+        const op = (u, v) => p * u + q * v + k;
+        const fp = v => (v < 0 ? `(${f(v)})` : f(v));
+        const kTxt = k ? ` ${k > 0 ? '+' : '−'} ${f(Math.abs(k))}` : '';
+        const regla = [p === 1 ? '' : f(p), a, q < 0 ? ' − ' : ' + ', Math.abs(q) === 1 ? '' : f(Math.abs(q)), b, kTxt];
+        // La cuenta escrita: 2 · (−1) + 3 · 4 − 2 = 8.
+        const cuenta = (u, v) => `${p === 1 ? fp(u) : `${f(p)} · ${fp(u)}`}${q < 0 ? ' − ' : ' + '}${Math.abs(q) === 1 ? fp(v) : `${f(Math.abs(q))} · ${fp(v)}`}${kTxt} = ${f(op(u, v))}`;
+        const tabla = (filas, ver) => ({ datos: { columnas: ['a', 'b', 'a ★ b'], colorCol: ['o', 'i', 'd'],
+          filas: filas.map(([u, v, w]) => [typeof u === 'number' ? f(u) : u, f(v), ver ? { t: f(w), color: 'd', fuerte: true } : '?']), alt: `Operaciones hechas: ${filas.map(([u, v]) => `${typeof u === 'number' ? f(u) : u} ★ ${f(v)}`).join(', ')}` }, estado: {} });
+        if (tipo === 0) {
+          const u = r.ent(1, 5), v = r.ent(-2, 4), fil = [[v, u, op(v, u)]];
+          return {
+            enunciado: ['Si ', a, ' ★ ', b, ' = ', ...regla, `, ¿cuánto vale ${fp(v)} ★ ${fp(u)}?`],
+            dibujo: tabla(fil, false),
+            pasos: [
+              { tipo: 'pide', texto: `Piden ${fp(v)} ★ ${fp(u)}: el primer número va en el lugar de a y el segundo, en el de b.` },
+              { tipo: 'datos', texto: ['Aquí ', a, ` = ${f(v)} y `, b, ` = ${f(u)}. La regla es `, ...regla, '.'] },
+              { tipo: 'regla', texto: 'Una operación inventada se usa tal como está escrita: cada letra se cambia por su número, en su lugar. No se trata como una suma.' },
+              { tipo: 'cuentas', texto: ['Reemplazo ', a, ' y ', b, ' en la regla y opero.'], ecuacion: [cuenta(v, u)], dibujo: tabla(fil, true) },
+              { tipo: 'sentido', texto: op(u, v) !== op(v, u) ? `Comprueba el orden: ${fp(u)} ★ ${fp(v)} da ${f(op(u, v))}, otro número. Por eso no se pueden cambiar de lugar.`
+                : `Comprueba: aquí ${fp(u)} ★ ${fp(v)} también da ${f(op(u, v))}, pero igual se respeta el orden de la regla.` },
+            ],
+            respuesta: `${fp(v)} ★ ${fp(u)} = ${f(op(v, u))}`,
+          };
+        }
+        if (tipo === 1) {
+          const u = r.ent(0, 3), v = r.ent(0, 3), w = r.ent(0, 2), m = op(u, v), izq = op(m, w), der = op(u, op(v, w));
+          const fil = [[u, v, m], [m, w, izq]];
+          return {
+            enunciado: ['Si ', a, ' ★ ', b, ' = ', ...regla, `, ¿cuánto vale (${f(u)} ★ ${f(v)}) ★ ${f(w)}?`],
+            dibujo: tabla([fil[0], ['?', w, izq]], false),
+            pasos: [
+              { tipo: 'pide', texto: `Piden (${f(u)} ★ ${f(v)}) ★ ${f(w)}: dos operaciones seguidas, empezando por el paréntesis.` },
+              { tipo: 'datos', texto: ['La regla es ', ...regla, `. Los números son ${f(u)}, ${f(v)} y ${f(w)}, en ese orden.`] },
+              { tipo: 'regla', texto: ['Primero se opera lo que está entre paréntesis; su resultado pasa a ser el nuevo ', a, '. Cada vez se reemplaza en la regla.'] },
+              { tipo: 'cuentas', texto: `Primero ${f(u)} ★ ${f(v)}; después, ese resultado ★ ${f(w)}.`, ecuacion: [cuenta(u, v), '   →   ', cuenta(m, w)], dibujo: tabla(fil, true) },
+              { tipo: 'sentido', texto: izq !== der ? `Comprueba: ${f(u)} ★ (${f(v)} ★ ${f(w)}) da ${f(der)}, otro número. El lugar del paréntesis cambia el resultado.`
+                : `Comprueba: aquí ${f(u)} ★ (${f(v)} ★ ${f(w)}) también da ${f(der)}, pero no siempre pasa: se respeta el paréntesis.` },
+            ],
+            respuesta: `(${f(u)} ★ ${f(v)}) ★ ${f(w)} = ${f(izq)}`,
+          };
+        }
+        const e = -k || 0, reg2 = [a, ' + ', b, kTxt], op2 = (u, v) => u + v + k;
+        const fil = [0, 1, 2].map(u => [u, e, op2(u, e)]);
+        return {
+          enunciado: ['Si ', a, ' ★ ', b, ' = ', ...reg2, ', ¿qué elemento e cumple ', a, ' ★ e = ', a, ' para todo ', a, '?'],
+          dibujo: { datos: { columnas: ['a', 'e', 'a ★ e'], colorCol: ['o', 'd', 'o'], filas: fil.map(([u]) => [f(u), '?', '?']), alt: 'Se busca e con a ★ e = a' }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el elemento neutro e: el que, operado con cualquier ', a, ', lo deja igual.'] },
+            { tipo: 'datos', texto: ['La regla es ', ...reg2, '. Busco e con ', a, ' ★ e = ', a, ', sea cual sea ', a, '.'] },
+            { tipo: 'regla', texto: ['Escribo ', a, ' ★ e con la regla, lo igualo con ', a, ' y despejo e. Si el valor no depende de ', a, ', ese es el neutro.'] },
+            { tipo: 'cuentas', texto: [a, ' ★ e queda ', a, ' + e', kTxt, '. Lo igualo con ', a, ' y despejo.'], ecuacion: [a, ` + e${kTxt} = `, a, `   →   e = ${f(e)}`],
+              dibujo: { datos: { columnas: ['a', 'e', 'a ★ e'], colorCol: ['o', 'd', 'o'], filas: fil.map(([u, ee, w]) => [f(u), f(ee), { t: f(w), color: 'o', fuerte: true }]), alt: `Con e = ${f(e)}: 0 ★ e = 0, 1 ★ e = 1 y 2 ★ e = 2` }, estado: {} } },
+            { tipo: 'sentido', texto: `Compruebo con a = 2: 2 ★ ${fp(e)} = 2 + ${fp(e)}${kTxt} = ${f(op2(2, e))}. Queda igual, y la regla da lo mismo al revés.` },
+          ],
+          respuesta: `e = ${f(e)}`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
