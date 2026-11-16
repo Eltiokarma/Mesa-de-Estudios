@@ -114,7 +114,7 @@ Se construye mientras se rehace la primera unidad (etapa 1), con un caso real qu
 
 ### Etapa 0: dejar las decisiones escritas
 
-- Gerson responde las decisiones de la sección 9.
+- Gerson respondió las decisiones 1 y 2 de la sección 9 (16 nov).
 - Se actualizan `CLAUDE.md` (público, regla de los SVG de prueba), `docs/teoria.md` (el contrato de la sección 3 pasa a ser parte del formato) y `docs/vision-futura.md` (3.º y 4.º pasan ahí).
 
 ### Etapa 1: una unidad de punta a punta
@@ -152,15 +152,17 @@ Lo que el contrato no cubra en estos tres casos se corrige en el contrato, no co
 - No se cambian los `id` de unidades, ideas ni controles: el avance de los alumnos se guarda con ellos.
 - No se declara «se entiende» por una revisión del propio autor.
 
-## 9. Decisiones que faltan (Gerson)
+## 9. Decisiones de Gerson sobre el plan (16 nov, «vamos con lo que recomiendas»)
 
-1. **Qué significa que un conocimiento «abre» el siguiente.** Hoy se puede entrar a todo y lo que no tiene sus requisitos se ve punteado; el 15 nov se decidió que ninguna prueba bloquea. Opciones:
-   - **Recomendada:** el tema siguiente se abre al terminar la teoría del anterior **o** al aprobar su prueba del tema («ya me lo sé», que ya existe). Así un preuniversitario que ya sabe vectores no queda encerrado, y el que no sabe tiene un camino claro.
-   - Candado puro: solo se abre estudiando el anterior.
-   - Como está: sugerencia sin candado.
-2. **Qué pregunta la bienvenida en vez del grado.** Recomendación: «5.º de secundaria» o «Academia o egresado», solo para la medición. No cambia lo que se ve.
-3. **El orden de las ideas de magnitudes y vectores** y si se parte en dos unidades. Llega como propuesta en la etapa 1, paso 2.
-4. **Alumnos para probar.** ¿Hay dos o tres chicos de 5.º o de academia a quienes se les pueda dar el celular media hora en las etapas 1 y 2?
+1. **Un conocimiento abre el siguiente.** Un tema se abre cuando su requisito **del mismo curso** está hecho: terminó su teoría (o la marcó como estudiada) **o** aprobó su prueba del tema con 80 % o más («ya me lo sé»). Así un preuniversitario que ya sabe vectores no queda encerrado, y el que no sabe tiene un camino claro.
+   - Los requisitos de **otro curso** no cierran nada: se muestran como consejo («Antes: …»). Si cerraran, toda la física quedaría detrás de trigonometría.
+   - Las raíces de cada curso están siempre abiertas.
+   - Lo que el alumno ya empezó (abrió, estudió o probó) no se le vuelve a cerrar.
+   - Un tema cerrado no se esconde: se ve en el mapa con su candado, y al tocarlo dice qué falta, con dos caminos («Estudiar…» o «Ya lo sé: dar la prueba de…»).
+   - Esto reemplaza, solo para el mapa, la decisión del 15 nov de que nada bloquea. La prueba del tema sigue siendo opcional y nunca se impone.
+2. **La bienvenida ya no pregunta el grado.** Pregunta «5.º de secundaria» o «Academia o egresado». Sirve solo para la medición; no cambia lo que se ve. Las etiquetas «Tu grado», «Repaso» y «Adelanto» se van.
+3. **El orden de las ideas de magnitudes y vectores**, y si se parte en dos unidades: llega como propuesta en la etapa 1, paso 2.
+4. **Alumnos para probar:** sin respuesta todavía. Mientras tanto valen el lector en frío y Gerson.
 
 ## 10. Riesgos
 

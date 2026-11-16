@@ -216,9 +216,9 @@ Pedido de Gerson: que den ganas de tocar los cursos.
   - **Ramas.** Cada curso se divide en ramas (Mecánica, Ondas y luz…), y cada rama es un árbol de pisos: arriba lo básico, debajo lo que se apoya en eso.
   - **Líneas.** Unen cada tema con lo que necesita antes. Se dibujan en SVG midiendo la pantalla, así sirven con cualquier ancho. La línea es de color si el requisito ya está hecho y punteada si no.
   - **Cabecera de la rama.** Dice si se puede empezar por ella («No necesita otra rama», o «Puedes empezar por aquí. Algunos temas se apoyan en…») o qué conviene ver antes.
-  - **Tarjetas.** Lo que un tema necesita de otra rama o de otro curso va escrito en la tarjeta («Antes: Razones trigonométricas (Trigonometría)»), con enlace. Cada tarjeta muestra su grado; el del alumno va resaltado.
-  - **Todo se puede abrir.** Los temas cuyos requisitos faltan se ven más suaves (borde punteado), pero no se bloquean.
-  - **«Lo que sigue».** Arriba del mapa va la tarjeta con el primer tema sin hacer que ya tiene sus requisitos (de su grado, si hay).
+  - **Tarjetas.** Lo que un tema necesita de otro curso va escrito en la tarjeta como consejo («Antes: Razones trigonométricas (Trigonometría)»), con enlace. Ya no muestran el grado: la app es para 5.º y preuniversitario (`docs/plan-calidad.md`).
+  - **Un conocimiento abre el siguiente (16 nov).** Un tema con candado (borde punteado, dibujo apagado, «Se abre con: …») se abre cuando su requisito del mismo curso está estudiado o su prueba del tema aprobada con 80 % o más. Tocarlo lleva a la pantalla del tema cerrado, con dos caminos por requisito: «Estudiarlo» o «Ya lo sé: dar su prueba». Las raíces y lo que el alumno ya empezó están siempre abiertos. La regla está en `nucleo/mapa.js` (`abierta`) y vale también para los enlaces directos, el inicio y «Lo que sigue».
+  - **«Lo que sigue».** Arriba del mapa va la tarjeta con el primer tema abierto sin hacer; primero los que tienen también sus requisitos de otro curso.
   - **Tamaños.** En el celular entran dos tarjetas por piso. En PC las ramas van en dos columnas.
   - **Datos y cálculo.** Los datos están en `catalogo/cursos` (`ramas`, `requiere`) y el cálculo en `nucleo/mapa.js`. Ya no hay ejercicios en la página del curso.
 - **La unidad** (`#/unidad/<id>`) tiene el dibujo, el nombre, los temas y «Marcar como estudiada», y cuatro puertas: Teoría, Ejercicios, Exámenes y Dejar una pregunta. La principal (tinta llena) es Ejercicios. Nada se deshabilita sin explicar: lo que falta dice «En preparación» y lleva a lo que sí hay.

@@ -13,7 +13,9 @@ const UNI_SIGLA = { uni: 'UNI', unmsm: 'SM', una: 'UNA' };
 const textoDias = n => `${n} ${n === 1 ? 'día seguido' : 'días seguidos'}`;
 let cat = null, pruebas = null, instalar = null, offlineListo = false;
 const VERSION_APP = '0.6.0';
-const GRADOS = [['3', '3.º de secundaria'], ['4', '4.º de secundaria'], ['5', '5.º de secundaria'], ['egresado', 'Ya terminé el colegio']];
+// Para quién es (Gerson, 16 nov 2026): 5.º de secundaria y preuniversitario. Solo sirve para la medición; no cambia
+// lo que se ve. Los alumnos que ya habían elegido 3.º o 4.º lo conservan.
+const GRADOS = [['5', '5.º de secundaria'], ['egresado', 'Academia o egresado']];
 
 // ---------- Datos del alumno (en el celular) ----------
 function cargarEstado() {
@@ -123,13 +125,23 @@ const enlace = (p, unidad) => p.formato === 'escena' ? `${p.url}?desde=app${unid
 const VERBO = { escena: 'Abrir escena', predicciones: 'Practicar', lectura: 'Leer' };
 const ETIQUETA = { escena: 'Escena', predicciones: 'Práctica', lectura: 'Lectura' };
 function avance(c, uni) { const us = unidadesDe(c, uni); return us.length ? us.filter(estudiada).length / us.length : 0; }
-// Grado: una unidad de un grado mayor al del alumno es un "adelanto". No se oculta, pero va al final.
-const adelanto = u => u.grado > (Number(est.grado) || 99);
-const tagAdelanto = u => adelanto(u) ? `<span class="tag gris" title="Normalmente se ve en ${u.grado}.º de secundaria">Adelanto · ${u.grado}.º</span>` : '';
-// Orden de estudio: primero lo de su grado; dentro, el cronograma de su universidad (semana o tema), intercalando cursos.
+// Un conocimiento abre el siguiente (Gerson, 16 nov 2026; docs/plan-calidad.md §9, nucleo/mapa.js). Un tema abre lo que
+// sigue cuando el alumno lo estudió (teoría terminada o marcada) o aprobó su prueba del tema con 80 % o más.
+function pruebaAprobada(id) {
+  const tm = (est.temas || {})[id] || {}, lim = window.Mapa ? Mapa.APRUEBA : 0.8;
+  return [tm.entrada, ...(tm.intentos || [])].some(x => x && x.total && x.aciertos / x.total >= lim - 1e-9);
+}
+const aprobadaU = id => { const u = unidadPorId(id); return !!u && (estudiada(u) || pruebaAprobada(id)); };
+// Lo que el alumno ya empezó no se le vuelve a cerrar.
+const empezadaU = id => !!(est.vistas[id] || (est.teoria || {})[id] || (est.temas || {})[id] || (est.examenes || {})[id] || (est.marcadas || {})[id]);
+const opcMapa = c => ({ incluir: u => !!u.universidades[est.uni] || !est.uni, hecha: id => { const u = unidadPorId(id); return !!u && estudiada(u); },
+  aprobada: aprobadaU, empezada: empezadaU });
+const estadoUnidad = (c, id) => (window.Mapa ? Mapa.abierta(c, id, opcMapa(c)) : { abierta: true, faltan: [] });
+// Orden de estudio: primero lo abierto; dentro, el cronograma de su universidad (semana o tema), intercalando cursos.
 function cola(uni) {
   const todas = [];
-  cat.cursos.forEach((c, ci) => unidadesDe(c, uni).forEach(u => todas.push({ c, u, a: adelanto(u) ? 1 : 0, k: Math.min(...(ubic(u, uni) || [99])), ci })));
+  cat.cursos.forEach((c, ci) => unidadesDe(c, uni).forEach(u => { const abierta = estadoUnidad(c, u.id).abierta;
+    todas.push({ c, u, abierta, a: abierta ? 0 : 1, k: Math.min(...(ubic(u, uni) || [99])), ci }); }));
   return todas.sort((a, b) => a.a - b.a || a.k - b.k || a.ci - b.ci);
 }
 
@@ -179,7 +191,7 @@ function vBienvenida() {
     <input type="text" id="nombre" autocomplete="given-name" maxlength="30" placeholder="Tu nombre" value="${esc(est.nombre)}">`}
     <span class="sub">¿A qué universidad postulas?</span>
     <div class="opciones">${opc}</div>
-    <span class="sub">¿En qué grado estás?</span>
+    <span class="sub">¿Dónde estás ahora?</span>
     <div class="chips" style="margin:0">${GRADOS.map(([k, t]) => `<button class="chip${est.grado === k ? ' on' : ''}" data-grado="${k}">${esc(t)}</button>`).join('')}</div>
     <button class="btn acento ancho" id="empezar"${est.uni && est.grado ? '' : ' disabled'}>Empezar</button>
     <span class="sub" style="text-align:center">${esAlumnoCuenta() ? 'Tu avance se guarda en tu cuenta. Funciona sin internet y se sube cuando vuelve la señal.' : 'Tu avance se guarda en este celular. Funciona sin internet.'}</span>
@@ -245,9 +257,9 @@ function tarjetaRepaso() {
 
 function vInicio() {
   sembrarRepaso();
-  const q = cola(est.uni), pend = q.filter(x => !estudiada(x.u));
-  const conEscena = pend.find(x => !x.a && x.u.plantillas.length) || pend[0];
-  const totalU = q.length, hechas = q.length - pend.length;
+  const q = cola(est.uni), pend = q.filter(x => !estudiada(x.u) && x.abierta);
+  const conEscena = pend.find(x => x.u.teoria || x.u.plantillas.length) || pend[0];
+  const totalU = q.length, hechas = q.filter(x => estudiada(x.u)).length;
   const reto = conEscena ? `<div class="reto tinte" style="${Ilus.tinte(conEscena.c.id)}">${Ilus.viñeta(conEscena.c.id, 'class="reto-vineta vineta-flota"')}${Ilus.gato('class="reto-gato-mini"')}
       <div class="etq">Reto de hoy · ${esc(conEscena.c.nombre)}</div>
       <h3>${esc(conEscena.u.nombre)}</h3>
@@ -264,7 +276,7 @@ function vInicio() {
   // Si la unidad tiene teoría, «Lo que sigue» lleva a la teoría (Gerson, 15 nov: primero estudiar, después ejercitar).
   const sig = [...primeras, ...conModulo.filter(x => !primeras.includes(x))].slice(0, 4).map(x => `<a class="item" style="${Ilus.tinte(x.c.id)}" href="${esc(x.u.teoria ? `#/unidad/${x.u.id}/teoria` : enlace(cat.plantillas[x.u.plantillas[0]], x.u.id))}"${x.u.teoria ? '' : ` data-abrir="${esc(x.u.id)}"`}>${icono(x.c.id)}
       <span class="tx"><span class="t">${esc(x.u.nombre)}</span><br><span class="d">${esc(x.c.nombre)} · ${esc(etiquetaUbic(x.u, est.uni))}</span></span>
-      <span class="ir">${tagAdelanto(x.u)}${x.u.teoria ? 'Teoría' : esc(ETIQUETA[cat.plantillas[x.u.plantillas[0]].formato] || 'Abrir')} ›</span></a>`).join('');
+      <span class="ir">${x.u.teoria ? 'Teoría' : esc(ETIQUETA[cat.plantillas[x.u.plantillas[0]].formato] || 'Abrir')} ›</span></a>`).join('');
   // Tus cursos: carrusel de pegatinas con la viñeta de cada curso.
   const carrusel = cat.cursos.filter(c => unidadesDe(c, est.uni).length).map(c => { const a = avance(c, est.uni);
     return `<a class="cursito tinte" style="${Ilus.tinte(c.id)}" href="#/curso/${esc(c.id)}">${Ilus.viñeta(c.id)}<span class="t">${esc(c.nombre)}</span>
@@ -360,16 +372,20 @@ function vCurso(id) {
   const todas = sessionStorage.getItem('todas') === '1';
   const us = todas ? c.unidades : unidadesDe(c, est.uni);
   const hecha = uid => { const x = nombreUnidad(uid); return !!x && estudiada(x.u); };
-  const m = Mapa.armar(c, { incluir: u => us.includes(u), hecha });
-  const sig = Mapa.siguiente(m.ramas, u => !adelanto(u));
-  const mio = Number(est.grado) || 0;
-  const antes = n => n.fuera.length ? `<span class="nodo-antes">Antes: ${n.fuera.map(p => { const x = nombreUnidad(p); if (!x) return '';
+  const m = Mapa.armar(c, Object.assign(opcMapa(c), { incluir: u => us.includes(u) }));
+  const sig = m.siguiente;
+  // Lo que falta para abrir un tema cerrado («Se abre con…») y el consejo de otra rama u otro curso («Antes: …»).
+  const nombres = ids => ids.map(p => { const x = nombreUnidad(p); return x ? esc(x.u.nombre) : ''; }).filter(Boolean).join(' y ');
+  const antes = n => { const otros = n.abierta ? n.fuera : n.fuera.filter(p => !n.faltan.includes(p));
+    return (n.abierta ? '' : `<span class="nodo-abre">Se abre con: ${nombres(n.faltan)}</span>`) + antesDe(otros); };
+  const antesDe = ids => ids.length ? `<span class="nodo-antes">Antes: ${ids.map(p => { const x = nombreUnidad(p); if (!x) return '';
     return `<a href="#/unidad/${esc(p)}"${hecha(p) ? ' class="ok"' : ''}>${esc(x.u.nombre)}${x.c.id !== c.id ? ` <small>(${esc(x.c.nombre)})</small>` : ''}</a>`; }).join(', ')}</span>` : '';
   const nodo = n => { const u = n.unidad;
-    return `<div class="nodo${n.hecha ? ' hecha' : ''}${n.lista || n.hecha ? '' : ' espera'}${sig && sig.id === n.id ? ' sigue' : ''}" data-unidad="${esc(u.id)}" data-dentro="${esc(n.dentro.join(' '))}">
-      <span class="lamina">${dibujo(c, u)}${n.hecha ? `<span class="hecho" title="${esc(nivelDe(u).nombre)}">✓<span class="lector"> ${esc(nivelDe(u).nombre)}</span></span>` : ''}</span>
-      <a class="t nodo-ir" href="#/unidad/${esc(u.id)}">${esc(u.nombre)}</a>
-      <span class="nodo-g"><span class="tag ${u.grado === mio ? 'acento' : 'gris'}">${u.grado}.º</span>${sig && sig.id === n.id ? '<span class="tag">Sigue aquí</span>' : ''}</span>
+    return `<div class="nodo${n.hecha ? ' hecha' : ''}${n.abierta ? '' : ' cerrada'}${sig && sig.id === n.id ? ' sigue' : ''}" data-unidad="${esc(u.id)}" data-dentro="${esc(n.dentro.join(' '))}">
+      <span class="lamina">${dibujo(c, u)}${n.hecha ? `<span class="hecho" title="${esc(nivelDe(u).nombre)}">✓<span class="lector"> ${esc(nivelDe(u).nombre)}</span></span>`
+        : n.abierta ? '' : `<span class="candado" aria-hidden="true">${CANDADO}</span>`}</span>
+      <a class="t nodo-ir" href="#/unidad/${esc(u.id)}">${esc(u.nombre)}${n.abierta ? '' : '<span class="lector"> (cerrado)</span>'}</a>
+      ${sig && sig.id === n.id ? '<span class="nodo-g"><span class="tag">Sigue aquí</span></span>' : ''}
       <span class="d">${u.teoria ? esc(textoTeoriaCorto(u)) : textoEjercicios(modulosDe(u).length)}</span>${antes(n)}</div>`; };
   const ramas = m.ramas.map((r, k) => {
     const otras = r.necesita.map(j => `«${esc(c.ramas[j].nombre)}»`).join(' y ');
@@ -391,7 +407,7 @@ function vCurso(id) {
     <span class="barra" aria-hidden="true"><i style="width:${pc}%"></i></span>
     <div class="chips"><button class="chip${todas ? '' : ' on'}" data-todas="0">${esc(UNI_CORTA[est.uni] || 'Mi universidad')}</button><button class="chip${todas ? ' on' : ''}" data-todas="1">Todas las unidades</button></div></header>
     ${sigue}
-    <p class="mapa-guia">Cada rama va <b>de lo básico a lo complejo</b>: un tema se apoya en el que tiene arriba, unido por la línea. Puedes entrar a cualquiera; los que se ven más suaves te costarán menos si antes ves lo de arriba.</p>
+    <p class="mapa-guia">Cada rama va <b>de lo básico a lo complejo</b>: un tema se apoya en el que tiene arriba, unido por la línea. Un tema con candado <b>se abre</b> cuando estudias el de arriba o apruebas su prueba del tema. Lo que viene de otro curso es un consejo: no cierra nada.</p>
     <div class="mapa" style="${Ilus.tinte(c.id)}">${ramas}</div>
     ${PC || lec ? `<div class="pruebas-curso">${PC ? PC.tarjeta(ctxPrueba(), c.id) : ''}${lec ? tarjetaLectura(lec, c) : ''}</div>` : ''}`;
   $app.querySelectorAll('[data-todas]').forEach(b => b.onclick = () => { sessionStorage.setItem('todas', b.dataset.todas); vCurso(id); });
@@ -471,10 +487,28 @@ function textoTeoria(u) {
   const h = st ? Object.values(st.ideas || {}).filter(i => i.hecha).length : 0;
   return h ? `${h} de ${n} ideas terminadas` : `${n} ${n === 1 ? 'idea' : 'ideas'} para jugar y entender`;
 }
+// Tema cerrado: dice qué lo abre, con los dos caminos (estudiar lo de antes o probar que ya lo sabe).
+const CANDADO = '<svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>';
+function vCerrada(c, u, faltan) {
+  const camino = id => { const x = unidadPorId(id); if (!x) return '';
+    return `<div class="card cerrada-req"><span class="lamina">${dibujo(c, x)}</span><div><b>${esc(x.nombre)}</b>
+      <div class="cerrada-acc"><a class="btn morado" href="#/unidad/${esc(id)}${x.teoria ? '/teoria' : ''}">Estudiarlo ›</a>
+      ${x.teoria ? `<a class="btn borde" href="#/unidad/${esc(id)}/entrada">Ya lo sé: dar su prueba</a>` : ''}</div></div></div>`; };
+  $app.innerHTML = `<header class="unidad-hero tinte" style="${Ilus.tinte(c.id)}">
+      <a class="volver" href="#/curso/${esc(c.id)}" aria-label="Volver a ${esc(c.nombre)}">‹</a>
+      <div class="uh-cuerpo"><span class="lamina">${dibujo(c, u)}<span class="candado" aria-hidden="true">${CANDADO}</span></span>
+        <div><p class="sub">${esc(c.nombre)} · tema cerrado</p><h1>${esc(u.nombre)}</h1></div></div></header>
+    <p class="cerrada-txt"><b>${esc(u.nombre)}</b> se apoya en ${faltan.length > 1 ? 'estos temas' : 'este tema'}. Se abre cuando ${faltan.length > 1 ? 'los estudias' : 'lo estudias'}, o cuando apruebas ${faltan.length > 1 ? 'sus pruebas' : 'su prueba'} del tema con 80 % o más si ya ${faltan.length > 1 ? 'los sabes' : 'lo sabes'}.</p>
+    ${faltan.map(camino).join('')}
+    <a class="btn borde ancho" href="#/curso/${esc(c.id)}">Volver al mapa de ${esc(c.nombre)}</a>`;
+  registrar({ tipo: 'cerrada', unidad: u.id, faltan });
+}
 function vUnidad(id, sub) {
   const c = cursoDeUnidad(id), u = c && c.unidades.find(x => x.id === id);
   if (!u) return ir('#/cursos');
   if (llevarAEntrada(c)) return;
+  const st = estadoUnidad(c, id);
+  if (!st.abierta) return vCerrada(c, u, st.faltan);
   sessionStorage.setItem('ultima-unidad', id);
   if (sub === 'entrada') return vEntradaTema(c, u);
   // La prueba del tema es opcional y va después de la teoría (decisión de Gerson, 15 nov): ya no se impone antes de nada.
@@ -490,7 +524,7 @@ function vUnidad(id, sub) {
   $app.innerHTML = `<header class="unidad-hero tinte" style="${Ilus.tinte(c.id)}">
       <a class="volver" href="#/curso/${esc(c.id)}" aria-label="Volver a ${esc(c.nombre)}">‹</a>
       <div class="uh-cuerpo"><span class="lamina">${dibujo(c, u)}</span>
-        <div><p class="sub">${esc(c.nombre)} · ${u.grado}.º de secundaria</p><h1>${esc(u.nombre)}</h1></div></div>
+        <div><p class="sub">${esc(c.nombre)}</p><h1>${esc(u.nombre)}</h1></div></div>
       <p class="sub temas">${esc(u.temas.join(' · '))}</p>
       ${(est.temas || {})[id] && est.temas[id].entrada ? `<p class="sub">Prueba del tema: ${est.temas[id].entrada.aciertos} de ${est.temas[id].entrada.total} ideas acertadas</p>` : ''}
       <div class="nivel-u">${nv.nivel > 0 || (nv.nivel === 0 && primeraVisita < hoy()) ? `<span class="tag nivel-${nv.nivel}">${esc(nv.nombre)}</span>` : ''}${nv.falta ? `<span class="sub">${esc(nv.nivel < 1 ? `Para empezar: ${nv.falta.charAt(0).toLowerCase()}${nv.falta.slice(1)}` : nv.falta)}</span>` : ''}</div>
@@ -770,7 +804,7 @@ function vCierre() {
   const { partes, vacio } = resumenDeHoy();
   const ult = est.ultima && diasDesde(est.ultima.fecha) <= 21 ? est.ultima : null;
   const cursoComp = (ult && cursoDeRuta(ult.hash)) || cat.cursos[0], per = companero(cursoComp && cursoComp.id);
-  const q = cola(est.uni), sig = q.find(x => !estudiada(x.u));
+  const q = cola(est.uni), sig = q.find(x => !estudiada(x.u) && x.abierta);
   const opciones = [
     ult && tituloRuta(ult.hash) ? { hash: ult.hash, t: `Seguir con ${tituloRuta(ult.hash)}` } : null,
     sig ? { hash: `#/unidad/${sig.u.id}`, t: `Empezar ${sig.u.nombre}` } : null,
@@ -870,7 +904,7 @@ function vPerfil() {
       <div><b>${esc(cu.nombre || est.nombre)}</b><br><span class="sub">Usuario <b>${esc(ses.usuario().usuario || '')}</b>${cu.seccion ? ` · ${esc(seccionTxt(cu.seccion))}` : ''}</span><br>${pildoraSync()}</div></div>`
       : `<h2>Nombre</h2><input type="text" id="nombre" maxlength="30" value="${esc(est.nombre)}" placeholder="Tu nombre">`}
     <h2>Universidad</h2><div class="chips">${unis}</div>
-    <h2>Grado</h2><div class="chips">${GRADOS.map(([k, t]) => `<button class="chip${est.grado === k ? ' on' : ''}" data-grado="${k}">${esc(t)}</button>`).join('')}</div>
+    <h2>Dónde estás</h2><div class="chips">${GRADOS.map(([k, t]) => `<button class="chip${est.grado === k ? ' on' : ''}" data-grado="${k}">${esc(t)}</button>`).join('')}</div>
     ${cu ? '' : `<h2>Código del colegio</h2><input type="text" id="colegio" maxlength="20" value="${esc(est.colegio)}" placeholder="Lo da tu profesor" autocapitalize="characters">`}
     <h2>Apariencia</h2><div class="chips">${temas}</div>
     <h2>Tu compañero</h2><div class="chips">

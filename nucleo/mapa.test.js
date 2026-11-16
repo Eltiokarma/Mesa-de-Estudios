@@ -35,13 +35,39 @@ test('una rama que no se apoya en otra es independiente', () => {
   assert.equal(r.conEntrada, true);
 });
 
-test('lo siguiente es lo primero sin hacer que ya tiene sus requisitos', () => {
+test('lo siguiente es la primera unidad abierta sin hacer', () => {
   const hechas = new Set(['x.a']);
   const m = Mapa.armar(curso, { hecha: id => hechas.has(id) });
   assert.equal(m.siguiente.id, 'x.b');
   hechas.add('x.b'); hechas.add('x.c');
-  // x.d necesita y.z (otro curso) y no está lista: sigue x.e, de otra rama
+  // x.d está abierta (y.z es de otro curso: no cierra), pero x.e ya tiene todos sus requisitos: va primero
   assert.equal(Mapa.armar(curso, { hecha: id => hechas.has(id) }).siguiente.id, 'x.e');
+});
+
+test('un tema se abre cuando su requisito del mismo curso está aprobado', () => {
+  const nodo = (opc, id) => Mapa.armar(curso, opc).ramas.flatMap(r => r.nodos).find(n => n.id === id);
+  // al inicio solo las raíces están abiertas
+  assert.equal(nodo({}, 'x.a').abierta, true);
+  assert.equal(nodo({}, 'x.f').abierta, true);
+  assert.equal(nodo({}, 'x.b').abierta, false);
+  assert.deepEqual(nodo({}, 'x.b').faltan, ['x.a']);
+  // aprobar la prueba de x.a (sin estudiarla) abre x.b y x.c
+  const aprobada = id => id === 'x.a';
+  assert.equal(nodo({ aprobada }, 'x.b').abierta, true);
+  assert.equal(nodo({ aprobada }, 'x.c').abierta, true);
+  // x.d necesita x.b y x.c; y.z, de otro curso, no cierra
+  const ab = id => ['x.a', 'x.b', 'x.c'].includes(id);
+  assert.equal(nodo({ aprobada: ab }, 'x.d').abierta, true);
+  assert.deepEqual(nodo({ aprobada: ab }, 'x.d').faltan, []);
+  // lo que ya empezó no se cierra
+  assert.equal(nodo({ empezada: id => id === 'x.d' }, 'x.d').abierta, true);
+  // la consulta suelta da lo mismo
+  assert.deepEqual(Mapa.abierta(curso, 'x.b', {}), { abierta: false, faltan: ['x.a'] });
+});
+
+test('un requisito que la universidad no pide no cierra nada', () => {
+  const n = Mapa.armar(curso, { incluir: u => u.id !== 'x.a' }).ramas[0].nodos.find(x => x.id === 'x.b');
+  assert.equal(n.abierta, true);
 });
 
 test('si la universidad no pide una unidad, sale del mapa y queda como requisito de afuera', () => {
@@ -56,5 +82,6 @@ test('el catálogo real arma un mapa con todas sus unidades', () => {
     assert.equal(m.ramas.reduce((s, r) => s + r.nodos.length, 0), c.unidades.length, c.id);
     assert.ok(m.ramas.some(r => r.independiente), `${c.id}: alguna rama tiene que poder empezarse sin otra`);
     assert.ok(m.siguiente, c.id);
+    assert.ok(m.ramas.flatMap(r => r.nodos).some(n => n.abierta), `${c.id}: sin nada aprobado, algo tiene que estar abierto`);
   }
 });

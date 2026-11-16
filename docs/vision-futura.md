@@ -65,3 +65,8 @@
 ## Más ideas a futuro
 
 - Modo PISA, agilidad mental (al estilo de Peak), interacciones tipo juego (al estilo de Brilliant) y aprendizaje guiado (POGIL): `docs/vision-pisa-agilidad-interaccion.md` (5 nov 2026).
+
+## 3.º y 4.º de secundaria (16 nov 2026)
+
+La app se pensó para un colegio de 3.º a 5.º. Gerson decidió que es para 5.º y preuniversitario (`docs/plan-calidad.md`). El campo `grado` de cada unidad se queda en el catálogo: sirve para que ningún requisito sea de un grado mayor, y para volver a abrir 3.º y 4.º algún día.
+

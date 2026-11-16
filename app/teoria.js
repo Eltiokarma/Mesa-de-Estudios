@@ -1294,7 +1294,9 @@
         <span class="etq-p">Prueba del tema lista</span>
         <h2>${aciertos} de ${preguntas.length} ideas ya las tienes</h2>
         <ul class="te-calib">${def.ideas.map(i => `<li class="${sabidas.includes(i.id) ? 'si' : 'no'}"><span aria-hidden="true">${sabidas.includes(i.id) ? '✓' : '○'}</span> ${esc(i.titulo)} <span class="sub">${sabidas.includes(i.id) ? 'la tienes' : 'conviene repasarla'}</span></li>`).join('')}</ul>
+        ${aciertos / preguntas.length >= ((window.Mapa && Mapa.APRUEBA) || 0.8) - 1e-9 ? `<p class="te-abre">Con este resultado, este tema ya abre lo que sigue en el mapa del curso.</p>` : ''}
         <div class="acciones-prueba"><a class="btn morado" href="#/unidad/${esc(u.id)}/teoria">${hechas >= def.ideas.length ? 'Repasar la teoría' : 'Ir a la teoría'}</a>
+          <a class="btn borde" href="#/curso/${esc(c.id)}">Ver el mapa del curso</a>
           <a class="btn borde" href="#/unidad/${esc(u.id)}">Volver a la unidad</a></div></section>`;
     }
     if ((tm.entrada || tm.intentos.length) && !(tm.enCurso && (tm.enCurso.i || tm.enCurso.resp.some(Boolean)))) resumen(); else intro();
