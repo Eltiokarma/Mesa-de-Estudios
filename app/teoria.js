@@ -257,6 +257,25 @@
         frag.append(txt.slice(k));
         n.replaceWith(frag);
       }
+      pistaGlosario();
+    }
+    // Aviso de una sola vez (lector en frío, 16 nov: nadie sabía que las palabras con puntos se tocan). Se va al tocar
+    // una palabra o la ✕, y no vuelve (est.prefs.pistaGlo).
+    function pistaGlosario() {
+      const prefs = ctx.est.prefs || {};
+      if (prefs.pistaGlo || document.querySelector('.te-pista-glo')) return;
+      const idea = document.querySelector('.te-idea'), t = idea && idea.querySelector('.te-term');
+      if (!t) return;
+      const ol = idea.querySelector('.te-momentos');
+      const p = document.createElement('p');
+      p.className = 'te-pista-glo';
+      p.innerHTML = '<span class="te-pista-glo-m" aria-hidden="true">Aa</span><span>Las palabras con <u>puntos debajo</u> se tocan: te dicen qué significan.</span><button type="button" class="te-pista-glo-x" aria-label="Entendido, cerrar el aviso">✕</button>';
+      (ol || idea.firstElementChild).insertAdjacentElement('afterend', p);
+      p.querySelector('button').onclick = () => quitarPistaGlo();
+    }
+    function quitarPistaGlo() {
+      ctx.est.prefs = Object.assign({}, ctx.est.prefs, { pistaGlo: true }); ctx.guardar();
+      const p = document.querySelector('.te-pista-glo'); if (p) p.remove();
     }
     // Lo que se pinta después (pasos de «Mira», preguntas, consignas) también se marca.
     function vigilar(el) {
@@ -271,6 +290,7 @@
       marcarTerminos(el); ob.observe(el, OPC);
     }
     glosaActual = (k, desde) => {
+      if (!(ctx.est.prefs || {}).pistaGlo) quitarPistaGlo();
       const e = porClave.get(k); if (!e) return;
       let capa = document.querySelector('.te-glosa');
       if (!capa) {
