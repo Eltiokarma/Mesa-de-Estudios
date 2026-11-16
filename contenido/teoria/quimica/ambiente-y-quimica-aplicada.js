@@ -83,11 +83,35 @@
   // salta). El segundo es del dibujo, no del fenómeno: una cadena real tarda días o años.
   const eslabon = (tt, nNodos) => Math.min(nNodos, Math.floor(tt) + 1);
   const colHasta = (k, c) => ({ titulo: AIRE[k].titulo, color: AIRE[k].color, nodos: AIRE[k].nodos.map((t, i) => ({ texto: t, tenue: i >= c })) });
+  // Casos de «Así se resuelve» y «Ahora tú»: una sustancia con su fuente y la cadena a la que aporta sobre todo.
+  const CASOS_AIRE = [
+    ['El SO₂ que sale de una fundición', 'lluvia'], ['El CO₂ de los motores y las cocinas', 'invernadero'],
+    ['Los CFC de refrigeradoras antiguas', 'ozono'], ['Los NOₓ de los autos en una tarde soleada', 'smog'],
+    ['El metano de un relleno sanitario', 'invernadero'], ['El H₂SO₄ que se forma en las nubes', 'lluvia'],
+  ];
+  const CADENA_DE = { invernadero: 'del efecto invernadero', ozono: 'de la capa de ozono', lluvia: 'de la lluvia ácida', smog: 'del smog fotoquímico' };
+  // El último eslabón de cada cadena, dicho como comprobación (paso «¿Tiene sentido?»).
+  const FIN_AIRE = {
+    invernadero: 'El efecto final es calentar el planeta: cuadra con un gas que se acumula en el aire y retiene calor.',
+    ozono: 'El efecto final es que llega más ultravioleta: cuadra con una sustancia que suelta cloro en la estratosfera.',
+    lluvia: 'El efecto final es una lluvia más ácida: cuadra con una sustancia que forma ácidos en el aire.',
+    smog: 'El efecto final es ozono junto al suelo que irrita: cuadra con gases de autos que reaccionan con la luz del sol.',
+  };
   const aire = {
     id: 'cadenas-del-aire',
     titulo: 'Cada problema, su cadena',
     temas: ['Ecosistemas y contaminantes', 'Efecto invernadero', 'Smog y lluvia ácida', 'Capa de ozono'],
     pieza: 'quim-cadena',
+    // Lee (fase 2): contexto cercano y vocabulario (eslabones de una cadena, estratosfera); no compara ozono con invernadero.
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que no se ve', texto: 'En las mañanas de Juliaca se ve el humo de los motores y de las ladrilleras. Lo que no se ve son los gases que ese humo lleva. Cada gas sigue su propio camino en el aire.' },
+        { titulo: 'Cuatro preguntas', texto: 'Para entender un contaminante, pregunta en orden: ¿de dónde sale?, ¿qué sustancia actúa?, ¿qué le pasa en el aire? y ¿qué efecto deja? Las cuatro respuestas forman su cadena.',
+          ecuacion: ['fuente → especie → transformación → efecto'] },
+        { titulo: 'Arriba de las nubes', texto: 'Entre unos 10 y 50 km de altura está la estratosfera, más arriba de donde se forman casi todas las nubes. Ahí está la mayor parte del ozono, O₃, de la atmósfera.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, cada cadena se arma sola, eslabón por eslabón. Cambia de problema y lee qué sustancia actúa en el segundo eslabón y qué efecto deja el último.' },
+      ],
+    },
     juega: {
       consigna: 'La cadena se arma sola, un eslabón por segundo: de dónde sale, qué sustancia actúa, qué le pasa y qué efecto deja. Cambia de problema.',
       voz: 'Un contaminante se entiende por su cadena completa.',
@@ -131,14 +155,27 @@
       condicion: 'una sustancia puede estar en más de una cadena (los CFC también absorben infrarrojo), pero cada mecanismo es otro.',
       voz: 'Antes de culpar a un gas, arma su cadena.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (ubicar una sustancia en su cadena), con CASOS_AIRE y AIRE.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), [caso, k] = CASOS_AIRE[r.ent(0, CASOS_AIRE.length - 1)], N = AIRE[k].nodos;
+        return {
+          enunciado: `${caso}. ¿A qué cadena aporta sobre todo?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden en qué problema del aire actúa esa sustancia: efecto invernadero, capa de ozono, lluvia ácida o smog.' },
+            { tipo: 'datos', texto: `Tengo la sustancia y de dónde viene: «${caso}».` },
+            { tipo: 'regla', texto: 'Cada problema del aire es una cadena con sus propias sustancias. Se busca la cadena donde esa sustancia es un eslabón.' },
+            { tipo: 'aplica', texto: `La sustancia encaja en la cadena ${CADENA_DE[k]}, que empieza así:`, ecuacion: [`${N[0]} → ${N[1]}`] },
+            { tipo: 'sentido', texto: FIN_AIRE[k] },
+          ],
+          respuesta: `Aporta sobre todo a la cadena ${CADENA_DE[k]}.`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Ubica la sustancia en su cadena.',
       generar(s) {
-        const C = [
-          ['El SO₂ que sale de una fundición', 'lluvia'], ['El CO₂ de los motores y las cocinas', 'invernadero'],
-          ['Los CFC de refrigeradoras antiguas', 'ozono'], ['Los NOₓ de los autos en una tarde soleada', 'smog'],
-          ['El metano de un relleno sanitario', 'invernadero'], ['El H₂SO₄ que se forma en las nubes', 'lluvia'],
-        ];
+        const C = CASOS_AIRE;
         const [caso, k] = C[s % C.length];
         const si = { invernadero: 'Sería invernadero si la sustancia atrapara el infrarrojo que emite la Tierra.', ozono: 'Sería ozono si liberara cloro o bromo en la estratosfera.', lluvia: 'Sería lluvia ácida si formara ácidos que bajan el pH de la lluvia.', smog: 'Sería smog si con luz solar formara ozono junto al suelo.' };
         return {
@@ -163,13 +200,36 @@
   // la más cercana al frente del agua; la manija sigue al frente sin saltos.
   const etapaDe = e => Math.min(3, Math.max(1, Math.round(e)));
   const potab = (hasta, desde = false) => cadena([{ titulo: 'Potabilización', color: 'i', nodos: ETAPAS.map((e, i) => ({ texto: e.texto, desde: desde ? i : 0, tenue: !desde && i > hasta })) }]);
+  // Casos de «Así se resuelve» y «Ahora tú»: qué se quiere quitar y qué etapa lo quita.
+  const CASOS_AGUA = [['la arena que trae el río', 'filtro'], ['las bacterias del agua', 'cloro'], ['el plomo disuelto', 'otro'], ['los flóculos formados al coagular', 'filtro'], ['los virus del agua', 'cloro'], ['la sal disuelta del agua de mar', 'otro']];
+  const ETAPA_AGUA = { filtro: 'Sedimentar y filtrar', cloro: 'Desinfectar', otro: 'Ninguna de estas dos: está disuelto' };
+  const CLASE_AGUA = { filtro: 'una partícula suelta, que no está disuelta', cloro: 'un microbio', otro: 'algo disuelto: está repartido entre las moléculas de agua' };
+  const APLICA_AGUA = {
+    filtro: 'Es una partícula: la retienen la sedimentación y el filtro.',
+    cloro: 'Es un microbio: lo inactiva la desinfección con cloro.',
+    otro: 'Está disuelto: no lo retiene el filtro ni lo quita el cloro. Ninguna de esas dos etapas sirve.',
+  };
+  const SENTIDO_AGUA = {
+    filtro: 'Cuadra: la arena del filtro retiene granos y grumos, y por eso el agua sale clara.',
+    cloro: 'Cuadra: muchos microbios atraviesan el filtro; el cloro reacciona con ellos y los inactiva.',
+    otro: 'Cuadra: lo disuelto atraviesa el filtro junto con el agua y el cloro no lo saca; hace falta otro tratamiento.',
+  };
   const agua = {
     id: 'filtrar-no-desinfecta',
     titulo: 'Agua clara no es segura',
     temas: ['Contaminación y potabilización del agua'],
     pieza: 'quim-cadena',
+    // Lee (fase 2): de dónde viene el agua y las primeras etapas (coagular, sedimentar, filtrar); no dice qué deja pasar el filtro.
+    lee: {
+      tarjetas: [
+        { titulo: 'Del río al caño', texto: 'En Juliaca y en Puno, el agua de la red sale de ríos o del lago Titicaca. Antes de llegar al caño, pasa por una planta de tratamiento que la limpia en varias etapas.' },
+        { titulo: 'Coagular', texto: 'El agua del río trae arcilla tan fina que no se asienta sola. Se agrega un coagulante, como el sulfato de aluminio, y las partículas se juntan en grumos más grandes: los flóculos.' },
+        { titulo: 'Sedimentar y filtrar', texto: 'Los flóculos pesan y se van al fondo de los tanques: eso es sedimentar. Después, el agua atraviesa capas de arena y grava que atrapan lo que quedó flotando.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, las etapas se encienden una por una. En cada etapa, lee qué se quitó y anota qué sigue en el agua.' },
+      ],
+    },
     juega: {
-      consigna: 'El agua de un río avanza sola por la planta, etapa por etapa. Mira qué quita cada una y qué sigue en el agua.',
+      consigna: 'Las etapas de la planta se encienden solas, una por una. Mira qué quita cada etapa y qué sigue en el agua.',
       voz: 'Anota qué queda en el agua después de cada etapa.',
       controles: [{ id: 'e', etiqueta: 'Hasta la etapa', min: 1, max: 3, paso: 1, inicio: 1, decimales: 0, auto: { velocidad: 0.5, modo: 'rebota' } }],
       dibujo: val => potab(etapaDe(val.e) - 1),
@@ -213,12 +273,29 @@
       condicion: 'agua clara no es agua segura; las sales o metales disueltos necesitan otros tratamientos.',
       voz: 'Pregunta qué quita cada etapa.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (qué etapa quita qué), con CASOS_AGUA y ETAPA_AGUA.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), [cosa, k] = CASOS_AGUA[r.ent(0, CASOS_AGUA.length - 1)];
+        return {
+          enunciado: `¿Qué etapa de una planta de agua potable quita ${cosa}?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden la etapa de la planta que quita ${cosa}.` },
+            { tipo: 'datos', texto: `Lo que hay que quitar es ${CLASE_AGUA[k]}.` },
+            { tipo: 'regla', texto: 'Cada etapa quita una clase de cosa: el filtro retiene partículas, el cloro inactiva microbios y lo disuelto necesita otro tratamiento.' },
+            { tipo: 'aplica', texto: APLICA_AGUA[k] },
+            { tipo: 'sentido', texto: SENTIDO_AGUA[k] },
+          ],
+          respuesta: `${ETAPA_AGUA[k]}.`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Piensa si lo que se quiere quitar es partícula, microbio o algo disuelto.',
       generar(s) {
-        const C = [['la arena que trae el río', 'filtro'], ['las bacterias del agua', 'cloro'], ['el plomo disuelto', 'otro'], ['los flóculos formados al coagular', 'filtro'], ['los virus del agua', 'cloro'], ['la sal disuelta del agua de mar', 'otro']];
+        const C = CASOS_AGUA;
         const [cosa, k] = C[s % C.length];
-        const T = { filtro: 'Sedimentar y filtrar', cloro: 'Desinfectar', otro: 'Ninguna de estas dos: está disuelto' };
+        const T = ETAPA_AGUA;
         const si = { filtro: 'Filtrar sirve para partículas que el filtro retiene.', cloro: 'Desinfectar sirve para inactivar microbios.', otro: 'Haría falta otro tratamiento si estuviera disuelto.' };
         return {
           pregunta: `¿Qué etapa de una planta de agua potable quita ${cosa}?`,
@@ -242,8 +319,17 @@
     titulo: 'Más nutrientes, menos oxígeno',
     temas: ['Eutrofización'],
     pieza: 'quim-cadena',
+    // Lee (fase 2): el lago verde, nutrientes y la palabra eutrofización; no dice qué eslabón daña a los peces.
+    lee: {
+      tarjetas: [
+        { titulo: 'Un lago que se pone verde', texto: 'En algunas bahías de lagos, como la bahía interior de Puno, el agua se ve verde. Ese verde son algas y plantas diminutas que crecen mucho más de lo normal.' },
+        { titulo: 'Alimento para las algas', texto: 'Las algas, como las plantas de una chacra, crecen con nitrógeno y fósforo. Los nitratos y fosfatos llegan al agua desde fertilizantes, detergentes y desagües.' },
+        { titulo: 'Una palabra larga', texto: 'Al exceso de nutrientes en un lago, y a todo lo que desencadena, se le llama eutrofización. La palabra viene del griego y quiere decir «bien alimentado».' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, compara la cadena con pocos nutrientes y la cadena con muchos. Lee cada eslabón hasta llegar al último.' },
+      ],
+    },
     juega: {
-      consigna: 'Elige cuántos nutrientes llegan a un lago. La cadena avanza sola, en cámara rápida, hasta los peces.',
+      consigna: 'Elige cuántos nutrientes llegan a un lago. La cadena avanza sola, en cámara rápida, hasta el último eslabón.',
       voz: 'Busca el eslabón que de verdad afecta a los peces.',
       controles: [
         { id: 'n', etiqueta: 'Nutrientes', opciones: [{ valor: 'pocos', texto: 'Pocos' }, { valor: 'muchos', texto: 'Muchos' }] },
@@ -289,6 +375,24 @@
       condicion: 'los nutrientes vienen sobre todo de fertilizantes, detergentes y desagües; el daño es el oxígeno que falta, no el color.',
       voz: 'Sigue la cadena hasta el final.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (el eslabón vecino en la cadena EUTRO), con otra semilla.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), i = r.ent(0, 3), despues = r() < 0.5;
+        const ref = despues ? EUTRO[i] : EUTRO[i + 1], bien = despues ? EUTRO[i + 1] : EUTRO[i];
+        return {
+          enunciado: `En la cadena de la eutrofización, ¿qué va justo ${despues ? 'después' : 'antes'} de «${ref}»?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden el eslabón que va justo ${despues ? 'después' : 'antes'} de «${ref}».` },
+            { tipo: 'datos', texto: `«${ref}» es el eslabón ${despues ? i + 1 : i + 2} de los ${EUTRO.length} de la cadena.` },
+            { tipo: 'regla', texto: 'La eutrofización es una sola cadena: cada eslabón causa el siguiente. Para hallar el vecino, pregunto qué causa ese eslabón o qué lo causó.' },
+            { tipo: 'aplica', texto: despues ? `¿Qué causa «${ref}»? El eslabón siguiente: «${bien}».` : `¿Qué causó «${ref}»? El eslabón anterior: «${bien}».` },
+            { tipo: 'sentido', texto: `Leído en orden, primero «${EUTRO[i]}» y luego «${EUTRO[i + 1]}»: la causa va antes que el efecto.` },
+          ],
+          respuesta: `«${bien}».`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Ubica el eslabón en su lugar.',
       generar(s) {
@@ -308,11 +412,21 @@
   // Cambia: la fracción recolectada y la recuperada · Permanece: 100 kg de botellas · Progresa: dos cortes sucesivos ·
   // Se reserva: el segundo porcentaje, que muerde lo recolectado · Debe verse: cuánto vuelve de verdad.
   const barra = (rec, recu, corte = 2) => ({ datos: { total: 100, sufijo: ' kg', decimales: 1, color: 'i', tramos: [{ tipo: 'descuento', pct: 100 - rec, color: 'o' }, { tipo: 'descuento', pct: 100 - recu, color: 'd' }] }, estado: { corte } });
+  const MATERIALES = ['latas de aluminio', 'botellas de plástico', 'papel', 'vidrio'];
   const reciclaje = {
     id: 'reciclaje-flujos',
     titulo: 'Reciclar se mide con flujos',
     temas: ['Reciclaje y tecnologías limpias'],
     pieza: 'barra-porcentaje',
+    // Lee (fase 2): recolectar y recuperar como dos pasos, y medir en kilos; no dice cómo se combinan los dos porcentajes.
+    lee: {
+      tarjetas: [
+        { titulo: 'Después de la feria', texto: 'Después de una feria en Juliaca quedan bolsas llenas de botellas de plástico. Algunas llegan a un centro de acopio; otras terminan en la calle, en un botadero o en el río.' },
+        { titulo: 'Dos pasos distintos', texto: 'Recolectar es juntar las botellas y llevarlas a la planta. Recuperar es lo que la planta logra convertir en material nuevo; lo demás se descarta, como etiquetas, restos y suciedad.' },
+        { titulo: 'Seguir los kilos', texto: 'Una etiqueta que dice «reciclable» no dice cuánto se recicla. Para saberlo, se siguen los kilos: cuántos entran a cada paso y cuántos salen de él.' },
+        { titulo: 'Qué mirar al jugar', texto: ['En el juego, la barra de arriba son 100 kg. Mira cómo se acorta en cada paso y lee cuántos kilos ', m, ' vuelven al final.'] },
+      ],
+    },
     juega: {
       consigna: 'De 100 kg de botellas, lo recolectado para reciclaje sube y baja solo. Mira cómo lo recuperado crece y se achica con él.',
       voz: 'Mira sobre qué se aplica el segundo porcentaje.',
@@ -365,11 +479,30 @@
       condicion: 'las fracciones se aplican una sobre otra; «reciclable» no dice cuánto se recicla de verdad.',
       voz: 'Sigue los kilos de un paso al siguiente.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (kilos que vuelven tras dos porcentajes), con las mismas cuentas.
+    resuelve: {
+      generar(s) {
+        const x = azar(s + 900), tot = 50 * x.ent(2, 20), a = 5 * x.ent(5, 18), b = 5 * x.ent(12, 19);
+        const llega = tot * a / 100, v = llega * b / 100, mat = MATERIALES[x.ent(0, 3)];
+        return {
+          enunciado: [`Se desechan ${f(tot, 0)} kg de ${mat}. Se recolecta el ${f(a, 0)} % y la planta recupera el ${f(b, 0)} % de lo recolectado. ¿Cuánto material `, m, ' vuelve?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la masa ', m, ` de ${mat} que vuelve como material.`] },
+            { tipo: 'datos', texto: `Total: ${f(tot, 0)} kg. Recolectado: ${f(a, 0)} % del total. Recuperado: ${f(b, 0)} % de lo recolectado.` },
+            { tipo: 'regla', texto: 'El segundo porcentaje se aplica sobre lo que llegó a la planta, no sobre el total. Primero saco lo recolectado; después, la parte que se recupera de eso.' },
+            { tipo: 'cuentas', texto: 'Kilos que llegan a la planta y, de ellos, los que se recuperan.',
+              ecuacion: [`${f(tot, 0)} · ${f(a / 100)} = ${f(llega, 1)} kg → `, m, ` = ${f(llega, 1)} · ${f(b / 100)} = ${f(v, 1)} kg`] },
+            { tipo: 'sentido', texto: ['Cuadra: ', m, ` es menos que lo recolectado (${f(llega, 1)} kg), que es menos que el total. Vuelve el ${f(a * b / 100, 2)} % de lo desechado.`] },
+          ],
+          respuesta: [m, ` = ${f(v, 1)} kg`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Multiplica las fracciones, en orden.',
       generar(s) {
         const x = azar(s), tot = 50 * x.ent(2, 20), a = 5 * x.ent(5, 18), b = 5 * x.ent(12, 19), v = tot * a / 100 * b / 100;
-        const mat = ['latas de aluminio', 'botellas de plástico', 'papel', 'vidrio'][s % 4];
+        const mat = MATERIALES[s % 4];
         return {
           pregunta: [`Se desechan ${f(tot, 0)} kg de ${mat}. Se recolecta el ${f(a, 0)} % y la planta recupera el ${f(b, 0)} % de lo recolectado. ¿Cuánto material `, m, ' vuelve?'],
           opciones: opciones(v, [
@@ -425,11 +558,22 @@
     flechas: [{ de: [1.6, 3.0], a: [1.6, 3.6], desde: 4 }],
     alt: 'Arriba, polimerización por adición: grupos CH₂ unidos sin subproducto. Abajo, condensación: un ácido y un alcohol forman un éster y sueltan una molécula de agua.',
   };
+  // Monómeros de «Así se resuelve» y «Ahora tú», por su masa molar en g/mol.
+  const MONO_ADICION = { 28: 'etileno', 42: 'propileno', 104: 'estireno' }, MONO_CONDENSA = { 75: 'glicina', 89: 'alanina', 181: 'tirosina' };
   const polimeros = {
     id: 'polimeros-adicion',
     titulo: 'No toda unión suelta agua',
     temas: ['Nanotecnología, polímeros y corrosión (solo UNI)'],
     pieza: 'quim-molecula',
+    // Lee (fase 2): qué es un polímero y su monómero; no dice si al unirse sale alguna molécula (es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Plásticos de todos los días', texto: 'La bolsa del mercado, el balde y la botella de gaseosa son polímeros: moléculas enormes hechas de muchas piezas pequeñas repetidas, como los eslabones de una cadena.' },
+        { titulo: 'La pieza que se repite', texto: 'Cada pieza pequeña se llama monómero. El de la bolsa es el etileno, que tiene dos carbonos unidos por un doble enlace y dos hidrógenos en cada carbono.',
+          ecuacion: ['CH₂=CH₂'] },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, los etilenos llegan de uno en uno. Cuenta los CH₂ antes y después de cada enganche, y revisa si queda algún átomo suelto.' },
+      ],
+    },
     juega: {
       consigna: 'Llegan solas moléculas de etileno, CH₂=CH₂: el doble enlace se abre y se engancha a la cadena. Cuenta si sobra algún átomo.',
       voz: 'Cuenta si sobra algún átomo al unir.',
@@ -473,12 +617,44 @@
       condicion: 'que un polímero sea degradable o reciclable depende de su estructura y de cómo se procesa; no son lo mismo.',
       voz: 'Antes de decir que sale agua, cuenta átomos.',
     },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (masa de la cadena por adición o por condensación), mismas cuentas.
+    resuelve: {
+      generar(s) {
+        const x = azar(s + 900), n = x.ent(3, 12), cond = s % 2 === 1;
+        if (!cond) {
+          const M = x.de([28, 42, 104]), nom = MONO_ADICION[M], v = n * M;
+          return {
+            enunciado: [`${f(n, 0)} moléculas de ${nom} (M = ${f(M, 0)} g/mol) se unen por adición en una sola cadena. ¿Qué masa molar `, m, ' tiene la cadena?'],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la masa molar ', m, ` de la cadena de ${nom}.`] },
+              { tipo: 'datos', texto: `${f(n, 0)} monómeros de ${f(M, 0)} g/mol cada uno, unidos por adición.` },
+              { tipo: 'regla', texto: 'En la adición, cada monómero abre su doble enlace y se engancha sin soltar nada: la cadena pesa lo que suman sus piezas.' },
+              { tipo: 'cuentas', texto: 'Sumo las masas de todos los monómeros.', ecuacion: [m, ` = ${f(n, 0)} · ${f(M, 0)} = ${f(v, 0)} g/mol`] },
+              { tipo: 'sentido', texto: ['De vuelta: ', m, ` ÷ ${f(M, 0)} = ${f(v / M, 0)} monómeros, ni uno más ni uno menos. No falta ningún átomo.`] },
+            ],
+            respuesta: [m, ` = ${f(v, 0)} g/mol`],
+          };
+        }
+        const M = x.de([75, 89, 181]), nom = MONO_CONDENSA[M], u = n - 1, v = n * M - u * 18;
+        return {
+          enunciado: [`${f(n, 0)} moléculas de ${nom} (M = ${f(M, 0)} g/mol) se unen por condensación en una cadena; cada unión suelta un H₂O. ¿Qué masa `, m, ' tiene la cadena?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la masa molar ', m, ` de la cadena de ${nom}.`] },
+            { tipo: 'datos', texto: `${f(n, 0)} piezas de ${f(M, 0)} g/mol; cada unión suelta una molécula de agua de 18 g/mol.` },
+            { tipo: 'regla', texto: `En la condensación, cada unión entre dos piezas suelta un H₂O. Con ${f(n, 0)} piezas en fila hay ${f(u, 0)} uniones, una menos que piezas.` },
+            { tipo: 'cuentas', texto: 'Sumo las piezas y resto el agua que salió en las uniones.', ecuacion: [m, ` = ${f(n, 0)} · ${f(M, 0)} − ${f(u, 0)} · 18 = ${f(n * M, 0)} − ${f(u * 18, 0)} = ${f(v, 0)} g/mol`] },
+            { tipo: 'sentido', texto: ['Cuadra: ', m, ` es menor que la suma de las piezas (${f(n * M, 0)} g/mol) justo en la masa de ${f(u, 0)} aguas.`] },
+          ],
+          respuesta: [m, ` = ${f(v, 0)} g/mol`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Decide si la unión suelta agua.',
       generar(s) {
         const x = azar(s), n = x.ent(3, 12), cond = s % 2 === 1;
         if (!cond) {
-          const M = x.de([28, 42, 104]), nom = { 28: 'etileno', 42: 'propileno', 104: 'estireno' }[M];
+          const M = x.de([28, 42, 104]), nom = MONO_ADICION[M];
           return {
             pregunta: [`${f(n, 0)} moléculas de ${nom} (M = ${f(M, 0)} g/mol) se unen por adición en una sola cadena. ¿Qué masa molar `, m, ' tiene la cadena?'],
             opciones: opciones(n * M, [
@@ -489,7 +665,7 @@
             solucion: { texto: 'En la adición no se pierde ningún átomo: se suman las masas.', ecuacion: [m, ` = ${f(n, 0)} · ${f(M, 0)} = ${f(n * M, 0)} g/mol`] },
           };
         }
-        const M = x.de([75, 89, 181]), nom = { 75: 'glicina', 89: 'alanina', 181: 'tirosina' }[M];
+        const M = x.de([75, 89, 181]), nom = MONO_CONDENSA[M];
         const v = n * M - (n - 1) * 18;
         return {
           pregunta: [`${f(n, 0)} moléculas de ${nom} (M = ${f(M, 0)} g/mol) se unen por condensación en una cadena; cada unión suelta un H₂O. ¿Qué masa `, m, ' tiene la cadena?'],
@@ -525,8 +701,18 @@
     titulo: 'Más pedazos, más superficie',
     temas: ['Nanotecnología, polímeros y corrosión (solo UNI)'],
     pieza: 'ejes',
+    // Lee (fase 2): superficie, nanómetro y corrosión como contexto; no dice cómo crece el área con los cortes.
+    lee: {
+      tarjetas: [
+        { titulo: 'Terrón o polvo', texto: 'Un terrón de azúcar tarda en disolverse en el agua; el azúcar en polvo, casi nada. Es la misma sustancia y la misma cantidad. Lo que cambia es cuánta superficie toca el agua.' },
+        { titulo: 'Muy, muy pequeño', texto: 'Un nanómetro es la millonésima parte de un milímetro. Un cabello tiene unos 80 000 nm de grosor. La nanoescala va de 1 a 100 nm: ahí casi todo es superficie.',
+          ecuacion: ['1 nm = 10⁻⁹ m'] },
+        { titulo: 'La calamina que se oxida', texto: 'La calamina de un techo se oxida donde el agua y el aire tocan el metal. La corrosión es una reacción que ocurre en la superficie.' },
+        { titulo: 'Qué mirar al jugar', texto: ['En el juego, cada vez que k sube, el cubo se corta en más partes por arista. Mira cuánto sube el área ', A, ' del punto naranja con cada corte.'] },
+      ],
+    },
     juega: {
-      consigna: 'Un cubo de 1 cm³ se corta solo en k partes por arista: salen k³ cubitos. Mira qué crece y qué no.',
+      consigna: 'La gráfica da el área de 1 cm³ cortado en k partes por arista. El punto avanza solo: mira qué crece y qué no.',
       voz: 'Fíjate en qué crece y qué se queda igual.',
       controles: [{ id: 'k', etiqueta: 'k', min: 1, max: 10, paso: 1, inicio: 1, decimales: 0, auto: { velocidad: 2, modo: 'rebota' } }],
       dibujo: val => ({ datos: nanoK(cortes(val.k)), estado: {} }),
@@ -568,6 +754,24 @@
       ecuacion: [A, ' = 6', { llave: ['k'], nota: 'partes por arista' }, '\u00a0cm²', '   ·   ', 'V = 1\u00a0cm³'],
       condicion: 'la nanoescala no garantiza seguridad ni mejor rendimiento; la corrosión depende también del medio, como sal o ácido.',
       voz: 'Pregunta cuánta superficie queda expuesta.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (área total de un cubo partido), con las mismas cuentas.
+    resuelve: {
+      generar(s) {
+        const x = azar(s + 900), a = x.ent(1, 4), k = x.ent(2, 9), entero = 6 * a * a, area = entero * k;
+        return {
+          enunciado: [`Un cubo de ${f(a, 0)} cm de arista se corta en ${f(k, 0)} partes por arista. ¿Cuánta área total `, A, ' tienen los cubitos?'],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el área total ', A, ': la suma de las caras de todos los cubitos.'] },
+            { tipo: 'datos', texto: `Arista del cubo: ${f(a, 0)} cm. Cortes: ${f(k, 0)} partes por arista, así que salen ${f(k, 0)}³ = ${f(k ** 3, 0)} cubitos.` },
+            { tipo: 'regla', texto: 'Cortar no cambia el volumen, pero deja caras nuevas al aire. Cada cubito tiene una arista k veces menor y 6 caras.' },
+            { tipo: 'cuentas', texto: 'Cuento los cubitos por el área de cada uno; los k se simplifican.',
+              ecuacion: [A, ` = ${f(k ** 3, 0)} · 6 · `, { frac: [`${f(a, 0)}²`, `${f(k, 0)}²`] }, ` = 6 · ${f(a, 0)}² · ${f(k, 0)} = ${f(area, 0)} cm²`] },
+            { tipo: 'sentido', texto: `El cubo entero tenía 6 · ${f(a, 0)}² = ${f(entero, 0)} cm². Con ${f(k, 0)} partes por arista el área se multiplica por ${f(k, 0)}, y el volumen sigue en ${f(a ** 3, 0)} cm³.` },
+          ],
+          respuesta: [A, ` = ${f(area, 0)} cm²`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Cada corte agrega caras nuevas.',
@@ -645,6 +849,8 @@
         ver: ['capa de ozono'] },
       { termino: 'capa de ozono', def: 'Zona alta de la atmósfera con más O₃, que absorbe gran parte de la luz ultravioleta del Sol.',
         ver: ['CFC', 'efecto invernadero'] },
+      { termino: 'estratosfera', def: 'Capa de la atmósfera entre unos 10 y 50 km de altura, sobre la zona de las nubes.',
+        ver: ['capa de ozono'] },
       { termino: 'CFC', def: 'Clorofluorocarbonos: gases de aerosoles y refrigeradoras antiguas que destruyen el ozono de la estratosfera.',
         ver: ['capa de ozono'] },
       { termino: 'eutrofización', def: 'Exceso de nutrientes en un lago: crecen algas, al morir se descomponen y se gasta el oxígeno del agua.',
@@ -653,6 +859,16 @@
         ver: ['eutrofización'] },
       { termino: 'potabilización', def: 'Tratamiento que vuelve el agua apta para beber: coagular, sedimentar, filtrar y desinfectar.',
         formas: ['potabilización', 'potabilizar'], ver: ['desinfección'] },
+      { termino: 'coagulante', formas: ['coagulante', 'coagulantes', 'coagular'], def: 'Sustancia que hace que las partículas finas del agua se peguen entre sí, como el sulfato de aluminio.',
+        ver: ['flóculo'] },
+      { termino: 'flóculo', formas: ['flóculo', 'flóculos'], def: 'Grumo de partículas pegadas que se forma al tratar el agua; pesa y se va al fondo.',
+        ver: ['coagulante', 'sedimentar'] },
+      { termino: 'sedimentar', formas: ['sedimentar', 'sedimentación'], def: 'Dejar el agua quieta para que lo más pesado se asiente en el fondo del tanque.',
+        ver: ['flóculo', 'potabilización'] },
+      { termino: 'nutriente', formas: ['nutriente', 'nutrientes'], def: 'Sustancia que un ser vivo usa para crecer, como los nitratos y fosfatos para las algas.',
+        ver: ['eutrofización'] },
+      { termino: 'nanómetro', simbolo: 'nm', formas: ['nanómetro', 'nanómetros'], def: 'Millonésima parte de un milímetro: 10⁻⁹ m.',
+        ver: ['nanoescala'] },
       { termino: 'desinfección', def: 'Paso que mata o inactiva los microbios del agua, por ejemplo con cloro o luz ultravioleta.',
         formas: ['desinfección', 'desinfectar'], ver: ['potabilización'] },
       { termino: 'reciclaje', def: 'Recuperar el material de un producto usado para fabricar otro, en lugar de botarlo.',
@@ -711,7 +927,7 @@
       },
       {
         id: 'cubo-partido', titulo: 'Arista y cortes juntos', pieza: 'ejes',
-        consigna: 'Elige la arista del cubo y desliza el punto para cortarlo en más partes. Compara el área con la del cubo entero.',
+        consigna: 'Elige la arista y desliza el punto por la recta: más a la derecha, más cortes. Compara su área con la del punto «entero».',
         controles: [
           { id: 'a', etiqueta: 'Arista', min: 1, max: 4, paso: 1, inicio: 1, unidad: 'cm', decimales: 0 },
           { id: 'k', etiqueta: 'k', min: 1, max: 20, paso: 1, inicio: 5, unidad: '', decimales: 0 },
