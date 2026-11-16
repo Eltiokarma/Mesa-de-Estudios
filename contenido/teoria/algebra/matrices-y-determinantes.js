@@ -92,11 +92,34 @@
     };
   };
   const PA = [[1, 2], [3, 4]], PB = [[0, 1], [1, 0]];
+  // A y B lado a lado para «Así se resuelve»: la fila i de A en naranja y la columna j de B en turquesa.
+  const tablaAB = (X, Y, i, j, pie = '') => {
+    const n = Y.length, vacias = k => Array.from({ length: k }, () => '');
+    return {
+      columnas: ['A', ...vacias(n - 1), '', 'B', ''], colorCol: ['o', ...vacias(n - 1).map(() => null), null, 'i', null],
+      filas: Array.from({ length: Math.max(2, n) }, (_, k) => [
+        ...(X[k] ? X[k].map(v => ({ t: f(v), color: k === i ? 'o' : null, fuerte: k === i })) : vacias(n)), '',
+        ...(Y[k] ? Y[k].map((v, c) => ({ t: f(v), color: c === j ? 'i' : null, fuerte: c === j })) : vacias(2)),
+      ]),
+      resaltes: [{ f: i, c: 0, ancho: n, color: 'o' }, { f: 0, c: n + 1 + j, alto: n, color: 'i' }],
+      pie,
+      alt: `A = ${mt(X)} y B = ${mt(Y)}; resaltadas la fila ${i + 1} de A y la columna ${j + 1} de B`,
+    };
+  };
   const producto = {
     id: 'fila-por-columna',
     titulo: 'Fila por columna',
     temas: ['Operaciones con matrices'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): qué es una matriz, su tamaño y cómo se nombra una casilla; no dice cómo se multiplica (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una tabla con nombre', texto: 'Una bodega de Juliaca anota sus ventas en una tabla: cada fila es un día y cada columna, un producto. Una tabla así, con números ordenados en filas y columnas, es una matriz.' },
+        { titulo: 'El tamaño', texto: 'Una matriz de 2×3 tiene 2 filas y 3 columnas. Siempre se dicen primero las filas y después las columnas. Aquí las escribimos por filas, separadas por punto y coma: (1, 4, 0; 2, 5, 3).' },
+        { titulo: 'Cada casilla tiene dirección', texto: 'La casilla (2, 3) está en la fila 2 y la columna 3, como un asiento con fila y número. Con letras se escribe así:', ecuacion: [{ sub: ['a', 'ij'] }, ' = fila i, columna j'] },
+        { titulo: 'Qué mirar al jugar', texto: ['En el juego eliges el tamaño de ', A, ' y de ', B, '. Fíjate en qué dos números tienen que coincidir para que exista ', A, B, ' y qué tamaño sale.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige cuántas filas y columnas tienen A y B. Mira cuándo existe el producto AB y qué tamaño tiene.',
       voz: 'Fíjate en los dos números que se tocan.',
@@ -156,6 +179,32 @@
       ecuacion: [{ sub: ['(AB)', 'ij'] }, ' = ', { llave: [{ sub: [A, 'i1'] }, { sub: [B, '1j'] }, ' + ', { sub: [A, 'i2'] }, { sub: [B, '2j'] }, ' + …'], nota: 'fila por columna', color: 'c-d' }],
       condicion: 'la suma A + B exige el mismo tamaño y va casilla por casilla; en general AB y BA son distintos.',
     },
+    // Así se resuelve (fase 2): una casilla de AB, como en «Ahora tú», con otras semillas.
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900), n = s % 3 === 2 ? 3 : 2;
+        const X = [0, 1].map(() => Array.from({ length: n }, () => r.ent(-3, 4)));
+        const Y = Array.from({ length: n }, () => [r.ent(-3, 4), r.ent(-3, 4)]);
+        const i = r.ent(0, 1), j = r.ent(0, 1), P = prod(X, Y), bien = P[i][j];
+        const fila = X[i], col = Y.map(z => z[j]);
+        const productos = fila.map((v, k) => v * col[k]);
+        return {
+          enunciado: [A, ` = ${mt(X)} y `, B, ` = ${mt(Y)}, escritas por filas. ¿Cuánto vale la casilla de la fila ${i + 1}, columna ${j + 1} de `, A, B, '?'],
+          dibujo: { datos: tablaAB(X, Y, i, j), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden un solo número de ', A, B, `: el que va en la fila ${i + 1} y la columna ${j + 1}.`] },
+            { tipo: 'datos', texto: [`La fila ${i + 1} de `, A, ` es (${fila.map(v => f(v)).join(', ')}) y la columna ${j + 1} de `, B, ` es (${col.map(v => f(v)).join(', ')}).`] },
+            { tipo: 'regla', texto: `Tomo la fila ${i + 1} entera de A y la columna ${j + 1} entera de B. Multiplico primero con primero, segundo con segundo, y sumo todo.` },
+            { tipo: 'cuentas', texto: `Son ${n} productos, uno por cada pareja de números.`,
+              ecuacion: [fila.map((v, k) => `${pa(v)}·${pa(col[k])}`).join(' + '), ` = ${productos.map(v => pa(v)).join(' + ')} = ${f(bien)}`],
+              dibujo: { datos: tablaAB(X, Y, i, j, `casilla (${i + 1}, ${j + 1}) de AB = ${f(bien)}`), estado: {} } },
+            { tipo: 'sentido', texto: `A es 2×${n} y B es ${n}×2: los ${n} se tocan, así que AB existe y es 2×2. La casilla (${i + 1}, ${j + 1}) está dentro.` },
+          ],
+          respuesta: [`La casilla (${i + 1}, ${j + 1}) de `, A, B, ` vale ${f(bien)}.`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), n = s % 3 === 2 ? 3 : 2;
@@ -204,6 +253,15 @@
     titulo: 'Filas que pasan a columnas',
     temas: ['Tipos de matrices', 'Traza y transpuesta'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): cuadrada, diagonal y el nombre Aᵀ; no dice qué matriz queda igual al transponer (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cuadradas y rectangulares', texto: 'Un tablero de ajedrez tiene 8 filas y 8 columnas: es cuadrado. Una matriz cuadrada también tiene tantas filas como columnas. Si no, como una de 2×3, es rectangular.' },
+        { titulo: 'La diagonal', texto: 'En una matriz cuadrada, la diagonal baja desde la casilla de arriba a la izquierda hasta la de abajo a la derecha. Varias matrices llevan nombre por ella: diagonal, triangular e identidad.' },
+        { titulo: 'Transponer', texto: 'Transponer es reescribir la matriz cambiando de lugar sus casillas, sin cambiar ningún número. La transpuesta de A se escribe así:', ecuacion: [A, 'ᵀ'] },
+        { titulo: 'Qué mirar al jugar', texto: 'Elige un tipo de matriz y pasa de A a Aᵀ. Sigue con la vista la fila naranja: ¿a dónde se va? Mira también si la diagonal verde se mueve.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un tipo de matriz y mírala sola o transpuesta. La primera fila va en naranja; la diagonal, en verde si es cuadrada.',
       voz: 'Mira a dónde va la fila naranja al transponer.',
@@ -257,6 +315,46 @@
       texto: 'La transpuesta cambia filas por columnas. La traza suma la diagonal de una matriz cuadrada, y no cambia al transponer. Una matriz simétrica es igual a su transpuesta.',
       ecuacion: [{ sub: ['(Aᵀ)', 'ij'] }, ' = ', { llave: [{ sub: [A, 'ji'] }], nota: 'subíndices al revés', color: 'c-o' }, '   ·   ', 'tr(Aᵀ) = tr(', A, ')'],
       condicion: 'diagonal, triangular y la matriz identidad son cuadradas; una de m×n tiene transpuesta de n×m.',
+    },
+    // Así se resuelve (fase 2): la traza o una casilla de Aᵀ, dos de las ramas de «Ahora tú», con otras semillas.
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const n = r.ent(2, 3), M = Array.from({ length: n }, () => Array.from({ length: n }, () => r.ent(-4, 6)));
+          const t = traza(M), dg = M.map((fila, k) => fila[k]);
+          const conDiag = Object.assign(matriz(M), { resaltes: M.map((_, k) => ({ f: k, c: k, color: 'd' })), pie: `traza = ${f(t)}` });
+          return {
+            enunciado: [A, ` = ${mt(M)}, escrita por filas. ¿Cuánto vale la traza de `, A, '?'],
+            dibujo: { datos: matriz(M), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la traza de ', A, ': un solo número.'] },
+              { tipo: 'datos', texto: [A, ` es ${n}×${n}, cuadrada. Su diagonal tiene ${n} números: ${dg.map(v => f(v)).join(', ')}.`] },
+              { tipo: 'regla', texto: 'La traza solo existe si la matriz es cuadrada. Se suman los números de la diagonal que baja de izquierda a derecha, y nada más.' },
+              { tipo: 'cuentas', texto: 'Sumo la diagonal, cuidando los signos.', ecuacion: [`tr(A) = ${dg.map(v => pa(v)).join(' + ')} = ${f(t)}`], dibujo: { datos: conDiag, estado: {} } },
+              { tipo: 'sentido', texto: `Entraron ${n} sumandos, uno por fila: las ${n * n - n} casillas de fuera de la diagonal no cuentan. Al transponer, la diagonal no se mueve.` },
+            ],
+            respuesta: [`tr(`, A, `) = ${f(t)}`],
+          };
+        }
+        const m = r.ent(2, 3), n = r.ent(2, 3), M = Array.from({ length: m }, () => Array.from({ length: n }, () => r.ent(-4, 6)));
+        const i = r.ent(0, n - 1), T = tr(M), q0 = r.ent(0, m - 2), q = q0 >= i ? q0 + 1 : q0, val = T[i][q];
+        const marca = (X, fi, co) => Object.assign(matriz(X), { resaltes: [{ f: fi, c: co, color: 'd' }] });
+        return {
+          enunciado: [A, ` = ${mt(M)}, escrita por filas. ¿Cuánto vale la casilla de la fila ${i + 1}, columna ${q + 1} de Aᵀ?`],
+          dibujo: { datos: matriz(M), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden la casilla (${i + 1}, ${q + 1}) de la transpuesta, no de A.` },
+            { tipo: 'datos', texto: [A, ` tiene ${m} filas y ${n} columnas, así que Aᵀ tiene ${n} filas y ${m} columnas.`] },
+            { tipo: 'regla', texto: 'Al transponer, cada fila pasa a ser columna. Por eso una casilla de Aᵀ se busca en A con los dos números al revés.' },
+            { tipo: 'cuentas', texto: `La casilla (${i + 1}, ${q + 1}) de Aᵀ es la (${q + 1}, ${i + 1}) de A: fila ${q + 1}, columna ${i + 1}.`,
+              ecuacion: [{ sub: ['(Aᵀ)', `${i + 1}${q + 1}`] }, ' = ', { sub: [A, `${q + 1}${i + 1}`] }, ` = ${f(val)}`], dibujo: { datos: marca(M, q, i), estado: {} } },
+            { tipo: 'sentido', texto: `Aᵀ = ${mt(T)}. En su fila ${i + 1}, columna ${q + 1}, está ${f(val)}: el mismo número, con su mismo signo.`, dibujo: { datos: marca(T, i, q), estado: {} } },
+          ],
+          respuesta: [`La casilla (${i + 1}, ${q + 1}) de Aᵀ vale ${f(val)}.`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'alg-tabla',
@@ -326,6 +424,15 @@
     titulo: 'El determinante es un área',
     temas: ['Determinantes y propiedades'],
     pieza: 'ejes',
+    // Lee (fase 2): columnas como flechas y el paralelogramo; no da la fórmula ni qué pasa si las columnas se alinean.
+    lee: {
+      tarjetas: [
+        { titulo: 'Un número para la tabla', texto: 'Toda matriz cuadrada tiene un número propio, su determinante, que se escribe det A. Sirve para saber, entre otras cosas, si un sistema tiene una sola solución.' },
+        { titulo: 'Columnas como flechas', texto: 'Cada columna de una matriz 2×2 se puede dibujar como una flecha que sale del origen. La columna (a, c) llega al punto donde x vale a e y vale c.' },
+        { titulo: 'Dos flechas, un paralelogramo', texto: 'Con las dos flechas como lados se arma un paralelogramo, como una parcela inclinada en un plano de catastro. Al mover una flecha, toda la figura cambia de forma.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Arrastra las puntas naranja y turquesa y mira cómo cambia el número det en la lectura. Fíjate cuándo el paralelogramo se pinta verde y cuándo rojo.' },
+      ],
+    },
     juega: {
       consigna: 'Arrastra las puntas de las columnas (a, c) naranja y (b, d) turquesa. El paralelogramo es verde si det > 0 y rojo si det < 0.',
       voz: 'Busca columnas que dejen el paralelogramo aplastado.',
@@ -382,6 +489,29 @@
       texto: 'El determinante de una matriz 2×2 es el área con signo del paralelogramo de sus columnas. Vale 0 justo cuando las columnas están alineadas.',
       ecuacion: ['det', { par: ['a, b; c, d'] }, ' = ', { llave: ['ad − bc'], nota: 'área con signo', color: 'c-d' }],
       condicion: 'solo para matrices cuadradas; intercambiar dos columnas cambia el signo, y multiplicar una por k multiplica el determinante por k.',
+    },
+    // Así se resuelve (fase 2): det de una 2×2, la rama 0 de «Ahora tú», con casillas que caben en el plano del juego.
+    resuelve: {
+      pieza: 'ejes',
+      generar(s) {
+        const r = azar(s + 900);
+        let a, b, c, d;
+        do { a = r.ent(1, 4); c = r.ent(-1, 2); b = r.ent(-1, 4); d = r.ent(-1, 4); } while (det2([[a, b], [c, d]]) === 0 || det2([[a, b], [c, d]]) === a * d + b * c);
+        const M = [[a, b], [c, d]], D = det2(M);
+        return {
+          enunciado: [A, ` = ${mt(M)}, escrita por filas. Sus columnas son las flechas naranja y turquesa. ¿Cuánto vale det `, A, '?'],
+          dibujo: { datos: para(a, b, c, d), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden det ', A, ', un número que puede ser positivo o negativo.'] },
+            { tipo: 'datos', texto: `Por filas: a = ${f(a)}, b = ${f(b)}, c = ${f(c)}, d = ${f(d)}. Las columnas son (${f(a)}, ${f(c)}) y (${f(b)}, ${f(d)}).` },
+            { tipo: 'regla', texto: 'En una 2×2 multiplico en cruz: la diagonal que baja menos la diagonal que sube. Ese número es el área con signo del paralelogramo.' },
+            { tipo: 'cuentas', texto: 'Primero a por d; después le resto b por c.', ecuacion: [`det A = ${pa(a)}·${pa(d)} − ${pa(b)}·${pa(c)} = ${f(a * d)} − ${pa(b * c)} = ${f(D)}`],
+              dibujo: { datos: para(a, b, c, d, { rotulo: `det = ${f(D)}` }), estado: {} } },
+            { tipo: 'sentido', texto: D > 0 ? `El paralelogramo sale verde: el signo es positivo. Su área mide ${f(Math.abs(D))} ${Math.abs(D) === 1 ? 'cuadradito' : 'cuadraditos'}.` : `El paralelogramo sale rojo: el signo es negativo. Su área mide ${f(Math.abs(D))} ${Math.abs(D) === 1 ? 'cuadradito' : 'cuadraditos'}.` },
+          ],
+          respuesta: ['det ', A, ` = ${f(D)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -458,6 +588,15 @@
     titulo: 'La inversa deshace a A',
     temas: ['Matriz inversa y adjunta'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): qué es deshacer, la matriz identidad y la notación A⁻¹; no da la receta de la adjunta (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Hacer y deshacer', texto: 'En una casa de cambio de Puno cambias soles a dólares; si luego cambias esos dólares a soles al mismo precio, vuelves a lo que tenías. Una cosa deshace a la otra.' },
+        { titulo: 'La que no hace nada', texto: 'La matriz identidad I tiene 1 en la diagonal y 0 en las demás casillas. Multiplicar por ella deja cualquier matriz igual, como multiplicar un número por 1.' },
+        { titulo: 'La inversa', texto: 'La inversa de A es la matriz que deshace a A: multiplicadas dan la matriz identidad. Se escribe con un −1 arriba, pero no se calcula invirtiendo cada casilla.', ecuacion: [A, ' · ', A, '⁻¹ = I'] },
+        { titulo: 'Qué mirar al jugar', texto: 'Cambia las casillas de A y mira las tres tablas. Busca un caso en que la tabla diga que no hay inversa, y fíjate qué vale det en ese caso.' },
+      ],
+    },
     juega: {
       consigna: 'Cambia las casillas de A. La tabla muestra su adjunta y su inversa. Busca un caso sin inversa.',
       voz: 'Mira qué pasa con la diagonal y con los signos.',
@@ -508,6 +647,29 @@
       texto: 'Una matriz cuadrada tiene inversa si su determinante no es 0. En 2×2, a y d se intercambian, b y c cambian de signo, y se divide entre det.',
       ecuacion: ['A⁻¹ = ', { frac: ['adj A', 'det A'] }, '   ·   ', { llave: ['det A ≠ 0'], nota: 'o no existe', color: 'c-h' }],
       condicion: 'det A ≠ 0; la adjunta es la transpuesta de los cofactores, no la transpuesta sola.',
+    },
+    // Así se resuelve (fase 2): una casilla de A⁻¹, la rama con det ≠ 0 de «Ahora tú», con otras semillas.
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        let M; do { M = [[r.ent(-3, 5), r.ent(-3, 5)], [r.ent(-3, 5), r.ent(-3, 5)]]; } while (![1, -1, 2, -2, 3].includes(det2(M)) || M.flat().filter(v => v === 0).length > 1);
+        const D = det2(M), J = adj2(M), i = r.ent(0, 1), j = r.ent(0, 1), P = prod(M, J);
+        return {
+          enunciado: [A, ` = ${mt(M)}, escrita por filas. ¿Cuánto vale la casilla de la fila ${i + 1}, columna ${j + 1} de A⁻¹?`],
+          dibujo: { datos: matriz(M), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden un número de la inversa: el de la fila ${i + 1}, columna ${j + 1}.` },
+            { tipo: 'datos', texto: `Por filas: a = ${f(M[0][0])}, b = ${f(M[0][1])}, c = ${f(M[1][0])}, d = ${f(M[1][1])}.` },
+            { tipo: 'regla', texto: 'Primero miro det A: si fuera 0, no habría inversa. Si no lo es, armo la adjunta y la divido entera entre det A.' },
+            { tipo: 'cuentas', texto: `det A = ${f(D)}, no es 0. En la adjunta, a y d se intercambian; b y c cambian de signo. Su casilla (${i + 1}, ${j + 1}) es ${f(J[i][j])}, que divido entre ${f(D)}.`,
+              ecuacion: [`det A = ${pa(M[0][0])}·${pa(M[1][1])} − ${pa(M[0][1])}·${pa(M[1][0])} = ${f(D)}   →   adj A = ${mt(J)}   →   `, { frac: [f(J[i][j]), f(D)] }, ` = ${fr(J[i][j], D)}`],
+              dibujo: { datos: tablaInversa(M), estado: {} } },
+            { tipo: 'sentido', texto: `Compruebo: A por su adjunta da ${mt(P)}, que es ${f(D)} veces I. Al dividir entre ${f(D)} queda I, como debe ser.` },
+          ],
+          respuesta: [`La casilla (${i + 1}, ${j + 1}) de A⁻¹ vale ${fr(J[i][j], D)}.`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -589,6 +751,15 @@
     titulo: 'Rango: filas que aportan',
     temas: ['Rango de una matriz'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): operar filas, escalonar y el nombre «rango»; no dice qué filas cuentan (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Filas que se combinan', texto: 'Una fila de una matriz es una lista de números. Puedes multiplicarla por un número, o sumarla con otra casilla por casilla, y obtienes otra fila del mismo largo.' },
+        { titulo: 'Escalonar', texto: 'Escalonar es restar múltiplos de unas filas a otras hasta llenar de ceros la esquina de abajo a la izquierda. La matriz queda con forma de escalera.' },
+        { titulo: 'El rango', texto: 'El rango de una matriz es un número entero que se lee en su forma escalonada. Se escribe rango A y nunca pasa del número de filas ni del de columnas.' },
+        { titulo: 'Qué mirar al jugar', texto: 'F1 y F2 están fijas, y tú armas F3 con ellas. Prueba un ajuste de 0 y luego otro, y mira cómo queda F3 en la escalonada.' },
+      ],
+    },
     juega: {
       consigna: 'F1 y F2 están fijas. Arma F3 como x·F1 + y·F2 más un ajuste. Mira la matriz escalonada y cuenta sus filas no nulas.',
       voz: 'Prueba un ajuste de 0 y uno distinto de 0.',
@@ -645,6 +816,36 @@
       texto: 'El rango es cuántas filas no se vuelven ceros al escalonar: las filas independientes. Una matriz n×n tiene rango n justo cuando su determinante no es 0.',
       ecuacion: [{ llave: ['rango ', A], nota: 'filas independientes', color: 'c-o' }, ' = n  ⇔  det ', A, ' ≠ 0'],
       condicion: 'las operaciones de fila no cambian el rango; el rango nunca supera el número de filas ni el de columnas.',
+    },
+    // Así se resuelve (fase 2): el rango de una 3×3, como en «Ahora tú», con otras semillas; escalona gauss().
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900), quiere = [1, 2, 3, 2][s % 4];
+        let M;
+        for (let k = 0; k < 200; k++) {
+          const u = [r.ent(-2, 3), r.ent(-2, 3), r.ent(-2, 3)], v = [r.ent(-2, 3), r.ent(-2, 3), r.ent(-2, 3)], w = [r.ent(-2, 3), r.ent(-2, 3), r.ent(-2, 3)];
+          const a = r.ent(-2, 2) || 1, b = r.ent(-2, 2), c = r.ent(-2, 2) || 2;
+          M = quiere === 1 ? [u, u.map(z => a * z), u.map(z => c * z)] : quiere === 2 ? [u, v, u.map((z, j) => a * z + b * v[j])] : [u, v, w];
+          if (rango(M) === quiere && M.flat().some(z => z)) break;
+        }
+        const rg = rango(M), D = det3(M);
+        const esc = gauss(M).map(fl => fl.map(z => (Math.abs(z) < 1e-9 ? 0 : Math.round(z * 100) / 100)));
+        const nulas = esc.filter(fl => fl.every(z => z === 0)).length;
+        return {
+          enunciado: [A, ` = ${mt(M)}, escrita por filas. ¿Cuál es su rango?`],
+          dibujo: { datos: tablaRango(M, false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden rango ', A, ': cuántas filas aportan algo que las otras no tienen.'] },
+            { tipo: 'datos', texto: `Las filas son F1 = (${filaTxt(M[0])}), F2 = (${filaTxt(M[1])}) y F3 = (${filaTxt(M[2])}).` },
+            { tipo: 'regla', texto: 'Escalono la matriz. Una fila que termina toda en ceros salía de las otras; el rango cuenta las filas que conservan algún número distinto de 0.' },
+            { tipo: 'cuentas', texto: `Al escalonar, ${nulas === 1 ? 'una fila queda' : nulas ? `${nulas} filas quedan` : 'ninguna fila queda'} en ceros. ${rg === 1 ? 'Queda 1 fila no nula' : `Quedan ${rg} filas no nulas`}.`,
+              ecuacion: [`escalonada ${mt(esc)}   →   rango A = ${rg}`], dibujo: { datos: tablaRango(M, true), estado: { corte: 1 } } },
+            { tipo: 'sentido', texto: rg === 3 ? `Compruebo con el determinante: det A = ${f(D)}, distinto de 0, como pide el rango 3.` : `Compruebo con el determinante: det A = ${f(D)}, como debe ser si el rango es menor que 3.` },
+          ],
+          respuesta: ['rango ', A, ` = ${rg}`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'alg-tabla',

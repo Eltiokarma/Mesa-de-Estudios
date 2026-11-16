@@ -58,6 +58,19 @@
     return [...(out.length ? out : ['0']), ` = ${f(c)}`];
   }
   const par = (p, q) => `(${f(p)}; ${f(q)})`;
+  // Un número entre paréntesis si es negativo, para escribir productos: 3·(−2).
+  const pn = v => (v < 0 ? `(${f(v)})` : f(v));
+  // c₁·x + c₂·y + c₃·z = d como partes de ecuación (se omiten los ceros), con cada letra en su color.
+  function linealN(cs, d, vars) {
+    const out = [];
+    cs.forEach((k, i) => {
+      if (!k) return;
+      out.push(out.length ? (k < 0 ? ' − ' : ' + ') : (k < 0 ? '−' : ''));
+      if (Math.abs(k) !== 1) out.push(f(Math.abs(k)));
+      out.push(vars[i]);
+    });
+    return [...(out.length ? out : ['0']), ` = ${f(d)}`];
+  }
   // Recta a·x + b·y = c dentro de la ventana de los ejes, como dos puntos (o vertical).
   function recta(a, b, c, X0, X1, Y0, Y1) {
     // Recorte de Liang–Barsky de la recta a·x + b·y = c a la ventana [X0, X1] × [Y0, Y1].
@@ -103,6 +116,15 @@
     titulo: 'Dos rectas, tres destinos',
     temas: ['Sistemas lineales 2x2 e interpretación gráfica'],
     pieza: 'ejes',
+    // Lee (fase 2): qué es un sistema, que cada ecuación es una recta y qué es una solución; no dice cuándo no hay cruce.
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos condiciones a la vez', texto: ['En una feria de Juliaca compras ', x, ' kilos de papa e ', y, ' kilos de oca. Si sabes cuánto pesan juntos y cuánto pagaste, tienes dos ecuaciones que deben cumplirse a la vez: un sistema.'] },
+        { titulo: 'Cada ecuación, una recta', texto: ['Los pares que cumplen ', x, ' + ', y, ' = 4 son (0; 4), (1; 3), (2; 2)… Si los marcas en el plano, quedan en fila: forman una recta. Toda ecuación de la forma a', x, ' + b', y, ' = c se dibuja así.'] },
+        { titulo: 'Qué es una solución', texto: ['Una solución del sistema es un par (', x, '; ', y, ') que cumple las dos ecuaciones, no solo una. En el dibujo, es un punto que está en las dos rectas.'] },
+        { titulo: 'Qué mirar al jugar', texto: 'La recta verde queda fija y la roja se mueve. Fíjate en el punto naranja: cuándo aparece, cuándo se va y qué pasa con él cuando cambias la inclinación.' },
+      ],
+    },
     juega: {
       consigna: 'La recta verde es x + y = 4. Arrastra la roja, ax + y = c, por su corte o por el punto que la inclina.',
       voz: 'Busca a = 1. ¿Qué pasa con el cruce?',
@@ -149,6 +171,53 @@
       texto: 'Cada ecuación lineal es una recta. Si se cortan, hay una solución; si son paralelas distintas, ninguna; si son la misma recta, infinitas.',
       ecuacion: [{ llave: [{ frac: [{ sub: ['a', '1'] }, { sub: ['a', '2'] }] }, ' = ', { frac: [{ sub: ['b', '1'] }, { sub: ['b', '2'] }] }], nota: 'misma inclinación' }, ' ≠ ', { llave: [{ frac: [{ sub: ['c', '1'] }, { sub: ['c', '2'] }] }], nota: 'otro corte' }, '  ⇒  paralelas'],
       condicion: 'una solución es un par (x; y) que cumple las dos ecuaciones a la vez, no solo una de ellas.',
+    },
+    // Así se resuelve (fase 2): el mismo sistema 2 × 2 de «Ahora tú» (una, ninguna o infinitas), con otras semillas.
+    resuelve: {
+      pieza: 'ejes',
+      generar(s) {
+        const r = azar(s + 900), tipo = ['una', 'ninguna', 'infinitas'][s % 3];
+        const a1 = r.ent(1, 3), b1 = r.uno([-2, -1, 1, 2, 3]);
+        let a2, b2, x0 = r.ent(0, 4), y0 = r.ent(0, 4);
+        if (a1 * x0 + b1 * y0 === 0) x0 += 1;
+        const c1 = a1 * x0 + b1 * y0;
+        let c2;
+        if (tipo === 'una') { do { a2 = r.ent(-2, 3); b2 = r.uno([-2, -1, 1, 2]); } while (a1 * b2 === a2 * b1); c2 = a2 * x0 + b2 * y0; }
+        else { const k = r.ent(2, 3); a2 = k * a1; b2 = k * b1; c2 = tipo === 'infinitas' ? k * c1 : k * c1 + r.uno([-2, -1, 1, 2]); }
+        const E1 = lineal(a1, b1, c1), E2 = lineal(a2, b2, c2), K = clasificar2(a1, b1, c1, a2, b2, c2);
+        const dib = conPunto => ({ datos: Object.assign({}, VENT, { curvas: [rectaE(a1, b1, c1, 'd'), rectaE(a2, b2, c2, 'h', { discontinua: tipo === 'infinitas' })], puntos: conPunto && K.tipo === 'una' ? [{ x: K.x, y: K.y, color: 'o', rotulo: par(K.x, K.y), guias: true }] : [], alt: `Las rectas ${Kit.plano(E1)} y ${Kit.plano(E2)}: ${TXT[K.tipo]}` }), estado: {} });
+        const datos = { tipo: 'datos', texto: ['La primera ecuación es ', ...E1, ' (recta verde) y la segunda, ', ...E2, ' (recta roja).'] };
+        if (K.tipo === 'una') {
+          const izq = a1 * b2 - a2 * b1, der = c1 * b2 - c2 * b1;
+          return {
+            enunciado: ['Resuelve el sistema ', ...E1, ' y ', ...E2, '.'],
+            dibujo: dib(false),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el par (', x, '; ', y, ') que cumple las dos ecuaciones a la vez.'] },
+              datos,
+              { tipo: 'regla', texto: 'La solución es el punto donde se cruzan las dos rectas. Para hallarlo, combino las ecuaciones de modo que una letra desaparezca, y despejo la otra.' },
+              { tipo: 'cuentas', texto: ['Multiplico la primera por ', pn(b2), ' y la segunda por ', pn(b1), ', y resto: se va la ', y, '. Después vuelvo a la primera.'],
+                ecuacion: [`${f(izq)}`, x, ` = ${f(der)}  ⇒  `, x, ` = ${f(K.x)}   ·   `, y, ` = (${f(c1)} − ${pn(a1)}·${pn(K.x)}) ÷ ${pn(b1)} = ${f(K.y)}`], dibujo: dib(true) },
+              { tipo: 'sentido', texto: ['Compruebo el par en las dos: ', `${pn(a1)}·${pn(K.x)} + ${pn(b1)}·${pn(K.y)} = ${f(c1)}`, ' y ', `${pn(a2)}·${pn(K.x)} + ${pn(b2)}·${pn(K.y)} = ${f(c2)}`, '. Cuadra.'] },
+            ],
+            respuesta: `La solución es ${par(K.x, K.y)}, el cruce de las dos rectas.`,
+          };
+        }
+        const k = a2 / a1, prueba = a2 * x0 + b2 * y0;
+        return {
+          enunciado: ['¿Cuántas soluciones tiene el sistema ', ...E1, ' y ', ...E2, '?'],
+          dibujo: dib(false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden cuántas soluciones tiene: una, ninguna o infinitas.' },
+            datos,
+            { tipo: 'regla', texto: 'Comparo la segunda ecuación con la primera. Si x e y van multiplicados por el mismo número, las rectas tienen igual inclinación; el término independiente decide si coinciden.' },
+            { tipo: 'cuentas', texto: tipo === 'infinitas' ? `Los tres números de la segunda son los de la primera por ${f(k)}: es la misma recta.` : `x e y van por ${f(k)}, pero ${f(k)} · ${pn(c1)} = ${f(k * c1)} y no ${f(c2)}: son paralelas.`,
+              ecuacion: [`${f(a2)}/${f(a1)} = ${f(b2)}/${pn(b1)} = ${f(k)}   ·   ${f(k)} · ${pn(c1)} = ${f(k * c1)}${k * c1 === c2 ? ' = ' : ' ≠ '}${f(c2)}`] },
+            { tipo: 'sentido', texto: prueba === c2 ? ['El punto ', par(x0, y0), ' de la recta verde también cumple la segunda: ', `${pn(a2)}·${pn(x0)} + ${pn(b2)}·${pn(y0)} = ${f(prueba)}`, '. Como él, toda la recta.'] : ['El punto ', par(x0, y0), ' de la recta verde da en la segunda ', `${f(prueba)}`, `, no ${f(c2)}. Ningún punto de una está en la otra.`] },
+          ],
+          respuesta: tipo === 'infinitas' ? 'Infinitas soluciones: las dos ecuaciones son la misma recta.' : 'Ninguna solución: las dos rectas son paralelas.',
+        };
+      },
     },
     ahoraTu: {
       pieza: 'ejes',
@@ -199,6 +268,15 @@
     titulo: 'Se opera la fila entera',
     temas: ['Método de Gauss', 'Sistemas 3x3'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): la matriz ampliada, la notación F2 − λF1 y la meta de escalonar; no dice qué pasa con la última columna.
+    lee: {
+      tarjetas: [
+        { titulo: 'El sistema como tabla', texto: 'Un sistema se puede escribir sin letras: cada fila es una ecuación, cada columna guarda los números de una incógnita y la última, el término independiente. Esa tabla es la matriz ampliada.' },
+        { titulo: 'Cómo se lee F2 − λF1', texto: 'F1 y F2 son las filas 1 y 2. F2 − λF1 es una fila nueva que se arma con las dos; λ, la letra griega lambda, es el número que multiplica a F1.' },
+        { titulo: 'La meta: una escalera', texto: 'Se buscan ceros abajo a la izquierda. Así la última ecuación queda con una sola incógnita, que se despeja de inmediato; luego se sube fila por fila.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Mueve λ y busca el valor que deja un 0 en la columna de x de la fila nueva. Mira cómo cambia cada número de esa fila.' },
+      ],
+    },
     juega: {
       consigna: 'Sistema x + y = 5 y 2x + 3y = 13. Elige λ: la nueva fila es F2 menos λ veces F1. Busca que desaparezca x.',
       voz: 'Mira también la última columna.',
@@ -249,6 +327,50 @@
       ecuacion: [{ sub: ['F', '2'] }, ' ← ', { sub: ['F', '2'] }, ' − ', { llave: ['λ', { sub: ['F', '1'] }], nota: 'la fila entera' }],
       condicion: 'la operación incluye el término independiente; λ es cualquier número real y la fila 1 no cambia.',
     },
+    // Así se resuelve (fase 2): las dos ramas de «Ahora tú» (operar una fila y despejar un 3 × 3 escalonado), con otras semillas.
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const a = r.uno([1, 2]), l = r.ent(2, 4) * (s % 4 === 0 ? 1 : -1), b = r.ent(-3, 3) || 1, x0 = r.ent(-2, 3), y0 = r.ent(-2, 3);
+          const c = a * x0 + b * y0, a2 = l * a, b2 = r.ent(-3, 4), c2 = a2 * x0 + b2 * y0;
+          const na = a2 - l * a, nb = b2 - l * b, nc = c2 - l * c;
+          const op = `F2 ${l < 0 ? '+' : '−'} ${f(Math.abs(l))}F1`;
+          const tabla = nueva => ({ datos: { columnas: ['x', 'y', '='], colorCol: ['o', 'i'], rotulosFila: ['F1', 'F2', op], separador: { columna: 2 }, filas: [fila(a, b, c), fila(a2, b2, c2), nueva ? fila(na, nb, nc) : [{ t: '?' }, { t: '?' }, { t: '?' }]], resaltes: nueva ? [{ f: 2, c: 0, ancho: 3, color: 'd' }] : [], alt: `Matriz ampliada con F1 = (${f(a)}, ${f(b)} | ${f(c)}) y F2 = (${f(a2)}, ${f(b2)} | ${f(c2)})${nueva ? `; ${op} = (${f(na)}, ${f(nb)} | ${f(nc)})` : ''}` }, estado: {} });
+          return {
+            enunciado: ['Matriz ampliada de ', ...lineal(a, b, c), ' y ', ...lineal(a2, b2, c2), `. ¿Cómo queda la fila 2 tras ${op}?`],
+            dibujo: tabla(false),
+            pasos: [
+              { tipo: 'pide', texto: `Piden los tres números de la fila 2 después de hacer ${op}.` },
+              { tipo: 'datos', texto: `F1 = (${f(a)}, ${f(b)} | ${f(c)}) y F2 = (${f(a2)}, ${f(b2)} | ${f(c2)}). Aquí λ = ${f(l)}.` },
+              { tipo: 'regla', texto: 'A cada número de F2 le resto λ veces el número de F1 que está en su misma columna. Se opera la fila entera, también el término independiente.' },
+              { tipo: 'cuentas', texto: 'Columna por columna, cuidando los signos:',
+                ecuacion: [`${f(a2)} − (${f(l)})(${f(a)}) = ${f(na)}   ·   ${f(b2)} − (${f(l)})(${f(b)}) = ${f(nb)}   ·   ${f(c2)} − (${f(l)})(${f(c)}) = ${f(nc)}`], dibujo: tabla(true) },
+              { tipo: 'sentido', texto: `La x desapareció, que era la meta. Y la solución del sistema, ${par(x0, y0)}, también cumple la fila nueva: ${f(nb)}·${pn(y0)} = ${f(nc)}.` },
+            ],
+            respuesta: `La fila 2 queda ${f(na)}   ${f(nb)}   |   ${f(nc)}.`,
+          };
+        }
+        const x0 = r.ent(-3, 4), y0 = r.ent(-3, 4), z0 = r.ent(-2, 4), p = r.ent(-2, 3), q = r.ent(-2, 3), w = r.ent(-2, 2) || 1;
+        const filas = [[1, p, q, x0 + p * y0 + q * z0], [0, 1, w, y0 + w * z0], [0, 0, 1, z0]];
+        const V = [x, y, zz], yy = filas[1][3] - w * z0, xx = filas[0][3] - p * yy - q * z0;
+        const tabla = { datos: { columnas: ['x', 'y', 'z', '='], colorCol: ['o', 'i', 'd'], separador: { columna: 3 }, filas: filas.map(fl => [...fl.slice(0, 3).map(v => f(v)), { t: f(fl[3]), fuerte: true }]), alt: `Sistema escalonado: ${filas.map(fl => Kit.plano(linealN(fl.slice(0, 3), fl[3], ['x', 'y', 'z']))).join('; ')}` }, estado: {} };
+        return {
+          enunciado: ['El sistema ya está escalonado: ', ...linealN(filas[0].slice(0, 3), filas[0][3], V), '; ', ...linealN(filas[1].slice(0, 3), filas[1][3], V), '; ', zz, ` = ${f(z0)}. ¿Cuánto vale `, x, '?'],
+          dibujo: tabla,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', x, ', la incógnita de la primera fila.'] },
+            { tipo: 'datos', texto: ['La tabla tiene ceros abajo a la izquierda: la última fila ya da ', zz, ' y la del medio solo tiene ', y, ' y ', zz, '.'] },
+            { tipo: 'regla', texto: 'En un sistema escalonado se despeja de abajo hacia arriba: la última fila da z; con z, la del medio da y; con las dos, la primera da x.' },
+            { tipo: 'cuentas', texto: 'Paso al otro lado lo que ya conozco, con el signo cambiado.',
+              ecuacion: [zz, ` = ${f(z0)}   ·   `, y, ` = ${f(filas[1][3])} − (${f(w)})(${f(z0)}) = ${f(yy)}   ·   `, x, ` = ${f(filas[0][3])} − (${f(p)})(${f(yy)}) − (${f(q)})(${f(z0)}) = ${f(xx)}`] },
+            { tipo: 'sentido', texto: ['Compruebo en la primera fila: ', `${f(xx)} + (${f(p)})(${f(yy)}) + (${f(q)})(${f(z0)}) = ${f(filas[0][3])}`, '. Cuadra.'] },
+          ],
+          respuesta: [x, ` = ${f(xx)}`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'alg-tabla',
       generar(s) {
@@ -296,6 +418,15 @@
     titulo: 'Cramer, solo si Δ ≠ 0',
     temas: ['Regla de Cramer'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): de dónde viene el nombre y qué son Δ, Δx y Δy; no dice qué pasa si Δ vale 0 (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un método con nombre', texto: 'Gabriel Cramer, un matemático suizo, publicó en 1750 una manera de resolver sistemas usando solo determinantes. Por eso hoy se habla de la regla de Cramer.' },
+        { titulo: 'Tres determinantes', texto: ['En un sistema 2 × 2 se arman tres. Δ usa los coeficientes de ', x, ' y de ', y, '. Δ', x, ' cambia la columna de ', x, ' por los términos independientes, y Δ', y, ', la de ', y, '.'] },
+        { titulo: 'Delta', texto: 'Δ es la letra griega delta mayúscula. Aquí no es un cambio ni una diferencia: es solo el nombre del determinante de los coeficientes.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Mueve k y c, y mira la tabla: arriba van los tres determinantes y abajo, lo que sale para x e y. Compara varios valores de k.' },
+      ],
+    },
     juega: {
       consigna: 'Sistema 2x + y = 7 y x + ky = c. Mueve k y c: la tabla calcula los tres determinantes y, si se puede, x e y.',
       voz: 'Busca el k que deja Δ en cero.',
@@ -340,6 +471,34 @@
       texto: 'En un sistema cuadrado con Δ ≠ 0, x = Δx/Δ e y = Δy/Δ, donde Δx cambia la columna de x por los términos independientes.',
       ecuacion: [x, ' = ', { frac: [['Δ', x], 'Δ'] }, '   ·   ', y, ' = ', { frac: [['Δ', y], 'Δ'] }, '   ·   ', { llave: ['Δ ≠ 0'], nota: 'si no, rangos' }],
       condicion: 'tantas ecuaciones como incógnitas y Δ ≠ 0. Si Δ = 0, Cramer no decide: se analiza con rangos.',
+    },
+    // Así se resuelve (fase 2): x o y por Cramer, como en «Ahora tú», con otras semillas.
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        let a, b, c, d;
+        do { a = r.ent(1, 4); b = r.uno([-2, -1, 1, 2, 3]); c = r.uno([-1, 1, 2, 3]); d = r.uno([-3, -2, -1, 1, 2]); } while (det(a, b, c, d) === 0);
+        const x0 = r.ent(-3, 4), y0 = r.ent(-3, 4), e = a * x0 + b * y0, g = c * x0 + d * y0;
+        const D = det(a, b, c, d), Dx = det(e, b, g, d), Dy = det(a, e, c, g), pideX = s % 2 === 0;
+        const V = pideX ? x : y, nombre = pideX ? 'x' : 'y', num = pideX ? Dx : Dy;
+        const xs = Dx / D, ys = Dy / D;
+        const tabla = conV => ({ datos: { columnas: ['Δ', 'Δx', 'Δy'], colorCol: [null, 'o', 'i'], filas: [conV ? [f(D), f(Dx), f(Dy)] : ['?', '?', '?'], conV ? ['', { t: `x = ${f(xs)}`, color: 'o', fuerte: true }, { t: `y = ${f(ys)}`, color: 'i', fuerte: true }] : ['', '', '']], alt: conV ? `Cramer: Δ = ${f(D)}, Δx = ${f(Dx)} y Δy = ${f(Dy)}; x = ${f(xs)} e y = ${f(ys)}` : 'Tabla de Cramer con Δ, Δx y Δy todavía sin calcular' }, estado: {} });
+        const detTxt = pideX ? `${pn(e)}·${pn(d)} − ${pn(b)}·${pn(g)}` : `${pn(a)}·${pn(g)} − ${pn(e)}·${pn(c)}`;
+        return {
+          enunciado: ['Por la regla de Cramer, en ', ...lineal(a, b, e), ' y ', ...lineal(c, d, g), ', ¿cuánto vale ', V, '?'],
+          dibujo: tabla(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden solo ', V, ', usando determinantes.'] },
+            { tipo: 'datos', texto: ['Coeficientes: ', `${f(a)}, ${f(b)} en la primera fila y ${f(c)}, ${f(d)} en la segunda. Términos independientes: ${f(e)} y ${f(g)}.`] },
+            { tipo: 'regla', texto: ['La incógnita sale de dividir dos determinantes: abajo Δ, el de los coeficientes; arriba, el mismo con la columna de ', V, ' cambiada por los términos independientes.'] },
+            { tipo: 'cuentas', texto: `Δ = ${f(D)}, que no es 0: se puede dividir. Luego armo Δ${nombre} y divido.`,
+              ecuacion: [`Δ = ${pn(a)}·${pn(d)} − ${pn(b)}·${pn(c)} = ${f(D)}   ·   Δ`, V, ` = ${detTxt} = ${f(num)}   ·   `, V, ' = ', { frac: [f(num), f(D)] }, ` = ${f(num / D)}`], dibujo: tabla(true) },
+            { tipo: 'sentido', texto: ['Con ', x, ` = ${f(xs)} e `, y, ` = ${f(ys)}, la primera da ${pn(a)}·${pn(xs)} + ${pn(b)}·${pn(ys)} = ${f(a * xs + b * ys)} y la segunda, ${f(c * xs + d * ys)}. Cuadra.`] },
+          ],
+          respuesta: [V, ` = ${f(num / D)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -388,6 +547,15 @@
     titulo: 'Rangos que deciden',
     temas: ['Compatibilidad: Rouché-Frobenius'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): las dos matrices, qué es compatible y que los rangos deciden; no dice qué significa una fila 0 0 | 0.
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos matrices de un sistema', texto: 'De un sistema salen dos matrices: A, solo con los coeficientes de las incógnitas, y (A|b), la matriz ampliada, que agrega la columna de los términos independientes.' },
+        { titulo: 'Compatible o incompatible', texto: 'Un sistema compatible tiene al menos una solución; uno incompatible no tiene ninguna. Antes de buscar números, conviene saber en cuál de los dos casos estás.' },
+        { titulo: 'Contar rangos', texto: 'El rango de cada matriz se cuenta al escalonar. Como (A|b) tiene una columna más que A, su rango es igual al de A o uno más.' },
+        { titulo: 'Qué mirar al jugar', texto: 'La tabla ya restó 2 veces la fila 1. Mueve k y m, y mira la fila de abajo y los dos rangos del pie, sobre todo cuando k vale 4.' },
+      ],
+    },
     juega: {
       consigna: 'Sistema x + 2y = 3 y 2x + ky = m. Mueve k y m: la tabla resta 2 veces la fila 1 y cuenta los rangos.',
       voz: 'Mira qué pasa con k = 4.',
@@ -433,6 +601,38 @@
       ecuacion: [{ llave: ['r(A)'], nota: 'sin los términos' }, ' = ', { llave: ['r(A|b)'], nota: 'con los términos' }, '  ⇔  hay solución'],
       condicion: 'una fila 0 … 0 | 0 no es una solución: es una ecuación que se cumple siempre.',
     },
+    // Así se resuelve (fase 2): cuántas soluciones, como en «Ahora tú», con otras semillas; deciden los rangos.
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900), a = r.ent(1, 3), b = r.ent(1, 3), c = r.ent(2, 3);
+        const tipo = ['única', 'ninguna', 'infinitas'][s % 3];
+        const k = tipo === 'única' ? c * a + r.uno([-2, -1, 1, 2]) : c * a;
+        const m = tipo === 'infinitas' ? c * b : c * b + r.uno([-2, -1, 1, 2]);
+        const fl = [k - c * a, m - c * b];
+        const rA = fl[0] ? 2 : 1, rAb = fl[0] || fl[1] ? 2 : 1;
+        const tabla = conResta => ({ datos: { columnas: ['x', 'y', '='], colorCol: ['o', 'i'], separador: { columna: 2 }, rotulosFila: ['F1', conResta ? `F2 − ${c}F1` : 'F2'], filas: [fila(1, a, b), conResta ? fila(0, fl[0], fl[1]) : fila(c, k, m)], pie: conResta ? `rango A = ${rA}; rango (A|b) = ${rAb}` : '', resaltes: conResta ? [{ f: 1, c: 0, ancho: 3, color: rA === rAb ? 'd' : 'h' }] : [], alt: conResta ? `Tras F2 − ${c}F1 la fila 2 queda 0, ${f(fl[0])} | ${f(fl[1])}; rangos ${rA} y ${rAb}` : `Matriz ampliada con filas (1, ${f(a)} | ${f(b)}) y (${f(c)}, ${f(k)} | ${f(m)})` }, estado: {} });
+        let sentido;
+        if (tipo === 'única') {
+          const yv = fr(fl[1], fl[0]), xv = fr(b * fl[0] - a * fl[1], fl[0]);
+          sentido = ['La fila 2 da ', y, ` = ${yv}, y la primera, `, x, ` = ${xv}: un solo par, como dicen los rangos 2 y 2 con 2 incógnitas.`];
+        } else if (tipo === 'ninguna') sentido = `La fila 2 dice 0 = ${f(fl[1])}, que es falso para cualquier par. Por eso los rangos no coinciden.`;
+        else sentido = ['Cada valor de ', y, ' da un ', x, `. Con y = 0 sale ${par(b, 0)}, que cumple las dos: ${f(c)}·${f(b)} = ${f(m)}.`];
+        return {
+          enunciado: ['¿Cuántas soluciones tiene el sistema ', ...lineal(1, a, b), ' y ', ...lineal(c, k, m), '?'],
+          dibujo: tabla(false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden si el sistema tiene una solución, ninguna o infinitas.' },
+            { tipo: 'datos', texto: `F1 = (1, ${f(a)} | ${f(b)}) y F2 = (${f(c)}, ${f(k)} | ${f(m)}). Hay 2 incógnitas.` },
+            { tipo: 'regla', texto: 'Escalono y comparo dos rangos: el de A, sin los términos independientes, y el de (A|b), con ellos. Si difieren, no hay solución; si coinciden, miro cuántas incógnitas hay.' },
+            { tipo: 'cuentas', texto: `Resto ${c} veces F1 a F2. Entonces rango A = ${rA} y rango (A|b) = ${rAb}.`,
+              ecuacion: [`F2 − ${c}F1 = (0, ${f(fl[0])} | ${f(fl[1])})`], dibujo: tabla(true) },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: tipo === 'única' ? 'Una sola solución.' : tipo === 'ninguna' ? 'Ninguna solución: el sistema es incompatible.' : 'Infinitas soluciones.',
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), a = r.ent(1, 3), b = r.ent(1, 3), c = r.ent(2, 3);
@@ -466,6 +666,15 @@
     titulo: 'Curvas que se cruzan',
     temas: ['Sistemas no lineales'],
     pieza: 'ejes',
+    // Lee (fase 2): qué hace no lineal a un sistema y que cada solución es un punto común; no dice cuántos hay en Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Curvas, no solo rectas', texto: ['Un sistema es no lineal si alguna ecuación tiene ', x, '², ', x, y, ' u otra potencia. Su gráfica ya no es una recta: puede ser una parábola, como y = x², o una circunferencia.'] },
+        { titulo: 'Curvas de todos los días', texto: 'El chorro de agua de una pileta o una pelota lanzada al aire siguen una parábola. Un sistema no lineal pregunta dónde se encuentra una curva así con otra línea.' },
+        { titulo: 'Puntos comunes', texto: 'Igual que con dos rectas, cada solución es un punto que está en las dos gráficas a la vez. Para estar seguro, cada par se prueba en las dos ecuaciones.' },
+        { titulo: 'Qué mirar al jugar', texto: 'La parábola verde queda fija y la recta roja se mueve. Cuenta los puntos naranjas y busca el momento en que la recta apenas toca la curva.' },
+      ],
+    },
     juega: {
       consigna: 'La curva verde es y = x². Arrastra la recta roja y = mx + n por sus dos manijas y cuenta los puntos comunes.',
       voz: 'Busca una recta que solo toque la curva.',
@@ -511,6 +720,36 @@
       texto: 'Se despeja una variable en una ecuación y se reemplaza en la otra. Cada solución de la ecuación que resulta da un punto, que se comprueba en las dos.',
       ecuacion: [y, ' = 7 − ', x, '  ⇒  ', x, '² + (7 − ', x, ')² = 25'],
       condicion: 'elevar al cuadrado o dividir puede agregar o perder soluciones: cada par se verifica en el sistema original.',
+    },
+    // Así se resuelve (fase 2): cuántos cortes tienen y = x² y una recta, las tres ramas de «Ahora tú», con otras semillas.
+    resuelve: {
+      pieza: 'ejes',
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3;
+        let mm, nn, xs;
+        if (tipo === 0) { const p = r.ent(-2, 1), q = p + r.ent(1, 3); mm = p + q; nn = -p * q; xs = [p, q]; }
+        else if (tipo === 1) { const p = r.ent(-2, 2); mm = 2 * p; nn = -p * p; xs = [p]; }
+        else { mm = r.uno([-2, 0, 2]); nn = -(mm * mm) / 4 - r.ent(1, 3); xs = []; }
+        // El mismo lado derecho que escribe «Ahora tú»: mx + n sin ceros ni unos sobrantes.
+        const lado = [mm ? `${Math.abs(mm) === 1 ? (mm < 0 ? '−' : '') : f(mm)}x` : '', nn ? `${mm ? (nn < 0 ? ' − ' : ' + ') : (nn < 0 ? '−' : '')}${f(Math.abs(nn))}` : ''].join('') || '0';
+        const cuad = `x²${mm ? ` ${mm > 0 ? '−' : '+'} ${Math.abs(mm) === 1 ? '' : f(Math.abs(mm))}x` : ''}${nn ? ` ${nn > 0 ? '−' : '+'} ${f(Math.abs(nn))}` : ''} = 0`;
+        const D = mm * mm + 4 * nn;
+        const dib = conPuntos => ({ datos: Object.assign({}, VNL, { curvas: [{ puntos: curvaY(z => z * z, -4, 4), color: 'd' }, { puntos: curvaY(z => mm * z + nn, -4, 4), color: 'h' }], puntos: conPuntos ? xs.map(v => ({ x: v, y: v * v, color: 'o', rotulo: par(v, v * v) })) : [], alt: `La parábola y = x² y la recta y = ${lado}${conPuntos ? `: ${xs.length} puntos comunes` : ''}` }), estado: {} });
+        const N = ['Ningún punto', 'Un punto', 'Dos puntos'][xs.length];
+        return {
+          enunciado: ['¿En cuántos puntos se cortan ', y, ' = ', x, '² y ', y, ` = ${lado}?`],
+          dibujo: dib(false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden cuántos puntos comparten la parábola verde y la recta roja.' },
+            { tipo: 'datos', texto: ['La parábola es ', y, ' = ', x, '² y la recta es ', y, ` = ${lado}.`] },
+            { tipo: 'regla', texto: 'En un punto común las dos dan la misma y. Igualo, paso todo a un lado y el discriminante cuenta las soluciones: positivo, dos; cero, una; negativo, ninguna.' },
+            { tipo: 'cuentas', texto: xs.length === 2 ? `Δ = ${f(D)}, positivo. Las raíces son x = ${f(xs[0])} y x = ${f(xs[1])}.` : xs.length ? `Δ = 0: hay una sola raíz, x = ${f(xs[0])}.` : `Δ = ${f(D)}, negativo: no hay ningún x real.`,
+              ecuacion: [`x² = ${lado}  ⇒  ${cuad}   ·   Δ = ${pn(-mm)}² − 4·1·${pn(-nn)} = ${f(D)}`], dibujo: dib(true) },
+            { tipo: 'sentido', texto: xs.length ? `Compruebo cada x en las dos: ${xs.map(v => `con x = ${f(v)}, la parábola da ${f(v * v)} y la recta, ${f(mm * v + nn)}`).join('; ')}.` : 'La recta pasa entera por debajo de la parábola: en cada x, x² queda más arriba. No se tocan.' },
+          ],
+          respuesta: xs.length ? `${N}: ${xs.map(v => par(v, v * v)).join(' y ')}.` : `${N}: no se cortan.`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'ejes',

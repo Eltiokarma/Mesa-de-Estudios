@@ -59,6 +59,17 @@
   const invLineal = (escala, p, q) => px => p + (px - escala(p)) * (q - p) / (escala(q) - escala(p));
   const PIEZA = id => Kit.piezas[id];
   const lienzoDe = datos => { const g = PIEZA('ejes').geometria(datos); return { X: g.X, Y: g.Y, aX: invLineal(g.X, datos.x.min, datos.x.max), aY: invLineal(g.Y, datos.y.min, datos.y.max) }; };
+  // «Así se resuelve» (fase 2): ejes con un paso redondo para cualquier rango (las geométricas llegan a miles), y el
+  // número entre paréntesis si es negativo.
+  const pasoRedondo = sp => [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000].find(p => sp / p <= 6) || 5000;
+  const ejesR = (xmax, ymin, ymax, extra = {}, y = {}) => {
+    const lo = Math.min(0, ymin), hi = Math.max(0, ymax), paso = pasoRedondo(hi - lo || 1);
+    return Object.assign({
+      x: { min: 0, max: xmax, paso: xmax > 30 ? 10 : xmax > 12 ? 2 : 1, nombre: 'n', decimales: 0, color: 'i' },
+      y: Object.assign({ min: Math.floor(lo / paso) * paso, max: Math.ceil(hi / paso) * paso || paso, paso, nombre: 'aₙ', decimales: paso < 1 ? 1 : 0, color: 'o' }, y),
+    }, extra);
+  };
+  const par = x => (x < 0 ? `(${f(x)})` : f(x));
 
   // ---------- Idea 1: suma lo mismo o multiplica lo mismo, y la regla se declara ----------
   // Cambia: el tipo, a₁ y d o r · Permanece: los ejes n y aₙ · Progresa: los puntos, término a término · Se reserva:
@@ -71,6 +82,14 @@
     titulo: 'Sumar lo mismo o multiplicar',
     temas: ['Progresiones aritméticas y geométricas'],
     pieza: 'ejes',
+    // Lee (fase 2): vocabulario y contexto, sin decir que tres términos admiten varias reglas (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una lista con orden', texto: ['Si en Juliaca ahorras 5 soles más cada semana, tu ahorro forma una lista: 10, 15, 20… Cada número de la lista es un término, ', an('n'), ', y su lugar en la lista es ', n, '.'] },
+        { titulo: 'Dos maneras de avanzar', texto: 'Si cada término es el anterior más un número fijo d, la lista es una progresión aritmética. Si cada término es el anterior por un número fijo r, es una progresión geométrica.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, cambia entre «suma k» y «multiplica por k». Compara los saltos entre puntos vecinos: ¿miden siempre lo mismo o van creciendo?' },
+      ],
+    },
     juega: {
       consigna: 'Elige si cada término suma lo mismo o multiplica por lo mismo, el primer término y el paso. Mira cómo se separan los puntos.',
       voz: 'Compara los saltos entre puntos vecinos.',
@@ -130,6 +149,42 @@
       ecuacion: [an('n'), ' = ', an('1'), ' + ', { llave: ['(', n, ' − 1)'], nota: 'saltos', color: 'c-i' }, 'd', '   ·   ', an('n'), ' = ', an('1'), { sup: ['r', [n, ' − 1']] }],
       condicion: 'n es entero positivo, y el modelo, aritmético o geométrico, se declara o se justifica: no se adivina.',
     },
+    // Así se resuelve (fase 2): el término n de una progresión, como en «Ahora tú», con la misma función termino().
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), suma = s % 2 === 0;
+        let a1, k, m;
+        if (suma) { a1 = r.ent(-5, 9); k = r.noCero(-4, 6); m = r.ent(8, 25); }
+        else { a1 = r.ent(1, 5); k = r.uno([2, 3, -2]); m = r.ent(4, 7); }
+        const tipo = suma ? 'suma' : 'multiplica', bien = termino(tipo, a1, k, m), pot = k ** (m - 1);
+        const tres = [1, 2, 3].map(j => termino(tipo, a1, k, j));
+        const fig = con => {
+          const ps = tres.map((y, j) => ({ x: j + 1, y, color: 'o', rotulo: f(y) }));
+          if (con) ps.push({ x: m, y: bien, color: 'o', rotulo: `a${sub(m)} = ${f(bien)}`, guias: true });
+          const ys = ps.map(p => p.y);
+          return { datos: ejesR(m + 1, Math.min(...ys), Math.max(...ys), { puntos: ps, alt: `Primeros términos ${tres.map(y => f(y)).join(', ')}${con ? ` y el término ${m}, ${f(bien)}` : ''}` }), estado: {} };
+        };
+        const M = String(m);
+        return {
+          enunciado: [`En una progresión ${suma ? 'aritmética' : 'geométrica'}, `, an('1'), ` = ${f(a1)} y ${suma ? 'd' : 'r'} = ${f(k)}. ¿Cuánto vale `, an(M), '?'],
+          dibujo: fig(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', an(M), `: el término que ocupa el lugar ${m}.`] },
+            { tipo: 'datos', texto: ['El primer término es ', an('1'), ` = ${f(a1)}, y cada paso ${suma ? `suma d = ${f(k)}` : `multiplica por r = ${f(k)}`}.`] },
+            suma
+              ? { tipo: 'regla', texto: ['En una aritmética, cada salto suma d. Del lugar 1 al lugar ', n, ' hay ', n, ' − 1 saltos, no ', n, '.'], ecuacion: [an('n'), ' = ', an('1'), ' + (', n, ' − 1)d'] }
+              : { tipo: 'regla', texto: ['En una geométrica, cada paso multiplica por r. Del lugar 1 al lugar ', n, ' hay ', n, ' − 1 multiplicaciones, no ', n, '.'], ecuacion: [an('n'), ' = ', an('1'), ' · ', { sup: ['r', [n, ' − 1']] }] },
+            suma
+              ? { tipo: 'cuentas', texto: `Del lugar 1 al ${m} hay ${m - 1} saltos de ${f(k)}.`, ecuacion: [an(M), ` = ${f(a1)} + ${m - 1} · ${par(k)} = ${f(bien)}`], dibujo: fig(true) }
+              : { tipo: 'cuentas', texto: `Del lugar 1 al ${m} hay ${m - 1} multiplicaciones por ${f(k)}.`, ecuacion: [an(M), ` = ${f(a1)} · ${par(k)}${sup(m - 1)} = ${f(a1)} · ${par(pot)} = ${f(bien)}`], dibujo: fig(true) },
+            suma
+              ? { tipo: 'sentido', texto: `De vuelta: ${f(bien)} − ${par(a1)} = ${f(bien - a1)}, y ${f(bien - a1)} ÷ ${m - 1} = ${f(k)}, que es d. Cuadra.` }
+              : { tipo: 'sentido', texto: `De vuelta: ${f(bien)} ÷ ${f(a1)} = ${f(pot)}, que es ${par(k)}${sup(m - 1)}.${k < 0 ? ` Con r negativa y exponente ${(m - 1) % 2 ? 'impar' : 'par'}, el signo sale ${(m - 1) % 2 ? 'negativo' : 'positivo'}.` : ' Cuadra.'}` },
+          ],
+          respuesta: [an(M), ` = ${f(bien)}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -182,6 +237,15 @@
     titulo: 'Acercarse sin llegar',
     temas: ['Sucesiones monótonas y acotadas', 'Límite de sucesiones'],
     pieza: 'ejes',
+    // Lee (fase 2): creciente, acotada y límite como palabras; no dice si los términos llegan o no a L (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Infinitos términos', texto: 'Una sucesión no se acaba: después de cada término viene otro. Como no se puede escribir entera, se mira su forma: si sube, si baja o si salta de un lado a otro.' },
+        { titulo: 'Creciente y acotada', texto: 'Una sucesión es creciente si cada término supera al anterior, y decreciente si cada uno es menor. Está acotada si sus términos no pasan de cierto techo ni bajan de cierto piso.' },
+        { titulo: 'El límite', texto: ['Si, al crecer ', n, ', los términos se juntan cada vez más alrededor de un número ', L, ', ese número es el límite. Se escribe así:'], ecuacion: ['lím ', an('n'), ' = ', L] },
+        { titulo: 'Qué mirar', texto: 'Al jugar, prueba las cinco sucesiones. Mira la forma de los puntos naranjas y si aparece la línea roja de un límite.' },
+      ],
+    },
     juega: {
       consigna: 'Elige una sucesión y mira sus doce primeros términos. ¿Crece, decrece o sube y baja? ¿Tiene techo? ¿Se acerca a algún número?',
       voz: 'Mira la forma de los puntos, no un punto solo.',
@@ -230,6 +294,35 @@
       ecuacion: ['lím ', an('n'), ' = ', { llave: [L], nota: 'destino', color: 'c-h' }, '   (', n, ' → ∞)'],
       condicion: 'acercarse no exige llegar a L. Monótona sola no basta: n/2 crece y no tiene límite.',
     },
+    // Así se resuelve (fase 2): el límite de (pn + q)/(un + w), con el mismo sorteo y las mismas cuentas de «Ahora tú».
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        let p, q, u, w;
+        do { p = r.noCero(-4, 6); q = r.ent(-6, 8); u = r.ent(1, 4); w = r.ent(1, 6); } while (p * w === q * u || mcd(p, u) !== 1 && u !== 1 && p % u !== 0);
+        const num = `${p === 1 ? '' : p === -1 ? '−' : f(p)}n ${q < 0 ? '−' : '+'} ${Math.abs(q)}`.replace(' + 0', ''), den = `${u === 1 ? '' : f(u)}n + ${w}`;
+        const a = m => (p * m + q) / (u * m + w), Lv = p / u, ps = puntosDe(a, 12);
+        const ys = [...ps.map(o => o.y), Lv];
+        const fig = con => ({ datos: ejesR(13, Math.min(...ys), Math.max(...ys), {
+          puntos: ps, curvas: con ? [{ puntos: [[0, Lv], [13, Lv]], color: 'h', discontinua: true, rotulo: `L = ${fr(p, u)}` }] : [],
+          alt: `Doce términos de aₙ = (${num})/(${den})${con ? `, que se juntan alrededor de ${fr(p, u)}` : ''}`,
+        }), estado: {} });
+        const arriba = `${f(p)}${q === 0 ? '' : ` ${q < 0 ? '−' : '+'} ${Math.abs(q)}/n`}`;
+        return {
+          enunciado: ['¿A qué número se acerca ', an('n'), ` = (${num})/(${den}) cuando n crece sin parar?`],
+          dibujo: fig(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el límite ', L, ': el número alrededor del cual se juntan los términos cuando ', n, ' crece sin parar.'] },
+            { tipo: 'datos', texto: ['El término general es una fracción con ', n, ' arriba y abajo.'], ecuacion: [an('n'), ` = (${num})/(${den})`] },
+            { tipo: 'regla', texto: ['Cuando ', n, ' es enorme, los números sueltos casi no pesan: mandan los que llevan ', n, '. Por eso divido arriba y abajo entre ', n, '.'] },
+            { tipo: 'cuentas', texto: q === 0 ? `Al dividir entre n queda ${w}/n, que se acerca a 0 cuando n crece.` : `Al dividir entre n quedan ${Math.abs(q)}/n y ${w}/n, que se acercan a 0 cuando n crece.`,
+              ecuacion: [`(${arriba})/(${f(u)} + ${w}/n) → ${u === 1 ? f(p) : `${f(p)}/${f(u)}${fr(p, u) === `${f(p)}/${f(u)}` ? '' : ` = ${fr(p, u)}`}`}`], dibujo: fig(true) },
+            { tipo: 'sentido', texto: ['Pruebo un ', n, ` grande: con n = 100, el término vale ${f(a(100), 3)}, muy cerca de ${fr(p, u)}${fr(p, u).includes('/') ? ` = ${f(Lv, 3)}` : ''}.`] },
+          ],
+          respuesta: ['lím ', an('n'), ` = ${fr(p, u)}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -266,6 +359,14 @@
     titulo: 'Cada término sale de anteriores',
     temas: ['Sucesiones recurrentes y Fibonacci'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): qué es una regla recurrente y una condición inicial; no calcula ningún término (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Mirar hacia atrás', texto: 'Algunas sucesiones no traen una fórmula para el término n. En cambio, dicen cómo se obtiene cada término a partir de los anteriores. Se llaman sucesiones recurrentes.' },
+        { titulo: 'Para arrancar', texto: 'Si una cooperativa de Puno teje cada mes el doble de chompas que el mes anterior, falta un dato: cuántas tejió el primer mes. Ese dato de partida es la condición inicial.' },
+        { titulo: 'Qué mirar', texto: ['En el juego, cada término es la suma de los dos anteriores. Cambia solo ', an('1'), ' y mira qué casillas de la fila cambian; después, cambia solo ', an('2'), '.'] },
+      ],
+    },
     juega: {
       consigna: 'La regla es: cada término es la suma de los dos anteriores. Elige los dos primeros y mira cómo cambia toda la fila.',
       voz: 'Misma regla, otros comienzos. Compara.',
@@ -310,6 +411,47 @@
       texto: 'Una sucesión recurrente da cada término a partir de los anteriores. Necesita sus condiciones iniciales: Fibonacci usa dos, a₁ y a₂.',
       ecuacion: [an('n'), ' = ', { llave: [an('n−1'), ' + ', an('n−2')], nota: 'los dos anteriores', color: 'c-o' }],
       condicion: 'la regla vale desde n = 3; sin a₁ y a₂ declarados, la sucesión no queda determinada.',
+    },
+    // Así se resuelve (fase 2): un término de una recurrencia, con las dos ramas de «Ahora tú» y su misma cuenta.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const a1 = r.ent(1, 6), a2 = r.ent(1, 7), m = r.ent(5, 8), v = recurrencia(a1, a2, m), M = String(m);
+          return {
+            enunciado: ['Con ', an('n'), ' = ', an('n−1'), ' + ', an('n−2'), ', ', an('1'), ` = ${a1} y `, an('2'), ` = ${a2}, ¿cuánto vale `, an(M), '?'],
+            dibujo: { datos: tablaRec(v, { ver: 2, oculta: m - 1 }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', an(M), `: el término ${m} de la fila.`] },
+              { tipo: 'datos', texto: ['Los dos primeros son ', an('1'), ` = ${a1} y `, an('2'), ` = ${a2}. Cada término es la suma de los dos anteriores.`] },
+              { tipo: 'regla', texto: 'Una regla recurrente se aplica paso a paso desde los términos dados. Cada casilla nueva sale de las dos que tiene a su izquierda.' },
+              { tipo: 'cuentas', texto: `Sumo de dos en dos hasta llegar al lugar ${m}.`, ecuacion: [v.map(x => f(x)).join(', ')], dibujo: { datos: tablaRec(v, { resaltar: m - 1 }), estado: {} } },
+              { tipo: 'sentido', texto: `Compruebo el último paso: ${f(v[m - 3])} + ${f(v[m - 2])} = ${f(v[m - 1])}. Y la fila tiene ${m} términos, ni uno más.` },
+            ],
+            respuesta: [an(M), ` = ${f(v[m - 1])}`],
+          };
+        }
+        // Se descarta el caso constante (2a₁ + c = a₁): cuadra, pero no deja ver la regla en marcha.
+        let a1, c, m;
+        do { a1 = r.ent(1, 4); c = r.noCero(-3, 3); m = r.ent(4, 6); } while (2 * a1 + c === a1);
+        const M = String(m);
+        const v = [a1]; while (v.length < m) v.push(2 * v[v.length - 1] + c);
+        // Aquí solo a₁ es dato de partida: solo esa columna va en naranja.
+        const tabla = o => { const t = tablaRec(v, o); t.colorCol[1] = null; const z = t.filas[0][1]; if (z && typeof z === 'object' && !z.hueco) z.color = 'd'; return t; };
+        const signo = c < 0 ? '−' : '+';
+        return {
+          enunciado: ['Con ', an('n'), ' = 2', an('n−1'), ` ${signo} ${Math.abs(c)} y `, an('1'), ` = ${a1}, ¿cuánto vale `, an(M), '?'],
+          dibujo: { datos: tabla({ ver: 1, oculta: m - 1 }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', an(M), `: el término ${m} de la fila.`] },
+            { tipo: 'datos', texto: ['Solo se da ', an('1'), ` = ${a1}. Cada término es el doble del anterior ${c < 0 ? 'menos' : 'más'} ${Math.abs(c)}.`] },
+            { tipo: 'regla', texto: 'Aquí cada término sale solo del anterior, así que basta un término dado para arrancar. Aplico la regla una vez por cada lugar nuevo.' },
+            { tipo: 'cuentas', texto: `Hago ${m - 1} pasos: doblo y ${c < 0 ? 'resto' : 'sumo'} ${Math.abs(c)}.`, ecuacion: [v.map(x => f(x)).join(', ')], dibujo: { datos: tabla({ resaltar: m - 1 }), estado: {} } },
+            { tipo: 'sentido', texto: `Compruebo el último paso: 2 · ${par(v[m - 2])} ${signo} ${Math.abs(c)} = ${f(v[m - 1])}. Y la fila tiene ${m} términos.` },
+          ],
+          respuesta: [an(M), ` = ${f(v[m - 1])}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -364,6 +506,14 @@
     titulo: 'Al derecho y al revés',
     temas: ['Sumas notables y series telescópicas', 'Progresiones aritméticas y geométricas'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): para qué sirve una suma notable y cómo se escribe; no dice cuánto da cada columna (eso se juega).
+    lee: {
+      tarjetas: [
+        { titulo: 'Sumas largas', texto: 'En una feria de Puno, un puesto guarda 1 sol el primer día, 2 el segundo, 3 el tercero, y así durante un mes. Sumar día por día cansa, y es fácil equivocarse.' },
+        { titulo: 'La suma de los primeros', texto: ['La suma de los ', n, ' primeros términos se llama suma parcial y se escribe ', Sn('n'), '. En esta unidad, las sumas van siempre en verde.'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, la fila de abajo trae los mismos números en el orden contrario. Suma algunas columnas y fíjate qué tienen en común cuando cambias n.' },
+      ],
+    },
     juega: {
       consigna: 'Arriba va 1 + 2 + … + n; debajo, la misma suma al revés. Cambia n y suma cada columna.',
       voz: 'Fíjate en qué da cada columna.',
@@ -397,6 +547,38 @@
       texto: 'Al sumar al derecho y al revés, cada columna da lo mismo: primer término más último. Así, 1 + 2 + … + n = n(n + 1)/2.',
       ecuacion: [Sn('n'), ' = ', n, ' · ', { llave: ['(', an('1'), ' + ', an('n'), ')'], nota: 'cada columna', color: 'c-o' }, ' ÷ 2'],
       condicion: 'vale para progresiones aritméticas: términos que suben siempre lo mismo, como 1, 2, 3, … o 3, 7, 11, …',
+    },
+    // Así se resuelve (fase 2): la suma de una progresión aritmética, con los tres tipos y las cuentas de «Ahora tú».
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3;
+        let a1, d, m;
+        if (tipo === 0) { a1 = 1; d = 1; m = r.ent(20, 60); }
+        else if (tipo === 1) { a1 = 1; d = 2; m = r.ent(10, 30); }
+        else { a1 = r.ent(2, 9); d = r.ent(3, 6); m = r.ent(8, 20); }
+        const am = a1 + (m - 1) * d, bien = m * (a1 + am) / 2, M = String(m);
+        const lista = `${a1} + ${a1 + d} + ${a1 + 2 * d} + … + ${am}`;
+        const celdas = xs => xs.map(x => (x === null ? '…' : f(x)));
+        const fig = con => ({ datos: Object.assign({
+          columnas: celdas([a1, a1 + d, a1 + 2 * d, null, am]), colorCol: ['o', 'o', 'o', null, 'o'],
+          rotulosFila: con ? ['al revés', '2S'] : ['S'], colorFila: con ? ['d', 'd'] : ['d'],
+          filas: con ? [celdas([am, am - d, am - 2 * d, null, a1]), celdas([0, 0, 0, null, 0]).map(t => ({ t: t === '…' ? t : f(a1 + am), color: 'd', fuerte: true }))] : [['', '', '', '', '']],
+          alt: con ? `La suma al derecho y al revés: ${m} columnas de ${f(a1 + am)}` : `La suma ${lista}`,
+        }, con ? { pie: `${m} columnas de ${f(a1 + am)}: S = ${f(bien)}` } : {}), estado: {} });
+        return {
+          enunciado: `¿Cuánto vale ${lista}?`,
+          dibujo: fig(false),
+          pasos: [
+            { tipo: 'pide', texto: `Piden la suma de todos los términos, desde ${a1} hasta ${am}.` },
+            { tipo: 'datos', texto: `Los términos suben de ${d} en ${d}: el primero es ${a1} y el último, ${am}. Cuento cuántos son.`, ecuacion: [n, ` = (${am} − ${a1}) ÷ ${d} + 1 = ${m}`] },
+            { tipo: 'regla', texto: 'Escribo la suma al derecho y, debajo, al revés. Cada columna da primero más último, y hay tantas columnas como términos. Al final, divido entre 2.' },
+            { tipo: 'cuentas', texto: `Cada columna da ${a1} + ${am} = ${a1 + am}. Las dos filas juntas suman ${m} · ${a1 + am}; la suma pedida es la mitad.`,
+              ecuacion: [Sn(M), ` = ${m} · ${a1 + am} ÷ 2 = ${f(bien)}`], dibujo: fig(true) },
+            { tipo: 'sentido', texto: `El promedio de los términos es ${f((a1 + am) / 2)}, y ${m} veces ese promedio da ${f(bien)}. Queda entre ${f(m * a1)} y ${f(m * am)}.` },
+          ],
+          respuesta: [Sn(M), ` = ${f(bien)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -443,6 +625,14 @@
     titulo: 'Lo de en medio se cancela',
     temas: ['Sumas notables y series telescópicas'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): de dónde viene el nombre y el truco de escribir una fracción como resta; no dice qué sobrevive.
+    lee: {
+      tarjetas: [
+        { titulo: 'Un nombre de catalejo', texto: 'Un catalejo de bolsillo tiene tubos que entran uno dentro de otro, hasta quedar corto. Las sumas telescópicas se llaman así porque, al sumarlas, pasa algo parecido.' },
+        { titulo: 'Una fracción como resta', texto: 'Algunas fracciones se pueden escribir como la resta de dos más simples. Por ejemplo, 1/6 = 1/2 − 1/3, y 1/12 = 1/3 − 1/4. Compruébalo con un denominador común.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, cada fila es una de esas restas. Las casillas punteadas se anulan con la fila vecina: fíjate cuáles quedan en verde al cambiar n.' },
+      ],
+    },
     juega: {
       consigna: 'Cada término 1/(k(k + 1)) se escribe como 1/k − 1/(k + 1). Cambia n: las casillas punteadas se cancelan con la fila vecina.',
       voz: 'Busca qué casillas sobreviven.',
@@ -481,6 +671,45 @@
       texto: 'Suma telescópica: si cada término es una diferencia de la forma bₖ − bₖ₊₁, al sumar se cancelan los de en medio y quedan los extremos.',
       ecuacion: [Sn('n'), ' = ', { llave: [{ sub: ['b', '1'] }], nota: 'el primero', color: 'c-d' }, ' − ', { llave: [{ sub: ['b', 'n+1'] }], nota: 'el último', color: 'c-d' }],
       condicion: 'todos los términos siguen el mismo patrón bₖ − bₖ₊₁, sin saltarse ninguno.',
+    },
+    // Así se resuelve (fase 2): las dos telescópicas de «Ahora tú» (de uno en uno y de dos en dos), con sus mismas cuentas.
+    // La tabla corta muestra las filas 1, 2, 3, las dos últimas y «⋮» en medio, para que quepa con n hasta 30.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), salto = s % 2 === 0 ? 1 : 2, m = salto === 1 ? r.ent(4, 30) : r.ent(4, 12), M = String(m);
+        const num = 3 * (m + 1) * (m + 2) - 2 * (m + 2) - 2 * (m + 1), den = 4 * (m + 1) * (m + 2);   // ½(1 + 1/2 − 1/(m+1) − 1/(m+2))
+        const bien = salto === 1 ? fr(m, m + 1) : fr(num, den);
+        const tabla = cancelar => {
+          const ks = [...new Set([1, 2, 3, m - 1, m])].sort((x, y) => x - y), filas = [];
+          ks.forEach((k, i) => {
+            if (i && k - ks[i - 1] > 1) filas.push(['⋮', '⋮', '⋮']);
+            const queda1 = k <= salto, queda2 = k > m - salto;
+            filas.push([f(k),
+              { t: k === 1 ? '1' : `1/${k}`, color: queda1 ? 'd' : undefined, fuerte: queda1, hueco: cancelar && !queda1 },
+              { t: `−1/${k + salto}`, color: queda2 ? 'd' : undefined, fuerte: queda2, hueco: cancelar && !queda2 }]);
+          });
+          return { datos: Object.assign({ columnas: ['k', '1/k', `− 1/(k + ${salto})`], colorCol: ['i', 'o', 'o'], filas,
+            alt: `Filas 1/k − 1/(k + ${salto}) de k = 1 a ${m}${cancelar ? ': se anulan las de en medio' : ''}` },
+          cancelar ? { pie: salto === 1 ? `Quedan 1 y −1/${m + 1}` : `Quedan 1, 1/2, −1/${m + 1} y −1/${m + 2}; todo por ½` } : {}), estado: {} };
+        };
+        const uno = salto === 1;
+        return {
+          enunciado: uno ? `¿Cuánto vale 1/(1·2) + 1/(2·3) + … + 1/(${m}·${m + 1})?`
+            : `¿Cuánto vale 1/(1·3) + 1/(2·4) + … + 1/(${m}·${m + 2})? Usa 1/(k(k + 2)) = ½(1/k − 1/(k + 2)).`,
+          dibujo: tabla(false),
+          pasos: [
+            { tipo: 'pide', texto: `Piden la suma de ${m} términos, desde ${uno ? '1/(1·2)' : '1/(1·3)'} hasta 1/(${m}·${m + salto}).` },
+            { tipo: 'datos', texto: uno ? 'Cada término tiene la forma 1/(k(k + 1)), con k de 1 a ' + m + '.' : `Cada término tiene la forma 1/(k(k + 2)), con k de 1 a ${m}, y vale la mitad de una resta.`,
+              ecuacion: uno ? [{ frac: ['1', 'k(k + 1)'] }, ' = ', { frac: ['1', 'k'] }, ' − ', { frac: ['1', 'k + 1'] }] : [{ frac: ['1', 'k(k + 2)'] }, ' = ½(', { frac: ['1', 'k'] }, ' − ', { frac: ['1', 'k + 2'] }, ')'] },
+            { tipo: 'regla', texto: uno ? 'Escribo cada término como una resta. Lo que resta una fila lo suma la fila siguiente, y se anulan: solo quedan el comienzo y el final.'
+              : 'Escribo cada término como una resta. Lo que resta una fila se anula con lo que suma la fila que está dos lugares más abajo.' },
+            { tipo: 'cuentas', texto: uno ? `Sobreviven el 1 de la primera fila y el −1/${m + 1} de la última.` : `Sobreviven 1 y 1/2 al inicio, y −1/${m + 1} y −1/${m + 2} al final. No olvido el ½.`,
+              ecuacion: [Sn(M), uno ? ` = 1 − 1/${m + 1} = ${bien}` : ` = ½(1 + 1/2 − 1/${m + 1} − 1/${m + 2}) = ${bien}`], dibujo: tabla(true) },
+            { tipo: 'sentido', texto: `${bien} es menor que ${uno ? '1' : '3/4'}, la suma con infinitos términos, y mayor que el primer término, ${uno ? '1/2' : '1/3'}. Cuadra.` },
+          ],
+          respuesta: [Sn(M), ` = ${bien}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -527,6 +756,15 @@
     titulo: 'La suma infinita es un límite',
     temas: ['Serie geométrica y convergencia'],
     pieza: 'ejes',
+    // Lee (fase 2): serie, suma parcial y converger como palabras; no dice si basta que los términos tiendan a 0.
+    lee: {
+      tarjetas: [
+        { titulo: 'Sumar una lista sin fin', texto: 'Una serie es la suma de los términos de una sucesión, uno tras otro. Si la lista no se acaba, no se puede sumar todo de una vez: se va sumando de a poco.' },
+        { titulo: 'Sumas parciales', texto: [Sn('1'), ' es el primer término; ', Sn('2'), ', la suma de los dos primeros; ', Sn('3'), ', la de los tres primeros. Cada suma parcial es un punto verde en el juego.'] },
+        { titulo: 'Converger', texto: 'Si las sumas parciales se acercan cada vez más a un número, la serie converge y ese número es su suma. Si no se acercan a ninguno, la serie no converge.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, cambia la razón r y mira si los puntos verdes se detienen en una altura o siguen subiendo sin parar.' },
+      ],
+    },
     juega: {
       consigna: 'Se suma 1 + r + r² + r³ + … Elige la razón r: cada punto es la suma de los primeros n términos.',
       voz: 'Mira si los puntos se detienen en una altura.',
@@ -589,6 +827,44 @@
       texto: 'Una serie converge si sus sumas parciales se acercan a un número. La geométrica con |r| < 1 suma a₁/(1 − r). Que los términos tiendan a 0 no basta.',
       ecuacion: [{ sub: ['S', '∞'] }, ' = ', { frac: [an('1'), '1 − r'] }, '   ·   ', { llave: ['|r| < 1'], nota: 'si no, no converge' }],
       condicion: '|r| < 1. Con |r| ≥ 1 la geométrica no converge; la armónica tiene términos que tienden a 0 y no converge.',
+    },
+    // Así se resuelve (fase 2): la suma infinita de una geométrica, con el mismo sorteo de «Ahora tú» (converja o no) y las
+    // sumas parciales de parciales().
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const [p, q] = r.uno([[1, 2], [1, 3], [2, 3], [1, 4], [3, 4], [-1, 2], [-1, 3], [3, 2], [2, 1], [-2, 1]]);
+        const a1 = r.uno([1, 2, 3, 4, 6, 8, 9, 12]);
+        const conv = Math.abs(p) < q, rt = fr(p, q), formula = fr(a1 * q, q - p), Lv = a1 * q / (q - p);
+        const S = parciales(p / q, conv ? 8 : 5).map(o => ({ x: o.x, y: a1 * o.y, color: 'd' }));
+        const Sinf = { sub: ['S', '∞'] };
+        const fig = con => {
+          const ps = con ? S : S.slice(0, 3), ys = [...ps.map(o => o.y), ...(con && conv ? [Lv] : [])];
+          return { datos: ejesR(S.length + 1, Math.min(...ys), Math.max(...ys), {
+            puntos: ps, curvas: con && conv ? [{ puntos: [[0, Lv], [S.length + 1, Lv]], color: 'h', discontinua: true, rotulo: formula }] : [],
+            alt: `Sumas parciales ${ps.map(o => f(o.y)).join(', ')}${con && conv ? `, que se acercan a ${formula}` : ''}`,
+          }, { nombre: 'Sₙ', color: 'd' }), estado: {} };
+        };
+        const absr = fr(Math.abs(p), q);
+        // Para comprobar: la primera suma parcial (desde n = 5) que queda a menos del 2 % del límite.
+        const SS = parciales(p / q, 60).map(o => a1 * o.y), nC = conv ? Math.max(5, SS.findIndex(y => Math.abs(y - Lv) <= 0.02 * Math.abs(Lv)) + 1) : 0;
+        return {
+          enunciado: ['Serie geométrica con ', an('1'), ` = ${a1} y r = ${rt}. ¿Cuánto vale la suma infinita?`],
+          dibujo: fig(false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la suma infinita: el número al que se acercan las sumas parciales, si es que se acercan a alguno.' },
+            { tipo: 'datos', texto: ['El primer término es ', an('1'), ` = ${a1}, y cada término es el anterior por r = ${rt}.`] },
+            { tipo: 'regla', texto: 'Una geométrica tiene suma infinita solo si |r| < 1. En ese caso, las sumas parciales se acercan a a₁ dividido entre 1 − r.', ecuacion: [Sinf, ' = ', { frac: [an('1'), '1 − r'] }] },
+            conv
+              ? { tipo: 'cuentas', texto: `|r| = ${absr} es menor que 1, así que la serie converge.`, ecuacion: [Sinf, ' = ', { frac: [String(a1), `1 − (${rt})`] }, ` = ${formula}`], dibujo: fig(true) }
+              : { tipo: 'cuentas', texto: `|r| = ${absr} no es menor que 1. Las primeras sumas parciales lo muestran:`, ecuacion: [`${S.map(o => f(o.y)).join('; ')}; …`], dibujo: fig(true) },
+            conv
+              ? { tipo: 'sentido', texto: ['Las sumas parciales lo confirman: ', Sn(String(nC)), ` = ${f(SS[nC - 1], 3)}, ya cerca de ${formula}${formula.includes('/') ? ` = ${f(Lv, 3)}` : ''}.`] }
+              : { tipo: 'sentido', texto: `La fórmula daría ${formula}, pero las sumas parciales no se acercan a ese número: se alejan cada vez más.` },
+          ],
+          respuesta: conv ? [Sinf, ` = ${formula}`] : 'No converge: las sumas parciales no se acercan a ningún número.',
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
