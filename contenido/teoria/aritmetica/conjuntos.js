@@ -85,6 +85,15 @@
     titulo: 'Pertenecer no es estar incluido',
     temas: ['Determinación de conjuntos', 'Pertenencia e inclusión', 'Conjuntos especiales'],
     pieza: 'arit-venn',
+    // Lee (fase 2): qué es un conjunto y cómo se escribe; no dice cuándo va ∈ y cuándo ⊂ (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una colección bien dicha', texto: 'Los distritos de la provincia de San Román forman un conjunto: de cualquier lugar se puede decir si está o no. «Los platos más ricos de Puno» no lo es: depende de a quién le preguntes.' },
+        { titulo: 'Dos formas de escribirlo', texto: 'Por extensión se escriben los elementos entre llaves, uno por uno. Por comprensión se dice la propiedad que cumplen. Las dos formas describen el mismo conjunto.',
+          ecuacion: ['{2, 4, 6, 8} = {x : x es par y x < 10}'] },
+        { titulo: 'Qué mirar', texto: 'U es el universo: todo lo que el problema toma en cuenta, aquí del 1 al 9. Al jugar, mira si el aro B queda entero dentro del aro A o se sale.' },
+      ],
+    },
     juega: {
       consigna: 'U = {1, …, 9} y B = múltiplos de 4. Elige el criterio de A y mira qué elementos caen dentro.',
       voz: 'Busca un criterio que deje a B entero dentro de A.',
@@ -117,6 +126,45 @@
       texto: 'Un elemento pertenece (∈) a un conjunto; un conjunto está incluido (⊂) en otro si todos sus elementos están en él. Extensión y comprensión describen el mismo conjunto.',
       ecuacion: [{ llave: ['x ∈ ', A], nota: 'un elemento' }, '   ·   ', { llave: [Bv, ' ⊂ ', A], nota: 'un conjunto' }],
       condicion: '∅ no tiene elementos y está incluido en todo conjunto; {∅} sí tiene uno. U es el universo del problema.',
+    },
+    // Así se resuelve (fase 2): los dos tipos principales de «Ahora tú» (contar por comprensión; ∈ o ⊂), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const a = r.ent(1, 5), b = a + r.ent(6, 12), k = r.de([2, 3, 5]);
+          const xs = []; for (let x = a; x < b; x++) if (x % k === 0) xs.push(x);
+          const pri = xs[0], ult = xs[xs.length - 1];
+          return {
+            enunciado: `¿Cuántos elementos tiene {x ∈ ℕ : ${a} ≤ x < ${b}, x múltiplo de ${k}}?`,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden cuántos elementos tiene un conjunto dado por comprensión.' },
+              { tipo: 'datos', texto: `Los x van desde ${a} hasta ${b - 1}, porque el ${b} no entra, y deben ser múltiplos de ${k}.` },
+              { tipo: 'regla', texto: 'Para contar, paso el conjunto a extensión: escribo cada número que cumple la condición, sin repetir, y los cuento.' },
+              { tipo: 'cuentas', texto: `Recorro del ${a} al ${b - 1} y me quedo con los múltiplos de ${k}.`, ecuacion: [`${llaves(xs)} → ${xs.length} elementos`] },
+              { tipo: 'sentido', texto: `Comprueba: de ${k} en ${k}, del ${pri} al ${ult} hay (${ult} − ${pri}) ÷ ${k} + 1 = ${(ult - pri) / k + 1} números.` },
+            ],
+            respuesta: `${xs.length} elementos`,
+          };
+        }
+        const Ae = [1, 2, 3, 4, 5, 6].filter(() => r() < 0.6).slice(0, 4);
+        if (Ae.length < 2) Ae.push(7, 8);
+        const x0 = r.de(Ae), y0 = Ae.find(z => z !== x0), [x, y] = [x0, y0].sort((m, k) => m - k);
+        const Ue = [...new Set([...Ae, 9])];
+        return {
+          enunciado: ['Si ', A, ` = ${llaves(Ae)}, ¿cuál es verdadera: {${x}, ${y}} ⊂ A o {${x}} ∈ A?`],
+          dibujo: { datos: venn(Ae, [x, y], Ue), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden cuál de las dos frases es verdadera.' },
+            { tipo: 'datos', texto: ['Los elementos de ', A, ` son números sueltos: ${sinLlaves(Ae)}. Ninguno es un conjunto con llaves.`] },
+            { tipo: 'regla', texto: '∈ une un elemento con su conjunto. ⊂ une dos conjuntos y pide que todo lo del primero esté en el segundo.' },
+            { tipo: 'aplica', texto: `${x} y ${y} están en A, así que {${x}, ${y}} ⊂ A. En cambio, {${x}} no aparece entre los elementos de A.`,
+              ecuacion: [`${x} ∈ `, A, ` · ${y} ∈ `, A, ` → {${x}, ${y}} ⊂ `, A], dibujo: { datos: venn(Ae, [x, y], Ue), estado: { resalta: ['AB'] } } },
+            { tipo: 'sentido', texto: `Para que {${x}} ∈ A fuera cierto, A tendría que llevar llaves por dentro, como {…, {${x}}, …}. No las lleva.` },
+          ],
+          respuesta: `{${x}, ${y}} ⊂ A`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -171,6 +219,12 @@
   const OPS = {
     'A ∪ B': ['A', 'AB', 'B'], 'A ∩ B': ['AB'], 'A − B': ['A'], 'B − A': ['B'], 'A′': ['B', ''], 'A Δ B': ['A', 'B'], 'B′': ['A', ''], '(A ∪ B)′': [''],
   };
+  // La condición de cada operación dicha en palabras (Así se resuelve).
+  const COND = {
+    'A ∪ B': 'estar en A, en B o en los dos', 'A ∩ B': 'estar en A y también en B', 'A − B': 'estar en A y no en B',
+    'B − A': 'estar en B y no en A', 'A′': 'estar en U y fuera de A', 'A Δ B': 'estar en uno solo de los dos',
+    'B′': 'estar en U y fuera de B', '(A ∪ B)′': 'no estar ni en A ni en B',
+  };
   const elementos = (Ae, Be, Ue, zonas) => Ue.filter(x => zonas.includes((Ae.includes(x) ? 'A' : '') + (Be.includes(x) ? 'B' : '')));
   const carroll = (Ae, Be, Ue) => {
     const c = (a, b) => sinLlaves(Ue.filter(x => Ae.includes(x) === a && Be.includes(x) === b)) || '—';
@@ -187,6 +241,14 @@
     titulo: 'Cada operación es una zona',
     temas: ['Operaciones con conjuntos', 'Diagramas de Venn y Carroll'],
     pieza: 'arit-venn',
+    // Lee: las cuatro zonas y los nombres de las operaciones; no calcula A ∩ B′ (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos listas en la feria', texto: 'En una feria de Juliaca, A son los puestos que venden queso y B los que venden quinua. Hay puestos con los dos productos, puestos con uno solo y puestos sin ninguno.' },
+        { titulo: 'Los nombres', texto: 'La unión (∪) junta lo que está en A o en B. La intersección (∩) se queda con lo que está en los dos. El complemento A′ es lo de U que está fuera de A.' },
+        { titulo: 'Qué mirar', texto: 'En el diagrama, cada número cae en una de cuatro zonas: solo A, los dos, solo B o fuera. Elige una operación y mira qué zonas se puntean.' },
+      ],
+    },
     juega: {
       consigna: 'A, B y U ya tienen sus elementos. Elige una operación y mira qué zonas se puntean.',
       voz: 'Lee cada operación como una condición: está en A, y no en B…',
@@ -230,6 +292,34 @@
       ecuacion: [A, ' − ', Bv, ' = ', A, ' ∩ ', Bv, '′', '   ·   ', A, ' Δ ', Bv, ' =', '   ·   ', '(', A, ' − ', Bv, ') ∪ (', Bv, ' − ', A, ')'],
       condicion: 'el complemento depende del universo U: con otro U, A′ cambia. Venn y Carroll muestran criterios, no tamaños.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), Ue = [1, 2, 3, 4, 5, 6, 7, 8];
+        const Ae = Ue.filter(() => r() < 0.5), Be = Ue.filter(() => r() < 0.5);
+        if (!Ae.length) Ae.push(1); if (!Be.length) Be.push(8);
+        const nombres = Object.keys(OPS), op = r.de(nombres), zs = OPS[op];
+        const res = elementos(Ae, Be, Ue, zs);
+        const NOMBRE = { A: 'solo A', AB: 'los dos', B: 'solo B', '': 'fuera' };
+        const zonaX = x => (Ae.includes(x) ? 'A' : '') + (Be.includes(x) ? 'B' : '');
+        const fuera = Ue.find(x => !res.includes(x));
+        const listaZ = z => llaves(Ue.filter(x => zonaX(x) === z));
+        return {
+          enunciado: ['Con ', A, ` = ${llaves(Ae)}, `, Bv, ` = ${llaves(Be)} y U = {1, …, 8}, ¿qué es ${op}?`],
+          dibujo: { datos: venn(Ae, Be, Ue), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden los elementos de ${op}.` },
+            { tipo: 'datos', texto: `Por zonas: solo A ${listaZ('A')}, los dos ${listaZ('AB')}, solo B ${listaZ('B')} y fuera ${listaZ('')}.` },
+            { tipo: 'regla', texto: `${op} pide ${COND[op]}. Leo esa condición zona por zona.` },
+            { tipo: 'cuentas', texto: `${zs.length === 1 ? 'Cumple la zona' : 'Cumplen las zonas'} ${zs.map(z => `«${NOMBRE[z]}»`).join(', ').replace(/, ([^,]*)$/, ' y $1')}. Junto sus elementos.`, ecuacion: [`${op} = ${llaves(res)}`],
+              dibujo: { datos: venn(Ae, Be, Ue), estado: { resalta: zs } } },
+            { tipo: 'sentido', texto: fuera !== undefined
+              ? `Comprueba con uno que quedó fuera: el ${fuera} está en la zona «${NOMBRE[zonaX(fuera)]}», y esa zona no cumple la condición.`
+              : `Todos los elementos de U cumplen la condición: ${op} es U entero.` },
+          ],
+          respuesta: `${op} = ${llaves(res)}`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), Ue = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -257,6 +347,15 @@
     titulo: 'La intersección se cuenta una vez',
     temas: ['Operaciones con conjuntos', 'Diagramas de Venn y Carroll'],
     pieza: 'arit-venn',
+    // Lee: la encuesta y la notación n(A); no dice cómo se cuenta la unión (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una encuesta', texto: 'En un aula de Puno, la profesora pregunta quién juega fútbol y quién juega vóley. Hay quienes levantan la mano en las dos preguntas, y quienes no la levantan nunca.' },
+        { titulo: 'Cómo se escribe', texto: 'n(A) se lee «número de elementos de A»: cuántos hay en A. Si A son los que juegan fútbol y son 12, entonces n(A) = 12. A ∩ B son los que juegan los dos.',
+          ecuacion: [...n(A), ' = 12'] },
+        { titulo: 'Qué mirar', texto: 'En el diagrama, cada zona muestra cuántos hay en ella. Mueve n(A), n(B) y «los dos», y mira qué número cambia en cada zona.' },
+      ],
+    },
     juega: {
       consigna: 'A: los que juegan fútbol. B: los que juegan vóley. Elige cuántos hay en cada grupo y cuántos juegan los dos.',
       voz: 'Mira cómo cambian las zonas «solo A» y «solo B».',
@@ -296,6 +395,33 @@
       ecuacion: [n([A, ' ∪ ', Bv]), ' =', '   ·   ', n(A), ' + ', n(Bv), ' − ', { llave: [n([A, ' ∩ ', Bv])], nota: 'contados dos veces', color: 'c-d' }],
       condicion: 'A y B son finitos. Los que no están en ninguno se obtienen restando del total de U.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), x = r.ent(2, 9), a = x + r.ent(4, 15), b = x + r.ent(4, 15), u = a + b - x + r.ent(2, 9);
+        const pide = ['union', 'soloA', 'ninguno'][s % 3];
+        const sa = a - x, sb = b - x, uni = sa + x + sb, ni = u - uni;
+        const bien = pide === 'union' ? uni : pide === 'soloA' ? sa : ni;
+        const preg = pide === 'union' ? '¿cuántos están en al menos uno?' : pide === 'soloA' ? '¿cuántos están solo en A?' : `si el aula tiene ${u}, ¿cuántos no están en ninguno?`;
+        const reg = pide === 'ninguno' ? { A: String(sa), AB: String(x), B: String(sb), '': String(ni) } : { A: String(sa), AB: String(x), B: String(sb) };
+        const cuenta = pide === 'union' ? `${sa} + ${x} + ${sb} = ${uni}` : pide === 'soloA' ? `solo A = ${a} − ${x} = ${sa}` : `${u} − (${sa} + ${x} + ${sb}) = ${ni}`;
+        const sentido = pide === 'union' ? `Comprueba con la fórmula: ${a} + ${b} − ${x} = ${uni}. Es menos que ${a} + ${b} = ${a + b}, porque los ${x} se contaban dos veces.`
+          : pide === 'soloA' ? `Comprueba: ${sa} solo en A más ${x} en los dos da ${sa + x}, que es n(A).`
+          : `Comprueba: ${uni} en algún grupo más ${ni} en ninguno da ${uni + ni}, el total del aula.`;
+        return {
+          enunciado: ['En un aula, ', { v: 'c-o', t: `n(A) = ${a}` }, ', ', { v: 'c-i', t: `n(B) = ${b}` }, ' y ', { v: 'c-d', t: `n(A ∩ B) = ${x}` }, `; ${preg}`],
+          dibujo: { datos: zonas(a, b, x, { regiones: { AB: String(x) } }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: pide === 'union' ? 'Piden cuántos están en A, en B o en los dos.' : pide === 'soloA' ? 'Piden cuántos están en A pero no en B.' : 'Piden cuántos del aula no están ni en A ni en B.' },
+            { tipo: 'datos', texto: [{ v: 'c-o', t: `n(A) = ${a}` }, ', ', { v: 'c-i', t: `n(B) = ${b}` }, ' y ', { v: 'c-d', t: `${x} en los dos` }, pide === 'ninguno' ? `; el aula tiene ${u}.` : '.'] },
+            { tipo: 'regla', texto: 'Lleno el diagrama desde el centro: primero los que están en los dos. Así nadie se cuenta dos veces.' },
+            { tipo: 'cuentas', texto: `Solo A: ${a} − ${x} = ${sa}. Solo B: ${b} − ${x} = ${sb}.`, ecuacion: [cuenta],
+              dibujo: { datos: zonas(a, b, x, { regiones: reg }), estado: { resalta: pide === 'soloA' ? ['A'] : pide === 'union' ? ['A', 'AB', 'B'] : [''] } } },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: pide === 'union' ? `${bien} están en al menos uno.` : pide === 'soloA' ? `${bien} están solo en A.` : `${bien} no están en ninguno.`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), x = r.ent(2, 9), a = x + r.ent(4, 15), b = x + r.ent(4, 15), u = a + b - x + r.ent(2, 9);
@@ -334,6 +460,15 @@
     titulo: 'Cada elemento duplica los subconjuntos',
     temas: ['Conjunto potencia'],
     pieza: 'arit-tabla',
+    // Lee: qué es un subconjunto y qué es P(A); no dice cuántos hay (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Elegir qué llevar', texto: 'Para el almuerzo puedes llevar papa, chuño o queso: los que quieras, incluso ninguno. Cada elección posible es un subconjunto de {papa, chuño, queso}.' },
+        { titulo: 'El conjunto de los subconjuntos', texto: 'Si juntas todos los subconjuntos de A en una sola colección, tienes el conjunto potencia de A. Se escribe P(A) y sus elementos son conjuntos.',
+          ecuacion: ['P(', A, ')'] },
+        { titulo: 'Qué mirar', texto: 'En la tabla, cada fila es un subconjunto: ✓ si el elemento está y · si no está. Agrega elementos de uno en uno y cuenta las filas cada vez.' },
+      ],
+    },
     juega: {
       consigna: 'Elige cuántos elementos tiene A. Cada fila es un subconjunto: cada elemento está (✓) o no está (·).',
       voz: 'Cuenta las filas cada vez que agregas un elemento.',
@@ -371,6 +506,24 @@
       texto: 'El conjunto potencia P(A) reúne todos los subconjuntos de A. Cada elemento está o no está, así que el número se duplica con cada uno.',
       ecuacion: [{ llave: ['n(P(', A, '))'], nota: 'cuántos subconjuntos', color: 'c-d' }, ' = ', { sup: ['2', ['n(', A, ')']] }],
       condicion: 'cuenta al vacío y a A misma. Los subconjuntos propios son todos menos A: 2ⁿ − 1.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), k = r.ent(2, 7), propios = s % 2 === 1;
+        const total = 2 ** k, bien = propios ? total - 1 : total, antes = 2 ** (k - 1);
+        return {
+          enunciado: ['Si ', A, ` tiene ${k} elementos, ¿cuántos subconjuntos ${propios ? 'propios ' : ''}tiene?`],
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuántos subconjuntos${propios ? ' propios' : ''} tiene A.` },
+            { tipo: 'datos', texto: ['n(', A, `) = ${k}. ${propios ? 'Un subconjunto propio es cualquiera menos A misma.' : 'Cuentan también el vacío y A misma.'}`] },
+            { tipo: 'regla', texto: 'Cada elemento puede estar o no estar: dos opciones por elemento. Por eso el total se duplica con cada elemento.' },
+            { tipo: 'cuentas', texto: `Multiplico ${k} veces por 2${propios ? ' y quito a A misma' : ''}.`,
+              ecuacion: [Array(k).fill('2').join(' · '), ` = ${total}`, propios ? `   →   ${total} − 1 = ${bien}` : ''] },
+            { tipo: 'sentido', texto: `Comprueba con un elemento menos: con ${k - 1} hay ${antes} subconjuntos, y ${antes} · 2 = ${total}.` },
+          ],
+          respuesta: `${bien} subconjuntos${propios ? ' propios' : ''}`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -412,6 +565,14 @@
     titulo: 'Pares con orden',
     temas: ['Producto cartesiano'],
     pieza: 'arit-tabla',
+    // Lee: qué es un par y qué junta A × B; no dice si (x, 1) está (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Combinaciones', texto: 'En una juguería de Juliaca eliges un jugo y un pan. Cada combinación se puede anotar como un par entre paréntesis, por ejemplo (papaya, integral).' },
+        { titulo: 'El producto', texto: 'A × B se lee «A por B». Junta los pares que se arman con un elemento de A y uno de B. Si A = {1, 2} y B = {x}, se arman dos pares.' },
+        { titulo: 'Qué mirar', texto: 'En la tabla, las filas son los elementos de A y las columnas, los de B. Cambia cuántos tiene cada uno y cuenta las casillas.' },
+      ],
+    },
     juega: {
       consigna: 'A tiene números y B tiene letras. Elige cuántos elementos tiene cada uno: cada casilla es un par (de A, de B).',
       voz: 'Cuenta las casillas: filas por columnas.',
@@ -447,6 +608,40 @@
       texto: 'El producto cartesiano A × B es el conjunto de pares ordenados (a, b) con a de A y b de B. Hay tantos como filas por columnas.',
       ecuacion: ['n(', A, ' × ', Bv, ') = ', { llave: ['n(', A, ') · n(', Bv, ')'], nota: 'filas por columnas' }],
       condicion: 'el orden importa: (a, b) = (c, d) solo si a = c y b = d. Si A ≠ B, A × B ≠ B × A.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 3 === 2) {
+          const a1 = r.de([1, 2]), b1 = r.de([3, 4, 5]);
+          const [o1, o2] = r() < 0.5 ? [`(${a1}, ${b1})`, `(${b1}, ${a1})`] : [`(${b1}, ${a1})`, `(${a1}, ${b1})`];
+          return {
+            enunciado: ['Si ', A, ' = {1, 2} y ', Bv, ' = {3, 4, 5}, ¿cuál par está en ', Bv, ' × ', A, `: ${o1} o ${o2}?`],
+            pasos: [
+              { tipo: 'pide', texto: 'Piden cuál de los dos pares está en B × A.' },
+              { tipo: 'datos', texto: [`El ${b1} es de `, Bv, ` y el ${a1} es de `, A, '. Los dos pares tienen los mismos números, en distinto orden.'] },
+              { tipo: 'regla', texto: 'En B × A, el primer lugar del par es de B y el segundo es de A. Cambiar el orden da otro par.' },
+              { tipo: 'aplica', texto: `(${b1}, ${a1}) empieza con uno de B: está en B × A. (${a1}, ${b1}) empieza con uno de A: está en A × B.`,
+                ecuacion: [`(${b1}, ${a1}) ∈ `, Bv, ' × ', A] },
+              { tipo: 'sentido', texto: 'B × A tiene 3 · 2 = 6 pares, y todos empiezan con 3, 4 o 5.' },
+            ],
+            respuesta: `(${b1}, ${a1})`,
+          };
+        }
+        const na = r.ent(2, 4), nb = r.ent(2, 4);
+        return {
+          enunciado: ['Si ', A, ` tiene ${na} elementos y `, Bv, ` tiene ${nb}, ¿cuántos pares tiene `, A, ' × ', Bv, '?'],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden cuántos pares tiene A × B.' },
+            { tipo: 'datos', texto: ['n(', A, `) = ${na} y n(`, Bv, `) = ${nb}.`] },
+            { tipo: 'regla', texto: 'Cada elemento de A forma un par con cada elemento de B: una fila por cada uno de A y una columna por cada uno de B.' },
+            { tipo: 'cuentas', texto: `Son ${na} filas de ${nb} pares cada una.`, ecuacion: ['n(', A, ' × ', Bv, `) = ${na} · ${nb} = ${na * nb}`],
+              dibujo: { datos: prod(na, nb), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba sumando fila por fila: ${Array(na).fill(nb).join(' + ')} = ${na * nb} casillas.` },
+          ],
+          respuesta: `${na * nb} pares`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
