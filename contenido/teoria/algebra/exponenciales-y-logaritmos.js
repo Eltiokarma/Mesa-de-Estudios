@@ -81,6 +81,15 @@
     titulo: 'Cada paso multiplica por b',
     temas: ['Función exponencial'],
     pieza: 'ejes',
+    // Lee (fase 2): base, exponente y la cuenta que se repite, sin comparar 2ˣ con x² (eso lo descubre en Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Base y exponente', texto: ['En ', y, ' = ', { sup: [bb, x] }, ', la base ', bb, ' es el número que se repite y el exponente ', x, ' dice cuántas veces se multiplica. Con base 2 y exponente 3 sale 8.'],
+          ecuacion: [{ sup: ['2', '3'] }, ' = 2 · 2 · 2 = 8'] },
+        { titulo: 'Una cuenta que se repite', texto: 'En un laboratorio de Puno, un cultivo de bacterias puede duplicarse cada hora. Contar hora por hora es multiplicar otra vez por la misma base: eso describe una función exponencial.' },
+        { titulo: 'Qué mirar al jugar', texto: ['Sube ', x, ' de uno en uno y anota cuánto cambia ', y, '. Compara el salto de cada paso con el anterior, y prueba también la base 1/2.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige la base b y la entrada x en y = bˣ. Sube x de uno en uno y mira cuánto cambia y cada vez.',
       voz: 'Creo que no suma lo mismo cada vez. Compruébalo.',
@@ -140,6 +149,38 @@
       ecuacion: [{ sup: [bb, [x, ' + 1']] }, ' = ', { llave: [bb], nota: 'un factor más', color: 'c-d' }, ' · ', { sup: [bb, x] }],
       condicion: 'b > 0 y b ≠ 1. El crecimiento es por un factor constante, no por una cantidad constante.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (crece o se reduce por un factor cada hora), con otras
+    // semillas. La tabla hora por hora sale de las mismas cuentas.
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(3, 6), crece = s % 2 === 0, fac = crece ? r.uno([2, 3]) : 2;
+        const C0 = crece ? r.uno([100, 200, 300, 500, 800]) : r.uno([3, 5, 25]) * 2 ** n;
+        const en = h => (crece ? C0 * fac ** h : C0 / fac ** h), bien = en(n);
+        const que = crece ? 'bacterias' : 'mg';
+        const tabla = lleno => ({ datos: {
+          columnas: ['hora', que], colorCol: ['o', 'i'],
+          filas: lleno ? Array.from({ length: n + 1 }, (_, h) => [f(h), { t: f(en(h)), fuerte: h === n, color: h === n ? 'i' : undefined }]) : [['0', f(C0)], [f(n), { t: '?', fuerte: true }]],
+          alt: lleno ? `Hora por hora, de ${f(C0)} a ${f(bien)} ${que}` : `Al inicio hay ${f(C0)} ${que}; después de ${f(n)} horas, por ver`,
+        }, estado: {} });
+        const verbo = crece ? (fac === 2 ? 'duplica' : 'triplica') : 'reduce a la mitad';
+        return {
+          enunciado: [crece ? `Un cultivo de ${f(C0)} bacterias se ${verbo} cada hora. ¿Cuántas hay después de ${f(n)} horas?`
+            : `En la sangre hay ${f(C0)} mg de un medicamento, y la cantidad se reduce a la mitad cada hora. ¿Cuántos mg quedan después de ${f(n)} horas?`],
+          dibujo: tabla(false),
+          pasos: [
+            { tipo: 'pide', texto: [crece ? `Piden cuántas bacterias hay al cabo de ${f(n)} horas.` : `Piden cuántos mg del medicamento quedan al cabo de ${f(n)} horas.`] },
+            { tipo: 'datos', texto: [`Al inicio hay ${f(C0)} ${que}. Cada hora la cantidad se ${verbo}, y pasan ${f(n)} horas.`] },
+            { tipo: 'regla', texto: [`Cada hora se ${crece ? 'multiplica' : 'divide'} por el mismo número, ${f(fac)}. No se suma lo mismo: en ${f(n)} horas, esa cuenta se repite ${f(n)} veces.`] },
+            { tipo: 'cuentas', texto: [`Se ${crece ? 'multiplica' : 'divide'} ${f(n)} veces por ${f(fac)}, o sea, por ${f(fac)} elevado a ${f(n)}.`],
+              ecuacion: [`${f(C0)} ${crece ? '·' : '÷'} `, { sup: [f(fac), f(n)] }, ` = ${f(C0)} ${crece ? '·' : '÷'} ${f(fac ** n)} = ${f(bien)}`], dibujo: tabla(true) },
+            { tipo: 'sentido', texto: [crece ? `Comprueba al revés: ${f(bien)} dividido ${f(n)} veces entre ${f(fac)} vuelve a las ${f(C0)} bacterias del inicio.`
+              : `Comprueba al revés: ${f(bien)} mg duplicados ${f(n)} veces vuelven a los ${f(C0)} mg del inicio.`] },
+          ],
+          respuesta: [`${f(bien)} ${que}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), n = r.ent(3, 6), crece = s % 2 === 0, fac = crece ? r.uno([2, 3]) : 2;
@@ -171,6 +212,15 @@
     titulo: 'El logaritmo es un exponente',
     temas: ['Logaritmo y propiedades'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): el logaritmo como pregunta al revés y sus nombres, sin decir qué pasa con una suma (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una pregunta al revés', texto: 'La potencia pregunta cuánto da 2 elevado a 3. El logaritmo pregunta al revés: ¿a qué exponente hay que elevar 2 para obtener 8? La respuesta es 3.',
+          ecuacion: [...log('2', ' 8'), ' = 3  ⇔  ', { sup: ['2', '3'] }, ' = 8'] },
+        { titulo: 'Base abajo, argumento al lado', texto: 'En log₂ 8, el 2 pequeño de abajo es la base y el 8 es el argumento. El resultado siempre es un exponente, aunque a veces no salga entero.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Elige M y N y fíjate en la columna roja, la del logaritmo. Pregúntate de dónde sale el número de la última fila, la del producto.' },
+      ],
+    },
     juega: {
       consigna: 'Elige M = 2ᵐ y N = 2ⁿ. La tabla da cada número y su logaritmo en base 2: el exponente que lleva el 2.',
       voz: 'Mira la columna de la derecha cuando multiplicas.',
@@ -217,6 +267,49 @@
       // dentro de la suma.
       ecuacion: [...log(bb, '(MN)'), ' = ', ...log(bb, '\u00A0M'), '\u00A0+\u00A0', ...log(bb, '\u00A0N')],
       condicion: 'b > 0, b ≠ 1 y M, N > 0. El log de M/N resta; el de Mᵏ es k · log M.',
+    },
+    // Así se resuelve (fase 2): dos de las ramas de «Ahora tú», alternadas: la suma de logaritmos y el logaritmo de
+    // una suma. Mismos sorteos, en el mismo orden, con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), B = r.uno([2, 3, 5]), p = r.ent(1, 4), q = r.ent(1, 3); r.ent(2, 3); r.ent(2, 3);
+        const P = B ** p, Q = B ** q, Bs = String(B), cols = ['número', 'como potencia', `log${'₀₁₂₃₄₅₆₇₈₉'[B]}`];
+        if (s % 2 === 0) {
+          const tabla = lleno => ({ datos: { columnas: cols, colorCol: [null, 'd', 'h'],
+            filas: [[f(P), lleno ? `${B}${SUP(p)}` : '?', lleno ? f(p) : '?'], [f(Q), lleno ? `${B}${SUP(q)}` : '?', lleno ? f(q) : '?'],
+              [{ t: `${f(P)} · ${f(Q)} = ${f(P * Q)}`, fuerte: true }, lleno ? `${B}${SUP(p + q)}` : '?', lleno ? { t: f(p + q), fuerte: true, color: 'h' } : '?']],
+            separador: { fila: 2 }, alt: `${f(P)} y ${f(Q)} como potencias de ${B}, con sus logaritmos` }, estado: {} });
+          return {
+            enunciado: ['¿Cuánto vale ', ...log(Bs, ` ${f(P)} + `), ...log(Bs, ` ${f(Q)}`), '?'],
+            dibujo: tabla(false),
+            pasos: [
+              { tipo: 'pide', texto: [`Piden la suma de dos logaritmos en base ${B}.`] },
+              { tipo: 'datos', texto: [`Los dos números, ${f(P)} y ${f(Q)}, son potencias de ${B}.`], ecuacion: [`${f(P)} = ${B}${SUP(p)}`, '   ·   ', `${f(Q)} = ${B}${SUP(q)}`] },
+              { tipo: 'regla', texto: [`Un logaritmo es un exponente: busco a qué potencia de ${B} corresponde cada número y después sumo esos exponentes.`] },
+              { tipo: 'cuentas', texto: ['Cada logaritmo devuelve su exponente.'], ecuacion: [...log(Bs, ` ${f(P)}`), ' + ', ...log(Bs, ` ${f(Q)}`), ` = ${f(p)} + ${f(q)} = ${f(p + q)}`], dibujo: tabla(true) },
+              { tipo: 'sentido', texto: [`Comprueba: ${f(P)} · ${f(Q)} = ${f(P * Q)}, y ${B} elevado a ${f(p + q)} da ${f(B ** (p + q))}. La suma de logaritmos es el logaritmo del producto.`] },
+            ],
+            respuesta: [`${f(p + q)}`],
+          };
+        }
+        // El logaritmo de una suma: se suma adentro primero.
+        const a = r.ent(1, 3), S = B ** (a + 1), parte = B ** a, otra = S - parte;
+        const tabla = lleno => ({ datos: { columnas: cols, colorCol: [null, 'd', 'h'],
+          filas: [[{ t: `${f(parte)} + ${f(otra)} = ${f(S)}`, fuerte: true }, lleno ? `${B}${SUP(a + 1)}` : '?', lleno ? { t: f(a + 1), fuerte: true, color: 'h' } : '?']],
+          alt: `${f(parte)} + ${f(otra)} = ${f(S)}, su potencia de ${B} y su logaritmo` }, estado: {} });
+        return {
+          enunciado: ['¿Cuánto vale ', ...log(Bs, `(${f(parte)} + ${f(otra)})`), '?'],
+          dibujo: tabla(false),
+          pasos: [
+            { tipo: 'pide', texto: [`Piden el logaritmo en base ${B} de una suma.`] },
+            { tipo: 'datos', texto: [`Adentro del paréntesis hay ${f(parte)} + ${f(otra)}.`] },
+            { tipo: 'regla', texto: ['El logaritmo no se reparte entre los sumandos: primero hago la cuenta de adentro y después busco su exponente.'] },
+            { tipo: 'cuentas', texto: [`La suma da ${f(S)}, que es una potencia de ${B}.`], ecuacion: [`${f(parte)} + ${f(otra)} = ${f(S)} = ${B}${SUP(a + 1)}  ⇒  `, ...log(Bs, ` ${f(S)}`), ` = ${f(a + 1)}`], dibujo: tabla(true) },
+            { tipo: 'sentido', texto: [`Comprueba: ${B} elevado a ${f(a + 1)} da ${f(B ** (a + 1))}, el número de adentro. Cuadra.`] },
+          ],
+          respuesta: [`${f(a + 1)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -287,6 +380,15 @@
     titulo: 'El número e aparece solo',
     temas: ['El número e'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): interés y capitalizar en partes, sin decir a qué valor llega el factor (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Interés sobre interés', texto: 'Si guardas S/ 100 en una caja de ahorros de Juliaca al 10 % anual, al año tienes S/ 110. Capitalizar es sumar ese interés al dinero, para que el año siguiente también gane interés.' },
+        { titulo: 'El año en partes', texto: 'El banco puede capitalizar una vez al año o en partes: cada semestre, cada mes o cada día. Con n partes, cada parte suma 1/n del interés anual sobre lo que ya hay.',
+          ecuacion: ['cada parte: × (1 + ', { frac: ['1', 'n'] }, ')'] },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, S/ 1 gana 100 % al año. Elige cada vez más partes y fíjate cuánto gana el total en cada salto, no solo si sube.' },
+      ],
+    },
     juega: {
       consigna: 'S/ 1 gana 100 % al año en n partes: cada parte suma 1/n de lo que hay. Elige n y mira el total.',
       voz: 'Creo que repartir más ayuda. ¿Cuánto más?',
@@ -328,6 +430,33 @@
       texto: 'Con 100 % de interés en n partes, el capital se multiplica por (1 + 1/n)ⁿ. Al crecer n, ese factor se acerca a e ≈ 2,71828: no crece sin fin.',
       ecuacion: ['e = lím ', { llave: ['(1 + ', { frac: ['1', 'n'] }, ')', { sup: ['', 'n'] }], nota: 'factor del año', color: 'c-i' }, '   ·   ', 'e ≈ 2,71828'],
       condicion: 'n crece sin fin. ln es el logaritmo de base e y cumple las mismas propiedades que los demás logaritmos.',
+    },
+    // Así se resuelve (fase 2): la rama del capital de «Ahora tú» (100 % al año en n partes), con los mismos sorteos
+    // en el mismo orden y otras semillas. La tabla parte por parte usa el mismo factor (1 + 1/n).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900); r.ent(2, 7); r.ent(1, 4);
+        const n = r.uno([2, 4, 12]), C = r.uno([100, 1000, 2000]), bien = C * factor(n), redondo = Math.round(bien);
+        const partes = n <= 4 ? Array.from({ length: n }, (_, k) => k + 1) : [1, 2, n];
+        const tabla = lleno => ({ datos: {
+          columnas: ['parte', 'tienes (S/)'], colorCol: ['o', 'i'],
+          filas: [['inicio', f(C)], ...partes.map(k => [f(k), k === n ? (lleno ? { t: f(C * (1 + 1 / n) ** k), fuerte: true, color: 'i' } : { t: '?', fuerte: true }) : f(C * (1 + 1 / n) ** k)])],
+          pie: n > 4 && lleno ? `de la parte 3 a la ${n}: × (1 + 1/${n}) cada vez` : undefined,
+          alt: lleno ? `S/ ${f(C)} capitalizados ${n} veces llegan a S/ ${f(bien)}` : `S/ ${f(C)} al inicio; al final del año, por ver`,
+        }, estado: {} });
+        return {
+          enunciado: [`S/ ${f(C)} ganan 100 % al año, con capitalización ${NOMBRE[n]}. ¿Cuánto hay al final del año, redondeado al sol?`],
+          dibujo: tabla(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el dinero que hay al final del año, redondeado al sol.'] },
+            { tipo: 'datos', texto: [`Capital: S/ ${f(C)}. Interés: 100 % al año, con capitalización ${NOMBRE[n]}: el año va en ${n} partes.`] },
+            { tipo: 'regla', texto: [`Cada parte suma 1/${n} de lo que ya hay: multiplica por (1 + 1/${n}). En el año, esa multiplicación se repite ${n} veces.`] },
+            { tipo: 'cuentas', texto: [`El factor del año es (1 + 1/${n}) elevado a ${n}.`], ecuacion: [`${f(C)} · (1 + 1/${n})${SUP(n)} = ${f(C)} · ${f(factor(n), 4)} ≈ ${f(redondo, 0)}`], dibujo: tabla(true) },
+            { tipo: 'sentido', texto: [`Queda entre S/ ${f(2 * C, 0)}, que da capitalizar una sola vez, y S/ ${f(Math.round(C * Math.E), 0)}, el tope con partes sin fin. Tiene sentido.`] },
+          ],
+          respuesta: [`S/ ${f(redondo, 0)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -381,6 +510,15 @@
     titulo: 'El logaritmo pide positivos',
     temas: ['Función logarítmica'],
     pieza: 'ejes',
+    // Lee (fase 2): el logaritmo como lo que deshace a bˣ y el reflejo en y = x, sin decir qué argumentos acepta
+    // (el dominio de log₂(x − 3) es la pregunta de Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Deshacer la potencia', texto: ['La función ', y, ' = ', ...log(bb, ' '), x, ' deshace lo que hace ', y, ' = ', { sup: [bb, x] }, ': si 2³ = 8, el logaritmo en base 2 lleva el 8 de vuelta al 3. Por eso son funciones inversas.'] },
+        { titulo: 'Un espejo en la diagonal', texto: 'Las gráficas de dos funciones inversas son reflejos una de la otra en la recta y = x. El punto (3; 8) de una pasa a ser el punto (8; 3) de la otra.' },
+        { titulo: 'Qué mirar al jugar', texto: 'La recta y = x es la línea naranja discontinua; la curva verde es bˣ y la roja, el logaritmo. Mira hacia dónde se acerca la curva roja por la izquierda.' },
+      ],
+    },
     juega: {
       consigna: 'Elige la base. La curva verde es y = bˣ; la roja, su reflejo en y = x: el logaritmo en base b. ¿Dónde existe cada una?',
       voz: 'Fíjate qué x nunca alcanza la curva roja.',
@@ -431,6 +569,35 @@
       ecuacion: [y, ' = ', ...log(bb, ' '), { llave: [x], nota: 'positivo', color: 'c-o' }, '  ⇔  ', { sup: [bb, y] }, ' = ', x],
       condicion: 'b > 0 y b ≠ 1. El argumento es siempre positivo, aunque el resultado pueda ser negativo o no entero.',
     },
+    // Así se resuelve (fase 2): la rama del dominio de «Ahora tú» (x − a o a − x adentro), alternada, con los mismos
+    // sorteos y otras semillas. La curva y su asíntota se calculan con el mismo logaritmo.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), a = r.ent(-4, 5) || 2, B = r.uno([2, 3, 10]), dentroMenos = s % 2 === 1, Bs = String(B);
+        const bien = dentroMenos ? `⟨−∞; ${f(a)}⟩` : `⟨${f(a)}; +∞⟩`;
+        const arg = dentroMenos ? `(${f(a)} − x)` : `(x ${signo(-a)})`;
+        const u = dentroMenos ? v => a - v : v => v - a, prueba = dentroMenos ? a - 1 : a + 1;
+        const plano = lleno => ({ datos: ejesBase(a - 6, a + 6, -3, 3, lleno ? {
+          curvas: [{ puntos: [[a, -3], [a, 3]], color: 'h', discontinua: true },
+            { puntos: muestra(v => (u(v) > 0 ? Math.log(u(v)) / Math.log(B) : NaN), dentroMenos ? a - 6 : a + 0.001, dentroMenos ? a - 0.001 : a + 6, -3, 3, 400), color: 'i' }],
+          puntos: [{ x: prueba, y: 0, color: 'i', rotulo: `(${f(prueba)}; 0)` }],
+          alt: `Logaritmo en base ${B} de ${arg}: existe solo a la ${dentroMenos ? 'izquierda' : 'derecha'} de x = ${f(a)}`,
+        } : { alt: `Plano vacío para el logaritmo en base ${B} de ${arg}` }), estado: {} });
+        return {
+          enunciado: ['¿Cuál es el dominio de ', y, ' = ', ...log(Bs, arg), '?'],
+          dibujo: plano(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el dominio: las ', x, ' con las que el logaritmo existe.'] },
+            { tipo: 'datos', texto: ['El argumento es ', arg, ` y la base es ${B}.`] },
+            { tipo: 'regla', texto: [`Ninguna potencia de ${B} da cero ni un negativo. Por eso lo de adentro del logaritmo tiene que ser positivo.`] },
+            { tipo: 'cuentas', texto: ['Pido argumento mayor que 0 y despejo x. El borde no entra: ahí el argumento vale 0.'],
+              ecuacion: [arg, ' > 0  ⇒  ', x, dentroMenos ? ` < ${f(a)}` : ` > ${f(a)}`], dibujo: plano(true) },
+            { tipo: 'sentido', texto: [`Prueba x = ${f(prueba)}: el argumento vale ${f(u(prueba))} y `, ...log(Bs, ' 1'), ` = 0, existe. Con x = ${f(a)} valdría ${f(u(a))}, y no existe.`] },
+          ],
+          respuesta: ['Dominio: ', bien],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), a = r.ent(-4, 5) || 2, B = r.uno([2, 3, 10]), tipo = s % 3;
@@ -474,6 +641,16 @@
     titulo: 'Resolver y revisar el argumento',
     temas: ['Ecuaciones exponenciales y logarítmicas'],
     pieza: 'ejes',
+    // Lee (fase 2): la incógnita en el exponente y el caso que no sale entero, sin hablar de revisar argumentos
+    // (la raíz que se descarta es la pregunta de Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'La x va arriba', texto: 'En una ecuación exponencial, la incógnita está en el exponente, como en 2ˣ = 32. Se resuelve escribiendo los dos lados con la misma base: como 32 = 2⁵, sale x = 5.',
+          ecuacion: [{ sup: ['2', x] }, ' = ', { sup: ['2', '5'] }, '  ⇒  ', x, ' = 5'] },
+        { titulo: 'Cuando no sale entero', texto: 'No todo número es una potencia exacta de 2. Si 2ˣ = 10, la x queda entre 3 y 4, y su valor exacto se escribe log₂ 10.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Mueve la recta roja y = c y lee la x del punto naranja, donde la recta corta a la curva. Busca qué alturas dan una x entera.' },
+      ],
+    },
     juega: {
       consigna: 'Sube o baja la recta y = c. Su corte con y = 2ˣ resuelve la ecuación 2ˣ = c. Mira qué x sale, entera o no.',
       voz: 'Creo que no siempre sale un entero. Compruébalo.',
@@ -530,6 +707,32 @@
       ecuacion: [...log(bb, ' '), { llave: ['u'], nota: 'positivo', color: 'c-o' }, ' = k  ⇒  u = ', { sup: [bb, 'k'] }],
       condicion: 'b > 0 y b ≠ 1. Juntar logaritmos puede agregar candidatos que la ecuación original no acepta.',
     },
+    // Así se resuelve (fase 2): la rama logarítmica de «Ahora tú» (log_B(x + p) = k), con los mismos sorteos y otras
+    // semillas. La tabla revisa el candidato en el argumento, como en «Mira».
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900), B = r.uno([2, 3, 5]), k = r.ent(1, 3), p = r.ent(-4, 4);
+        const bien = B ** k - p, Bs = String(B), arg = p ? `(x ${signo(p)})` : 'x', argVal = bien + p;
+        const tabla = lleno => ({ datos: {
+          columnas: ['candidato', 'argumento', '¿positivo?'], colorCol: ['o', null, 'd'],
+          filas: [lleno ? [f(bien), f(argVal), { t: argVal > 0 ? 'sí' : 'no', color: argVal > 0 ? 'd' : 'h', fuerte: true }] : ['?', '?', '?']],
+          alt: lleno ? `Con x = ${f(bien)}, el argumento vale ${f(argVal)}` : 'Candidato por hallar y revisar',
+        }, estado: {} });
+        return {
+          enunciado: ['Resuelve ', ...log(Bs, arg), ` = ${k}.`],
+          dibujo: tabla(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el valor de ', x, ' que cumple la ecuación.'] },
+            { tipo: 'datos', texto: [`La base es ${B}, el logaritmo vale ${k} y el argumento es `, arg, '.'] },
+            { tipo: 'regla', texto: [`Si el logaritmo en base ${B} vale ${k}, lo de adentro es ${B} elevado a ${k}. Al final reviso que el argumento quede positivo.`] },
+            { tipo: 'cuentas', texto: ['Paso de logaritmo a potencia y despejo x.'], ecuacion: [`${arg} = ${B}${SUP(k)} = ${f(B ** k)}  ⇒  x = ${f(bien)}`], dibujo: tabla(true) },
+            { tipo: 'sentido', texto: [`Comprueba: con x = ${f(bien)}, el argumento vale ${f(argVal)}, que es positivo, y `, ...log(Bs, ` ${f(argVal)}`), ` = ${f(Math.round(Math.log(argVal) / Math.log(B)))}. Cuadra.`] },
+          ],
+          respuesta: [x, ` = ${f(bien)}`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -577,6 +780,15 @@
     titulo: 'Base menor que 1 invierte',
     temas: ['Inecuaciones exponenciales y logarítmicas'],
     pieza: 'ejes',
+    // Lee (fase 2): qué es una inecuación exponencial y cómo se lee en la gráfica, sin decir qué hace una base menor
+    // que 1 (eso es Predice; el juego solo trae bases 2 y 3).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un tramo, no un número', texto: 'En una inecuación exponencial la x está en el exponente, como en 3ˣ > 9. Ya no se busca un solo número, sino todo un tramo de valores de x que cumplen.' },
+        { titulo: 'Leerla en la gráfica', texto: ['La desigualdad ', { sup: [bb, x] }, ' > ', { sup: [bb, 'c'] }, ' se lee en el plano: son las ', x, ' donde la curva queda por encima de la recta horizontal de altura ', { sup: [bb, 'c'] }, '.'] },
+        { titulo: 'Qué mirar al jugar', texto: 'La curva turquesa es y = bˣ, la recta roja marca la altura bᶜ y el tramo verde bajo el eje marca las x que cumplen. Fíjate de qué lado del corte cae.' },
+      ],
+    },
     juega: {
       consigna: 'Busca las x con bˣ > bᶜ: donde la curva queda sobre la recta. El tramo verde bajo el eje las marca. Cambia b y c.',
       voz: 'Mira de qué lado del corte queda el tramo verde.',
@@ -626,6 +838,40 @@
       texto: 'Con base mayor que 1, bᵘ < bᵛ equivale a u < v. Con base entre 0 y 1 el orden se invierte. En logaritmos, además, el argumento debe ser positivo.',
       ecuacion: [{ llave: ['0 < ', bb, ' < 1'], nota: 'la curva baja', color: 'c-d' }, '   ·   ', { sup: [bb, 'u'] }, ' > ', { sup: [bb, 'v'] }, '  ⇔  ', { llave: ['u < v'], nota: 'se invierte' }],
       condicion: 'b > 0 y b ≠ 1. En una inecuación con logaritmo se pide además que el argumento sea positivo.',
+    },
+    // Así se resuelve (fase 2): la rama exponencial de «Ahora tú» (base mayor o menor que 1, alternadas), con los mismos
+    // sorteos y otras semillas. Una tabla prueba x alrededor del borde: con base 1/3 la curva sería ilegible a 360 px.
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900), menor = s % 2 === 1, B = r.uno([2, 3]), k = r.ent(1, 4), mayorQue = r.uno([true, false]);
+        const base = menor ? `(1/${B})` : String(B), val = menor ? `1/${f(B ** k)}` : f(B ** k);
+        const op = mayorQue ? '>' : '<', sentido = mayorQue !== menor ? '>' : '<';
+        const exp = menor ? -1 : 1, umbral = B ** (exp * k), pot = t => B ** (exp * t);
+        const potTxt = t => { const e = exp * t; return e >= 0 ? f(B ** e) : `1/${f(B ** -e)}`; };
+        const cumple = t => (mayorQue ? pot(t) > umbral + 1e-12 : pot(t) < umbral - 1e-12);
+        const xs = [k - 2, k - 1, k, k + 1, k + 2];
+        const tabla = lleno => ({ datos: {
+          columnas: ['x', `${base}ˣ`, `¿${op} ${val}?`], colorCol: ['o', 'i', 'd'],
+          filas: xs.map(t => [f(t), potTxt(t), lleno ? { t: cumple(t) ? 'sí' : 'no', color: cumple(t) ? 'd' : 'h', fuerte: true } : '?']),
+          alt: lleno ? `Cumplen las x ${sentido === '>' ? 'mayores' : 'menores'} que ${f(k)}` : `Valores de ${base} elevado a x para x de ${f(k - 2)} a ${f(k + 2)}`,
+        }, estado: {} });
+        const t = sentido === '>' ? k + 1 : k - 1;
+        return {
+          enunciado: ['¿Qué valores de ', x, ` cumplen ${base}`, { sup: ['', x] }, ` ${op} ${val}?`],
+          dibujo: tabla(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden todas las ', x, ' que cumplen la desigualdad: un tramo.'] },
+            { tipo: 'datos', texto: [`La base es ${base}, ${menor ? 'menor' : 'mayor'} que 1, y ${val} = ${base}${SUP(k)}.`] },
+            { tipo: 'regla', texto: [menor ? 'Con base entre 0 y 1 la curva baja: si x crece, la potencia se achica. Al comparar exponentes, la desigualdad cambia de sentido.'
+              : 'Con base mayor que 1 la curva sube: si x crece, la potencia crece. Al comparar exponentes, la desigualdad conserva su sentido.'] },
+            { tipo: 'cuentas', texto: ['Escribo los dos lados con la misma base y comparo los exponentes.'],
+              ecuacion: [base, { sup: ['', x] }, ` ${op} ${base}${SUP(k)}  ⇒  `, x, ` ${sentido} ${f(k)}`], dibujo: tabla(true) },
+            { tipo: 'sentido', texto: [`Prueba x = ${f(t)}: ${base}${SUP(t)} = ${potTxt(t)}, ${cumple(t) ? 'que sí' : 'que no'} es ${mayorQue ? 'mayor' : 'menor'} que ${val}. Y en x = ${f(k)} hay empate: el borde no entra.`] },
+          ],
+          respuesta: [x, ` ${sentido} ${f(k)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -815,6 +1061,8 @@
       { termino: 'argumento', formas: ['argumento', 'argumentos'], def: 'En un logaritmo, el número del que se saca: debe ser positivo. En un número complejo, su ángulo.',
         ejemplo: 'En log₃ (x − 1), es x − 1.' },
       { termino: 'número e', simbolo: 'e', def: 'Constante cercana a 2,71828: el límite de (1 + 1/n)ⁿ cuando n crece sin fin.', ver: ['logaritmo natural'] },
+      { termino: 'capitalizar', formas: ['capitalizar', 'capitalizado', 'capitalizada'],
+        def: 'Sumar al dinero el interés ganado, para que desde ese momento también gane interés.', ejemplo: 'S/ 100 al 10 %: se capitalizan S/ 10 y quedan S/ 110.' },
       { termino: 'logaritmo natural', formas: ['logaritmo natural', 'logaritmos naturales'], simbolo: 'ln', def: 'El de base e.', ejemplo: 'ln e = 1 y ln 1 = 0.' },
       { termino: 'asíntota', formas: ['asíntota', 'asíntotas'], def: 'Recta a la que una gráfica se acerca cada vez más sin llegar a tocarla.',
         ejemplo: 'y = 2ˣ se acerca a y = 0 por la izquierda.' },
