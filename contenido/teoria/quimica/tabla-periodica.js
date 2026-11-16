@@ -93,6 +93,11 @@
     if (z <= 2) return `1s${sup(z)}`;
     return v <= 2 ? `${n}s${sup(v)}` : `${n}s² ${n}p${sup(v - 2)}`;
   };
+  // Configuración completa por el orden de llenado 1s 2s 2p 3s 3p 4s 3d 4p (Así se resuelve, idea 1). Solo se usa con
+  // grupos principales, donde no hay excepciones hasta Z = 36. Da las partes y los electrones de cada una.
+  const ORDEN = [['1s', 2], ['2s', 2], ['2p', 6], ['3s', 2], ['3p', 6], ['4s', 2], ['3d', 10], ['4p', 6]];
+  const configuracion = z => { const partes = []; let resto = z; for (const [sub, cap] of ORDEN) { if (resto <= 0) break; const e = Math.min(cap, resto); partes.push([sub, e]); resto -= e; } return partes; };
+  const confTexto = z => configuracion(z).map(([sub, e]) => `${sub}${sup(e)}`).join(' ');
   const tabla = extra => ({ datos: Object.assign({ periodos: 4, simbolos: SIMBOLOS }, extra), estado: {} });
   // Gesto directo (docs/teoria.md §4b): con la geometría de quim-tabla (casilla, celda, zDe). La manija va al centro
   // de la casilla del elemento; al soltarla, el Z es el de la casilla bajo el dedo. La casilla «d» del periodo 4
@@ -114,6 +119,14 @@
     titulo: 'Filas, columnas y bloques',
     temas: ['Ley periódica', 'Periodos, grupos y bloques', 'Metales, no metales y semimetales'],
     pieza: 'quim-tabla',
+    lee: {
+      tarjetas: [
+        { titulo: 'Un orden por Z', texto: ['La tabla periódica ordena los elementos por su número atómico ', Zv, ', la cantidad de protones. El cobre que sale de Toquepala tiene ', Zv, ` = ${SIMB.indexOf('Cu')}; el oxígeno del aire de Juliaca, `, Zv, ` = ${SIMB.indexOf('O')}.`] },
+        { titulo: 'Filas y columnas', texto: 'Cada fila de la tabla es un periodo y cada columna, un grupo. Los grupos se cuentan de izquierda a derecha: el 1 y el 2, la casilla d de transición y del 13 al 18.' },
+        { titulo: 'Bloques y escalera', texto: 'El color de fondo marca el bloque: s, p o d, según el subnivel que se está llenando. Una línea en escalera separa los metales, como el cobre, de los no metales, como el oxígeno.' },
+        { titulo: 'Qué mirar', texto: 'Mientras la casilla recorre la tabla, lee el periodo, el grupo y la clase de cada elemento. Fíjate qué cambia al bajar por una columna y qué cambia al avanzar por una fila.' },
+      ],
+    },
     juega: {
       consigna: 'La casilla recorre la tabla sola, Z por Z. Cambia la vista entre bloques y metales. Lee el periodo, el grupo y la clase.',
       voz: 'Mira qué tienen en común los de una misma columna.',
@@ -160,6 +173,29 @@
       condicion: 'el orden es por número atómico, no por masa. Metales a la izquierda de la escalera; no metales a la derecha.',
       voz: 'Ubica primero la fila y después la columna.',
     },
+    // Así se resuelve: el mismo problema de «Ahora tú» (periodo y grupo por Z), con otras semillas. Solo grupos
+    // principales: la configuración sale de configuracion(z) y el lugar, de lugar(z), el mismo que pinta la casilla.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), z = r.de([3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 19, 20, 31, 33, 35]), l = lugar(z);
+        const partes = configuracion(z), n = l.periodo, v = partes.filter(([sub]) => +sub[0] === n).reduce((a, [, e]) => a + e, 0);
+        const suma = partes.reduce((a, [, e]) => a + e, 0), grupo = l.bloque === 'p' ? `grupo = 10 + ${v} = ${l.grupo}` : `grupo ${v}`;
+        return {
+          enunciado: ['¿En qué periodo y grupo está el elemento de ', Zv, ` = ${z}? Ubícalo con su configuración electrónica.`],
+          dibujo: tabla({ bloques: true }),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la fila (el periodo) y la columna (el grupo) del elemento en la tabla.' },
+            { tipo: 'datos', texto: ['Con ', Zv, ` = ${z}, el átomo neutro tiene ${z} electrones para repartir.`] },
+            { tipo: 'regla', texto: 'Escribo la configuración. El nivel más alto con electrones es el periodo; los electrones de ese nivel dan el grupo, sumando 10 en el bloque p.' },
+            { tipo: 'cuentas', texto: `Lleno los subniveles en orden. El nivel más alto es n = ${n}, con ${v} ${v === 1 ? 'electrón' : 'electrones'}: bloque ${l.bloque}.`,
+              ecuacion: [confTexto(z), '   ·   ', `periodo ${n}, ${grupo}`], dibujo: tabla({ bloques: true, marcadas: [{ Z: z, color: 'h' }] }) },
+            { tipo: 'sentido', texto: `Los exponentes suman ${suma}, el Z del dato. Y la casilla marcada es la del ${NOMBRE[z]} (${SIMB[z]}).`,
+              ecuacion: [`${partes.map(([, e]) => e).join(' + ')} = ${suma}`] },
+          ],
+          respuesta: `Periodo ${n}, grupo ${l.grupo}: el ${NOMBRE[z]} (${SIMB[z]}).`,
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'quim-tabla',
       voz: 'Ubica la fila y después la columna.',
@@ -199,6 +235,14 @@
     titulo: 'Del último nivel al lugar',
     temas: ['Notación de Lewis', 'Ubicación de un elemento'],
     pieza: 'quim-molecula',
+    lee: {
+      tarjetas: [
+        { titulo: 'Leer una configuración', texto: 'En 2p⁶, el 2 es el nivel, la letra p es el subnivel y el exponente 6 dice cuántos electrones hay ahí. El nivel más alto es el más alejado del núcleo.' },
+        { titulo: 'Los de valencia', texto: 'Los electrones del nivel más alto se llaman electrones de valencia. Son los que se asoman cuando el átomo se une con otros: en la sal de Maras, el sodio y el cloro.' },
+        { titulo: 'El símbolo de Lewis', texto: 'Gilbert N. Lewis propuso dibujar el símbolo del elemento con un punto por cada electrón de valencia, en cuatro lados: arriba, derecha, abajo e izquierda. Los electrones internos no se dibujan.' },
+        { titulo: 'Qué mirar', texto: 'Mientras Z sube y baja, cuenta los puntos y compáralos con el grupo que da la lectura. Fíjate también en qué momento un punto deja de estar solo.' },
+      ],
+    },
     juega: {
       consigna: 'Z sube y baja solo; mira el símbolo de Lewis: un punto por cada electrón del último nivel. Compara los puntos con el grupo.',
       voz: 'Los puntos se reparten solos antes de formar parejas.',
@@ -237,6 +281,27 @@
       condicion: 'vale para los grupos principales; en los de transición el grupo cuenta también los electrones d.',
       voz: 'Solo cuentan los del último nivel.',
     },
+    // Así se resuelve: el problema de «Ahora tú» (del último nivel al lugar y a Lewis), con la misma lista, lugar(z),
+    // valencia(z), ultimoNivel(z) y lewis(z).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), z = r.de([3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 19, 20, 31, 33, 34, 35]), l = lugar(z), v = valencia(z), n = l.periodo;
+        const pts = `${v} punto${v === 1 ? '' : 's'}`;
+        return {
+          enunciado: `La configuración de un elemento termina en ${ultimoNivel(z)}. ¿Dónde está en la tabla y cuántos puntos lleva su símbolo de Lewis?`,
+          dibujo: { datos: { atomos: [{ id: 'a', t: '?', x: 0, y: 0 }], escala: 40, alto: 130, alt: 'Un elemento sin nombre, todavía sin puntos.' }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden tres cosas: el periodo, el grupo y los puntos del símbolo de Lewis.' },
+            { tipo: 'datos', texto: `El último nivel escrito es ${ultimoNivel(z)}.` },
+            { tipo: 'regla', texto: 'El número del nivel más alto es el periodo. Todos los electrones de ese nivel son los de valencia: dan el grupo y los puntos.' },
+            { tipo: 'cuentas', texto: v > 2 ? `El nivel más alto es n = ${n}. Sumo sus electrones s y p; en el bloque p, el grupo es 10 más.` : `El nivel más alto es n = ${n}, con ${v} ${v === 1 ? 'electrón' : 'electrones'} s: el grupo es igual a la valencia.`,
+              ecuacion: v > 2 ? [`valencia = 2 + ${v - 2} = ${v}   →   grupo = 10 + ${v} = ${l.grupo}`] : [`valencia = ${v}   →   grupo = ${l.grupo}`], dibujo: { datos: lewis(z), estado: {} } },
+            { tipo: 'sentido', texto: `Es el ${NOMBRE[z]} (${SIMB[z]}): en la figura hay ${pts} alrededor de su símbolo, uno por electrón de valencia.` },
+          ],
+          respuesta: `Periodo ${n}, grupo ${l.grupo}; ${pts} (${SIMB[z]}).`,
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'quim-molecula',
       voz: 'Lee el último nivel y cuenta.',
@@ -267,6 +332,14 @@
     titulo: 'Cuánto mide un átomo',
     temas: ['Radio atómico e iónico'],
     pieza: 'quim-tabla',
+    lee: {
+      tarjetas: [
+        { titulo: 'Muy, muy pequeño', texto: 'Un átomo se mide en picómetros (pm): un picómetro es la billonésima parte de un metro. En un solo grano de sal de Maras hay millones de billones de átomos.' },
+        { titulo: 'Un borde que no existe', texto: ['La nube de electrones no tiene un borde nítido. Por eso el radio atómico ', Rv, ' se define con dos átomos iguales unidos: es la mitad de la distancia entre sus núcleos.'] },
+        { titulo: 'Átomos e iones', texto: 'Un catión es un átomo que perdió electrones; un anión, uno que los ganó. En la sal hay cationes Na⁺ y aniones Cl⁻. Sus radios se miden en otra escala, la de los iones.' },
+        { titulo: 'Qué mirar', texto: 'El círculo de cada casilla es proporcional al radio. Mientras el marco baja por la columna, compara cada círculo con el de arriba y lee en qué periodo está.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un grupo. El círculo de cada casilla es proporcional al radio. Un marco baja solo por la columna: mira cómo cambia.',
       voz: 'Compara cada círculo con el de arriba.',
@@ -308,6 +381,30 @@
       texto: 'El radio crece hacia abajo en un grupo (más niveles) y baja hacia la derecha en un periodo (más protones, mismo nivel). Catión: menor que su átomo; anión: mayor.',
       condicion: 'se comparan valores de una misma escala de radios; los radios atómicos y los iónicos no se mezclan.',
       voz: 'Niveles hacia abajo, protones hacia la derecha.',
+    },
+    // Así se resuelve: la variante de pares de átomos de «Ahora tú» (la de números), con los mismos PARES, RADIO y lugar(z).
+    resuelve: {
+      generar(s) {
+        const PARES = [[3, 11], [11, 19], [9, 17], [17, 35], [11, 17], [12, 16], [3, 9], [19, 35], [4, 20], [13, 15], [6, 8], [14, 32], [5, 13], [20, 31]];
+        const r = azar(s + 900), [a, b] = r.de(PARES), mayor = RADIO[a] > RADIO[b] ? a : b, menor = mayor === a ? b : a;
+        const la = lugar(a), lb = lugar(b), misma = la.grupo === lb.grupo, veces = RADIO[mayor] / RADIO[menor];
+        const donde = z => `${SIMB[z]}: periodo ${lugar(z).periodo}, grupo ${lugar(z).grupo}`;
+        return {
+          enunciado: `¿Qué átomo tiene mayor radio: ${NOMBRE[a]} (${SIMB[a]}) o ${NOMBRE[b]} (${SIMB[b]})?`,
+          dibujo: tabla({ marcadas: [{ Z: a, color: 'i' }, { Z: b, color: 'i' }] }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden cuál de los dos átomos es más grande: el de mayor radio ', Rv, '.'] },
+            { tipo: 'datos', texto: misma ? `Los dos están en el grupo ${la.grupo}, uno debajo del otro.` : `Los dos están en el periodo ${la.periodo}: tienen el mismo número de niveles.`, ecuacion: [donde(a), '   ·   ', donde(b)] },
+            { tipo: 'regla', texto: misma ? 'En un grupo, cada fila hacia abajo suma un nivel de electrones: el átomo de abajo es más grande.' : 'En un periodo, hacia la derecha hay más protones jalando el mismo nivel: el átomo se achica.' },
+            { tipo: 'cuentas', texto: 'Leo los dos radios en la tabla de datos y los comparo dividiendo.',
+              ecuacion: [Rv, `(${SIMB[mayor]}) = ${RADIO[mayor]} pm   ·   `, Rv, `(${SIMB[menor]}) = ${RADIO[menor]} pm   →   ${RADIO[mayor]} ÷ ${RADIO[menor]} ≈ ${f(veces)}`],
+              dibujo: tabla({ propiedad: { valores: valores(RADIO, [a, b]), max: 245, forma: 'circulo', color: 'i' }, marcadas: [{ Z: a, color: 'i' }, { Z: b, color: 'i' }] }) },
+            { tipo: 'sentido', texto: misma ? `Cuadra con la regla: el ${SIMB[mayor]} está en el periodo ${lugar(mayor).periodo}, más abajo que el ${SIMB[menor]}; su círculo es ${f(veces)} veces más ancho.`
+              : `Cuadra con la regla: el ${SIMB[menor]} tiene ${Math.abs(a - b)} protones más que el ${SIMB[mayor]} y su círculo es más chico.` },
+          ],
+          respuesta: `El ${SIMB[mayor]}: ${RADIO[mayor]} pm, más que los ${RADIO[menor]} pm del ${SIMB[menor]}.`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'quim-tabla',
@@ -355,6 +452,14 @@
     titulo: 'Cuánto cuesta arrancar un electrón',
     temas: ['Energía de ionización y afinidad electrónica'],
     pieza: 'quim-tabla',
+    lee: {
+      tarjetas: [
+        { titulo: 'Arrancar un electrón', texto: 'Quitarle un electrón a un átomo siempre cuesta energía. Se mide con el átomo aislado, en estado gaseoso, y se da en kilojulios por cada mol de átomos: kJ/mol.' },
+        { titulo: 'Un nombre y un símbolo', texto: ['Esa energía se llama energía de ionización, ', EIv, '. Al perder el electrón, el átomo queda como catión, con carga +1.'], ecuacion: ['X(g) → X⁺(g) + e⁻'] },
+        { titulo: 'No confundir', texto: 'La afinidad electrónica es otro proceso: el átomo gaseoso gana un electrón y queda como anión. Una cosa es quitar y otra es recibir.', ecuacion: ['X(g) + e⁻ → X⁻(g)'] },
+        { titulo: 'Qué mirar', texto: 'Cada barra es la energía de ionización de un elemento, todas a la misma escala. Mientras el marco recorre la fila, compara cada barra con la anterior.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un periodo. Cada barra es la energía para quitarle un electrón al átomo gaseoso. Un marco recorre la fila solo: ¿siempre sube?',
       voz: 'Busca las barras que no siguen la subida.',
@@ -400,6 +505,34 @@
       condicion: 'las flechas son tendencias, no leyes: se comparan los datos. La afinidad electrónica es otro proceso: X(g) + e⁻ → X⁻(g).',
       voz: 'Ante la duda, mira el dato.',
     },
+    // Así se resuelve: el problema de «Ahora tú» (quién pide más energía), con los mismos PARES, EI y saltos.
+    resuelve: {
+      generar(s) {
+        const PARES = [[4, 5], [7, 8], [12, 13], [15, 16], [3, 11], [11, 19], [9, 17], [6, 7], [11, 17], [3, 9], [20, 31], [33, 34], [2, 10], [17, 35]];
+        const r = azar(s + 900), [a, b] = r.de(PARES), mayor = EI[a] > EI[b] ? a : b, menor = mayor === a ? b : a;
+        const salto = [[4, 5], [7, 8], [12, 13], [15, 16], [33, 34], [20, 31]].some(([x, y]) => x === a && y === b);
+        const pApareado = [[7, 8], [15, 16], [33, 34]].some(([x, y]) => x === a && y === b);
+        const misma = lugar(a).grupo === lugar(b).grupo;
+        const donde = z => `${SIMB[z]}: periodo ${lugar(z).periodo}, grupo ${lugar(z).grupo}`;
+        const por = salto ? (pApareado ? `el ${SIMB[b]} estrena un par en su subnivel p: los dos electrones se repelen y uno sale más fácil.`
+          : `el ${SIMB[b]} estrena el subnivel p, algo más lejos del núcleo que el s: su electrón sale más fácil.`)
+          : misma ? `el ${SIMB[mayor]} está más arriba: su último electrón está más cerca del núcleo.` : `el ${SIMB[mayor]} está más a la derecha: más protones jalan el mismo nivel.`;
+        return {
+          enunciado: `¿Cuál necesita más energía para perder un electrón: ${NOMBRE[a]} (${SIMB[a]}) o ${NOMBRE[b]} (${SIMB[b]})?`,
+          dibujo: tabla({ marcadas: [{ Z: a, color: 'o' }, { Z: b, color: 'o' }] }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden cuál de los dos tiene mayor energía de ionización ', EIv, '.'] },
+            { tipo: 'datos', texto: misma ? `Están en la misma columna, el grupo ${lugar(a).grupo}.` : `Están en la misma fila, el periodo ${lugar(a).periodo}.`, ecuacion: [donde(a), '   ·   ', donde(b)] },
+            { tipo: 'regla', texto: 'La energía de ionización tiende a subir hacia la derecha y hacia arriba. Pero tiene saltos: la flecha orienta y el dato decide.' },
+            { tipo: 'cuentas', texto: 'Leo los dos datos y los resto para ver cuánto más pide uno.',
+              ecuacion: [EIv, `(${SIMB[mayor]}) − `, EIv, `(${SIMB[menor]}) = ${EI[mayor]} − ${EI[menor]} = ${EI[mayor] - EI[menor]} kJ/mol`],
+              dibujo: barrasEI([a, b], { marcadas: [{ Z: a, color: 'o' }, { Z: b, color: 'o' }] }) },
+            { tipo: 'sentido', texto: salto ? `Aquí la flecha falla: ${por}` : `Cuadra con la flecha: ${por}` },
+          ],
+          respuesta: `El ${SIMB[mayor]}: ${EI[mayor]} kJ/mol, frente a ${EI[menor]} del ${SIMB[menor]}.`,
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'quim-tabla',
       voz: 'Compara las dos casillas; la flecha no basta.',
@@ -438,6 +571,14 @@
     titulo: 'Quién jala el par compartido',
     temas: ['Electronegatividad'],
     pieza: 'quim-tabla',
+    lee: {
+      tarjetas: [
+        { titulo: 'Un par entre dos', texto: 'Cuando dos átomos se unen compartiendo electrones, queda un par de electrones entre los dos. En cada molécula de agua del Titicaca, cada hidrógeno comparte un par con el oxígeno.' },
+        { titulo: 'Una escala de números', texto: ['En 1932, Linus Pauling propuso una escala de números para la electronegatividad, ', ENv, '. Sus valores van de menos de 1 a casi 4; las barras de la tabla los muestran.'] },
+        { titulo: 'La diferencia', texto: ['Para un enlace entre dos átomos distintos se calcula la diferencia Δ', ENv, ': se resta el valor menor del mayor. La lectura del juego la da en cada enlace.'], ecuacion: ['Δ', ENv, ' = mayor − menor'] },
+        { titulo: 'Qué mirar', texto: 'Mira cuál de los dos átomos marcados tiene la barra más alta. Mientras el otro marco recorre el periodo 2 y baja por el grupo 17, fíjate cómo cambian las barras.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un enlace y compara las barras de electronegatividad de los dos átomos marcados. Otro marco recorre solo el periodo 2 y el grupo 17.',
       voz: 'Mira cuál de los dos tiene la barra más alta.',
@@ -483,6 +624,26 @@
       ecuacion: [{ llave: ['Δ', ENv], nota: 'diferencia', color: 'c-d' }, ' grande → ', 'enlace\u00a0más\u00a0polar'],
       condicion: 'se usa una sola escala (aquí, Pauling, sin unidades). He, Ne y Ar no tienen valor en ella.',
       voz: 'Electronegativo no es negativo: es quien jala más.',
+    },
+    // Así se resuelve: la variante de números de «Ahora tú» (Δ EN de un enlace), con los mismos PARES y EN.
+    resuelve: {
+      generar(s) {
+        const PARES = [[1, 8], [6, 7], [1, 9], [11, 8], [6, 16], [14, 8], [1, 16], [19, 35], [15, 9], [12, 17], [5, 7], [13, 9], [6, 9], [1, 6]];
+        const r = azar(s + 900), [a, b] = r.de(PARES), m = EN[a] > EN[b] ? a : b, o = m === a ? b : a, d = Math.abs(EN[a] - EN[b]);
+        return {
+          enunciado: ['¿Cuánto vale Δ', ENv, ` en el enlace ${SIMB[a]}–${SIMB[b]}, y hacia qué átomo se corre el par compartido?`],
+          dibujo: tabla({ marcadas: [{ Z: a, color: 'd' }, { Z: b, color: 'd' }] }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la diferencia Δ', ENv, ` del enlace ${SIMB[a]}–${SIMB[b]} y hacia qué lado se corre el par.`] },
+            { tipo: 'datos', texto: 'Leo los dos valores en la escala de Pauling.', ecuacion: [ENv, `(${SIMB[a]}) = ${f(EN[a])}   ·   `, ENv, `(${SIMB[b]}) = ${f(EN[b])}`] },
+            { tipo: 'regla', texto: 'La diferencia se saca restando el valor menor del mayor, entera: no se suma ni se divide. El par se corre hacia el que tiene más.' },
+            { tipo: 'cuentas', texto: `El mayor es el del ${SIMB[m]}; le resto el del ${SIMB[o]}.`, ecuacion: ['Δ', ENv, ` = ${f(EN[m])} − ${f(EN[o])} = ${f(d)}`],
+              dibujo: barrasEN([a, b], { marcadas: [{ Z: a, color: 'd' }, { Z: b, color: 'd' }] }) },
+            { tipo: 'sentido', texto: `Sale positivo y menor que 4, como la escala. Y la barra más alta es la del ${SIMB[m]}: hacia él va el par.` },
+          ],
+          respuesta: ['Δ', ENv, ` = ${f(d)}; el par se corre hacia el ${SIMB[m]}.`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'quim-tabla',
@@ -562,6 +723,8 @@
       { termino: 'radio atómico', formas: ['radio atómico', 'radios atómicos'],
         def: 'Tamaño de un átomo: la mitad de la distancia entre los núcleos de dos átomos iguales unidos.',
         medida: 'pm', ejemplo: 'Na 190 pm y Cl 79 pm: en el periodo 3 el tamaño baja.', ver: ['carga nuclear'] },
+      { termino: 'picómetro', simbolo: 'pm', formas: ['picómetro', 'picómetros'], def: 'Unidad de longitud para medir átomos: la billonésima parte de un metro.',
+        ejemplo: '1 pm = 0,000 000 000 001 m.', ver: ['radio atómico'] },
       { termino: 'carga nuclear', def: 'Carga positiva del núcleo, igual a su número de protones: es la que atrae a los electrones.',
         ver: ['protón', 'radio atómico'] },
       { termino: 'energía de ionización', simbolo: 'EI', medida: 'kJ/mol', formas: ['energía de ionización', 'energías de ionización', 'ionización'],
