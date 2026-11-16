@@ -118,6 +118,15 @@
     titulo: 'Lo mismo en los dos platillos',
     temas: ['Ecuación de primer grado'],
     pieza: 'balanza',
+    // Lee (fase 2): la balanza como ecuación y la caja como incógnita; no toca los casos sin solución («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'La balanza del mercado', texto: 'En el mercado de Juliaca, una balanza de dos platillos queda en equilibrio cuando los dos lados pesan lo mismo. Una ecuación se parece: tiene dos lados que deben valer lo mismo.' },
+        { titulo: 'La caja que no se abre', texto: ['En el juego, cada caja ', x, ' pesa lo mismo, pero no sabemos cuánto. Ese peso desconocido es la incógnita, y hallarlo es resolver la ecuación.'],
+          ecuacion: ['3', x, ' + 4 = ', x, ' + 12'] },
+        { titulo: 'Qué mirar al jugar', texto: 'Levanta cajas o pesas de un solo platillo, y después de los dos a la vez. Fíjate en qué casos la barra de la balanza se queda horizontal.' },
+      ],
+    },
     juega: {
       consigna: 'La balanza muestra 3x + 4 = x + 12, y cada caja x pesa lo mismo. Levanta cajas o pesas y mira si sigue en equilibrio.',
       voz: 'Prueba quitar algo solo de un lado.',
@@ -180,6 +189,44 @@
       ecuacion: ['a', x, ' + b = 0  ⇒  ', x, ' = ', { llave: [{ frac: ['−b', 'a'] }], nota: 'si a ≠ 0', color: 'c-o' }],
       condicion: 'si a = 0, no hay solución cuando b ≠ 0, y todo número es solución cuando b = 0.',
     },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (despejar y el caso en que las x se cancelan), otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 5 === 4) {
+          const a = r.ent(2, 5), b1 = r.ent(1, 9), igual = s % 10 === 9, b2 = igual ? b1 : b1 + r.ent(1, 6);
+          return {
+            enunciado: ['Resuelve ', ...igualdad(a, b1, a, b2), '.'],
+            dibujo: { datos: balanza([{ izq: { x: a, pesa: b1 }, der: { x: a, pesa: b2 }, traba: true }], null), estado: { vista: 0 } },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden todos los valores de ', x, ' que hacen verdadera la igualdad.'] },
+              { tipo: 'datos', texto: `Los dos platillos tienen ${a} cajas x. Solo cambian las pesas: ${b1} kg a la izquierda y ${b2} kg a la derecha.` },
+              { tipo: 'regla', texto: 'Quitar lo mismo de los dos lados no cambia las soluciones. Si las x desaparecen, decide lo que queda.' },
+              { tipo: 'cuentas', texto: `Quito ${a} cajas de cada platillo y quedan solo las pesas.`, ecuacion: [`${b1} = ${b2}`, igual ? ': siempre verdadero' : ': nunca verdadero'],
+                dibujo: { datos: balanza([{ izq: { pesa: b1 }, der: { pesa: b2 }, quita: { izq: { x: a }, der: { x: a } } }], null), estado: { vista: 0 } } },
+              { tipo: 'sentido', texto: `Pruebo dos valores. Con x = 0, los lados dan ${b1} y ${b2}; con x = 1, dan ${a + b1} y ${a + b2}. ${igual ? 'Siempre iguales.' : 'Nunca iguales.'}` },
+            ],
+            respuesta: igual ? 'Todo número es solución.' : 'No tiene solución.',
+          };
+        }
+        const a = r.ent(2, 6), cc = r.ent(0, a - 1), x0 = r.ent(1, 9), b1 = r.ent(0, 9), b2 = (a - cc) * x0 + b1, dif = a - cc;
+        const quita = [cc ? `${cc} ${cc === 1 ? 'caja' : 'cajas'}` : '', b1 ? `${b1} kg` : ''].filter(Boolean).join(' y ');
+        return {
+          enunciado: ['Resuelve ', ...igualdad(a, b1, cc, b2), '.'],
+          dibujo: { datos: balanza([{ izq: { x: a, pesa: b1 }, der: { x: cc, pesa: b2 }, traba: true }], null), estado: { vista: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el valor de ', x, ': lo que pesa cada caja para que la balanza quede en equilibrio.'] },
+            { tipo: 'datos', texto: `A la izquierda hay ${a} cajas${b1 ? ` y ${b1} kg` : ''}; a la derecha, ${cc ? `${cc} ${cc === 1 ? 'caja' : 'cajas'} y ` : ''}${b2} kg.` },
+            { tipo: 'regla', texto: 'Si quito lo mismo de los dos platillos, sigue en equilibrio. Cuando las cajas quedan solas en un lado, reparto el peso entre ellas.' },
+            { tipo: 'cuentas', texto: `${quita ? `Quito ${quita} de cada lado` : 'Ya están solas'}: quedan ${dif} ${dif === 1 ? 'caja' : 'cajas'} contra ${b2 - b1} kg. Después divido entre ${dif}.`,
+              ecuacion: [...(dif === 1 ? [] : [f(dif)]), x, ` = ${f(b2 - b1)}  ⇒  `, x, ` = ${f(b2 - b1)} ÷ ${dif} = ${f(x0)}`],
+              dibujo: { datos: balanza([{ izq: { x: dif }, der: { pesa: b2 - b1 }, quita: { izq: { x: cc, pesa: b1 }, der: { x: cc, pesa: b1 } } }], { x: x0 }), estado: { vista: 0 } } },
+            { tipo: 'sentido', texto: `Lo pruebo en la ecuación de partida. Izquierda: ${a} · ${x0}${b1 ? ` + ${b1}` : ''} = ${a * x0 + b1}. Derecha: ${cc ? `${cc} · ${x0} + ${b2} = ${cc * x0 + b2}` : `${b2}`}. Pesan lo mismo.` },
+          ],
+          respuesta: [x, ` = ${f(x0)} kg`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -225,6 +272,15 @@
     titulo: 'Antes de dividir, revisa x = 0',
     temas: ['Ecuación cuadrática y discriminante'],
     pieza: 'recta',
+    // Lee (fase 2): conjunto de soluciones y candidato; no dice qué valor pierde la división («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una, varias o ninguna', texto: 'Una ecuación puede tener una solución, varias o ninguna. Por eso las soluciones se escriben juntas en un conjunto, entre llaves y separadas por punto y coma.',
+          ecuacion: ['{2; 5}'] },
+        { titulo: 'Probar un candidato', texto: 'Un candidato es un número que se prueba en la ecuación. Si los dos lados dan lo mismo, es solución; si no, se descarta. Así se revisa cualquier respuesta, también en el examen.' },
+        { titulo: 'Qué mirar al jugar', texto: ['Elige ', k, ' y mueve el candidato por la recta. Cuenta cuántos puntos verdes encuentras con cada ', k, ' y anota cuáles son.'] },
+      ],
+    },
     juega: {
       consigna: 'En x² = kx, elige k y prueba candidatos. El punto queda verde si los dos lados dan lo mismo; rojo y hueco si no.',
       voz: 'Prueba también x = 0 con cada k.',
@@ -275,6 +331,60 @@
       ecuacion: [x, '(', x, ' − 3) = 0  ⇔  ', { llave: [x, ' = 0'], nota: 'dividir la pierde', color: 'c-o' }, '  o  ', x, ' = 3'],
       condicion: 'el otro lado es cero: AB = 5 no da A = 5 o B = 5. En x²/x = 3, x = 0 queda excluido.',
       voz: 'Ese valor queda fuera del dominio solo si el enunciado lo excluye.',
+    },
+    resuelve: {
+      pieza: 'recta',
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 4;
+        const par = v => (v < 0 ? `(${f(v)})` : f(v));
+        let enunciado, sol, datos, regla, cuentas, ec, sentido;
+        const reglaFactor = 'Paso todo a un lado sin dividir entre lo que puede valer cero. Factorizo: un producto es cero si alguno de sus factores es cero.';
+        if (tipo === 0) {
+          const kk = r.uno([-4, -3, -2, 2, 3, 5, 6]);
+          enunciado = ['Resuelve ', x, `² = ${f(kk)}`, x, ' en los reales.']; sol = [0, kk];
+          datos = `Hay x en los dos lados: x² a la izquierda y ${f(kk)}x a la derecha.`; regla = reglaFactor;
+          cuentas = `Resto ${f(kk)}x en los dos lados y saco x de factor común.`;
+          ec = [...poli([1, -kk, 0]), ' = 0  ⇒  ', x, '(', ...poli([1, -kk]), ') = 0  ⇒  ', x, ' = 0  o  ', x, ` = ${f(kk)}`];
+          sentido = `Con x = 0: 0 = 0. Con x = ${f(kk)}: ${par(kk)}² = ${f(kk * kk)} y ${f(kk)} · ${par(kk)} = ${f(kk * kk)}. Las dos sirven.`;
+        } else if (tipo === 1) {
+          const m = r.ent(2, 6), n = r.ent(1, 4), t = m + n;
+          enunciado = ['Resuelve ', x, '(', x, ` − ${m}) = ${n === 1 ? '' : n}`, x, ' en los reales.']; sol = [0, t];
+          datos = `A la izquierda, x por x − ${m}; a la derecha, ${mon(n)}. Hay x en los dos lados.`; regla = reglaFactor;
+          cuentas = `Multiplico, resto ${mon(n)} en los dos lados y saco x de factor común.`;
+          ec = [x, `² − ${m}`, x, ` − ${n === 1 ? '' : n}`, x, ' = 0  ⇒  ', x, '(', x, ` − ${t}) = 0  ⇒  `, x, ' = 0  o  ', x, ` = ${t}`];
+          sentido = `Con x = 0: 0 = 0. Con x = ${t}: ${t} · ${t - m} = ${t * n} y ${n} · ${t} = ${t * n}. Las dos sirven.`;
+        } else if (tipo === 2) {
+          const p = r.ent(1, 4), q = r.ent(1, 3);
+          enunciado = ['Resuelve (', x, ` − ${p})² = ${q === 1 ? '' : q}(`, x, ` − ${p}) en los reales.`]; sol = [p, p + q];
+          datos = `El factor x − ${p} está en los dos lados: al cuadrado a la izquierda y ${q === 1 ? 'solo' : `por ${q}`} a la derecha.`;
+          regla = `No divido entre x − ${p}, que puede valer cero. Paso todo a un lado y saco x − ${p} de factor común.`;
+          cuentas = `Resto ${q === 1 ? '' : q}(x − ${p}) en los dos lados y factorizo.`;
+          ec = ['(', x, ` − ${p})(`, x, ` − ${p} − ${q}) = 0  ⇒  `, x, ` = ${p}  o  `, x, ` = ${p + q}`];
+          sentido = `Con x = ${p}, los dos lados dan 0. Con x = ${p + q}: ${q}² = ${q * q} y ${q} · ${q} = ${q * q}. Las dos sirven.`;
+        } else {
+          const kk = r.uno([2, 3, 4, 5, -2, -3]);
+          enunciado = ['Resuelve ', x, '²/', x, ` = ${f(kk)} en los reales.`]; sol = [kk];
+          datos = `Hay una división entre x, y el resultado debe ser ${f(kk)}.`;
+          regla = 'Antes de simplificar, reviso dónde el denominador vale cero: ese valor no puede ser solución.';
+          cuentas = 'Con x distinto de 0 puedo simplificar: x²/x = x.';
+          ec = ['dominio: ', x, ' ≠ 0', '   ·   ', x, ` = ${f(kk)}`];
+          sentido = `${f(kk)} no es 0 y cumple: ${f(kk * kk)}/${par(kk)} = ${f(kk)}. El 0 queda fuera porque haría cero el denominador.`;
+        }
+        const puntos = sol.map(v => ({ tipo: 'punto', x: v, color: 'd', rotulo: f(v) }));
+        return {
+          enunciado,
+          dibujo: { datos: rectaSol([]), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden todas las soluciones reales, sin perder ninguna.' },
+            { tipo: 'datos', texto: datos },
+            { tipo: 'regla', texto: regla },
+            { tipo: 'cuentas', texto: cuentas, ecuacion: ec,
+              dibujo: { datos: rectaSol(puntos, { min: Math.min(-4, ...sol) - 1, max: Math.max(6, ...sol) + 1 }), estado: {} } },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: `Conjunto solución: ${conjunto(sol)}`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'recta',
@@ -333,6 +443,15 @@
     titulo: 'El discriminante cuenta los cortes',
     temas: ['Ecuación cuadrática y discriminante', 'Interpretación geométrica'],
     pieza: 'ejes',
+    // Lee (fase 2): parábola, raíces como cortes y el nombre Δ; no dice qué signo de Δ da cada caso («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una curva conocida', texto: 'Cuando pateas una pelota en la cancha, su camino dibuja una curva llamada parábola. Las ecuaciones con x² también dibujan parábolas en el plano.',
+          ecuacion: ['y = ', x, '² + ', b, x, ' + ', c] },
+        { titulo: 'Raíces y cortes', texto: 'Las raíces de x² + bx + c = 0 son los valores de x donde la parábola toca el eje x, porque ahí y vale 0. Una ecuación cuadrática puede tener dos raíces reales, una o ninguna.' },
+        { titulo: 'Qué mirar al jugar', texto: ['Mueve ', b, ' y ', c, '. La lectura muestra un número, ', D, ', llamado discriminante. Fíjate qué le pasa cuando la parábola corta el eje, cuando solo lo toca y cuando no llega.'] },
+      ],
+    },
     juega: {
       consigna: 'Mueve b y c en y = x² + bx + c. Los puntos naranjas son las raíces: donde la parábola toca el eje x.',
       voz: 'Busca una parábola que solo toque el eje.',
@@ -383,6 +502,34 @@
       ecuacion: [D, ' = ', { llave: [b, '² − 4a', c], nota: 'decide los cortes', color: 'c-d' }, '   ·   ', x, ' = ', { frac: [['−', b, ' ± ', { raiz: [D] }], '2a'] }],
       condicion: 'a ≠ 0. Si Δ < 0 la parábola no corta el eje x, aunque haya dos raíces complejas que la gráfica no muestra.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), t = s % 3, a = r.ent(1, 3);
+        let bb, cc;
+        if (t === 0) { const r1 = r.ent(-4, 2), r2 = r1 + r.ent(1, 5); bb = -a * (r1 + r2); cc = a * r1 * r2; }
+        else if (t === 1) { const r0 = r.uno([-3, -2, -1, 1, 2, 3]); bb = -2 * a * r0; cc = a * r0 * r0; }
+        else { bb = r.ent(-4, 4); cc = Math.floor(bb * bb / (4 * a)) + r.ent(1, 3); }
+        const d = bb * bb - 4 * a * cc, rs = raices(a, bb, cc), par = v => (v < 0 ? `(${f(v)})` : f(v));
+        const OP = { dos: 'Dos raíces reales', una: 'Una raíz doble', ninguna: 'Ninguna raíz real' }, bien = d > 0 ? 'dos' : d === 0 ? 'una' : 'ninguna';
+        const xv = -bb / (2 * a), yv = cc - bb * bb / (4 * a);
+        const sentido = d > 0 ? `La parábola corta el eje x en dos puntos: x = ${f(rs[0])} y x = ${f(rs[1])}. Son dos raíces.`
+          : d === 0 ? `La parábola solo toca el eje x en su vértice, x = ${f(rs[0])}: las dos raíces se juntan en una.`
+          : `El vértice está en (${f(xv)}; ${f(yv)}), sobre el eje, y la parábola se abre hacia arriba: nunca lo toca.`;
+        return {
+          enunciado: ['¿Cuántas raíces reales tiene ', ...poli([a, bb, cc]), ' = 0?'],
+          dibujo: { datos: Object.assign({}, EJES3, { curvas: [], alt: 'Ejes sin gráfica' }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden cuántas raíces reales tiene la ecuación, no cuánto valen.' },
+            { tipo: 'datos', texto: ['Es cuadrática, con a = ', `${a}, `, b, ` = ${f(bb)} y `, c, ` = ${f(cc)}.`] },
+            { tipo: 'regla', texto: 'Calculo el discriminante, b² − 4ac. Si es positivo hay dos raíces reales; si es cero, una doble; si es negativo, ninguna.' },
+            { tipo: 'cuentas', texto: 'Reemplazo a, b y c, cuidando los signos.', ecuacion: [D, ` = ${par(bb)}² − 4 · ${a} · ${par(cc)} = ${f(bb * bb)} ${4 * a * cc < 0 ? '+' : '−'} ${f(Math.abs(4 * a * cc))} = ${f(d)}`],
+              dibujo: { datos: parabola(a, bb, cc), estado: {} } },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: `${OP[bien]}: Δ = ${f(d)}.`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), t = s % 3, a = r.ent(1, 3);
@@ -414,6 +561,14 @@
     titulo: 'Suma y producto sin resolver',
     temas: ['Propiedades de las raíces'],
     pieza: 'ejes',
+    // Lee (fase 2): suma y producto como pistas, y los nombres de los coeficientes; no dice cómo se leen («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un acertijo', texto: '«Pensé dos números: suman 7 y multiplicados dan 12.» Probando un poco salen 3 y 4. Saber la suma y el producto de dos números dice mucho sobre ellos.' },
+        { titulo: 'Los nombres', texto: 'En ax² + bx + c = 0, los números a, b y c son los coeficientes, y c, el que va sin x, es el término independiente. A las dos raíces se les suele llamar r y s.' },
+        { titulo: 'Qué mirar al jugar', texto: ['Arrastra las dos raíces por el eje x. Mira la ecuación desarrollada en la lectura y compara sus números con ', S, ', la suma, y con ', P, ', el producto.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige dos raíces. La parábola y = (x − r)(x − s) pasa por ellas; mira su ecuación desarrollada en la lectura.',
       voz: 'Compara los coeficientes con la suma y el producto.',
@@ -472,6 +627,45 @@
       ecuacion: [{ llave: [S], nota: 'suma de raíces', color: 'c-d' }, ' = ', { frac: [['−', b], 'a'] }, '   ·   ', { llave: [P], nota: 'su producto', color: 'c-h' }, ' = ', { frac: [c, 'a'] }],
       condicion: 'a ≠ 0. Vale también si las raíces son complejas; una raíz doble se cuenta dos veces.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), a = r.ent(1, 3);
+        let r1 = r.ent(-4, 5), r2 = r.ent(-4, 5);
+        if (r1 === 0 && r2 === 0) r2 = 2;
+        const bb = -a * (r1 + r2), cc = a * r1 * r2, Sm = r1 + r2, Pm = r1 * r2, q = Sm * Sm - 2 * Pm;
+        const pide = ['suma', 'producto', 'cuadrados'][s % 3], par = v => (v < 0 ? `(${f(v)})` : f(v));
+        const que = { suma: 'r + s', producto: 'r · s', cuadrados: 'r² + s²' }[pide];
+        const regla = {
+          suma: 'La suma de las raíces es −b dividido entre a: se cambia el signo de b y se divide entre a.',
+          producto: 'El producto de las raíces es c dividido entre a, sin cambiar ningún signo.',
+          cuadrados: 'Con la suma y el producto: como (r + s)² = r² + 2rs + s², resulta r² + s² = (r + s)² − 2rs.',
+        }[pide];
+        const ec = {
+          suma: [S, bb === 0 ? ` = 0/${a} = 0` : ` = −${par(bb)}/${a} = ${f(Sm)}`],
+          producto: [P, ` = ${f(cc)}/${a} = ${f(Pm)}`],
+          cuadrados: [S, ` = ${f(Sm)}`, '   ·   ', P, ` = ${f(Pm)}`, '   ·   ', `${par(Sm)}² − 2 · ${par(Pm)} = ${f(q)}`],
+        }[pide];
+        const valor = { suma: Sm, producto: Pm, cuadrados: q }[pide];
+        const raizTxt = v => (v < 0 ? `+ ${f(-v)}` : `− ${f(v)}`);
+        const fac = v => (v === 0 ? 'x' : `(x ${raizTxt(v)})`), factor = `${a === 1 ? '' : a}${[r1, r2].sort((u, w) => (u === 0 ? -1 : w === 0 ? 1 : 0)).map(fac).join('')}`;
+        const comprueba = { suma: `${par(r1)} + ${par(r2)} = ${f(Sm)}`, producto: `${par(r1)} · ${par(r2)} = ${f(Pm)}`, cuadrados: `${par(r1)}² + ${par(r2)}² = ${f(r1 * r1)} + ${f(r2 * r2)} = ${f(q)}` }[pide];
+        return {
+          enunciado: ['Las raíces de ', ...poli([a, bb, cc]), ` = 0 son r y s. ¿Cuánto vale ${que}?`],
+          pasos: [
+            { tipo: 'pide', texto: `Piden ${que} sin resolver la ecuación.` },
+            { tipo: 'datos', texto: ['Los coeficientes son a = ', `${a}, `, b, ` = ${f(bb)} y `, c, ` = ${f(cc)}.`] },
+            { tipo: 'regla', texto: regla },
+            { tipo: 'cuentas', texto: pide === 'cuadrados' ? 'Primero la suma, −b/a, y el producto, c/a. Después, la resta.' : 'Reemplazo los coeficientes y divido entre a.', ecuacion: ec },
+            { tipo: 'sentido', texto: `Factorizada, la ecuación es ${factor} = 0: sus raíces son ${f(r1)} y ${f(r2)}, y ${comprueba}. Cuadra.`,
+              dibujo: { datos: Object.assign({}, EJES4, {
+                curvas: [{ puntos: curva(z => a * z * z + bb * z + cc, -5, 6, -8, 10), color: 'i' }],
+                puntos: [...new Set([r1, r2])].map(z => ({ x: z, y: 0, color: 'o', rotulo: f(z) })),
+                alt: `Parábola y = ${poliTxt([a, bb, cc])} con raíces ${r1} y ${r2}` }), estado: {} } },
+          ],
+          respuesta: `${que} = ${f(valor)}`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), a = r.ent(1, 3);
@@ -528,6 +722,15 @@
     titulo: 'La letra es un número',
     temas: ['Planteo de ecuaciones'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): qué es plantear y la incógnita; el orden de «por cada» lo decide el juego («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Traducir', texto: 'Plantear es traducir un enunciado a una ecuación. «Rosa tiene 5 soles más que Luis» se vuelve R = L + 5, si R y L son los soles de cada uno.',
+          ecuacion: ['R = L + 5'] },
+        { titulo: 'La incógnita', texto: 'La letra de lo que no conoces es la incógnita. Conviene escribir al lado qué representa, por ejemplo «x: años del hijo hoy», para no confundirla a mitad del problema.' },
+        { titulo: 'Qué mirar al jugar', texto: ['La tabla prueba dos ecuaciones para el aula. Cambia ', Sx, ' y ', Px, ', y mira cuál marca ✓ cuando de verdad hay 6 estudiantes por profesor.'] },
+      ],
+    },
     juega: {
       consigna: 'En un aula hay 6 estudiantes por cada profesor. S es el número de estudiantes y P el de profesores. ¿Qué ecuación se cumple?',
       voz: 'Prueba varios números y mira cuál ecuación acierta.',
@@ -572,13 +775,64 @@
       ecuacion: ['6 por profesor  ⇒  ', { llave: [Sx], nota: 'cuántos estudiantes', color: 'c-o' }, ' = 6', { llave: [Px], nota: 'cuántos profesores', color: 'c-i' }],
       condicion: 'la letra es un número (cuántos estudiantes), no una etiqueta («estudiante»); la solución debe tener sentido en el problema.',
     },
+    // Así se resuelve: los dos tipos de «Ahora tú» con las mismas cuentas. En las edades, solo casos creíbles: la madre
+    // tiene entre 24 y 45 años hoy y el hijo al menos 4.
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          let kk, m, xx, n;
+          do { kk = r.ent(3, 5); m = r.ent(2, kk - 1); xx = r.ent(4, 12); n = xx * (kk - m) / (m - 1); }
+          while (!Number.isInteger(n) || kk * xx < 24 || kk * xx > 45);
+          const tabla = con => ({ datos: { columnas: ['hoy', `en ${n} años`], rotulosFila: ['Hijo', 'Madre'],
+            filas: [[{ t: con ? `x = ${xx}` : 'x', color: 'o', fuerte: true }, con ? `${xx + n}` : `x + ${n}`], [con ? `${kk * xx}` : `${kk}x`, { t: con ? `${kk * xx + n}` : `${kk}x + ${n}`, fuerte: true }]],
+            alt: `Edades del hijo y de la madre hoy y dentro de ${n} años` }, estado: {} });
+          const dk = kk - m;
+          return {
+            enunciado: `Una madre tiene ${kk} veces la edad de su hijo. Dentro de ${n} años tendrá ${m} veces la edad que él tenga entonces. ¿Cuántos años tiene hoy el hijo?`,
+            dibujo: tabla(false),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la edad del hijo hoy, no la de dentro de unos años.' },
+              { tipo: 'datos', texto: [x, ` son los años del hijo hoy, y la madre tiene ${kk}`, x, `. Dentro de ${n} años, cada uno tendrá ${n} años más.`],
+                ecuacion: ['hijo: ', x, ` + ${n}`, '   ·   ', `madre: ${kk}`, x, ` + ${n}`] },
+              { tipo: 'regla', texto: `Traduzco la frase de las edades futuras. «Tendrá ${m} veces la edad de él» se escribe: madre de entonces = ${m} · hijo de entonces.` },
+              { tipo: 'cuentas', texto: `Igualo, quito el paréntesis y junto las x en un lado.`,
+                ecuacion: [`${kk}`, x, ` + ${n} = ${m}(`, x, ` + ${n})  ⇒  `, ...(dk === 1 ? [] : [`${dk}`, x, ` = ${(m - 1) * n}  ⇒  `]), x, ` = ${xx}`],
+                dibujo: tabla(true) },
+              { tipo: 'sentido', texto: `Hoy: hijo ${xx} y madre ${kk * xx}. En ${n} años: ${xx + n} y ${kk * xx + n}, y ${m} · ${xx + n} = ${m * (xx + n)}. Cuadra, y las edades son creíbles.` },
+            ],
+            respuesta: `El hijo tiene ${xx} años hoy.`,
+          };
+        }
+        const a0 = r.ent(4, 40), N = 3 * a0 + 3;
+        const tabla = con => ({ datos: { columnas: ['x', 'x + 1', 'x + 2', 'suma'], colorCol: ['o'],
+          filas: [con ? [f(a0), f(a0 + 1), f(a0 + 2), { t: f(N), fuerte: true }] : ['?', '?', '?', { t: f(N), fuerte: true }]] }, estado: {} });
+        return {
+          enunciado: `Tres números enteros consecutivos suman ${N}. ¿Cuál es el menor?`,
+          dibujo: tabla(false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el menor de los tres números.' },
+            { tipo: 'datos', texto: `Son tres enteros seguidos, cada uno 1 más que el anterior, y juntos suman ${N}.` },
+            { tipo: 'regla', texto: 'Digo qué es la letra: x es el menor. Los otros dos son x + 1 y x + 2, y la suma de los tres se iguala al dato.' },
+            { tipo: 'cuentas', texto: `Sumo las tres expresiones, quito 3 y divido entre 3.`,
+              ecuacion: [x, ' + (', x, ' + 1) + (', x, ` + 2) = 3`, x, ` + 3 = ${N}  ⇒  `, x, ` = ${N - 3} ÷ 3 = ${a0}`], dibujo: tabla(true) },
+            { tipo: 'sentido', texto: `${a0} + ${a0 + 1} + ${a0 + 2} = ${N}. Además, el del medio, ${a0 + 1}, es ${N} ÷ 3, como debe ser.` },
+          ],
+          respuesta: `El menor es ${a0}.`,
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'alg-tabla',
       generar(s) {
         const r = azar(s);
         if (s % 2 === 0) {
           // Edades: la madre tiene k veces la edad del hijo; dentro de n años tendrá m veces.
-          const kk = r.ent(3, 5), m = r.ent(2, kk - 1), base = r.ent(2, 5) * (m - 1), xx = base, n = xx * (kk - m) / (m - 1);
+          // Solo casos creíbles (ronda 6): la madre tiene entre 24 y 45 años hoy y el hijo al menos 4.
+          let kk, m, xx, n;
+          do { kk = r.ent(3, 5); m = r.ent(2, kk - 1); xx = r.ent(4, 12); n = xx * (kk - m) / (m - 1); }
+          while (!Number.isInteger(n) || kk * xx < 24 || kk * xx > 45);
           return {
             pregunta: `Una madre tiene ${kk} veces la edad de su hijo. Dentro de ${n} años tendrá ${m} veces la edad que él tenga entonces. ¿Cuántos años tiene hoy el hijo?`,
             opciones: distintas([
@@ -764,6 +1018,12 @@
         ejemplo: 'x² − 4 = 0 tiene raíces −2 y 2.', ver: ['solución', 'radical'] },
       { termino: 'ecuación cuadrática', formas: ['ecuación cuadrática', 'ecuaciones cuadráticas', 'cuadrática', 'cuadráticas'],
         def: 'Ecuación de la forma ax² + bx + c = 0, con a ≠ 0: la letra sale al cuadrado.', ver: ['discriminante'] },
+      { termino: 'equilibrio', def: 'Estado de una balanza cuando sus dos platillos pesan lo mismo y la barra queda horizontal.',
+        ejemplo: '3 cajas de 4 kg y 4 kg pesan 16 kg, igual que 1 caja y 12 kg.', ver: ['ecuación'] },
+      { termino: 'raíz doble', formas: ['raíz doble', 'raíces dobles'], def: 'Cuando las dos raíces de una ecuación cuadrática son el mismo número: la parábola solo toca el eje x.',
+        ejemplo: 'x² − 6x + 9 = (x − 3)² tiene raíz doble 3.', ver: ['raíz', 'parábola'] },
+      { termino: 'plantear', formas: ['plantear', 'planteo'], def: 'Traducir el enunciado de un problema a una ecuación, diciendo antes qué representa cada letra.',
+        ejemplo: '«Rosa tiene 5 soles más que Luis»: R = L + 5.', ver: ['incógnita'] },
       { termino: 'coeficiente', def: 'Número que multiplica a la letra en un término.', ejemplo: 'En 2x² − 10x + 12, son 2 y −10.' },
       { termino: 'término independiente', formas: ['término independiente', 'términos independientes'],
         def: 'El número que va solo, sin letra; en ax² + bx + c es la c.', ejemplo: 'En x² − 5x + 6, es 6.' },

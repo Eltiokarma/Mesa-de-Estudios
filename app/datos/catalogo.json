@@ -1838,7 +1838,7 @@
        "/nucleo/kit/piezas/alg-cubo-3d.js"
       ],
       "ideas": 5,
-      "terminos": 28
+      "terminos": 32
      }
     },
     {
@@ -1878,7 +1878,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 5,
-      "terminos": 26
+      "terminos": 30
      }
     },
     {
@@ -1917,7 +1917,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 24
+      "terminos": 25
      }
     },
     {
@@ -2073,7 +2073,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 30
+      "terminos": 32
      }
     },
     {
@@ -2116,7 +2116,7 @@
        "/nucleo/kit/piezas/flechas.js"
       ],
       "ideas": 6,
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
@@ -2158,7 +2158,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 6,
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -2318,7 +2318,7 @@
        "/nucleo/kit/piezas/alg-columnas-3d.js"
       ],
       "ideas": 5,
-      "terminos": 20
+      "terminos": 21
      }
     },
     {
