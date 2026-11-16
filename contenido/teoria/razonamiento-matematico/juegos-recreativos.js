@@ -80,6 +80,14 @@
     titulo: 'Un par sin orden por ficha',
     temas: ['Dominó'],
     pieza: 'rm-fichas',
+    // Lee (fase 2): qué es una ficha y qué quiere decir «doble n», sin adelantar cuántas veces sale cada número.
+    lee: {
+      tarjetas: [
+        { titulo: 'Fichas de dos mitades', texto: 'En muchas familias de Juliaca se juega dominó en las reuniones. Cada ficha tiene dos mitades, y cada mitad lleva de 0 a 6 puntos.' },
+        { titulo: 'Qué dice «doble n»', texto: 'Un dominó doble seis llega hasta el 6; uno doble tres, hasta el 3. Una ficha doble tiene el mismo número en sus dos mitades, como el 4–4.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Cambia n y cuenta las fichas. Fíjate en las naranjas, que son las dobles, y en que el juego nunca trae dos veces la misma ficha.' },
+      ],
+    },
     juega: {
       consigna: 'Un dominó «doble n» tiene una ficha por cada pareja de números de 0 a n, con los dobles. Cambia n y cuenta.',
       voz: 'La ficha 2–5 es la misma que la 5–2.',
@@ -114,6 +122,39 @@
       texto: 'Un dominó doble n tiene una ficha por cada par sin orden de números de 0 a n, dobles incluidos. Cada número aparece n + 2 veces al sumar puntos.',
       ecuacion: ['fichas = ', { frac: [['(', nn, ' + 1)(', nn, ' + 2)'], '2'] }, '   ·   ', 'puntos = ', { frac: [[nn, '(', nn, ' + 1)(', nn, ' + 2)'], '2'] }],
       condicion: 'el juego está completo y tiene una sola copia de cada ficha.',
+    },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (fichas o puntos de un doble n), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(3, 9), pide = s % 2 ? 'puntos' : 'fichas';
+        const T = total(n), Pt = n * (n + 1) * (n + 2) / 2, distintas = n * (n + 1) / 2, sumaNum = n * (n + 1) / 2;
+        const dib = n <= 6 ? { datos: domino(n), estado: {} } : undefined;
+        return pide === 'fichas' ? {
+          enunciado: `¿Cuántas fichas tiene un dominó doble ${n} completo?`,
+          dibujo: dib,
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuántas fichas tiene el juego completo, con los dobles incluidos.` },
+            { tipo: 'datos', texto: `Los números van de 0 a ${n}: son ${n + 1} números.`, ecuacion: [nn, ` = ${n}`] },
+            { tipo: 'regla', texto: 'Cada ficha es una pareja de números sin orden. Cuento aparte las de números distintos y las dobles.' },
+            { tipo: 'cuentas', texto: `Parejas de números distintos: ${n + 1} por ${n}, entre 2, porque 2–5 y 5–2 son una. Luego sumo los ${n + 1} dobles.`,
+              ecuacion: [`${n + 1} · ${n} / 2 + ${n + 1} = ${distintas} + ${n + 1} = ${T}`] },
+            { tipo: 'sentido', texto: 'Comprueba con la fórmula de la regla: da lo mismo.', ecuacion: [`(${n} + 1)(${n} + 2) / 2 = ${T}`] },
+          ],
+          respuesta: `${T} fichas`,
+        } : {
+          enunciado: `¿Cuántos puntos suman todas las fichas de un dominó doble ${n}?`,
+          dibujo: dib,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la suma de los puntos de todas las fichas del juego.' },
+            { tipo: 'datos', texto: `Los números van de 0 a ${n}, y el juego tiene ${T} fichas.`, ecuacion: [nn, ` = ${n}`] },
+            { tipo: 'regla', texto: 'Cuento cuántas veces sale cada número: una vez con cada uno de los otros, y dos veces en su doble.' },
+            { tipo: 'cuentas', texto: `Cada número sale ${n} + 2 = ${n + 2} veces. Multiplico por la suma de 0 a ${n}.`,
+              ecuacion: [`${n + 2} · (0 + 1 + … + ${n}) = ${n + 2} · ${sumaNum} = ${Pt}`] },
+            { tipo: 'sentido', texto: `Una ficha tiene, en promedio, ${n} puntos. ${T} fichas por ${n} da lo mismo.`, ecuacion: [`${T} · ${n} = ${Pt}`] },
+          ],
+          respuesta: `${Pt} puntos`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Separa las fichas con números distintos de los dobles.',
@@ -158,7 +199,8 @@
     return {
       filas: Array.from({ length: k }, (_, i) => ({ rotulo: i === 0 ? `Dado 1 (arriba: ${arriba})` : `Dado ${i + 1}`, fichas: i === 0 ? [{ forma: 'dado', valor: arriba, color: 'i', resalto: 'i' }] : [{ forma: 'dado', valor: 0, hueca: true }] })),
       tam: 26,
-      pie: `${k} dados apilados sobre la mesa`,
+      // La mesa no se dibuja (pedido de vector para Gerson): el pie nombra solo lo que se ve.
+      pie: `${k} dados apilados`,
     };
   }
   const dados = {
@@ -166,6 +208,14 @@
     titulo: 'Una cara fija solo su opuesta',
     temas: ['Dados'],
     pieza: 'rm-fichas',
+    // Lee (fase 2): cómo está numerado el dado y qué es una cara tapada, sin decir qué cara queda fija al frente.
+    lee: {
+      tarjetas: [
+        { titulo: 'El dado común', texto: 'El dado de un juego de mesa tiene seis caras, con 1 a 6 puntos. Las caras que se miran de frente, las opuestas, siempre suman 7: el 1 con el 6, el 2 con el 5 y el 3 con el 4.' },
+        { titulo: 'Caras tapadas', texto: 'Cuando un dado se apoya en la mesa o sobre otro dado, la cara que toca ya no se ve. En los problemas se llama cara tapada.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Cambia la cara de arriba. Mira qué número aparece abajo cada vez y qué pasa con las cuatro caras de alrededor.' },
+      ],
+    },
     juega: {
       consigna: 'En un dado común, las caras opuestas suman 7. Elige la cara de arriba y mira qué queda fijado.',
       voz: 'Mira cuántas caras quedan sin un lugar fijo.',
@@ -199,6 +249,25 @@
       texto: 'En un dado común, cada cara y su opuesta suman 7. Una sola cara fija su opuesta; las otras cuatro pueden girar alrededor.',
       ecuacion: ['arriba + abajo = 7', '   ·   ', 'ocultas = 7', { llave: ['k'], nota: 'dados apilados', color: 'c-d' }, ' − ', { llave: [t], nota: 'la de arriba', color: 'c-i' }],
       condicion: 'el dado está numerado de la forma común; un cubo con otros números no cumple la regla.',
+    },
+    // Así se resuelve (fase 2): la pila de dados de «Ahora tú», con otras semillas.
+    resuelve: {
+      pieza: 'rm-fichas',
+      generar(s) {
+        const r = azar(s + 900), k = r.ent(2, 5), a = r.ent(1, 6), bien = 7 * k - a;
+        return {
+          enunciado: `Se apilan ${k} dados comunes sobre una mesa y arriba se ve un ${a}. ¿Cuánto suman las caras tapadas, las que tocan otro dado o la mesa?`,
+          dibujo: { datos: pila(Math.min(k, 5), a), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la suma de las caras que no se ven porque tocan otro dado o la mesa.' },
+            { tipo: 'datos', texto: [`Son ${k} dados y arriba se ve el `, t, ` = ${a}.`] },
+            { tipo: 'regla', texto: 'En cada dado, la cara de arriba y la de abajo son opuestas: juntas suman 7. Todas están tapadas, menos la de arriba del primero.' },
+            { tipo: 'cuentas', texto: `Sumo un 7 por cada dado y le resto el ${a}, que sí se ve.`, ecuacion: [`7 · ${k} − `, t, ` = ${7 * k} − ${a} = ${bien}`] },
+            { tipo: 'sentido', texto: `Comprueba: el ${a} de arriba más lo tapado debe dar ${k} pares de 7.`, ecuacion: [`${bien} + ${a} = ${7 * k} = 7 · ${k}`] },
+          ],
+          respuesta: `Las caras tapadas suman ${bien}.`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-fichas',
@@ -251,8 +320,16 @@
     titulo: 'Cerillas y cuadrados de todo tamaño',
     temas: ['Fichas y cerillas'],
     pieza: 'rm-plano',
+    // Lee (fase 2): qué es una cerilla en el dibujo y qué cuenta como cuadrado, sin decir cuántos se rompen al quitar una.
+    lee: {
+      tarjetas: [
+        { titulo: 'Acertijos de fósforos', texto: 'Con fósforos, o cerillas, se arman figuras para acertijos de mesa. En el dibujo, cada línea roja es una cerilla, y todas miden lo mismo.' },
+        { titulo: 'Cuadrados de todo tamaño', texto: 'En una cuadrícula hay cuadrados chicos, de una cerilla por lado, y cuadrados más grandes que encierran a varios chicos. Todos cuentan.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Cambia n y cuenta los cuadrados por tamaños: primero los chicos, luego los de dos cerillas por lado, y así hasta el borde.' },
+      ],
+    },
     juega: {
-      consigna: 'Una cuadrícula de n × n hecha con cerillas. Cambia n y cuenta las cerillas y los cuadrados de todos los tamaños.',
+      consigna: 'Cada línea roja es una cerilla de una cuadrícula de n × n. Cambia n y cuenta las cerillas y los cuadrados de todos los tamaños.',
       voz: 'No olvides los cuadrados grandes que encierran a varios chicos.',
       controles: [{ id: 'n', etiqueta: 'n', min: 1, max: 4, paso: 1, inicio: 1, decimales: 0, color: 'c-d' }],
       dibujo: val => ({ datos: malla(val.n), estado: {} }),
@@ -292,6 +369,45 @@
       texto: 'Una cuadrícula de n × n usa 2n(n + 1) cerillas y tiene cuadrados de todos los tamaños: n² chicos, (n − 1)² de 2 × 2, y así hasta uno grande.',
       ecuacion: [N, ' = ', { llave: [{ sup: ['1', '2'] }], nota: 'el grande', color: 'c-d' }, ' + … + ', { llave: [{ sup: [nn, '2'] }], nota: 'los chicos', color: 'c-o' }, ' = ', { frac: [[nn, '(', nn, ' + 1)(2', nn, ' + 1)'], '6'] }],
       condicion: 'la cuadrícula está completa; si se quita una cerilla, se rompen todos los cuadrados que la usan.',
+    },
+    // Así se resuelve (fase 2): cerillas o cuadrados de una cuadrícula n × n, como en «Ahora tú», con otras semillas.
+    resuelve: {
+      pieza: 'rm-plano',
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(2, 6), pide = s % 2 ? 'cerillas' : 'cuadrados';
+        // La pieza dibuja hasta 4 × 4: con n mayor no se muestra una cuadrícula de otro tamaño.
+        const dib = n <= 4 ? { datos: malla(n), estado: {} } : undefined;
+        if (pide === 'cerillas') {
+          const bien = cerillas(n);
+          return {
+            enunciado: `¿Cuántas cerillas hacen falta para una cuadrícula de ${n} × ${n}?`,
+            dibujo: dib,
+            pasos: [
+              { tipo: 'pide', texto: `Piden cuántas cerillas forman la cuadrícula de ${n} × ${n}.` },
+              { tipo: 'datos', texto: `Tiene ${n} cuadritos por lado: ${n + 1} líneas horizontales y ${n + 1} verticales.` },
+              { tipo: 'regla', texto: 'Cuento por líneas, no por cuadritos: así cada cerilla compartida entra una sola vez.' },
+              { tipo: 'cuentas', texto: `Cada línea tiene ${n} cerillas. Las horizontales y las verticales son la misma cantidad.`,
+                ecuacion: [`${n + 1} · ${n} + ${n + 1} · ${n} = ${n * (n + 1)} + ${n * (n + 1)} = ${bien}`] },
+              { tipo: 'sentido', texto: `Contar 4 por cuadrito daría ${4 * n * n}, más que ${bien}: sobra porque las cerillas de adentro se comparten.` },
+            ],
+            respuesta: `${bien} cerillas`,
+          };
+        }
+        const bien = cuadrados(n), tam = Array.from({ length: n }, (_, i) => n - i);
+        return {
+          enunciado: `¿Cuántos cuadrados, de todos los tamaños, hay en una cuadrícula de ${n} × ${n}?`,
+          dibujo: dib,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden todos los cuadrados: los chicos y los que encierran a varios chicos.' },
+            { tipo: 'datos', texto: `La cuadrícula tiene ${n} cuadritos por lado.`, ecuacion: [nn, ` = ${n}`] },
+            { tipo: 'regla', texto: 'Cuento por tamaños. En cada lado, un cuadrado de lado k cabe en n − k + 1 lugares; en todo el tablero, en (n − k + 1)².' },
+            { tipo: 'cuentas', texto: `De 1 × 1 caben ${n * n}; de 2 × 2, ${(n - 1) * (n - 1)}; y así hasta uno solo de ${n} × ${n}.`,
+              ecuacion: [N, ' = ', ...tam.map((q, i) => [i ? ' + ' : '', { sup: [String(q), '2'] }]).flat().filter(x => x !== ''), ` = ${bien}`] },
+            { tipo: 'sentido', texto: 'Comprueba con la fórmula de la regla.', ecuacion: [`${n} · ${n + 1} · ${2 * n + 1} / 6 = ${bien}`] },
+          ],
+          respuesta: `${bien} cuadrados`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-plano',
