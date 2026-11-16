@@ -70,6 +70,16 @@
     titulo: 'Lo caminado y dónde terminas',
     temas: ['Puntos cardinales y orientación'],
     pieza: 'rm-plano',
+    // Lee (fase 2): rumbos y las dos medidas del paseo, sin decir cuál de las dos es la respuesta de Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Cuadras en cuadrícula', texto: 'En el centro de Juliaca, como en muchas ciudades del Perú, las calles se cruzan en ángulo recto y forman manzanas casi iguales. Por eso un paseo se puede contar en cuadras.' },
+        { titulo: 'Los cuatro rumbos', texto: 'Norte, sur, este y oeste son los puntos cardinales. En la figura, el norte queda arriba y el este a la derecha. Cada tramo del paseo tiene un rumbo y un largo en cuadras.' },
+        { titulo: 'Dos medidas distintas', texto: ['Puedes sumar todas las cuadras que caminas: es el camino recorrido, en naranja. También puedes medir con una flecha recta desde la salida hasta el final: es ', d, ', en turquesa.'],
+          ecuacion: [cam, '   ·   ', d] },
+        { titulo: 'Qué mirar', texto: 'En el juego, alarga un tramo y luego el otro. Mira cuánto crece el camino y cuánto crece la flecha cada vez.' },
+      ],
+    },
     juega: {
       consigna: 'Camina primero al este y luego al norte, por cuadras iguales. Compara las cuadras caminadas con la flecha recta desde la salida.',
       voz: 'La flecha turquesa va directo de la salida al final.',
@@ -110,6 +120,34 @@
       texto: 'Para saber dónde terminas, se suman por separado los tramos este-oeste (con signo) y norte-sur. La distancia en línea recta sale de esos dos netos.',
       ecuacion: [d, ' = ', { raiz: [{ llave: [{ sup: ['x', '2'] }], nota: 'este neto', color: 'c-i' }, ' + ', { llave: [{ sup: ['y', '2'] }], nota: 'norte neto', color: 'c-i' }] }, '  ≤  ', { llave: [cam], nota: 'lo caminado', color: 'c-o' }],
       condicion: 'las cuadras miden lo mismo y las calles se cruzan en ángulo recto.',
+    },
+    // Así se resuelve (fase 2): el mismo paseo de tres tramos de «Ahora tú», con otras semillas.
+    resuelve: {
+      pieza: 'rm-plano',
+      generar(s) {
+        const r = azar(s + 900);
+        const a = r.ent(2, 6), b = r.ent(2, 5), tipo = s % 2;
+        const tramos = tipo ? [['E', a], ['N', b], ['O', r.ent(1, a - 1)]] : [['N', b], ['E', a], ['S', r.ent(1, b - 1)]];
+        let x = 0, y = 0;
+        for (const [dir, k] of tramos) { x += DIR[dir][0] * k; y -= DIR[dir][1] * k; }
+        const k = x * x + y * y, camino = tramos.reduce((m, t) => m + t[1], 0);
+        const nom = { E: 'este', O: 'oeste', N: 'norte', S: 'sur' };
+        const ex = tipo ? `${a} − ${tramos[2][1]} = ${x}` : `${a}`, ny = tipo ? `${b}` : `${b} − ${tramos[2][1]} = ${y}`;
+        return {
+          enunciado: `Desde la salida: ${tramos.map(([dir, n]) => `${plural(n, 'cuadra', 'cuadras')} al ${nom[dir]}`).join(', ')}. ¿A qué distancia de la salida termina, en línea recta?`,
+          dibujo: { datos: ruta(tramos, { recta: false }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', d, ': la flecha recta de la salida al final. No piden lo caminado.'] },
+            { tipo: 'datos', texto: `Tres tramos: ${tramos.map(([dir, n]) => `${n} al ${nom[dir]}`).join(', ')}.`, ecuacion: [cam, ` = ${tramos.map(t => t[1]).join(' + ')} = ${camino} cuadras`] },
+            { tipo: 'regla', texto: 'Junto aparte lo que avancé de este a oeste y lo de norte a sur, restando los tramos contrarios. Con esos dos netos se arma un triángulo rectángulo.' },
+            { tipo: 'cuentas', texto: `Neto al este: ${ex}. Neto al norte: ${ny}. La flecha es la hipotenusa de esos dos.`,
+              ecuacion: [d, ' = ', { raiz: [{ sup: [String(x), '2'] }, ' + ', { sup: [String(y), '2'] }] }, ` = ${raizTxt(k)}`],
+              dibujo: { datos: ruta(tramos), estado: {} } },
+            { tipo: 'sentido', texto: ['La flecha ', d, ` ${raizTxt(k).startsWith('√') ? '≈' : '='} ${f(Math.sqrt(k), 1)} cuadras no pasa de las ${camino} caminadas, y es mayor que cada neto. Cuadra.`] },
+          ],
+          respuesta: [d, ` = ${raizTxt(k)} cuadras`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-plano',
@@ -161,6 +199,15 @@
     titulo: 'La torre que se muda',
     temas: ['Traslado de fichas y figuras'],
     pieza: 'rm-plano',
+    // Lee (fase 2): el juego y su vocabulario; no dice cómo crece el mínimo (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un juego con nombre', texto: 'La torre de Hanói la publicó el matemático francés Édouard Lucas en 1883. Son tres palos, A, B y C, y una torre de discos de distinto tamaño en el palo A.' },
+        { titulo: 'Las reglas', texto: 'Se mueve un disco por vez, el de arriba de un palo. Nunca se pone un disco grande sobre uno más chico. La meta es dejar toda la torre en el palo C.' },
+        { titulo: 'Contar movimientos', texto: 'Cada vez que levantas un disco y lo dejas en otro palo cuentas un movimiento. El mínimo de movimientos es la menor cantidad con la que se logra la mudanza.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, cambia cuántos discos tiene la torre. Anota el mínimo de cada torre y compáralo con el de la torre con un disco menos.' },
+      ],
+    },
     juega: {
       consigna: 'Pasa la torre de A a C, un disco por vez, sin poner uno grande sobre uno chico. Cambia los discos y mira el mínimo.',
       voz: 'Compara cada mínimo con el anterior.',
@@ -198,6 +245,36 @@
       texto: 'Para mudar n discos, primero se mudan los n − 1 de encima, luego el grande y otra vez los n − 1. Por eso cada disco más duplica y suma uno.',
       ecuacion: [T('n'), ' = 2 · ', { llave: [T('n − 1')], nota: 'los de encima', color: 'c-d' }, ' + ', { llave: ['1'], nota: 'el grande', color: 'c-h' }, '   ·   ', T('n'), ' = ', { sup: ['2', 'n'] }, ' − 1'],
       condicion: 'se mueve un disco por vez, nunca uno grande sobre uno chico, y hay solo tres palos.',
+    },
+    // Así se resuelve (fase 2): el mismo mínimo de «Ahora tú» (minMov), con otras semillas.
+    resuelve: {
+      pieza: 'rm-plano',
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(3, 9), tipo = s % 2;
+        const bien = minMov(n), antes = minMov(n - 1);
+        // La torre se dibuja solo si cabe en la figura (hasta 5 discos).
+        const fig = palos => (n <= 5 ? { datos: torre(palos, { grande: n }), estado: {} } : undefined);
+        const enA = Array.from({ length: n }, (_, k) => n - k);
+        const c = {
+          enunciado: tipo ? `Mudar una torre de ${n - 1} discos toma, como mínimo, ${antes} movimientos. ¿Y una de ${n}?` : `¿Cuál es el mínimo de movimientos para mudar una torre de ${n} discos de A a C?`,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', T(n), `: el menor número de movimientos para pasar ${n} discos de A a C.`] },
+            { tipo: 'datos', texto: tipo ? `Torre de ${n} discos. Sé que la de ${n - 1} pide ${antes} movimientos.` : `Torre de ${n} discos y tres palos. Con un solo disco basta un movimiento.`,
+              ecuacion: tipo ? [T(n - 1), ` = ${antes}`] : [T(1), ' = 1'] },
+            { tipo: 'regla', texto: `Para mover el disco más grande, los ${n - 1} de encima tienen que esperar en B. Pasa el grande y los ${n - 1} vuelven encima: dos mudanzas chicas y un movimiento.` },
+            tipo
+              ? { tipo: 'cuentas', texto: `Dos veces la torre de ${n - 1} y uno más.`, ecuacion: [T(n), ` = 2 · ${antes} + 1 = ${bien}`], dibujo: fig([[], [], enA]) }
+              : { tipo: 'cuentas', texto: 'Cada disco más duplica y suma uno; desde 1, eso da una potencia de 2 menos uno.', ecuacion: [T(n), ' = ', { sup: ['2', String(n)] }, ` − 1 = ${2 ** n} − 1 = ${bien}`], dibujo: fig([[], [], enA]) },
+            { tipo: 'sentido', texto: tipo ? 'Compruebo con la potencia de 2: da lo mismo. Y el disco grande se movió una sola vez.' : `Compruebo con la torre de ${n - 1}: dos veces ${antes} y uno más da lo mismo.`,
+              ecuacion: tipo ? [{ sup: ['2', String(n)] }, ` − 1 = ${2 ** n - 1}`] : [`2 · ${antes} + 1 = ${2 * antes + 1}`] },
+          ],
+          respuesta: [T(n), ` = ${plural(bien, 'movimiento', 'movimientos')}`],
+        };
+        const d0 = fig([enA, [], []]);
+        if (d0) c.dibujo = d0;
+        c.pasos.forEach(p => { if (!p.dibujo) delete p.dibujo; });
+        return c;
+      },
     },
     ahoraTu: {
       voz: 'Usa el mínimo de la torre con un disco menos.',
@@ -262,6 +339,15 @@
     titulo: 'Pasar un número, mover el doble',
     temas: ['Traslado de números'],
     pieza: 'rm-fichas',
+    // Lee (fase 2): sumas de grupos y diferencia; no dice qué número iguala (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un grupo, una suma', texto: 'Cada grupo de fichas numeradas se resume en su suma. El grupo A del juego tiene 9, 7, 6, 5 y 3: suma 30. El grupo B tiene 8, 4 y 6: suma 18.' },
+        { titulo: 'La diferencia', texto: ['Para comparar los grupos se restan sus sumas. Esa ', D, ' dice cuánto le sobra al grupo mayor. Dejar los grupos iguales es lograr que ', D, ' sea cero.'],
+          ecuacion: [D, ' = 30 − 18 = 12'] },
+        { titulo: 'Pasar una ficha', texto: 'Pasar una ficha de A a B no crea ni borra números: lo que sale de un grupo entra en el otro. En el juego, mira cuánto cambia la diferencia con cada ficha que pasa.' },
+      ],
+    },
     juega: {
       consigna: 'El grupo A suma 30 y el B suma 18. Pasa un número de A a B y mira cómo cambia la diferencia de sumas.',
       voz: 'Compara el número que pasa con lo que baja la diferencia.',
@@ -295,6 +381,36 @@
       texto: 'Pasar un número de un grupo a otro cambia la diferencia de sus sumas en el doble de ese número. Para igualar, se pasa la mitad de la diferencia.',
       ecuacion: [x, ' = ', { frac: [D, '2'] }],
       condicion: 'el número pasa del grupo que suma más al que suma menos, y la diferencia es par.',
+    },
+    // Así se resuelve (fase 2): los mismos grupos de «Ahora tú», armados con otras semillas.
+    resuelve: {
+      pieza: 'rm-fichas',
+      generar(s) {
+        const r = azar(s + 900);
+        const xm = r.ent(2, 9);
+        const B = r.barajar([1, 2, 3, 4, 5, 6, 7, 8]).slice(0, 3);
+        const otrosA = r.barajar([1, 2, 3, 4, 5, 6, 7, 8, 9].filter(v => v !== xm && v !== 2 * xm)).slice(0, 3);
+        let A = otrosA.concat([xm]);
+        const falta = suma(A) - suma(B) - 2 * xm;
+        const B2 = falta >= 0 ? B.concat(falta ? [falta] : []) : B;
+        if (falta < 0) A = A.concat([-falta]);
+        const Dv = suma(A) - suma(B2);
+        A = r.barajar(A);
+        const sa = suma(A), sb = suma(B2);
+        return {
+          enunciado: `El grupo A tiene ${A.join(', ')} y suma ${sa}. El grupo B tiene ${B2.join(', ')} y suma ${sb}. ¿Qué número de A hay que pasar a B para que sumen lo mismo?`,
+          dibujo: { datos: grupos(A, B2), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el número ', x, ' que, al pasar de A a B, deja las dos sumas iguales.'] },
+            { tipo: 'datos', texto: `A suma ${sa} y B suma ${sb}. A tiene más.`, ecuacion: [D, ` = ${sa} − ${sb} = ${Dv}`] },
+            { tipo: 'regla', texto: ['El número que pasa le quita a A y le da a B. Así la diferencia baja dos veces ', x, '.'], ecuacion: [D, ' − 2', x, ' = 0'] },
+            { tipo: 'cuentas', texto: ['Despejo ', x, ` y lo busco entre las fichas de A.`], ecuacion: ['2', x, ` = ${Dv}   →   `, x, ` = ${Dv} / 2 = ${xm}`],
+              dibujo: { datos: grupos(A, B2, xm, { pie: `Las dos sumas quedan en ${sa - xm}` }), estado: {} } },
+            { tipo: 'sentido', texto: `Compruebo: A queda en ${sa} − ${xm} = ${sa - xm} y B en ${sb} + ${xm} = ${sb + xm}. Son iguales.` },
+          ],
+          respuesta: [x, ` = ${xm}`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-fichas',
