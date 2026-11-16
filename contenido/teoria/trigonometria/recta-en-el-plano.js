@@ -90,6 +90,15 @@
     return Object.assign({ de: pts[0] || [ven.x[0], bv], a: pts[pts.length - 1] || [ven.x[1], bv] }, o);
   }
 
+  // Ventana cuadrada que contiene unos puntos con margen (para los ejemplos de «Así se resuelve»), siempre con el origen
+  // a la vista; los números de los ejes se espacian si la ventana es grande.
+  function ventanaDe(pts, margen = 1.5) {
+    const xs = pts.map(p => p[0]).concat(0), ys = pts.map(p => p[1]).concat(0);
+    const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+    const L = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) / 2 + margen;
+    return { ventana: { x: [cx - L, cx + L], y: [cy - L, cy + L] }, numeros: L > 9 ? 5 : L > 5 ? 2 : 1 };
+  }
+
   // ---------- Idea 1: la distancia es una hipotenusa ----------
   // Cambia: el punto B. · Permanece: A = (1; 1) y la cuadrícula. · Progresa: el triángulo de catetos Δx y Δy.
   // Se reserva: puntos con coordenadas negativas en distinto cuadrante (la predicción).
@@ -112,6 +121,15 @@
     titulo: 'La distancia es una hipotenusa',
     temas: ['Distancia entre dos puntos'],
     pieza: 'trig-plano',
+    // Lee (fase 2): cómo se escribe un punto y qué es restar coordenadas; la distancia del caso con negativos es la predicción.
+    lee: {
+      tarjetas: [
+        { titulo: 'Un mapa con cuadrícula', texto: 'El plano cartesiano funciona como un mapa cuadriculado. Cada punto se ubica con dos números, (x; y): primero cuánto va a la derecha o a la izquierda del origen, después cuánto sube o baja.' },
+        { titulo: 'Restar coordenadas', texto: ['El avance ', dx, ' es la x del punto final menos la del inicial; la subida ', dy, ', lo mismo con las y. Si un punto está a la izquierda o abajo, su coordenada es negativa, y la resta la lleva.'],
+          ecuacion: [dx, ' = ', sub('x', '2'), ' − ', sub('x', '1'), '   ·   ', dy, ' = ', sub('y', '2'), ' − ', sub('y', '1')] },
+        { titulo: 'Qué mirar al jugar', texto: ['Mueve B y cuenta los cuadritos del avance turquesa y de la subida roja. Mira qué figura forman con la distancia ', d, ', el tramo verde.'] },
+      ],
+    },
     juega: {
       consigna: 'A = (1; 1) queda fijo. Mueve el punto B y mira el triángulo que forman el avance Δx, la subida Δy y la distancia d.',
       voz: 'Cuenta los cuadritos de cada cateto antes de mirar la lectura.',
@@ -157,6 +175,32 @@
       condicion: 'Δx = x₂ − x₁ y Δy = y₂ − y₁, con ejes perpendiculares de igual escala. El orden de los puntos no importa.',
       voz: 'Resta con cuidado; Pitágoras hace el resto.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (mismos catetos y mismas cuentas), con otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900), [p, q] = rr.uno([[3, 4], [6, 8], [5, 12], [1, 1], [1, 2], [2, 3], [8, 15]]);
+        const [ex, ey] = rr.ent(0, 1) ? [p, q] : [q, p];
+        const x1 = rr.ent(-6, 2), y1 = rr.ent(-6, 2), x2 = x1 + rr.sg() * ex, y2 = y1 + rr.sg() * ey;
+        const ax = x2 - x1, ay = y2 - y1, n2 = ax * ax + ay * ay, dv = Math.sqrt(n2), exacta = Number.isInteger(dv);
+        const vd = ventanaDe([[x1, y1], [x2, y2]]);
+        const lados = { ladoA: x1 <= x2 ? 'so' : 'se', ladoB: x2 >= x1 ? 'ne' : 'no' };
+        return {
+          enunciado: [`¿Cuánto mide la distancia entre A = ${P(x1, y1)} y B = ${P(x2, y2)}?`],
+          dibujo: { datos: plano({ ventana: vd.ventana, numeros: vd.numeros, extra: { puntos: [{ x: x1, y: y1, rotulo: `A${P(x1, y1)}`, lado: lados.ladoA }, { x: x2, y: y2, rotulo: `B${P(x2, y2)}`, lado: lados.ladoB }], alt: `Puntos A ${P(x1, y1)} y B ${P(x2, y2)} en el plano` } }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la distancia ', d, ' de A a B, en línea recta.'] },
+            { tipo: 'datos', texto: 'Las coordenadas de los dos puntos, con su signo.', ecuacion: [`A = ${P(x1, y1)}`, '   ·   ', `B = ${P(x2, y2)}`] },
+            { tipo: 'regla', texto: ['La distancia es la hipotenusa del triángulo rectángulo cuyos catetos son el avance ', dx, ' y la subida ', dy, ': Pitágoras.'],
+              ecuacion: [d, ' = ', { raiz: [cuad(dx), ' + ', cuad(dy)] }] },
+            { tipo: 'cuentas', texto: 'Se restan las coordenadas en el mismo orden; al elevar al cuadrado, el signo se va.',
+              ecuacion: [dx, ` = ${f(x2)} − ${par(x1)} = ${f(ax)}`, '   ·   ', dy, ` = ${f(y2)} − ${par(y1)} = ${f(ay)}`, '   ·   ', d, ' = ', { raiz: [`${par(ax)}² + ${par(ay)}²`] }, ` = ${raiz(n2)}`],
+              dibujo: { datos: triDist(x1, y1, x2, y2, Object.assign({ ventana: vd.ventana, numeros: vd.numeros, rd: `d = ${raiz(n2)}` }, lados)), estado: {} } },
+            { tipo: 'sentido', texto: [d, `${exacta ? ' = ' : ' ≈ '}${f(dv)} es mayor que el cateto más largo, ${Math.max(ex, ey)}, y menor que la suma de los dos, ${ex + ey}. Cuadra con un camino recto.`] },
+          ],
+          respuesta: [d, ` = ${raiz(n2)}`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'trig-plano',
       voz: 'Escribe Δx y Δy con su signo antes de elevar.',
@@ -197,6 +241,14 @@
     titulo: 'Promedio con pesos cruzados',
     temas: ['División de un segmento y punto medio'],
     pieza: 'trig-plano',
+    // Lee (fase 2): cómo se lee AP : PB; no dice cuántas partes tiene AB ni qué extremo pesa más (es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un punto en el camino', texto: 'Piensa en una avenida recta de Juliaca entre dos paraderos, A y B. Un punto P del camino lo parte en dos trozos: AP, que va de A hasta P, y PB, que va de P hasta B.' },
+        { titulo: 'Cómo se lee la razón', texto: 'AP : PB = 2 : 1 se lee «AP es a PB como 2 es a 1»: el trozo AP mide el doble que PB. Cuando la razón es 1 : 1, los dos trozos miden igual y P es el punto medio.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Mueve B y mira el punto medio M. Compara la x de M con las x de A y de B; después haz lo mismo con las y.' },
+      ],
+    },
     juega: {
       consigna: 'A queda fijo. Mueve B y mira el punto medio M: cada coordenada de M es el promedio de las de A y B.',
       voz: 'Compara M con los dos extremos: queda a la misma distancia.',
@@ -246,6 +298,33 @@
       condicion: 'P entre A y B, con m y n positivos. Se calcula con las x y con las y por separado.',
       voz: 'El extremo más cercano pesa más.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (P que divide AB en m : n), con otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900), mm = rr.ent(1, 3), nn = rr.uno([1, 2, 3, 4].filter(x => x !== mm)), vx = rr.sg() * rr.ent(1, 2), vy = rr.sg() * rr.ent(1, 2);
+        const px0 = rr.ent(-3, 3), py0 = rr.ent(-3, 3), x1 = px0 - mm * vx, y1 = py0 - mm * vy, x2 = px0 + nn * vx, y2 = py0 + nn * vy;
+        // P sale de la fórmula de pesos cruzados (no del punto con que se armó el caso); el paso «sentido» lo comprueba.
+        const px = (nn * x1 + mm * x2) / (mm + nn), py = (nn * y1 + mm * y2) / (mm + nn);
+        const ap = Math.hypot(px - x1, py - y1), pb = Math.hypot(x2 - px, y2 - py);
+        const vd = ventanaDe([[x1, y1], [x2, y2]]);
+        const base = extra => segmento(x1, y1, x2, y2, { ventana: vd.ventana, datos: Object.assign({ puntos: [{ x: x1, y: y1, rotulo: `A${P(x1, y1)}`, lado: 'so' }, { x: x2, y: y2, rotulo: `B${P(x2, y2)}`, lado: 'ne' }].concat(extra || []) }) });
+        return {
+          enunciado: [`A = ${P(x1, y1)} y B = ${P(x2, y2)}. P está en el segmento AB con AP : PB = ${mm} : ${nn}. ¿Cuáles son las coordenadas de P?`],
+          dibujo: { datos: Object.assign(base(), { numeros: vd.numeros }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden las coordenadas de P, el punto que parte el segmento AB en dos trozos.' },
+            { tipo: 'datos', texto: `Los extremos y la razón: el trozo AP tiene ${mm} parte${mm === 1 ? '' : 's'} y el trozo PB, ${nn}.`, ecuacion: [`A = ${P(x1, y1)}`, '   ·   ', `B = ${P(x2, y2)}`, '   ·   ', `AP : PB = ${mm} : ${nn}`] },
+            { tipo: 'regla', texto: `P es un promedio con pesos cruzados: A pesa ${nn} y B pesa ${mm}. El extremo más cercano a P pesa más.`,
+              ecuacion: ['P = ', { frac: [`${nn} · A + ${mm} · B`, `${mm + nn}`] }] },
+            { tipo: 'cuentas', texto: 'Se hace la cuenta con las x y, aparte, con las y.',
+              ecuacion: ['x = ', { frac: [`${nn} · ${par(x1)} + ${mm} · ${par(x2)}`, `${mm + nn}`] }, ` = ${f(px)}`, '   ·   ', 'y = ', { frac: [`${nn} · ${par(y1)} + ${mm} · ${par(y2)}`, `${mm + nn}`] }, ` = ${f(py)}`],
+              dibujo: { datos: Object.assign(base([{ x: px, y: py, color: 'd', rotulo: `P${P(px, py)}`, lado: 'e' }]), { numeros: vd.numeros }), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: AP ≈ ${f(ap)} y PB ≈ ${f(pb)}, y AP ÷ PB ≈ ${f(ap / pb)}, lo mismo que ${mm} ÷ ${nn}. P queda más cerca de ${ap < pb ? 'A' : 'B'}.` },
+          ],
+          respuesta: [`P = ${P(px, py)}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Decide primero de qué extremo queda más cerca P.',
       generar(sem) {
@@ -283,6 +362,14 @@
     titulo: 'Caja menos esquinas',
     temas: ['Baricentro y área con coordenadas'],
     pieza: 'trig-plano',
+    // Lee (fase 2): para qué sirve el área con coordenadas y qué es el baricentro; no da el método de la caja (es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Medir sin pisar', texto: 'Quien mide un terreno en el altiplano anota las coordenadas de sus esquinas. Con esos números, sin volver a caminar el terreno, se puede calcular su área en la oficina.' },
+        { titulo: 'El punto de equilibrio', texto: 'El baricentro G de un triángulo es su punto de equilibrio: un triángulo de cartón se sostiene sobre un dedo puesto justo en G. Sus coordenadas salen de las de los tres vértices.' },
+        { titulo: 'Qué mirar al jugar', texto: ['Aquí la base AB es horizontal, así que la altura se cuenta en cuadritos. Mueve el vértice C y mira cómo cambian el área ', A, ' y el punto G.'] },
+      ],
+    },
     juega: {
       consigna: 'A y B quedan en una recta horizontal. Mueve C: la lectura da el área y el baricentro G, el promedio de los tres vértices.',
       voz: 'Con la base horizontal, la altura se cuenta en cuadritos.',
@@ -335,6 +422,61 @@
       ecuacion: [A, ' = ', { frac: [{ llave: [{ abs: [sub(dx, '1'), sub(dy, '2'), ' − ', sub(dx, '2'), sub(dy, '1')] }], nota: 'determinante sin signo', color: 'c-d', arriba: true }, '2'] }, '   ·   ', 'G = ', { llave: [{ frac: ['P + Q + R', '3'] }], nota: 'promedio', color: 'c-o' }],
       condicion: 'Δx₁, Δy₁ y Δx₂, Δy₂ son los dos lados que salen del mismo vértice. El valor absoluto quita el signo del orden.',
       voz: 'El signo dice el orden de los vértices; el área no lo lleva.',
+    },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (área con el determinante o baricentro), con otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900);
+        for (;;) {
+          const pts = [0, 1, 2].map(() => [rr.ent(-4, 4), rr.ent(-4, 4)]);
+          const D = det(pts[0], pts[1], pts[2]);
+          const sx = pts[0][0] + pts[1][0] + pts[2][0], sy = pts[0][1] + pts[1][1] + pts[2][1];
+          if (Math.abs(D) < 4) continue;
+          const nombres = `P = ${P(...pts[0])}, Q = ${P(...pts[1])} y R = ${P(...pts[2])}`;
+          const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+          const VR = { x: [-5.5, 5.5], y: [-5.5, 5.5] }, lados = ['so', 'n', 'e'];
+          const dib = extra => ({ datos: triangulo(pts, Object.assign({ ventana: VR, nombres: ['P', 'Q', 'R'], lados }, extra || {})), estado: {} });
+          const datos = { tipo: 'datos', texto: 'Los tres vértices, con sus coordenadas.', ecuacion: [`P = ${P(...pts[0])}`, '   ·   ', `Q = ${P(...pts[1])}`, '   ·   ', `R = ${P(...pts[2])}`] };
+          if (sem % 2 === 1) {
+            const [a1, b1] = [pts[1][0] - pts[0][0], pts[1][1] - pts[0][1]], [a2, b2] = [pts[2][0] - pts[0][0], pts[2][1] - pts[0][1]];
+            const w = Math.max(...xs) - Math.min(...xs), h = Math.max(...ys) - Math.min(...ys);
+            return {
+              enunciado: [`¿Cuál es el área del triángulo de vértices ${nombres}?`],
+              dibujo: dib(),
+              pasos: [
+                { tipo: 'pide', texto: ['Piden el área ', A, ' del triángulo PQR. Ningún dato da su altura directamente.'] },
+                datos,
+                { tipo: 'regla', texto: 'Con los dos lados que salen de P, el área es la mitad del valor absoluto de su determinante.',
+                  ecuacion: [A, ' = ', { frac: [{ abs: [sub(dx, '1'), sub(dy, '2'), ' − ', sub(dx, '2'), sub(dy, '1')] }, '2'] }] },
+                { tipo: 'cuentas', texto: 'Lado PQ y lado PR, restando desde P.',
+                  ecuacion: ['PQ: ', sub(dx, '1'), ` = ${f(a1)}, `, sub(dy, '1'), ` = ${f(b1)}`, '   ·   ', 'PR: ', sub(dx, '2'), ` = ${f(a2)}, `, sub(dy, '2'), ` = ${f(b2)}`] },
+                { tipo: 'cuentas', texto: 'El determinante cruza los productos; el valor absoluto le quita el signo.',
+                  ecuacion: [`${par(a1)} · ${par(b2)} − ${par(a2)} · ${par(b1)} = ${f(D)}`, '   ·   ', A, ' = ', { frac: [`|${f(D)}|`, '2'] }, ` = ${f(Math.abs(D) / 2)}`],
+                  dibujo: dib({ rotulos: [{ x: sx / 3, y: sy / 3, texto: f(Math.abs(D) / 2), color: 'd' }] }) },
+                { tipo: 'sentido', texto: `El triángulo cabe en una caja de ${w} por ${h}, de área ${w * h}. Ocupa a lo más la mitad, ${f(w * h / 2)}: cuadra con ${f(Math.abs(D) / 2)}.` },
+              ],
+              respuesta: [A, ` = ${f(Math.abs(D) / 2)}`],
+            };
+          }
+          if (sx % 3 || sy % 3) continue;
+          const gx = sx / 3, gy = sy / 3;
+          return {
+            enunciado: [`¿Cuál es el baricentro del triángulo de vértices ${nombres}?`],
+            dibujo: dib(),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el baricentro G, el punto de equilibrio del triángulo PQR.' },
+              datos,
+              { tipo: 'regla', texto: 'El baricentro promedia los tres vértices: se suman las tres x y se divide entre 3; lo mismo con las y.',
+                ecuacion: ['G = ', { frac: ['P + Q + R', '3'] }] },
+              { tipo: 'cuentas', texto: 'Las x por un lado y las y por otro.',
+                ecuacion: ['G = ', { par: [{ frac: [`${xs.map(par).join(' + ')}`, '3'] }, '; ', { frac: [`${ys.map(par).join(' + ')}`, '3'] }] }, ` = ${P(gx, gy)}`],
+                dibujo: dib({ puntos: [{ x: gx, y: gy, color: 'o', rotulo: 'G', lado: 's' }] }) },
+              { tipo: 'sentido', texto: `G cae dentro del triángulo: su x, ${f(gx)}, está entre ${f(Math.min(...xs))} y ${f(Math.max(...xs))}, y su y, ${f(gy)}, entre ${f(Math.min(...ys))} y ${f(Math.max(...ys))}.` },
+            ],
+            respuesta: [`G = ${P(gx, gy)}`],
+          };
+        }
+      },
     },
     ahoraTu: {
       pieza: 'trig-plano',
@@ -394,6 +536,14 @@
     titulo: 'Lo que sube por paso',
     temas: ['Pendiente e inclinación'],
     pieza: 'trig-plano',
+    // Lee (fase 2): qué es la pendiente y desde dónde se mide θ; no habla de la recta vertical (es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Calles que suben', texto: 'Subiendo al mirador del cerro Huajsapata, en Puno, se siente la pendiente: cuánto subes por cada paso que avanzas. En el plano se mide igual: la subida comparada con el avance.' },
+        { titulo: 'La inclinación', texto: ['La inclinación ', th, ' es el ángulo que forma la recta con el eje x positivo, medido en sentido antihorario. Una recta horizontal tiene ', th, ' = 0°; las demás llegan casi hasta 180°.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['Prueba subidas positivas y negativas. Mira hacia dónde se abre ', th, ' y qué signo tiene la pendiente ', m, ' cuando la recta baja.'] },
+      ],
+    },
     juega: {
       consigna: 'Desde el punto (1; −3), elige cuánto avanza, Δx, y cuánto sube, Δy. La lectura da la pendiente y la inclinación θ.',
       voz: 'Prueba subidas negativas: mira hacia dónde se abre θ.',
@@ -445,6 +595,56 @@
       condicion: 'Δx ≠ 0 y 0° ≤ θ < 180°. Una recta vertical tiene θ = 90° y no tiene pendiente.',
       voz: 'Primero el avance: si es cero, no hay pendiente.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (pendiente por dos puntos o inclinación), con otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900);
+        if (sem % 2 === 1) {
+          const x1 = rr.ent(-5, 3), y1 = rr.ent(-5, 3), ax = rr.ent(1, 5) * rr.sg(), ay = rr.ent(1, 6) * rr.sg();
+          const x2 = x1 + ax, y2 = y1 + ay, mv = ay / ax;
+          const vd = ventanaDe([[x1, y1], [x2, y2]]);
+          const dib = conEscalon => ({ datos: plano({ ventana: vd.ventana, numeros: vd.numeros, extra: {
+            segmentos: [recta(mv, y1 - mv * x1, vd.ventana, { color: 'o' })].concat(conEscalon ? [{ de: [x1, y1], a: [x2, y1], color: 'i', rotulo: `Δx = ${f(ax)}` }, { de: [x2, y1], a: [x2, y2], color: 'h', rotulo: `Δy = ${f(ay)}` }] : []),
+            puntos: [{ x: x1, y: y1, rotulo: P(x1, y1), lado: 'so' }, { x: x2, y: y2, rotulo: P(x2, y2), lado: 'ne' }],
+            alt: `Recta por ${P(x1, y1)} y ${P(x2, y2)}${conEscalon ? `: avanza ${f(ax)} y sube ${f(ay)}` : ''}`,
+          } }), estado: {} });
+          return {
+            enunciado: [`¿Cuál es la pendiente de la recta que pasa por ${P(x1, y1)} y ${P(x2, y2)}?`],
+            dibujo: dib(false),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la pendiente ', m, ' de la recta que pasa por los dos puntos.'] },
+              { tipo: 'datos', texto: 'Dos puntos de la recta; los dos tienen x distinta, así que no es vertical.', ecuacion: [`${P(x1, y1)}`, '   ·   ', `${P(x2, y2)}`] },
+              { tipo: 'regla', texto: 'La pendiente es lo que sube la recta por cada paso que avanza: la subida entre el avance, restando en el mismo orden.',
+                ecuacion: [m, ' = ', { frac: [dy, dx] }] },
+              { tipo: 'cuentas', texto: 'Del primer punto al segundo, arriba y abajo.',
+                ecuacion: [m, ' = ', { frac: [`${f(y2)} − ${par(y1)}`, `${f(x2)} − ${par(x1)}`] }, ' = ', { frac: [f(ay), f(ax)] }, ` = ${fr(ay, ax)}`], dibujo: dib(true) },
+              { tipo: 'sentido', texto: `De izquierda a derecha la recta ${mv > 0 ? 'sube' : 'baja'}: por eso la pendiente es ${mv > 0 ? 'positiva' : 'negativa'}.` },
+            ],
+            respuesta: [m, ` = ${fr(ay, ax)}`],
+          };
+        }
+        const [mt, ang] = rr.uno([['1', 45], ['−1', 135], ['√3', 60], ['−√3', 120], ['√3/3', 30], ['−√3/3', 150], ['0', 0]]);
+        const mv = Math.tan(ang / GRA), b0 = 0;
+        const dib = { datos: plano({ extra: {
+          segmentos: [recta(Math.abs(mv) < 1e-12 ? 0 : mv, b0, VEN, { color: 'o' })],
+          arcos: ang ? [{ de: 0, a: ang, r: 1.2, espiral: 0, flecha: false, color: 'o', rotulo: `θ = ${ang}°` }] : [],
+          alt: `Recta por el origen con pendiente ${mt} e inclinación de ${ang} grados`,
+        } }), estado: {} };
+        return {
+          enunciado: [`Una recta tiene pendiente ${mt}. ¿Cuál es su inclinación θ, entre 0° y 180°?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la inclinación ', th, ', el ángulo que forma la recta con el eje x positivo.'] },
+            { tipo: 'datos', texto: 'Solo se conoce la pendiente.', ecuacion: [m, ` = ${mt}`] },
+            { tipo: 'regla', texto: ['La pendiente es la tangente de la inclinación, y ', th, ' se toma entre 0° y 180°.'], ecuacion: [m, ' = tan ', th] },
+            { tipo: 'cuentas', texto: 'Se busca en los notables el ángulo de ese intervalo con esa tangente.',
+              ecuacion: ['tan ', th, ` = ${mt}  ⇒  `, th, ` = ${ang}°`], dibujo: dib },
+            { tipo: 'sentido', texto: ang === 0 ? 'Pendiente 0: la recta no sube ni baja, es horizontal, y su inclinación es 0°.'
+              : ang > 90 ? `Pendiente negativa: la recta baja, así que ${th.t} es obtuso. ${ang}° lo es.` : `Pendiente positiva: la recta sube, así que ${th.t} es agudo. ${ang}° lo es.` },
+          ],
+          respuesta: [th, ` = ${ang}°`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Resta en el mismo orden arriba y abajo.',
       generar(sem) {
@@ -491,6 +691,14 @@
     titulo: 'Tres ecuaciones, una recta',
     temas: ['Ecuaciones de la recta'],
     pieza: 'trig-plano',
+    // Lee (fase 2): qué dice una ecuación de la recta y qué son m y b; no dice cómo hallar b desde otro punto (es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una regla para cada punto', texto: 'Una recta es una fila de puntos que cumplen la misma regla. La ecuación y = mx + b es esa regla: le das una x y te dice la y del punto que está en la recta.' },
+        { titulo: 'Dos números la fijan', texto: ['En y = ', m, 'x + b, ', m, ' es la pendiente y b es el intercepto: donde la recta corta al eje y. Un recibo de luz tiene esa forma: un cargo fijo más un monto por cada kilovatio hora.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['Cambia ', m, ' y b por separado. Mira qué le hace cada uno a la recta naranja y en qué punto corta al eje y.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige m y b en la ecuación de la recta y = mx + b. La recta corta al eje y en b.',
       voz: 'Mira dónde cruza el eje y cuando cambias b.',
@@ -547,6 +755,52 @@
       condicion: 'm existe: una recta vertical se escribe x = k. En la forma general, m = −A/B si B ≠ 0.',
       voz: 'Elige la forma que use los datos que tienes.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (ecuación por punto y pendiente, o pendiente de la
+    // forma general), con otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900), mv = rr.sg() * rr.ent(1, 4), x0 = rr.ent(-4, 4) || 2, y0 = rr.ent(-4, 4), bv = y0 - mv * x0;
+        const ec = (mm, bb) => `y = ${mm === 1 ? '' : mm === -1 ? '−' : f(mm)}x${bb ? ` ${bb < 0 ? '−' : '+'} ${f(Math.abs(bb))}` : ''}`;
+        if (sem % 2 === 1) {
+          const dib = conRecta => ({ datos: plano({ extra: {
+            segmentos: conRecta ? [recta(mv, bv, VEN, { color: 'o' })] : [],
+            puntos: [{ x: x0, y: y0, rotulo: P(x0, y0), lado: 'e' }],
+            alt: conRecta ? `Recta ${ec(mv, bv)} que pasa por ${P(x0, y0)}` : `El punto ${P(x0, y0)}`,
+          } }), estado: {} });
+          return {
+            enunciado: [`Una recta tiene pendiente ${f(mv)} y pasa por ${P(x0, y0)}. ¿Cuál es su ecuación?`],
+            dibujo: dib(false),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la ecuación de la recta, escrita como y = mx + b.' },
+              { tipo: 'datos', texto: `Un punto de la recta y su pendiente. Ojo: el punto no está sobre el eje y, porque su x es ${f(x0)}.`, ecuacion: [m, ` = ${f(mv)}`, '   ·   ', `(x₀; y₀) = ${P(x0, y0)}`] },
+              { tipo: 'regla', texto: 'Con un punto y la pendiente se escribe la forma punto-pendiente. Después se despeja y para ver el corte con el eje y.',
+                ecuacion: ['y − ', sub('y', '0'), ' = ', m, '(x − ', sub('x', '0'), ')'] },
+              { tipo: 'cuentas', texto: 'Se reemplaza el punto, se reparte la pendiente y se despeja y.',
+                ecuacion: [`${menos('y', y0)} = ${f(mv)}(${menos('x', x0)})  ⇒  ${ec(mv, bv)}`], dibujo: dib(true) },
+              { tipo: 'sentido', texto: `Comprueba con el punto: si x = ${f(x0)}, y = ${f(mv)} · ${par(x0)} ${bv < 0 ? '−' : '+'} ${f(Math.abs(bv))} = ${f(mv * x0 + bv)}. Es la y del punto.` },
+            ],
+            respuesta: [ec(mv, bv)],
+          };
+        }
+        const Av = mv, Bv = rr.uno([1, 2, 3]) * rr.sg(), Cv = rr.ent(-6, 6);
+        const coef = (c, letra) => `${c < 0 ? '−' : '+'} ${Math.abs(c) === 1 ? '' : f(Math.abs(c))}${letra}`;
+        const general = `${Av === 1 ? '' : Av === -1 ? '−' : f(Av)}x ${coef(Bv, 'y')}${Cv ? ` ${coef(Cv, '')}` : ''} = 0`;
+        const y0c = fr(-Cv, Bv), y1c = fr(-Cv - Av * Math.abs(Bv), Bv), sube = fr(-Av * Math.abs(Bv), Bv);
+        return {
+          enunciado: [`¿Cuál es la pendiente de la recta ${general}?`],
+          dibujo: { datos: plano({ extra: { segmentos: [recta(-Av / Bv, -Cv / Bv, VEN, { color: 'o' })], alt: `Recta ${general}` } }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la pendiente ', m, ' de una recta escrita en forma general, Ax + By + C = 0.'] },
+            { tipo: 'datos', texto: 'Los coeficientes de x y de y.', ecuacion: [`A = ${f(Av)}`, '   ·   ', `B = ${f(Bv)}`] },
+            { tipo: 'regla', texto: ['Si se despeja y, el número que queda multiplicando a x es la pendiente. Hecho en general, da ', m, ' = −A/B.'],
+              ecuacion: [m, ' = −', { frac: ['A', 'B'] }] },
+            { tipo: 'cuentas', texto: 'Se reemplazan los coeficientes, con su signo.', ecuacion: [m, ' = −', { frac: [f(Av), f(Bv)] }, ` = ${fr(-Av, Bv)}`] },
+            { tipo: 'sentido', texto: `Comprueba con dos puntos: con x = 0, y = ${y0c}; con x = ${Math.abs(Bv)}, y = ${y1c}. Sube ${sube} en ${Math.abs(Bv)} paso${Math.abs(Bv) === 1 ? '' : 's'}: ${fr(-Av * Math.abs(Bv), Bv * Math.abs(Bv))} por paso.` },
+          ],
+          respuesta: [m, ` = ${fr(-Av, Bv)}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Escribe primero la forma punto-pendiente.',
       generar(sem) {
@@ -594,6 +848,14 @@
     titulo: 'Paralelas, perpendiculares y distancia',
     temas: ['Paralelas, perpendiculares y distancia a una recta'],
     pieza: 'trig-plano',
+    // Lee (fase 2): qué son paralelas y perpendiculares; no dice cómo se mide la distancia a una recta (es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Rieles y esquinas', texto: 'Los dos rieles del tren que llega a Juliaca nunca se cruzan: son paralelos. Dos calles que forman una esquina en escuadra son perpendiculares: se cortan formando 90°.' },
+        { titulo: 'Dos rectas, dos pendientes', texto: ['Cada recta tiene su pendiente. En el juego hay dos: la gris, fija, con ', sub(m, '1'), ' = 1/2, y la naranja, con ', sub(m, '2'), ', que tú cambias.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['Busca primero cuándo las dos rectas no se cortan y después cuándo forman 90°. En cada caso, mira el producto ', sub(m, '1'), ' · ', sub(m, '2'), ' que da la lectura.'] },
+      ],
+    },
     juega: {
       consigna: 'La recta gris tiene pendiente 1/2. Elige la pendiente m₂ de la naranja y busca cuándo son paralelas y cuándo forman 90°.',
       voz: 'Mira el producto de las pendientes cuando forman 90°.',
@@ -641,6 +903,82 @@
       ecuacion: [{ llave: [sub(m, '1'), ' = ', sub(m, '2')], nota: 'paralelas', color: 'c-o' }, '   ·   ', { llave: [sub(m, '1'), ' · ', sub(m, '2'), ' = −1'], nota: 'perpendiculares', color: 'c-o' }, '   ·   ', d, ' = ', { frac: [{ abs: ['A', sub('x', '0'), ' + B', sub('y', '0'), ' + C'] }, { raiz: [{ sup: ['A', '2'] }, ' + ', { sup: ['B', '2'] }] }] }],
       condicion: 'm₁·m₂ = −1 vale si ninguna es vertical. Una horizontal y una vertical también son perpendiculares.',
       voz: 'Perpendicular: invierte y cambia el signo.',
+    },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (distancia a una recta, perpendicular a una horizontal,
+    // o pendiente paralela o perpendicular), con otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900), tipo = (sem + 1) % 3;
+        if (tipo === 2) {
+          const [a0, b0, c0] = rr.uno([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17]]);
+          const x0 = rr.ent(-3, 3), y0 = rr.ent(-3, 3), dist = rr.ent(1, 4), sg = rr.sg();
+          const Cv = sg * dist * c0 - a0 * x0 - b0 * y0;
+          const valor = a0 * x0 + b0 * y0 + Cv, nume = Math.abs(valor), dv = nume / Math.hypot(a0, b0);
+          // Pie de la perpendicular: H = P − valor/(A² + B²) · (A, B). La recta, con y = −(A x + C)/B.
+          const t = valor / (a0 * a0 + b0 * b0), hx = x0 - t * a0, hy = y0 - t * b0;
+          const vd = ventanaDe([[x0, y0], [hx, hy]], 2.5);
+          const ectxt = `${a0}x + ${b0}y ${Cv < 0 ? '−' : '+'} ${f(Math.abs(Cv))} = 0`;
+          const dib = conPie => ({ datos: plano({ ventana: vd.ventana, numeros: vd.numeros, extra: {
+            segmentos: [recta(-a0 / b0, -Cv / b0, vd.ventana, { grosor: 'contorno' })].concat(conPie ? [{ de: [x0, y0], a: [hx, hy], color: 'd', rotulo: `d = ${f(dv)}` }] : []),
+            puntos: [{ x: x0, y: y0, rotulo: P(x0, y0), lado: 'so' }].concat(conPie ? [{ x: hx, y: hy, color: 'd', rotulo: 'H', lado: 'ne' }] : []),
+            alt: conPie ? `El camino perpendicular de ${P(x0, y0)} a la recta mide ${f(dv)}` : `Recta ${ectxt} y el punto ${P(x0, y0)}`,
+          } }), estado: {} });
+          return {
+            enunciado: [`¿Cuál es la distancia del punto ${P(x0, y0)} a la recta ${ectxt}?`],
+            dibujo: dib(false),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la distancia ', d, ' del punto a la recta: el camino más corto entre los dos.'] },
+              { tipo: 'datos', texto: 'El punto y los tres coeficientes de la recta.', ecuacion: [`${P(x0, y0)}`, '   ·   ', `A = ${a0}, B = ${b0}, C = ${f(Cv)}`] },
+              { tipo: 'regla', texto: 'La distancia se mide por la perpendicular. La fórmula reemplaza el punto en la ecuación y divide entre la raíz de A² + B².',
+                ecuacion: [d, ' = ', { frac: [{ abs: ['A', sub('x', '0'), ' + B', sub('y', '0'), ' + C'] }, { raiz: [{ sup: ['A', '2'] }, ' + ', { sup: ['B', '2'] }] }] }] },
+              { tipo: 'cuentas', texto: 'Arriba, el punto reemplazado en la ecuación; abajo, la raíz de los cuadrados.',
+                ecuacion: [d, ' = ', { frac: [`|${a0} · ${par(x0)} + ${b0} · ${par(y0)} ${Cv < 0 ? '−' : '+'} ${f(Math.abs(Cv))}|`, { raiz: [`${a0}² + ${b0}²`] }] }, ' = ', { frac: [f(nume), f(Math.hypot(a0, b0))] }, ` = ${f(dv)}`],
+                dibujo: dib(true) },
+              { tipo: 'sentido', texto: `El camino vertical del punto hasta la recta mide ${fr(nume, b0)} ≈ ${f(nume / b0)}. El perpendicular, ${f(dv)}, es más corto, como debe ser.` },
+            ],
+            respuesta: [d, ` = ${f(dv)}`],
+          };
+        }
+        if (tipo === 0 && sem % 4 === 3) {
+          const yk = rr.ent(-4, 4), px = rr.ent(-4, 4), py = yk + rr.sg() * rr.ent(1, 2);
+          const dib = conPerp => ({ datos: plano({ extra: {
+            segmentos: [recta(0, yk, VEN, { grosor: 'contorno' })].concat(conPerp ? [recta(null, px, VEN, { color: 'o' })] : []),
+            puntos: [{ x: px, y: py, rotulo: P(px, py), lado: 'e' }].concat(conPerp ? [{ x: px, y: yk, color: 'o' }] : []),
+            alt: conPerp ? `Recta horizontal y = ${f(yk)} y su perpendicular vertical x = ${f(px)}` : `Recta horizontal y = ${f(yk)} y el punto ${P(px, py)}`,
+          } }), estado: {} });
+          return {
+            enunciado: [`Una recta es horizontal: y = ${f(yk)}. ¿Cómo es la recta perpendicular a ella que pasa por ${P(px, py)}?`],
+            dibujo: dib(false),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la recta que corta a la horizontal formando 90° y pasa por el punto dado.' },
+              { tipo: 'datos', texto: `La recta dada no sube ni baja: su pendiente es 0. El punto es ${P(px, py)}.`, ecuacion: [sub(m, '1'), ' = 0'] },
+              { tipo: 'regla', texto: 'La regla de invertir y cambiar el signo vale si la pendiente no es 0. Con pendiente 0, la perpendicular es vertical.' },
+              { tipo: 'cuentas', texto: 'Una recta vertical tiene la misma x en todos sus puntos: la del punto dado.', ecuacion: [`x = ${f(px)}`], dibujo: dib(true) },
+              { tipo: 'sentido', texto: `x = ${f(px)} pasa por ${P(px, py)} y corta a y = ${f(yk)} en ${P(px, yk)}, en escuadra.` },
+            ],
+            respuesta: [`x = ${f(px)}, una recta vertical`],
+          };
+        }
+        const p = rr.sg() * rr.ent(1, 4), q = rr.ent(1, 4), dada = fr(p, q), esPar = tipo === 0, m2 = esPar ? p / q : -q / p;
+        const m2txt = esPar ? dada : fr(-q, p);
+        const dib = { datos: plano({ extra: {
+          segmentos: [recta(p / q, 1, VEN, { grosor: 'contorno' }), recta(m2, -2, VEN, { color: 'o' })],
+          alt: `Recta gris de pendiente ${dada} y recta naranja ${esPar ? 'paralela' : 'perpendicular'}, de pendiente ${m2txt}`,
+        } }), estado: {} };
+        return {
+          enunciado: [`Una recta tiene pendiente ${dada}. ¿Qué pendiente tiene una recta ${esPar ? 'paralela' : 'perpendicular'} a ella?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la pendiente ', sub(m, '2'), ` de una recta ${esPar ? 'paralela' : 'perpendicular'} a la dada.`] },
+            { tipo: 'datos', texto: 'La pendiente de la recta dada.', ecuacion: [sub(m, '1'), ` = ${dada}`] },
+            { tipo: 'regla', texto: esPar ? 'Las paralelas tienen la misma pendiente: suben lo mismo por cada paso.' : 'Las perpendiculares tienen pendientes cuyo producto es −1: se invierte la pendiente y se le cambia el signo.',
+              ecuacion: esPar ? [sub(m, '1'), ' = ', sub(m, '2')] : [sub(m, '1'), ' · ', sub(m, '2'), ' = −1'] },
+            { tipo: 'cuentas', texto: esPar ? 'Se copia la pendiente.' : 'Se invierte y se cambia el signo.',
+              ecuacion: esPar ? [sub(m, '2'), ` = ${dada}`] : [`${dada} · `, sub(m, '2'), ' = −1  ⇒  ', sub(m, '2'), ` = ${m2txt}`], dibujo: dib },
+            { tipo: 'sentido', texto: esPar ? ['Comprueba: ', sub(m, '1'), ' − ', sub(m, '2'), ` = ${f(p / q - m2)}: suben lo mismo y nunca se cortan.`] : ['Comprueba: ', sub(m, '1'), ' · ', sub(m, '2'), ` = ${dada} · ${m2txt.startsWith('−') ? `(${m2txt})` : m2txt} = ${fr(-p * q, q * p)}, como pide la regla.`] },
+          ],
+          respuesta: [sub(m, '2'), ` = ${m2txt}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Primero la pendiente de la recta dada; después la que se pide.',
