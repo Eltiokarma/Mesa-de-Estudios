@@ -67,6 +67,7 @@
   }
   // Ruffini de cs entre x − a: fila de abajo b (cociente y, al final, el resto).
   const ruffini = (cs, x) => cs.reduce((b, c, i) => [...b, i ? c + x * b[i - 1] : c], []);
+  const par = v => (v < 0 ? `(${f(v)})` : f(v));
 
   // ---------- Idea 1: dividir es buscar P = D·Q + R ----------
   // Cambia: el divisor · Permanece: el dividendo x³ + 2x² − x + 5 · Progresa: las filas restadas · Se reserva: la
@@ -95,6 +96,15 @@
     titulo: 'Dividir es buscar D·Q + R',
     temas: ['Algoritmo de la división'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): los cuatro nombres con un reparto de panes, sin decir cómo sale el grado del cociente (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Repartir panes', texto: 'Si repartes 17 panes entre 5 amigos, a cada uno le tocan 3 y sobran 2. Lo que sobra es menor que 5: si no, alcanzaría para darle uno más a cada amigo.',
+          ecuacion: ['17 = 5 · 3 + 2'] },
+        { titulo: 'Los cuatro nombres', texto: ['En la división de ', P, ' entre ', D, ', ', P, ' es el dividendo y ', D, ' el divisor. Lo que se obtiene es el cociente ', Q, ', y lo que sobra es el resto ', R, '.'] },
+        { titulo: 'Qué mirar', texto: ['En el juego, cada fila resta un múltiplo de ', D, '. Fíjate en el grado de lo que queda al final y compáralo con el grado de ', D, '.'] },
+      ],
+    },
     juega: {
       consigna: 'P = x³ + 2x² − x + 5. Elige un divisor D: cada fila resta un múltiplo de D hasta que lo que queda es el resto.',
       voz: 'Compara el grado del resto con el de D.',
@@ -133,6 +143,41 @@
       texto: 'Dividir el dividendo P entre D es hallar el cociente Q y el resto R con P = D · Q + R, y R de grado menor que D.',
       ecuacion: [P, ' = ', { llave: [D, ' · ', Q], nota: 'múltiplo de D', color: 'c-i' }, ' + ', { llave: [R], nota: 'menor que D', color: 'c-h' }],
       condicion: 'D no es el polinomio cero. El grado de Q es grado de P menos grado de D.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (las mismas cuentas), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), gP = r.ent(4, 9), gD = r.ent(1, Math.min(4, gP - 1));
+        const pideQ = s % 2 === 0, gQ = gP - gD, gR = gD - 1;
+        const tabla = lleno => ({ columnas: ['P', 'D', 'Q', 'R'], colorCol: ['o', 'i', 'd', 'h'], rotulosFila: ['grado'],
+          filas: [[f(gP), f(gD), lleno && pideQ ? { t: f(gQ), color: 'd', fuerte: true } : { t: '?', hueco: true }, lleno && !pideQ ? { t: `≤ ${f(gR)}`, color: 'h', fuerte: true } : { t: '?', hueco: true }]],
+          alt: `Grados: P ${gP}, D ${gD}; ${pideQ ? 'Q' : 'R'} por hallar` });
+        const comun = [
+          { tipo: 'datos', texto: ['El dividendo ', P, ` tiene grado ${gP} y el divisor `, D, `, grado ${gD}.`] },
+        ];
+        const pasos = pideQ ? [
+          { tipo: 'pide', texto: ['Piden el grado del cociente ', Q, '.'] },
+          ...comun,
+          { tipo: 'regla', texto: ['El resto queda con grado menor que el divisor. Así, el grado de ', P, ' lo pone ', D, ' · ', Q, ', y al multiplicar polinomios los grados se suman.'],
+            ecuacion: [P, ' = ', D, ' · ', Q, ' + ', R] },
+          { tipo: 'cuentas', texto: ['Busco el grado que, sumado al de ', D, ', da el de ', P, '.'],
+            ecuacion: [`${gD} + grado `, Q, ` = ${gP}   →   grado `, Q, ` = ${gP} − ${gD} = ${gQ}`], dibujo: { datos: tabla(true), estado: {} } },
+          { tipo: 'sentido', texto: ['Comprueba: ', D, ' · ', Q, ` tiene grado ${gD} + ${gQ} = ${gD + gQ}, el mismo grado de `, P, '.'] },
+        ] : [
+          { tipo: 'pide', texto: ['Piden el mayor grado que puede tener el resto ', R, '.'] },
+          ...comun,
+          { tipo: 'regla', texto: ['Se sigue dividiendo mientras lo que queda tenga grado igual o mayor que el de ', D, '. Por eso el resto termina con grado menor que ', D, '.'] },
+          { tipo: 'cuentas', texto: ['El grado de ', R, ` es menor que ${gD}: el mayor entero que cumple eso es uno menos.`],
+            ecuacion: ['grado ', R, ` < ${gD}   →   grado `, R, ` ≤ ${gD} − 1 = ${gR}`], dibujo: { datos: tabla(true), estado: {} } },
+          { tipo: 'sentido', texto: ['Comprueba: si ', R, ` tuviera grado ${gD}, todavía se podría restar otro múltiplo de `, D, `. Con grado ${gR}, ya no.`] },
+        ];
+        return {
+          enunciado: ['Se divide un ', P, ` de grado ${gP} entre un `, D, ` de grado ${gD}. ¿Qué grado ${pideQ ? 'tiene el cociente' : 'puede tener, como máximo, el resto'}?`],
+          dibujo: { datos: tabla(false), estado: {} },
+          pasos,
+          respuesta: pideQ ? ['grado de ', Q, ` = ${gQ}`] : ['grado de ', R, `: como máximo ${gR}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -181,6 +226,14 @@
     titulo: 'Bajar, multiplicar y sumar',
     temas: ['Métodos de Horner y Ruffini'],
     pieza: 'alg-tabla',
+    // Lee: de dónde viene Ruffini y cómo es la tabla, sin decir qué cuenta hace cada flecha (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un atajo con nombre', texto: 'Paolo Ruffini, médico y matemático italiano, publicó en 1804 una forma corta de dividir entre x − a. Quienes se preparan para la admisión la usan muchísimo.' },
+        { titulo: 'Tres filas', texto: ['Arriba van los coeficientes del dividendo, de la potencia mayor a la menor. A la izquierda va ', a, '. La fila de abajo se llena de izquierda a derecha.'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, sigue las flechas naranjas: van de una casilla de abajo a la fila del medio. Descubre qué cuenta hace cada una.' },
+      ],
+    },
     juega: {
       consigna: 'P = x³ − 3x² + 4, dividido entre x − a. Elige a: la fila de abajo se arma bajando, multiplicando por a y sumando.',
       voz: 'Sigue una flecha: multiplica por a y suma.',
@@ -221,6 +274,32 @@
       texto: 'Para dividir entre x − a, se baja el primer coeficiente; cada casilla nueva es el coeficiente de arriba más a por la casilla anterior. La última es el resto.',
       ecuacion: [{ sub: ['b', 'k'] }, ' = ', { llave: [{ sub: ['c', 'k'] }], nota: 'el de arriba', color: 'c-o' }, ' + ', a, ' · ', { llave: [{ sub: ['b', 'k−1'] }], nota: 'casilla anterior', color: 'c-d' }],
       condicion: 'el divisor es x − a; se escriben todos los coeficientes, con 0 en las potencias que faltan. Es el esquema de Horner.',
+    },
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        const cs = [r.noCero(-3, 3), r.ent(-4, 4), r.ent(-5, 5), r.ent(-6, 6)];
+        if (s % 3 === 0) cs[1] = 0;
+        const x = r.noCero(-3, 3), b = ruffini(cs, x), k = r.ent(1, 3);
+        const div = x < 0 ? `x + ${-x}` : `x − ${x}`;
+        const pideResto = k === 3, Qc = b.slice(0, -1), Rv = b[3];
+        const vuelta = multiplicar([1, -x], Qc).map((c, i, arr) => (i === arr.length - 1 ? c + Rv : c));
+        return {
+          enunciado: [`En Ruffini de ${poli(cs)} entre ${div}, ¿qué número va en la casilla «?» de la fila de abajo${pideResto ? ', el resto' : ''}?`],
+          dibujo: { datos: tablaRuffini(cs, x, { ver: k, oculta: k }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: pideResto ? ['Piden la última casilla de la fila de abajo: el resto ', R, '.'] : [`Piden la casilla ${k + 1} de la fila de abajo, uno de los coeficientes del cociente `, Q, '.'] },
+            { tipo: 'datos', texto: [`Arriba van ${cs.map(c => f(c)).join(' | ')}. El divisor es ${div}, así que `, a, ` = ${f(x)}. La casilla anterior vale ${f(b[k - 1])}.`] },
+            { tipo: 'regla', texto: ['Cada casilla nueva de abajo sale de dos números: la casilla anterior multiplicada por ', a, ', más el coeficiente que está arriba en esa columna.'] },
+            { tipo: 'cuentas', texto: `Multiplico ${f(b[k - 1])} por ${f(x)} y le sumo ${f(cs[k])}.`,
+              ecuacion: [`${f(cs[k])} + ${par(x)} · ${par(b[k - 1])} = ${f(b[k])}`], dibujo: { datos: tablaRuffini(cs, x, { resaltar: k }), estado: {} } },
+            { tipo: 'sentido', texto: ['Comprueba con la tabla completa: (', div, ') · ', Q, ' + ', R, ' vuelve a dar el dividendo.'],
+              ecuacion: [`(${div})(${poli(Qc)}) ${Rv < 0 ? '−' : '+'} ${f(Math.abs(Rv))} = ${poli(vuelta)}`] },
+          ],
+          respuesta: `La casilla «?» vale ${f(b[k])}`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'alg-tabla',
@@ -275,6 +354,15 @@
     titulo: 'Con kx + b, divide entre k',
     temas: ['Métodos de Horner y Ruffini', 'Algoritmo de la división'],
     pieza: 'alg-tabla',
+    // Lee: el número que usa Ruffini y el factor común del divisor, sin decir qué se hace con el cociente (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'El número de Ruffini', texto: 'Ruffini necesita el valor de x que hace cero al divisor. Para x − 3 es 3. Para 2x − 1 es 1/2, porque 2 · 1/2 − 1 = 0.',
+          ecuacion: ['2x − 1 = 0 → x = 1/2'] },
+        { titulo: 'Divisores parecidos', texto: '2x − 2 y x − 1 se anulan con el mismo x = 1, pero no son iguales: 2x − 2 = 2(x − 1). El primero es el doble del segundo.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, cambia k. Mira qué fila se mueve, cuál se queda quieta y qué pasa con la última casilla, la del resto.' },
+      ],
+    },
     juega: {
       consigna: 'P = 6x² + 6x + 1 entre kx − k. Ruffini usa x = 1 sin importar k; la última fila divide el cociente entre k.',
       voz: 'Cambia k y mira qué fila se mueve.',
@@ -309,6 +397,36 @@
       texto: 'Para dividir entre kx + b se usa Ruffini con x = −b/k; su cociente Q′ se divide entre k. El resto R′ de Ruffini es el resto, sin dividir.',
       ecuacion: [Q, ' = ', { frac: ['Q′', 'k'] }, '   ·   ', R, ' = ', R, '′'],
       condicion: 'k distinto de 0. El resto queda igual porque solo se reparte el factor k entre el divisor y el cociente.',
+    },
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        const k = r.uno([2, 3]), x = r.noCero(-2, 3), Qc = [r.noCero(-3, 3), r.ent(-4, 4)], Rr = r.noCero(-6, 6);
+        const div = [k, -k * x];
+        const cs = multiplicar(div, Qc).map((c, i, arr) => (i === arr.length - 1 ? c + Rr : c));
+        const pideQ = s % 2 === 0, dTxt = poli(div), xa = x < 0 ? `x + ${-x}` : `x − ${x}`;
+        // Las cuentas salen de Ruffini, no de Qc ni de Rr: Q = Q′ ÷ k y R = R′.
+        const b = ruffini(cs, x), Qp = b.slice(0, -1), Rp = b[b.length - 1], Qv = Qp.map(c => c / k);
+        const vuelta = multiplicar(div, Qv).map((c, i, arr) => (i === arr.length - 1 ? c + Rp : c));
+        return {
+          enunciado: ['Divide ', `${poli(cs)} entre ${dTxt}. ¿Cuál es el ${pideQ ? 'cociente' : 'resto'} `, pideQ ? Q : R, '?'],
+          dibujo: { datos: tablaRuffini(cs, x, { ver: 1 }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el ', pideQ ? 'cociente ' : 'resto ', pideQ ? Q : R, ` de dividir entre ${dTxt}.`] },
+            { tipo: 'datos', texto: `El divisor es ${dTxt} = ${k}(${xa}). Se anula en x = ${f(x)}, y su primer coeficiente es k = ${k}.` },
+            { tipo: 'regla', texto: [`Ruffini con x = ${f(x)} divide entre ${xa}. Como ${dTxt} es ${k} veces eso, el cociente de Ruffini se reparte entre ${k}; el resto queda igual.`] },
+            pideQ
+              ? { tipo: 'cuentas', texto: `Ruffini deja ${b.map(c => f(c)).join(' | ')}. Divido entre ${k} todas las casillas menos la última.`,
+                ecuacion: [Q, ` = (${poli(Qp)}) ÷ ${k} = ${poli(Qv)}`], dibujo: { datos: tablaK(cs, x, 1, k), estado: {} } }
+              : { tipo: 'cuentas', texto: `Ruffini deja ${b.map(c => f(c)).join(' | ')}. La última casilla es el resto, y no se divide entre ${k}.`,
+                ecuacion: [R, ` = ${f(Rp)}`], dibujo: { datos: tablaK(cs, x, 1, k), estado: {} } },
+            { tipo: 'sentido', texto: ['Comprueba: el divisor por el cociente, más el resto, vuelve a dar el dividendo.'],
+              ecuacion: [`(${dTxt})(${poli(Qv)}) ${Rp < 0 ? '−' : '+'} ${f(Math.abs(Rp))} = ${poli(vuelta)}`] },
+          ],
+          respuesta: pideQ ? [Q, ` = ${poli(Qv)}`] : [R, ` = ${f(Rp)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -360,6 +478,17 @@
       alt: `P(x) = x² − 2x − 3 y (x − ${f(x)})·Q(x): la distancia vertical entre las dos es siempre ${f(Rv)}`,
     };
   }
+  // Así se resuelve: la curva de un cúbico de «Ahora tú», de −3 a 3, con la escala que pidan sus alturas.
+  function curvaSola(cs, puntos) {
+    const pts = muestra(cs, -3, 3), ys = [...pts.map(z => z[1]), 0, ...puntos.map(z => z.y)];
+    const alto = Math.max(...ys.map(Math.abs)), paso = alto > 60 ? 20 : alto > 20 ? 10 : 5;
+    return {
+      x: { min: -3, max: 3, paso: 1, nombre: 'x', decimales: 0, color: 'o' },
+      y: { min: Math.floor(Math.min(...ys) / paso) * paso, max: Math.ceil(Math.max(...ys) / paso) * paso, paso, nombre: 'P(x)', decimales: 0 },
+      curvas: [{ puntos: pts, color: 'o', rotulo: 'P' }],
+      puntos, alt: `Gráfica de P(x) = ${poli(cs)}${puntos.length ? ': ' + puntos.map(z => z.rotulo).join('; ') : ''}`,
+    };
+  }
   const P5 = [1, 0, 0, -3, 0, 7];   // x⁵ − 3x² + 7
   // Gesto directo: la manija vive en el viewBox de la pieza; la inversa lineal de su escala da el valor.
   const EJES = () => Kit.piezas.ejes;
@@ -369,6 +498,15 @@
     titulo: 'El resto es P(a)',
     temas: ['Teorema del resto', 'Divisibilidad de polinomios'],
     pieza: 'ejes',
+    // Lee: para qué sirve un atajo y qué es un factor, sin decir cuánto vale el resto (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: '¿Hay un atajo?', texto: 'Dividir un polinomio de grado 5 con Ruffini pide escribir seis coeficientes y hacer cinco cuentas. En el examen de admisión el tiempo cuenta, y muchas veces solo preguntan el resto.' },
+        { titulo: 'Qué es un factor', texto: 'Si una división sale exacta, el divisor es un factor. Con números, 12 = 4 · 3, así que 4 es factor de 12. Con polinomios pasa lo mismo.',
+          ecuacion: ['x² − 1 = (x − 1)(x + 1)'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, la curva naranja es P y la verde punteada es (x − a)·Q. Mueve el punto: mira cuánto se separan las dos curvas y a qué altura queda el punto.' },
+      ],
+    },
     juega: {
       consigna: 'P = x² − 2x − 3, dividido entre x − a. La curva punteada es (x − a)·Q; la distancia entre las dos curvas es el resto.',
       voz: 'Busca un a donde las curvas se junten.',
@@ -416,6 +554,52 @@
       texto: 'Teorema del resto: dividir P(x) entre x − a deja resto P(a). Si P(a) = 0, x − a es factor y P es divisible entre x − a.',
       ecuacion: [P, ' = (x − ', a, ')·', Q, ' + ', { llave: [P, '(', a, ')'], nota: 'el resto', color: 'c-h' }],
       condicion: 'el divisor es de grado 1, como pide el teorema del resto. Para kx + b se evalúa en x = −b/k.',
+    },
+    resuelve: {
+      pieza: 'ejes',
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const cs = [r.noCero(-2, 3), r.ent(-4, 4), r.ent(-4, 4), r.ent(-6, 6)];
+          const x = r.noCero(-3, 3), div = x < 0 ? `x + ${-x}` : `x − ${x}`;
+          const v = evaluar(cs, x), b = ruffini(cs, x);
+          const vals = cs.map((c, k) => c * x ** (3 - k) + 0).filter((_, k) => cs[k] !== 0);
+          const suma = vals.map((w, i) => (i ? (w < 0 ? ` − ${f(-w)}` : ` + ${f(w)}`) : f(w))).join('');
+          return {
+            enunciado: `¿Cuál es el resto de dividir ${poli(cs)} entre ${div}?`,
+            dibujo: { datos: curvaSola(cs, []), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el resto ', R, ` de dividir entre ${div}, sin hacer toda la división.`] },
+              { tipo: 'datos', texto: `El divisor ${div} se anula en x = ${f(x)}.`, ecuacion: [`${div} = 0 → x = ${f(x)}`] },
+              { tipo: 'regla', texto: ['Al dividir entre x − ', a, ', lo que sobra es justo ', P, '(', a, '). Basta reemplazar x por ese número y operar.'] },
+              { tipo: 'cuentas', texto: `Con x = ${f(x)}: x³ = ${f(x ** 3)}, x² = ${f(x * x)}. Multiplico cada potencia por su coeficiente y sumo.`,
+                ecuacion: [R, ' = ', P, `(${f(x)}) = ${suma} = ${f(v)}`],
+                dibujo: { datos: curvaSola(cs, [{ x, y: v, color: 'h', guias: true, rotulo: `R = P(${f(x)}) = ${f(v)}` }]), estado: {} } },
+              { tipo: 'sentido', texto: `Comprueba con Ruffini: la fila de abajo queda ${b.map(c => f(c)).join(' | ')}, y su última casilla también es ${f(b[3])}.` },
+            ],
+            respuesta: [R, ` = ${f(v)}`],
+          };
+        }
+        // Divisibilidad: el mismo generador de «Ahora tú».
+        let x, m, c, d;
+        do { x = r.noCero(-3, 3); m = r.noCero(-4, 4); c = r.ent(-5, 5); d = -(x ** 3 + m * x * x + c * x); } while (d === 0 || d === m || d === -m);
+        const div = x < 0 ? `x + ${-x}` : `x − ${x}`;
+        const resto = c * x + d, mm = -(x ** 3 + resto) / (x * x);
+        const fin = evaluar([1, mm, c, d], x);
+        return {
+          enunciado: ['¿Qué valor de m hace que ', `x³ + mx²${c === 0 ? '' : ` ${c < 0 ? '−' : '+'} ${Math.abs(c) === 1 ? '' : Math.abs(c)}x`} ${d < 0 ? '−' : '+'} ${Math.abs(d)} sea divisible entre ${div}?`],
+          pasos: [
+            { tipo: 'pide', texto: `Piden el valor de m que hace exacta la división entre ${div}.` },
+            { tipo: 'datos', texto: `El divisor ${div} se anula en x = ${f(x)}.` },
+            { tipo: 'regla', texto: ['Divisible quiere decir que el resto es 0. Por el teorema del resto, ese resto es ', P, `(${f(x)}): planteo `, P, `(${f(x)}) = 0.`] },
+            { tipo: 'cuentas', texto: `Reemplazo x por ${f(x)}: x³ = ${f(x ** 3)} y x² = ${f(x * x)}. Junto los números y despejo m.`,
+              ecuacion: [`${f(x ** 3)} + ${f(x * x)}m ${resto < 0 ? '−' : '+'} ${Math.abs(resto)} = 0 → m = ${f(mm)}`],
+              dibujo: { datos: curvaSola([1, mm, c, d], [{ x, y: 0, color: 'h', guias: true, rotulo: `P(${f(x)}) = ${f(fin)}` }]), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: con m = ${f(mm)}, Ruffini deja ${ruffini([1, mm, c, d], x).map(z => f(z)).join(' | ')}. La última casilla es 0: la división es exacta.` },
+          ],
+          respuesta: `m = ${f(mm)}`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -468,6 +652,15 @@
     titulo: 'Un exponente baja, otro sube',
     temas: ['Cocientes notables y término general'],
     pieza: 'alg-tabla',
+    // Lee: qué es un cociente notable y los ceros de en medio, sin decir cómo se arma el término k (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Divisiones que se repiten', texto: 'Un cociente notable es una división que aparece tanto que su resultado se aprende sin dividir, como pasa con los productos notables. El más corto es este.',
+          ecuacion: ['(x² − a²) ÷ (x − a) = x + a'] },
+        { titulo: 'Ceros en medio', texto: 'Para dividir x³ − 8 con Ruffini, arriba van 1, 0, 0 y −8. Los términos en x² y en x no aparecen, pero tienen su casilla con 0.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, elige n y a. Mira la fila de abajo: qué relación tiene cada número con el anterior. Y mira siempre la última casilla.' },
+      ],
+    },
     juega: {
       consigna: 'Divide xⁿ − aⁿ entre x − a con Ruffini. Elige n y a: en medio todo es 0, y abajo aparecen las potencias de a.',
       voz: 'Mira el resto cada vez que cambias n.',
@@ -505,6 +698,41 @@
       texto: '(xⁿ − aⁿ) ÷ (x − a) tiene n términos: el exponente de x baja de uno en uno y el de a sube desde 0. Así se arma el término k.',
       ecuacion: [{ sub: ['t', 'k'] }, ' = ', { llave: [{ sup: ['x', 'n − k'] }], nota: 'baja', color: 'c-o' }, '·', { llave: [{ sup: [{ v: 'c-i', t: 'a' }, 'k − 1'] }], nota: 'sube desde 0', color: 'c-i' }],
       condicion: 'vale para x ≠ a. Con x + a en el divisor, los signos se alternan: +, −, +, …',
+    },
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        const n = r.ent(5, 11), k = r.ent(2, n - 1);
+        const conMas = s % 3 === 1;
+        const nn = conMas && n % 2 === 0 ? n + 1 : n;
+        const sg = i => (conMas && i % 2 === 0 ? -1 : 1);
+        const enun = conMas ? `(x${sup(nn)} + y${sup(nn)}) ÷ (x + y)` : `(x${sup(nn)} − y${sup(nn)}) ÷ (x − y)`;
+        const tk = termino(nn, k, 'y', sg(k)), ex = nn - k, ey = k - 1;
+        // Tabla de exponentes: los primeros términos, «…» y el término k.
+        const lugares = k <= 3 ? Array.from({ length: k }, (_, i) => i + 1) : [1, 2, null, k];
+        const tabla = lleno => ({
+          columnas: ['n.º', 'exp. de x', 'exp. de y', 'término'], colorCol: [null, 'o', 'i', 'd'],
+          filas: lugares.map(i => (i === null ? ['…', '…', '…', '…'] : i === k && !lleno ? [f(i), { t: '?', hueco: true }, { t: '?', hueco: true }, { t: '?', hueco: true }]
+            : [f(i), { t: f(nn - i), color: 'o' }, { t: f(i - 1), color: 'i' }, { t: termino(nn, i, 'y', sg(i)), color: 'd', fuerte: i === k }])),
+          resaltes: lleno ? [{ f: lugares.length - 1, c: 0, ancho: 4, color: 'd' }] : [],
+          alt: `Exponentes de x y de y en los términos del cociente de ${enun}`,
+        });
+        return {
+          enunciado: `En el cociente de ${enun}, ¿cuál es el término número ${k}?`,
+          dibujo: { datos: tabla(false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden el término número ${k} del cociente, sin hacer la división.` },
+            { tipo: 'datos', texto: conMas ? `Es un cociente notable con signo más y n = ${nn}, impar: la división es exacta y el cociente tiene ${nn} términos.`
+              : `Es un cociente notable con n = ${nn}: el cociente tiene ${nn} términos.` },
+            { tipo: 'regla', texto: `El exponente de x empieza en n − 1 y baja de uno en uno; el de y empieza en 0 y sube.${conMas ? ' Con x + y, los signos se alternan.' : ''}` },
+            { tipo: 'cuentas', texto: `En el término ${k}, x lleva ${nn} − ${k} = ${ex} e y lleva ${k} − 1 = ${ey}.${conMas ? ` El lugar ${k} es ${k % 2 ? 'impar: signo +' : 'par: signo −'}.` : ''}`,
+              ecuacion: [{ sub: ['t', String(k)] }, ` = ${tk}`], dibujo: { datos: tabla(true), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: en cada término los exponentes suman n − 1. Aquí ${ex} + ${ey} = ${ex + ey}, y ${nn} − 1 = ${nn - 1}.` },
+          ],
+          respuesta: [{ sub: ['t', String(k)] }, ` = ${tk}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
