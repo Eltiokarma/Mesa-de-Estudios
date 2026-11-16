@@ -826,7 +826,7 @@ input[type=file]{font:inherit;max-width:100%}
 .ec-num{border-bottom:2px solid currentColor;padding:0 3px}
 .ec-den{padding:0 3px}
 .ec-sup,.ec-sub{font-size:.75em;line-height:0}
-.ec-raiz{display:inline-flex;align-items:stretch;white-space:nowrap;vertical-align:middle}.ec-rad{display:flex;align-items:flex-end;font-size:1.15em;line-height:1}.ec-bajo{display:inline-flex;align-items:center;border-top:2px solid currentColor;padding:2px 2px 0}.ec-ind{align-self:flex-start}
+.ec-raiz{display:inline-flex;align-items:stretch;white-space:nowrap;vertical-align:middle}.ec-rad{display:flex;align-items:flex-start;font-size:1.2em;line-height:1;margin-right:-1px;margin-top:-.04em}.ec-bajo{display:inline-block;border-top:2px solid currentColor;padding:4px 2px 0;line-height:1.25}.ec-ind{align-self:flex-start}
 .ec-tacha{text-decoration:line-through;text-decoration-color:var(--c-h);text-decoration-thickness:2px;opacity:.75}
 .ec-vec{display:inline-block;position:relative}.ec-vec::before{content:'→';position:absolute;left:0;right:0;top:-.85em;font-size:.7em;text-align:center}
 .ec-v{border-radius:4px;padding:0 2px}
