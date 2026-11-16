@@ -76,20 +76,30 @@
   // Progresa: los tres números a la vez (6,5 m, 65 dm, 650 cm) · Se reserva: la conversión de km/h a m/s ·
   // Debe verse: el mismo alto con tres números; la regla más fina da el número más grande.
   const POSTE = 8;   // m: los postes de alumbrado de baja tensión suelen medir unos 8 m
+  // Largos creíbles para los ejercicios de la idea 1 (contrato, punto 10: nada de lápices de 2,5 m).
+  const LARGOS = [{ que: 'Una puerta', m: 2.1 }, { que: 'Una pizarra', m: 2.4 }, { que: 'Un poste de luz', m: 8.5 },
+    { que: 'Una cancha de vóley', m: 18 }, { que: 'Un estudiante', m: 1.65 }];
   const MISION = 6.5;
   const Lp = { v: 'c-o', t: 'L' };
   const medida = L => ({ datos: { objeto: 'poste', alto: L, max: 10, color: 'o', variable: 'L' }, estado: {} });
-  // Lo que avanza en cada segundo a 72 km/h: saltos de 20 m (se calcula: 72 · 1000 / 3600).
+  // Lo que avanza en cada segundo a 72 km/h: tramos de 20 m (se calcula: 72 · 1000 / 3600).
   const V_KMH = 72, V_MS = V_KMH * 1000 / 3600;
-  const saltos = (n, conRotulo) => Array.from({ length: n }, (_, i) => ({ tipo: 'salto', a: i * V_MS, b: (i + 1) * V_MS, color: 'o', rotulo: conRotulo && i === 0 ? '1 s' : undefined, desde: i + 2 }));
-  const rectaV = (n, conRotulo, desde = false) => ({ min: 0, max: 100, paso: 10, cada: 2, sufijo: ' m', decimales: 0, variable: 'x (m)', color: 'i', filas: 1,
-    elementos: saltos(n, conRotulo).map(e => (desde ? e : Object.assign({}, e, { desde: 0 }))) });
+  // La combi en su pista (pieza fis-combi): dónde está en cada segundo. segundos: 0 la deja en la partida.
+  const pista = (segundos, v = V_MS) => ({ v, segundos, max: Math.max(100, Math.ceil(5 * v / 20) * 20), paso: 10, numero: 20, color: 'o' });
   const unidades = {
     id: 'unidades',
     titulo: 'Otra unidad, otro número',
     pregunta: '¿Qué cambia cuando mides lo mismo en otra unidad?',
     temas: ['Magnitudes fundamentales y derivadas', 'Sistema Internacional'],
     pieza: 'recta',
+    lee: {
+      tarjetas: [
+        { titulo: 'Medir es contar', texto: 'Medir algo es contar cuántas veces cabe en él una unidad: el metro, el decímetro o el centímetro. El número que sale depende de la unidad que elijas.' },
+        { titulo: 'Las unidades de la ciencia', texto: 'La ciencia usa el Sistema Internacional: el metro para el largo y el segundo para el tiempo. Así cualquiera, en cualquier país, mide igual.' },
+        { titulo: 'Unidades que se juntan', texto: 'Una rapidez junta dos unidades. 60 km/h dice cuántos kilómetros se avanzan en una hora; en metros por segundo, m/s, dice cuántos metros en un segundo.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a medir un poste de luz con tres reglas a la vez. Cambia su alto y mira las tres reglas juntas: ¿marcan la misma altura?' },
+      ],
+    },
     aprendizaje: 'El poste mide lo mismo en cualquier unidad; cambia el número: en decímetros es 10 veces más y en centímetros, 100 veces más.',
     juega: {
       pieza: 'fis-medida',
@@ -118,77 +128,148 @@
       opciones: [
         { id: 'c', texto: `${f(V_MS, 0)} m`, correcta: true },
         { id: 'solo-km', texto: `${f(V_KMH * 1000, 0)} m`, error: 'CONV-UNO', siFuera: 'Eso pasa bien los km a metros, pero son los metros de una hora entera.' },
-        { id: 'por', texto: `${f(V_KMH * 3.6, 1)} m`, error: 'CONV-INVERSO', siFuera: 'El 3,6 es el factor correcto, pero aquí se divide: un segundo es poco tiempo.' },
+        { id: 'por', texto: `${f(V_KMH * 3.6, 1)} m`, error: 'CONV-INVERSO', siFuera: 'Multiplicaste: 72 × 3,6 = 259,2 m en un segundo, más que dos canchas de fútbol. Una combi no corre tanto.' },
         { id: 'minuto', texto: `${f(V_KMH * 1000 / 60, 0)} m`, error: 'CONV-UNO', siFuera: 'Esos son los metros de un minuto. Una hora tiene 3600 segundos.' },
       ],
-      dibujo: { datos: rectaV(0, false), estado: {} },
-      revelar: { datos: rectaV(5, true), estado: {} },
+      pieza: 'fis-combi',
+      dibujo: { datos: pista(0), estado: {} },
+      revelar: { datos: pista(5), estado: {} },
       coincide: `Coincide: 72 000 m repartidos en 3600 s dan ${f(V_MS, 0)} m cada segundo.`,
     },
-    // «Mira» mide la combi de la predicción en la recta (pieza recta). Pendiente del contrato (etapa 1, paso 3): dibujar
-    // la combi, que hoy son solo saltos sobre la recta.
+    // «Predice», «Mira» y «Así se resuelve» muestran la combi en su pista (pieza fis-combi, 16 nov): antes eran saltos
+    // sobre una recta que hablaban de una combi que no se dibujaba.
     mira: {
-      datos: rectaV(5, true, true),
+      pieza: 'fis-combi',
+      datos: pista(5),
+      // Las unidades se tachan arriba con abajo (lector en frío, 16 nov: no se veía por qué el factor de la hora va al revés).
       pasos: [
-        { estado: { corte: 1 }, texto: 'En una hora avanza 72 km, que son 72 000 m.', ecuacion: ['72 km · ', { frac: ['1000 m', '1 km'] }, ' = 72 000 m'] },
-        { estado: { corte: 1 }, texto: 'Una hora son 3600 segundos.', ecuacion: ['1 h · ', { frac: ['3600 s', '1 h'] }, ' = 3600 s'] },
-        { estado: { corte: 2 }, texto: 'Se reparten los metros en los segundos: 20 m en cada uno.', ecuacion: [{ frac: ['72 000 m', '3600 s'] }, ' = 20 m/s'] },
-        { estado: { corte: 6 }, texto: 'Cinco segundos, cinco saltos iguales: la rapidez no cambió, solo su número.', ecuacion: ['72 km/h = 20 m/s'] },
+        { estado: { corte: 0 }, texto: '72 km/h quiere decir 72 km en una hora.', ecuacion: ['72 km/h = ', { frac: ['72 km', '1 h'] }] },
+        { estado: { corte: 0 }, texto: 'Algo entre algo igual da 1, y 1000 m es igual a 1 km.', ecuacion: [{ frac: ['1000 m', '1 km'] }, ' = 1'] },
+        { estado: { corte: 0 }, texto: 'Por 1 nada cambia: el km de arriba se tacha con el de abajo.',
+          ecuacion: [{ frac: [['72 ', { tacha: 'km' }], '1 h'] }, ' × ', { frac: ['1000 m', ['1 ', { tacha: 'km' }]] }, ' = ', { frac: ['72 000 m', '1 h'] }] },
+        { estado: { corte: 0 }, texto: 'Para tachar la hora de abajo, el factor lleva la hora arriba.',
+          ecuacion: [{ frac: ['72 000 m', ['1 ', { tacha: 'h' }]] }, ' × ', { frac: [['1 ', { tacha: 'h' }], '3600 s'] }, ' = ', { frac: ['72 000 m', '3600 s'] }] },
+        { estado: { corte: 1 }, texto: 'Se reparten los metros entre los segundos: 20 m en cada uno.', ecuacion: [{ frac: ['72 000 m', '3600 s'] }, ' = 20 m/s'] },
+        { estado: { corte: 3 }, texto: 'Atajo: por 1000 y entre 3600 es entre 3,6, porque 3600 ÷ 1000 = 3,6.', ecuacion: ['72 ÷ 3,6 = 20'] },
+        { estado: { corte: 5 }, texto: 'Cinco segundos, cinco tramos iguales: la misma rapidez, otro número.', ecuacion: ['72 km/h = 20 m/s'] },
       ],
     },
     regla: {
-      texto: 'Una magnitud no cambia al cambiar de unidad: cambia el número. Se multiplica por factores que valen 1. Las magnitudes derivadas del Sistema Internacional salen de las siete fundamentales.',
-      ecuacion: ['72 ', { frac: ['km', 'h'] }, ' · ', { llave: [{ frac: ['1000 m', '1 km'] }], nota: 'vale 1', color: 'c-o' }, ' · ', { llave: [{ frac: ['1 h', '3600 s'] }], nota: 'vale 1', color: 'c-o' }, ' = 20 ', { frac: ['m', 's'] }],
-      condicion: 'cada factor tiene arriba y abajo lo mismo medido en dos unidades; si la unidad está al cuadrado, el factor también.',
+      texto: 'Cambiar de unidad no cambia lo medido: el poste es el mismo y la combi va igual de rápido. Cambia el número: se multiplica por factores que valen 1.',
+      ecuacion: [{ frac: [['72 ', { tacha: 'km' }], ['1 ', { tacha: 'h' }]] }, ' × ', { llave: [{ frac: ['1000 m', ['1 ', { tacha: 'km' }]] }], nota: 'vale 1', color: 'c-d' }, ' × ', { llave: [{ frac: [['1 ', { tacha: 'h' }], '3600 s'] }], nota: 'vale 1', color: 'c-d' }, ' = 20 ', { frac: ['m', 's'] }],
+      condicion: 'cada factor vale 1 y va de modo que la unidad vieja se tache: arriba si estaba abajo, y al revés.',
+    },
+    resuelve: {
+      pieza: 'fis-combi',
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 4;
+        if (tipo === 0) {
+          // Sin 72 km/h: ese es el caso de «Predice» y «Mira».
+          const n = r.de([36, 54, 90, 108]), ms = n * 1000 / 3600;
+          return {
+            enunciado: `Una combi va a ${f(n, 0)} km/h. ¿Cuántos metros avanza en cada segundo?`,
+            dibujo: { datos: pista(0, ms), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la rapidez en metros por segundo: cuántos metros avanza en un segundo.' },
+              { tipo: 'datos', texto: `Va a ${f(n, 0)} km/h: avanza ${f(n, 0)} km en cada hora.` },
+              { tipo: 'regla', texto: 'Cada unidad se cambia con un factor que vale 1: los km a metros y la hora a segundos.', ecuacion: ['1 km = 1000 m', '  y  ', '1 h = 60 × 60 s = 3600 s'] },
+              { tipo: 'cuentas', texto: 'Los km y las horas se tachan y queda m/s. Es lo mismo que dividir entre 3,6.', ecuacion: [`${f(n, 0)} `, { frac: [{ tacha: 'km' }, { tacha: 'h' }] }, ' × ', { frac: ['1000 m', ['1 ', { tacha: 'km' }]] }, ' × ', { frac: [['1 ', { tacha: 'h' }], '3600 s'] }, ` = ${f(ms, 2)} m/s`], dibujo: { datos: pista(1, ms), estado: {} } },
+              { tipo: 'sentido', texto: `${f(ms, 2)} m en un segundo: menos que una cancha de fútbol. Es creíble para un vehículo.` },
+            ],
+            respuesta: `${f(ms, 2)} m/s`,
+          };
+        }
+        if (tipo === 1) {
+          const o = r.de(LARGOS);
+          return {
+            enunciado: `${o.que} mide ${f(o.m, 2)} m. ¿Cuántos centímetros son?`,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el mismo largo en centímetros.' },
+              { tipo: 'datos', texto: `Mide ${f(o.m, 2)} m.` },
+              { tipo: 'regla', texto: 'En un metro caben 100 centímetros: ese es el factor que vale 1.', ecuacion: [{ frac: ['100 cm', '1 m'] }, ' = 1'] },
+              { tipo: 'cuentas', texto: 'Se multiplica por 100.', ecuacion: [`${f(o.m, 2)} m × `, { frac: ['100 cm', '1 m'] }, ` = ${f(o.m * 100, 0)} cm`] },
+              { tipo: 'sentido', texto: 'El centímetro es más chico que el metro: el número tenía que subir, y subió.' },
+            ],
+            respuesta: `${f(o.m * 100, 0)} cm`,
+          };
+        }
+        if (tipo === 2) {
+          const mn = r.ent(2, 12) * 5, sg = mn * 60;
+          return {
+            enunciado: `Una clase dura ${f(mn, 0)} minutos. ¿Cuántos segundos son?`,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el mismo tiempo en segundos, la unidad del Sistema Internacional.' },
+              { tipo: 'datos', texto: `La clase dura ${f(mn, 0)} min.` },
+              { tipo: 'regla', texto: 'Un minuto son 60 segundos: ese es el factor que vale 1.', ecuacion: [{ frac: ['60 s', '1 min'] }, ' = 1'] },
+              { tipo: 'cuentas', texto: 'Se multiplica por 60.', ecuacion: [`${f(mn, 0)} min × `, { frac: ['60 s', '1 min'] }, ` = ${f(sg, 0)} s`] },
+              { tipo: 'sentido', texto: 'El segundo es más chico que el minuto: el número tenía que subir, y subió.' },
+            ],
+            respuesta: `${f(sg, 0)} s`,
+          };
+        }
+        const v = r.de([5, 10, 15, 25]), kmh = v * 3.6;
+        return {
+          enunciado: `${v <= 10 ? 'Un ciclista' : 'Un carro'} va a ${f(v, 0)} m/s. ¿Cuántos km/h son?`,
+          dibujo: { datos: pista(0, v), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la misma rapidez en kilómetros por hora.' },
+            { tipo: 'datos', texto: `Avanza ${f(v, 0)} m en cada segundo.`, dibujo: { datos: pista(1, v), estado: {} } },
+            { tipo: 'regla', texto: 'Es el camino de vuelta: los metros a km y los segundos a horas. Ahora se multiplica por 3,6.', ecuacion: [{ frac: ['1 km', '1000 m'] }, ' × ', { frac: ['3600 s', '1 h'] }, ' = 3,6'] },
+            { tipo: 'cuentas', texto: 'Se multiplica por 3,6.', ecuacion: [`${f(v, 0)} × 3,6 = ${f(kmh, 0)} km/h`] },
+            { tipo: 'sentido', texto: 'En una hora se avanza mucho más que en un segundo: el número tenía que subir.' },
+          ],
+          respuesta: `${f(kmh, 0)} km/h`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
         const r = azar(s), tipo = s % 4;
         if (tipo === 0) {
-          const n = r.ent(2, 8) * 18, ms = n * 1000 / 3600;
+          const n = r.de([36, 54, 90, 108]), ms = n * 1000 / 3600;   // velocidades creíbles; sin 72, el caso de «Predice»
           return {
             pregunta: `Un bus va a ${f(n, 0)} km/h. ¿Cuánto es eso en m/s?`,
             opciones: opciones(ms, [
-              { id: 'por', valor: n * 3.6, error: 'CONV-INVERSO', siFuera: 'Ese factor va al revés: un segundo es mucho menos que una hora.' },
+              { id: 'por', valor: n * 3.6, error: 'CONV-INVERSO', siFuera: 'Multiplicar por 3,6 agranda el número; de km/h a m/s, el número baja.' },
               { id: 'km', valor: n * 1000, error: 'CONV-UNO', siFuera: 'Pasaste los km a metros; falta pasar la hora a segundos.' },
               { id: 'min', valor: n * 1000 / 60, error: 'CONV-UNO', siFuera: 'Eso divide entre 60: son metros por minuto.' },
             ], x => `${f(x, 2)} m/s`),
-            solucion: { texto: 'Los km a metros y la hora a segundos.', ecuacion: [`${f(n, 0)} · `, { frac: ['1000', '3600'] }, ` = ${f(ms, 2)} m/s`] },
+            solucion: { texto: 'Por 1000 y entre 3600: es dividir entre 3,6.', ecuacion: [`${f(n, 0)} ÷ 3,6 = ${f(ms, 2)} m/s`] },
           };
         }
         if (tipo === 1) {
-          const n = r.ent(2, 9) * 50;
+          const o = r.de(LARGOS);
           return {
-            pregunta: `Un terreno de ${f(n, 0)} cm² dibujado en un plano, ¿cuántos m² mide?`,
-            opciones: opciones(n / 10000, [
-              { id: 'lineal', valor: n / 100, error: 'CONV-CUADRADO', siFuera: '100 cm son 1 m; pero en un área ese factor va al cuadrado.' },
-              { id: 'inverso', valor: n * 10000, error: 'CONV-INVERSO', siFuera: 'El factor 10 000 es correcto, pero un m² es más grande: el número baja.' },
-              { id: 'mil', valor: n / 1000, error: 'CONV-CUADRADO', siFuera: 'Ese factor de 1000 es para el volumen en litros, no para áreas.' },
-            ], x => `${f(x, 4)} m²`),
-            solucion: { texto: '1 m² es un cuadrado de 100 cm por 100 cm.', ecuacion: [`${f(n, 0)} cm² · `, { frac: ['1 m²', '10 000 cm²'] }, ` = ${f(n / 10000, 4)} m²`] },
+            pregunta: `${o.que} mide ${f(o.m, 2)} m. ¿Cuántos centímetros son?`,
+            opciones: opciones(o.m * 100, [
+              { id: 'dm', valor: o.m * 10, error: 'CONV-UNO', siFuera: 'Por 10 da decímetros; en un metro caben 100 cm.' },
+              { id: 'inverso', valor: o.m / 100, error: 'CONV-INVERSO', siFuera: 'Dividir achica el número; el centímetro es más chico, el número sube.' },
+              { id: 'mm', valor: o.m * 1000, error: 'CONV-UNO', siFuera: 'Por 1000 da milímetros; en un metro caben 100 cm.' },
+            ], x => `${f(x, 3)} cm`),
+            solucion: { texto: 'En un metro caben 100 cm.', ecuacion: [`${f(o.m, 2)} m × `, { frac: ['100 cm', '1 m'] }, ` = ${f(o.m * 100, 0)} cm`] },
           };
         }
         if (tipo === 2) {
-          const n = r.de([0.8, 1.2, 2.7, 7.8, 13.6]);
+          const mn = r.ent(2, 12) * 5, sg = mn * 60;
           return {
-            pregunta: `Un material tiene densidad ${f(n, 1)} g/cm³. ¿Cuánto es en kg/m³?`,
-            opciones: opciones(n * 1000, [
-              { id: 'g', valor: n / 1000, error: 'CONV-INVERSO', siFuera: 'Pasar los g a kg baja el número, pero el m³ lo sube un millón.' },
-              { id: 'solo-kg', valor: n / 1000 * 100, error: 'CONV-CUADRADO', siFuera: 'Ese factor 100 sirve para cm a m, no para cm³ a m³.' },
-              { id: 'millon', valor: n * 1e6, error: 'CONV-UNO', siFuera: 'El millón de cm³ en un m³ es correcto; falta pasar los gramos a kg.' },
-            ], x => `${f(x, 3)} kg/m³`),
-            solucion: { texto: 'Gramos a kg divide entre 1000; cm³ a m³ multiplica por un millón.', ecuacion: [`${f(n, 1)} · `, { frac: ['1 000 000', '1000'] }, ` = ${f(n * 1000, 0)} kg/m³`] },
+            pregunta: `Una clase dura ${f(mn, 0)} minutos. ¿Cuántos segundos son, la unidad del SI para el tiempo?`,
+            opciones: opciones(sg, [
+              { id: 'div', valor: mn / 60, error: 'CONV-INVERSO', siFuera: 'Dividir da horas: el segundo es más chico, el número sube.' },
+              { id: 'cien', valor: mn * 100, error: 'CONV-UNO', siFuera: 'Un minuto tiene 60 segundos, no 100.' },
+              { id: 'hora', valor: mn * 3600, error: 'CONV-UNO', siFuera: 'Ese 3600 es para horas, no para minutos.' },
+            ], x => `${f(x, 2)} s`),
+            solucion: { texto: 'Cada minuto son 60 segundos.', ecuacion: [`${f(mn, 0)} min × `, { frac: ['60 s', '1 min'] }, ` = ${f(sg, 0)} s`] },
           };
         }
-        const mn = r.ent(2, 12) * 5, sg = mn * 60;
+        const v = r.de([5, 10, 15, 25]);
         return {
-          pregunta: `Una clase dura ${f(mn, 0)} minutos. ¿Cuántos segundos son, la unidad del SI para el tiempo?`,
-          opciones: opciones(sg, [
-            { id: 'div', valor: mn / 60, error: 'CONV-INVERSO', siFuera: 'Dividir da horas: el segundo es más chico, el número sube.' },
-            { id: 'cien', valor: mn * 100, error: 'CONV-UNO', siFuera: 'Un minuto tiene 60 segundos, no 100.' },
-            { id: 'hora', valor: mn * 3600, error: 'CONV-UNO', siFuera: 'Ese 3600 es para horas, no para minutos.' },
-          ], x => `${f(x, 2)} s`),
-          solucion: { texto: 'Cada minuto son 60 segundos.', ecuacion: [`${f(mn, 0)} min · `, { frac: ['60 s', '1 min'] }, ` = ${f(sg, 0)} s`] },
+          pregunta: `${v <= 10 ? 'Un ciclista' : 'Un carro'} va a ${f(v, 0)} m/s. ¿Cuántos km/h son?`,
+          opciones: opciones(v * 3.6, [
+            { id: 'entre', valor: v / 3.6, error: 'CONV-INVERSO', siFuera: 'Entre 3,6 es para ir de km/h a m/s; aquí es el camino de vuelta.' },
+            { id: 'sesenta', valor: v * 60, error: 'CONV-UNO', siFuera: 'Eso son metros por minuto; falta pasar a km y a horas.' },
+            { id: 'tres-mil', valor: v * 3600, error: 'CONV-UNO', siFuera: 'Eso son metros por hora; falta pasar los metros a km.' },
+          ], x => `${f(x, 2)} km/h`),
+          solucion: { texto: 'De m/s a km/h se multiplica por 3,6.', ecuacion: [`${f(v, 0)} × 3,6 = ${f(v * 3.6, 0)} km/h`] },
         };
       },
     },
@@ -670,7 +751,7 @@
     unidad: 'fisica.magnitudes-y-vectores',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/fis-medida.js', '/nucleo/kit/piezas/fis-dimensiones.js', '/nucleo/kit/piezas/flechas.js',
+    requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/fis-medida.js', '/nucleo/kit/piezas/fis-combi.js', '/nucleo/kit/piezas/fis-dimensiones.js', '/nucleo/kit/piezas/flechas.js',
       '/plantillas/vectores/motor.js', '/nucleo/fisica3d.js', '/nucleo/kit/piezas/fis-espacio-3d.js'],
     // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso (es la primera).
     glosario: [

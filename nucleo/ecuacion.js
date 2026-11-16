@@ -14,6 +14,7 @@
  *   { sub: [base, ind] }            subíndice: v₀ se escribe { sub: [{ v: 'c-o', t: 'v' }, '0'] }
  *   { raiz: radicando, indice? }    raíz cuadrada (o de índice dado)
  *   { vec: partes }                 flecha encima (vector)
+ *   { tacha: partes }               unidad tachada: se cancela arriba con abajo (conversiones, 16 nov)
  *   { abs: partes }                 valor absoluto |…|
  *   { par: partes }                 entre paréntesis que crecen con lo de adentro
  *   { llave: partes, nota, color? } llave horizontal («}» girada) debajo de un trozo, con su nota: explica qué es cada
@@ -55,7 +56,7 @@
       lista(p.llave).forEach(x => revisar(x, donde)); lista(p.nota).forEach(x => revisar(x, donde));
       return;
     }
-    const k = Object.keys(p).find(c => ['frac', 'sup', 'sub', 'raiz', 'vec', 'abs', 'par'].includes(c));
+    const k = Object.keys(p).find(c => ['frac', 'sup', 'sub', 'raiz', 'vec', 'tacha', 'abs', 'par'].includes(c));
     if (!k) throw new Error(`${donde}: parte desconocida ${JSON.stringify(p)}`);
     if (['frac', 'sup', 'sub'].includes(k) && !(Array.isArray(p[k]) && p[k].length === 2)) throw new Error(`${donde}: ${k} lleva dos partes`);
     lista(p[k]).forEach(x => revisar(x, donde));
@@ -73,6 +74,7 @@
       if (p.sub) return `${html(p.sub[0])}<sub class="ec-sub">${html(p.sub[1])}</sub>`;
       if (p.raiz) return `<span class="ec-raiz">${p.indice ? `<sup class="ec-ind">${esc(p.indice)}</sup>` : ''}<span class="ec-rad" aria-hidden="true">√</span><span class="ec-bajo">${html(p.raiz)}</span></span>`;
       if (p.vec) return `<span class="ec-vec">${html(p.vec)}</span>`;
+      if (p.tacha) return `<span class="ec-tacha">${html(p.tacha)}</span>`;
       if (p.abs) return `<span class="ec-abs">|${html(p.abs)}|</span>`;
       if (p.par) return `<span class="ec-par">(${html(p.par)})</span>`;
       if ('llave' in p) {
@@ -98,6 +100,7 @@
       if (p.sub) return `${texto(p.sub[0])}${texto(p.sub[1])}`;
       if (p.raiz) return `${p.indice ? `raíz ${p.indice} de` : 'raíz de'} ${texto(p.raiz)}`;
       if (p.vec) return `vector ${texto(p.vec)}`;
+      if (p.tacha) return `${texto(p.tacha)} (tachado)`;
       if (p.abs) return `valor absoluto de ${texto(p.abs)}`;
       if (p.par) return `(${texto(p.par)})`;
       if ('llave' in p) return `${texto(p.llave)} (${texto(p.nota)})`;
@@ -111,7 +114,7 @@
       if (!p || typeof p !== 'object') continue;
       if (Array.isArray(p)) { colores(p, acc); continue; }
       if ('v' in p) { acc.add(p.v); continue; }
-      for (const k of ['frac', 'sup', 'sub', 'raiz', 'vec', 'abs', 'par', 'llave']) if (p[k]) colores(p[k], acc);
+      for (const k of ['frac', 'sup', 'sub', 'raiz', 'vec', 'tacha', 'abs', 'par', 'llave']) if (p[k]) colores(p[k], acc);
     }
     return acc;
   }

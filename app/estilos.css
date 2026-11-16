@@ -782,6 +782,8 @@ input[type=file]{font:inherit;max-width:100%}
 .te-ficha-op[aria-pressed=true]{border-color:var(--brand);background:var(--brand-soft)}
 .te-casos{margin:0;min-height:20px}
 .te-fb{min-height:24px;scroll-margin-bottom:calc(168px + env(safe-area-inset-bottom))}
+/* El paso nuevo de «Así se resuelve» queda a la vista, sobre el botón fijo (lector en frío, 16 nov: quedaba tapado). */
+.te-res-paso,.te-res-resp{scroll-margin-bottom:calc(168px + env(safe-area-inset-bottom))}
 .te-ec-grande .ec-sep{display:block;height:6px;overflow:hidden;color:transparent;border:0;margin:0;width:auto}
 /* Fuera de la regla grande, el separador de dos relaciones es una raya vertical con aire, no un «·» que parece producto. */
 .ec-sep{display:inline-block;width:0;height:1.1em;margin:0 .75em;border-left:2px solid var(--line);vertical-align:-.2em;color:transparent;overflow:hidden}
@@ -816,6 +818,7 @@ input[type=file]{font:inherit;max-width:100%}
 .ec-den{padding:0 3px}
 .ec-sup,.ec-sub{font-size:.75em;line-height:0}
 .ec-raiz{display:inline-flex;align-items:stretch;white-space:nowrap;vertical-align:middle}.ec-rad{display:flex;align-items:flex-end;font-size:1.15em;line-height:1}.ec-bajo{display:inline-flex;align-items:center;border-top:2px solid currentColor;padding:2px 2px 0}.ec-ind{align-self:flex-start}
+.ec-tacha{text-decoration:line-through;text-decoration-color:var(--c-h);text-decoration-thickness:2px;opacity:.75}
 .ec-vec{display:inline-block;position:relative}.ec-vec::before{content:'→';position:absolute;left:0;right:0;top:-.85em;font-size:.7em;text-align:center}
 .ec-v{border-radius:4px;padding:0 2px}
 @media (min-width:900px){.te-idea{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:12px 24px;align-items:start}

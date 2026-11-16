@@ -36,3 +36,11 @@ test('ecuación: llave con su nota, en el texto plano y en los colores', () => {
   assert.match(E.html([{ v: 'c-o', t: 'x' }]), /ec-letra/);
   assert.doesNotMatch(E.html([{ v: 'c-o', t: 'lo escrito' }]), /ec-letra/);
 });
+
+test('una unidad tachada se dibuja tachada y se lee en voz alta', () => {
+  const E2 = require('./ecuacion.js');
+  const eq = ['72 ', { tacha: 'km' }, ' × ', { frac: ['1000 m', ['1 ', { tacha: 'km' }]] }];
+  E2.revisar(eq, 'prueba');
+  assert.match(E2.html(eq), /<span class="ec-tacha">km<\/span>/);
+  assert.match(E2.texto(eq), /km \(tachado\)/);
+});

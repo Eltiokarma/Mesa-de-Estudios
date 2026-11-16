@@ -452,7 +452,8 @@
         else {
           const prox = c.pasos[n];
           sig.textContent = `Paso ${n + 1}: ${PASOS[prox.tipo]} ›`;
-          sig.onclick = () => { n++; pintarR(); const li = zona.querySelector('[data-nuevo]'); if (li) mostrar(li); };
+          // Al revelar el último paso, también la respuesta queda a la vista sobre el botón (lector en frío, 16 nov).
+          sig.onclick = () => { n++; pintarR(); const li = zona.querySelector(n >= c.pasos.length ? '.te-res-resp' : '[data-nuevo]') || zona.querySelector('[data-nuevo]'); if (li) mostrar(li); };
         }
       };
       const nuevo = () => {
@@ -543,12 +544,17 @@
       zona.innerHTML = `<h3 class="lector" tabindex="-1">Mira</h3><div class="te-tiempo"></div><div class="te-paso" aria-live="polite"></div>`;
       const P = pieza(m.pieza);
       $('#te-alt').textContent = P.alt(m.datos);
+      const n = m.pasos.length;
       lt = Kit.lineaTiempo.montar(zona.querySelector('.te-tiempo'), {
         pieza: P, datos: m.datos, pasos: m.pasos, base: m.base, figura: fig, pie: zona.querySelector('.te-paso'), inicio: 1,
         textoPaso: paso => `<p>${E.html(paso.texto)}</p>${paso.ecuacion ? `<p class="te-ec">${E.html(paso.ecuacion)}</p>` : ''}`,
+        alCambiar: i => pintarSigMira(i),
       });
-      sig.textContent = 'Siguiente: La regla ›';
-      sig.onclick = () => ir('regla');
+      // El botón grande avanza paso por paso (lector en frío, 16 nov: con «Siguiente: La regla» desde el paso 1, el alumno
+      // se saltaba la explicación). En el último paso, recién lleva a la regla.
+      function pintarSigMira(i) { sig.textContent = i < n ? `Paso ${i + 1} de ${n} ›` : 'Siguiente: La regla ›'; }
+      pintarSigMira(lt.actual());
+      sig.onclick = () => { const i = lt.actual(); if (i < n) { lt.pausar(); lt.ir(i + 1, true); pintarSigMira(i + 1); } else ir('regla'); };
     }
 
     // 4. La regla: texto corto, ecuación con el hilo de color y la condición que la hace verdadera.
