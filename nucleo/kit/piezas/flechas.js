@@ -12,8 +12,10 @@
  * datos = {
  *   unidad: 'N',
  *   flechas: [{ de: [x, y], a: [x, y], color: 'o', rotulo: 'A', valor: '6 N', valorPaso: 0,
- *               paso: 0, discontinua: false, grosor: 'variable'|'contorno' }],
- *   resultante: { de, a, color: 'd', rotulo: 'R', valor: '2√13 N', paso: (por defecto, solo en el final) },
+ *               paso: 0, discontinua: false, grosor: 'variable'|'contorno', lejos: [x, y], rotuloEn: 0.5 }],
+ *                                              // lejos: como en resultante; rotuloEn: dónde va el rótulo (0 cola, 1 punta)
+ *   resultante: { de, a, color: 'd', rotulo: 'R', valor: '2√13 N', paso: (por defecto, solo en el final),
+ *                 lejos: [x, y] },          // opcional: el rótulo va del lado contrario a ese punto
  *   guias: [{ de, a, color, paso }],          // líneas discontinuas: lados del paralelogramo, proyecciones
  *   segmentos: [{ de, a, color: 'o', texto: 'L = 6 cm', paso }],  // un dato que es un largo sin sentido (un lado)
  *   angulos: [{ en: [x, y], de: 0, a: 60, texto: '60°', color: 'h', paso }],  // de y a en grados, antihorario desde +x
@@ -105,10 +107,13 @@
 
   // Rótulo de una flecha: junto a su mitad, del lado que mira afuera de la figura.
   function rotuloFlecha(g, x1, y1, x2, y2, texto, o) {
-    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2, L = Math.hypot(x2 - x1, y2 - y1) || 1;
+    const t = o.en === undefined ? 0.5 : o.en, mx = x1 + (x2 - x1) * t, my = y1 + (y2 - y1) * t, L = Math.hypot(x2 - x1, y2 - y1) || 1;
     let nx = -(y2 - y1) / L, ny = (x2 - x1) / L;
     if ((mx - g.centro[0]) * nx + (my - g.centro[1]) * ny < 0) { nx = -nx; ny = -ny; }
     if (o.lado === -1) { nx = -nx; ny = -ny; }
+    // lejos: el rótulo va del lado contrario a ese punto (la resultante de un triángulo cola con punta: su rótulo, afuera,
+    // lejos del vértice donde se juntan A y B; si no, caía encima del rótulo de B; lector en frío, 16 nov).
+    if (o.lejos && (mx - o.lejos[0]) * nx + (my - o.lejos[1]) * ny < 0) { nx = -nx; ny = -ny; }
     const w = T.ancho(texto, T.TEXTO, 700);
     const px = mx + nx * 14, py = my + ny * 14;
     const ancla = Math.abs(nx) < 0.35 ? 'middle' : nx > 0 ? 'start' : 'end';
@@ -212,7 +217,7 @@
       let a = largo < 40 ? flechaCorta(x1, y1, x2, y2, f.color) : T.flecha(x1, y1, x2, y2, { color: f.color, grosor });
       if (f.discontinua) a = a.replace('stroke-linecap="round"/>', 'stroke-linecap="round" stroke-dasharray="6 5"/>').replace(/<path /, '<path fill-opacity="0.6" ');
       const texto = f.valor !== undefined && p >= (f.valorPaso || 0) ? `${f.rotulo} = ${f.valor}` : f.rotulo;
-      s += `<g class="kit-aparece${nuevo(f)}">${a}${texto ? rotuloFlecha(g, x1, y1, x2, y2, texto, { color: f.color, lado: f.lado }) : ''}</g>`;
+      s += `<g class="kit-aparece${nuevo(f)}">${a}${texto ? rotuloFlecha(g, x1, y1, x2, y2, texto, { color: f.color, lado: f.lado, en: f.rotuloEn, lejos: f.lejos ? [g.X(f.lejos[0]), g.Y(f.lejos[1])] : null }) : ''}</g>`;
     }
     for (const q of d.fuera || []) if (ve(q)) {
       const x = g.X(q.en[0]), y = g.Y(q.en[1]), c = T.color(q.color || 'd');
@@ -235,7 +240,7 @@
       const texto = final && res.valor !== undefined ? `${res.rotulo} = ${res.valor}` : res.rotulo;
       const cl = final ? ' kit-nuevo' : nuevo(res);
       if (Math.hypot(x2 - x1, y2 - y1) >= 1) {
-        s += `<g class="kit-aparece${cl}">${T.flecha(x1, y1, x2, y2, { color: res.color, grosor: T.GROSOR.variable })}${rotuloFlecha(g, x1, y1, x2, y2, texto, { color: res.color, lado: res.lado })}</g>`;
+        s += `<g class="kit-aparece${cl}">${T.flecha(x1, y1, x2, y2, { color: res.color, grosor: T.GROSOR.variable })}${rotuloFlecha(g, x1, y1, x2, y2, texto, { color: res.color, lado: res.lado, lejos: res.lejos ? [g.X(res.lejos[0]), g.Y(res.lejos[1])] : null })}</g>`;
       } else {
         s += `<g class="kit-aparece${cl}"><circle cx="${T.n(x1)}" cy="${T.n(y1)}" r="5" fill="${T.color(res.color)}"/>${T.rotulo(x1 + 10, y1 - 10, texto, { color: res.color, peso: 700 })}</g>`;
       }
