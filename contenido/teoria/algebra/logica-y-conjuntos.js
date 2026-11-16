@@ -84,11 +84,33 @@
       alt: `Tabla de verdad de ${con}`,
     }, estado: {},
   });
+  // Condiciones sobre n: «múltiplo de k» o «múltiplo de a y de b». Todo se decide revisando n = 1 … 600.
+  // La usan «Ahora tú» y «Así se resuelve» (regla 1: las mismas cuentas). X → Y falla en nXY; Y → X falla en nYX.
+  const contraN = (U, V) => { for (let n = 1; n <= 600; n++) if (U.f(n) && !V.f(n)) return n; return null; };
+  function parCondiciones(r, s) {
+    const mult = k => ({ texto: `múltiplo de ${k}`, f: n => n % k === 0, divisores: [k] });
+    const tipo = s % 4;
+    let X, Y;
+    if (tipo === 0 || tipo === 1) { const k = r.uno([2, 3, 4, 5]), m = r.uno([2, 3, 5]); X = mult(k * m); Y = mult(k); if (tipo === 1) [X, Y] = [Y, X]; }
+    else if (tipo === 2) { const [k, m] = r.uno([[4, 6], [6, 9], [4, 10], [6, 10], [9, 12], [10, 15]]); X = mult(k); Y = mult(m); }
+    else { const [k, m] = r.uno([[2, 3], [3, 5], [2, 5], [3, 4], [4, 5]]); X = mult(k * m); Y = { texto: `múltiplo de ${k} y de ${m}`, f: n => n % k === 0 && n % m === 0, divisores: [k, m] }; if (s % 8 === 7) [X, Y] = [Y, X]; }
+    const nXY = contraN(X, Y), nYX = contraN(Y, X);
+    return { X, Y, nXY, nYX, suf: nXY === null, nec: nYX === null };
+  }
+  const TEXTOS_COND = { suf: 'suficiente, pero no necesaria', nec: 'necesaria, pero no suficiente', ambas: 'necesaria y suficiente', ninguna: 'ni necesaria ni suficiente' };
   const condicional = {
     id: 'condicional',
     titulo: 'El condicional solo falla una vez',
     temas: ['Proposiciones y conectores', 'Condición necesaria y suficiente'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): vocabulario y qué mirar; no dice qué pasa con p cuando q es verdadera (eso lo pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Frases que se juzgan', texto: ['«Hoy llueve en Juliaca» puede ser verdadera o falsa, según el día. Una frase así es una proposición. Se nombra con una letra, como ', p, ' o ', q, ', y vale V o F.'] },
+        { titulo: 'Los conectores', texto: 'Las proposiciones se unen con conectores: ∧ se lee «y»; ∨, «o»; → , «si…, entonces»; y ↔, «si y solo si». Cada conector tiene su tabla de verdad.' },
+        { titulo: 'Qué mirar al jugar', texto: ['La tabla tiene cuatro filas: una por cada par de valores de ', p, ' y ', q, '. Prueba los cuatro conectores y cuenta en cuántas filas da F cada uno.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige el valor de p y de q, y un conector. La fila marcada es tu caso; la última columna dice si es verdadera.',
       voz: 'Prueba el mismo par con los cuatro conectores.',
@@ -135,20 +157,50 @@
       condicion: 'se lee «si p, entonces q»; no afirma la recíproca q → p, que es otra proposición.',
       voz: 'Suficiente va antes de la flecha; necesaria, después.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con otras semillas; los contraejemplos los busca contraN.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const { X, Y, nXY, nYX, suf, nec } = parCondiciones(r, s);
+        const bien = suf && nec ? 'ambas' : suf ? 'suf' : nec ? 'nec' : 'ninguna';
+        const PX = { v: 'c-o', t: X.texto }, PY = { v: 'c-i', t: Y.texto };
+        let ambos = 1; while (!(X.f(ambos) && Y.f(ambos))) ambos++;
+        let ninguno = 2; while (X.f(ninguno) || Y.f(ninguno)) ninguno++;
+        const filasN = [...new Set([ninguno, ambos, nXY, nYX].filter(n => n !== null))].sort((u, w) => u - w);
+        const tabla = ver => ({
+          datos: {
+            columnas: ['n', 'p', 'q', 'p → q', 'q → p'], colorCol: [null, 'o', 'i'],
+            filas: filasN.map(n => [String(n), ...[X.f(n), Y.f(n), !X.f(n) || Y.f(n), !Y.f(n) || X.f(n)].map(v => (ver ? celdaVF(v) : '?'))]),
+            resaltes: ver ? [nXY, nYX].filter(n => n !== null).map(n => ({ f: filasN.indexOf(n), c: 0, ancho: 5, color: 'h' })) : [],
+            alt: `Números ${filasN.join(', ')}: si cumplen p (${X.texto}) y q (${Y.texto})`,
+          }, estado: {},
+        });
+        // Prueba de pertenencia con divisiones: «8 ÷ 4 = 2» o «8 ÷ 6 no es exacta».
+        const prueba = (n, C) => C.divisores.map(d => (n % d === 0 ? `${n} ÷ ${d} = ${n / d}` : `${n} ÷ ${d} no es exacta`)).join(' y ');
+        let sentido;
+        if (nXY !== null) sentido = `Compruebo ${nXY}: ${prueba(nXY, X)}, pero ${prueba(nXY, Y)}.${nYX !== null ? ` Con ${nYX} pasa al revés.` : ''}`;
+        else if (nYX !== null) sentido = `Compruebo ${nYX}: ${prueba(nYX, Y)}, pero ${prueba(nYX, X)}. Por eso falla la segunda flecha.`;
+        else { const [k, m] = (X.divisores.length === 2 ? X : Y).divisores; sentido = `Comprueba: ${k} y ${m} no tienen divisores comunes, así que ser múltiplo de los dos es ser múltiplo de ${k * m}.`; }
+        return {
+          enunciado: ['Ser ', PX, ' es una condición ___ para ser ', PY, '. ¿Qué completa el espacio?'],
+          dibujo: tabla(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden qué clase de condición es ser ', PX, ' para ser ', PY, ': suficiente, necesaria, las dos o ninguna.'] },
+            { tipo: 'datos', texto: ['Llamo ', p, ' a «n es ', PX, '» y ', q, ' a «n es ', PY, '». Hay que revisar las dos flechas.'], ecuacion: [p, ' → ', q, '   ·   ', q, ' → ', p] },
+            { tipo: 'regla', texto: ['Si ', p, ' → ', q, ' vale para todo n, ', p, ' es suficiente. Si ', q, ' → ', p, ' vale, es necesaria. Una flecha cae con un solo contraejemplo.'] },
+            { tipo: 'cuentas', texto: ['Busco desde n = 1 un número con ', p, ' verdadera y ', q, ' falsa, y otro con ', q, ' verdadera y ', p, ' falsa.'],
+              ecuacion: [p, ' → ', q, nXY === null ? ' vale' : ` falla con n = ${nXY}`, '   ·   ', q, ' → ', p, nYX === null ? ' vale' : ` falla con n = ${nYX}`], dibujo: tabla(true) },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: bien === 'ninguna' ? 'No es necesaria ni suficiente.' : `Es una condición ${TEXTOS_COND[bien]}.`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Un caso nuevo. Busca un número que sirva de contraejemplo.',
       generar(s) {
         const r = azar(s);
-        // Condiciones sobre n: «múltiplo de k» o «múltiplo de a y de b». Todo se decide revisando n = 1 … 600.
-        const mult = k => ({ texto: `múltiplo de ${k}`, f: n => n % k === 0 });
-        const tipo = s % 4;
-        let X, Y;
-        if (tipo === 0 || tipo === 1) { const k = r.uno([2, 3, 4, 5]), m = r.uno([2, 3, 5]); X = mult(k * m); Y = mult(k); if (tipo === 1) [X, Y] = [Y, X]; }
-        else if (tipo === 2) { const [k, m] = r.uno([[4, 6], [6, 9], [4, 10], [6, 10], [9, 12], [10, 15]]); X = mult(k); Y = mult(m); }
-        else { const [k, m] = r.uno([[2, 3], [3, 5], [2, 5], [3, 4], [4, 5]]); X = mult(k * m); Y = { texto: `múltiplo de ${k} y de ${m}`, f: n => n % k === 0 && n % m === 0 }; if (s % 8 === 7) [X, Y] = [Y, X]; }
-        const contra = (U, V) => { for (let n = 1; n <= 600; n++) if (U.f(n) && !V.f(n)) return n; return null; };
-        const nXY = contra(X, Y), nYX = contra(Y, X);       // X → Y falla en nXY; Y → X falla en nYX
-        const suf = nXY === null, nec = nYX === null;
+        const { X, Y, nXY, nYX, suf, nec } = parCondiciones(r, s);
         const TEXTOS = {
           'suf': 'suficiente, pero no necesaria', 'nec': 'necesaria, pero no suficiente', 'ambas': 'necesaria y suficiente', 'ninguna': 'ni necesaria ni suficiente',
         };
@@ -184,11 +236,23 @@
     filas: FILAS.map(([a, b]) => [VF(a), VF(b), ...lista.map(t => celdaVF(valor(t, a, b), { desde: ocultas.includes(t) ? 1 : 0 }))]),
     alt: `Tabla de verdad de ${lista.join(', ')}`,
   });
+  // Fórmulas para «Ahora tú» y «Así se resuelve»: tautologías y no tautologías, y la primera fila donde una da F.
+  const TAUTO_SI = ['p ∨ ~p', '(p ∧ q) → p', 'p → (p ∨ q)', '~(p ∧ ~p)', '(p ∧ (p → q)) → q', 'p → p'];
+  const TAUTO_NO = ['p → q', 'q → p', 'p ∧ ~q', '(p ∨ q) → p', '(p → q) → p', 'q → (p ∧ q)', 'p ↔ q', 'p ∨ q'];
+  const falloTauto = t => { const [a, b] = FILAS.find(([x, y]) => !valor(t, x, y)); return `con p = ${VF(a)}, q = ${VF(b)}`; };
   const equivalencias = {
     id: 'equivalencias',
     titulo: 'Misma columna, misma proposición',
     temas: ['Tautología y equivalencias'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): qué es una columna, tautología y contradicción; no dice qué fórmula copia a p → q.
+    lee: {
+      tarjetas: [
+        { titulo: 'Una columna por fórmula', texto: 'En una tabla de verdad, cada fórmula tiene su columna: cuatro valores, uno por fila. Esa columna es como su huella: dice cuánto vale la fórmula en cada caso.' },
+        { titulo: 'Dos nombres', texto: 'Si la columna tiene V en las cuatro filas, la fórmula es una tautología, como «o llueve en Puno o no llueve». Si tiene F en las cuatro, es una contradicción.' },
+        { titulo: 'Qué mirar al jugar', texto: ['El signo ~ niega: ~', p, ' es V cuando ', p, ' es F. Elige cada fórmula y cuenta sus V. Busca una columna con cuatro V y otra con cuatro F.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige una fórmula y mira su columna en las cuatro filas. Busca una verdadera en todas y otra falsa en todas.',
       voz: 'Cuenta cuántas V tiene cada columna.',
@@ -236,14 +300,35 @@
       ecuacion: [...pinta('~(p ∧ q)'), '  ≡  ', ...pinta('~p ∨ ~q')],
       condicion: 'se revisan las cuatro filas de p y q; una sola fila distinta basta para que no sean equivalentes.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» (¿cuál es tautología?) con otras semillas y tres fórmulas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const buena = TAUTO_SI[(s + 3) % TAUTO_SI.length], malas = r.mezclar(TAUTO_NO).slice(0, 2);
+        const lista = r.mezclar([buena, ...malas]), k = lista.indexOf(buena);
+        const sep = (l, f) => l.flatMap((t, i) => [...(i ? ['   ·   '] : []), ...f(t)]);
+        return {
+          enunciado: ['¿Cuál de estas fórmulas es una tautología: ', ...pinta(lista[0]), ', ', ...pinta(lista[1]), ' o ', ...pinta(lista[2]), '?'],
+          dibujo: { datos: tablaFormulas(lista, lista), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la fórmula que da V en las cuatro filas de ', p, ' y ', q, ', pase lo que pase.'] },
+            { tipo: 'datos', texto: ['Tengo tres fórmulas con ', p, ' y ', q, ', y cuatro filas: VV, VF, FV y FF.'], ecuacion: sep(lista, pinta) },
+            { tipo: 'regla', texto: 'Una tautología no tiene ninguna F en su columna. Para descartar una fórmula me basta una fila donde dé F.' },
+            { tipo: 'cuentas', texto: 'Calculo cada fórmula fila por fila, en el orden VV, VF, FV y FF.',
+              ecuacion: sep(lista, t => [...pinta(t), ': ', columna(t).map(VF).join(' ')]),
+              dibujo: { datos: Object.assign(tablaFormulas(lista), { resaltes: [{ f: 0, c: 2 + k, alto: 4, color: 'd' }] }), estado: {} } },
+            { tipo: 'sentido', texto: ['Compruebo las descartadas: ', ...malas.flatMap((t, i) => [...(i ? ['; '] : []), ...pinta(t), ` da F ${falloTauto(t)}`]), '.'] },
+          ],
+          respuesta: [...pinta(buena), ' es la tautología.'],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'alg-tabla',
       generar(s) {
         const r = azar(s);
-        const SI = ['p ∨ ~p', '(p ∧ q) → p', 'p → (p ∨ q)', '~(p ∧ ~p)', '(p ∧ (p → q)) → q', 'p → p'];
-        const NO = ['p → q', 'q → p', 'p ∧ ~q', '(p ∨ q) → p', '(p → q) → p', 'q → (p ∧ q)', 'p ↔ q', 'p ∨ q'];
+        const SI = TAUTO_SI, NO = TAUTO_NO, fallo = falloTauto;
         const buena = SI[s % SI.length], malas = r.mezclar(NO).slice(0, 3);
-        const fallo = t => { const [a, b] = FILAS.find(([x, y]) => !valor(t, x, y)); return `con p = ${VF(a)}, q = ${VF(b)}`; };
         return {
           pregunta: '¿Cuál de estas fórmulas es una tautología, es decir, verdadera en las cuatro filas?',
           opciones: [{ id: 'c', texto: pinta(buena), correcta: true }, ...malas.map((t, k) => ({ id: `m${k}`, texto: pinta(t), error: 'TAL-TAUTO', siFuera: `Sería tautología si no tuviera filas F, pero ${fallo(t)} da F.` }))],
@@ -290,6 +375,15 @@
     titulo: 'Cada operación junta regiones',
     temas: ['Conjuntos y operaciones'],
     pieza: 'alg-venn',
+    // Lee (fase 2): universo, regiones y nombres de las operaciones; no dice a qué es igual (A ∩ B)′.
+    lee: {
+      tarjetas: [
+        { titulo: 'Conjuntos de cerca', texto: ['En un aula de Juliaca, ', A, ' pueden ser los que juegan fútbol y ', B, ' los que juegan vóley. El universo U es todo lo que se está mirando: el aula entera.'] },
+        { titulo: 'Cuatro regiones', texto: ['Dos círculos dentro de U dejan cuatro regiones: solo ', A, ', solo ', B, ', los dos a la vez y ninguno. Cada elemento vive en una sola región.'] },
+        { titulo: 'Las operaciones', texto: ['La unión ', ...pintaC('A ∪ B'), ' junta los dos. La intersección ', ...pintaC('A ∩ B'), ' deja lo común. ', ...pintaC('A − B'), ' es lo de A que no está en B. El complemento ', ...pintaC('A′'), ' es lo de U que no está en A.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['En el juego, ', A, ' son los pares y ', B, ' los múltiplos de 3. Elige una operación y mira qué regiones se llenan de puntitos.'] },
+      ],
+    },
     juega: {
       consigna: 'U = {1, …, 9}, A son los pares y B los múltiplos de 3. Elige una operación y lleva la ficha a otra región.',
       voz: 'Fíjate en qué región vive cada número.',
@@ -330,6 +424,45 @@
       texto: 'Cada operación es un grupo de regiones del diagrama. El complemento de una intersección es la unión de los complementos, y al revés (De Morgan).',
       ecuacion: [...pintaC('(A ∩ B)′'), ' = ', ...pintaC('A′ ∪ B′')],
       condicion: 'los complementos se toman respecto del mismo universo U; A − B es lo de A que no está en B.',
+    },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con otras semillas; conjunto() y regiones() hacen la cuenta.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const n = r.ent(7, 9), U = Array.from({ length: n }, (_, k) => k + 1);
+        let Aa, Bb;
+        do { Aa = U.filter(() => r() < 0.45); Bb = U.filter(() => r() < 0.45); } while (Aa.length < 2 || Bb.length < 2 || !Aa.some(v => Bb.includes(v)) || Aa.every(v => Bb.includes(v)));
+        const op = ['A − B', 'B − A', 'A Δ B', '(A ∪ B)′', '(A ∩ B)′', 'A ∩ B'][(s + 3) % 6];
+        const bien = conjunto(op, U, Aa, Bb);
+        const QUE = {
+          'A − B': 'se queda con lo que está en A y no está en B: la región «solo A».',
+          'B − A': 'se queda con lo que está en B y no está en A: la región «solo B».',
+          'A Δ B': 'junta lo que está en uno solo de los dos: «solo A» y «solo B», sin lo común.',
+          '(A ∪ B)′': 'es lo de U que no está en ninguno de los dos: la región de afuera.',
+          '(A ∩ B)′': 'es todo U menos lo común: todas las regiones salvo la del centro.',
+          'A ∩ B': 'es lo que está en los dos a la vez: la región del centro.',
+        };
+        const zona = c => U.filter(v => Aa.includes(v) === COD[c][0] && Bb.includes(v) === COD[c][1]);
+        const desc = v => `${Aa.includes(v) ? 'está en A' : 'no está en A'} y ${Bb.includes(v) ? 'está en B' : 'no está en B'}`;
+        const fuera = U.find(v => !bien.includes(v));
+        const sentido = bien.length
+          ? `Compruebo: el ${bien[0]} ${desc(bien[0])}, y entra.${fuera !== undefined ? ` El ${fuera} ${desc(fuera)}, y no entra.` : ''}`
+          : `Compruebo: ningún número de U cae en las regiones que pide ${op}, así que queda vacío.`;
+        return {
+          enunciado: [`U = {1, …, ${n}}, `, A, ` = ${llaves(Aa)} y `, B, ` = ${llaves(Bb)}. ¿Cuál es `, ...pintaC(op), '?'],
+          dibujo: { datos: vennDe(U, Aa, Bb), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden los elementos de ', ...pintaC(op), ', dentro de U.'] },
+            { tipo: 'datos', texto: [`U tiene los números del 1 al ${n}. Conozco `, A, ' y ', B, '; lo demás de U queda fuera de los dos.'], ecuacion: [A, ` = ${llaves(Aa)}`, '   ·   ', B, ` = ${llaves(Bb)}`] },
+            { tipo: 'regla', texto: [...pintaC(op), ' ', ...pintaC(QUE[op])] },
+            { tipo: 'cuentas', texto: 'Ubico cada número en su región del diagrama y me quedo con las regiones que pide la operación.',
+              ecuacion: [`solo A: ${llaves(zona('10'))} · los dos: ${llaves(zona('11'))} · solo B: ${llaves(zona('01'))} · fuera: ${llaves(zona('00'))}`],
+              dibujo: { datos: vennDe(U, Aa, Bb), estado: { sombra: regiones(op) } } },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: [...pintaC(op), ` = ${llaves(bien)}`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'alg-venn',
@@ -374,6 +507,14 @@
     titulo: 'Con o sin cada elemento',
     temas: ['Conjunto potencia y cardinalidad'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): qué es un subconjunto y el conjunto potencia; no dice cómo contarlos ni qué pasa con un repetido.
+    lee: {
+      tarjetas: [
+        { titulo: 'Elegir qué llevar', texto: 'En una feria de Puno venden papa, chuño y queso. Cada grupo que se puede formar con esos productos es un subconjunto de {papa, chuño, queso}.' },
+        { titulo: 'El conjunto potencia', texto: ['El conjunto potencia de ', A, ', que se escribe P(', A, '), reúne todos los subconjuntos de ', A, '. Contarlos es una pregunta frecuente en el examen de admisión.'] },
+        { titulo: 'Qué mirar al jugar', texto: 'Cada fila de la tabla es un subconjunto: ✓ si el elemento está y un punto si no está. Agrega elementos de uno en uno y cuenta cuántas filas hay cada vez.' },
+      ],
+    },
     juega: {
       consigna: 'Elige el cardinal: cuántos elementos tiene el conjunto. Cada fila es un subconjunto: ✓ si el elemento está, punto si no está.',
       voz: 'Cuenta las filas cada vez que agregas un elemento.',
@@ -411,6 +552,48 @@
       texto: 'Cada elemento distinto se pone o no se pone. Con n elementos distintos hay 2ⁿ subconjuntos, contando el vacío y el propio conjunto: juntos forman el conjunto potencia.',
       ecuacion: [{ llave: ['n(P(', A, '))'], nota: 'subconjuntos', color: 'c-d' }, ' = ', { llave: [{ sup: ['2', { v: 'c-o', t: 'n' }] }], nota: 'n distintos', color: 'c-o' }],
       condicion: 'n cuenta elementos distintos: {2, 3, 3, 5} tiene n = 3. En una unión, lo común se cuenta una sola vez.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (subconjuntos con un repetido, y la unión que no cuenta
+    // dos veces lo común) con otras semillas. La figura es una tabla (la pieza de la idea), no el Venn de «Ahora tú».
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const k = r.ent(3, 5), base = r.mezclar([1, 2, 3, 4, 5, 6, 7, 8, 9]).slice(0, k).sort((u, w) => u - w);
+          const rep = r.uno(base), lista = [...base, rep].sort((u, w) => u - w);
+          const propios = s % 4 === 2, total = 2 ** k, bien = total - (propios ? 1 : 0);
+          const dos = Array.from({ length: k }, () => '2').join(' · ');
+          return {
+            enunciado: [A, ` = {${lista.join(', ')}}. ¿Cuántos subconjuntos ${propios ? 'propios (distintos de A) ' : ''}tiene `, A, '?'],
+            dibujo: { datos: { columnas: lista.map(String), filas: [lista.map(() => '?')], alt: `Los elementos escritos de A: ${lista.join(', ')}` }, estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: propios ? 'Piden los subconjuntos propios: todos los subconjuntos de A, menos el mismo A.' : 'Piden cuántos subconjuntos tiene A, contando el vacío y el mismo A.' },
+              { tipo: 'datos', texto: `A está escrito con ${k + 1} números, pero el ${rep} aparece dos veces y es un solo elemento.`, ecuacion: ['n(', A, `) = ${k}`] },
+              { tipo: 'regla', texto: `Cada elemento distinto tiene dos opciones: está o no está en el subconjunto. Las opciones se multiplican${propios ? '; después quito el mismo A' : ''}.` },
+              { tipo: 'cuentas', texto: `Multiplico un 2 por cada uno de los ${k} elementos distintos${propios ? ' y resto 1' : ''}.`,
+                ecuacion: [{ sup: ['2', String(k)] }, ` = ${dos} = ${total}`, propios ? `   →   ${total} − 1 = ${bien}` : ''],
+                dibujo: { datos: { columnas: base.map(String), filas: [base.map(() => ({ t: '✓ o ·', color: 'd' }))], pie: `${dos} = ${total}`, alt: `Los ${k} elementos distintos de A, cada uno con dos opciones: ${total} subconjuntos` }, estado: {} } },
+              { tipo: 'sentido', texto: `Comprueba con pocos: un elemento da 2 subconjuntos, el vacío y él mismo. Cada elemento nuevo duplica: ${Array.from({ length: k }, (_, i) => 2 ** (i + 1)).join(', ')}.` },
+            ],
+            respuesta: `${bien} subconjuntos${propios ? ' propios' : ''}`,
+          };
+        }
+        const nA = r.ent(8, 20), nB = r.ent(6, 18), nI = r.ent(2, Math.min(nA, nB) - 2);
+        const bien = nA + nB - nI;
+        const partes = ver => ({ datos: { columnas: ['solo A', 'A y B', 'solo B'], colorCol: ['o', 'd', 'i'], filas: [ver ? [String(nA - nI), String(nI), String(nB - nI)] : ['?', String(nI), '?']], pie: ver ? `${nA - nI} + ${nI} + ${nB - nI} = ${bien}` : '', alt: `Fútbol ${nA}, vóley ${nB}, ambos ${nI}` }, estado: {} });
+        return {
+          enunciado: ['En un aula, ', `${nA} alumnos juegan fútbol (`, A, `), ${nB} juegan vóley (`, B, `) y ${nI} juegan ambos. ¿Cuántos juegan al menos uno?`],
+          dibujo: partes(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden cuántos juegan al menos un deporte: el cardinal de ', A, ' ∪ ', B, '.'] },
+            { tipo: 'datos', texto: `Juegan fútbol ${nA}, vóley ${nB}, y ${nI} están en los dos grupos.`, ecuacion: ['n(', A, `) = ${nA}   ·   n(`, B, `) = ${nB}   ·   n(`, A, ' ∩ ', B, `) = ${nI}`] },
+            { tipo: 'regla', texto: 'Si sumo los dos grupos, los que juegan ambos quedan contados dos veces. Por eso resto lo común una sola vez.' },
+            { tipo: 'cuentas', texto: 'Sumo los dos grupos y resto una vez a los que están en los dos.', ecuacion: ['n(', A, ' ∪ ', B, `) = ${nA} + ${nB} − ${nI} = ${bien}`], dibujo: partes(true) },
+            { tipo: 'sentido', texto: `Comprueba por regiones: solo fútbol ${nA - nI}, ambos ${nI} y solo vóley ${nB - nI}. Sumados dan ${bien}, sin contar a nadie dos veces.` },
+          ],
+          respuesta: `${bien} alumnos juegan al menos uno.`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'alg-venn',
@@ -483,11 +666,32 @@
     donde: val => { const g = RECTA().geometria(rectaTestigo(val, doms, rango)); return { x: g.x(val.t), y: g.filaY(1) }; },
     mover: (pt, val) => ({ t: RECTA().geometria(rectaTestigo(val, doms, rango)).v(pt.x) }),
   });
+  // Cómo se comprueba la propiedad con un número dado (para «Así se resuelve»); los números negativos van entre paréntesis.
+  const fpar = v => (v < 0 ? `(${f(v)})` : f(v));
+  const EXPLICA = {
+    'x > 0': v => `${f(v)} ${v > 0 ? '>' : '≤'} 0`,
+    'x es par': v => `${f(v)} ${v % 2 === 0 ? 'es par' : 'es impar'}`,
+    'x² ≥ x': v => `${fpar(v)}² = ${f(v * v)} ${v * v >= v ? '≥' : '<'} ${f(v)}`,
+    'x + 1 > x': v => `${f(v)} + 1 = ${f(v + 1)} > ${f(v)}`,
+    'x² > 0': v => `${fpar(v)}² = ${f(v * v)} ${v * v > 0 ? '> 0' : 'no es mayor que 0'}`,
+    'x < 4': v => `${f(v)} ${v < 4 ? '<' : '≥'} 4`,
+    '2x > x': v => `2 · ${fpar(v)} = ${f(2 * v)} ${2 * v > v ? '>' : '≤'} ${f(v)}`,
+    'x² ≠ 4': v => `${fpar(v)}² = ${f(v * v)} ${v * v !== 4 ? '≠ 4' : '= 4'}`,
+  };
   const cuantificadores = {
     id: 'cuantificadores',
     titulo: 'Un contraejemplo basta',
     temas: ['Cuantificadores'],
     pieza: 'recta',
+    // Lee (fase 2): «para todo», «existe» y dominio; no dice cómo se niega un «para todo».
+    lee: {
+      tarjetas: [
+        { titulo: 'Todos o alguno', texto: '«Todos los alumnos del aula viven en Juliaca» habla de cada uno. «Algún alumno vive en Puno» habla de al menos uno. Esas palabras, «todos» y «alguno», son cuantificadores.' },
+        { titulo: 'Los signos', texto: ['∀ se lee «para todo» y ∃ se lee «existe». Así, «∀', x, ': ', x, ' + 1 > ', x, '» dice que cada número, sumado con 1, da uno mayor.'] },
+        { titulo: 'El dominio', texto: ['El dominio es el conjunto de valores que puede tomar ', x, '. La misma propiedad puede ser cierta en un dominio y falsa en otro, porque cambian los números que se revisan.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['En la recta, verde es que el número cumple la propiedad; rojo y hueco, que no. Arrastra el testigo ', x, ' y mira cómo cambian ∀ y ∃ en la lectura.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige una propiedad y un dominio. En verde, los números que la cumplen; en rojo y huecos, los que no. Arrastra el testigo x.',
       voz: 'Busca una propiedad que cumplan todos.',
@@ -530,6 +734,41 @@
       texto: 'Para negar «todo x cumple P» basta un x del dominio que no la cumpla. Negar «existe x que cumple P» exige que ninguno la cumpla.',
       ecuacion: ['~(∀', x, ': P(', x, '))  ≡  ', { llave: ['∃', x, ': ~P(', x, ')'], nota: 'un contraejemplo', color: 'c-h' }],
       condicion: 'el dominio es el que se declara: cambiar el dominio puede cambiar la verdad de la afirmación.',
+    },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con otras semillas; PRED decide cada número del dominio.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const nombres = Object.keys(PRED), todo = s % 3 !== 2, quiere = s % 2 === 1;
+        let pr, a, b, D, fallan, cumplen, verdad;
+        for (let k = 0; k < 100; k++) {
+          pr = nombres[(s + 3 + k) % nombres.length]; a = r.ent(-3, 1); b = a + r.ent(3, 5);
+          D = Array.from({ length: b - a + 1 }, (_, i) => a + i);
+          fallan = D.filter(v => !PRED[pr](v)); cumplen = D.filter(PRED[pr]);
+          verdad = todo ? fallan.length === 0 : cumplen.length > 0;
+          if (verdad === quiere) break;
+        }
+        const dom = `{${a}, …, ${b}}`.replace(/-/g, '−');
+        const prop = pr.split('x').reduce((acc, t, i) => (i ? [...acc, x, t] : [t]), []);
+        const lista = l => (l.length ? l.map(v => f(v)).join(', ') : 'ninguno');
+        const sentido = todo
+          ? (verdad ? `Compruebo los dos bordes: ${EXPLICA[pr](a)} y ${EXPLICA[pr](b)}. Los del medio también la cumplen.` : `Compruebo el contraejemplo: ${EXPLICA[pr](fallan[0])}. Con uno basta para que el «para todo» caiga.`)
+          : (verdad ? `Compruebo el testigo: ${EXPLICA[pr](cumplen[0])}. Con uno basta para el «existe».` : `Compruebo los bordes: ${EXPLICA[pr](a)} y ${EXPLICA[pr](b)}. Ninguno del dominio la cumple.`);
+        const resp = todo ? (verdad ? 'Verdadera: todos la cumplen.' : `Falsa: falla con x = ${f(fallan[0])}.`) : (verdad ? `Verdadera: la cumple x = ${f(cumplen[0])}.` : 'Falsa: ninguno la cumple.');
+        return {
+          enunciado: [todo ? '«Para todo ' : '«Existe un ', x, ` de ${dom}: `, ...prop, '». ¿Es verdadera o falsa?'],
+          dibujo: { datos: rectaDominio(D, pr, false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden decidir si la afirmación es verdadera o falsa, revisando solo los números del dominio dado.' },
+            { tipo: 'datos', texto: [`El dominio tiene ${D.length} números, del ${f(a)} al ${f(b)}. La propiedad es `, ...prop, '.'], ecuacion: [x, ` ∈ {${D.map(v => f(v)).join(', ')}}`] },
+            { tipo: 'regla', texto: todo ? 'Un «para todo» es verdadero solo si ningún número del dominio falla. Un único contraejemplo lo vuelve falso.' : 'Un «existe» es verdadero si al menos un número del dominio cumple. Es falso solo si fallan todos.' },
+            { tipo: 'cuentas', texto: 'Reviso los números uno por uno y separo los que cumplen de los que fallan.',
+              ecuacion: [`Cumplen: ${lista(cumplen)}`, '   ·   ', `Fallan: ${lista(fallan)}`], dibujo: { datos: rectaDominio(D, pr, true), estado: {} } },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: resp,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'recta',
@@ -584,6 +823,14 @@
     titulo: 'Seguro es en todos los casos',
     temas: ['Juegos lógicos: ordenamientos, parentescos y certezas'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): de qué tratan los juegos lógicos y cómo leer las pistas; no dice quién va último.
+    lee: {
+      tarjetas: [
+        { titulo: 'Juegos de orden', texto: 'En el examen aparecen filas, mesas redondas y parentescos. Se dan pistas y se pregunta qué se puede asegurar. Aquí, cada fila de la tabla es un orden posible de cuatro nombres.' },
+        { titulo: 'Leer bien las pistas', texto: '«Ana va antes que Beto» no dice que vaya justo antes: puede haber otros entre los dos. «Ciro y Dina van juntos» sí pide dos puestos seguidos.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Activa una pista y cuenta cuántos órdenes quedan. Después activa la otra. Fíjate qué puestos cambian de una fila a otra y cuáles no.' },
+      ],
+    },
     juega: {
       consigna: 'Cuatro amigos hacen fila. Pista 1: Ana va antes que Beto. Pista 2: Ciro y Dina van juntos. Activa pistas y mira qué órdenes quedan.',
       voz: '«Antes» no dice «justo antes». Mira las filas.',
@@ -637,6 +884,73 @@
       texto: 'Una afirmación es segura si se cumple en todos los casos que respetan las pistas. Un solo caso válido que la contradiga la descarta.',
       condicion: 'se usan solo las pistas dadas: «antes» no es «justo antes», y ningún parentesco se supone sin decirlo.',
       voz: 'Yo había mirado un solo orden. Hay que mirarlos todos.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» con otras semillas. Parentescos: la misma cuenta de
+    // generaciones (sube, baja). Ordenamientos: los 24 órdenes filtrados por las pistas, como en «Ahora tú».
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 1) {
+          const REL = { padre: [1, 0], hermano: [1, 1], hijo: [0, 1] };
+          const NOMBRE = { '1,0': 'padre', '2,0': 'abuelo', '3,0': 'bisabuelo', '0,1': 'hijo', '0,2': 'nieto', '1,1': 'hermano', '2,1': 'tío', '3,1': 'tío abuelo', '2,2': 'primo', '1,2': 'sobrino' };
+          const ES = { padre: 'quien te dio la vida', abuelo: 'el padre de tu padre', bisabuelo: 'el padre de tu abuelo', hijo: 'alguien a quien diste la vida', nieto: 'el hijo de tu hijo', hermano: 'otro hijo de tus padres', tío: 'el hermano de tu padre', 'tío abuelo': 'el hermano de tu abuelo', primo: 'el hijo de tu tío', sobrino: 'el hijo de tu hermano' };
+          const CADENAS = [['padre', 'padre'], ['padre', 'hermano'], ['padre', 'hermano', 'hijo'], ['hermano', 'hijo'], ['hijo', 'hijo'], ['padre', 'padre', 'padre'], ['padre', 'padre', 'hermano'], ['padre', 'padre', 'hijo', 'hijo']];
+          const cad = CADENAS[(Math.floor(s / 2) + 3) % CADENAS.length];
+          let [u, d] = [0, 0];
+          const filas = [];
+          for (const k of cad) { const [ur, dr] = REL[k]; if (ur <= d) d = d - ur + dr; else { u += ur - d; d = dr; } filas.push([k, String(u), String(d)]); }
+          const bien = NOMBRE[`${u},${d}`];
+          const gen = k => `${k} generaci${k === 1 ? 'ón' : 'ones'}`;
+          const frase = [...cad].reverse().map((k, i) => (i === 0 ? `el ${k}` : `del ${k}`)).join(' ').replace(/del (\w+)$/, 'de tu $1');
+          const extra = cad.join() === 'padre,padre,hijo,hijo' ? ', si no es hijo de tus padres' : '';
+          const tabla = ver => ({ datos: { columnas: ['relación', 'sube', 'baja'], colorCol: [null, 'o', 'i'], filas: ver ? filas : filas.map(([k]) => [k, '?', '?']), alt: `Cadena ${cad.join(', ')}: sube ${u} y baja ${d} generaciones` }, estado: {} });
+          return {
+            enunciado: `¿Qué es de ti ${frase}${extra}?`,
+            dibujo: tabla(false),
+            pasos: [
+              { tipo: 'pide', texto: `Piden el parentesco que tiene contigo ${frase}.` },
+              { tipo: 'datos', texto: `La frase se lee de atrás hacia adelante: empiezo en ti y aplico ${cad.length} relaciones en orden.`, ecuacion: [cad.join(' → ')] },
+              { tipo: 'regla', texto: 'Cuento generaciones desde mí: padre sube una, hijo baja una y hermano sube una y baja una. Subir después de bajar deshace la bajada.' },
+              { tipo: 'cuentas', texto: 'Anoto, relación por relación, cuántas generaciones subí y cuántas bajé en total.', ecuacion: [`sube ${u}, baja ${d}   →   ${bien}`], dibujo: tabla(true) },
+              { tipo: 'sentido', texto: `Comprueba: tu ${bien} sube ${gen(u)} y baja ${gen(d)} desde ti, porque es ${ES[bien]}.` },
+            ],
+            respuesta: `Es tu ${bien}.`,
+          };
+        }
+        for (let intento = 0; intento < 200; intento++) {
+          const [a, b, c, dd] = r.mezclar(PERS);
+          const cand = [
+            { t: `${a} va antes que ${b}`, f: o => pos(o, a) < pos(o, b) },
+            { t: `${c} va justo detrás de ${a}`, f: o => pos(o, c) === pos(o, a) + 1 },
+            { t: `${dd} no va al final`, f: o => pos(o, dd) !== 3 },
+            { t: `${b} no va al inicio`, f: o => pos(o, b) !== 0 },
+            { t: `${c} y ${dd} no van juntos`, f: o => Math.abs(pos(o, c) - pos(o, dd)) !== 1 },
+          ];
+          const pistas = r.mezclar(cand).slice(0, 3);
+          const quedan = perms(PERS).filter(o => pistas.every(pi => pi.f(o)));
+          if (quedan.length < 2 || quedan.length > 4) continue;
+          const afs = [];
+          for (const nombre of PERS) for (let k = 0; k < 4; k++) afs.push({ t: `${nombre} va ${['1.º', '2.º', '3.º', '4.º'][k]}`, nombre, k, f: o => pos(o, nombre) === k });
+          const seguras = afs.filter(af => quedan.every(af.f)), posibles = afs.filter(af => quedan.some(af.f) && !quedan.every(af.f));
+          if (!seguras.length || posibles.length < 2) continue;
+          const buena = r.uno(seguras), otra = r.uno(posibles), sin = quedan.find(o => !otra.f(o));
+          return {
+            enunciado: `Fila de cuatro: Ana, Beto, Ciro y Dina. Pistas: ${pistas.map(pi => pi.t).join('; ')}. ¿Qué puesto es seguro?`,
+            dibujo: { datos: tablaOrdenes(perms(PERS)), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden algo que se cumpla en todos los órdenes que respetan las tres pistas, no solo en uno.' },
+              { tipo: 'datos', texto: `Con cuatro personas hay ${perms(PERS).length} órdenes posibles. Las tres pistas van descartando los que no sirven.`, ecuacion: [pistas.map(pi => pi.t).join('   ·   ')] },
+              { tipo: 'regla', texto: 'Seguro quiere decir que pasa en todos los órdenes válidos. Si un orden válido lo contradice, solo es posible.' },
+              { tipo: 'cuentas', texto: `Pruebo los ${perms(PERS).length} órdenes con las tres pistas y quedan ${quedan.length}. Miro cada puesto, columna por columna.`,
+                ecuacion: [`${perms(PERS).length} → ${quedan.length} órdenes   ·   ${buena.t} en todos`],
+                dibujo: { datos: tablaOrdenes(quedan, { resaltes: quedan.map((_, k) => ({ f: k, c: buena.k, color: 'd' })) }), estado: {} } },
+              { tipo: 'sentido', texto: `Comprueba la diferencia: «${otra.t}» pasa en algún orden, pero no en ${sin.join(', ')}. Es posible, no seguro.` },
+            ],
+            respuesta: `Es seguro que ${buena.t}.`,
+          };
+        }
+        throw new Error('sin ordenamiento válido');
+      },
     },
     ahoraTu: {
       pieza: 'alg-tabla',
@@ -828,6 +1142,9 @@
         ver: ['contrarrecíproca'] },
       { termino: 'contrarrecíproca', def: 'Cambiar de lugar las dos partes y negarlas: de p → q a ~q → ~p. Vale siempre lo mismo.',
         ver: ['recíproca', 'equivalencia'] },
+      { termino: 'contradicción', formas: ['contradicción', 'contradicciones'],
+        def: 'Fórmula que da falso en todas las filas de su tabla, pase lo que pase con las letras.',
+        ejemplo: 'p ∧ ~p: llueve y no llueve a la vez.', ver: ['tautología'] },
       { termino: 'tautología', def: 'Fórmula que da verdadero en todas las filas de su tabla, pase lo que pase con las letras.',
         ejemplo: 'p ∨ ~p: o llueve o no llueve.', ver: ['tabla de verdad'] },
       { termino: 'equivalencia', simbolo: '≡', formas: ['equivalencia', 'equivalencias', 'equivalente', 'equivalentes'],
