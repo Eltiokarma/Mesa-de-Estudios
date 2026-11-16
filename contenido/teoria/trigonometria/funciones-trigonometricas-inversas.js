@@ -143,6 +143,15 @@
     titulo: 'Una inversa elige una rama',
     temas: ['Arco seno, arco coseno y arco tangente', 'Dominio, rango y gráfica'],
     pieza: 'trig-plano',
+    // Lee (fase 2): qué es una inversa y por qué necesita una rama, sin decir dónde está la rama (eso lo usa Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'El camino de vuelta', texto: 'Con el seno das un ángulo y recibes un número: sen 30° = 1/2. Una función inversa hace el camino de vuelta: das el número y recibes el ángulo. La del seno se llama arcoseno.',
+          ecuacion: ['sen 30° = 1/2', '   ·   ', 'arcsen(1/2) = 30°'] },
+        { titulo: 'Un problema', texto: 'Muchos ángulos tienen el mismo seno: 30°, 150° y 390° tienen seno 1/2. Para dar una sola respuesta se elige un trozo de la circunferencia, la rama, y el ángulo que cae ahí es el valor principal.' },
+        { titulo: 'Qué mirar', texto: 'Mueve k y mira los dos puntos donde la recta y = k corta la circunferencia. Fíjate cuál de los dos queda sobre el arco verde grueso.' },
+      ],
+    },
     juega: {
       consigna: 'Mueve k. La recta y = k corta la circunferencia en dos puntos; arcsen k devuelve solo el que está en la rama verde.',
       voz: 'La calculadora muestra un valor principal: el de la rama.',
@@ -190,6 +199,37 @@
       condicion: '−1 ≤ k ≤ 1. Fuera de ese intervalo, arcsen k no existe: ningún seno pasa de 1.',
       voz: 'Una entrada, un solo ángulo: el de la rama.',
     },
+    // Así se resuelve (fase 2): arcsen de un valor notable o de uno fuera de [−1, 1], como en «Ahora tú».
+    resuelve: {
+      pieza: 'trig-plano',
+      generar(s) {
+        const rr = azar(s + 900), v = rr.uno([0.5, -0.5, Math.SQRT2 / 2, -Math.SQRT2 / 2, Math.sqrt(3) / 2, -Math.sqrt(3) / 2, 1, -1, 0, 2, -1.5]);
+        const fuera = Math.abs(v) > 1, t = fuera ? NaN : redondo(ARC.sen(v)), kv = kTxt(v);
+        const ven = fuera ? { ventana: { x: [-2.4, 2.4], y: [-2.3, 2.3] } } : {};
+        const inicio = { datos: plano(Object.assign({ arcos: rama('sen').arcos, rectas: [{ y: v, color: 'i' }], alt: `La rama verde de arcsen y la recta y = ${kv}` }, ven)), estado: {} };
+        const pasos = [
+          { tipo: 'pide', texto: ['Piden arcsen(', k, `) con `, k, ` = ${kv}: el ángulo de la rama cuyo seno es ${kv}.`] },
+          { tipo: 'datos', texto: `El seno es la altura del punto en la circunferencia: busco dónde la recta y = ${kv} la corta.` },
+          { tipo: 'regla', texto: 'arcsen devuelve un solo ángulo: el que tiene ese seno y está en la mitad derecha, de −90° a 90°. Solo acepta valores entre −1 y 1.',
+            ecuacion: ['−90° ≤ ', th, ' ≤ 90°   ·   −1 ≤ ', k, ' ≤ 1'] },
+        ];
+        if (fuera) {
+          pasos.push(
+            { tipo: 'cuentas', texto: `La altura de un punto de la circunferencia va de −1 a 1. La recta y = ${kv} queda fuera: no la corta.`,
+              ecuacion: [`${kv} no está en [−1, 1]`] },
+            { tipo: 'sentido', texto: 'Comprueba: ningún ángulo tiene seno mayor que 1 ni menor que −1. No hay ángulo que devolver.' });
+          return { enunciado: [`¿Cuánto vale arcsen(${kv})?`], dibujo: inicio, pasos, respuesta: [`arcsen(${kv}) no existe`] };
+        }
+        const otro = redondo(mod360(180 - t));
+        const corte = Math.abs(v) === 1 ? `La recta toca la circunferencia en un solo punto, ${g(t)}, el extremo de la rama.`
+          : `La recta corta en ${g(t)} y en ${g(otro)}; solo ${g(t)} está en la rama verde.`;
+        const signo = v > 0 ? 'k positivo da un ángulo positivo' : v < 0 ? 'k negativo da un ángulo negativo' : 'k = 0 da 0°';
+        pasos.push(
+          { tipo: 'cuentas', texto: corte, ecuacion: [`arcsen(${kv}) = `, th, ` = ${g(t)}`], dibujo: { datos: figura('sen', v), estado: {} } },
+          { tipo: 'sentido', texto: `De vuelta: sen(${g(t)}) = ${kTxt(FN.sen(t))}. Y el signo cuadra: ${signo}.` });
+        return { enunciado: [`¿Cuánto vale arcsen(${kv})?`], dibujo: inicio, pasos, respuesta: [`arcsen(${kv}) = ${g(t)}`] };
+      },
+    },
     ahoraTu: {
       pieza: 'trig-plano',
       voz: 'Busca el corte que cae en la rama.',
@@ -233,6 +273,14 @@
     titulo: 'Cada inversa, su rama',
     temas: ['Arco seno, arco coseno y arco tangente', 'Dominio, rango y gráfica'],
     pieza: 'trig-plano',
+    // Lee: cada razón tiene su inversa y dónde se lee cada razón, sin decir dónde va cada rama (eso lo usa Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Tres inversas', texto: 'El coseno y la tangente también repiten valores. Sus inversas se llaman arcocoseno y arcotangente, y cada una tiene su propia rama, elegida para que cada número dé un solo ángulo.' },
+        { titulo: 'Dónde se lee cada razón', texto: 'En la circunferencia de radio 1, el seno es la altura del punto y el coseno es su avance de lado, la x. La tangente se lee sobre la recta vertical x = 1.' },
+        { titulo: 'Qué mirar', texto: 'Deja k quieto y cambia entre arcsen, arccos y arctan. Mira hacia dónde se mueve el arco verde grueso y qué punto devuelve cada una.' },
+      ],
+    },
     juega: {
       consigna: 'Elige la inversa y mueve k. Mira dónde queda la rama verde de cada una y qué corte devuelve.',
       voz: 'Antes del número, ubica la rama.',
@@ -284,6 +332,38 @@
       ecuacion: ['arccos(−', k, ') = ', { llave: ['180° − arccos ', k], nota: 'el simétrico', color: 'c-o' }, '   ·   ', 'arctan(−', k, ') = −arctan ', k],
       condicion: 'arccos pide −1 ≤ k ≤ 1. arctan acepta cualquier k, pero nunca devuelve ±90°.',
       voz: 'Con arccos, el signo de k no pasa al ángulo.',
+    },
+    // Así se resuelve: arccos o arctan de un valor notable, como en «Ahora tú» (semilla par: arccos; impar: arctan).
+    resuelve: {
+      pieza: 'trig-plano',
+      generar(s) {
+        const rr = azar(s + 900), fn = s % 2 ? 'tan' : 'cos', esCos = fn === 'cos';
+        const v = esCos ? rr.uno([0.5, -0.5, Math.SQRT2 / 2, -Math.SQRT2 / 2, Math.sqrt(3) / 2, -Math.sqrt(3) / 2, -1, 0])
+          : rr.uno([1, -1, Math.sqrt(3), -Math.sqrt(3), Math.sqrt(3) / 3, -Math.sqrt(3) / 3]);
+        const t = redondo(ARC[fn](v)), ref = redondo(ARC[fn](Math.abs(v))), kv = kTxt(v), nom = nombreFn[fn];
+        const ven = !esCos && Math.abs(v) > 1.2 ? { ventana: { x: [-2.4, 2.4], y: [-2, 2] } } : {};
+        const R = rama(fn);
+        const inicio = { datos: plano(Object.assign({ arcos: R.arcos, puntos: R.huecos,
+          rectas: [esCos ? { x: v, color: 'i' } : { x: 1, color: 'i' }],
+          alt: esCos ? `La rama de arccos y la recta x = ${kv}` : `La rama de arctan y la recta x = 1` }, ven)), estado: {} };
+        const cuenta = v < 0
+          ? (esCos ? { texto: `El ángulo de |k| es ${g(ref)}. Con k negativo, el punto queda a la izquierda: resto de 180°.`, ecuacion: [`arccos(${kv}) = 180° − ${g(ref)} = ${g(t)}`] }
+            : { texto: `El ángulo de |k| es ${g(ref)}. Con k negativo, el punto (1; k) queda abajo: cambio el signo.`, ecuacion: [`arctan(${kv}) = −arctan(${kTxt(-v)}) = ${g(t)}`] })
+          : { texto: esCos ? `La recta x = ${kv} corta la mitad de arriba en un solo punto.` : `El rayo que pasa por (1; ${kv}) queda en la mitad derecha.`, ecuacion: [`${nom}(${kv}) = `, th, ` = ${g(t)}`] };
+        return {
+          enunciado: [`¿Cuánto vale ${nom}(${kv})?`],
+          dibujo: inicio,
+          pasos: [
+            { tipo: 'pide', texto: [`Piden ${nom} `, k, ` con `, k, ` = ${kv}: el ángulo de su rama con ${esCos ? 'coseno' : 'tangente'} ${kv}.`] },
+            { tipo: 'datos', texto: esCos ? `El coseno es la x del punto: uso la recta vertical x = ${kv}.` : `La tangente se lee en la recta x = 1: uso el punto (1; ${kv}).` },
+            esCos ? { tipo: 'regla', texto: 'arccos devuelve un ángulo de la mitad de arriba, de 0° a 180°. Si k es negativo, es 180° menos el ángulo de |k|.', ecuacion: ['arccos(−', k, ') = 180° − arccos ', k] }
+              : { tipo: 'regla', texto: 'arctan devuelve un ángulo entre −90° y 90°, sin llegar a ellos, y conserva el signo de k.', ecuacion: ['arctan(−', k, ') = −arctan ', k] },
+            Object.assign({ tipo: 'cuentas', dibujo: { datos: figura(fn, v, ven), estado: {} } }, cuenta),
+            { tipo: 'sentido', texto: esCos ? `De vuelta: cos(${g(t)}) = ${kTxt(FN.cos(t))}, y ${g(t)} está entre 0° y 180°.` : `De vuelta: tan(${g(t)}) = ${kTxt(FN.tan(t))}, y ${g(t)} está entre −90° y 90°.` },
+          ],
+          respuesta: [`${nom}(${kv}) = ${g(t)}`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'trig-plano',
@@ -337,6 +417,15 @@
     titulo: 'Componer sin cancelar a ciegas',
     temas: ['Propiedades'],
     pieza: 'trig-plano',
+    // Lee: qué es una composición y cómo se calcula, con un ejemplo dentro de la rama (Predice pregunta por uno fuera).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una dentro de otra', texto: 'En arcsen(sen x) hay dos funciones, una dentro de la otra: eso es una composición. Se calcula de adentro hacia afuera: primero sen x, que da un número; después, arcsen de ese número.' },
+        { titulo: 'Un ejemplo', texto: 'Con x = 30°: sen 30° = 1/2, y arcsen(1/2) = 30°. Saliste de 30° y volviste a 30°. Ahora toca probar con otros ángulos.',
+          ecuacion: ['arcsen(sen 30°) = arcsen(1/2) = 30°'] },
+        { titulo: 'Qué mirar', texto: 'Mueve x y compara el punto rojo, que es x, con el punto naranja, que es el resultado. Fíjate en lo que pasa cuando el rojo sale del arco verde.' },
+      ],
+    },
     juega: {
       consigna: 'Mueve el ángulo x. Se calcula sen x y después arcsen: el resultado naranja siempre cae en la rama verde, esté donde esté x.',
       voz: 'Mira qué pasa cuando x sale de la rama.',
@@ -385,6 +474,39 @@
       condicion: 'al revés siempre se cancelan: sen(arcsen k) = k para todo k entre −1 y 1.',
       voz: 'Antes de tachar, pregunta si el ángulo está en la rama.',
     },
+    // Así se resuelve: una inversa compuesta con su función, con x fuera de la rama, como en «Ahora tú».
+    resuelve: {
+      pieza: 'trig-plano',
+      generar(s) {
+        const rr = azar(s + 900), fn = ['sen', 'cos', 'tan'][s % 3], nom = nombreFn[fn];
+        const xs = { sen: [120, 135, 150, 210, 240, 300, 330, 390, -150], cos: [210, 225, 240, 300, 315, 330, -60, -120, 390], tan: [120, 135, 150, 210, 240, 300, 330, -120, 225] }[fn];
+        const xv = rr.uno(xs), dentro = FN[fn](xv), t = redondo(ARC[fn](dentro));
+        const rangoTxt = { sen: 'de −90° a 90°', cos: 'de 0° a 180°', tan: 'entre −90° y 90°' }[fn];
+        const xg = xv < 0 ? `(${g(xv)})` : g(xv);
+        const base = extra => ({ datos: plano(Object.assign({
+          arcos: [...rama(fn).arcos, { de: 0, a: xv, r: 0.55, color: 'h', espiral: 6 }],
+          rayos: [{ ang: xv, color: 'h' }],
+          puntos: [...rama(fn).huecos, pto(xv, { color: 'h', abierto: true, rotulo: `x = ${g(xv)}` })],
+          alt: `La rama de ${nom} y el ángulo x = ${g(xv)}, fuera de ella`,
+        }, extra)), estado: {} });
+        return {
+          enunciado: [`¿Cuánto vale ${nom}(${fn} `, x, ') si ', x, ` = ${g(xv)}?`],
+          dibujo: base({}),
+          pasos: [
+            { tipo: 'pide', texto: [`Piden ${nom}(${fn} `, x, ') con ', x, ` = ${g(xv)}: una inversa aplicada a su propia función.`] },
+            { tipo: 'datos', texto: [x, ` = ${g(xv)} no está en la rama de ${nom}, que va ${rangoTxt}.`] },
+            { tipo: 'regla', texto: `Primero se calcula lo de adentro. ${nom} devuelve el ángulo de su rama con esa razón; solo devolvería x si x ya estuviera en la rama.` },
+            { tipo: 'cuentas', texto: `Lo de adentro vale ${kTxt(dentro)}. Busco el ángulo de la rama con ${fn === 'sen' ? 'ese seno' : fn === 'cos' ? 'ese coseno' : 'esa tangente'}.`,
+              ecuacion: [`${nom}(${fn} ${xg}) = ${nom}(${kTxt(dentro)}) = ${g(t)}`],
+              dibujo: base({ rayos: [{ ang: xv, color: 'h' }, { ang: t, color: 'o' }],
+                puntos: [...rama(fn).huecos, pto(xv, { color: 'h', abierto: true, rotulo: `x = ${g(xv)}` }), pto(t, { rotulo: g(t) })],
+                alt: `${fn} de ${g(xv)} vale ${kTxt(dentro)}; la rama de ${nom} devuelve ${g(t)}` }) },
+            { tipo: 'sentido', texto: `De vuelta: ${fn}(${g(t)}) = ${kTxt(FN[fn](t))}, lo mismo que ${fn} ${xg}, y ${g(t)} sí está en la rama.` },
+          ],
+          respuesta: [`${nom}(${fn} ${xg}) = ${g(t)}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Calcula primero lo de adentro.',
       generar(sem) {
@@ -432,6 +554,15 @@
     titulo: 'La gráfica se refleja',
     temas: ['Dominio, rango y gráfica', 'Arco seno, arco coseno y arco tangente'],
     pieza: 'trig-plano',
+    // Lee: función e inversa intercambian entrada y salida, y qué es reflejar en y = x, sin tocar la notación sen⁻¹.
+    lee: {
+      tarjetas: [
+        { titulo: 'Se cambian los papeles', texto: 'Una función y su inversa se cambian los papeles: lo que una recibe, la otra lo devuelve. Como sen(π/2) = 1, arcsen(1) = π/2. El ángulo pasa de entrada a salida.',
+          ecuacion: ['sen(π/2) = 1   ⇔   arcsen(1) = π/2'] },
+        { titulo: 'El reflejo en y = x', texto: 'Cambiar la x por la y en cada punto es reflejarlo en la diagonal y = x: el punto (2; 5) pasa a (5; 2). En el juego, la diagonal es la recta discontinua.' },
+        { titulo: 'Qué mirar', texto: 'Mueve k y sigue al punto naranja, sobre la gráfica de arcsen, y a su pareja verde, sobre la del seno. Compara sus coordenadas.' },
+      ],
+    },
     juega: {
       consigna: 'Mueve k. El punto naranja (k; arcsen k) es el reflejo, en la recta y = x, del punto verde de la rama del seno.',
       voz: 'Lo que en una gráfica es x, en la otra es y.',
@@ -479,6 +610,37 @@
       condicion: 'el reflejo vale para la rama elegida; sin rama, el seno no tiene inversa porque repite valores.',
       voz: 'El ⁻¹ de la función no es un exponente.',
     },
+    // Así se resuelve: el dominio de arcsen(ax + b) o arccos(ax + b), como en «Ahora tú» (semilla par: arcsen; impar: arccos).
+    resuelve: {
+      pieza: 'trig-plano',
+      generar(s) {
+        const rr = azar(s + 900), fn = s % 2 ? 'cos' : 'sen', nom = nombreFn[fn];
+        const a = rr.uno([2, 3, 4, 5]), b = rr.uno([-3, -2, -1, 1, 2, 3]);
+        const fr = (p, q) => { const m = (u, w) => (w ? m(w, u % w) : Math.abs(u)); const d = m(p, q) || 1; const sg = p * q < 0 ? '−' : ''; const P = Math.abs(p / d), Q = Math.abs(q / d); return Q === 1 ? `${sg}${P}` : `${sg}${P}/${Q}`; };
+        const bTxt = b > 0 ? `+ ${b}` : `− ${-b}`;
+        const lo = (-1 - b) / a, hi = (1 - b) / a, inv = fn === 'sen' ? Math.asin : Math.acos;
+        const curva = (p, q, h) => Array.from({ length: 49 }, (_, i) => { const u = p + (q - p) * i / 48; return [u, inv(Math.max(-1, Math.min(1, h(u))))]; });
+        const ven = { ventana: { x: [-2.4, 2.4], y: fn === 'sen' ? [-1.9, 1.9] : [-0.6, 3.4] }, numeros: 1 };
+        const ref = { puntos: curva(-1, 1, u => u), color: 'd', discontinua: true, rotulo: nom, en: [1, inv(1)], lado: 'e' };
+        return {
+          enunciado: ['¿Cuál es el dominio de f(', x, `) = ${nom}(${a}`, x, ` ${bTxt})?`],
+          dibujo: { datos: Object.assign({ curvas: [ref], alt: `La gráfica de ${nom} x, de dominio [−1, 1]` }, ven), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el dominio de f: todos los valores de ', x, ' que la función acepta.'] },
+            { tipo: 'datos', texto: [`Lo que entra a ${nom} no es `, x, ` sino ${a}`, x, ` ${bTxt}.`] },
+            { tipo: 'regla', texto: `${nom} solo acepta números entre −1 y 1: es lo que tomaba la rama del ${fn === 'sen' ? 'seno' : 'coseno'}, reflejado. Lo de adentro tiene que caer ahí.`,
+              ecuacion: [`−1 ≤ ${a}`, x, ` ${bTxt} ≤ 1`] },
+            { tipo: 'cuentas', texto: [`${b > 0 ? `Resto ${b}` : `Sumo ${-b}`} en los tres lados y después divido entre ${a} para despejar `, x, '.'],
+              ecuacion: [`${fr(-1 - b, 1)} ≤ ${a}`, x, ` ≤ ${fr(1 - b, 1)}  ⇒  ${fr(-1 - b, a)} ≤ `, x, ` ≤ ${fr(1 - b, a)}`],
+              dibujo: { datos: Object.assign({ curvas: [ref, { puntos: curva(lo, hi, u => a * u + b), color: 'o', rotulo: 'f', en: [hi, inv(1)], lado: 'ne' }],
+                segmentos: [{ de: [lo, 0], a: [hi, 0], color: 'i' }],
+                alt: `La gráfica de f existe solo para x entre ${fr(-1 - b, a)} y ${fr(1 - b, a)}` }, ven), estado: {} } },
+            { tipo: 'sentido', texto: ['Pruebo el borde ', x, ` = ${fr(1 - b, a)}: ${a} · ${fr(1 - b, a)} ${bTxt} = ${f(a * hi + b)}, justo el extremo permitido.`] },
+          ],
+          respuesta: [`Dom f = [${fr(-1 - b, a)}, ${fr(1 - b, a)}]`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'El dominio sale de lo que la inversa acepta.',
       generar(sem) {
@@ -512,6 +674,15 @@
     titulo: 'arccot, arcsec y arccsc',
     temas: ['Arco cotangente, arco secante y arco cosecante'],
     pieza: 'trig-plano',
+    // Lee: las tres inversas que faltan y su relación con los recíprocos, sin decir cómo se ubica arccot (eso lo usa Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Las tres que faltan', texto: 'Quedan las inversas de la cotangente, la secante y la cosecante: arccot, arcsec y arccsc. En el examen salen menos, pero se resuelven con lo que ya sabes de las otras tres.' },
+        { titulo: 'Recíprocos', texto: 'La secante es el recíproco del coseno y la cosecante, el del seno. Por eso la figura del juego no usa k: usa su recíproco, 1/k.',
+          ecuacion: ['sec ', th, ' = ', { frac: ['1', ['cos ', th]] }, '   ·   ', 'csc ', th, ' = ', { frac: ['1', ['sen ', th]] }] },
+        { titulo: 'Qué mirar', texto: 'Elige arcsec y prueba k = 2 y k = 4: mira si la recta turquesa se acerca al centro o se aleja. Luego cambia a arccsc.' },
+      ],
+    },
     juega: {
       consigna: 'Elige arcsec o arccsc y el valor k. La figura usa 1/k: arcsec k = arccos(1/k) y arccsc k = arcsen(1/k).',
       voz: 'Pasemos k a su recíproco y usemos una rama conocida.',
@@ -558,6 +729,50 @@
       ecuacion: ['arcsec ', k, ' = arccos ', { llave: [{ frac: ['1', k] }], nota: 'el recíproco', color: 'c-i' }, '   ·   ', 'arccsc ', k, ' = arcsen ', { frac: ['1', k] }, '   ·   ', '0° < arccot ', k, ' < 180°'],
       condicion: 'arcsec y arccsc piden |k| ≥ 1; arccot acepta todo k. Algunos libros usan otra rama de arccot: revisa la del examen.',
       voz: 'Declaremos la rama antes de dar el número.',
+    },
+    // Así se resuelve: arccot, arcsec o arccsc de un valor notable, como en «Ahora tú» (tres tipos según la semilla).
+    resuelve: {
+      pieza: 'trig-plano',
+      generar(s) {
+        const rr = azar(s + 900), fn = ['cot', 'sec', 'csc'][s % 3], nom = nombreFn[fn];
+        const v = fn === 'cot' ? rr.uno([1, -1, Math.sqrt(3), -Math.sqrt(3), Math.sqrt(3) / 3, -Math.sqrt(3) / 3])
+          : rr.uno([2, -2, Math.SQRT2, -Math.SQRT2, 2 * Math.sqrt(3) / 3, -2 * Math.sqrt(3) / 3, -1]);
+        const t = redondo(ARC[fn](v)), ref = redondo(ARC[fn](Math.abs(v))), kv = kTxt(v), ki = kTxt(1 / v);
+        const ven = fn === 'cot' && Math.abs(v) > 1.2 ? { ventana: { x: [-2.4, 2.4], y: [-1.6, 1.6] } } : {};
+        const R = rama(fn);
+        const inicio = { datos: plano(Object.assign({ arcos: R.arcos, puntos: R.huecos, alt: `La rama de ${nom}` }, ven)), estado: {} };
+        const fig = { datos: figura(fn, v, ven), estado: {} };
+        if (fn === 'cot') {
+          return {
+            enunciado: [`Con la rama de arccot entre 0° y 180°, ¿cuánto vale arccot(${kv})?`],
+            dibujo: inicio,
+            pasos: [
+              { tipo: 'pide', texto: ['Piden arccot ', k, ' con ', k, ` = ${kv}: el ángulo de la mitad de arriba con cotangente ${kv}.`] },
+              { tipo: 'datos', texto: `La cotangente es x/y. Con y = 1, el punto que la da es (${kv}; 1).` },
+              { tipo: 'regla', texto: 'arccot devuelve el ángulo del rayo que pasa por (k; 1): siempre entre 0° y 180°, sin llegar a ellos.', ecuacion: ['0° < ', th, ' < 180°'] },
+              v > 0 ? { tipo: 'cuentas', texto: 'Con k positivo, el punto está a la derecha y basta arctan(1/k).', ecuacion: [`arccot(${kv}) = arctan(${ki}) = ${g(t)}`], dibujo: fig }
+                : { tipo: 'cuentas', texto: `Con k negativo, el punto está a la izquierda: 180° menos el ángulo de |k|, que es ${g(ref)}.`, ecuacion: [`arccot(${kv}) = 180° − ${g(ref)} = ${g(t)}`], dibujo: fig },
+              { tipo: 'sentido', texto: `De vuelta: cot(${g(t)}) = ${kTxt(1 / FN.tan(t))}, y ${g(t)} está entre 0° y 180°.` },
+            ],
+            respuesta: [`arccot(${kv}) = ${g(t)}`],
+          };
+        }
+        const base = fn === 'sec' ? 'arccos' : 'arcsen', raz = fn === 'sec' ? 'cos' : 'sen';
+        return {
+          enunciado: [`¿Cuánto vale ${nom}(${kv})?`],
+          dibujo: inicio,
+          pasos: [
+            { tipo: 'pide', texto: [`Piden ${nom} `, k, ' con ', k, ` = ${kv}.`] },
+            { tipo: 'datos', texto: ['El valor es ', k, ` = ${kv}; su recíproco es 1/`, k, ` = ${ki}.`] },
+            { tipo: 'regla', texto: fn === 'sec' ? 'La secante es 1 entre el coseno: arcsec k es arccos(1/k), con la rama de arccos, de 0° a 180°.'
+              : 'La cosecante es 1 entre el seno: arccsc k es arcsen(1/k), con la rama de arcsen, de −90° a 90°.',
+              ecuacion: [`${nom} `, k, ` = ${base} `, { frac: ['1', k] }] },
+            { tipo: 'cuentas', texto: 'Paso al recíproco y uso la rama que ya conozco.', ecuacion: [`${nom}(${kv}) = ${base}(${ki}) = ${g(t)}`], dibujo: fig },
+            { tipo: 'sentido', texto: `De vuelta: ${raz}(${g(t)}) = ${kTxt(FN[raz](t))}, el recíproco de ${kv}. ${g(t)} está en la rama.` },
+          ],
+          respuesta: [`${nom}(${kv}) = ${g(t)}`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'trig-plano',
