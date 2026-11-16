@@ -61,6 +61,77 @@
     return { datos: { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: antes.trim() }, { id: 'w', t: palabraClave }, ...(despues.trim() ? [{ id: 'b', t: despues.trim() }] : [])] }] }, estado: { marcas: { w: 'o' } } };
   }
 
+  // Bancos de «Ahora tú» (sin cambios); «Así se resuelve» toma de aquí otro caso que el de la misma semilla.
+  const BANCO_ACEP = [
+    { o: 'El discurso del alcalde fue pesado: duró dos horas y la gente se iba durmiendo.', w: 'pesado', pide: 'sinónimo', ok: 'aburrido', m: [['denso de carga', 'RV18', 'Sirve si se habla de peso físico; aquí se habla de un discurso.'], ['grave', 'RV19', 'Es del mismo campo, pero aquí no se trata de seriedad.'], ['pensado', 'RV20', 'Se parece por la forma, pero significa otra cosa.']] },
+    { o: 'Es un alumno brillante: entiende rápido y explica bien a sus compañeros.', w: 'brillante', pide: 'antónimo', ok: 'torpe', m: [['opaco de color', 'RV18', 'Sería el contrario si se hablara de luz; aquí es inteligencia.'], ['callado', 'RV21', 'Es distinto, pero habla de cuánto conversa, no de cuánto entiende.'], ['talentoso', 'RV17', 'Va en el mismo sentido que brillante: sería un sinónimo.']] },
+    { o: 'La crítica fue dura: señaló cada error sin reconocer ningún acierto.', w: 'dura', pide: 'sinónimo', ok: 'severa', m: [['sólida', 'RV18', 'Sirve para un material; aquí se habla de una crítica.'], ['larga', 'RV19', 'La crítica pudo ser larga, pero eso no es lo que dice «dura».'], ['durable', 'RV20', 'Se parece por la forma, pero significa que dura mucho.']] },
+    { o: 'El precio del pasaje está alto: cuesta el doble que el mes pasado.', w: 'alto', pide: 'antónimo', ok: 'barato', m: [['bajo de estatura', 'RV18', 'Sería el contrario si se hablara de altura; aquí es el precio.'], ['caro', 'RV17', 'Va en el mismo sentido que alto: sería un sinónimo.'], ['lejano', 'RV21', 'Es distinto, pero mide distancia, no precio.']] },
+    { o: 'Su explicación fue clara: todos la entendieron a la primera.', w: 'clara', pide: 'antónimo', ok: 'confusa', m: [['oscura de color', 'RV18', 'Sería el contrario en luz o color; aquí es una explicación.'], ['corta', 'RV21', 'Es distinto, pero mide extensión, no comprensión.'], ['sencilla', 'RV17', 'Va en el mismo sentido que clara: sería un sinónimo.']] },
+    { o: 'Fue un golpe duro para la familia perder la cosecha de todo el año.', w: 'golpe', pide: 'sinónimo', ok: 'desgracia', m: [['puñete', 'RV18', 'Sirve para un golpe con la mano; aquí es una pérdida.'], ['ruido', 'RV19', 'Un golpe puede sonar, pero aquí no se habla de sonido.'], ['gopel', 'RV20', 'Solo se parece por las letras.']] },
+  ];
+  const BANCO_VALOR = [
+    { o: 'El vecino es tacaño: nunca invita nada.', w: 'tacaño', ok: 'ahorrativo', pide: 'elogie', m: [['avaro', 'RVL2', 'Describe lo mismo, pero también critica: no cambia la valoración.'], ['generoso', 'RVL1', 'Cambia la conducta: un generoso sí invita.'], ['callado', 'RV19', 'Describe otra cosa: cuánto habla, no cuánto gasta.']] },
+    { o: 'La casa es vieja: la construyeron hace cien años.', w: 'vieja', ok: 'antigua', pide: 'valore mejor', m: [['ruinosa', 'RVL2', 'Agrega una crítica: describe deterioro, no solo edad.'], ['nueva', 'RVL1', 'Cambia lo que describe: la casa ya no tendría cien años.'], ['grande', 'RV19', 'Describe otra cosa: tamaño, no edad.']] },
+    { o: 'Mi primo es curioso: pregunta por todo lo que ve.', w: 'curioso', ok: 'entrometido', pide: 'critique', m: [['interesado en aprender', 'RVL2', 'Describe lo mismo, pero lo elogia: no lo critica.'], ['indiferente', 'RVL1', 'Cambia la conducta: alguien indiferente no pregunta.'], ['alto', 'RV19', 'Describe otra cosa: estatura.']] },
+    { o: 'El líder fue firme: no cambió su decisión.', w: 'firme', ok: 'obstinado', pide: 'critique', m: [['decidido', 'RVL2', 'Describe lo mismo con elogio: no lo critica.'], ['dudoso', 'RVL1', 'Cambia la conducta: un dudoso sí cambiaría.'], ['joven', 'RV19', 'Describe otra cosa: edad.']] },
+    { o: 'La comida estaba picante: tenía mucho ají.', w: 'picante', ok: 'sabrosa y picante', pide: 'elogie', m: [['incomible de tanto ají', 'RVL2', 'Describe el ají con crítica, no con elogio.'], ['sin ají', 'RVL1', 'Cambia lo que describe: ya no tendría ají.'], ['fría', 'RV19', 'Describe otra cosa: temperatura.']] },
+    { o: 'El niño es inquieto: no se queda sentado.', w: 'inquieto', ok: 'activo', pide: 'valore mejor', m: [['revoltoso', 'RVL2', 'Describe lo mismo, pero sigue siendo una crítica.'], ['tranquilo', 'RVL1', 'Cambia la conducta: un niño tranquilo sí se queda sentado.'], ['pequeño', 'RV19', 'Describe otra cosa: tamaño o edad.']] },
+  ];
+  const BANCO_PRECISA = [
+    { o: 'El jurado ___ al ganador del concurso de cuentos.', ok: 'eligió', m: [['tuvo', 'RVL3', '«Tuvo» encaja, pero no dice qué hizo el jurado.'], ['escribió', 'RV19', 'Es del campo de los cuentos, pero el jurado no escribe al ganador.'], ['perdió', 'RV23', 'Choca con la oración: un jurado decide al ganador.']] },
+    { o: 'La doctora ___ una dieta sin sal a su paciente.', ok: 'recetó', m: [['dio', 'RVL3', '«Dio» encaja, pero es vago: no dice que fue una indicación médica.'], ['cocinó', 'RV19', 'Es del campo de la comida, pero la doctora no la prepara.'], ['prohibió', 'RV23', 'Choca: lo que prohíbe es la sal, no la dieta sin sal.']] },
+    { o: 'El alcalde ___ la nueva plaza en la ceremonia del domingo.', ok: 'inauguró', m: [['hizo', 'RVL3', '«Hizo» encaja, pero no dice qué pasó en la ceremonia.'], ['barrió', 'RV19', 'Es algo que se hace en una plaza, pero no en una ceremonia.'], ['cerró', 'RV23', 'Choca con «nueva»: una plaza nueva se abre.']] },
+    { o: 'Los vecinos ___ dinero para arreglar la pista del barrio.', ok: 'reunieron', m: [['pusieron cosas', 'RVL3', 'Es vago: «cosas» no precisa qué aportaron.'], ['gastaron', 'RV23', 'Choca: primero hay que juntar el dinero para arreglarla.'], ['contaron', 'RV19', 'Es del campo del dinero, pero no dice que lo juntaran.']] },
+    { o: 'La profesora ___ las dudas de los alumnos una por una.', ok: 'resolvió', m: [['vio', 'RVL3', '«Vio» encaja, pero no dice que las aclarara.'], ['tuvo', 'RV23', 'Las dudas son de los alumnos, no de la profesora.'], ['dictó', 'RV19', 'Es del campo de la clase, pero no se dictan dudas.']] },
+    { o: 'El río ___ los campos después de tres días de lluvia.', ok: 'inundó', m: [['hizo algo en', 'RVL3', 'Es vago: no dice qué le pasó a los campos.'], ['regó', 'RV23', 'Encaja con campos, pero choca con tres días de lluvia: es exceso.'], ['cruzó', 'RV19', 'Un río cruza un valle, pero eso no es lo que causa la lluvia.']] },
+  ];
+  const BANCO_PISTA = [
+    { o: 'El camino era sinuoso: daba tantas curvas que el bus iba muy despacio.', w: 'sinuoso', ok: 'Con muchas curvas', m: [['Peligroso', 'RVL4', 'Se asocia con un camino difícil, pero la pista dice curvas.'], ['Largo', 'RVL4', 'Un camino así puede ser largo, pero la pista habla de curvas.'], ['Recto', 'RV34', 'Es lo contrario de lo que dice la pista.']] },
+    { o: 'Era un hombre locuaz; en cambio, su hermano casi no hablaba.', w: 'locuaz', ok: 'Que habla mucho', m: [['Que es callado', 'RV24', 'Eso describe al hermano: «en cambio» marca lo contrario.'], ['Que está loco', 'RV20', 'Se parece por la forma, pero la pista habla de hablar.'], ['Que es amable', 'RVL4', 'Puede serlo, pero la oración no habla de eso.']] },
+    { o: 'La planta es perenne: conserva sus hojas verdes durante todo el año.', w: 'perenne', ok: 'Que dura todo el año', m: [['Que da flores', 'RVL4', 'Es una idea de plantas, pero la pista habla de hojas todo el año.'], ['Que pierde sus hojas', 'RV34', 'Es lo contrario de lo que dice la pista.'], ['Que es grande', 'RVL4', 'La oración no habla del tamaño.']] },
+    { o: 'Su letra era ilegible: ni la profesora pudo entender lo que escribió.', w: 'ilegible', ok: 'Que no se puede leer', m: [['Que es bonita', 'RVL4', 'La oración no la valora así; dice que no se entendía.'], ['Que es ilegal', 'RV20', 'Se parece por la forma, pero la pista habla de leer.'], ['Que es pequeña', 'RVL4', 'Podría ser una causa, pero la pista dice que no se entendía.']] },
+    { o: 'Fue un error garrafal: por él, el puente se cayó a la semana.', w: 'garrafal', ok: 'Muy grave', m: [['Pequeño', 'RV34', 'La consecuencia, un puente caído, dice lo contrario.'], ['Gracioso', 'RVL4', 'Nada en la oración lo toma como broma.'], ['Escondido', 'RVL4', 'La oración no habla de si se veía o no.']] },
+    { o: 'El agua del pozo es potable: la familia la toma sin hervirla y nunca se enferma.', w: 'potable', ok: 'Que se puede beber', m: [['Que es caliente', 'RVL4', 'Al contrario: la toman sin hervirla.'], ['Que es abundante', 'RVL4', 'La oración no dice cuánta agua hay.'], ['Que está sucia', 'RV34', 'Es lo contrario de lo que dice la pista.']] },
+  ];
+  // Así se resuelve: lo que cada caso del banco necesita para contarse paso a paso (acepción, valoración, partes que
+  // deciden, tipo de pista). Es dato del banco, como sus opciones; «Ahora tú» no lo usa.
+  const ACEPCION = { pesado: 'aburrimiento', brillante: 'inteligencia', dura: 'severidad', alto: 'precio', clara: 'comprensión', golpe: 'una pérdida que duele' };
+  const VALORA = {
+    tacaño: ['no gasta ni invita', 'lo critica', 'lo elogia'], vieja: ['tiene muchos años', 'algo despectiva', 'la valora mejor'],
+    curioso: ['pregunta por todo', 'casi neutra', 'lo critica'], firme: ['no cambia su decisión', 'lo elogia', 'lo critica'],
+    picante: ['tiene mucho ají', 'neutra', 'la elogia'], inquieto: ['no se queda sentado', 'algo despectiva', 'lo valora mejor'],
+  };
+  const DECIDE = { eligió: 'al ganador del concurso', recetó: 'una dieta sin sal a su paciente', inauguró: 'la nueva plaza en la ceremonia', reunieron: 'dinero para arreglar la pista', resolvió: 'las dudas de los alumnos', inundó: 'después de tres días de lluvia' };
+  const TIPO_PISTA = { sinuoso: 'una consecuencia', locuaz: 'un contraste', perenne: 'una explicación', ilegible: 'una consecuencia', garrafal: 'una consecuencia', potable: 'una consecuencia' };
+  function azar(s) {
+    let q = (s * 2654435761 + 12345) >>> 0;
+    return () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+  }
+  // Índice de «Así se resuelve»: sale de azar(s + 900) y nunca coincide con el de «Ahora tú» (s % n).
+  const otroIndice = (s, n) => (s % n + 1 + Math.floor(azar(s + 900)() * (n - 1))) % n;
+  const barajar = (b, s) => {
+    const r = azar(s + 900), malas = b.m.slice(); r(); if (r() < 0.5) malas.reverse();
+    const ops = opciones(b.ok, malas), c = ops.shift(), k = Math.floor(r() * (ops.length + 1));
+    ops.splice(k, 0, c); return ops;
+  };
+  const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
+  // Un trozo de color largo (una pista, una razón) puede partir línea (.var.largo): si no, se sale de la tarjeta.
+  const largo = x => Object.assign(x, { largo: true });
+  const trampa = (b, codigo) => b.m.find(m => m[1] === codigo);
+  // Figura de «Así se resuelve»: la oración del caso (la misma tarjeta de «Ahora tú») y la lista de opciones; el
+  // estado marca la pista (i), llena el hueco y, al resolver, marca la correcta (i) y tacha las demás.
+  const conOpciones = (fig, ops, extra = {}, resuelto = false) => ({
+    datos: { esquinaLibre: true, secciones: fig.datos.secciones.concat([{ id: 'ops', titulo: 'Opciones', modo: 'lista', fragmentos: ops.map((o, k) => ({ id: `o${k}`, t: o.texto })) }]) },
+    estado: Object.assign({}, fig.estado, extra, {
+      marcas: Object.assign({}, fig.estado.marcas, extra.marcas, resuelto ? { [`o${ops.findIndex(o => o.correcta)}`]: 'i' } : {}),
+    }, resuelto ? { tachar: ops.map((o, k) => (o.correcta ? null : `o${k}`)).filter(Boolean) } : {}),
+  });
+  // La oración con hueco de la idea 3 (como la de «Ahora tú»); el hueco se llena con el verbo elegido.
+  const conHueco = o => { const [antes, despues] = o.split('___'); return { datos: { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [{ id: 'a', t: antes.trim() }, { id: 'w', hueco: true, reserva: 'construyó' }, { id: 'b', t: despues.trim() }] }] }, estado: { marcas: {} } }; };
+  // La parte que sigue a la palabra (la pista, en estos bancos), sin la puntuación del comienzo.
+  const despuesDe = (o, w) => o.split(w)[1].replace(/^[\s:;,]+/, '').replace(/\.$/, '');
+
   // ---------- Idea 1: la oración elige la acepción ----------
   // Cambia: la oración (la palabra «fría» se queda) y el reemplazo. Permanece: la palabra y su lugar.
   // Progresa: qué reemplazo encaja en cada oración. Se reserva: el antónimo en contexto (la predicción).
@@ -83,6 +154,14 @@
     titulo: 'La oración elige la acepción',
     temas: ['Sinónimos en contexto', 'Antónimos en contexto'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué es una acepción y qué es una pista, sin tocar el contrario de «fría» (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una palabra, varios sentidos', texto: 'Muchas palabras tienen varios significados, y a cada uno se le llama acepción. «Banco» puede ser el asiento de la plaza o el lugar donde guardas tu dinero.' },
+        { titulo: 'La oración da pistas', texto: 'La oración avisa qué acepción usa. En «me senté en el banco a esperar la combi», «me senté» es la pista: nadie se sienta en una oficina de dinero.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, la palabra que falta es siempre «fría». Mira qué palabras de cada oración están marcadas y qué reemplazo encaja con ellas.' },
+      ],
+    },
     juega: {
       consigna: 'La palabra que falta es «fría». Cambia la oración y prueba reemplazos: mira cuál conserva el sentido en cada una.',
       voz: 'Las palabras marcadas son las pistas de la oración.',
@@ -123,17 +202,30 @@
       ecuacion: [pista('pista'), ' → ', { llave: [rasgo('acepción')], nota: 'sentido que usa', color: 'c-d' }, ' → ', palabra('reemplazo')],
       condicion: 'el reemplazo, puesto en el lugar de la palabra, conserva el sentido y el tono de la oración.',
     },
+    // Así se resuelve (fase 2): otro caso del banco de «Ahora tú»; primero la pista, después la palabra.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Primero la pista; después, la palabra.',
+      generar(s) {
+        const b = BANCO_ACEP[otroIndice(s, BANCO_ACEP.length)], ops = barajar(b, s), fig = tarjeta(b.o, b.w), t = trampa(b, 'RV18');
+        return {
+          enunciado: `En esta oración, ¿qué palabra es un ${b.pide} de «${b.w}»?`,
+          dibujo: conOpciones(fig, ops),
+          pasos: [
+            { tipo: 'pide', texto: [`Piden un ${b.pide} de `, palabra(b.w), ' con el sentido que tiene en esta oración, no en cualquiera.'] },
+            { tipo: 'datos', texto: ['La pista de la oración: ', largo(pista(`«${despuesDe(b.o, b.w)}»`)), '.'], dibujo: conOpciones(fig, ops, { marcas: { b: 'i' } }) },
+            { tipo: 'regla', texto: 'Veo qué acepción usa la oración. Después busco la palabra que dice lo mismo, o lo contrario, en esa acepción.', ecuacion: [pista('pista'), ' → ', rasgo('acepción'), ' → ', palabra('reemplazo')] },
+            { tipo: 'aplica', texto: ['Aquí ', palabra(b.w), ' habla de ', largo(rasgo(ACEPCION[b.w])), `. En esa acepción, el ${b.pide} es `, palabra(b.ok), '.'], dibujo: conOpciones(fig, ops, { marcas: { b: 'i' } }, true) },
+            { tipo: 'sentido', texto: [`«${t[0]}» es la trampa de la primera acepción. `, largo(mal(t[2]))] },
+          ],
+          respuesta: [palabra(b.ok)],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Busca la pista que decide la acepción.',
       generar(s) {
-        const B = [
-          { o: 'El discurso del alcalde fue pesado: duró dos horas y la gente se iba durmiendo.', w: 'pesado', pide: 'sinónimo', ok: 'aburrido', m: [['denso de carga', 'RV18', 'Sirve si se habla de peso físico; aquí se habla de un discurso.'], ['grave', 'RV19', 'Es del mismo campo, pero aquí no se trata de seriedad.'], ['pensado', 'RV20', 'Se parece por la forma, pero significa otra cosa.']] },
-          { o: 'Es un alumno brillante: entiende rápido y explica bien a sus compañeros.', w: 'brillante', pide: 'antónimo', ok: 'torpe', m: [['opaco de color', 'RV18', 'Sería el contrario si se hablara de luz; aquí es inteligencia.'], ['callado', 'RV21', 'Es distinto, pero habla de cuánto conversa, no de cuánto entiende.'], ['talentoso', 'RV17', 'Va en el mismo sentido que brillante: sería un sinónimo.']] },
-          { o: 'La crítica fue dura: señaló cada error sin reconocer ningún acierto.', w: 'dura', pide: 'sinónimo', ok: 'severa', m: [['sólida', 'RV18', 'Sirve para un material; aquí se habla de una crítica.'], ['larga', 'RV19', 'La crítica pudo ser larga, pero eso no es lo que dice «dura».'], ['durable', 'RV20', 'Se parece por la forma, pero significa que dura mucho.']] },
-          { o: 'El precio del pasaje está alto: cuesta el doble que el mes pasado.', w: 'alto', pide: 'antónimo', ok: 'barato', m: [['bajo de estatura', 'RV18', 'Sería el contrario si se hablara de altura; aquí es el precio.'], ['caro', 'RV17', 'Va en el mismo sentido que alto: sería un sinónimo.'], ['lejano', 'RV21', 'Es distinto, pero mide distancia, no precio.']] },
-          { o: 'Su explicación fue clara: todos la entendieron a la primera.', w: 'clara', pide: 'antónimo', ok: 'confusa', m: [['oscura de color', 'RV18', 'Sería el contrario en luz o color; aquí es una explicación.'], ['corta', 'RV21', 'Es distinto, pero mide extensión, no comprensión.'], ['sencilla', 'RV17', 'Va en el mismo sentido que clara: sería un sinónimo.']] },
-          { o: 'Fue un golpe duro para la familia perder la cosecha de todo el año.', w: 'golpe', pide: 'sinónimo', ok: 'desgracia', m: [['puñete', 'RV18', 'Sirve para un golpe con la mano; aquí es una pérdida.'], ['ruido', 'RV19', 'Un golpe puede sonar, pero aquí no se habla de sonido.'], ['gopel', 'RV20', 'Solo se parece por las letras.']] },
-        ];
+        const B = BANCO_ACEP;
         const b = B[s % B.length];
         return {
           pregunta: `En esta oración, ¿qué palabra es un ${b.pide} de «${b.w}»?`,
@@ -168,6 +260,14 @@
     titulo: 'Lo que dice y cómo valora',
     temas: ['Denotación y connotación'],
     pieza: 'rv-texto',
+    // Lee (fase 2): solo el vocabulario (elogiar, criticar) y qué mirar; que la valoración cambie y la conducta no, lo
+    // descubre en el juego y en Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Elogiar y criticar', texto: 'Elogiar es hablar bien de alguien; criticar es señalar lo que no te gusta de él. En el examen te preguntan si una palabra elogia, critica o solo describe.' },
+        { titulo: 'Qué mirar', texto: 'En el juego describes a Rosa con cuatro palabras. Abajo hay dos tarjetas: una dice lo que la palabra describe y la otra, cómo lo valora. Mira cuál se mueve.' },
+      ],
+    },
     juega: {
       consigna: 'Describe a Rosa con distintas palabras. Mira qué se mantiene y qué cambia en cada caso.',
       voz: 'Compara las dos tarjetas de abajo.',
@@ -206,16 +306,30 @@
       ecuacion: [palabra('palabra'), ' = ', { llave: [pista('denotación')], nota: 'lo que describe', color: 'c-i' }, ' + ', { llave: [rasgo('connotación')], nota: 'cómo lo valora', color: 'c-d' }],
       condicion: 'se compara en la misma oración; un sinónimo que cambia la valoración no conserva el tono.',
     },
+    // Así se resuelve (fase 2): otro caso del banco; se separa lo que describe de cómo lo valora.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Separa lo que describe de cómo lo valora.',
+      generar(s) {
+        const b = BANCO_VALOR[otroIndice(s, BANCO_VALOR.length)], ops = barajar(b, s), fig = tarjeta(b.o, b.w), [den, antes, ahora] = VALORA[b.w];
+        const cambia = trampa(b, 'RVL1'), igual = trampa(b, 'RVL2');
+        return {
+          enunciado: `¿Qué palabra describe la misma conducta que «${b.w}», pero hace que la oración la ${b.pide}?`,
+          dibujo: conOpciones(fig, ops),
+          pasos: [
+            { tipo: 'pide', texto: `Piden otra palabra para la misma conducta, que haga que la oración la ${b.pide}.` },
+            { tipo: 'datos', texto: [palabra(b.w), ' describe que ', largo(pista(den)), '. Su valoración: ', rasgo(antes), '.'], dibujo: conOpciones(fig, ops, { marcas: { b: 'i' } }) },
+            { tipo: 'regla', texto: 'Conservo lo que la palabra describe y cambio solo cómo lo valora.', ecuacion: [pista('misma denotación'), ' + ', rasgo('otra connotación')] },
+            { tipo: 'aplica', texto: [`Descarto «${cambia[0]}», porque `, largo(mal(minus(cambia[2]))), ' Queda ', palabra(b.ok), ': describe lo mismo y ', rasgo(ahora), '.'], dibujo: conOpciones(fig, ops, { marcas: { b: 'i' } }, true) },
+            { tipo: 'sentido', texto: [`La parecida, «${igual[0]}», tampoco sirve, porque `, largo(mal(minus(igual[2])))] },
+          ],
+          respuesta: [palabra(b.ok)],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { o: 'El vecino es tacaño: nunca invita nada.', w: 'tacaño', ok: 'ahorrativo', pide: 'elogie', m: [['avaro', 'RVL2', 'Describe lo mismo, pero también critica: no cambia la valoración.'], ['generoso', 'RVL1', 'Cambia la conducta: un generoso sí invita.'], ['callado', 'RV19', 'Describe otra cosa: cuánto habla, no cuánto gasta.']] },
-          { o: 'La casa es vieja: la construyeron hace cien años.', w: 'vieja', ok: 'antigua', pide: 'valore mejor', m: [['ruinosa', 'RVL2', 'Agrega una crítica: describe deterioro, no solo edad.'], ['nueva', 'RVL1', 'Cambia lo que describe: la casa ya no tendría cien años.'], ['grande', 'RV19', 'Describe otra cosa: tamaño, no edad.']] },
-          { o: 'Mi primo es curioso: pregunta por todo lo que ve.', w: 'curioso', ok: 'entrometido', pide: 'critique', m: [['interesado en aprender', 'RVL2', 'Describe lo mismo, pero lo elogia: no lo critica.'], ['indiferente', 'RVL1', 'Cambia la conducta: alguien indiferente no pregunta.'], ['alto', 'RV19', 'Describe otra cosa: estatura.']] },
-          { o: 'El líder fue firme: no cambió su decisión.', w: 'firme', ok: 'obstinado', pide: 'critique', m: [['decidido', 'RVL2', 'Describe lo mismo con elogio: no lo critica.'], ['dudoso', 'RVL1', 'Cambia la conducta: un dudoso sí cambiaría.'], ['joven', 'RV19', 'Describe otra cosa: edad.']] },
-          { o: 'La comida estaba picante: tenía mucho ají.', w: 'picante', ok: 'sabrosa y picante', pide: 'elogie', m: [['incomible de tanto ají', 'RVL2', 'Describe el ají con crítica, no con elogio.'], ['sin ají', 'RVL1', 'Cambia lo que describe: ya no tendría ají.'], ['fría', 'RV19', 'Describe otra cosa: temperatura.']] },
-          { o: 'El niño es inquieto: no se queda sentado.', w: 'inquieto', ok: 'activo', pide: 'valore mejor', m: [['revoltoso', 'RVL2', 'Describe lo mismo, pero sigue siendo una crítica.'], ['tranquilo', 'RVL1', 'Cambia la conducta: un niño tranquilo sí se queda sentado.'], ['pequeño', 'RV19', 'Describe otra cosa: tamaño o edad.']] },
-        ];
+        const B = BANCO_VALOR;
         const b = B[s % B.length];
         return {
           pregunta: `¿Qué palabra describe la misma conducta que «${b.w}», pero hace que la oración la ${b.pide}?`,
@@ -246,6 +360,14 @@
     titulo: 'La palabra precisa',
     temas: ['Precisión léxica'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué hace el verbo y qué decide cuál va, sin el comodín ni la oración de la comisión (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Varias palabras posibles', texto: 'Al escribir, casi siempre hay varias palabras que podrían ir en un mismo lugar. En el examen te piden la que mejor dice lo que pasa en esa oración.' },
+        { titulo: 'El verbo dice la acción', texto: 'El verbo dice qué hace alguien: «redactar», «construir», «preguntar». Una persona puede hacer muchas cosas; el resto de la oración dice cuál hizo.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el ingeniero hace tres cosas distintas. Prueba cada verbo con cada una y mira con cuántas encaja.' },
+      ],
+    },
     juega: {
       consigna: 'Cambia lo que hizo el ingeniero y prueba verbos. Mira cuál dice más sobre esa acción en particular.',
       voz: 'Fíjate en qué verbo sirve para todo.',
@@ -283,16 +405,30 @@
       ecuacion: [{ llave: [palabra('verbo preciso')], nota: 'no es comodín', color: 'c-o' }, ' = encaja con ', pista('el objeto'), ' + dice más'],
       condicion: 'la palabra no choca con ninguna otra parte de la oración (los complementos, los conectores, el tiempo).',
     },
+    // Así se resuelve (fase 2): otro caso del banco; se descartan el comodín y el verbo que choca.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Descarta el comodín y el verbo que choca.',
+      generar(s) {
+        const b = BANCO_PRECISA[otroIndice(s, BANCO_PRECISA.length)], ops = barajar(b, s), fig = conHueco(b.o);
+        const vago = trampa(b, 'RVL3'), choca = trampa(b, 'RV23');
+        return {
+          enunciado: `¿Qué palabra completa con más precisión la oración «${b.o}»?`,
+          dibujo: conOpciones(fig, ops),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la palabra que encaja con toda la oración y, además, dice más sobre la acción.' },
+            { tipo: 'datos', texto: ['Las partes que deciden: ', largo(pista(`«${DECIDE[b.ok]}»`)), '.'], dibujo: conOpciones(fig, ops, { marcas: { b: 'i' } }) },
+            { tipo: 'regla', texto: 'Descarto la palabra que sirve para todo y la que choca con alguna parte. Queda la que nombra justo esa acción.', ecuacion: [palabra('preciso'), ' = encaja con todo + dice más'] },
+            { tipo: 'aplica', texto: [`«${vago[0]}» es vago; `, mal(`«${choca[0]}»`), ' choca con la oración. Queda ', palabra(b.ok), ': encaja y dice más.'], dibujo: conOpciones(fig, ops, { huecos: { w: b.ok }, marcas: { b: 'i', w: 'o' } }, true) },
+            { tipo: 'sentido', texto: `Leo la oración completa: «${b.o.replace('___', b.ok)}» Encaja con todas sus partes.` },
+          ],
+          respuesta: [palabra(b.ok)],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { o: 'El jurado ___ al ganador del concurso de cuentos.', ok: 'eligió', m: [['tuvo', 'RVL3', '«Tuvo» encaja, pero no dice qué hizo el jurado.'], ['escribió', 'RV19', 'Es del campo de los cuentos, pero el jurado no escribe al ganador.'], ['perdió', 'RV23', 'Choca con la oración: un jurado decide al ganador.']] },
-          { o: 'La doctora ___ una dieta sin sal a su paciente.', ok: 'recetó', m: [['dio', 'RVL3', '«Dio» encaja, pero es vago: no dice que fue una indicación médica.'], ['cocinó', 'RV19', 'Es del campo de la comida, pero la doctora no la prepara.'], ['prohibió', 'RV23', 'Choca: lo que prohíbe es la sal, no la dieta sin sal.']] },
-          { o: 'El alcalde ___ la nueva plaza en la ceremonia del domingo.', ok: 'inauguró', m: [['hizo', 'RVL3', '«Hizo» encaja, pero no dice qué pasó en la ceremonia.'], ['barrió', 'RV19', 'Es algo que se hace en una plaza, pero no en una ceremonia.'], ['cerró', 'RV23', 'Choca con «nueva»: una plaza nueva se abre.']] },
-          { o: 'Los vecinos ___ dinero para arreglar la pista del barrio.', ok: 'reunieron', m: [['pusieron cosas', 'RVL3', 'Es vago: «cosas» no precisa qué aportaron.'], ['gastaron', 'RV23', 'Choca: primero hay que juntar el dinero para arreglarla.'], ['contaron', 'RV19', 'Es del campo del dinero, pero no dice que lo juntaran.']] },
-          { o: 'La profesora ___ las dudas de los alumnos una por una.', ok: 'resolvió', m: [['vio', 'RVL3', '«Vio» encaja, pero no dice que las aclarara.'], ['tuvo', 'RV23', 'Las dudas son de los alumnos, no de la profesora.'], ['dictó', 'RV19', 'Es del campo de la clase, pero no se dictan dudas.']] },
-          { o: 'El río ___ los campos después de tres días de lluvia.', ok: 'inundó', m: [['hizo algo en', 'RVL3', 'Es vago: no dice qué le pasó a los campos.'], ['regó', 'RV23', 'Encaja con campos, pero choca con tres días de lluvia: es exceso.'], ['cruzó', 'RV19', 'Un río cruza un valle, pero eso no es lo que causa la lluvia.']] },
-        ];
+        const B = BANCO_PRECISA;
         const b = B[s % B.length];
         const [antes, despues] = b.o.split('___');
         return {
@@ -320,6 +456,14 @@
     titulo: 'El significado sale de las pistas',
     temas: ['Inferencias léxicas'],
     pieza: 'rv-texto',
+    // Lee (fase 2): que la oración ayuda con la palabra nueva, sin decir qué pista es la buena (eso lo marca el juego).
+    lee: {
+      tarjetas: [
+        { titulo: 'Palabras nuevas', texto: 'En una lectura siempre aparece alguna palabra que no conoces. En el examen no hay diccionario, pero la misma oración te puede ayudar a entenderla.' },
+        { titulo: 'Lo que rodea a la palabra', texto: 'Mira lo que viene antes y después de la palabra: una explicación, un ejemplo o lo que pasó luego. Algunas frases cercanas ayudan; otras solo la acompañan.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el texto dice que un jarabe es «inocuo». Marca cada parte del texto y mira cuál te dice qué significa esa palabra.' },
+      ],
+    },
     juega: {
       consigna: '«Inocuo» quizá sea nueva para ti. Marca cada parte del texto y mira cuál dice qué significa.',
       voz: 'No todas las frases cercanas ayudan igual.',
@@ -357,16 +501,29 @@
       ecuacion: [{ llave: [pista('pista')], nota: 'explica o contrasta', color: 'c-i' }, ' + ', palabra('lugar de la palabra'), ' → significado'],
       condicion: 'la pista está en el texto y habla de la palabra; una asociación propia o un detalle cercano no bastan.',
     },
+    // Así se resuelve (fase 2): otro caso del banco; la pista dice el significado y la asociación se descarta.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Busca la parte que habla de la palabra.',
+      generar(s) {
+        const b = BANCO_PISTA[otroIndice(s, BANCO_PISTA.length)], ops = barajar(b, s), fig = tarjeta(b.o, b.w), t = trampa(b, 'RVL4');
+        return {
+          enunciado: `Según las pistas de la oración, ¿qué significa «${b.w}»?`,
+          dibujo: conOpciones(fig, ops),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden qué significa ', palabra(b.w), ' según esta oración, aunque no la conozca.'] },
+            { tipo: 'datos', texto: ['La parte que habla de la palabra: ', largo(pista(`«${despuesDe(b.o, b.w)}»`)), '.'], dibujo: conOpciones(fig, ops, { marcas: { b: 'i' } }) },
+            { tipo: 'regla', texto: 'Busco la parte que explica la palabra, la contrasta o cuenta su consecuencia. El significado debe encajar en el lugar de la palabra.', ecuacion: [pista('pista'), ' + ', palabra('lugar'), ' → significado'] },
+            { tipo: 'aplica', texto: ['La pista da ', rasgo(TIPO_PISTA[b.w]), '. Por eso ', palabra(b.w), ' quiere decir ', largo(pista(`«${minus(b.ok)}»`)), '.'], dibujo: conOpciones(fig, ops, { marcas: { b: 'i' } }, true) },
+            { tipo: 'sentido', texto: [`Descarto «${minus(t[0])}». `, largo(mal(t[2]))] },
+          ],
+          respuesta: [`«${b.ok}»`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { o: 'El camino era sinuoso: daba tantas curvas que el bus iba muy despacio.', w: 'sinuoso', ok: 'Con muchas curvas', m: [['Peligroso', 'RVL4', 'Se asocia con un camino difícil, pero la pista dice curvas.'], ['Largo', 'RVL4', 'Un camino así puede ser largo, pero la pista habla de curvas.'], ['Recto', 'RV34', 'Es lo contrario de lo que dice la pista.']] },
-          { o: 'Era un hombre locuaz; en cambio, su hermano casi no hablaba.', w: 'locuaz', ok: 'Que habla mucho', m: [['Que es callado', 'RV24', 'Eso describe al hermano: «en cambio» marca lo contrario.'], ['Que está loco', 'RV20', 'Se parece por la forma, pero la pista habla de hablar.'], ['Que es amable', 'RVL4', 'Puede serlo, pero la oración no habla de eso.']] },
-          { o: 'La planta es perenne: conserva sus hojas verdes durante todo el año.', w: 'perenne', ok: 'Que dura todo el año', m: [['Que da flores', 'RVL4', 'Es una idea de plantas, pero la pista habla de hojas todo el año.'], ['Que pierde sus hojas', 'RV34', 'Es lo contrario de lo que dice la pista.'], ['Que es grande', 'RVL4', 'La oración no habla del tamaño.']] },
-          { o: 'Su letra era ilegible: ni la profesora pudo entender lo que escribió.', w: 'ilegible', ok: 'Que no se puede leer', m: [['Que es bonita', 'RVL4', 'La oración no la valora así; dice que no se entendía.'], ['Que es ilegal', 'RV20', 'Se parece por la forma, pero la pista habla de leer.'], ['Que es pequeña', 'RVL4', 'Podría ser una causa, pero la pista dice que no se entendía.']] },
-          { o: 'Fue un error garrafal: por él, el puente se cayó a la semana.', w: 'garrafal', ok: 'Muy grave', m: [['Pequeño', 'RV34', 'La consecuencia, un puente caído, dice lo contrario.'], ['Gracioso', 'RVL4', 'Nada en la oración lo toma como broma.'], ['Escondido', 'RVL4', 'La oración no habla de si se veía o no.']] },
-          { o: 'El agua del pozo es potable: la familia la toma sin hervirla y nunca se enferma.', w: 'potable', ok: 'Que se puede beber', m: [['Que es caliente', 'RVL4', 'Al contrario: la toman sin hervirla.'], ['Que es abundante', 'RVL4', 'La oración no dice cuánta agua hay.'], ['Que está sucia', 'RV34', 'Es lo contrario de lo que dice la pista.']] },
-        ];
+        const B = BANCO_PISTA;
         const b = B[s % B.length];
         return {
           pregunta: `Según las pistas de la oración, ¿qué significa «${b.w}»?`,
