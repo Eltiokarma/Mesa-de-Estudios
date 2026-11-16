@@ -63,6 +63,16 @@
     titulo: 'Lo que vale en todo dibujo',
     temas: ['Diagramas lineales y de Venn-Euler', 'Deductivo directo e indirecto'],
     pieza: 'rm-plano',
+    // Lee (fase 2): vocabulario de premisa, Venn y «algunos», sin decir si A y C quedan amarrados (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Datos para razonar', texto: 'Alguien en Juliaca dice: «Todos los mototaxistas conocen la plaza de Armas». Ese dato, que se acepta para razonar, es una premisa. Lo que se afirma a partir de las premisas es la conclusión.' },
+        { titulo: 'Un círculo por grupo', texto: ['En un diagrama de Venn, cada grupo es un círculo. «Todos los ', A, ' son ', B, '» se dibuja con el círculo ', A, ' completo dentro del círculo ', B, '.'],
+          ecuacion: [A, ' ⊂ ', B] },
+        { titulo: 'Qué dice «algunos»', texto: ['«Algunos ', B, ' son ', C, '» quiere decir que al menos un ', B, ' es ', C, ', y quizás todos. En el dibujo, los círculos ', B, ' y ', C, ' tienen que tocarse.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['En el juego, ', C, ' puede ir en tres lugares. En cada uno, revisa si se cumplen las dos premisas y si ', C, ' toca a ', A, '.'] },
+      ],
+    },
     juega: {
       consigna: 'Las premisas: todos los A son B y algunos B son C. En este diagrama de Venn, prueba cada lugar de C: ¿toca a A?',
       voz: 'Cada lugar de C es un dibujo posible. Probemos todos.',
@@ -110,6 +120,32 @@
       condicion: 'cada premisa se dibuja tal como dice, sin agregar nada: «algunos» no dice cuáles.',
       voz: 'Una regla vale si resiste el dibujo que intenta romperla.',
     },
+    // Así se resuelve (fase 2): el mismo generador de «Ahora tú» (formas, opciones y dibujo compatible), con la semilla + 900.
+    resuelve: {
+      pieza: 'rm-plano',
+      generar(s) {
+        const c = ideaVenn.ahoraTu.generar(s + 900);
+        const [p1, , p2] = c.pregunta;
+        const ok = c.opciones.find(o => o.correcta), mal = c.opciones.find(o => !o.correcta);
+        const modelo = c.solucion.dibujo;
+        // El enunciado dibuja solo la primera premisa: un círculo por nombre, sin el tercer grupo (verde).
+        const vistos = new Set(), primera = [];
+        for (const k of modelo.datos.circulos) if (!vistos.has(k.rotulo)) { vistos.add(k.rotulo); primera.push(k); }
+        const tercero = modelo.datos.circulos.find(k => k.color === 'd').rotulo;
+        return {
+          enunciado: c.pregunta,
+          dibujo: { datos: { ancho: 10, alto: 6.4, circulos: primera.filter(k => k.rotulo !== tercero), pie: 'Primera premisa' }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden lo que se concluye con certeza: lo que vale en todo dibujo que cumpla las dos premisas.' },
+            { tipo: 'datos', texto: ['Premisa 1: ', p1, ' Premisa 2: ', p2] },
+            { tipo: 'regla', texto: 'Dibujo cada grupo como un círculo, tal como dicen las premisas, sin agregar nada. Es seguro solo lo que pasa en todos los dibujos posibles.' },
+            { tipo: 'aplica', texto: `Lo dibujo: ${c.solucion.texto}`, dibujo: modelo },
+            { tipo: 'sentido', texto: `¿Y «${mal.texto}»? ${mal.siFuera}` },
+          ],
+          respuesta: ok.texto,
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'rm-plano',
       voz: 'Dibuja las dos premisas y busca un caso que rompa cada opción.',
@@ -144,7 +180,7 @@
           [K(2.4, 3.3, 1.9, 'o', b), KA(1.9, 3.6, 0.8, a), Object.assign(K(3.9, 3.9, 0.9, 'd', c), { en: [4.1, 5.4] }), K(7.6, 3.3, 1.9, 'o', b), KA(7.1, 3.6, 0.8, a), Object.assign(K(7.6, 3.9, 0.9, 'd', c), { en: [8.9, 5.4] })],
           [KA(2.2, 3.3, 1.4, a), K(6.8, 3.3, 2.3, 'o', b), Object.assign(K(6.8, 3.6, 1.1, 'd', c), { en: [6.8, 3.8] })],
           [K(3, 3.3, 2.2, 'o', b), KA(3, 3.6, 1.1, a), K(7.8, 3.3, 1.4, 'd', c)],
-          [K(6.2, 3.3, 2.5, 'd', c), Object.assign(K(6.6, 3.5, 1.3, 'o', b), { en: [6.9, 3.7] }), KA(3.6, 3.8, 1.6, a)],
+          [K(6.2, 3.3, 2.5, 'd', c), Object.assign(K(6.6, 3.5, 1.3, 'o', b), { en: [6.9, 3.7] }), KA(4.1, 3.8, 1.6, a)],
         ][f];
         return {
           pregunta: [formas.p[0], ' ', formas.p[1], ' ¿Qué se concluye con certeza?'],
@@ -178,6 +214,16 @@
     titulo: 'Si llueve, la pista se moja',
     temas: ['Deductivo directo e indirecto'],
     pieza: 'rm-tablero',
+    // Lee (fase 2): el condicional, sus dos partes y los cuatro casos; no dice qué pasa con «la pista está seca».
+    lee: {
+      tarjetas: [
+        { titulo: 'Una regla con «si»', texto: '«Si llueve, la pista se moja» es un condicional. Tiene dos partes: lo que pasa primero, que se llama p, y lo que trae consigo, que se llama q.',
+          ecuacion: ['si p, entonces q'] },
+        { titulo: 'Cuatro casos', texto: 'Antes de saber nada, pueden pasar cuatro cosas: llueve o no llueve, y la pista queda mojada o seca. La tabla del juego pone cada caso en una fila.' },
+        { titulo: 'Lo que la regla prohíbe', texto: 'La regla no dice qué pasará; prohíbe un caso: que llueva y la pista siga seca. En una tarde de lluvia en Juliaca, esa fila no puede ocurrir.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego eliges qué se sabe. Cuenta cuántas filas quedan en pie: si queda una sola, ya se sabe todo lo que pasó.' },
+      ],
+    },
     // Sin arrastre: lo que se elige es un dato (una frase), no un lugar de la tabla; las filas son lo que resulta.
     juega: {
       consigna: 'La regla tacha el caso «llueve y la pista sigue seca». Elige qué se sabe y mira qué casos quedan.',
@@ -212,6 +258,44 @@
       texto: 'Del condicional «si p, entonces q» se concluye q cuando ocurre p (forma directa) y «no p» cuando no ocurre q (forma indirecta). Saber q o «no p» no basta.',
       ecuacion: [{ llave: ['(p ⇒ q)'], nota: 'la regla', color: 'c-i' }, ' y p ⇒ q', '   ·   ', '(p ⇒ q) y ', { llave: ['no q'], nota: 'el dato', color: 'c-o' }, ' ⇒ no p'],
       condicion: 'la regla se cumple siempre, sin excepciones, y p y q significan lo mismo en todo el razonamiento.',
+    },
+    // Así se resuelve (fase 2): las mismas plantillas y la misma tabla de cuatro casos de «Ahora tú», con la semilla + 900.
+    resuelve: {
+      pieza: 'rm-tablero',
+      generar(s) {
+        const t = s + 900, r = azar(t);
+        const plantillas = [
+          ['Luis estudia', 'Luis no estudia', 'aprueba', 'Luis aprueba', 'Luis no aprueba'],
+          ['el foco está prendido', 'el foco no está prendido', 'hay corriente', 'hay corriente', 'no hay corriente'],
+          ['un número termina en 0', 'el número no termina en 0', 'es par', 'el número es par', 'el número no es par'],
+          ['una persona es de Juliaca', 'no es de Juliaca', 'es de Puno', 'es de Puno', 'no es de Puno'],
+          ['el pan está en el horno', 'el pan no está en el horno', 'está caliente', 'el pan está caliente', 'el pan no está caliente'],
+          ['la puerta está abierta', 'la puerta no está abierta', 'entra el gato', 'entra el gato', 'no entra el gato'],
+        ];
+        const [p, np, qCorta, q, nq] = r.elegir(plantillas);
+        const tipo = (t + r.ent(0, 3)) % 4;
+        const sabe = [p, nq, q, np][tipo];
+        const correcta = ['Que ' + q, 'Que ' + np, 'Nada con certeza', 'Nada con certeza'][tipo];
+        // El dato, en las llaves de la tabla del juego: p ↔ llueve, q ↔ mojada.
+        const dato = ['llueve', 'seca', 'mojada', 'no-llueve'][tipo];
+        const tabla = d => ({ datos: Object.assign(tablaSi(d), { columnas: ['p', 'q', 'Queda'], notas: [{ t: 'Regla: si p, entonces q' }] }), estado: {} });
+        const filas = CASOS.map((c, k) => k).filter(k => k !== 1 && cumpleDato[dato](CASOS[k]));
+        const caso = k => `${CASOS[k][0] === 'Sí' ? p : np} y ${CASOS[k][1] === 'Sí' ? q : nq}`;
+        const una = filas.length === 1;
+        return {
+          enunciado: `Regla: si ${p}, ${qCorta}. Se sabe que ${sabe}. ¿Qué se concluye con certeza?`,
+          dibujo: tabla(null),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden lo que es seguro sabiendo la regla y el dato.' },
+            { tipo: 'datos', texto: `p: ${p}. q: ${qCorta}. Dato: ${sabe}.` },
+            { tipo: 'regla', texto: 'Armo los cuatro casos de p y q. La regla tacha «p sí, q no»; el dato tacha los que no lo cumplen. Si queda uno, se concluye.' },
+            { tipo: 'aplica', texto: una ? `La regla tacha la fila 2 y el dato deja solo la fila ${filas[0] + 1}: ${caso(filas[0])}.` : `La regla tacha la fila 2, pero el dato deja dos filas en pie: la ${filas[0] + 1} y la ${filas[1] + 1}.`,
+              ecuacion: [filas.map(k => `fila ${k + 1}: p ${CASOS[k][0].toLowerCase()}, q ${CASOS[k][1].toLowerCase()}`).join('   ·   ')], dibujo: tabla(dato) },
+            { tipo: 'sentido', texto: una ? 'Compruebo: en esa fila se cumplen la regla y el dato a la vez, y en ninguna otra.' : 'Compruebo: las dos filas cumplen la regla y el dato, pero dicen cosas distintas. Nada vale en las dos.' },
+          ],
+          respuesta: correcta,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Arma la tabla de cuatro casos en la cabeza y tacha.',
@@ -270,6 +354,15 @@
     titulo: 'El cuadro que descarta',
     temas: ['Cuadros de doble entrada'],
     pieza: 'rm-tablero',
+    // Lee (fase 2): reparto, cuadro de doble entrada y las dos marcas; no resuelve la cuarta pista (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un reparto', texto: 'Ana, Beto y Ciro juegan cada uno un deporte distinto: fútbol, vóley o ajedrez. Un reparto dice quién juega qué. Sin ninguna pista, hay 6 repartos posibles.' },
+        { titulo: 'Filas y columnas', texto: 'En un cuadro de doble entrada, las personas van en las filas y los deportes en las columnas. Cada casilla responde una pregunta: ¿esta persona juega esto?' },
+        { titulo: 'Dos marcas', texto: '✗ quiere decir que no puede ser. ✓ quiere decir que es seguro. Una pista como «Ana no juega vóley» pone una ✗ directa en su casilla.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, agrega las pistas una por una. Fíjate cuándo aparece la primera ✓ y cuántos repartos quedan después de cada pista.' },
+      ],
+    },
     // Sin arrastre: lo que cambia es cuántas pistas (frases) se usan; las ✗ y ✓ son su consecuencia, no se agarran.
     juega: {
       consigna: 'Cada uno juega un deporte distinto. Agrega las pistas una a una: ✗ es imposible y ✓ es seguro.',
@@ -313,6 +406,44 @@
       texto: 'En un cuadro de doble entrada, cada fila y cada columna tiene exactamente una ✓. Al poner una ✓, se tacha el resto de su fila y de su columna.',
       ecuacion: ['✓ seguro  ⇔  vale en todos los repartos que quedan'],
       condicion: 'cada persona tiene una sola cosa y cada cosa es de una sola persona; si no, el cuadro no es de reparto.',
+    },
+    // Así se resuelve (fase 2): las mismas pistas de «Ahora tú» (compatibles() y cuadro()), con la semilla + 900.
+    resuelve: {
+      pieza: 'rm-tablero',
+      generar(s) {
+        const r = azar(s + 900);
+        const personas = r.barajar(['Ana', 'Beto', 'Ciro', 'Dina', 'Eva', 'Fito']).slice(0, 3);
+        const [cosas, verbo] = r.elegir([[['Fútbol', 'Vóley', 'Ajedrez'], 'juega'], [['Flauta', 'Charango', 'Bombo'], 'toca'], [['Rojo', 'Azul', 'Verde'], 'viste'], [['Puno', 'Cusco', 'Lima'], 'vive en']]);
+        let pistas = null;
+        for (let t = 0; t < 30 && !pistas; t++) {
+          const sol = r.elegir(PERMS), falsos = [];
+          for (let q = 0; q < 3; q++) for (let i = 0; i < 3; i++) if (sol[q] !== i) falsos.push([q, i]);
+          const orden = r.barajar(falsos), ps = [];
+          for (const f of orden) { ps.push(f); if (compatibles(ps).length === 1) break; }
+          if (ps.length <= 4) pistas = ps;
+        }
+        const sol = compatibles(pistas)[0], quien = r.ent(0, 2);
+        // Los lugares conservan la mayúscula; lo demás va en minúscula dentro de la frase.
+        const nom = c => (verbo === 'vive en' ? c : c.toLowerCase());
+        const ancho = { ancho: 76 };   // columnas anchas: «Charango» no se monta con su vecina
+        const soloX = { columnas: cosas, filas: personas, ancho: 76,
+          celdas: personas.map((_, q) => cosas.map((_, i) => (pistas.some(([a, b]) => a === q && b === i) ? { marca: 'no', color: 'h' } : ''))),
+          notas: [{ t: `${pistas.length} ✗ de las pistas` }] };
+        return {
+          enunciado: `Cada uno ${verbo} algo distinto. ${pistas.map(([q, i]) => `${personas[q]} no ${verbo} ${nom(cosas[i])}`).join('; ')}. ¿Qué ${verbo} ${personas[quien]}?`,
+          dibujo: { datos: Object.assign(cuadro(personas, cosas, [], { nota: 'Sin marcas todavía' }), ancho), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden qué ${verbo} ${personas[quien]}.` },
+            { tipo: 'datos', texto: `Tres personas y tres opciones, una para cada una. Hay ${pistas.length} pistas, todas dicen quién no.` },
+            { tipo: 'regla', texto: 'Cada fila y cada columna lleva una sola ✓. Pongo una ✗ por pista; donde una fila o columna queda con una casilla libre, va la ✓.' },
+            { tipo: 'aplica', texto: `Marco las ${pistas.length} ✗ que dicen las pistas.`, dibujo: { datos: soloX, estado: {} } },
+            { tipo: 'aplica', texto: 'Cada ✓ que aparece tacha el resto de su fila y de su columna. Queda un solo reparto.',
+              ecuacion: [personas.map((pp, q) => `${pp}: ${nom(cosas[sol[q]])}`).join(' · ')], dibujo: { datos: Object.assign(cuadro(personas, cosas, pistas), ancho), estado: {} } },
+            { tipo: 'sentido', texto: 'Compruebo con cada pista: nadie quedó con lo que una pista le prohíbe, y nadie repite.' },
+          ],
+          respuesta: `${personas[quien]} ${verbo} ${nom(cosas[sol[quien]])}`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Tacha en tu cuadro y busca la fila con una sola casilla libre.',
@@ -380,6 +511,16 @@
     titulo: 'Un papel no es una persona',
     temas: ['Parentesco'],
     pieza: 'rm-plano',
+    // Lee (fase 2): árbol, subir y bajar y los nombres de familia; no cuenta papeles (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'El árbol de una familia', texto: 'Un árbol genealógico dibuja una familia por generaciones: los abuelos arriba, los padres al medio y los nietos abajo. Cada línea une a un padre o una madre con un hijo.' },
+        { titulo: 'Subir y bajar', texto: 'Ir de una persona a su padre es subir una línea. Ir a su hijo es bajar una. Para llegar a un hermano, se sube una línea y se baja otra.',
+          ecuacion: ['hermano: sube 1, baja 1'] },
+        { titulo: 'Tíos y primos', texto: 'El tío es el hermano de tu padre o de tu madre. El primo es el hijo de tu tío. En muchas familias de Puno, los primos crecen casi como hermanos.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego eliges un parentesco para Ana. Sigue el camino naranja y cuenta cuántas líneas sube y cuántas baja.' },
+      ],
+    },
     juega: {
       consigna: 'Raúl tiene dos hijos, Pedro y Tomás. Elige un parentesco y sigue el camino desde Ana por las líneas del árbol.',
       voz: 'Subir es ir a los padres; bajar, a los hijos.',
@@ -421,6 +562,65 @@
       texto: 'Cada línea del árbol es una relación padre-hijo. Un parentesco es un camino: subir a los padres y bajar a los hijos. Una persona puede tener varios papeles.',
       ecuacion: ['tío = hermano del padre', '   ·   ', 'primo = hijo del tío'],
       condicion: 'no se supone matrimonio, sexo ni que alguien sea hijo único si el enunciado no lo dice.',
+    },
+    // Así se resuelve (fase 2): las mismas relaciones (sube, baja) y la misma composición de «Ahora tú», con la semilla + 900.
+    // La figura dibuja el camino: a la izquierda lo que sube, arriba el antepasado común, a la derecha lo que baja.
+    resuelve: {
+      pieza: 'rm-plano',
+      generar(s) {
+        const r = azar(s + 900);
+        const REL = [['padre', 1, 0, 'm'], ['madre', 1, 0, 'f'], ['hermano', 1, 1, 'm'], ['hermana', 1, 1, 'f'], ['hijo', 0, 1, 'm'], ['hija', 0, 1, 'f'], ['abuelo', 2, 0, 'm'], ['tío', 2, 1, 'm'], ['tía', 2, 1, 'f']];
+        const NOMBRE = { '1,0': ['padre', 'madre'], '2,0': ['abuelo', 'abuela'], '3,0': ['bisabuelo', 'bisabuela'], '0,1': ['hijo', 'hija'], '0,2': ['nieto', 'nieta'], '0,3': ['bisnieto', 'bisnieta'], '1,1': ['hermano', 'hermana'], '2,1': ['tío', 'tía'], '1,2': ['sobrino', 'sobrina'], '2,2': ['primo', 'prima'], '3,1': ['tío abuelo', 'tía abuela'], '1,3': ['sobrino nieto', 'sobrina nieta'] };
+        let r1, r2, u, d;
+        for (;;) {
+          r1 = r.elegir(REL); r2 = r.elegir(REL);
+          if (r1[2] > 0 && r2[1] > 0) continue;
+          if (r1[2] === 0 && r2[1] === 0 && r2[2] > 0) continue;
+          u = r1[1] + r2[1]; d = r1[2] + r2[2];
+          if (NOMBRE[`${u},${d}`]) break;
+        }
+        const yo = r.elegir([['Ana', 'f'], ['Rosa', 'f'], ['Luis', 'm'], ['Iván', 'm']]);
+        const de = r1[3] === 'f' ? 'de la' : 'del';
+        const g2 = r2[3] === 'f' ? 1 : 0, gy = yo[1] === 'f' ? 1 : 0;
+        const inversa = (s + 900) % 2 === 1;
+        const nombre = inversa ? NOMBRE[`${d},${u}`][gy] : NOMBRE[`${u},${d}`][g2];
+        const vuelta = inversa ? NOMBRE[`${u},${d}`][g2] : NOMBRE[`${d},${u}`][gy];
+        const frase = `${r2[3] === 'f' ? 'la' : 'el'} ${r2[0]} ${de} ${r1[0]} de ${yo[0]}`;
+        const otro = inversa ? 'Carmen' : undefined;
+        // Camino: u0 = yo … u{u} = antepasado común; d1 … d{d} bajan desde él. El fin del primer tramo va en verde.
+        const Y = lev => 0.7 + lev * 1.6;
+        const nodoU = i => ({ id: 'u' + i, x: i === u ? 5 : 2.4, y: Y(u - i), lado: i === u ? 'arriba' : 'izq' });
+        const nodoD = j => ({ id: 'd' + j, x: 7.6, y: Y(j), lado: 'der' });
+        const medio = r1[2] === 0 ? 'u' + r1[1] : 'd' + r1[2], fin = d === 0 ? 'u' + u : 'd' + d;
+        const todos = Array.from({ length: u + 1 }, (_, i) => nodoU(i)).concat(Array.from({ length: d }, (_, j) => nodoD(j + 1)));
+        const aristas = Array.from({ length: u }, (_, i) => ['u' + (i + 1), 'u' + i]).concat(Array.from({ length: d }, (_, j) => [j === 0 ? 'u' + u : 'd' + j, 'd' + (j + 1)]));
+        const enTramo1 = new Set(r1[2] === 0 ? aristas.slice(0, r1[1]).map(a => a.join()) : aristas.slice(0, u + r1[2]).map(a => a.join()));
+        const viste = id => (id === 'u0' ? { t: yo[0][0], etiqueta: yo[0], color: 'i' } : id === fin ? { t: inversa ? 'C' : '?', etiqueta: otro, color: 'o' } : id === medio ? { t: '', etiqueta: r1[0], color: 'd' } : { t: '' });
+        const camino = soloTramo1 => {
+          const ids = new Set(['u0']);
+          if (soloTramo1) for (const a of aristas) { if (enTramo1.has(a.join())) { ids.add(a[0]); ids.add(a[1]); } } else for (const n of todos) ids.add(n.id);
+          return { datos: { ancho: 10, alto: 6.4,
+            nodos: todos.filter(n => ids.has(n.id)).map(n => Object.assign(n, viste(n.id))),
+            aristas: aristas.filter(a => ids.has(a[0]) && ids.has(a[1])).map(([x, y]) => ({ de: x, a: y, color: 'o', grosor: 'variable' })),
+            pie: soloTramo1 ? `Primer tramo: ${r1[0]} de ${yo[0]}` : `Sube ${u} · baja ${d}` }, estado: {} };
+        };
+        const may = w => w[0].toUpperCase() + w.slice(1);
+        const pasos = [
+          { tipo: 'pide', texto: inversa ? `Carmen es ${frase}. Piden qué es ${yo[0]} para Carmen.` : `Piden qué es para ${yo[0]} ${frase}.` },
+          { tipo: 'datos', texto: `La frase tiene dos tramos: primero «${r1[0]} de ${yo[0]}», y después «${r2[0]}» de esa persona.`, dibujo: camino(true) },
+          { tipo: 'regla', texto: 'Cada parentesco es un camino en el árbol: subo una línea por cada padre o madre, y bajo una por cada hijo o hija.' },
+          { tipo: 'cuentas', texto: `${may(r1[0])}: sube ${r1[1]}, baja ${r1[2]}. ${may(r2[0])}: sube ${r2[1]}, baja ${r2[2]}. Sumo los dos tramos.`,
+            ecuacion: [`sube ${r1[1]} + ${r2[1]} = ${u}   ·   baja ${r1[2]} + ${r2[2]} = ${d}`], dibujo: camino(false) },
+        ];
+        if (inversa) pasos.push({ tipo: 'aplica', texto: `Desde Carmen, el camino se recorre al revés: sube ${d} y baja ${u}. Eso es ${nombre}.` });
+        pasos.push({ tipo: 'sentido', texto: inversa ? `Compruebo al derecho: desde ${yo[0]}, sube ${u} y baja ${d}, y eso es ${vuelta}. Cuadra con la frase.` : `Compruebo al revés: desde esa persona se sube ${d} y se baja ${u}, y ${yo[0]} es su ${vuelta}. Cuadra.` });
+        return {
+          enunciado: inversa ? `Si Carmen es ${frase}, ¿qué es ${yo[0]} de Carmen?` : `¿Qué es de ${yo[0]} ${frase}?`,
+          dibujo: { datos: { ancho: 10, alto: 6.4, nodos: [Object.assign(nodoU(0), viste('u0'))], pie: `Se parte de ${yo[0]}` }, estado: {} },
+          pasos,
+          respuesta: inversa ? `${yo[0]} es ${nombre} de Carmen` : `Es ${nombre} de ${yo[0]}`,
+        };
+      },
     },
     ahoraTu: {
       voz: 'Dibuja el árbol con los pasos que dice la frase.',
@@ -612,6 +812,8 @@
         ejemplo: 'Si llueve, se moja. Está seca. Entonces no llovió.', ver: ['condicional', 'forma directa'] },
       { termino: 'cuadro de doble entrada', def: 'Tabla con un grupo en las filas y otro en las columnas, para marcar qué va con qué.',
         formas: ['cuadro de doble entrada', 'cuadro'], ejemplo: 'Personas en filas y deportes en columnas: ✗ si no puede ser, ✓ si es seguro.' },
+      { termino: 'reparto', formas: ['reparto', 'repartos'], def: 'Forma de asignar a cada persona una sola cosa distinta, sin que dos personas compartan la misma.',
+        ejemplo: 'Ana fútbol, Beto ajedrez y Ciro vóley es un reparto de tres deportes.', ver: ['cuadro de doble entrada'] },
       { termino: 'parentesco', def: 'Relación de familia entre dos personas, como padre, tío o primo.',
         formas: ['parentesco', 'parentescos'], ejemplo: 'El hijo de tu tío es tu primo.', ver: ['árbol genealógico'] },
       { termino: 'árbol genealógico', def: 'Dibujo de una familia: cada línea une a un padre o una madre con un hijo o una hija.',
