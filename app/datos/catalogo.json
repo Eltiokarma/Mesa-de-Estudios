@@ -899,7 +899,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 23
+      "terminos": 32
      }
     },
     {
@@ -948,7 +948,7 @@
        "/nucleo/kit/piezas/quim-orbital-3d.js"
       ],
       "ideas": 5,
-      "terminos": 26
+      "terminos": 27
      }
     },
     {
@@ -1036,7 +1036,7 @@
        "/nucleo/kit/piezas/quim-molecula-3d.js"
       ],
       "ideas": 5,
-      "terminos": 40
+      "terminos": 41
      }
     },
     {
@@ -1078,7 +1078,7 @@
        "/nucleo/kit/piezas/quim-cadena.js"
       ],
       "ideas": 5,
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
@@ -1162,7 +1162,7 @@
        "/nucleo/kit/piezas/quim-fichas.js"
       ],
       "ideas": 5,
-      "terminos": 32
+      "terminos": 33
      }
     },
     {
@@ -1405,7 +1405,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 4,
-      "terminos": 27
+      "terminos": 28
      }
     },
     {
@@ -1487,7 +1487,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 33
+      "terminos": 34
      }
     },
     {
@@ -1710,7 +1710,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
-      "terminos": 37
+      "terminos": 38
      }
     }
    ]
