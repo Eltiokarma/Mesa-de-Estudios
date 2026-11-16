@@ -47,6 +47,16 @@
   const voltear = (arr, s) => (s % 2 ? arr.slice().reverse() : arr.slice());
   const tarjeta = (titulo, frs) => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo, modo: 'tarjeta', fragmentos: frs.map(([id, t]) => ({ id, t })) }] });
   const lista = (titulo, ors) => ({ esquinaLibre: true, secciones: [{ id: 'o', titulo, modo: 'lista', fragmentos: ors.map((t, k) => ({ id: `o${k + 1}`, t })) }] });
+  // «Así se resuelve»: azar con semilla (el de razones-y-proporciones.js) para elegir un ítem de los bancos RES_*, que
+  // son propios y distintos de los de «Ahora tú». El paso «sentido» descarta la opción más tentadora del ítem.
+  function azar(s) {
+    let q = (s * 2654435761 + 12345) >>> 0;
+    const r = () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+    return r;
+  }
+  const elegirRes = (banco, s) => banco[(s + Math.floor(azar(s + 900)() * (banco.length - 1))) % banco.length];
+  const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
+  const descarto = ([texto, , porque]) => `Descarto la más tentadora, «${texto}»: ${minus(porque)}`;
 
   // ---------- Idea 1: palabras que engañan ----------
   // Cambia: la palabra que se mira. Permanece: el texto de la biblioteca. Progresa: falso amigo, tiempo y
@@ -58,13 +68,44 @@
     c: { glosa: '«Used to» = antes solía: ya no', trampa: true, clase: 'tiempo' },
     f: { glosa: '«Few» = pocos (no «algunos»)', trampa: true, clase: 'cuantificador' },
   };
+  // Banco de «Así se resuelve» (misma forma que el de «Ahora tú», con otras oraciones): es = sentido real de w,
+  // tienta = la opción más tentadora, datos y aplica = lo que se lee y se razona en cada paso.
+  const RES_PAL = [
+    { t: 'She was embarrassed when she fell in the street.', w: 'embarrassed', clase: 'falso amigo', es: 'avergonzada', ok: 'Ella sintió vergüenza al caerse en la calle',
+      m: [['Ella estaba embarazada cuando se cayó', 'RV54', '«Embarrassed» es avergonzada; embarazada es «pregnant».'], ['Ella se caerá en la calle', 'RV55', '«Was» y «fell» están en pasado.'], ['Ella no se cayó en la calle', 'RV10', 'No hay negación.']], tienta: 0,
+      datos: '«Embarrassed» se parece a «embarazada». La oración cuenta que ella se cayó en la calle.',
+      aplica: 'Caerse en la calle da vergüenza; «embarazada» no encaja con «when she fell». Entonces «embarrassed» es avergonzada.' },
+    { t: 'Please use the exit at the back of the bus.', w: 'exit', clase: 'falso amigo', es: 'salida', ok: 'Por favor, usa la salida de atrás del bus',
+      m: [['Por favor, ten éxito al final del viaje', 'RV54', '«Exit» es salida; éxito es «success».'], ['Usaste la salida de atrás del bus', 'RV55', '«Please use» es un pedido en presente.'], ['No uses la salida de atrás', 'RV10', 'No hay «don\'t».']], tienta: 0,
+      datos: '«Exit» se parece a «éxito». La oración pide usar algo que está en la parte de atrás del bus.',
+      aplica: 'En un bus, lo que se usa atrás es una puerta, no un éxito. «Exit» es salida.' },
+    { t: 'Many families in Puno will travel to Lima in March.', w: 'will travel', clase: 'tiempo', es: 'viajarán', ok: 'Muchas familias de Puno viajarán a Lima en marzo',
+      m: [['Muchas familias de Puno viajaron a Lima en marzo', 'RV55', '«Will travel» es futuro; el pasado sería «traveled».'], ['Pocas familias de Puno viajarán a Lima', 'RV11', '«Many» es muchas.'], ['Ninguna familia de Puno viajará a Lima', 'RV10', 'No hay negación.']], tienta: 0,
+      datos: '«Will» va delante de «travel». La oración dice quiénes viajan, adónde y cuándo: en marzo.',
+      aplica: '«Will» delante del verbo habla del futuro: las familias todavía no viajan. Se lee «viajarán».' },
+    { t: 'A few students stayed after class to clean the room.', w: 'A few', clase: 'cuantificador', es: 'unos cuantos', ok: 'Unos cuantos estudiantes se quedaron a limpiar el aula',
+      m: [['Casi ningún estudiante se quedó a limpiar el aula', 'RV11', '«A few» es unos cuantos; «few», sin la «a», sería casi ninguno.'], ['Todos los estudiantes se quedaron a limpiar', 'RV11', 'Nada dice «all».'], ['Unos cuantos estudiantes se quedarán a limpiar', 'RV55', '«Stayed» está en pasado.']], tienta: 0,
+      datos: '«A few» va delante de «students». La oración dice que se quedaron después de clase a limpiar el aula.',
+      aplica: 'Con la «a», «a few» es unos cuantos: sí se quedaron algunos. La palabra pequeña cambia el sentido.' },
+  ];
+  const REGLA_PAL = {
+    'falso amigo': 'Si una palabra se parece al español, compruebo que ese sentido encaje con el resto de la oración. Si no encaja, es un falso amigo.',
+    tiempo: 'El verbo dice cuándo pasa algo. Antes de elegir, miro si la oración habla de antes, de ahora o de después.',
+    cuantificador: 'Un cuantificador dice cuántos y cambia todo el sentido. Lo leo completo, con las palabras pequeñas que lo acompañan.',
+  };
   const basico = {
     id: 'palabras-que-enganan',
     titulo: 'Palabras que engañan',
     temas: ['Inglés básico'],
+    lee: { tarjetas: [
+      { titulo: 'Palabras conocidas', texto: 'En los letreros de Puno para turistas lees «hotel», «restaurant» o «museum». Se parecen al español y significan lo mismo. Se llaman cognados y te ayudan a leer más rápido.' },
+      { titulo: 'Falsos amigos', texto: 'Otras palabras se parecen al español y significan otra cosa. «Carpet» no es carpeta: es alfombra. Si te fías del parecido, la oración entera cambia de sentido.',
+        ecuacion: [engana('carpet'), ' = alfombra'] },
+      { titulo: 'Qué mirar al jugar', texto: 'En el juego hay un aviso corto en inglés. Lleva el círculo naranja a cada palabra marcada y pregúntate si el sentido que le das encaja con el resto del aviso.' },
+    ] },
     pieza: 'rv-texto',
     juega: {
-      consigna: 'Arrastra el marcador por el texto en inglés. Mira qué palabras se parecen al español y significan otra cosa.',
+      consigna: 'Arrastra el círculo naranja por el texto en inglés. Mira qué palabras se parecen al español y significan otra cosa.',
       voz: 'Un cognado se parece al español y significa lo mismo; un falso amigo, no.',
       controles: [{ id: 'k', etiqueta: 'Palabra', opciones: [{ valor: 'a', texto: 'Actually' }, { valor: 'b', texto: 'library' }, { valor: 'c', texto: 'used to' }, { valor: 'f', texto: 'few' }] }],
       dibujo: val => ({ datos: tarjeta('Text', LIB), estado: { marcas: { [val.k]: 'o' }, sellos: { o: { t: 'Revisa el sentido', c: 'h' } } } }),
@@ -97,6 +138,26 @@
       ecuacion: [{ llave: [engana('falso amigo')], nota: 'parece y no es', color: 'c-h' }, '   ·   ', prueba('tiempo'), '   ·   ', { llave: [prueba('cuantificador')], nota: 'some, few, all', color: 'c-o' }],
       condicion: 'se lee la palabra en su oración; si el sentido del español no encaja con el resto, quizá es un falso amigo.',
     },
+    resuelve: {
+      pieza: 'rv-texto',
+      generar(s) {
+        const b = elegirRes(RES_PAL, s), [antes, despues] = b.t.split(b.w);
+        const frs = [...(antes.trim() ? [['a', antes.trim()]] : []), ['w', b.w], ['b', despues.trim()]];
+        return {
+          enunciado: `What does the sentence say? Look at «${b.w}» and choose the best Spanish version.`,
+          dibujo: { datos: tarjeta('Text', frs), estado: { marcas: { w: 'o' } } },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la versión en español que dice lo mismo que la oración. La palabra que decide es «', prueba(b.w), '».'] },
+            { tipo: 'datos', texto: b.datos },
+            { tipo: 'regla', texto: REGLA_PAL[b.clase] },
+            { tipo: 'aplica', texto: b.aplica, ecuacion: [prueba(b.w), ' = ', sost(b.es)],
+              dibujo: { datos: tarjeta('Text', frs), estado: { marcas: { w: 'i', b: 'i' }, sellos: { o: { t: `${b.w} = ${b.es}`, c: 'i' } }, nuevo: ['w', 'b'] } } },
+            { tipo: 'sentido', texto: descarto(b.m[b.tienta]) },
+          ],
+          respuesta: b.ok,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const B = [
@@ -128,14 +189,38 @@
     general: { t: 'Food is important for people.', cubre: [], dice: 'Demasiado general: otro texto', ok: false },
     primera: { t: 'Quinoa grows in the Andes.', cubre: [1], dice: 'Es la primera oración: deja fuera el resto', ok: false },
   };
+  // Banco de «Así se resuelve»: tema = de qué trata (en inglés para la pregunta, en español para el paso).
+  const RES_MAIN = [
+    { tema: 'alpacas', temaEs: 'las alpacas', o: ['Alpacas live in the high Andes of Puno.', 'Their wool keeps people warm in winter.', 'Many families sell clothes made from it.'],
+      ok: 'Alpacas matter to Puno families because their wool is warm', m: [['Alpacas live in the high Andes of Puno', 'RV4', 'Es la primera oración; deja fuera la lana y la venta.'], ['Wool keeps people warm', 'RV1', 'Es un detalle: cubre solo la 2.'], ['Animals are useful', 'RV2', 'Es demasiado general: sirve para otro texto.']], tienta: 0,
+      datos: 'La 1 dice dónde viven las alpacas; la 2, que su lana abriga; la 3, que muchas familias venden ropa hecha con ella.',
+      aplica: 'Uno las tres: las alpacas viven en Puno, su lana abriga y da trabajo a las familias. La propuesta que junta todo eso es la main idea.' },
+    { tema: 'the school garden', temaEs: 'el huerto del colegio', o: ['Students at a school in Juliaca started a garden.', 'They grow lettuce and carrots there.', 'Now the school kitchen uses their vegetables.'],
+      ok: 'A school garden in Juliaca now gives vegetables to its kitchen', m: [['Students at a school in Juliaca started a garden', 'RV4', 'Es la primera oración; falta para qué sirve el huerto.'], ['They grow lettuce and carrots', 'RV1', 'Es un detalle: cubre solo la 2.'], ['Gardens are nice', 'RV2', 'Es demasiado general.']], tienta: 0,
+      datos: 'La 1 cuenta que unos alumnos de Juliaca hicieron un huerto; la 2, qué siembran; la 3, que la cocina del colegio usa sus verduras.',
+      aplica: 'Uno las tres: el huerto existe, da verduras y esas verduras llegan a la cocina. La propuesta que dice todo eso cubre 1, 2 y 3.' },
+    { tema: 'reading on paper and on screens', temaEs: 'leer en papel y en pantalla', o: ['Reading on paper helps some people remember more.', 'Screens can make the eyes tired.', 'But a phone lets us carry many books at once.'],
+      ok: 'Paper and phones each have good points for reading', m: [['Phones are better than paper for reading', 'RV11', 'El texto da ventajas a los dos, no elige uno.'], ['Screens can make the eyes tired', 'RV1', 'Es un detalle: cubre solo la 2.'], ['Reading is important', 'RV2', 'Es demasiado general.']], tienta: 0,
+      datos: 'La 1 da una ventaja del papel; la 2, una desventaja de la pantalla; la 3, con «but», una ventaja del celular.',
+      aplica: '«But» equilibra el texto: hay puntos a favor del papel y a favor del celular. La main idea tiene que nombrar a los dos sin elegir uno.' },
+    { tema: 'the Uros', temaEs: 'los uros', o: ['The Uros live on floating islands on Lake Titicaca.', 'They build the islands with totora reeds.', 'Every few months, they add new reeds on top.'],
+      ok: 'The Uros build and keep their floating islands with totora reeds', m: [['The Uros live on Lake Titicaca', 'RV4', 'Es casi la primera oración; falta cómo hacen y cuidan las islas.'], ['They add new reeds every few months', 'RV1', 'Es un detalle: cubre solo la 3.'], ['Islands are beautiful', 'RV2', 'Es demasiado general.']], tienta: 0,
+      datos: 'La 1 dice dónde viven los uros; la 2, con qué hacen sus islas; la 3, que cada pocos meses ponen totora nueva encima.',
+      aplica: 'Uno las tres: viven en islas flotantes, las construyen con totora y las renuevan. La main idea dice construir y mantener las islas.' },
+  ];
   const figQ = k => ({ esquinaLibre: true, secciones: [lista('Text', QUI).secciones[0], { id: 'p', titulo: 'Main idea?', modo: 'tarjeta', fragmentos: [{ id: 'p1', t: PROP[k].t }] }] });
   const mainIdea = {
     id: 'main-idea',
     titulo: 'Main idea y summary',
     temas: ['Idea principal (main idea)', 'Resumen (summary)'],
+    lee: { tarjetas: [
+      { titulo: 'Preguntas en inglés', texto: 'En los exámenes de admisión, el texto en inglés trae sus preguntas también en inglés. «Main idea» es la idea principal y «summary», el resumen. Son preguntas que vas a encontrar seguido.' },
+      { titulo: 'No hace falta cada palabra', texto: 'Lo que ya haces al leer en español sirve aquí. Para saber de qué trata un texto, busca el tema que vuelve en cada oración, aunque alguna palabra no la entiendas.' },
+      { titulo: 'Qué mirar al jugar', texto: 'En el juego hay tres oraciones sobre la quinua y cuatro propuestas. Lleva el círculo naranja por cada oración y fíjate cuántas quedan en turquesa con cada propuesta.' },
+    ] },
     pieza: 'rv-texto',
     juega: {
-      consigna: 'Prueba cuatro propuestas de main idea sobre la quinua. Pasa el marcador por cada oración: ¿la propuesta la cubre?',
+      consigna: 'Prueba cuatro propuestas de main idea sobre la quinua. Pasa el círculo naranja por cada oración: ¿la propuesta la cubre?',
       voz: 'La main idea cubre todo el texto, igual que en español.',
       controles: [
         { id: 'k', etiqueta: 'Propuesta', opciones: [{ valor: 'main', texto: 'A' }, { valor: 'detalle', texto: 'B' }, { valor: 'general', texto: 'C' }, { valor: 'primera', texto: 'D' }] },
@@ -173,6 +258,25 @@
       ecuacion: [{ llave: [prueba('main idea')], nota: 'una oración', color: 'c-o' }, ' = ', { llave: [sost('todo el texto')], nota: 'sin detalles', color: 'c-i' }],
       condicion: 'se comprueba oración por oración que la propuesta las cubre, sin agregar algo que el texto no dice.',
     },
+    resuelve: {
+      pieza: 'rv-texto',
+      generar(s) {
+        const b = elegirRes(RES_MAIN, s);
+        return {
+          enunciado: `What is the main idea of the text about ${b.tema}?`,
+          dibujo: { datos: lista('Text', b.o), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden la main idea del texto sobre ${b.temaEs}: una oración en inglés que cubra las tres oraciones.` },
+            { tipo: 'datos', texto: b.datos },
+            { tipo: 'regla', texto: 'La main idea junta lo que dicen todas las oraciones. Un detalle o la primera oración sola se quedan cortos; una frase muy amplia habla de otro texto.' },
+            { tipo: 'aplica', texto: b.aplica, ecuacion: [sost('1'), ' + ', sost('2'), ' + ', sost('3'), ' → ', prueba('main idea')],
+              dibujo: { datos: lista('Text', b.o), estado: { marcas: { o1: 'i', o2: 'i', o3: 'i' }, sellos: { o: { t: 'Cubre 3 de 3', c: 'i' } }, nuevo: ['o1', 'o2', 'o3'] } } },
+            { tipo: 'sentido', texto: descarto(b.m[b.tienta]) },
+          ],
+          respuesta: b.ok,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const B = [
@@ -202,14 +306,38 @@
     false: { t: 'Ana lives in Lima.', marcas: { o1: 'h' }, sello: ['False: lo contradice', 'h'], dice: 'La 1 dice Puno: lo contradice' },
     notstated: { t: 'Ana has two brothers.', marcas: {}, sello: ['Not stated', 'd'], dice: 'No lo dice ni lo niega' },
   };
+  // Banco de «Así se resuelve»: decide = la oración que decide y su color (vacío si ninguna lo decide).
+  const RES_DICE = [
+    { o: ['Carmen sells bread in the market of Juliaca.', 'She opens her stall at six in the morning.'], a: 'Carmen opens her stall early.', ok: 'True', decide: { o2: 'i' },
+      m: [['False', 'RV36', 'La oración 2 lo dice: a las seis de la mañana.'], ['Not stated', 'RV34', '«At six in the morning» es temprano: sí está dicho.'], ['Only on Sundays', 'RV7', 'El texto no habla de días.']], tienta: 1,
+      datos: 'El statement habla de la hora en que Carmen abre su puesto. La oración 2 habla de lo mismo.',
+      aplica: 'La 2 dice «at six in the morning»: las seis es temprano. El texto lo dice con otras palabras, así que el statement es true.' },
+    { o: ['The bus to Puno leaves every hour.', 'The trip takes about one hour.'], a: 'The trip to Puno takes three hours.', ok: 'False', decide: { o2: 'h' },
+      m: [['True', 'RV11', 'El texto dice «about one hour», no tres.'], ['Not stated', 'RV34', 'La oración 2 habla de la duración y lo contradice.'], ['True, every hour', 'RV5', '«Every hour» habla de las salidas, no de cuánto dura el viaje.']], tienta: 2,
+      datos: 'El statement habla de cuánto dura el viaje. La oración 1 habla de las salidas; la 2, de la duración.',
+      aplica: 'La 2 dice «about one hour» y el statement dice «three hours». Chocan: la oración 2 lo contradice, así que es false.' },
+    { o: ['Miguel plays football with his friends.', 'He practices on Saturdays.'], a: 'Miguel is the best player on the team.', ok: 'Not stated', decide: {},
+      m: [['True', 'RV7', 'Que juegue no dice que sea el mejor.'], ['False', 'RV36', 'Ninguna oración dice que juegue mal.'], ['True, because he practices', 'RV7', 'Practicar los sábados no lo vuelve el mejor.']], tienta: 1,
+      datos: 'El statement dice que Miguel es el mejor jugador. Busco una oración que hable de qué tan bien juega.',
+      aplica: 'La 1 dice que juega con amigos; la 2, cuándo practica. Ninguna dice si es el mejor ni si juega mal: es not stated.' },
+    { o: ['Our class did not go to the museum on Friday.', 'It was closed because of the rain.'], a: 'The class visited the museum on Friday.', ok: 'False', decide: { o1: 'h' },
+      m: [['True', 'RV10', '«Did not go» niega la visita.'], ['Not stated', 'RV34', 'La oración 1 habla de ese viernes y lo niega.'], ['True, but it rained', 'RV10', 'No fueron: el museo estaba cerrado.']], tienta: 1,
+      datos: 'El statement dice que la clase visitó el museo el viernes. La oración 1 habla de ese mismo viernes.',
+      aplica: '«Did not go» niega la visita, y la 2 explica por qué: estaba cerrado. La oración 1 lo contradice: false.' },
+  ];
   const figAna = k => ({ esquinaLibre: true, secciones: [lista('Text', ANA).secciones[0], { id: 'a', titulo: 'Statement', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: AF[k].t }] }] });
   const dice = {
     id: 'stated-or-not',
     titulo: 'Dicho, contradicho o no dicho',
     temas: ['Lo que el texto dice y lo que no'],
+    lee: { tarjetas: [
+      { titulo: 'Statement', texto: 'En muchos exámenes en inglés, después del texto viene un «statement», una afirmación. Tú eliges entre tres casillas: true, false o not stated. Es una pregunta rápida, pero tiene trampa.' },
+      { titulo: 'Como un testigo', texto: 'Piensa en un testigo ante un juez: no basta con decir «sí» o «no», tiene que señalar la prueba. Aquí la prueba es una frase exacta del texto en inglés.' },
+      { titulo: 'Qué mirar al jugar', texto: 'En el juego, el texto cuenta tres cosas de Ana. Prueba cada afirmación, lleva el círculo naranja a la oración que habla de lo mismo y mira qué sello aparece.' },
+    ] },
     pieza: 'rv-texto',
     juega: {
-      consigna: 'Prueba tres afirmaciones sobre Ana. Arrastra el marcador a la oración que las decide, si hay alguna.',
+      consigna: 'Prueba tres afirmaciones sobre Ana. Arrastra el círculo naranja a la oración que las decide, si hay alguna.',
       voz: 'Que el texto no lo diga no lo vuelve falso.',
       controles: [
         { id: 'k', etiqueta: 'Statement', opciones: [{ valor: 'stated', texto: 'A' }, { valor: 'false', texto: 'B' }, { valor: 'notstated', texto: 'C' }] },
@@ -252,6 +380,28 @@
       texto: 'Una afirmación es true si el texto la dice, false si la contradice y not stated si el texto no la decide. Se justifica con la frase inglesa exacta.',
       ecuacion: [sost('true'), '   ·   ', engana('false'), '   ·   ', { llave: [nodice('not stated')], nota: 'no lo decide', color: 'c-d' }],
       condicion: 'se compara quién, qué, cuándo y cuántos; lo que no se menciona no es falso.',
+    },
+    resuelve: {
+      pieza: 'rv-texto',
+      generar(s) {
+        const b = elegirRes(RES_DICE, s), n = Object.keys(b.decide).map(k => k.slice(1))[0];
+        const fig = estado => ({ datos: { esquinaLibre: true, secciones: [lista('Text', b.o).secciones[0], { id: 'a', titulo: 'Statement', modo: 'tarjeta', fragmentos: [{ id: 'a1', t: b.a }] }] }, estado });
+        const c = b.ok === 'True' ? 'i' : b.ok === 'False' ? 'h' : 'd', fn = c === 'i' ? sost : c === 'h' ? engana : nodice;
+        const marcas = Object.assign({ a1: c === 'h' ? 'h' : 'o' }, n ? b.decide : Object.fromEntries(b.o.map((_, k) => [`o${k + 1}`, 'd'])));
+        return {
+          enunciado: `According to the text, is «${b.a.replace(/\.$/, '')}» true, false or not stated?`,
+          dibujo: fig({ marcas: { a1: 'o' } }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden decidir si el statement es ', sost('true'), ', ', engana('false'), ' o ', nodice('not stated'), ', con la frase del texto que lo prueba.'] },
+            { tipo: 'datos', texto: b.datos },
+            { tipo: 'regla', texto: 'Si una oración lo dice, es true; si una oración dice lo contrario, es false; si ninguna lo decide, es not stated. Siempre señalo la frase.' },
+            { tipo: 'aplica', texto: b.aplica, ecuacion: [prueba('statement'), ' → ', fn(b.ok)],
+              dibujo: fig({ marcas, sellos: { a: { t: b.ok, c } }, nuevo: ['a'] }) },
+            { tipo: 'sentido', texto: descarto(b.m[b.tienta]) },
+          ],
+          respuesta: n ? `${b.ok}: lo decide la oración ${n}` : `${b.ok}: ninguna oración lo decide`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -299,7 +449,7 @@
   ] });
   const mesaCuant = {
     id: 'cuantificadores', titulo: 'All, some, not all, no', pieza: 'rv-texto',
-    consigna: 'Arrastra el marcador a lo que dice el texto y elige el statement. Mira en qué casilla cae cada par.',
+    consigna: 'Arrastra el círculo naranja a lo que dice el texto y elige el statement. Mira en qué casilla cae cada par.',
     voz: '«Some» deja abierto si son todos.',
     controles: [
       { id: 't', etiqueta: 'Text', opciones: CUANT.map(q => ({ valor: q.valor, texto: q.texto })) },
