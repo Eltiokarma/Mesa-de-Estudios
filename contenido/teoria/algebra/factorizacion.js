@@ -92,6 +92,15 @@
     titulo: 'Primero el factor común',
     temas: ['Factor común e identidades'],
     pieza: 'alg-baldosas',
+    // Lee (fase 2): qué es factorizar y qué es un factor, sin decir cuándo una factorización queda completa (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Armar paquetes', texto: 'En una feria de Juliaca, 12 polos se venden en 3 paquetes de 4: 12 = 3 · 4. Con polinomios se hace lo mismo: se escriben como una multiplicación de partes más simples.' },
+        { titulo: 'Factores', texto: 'Cada parte que se multiplica es un factor. En 3x(x + 2) hay dos factores: 3x y x + 2. Factorizar no cambia el polinomio; solo cambia su forma.',
+          ecuacion: ['3x(x + 2) = 3', X, '² + 6', X] },
+        { titulo: 'Qué mirar', texto: 'En el juego hay dos piezas pegadas, una naranja y una turquesa. Cambia k y m, y fíjate qué lado tienen igual las dos piezas.' },
+      ],
+    },
     juega: {
       consigna: 'Elige el número k y el factor m. Las dos piezas comparten el mismo alto: juntas forman un solo rectángulo.',
       voz: 'Lo que comparten las dos piezas es el factor común.',
@@ -143,6 +152,53 @@
       texto: 'Factorizar es reescribir como producto sin cambiar el polinomio. Primero se saca el factor común; después se reconocen identidades. Se comprueba multiplicando.',
       ecuacion: ['ab + ac = ', { llave: ['a'], nota: 'común', color: 'c-o' }, '(b + c)', '   ·   ', 'a² − b² = (a + b)(a − b)', '   ·   ', 'a² + 2ab + b² = (a + b)²'],
       condicion: '«completa» depende de los números permitidos: x² − 2 no factoriza con racionales, pero con reales sí.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (factor común y diferencia de cuadrados, o trinomio
+    // cuadrado perfecto), con otras semillas; la comprobación multiplica con mult().
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const k = r.uno([1, 2, 3, 5]), p = r.ent(1, 2), c = r.ent(1, 5);
+          const xp = p === 1 ? 'x' : `x${sup(p)}`, K = k === 1 ? '' : String(k), comunCs = [k, ...Array(p).fill(0)];
+          const cs = mult(comunCs, [1, 0, -c * c]), dentro = mult([1, c], [1, -c]);
+          const tabla = n => ({ datos: { columnas: ['paso', 'expresión'], filas: [['original', poli(cs)], [{ t: 'factor común', desde: 1 }, { t: `${K}${xp}(x² − ${c * c})`, desde: 1 }], [{ t: 'identidad', desde: 2 }, { t: `${K}${xp}(x + ${c})(x − ${c})`, desde: 2, color: 'd', fuerte: true }]], alt: `Factorización de ${poli(cs)} en dos pasos` }, estado: { corte: n } });
+          return {
+            enunciado: `Factoriza por completo ${poli(cs)}.`,
+            dibujo: tabla(0),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden escribirlo como producto, hasta que ningún factor se pueda abrir más con enteros.' },
+              { tipo: 'datos', texto: `Tiene dos términos, ${poli(cs.slice(0, 1).concat(Array(p + 2).fill(0)))} y ${poli([cs[2], ...Array(p).fill(0)])}. En los dos aparece ${K}${xp}.` },
+              { tipo: 'regla', texto: 'Primero saco lo que se repite en todos los términos. Después reviso si lo de adentro es una identidad, como la diferencia de cuadrados.',
+                ecuacion: ['a² − b² = (a + b)(a − b)'] },
+              { tipo: 'cuentas', texto: `Saco ${K}${xp}. Queda x² − ${c * c}, que es x² − ${c}²: se abre en suma por diferencia.`,
+                ecuacion: [`${poli(cs)} = ${K}${xp}(x² − ${c * c}) = ${K}${xp}(x + ${c})(x − ${c})`], dibujo: tabla(2) },
+              { tipo: 'sentido', texto: `Compruebo multiplicando: (x + ${c})(x − ${c}) da ${poli(dentro)}, y por ${K}${xp} vuelve el original.`,
+                ecuacion: [`${K}${xp} · (${poli(dentro)}) = ${poli(mult(comunCs, dentro))}`] },
+            ],
+            respuesta: `${K}${xp}(x + ${c})(x − ${c})`,
+          };
+        }
+        const c = r.ent(2, 7), sg = s % 4 === 1 ? '+' : '−', cc = sg === '+' ? c : -c;
+        const cs = [1, 2 * cc, c * c];
+        return {
+          enunciado: `Factoriza ${poli(cs)}.`,
+          dibujo: { datos: { columnas: ['término', 'qué es'], filas: [['x²', { t: '?', desde: 1 }], [`${sg} ${2 * c}x`, { t: '?', desde: 1 }], [String(c * c), { t: '?', desde: 1 }]], alt: `Los tres términos de ${poli(cs)}` }, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden escribir el trinomio como un producto.' },
+            { tipo: 'datos', texto: `x² es el cuadrado de x y ${c * c} es el cuadrado de ${c}. El término central es ${poli([2 * cc, 0])}.` },
+            { tipo: 'regla', texto: 'Si el primero y el último son cuadrados, a² y b², y el del medio es el doble de a por b, el trinomio es un binomio al cuadrado.',
+              ecuacion: ['a² ± 2ab + b² = (a ± b)²'] },
+            { tipo: 'cuentas', texto: `Con a = x y b = ${c}, el doble producto es 2 · x · ${c} = ${2 * c}x. Coincide con el del medio, y su signo es ${sg}.`,
+              ecuacion: [`${poli(cs)} = (x ${sg} ${c})²`],
+              dibujo: { datos: { columnas: ['término', 'qué es'], filas: [['x²', { t: 'x · x', color: 'o', fuerte: true }], [`${sg} ${2 * c}x`, { t: `${sg} 2 · x · ${c}`, color: 'd', fuerte: true }], [String(c * c), { t: `${c} · ${c}`, color: 'i', fuerte: true }]], alt: `Cuadrados x² y ${c}², y el doble producto ${2 * c}x` }, estado: {} } },
+            { tipo: 'sentido', texto: `Compruebo multiplicando: (x ${sg} ${c})(x ${sg} ${c}) vuelve a dar el trinomio.`,
+              ecuacion: [`(x ${sg} ${c})² = ${poli(mult([1, cc], [1, cc]))}`] },
+          ],
+          respuesta: `(x ${sg} ${c})²`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'alg-tabla',
@@ -205,6 +261,15 @@
     titulo: 'El aspa reconstruye el centro',
     temas: ['Aspa simple, doble y doble especial'],
     pieza: 'alg-baldosas',
+    // Lee (fase 2): el rectángulo como producto y los nombres de las partes del trinomio; no dice cómo elegir signos (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un terreno en partes', texto: 'Un terreno rectangular en Juliaca mide x + 3 metros de largo y x + 2 de ancho. Su área se puede partir en cuatro parcelas: un cuadrado, dos franjas y un rectángulo chico.',
+          ecuacion: ['(', X, ' + 3)(', X, ' + 2)'] },
+        { titulo: 'Las partes del trinomio', texto: 'Al sumar las cuatro partes sale un trinomio, como x² + 5x + 6. El primero y el último son sus extremos; el de en medio es el término central.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, mueve p y q y fíjate en las dos piezas verdes. Compáralas con el número que acompaña a x en el trinomio.' },
+      ],
+    },
     juega: {
       consigna: 'Elige p y q. El rectángulo de lados x + p y x + q tiene cuatro piezas; las dos verdes son el término central.',
       voz: 'Suma las dos piezas verdes.',
@@ -262,6 +327,33 @@
       // Espacios duros dentro de cada factor: la línea no se parte a mitad de un paréntesis.
       ecuacion: ['ax² + bx + c = (mx\u00a0+\u00a0p)(nx\u00a0+\u00a0q)', '   ·   ', { llave: ['mq + np'], nota: 'en cruz', color: 'c-d' }, ' = b'],
       condicion: 'se comprueba multiplicando; si ninguna partición con enteros reconstruye el centro, no factoriza con enteros.',
+    },
+    // Así se resuelve (fase 2): el mismo trinomio (Mx + P)(Nx + Q) de «Ahora tú», con otras semillas, y la misma aspa en tabla.
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        let M, N, P, Q;
+        do { M = r.ent(1, 3); N = r.ent(1, 3); P = r.uno([-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6]); Q = r.uno([-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]); }
+        while (mcd(M, P) !== 1 || mcd(N, Q) !== 1 || M * Q + N * P === 0 || (M === N && P === Q));
+        const cs = mult([M, P], [N, Q]), txt = `(${lin(M, P)})(${lin(N, Q)})`;
+        const mx = k => `${k === 1 ? '' : k}x`, num = v => `${v > 0 ? '+' : '−'}${Math.abs(v)}`, par = v => (v < 0 ? `(${f(v, 0)})` : f(v, 0));
+        const cruz = [`${M * Q > 0 ? '+' : '−'}${Math.abs(M * Q)}x`, `${N * P > 0 ? '+' : '−'}${Math.abs(N * P)}x`];
+        const llena = aspaTabla([[mx(M), num(P)], [mx(N), num(Q)]], cruz, `cruzados: ${poli([M * Q + N * P, 0])} ✓`);
+        return {
+          enunciado: `Factoriza ${poli(cs)} con el aspa.`,
+          dibujo: { datos: aspaTabla([['?', '?'], ['?', '?']], ['', ''], `${poli(cs)}: el centro es ${poli([cs[1], 0])}`), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden dos factores de primer grado cuyo producto sea el trinomio.' },
+            { tipo: 'datos', texto: `Los extremos son ${poli([cs[0], 0, 0])} y ${f(cs[2], 0)}. El término central es ${poli([cs[1], 0])}.` },
+            { tipo: 'regla', texto: 'Parto el primero y el último en dos productos. Multiplico en cruz: si los cruzados suman el término central, la partición sirve; si no, pruebo otra.' },
+            { tipo: 'cuentas', texto: `Parto ${poli([cs[0], 0, 0])} en ${mx(M)} · ${mx(N)} y ${f(cs[2], 0)} en ${par(P)} · ${par(Q)}. Los cruzados suman el centro.`,
+              ecuacion: [`${mx(M)} · ${par(Q)} + ${mx(N)} · ${par(P)} = ${poli([M * Q + N * P, 0])}`], dibujo: { datos: llena, estado: {} } },
+            { tipo: 'sentido', texto: 'Compruebo multiplicando los dos factores: vuelve el trinomio del enunciado.', ecuacion: [`${txt} = ${poli(mult([M, P], [N, Q]))}`] },
+          ],
+          respuesta: `${poli(cs)} = ${txt}`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'alg-tabla',
@@ -327,6 +419,15 @@
     titulo: 'Tres aspas para seis términos',
     temas: ['Aspa simple, doble y doble especial'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): cuándo hace falta más de un aspa y cómo se ordena la tabla; no dice cómo se halla lo que falta (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Seis términos', texto: 'El aspa simple sirve para tres términos. Un polinomio como 2x² + 7xy + 3y² + 7x + 11y + 6 tiene seis y dos letras: ahí se usa el aspa doble.' },
+        { titulo: 'Tres columnas', texto: 'Cada factor se escribe en una fila de la tabla, con tres columnas: la de x, la de y y la del número. Cada aspa cruza dos de esas columnas.' },
+        { titulo: 'La doble especial', texto: 'El aspa doble especial es para polinomios de cuarto grado en una sola letra, como x⁴ + 5x³ + 9x² + 7x + 2. Las columnas pasan a ser x², x y número.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, sube el paso de uno en uno. Mira qué dos columnas une cada aspa verde y qué término aparece debajo de la tabla.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un ejemplo y avanza el paso. Cada paso dibuja un aspa y comprueba el término que reconstruye.',
       voz: 'Cada aspa usa dos columnas.',
@@ -375,6 +476,56 @@
       texto: 'El aspa doble verifica tres aspas, una por cada par de columnas. En la doble especial, lo que falta del término central se reparte entre los términos de en medio.',
       ecuacion: ['(2x + y + 3)(x + 3y + 2)', '   ·   ', { llave: ['2x · 3y + x · y'], nota: 'primera aspa', color: 'c-d' }, ' = 7xy'],
       condicion: 'cada producto cruzado debe reconstruir su término; si alguno falla, se cambia la partición y se comprueba multiplicando.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (lo que falta en la doble especial, o el aspa auxiliar del
+    // término en x en la doble), con otras semillas y las mismas cuentas con mult().
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const k = (c, v) => `${c === 1 ? '' : c}${v}`;
+        if (s % 2 === 0) {
+          const a1 = r.ent(1, 3), b1 = r.ent(1, 3), a2 = r.ent(1, 4), b2 = r.ent(1, 4);
+          const P = mult([1, a1, b1], [1, a2, b2]), cruce = b1 + b2, falta = P[2] - cruce;
+          const tabla = (medio, pie) => ({ datos: { columnas: ['x²', HUECO, 'x', HUECO, 'número'],
+            filas: [[{ t: 'x²', color: 'o', fuerte: true }, '', medio ? { t: k(a1, 'x'), color: 'd', fuerte: true } : '?', '', { t: String(b1), color: 'i', fuerte: true }],
+              [{ t: 'x²', color: 'o', fuerte: true }, '', medio ? { t: k(a2, 'x'), color: 'd', fuerte: true } : '?', '', { t: String(b2), color: 'i', fuerte: true }]],
+            flechas: [{ de: [0, 0], a: [1, 4], color: 'd' }, { de: [1, 0], a: [0, 4], color: 'd' }], pie, alt: `Aspa de los extremos de ${poli(P)}` }, estado: {} });
+          return {
+            enunciado: `En ${poli(P)}, se parte x⁴ = x² · x² y ${P[4]} = ${b1} · ${b2}. ¿Cuánto falta para el término en x²?`,
+            dibujo: tabla(false, `extremos: ${cruce}x²`),
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la parte del término en x² que todavía no dan los extremos.' },
+              { tipo: 'datos', texto: `El término en x² es ${P[2]}x². Los extremos ya están partidos: x² · x² y ${b1} · ${b2}.` },
+              { tipo: 'regla', texto: 'El aspa de los extremos da una parte del término en x². Lo que falta lo dan los dos términos de en medio, multiplicados entre sí.' },
+              { tipo: 'cuentas', texto: 'Cruzo los extremos y resto eso del término en x².',
+                ecuacion: [`x² · ${b2} + x² · ${b1} = ${cruce}x²   →   ${P[2]}x² − ${cruce}x² = ${falta}x²`] },
+              { tipo: 'sentido', texto: `Comprueba: ${falta}x² = ${k(a1, 'x')} · ${k(a2, 'x')}. Con ellos en medio, las otras dos aspas rehacen los términos en x³ y en x.`,
+                ecuacion: [`x² · ${k(a2, 'x')} + x² · ${k(a1, 'x')} = ${poli([P[1], 0, 0, 0])}`, '   ·   ', `${k(a1, 'x')} · ${b2} + ${k(a2, 'x')} · ${b1} = ${poli([P[3], 0])}`],
+                dibujo: tabla(true, `${P[2]}x² − ${cruce}x² = ${falta}x²`) },
+            ],
+            respuesta: `Faltan ${falta}x².`,
+          };
+        }
+        const m = r.ent(1, 3), p = r.ent(1, 3), c = r.ent(1, 5), n = r.ent(1, 3), q = r.ent(1, 3), d = r.ent(1, 5);
+        const coef = m * d + n * c;
+        const tabla = conFlechas => ({ datos: { columnas: ['x', HUECO, 'y', HUECO, 'número'],
+          filas: [[k(m, 'x'), k(p, 'y'), String(c)], [k(n, 'x'), k(q, 'y'), String(d)]].map(fila => conHuecos(fila).map((t, col) => ({ t, color: COL(col), fuerte: true }))),
+          flechas: conFlechas ? [{ de: [0, 0], a: [1, 4], color: 'd' }, { de: [1, 0], a: [0, 4], color: 'd' }] : [],
+          pie: conFlechas ? `${k(m, 'x')} · ${d} + ${k(n, 'x')} · ${c} = ${poli([coef, 0])}` : 'x, y, número', alt: 'Dos factores de tres términos ordenados en columnas' }, estado: {} });
+        return {
+          enunciado: `Al multiplicar (${k(m, 'x')} + ${k(p, 'y')} + ${c})(${k(n, 'x')} + ${k(q, 'y')} + ${d}), ¿qué coeficiente tiene el término en x?`,
+          dibujo: tabla(false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el número que acompaña a x sola, sin y, en el producto.' },
+            { tipo: 'datos', texto: `Cada factor es una fila: ${k(m, 'x')}, ${k(p, 'y')}, ${c} arriba y ${k(n, 'x')}, ${k(q, 'y')}, ${d} abajo.` },
+            { tipo: 'regla', texto: 'El término en x sale del aspa que cruza la columna de x con la del número: cada x por el número de la otra fila.' },
+            { tipo: 'cuentas', texto: 'Cruzo la columna de x con la de los números y sumo.',
+              ecuacion: [`${k(m, 'x')} · ${d} + ${k(n, 'x')} · ${c} = ${poli([m * d, 0])} + ${poli([n * c, 0])} = ${poli([coef, 0])}`], dibujo: tabla(true) },
+            { tipo: 'sentido', texto: 'Comprueba: x por x da x², y x por y da xy. Solo x por un número deja x sola, así que no hay más aportes.' },
+          ],
+          respuesta: `El coeficiente es ${coef}.`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -427,6 +578,16 @@
     titulo: 'Si P(a) = 0, hay factor',
     temas: ['Divisores binómicos', 'Teorema del factor'],
     pieza: 'ejes',
+    // Lee (fase 2): evaluar, raíz y divisor binómico; no dice qué binomio sale de cada cero, ni su signo (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Evaluar', texto: 'Evaluar P en un número es reemplazar x por ese número y hacer las cuentas. Si P(x) = x² − 4, entonces P(3) = 9 − 4 = 5.',
+          ecuacion: ['P(3) = 3² − 4 = 5'] },
+        { titulo: 'Raíz', texto: 'Si P(a) = 0, el número a es una raíz de P. En la gráfica, las raíces son los lugares donde la curva corta el eje horizontal.' },
+        { titulo: 'Divisores binómicos', texto: 'Un binomio de primer grado, como x − 1 o x + 5, es un divisor binómico de P si lo divide con resto cero. Es una forma de buscar factores.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, lleva el punto naranja por la curva. Anota los valores de a donde P(a) vale cero: después verás qué binomio sale de cada uno.' },
+      ],
+    },
     juega: {
       consigna: 'P(x) = x³ − 2x² − 5x + 6. Mueve a y mira el valor de P(a). Busca dónde la curva corta el eje.',
       voz: 'Anota los valores de a donde P vale cero.',
@@ -470,6 +631,43 @@
       texto: 'x − a es factor de P(x) exactamente cuando P(a) = 0. Con coeficientes enteros, una raíz entera divide al término independiente.',
       ecuacion: ['P(', { v: 'c-o', t: 'a' }, ') = 0   ⇔   ', { llave: ['(x − ', { v: 'c-o', t: 'a' }, ')'], nota: 'cero en a', color: 'c-o' }, ' es factor de P(x)'],
       condicion: 'la lista de candidatos pide coeficientes enteros; si el principal no es 1, se prueban fracciones p/q. Ser candidato no basta.',
+    },
+    // Así se resuelve (fase 2): el mismo P de «Ahora tú» (tres raíces enteras distintas), con otras semillas: se prueba
+    // un candidato que falla y una raíz, con evaluar(); la gráfica marca la raíz en el paso de las cuentas.
+    resuelve: {
+      pieza: 'ejes',
+      generar(s) {
+        const r = azar(s + 900);
+        let raices;
+        do { raices = [r.ent(-4, 4), r.ent(-4, 4), r.ent(-4, 4)]; } while (new Set(raices).size < 3 || raices.includes(0));
+        const cs = raices.reduce((acc, a) => mult(acc, [1, -a]), [1]);
+        const c0 = cs[3], rr = r.uno(raices);
+        const divs = []; for (let d = 1; d <= Math.abs(c0); d++) if (c0 % d === 0) divs.push(d, -d);
+        const noRaiz = divs.filter(d => !raices.includes(d)).sort((p, q) => Math.abs(p) - Math.abs(q));
+        const d1 = noRaiz.length ? noRaiz[0] : null;
+        // P(v) término a término: los cuatro sumandos con su signo, calculados con los coeficientes.
+        const sumandos = v => { const t = cs.map((c, k) => c * v ** (3 - k)); return t.map((y, k) => (k ? ` ${y < 0 ? '−' : '+'} ${f(Math.abs(y), 0)}` : f(y, 0))).join(''); };
+        const lo = Math.min(...raices) - 1, hi = Math.max(...raices) + 1;
+        const pts = Array.from({ length: 41 }, (_, k) => { const xx = lo + (hi - lo) * k / 40; return [xx, evaluar(cs, xx)]; });
+        const ys = pts.map(p => p[1]), ymin = Math.floor(Math.min(...ys)), ymax = Math.ceil(Math.max(...ys));
+        const graf = puntos => ({ datos: { x: { min: lo, max: hi, paso: 1, nombre: 'x', decimales: 0, color: 'o' }, y: { min: ymin, max: ymax, paso: Math.max(1, Math.ceil((ymax - ymin) / 50) * 10), nombre: 'P', decimales: 0, color: 'd' }, curvas: [{ puntos: pts, color: 'd' }], puntos, alt: `Gráfica de P(x) = ${poli(cs)}` }, estado: {} });
+        const pasos = [
+          { tipo: 'pide', texto: 'Piden un binomio x − a que sea factor de P(x).' },
+          { tipo: 'datos', texto: `Los coeficientes son enteros, el principal es 1 y el término independiente es ${f(c0, 0)}.` },
+          { tipo: 'regla', texto: `x − a es factor justo cuando P(a) = 0. Si a es entero, tiene que dividir a ${f(c0, 0)}: así salen los candidatos.` },
+        ];
+        if (d1 !== null) pasos.push({ tipo: 'cuentas', texto: `Pruebo ${f(d1, 0)}, que divide a ${f(c0, 0)}. No da cero: ser candidato no basta.`, ecuacion: [`P(${f(d1, 0)}) = ${sumandos(d1)} = ${f(evaluar(cs, d1), 0)}`] });
+        pasos.push({ tipo: 'cuentas', texto: `Pruebo ${f(rr, 0)}: da cero, así que ${fx(rr)} es factor.`, ecuacion: [`P(${f(rr, 0)}) = ${sumandos(rr)} = ${f(evaluar(cs, rr), 0)}`],
+          dibujo: graf([{ x: rr, y: 0, color: 'o', rotulo: `P(${f(rr, 0)}) = 0`, guias: true }]) });
+        pasos.push({ tipo: 'sentido', texto: `Comprueba: ${fx(rr)} vale 0 en x = ${f(rr, 0)}, donde la curva corta el eje. Y aparece al factorizar P del todo.`,
+          ecuacion: [`P(x) = ${raices.map(a => `(${fx(a)})`).join('')}`] });
+        return {
+          enunciado: `Halla un factor de la forma x − a de P(x) = ${poli(cs)}.`,
+          dibujo: graf([]),
+          pasos,
+          respuesta: `${fx(rr)} es factor de P(x).`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'ejes',
@@ -517,6 +715,14 @@
     titulo: 'Menor exponente, mayor exponente',
     temas: ['MCD y MCM de polinomios'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): MCD y MCM con números conocidos y qué quieren decir con polinomios; no dice qué exponente toma cada uno (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Con números', texto: 'En un paradero de Juliaca, una combi sale cada 12 minutos y otra cada 18. Si salen juntas a las 7:00, vuelven a coincidir a las 7:36: 36 es el MCM de 12 y 18.' },
+        { titulo: 'Con polinomios', texto: 'El MCD de dos polinomios es el de mayor grado que divide a los dos. El MCM es el de menor grado que es múltiplo de los dos.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, P y Q ya están factorizados en la tabla. Cambia i y j, y compara cada exponente de las columnas MCD y MCM con los de P y Q.' },
+      ],
+    },
     juega: {
       consigna: 'P = (x − 1)ⁱ(x + 2)² y Q = (x − 1)ʲ(x + 2)(x + 3). Cambia i y j; mira MCD y MCM.',
       voz: 'Compara cada exponente de MCD con los de P y Q.',
@@ -553,6 +759,42 @@
       texto: 'Se factorizan los polinomios del todo. El MCD lleva los factores comunes con su menor exponente; el MCM, todos los factores con su mayor exponente.',
       ecuacion: ['MCD · MCM = ', { llave: ['P · Q'], nota: 'mónicos', color: 'c-d' }],
       condicion: 'MCD y MCM se fijan salvo una constante: se eligen mónicos, con coeficiente principal 1.',
+    },
+    // Así se resuelve (fase 2): los mismos P y Q de «Ahora tú» (un factor común y uno propio en cada uno), con otras
+    // semillas; pide el MCD o el MCM según la semilla, como «Ahora tú», y la tabla destapa las dos columnas en las cuentas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const [a, b, c] = r.mezclar([-3, -2, -1, 1, 2, 3, 4]).slice(0, 3);
+        const i = r.ent(1, 3), j = r.ent(1, 2), l = r.ent(1, 2); let k = r.ent(1, 3); if (k === i) k = i === 3 ? 1 : i + 1;
+        const P = [[fx(a), i], [fx(b), j]], Q = [[fx(a), k], [fx(c), l]];
+        const pide = s % 2 ? 'MCM' : 'MCD';
+        const mn = Math.min(i, k), mx = Math.max(i, k);
+        const mcdT = escribir([[fx(a), mn]]), mcmT = escribir([[fx(a), mx], [fx(b), j], [fx(c), l]]);
+        const bien = pide === 'MCD' ? mcdT : mcmT;
+        const tabla = corte => ({ datos: tablaMult([[fx(a), i, k, 1], [fx(b), j, 0, 1], [fx(c), 0, l, 1]]), estado: { corte } });
+        const gMcd = mn, gMcm = mx + j + l, gPQ = i + j + k + l;
+        return {
+          enunciado: `P = ${escribir(P)} y Q = ${escribir(Q)}. ¿Cuál es el ${pide} de P y Q?`,
+          dibujo: tabla(0),
+          pasos: [
+            { tipo: 'pide', texto: `Piden el ${pide} de P y Q, escrito como producto de factores.` },
+            { tipo: 'datos', texto: `Los dos ya están factorizados. Comparten ${fx(a)}; ${fx(b)} solo está en P y ${fx(c)} solo en Q.` },
+            pide === 'MCD'
+              ? { tipo: 'regla', texto: 'El MCD tiene que dividir a los dos: lleva solo lo que comparten, con el exponente más chico de los dos.' }
+              : { tipo: 'regla', texto: 'El MCM tiene que ser múltiplo de los dos: lleva todos los factores, cada uno con el exponente más grande.' },
+            pide === 'MCD'
+              ? { tipo: 'cuentas', texto: `${fx(a)} está con exponente ${i} en P y ${k} en Q: tomo ${mn}. Los otros factores no son comunes.`, ecuacion: [`MCD = ${mcdT}`], dibujo: tabla(1) }
+              : { tipo: 'cuentas', texto: `${fx(a)}: entre ${i} y ${k} tomo ${mx}. ${fx(b)} va con ${j} y ${fx(c)} con ${l}, porque están en uno solo.`, ecuacion: [`MCM = ${mcmT}`], dibujo: tabla(1) },
+            pide === 'MCD'
+              ? { tipo: 'sentido', texto: `Comprueba: ${mcdT} divide a P y a Q, porque su exponente, ${mn}, no pasa de ${i} ni de ${k}.`,
+                ecuacion: [`mín(${i}, ${k}) = ${mn}`] }
+              : { tipo: 'sentido', texto: `Comprueba con los grados: el MCD es ${mcdT}, de grado ${gMcd}. MCD por MCM tiene el grado de P por Q.`,
+                ecuacion: [`${gMcd} + ${gMcm} = ${gMcd + gMcm}`, '   ·   ', `${i} + ${j} + ${k} + ${l} = ${gPQ}`] },
+          ],
+          respuesta: `${pide} = ${bien}`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'alg-tabla',
@@ -738,6 +980,10 @@
       { termino: 'aspa', def: 'Método para factorizar ax² + bx + c: se parten a y c en productos, cruzados hasta sumar b.',
         ejemplo: '2x² + 7x + 3: 2x · 3 + x · 1 = 7x.', ver: ['término central', 'aspa doble'] },
       { termino: 'aspa doble', def: 'Aspa para polinomios de dos letras con seis términos: se revisan tres cruces, uno por cada par de columnas.' },
+      { termino: 'aspa doble especial', def: 'Aspa para cuarto grado en una letra: lo que falta del término en x² lo ponen los del medio.',
+        ejemplo: 'x⁴ + 5x³ + 9x² + 7x + 2 = (x² + 2x + 1)(x² + 3x + 2).', ver: ['aspa doble'] },
+      { termino: 'divisor binómico', formas: ['divisor binómico', 'divisores binómicos'], def: 'Binomio de primer grado, como x + 3, que divide a un polinomio con resto cero.',
+        ver: ['binomio', 'factor'] },
       { termino: 'MCD', def: 'Máximo común divisor: el producto de los factores comunes, cada uno con su menor exponente.',
         ejemplo: '(x − 1)²(x + 2) y (x − 1)(x + 2)³: (x − 1)(x + 2).', ver: ['MCM'] },
       { termino: 'MCM', def: 'Mínimo común múltiplo: el producto de todos los factores, cada uno con su mayor exponente.',
