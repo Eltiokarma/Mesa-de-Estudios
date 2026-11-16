@@ -1078,7 +1078,7 @@
        "/nucleo/kit/piezas/quim-cadena.js"
       ],
       "ideas": 5,
-      "terminos": 34
+      "terminos": 35
      }
     },
     {
@@ -1329,7 +1329,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 27
+      "terminos": 33
      }
     },
     {
@@ -1367,7 +1367,7 @@
        "/nucleo/kit/piezas/quim-particulas.js"
       ],
       "ideas": 5,
-      "terminos": 30
+      "terminos": 37
      }
     },
     {
@@ -1405,7 +1405,7 @@
        "/nucleo/kit/piezas/recta.js"
       ],
       "ideas": 4,
-      "terminos": 28
+      "terminos": 30
      }
     },
     {
@@ -1445,7 +1445,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 28
+      "terminos": 33
      }
     },
     {
@@ -1487,7 +1487,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 4,
-      "terminos": 34
+      "terminos": 39
      }
     },
     {
@@ -1533,7 +1533,7 @@
        "/nucleo/kit/piezas/quim-molecula-3d.js"
       ],
       "ideas": 6,
-      "terminos": 38
+      "terminos": 44
      }
     },
     {
@@ -1576,7 +1576,7 @@
        "/nucleo/kit/piezas/quim-molecula.js"
       ],
       "ideas": 6,
-      "terminos": 35
+      "terminos": 37
      }
     },
     {
@@ -1623,7 +1623,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 5,
-      "terminos": 32
+      "terminos": 35
      }
     },
     {
@@ -1665,7 +1665,7 @@
        "/nucleo/kit/piezas/quim-composicion.js"
       ],
       "ideas": 4,
-      "terminos": 30
+      "terminos": 33
      }
     },
     {
@@ -1710,7 +1710,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
-      "terminos": 38
+      "terminos": 46
      }
     }
    ]
@@ -2236,7 +2236,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 6,
-      "terminos": 27
+      "terminos": 32
      }
     },
     {
@@ -2275,7 +2275,7 @@
        "/nucleo/kit/piezas/ejes.js"
       ],
       "ideas": 6,
-      "terminos": 28
+      "terminos": 32
      }
     },
     {
@@ -2318,7 +2318,7 @@
        "/nucleo/kit/piezas/alg-columnas-3d.js"
       ],
       "ideas": 5,
-      "terminos": 21
+      "terminos": 25
      }
     },
     {
@@ -2361,7 +2361,7 @@
        "/nucleo/kit/piezas/alg-planos-3d.js"
       ],
       "ideas": 5,
-      "terminos": 28
+      "terminos": 31
      }
     },
     {
@@ -2401,7 +2401,7 @@
        "/nucleo/kit/piezas/alg-techo-3d.js"
       ],
       "ideas": 4,
-      "terminos": 22
+      "terminos": 23
      }
     },
     {
@@ -2436,7 +2436,7 @@
        "/nucleo/kit/piezas/alg-tabla.js"
       ],
       "ideas": 6,
-      "terminos": 18
+      "terminos": 21
      }
     },
     {
@@ -2474,7 +2474,7 @@
        "/nucleo/kit/piezas/alg-cubo-3d.js"
       ],
       "ideas": 4,
-      "terminos": 24
+      "terminos": 26
      }
     }
    ]
