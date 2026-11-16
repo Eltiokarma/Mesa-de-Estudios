@@ -23,7 +23,7 @@ const estado = momento => JSON.stringify({ uni: 'unmsm', grado: '5',
     p.on('pageerror', e => errores.push(e.message));
     p.on('console', m => { if (m.type() === 'error') errores.push(m.text()); });
     await p.addInitScript(s => { localStorage.setItem('lab-v1', s); }, estado(momento));
-    await p.goto(`${BASE}#/unidad/${U}/teoria/${idea.id}`); await p.waitForTimeout(1200);
+    await p.goto(`${BASE}#/unidad/${U}/teoria/${idea.id}`); await p.waitForSelector('.te-lee-t, .te-res-enun, .te-momentos', { timeout: 15000 }).catch(() => {}); await p.waitForTimeout(500);
     return p;
   };
   let ok = true;
