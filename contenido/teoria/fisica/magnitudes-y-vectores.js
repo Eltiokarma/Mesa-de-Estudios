@@ -69,18 +69,18 @@
   }
 
   // ---------- Idea 1: cambiar de unidad cambia el número, no la magnitud ----------
-  // Cambia: la unidad de la regla · Permanece: el largo dibujado de la barra (2,5 m) ·
+  // Cambia: la unidad de la regla · Permanece: el largo dibujado del elástico (2,5 m) ·
   // Progresa: el número que lo mide (2,5 → 25 → 250) · Se reserva: la conversión de km/h a m/s, en saltos de 20 m ·
   // Debe verse: el mismo segmento con otro número; convertir es multiplicar por un factor que vale 1.
   const UNIDADES = { m: { k: 1, max: 3, paso: 0.5, cada: 2 }, dm: { k: 10, max: 30, paso: 5, cada: 2 }, cm: { k: 100, max: 300, paso: 50, cada: 2 } };
   const LAPIZ = 2.5;
   // Decimales con que se lee el largo en cada unidad: la misma precisión (1 cm) en las tres.
   const DEC_UN = { m: 2, dm: 1, cm: 0 };
-  // largo: el de la barra en metros (el juego lo hace crecer y encoger solo; la regla de cada unidad llega a 3 m).
+  // largo: el del elástico en metros (el juego lo hace crecer y encoger solo; la regla de cada unidad llega a 3 m).
   const reglaEn = (un, largo = LAPIZ) => {
     const U = UNIDADES[un], L = largo * U.k;
     return { datos: { min: 0, max: U.max, paso: U.paso, cada: U.cada, sufijo: ` ${un}`, decimales: 1, variable: un, color: 'o', filas: 1,
-      elementos: [{ tipo: 'distancia', a: 0, b: L, color: 'o', rotulo: `L = ${f(L, DEC_UN[un])} ${un}` }] }, estado: {} };
+      elementos: [{ tipo: 'distancia', objeto: 'elastico', a: 0, b: L, color: 'o', rotulo: `L = ${f(L, DEC_UN[un])} ${un}` }] }, estado: {} };
   };
   // El mismo largo dicho en la unidad elegida y en otra (metros, o centímetros si la regla ya está en metros).
   const mismoLargo = (un, largo) => (un === 'm'
@@ -97,8 +97,8 @@
     temas: ['Magnitudes fundamentales y derivadas', 'Sistema Internacional'],
     pieza: 'recta',
     juega: {
-      consigna: 'La barra naranja crece y se encoge sola. Mira los dos números de un mismo largo; cambia la unidad de la regla.',
-      voz: '¿Qué cambia: la barra o el número que la mide?',
+      consigna: 'El elástico se estira y se encoge solo. Mira los dos números de un mismo largo; cambia la unidad de la regla.',
+      voz: '¿Qué cambia: el elástico o el número que lo mide?',
       // L barre de 0,5 m a 3 m y vuelve: el largo es uno solo, cada unidad le pone su número (× 10, × 100).
       controles: [
         { id: 'un', etiqueta: 'Unidad', opciones: [{ valor: 'm', texto: 'metro' }, { valor: 'dm', texto: 'decímetro' }, { valor: 'cm', texto: 'centímetro' }] },
@@ -121,7 +121,7 @@
       revelar: { datos: rectaV(5, true), estado: {} },
       coincide: `Coincide: 72 000 m repartidos en 3600 s dan ${f(V_MS, 0)} m cada segundo.`,
     },
-    // Hallazgo 9: el juego mide la barra y «Mira» mide la combi de la predicción. Es la misma regla graduada (pieza
+    // Hallazgo 9: el juego mide el elástico y «Mira» mide la combi de la predicción. Es la misma regla graduada (pieza
     // recta) con otro objeto: lo que se repite es la idea de cambiar el número sin cambiar la magnitud.
     mira: {
       datos: rectaV(5, true, true),
@@ -396,7 +396,7 @@
           opciones: ops,
           solucion: {
             texto: `cos ${f(g, 0)}° = ${f(cosG(g), 1)}; se reemplaza en la ley de la suma.`,
-            ecuacion: [R, ` = √(${f(a * a, 0)} + ${f(b * b, 0)} + 2 · ${f(a, 0)} · ${f(b, 0)} · ${f(cosG(g), 1)}) = ${f(c.r, 2)} u`],
+            ecuacion: [R, ` = √(${f(a * a, 0)} + ${f(b * b, 0)} + 2 · ${f(a, 0)} · ${f(b, 0)} · cos ${f(g, 0)}°) = √(${f(a * a, 0)} + ${f(b * b, 0)} + 2 · ${f(a, 0)} · ${f(b, 0)} · ${f(cosG(g), 1)}) = ${f(c.r, 2)} u`],
             dibujo: { datos: colaPunta(a, b, g, { circulo: false }).datos, estado: { paso: 9, final: true } },
           },
         };
@@ -560,8 +560,8 @@
       datos: prod(4, 3, 60, { circulo: false, pasoS: 1, pasoP: 3 }).datos,
       pasos: [
         { estado: { paso: 0 }, texto: 'A mide 4, B mide 3 y forman 60°.', ecuacion: [A, ' = 4,  ', B, ' = 3,  ', th, ' = 60°'] },
-        { estado: { paso: 1 }, texto: 'La sombra de B sobre A mide 3 · cos 60° = 1,5.', ecuacion: ['B cos θ = 1,5'] },
-        { estado: { paso: 2 }, texto: 'El producto escalar da una magnitud escalar: un número, sin dirección.', ecuacion: [vA, ' · ', vB, ' = ', A, B, ' cos ', th, ' = 4 · 1,5 = 6'] },
+        { estado: { paso: 1 }, texto: 'La sombra de B sobre A mide 3 · cos 60° = 1,5.', ecuacion: ['B cos θ = 3 · cos 60° = 3 · 0,5 = 1,5'] },
+        { estado: { paso: 2 }, texto: 'El producto escalar da una magnitud escalar: un número, sin dirección.', ecuacion: [vA, ' · ', vB, ' = ', A, B, ' cos ', th, ' = 4 · 3 · cos 60° = 4 · 1,5 = 6'] },
         { estado: { paso: 3 }, texto: 'El vectorial mide el área del paralelogramo.', ecuacion: ['|', vA, ' × ', vB, '| = ', A, B, ` sen `, th, ` = ${f(12 * senG(60), 2)}`] },
         { estado: { paso: 3 }, texto: 'Apunta perpendicular al plano de A y B, por la mano derecha.', ecuacion: [vA, ' × ', vB, ` = ${f(12 * senG(60), 2)} k̂`] },
       ],

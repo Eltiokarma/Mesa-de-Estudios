@@ -169,7 +169,7 @@
       voz: 'Un solo cambio: la altura se escribe con el seno.',
       pasos: [
         { estado: { corte: 1 }, texto: 'Dos lados y el ángulo que forman.', ecuacion: [b, ' = 5', SEP, c, ' = 6', SEP, A, ' = 150°'] },
-        { estado: { corte: 2 }, texto: 'La altura desde B cae fuera, sobre la prolongación de b.', ecuacion: [h, ' = ', c, ' sen ', A, ' = 6 · 0,5 = 3'] },
+        { estado: { corte: 2 }, texto: 'La altura desde B cae fuera, sobre la prolongación de b.', ecuacion: [h, ' = ', c, ' sen ', A, ' = 6 · sen 150° = 6 · 0,5 = 3'] },
         { estado: { corte: 3 }, texto: 'El área es base por altura entre dos.', ecuacion: [S, ' = ', { frac: [[b, ' · ', h], '2'] }, ' = ', { frac: ['5 · 3', '2'] }, ' = 7,5'] },
         { estado: { corte: 3 }, texto: 'Con h = c sen A queda la fórmula.', ecuacion: [S, ' = ', medio, b, c, ' sen ', A] },
       ],

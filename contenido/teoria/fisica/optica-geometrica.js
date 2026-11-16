@@ -104,7 +104,7 @@
     mira: {
       datos: Object.assign(interfaz(4 / 3, 'agua', 53, { reflejado: true }).datos, { n2: 1.33, rotulos: { t1: 'θ₁ = 53°', t2: 'θ₂ = 37°', r: '53°' } }),
       pasos: [
-        { estado: { paso: 1 }, texto: 'El rayo llega a 53° de la normal desde el aire.', ecuacion: [n1, ' sen ', t1, ' = 1 · 0,8 = 0,8'] },
+        { estado: { paso: 1 }, texto: 'El rayo llega a 53° de la normal desde el aire.', ecuacion: [n1, ' sen ', t1, ' = 1 · sen 53° = 1 · 0,8 = 0,8'] },
         { estado: { paso: 2 }, texto: 'Una parte rebota con el mismo ángulo.', ecuacion: ['θ reflejado = ', t1, ' = 53°'] },
         { estado: { paso: 3 }, texto: 'La que entra al agua conserva n · sen θ.', ecuacion: ['sen ', t2, ' = ', { frac: ['0,8', '4/3'] }, ' = 0,6'] },
         { estado: { paso: 3 }, texto: 'En el medio más denso, el rayo se acerca a la normal.', ecuacion: [t2, ' = 37° < ', t1] },

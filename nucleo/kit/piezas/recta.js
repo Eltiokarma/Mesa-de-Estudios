@@ -16,6 +16,7 @@
  *     { tipo: 'intervalo', a, b, ca, cb, color, rotulo, fila, desde },  // a o b null: −∞ o +∞; ca, cb: cerrado
  *     { tipo: 'enteros', a, b, cada, color, rotulo, fila, desde },      // un punto en cada entero (o múltiplo de cada) de [a, b]
  *     { tipo: 'distancia', a, b, color, rotulo, fila, desde },          // cota entre dos valores
+ *       objeto: 'elastico' (opcional): la distancia se dibuja como un elástico que se estira (más largo, más delgado)
  *     { tipo: 'salto', a, b, color, rotulo, fila, desde },              // flecha de a hasta b
  *   ],
  *   marca: { min, max, inicio } | null,   // si la respuesta es un valor de la recta y se arrastra
@@ -132,6 +133,17 @@
     const a = e.a === null || e.a === undefined ? null : dentro(d, e.a);
     const b = e.b === null || e.b === undefined ? null : dentro(d, e.b);
     const xa = a === null ? X0 - 8 : g.x(a), xb = b === null ? X1 + 8 : g.x(b);
+    if (e.tipo === 'distancia' && e.objeto === 'elastico' && !disc) {
+      // Un elástico (dibujo de prueba, 16 nov: «un lápiz no se encoge»): banda con dos argollas; al estirarse adelgaza.
+      const x1 = Math.min(xa, xb), x2 = Math.max(xa, xb), largo = Math.max(1, x2 - x1);
+      const alto = Math.max(5, Math.min(16, 16 * Math.sqrt(90 / largo)));
+      const col = T.color(c);
+      s += `<rect x="${T.n(x1)}" y="${T.n(y - alto / 2)}" width="${T.n(largo)}" height="${T.n(alto)}" rx="${T.n(alto / 2)}" fill="${col}" fill-opacity="0.28" stroke="${col}" stroke-width="2.5"/>`;
+      s += `<line x1="${T.n(x1 + alto / 2)}" y1="${T.n(y)}" x2="${T.n(x2 - alto / 2)}" y2="${T.n(y)}" stroke="${col}" stroke-width="1.2" stroke-opacity="0.6"/>`;
+      for (const x of [x1, x2]) s += `<circle cx="${T.n(x)}" cy="${T.n(y)}" r="5" fill="var(--card)" stroke="${col}" stroke-width="2.5"/>`;
+      if (e.rotulo) rot = rotuloSobre(x1, x2, y - alto / 2 + 2, e.rotulo, op);
+      return `<g class="kit-aparece${clase}">${s}</g>${rot}`;
+    }
     if (e.tipo === 'distancia') {
       s += T.cota(Math.min(xa, xb), Math.max(xa, xb), y, { color: c, grosor: T.GROSOR.contorno, texto: disc ? '' : e.rotulo || '' });
       return `<g class="kit-aparece${clase}">${s}</g>`;

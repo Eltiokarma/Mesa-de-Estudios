@@ -1073,3 +1073,6 @@ body.con-lupa{overflow:hidden}
 .te-momentos.muchos li{flex:1 1 0}
 .te-momentos.muchos li:not(.on){font-size:0}
 .te-momentos.muchos li.on{flex:4 1 auto;overflow:visible}
+/* Velocidad de la animación (16 nov): Lento · Normal · Rápido, junto a la pausa. */
+.te-ritmo{grid-column:1/-1;justify-self:start;margin:4px 0 0 8px;min-height:40px;padding:6px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font:inherit;font-size:15px;font-weight:700;color:var(--muted);cursor:pointer}
+.te-play+.te-ritmo{display:inline-flex}

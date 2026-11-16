@@ -159,7 +159,7 @@
         { estado: { corte: 1 }, texto: 'La altura de P es el seno del ángulo doble.', ecuacion: ['sen ', dos, ' = sen(', th, ' + ', th, ')'] },
         { estado: { corte: 2 }, texto: 'Bajamos de P al rayo θ: OQ = cos θ y QP = sen θ.', ecuacion: ['OQ = ', { llave: ['cos ', th], nota: 'lo que avanza', color: 'c-o' }, '   ·   ', 'QP = ', { llave: ['sen ', th], nota: 'lo que sube', color: 'c-o' }] },
         { estado: { corte: 3 }, texto: 'La altura de Q y la subida de Q a P son iguales.', ecuacion: ['sen ', th, ' cos ', th, ' + cos ', th, ' sen ', th, ' = 2 sen ', th, ' cos ', th] },
-        { estado: { corte: 3 }, texto: 'Con θ = 30°, las dos piezas suman la altura roja.', ecuacion: [`2 · ${f(sen(30))} · ${f(cos(30))} = ${f(sen(60))}`] },
+        { estado: { corte: 3 }, texto: 'Con θ = 30°, las dos piezas suman la altura roja.', ecuacion: [`2 · sen 30° · cos 30° = 2 · ${f(sen(30))} · ${f(cos(30))} = ${f(sen(60))}`] },
         { estado: { corte: 3 }, texto: 'El coseno doble resta las proyecciones al cuadrado.', ecuacion: ['cos ', dos, ' = ', { sup: ['cos', '2'] }, ' ', th, ' − ', { sup: ['sen', '2'] }, ' ', th, ' = 1 − 2', { sup: ['sen', '2'] }, ' ', th] },
       ],
     },

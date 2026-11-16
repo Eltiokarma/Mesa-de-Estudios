@@ -175,7 +175,7 @@
             { tipo: 'regla', texto: 'Solo cuenta la parte de la fuerza que va a lo largo del camino: la fuerza por el coseno del ángulo. Esa parte se multiplica por la distancia.',
               ecuacion: ['W = ', F, ' cos θ · ', d] },
             { tipo: 'cuentas', texto: `El coseno de ${ang}° es ${f(c, 2)}: la parte que acompaña al avance es ${f(Fv * c, 2)} N.`,
-              ecuacion: [`W = ${Fv} · ${c < 0 ? `(${f(c, 2)})` : f(c, 2)} · ${dd} = ${f(W, 2)} J`] },
+              ecuacion: [`W = ${Fv} · cos ${ang}° · ${dd} = ${Fv} · ${c < 0 ? `(${f(c, 2)})` : f(c, 2)} · ${dd} = ${f(W, 2)} J`] },
             { tipo: 'sentido', texto: sentido },
           ],
           respuesta: `W = ${f(W, 2)} J`,

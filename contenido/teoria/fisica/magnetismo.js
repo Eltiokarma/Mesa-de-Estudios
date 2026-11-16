@@ -616,7 +616,7 @@
       pasos: [
         { estado: { paso: 0 }, texto: 'Cable de 0,5 m con 6 A dentro de un campo de 0,2 T.', ecuacion: [I, ' = 6 A', '   ·   ', B, ' = 0,2 T'] },
         { estado: { paso: 1 }, texto: 'Lo que importa es el ángulo entre la corriente y el campo.', ecuacion: ['θ = 30° → sen θ = 0,5'] },
-        { estado: { paso: 2 }, texto: 'La fuerza sale de la pantalla: perpendicular al cable y al campo.', ecuacion: [F, ' = ', I, 'L', B, ` sen θ = 6 · 0,5 · 0,2 · 0,5 = ${f(fCable(6, 30), 2)} N`] },
+        { estado: { paso: 2 }, texto: 'La fuerza sale de la pantalla: perpendicular al cable y al campo.', ecuacion: [F, ' = ', I, 'L', B, ` sen θ = 6 · 0,5 · 0,2 · sen 30° = 6 · 0,5 · 0,2 · 0,5 = ${f(fCable(6, 30), 2)} N`] },
       ],
     },
     regla: {
@@ -641,7 +641,7 @@
             { tipo: 'regla', texto: 'El campo empuja solo la parte del cable que lo cruza: la fuerza va con la corriente, el largo, el campo y el seno del ángulo.',
               ecuacion: [F, ' = ', I, ' L ', B, ' sen θ'] },
             { tipo: 'cuentas', texto: `Multiplico los cuatro factores; el seno de ${f(th)}° vale ${f(sn, 1)}.`, dibujo: { datos: cableEnB(i, th, { L, B: bt }), estado: {} },
-              ecuacion: [F, ` = ${f(i)} · ${f(L, 1)} · ${f(bt, 1)} · ${f(sn, 1)} = ${f(fz, 2)} N`] },
+              ecuacion: [F, ` = ${f(i)} · ${f(L, 1)} · ${f(bt, 1)} · sen ${f(th)}° = ${f(i)} · ${f(L, 1)} · ${f(bt, 1)} · ${f(sn, 1)} = ${f(fz, 2)} N`] },
             { tipo: 'sentido', texto: sentido },
           ],
           respuesta: [F, ` = ${f(fz, 2)} N`],

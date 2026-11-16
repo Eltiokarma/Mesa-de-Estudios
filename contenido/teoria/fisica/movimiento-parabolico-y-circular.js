@@ -177,7 +177,7 @@
         ],
       }, { curva: 1 }),
       pasos: [
-        { estado: { corte: 1 }, texto: 'La velocidad de salida se parte en dos: de lado y hacia arriba.', ecuacion: [vx, ' = 25 · 0,6 = 15 m/s', '   ·   ', { sub: [v, 'y0'] }, ' = 25 · 0,8 = 20 m/s'] },
+        { estado: { corte: 1 }, texto: 'La velocidad de salida se parte en dos: de lado y hacia arriba.', ecuacion: [vx, ' = 25 · cos 53° = 25 · 0,6 = 15 m/s', '   ·   ', { sub: [v, 'y0'] }, ' = 25 · sen 53° = 25 · 0,8 = 20 m/s'] },
         { estado: { corte: 2 }, texto: 'De lado no hay aceleración: avanza 15 m cada segundo.', ecuacion: [x, ' = 15 ', t] },
         { estado: { corte: 3 }, texto: 'Sube en caída libre hasta la altura máxima: vy = 0 a los 2 s.', ecuacion: [{ sub: [y, 'máx'] }, ' = ½ · 20 · 2 = 20 m'] },
         { estado: { corte: 4 }, texto: 'Baja otros 2 s: tiempo de vuelo, 4 s. Avanzó 15 · 4.', ecuacion: ['R = ', vx, ' · ', t, ' = 15 · 4 = 60 m'] },
@@ -217,7 +217,7 @@
           pasos: [
             { tipo: 'pide', texto: piden },
             { tipo: 'datos', texto: [v0, ` = ${f(vi)} m/s a ${ang}°: la parto en dos flechas con el triángulo 3-4-5.`],
-              ecuacion: [vx, ` = ${f(vi)} · ${f(COS[ang], 1)} = ${f(ux, 1)} m/s   ·   `, vy0, ` = ${f(vi)} · ${f(SEN[ang], 1)} = ${f(uy, 1)} m/s`] },
+              ecuacion: [vx, ` = ${f(vi)} · cos ${ang}° = ${f(vi)} · ${f(COS[ang], 1)} = ${f(ux, 1)} m/s   ·   `, vy0, ` = ${f(vi)} · sen ${ang}° = ${f(vi)} · ${f(SEN[ang], 1)} = ${f(uy, 1)} m/s`] },
             { tipo: 'regla', texto: 'Dos movimientos con el mismo reloj: de lado, velocidad constante; hacia arriba, caída libre con g = 10 m/s².',
               ecuacion: [x, ' = ', vx, t, '   ·   ', { sub: [v, 'y'] }, ' = ', vy0, ' − ', g, t] },
             Object.assign({ tipo: 'cuentas', dibujo: { datos: tiro(vi, ang, {}, { xmax, ymax }), estado: {} } }, cuentas),

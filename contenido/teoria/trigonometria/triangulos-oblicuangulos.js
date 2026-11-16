@@ -301,7 +301,7 @@
         voz: 'La altura decide antes que la calculadora.',
         pasos: [
           { estado: { corte: 1 }, texto: 'El ángulo A y el lado b fijan el vértice C.', ecuacion: [A, ' = 30°', '   ·   ', b, ' = 8'] },
-          { estado: { corte: 2 }, texto: 'La distancia de C a la base es la altura.', ecuacion: ['h = ', b, ' sen ', A, ' = 8 · 0,5 = 4'] },
+          { estado: { corte: 2 }, texto: 'La distancia de C a la base es la altura.', ecuacion: ['h = ', b, ' sen ', A, ' = 8 · sen 30° = 8 · 0,5 = 4'] },
           { estado: { corte: 3 }, texto: 'El compás mide 5: más que h y menos que b.', ecuacion: ['4 < ', a, ' = 5 < 8'] },
           { estado: { corte: 4 }, texto: 'La ley de senos da el primer ángulo.', ecuacion: ['sen ', B, ' = ', { frac: ['8 · sen 30°', '5'] }, ` = 0,8  ⇒  `, { sub: [B, '1'] }, ` ≈ ${f(k.B1)}°`] },
           { estado: { corte: 5 }, texto: 'El suplemento tiene el mismo seno y también cabe.', ecuacion: [{ sub: [B, '2'] }, ` = 180° − ${f(k.B1)}° = ${f(k.B2)}°`, '   ·   ', `30° + ${f(k.B2)}° < 180°`] },
@@ -420,7 +420,7 @@
       pasos: [
         { estado: { paso: 1 }, texto: 'Se conocen dos lados y el ángulo entre ellos.', ecuacion: [b, ' = 5', '   ·   ', c, ' = 8', '   ·   ', A, ' = 120°'] },
         { estado: { paso: 2 }, texto: 'La altura desde C cae fuera, detrás de A.', ecuacion: ['h = ', b, ` sen 120° = ${f(5 * sen(120))}`] },
-        { estado: { paso: 2 }, texto: 'De H a B hay c más la sombra de b.', ecuacion: ['HB = ', c, ' − ', b, ' cos ', A, ' = 8 + 2,5 = 10,5'] },
+        { estado: { paso: 2 }, texto: 'De H a B hay c más la sombra de b.', ecuacion: ['HB = ', c, ' − ', b, ' cos ', A, ' = 8 − 5 · cos 120° = 8 + 2,5 = 10,5'] },
         { estado: { paso: 2 }, texto: 'Pitágoras en el triángulo CHB.', ecuacion: [{ sup: [a, '2'] }, ` = ${f(25 * 0.75)} + ${f(110.25)} = 129`] },
         { estado: { paso: 2, final: true }, texto: 'Al desarrollar sale la ley de cosenos.', ecuacion: [{ sup: [a, '2'] }, ' = ', { sup: [b, '2'] }, ' + ', { sup: [c, '2'] }, ' − 2', b, c, ' cos ', A] },
       ],

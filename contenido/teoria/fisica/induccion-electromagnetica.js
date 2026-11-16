@@ -115,7 +115,7 @@
       pasos: [
         { estado: { paso: 0 }, texto: 'Campo de 0,8 T; espira de 0,5 m².', ecuacion: [B, ' = 0,8 T', '   ·   ', 'A = 0,5 m²'] },
         { estado: { paso: 1 }, texto: 'θ se mide entre B y la normal n de la espira.', ecuacion: ['θ = 60°'] },
-        { estado: { paso: 2 }, texto: 'B solo atraviesa la sombra de la espira: A cos θ.', ecuacion: ['A cos θ = 0,5 · 0,5 = 0,25 m²'] },
+        { estado: { paso: 2 }, texto: 'B solo atraviesa la sombra de la espira: A cos θ.', ecuacion: ['A cos θ = 0,5 · cos 60° = 0,5 · 0,5 = 0,25 m²'] },
         { estado: { paso: 2 }, texto: 'El flujo es B por esa sombra.', ecuacion: [Phi, ' = 0,8 · 0,25 = 0,2 Wb'] },
       ],
     },

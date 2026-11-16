@@ -1058,25 +1058,49 @@
       if (autos.length) {
         const pista = autos.map(c => { const A = typeof c.auto === 'object' ? c.auto : {}, rango = c.max - c.min;
           return { c, rango, vel: A.velocidad || rango / 4, modo: A.modo || 'repite', dir: 1, alGirar: !!A.pausaAlGirar }; });
+        // Ritmo (decisión de Gerson, 16 nov: «las simulaciones corren tan rápido que el alumno no capta los cambios»):
+        // cada pasada por el rango dura al menos PASADA s. Si un control va más rápido, se frenan todos por el mismo factor,
+        // para que los que van juntos sigan sincronizados. Al llegar al final se detiene un momento (ESPERA s) para que se
+        // vea cómo terminó. El alumno elige la velocidad (lento, normal, rápido); la elección se recuerda.
+        const PASADA = 12, ESPERA = 1.2;
+        const freno = Math.max(1, ...pista.map(q => q.rango ? PASADA * q.vel / q.rango : 1));
+        for (const q of pista) q.vel /= freno;
+        const RITMOS = [{ k: 0.5, t: 'Lento' }, { k: 1, t: 'Normal' }, { k: 2, t: 'Rápido' }];
+        let ritmo = RITMOS.findIndex(r => r.k === ((ctx.est.prefs || {}).ritmo || 1)); if (ritmo < 0) ritmo = 1;
+        let espera = 0;
         let corriendo = !reducido(), ultimo = 0, raf = 0, visible = true, pintado = 0;
         const el = z.querySelector(`[data-c="${autos[0].id}"]`);
         const btn = document.createElement('button');
         btn.type = 'button'; btn.className = 'te-play';
         el.appendChild(btn);
+        const btnR = document.createElement('button');
+        btnR.type = 'button'; btnR.className = 'te-ritmo';
+        const rotR = () => { btnR.textContent = `Velocidad: ${RITMOS[ritmo].t}`; btnR.setAttribute('aria-label', `Velocidad de la animación: ${RITMOS[ritmo].t}. Toca para cambiarla.`); };
+        btnR.onclick = () => { ritmo = (ritmo + 1) % RITMOS.length; ctx.est.prefs = Object.assign({}, ctx.est.prefs, { ritmo: RITMOS[ritmo].k }); ctx.guardar(); rotR(); };
+        rotR(); el.appendChild(btnR);
         const IC_PAUSA = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="3.5" height="12" rx="1" fill="currentColor"/></svg>';
         const IC_SEGUIR = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z" fill="currentColor"/></svg>';
         const rotulo = () => { btn.innerHTML = corriendo ? `${IC_PAUSA}<span>Pausa</span>` : `${IC_SEGUIR}<span>Seguir</span>`; btn.setAttribute('aria-pressed', String(!corriendo)); if (lec) lec.setAttribute('aria-live', corriendo ? 'off' : 'polite'); };
         const cuadro = now => {
           raf = 0;
           if (!corriendo || !visible || document.hidden) { ultimo = 0; return; }
-          const dt = ultimo ? Math.min(0.1, (now - ultimo) / 1000) : 0; ultimo = now;
+          let dt = ultimo ? Math.min(0.1, (now - ultimo) / 1000) : 0; ultimo = now;
+          if (espera > 0) { espera -= dt; raf = requestAnimationFrame(cuadro); return; }
+          dt *= RITMOS[ritmo].k;
+          let tope = false;
           for (const q of pista) {
             const c = q.c;
             let v = vals[c.id] + q.dir * q.vel * dt;
-            if (q.modo === 'rebota') { if (v > c.max) { v = 2 * c.max - v; q.dir = -1; } if (v < c.min) { v = 2 * c.min - v; q.dir = 1; } }
-            else if (v > c.max) v = c.min + (v - c.max) % (q.rango || 1);
+            if (q.modo === 'rebota') {
+              if (v > c.max) { v = c.max; q.dir = -1; tope = true; }
+              if (v < c.min) { v = c.min; q.dir = 1; tope = true; }
+            } else if (v > c.max) {
+              // Primero se queda en el final (se ve cómo terminó); en la vuelta siguiente vuelve a empezar.
+              if (vals[c.id] < c.max) { v = c.max; tope = true; } else v = c.min;
+            }
             vals[c.id] = Math.round(v * 1e5) / 1e5;
           }
+          if (tope) espera = ESPERA;
           if (now - pintado > 33) { pintado = now; pintarJ(false); }        // ~30 cuadros por segundo: alcanza y ahorra
           raf = requestAnimationFrame(cuadro);
         };
