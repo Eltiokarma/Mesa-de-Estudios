@@ -103,6 +103,14 @@
     titulo: 'Indicios, no pruebas',
     temas: ['Evidencias de una reacción'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): vocabulario (indicio, prueba) sin decir qué es el sólido de «Predice».
+    lee: {
+      tarjetas: [
+        { titulo: 'Cuatro pistas', texto: 'Al mezclar o calentar algo, a veces salen burbujas, aparece un sólido, cambia el color o sube la temperatura. Esas observaciones se llaman indicios: pistas de que algo pudo transformarse.' },
+        { titulo: 'Pista no es prueba', texto: 'La prueba es encontrar una sustancia que antes no estaba, con otras propiedades. Cuando la chicha de jora fermenta, aparece alcohol, que el maíz no tenía.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, cada bolita o grupo de bolitas es una partícula. Compara el dibujo de antes con el de después: ¿son las mismas partículas, solo movidas, o aparece una distinta?' },
+      ],
+    },
     juega: {
       consigna: 'Elige un fenómeno; las partículas se mueven en cámara lenta. Compara antes y después: ¿aparece alguna especie que antes no estaba?',
       voz: 'Lo que ves es una observación; falta explicar qué significa.',
@@ -146,6 +154,35 @@
       condicion: 'un indicio aislado puede venir de un cambio físico: hervir también hace burbujas y disolver también calienta o enfría.',
       voz: 'Observa primero; explica después.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (¿hubo reacción?), con casos propios. Como «Ahora tú», recorre
+    // una tabla de casos; la semilla va corrida en 900 ((s + 900) % largo) y cada «Otro ejemplo» trae el caso siguiente.
+    resuelve: {
+      generar(s) {
+        // [caso, hubo, antes, después, cómo se compara, la comprobación con propiedades]
+        const C = [
+          ['Pones un huevo a hervir: la clara pasa de transparente a blanca', 1, 'proteínas de la clara, disueltas en agua', 'proteínas que cambiaron de forma y ya no se disuelven', 'La clara cocida no vuelve a ser transparente al enfriarse: tiene otras propiedades.'],
+          ['Dejas un charco al sol y se seca', 0, 'agua líquida', 'vapor de agua en el aire', 'Ese vapor, al enfriarse, vuelve a ser agua líquida: es la misma sustancia.'],
+          ['Echas sal de Maras al agua y la sal desaparece', 0, 'sal y agua', 'sal repartida en el agua', 'Si evaporas el agua, la sal vuelve a aparecer: siguen la misma sal y la misma agua.'],
+          ['Echas vinagre sobre bicarbonato y salen burbujas', 1, 'bicarbonato y el ácido del vinagre', 'dióxido de carbono, un gas que antes no estaba, y una sal nueva', 'El bicarbonato se gastó y el gas no vuelve a ser bicarbonato: hay sustancias nuevas.'],
+          ['Un cable de cobre al aire se cubre de una capa verde', 1, 'cobre y gases del aire', 'una capa verde de sales de cobre', 'La capa verde no brilla ni se dobla como el cobre: es otra sustancia.'],
+          ['En invierno, el agua de la orilla del lago Titicaca se congela de madrugada', 0, 'agua líquida', 'hielo, que es agua sólida', 'Con el sol de la mañana, el hielo vuelve a ser agua líquida: es la misma sustancia.'],
+          ['La chicha de jora fermenta y suelta burbujas', 1, 'azúcares del maíz disueltos en agua', 'alcohol y dióxido de carbono, que antes no estaban', 'El alcohol huele distinto y arde; el azúcar no: hay sustancias nuevas.'],
+          ['Mezclas quinua con arroz en una bolsa', 0, 'granos de quinua y de arroz', 'los mismos granos, revueltos', 'Puedes separarlos grano por grano y cada uno sigue igual: nada se transformó.'],
+        ];
+        const [caso, hubo, antes, despues, prueba] = C[(s + 900) % C.length];
+        return {
+          enunciado: `${caso}. ¿Hubo reacción química?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden decidir si hubo reacción química: si después hay alguna sustancia que antes no estaba.' },
+            { tipo: 'datos', texto: `Antes hay ${antes}. Después hay ${despues}.` },
+            { tipo: 'regla', texto: 'Burbujas, sólidos, color o calor son solo pistas. Lo que decide es si aparece una sustancia nueva, con otras propiedades.' },
+            { tipo: 'aplica', texto: hubo ? 'Comparo antes y después: aparecen sustancias que antes no estaban.' : 'Comparo antes y después: son las mismas sustancias, solo cambiaron de estado o de lugar.' },
+            { tipo: 'sentido', texto: prueba },
+          ],
+          respuesta: hubo ? 'Sí hubo reacción: es un cambio químico.' : 'No hubo reacción: es un cambio físico.',
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Decide si hay una sustancia nueva.',
       generar(s) {
@@ -179,6 +216,14 @@
     titulo: 'Juntar, separar, reemplazar',
     temas: ['Clasificación de las reacciones'],
     pieza: 'quim-particulas',
+    // Lee: qué es clasificar y cómo leer las letras del juego; no dice que una reacción lleve dos etiquetas (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Pocos patrones', texto: 'Hay miles de reacciones, pero muchas siguen unos pocos patrones. Clasificarlas es mirar qué les pasa a las sustancias: si se juntan, si se separan o si cambian de pareja.' },
+        { titulo: 'Letras en vez de nombres', texto: 'Para ver el patrón sin distraerse, se usan letras. AB es un compuesto formado por A y B. X, sola, es un elemento suelto, que no está unido a nadie.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, sigue a una sola partícula de la caja de antes a la de después. Fíjate si termina con la misma pareja, con otra o sola.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un tipo de reacción; las partículas vuelan en cámara lenta. Compara antes y después: ¿qué se junta, se separa o cambia de pareja?',
       voz: 'Sigue a una sola partícula de antes a después.',
@@ -220,6 +265,45 @@
       condicion: 'los criterios se solapan: una síntesis o un desplazamiento pueden ser también redox; combustión, ácido-base, exotérmica o endotérmica son otras etiquetas.',
       voz: 'Una reacción puede llevar dos etiquetas.',
     },
+    resuelve: {
+      pieza: 'quim-particulas',
+      generar(s) {
+        // [ecuación, reactivos, productos]; cada sustancia con true si es un elemento suelto. El tipo se deduce de eso.
+        const C = [
+          ['Fe + S → FeS', [['Fe', true], ['S', true]], [['FeS', false]]],
+          ['2 HgO → 2 Hg + O₂', [['HgO', false]], [['Hg', true], ['O₂', true]]],
+          ['Cu + 2 AgNO₃ → Cu(NO₃)₂ + 2 Ag', [['Cu', true], ['AgNO₃', false]], [['Cu(NO₃)₂', false], ['Ag', true]]],
+          ['Pb(NO₃)₂ + 2 KI → PbI₂ + 2 KNO₃', [['Pb(NO₃)₂', false], ['KI', false]], [['PbI₂', false], ['KNO₃', false]]],
+          ['S + O₂ → SO₂', [['S', true], ['O₂', true]], [['SO₂', false]]],
+          ['2 KClO₃ → 2 KCl + 3 O₂', [['KClO₃', false]], [['KCl', false], ['O₂', true]]],
+          ['Fe + 2 HCl → FeCl₂ + H₂', [['Fe', true], ['HCl', false]], [['FeCl₂', false], ['H₂', true]]],
+          ['HCl + NaOH → NaCl + H₂O', [['HCl', false], ['NaOH', false]], [['NaCl', false], ['H₂O', false]]],
+        ];
+        const [ec, re, pr] = C[(s + 900) % C.length];
+        const sueltoR = re.find(x => x[1]), sueltoP = pr.find(x => x[1]);
+        const tipo = re.length === 1 ? 'descomp' : pr.length === 1 ? 'sintesis' : sueltoR && sueltoP ? 'simple' : 'doble';
+        const lista = l => l.map(x => x[0]).join(', ');
+        const sueltos = [...re, ...pr].filter(x => x[1]).map(x => x[0]);
+        const como = {
+          sintesis: `${re.length === 2 ? 'Dos' : 'Varias'} sustancias se juntan y forman una sola, ${pr[0][0]}.`,
+          descomp: `Una sola sustancia, ${re[0][0]}, se separa en ${pr.length === 2 ? 'dos' : 'varias'}.`,
+          simple: `El elemento suelto ${sueltoR ? sueltoR[0] : ''} entra al compuesto y deja suelto a ${sueltoP ? sueltoP[0] : ''}.`,
+          doble: 'No hay elementos sueltos: los dos compuestos intercambian sus partes.',
+        }[tipo];
+        const PATRON = { sintesis: 'A + B → AB', descomp: 'AB → A + B', simple: 'X + AB → XB + A', doble: 'AB + XY → AY + XB' };
+        return {
+          enunciado: `¿Qué tipo de reacción es ${ec}?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el tipo de reacción por su patrón: qué se junta, qué se separa o qué cambia de pareja.' },
+            { tipo: 'datos', texto: `Antes de la flecha: ${lista(re)}. Después: ${lista(pr)}. Elementos sueltos: ${sueltos.length ? sueltos.join(', ') : 'ninguno'}.` },
+            { tipo: 'regla', texto: 'Varias forman una: síntesis. Una da varias: descomposición. Un elemento suelto entra a un compuesto: desplazamiento. Dos compuestos cambian de pareja: doble desplazamiento.' },
+            { tipo: 'aplica', texto: como, dibujo: lupa([{ titulo: 'Antes', forma: 'caja', particulas: TIPOS[tipo].a }, { titulo: 'Después', forma: 'caja', particulas: TIPOS[tipo].d }]) },
+            { tipo: 'sentido', texto: 'Lo comparo con el patrón de letras: encaja.', ecuacion: [PATRON[tipo]] },
+          ],
+          respuesta: `Es ${TIPOS[tipo].t.toLowerCase()}.`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Mira qué se junta, se separa o se cambia.',
       generar(s) {
@@ -252,6 +336,15 @@
     titulo: 'Coeficientes, nunca subíndices',
     temas: ['Balance por tanteo'],
     pieza: 'quim-particulas',
+    // Lee: conservación de átomos y los dos números de una fórmula; no dice qué pasa si se toca un subíndice (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Nada se pierde', texto: 'Lavoisier pesó con cuidado lo que entraba y salía de sus reacciones: la masa total no cambiaba. Los átomos no aparecen ni desaparecen; solo cambian de pareja.' },
+        { titulo: 'Dos números distintos', texto: ['En ', cf(3), ' H₂O hay dos clases de números. El 3 grande de adelante es el coeficiente. El 2 pequeño de abajo es el subíndice. Cada uno cuenta una cosa distinta.'] },
+        { titulo: 'El gas de Camisea', texto: 'El gas natural de Camisea es sobre todo metano, CH₄. Al arder con el oxígeno del aire da dióxido de carbono y agua. Esa es la ecuación que balanceas en el juego.' },
+        { titulo: 'Qué mirar', texto: 'Mira la fila de números bajo cada caja: cuántos átomos de cada elemento hay. Compara un elemento a la vez: carbono, después hidrógeno, al final oxígeno.' },
+      ],
+    },
     juega: {
       consigna: 'Quema de metano. Las moléculas de H₂O suben y bajan solas; cambia tú las de O₂. Busca los mismos átomos a los dos lados.',
       voz: 'Compara elemento por elemento: C, después H, después O.',
@@ -296,6 +389,47 @@
       ecuacion: [cf(4), ' Fe + ', cf(3), ' O₂ → ', cf(2), ' ', { llave: ['Fe₂O₃'], nota: 'fija' }],
       condicion: 'se usan los enteros más pequeños. Una ecuación balanceada no prueba que la reacción ocurra ni muestra sus pasos.',
       voz: 'Inventario igual antes y después; elemento por elemento.',
+    },
+    resuelve: {
+      pieza: 'quim-particulas',
+      generar(s) {
+        // Ecuaciones con especies que la lupa sabe dibujar: [coeficiente, fórmula, átomos, especie de la lupa].
+        const C = [
+          [[[2, 'H₂', { H: 2 }, 'H2'], [1, 'O₂', { O: 2 }, 'O2']], [[2, 'H₂O', { H: 2, O: 1 }, 'H2O']]],
+          [[[1, 'CH₄', { C: 1, H: 4 }, 'CH4'], [2, 'O₂', { O: 2 }, 'O2']], [[1, 'CO₂', { C: 1, O: 2 }, 'CO2'], [2, 'H₂O', { H: 2, O: 1 }, 'H2O']]],
+          [[[4, 'Fe', { Fe: 1 }, 'Fe'], [3, 'O₂', { O: 2 }, 'O2']], [[2, 'Fe₂O₃', { Fe: 2, O: 3 }, 'Fe2O3']]],
+          [[[2, 'H₂O₂', { H: 2, O: 2 }, 'H2O2']], [[2, 'H₂O', { H: 2, O: 1 }, 'H2O'], [1, 'O₂', { O: 2 }, 'O2']]],
+        ];
+        // Cada semilla, un par (ecuación, hueco) distinto: se recorren todos antes de repetir.
+        const pares = C.flatMap(([re, pr]) => [...re, ...pr].map((_, k) => [re, pr, k]));
+        const [re, pr, k] = pares[(s + 900) % pares.length], todos = [...re, ...pr], X = todos[k], ladoX = k < re.length ? re : pr, otroLado = k < re.length ? pr : re;
+        const at = (lado, e, coef) => lado.reduce((t, x, i) => t + (x === X ? coef : x[0]) * (x[2][e] || 0), 0);
+        // El elemento de X que menos sustancias comparten en su lado: con él se despeja directo.
+        const el = Object.keys(X[2]).sort((a, b) => ladoX.filter(x => x[2][a]).length - ladoX.filter(x => x[2][b]).length)[0];
+        const otro = at(otroLado, el), mismo = at(ladoX, el, 0), porX = X[2][el], bien = (otro - mismo) / porX;
+        if (bien !== X[0]) throw new Error(`tanteo: ${X[1]} debería ser ${X[0]} y sale ${bien}`);
+        const NOMBRE = { H: 'hidrógeno', O: 'oxígeno', C: 'carbono', Fe: 'hierro' };
+        const escribir = (lado, hueco) => lado.map(x => (x === X ? (hueco ? '__ ' : bien === 1 ? '' : `${bien} `) : x[0] === 1 ? '' : `${x[0]} `) + x[1]).join(' + ');
+        const ec = hueco => `${escribir(re, hueco)} → ${escribir(pr, hueco)}`;
+        const elementos = [...new Set(todos.flatMap(x => Object.keys(x[2])))];
+        const cuentaLado = lado => cuenta(elementos.map(e => [e, at(lado, e, bien)]));
+        const caja = (lado, conX) => ({ titulo: escribir(lado, !conX), forma: 'caja', particulas: lado.map(x => ({ e: x[3], n: x === X ? (conX ? bien : 0) : x[0] })), cuenta: conX ? cuentaLado(lado) : undefined });
+        const dib = conX => lupa([caja(re, conX), caja(pr, conX)], { alto: 130 });
+        return {
+          enunciado: `¿Qué coeficiente va en el espacio para que la ecuación quede balanceada? ${ec(true)}`,
+          dibujo: dib(false),
+          pasos: [
+            { tipo: 'pide', texto: `Piden el coeficiente de ${X[1]}: cuántas veces va ${X[1]} en la ecuación.` },
+            { tipo: 'datos', texto: `Las fórmulas quedan como están. Elijo el ${NOMBRE[el]}: cada ${X[1]} tiene ${porX} ${porX === 1 ? 'átomo' : 'átomos'} de ${el}.` },
+            { tipo: 'regla', texto: 'Solo cambio los números de adelante, nunca los pequeños de las fórmulas, hasta tener los mismos átomos de cada elemento a los dos lados.' },
+            { tipo: 'cuentas', texto: `Del otro lado hay ${otro} ${otro === 1 ? 'átomo' : 'átomos'} de ${el}.${mismo ? ` En mi lado, sin ${X[1]}, ya hay ${mismo}.` : ''} Cada ${X[1]} trae ${porX}: divido lo que falta entre ${porX}.`,
+              ecuacion: [mismo ? `${el}: (${otro} − ${mismo}) ÷ ${porX} = ` : `${el}: ${otro} ÷ ${porX} = `, cf(bien)], dibujo: dib(true) },
+            { tipo: 'sentido', texto: 'Reviso cada elemento con ese coeficiente: tiene los mismos átomos a los dos lados.',
+              ecuacion: elementos.flatMap((e, i) => [...(i ? ['   ·   '] : []), `${e}: ${at(re, e, bien)} = ${at(pr, e, bien)}`]) },
+          ],
+          respuesta: [cf(bien), ` ${X[1]}${bien === 1 ? ' (el 1 no se escribe)' : ''}: ${ec(false)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Cuenta un elemento a la vez.',
@@ -355,6 +489,14 @@
     titulo: 'Quién se oxida, quién se reduce',
     temas: ['Oxidación, reducción y agentes'],
     pieza: 'recta',
+    // Lee: el estado de oxidación y de dónde viene «oxidarse»; no cruza los nombres de los agentes (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un número por átomo', texto: ['Cada átomo de una fórmula lleva su estado de oxidación, ', w, ': la carga que tendría si todos sus enlaces fueran iónicos. Lo viste en nomenclatura; aquí sirve para seguir a los electrones.'] },
+        { titulo: 'La calamina oxidada', texto: 'Oxidarse viene de oxígeno: el hierro de un techo de calamina gastado se une al oxígeno del aire y se vuelve óxido. Hoy la palabra es más amplia: perder electrones, haya oxígeno o no.' },
+        { titulo: 'Qué mirar', texto: ['En el juego, cada salto en la recta es un elemento que cambia su ', w, '. Mira hacia qué lado salta cada uno y lee quién pierde electrones y quién los gana.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige una reacción. En la recta de estados de oxidación los saltos se dibujan solos: uno a la derecha y otro a la izquierda.',
       voz: 'Sube quien pierde electrones; baja quien los gana.',
@@ -395,6 +537,40 @@
       condicion: 'los electrones perdidos por uno son los ganados por otro. Oxidar no es solo agregar oxígeno: también hay redox sin oxígeno.',
       voz: 'El nombre del agente es lo que le hace al otro.',
     },
+    resuelve: {
+      pieza: 'recta',
+      generar(s) {
+        // [ecuación, reactivo que contiene al que sube, reactivo que contiene al que baja, [elemento, ω antes, ω después, átomos]]
+        const C = [
+          ['Zn + CuSO₄ → ZnSO₄ + Cu', 'Zn', 'CuSO₄', [['Zn', 0, 2, 1], ['Cu', 2, 0, 1]]],
+          ['Fe + 2 HCl → FeCl₂ + H₂', 'Fe', 'HCl', [['Fe', 0, 2, 1], ['H', 1, 0, 2]]],
+          ['2 H₂ + O₂ → 2 H₂O', 'H₂', 'O₂', [['H', 0, 1, 4], ['O', 0, -2, 2]]],
+          ['Cu + 2 AgNO₃ → Cu(NO₃)₂ + 2 Ag', 'Cu', 'AgNO₃', [['Cu', 0, 2, 1], ['Ag', 1, 0, 2]]],
+          ['2 Fe + 3 Cl₂ → 2 FeCl₃', 'Fe', 'Cl₂', [['Fe', 0, 3, 2], ['Cl', 0, -1, 6]]],
+          ['C + O₂ → CO₂', 'C', 'O₂', [['C', 0, 4, 1], ['O', 0, -2, 2]]],
+          ['ZnO + C → Zn + CO', 'C', 'ZnO', [['Zn', 2, 0, 1], ['C', 0, 2, 1]]],
+        ];
+        const [ec, red, ox, sal] = C[(s + 900) % C.length], pideOx = s % 2 === 0;
+        const sube = sal.find(x => x[2] > x[1]), baja = sal.find(x => x[2] < x[1]);
+        const perdidos = sube[3] * (sube[2] - sube[1]), ganados = baja[3] * (baja[1] - baja[2]);
+        if (perdidos !== ganados) throw new Error(`redox: ${ec} pierde ${perdidos} y gana ${ganados}`);
+        const bien = pideOx ? ox : red, quien = pideOx ? baja : sube;
+        return {
+          enunciado: `En ${ec}, ¿cuál es el agente ${pideOx ? 'oxidante' : 'reductor'}?`,
+          dibujo: recta([]),
+          pasos: [
+            { tipo: 'pide', texto: `Piden el agente ${pideOx ? 'oxidante' : 'reductor'}: el reactivo que ${pideOx ? 'le quita electrones al otro' : 'le entrega electrones al otro'}.` },
+            { tipo: 'datos', texto: ['Busco los elementos que cambian su ', w, ' de un lado al otro.'], ecuacion: sal.flatMap(([x, a, b], i) => [...(i ? ['   ·   '] : []), `${x}: ${sg(a)} → ${sg(b)}`]) },
+            { tipo: 'regla', texto: 'Quien sube de estado pierde electrones y se oxida; quien baja los gana y se reduce. El agente se nombra por lo que le hace al otro.' },
+            { tipo: 'cuentas', texto: [`El ${sube[0]} sube y pierde `, el, `; el ${baja[0]} baja y los gana. Cuento cuántos, átomo por átomo.`],
+              ecuacion: [`perdidos: ${sube[3]} ${sube[0]} · ${sube[2] - sube[1]} = ${perdidos} `, el, '   ·   ', `ganados: ${baja[3]} ${baja[0]} · ${baja[1] - baja[2]} = ${ganados} `, el],
+              dibujo: recta(saltos(sal)) },
+            { tipo: 'sentido', texto: `Perdidos y ganados son ${perdidos}: cuadra. El ${quien[0]} ${pideOx ? 'se reduce' : 'se oxida'} y viene del reactivo ${bien}: ese es el agente.` },
+          ],
+          respuesta: `El agente ${pideOx ? 'oxidante' : 'reductor'} es ${bien}.`,
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'recta',
       voz: 'Ubica los dos saltos en la recta.',
@@ -431,6 +607,15 @@
     titulo: 'La carga también se balancea',
     temas: ['Balance redox por ion-electrón'],
     pieza: 'quim-fichas',
+    // Lee: semirreacción, medio ácido y el permanganato; no dice cómo se igualan los electrones al sumar (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos mitades', texto: 'Una redox se puede partir en dos mitades: la oxidación y la reducción. Cada mitad se llama semirreacción y se balancea por separado, antes de juntarlas.' },
+        { titulo: 'Medio ácido', texto: 'Muchas redox pasan en agua con ácido. Ahí hay iones H⁺ y moléculas de H₂O a la mano, y con ellos se cuadran el oxígeno y el hidrógeno.' },
+        { titulo: 'El polvo morado', texto: 'El permanganato de potasio, KMnO₄, es el polvo morado que se ha usado para desinfectar verduras. En medio ácido, su ion MnO₄⁻ pasa a Mn²⁺, casi sin color.' },
+        { titulo: 'Qué mirar', texto: ['Una semirreacción pide los mismos átomos y también la misma carga a los dos lados. En el juego, mira la fila de cuadritos: cada ', el, ' es una carga negativa más.'] },
+      ],
+    },
     juega: {
       consigna: 'Semirreacción del permanganato en medio ácido. Los electrones de la izquierda suben y bajan solos: pausa cuando la carga iguale a la de la derecha.',
       voz: 'Compara las dos cargas, no solo los átomos.',
@@ -473,6 +658,40 @@
       ecuacion: ['MnO₄⁻ + 8 H⁺ + ', { llave: ['5 ', el], nota: 'cierra la carga', color: 'c-i' }, ' → Mn²⁺ + 4 H₂O'],
       condicion: 'así se hace en medio ácido; en medio básico, al final los H⁺ se neutralizan con OH⁻. La suma no lleva electrones.',
       voz: 'Átomos primero; la carga cierra con electrones.',
+    },
+    resuelve: {
+      pieza: 'quim-fichas',
+      generar(s) {
+        // [ion, su carga, cuántos, H⁺, derecha, carga de la derecha, [elemento que se reduce, ω antes, ω después, átomos]]
+        const C = [
+          ['ClO₃⁻', -1, 1, 6, 'Cl⁻ + 3 H₂O', -1, ['Cl', 5, -1, 1]],
+          ['H₂O₂', 0, 1, 2, '2 H₂O', 0, ['O', -1, -2, 2]],
+          ['BrO₃⁻', -1, 2, 12, 'Br₂ + 6 H₂O', 0, ['Br', 5, 0, 2]],
+          ['NO₃⁻', -1, 1, 10, 'NH₄⁺ + 3 H₂O', 1, ['N', 5, -3, 1]],
+          ['SO₄²⁻', -2, 1, 10, 'H₂S + 4 H₂O', 0, ['S', 6, -2, 1]],
+          ['PbO₂', 0, 1, 4, 'Pb²⁺ + 2 H₂O', 2, ['Pb', 4, 2, 1]],
+          ['ClO⁻', -1, 1, 2, 'Cl⁻ + H₂O', -1, ['Cl', 1, -1, 1]],
+        ];
+        const [ion, q, cu, h, de, qd, [x, a, b, ats]] = C[(s + 900) % C.length];
+        const iz = `${cu > 1 ? `${cu} ` : ''}${ion} + ${h} H⁺`, qIon = cu * q, qi = qIon + h, ne = qi - qd;
+        if (ne !== ats * (a - b)) throw new Error(`ion-electrón: ${ion} pide ${ne} y el ω da ${ats * (a - b)}`);
+        const fichasDe = conE => ({ datos: { fichas: [{ t: ion, carga: q, n: cu, color: 'd' }, { t: `${h} H⁺`, carga: h, color: 'h' }, ...(conE ? [{ t: `${ne} e⁻`, carga: -ne, color: 'i' }] : [])], neta: 'carga a la izquierda' }, estado: {} });
+        const par = v => (v ? `(${sg(v)})` : sg(v));
+        return {
+          enunciado: ['¿Cuántos electrones van a la izquierda? ', `${iz} + n `, el, ` → ${de}`],
+          dibujo: fichasDe(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden n: cuántos ', el, ' hay que sumar a la izquierda para que la carga cuadre.'] },
+            { tipo: 'datos', texto: 'Los átomos ya están balanceados. Sumo las cargas de cada lado.',
+              ecuacion: [`izquierda: ${cu > 1 ? `${cu} · ${par(q)}` : par(q)} + ${h} = ${sg(qi)}`, '   ·   ', `derecha: ${sg(qd)}`] },
+            { tipo: 'regla', texto: 'Con los átomos ya cuadrados, los electrones cierran la carga: cada uno baja en 1 la carga de la izquierda hasta igualar la derecha.' },
+            { tipo: 'cuentas', texto: ['Hacen falta tantos ', el, ' como la diferencia entre las dos cargas.'], ecuacion: [`n = ${sg(qi)} − ${par(qd)} = ${ne}`], dibujo: fichasDe(true) },
+            { tipo: 'sentido', texto: [`Lo compruebo con `, w, `: el ${x} baja de ${sg(a)} a ${sg(b)}${ats > 1 ? `, y son ${ats} átomos` : ''}. Gana ${ne} electrones: coincide.`],
+              ecuacion: [ats > 1 ? `${ats} · (${sg(a)} − ${par(b)}) = ${ne}` : `${sg(a)} − ${par(b)} = ${ne}`] },
+          ],
+          respuesta: [`n = ${ne}: `, `${iz} + ${ne} `, el, ` → ${de}`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'quim-fichas',
@@ -572,6 +791,16 @@
         formas: ['endotérmica', 'endotérmicas', 'endotérmico', 'endotérmicos'], ejemplo: 'Descomponer la caliza en el horno pide calor todo el tiempo.', ver: ['exotérmica'] },
       { termino: 'síntesis', def: 'Reacción en que dos o más sustancias se unen y forman una sola.',
         ejemplo: '2 H₂ + O₂ → 2 H₂O.', ver: ['reacción química'] },
+      { termino: 'descomposición', def: 'Reacción en que una sola sustancia se separa en dos o más sustancias.',
+        ejemplo: '2 H₂O₂ → 2 H₂O + O₂.', ver: ['síntesis'] },
+      { termino: 'desplazamiento', def: 'Reacción en que un elemento suelto toma el lugar de otro dentro de un compuesto.',
+        formas: ['desplazamiento simple', 'desplazamiento'], ejemplo: 'Fe + 2 HCl → FeCl₂ + H₂: el hierro deja suelto al hidrógeno.', ver: ['doble desplazamiento'] },
+      { termino: 'doble desplazamiento', def: 'Reacción en que dos compuestos intercambian sus partes y forman otros dos.',
+        ejemplo: 'AgNO₃ + KCl → AgCl + KNO₃.', ver: ['desplazamiento'] },
+      { termino: 'indicio', def: 'Observación que sugiere una reacción, como burbujas o un sólido nuevo, pero que no la prueba.',
+        formas: ['indicio', 'indicios'], ver: ['reacción química'] },
+      { termino: 'medio ácido', def: 'Agua con muchos iones H⁺. Ahí las semirreacciones se balancean con H⁺ y con moléculas de agua.',
+        ver: ['semirreacción'] },
     ],
     // Laboratorio (docs/teoria.md §4b), sin preguntas. La primera mesa suelta los cuatro coeficientes (más controles y el
     // caso de los múltiplos); la segunda trae cinco semirreacciones, hasta 12 electrones, con la fila estirable.
