@@ -285,7 +285,7 @@
     // Atajos siempre a la vista (antes quedaban escondidos al final de la tira de ideas): ficha, glosario y laboratorio.
     const atajo = (k, txt, ic, on) => `<a class="te-atajo te-atajo-${k}${on ? ' on' : ''}" href="#/unidad/${esc(u.id)}/teoria/${k}"${on ? ' aria-current="page"' : ''}><span class="te-atajo-ic" aria-hidden="true">${ic}</span><span>${txt}</span></a>`;
     const cab = ctx.muestra ? ctx.cab() : `${ctx.cab('Teoría')}
-      <nav class="te-atajos" aria-label="Para hojear y jugar">${atajo('ficha', 'Reglas', '≡', ficha)}${aqui.length ? atajo('glosario', 'Glosario', 'Aa', glosa) : ''}${atajo('laboratorio', 'Laboratorio', '⚗', lab)}</nav>
+      <nav class="te-atajos" aria-label="Para hojear y jugar">${atajo('ficha', 'Resumen', '≡', ficha)}${aqui.length ? atajo('glosario', 'Glosario', 'Aa', glosa) : ''}${atajo('laboratorio', 'Laboratorio', '⚗', lab)}</nav>
       <nav class="te-ideas" aria-label="Ideas de esta unidad">${ideas.map(chip).join('')}</nav>
       <p class="sub te-avance">${n} de ${ideas.length} ideas terminadas${sabidas.size ? ` · en la prueba de entrada acertaste ${sabidas.size}` : ''}</p>`;
 
@@ -738,13 +738,22 @@
       pintarR();
     }
 
-    // Ficha de repaso: todas las reglas a la vista, para hojear cuando se quiera (decisión de Gerson, 15 nov: leer no
-    // depende de jugar). Las ideas que aún no se jugaron lo dicen y llevan a la idea.
+    // Resumen de la unidad (antes «Reglas»; Gerson, 16 nov: parecía otra sección de teoría): todas las reglas a la vista,
+    // para repasar cuando se quiera (decisión del 15 nov: leer no depende de jugar). Cada regla va con la figura del juego
+    // de su idea, la que el alumno ya conoce (antes era la de «Mira», que sola no se entendía). Las ideas que aún no se
+    // jugaron lo dicen y llevan a la idea.
+    function figuraResumen(i) {
+      try {
+        const j = i.juega, d = j && typeof j.dibujo === 'function' ? j.dibujo(T.inicio(j)) : null, P = d && Kit.piezas[j.pieza || i.pieza];
+        if (P && !P.montar) return P.dibujar(d.datos, d.estado || {});
+      } catch { /* si el juego no se puede dibujar quieto, va la figura de «Mira» */ }
+      return Kit.piezas[i.mira.pieza || i.pieza].dibujar(i.mira.datos, Object.assign({}, i.mira.base || {}, i.mira.pasos[i.mira.pasos.length - 1].estado || {}));
+    }
     function vistaFicha() {
-      return `<p class="sub te-fichas-intro">Las reglas de las ${ideas.length} ideas, para leer cuando quieras. Para entender por qué valen, juega cada idea.</p>
+      return `<h2 class="te-fichas-tit">Resumen de la unidad</h2><p class="sub te-fichas-intro">Las reglas de las ${ideas.length} ideas, para repasar. Para entender por qué valen, juega cada idea.</p>
         <section class="te-fichas">${ideas.map((i, k) => `<article class="card te-fic${hecha(st, i.id) ? ' hecha' : ''}">
             <div class="te-fic-cab"><span class="te-fic-n" aria-hidden="true">${hecha(st, i.id) ? '✓' : k + 1}</span><h2>${esc(i.titulo)}</h2></div>
-            <div class="te-figcaja"><figure class="kit-figura te-fig te-fig-chica">${Kit.piezas[i.mira.pieza || i.pieza].dibujar(i.mira.datos, Object.assign({}, i.mira.base || {}, i.mira.pasos[i.mira.pasos.length - 1].estado || {}))}</figure>
+            <div class="te-figcaja"><figure class="kit-figura te-fig te-fig-chica">${figuraResumen(i)}</figure>
             <div class="te-figbarra"><button type="button" class="te-zoom" aria-label="Ampliar la figura de ${esc(i.titulo)}">${ICONO_LUPA}</button></div></div>
             ${reglaHTML(i.regla)}
             ${hecha(st, i.id) ? '' : `<a class="btn borde te-fic-ir" href="#/unidad/${esc(u.id)}/teoria/${esc(i.id)}">Jugar esta idea ›</a>`}</article>`).join('')}</section>`;

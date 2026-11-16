@@ -154,7 +154,7 @@ Se construyó sobre la rama de teoría `claude/awesome-einstein-ch5g9a`, que ya 
   - las pruebas del curso bajan al final;
   - la puerta Teoría es la principal.
 - **Teoría:**
-  - fila fija con Reglas, Glosario y Laboratorio;
+  - fila fija con Resumen (antes «Reglas»; 16 nov), Glosario y Laboratorio;
   - la ficha de reglas, abierta;
   - la consigna, arriba de la figura (la figura fija la tapaba);
   - botones «Siguiente: …».

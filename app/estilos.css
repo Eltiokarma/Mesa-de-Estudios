@@ -988,6 +988,7 @@ body.con-lupa{overflow:hidden}
 .te-atajo.on{border-color:currentColor}
 .te-atajo-ficha.on{color:var(--c-i)}.te-atajo-glosario.on{color:var(--c-d)}.te-atajo-laboratorio.on{color:var(--c-o)}
 /* Ficha de repaso abierta: cada regla en su tarjeta, numerada. */
+.te-fichas-tit{margin:4px 0 2px;font-size:20px}
 .te-fichas-intro{margin:0 0 10px}
 .te-fic-cab{display:flex;align-items:center;gap:10px}
 .te-fic-cab h2{margin:0;font-size:19px}
