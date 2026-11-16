@@ -125,6 +125,15 @@
     titulo: 'Una desigualdad, medio plano',
     temas: ['Inecuaciones con dos variables'],
     pieza: 'ejes',
+    // Lee (fase 2): contexto y vocabulario. No dice qué lado cumple ni cómo influye el signo de b (eso es «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un límite de gasto', texto: 'En un mercado de Juliaca, el pan cuesta 1 sol y el queque, 2 soles. Si tienes 20 soles, compras x panes e y queques con una condición. No hay una sola compra posible: hay muchas.',
+          ecuacion: [X, ' + 2', Y, ' ≤ 20'] },
+        { titulo: 'El borde', texto: 'La igualdad x + 2y = 20 es una recta. Esa recta parte el plano en dos mitades, y cada mitad se llama semiplano. La recta es el borde entre las compras que alcanzan y las que no.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Cambia a, b, c y el signo. Mira qué zona se pinta de verde y fíjate en el punto (0; 0): a veces queda dentro de esa zona y a veces queda fuera.' },
+      ],
+    },
     juega: {
       consigna: 'Arma ax + by con su signo y su número c. La zona verde cumple la desigualdad. El punto (0; 0) dice si cumple o no.',
       voz: 'Prueba b negativo con el signo ≥.',
@@ -179,6 +188,40 @@
       ecuacion: [{ llave: ['a', X, ' + b', Y, ' ≤ c'], nota: 'medio plano', color: 'c-d' }, '   ·   ', { llave: ['a', X, ' + b', Y, ' = c'], nota: 'su borde', color: 'c-d' }],
       condicion: 'con ≤ o ≥ el borde entra (línea continua); con < o > no entra (línea discontinua).',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (qué punto cumple), con azar(s + 900) y las mismas cuentas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        let a, b, c, signo, si, no, cumple;
+        do {
+          a = r.ent(-3, 3); b = r.ent(-3, 3); c = r.ent(-4, 6); signo = r.uno(['≤', '≥']);
+          cumple = ([x, y]) => (signo === '≤' ? a * x + b * y <= c : a * x + b * y >= c);
+          const cand = [];
+          for (let k = 0; k < 60 && cand.length < 12; k++) { const q = [r.ent(-3, 4), r.ent(-3, 4)]; if (!cand.some(w => w[0] === q[0] && w[1] === q[1])) cand.push(q); }
+          si = cand.filter(cumple); no = cand.filter(q => !cumple(q));
+        } while (!a || !b || !si.length || no.length < 3);
+        const R = [a, b, c], valor = ([x, y]) => a * x + b * y;
+        const expr = textoDesig(R, '≤').split(' ≤ ')[0];
+        const LET = ['A', 'B', 'C', 'D'], lista = r.mezclar([si[0], ...no.slice(0, 3)]), L = LET[lista.indexOf(si[0])];
+        const marcas = ok => lista.map((p, i) => ({ x: p[0], y: p[1], color: ok ? (cumple(p) ? 'd' : 'h') : undefined, abierto: ok && !cumple(p), rotulo: LET[i] }));
+        const borde = tramo(R, V1);
+        const antes = Object.assign(EJ(-6, 6, -4, 4), { curvas: borde ? [{ puntos: borde, color: 'd' }] : [], puntos: marcas(false), alt: `El borde ${expr} = ${f(c)} y cuatro puntos por probar` });
+        const despues = Object.assign(semi(R, signo), { puntos: marcas(true), alt: `Semiplano ${textoDesig(R, signo)}: solo el punto ${L} queda en la zona verde` });
+        return {
+          enunciado: ['¿Cuál de estos puntos cumple ', ...desig(R, signo), '? ', lista.map((p, i) => `${LET[i]}${pt(p)}`).join(', ')],
+          dibujo: { datos: antes, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el único punto que cumple la desigualdad, es decir, el que cae en el semiplano correcto.' },
+            { tipo: 'datos', texto: ['La desigualdad y cuatro puntos. Cada punto trae su valor de ', X, ' y su valor de ', Y, '.'], ecuacion: desig(R, signo) },
+            { tipo: 'regla', texto: 'Un punto cumple si, al reemplazar sus coordenadas, la desigualdad queda verdadera. El borde separa los puntos que cumplen de los que no.' },
+            { tipo: 'cuentas', texto: `Se reemplaza cada punto en ${expr} y se compara el resultado con ${f(c)}.`,
+              ecuacion: [lista.map((p, i) => `${LET[i]}: ${f(valor(p))} ${signo} ${f(c)} ${cumple(p) ? '✓' : '✗'}`).join('   ·   ')], dibujo: { datos: despues, estado: {} } },
+            { tipo: 'sentido', texto: `En la figura, solo ${L} queda en la zona verde; los otros tres puntos están del otro lado del borde.` },
+          ],
+          respuesta: `El punto ${L}${pt(si[0])}`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -226,6 +269,14 @@
     titulo: 'Lo que cumple todo junto',
     temas: ['Sistemas de inecuaciones', 'Región factible'],
     pieza: 'ejes',
+    // Lee: vocabulario (restricción, región factible, vértice). No dice qué pasa si dos restricciones chocan («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Varias condiciones', texto: 'Un taller de Puno teje x chompas e y chalinas por semana. No puede tejer cantidades negativas, la lana alcanza para un número de prendas y las horas también. Cada condición es una restricción.' },
+        { titulo: 'Todas a la vez', texto: 'Cada restricción pinta su propio semiplano. Un plan sirve solo si cumple todas juntas. Los puntos que están en todos los semiplanos a la vez forman la región factible.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Activa y apaga las restricciones. Donde se cruzan dos bordes, la región hace una esquina, llamada vértice. Cuenta cuántos vértices quedan cada vez.' },
+      ],
+    },
     juega: {
       consigna: 'Siempre x ≥ 0 e y ≥ 0. Activa o apaga las otras restricciones y mira cómo se recorta la región verde.',
       voz: 'Cuenta los vértices cada vez.',
@@ -271,6 +322,37 @@
       // Sin llave: con la nota, la intersección se partía en dos líneas a 360 px; el texto ya nombra cada S como semiplano.
       ecuacion: ['factible = ', { sub: ['S', '1'] }, ' ∩ ', { sub: ['S', '2'] }, ' ∩ … ∩ ', { sub: ['S', 'n'] }],
       condicion: 'se incluyen las restricciones del contexto, como x ≥ 0 e y ≥ 0 cuando no hay cantidades negativas.',
+    },
+    // Así se resuelve: la rama «¿cuántos vértices?» de «Ahora tú», con la misma región (region, dibRegion) y azar(s + 900).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        for (let k = 0; k < 300; k++) {
+          const p = r.ent(1, 3), q = r.ent(1, 3), c1 = r.ent(6, 12), m = r.ent(2, 6);
+          const lista = [[p, q, c1], s % 2 ? [1, 0, m] : [0, 1, Math.min(m, 5)]];
+          const poli = region([...BASE, ...lista], caja(...Q1));
+          if (poli.length < 3 || poli.some(v => v[0] >= Q1[2] - 1e-9 || v[1] >= Q1[3] - 1e-9)) continue;
+          const nombre = lista.map(x => textoDesig(x, '≤')).join(', '), nv = poli.length;
+          // Para comprobar: un vértice que no es el origen y los bordes sobre los que queda justo.
+          const ent = w => Number.isInteger(w[0]) && Number.isInteger(w[1]), noCero = poli.filter(w => w[0] || w[1]);
+          const v = noCero.find(ent) || noCero[0] || poli[0];
+          const sobre = [...BASE, ...lista].filter(([a, b, c]) => Math.abs(a * v[0] + b * v[1] - c) < 1e-6).map(txtR).map(t => t.replace(/ [≤≥] /, ' = '));
+          return {
+            enunciado: [`Con x ≥ 0, y ≥ 0, ${nombre}: ¿cuántos vértices tiene la región factible?`],
+            dibujo: { datos: dibRegion(lista), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden cuántos vértices tiene la región factible, es decir, cuántas esquinas forma su contorno.' },
+              { tipo: 'datos', texto: `Hay ${lista.length + 2} restricciones: las dos de los ejes y otras ${lista.length}.`, ecuacion: [lista.map(x => textoDesig(x, '≤')).join('   ·   ')] },
+              { tipo: 'regla', texto: 'La región es lo que cumple todas las restricciones a la vez. Cada vértice es el cruce de dos bordes que de verdad la limitan.' },
+              { tipo: 'cuentas', texto: 'Se dibuja cada borde, se sombrea lo que cumple todo y se resuelven los cruces que tocan la región.',
+                ecuacion: [poli.map(pt).join('   ')], dibujo: { datos: dibRegion(lista, { conVertices: true, rotulos: true }), estado: {} } },
+              { tipo: 'sentido', texto: `Comprueba ${pt(v)}: cumple todas las restricciones y queda justo sobre ${sobre.length > 2 ? 'tres' : 'dos'} bordes: ${sobre.join('; ')}.` },
+            ],
+            respuesta: `La región tiene ${nv} vértices.`,
+          };
+        }
+        throw new Error('sin región');
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -337,6 +419,15 @@
     titulo: 'La recta de nivel se despide',
     temas: ['Función objetivo', 'Método gráfico de optimización'],
     pieza: 'ejes',
+    // Lee: función objetivo y recta de nivel. No dice dónde queda el máximo (en un vértice): eso lo predice el alumno.
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que se quiere mejorar', texto: 'El taller de Puno gana 3 soles por chompa y 2 por chalina. Su ganancia es Z = 3x + 2y. La expresión que se quiere hacer máxima o mínima se llama función objetivo.',
+          ecuacion: [Z, ' = 3', X, ' + 2', Y] },
+        { titulo: 'Misma ganancia, una recta', texto: 'Todos los planes que ganan lo mismo, por ejemplo 6 soles, están sobre una recta: 3x + 2y = 6. Es una recta de nivel. Si cambias el 6 por otro número, la recta se corre.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Desliza la recta roja con k cada vez mayor. Observa qué puntos de la región verde va tocando y en qué momento deja de tocarla.' },
+      ],
+    },
     juega: {
       consigna: 'Región: x + y ≤ 4 y x ≤ 2. La recta roja junta los puntos con 3x + 2y = k. Deslízala: ¿cuándo deja de tocar la región?',
       voz: 'Las rectas de nivel no giran: solo se corren.',
@@ -383,6 +474,42 @@
       texto: 'Las rectas Z = k de la función objetivo son paralelas. En una región cerrada, acotada y no vacía, el máximo y el mínimo de Z están en vértices: basta evaluarlos.',
       ecuacion: [{ llave: [{ sub: [Z, 'máx'] }], nota: 'el mejor valor', color: 'c-h' }, ' = el mayor ', Z, ' de los vértices'],
       condicion: 'si la recta de nivel es paralela a un lado, todo ese lado puede ser óptimo, no solo un vértice.',
+    },
+    // Así se resuelve: el mismo problema de «Ahora tú» (máximo o mínimo de Z en los vértices), con azar(s + 900).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        for (let k = 0; k < 300; k++) {
+          const maxi = s % 3 !== 2;
+          const lista = [[r.ent(1, 3), r.ent(1, 3), r.ent(6, 12)], [1, 0, r.ent(2, 5)], ...(maxi ? [] : [[-1, -1, -r.ent(1, 2)]])];
+          const poli = region([...BASE, ...lista], caja(...Q1));
+          if (poli.length < 4 || poli.some(v => v[0] >= Q1[2] - 1e-9 || v[1] >= Q1[3] - 1e-9 || Math.abs(v[0] - Math.round(v[0])) > 1e-9 || Math.abs(v[1] - Math.round(v[1])) > 1e-9)) continue;
+          const p = r.ent(1, 5), q = r.ent(1, 5);
+          const zs = poli.map(Zf(p, q)), best = maxi ? Math.max(...zs) : Math.min(...zs);
+          if (zs.filter(z => z === best).length > 1) continue;
+          const vb = poli[zs.indexOf(best)], nombre = lista.map(txtR).join(', ');
+          // El vértice que le sigue: el segundo mejor valor de Z.
+          const resto = zs.filter(z => z !== best), segundo = maxi ? Math.max(...resto) : Math.min(...resto), v2 = poli[zs.indexOf(segundo)];
+          const zTxt = [Z, ` = ${p === 1 ? '' : p}`, X, ` + ${q === 1 ? '' : q}`, Y];
+          const region0 = { areas: [{ puntos: poli, color: 'd', cerrada: true }], puntos: poli.map(v => ({ x: v[0], y: v[1], color: 'd' })) };
+          const palabra = maxi ? 'máximo' : 'mínimo';
+          return {
+            enunciado: [`Con x ≥ 0, y ≥ 0, ${nombre}: ¿cuál es el valor ${palabra} de `, ...zTxt, '?'],
+            dibujo: { datos: Object.assign(ejQ1(), region0, { alt: `Región con vértices ${poli.map(pt).join(', ')}` }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: `Piden el valor ${palabra} de Z entre todos los puntos que cumplen las restricciones.` },
+              { tipo: 'datos', texto: ['La región verde, que es cerrada, y la función objetivo.'], ecuacion: zTxt },
+              { tipo: 'regla', texto: `Las rectas de nivel de Z son paralelas. La ${maxi ? 'última' : 'primera'} que toca una región cerrada pasa por un vértice, así que basta evaluar Z en los vértices.` },
+              { tipo: 'cuentas', texto: `Se hallan los vértices cruzando bordes y se evalúa Z en cada uno. El ${maxi ? 'mayor' : 'menor'} sale en ${pt(vb)}.`,
+                ecuacion: [poli.map(v => `${pt(v)} → ${f(Zf(p, q)(v))}`).join('   ')],
+                dibujo: { datos: Object.assign(ejQ1(), region0, { curvas: [{ puntos: tramo([p, q, best], Q1), color: 'h', rotulo: `Z = ${f(best)}` }].filter(c => c.puntos), alt: `Región con vértices ${poli.map(pt).join(', ')}; óptimo en ${pt(vb)}` }), estado: {} } },
+              { tipo: 'sentido', texto: `Comprueba el orden: el vértice que le sigue, ${pt(v2)}, da Z = ${f(segundo)}, que es ${maxi ? 'menor' : 'mayor'} que ${f(best)}.` },
+            ],
+            respuesta: [`El ${palabra} es `, Z, ` = ${f(best)}, en ${pt(vb)}.`],
+          };
+        }
+        throw new Error('sin caso');
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -452,6 +579,14 @@
     titulo: 'Lado entero, sin tope o vacío',
     temas: ['Método gráfico de optimización'],
     pieza: 'ejes',
+    // Lee: empates y regiones cerradas o abiertas. No dice qué pasa con el máximo en una región abierta («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos planes empatan', texto: 'En la feria, si el kilo de papa y el de oca se pagan igual, vender 2 de papa y 1 de oca rinde lo mismo que vender 1 y 2. Dos planes distintos pueden dar el mismo Z.' },
+        { titulo: 'Cerrada o abierta', texto: 'Una región es cerrada si sus bordes la rodean por todos lados, como un terreno con cerco. Es abierta si sigue sin fin hacia algún lado, como un campo sin cerco.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Prueba los tres casos. En cada uno, compara la inclinación de la recta roja con la de los lados de la región verde, y fíjate si la región tiene techo.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un caso y busca el máximo de Z. Mira si queda un vértice, un lado entero, o ningún tope.',
       voz: 'Compara la inclinación de Z con la de los lados.',
@@ -495,6 +630,61 @@
       ecuacion: [{ sub: [Z, 'máx'] }, ' en un vértice, en un lado, o no existe'],
       condicion: 'con variables enteras se revisan los puntos enteros de la región; redondear el óptimo continuo puede salirse.',
     },
+    // Así se resuelve: el mismo problema de «Ahora tú» (dónde está el máximo, cuatro casos según s % 4), con azar(s + 900).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 4;
+        const RESP = { vertice: 'En un solo vértice', lado: 'En todo un lado', sinTope: 'No tiene máximo: crece sin tope', vacia: 'No hay solución: la región es vacía' };
+        let lista, p, q, bien;
+        if (tipo === 0) { const c = r.ent(3, 5); lista = [[1, 1, c], [1, 0, c - 1]]; const k = r.uno([1, 2, 3]); p = k; q = k; bien = 'lado'; }
+        else if (tipo === 1) { const c = r.ent(4, 5); lista = [[1, 1, c], [1, 0, r.ent(2, c - 1)]]; p = r.ent(2, 4); q = 1; bien = 'vertice'; }
+        else if (tipo === 2) { const c = r.ent(2, 5); lista = [[-1, -1, -c]]; p = r.ent(1, 3); q = r.ent(1, 3); bien = 'sinTope'; }
+        else { const c = r.ent(3, 5); lista = [[1, 1, c], [-1, -1, -(c + r.ent(1, 3))]]; p = r.ent(1, 3); q = r.ent(1, 3); bien = 'vacia'; }
+        const poli = region([...BASE, ...lista], caja(...Q1));
+        const abierta = poli.length > 2 && poli.some(v => v[0] >= Q1[2] - 1e-9 || v[1] >= Q1[3] - 1e-9);
+        const zs = poli.map(Zf(p, q)), max = zs.length ? Math.max(...zs) : null;
+        const calc = poli.length < 3 ? 'vacia' : abierta ? 'sinTope' : zs.filter(z => z === max).length > 1 ? 'lado' : 'vertice';
+        if (calc !== bien) throw new Error(`caso mal armado: ${calc} ≠ ${bien}`);
+        const texto = lista.map(txtR).join(', ');
+        const zTxt = [Z, ` = ${p === 1 ? '' : p}`, X, ` + ${q === 1 ? '' : q}`, Y];
+        const evalua = poli.map(v => `${pt(v)} → ${f(Zf(p, q)(v))}`).join('   ');
+        const top = poli.filter((_, i) => zs[i] === max);
+        const c0 = -lista[0][2];                                   // en «sin tope», x + y ≥ c0
+        const lejos = [10, 100].map(x => [x, 0]);
+        let cuentas, sentido, dib;
+        if (bien === 'vacia') {
+          const [c1, c2] = [lista[0][2], -lista[1][2]];
+          cuentas = { texto: `La primera pide x + y como mucho ${f(c1)}; la segunda, al menos ${f(c2)}. Ningún punto cumple las dos.`, ecuacion: [`${f(c2)} ≤ x + y ≤ ${f(c1)}  ✗`] };
+          sentido = `Comprueba con un punto del borde x + y = ${f(c1)}: cumple la primera, pero no la segunda: ${f(c1)} es menor que ${f(c2)}.`;
+          dib = dibRegion(lista);
+        } else if (bien === 'sinTope') {
+          cuentas = { texto: 'La región no tiene borde arriba ni a la derecha. Se evalúa Z en puntos cada vez más lejos.', ecuacion: [lejos.map(w => `${pt(w)} → ${f(Zf(p, q)(w))}`).join('   ')] };
+          sentido = `Comprueba: (10; 0) y (100; 0) cumplen x + y ≥ ${f(c0)}, y Z sigue subiendo sin límite.`;
+          dib = Object.assign(dibRegion(lista), { curvas: [4, 7, 10].map(k => nivel(p, q, k * Math.max(p, q), { discontinua: true })).filter(c => c.puntos) });
+        } else if (bien === 'lado') {
+          cuentas = { texto: `Se evalúa Z en cada vértice. Dos empatan en el mayor valor, ${f(max)}.`, ecuacion: [evalua] };
+          sentido = `Z = ${p === 1 ? '' : p}(x + y) tiene la inclinación del lado x + y = ${f(lista[0][2])}: todo el lado de ${pt(top[0])} a ${pt(top[1])} vale ${f(max)}.`;
+          dib = Object.assign(dibRegion(lista), { curvas: [nivel(p, q, max), { puntos: top, color: 'd' }].filter(c => c.puntos), puntos: top.map(v => ({ x: v[0], y: v[1], color: 'h' })) });
+        } else {
+          const resto = zs.filter(z => z !== max), seg = Math.max(...resto), v2 = poli[zs.indexOf(seg)];
+          cuentas = { texto: `Se evalúa Z en cada vértice. Solo ${pt(top[0])} da el mayor valor, ${f(max)}.`, ecuacion: [evalua] };
+          sentido = `Comprueba: el vértice que le sigue, ${pt(v2)}, da ${f(seg)}, menos que ${f(max)}. No hay empate.`;
+          dib = Object.assign(dibRegion(lista), { curvas: [nivel(p, q, max)].filter(c => c.puntos), puntos: top.map(v => ({ x: v[0], y: v[1], color: 'h', rotulo: pt(v) })) });
+        }
+        return {
+          enunciado: [`Con x ≥ 0, y ≥ 0, ${texto}: ¿dónde está el máximo de `, ...zTxt, '?'],
+          dibujo: { datos: dibRegion(lista), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden dónde está el máximo de Z: en un vértice, en todo un lado, en ninguna parte o si no hay región.' },
+            { tipo: 'datos', texto: `Hay ${lista.length + 2} restricciones: x ≥ 0; y ≥ 0; ${lista.map(txtR).join('; ')}. Y la función objetivo:`, ecuacion: zTxt },
+            { tipo: 'regla', texto: 'Primero se mira la región: vacía, abierta o cerrada. Si es cerrada, se evalúa Z en los vértices; si dos empatan arriba, gana todo el lado.' },
+            Object.assign({ tipo: 'cuentas', dibujo: { datos: dib, estado: {} } }, cuentas),
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: RESP[bien],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), tipo = s % 4;
@@ -531,7 +721,7 @@
   const PL_L = region([...BASE, ...LISTA_L], caja(...Q1));
   const nivelLibre = {
     id: 'nivel-libre', titulo: 'Z que gira y se desliza', pieza: 'ejes',
-    consigna: 'Arrastra la punta de la flecha para cambiar Z = px + qy, y desliza la recta roja. ¿Cuál es el último punto que toca?',
+    consigna: 'Arrastra el punto rojo hueco (p; q) para cambiar Z = px + qy, y desliza la recta roja. ¿Cuál es el último punto que toca?',
     controles: [
       { id: 'p', etiqueta: 'p', color: 'c-o', min: 0, max: 4, paso: 1, inicio: 3, decimales: 0 },
       { id: 'q', etiqueta: 'q', color: 'c-i', min: 0, max: 4, paso: 1, inicio: 2, decimales: 0 },
@@ -556,7 +746,7 @@
       return [Z, ` = ${v.k}: ${v.k <= max ? 'toca' : 'no toca'} · máx ${f(max)} ${top.length > 1 ? 'en un lado' : `en ${pt(top[0])}`}`];
     },
     arrastres: [
-      { id: 'flecha', etiqueta: 'punta de la flecha (p; q): gira Z', color: 'c-h',
+      { id: 'flecha', etiqueta: 'punto rojo hueco (p; q): gira Z', color: 'c-h',
         donde: v => { const g = EJES().geometria(ejQ1()); return { x: g.X(v.p), y: g.Y(v.q) }; },
         mover: pt => { const g = EJES().geometria(ejQ1()); return { p: inversa(g.X, 0, 9)(pt.x), q: inversa(g.Y, 0, 6)(pt.y) }; } },
       manijaNivel(ejQ1(), 'nivel', 'recta de nivel: deslízala', 'c-h', v => [v.p, v.q], 'k'),
