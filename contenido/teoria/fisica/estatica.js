@@ -70,20 +70,20 @@
   };
 
   // ---------- Idea 1: el diagrama de cuerpo libre y las parejas ----------
-  // Cambia: la masa del libro y el empujón de la mano · Permanece: el libro quieto (ΣF = 0) · Progresa: el DCL, una
+  // Cambia: la masa del bloque y el empujón F · Permanece: el bloque quieto (ΣF = 0) · Progresa: el DCL, una
   // fuerza por paso · Se reserva: la pareja de cada fuerza, que vive en otro cuerpo · Debe verse: N = P + F, no N = P.
   const K1 = 2; // px por N
   function libro(m, Fm, o = {}) {
     const Pv = m * G, Nv = Pv + Fm;
     return {
       vista: { x0: -2, x1: 2, y0: -1.8, y1: 2.6 }, escalaF: K1,
-      alt: o.alt || `Libro de ${f(m, 0)} kg sobre una mesa, empujado hacia abajo con ${f(Fm, 0)} N: peso ${f(Pv, 0)} N, normal ${f(Nv, 0)} N.`,
+      alt: o.alt || `Bloque de ${f(m, 0)} kg sobre el piso, empujado hacia abajo con ${f(Fm, 0)} N: peso ${f(Pv, 0)} N, normal ${f(Nv, 0)} N.`,
       poligonos: [{ puntos: [[-1.9, 0], [1.9, 0]], rayado: true }, { ...caja(0, 0, 1.4, 0.45), paso: o.pCaja || 0 }],
       flechas: [
         { de: [-0.25, 0.22], d: [0, -Pv], color: 'd', rotulo: `P = ${f(Pv, 0)} N`, lado: -1, paso: o.pP || 0 },
         ...(Fm > 0 ? [{ de: [0.45, 0.45 + Fm * K1 / 59.1], d: [0, -Fm], color: 'o', rotulo: `F = ${f(Fm, 0)} N`, paso: o.pF || 0 }] : []),
         { de: [-0.25, 0.22], d: [0, Nv], color: 'i', rotulo: `N = ${f(Nv, 0)} N`, lado: -1, paso: o.pN || 0, hasta: o.sinN ? -1 : undefined },
-        ...(o.pareja ? [{ de: [1.1, 0], d: [0, -Nv], color: 'i', discontinua: true, rotulo: 'sobre la mesa', lado: -1, paso: o.pareja }] : []),
+        ...(o.pareja ? [{ de: [1.1, 0], d: [0, -Nv], color: 'i', discontinua: true, rotulo: 'sobre el piso', lado: -1, paso: o.pareja }] : []),
       ],
     };
   }
@@ -92,8 +92,17 @@
     titulo: 'Cada fuerza tiene su pareja',
     temas: ['Primera y tercera ley de Newton', 'Diagrama de cuerpo libre'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): qué es una fuerza, el peso y el DCL. No dice cuál es la pareja del peso de «Predice».
+    lee: {
+      tarjetas: [
+        { titulo: 'Empujones y jalones', texto: ['Una fuerza es un empujón o un jalón, y se mide en newtons (N). Una bolsa de 1 kg de papas, en el mercado de Juliaca, pesa unos 10 N: la Tierra la jala hacia abajo.'],
+          ecuacion: [P, ' = m g'] },
+        { titulo: 'Un cuerpo a la vez', texto: 'Para estudiar un cuerpo, se dibuja solo él, aislado, con una flecha por cada fuerza que recibe. Ese dibujo se llama diagrama de cuerpo libre, o DCL.' },
+        { titulo: 'Qué mirar', texto: ['Al jugar, la flecha naranja ', F, ' aprieta el bloque contra el piso. Mira qué flecha cambia cuando aprieta más y cuál se queda igual.'] },
+      ],
+    },
     juega: {
-      consigna: 'Un libro descansa en la mesa y la mano lo aprieta hacia abajo, más y menos, sola. Elige la masa y mira la fuerza normal.',
+      consigna: 'La flecha naranja F aprieta el bloque contra el piso, más y menos, sola. Elige la masa y mira la fuerza normal.',
       voz: 'Aprieta sin cambiar la masa. ¿Qué flecha crece?',
       controles: [
         { id: 'm', etiqueta: 'm', min: 1, max: 4, paso: 1, inicio: 2, unidad: 'kg', decimales: 0 },
@@ -103,31 +112,31 @@
       dibujo: val => ({ datos: libro(val.m, val.F), estado: {} }),
       lectura: val => [N, ` = ${f(val.m * G + val.F, 0)} N · `, P, ` = ${f(val.m * G, 0)} N`],
       minimo: 3,
-      // Arrastra la mano (la cola de la flecha F): más larga, más empujón. La normal responde sola.
-      arrastres: [{ id: 'mano', etiqueta: 'empujón de la mano', color: 'c-o',
+      // Arrastra la cola de la flecha F: más larga, más empujón. La normal responde sola.
+      arrastres: [{ id: 'mano', etiqueta: 'empujón F (cola de la flecha)', color: 'c-o',
         donde: val => { const g = LZ(libro(val.m, val.F)); return { x: g.X(0.45), y: g.Y(0.45 + val.F * K1 / 59.1) }; },
         mover: (pt, val) => ({ F: (LZ(libro(val.m, val.F)).Yi(pt.y) - 0.45) * 59.1 / K1 }) }],
     },
     predice: {
-      pregunta: 'Un libro de 2 kg está quieto sobre la mesa. Según la tercera ley, ¿cuál es la pareja de su peso?',
+      pregunta: 'Un bloque de 2 kg está quieto sobre el piso. Según la tercera ley, ¿cuál es la pareja de su peso?',
       opciones: [
-        { id: 'c', texto: 'El libro atrae a la Tierra con 20 N', correcta: true },
-        { id: 'normal', texto: 'La mesa empuja al libro con 20 N', error: 'ES-REACCION', siFuera: 'La normal sí equilibra al peso. Pero las dos actúan sobre el libro: una pareja actúa en cuerpos distintos.' },
+        { id: 'c', texto: 'El bloque atrae a la Tierra con 20 N', correcta: true },
+        { id: 'normal', texto: 'El piso empuja al bloque con 20 N', error: 'ES-REACCION', siFuera: 'La normal sí equilibra al peso. Pero las dos actúan sobre el bloque: una pareja actúa en cuerpos distintos.' },
         { id: 'ninguna', texto: 'No tiene: el peso no es un empujón', error: 'D11', siFuera: 'El peso no es un contacto, cierto. Igual es una interacción con la Tierra, y tiene pareja.' },
-        { id: 'mesa', texto: 'El libro empuja la mesa con 20 N', error: 'ES-REACCION', siFuera: 'Esa es la pareja de la normal: mesa y libro. El peso es una interacción libro–Tierra.' },
+        { id: 'mesa', texto: 'El bloque empuja el piso con 20 N', error: 'ES-REACCION', siFuera: 'Esa es la pareja de la normal: piso y bloque. El peso es una interacción bloque–Tierra.' },
       ],
-      dibujo: { datos: libro(2, 0, { sinN: true, alt: 'Libro de 2 kg sobre una mesa, con su peso de 20 N hacia abajo.' }), estado: {} },
+      dibujo: { datos: libro(2, 0, { sinN: true, alt: 'Bloque de 2 kg sobre el piso, con su peso de 20 N hacia abajo.' }), estado: {} },
       revelar: { datos: Object.assign(libro(2, 0), { textos: [{ en: [1.1, -1.4], texto: 'Tierra: 20 N ↑', color: 'd' }] }), estado: {} },
-      coincide: 'Coincide: peso y pareja están en el libro y en la Tierra; la normal tiene su propia pareja.',
+      coincide: 'Coincide: peso y pareja están en el bloque y en la Tierra; la normal tiene su propia pareja.',
     },
     mira: {
       datos: libro(2, 10, { pP: 1, pF: 2, pN: 3, pareja: 4 }),
       pasos: [
-        { estado: { paso: 0 }, texto: 'Se aísla el libro: solo cuentan las fuerzas sobre él.', ecuacion: ['m = 2 kg'] },
+        { estado: { paso: 0 }, texto: 'Se aísla el bloque: solo cuentan las fuerzas sobre él.', ecuacion: ['m = 2 kg'] },
         { estado: { paso: 1 }, texto: 'La Tierra lo atrae: su peso.', ecuacion: [P, ' = m g = 20 N'] },
-        { estado: { paso: 2 }, texto: 'La mano lo empuja hacia abajo.', ecuacion: [F, ' = 10 N'] },
-        { estado: { paso: 3 }, texto: 'Está quieto: la mesa empuja lo que haga falta para cancelar.', ecuacion: [N, ' = ', P, ' + ', F, ' = 30 N'] },
-        { estado: { paso: 4 }, texto: 'La pareja de N es el libro empujando la mesa: otro cuerpo.', ecuacion: ['Σ', F, ' = 0 sobre el libro'] },
+        { estado: { paso: 2 }, texto: 'La fuerza F lo empuja hacia abajo.', ecuacion: [F, ' = 10 N'] },
+        { estado: { paso: 3 }, texto: 'Está quieto: el piso empuja lo que haga falta para cancelar.', ecuacion: [N, ' = ', P, ' + ', F, ' = 30 N'] },
+        { estado: { paso: 4 }, texto: 'La pareja de N es el bloque empujando el piso: otro cuerpo.', ecuacion: ['Σ', F, ' = 0 sobre el bloque'] },
       ],
     },
     regla: {
@@ -135,27 +144,54 @@
       ecuacion: ['Σ', F, ' = 0', '   ·   ', { sub: [F, 'A sobre B'] }, ' = −', { sub: [F, 'B sobre A'] }],
       condicion: 'el diagrama de cuerpo libre (DCL) lleva solo las fuerzas sobre el cuerpo aislado; las parejas nunca se cancelan entre sí.',
     },
+    // Así se resuelve: la normal con una fuerza vertical extra, calculado igual que «Ahora tú» (N = P ± F, con libro()).
+    // Con F hacia arriba se descartan los casos en que F llega al peso (la normal sería cero o negativa).
+    resuelve: {
+      pieza: 'fis-lienzo',
+      generar(sm) {
+        const r = azar(sm + 900), abajo = sm % 2 === 0;
+        let m, Fm;
+        do { m = r.ent(1, 4); Fm = r.de([5, 10, 15]); } while (!abajo && Fm >= m * G);
+        const Pv = m * G, Nv = abajo ? Pv + Fm : Pv - Fm;
+        return {
+          enunciado: `Un bloque de ${m} kg está quieto sobre el piso. Una fuerza vertical lo ${abajo ? 'empuja hacia abajo' : 'jala hacia arriba'} con ${Fm} N. Con g = 10 m/s², ¿cuánto vale la normal?`,
+          dibujo: abajo ? { datos: libro(m, Fm, { sinN: true }), estado: {} } : undefined,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la fuerza normal ', N, ': cuánto empuja el piso al bloque.'] },
+            { tipo: 'datos', texto: ['La masa da el peso. Además, ', F, ` = ${Fm} N va hacia ${abajo ? 'abajo' : 'arriba'}.`], ecuacion: [P, ` = ${m} · 10 = ${Pv} N`] },
+            { tipo: 'regla', texto: 'El bloque está quieto: lo que empuja hacia arriba iguala a lo que empuja hacia abajo.', ecuacion: ['Σ', F, ' = 0'] },
+            Object.assign({ tipo: 'cuentas' }, abajo
+              ? { texto: ['Hacia abajo van el peso y ', F, '; hacia arriba, solo ', N, '.'], ecuacion: [N, ` = ${Pv} + ${Fm} = ${f(Nv, 0)} N`], dibujo: { datos: libro(m, Fm), estado: {} } }
+              : { texto: ['Hacia arriba van ', N, ' y ', F, '; hacia abajo, solo el peso.'], ecuacion: [N, ` + ${Fm} = ${Pv}   →   `, N, ` = ${f(Nv, 0)} N`] }),
+            { tipo: 'sentido', texto: abajo
+              ? `La normal sale mayor que el peso: el piso también aguanta el empujón. Sin la fuerza extra, valdría ${Pv} N.`
+              : `La normal sale menor que el peso: la fuerza de arriba sostiene una parte. Si esa fuerza llegara a ${Pv} N, la normal sería cero.` },
+          ],
+          respuesta: [N, ` = ${f(Nv, 0)} N`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'fis-lienzo',
       generar(sm) {
         const r = azar(sm), m = r.ent(1, 4), Fm = r.de([5, 10, 15]), abajo = sm % 2 === 0;
         const Pv = m * G, Nv = abajo ? Pv + Fm : Pv - Fm;
         return {
-          pregunta: `Un bloque de ${m} kg está quieto sobre el piso. Una mano lo ${abajo ? 'empuja hacia abajo' : 'jala hacia arriba'} con ${Fm} N. Con g = 10 m/s², ¿cuánto vale la normal?`,
+          pregunta: `Un bloque de ${m} kg está quieto sobre el piso. Una fuerza vertical lo ${abajo ? 'empuja hacia abajo' : 'jala hacia arriba'} con ${Fm} N. Con g = 10 m/s², ¿cuánto vale la normal?`,
           dibujo: abajo ? { datos: libro(m, Fm, { sinN: true }), estado: {} } : undefined,
           opciones: opciones(Nv, [
-            { id: 'mg', valor: Pv, error: 'N-MG', siFuera: 'N = mg es cierto si nadie más empuja. Aquí la mano cambia lo que hace la mesa.' },
-            { id: 'signo', valor: abajo ? Pv - Fm : Pv + Fm, error: 'N-SIGNO', siFuera: abajo ? 'Restar sería cierto si la mano jalara hacia arriba.' : 'Sumar sería cierto si la mano empujara hacia abajo.' },
-            { id: 'F', valor: Fm, error: 'N-F', siFuera: 'Esa es la fuerza de la mano; la normal equilibra todo lo demás.' },
+            { id: 'mg', valor: Pv, error: 'N-MG', siFuera: 'N = mg es cierto si nadie más empuja. Aquí F cambia lo que hace el piso.' },
+            { id: 'signo', valor: abajo ? Pv - Fm : Pv + Fm, error: 'N-SIGNO', siFuera: abajo ? 'Restar sería cierto si F jalara hacia arriba.' : 'Sumar sería cierto si F empujara hacia abajo.' },
+            { id: 'F', valor: Fm, error: 'N-F', siFuera: 'Esa es la fuerza F; la normal equilibra todo lo demás.' },
           ], n => `${f(n, 0)} N`),
-          solucion: { texto: abajo ? 'El piso cancela el peso y el empujón.' : 'El piso cancela lo que la mano no sostiene.', ecuacion: [N, ` = ${Pv} ${abajo ? '+' : '−'} ${Fm} = ${f(Nv, 0)} N`] },
+          solucion: { texto: abajo ? 'El piso cancela el peso y el empujón.' : 'El piso cancela lo que F no sostiene.', ecuacion: [N, ` = ${Pv} ${abajo ? '+' : '−'} ${Fm} = ${f(Nv, 0)} N`] },
         };
       },
     },
   };
 
   // ---------- Idea 2: el nudo en equilibrio ----------
-  // Cambia: el peso de la lámpara y el ángulo de las cuerdas · Permanece: el nudo quieto · Progresa: las partes
+  // Cambia: el peso del bloque colgado y el ángulo de las cuerdas · Permanece: el nudo quieto · Progresa: las partes
   // verticales de T, que sostienen a P · Se reserva: las horizontales, que se cancelan · Debe verse: T crece al
   // aplanar las cuerdas y no es P/2.
   const K2 = 1.25;
@@ -164,7 +200,7 @@
     const u1 = [-cos(ang), sen(ang)], u2 = [cos(ang), sen(ang)];
     return {
       vista: { x0: -2.5, x1: 2.5, y0: -3.6, y1: 2.3 }, escalaF: K2,
-      alt: o.alt || `Lámpara de ${f(Pv, 0)} N colgada de dos cuerdas a ${f(ang, 0)}° de la horizontal; cada cuerda tira con ${f(Tv, 1)} N.`,
+      alt: o.alt || `Bloque de ${f(Pv, 0)} N colgado de dos cuerdas a ${f(ang, 0)}° de la horizontal; cada cuerda tira con ${f(Tv, 1)} N.`,
       poligonos: [{ puntos: [[-2.45, 2], [2.45, 2]], rayado: true }, { puntos: [[-A, 2], nudo, [A, 2]] }, { puntos: [nudo, [0, yn - 0.45]] }, caja(0, yn - 0.85, 0.5, 0.4)],
       discos: [{ c: nudo, r: 0.06 }],
       flechas: [
@@ -187,8 +223,18 @@
     titulo: 'El nudo que no se mueve',
     temas: ['Equilibrio de una partícula', 'Diagrama de cuerpo libre'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): el nudo como punto en equilibrio, la tensión y partir una flecha. No dice qué pasa con T al
+    // cambiar el ángulo («Predice») ni cuál parte de T sostiene el peso.
+    lee: {
+      tarjetas: [
+        { titulo: 'Cables que cuelgan', texto: 'En muchas calles de Puno, los letreros cuelgan de dos cables que se juntan en un punto. Ese punto, el nudo, no se mueve: está en equilibrio.' },
+        { titulo: 'La tensión', texto: ['Una cuerda tirante jala con una fuerza llamada tensión, ', T, '. Siempre jala a lo largo de la cuerda, nunca de costado. Una cuerda floja no jala nada.'] },
+        { titulo: 'Partir una flecha', texto: 'Una flecha inclinada se puede partir en dos: una parte horizontal y otra vertical. Son los catetos de un triángulo rectángulo, y la flecha es su hipotenusa.' },
+        { titulo: 'Qué mirar', texto: ['Al jugar, las cuerdas se aplanan y se paran solas. Compara el largo de las flechas ', T, ' con la flecha verde del peso ', P, '.'] },
+      ],
+    },
     juega: {
-      consigna: 'Una lámpara cuelga de dos cuerdas iguales que se aplanan y se paran solas. Elige el peso y mira las flechas T.',
+      consigna: 'Un bloque cuelga de dos cuerdas iguales que se aplanan y se paran solas. Elige el peso y mira las flechas T.',
       voz: 'Aplana las cuerdas sin cambiar el peso. Mira las flechas T.',
       controles: [
         { id: 'P', etiqueta: 'P', color: 'c-d', min: 20, max: 50, paso: 10, inicio: 30, unidad: 'N', decimales: 0 },
@@ -203,26 +249,26 @@
         { id: 'nudo', etiqueta: 'altura del nudo (ángulo de las cuerdas)', color: 'c-i',
           donde: val => { const g = LZ(lampara(val.P, val.ang)); return { x: g.X(0), y: g.Y(2 - 2.2 * Math.tan(rad(val.ang))) }; },
           mover: (pt, val) => ({ ang: cercano(nudo.juega.controles[1], ang => { const g = LZ(lampara(val.P, ang)); return { x: g.X(0), y: g.Y(2 - 2.2 * Math.tan(rad(ang))) }; }, pt) }) },
-        { id: 'peso', etiqueta: 'peso de la lámpara', color: 'c-d',
+        { id: 'peso', etiqueta: 'peso del bloque', color: 'c-d',
           donde: val => { const g = LZ(lampara(val.P, val.ang)), yn = 2 - 2.2 * Math.tan(rad(val.ang)); return { x: g.X(0), y: g.Y(yn - 0.85) + val.P * K2 }; },
           mover: (pt, val) => { const g = LZ(lampara(val.P, val.ang)), yn = 2 - 2.2 * Math.tan(rad(val.ang)); return { P: (pt.y - g.Y(yn - 0.85)) / K2 }; } },
       ],
     },
     predice: {
-      pregunta: 'Una lámpara de 40 N cuelga de dos cuerdas iguales a 60° del techo. Si las cuerdas se ponen a 30°, ¿qué pasa con la tensión de cada una?',
+      pregunta: 'Un bloque de 40 N cuelga de dos cuerdas iguales a 60° del techo. Si las cuerdas se ponen a 30°, ¿qué pasa con la tensión de cada una?',
       opciones: [
         { id: 'c', texto: 'Aumenta', correcta: true },
         { id: 'mitad', texto: 'Sigue en 20 N: la mitad del peso', error: 'E8', siFuera: 'La mitad sería cierto con cuerdas verticales. Inclinadas, solo una parte de T sostiene.' },
         { id: 'baja', texto: 'Disminuye', error: 'ST-BAJA', siFuera: 'Más inclinada parece más relajada. Pero su parte vertical se achica y T debe crecer.' },
       ],
-      dibujo: { datos: lampara(40, 60, { sinT: true, alt: 'Lámpara de 40 N colgada de dos cuerdas a 60° del techo; las tensiones no están dibujadas.' }), estado: {} },
+      dibujo: { datos: lampara(40, 60, { sinT: true, alt: 'Bloque de 40 N colgado de dos cuerdas a 60° del techo; las tensiones no están dibujadas.' }), estado: {} },
       revelar: { datos: lampara(40, 30), estado: {} },
       coincide: 'Coincide: a 30° cada cuerda tira con 40 N, el doble que con cuerdas verticales.',
     },
     mira: {
       datos: lampara(48, 37, { pP: 1, pT: 2, pComp: 3, pH: 4 }),
       pasos: [
-        { estado: { paso: 1 }, texto: 'Sobre el nudo actúa el peso de la lámpara.', ecuacion: [P, ' = 48 N'] },
+        { estado: { paso: 1 }, texto: 'Sobre el nudo actúa el peso del bloque.', ecuacion: [P, ' = 48 N'] },
         { estado: { paso: 2 }, texto: 'Las dos cuerdas tiran a lo largo de sí mismas.', ecuacion: [T, ' = ?'] },
         { estado: { paso: 3 }, texto: 'Hacia arriba solo sostiene la parte vertical de cada T.', ecuacion: ['2 ', T, ' sen 37° = 48   →   ', T, ' = 40 N'] },
         { estado: { paso: 4 }, texto: 'Las partes horizontales son iguales y opuestas: se cancelan.', ecuacion: ['40 cos 37° = 32 N a cada lado'] },
@@ -233,13 +279,40 @@
       ecuacion: ['Σ', { sub: [F, 'x'] }, ' = 0', '   ·   ', 'Σ', { sub: [F, 'y'] }, ' = 0', '   ·   ', '2 ', { llave: [T, ' sen θ'], nota: 'parte vertical', color: 'c-i' }, ' = ', P],
       condicion: 'cuerdas iguales y simétricas; θ medido desde la horizontal. Por eso, cuerda casi horizontal, tensión enorme.',
     },
+    // Así se resuelve: la tensión de cada cuerda, calculado igual que «Ahora tú» (2 T sen θ = P, con lampara()). La
+    // figura se dibuja con el peso topado en 50 N, como en «Ahora tú», pero los rótulos llevan los valores del enunciado.
+    resuelve: {
+      pieza: 'fis-lienzo',
+      generar(sm) {
+        const r = azar(sm + 900), Pv = r.de([20, 30, 40, 48, 60, 80, 96]), ang = r.de([30, 37, 53, 60]), Tv = Pv / (2 * SEN[ang]);
+        const alt = `Bloque de ${Pv} N colgado de dos cuerdas a ${ang}° del techo.`;
+        const fig = sinT => { const dd = lampara(Math.min(Pv, 50), ang, { sinT, alt });
+          dd.flechas[0].rotulo = `P = ${Pv} N`;
+          if (!sinT) dd.textos = [{ en: [-1.5, -3.2], texto: `T = ${f(Tv, 1)} N`, color: 'i' }];
+          return { datos: dd, estado: {} }; };
+        return {
+          enunciado: ['Un bloque de ', P, ` = ${Pv} N cuelga de dos cuerdas iguales, cada una a ${ang}° de la horizontal. ¿Con qué fuerza tira cada cuerda?`],
+          dibujo: fig(true),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la tensión ', T, ' de cada cuerda: con qué fuerza jala cada una.'] },
+            { tipo: 'datos', texto: ['El peso es ', P, ` = ${Pv} N y las dos cuerdas forman ${ang}° con la horizontal.`], ecuacion: [`sen ${ang}° = ${f(SEN[ang], 3)}`] },
+            { tipo: 'regla', texto: 'El nudo está quieto. De lado, las dos cuerdas se cancelan; hacia arriba, sus partes verticales juntas sostienen el peso.',
+              ecuacion: ['2 ', T, ' sen θ = ', P] },
+            { tipo: 'cuentas', texto: ['Cada cuerda sostiene con su parte vertical, ', T, ' sen θ. Igualo las dos partes al peso y despejo.'],
+              ecuacion: ['2 ', T, ` · ${f(SEN[ang], 3)} = ${Pv}   →   `, T, ` = ${f(Tv, 2)} N`], dibujo: fig(false) },
+            { tipo: 'sentido', texto: `Comprobación: cada cuerda sostiene ${f(Tv * SEN[ang], 2)} N hacia arriba, y las dos suman ${Pv} N. Cada una tira con más que la mitad del peso.` },
+          ],
+          respuesta: [T, ` = ${f(Tv, 2)} N en cada cuerda`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'fis-lienzo',
       generar(sm) {
         const r = azar(sm), Pv = r.de([20, 30, 40, 48, 60, 80, 96]), ang = r.de([30, 37, 53, 60]), Tv = Pv / (2 * SEN[ang]);
         return {
-          pregunta: ['Una lámpara de ', P, ` = ${Pv} N cuelga de dos cuerdas iguales, cada una a ${ang}° de la horizontal. ¿Con qué fuerza tira cada cuerda?`],
-          dibujo: { datos: lampara(Math.min(Pv, 50), ang, { sinT: true, alt: `Lámpara de ${Pv} N colgada de dos cuerdas a ${ang}° del techo.` }), estado: {} },
+          pregunta: ['Un bloque de ', P, ` = ${Pv} N cuelga de dos cuerdas iguales, cada una a ${ang}° de la horizontal. ¿Con qué fuerza tira cada cuerda?`],
+          dibujo: { datos: lampara(Math.min(Pv, 50), ang, { sinT: true, alt: `Bloque de ${Pv} N colgado de dos cuerdas a ${ang}° del techo.` }), estado: {} },
           opciones: opciones(Tv, [
             { id: 'mitad', valor: Pv / 2, error: 'E8', siFuera: 'La mitad del peso sería cierta con cuerdas verticales.' },
             { id: 'coseno', valor: Pv / (2 * COS[ang]), error: 'ST-SENCOS', siFuera: 'Eso usa el coseno: sostiene la parte vertical, que va con el seno desde la horizontal.' },
@@ -275,16 +348,26 @@
     titulo: 'El rozamiento se ajusta',
     temas: ['Rozamiento estático y cinético'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): qué es el rozamiento, sus dos nombres y el coeficiente. No dice cuánto vale el rozamiento de una
+    // caja quieta («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'El piso también empuja', texto: 'Empujas un ropero pesado y no se mueve: algo lo frena. Es el piso, que empuja paralelo al suelo y en contra del deslizamiento. Esa fuerza se llama rozamiento.' },
+        { titulo: 'Dos nombres', texto: ['Mientras el cuerpo sigue quieto, actúa el rozamiento estático, ', fs, '. Cuando ya desliza, actúa el rozamiento cinético, ', fk, '. Cada uno tiene su coeficiente: μs y μk.'] },
+        { titulo: 'Áspero o liso', texto: 'El coeficiente μ es un número sin unidad. Una zapatilla sobre cemento seco tiene un μ alto; sobre la escarcha de una mañana fría en el altiplano, uno muy bajo.' },
+        { titulo: 'Qué mirar', texto: ['Al jugar, la flecha naranja ', F, ' empuja la caja. Sigue la flecha roja del rozamiento mientras ', F, ' crece, y fíjate en el momento en que la caja desliza.'] },
+      ],
+    },
     juega: {
-      consigna: 'La mano empuja una caja de 4 kg, más y luego menos (μs = 0,5; μk = 0,3). Mira la flecha roja y su tope punteado.',
+      consigna: 'La flecha F empuja una caja de 4 kg, más y luego menos (μs = 0,5; μk = 0,3). Mira la flecha roja y su tope punteado.',
       voz: 'Pausa cuando quieras. ¿La flecha roja crece siempre?',
       controles: [{ id: 'F', etiqueta: 'F', color: 'c-o', min: 0, max: 30, paso: 2, inicio: 4, unidad: 'N', decimales: 0,
         auto: { velocidad: 5, modo: 'rebota' } }],
       dibujo: val => ({ datos: cajaRoce(4, val.F, { tope: true }), estado: {} }),
       lectura: val => { const r = roceDe({ m: 4, F: val.F }); return [F, ` = ${f(val.F, 0)} N · `, fr, ` = ${f(r.f, 0)} N · ${r.desliza ? 'desliza' : 'quieta'}`]; },
       minimo: 4,
-      // Arrastra la mano (la cola de F) hacia la izquierda: más larga, más empuje. La flecha roja responde.
-      arrastres: [{ id: 'empuje', etiqueta: 'empuje de la mano', color: 'c-o',
+      // Arrastra la cola de F hacia la izquierda: más larga, más empuje. La flecha roja responde.
+      arrastres: [{ id: 'empuje', etiqueta: 'empuje F (cola de la flecha)', color: 'c-o',
         donde: val => ({ x: LZ(cajaRoce(4, val.F)).X(-0.55 - val.F * K3 / 82.35), y: LZ(cajaRoce(4, val.F)).Y(0.5) }),
         mover: (pt, val) => ({ F: (-0.55 - LZ(cajaRoce(4, val.F)).Xi(pt.x)) * 82.35 / K3 }) }],
     },
@@ -319,6 +402,33 @@
       texto: 'Quieta, el rozamiento estático vale lo justo para cancelar, hasta un tope μs N. Deslizando, el rozamiento cinético vale μk N, fijo y menor.',
       ecuacion: [fs, ' ≤ ', { llave: [{ sub: ['μ', 's'] }, N], nota: 'tope estático', color: 'c-h' }, '   ·   ', fk, ' = ', { sub: ['μ', 'k'] }, N],
       condicion: 'superficies secas; f se opone al deslizamiento (o a su tendencia). Los coeficientes de rozamiento cumplen, en general, μk < μs.',
+    },
+    // Así se resuelve: el rozamiento de una caja empujada, calculado igual que «Ahora tú» (tope μs N; quieta, fs = F;
+    // deslizando, fk = μk N). Alterna quieta y deslizando con la semilla, como «Ahora tú».
+    resuelve: {
+      generar(sm) {
+        const r = azar(sm + 900), m = r.ent(2, 6), mus = r.de([0.4, 0.5, 0.6]), muk = Math.round((mus - 0.2) * 10) / 10;
+        const Nv = m * G, max = mus * Nv, desl = sm % 2 === 1;
+        const Fv = desl ? Math.round(max + r.ent(2, 10)) : Math.max(2, Math.round(max * r.de([0.3, 0.5, 0.7])));
+        const fv = desl ? muk * Nv : Fv;
+        return {
+          enunciado: `Una caja de ${m} kg en el piso (μs = ${f(mus, 1)}, μk = ${f(muk, 1)}) se empuja con ${f(Fv, 0)} N. Con g = 10 m/s², ¿cuánto vale el rozamiento?`,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el rozamiento ', fr, ' que hace el piso sobre la caja. Primero hay que saber si desliza.'] },
+            { tipo: 'datos', texto: ['El piso es horizontal: la normal iguala al peso. El tope del rozamiento estático es μs por ', N, '.'],
+              ecuacion: [N, ` = ${m} · 10 = ${Nv} N   ·   `, { sub: [fs, 'máx'] }, ` = ${f(mus, 1)} · ${Nv} = ${f(max, 0)} N`] },
+            { tipo: 'regla', texto: 'Comparo el empuje con el tope. Si no lo pasa, el rozamiento cancela justo el empuje; si lo pasa, vale μk por N.',
+              ecuacion: [fs, ' = ', F, '  (quieta)   ·   ', fk, ' = ', { sub: ['μ', 'k'] }, N, '  (desliza)'] },
+            desl
+              ? { tipo: 'cuentas', texto: `${f(Fv, 0)} N pasa el tope de ${f(max, 0)} N: la caja desliza. Vale el rozamiento cinético.`, ecuacion: [fk, ` = ${f(muk, 1)} · ${Nv} = ${f(fv, 0)} N`] }
+              : { tipo: 'cuentas', texto: `${f(Fv, 0)} N no llega al tope de ${f(max, 0)} N: la caja sigue quieta y el rozamiento cancela el empuje.`, ecuacion: [fs, ' = ', F, ` = ${f(fv, 0)} N`] },
+            { tipo: 'sentido', texto: desl
+              ? `El rozamiento (${f(fv, 0)} N) es menor que el empuje (${f(Fv, 0)} N): sobra fuerza y la caja acelera. Y es menor que el tope, porque μk < μs.`
+              : `De lado, ${f(Fv, 0)} N contra ${f(fv, 0)} N suman cero: la caja sigue quieta. Y no pasa el tope de ${f(max, 0)} N.` },
+          ],
+          respuesta: desl ? [fk, ` = ${f(fv, 0)} N: la caja desliza`] : [fs, ` = ${f(fv, 0)} N: la caja sigue quieta`],
+        };
+      },
     },
     ahoraTu: {
       generar(sm) {
@@ -365,6 +475,16 @@
     titulo: 'El resorte estira en proporción',
     temas: ['Fuerza elástica'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): dónde hay resortes, el largo natural, la deformación y k. No dice cómo crece x con la masa
+    // («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Resortes de todos los días', texto: 'Hay resortes en el colchón, en el lapicero que haces clic y en la balanza de gancho de la feria, donde se cuelga una bolsa para pesarla.' },
+        { titulo: 'Largo natural', texto: ['Sin nada colgado, el resorte tiene su largo natural. Lo que se estira o se encoge desde ahí es la deformación, ', x, '. Se mide desde el largo natural, no desde el techo.'] },
+        { titulo: 'Duro o blando', texto: 'La constante elástica k dice qué tan duro es un resorte, y se mide en N/m. Un resorte de suspensión tiene un k enorme; el de un lapicero, uno pequeño.' },
+        { titulo: 'Qué mirar', texto: ['Al jugar, la línea discontinua marca el largo natural. Mira la cota ', x, ' cuando la masa crece, y anota algunos pares de masa y estiramiento.'] },
+      ],
+    },
     juega: {
       consigna: 'La masa colgada crece y baja sola. La línea discontinua marca el largo natural. Elige la constante elástica k y mira x.',
       voz: 'Duplica la masa con el mismo k. ¿Qué le pasa a x?',
@@ -417,6 +537,29 @@
       ecuacion: [Fe, ' = k ', { llave: [x], nota: 'desde el largo natural', color: 'c-i' }],
       condicion: 'x se mide desde el largo natural (sin nada colgado) y el resorte no pasa su límite elástico.',
     },
+    // Así se resuelve: el estiramiento de un resorte con una masa colgada, calculado igual que «Ahora tú» (x = mg/k,
+    // con resorte()).
+    resuelve: {
+      pieza: 'fis-lienzo',
+      generar(sm) {
+        const r = azar(sm + 900), k = r.de([100, 200, 250, 400, 500]), m = r.de([0.5, 1, 1.5, 2, 3]), xv = m * G / k * 100;
+        return {
+          enunciado: ['Se cuelgan ', `${f(m, 1)} kg de un resorte de k = ${k} N/m. Con g = 10 m/s², ¿cuánto se estira?`],
+          dibujo: { datos: resorte(k, m, { sinX: true, alt: `Resorte de k = ${k} N/m con ${f(m, 1)} kg colgados; el estiramiento no está rotulado.` }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el estiramiento ', x, ': cuánto se alarga el resorte desde su largo natural.'] },
+            { tipo: 'datos', texto: `k = ${k} N/m. La masa de ${f(m, 1)} kg da el peso que cuelga.`, ecuacion: [P, ` = ${f(m, 1)} · 10 = ${f(m * G, 0)} N`] },
+            { tipo: 'regla', texto: 'Quieto, el resorte jala hacia arriba lo mismo que pesa lo colgado. Y su fuerza es k por lo que se estira.',
+              ecuacion: [Fe, ' = k', x, ' = ', P] },
+            { tipo: 'cuentas', texto: ['Despejo ', x, ': el peso entre k da metros; después paso a centímetros.'],
+              ecuacion: [x, ` = ${f(m * G, 0)} / ${k} = ${f(xv / 100, 4)} m = ${f(xv, 2)} cm`],
+              dibujo: { datos: resorte(k, m), estado: {} } },
+            { tipo: 'sentido', texto: `Las unidades: N entre N/m da metros. De vuelta: ${k} · ${f(xv / 100, 4)} = ${f(k * xv / 100, 0)} N, justo el peso.` },
+          ],
+          respuesta: [x, ` = ${f(xv, 2)} cm`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'fis-lienzo',
       generar(sm) {
@@ -461,7 +604,7 @@
     const pie = [punta[0] + u[0] * (-(punta[0] * u[0] + punta[1] * u[1])), punta[1] + u[1] * (-(punta[0] * u[0] + punta[1] * u[1]))];
     return {
       vista: { x0: -0.25, x1: 0.55, y0: -0.15, y1: 0.35 }, escalaF: 1.6,
-      alt: con ? 'Llave de 0,4 m con una fuerza de 50 N a 30° de la llave; el brazo perpendicular desde el perno mide 0,2 m.' : 'Llave de 0,4 m con una fuerza de 50 N aplicada en la punta, a 30° de la llave.',
+      alt: con ? 'Barra de 0,4 m que gira en un extremo, con 50 N a 30° de la barra; el brazo perpendicular desde el eje mide 0,2 m.' : 'Barra de 0,4 m que gira en un extremo, con 50 N aplicados en la otra punta, a 30° de la barra.',
       poligonos: [{ puntos: [[0, 0], punta], grosor: 'variable' }],
       discos: [{ c: [0, 0], r: 0.03, rotulo: '' }],
       segmentos: [{ de: [0, -0.06], a: [L, -0.06], texto: '0,4 m', lado: -1 },
@@ -496,6 +639,16 @@
     titulo: 'El brazo decide el giro',
     temas: ['Torque', 'Equilibrio del cuerpo rígido'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): qué es girar, el torque y el sube y baja. No dice qué distancia cuenta cuando la fuerza va
+    // inclinada (el brazo perpendicular de «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cosas que giran', texto: 'Una puerta gira en sus bisagras; el caño, en su eje; el sube y baja del parque, en su apoyo del medio. Cada uno tiene un eje de giro.' },
+        { titulo: 'El torque', texto: 'Lo que mide cuánto hace girar una fuerza se llama torque, τ, y se mide en N·m. Un caño duro de abrir pide más torque que uno suelto.' },
+        { titulo: 'Dos sentidos', texto: 'Una fuerza puede hacer girar como las agujas del reloj o al revés. En el sube y baja, cada lado intenta girarlo hacia su propio lado.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, la masa de la derecha se corre sola por la barra. Mira cuándo la barra queda horizontal y anota la masa y su distancia al apoyo.' },
+      ],
+    },
     juega: {
       consigna: 'A la izquierda cuelgan 3 kg a 1 m del apoyo. La masa derecha se corre sola. Elige cuánta y mira cuándo se nivela.',
       voz: 'Busca dos maneras distintas de dejar la barra horizontal.',
@@ -510,16 +663,16 @@
       arrastres: arrastresPalanca(val => [3, 1, val.m2, val.d2], { m2: 0, d2: 1 }, () => torque.juega.controles, 'der'),
     },
     predice: {
-      pregunta: 'Con una llave de 0,4 m aprietas un perno: aplicas 50 N en la punta, a 30° de la llave. ¿Qué torque haces?',
+      pregunta: 'Una barra de 0,4 m gira alrededor de un eje en un extremo. Aplicas 50 N en la otra punta, a 30° de la barra. ¿Qué torque haces?',
       opciones: [
         { id: 'c', texto: '10 N·m', correcta: true },
-        { id: 'largo', texto: '20 N·m', error: 'TQ-BRAZO', siFuera: '50 · 0,4 vale con F perpendicular a la llave. Inclinada, el brazo es menor.' },
-        { id: 'cos', texto: `${f(50 * 0.4 * Math.cos(rad(30)), 2)} N·m`, error: 'TQ-COS', siFuera: 'Va con el seno del ángulo entre F y la llave; el coseno da la parte que empuja al perno.' },
+        { id: 'largo', texto: '20 N·m', error: 'TQ-BRAZO', siFuera: '50 · 0,4 vale con F perpendicular a la barra. Inclinada, el brazo es menor.' },
+        { id: 'cos', texto: `${f(50 * 0.4 * Math.cos(rad(30)), 2)} N·m`, error: 'TQ-COS', siFuera: 'Va con el seno del ángulo entre F y la barra; el coseno da la parte que apunta al eje.' },
         { id: 'div', texto: '125 N·m', error: 'TQ-DIV', siFuera: 'El torque crece con la distancia: se multiplica, no se divide.' },
       ],
       dibujo: { datos: llave(false), estado: {} },
       revelar: { datos: llave(true), estado: {} },
-      coincide: 'Coincide: el brazo es la distancia perpendicular del perno a la línea de F, 0,2 m.',
+      coincide: 'Coincide: el brazo es la distancia perpendicular del eje a la línea de F, 0,2 m.',
     },
     mira: {
       datos: palanca(3, 1, 2, 1.5, { pP: 1, pd: 2, pR: 4 }),
@@ -534,6 +687,33 @@
       texto: 'El giro que produce una fuerza es su valor por el brazo perpendicular. Un cuerpo rígido en equilibrio cumple dos condiciones a la vez.',
       ecuacion: ['τ = ', F, ' · ', { llave: [{ sub: [d, '⊥'] }], nota: 'brazo perpendicular', color: 'c-i' }, '   ·   ', 'Σ', F, ' = 0', '   ·   ', 'Στ = 0'],
       condicion: 'd⊥ es la distancia perpendicular del eje a la línea de acción de la fuerza, no cualquier distancia.',
+    },
+    // Así se resuelve: la distancia que equilibra la barra, calculado igual que «Ahora tú» (m1 d1 = m2 d2, el mismo
+    // sorteo con distancia exacta y menor que 2,4 m, y palanca()).
+    resuelve: {
+      pieza: 'fis-lienzo',
+      generar(sm) {
+        const r = azar(sm + 900);
+        let m1, d1, m2, d2;
+        do { m1 = r.ent(2, 6); d1 = r.de([0.5, 1, 1.5, 2]); m2 = r.ent(1, 6); d2 = m1 * d1 / m2; } while (m1 === m2 || d2 > 2.4 || Math.abs(d2 * 100 - Math.round(d2 * 100)) > 1e-9);
+        const P1 = m1 * G, P2 = m2 * G, tau = P1 * d1;
+        return {
+          enunciado: ['Una barra se apoya en su centro. A la izquierda cuelgan ', `${m1} kg a ${f(d1, 1)} m del apoyo. ¿A qué distancia del apoyo, a la derecha, hay que colgar ${m2} kg para equilibrarla?`],
+          dibujo: { datos: palanca(m1, d1, m2, d2, { sinD2: true, alt: `Barra apoyada al centro con ${m1} kg a ${f(d1, 1)} m a la izquierda y ${m2} kg a la derecha.` }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la distancia ', d, ' del apoyo a la masa de la derecha que deja la barra horizontal.'] },
+            { tipo: 'datos', texto: `A la izquierda, ${P1} N a ${f(d1, 1)} m. A la derecha, ${P2} N a una distancia que no sé.`,
+              ecuacion: [{ sub: [P, 'izq.'] }, ` = ${m1} · 10 = ${P1} N   ·   `, { sub: [P, 'der.'] }, ` = ${m2} · 10 = ${P2} N`] },
+            { tipo: 'regla', texto: 'La barra queda horizontal si los dos giros se igualan. Cada giro es el peso por su distancia al apoyo.',
+              ecuacion: ['τ izq. = τ der.'] },
+            { tipo: 'cuentas', texto: 'Los pesos cuelgan verticales y la barra está horizontal: la distancia al apoyo es el brazo. Igualo los torques y despejo.',
+              ecuacion: [`${P1} · ${f(d1, 1)} = ${P2} · `, d, '   →   ', d, ` = ${f(d2, 2)} m`],
+              dibujo: { datos: palanca(m1, d1, m2, d2), estado: {} } },
+            { tipo: 'sentido', texto: `${m2 > m1 ? 'La masa de la derecha es mayor: va más cerca' : 'La masa de la derecha es menor: va más lejos'} del apoyo que ${f(d1, 1)} m. Cada lado hace ${f(tau, 0)} N·m.` },
+          ],
+          respuesta: [d, ` = ${f(d2, 2)} m a la derecha del apoyo`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'fis-lienzo',
@@ -565,7 +745,7 @@
     const Fv = movil ? Pv / 2 : Pv, h = o.h || 0;
     const base = {
       vista: { x0: -1.6, x1: 1.6, y0: -1.2, y1: 4.2 }, escalaF: K6,
-      alt: o.alt || (movil ? `Polea móvil que sostiene ${Pv} N con dos tramos de cuerda: la mano tira con ${f(Fv, 0)} N.` : `Polea fija: la mano tira con ${f(Fv, 0)} N para sostener ${Pv} N.`),
+      alt: o.alt || (movil ? `Polea móvil que sostiene ${Pv} N con dos tramos de cuerda: la cuerda se jala con ${f(Fv, 0)} N.` : `Polea fija: la cuerda se jala con ${f(Fv, 0)} N para sostener ${Pv} N.`),
       poligonos: [{ puntos: movil ? [[-1.5, 3], [0, 3]] : [[-1.5, 3], [1.5, 3]], rayado: true }],
     };
     if (!movil) {
@@ -593,9 +773,19 @@
     titulo: 'Menos fuerza, más cuerda',
     temas: ['Máquinas simples'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): para qué sirve una polea, fija o móvil, y qué es un tramo. No dice cuánta cuerda hay que jalar
+    // («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Poleas en la obra', texto: 'En una construcción de Juliaca, los baldes de mezcla suben con una cuerda que pasa por una rueda colgada arriba: una polea. Así se jala hacia abajo para subir algo.' },
+        { titulo: 'Fija o móvil', texto: 'Una polea fija está amarrada arriba y solo cambia la dirección de la cuerda. Una polea móvil cuelga de la cuerda y sube junto con la carga.' },
+        { titulo: 'Tramos', texto: ['Cada pedazo de cuerda que sostiene la polea móvil es un tramo. En una cuerda ideal, sin masa ni rozamiento, todos los tramos jalan con la misma tensión, ', T, '.'] },
+        { titulo: 'Qué mirar', texto: 'Al jugar, el bloque sube y baja. Compara las dos cotas: cuánto sube el bloque y cuánto se mueve el extremo de la cuerda, con cada polea.' },
+      ],
+    },
     juega: {
-      consigna: 'La mano sube y baja un bulto. Elige el peso y la polea, fija o móvil; compara la fuerza y cuánto recorre la mano.',
-      voz: 'Con el mismo bulto, cambia de polea. ¿Cuántos tramos sostienen?',
+      consigna: 'La cuerda sube y baja un bloque. Elige el peso y la polea, fija o móvil; compara la fuerza F y cuánto recorre su extremo.',
+      voz: 'Con el mismo bloque, cambia de polea. ¿Cuántos tramos sostienen?',
       controles: [
         { id: 'P', etiqueta: 'P', color: 'c-d', min: 40, max: 120, paso: 20, inicio: 80, unidad: 'N', decimales: 0 },
         { id: 'movil', etiqueta: 'Polea', opciones: [{ valor: 0, texto: 'Fija' }, { valor: 1, texto: 'Móvil' }], inicio: 0 },
@@ -603,7 +793,7 @@
           auto: { velocidad: 0.15, modo: 'rebota' } },
       ],
       dibujo: val => ({ datos: polea(val.P, val.movil === 1, { h: val.h }), estado: {} }),
-      lectura: val => [F, ` = ${f(val.movil ? val.P / 2 : val.P, 0)} N · sube ${f(val.h, 2)} m · mano ${f((val.movil ? 2 : 1) * val.h, 2)} m`],
+      lectura: val => [F, ` = ${f(val.movil ? val.P / 2 : val.P, 0)} N · sube ${f(val.h, 2)} m · cuerda ${f((val.movil ? 2 : 1) * val.h, 2)} m`],
       minimo: 3,
       // Arrastra la punta del peso hacia abajo (más carga). Fija o móvil se elige con los botones: son dos montajes.
       arrastres: [{ id: 'carga', etiqueta: 'peso de la carga', color: 'c-d',
@@ -611,7 +801,7 @@
         mover: (pt, val) => ({ P: (pt.y - LZ(polea(val.P, val.movil === 1, { h: val.h })).Y(0.4 + val.h)) / K6 }) }],
     },
     predice: {
-      pregunta: 'Con una polea móvil sostienes 80 N con solo 40 N. Para subir el bulto 1 m, ¿cuánta cuerda tienes que jalar?',
+      pregunta: 'Con una polea móvil sostienes 80 N con solo 40 N. Para subir el bloque 1 m, ¿cuánta cuerda tienes que jalar?',
       opciones: [
         { id: 'c', texto: '2 m', correcta: true },
         { id: 'uno', texto: '1 m, lo mismo que sube', error: 'MS-CUERDA', siFuera: 'Con polea fija, sí. Aquí cada uno de los dos tramos se acorta 1 m.' },
@@ -625,15 +815,49 @@
       datos: polea(80, true, { pT: 1, cotas: 3 }),
       pasos: [
         { estado: { paso: 1 }, texto: 'Dos tramos de la misma cuerda sostienen la polea.', ecuacion: ['2 ', T, ' = ', P, ' = 80 N'] },
-        { estado: { paso: 2 }, texto: 'La mano tira de un tramo: hace la mitad del peso.', ecuacion: [F, ' = ', T, ' = 40 N'] },
+        { estado: { paso: 2 }, texto: 'La fuerza F tira de un tramo: es la mitad del peso.', ecuacion: [F, ' = ', T, ' = 40 N'] },
         { estado: { paso: 3 }, texto: 'Para subir 1 m, los dos tramos se acortan: jalas 2 m.', ecuacion: ['cuerda = 2 · 1 m = 2 m'] },
         { estado: { paso: 3 }, texto: 'Fuerza por distancia es igual de los dos lados: no se ahorra trabajo.', ecuacion: ['40 · 2 = 80 · 1 = 80 J'] },
       ],
     },
     regla: {
-      texto: 'Una máquina ideal cambia fuerza por distancia: si reduce la fuerza, la mano recorre más. Fuerza por distancia se conserva.',
-      ecuacion: [F, ' · ', { llave: [{ sub: [d, 'mano'] }], nota: 'cuerda jalada', color: 'c-i' }, ' = ', P, ' · ', { llave: [{ sub: [d, 'carga'] }], nota: 'lo que sube', color: 'c-i' }],
+      texto: 'Una máquina ideal cambia fuerza por distancia: si reduce la fuerza, el extremo de la cuerda recorre más. Fuerza por distancia se conserva.',
+      ecuacion: [F, ' · ', { llave: [{ sub: [d, 'cuerda'] }], nota: 'cuerda jalada', color: 'c-i' }, ' = ', P, ' · ', { llave: [{ sub: [d, 'carga'] }], nota: 'lo que sube', color: 'c-i' }],
       condicion: 'poleas y cuerdas sin masa ni rozamiento. Cada polea móvil reparte el peso entre dos tramos.',
+    },
+    // Así se resuelve: la fuerza o la cuerda con poleas móviles en serie, calculado igual que «Ahora tú» (F = P/2ⁿ,
+    // cuerda = h · 2ⁿ). Alterna fuerza y cuerda con la semilla, como «Ahora tú».
+    resuelve: {
+      generar(sm) {
+        const r = azar(sm + 900), n = r.ent(1, 3), Pv = r.de([80, 120, 160, 240, 320]), pide = sm % 2 ? 'fuerza' : 'cuerda', h = r.de([1, 2, 3]);
+        const k = 2 ** n, Fv = Pv / k, cu = h * k;
+        const pre = `Un sistema tiene ${n} ${n === 1 ? 'polea móvil' : 'poleas móviles'} una tras otra (cada una reparte su peso en dos tramos) y sube ${Pv} N`;
+        const dosN = n > 1 ? { sup: ['2', `${n}`] } : '2';
+        const datos = { tipo: 'datos', texto: `${n} ${n === 1 ? 'polea móvil' : 'poleas móviles'} en serie y una carga de ${Pv} N${pide === 'cuerda' ? ` que sube ${h} m` : ''}.` };
+        if (pide === 'fuerza') return {
+          enunciado: `${pre}. Sin rozamiento, ¿con qué fuerza hay que jalar?`,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la fuerza ', F, ' con que se jala el extremo libre de la cuerda.'] },
+            datos,
+            { tipo: 'regla', texto: 'Cada polea móvil cuelga de dos tramos que jalan igual: reparte su carga a la mitad. Una tras otra, es la mitad de la mitad.' },
+            { tipo: 'cuentas', texto: `Divido la carga entre 2 una vez por cada polea: ${n} ${n === 1 ? 'vez' : 'veces'}.`, ecuacion: [F, ` = ${Pv} / `, dosN, ` = ${f(Fv, 2)} N`] },
+            { tipo: 'sentido', texto: `De vuelta: ${f(Fv, 2)} N multiplicado ${n} ${n === 1 ? 'vez' : 'veces'} por 2 da ${Pv} N. A cambio, la cuerda recorre ${k} veces lo que sube la carga.` },
+          ],
+          respuesta: [F, ` = ${f(Fv, 2)} N`],
+        };
+        return {
+          enunciado: `${pre} una altura de ${h} m. Sin rozamiento, ¿cuánta cuerda hay que jalar?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuánta cuerda pasa por el extremo libre mientras la carga sube ${h} m.` },
+            datos,
+            { tipo: 'regla', texto: 'Una máquina ideal no ahorra trabajo: si la fuerza se divide entre un número, la cuerda jalada se multiplica por ese número.',
+              ecuacion: [F, ' · ', { sub: [d, 'cuerda'] }, ' = ', P, ' · ', { sub: [d, 'carga'] }] },
+            { tipo: 'cuentas', texto: `Cada polea divide la fuerza entre 2: con ${n}, entre ${k}. La cuerda crece lo mismo.`, ecuacion: [F, ` = ${Pv} / ${k} = ${f(Fv, 2)} N   ·   cuerda = ${h} · ${k} = ${f(cu, 0)} m`] },
+            { tipo: 'sentido', texto: `Trabajo de cada lado: ${f(Fv, 2)} N · ${f(cu, 0)} m y ${Pv} N · ${h} m dan ${f(Pv * h, 0)} J. Se conserva.` },
+          ],
+          respuesta: `${f(cu, 0)} m de cuerda`,
+        };
+      },
     },
     ahoraTu: {
       generar(sm) {
@@ -685,13 +909,13 @@
     // magnitudes y vectores; MRU y gravedad, de MRU, MRUV y caída libre; polea se define en dinámica.
     glosario: [
       { termino: 'fuerza', simbolo: 'F', medida: 'N', def: 'Empujón o jalón entre dos cuerpos; puede cambiar cómo se mueve algo o deformarlo.',
-        ejemplo: 'La mano aprieta el libro hacia abajo con F = 10 N.', ver: ['peso', 'tercera ley de Newton'] },
+        ejemplo: 'La flecha F aprieta el bloque hacia abajo con 10 N.', ver: ['peso', 'tercera ley de Newton'] },
       { termino: 'primera ley de Newton',
         def: 'Si las fuerzas sobre un cuerpo suman cero, sigue quieto o en línea recta a velocidad constante.',
-        ejemplo: 'Un libro quieto en la mesa: sus fuerzas suman cero.', ver: ['equilibrio'] },
+        ejemplo: 'Un bloque quieto en el piso: sus fuerzas suman cero.', ver: ['equilibrio'] },
       { termino: 'tercera ley de Newton',
         def: 'Si A empuja a B, B empuja a A con igual valor y sentido opuesto.',
-        ejemplo: 'La Tierra jala al libro con 20 N; el libro jala a la Tierra con 20 N.', ver: ['diagrama de cuerpo libre'] },
+        ejemplo: 'La Tierra jala al bloque con 20 N; el bloque jala a la Tierra con 20 N.', ver: ['diagrama de cuerpo libre'] },
       { termino: 'diagrama de cuerpo libre', formas: ['diagrama de cuerpo libre', 'diagramas de cuerpo libre', 'DCL'],
         def: 'Dibujo de un solo cuerpo, aislado, con todas las fuerzas que otros cuerpos hacen sobre él.',
         ver: ['fuerza'] },
@@ -699,9 +923,9 @@
         ejemplo: '2 kg con g = 10 m/s²: P = 20 N.', ver: ['masa', 'gravedad'] },
       { termino: 'fuerza normal', simbolo: 'N', medida: 'N', formas: ['fuerza normal', 'fuerzas normales'],
         def: 'Empuje de una superficie sobre lo que se apoya en ella, perpendicular a la superficie.',
-        ejemplo: 'Libro de 20 N apretado con 10 N: N = 30 N.', ver: ['peso'] },
+        ejemplo: 'Bloque de 20 N apretado con 10 N: N = 30 N.', ver: ['peso'] },
       { termino: 'tensión', simbolo: 'T', medida: 'N', def: 'Fuerza con que una cuerda tirante jala, siempre a lo largo de ella.',
-        ejemplo: 'Lámpara de 48 N con dos cuerdas a 37°: T = 40 N cada una.', ver: ['fuerza'] },
+        ejemplo: 'Bloque de 48 N con dos cuerdas a 37°: T = 40 N cada una.', ver: ['fuerza'] },
       { termino: 'rozamiento estático', simbolo: 'fs', medida: 'N', def: 'Fuerza del piso que impide que algo empiece a deslizar; vale lo justo, hasta un tope μs N.',
         ejemplo: 'Con N = 60 N, empujada con 12 N y quieta: fs = 12 N.', ver: ['rozamiento cinético', 'coeficiente de rozamiento'] },
       { termino: 'rozamiento cinético', simbolo: 'fk', medida: 'N', def: 'Fuerza que frena algo que ya desliza; vale μk N y no depende del empuje.',
@@ -717,7 +941,7 @@
         ejemplo: '50 N con brazo de 0,2 m: τ = 10 N·m.', ver: ['brazo de palanca', 'cuerpo rígido'] },
       { termino: 'brazo de palanca', simbolo: 'd', medida: 'm', formas: ['brazo de palanca', 'brazo', 'brazos'],
         def: 'Distancia perpendicular del eje de giro a la línea de acción de la fuerza.',
-        ejemplo: 'Llave de 0,4 m empujada a 30°: el brazo mide 0,2 m.', ver: ['torque'] },
+        ejemplo: 'Barra de 0,4 m empujada a 30°: el brazo mide 0,2 m.', ver: ['torque'] },
       { termino: 'cuerpo rígido', def: 'Cuerpo que no se deforma: sus puntos guardan siempre la misma distancia entre sí.',
         ejemplo: 'Una barra de palanca: para equilibrarla, fuerzas y torques deben cancelarse.', ver: ['equilibrio'] },
     ],
@@ -781,13 +1005,13 @@
               && guardados.some(x => x.m === val.m && x.F === val.F),
             bien: 'Al empezar a deslizar, el rozamiento cae: el tope estático era mayor.' },
         ],
-        arrastres: [{ id: 'empuje', etiqueta: 'empuje de la mano', color: 'c-o',
+        arrastres: [{ id: 'empuje', etiqueta: 'empuje F (cola de la flecha)', color: 'c-o',
           donde: val => ({ x: LZ(cajaRoce(val.m, val.F)).X(-0.55 - val.F * K3 / 82.35), y: LZ(cajaRoce(val.m, val.F)).Y(0.5) }),
           mover: (pt, val) => ({ F: (-0.55 - LZ(cajaRoce(val.m, val.F)).Xi(pt.x)) * 82.35 / K3 }) }],
       },
       Object.assign({ id: 'nudo-libre', titulo: 'El nudo y sus cuerdas', pieza: 'fis-lienzo',
         invitaciones: [
-          { texto: 'Haz que cada cuerda tire con lo mismo que pesa la lámpara.',
+          { texto: 'Haz que cada cuerda tire con lo mismo que pesa el bloque.',
             logrado: val => Math.abs(tensionDe(val) - val.P) < 1e-9,
             bien: 'A 30°, cada cuerda tira con todo el peso. ¿Y si fueran verticales?' },
           { texto: 'Con 40 N, busca el ángulo que menos tensa las cuerdas.',
