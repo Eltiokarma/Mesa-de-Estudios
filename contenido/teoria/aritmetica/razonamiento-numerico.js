@@ -63,6 +63,14 @@
     titulo: 'Suponer todo igual y corregir',
     temas: ['Falsa suposición'],
     pieza: 'arit-tiras',
+    // Lee (fase 2): contexto y vocabulario, sin decir cuánto suma cada canje ni cómo se divide (eso es Predice y Mira).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos precios', texto: 'En la feria de Juliaca, las entradas al concierto cuestan S/ 5 en general y S/ 8 junto al escenario. Si sabes cuántas se vendieron y cuánto se juntó, ¿puedes saber cuántas eran de cada precio? Así son estos problemas.' },
+        { titulo: 'Qué es un canje', texto: 'Un canje es cambiar una cosa de un tipo por una del otro, sin cambiar cuántas hay. Las 12 entradas siguen siendo 12: solo una de ellas pasa a tener el otro precio.' },
+        { titulo: 'Qué mirar al jugar', texto: 'La primera tira es lo que se paga y la segunda, la meta de S/ 81. Haz un canje a la vez y fíjate cuánto se alarga la primera tira cada vez.' },
+      ],
+    },
     juega: {
       consigna: 'Se compraron 12 entradas de S/ 5 o S/ 8 y se pagó S/ 81. Cambia cuántas son de S/ 8 hasta la meta.',
       voz: 'Mira cuánto crece la tira con cada entrada que cambias.',
@@ -104,6 +112,28 @@
       ecuacion: [{ sub: ['n', 'b'] }, ' = ', { frac: [[{ llave: [T, ' − n · a'], nota: 'lo que falta', color: 'c-d' }], [{ llave: ['b − a'], nota: 'cada canje', color: 'c-i' }]] }],
       condicion: 'cada canje cambia el total en la misma cantidad b − a; es una ecuación lineal escrita de otra forma.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú», con otras semillas, resuelto paso a paso.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(10, 30), [a, b] = r.de([[2, 4], [5, 8], [10, 20], [3, 7], [20, 50], [1, 5]]);
+        const k = r.ent(2, n - 2), Tot = (n - k) * a + k * b;
+        const ctx = r.de([['monedas de', 'y de', 'soles', 'monedas'], ['entradas de', 'y de', 'soles', 'entradas'], ['cajas de', 'y de', 'kilos', 'cajas']]);
+        const base = n * a, falta = Tot - base, cambio = b - a;
+        return {
+          enunciado: [`${n} ${ctx[3]}, unas de ${a} y otras de ${b} ${ctx[2]}, suman `, { v: 'c-d', t: String(Tot) }, ` ${ctx[2]}. ¿Cuántas son de ${b}?`],
+          dibujo: { datos: tirasCanje(n, a, b, 0, Tot), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuántas de las ${n} ${ctx[3]} son de ${b} ${ctx[2]}.` },
+            { tipo: 'datos', texto: [`Hay ${n} ${ctx[3]}, cada una de ${a} o de ${b} ${ctx[2]}, y entre todas suman `, { v: 'c-d', t: String(Tot) }, '.'] },
+            { tipo: 'regla', texto: `Supongo que todas son de ${a}. Cada vez que cambio una de ${a} por una de ${b}, el total sube siempre lo mismo: ${cambio}.` },
+            { tipo: 'cuentas', texto: `Todas de ${a} darían ${base}; faltan ${falta}. Divido lo que falta entre lo que sube cada cambio.`,
+              ecuacion: [`${n} · ${a} = ${base}`, '   ·   ', `(${Tot} − ${base}) ÷ ${cambio} = ${k}`], dibujo: { datos: tirasCanje(n, a, b, k, Tot), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: ${n - k} de ${a} y ${k} de ${b} son ${n} ${ctx[3]}, y suman ${(n - k) * a} + ${k * b} = ${(n - k) * a + k * b}. Cuadra.` },
+          ],
+          respuesta: `${k} ${ctx[3]} de ${b} ${ctx[2]}`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), n = r.ent(10, 30), [a, b] = r.de([[2, 4], [5, 8], [10, 20], [3, 7], [20, 50], [1, 5]]);
@@ -139,6 +169,14 @@
     titulo: 'Deshacer de atrás hacia adelante',
     temas: ['Método regresivo'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): qué es una operación inversa, sin decir en qué orden se deshacen (eso lo pregunta Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un número escondido', texto: 'Un amigo piensa un número, le hace varias cuentas y solo te dice el resultado. Parece magia adivinar su número, pero no lo es: las cuentas dejan huella y se pueden desandar.' },
+        { titulo: 'La operación inversa', texto: 'Cada operación tiene otra que la deshace. Si a un número le sumas 10, restarle 10 te devuelve al de antes. Si lo multiplicas por 3, dividirlo entre 3 también. Esa pareja es una operación inversa.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Cada fila de la tabla es una operación: lo que había antes, la operación y lo que quedó después. La columna roja dice qué la deshace. Cambia el número y sigue cada fila.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un número. La tabla lo multiplica por 3, le resta 5 y lo divide entre 2. Mira la columna que deshace.',
       voz: 'Lee la última fila primero: es lo primero que se deshace.',
@@ -172,6 +210,35 @@
       texto: 'Método regresivo: para hallar el inicio se parte del final y se aplica la operación inversa de cada paso, en orden contrario. Siempre se comprueba de ida.',
       ecuacion: ['× ↔ ÷', '   ·   ', '+ ↔ −', '   ·   ', 'último → primero'],
       condicion: 'cada operación es invertible en el dominio: no se multiplica por 0 y las divisiones quedan dentro de los números permitidos.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), x0 = r.ent(2, 20);
+        const ops = [['×', r.ent(2, 5)], r.de([['+', r.ent(3, 15)], ['−', r.ent(1, 2 * x0 - 1)]]), ['×', r.ent(2, 3)]];
+        if (s % 2) ops[2] = ops[1][0] === '+' ? ['−', r.ent(1, 9)] : ['+', r.ent(4, 12)];
+        const vals = [x0]; for (const o of ops) vals.push(aplicar(vals[vals.length - 1], o));
+        const v = vals[ops.length];
+        const verbo = o => (o[0] === '×' ? 'lo multipliqué por' : o[0] === '+' ? 'le sumé' : o[0] === '−' ? 'le resté' : 'lo dividí entre');
+        const vuelta = []; let u = v;
+        for (const o of ops.slice().reverse()) { const w = aplicar(u, [INV[o[0]], o[1]]); vuelta.push(`${f(u)} ${INV[o[0]]} ${o[1]} = ${f(w)}`); u = w; }
+        const incognita = { columnas: [{ t: 'antes' }, { t: 'operación', color: 'i' }, { t: 'después' }],
+          filas: ops.map((o, i) => [i === 0 ? { t: '?', color: 'o' } : '?', { t: `${o[0]} ${o[1]}`, color: 'i' }, i === ops.length - 1 ? { t: f(v), color: 'd' } : '?']), filasMax: 4 };
+        return {
+          enunciado: [`Pensé un número, ${ops.map(o => `${verbo(o)} ${o[1]}`).join(', ')} y obtuve `, { v: 'c-d', t: f(v) }, '. ¿Qué número pensé?'],
+          dibujo: { datos: incognita, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el número del inicio, ', X, ', el que se pensó antes de hacer las cuentas.'] },
+            { tipo: 'datos', texto: ['Conozco el resultado final, ', { v: 'c-d', t: f(v) }, ', y las tres operaciones en el orden en que se hicieron.'],
+              ecuacion: [X, ` → ${ops.map(o => `${o[0]} ${o[1]}`).join(' → ')} → ${f(v)}`] },
+            { tipo: 'regla', texto: 'Parto del resultado y deshago cada operación con su inversa. Empiezo por la última que se hizo y termino con la primera.' },
+            { tipo: 'cuentas', texto: 'Voy de abajo hacia arriba en la tabla, usando la columna que deshace.',
+              ecuacion: [vuelta.join('   ·   ')], dibujo: { datos: tablaCadena(x0, ops, true), estado: { paso: 9 } } },
+            { tipo: 'sentido', texto: `Comprueba de ida: con ${x0} se hacen las tres operaciones y se llega a ${f(v)}. Cuadra.`,
+              ecuacion: [ops.map((o, i) => `${f(vals[i])} ${o[0]} ${o[1]} = ${f(vals[i + 1])}`).join('   ·   ')] },
+          ],
+          respuesta: [X, ` = ${x0}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -211,6 +278,14 @@
     titulo: 'La diferencia de edades no cambia',
     temas: ['Edades'],
     pieza: 'arit-tiras',
+    // Lee (fase 2): vocabulario de edades (doble, hace, dentro de), sin decir qué se conserva con el tiempo.
+    lee: {
+      tarjetas: [
+        { titulo: 'Edades en la familia', texto: 'En cada cumpleaños de la familia sale la misma pregunta: «¿Y cuántos años tienes ya?». Los problemas de edades comparan a dos o más personas hoy, hace unos años o dentro de unos años.' },
+        { titulo: 'Cómo se dice', texto: '«El doble» es dos veces la edad del otro y «el triple», tres veces. «Hace 5 años» mira hacia atrás; «dentro de 5 años», hacia adelante. Ordenar los datos en antes, hoy y después ayuda mucho.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Hay dos tiras: la del hijo y la del padre. La del padre termina en un pedazo turquesa. Mueve los años hacia adelante y hacia atrás, y fíjate en ese pedazo y en las veces de la lectura.' },
+      ],
+    },
     juega: {
       consigna: 'Un padre tiene 40 años y su hijo 10. Mueve el tiempo hacia adelante o hacia atrás y compara las dos tiras.',
       voz: 'Mira el pedazo turquesa mientras cambias los años.',
@@ -248,6 +323,40 @@
       texto: 'Con el tiempo, todas las edades aumentan lo mismo: la diferencia queda fija y la razón entre las edades cambia.',
       ecuacion: ['(P + ', t, ') − (H + ', t, ') = ', { llave: ['P − H'], nota: 'diferencia fija', color: 'c-i' }],
       condicion: 'los años que pasan son los mismos para todos; hacia el pasado t es negativo y ninguna edad baja de cero.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), h = r.ent(3, 15), dif = r.ent(18, 35), k = r.de([2, 3]);
+        const objetivo = dif / (k - 1), anios = z => ({ v: 'c-h', t: String(z) });
+        if (!Number.isInteger(objetivo) || objetivo <= h) {
+          const P = h + dif, a = r.ent(5, 20);
+          return {
+            enunciado: `Hoy Ana tiene ${h} años y su madre ${P}. ¿Cuántos años tendrá la madre cuando Ana tenga ${h + a}?`,
+            pasos: [
+              { tipo: 'pide', texto: `Piden la edad de la madre en el momento en que Ana cumpla ${h + a}.` },
+              { tipo: 'datos', texto: ['Hoy Ana tiene ', String(h), ' y su madre ', String(P), '. Para que Ana llegue a ', String(h + a), ' pasan ', anios(a), ' años.'], ecuacion: [`${h + a} − ${h} = ${a}`] },
+              { tipo: 'regla', texto: 'El tiempo pasa igual para las dos: los años que se le suman a Ana se le suman también a su madre.' },
+              { tipo: 'cuentas', texto: ['A la edad de hoy de la madre le sumo los mismos ', anios(a), ' años.'], ecuacion: [`${P} + ${a} = ${P + a}`] },
+              { tipo: 'sentido', texto: `Hoy la madre le lleva ${dif} años a Ana, y entonces también: ${P + a} − ${h + a} = ${(P + a) - (h + a)}. Cuadra.` },
+            ],
+            respuesta: `La madre tendrá ${P + a} años.`,
+          };
+        }
+        const a = objetivo - h, veces = k === 2 ? 'doble' : 'triple';
+        return {
+          enunciado: `Hoy Luis tiene ${h} años y su padre ${h + dif}. ¿Dentro de cuántos años el padre tendrá el ${veces} de la edad de Luis?`,
+          dibujo: { datos: tirasEdad(h + dif, h, 0), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden cuántos años deben pasar para que la edad del padre sea el ${veces} de la de Luis.` },
+            { tipo: 'datos', texto: `Hoy Luis tiene ${h} y su padre ${h + dif}: el padre le lleva ${dif} años.`, ecuacion: [`${h + dif} − ${h} = ${dif}`] },
+            { tipo: 'regla', texto: `Los años pasan igual para los dos, así que el padre le seguirá llevando ${dif} años a Luis toda la vida.` },
+            { tipo: 'cuentas', texto: `Entonces el padre tendrá la edad de Luis más ${dif}, y también ${k} veces la de Luis. Igualo y después resto ${h}.`,
+              ecuacion: [`Luis + ${dif} = ${k} · Luis   ⇒   Luis = ${objetivo}`, '   ·   ', `${objetivo} − ${h} = ${a}`], dibujo: { datos: tirasEdad(h + dif, h, a), estado: {} } },
+            { tipo: 'sentido', texto: `Dentro de ${a} años, Luis tendrá ${objetivo} y su padre ${objetivo + dif}, que es ${k} · ${objetivo} = ${k * objetivo}. Cuadra.` },
+          ],
+          respuesta: ['Dentro de ', anios(a), ' años.'],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -306,6 +415,14 @@
     titulo: 'Encuentro y alcance',
     temas: ['Móviles'],
     pieza: 'recta',
+    // Lee (fase 2): contexto y los dos modos (encuentro y alcance), sin decir si las rapideces se suman o se restan.
+    lee: {
+      tarjetas: [
+        { titulo: 'En la carretera', texto: 'Entre Juliaca y Puno hay unos 45 km de pista. Si sale un vehículo de cada ciudad a la misma hora, en algún punto se cruzan. Los problemas de móviles preguntan cuándo y dónde pasa eso.' },
+        { titulo: 'Dos maneras de moverse', texto: 'Dos móviles pueden ir al encuentro, uno hacia el otro, o en el mismo sentido, cuando uno persigue al otro. Ese segundo caso se llama alcance. En los dos importa cómo cambia la distancia entre ellos.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En la recta, A es el punto naranja y B, el turquesa. Elige el modo y las rapideces, y lee en la lectura cuántos kilómetros se acercan cada hora.' },
+      ],
+    },
     juega: {
       consigna: 'A y B salen a la vez, separados 300 km. Elige si van al encuentro o si A persigue a B, y sus rapideces.',
       voz: 'Compara cuánto se acercan por hora en cada caso.',
@@ -352,6 +469,29 @@
       ecuacion: [{ sub: [t, 'e'] }, ' = ', { frac: [D, [{ llave: [{ sub: ['v', 'A'] }, ' + ', { sub: ['v', 'B'] }], nota: 'al encuentro' }]] }, '   ·   ', { sub: [t, 'a'] }, ' = ', { frac: [D, [{ llave: [{ sub: ['v', 'A'] }, ' − ', { sub: ['v', 'B'] }], nota: 'en el alcance' }]] }],
       condicion: 'rapideces constantes, mismo instante de salida y, en el alcance, el que persigue va más rápido.',
     },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), enc = s % 2 === 0;
+        const vB = r.de([20, 30, 40, 50]), vA = vB + r.de([10, 20, 30, 40]), tt = r.ent(2, 6);
+        const rel = enc ? vA + vB : vA - vB, dd = rel * tt;
+        const VA = { v: 'c-o', t: `${vA} km/h` }, VB = { v: 'c-i', t: `${vB} km/h` }, modo = enc ? 'encuentro' : 'alcance';
+        return {
+          enunciado: enc
+            ? [`En la recta, A y B están separados ${dd} km y van uno hacia el otro, A a `, VA, ' y B a ', VB, '. ¿En cuántas horas se encuentran?']
+            : ['En la recta, B va a ', VB, ` y A lo persigue desde ${dd} km atrás, a `, VA, '. ¿En cuántas horas lo alcanza?'],
+          dibujo: { datos: rectaMov(dd, vA, vB, modo, false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: enc ? 'Piden cuántas horas pasan hasta que A y B se encuentran.' : 'Piden cuántas horas pasan hasta que A alcanza a B.' },
+            { tipo: 'datos', texto: enc ? ['Los separan ', D, ` = ${dd} km; A va a `, VA, ' y B a ', VB, ', uno hacia el otro.'] : ['A está ', D, ` = ${dd} km detrás de B; A va a `, VA, ' y B a ', VB, ', en el mismo sentido.'] },
+            { tipo: 'regla', texto: enc ? 'Como van uno hacia el otro, cada hora la distancia entre ellos baja lo que avanzan los dos juntos.' : 'Como van en el mismo sentido, cada hora A recorta solo lo que avanza de más que B.' },
+            { tipo: 'cuentas', texto: `Se acercan ${vA} ${enc ? '+' : '−'} ${vB} = ${rel} km cada hora. Divido la distancia entre eso.`,
+              ecuacion: [t, ` = ${dd} ÷ ${rel} = ${tt} h`], dibujo: { datos: rectaMov(dd, vA, vB, modo), estado: {} } },
+            { tipo: 'sentido', texto: enc ? `En ${tt} h, A recorre ${vA * tt} km y B ${vB * tt} km: juntos suman ${vA * tt + vB * tt} km. Cuadra.` : `En ${tt} h, A recorre ${vA * tt} km y B ${vB * tt} km: A hizo ${vA * tt - vB * tt} km más. Cuadra.` },
+          ],
+          respuesta: [t, ` = ${tt} horas`],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s), enc = s % 2 === 0;
@@ -385,6 +525,14 @@
     titulo: 'Cada letra es una cifra',
     temas: ['Criptoaritmética'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): las reglas del juego de letras y qué es un reverso, sin decir en qué se convierte AB + BA.
+    lee: {
+      tarjetas: [
+        { titulo: 'Letras en vez de cifras', texto: 'En criptoaritmética, una cuenta llega escrita con letras y hay que descubrir qué cifra esconde cada una. Es como un candado de números: cada pista descarta muchas combinaciones.' },
+        { titulo: 'Las reglas', texto: 'Cada letra guarda una cifra, de 0 a 9, y la misma letra vale lo mismo en toda la cuenta. Un número no empieza con 0. Si AB es 47, su reverso BA es 74.' },
+        { titulo: 'Qué mirar al jugar', texto: 'AB no es A por B: es un número de dos cifras. En la tabla, elige A y B, mira la suma AB + BA y compárala con la última columna.' },
+      ],
+    },
     juega: {
       consigna: 'Elige las cifras A y B (distintas de 0). La tabla suma el número AB con su reverso BA.',
       voz: 'Compara la suma con 11 veces A + B.',
@@ -420,6 +568,38 @@
       texto: 'En criptoaritmética cada letra es una cifra, letras distintas son cifras distintas y la primera cifra no es 0. Cada número se escribe por su valor posicional.',
       ecuacion: ['AB = ', { llave: ['10A'], nota: 'decenas', color: 'c-o' }, ' + ', { llave: ['B'], nota: 'unidades', color: 'c-i' }, '   ·   ', 'ABC = 100A + 10B + C'],
       condicion: 'la asignación es la misma en toda la operación y se respetan las llevadas.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const A = r.ent(1, 9), B = r.ent(1, 9), S = 11 * (A + B), prueba = (10 * A + B) + (10 * B + A);
+          return {
+            enunciado: `En la suma AB + BA = ${S}, cada letra es una cifra. ¿Cuánto vale A + B?`,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la suma A + B, no cada cifra por separado.' },
+              { tipo: 'datos', texto: `AB y BA tienen las mismas dos cifras en orden contrario, y juntos suman ${S}.` },
+              { tipo: 'regla', texto: 'Escribo cada número por el valor de sus cifras: la de la izquierda está en las decenas y vale diez veces más.', ecuacion: ['AB = 10A + B   ·   BA = 10B + A'] },
+              { tipo: 'cuentas', texto: 'Al sumar quedan 11 veces A y 11 veces B. Divido el resultado entre 11.', ecuacion: [`AB + BA = 11(A + B) = ${S}   ⇒   A + B = ${S} ÷ 11 = ${A + B}`] },
+              { tipo: 'sentido', texto: `Pruebo con un caso posible: ${A}${B} + ${B}${A} = ${prueba}, igual que en el enunciado. Cuadra.` },
+            ],
+            respuesta: `A + B = ${A + B}`,
+          };
+        }
+        let A, C; do { A = r.ent(2, 9); C = r.ent(1, 8); } while (A <= C);
+        const B = r.ent(0, 9), Dd = 99 * (A - C), prueba = (100 * A + 10 * B + C) - (100 * C + 10 * B + A);
+        return {
+          enunciado: `En la resta ABC − CBA = ${Dd}, cada letra es una cifra y A es mayor que C. ¿Cuánto vale A − C?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden A − C, la diferencia entre la primera y la última cifra.' },
+            { tipo: 'datos', texto: `ABC y CBA tienen las mismas cifras en orden contrario, y la resta da ${Dd}.` },
+            { tipo: 'regla', texto: 'Escribo cada número por el valor de sus cifras: centenas, decenas y unidades. La B está en las decenas en los dos.', ecuacion: ['ABC = 100A + 10B + C'] },
+            { tipo: 'cuentas', texto: 'Al restar, las B se cancelan y quedan 99 veces A menos 99 veces C. Divido entre 99.', ecuacion: [`ABC − CBA = 99(A − C) = ${Dd}   ⇒   A − C = ${Dd} ÷ 99 = ${A - C}`] },
+            { tipo: 'sentido', texto: `Pruebo con un caso posible: ${A}${B}${C} − ${C}${B}${A} = ${prueba}, igual que en el enunciado. Cuadra.` },
+          ],
+          respuesta: `A − C = ${A - C}`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -472,8 +652,16 @@
     titulo: '¿Alcanza para una sola respuesta?',
     temas: ['Suficiencia de datos', 'Distribuciones numéricas'],
     pieza: 'arit-tabla',
+    // Lee (fase 2): qué es una pregunta de suficiencia y cómo se lee la tabla, sin decir si el dato basta.
+    lee: {
+      tarjetas: [
+        { titulo: '¿Alcanza el dato?', texto: 'En el examen, a veces no te piden un número: te preguntan si los datos alcanzan para hallarlo. Son preguntas de suficiencia de datos, y se responden con «sí, basta» o «no basta».' },
+        { titulo: 'El triángulo de números', texto: 'En este juego, los números del 1 al 6 se reparten en los tres lados de un triángulo, tres por lado. Las esquinas se llaman vértices, y cada lado debe sumar lo mismo: S.' },
+        { titulo: 'Qué mirar al jugar', texto: 'La tabla tiene una fila por reparto: los vértices, los tres lados y su suma S. Elige otros vértices y revisa que los tres lados de la fila sumen lo mismo.' },
+      ],
+    },
     juega: {
-      consigna: 'Los números del 1 al 6 van en un triángulo, 3 por lado, y los tres lados suman S. Elige los vértices.',
+      consigna: 'Los números del 1 al 6 van en los lados de un triángulo, 3 por lado, y cada lado suma S. Elige los vértices.',
       voz: 'Cada distribución cumple la regla. ¿Dan la misma S?',
       controles: [{ id: 'k', etiqueta: 'Vértices', opciones: Object.keys(DIST).map(k => ({ valor: k, texto: k.replace(/-/g, ', ') })) }],
       dibujo: v => ({ datos: tablaDist([v.k]), estado: {} }),
@@ -481,7 +669,7 @@
       minimo: 3,
     },
     predice: {
-      pregunta: 'Se sabe solo que los números del 1 al 6 están en el triángulo con los tres lados de igual suma S. ¿Ese dato basta para saber S?',
+      pregunta: 'Se sabe solo que los números del 1 al 6 están en un triángulo con los tres lados de igual suma S. ¿Ese dato basta para saber S?',
       opciones: [
         { id: 'c', texto: 'No: S puede ser 9, 10, 11 o 12', correcta: true },
         { id: 'siete', texto: 'Sí: S = 7', error: 'AT-VERTICES', siFuera: '21 ÷ 3 = 7 sería cierto si cada número estuviera en un solo lado; los vértices están en dos.' },
@@ -503,6 +691,52 @@
       texto: 'Un dato es suficiente si deja una sola respuesta para lo que se pide. Para mostrar que no basta, sirven dos casos que lo cumplen con respuestas distintas.',
       ecuacion: ['3S = 21 + ', { llave: ['V'], nota: 'suma de vértices', color: 'c-o' }],
       condicion: 'se pregunta por lo que se pide, no por todas las incógnitas. Un patrón observado no prueba que la respuesta sea única.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3;
+        if (tipo === 0) {
+          const k = r.de(Object.keys(DIST)), v = k.split('-').map(Number), S = sumaLado(k), sv = v.reduce((u, z) => u + z, 0);
+          return {
+            enunciado: `Los números del 1 al 6 están en los lados de un triángulo, 3 por lado, y cada lado suma S. Si los vértices son ${v.join(', ')}, ¿cuánto vale S?`,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden S, lo que suma cada lado del triángulo.' },
+              { tipo: 'datos', texto: `Van los números del 1 al 6, tres por lado, y en los vértices están ${v.join(', ')}.` },
+              { tipo: 'regla', texto: 'Si sumo los tres lados, cada vértice entra dos veces, porque está en dos lados; los otros números entran una sola vez.' },
+              { tipo: 'cuentas', texto: `Del 1 al 6 suman 21 y los vértices, ${sv}. Esa suma total es tres veces S.`,
+                ecuacion: [`3S = 21 + ${sv} = ${21 + sv}   ⇒   S = ${(21 + sv) / 3}`], dibujo: { datos: tablaDist([k], k), estado: {} } },
+              { tipo: 'sentido', texto: `En la tabla, los lados ${DIST[k].map(l => l.join(' + ')).join(', ')} suman ${DIST[k].map(l => l.reduce((u, z) => u + z, 0)).join(', ')}. Cuadra.` },
+            ],
+            respuesta: `S = ${S}`,
+          };
+        }
+        const a = r.ent(3, 9), b = r.ent(2, 8), suma = a + b, dif = Math.abs(a - b), mayor = Math.max(a, b), menor = Math.min(a, b);
+        const caso = r.de([
+          { dato: `x + y = ${suma} y x − y = ${dif}`, pide: 'el valor de x', basta: true, resp: `x = (${suma} + ${dif}) ÷ 2 = ${(suma + dif) / 2}`, vale: `x = ${(suma + dif) / 2}`,
+            ver: `con x = ${mayor} e y = ${menor}: ${mayor} + ${menor} = ${mayor + menor} y ${mayor} − ${menor} = ${mayor - menor}; es el único par posible` },
+          { dato: `x + y = ${suma}`, pide: 'el valor de x', basta: false, pares: [[a, b], [a - 1, b + 1]] },
+          { dato: `2x + 2y = ${2 * suma}`, pide: 'el valor de x + y', basta: true, resp: `x + y = ${2 * suma} ÷ 2 = ${(2 * suma) / 2}`, vale: `x + y = ${(2 * suma) / 2}`,
+            ver: `con x = ${a} e y = ${b}: 2 · ${a} + 2 · ${b} = ${2 * a + 2 * b}, y con x = ${a - 1} e y = ${b + 1} también; en los dos, x + y = ${suma}` },
+          { dato: `x · y = ${a * b}`, pide: 'el valor de x', basta: false, pares: a === b ? [[a, b], [a * b, 1]] : [[a, b], [b, a]] },
+        ]);
+        const pares = caso.pares && caso.pares.map(([x, y]) => `x = ${x}, y = ${y}`).join(' o ');
+        const cumple = caso.pares && caso.pares.map(([x, y]) => (caso.dato.includes('·') ? `${x} · ${y} = ${x * y}` : `${x} + ${y} = ${x + y}`)).join(' y ');
+        return {
+          enunciado: `Se sabe solo que ${caso.dato}, con x e y enteros positivos. ¿Eso basta para hallar ${caso.pide}?`,
+          pasos: [
+            { tipo: 'pide', texto: `Piden decidir si el dato alcanza para hallar ${caso.pide} con un solo valor posible.` },
+            { tipo: 'datos', texto: `Solo se sabe que ${caso.dato}, y que x e y son enteros positivos.` },
+            { tipo: 'regla', texto: 'Si encuentro dos casos que cumplen el dato y dan respuestas distintas, no basta. Si lo pedido sale con un solo valor, sí basta.' },
+            caso.basta
+              ? { tipo: 'cuentas', texto: 'Despejo lo pedido usando solo el dato.', ecuacion: [caso.resp] }
+              : { tipo: 'cuentas', texto: 'Busco dos casos que cumplan el dato.', ecuacion: [pares] },
+            caso.basta
+              ? { tipo: 'sentido', texto: `Comprueba ${caso.ver}. Cuadra.` }
+              : { tipo: 'sentido', texto: `Los dos cumplen: ${cumple}. Pero dan x distinto, así que el dato no alcanza.` },
+          ],
+          respuesta: caso.basta ? `Sí basta: ${caso.vale}.` : 'No basta: x puede tomar dos valores.',
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -609,6 +843,15 @@
       { termino: 'reverso', formas: ['reverso', 'reversos'],
         def: 'El número que se forma con las mismas cifras escritas en orden contrario.',
         ejemplo: 'El de 47 es 74; 47 + 74 = 121 = 11 · 11.', ver: ['valor posicional'] },
+      { termino: 'canje', formas: ['canjes', 'canje'],
+        def: 'Cambiar un objeto de un tipo por uno del otro tipo sin cambiar cuántos objetos hay.',
+        ejemplo: 'Cambiar una entrada de S/ 5 por una de S/ 8: siguen siendo 12 entradas, pero el total sube 3.', ver: ['falsa suposición'] },
+      { termino: 'vértice', formas: ['vértices', 'vértice'],
+        def: 'Esquina de una figura, donde se juntan dos de sus lados.',
+        ejemplo: 'Un triángulo tiene 3 vértices; cada uno pertenece a dos lados.' },
+      { termino: 'suficiencia de datos', formas: ['suficiencia de datos'],
+        def: 'Tipo de pregunta que no pide el valor, sino si los datos alcanzan para hallar una sola respuesta.',
+        ejemplo: 'Solo x + y = 10 no basta para x; con x − y = 2, sí: x = 6.' },
       { termino: 'llevada', formas: ['llevadas', 'llevada'],
         def: 'Lo que pasa a la columna siguiente cuando las cifras de una columna suman 10 o más.',
         ejemplo: '58 + 67: 8 + 7 = 15, se escribe 5 y se lleva 1.', ver: ['valor posicional'] },
