@@ -301,6 +301,31 @@ resuelve: { pieza?, generar(semilla) → {
 
 **Unidades de referencia:** `aritmetica/razones-y-proporciones.js` (ideas 1 y 2) y `fisica/movimiento-parabolico-y-circular.js` (ideas 1 y 2).
 
+## 4f. Contrato «se entiende sin profesor» (16 nov): misión, leyenda y aprendizaje
+
+Manda `docs/plan-calidad.md`. Tres campos nuevos por idea; son obligatorios cuando la unidad declara `calidad: 2` (ya pasó por el contrato) y opcionales mientras no.
+
+```js
+aprendizaje: 'El poste mide lo mismo en cualquier unidad; cambia el número…',   // ≤ 25 palabras; no se muestra
+juega: {
+  consigna: 'Los postes de luz de Juliaca miden unos 8 m. Aquí medimos uno con tres reglas a la vez.',
+  mision: { texto: 'Cambia el alto del poste hasta que la regla de centímetros marque 650.',   // ≤ 16 palabras
+            logrado: val => Math.abs(val.L - 6.5) < 1e-9,       // el motor la comprueba (como un reto del laboratorio)
+            bien: 'Listo: 650 cm. Mira las otras reglas: 6,5 m y 65 dm. Es el mismo poste.' },
+  leyenda: [{ s: { v: 'c-o', t: 'L' }, t: 'el alto del poste' }, { s: 'dm', t: 'decímetro: 10 caben en un metro' }],  // ≤ 8 palabras
+  …
+}
+```
+
+- **`aprendizaje`:** lo que el alumno debe poder decir al terminar el juego. Lo usa el lector en frío para comparar.
+- **`mision`:**
+  - el lector la muestra junto a la consigna, arriba de la figura;
+  - se marca con ✓ cuando `logrado` da verdadero, y registra el evento `mision`;
+  - no bloquea nada: el único bloqueo sigue siendo la predicción (regla 3);
+  - el validador exige que no esté cumplida al abrir y que alguien la pueda lograr.
+- **`leyenda`:** cada símbolo de la figura y de la lectura, dicho en palabras. Va debajo de la lectura.
+- **Lector en frío:** sus respuestas quedan en `rutinas/frio/<unidad>.md`.
+
 ## 5. Topes de texto (los vigila `contenido/teoria/teoria.test.js`)
 
 | Campo | Palabras |

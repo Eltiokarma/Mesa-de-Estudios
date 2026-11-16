@@ -818,8 +818,12 @@ input[type=file]{font:inherit;max-width:100%}
 .ec-raiz{display:inline-flex;align-items:stretch;white-space:nowrap;vertical-align:middle}.ec-rad{display:flex;align-items:flex-end;font-size:1.15em;line-height:1}.ec-bajo{display:inline-flex;align-items:center;border-top:2px solid currentColor;padding:2px 2px 0}.ec-ind{align-self:flex-start}
 .ec-vec{display:inline-block;position:relative}.ec-vec::before{content:'→';position:absolute;left:0;right:0;top:-.85em;font-size:.7em;text-align:center}
 .ec-v{border-radius:4px;padding:0 2px}
-@media (min-width:900px){.te-idea{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:12px 24px}
-  .te-idea>h2,.te-idea>.te-momentos{grid-column:1/-1}.te-fig{grid-row:3/7}.te-accion{position:static}}
+@media (min-width:900px){.te-idea{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:12px 24px;align-items:start}
+  .te-idea>h2,.te-idea>.te-momentos{grid-column:1/-1}.te-accion{position:static}
+  /* La figura va a la derecha y ocupa todo el alto; lo demás, apilado a la izquierda. Antes la consigna compartía fila
+     con la figura y se estiraba hasta su alto: un cuadro enorme con dos líneas (captura de Gerson, 16 nov). */
+  .te-idea>.te-figcaja{grid-column:2;grid-row:3/span 8}
+  .te-idea>:not(h2):not(.te-momentos):not(.te-figcaja){grid-column:1}}
 
 /* ---------- Teoría, segunda tanda (14 nov, pedido de Gerson): gesto directo, lupa, llaves, tipografía y laboratorio ---------- */
 /* La figura llega al borde de la tarjeta: a 360 px el texto del SVG (14 en un lienzo de 320) se ve a ~14 px, no a 12,6. */
@@ -1108,3 +1112,19 @@ body.con-lupa{overflow:hidden}
 /* Velocidad de la animación (16 nov): Lento · Normal · Rápido, junto a la pausa. */
 .te-ritmo{grid-column:1/-1;justify-self:start;margin:4px 0 0 8px;min-height:40px;padding:6px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);font:inherit;font-size:15px;font-weight:700;color:var(--muted);cursor:pointer}
 .te-play+.te-ritmo{display:inline-flex}
+
+/* ---------- Contrato «se entiende sin profesor» (docs/plan-calidad.md, 16 nov): misión y leyenda del juego ---------- */
+.te-mision{margin:10px 0;padding:10px 12px 12px;border:2px dashed var(--mom,var(--brand));border-radius:16px;background:var(--card)}
+.te-mision-e{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--mom,var(--brand))}
+.te-mision-c{width:16px;height:16px;border-radius:50%;border:2px solid currentColor;display:inline-grid;place-items:center;font-size:11px;line-height:1}
+.te-mision-t{margin:4px 0 0;font-weight:700;font-size:16px;line-height:1.4}
+.te-mision.lograda{border-style:solid;border-color:var(--ok);background:color-mix(in srgb,var(--ok) 8%,var(--card))}
+.te-mision.lograda .te-mision-e{color:var(--ok)}
+.te-mision.lograda .te-mision-c{background:var(--ok);border-color:var(--ok)}
+.te-mision.lograda .te-mision-c::after{content:'✓';color:#fff}
+.te-mision-bien{margin:6px 0 0;font-size:15px;line-height:1.4}
+.te-leyenda{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0 10px;font-size:14px}
+.te-leyenda>div{display:flex;align-items:baseline;gap:6px}
+.te-leyenda dt{font-weight:800;min-width:1.2em}
+.te-leyenda dd{margin:0;color:var(--muted)}
+

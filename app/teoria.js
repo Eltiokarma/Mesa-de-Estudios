@@ -449,11 +449,12 @@
     function juega() {
       const j = idea.juega;
       actuar('consigna', j.voz || T.plano(j.consigna));
-      juego = montarJuego(j, { fig, zona, lectura, alt: $('#te-alt'), piezaPorDefecto: idea.pieza, alTocar: () => actuar('juego'), minimo: j.minimo });
+      juego = montarJuego(j, { fig, zona, lectura, alt: $('#te-alt'), piezaPorDefecto: idea.pieza, alTocar: () => actuar('juego'), minimo: j.minimo,
+        alMision: () => evento('mision', {}) });
       sig.textContent = 'Siguiente: Predice ›';
       sig.onclick = () => {
         const p = juego.probados();
-        if (p < j.minimo) { decir(`Prueba ${j.minimo - p === 1 ? 'un caso más' : `${j.minimo - p} casos más`} antes de seguir: cambia un valor.`); (zona.querySelector('input,button') || sig).focus(); return; }
+        if (p < j.minimo) { decir(`Prueba ${j.minimo - p === 1 ? 'un valor más' : `${j.minimo - p} valores más`} antes de seguir: cambia un número.`); (zona.querySelector('input,button') || sig).focus(); return; }
         evento('juego', { casos: p });
         ir('predice');
       };
@@ -945,11 +946,26 @@
       const consignaHTML = typeof j.consigna === 'string' ? esc(j.consigna) : E.html(j.consigna);
       const slotC = f.closest('.te-idea, .te-labo') && f.closest('.te-idea, .te-labo').querySelector('.te-consigna-arriba');
       if (slotC) { slotC.innerHTML = consignaHTML; slotC.hidden = false; }
+      // Contrato «se entiende sin profesor» (docs/plan-calidad.md, 16 nov): una misión que el motor comprueba y la
+      // leyenda de los símbolos, dichos en palabras. Las dos son opcionales mientras la unidad no esté rehecha.
+      // La misión va junto a la consigna, arriba de la figura (en el celular, debajo quedaba fuera de la vista).
+      const mis = j.mision;
+      let misEl = null;
+      const misionHecha = () => !!(misEl && misEl.classList.contains('lograda'));
+      const misionHTML = mis ? `<div class="te-mision" aria-live="polite"><span class="te-mision-e"><span class="te-mision-c" aria-hidden="true"></span>Misión</span>
+          <p class="te-mision-t">${E.html(mis.texto)}</p><p class="te-mision-bien" hidden></p></div>` : '';
+      const leyendaHTML = j.leyenda ? `<dl class="te-leyenda" aria-label="Qué es cada símbolo">${j.leyenda.map(x =>
+        `<div><dt>${E.html([x.s])}</dt><dd>${esc(x.t)}</dd></div>`).join('')}</dl>` : '';
       z.innerHTML = `<h3 class="lector" tabindex="-1">Juega</h3>${slotC ? '' : `<p class="te-consigna">${consignaHTML}</p>`}
+        ${slotC ? '' : misionHTML}${leyendaHTML}
         ${arr.length ? '<p class="te-pista"><span class="te-pista-m" aria-hidden="true"></span>Arrastra los círculos de la figura, o usa − y +.</p>' : ''}
         <div class="te-controles">${ctr.map(control).join('')}</div>
         ${ctr.length ? '<button type="button" class="btn borde te-reinicio">Volver al inicio</button>' : ''}
         ${o.minimo ? '<p class="sub te-casos" aria-live="polite"></p>' : ''}`;
+      if (mis) {
+        if (slotC) { slotC.insertAdjacentHTML('afterend', misionHTML); misEl = slotC.nextElementSibling; }
+        else misEl = z.querySelector('.te-mision');
+      }
       // Una figura muy alta no se queda fija al bajar: taparía la consigna, los retos y los controles. Se recalcula cuando
       // la figura cambia de tamaño (una pieza 3D crece recién cuando carga three.js).
       const altura = () => { const c = f.closest('.te-figcaja'); if (c) c.classList.toggle('alta', f.getBoundingClientRect().height > innerHeight * 0.42); };
@@ -973,8 +989,18 @@
         if (j.lectura) lec.innerHTML = E.html(j.lectura(vals));
         if (contar) probados.add(JSON.stringify(vals));
         if (contar && o.alCambiar) o.alCambiar(Object.assign({}, vals));
+        if (mis && contar && !misionHecha()) {   // el validador asegura que no está cumplida al abrir
+          let ok = false; try { ok = mis.logrado(Object.assign({}, vals)) === true; } catch { ok = false; }
+          if (ok) {
+            const m = misEl, b = m.querySelector('.te-mision-bien');
+            m.classList.add('lograda');
+            if (mis.bien) { b.innerHTML = E.html(mis.bien); b.hidden = false; }
+            if (o.alMision) o.alMision();
+          }
+        }
         const cas = z.querySelector('.te-casos');
-        if (cas) cas.textContent = probados.size < o.minimo ? `Casos probados: ${probados.size} de ${o.minimo}` : `Casos probados: ${probados.size}`;
+        // «Casos probados: 1 de 3» no se entendía (lector en frío, 16 nov): se dice qué cuenta como un caso.
+        if (cas) cas.textContent = probados.size < o.minimo ? `Prueba ${o.minimo} valores distintos: llevas ${probados.size}.` : `Probaste ${probados.size} valores distintos.`;
         for (const c of ctr) {
           const el = z.querySelector(`[data-c="${c.id}"]`);
           if (!el) continue;
@@ -1150,6 +1176,7 @@
           if (anim) anim.destruir();
           if (roFig) roFig.disconnect();
           if (slotC) { slotC.hidden = true; slotC.textContent = ''; }
+          if (misEl && misEl.parentNode !== z) misEl.remove();
           f.removeEventListener('pointerdown', abajo); f.removeEventListener('pointermove', mueve);
           f.removeEventListener('pointerup', arriba); f.removeEventListener('pointercancel', arriba);
           f.removeEventListener('touchstart', sinScroll); f.classList.remove('con-manijas', 'arrastrando');

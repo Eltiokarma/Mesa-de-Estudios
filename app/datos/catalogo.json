@@ -107,6 +107,7 @@
       "archivo": "/contenido/teoria/fisica/magnitudes-y-vectores.js",
       "requiere": [
        "/nucleo/kit/piezas/recta.js",
+       "/nucleo/kit/piezas/fis-medida.js",
        "/nucleo/kit/piezas/fis-dimensiones.js",
        "/nucleo/kit/piezas/flechas.js",
        "/plantillas/vectores/motor.js",

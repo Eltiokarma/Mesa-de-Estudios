@@ -61,6 +61,8 @@
     paso: 14, regla: 30, condicion: 22, historia: 70, enunciado: 40, solucion: 20, lectura: 12,
     // Fase 2 (decisión de Gerson, 15 nov): «Lee» (tarjetas para leer) y «Así se resuelve» (ejercicio resuelto paso a paso).
     tarjeta: 45, resuelto: 30, respuesta: 14,
+    // Contrato «se entiende sin profesor» (16 nov): qué debe poder decir el alumno y qué es cada símbolo.
+    aprendizaje: 25, leyenda: 8,
   };
   // Los siete momentos posibles, en orden. «Lee» y «Así se resuelve» van solo si la idea los trae (momentosDe).
   const MOMENTOS = ['lee', 'juega', 'predice', 'mira', 'regla', 'resuelve', 'ahora-tu'];
@@ -194,6 +196,25 @@
       if (conMinimo && !(j.minimo >= 1)) mal(d, 'minimo: cuántos casos distintos prueba el alumno antes de seguir (1 o más)');
     }
 
+    function revisarContrato(d, idea, exige) {
+      const j = idea.juega;
+      if (idea.aprendizaje !== undefined) tope(d, 'aprendizaje', idea.aprendizaje);
+      else if (exige) mal(d, 'sin aprendizaje: la frase que el alumno debe poder decir al terminar el juego');
+      if (j.mision !== undefined) {
+        const m = j.mision;
+        // La misión se revisa como un reto del laboratorio: el motor la comprueba y alguien la puede lograr.
+        revisarInvitacion(`${d} misión`, j, Object.assign({}, m, { texto: m.texto }));
+        if (m.logrado && m.logrado.length >= 2) mal(`${d} misión`, 'logrado(valores) mira solo el caso actual');
+      } else if (exige) mal(d, 'sin misión en el juego: una meta que el motor comprueba («Haz que…»)');
+      if (j.leyenda !== undefined) {
+        if (!Array.isArray(j.leyenda) || !j.leyenda.length) mal(d, 'leyenda: lista de { s, t } (símbolo y qué es)');
+        else for (const x of j.leyenda) {
+          if (!x || !x.s || !x.t) { mal(d, 'leyenda: cada símbolo con s y t'); continue; }
+          ecuacion(`${d} leyenda`, [x.s]);
+          tope(d, 'leyenda', x.t);
+        }
+      } else if (exige) mal(d, 'sin leyenda: cada símbolo de la figura y la lectura dicho en palabras');
+    }
     // Una invitación del laboratorio: { texto, logrado, bien?, testigo? }. logrado(valores, guardados, mesa) → true solo si
     // se cumplió. Se busca un caso que la cumpla en la grilla de los controles (toda, o una muestra fija si es muy grande);
     // y no debe estar cumplida ya en el inicio. Si `logrado` pide dos argumentos o más, mira también los casos guardados:
@@ -315,6 +336,10 @@
       // 1. Juega
       if (!idea.juega) mal(d, 'sin juega (regla 3: se juega antes de cualquier pregunta)');
       else revisarJuego(`${d} juega`, idea.juega, idea.pieza, true);
+      // Contrato «se entiende sin profesor» (docs/plan-calidad.md, 16 nov): la misión del juego, la leyenda de símbolos y
+      // lo que el alumno debe poder decir al terminar. Opcionales mientras la unidad no esté rehecha; obligatorios si la
+      // unidad declara calidad: 2 (la unidad ya pasó por el contrato).
+      if (idea.juega) revisarContrato(d, idea, def.calidad >= 2);
 
       // 2. Predice
       const p = idea.predice;

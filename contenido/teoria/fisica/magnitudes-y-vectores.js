@@ -69,23 +69,16 @@
   }
 
   // ---------- Idea 1: cambiar de unidad cambia el número, no la magnitud ----------
-  // Cambia: la unidad de la regla · Permanece: el largo dibujado del elástico (2,5 m) ·
-  // Progresa: el número que lo mide (2,5 → 25 → 250) · Se reserva: la conversión de km/h a m/s, en saltos de 20 m ·
-  // Debe verse: el mismo segmento con otro número; convertir es multiplicar por un factor que vale 1.
-  const UNIDADES = { m: { k: 1, max: 3, paso: 0.5, cada: 2 }, dm: { k: 10, max: 30, paso: 5, cada: 2 }, cm: { k: 100, max: 300, paso: 50, cada: 2 } };
-  const LAPIZ = 2.5;
-  // Decimales con que se lee el largo en cada unidad: la misma precisión (1 cm) en las tres.
-  const DEC_UN = { m: 2, dm: 1, cm: 0 };
-  // largo: el del elástico en metros (el juego lo hace crecer y encoger solo; la regla de cada unidad llega a 3 m).
-  const reglaEn = (un, largo = LAPIZ) => {
-    const U = UNIDADES[un], L = largo * U.k;
-    return { datos: { min: 0, max: U.max, paso: U.paso, cada: U.cada, sufijo: ` ${un}`, decimales: 1, variable: un, color: 'o', filas: 1,
-      elementos: [{ tipo: 'distancia', objeto: 'elastico', a: 0, b: L, color: 'o', rotulo: `L = ${f(L, DEC_UN[un])} ${un}` }] }, estado: {} };
-  };
-  // El mismo largo dicho en la unidad elegida y en otra (metros, o centímetros si la regla ya está en metros).
-  const mismoLargo = (un, largo) => (un === 'm'
-    ? `${f(largo, 2)} m = ${f(largo * 100, 0)} cm`
-    : `${f(largo * UNIDADES[un].k, DEC_UN[un])} ${un} = ${f(largo, 2)} m`);
+  // Rehecha el 16 nov contra el contrato «se entiende sin profesor» (docs/plan-calidad.md): Gerson pidió un poste de
+  // luz medido con reglas de distintas escalas, en SVG (pieza fis-medida). Antes era una barra sobre una recta que
+  // cambiaba de regla al cambiar de unidad, y así no se podía comparar.
+  // Cambia: el alto del poste · Permanece: el poste es uno solo y las tres reglas lo miden juntas ·
+  // Progresa: los tres números a la vez (6,5 m, 65 dm, 650 cm) · Se reserva: la conversión de km/h a m/s ·
+  // Debe verse: el mismo alto con tres números; la regla más fina da el número más grande.
+  const POSTE = 8;   // m: los postes de alumbrado de baja tensión suelen medir unos 8 m
+  const MISION = 6.5;
+  const Lp = { v: 'c-o', t: 'L' };
+  const medida = L => ({ datos: { objeto: 'poste', alto: L, max: 10, color: 'o', variable: 'L' }, estado: {} });
   // Lo que avanza en cada segundo a 72 km/h: saltos de 20 m (se calcula: 72 · 1000 / 3600).
   const V_KMH = 72, V_MS = V_KMH * 1000 / 3600;
   const saltos = (n, conRotulo) => Array.from({ length: n }, (_, i) => ({ tipo: 'salto', a: i * V_MS, b: (i + 1) * V_MS, color: 'o', rotulo: conRotulo && i === 0 ? '1 s' : undefined, desde: i + 2 }));
@@ -96,17 +89,27 @@
     titulo: 'Otra unidad, otro número',
     temas: ['Magnitudes fundamentales y derivadas', 'Sistema Internacional'],
     pieza: 'recta',
+    aprendizaje: 'El poste mide lo mismo en cualquier unidad; cambia el número: en decímetros es 10 veces más y en centímetros, 100 veces más.',
     juega: {
-      consigna: 'El elástico se estira y se encoge solo. Mira los dos números de un mismo largo; cambia la unidad de la regla.',
-      voz: '¿Qué cambia: el elástico o el número que lo mide?',
-      // L barre de 0,5 m a 3 m y vuelve: el largo es uno solo, cada unidad le pone su número (× 10, × 100).
-      controles: [
-        { id: 'un', etiqueta: 'Unidad', opciones: [{ valor: 'm', texto: 'metro' }, { valor: 'dm', texto: 'decímetro' }, { valor: 'cm', texto: 'centímetro' }] },
-        { id: 'L', etiqueta: 'L', color: 'c-o', min: 0.5, max: 3, paso: 0.05, inicio: LAPIZ, unidad: 'm', decimales: 2,
-          auto: { velocidad: 0.5, modo: 'rebota' } },
+      pieza: 'fis-medida',
+      consigna: 'Los postes de luz de Juliaca miden unos 8 m. Aquí medimos uno con tres reglas a la vez.',
+      mision: {
+        texto: `Cambia el alto del poste hasta que la regla de centímetros marque ${f(MISION * 100, 0)}.`,
+        logrado: val => Math.abs(val.L - MISION) < 1e-9,
+        bien: `Listo: ${f(MISION * 100, 0)} cm. Mira las otras reglas: ${f(MISION, 1)} m y ${f(MISION * 10, 0)} dm. Es el mismo poste.`,
+      },
+      voz: 'Mira las tres reglas: ¿marcan alturas distintas o la misma altura con otro número?',
+      leyenda: [
+        { s: Lp, t: 'el alto del poste' },
+        { s: 'm', t: 'metro' },
+        { s: 'dm', t: 'decímetro: 10 caben en un metro' },
+        { s: 'cm', t: 'centímetro: 100 caben en un metro' },
       ],
-      dibujo: val => reglaEn(val.un, val.L),
-      lectura: val => [`El mismo largo: ${mismoLargo(val.un, val.L)}`],
+      controles: [
+        { id: 'L', etiqueta: 'Alto del poste, L', color: 'c-o', min: 4, max: 10, paso: 0.1, inicio: POSTE, unidad: 'm', decimales: 1 },
+      ],
+      dibujo: val => medida(val.L),
+      lectura: val => [Lp, ` = ${f(val.L, 1)} m = ${f(val.L * 10, 0)} dm = ${f(val.L * 100, 0)} cm`],
       minimo: 3,
     },
     predice: {
@@ -121,8 +124,8 @@
       revelar: { datos: rectaV(5, true), estado: {} },
       coincide: `Coincide: 72 000 m repartidos en 3600 s dan ${f(V_MS, 0)} m cada segundo.`,
     },
-    // Hallazgo 9: el juego mide el elástico y «Mira» mide la combi de la predicción. Es la misma regla graduada (pieza
-    // recta) con otro objeto: lo que se repite es la idea de cambiar el número sin cambiar la magnitud.
+    // «Mira» mide la combi de la predicción en la recta (pieza recta). Pendiente del contrato (etapa 1, paso 3): dibujar
+    // la combi, que hoy son solo saltos sobre la recta.
     mira: {
       datos: rectaV(5, true, true),
       pasos: [
@@ -662,7 +665,7 @@
     unidad: 'fisica.magnitudes-y-vectores',
     version: '0.2.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/fis-dimensiones.js', '/nucleo/kit/piezas/flechas.js',
+    requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/fis-medida.js', '/nucleo/kit/piezas/fis-dimensiones.js', '/nucleo/kit/piezas/flechas.js',
       '/plantillas/vectores/motor.js', '/nucleo/fisica3d.js', '/nucleo/kit/piezas/fis-espacio-3d.js'],
     // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso (es la primera).
     glosario: [
