@@ -80,6 +80,16 @@
     titulo: 'Una paralela corta en proporción',
     temas: ['Teorema de Thales'],
     pieza: 'geo-figura',
+    // Lee (fase 2): vocabulario de tramos y paralelas, sin decir qué pasa si DE se inclina (eso lo decide Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un lado en dos tramos', texto: ['El punto D parte el lado AB en dos tramos: ', { v: 'c-o', t: 'AD' }, ', el de arriba, y ', { v: 'c-i', t: 'DB' },
+          ', el de abajo. Su razón dice cuántas veces cabe el tramo de abajo en el de arriba.'],
+          ecuacion: [{ v: 'c-o', t: 'AD' }, ' = 6 y ', { v: 'c-i', t: 'DB' }, ' = 3  →  ', frac({ v: 'c-o', t: 'AD' }, { v: 'c-i', t: 'DB' }), ' = 2'] },
+        { titulo: 'Rectas paralelas', texto: 'Dos rectas son paralelas si nunca se cortan y van siempre a la misma distancia, como los dos rieles del tren que llega a Juliaca. En la figura, DE y BC llevan la misma marca de paralelas.' },
+        { titulo: 'Qué mirar', texto: 'Sube y baja el corte DE. La lectura muestra dos razones: una en el lado AB y otra en el lado AC. Fíjate cómo se comportan las dos a la vez.' },
+      ],
+    },
     juega: {
       consigna: 'La recta DE es paralela a BC. Súbela o bájala y compara la razón AD/DB con la razón AE/EC.',
       voz: 'Mueve el corte. Comprueba las dos razones cada vez.',
@@ -119,6 +129,32 @@
       ecuacion: ['DE ∥ BC  ⇔  ', { llave: [frac({ v: 'c-o', t: 'AD' }, { v: 'c-i', t: 'DB' })], nota: 'en AB', color: 'c-o' }, ' = ', { llave: [frac({ v: 'c-o', t: 'AE' }, { v: 'c-i', t: 'EC' })], nota: 'en AC', color: 'c-i' }],
       condicion: 'se comparan tramos que se corresponden en el mismo orden. Vale igual para tres paralelas cortadas por dos secantes.',
       voz: 'Primero la paralela; después la proporción.',
+    },
+    // Así se resuelve (fase 2): el caso del triángulo de «Ahora tú» (mismas cuentas, otras semillas). Se alterna el
+    // tramo que falta en AC: el de abajo (EC) o el de arriba (AE).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), a = r.ent(2, 9), b = r.ent(2, 9), c = r.ent(2, 9), pideEC = s % 2 === 0;
+        const x = pideEC ? b * c / a : a * c / b;
+        const AD = { v: 'c-o', t: 'AD' }, DB = { v: 'c-i', t: 'DB' }, AE = { v: 'c-o', t: 'AE' }, EC = { v: 'c-i', t: 'EC' };
+        const dato = pideEC ? AE : EC, pedido = pideEC ? EC : AE;
+        const compara = a === b ? 'igual a' : a > b ? 'mayor que' : 'menor que';
+        return {
+          enunciado: ['En el triángulo ABC, DE es paralela a BC. Si ', AD, ` = ${a}, `, DB, ` = ${b} y `, dato, ` = ${c}, ¿cuánto mide `, pedido, '?'],
+          dibujo: { datos: thales(a / (a + b), { sinNum: true, alt: `DE paralela a BC con AD = ${a}, DB = ${b} y ${pideEC ? 'AE' : 'EC'} = ${c}` }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', pedido, pideEC ? ', el tramo de abajo del lado AC.' : ', el tramo de arriba del lado AC.'] },
+            { tipo: 'datos', texto: ['En el lado AB, ', AD, ` = ${a} arriba y `, DB, ` = ${b} abajo. En el lado AC conozco `, dato, ` = ${c}.`] },
+            { tipo: 'regla', texto: 'DE es paralela a BC. Entonces los lados AB y AC quedan partidos en la misma razón: tramo de arriba entre tramo de abajo.',
+              ecuacion: [frac(AD, DB), ' = ', frac(AE, EC)] },
+            { tipo: 'cuentas', texto: 'Pongo los números en el mismo orden, arriba con arriba y abajo con abajo, y despejo.',
+              ecuacion: pideEC ? [frac(`${a}`, `${b}`), ' = ', frac(`${c}`, 'x'), `  →  x = ${b} · ${c} / ${a} = ${f(x)}`]
+                : [frac(`${a}`, `${b}`), ' = ', frac('x', `${c}`), `  →  x = ${a} · ${c} / ${b} = ${f(x)}`] },
+            { tipo: 'sentido', texto: [`Las dos razones dan ${f(a / b)}. Y como `, AD, ` es ${compara} `, DB, ', también ', AE, ` es ${compara} `, EC, '.'] },
+          ],
+          respuesta: [pedido, ` = ${f(x)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Empareja los tramos en el mismo orden.',
@@ -168,11 +204,38 @@
       angulos: [{ en: 'A', de: 'B', a: 'C' }, ...(o.E ? [{ en: 'E', de: 'A', a: 'C', color: 'd', texto: '45°', desde: k.ec || 0 }, { en: 'C', de: 'E', a: 'A', color: 'd', texto: '45°', desde: k.ec || 0 }] : [])],
     };
   };
+  // Triángulo de «Así se resuelve» a escala con sus lados reales: BC = a sobre el piso, AB = c y AC = b. D es el pie de la
+  // bisectriz de A (BD = a·c/(b + c)) e I, el incentro (promedio de los vértices con pesos a, b y c).
+  const bisecLados = (c, b, a, o = {}) => {
+    const B = [0, 0], C = [a, 0], ax = (c * c - b * b + a * a) / (2 * a), A = [ax, Math.sqrt(Math.max(c * c - ax * ax, 0))];
+    const bd = a * c / (b + c), D = [bd, 0], I = [(a * A[0] + b * B[0] + c * C[0]) / (a + b + c), (a * A[1] + b * B[1] + c * C[1]) / (a + b + c)];
+    const m = Math.max(a, c, b) * 0.12;
+    return {
+      alt: `Triángulo con AB = ${c}, AC = ${b} y BC = ${a}; la bisectriz de A corta BC en D${o.inc ? ' y pasa por el incentro I' : ''}`,
+      vista: { x: [Math.min(0, ax) - m, Math.max(a, ax) + m], y: [-m * 2.6, A[1] + m] },
+      puntos: [pt('A', A, { rotulo: 'A', lado: 90 }), pt('B', B, { rotulo: 'B', lado: 200 }), pt('C', C, { rotulo: 'C', lado: -20 }), pt('D', D, { rotulo: 'D', color: 'h', lado: -90 }),
+        ...(o.inc ? [pt('I', I, { rotulo: 'I', color: 'h', lado: 0 })] : [])],
+      segmentos: [{ de: 'A', a: 'B', color: 'o', grosor: 'variable', texto: `${c}` }, { de: 'A', a: 'C', color: 'i', grosor: 'variable', texto: `${b}` },
+        { de: 'B', a: 'D', color: 'o', lado: -1, texto: o.inc ? undefined : o.sol ? f(bd) : '?' }, { de: 'D', a: 'C', color: 'i', lado: -1, texto: o.sol && !o.inc ? f(a - bd) : undefined },
+        { de: 'A', a: 'D', color: 'h', discontinua: true }, ...(o.inc ? [{ de: 'B', a: 'I', color: 'h', grosor: 'fino', discontinua: true }] : [])],
+      angulos: [{ en: 'A', de: 'B', a: 'D', color: 'h', rayita: 1, radio: 22 }, { en: 'A', de: 'D', a: 'C', color: 'h', rayita: 1, radio: 22 }],
+      rotulos: [{ x: a / 2, y: -m * 2.3, texto: `BC = ${a}` }],
+    };
+  };
   const bisectriz = {
     id: 'bisectriz',
     titulo: 'La bisectriz copia la razón',
     temas: ['Teoremas de la bisectriz y del incentro'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es la bisectriz y qué tramos deja en BC, sin decir cómo se reparte el lado (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Partir el ángulo', texto: 'La bisectriz de un ángulo es la recta que lo parte en dos ángulos iguales. En la figura, las dos marcas rojas junto a A señalan esas dos mitades.' },
+        { titulo: 'Dos tramos en BC', texto: ['La bisectriz de A llega al lado BC en el punto D y lo parte en dos tramos. El tramo ', { v: 'c-o', t: 'BD' },
+          ' toca al lado ', { v: 'c-o', t: 'AB' }, '; el tramo ', { v: 'c-i', t: 'DC' }, ' toca al lado ', { v: 'c-i', t: 'AC' }, '.'] },
+        { titulo: 'Qué mirar', texto: 'Alarga o acorta AB y AC con los controles o arrastrando B y C. Fíjate hacia qué vértice se corre D y compara las dos razones de la lectura.' },
+      ],
+    },
     juega: {
       consigna: 'AD es la bisectriz del ángulo A. Cambia los lados AB y AC y compara cómo queda partido BC.',
       voz: 'Cambia un lado. Mira hacia dónde se corre D.',
@@ -223,6 +286,45 @@
       condicion: 'AD es la bisectriz interior del ángulo A y D está en BC; I es el corte de las bisectrices.',
       voz: 'Cada tramo copia al lado que lo toca.',
     },
+    // Así se resuelve (fase 2): los dos casos de «Ahora tú» (BD con la bisectriz; AI/ID con el incentro), mismas cuentas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        let c, b, a;
+        do { c = r.ent(4, 12); b = r.ent(4, 12); a = r.ent(Math.abs(b - c) + 1, b + c - 1); } while (b === c);
+        const AB = { v: 'c-o', t: 'AB' }, AC = { v: 'c-i', t: 'AC' }, BD = { v: 'c-o', t: 'BD' }, DC = { v: 'c-i', t: 'DC' };
+        const bd = a * c / (b + c), inc = s % 2 === 1, raz = (b + c) / a;
+        const datos = { tipo: 'datos', texto: [AB, ` = ${c}, `, AC, ` = ${b} y BC = ${a}. AD es la bisectriz del ángulo A.`] };
+        if (!inc) return {
+          enunciado: ['En el triángulo ABC, ', AB, ` = ${c}, `, AC, ` = ${b} y BC = ${a}. La bisectriz de A corta BC en D. ¿Cuánto mide `, BD, '?'],
+          dibujo: { datos: bisecLados(c, b, a), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', BD, ', el tramo de BC que toca al lado ', AB, '.'] },
+            datos,
+            { tipo: 'regla', texto: ['La bisectriz reparte BC como están los lados que la rodean: ', BD, ' va con ', AB, ' y ', DC, ' va con ', AC, '.'],
+              ecuacion: [frac(BD, DC), ' = ', frac(AB, AC), ` = ${c} : ${b}`] },
+            { tipo: 'cuentas', texto: [`Parto BC = ${a} en ${c} + ${b} = ${b + c} partes iguales. `, BD, ` se lleva ${c} de esas partes.`],
+              ecuacion: [BD, ` = ${a} · `, frac(`${c}`, `${b + c}`), ` = ${f(bd)}`], dibujo: { datos: bisecLados(c, b, a, { sol: true }), estado: {} } },
+            { tipo: 'sentido', texto: ['Queda ', DC, ` = ${f(a - bd)}, y los dos tramos suman BC. `, BD, ` sale ${c > b ? 'mayor' : 'menor'} porque `, AB, ` es ${c > b ? 'mayor' : 'menor'} que `, AC, '.'] },
+          ],
+          respuesta: [BD, ` = ${f(bd)}`],
+        };
+        return {
+          enunciado: ['En el triángulo ABC, ', AB, ` = ${c}, `, AC, ` = ${b} y BC = ${a}. I es el incentro y AD, la bisectriz de A. ¿Cuánto vale AI/ID?`],
+          dibujo: { datos: bisecLados(c, b, a, { inc: true }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden AI/ID: en qué razón el incentro I parte la bisectriz AD.' },
+            datos,
+            { tipo: 'regla', texto: ['I también está en la bisectriz de B. En el triángulo ABD, esa bisectriz parte AD como los lados ', AB, ' y ', BD, '.'],
+              ecuacion: [frac('AI', 'ID'), ' = ', frac(AB, BD)] },
+            { tipo: 'cuentas', texto: ['Primero hallo ', BD, ' con la bisectriz de A; después divido.'],
+              ecuacion: [BD, ` = ${a} · ${c} / ${b + c} = ${f(bd)}  →  `, frac('AI', 'ID'), ` = ${c} / ${f(bd)} = ${f(raz)}`] },
+            { tipo: 'sentido', texto: `Con el atajo, (AB + AC) / BC = (${c} + ${b}) / ${a} = ${f(raz)}. Coincide, y es mayor que 1: AI es el tramo largo.` },
+          ],
+          respuesta: [`AI/ID = ${f(raz)}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Ubica los lados vecinos de cada tramo.',
       generar(s) {
@@ -271,11 +373,12 @@
     };
   };
   const mene = (o = {}) => {
-    const F = U.mezcla(MA, MB, 0.5), D = U.mezcla(MB, MC, 0.7), E = U.corte(F, D, MC, MA), k = o.pasos || {};
+    const F = U.mezcla(MA, MB, o.tf === undefined ? 0.5 : o.tf), D = U.mezcla(MB, MC, o.td === undefined ? 0.7 : o.td), E = U.corte(F, D, MC, MA), k = o.pasos || {};
     const G = U.corte(MC, [MC[0] + (MA[0] - MB[0]), MC[1] + (MA[1] - MB[1])], F, D);
     const r1 = U.dist(MA, F) / U.dist(F, MB), r2 = U.dist(MB, D) / U.dist(D, MC), r3 = U.dist(MC, E) / U.dist(E, MA);
     return {
-      d: { alt: o.alt || `Una recta corta AB en F, BC en D y la prolongación de CA en E: AF/FB · BD/DC · CE/EA = ${f(r1 * r2 * r3)}`, vista: { x: [-0.8, 12], y: [-3.2, 5.6] },
+      d: { alt: o.alt || `Una recta corta AB en F, BC en D y la prolongación de CA en E: AF/FB · BD/DC · CE/EA = ${f(r1 * r2 * r3)}`,
+        vista: o.tf === undefined ? { x: [-0.8, 12], y: [-3.2, 5.6] } : { x: [-0.8, Math.max(7.8, E[0] + 0.8)], y: [Math.min(-0.8, E[1] - 0.8), 5.6] },
         puntos: [pt('A', MA, { rotulo: 'A', lado: 90 }), pt('B', MB, { rotulo: 'B', lado: -120 }), pt('C', MC, { rotulo: 'C', lado: 60 }), pt('D', D, { rotulo: 'D', color: 'o', lado: -120 }),
           pt('E', E, { rotulo: 'E', color: 'i', lado: -45 }), pt('F', F, { rotulo: 'F', color: 'd', lado: 160 }), ...(o.G ? [pt('G', G, { rotulo: 'G', lado: 0, desde: k.g || 0 })] : [])],
         regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', opacidad: 0.05 }],
@@ -290,6 +393,15 @@
     titulo: 'Tres razones cuyo producto es 1',
     temas: ['Menelao y Ceva'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es una ceviana y cómo se recorre el triángulo, sin decir qué pasa con una recta que lo corta.
+    lee: {
+      tarjetas: [
+        { titulo: 'Cevianas', texto: 'Una ceviana es un segmento que va de un vértice a un punto del lado opuesto, como AD, que sale de A y llega a BC. Las medianas y las bisectrices que ya conoces son cevianas.' },
+        { titulo: 'Dar la vuelta', texto: 'Las tres razones se escriben dando la vuelta al triángulo: de A a F, de F a B, de B a D, de D a C, de C a E y de E a A. Así cada tramo aparece una sola vez.',
+          ecuacion: [frac('AF', 'FB'), ' · ', frac('BD', 'DC'), ' · ', frac('CE', 'EA')] },
+        { titulo: 'Qué mirar', texto: 'Mueve D y E por sus lados. F se acomoda solo para que las tres cevianas pasen por P. Mira el producto de la lectura cada vez que muevas algo.' },
+      ],
+    },
     juega: {
       consigna: 'Las cevianas AD, BE y CF pasan por un mismo punto P. Mueve D y E; F se acomoda. Mira el producto de las razones.',
       voz: 'Mueve D y E. Comprueba si el producto cambia.',
@@ -341,6 +453,32 @@
       condicion: 'se usan largos y se recorre A → F → B → D → C → E → A. En Menelao quedan uno o tres puntos afuera.',
       voz: 'Recorre el triángulo en orden: así no se cruzan los tramos.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» (mismas cuentas, otras semillas), con la figura a escala: D y F
+    // donde dicen las razones dadas y E donde la deja el teorema. En Menelao se pide CE/EA ≤ 1/2 para que E no se vaya lejos.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), esCeva = s % 2 === 0;
+        let p, q, m, n, x;
+        do { p = r.ent(1, 5); q = r.ent(1, 5); m = r.ent(2, 6); n = r.ent(2, 6); x = (q * n) / (p * m); } while (!esCeva && x > 0.5);
+        const dib = esCeva ? ceva(m / (m + n), x / (1 + x)).d : mene({ tf: p / (p + q), td: m / (m + n), alt: `Una recta corta AB en F, BC en D y la prolongación de CA en E, con AF/FB = ${p}/${q} y BD/DC = ${m}/${n}` }).d;
+        const cerca = x === 1 ? 'x = 1: E es el punto medio de CA.' : `x ${x < 1 ? 'es menor' : 'es mayor'} que 1: E queda más cerca de ${x < 1 ? 'C' : 'A'} que de ${x < 1 ? 'A' : 'C'}, como en la figura.`;
+        return {
+          enunciado: [`${esCeva ? 'Las cevianas AD, BE y CF son concurrentes' : 'Una recta corta AB en F, BC en D y la prolongación de CA en E'}. Si AF/FB = ${p}/${q} y BD/DC = ${m}/${n}, ¿cuánto vale CE/EA?`],
+          dibujo: { datos: dib, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden x = CE/EA, la tercera razón de la vuelta al triángulo.' },
+            { tipo: 'datos', texto: `AF/FB = ${p}/${q} y BD/DC = ${m}/${n}. ${esCeva ? 'Las tres cevianas pasan por un mismo punto P.' : 'F, D y E están alineados; E cae fuera del lado CA.'}` },
+            { tipo: 'regla', texto: esCeva ? 'Teorema de Ceva: si las tres cevianas concurren, las tres razones de la vuelta multiplicadas dan 1.'
+              : 'Teorema de Menelao: si los tres puntos están en una recta, las tres razones de la vuelta, con largos, multiplicadas dan 1.',
+              ecuacion: [frac('AF', 'FB'), ' · ', frac('BD', 'DC'), ' · ', frac('CE', 'EA'), ' = 1'] },
+            { tipo: 'cuentas', texto: 'Multiplico las dos razones que conozco. La que falta es la inversa de ese producto.',
+              ecuacion: [frac(`${p}`, `${q}`), ' · ', frac(`${m}`, `${n}`), ' · x = 1  →  x = ', frac(`${q} · ${n}`, `${p} · ${m}`), ` = ${f(x)}`] },
+            { tipo: 'sentido', texto: `Compruebo: ${p}/${q} · ${m}/${n} · ${q * n}/${p * m} = ${p * m * q * n}/${p * m * q * n} = 1. Y ${cerca}` },
+          ],
+          respuesta: [`CE/EA = ${f(x)}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Recorre el triángulo en orden y despeja la razón que falta.',
       generar(s) {
@@ -382,16 +520,20 @@
     };
   };
   const anti = (AB, AC, AE, o = {}) => {
-    const A = [0, 0], B = [AB, 0], C = U.polar(A, AC, 52), AD = AC * AE / AB, D = [AD, 0], E = U.polar(A, AE, 52), k = o.pasos || {};
+    // o.par: DE paralela a BC (D va con B), para «Así se resuelve»; sin él, la antiparalela de Predice y Mira.
+    const A = [0, 0], B = [AB, 0], C = U.polar(A, AC, 52), AD = o.par ? AB * AE / AC : AC * AE / AB, D = [AD, 0], E = U.polar(A, AE, 52), k = o.pasos || {};
     return {
-      alt: o.alt || `Triángulo ABC con D en AB y E en AC; el ángulo ADE es igual al ángulo ACB, así que ADE es semejante a ACB`,
+      alt: o.alt || (o.par ? 'Triángulo ABC con D en AB y E en AC; DE es paralela a BC, así que ADE es semejante a ABC'
+        : `Triángulo ABC con D en AB y E en AC; el ángulo ADE es igual al ángulo ACB, así que ADE es semejante a ACB`),
       vista: { x: [-0.8, AB + 0.8], y: [-1, AC * Math.sin(U.rad(52)) + 0.9] },
       puntos: [pt('A', A, { rotulo: 'A', lado: -135 }), pt('B', B, { rotulo: 'B', lado: -45 }), pt('C', C, { rotulo: 'C', lado: 90 }), pt('D', D, { rotulo: 'D', color: 'h', lado: -90 }), pt('E', E, { rotulo: 'E', lado: 140 })],
       regiones: [{ puntos: ['A', 'D', 'E'], color: 'o', opacidad: 0.18, desde: k.tri || 0 }],
       segmentos: [{ de: 'A', a: 'B', texto: `AB = ${f(AB)}`, lado: -1 }, { de: 'B', a: 'C' }, { de: 'A', a: 'C' }, { de: 'D', a: 'E', color: 'o', grosor: 'variable' },
         { de: 'A', a: 'E', color: 'i', grosor: 'variable', texto: `${f(AE)}`, lado: 1 }, { de: 'A', a: 'D', color: 'h', grosor: 'variable', texto: o.sol ? f(AD) : 'x' },
-        { de: 'E', a: 'C', texto: o.sinAC ? undefined : `AC = ${f(AC)}`, lado: 1, grosor: 'fino' }],
-      angulos: [{ en: 'D', de: 'A', a: 'E', color: 'd', rayita: 1, radio: 22 }, { en: 'C', de: 'A', a: 'B', color: 'd', rayita: 1, radio: 26 }, { en: 'A', de: 'B', a: 'C', color: 'h', radio: 18, desde: k.a || 0 }],
+        { de: 'E', a: 'C', texto: o.sinAC ? undefined : `AC = ${f(AC)}`, lado: 1, grosor: 'fino' },
+        ...(o.par ? [{ de: 'D', a: 'E', paralela: 1 }, { de: 'B', a: 'C', paralela: 1 }] : [])],
+      angulos: [{ en: 'D', de: 'A', a: 'E', color: 'd', rayita: 1, radio: 22 }, o.par ? { en: 'B', de: 'A', a: 'C', color: 'd', rayita: 1, radio: 26 } : { en: 'C', de: 'A', a: 'B', color: 'd', rayita: 1, radio: 26 },
+        { en: 'A', de: 'B', a: 'C', color: 'h', radio: 18, desde: k.a || 0 }],
     };
   };
   const semejanza = {
@@ -399,6 +541,15 @@
     titulo: 'Emparejar lados por sus ángulos',
     temas: ['Criterios de semejanza de triángulos'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es semejante y qué dice la correspondencia, sin resolver el caso cruzado de Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Misma forma', texto: 'Un mapa de la plaza de Armas de Puno y la plaza misma tienen la misma forma: los ángulos son iguales y cada medida del mapa está multiplicada por un mismo número. Eso es ser semejantes.' },
+        { titulo: 'Quién va con quién', texto: 'Escribir ABC ∼ A′B′C′ es una correspondencia: A va con A′, B con B′ y C con C′. Los lados que se comparan unen vértices que se corresponden, como AB con A′B′.',
+          ecuacion: [frac("A'B'", 'AB'), ' = ', frac("B'C'", 'BC'), ' = ', frac("C'A'", 'CA')] },
+        { titulo: 'Qué mirar', texto: 'En el juego, la copia A′B′C′ gira y cambia de tamaño. Sigue las marcas de los ángulos, la de una rayita y la de dos: ellas dicen qué lado queda frente a cada ángulo.' },
+      ],
+    },
     juega: {
       consigna: 'La copia A′B′C′ tiene los mismos ángulos que ABC. Cambia su escala k y gírala. Mira qué lado queda frente a cada marca.',
       voz: 'Gira la copia. Sigue los ángulos marcados, no la posición.',
@@ -447,6 +598,32 @@
       condicion: 'los lados se emparejan por los ángulos opuestos iguales, no por su posición en el dibujo.',
       voz: 'Escribe primero qué vértice va con cuál.',
     },
+    // Así se resuelve (fase 2): los dos casos de «Ahora tú» (paralela y antiparalela), mismas cuentas. En la antiparalela
+    // se pide AD < AB, para que D quede en el lado.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), par = s % 2 === 1;
+        let AB, AC, AE;
+        do { AB = r.ent(6, 12); AC = r.ent(4, 10); AE = r.ent(2, Math.min(AC, AB) - 1); } while (!par && AC * AE >= AB * AB);
+        const ad = par ? AB * AE / AC : AC * AE / AB, va = par ? AB : AC, otro = par ? AC : AB;
+        const AD = { v: 'c-h', t: 'AD' }, AEv = { v: 'c-i', t: 'AE' };
+        return {
+          enunciado: [`En el triángulo ABC, AB = ${AB} y AC = ${AC}. D está en AB y E en AC, con AE = ${AE} y ${par ? 'DE paralela a BC' : 'el ángulo ADE igual al ACB'}. ¿Cuánto mide AD?`],
+          dibujo: { datos: anti(AB, AC, AE, { par }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', AD, ', el tramo del lado AB que va de A hasta D.'] },
+            { tipo: 'datos', texto: [`AB = ${AB}, AC = ${AC} y `, AEv, ` = ${AE}. ${par ? 'DE es paralela a BC.' : 'El ángulo ADE es igual al ángulo ACB.'}`] },
+            { tipo: 'regla', texto: par ? 'Con dos ángulos iguales, los triángulos son semejantes. El ángulo A es común y, por la paralela, ∠ADE = ∠ABC: D va con B.'
+              : 'Con dos ángulos iguales, los triángulos son semejantes. El ángulo A es común y ∠ADE = ∠ACB: D va con C, no con B.',
+              ecuacion: par ? ['ADE ∼ ABC  →  ', frac(AD, 'AB'), ' = ', frac(AEv, 'AC')] : ['ADE ∼ ACB  →  ', frac(AD, 'AC'), ' = ', frac(AEv, 'AB')] },
+            { tipo: 'cuentas', texto: ['Despejo ', AD, ' multiplicando en cruz.'],
+              ecuacion: [AD, ` = ${va} · ${AE} / ${otro} = ${f(ad)}`], dibujo: { datos: anti(AB, AC, AE, { par, sol: true }), estado: {} } },
+            { tipo: 'sentido', texto: ['Las dos razones dan la misma escala: ', AD, ` / ${va} = `, AEv, ` / ${otro} = ${f(AE / otro)}. Y `, AD, ` = ${f(ad)} es menor que AB = ${AB}: D cae en el lado.`] },
+          ],
+          respuesta: [AD, ` = ${f(ad)}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Decide si DE es paralela o antiparalela; después empareja.',
       generar(s) {
@@ -486,11 +663,34 @@
         { de: 'A', a: 'B', color: 'o', grosor: 'variable', texto: f(3 * k), lado: -1 }, { de: 'A', a: 'C', color: 'o', grosor: 'variable', texto: f(2 * k), lado: -1 }],
     };
   };
+  // Figura de «Así se resuelve» (idea 5): un triángulo y su copia semejante a escala k, con el dato (área o perímetro)
+  // rotulado sobre el original y la incógnita sobre la copia. Misma forma que la base de la idea 4, a la mitad.
+  const triEscala = (k, que, dato, o = {}) => {
+    const t = base.map(p => [p[0] / 2, p[1] / 2]), x0 = 2.8, tc = t.map(p => [x0 + p[0] * k, p[1] * k]), h = Math.max(1.3, 1.3 * k);
+    return {
+      alt: `Triángulo de ${que} ${dato} y su copia semejante a escala ${f(k)}`,
+      vista: { x: [-0.5, x0 + 2 * k + 0.5], y: [-0.9, h + 0.9] },
+      puntos: t.map((p, i) => pt('o' + i, p, { sinPunto: true })).concat(tc.map((p, i) => pt('c' + i, p, { sinPunto: true }))),
+      regiones: [{ puntos: ['o0', 'o1', 'o2'], color: 'i', opacidad: 0.25 }, { puntos: ['c0', 'c1', 'c2'], color: 'o', opacidad: 0.14 }],
+      segmentos: [{ de: 'c0', a: 'c1', color: 'o', grosor: 'variable', texto: `k = ${f(k)}`, lado: 1 }],
+      rotulos: [{ x: 0.6, y: 1.3 + 0.45, texto: `${que === 'área' ? 'A' : 'P'} = ${dato}`, color: 'i' },
+        { x: x0 + 0.6 * k, y: 1.3 * k + 0.45, texto: `${que === 'área' ? "A'" : "P'"} = ${o.valor === undefined ? '?' : f(o.valor)}`, color: 'o' }],
+    };
+  };
   const areaEscala = {
     id: 'area-y-escala',
     titulo: 'El área crece con k²',
     temas: ['Criterios de semejanza de triángulos'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es la escala y qué es el área, sin decir por cuánto se multiplica el área (eso es Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Escala', texto: ['Ampliar a escala ', { v: 'c-o', t: 'k' }, ' es multiplicar cada longitud de la figura por el mismo número. Con k = 2, un lado de 3 pasa a medir 6; con k = 0,5, se reduce a 1,5.'] },
+        { titulo: 'En una librería', texto: 'En una librería de Juliaca, la fotocopiadora amplía un croquis al 200 %. Eso es una escala k = 2: cada medida del croquis sale el doble de larga en la copia.' },
+        { titulo: 'Longitud y área', texto: 'Una longitud se mide en una sola dirección, como un lado o el perímetro. El área cuenta la superficie encerrada, en cuadraditos de lado 1.' },
+        { titulo: 'Qué mirar', texto: 'Mueve k y sigue los dos lados del rectángulo naranja a la vez. La lectura te da los lados y el perímetro; el área la piensas tú.' },
+      ],
+    },
     juega: {
       consigna: 'Ampliación con escala k: cada lado del rectángulo de 3 por 2 se multiplica por k. Cambia k y mira lados y perímetro.',
       voz: 'Cambia k. Sigue los dos lados a la vez.',
@@ -530,6 +730,31 @@
       ecuacion: ["P' = k P", '   ·   ', "A' = ", { sup: ['k', '2'] }, ' A', '   ·   ', "V' = ", { sup: ['k', '3'] }, ' V'],
       condicion: 'todas las longitudes se multiplican por el mismo k > 0. Si cambia solo un lado, ya no son semejantes.',
       voz: 'La escala actúa en cada dimensión: dos en el área.',
+    },
+    // Así se resuelve (fase 2): los dos casos de «Ahora tú» (área por k², perímetro por k), mismas cuentas, otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 3, k = r.de([2, 3, 4, 0.5]), A = r.ent(3, 15), P = r.ent(8, 30);
+        const kv = { v: 'c-o', t: 'k' }, area = tipo !== 2, dato = area ? A : P, res = area ? A * k * k : P * k;
+        const que = area ? 'área' : 'perímetro', crece = k > 1 ? 'mayor' : 'menor';
+        return {
+          enunciado: [`Un triángulo tiene ${que} ${dato}. Se dibuja otro semejante con escala `, kv, ` = ${f(k)}. ¿Cuál es el ${que} del nuevo triángulo?`],
+          dibujo: { datos: triEscala(k, que, dato), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden el ${que} del triángulo nuevo. ${area ? 'El área es superficie: tiene dos dimensiones.' : 'El perímetro es una longitud: una sola dimensión.'}` },
+            { tipo: 'datos', texto: [`El original tiene ${que} ${dato}, y cada lado del nuevo es `, kv, ` = ${f(k)} veces el del original.`] },
+            { tipo: 'regla', texto: area ? ['En la copia, la base y la altura se multiplican por ', kv, '. El área, que usa las dos, se multiplica por ', kv, ' · ', kv, '.']
+              : ['Cada lado se multiplica por ', kv, '. El perímetro suma los lados, así que también se multiplica por ', kv, '.'],
+              ecuacion: area ? ["A' = ", { sup: [kv, '2'] }, ' A'] : ["P' = ", kv, ' P'] },
+            { tipo: 'cuentas', texto: area ? 'Multiplico el área por k al cuadrado.' : 'Multiplico el perímetro por k.',
+              ecuacion: area ? [`A' = ${A} · `, { sup: [f(k), '2'] }, ` = ${A} · ${f(k * k)} = ${f(res)}`] : [`P' = ${P} · ${f(k)} = ${f(res)}`],
+              dibujo: { datos: triEscala(k, que, dato, { valor: res }), estado: {} } },
+            { tipo: 'sentido', texto: area ? `Con k ${k > 1 ? 'mayor' : 'menor'} que 1, el área sale ${crece}, y cambia más que el lado: el lado va por ${f(k)}, el área por ${f(k * k)}.`
+              : `Con k ${k > 1 ? 'mayor' : 'menor'} que 1, el perímetro sale ${crece}, y cambia igual que cada lado: por ${f(k)}, no por ${f(k * k)}.` },
+          ],
+          respuesta: [area ? "A' = " : "P' = ", f(res)],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Decide qué magnitud te piden: longitud, perímetro o área.',
@@ -761,6 +986,8 @@
       { termino: 'factor del área', formas: ['factor del área', 'factor de área', 'factor de las áreas'],
         def: 'Número por el que se multiplica el área al cambiar el tamaño. Con escala k en todo, es k².',
         ejemplo: 'k = 3: el área se multiplica por 3² = 9.', ver: ['escala'] },
+      { termino: 'correspondencia', formas: ['correspondencia', 'correspondencias'],
+        def: 'Regla que dice qué vértice de una figura va con cuál de la otra.', ejemplo: 'ABC ∼ A′B′C′: A va con A′, B con B′ y C con C′.', ver: ['semejanza'] },
       { termino: 'antiparalela', formas: ['antiparalela', 'antiparalelas'],
         def: 'Recta que corta dos lados de un triángulo con los ángulos cruzados: ∠ADE = ∠ACB, no ∠ABC.',
         ejemplo: 'AE = 3, AB = 9 y AC = 6: AD = 6 · 3/9 = 2.', ver: ['semejanza'] },
