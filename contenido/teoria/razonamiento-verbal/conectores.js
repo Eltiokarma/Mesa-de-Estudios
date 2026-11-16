@@ -68,6 +68,70 @@
     return { datos: { esquinaLibre: true, secciones: [{ id: 'o', titulo: 'Oración', modo: 'tarjeta', fragmentos: [...(a.trim() ? [{ id: 'a', t: a.trim() }] : []), { id: 'w', hueco: true, reserva }, { id: 'b', t: b.trim() }] }] }, estado: { marcas: { a: 'i', b: 'i' } } };
   };
 
+  // Bancos de «Ahora tú» (sin cambios); «Así se resuelve» toma de aquí otro caso que el de la misma semilla.
+  const BANCO_RELACION = [
+    { f: 'El agua estaba helada; ___ nadie quiso bañarse en la laguna.', ok: 'por eso', m: [['sin embargo', 'RV24', 'Iría si se bañaran igual: eso rompería lo esperado.'], ['además', 'RV26', 'Sumaría otra idea; aquí la segunda es el resultado de la primera.'], ['por ejemplo', 'RV35', 'Daría un caso de lo anterior; aquí es una consecuencia.']] },
+    { f: 'La tienda bajó sus precios; ___ vendió menos que el mes pasado.', ok: 'sin embargo,', m: [['por eso', 'RV24', 'Al bajar precios se espera vender más; vender menos rompe eso.'], ['además,', 'RV26', 'Sumaría una idea; aquí el resultado contradice lo esperado.'], ['es decir,', 'RV35', 'Diría lo mismo con otras palabras; son dos hechos distintos.']] },
+    { f: 'El puente es seguro ___ fue revisado por ingenieros el año pasado.', ok: 'porque', m: [['aunque', 'RV24', 'Iría si la revisión hiciera dudar de la seguridad; aquí la sostiene.'], ['pero', 'RV26', 'Marcaría un choque; la revisión es la razón de que sea seguro.'], ['luego', 'RV35', 'Marcaría orden en el tiempo; aquí se da una razón.']] },
+    { f: 'Ana cocina muy bien; ___ toca el charango en las fiestas.', ok: 'además,', m: [['por eso', 'RV24', 'Diría que cocinar bien causa tocar el charango; son cosas que se suman.'], ['sin embargo,', 'RV26', 'Marcaría un choque; las dos ideas no se oponen.'], ['es decir,', 'RV35', 'Diría lo mismo con otras palabras; son dos cosas distintas.']] },
+    { f: 'El bus salió temprano; ___ llegamos tarde por el tráfico.', ok: 'pero', m: [['así que', 'RV24', 'Salir temprano hace esperar llegar a tiempo; llegar tarde rompe eso.'], ['también', 'RV26', 'Sumaría una idea; aquí el resultado va contra lo esperado.'], ['o sea', 'RV35', 'Diría lo mismo con otras palabras; son dos hechos distintos.']] },
+    { f: 'No hubo luz en todo el barrio ___ un rayo cayó sobre el transformador.', ok: 'porque', m: [['aunque', 'RV24', 'Iría si el rayo hiciera esperar que sí hubiera luz.'], ['además', 'RV26', 'Sumaría otra noticia; el rayo es la razón del apagón.'], ['por ejemplo', 'RV35', 'Daría un caso; aquí se da la razón.']] },
+  ];
+  const BANCO_CLASES = [
+    { f: 'Primero se lava la quinua; ___ se hierve durante quince minutos.', ok: 'Orden: luego', m: [['Contraste: pero', 'RV26', 'Nada se opone: son dos pasos seguidos.'], ['Causa: porque', 'RV24', 'Lavarla no es la razón de hervirla; es el paso anterior.'], ['Ejemplo: por ejemplo', 'RV35', 'Hervirla no es un caso de lavarla; es otro paso.']] },
+    { f: 'Muchas aves migran en invierno; ___ las golondrinas viajan miles de kilómetros.', ok: 'Ejemplo: por ejemplo', m: [['Contraste: en cambio', 'RV26', 'Las golondrinas no se oponen: son un caso de lo anterior.'], ['Consecuencia: por eso', 'RV24', 'Las golondrinas no son un resultado de que las aves migren.'], ['Orden: después', 'RV35', 'No hay pasos en el tiempo: hay un caso de una idea general.']] },
+    { f: 'El cultivo necesita poca agua, ___ se adapta bien a zonas secas.', ok: 'Reformulación: o sea', m: [['Contraste: sin embargo', 'RV26', 'Nada se opone: las dos partes dicen lo mismo.'], ['Adición: además', 'RV35', 'No suma otra idea: repite la anterior con otras palabras.'], ['Causa: porque', 'RV24', 'No da una razón: dice lo mismo de otra forma.']] },
+    { f: 'Revisamos los datos tres veces; ___ los resultados son confiables.', ok: 'Consecuencia: por lo tanto', m: [['Contraste: no obstante', 'RV24', 'Revisar tres veces hace esperar confianza; no la contradice.'], ['Ejemplo: por ejemplo', 'RV35', 'La confianza no es un caso de revisar; es su resultado.'], ['Adición: también', 'RV26', 'No suma una idea aparte: es lo que se sigue de la revisión.']] },
+    { f: 'La papa nativa tiene muchas variedades; ___ la papa blanca del mercado tiene pocas.', ok: 'Contraste: en cambio', m: [['Adición: además', 'RV26', 'No se suma: se opone una a la otra.'], ['Consecuencia: así que', 'RV24', 'Que la nativa tenga muchas no causa que la blanca tenga pocas.'], ['Reformulación: es decir', 'RV35', 'No dice lo mismo: habla de otra papa.']] },
+    { f: 'Leímos tres textos sobre el agua; ___ el agua limpia es un bien escaso.', ok: 'Cierre: en síntesis', m: [['Ejemplo: por ejemplo', 'RV35', 'No es un caso: reúne lo que dicen los tres textos.'], ['Contraste: pero', 'RV26', 'Nada se opone: se cierra con lo que tienen en común.'], ['Orden: primero', 'RV35', 'No inicia una serie: cierra lo leído.']] },
+  ];
+  const BANCO_LOCUCIONES = [
+    { f: '___ el examen era difícil, la mayoría lo aprobó.', ok: 'Si bien', m: [['Puesto que', 'RV25', 'Daría una razón; la dificultad no explica aprobar.'], ['De manera que', 'RV24', 'Marcaría un resultado; aprobar va contra lo esperado.'], ['Así como', 'RV25', 'Compararía o sumaría; aquí hay un obstáculo superado.']] },
+    { f: 'Llevaremos casacas ___ en la puna hace mucho frío de noche.', ok: 'puesto que', m: [['si bien', 'RV25', 'Marcaría un obstáculo; el frío es la razón de llevarlas.'], ['de modo que', 'RV24', 'Iría al revés: el frío no es el resultado de llevar casacas.'], ['a pesar de que', 'RV25', 'Marcaría contraste; el frío justifica las casacas.']] },
+    { f: 'El río creció mucho, ___ cerraron el puente por seguridad.', ok: 'de manera que', m: [['aun cuando', 'RV25', 'Marcaría un obstáculo; cerrar el puente es lo esperado.'], ['ya que', 'RV24', 'Daría la razón al revés: el cierre no causó la crecida.'], ['así como', 'RV25', 'Sumaría; aquí el cierre es un resultado.']] },
+    { f: '___ no tenía experiencia, hizo un buen trabajo en la feria.', ok: 'A pesar de que', m: [['Dado que', 'RV25', 'Daría una razón; la falta de experiencia no explica el buen trabajo.'], ['De modo que', 'RV24', 'Marcaría un resultado; el buen trabajo va contra lo esperado.'], ['Así como', 'RV25', 'Compararía; aquí hay un obstáculo que no impidió el resultado.']] },
+    { f: 'Suspendieron la clase ___ el profesor estaba enfermo.', ok: 'dado que', m: [['si bien', 'RV25', 'Marcaría un obstáculo; la enfermedad es la razón.'], ['de modo que', 'RV24', 'Iría al revés: la enfermedad no resulta de suspender.'], ['aun cuando', 'RV25', 'Marcaría contraste; la enfermedad justifica la suspensión.']] },
+    { f: 'Ahorró durante un año, ___ pudo comprar su propia computadora.', ok: 'de modo que', m: [['si bien', 'RV25', 'Marcaría un obstáculo; ahorrar ayuda a comprar.'], ['puesto que', 'RV24', 'Daría la razón al revés: comprar no explica ahorrar.'], ['a pesar de que', 'RV25', 'Marcaría contraste; comprar es lo esperado tras ahorrar.']] },
+  ];
+  // Relación que marca cada conector correcto del banco de la idea 1, y qué hace la segunda idea en esa relación.
+  const RELACION_DE = { 'por eso': 'consecuencia', 'sin embargo': 'contraste', pero: 'contraste', porque: 'causa', 'además': 'adición' };
+  const QUE_HACE = { consecuencia: 'es el resultado de la primera', contraste: 'rompe lo que la primera hacía esperar', causa: 'da la razón de la primera', 'adición': 'suma otra idea en la misma dirección' };
+  const QUE_HACE_CLASE = { Orden: 'es el paso que sigue en el tiempo', Ejemplo: 'es un caso de lo de antes', 'Reformulación': 'dice lo mismo con otras palabras', Consecuencia: 'es el resultado de lo de antes', Contraste: 'se opone a lo de antes', Cierre: 'reúne todo lo anterior' };
+  // El conector corto de cada locución del banco de la idea 3: la misma cuenta que la solución de «Ahora tú».
+  const SIMPLE_DE = t => (/si bien|pesar/i.test(t) ? 'aunque' : /dado|puesto/i.test(t) ? 'porque' : 'por eso');
+  const NOMBRE_SIMPLE = { aunque: 'concesión', porque: 'causa', 'por eso': 'consecuencia' };
+  function azar(s) {
+    let q = (s * 2654435761 + 12345) >>> 0;
+    return () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+  }
+  // Índice de «Así se resuelve»: sale de azar(s + 900) y nunca coincide con el de «Ahora tú» (s % n).
+  const otroIndice = (s, n) => (s % n + 1 + Math.floor(azar(s + 900)() * (n - 1))) % n;
+  const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
+  const sinComa = t => t.replace(/,$/, '');
+  // Así se resuelve: la oración con su hueco y debajo las cuatro opciones. En el paso «Lo aplico» el conector
+  // correcto entra al hueco (o) y en la lista se marca (i); las otras se tachan.
+  // El orden de las opciones sale de azar(s + 900): la correcta no queda siempre primera.
+  function barajar(b, s) {
+    const r = azar(s + 900); r();
+    const ops = opciones(b.ok, voltear(b.m, Math.floor(r() * 2))), c = ops.shift();
+    ops.splice(Math.floor(r() * (ops.length + 1)), 0, c);
+    return ops;
+  }
+  function figResuelve(b, s, reserva, resuelto, enHueco = b.ok) {
+    const base = ejercicio(b.f, reserva), ops = barajar(b, s);
+    const datos = { esquinaLibre: true, secciones: base.datos.secciones.concat([{ id: 'ops', titulo: 'Opciones', modo: 'lista', fragmentos: ops.map((o, k) => ({ id: `p${k}`, t: o.texto })) }]) };
+    if (!resuelto) return { datos, estado: base.estado };
+    const k = ops.findIndex(o => o.correcta);
+    return { datos, estado: { huecos: { w: enHueco }, marcas: { a: 'i', b: 'i', w: 'o', [`p${k}`]: 'i' }, tachar: ops.map((o, j) => (o.correcta ? null : `p${j}`)).filter(Boolean), nuevo: ['w', `p${k}`] } };
+  }
+  // Las dos ideas de la oración: lo que va antes y después del hueco (si el hueco abre la oración, se parte en la coma).
+  const partes = f => {
+    const [a, b] = f.split('___').map(t => t.trim().replace(/[;,]$/, ''));
+    if (a) return [a, b.replace(/\.$/, '')];
+    const k = b.indexOf(', ');
+    return [b.slice(0, k), b.slice(k + 2).replace(/\.$/, '')];
+  };
+
   // ---------- Idea 1: la relación decide el conector ----------
   // Cambia: el resultado (aprobó / desaprobó) y el conector. Permanece: la primera idea y lo que hace esperar.
   // Progresa: la expectativa se cumple o se rompe. Se reserva: el contraste con «aun así» (predicción).
@@ -87,6 +151,14 @@
     titulo: 'Primero la relación, después el conector',
     temas: ['Conectores de adición, contraste y causa'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué es un conector y qué es la expectativa, sin decir qué va tras la noche de lluvia (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Palabras que unen', texto: 'Palabras como «además», «pero» o «por eso» unen dos ideas. Se llaman conectores y le avisan al lector qué viene: una idea más, un choque o un resultado.' },
+        { titulo: 'Lo que se espera', texto: 'Si alguien dice «me levanté tarde», ya imaginas lo que sigue: llegó tarde al colegio. Eso que imaginas es la expectativa, y cada conector dice si se cumple o no.' },
+        { titulo: 'Qué mirar', texto: 'En el juego cambias si el estudiante aprobó o desaprobó. Antes de probar un conector, piensa qué se esperaba después de estudiar toda la semana.' },
+      ],
+    },
     juega: {
       consigna: 'Cambia el resultado del examen y prueba conectores. Mira cuál encaja cuando se cumple lo esperado y cuál cuando se rompe.',
       voz: 'Lee primero qué se espera después de estudiar.',
@@ -127,17 +199,32 @@
       ecuacion: [idea('idea A'), ' + ', { llave: [rel('relación')], nota: 'qué las une', color: 'c-d' }, ' + ', idea('idea B'), ' → ', { llave: [con('conector')], nota: 'su forma', color: 'c-o' }],
       condicion: 'se lee qué hace esperar la primera idea; si la segunda lo cumple o lo rompe, cambia el conector.',
     },
+    // Así se resuelve (fase 2): otro caso del banco de «Ahora tú», resuelto nombrando la relación antes de la palabra.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Primero la relación; la palabra viene después.',
+      generar(s) {
+        const b = BANCO_RELACION[otroIndice(s, BANCO_RELACION.length)], [x, y] = partes(b.f);
+        const clase = RELACION_DE[sinComa(b.ok)], prueba = b.m.find(m => m[1] === 'RV24');
+        return {
+          enunciado: `«${b.f}» ¿Qué conector expresa la relación entre las dos ideas?`,
+          dibujo: figResuelve(b, s, 'sin embargo,', false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el conector que va en el espacio: la palabra que dice cómo se unen las dos ideas.' },
+            { tipo: 'datos', texto: ['Primera idea: «', corto(idea, x), '». Segunda: «', corto(idea, y), '».'] },
+            { tipo: 'regla', texto: 'Antes de mirar las opciones, digo qué relación hay entre las dos ideas. Recién después busco la palabra que la marca.',
+              ecuacion: [idea('idea A'), ' + ', rel('relación'), ' + ', idea('idea B'), ' → ', con('conector')] },
+            { tipo: 'aplica', texto: ['La segunda idea ', QUE_HACE[clase], ': es ', rel(clase), '. Va ', con(sinComa(b.ok)), '.'], dibujo: figResuelve(b, s, 'sin embargo,', true) },
+            { tipo: 'sentido', texto: `Compruebo con «${sinComa(prueba[0])}»: ${minus(prueba[2])}` },
+          ],
+          respuesta: ['«', con(sinComa(b.ok)), '»'],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Nombra la relación antes de mirar las opciones.',
       generar(s) {
-        const B = [
-          { f: 'El agua estaba helada; ___ nadie quiso bañarse en la laguna.', ok: 'por eso', m: [['sin embargo', 'RV24', 'Iría si se bañaran igual: eso rompería lo esperado.'], ['además', 'RV26', 'Sumaría otra idea; aquí la segunda es el resultado de la primera.'], ['por ejemplo', 'RV35', 'Daría un caso de lo anterior; aquí es una consecuencia.']] },
-          { f: 'La tienda bajó sus precios; ___ vendió menos que el mes pasado.', ok: 'sin embargo,', m: [['por eso', 'RV24', 'Al bajar precios se espera vender más; vender menos rompe eso.'], ['además,', 'RV26', 'Sumaría una idea; aquí el resultado contradice lo esperado.'], ['es decir,', 'RV35', 'Diría lo mismo con otras palabras; son dos hechos distintos.']] },
-          { f: 'El puente es seguro ___ fue revisado por ingenieros el año pasado.', ok: 'porque', m: [['aunque', 'RV24', 'Iría si la revisión hiciera dudar de la seguridad; aquí la sostiene.'], ['pero', 'RV26', 'Marcaría un choque; la revisión es la razón de que sea seguro.'], ['luego', 'RV35', 'Marcaría orden en el tiempo; aquí se da una razón.']] },
-          { f: 'Ana cocina muy bien; ___ toca el charango en las fiestas.', ok: 'además,', m: [['por eso', 'RV24', 'Diría que cocinar bien causa tocar el charango; son cosas que se suman.'], ['sin embargo,', 'RV26', 'Marcaría un choque; las dos ideas no se oponen.'], ['es decir,', 'RV35', 'Diría lo mismo con otras palabras; son dos cosas distintas.']] },
-          { f: 'El bus salió temprano; ___ llegamos tarde por el tráfico.', ok: 'pero', m: [['así que', 'RV24', 'Salir temprano hace esperar llegar a tiempo; llegar tarde rompe eso.'], ['también', 'RV26', 'Sumaría una idea; aquí el resultado va contra lo esperado.'], ['o sea', 'RV35', 'Diría lo mismo con otras palabras; son dos hechos distintos.']] },
-          { f: 'No hubo luz en todo el barrio ___ un rayo cayó sobre el transformador.', ok: 'porque', m: [['aunque', 'RV24', 'Iría si el rayo hiciera esperar que sí hubiera luz.'], ['además', 'RV26', 'Sumaría otra noticia; el rayo es la razón del apagón.'], ['por ejemplo', 'RV35', 'Daría un caso; aquí se da la razón.']] },
-        ];
+        const B = BANCO_RELACION;
         const b = B[s % B.length];
         return {
           pregunta: '¿Qué conector expresa la relación entre las dos ideas?',
@@ -170,6 +257,14 @@
     titulo: 'Cada hueco pide una clase',
     temas: ['Clases de conectores'],
     pieza: 'rv-texto',
+    // Lee (fase 2): que los conectores forman clases y cómo se mira un hueco, sin decir qué clase pide el vuelo (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Familias de conectores', texto: 'Los conectores se agrupan en clases. «Además» y «también» son de la misma clase: los dos suman una idea. Por eso puedes cambiar uno por otro sin cambiar el sentido.' },
+        { titulo: 'Mirar a los dos lados', texto: 'Para saber qué clase pide un espacio, lee lo que va antes y lo que va después. La pregunta es qué le hace la segunda parte a la primera.' },
+        { titulo: 'Qué mirar', texto: 'En el juego hay un texto sobre la quinua con tres espacios. Elige un espacio, lee las partes marcadas a cada lado y prueba conectores.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un hueco del texto y prueba conectores. Lee lo que hay a cada lado: eso decide la clase.',
       voz: 'Mira las dos partes marcadas junto al hueco.',
@@ -212,16 +307,31 @@
       ecuacion: [rel('clase'), ' = la relación entre ', idea('lo de antes'), ' y ', idea('lo de después')],
       condicion: 'se mira lo que hay a los dos lados del hueco; un conector de la misma clase puede reemplazar a otro.',
     },
+    // Así se resuelve (fase 2): otro caso del banco de «Ahora tú»: primero la clase por los dos lados, después la forma.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Lee lo de antes y lo de después del espacio.',
+      generar(s) {
+        const b = BANCO_CLASES[otroIndice(s, BANCO_CLASES.length)], [x, y] = partes(b.f), [clase, forma] = b.ok.split(': ');
+        const prueba = b.m[0];
+        return {
+          enunciado: `«${b.f}» ¿Qué clase de conector pide el espacio, y cuál sirve?`,
+          dibujo: figResuelve(b, s, 'por lo tanto,', false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden dos cosas: la clase de relación que pide el espacio y un conector de esa clase.' },
+            { tipo: 'datos', texto: ['Antes del espacio: «', corto(idea, x), '». Después: «', corto(idea, y), '».'] },
+            { tipo: 'regla', texto: 'La clase no la decide cómo suena la palabra: la decide qué le hace la parte de después a la de antes.',
+              ecuacion: [rel('clase'), ' = la relación entre ', idea('antes'), ' y ', idea('después')] },
+            { tipo: 'aplica', texto: ['Lo de después ', QUE_HACE_CLASE[clase], ': clase ', rel(minus(clase)), '. De esa clase es ', con(forma), '.'], dibujo: figResuelve(b, s, 'por lo tanto,', true, `${forma},`) },
+            { tipo: 'sentido', texto: `Descarto «${prueba[0]}». ${prueba[2]}` },
+          ],
+          respuesta: [rel(clase), ': ', con(forma)],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { f: 'Primero se lava la quinua; ___ se hierve durante quince minutos.', ok: 'Orden: luego', m: [['Contraste: pero', 'RV26', 'Nada se opone: son dos pasos seguidos.'], ['Causa: porque', 'RV24', 'Lavarla no es la razón de hervirla; es el paso anterior.'], ['Ejemplo: por ejemplo', 'RV35', 'Hervirla no es un caso de lavarla; es otro paso.']] },
-          { f: 'Muchas aves migran en invierno; ___ las golondrinas viajan miles de kilómetros.', ok: 'Ejemplo: por ejemplo', m: [['Contraste: en cambio', 'RV26', 'Las golondrinas no se oponen: son un caso de lo anterior.'], ['Consecuencia: por eso', 'RV24', 'Las golondrinas no son un resultado de que las aves migren.'], ['Orden: después', 'RV35', 'No hay pasos en el tiempo: hay un caso de una idea general.']] },
-          { f: 'El cultivo necesita poca agua, ___ se adapta bien a zonas secas.', ok: 'Reformulación: o sea', m: [['Contraste: sin embargo', 'RV26', 'Nada se opone: las dos partes dicen lo mismo.'], ['Adición: además', 'RV35', 'No suma otra idea: repite la anterior con otras palabras.'], ['Causa: porque', 'RV24', 'No da una razón: dice lo mismo de otra forma.']] },
-          { f: 'Revisamos los datos tres veces; ___ los resultados son confiables.', ok: 'Consecuencia: por lo tanto', m: [['Contraste: no obstante', 'RV24', 'Revisar tres veces hace esperar confianza; no la contradice.'], ['Ejemplo: por ejemplo', 'RV35', 'La confianza no es un caso de revisar; es su resultado.'], ['Adición: también', 'RV26', 'No suma una idea aparte: es lo que se sigue de la revisión.']] },
-          { f: 'La papa nativa tiene muchas variedades; ___ la papa blanca del mercado tiene pocas.', ok: 'Contraste: en cambio', m: [['Adición: además', 'RV26', 'No se suma: se opone una a la otra.'], ['Consecuencia: así que', 'RV24', 'Que la nativa tenga muchas no causa que la blanca tenga pocas.'], ['Reformulación: es decir', 'RV35', 'No dice lo mismo: habla de otra papa.']] },
-          { f: 'Leímos tres textos sobre el agua; ___ el agua limpia es un bien escaso.', ok: 'Cierre: en síntesis', m: [['Ejemplo: por ejemplo', 'RV35', 'No es un caso: reúne lo que dicen los tres textos.'], ['Contraste: pero', 'RV26', 'Nada se opone: se cierra con lo que tienen en común.'], ['Orden: primero', 'RV35', 'No inicia una serie: cierra lo leído.']] },
-        ];
+        const B = BANCO_CLASES;
         const b = B[s % B.length];
         return {
           pregunta: '¿Qué clase de conector pide el espacio, y cuál sirve?',
@@ -250,6 +360,14 @@
     titulo: 'Varias palabras, un conector',
     temas: ['Locuciones conjuntivas'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué es una locución y la prueba del cambio, sin decir cuál va con el camino cerrado (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un conector de varias palabras', texto: 'Algunos conectores tienen varias palabras, como «dado que» o «de modo que». Funcionan como una sola pieza y se llaman locuciones conjuntivas.' },
+        { titulo: 'La prueba del cambio', texto: 'Si dudas, cambia la locución por un conector corto que ya conoces. Si la oración sigue diciendo lo mismo, encontraste la relación.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el pasaje del tren subió y tú cambias el final de la oración. Mira a qué conector corto equivale cada locución.' },
+      ],
+    },
     juega: {
       consigna: 'Prueba locuciones al inicio de la oración y cambia el final. Mira a qué conector simple equivale cada una.',
       voz: 'Una locución funciona como una sola palabra.',
@@ -289,16 +407,31 @@
       ecuacion: [con('si bien'), ' = ', { llave: [rel('aunque')], nota: 'concesión', color: 'c-d' }, '   ·   ', con('dado que'), ' = ', { llave: [rel('porque')], nota: 'causa', color: 'c-d' }, '   ·   ', con('de modo que'), ' = ', { llave: [rel('por eso')], nota: 'consecuencia', color: 'c-d' }],
       condicion: 'se reemplaza la locución por el conector simple; si la oración conserva el sentido, la relación es esa.',
     },
+    // Así se resuelve (fase 2): otro caso del banco de «Ahora tú», resuelto con la prueba del cambio por el conector corto.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Cambia la locución por un conector corto y relee.',
+      generar(s) {
+        const b = BANCO_LOCUCIONES[otroIndice(s, BANCO_LOCUCIONES.length)], [x, y] = partes(b.f), ok = b.ok.toLowerCase();
+        const simple = SIMPLE_DE(ok), prueba = b.m[0];
+        return {
+          enunciado: `«${b.f}» ¿Qué locución expresa la relación entre las dos ideas?`,
+          dibujo: figResuelve(b, s, 'A pesar de que', false),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden la locución: el grupo de palabras que une las dos ideas y marca su relación.' },
+            { tipo: 'datos', texto: ['Una idea: «', corto(idea, x), '». La otra: «', corto(idea, y), '».'] },
+            { tipo: 'regla', texto: 'Una locución funciona como un solo conector. Pienso qué conector corto iría y busco la locución que vale lo mismo.',
+              ecuacion: [con('locución'), ' = ', rel('conector corto')] },
+            { tipo: 'aplica', texto: ['La relación es de ', rel(NOMBRE_SIMPLE[simple]), ': iría «', rel(simple), '». La locución que vale lo mismo es ', con(ok), '.'], dibujo: figResuelve(b, s, 'A pesar de que', true) },
+            { tipo: 'sentido', texto: `Releo con «${simple}» en su lugar y dice lo mismo. Con «${prueba[0].toLowerCase()}», no: ${minus(prueba[2])}` },
+          ],
+          respuesta: ['«', con(b.ok), '» = «', rel(simple), '»'],
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { f: '___ el examen era difícil, la mayoría lo aprobó.', ok: 'Si bien', m: [['Puesto que', 'RV25', 'Daría una razón; la dificultad no explica aprobar.'], ['De manera que', 'RV24', 'Marcaría un resultado; aprobar va contra lo esperado.'], ['Así como', 'RV25', 'Compararía o sumaría; aquí hay un obstáculo superado.']] },
-          { f: 'Llevaremos casacas ___ en la puna hace mucho frío de noche.', ok: 'puesto que', m: [['si bien', 'RV25', 'Marcaría un obstáculo; el frío es la razón de llevarlas.'], ['de modo que', 'RV24', 'Iría al revés: el frío no es el resultado de llevar casacas.'], ['a pesar de que', 'RV25', 'Marcaría contraste; el frío justifica las casacas.']] },
-          { f: 'El río creció mucho, ___ cerraron el puente por seguridad.', ok: 'de manera que', m: [['aun cuando', 'RV25', 'Marcaría un obstáculo; cerrar el puente es lo esperado.'], ['ya que', 'RV24', 'Daría la razón al revés: el cierre no causó la crecida.'], ['así como', 'RV25', 'Sumaría; aquí el cierre es un resultado.']] },
-          { f: '___ no tenía experiencia, hizo un buen trabajo en la feria.', ok: 'A pesar de que', m: [['Dado que', 'RV25', 'Daría una razón; la falta de experiencia no explica el buen trabajo.'], ['De modo que', 'RV24', 'Marcaría un resultado; el buen trabajo va contra lo esperado.'], ['Así como', 'RV25', 'Compararía; aquí hay un obstáculo que no impidió el resultado.']] },
-          { f: 'Suspendieron la clase ___ el profesor estaba enfermo.', ok: 'dado que', m: [['si bien', 'RV25', 'Marcaría un obstáculo; la enfermedad es la razón.'], ['de modo que', 'RV24', 'Iría al revés: la enfermedad no resulta de suspender.'], ['aun cuando', 'RV25', 'Marcaría contraste; la enfermedad justifica la suspensión.']] },
-          { f: 'Ahorró durante un año, ___ pudo comprar su propia computadora.', ok: 'de modo que', m: [['si bien', 'RV25', 'Marcaría un obstáculo; ahorrar ayuda a comprar.'], ['puesto que', 'RV24', 'Daría la razón al revés: comprar no explica ahorrar.'], ['a pesar de que', 'RV25', 'Marcaría contraste; comprar es lo esperado tras ahorrar.']] },
-        ];
+        const B = BANCO_LOCUCIONES;
         const b = B[s % B.length];
         return {
           pregunta: '¿Qué locución expresa la relación entre las dos ideas?',
