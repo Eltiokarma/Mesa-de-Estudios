@@ -1,8 +1,9 @@
 /*
  * Teoría de «Vectores» (fisica.vectores), unidad nueva del 16 nov: sale de «Magnitudes y vectores», que Gerson eligió
  * partir en dos. Molde de docs/teoria.md. Ideas, mesas y glosario movidos tal cual desde magnitudes-y-vectores.js; el
- * vector unitario y las componentes van antes de sumar. Pendiente (docs/plan-calidad.md, etapa 1): la idea «escalar o
- * vector» y pasar cada idea por el contrato «se entiende sin profesor».
+ * vector unitario y las componentes van antes de sumar. 16 nov: idea nueva «¿Basta un número?» (escalar o vector, con
+ * la pieza fis-dron) y las cuatro ideas pasadas por el contrato «se entiende sin profesor» (calidad: 2), con dos
+ * rondas de lector en frío cada una (rutinas/frio/fisica.vectores.md).
  * Colores (regla 4), los mismos en control, figura, texto y ecuación:
  *   A naranja (c-o), B turquesa (c-i), la resultante R y el unitario û verde (c-d), el ángulo θ rojo (c-h).
  * Códigos de error nuevos (hipótesis, sin dato empírico propio; matriz: «sumar módulos ignorando el ángulo»,
@@ -15,6 +16,7 @@
  *   dirección · ESC-DISTANCIA da la distancia recorrida por desplazamiento · ESC-SENTIDO invierte el sentido ·
  *   ESC-ULTIMO toma solo el último tramo · ESC-MOVIMIENTO cree que moverse vuelve vector a la distancia ·
  *   ESC-PESO confunde masa con peso · ESC-TIEMPO cree que el tiempo apunta
+ *   C-SENO usa el seno para lo que avanza en x · C-MODULO toma el largo entero · C-MITAD reparte por mitades
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -278,16 +280,40 @@
   };
   // El juego fija la escala con el B más largo (6): así la punta de B sigue al dedo sin que la figura se encoja.
   const MARCO_R = [[0, 0], [12.5, 6]];
-  const juegoR = val => colaPunta(6, val.b, val.g, { valores: false, marco: MARCO_R });
+  // Con los largos escritos (lector en frío, 16 nov: sin el número de A y de R, la misión se adivinaba).
+  const juegoR = val => colaPunta(6, val.b, val.g, { marco: MARCO_R });
   const resultante = {
     id: 'resultante',
     titulo: 'La resultante depende del ángulo',
     pregunta: '¿Por qué 3 + 4 no siempre da 7 cuando sumas flechas?',
     temas: ['Suma de vectores por el método gráfico'],
     pieza: 'flechas',
+    // Contrato «se entiende sin profesor» (16 nov): Lee, misión, leyenda, Así se resuelve y las palabras del Resumen.
+    lee: {
+      tarjetas: [
+        { titulo: 'Sumar flechas', texto: 'Sumar dos vectores es hacer un movimiento y después el otro. Por eso B se pone con su cola en la punta de A, sin cambiarle el largo ni hacia dónde apunta.' },
+        { titulo: 'La resultante', texto: 'La resultante R es la flecha que va de la cola de A a la punta de B. Hace lo mismo que las dos juntas.' },
+        { titulo: 'El ángulo entre dos flechas', texto: 'θ es el ángulo entre A y B si salieran del mismo punto: 0° si apuntan igual, 180° si se oponen. En el dibujo se mide en la punta de A, desde la punteada que sigue a A.' },
+        { titulo: 'Qué mirar al jugar', texto: 'B gira sobre la punta de A. Mira cuánto mide R cuando B apunta como A y cuando apunta al revés.' },
+      ],
+    },
+    actividad: 'Girar una flecha B sobre la punta de A y mirar cuánto mide la suma.',
+    aprendizaje: 'R mide A + B si apuntan igual, A − B si se oponen, y un valor intermedio con cualquier otro ángulo.',
     juega: {
       consigna: 'B gira sola sobre la punta de A. Mira cómo R se estira hasta A + B y se encoge hasta A − B.',
+      mision: {
+        texto: 'Haz que R mida 0. Vas a tener que cambiar también el largo de B.',
+        logrado: val => colaPunta(6, val.b, val.g).r < 1e-9,
+        bien: 'A y B iguales y opuestas se anulan. Así se equilibran dos fuerzas.',
+      },
       voz: 'Mira entre qué valores se mueve R.',
+      leyenda: [
+        { s: [A], t: 'la primera flecha; mide 6' },
+        { s: [B], t: 'la segunda, puesta en la punta de A' },
+        { s: [R], t: 'la resultante, la suma de A y B' },
+        { s: [th], t: 'el ángulo entre A y B' },
+        { s: ['- - -'], t: 'por donde seguiría A; θ sale de ahí' },
+      ],
       controles: [
         { id: 'g', etiqueta: 'θ', color: 'c-h', min: 0, max: 180, paso: 30, inicio: 60, unidad: '°', decimales: 0, auto: { velocidad: 30, modo: 'rebota' } },
         { id: 'b', etiqueta: 'B', color: 'c-i', min: 2, max: 6, paso: 1, inicio: 4, decimales: 0 },
@@ -322,14 +348,66 @@
       pasos: [
         { estado: { paso: 0 }, texto: 'A es una magnitud vectorial: se dibuja con su largo, 6 unidades.', ecuacion: [A, ' = 6'] },
         { estado: { paso: 1 }, texto: 'B empieza en la punta de A, sin cambiar largo ni dirección.', ecuacion: [B, ' = 4,   ', th, ' = 60°'] },
-        { estado: { paso: 2 }, texto: 'R une la cola de A con la punta de B.', ecuacion: [{ sup: [R, '2'] }, ' = ', { sup: [A, '2'] }, ' + ', { sup: [B, '2'] }, ' + 2', A, B, ' cos ', th] },
-        { estado: { paso: 2, final: true }, texto: 'Con cos 60° = 0,5: R² = 36 + 16 + 24.', ecuacion: [R, ` = √76 ≈ ${f(Math.sqrt(76), 2)}`] },
+        { estado: { paso: 2 }, texto: 'R une la cola de A con la punta de B: ley de cosenos.', ecuacion: [{ sup: [R, '2'] }, ' = ', { sup: [A, '2'] }, ' + ', { sup: [B, '2'] }, ' + 2', A, B, ' cos ', th] },
+        { estado: { paso: 2, final: true }, texto: 'Con cos 60° = 0,5, el último término da 2 · 6 · 4 · 0,5 = 24.', ecuacion: [{ sup: [R, '2'] }, ' = 36 + 16 + 24 = 76,   ', R, ` ≈ ${f(Math.sqrt(76), 2)}`] },
       ],
     },
     regla: {
-      texto: 'Los vectores se suman poniéndolos uno a continuación del otro. El módulo de R depende del ángulo, y queda entre A − B y A + B.',
-      ecuacion: [{ sup: [R, '2'] }, ' = ', { sup: [A, '2'] }, ' + ', { sup: [B, '2'] }, ' + ', { llave: ['2', A, B, ' cos ', th], nota: 'lo que pone θ', color: 'c-h' }],
-      condicion: 'θ es el ángulo entre A y B puestos con el mismo origen; con θ = 90° queda Pitágoras.',
+      texto: 'Los vectores se suman poniéndolos uno a continuación del otro. El módulo de R depende del ángulo: queda entre la diferencia y la suma de los módulos.',
+      ecuacion: [{ sup: [R, '2'] }, ' = ', { sup: [A, '2'] }, ' + ', { sup: [B, '2'] }, ' + ', { llave: ['2', A, B, ' cos ', th], nota: 'el término del ángulo', color: 'c-h' }],
+      condicion: 'θ es el ángulo entre A y B, no el de adentro del triángulo: por eso el signo +. Con 90°, Pitágoras.',
+    },
+    resuelve: {
+      pieza: 'flechas',
+      generar(s) {
+        const r = azar(s + 500), tipo = s % 3;
+        if (tipo === 0) {
+          // Con 120° el coseno es negativo y el término resta (lector en frío, ronda 2: todos los ejemplos eran de 60° o 90°).
+          const [a, b, g, cs] = s === 0 ? [5, 3, 120, -0.5] : r.de([[5, 3, 60, 0.5], [8, 3, 60, 0.5], [5, 8, 60, 0.5], [7, 8, 60, 0.5], [5, 3, 120, -0.5], [8, 5, 120, -0.5]]);
+          const rr = Math.sqrt(a * a + b * b + 2 * a * b * cs);
+          const c = colaPunta(a, b, g, { circulo: false, sinR: true, paso: 1, pasoR: 9 });
+          return {
+            enunciado: ['Dos fuerzas de ', A, ` = ${f(a, 0)} N y `, B, ` = ${f(b, 0)} N forman `, th, ` = ${g}°. ¿Cuánto mide la resultante?`],
+            dibujo: { datos: c.datos, estado: { paso: 1 } },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el módulo de R, la suma de las dos fuerzas.' },
+              { tipo: 'datos', texto: `A = ${f(a, 0)} N, B = ${f(b, 0)} N y el ángulo entre ellas es ${g}°.` },
+              { tipo: 'regla', texto: 'Con un ángulo cualquiera se usa la ley de cosenos, con θ entre A y B.', ecuacion: [{ sup: [R, '2'] }, ' = ', { sup: [A, '2'] }, ' + ', { sup: [B, '2'] }, ' + 2', A, B, ' cos ', th] },
+              { tipo: 'cuentas', texto: cs < 0 ? `cos ${g}° = −0,5: el último término resta.` : `cos ${g}° = 0,5.`, ecuacion: [{ sup: [R, '2'] }, ` = ${f(a * a, 0)} + ${f(b * b, 0)} + 2 · ${f(a, 0)} · ${f(b, 0)} · (${f(cs, 1)}) = ${f(rr * rr, 0)},   `, R, ` = √${f(rr * rr, 0)} ≈ ${f(rr, 2)} N`], dibujo: { datos: colaPunta(a, b, g, { circulo: false }).datos, estado: { paso: 9, final: true } } },
+              { tipo: 'sentido', texto: `${f(rr, 2)} N queda entre la diferencia, ${f(Math.abs(a - b), 0)} N, y la suma, ${f(a + b, 0)} N. Cuadra.` },
+            ],
+            respuesta: [R, ` = ${f(rr, 2)} N`],
+          };
+        }
+        if (tipo === 1) {
+          const a = r.ent(5, 12), b = r.ent(2, a - 1);
+          return {
+            enunciado: `Dos fuerzas de ${f(a, 0)} N y ${f(b, 0)} N actúan sobre una caja. ¿Entre qué valores puede estar su resultante?`,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la resultante más grande y la más chica que pueden dar.' },
+              { tipo: 'datos', texto: `Se conocen los módulos, ${f(a, 0)} N y ${f(b, 0)} N; el ángulo no.` },
+              { tipo: 'regla', texto: 'La mayor sale con θ = 0°, apuntando igual; la menor, con θ = 180°: la grande menos la chica.', ecuacion: ['A − B ≤ ', R, ' ≤ A + B,  con A la mayor'] },
+              { tipo: 'cuentas', texto: 'Se suman y se restan los módulos.', ecuacion: [`${f(a, 0)} − ${f(b, 0)} = ${f(a - b, 0)} N,   ${f(a, 0)} + ${f(b, 0)} = ${f(a + b, 0)} N`] },
+              { tipo: 'sentido', texto: 'Cualquier otro ángulo da un valor entre esos dos.' },
+            ],
+            respuesta: [`${f(a - b, 0)} N ≤ `, R, ` ≤ ${f(a + b, 0)} N`],
+          };
+        }
+        const [a, b] = r.de([[6, 8], [5, 12], [9, 12], [8, 15]]), rr = Math.hypot(a, b);
+        const c = colaPunta(a, b, 90, { circulo: false, sinR: true, paso: 1, pasoR: 9 });
+        return {
+          enunciado: ['Una persona camina ', A, ` = ${f(a, 0)} m al este y luego `, B, ` = ${f(b, 0)} m al norte. ¿Cuánto mide su desplazamiento?`],
+          dibujo: { datos: c.datos, estado: { paso: 1 } },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el módulo de R, la flecha del inicio al final.' },
+            { tipo: 'datos', texto: `Este y norte forman 90°: θ = 90°.` },
+            { tipo: 'regla', texto: 'Con 90°, cos 90° = 0 y la ley de cosenos se vuelve Pitágoras.', ecuacion: [{ sup: [R, '2'] }, ' = ', { sup: [A, '2'] }, ' + ', { sup: [B, '2'] }] },
+            { tipo: 'cuentas', texto: 'Se reemplaza y se saca la raíz.', ecuacion: [R, ` = √(${f(a * a, 0)} + ${f(b * b, 0)}) = ${f(rr, 0)} m`], dibujo: { datos: colaPunta(a, b, 90, { circulo: false }).datos, estado: { paso: 9, final: true } } },
+            { tipo: 'sentido', texto: `Caminó ${f(a + b, 0)} m, pero quedó a ${f(rr, 0)} m del inicio: la diagonal es más corta.` },
+          ],
+          respuesta: [R, ` = ${f(rr, 0)} m`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'flechas',
@@ -365,7 +443,8 @@
   const EJES = [{ de: [-4, 0], a: [4, 0] }, { de: [0, -4], a: [0, 4] }];
   const compA = (ax, ay, o = {}) => {
     const m = Math.hypot(ax, ay);
-    const fl = [{ de: [0, 0], a: [ax, ay], color: 'o', rotulo: 'A', paso: 0 }];
+    // En el juego, A lleva escrito cuánto mide (lector en frío, 16 nov: el número estaba solo en la lectura, abajo).
+    const fl = [{ de: [0, 0], a: [ax, ay], color: 'o', rotulo: 'A', valor: o.valor && m > 0 ? f(m, 2) : undefined, paso: 0 }];
     if (m > 0 && o.unitario) fl.push({ de: [0, 0], a: [ax / m, ay / m], color: 'd', rotulo: 'û', paso: o.pasoU || 0 });
     return { datos: { unidad: 'u', flechas: fl,
       guias: [...EJES, ...(m > 0 ? [{ de: [ax, 0], a: [ax, ay], color: 'o', paso: o.pasoG || 0 }, { de: [0, ay], a: [ax, ay], color: 'o', paso: o.pasoG || 0 }] : [])],
@@ -382,26 +461,27 @@
     lee: {
       tarjetas: [
         { titulo: 'Los ejes', texto: 'En un plano, el eje x va hacia la derecha y el eje y hacia arriba. Cada punto se dice con dos números: cuánto avanzar y cuánto subir.' },
-        { titulo: 'Partir una flecha', texto: 'Una flecha que sale del origen avanza algo en x y sube algo en y. Esos dos números son sus componentes, Aₓ y Aᵧ. Si son negativos, va hacia la izquierda o hacia abajo.' },
-        { titulo: 'î y ĵ', texto: 'î es una flecha de largo 1 hacia la derecha, y ĵ, una de largo 1 hacia arriba. A = 3î + 2ĵ quiere decir: avanza 3 y sube 2.' },
-        { titulo: 'Qué mirar al jugar', texto: 'Vas a cambiar cuánto avanza y cuánto sube A. Mira cuánto mide A y la flechita verde que sale con ella: ¿cuánto mide siempre?' },
+        { titulo: 'Partir una flecha', texto: 'Una flecha que sale del origen avanza algo en x y sube algo en y: son sus componentes, Aₓ y Aᵧ. î y ĵ miden 1 y apuntan por los ejes; A = 3î + 2ĵ quiere decir: avanza 3 y sube 2.' },
+        { titulo: 'Con un ángulo', texto: 'A veces te dan cuánto mide A y el ángulo θ que forma con el eje x. Entonces lo que avanza es |A| cos θ, y lo que sube, |A| sen θ.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a cambiar cuánto avanza y cuánto sube A. Mira cuánto mide A, su módulo |A|, y la flechita verde que sale con ella: ¿cuánto mide siempre?' },
       ],
     },
     actividad: 'Cambiar cuánto avanza y cuánto sube una flecha, y mirar su largo y su flechita verde.',
     aprendizaje: 'A se parte en lo que avanza en x y lo que sube en y; su largo sale por Pitágoras; el unitario es A ÷ |A|.',
     juega: {
-      consigna: 'Aₓ va y viene sola; tú cambias Aᵧ o arrastras la punta de A. La flecha verde es su unitario.',
+      consigna: 'Aₓ va y viene sola. Arrastra la punta de A y la flecha se queda donde la sueltes. La verde es su unitario.',
       mision: {
         texto: 'Haz que A mida justo 5.',
         logrado: val => Math.abs(Math.hypot(val.ax, val.ay) - 5) < 1e-9,
         bien: 'Avanza 3 y sube 4: 3² + 4² = 25, y √25 = 5.',
       },
-      voz: 'Prueba también A = 0. ¿Hacia dónde apuntaría su unitario?',
+      voz: 'Alarga A sin girarla. ¿Cambia la flecha verde?',
       leyenda: [
         { s: [{ sub: [A, 'x'] }], t: 'cuánto avanza A en x' },
         { s: [{ sub: [A, 'y'] }], t: 'cuánto sube A en y' },
         { s: [u], t: 'el unitario: apunta como A y mide 1' },
         { s: ['|', A, '|'], t: 'el módulo: cuánto mide A' },
+        { s: [vA], t: 'el vector; sin flechita, A es su largo' },
       ],
       controles: [
         { id: 'ax', etiqueta: 'Aₓ', color: 'c-o', min: -4, max: 4, paso: 1, inicio: 3, decimales: 0, auto: { velocidad: 1.5, modo: 'rebota' } },
@@ -410,7 +490,8 @@
       dibujo: val => compA(val.ax, val.ay, { unitario: true, valor: true }),
       lectura: val => {
         const m = Math.hypot(val.ax, val.ay);
-        return m > 1e-9 ? ['|', A, `| = ${f(m, 2)} · `, u, ` = (${f(val.ax / m, 2)}; ${f(val.ay / m, 2)})`] : [A, ' = 0: no apunta a ningún lado; no tiene ', u];
+        const c = x => `${x < 0 ? '−' : ''}${f(Math.abs(x), 2)}`;
+        return m > 1e-9 ? ['|', A, `| = ${f(m, 2)} · `, u, ` = ${c(val.ax / m)}î ${val.ay < 0 ? '−' : '+'} ${f(Math.abs(val.ay / m), 2)}ĵ, mide 1`] : [A, ' = 0: no apunta a ningún lado; no tiene ', u];
       },
       minimo: 3,
       // Arrastra la punta de A: su sombra en x es Aₓ y su sombra en y es Aᵧ (los ejes de −4 a 4 fijan la escala).
@@ -439,18 +520,20 @@
         { estado: { paso: 1 }, texto: 'Sus componentes son lo que avanza en cada eje.', ecuacion: [{ sub: [A, 'x'] }, ' = 3,   ', { sub: [A, 'y'] }, ' = 4'] },
         { estado: { paso: 2 }, texto: 'Su módulo sale de Pitágoras con las componentes.', ecuacion: ['|', A, '| = ', { raiz: [[{ sup: ['3', '2'] }, ' + ', { sup: ['4', '2'] }]] }, ' = 5'] },
         { estado: { paso: 3 }, texto: 'El unitario divide cada componente entre 5: mide 1.', ecuacion: [u, ' = ', { frac: [vA, ['|', A, '|']] }, ' = 0,6î + 0,8ĵ'] },
+        { estado: { paso: 3 }, texto: 'A forma 53° con el eje x: coseno para avanzar, seno para subir.', ecuacion: ['5 cos 53° = 5 · 3/5 = 3,   5 sen 53° = 5 · 4/5 = 4'] },
       ],
     },
     regla: {
       texto: 'Un vector se escribe con sus componentes sobre î y ĵ. Su módulo sale de Pitágoras, y el unitario es el vector dividido entre su módulo.',
-      ecuacion: [vA, ' = ', { sub: [A, 'x'] }, 'î + ', { sub: [A, 'y'] }, 'ĵ', '   ·   ', '|', A, '| = ', { llave: [{ raiz: [[{ sub: [A, 'x'] }, '²', ' + ', { sub: [A, 'y'] }, '²']] }], nota: 'el módulo', color: 'c-o' }, '   ·   ', u, ' = ', { llave: [{ frac: [vA, ['|', A, '|']] }], nota: 'mide 1', color: 'c-d' }],
-      condicion: 'los ejes x e y son perpendiculares; el vector nulo no tiene unitario.',
+      ecuacion: [vA, ' = ', { sub: [A, 'x'] }, 'î + ', { sub: [A, 'y'] }, 'ĵ', '   ·   ', '|', A, '| = ', { llave: [{ raiz: [[{ sub: [A, 'x'] }, '²', ' + ', { sub: [A, 'y'] }, '²']] }], nota: 'el módulo', color: 'c-o' }, '   ·   ', u, ' = ', { llave: [{ frac: [vA, ['|', A, '|']] }], nota: 'û mide 1', color: 'c-d' }],
+      condicion: 'los ejes son perpendiculares; con θ medido desde el eje x, Aₓ = |A| cos θ y Aᵧ = |A| sen θ.',
     },
     resuelve: {
       pieza: 'flechas',
       generar(s) {
         const r = azar(s + 300), tipo = s % 3;
-        const [p, q, m] = r.de([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [12, 5, 13], [8, 6, 10]]);
+        // 9, 12, 15 no sale en «Ahora tú»: el primer ejemplo resuelto no regala la respuesta del primer ejercicio.
+        const [p, q, m] = s === 0 ? [9, 12, 15] : r.de([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [12, 5, 13], [8, 6, 10], [9, 12, 15]]);
         const esc = Math.max(p, q) / 4;
         if (tipo === 0) return {
           enunciado: ['¿Cuánto mide el vector ', vA, ` = ${f(p, 0)}î + ${f(q, 0)}ĵ?`],
@@ -502,7 +585,22 @@
         const sx = r.de([1, -1]), sy = r.de([1, -1]), ax = sx * p, ay = sy * q;
         const esc = Math.max(p, q) / 4;
         const dib = compA(ax / esc, ay / esc, { paso: 0 });
-        if (s % 2 === 0) return {
+        if (s % 3 === 2) {
+          // Componentes a partir del módulo y el ángulo, con los notables de 37° y 53° (lector en frío, 16 nov: el
+          // ángulo es lo más típico del examen y «Ahora tú» no lo pedía).
+          const k = r.de([2, 4, 5, 10]), mod = 5 * k, g = r.de([37, 53]), ax = (g === 37 ? 4 : 3) * k, ay = (g === 37 ? 3 : 4) * k;
+          return {
+            pregunta: ['Un vector ', vA, ` mide ${f(mod, 0)} y forma ${g}° con el eje x. ¿Cuánto vale su componente x?`],
+            dibujo: compA(ax / (mod / 4), ay / (mod / 4), { paso: 0 }),
+            opciones: opciones(ax, [
+              { id: 'cruce', valor: ay, error: 'C-SENO', siFuera: 'Esa es la que sube, |A| sen θ. Lo que avanza en x es |A| cos θ.' },
+              { id: 'mod', valor: mod, error: 'C-MODULO', siFuera: 'Ese es todo el largo de A; lo que avanza en x es más corto.' },
+              { id: 'mitad', valor: mod / 2, error: 'C-MITAD', siFuera: 'La mitad sería con 60°. Lo que avanza depende del ángulo: |A| cos θ.' },
+            ], x => f(x, 1)),
+            solucion: { texto: `En el triángulo de 37° y 53°, cos ${g}° = ${g === 37 ? '4/5' : '3/5'}.`, ecuacion: [{ sub: [A, 'x'] }, ` = ${f(mod, 0)} · ${g === 37 ? '4/5' : '3/5'} = ${f(ax, 0)}`] },
+          };
+        }
+        if (s % 3 === 0) return {
           pregunta: ['¿Cuánto mide el vector ', vA, ` = ${f(ax, 0)}î ${ay < 0 ? '−' : '+'} ${f(Math.abs(ay), 0)}ĵ?`],
           dibujo: dib,
           opciones: opciones(m, [
@@ -555,9 +653,31 @@
     pregunta: '¿De qué dos maneras se multiplican dos flechas?',
     temas: ['Producto escalar y vectorial'],
     pieza: 'flechas',
+    // Contrato «se entiende sin profesor» (16 nov): Lee, misión, leyenda, Así se resuelve y las palabras del Resumen.
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos maneras de multiplicar', texto: 'Dos flechas se multiplican de dos maneras. Una da un número: el producto escalar, A · B. La otra da una flecha nueva: el producto vectorial, A × B.' },
+        { titulo: 'La sombra y el área', texto: 'La sombra de B sobre A es lo que B avanza en la dirección de A. Y A y B, desde un mismo punto, arman un paralelogramo cuya área cambia cuando B gira.' },
+        { titulo: 'k̂ y la mano derecha', texto: 'Además de î y ĵ está k̂: mide 1 y sale de la pantalla hacia ti. Mano derecha: los dedos van de A hacia B y el pulgar dice hacia dónde apunta A × B.' },
+        { titulo: 'Qué mirar al jugar', texto: 'B gira sola. Mira cuándo la sombra crece, cuándo desaparece y cuándo el área es la mayor.' },
+      ],
+    },
+    actividad: 'Girar B y comparar su sombra sobre A con el área que encierran juntas.',
+    aprendizaje: 'El producto escalar es A por la sombra de B: un número. El vectorial mide el área y apunta fuera del plano.',
     juega: {
-      consigna: 'A = 4 y B = 3. B gira sola. Mira la sombra de B sobre A (escalar) y el área del paralelogramo (vectorial).',
+      consigna: 'A = 4 y B = 3. B gira sola; arrástrala para dejarla quieta. Mira su sombra sobre A y el área.',
+      mision: {
+        texto: 'Haz que el producto escalar valga 0.',
+        logrado: val => Math.abs(cosG(val.g)) < 1e-9,
+        bien: 'A 90°, B no hace sombra sobre A: escalar 0 y área máxima.',
+      },
       voz: 'Busca dónde la sombra desaparece y dónde el área es mayor.',
+      leyenda: [
+        { s: [A, ', ', B], t: 'las dos flechas: miden 4 y 3' },
+        { s: [th], t: 'el ángulo entre A y B' },
+        { s: ['·'], t: 'producto escalar: da un número' },
+        { s: ['×'], t: 'producto vectorial: da una flecha' },
+      ],
       controles: [{ id: 'g', etiqueta: 'θ', color: 'c-h', min: 0, max: 180, paso: 30, inicio: 60, unidad: '°', decimales: 0, auto: { velocidad: 30, modo: 'rebota' } }],
       dibujo: val => prod(4, 3, val.g, { marco: MARCO_P }),
       lectura: val => [vA, '·', vB, ` = ${f(12 * cosG(val.g), 2)} · |`, vA, '×', vB, `| = ${f(12 * senG(val.g), 2)}`],
@@ -588,13 +708,77 @@
         { estado: { paso: 1 }, texto: 'La sombra de B sobre A mide 3 · cos 60° = 1,5.', ecuacion: ['B cos θ = 3 · cos 60° = 3 · 0,5 = 1,5'] },
         { estado: { paso: 2 }, texto: 'El producto escalar da una magnitud escalar: un número, sin dirección.', ecuacion: [vA, ' · ', vB, ' = ', A, B, ' cos ', th, ' = 4 · 3 · cos 60° = 4 · 1,5 = 6'] },
         { estado: { paso: 3 }, texto: 'El vectorial mide el área del paralelogramo.', ecuacion: ['|', vA, ' × ', vB, '| = ', A, B, ` sen `, th, ` = ${f(12 * senG(60), 2)}`] },
-        { estado: { paso: 3 }, texto: 'Apunta perpendicular al plano de A y B, por la mano derecha.', ecuacion: [vA, ' × ', vB, ` = ${f(12 * senG(60), 2)} k̂`] },
+        { estado: { paso: 3 }, texto: 'A × B sale de la pantalla: dedos de A a B; el pulgar apunta.', ecuacion: [vA, ' × ', vB, ` = ${f(12 * senG(60), 2)} k̂`] },
+        { estado: { paso: 3 }, texto: 'Con componentes, el escalar multiplica cada eje por su eje y suma.', ecuacion: [vA, ' · ', vB, ' = ', { sub: [A, 'x'] }, { sub: [B, 'x'] }, ' + ', { sub: [A, 'y'] }, { sub: [B, 'y'] }, ';   (3î + 4ĵ) · (2î + ĵ) = 6 + 4 = 10'] },
+        { estado: { paso: 3 }, texto: 'El vectorial multiplica en cruz, x de una por y de otra, y resta.', ecuacion: [vA, ' × ', vB, ' = (', { sub: [A, 'x'] }, { sub: [B, 'y'] }, ' − ', { sub: [A, 'y'] }, { sub: [B, 'x'] }, ') k̂'] },
       ],
     },
     regla: {
       texto: 'El producto escalar es un número: A por la sombra de B. El vectorial es un vector perpendicular a ambos, de módulo igual al área del paralelogramo.',
       ecuacion: [vA, ' · ', vB, ' = ', A, { llave: [B, ' cos ', th], nota: 'sombra de B', color: 'c-i' }, '   ·   ', '|', vA, ' × ', vB, '| = ', { llave: [A, B, ' sen ', th], nota: 'área', color: 'c-d' }],
-      condicion: 'θ es el ángulo entre A y B con el mismo origen. B × A = −(A × B): el orden importa.',
+      condicion: 'θ es el ángulo entre A y B. B × A mide lo mismo que A × B, pero apunta al revés.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 800), tipo = s % 4;
+        if (tipo === 3) {
+          // El vectorial con componentes, resuelto (lector en frío, ronda 2: no había ningún ejemplo con números).
+          const [a1, a2, b1, b2] = r.de([[3, 2, 1, 4], [2, 5, 3, 1], [4, -1, 2, 3], [1, 3, -2, 2]]), pv = a1 * b2 - a2 * b1;
+          const t = (x, y) => `${f(x, 0)}î ${y < 0 ? '−' : '+'} ${f(Math.abs(y), 0)}ĵ`;
+          return {
+            enunciado: ['Si ', vA, ` = ${t(a1, a2)} y `, vB, ` = ${t(b1, b2)}, ¿cuánto vale `, vA, ' × ', vB, '?'],
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el producto vectorial: una flecha que sale del plano, según k̂.' },
+              { tipo: 'datos', texto: `Aₓ = ${f(a1, 0)}, Aᵧ = ${f(a2, 0)}; Bₓ = ${f(b1, 0)}, Bᵧ = ${f(b2, 0)}.` },
+              { tipo: 'regla', texto: 'x de A por y de B, menos y de A por x de B. En ese orden.', ecuacion: [vA, ' × ', vB, ' = (', { sub: [A, 'x'] }, { sub: [B, 'y'] }, ' − ', { sub: [A, 'y'] }, { sub: [B, 'x'] }, ') k̂'] },
+              { tipo: 'cuentas', texto: 'Se reemplaza con sus signos.', ecuacion: [`(${f(a1, 0)})(${f(b2, 0)}) − (${f(a2, 0)})(${f(b1, 0)}) = ${f(a1 * b2, 0)} − (${f(a2 * b1, 0)}) = ${f(pv, 0)}`] },
+              { tipo: 'sentido', texto: pv > 0 ? `${f(pv, 0)} k̂: positivo, sale de la pantalla. B × A daría ${f(-pv, 0)} k̂.` : `${f(pv, 0)} k̂: negativo, entra en la pantalla. B × A daría ${f(-pv, 0)} k̂.` },
+            ],
+            respuesta: [vA, ' × ', vB, ` = ${f(pv, 0)} k̂`],
+          };
+        }
+        if (tipo === 0) {
+          const [a, b, g, cs] = r.de([[10, 5, 60, 0.5], [8, 5, 37, 0.8], [6, 10, 53, 0.6], [4, 5, 120, -0.5]]), pe = a * b * cs;
+          return {
+            enunciado: ['Dos vectores de ', A, ` = ${f(a, 0)} y `, B, ` = ${f(b, 0)} forman `, th, ` = ${g}°. ¿Cuánto vale `, vA, ' · ', vB, '?'],
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el producto escalar: un número.' },
+              { tipo: 'datos', texto: `A = ${f(a, 0)}, B = ${f(b, 0)} y θ = ${g}°.` },
+              { tipo: 'regla', texto: 'El escalar es A por la sombra de B sobre A.', ecuacion: [vA, ' · ', vB, ' = ', A, B, ' cos ', th] },
+              { tipo: 'cuentas', texto: `cos ${g}° = ${f(cs, 1)}.`, ecuacion: [vA, ' · ', vB, ` = ${f(a, 0)} · ${f(b, 0)} · ${f(cs, 1)} = ${f(pe, 0)}`] },
+              { tipo: 'sentido', texto: g > 90 ? 'Pasado 90°, la sombra cae detrás de A: el escalar sale negativo.' : `Es un número, sin flecha, y menor que ${f(a, 0)} · ${f(b, 0)} = ${f(a * b, 0)} porque cos θ es menor que 1.` },
+            ],
+            respuesta: [vA, ' · ', vB, ` = ${f(pe, 0)}`],
+          };
+        }
+        if (tipo === 1) {
+          const [a, b, g, sn] = r.de([[6, 4, 30, 0.5], [10, 5, 37, 0.6], [5, 4, 53, 0.8], [8, 3, 90, 1]]), pv = a * b * sn;
+          return {
+            enunciado: ['Dos vectores de ', A, ` = ${f(a, 0)} y `, B, ` = ${f(b, 0)} forman `, th, ` = ${g}°. ¿Cuánto mide `, vA, ' × ', vB, '?'],
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el módulo del producto vectorial: el área del paralelogramo.' },
+              { tipo: 'datos', texto: `A = ${f(a, 0)}, B = ${f(b, 0)} y θ = ${g}°.` },
+              { tipo: 'regla', texto: 'El área es base por altura: A por lo que B sube sobre A.', ecuacion: ['|', vA, ' × ', vB, '| = ', A, B, ' sen ', th] },
+              { tipo: 'cuentas', texto: `sen ${g}° = ${f(sn, 1)}.`, ecuacion: ['|', vA, ' × ', vB, `| = ${f(a, 0)} · ${f(b, 0)} · ${f(sn, 1)} = ${f(pv, 0)}`] },
+              { tipo: 'sentido', texto: `Apunta fuera del plano, según k̂; su módulo nunca pasa de ${f(a, 0)} · ${f(b, 0)} = ${f(a * b, 0)}.` },
+            ],
+            respuesta: ['|', vA, ' × ', vB, `| = ${f(pv, 0)}`],
+          };
+        }
+        const [a1, a2, b1, b2] = r.de([[3, 4, 2, -1], [2, 5, 4, 1], [1, 3, 5, 2], [4, -2, 3, 6]]), pe = a1 * b1 + a2 * b2;
+        const t = (x, y) => `${f(x, 0)}î ${y < 0 ? '−' : '+'} ${f(Math.abs(y), 0)}ĵ`;
+        return {
+          enunciado: ['Si ', vA, ` = ${t(a1, a2)} y `, vB, ` = ${t(b1, b2)}, ¿cuánto vale `, vA, ' · ', vB, '?'],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el producto escalar con componentes.' },
+            { tipo: 'datos', texto: `Aₓ = ${f(a1, 0)}, Aᵧ = ${f(a2, 0)}; Bₓ = ${f(b1, 0)}, Bᵧ = ${f(b2, 0)}.` },
+            { tipo: 'regla', texto: 'Cada componente se multiplica con la de su mismo eje, y se suman.', ecuacion: [vA, ' · ', vB, ' = ', { sub: [A, 'x'] }, { sub: [B, 'x'] }, ' + ', { sub: [A, 'y'] }, { sub: [B, 'y'] }] },
+            { tipo: 'cuentas', texto: 'Se reemplaza con sus signos.', ecuacion: [`(${f(a1, 0)})(${f(b1, 0)}) + (${f(a2, 0)})(${f(b2, 0)}) = ${f(a1 * b1, 0)} + (${f(a2 * b2, 0)}) = ${f(pe, 0)}`] },
+            { tipo: 'sentido', texto: pe === 0 ? 'Da 0: A y B son perpendiculares.' : `Da ${f(pe, 0)}: un número, sin î ni ĵ. ${pe < 0 ? 'Negativo: forman más de 90°.' : 'Positivo: forman menos de 90°.'}` },
+          ],
+          respuesta: [vA, ' · ', vB, ` = ${f(pe, 0)}`],
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -685,10 +869,12 @@
 
   return {
     unidad: 'fisica.vectores',
-    // Unidad nueva del 16 nov: sale de «Magnitudes y vectores» (Gerson eligió partirla). Ideas, mesas y glosario se movieron
-    // tal cual; las ideas nuevas (escalar o vector) y el contrato «se entiende sin profesor» vienen después, una por una.
-    version: '0.1.0',
+    // Unidad nueva del 16 nov: sale de «Magnitudes y vectores» (Gerson eligió partirla).
+    version: '0.2.0',
     estado: 'completa',
+    // Pasó por el contrato «se entiende sin profesor» (16 nov): misión, leyenda, aprendizaje, actividad, pregunta, palabras
+    // del Resumen y 3 ejemplos por término; las cuatro ideas, con lector en frío (rutinas/frio/fisica.vectores.md).
+    calidad: 2,
     requiere: ['/nucleo/kit/piezas/fis-dron.js', '/nucleo/kit/piezas/flechas.js', '/plantillas/vectores/motor.js', '/nucleo/fisica3d.js', '/nucleo/kit/piezas/fis-espacio-3d.js'],
     glosario: [
       { termino: 'magnitud escalar', formas: ['magnitud escalar', 'magnitudes escalares', 'escalar', 'escalares'],
@@ -706,16 +892,19 @@
         ejemplos: ['Ir a la tienda y volver a casa: el desplazamiento es 0.', 'Un dron que vuela 300 m hacia el noroeste: 300 m al noroeste.', 'De x = 5 m a x = 2 m: Δx = −3 m, hacia atrás.'], ver: ['distancia recorrida', 'vector'] },
       { termino: 'distancia recorrida', medida: 'm', def: 'Todo el camino hecho, sumando idas y vueltas. Nunca es negativa.',
         ejemplos: ['Ir 4 m y volver 4 m: recorriste 8 m, aunque Δx = 0.', 'Dar una vuelta de 400 m a la pista: 400 m recorridos.', 'Ir 600 m al este y volver 200 m: 800 m recorridos.'], ver: ['desplazamiento'] },
-      { termino: 'resultante', simbolo: 'R', def: 'Vector que reemplaza a varios: va de la cola del primero a la punta del último.',
+      { termino: 'ley de cosenos', formas: ['ley de cosenos', 'ley del coseno', 'teorema de cosenos'], simple: 'La fórmula que da la suma de dos flechas con cualquier ángulo.',
+        def: 'Para sumar vectores: R² = A² + B² + 2AB cos θ, con θ entre A y B.',
+        ejemplos: ['Con 5, 3 y 60°: R² = 25 + 9 + 15 = 49, y R = 7.', 'Con θ = 90°, cos θ = 0 y queda Pitágoras.', 'Con θ = 180°, cos θ = −1 y R = A − B.'], ver: ['resultante'] },
+      { termino: 'resultante', simbolo: 'R', simple: 'La flecha que hace lo mismo que varias juntas.', def: 'Vector que reemplaza a varios: va de la cola del primero a la punta del último.',
         ejemplos: ['A = 3 y B = 4 a 90°: R = 5.', 'Dos personas jalan una caja con 30 N cada una, hacia el mismo lado: R = 60 N.', 'Con 30 N y 20 N en sentidos opuestos: R = 10 N.'], ver: ['vector'] },
       { termino: 'componente', simple: 'Lo que una flecha avanza de lado o sube; sus dos «sombras».', def: 'Lo que un vector avanza a lo largo de un eje, con su signo.',
         ejemplos: ['A = 3î + 4ĵ: Aₓ = 3 y Aᵧ = 4.', 'Una flecha de 10 a 37° del eje x tiene Aₓ = 8 y Aᵧ = 6.', 'Una flecha que apunta al oeste tiene componente x negativa.'], ver: ['vector unitario', 'módulo'] },
       { termino: 'vector unitario', simbolo: 'û', simple: 'Una flechita de largo 1 que apunta igual que la otra.', formas: ['vector unitario', 'vectores unitarios', 'unitario', 'unitarios'],
         def: 'Flecha de largo 1 que apunta igual que otra; sale de dividirla entre su módulo.',
         ejemplos: ['A = 6î + 8ĵ: û = 0,6î + 0,8ĵ.', 'î es el unitario del eje x: mide 1 y apunta a la derecha.', 'Una fuerza de 5 N hacia arriba es 5 veces el unitario ĵ.'], ver: ['componente'] },
-      { termino: 'producto escalar', simbolo: 'A · B', def: 'Número que sale de multiplicar un largo por la sombra del otro: A B cos θ.',
+      { termino: 'producto escalar', simbolo: 'A · B', simple: 'Un largo por la sombra del otro: da solo un número.', def: 'Número que sale de multiplicar un largo por la sombra del otro: A B cos θ.',
         ejemplos: ['A = 4 y B = 3 a 60°: A · B = 6.', 'Dos flechas perpendiculares: A · B = 0.', 'Empujar un carrito 5 m con 10 N en esa misma dirección da 50 J de trabajo.'], ver: ['producto vectorial'] },
-      { termino: 'producto vectorial', simbolo: 'A × B',
+      { termino: 'producto vectorial', simbolo: 'A × B', simple: 'Da una flecha nueva que sale del plano; mide el área que encierran.',
         def: 'Vector perpendicular a los dos, cuyo largo es el área de su paralelogramo: A B sen θ.',
         ejemplos: ['A = 4 y B = 5 a 90°: |A × B| = 20.', 'Dos flechas paralelas: |A × B| = 0, no encierran área.', 'Girar una llave de 0,2 m con 10 N perpendicular: torque de 2 N·m.'], ver: ['producto escalar'] },
     ],
