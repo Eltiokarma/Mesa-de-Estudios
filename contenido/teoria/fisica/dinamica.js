@@ -140,6 +140,15 @@
     titulo: 'La aceleración sigue a la fuerza',
     temas: ['Segunda ley de Newton'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): contexto y vocabulario. No dice hacia dónde apunta la aceleración del carrito de «Predice».
+    lee: {
+      tarjetas: [
+        { titulo: 'Vacía o llena', texto: 'En la feria de Juliaca, arrancar una carretilla vacía cuesta poco; llena de papas, cuesta bastante más. Lo que cambia es la masa: cuánto se resiste un cuerpo a cambiar su velocidad.' },
+        { titulo: 'Juntar las fuerzas', texto: ['Si varias fuerzas actúan a la vez, se juntan en una sola, la fuerza neta ', SF, '. Las que van al mismo lado se suman; las que se oponen, se restan.'],
+          ecuacion: [SF, ' = ', { sub: [F, '1'] }, ' − ', { sub: [F, '2'] }] },
+        { titulo: 'Qué mirar', texto: 'En el juego, el carrito arranca del reposo. Cambia la fuerza o la masa y mira el largo de la flecha roja y cómo se separan las marcas.' },
+      ],
+    },
     juega: {
       consigna: 'El carrito arranca del reposo, en cámara lenta. Elige la fuerza y la masa; mira la flecha roja y cómo se separan las marcas.',
       voz: 'Duplica la masa con la misma fuerza. ¿Qué le pasa a a?',
@@ -151,8 +160,8 @@
       dibujo: val => ({ datos: carritoT(val.F, val.m, val.t), estado: {} }),
       lectura: val => { const r = recorrido(val.F / val.m, 0, Infinity, val.t); return [a, ` = ${f(val.F / val.m, 2)} m/s² · v = ${f(r.v, 1)} m/s · x = ${f(r.x, 2)} m`]; },
       minimo: 3,
-      // Arrastra la mano (la cola de F) hacia la izquierda: más fuerza. La flecha roja responde; el carrito sigue andando.
-      arrastres: [{ id: 'empuje', etiqueta: 'fuerza de la mano', color: 'c-o',
+      // Arrastra la cola de F hacia la izquierda: más fuerza. La flecha roja responde; el carrito sigue andando.
+      arrastres: [{ id: 'empuje', etiqueta: 'cola de la fuerza F', color: 'c-o',
         donde: val => { const g = LZ(carritoT(val.F, val.m, val.t)); return { x: g.X(carritoCam(val.F, val.m, val.t).xc - 0.45) - val.F * KF1T, y: g.Y(0.3) }; },
         mover: (pt, val) => { const g = LZ(carritoT(val.F, val.m, val.t)); return { F: (g.X(carritoCam(val.F, val.m, val.t).xc - 0.45) - pt.x) / KF1T }; } }],
     },
@@ -187,6 +196,27 @@
       texto: 'Segunda ley de Newton: la fuerza neta no dice hacia dónde va el cuerpo, sino cómo cambia su velocidad. La aceleración apunta como la fuerza neta.',
       ecuacion: [{ llave: [SF], nota: 'fuerza neta', color: 'c-o' }, ' = m ', a],
       condicion: 'masa constante y medida desde un marco inercial (el piso). ΣF suma todas las fuerzas sobre el cuerpo, con signo.',
+    },
+    // Así se resuelve: dos fuerzas opuestas sobre un bloque, calculado igual que «Ahora tú» (a = (F₁ − F₂) / m).
+    resuelve: {
+      generar(sm) {
+        const r = azar(sm + 900), m = r.ent(1, 5), F1 = r.de([4, 6, 8, 10, 12, 15, 20]);
+        let F2; do { F2 = r.de([2, 3, 5, 6, 9, 12, 16]); } while (F2 === F1);
+        const neta = F1 - F2, av = neta / m, lado = av >= 0 ? 'derecha' : 'izquierda';
+        return {
+          enunciado: [`Sobre un bloque de ${m} kg, sin rozamiento, actúan `, { sub: [F, '1'] }, ` = ${F1} N hacia la derecha y `, { sub: [F, '2'] }, ` = ${F2} N hacia la izquierda. ¿Cuál es su aceleración?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la aceleración ', a, ' del bloque: cuánto vale y hacia dónde apunta.'] },
+            { tipo: 'datos', texto: [`La masa es ${m} kg. Hay ${F1} N hacia la derecha y ${F2} N hacia la izquierda, sin rozamiento.`] },
+            { tipo: 'regla', texto: 'La aceleración sale de la fuerza neta: junto todas las fuerzas con su signo y divido entre la masa.',
+              ecuacion: [a, ' = ', { frac: [SF, 'm'] }] },
+            { tipo: 'cuentas', texto: 'Tomo la derecha como positiva. Las dos fuerzas se oponen, así que se restan.',
+              ecuacion: [SF, ` = ${F1} − ${F2} = ${f(neta, 0)} N   →   `, a, ` = ${f(neta, 0)} / ${m} = ${f(av, 2)} m/s²`] },
+            { tipo: 'sentido', texto: `El signo ${av >= 0 ? 'positivo' : 'negativo'} dice que apunta a la ${lado}, como la fuerza mayor. Y N entre kg da m/s².` },
+          ],
+          respuesta: [a, ` = ${f(Math.abs(av), 2)} m/s² hacia la ${lado}`],
+        };
+      },
     },
     ahoraTu: {
       generar(sm) {
@@ -230,6 +260,15 @@
     titulo: 'La masa viaja, el peso cambia',
     temas: ['Masa y peso'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): contexto y vocabulario. No dice cuánto acelera el bloque empujado en la Luna de «Predice».
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos kilos de papa', texto: 'Cuando pides 2 kg de papa en el mercado, pides masa: cuánta materia hay. El peso es otra cosa: la fuerza con que la Tierra jala esas papas hacia abajo. Se mide en newtons, N.' },
+        { titulo: 'Cada astro, su g', texto: 'Cada astro jala distinto. En la Tierra, g vale cerca de 10 m/s²; en Marte, 3,7; en la Luna, 1,6. El peso se calcula con la g del lugar.',
+          ecuacion: [P, ' = m g'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, la masa sube y baja sola. Cambia de lugar y mira cuánto se alarga la flecha verde del peso por cada kilo.' },
+      ],
+    },
     juega: {
       consigna: 'La masa sube y baja sola. Llévala a la Tierra, a Marte o a la Luna, y mira cuánto crece el peso por cada kilo.',
       voz: 'Con la misma masa, ¿dónde es más corta la flecha del peso?',
@@ -247,13 +286,13 @@
         mover: (pt, val) => ({ m: (pt.y - LZ(persona(val.m, val.g)).Y(0.5)) / (val.g * KP2) }) }],
     },
     predice: {
-      pregunta: 'Un astronauta de 70 kg flota quieto junto a su nave en la Luna, sin rozamiento. Lo empujas 140 N horizontalmente. ¿Cuánto acelera, comparado con la Tierra?',
+      pregunta: 'Un bloque de 70 kg descansa en la Luna sobre un piso sin rozamiento. Lo empujas con 140 N horizontales. ¿Cuánto acelera, comparado con la Tierra?',
       opciones: [
         { id: 'c', texto: 'Igual: 2 m/s² en los dos lugares', correcta: true },
         { id: 'mas', texto: 'Más en la Luna: allá pesa menos', error: 'MP-PESO', siFuera: 'Allá pesa menos, cierto. Pero para acelerarlo de lado cuenta su masa, que es la misma.' },
         { id: 'menos', texto: 'Menos en la Luna', error: 'MP-LIVIANO', siFuera: 'Con la misma fuerza y la misma masa, la aceleración no cambia de lugar.' },
       ],
-      dibujo: { datos: persona(70, 1.6, { alt: 'Astronauta de 70 kg en la Luna, con su peso de 112 N.' }), estado: {} },
+      dibujo: { datos: persona(70, 1.6, { alt: 'Bloque de 70 kg en la Luna, con su peso de 112 N.' }), estado: {} },
       revelar: { datos: persona(70, 1.6, { empuje: 140 }), estado: {} },
       coincide: 'Coincide: 140 N entre 70 kg da 2 m/s² en la Luna y en la Tierra.',
     },
@@ -276,6 +315,28 @@
       texto: 'La masa mide cuánto cuesta cambiar la velocidad de un cuerpo y no depende del lugar. El peso es la fuerza con que lo atrae el astro.',
       ecuacion: [P, ' = m ', { llave: ['g'], nota: 'según el lugar', color: 'c-d' }],
       condicion: 'g depende del lugar (Tierra ≈ 10, Marte ≈ 3,7, Luna ≈ 1,6 m/s²). En ΣF = ma va la masa, en kg.',
+    },
+    // Así se resuelve: el peso en otro lugar, calculado igual que «Ahora tú» (m = P / 10 y P = m g). La figura del
+    // paso de las cuentas es la del juego (la función persona dibuja un bloque), con la masa y el lugar del ejercicio.
+    resuelve: {
+      pieza: 'fis-lienzo',
+      generar(sm) {
+        const r = azar(sm + 900), m = r.de([40, 50, 60, 70, 80, 90]), g2 = r.de([3.7, 1.6]), PT = m * G, P2 = m * g2;
+        const astro = g2 === 1.6 ? 'la Luna' : 'Marte', Astro = g2 === 1.6 ? 'La Luna' : 'Marte';
+        return {
+          enunciado: ['Un cuerpo pesa ', P, ` = ${PT} N en la Tierra (g = 10 m/s²). ¿Cuánto pesa en ${astro}, donde g = ${f(g2, 1)} m/s²?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el peso ', P, ` en ${astro}: la fuerza con que ${astro} jala al cuerpo.`] },
+            { tipo: 'datos', texto: [P, ` = ${PT} N en la Tierra, con g = 10 m/s². En ${astro}, g = ${f(g2, 1)} m/s².`] },
+            { tipo: 'regla', texto: 'La masa es la misma en todo lugar; el peso es esa masa por la g del lugar.', ecuacion: [P, ' = m g'] },
+            { tipo: 'cuentas', texto: 'Primero saco la masa con el dato de la Tierra. Después la multiplico por la g nueva.',
+              ecuacion: [`m = ${PT} / 10 = ${m} kg   →   `, P, ` = ${m} · ${f(g2, 1)} = ${f(P2, 2)} N`],
+              dibujo: { datos: persona(m, g2), estado: {} } },
+            { tipo: 'sentido', texto: `${Astro} jala menos que la Tierra, así que pesa menos: ${f(P2, 2)} N contra ${PT} N. Y kg por m/s² da N.` },
+          ],
+          respuesta: [P, ` = ${f(P2, 2)} N en ${astro}`],
+        };
+      },
     },
     ahoraTu: {
       generar(sm) {
@@ -338,6 +399,15 @@
     titulo: 'Acelera lo que sobra',
     temas: ['Rozamiento en movimiento'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): contexto y vocabulario. No dice cuánto vale el rozamiento cuando el bloque va a velocidad constante.
+    lee: {
+      tarjetas: [
+        { titulo: 'Se frena sola', texto: 'Empuja una caja por el piso de tu casa y suéltala: se detiene sola. La frena el rozamiento, una fuerza que el piso hace contra el deslizamiento.' },
+        { titulo: 'Dos números', texto: ['Al deslizar, el rozamiento depende de qué tan áspero es el contacto, μk, y de cuánto aprieta el piso, la normal ', N, '. Un piso encerado tiene μk chico; uno de cemento, más grande.'],
+          ecuacion: ['f = ', { sub: ['μ', 'k'] }, N] },
+        { titulo: 'Qué mirar', texto: 'En el juego, el bloque ya va deslizando. Cambia la fuerza y μk, y mira hacia dónde apunta la flecha roja y cómo se separan las marcas.' },
+      ],
+    },
     juega: {
       consigna: 'Un bloque de 5 kg ya desliza, en cámara lenta. Elige la fuerza y el rozamiento μk; mira si acelera, va parejo o frena.',
       voz: 'Busca la fuerza con la que no acelera.',
@@ -349,8 +419,8 @@
       dibujo: val => ({ datos: bloqueT(val.F, val.mu, 5, val.t), estado: {} }),
       lectura: val => lecturaRoce(val.F, val.mu, 5, val.t),
       minimo: 4,
-      // Arrastra la mano (la cola de F) hacia la izquierda: más fuerza. μk se elige con los botones.
-      arrastres: [{ id: 'jalon', etiqueta: 'fuerza de la mano', color: 'c-o',
+      // Arrastra la cola de F hacia la izquierda: más fuerza. μk se elige con los botones.
+      arrastres: [{ id: 'jalon', etiqueta: 'cola de la fuerza F', color: 'c-o',
         donde: val => { const g = LZ(bloqueT(val.F, val.mu, 5, val.t)), izq = bloqueCam(val.F, val.mu, 5, val.t).xc - 0.45; return { x: g.X(izq - val.F * KF3 / S3T), y: g.Y(0.4) }; },
         mover: (pt, val) => { const g = LZ(bloqueT(val.F, val.mu, 5, val.t)), izq = bloqueCam(val.F, val.mu, 5, val.t).xc - 0.45; return { F: (izq - g.Xi(pt.x)) * S3T / KF3 }; } }],
     },
@@ -379,6 +449,27 @@
       texto: 'Al deslizar, el rozamiento cinético se resta de la fuerza que jala. Solo lo que sobra acelera al bloque.',
       ecuacion: [F, ' − ', { llave: [{ sub: ['μ', 'k'] }, N], nota: 'rozamiento', color: 'c-i' }, ' = m ', a],
       condicion: 'el bloque ya desliza sobre piso horizontal; f apunta contra el deslizamiento.',
+    },
+    // Así se resuelve: bloque que desliza con rozamiento, calculado igual que «Ahora tú» (fk = μk m g, a = (F − fk) / m).
+    resuelve: {
+      generar(sm) {
+        const r = azar(sm + 900), m = r.ent(2, 8), mu = r.de([0.1, 0.2, 0.25, 0.3, 0.5]), Nv = m * G, fk = mu * Nv;
+        const Fv = Math.round(fk + m * r.de([0.5, 1, 1.5, 2, 3]));
+        const av = (Fv - fk) / m;
+        return {
+          enunciado: ['Un bloque de ', `${m} kg desliza sobre el piso (μk = ${f(mu, 2)}) jalado con `, F, ` = ${Fv} N horizontal. Con g = 10 m/s², ¿cuál es su aceleración?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la aceleración ', a, ' del bloque mientras desliza.'] },
+            { tipo: 'datos', texto: [`m = ${m} kg, μk = ${f(mu, 2)} y `, F, ` = ${Fv} N. El piso es horizontal y g = 10 m/s².`] },
+            { tipo: 'regla', texto: 'Al deslizar, el rozamiento va en contra: se lo resto a la fuerza que jala, y solo lo que sobra acelera.',
+              ecuacion: [F, ' − ', { sub: ['μ', 'k'] }, N, ' = m ', a] },
+            { tipo: 'cuentas', texto: 'En piso horizontal, la normal iguala al peso. Con ella saco el rozamiento y después lo que sobra, entre la masa.',
+              ecuacion: [N, ` = ${m} · 10 = ${Nv} N   →   f = ${f(mu, 2)} · ${Nv} = ${f(fk, 1)} N   →   `, a, ` = (${Fv} − ${f(fk, 1)}) / ${m} = ${f(av, 2)} m/s²`] },
+            { tipo: 'sentido', texto: `Sin rozamiento serían ${f(Fv / m, 2)} m/s²; con él sale menos, como debe ser. Y ${Fv} N le gana a ${f(fk, 1)} N: acelera hacia adelante.` },
+          ],
+          respuesta: [a, ` = ${f(av, 2)} m/s²`],
+        };
+      },
     },
     ahoraTu: {
       generar(sm) {
@@ -458,6 +549,14 @@
     titulo: 'Planos y poleas',
     temas: ['Bloques, poleas y planos inclinados'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): contexto y vocabulario. No dice si la masa cambia la aceleración en el plano de «Predice».
+    lee: {
+      tarjetas: [
+        { titulo: 'Máquinas viejas', texto: 'Una rampa para subir sacos a un camión y una polea para izar baldes en una obra son máquinas muy antiguas. En física se llaman plano inclinado y polea.' },
+        { titulo: 'Unidos por la cuerda', texto: ['Una cuerda que no se estira obliga a dos bloques a moverse juntos: si uno avanza 1 m, el otro también. La fuerza con que jala la cuerda se llama tensión, ', T, '.'] },
+        { titulo: 'Qué mirar', texto: 'En el juego, el bloque baja por el plano sin rozamiento. Cambia el ángulo, después la masa, y mira en cada caso la flecha roja y las marcas.' },
+      ],
+    },
     juega: {
       consigna: 'Un bloque baja por un plano inclinado sin rozamiento, en cámara lenta. Elige el ángulo y la masa; mira la flecha roja y las marcas.',
       voz: 'Cambia solo la masa. ¿Cambia la flecha roja?',
@@ -506,6 +605,42 @@
       texto: 'En un plano sin roce, el bloque baja con la parte del peso a lo largo del plano. Cuerpos unidos aceleran con la fuerza neta externa entre la masa total.',
       ecuacion: [a, ' = g sen θ', '   ·   ', a, ' = ', { frac: [['Σ', { sub: [F, 'ext'] }], { llave: ['Σm'], nota: 'masa total', color: 'c-i' }] }],
       condicion: 'sin rozamiento, cuerdas que no se estiran y poleas sin masa. θ se mide desde la horizontal.',
+    },
+    // Así se resuelve: bloque en la mesa y otro que cuelga, calculado igual que «Ahora tú» (a = m₂g / (m₁ + m₂),
+    // T = m₁a); pide a o T, alternando con la semilla.
+    resuelve: {
+      generar(sm) {
+        const r = azar(sm + 900), m1 = r.ent(1, 8), m2 = r.ent(1, 6), av = m2 * G / (m1 + m2), Tv = m1 * av, pide = sm % 2 ? 'T' : 'a';
+        const pre = `Un bloque de ${m1} kg sobre una mesa sin roce está unido por una cuerda, a través de una polea, a otro de ${m2} kg que cuelga. Con g = 10 m/s², `;
+        const cuentaA = { tipo: 'cuentas', texto: 'La única fuerza externa que no se cancela es el peso del que cuelga; el peso del de la mesa lo cancela la normal.',
+          ecuacion: [a, ` = ${m2 * G} / (${m1} + ${m2}) = ${f(av, 2)} m/s²`] };
+        const comun = [
+          { tipo: 'datos', texto: [`Sobre la mesa hay ${m1} kg; colgando, ${m2} kg, que pesan `, P, ` = ${m2 * G} N. No hay roce.`] },
+          { tipo: 'regla', texto: 'Los bloques unidos se mueven como uno solo: la fuerza externa que los mueve, entre la masa total, da la aceleración.',
+            ecuacion: [a, ' = ', { frac: [['Σ', { sub: [F, 'ext'] }], 'Σm'] }] },
+          cuentaA,
+        ];
+        return pide === 'a' ? {
+          enunciado: pre + '¿cuánto acelera el sistema?',
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la aceleración ', a, ' del sistema: los dos bloques se mueven juntos, con la misma a.'] },
+            ...comun,
+            { tipo: 'sentido', texto: 'Sale menos que g = 10 m/s²: el que cuelga no cae solo, también arrastra al de la mesa. Y N entre kg da m/s².' },
+          ],
+          respuesta: [a, ` = ${f(av, 2)} m/s²`],
+        } : {
+          enunciado: pre + '¿cuánto vale la tensión de la cuerda?',
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la tensión ', T, ': la fuerza con que la cuerda jala a cada bloque.'] },
+            ...comun,
+            { tipo: 'cuentas', texto: 'Al bloque de la mesa solo lo jala la cuerda: la tensión es su masa por la aceleración.',
+              ecuacion: [T, ` = ${m1} · ${f(av, 2)} = ${f(Tv, 2)} N`] },
+            { tipo: 'sentido', texto: `Compruebo con el que cuelga: su peso menos T es su masa por a. T sale menor que ${m2 * G} N porque baja acelerando.`,
+              ecuacion: [`${m2 * G} − ${f(Tv, 2)} = ${f(m2 * G - Tv, 2)}   y   ${m2} · ${f(av, 2)} = ${f(m2 * av, 2)} ✓`] },
+          ],
+          respuesta: [T, ` = ${f(Tv, 2)} N`],
+        };
+      },
     },
     ahoraTu: {
       generar(sm) {
@@ -559,6 +694,14 @@
     titulo: 'La centrípeta es una resultante',
     temas: ['Dinámica circular'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): contexto y vocabulario. No dice si la normal en lo alto de la loma es mayor, igual o menor que el peso.
+    lee: {
+      tarjetas: [
+        { titulo: 'Lomas y hondonadas', texto: 'En la carretera de Juliaca a Puno, el auto pasa por lomas, donde la pista sube y vuelve a bajar, y por hondonadas, donde baja y vuelve a subir. Cada tramo curvo es como un pedazo de círculo.' },
+        { titulo: 'Centro y radio', texto: 'Ese círculo tiene su centro y su radio r. Una curva cerrada, de las que obligan a ir despacio, tiene r chico; una curva suave tiene r grande.' },
+        { titulo: 'Qué mirar', texto: ['En el juego, el auto pasa por lo alto de una loma y su rapidez cambia sola. Compara el largo de la flecha turquesa, la normal ', N, ', con el de la verde, el peso ', P, '.'] },
+      ],
+    },
     juega: {
       consigna: 'Un auto de 1000 kg pasa por lo alto de una loma de radio 10 m. Su rapidez cambia sola: mira la normal.',
       voz: 'Mira cuando la rapidez sube. ¿Qué flecha se achica?',
@@ -596,6 +739,37 @@
       ecuacion: ['Σ', { sub: [F, 'radial'] }, ' = m ', { llave: [{ frac: [{ sup: ['v', '2'] }, 'r'] }], nota: 'hacia el centro', color: 'c-h' }],
       condicion: 'se toma positivo hacia el centro. Si N llegara a ser negativa, el auto ya se despegó del piso.',
     },
+    // Así se resuelve: la normal en una loma o una hondonada, calculado igual que «Ahora tú» (N = m (g ∓ v²/r));
+    // las semillas pares van a la loma, como en «Ahora tú», y si el auto se despegaría se toma otra semilla.
+    resuelve: {
+      generar(sm) {
+        const arriba = sm % 2 === 0;
+        let m, rr, vv, acv, Nv;
+        for (let k = 0; ; k++) {
+          const r = azar(sm + 900 + 1000 * k);
+          m = r.de([500, 800, 1000, 1200]); rr = r.de([10, 20, 40]); vv = r.de([4, 5, 6, 8, 10]);
+          acv = vv * vv / rr; Nv = arriba ? m * (G - acv) : m * (G + acv);
+          if (!(arriba && Nv < 0)) break;
+        }
+        const ac = { sub: [a, 'c'] }, v2r = { frac: [{ sup: ['v', '2'] }, 'r'] };
+        const sentido = !arriba ? `En la hondonada la pista empuja más que el peso, ${f(m * G, 0)} N: además de sostener al auto, dobla su camino hacia arriba.`
+          : Nv > 0 ? `En la loma la pista empuja menos que el peso, ${f(m * G, 0)} N: parte del peso se usa en doblar el camino hacia abajo.`
+            : 'N = 0: el auto apenas toca la pista. Un poco más rápido y se despegaría.';
+        return {
+          enunciado: `Un auto de ${m} kg pasa a ${vv} m/s por ${arriba ? 'lo alto de una loma' : 'lo más bajo de una hondonada'} de radio ${rr} m. Con g = 10 m/s², ¿cuánto vale la normal?`,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la normal ', N, `: cuánto empuja la pista al auto en ${arriba ? 'lo alto de la loma' : 'lo más bajo de la hondonada'}.`] },
+            { tipo: 'datos', texto: [`m = ${m} kg, v = ${vv} m/s y r = ${rr} m. Su peso es `, P, ` = ${f(m * G, 0)} N.`] },
+            { tipo: 'regla', texto: `En un giro, las fuerzas juntas apuntan al centro y valen m v²/r. Aquí el centro está ${arriba ? 'abajo' : 'arriba'}.`,
+              ecuacion: arriba ? [P, ' − ', N, ' = m ', v2r] : [N, ' − ', P, ' = m ', v2r] },
+            { tipo: 'cuentas', texto: ['Primero la aceleración hacia el centro, ', ac, '; después despejo ', N, '.'],
+              ecuacion: [ac, ' = ', { sup: [`${vv}`, '2'] }, ` / ${rr} = ${f(acv, 3)} m/s²   →   `, N, ` = ${m} · (10 ${arriba ? '−' : '+'} ${f(acv, 3)}) = ${f(Nv, 1)} N`] },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: [N, ` = ${f(Nv, 1)} N`],
+        };
+      },
+    },
     ahoraTu: {
       generar(sm) {
         const r = azar(sm), m = r.de([500, 800, 1000, 1200]), rr = r.de([10, 20, 40]), vv = r.de([4, 5, 6, 8, 10]), arriba = sm % 2 === 0;
@@ -615,7 +789,7 @@
   };
 
   // ---------- Idea 6: el ascensor y los marcos inerciales ----------
-  // Cambia: la aceleración del ascensor · Permanece: la persona de 60 kg y su peso · Progresa: la lectura de la
+  // Cambia: la aceleración del ascensor · Permanece: el bloque de 60 kg y su peso · Progresa: la lectura de la
   // balanza, N · Se reserva: el ascensor a velocidad constante, que marca igual que en reposo ·
   // Debe verse: la balanza mide N, y N depende de a, no de v.
   const M6 = 60, KF6 = 0.12, KA6 = 10;
@@ -633,14 +807,14 @@
     if (vj) {
       const base = ascensor(av, Object.assign({}, o, { t: undefined }));
       return Object.assign(base, {
-        alt: `Persona de 60 kg sobre una balanza en un ascensor con a = ${f(av, 0)} m/s² y v = ${f(vj.v, 1)} m/s (positivas hacia arriba): la balanza marca ${f(Nv, 0)} N.`,
+        alt: `Bloque de 60 kg sobre una balanza en un ascensor con a = ${f(av, 0)} m/s² y v = ${f(vj.v, 1)} m/s (positivas hacia arriba): la balanza marca ${f(Nv, 0)} N.`,
         segmentos: pared(vj.y),
         flechas: base.flechas.concat(Math.abs(vj.v) > 0.05 ? [{ de: [-1.8, 1.5], d: [0, vj.v], escala: 8, rotulo: 'v', lado: -1 }] : []),
       });
     }
     return {
       vista: { x0: -2, x1: 2, y0: -1.1, y1: 3.2 }, escalaF: KF6,
-      alt: o.alt || `Persona de 60 kg sobre una balanza en un ascensor con aceleración ${f(av, 0)} m/s² (positiva hacia arriba): la balanza marca ${f(Nv, 0)} N.`,
+      alt: o.alt || `Bloque de 60 kg sobre una balanza en un ascensor con aceleración ${f(av, 0)} m/s² (positiva hacia arriba): la balanza marca ${f(Nv, 0)} N.`,
       poligonos: [caja(0, 0, 2.4, 3), caja(-0.3, 0, 0.9, 0.12), caja(-0.3, 0.12, 0.5, 1.4)],
       textos: [{ en: [-0.3, 0.85], texto: '60 kg' }, { en: [0, 2.65], texto: `balanza: ${f(Nv, 0)} N`, paso: o.pN || 0 }],
       flechas: [
@@ -655,8 +829,16 @@
     titulo: 'La balanza del ascensor',
     temas: ['Movimiento relativo y sistemas inerciales'],
     pieza: 'fis-lienzo',
+    // Lee (fase 2): contexto y vocabulario. No dice qué marca la balanza con el ascensor a velocidad constante.
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que mide la balanza', texto: ['Una balanza de baño no mide tu masa: mide cuánto la aprietas. Ella te empuja hacia arriba con esa misma fuerza, la normal ', N, '. Eso es lo que marca.'] },
+        { titulo: 'Velocidad y aceleración', texto: 'En un ascensor conviene separar dos cosas: hacia dónde viaja, que es su velocidad, y si esa velocidad crece o baja, que es su aceleración. Aquí, hacia arriba es positivo.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, elige la aceleración del ascensor y mira la lectura de la balanza. Las rayitas de la pared muestran si sube o baja, y la flecha v, qué tan rápido.' },
+      ],
+    },
     juega: {
-      consigna: 'Persona de 60 kg sobre una balanza en un ascensor, en cámara lenta. Elige su aceleración (positiva, hacia arriba). ¿Cambia la balanza con v?',
+      consigna: 'Bloque de 60 kg sobre una balanza en un ascensor, en cámara lenta. Elige su aceleración (positiva, hacia arriba). ¿Cambia la balanza con v?',
       voz: 'Prueba a = 0. ¿Importa si el ascensor sube o baja?',
       controles: [{ id: 'a', etiqueta: 'a', color: 'c-h', min: -4, max: 4, paso: 2, inicio: 2, unidad: 'm/s²', decimales: 0 }, tiempo(2, 0.05, 0.5)],
       dibujo: val => ({ datos: ascensor(val.a, { t: val.t }), estado: {} }),
@@ -668,21 +850,21 @@
         mover: (pt, val) => ({ a: (LZ(ascensor(val.a)).Y(1.5) - pt.y) / KA6 }) }],
     },
     predice: {
-      pregunta: 'El ascensor sube a velocidad constante de 3 m/s. ¿Qué marca la balanza de la persona de 60 kg?',
+      pregunta: 'El ascensor sube a velocidad constante de 3 m/s. ¿Qué marca la balanza del bloque de 60 kg?',
       opciones: [
         { id: 'c', texto: '600 N, como en reposo', correcta: true },
         { id: 'mas', texto: 'Más de 600 N: está subiendo', error: 'D1', siFuera: 'Marca más mientras el ascensor acelera hacia arriba. Con velocidad constante, a = 0.' },
         { id: 'menos', texto: 'Menos de 600 N', error: 'AS-SIGNO', siFuera: 'Marca menos si acelera hacia abajo. Aquí la velocidad no cambia.' },
       ],
-      dibujo: { datos: Object.assign(ascensor(0, { pN: 9 }), { alt: 'Persona de 60 kg en un ascensor que sube a velocidad constante; la lectura de la balanza no se muestra.' }), estado: {} },
+      dibujo: { datos: Object.assign(ascensor(0, { pN: 9 }), { alt: 'Bloque de 60 kg en un ascensor que sube a velocidad constante; la lectura de la balanza no se muestra.' }), estado: {} },
       revelar: { datos: ascensor(0), estado: {} },
       coincide: 'Coincide: un ascensor a velocidad constante es un marco inercial; todo pasa como en reposo.',
     },
     mira: {
       datos: ascensor(2, { pP: 1, pA: 2, pN: 3 }),
       pasos: [
-        { estado: { paso: 1 }, texto: 'Sobre la persona actúan su peso y la balanza, que empuja hacia arriba.', ecuacion: [P, ' = 600 N'] },
-        { estado: { paso: 2 }, texto: 'El ascensor acelera hacia arriba: la persona acelera con él.', ecuacion: [a, ' = +2 m/s²'] },
+        { estado: { paso: 1 }, texto: 'Sobre el bloque actúan su peso y la balanza, que empuja hacia arriba.', ecuacion: [P, ' = 600 N'] },
+        { estado: { paso: 2 }, texto: 'El ascensor acelera hacia arriba: el bloque acelera con él.', ecuacion: [a, ' = +2 m/s²'] },
         { estado: { paso: 3 }, texto: 'La balanza empuja más que el peso para darle esa aceleración.', ecuacion: [N, ' − 600 = 60 · 2   →   ', N, ' = 720 N'] },
         { estado: { paso: 3 }, texto: 'Cable cortado: a = −10 y la balanza marca 0. Eso es ingravidez.', ecuacion: [N, ' = 60 · (10 − 10) = 0'] },
       ],
@@ -691,6 +873,29 @@
       texto: 'Las leyes de Newton valen igual en todo marco que se mueve con velocidad constante. Si el ascensor acelera, la balanza marca un peso aparente, distinto del peso.',
       ecuacion: [{ llave: [N], nota: 'lo que marca', color: 'c-i' }, ' − m g = m ', a, '   ·   ', N, ' = m (g + ', a, ')'],
       condicion: 'a positiva hacia arriba, medida desde el piso del edificio (marco inercial). La balanza mide N, no el peso.',
+    },
+    // Así se resuelve: la balanza en un ascensor que acelera, calculado igual que «Ahora tú» (N = m (g + a), con el
+    // signo de a según sm % 4). Sin figura, como «Ahora tú».
+    resuelve: {
+      generar(sm) {
+        const r = azar(sm + 900), m = r.de([50, 60, 70, 80]), am = r.de([1, 2, 3, 4]);
+        const CASOS = [['sube y va cada vez más rápido', 1], ['sube y está frenando', -1], ['baja y va cada vez más rápido', -1], ['baja y está frenando', 1]];
+        const [txt, sg] = CASOS[sm % 4], av = sg * am, Nv = m * (G + av);
+        const porque = ['sube y su velocidad crece', 'sube, pero su velocidad baja', 'baja y su velocidad crece', 'baja, pero su velocidad se achica'][sm % 4];
+        return {
+          enunciado: `Una persona de ${m} kg está sobre una balanza en un ascensor que ${txt}, con aceleración de ${am} m/s². Con g = 10 m/s², ¿qué marca la balanza?`,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden lo que marca la balanza: la normal ', N, ' con que empuja a la persona hacia arriba.'] },
+            { tipo: 'datos', texto: [`m = ${m} kg y la aceleración mide ${am} m/s². El ascensor ${porque}: `, a, ` apunta hacia ${sg > 0 ? 'arriba' : 'abajo'}.`] },
+            { tipo: 'regla', texto: 'La balanza empuja hacia arriba y el peso jala hacia abajo; lo que sobra le da a la persona la aceleración del ascensor.',
+              ecuacion: [N, ' − m g = m ', a, '   ·   ', N, ' = m (g + ', a, ')'] },
+            { tipo: 'cuentas', texto: ['Con hacia arriba positivo, ', a, ` = ${sg > 0 ? '+' : '−'}${am} m/s².`],
+              ecuacion: [N, ` = ${m} · (10 ${sg > 0 ? '+' : '−'} ${am}) = ${f(Nv, 0)} N`] },
+            { tipo: 'sentido', texto: `Su peso es ${m * G} N. La balanza marca ${sg > 0 ? 'más' : 'menos'}, porque la aceleración apunta hacia ${sg > 0 ? 'arriba' : 'abajo'}, no por el sentido del viaje.` },
+          ],
+          respuesta: [N, ` = ${f(Nv, 0)} N`],
+        };
+      },
     },
     ahoraTu: {
       generar(sm) {
@@ -782,7 +987,7 @@
             bien: 'Frenó porque el rozamiento le ganaba a F. Quieto, el roce estático iguala a F.',
             pista: 'Usa F menor que el rozamiento y pausa cuando v llegue a 0; afina con − y +.' },
         ],
-        arrastres: [{ id: 'jalon', etiqueta: 'fuerza de la mano', color: 'c-o',
+        arrastres: [{ id: 'jalon', etiqueta: 'cola de la fuerza F', color: 'c-o',
           donde: val => { const g = LZ(bloqueT(val.F, val.mu, val.m, val.t)), izq = bloqueCam(val.F, val.mu, val.m, val.t).xc - 0.45; return { x: g.X(izq - val.F * KF3 / S3T), y: g.Y(0.4) }; },
           mover: (pt, val) => { const g = LZ(bloqueT(val.F, val.mu, val.m, val.t)), izq = bloqueCam(val.F, val.mu, val.m, val.t).xc - 0.45; return { F: (izq - g.Xi(pt.x)) * S3T / KF3 }; } }],
       },
@@ -793,7 +998,7 @@
         lectura: val => [a, ` = ${f(val.a, 0)} m/s², v = ${f(viaje(val.a, val.t).v, 1)} m/s: balanza `, N, ` = ${f(balanzaDe(val), 0)} N`],
         minimo: undefined, voz: undefined,
         invitaciones: [
-          { texto: 'Haz que la balanza marque justo el peso de la persona.',
+          { texto: 'Haz que la balanza marque justo el peso del bloque.',
             logrado: val => Math.abs(balanzaDe(val) - M6 * G) < 1e-9,
             bien: 'Con a = 0 marca el peso, suba o baje. ¿Importa la velocidad?' },
           { texto: 'Haz que la balanza marque más de 900 N.',
@@ -801,7 +1006,7 @@
             bien: 'Acelerar hacia arriba aprieta la balanza: el peso aparente crece.' },
           { texto: 'Consigue que la balanza marque 0.',
             logrado: val => Math.abs(balanzaDe(val)) < 1e-9,
-            bien: 'Persona y ascensor caen juntos: eso es ingravidez, con la misma masa.' },
+            bien: 'Bloque y ascensor caen juntos: eso es ingravidez, con la misma masa.' },
           { texto: 'Guarda dos casos: uno que marque más que el peso y otro menos.',
             logrado: (val, guardados) => guardados.some(x => (balanzaDe(x) - M6 * G) * (balanzaDe(val) - M6 * G) < 0)
               && guardados.some(x => x.a === val.a),
