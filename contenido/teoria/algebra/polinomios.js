@@ -84,6 +84,16 @@
     titulo: 'El grado se suma por término',
     temas: ['Grado absoluto y relativo'],
     pieza: 'alg-tabla',
+    // Lee (fase 2): vocabulario del término y contexto, sin decir cómo se calcula el grado absoluto (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Letras que guardan precios', texto: 'En una feria de Juliaca, si x es el precio del kilo de papa e y el del kilo de quinua, 3x + 2y es lo que pagas por 3 kilos de papa y 2 de quinua.' },
+        { titulo: 'Las partes de un término', texto: 'En el término −2xy³ hay un coeficiente, −2, y dos letras con sus exponentes: x lleva 1 e y lleva 3. Si una letra no muestra exponente, lleva un 1 que no se escribe.',
+          ecuacion: ['−2', { sup: ['x', '1'] }, { sup: [{ v: 'c-i', t: 'y' }, '3'] }] },
+        { titulo: 'Dos clases de grado', texto: 'El grado relativo mira una sola letra. El grado absoluto mira el polinomio entero. En el juego vas a descubrir cómo se halla cada uno.' },
+        { titulo: 'Qué mirar', texto: 'Cambia los exponentes del primer término. Mira qué columnas cambian, qué fila queda marcada en verde y qué dice la lectura de abajo.' },
+      ],
+    },
     juega: {
       consigna: 'P = 3xᵃyᵇ − 2xy³ + 5x². Cambia los exponentes del primer término y mira el grado de cada fila y el de todo P.',
       voz: 'Creo que conviene mirar fila por fila.',
@@ -129,6 +139,42 @@
       texto: 'El grado de un término es la suma de sus exponentes. El grado absoluto es el mayor de esos grados; el relativo a x, el mayor exponente de x.',
       ecuacion: ['GA = máx(', { llave: [{ sub: ['g', '1'] }, '; ', { sub: ['g', '2'] }, '; …'], nota: 'grado por término', color: 'c-d' }, ')'],
       condicion: 'los exponentes son enteros no negativos; el polinomio cero no tiene grado y se trata por convención aparte.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (las mismas cuentas), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        let ts;
+        do { ts = [0, 1, 2].map(() => [r.noCero(-6, 7), r.ent(0, 5), r.ent(0, 5)]); } while (new Set(ts.map(t => t[1] + ',' + t[2])).size < 3 || ts.some(t => t[1] + t[2] === 0));
+        const gr = ts.map(t => t[1] + t[2]), GA = Math.max(...gr), GRx = Math.max(...ts.map(t => t[1])), GRy = Math.max(...ts.map(t => t[2]));
+        const texto = ts.map(([c, a, b], i) => mono(c, [['x', a], ['y', b]], i === 0)).join('');
+        const sueltos = ts.map(([c, a, b]) => mono(c, [['x', a], ['y', b]], true)).join('; ');
+        const pide = ['GA', 'GR(x)', 'GR(y)'][s % 3], esGA = pide === 'GA', letra = pide === 'GR(y)' ? 'y' : 'x';
+        const exps = ts.map(t => (letra === 'x' ? t[1] : t[2]));
+        const bien = esGA ? GA : Math.max(...exps), tm = ts[exps.indexOf(bien)];
+        const datos = { tipo: 'datos', texto: `Tiene tres términos: ${sueltos}.` };
+        const pasos = esGA ? [
+          { tipo: 'pide', texto: 'Piden el grado absoluto: el grado del polinomio entero.' },
+          datos,
+          { tipo: 'regla', texto: 'Primero sumo los exponentes dentro de cada término: ese es su grado. El grado absoluto es el mayor de esos tres grados.' },
+          { tipo: 'cuentas', texto: 'Sumo el exponente de x y el de y en cada fila, y elijo el mayor.',
+            ecuacion: [...ts.flatMap((t, k) => [`${t[1]} + ${t[2]} = ${gr[k]}`, '   ·   ']), `GA = máx(${gr.join('; ')}) = ${GA}`], dibujo: { datos: tablaGrados(ts), estado: {} } },
+          { tipo: 'sentido', texto: `Comprueba: GA no es menor que GR(x) = ${GRx} ni que GR(y) = ${GRy}, y no pasa de su suma, ${GRx + GRy}. ${GA} cumple.` },
+        ] : [
+          { tipo: 'pide', texto: `Piden el grado relativo a ${letra}.` },
+          datos,
+          { tipo: 'regla', texto: `Para el grado relativo a ${letra} miro solo los exponentes de ${letra}, término por término, y me quedo con el mayor. La otra letra no cuenta.` },
+          { tipo: 'cuentas', texto: `Los exponentes de ${letra} son ${exps.join(', ')}.`, ecuacion: [`${pide} = máx(${exps.join('; ')}) = ${bien}`], dibujo: { datos: tablaGrados(ts), estado: {} } },
+          { tipo: 'sentido', texto: bien === 0 ? `Comprueba: ningún término lleva ${letra}; por eso su grado relativo es 0.`
+            : `Comprueba: el término ${mono(tm[0], [['x', tm[1]], ['y', tm[2]]], true)} lleva ${letra}${sup(bien)}, y ningún otro término lleva un exponente de ${letra} mayor.` },
+        ];
+        return {
+          enunciado: `¿Cuál es ${esGA ? 'el grado absoluto' : `el grado relativo a ${letra}`} de ${texto}?`,
+          dibujo: { datos: tablaGrados(ts, { g: 1, max: 1 }), estado: { corte: 0 } },
+          pasos,
+          respuesta: `${pide} = ${bien}`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
@@ -193,6 +239,16 @@
     titulo: 'Evaluar es reemplazar cada x',
     temas: ['Valor numérico'],
     pieza: 'ejes',
+    // Lee: qué es evaluar y cómo se lee P(3), sin adelantar qué da P(1) (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Una fórmula que espera', texto: 'Un reparto en Juliaca cobra 2 soles de base y 1 sol por kilómetro: el costo es x + 2. Si recorres 3 km, pagas 3 + 2 = 5 soles. Eso es evaluar.',
+          ecuacion: [P, '(x) = x + 2', '   ·   ', P, '(3) = 5'] },
+        { titulo: 'Cómo se lee', texto: 'P(3) se lee «P de 3». Es el valor del polinomio cuando x vale 3. No quiere decir P por 3.' },
+        { titulo: 'Con números negativos', texto: 'Si x vale −2, se escribe entre paréntesis para no perder el signo: x² es (−2)² = 4 y x³ es (−2)³ = −8.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el punto verde se mueve sobre la curva. Su altura es P(x). Prueba x = 0, x = 1 y algún valor negativo.' },
+      ],
+    },
     juega: {
       consigna: 'P(x) = x³ − 3x + 1. Elige un valor de x: el punto marca su altura, que es P(x).',
       voz: 'Prueba también valores negativos de x.',
@@ -236,6 +292,32 @@
       texto: 'Evaluar es reemplazar x por el número en cada término y operar. P(1) es la suma de los coeficientes y P(0), el término independiente.',
       ecuacion: [P, '(x) = ax³ + bx² + cx + d', '   ·   ', P, '(1) = ', { llave: ['a + b + c + d'], nota: 'suma de coeficientes', color: 'c-d' }, '   ·   ', P, '(0) = ', { llave: ['d'], nota: 'independiente', color: 'c-d' }],
       condicion: 'se respeta cada signo y cada potencia: (−2)² = 4, pero (−2)³ = −8.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const cs = [r.noCero(-3, 3), r.ent(-4, 4), r.ent(-4, 4), r.ent(-6, 6)];
+        const a = [-2, -1, 2, 1, 0][s % 5];
+        const bien = evaluar(cs, a);
+        const ts = cs.map((c, k) => [c, 3 - k]).filter(([c]) => c !== 0);
+        const sust = ts.map(([c, e], i) => { const sg = c < 0 ? (i ? ' − ' : '−') : (i ? ' + ' : ''); return sg + (e === 0 ? f(Math.abs(c)) : `${f(Math.abs(c))}·${par(a ** e + 0)}`); }).join('');
+        const vals = ts.map(([c, e]) => c * a ** e + 0);
+        const suma = vals.map((v, i) => (i ? (v < 0 ? ` − ${f(-v)}` : ` + ${f(v)}`) : f(v))).join('');
+        return {
+          enunciado: ['Si ', P, `(x) = ${poli(cs)}, ¿cuánto vale `, P, `(${f(a)})?`],
+          dibujo: { datos: curvaP(cs, -2, 2, [], 'P'), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', P, `(${f(a)}): el valor del polinomio cuando x vale ${f(a)}.`] },
+            { tipo: 'datos', texto: ['El polinomio es ', P, `(x) = ${poli(cs)}, y x vale ${f(a)}.`] },
+            { tipo: 'regla', texto: 'Cambio cada x por el número, con su signo, y opero. Primero las potencias, después los productos y al final las sumas.' },
+            { tipo: 'cuentas', texto: `Con x = ${f(a)}: x³ = ${f(a ** 3 + 0)}, x² = ${f(a ** 2 + 0)} y x = ${f(a)}. Multiplico cada potencia por su coeficiente y sumo.`,
+              ecuacion: [P, `(${f(a)}) = ${sust} = ${suma} = ${f(bien)}`],
+              dibujo: { datos: curvaP(cs, -2, 2, [{ x: a, y: bien, color: 'd', guias: true, rotulo: `P(${f(a)}) = ${f(bien)}` }], 'P'), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba en la gráfica: en x = ${f(a)}, la curva pasa a la altura ${f(bien)}.` },
+          ],
+          respuesta: [P, `(${f(a)}) = ${f(bien)}`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'ejes',
@@ -289,11 +371,29 @@
       alt: `Casillas de las potencias de x, de x${sup(grado)} a x⁰, con los coeficientes; las vacías llevan 0`,
     };
   };
+  // Así se resuelve: casillas de x^n a x⁰ para cualquier grado (POT llega solo a x⁵).
+  const casillasN = (ts, ceros) => {
+    const n = Math.max(...ts.map(t => t[1])), cols = Array.from({ length: n + 1 }, (_, k) => n - k);
+    return {
+      columnas: cols.map(e => (e === 0 ? 'x⁰' : e === 1 ? 'x¹' : pot('x', e))),
+      rotulosFila: ['coef.'],
+      filas: [cols.map(e => { const t = ts.find(z => z[1] === e); return t ? { t: f(t[0]), color: 'o', fuerte: true } : (ceros ? { t: '0', color: 'h', hueco: true } : ''); })],
+      alt: `Casillas de x${sup(n)} a x⁰ con los coeficientes${ceros ? '; las vacías llevan 0' : ''}`,
+    };
+  };
   const especiales = {
     id: 'completo-ordenado',
     titulo: 'Una casilla por cada potencia',
     temas: ['Polinomios especiales'],
     pieza: 'alg-tabla',
+    // Lee: ordenar y las tres palabras, sin decir cuántas casillas tiene un polinomio completo (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Ordenar es elegir un sentido', texto: 'La lista de tu salón se ordena por apellido. Un polinomio se ordena por sus exponentes: 2x³ + x² − x + 4 baja de exponente en exponente; 5 − x + x³ sube.' },
+        { titulo: 'Tres palabras', texto: 'Completo, ordenado y homogéneo describen cómo está armado un polinomio. Las dos primeras se ven en la tabla del juego. La tercera mira el grado de cada término.' },
+        { titulo: 'Qué mirar', texto: 'Arriba, cada coeficiente cae en la columna de su potencia. Fíjate en las casillas rojas y en cuántas columnas tiene la tabla de cada polinomio.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un polinomio. Arriba va cada coeficiente en la casilla de su potencia; abajo, en qué orden se escribió cada término.',
       voz: 'Fíjate en las casillas que quedan con cero.',
@@ -329,6 +429,61 @@
       texto: 'Completo: tiene todas las potencias, del grado hasta x⁰. Ordenado: los exponentes solo bajan o solo suben. Homogéneo: todos sus términos tienen el mismo grado.',
       ecuacion: ['grado n → ', { llave: ['n + 1'], nota: 'con x⁰', color: 'c-d' }, ' casillas'],
       condicion: 'las casillas de coeficiente 0 cuentan al completar; la homogeneidad mira el grado de cada término no nulo.',
+    },
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const n = r.ent(3, 8), m = r.ent(2, Math.min(4, n));
+          // Las m potencias escritas: la del grado y m − 1 más, distintas.
+          const exps = [n];
+          while (exps.length < m) { const e = r.ent(0, n - 1); if (!exps.includes(e)) exps.push(e); }
+          exps.sort((u, v) => v - u);
+          const ts = exps.map(e => [r.noCero(-5, 6), e]);
+          const cs = Array(n + 1).fill(0); ts.forEach(([c, e]) => { cs[n - e] = c; });
+          const falta = n + 1 - m;
+          return {
+            enunciado: `${poli(cs)} tiene grado ${n} y ${m} términos escritos. Si se completa, ¿cuántos términos tendrá?`,
+            dibujo: { datos: casillasN(ts, false), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden cuántos términos tendrá el polinomio cuando esté completo.' },
+              { tipo: 'datos', texto: `Tiene grado ${n} y ${m} términos escritos: faltan algunas potencias entre x${sup(n)} y x⁰.` },
+              { tipo: 'regla', texto: 'Completo quiere decir que aparece cada potencia de x, desde la del grado hasta x⁰. Las que faltan se escriben con coeficiente 0 y también cuentan.' },
+              { tipo: 'cuentas', texto: `Cuento las casillas: de x${sup(n)} a x¹ hay ${n}, y falta sumar la de x⁰.`, ecuacion: [`${n} + 1 = ${n + 1}`], dibujo: { datos: casillasN(ts, true), estado: {} } },
+              { tipo: 'sentido', texto: `Comprueba: ${m} casillas tienen su coeficiente y ${falta} ${falta === 1 ? 'lleva' : 'llevan'} 0. Juntas: ${m} + ${falta} = ${m + falta}.` },
+            ],
+            respuesta: `${n + 1} términos`,
+          };
+        }
+        // Homogéneo: el mismo generador de «Ahora tú».
+        let g, a1, b1, a2, b2, a3, b3;
+        do { g = r.ent(5, 9); a2 = r.ent(1, g - 1); b2 = g - a2; a3 = r.ent(0, g); b3 = g - a3; b1 = r.ent(1, g - 1); a1 = g - b1; } while (a2 === a3 || a1 === a2 || a1 === a3);
+        const c2 = r.noCero(-5, 5), c3 = r.noCero(-5, 5);
+        const t2 = mono(c2, [['x', a2], ['y', b2]], false), t3 = mono(c3, [['x', a3], ['y', b3]], false);
+        const m = g - b1;
+        const tabla = lleno => ({
+          columnas: ['término', 'exp. de x', 'exp. de y', 'grado'], colorCol: [null, 'o', 'i', 'd'],
+          filas: [
+            [lleno ? `2${pot('x', m)}${pot('y', b1)}` : `2xᵐ${pot('y', b1)}`, lleno ? { t: f(m), color: 'o', fuerte: true } : { t: 'm', color: 'o' }, { t: f(b1), color: 'i' }, lleno ? { t: f(m + b1), color: 'd', fuerte: true } : { t: '?', hueco: true }],
+            [mono(c2, [['x', a2], ['y', b2]], true), { t: f(a2), color: 'o' }, { t: f(b2), color: 'i' }, { t: f(a2 + b2), color: 'd' }],
+            [mono(c3, [['x', a3], ['y', b3]], true), { t: f(a3), color: 'o' }, { t: f(b3), color: 'i' }, { t: f(a3 + b3), color: 'd' }],
+          ],
+          alt: `Exponentes y grado de cada término; los otros dos tienen grado ${g}`,
+        });
+        return {
+          enunciado: `¿Qué valor de m hace homogéneo a 2xᵐ${pot('y', b1)}${t2}${t3}?`,
+          dibujo: { datos: tabla(false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el exponente m que hace que todos los términos tengan el mismo grado.' },
+            { tipo: 'datos', texto: `Los otros dos términos tienen grado ${a2} + ${b2} = ${a2 + b2} y ${a3} + ${b3} = ${a3 + b3}.` },
+            { tipo: 'regla', texto: 'En un polinomio homogéneo todos los términos tienen el mismo grado, y el grado de un término es la suma de los exponentes de sus letras.' },
+            { tipo: 'cuentas', texto: `El primer término tiene grado m + ${b1}, y debe valer ${g}.`, ecuacion: [`m + ${b1} = ${g} → m = ${g} − ${b1} = ${m}`], dibujo: { datos: tabla(true), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba: 2${pot('x', m)}${pot('y', b1)} tiene grado ${m} + ${b1} = ${m + b1}, igual que los otros dos términos.` },
+          ],
+          respuesta: `m = ${m}`,
+        };
+      },
     },
     ahoraTu: {
       pieza: 'alg-tabla',
@@ -389,6 +544,15 @@
     titulo: 'Iguales casilla por casilla',
     temas: ['Igualdad de polinomios'],
     pieza: 'alg-tabla',
+    // Lee: qué es «idéntico» y cómo se comparan, sin decir si basta un valor común (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Escrito de otra forma', texto: 'x + 2x² y 2x² + x son el mismo polinomio con los términos en otro orden. Cuando dos polinomios son el mismo, se dice que son idénticos.',
+          ecuacion: ['x + 2x² ≡ 2x² + x'] },
+        { titulo: 'Uno debajo del otro', texto: 'Para comparar dos polinomios conviene escribirlos en filas: P en la naranja y Q en la turquesa, cada coeficiente en la columna de su potencia.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, mueve a y b. Mira qué casillas de P cambian, cuántas coinciden con Q y qué marca aparece cuando coinciden.' },
+      ],
+    },
     juega: {
       consigna: 'P = ax² + (b − 1)x + 3 y Q = 2x² + 5x + 3. Ajusta a y b hasta que P y Q coincidan en todas las casillas.',
       voz: 'Una casilla a la vez. Las demás no se mueven.',
@@ -434,6 +598,31 @@
       ecuacion: ['ax² + bx + c ≡ mx² + nx + p', '   ·   ', { llave: ['a = m, b = n, c = p'], nota: 'casilla por casilla', color: 'c-d' }],
       condicion: 'coincidir en uno o en dos valores de x no basta; los coeficientes deben ser iguales en todas las casillas.',
     },
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        const p = r.ent(1, 5), q = r.ent(1, 5), A = r.noCero(-4, 6), B = r.noCero(-4, 8), c = r.noCero(-5, 5);
+        const m = A + p, n = B - q, pide = s % 2 ? 'm + n' : 'm · n';
+        const val = pide === 'm + n' ? m + n : m * n;
+        const pFila = [{ t: `m − ${p}`, color: 'o' }, { t: `n + ${q}`, color: 'o' }, { t: f(c), color: 'o', fuerte: true }];
+        const sinMarcar = { columnas: ['x²', 'x¹', 'x⁰'], rotulosFila: ['P', 'Q'], colorFila: ['o', 'i'], filas: [pFila, [A, B, c].map(v => ({ t: f(v), color: 'i', fuerte: true }))], alt: 'Coeficientes de P, con m y n, y de Q, casilla por casilla' };
+        return {
+          enunciado: [P, `(x) = (m − ${p})x² + (n + ${q})x ${c < 0 ? '−' : '+'} ${Math.abs(c)} y `, Q, `(x) = ${poli([A, B, c])} son idénticos. ¿Cuánto vale ${pide}?`],
+          dibujo: { datos: sinMarcar, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: `Piden ${pide}, con los valores de m y n que hacen idénticos a P y Q.` },
+            { tipo: 'datos', texto: [`En x², `, P, ` tiene m − ${p} y `, Q, ` tiene ${f(A)}. En x, `, P, ` tiene n + ${q} y `, Q, ` tiene ${f(B)}.`] },
+            { tipo: 'regla', texto: 'Dos polinomios idénticos tienen el mismo coeficiente en cada potencia. Por eso igualo los coeficientes de x² entre sí, y los de x entre sí.' },
+            { tipo: 'cuentas', texto: `Despejo m y n, y después calculo ${pide}.`,
+              ecuacion: [`m − ${p} = ${f(A)} → m = ${f(m)}`, '   ·   ', `n + ${q} = ${f(B)} → n = ${f(n)}`, '   ·   ', `${pide} = ${par(m)} ${pide === 'm + n' ? '+' : '·'} ${par(n)} = ${f(val)}`],
+              dibujo: { datos: tablaIgualdad([m - p, n + q, c], [A, B, c]), estado: {} } },
+            { tipo: 'sentido', texto: ['Comprueba: con m = ', f(m), ' y n = ', f(n), ', ', P, ` = ${poli([m - p, n + q, c])}, igual que `, Q, ' en las tres casillas.'] },
+          ],
+          respuesta: `${pide} = ${f(val)}`,
+        };
+      },
+    },
     ahoraTu: {
       generar(s) {
         const r = azar(s);
@@ -475,6 +664,15 @@
     titulo: 'Cada término por cada término',
     temas: ['Operaciones con polinomios'],
     pieza: 'alg-tabla',
+    // Lee: semejantes y la idea de la cuadrícula, sin decir qué casillas dan x² (eso se predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Términos semejantes', texto: 'Dos términos son semejantes si tienen la misma parte literal: 3x² y −5x² lo son; 3x² y 3x no. Al sumar, solo se juntan los semejantes.',
+          ecuacion: ['3x² − 5x² = −2x²'] },
+        { titulo: 'Como en el cuaderno', texto: 'Cuando multiplicas 23 · 14 en tu cuaderno, cada cifra de un número multiplica a cada cifra del otro. Con polinomios se hace algo parecido, término por término.' },
+        { titulo: 'Qué mirar', texto: 'En la cuadrícula, cada fila es un término de P y cada columna, uno de Q. Busca las casillas que tienen la misma potencia de x.' },
+      ],
+    },
     juega: {
       consigna: 'P = x + a y Q = x² + bx + 2. Cada casilla multiplica un término de P (fila) por uno de Q (columna). Cambia a y b.',
       voz: 'Busca las casillas con la misma potencia de x.',
@@ -517,6 +715,49 @@
       texto: 'Multiplicar es multiplicar cada término por cada término y luego juntar los semejantes. Sumar solo junta términos con la misma parte literal.',
       ecuacion: ['grado(', P, '·', Q, ') = ', { llave: ['grado ', P, ' + grado ', Q], nota: 'se suman', color: 'c-d' }],
       condicion: 'solo se suman coeficientes de términos semejantes; al juntarlos algún término puede cancelarse.',
+    },
+    resuelve: {
+      pieza: 'alg-tabla',
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 3 === 2) {
+          const m = r.ent(2, 6), n = r.ent(1, 5);
+          const tabla = lleno => ({ columnas: ['P', 'Q', 'P · Q'], colorCol: ['o', 'i', 'd'], rotulosFila: ['grado'], filas: [[f(m), f(n), lleno ? { t: f(m + n), color: 'd', fuerte: true } : { t: '?', hueco: true }]], alt: `Grados: P ${m}, Q ${n}, P · Q por hallar` });
+          return {
+            enunciado: `P tiene grado ${m} y Q tiene grado ${n}. ¿Qué grado tiene P · Q?`,
+            dibujo: { datos: tabla(false), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el grado del producto ', P, ' · ', Q, '.'] },
+              { tipo: 'datos', texto: ['El término de mayor grado de ', P, ` lleva x${sup(m)}, y el de `, Q, ` lleva x${sup(n)}.`] },
+              { tipo: 'regla', texto: 'El término de mayor grado del producto sale de multiplicar los términos de mayor grado de cada uno. Al multiplicar potencias de x, los exponentes se suman.' },
+              { tipo: 'cuentas', texto: 'Multiplico esos dos términos y miro el exponente.', ecuacion: [`x${sup(m)} · x${sup(n)} = x${sup(m + n)}`, '   ·   ', `${m} + ${n} = ${m + n}`], dibujo: { datos: tabla(true), estado: {} } },
+              { tipo: 'sentido', texto: `Comprueba: x${sup(m)} son ${m} factores x y x${sup(n)} son ${n}; juntos, ${m + n} factores x. Ningún otro producto llega a ese grado.` },
+            ],
+            respuesta: `grado ${m + n}`,
+          };
+        }
+        const a = r.noCero(-4, 4), b = r.noCero(-4, 4), c = r.noCero(-5, 5);
+        const prod = multiplicar([1, a], [1, b, c]);
+        const enX2 = s % 3 === 0, cual = enX2 ? 'x²' : 'x';
+        const bien = enX2 ? prod[1] : prod[2];
+        const bx = mono(b, [['x', 1]], true);
+        const sumaC = prod.reduce((u, v) => u + v, 0);
+        return {
+          enunciado: `¿Cuál es el coeficiente de ${cual} en (${poli([1, a])})(${poli([1, b, c])})?`,
+          dibujo: { datos: tablaProducto([1, a], [1, b, c], { f0: 1, f1: 1 }), estado: { corte: 0 } },
+          pasos: [
+            { tipo: 'pide', texto: `Piden el número que multiplica a ${cual} cuando el producto ya está desarrollado.` },
+            { tipo: 'datos', texto: ['', P, ` = ${poli([1, a])} tiene 2 términos y `, Q, ` = ${poli([1, b, c])} tiene 3: la cuadrícula tiene 2 · 3 = 6 casillas.`] },
+            { tipo: 'regla', texto: 'Cada término de P multiplica a cada término de Q. Después junto las casillas que tienen la misma potencia de x y sumo sus coeficientes.' },
+            { tipo: 'cuentas', texto: enX2 ? `Dan x² dos casillas: x por ${bx}, y ${f(a)} por x². Sumo sus coeficientes.` : `Dan x dos casillas: x por ${f(c)}, y ${f(a)} por ${bx}. Sumo sus coeficientes.`,
+              ecuacion: [enX2 ? `${f(b)} + ${par(a)} = ${f(bien)}` : `${f(c)} + ${par(a)} · ${par(b)} = ${f(bien)}`],
+              dibujo: { datos: tablaProducto([1, a], [1, b, c], { resaltar: enX2 ? [[0, 1], [1, 0]] : [[0, 2], [1, 1]] }), estado: {} } },
+            { tipo: 'sentido', texto: ['Comprueba con x = 1: ', P, '(1) · ', Q, `(1) = ${f(1 + a)} · ${par(1 + b + c)} = ${f((1 + a) * (1 + b + c))}, lo mismo que suman los coeficientes del producto.`],
+              ecuacion: [P, ' · ', Q, ` = ${poli(prod)}   →   suma ${f(sumaC)}`] },
+          ],
+          respuesta: `El coeficiente de ${cual} es ${f(bien)}`,
+        };
+      },
     },
     ahoraTu: {
       generar(s) {
