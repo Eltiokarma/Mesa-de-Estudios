@@ -96,6 +96,15 @@
     angulos: [{ en: 'A', de: 'C', a: 'B', texto: o.ang === undefined ? 'θ' : o.ang, color: 'o' }, { en: 'C', de: 'A', a: 'B' }],
   });
 
+  // «Así se resuelve»: el símbolo de cada lado y la razón que une dos de ellos, nombrados desde el ángulo dado.
+  const SIM = { op: CO, ad: CA, hip: H };
+  const RAZON = { 'op,hip': 'sen', 'hip,op': 'sen', 'ad,hip': 'cos', 'hip,ad': 'cos', 'op,ad': 'tan', 'ad,op': 'tan' };
+  const ARRIBA = { sen: 'op', cos: 'ad', tan: 'op' }, ABAJO = { sen: 'hip', cos: 'hip', tan: 'ad' };
+  // Valor exacto de la razón de g° como cociente de los coeficientes del notable (1/2, √3/2, 3/4…).
+  const razonTxt = (g, rz) => { const a = txt(1, NOT[g][ARRIBA[rz]]), b = txt(1, NOT[g][ABAJO[rz]]); return b === '1' ? a : `${a}/${b}`; };
+  const mdc = (a, b) => (b ? mdc(b, a % b) : a);
+  const fraccion = (p, q) => { const m = mdc(p, q); return q / m === 1 ? `${p / m}` : `${p / m}/${q / m}`; };
+
   // ---------- Idea 1: un lado y un ángulo bastan ----------
   // Cambia: el ángulo θ y la hipotenusa. · Permanece: el ángulo recto y los nombres de los lados desde θ.
   // Progresa: los dos catetos que salen de H·sen θ y H·cos θ. · Se reserva: conocer un cateto y buscar la
@@ -106,6 +115,14 @@
     titulo: 'Un lado y un ángulo bastan',
     temas: ['Resolver con un lado y un ángulo'],
     pieza: 'triangulo',
+    // Lee (fase 2): qué es resolver y cómo se nombran los lados, sin adelantar que a veces se divide (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Resolver un triángulo', texto: 'Resolver un triángulo rectángulo es hallar los lados y ángulos que faltan. Así un maestro de obra en Juliaca calcula el largo de la escalera de un techo sin medirla: le bastan un ángulo y un lado.' },
+        { titulo: 'Primero, los nombres', texto: ['Antes de calcular, nombra cada lado desde el ángulo que conoces: el opuesto ', CO, ' queda enfrente, el adyacente ', CA, ' lo toca y la hipotenusa ', H, ' es la más larga.'] },
+        { titulo: 'Qué mirar', texto: ['En el juego eliges ', th, ' y la hipotenusa ', H, '. Mira cómo la lectura saca cada cateto con el seno y el coseno.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige el ángulo θ y la hipotenusa H. La lectura calcula los dos catetos con el seno y el coseno.',
       voz: 'Desde θ, nombra cuál cateto es opuesto y cuál adyacente.',
@@ -150,6 +167,37 @@
       ecuacion: [{ llave: [CO], nota: 'opuesto a θ', color: 'c-h' }, ' = ', H, ' sen ', th, '   ·   ', { llave: [CA], nota: 'junto a θ', color: 'c-i' }, ' = ', H, ' cos ', th, '   ·   ', CO, ' = ', CA, ' tan ', th],
       condicion: 'θ agudo en un triángulo rectángulo y los lados nombrados desde θ. Si el dato es un cateto, a veces se divide.',
       voz: 'Escribe la razón con los dos lados; después despeja.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (un lado con un notable), con las mismas cuentas.
+    resuelve: {
+      pieza: 'triangulo',
+      generar(s) {
+        const rr = azar(s + 900), g = rr.uno([30, 45, 60, 37, 53]), k = rr.ent(2, 9);
+        const roles = ['op', 'ad', 'hip'], nom = { op: `el cateto opuesto a ${g}°`, ad: `el cateto adyacente a ${g}°`, hip: 'la hipotenusa' };
+        const dado = roles[s % 3], pide = roles[(s + 1 + (Math.floor(s / 3) % 2)) % 3];
+        const L = rol => num(k, NOT[g][rol]);
+        const rz = RAZON[`${dado},${pide}`], multiplica = ARRIBA[rz] === pide;
+        const rot = (rol, todo) => (todo || rol === dado ? ladoTxt(g, k, rol) : rol === pide ? '?' : '');
+        const fig = todo => ({ datos: tri(L('op'), L('ad'), { ang: `${g}°`, co: rot('op', todo), ca: rot('ad', todo), h: rot('hip', todo) }), estado: {} });
+        const sentido = pide === 'hip' ? `${f(L('hip'))} sale mayor que ${f(L(dado))}: la hipotenusa siempre es el lado más largo.`
+          : dado === 'hip' ? `${f(L(pide))} sale menor que ${f(L('hip'))}: ningún cateto llega a la hipotenusa.`
+          : g === 45 ? 'A 45° los dos catetos miden lo mismo, como salió.'
+          : `Frente al ángulo mayor queda el cateto mayor: ${f(L('op'))} frente a ${g}° y ${f(L('ad'))} frente a ${90 - g}°.`;
+        return {
+          enunciado: [`En un triángulo rectángulo, ${nom[dado]} mide ${ladoTxt(g, k, dado)}${conv(g)}. ¿Cuánto mide ${nom[pide]}?`],
+          dibujo: fig(false),
+          pasos: [
+            { tipo: 'pide', texto: [`Piden ${nom[pide]}.`] },
+            { tipo: 'datos', texto: [`Un ángulo de ${g}°${conv(g)} y ${nom[dado]}, que mide ${ladoTxt(g, k, dado)}.`], ecuacion: [SIM[dado], ` = ${ladoTxt(g, k, dado)}`] },
+            { tipo: 'regla', texto: [`Busco la razón que une el lado que tengo con el que busco, los dos nombrados desde ${g}°. Aquí es ${rz === 'sen' ? 'el seno' : rz === 'cos' ? 'el coseno' : 'la tangente'}.`],
+              ecuacion: [`${rz} ${g}° = `, { frac: [SIM[ARRIBA[rz]], SIM[ABAJO[rz]]] }, ` = ${razonTxt(g, rz)}`] },
+            { tipo: 'cuentas', texto: [`El lado buscado está ${multiplica ? 'arriba' : 'abajo'} en la fracción: despejo ${multiplica ? 'multiplicando' : 'dividiendo'} el dato por la razón.`],
+              ecuacion: [SIM[pide], ` = ${ladoTxt(g, k, dado)} ${multiplica ? '·' : '÷'} ${!multiplica && razonTxt(g, rz).includes('/') ? `(${razonTxt(g, rz)})` : razonTxt(g, rz)} = ${ladoTxt(g, k, pide)}`], dibujo: fig(true) },
+            { tipo: 'sentido', texto: [sentido] },
+          ],
+          respuesta: [SIM[pide], ` = ${ladoTxt(g, k, pide)}`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'triangulo',
@@ -218,8 +266,16 @@
     titulo: 'Desde la horizontal del ojo',
     temas: ['Ángulos de elevación y depresión'],
     pieza: 'triangulo',
+    // Lee (fase 2): elevación y depresión como gestos de la mirada, sin decir cómo se relacionan entre sí (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Mirar hacia arriba', texto: 'Para ver la punta de la torre de una iglesia en Juliaca, levantas la vista. Lo que sube tu mirada, medido desde la horizontal de tus ojos, es el ángulo de elevación.' },
+        { titulo: 'Mirar hacia abajo', texto: 'Desde lo alto del cerro Huaynarroque miras una calle de la ciudad. Lo que baja tu mirada, medido también desde la horizontal de tus ojos, es el ángulo de depresión.' },
+        { titulo: 'Qué mirar', texto: ['En el juego, la línea roja es la torre y la turquesa, tu distancia ', d, ' a su pie. La línea punteada es tu visual. Cambia ', d, ' y ', th, ', y mira la altura.'] },
+      ],
+    },
     juega: {
-      consigna: 'Miras la punta de una torre. Elige tu distancia d al pie y el ángulo de elevación θ, medido desde la horizontal.',
+      consigna: 'La línea roja es una torre; la turquesa, tu distancia d al pie. Elige d y el ángulo de elevación θ, desde la horizontal.',
       voz: 'El ángulo nace en la horizontal de tu ojo y sube.',
       controles: [
         { id: 'd', etiqueta: 'd', color: 'c-i', min: 10, max: 30, paso: 5, inicio: 20, unidad: 'm', decimales: 0 },
@@ -270,6 +326,63 @@
       ecuacion: [h, ' = ', d, ' · tan ', { llave: [th], nota: 'elevación', color: 'c-o' }],
       condicion: 'θ medido desde la horizontal. Si el problema da la altura de los ojos, se suma a h.',
       voz: 'Primero la horizontal; después el ángulo.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (elevación, depresión o instrumento), con las mismas cuentas.
+    resuelve: {
+      pieza: 'triangulo',
+      generar(s) {
+        const rr = azar(s + 900), g = rr.uno([30, 45, 60, 37, 53]), k = rr.ent(2, 9);
+        const altura = ladoTxt(g, k, 'op'), dist = ladoTxt(g, k, 'ad'), tan = razonTxt(g, 'tan');
+        const hv = num(k, NOT[g].op), dv = num(k, NOT[g].ad), caso = s % 3;
+        const compara = g === 45 ? 'A 45°, altura y distancia miden lo mismo.' : `Con ${g}°, ${g > 45 ? 'más' : 'menos'} de 45°, la altura sale ${g > 45 ? 'mayor' : 'menor'} que la distancia.`;
+        const dib = (dT, hT, nO) => ({ datos: torre(dv, g, { d: dT, h: hT, nO }), estado: {} });
+        if (caso === 2) {
+          return {
+            enunciado: [`Un instrumento de 1,5 m de alto está a ${dist} m de un edificio y marca una elevación de ${g}°${conv(g)} hasta la azotea. ¿Cuánto mide el edificio?`],
+            dibujo: dib(`d = ${dist}`, 'h = ?', 'ojo'),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la altura total del edificio, desde el suelo.'] },
+              { tipo: 'datos', texto: [`El instrumento mide 1,5 m, está a ${dist} m y marca ${g}°${conv(g)}.`], ecuacion: [d, ` = ${dist} m`] },
+              { tipo: 'regla', texto: ['La visual sale del instrumento, no del suelo. La tangente da el tramo sobre el instrumento; el tramo de abajo, 1,5 m, se suma.'],
+                ecuacion: [h, ' = ', d, ' · tan ', th, ' + 1,5'] },
+              { tipo: 'cuentas', texto: ['Calculo el tramo de arriba con la tangente y le sumo la altura del instrumento.'],
+                ecuacion: [h, ` = ${dist} · ${tan} + 1,5 = ${altura} + 1,5 m`], dibujo: { datos: instr({ a: 1.5, d: dv, g }), estado: {} } },
+              { tipo: 'sentido', texto: [`Con decimales, h ≈ ${f(hv + 1.5)} m: el tramo de la tangente, ${f(hv)} m, más 1,5 m.`] },
+            ],
+            respuesta: [h, ` = ${altura} + 1,5 m`],
+          };
+        }
+        if (caso === 1) {
+          return {
+            enunciado: [`Desde lo alto de un acantilado de ${altura} m se ve un barco con un ángulo de depresión de ${g}°${conv(g)}. ¿A qué distancia horizontal está el barco?`],
+            dibujo: dib('d = ?', `h = ${altura}`, 'barco'),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la distancia horizontal ', d, ' del pie del acantilado al barco.'] },
+              { tipo: 'datos', texto: [`El acantilado mide ${altura} m y la depresión es ${g}°${conv(g)}.`], ecuacion: [h, ` = ${altura} m`] },
+              { tipo: 'regla', texto: [`La depresión baja desde la horizontal de arriba, paralela al suelo. Por eso, desde el barco, la elevación también es ${g}°.`],
+                ecuacion: ['tan ', th, ' = ', { frac: [h, d] }] },
+              { tipo: 'cuentas', texto: ['La altura es opuesta al ángulo y la distancia, adyacente. Despejo dividiendo.'],
+                ecuacion: [d, ' = ', { frac: [`${altura}`, `tan ${g}°`] }, ` = ${altura} ÷ ${tan.includes('/') ? `(${tan})` : tan} = ${dist} m`], dibujo: dib(`d = ${dist}`, `h = ${altura}`, 'barco') },
+              { tipo: 'sentido', texto: [`Con decimales, d ≈ ${f(dv)} m. ${compara}`] },
+            ],
+            respuesta: [d, ` = ${dist} m`],
+          };
+        }
+        return {
+          enunciado: [`Desde ${dist} m del pie de un edificio, su azotea se ve con un ángulo de elevación de ${g}°${conv(g)}. Sin contar la altura de los ojos, ¿cuánto mide el edificio?`],
+          dibujo: dib(`d = ${dist}`, 'h = ?', 'ojo'),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la altura ', h, ' del edificio, sin la altura de los ojos.'] },
+            { tipo: 'datos', texto: [`La distancia al pie es ${dist} m y la elevación, ${g}°${conv(g)}.`], ecuacion: [d, ` = ${dist} m`] },
+            { tipo: 'regla', texto: ['El ángulo sube desde la horizontal del ojo. Desde él, la altura es el cateto opuesto y la distancia, el adyacente: los une la tangente.'],
+              ecuacion: [h, ' = ', d, ' · tan ', th] },
+            { tipo: 'cuentas', texto: ['Reemplazo la distancia y la tangente, y multiplico.'],
+              ecuacion: [h, ` = ${dist} · ${tan} = ${altura} m`], dibujo: dib(`d = ${dist}`, `h = ${altura}`, 'ojo') },
+            { tipo: 'sentido', texto: [`Con decimales, h ≈ ${f(hv)} m. ${compara}`] },
+          ],
+          respuesta: [h, ` = ${altura} m`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'triangulo',
@@ -344,8 +457,16 @@
     titulo: 'Lo que abarca la mirada',
     temas: ['Ángulo de observación'],
     pieza: 'triangulo',
+    // Lee (fase 2): qué abarca la mirada y su vocabulario, sin decir qué pasa con β muy cerca del poste (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Lo que abarca la mirada', texto: 'En la plaza de Juliaca, un letrero alto se ve entero desde lejos. El ángulo entre la visual a su borde de abajo y la de su borde de arriba se llama ángulo de observación.' },
+        { titulo: 'Dos visuales, un ojo', texto: ['Las dos visuales salen del mismo ojo. Cada una sube su propio ángulo de elevación desde la horizontal: una hasta el borde bajo y otra hasta el alto. Entre ellas queda ', be, '.'] },
+        { titulo: 'Qué mirar', texto: ['En el juego, el tramo rojo es el letrero. Cambia tu distancia ', d, ' al poste y mira cómo se abren o se cierran las dos visuales.'] },
+      ],
+    },
     juega: {
-      consigna: 'Un letrero va de 2 m a 6 m de altura. Elige tu distancia d al poste y mira el ángulo β entre las visuales.',
+      consigna: 'El tramo rojo es un letrero de 2 m a 6 m de altura. Cambia tu distancia d y mira el ángulo β entre visuales.',
       voz: 'Compara las dos visuales: la de arriba y la de abajo.',
       controles: [{ id: 'd', etiqueta: 'd', color: 'c-i', min: 6, max: 12, paso: 1, inicio: 10, unidad: 'm', decimales: 0 }],
       dibujo: v => ({ datos: letJ(v), estado: {} }),
@@ -387,6 +508,38 @@
       condicion: 'las dos elevaciones se miden desde el mismo ojo y la misma horizontal.',
       voz: 'Resta ángulos, no alturas.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (ángulo de observación con convenciones), otras semillas.
+    resuelve: {
+      pieza: 'triangulo',
+      generar(s) {
+        // k = 1 (no de 1 a 3 como en «Ahora tú») para que el panel no pase de 32 m: así el caso es creíble.
+        const rr = azar(s + 900), k = 1;
+        const juegos = [
+          { d: 12, hs: [[9, 37], [12, 45], [16, 53]] },
+          { d: 24, hs: [[7, 16], [18, 37], [24, 45], [32, 53]] },
+        ];
+        const J = juegos[s % 2];
+        const i = rr.ent(0, J.hs.length - 2), j = rr.ent(i + 1, J.hs.length - 1);
+        const [ha, aa] = J.hs[i], [hb, ab] = J.hs[j], dv = J.d * k;
+        const conv2 = J.d === 24 ? 'triángulos 3-4-5 y 7-24-25' : 'triángulo 3-4-5';
+        const fig = { datos: letL({ d: dv, a: ha * k, L: (hb - ha) * k }), estado: {} };
+        return {
+          enunciado: [`En una pared, un panel va de ${ha * k} m a ${hb * k} m de altura. ¿Cuál es su ángulo de observación desde el suelo, a ${dv} m de la pared? Convención: ${conv2}.`],
+          dibujo: fig,
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el ángulo de observación ', be, ': lo que abarca la mirada entre los dos bordes del panel.'] },
+            { tipo: 'datos', texto: [`Bordes a ${ha * k} m y a ${hb * k} m de altura; el ojo, en el suelo, a ${dv} m de la pared.`] },
+            { tipo: 'regla', texto: ['β es la resta de dos elevaciones desde el mismo ojo: la del borde alto menos la del borde bajo. Cada una sale de su tangente.'],
+              ecuacion: [be, ' = ', sub(al, '2'), ' − ', sub(al, '1'), '   ·   ', 'tan ', al, ' = ', { frac: [h, d] }] },
+            { tipo: 'cuentas', texto: ['Cada tangente se simplifica y se reconoce su triángulo de convención.'],
+              ecuacion: ['tan ', sub(al, '2'), ` = ${hb * k}/${dv} = ${fraccion(hb, J.d)}  ⇒  `, sub(al, '2'), ` = ${ab}°`, '   ·   ', 'tan ', sub(al, '1'), ` = ${ha * k}/${dv} = ${fraccion(ha, J.d)}  ⇒  `, sub(al, '1'), ` = ${aa}°`] },
+            { tipo: 'cuentas', texto: ['Resto las dos elevaciones.'], ecuacion: [be, ` = ${ab}° − ${aa}° = ${ab - aa}°`] },
+            { tipo: 'sentido', texto: [`β = ${ab - aa}° es menor que la elevación del borde alto, ${ab}°: es solo un pedazo de ella.`] },
+          ],
+          respuesta: [be, ` = ${ab - aa}°`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Calcula cada elevación por separado y después réstalas.',
       generar(sem) {
@@ -398,9 +551,9 @@
         const J = juegos[sem % 2];
         const i = rr.ent(0, J.hs.length - 2), j = rr.ent(i + 1, J.hs.length - 1);
         const [ha, aa] = J.hs[i], [hb, ab] = J.hs[j], dv = J.d * k;
-        const conv2 = J.d === 24 ? 'los triángulos 3-4-5 y 7-24-25' : 'el triángulo 3-4-5';
+        const conv2 = J.d === 24 ? 'de los triángulos 3-4-5 y 7-24-25' : 'del triángulo 3-4-5';
         return {
-          pregunta: [`Un letrero va de ${ha * k} m a ${hb * k} m de altura. Desde el suelo, a ${dv} m del poste, ¿cuál es su ángulo de observación? Usa la convención de ${conv2}.`],
+          pregunta: [`Una franja de un edificio va de ${ha * k} m a ${hb * k} m de altura. Desde el suelo, a ${dv} m, ¿cuál es su ángulo de observación? Usa la convención ${conv2}.`],
           opciones: opciones(ab - aa, [
             { id: 'arriba', valor: ab, error: 'OBS-SOLO-ARRIBA', siFuera: `${ab}° es la elevación del borde de arriba. Falta restarle la del borde de abajo.` },
             { id: 'suma', valor: aa + ab, error: 'OBS-SUMA', siFuera: 'Las dos elevaciones son las correctas; el ángulo entre visuales es su resta.' },

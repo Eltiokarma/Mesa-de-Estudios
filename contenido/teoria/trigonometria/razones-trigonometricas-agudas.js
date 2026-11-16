@@ -100,6 +100,15 @@
     titulo: 'Una razón es un cociente',
     temas: ['Definición en el triángulo rectángulo'],
     pieza: 'triangulo',
+    // Lee (fase 2): vocabulario de los lados vistos desde θ, sin adelantar que la razón no depende del tamaño (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Tres lados con nombre', texto: 'Un triángulo rectángulo tiene un ángulo de 90°. Los dos lados que forman ese ángulo se llaman catetos. El tercero, el más largo y frente al 90°, es la hipotenusa.' },
+        { titulo: 'Desde dónde miras', texto: ['Los catetos cambian de nombre según el ángulo agudo desde el que miras. El que toca a ', th, ' es el adyacente, ', CA, '. El que queda frente a ', th, ', sin tocarlo, es el opuesto, ', CO, '.'] },
+        { titulo: 'Qué mirar', texto: 'En el juego cambias los dos catetos. Mira la hipotenusa que sale y el cociente de la lectura: el opuesto dividido entre la hipotenusa.',
+          ecuacion: ['sen ', th, ' = ', { frac: [CO, H] }] },
+      ],
+    },
     juega: {
       consigna: 'Elige el cateto opuesto a θ y el adyacente. La lectura divide el opuesto entre la hipotenusa: ese cociente es sen θ.',
       voz: 'Nombra los lados siempre desde el ángulo θ.',
@@ -144,6 +153,36 @@
       ecuacion: ['sen ', th, ' = ', { frac: [{ llave: [CO], nota: 'opuesto a θ', color: 'c-h' }, H] }, '   ·   ', 'cos ', th, ' = ', { frac: [{ llave: [CA], nota: 'junto a θ', color: 'c-i' }, H] }],
       condicion: 'θ agudo de un triángulo rectángulo. tan θ = CO/CA; cot, sec y csc invierten tan, cos y sen.',
       voz: 'Una razón es un número sin unidades: compara dos largos.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (una razón con los lados de un triángulo pitagórico), otras semillas.
+    resuelve: {
+      pieza: 'triangulo',
+      generar(s) {
+        const rr = azar(s + 900), [p, q, hh] = rr.uno([[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25], [20, 21, 29]]), k = rr.ent(1, 3);
+        const [co, ca] = rr.ent(0, 1) ? [p * k, q * k] : [q * k, p * k], hv = hh * k;
+        const razon = ['sen', 'cos', 'tan'][s % 3];
+        const [num, den] = { sen: [co, hv], cos: [ca, hv], tan: [co, ca] }[razon];
+        const lados = { sen: [CO, H], cos: [CA, H], tan: [CO, CA] }[razon];
+        const dice = { sen: 'El seno divide el cateto que queda frente a θ entre la hipotenusa, el lado más largo.',
+          cos: 'El coseno divide el cateto que toca a θ entre la hipotenusa, el lado más largo.',
+          tan: 'La tangente divide el cateto que queda frente a θ entre el cateto que lo toca.' }[razon];
+        const valor = num / den;
+        return {
+          enunciado: ['En el triángulo de la figura, ¿cuánto vale ', `${razon} `, th, '?'],
+          dibujo: { datos: tri(co, ca, { co: `${co}`, ca: `${ca}`, h: `${hv}` }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', `${razon} `, th, ': un cociente entre dos lados del triángulo.'] },
+            { tipo: 'datos', texto: ['Desde ', th, `, el opuesto mide ${co}, el adyacente ${ca} y la hipotenusa ${hv}.`],
+              ecuacion: [CO, ` = ${co}`, '   ·   ', CA, ` = ${ca}`, '   ·   ', H, ` = ${hv}`] },
+            { tipo: 'regla', texto: [dice], ecuacion: [`${razon} `, th, ' = ', { frac: lados }] },
+            { tipo: 'cuentas', texto: ['Reemplazo los dos lados y simplifico la fracción.'],
+              ecuacion: [`${razon} `, th, ' = ', { frac: [`${num}`, `${den}`] }, ` = ${fr(num, den)}`] },
+            { tipo: 'sentido', texto: [`Pitágoras cuadra: ${co}² + ${ca}² = ${co * co + ca * ca} = ${hv}². `,
+              razon === 'tan' ? `La tangente puede pasar de 1; aquí da ${f(valor, 3)}.` : `Sale ${f(valor, 3)}, menos que 1: un cateto es más corto que la hipotenusa.`] },
+          ],
+          respuesta: [`${razon} `, th, ` = ${fr(num, den)}`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'triangulo',
@@ -212,6 +251,14 @@
     titulo: 'Medio cuadrado, medio equilátero',
     temas: ['Ángulos notables'],
     pieza: 'triangulo',
+    // Lee (fase 2): qué son los ángulos notables y de qué figuras salen, sin dar ningún valor de 60° (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Ángulos que se repiten', texto: 'En los exámenes de admisión vuelven siempre los mismos ángulos: 30°, 45° y 60°. Se llaman ángulos notables porque sus razones se escriben exactas, con raíces, sin calculadora.' },
+        { titulo: 'Dos figuras partidas', texto: 'Un cuadrado cortado por su diagonal deja dos triángulos rectángulos iguales. Un triángulo equilátero cortado por su altura, también. De esas mitades salen los tres ángulos notables.' },
+        { titulo: 'Qué mirar', texto: 'En el juego eliges la figura y su lado. Fíjate qué lados salen enteros y cuáles llevan raíz cuando el lado cambia.' },
+      ],
+    },
     juega: {
       consigna: 'Elige la figura y su lado. Cortada por la mitad, da un triángulo rectángulo con 45°, o con 30° y 60°. Mira sus lados.',
       voz: 'Mira qué lados salen con raíz y cuáles no.',
@@ -268,6 +315,35 @@
       condicion: 'se usan los valores exactos, sin redondear. El coseno lee el otro cateto; la tangente, opuesto entre adyacente.',
       voz: 'Dos figuras bastan para recordar los tres ángulos.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (valor exacto de una razón notable), con la tabla VAL.
+    resuelve: {
+      pieza: 'triangulo',
+      generar(s) {
+        const rr = azar(s + 900), g = [30, 45, 60][s % 3], razon = rr.uno(['sen', 'cos', 'tan', 'cot', 'sec', 'csc']);
+        // Lados del triángulo de g° (medio cuadrado de cateto 1 o medio equilátero de lado 2): texto y valor.
+        const L = { 30: { op: ['1', 1], ad: ['√3', Math.sqrt(3)], h: ['2', 2] }, 45: { op: ['1', 1], ad: ['1', 1], h: ['√2', Math.SQRT2] },
+          60: { op: ['√3', Math.sqrt(3)], ad: ['1', 1], h: ['2', 2] } }[g];
+        const usa = { sen: ['op', 'h'], cos: ['ad', 'h'], tan: ['op', 'ad'], cot: ['ad', 'op'], sec: ['h', 'ad'], csc: ['h', 'op'] }[razon];
+        const sim = { op: CO, ad: CA, h: H };
+        const dice = { op: 'el cateto de enfrente', ad: 'el cateto que toca al ángulo', h: 'la hipotenusa' };
+        const calc = { sen: Math.sin, cos: Math.cos, tan: Math.tan, cot: x => 1 / Math.tan(x), sec: x => 1 / Math.cos(x), csc: x => 1 / Math.sin(x) }[razon](g * RAD);
+        const fig = g === 45 ? medioCuadrado(1, { ca: '1', co: '1', h: '√2' }) : medioEquilatero(2, { am: '1', mt: '√3', at: '2' });
+        const raiz = L[usa[1]][0].includes('√');
+        return {
+          enunciado: [`¿Cuál es el valor exacto de ${razon} ${g}°?`],
+          dibujo: { datos: fig, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: [`Piden ${razon} ${g}° exacto, sin redondear.`] },
+            { tipo: 'datos', texto: [g === 45 ? '45° vive en el medio cuadrado: catetos 1 y 1, hipotenusa √2.' : `${g}° vive en el medio equilátero de lado 2: lados 1, √3 y 2.`] },
+            { tipo: 'regla', texto: [`${razon} divide ${dice[usa[0]]} entre ${dice[usa[1]]}, vistos desde ${g}°.`], ecuacion: [`${razon} ${g}° = `, { frac: [sim[usa[0]], sim[usa[1]]] }] },
+            { tipo: 'cuentas', texto: [`Desde ${g}°, enfrente queda ${L.op[0]} y junto a él, ${L.ad[0]}.${raiz ? ' Si queda raíz abajo, se racionaliza.' : ''}`],
+              ecuacion: [`${razon} ${g}° = `, { frac: [L[usa[0]][0], L[usa[1]][0]] }, ` = ${VAL[razon][g]}`] },
+            { tipo: 'sentido', texto: [`Con calculadora, ${razon} ${g}° ≈ ${f(calc, 3)}, y ${L[usa[0]][0]} ÷ ${L[usa[1]][0]} ≈ ${f(L[usa[0]][1] / L[usa[1]][1], 3)}. Cuadra.`] },
+          ],
+          respuesta: [`${razon} ${g}° = ${VAL[razon][g]}`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'triangulo',
       voz: 'Dibuja el medio cuadrado o el medio equilátero antes de responder.',
@@ -304,6 +380,14 @@
     titulo: '37° es un redondeo',
     temas: ['Ángulos aproximados (37°, 53°, 16°, 74°)'],
     pieza: 'triangulo',
+    // Lee (fase 2): triángulos de lados enteros y sus nombres de academia, sin decir si 37° es exacto (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Lados enteros', texto: 'Algunos triángulos rectángulos tienen los tres lados enteros, como 3, 4 y 5, porque 3² + 4² = 5². Con una cuerda de 3, 4 y 5 metros, un albañil de Juliaca marca una esquina recta.' },
+        { titulo: 'Nombres de academia', texto: 'Otro triángulo de lados enteros es el de 7, 24 y 25. A los ángulos agudos del 3-4-5 se les llama 37° y 53°; a los del 7-24-25, 16° y 74°.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, el cateto adyacente queda fijo en 4. Mueve θ de grado en grado y lee cuánto mide el opuesto, con su decimal.' },
+      ],
+    },
     juega: {
       consigna: 'El cateto adyacente mide 4. Elige θ y mira cuánto mide el opuesto. Busca el ángulo que da un opuesto de 3.',
       voz: 'Anota con qué ángulo el opuesto se acerca a 3.',
@@ -347,6 +431,35 @@
       condicion: `el problema o el examen indican esa convención. El valor exacto es arctan(3/4) ≈ ${f(EX37)}°.`,
       voz: 'Cuando aproximes, dilo: así nadie confunde el redondeo con lo exacto.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (un lado con la convención 3-4-5 o 7-24-25), otras semillas.
+    resuelve: {
+      pieza: 'triangulo',
+      generar(s) {
+        const rr = azar(s + 900), t = rr.uno([{ l: [3, 4, 5], a: [37, 53] }, { l: [7, 24, 25], a: [16, 74] }]), k = rr.ent(1, 4);
+        const idx = s % 2, g = t.a[idx];
+        const [op, ad] = idx === 0 ? [t.l[0], t.l[1]] : [t.l[1], t.l[0]], hv = t.l[2];
+        const partes = { op, ad, hip: hv }, lados = { op: op * k, ad: ad * k, hip: hv * k };
+        const nom = { op: `el cateto opuesto a ${g}°`, ad: `el cateto adyacente a ${g}°`, hip: 'la hipotenusa' };
+        const sim = { op: CO, ad: CA, hip: H };
+        const [dado, pide] = [['hip', 'op'], ['hip', 'ad'], ['ad', 'op'], ['op', 'hip']][Math.floor(s / 2) % 4];
+        const rot = (rol, todo) => (todo || rol === dado ? `${lados[rol]}` : rol === pide ? '?' : '');
+        const fig = todo => ({ datos: tri(op * k, ad * k, { co: rot('op', todo), ca: rot('ad', todo), h: rot('hip', todo), ang: `${g}°` }), estado: {} });
+        return {
+          enunciado: [`Un triángulo rectángulo tiene un ángulo de ${g}° y ${nom[dado]} mide ${lados[dado]}. Con la convención del triángulo ${t.l.join('-')}, ¿cuánto mide ${nom[pide]}?`],
+          dibujo: fig(false),
+          pasos: [
+            { tipo: 'pide', texto: [`Piden ${nom[pide]}.`] },
+            { tipo: 'datos', texto: [`Un ángulo de ${g}° y ${nom[dado]}, que mide ${lados[dado]}.`], ecuacion: [sim[dado], ` = ${lados[dado]}`] },
+            { tipo: 'regla', texto: [`Con la convención, los lados van como ${t.l.join(', ')}: frente a ${g}° van ${op} partes, junto a él ${ad} y en la hipotenusa ${hv}.`],
+              ecuacion: [CO, ` = ${op}k`, '   ·   ', CA, ` = ${ad}k`, '   ·   ', H, ` = ${hv}k`] },
+            { tipo: 'cuentas', texto: [`Cada parte vale el lado dado entre sus ${partes[dado]} partes. Después multiplico por las partes del lado buscado.`],
+              ecuacion: [`k = ${lados[dado]} ÷ ${partes[dado]} = ${k}   →   `, sim[pide], ` = ${partes[pide]} · ${k} = ${lados[pide]}`], dibujo: fig(true) },
+            { tipo: 'sentido', texto: [`Pitágoras cuadra: ${lados.op}² + ${lados.ad}² = ${lados.op * lados.op + lados.ad * lados.ad} = ${lados.hip}². El ángulo es un redondeo; los lados, no.`] },
+          ],
+          respuesta: [sim[pide], ` = ${lados[pide]}`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'triangulo',
       voz: 'Ubica el ángulo y elige el triángulo de lados enteros que le corresponde.',
@@ -388,6 +501,15 @@
     titulo: 'Complementarias y recíprocas',
     temas: ['Razones recíprocas y complementarias'],
     pieza: 'triangulo',
+    // Lee (fase 2): los dos agudos y las seis razones, sin decir que el opuesto de uno es el adyacente del otro (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos ángulos agudos', texto: 'Un triángulo rectángulo tiene, además del ángulo de 90°, dos ángulos agudos. Los tres suman 180°, así que esos dos se reparten 90°: son ángulos complementarios.' },
+        { titulo: 'Seis cocientes', texto: 'Con tres lados se arman seis cocientes. Además de sen, cos y tan están cot, sec y csc. Cada uno da vuelta a uno de los primeros: son razones recíprocas.',
+          ecuacion: ['csc ', th, ' = ', { frac: [H, CO] }] },
+        { titulo: 'Qué mirar', texto: 'En el juego, la hipotenusa mide 1. Al mover θ, mira cuánto mide el otro ángulo agudo y qué cateto queda frente a cada uno.' },
+      ],
+    },
     juega: {
       consigna: 'La hipotenusa mide 1. Elige θ y mira el otro ángulo agudo y los dos catetos.',
       voz: 'Fíjate en qué lado queda frente a cada ángulo.',
@@ -431,6 +553,13 @@
       condicion: 'θ agudo. Cofunciones: ángulos que suman 90°. Recíprocas: el mismo ángulo en las dos razones.',
       voz: 'Cofunción, dos ángulos que suman 90°; recíproca, un mismo ángulo.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (hallar x con cofunciones o recíprocas), con casoRes.
+    resuelve: {
+      pieza: 'triangulo',
+      generar(s) {
+        for (let k = 0; ; k++) { const c = casoRes(s, k); if (c) return c; }
+      },
+    },
     ahoraTu: {
       voz: 'Mira si las dos razones son cofunciones o recíprocas.',
       generar(sem) {
@@ -467,6 +596,51 @@
           ].filter(o => o.valor > 0), v => `${f(v)}°`),
           solucion: { texto: 'Tangente y cotangente del mismo ángulo dan 1: los ángulos son iguales.', ecuacion: [`${arg(a, b)} = ${arg(c, dd)}  ⇒  x = ${x}°`] },
         };
+  }
+
+  // «Así se resuelve» de la idea 4: las mismas cuentas de casoComp, con la semilla corrida en 900.
+  function casoRes(sem, intento) {
+    const rr = azar(sem + 900 + 7919 * intento);
+    const a = rr.ent(1, 3), c = rr.uno([1, 2, 3].filter(x => x !== a)), x = rr.ent(2, 9) * 2;
+    const arg = (m, b) => `${m === 1 ? '' : m}x${b ? ` + ${b}°` : ''}`;
+    const coef = m => `${m === 1 ? '' : m}x`;
+    const fig = (g, o) => ({ datos: complemento(g, Object.assign({ co: '', ca: '', h: '' }, o)), estado: {} });
+    if (sem % 2 === 0) {
+      const resto = 90 - (a + c) * x;
+      if (resto < 0) return null;
+      const b = rr.ent(0, resto), dd = resto - b, g1 = a * x + b, g2 = c * x + dd;
+      return {
+        enunciado: [`Si sen(${arg(a, b)}) = cos(${arg(c, dd)}), con ángulos agudos, ¿cuánto vale x?`],
+        dibujo: fig(45, { ang: arg(a, b), otro: arg(c, dd) }),
+        pasos: [
+          { tipo: 'pide', texto: ['Piden x, el número que hace cierta la igualdad.'] },
+          { tipo: 'datos', texto: [`El seno de ${arg(a, b)} vale lo mismo que el coseno de ${arg(c, dd)}. Los dos ángulos son agudos.`] },
+          { tipo: 'regla', texto: ['Un seno igual a un coseno: el cateto opuesto de un ángulo es el adyacente del otro. Son los dos agudos de un triángulo y suman 90°.'],
+            ecuacion: ['sen ', th, ' = cos(90° − ', th, ')'] },
+          { tipo: 'cuentas', texto: ['Sumo los dos ángulos, los igualo a 90° y despejo x.'],
+            ecuacion: [`${arg(a, b)} + ${arg(c, dd)} = 90°  ⇒  ${coef(a + c)} = ${(a + c) * x}°  ⇒  x = ${x}°`], dibujo: fig(g1, { ang: `${g1}°`, otro: `${g2}°` }) },
+          { tipo: 'sentido', texto: [`Con x = ${x}°, los ángulos miden ${g1}° y ${g2}°: suman ${g1 + g2}° y los dos son agudos.`] },
+        ],
+        respuesta: [`x = ${x}°`],
+      };
+    }
+    const b = rr.ent(0, 30), dd = b + (a - c) * x;
+    if (dd < 0 || a * x + b >= 90 || c * x + dd >= 90) return null;
+    const g1 = a * x + b, dif = Math.abs(a - c);
+    return {
+      enunciado: [`Si tan(${arg(a, b)}) · cot(${arg(c, dd)}) = 1, con ángulos agudos, ¿cuánto vale x?`],
+      dibujo: fig(45, { ang: arg(a, b), otro: '', co: 'CO', ca: 'CA' }),
+      pasos: [
+        { tipo: 'pide', texto: ['Piden x, el número que hace cierta la igualdad.'] },
+        { tipo: 'datos', texto: [`La tangente de ${arg(a, b)} por la cotangente de ${arg(c, dd)} da 1. Los dos ángulos son agudos.`] },
+        { tipo: 'regla', texto: ['Tangente y cotangente del mismo ángulo son razones recíprocas: CO/CA por CA/CO da 1. Por eso los dos ángulos son iguales.'],
+          ecuacion: ['tan ', th, ' · cot ', th, ' = 1'] },
+        { tipo: 'cuentas', texto: ['Igualo los dos ángulos y despejo x.'],
+          ecuacion: [`${arg(a, b)} = ${arg(c, dd)}  ⇒  ${coef(dif)} = ${dif * x}°  ⇒  x = ${x}°`], dibujo: fig(g1, { ang: `${g1}°`, otro: '', co: 'CO', ca: 'CA' }) },
+        { tipo: 'sentido', texto: [`Con x = ${x}°, los dos ángulos miden ${g1}° y ${c * x + dd}°: el mismo, y agudo.`] },
+      ],
+      respuesta: [`x = ${x}°`],
+    };
   }
 
   // ---------- Laboratorio ----------

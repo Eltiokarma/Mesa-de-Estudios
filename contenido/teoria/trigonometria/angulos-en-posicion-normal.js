@@ -42,6 +42,7 @@
     const m = gcd(p, q), sg = (p < 0) !== (q < 0) ? '−' : '', a = Math.abs(p / m), b = Math.abs(q / m);
     return b === 1 ? `${sg}${a}` : `${sg}${a}/${b}`;
   }
+  const par = v => (v < 0 ? `(${f(v)})` : f(v));   // un negativo entre paréntesis para elevarlo: (−3)²
   const cuadrante = g => { const m = mod360(g); return m === 0 || m === 90 || m === 180 || m === 270 ? 0 : m < 90 ? 1 : m < 180 ? 2 : m < 270 ? 3 : 4; };
   const ROM = ['sobre un eje', 'I', 'II', 'III', 'IV'];
   // Gesto directo (docs/teoria.md §4b): las manijas usan la geometría de la pieza.
@@ -109,6 +110,15 @@
     titulo: 'Las razones salen de P',
     temas: ['Razones de un ángulo en posición normal'],
     pieza: 'trig-plano',
+    // Lee (fase 2): vocabulario de la posición normal, sin decir qué pasa al alejar P (eso es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un giro con punto de partida', texto: 'Un ángulo en posición normal siempre empieza igual: el vértice en el origen y el lado inicial sobre el eje x positivo. Desde ahí gira, en un sentido o en el otro, hasta su lado final.' },
+        { titulo: 'Tres números de P', texto: ['Toma un punto P del lado final. Su abscisa ', X, ' dice cuánto va a la derecha o a la izquierda; su ordenada ', Y, ', cuánto sube o baja. El radio vector ', R, ' es su distancia al origen.'],
+          ecuacion: [R, ' = ', { raiz: [{ sup: [X, '2'] }, ' + ', { sup: [Y, '2'] }] }] },
+        { titulo: 'Qué mirar al jugar', texto: ['Mueve P a puntos de distintos cuadrantes. Mira qué signo tienen ', X, ' e ', Y, ', cuánto vale ', R, ' y qué números da la lectura para el seno y el coseno.'] },
+      ],
+    },
     juega: {
       consigna: 'Mueve el punto P. El ángulo θ gira desde el eje x positivo hasta el lado por P; r mide de P al origen.',
       voz: 'Conservemos el origen como vértice; P solo elige el lado final.',
@@ -172,6 +182,36 @@
       condicion: 'P distinto del origen y r > 0. cot = x/y, sec = r/x y csc = r/y. Ningún denominador puede valer 0.',
       voz: 'El signo viaja con x e y; r nunca es negativo.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (mismas ternas y mismas cuentas), con otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900), [a, b, c] = rr.uno([[3, 4, 5], [5, 12, 13], [8, 15, 17], [6, 8, 10], [7, 24, 25]]);
+        const swap = rr.ent(0, 1), sx = rr.uno([1, -1]), sy = sem % 3 ? -sx : sx;
+        const x = sx * (swap ? b : a), y = sy * (swap ? a : b), r = Math.hypot(x, y);
+        const fn = ['sen', 'cos', 'tan', 'sec', 'csc', 'cot'][(sem + 1) % 6];
+        const [p, q] = RAZON[fn](x, y, r), [num, den] = DEF[fn];
+        const L = c > 14 ? 26 : c > 10 ? 14 : 11;
+        const usa = { sen: [Y], csc: [Y], cos: [X], sec: [X], tan: [Y, X], cot: [X, Y] }[fn];
+        const sgTxt = v => (v > 0 ? 'positiva' : 'negativa');
+        return {
+          enunciado: ['El lado final de ', th, ` pasa por P(${f(x)}, ${f(y)}). ¿Cuánto vale ${fn} `, th, '?'],
+          dibujo: { datos: punto(x, y, { L, sinRotulos: true }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: [`Piden ${fn} `, th, ', una razón del ángulo cuyo lado final pasa por P.'] },
+            { tipo: 'datos', texto: ['Las coordenadas de P, con su signo:'], ecuacion: [X, ` = ${f(x)}`, '   ·   ', Y, ` = ${f(y)}`] },
+            { tipo: 'regla', texto: [`La razón ${fn} es un cociente: `, num, ' arriba y ', den, ' abajo. El signo lo ponen las coordenadas; ', R, ' siempre es positivo.'],
+              ecuacion: [`${fn} `, th, ' = ', { frac: [num, den] }] },
+            { tipo: 'cuentas', texto: ['Primero el radio vector; después el cociente.'],
+              ecuacion: [R, ' = ', { raiz: [`${par(x)}² + ${par(y)}²`] }, ` = ${f(r)}   →   ${fn} `, th, ' = ', { frac: [f(p), f(q)] }, ` = ${fr(p, q)}`],
+              dibujo: { datos: punto(x, y, { L, rTxt: f(r) }), estado: {} } },
+            { tipo: 'sentido', texto: usa.length === 1
+              ? ['El signo de la respuesta es el de ', usa[0], `, que es ${sgTxt(usa[0] === X ? x : y)}: P está en el cuadrante ${ROM[cuadP(x, y)]}.`]
+              : ['La respuesta es ', x * y > 0 ? 'positiva: ' : 'negativa: ', X, ' e ', Y, x * y > 0 ? ' tienen el mismo signo.' : ' tienen signos contrarios.'] },
+          ],
+          respuesta: [`${fn} `, th, ` = ${fr(p, q)}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Ubica P, calcula r y elige qué coordenada va arriba.',
       generar(sem) {
@@ -227,6 +267,14 @@
     titulo: 'El signo sale de x, y',
     temas: ['Signos por cuadrante'],
     pieza: 'trig-plano',
+    // Lee (fase 2): cuadrantes y signos de las coordenadas; la tangente queda fuera (es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cuatro regiones', texto: 'Los ejes parten el plano en cuatro cuadrantes. Se numeran I, II, III y IV en sentido antihorario, empezando arriba a la derecha. Es como un plano de Juliaca con la plaza en el centro: noreste, noroeste, suroeste y sureste.' },
+        { titulo: 'Cada cuadrante, sus signos', texto: ['A la derecha del eje y, ', X, ' es positiva; a la izquierda, negativa. Arriba del eje x, ', Y, ' es positiva; abajo, negativa. Así cada cuadrante tiene su propio par de signos.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['Gira el lado final y mira qué tramo cambia de signo al cruzar cada eje: el turquesa, ', X, ', o el rojo, ', Y, '. La lectura te da el seno y el coseno; la tangente la piensas después.'] },
+      ],
+    },
     juega: {
       consigna: 'Gira el lado final por los cuatro cuadrantes. Mira el signo de x y de y, y qué hacen seno y coseno.',
       voz: 'Antes de cruzar un eje, anticipa qué coordenada cambia de signo.',
@@ -288,6 +336,34 @@
       condicion: 'θ en posición normal y P fuera de los ejes. Cada recíproca tiene el mismo signo que su razón.',
       voz: 'La tabla de signos se reconstruye con x e y.',
     },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (signos de dos razones), con otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900);
+        let g = 10 * rr.ent(1, 35); while (g % 90 === 0) g += 10;
+        const q = cuadrante(g), [sx, sy] = SIGNOS[q];
+        const par2 = [['sen', 'cos'], ['tan', 'cos'], ['sen', 'tan'], ['csc', 'sec'], ['cot', 'sen']][sem % 5];
+        const sgTxt = s => (s > 0 ? '+' : '−');
+        const porque = fn => ({ sen: `signo de y: ${sgTxt(sy)}`, csc: `signo de y: ${sgTxt(sy)}`, cos: `signo de x: ${sgTxt(sx)}`, sec: `signo de x: ${sgTxt(sx)}`,
+          tan: `(${sgTxt(sy)}) ÷ (${sgTxt(sx)}) = ${sgTxt(sx * sy)}`, cot: `(${sgTxt(sx)}) ÷ (${sgTxt(sy)}) = ${sgTxt(sx * sy)}` }[fn]);
+        const positivas = { 1: 'las seis', 2: 'seno y cosecante', 3: 'tangente y cotangente', 4: 'coseno y secante' }[q];
+        const combo = `${par2[0]} ${sgTxt(signoDe(par2[0], q))}, ${par2[1]} ${sgTxt(signoDe(par2[1], q))}`;
+        return {
+          enunciado: ['El ángulo ', th, ` = ${f(g)}° está en posición normal. ¿Qué signos tienen ${par2[0]} `, th, ` y ${par2[1]} `, th, '?'],
+          dibujo: { datos: unidad1(g, { segmentos: [] }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: [`Piden el signo de ${par2[0]} `, th, ` y el de ${par2[1]} `, th, ', no su valor.'] },
+            { tipo: 'datos', texto: [`${f(g)}° está entre ${(q - 1) * 90}° y ${q * 90}°: su lado final queda en el cuadrante ${ROM[q]}.`],
+              ecuacion: [`${(q - 1) * 90}° < `, th, ` < ${q * 90}°`] },
+            { tipo: 'regla', texto: 'El seno lleva el signo de y; el coseno, el de x, porque r es positivo. La tangente divide y entre x. Cada recíproca copia a su razón.' },
+            { tipo: 'cuentas', texto: [`En el cuadrante ${ROM[q]}, `, X, ` es ${sgTxt(sx)} e `, Y, ` es ${sgTxt(sy)}. Con eso salen los dos signos.`],
+              ecuacion: [`${par2[0]}: ${porque(par2[0])}`, '   ·   ', `${par2[1]}: ${porque(par2[1])}`], dibujo: { datos: unidad1(g), estado: {} } },
+            { tipo: 'sentido', texto: `Comprueba con la tabla: en el cuadrante ${ROM[q]} son positivas ${positivas}. Cuadra con lo que salió.` },
+          ],
+          respuesta: combo,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Ubica el cuadrante; después, el signo de x y el de y.',
       generar(sem) {
@@ -340,6 +416,15 @@
     titulo: 'Cero no es «no definida»',
     temas: ['Ángulos cuadrantales'],
     pieza: 'trig-plano',
+    // Lee (fase 2): qué es un ángulo cuadrantal y qué punto le toca; no dice qué pasa con un 0 en el cociente.
+    lee: {
+      tarjetas: [
+        { titulo: 'En la frontera', texto: 'Cuando el lado final cae justo sobre un eje, como en 0°, 90°, 180° o 270°, el ángulo se llama cuadrantal. No está dentro de ningún cuadrante: queda en la frontera entre dos.' },
+        { titulo: 'Un punto sencillo', texto: ['En la circunferencia de radio 1, el punto de un ángulo cuadrantal es muy simple: una coordenada vale 0 y la otra, 1 o −1. Por ejemplo, en 180° el punto es (−1, 0).'],
+          ecuacion: [R, ' = 1'] },
+        { titulo: 'Qué mirar al jugar', texto: 'Gira de 90° en 90°, también hacia los negativos y más allá de una vuelta. En cada eje, anota qué coordenada del punto vale 0 y cuánto valen el seno y el coseno.' },
+      ],
+    },
     juega: {
       consigna: 'Gira el lado final de 90° en 90°. Sobre un eje, una de las coordenadas del punto vale 0. Mira cuál.',
       voz: 'Fíjate qué coordenada se vuelve cero en cada eje.',
@@ -385,6 +470,32 @@
       ecuacion: [{ llave: [{ frac: ['0', 'a'] }], nota: 'cero arriba' }, ' = 0', '   ·   ', { llave: [{ frac: ['a', '0'] }], nota: 'cero abajo' }, ' no está definido'],
       condicion: 'a ≠ 0. tan y sec no existen cuando x = 0 (90°, 270°); cot y csc, cuando y = 0 (0°, 180°).',
       voz: 'Cero es un valor; «no definida» es que no hay valor.',
+    },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (una razón de un cuadrantal), con otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900), g = 90 * rr.ent(-4, 8), fn = ['tan', 'cot', 'sec', 'csc', 'sen', 'cos'][(sem + 2) % 6];
+        const x = Math.round(Math.cos(rad(g))), y = Math.round(Math.sin(rad(g)));
+        const bien = valor(fn, g), [p, q] = RAZON[fn](x, y, 1), [num, den] = DEF[fn];
+        const eje = x === 0 ? 'y' : 'x', vueltas = Math.floor(g / 360), m = mod360(g);
+        return {
+          enunciado: ['Para ', th, ` = ${f(g)}°, ¿cuánto vale ${fn} `, th, '?'],
+          dibujo: { datos: cuad(g, { puntos: [] }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: [`Piden ${fn} `, th, ` para un ángulo de ${f(g)}°, cuyo lado final cae sobre un eje.`] },
+            { tipo: 'datos', texto: [vueltas ? `${vueltas > 0 ? 'Quitando' : 'Sumando'} ${f(Math.abs(vueltas))} vuelta${Math.abs(vueltas) === 1 ? '' : 's'}, ${f(g)}° termina igual que ${f(m)}°: ` : `${f(g)}° `, `queda sobre el eje ${eje}. En la circunferencia de radio 1, su punto es (${f(x)}, ${f(y)}).`],
+              ecuacion: [X, ` = ${f(x)}`, '   ·   ', Y, ` = ${f(y)}`, '   ·   ', R, ' = 1'], dibujo: { datos: cuad(g), estado: {} } },
+            { tipo: 'regla', texto: 'Con un 0 arriba del cociente, la razón vale 0. Con un 0 abajo, no está definida: entre 0 no se divide.',
+              ecuacion: [`${fn} `, th, ' = ', { frac: [num, den] }] },
+            { tipo: 'cuentas', texto: [`Se reemplazan las coordenadas del punto en ${num.t}/${den.t}.`],
+              ecuacion: [`${fn} ${f(g)}° = `, { frac: [f(p), f(q)] }, q === 0 ? ' → no está definida' : ` = ${bien}`] },
+            { tipo: 'sentido', texto: q === 0 ? 'No es 0 ni «infinito»: el cociente pide dividir entre 0, así que no hay ningún número.'
+              : p === 0 ? 'El 0 está arriba: 0 entre un número distinto de 0 da 0, que es un valor.'
+                : `Sobre un eje, una razón que existe vale 0, 1 o −1. Aquí el signo sale de la coordenada (${f(x)}, ${f(y)}).` },
+          ],
+          respuesta: [`${fn} ${f(g)}° `, q === 0 ? 'no está definida' : `= ${bien}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Escribe el punto del eje; después, el cociente.',
@@ -443,6 +554,15 @@
     titulo: 'Vueltas iguales, giros reflejados',
     temas: ['Ángulos coterminales', 'Ángulos negativos'],
     pieza: 'trig-plano',
+    // Lee (fase 2): qué es una vuelta y qué es un giro negativo; no dice qué le pasa al seno (es la predicción).
+    lee: {
+      tarjetas: [
+        { titulo: 'Vueltas completas', texto: 'Una vuelta completa mide 360°. Si a un ángulo le sumas o le restas vueltas enteras, su lado final termina en el mismo lugar. Esos ángulos se llaman coterminales: 30°, 390° y 750° lo son.',
+          ecuacion: [th, ' + 360° · n'] },
+        { titulo: 'Girar al revés', texto: 'El giro antihorario se mide con signo positivo. El horario, el sentido en que avanzan las agujas de un reloj, se mide con signo negativo. Así, 45° y −45° tienen el mismo tamaño y giran en sentidos contrarios.' },
+        { titulo: 'Qué mirar al jugar', texto: ['Elige un ', th, ' y cambia solo las vueltas n. Mira si el punto P se mueve y qué pasa con el seno y el coseno de la lectura.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige un giro θ y súmale n vueltas completas. Mira si el punto P y sus razones cambian.',
       voz: 'Conservemos el lado final; cuenta solo las vueltas.',
@@ -502,6 +622,32 @@
       ecuacion: ['sen(', th, ' + 360°n) = sen ', th, '   ·   ', 'sen(−', th, ') = −sen ', th, '   ·   ', 'cos(−', th, ') = cos ', th],
       condicion: 'n es un entero y los ángulos se miden desde el mismo lado inicial. También tan(−θ) = −tan θ, donde exista.',
       voz: 'Las vueltas no cambian el punto; el sentido lo refleja.',
+    },
+    // Así se resuelve (fase 2): el mismo problema de «Ahora tú» (vueltas y giro negativo), con otra semilla.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900), base = rr.uno([30, 45, 60]), neg = sem % 2 === 0, k = neg ? rr.ent(0, 3) : rr.ent(1, 3);
+        const g = (neg ? -1 : 1) * (base + 360 * k), fn = sem % 4 < 2 ? 'cos' : 'sen';
+        const [sv, cv] = EXACTO[base], mag = fn === 'sen' ? sv : cv;
+        const signo = neg && fn === 'sen' ? '−' : '';
+        const real = fn === 'sen' ? Math.sin(rad(g)) : Math.cos(rad(g)), coord = fn === 'sen' ? Y : X;
+        const vueltasTxt = k ? `${f(k)} vuelta${k === 1 ? '' : 's'} completa${k === 1 ? '' : 's'} y ${base}°` : `${base}°, sin vueltas completas`;
+        return {
+          enunciado: [`¿Cuánto vale ${fn}(${f(g)}°)?`],
+          dibujo: { datos: vueltas(g, { segmentos: [], puntos: [] }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: [`Piden ${fn}(${f(g)}°), el ${fn === 'sen' ? 'seno' : 'coseno'} de un giro ${neg ? 'horario' : 'de más de una vuelta'}.`] },
+            { tipo: 'datos', texto: [`El giro ${neg ? 'es horario: ' : 'tiene '}${vueltasTxt}.`], ecuacion: [neg ? `${f(g)}° = −(${base}° + 360° · ${f(k)})` : `${f(g)}° = ${base}° + 360° · ${f(k)}`] },
+            { tipo: 'regla', texto: neg ? 'Las vueltas completas no mueven el lado final. El giro negativo refleja P en el eje x: la y cambia de signo y la x no.'
+              : 'Las vueltas completas no mueven el lado final: el punto P y sus razones son los mismos.',
+              ecuacion: neg ? ['sen(−', th, ') = −sen ', th, '   ·   ', 'cos(−', th, ') = cos ', th] : [`${fn}(`, th, ' + 360°n) = ', `${fn} `, th] },
+            { tipo: 'cuentas', texto: [k ? `Se quita${k === 1 ? '' : 'n'} ${f(k)} vuelta${k === 1 ? '' : 's'}` : 'No hay vueltas que quitar', neg ? (fn === 'sen' ? '; el reflejo cambia el signo del seno.' : '; el reflejo no cambia el coseno.') : '.'],
+              ecuacion: [k ? `${fn}(${f(g)}°) = ${fn}(${neg ? '−' : ''}${base}°) = ${signo}${mag}` : `${fn}(${f(g)}°) = ${neg && fn === 'sen' ? '−' : ''}${fn} ${base}° = ${signo}${mag}`], dibujo: { datos: vueltas(g), estado: {} } },
+            { tipo: 'sentido', texto: [`${f(g)}° termina en el cuadrante ${ROM[cuadrante(g)]}, donde `, coord, ` es ${real > 0 ? 'positiva' : 'negativa'}. El signo de la respuesta cuadra.`] },
+          ],
+          respuesta: [`${fn}(${f(g)}°) = ${signo}${mag}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Quita las vueltas; después, mira el signo del giro.',

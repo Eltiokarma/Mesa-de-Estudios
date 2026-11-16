@@ -94,6 +94,15 @@
     titulo: 'El arco cuenta radios',
     temas: ['Longitud de arco'],
     pieza: 'trig-plano',
+    // Lee (fase 2): qué es un arco y de qué depende, sin la fórmula ni el paso a radianes (eso es Predice).
+    lee: {
+      voz: 'Un arco es un pedazo de borde. Lee y después juega.',
+      tarjetas: [
+        { titulo: 'Un pedazo de borde', texto: 'Una combi que rodea un óvalo de la ciudad recorre un pedazo de circunferencia. Ese pedazo es un arco, y lo que mide a lo largo es su longitud de arco.' },
+        { titulo: 'De qué depende', texto: 'El arco depende de dos cosas: cuánto se abre el ángulo central, con su vértice en el centro, y qué tan grande es el radio del círculo.' },
+        { titulo: 'Qué mirar', texto: ['Al jugar, cambia el ángulo ', th, ' y el radio verde ', r, ' por separado. La lectura escribe ', th, ' también en radianes y da el largo ', s, ' del arco turquesa.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige el ángulo central θ y el radio r. La lectura pasa θ a radianes y da la longitud de arco s.',
       voz: 'Primero el ángulo en radianes; después lo multiplicamos por el radio.',
@@ -153,6 +162,45 @@
       condicion: 'θ en radianes y no negativo; s y r en la misma unidad de longitud.',
       voz: 'Radianes por radio: un largo, en la unidad del radio.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (arco o radio, según la paridad), con otra semilla.
+    resuelve: {
+      pieza: 'trig-plano',
+      generar(sem) {
+        const rr = azar(sem + 900), g = rr.uno([30, 45, 60, 90, 120, 135, 150, 180, 240, 270]), rv = rr.ent(2, 12);
+        const sTxt = piFrac(g * rv, 180), sNum = g * RAD * rv;
+        const regla = { tipo: 'regla', texto: 'El arco mide tantos radios como radianes tiene su ángulo central. El ángulo tiene que estar en radianes.',
+          ecuacion: [s, ' = ', th, ' · ', r] };
+        const aRad = { tipo: 'cuentas', texto: [`Primero ${g}° pasa a radianes: se multiplica por π y se divide entre 180.`], ecuacion: [th, ` = ${g} · `, { frac: ['π', '180'] }, ` = ${piTxt(g)} rad`] };
+        if (sem % 2 === 0) {
+          return {
+            enunciado: ['Un sector tiene radio ', r, ` = ${rv} cm y ángulo central `, th, ` = ${g}°. ¿Cuánto mide su arco?`],
+            dibujo: { datos: sector(g, rv, { rs: 's = ¿?', rr: `r = ${rv}` }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la longitud de arco ', s, '.'] },
+              { tipo: 'datos', texto: ['El radio mide ', r, ` = ${rv} cm y el ángulo central, `, th, ` = ${g}°, en grados.`] },
+              regla, aRad,
+              { tipo: 'cuentas', texto: ['Después se multiplica por el radio.'], ecuacion: [s, ` = ${piTxt(g)} · ${rv} = ${sTxt} cm`],
+                dibujo: { datos: sector(g, rv, { rs: `s = ${sTxt}`, rr: `r = ${rv}` }), estado: {} } },
+              { tipo: 'sentido', texto: [`${sTxt} ≈ ${f(sNum)} cm. La vuelta entera mide 2π · ${rv} ≈ ${f(2 * Math.PI * rv)} cm, y el arco es ${g}/360 de ella. Cuadra.`] },
+            ],
+            respuesta: [s, ` = ${sTxt} cm`],
+          };
+        }
+        return {
+          enunciado: ['Un arco mide ', s, ` = ${sTxt} cm y su ángulo central es `, th, ` = ${g}°. ¿Cuánto mide el radio?`],
+          dibujo: { datos: sector(g, rv, { rs: `s = ${sTxt}`, rr: 'r = ¿?' }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el radio ', r, '.'] },
+            { tipo: 'datos', texto: ['El arco mide ', s, ` = ${sTxt} cm y el ángulo, `, th, ` = ${g}°, en grados.`] },
+            regla, aRad,
+            { tipo: 'cuentas', texto: ['Se despeja el radio: el arco dividido entre el ángulo en radianes.'], ecuacion: [r, ' = ', { frac: [s, th] }, ' = ', { frac: [sTxt, piTxt(g)] }, ` = ${rv} cm`],
+              dibujo: { datos: sector(g, rv, { rs: `s = ${sTxt}`, rr: `r = ${rv}` }), estado: {} } },
+            { tipo: 'sentido', texto: [`Comprueba: ${piTxt(g)} · ${rv} = ${sTxt}, el arco del dato. El radio queda en cm.`] },
+          ],
+          respuesta: [r, ` = ${rv} cm`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'trig-plano',
       voz: 'Pasa el ángulo a radianes antes de usarlo.',
@@ -200,6 +248,15 @@
     titulo: 'El área lleva dos radios',
     temas: ['Área del sector y del trapecio circular'],
     pieza: 'trig-plano',
+    // Lee (fase 2): sector, arco y área por su nombre y su unidad, sin decir cómo crece el área con el radio (eso es Predice).
+    lee: {
+      voz: 'Un largo y una región no se miden igual. Lee y después juega.',
+      tarjetas: [
+        { titulo: 'Una tajada', texto: 'Una tajada de torta cortada desde el centro es un sector circular: la limitan dos radios y un arco. El borde curvo de la tajada es su arco; lo que cubre en la mesa es su área.' },
+        { titulo: 'Largo y región', texto: 'El arco es un largo y se mide en centímetros. El área es una región y se mide en centímetros cuadrados, como los cuadraditos de una hoja cuadriculada.' },
+        { titulo: 'Qué mirar', texto: ['En el juego, el radio queda fijo en 3 cm. Abre y cierra el ángulo ', th, ' y compara cómo cambian el arco ', s, ' y el área ', A, ' de la lectura.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige el ángulo θ del sector; el radio queda en 3 cm. La lectura da su arco s y su área A.',
       voz: 'Mira cómo crecen juntos el arco y el área cuando abres el ángulo.',
@@ -263,6 +320,43 @@
       condicion: 'θ en radianes, entre 0 y 2π; el área queda en unidades al cuadrado.',
       voz: 'Un radio para el largo y otro para el ancho.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (área con θ y r, o con s y r), con otra semilla.
+    resuelve: {
+      pieza: 'trig-plano',
+      generar(sem) {
+        const rr = azar(sem + 900), g = rr.uno([30, 45, 60, 90, 120, 135, 150, 180, 240, 270]), rv = rr.ent(2, 10);
+        const aTxt = piFrac(g * rv * rv, 360);
+        const regla = { tipo: 'regla', texto: 'El sector es como un triángulo de base el arco y altura el radio: medio arco por radio. Con el ángulo, el radio entra dos veces.',
+          ecuacion: [A, ' = ', { frac: [[s, ' · ', r], '2'] }, ' = ', { frac: [[th, ' · ', cuad(r)], '2'] }] };
+        if (sem % 2 === 0) {
+          return {
+            enunciado: ['Un sector tiene radio ', r, ` = ${rv} cm y ángulo central `, th, ` = ${g}°. ¿Cuánto mide su área?`],
+            dibujo: { datos: sector(g, rv, { area: true, rs: 's', rr: `r = ${rv}` }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el área ', A, ' del sector, una región en cm².'] },
+              { tipo: 'datos', texto: ['El radio mide ', r, ` = ${rv} cm y el ángulo, `, th, ` = ${g}°, que son ${piTxt(g)} rad.`], ecuacion: [th, ` = ${g} · `, { frac: ['π', '180'] }, ` = ${piTxt(g)}`] },
+              regla,
+              { tipo: 'cuentas', texto: ['Se usa la forma con el ángulo en radianes y el radio al cuadrado.'], ecuacion: [A, ' = ', { frac: [`${piTxt(g)} · ${rv * rv}`, '2'] }, ` = ${aTxt} cm²`],
+                dibujo: { datos: sector(g, rv, { area: true, rs: `s = ${piFrac(g * rv, 180)}`, rr: `r = ${rv}`, rotulos: [{ x: rv * 0.7 * Math.cos(g / 2 * RAD), y: rv * 0.7 * Math.sin(g / 2 * RAD), texto: `A = ${aTxt}`, color: 'h' }] }), estado: {} } },
+              { tipo: 'sentido', texto: [`El círculo entero mide π · ${rv * rv} = ${piFrac(rv * rv * 180, 180)} cm², y el sector es ${g}/360 de él: ${piFrac(rv * rv * g, 360)} cm². Cuadra.`] },
+            ],
+            respuesta: [A, ` = ${aTxt} cm²`],
+          };
+        }
+        const sv = rr.ent(2, 9) * 2, av = sv * rv / 2;
+        return {
+          enunciado: ['El arco de un sector mide ', s, ` = ${sv} cm y su radio, `, r, ` = ${rv} cm. ¿Cuánto mide su área?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el área ', A, ' del sector, una región en cm².'] },
+            { tipo: 'datos', texto: ['El arco mide ', s, ` = ${sv} cm y el radio, `, r, ` = ${rv} cm. No hace falta el ángulo.`] },
+            regla,
+            { tipo: 'cuentas', texto: ['Como ya se tiene el arco, se usa medio arco por radio.'], ecuacion: [A, ' = ', { frac: [`${sv} · ${rv}`, '2'] }, ` = ${f(av)} cm²`] },
+            { tipo: 'sentido', texto: [`El área va en cm²: cm por cm. Es la mitad del rectángulo de ${sv} cm por ${rv} cm, que mide ${f(sv * rv)} cm².`] },
+          ],
+          respuesta: [A, ` = ${f(av)} cm²`],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'trig-plano',
       voz: 'Decide primero si te piden un largo o una región.',
@@ -320,6 +414,15 @@
     titulo: 'Sector grande menos sector chico',
     temas: ['Área del sector y del trapecio circular'],
     pieza: 'trig-plano',
+    // Lee (fase 2): qué es un trapecio circular y sus partes, sin decir cómo se calcula su área (eso es Predice).
+    lee: {
+      voz: 'Una banda curva con nombre propio. Lee y después juega.',
+      tarjetas: [
+        { titulo: 'Una banda curva', texto: 'El limpiaparabrisas de un carro gira desde un punto, pero su jebe no llega hasta ese punto: deja limpia una banda curva del vidrio. Esa figura se llama trapecio circular.' },
+        { titulo: 'Sus partes', texto: ['Tiene dos arcos con el mismo ángulo central: el de afuera, ', L, ', más largo, y el de adentro, ', l, '. La distancia entre ellos, medida sobre un radio, es su ancho ', h, '.'] },
+        { titulo: 'Qué mirar', texto: ['Al jugar, cambia el radio de adentro ', r, ' y el ancho ', h, '. Mira los dos arcos turquesa y cómo cambia el área ', A, ' de la banda roja.'] },
+      ],
+    },
     juega: {
       consigna: 'La banda roja es un trapecio circular de 90°. Elige el radio interior r y el ancho h; la lectura da su área.',
       voz: 'Fíjate en los dos arcos turquesa: el de afuera es más largo.',
@@ -369,6 +472,47 @@
       ecuacion: [A, ' = ', { frac: [[th, ' ', { llave: ['(', cuad(R), ' − ', cuad(r), ')'], nota: 'se restan', color: 'c-d' }], '2'] }, ' = ', { frac: [['(', L, ' + ', l, ') ', { llave: [h], nota: 'ancho', color: 'c-d' }], '2'] }],
       condicion: 'θ en radianes; los dos arcos tienen el mismo ángulo central y h = R − r.',
       voz: 'Restar cuadrados no es lo mismo que restar radios.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (con los radios o con los arcos), con otra semilla.
+    resuelve: {
+      pieza: 'trig-plano',
+      generar(sem) {
+        const rr = azar(sem + 900);
+        const regla = { tipo: 'regla', texto: 'La banda es un sector grande menos uno chico. También es como un trapecio: la semisuma de los dos arcos por el ancho.',
+          ecuacion: [A, ' = ', { frac: [[th, ' (', cuad(R), ' − ', cuad(r), ')'], '2'] }, ' = ', { frac: [['(', L, ' + ', l, ') ', h], '2'] }] };
+        if (sem % 2 === 0) {
+          const g = rr.uno([30, 45, 60, 90, 120]), ri = rr.ent(1, 5), Re = ri + rr.ent(1, 4);
+          const aTxt = piFrac(g * (Re * Re - ri * ri), 360);
+          const vent = { x: [Math.min(0, Re * Math.cos(g * RAD)) - 0.2 * Re, 1.3 * Re], y: [-0.25 * Re, (g >= 90 ? 1 : Math.sin(g * RAD)) * Re + 0.25 * Re] };
+          const aSemi = (g * RAD * Re + g * RAD * ri) / 2 * (Re - ri);
+          return {
+            enunciado: ['Un trapecio circular de ', th, ` = ${g}° va desde `, r, ` = ${ri} cm hasta `, R, ` = ${Re} cm. ¿Cuánto mide su área?`],
+            dibujo: { datos: banda(g, ri, Re, { rL: 'L', rl: 'l', rr: `r = ${ri}`, rh: `h = ${Re - ri}`, ventana: vent }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el área ', A, ' de la banda entre los dos arcos.'] },
+              { tipo: 'datos', texto: [th, ` = ${g}° = ${piTxt(g)} rad; la banda empieza en `, r, ` = ${ri} cm y termina en `, R, ` = ${Re} cm.`] },
+              regla,
+              { tipo: 'cuentas', texto: ['Se restan los cuadrados de los radios, no los radios, y se multiplica por medio ángulo.'],
+                ecuacion: [A, ' = ', { frac: [`${piTxt(g)} (${Re * Re} − ${ri * ri})`, '2'] }, ` = ${aTxt} cm²`],
+                dibujo: { datos: banda(g, ri, Re, { rL: `L = ${piFrac(g * Re, 180)}`, rl: `l = ${piFrac(g * ri, 180)}`, rr: `r = ${ri}`, rh: `h = ${Re - ri}`, ventana: vent }), estado: {} } },
+              { tipo: 'sentido', texto: ['Con la otra forma: ', L, ` ≈ ${f(g * RAD * Re)}, `, l, ` ≈ ${f(g * RAD * ri)}, su semisuma por ${Re - ri} da ≈ ${f(aSemi)} cm², igual que ${aTxt} ≈ ${f(g * RAD * (Re * Re - ri * ri) / 2)}.`] },
+            ],
+            respuesta: [A, ` = ${aTxt} cm²`],
+          };
+        }
+        const lv = rr.ent(2, 8), Lv = lv + rr.ent(2, 8), hv = rr.ent(2, 6), av = (Lv + lv) / 2 * hv;
+        return {
+          enunciado: ['Los arcos de un trapecio circular miden ', L, ` = ${Lv} cm y `, l, ` = ${lv} cm, y su ancho es `, h, ` = ${hv} cm. ¿Cuánto mide su área?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el área ', A, ' del trapecio circular.'] },
+            { tipo: 'datos', texto: ['Se tienen los dos arcos y el ancho; no el ángulo ni los radios.'], ecuacion: [L, ` = ${Lv}`, '   ·   ', l, ` = ${lv}`, '   ·   ', h, ` = ${hv}`] },
+            regla,
+            { tipo: 'cuentas', texto: ['Con los arcos, se usa la forma del trapecio: los arcos se suman, como las bases.'], ecuacion: [A, ' = ', { frac: [`${Lv} + ${lv}`, '2'] }, ` · ${hv} = ${f(av)} cm²`] },
+            { tipo: 'sentido', texto: [`El área queda entre la de los rectángulos ${lv} · ${hv} = ${lv * hv} y ${Lv} · ${hv} = ${Lv * hv} cm². Cuadra.`] },
+          ],
+          respuesta: [A, ` = ${f(av)} cm²`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'trig-plano',
@@ -435,6 +579,15 @@
     titulo: 'La rueda gira lo que avanza',
     temas: ['Número de vueltas de una rueda'],
     pieza: 'trig-plano',
+    // Lee (fase 2): rodar sin deslizar y contar vueltas, sin decir qué camino se cuenta al rodear otra rueda (eso es Predice).
+    lee: {
+      voz: 'Rodar no es patinar. Lee y después juega.',
+      tarjetas: [
+        { titulo: 'La llanta que avanza', texto: 'Cuando una bicicleta avanza por la pista, cada llanta rueda sin deslizar: el punto que toca el suelo no patina. Por eso lo que avanza la bici y lo que gira la llanta van amarrados.' },
+        { titulo: 'Contar vueltas', texto: 'Una vuelta completa de la rueda se nota con una marca en su borde: vuelve a apuntar hacia el mismo lado. El número de vueltas no tiene que ser entero; puede ser 2,5.' },
+        { titulo: 'Qué mirar', texto: ['Al jugar, cambia el radio ', r, ' de la rueda y lo que avanza su centro, ', d, '. Sigue la marca naranja y compara la lectura con el largo del borde.'] },
+      ],
+    },
     juega: {
       consigna: 'La rueda avanza sin deslizar. Elige su radio r y cuánto avanza su centro, d. La marca naranja cuenta el número de vueltas.',
       voz: 'Sigue la marca: cada vuelta completa vuelve a apuntar arriba.',
@@ -483,6 +636,43 @@
       ecuacion: [n, ' = ', { frac: [{ llave: [d], nota: 'camino del centro', color: 'c-i' }, { llave: ['2π', r], nota: 'una vuelta', color: 'c-d' }] }],
       condicion: 'd es lo que recorre el centro. Por fuera de una rueda R, d = 2π(R + r); por dentro, 2π(R − r).',
       voz: 'Cuenta el camino del centro; el borde lo acompaña.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (recta, por fuera o por dentro, según sem % 3), con otra
+    // semilla. Sin figura: los radios del problema (hasta 75 cm) no caben en la ventana fija de rueda().
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900), tipo = sem % 3;
+        const regla = { tipo: 'regla', texto: 'Sin deslizar, la rueda da tantas vueltas como veces cabe su borde, 2π por el radio, en el camino que recorre su centro.',
+          ecuacion: [n, ' = ', { frac: [d, ['2π', r]] }] };
+        if (tipo === 0) {
+          const rv = rr.ent(2, 15) * 5, nv = rr.ent(2, 12), dv = 2 * rv * nv;
+          return {
+            enunciado: ['Una rueda de radio ', r, ` = ${rv} cm avanza sin deslizar; su centro recorre `, d, ` = ${dv}π cm. ¿Cuántas vueltas da?`],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el número de vueltas ', n, ' de la rueda.'] },
+              { tipo: 'datos', texto: ['El radio es ', r, ` = ${rv} cm y el centro avanza en línea recta `, d, ` = ${dv}π cm.`] },
+              regla,
+              { tipo: 'cuentas', texto: [`Una vuelta avanza 2π · ${rv} = ${2 * rv}π cm. Se ve cuántas caben en el recorrido.`], ecuacion: [n, ' = ', { frac: [`${dv}π`, `${2 * rv}π`] }, ` = ${nv}`] },
+              { tipo: 'sentido', texto: [`Comprueba: ${nv} vueltas de ${2 * rv}π cm dan ${nv * 2 * rv}π cm, el recorrido del dato. Las π se cancelan.`] },
+            ],
+            respuesta: [n, ` = ${nv} vueltas`],
+          };
+        }
+        const k = rr.ent(2, 6), rv = rr.ent(1, 4);
+        const fuera = tipo === 1, Rv = fuera ? k * rv : (k + 1) * rv, camino = fuera ? Rv + rv : Rv - rv, nv = camino / rv;
+        return {
+          enunciado: ['Una rueda de radio ', r, ` = ${rv} cm rueda sin deslizar por ${fuera ? 'fuera de otra fija' : 'dentro de un aro fijo'} de radio `, R, ` = ${Rv} cm, una vez alrededor. ¿Cuántas vueltas da?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden cuántas vueltas ', n, ' da la rueda chica sobre sí misma.'] },
+            { tipo: 'datos', texto: ['La rueda mide ', r, ` = ${rv} cm y ${fuera ? 'la rueda fija' : 'el aro'}, `, R, ` = ${Rv} cm. Rueda por ${fuera ? 'fuera' : 'dentro'}.`] },
+            regla,
+            { tipo: 'cuentas', texto: [`Por ${fuera ? 'fuera' : 'dentro'}, su centro va a ${fuera ? 'R + r' : 'R − r'} = ${camino} cm del centro fijo: recorre una circunferencia de ese radio.`],
+              ecuacion: [n, ' = ', { frac: [`2π · ${camino}`, `2π · ${rv}`] }, ` = ${f(nv)}`] },
+            { tipo: 'sentido', texto: [`Sobre una recta del largo del borde fijo daría ${Rv / rv} vueltas. ${fuera ? 'Por fuera da una más' : 'Por dentro da una menos'}: ${f(nv)}.`] },
+          ],
+          respuesta: [n, ` = ${f(nv)} vueltas`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Primero dibuja el camino del centro.',
@@ -585,6 +775,15 @@
     titulo: 'Mismo borde o mismo ángulo',
     temas: ['Ruedas, poleas y engranajes'],
     pieza: 'trig-plano',
+    // Lee (fase 2): las tres maneras de unir ruedas por su nombre, sin decir qué conserva cada una (eso es Predice).
+    lee: {
+      voz: 'Una rueda puede mover a otra de tres maneras. Lee y después juega.',
+      tarjetas: [
+        { titulo: 'Ruedas que se pasan el giro', texto: 'En una bicicleta, la cadena une el plato de los pedales con el piñón de la llanta de atrás. En un molino, los engranajes se tocan diente con diente. Así una rueda mueve a otra.' },
+        { titulo: 'Tres uniones', texto: 'Dos ruedas pueden unirse con una faja o una cadena, con engranajes que se tocan, o soldadas en un eje común, una pegada a la otra.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, la rueda A gira siempre 120°. Cambia la unión y el radio de B, y compara el largo de los dos arcos turquesa y el sentido en que gira cada rueda.' },
+      ],
+    },
     juega: {
       consigna: 'La rueda A gira 120°. Elige cómo mueve a B, con faja o engranaje, y el radio de B. Compara los arcos turquesa.',
       voz: 'Compara el largo de los dos arcos turquesa.',
@@ -641,6 +840,57 @@
       ecuacion: [{ llave: [sub(th, 'A'), ' · ', sub(r, 'A')], nota: 'largo del borde', color: 'c-i' }, ' = ', sub(th, 'B'), ' · ', sub(r, 'B'), '   ·   ', sub(th, 'B'), ' = ', { llave: [sub(th, 'C')], nota: 'mismo eje', color: 'c-o' }],
       condicion: 'sin deslizar. Vale igual para vueltas o para giros por segundo; los engranajes que se tocan giran en sentidos opuestos.',
       voz: 'Faja: mismo largo de borde. Eje común: mismo ángulo.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (faja, engranaje o faja más eje común, según sem % 3), con
+    // otra semilla. Sin figura: poleasG() dibuja un giro en grados, y aquí se cuentan vueltas.
+    resuelve: {
+      generar(sem) {
+        const rr = azar(sem + 900), tipo = sem % 3;
+        const borde = { tipo: 'regla', texto: 'Con faja o engranaje, los bordes recorren el mismo largo: vueltas por radio, o por dientes, dan lo mismo en las dos ruedas.',
+          ecuacion: [sub(n, 'A'), ' · ', sub(r, 'A'), ' = ', sub(n, 'B'), ' · ', sub(r, 'B')] };
+        if (tipo === 0) {
+          const ra = rr.ent(2, 6), k = rr.uno([2, 3, 4]), rb = ra * k, nb = rr.ent(2, 9), na = nb * k;
+          return {
+            enunciado: ['Una faja une una rueda de radio ', sub(r, 'A'), ` = ${ra} cm con otra de `, sub(r, 'B'), ` = ${rb} cm. Si A da ${na} vueltas, ¿cuántas da B?`],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden las vueltas ', sub(n, 'B'), ' de la rueda B.'] },
+              { tipo: 'datos', texto: ['A mide ', sub(r, 'A'), ` = ${ra} cm y da ${na} vueltas; B mide `, sub(r, 'B'), ` = ${rb} cm. Las une una faja.`] },
+              borde,
+              { tipo: 'cuentas', texto: ['Se despeja ', sub(n, 'B'), '.'], ecuacion: [`${na} · ${ra} = `, sub(n, 'B'), ` · ${rb}  ⇒  `, sub(n, 'B'), ` = ${f(na * ra / rb)}`] },
+              { tipo: 'sentido', texto: [`B es ${k} veces más grande que A, así que gira ${k} veces menos: ${na} ÷ ${k} = ${nb}. Cuadra.`] },
+            ],
+            respuesta: [sub(n, 'B'), ` = ${nb} vueltas`],
+          };
+        }
+        if (tipo === 1) {
+          const za = rr.uno([10, 12, 15, 20]), zb = za * rr.uno([2, 3]), nb = rr.ent(2, 8), na = nb * zb / za;
+          return {
+            enunciado: [`Un engranaje de ${za} dientes mueve a otro de ${zb} dientes. Si el chico da `, sub(n, 'A'), ` = ${na} vueltas, ¿cuántas da el grande?`],
+            pasos: [
+              { tipo: 'pide', texto: ['Piden las vueltas ', sub(n, 'B'), ' del engranaje grande.'] },
+              { tipo: 'datos', texto: [`El chico tiene ${za} dientes y da ${na} vueltas; el grande tiene ${zb} dientes.`] },
+              { tipo: 'regla', texto: 'Por el punto donde se tocan pasan los mismos dientes de los dos engranajes: vueltas por dientes da lo mismo en los dos.',
+                ecuacion: [sub(n, 'A'), ' · ', sub('z', 'A'), ' = ', sub(n, 'B'), ' · ', sub('z', 'B')] },
+              { tipo: 'cuentas', texto: [`En total pasan ${na} · ${za} = ${na * za} dientes. Se reparten entre los ${zb} del grande.`], ecuacion: [sub(n, 'B'), ' = ', { frac: [`${na * za}`, `${zb}`] }, ` = ${f(na * za / zb)}`] },
+              { tipo: 'sentido', texto: [`El grande tiene más dientes y gira menos: ${nb} < ${na}. Además gira en sentido contrario.`] },
+            ],
+            respuesta: [sub(n, 'B'), ` = ${nb} vueltas`],
+          };
+        }
+        const ra = rr.ent(1, 4), rb = ra * 2, rc = rr.ent(1, 6), na = 2 * rr.ent(2, 6), nb = na / 2;
+        return {
+          enunciado: ['A, de radio ', sub(r, 'A'), ` = ${ra} cm, mueve con faja a B, de `, sub(r, 'B'), ` = ${rb} cm. C, de `, sub(r, 'C'), ` = ${rc} cm, está soldada a B. Si A da ${na} vueltas, ¿cuántas da C?`],
+          pasos: [
+            { tipo: 'pide', texto: ['Piden las vueltas ', sub(n, 'C'), ' de la rueda C.'] },
+            { tipo: 'datos', texto: ['Entre A y B hay una faja. B y C comparten un eje común.'] },
+            borde,
+            { tipo: 'cuentas', texto: ['Primero la faja, de A a B. Después, C gira con B: en un eje común, las mismas vueltas.'],
+              ecuacion: [sub(n, 'B'), ` = ${na} · ${ra}/${rb} = ${f(na * ra / rb)}`, '   ·   ', sub(n, 'C'), ' = ', sub(n, 'B'), ` = ${f(na * ra / rb)}`] },
+            { tipo: 'sentido', texto: [`El radio de C, ${rc} cm, no cambia sus vueltas: solo cambia cuánto recorre su borde.`] },
+          ],
+          respuesta: [sub(n, 'C'), ` = ${nb} vueltas`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Pregunta qué comparten las dos ruedas: el borde o el eje.',

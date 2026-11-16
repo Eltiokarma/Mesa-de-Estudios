@@ -88,6 +88,15 @@
     titulo: 'El sentido es el signo',
     temas: ['Sentido de giro y signo'],
     pieza: 'trig-plano',
+    // Lee (fase 2): vocabulario del giro, sin decir si dos giros que terminan juntos son el mismo ángulo (eso es Predice).
+    lee: {
+      voz: 'Lee con calma. Después mueves el rayo tú.',
+      tarjetas: [
+        { titulo: 'Un rayo que gira', texto: 'Una puerta que se abre, el timón de una combi o la aguja de un reloj giran alrededor de un punto. En trigonometría, el ángulo nace de un rayo que gira desde una posición fija: el lado inicial.' },
+        { titulo: 'Dos sentidos', texto: 'El rayo puede girar contra las agujas del reloj, en sentido antihorario, o como ellas, en sentido horario. Por convención, el primero da medidas positivas y el segundo, negativas.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, pasa de 360° y baja de 0°. Mira la flecha del arco: hacia dónde apunta y cuántas veces se enrosca alrededor del centro.' },
+      ],
+    },
     juega: {
       consigna: 'Elige el giro. El rayo naranja sale del lado inicial y el arco con flecha cuenta el recorrido, también si da más de una vuelta.',
       voz: 'Conservemos el lado inicial; después mira hacia dónde apunta la flecha.',
@@ -135,6 +144,29 @@
       ecuacion: [{ sub: [th, '1'] }, ' − ', { sub: [th, '2'] }, ' = 360° · ', { llave: [n], nota: 'vueltas enteras', color: 'c-h' }],
       condicion: 'los dos se miden desde el mismo lado inicial, y n es un entero. Coterminales no quiere decir iguales.',
       voz: 'El signo guarda el sentido; las vueltas guardan el recorrido.',
+    },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (quitar vueltas sin perder el sentido), con otra semilla.
+    resuelve: {
+      pieza: 'trig-plano',
+      generar(sem) {
+        const rr = azar(sem + 900), sg = sem % 2 ? -1 : 1, k = rr.ent(1, 2), resto = rr.uno([30, 45, 60, 120, 135, 150, 210, 240, 300, 315]);
+        const g = sg * (360 * k + resto), bien = mod360(g), m = sg > 0 ? k : k + 1, vv = (g - bien) / 360;
+        return {
+          enunciado: ['Un rayo gira ', th, ` = ${f(g)}°. ¿Qué ángulo entre 0° y 360° termina en el mismo lado?`],
+          dibujo: { datos: giro(g), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden un giro entre 0° y 360° que termine donde termina ', th, '.'] },
+            { tipo: 'datos', texto: [th, ` = ${f(g)}°: gira en sentido ${sg > 0 ? 'antihorario' : 'horario'} y da ${vueltasTxt(g)}.`], ecuacion: [th, ` = ${f(g)}°`] },
+            { tipo: 'regla', texto: 'Si a un giro le sumas o le restas vueltas enteras de 360°, termina en el mismo lado: son coterminales. El signo no se cambia a mano.',
+              ecuacion: [{ sub: [th, '1'] }, ' − ', { sub: [th, '2'] }, ' = 360° · ', n] },
+            { tipo: 'cuentas', texto: [sg > 0 ? `Se ${m > 1 ? 'restan' : 'resta'} ${f(m)} vuelta${m > 1 ? 's' : ''} para quedar entre 0° y 360°.` : `Se suman ${f(m)} vueltas para quedar entre 0° y 360°.`],
+              ecuacion: [`${f(g)}° ${sg > 0 ? '−' : '+'} 360° · ${f(m)} = ${f(bien)}°`],
+              dibujo: { datos: giro(g, { rayos: [{ ang: 0, largo: 1, grosor: 'contorno' }, { ang: g, color: 'o', rotulo: `${f(bien)}°` }] }), estado: {} } },
+            { tipo: 'sentido', texto: [`Comprueba: ${f(g)}° − ${f(bien)}° = ${f(g - bien)}°, que son `, n, ` = ${f(vv)} ${Math.abs(vv) === 1 ? 'vuelta entera' : 'vueltas enteras'}. Y ${f(bien)}° está entre 0° y 360°.`] },
+          ],
+          respuesta: [th, ` termina como ${f(bien)}°`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'trig-plano',
@@ -184,6 +216,15 @@
     titulo: 'Una vuelta, tres escalas',
     temas: ['Sistemas sexagesimal, centesimal y radial', 'Conversión entre sistemas'],
     pieza: 'trig-plano',
+    // Lee (fase 2): las tres escalas por su nombre, sin dar cuánto mide la vuelta en grados centesimales (eso es Predice).
+    lee: {
+      voz: 'Tres nombres para un mismo giro. Léelos antes de jugar.',
+      tarjetas: [
+        { titulo: 'Un giro, varias escalas', texto: 'Una distancia se mide en metros o en kilómetros, y un tiempo en horas o en minutos. Con los giros pasa igual: hay tres escalas, y el examen de admisión las mezcla en una misma pregunta.' },
+        { titulo: 'Tres nombres', texto: 'Los grados sexagesimales (°) son los que usas en el colegio. Los grados centesimales (ᵍ) parten la vuelta de otra manera. Los radianes (rad) miden el giro con el radio del círculo.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, fíjate qué parte de la circunferencia queda sombreada y compárala con los tres números de la lectura.' },
+      ],
+    },
     juega: {
       consigna: 'Elige el giro y mira qué parte de la circunferencia recorre. La lectura lo escribe en los tres sistemas.',
       voz: 'Fíjate en qué parte de la vuelta queda sombreada.',
@@ -229,6 +270,61 @@
       ecuacion: [{ llave: [{ frac: [D, '180'] }], nota: 'sexagesimal', color: 'c-o' }, ' = ', { llave: [{ frac: [G, '200'] }], nota: 'centesimal', color: 'c-o' }, ' = ', { llave: [{ frac: [R, 'π'] }], nota: 'radial', color: 'c-o' }],
       condicion: 'D, G y R son las medidas del mismo ángulo, con el mismo signo. Media vuelta es 180°, 200ᵍ o π rad.',
       voz: 'Tres escalas, un solo giro.',
+    },
+    // Así se resuelve (fase 2): las mismas tres conversiones de «Ahora tú» (según sem % 3), con otra semilla.
+    resuelve: {
+      pieza: 'trig-plano',
+      generar(sem) {
+        const rr = azar(sem + 900), deg = 9 * rr.ent(1, 39) * (rr.ent(0, 4) === 0 ? -1 : 1);
+        const cen = deg * 10 / 9, tipo = sem % 3;
+        const dd = 15 * rr.ent(1, 24) * (rr.ent(0, 4) === 0 ? -1 : 1);
+        const regla = { tipo: 'regla', texto: 'Convertir no cambia el giro: la fracción de media vuelta es la misma en las tres escalas. Media vuelta es 180°, 200ᵍ o π rad.',
+          ecuacion: [{ frac: [D, '180'] }, ' = ', { frac: [G, '200'] }, ' = ', { frac: [R, 'π'] }] };
+        if (tipo === 0) {
+          return {
+            enunciado: ['Un ángulo mide ', gc(f(cen)), '. ¿Cuánto mide en grados sexagesimales?'],
+            dibujo: { datos: sector(deg, `${f(cen)}ᵍ`), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la medida ', D, ' en grados sexagesimales.'] },
+              { tipo: 'datos', texto: ['El ángulo mide ', G, ` = ${f(cen)} grados centesimales.`], ecuacion: [G, ' = ', gc(f(cen))] },
+              regla,
+              { tipo: 'cuentas', texto: ['Se despeja ', D, ': se multiplica por 180 y se divide entre 200.'],
+                ecuacion: [D, ` = ${f(cen)} · `, { frac: ['180', '200'] }, ` = ${f(deg)}°`], dibujo: { datos: sector(deg, `${f(deg)}°`), estado: {} } },
+              { tipo: 'sentido', texto: [`El grado centesimal es más chico: ${f(deg)} queda más cerca de cero que ${f(cen)}. Y ${f(deg)}/360 = ${f(cen)}/400 = ${f(deg / 360, 4)} de vuelta.`] },
+            ],
+            respuesta: [D, ` = ${f(deg)}°`],
+          };
+        }
+        if (tipo === 1) {
+          const rad = dd * Math.PI / 180;
+          return {
+            enunciado: ['Un ángulo mide ', D, ` = ${f(dd)}°. ¿Cuánto mide en radianes?`],
+            dibujo: { datos: sector(dd, `${f(dd)}°`), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la medida ', R, ' en radianes.'] },
+              { tipo: 'datos', texto: ['El ángulo mide ', D, ` = ${f(dd)} grados sexagesimales.`] },
+              regla,
+              { tipo: 'cuentas', texto: ['Se despeja ', R, ': se divide entre 180 y se multiplica por π.'],
+                ecuacion: [R, ` = ${f(dd)} · `, { frac: ['π', '180'] }, ` = ${piTxt(dd)} rad`], dibujo: { datos: sector(dd, `${piTxt(dd)} rad`), estado: {} } },
+              { tipo: 'sentido', texto: [`De vuelta: ${piTxt(dd)} ≈ ${f(rad)} rad, y por 180/π da ${f(rad * 180 / Math.PI)}°, el dato.`] },
+            ],
+            respuesta: [R, ` = ${piTxt(dd)} rad`],
+          };
+        }
+        return {
+          enunciado: ['Un ángulo mide ', R, ` = ${piTxt(dd)} rad. ¿Cuánto mide en grados sexagesimales?`],
+          dibujo: { datos: sector(dd, `${piTxt(dd)} rad`), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la medida ', D, ' en grados sexagesimales.'] },
+            { tipo: 'datos', texto: ['El ángulo mide ', R, ` = ${piTxt(dd)} radianes.`] },
+            regla,
+            { tipo: 'cuentas', texto: ['π rad y 180° son media vuelta: se cambia π por 180°.'],
+              ecuacion: [D, ` = ${piTxt(dd)} · `, { frac: ['180°', 'π'] }, ` = ${f(dd)}°`], dibujo: { datos: sector(dd, `${f(dd)}°`), estado: {} } },
+            { tipo: 'sentido', texto: [`Comprueba: ${f(dd)}° entre 180° da ${f(dd / 180, 4)}, la misma fracción de media vuelta que ${piTxt(dd)} entre π.`] },
+          ],
+          respuesta: [D, ` = ${f(dd)}°`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Compara las dos medias vueltas antes de calcular.',
@@ -298,6 +394,15 @@
     titulo: 'Un radián: un radio de arco',
     temas: ['Radián', 'Conversión entre sistemas'],
     pieza: 'trig-plano',
+    // Lee (fase 2): medir con el radio como regla, sin decir cuántos radios tiene la vuelta (eso es Predice).
+    lee: {
+      voz: 'Aquí la regla de medir es el radio. Lee y después juega.',
+      tarjetas: [
+        { titulo: 'Medir contando', texto: 'Para saber el ancho del aula puedes contar cuántos pasos tuyos caben de pared a pared. El radián hace algo parecido: cuenta cuántas veces cabe el radio a lo largo del arco.' },
+        { titulo: 'Un radián', texto: ['Si el arco ', s, ' mide lo mismo que el radio ', r, ', el ángulo central mide 1 radián. Si caben dos radios y medio, mide 2,5 rad.'] },
+        { titulo: 'Qué mirar', texto: ['Al jugar, cambia el radio verde ', r, ' y el arco turquesa ', s, '. La lectura dice cuántos radios mide el arco. Prueba también duplicar los dos a la vez.'] },
+      ],
+    },
     juega: {
       consigna: 'Elige el radio r y el largo del arco s. La lectura dice cuántos radios mide el arco: esa es la medida en radianes.',
       voz: 'Prueba duplicar r y s a la vez.',
@@ -356,6 +461,45 @@
       condicion: 's y r en la misma unidad de longitud, y θ en radianes.',
       voz: 'El radián compara dos largos; por eso no lleva centímetros.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú» (θ = s/r o s = θ·r, según la paridad), con otra semilla.
+    resuelve: {
+      pieza: 'trig-plano',
+      generar(sem) {
+        const rr = azar(sem + 900), rv = rr.ent(2, 9), pide = sem % 2 ? 'arco' : 'angulo';
+        const vent = { ventana: { x: [-1.5 * rv, 1.5 * rv], y: [-1.5 * rv, 1.5 * rv] } };
+        const regla = { tipo: 'regla', texto: 'Medir en radianes es contar cuántos radios caben a lo largo del arco: el ángulo es el arco dividido entre el radio.',
+          ecuacion: [th, ' = ', { frac: [s, r] }] };
+        if (pide === 'angulo') {
+          const sv = rv * rr.uno([0.5, 1.5, 2, 2.5, 3, 4]), t = sv / rv;
+          return {
+            enunciado: ['En un círculo de radio ', r, ` = ${f(rv)} cm, un arco mide `, s, ` = ${f(sv)} cm. ¿Cuánto mide su ángulo central en radianes?`],
+            dibujo: { datos: arcoRad(rv, sv, Object.assign({ alt: `Arco de ${f(sv)} cm en un círculo de radio ${f(rv)} cm` }, vent)), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden el ángulo central ', th, ', en radianes.'] },
+              { tipo: 'datos', texto: ['El radio mide ', r, ` = ${f(rv)} cm y el arco, `, s, ` = ${f(sv)} cm. Los dos en la misma unidad.`] },
+              regla,
+              { tipo: 'cuentas', texto: ['Se divide el arco entre el radio.'], ecuacion: [th, ' = ', { frac: [`${f(sv)}`, `${f(rv)}`] }, ` = ${f(t)} rad`] },
+              { tipo: 'sentido', texto: [`Comprueba: ${f(t)} radios de ${f(rv)} cm dan ${f(t * rv)} cm, el arco del dato. El ángulo no lleva cm.`] },
+            ],
+            respuesta: [th, ` = ${f(t)} rad`],
+          };
+        }
+        const t = rr.uno([0.5, 1.5, 2, 2.5, 3]), sv = t * rv;
+        return {
+          enunciado: ['Un ángulo central de ', th, ` = ${f(t)} rad está en un círculo de radio `, r, ` = ${f(rv)} cm. ¿Cuánto mide su arco?`],
+          dibujo: { datos: arcoRad(rv, sv, Object.assign({ arcos: [{ de: 0, a: t * 180 / Math.PI, r: rv, espiral: 0, color: 'i', rotulo: 's = ¿?', flecha: false }] }, vent)), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el largo del arco ', s, '.'] },
+            { tipo: 'datos', texto: ['El ángulo mide ', th, ` = ${f(t)} rad y el radio, `, r, ` = ${f(rv)} cm.`] },
+            regla,
+            { tipo: 'cuentas', texto: ['Si el ángulo cuenta radios, el arco son ', th, ' radios de largo ', r, ': se multiplica.'],
+              ecuacion: [s, ' = ', th, ' · ', r, ` = ${f(t)} · ${f(rv)} = ${f(sv)} cm`], dibujo: { datos: arcoRad(rv, sv, vent), estado: {} } },
+            { tipo: 'sentido', texto: [`Comprueba: ${f(sv)} cm entre ${f(rv)} cm da ${f(sv / rv)}, el ángulo del dato. El arco queda en cm, como el radio.`] },
+          ],
+          respuesta: [s, ` = ${f(sv)} cm`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Mira si piden el ángulo o el arco.',
       generar(sem) {
@@ -398,6 +542,15 @@
     titulo: 'Minutos no son décimas',
     temas: ['Sistemas sexagesimal, centesimal y radial'],
     pieza: 'recta',
+    // Lee (fase 2): la notación con grados, minutos y segundos, sin pasar minutos a decimales (eso es Predice).
+    lee: {
+      voz: 'Un grado también se parte en pedazos. Lee cómo se escriben.',
+      tarjetas: [
+        { titulo: 'Grados con pedazos', texto: 'Los mapas ubican a Juliaca a unos 15° 29′ al sur del ecuador. Ese número tiene dos partes: 15 grados enteros y 29 minutos, que son un pedazo de grado.' },
+        { titulo: 'Los símbolos', texto: 'El símbolo ° marca los grados, ′ los minutos y ″ los segundos. Un ángulo de 3° 10′ 20″ se lee «tres grados, diez minutos y veinte segundos».' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, cuenta cuántas rayitas hay entre dos grados enteros y cuántos minutos vale cada una. La lectura escribe el ángulo también con decimales.' },
+      ],
+    },
     juega: {
       consigna: 'Arma un ángulo con grados y minutos. Cada rayita de la recta son 12 minutos; un grado tiene 60.',
       voz: 'Cuenta las rayitas que hay entre dos grados.',
@@ -449,6 +602,48 @@
       ecuacion: ['1° = 60′', '   ·   ', '1′ = 60″', '   ·   ', 'm′ = ', { llave: [{ frac: ['m', '60'] }], nota: 'parte de grado', color: 'c-o' }, ' grados'],
       condicion: 'los minutos y segundos son sexagesimales. Una coma decimal ya no es sexagesimal: 1,5° = 1° 30′.',
       voz: 'Sesenta partes por grado; no las leas como décimas.',
+    },
+    // Así se resuelve (fase 2): la misma conversión de «Ahora tú» (decimal a minutos o al revés), con otra semilla.
+    // La recta va de g° a (g + 1)°, con una rayita cada 15′, para que quepa cualquier ángulo del enunciado.
+    resuelve: {
+      pieza: 'recta',
+      generar(sem) {
+        const rr = azar(sem + 900), g = rr.ent(1, 40), m = rr.uno([6, 12, 15, 18, 24, 30, 36, 42, 45, 48, 54]);
+        const dec = g + m / 60;
+        const tramo = el => ({ min: g, max: g + 1, paso: 0.25, cada: 4, sufijo: '°', decimales: 0, variable: 'θ', color: 'o', filas: 3, elementos: el });
+        const regla = { tipo: 'regla', texto: 'Un grado sexagesimal se parte en 60 minutos, no en 100. Por eso los minutos pasan a grados dividiendo entre 60, y al revés, multiplicando por 60.',
+          ecuacion: ['1° = 60′', '   ·   ', 'm′ = ', { frac: ['m', '60'] }, ' grados'] };
+        if (sem % 2) {
+          return {
+            enunciado: ['Un ángulo mide ', th, ` = ${f(dec, 2)}°. ¿Cuánto mide en grados y minutos?`],
+            dibujo: { datos: tramo([{ tipo: 'punto', x: dec, color: 'o', rotulo: `${f(dec, 2)}°` }]), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', th, ' escrito en grados y minutos.'] },
+              { tipo: 'datos', texto: [th, ` = ${f(dec, 2)}°: son ${g} grados enteros y ${f(dec - g, 2)} de grado.`] },
+              regla,
+              { tipo: 'cuentas', texto: 'La parte decimal se multiplica por 60 para tenerla en minutos.',
+                ecuacion: [`${f(dec - g, 2)} · 60 = ${m}′  ⇒  `, th, ` = ${gm(g, m)}`],
+                dibujo: { datos: tramo([{ tipo: 'distancia', a: g, b: dec, color: 'o', rotulo: `${m}′`, fila: 2 }, { tipo: 'punto', x: dec, color: 'o', rotulo: gm(g, m) }]), estado: {} } },
+              { tipo: 'sentido', texto: [`Comprueba: ${m} de 60 minutos es ${f(m / 60, 2)} de grado, la parte decimal del dato.`] },
+            ],
+            respuesta: [th, ` = ${gm(g, m)}`],
+          };
+        }
+        return {
+          enunciado: ['Un ángulo mide ', th, ` = ${gm(g, m)}. ¿Cuánto mide en grados, con decimales?`],
+          dibujo: { datos: tramo([{ tipo: 'punto', x: dec, color: 'o', rotulo: gm(g, m) }]), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', th, ' en grados, con decimales.'] },
+            { tipo: 'datos', texto: [th, ` = ${gm(g, m)}: ${g} grados enteros y ${m} minutos.`] },
+            regla,
+            { tipo: 'cuentas', texto: `Los ${m} minutos se dividen entre 60 y se suman a los grados enteros.`,
+              ecuacion: [`${f(g)} + `, { frac: [`${m}`, '60'] }, ` = ${f(g)} + ${f(m / 60, 3)} = ${f(dec, 3)}°`],
+              dibujo: { datos: tramo([{ tipo: 'distancia', a: g, b: dec, color: 'o', rotulo: `${m}′`, fila: 2 }, { tipo: 'punto', x: dec, color: 'o', rotulo: `${f(dec, 3)}°` }]), estado: {} } },
+            { tipo: 'sentido', texto: [`Comprueba: ${f(dec - g, 3)} por 60 da ${f((dec - g) * 60)} minutos. El punto queda antes de ${g + 1}°, como debe.`] },
+          ],
+          respuesta: [th, ` = ${f(dec, 3)}°`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Primero decide en cuántas partes se divide un grado.',
