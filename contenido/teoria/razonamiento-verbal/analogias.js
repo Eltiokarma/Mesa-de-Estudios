@@ -68,6 +68,96 @@
     sellos: { puente: cumple ? { t: 'Se cumple', c: 'i' } : { t: 'No se cumple', c: 'h' } },
   }, extra);
 
+  // Bancos de «Ahora tú» (sin cambios); «Así se resuelve» toma de aquí otro caso que el de la misma semilla.
+  const BANCO_HERR = [
+    { base: 'pintor : pincel', ok: 'jardinero : tijera', m: [['pintor : cuadro', 'RV17', 'El pintor hace el cuadro: es su obra, no su herramienta.'], ['pincel : pintor', 'RV16', 'Es la relación correcta, pero al revés.'], ['pintor : museo', 'RV15', 'Van juntos en el tema del arte, pero el museo no es su herramienta.']] },
+    { base: 'tecla : piano', ok: 'cuerda : guitarra', m: [['piano : tecla', 'RV16', 'Es la relación correcta, pero al revés: el todo va primero.'], ['pianista : piano', 'RV17', 'El pianista usa el piano; no es una parte de él.'], ['piano : música', 'RV15', 'El piano produce música; la música no es una parte.']] },
+    { base: 'pescador : red', ok: 'escritor : pluma', m: [['pescador : pez', 'RV17', 'El pez es lo que obtiene, no su instrumento.'], ['red : pescador', 'RV16', 'Es la relación correcta, pero al revés.'], ['pescador : mar', 'RV15', 'Comparten tema; el mar es el lugar, no el instrumento.']] },
+    { base: 'página : libro', ok: 'vagón : tren', m: [['libro : página', 'RV16', 'Es la relación correcta, pero al revés.'], ['lector : libro', 'RV17', 'El lector usa el libro; no es una parte de él.'], ['libro : biblioteca', 'RV15', 'El libro está en la biblioteca, pero no como una parte suya.']] },
+    { base: 'barbero : navaja', ok: 'agricultor : arado', m: [['barbero : barba', 'RV17', 'La barba es lo que corta; no es su instrumento.'], ['navaja : barbero', 'RV16', 'Es la relación correcta, pero al revés.'], ['barbero : peluquería', 'RV15', 'La peluquería es el lugar; comparten tema, no relación.']] },
+    { base: 'rueda : bicicleta', ok: 'hoja : árbol', m: [['ciclista : bicicleta', 'RV17', 'El ciclista usa la bicicleta; no es una parte de ella.'], ['bicicleta : rueda', 'RV16', 'Es la relación correcta, pero al revés.'], ['bicicleta : pista', 'RV15', 'Comparten tema; la pista es el lugar.']] },
+  ];
+  const BANCO_CLASE = [
+    { base: 'ave : cóndor', ok: 'reptil : lagartija', m: [['cóndor : ave', 'RV16', 'Es la misma relación, pero al revés: la clase va primero.'], ['ave : nido', 'RV17', 'El ave hace el nido; el nido no es una clase de ave.'], ['ave : pluma', 'RV17', 'La pluma es una parte del ave, no un tipo de ave.']] },
+    { base: 'virus : gripe', ok: 'chispa : incendio', m: [['gripe : virus', 'RV16', 'Es la misma relación, pero al revés: la causa va primero.'], ['virus : médico', 'RV15', 'Comparten el tema de la salud; el virus no produce al médico.'], ['enero : febrero', 'RVA1', 'Febrero viene después, pero enero no lo produce.']] },
+    { base: 'instrumento : quena', ok: 'herramienta : martillo', m: [['quena : instrumento', 'RV16', 'Es la misma relación, pero al revés.'], ['quena : músico', 'RV17', 'El músico toca la quena; no es un tipo de quena.'], ['instrumento : concierto', 'RV15', 'Comparten tema, pero el concierto no es un tipo de instrumento.']] },
+    { base: 'estudio : aprobación', ok: 'ejercicio : fuerza', m: [['aprobación : estudio', 'RV16', 'Es la misma relación, pero al revés.'], ['estudio : cuaderno', 'RV17', 'El cuaderno sirve para estudiar; no es un efecto del estudio.'], ['mañana : tarde', 'RVA1', 'La tarde viene después de la mañana, pero no es su efecto.']] },
+    { base: 'mueble : mesa', ok: 'calzado : sandalia', m: [['mesa : mueble', 'RV16', 'Es la misma relación, pero al revés.'], ['mesa : pata', 'RV17', 'La pata es una parte de la mesa, no un tipo.'], ['mueble : carpintero', 'RV15', 'El carpintero hace muebles; no es un tipo de mueble.']] },
+    { base: 'helada : pérdida de cosecha', ok: 'erosión : derrumbe', m: [['pérdida de cosecha : helada', 'RV16', 'Es la misma relación, pero al revés.'], ['helada : invierno', 'RV17', 'La helada ocurre en invierno; no lo produce.'], ['siembra : cosecha', 'RVA1', 'La cosecha viene después de la siembra; aquí el par base es un daño causado.']] },
+  ];
+  const BANCO_SINANT = [
+    { base: 'caliente : frío', ok: 'claro : oscuro', m: [['caliente : tibio', 'RV21', 'Están en el mismo rasgo, pero tibio es un punto medio, no el opuesto.'], ['frío : hielo', 'RV15', 'El hielo se asocia con el frío, pero no es su contrario.'], ['caliente : ardiente', 'RV17', 'Comparten el rasgo: serían sinónimos, no contrarios.']] },
+    { base: 'generoso : dadivoso', ok: 'astuto : sagaz', m: [['generoso : tacaño', 'RV17', 'Se oponen en el mismo rasgo: serían antónimos, no sinónimos.'], ['generoso : regalo', 'RV15', 'Comparten tema, pero regalo no es un rasgo de una persona.'], ['generoso : alto', 'RV21', 'Son de otro rasgo; no significan lo mismo.']] },
+    { base: 'ancho : angosto', ok: 'pesado : liviano', m: [['ancho : amplio', 'RV17', 'Comparten el rasgo: serían sinónimos.'], ['ancho : largo', 'RV21', 'Son distintos, pero miden otra dimensión; no son opuestos.'], ['angosto : callejón', 'RV15', 'Un callejón suele ser angosto; no es su contrario.']] },
+    { base: 'comenzar : iniciar', ok: 'terminar : concluir', m: [['comenzar : terminar', 'RV17', 'Se oponen: serían antónimos, no sinónimos.'], ['comenzar : carrera', 'RV15', 'Una carrera comienza, pero no significa comenzar.'], ['comenzar : correr', 'RV21', 'Son acciones distintas; no significan lo mismo.']] },
+    { base: 'valiente : cobarde', ok: 'honesto : mentiroso', m: [['valiente : audaz', 'RV17', 'Comparten el rasgo: serían sinónimos.'], ['valiente : héroe', 'RV15', 'Un héroe suele ser valiente; no es su contrario.'], ['valiente : tímido', 'RV21', 'Tímido habla del trato con otros, no del miedo al peligro.']] },
+    { base: 'escaso : abundante', ok: 'vacío : lleno', m: [['escaso : poco', 'RV17', 'Comparten el rasgo: serían sinónimos.'], ['escaso : sequía', 'RV15', 'En una sequía el agua es escasa; no es su contrario.'], ['escaso : pequeño', 'RV21', 'Pequeño mide tamaño, no cantidad.']] },
+  ];
+  // Así se resuelve: la relación de cada par base del banco, su oración puente y la del par correcto.
+  // Es dato del banco (como sus opciones); «Ahora tú» no lo usa.
+  const PUENTES = {
+    'pintor : pincel': ['herramienta', 'El pintor trabaja con el pincel.', 'El jardinero trabaja con la tijera.'],
+    'tecla : piano': ['parte y todo', 'La tecla es una parte del piano.', 'La cuerda es una parte de la guitarra.'],
+    'pescador : red': ['herramienta', 'El pescador trabaja con la red.', 'El escritor trabaja con la pluma.'],
+    'página : libro': ['parte y todo', 'La página es una parte del libro.', 'El vagón es una parte del tren.'],
+    'barbero : navaja': ['herramienta', 'El barbero trabaja con la navaja.', 'El agricultor trabaja con el arado.'],
+    'rueda : bicicleta': ['parte y todo', 'La rueda es una parte de la bicicleta.', 'La hoja es una parte del árbol.'],
+    'ave : cóndor': ['género y especie', 'Todo cóndor es un ave.', 'Toda lagartija es un reptil.'],
+    'virus : gripe': ['causa y efecto', 'El virus produce la gripe.', 'La chispa produce el incendio.'],
+    'instrumento : quena': ['género y especie', 'Toda quena es un instrumento.', 'Todo martillo es una herramienta.'],
+    'estudio : aprobación': ['causa y efecto', 'El estudio produce la aprobación.', 'El ejercicio produce la fuerza.'],
+    'mueble : mesa': ['género y especie', 'Toda mesa es un mueble.', 'Toda sandalia es un calzado.'],
+    'helada : pérdida de cosecha': ['causa y efecto', 'La helada produce la pérdida de cosecha.', 'La erosión produce el derrumbe.'],
+    'caliente : frío': ['antónimos', 'Caliente es lo contrario de frío, en la temperatura.', 'Claro es lo contrario de oscuro, en la luz.'],
+    'generoso : dadivoso': ['sinónimos', 'Generoso significa casi lo mismo que dadivoso: que da a otros.', 'Astuto significa casi lo mismo que sagaz: que piensa rápido.'],
+    'ancho : angosto': ['antónimos', 'Ancho es lo contrario de angosto, en la anchura.', 'Pesado es lo contrario de liviano, en el peso.'],
+    'comenzar : iniciar': ['sinónimos', 'Comenzar significa casi lo mismo que iniciar: empezar algo.', 'Terminar significa casi lo mismo que concluir: acabar algo.'],
+    'valiente : cobarde': ['antónimos', 'Valiente es lo contrario de cobarde, ante el peligro.', 'Honesto es lo contrario de mentiroso, ante la verdad.'],
+    'escaso : abundante': ['antónimos', 'Escaso es lo contrario de abundante, en la cantidad.', 'Vacío es lo contrario de lleno, en lo que contiene.'],
+  };
+  function azar(s) {
+    let q = (s * 2654435761 + 12345) >>> 0;
+    return () => { q = (q + 0x6D2B79F5) >>> 0; let z = q; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+  }
+  // Índice de «Así se resuelve»: sale de azar(s + 900) y nunca coincide con el de «Ahora tú» (s % n).
+  const otroIndice = (s, n) => (s % n + 1 + Math.floor(azar(s + 900)() * (n - 1))) % n;
+  const barajar = (b, s) => {
+    const r = azar(s + 900), malas = b.m.slice(); r(); if (r() < 0.5) malas.reverse();
+    const ops = opciones(b.ok, malas), c = ops.shift(), k = Math.floor(r() * (ops.length + 1));
+    ops.splice(k, 0, c); return ops;
+  };
+  const minus = t => t.charAt(0).toLowerCase() + t.slice(1);
+  // Un trozo de color largo (una pista, una razón) puede partir línea (.var.largo): si no, se sale de la tarjeta.
+  const largo = x => Object.assign(x, { largo: true });
+  // Figura de «Así se resuelve»: el par base, la oración puente (desde el paso «Lo aplico») y la lista de opciones;
+  // al resolver, la correcta se marca (i) y las demás se tachan.
+  const figResuelve = (b, ops, frase, resuelto) => ({
+    datos: { esquinaLibre: true, secciones: [
+      { id: 'base', titulo: 'Par base', modo: 'tarjeta', fragmentos: [{ id: 'pb', t: b.base }] },
+      ...(frase ? [{ id: 'puente', titulo: 'Oración puente', modo: 'parrafo', fragmentos: [{ id: 'q', t: frase }] }] : []),
+      { id: 'ops', titulo: 'Opciones', modo: 'lista', fragmentos: ops.map((o, k) => ({ id: `o${k}`, t: o.texto })) }] },
+    estado: Object.assign({ marcas: Object.assign({ pb: 'i' }, frase ? { q: resuelto ? 'o' : 'd' } : {}, resuelto ? { [`o${ops.findIndex(o => o.correcta)}`]: 'i' } : {}) },
+      resuelto ? { tachar: ops.map((o, k) => (o.correcta ? null : `o${k}`)).filter(Boolean), sellos: { puente: { t: 'Se cumple', c: 'i' } } } : {},
+      frase ? { nuevo: ['puente'] } : {}),
+  });
+  // Un ejercicio resuelto con la misma forma que «Ahora tú»: pide, regla, oración del par base, prueba y trampa.
+  function resolver(banco, s, regla, trampa) {
+    const b = banco[otroIndice(s, banco.length)], ops = barajar(b, s), [relacion, fb, fok] = PUENTES[b.base];
+    const t = b.m.find(m => m[1] === trampa);
+    return {
+      enunciado: ['Par base: ', base(b.base), '. ¿Qué par guarda la misma relación, en el mismo orden?'],
+      dibujo: figResuelve(b, ops, null, false),
+      pasos: [
+        { tipo: 'pide', texto: ['Piden el par que se relaciona como ', base(b.base), ', y en el mismo orden.'] },
+        { tipo: 'regla', texto: regla.texto, ecuacion: regla.ecuacion },
+        { tipo: 'aplica', texto: [`Oración puente con el par base: «${fb}» Relación: `, largo(rel(relacion)), '.'], dibujo: figResuelve(b, ops, fb, false) },
+        { tipo: 'aplica', texto: ['Pruebo cada opción. La misma relación, en el mismo orden, solo se cumple con ', prueba(b.ok), `: «${fok}»`], dibujo: figResuelve(b, ops, fok, true) },
+        { tipo: 'sentido', texto: [`«${t[0]}» es la trampa. `, largo(mal(t[2]))] },
+      ],
+      respuesta: [prueba(b.ok)],
+    };
+  }
+
   // ---------- Idea 1: la relación, no el tema (agente e instrumento; parte y todo) ----------
   // Cambia: el par que entra en la oración puente. Permanece: el par base y su oración. Progresa: se descartan los
   // pares del mismo tema que no cumplen. Se reserva: el par invertido (serrucho : carpintero), que tiene las mismas
@@ -87,6 +177,14 @@
     titulo: 'La relación, no el tema',
     temas: ['Agente e instrumento', 'Parte y todo'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué es una analogía y la oración puente, sin tocar la relación parte y todo de Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Dos pares que se parecen', texto: 'Una analogía compara dos pares de palabras. El examen te da un par base, como «carpintero : serrucho», y cuatro pares más. Solo uno se relaciona igual que el par base.' },
+        { titulo: 'La oración puente', texto: 'Para ver la relación, une las dos palabras con una oración corta: «El chofer maneja la combi». Después pruebas esa misma oración con los otros pares.' },
+        { titulo: 'Qué mirar', texto: 'En el juego pones pares en la oración del carpintero. Mira con cuáles la oración sigue siendo verdadera y con cuáles se vuelve falsa.' },
+      ],
+    },
     juega: {
       consigna: 'El par base es «carpintero : serrucho». Pon otro par en la oración puente y mira si sigue siendo verdadera.',
       voz: 'La oración tiene que valer igual para los dos pares.',
@@ -124,17 +222,18 @@
       ecuacion: [{ llave: [base('A'), ' : ', base('B')], nota: 'par base', color: 'c-i' }, ' :: ', { llave: [prueba('C'), ' : ', prueba('D')], nota: 'par probado', color: 'c-o' }, '   ·   ', { llave: [rel('misma oración')], nota: 'vale para ambos', color: 'c-d' }],
       condicion: 'la oración puente es precisa (herramienta, parte, material) y no basta que los pares sean del mismo tema.',
     },
+    // Así se resuelve (fase 2): otro par base del banco de «Ahora tú», resuelto con la oración puente.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Primero la oración puente; después, las opciones.',
+      generar: s => resolver(BANCO_HERR, s, {
+        texto: 'Uno las dos palabras del par base con una oración corta. Vale el par que deja esa oración verdadera, en el mismo orden.',
+        ecuacion: [base('A'), ' : ', base('B'), ' :: ', prueba('C'), ' : ', prueba('D')] }, 'RV16'),
+    },
     ahoraTu: {
       voz: 'Arma la oración puente antes de mirar las opciones.',
       generar(s) {
-        const B = [
-          { base: 'pintor : pincel', ok: 'jardinero : tijera', m: [['pintor : cuadro', 'RV17', 'El pintor hace el cuadro: es su obra, no su herramienta.'], ['pincel : pintor', 'RV16', 'Es la relación correcta, pero al revés.'], ['pintor : museo', 'RV15', 'Van juntos en el tema del arte, pero el museo no es su herramienta.']] },
-          { base: 'tecla : piano', ok: 'cuerda : guitarra', m: [['piano : tecla', 'RV16', 'Es la relación correcta, pero al revés: el todo va primero.'], ['pianista : piano', 'RV17', 'El pianista usa el piano; no es una parte de él.'], ['piano : música', 'RV15', 'El piano produce música; la música no es una parte.']] },
-          { base: 'pescador : red', ok: 'escritor : pluma', m: [['pescador : pez', 'RV17', 'El pez es lo que obtiene, no su instrumento.'], ['red : pescador', 'RV16', 'Es la relación correcta, pero al revés.'], ['pescador : mar', 'RV15', 'Comparten tema; el mar es el lugar, no el instrumento.']] },
-          { base: 'página : libro', ok: 'vagón : tren', m: [['libro : página', 'RV16', 'Es la relación correcta, pero al revés.'], ['lector : libro', 'RV17', 'El lector usa el libro; no es una parte de él.'], ['libro : biblioteca', 'RV15', 'El libro está en la biblioteca, pero no como una parte suya.']] },
-          { base: 'barbero : navaja', ok: 'agricultor : arado', m: [['barbero : barba', 'RV17', 'La barba es lo que corta; no es su instrumento.'], ['navaja : barbero', 'RV16', 'Es la relación correcta, pero al revés.'], ['barbero : peluquería', 'RV15', 'La peluquería es el lugar; comparten tema, no relación.']] },
-          { base: 'rueda : bicicleta', ok: 'hoja : árbol', m: [['ciclista : bicicleta', 'RV17', 'El ciclista usa la bicicleta; no es una parte de ella.'], ['bicicleta : rueda', 'RV16', 'Es la relación correcta, pero al revés.'], ['bicicleta : pista', 'RV15', 'Comparten tema; la pista es el lugar.']] },
-        ];
+        const B = BANCO_HERR;
         const b = B[s % B.length];
         return {
           pregunta: '¿Qué par guarda la misma relación que el par base, en el mismo orden?',
@@ -178,6 +277,14 @@
     titulo: 'Clase y miembro, causa y efecto',
     temas: ['Género y especie', 'Causa y efecto'],
     pieza: 'rv-texto',
+    // Lee (fase 2): grupo y miembro, causa y efecto, sin decir que venir antes no basta (eso lo prueba Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Grupos y miembros', texto: 'Algunas palabras nombran un grupo y otras, a uno de sus miembros. «Cereal» nombra el grupo; la quinua que se siembra en Puno es uno de sus miembros.' },
+        { titulo: 'Lo que provoca algo', texto: 'Otras parejas unen un hecho con lo que ese hecho provoca. Si dejas la leche fuera de la refrigeradora, se malogra: el calor es la causa y la leche malograda, el efecto.' },
+        { titulo: 'Qué mirar', texto: 'En el juego lees cada par en su orden y al revés. Mira cuál de las dos oraciones sigue siendo verdadera.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un par base. Mira su oración puente en el orden del par y al revés.',
       voz: 'Fíjate qué oración deja de ser verdadera al dar vuelta el par.',
@@ -214,16 +321,17 @@
       ecuacion: [{ llave: [base('especie'), ' es un ', base('género')], nota: 'no al revés', color: 'c-i' }, '   ·   ', base('causa'), ' ', { llave: [rel('produce')], nota: 'no solo antes', color: 'c-d' }, ' ', base('efecto')],
       condicion: 'el par de la opción va en el mismo orden que el par base y la oración puente es verdadera así.',
     },
+    // Así se resuelve (fase 2): otro par base del banco de «Ahora tú»; la trampa es el par al revés.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Lee el par base en su orden antes de mirar las opciones.',
+      generar: s => resolver(BANCO_CLASE, s, {
+        texto: 'Veo si el par base une una clase con uno de sus miembros o una causa con su efecto. La opción debe ir en ese mismo orden.',
+        ecuacion: [base('causa'), ' ', rel('produce'), ' ', base('efecto'), '   ·   ', base('clase'), ' ', rel('⊃'), ' ', base('miembro')] }, 'RV16'),
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { base: 'ave : cóndor', ok: 'reptil : lagartija', m: [['cóndor : ave', 'RV16', 'Es la misma relación, pero al revés: la clase va primero.'], ['ave : nido', 'RV17', 'El ave hace el nido; el nido no es una clase de ave.'], ['ave : pluma', 'RV17', 'La pluma es una parte del ave, no un tipo de ave.']] },
-          { base: 'virus : gripe', ok: 'chispa : incendio', m: [['gripe : virus', 'RV16', 'Es la misma relación, pero al revés: la causa va primero.'], ['virus : médico', 'RV15', 'Comparten el tema de la salud; el virus no produce al médico.'], ['enero : febrero', 'RVA1', 'Febrero viene después, pero enero no lo produce.']] },
-          { base: 'instrumento : quena', ok: 'herramienta : martillo', m: [['quena : instrumento', 'RV16', 'Es la misma relación, pero al revés.'], ['quena : músico', 'RV17', 'El músico toca la quena; no es un tipo de quena.'], ['instrumento : concierto', 'RV15', 'Comparten tema, pero el concierto no es un tipo de instrumento.']] },
-          { base: 'estudio : aprobación', ok: 'ejercicio : fuerza', m: [['aprobación : estudio', 'RV16', 'Es la misma relación, pero al revés.'], ['estudio : cuaderno', 'RV17', 'El cuaderno sirve para estudiar; no es un efecto del estudio.'], ['mañana : tarde', 'RVA1', 'La tarde viene después de la mañana, pero no es su efecto.']] },
-          { base: 'mueble : mesa', ok: 'calzado : sandalia', m: [['mesa : mueble', 'RV16', 'Es la misma relación, pero al revés.'], ['mesa : pata', 'RV17', 'La pata es una parte de la mesa, no un tipo.'], ['mueble : carpintero', 'RV15', 'El carpintero hace muebles; no es un tipo de mueble.']] },
-          { base: 'helada : pérdida de cosecha', ok: 'erosión : derrumbe', m: [['pérdida de cosecha : helada', 'RV16', 'Es la misma relación, pero al revés.'], ['helada : invierno', 'RV17', 'La helada ocurre en invierno; no lo produce.'], ['siembra : cosecha', 'RVA1', 'La cosecha viene después de la siembra; aquí el par base es un daño causado.']] },
-        ];
+        const B = BANCO_CLASE;
         const b = B[s % B.length];
         return {
           pregunta: '¿Qué par guarda la misma relación que el par base, en el mismo orden?',
@@ -253,6 +361,14 @@
     titulo: 'Sinónimos y antónimos en un rasgo',
     temas: ['Sinonimia y antonimia'],
     pieza: 'rv-texto',
+    // Lee (fase 2): qué son sinónimos y antónimos, sin hablar todavía del rasgo que se compara (lo muestra Mira).
+    lee: {
+      tarjetas: [
+        { titulo: 'Sinónimos', texto: 'Dos palabras son sinónimos cuando dicen casi lo mismo, como «cerca» y «próximo». Si cambias una por otra en una oración, el sentido casi no cambia.' },
+        { titulo: 'Antónimos', texto: 'Dos palabras son antónimos cuando dicen lo contrario, como «día» y «noche». En el examen hay pares de palabras distintas que no llegan a ser contrarias.' },
+        { titulo: 'Qué mirar', texto: 'En el juego comparas «alegre» con otras palabras. Fíjate de qué habla cada una: del ánimo, del cansancio o de otra cosa.' },
+      ],
+    },
     juega: {
       consigna: 'Compara «alegre» con otras palabras. Mira qué oración puente queda verdadera y qué rasgo comparan.',
       voz: 'Lo contrario se mide siempre en el mismo rasgo.',
@@ -287,16 +403,17 @@
       ecuacion: [{ llave: [base('A'), ' ≈ ', prueba('B')], nota: 'mismo rasgo', color: 'c-i' }, '   ·   ', { llave: [base('A'), ' ↔ ', prueba('B')], nota: 'rasgo opuesto', color: 'c-o' }],
       condicion: 'se nombra el rasgo que se compara (ánimo, temperatura, tamaño) y las dos palabras hablan de él.',
     },
+    // Así se resuelve (fase 2): otro par base del banco; la trampa es la palabra distinta que mide otro rasgo.
+    resuelve: {
+      pieza: 'rv-texto',
+      voz: 'Nombra el rasgo antes de mirar las opciones.',
+      generar: s => resolver(BANCO_SINANT, s, {
+        texto: 'Nombro el rasgo de significado del par base. Veo si las dos palabras lo comparten o se oponen en él, y busco otro par igual.',
+        ecuacion: [base('A'), ' ≈ ', base('B'), ' sinónimos   ·   ', base('A'), ' ↔ ', base('B'), ' antónimos'] }, 'RV21'),
+    },
     ahoraTu: {
       generar(s) {
-        const B = [
-          { base: 'caliente : frío', ok: 'claro : oscuro', m: [['caliente : tibio', 'RV21', 'Están en el mismo rasgo, pero tibio es un punto medio, no el opuesto.'], ['frío : hielo', 'RV15', 'El hielo se asocia con el frío, pero no es su contrario.'], ['caliente : ardiente', 'RV17', 'Comparten el rasgo: serían sinónimos, no contrarios.']] },
-          { base: 'generoso : dadivoso', ok: 'astuto : sagaz', m: [['generoso : tacaño', 'RV17', 'Se oponen en el mismo rasgo: serían antónimos, no sinónimos.'], ['generoso : regalo', 'RV15', 'Comparten tema, pero regalo no es un rasgo de una persona.'], ['generoso : alto', 'RV21', 'Son de otro rasgo; no significan lo mismo.']] },
-          { base: 'ancho : angosto', ok: 'pesado : liviano', m: [['ancho : amplio', 'RV17', 'Comparten el rasgo: serían sinónimos.'], ['ancho : largo', 'RV21', 'Son distintos, pero miden otra dimensión; no son opuestos.'], ['angosto : callejón', 'RV15', 'Un callejón suele ser angosto; no es su contrario.']] },
-          { base: 'comenzar : iniciar', ok: 'terminar : concluir', m: [['comenzar : terminar', 'RV17', 'Se oponen: serían antónimos, no sinónimos.'], ['comenzar : carrera', 'RV15', 'Una carrera comienza, pero no significa comenzar.'], ['comenzar : correr', 'RV21', 'Son acciones distintas; no significan lo mismo.']] },
-          { base: 'valiente : cobarde', ok: 'honesto : mentiroso', m: [['valiente : audaz', 'RV17', 'Comparten el rasgo: serían sinónimos.'], ['valiente : héroe', 'RV15', 'Un héroe suele ser valiente; no es su contrario.'], ['valiente : tímido', 'RV21', 'Tímido habla del trato con otros, no del miedo al peligro.']] },
-          { base: 'escaso : abundante', ok: 'vacío : lleno', m: [['escaso : poco', 'RV17', 'Comparten el rasgo: serían sinónimos.'], ['escaso : sequía', 'RV15', 'En una sequía el agua es escasa; no es su contrario.'], ['escaso : pequeño', 'RV21', 'Pequeño mide tamaño, no cantidad.']] },
-        ];
+        const B = BANCO_SINANT;
         const b = B[s % B.length];
         return {
           pregunta: '¿Qué par guarda la misma relación que el par base?',
