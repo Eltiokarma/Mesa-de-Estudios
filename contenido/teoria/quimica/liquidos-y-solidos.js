@@ -111,6 +111,14 @@
     });
     return Object.assign({}, caja, { particulas });
   }
+  // Casos de «Ahora tú» y de «Así se resuelve»: una pista que se ve a simple vista y el estado que la explica.
+  const CASOS = [
+    ['La sal de mesa se rompe en cubitos de caras planas', 'cristal'], ['El vidrio de una ventana se rompe en bordes curvos', 'amorfo'],
+    ['La cera de una vela se ablanda poco a poco, sin temperatura fija', 'amorfo'], ['El cuarzo forma prismas con caras planas', 'cristal'],
+    ['El aceite toma la forma del frasco pero no lo llena', 'liquido'], ['El aire llena toda la habitación', 'gas'],
+    ['La miel fluye lento y toma la forma del plato', 'liquido'], ['El vapor de una olla se esparce por la cocina', 'gas'],
+    ['La nieve forma copos de seis puntas', 'cristal'], ['Un caramelo duro se rompe como vidrio, sin caras planas', 'amorfo'],
+  ];
   const T_ANIMA = { id: 's', etiqueta: 't', min: 0, max: CICLO, paso: 0.1, inicio: 0, unidad: 's', decimales: 1, auto: { velocidad: 1 } };
   // Sin arrastre: el control elige entre estados y sólidos distintos; no hay una magnitud que agarrar en la lupa.
   const estados = {
@@ -118,6 +126,15 @@
     titulo: 'Orden y libertad de las partículas',
     temas: ['Propiedades de los estados de agregación', 'Sólidos cristalinos y amorfos'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): estados con ejemplos de Puno y la sal de Maras. No dice por qué el vidrio no tiene caras («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'La misma agua', texto: 'El agua del Titicaca es líquida, en los nevados de la cordillera hay agua sólida y en el aire de Juliaca hay vapor de agua que no se ve. Es la misma sustancia; cambia cómo están sus partículas.' },
+        { titulo: 'Forma y volumen', texto: 'Un sólido tiene forma y volumen propios. Un líquido guarda su volumen, pero toma la forma del recipiente. Un gas no guarda ninguno de los dos: ocupa todo el espacio que le den.' },
+        { titulo: 'La sal de Maras', texto: 'En las salineras de Maras, en el Cusco, el sol seca el agua salada de las pozas y queda la sal. Con una lupa, sus granos se ven como cubitos de caras planas.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, elige cada estado y responde tres preguntas: ¿cada partícula tiene un lugar fijo?, ¿se repite un patrón?, ¿llenan todo el recipiente?' },
+      ],
+    },
     juega: {
       consigna: 'Elige un estado; las partículas se mueven en cámara lenta. Mira si tienen lugar fijo, si se repite un patrón y si llenan el recipiente.',
       voz: 'Compara el orden de los dos sólidos.',
@@ -160,16 +177,43 @@
       condicion: 'es un modelo de partículas: las distancias no están a escala y las partículas del sólido también vibran.',
       voz: 'Lugar fijo, orden y espacio libre: tres preguntas, tres respuestas.',
     },
+    // Así se resuelve (fase 2): un caso de «Ahora tú» elegido con azar(s + 900). No hay cuentas: se aplica la regla
+    // (paso «aplica»). La figura pone lado a lado el estado que explica el caso y su vecino más parecido.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), [caso, tipo] = r.de(CASOS);
+        const VECINO = { cristal: 'amorfo', amorfo: 'cristal', liquido: 'gas', gas: 'liquido' }, otro = VECINO[tipo];
+        const par = Object.keys(ESTADOS).filter(k => k === tipo || k === otro);
+        const caja = (k, rot) => Object.assign({ titulo: ESTADOS[k].texto }, ESTADOS[k].caja, rot ? { rotulo: rot } : {});
+        const APLICA = {
+          cristal: 'Una forma regular, con caras planas o puntas iguales, solo sale si las partículas están fijas y siguen un patrón que se repite.',
+          amorfo: 'No fluye, así que es sólido. Pero no muestra caras planas ni un punto de fusión fijo: partículas fijas, sin patrón.',
+          liquido: 'Toma la forma del recipiente, pero no se esparce para llenarlo: las partículas siguen juntas y se deslizan unas sobre otras.',
+          gas: 'Ocupa todo el espacio que tiene: las partículas están separadas y se mueven libres en todas las direcciones.',
+        };
+        const CONTRA = {
+          cristal: 'Si fuera cristalino, se rompería en caras planas y fundiría a una temperatura fija.',
+          amorfo: 'Si fuera amorfo, no tendría formas regulares y se ablandaría poco a poco.',
+          liquido: 'Si fuera líquido, se juntaría abajo y no llenaría todo el espacio.',
+          gas: 'Si fuera gas, no se quedaría abajo: llenaría todo el recipiente.',
+        };
+        return {
+          enunciado: `${caso}. Por cómo están sus partículas, ¿es un ${ESTADOS[par[0]].texto.toLowerCase()} o un ${ESTADOS[par[1]].texto.toLowerCase()}?`,
+          dibujo: lupa(par.map(k => caja(k))),
+          pasos: [
+            { tipo: 'pide', texto: 'Piden decidir cómo están las partículas a partir de lo que se ve a simple vista.' },
+            { tipo: 'datos', texto: `La pista: «${caso.charAt(0).toLowerCase() + caso.slice(1)}».` },
+            { tipo: 'regla', texto: 'Me hago tres preguntas: ¿cada partícula tiene un lugar fijo?, ¿forman un patrón que se repite?, ¿llenan todo el recipiente?' },
+            { tipo: 'aplica', texto: APLICA[tipo], ecuacion: [ESTADOS[tipo].texto], dibujo: lupa(par.map(k => caja(k, k === tipo ? 'este' : 'no'))) },
+            { tipo: 'sentido', texto: `Compruebo con el vecino: ${CONTRA[otro].charAt(0).toLowerCase() + CONTRA[otro].slice(1)} Eso no pasa aquí.` },
+          ],
+          respuesta: ESTADOS[tipo].texto,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Decide por cómo están las partículas.',
       generar(s) {
-        const CASOS = [
-          ['La sal de mesa se rompe en cubitos de caras planas', 'cristal'], ['El vidrio de una ventana se rompe en bordes curvos', 'amorfo'],
-          ['La cera de una vela se ablanda poco a poco, sin temperatura fija', 'amorfo'], ['El cuarzo forma prismas con caras planas', 'cristal'],
-          ['El aceite toma la forma del frasco pero no lo llena', 'liquido'], ['El aire llena toda la habitación', 'gas'],
-          ['La miel fluye lento y toma la forma del plato', 'liquido'], ['El vapor de una olla se esparce por la cocina', 'gas'],
-          ['La nieve forma copos de seis puntas', 'cristal'], ['Un caramelo duro se rompe como vidrio, sin caras planas', 'amorfo'],
-        ];
         const [caso, tipo] = CASOS[s % CASOS.length];
         const si = { cristal: 'Sería cristalino si sus partículas formaran un patrón que se repite.', amorfo: 'Sería amorfo si sus partículas estuvieran fijas sin un patrón.', liquido: 'Sería líquido si sus partículas se deslizaran pero siguieran juntas.', gas: 'Sería gas si sus partículas estuvieran separadas y llenaran el recipiente.' };
         const porque = { cristal: 'Partículas fijas en un orden que se repite.', amorfo: 'Partículas fijas, sin un orden repetido.', liquido: 'Partículas juntas que se deslizan.', gas: 'Partículas separadas que llenan el recipiente.' };
@@ -200,9 +244,19 @@
     titulo: 'La superficie que jala',
     temas: ['Tensión superficial, viscosidad y capilaridad'],
     pieza: 'ejes',
+    // Lee (fase 2): la piel del agua, la miel y la servilleta; cómo leer la curva. No dice cómo cambia h con r («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'La piel del agua', texto: 'Algunos insectos caminan sobre el agua de una poza sin hundirse. Las moléculas de la superficie se jalan entre sí y forman algo parecido a una piel: es la tensión superficial.' },
+        { titulo: 'Miel y agua', texto: 'La miel cae lenta y el agua, rápida: la miel es más viscosa. La viscosidad mide cuánto le cuesta a un líquido fluir; no es lo mismo que la tensión superficial.' },
+        { titulo: 'Subir solo', texto: 'Si mojas la punta de una servilleta, el agua sube por ella sola. En un tubo de vidrio muy delgado pasa algo parecido: el agua moja la pared y trepa. Eso es capilaridad.' },
+        { titulo: 'Qué mirar', texto: ['El juego no dibuja el tubo: muestra una curva. Abajo va el radio del tubo, ', r, '; a la izquierda, la altura que sube el líquido, ', h, '. Mira qué le pasa a ', h, ' cuando ', r, ' se achica.'] },
+      ],
+    },
     juega: {
-      consigna: 'Un tubo de vidrio delgado entra en un líquido y el líquido sube. El radio del tubo cambia solo: lee la altura. Elige el líquido.',
-      voz: 'Prueba tubos cada vez más angostos.',
+      // Pedido de Gerson (objetos que la figura no dibuja): la figura es la curva h–r, no el tubo; el texto dice lo que se ve.
+      consigna: 'Un líquido sube por un tubo de vidrio delgado. La curva da la altura para cada radio; el punto la recorre solo. Elige el líquido.',
+      voz: 'Lleva el punto a radios cada vez más chicos.',
       controles: [
         { id: 'r', etiqueta: 'r', color: 'c-d', min: 0.25, max: 2, paso: 0.25, inicio: 1, unidad: 'mm', decimales: 2, auto: { velocidad: 0.35, modo: 'rebota' } },
         { id: 'l', etiqueta: 'Líquido', opciones: Object.keys(LIQ).map(k => ({ valor: k, texto: LIQ[k][0] })) },
@@ -248,6 +302,37 @@
       condicion: 'vale para un líquido que moja el vidrio (ángulo de contacto cercano a 0); el mercurio no lo moja y baja.',
       voz: 'Tubo más angosto, subida mayor. Comprueba con la curva.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con azar(s + 900) y la misma cuenta (h·r se mantiene). La
+    // figura: la curva h = (h₁r₁)/r de ese líquido, con ejes que alcanzan a los dos tubos. Para que sea creíble, h₁ se
+    // elige con h·r ≤ 14,8 mm² (el agua, que es de los líquidos que más suben, da 14,9 mm²).
+    resuelve: {
+      generar(s) {
+        const a = azar(s + 900), r1 = a.de([0.5, 1, 1.5, 2]), r2 = a.de([0.25, 0.5, 0.75, 1, 2, 3].filter(x => x !== r1)), h1 = 2 * a.ent(2, Math.floor(7.4 / r1)), h2 = h1 * r1 / r2;
+        const kk = h1 * r1, xmax = Math.max(r1, r2) <= 2 ? 2 : 3.5, ymax = Math.ceil(Math.max(h1, h2) / 10) * 10 + 10, desde = kk / ymax;
+        const ejes = extra => ({ datos: ejesCap(Object.assign({
+          x: { min: 0, max: xmax, paso: 0.5, nombre: 'r', unidad: 'mm', decimales: 1, color: 'd' },
+          y: { min: 0, max: ymax, paso: ymax > 100 ? 20 : 10, nombre: 'h', unidad: 'mm', decimales: 0, color: 'i' },
+          curvas: [], alt: `Altura que sube el líquido contra el radio del tubo: ${h1} mm con ${f(r1, 2)} mm de radio y ${f(h2, 1)} mm con ${f(r2, 2)} mm. h por r vale ${f(kk, 1)} mm².` }, extra)), estado: {} });
+        const curva = { puntos: Array.from({ length: 40 }, (_, i) => { const rr = desde + i * (xmax - desde) / 39; return [rr, kk / rr]; }), color: 'i' };
+        const p1 = { x: r1, y: h1, color: 'i', rotulo: `${h1} mm` };
+        const menor = r2 < r1;
+        return {
+          enunciado: ['Un líquido sube ', h, ` = ${h1} mm en un tubo de `, r, ` = ${f(r1, 2)} mm. ¿Cuánto sube el mismo líquido en un tubo de ${f(r2, 2)} mm?`],
+          dibujo: ejes({ puntos: [p1] }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la altura ', h, ` que sube el mismo líquido en el tubo de ${f(r2, 2)} mm.`] },
+            { tipo: 'datos', texto: [`En el tubo de ${f(r1, 2)} mm sube ${h1} mm. Es el mismo líquido y el mismo vidrio.`] },
+            { tipo: 'regla', texto: ['Con el mismo líquido, la altura que sube por el radio del tubo da siempre lo mismo: tubo más angosto, subida mayor.'],
+              ecuacion: [{ sub: [h, '1'] }, ' · ', { sub: [r, '1'] }, ' = ', { sub: [h, '2'] }, ' · ', { sub: [r, '2'] }] },
+            { tipo: 'cuentas', texto: ['Calculo el producto ', h, ' · ', r, ' del primer tubo y lo divido entre el radio nuevo.'],
+              ecuacion: [h, ' · ', r, ` = ${h1} · ${f(r1, 2)} = ${f(kk, 1)} mm²   →   `, h, ` = ${f(kk, 1)} / ${f(r2, 2)} = ${f(h2, 1)} mm`],
+              dibujo: ejes({ curvas: [curva], puntos: [p1, { x: r2, y: h2, color: 'i', rotulo: `${f(h2, 1)} mm`, guias: true }] }) },
+            { tipo: 'sentido', texto: [`El tubo nuevo es más ${menor ? 'angosto' : 'ancho'}, así que el líquido debía subir ${menor ? 'más' : 'menos'}: de ${h1} a ${f(h2, 1)} mm. De vuelta, ${f(h2, 1)} · ${f(r2, 2)} da otra vez unos ${f(h2 * r2, 1)} mm².`] },
+          ],
+          respuesta: [h, ` = ${f(h2, 1)} mm`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Usa que h por r se mantiene.',
       generar(s) {
@@ -285,6 +370,16 @@
     titulo: 'Hervir es igualar la presión',
     temas: ['Presión de vapor y punto de ebullición'],
     pieza: 'ejes',
+    // Lee (fase 2): evaporar, presión de vapor y hervir, y cómo leer la figura. No dice hacia dónde se mueve la ebullición
+    // cuando la presión de afuera sube («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Secarse sin hervir', texto: 'La ropa tendida en Juliaca se seca aunque el agua nunca hierva. Del líquido siempre escapan algunas moléculas hacia el aire: el agua se evapora poco a poco.' },
+        { titulo: 'Presión de vapor', texto: 'En un frasco cerrado, las moléculas que escapan del líquido forman vapor y empujan. Cuando escapan tantas como vuelven al líquido, esa presión ya no cambia: es la presión de vapor.' },
+        { titulo: 'Hervir es otra cosa', texto: 'Al hervir, se forman burbujas de vapor dentro del líquido, no solo en la superficie. Evaporarse, en cambio, pasa solo en la superficie y a cualquier temperatura.' },
+        { titulo: 'Qué mirar', texto: ['En el juego, la curva es la presión de vapor del agua y la línea punteada, la presión de afuera. Mira en qué temperatura ', T, ' se cortan.'] },
+      ],
+    },
     juega: {
       consigna: 'La curva es la presión del vapor del agua a cada temperatura. La presión de afuera sube y baja sola: mira dónde corta la curva.',
       voz: 'Busca la temperatura de ebullición en Juliaca.',
@@ -333,6 +428,29 @@
       condicion: 'sustancia pura; la presión de vapor depende de la temperatura, no de cuánto líquido hay ni del tamaño del frasco.',
       voz: 'Antes de hervir ya hay vapor. Hervir es otra cosa.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con azar(s + 900) y la misma curva (Antoine, ebulle()).
+    resuelve: {
+      generar(s) {
+        const a = azar(s + 900), pk = a.de([50, 60, 70, 80, 90, 120, 140, 160, 180]), tb = ebulle(pk), tr = Math.round(tb);
+        const alta = pk < 101, lugar = alta ? 'en una ciudad alta' : 'en una olla a presión';
+        const Teb = { sub: [T, 'eb'] };
+        return {
+          enunciado: [`El agua está ${lugar}, con `, P, ` = ${pk} kPa sobre ella. Según su curva de presión de vapor, ¿a qué temperatura hierve?`],
+          dibujo: { datos: ejesPv({ curvas: [{ puntos: curvaPv, color: 'o' }, linea(pk)] }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la temperatura ', Teb, ` a la que hierve el agua con ${pk} kPa encima.`] },
+            { tipo: 'datos', texto: ['La presión de afuera es ', P, ` = ${pk} kPa. Al nivel del mar sería unos 101 kPa.`] },
+            { tipo: 'regla', texto: ['El agua hierve cuando la presión de su vapor alcanza a la presión de afuera. Busco en la curva dónde el vapor llega a ese valor.'],
+              ecuacion: [{ sub: [P, 'vapor'] }, '(', Teb, ') = ', { sub: [P, 'externa'] }] },
+            { tipo: 'cuentas', texto: [`Sigo la línea de ${pk} kPa hasta la curva y bajo al eje de temperatura. A ${tr} °C, la curva marca ${f(antoine(tr), 0)} kPa.`],
+              ecuacion: [Teb, ` ≈ ${f(tb, 0)} °C`],
+              dibujo: { datos: ejesPv({ curvas: [{ puntos: curvaPv, color: 'o' }, linea(pk)], puntos: [{ x: tb, y: pk, color: 'h', rotulo: `${f(tb, 0)} °C`, guias: true }] }), estado: {} } },
+            { tipo: 'sentido', texto: [`Hay ${alta ? 'menos' : 'más'} presión que al nivel del mar, así que hierve ${alta ? 'antes' : 'después'} de los 100 °C: a unos ${f(tb, 0)} °C. Cuadra.`] },
+          ],
+          respuesta: [`Hierve a unos ${f(tb, 0)} °C.`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Busca dónde la curva alcanza esa presión.',
       generar(s) {
@@ -377,6 +495,8 @@
     curvas: CURVAS_CO2,
     alt: 'Diagrama de fases del CO₂: sólido a la izquierda arriba, líquido en el centro arriba y gas abajo. Punto triple a −56,6 °C y 5,1 atm; punto crítico a 31 °C y 72,9 atm.',
   }, extra);
+  // Puntos (T en °C, P en atm) de «Ahora tú» y de «Así se resuelve».
+  const PUNTOS = [[-80, 10], [-40, 1], [0, 60], [20, 30], [-60, 2], [10, 70], [-20, 40], [35, 76], [-90, 40], [25, 66]];
   const dibFase = val => ({ datos: ejesFase({ puntos: [{ x: val.t, y: val.p, color: 'o', rotulo: fase(val.t, val.p) }] }), estado: {} });
   const arrastreFase = { id: 'punto', etiqueta: 'punto del mapa: temperatura y presión', color: 'c-o',
     donde: val => { const g = EJES().geometria(dibFase(val).datos); return { x: g.X(val.t), y: g.Y(val.p) }; },
@@ -386,6 +506,15 @@
     titulo: 'El mapa de las fases',
     temas: ['Diagrama de fases'],
     pieza: 'ejes',
+    // Lee (fase 2): el mapa, sus fronteras y el hielo seco. No dice qué le pasa al CO₂ sólido a 1 atm («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un mapa', texto: ['Un diagrama de fases es un mapa. La temperatura ', T, ' va en el eje horizontal y la presión ', P, ' en el vertical. Cada punto dice en qué fase está la sustancia con esas condiciones.'] },
+        { titulo: 'Las fronteras', texto: 'Las curvas del mapa son fronteras entre regiones. Sobre una frontera conviven dos fases, como el agua y el hielo de una jarra a 0 °C y 1 atm.' },
+        { titulo: 'El CO₂', texto: 'El dióxido de carbono, CO₂, es el gas que exhalas y el de las burbujas de una gaseosa. Sólido se llama hielo seco y se usa para mantener muy frías las vacunas y los helados.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, mueve el punto por el mapa del CO₂ y lee en qué fase queda. Fíjate qué curva cruzas al pasar de una región a otra.' },
+      ],
+    },
     juega: {
       consigna: 'Diagrama de fases del CO₂. La presión sube y baja sola: lee en qué fase está. Cambia la temperatura y mueve el punto.',
       voz: 'Busca dónde está el CO₂ líquido.',
@@ -432,10 +561,46 @@
       condicion: 'es el equilibrio de una sustancia pura: no dice cuánto tarda el cambio. Cada sustancia tiene su propio diagrama.',
       voz: 'Ubica el punto y lee la región. El mapa no corre solo.',
     },
+    // Así se resuelve (fase 2): un punto de «Ahora tú» elegido con azar(s + 900). Las cuentas comparan el punto con la
+    // frontera que le toca, con las mismas curvas que usa fase() (psub, pvap, tfus y el punto crítico).
+    resuelve: {
+      generar(s) {
+        const a = azar(s + 900), [t, p] = a.de(PUNTOS), ok = fase(t, p);
+        let txt, ec, ref;
+        if (t >= TC[0]) {
+          txt = `Pasa de 31 °C, la temperatura del punto crítico. Ahí no hay líquido: si la presión pasa de 72,9 atm es supercrítico; si no, gas.`;
+          ec = [P, ` = ${p} atm ${p >= TC[1] ? '≥' : '<'} 72,9 atm`]; ref = { x: TC[0], y: TC[1], color: 'h', rotulo: 'punto crítico' };
+        } else if (t <= TP[0]) {
+          const ps = psub(t);
+          txt = `A ${f(t, 0)} °C, más frío que el punto triple, la frontera es la curva de sublimación. Arriba de ella es sólido; abajo, gas.`;
+          ec = [{ sub: [P, 'sub'] }, `(${f(t, 0)} °C) ≈ ${f(ps, 1)} atm ${p > ps ? '<' : '≥'} ${p} atm`]; ref = { x: t, y: ps, color: 'h', rotulo: `${f(ps, 1)} atm` };
+        } else if (t < tfus(p)) {
+          const tf = tfus(p);
+          txt = `A ${p} atm, la línea de fusión está en ${f(tf, 1)} °C. El punto queda a su izquierda: sólido.`;
+          ec = [T, ` = ${f(t, 0)} °C < ${f(tf, 1)} °C`]; ref = { x: tf, y: p, color: 'h', rotulo: `${f(tf, 1)} °C` };
+        } else {
+          const pv = pvap(t);
+          txt = `A ${f(t, 0)} °C ya pasó la línea de fusión; la frontera es la curva de vaporización. Arriba de ella es líquido; abajo, gas.`;
+          ec = [{ sub: [P, 'vap'] }, `(${f(t, 0)} °C) ≈ ${f(pv, 1)} atm ${p > pv ? '<' : '≥'} ${p} atm`]; ref = { x: t, y: pv, color: 'h', rotulo: `${f(pv, 1)} atm` };
+        }
+        const lado = { 'sólido': 'arriba de la sublimación', 'líquido': 'arriba de la vaporización', gas: 'debajo de las curvas', 'supercrítico': 'pasado el punto crítico' }[ok];
+        return {
+          enunciado: ['Según el diagrama del CO₂, ¿en qué fase está a ', T, ` = ${f(t, 0)} °C y `, P, ` = ${p} atm?`],
+          dibujo: { datos: ejesFase({ puntos: [{ x: t, y: p, color: 'o', rotulo: '?' }] }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la fase del CO₂ a ', T, ` = ${f(t, 0)} °C y `, P, ` = ${p} atm: en qué región del mapa cae el punto.`] },
+            { tipo: 'datos', texto: 'Punto triple del CO₂: −56,6 °C y 5,1 atm. Punto crítico: 31 °C y 72,9 atm.' },
+            { tipo: 'regla', texto: 'Cada región del mapa es una fase. Ubico el punto y lo comparo con la curva que hace de frontera a esa temperatura.' },
+            { tipo: 'cuentas', texto: txt, ecuacion: ec, dibujo: { datos: ejesFase({ puntos: [ref, { x: t, y: p, color: 'o', rotulo: ok }] }), estado: {} } },
+            { tipo: 'sentido', texto: `En el dibujo, el punto queda ${lado}: en la región del ${ok}. Las cuentas y el mapa dicen lo mismo.` },
+          ],
+          respuesta: [`${f(t, 0)} °C y ${p} atm: ${ok}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Ubica el punto en el mapa.',
       generar(s) {
-        const PUNTOS = [[-80, 10], [-40, 1], [0, 60], [20, 30], [-60, 2], [10, 70], [-20, 40], [35, 76], [-90, 40], [25, 66]];
         const [t, p] = PUNTOS[s % PUNTOS.length], ok = fase(t, p);
         const todas = ['sólido', 'líquido', 'gas', 'supercrítico'];
         const si = { 'sólido': 'Sería sólido si el punto quedara a la izquierda de la fusión y sobre la sublimación.', 'líquido': 'Sería líquido si estuviera entre la fusión y la curva de vaporización.', gas: 'Sería gas si quedara debajo de las curvas de sublimación y vaporización.', 'supercrítico': 'Sería supercrítico si pasara de 31 °C y de 72,9 atm a la vez.' };
@@ -470,6 +635,17 @@
     titulo: 'Aire húmedo y rocío',
     temas: ['Gases húmedos y humedad relativa'],
     pieza: 'quim-particulas',
+    // Lee (fase 2): vapor en el aire, qué es la humedad relativa y el gas recogido sobre agua. No dice qué pasa al
+    // enfriar el aire («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Vapor que no se ve', texto: 'El aire siempre lleva algo de vapor de agua, aunque no se vea. En la selva hay mucho; en el altiplano, en los meses secos, muy poco. Ese vapor suma su propia presión a la del aire.' },
+        { titulo: 'Humedad relativa', texto: ['Cuando el pronóstico dice «humedad 60 %», habla de la humedad relativa. Compara el vapor que hay en el aire con el máximo que podría tener a esa temperatura, la presión de saturación.'],
+          ecuacion: ['HR = 100 · ', { frac: [{ sub: [P, 'vapor'] }, { sub: [P, 'sat'] }] }, ' %'] },
+        { titulo: 'Gas sobre agua', texto: 'En el laboratorio, a veces un gas se recoge haciéndolo burbujear dentro de un frasco lleno de agua, puesto boca abajo. Ese gas sale húmedo: lleva vapor de agua mezclado.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, cada bolita de agua que flota es vapor. Cambia la temperatura y cuenta cuántas caben flotando; las que no caben quedan abajo, como gotas.' },
+      ],
+    },
     juega: {
       consigna: 'Cada molécula de agua en el aire aporta 0,5 kPa. El vapor entra y sale solo; cambia la temperatura. Lo que no cabe se condensa.',
       voz: 'Mira cuánto vapor cabe a cada temperatura.',
@@ -509,6 +685,49 @@
       ecuacion: ['HR = 100 · ', { frac: [{ sub: [P, 'vapor'] }, { sub: [P, 'sat'] }] }, ' %', '   ·   ', { sub: [P, 'seco'] }, ' = ', { sub: [P, 'total'] }, ' − ', { llave: [{ sub: [P, 'vapor'] }], nota: 'del agua', color: 'c-o' }],
       condicion: 'gas ideal; la presión de saturación es la del agua a la misma temperatura del aire.',
       voz: 'Primero cuánto cabe; después cuánto hay.',
+    },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» (gas seco si s es impar, humedad relativa si es par), con
+    // azar(s + 900) y las mismas cuentas. En la humedad relativa el vapor va de 0,5 en 0,5 kPa, para que la caja use el
+    // modelo del juego (0,5 kPa por molécula, humedo() y cajaHumeda()).
+    resuelve: {
+      generar(s) {
+        const a = azar(s + 900), t = a.de([15, 20, 25, 30]), ps = PSAT[t];
+        if (s % 2) {
+          const pt = a.ent(95, 101), seco = pt - ps;
+          const caja = (to, tv) => lupa([{ titulo: `${t} °C, sobre agua`, forma: 'caja', particulas: [{ e: 'O2', n: 6 }, { e: 'H2O', n: 1 }],
+            cuenta: [{ e: 'O2', texto: to }, { e: 'H2O', texto: tv }], rotulo: `${pt} kPa en total` }], { especies: Object.assign({}, ESPECIES, { O2: [['O', -5, 0], ['O', 5, 0]] }) });
+          const Ps = { sub: [P, 'seco'] }, Pt = { sub: [P, 'total'] }, Pv = { sub: [P, 'vapor'] };
+          return {
+            enunciado: [`Se recoge oxígeno sobre agua a ${t} °C; la presión total es `, Pt, ` = ${pt} kPa. ¿Cuál es la presión del oxígeno seco? (agua a ${t} °C: ${f(ps, 2)} kPa)`],
+            dibujo: caja('¿?', `${f(ps, 2)} kPa`),
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la presión del oxígeno seco: la que tendría sin el vapor de agua que se le mezcló.'] },
+              { tipo: 'datos', texto: ['La presión total es ', Pt, ` = ${pt} kPa a ${t} °C. A esa temperatura, el vapor de agua aporta ${f(ps, 2)} kPa.`] },
+              { tipo: 'regla', texto: ['Un gas recogido sobre agua sale húmedo: la presión total es la del gas más la del vapor. Para el gas seco, resto el vapor.'],
+                ecuacion: [Ps, ' = ', Pt, ' − ', Pv] },
+              { tipo: 'cuentas', texto: [`Resto la presión del vapor de agua a ${t} °C.`], ecuacion: [Ps, ` = ${pt} − ${f(ps, 2)} = ${f(seco, 2)} kPa`],
+                dibujo: caja(`${f(seco, 2)} kPa`, `${f(ps, 2)} kPa`) },
+              { tipo: 'sentido', texto: [`El oxígeno seco da un poco menos que la total, y de vuelta: ${f(seco, 2)} + ${f(ps, 2)} = ${pt} kPa. Cuadra.`] },
+            ],
+            respuesta: [Ps, ` = ${f(seco, 2)} kPa`],
+          };
+        }
+        const nv = a.de([1, 2, 3]), pv = nv * KV, hr = 100 * pv / ps;
+        return {
+          enunciado: [`El aire a ${t} °C tiene `, { sub: [P, 'vapor'] }, ` = ${f(pv, 1)} kPa. ¿Cuál es su humedad relativa? (saturación a ${t} °C: ${f(ps, 2)} kPa)`],
+          dibujo: lupa([cajaHumeda(nv, t, { rotulo: 'HR = ¿?' })]),
+          pasos: [
+            { tipo: 'pide', texto: [`Piden la humedad relativa del aire a ${t} °C, en porcentaje.`] },
+            { tipo: 'datos', texto: ['Hay ', { sub: [P, 'vapor'] }, ` = ${f(pv, 1)} kPa de vapor. A ${t} °C, el aire se satura con ${f(ps, 2)} kPa.`] },
+            { tipo: 'regla', texto: ['La humedad relativa compara el vapor que hay con el máximo que cabe a esa temperatura, y lo dice en porcentaje.'],
+              ecuacion: ['HR = 100 · ', { frac: [{ sub: [P, 'vapor'] }, { sub: [P, 'sat'] }] }, ' %'] },
+            { tipo: 'cuentas', texto: ['Divido el vapor que hay entre el que cabe y multiplico por 100.'], ecuacion: [`HR = 100 · ${f(pv, 1)} / ${f(ps, 2)} = ${f(hr, 0)} %`],
+              dibujo: lupa([cajaHumeda(nv, t)]) },
+            { tipo: 'sentido', texto: [`Hay menos vapor del que cabe, así que la humedad debía quedar debajo de 100 %: ${f(hr, 0)} %. En la caja, ninguna molécula queda abajo como gota.`] },
+          ],
+          respuesta: [`HR = ${f(hr, 0)} %`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Busca la presión de saturación a esa temperatura.',
@@ -599,6 +818,8 @@
         ejemplo: 'Agua en un tubo de 0,5 mm de radio: sube unos 3 cm.', ver: ['tensión superficial'] },
       { termino: 'presión de vapor', medida: 'kPa', def: 'Presión del vapor sobre su líquido en un frasco cerrado, cuando se evapora tanto como se condensa.',
         formas: ['presión de vapor', 'presiones de vapor'], ejemplo: 'Agua a 20 °C: 2,3 kPa.', ver: ['ebullición'] },
+      { termino: 'evaporación', def: 'Paso lento de líquido a gas por la superficie, a cualquier temperatura y sin burbujas.',
+        formas: ['evaporación', 'evapora', 'evaporarse'], ejemplo: 'La ropa tendida se seca sin que el agua hierva.', ver: ['ebullición', 'presión de vapor'] },
       { termino: 'ebullición', def: 'Cuando la presión de vapor de un líquido iguala la de afuera: se forman burbujas de vapor en todo él.',
         formas: ['temperatura de ebullición', 'ebullición', 'hierve', 'hervir'], ejemplo: 'En Juliaca, a 63 kPa, el agua lo hace a 87 °C.', ver: ['presión de vapor'] },
       { termino: 'diagrama de fases', def: 'Mapa de presión contra temperatura que dice en qué estado está estable una sustancia.',
@@ -613,6 +834,8 @@
         formas: ['sublimación', 'sublima', 'sublimar'], ejemplo: 'El hielo seco a 1 atm.', ver: ['diagrama de fases'] },
       { termino: 'humedad relativa', medida: '%', def: 'Cuánto vapor de agua tiene el aire comparado con el máximo que cabe a esa temperatura.',
         ver: ['presión de vapor'] },
+      { termino: 'presión de saturación', simbolo: 'Pₛₐₜ', medida: 'kPa', def: 'La mayor presión de vapor de agua que cabe en el aire a una temperatura; lo que sobra se condensa.',
+        ejemplo: 'A 20 °C: 2,34 kPa.', ver: ['humedad relativa', 'presión de vapor'] },
       { termino: 'gas húmedo', def: 'Gas recogido sobre agua: lleva vapor de agua mezclado, que suma su presión.',
         formas: ['gas húmedo', 'gases húmedos'], ver: ['gas seco'] },
       { termino: 'gas seco', def: 'La parte del gas húmedo que no es vapor: su presión es la total menos la del vapor.',
