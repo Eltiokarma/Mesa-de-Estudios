@@ -56,6 +56,9 @@
   // Seno y coseno de los ángulos de examen como coeficiente por raíz: [coef, raíz].
   const SEN = { 30: [0.5, 1], 37: [0.6, 1], 45: [0.5, 2], 53: [0.8, 1], 60: [0.5, 3], 90: [1, 1] };
   const COS = { 30: [0.5, 3], 37: [0.8, 1], 45: [0.5, 2], 53: [0.6, 1], 60: [0.5, 1], 90: [0, 1] };
+  // Valor notable de la tabla como fracción (√3/2, 4/5, 1/2) y como decimal, para «Así se resuelve».
+  const notable = ([c, n]) => (c === 0.5 ? (n === 1 ? '1/2' : `√${n}/2`) : `${f(c * 5)}/5`);
+  const aprox = (k, n) => f(k * Math.sqrt(n));
 
   // ---------- Vectores 3D (y hacia arriba, z hacia quien mira) ----------
   const sum = (...vs) => vs.reduce((s, v) => [s[0] + v[0], s[1] + v[1], s[2] + v[2]]);
@@ -104,11 +107,25 @@
       rotulos: conA.map(c => ({ x: c.rotulo[0], y: c.rotulo[1], z: c.rotulo[2], texto: `${90 - fi}°`, color: 'h', desde: k.a || 0, hasta: k.hT })),
     };
   };
+  // Ternas del poste para «Ahora tú» y «Así se resuelve»: alto y piso cambian de lugar según la semilla.
+  const posteCaso = (r, s) => {
+    const [p, q, h] = r.de([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15], [12, 16, 20], [7, 24, 25]]);
+    const [alto, piso] = s % 4 < 2 ? [p, q] : [q, p];
+    return { alto, piso, h };
+  };
   const perpIdea = {
     id: 'recta-perpendicular',
     titulo: 'Perpendicular a todo el plano',
     temas: ['Recta perpendicular a un plano'],
     pieza: 'geo-figura',
+    // Lee (fase 2): contexto y vocabulario. No dice cuántas rectas del piso hacen falta (eso lo pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Bien parada', texto: 'En una obra de Juliaca, el maestro revisa que cada columna quede bien parada antes de vaciar el concreto. Decimos que la columna es perpendicular al piso.' },
+        { titulo: 'Recta y plano', texto: 'En el espacio, una recta puede quedar dentro de un plano, no tocarlo nunca o cortarlo en un solo punto. Ese punto donde lo corta es su pie.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, la varilla L sale del punto O del piso. Por O pasan dos rectas del piso, a y b. Inclina la varilla y lee el ángulo que forma con cada una.' },
+      ],
+    },
     juega: {
       consigna: 'La varilla L sale del punto O del piso. Inclínala y mira qué ángulo forma con las rectas a y b del piso.',
       voz: 'Inclina la varilla. ¿Con cuál recta sigue a 90°?',
@@ -149,11 +166,34 @@
       condicion: 'a y b se cortan. Dos rectas paralelas del plano no bastan.',
       voz: 'Dos rectas que se cortan. Una sola no alcanza.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con otras semillas, con las mismas ternas (posteCaso).
+    resuelve: {
+      generar(s) {
+        const { alto, piso, h } = posteCaso(azar(s + 900), s), cable = s % 2 === 0;
+        const P = { v: 'c-o', t: 'poste' }, Q = { v: 'c-d', t: 'piso' }, C = { v: 'c-h', t: 'cable' };
+        const hip = h * h, sumaC = alto * alto + piso * piso;
+        return {
+          enunciado: cable
+            ? [`Un poste vertical de ${alto} m está en un piso horizontal. Se tiende un cable desde su punta hasta un punto del piso a ${piso} m del pie. ¿Cuánto mide el cable?`]
+            : [`Un cable de ${h} m va desde la punta de un poste vertical hasta un punto del piso a ${piso} m del pie. ¿Cuánto mide el poste?`],
+          pasos: [
+            { tipo: 'pide', texto: cable ? 'Piden el largo del cable: el tramo recto desde la punta del poste hasta el punto del piso.' : 'Piden la altura del poste, desde su pie hasta su punta.' },
+            { tipo: 'datos', texto: cable ? 'El poste es vertical y mide lo que se da. El punto del piso está a una distancia conocida del pie.' : 'Se conocen el cable y la distancia del pie al punto del piso donde llega el cable.',
+              ecuacion: cable ? [P, ` = ${alto} m`, SEP, Q, ` = ${piso} m`] : [C, ` = ${h} m`, SEP, Q, ` = ${piso} m`] },
+            { tipo: 'regla', texto: 'Un poste vertical forma 90° con cualquier recta del piso que pase por su pie. Poste, tramo del piso y cable arman un triángulo rectángulo.' },
+            { tipo: 'cuentas', texto: cable ? 'El cable es la hipotenusa: sumo los cuadrados de los dos catetos y saco la raíz.' : 'El poste es un cateto: al cuadrado del cable le resto el cuadrado del tramo del piso.',
+              ecuacion: cable ? [C, ` = √(${alto}² + ${piso}²) = √${sumaC} = ${h} m`] : [P, ` = √(${h}² − ${piso}²) = √${hip - piso * piso} = ${alto} m`] },
+            { tipo: 'sentido', texto: cable ? `El cable, ${h} m, es más largo que el poste y que el tramo del piso, pero más corto que ir por el pie: ${alto + piso} m.`
+              : `El poste, ${alto} m, es más corto que el cable, ${h} m. Comprueba: ${alto}² + ${piso}² = ${sumaC} = ${h}².` },
+          ],
+          respuesta: cable ? [C, ` = ${h} m`] : [P, ` = ${alto} m`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'El poste forma 90° con toda recta del piso que pase por su pie.',
       generar(s) {
-        const r = azar(s), [p, q, h] = r.de([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15], [12, 16, 20], [7, 24, 25]]);
-        const [alto, piso] = s % 4 < 2 ? [p, q] : [q, p];
+        const { alto, piso, h } = posteCaso(azar(s), s);
         if (s % 2 === 0) return {
           pregunta: [`Un poste vertical de ${alto} m está en un piso horizontal. Un punto del piso está a ${piso} m del pie del poste. ¿Qué distancia hay desde la punta del poste hasta ese punto?`],
           opciones: opcionesTxt(`${h} m`, [
@@ -196,11 +236,24 @@
       rotulos: ar ? [{ x: ar.rotulo[0], y: ar.rotulo[1], z: ar.rotulo[2], texto: `${th}°`, color: 'h', desde: k.a || 0 }] : [],
     };
   };
+  // Caso de «Ahora tú» y «Así se resuelve»: ángulo de examen y un largo que deja catetos exactos.
+  const segCaso = (r, s) => {
+    const th = r.de([30, 37, 53, 60]), m = r.ent(1, 6), L = th === 37 || th === 53 ? 5 * m : 2 * m;
+    return { th, L, proy: raiz(L * COS[th][0], COS[th][1]), alto: raiz(L * SEN[th][0], SEN[th][1]), pideP: s % 2 === 0 };
+  };
   const proyIdea = {
     id: 'proyeccion-y-angulo',
     titulo: 'La sombra que mide el ángulo',
     temas: ['Proyección ortogonal', 'Ángulo entre recta y plano'],
     pieza: 'geo-figura',
+    // Lee (fase 2): vocabulario de la proyección. No dice cómo se calcula su largo (eso lo pregunta «Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'La sombra de mediodía', texto: 'Cerca del mediodía, en Puno, el sol cae casi vertical sobre el patio. La sombra que deja una figura cuando cada punto baja a 90° hasta el piso se llama proyección ortogonal.' },
+        { titulo: 'El pie B′', texto: 'Desde la punta B de un segmento AB baja una perpendicular hasta el plano. Donde toca está B′. El segmento AB′, dentro del plano, es la proyección de AB.' },
+        { titulo: 'Qué mirar', texto: 'Cuando juegues, cambia el ángulo real y gira la cámara. Fíjate qué cambia en el dibujo y qué número de la lectura se queda igual.' },
+      ],
+    },
     juega: {
       consigna: 'B′ es el pie de la perpendicular desde B al plano. Cambia el ángulo real y gira la cámara: compara lo dibujado con lo real.',
       voz: 'Gira la cámara. El ángulo real no cambia; el dibujo sí.',
@@ -245,11 +298,32 @@
       condicion: 'θ va de 0° a 90°. Se mide con la proyección, no con el dibujo ni con otra recta del plano.',
       voz: 'Primero la perpendicular; después el triángulo rectángulo.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con otras semillas, con las mismas cuentas (segCaso).
+    resuelve: {
+      generar(s) {
+        const { th, L, proy, alto, pideP } = segCaso(azar(s + 900), s), T = pideP ? COS : SEN;
+        const AB = { v: 'c-o', t: 'AB' }, AP = { v: 'c-d', t: 'AB′' }, BB = { v: 'c-i', t: 'BB′' }, th_ = { v: 'c-h', t: 'θ' };
+        const fig = o => ({ datos: proyFig(th, -30, Object.assign({ AB: `${L}`, alt: `Segmento AB de ${L} cm a ${th}° del plano, con su proyección AB′ y la altura BB′` }, o)), estado: {} });
+        return {
+          enunciado: [`Un segmento AB de ${L} cm forma ${th}° con un plano. ¿Cuánto mide ${pideP ? 'su proyección AB′ sobre el plano' : 'la distancia BB′ de su extremo B al plano'}?`],
+          dibujo: fig({ pasos: { p: 99 } }),
+          pasos: [
+            { tipo: 'pide', texto: pideP ? ['Piden la proyección ', AP, ': la sombra de AB que queda dentro del plano.'] : ['Piden la altura ', BB, ': cuánto está B por encima del plano.'] },
+            { tipo: 'datos', texto: 'Se conoce el largo del segmento y el ángulo que forma con el plano.', ecuacion: [AB, ` = ${L} cm`, SEP, th_, ` = ${th}°`] },
+            { tipo: 'regla', texto: ['Bajo la perpendicular desde B hasta el plano: cae en B′. El triángulo ABB′ es rectángulo en B′, y el ángulo ', th_, ' está en A, junto a la sombra.'], dibujo: fig({}) },
+            { tipo: 'cuentas', texto: pideP ? ['La sombra ', AP, ' es el cateto junto al ángulo: lleva el coseno.'] : ['La altura ', BB, ' es el cateto opuesto al ángulo: lleva el seno.'],
+              ecuacion: [pideP ? AP : BB, ` = ${L} · ${pideP ? 'cos' : 'sen'} ${th}° = ${L} · ${notable(T[th])} = ${pideP ? proy : alto} cm`],
+              dibujo: fig(pideP ? { ABp: proy } : { BB: alto }) },
+            { tipo: 'sentido', texto: `${pideP ? proy : alto}${T[th][1] > 1 ? ` ≈ ${aprox(L * T[th][0], T[th][1])}` : ''} cm es menos que ${L} cm: un cateto siempre es más corto que el segmento inclinado.` },
+          ],
+          respuesta: [pideP ? AP : BB, ` = ${pideP ? proy : alto} cm`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Arma el triángulo rectángulo con la perpendicular al plano.',
       generar(s) {
-        const r = azar(s), th = r.de([30, 37, 53, 60]), m = r.ent(1, 6), L = th === 37 || th === 53 ? 5 * m : 2 * m;
-        const proy = raiz(L * COS[th][0], COS[th][1]), alto = raiz(L * SEN[th][0], SEN[th][1]), pideP = s % 2 === 0;
+        const { th, L, proy, alto, pideP } = segCaso(azar(s), s);
         return {
           pregunta: [`Un segmento de ${L} cm forma ${th}° con un plano. ¿Cuánto mide ${pideP ? 'su proyección sobre el plano' : 'la distancia de su extremo superior al plano'}?`],
           opciones: opcionesTxt(`${pideP ? proy : alto} cm`, [
@@ -288,11 +362,25 @@
       donde: v => enPantalla(fig(v), [XL - v.d * E3, 0, 0.3]),
       mover: (p, v) => ({ d: G.sobreRecta(fig(v), [XL, 0, 0.3], [XL - E3, 0, 0.3], p) }) },
   ];
+  // Ternas de «Ahora tú» y «Así se resuelve»: PA y AB cambian de lugar según la semilla.
+  const tresCaso = (r, s) => {
+    const [p, q, h] = r.de([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15], [12, 16, 20]]);
+    const [pa, ab] = s % 4 < 2 ? [p, q] : [q, p];
+    return { pa, ab, h };
+  };
   const tresIdea = {
     id: 'tres-perpendiculares',
     titulo: 'Tres perpendiculares',
     temas: ['Teorema de las tres perpendiculares'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es la distancia a una recta y qué hay en la figura. No dice qué segmento la mide («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Un punto en el aire', texto: 'Una lámpara del alumbrado público cuelga sobre la pista de una calle de Juliaca. ¿Qué tan lejos está del borde recto de la vereda? Es la distancia de un punto a una recta, aunque el punto esté en el aire.' },
+        { titulo: 'Distancia a una recta', texto: 'En el plano y en el espacio, la distancia de un punto a una recta se mide por el camino más corto entre los dos. Ese camino llega a la recta formando 90°.' },
+        { titulo: 'Qué ves en el juego', texto: 'PA baja a 90° hasta el plano y A es su pie. La recta l está en el plano, y AB es el camino más corto de A hasta l. Mueve P y A, y mira el segmento PB.' },
+      ],
+    },
     juega: {
       consigna: 'PA es perpendicular al plano y AB es perpendicular a la recta l. Cambia la altura de P y la distancia de A a l.',
       voz: 'Mira el ángulo de PB con la recta l.',
@@ -335,11 +423,39 @@
       condicion: 'A y B están en el plano; B es el pie de la perpendicular desde A a l.',
       voz: 'Primero al plano, luego a la recta. La tercera sale sola.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con otras semillas y las mismas ternas (tresCaso). La figura
+    // se dibuja a escala de la idea (el lado mayor, 4) con las medidas del problema en los rótulos.
+    resuelve: {
+      generar(s) {
+        const { pa, ab, h } = tresCaso(azar(s + 900), s), pidePB = s % 2 === 0, e = 4 / Math.max(pa, ab);
+        const PA = { v: 'c-i', t: 'PA' }, AB = { v: 'c-d', t: 'AB' }, PB = { v: 'c-h', t: 'PB' };
+        const fig = o => ({ datos: tresFig(pa * e, ab * e, Object.assign({ PA: pidePB ? `${pa}` : '', AB: `${ab}`,
+          alt: `PA perpendicular al plano; A a ${ab} de la recta l; PB es la distancia de P a l` }, o)), estado: {} });
+        return {
+          enunciado: pidePB
+            ? [`PA es perpendicular a un plano y mide ${pa}. Una recta l del plano está a ${ab} de A. ¿Cuál es la distancia de P a la recta l?`]
+            : [`PA es perpendicular a un plano. La distancia de P a una recta l del plano es ${h}, y la de A a l es ${ab}. ¿Cuánto mide PA?`],
+          dibujo: fig(pidePB ? { pasos: { p: 99 } } : { PB: `${h}` }),
+          pasos: [
+            { tipo: 'pide', texto: pidePB ? 'Piden la distancia de P a la recta l: el camino más corto desde P hasta l.' : ['Piden ', PA, ': cuánto sube P sobre el plano.'] },
+            { tipo: 'datos', texto: pidePB ? ['PA cae a 90° sobre el plano; ', AB, ' es la distancia de A a la recta l.'] : [PB, ' es la distancia de P a l y ', AB, ', la de A a l.'],
+              ecuacion: pidePB ? [PA, ` = ${pa}`, SEP, AB, ` = ${ab}`] : [PB, ` = ${h}`, SEP, AB, ` = ${ab}`] },
+            { tipo: 'regla', texto: ['PA es perpendicular al plano y AB es perpendicular a l. Entonces ', PB, ' también llega a l formando 90°: PB es la distancia de P a l.'],
+              dibujo: fig(pidePB ? {} : { PB: `${h}` }) },
+            { tipo: 'cuentas', texto: pidePB ? ['El triángulo PAB es rectángulo en A, y ', PB, ' es la hipotenusa.'] : ['El triángulo PAB es rectángulo en A, y ', PA, ' es un cateto.'],
+              ecuacion: pidePB ? [PB, ` = √(${pa}² + ${ab}²) = √${pa * pa + ab * ab} = ${h}`] : [PA, ` = √(${h}² − ${ab}²) = √${h * h - ab * ab} = ${pa}`],
+              dibujo: fig({ PA: `${pa}`, PB: `${h}` }) },
+            { tipo: 'sentido', texto: pidePB ? `PB = ${h} es más que PA y que AB, pero menos que ${pa + ab}, el camino quebrado P → A → B.`
+              : `PA = ${pa} es más corto que PB = ${h}, que va inclinado. Comprueba: ${pa}² + ${ab}² = ${h}².` },
+          ],
+          respuesta: pidePB ? [PB, ` = ${h}`] : [PA, ` = ${pa}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Ubica el triángulo rectángulo PAB, recto en A.',
       generar(s) {
-        const r = azar(s), [p, q, h] = r.de([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15], [12, 16, 20]]);
-        const [pa, ab] = s % 4 < 2 ? [p, q] : [q, p];
+        const { pa, ab, h } = tresCaso(azar(s), s);
         if (s % 2 === 0) return {
           pregunta: [`PA es perpendicular a un plano y mide ${pa}. Una recta l del plano está a ${ab} de A. ¿Cuál es la distancia de P a la recta l?`],
           opciones: opcionesTxt(`${h}`, [
@@ -383,18 +499,31 @@
       rotulos: [{ x: ar.rotulo[0], y: ar.rotulo[1], z: ar.rotulo[2], texto: `${al}°`, color: 'i', desde: k.a || 0 }],
     };
   };
+  // Caso de «Ahora tú» y «Así se resuelve»: diedro de examen y una distancia a la arista que deja catetos exactos.
+  const diedroCaso = r => {
+    const al = r.de([30, 37, 45, 53, 60]), m = r.ent(1, 6), d = al === 37 || al === 53 ? 5 * m : 2 * m;
+    return { al, d, ok: raiz(d * SEN[al][0], SEN[al][1]), cs: raiz(d * COS[al][0], COS[al][1]) };
+  };
   const diedroIdea = {
     id: 'diedro',
     titulo: 'El diedro se mide de canto',
     temas: ['Ángulo diedro'],
     pieza: 'geo-figura',
+    // Lee (fase 2): vocabulario del diedro. No dice cómo se calcula la distancia a la otra cara («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Puerta y pared', texto: 'Una puerta entreabierta y la pared comparten la línea de las bisagras. Entre las dos hojas planas hay un ángulo diedro. Cada hoja es una cara, y la línea común es la arista.' },
+        { titulo: 'Se mide de canto', texto: 'Desde un punto O de la arista se traza una perpendicular a ella en cada cara. El ángulo entre esas dos es el ángulo plano: así se mide el diedro.' },
+        { titulo: 'Qué mirar', texto: 'En el juego, P está en la cara naranja, a 4 de la arista. Abre esa cara y mira cuánto mide PH, la distancia de P a la otra cara.' },
+      ],
+    },
     juega: {
       consigna: 'Dos semiplanos comparten la arista. Ábrelos como una puerta. El diedro se mide con dos perpendiculares a la arista desde O.',
-      voz: 'Abre la puerta. Mira cuánto sube P sobre el piso.',
+      voz: 'Abre la cara naranja. Mira cuánto sube P sobre la otra.',
       controles: [{ id: 'al', etiqueta: 'diedro', min: 15, max: 90, paso: 15, inicio: 45, unidad: '°', decimales: 0, color: 'c-i' }],
       dibujo: v => ({ datos: diedroFig(v.al, { d: '4', PH: f(4 * Math.sin(U.rad(v.al))) }), estado: {} }),
       // Se agarra P y se abre la puerta: P gira alrededor de O en el plano perpendicular a la arista.
-      arrastres: [{ id: 'punto-p', etiqueta: 'punto P de la puerta', color: 'c-i',
+      arrastres: [{ id: 'punto-p', etiqueta: 'punto P de la cara naranja', color: 'c-i',
         donde: v => enPantalla(diedroFig(v.al), sum([0, 0, 0.6], por([Math.cos(U.rad(v.al)), Math.sin(U.rad(v.al)), 0], 2.6))),
         mover: (p, v) => { const [u, w] = enPlano(diedroFig(v.al), [0, 0, 0.6], [1, 0, 0], [0, 1, 0], p); return { al: U.grados(Math.atan2(w, u)) }; } }],
       lectura: v => [nb('OP = 4'), SEP, nb(`PH = 4 · sen ${v.al}° = ${f(4 * Math.sin(U.rad(v.al)))}`)],
@@ -428,11 +557,31 @@
       condicion: 'OP es perpendicular a la arista y α es el ángulo plano del diedro, hasta 90°.',
       voz: 'Corta el diedro con un plano perpendicular a la arista.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con otras semillas, con las mismas cuentas (diedroCaso).
+    resuelve: {
+      generar(s) {
+        const { al, d, ok } = diedroCaso(azar(s + 900)), n = SEN[al][1];
+        const OP = { v: 'c-o', t: 'OP' }, A = { v: 'c-i', t: 'α' }, PH = { v: 'c-h', t: 'PH' };
+        const fig = o => ({ datos: diedroFig(al, Object.assign({ d: `${d}`, alt: `Diedro de ${al}°: P está en una cara a ${d} cm de la arista; PH es su distancia a la otra cara` }, o)), estado: {} });
+        return {
+          enunciado: [`Un diedro mide ${al}°. Un punto P de una de sus caras está a ${d} cm de la arista. ¿A qué distancia está P de la otra cara?`],
+          dibujo: fig({ pasos: { h: 99 } }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', PH, ': el segmento que baja desde P a 90° hasta la otra cara.'] },
+            { tipo: 'datos', texto: ['Se conocen el ángulo plano del diedro y ', OP, ', que va desde la arista hasta P formando 90° con ella.'], ecuacion: [OP, ` = ${d} cm`, SEP, A, ` = ${al}°`] },
+            { tipo: 'regla', texto: 'Corto el diedro con un plano perpendicular a la arista que pase por P. En ese corte están el ángulo plano y el triángulo OHP, recto en H.', dibujo: fig({}) },
+            { tipo: 'cuentas', texto: [PH, ' es el cateto opuesto al ángulo ', A, ', y ', OP, ' es la hipotenusa: lleva el seno.'],
+              ecuacion: [PH, ` = ${d} · sen ${al}° = ${d} · ${notable(SEN[al])} = ${ok} cm`], dibujo: fig({ PH: ok }) },
+            { tipo: 'sentido', texto: `${ok}${n > 1 ? ` ≈ ${aprox(d * SEN[al][0], n)}` : ''} cm es menos que ${d} cm: P está más cerca de la otra cara que de la arista.` },
+          ],
+          respuesta: [PH, ` = ${ok} cm`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Arma el ángulo plano y el triángulo rectángulo.',
       generar(s) {
-        const r = azar(s), al = r.de([30, 37, 45, 53, 60]), m = r.ent(1, 6), d = al === 37 || al === 53 ? 5 * m : 2 * m;
-        const ok = raiz(d * SEN[al][0], SEN[al][1]), cs = raiz(d * COS[al][0], COS[al][1]);
+        const { al, d, ok, cs } = diedroCaso(azar(s));
         return {
           pregunta: [`Un diedro mide ${al}°. Un punto P de una de sus caras está a ${d} cm de la arista. ¿A qué distancia está P de la otra cara?`],
           opciones: opcionesTxt(`${ok} cm`, [
@@ -471,11 +620,24 @@
         { de: 'M', a: 'N', color: 'h', grosor: 'variable', discontinua: par === 'dd', texto: o.d, desde: k.m || 0 }],
     };
   };
+  // Caso de «Ahora tú» y «Así se resuelve»: arista al azar y el par de rectas según la semilla.
+  const cruzCaso = (r, s) => {
+    const a = r.ent(2, 10), par = ['aa', 'ad', 'dd'][s % 3], q = PARES[par];
+    return { a, par, q, ok: raiz(a * q.k[0], q.k[1]) };
+  };
   const cruzIdea = {
     id: 'rectas-cruzadas',
     titulo: 'Rectas que se cruzan sin tocarse',
     temas: ['Distancia entre rectas cruzadas'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué son las rectas cruzadas y cómo se nombra el cubo. No dice cuánto mide ninguna distancia.
+    lee: {
+      tarjetas: [
+        { titulo: 'Ni se cortan ni son paralelas', texto: 'Un puente peatonal cruza por encima de una avenida de Juliaca. El borde del puente y la línea del centro de la pista no se tocan ni son paralelos: son rectas cruzadas.' },
+        { titulo: 'La más corta', texto: 'Entre dos rectas cruzadas hay muchos segmentos que van de una a otra. La distancia entre ellas es el largo del más corto, el que forma 90° con las dos: la perpendicular común.' },
+        { titulo: 'El cubo del juego', texto: 'El cubo tiene la base ABCD y arriba EFGH; AE es una arista vertical. Elige un par de rectas y busca el segmento rojo que hace 90° con las dos.' },
+      ],
+    },
     juega: {
       consigna: 'Elige un par de rectas del cubo de arista 4. No se cortan ni son paralelas. El segmento rojo es perpendicular a las dos.',
       voz: 'Cambia el par. Busca el segmento que hace 90° con ambas.',
@@ -513,11 +675,41 @@
       condicion: 'las rectas no se cortan ni son paralelas; cualquier otro segmento entre ellas es más largo que MN.',
       voz: 'Busca el segmento que hace 90° con las dos.',
     },
+    // Así se resuelve (fase 2): el problema de «Ahora tú» con otras semillas; la distancia sale de PARES (cruzCaso).
+    resuelve: {
+      generar(s) {
+        const { a, par, q, ok } = cruzCaso(azar(s + 900), s), D = { v: 'c-h', t: 'd' };
+        const L1 = { v: 'c-o', t: q.txt.split(' y ')[0] }, L2 = { v: 'c-d', t: q.txt.split(' y ')[1] };
+        const fig = o => ({ datos: cuboFig(par, a, Object.assign({ alt: `Cubo de arista ${a} con las rectas ${q.txt} y su perpendicular común` }, o)), estado: {} });
+        const datos = { aa: 'AB es una arista de la base; CG, una arista vertical que no la toca.',
+          ad: 'AE es una arista vertical; BD, una diagonal de la base que no pasa por A.',
+          dd: 'AC es una diagonal de la base; FH, una diagonal de la cara de arriba que no es paralela a AC.' }[par];
+        const cuentas = {
+          aa: { texto: 'La arista BC va por la base: forma 90° con AB en la esquina del cuadrado, y con CG, que es vertical.', ecuacion: [D, ` = BC = ${ok}`] },
+          ad: { texto: 'Desde A hasta el centro de la base: va por el piso, a 90° de AE, y corta a BD a 90°, como las diagonales del cuadrado.',
+            ecuacion: [D, ' = ', { frac: [raiz(a, 2), '2'] }, ` = ${ok}`] },
+          dd: { texto: 'Del centro de la base al centro de la cara de arriba: ese segmento es vertical y forma 90° con las dos diagonales.', ecuacion: [D, ` = ${ok}`] },
+        }[par];
+        // Otro segmento entre las dos rectas, para comprobar que d es el más corto.
+        const otro = { aa: ['AC', raiz(a, 2), aprox(a, 2)], ad: ['AB', f(a), f(a)], dd: ['AF', raiz(a, 2), aprox(a, 2)] }[par];
+        return {
+          enunciado: [`En un cubo ABCD-EFGH de arista ${a} (ABCD es la base, AE una arista vertical), ¿cuál es la distancia entre las rectas cruzadas ${q.txt}?`],
+          dibujo: fig({ pasos: { m: 99 } }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la distancia ', D, ' entre ', L1, ' y ', L2, ': el largo del segmento que forma 90° con las dos.'] },
+            { tipo: 'datos', texto: `El cubo tiene arista ${a}. ${datos}` },
+            { tipo: 'regla', texto: 'Busco la perpendicular común: el único segmento que llega a 90° a cada recta. Cualquier otro segmento entre ellas es más largo.' },
+            { tipo: 'cuentas', texto: cuentas.texto, ecuacion: cuentas.ecuacion, dibujo: fig({ d: ok }) },
+            { tipo: 'sentido', texto: `Otro segmento entre las dos rectas, ${otro[0]}, mide ${otro[1]}${otro[1] === otro[2] ? '' : ` ≈ ${otro[2]}`}: más que ${ok}. La perpendicular común es la más corta.` },
+          ],
+          respuesta: [D, ` = ${ok}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Ubica la perpendicular común dentro del cubo.',
       generar(s) {
-        const r = azar(s), a = r.ent(2, 10), par = ['aa', 'ad', 'dd'][s % 3], q = PARES[par];
-        const ok = raiz(a * q.k[0], q.k[1]);
+        const { a, par, q, ok } = cruzCaso(azar(s), s);
         return {
           pregunta: [`En un cubo ABCD-EFGH de arista ${a} (ABCD es la base, AE una arista vertical), ¿cuál es la distancia entre las rectas cruzadas ${q.txt}?`],
           dibujo: { datos: cuboFig(par, a, { pasos: { m: 99 }, alt: `Cubo de arista ${a} con las rectas ${q.txt} marcadas` }), estado: {} },
@@ -560,14 +752,37 @@
       return { [id]: d };
     },
   }));
+  // Casos de «Ahora tú» y «Así se resuelve». triPuede: tres caras (tipo 0 cierra, 1 se pasa de 360°, 2 falla la
+  // desigualdad). triTercera: dos caras y un valor de la tercera en medio del rango que cierra.
+  function triPuede(r, s) {
+    const tipo = (s / 2) % 3;
+    let tri;
+    if (tipo === 0) { const a = 10 * r.ent(4, 12), b = 10 * r.ent(4, 12); const lo = Math.abs(a - b) / 10 + 1, hi = Math.min(a + b, 360 - a - b) / 10 - 1; tri = [a, b, 10 * r.ent(lo, Math.max(lo, hi))]; }
+    else if (tipo === 1) { const a = 10 * r.ent(11, 16), b = 10 * r.ent(11, 16); tri = [a, b, 10 * r.ent(Math.max(36 - (a + b) / 10, 2), 16)]; }
+    else { const a = 10 * r.ent(3, 6), b = 10 * r.ent(3, 6); tri = [a, b, 10 * r.ent((a + b) / 10 + 1, 17)]; }
+    const [a, b, c] = tri, m = Math.max(a, b, c), suma = a + b + c;
+    return { a, b, c, m, suma, correcta: suma >= 360 ? 'suma' : m >= suma - m ? 'desig' : 'si' };
+  }
+  function triTercera(r) {
+    const a = 10 * r.ent(5, 13), b = 10 * r.ent(4, 9), lo = Math.abs(a - b), hi = Math.min(a + b, 360 - a - b);
+    return { a, b, lo, hi, ok: 10 * Math.round((lo + hi) / 20) };
+  }
   function cierra(a, b, c) { const m = Math.max(a, b, c); return a + b + c < 360 && m < a + b + c - m; }
   const trIdea = {
     id: 'triedro',
     titulo: 'Tres caras que cierran',
     temas: ['Ángulo triedro'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es un triedro y su desarrollo. No dice qué condiciones lo hacen cerrar («Predice»).
+    lee: {
+      tarjetas: [
+        { titulo: 'Rincones de tres caras', texto: 'En la esquina de tu cuarto se juntan dos paredes y el piso. Es un rincón de tres caras planas que salen de un mismo vértice: un triedro.' },
+        { titulo: 'Abrir el rincón', texto: 'Cada cara del triedro es un ángulo con vértice en O. Si cortas el rincón por una arista y abres sus tres caras sobre un plano, obtienes su desarrollo.' },
+        { titulo: 'Qué mirar', texto: 'En el juego cambias las tres caras del desarrollo. Imagina que lo pliegas: los dos bordes rojos tienen que juntarse en una arista. La lectura te dice si cierra.' },
+      ],
+    },
     juega: {
-      consigna: 'Las tres caras de un triedro, abiertas sobre la mesa. Al plegarlas, los dos bordes rojos deben juntarse en una arista. Cambia las caras.',
+      consigna: 'Las tres caras de un triedro, abiertas en un plano. Al plegarlas, los dos bordes rojos deben juntarse en una arista. Cambia las caras.',
       voz: 'Prueba caras grandes y una muy chica. ¿Cierra la punta?',
       controles: [
         { id: 'a', etiqueta: 'cara 1', min: 20, max: 170, paso: 10, inicio: 80, unidad: '°', decimales: 0, color: 'c-o' },
@@ -610,18 +825,51 @@
       condicion: 'las tres caras son de un mismo vértice; basta revisar la desigualdad con la cara mayor.',
       voz: 'Mayor contra la suma de las otras; y total contra 360°.',
     },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» con otras semillas, con las mismas cuentas (triPuede, triTercera).
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), cara = (x, i) => ({ v: COLCARA[i], t: `${x}°` });
+        if (s % 2 === 0) {
+          const { a, b, c, m, suma, correcta } = triPuede(r, s);
+          const fin = { si: 'Las dos condiciones se cumplen: al plegar el desarrollo, los bordes rojos se juntan en una arista.',
+            suma: suma === 360 ? 'Suman justo una vuelta: al plegar, las caras quedan planas y no forman punta.' : `Pasan de una vuelta por ${suma - 360}°: al plegar, las caras se montan.`,
+            desig: `La mayor, ${m}°, no cabe en las otras dos: al plegar, los bordes rojos no llegan a juntarse.` }[correcta];
+          return {
+            enunciado: [`¿Pueden ${a}°, ${b}° y ${c}° ser las tres caras de un triedro?`],
+            dibujo: { datos: triedroFig(a, b, c), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden decidir si esas tres caras, plegadas alrededor de un vértice, cierran en punta.' },
+              { tipo: 'datos', texto: `Las caras miden ${a}°, ${b}° y ${c}°. La mayor es ${m}°.`, ecuacion: [cara(a, 0), ' , ', cara(b, 1), ' , ', cara(c, 2)] },
+              { tipo: 'regla', texto: 'Para que cierre, la cara mayor tiene que ser menor que las otras dos juntas, y las tres no deben completar una vuelta entera.' },
+              { tipo: 'cuentas', texto: 'Comparo la suma total con 360° y la cara mayor con la suma de las otras dos.',
+                ecuacion: [`${a}° + ${b}° + ${c}° = ${suma}° ${suma < 360 ? '<' : '≥'} 360°`, SEP, `${m}° ${m < suma - m ? '<' : '≥'} ${suma - m}°`] },
+              { tipo: 'sentido', texto: fin },
+            ],
+            respuesta: { si: 'Sí, forman un triedro', suma: 'No: suman 360° o más', desig: 'No: la cara mayor no es menor que las otras dos juntas' }[correcta],
+          };
+        }
+        const { a, b, lo, hi, ok } = triTercera(r), m = Math.max(a, b, ok), t = a + b + ok;
+        return {
+          enunciado: [`Dos caras de un triedro miden ${a}° y ${b}°. Da un valor que pueda medir la tercera cara.`],
+          pasos: [
+            { tipo: 'pide', texto: 'Piden un valor posible x para la tercera cara, de modo que las tres cierren en punta.' },
+            { tipo: 'datos', texto: `Dos caras miden ${a}° y ${b}°. La tercera, x, falta.`, ecuacion: [cara(a, 0), ' , ', cara(b, 1), ' , ', { v: COLCARA[2], t: 'x' }] },
+            { tipo: 'regla', texto: 'Ninguna cara puede llegar a la suma de las otras dos, y las tres juntas deben quedar por debajo de una vuelta, 360°.' },
+            { tipo: 'cuentas', texto: 'Por abajo, x supera la diferencia de las dos caras. Por arriba, x no llega a su suma ni a lo que falta para 360°.',
+              ecuacion: [`${Math.max(a, b)}° − ${Math.min(a, b)}° = ${lo}°`, SEP, `${a}° + ${b}° = ${a + b}°`, SEP, `360° − ${a + b}° = ${360 - a - b}°`, SEP, `${lo}° < x < ${hi}°`],
+              dibujo: { datos: triedroFig(a, b, ok), estado: {} } },
+            { tipo: 'sentido', texto: `Pruebo x = ${ok}°: suman ${t}°, menos de 360°, y la mayor, ${m}°, es menor que ${t - m}°. Cierra.` },
+          ],
+          respuesta: `x = ${ok}° sirve: va entre ${lo}° y ${hi}°`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Revisa la cara mayor y la suma total.',
       generar(s) {
         const r = azar(s);
         if (s % 2 === 0) {
-          const tipo = (s / 2) % 3;
-          let tri;
-          if (tipo === 0) { const a = 10 * r.ent(4, 12), b = 10 * r.ent(4, 12); const lo = Math.abs(a - b) / 10 + 1, hi = Math.min(a + b, 360 - a - b) / 10 - 1; tri = [a, b, 10 * r.ent(lo, Math.max(lo, hi))]; }
-          else if (tipo === 1) { const a = 10 * r.ent(11, 16), b = 10 * r.ent(11, 16); tri = [a, b, 10 * r.ent(Math.max(36 - (a + b) / 10, 2), 16)]; }
-          else { const a = 10 * r.ent(3, 6), b = 10 * r.ent(3, 6); tri = [a, b, 10 * r.ent((a + b) / 10 + 1, 17)]; }
-          const [a, b, c] = tri, m = Math.max(a, b, c), suma = a + b + c;
-          const correcta = suma >= 360 ? 'suma' : m >= suma - m ? 'desig' : 'si';
+          const { a, b, c, m, suma, correcta } = triPuede(r, s);
           const textos = { si: 'Sí, forman un triedro', suma: 'No: suman 360° o más', desig: 'No: una cara no es menor que la suma de las otras' };
           const err = { si: ['GE-ESP7', 'Revisa la suma total y la cara mayor.'], suma: ['GE-ESP7', `Suman ${suma}°, menos de 360°.`], desig: ['GE-ESP8', `La mayor, ${m}°, es menor que ${suma - m}°.`] };
           const ops = [{ id: 'c', texto: textos[correcta], correcta: true }, ...['si', 'suma', 'desig'].filter(x => x !== correcta).map(x => ({ id: x, texto: textos[x], error: err[x][0], siFuera: err[x][1] }))];
@@ -631,8 +879,7 @@
             solucion: { texto: `Suma ${suma}°; la mayor, ${m}°, contra ${suma - m}°.`, ecuacion: [`${suma}° ${suma < 360 ? '<' : '≥'} 360°`, SEP, `${m}° ${m < suma - m ? '<' : '≥'} ${suma - m}°`] },
           };
         }
-        const a = 10 * r.ent(5, 13), b = 10 * r.ent(4, 9), lo = Math.abs(a - b), hi = Math.min(a + b, 360 - a - b);
-        const ok = 10 * Math.round((lo + hi) / 20);
+        const { a, b, lo, hi, ok } = triTercera(r);
         const malos = [{ id: 'bajo', v: lo, e: 'GE-ESP8', t: `Con ${lo}° la mayor iguala a la suma de las otras: no cierra.` },
           { id: 'alto', v: hi, e: hi === a + b ? 'GE-ESP8' : 'GE-ESP7', t: hi === a + b ? `Con ${hi}° esa cara iguala a ${a}° + ${b}°.` : `Con ${hi}° las tres suman 360°.` },
           { id: 'muy', v: hi + 20, e: 'GE-ESP7', t: 'Revisa la suma total y la cara mayor.' }];
@@ -729,13 +976,13 @@
     alt: `Diedro de ${v.al}°: P a ${f(v.d)} de la arista está a ${f(largoPH(v))} de la otra cara${v.al > 90 ? '; H cae en la prolongación de esa cara' : ''}` });
   const mesaDiedro = {
     id: 'diedro-abierto', titulo: 'Diedro hasta obtuso', pieza: 'geo-figura',
-    consigna: 'Arrastra P: abre la puerta más allá de 90° y aléjala de la arista. Mira dónde cae H.',
+    consigna: 'Arrastra P: abre la cara naranja más allá de 90° y aleja P de la arista. Mira dónde cae H.',
     controles: [
       { id: 'al', etiqueta: 'diedro', min: 15, max: 165, paso: 15, inicio: 120, unidad: '°', decimales: 0, color: 'c-i' },
       { id: 'd', etiqueta: 'OP', min: 1, max: 4, paso: 0.5, inicio: 4, unidad: '', decimales: 1, color: 'c-o' },
     ],
     dibujo: v => ({ datos: diedroLibre(v), estado: {} }),
-    arrastres: [{ id: 'punto-p', etiqueta: 'punto P de la puerta', color: 'c-i',
+    arrastres: [{ id: 'punto-p', etiqueta: 'punto P de la cara naranja', color: 'c-i',
       donde: v => enPantalla(diedroLibre(v), sum([0, 0, 0.6], por([Math.cos(U.rad(v.al)), Math.sin(U.rad(v.al)), 0], RD * v.d))),
       mover: (p, v) => { const [u, w] = enPlano(diedroLibre(v), [0, 0, 0.6], [1, 0, 0], [0, 1, 0], p); return { al: U.grados(Math.atan2(w, u)), d: Math.hypot(u, w) / RD }; } }],
     lectura: v => [nb(`α = ${v.al}°`), SEP, nb(`OP = ${f(v.d)}`), SEP, nb(`PH = ${f(largoPH(v))}${v.al > 90 ? ', H fuera' : ''}`)],
