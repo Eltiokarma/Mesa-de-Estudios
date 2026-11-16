@@ -58,6 +58,13 @@
   // Ángulo de un rayo en grados, en [0, 180]: lo que cae por debajo del eje se pega al extremo más cercano.
   const angSup = (x, y) => { const g = U.grados(Math.atan2(y, x)); return g >= 0 ? g : g < -90 ? 180 : 0; };
   const sep = '   ·   ';
+  // «Así se resuelve» (docs/teoria.md §4e): sus figuras cambian de tamaño con la semilla, así que el marco se ajusta a
+  // los puntos con una holgura para los rótulos.
+  const marco = (ps, h = 0.14) => {
+    const xs = ps.map(p => p[0]), ys = ps.map(p => p[1]), x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+    const e = h * Math.max(x1 - x0, y1 - y0, 1);
+    return { x: [x0 - e, x1 + e], y: [y0 - e, y1 + e] };
+  };
 
   // ---------- Idea 1: el triángulo rectángulo ----------
   // Cambia: C en la semicircunferencia · Permanece: la hipotenusa 10 · Progresa: h² frente a p · q ·
@@ -77,12 +84,24 @@
     };
   };
   const enArco = fi => [5 + 5 * Math.cos(U.rad(fi)), 5 * Math.sin(U.rad(fi))];
+  // Proyecciones p y q con producto cuadrado perfecto: las usan «Ahora tú» y «Así se resuelve» (cada una con su k).
+  const PARES_PQ = [[1, 4], [4, 9], [1, 9], [9, 16], [4, 25], [1, 16]];
+  const P1 = { v: 'c-o', t: 'p' }, Q1 = { v: 'c-i', t: 'q' }, H1 = { v: 'c-h', t: 'h' };
   // Hallazgo 9: «Mira» usa el mismo dibujo del juego (rect), con la hipotenusa 13 de la predicción.
   const rectIdea = {
     id: 'triangulo-rectangulo',
     titulo: 'La altura y sus proyecciones',
     temas: ['Teorema de Pitágoras y relaciones en el triángulo rectángulo'],
     pieza: 'geo-figura',
+    // Lee (fase 2): nombres y contexto; la relación entre h, p y q se descubre en el juego, no aquí.
+    lee: {
+      tarjetas: [
+        { titulo: 'Los nombres', texto: 'En un triángulo rectángulo, el lado opuesto al ángulo recto es la hipotenusa y los otros dos son los catetos. Si desde el ángulo recto bajas una perpendicular hasta la hipotenusa, ese segmento es la altura.' },
+        { titulo: 'La esquina a escuadra', texto: 'En las obras de Juliaca, el maestro marca 3 m en un muro y 4 m en el otro. Si entre las dos marcas hay 5 m, la esquina está a escuadra: 9 + 16 = 25. Es Pitágoras.' },
+        { titulo: 'Dos tramos con nombre', texto: ['El pie H de la altura parte la hipotenusa en dos tramos: ', P1, ', junto a A, y ', Q1, ', junto a B. Cada tramo es la proyección de un cateto, como su sombra sobre la hipotenusa.'] },
+        { titulo: 'Qué mirar', texto: ['C corre por una semicircunferencia, así que el ángulo C siempre es recto. Al jugar, mueve C y mira cómo cambian juntos la altura ', H1, ' y los tramos ', P1, ' y ', Q1, '.'] },
+      ],
+    },
     juega: {
       consigna: 'C se mueve por la semicircunferencia de diámetro AB = 10: el ángulo C es recto. La altura CH parte la hipotenusa en p y q.',
       voz: 'Mueve C. Compara h con p y con q.',
@@ -124,10 +143,46 @@
       condicion: 'el ángulo C es recto y c es la hipotenusa, opuesta a él; cada cateto se empareja con su propia proyección.',
       voz: 'Antes de usarlas, comprueba el ángulo recto.',
     },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (altura o cateto), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), k = r.ent(1, 3), [p, q] = r.de(PARES_PQ).map(x => x * k * k), h = Math.sqrt(p * q), L = p + q, t = s % 2;
+        const cat = Math.sqrt(p * L), A = [0, 0], Bp = [L, 0], C = [p, h], vista = marco([A, Bp, C]);
+        const fig = (o = {}) => ({ datos: rect(A, Bp, C, Object.assign({ vista }, o)), estado: {} });
+        if (t === 0) return {
+          enunciado: ['En un triángulo rectángulo, la altura sobre la hipotenusa la parte en ', P1, ` = ${p} y `, Q1, ` = ${q}. ¿Cuánto mide la altura `, H1, '?'],
+          dibujo: fig({ sinH: true }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden la altura ', H1, ': el segmento que baja desde el ángulo recto C hasta la hipotenusa.'] },
+            { tipo: 'datos', texto: ['Los dos tramos de la hipotenusa: ', P1, ` = ${p} y `, Q1, ` = ${q}. Juntos forman la hipotenusa, que mide ${L}.`] },
+            { tipo: 'regla', texto: ['La altura parte al triángulo en dos triángulos semejantes. Por eso ', H1, ' al cuadrado es el producto de los dos tramos.'],
+              ecuacion: [sup2(H1), ' = ', P1, ' · ', Q1] },
+            { tipo: 'cuentas', texto: 'Multiplico los dos tramos y saco la raíz cuadrada.',
+              ecuacion: [sup2(H1), ` = ${p} · ${q} = ${p * q}   →   `, H1, ` = √${p * q} = ${f(h)}`], dibujo: fig() },
+            { tipo: 'sentido', texto: [H1, ` = ${f(h)} queda entre ${p} y ${q}, pero no llega al promedio de los dos, ${f(L / 2)}. Así es la media geométrica.`] },
+          ],
+          respuesta: [H1, ` = ${f(h)}`],
+        };
+        return {
+          enunciado: [`En un triángulo rectángulo, la hipotenusa mide ${L} y la proyección de un cateto sobre ella, `, P1, ` = ${p}. ¿Cuánto mide ese cateto?`],
+          dibujo: fig({ sinH: true, lados: ['AC', undefined] }),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el cateto AC: el que tiene su proyección ', P1, ' sobre la hipotenusa.'] },
+            { tipo: 'datos', texto: [`La hipotenusa AB mide ${L} y la proyección de AC sobre ella es `, P1, ` = ${p}.`] },
+            { tipo: 'regla', texto: 'Cada cateto al cuadrado es la hipotenusa entera por la proyección de ese mismo cateto, no por la del otro.',
+              ecuacion: [sup2('AC'), ' = AB · ', P1] },
+            { tipo: 'cuentas', texto: 'Multiplico la hipotenusa por la proyección y saco la raíz cuadrada.',
+              ecuacion: [sup2('AC'), ` = ${L} · ${p} = ${L * p}   →   AC = √${L * p} = ${f(cat)}`], dibujo: fig({ sinH: true, lados: [`AC = ${f(cat)}`, undefined] }) },
+            { tipo: 'sentido', texto: `AC = ${f(cat)} es mayor que su proyección, ${p}, y menor que la hipotenusa, ${L}. Un cateto siempre queda entre las dos.` },
+          ],
+          respuesta: `AC = ${f(cat)}`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Ubica p, q y h en la figura antes de operar.',
       generar(s) {
-        const r = azar(s), k = r.ent(1, 3), [p, q] = r.de([[1, 4], [4, 9], [1, 9], [9, 16], [4, 25], [1, 16]]).map(x => x * k * k), h = Math.sqrt(p * q), t = s % 2;
+        const r = azar(s), k = r.ent(1, 3), [p, q] = r.de(PARES_PQ).map(x => x * k * k), h = Math.sqrt(p * q), t = s % 2;
         if (t === 0) return {
           pregunta: [`En un triángulo rectángulo, la altura sobre la hipotenusa la parte en `, { v: 'c-o', t: 'p' }, ` = ${p} y `, { v: 'c-i', t: 'q' }, ` = ${q}. ¿Cuánto mide la altura?`],
           opciones: opciones(h, [
@@ -165,11 +220,34 @@
       angulos: [{ en: 'B', de: 'C', a: 'A', color: 'o', texto: `${B}°`, radio: 20 }, { en: 'P', de: 'C', a: 'A' }],
     };
   };
+  // Figura de «Así se resuelve»: la de euc con a, c y m de la semilla; A queda sobre P, a la altura que da c.
+  const M2 = { v: 'c-i', t: 'm' }, B2 = { v: 'c-h', t: 'b' };
+  const eucRes = (a, c, m, obt, b2v) => {
+    const ax = obt ? -m : m, A = [ax, Math.sqrt(c * c - m * m)], P = [ax, 0];
+    return {
+      alt: `Triángulo con a = ${a} y c = ${c}, ángulo B ${obt ? 'obtuso' : 'agudo'} y proyección m = ${m}${obt ? ' fuera del lado BC' : ' sobre el lado BC'}${b2v ? `; b mide ${f(Math.sqrt(b2v))}` : ''}`,
+      vista: marco([[0, 0], [a, 0], A, P]),
+      puntos: [pt('B', [0, 0], { rotulo: 'B', lado: obt ? -40 : -140 }), pt('C', [a, 0], { rotulo: 'C', lado: -60 }), pt('A', A, { rotulo: 'A', lado: 90 }), pt('P', P, { rotulo: 'P', lado: obt ? -140 : -40 })],
+      regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', opacidad: 0.08 }],
+      segmentos: [{ de: 'B', a: 'C', color: 'd', grosor: 'variable', texto: `a = ${a}`, lado: -1 }, { de: 'B', a: 'A', color: 'o', grosor: 'variable', texto: `c = ${c}` },
+        { de: 'A', a: 'C', color: 'h', grosor: 'variable', texto: b2v ? `b ≈ ${f(Math.sqrt(b2v))}` : 'b' },
+        { de: 'A', a: 'P', discontinua: true, grosor: 'fino' }, { de: 'B', a: 'P', color: 'i', grosor: 'variable', texto: `m = ${m}`, lado: 1 }],
+      angulos: [{ en: 'B', de: 'C', a: 'A', color: 'o', radio: 20 }, { en: 'P', de: 'C', a: 'A' }],
+    };
+  };
   const euclides = {
     id: 'euclides',
     titulo: 'Pitágoras corregido: la proyección',
     temas: ['Teorema de Euclides o de la proyección'],
     pieza: 'geo-figura',
+    // Lee (fase 2): vocabulario de ángulos y de la proyección; el signo de la corrección queda para Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Agudo y obtuso', texto: 'Un ángulo agudo mide menos de 90°; uno obtuso, más de 90° y menos de 180°. Un triángulo tiene a lo más un ángulo obtuso, y entonces los otros dos son agudos.' },
+        { titulo: 'Una sombra que se sale', texto: ['Desde A baja una perpendicular hasta la recta de BC. Su pie P marca la proyección ', M2, ' del lado AB. A veces P cae sobre el lado BC y a veces en su prolongación, fuera del triángulo.'] },
+        { titulo: 'Terrenos sin escuadra', texto: ['Pocos terrenos de Puno tienen esquinas rectas, y Pitágoras solo vale con ángulo recto. Al jugar, abre el ángulo B y mira cuándo ', sup2(B2), ' queda por debajo de 89 y cuándo por encima.'] },
+      ],
+    },
     juega: {
       consigna: 'Los lados a = 8 y c = 5 están fijos. Abre el ángulo B y compara b² con a² + c² = 89.',
       voz: 'Abre B poco a poco. Fíjate cuándo b² supera a 89.',
@@ -210,6 +288,27 @@
       condicion: 'm se mide sobre la recta de a; el ángulo B decide el signo. Si B es recto, m = 0: Pitágoras.',
       voz: 'El ángulo B decide el signo. Míralo primero.',
     },
+    // Así se resuelve (fase 2): las mismas cuentas de «Ahora tú», con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), a = r.ent(6, 14), c = r.ent(4, 10), m = r.ent(1, Math.min(c - 1, 5)), obt = s % 2 === 1;
+        const b2v = a * a + c * c + (obt ? 2 : -2) * a * m, sg = obt ? '+' : '−';
+        return {
+          enunciado: [`En el triángulo ABC, a = ${a}, c = ${c} y el ángulo B es ${obt ? 'obtuso' : 'agudo'}. La proyección de c sobre la recta de a mide `, M2, ` = ${m}. ¿Cuánto vale `, sup2(B2), '?'],
+          dibujo: { datos: eucRes(a, c, m, obt), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', sup2(B2), ': el cuadrado del lado AC, que está frente al ángulo B.'] },
+            { tipo: 'datos', texto: [`a = ${a}, c = ${c} y la proyección de c sobre la recta de a es `, M2, ` = ${m}. El ángulo B es ${obt ? 'obtuso' : 'agudo'}.`] },
+            { tipo: 'regla', texto: ['Sin ángulo recto, Pitágoras se corrige con 2a', M2, '. Con B agudo esa corrección se resta; con B obtuso, se suma.'],
+              ecuacion: [sup2(B2), ' = ', sup2('a'), ' + ', sup2('c'), ' ∓ 2a', M2] },
+            { tipo: 'cuentas', texto: `B es ${obt ? 'obtuso: la proyección cae fuera de BC, así que sumo' : 'agudo: la proyección cae dentro de BC, así que resto'}.`,
+              ecuacion: [sup2(B2), ` = ${a}² + ${c}² ${sg} 2 · ${a} · ${m} = ${a * a} + ${c * c} ${sg} ${2 * a * m} = ${b2v}`], dibujo: { datos: eucRes(a, c, m, obt, b2v), estado: {} } },
+            { tipo: 'sentido', texto: [sup2(B2), ` = ${b2v} queda ${obt ? 'por encima' : 'por debajo'} de a² + c² = ${a * a + c * c}, como pide un ángulo B ${obt ? 'obtuso' : 'agudo'}. Y b ≈ ${f(Math.sqrt(b2v))} cabe entre ${Math.abs(a - c)} y ${a + c}, como todo lado.`] },
+          ],
+          respuesta: [sup2(B2), ` = ${b2v}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Decide si B es agudo u obtuso por dónde cae la proyección.',
       generar(s) {
@@ -243,11 +342,36 @@
         { de: 'B', a: 'D', color: 'o', grosor: 'variable', texto: `m = ${f(m)}`, lado: -1, marcas: o.marcas ? 1 : 0 }, { de: 'D', a: 'C', color: 'i', grosor: 'variable', texto: `n = ${f(8 - m)}`, lado: -1, marcas: o.marcas ? 1 : 0 }],
     };
   };
+  // Lados b, c y a de las bisectrices de «Ahora tú» y «Así se resuelve» (tramos enteros).
+  const BISECTRICES = [[6, 3, 6], [12, 6, 12], [8, 4, 9], [10, 5, 9], [9, 6, 10], [12, 8, 15]];
+  const D3 = { v: 'c-h', t: 'd' }, AD3 = { v: 'c-h', t: 'AD' }, M3 = { v: 'c-o', t: 'm' }, N3 = { v: 'c-i', t: 'n' };
+  // Figura de «Así se resuelve»: la de stew con los lados de la semilla (B = (0, 0), C = (a, 0)).
+  const stewRes = (a, b, c, m, o = {}) => {
+    const A = porLados(a, b, c);
+    return {
+      alt: `Triángulo de lados a = ${a}, b = ${b} y c = ${c}; la ceviana AD llega a ${f(m)} de B${o.d ? ` y mide ${f(o.d)}` : ''}`,
+      vista: marco([[0, 0], [a, 0], A]),
+      puntos: [pt('B', [0, 0], { rotulo: 'B', lado: -120 }), pt('C', [a, 0], { rotulo: 'C', lado: -60 }), pt('A', A, { rotulo: 'A', lado: 90 }), pt('D', [m, 0], { rotulo: 'D', color: 'h', lado: -90 })],
+      regiones: [{ puntos: ['A', 'B', 'C'], color: 'i', opacidad: 0.08 }],
+      segmentos: [{ de: 'A', a: 'B', texto: `c = ${c}` }, { de: 'A', a: 'C', texto: `b = ${b}` },
+        { de: 'A', a: 'D', color: 'h', grosor: 'variable', texto: o.d ? `${o.nombre || 'd'} ≈ ${f(o.d)}` : (o.nombre || 'd'), lado: -1 },
+        { de: 'B', a: 'D', color: 'o', grosor: 'variable', texto: `m = ${f(m)}`, lado: -1, marcas: o.marcas ? 1 : 0 }, { de: 'D', a: 'C', color: 'i', grosor: 'variable', texto: `n = ${f(a - m)}`, lado: -1, marcas: o.marcas ? 1 : 0 }],
+      angulos: o.bis ? [{ en: 'A', de: 'B', a: 'D', color: 'd', rayita: 1, radio: 22 }, { en: 'A', de: 'D', a: 'C', color: 'd', rayita: 1, radio: 26 }] : [],
+    };
+  };
   const stewart = {
     id: 'stewart',
     titulo: 'Una ceviana: Stewart',
     temas: ['Teoremas de Stewart y de la mediana', 'Longitud de la bisectriz'],
     pieza: 'geo-figura',
+    // Lee (fase 2): qué es una ceviana y sus dos casos famosos; cómo se calcula la mediana queda para Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Una ceviana', texto: 'Una ceviana une un vértice con un punto del lado de enfrente. En una chacra triangular de Juliaca, una acequia recta que va de una esquina hasta el lindero opuesto parte el terreno en dos.' },
+        { titulo: 'Dos cevianas famosas', texto: 'La mediana llega al punto medio del lado opuesto. La bisectriz parte en dos el ángulo de su vértice, y corta el lado opuesto en tramos proporcionales a los dos lados vecinos.' },
+        { titulo: 'Qué mirar', texto: ['El pie D parte el lado BC en ', M3, ' = BD y ', N3, ' = DC. Al jugar, corre D de B hacia C y fíjate dónde la ceviana AD queda más corta.'] },
+      ],
+    },
     juega: {
       consigna: 'La ceviana AD une A con un punto D de BC, que queda partido en m y n. Corre D y mira su largo d.',
       voz: 'Corre D por el lado. Observa el largo de AD.',
@@ -288,6 +412,71 @@
       condicion: 'D está en BC, con m = BD y n = DC. En la bisectriz, m y n cumplen m/n = c/b.',
       voz: 'Ubica bien m y n: cada uno va con el lado de enfrente.',
     },
+    // Así se resuelve (fase 2): los tres tipos de «Ahora tú» (mediana, bisectriz, ceviana cualquiera), con otras semillas.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), t = s % 3;
+        if (t === 0) {
+          let a, b, c; do { a = 2 * r.ent(2, 7); b = r.ent(4, 12); c = r.ent(4, 12); } while (!(a < b + c && b < a + c && c < a + b));
+          const cuatro = 2 * b * b + 2 * c * c - a * a, d = Math.sqrt(cuatro / 4);
+          return {
+            enunciado: [`Un triángulo tiene lados a = ${a}, b = ${b} y c = ${c}. ¿Cuánto mide la mediana `, D3, ' relativa al lado a?'],
+            dibujo: { datos: stewRes(a, b, c, a / 2, { marcas: true }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la mediana ', D3, ' = AD: va desde A hasta el punto medio D del lado a.'] },
+              { tipo: 'datos', texto: [`a = ${a}, b = ${b} y c = ${c}. Como D es el punto medio, los tramos son iguales: `, M3, ' = ', N3, ` = ${a / 2}.`] },
+              { tipo: 'regla', texto: ['Stewart con los dos tramos iguales da la fórmula de la mediana: cuatro veces ', D3, ' al cuadrado es 2b² + 2c² − a².'],
+                ecuacion: ['4', sup2(D3), ' = 2', sup2('b'), ' + 2', sup2('c'), ' − ', sup2('a')] },
+              { tipo: 'cuentas', texto: 'Reemplazo los lados, divido entre 4 y saco la raíz cuadrada.',
+                ecuacion: ['4', sup2(D3), ` = 2 · ${b * b} + 2 · ${c * c} − ${a * a} = ${cuatro}   →   `, D3, ` = √${f(cuatro / 4)} = ${f(d)}`],
+                dibujo: { datos: stewRes(a, b, c, a / 2, { marcas: true, d }), estado: {} } },
+              { tipo: 'sentido', texto: [D3, ` = ${f(d)} es menor que el promedio de b y c, ${f((b + c) / 2)}: la mediana nunca llega a ese promedio.`] },
+            ],
+            respuesta: [D3, ` = ${f(d)}`],
+          };
+        }
+        if (t === 1) {
+          const [b, c, a] = r.de(BISECTRICES);
+          const m = a * c / (b + c), n = a * b / (b + c), d = Math.sqrt(b * c - m * n);
+          return {
+            enunciado: [`En el triángulo ABC, b = ${b}, c = ${c} y a = ${a}. ¿Cuánto mide la bisectriz interior `, D3, ' trazada desde A?'],
+            dibujo: { datos: stewRes(a, b, c, m, { bis: true }), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la bisectriz ', D3, ' = AD: parte en dos el ángulo A y llega al lado BC.'] },
+              { tipo: 'datos', texto: [`La bisectriz corta BC en tramos con razón c : b = ${c} : ${b}. Como a = ${a}, los tramos son:`],
+                ecuacion: [M3, ` = ${a} · ${c} ÷ ${b + c} = ${f(m)}`, sep, N3, ` = ${a} · ${b} ÷ ${b + c} = ${f(n)}`] },
+              { tipo: 'regla', texto: ['En la bisectriz, Stewart se simplifica: ', D3, ' al cuadrado es el producto de los lados que la encierran menos el producto de los tramos.'],
+                ecuacion: [sup2(D3), ' = bc − ', M3, N3] },
+              { tipo: 'cuentas', texto: 'Reemplazo y saco la raíz cuadrada.',
+                ecuacion: [sup2(D3), ` = ${b} · ${c} − ${f(m)} · ${f(n)} = ${f(d * d)}   →   `, D3, ` = ${f(d)}`], dibujo: { datos: stewRes(a, b, c, m, { bis: true, d }), estado: {} } },
+              { tipo: 'sentido', texto: [`Los tramos suman ${f(m)} + ${f(n)} = ${a}, todo el lado. Y `, D3, ` = ${f(d)} queda por debajo de √(bc) ≈ ${f(Math.sqrt(b * c))}.`] },
+            ],
+            respuesta: [D3, ` = ${f(d)}`],
+          };
+        }
+        let a, b, c, m, n, d2;
+        do {
+          do { a = r.ent(6, 12); b = r.ent(4, 10); c = r.ent(4, 10); } while (!(a < b + c && b < a + c && c < a + b));
+          m = r.ent(1, a - 1); n = a - m; d2 = (b * b * m + c * c * n) / a - m * n;
+        } while (d2 <= 0);
+        const suma = b * b * m + c * c * n;
+        return {
+          enunciado: [`En el triángulo ABC, a = ${a}, b = ${b} y c = ${c}. D está en BC con BD = ${m} y DC = ${n}. ¿Cuánto vale `, sup2(AD3), '?'],
+          dibujo: { datos: stewRes(a, b, c, m, { nombre: 'AD' }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', sup2(AD3), ': el cuadrado de la ceviana que va de A hasta D.'] },
+            { tipo: 'datos', texto: [`a = ${a}, b = ${b} y c = ${c}. El pie D parte BC en `, M3, ` = BD = ${m} y `, N3, ` = DC = ${n}.`] },
+            { tipo: 'regla', texto: ['Stewart: cada lado al cuadrado se multiplica por el tramo de enfrente, b² por ', M3, ' y c² por ', N3, '. La suma es a por (AD² + mn).'],
+              ecuacion: [sup2('b'), M3, ' + ', sup2('c'), N3, ' = a(', sup2(AD3), ' + ', M3, N3, ')'] },
+            { tipo: 'cuentas', texto: 'Reemplazo, divido entre a y resto el producto de los tramos.',
+              ecuacion: [`${b * b} · ${m} + ${c * c} · ${n} = ${a}(`, sup2(AD3), ` + ${m * n})   →   `, sup2(AD3), ` = ${suma} ÷ ${a} − ${m * n} = ${f(d2)}`],
+              dibujo: { datos: stewRes(a, b, c, m, { nombre: 'AD', d: Math.sqrt(d2) }), estado: {} } },
+            { tipo: 'sentido', texto: [AD3, ` ≈ ${f(Math.sqrt(d2))} es menor que el lado más largo entre b y c, que mide ${Math.max(b, c)}: una ceviana nunca lo supera.`] },
+          ],
+          respuesta: [sup2(AD3), ` = ${f(d2)}`],
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Decide si es mediana, bisectriz o ceviana cualquiera.',
       generar(s) {
@@ -306,7 +495,7 @@
           };
         }
         if (t === 1) {
-          const [b, c, a] = r.de([[6, 3, 6], [12, 6, 12], [8, 4, 9], [10, 5, 9], [9, 6, 10], [12, 8, 15]]);
+          const [b, c, a] = r.de(BISECTRICES);
           const m = a * c / (b + c), n = a * b / (b + c), d = Math.sqrt(b * c - m * n);
           return {
             pregunta: [`En el triángulo ABC, b = ${b}, c = ${c} y a = ${a}. ¿Cuánto mide la bisectriz interior trazada desde A?`],
@@ -349,11 +538,34 @@
       angulos: o.altura ? [{ en: 'H', de: 'C', a: 'A', color: 'h' }] : [],
     };
   };
+  // Triángulos con área entera (lados de menor a mayor y su área): los usan «Ahora tú» y «Así se resuelve».
+  const LADOS_HERON = [[5, 5, 6, 12], [5, 5, 8, 12], [13, 14, 15, 84], [9, 10, 17, 36], [7, 15, 20, 42], [10, 13, 13, 60], [5, 12, 13, 30], [8, 15, 17, 60], [9, 12, 15, 54], [6, 25, 29, 60], [13, 20, 21, 126]];
+  // Figura de «Así se resuelve»: base en el lado mayor z, AC = y y AB = x; con S, dibuja la altura que la comprueba.
+  const heronRes = (x, y, z, S) => {
+    const A = porLados(z, y, x);
+    return {
+      alt: `Triángulo de lados ${x}, ${y} y ${z}${S ? `: área ${f(S)} y altura ${f(A[1])} sobre la base ${z}` : ''}`,
+      vista: marco([[0, 0], [z, 0], A]),
+      puntos: [pt('B', [0, 0], { rotulo: 'B', lado: -120 }), pt('C', [z, 0], { rotulo: 'C', lado: -60 }), pt('A', A, { rotulo: 'A', lado: 90 }), pt('H', [A[0], 0], { sinPunto: true })],
+      regiones: [{ puntos: ['A', 'B', 'C'], color: 'o', opacidad: 0.16 }],
+      segmentos: [{ de: 'B', a: 'C', texto: `${z}`, color: 'd' }, { de: 'C', a: 'A', texto: `${y}`, color: 'i' }, { de: 'A', a: 'B', texto: `${x}`, color: 'o' },
+        ...(S ? [{ de: 'A', a: 'H', color: 'h', discontinua: true, texto: `h = ${f(A[1])}`, lado: -1 }] : [])],
+      angulos: S ? [{ en: 'H', de: 'C', a: 'A', color: 'h' }] : [],
+    };
+  };
   const heron = {
     id: 'heron',
     titulo: 'Área con los tres lados',
     temas: ['Teorema de Herón'],
     pieza: 'geo-figura',
+    // Lee (fase 2): por qué importa calcular sin altura y qué es el semiperímetro; el área del 13-14-15 queda para Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Medir en la chacra', texto: 'En una chacra del altiplano, medir los tres lados de un terreno triangular es fácil: basta una wincha. La altura, en cambio, pide trazar una perpendicular exacta en pleno campo, y ahí se cometen errores.' },
+        { titulo: 'El semiperímetro', texto: 'El perímetro es la suma de los tres lados. Su mitad se llama semiperímetro y se escribe s. Con lados 5, 6 y 7, el perímetro es 18 y s = 9.' },
+        { titulo: 'Qué mirar', texto: 'Al jugar, la base queda en 14 y cambias los otros dos lados. Compara s con cada lado y fíjate si alguno lo supera. Mira también cómo responde el área.' },
+      ],
+    },
     juega: {
       consigna: 'La base mide 14. Cambia los otros dos lados y mira el semiperímetro s y el área que da la fórmula de Herón.',
       voz: 'Cambia un lado. Mira cómo responde el área.',
@@ -398,10 +610,32 @@
       condicion: 'los tres lados forman un triángulo: cada uno es menor que la suma de los otros dos.',
       voz: 'Cuando no tienes la altura, Herón te la ahorra.',
     },
+    // Así se resuelve (fase 2): el mismo tipo de «Ahora tú»; el área sale de Herón, no de la lista.
+    resuelve: {
+      generar(sm) {
+        const r = azar(sm + 900), [x0, y0, z0] = r.de(LADOS_HERON), k = r.ent(1, 2), x = x0 * k, y = y0 * k, z = z0 * k;
+        const s = (x + y + z) / 2, prod = s * (s - x) * (s - y) * (s - z), S = Math.sqrt(prod), h = 2 * S / z;
+        return {
+          enunciado: `Un triángulo tiene lados ${x}, ${y} y ${z}. ¿Cuál es su área?`,
+          dibujo: { datos: heronRes(x, y, z), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el área S del triángulo. Solo dan sus tres lados, ninguna altura.' },
+            { tipo: 'datos', texto: `Los lados ${x}, ${y} y ${z} forman triángulo: el mayor, ${z}, es menor que la suma de los otros dos, ${x + y}.` },
+            { tipo: 'regla', texto: 'Con los tres lados basta: saco el semiperímetro s, le resto cada lado y saco la raíz del producto de los cuatro números.',
+              ecuacion: ['S = ', { raiz: ['s(s − a)(s − b)(s − c)'] }] },
+            { tipo: 'cuentas', texto: 'Primero s; después las tres restas; al final, la raíz.',
+              ecuacion: [`s = ${x + y + z} ÷ 2 = ${f(s)}   →   S = `, { raiz: [`${f(s)} · ${f(s - x)} · ${f(s - y)} · ${f(s - z)}`] }, ' = ', { raiz: [f(prod)] }, ` = ${f(S)}`] },
+            { tipo: 'sentido', texto: `Con base ${z}, la altura sería 2S ÷ ${z} = ${f(h)}: menor que ${x} y que ${y}, como toda altura. Cuadra.`,
+              dibujo: { datos: heronRes(x, y, z, S), estado: {} } },
+          ],
+          respuesta: `S = ${f(S)}`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Calcula s primero; después las tres restas.',
       generar(s) {
-        const r = azar(s), [a, b, c, S] = r.de([[5, 5, 6, 12], [5, 5, 8, 12], [13, 14, 15, 84], [9, 10, 17, 36], [7, 15, 20, 42], [10, 13, 13, 60], [5, 12, 13, 30], [8, 15, 17, 60], [9, 12, 15, 54], [6, 25, 29, 60], [13, 20, 21, 126]]), k = r.ent(1, 2);
+        const r = azar(s), [a, b, c, S] = r.de(LADOS_HERON), k = r.ent(1, 2);
         return {
           pregunta: [`Un triángulo tiene lados ${a * k}, ${b * k} y ${c * k}. ¿Cuál es su área?`],
           opciones: opciones(S * k * k, [
@@ -449,6 +683,46 @@
       angulos: o.tri ? [{ en: 'B', de: 'P', a: 'T', color: 'd', rayita: 1, radio: 26, desde: k.ang || 0 }, { en: 'T', de: 'P', a: 'A', color: 'd', rayita: 1, radio: 26, desde: k.ang || 0 }] : [],
     };
   };
+  // Figuras de «Así se resuelve», armadas desde los tramos: se elige el radio R y se ubica P para que la recta por P en
+  // la dirección u corte justo a esas distancias. Con P = (±OP, 0), los cortes P + t·u cumplen t² ± 2·OP·cos·t + OP² − R² = 0.
+  const PA5 = { v: 'c-o', t: 'PA' }, PB5 = { v: 'c-i', t: 'PB' }, PT5 = { v: 'c-h', t: 'PT' }, PD5 = { v: 'c-h', t: 'PD' };
+  const marcoCirculo = (ps, R) => marco([...ps, [-R, -R], [R, R]], 0.1);
+  // Dos cuerdas por P interior: PA = a, PB = b, PC = c y PD = d, con a · b = c · d.
+  const cuerdasRes = (a, b, c, d, conD) => {
+    const R = 1.25 * Math.max(a + b, c + d) / 2, OP = Math.sqrt(R * R - a * b), P = [OP, 0];
+    const t1 = Math.acos((a - b) / (2 * OP)), t2 = -Math.acos((c - d) / (2 * OP)), u1 = [Math.cos(t1), Math.sin(t1)], u2 = [Math.cos(t2), Math.sin(t2)];
+    const ir = (u, l) => [P[0] + l * u[0], P[1] + l * u[1]], A = ir(u1, -a), Bq = ir(u1, b), C = ir(u2, -c), D = ir(u2, d);
+    return {
+      alt: `Dos cuerdas se cortan en P: PA = ${a}, PB = ${b}, PC = ${c} y PD ${conD ? `= ${f(d)}` : 'por hallar'}`,
+      vista: marcoCirculo([P, A, Bq, C, D], R),
+      puntos: [pt('O', [0, 0], { sinPunto: true }), pt('P', P, { rotulo: 'P', color: 'h', lado: 0 }), pt('A', A, { rotulo: 'A' }), pt('B', Bq, { rotulo: 'B' }), pt('C', C, { rotulo: 'C' }), pt('D', D, { rotulo: 'D' })],
+      circulos: [{ centro: 'O', r: R }],
+      segmentos: [{ de: 'P', a: 'A', color: 'o', grosor: 'variable', texto: `${a}` }, { de: 'P', a: 'B', color: 'i', grosor: 'variable', texto: `${b}` },
+        { de: 'P', a: 'C', color: 'd', grosor: 'variable', texto: `${c}` }, { de: 'P', a: 'D', color: 'h', grosor: 'variable', texto: conD ? f(d) : 'PD' }],
+    };
+  };
+  // P exterior: una secante con PA = pa y PB = pb (hacia abajo) y, arriba, la tangente PT o una segunda secante PC, PD.
+  const exteriorRes = (pa, pb, o = {}) => {
+    const cd = o.pd ? o.pd - o.pc : 0, R = Math.max(pb - pa, cd) / 2 + 1, OP = Math.sqrt(R * R + pa * pb), P = [-OP, 0];
+    const dir = (x, y) => { const g = Math.acos((x + y) / (2 * OP)); return [Math.cos(g), Math.sin(g)]; };
+    const ir = (u, l, abajo) => [P[0] + l * u[0], P[1] + (abajo ? -1 : 1) * l * u[1]];
+    const u1 = dir(pa, pb), A = ir(u1, pa, true), Bq = ir(u1, pb, true);
+    const puntos = [pt('O', [0, 0], { sinPunto: true }), pt('P', P, { rotulo: 'P', color: 'h', lado: 180 }), pt('A', A, { rotulo: 'A', lado: -100 }), pt('B', Bq, { rotulo: 'B', lado: -20 })];
+    const segmentos = [{ de: 'P', a: 'A', color: 'o', grosor: 'variable', texto: `${pa}`, lado: -1 }, { de: 'A', a: 'B', color: 'i', grosor: 'variable', texto: `${pb - pa}`, lado: -1 }];
+    let alt = `Desde P, fuera de la circunferencia, una secante con PA = ${pa} y AB = ${pb - pa}`;
+    if (o.pd) {
+      const u2 = dir(o.pc, o.pd), C = ir(u2, o.pc), D = ir(u2, o.pd);
+      puntos.push(pt('C', C, { rotulo: 'C', lado: 100 }), pt('D', D, { rotulo: 'D', lado: 20 }));
+      segmentos.push({ de: 'P', a: 'D', color: 'h', grosor: 'variable', texto: o.ver ? `PD = ${f(o.pd)}` : 'PD' }, { de: 'P', a: 'C', color: 'd', grosor: 'variable', texto: `${o.pc}`, lado: -1 });
+      alt += ` y otra secante con PC = ${o.pc}${o.ver ? ` y PD = ${f(o.pd)}` : ''}`;
+    } else {
+      const T = U.polar([0, 0], R, 180 - U.grados(Math.acos(R / OP)));
+      puntos.push(pt('T', T, { rotulo: 'T', lado: 100 }));
+      segmentos.push({ de: 'P', a: 'T', color: 'h', grosor: 'variable', texto: o.ver ? `PT = ${f(Math.sqrt(pa * pb))}` : 'PT' }, { de: 'O', a: 'T', grosor: 'fino', discontinua: true });
+      alt += `, y la tangente PT${o.ver ? ` = ${f(Math.sqrt(pa * pb))}` : ''}`;
+    }
+    return { alt, vista: marcoCirculo(puntos.map(q => [q.x, q.y]), R), puntos, circulos: [{ centro: 'O', r: R }], segmentos };
+  };
   // Hallazgo 9: el juego tiene P dentro y «Mira» lo saca fuera, con la tangente. Son dos dibujos a propósito: la
   // predicción pide llevar la regla al caso que el juego no mostró; el laboratorio (mesa «potencia-libre») los une.
   const potencia = {
@@ -456,6 +730,14 @@
     titulo: 'Cuerdas, secantes y tangente',
     temas: ['Cuerdas, secantes y tangente'],
     pieza: 'geo-figura',
+    // Lee (fase 2): cuerda, secante, tangente y cómo se nombran los tramos; la tangente con P fuera queda para Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Tres rectas y una circunferencia', texto: 'Una cuerda une dos puntos de la circunferencia, como una vereda recta que cruza de lado a lado una plaza redonda. Una secante es la recta que la corta en dos puntos. Una tangente solo la toca en uno.' },
+        { titulo: 'Tramos desde P', texto: ['Si una recta pasa por un punto P y corta la circunferencia en A y B, quedan dos tramos que salen de P: ', PA5, ', hasta el corte más cercano, y ', PB5, ', hasta el más lejano.'] },
+        { titulo: 'Qué mirar', texto: 'Al jugar, P queda quieto dentro de la circunferencia. Gira la cuerda: un tramo crece y el otro se achica. Mira qué número de la lectura cambia y cuál se queda igual.' },
+      ],
+    },
     juega: {
       consigna: 'Por el punto P pasa una cuerda AB. Gírala y compara los dos tramos PA y PB con su producto.',
       voz: 'Gira la cuerda. Uno crece, el otro baja: mira el producto.',
@@ -495,6 +777,66 @@
       ecuacion: [{ llave: [{ v: 'c-o', t: 'PA' }, ' · ', { v: 'c-i', t: 'PB' }], nota: 'desde P', color: 'c-o' }, ' = PC · PD', sep, sup2({ v: 'c-h', t: 'PT' }), ' = PA · PB'],
       condicion: 'los tramos se miden desde P hasta cada punto de corte; fuera, PB es la secante completa, no la cuerda.',
       voz: 'Mide siempre desde P. Ahí está la trampa.',
+    },
+    // Así se resuelve (fase 2): los tres tipos de «Ahora tú» (dos cuerdas, secante y tangente, dos secantes).
+    // En dos secantes, PC queda menor que PD (PC² < PA · PB): C es el corte cercano, como en la figura.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900), t = s % 3;
+        if (t === 0) {
+          const a = r.ent(2, 9), b = r.ent(2, 9), c = r.ent(1, 9), d = a * b / c;
+          return {
+            enunciado: ['Dos cuerdas se cortan en P. Una queda partida en ', PA5, ` = ${a} y `, PB5, ` = ${b}; la otra, en PC = ${c} y `, PD5, '. ¿Cuánto mide ', PD5, '?'],
+            dibujo: { datos: cuerdasRes(a, b, c, d), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden ', PD5, ': el tramo que va de P hasta D en la segunda cuerda.'] },
+              { tipo: 'datos', texto: ['Primera cuerda: ', PA5, ` = ${a} y `, PB5, ` = ${b}. Segunda cuerda: PC = ${c}.`] },
+              { tipo: 'regla', texto: 'Por un mismo punto P, los dos tramos de cada cuerda dan el mismo producto. Se igualan productos, no sumas.',
+                ecuacion: [PA5, ' · ', PB5, ' = PC · ', PD5] },
+              { tipo: 'cuentas', texto: 'Multiplico los tramos de la primera cuerda y divido entre PC.',
+                ecuacion: [`${a} · ${b} = ${c} · `, PD5, '   →   ', PD5, ` = ${a * b} ÷ ${c} = ${f(d)}`], dibujo: { datos: cuerdasRes(a, b, c, d, true), estado: {} } },
+              { tipo: 'sentido', texto: `Comprueba: ${c} · ${f(d)} = ${f(c * d)}, lo mismo que ${a} · ${b}. Las dos cuerdas dan el mismo producto desde P.` },
+            ],
+            respuesta: [PD5, ` = ${f(d)}`],
+          };
+        }
+        const pa = r.ent(2, 8), ab = r.ent(2, 10), pb = pa + ab;
+        if (t === 1) {
+          const ptv = Math.sqrt(pa * pb);
+          return {
+            enunciado: ['Desde P, fuera de la circunferencia, una secante corta en A y B con ', PA5, ` = ${pa} y AB = ${ab}. ¿Cuánto mide la tangente `, PT5, '?'],
+            dibujo: { datos: exteriorRes(pa, pb), estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la tangente ', PT5, ': el tramo de P hasta T, donde la recta solo toca la circunferencia.'] },
+              { tipo: 'datos', texto: ['El tramo exterior es ', PA5, ` = ${pa}. La secante completa es `, PB5, ` = ${pa} + ${ab} = ${pb}.`] },
+              { tipo: 'regla', texto: 'Desde P, el tramo exterior por la secante completa da un producto fijo. La tangente al cuadrado vale lo mismo.',
+                ecuacion: [sup2(PT5), ' = ', PA5, ' · ', PB5] },
+              { tipo: 'cuentas', texto: 'Multiplico los dos tramos y saco la raíz cuadrada.',
+                ecuacion: [sup2(PT5), ` = ${pa} · ${pb} = ${pa * pb}   →   `, PT5, ` = √${pa * pb} = ${f(ptv)}`], dibujo: { datos: exteriorRes(pa, pb, { ver: true }), estado: {} } },
+              { tipo: 'sentido', texto: [PT5, ` = ${f(ptv)} queda entre `, PA5, ` = ${pa} y `, PB5, ` = ${pb}: la tangente es la media geométrica de los dos tramos.`] },
+            ],
+            respuesta: [PT5, ` = ${f(ptv)}`],
+          };
+        }
+        let pc = r.ent(2, 8);
+        for (let i = 0; i < 20 && pc * pc >= pa * pb; i++) pc = r.ent(2, 8);
+        if (pc * pc >= pa * pb) pc = 2;
+        const pd = pa * pb / pc;
+        return {
+          enunciado: ['Desde P salen dos secantes: una con ', PA5, ` = ${pa} y AB = ${ab}; la otra con PC = ${pc}. ¿Cuánto mide `, PD5, ', la secante completa?'],
+          dibujo: { datos: exteriorRes(pa, pb, { pc, pd }), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden ', PD5, ': la segunda secante entera, desde P hasta su corte más lejano.'] },
+            { tipo: 'datos', texto: ['Primera secante completa: ', PB5, ` = ${pa} + ${ab} = ${pb}. En la segunda, el tramo exterior es PC = ${pc}.`] },
+            { tipo: 'regla', texto: 'Desde P, en cada secante, el tramo exterior por la secante completa da el mismo producto.',
+              ecuacion: [PA5, ' · ', PB5, ' = PC · ', PD5] },
+            { tipo: 'cuentas', texto: 'Multiplico en la primera secante y divido entre PC.',
+              ecuacion: [`${pa} · ${pb} = ${pc} · `, PD5, '   →   ', PD5, ` = ${pa * pb} ÷ ${pc} = ${f(pd)}`], dibujo: { datos: exteriorRes(pa, pb, { pc, pd, ver: true }), estado: {} } },
+            { tipo: 'sentido', texto: [PD5, ` = ${f(pd)} es mayor que PC = ${pc}, como debe ser: la cuerda CD mide ${f(pd - pc)}.`] },
+          ],
+          respuesta: [PD5, ` = ${f(pd)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Mide desde P: tramo cercano por tramo lejano.',
@@ -567,6 +909,36 @@
       angulos: [{ en: 'A', de: 'B', a: 'D' }],
     };
   };
+  // «Así se resuelve»: con los cuatro lados de un cuadrilátero inscrito, la diagonal AC ya queda fija:
+  // AC² = (AB·CD + BC·DA)(AB·DA + BC·CD)/(AB·BC + CD·DA). Por eso el ejemplo de Ptolomeo toma solo cuadriláteros
+  // de lados 2 a 9 cuya AC sale entera (calculados aquí), y la figura se arma con esa AC. Son 68.
+  const acInscrito = (ab, bc, cd, da) => Math.sqrt((ab * cd + bc * da) * (ab * da + bc * cd) / (ab * bc + cd * da));
+  const cierra = (ab, bc, cd, da) => [ab, bc, cd, da].every(x => 2 * x < ab + bc + cd + da);
+  const INSCRITOS = (() => {
+    const l = [];
+    for (let ab = 2; ab <= 9; ab++) for (let bc = 2; bc <= 9; bc++) for (let cd = 2; cd <= 9; cd++) for (let da = 2; da <= 9; da++) {
+      const ac = acInscrito(ab, bc, cd, da);
+      // Sin trapecios isósceles (AB = CD o BC = DA): ahí BD = AC y el ejemplo reforzaría «las diagonales son iguales».
+      if (cierra(ab, bc, cd, da) && ab !== cd && bc !== da && Math.abs(ac - Math.round(ac)) < 1e-9) l.push([ab, bc, cd, da, Math.round(ac)]);
+    }
+    return l;
+  })();
+  const AC6 = { v: 'c-h', t: 'AC' }, BD6 = { v: 'c-h', t: 'BD' };
+  // A = (0, 0) y C = (AC, 0); B arriba y D abajo, cada uno a sus dos distancias; O es el circuncentro de ABC.
+  const ptoRes = (ab, bc, cd, da, o = {}) => {
+    const ac = acInscrito(ab, bc, cd, da), B = porLados(ac, bc, ab), Dd = porLados(ac, cd, da), D = [Dd[0], -Dd[1]];
+    const oy = ((B[0] - ac / 2) ** 2 + B[1] ** 2 - (ac / 2) ** 2) / (2 * B[1]), O = [ac / 2, oy], R = Math.hypot(ac / 2, oy);
+    const bd = U.dist(B, D);
+    return { bd, d: {
+      alt: o.alt || `Cuadrilátero inscrito ABCD con AB = ${ab}, BC = ${bc}, CD = ${cd} y DA = ${da}; diagonales AC ≈ ${f(ac)} y BD ≈ ${f(bd)}`,
+      vista: marco([[O[0] - R, O[1] - R], [O[0] + R, O[1] + R]], 0.1),
+      puntos: [pt('O', O, { sinPunto: true }), pt('A', [0, 0], { rotulo: 'A', lado: 180 }), pt('B', B, { rotulo: 'B', lado: 90 }), pt('C', [ac, 0], { rotulo: 'C', lado: 0 }), pt('D', D, { rotulo: 'D', lado: -90 })],
+      circulos: [{ centro: 'O', r: R, grosor: 'fino' }],
+      regiones: [{ puntos: ['A', 'B', 'C', 'D'], color: 'i', opacidad: 0.08 }],
+      segmentos: [{ de: 'A', a: 'B', color: 'o', texto: `${ab}` }, { de: 'B', a: 'C', color: 'i', texto: `${bc}` }, { de: 'C', a: 'D', color: 'o', texto: `${cd}` }, { de: 'D', a: 'A', color: 'i', texto: `${da}` },
+        { de: 'A', a: 'C', color: 'h', grosor: 'variable', texto: o.ac }, { de: 'B', a: 'D', color: 'h', grosor: 'variable', texto: o.bd }],
+    } };
+  };
   // Hallazgo 9: «Mira» cambia el cuadrilátero del juego por un rectángulo inscrito a propósito: es el caso en que
   // Ptolomeo se vuelve Pitágoras, y se reconoce sin medir. El juego y el laboratorio dejan el cuadrilátero general.
   const ptolomeo = {
@@ -574,6 +946,14 @@
     titulo: 'Diagonales del cuadrilátero inscrito',
     temas: ['Teoremas de Ptolomeo y Viette'],
     pieza: 'geo-figura',
+    // Lee (fase 2): cuándo un cuadrilátero es inscrito y cómo se emparejan sus lados; qué pasa si D sale queda para Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Cuadrilátero inscrito', texto: 'Un cuadrilátero está inscrito cuando sus cuatro vértices están sobre una misma circunferencia. Un rectángulo siempre lo está. Un rombo que no es cuadrado, nunca.' },
+        { titulo: 'Pares que no se tocan', texto: ['En ABCD, las diagonales son ', AC6, ' y ', BD6, '. Los lados opuestos van en pares que no comparten vértice: AB con CD, y AD con BC.'] },
+        { titulo: 'Cuerdas para mirar el cielo', texto: 'Hace casi 1900 años, Ptolomeo armó en Alejandría tablas de cuerdas para seguir el movimiento de los astros. Al jugar, corre D por el arco y compara las dos cuentas de la lectura.' },
+      ],
+    },
     juega: {
       consigna: 'A, B, C y D están en la circunferencia. Corre D por su arco y compara AC · BD con AB · CD + AD · BC.',
       voz: 'Corre D. Comprueba las dos cuentas cada vez.',
@@ -612,6 +992,50 @@
       ecuacion: [{ llave: [{ v: 'c-h', t: 'AC · BD' }], nota: 'diagonales', color: 'c-h' }, ' = ', { llave: ['AB · CD + AD · BC'], nota: 'lados opuestos', color: 'c-o' }, sep, frac('AC', 'BD'), ' = ', frac('AB · AD + CB · CD', 'BA · BC + DA · DC')],
       condicion: 'los cuatro vértices están en una circunferencia, en el orden A, B, C, D. Fuera de ella, AC · BD queda menor.',
       voz: 'Primero comprueba que es inscrito. Después multiplica.',
+    },
+    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (Ptolomeo y Viette). En Ptolomeo, AC sale de los lados
+    // (INSCRITOS), así el cuadrilátero existe; ¿Tiene sentido? compara con BD medida en la figura a escala.
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        if (s % 2 === 0) {
+          const [ab, bc, cd, da, ac] = r.de(INSCRITOS), suma = ab * cd + da * bc, bd = suma / ac, fig = ptoRes(ab, bc, cd, da, { ac: `${ac}`, bd: 'BD' });
+          return {
+            enunciado: [`ABCD está inscrito en una circunferencia: AB = ${ab}, BC = ${bc}, CD = ${cd}, DA = ${da} y la diagonal `, AC6, ` = ${ac}. ¿Cuánto mide `, BD6, '?'],
+            dibujo: { datos: fig.d, estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: ['Piden la diagonal ', BD6, ', la que une B con D.'] },
+              { tipo: 'datos', texto: [`Lados opuestos: AB = ${ab} con CD = ${cd}, y DA = ${da} con BC = ${bc}. La otra diagonal es `, AC6, ` = ${ac}.`] },
+              { tipo: 'regla', texto: 'Como ABCD es inscrito, vale Ptolomeo: diagonal por diagonal es igual a la suma de los productos de lados opuestos.',
+                ecuacion: [AC6, ' · ', BD6, ' = AB · CD + DA · BC'] },
+              { tipo: 'cuentas', texto: 'Sumo los dos productos y divido entre AC.',
+                ecuacion: [`${ac} · `, BD6, ` = ${ab} · ${cd} + ${da} · ${bc} = ${suma}   →   `, BD6, ` = ${suma} ÷ ${ac} = ${f(bd)}`],
+                dibujo: { datos: ptoRes(ab, bc, cd, da, { ac: `${ac}`, bd: f(bd) }).d, estado: {} } },
+              { tipo: 'sentido', texto: [`En la figura a escala, BD mide ${f(fig.bd)}. Y `, BD6, ` = ${f(bd)} es menor que AB + DA = ${ab + da}, como pide el triángulo ABD.`] },
+            ],
+            respuesta: [BD6, ` = ${f(bd)}`],
+          };
+        }
+        let ab, bc, cd, da;
+        do { ab = r.ent(2, 9); bc = r.ent(2, 9); cd = r.ent(2, 9); da = r.ent(2, 9); } while (!cierra(ab, bc, cd, da));
+        const num = ab * da + bc * cd, den = ab * bc + da * cd, q = num / den, fig = ptoRes(ab, bc, cd, da);
+        const acF = acInscrito(ab, bc, cd, da);
+        return {
+          enunciado: [`ABCD está inscrito en una circunferencia, con AB = ${ab}, BC = ${bc}, CD = ${cd} y DA = ${da}. ¿Cuánto vale `, AC6, '/', BD6, '?'],
+          dibujo: { datos: fig.d, estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: ['Piden el cociente ', AC6, '/', BD6, ' de las dos diagonales, sin hallar cada una.'] },
+            { tipo: 'datos', texto: `De A salen AB = ${ab} y AD = ${da}; de C, CB = ${bc} y CD = ${cd}. De B salen BA y BC; de D, DA y DC.` },
+            { tipo: 'regla', texto: 'Viette: arriba van los productos de los lados que salen de A y de C; abajo, los que salen de B y de D.',
+              ecuacion: [frac(AC6, BD6), ' = ', frac('AB · AD + CB · CD', 'BA · BC + DA · DC')] },
+            { tipo: 'cuentas', texto: 'Reemplazo los lados y divido.',
+              ecuacion: [frac(AC6, BD6), ' = ', frac(`${ab} · ${da} + ${bc} · ${cd}`, `${ab} · ${bc} + ${da} · ${cd}`), ' = ', frac(`${num}`, `${den}`), ` ≈ ${f(q)}`],
+              dibujo: { datos: ptoRes(ab, bc, cd, da, { ac: `AC ≈ ${f(acF)}`, bd: `BD ≈ ${f(fig.bd)}` }).d, estado: {} } },
+            { tipo: 'sentido', texto: `En la figura a escala, AC ≈ ${f(acF)} y BD ≈ ${f(fig.bd)}. Su cociente da ${f(acF / fig.bd)}, lo mismo que Viette.` },
+          ],
+          respuesta: [AC6, '/', BD6, ` ≈ ${f(q)}`],
+        };
+      },
     },
     ahoraTu: {
       voz: 'Escribe los pares de lados opuestos antes de operar.',
