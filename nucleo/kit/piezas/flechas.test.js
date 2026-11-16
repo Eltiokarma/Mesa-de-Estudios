@@ -145,3 +145,19 @@ test('geometria trae las inversas: Xi(X(x)) = x e Yi(Y(y)) = y (gesto directo)',
     assert.ok(Math.abs(g.Yi(g.Y(v)) - v) < 1e-9);
   }
 });
+
+test('fuera: ⊙ si la flecha sale de la pantalla y ⊗ si entra, con su rótulo', () => {
+  const P = require('./flechas.js');
+  const base = { flechas: [{ de: [0, 0], a: [4, 0], color: 'o', rotulo: 'A' }] };
+  const sale = P.dibujar(Object.assign({ fuera: [{ en: [2, 1], sentido: 'sale', rotulo: 'A × B' }] }, base));
+  assert.match(sale, /kit-fuera/); assert.match(sale, />A × B</); assert.ok(!/<path d="M[^"]*M/.test(sale.match(/<g class="kit-fuera[\s\S]*?<\/g>/)[0]));
+  const entra = P.dibujar(Object.assign({ fuera: [{ en: [2, 1], sentido: 'entra' }] }, base));
+  assert.match(entra.match(/<g class="kit-fuera[\s\S]*?<\/g>/)[0], /<path d="M[^"]*M/);
+});
+
+test('una flecha corta lleva punta chica', () => {
+  const P = require('./flechas.js');
+  const s = P.dibujar({ flechas: [{ de: [0, 0], a: [8, 0], color: 'o', rotulo: 'A' }, { de: [0, 0], a: [1, 0], color: 'd', rotulo: 'û' }] });
+  assert.ok(!/NaN/.test(s));
+  assert.match(s, /stroke-width="2.5"/);
+});

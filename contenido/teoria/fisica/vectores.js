@@ -109,7 +109,7 @@
   const QUIEN_EV = ['Un ciclista', 'Una vicuña', 'Una alumna', 'Un perro'];
   const escalarOVector = {
     id: 'escalar-vector',
-    titulo: '¿Basta un número?',
+    titulo: 'Escalar o vector',
     pregunta: '¿Basta con decir «300 m» para saber dónde aterrizó un dron?',
     temas: ['Escalares y vectores'],
     pieza: 'fis-dron',
@@ -284,7 +284,7 @@
   const juegoR = val => colaPunta(6, val.b, val.g, { marco: MARCO_R });
   const resultante = {
     id: 'resultante',
-    titulo: 'La resultante depende del ángulo',
+    titulo: 'Suma de vectores',
     pregunta: '¿Por qué 3 + 4 no siempre da 7 cuando sumas flechas?',
     temas: ['Suma de vectores por el método gráfico'],
     pieza: 'flechas',
@@ -448,12 +448,13 @@
     if (m > 0 && o.unitario) fl.push({ de: [0, 0], a: [ax / m, ay / m], color: 'd', rotulo: 'û', paso: o.pasoU || 0 });
     return { datos: { unidad: 'u', flechas: fl,
       guias: [...EJES, ...(m > 0 ? [{ de: [ax, 0], a: [ax, ay], color: 'o', paso: o.pasoG || 0 }, { de: [0, ay], a: [ax, ay], color: 'o', paso: o.pasoG || 0 }] : [])],
-      segmentos: m > 0 && o.textos ? [{ de: [0, 0], a: [ax, 0], color: 'o', texto: `Aₓ = ${f(ax, 0)}`, paso: o.pasoG || 0 }, { de: [0, 0], a: [0, ay], color: 'o', texto: `Aᵧ = ${f(ay, 0)}`, paso: o.pasoG || 0 }].filter(sg => Math.hypot(sg.a[0], sg.a[1]) > 0) : [],
+      // Aᵧ se marca en la vertical de la punta, a la derecha, lejos del rótulo de A (lector en frío: se encimaban).
+      segmentos: m > 0 && o.textos ? [{ de: [0, 0], a: [ax, 0], color: 'o', texto: `Aₓ = ${f(ax, 0)}`, paso: o.pasoG || 0 }, { de: [ax, 0], a: [ax, ay], color: 'o', texto: `Aᵧ = ${f(ay, 0)}`, paso: o.pasoG || 0 }].filter(sg => Math.hypot(sg.a[0], sg.a[1]) > 0) : [],
     }, estado: { paso: o.paso === undefined ? 9 : o.paso } };
   };
   const componentes = {
     id: 'componentes',
-    titulo: 'Componentes y vector unitario',
+    titulo: 'Componentes',
     pregunta: '¿Cómo se parte una flecha en dos, y qué flecha mide 1?',
     temas: ['Componentes y vector unitario'],
     pieza: 'flechas',
@@ -643,13 +644,15 @@
         { de: [a, 0], a: [a + tip[0], tip[1]], color: 'd', paso: o.pasoP || 0 }, { de: tip, a: [a + tip[0], tip[1]], color: 'd', paso: o.pasoP || 0 },
         ...(o.marco ? [marco(...o.marco)] : [])],
       segmentos: Math.abs(sombra) > 1e-9 ? [{ de: [0, yS], a: [sombra, yS], color: 'i', texto: `B cos θ = ${f(sombra, 2)}`, paso: o.pasoS || 0 }] : [],
+      // A × B, perpendicular a la pantalla: ⊙ (sale) en el centro del paralelogramo (lector en frío: no se dibujaba).
+      fuera: o.pasoK === undefined || !(g > 0 && g < 180) ? [] : [{ en: [(a + tip[0]) / 2, tip[1] / 2], sentido: 'sale', rotulo: 'A × B', color: 'd', paso: o.pasoK }],
     }, estado: { paso: o.paso === undefined ? 9 : o.paso } };
   };
   // El juego fija la escala con todo lo que puede ocupar la figura en la media vuelta (sombra y paralelogramo).
   const MARCO_P = [[-3, -0.7], [7, 3]];
   const productos = {
     id: 'productos',
-    titulo: 'Producto escalar y vectorial',
+    titulo: 'Productos',
     pregunta: '¿De qué dos maneras se multiplican dos flechas?',
     temas: ['Producto escalar y vectorial'],
     pieza: 'flechas',
@@ -658,7 +661,7 @@
       tarjetas: [
         { titulo: 'Dos maneras de multiplicar', texto: 'Dos flechas se multiplican de dos maneras. Una da un número: el producto escalar, A · B. La otra da una flecha nueva: el producto vectorial, A × B.' },
         { titulo: 'La sombra y el área', texto: 'La sombra de B sobre A es lo que B avanza en la dirección de A. Y A y B, desde un mismo punto, arman un paralelogramo cuya área cambia cuando B gira.' },
-        { titulo: 'k̂ y la mano derecha', texto: 'Además de î y ĵ está k̂: mide 1 y sale de la pantalla hacia ti. Mano derecha: los dedos van de A hacia B y el pulgar dice hacia dónde apunta A × B.' },
+        { titulo: 'k̂ y la mano derecha', texto: 'Además de î y ĵ está k̂: mide 1 y sale de la pantalla hacia ti. ⊙ es una flecha que sale; ⊗, una que entra. Mano derecha: dedos de A hacia B; el pulgar da A × B.' },
         { titulo: 'Qué mirar al jugar', texto: 'B gira sola. Mira cuándo la sombra crece, cuándo desaparece y cuándo el área es la mayor.' },
       ],
     },
@@ -702,15 +705,15 @@
       coincide: 'Coincide: a 90°, la sombra de B sobre A mide 0.',
     },
     mira: {
-      datos: prod(4, 3, 60, { circulo: false, pasoS: 1, pasoP: 3 }).datos,
+      datos: prod(4, 3, 60, { circulo: false, pasoS: 1, pasoP: 3, pasoK: 4 }).datos,
       pasos: [
         { estado: { paso: 0 }, texto: 'A mide 4, B mide 3 y forman 60°.', ecuacion: [A, ' = 4,  ', B, ' = 3,  ', th, ' = 60°'] },
         { estado: { paso: 1 }, texto: 'La sombra de B sobre A mide 3 · cos 60° = 1,5.', ecuacion: ['B cos θ = 3 · cos 60° = 3 · 0,5 = 1,5'] },
         { estado: { paso: 2 }, texto: 'El producto escalar da una magnitud escalar: un número, sin dirección.', ecuacion: [vA, ' · ', vB, ' = ', A, B, ' cos ', th, ' = 4 · 3 · cos 60° = 4 · 1,5 = 6'] },
         { estado: { paso: 3 }, texto: 'El vectorial mide el área del paralelogramo.', ecuacion: ['|', vA, ' × ', vB, '| = ', A, B, ` sen `, th, ` = ${f(12 * senG(60), 2)}`] },
-        { estado: { paso: 3 }, texto: 'A × B sale de la pantalla: dedos de A a B; el pulgar apunta.', ecuacion: [vA, ' × ', vB, ` = ${f(12 * senG(60), 2)} k̂`] },
-        { estado: { paso: 3 }, texto: 'Con componentes, el escalar multiplica cada eje por su eje y suma.', ecuacion: [vA, ' · ', vB, ' = ', { sub: [A, 'x'] }, { sub: [B, 'x'] }, ' + ', { sub: [A, 'y'] }, { sub: [B, 'y'] }, ';   (3î + 4ĵ) · (2î + ĵ) = 6 + 4 = 10'] },
-        { estado: { paso: 3 }, texto: 'El vectorial multiplica en cruz, x de una por y de otra, y resta.', ecuacion: [vA, ' × ', vB, ' = (', { sub: [A, 'x'] }, { sub: [B, 'y'] }, ' − ', { sub: [A, 'y'] }, { sub: [B, 'x'] }, ') k̂'] },
+        { estado: { paso: 4 }, texto: 'A × B sale de la pantalla: ⊙. Dedos de A a B; el pulgar apunta.', ecuacion: [vA, ' × ', vB, ` = ${f(12 * senG(60), 2)} k̂`] },
+        { estado: { paso: 4 }, texto: 'Con componentes, el escalar multiplica cada eje por su eje y suma.', ecuacion: [vA, ' · ', vB, ' = ', { sub: [A, 'x'] }, { sub: [B, 'x'] }, ' + ', { sub: [A, 'y'] }, { sub: [B, 'y'] }, ';   (3î + 4ĵ) · (2î + ĵ) = 6 + 4 = 10'] },
+        { estado: { paso: 4 }, texto: 'El vectorial multiplica en cruz, x de una por y de otra, y resta.', ecuacion: [vA, ' × ', vB, ' = (', { sub: [A, 'x'] }, { sub: [B, 'y'] }, ' − ', { sub: [A, 'y'] }, { sub: [B, 'x'] }, ') k̂'] },
       ],
     },
     regla: {

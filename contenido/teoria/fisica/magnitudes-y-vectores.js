@@ -9,6 +9,7 @@
  *   DIM-UNIDAD toma la unidad por la dimensión · DIM-INVERSA invierte el despeje · DIM-TERMINO copia la del otro lado
  *   DIM-EXPONENTE olvida que una potencia repite las fichas
  *   CONV-UNO un solo factor · CONV-INVERSO factor al revés · CONV-CUADRADO olvida elevar el factor
+ *   DIM-UNO cree que basta un término · DIM-SUMA suma las dimensiones · DIM-NUMERO cree que un número suelto cambia la dimensión
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -77,7 +78,7 @@
   const pista = (segundos, v = V_MS) => ({ v, segundos, max: Math.max(100, Math.ceil(5 * v / 20) * 20), paso: 10, numero: 20, color: 'o' });
   const unidades = {
     id: 'unidades',
-    titulo: 'Otra unidad, otro número',
+    titulo: 'Cambiar de unidad',
     pregunta: '¿Qué cambia cuando mides lo mismo en otra unidad?',
     temas: ['Magnitudes fundamentales y derivadas', 'Sistema Internacional', 'Conversión de unidades'],
     pieza: 'recta',
@@ -492,16 +493,26 @@
     { izq: { nombre: 'x', exps: DIM.L }, der: { nombre: 'k · t²', oculta: true } },
     { izq: { nombre: 'x', exps: DIM.L }, der: { nombre: 'k · t²', exps: DIM.L } },
   ];
+  // Fórmulas con sumas: d, v, x distancias o rapideces; a aceleración; t tiempo (v₀, rapidez del inicio).
+  const L1 = [0, 1, 0], V1 = [0, 1, -1], A1 = [0, 1, -2], V2 = [0, 2, -2];
+  const SUMAS = [
+    { f: 'd = v·t + ½·a·t²', izq: ['d', L1], terminos: [['v·t', L1], ['½·a·t²', L1]], datos: 'd es una distancia, v una rapidez, a una aceleración y t un tiempo.' },
+    { f: 'd = v·t + a·t', izq: ['d', L1], terminos: [['v·t', L1], ['a·t', V1]], datos: 'd es una distancia, v una rapidez, a una aceleración y t un tiempo.' },
+    { f: 'v = v₀ + a·t', izq: ['v', V1], terminos: [['v₀', V1], ['a·t', V1]], datos: 'v y v₀ son rapideces, a una aceleración y t un tiempo.' },
+    { f: 'v = v₀ + a·t²', izq: ['v', V1], terminos: [['v₀', V1], ['a·t²', L1]], datos: 'v y v₀ son rapideces, a una aceleración y t un tiempo.' },
+    { f: 'v² = v₀² + 2·a·d', izq: ['v²', V2], terminos: [['v₀²', V2], ['2·a·d', V2]], datos: 'v y v₀ son rapideces, a una aceleración y d una distancia.' },
+    { f: 'x = v·t + d/t', izq: ['x', L1], terminos: [['v·t', L1], ['d/t', V1]], datos: 'x y d son distancias, v una rapidez y t un tiempo.' },
+  ];
   const dimensiones = {
     id: 'homogeneidad',
-    titulo: 'Las dimensiones deben cuadrar',
+    titulo: 'Análisis dimensional',
     pregunta: '¿Cómo sabes si una fórmula de física puede estar bien escrita?',
     temas: ['Análisis dimensional', 'Magnitudes fundamentales y derivadas'],
     pieza: 'fis-balanza-dim',
     lee: {
       tarjetas: [
         { titulo: 'Las letras de base', texto: 'Las magnitudes fundamentales, como la masa (M), la longitud (L) y el tiempo (T), son las letras con que se arman todas las demás.' },
-        { titulo: 'De qué está hecha una magnitud', texto: 'La rapidez es una magnitud derivada: una longitud entre un tiempo. Su dimensión es L T⁻¹, se mida en m/s o en km/h.' },
+        { titulo: 'De qué está hecha una magnitud', texto: 'La rapidez es una magnitud derivada: una longitud entre un tiempo. Su dimensión es L T⁻¹, tanto en m/s como en km/h.' },
         { titulo: 'Letras que se operan', texto: 'Las dimensiones se multiplican y se dividen como letras: L entre T es L T⁻¹, y T por T es T². Un número como ½ no tiene dimensión.' },
         { titulo: 'Qué mirar al jugar', texto: 'Vas a hacer análisis dimensional: poner fórmulas de una distancia en una balanza y mirar cuándo queda derecha.' },
       ],
@@ -554,6 +565,7 @@
         { estado: { vista: 1 }, texto: 'Para que quede L, k debe traer L y quitar T²: dividir entre T².', ecuacion: ['[', k, '] = L ÷ T² = L T⁻²'] },
         { estado: { vista: 2 }, texto: 'Con eso, la balanza queda derecha.', ecuacion: ['[', k, ' · t²] = L T⁻² × T² = L = [x]'] },
         { estado: { vista: 2 }, texto: 'L T⁻² es una aceleración: k puede ser algo como ½ a.', ecuacion: ['x = ½ a t²'] },
+        { estado: { vista: 2 }, texto: 'Si hay una suma, cada término debe cuadrar por separado.', ecuacion: ['d = v t + ½ a t²:   [v t] = L,   [½ a t²] = L'] },
       ],
     },
     regla: {
@@ -564,6 +576,21 @@
     resuelve: {
       generar(s) {
         const r = azar(s + 900);
+        if (s % 3 === 2) {
+          const S = r.de(SUMAS);
+          const malo = S.terminos.find(t => dimTxt(t[1]) !== dimTxt(S.izq[1]));
+          return {
+            enunciado: `¿Puede estar bien escrita la fórmula ${S.f}? ${S.datos}`,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden revisar si la fórmula es homogénea: si todo cuadra.' },
+              { tipo: 'datos', texto: `A la izquierda está ${S.izq[0]}: ${dimTxt(S.izq[1])}. A la derecha hay una suma de ${S.terminos.length} términos.` },
+              { tipo: 'regla', texto: 'Solo se suman cosas de la misma dimensión: cada término debe tener la del otro lado.' },
+              { tipo: 'cuentas', texto: 'Se revisa término por término.', ecuacion: [S.terminos.map(t => `[${t[0]}] = ${dimTxt(t[1])}`).join(',   ')] },
+              { tipo: 'sentido', texto: malo ? `${malo[0]} es ${dimTxt(malo[1])} y no ${dimTxt(S.izq[1])}: no se puede sumar. La fórmula está mal.` : `Todos son ${dimTxt(S.izq[1])}, como ${S.izq[0]}: puede estar bien. Los números como ½ no cuentan.` },
+            ],
+            respuesta: malo ? `No: ${malo[0]} no cuadra` : 'Sí: cada término cuadra',
+          };
+        }
         const Q = r.de([['F', 'una fuerza', 'masa por aceleración'], ['E', 'una energía', 'fuerza por distancia'], ['P', 'una potencia', 'energía entre tiempo'], ['p', 'una presión', 'fuerza entre área']]);
         const F = r.de([['v', 'una rapidez', 'v'], ['a', 'una aceleración', 'a'], ['area', 'un área', 'S'], ['L', 'una longitud', 'x'], ['T', 'un tiempo', 't']]);
         const n = (s % 2) + 1, kd = suma(DIM[Q[0]], DIM[F[0]], -n), letra = Q[0];
@@ -586,6 +613,22 @@
     ahoraTu: {
       generar(s) {
         const r = azar(s);
+        if (s % 3 === 2) {
+          const S = r.de(SUMAS), malo = S.terminos.find(t => dimTxt(t[1]) !== dimTxt(S.izq[1])), izq = dimTxt(S.izq[1]);
+          return {
+            pregunta: `${S.datos} ¿La fórmula ${S.f} puede estar bien escrita?`,
+            opciones: malo ? [
+              { id: 'c', texto: `No: ${malo[0]} no es ${izq}`, correcta: true },
+              { id: 'uno', texto: 'Sí: el primer término ya cuadra', error: 'DIM-UNO', siFuera: 'En una suma cuadran todos o ninguno: no se suman metros con segundos.' },
+              { id: 'suma', texto: 'Sí: en una suma, las dimensiones se suman', error: 'DIM-SUMA', siFuera: 'Las dimensiones no se suman: L + L sigue siendo L, y L + T no se puede.' },
+            ] : [
+              { id: 'c', texto: `Sí: cada término es ${izq}`, correcta: true },
+              { id: 'suma', texto: `No: ${izq} + ${izq} da 2 ${izq}`, error: 'DIM-SUMA', siFuera: `Sumar dos ${izq} da otra ${izq}: dos distancias juntas siguen siendo distancia.` },
+              { id: 'num', texto: 'No: el número suelto la rompe', error: 'DIM-NUMERO', siFuera: 'Los números como ½ o 2 no tienen dimensión: no cambian nada.' },
+            ],
+            solucion: { texto: 'Se revisa cada término por separado.', ecuacion: [S.terminos.map(t => `[${t[0]}] = ${dimTxt(t[1])}`).join(',   ')] },
+          };
+        }
         const Q = r.de([['F', 'una fuerza'], ['E', 'una energía'], ['P', 'una potencia'], ['p', 'una presión']]);
         const F = r.de([['v', 'una rapidez', 'v'], ['a', 'una aceleración', 'a'], ['area', 'un área', 'S'], ['L', 'una longitud', 'x'], ['T', 'un tiempo', 't']]);
         const n = (s % 2) + 1, kd = suma(DIM[Q[0]], DIM[F[0]], -n);

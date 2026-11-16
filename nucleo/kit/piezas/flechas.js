@@ -18,6 +18,8 @@
  *   segmentos: [{ de, a, color: 'o', texto: 'L = 6 cm', paso }],  // un dato que es un largo sin sentido (un lado)
  *   angulos: [{ en: [x, y], de: 0, a: 60, texto: '60°', color: 'h', paso }],  // de y a en grados, antihorario desde +x
  *   puntos: [{ x, y, rotulo: 'A', paso }],     // vértices con nombre
+ *   fuera: [{ en: [x, y], sentido: 'sale'|'entra', rotulo: 'A × B', paso }],   // una flecha perpendicular a la pantalla:
+ *                                              // ⊙ si sale hacia quien mira, ⊗ si entra (notación de los exámenes)
  *   contorno: [[x, y], …],                     // figura de fondo (polígono cerrado), tenue
  *   ejes: false,                               // ejes x e y por el origen, con los unitarios î y ĵ de largo 1
  *   regla: { max: 20, respuesta: 7.21, texto: '2√13 N', decimales: 1 }  // solo si la respuesta se arrastra
@@ -91,6 +93,14 @@
       };
     }
     return c;
+  }
+
+  // Flecha corta: la línea llega casi a la punta y la punta mide 7 de largo (la del kit mide unos 13).
+  function flechaCorta(x1, y1, x2, y2, color) {
+    const c = T.color(color), ang = Math.atan2(y2 - y1, x2 - x1), ca = Math.cos(ang), sa = Math.sin(ang), Lp = 7, Ap = 3.5;
+    const p = (dx, dy) => `${T.n(x2 + dx * ca - dy * sa)} ${T.n(y2 + dx * sa + dy * ca)}`;
+    return `<g><line x1="${T.n(x1)}" y1="${T.n(y1)}" x2="${T.n(x2 - ca * Lp * 0.6)}" y2="${T.n(y2 - sa * Lp * 0.6)}" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/>`
+      + `<path d="M${p(0, 0)}L${p(-Lp, Ap)}L${p(-Lp, -Ap)}Z" fill="${c}" stroke="${c}" stroke-width="1" stroke-linejoin="round"/></g>`;
   }
 
   // Rótulo de una flecha: junto a su mitad, del lado que mira afuera de la figura.
@@ -196,10 +206,21 @@
       const x1 = g.X(f.de[0]), y1 = g.Y(f.de[1]), x2 = g.X(f.a[0]), y2 = g.Y(f.a[1]);
       if (Math.hypot(x2 - x1, y2 - y1) < 1) continue;
       const grosor = f.grosor === 'contorno' ? T.GROSOR.contorno : T.GROSOR.variable;
-      let a = T.flecha(x1, y1, x2, y2, { color: f.color, grosor });
+      // Una flecha corta (el unitario a escala, unos 25 px) con la punta normal se veía como un triangulito, y hasta
+      // parecía apuntar al revés (lector en frío, 16 nov): debajo de 40 px, línea entera y punta chica.
+      const largo = Math.hypot(x2 - x1, y2 - y1);
+      let a = largo < 40 ? flechaCorta(x1, y1, x2, y2, f.color) : T.flecha(x1, y1, x2, y2, { color: f.color, grosor });
       if (f.discontinua) a = a.replace('stroke-linecap="round"/>', 'stroke-linecap="round" stroke-dasharray="6 5"/>').replace(/<path /, '<path fill-opacity="0.6" ');
       const texto = f.valor !== undefined && p >= (f.valorPaso || 0) ? `${f.rotulo} = ${f.valor}` : f.rotulo;
       s += `<g class="kit-aparece${nuevo(f)}">${a}${texto ? rotuloFlecha(g, x1, y1, x2, y2, texto, { color: f.color, lado: f.lado }) : ''}</g>`;
+    }
+    for (const q of d.fuera || []) if (ve(q)) {
+      const x = g.X(q.en[0]), y = g.Y(q.en[1]), c = T.color(q.color || 'd');
+      const marca = q.sentido === 'entra'
+        ? `<path d="M${T.n(x - 7)} ${T.n(y - 7)}L${T.n(x + 7)} ${T.n(y + 7)}M${T.n(x + 7)} ${T.n(y - 7)}L${T.n(x - 7)} ${T.n(y + 7)}" stroke="${c}" stroke-width="3" stroke-linecap="round"/>`
+        : `<circle cx="${T.n(x)}" cy="${T.n(y)}" r="4" fill="${c}"/>`;
+      s += `<g class="kit-fuera kit-aparece${nuevo(q)}"><circle cx="${T.n(x)}" cy="${T.n(y)}" r="13" fill="var(--card)" stroke="${c}" stroke-width="3"/>${marca}`
+        + `${q.rotulo ? T.rotulo(x + 20, y + 6, q.rotulo, { color: q.color || 'd', peso: 700, max: W - 2 }) : ''}</g>`;
     }
     for (const q of d.puntos || []) if (ve(q)) {
       const x = g.X(q.x), y = g.Y(q.y), L = Math.hypot(x - g.centro[0], y - g.centro[1]) || 1;
