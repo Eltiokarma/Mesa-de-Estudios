@@ -66,7 +66,8 @@
     return lista(partes).map(p => {
       // Un separador suelto con espacios a los dos lados ('   ·   ') junta dos relaciones: en la regla grande, cada una va en su línea.
       if (typeof p === 'string' && /^\s{2,}[·;]\s{2,}$/.test(p)) return '<span class="ec-sep"> · </span>';
-      if (typeof p === 'string' || typeof p === 'number') return signos(esc(menos(p)));
+      // Los miles no se parten en dos renglones («10 000» quedaba como «10» y «000», lector en frío, 16 nov).
+      if (typeof p === 'string' || typeof p === 'number') return signos(esc(menos(p))).replace(/(\d) (?=\d{3}(?!\d))/g, '$1\u00a0');
       if (Array.isArray(p)) return html(p);
       if ('v' in p) return `<span class="var ${esc(p.v)} ec-v${p.largo ? ' largo' : ''}${LETRA.test(p.t) ? ' ec-letra' : ''}">${esc(p.t)}</span>`;
       if (p.frac) return `<span class="ec-frac"><span class="ec-num">${html(p.frac[0])}</span><span class="ec-den">${html(p.frac[1])}</span></span>`;

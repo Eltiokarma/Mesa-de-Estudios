@@ -1,4 +1,4 @@
-# Lector en frío: fisica.magnitudes-y-vectores
+# Lector en frío: fisica.magnitudes-y-vectores («Magnitudes y unidades» desde el 16 nov)
 
 Método: `docs/plan-calidad.md`, filtro 2. Un agente sin contexto hace de alumno de 5.º y ve solo las capturas a 360 × 780.
 
@@ -91,3 +91,50 @@ Se corrigió así:
   - el botón fijo tapa parte del contenido hasta que se baja la pantalla;
   - las palabras del glosario, subrayadas con puntos, no dicen que se pueden tocar.
 
+## Idea 2, «Áreas y volúmenes» (nueva, 16 nov 2026)
+
+Se arma con la pieza nueva `fis-area`:
+- el mismo piso, lado a lado, con cuadros de 1 m y de 1 dm;
+- Mira cierra con un cubo de 1 dm³ = 1 L y con 1 m³ = 1000 L;
+- los ejercicios son de chacras en hectáreas, pizarras, tanques del techo de 600 a 2500 L y botellas.
+
+**Primer lector («más o menos»).** Aprendió a multiplicar, pero le faltaba:
+- qué es el «factor»;
+- la conversión al revés: de chica a grande se divide;
+- el m³.
+
+Además, la misión se cumplía llevando la barra al máximo, y «Ahora tú» era igual al ejemplo resuelto. Se corrigió así:
+- glosario «factor de conversión»;
+- la regla dice cuándo se multiplica y cuándo se divide, y su condición dice cuándo no vale;
+- un paso de Mira con el m³;
+- la misión pide 625 dm²;
+- «Ahora tú» trae otro tipo de caso que el ejemplo;
+- los miles ya no se parten en dos renglones, en todas las ecuaciones de la app;
+- el paso nuevo de Mira queda a la vista.
+
+**Segundo lector («más o menos»).**
+- **Lo que logró:** aprendió la idea («100 en una fila, pero hay 100 filas») y resolvió el ejercicio (2500 L = 2,5 m³). Inventó casos en las dos direcciones y los resolvió bien.
+- **Lo que pidió:** que la hectárea se presente antes. Ahora va en una tarjeta de «Lee».
+- **Lo que no es un problema de la app:** lo que vio tapado lo causaba el script de capturas, que sube la pantalla en cada paso.
+
+**Revisión a mano de las cuentas:**
+- 2,5 ha = 25 000 m²;
+- 2,4 m² = 24 000 cm²;
+- 1100 L = 1,1 m³;
+- 625 cm³ = 0,625 L.
+
+## Idea 3, «Las dimensiones deben cuadrar» (rehecha, 16 nov 2026)
+
+Se rehízo sobre una balanza (pieza nueva `fis-balanza-dim`): a cada lado de una fórmula real, de qué está hecho ese lado, escrito en letras. Así se reemplazaron las «fichas huecas que dividen». En el juego se prueban fórmulas de la distancia de una combi, y la misión es encontrar la que lleva aceleración.
+
+**Primer lector («más o menos»).**
+- **Lo que logró:** entendió la balanza y despejó bien la dimensión de k en el ejercicio final ([k] = M L⁻²). Comprobó solo dos fórmulas: una real (v² = 2ad, cuadra) y una inventada (d = v²t, no cuadra).
+- **Lo que le frenó, ya corregido:**
+  - no sabía la dimensión de la aceleración: ahora va en la leyenda, junto con la de la rapidez;
+  - no sabía qué son los corchetes: ahora la leyenda dice «la dimensión de»;
+  - la opción «m/s², sin dimensión» se contradecía: ahora dice «Ninguna: k es solo un número»;
+  - la condición se leía mal detrás del «Vale si»;
+  - no sabía de dónde salen las dimensiones de la energía y de la presión: ahora el ejemplo resuelto lo dice («fuerza por distancia»);
+  - no sabía qué pasa con L² ÷ L²: ahora dice que lo que queda con 0 desaparece;
+  - «Prueba 3 valores» no calzaba cuando son opciones: ahora dice «casos».
+- **Pendiente:** fórmulas con sumas (d = v t + ½ a t²), donde cada término debe cuadrar por separado. Se puede agregar como un tipo de ejercicio más.

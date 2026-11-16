@@ -568,7 +568,7 @@
       lt = Kit.lineaTiempo.montar(zona.querySelector('.te-tiempo'), {
         pieza: P, datos: m.datos, pasos: m.pasos, base: m.base, figura: fig, pie: zona.querySelector('.te-paso'), inicio: 1,
         textoPaso: paso => `<p>${E.html(paso.texto)}</p>${paso.ecuacion ? `<p class="te-ec">${E.html(paso.ecuacion)}</p>` : ''}`,
-        alCambiar: i => pintarSigMira(i),
+        alCambiar: i => { pintarSigMira(i); const pie = zona.querySelector('.te-paso'); if (pie && i > 1) mostrar(pie); },
       });
       // El botón grande avanza paso por paso (lector en frío, 16 nov: con «Siguiente: La regla» desde el paso 1, el alumno
       // se saltaba la explicación). En el último paso, recién lleva a la regla.
@@ -1077,7 +1077,7 @@
         }
         const cas = z.querySelector('.te-casos');
         // «Casos probados: 1 de 3» no se entendía (lector en frío, 16 nov): se dice qué cuenta como un caso.
-        if (cas) cas.textContent = probados.size < o.minimo ? `Prueba ${o.minimo} valores distintos: llevas ${probados.size}.` : `Probaste ${probados.size} valores distintos.`;
+        if (cas) cas.textContent = probados.size < o.minimo ? `Prueba ${o.minimo} casos distintos (otro valor u otra opción): llevas ${probados.size}.` : `Probaste ${probados.size} casos distintos.`;
         for (const c of ctr) {
           const el = z.querySelector(`[data-c="${c.id}"]`);
           if (!el) continue;

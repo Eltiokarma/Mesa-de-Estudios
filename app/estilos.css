@@ -783,7 +783,7 @@ input[type=file]{font:inherit;max-width:100%}
 .te-casos{margin:0;min-height:20px}
 .te-fb{min-height:24px;scroll-margin-bottom:calc(168px + env(safe-area-inset-bottom))}
 /* El paso nuevo de «Así se resuelve» queda a la vista, sobre el botón fijo (lector en frío, 16 nov: quedaba tapado). */
-.te-res-paso,.te-res-resp{scroll-margin-bottom:calc(168px + env(safe-area-inset-bottom))}
+.te-res-paso,.te-res-resp,.te-paso{scroll-margin-bottom:calc(168px + env(safe-area-inset-bottom))}
 .te-ec-grande .ec-sep{display:block;height:6px;overflow:hidden;color:transparent;border:0;margin:0;width:auto}
 /* Fuera de la regla grande, el separador de dos relaciones es una raya vertical con aire, no un «·» que parece producto. */
 .ec-sep{display:inline-block;width:0;height:1.1em;margin:0 .75em;border-left:2px solid var(--line);vertical-align:-.2em;color:transparent;overflow:hidden}

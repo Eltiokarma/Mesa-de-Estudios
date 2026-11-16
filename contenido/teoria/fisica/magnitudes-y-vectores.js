@@ -264,111 +264,341 @@
     },
   };
 
-  // ---------- Idea 2: cada término de una ecuación tiene la misma dimensión ----------
-  // Cambia: los exponentes de M, L y T de una magnitud · Permanece: las tres filas de fichas ·
-  // Progresa: las columnas de x = k t² que se van llenando · Se reserva: la incógnita k, que es «?» hasta el paso 3 ·
-  // Debe verse: la columna de k sale de quitar a un lado las fichas que sobran del otro.
-  const DIM = { L: [0, 1, 0], T: [0, 0, 1], M: [1, 0, 0], v: [0, 1, -1], a: [0, 1, -2], F: [1, 1, -2], E: [1, 2, -2], P: [1, 2, -3], p: [1, -1, -2], area: [0, 2, 0], f: [0, 0, -1] };
-  const NOMBRES = [
-    [[1, 0, 0], 'masa: es fundamental (kg)'], [[0, 1, 0], 'longitud: es fundamental (m)'], [[0, 0, 1], 'tiempo: es fundamental (s)'],
-    [[0, 1, -1], 'velocidad, en m/s'], [[0, 1, -2], 'aceleración, en m/s²'], [[1, 1, -2], 'fuerza, en newton'],
-    [[1, 2, -2], 'energía, en joule'], [[1, 2, -3], 'potencia, en watt'], [[1, -1, -2], 'presión, en pascal'],
-    [[0, 2, 0], 'área, en m²'], [[0, 3, 0], 'volumen, en m³'], [[1, -3, 0], 'densidad, en kg/m³'],
-    [[1, 1, -1], 'cantidad de movimiento'], [[0, 0, -1], 'frecuencia, en hertz'], [[0, 0, 0], 'número sin dimensión'],
+  // ---------- Idea 2: en un área el factor va al cuadrado; en un volumen, al cubo ----------
+  // Nueva el 16 nov (Gerson aprobó sacar estas conversiones de la idea 1, donde llegaban sin preparación). Pieza
+  // fis-area: el mismo piso cubierto con cuadros de 1 m y de 1 dm, lado a lado, y un cubo con cuadrícula para el volumen.
+  // Cambia: el lado del piso · Permanece: el piso es uno solo · Progresa: los cuadros que caben (× 100 al pasar a dm²) ·
+  // Se reserva: m² a cm² (10 000), que se predice · Debe verse: el factor 10 entra una vez por cada lado.
+  const Ar = { v: 'c-o', t: 'A' };
+  const pisoDoble = L => ({ datos: { color: 'o', cuadros: [
+    { lado: L, max: 3, celdas: 1, arriba: `${f(L, 1)} m`, abajo: `${f(L * L, 2)} m²`, nombre: 'cuadros de 1 m' },
+    { lado: L * 10, max: 30, celdas: 1, arriba: `${f(L * 10, 0)} dm`, abajo: `${f(L * L * 100, 0)} dm²`, nombre: 'cuadros de 1 dm' },
+  ] }, estado: {} });
+  const VISTAS_AREA = [
+    { cuadros: [{ lado: 1, celdas: 10, fila: true, arriba: '1 m = 10 dm', abajo: '100 dm²', nombre: 'cuadros de 1 dm' }] },
+    { cuadros: [{ lado: 1, celdas: 10, arriba: '1 m = 10 dm', abajo: '1 m² = 100 dm²', nombre: 'cuadros de 1 dm' },
+      { lado: 1, celdas: 10, arriba: '1 dm = 10 cm', abajo: '1 dm² = 100 cm²', nombre: 'un dm², en cm' }] },
+    { cubo: { n: 10, arriba: '1 dm = 10 cm', abajo: '1 dm³ = 1000 cm³ = 1 L', nombre: 'cubitos de 1 cm' } },
   ];
+  // Datos creíbles: chacras de la sierra en hectáreas, tanques de agua de los techos, botellas.
+  const CHACRAS = [0.5, 1.5, 2, 2.5, 3];
+  const TANQUES = [600, 1100, 2500];
+  const BOTELLAS = [250, 500, 625, 750];
+  const areas = {
+    id: 'areas-volumenes',
+    titulo: 'Áreas y volúmenes',
+    pregunta: '¿Por qué un metro cuadrado no son 100 centímetros cuadrados?',
+    temas: ['Conversión de unidades'],
+    pieza: 'fis-area',
+    lee: {
+      tarjetas: [
+        { titulo: 'Área: cuántos cuadros caben', texto: 'El área de un piso dice cuántos cuadros de una medida caben en él. Un metro cuadrado, m², es un cuadro de 1 m de lado.' },
+        { titulo: 'Volumen: cuántos cubos caben', texto: 'El volumen dice cuántos cubos de una medida caben dentro, por ejemplo cubitos de 1 cm de lado. Un litro es lo que cabe en un cubo de 10 cm de lado.' },
+        { titulo: 'Medidas de terrenos', texto: 'En el campo, las chacras se miden en hectáreas. Una hectárea es un cuadrado de 100 m de lado.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a cubrir el mismo piso con cuadros de 1 m y con cuadros de 1 dm, que miden 10 cm de lado. Compara los dos números.' },
+      ],
+    },
+    aprendizaje: 'De m² a dm², el número se multiplica por 100 y no por 10: el factor 10 entra una vez por cada lado.',
+    juega: {
+      consigna: 'El piso de un cuarto cuadrado, cubierto dos veces: con cuadros de 1 m y con cuadros de 1 dm.',
+      mision: {
+        texto: 'Cambia el lado hasta que el piso tenga 625 cuadros de 1 dm.',
+        logrado: val => Math.abs(val.L - 2.5) < 1e-9,
+        bien: 'Listo: 625 dm². Son 6,25 m²: cada metro cuadrado guarda 100 decímetros cuadrados.',
+      },
+      voz: '¿Cuántos cuadros de 1 dm caben en uno de 1 m?',
+      leyenda: [
+        { s: Ar, t: 'el área del piso' },
+        { s: 'm²', t: 'metro cuadrado: cuadro de 1 m de lado' },
+        { s: 'dm²', t: 'decímetro cuadrado: cuadro de 10 cm de lado' },
+      ],
+      controles: [
+        { id: 'L', etiqueta: 'Lado del piso', color: 'c-o', min: 1, max: 3, paso: 0.5, inicio: 2, unidad: 'm', decimales: 1 },
+      ],
+      dibujo: val => pisoDoble(val.L),
+      lectura: val => [Ar, ` = ${f(val.L * val.L, 2)} m² = ${f(val.L * val.L * 100, 0)} dm²`],
+      minimo: 3,
+    },
+    predice: {
+      pregunta: '¿Cuántos cuadraditos de 1 cm de lado caben en 1 m²?',
+      opciones: [
+        { id: 'c', texto: '10 000', correcta: true },
+        { id: 'fila', texto: '100', error: 'CONV-CUADRADO', siFuera: 'Esos caben en una sola fila: 1 m tiene 100 cm. Pero hay 100 filas.' },
+        { id: 'mil', texto: '1000', error: 'CONV-CUADRADO', siFuera: 'Mil serían 10 filas de 100. En 1 m hay 100 filas, no 10.' },
+        { id: 'millon', texto: '1 000 000', error: 'CONV-CUBO', siFuera: 'Un millón es lo que cabe en un metro cúbico: ahí el factor va tres veces.' },
+      ],
+      dibujo: { datos: { cuadros: [{ lado: 1, celdas: 1, arriba: '1 m', abajo: '1 m²', nombre: 'un cuadro de 1 m de lado' }] }, estado: {} },
+      revelar: { datos: VISTAS_AREA[1], estado: {} },
+      coincide: 'Coincide: 100 filas de 100 cuadraditos son 10 000 cm².',
+    },
+    mira: {
+      datos: { color: 'o', vistas: VISTAS_AREA },
+      pasos: [
+        { estado: { vista: 0 }, texto: 'Un metro tiene 10 dm: en una fila caben 10 cuadros de 1 dm.', ecuacion: ['1 m = 10 dm'] },
+        { estado: { vista: 0 }, texto: 'Son 10 filas de 10: el factor 10 entra dos veces.', ecuacion: ['1 m² = 10 dm × 10 dm = 100 dm²'] },
+        { estado: { vista: 1 }, texto: 'Cada dm² tiene 100 cm²: 100 veces 100.', ecuacion: ['1 m² = 100 × 100 cm² = 10 000 cm²'] },
+        { estado: { vista: 2 }, texto: 'En un volumen el factor entra tres veces: largo, ancho y alto.', ecuacion: ['1 dm³ = 10 × 10 × 10 cm³ = 1000 cm³'] },
+        { estado: { vista: 2 }, texto: 'Un cubo de 10 cm de lado guarda justo un litro.', ecuacion: ['1 dm³ = 1 L = 1000 cm³'] },
+        { estado: { vista: 2 }, texto: 'Un metro cúbico son 10 por 10 por 10 de esos cubos: 1000 litros.', ecuacion: ['1 m³ = (10 dm)³ = 1000 dm³ = 1000 L'] },
+      ],
+    },
+    regla: {
+      texto: 'En un área el factor va al cuadrado; en un volumen, al cubo. De unidad grande a chica se multiplica; de chica a grande, se divide.',
+      ecuacion: ['1 m² = (100 cm)² = 10 000 cm²', '   ·   ', '1 m³ = (10 dm)³ = 1000 dm³ = 1000 L'],
+      condicion: 'se cambia de unidad dentro de una misma magnitud: un área no se pasa a volumen, ni un largo a área.',
+    },
+    resuelve: {
+      pieza: 'fis-area',
+      generar(s) {
+        const r = azar(s + 900), tipo = s % 4;
+        if (tipo === 0) {
+          const ha = r.de(CHACRAS);
+          return {
+            enunciado: `Una chacra en Puno mide ${f(ha, 1)} hectáreas. ¿Cuántos m² son?`,
+            dibujo: { datos: { cuadros: [{ lado: 100, celdas: 0.1, arriba: '100 m', abajo: '1 ha = 10 000 m²', nombre: 'cada cuadro: 10 m × 10 m = 100 m²' }] }, estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la misma área en metros cuadrados.' },
+              { tipo: 'datos', texto: `La chacra mide ${f(ha, 1)} ha.` },
+              { tipo: 'regla', texto: 'Una hectárea es un cuadrado de 100 m de lado: 100 por 100 metros cuadrados.', ecuacion: ['1 ha = 100 m × 100 m = 10 000 m²'] },
+              { tipo: 'cuentas', texto: 'Se multiplica por 10 000.', ecuacion: [`${f(ha, 1)} × 10 000 = ${f(ha * 10000, 0)} m²`] },
+              { tipo: 'sentido', texto: 'El m² es mucho más chico que la hectárea: el número tenía que subir, y subió mucho.' },
+            ],
+            respuesta: `${f(ha * 10000, 0)} m²`,
+          };
+        }
+        if (tipo === 1) {
+          const m2 = r.de([1.5, 2, 2.4, 3]);
+          return {
+            enunciado: `Una pizarra tiene ${f(m2, 1)} m² de área. ¿Cuántos cm² son?`,
+            pasos: [
+              { tipo: 'pide', texto: 'Piden la misma área en centímetros cuadrados.' },
+              { tipo: 'datos', texto: `La pizarra tiene ${f(m2, 1)} m².` },
+              { tipo: 'regla', texto: 'En un área el factor va al cuadrado: 100 cm por 100 cm.', ecuacion: ['1 m² = (100 cm)² = 10 000 cm²'] },
+              { tipo: 'cuentas', texto: 'Se multiplica por 10 000, no por 100.', ecuacion: [`${f(m2, 1)} × 10 000 = ${f(m2 * 10000, 0)} cm²`] },
+              { tipo: 'sentido', texto: 'Un cm² es una uña de chico: en una pizarra caben muchísimos.' },
+            ],
+            respuesta: `${f(m2 * 10000, 0)} cm²`,
+          };
+        }
+        if (tipo === 2) {
+          const L = r.de(TANQUES);
+          return {
+            enunciado: `Un tanque de agua del techo guarda ${f(L, 0)} L. ¿Cuántos m³ son?`,
+            dibujo: { datos: VISTAS_AREA[2], estado: {} },
+            pasos: [
+              { tipo: 'pide', texto: 'Piden el mismo volumen en metros cúbicos.' },
+              { tipo: 'datos', texto: `El tanque guarda ${f(L, 0)} litros.` },
+              { tipo: 'regla', texto: 'Un m³ es un cubo de 10 dm de lado, y cada dm³ es un litro.', ecuacion: ['1 m³ = (10 dm)³ = 1000 dm³ = 1000 L'] },
+              { tipo: 'cuentas', texto: 'Se divide entre 1000.', ecuacion: [`${f(L, 0)} ÷ 1000 = ${f(L / 1000, 2)} m³`] },
+              { tipo: 'sentido', texto: 'Un m³ es un cubo de 1 m de lado: un tanque cabe en uno o en pocos de esos.' },
+            ],
+            respuesta: `${f(L / 1000, 2)} m³`,
+          };
+        }
+        const cm3 = r.de(BOTELLAS);
+        return {
+          enunciado: `Una botella tiene ${f(cm3, 0)} cm³ de gaseosa. ¿Cuántos litros son?`,
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el mismo volumen en litros.' },
+            { tipo: 'datos', texto: `La botella tiene ${f(cm3, 0)} cm³.` },
+            { tipo: 'regla', texto: 'Un litro es un cubo de 10 cm de lado: 10 por 10 por 10 cm³.', ecuacion: ['1 L = 1 dm³ = 1000 cm³'] },
+            { tipo: 'cuentas', texto: 'Se divide entre 1000.', ecuacion: [`${f(cm3, 0)} ÷ 1000 = ${f(cm3 / 1000, 3)} L`] },
+            { tipo: 'sentido', texto: 'Una botella personal tiene menos de un litro: tiene sentido.' },
+          ],
+          respuesta: `${f(cm3 / 1000, 3)} L`,
+        };
+      },
+    },
+    ahoraTu: {
+      generar(s) {
+        // Otro tipo que el del ejemplo resuelto con la misma semilla (lector en frío, 16 nov: «es casi el mismo problema»).
+        const r = azar(s), tipo = (s + 2) % 4;
+        if (tipo === 0) {
+          const ha = r.de(CHACRAS);
+          return {
+            pregunta: `Una chacra mide ${f(ha, 1)} hectáreas. ¿Cuántos m² son? (1 ha es un cuadrado de 100 m de lado)`,
+            opciones: opciones(ha * 10000, [
+              { id: 'cien', valor: ha * 100, error: 'CONV-CUADRADO', siFuera: 'Por 100 es un solo lado; la hectárea es 100 m por 100 m.' },
+              { id: 'mil', valor: ha * 1000, error: 'CONV-CUADRADO', siFuera: 'Mil no sale de ningún lado: son 100 × 100 = 10 000.' },
+              { id: 'inverso', valor: ha / 10000, error: 'CONV-INVERSO', siFuera: 'Dividir achica el número; el m² es más chico que la hectárea.' },
+            ], x => `${f(x, 4)} m²`),
+            solucion: { texto: 'Una hectárea son 100 m × 100 m.', ecuacion: [`${f(ha, 1)} × 10 000 = ${f(ha * 10000, 0)} m²`] },
+          };
+        }
+        if (tipo === 1) {
+          const m2 = r.de([1.5, 2, 2.4, 3]);
+          return {
+            pregunta: `Una pizarra tiene ${f(m2, 1)} m². ¿Cuántos cm² son?`,
+            opciones: opciones(m2 * 10000, [
+              { id: 'cien', valor: m2 * 100, error: 'CONV-CUADRADO', siFuera: 'Por 100 pasa un largo a cm; un área lleva el factor al cuadrado.' },
+              { id: 'millon', valor: m2 * 1e6, error: 'CONV-CUBO', siFuera: 'Un millón es para m³; en un área el factor va dos veces.' },
+              { id: 'inverso', valor: m2 / 10000, error: 'CONV-INVERSO', siFuera: 'Dividir achica el número; el cm² es más chico, el número sube.' },
+            ], x => `${f(x, 4)} cm²`),
+            solucion: { texto: 'El factor va al cuadrado: 100 × 100.', ecuacion: [`${f(m2, 1)} × 10 000 = ${f(m2 * 10000, 0)} cm²`] },
+          };
+        }
+        if (tipo === 2) {
+          const L = r.de(TANQUES);
+          return {
+            pregunta: `Un tanque de agua guarda ${f(L, 0)} L. ¿Cuántos m³ son?`,
+            opciones: opciones(L / 1000, [
+              { id: 'por', valor: L * 1000, error: 'CONV-INVERSO', siFuera: 'Multiplicar agranda el número; el m³ es mucho más grande que el litro.' },
+              { id: 'cien', valor: L / 100, error: 'CONV-CUADRADO', siFuera: 'Entre 100 sería si 1 m³ fueran 100 L; son 10 × 10 × 10 = 1000.' },
+              { id: 'diez', valor: L / 10, error: 'CONV-UNO', siFuera: 'Entre 10 cambia un largo; un volumen lleva el factor tres veces.' },
+            ], x => `${f(x, 3)} m³`),
+            solucion: { texto: '1 m³ = 1000 L.', ecuacion: [`${f(L, 0)} ÷ 1000 = ${f(L / 1000, 2)} m³`] },
+          };
+        }
+        const cm3 = r.de(BOTELLAS);
+        return {
+          pregunta: `Una botella tiene ${f(cm3, 0)} cm³. ¿Cuántos litros son?`,
+          opciones: opciones(cm3 / 1000, [
+            { id: 'cien', valor: cm3 / 100, error: 'CONV-CUADRADO', siFuera: 'Entre 100 sería si un litro fueran 100 cm³; son 1000.' },
+            { id: 'por', valor: cm3 * 1000, error: 'CONV-INVERSO', siFuera: 'Multiplicar agranda el número; el litro es más grande que el cm³.' },
+            { id: 'diez', valor: cm3 / 10, error: 'CONV-UNO', siFuera: 'Entre 10 cambia un largo; un volumen lleva el factor tres veces.' },
+          ], x => `${f(x, 3)} L`),
+          solucion: { texto: '1 L = 1000 cm³.', ecuacion: [`${f(cm3, 0)} ÷ 1000 = ${f(cm3 / 1000, 3)} L`] },
+        };
+      },
+    },
+  };
+
+  // ---------- Idea 3: los dos lados de una fórmula tienen la misma dimensión ----------
+  // Rehecha el 16 nov contra el contrato «se entiende sin profesor» (docs/plan-calidad.md): Gerson no entendió las
+  // «fichas huecas que dividen» ni la lectura «L⁻² T⁻¹: sin nombre en el SI». Ahora es una balanza (pieza
+  // fis-balanza-dim): a cada lado, de qué está hecho ese lado de una fórmula real, escrito en letras.
+  // Cambia: la fórmula que se prueba · Permanece: la distancia d a la izquierda (L) ·
+  // Progresa: cuáles cuadran · Se reserva: despejar la dimensión de una constante k · Debe verse: se opera como con letras.
+  const DIM = { L: [0, 1, 0], T: [0, 0, 1], M: [1, 0, 0], v: [0, 1, -1], a: [0, 1, -2], F: [1, 1, -2], E: [1, 2, -2], P: [1, 2, -3], p: [1, -1, -2], area: [0, 2, 0] };
   const SUPS = { '-': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹' };
   const dimTxt = e => {
     const ps = ['M', 'L', 'T'].map((x, i) => (e[i] ? (e[i] === 1 ? x : x + String(e[i]).split('').map(c => SUPS[c]).join('')) : '')).filter(Boolean);
     return ps.length ? ps.join(' ') : '1';
   };
-  const expsDe = val => [val.m, val.l, val.t].map(x => Math.round(x) || 0);
   const suma = (a, b, n = 1) => a.map((x, i) => x + n * b[i]);
-  const dimEj = (oculta) => ({ datos: { columnas: [
-    { nombre: 'x', exps: DIM.L },
-    { nombre: 'k', color: 'h', exps: DIM.a, oculta, signo: '=' },
-    { nombre: 't²', exps: [0, 0, 2], signo: '·' },
-    { nombre: 'k·t²', exps: DIM.L, desde: 4 },
-  ] }, estado: {} });
+  // Fórmulas que alguien propone para la distancia d de una combi: la balanza dice cuáles pueden estar bien.
+  const FORMULAS = {
+    'v/t': { der: 'v / t', exps: [0, 1, -2], cuenta: 'L T⁻¹ ÷ T = L T⁻²' },
+    'vt': { der: 'v · t', exps: [0, 1, 0], cuenta: 'L T⁻¹ × T = L' },
+    'vt2': { der: 'v · t²', exps: [0, 1, 1], cuenta: 'L T⁻¹ × T² = L T' },
+    'at': { der: 'a · t', exps: [0, 1, -1], cuenta: 'L T⁻² × T = L T⁻¹' },
+    'at2': { der: '½ a · t²', exps: [0, 1, 0], cuenta: 'L T⁻² × T² = L' },
+  };
+  const balanzaD = f => ({ datos: { izq: { nombre: 'd', exps: DIM.L }, der: { nombre: FORMULAS[f].der, exps: FORMULAS[f].exps } }, estado: {} });
+  const VISTAS_K = [
+    { izq: { nombre: 'x', exps: DIM.L }, der: { nombre: 'k · t²', oculta: true } },
+    { izq: { nombre: 'x', exps: DIM.L }, der: { nombre: 'k · t²', oculta: true } },
+    { izq: { nombre: 'x', exps: DIM.L }, der: { nombre: 'k · t²', exps: DIM.L } },
+  ];
   const dimensiones = {
     id: 'homogeneidad',
     titulo: 'Las dimensiones deben cuadrar',
     pregunta: '¿Cómo sabes si una fórmula de física puede estar bien escrita?',
     temas: ['Análisis dimensional', 'Magnitudes fundamentales y derivadas'],
-    pieza: 'fis-dimensiones',
-    juega: {
-      consigna: 'Las fichas de tiempo cambian solas: mira aparecer la velocidad y la aceleración en la lectura. Las huecas dividen.',
-      voz: 'Busca la fuerza: masa por aceleración.',
-      controles: [
-        { id: 'm', etiqueta: 'M', min: 0, max: 1, paso: 1, inicio: 0, decimales: 0 },
-        { id: 'l', etiqueta: 'L', min: -3, max: 3, paso: 1, inicio: 1, decimales: 0 },
-        // El exponente de T barre de 1 a −3 y vuelve (cada paso, una ficha de tiempo más o menos). Va rápido a propósito:
-        // cada magnitud dura poco más de medio segundo; «⏸ Pausa» deja leerla.
-        { id: 't', etiqueta: 'T', min: -3, max: 1, paso: 1, inicio: -1, decimales: 0, auto: { velocidad: 1.8, modo: 'rebota' } },
+    pieza: 'fis-balanza-dim',
+    lee: {
+      tarjetas: [
+        { titulo: 'Las letras de base', texto: 'Las magnitudes fundamentales, como la masa (M), la longitud (L) y el tiempo (T), son las letras con que se arman todas las demás.' },
+        { titulo: 'De qué está hecha una magnitud', texto: 'La rapidez es una magnitud derivada: una longitud entre un tiempo. Su dimensión es L T⁻¹, se mida en m/s o en km/h.' },
+        { titulo: 'Letras que se operan', texto: 'Las dimensiones se multiplican y se dividen como letras: L entre T es L T⁻¹, y T por T es T². Un número como ½ no tiene dimensión.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Vas a hacer análisis dimensional: poner fórmulas de una distancia en una balanza y mirar cuándo queda derecha.' },
       ],
-      // Las fichas son enteras: mientras el exponente barre, se toma el entero más cercano.
-      dibujo: val => { const e = expsDe(val); return { datos: { columnas: [{ nombre: dimTxt(e), exps: e }] }, estado: {} }; },
-      lectura: val => {
-        const e = expsDe(val), n = NOMBRES.find(([d]) => d.every((x, i) => x === e[i]));
-        return [`${dimTxt(e)}: ${n ? n[1] : 'sin nombre en el SI'}`];
+    },
+    aprendizaje: 'Una fórmula solo puede estar bien si sus dos lados tienen la misma dimensión; las dimensiones se multiplican y dividen como letras.',
+    juega: {
+      consigna: 'Alguien anota fórmulas para la distancia d que recorre una combi. La balanza compara de qué está hecho cada lado.',
+      mision: {
+        texto: 'Encuentra la fórmula con aceleración que deja la balanza derecha.',
+        logrado: val => val.f === 'at2',
+        bien: 'Esa es: ½ a t² es una longitud, como d. El ½ no tiene dimensión.',
       },
+      voz: '¿Qué fórmulas dejan la balanza derecha?',
+      leyenda: [
+        { s: 'd', t: 'distancia: L' }, { s: 'v', t: 'rapidez: L T⁻¹' }, { s: 'a', t: 'aceleración: L T⁻²' }, { s: 't', t: 'tiempo: T' },
+        { s: 'L', t: 'una longitud (metros)' }, { s: 'T', t: 'un tiempo (segundos)' }, { s: 'T⁻¹', t: '«entre un tiempo»: por segundo' },
+        { s: '[ ]', t: '«la dimensión de»: [d] = L' },
+      ],
+      controles: [
+        { id: 'f', etiqueta: 'Fórmula', opciones: [
+          { valor: 'v/t', texto: 'd = v / t' }, { valor: 'vt', texto: 'd = v · t' }, { valor: 'vt2', texto: 'd = v · t²' },
+          { valor: 'at', texto: 'd = a · t' }, { valor: 'at2', texto: 'd = ½ a · t²' },
+        ] },
+      ],
+      dibujo: val => balanzaD(val.f),
+      lectura: val => [`[${FORMULAS[val.f].der}] = ${FORMULAS[val.f].cuenta}`],
       minimo: 3,
     },
     predice: {
-      pregunta: ['En la ecuación x = ', k, ' · t², x es una distancia y t un tiempo. ¿Qué dimensión debe tener ', k, '?'],
+      pregunta: ['En la fórmula x = ', k, ' · t², x es una distancia y t un tiempo. ¿Qué dimensión debe tener ', k, '?'],
       opciones: [
         { id: 'c', texto: 'L T⁻², como una aceleración', correcta: true },
-        { id: 'igual', texto: 'L, igual que x', error: 'DIM-TERMINO', siFuera: 'L es lo que debe tener todo el producto k · t², no k sola.' },
+        { id: 'igual', texto: 'L, igual que x', error: 'DIM-TERMINO', siFuera: 'L es lo que debe tener todo el lado k · t², no k sola: falta quitar el T².' },
         { id: 'inv', texto: 'L T², por el t²', error: 'DIM-INVERSA', siFuera: 'Sería cierto si x = k / t². Aquí k multiplica: debe quitar el T².' },
-        { id: 'unidad', texto: 'm/s², sin dimensión', error: 'DIM-UNIDAD', siFuera: 'm/s² es la unidad de L T⁻², no su ausencia. Tiene dimensión.' },
+        { id: 'unidad', texto: 'Ninguna: k es solo un número', error: 'DIM-UNIDAD', siFuera: 'Si k fuera solo un número, el lado derecho sería T², un tiempo al cuadrado, y no una distancia.' },
       ],
-      dibujo: dimEj(9),
-      revelar: dimEj(0),
-      coincide: 'Coincide: k debe quitar las dos fichas de T que pone t².',
+      dibujo: { datos: VISTAS_K[0], estado: {} },
+      revelar: { datos: VISTAS_K[2], estado: {} },
+      coincide: 'Coincide: k = L T⁻² quita las dos T de t², y el lado derecho queda L.',
     },
     mira: {
-      datos: dimEj(3).datos,
+      datos: { vistas: VISTAS_K },
       pasos: [
-        { estado: { corte: 1, resalta: [0] }, texto: 'A la izquierda, x es una longitud: una ficha de L.', ecuacion: ['[x] = L'] },
-        { estado: { corte: 2, resalta: [2] }, texto: 't² pone dos fichas de tiempo.', ecuacion: ['[', { sup: ['t', '2'] }, '] = ', { sup: ['T', '2'] }] },
-        { estado: { corte: 3, resalta: [1] }, texto: 'k debe dar la L y quitar T²: dos fichas huecas.', ecuacion: ['[', k, '] = ', { frac: ['L', { sup: ['T', '2'] }] }, ' = L ', { sup: ['T', '−2'] }] },
-        { estado: { corte: 4, resalta: [0, 3] }, texto: 'Producto completo: la misma fila que x. La ecuación es homogénea.', ecuacion: ['[', k, ' · ', { sup: ['t', '2'] }, '] = L ', { sup: ['T', '−2'] }, ' · ', { sup: ['T', '2'] }, ' = L'] },
+        { estado: { vista: 0 }, texto: 'A la izquierda, x es una distancia: su dimensión es L.', ecuacion: ['[x] = L'] },
+        { estado: { vista: 0 }, texto: 't² es un tiempo por otro tiempo.', ecuacion: ['[t²] = T × T = T²'] },
+        { estado: { vista: 1 }, texto: 'Para que quede L, k debe traer L y quitar T²: dividir entre T².', ecuacion: ['[', k, '] = L ÷ T² = L T⁻²'] },
+        { estado: { vista: 2 }, texto: 'Con eso, la balanza queda derecha.', ecuacion: ['[', k, ' · t²] = L T⁻² × T² = L = [x]'] },
+        { estado: { vista: 2 }, texto: 'L T⁻² es una aceleración: k puede ser algo como ½ a.', ecuacion: ['x = ½ a t²'] },
       ],
     },
     regla: {
-      texto: 'En una ecuación física, cada término tiene la misma dimensión. Las magnitudes derivadas se arman con las magnitudes fundamentales: masa, longitud y tiempo, entre otras.',
-      ecuacion: ['[F] = M L ', { sup: ['T', '−2'] }, '   ·   ', '[E] = M ', { sup: ['L', '2'] }, ' ', { sup: ['T', '−2'] }, '   ·   ', '[', k, ' · Q] = ', { llave: ['[', k, '] · [Q]'], nota: 'se multiplican', color: 'c-h' }],
-      condicion: 'en el análisis dimensional solo se suman o igualan términos de igual dimensión. Que cuadre no prueba que la ecuación sea correcta.',
+      texto: 'En una fórmula de física, los dos lados tienen la misma dimensión, como una balanza derecha. Las dimensiones se multiplican y se dividen como letras.',
+      ecuacion: ['[v · t] = L T⁻¹ × T = L = [d]'],
+      condicion: 'cada término se escribe con M, L y T. Ojo: cuadrar no prueba la fórmula, porque un ½ no tiene dimensión.',
+    },
+    resuelve: {
+      generar(s) {
+        const r = azar(s + 900);
+        const Q = r.de([['F', 'una fuerza', 'masa por aceleración'], ['E', 'una energía', 'fuerza por distancia'], ['P', 'una potencia', 'energía entre tiempo'], ['p', 'una presión', 'fuerza entre área']]);
+        const F = r.de([['v', 'una rapidez', 'v'], ['a', 'una aceleración', 'a'], ['area', 'un área', 'S'], ['L', 'una longitud', 'x'], ['T', 'un tiempo', 't']]);
+        const n = (s % 2) + 1, kd = suma(DIM[Q[0]], DIM[F[0]], -n), letra = Q[0];
+        const pot = n === 2 ? `${F[2]}²` : F[2], dp = DIM[F[0]].map(x => x * n);
+        const bal = conK => ({ datos: { izq: { nombre: letra, exps: DIM[Q[0]] }, der: conK ? { nombre: `k · ${pot}`, exps: DIM[Q[0]] } : { nombre: `k · ${pot}`, oculta: true } }, estado: {} });
+        return {
+          enunciado: ['En ', `${letra} = `, k, ` · ${pot}`, `, ${letra} es ${Q[1]} y ${F[2]} es ${F[1]}. ¿Qué dimensión tiene `, k, '?'],
+          dibujo: bal(false),
+          pasos: [
+            { tipo: 'pide', texto: ['Piden de qué está hecha ', k, ': su dimensión.'] },
+            { tipo: 'datos', texto: `${letra} es ${Q[1]}: ${Q[2]}. ${pot} trae su dimensión ${n === 2 ? 'dos veces' : 'una vez'}.`, ecuacion: [`[${letra}] = ${dimTxt(DIM[Q[0]])}`, '  y  ', `[${pot}] = ${dimTxt(dp)}`] },
+            { tipo: 'regla', texto: 'Los dos lados deben tener la misma dimensión. Para despejar, se divide.', ecuacion: ['[', k, `] = [${letra}] ÷ [${pot}]`] },
+            { tipo: 'cuentas', texto: 'Se dividen las letras: se restan los exponentes, y lo que queda con 0 desaparece.', ecuacion: ['[', k, `] = ${dimTxt(DIM[Q[0]])} ÷ ${dimTxt(dp)} = ${dimTxt(kd)}`], dibujo: bal(true) },
+            { tipo: 'sentido', texto: ['Comprueba: ', k, ` por ${pot} debe dar ${dimTxt(DIM[Q[0]])}. Da.`], ecuacion: [`${dimTxt(kd)} × ${dimTxt(dp)} = ${dimTxt(DIM[Q[0]])}`] },
+          ],
+          respuesta: ['[', k, `] = ${dimTxt(kd)}`],
+        };
+      },
     },
     ahoraTu: {
-      pieza: 'fis-dimensiones',
       generar(s) {
         const r = azar(s);
         const Q = r.de([['F', 'una fuerza'], ['E', 'una energía'], ['P', 'una potencia'], ['p', 'una presión']]);
-        const F = r.de([['v', 'una velocidad', 'v'], ['a', 'una aceleración', 'a'], ['area', 'un área', 'S'], ['L', 'una longitud', 'x'], ['T', 'un tiempo', 't']]);
+        const F = r.de([['v', 'una rapidez', 'v'], ['a', 'una aceleración', 'a'], ['area', 'un área', 'S'], ['L', 'una longitud', 'x'], ['T', 'un tiempo', 't']]);
         const n = (s % 2) + 1, kd = suma(DIM[Q[0]], DIM[F[0]], -n);
-        const letra = Q[0] === 'p' ? 'p' : Q[0];
+        const letra = Q[0];
         const pot = n === 2 ? `${F[2]}²` : F[2];
+        const dp = DIM[F[0]].map(x => x * n);
         return {
           pregunta: ['En ', `${letra} = `, k, ` · ${pot}`, `, ${letra} es ${Q[1]} y ${F[2]} es ${F[1]}. ¿Qué dimensión tiene `, k, '?'],
-          dibujo: { datos: { columnas: [
-            { nombre: letra, exps: DIM[Q[0]] },
-            { nombre: 'k', color: 'h', exps: kd, oculta: 9, signo: '=' },
-            { nombre: pot, exps: DIM[F[0]].map(x => x * n), signo: '·' },
-          ] }, estado: {} },
+          dibujo: { datos: { izq: { nombre: letra, exps: DIM[Q[0]] }, der: { nombre: `k · ${pot}`, oculta: true } }, estado: {} },
           opciones: opciones(dimTxt(kd), [
             { id: 'inv', valor: dimTxt(suma(DIM[Q[0]], DIM[F[0]], n)), error: 'DIM-INVERSA', siFuera: `Eso multiplica por ${pot}; para despejar k se divide.` },
-            { id: 'igual', valor: dimTxt(DIM[Q[0]]), error: 'DIM-TERMINO', siFuera: `Esa es la dimensión de ${letra}; k es solo una parte del producto.` },
-            { id: 'solo', valor: dimTxt(DIM[F[0]].map(x => -x * n)), error: 'DIM-INVERSA', siFuera: `Eso quita ${pot} pero olvida las fichas de ${letra}.` },
-            { id: 'pot1', valor: dimTxt(suma(DIM[Q[0]], DIM[F[0]], -(3 - n))), error: 'DIM-EXPONENTE', siFuera: 'Revisa el exponente: cada potencia repite todas sus fichas.' },
+            { id: 'igual', valor: dimTxt(DIM[Q[0]]), error: 'DIM-TERMINO', siFuera: `Esa es la dimensión de ${letra}; k es solo una parte del lado derecho.` },
+            { id: 'solo', valor: dimTxt(DIM[F[0]].map(x => -x * n)), error: 'DIM-INVERSA', siFuera: `Eso quita ${pot}, pero olvida lo que trae ${letra}.` },
+            { id: 'pot1', valor: dimTxt(suma(DIM[Q[0]], DIM[F[0]], -(3 - n))), error: 'DIM-EXPONENTE', siFuera: `Revisa el exponente: ${pot} trae su dimensión ${n === 2 ? 'dos veces' : 'una vez'}.` },
           ], x => x),
           solucion: {
-            texto: `Se quitan de ${letra} las fichas de ${pot}.`,
-            ecuacion: ['[', k, `] = ${dimTxt(DIM[Q[0]])} / ${dimTxt(DIM[F[0]].map(x => x * n))} = ${dimTxt(kd)}`],
-            dibujo: { datos: { columnas: [
-              { nombre: letra, exps: DIM[Q[0]] },
-              { nombre: 'k', color: 'h', exps: kd, signo: '=' },
-              { nombre: pot, exps: DIM[F[0]].map(x => x * n), signo: '·' },
-            ] }, estado: {} },
+            texto: `Se divide la dimensión de ${letra} entre la de ${pot}.`,
+            ecuacion: ['[', k, `] = ${dimTxt(DIM[Q[0]])} ÷ ${dimTxt(dp)} = ${dimTxt(kd)}`],
+            dibujo: { datos: { izq: { nombre: letra, exps: DIM[Q[0]] }, der: { nombre: `k · ${pot}`, exps: DIM[Q[0]] } }, estado: {} },
           },
         };
       },
@@ -379,11 +609,25 @@
     unidad: 'fisica.magnitudes-y-vectores',
     // Desde el 16 nov es «Magnitudes y unidades» (Gerson eligió partir la unidad); los vectores van en fisica/vectores.js.
     // El id no cambia: el avance de los alumnos se guarda con él.
-    version: '0.3.0',
+    version: '0.4.0',
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/fis-medida.js', '/nucleo/kit/piezas/fis-combi.js', '/nucleo/kit/piezas/fis-dimensiones.js'],
+    // Pasó por el contrato «se entiende sin profesor» (16 nov): el validador exige misión, leyenda, aprendizaje, pregunta
+    // y 3 ejemplos por término del glosario.
+    calidad: 2,
+    requiere: ['/nucleo/kit/piezas/recta.js', '/nucleo/kit/piezas/fis-medida.js', '/nucleo/kit/piezas/fis-combi.js', '/nucleo/kit/piezas/fis-area.js', '/nucleo/kit/piezas/fis-balanza-dim.js'],
     // Glosario del tema (docs/teoria.md, 4d): las palabras que esta unidad estrena en el curso (es la primera).
     glosario: [
+      { termino: 'factor de conversión', formas: ['factor de conversión', 'factores de conversión', 'factor', 'factores'],
+        def: 'Fracción que vale 1 y cambia la unidad: arriba y abajo dice lo mismo, como 100 cm sobre 1 m.',
+        ejemplos: ['De m a cm: 100 cm sobre 1 m.', 'De horas a segundos: 3600 s sobre 1 h.', 'De m² a cm²: el de m a cm, al cuadrado, 10 000.'], ver: ['magnitud'] },
+      { termino: 'área', formas: ['área', 'áreas'], def: 'Cuánta superficie ocupa algo: cuántos cuadros de una medida caben en él.',
+        ejemplos: ['El piso de un aula de 7 m por 8 m: 56 m².', 'Una cancha de fútbol: unos 7000 m².', 'Una hoja A4: unos 620 cm².'], ver: ['volumen', 'hectárea'] },
+      { termino: 'volumen', formas: ['volumen', 'volúmenes'], def: 'Cuánto espacio ocupa algo: cuántos cubos de una medida caben dentro.',
+        ejemplos: ['Un tanque de agua del techo: 1100 L, que es 1,1 m³.', 'Una botella personal: 500 cm³, medio litro.', 'Un cubo de 1 m de lado: 1 m³, que son 1000 L.'], ver: ['área', 'litro'] },
+      { termino: 'hectárea', simbolo: 'ha', formas: ['hectárea', 'hectáreas'], def: 'Medida de terrenos: un cuadrado de 100 m de lado, o sea 10 000 m².',
+        ejemplos: ['Una chacra de 2 ha mide 20 000 m².', 'Una cancha de fútbol ocupa unas tres cuartas partes de una hectárea.', 'Media hectárea son 5000 m².'], ver: ['área'] },
+      { termino: 'litro', simbolo: 'L', formas: ['litro', 'litros'], def: 'Medida de volumen: lo que cabe en un cubo de 10 cm de lado, 1 dm³.',
+        ejemplos: ['Una botella grande de gaseosa: 3 L.', 'Un balde: unos 10 L.', '1000 L llenan un cubo de 1 m de lado.'], ver: ['volumen'] },
       { termino: 'magnitud', def: 'Propiedad de algo que se puede medir y decir con un número y una unidad.',
         ejemplos: ['El largo de una mesa: 2,5 m, que también son 250 cm.', 'La temperatura de Juliaca una mañana de julio: −8 °C.', 'La masa de una pelota de fútbol: unos 0,43 kg.'], ver: ['magnitud fundamental', 'magnitud derivada'] },
       { termino: 'magnitud fundamental', formas: ['magnitud fundamental', 'magnitudes fundamentales'],
@@ -407,6 +651,6 @@
       pregunta: '¿Qué cambia cuando mides lo mismo en otra unidad?',
       fuente: { titulo: 'NIST — A Turning Point for Humanity: Redefining the World’s Measurement System', url: 'https://www.nist.gov/si-redefinition/turning-point-humanity-redefining-worlds-measurement-system' },
     },
-    ideas: [unidades, dimensiones],
+    ideas: [unidades, areas, dimensiones],
   };
 });
