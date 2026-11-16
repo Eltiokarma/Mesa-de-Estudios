@@ -85,11 +85,26 @@
     },
   };
   const CASA = { n: [{ id: 'a', x: 3, y: 2.4 }, { id: 'b', x: 7, y: 2.4 }, { id: 'c', x: 7, y: 5.6 }, { id: 'd', x: 3, y: 5.6 }, { id: 'e', x: 5, y: 0.4 }], a: LADOS.concat([['a', 'c'], ['b', 'd'], ['a', 'e'], ['e', 'b']]) };
+  // La figura al azar de «Ahora tú» y de «Así se resuelve»: seis puntos y las líneas que pueden unirlos.
+  const FIG_AT = {
+    N: [{ id: '0', x: 1.2, y: 1 }, { id: '1', x: 5, y: 0.6 }, { id: '2', x: 8.8, y: 1 }, { id: '3', x: 1.2, y: 5 }, { id: '4', x: 5, y: 5.4 }, { id: '5', x: 8.8, y: 5 }],
+    posibles: [['0', '1'], ['1', '2'], ['3', '4'], ['4', '5'], ['0', '3'], ['2', '5'], ['1', '4'], ['0', '4'], ['1', '3'], ['1', '5'], ['2', '4']],
+  };
   const unTrazo = {
     id: 'un-solo-trazo',
     titulo: 'Contar los vértices impares',
     temas: ['Figuras de un solo trazo'],
     pieza: 'rm-plano',
+    // Lee (fase 2): el reto, el vocabulario (vértice, líneas que llegan, cruce) y qué mirar. No dice qué hacen los
+    // impares ni dónde se empieza: eso lo descubre en Predice.
+    lee: {
+      tarjetas: [
+        { titulo: 'Un reto de pizarra', texto: 'Alguien dibuja una figura en la pizarra y te reta: hazla de un solo trazo, sin pasar dos veces por la misma línea. Se puede probar a ciegas, o contar antes de probar.' },
+        { titulo: 'Puntos y líneas', texto: 'Un vértice es un punto donde terminan o se juntan líneas. A cada vértice se le cuenta cuántas líneas llegan: a la esquina de un cuadrado llegan 2. Ese número puede ser par o impar.' },
+        { titulo: 'Cruzar no es tocar', texto: 'Si dos líneas se cruzan donde no hay un punto marcado, ese cruce no es un vértice: el trazo pasa de largo por ahí, como un puente sobre otra calle.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Cada punto del juego muestra su número de líneas. Cambia la figura y anota cuántos puntos impares tiene y si sale de un solo trazo.' },
+      ],
+    },
     juega: {
       consigna: 'Cada punto muestra cuántas líneas llegan a él. Cambia la figura y mira cuántos puntos tienen un número impar.',
       voz: 'Fíjate también en la figura que viene en dos partes.',
@@ -128,18 +143,43 @@
       ecuacion: [{ llave: [I], nota: 'puntos impares', color: 'c-h' }, ' ∈ {0, 2}'],
       condicion: 'la figura está en una sola pieza y solo cuentan los puntos donde se unen líneas, no los cruces.',
     },
+    // Así se resuelve (fase 2): la misma figura al azar de «Ahora tú» (mismos puntos y líneas posibles, mismo analizar),
+    // con otra semilla, resuelta paso a paso.
+    resuelve: {
+      pieza: 'rm-plano',
+      generar(s) {
+        const r = azar(s + 900), ar = r.barajar(FIG_AT.posibles).slice(0, r.ent(5, 10));
+        const A = analizar(FIG_AT.N, ar), usados = Object.values(A.g).filter(x => x > 0);
+        const sentido = !A.conexo ? 'La figura viene en partes separadas: para pasar de una a otra habría que saltar. No sale, cuente lo que cuente.'
+          : A.impares === 0 ? 'Cero impares: en cada punto, cada línea que entra tiene otra para salir. Se empieza en cualquiera y se vuelve a él.'
+          : A.impares === 2 ? 'Dos impares: se empieza en uno y se termina en el otro. Desde un punto par no saldría.'
+          : `Con ${A.impares} impares sobrarían puntos sin pareja de líneas, y solo dos pueden ser inicio y final. No sale.`;
+        return {
+          enunciado: `Esta figura tiene ${ar.length} líneas. ¿Se puede dibujar de un solo trazo, sin repetir ninguna línea?`,
+          dibujo: { datos: dibujoGrafo(FIG_AT.N, ar, false), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden decidir si la figura sale de un trazo sin repetir líneas y, si sale, si vuelve al punto de partida.' },
+            { tipo: 'datos', texto: `Tengo ${ar.length} líneas y ${usados.length} puntos. Escribo en cada punto cuántas líneas le llegan.`,
+              ecuacion: [usados.join(', ')], dibujo: { datos: dibujoGrafo(FIG_AT.N, ar, true), estado: {} } },
+            { tipo: 'regla', texto: 'Cada vez que paso por un punto gasto dos líneas: una para llegar y otra para irme. Un punto impar solo puede ser donde empiezo o donde termino.' },
+            { tipo: 'cuentas', texto: `Cuento los puntos con número impar${A.conexo ? '' : ' y reviso si la figura está unida'}.`,
+              ecuacion: [I, ` = ${A.impares}`, A.conexo ? ' · figura unida' : ' · figura en partes'] },
+            { tipo: 'sentido', texto: sentido },
+          ],
+          respuesta: VERED[A.veredicto],
+        };
+      },
+    },
     ahoraTu: {
       pieza: 'rm-plano',
       voz: 'Escribe en cada punto cuántas líneas llegan.',
       generar(s) {
-        const r = azar(s);
-        const N = [{ id: '0', x: 1.2, y: 1 }, { id: '1', x: 5, y: 0.6 }, { id: '2', x: 8.8, y: 1 }, { id: '3', x: 1.2, y: 5 }, { id: '4', x: 5, y: 5.4 }, { id: '5', x: 8.8, y: 5 }];
-        const POSIBLES = [['0', '1'], ['1', '2'], ['3', '4'], ['4', '5'], ['0', '3'], ['2', '5'], ['1', '4'], ['0', '4'], ['1', '3'], ['1', '5'], ['2', '4']];
-        const ar = r.barajar(POSIBLES).slice(0, r.ent(5, 10));
+        const r = azar(s), N = FIG_AT.N;
+        const ar = r.barajar(FIG_AT.posibles).slice(0, r.ent(5, 10));
         const A = analizar(N, ar);
         const correcta = VERED[A.veredicto];
         return {
-          pregunta: `Esta figura tiene ${ar.length} líneas. ¿Se puede dibujar de un solo trazo, sin levantar el lápiz ni repetir líneas?`,
+          pregunta: `Esta figura tiene ${ar.length} líneas. ¿Se puede dibujar de un solo trazo, sin cortarlo ni repetir líneas?`,
           dibujo: { datos: dibujoGrafo(N, ar, false), estado: {} },
           opciones: [
             { id: 'cerrado', texto: VERED.cerrado, correcta: correcta === VERED.cerrado, error: 'RMT-TRA-4', siFuera: 'Volver al inicio pide cero puntos impares. Cuenta las líneas de cada punto.' },
@@ -184,8 +224,18 @@
     titulo: 'Repetir lo menos posible',
     temas: ['Longitud mínima de un recorrido'],
     pieza: 'rm-plano',
+    // Lee (fase 2): el problema del recorrido, qué es repetir un tramo y qué mirar. No dice qué tramos conviene
+    // repetir ni cuánto mide el recorrido que vuelve al inicio (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'El recorrido del vigilante', texto: 'Un vigilante debe pasar por todas las calles de un parque de Juliaca. Si la figura de las calles no sale de un trazo, alguna calle la camina dos veces. La pregunta: ¿cuánto camina, como mínimo?' },
+        { titulo: 'Repetir un tramo', texto: 'Un tramo es la parte de una línea entre dos puntos seguidos. Si se repite, su largo se suma otra vez al recorrido. En el juego, el tramo repetido se dibuja en naranja.' },
+        { titulo: 'Los extremos', texto: 'Cada tramo tiene dos extremos, sus dos puntas. Al repetirlo, a cada extremo le llega una línea más: su número de líneas cambia de par a impar, o al revés.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Elige qué parte de la cruz repetir. Mira cuántos puntos impares (I) quedan y cuánto mide el recorrido cuando ya sale.' },
+      ],
+    },
     juega: {
-      consigna: 'Ventana de 6 × 4 cm con cruz: 30 cm de líneas y cuatro puntos impares (I). Elige qué tramo repetir y cuenta los impares.',
+      consigna: 'Rectángulo de 6 × 4 cm con cruz: 30 cm de líneas y cuatro puntos impares (I). Elige qué tramo repetir y cuenta los impares.',
       voz: 'Repetir un tramo cambia la paridad de sus dos extremos.',
       controles: [{ id: 'rep', etiqueta: 'Repite', opciones: [{ valor: 'nada', texto: 'Nada' }, { valor: 'tc', texto: 'Medio palo' }, { valor: 'tcu', texto: 'Palo vertical' }, { valor: 'lcr', texto: 'Palo horizontal' }] }],
       dibujo: val => ({ datos: ventana(val.rep), estado: {} }),
@@ -196,7 +246,7 @@
       minimo: 4,
     },
     predice: {
-      pregunta: 'Ahora el lápiz debe volver al punto donde empezó. ¿Cuánto mide, como mínimo, el recorrido?',
+      pregunta: 'Ahora el recorrido debe volver al punto donde empezó. ¿Cuánto mide, como mínimo, el recorrido?',
       opciones: [
         { id: 'abierto', texto: '34 cm', error: 'RMT-TRA-6', siFuera: '34 cm alcanza si se termina en otro punto. Para volver, no puede quedar ningún impar.' },
         { id: 'total', texto: '30 cm', error: 'RME32', siFuera: '30 cm sería sin repetir: con cuatro impares no se puede.' },
@@ -223,6 +273,33 @@
       ecuacion: ['mínimo = total + lo repetido'],
       condicion: 'se repiten caminos que existen en la figura y se elige la forma más corta de emparejar los impares.',
     },
+    // Así se resuelve (fase 2): el rectángulo con cruz de «Ahora tú», con las mismas cuentas y otra semilla.
+    resuelve: {
+      pieza: 'rm-plano',
+      generar(s) {
+        const r = azar(s + 900), w = 2 * r.ent(2, 6), h = 2 * r.ent(2, 5);
+        const vuelve = s % 2 === 0, total = 3 * (w + h), corto = Math.min(w, h), largo = Math.max(w, h);
+        const rep = vuelve ? w + h : corto, bien = total + rep;
+        const naranja = (a, b) => ({ de: a, a: b, color: 'o', grosor: 'variable', curva: 9 });
+        const repetidos = vuelve ? [['t', 'c'], ['c', 'u'], ['l', 'c'], ['c', 'r']] : h <= w ? [['t', 'c'], ['c', 'u']] : [['l', 'c'], ['c', 'r']];
+        return {
+          enunciado: `Un rectángulo de ${f(w)} × ${f(h)} cm tiene una cruz al centro. ¿Cuánto mide el menor recorrido que pasa por todas las líneas${vuelve ? ' y vuelve al inicio' : ''}?`,
+          dibujo: { datos: ventana('nada', w, h), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: vuelve ? 'Piden el recorrido más corto que pase por todas las líneas y termine donde empezó.' : 'Piden el recorrido más corto que pase por todas las líneas; puede terminar en otro punto.' },
+            { tipo: 'datos', texto: `El borde mide 2 · (${f(w)} + ${f(h)}) y la cruz, ${f(w)} + ${f(h)}. Los cuatro puntos medios de los lados reciben tres líneas: son impares.`,
+              ecuacion: [`2 · (${f(w)} + ${f(h)}) + ${f(w)} + ${f(h)} = ${f(total)} cm`] },
+            { tipo: 'regla', texto: 'Con más de dos impares no sale de un trazo. Repito los tramos más cortos que unan impares de dos en dos, y el recorrido crece en lo repetido.' },
+            { tipo: 'cuentas', texto: vuelve ? 'Para volver al inicio no puede quedar ningún impar: repito los dos palos de la cruz.' : `Pueden quedar dos impares: repito solo el palo más corto, de ${f(corto)} cm.`,
+              ecuacion: [`${f(total)} + ${vuelve ? `${f(w)} + ${f(h)}` : f(corto)} = ${f(bien)} cm`],
+              dibujo: { datos: ventana('nada', w, h, { aristas: repetidos.map(([a, b]) => naranja(a, b)), pie: `${f(total)} + ${f(rep)} = ${f(bien)} cm` }), estado: {} } },
+            { tipo: 'sentido', texto: vuelve ? `Sin impares, el recorrido se cierra. Mide más que los ${f(total)} cm de líneas, como debe ser, porque algo se repite.`
+              : `Quedan dos impares: se empieza en uno y se termina en el otro. Repetir el palo de ${f(largo)} cm daría ${f(total + largo)} cm, ${corto === largo ? 'lo mismo' : 'más'}.` },
+          ],
+          respuesta: `${f(bien)} cm`,
+        };
+      },
+    },
     ahoraTu: {
       voz: 'Marca los impares y busca los caminos más cortos que los unen.',
       generar(s) {
@@ -230,7 +307,7 @@
         const vuelve = s % 2 === 0, total = 3 * (w + h);
         const bien = total + (vuelve ? w + h : Math.min(w, h));
         return {
-          pregunta: `Una ventana de ${f(w)} × ${f(h)} cm con una cruz al centro. ¿Cuánto mide el menor recorrido que pasa por todas las líneas${vuelve ? ' y vuelve al inicio' : ''}?`,
+          pregunta: `Un rectángulo de ${f(w)} × ${f(h)} cm con una cruz al centro. ¿Cuánto mide el menor recorrido que pasa por todas las líneas${vuelve ? ' y vuelve al inicio' : ''}?`,
           dibujo: { datos: ventana('nada', w, h), estado: {} },
           opciones: opciones(bien, [
             { id: 'total', valor: total, error: 'RME32', siFuera: 'Eso es sin repetir: con cuatro impares no sale.' },
@@ -273,6 +350,16 @@
     titulo: 'Deslizar lados hasta el borde',
     temas: ['Perímetros de figuras poligonales'],
     pieza: 'rm-plano',
+    // Lee (fase 2): qué es el perímetro, la figura escalonada y el rectángulo punteado. No dice qué pasa con el
+    // entrante (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Cercar un terreno', texto: 'Para cercar un terreno con alambre hay que saber cuánto mide todo su borde. Ese largo es el perímetro: se recorre el contorno completo, sin saltar ni repetir ningún trozo.' },
+        { titulo: 'Figuras escalonadas', texto: 'Una figura escalonada tiene lados horizontales y verticales que bajan como gradas. Medir grada por grada cansa, y el examen casi nunca da la medida de cada una.' },
+        { titulo: 'El rectángulo punteado', texto: 'La línea punteada del juego es el rectángulo más chico que encierra la figura: mide 10 cm de ancho y 6 cm de alto. Su borde sirve para comparar.' },
+        { titulo: 'Qué mirar al jugar', texto: 'Cambia cuántos escalones hay. Fíjate si el perímetro cambia y compara los trozos horizontales de las gradas con el lado de abajo.' },
+      ],
+    },
     juega: {
       consigna: 'Una figura de 10 cm de ancho y 6 cm de alto con escalones. Cambia cuántos escalones tiene y mira su perímetro.',
       voz: 'Cada escalón tiene un trozo horizontal y uno vertical.',
@@ -309,6 +396,28 @@
       texto: 'Si los lados se pueden deslizar hasta el borde del rectángulo que la encierra, el perímetro es el del rectángulo. Cada entrante agrega dos veces su profundidad.',
       ecuacion: [P, ' = ', { llave: ['2 · (ancho + alto)'], nota: 'el rectángulo', color: 'c-i' }, ' + ', { llave: ['2 · entrantes'], nota: 'paredes de adentro', color: 'c-o' }],
       condicion: 'todos los lados son horizontales o verticales y los escalones van siempre en el mismo sentido.',
+    },
+    // Así se resuelve (fase 2): la escalera de «Ahora tú» (mismos rangos, misma cuenta), con otra semilla.
+    resuelve: {
+      pieza: 'rm-plano',
+      generar(s) {
+        const r = azar(s + 900), W = r.ent(6, 14), H = r.ent(4, 9), n = r.ent(2, 5), e = s % 3 ? r.ent(1, Math.max(1, H - 3)) : 0;
+        const bien = 2 * (W + H) + 2 * e;
+        return {
+          enunciado: `La figura escalonada mide ${f(W)} cm de ancho y ${f(H)} cm de alto${e ? `, con un entrante de ${f(e)} cm de profundidad` : ''}. ¿Cuál es su perímetro?`,
+          dibujo: { datos: escalera(W, H, n, e), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el perímetro: el largo de todo el borde de la figura.' },
+            { tipo: 'datos', texto: `Ancho ${f(W)} cm, alto ${f(H)} cm y ${n} escalones${e ? `; además, un entrante de ${f(e)} cm de fondo` : ''}. No conozco cada grada, y no hace falta.` },
+            { tipo: 'regla', texto: 'Los trozos de las gradas se pueden correr hasta el borde del rectángulo punteado. Lo que no tiene pareja en ese borde se suma aparte.' },
+            { tipo: 'cuentas', texto: e ? 'El borde del rectángulo, más las dos paredes del entrante, que quedan adentro.' : 'Las gradas llenan justo el borde del rectángulo: no sobra nada.',
+              ecuacion: [P, ` = 2 · (${f(W)} + ${f(H)})${e ? ` + 2 · ${f(e)}` : ''} = ${f(bien)} cm`],
+              dibujo: { datos: escalera(W, H, n, e, { pie: `${P.t} = ${f(bien)} cm` }), estado: {} } },
+            { tipo: 'sentido', texto: `Los trozos horizontales suman ${f(W)} y los verticales ${f(H)}, con ${n} gradas o con las que sean.${e ? ' El entrante quita área, pero agrega borde.' : ' El resultado no depende del número de escalones.'}` },
+          ],
+          respuesta: [P, ` = ${f(bien)} cm`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-plano',
@@ -356,6 +465,17 @@
     titulo: 'Los arcos chicos suman igual',
     temas: ['Perímetros de figuras circulares'],
     pieza: 'rm-plano',
+    // Lee (fase 2): bordes curvos, la semicircunferencia con otro diámetro y dejar π escrito. No dice cuánto suman
+    // los arcos chicos (Predice).
+    lee: {
+      tarjetas: [
+        { titulo: 'Bordes curvos', texto: 'Muchas puertas de las iglesias de Puno terminan arriba en medio círculo. Para medir un borde curvo no sirve la regla: se usa el número π, que vale cerca de 3,14.' },
+        { titulo: 'Media circunferencia', texto: 'Una circunferencia mide π por su diámetro. Una semicircunferencia es la mitad: π por el diámetro, entre dos. Con 10 cm de diámetro mide 5π cm.',
+          ecuacion: [{ frac: ['π · D', '2'] }] },
+        { titulo: 'Dejar π escrito', texto: 'En el examen el borde suele quedar con π: se escribe 5π cm en lugar de 15,7 cm. Así se comparan largos sin cuentas con decimales.' },
+        { titulo: 'Qué mirar al jugar', texto: 'En el juego, semicírculos iguales se apoyan en un segmento de 12 cm. Al poner más, cada uno se achica: mira qué pasa con la suma de sus arcos.' },
+      ],
+    },
     juega: {
       consigna: 'Sobre un segmento de 12 cm se apoyan semicírculos iguales. Cambia cuántos son y mira la suma de sus arcos.',
       voz: 'Más semicírculos son más chicos. ¿Qué pasa con la suma?',
@@ -392,6 +512,27 @@
       texto: 'Una semicircunferencia mide π por el diámetro entre dos. Si varios semicírculos se reparten un mismo diámetro, sus arcos suman lo mismo que el semicírculo grande.',
       ecuacion: [{ llave: [{ frac: ['π · D', '2'] }], nota: 'arco grande', color: 'c-o' }, ' = ', { llave: [{ frac: [['π · ', { sub: ['d', '1'] }], '2'] }, ' + … + ', { frac: [['π · ', { sub: ['d', 'n'] }], '2'] }], nota: 'arcos chicos', color: 'c-i' }],
       condicion: 'los diámetros chicos están sobre el diámetro grande y lo cubren sin sobrar ni faltar.',
+    },
+    // Así se resuelve (fase 2): la figura de arcos de «Ahora tú» (mismos rangos, misma cuenta), con otra semilla.
+    resuelve: {
+      pieza: 'rm-plano',
+      generar(s) {
+        const r = azar(s + 900), n = r.ent(2, 5), D = 2 * n * r.ent(1, 3), d = D / n;
+        return {
+          enunciado: `Arriba de un segmento de ${f(D)} cm va un semicírculo con ese diámetro; abajo, ${n} semicírculos iguales. ¿Cuál es el perímetro de la figura?`,
+          dibujo: { datos: semis(n, D, true), estado: {} },
+          pasos: [
+            { tipo: 'pide', texto: 'Piden el perímetro: el largo del borde. El segmento queda adentro de la figura, así que no cuenta.' },
+            { tipo: 'datos', texto: `Arriba hay un arco de ${f(D)} cm de diámetro. Abajo, ${n} arcos que se reparten ese segmento: cada uno de ${f(d)} cm.`, ecuacion: [`${f(D)} ÷ ${n} = ${f(d)} cm`] },
+            { tipo: 'regla', texto: 'El borde de medio círculo mide π por su diámetro, entre dos. Lo calculo arriba y abajo por separado, y después sumo.' },
+            { tipo: 'cuentas', texto: `Arriba, un arco grande. Abajo, ${n} arcos chicos iguales.`,
+              ecuacion: [{ frac: [`π · ${f(D)}`, '2'] }, ` = ${f(D / 2)}π   ·   ${n} · `, { frac: [`π · ${f(d)}`, '2'] }, ` = ${f(D / 2)}π   →   `, P, ` = ${f(D)}π cm`],
+              dibujo: { datos: semis(n, D, true, { pie: `${f(D / 2)}π + ${f(D / 2)}π = ${f(D)}π cm` }), estado: {} } },
+            { tipo: 'sentido', texto: `Con π ≈ 3,14, el borde mide unos ${f(D * Math.PI, 1)} cm: más que dos segmentos rectos de ${f(D)} cm. Lo curvo siempre es más largo.` },
+          ],
+          respuesta: [P, ` = ${f(D)}π cm`],
+        };
+      },
     },
     ahoraTu: {
       pieza: 'rm-plano',
@@ -571,7 +712,7 @@
         ejemplo: 'El palo vertical de la cruz tiene dos: arriba y abajo.' },
       { termino: 'paridad', def: 'Si un número es par o impar.',
         ejemplo: 'Repetir un tramo suma 1 línea a cada extremo y cambia su paridad.', ver: ['vértice impar'] },
-      { termino: 'un solo trazo', def: 'Dibujo hecho sin levantar el lápiz y sin pasar dos veces por la misma línea.',
+      { termino: 'un solo trazo', def: 'Dibujo hecho de corrido, sin cortar la línea y sin pasar dos veces por el mismo tramo.',
         formas: ['un solo trazo', 'un trazo'], ejemplo: 'Un cuadrado sale así: sus 4 vértices tienen 2 líneas, ninguno es impar.', ver: ['vértice impar', 'recorrido euleriano'] },
       { termino: 'figura unida', def: 'Figura de una sola pieza: desde cualquier punto se llega a otro siguiendo sus líneas.',
         formas: ['figura unida', 'figuras unidas'], ejemplo: 'Dos triángulos separados no lo son, aunque cada uno tenga 0 impares.' },
@@ -593,7 +734,7 @@
         formas: ['semicircunferencia', 'semicircunferencias', 'media circunferencia'],
         ejemplo: 'Diámetro de 12 cm: π · 12 / 2 = 6π cm.', ver: ['arco', 'semicírculo'] },
       { termino: 'tramo', def: 'Parte de un camino o de una línea entre dos puntos seguidos.',
-        ejemplo: 'Una ventana con cruz tiene tramos de 3 cm y de 2 cm.', ver: ['vértice'] },
+        ejemplo: 'Un rectángulo de 6 × 4 cm con cruz tiene tramos de 3 cm y de 2 cm.', ver: ['vértice'] },
     ],
     // Laboratorio: la casa con dos líneas sueltas, la escalera con entrante y los arcos arriba y abajo.
     laboratorio: [mesaSueltas, mesaEntrante, mesaArcos],
