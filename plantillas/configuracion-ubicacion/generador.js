@@ -222,11 +222,19 @@
   const DATOS_MOLLER = 'Configuraciones en el orden de llenado (regla de Möller), salvo Cr, Cu, Mo, Ag y Au, que son anómalas: un electrón del s de afuera pasa al d; abreviadas con el gas noble anterior.';
 
   // ---------- Armado ----------
-  function generar(semilla) {
+  const TIPOS = ['ubicar', 'ubicar', 'ubicar', 'familia', 'familia', 'cation', 'cation', 'cation', 'anion',
+    'desapareados', 'desapareados', 'anomala', 'anomala', 'cuanticos', 'cuanticos', 'contar', 'particulas', 'particulas',
+    'atomo-ion', 'vida-media', 'vida-media', 'vida-media'];
+  // Qué tipos sirve a cada unidad del catálogo (decisión de Gerson, 17 nov 2026): en Materia y energía no sale la
+  // configuración electrónica, solo la vida media. generar(semilla, { unidad }) elige entre los tipos de esa unidad; sin
+  // unidad, o con una que no está aquí, entre todos y con el mismo azar de antes (las otras unidades y casos.json no
+  // cambian). Modelo: plantillas/velocidad-relativa/.
+  const TIPOS_POR_UNIDAD = { 'quimica.materia-y-energia': ['vida-media'] };
+  function generar(semilla, opciones) {
+    const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
+    const permitidos = TIPOS_POR_UNIDAD[unidad];
     const rng = Azar.crear('configuracion-ubicacion|' + semilla);
-    const tipo = rng.elegir(['ubicar', 'ubicar', 'ubicar', 'familia', 'familia', 'cation', 'cation', 'cation', 'anion',
-      'desapareados', 'desapareados', 'anomala', 'anomala', 'cuanticos', 'cuanticos', 'contar', 'particulas', 'particulas',
-      'atomo-ion', 'vida-media', 'vida-media', 'vida-media']);
+    const tipo = rng.elegir(permitidos ? TIPOS.filter(t => permitidos.includes(t)) : TIPOS);
     for (let intento = 0; intento < 500; intento++) {
       const p = CONSTRUIR[tipo](rng, semilla);
       if (p && p.alternativas.length >= 4) return p;
@@ -554,6 +562,9 @@
 
   // ---- vida media ----
   const UNIDADES_T = ['horas', 'días', 'años'];
+  // Datos de la vida media (docs/plan-calidad.md §3, punto 13): la definición y la fórmula general, nunca la cuenta hecha.
+  const DATOS_VIDA = ['Vida media: tiempo en que se desintegra la mitad de lo que hay',
+    'Tras n vidas medias queda m₀ / 2ⁿ, con m₀ la cantidad inicial', 'n = tiempo transcurrido ÷ vida media'];
   function vidaMediaP(rng, semilla) {
     const sub = rng.elegir(['queda', 'tiempo', 'lectura']);
     const u = rng.elegir(UNIDADES_T), T = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30]);
@@ -564,10 +575,10 @@
       const m0 = rng.elegir([40, 48, 64, 80, 96, 120, 160, 200, 240, 320, 400, 480, 640]), n = rng.entero(2, 5), t = n * T, m = m0 / 2 ** n;
       if (!corto(m)) return null;
       const errores = [
-        hv('AQ-vm-divide-entre-2n', { valor: m0 / (2 * n) }, `Dividiste entre 2 × ${n}. Cada vida media la masa se divide entre 2 otra vez: después de ${n} vidas medias se divide entre 2^${n} = ${2 ** n}.`),
-        hv('AQ-vm-desintegrada', { valor: m0 - m }, `Esa es la masa que se desintegró. Lo que queda es ${f(m0)} − ${f(m0 - m)}.`),
-        hv('AQ-vm-una-vida-de-mas', { valor: m0 / 2 ** (n + 1) }, `Contaste una vida media de más. En ${f(t)} ${u} caben ${f(t)} ÷ ${T} = ${n} vidas medias.`),
-        hv('AQ-vm-una-vida-de-menos', { valor: m0 / 2 ** (n - 1) }, `Contaste una vida media de menos. En ${f(t)} ${u} caben ${f(t)} ÷ ${T} = ${n} vidas medias.`),
+        hv('AQ-vm-divide-entre-2n', { valor: m0 / (2 * n) }, `Bien contar ${n} vidas medias. Pero cada una divide entre 2 otra vez: se divide entre 2^${n} = ${2 ** n}, no entre 2 × ${n}. Así queda ${f(m0 / (2 * n))} ${mu}.`),
+        hv('AQ-vm-desintegrada', { valor: m0 - m }, `Bien contar las vidas medias. Pero ${f(m0 - m)} ${mu} es la masa que se desintegró; lo que queda es ${f(m0)} − ${f(m0 - m)}.`),
+        hv('AQ-vm-una-vida-de-mas', { valor: m0 / 2 ** (n + 1) }, `Bien dividir entre 2 cada vida media. Pero contaste una de más: en ${f(t)} ${u} caben ${f(t)} ÷ ${T} = ${n}. Así queda ${f(m0 / 2 ** (n + 1))} ${mu}.`),
+        hv('AQ-vm-una-vida-de-menos', { valor: m0 / 2 ** (n - 1) }, `Bien dividir entre 2 cada vida media. Pero contaste una de menos: en ${f(t)} ${u} caben ${f(t)} ÷ ${T} = ${n}. Así queda ${f(m0 / 2 ** (n - 1))} ${mu}.`),
       ];
       return cerrar(rng, semilla, { numero: true, correcta: m, errores, unidad: mu, variables,
         enunciado: [`${ctx}: hay `, v('m0', `${f(m0)} ${mu}`), ' y su vida media es de ', v('T', `${T} ${u}`), '.'],
@@ -576,7 +587,7 @@
           ['Vidas medias que pasan: ', v('t', f(t)), ' ÷ ', v('T', String(T)), ` = ${n}.`],
           [`Cada vida media queda la mitad: `, v('m0', f(m0)), ` → ${Array.from({ length: n }, (x, i) => f(m0 / 2 ** (i + 1))).join(' → ')} ${mu}.`],
           ['Queda ', v('m', `${f(m)} ${mu}`), ` (${f(m0)} ÷ ${2 ** n}).`],
-        ], _datos: { tipo: 'vida-media', sub, m0, T, t, unidad: u } });
+        ], datos: DATOS_VIDA, _datos: { tipo: 'vida-media', sub, m0, T, t, unidad: u } });
     }
     if (sub === 'tiempo') {
       const porcentaje = rng.moneda(), n = porcentaje ? rng.entero(2, 4) : rng.entero(2, 5);
@@ -584,10 +595,10 @@
       if (!corto(m)) return null;
       const pct = 100 * (1 - 1 / 2 ** n);
       const errores = [
-        hv('AQ-vm-lineal', { valor: 2 * T * (1 - 1 / 2 ** n) }, `Supusiste que en cada vida media se desintegra la mitad de la muestra INICIAL, siempre la misma cantidad. Se desintegra la mitad de lo que QUEDA: cada vez menos.`),
-        hv('AQ-vm-multiplica-fraccion', { valor: T * 2 ** n }, `Multiplicaste la vida media por ${2 ** n}. Que quede 1/${2 ** n} quiere decir que la muestra se partió por la mitad ${n} veces: ${n} vidas medias.`),
-        hv('AQ-vm-una-vida-de-mas', { valor: (n + 1) * T }, `Contaste una vida media de más: ${porcentaje ? `de 100 % a ${f(100 - pct)} %` : `de ${f(m0)} a ${f(m)}`} hay ${n} mitades.`),
-        hv('AQ-vm-una-vida-de-menos', { valor: (n - 1) * T }, `Contaste una vida media de menos: ${porcentaje ? `de 100 % a ${f(100 - pct)} %` : `de ${f(m0)} a ${f(m)}`} hay ${n} mitades.`),
+        hv('AQ-vm-lineal', { valor: 2 * T * (1 - 1 / 2 ** n) }, `Bien ver que la muestra se desintegra con el tiempo. Pero no siempre la misma cantidad: en cada vida media se va la mitad de lo que queda. Así salen ${f(2 * T * (1 - 1 / 2 ** n))} ${u}.`),
+        hv('AQ-vm-multiplica-fraccion', { valor: T * 2 ** n }, `Bien usar la vida media. Pero que quede 1/${2 ** n} es partir por la mitad ${n} veces: ${n} vidas medias, no ${2 ** n}. Así salen ${f(T * 2 ** n)} ${u}.`),
+        hv('AQ-vm-una-vida-de-mas', { valor: (n + 1) * T }, `Bien multiplicar por la vida media. Pero contaste una de más: ${porcentaje ? `de 100 % a ${f(100 - pct)} %` : `de ${f(m0)} a ${f(m)}`} hay ${n} mitades.`),
+        hv('AQ-vm-una-vida-de-menos', { valor: (n - 1) * T }, `Bien multiplicar por la vida media. Pero contaste una de menos: ${porcentaje ? `de 100 % a ${f(100 - pct)} %` : `de ${f(m0)} a ${f(m)}`} hay ${n} mitades.`),
       ];
       const pregunta = porcentaje
         ? ['¿Cuánto ', v('t', 'tiempo'), ' debe pasar para que se haya desintegrado el ', v('pd', `${f(pct)} %`), ' de la muestra?']
@@ -602,16 +613,16 @@
             : ['Queda ', v('m', `${f(m)} ${mu}`), ' de ', v('m0', `${f(m0)} ${mu}`), `: 1/${2 ** n} de la muestra.`],
           [`1/${2 ** n} = (1/2)^${n}: la muestra se partió por la mitad ${n} veces.`],
           ['Tiempo: ', `${n} × `, v('T', String(T)), ' = ', v('t', `${f(correcta)} ${u}`), '.'],
-        ], _datos: { tipo: 'vida-media', sub, m0, T, n, porcentaje, unidad: u } });
+        ], datos: DATOS_VIDA, _datos: { tipo: 'vida-media', sub, m0, T, n, porcentaje, unidad: u } });
     }
     // lectura: tres mediciones de la actividad
     const k1 = rng.entero(2, 3), k2 = rng.entero(1, 3), base = rng.elegir([5, 10, 15, 20, 25, 40]);
     const A0 = base * 2 ** (k1 + k2), A1 = base * 2 ** k2, A2 = base, t1 = k1 * T, t2 = (k1 + k2) * T;
     const errores = [
-      hv('AQ-vm-lee-tiempo-sin-mitad', { valor: t1 }, `Tomaste como vida media los ${f(t1)} ${u} de la primera medición. Pero en ese tiempo la actividad no bajó a la mitad: bajó de ${A0} a ${A1}, a la ${A0 / A1 === 4 ? 'cuarta' : 'octava'} parte.`),
-      hv('AQ-vm-divide-entre-fraccion', { valor: t1 / 2 ** k1 }, `Dividiste ${f(t1)} entre ${2 ** k1} porque quedó 1/${2 ** k1}. La actividad se partió por la mitad ${k1} veces: hay que dividir entre ${k1}.`),
-      hv('AQ-vm-intervalo', { valor: t2 - t1 }, `Tomaste el tiempo entre las dos mediciones (${f(t2)} − ${f(t1)}). En ese tramo la actividad bajó de ${A1} a ${A2}, a 1/${2 ** k2}: son ${k2} mitades, no una.`),
-      hv('AQ-vm-mitad-del-tiempo', { valor: t2 / 2 }, `Tomaste la mitad del tiempo total. La vida media es el tiempo en que la actividad baja a la mitad, no la mitad del tiempo.`),
+      hv('AQ-vm-lee-tiempo-sin-mitad', { valor: t1 }, `Bien leer la primera medición. Pero en ${f(t1)} ${u} la actividad no bajó a la mitad: bajó de ${A0} a ${A1}, a la ${A0 / A1 === 4 ? 'cuarta' : 'octava'} parte.`),
+      hv('AQ-vm-divide-entre-fraccion', { valor: t1 / 2 ** k1 }, `Bien ver que quedó 1/${2 ** k1}. Pero la actividad se partió por la mitad ${k1} veces: ${f(t1)} se divide entre ${k1}, no entre ${2 ** k1}.`),
+      hv('AQ-vm-intervalo', { valor: t2 - t1 }, `Bien usar las dos mediciones. Pero de ${A1} a ${A2} la actividad bajó a 1/${2 ** k2}: en ${f(t2)} − ${f(t1)} ${u} hay ${k2} mitades, no una.`),
+      hv('AQ-vm-mitad-del-tiempo', { valor: t2 / 2 }, `Bien buscar una mitad. Pero la vida media es el tiempo en que la actividad baja a la mitad, no la mitad del tiempo total: ${f(t2 / 2)} ${u}.`),
     ];
     const varsL = { m0: { nombre: 'actividad inicial', color: 'o' }, T: variables.T, t: variables.t, m: { nombre: 'actividad medida', color: 'd' } };
     return cerrar(rng, semilla, { numero: true, correcta: T, errores, unidad: u, variables: varsL,
@@ -621,13 +632,13 @@
         ['De ', v('m0', String(A0)), ' a ', v('m', String(A1)), ` la actividad se dividió entre ${2 ** k1} = 2^${k1}: pasaron ${k1} vidas medias.`],
         [v('T', 'Vida media'), ' = ', v('t', f(t1)), ` ÷ ${k1} = `, v('T', `${f(T)} ${u}`), '.'],
         ['Comprobación: de ', v('m', String(A1)), ' a ', v('m', String(A2)), ` hay ${k2} mitad${k2 > 1 ? 'es' : ''} en ${f(t2 - t1)} ${u} = ${k2} × ${f(T)}.`],
-      ], _datos: { tipo: 'vida-media', sub, A0, A1, A2, t1, t2, unidad: u } });
+      ], datos: DATOS_VIDA, _datos: { tipo: 'vida-media', sub, A0, A1, A2, t1, t2, unidad: u } });
   }
 
   const CONSTRUIR = { ubicar, familia, cation, anion, desapareados, anomala, cuanticos: cuanticosP, contar,
     particulas: particulasP, 'atomo-ion': atomoIon, 'vida-media': vidaMediaP };
 
-  return { id: 'configuracion-ubicacion', titulo: 'Configuración y lugar en la tabla, hasta Z = 86', generar,
+  return { id: 'configuracion-ubicacion', titulo: 'Configuración y lugar en la tabla, hasta Z = 86', generar, tiposPorUnidad: TIPOS_POR_UNIDAD,
     configuracion, ubicacion, ultimoElectron, particulas, contarL, vidaQueda, vidaTiempo, SIMBOLOS, EXCEPCIONES, conConfig,
     LISTAS: { CATIONES, ANIONES, ESPECIES_D, NUCLIDOS, IONES_CUERPO, ANOMALA_Z, UBICAR: CAND_UBICAR.map(x => x.Z) } };
 });

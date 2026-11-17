@@ -1,0 +1,17 @@
+{
+  "id": "densidad-propiedades",
+  "titulo": "Lo que no cambia al partir",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.materia-y-energia"
+  ],
+  "temas": [
+    "Propiedades físicas y químicas"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

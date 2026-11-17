@@ -1,0 +1,91 @@
+{
+  "titulo": "Calor que no sube la temperatura: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Se calientan 500 g de aluminio de 15 °C a 35 °C, sin que cambie de estado. ¿Cuánto calor necesitan? Datos: Calor sensible: Q = m · cₑ · ΔT. Aluminio: cₑ = unos 0,22 cal/(g·°C). ΔT: temperatura final menos temperatura inicial. Alternativas: A) 1650 cal   B) 10 000 cal   C) 5500 cal   D) 3850 cal   E) 2200 cal",
+      "respuesta": "E) 2200 cal",
+      "pasos": [
+        "No cambia de estado: calor sensible. Lo que sube: ΔT = 35 − 15 = 20 °C.",
+        "Q = 500 · 0,22 · 20 = 2200 cal."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Una olla hierve. Hay 150 g de esa agua. ¿Cuánto calor necesitan para volverse vapor por completo? Datos: Calor latente: Q = m · L. Hielo: se funde a 0 °C con L = 80 cal/g. Agua: al hervir, L = 540 cal/g. Alternativas: A) 12 000 cal   B) 81 000 cal   C) 15 000 cal   D) 0 cal   E) 93 000 cal",
+      "respuesta": "B) 81 000 cal",
+      "pasos": [
+        "Ya hierve: todo el calor va a cambiar el estado, sin subir la temperatura.",
+        "Q = 150 · 540 = 81 000 cal."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "En una curva de calentamiento, un líquido pasa de 20 °C a 90 °C. ¿Cuánto varió su temperatura, en °F? Datos: En una variación: ΔK = Δ°C. En una variación: Δ°F = 1,8 · Δ°C. Alternativas: A) 158 °F   B) 126 °F   C) 70 °F   D) 162 °F   E) 38,89 °F",
+      "respuesta": "B) 126 °F",
+      "pasos": [
+        "Primero la variación en °C, final menos inicial: 90 − 20 = 70 °C.",
+        "Δ°F = 1,8 · Δ°C = 1,8 · 70 = 126 °F. Sin el +32: eso es para leer un punto."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Hay 50 g de hielo a 0 °C, que se quieren llevar hasta agua líquida a 20 °C. ¿Cuánto calor hace falta? Datos: Calor latente: Q = m · L. Calor sensible: Q = m · cₑ · ΔT. Hielo: se funde a 0 °C con L = 80 cal/g. Agua líquida: cₑ = 1 cal/(g·°C). Alternativas: A) 1000 cal   B) 28 000 cal   C) 5000 cal   D) 4000 cal   E) 4500 cal",
+      "respuesta": "C) 5000 cal",
+      "pasos": [
+        "Primero se funde a 0 °C: Q = 50 · 80 = 4000 cal.",
+        "Después se calienta el agua: Q = 50 · 1 · 20 = 1000 cal.",
+        "Se suman los dos tramos: 4000 + 1000 = 5000 cal."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "En Juliaca y en Lima se pone a calentar 3 L de agua a 10 °C. ¿Cuánto calor de más hace falta en Lima para que empiece a hervir? Datos: Calor sensible: Q = m · cₑ · ΔT. Agua líquida: cₑ = 1 cal/(g·°C). 1 L de agua = 1000 g. Hierve a unos 87 °C en Juliaca y a unos 100 °C en Lima. Alternativas: A) 231 000 cal   B) 39 000 cal   C) 13 000 cal   D) 501 000 cal   E) 270 000 cal",
+      "respuesta": "B) 39 000 cal",
+      "pasos": [
+        "En Lima sube 100 − 10 = 90 °C; en Juliaca, 87 − 10 = 77 °C. La diferencia: 13 °C.",
+        "Q = 3000 · 1 · 13 = 39 000 cal.",
+        "En la altura el agua hierve antes, pero a menos temperatura."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Una terma calienta 10 kg de agua de 20 °C a 50 °C. ¿Cuánto calor recibe el agua, en kJ? Datos: Calor sensible: Q = m · cₑ · ΔT. Agua líquida: cₑ = 1 cal/(g·°C). 1 kg = 1000 g. 1 cal ≈ 4,18 J. 1 kJ = 1000 J. Alternativas: A) 300 kJ   B) 71,77 kJ   C) 1,25 kJ   D) 1254 kJ   E) 2090 kJ",
+      "respuesta": "D) 1254 kJ",
+      "pasos": [
+        "La masa en gramos, 10 000 g, y lo que sube, 30 °C.",
+        "Q = 10 000 · 1 · 30 = 300 000 cal.",
+        "A joules y a kJ: 300 000 · 4,18 = 1 254 000 J = 1254 kJ."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Hay 50 g de hielo a −20 °C, que se quieren llevar hasta agua líquida a 20 °C. ¿Cuánto calor hace falta? Datos: Calor latente: Q = m · L. Calor sensible: Q = m · cₑ · ΔT. Hielo: cₑ = 0,5 cal/(g·°C). Hielo: se funde a 0 °C con L = 80 cal/g. Agua líquida: cₑ = 1 cal/(g·°C). Alternativas: A) 1500 cal   B) 4500 cal   C) 5500 cal   D) 6000 cal   E) 2000 cal",
+      "respuesta": "C) 5500 cal",
+      "pasos": [
+        "El hielo sube de −20 °C a 0 °C: Q = 50 · 0,5 · 20 = 500 cal.",
+        "Se funde a 0 °C: Q = 50 · 80 = 4000 cal. El agua sube hasta 20 °C: Q = 50 · 1 · 20 = 1000 cal.",
+        "Se suman los tres tramos: 500 + 4000 + 1000 = 5500 cal."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "A 200 g de hielo a 0 °C se les dan 18 000 cal. ¿A qué temperatura queda el agua? Datos: Calor latente: Q = m · L. Calor sensible: Q = m · cₑ · ΔT. Hielo: se funde a 0 °C con L = 80 cal/g. Agua líquida: cₑ = 1 cal/(g·°C). Alternativas: A) 0 °C   B) 10 °C   C) 89,6 °C   D) 20 °C   E) 90 °C",
+      "respuesta": "B) 10 °C",
+      "pasos": [
+        "Fundir todo pide 200 · 80 = 16 000 cal. Alcanza, y sobran 18 000 − 16 000 = 2000 cal.",
+        "Lo que sobra calienta el agua desde 0 °C: ΔT = 2000 ÷ (200 · 1) = 10 °C."
+      ]
+    }
+  ]
+}

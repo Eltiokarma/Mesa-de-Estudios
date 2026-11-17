@@ -1,0 +1,95 @@
+{
+  "titulo": "Poca masa, muchísima energía: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "En un proceso nuclear desaparecen 9 g de masa. ¿Cuánta energía sale? Datos: E = Δm · c², con Δm en kg y E en joules (J). c = 3 × 10⁸ m/s, la rapidez de la luz. 1 kg = 1000 g. Potencias de 10: (10ᵃ)² = 10²ᵃ y al multiplicar se suman los exponentes. Alternativas: A) 8,1 × 10¹⁷ J   B) 5,4 × 10¹⁴ J   C) 8,1 × 10¹⁴ J   D) 2,7 × 10¹⁷ J   E) 2,7 × 10¹⁴ J",
+      "respuesta": "C) 8,1 × 10¹⁴ J",
+      "pasos": [
+        "La masa en kg: 9 g = 9 × 10⁻³ kg.",
+        "c² = (3 × 10⁸)² = 9 × 10¹⁶ m²/s²: se eleva el 3 y también la potencia.",
+        "E = 9 × 10⁻³ · 9 × 10¹⁶ = 8,1 × 10¹⁴ J."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "En un proceso nuclear desaparecen 0,8 g de masa. ¿Cuánta energía sale? Datos: E = Δm · c², con Δm en kg y E en joules (J). c = 3 × 10⁸ m/s, la rapidez de la luz. 1 kg = 1000 g. Potencias de 10: (10ᵃ)² = 10²ᵃ y al multiplicar se suman los exponentes. Alternativas: A) 2,4 × 10¹⁶ J   B) 7,2 × 10¹³ J   C) 7,2 × 10¹⁶ J   D) 4,8 × 10¹³ J   E) 2,4 × 10¹³ J",
+      "respuesta": "B) 7,2 × 10¹³ J",
+      "pasos": [
+        "La masa en kg: 0,8 g = 8 × 10⁻⁴ kg.",
+        "c² = (3 × 10⁸)² = 9 × 10¹⁶ m²/s²: se eleva el 3 y también la potencia.",
+        "E = 8 × 10⁻⁴ · 9 × 10¹⁶ = 7,2 × 10¹³ J."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Un reactor nuclear libera 1,8 × 10¹⁴ J. ¿Cuántos gramos de masa desaparecieron? Datos: E = Δm · c², con Δm en kg y E en joules (J). c = 3 × 10⁸ m/s, la rapidez de la luz. 1 kg = 1000 g. Potencias de 10: (10ᵃ)² = 10²ᵃ y al multiplicar se suman los exponentes. Alternativas: A) 6 × 10⁻³ g   B) 2 g   C) 6 g   D) 3 g   E) 2 × 10⁻³ g",
+      "respuesta": "B) 2 g",
+      "pasos": [
+        "De E = Δm · c² se despeja la masa: Δm = E / c², con c² = (3 × 10⁸)² = 9 × 10¹⁶.",
+        "Δm = 1,8 × 10¹⁴ ÷ 9 × 10¹⁶ = 2 × 10⁻³ kg.",
+        "A gramos: 2 × 10⁻³ · 1000 = 2 g."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "En un reactor se fisionan 2000 g de uranio y los productos tienen 1998,2 g. ¿Qué masa se usa en E = Δm · c² para calcular la energía que sale? Datos: E = Δm · c², con Δm en kg y E en joules (J). Δm: la masa antes menos la masa después. Alternativas: A) La que queda: 1998,2 g   B) La que falta: 1,8 g   C) Toda la de antes: 2000 g   D) Ninguna: la masa no cambia",
+      "respuesta": "B) La que falta: 1,8 g",
+      "pasos": [
+        "Δm es la masa que desaparece: antes menos después.",
+        "Δm = 2000 − 1998,2 = 1,8 g.",
+        "Solo esos 1,8 g salen como energía; el resto sigue como productos."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un reactor nuclear libera 1,8 × 10¹² J. ¿Cuántos gramos de masa desaparecieron? Datos: E = Δm · c², con Δm en kg y E en joules (J). c = 3 × 10⁸ m/s, la rapidez de la luz. 1 kg = 1000 g. Potencias de 10: (10ᵃ)² = 10²ᵃ y al multiplicar se suman los exponentes. Alternativas: A) 6 × 10⁻⁵ g   B) 0,02 g   C) 2 × 10⁻⁵ g   D) 0,06 g   E) 0,03 g",
+      "respuesta": "B) 0,02 g",
+      "pasos": [
+        "De E = Δm · c² se despeja la masa: Δm = E / c², con c² = (3 × 10⁸)² = 9 × 10¹⁶.",
+        "Δm = 1,8 × 10¹² ÷ 9 × 10¹⁶ = 2 × 10⁻⁵ kg.",
+        "A gramos: 2 × 10⁻⁵ · 1000 = 0,02 g."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "En el Sol, núcleos de hidrógeno con 4,0312 g forman núcleos de helio con 4,0026 g. ¿Qué masa se usa en E = Δm · c² para calcular la energía que sale? Datos: E = Δm · c², con Δm en kg y E en joules (J). Δm: la masa antes menos la masa después. Alternativas: A) Ninguna: la masa no cambia   B) La que falta: 0,0286 g   C) Toda la de antes: 4,0312 g   D) La que queda: 4,0026 g",
+      "respuesta": "B) La que falta: 0,0286 g",
+      "pasos": [
+        "Δm es la masa que desaparece: antes menos después.",
+        "Δm = 4,0312 − 4,0026 = 0,0286 g.",
+        "Solo esos 0,0286 g salen como energía; el resto sigue como helio."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "En una reacción nuclear, la masa pasa de 2000 g a 1995 g. ¿Cuánta energía se libera? Datos: E = Δm · c², con Δm en kg y E en joules (J). Δm: la masa antes menos la masa después. c = 3 × 10⁸ m/s, la rapidez de la luz. 1 kg = 1000 g. Potencias de 10: (10ᵃ)² = 10²ᵃ y al multiplicar se suman los exponentes. Alternativas: A) 1,5 × 10¹⁷ J   B) 4,5 × 10¹⁷ J   C) 4,5 × 10¹⁴ J   D) 1,5 × 10¹⁴ J   E) 3 × 10¹⁴ J",
+      "respuesta": "C) 4,5 × 10¹⁴ J",
+      "pasos": [
+        "Solo la masa que falta se vuelve energía: Δm = 2000 − 1995 = 5 g = 5 × 10⁻³ kg.",
+        "c² = (3 × 10⁸)² = 9 × 10¹⁶.",
+        "E = 5 × 10⁻³ · 9 × 10¹⁶ = 4,5 × 10¹⁴ J."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "En un proceso nuclear desaparecen 5 mg de masa. ¿A cuántos balones de gas equivale la energía que sale? Redondea a la unidad. Datos: E = Δm · c², con Δm en kg y E en joules (J). c = 3 × 10⁸ m/s, la rapidez de la luz. 1 kg = 1 000 000 mg. Un balón de gas de 10 kg da unos 4,6 × 10⁸ J al quemarse. Alternativas: A) 326 balones   B) 652 balones   C) 1 balones   D) 978 balones",
+      "respuesta": "D) 978 balones",
+      "pasos": [
+        "La masa en kg: 5 mg = 5 × 10⁻⁶ kg; c² = 9 × 10¹⁶.",
+        "E = 5 × 10⁻⁶ · 9 × 10¹⁶ = 4,5 × 10¹¹ J.",
+        "Entre la de un balón: 4,5 × 10¹¹ ÷ 4,6 × 10⁸ ≈ 978 balones."
+      ]
+    }
+  ]
+}

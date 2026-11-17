@@ -1,0 +1,237 @@
+{
+  "plantilla": "masa-energia",
+  "nota": "energia: x en u (mg o g) que desaparece → J. masa: E (J) → g. defecto: masa antes y después (g) → J. balones: mg → balones de gas de unos 4,6 × 10⁸ J, redondeado a la unidad. que-masa: la masa que va en la fórmula ('masa:falta', la diferencia antes − después). c = 3 × 10⁸ m/s.",
+  "verificacion": "Script aparte (17 nov 2026, python3 con fractions, fuera del repo: verif/masa.py), que no usa el generador ni el núcleo: E = Δm · c² con c² = (3 · 10⁸)² exacto, la masa pasada a kg con su propia tabla, los balones con 46 · 10⁷ J cada uno, y el texto de la correcta en notación científica con superíndices y coma decimal. Los 18 casos cuadran con el generador.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "energia",
+        "nivel": 1,
+        "x": 6,
+        "u": "mg"
+      },
+      "esperado": {
+        "respuesta": 540000000000.0,
+        "texto": "5,4 × 10¹¹ J"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "masa",
+        "nivel": 2,
+        "E": 45000000000000
+      },
+      "esperado": {
+        "respuesta": 0.5,
+        "texto": "0,5 g"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "balones",
+        "nivel": 3,
+        "mg": 10
+      },
+      "esperado": {
+        "respuesta": 1957.0,
+        "texto": "1957 balones"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "defecto",
+        "nivel": 3,
+        "antes": 500,
+        "despues": 499.2
+      },
+      "esperado": {
+        "respuesta": 72000000000000.0,
+        "texto": "7,2 × 10¹³ J"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "que-masa",
+        "nivel": 2,
+        "caso": "uranio",
+        "antes": 500,
+        "despues": 499.55
+      },
+      "esperado": {
+        "respuesta": "masa:falta",
+        "texto": "La que falta: 0,45 g"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "energia",
+        "nivel": 1,
+        "x": 6,
+        "u": "mg"
+      },
+      "esperado": {
+        "respuesta": 540000000000.0,
+        "texto": "5,4 × 10¹¹ J"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "defecto",
+        "nivel": 3,
+        "antes": 2000,
+        "despues": 1995
+      },
+      "esperado": {
+        "respuesta": 450000000000000.0,
+        "texto": "4,5 × 10¹⁴ J"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "energia",
+        "nivel": 1,
+        "x": 0.8,
+        "u": "g"
+      },
+      "esperado": {
+        "respuesta": 72000000000000.0,
+        "texto": "7,2 × 10¹³ J"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "defecto",
+        "nivel": 3,
+        "antes": 8.0624,
+        "despues": 8.0052
+      },
+      "esperado": {
+        "respuesta": 5148000000000.0,
+        "texto": "5,15 × 10¹² J"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "defecto",
+        "nivel": 3,
+        "antes": 8.0624,
+        "despues": 8.0052
+      },
+      "esperado": {
+        "respuesta": 5148000000000.0,
+        "texto": "5,15 × 10¹² J"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "que-masa",
+        "nivel": 2,
+        "caso": "sol",
+        "antes": 4.0312,
+        "despues": 4.0026
+      },
+      "esperado": {
+        "respuesta": "masa:falta",
+        "texto": "La que falta: 0,0286 g"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "energia",
+        "nivel": 1,
+        "x": 0.5,
+        "u": "g"
+      },
+      "esperado": {
+        "respuesta": 45000000000000.0,
+        "texto": "4,5 × 10¹³ J"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "masa",
+        "nivel": 2,
+        "E": 45000000000000
+      },
+      "esperado": {
+        "respuesta": 0.5,
+        "texto": "0,5 g"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "balones",
+        "nivel": 3,
+        "mg": 1
+      },
+      "esperado": {
+        "respuesta": 196.0,
+        "texto": "196 balones"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "masa",
+        "nivel": 2,
+        "E": 180000000000000
+      },
+      "esperado": {
+        "respuesta": 2.0,
+        "texto": "2 g"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "balones",
+        "nivel": 3,
+        "mg": 10
+      },
+      "esperado": {
+        "respuesta": 1957.0,
+        "texto": "1957 balones"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "masa",
+        "nivel": 2,
+        "E": 180000000000000
+      },
+      "esperado": {
+        "respuesta": 2.0,
+        "texto": "2 g"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "que-masa",
+        "nivel": 2,
+        "caso": "sol",
+        "antes": 4.0312,
+        "despues": 4.0026
+      },
+      "esperado": {
+        "respuesta": "masa:falta",
+        "texto": "La que falta: 0,0286 g"
+      }
+    }
+  ]
+}

@@ -1089,9 +1089,14 @@
      ],
      "plantillas": [
       "materia-energia",
-      "configuracion-ubicacion",
+      "sustancias-mezclas",
+      "densidad-propiedades",
+      "cambios-materia",
+      "calor-sensible-latente",
+      "masa-energia",
       "quimica-conceptos",
-      "conversiones-quimica"
+      "conversiones-quimica",
+      "configuracion-ubicacion"
      ],
      "teoria": {
       "archivo": "/contenido/teoria/quimica/materia-y-energia.js",
@@ -6954,6 +6959,22 @@
     "/plantillas/calor-escalas/papel.json"
    ]
   },
+  "calor-sensible-latente": {
+   "id": "calor-sensible-latente",
+   "titulo": "Calor que no sube la temperatura",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.materia-y-energia"
+   ],
+   "url": "#/practica/calor-sensible-latente",
+   "papel": "/plantillas/calor-sensible-latente/papel.json",
+   "archivos": [
+    "/plantillas/calor-sensible-latente/generador.js",
+    "/plantillas/calor-sensible-latente/papel.json"
+   ]
+  },
   "calorimetria": {
    "id": "calorimetria",
    "titulo": "Temperatura y calor",
@@ -6969,6 +6990,22 @@
     "/plantillas/calorimetria/index.html",
     "/plantillas/calorimetria/motor.js",
     "/plantillas/calorimetria/papel.json"
+   ]
+  },
+  "cambios-materia": {
+   "id": "cambios-materia",
+   "titulo": "¿Físico, químico o nuclear?",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.materia-y-energia"
+   ],
+   "url": "#/practica/cambios-materia",
+   "papel": "/plantillas/cambios-materia/papel.json",
+   "archivos": [
+    "/plantillas/cambios-materia/generador.js",
+    "/plantillas/cambios-materia/papel.json"
    ]
   },
   "carga-en-campo": {
@@ -7613,6 +7650,22 @@
     "/plantillas/dados-domino/index.html",
     "/plantillas/dados-domino/motor.js",
     "/plantillas/dados-domino/papel.json"
+   ]
+  },
+  "densidad-propiedades": {
+   "id": "densidad-propiedades",
+   "titulo": "Lo que no cambia al partir",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.materia-y-energia"
+   ],
+   "url": "#/practica/densidad-propiedades",
+   "papel": "/plantillas/densidad-propiedades/papel.json",
+   "archivos": [
+    "/plantillas/densidad-propiedades/generador.js",
+    "/plantillas/densidad-propiedades/papel.json"
    ]
   },
   "dinamica": {
@@ -8617,6 +8670,22 @@
    "archivos": [
     "/plantillas/mas-horaria/generador.js",
     "/plantillas/mas-horaria/papel.json"
+   ]
+  },
+  "masa-energia": {
+   "id": "masa-energia",
+   "titulo": "Poca masa, muchísima energía",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.materia-y-energia"
+   ],
+   "url": "#/practica/masa-energia",
+   "papel": "/plantillas/masa-energia/papel.json",
+   "archivos": [
+    "/plantillas/masa-energia/generador.js",
+    "/plantillas/masa-energia/papel.json"
    ]
   },
   "materia-energia": {
@@ -9798,6 +9867,22 @@
     "/plantillas/sucesiones/index.html",
     "/plantillas/sucesiones/motor.js",
     "/plantillas/sucesiones/papel.json"
+   ]
+  },
+  "sustancias-mezclas": {
+   "id": "sustancias-mezclas",
+   "titulo": "¿Sustancia pura o mezcla?",
+   "formato": "predicciones",
+   "estado": "borrador",
+   "version": "0.1.0",
+   "unidades": [
+    "quimica.materia-y-energia"
+   ],
+   "url": "#/practica/sustancias-mezclas",
+   "papel": "/plantillas/sustancias-mezclas/papel.json",
+   "archivos": [
+    "/plantillas/sustancias-mezclas/generador.js",
+    "/plantillas/sustancias-mezclas/papel.json"
    ]
   },
   "tablas-graficos": {

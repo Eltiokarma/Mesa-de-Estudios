@@ -1,0 +1,17 @@
+{
+  "id": "masa-energia",
+  "titulo": "Poca masa, muchísima energía",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.materia-y-energia"
+  ],
+  "temas": [
+    "Equivalencia masa-energía"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "cambios-materia",
+  "titulo": "¿Físico, químico o nuclear?",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.materia-y-energia"
+  ],
+  "temas": [
+    "Estados de agregación",
+    "Propiedades físicas y químicas",
+    "Fenómenos físicos, químicos y nucleares"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

@@ -32,6 +32,9 @@
  *            o kg: masa ya está en g) } → kJ; sub 'inversa' { Q (kJ) } → mL de agua vaporizada.
  *   vida     sub 'queda' { m0, tMedia, t } → masa que queda; sub 'deducir' { m0, T1, a, T2 } (en T1 queda m0/2^a;
  *            se pide lo que queda en T2) → masa; sub 'tiempo' { tMedia, n } (queda 1/2^n) → tiempo.
+ * Por unidad (decisión de Gerson, 17 nov 2026): generar(semilla, { unidad }) en quimica.materia-y-energia elige entre
+ * delta, lectura, densidad y vida (sin el calor latente molar); en las otras unidades, o sin unidad, entre todos, como
+ * antes (TIPOS_POR_UNIDAD, modelo plantillas/velocidad-relativa/). Vida media y variaciones traen `datos` en lista.
  * Errores: ES7 del informe de estequiometría (fórmula de moles invertida); los AQ-* y las trampas de unidades QU1 a QU3 (docs/investigacion/unidades-ideas-erroneas.md) son hipótesis nuestras (los de vida
  * media, AQ-vm-*, comparten id con configuracion-ubicacion). Rangos creíbles: cada objeto y cada lugar tiene su rango de
  * temperatura, y el dato se genera dentro de él; en lectura no salen kelvin negativos entre las alternativas.
@@ -88,9 +91,19 @@
   function tiempoPara({ tMedia, fraccion }) { const vidas = Math.log2(1 / fraccion); return { vidas, t: vidas * tMedia }; }
 
   // ---------- Armado ----------
-  function generar(semilla) {
+  const TIPOS = ['delta', 'delta', 'lectura', 'densidad', 'densidad', 'latente', 'latente', 'vida', 'vida'];
+  // Qué tipos sirve a cada unidad del catálogo (decisión de Gerson, 17 nov 2026): en Materia y energía no sale el calor
+  // latente molar (kJ/mol, de Líquidos y sólidos); la vida media se queda. generar(semilla, { unidad }) elige solo entre
+  // los tipos de esa unidad; sin unidad, o con una que no está aquí, entre todos y con el mismo azar de antes (las otras
+  // unidades y casos.json no cambian). Modelo: plantillas/velocidad-relativa/.
+  const TIPOS_POR_UNIDAD = {
+    'quimica.materia-y-energia': ['delta', 'lectura', 'densidad', 'vida'],
+  };
+  function generar(semilla, opciones) {
+    const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
+    const permitidos = TIPOS_POR_UNIDAD[unidad];
     const rng = Azar.crear(ID + '|' + semilla);
-    const tipo = rng.elegir(['delta', 'delta', 'lectura', 'densidad', 'densidad', 'latente', 'latente', 'vida', 'vida']);
+    const tipo = rng.elegir(permitidos ? TIPOS.filter(t => permitidos.includes(t)) : TIPOS);
     for (let intento = 0; intento < 3000; intento++) {
       const pr = ({ delta: tDelta, lectura: tLectura, densidad: tDensidad, latente: tLatente, vida: tVida })[tipo](rng, semilla);
       if (pr && pr.alternativas.length >= 4) return pr;
@@ -108,6 +121,8 @@
       alternativas, solucion: o.solucion, respuesta: { valor: o.correcta, unidad: o.unidad }, _datos: o._datos };
   }
   const grado = { C: '°C', F: '°F', K: 'K' };
+  // Datos de una variación (decisión de Gerson, 17 nov: en química, las escalas solo como variaciones).
+  const DATOS_DELTA = ['En una variación: ΔK = Δ°C', 'En una variación: Δ°F = 1,8 · Δ°C'];
 
   // 1. Variación de temperatura en otra escala. Cada objeto tiene un rango creíble de temperatura (en °C).
   const OBJETOS = [
@@ -156,7 +171,7 @@
           : ['El kelvin y el °C tienen el mismo tamaño: ', v('d', `ΔK = ${dC} K`), '. En una variación no se suma 273.'],
       ];
       return cerrar(rng, semilla, { correcta, errores, unidad: grado[a], decimales: 1, variables: vars, enunciado, pregunta, solucion,
-        _datos: { tipo: 'delta', sub, tiempos, temps, i, j, a } });
+        datos: DATOS_DELTA, _datos: { tipo: 'delta', sub, tiempos, temps, i, j, a } });
     }
     if (sub === 'f-c') {
       const dF = 9 * rng.entero(4, 18), correcta = variacion(dF, 'F', 'C');
@@ -170,7 +185,7 @@
         h('AQ-escala-equivocada-k', dF / 1.8 + 273, 'Sumaste 273: eso pasa una lectura a kelvin. Se pide la variación en °C.'),
       ];
       const solucion = [['Cada °C de variación son ', v('k', '1,8 °F'), ': ', v('d', `${dF} °F`), ' ÷ 1,8 = ', v('d', `${f(correcta, 1)} °C`), '. Sin restar 32: es una diferencia.']];
-      return cerrar(rng, semilla, { correcta, errores, unidad: '°C', decimales: 1, variables, enunciado, pregunta, solucion, _datos: { tipo: 'delta', sub, dF } });
+      return cerrar(rng, semilla, { correcta, errores, unidad: '°C', decimales: 1, variables, enunciado, pregunta, solucion, datos: DATOS_DELTA, _datos: { tipo: 'delta', sub, dF } });
     }
     const T1 = 5 * rng.entero(Math.ceil(O.min / 5), Math.floor(O.max / 5)), T2 = 5 * rng.entero(Math.ceil(O.min / 5), Math.floor(O.max / 5));
     const d = Math.abs(T2 - T1), baja = T2 < T1;
@@ -192,7 +207,7 @@
       a === 'F' ? ['Cada °C de variación son ', v('k', '1,8 °F'), `: ${d} × 1,8 = `, v('d', `${f(correcta, 1)} °F`), '. No se suma 32: es una diferencia.']
         : ['El kelvin tiene el ', v('k', 'mismo tamaño'), ' que el grado Celsius: ', v('d', `${d} K`), '. No se suma 273.'],
     ];
-    return cerrar(rng, semilla, { correcta, errores, unidad: grado[a], decimales: 1, variables, enunciado, pregunta, solucion, _datos: { tipo: 'delta', sub, T1, T2 } });
+    return cerrar(rng, semilla, { correcta, errores, unidad: grado[a], decimales: 1, variables, enunciado, pregunta, solucion, datos: DATOS_DELTA, _datos: { tipo: 'delta', sub, T1, T2 } });
   }
 
   // 2. Lectura de temperatura en otra escala (para contrastar con la variación). Cada lugar tiene su rango (en °C);
@@ -407,6 +422,9 @@
     { s: 'tecnecio-99m', t: 6, u: 'horas', hospital: true }, { s: 'sodio-24', t: 15, u: 'horas', hospital: true },
     { s: 'cesio-137', t: 30, u: 'años', hospital: false },
   ];
+  // Datos de la vida media (docs/plan-calidad.md §3, punto 13): la definición y la fórmula general, nunca la cuenta hecha.
+  const DATOS_VIDA = ['Vida media: tiempo en que se desintegra la mitad de lo que hay',
+    'Tras n vidas medias queda m₀ / 2ⁿ, con m₀ la masa inicial', 'n = tiempo transcurrido ÷ vida media'];
   function tVida(rng, semilla) {
     const sub = rng.elegir(['queda', 'queda', 'deducir', 'tiempo']);
     const variables = { m0: { nombre: 'masa inicial', color: 'o' }, th: { nombre: 'vida media', color: 'i' }, t: { nombre: 'tiempo', color: 'h' }, q: { nombre: 'lo que queda', color: 'd' } };
@@ -419,17 +437,17 @@
       const enunciado = ['El ', iso.s, ' tiene una ', v('th', `vida media de ${iso.t} ${iso.u}`), '.'];
       const pregunta = ['¿Cuánto ', v('t', 'tiempo'), ` pasa hasta que en una muestra quede `, v('q', `1/${2 ** n}`), ' de lo que había?'];
       const errores = [
-        hv('AQ-vm-multiplica-fraccion', iso.t * 2 ** n, `Multiplicaste la vida media por ${2 ** n}. El ${2 ** n} es 2${pot(n)}: se llega a 1/${2 ** n} después de ${n} vidas medias, no de ${2 ** n}.`),
-        hv('AQ-vm-lineal', 2 * (1 - 1 / 2 ** n) * iso.t, 'Supusiste que se pierde siempre la misma cantidad por unidad de tiempo, como en una recta. Cada vida media se pierde la mitad de lo que queda, no la mitad de lo que había al inicio.'),
-        hv('AQ-vm-una-vida-de-menos', (n - 1) * iso.t, `Contaste una vida media menos. Tras 1 vida media queda 1/2; tras 2, 1/4…: para 1/${2 ** n} hacen falta ${n}.`),
-        hv('AQ-vm-una-vida-de-mas', (n + 1) * iso.t, `Contaste una vida media de más. Tras 1 vida media queda 1/2; tras 2, 1/4…: para 1/${2 ** n} hacen falta ${n}.`),
-        hv('AQ-vm-divide-vida-media', iso.t / 2 ** n, 'Dividiste la vida media. Mientras menos queda, más tiempo pasó: el tiempo crece.'),
+        hv('AQ-vm-multiplica-fraccion', iso.t * 2 ** n, `Bien usar la vida media. Pero ${2 ** n} es 2${pot(n)}: se llega a 1/${2 ** n} tras ${n} vidas medias, no ${2 ** n}. Así salen ${f(iso.t * 2 ** n)} ${iso.u}.`),
+        hv('AQ-vm-lineal', 2 * (1 - 1 / 2 ** n) * iso.t, `Bien ver que se pierde masa con el tiempo. Pero no al mismo ritmo: cada vida media se va la mitad de lo que queda. Así salen ${f(2 * (1 - 1 / 2 ** n) * iso.t)} ${iso.u}.`),
+        hv('AQ-vm-una-vida-de-menos', (n - 1) * iso.t, `Bien multiplicar por la vida media. Pero contaste una de menos: tras 1 queda 1/2; tras 2, 1/4…; para 1/${2 ** n} hacen falta ${n}.`),
+        hv('AQ-vm-una-vida-de-mas', (n + 1) * iso.t, `Bien multiplicar por la vida media. Pero contaste una de más: tras 1 queda 1/2; tras 2, 1/4…; para 1/${2 ** n} hacen falta ${n}.`),
+        hv('AQ-vm-divide-vida-media', iso.t / 2 ** n, `Bien usar 1/${2 ** n}. Pero dividiste la vida media: mientras menos queda, más tiempo pasó. Así salen ${f(iso.t / 2 ** n)} ${iso.u}.`),
       ];
       const solucion = [
         [`1 → 1/2 → 1/4 → … → `, v('q', `1/${2 ** n}`), `: son ${n} mitades, porque ${2 ** n} = 2${pot(n)}.`],
         [`${n} × `, v('th', `${iso.t} ${iso.u}`), ' = ', v('t', `${f(correcta)} ${iso.u}`), '.'],
       ];
-      return cerrar(rng, semilla, { correcta, errores, unidad: iso.u, decimales: 2, variables, enunciado, pregunta, solucion, _datos: { tipo: 'vida', sub, tMedia: iso.t, n } });
+      return cerrar(rng, semilla, { correcta, errores, unidad: iso.u, decimales: 2, variables, enunciado, pregunta, solucion, datos: DATOS_VIDA, _datos: { tipo: 'vida', sub, tMedia: iso.t, n } });
     }
     if (sub === 'deducir') {
       const th = rng.elegir([2, 3, 4, 5, 6, 8, 10, 12]), a = rng.elegir([2, 3]), b = a + rng.entero(1, 3);
@@ -439,17 +457,17 @@
       const enunciado = ['Una muestra de ', v('m0', `${m0} mg`), ' de un isótopo radiactivo se reduce a ', `${f(m0 / 2 ** a, 2)} mg`, ' en ', v('t', `${T1} ${u}`), '.'];
       const pregunta = ['¿Cuántos ', v('q', 'mg del isótopo quedan'), u === 'días' ? ' a los ' : ' a las ', v('t', `${T2} ${u}`), ' de empezar?'];
       const errores = [
-        hv('AQ-vm-lee-tiempo-sin-mitad', m0 / 2 ** (T2 / T1), `Tomaste ${T1} ${u} como vida media. En ese tiempo no quedó la mitad sino 1/${2 ** a}: pasaron ${a} vidas medias, así que la vida media es ${th} ${u}.`),
-        hv('AQ-vm-desintegrada', m0 - correcta, 'Ese número es lo que se desintegró. Se pide lo que queda.'),
-        hv('AQ-vm-una-vida-de-menos', m0 / 2 ** (b - 1), 'Contaste una vida media de menos.'),
-        hv('AQ-vm-una-vida-de-mas', m0 / 2 ** (b + 1), 'Contaste una vida media de más.'),
-        hv('AQ-vm-divide-entre-2n', m0 / (2 * b), `Dividiste entre 2 × ${b}. Cada vida media divide entre 2 lo que queda: después de ${b} vidas medias se divide entre 2${pot(b)} = ${2 ** b}.`),
+        hv('AQ-vm-lee-tiempo-sin-mitad', m0 / 2 ** (T2 / T1), `Bien dividir a la mitad cada vida media. Pero en ${T1} ${u} no quedó la mitad sino 1/${2 ** a}: pasaron ${a} vidas medias, de ${th} ${u} cada una.`),
+        hv('AQ-vm-desintegrada', m0 - correcta, `Bien contar las vidas medias. Pero ${f(m0 - correcta, 2)} mg es lo que se desintegró; se pide lo que queda.`),
+        hv('AQ-vm-una-vida-de-menos', m0 / 2 ** (b - 1), `Bien dividir entre 2 cada vida media. Pero contaste una de menos: en ${T2} ${u} caben ${b}.`),
+        hv('AQ-vm-una-vida-de-mas', m0 / 2 ** (b + 1), `Bien dividir entre 2 cada vida media. Pero contaste una de más: en ${T2} ${u} caben ${b}.`),
+        hv('AQ-vm-divide-entre-2n', m0 / (2 * b), `Bien contar ${b} vidas medias. Pero cada una divide entre 2 lo que queda: se divide entre 2${pot(b)} = ${2 ** b}, no entre 2 × ${b}.`),
       ];
       const solucion = [
         [`De `, v('m0', `${m0} mg`), ` a ${f(m0 / 2 ** a, 2)} mg es 1/${2 ** a}: ${a} vidas medias en `, v('t', `${T1} ${u}`), '. La ', v('th', `vida media es ${th} ${u}`), '.'],
         [v('t', `${T2} ${u}`), ' ÷ ', v('th', `${th} ${u}`), ` = ${b} vidas medias: ${m0} ÷ 2${pot(b)} = `, v('q', `${f(correcta, 2)} mg`), '.'],
       ];
-      return cerrar(rng, semilla, { correcta, errores, unidad: 'mg', decimales: 2, variables, enunciado, pregunta, solucion, _datos: { tipo: 'vida', sub, m0, T1, a, T2 } });
+      return cerrar(rng, semilla, { correcta, errores, unidad: 'mg', decimales: 2, variables, enunciado, pregunta, solucion, datos: DATOS_VIDA, _datos: { tipo: 'vida', sub, m0, T1, a, T2 } });
     }
     const iso = rng.elegir(ISOTOPOS), n = rng.entero(2, 5);
     const t = n * iso.t;
@@ -458,20 +476,20 @@
     const enunciado = [iso.hospital ? 'Un hospital recibe ' : 'Un laboratorio guarda una fuente sellada con ', v('m0', `${m0} mg de ${iso.s}`), ', cuya ', v('th', `vida media es ${iso.t} ${iso.u}`), '.'];
     const pregunta = ['¿Cuántos ', v('q', 'mg quedan'), ' después de ', v('t', `${t} ${iso.u}`), '?'];
     const errores = [
-      hv('AQ-vm-divide-entre-2n', m0 / (2 * n), `Dividiste entre 2 × ${n}. Cada vida media divide entre 2 lo que queda: después de ${n} vidas medias se divide entre 2${pot(n)} = ${2 ** n}.`),
-      hv('AQ-vm-desintegrada', r.desintegrado, 'Ese número es lo que se desintegró. Se pide lo que queda.'),
-      hv('AQ-vm-tiempo-como-una-vida', m0 / 2, `Tomaste los ${t} ${iso.u} como si fueran una sola vida media. La vida media es ${iso.t} ${iso.u}: en ${t} ${iso.u} caben ${n}.`),
-      hv('AQ-vm-una-vida-de-menos', m0 / 2 ** (n - 1), 'Contaste una vida media de menos.'),
-      hv('AQ-vm-una-vida-de-mas', m0 / 2 ** (n + 1), 'Contaste una vida media de más.'),
-      hv('AQ-vm-divide-entre-n', m0 / n, `Dividiste entre ${n}. No se reparte en partes iguales: en cada vida media se va la mitad de lo que queda.`),
+      hv('AQ-vm-divide-entre-2n', m0 / (2 * n), `Bien contar ${n} vidas medias. Pero cada una divide entre 2 lo que queda: se divide entre 2${pot(n)} = ${2 ** n}, no entre 2 × ${n}.`),
+      hv('AQ-vm-desintegrada', r.desintegrado, `Bien contar las vidas medias. Pero ${f(r.desintegrado, 2)} mg es lo que se desintegró; se pide lo que queda.`),
+      hv('AQ-vm-tiempo-como-una-vida', m0 / 2, `Bien dividir entre 2. Pero ${t} ${iso.u} no son una sola vida media: con ${iso.t} ${iso.u} cada una, caben ${n}.`),
+      hv('AQ-vm-una-vida-de-menos', m0 / 2 ** (n - 1), `Bien dividir entre 2 cada vida media. Pero contaste una de menos: en ${t} ${iso.u} caben ${n}.`),
+      hv('AQ-vm-una-vida-de-mas', m0 / 2 ** (n + 1), `Bien dividir entre 2 cada vida media. Pero contaste una de más: en ${t} ${iso.u} caben ${n}.`),
+      hv('AQ-vm-divide-entre-n', m0 / n, `Bien contar ${n} vidas medias. Pero no se reparte en partes iguales: en cada una se va la mitad de lo que queda.`),
     ];
     const solucion = [
       [v('t', `${t} ${iso.u}`), ' ÷ ', v('th', `${iso.t} ${iso.u}`), ` = ${n} vidas medias.`],
       [v('m0', `${m0} mg`), ` ÷ 2${pot(n)} = ${m0} ÷ ${2 ** n} = `, v('q', `${f(correcta, 2)} mg`), '.'],
     ];
-    return cerrar(rng, semilla, { correcta, errores, unidad: 'mg', decimales: 2, variables, enunciado, pregunta, solucion, _datos: { tipo: 'vida', sub, m0, tMedia: iso.t, t } });
+    return cerrar(rng, semilla, { correcta, errores, unidad: 'mg', decimales: 2, variables, enunciado, pregunta, solucion, datos: DATOS_VIDA, _datos: { tipo: 'vida', sub, m0, tMedia: iso.t, t } });
   }
 
-  return { id: ID, titulo: 'Termómetros, lingotes e isótopos que se desintegran', generar, cient,
+  return { id: ID, titulo: 'Termómetros, lingotes e isótopos que se desintegran', generar, tiposPorUnidad: TIPOS_POR_UNIDAD, cient,
     convertir, variacion, volumenDeMetal, masaDeMetal, longitud, calorLatente, masaPorCalor, vidaMedia, tiempoPara, METALES, ISOTOPOS };
 });

@@ -1,0 +1,285 @@
+{
+  "plantilla": "calor-sensible-latente",
+  "nota": "Masas en g (joules: kg), temperaturas en °C, calores en cal. sensible: m, ce, t0 → t1. latente/calor: m y funde (80 cal/g) o hierve (540 cal/g); latente/masa: q que recibe el agua que hierve → g. variacion: t0 → t1, en K o °F. tramos: hielo a 0 °C → agua a t. juliaca: litros de agua a t0 hasta hervir a unos 87 °C; lima: cuánto más hasta 100 °C. joules: terma de kg, t0 → t1, en kJ con 1 cal = 4,18 J. bajo-cero: hielo a −T0 → agua a t. final: hielo a 0 °C recibe q → temperatura final.",
+  "verificacion": "Script aparte (17 nov 2026, python3 con fractions, fuera del repo: verif/calor.py), que no usa el generador ni el núcleo: recalcula tramo por tramo con fracciones exactas (cₑ del agua 1 y del hielo 1/2, fusión 80 y vaporización 540 cal/g, Juliaca 87 °C y Lima 100 °C, 1 cal = 418/100 J, Δ°F = 9/5 · Δ°C) y escribe el texto de la correcta con coma decimal y espacio de miles. Los 20 casos cuadran con el generador.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "sensible",
+        "nivel": 1,
+        "sustancia": "agua",
+        "ce": 1,
+        "m": 100,
+        "t0": 15,
+        "t1": 45
+      },
+      "esperado": {
+        "respuesta": 3000.0,
+        "texto": "3000 cal"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "juliaca",
+        "sub": "juliaca",
+        "nivel": 2,
+        "litros": 2,
+        "t0": 17
+      },
+      "esperado": {
+        "respuesta": 140000.0,
+        "texto": "140 000 cal"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "sensible",
+        "nivel": 1,
+        "sustancia": "aluminio",
+        "ce": 0.22,
+        "m": 200,
+        "t0": 15,
+        "t1": 65
+      },
+      "esperado": {
+        "respuesta": 2200.0,
+        "texto": "2200 cal"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "joules",
+        "nivel": 2,
+        "kg": 2,
+        "t0": 20,
+        "t1": 60
+      },
+      "esperado": {
+        "respuesta": 334.4,
+        "texto": "334,4 kJ"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "latente",
+        "sub": "calor",
+        "nivel": 1,
+        "funde": true,
+        "m": 100
+      },
+      "esperado": {
+        "respuesta": 8000.0,
+        "texto": "8000 cal"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "final",
+        "nivel": 3,
+        "m": 200,
+        "q": 22000
+      },
+      "esperado": {
+        "respuesta": 30.0,
+        "texto": "30 °C"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "bajo-cero",
+        "nivel": 3,
+        "m": 100,
+        "T0": 10,
+        "t": 30
+      },
+      "esperado": {
+        "respuesta": 11500.0,
+        "texto": "11 500 cal"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "final",
+        "nivel": 3,
+        "m": 50,
+        "q": 6000
+      },
+      "esperado": {
+        "respuesta": 40.0,
+        "texto": "40 °C"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "bajo-cero",
+        "nivel": 3,
+        "m": 100,
+        "T0": 20,
+        "t": 30
+      },
+      "esperado": {
+        "respuesta": 12000.0,
+        "texto": "12 000 cal"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "tramos",
+        "nivel": 2,
+        "m": 200,
+        "t": 30
+      },
+      "esperado": {
+        "respuesta": 22000.0,
+        "texto": "22 000 cal"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "tramos",
+        "nivel": 2,
+        "m": 50,
+        "t": 30
+      },
+      "esperado": {
+        "respuesta": 5500.0,
+        "texto": "5500 cal"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "juliaca",
+        "sub": "juliaca",
+        "nivel": 2,
+        "litros": 3,
+        "t0": 12
+      },
+      "esperado": {
+        "respuesta": 225000.0,
+        "texto": "225 000 cal"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "latente",
+        "sub": "calor",
+        "nivel": 1,
+        "funde": false,
+        "m": 20
+      },
+      "esperado": {
+        "respuesta": 10800.0,
+        "texto": "10 800 cal"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "variacion",
+        "nivel": 1,
+        "t0": 12,
+        "t1": 70,
+        "a": "°F"
+      },
+      "esperado": {
+        "respuesta": 104.4,
+        "texto": "104,4 °F"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "variacion",
+        "nivel": 1,
+        "t0": 20,
+        "t1": 90,
+        "a": "K"
+      },
+      "esperado": {
+        "respuesta": 70.0,
+        "texto": "70 K"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "latente",
+        "sub": "masa",
+        "nivel": 2,
+        "q": 13500
+      },
+      "esperado": {
+        "respuesta": 25.0,
+        "texto": "25 g"
+      }
+    },
+    {
+      "semilla": 24,
+      "entrada": {
+        "tipo": "juliaca",
+        "sub": "lima",
+        "nivel": 3,
+        "litros": 3,
+        "t0": 17
+      },
+      "esperado": {
+        "respuesta": 39000.0,
+        "texto": "39 000 cal"
+      }
+    },
+    {
+      "semilla": 29,
+      "entrada": {
+        "tipo": "joules",
+        "nivel": 2,
+        "kg": 20,
+        "t0": 10,
+        "t1": 40
+      },
+      "esperado": {
+        "respuesta": 2508.0,
+        "texto": "2508 kJ"
+      }
+    },
+    {
+      "semilla": 42,
+      "entrada": {
+        "tipo": "juliaca",
+        "sub": "lima",
+        "nivel": 3,
+        "litros": 3,
+        "t0": 20
+      },
+      "esperado": {
+        "respuesta": 39000.0,
+        "texto": "39 000 cal"
+      }
+    },
+    {
+      "semilla": 117,
+      "entrada": {
+        "tipo": "latente",
+        "sub": "masa",
+        "nivel": 2,
+        "q": 21600
+      },
+      "esperado": {
+        "respuesta": 40.0,
+        "texto": "40 g"
+      }
+    }
+  ]
+}

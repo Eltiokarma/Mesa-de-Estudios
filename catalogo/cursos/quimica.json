@@ -40,7 +40,7 @@
       "requiere": [
         "fisica.magnitudes-y-vectores"
       ],
-      "plantillas": ["materia-energia", "configuracion-ubicacion", "quimica-conceptos", "conversiones-quimica"],
+      "plantillas": ["materia-energia", "sustancias-mezclas", "densidad-propiedades", "cambios-materia", "calor-sensible-latente", "masa-energia", "quimica-conceptos", "conversiones-quimica", "configuracion-ubicacion"],
       "investigacion": "docs/investigacion/atomo-enlace-ideas-erroneas.md"
     },
     {

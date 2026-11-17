@@ -131,3 +131,40 @@ for (const p of papel.problemas) test(`papel ${p.id}: la respuesta coincide con 
     for (const [k, esp] of Object.entries(x.espera)) assert.ok(Math.abs(r[k] - esp) <= Math.max(1e-9, 1e-6 * Math.abs(esp)), `${p.id} ${x.fn}.${k}: ${r[k]} ≠ ${esp}`);
   }
 });
+
+// Por unidad (decisión de Gerson, 17 nov 2026): en Materia y energía no sale el calor latente molar; la vida media sí.
+// Las otras unidades, y la llamada sin unidad, dan el mismo problema que antes con la misma semilla.
+test('por unidad: Materia y energía sin calor latente molar; las otras unidades como antes', () => {
+  const vistos = new Set();
+  for (let s = 0; s < 600; s++) {
+    const p = gen.generar(s, { unidad: 'quimica.materia-y-energia' });
+    vistos.add(p._datos.tipo);
+    assert.notEqual(p._datos.tipo, 'latente', `semilla ${s}: sale calor latente en Materia y energía`);
+    for (const u of ['quimica.liquidos-y-solidos', 'quimica.estructura-atomica', undefined])
+      assert.deepEqual(gen.generar(s, { unidad: u }), gen.generar(s), `semilla ${s}: cambió el problema de ${u}`);
+  }
+  for (const t of ['delta', 'lectura', 'densidad', 'vida']) assert.ok(vistos.has(t), `no sale ${t} en Materia y energía`);
+  assert.deepEqual(gen.tiposPorUnidad['quimica.materia-y-energia'], ['delta', 'lectura', 'densidad', 'vida']);
+});
+
+// Recuadro «Datos» de la vida media y de las variaciones (docs/plan-calidad.md, contrato, punto 13), y explicaciones
+// de la vida media que empiezan por lo que el alumno hizo bien.
+test('vida media y variaciones: datos en lista, con la fórmula y sin la respuesta; explicaciones que empiezan por «Bien»', () => {
+  const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { unidad: 'quimica.materia-y-energia' }), d = p._datos;
+    if (d.tipo !== 'vida' && d.tipo !== 'delta') continue;
+    assert.ok(Array.isArray(p.datos) && p.datos.length, `semilla ${s}: datos debe ser una lista no vacía`);
+    for (const l of p.datos) assert.ok(palabras(l) <= 22 && !/\d\.\d|^Dato:/.test(l), `semilla ${s}: «${l}»`);
+    const todo = p.datos.join('\n'), c = p.alternativas.find(a => a.correcta).texto;
+    assert.ok(!todo.includes(c), `semilla ${s}: los datos traen la respuesta ${c}`);
+    // El 2 de «m₀ / 2ⁿ» es de la fórmula, no un número del problema.
+    const sinFormula = todo.replace('2ⁿ', 'Xⁿ');
+    const num = c.split(' ')[0];
+    assert.ok(!new RegExp(`(^|[^\\d,])${num.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\d,])`).test(sinFormula), `semilla ${s}: el número ${num} está en los datos`);
+    if (d.tipo === 'vida') {
+      assert.ok(todo.includes('m₀ / 2ⁿ') && todo.includes('n = tiempo transcurrido ÷ vida media'), `semilla ${s}: falta la fórmula de la vida media`);
+      for (const a of p.alternativas.filter(x => x.error)) assert.match(a.error.explicacion, /^Bien/, `semilla ${s}: ${a.error.explicacion}`);
+    } else assert.ok(todo.includes('ΔK = Δ°C') && todo.includes('Δ°F = 1,8 · Δ°C'), `semilla ${s}: faltan las variaciones`);
+  }
+});

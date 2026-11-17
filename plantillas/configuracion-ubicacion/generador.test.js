@@ -208,3 +208,28 @@ for (const q of papel.problemas) test(`papel ${q.id}`, () => {
     }
   }
 });
+
+// Por unidad (decisión de Gerson, 17 nov 2026): en Materia y energía solo sale la vida media, sin configuración
+// electrónica. Las otras unidades, y la llamada sin unidad, dan el mismo problema que antes con la misma semilla.
+test('por unidad: Materia y energía solo vida media; las otras unidades como antes', () => {
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { unidad: 'quimica.materia-y-energia' });
+    assert.equal(p._datos.tipo, 'vida-media', `semilla ${s}: sale ${p._datos.tipo} en Materia y energía`);
+    for (const u of ['quimica.tabla-periodica', 'quimica.estructura-atomica', undefined])
+      assert.deepEqual(gen.generar(s, { unidad: u }), gen.generar(s), `semilla ${s}: cambió el problema de ${u}`);
+  }
+});
+
+// Vida media: datos en lista con la fórmula y sin la respuesta, y explicaciones que empiezan por lo que el alumno hizo bien.
+test('vida media: datos en lista, con la fórmula y sin la respuesta; explicaciones que empiezan por «Bien»', () => {
+  const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
+  for (let s = 0; s < 400; s++) {
+    const p = gen.generar(s, { unidad: 'quimica.materia-y-energia' });
+    assert.ok(Array.isArray(p.datos) && p.datos.length, `semilla ${s}: datos debe ser una lista`);
+    for (const l of p.datos) assert.ok(palabras(l) <= 22 && !/\d\.\d|^Dato:/.test(l), `semilla ${s}: «${l}»`);
+    const todo = p.datos.join('\n').replace('2ⁿ', 'Xⁿ'), c = p.alternativas.find(a => a.correcta).texto;
+    assert.ok(p.datos.join('\n').includes('m₀ / 2ⁿ') && todo.includes('n = tiempo transcurrido ÷ vida media'), `semilla ${s}: falta la fórmula`);
+    assert.ok(!new RegExp(`(^|[^\\d,])${c.split(' ')[0]}(?![\\d,])`).test(todo), `semilla ${s}: el número de ${c} está en los datos`);
+    for (const a of p.alternativas.filter(x => x.error)) assert.match(a.error.explicacion, /^Bien/, `semilla ${s}: ${a.error.explicacion}`);
+  }
+});

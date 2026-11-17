@@ -1,0 +1,289 @@
+{
+  "plantilla": "densidad-propiedades",
+  "nota": "densidad: m (g) y V (cm³, lo que sube el agua desde v0 mL); respuesta en g/cm³. liquido/masa: rho (g/mL) y litros → g; liquido/volumen: masa (g) y rho → mL. cubo: lado (cm) y kg → g/cm³. barra: m (g), V (cm³) y partes → 'parte:<masa de cada parte>|<densidad>'. contar: cuántas de la lista son intensivas. separar: 'metodo:<id>'. intensiva: 'prop:<la única intensiva (igual) o extensiva (mitad)>'.",
+  "verificacion": "Script aparte (17 nov 2026, python3 con fractions, fuera del repo: verif/densidad.py), que no usa el generador ni el núcleo: recalcula ρ = m / V y sus despejes con fracciones exactas (los litros por 1000, los kg por 1000, el lado al cubo), clasifica las propiedades con su propia lista de intensivas, elige el método con su propia tabla y formatea el texto de la correcta con coma decimal. Los 18 casos cuadran con el generador.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "separar",
+        "nivel": 2,
+        "caso": "agua-arena"
+      },
+      "esperado": {
+        "respuesta": "metodo:filtracion",
+        "texto": "Filtración"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "cubo",
+        "nivel": 3,
+        "metal": "plomo",
+        "rho": 11.3,
+        "lado": 5,
+        "kg": 1.4125
+      },
+      "esperado": {
+        "respuesta": 11.3,
+        "texto": "11,3 g/cm³"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "liquido",
+        "sub": "volumen",
+        "nivel": 2,
+        "liquido": "alcohol",
+        "rho": 0.79,
+        "masa": 1185
+      },
+      "esperado": {
+        "respuesta": 1500.0,
+        "texto": "1500 mL"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "liquido",
+        "sub": "masa",
+        "nivel": 2,
+        "liquido": "miel",
+        "rho": 1.4,
+        "litros": 2.5
+      },
+      "esperado": {
+        "respuesta": 3500.0,
+        "texto": "3500 g"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "cubo",
+        "nivel": 3,
+        "metal": "hierro",
+        "rho": 7.9,
+        "lado": 5,
+        "kg": 0.9875
+      },
+      "esperado": {
+        "respuesta": 7.9,
+        "texto": "7,9 g/cm³"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "densidad",
+        "nivel": 1,
+        "objeto": "clavo",
+        "m": 31.6,
+        "V": 4,
+        "v0": 15
+      },
+      "esperado": {
+        "respuesta": 7.9,
+        "texto": "7,9 g/cm³"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "contar",
+        "nivel": 3,
+        "lista": [
+          "densidad",
+          "volumen",
+          "temperatura",
+          "sabor",
+          "peso"
+        ]
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "cubo",
+        "nivel": 3,
+        "metal": "aluminio",
+        "rho": 2.7,
+        "lado": 2,
+        "kg": 0.0216
+      },
+      "esperado": {
+        "respuesta": 2.7,
+        "texto": "2,7 g/cm³"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "liquido",
+        "sub": "masa",
+        "nivel": 2,
+        "liquido": "aceite",
+        "rho": 0.92,
+        "litros": 2.5
+      },
+      "esperado": {
+        "respuesta": 2300.0,
+        "texto": "2300 g"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "intensiva",
+        "nivel": 1,
+        "material": "una barra de chocolate",
+        "pide": "igual",
+        "lista": [
+          "densidad",
+          "longitud",
+          "peso",
+          "volumen"
+        ]
+      },
+      "esperado": {
+        "respuesta": "prop:densidad",
+        "texto": "Densidad"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "intensiva",
+        "nivel": 1,
+        "material": "un queso",
+        "pide": "mitad",
+        "lista": [
+          "peso",
+          "dureza",
+          "olor",
+          "temperatura de fusión"
+        ]
+      },
+      "esperado": {
+        "respuesta": "prop:peso",
+        "texto": "Peso"
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "contar",
+        "nivel": 3,
+        "lista": [
+          "peso",
+          "color",
+          "sabor",
+          "conductividad eléctrica",
+          "viscosidad"
+        ]
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "liquido",
+        "sub": "masa",
+        "nivel": 2,
+        "liquido": "leche",
+        "rho": 1.03,
+        "litros": 3
+      },
+      "esperado": {
+        "respuesta": 3090.0,
+        "texto": "3090 g"
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "intensiva",
+        "nivel": 1,
+        "material": "una vela",
+        "pide": "mitad",
+        "lista": [
+          "longitud",
+          "temperatura",
+          "color",
+          "densidad"
+        ]
+      },
+      "esperado": {
+        "respuesta": "prop:longitud",
+        "texto": "Longitud"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "separar",
+        "nivel": 2,
+        "caso": "agua-aceite"
+      },
+      "esperado": {
+        "respuesta": "metodo:decantacion",
+        "texto": "Decantación"
+      }
+    },
+    {
+      "semilla": 23,
+      "entrada": {
+        "tipo": "separar",
+        "nivel": 2,
+        "caso": "sal-agua"
+      },
+      "esperado": {
+        "respuesta": "metodo:destilacion",
+        "texto": "Destilación"
+      }
+    },
+    {
+      "semilla": 25,
+      "entrada": {
+        "tipo": "contar",
+        "nivel": 3,
+        "lista": [
+          "sabor",
+          "conductividad eléctrica",
+          "longitud",
+          "área",
+          "volumen"
+        ]
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 26,
+      "entrada": {
+        "tipo": "densidad",
+        "nivel": 1,
+        "objeto": "anillo",
+        "m": 42,
+        "V": 4,
+        "v0": 20
+      },
+      "esperado": {
+        "respuesta": 10.5,
+        "texto": "10,5 g/cm³"
+      }
+    }
+  ]
+}

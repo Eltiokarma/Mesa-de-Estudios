@@ -1,0 +1,17 @@
+{
+  "id": "calor-sensible-latente",
+  "titulo": "Calor que no sube la temperatura",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.materia-y-energia"
+  ],
+  "temas": [
+    "Calor sensible y latente"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

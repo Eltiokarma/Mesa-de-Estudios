@@ -1,0 +1,95 @@
+{
+  "titulo": "¿Sustancia pura o mezcla?: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Piensa en el agua destilada de la farmacia. ¿Cómo se clasifica? Datos: Agua destilada: solo moléculas H₂O. Sustancia pura: una sola clase de partícula. Mezcla: varias clases. Elemento: átomos de una sola clase. Compuesto: átomos distintos unidos. Mezcla homogénea: una sola fase. Heterogénea: dos fases o más. Alternativas: A) Una mezcla homogénea   B) Una mezcla heterogénea   C) Un compuesto   D) Un elemento",
+      "respuesta": "C) Un compuesto",
+      "pasos": [
+        "El dato dice qué tiene: solo moléculas H₂O.",
+        "Primero, cuántas clases de partícula: una, sustancia pura; varias, mezcla. Después, sus átomos o sus fases.",
+        "Una sola clase de partícula, y cada una une átomos de elementos distintos. Es un compuesto."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Piensa en una chicha morada con hielo. ¿Cómo se clasifica? Datos: Chicha con hielo: agua, azúcar y otras sustancias disueltas, y cubitos de hielo que flotan. Sustancia pura: una sola clase de partícula. Mezcla: varias clases. Elemento: átomos de una sola clase. Compuesto: átomos distintos unidos. Mezcla homogénea: una sola fase. Heterogénea: dos fases o más. Alternativas: A) Una mezcla heterogénea   B) Un compuesto   C) Un elemento   D) Una mezcla homogénea",
+      "respuesta": "A) Una mezcla heterogénea",
+      "pasos": [
+        "El dato dice qué tiene: agua, azúcar y otras sustancias disueltas, y cubitos de hielo que flotan.",
+        "Primero, cuántas clases de partícula: una, sustancia pura; varias, mezcla. Después, sus átomos o sus fases.",
+        "Dos clases de partícula, cada una en su zona: hay un borde, dos fases. Es una mezcla heterogénea."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Piensa en la sal de mesa. ¿Cómo se clasifica? Datos: Sal de mesa: cloruro de sodio, NaCl; un sodio por cada cloro. Sustancia pura: una sola clase de partícula. Mezcla: varias clases. Elemento: átomos de una sola clase. Compuesto: átomos distintos unidos. Mezcla homogénea: una sola fase. Heterogénea: dos fases o más. Alternativas: A) Una mezcla heterogénea   B) Una mezcla homogénea   C) Un elemento   D) Un compuesto",
+      "respuesta": "D) Un compuesto",
+      "pasos": [
+        "El dato dice qué tiene: cloruro de sodio, NaCl; un sodio por cada cloro.",
+        "Primero, cuántas clases de partícula: una, sustancia pura; varias, mezcla. Después, sus átomos o sus fases.",
+        "Una sola clase de partícula, y cada una une átomos de elementos distintos. Es un compuesto."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Piensa en el acero. ¿De qué está formado? Datos: Acero: hierro (Fe) con un poco de carbono (C), fundidos juntos. Sustancia pura: una sola clase de partícula. Mezcla: varias clases. Elemento: átomos de una sola clase. Compuesto: átomos distintos unidos. En una fórmula, cada símbolo es una clase de átomo: CO₂ tiene C y O. Alternativas: A) Un compuesto de varios elementos   B) Una mezcla de elementos y compuestos   C) Una mezcla de elementos solamente   D) Una mezcla de compuestos solamente",
+      "respuesta": "C) Una mezcla de elementos solamente",
+      "pasos": [
+        "Tiene 2 clases de partícula: es una mezcla.",
+        "Fe y C: un solo símbolo cada uno, elementos.",
+        "El subíndice no cuenta: O₂ tiene dos átomos y sigue siendo un elemento."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Un vaso tiene agua, cubitos de hielo y arena en el fondo. ¿Cuántas fases y cuántos componentes tiene el sistema? Datos: Fase: zona que se ve igual en todos sus puntos, con un borde. Componente: cada sustancia distinta del sistema. Hielo: agua en estado sólido, H₂O. Alternativas: A) 2 fases y 2 componentes   B) 3 fases y 2 componentes   C) 2 fases y 3 componentes   D) 3 fases y 1 componente   E) 3 fases y 3 componentes",
+      "respuesta": "B) 3 fases y 2 componentes",
+      "pasos": [
+        "Fases, las zonas con borde: el agua líquida, el hielo y la arena. Son 3.",
+        "Componentes, las sustancias: agua y arena. Son 2.",
+        "El hielo es agua: otra fase, pero el mismo componente."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Piensa en el bronce. ¿De qué está formado? Datos: Bronce: cobre (Cu) y estaño (Sn) fundidos juntos. Sustancia pura: una sola clase de partícula. Mezcla: varias clases. Elemento: átomos de una sola clase. Compuesto: átomos distintos unidos. En una fórmula, cada símbolo es una clase de átomo: CO₂ tiene C y O. Alternativas: A) Una mezcla de compuestos solamente   B) Una mezcla de elementos solamente   C) Un compuesto de varios elementos   D) Una mezcla de elementos y compuestos",
+      "respuesta": "B) Una mezcla de elementos solamente",
+      "pasos": [
+        "Tiene 2 clases de partícula: es una mezcla.",
+        "Cu y Sn: un solo símbolo cada uno, elementos.",
+        "El subíndice no cuenta: O₂ tiene dos átomos y sigue siendo un elemento."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Un vaso tiene agua, cubitos de hielo, azúcar disuelto y arena en el fondo. ¿Cuántas fases y cuántos componentes tiene el sistema? Datos: Fase: zona que se ve igual en todos sus puntos, con un borde. Componente: cada sustancia distinta del sistema. Hielo: agua en estado sólido, H₂O. Alternativas: A) 4 fases y 3 componentes   B) 3 fases y 3 componentes   C) 4 fases y 4 componentes   D) 3 fases y 4 componentes   E) 3 fases y 2 componentes",
+      "respuesta": "B) 3 fases y 3 componentes",
+      "pasos": [
+        "Fases, las zonas con borde: el agua líquida, el hielo y la arena (con lo disuelto adentro). Son 3.",
+        "Componentes, las sustancias: agua, azúcar y arena. Son 3.",
+        "Lo disuelto no forma otra fase, y el hielo es agua: otra fase, el mismo componente."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Mira esta lista: el agua con arena, el ozono (O₃), la sal de mesa (NaCl), el granito y el oxígeno (O₂). ¿Cuántos de estos materiales son mezclas? Datos: Agua con arena: la arena se asienta en el fondo. Ozono: moléculas O₃. Sal de mesa: NaCl. Granito: granos de cuarzo, feldespato y mica. Oxígeno: moléculas O₂. Sustancia pura: una sola clase de partícula. Mezcla: varias clases. Alternativas: A) 3   B) 2   C) 4   D) 1",
+      "respuesta": "B) 2",
+      "pasos": [
+        "Mezcla: varias clases de partícula, se vea pareja o no.",
+        "Cumplen: el agua con arena y el granito.",
+        "Son 2."
+      ]
+    }
+  ]
+}

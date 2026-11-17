@@ -1,0 +1,18 @@
+{
+  "id": "sustancias-mezclas",
+  "titulo": "¿Sustancia pura o mezcla?",
+  "formato": "predicciones",
+  "unidades": [
+    "quimica.materia-y-energia"
+  ],
+  "temas": [
+    "Qué estudia la química",
+    "Sustancias y mezclas"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

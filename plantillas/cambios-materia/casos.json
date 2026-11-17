@@ -1,0 +1,280 @@
+{
+  "plantilla": "cambios-materia",
+  "nota": "cual y propiedad: ids de los fenómenos o rasgos mostrados; el primero es el que se pide (respuesta 'fen:<id>' o 'prop:<id>'). lupa: caso de la lupa (antes y después en la verificación); respuesta 'cambio:fisico|quimico|nuclear'. atomos: caso; respuesta, moléculas del producto pedido. contar: cuántos de I a IV son químicos. balanza: frasco (g, con la lana) y lana (g) de hierro; respuesta, lo que marca al final.",
+  "verificacion": "Script aparte (17 nov 2026, python3 con fractions, fuera del repo: verif/cambios.py), que no usa el generador para calcular (solo lee los textos de los fenómenos para comparar la alternativa): clasifica con su propia lista de fenómenos químicos y nucleares y de propiedades químicas; en la lupa compara sustancias y elementos de antes y después; cuenta átomos del elemento pedido, divide entre los de cada molécula y comprueba que con ese número todos los elementos quedan iguales antes y después; en la balanza suma 24/56 de la masa de hierro solo si el frasco está abierto. Los 18 casos cuadran con el generador.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "lupa",
+        "nivel": 2,
+        "caso": "agua"
+      },
+      "esperado": {
+        "respuesta": "cambio:quimico",
+        "texto": "Químico: otras partículas, los mismos átomos"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "contar",
+        "nivel": 3,
+        "ids": [
+          "alcohol",
+          "clavo",
+          "hielo",
+          "leche"
+        ]
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "lupa",
+        "nivel": 2,
+        "caso": "propano"
+      },
+      "esperado": {
+        "respuesta": "cambio:quimico",
+        "texto": "Químico: otras partículas, los mismos átomos"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "lupa",
+        "nivel": 2,
+        "caso": "amoniaco"
+      },
+      "esperado": {
+        "respuesta": "cambio:quimico",
+        "texto": "Químico: otras partículas, los mismos átomos"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "contar",
+        "nivel": 3,
+        "ids": [
+          "azucar",
+          "leche",
+          "chicha",
+          "c14"
+        ]
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "cual",
+        "nivel": 1,
+        "pide": "quimico",
+        "ids": [
+          "leche",
+          "papa",
+          "hielo",
+          "alcohol"
+        ]
+      },
+      "esperado": {
+        "respuesta": "fen:leche",
+        "texto": "La leche se agria y se corta"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "balanza",
+        "nivel": 3,
+        "cerrado": true,
+        "frasco": 250,
+        "lana": 11.2
+      },
+      "esperado": {
+        "respuesta": 250.0,
+        "texto": "250 g"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "atomos",
+        "nivel": 2,
+        "caso": "metano"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "balanza",
+        "nivel": 3,
+        "cerrado": true,
+        "frasco": 250,
+        "lana": 5.6
+      },
+      "esperado": {
+        "respuesta": 250.0,
+        "texto": "250 g"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "balanza",
+        "nivel": 3,
+        "cerrado": false,
+        "frasco": 250,
+        "lana": 5.6
+      },
+      "esperado": {
+        "respuesta": 252.4,
+        "texto": "252,4 g"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "propiedad",
+        "nivel": 1,
+        "pide": "quimica",
+        "ids": [
+          "arde",
+          "disuelve",
+          "brilla",
+          "duro"
+        ]
+      },
+      "esperado": {
+        "respuesta": "prop:arde",
+        "texto": "El gas de la cocina arde"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "atomos",
+        "nivel": 2,
+        "caso": "metano"
+      },
+      "esperado": {
+        "respuesta": 4,
+        "texto": "4"
+      }
+    },
+    {
+      "semilla": 18,
+      "entrada": {
+        "tipo": "atomos",
+        "nivel": 2,
+        "caso": "oxido"
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "cual",
+        "nivel": 1,
+        "pide": "quimico",
+        "ids": [
+          "gas",
+          "espejo",
+          "c14",
+          "alcohol"
+        ]
+      },
+      "esperado": {
+        "respuesta": "fen:gas",
+        "texto": "El gas de la cocina arde en la hornilla"
+      }
+    },
+    {
+      "semilla": 22,
+      "entrada": {
+        "tipo": "contar",
+        "nivel": 3,
+        "ids": [
+          "vidrio",
+          "vinagre",
+          "clavo",
+          "alcohol"
+        ]
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 25,
+      "entrada": {
+        "tipo": "cual",
+        "nivel": 1,
+        "pide": "fisico",
+        "ids": [
+          "azucar",
+          "vinagre",
+          "chicha",
+          "c14"
+        ]
+      },
+      "esperado": {
+        "respuesta": "fen:azucar",
+        "texto": "El azúcar se disuelve en el té"
+      }
+    },
+    {
+      "semilla": 31,
+      "entrada": {
+        "tipo": "propiedad",
+        "nivel": 1,
+        "pide": "fisica",
+        "ids": [
+          "brilla",
+          "bicarbonato",
+          "arde",
+          "oxida"
+        ]
+      },
+      "esperado": {
+        "respuesta": "prop:brilla",
+        "texto": "El oro brilla"
+      }
+    },
+    {
+      "semilla": 41,
+      "entrada": {
+        "tipo": "propiedad",
+        "nivel": 1,
+        "pide": "quimica",
+        "ids": [
+          "zinc",
+          "hierve",
+          "brilla",
+          "funde"
+        ]
+      },
+      "esperado": {
+        "respuesta": "prop:zinc",
+        "texto": "El zinc reacciona con los ácidos"
+      }
+    }
+  ]
+}

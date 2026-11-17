@@ -1,0 +1,313 @@
+{
+  "plantilla": "sustancias-mezclas",
+  "nota": "lupa: capas de la lupa, de arriba abajo; cada capa es una fase y trae [especie, número de partículas]. material y contar: ids de los materiales (sus composiciones están en la verificación). formada: las fórmulas de la mezcla. fases: lo que acompaña al agua líquida del vaso. Respuestas: 'clase:<clase>', 'formada:el|co|am', 'fc:F|C' o un número.",
+  "verificacion": "Script aparte (17 nov 2026, python3, fuera del repo: verif/sustancias.py), que no usa el generador ni el núcleo: con una tabla propia de composiciones (sustancias y zonas con borde de cada material) clasifica por las reglas de la teoría (una sustancia: elemento si su fórmula tiene un solo símbolo, si no compuesto; varias: homogénea con una zona, heterogénea con más), cuenta fases (agua más hielo, aceite y arena) y componentes (agua más todo lo que no es hielo) y escribe el texto de la alternativa correcta. Los 18 casos cuadran con el generador.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "contar",
+        "nivel": 3,
+        "pide": "elementos",
+        "lista": [
+          "hieloSeco",
+          "cobre",
+          "aire",
+          "ozono",
+          "nitrogeno"
+        ]
+      },
+      "esperado": {
+        "respuesta": 3,
+        "texto": "3"
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "formada",
+        "nivel": 3,
+        "m": "con-gas",
+        "formulas": [
+          "H2O",
+          "CO2"
+        ]
+      },
+      "esperado": {
+        "respuesta": "formada:co",
+        "texto": "Una mezcla de compuestos solamente"
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "lupa",
+        "nivel": 1,
+        "capas": [
+          [
+            [
+              "He",
+              7
+            ]
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": "clase:elemento",
+        "texto": "Un elemento"
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "formada",
+        "nivel": 3,
+        "m": "nitrox",
+        "formulas": [
+          "N2",
+          "O2"
+        ]
+      },
+      "esperado": {
+        "respuesta": "formada:el",
+        "texto": "Una mezcla de elementos solamente"
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "formada",
+        "nivel": 3,
+        "m": "pecera",
+        "formulas": [
+          "H2O",
+          "O2"
+        ]
+      },
+      "esperado": {
+        "respuesta": "formada:am",
+        "texto": "Una mezcla de elementos y compuestos"
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "material",
+        "nivel": 2,
+        "m": "bronce"
+      },
+      "esperado": {
+        "respuesta": "clase:homogenea",
+        "texto": "Una mezcla homogénea"
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "lupa",
+        "nivel": 1,
+        "capas": [
+          [
+            [
+              "H2O",
+              3
+            ],
+            [
+              "NaCl",
+              1
+            ]
+          ],
+          [
+            [
+              "SiO2",
+              3
+            ]
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": "clase:heterogenea",
+        "texto": "Una mezcla heterogénea"
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "fases",
+        "nivel": 3,
+        "partes": [
+          "hielo",
+          "aceite"
+        ]
+      },
+      "esperado": {
+        "respuesta": "fc:3|2",
+        "texto": "3 fases y 2 componentes"
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "material",
+        "nivel": 2,
+        "m": "ozono"
+      },
+      "esperado": {
+        "respuesta": "clase:elemento",
+        "texto": "Un elemento"
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "formada",
+        "nivel": 3,
+        "m": "nitrox",
+        "formulas": [
+          "N2",
+          "O2"
+        ]
+      },
+      "esperado": {
+        "respuesta": "formada:el",
+        "texto": "Una mezcla de elementos solamente"
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "lupa",
+        "nivel": 1,
+        "capas": [
+          [
+            [
+              "O3",
+              5
+            ]
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": "clase:elemento",
+        "texto": "Un elemento"
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "fases",
+        "nivel": 3,
+        "partes": [
+          "hielo",
+          "sal"
+        ]
+      },
+      "esperado": {
+        "respuesta": "fc:2|2",
+        "texto": "2 fases y 2 componentes"
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "lupa",
+        "nivel": 1,
+        "capas": [
+          [
+            [
+              "H2O",
+              4
+            ]
+          ],
+          [
+            [
+              "SiO2",
+              3
+            ]
+          ]
+        ]
+      },
+      "esperado": {
+        "respuesta": "clase:heterogenea",
+        "texto": "Una mezcla heterogénea"
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "material",
+        "nivel": 2,
+        "m": "hielo-seco"
+      },
+      "esperado": {
+        "respuesta": "clase:compuesto",
+        "texto": "Un compuesto"
+      }
+    },
+    {
+      "semilla": 17,
+      "entrada": {
+        "tipo": "material",
+        "nivel": 2,
+        "m": "azucar"
+      },
+      "esperado": {
+        "respuesta": "clase:compuesto",
+        "texto": "Un compuesto"
+      }
+    },
+    {
+      "semilla": 19,
+      "entrada": {
+        "tipo": "contar",
+        "nivel": 3,
+        "pide": "mezclas",
+        "lista": [
+          "ozono",
+          "bronce",
+          "arenaAgua",
+          "destilada",
+          "oxigeno"
+        ]
+      },
+      "esperado": {
+        "respuesta": 2,
+        "texto": "2"
+      }
+    },
+    {
+      "semilla": 20,
+      "entrada": {
+        "tipo": "contar",
+        "nivel": 3,
+        "pide": "mezclas",
+        "lista": [
+          "azucar",
+          "oxigeno",
+          "sal",
+          "granito",
+          "hieloSeco"
+        ]
+      },
+      "esperado": {
+        "respuesta": 1,
+        "texto": "1"
+      }
+    },
+    {
+      "semilla": 21,
+      "entrada": {
+        "tipo": "fases",
+        "nivel": 3,
+        "partes": [
+          "hielo",
+          "sal"
+        ]
+      },
+      "esperado": {
+        "respuesta": "fc:2|2",
+        "texto": "2 fases y 2 componentes"
+      }
+    }
+  ]
+}
