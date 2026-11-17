@@ -1,16 +1,46 @@
 /*
- * Teoría de «Numeración» (aritmetica.numeracion). Molde: docs/teoria.md; modelo de forma: porcentajes.js.
- * Fuente del contenido: docs/teoria/matriz/aritmetica.json (unidad 11) y docs/teoria/fuentes/historia-ecuaciones.pdf.
- * Errores: los AT-* son hipótesis nuevas (la matriz marca «admitir la cifra b» y «leer el numeral como decimal»).
+ * Teoría de «Sistemas de numeración» (aritmetica.numeracion), para 5.º de secundaria y preuniversitario. Fuente del
+ * contenido: docs/teoria/matriz/aritmetica.json (unidad 11) y docs/teoria/fuentes/historia-ecuaciones.pdf.
+ *
+ * Etapa 3 del plan de calidad (17 nov), fase 2 del método: la propuesta aprobada (docs/etapa3/propuesta-aritmetica.md,
+ * con las recomendaciones de su sección 9) y docs/etapa3/decisiones.md, que manda. Por ahora está rehecha SOLO la idea
+ * 1, «Agrupar de n en n», para el visto bueno de Gerson; las ideas 2 a 4 (descomposición, cambio de base y conteo)
+ * siguen como estaban, con su notación (132)₄ y sus colores viejos, hasta que les toque. Por eso la unidad no declara
+ * todavía calidad: 2; numeracion.test.js corre la idea 1 sola con calidad 2 (misión, leyenda, datos, glosario). La
+ * idea `base-desconocida` y el tema nuevo del catálogo («Base desconocida y cifras ocultas») entran con ella.
+ * Hilo de la unidad: el puesto de caramelos de doña Juana en el mercado de Juliaca (pieza arit-puesto, dibujo de
+ * prueba): n caramelos sueltos llenan una bolsita, n bolsitas una caja, n cajas un cajón; la etiqueta es el numeral.
+ *
+ * Letras: la base se llama n (en a̅b̅c̅₍ₙ₎, b es una cifra); N, la cantidad en base 10 (caramelos), siempre con su
+ * color y su leyenda. Los ids de los controles siguen siendo n (la cantidad) y b (la base): solo cambian sus rótulos.
+ * Notación: 342₍₆₎, con la base de subíndice entre paréntesis (num en las ecuaciones, numT en el texto plano), y
+ * a̅b̅c̅₍ₙ₎ con raya cuando lleva letras ({ raya } de nucleo/ecuacion.js). Sin base escrita, la base es 10. Se usa «×»
+ * para multiplicar (el «·» separa relaciones en la regla).
+ *
+ * REGLA DE COLORES DE LA UNIDAD: un color fijo por magnitud (docs/molde-unidad.md §5b; decisiones, 17 nov), en la
+ * tabla COLORES (def.colores), la misma en el juego, la figura, la fórmula, los datos, los ejemplos y «Ahora tú»:
+ *   - violeta (c-f): la cantidad en base 10 (N): los caramelos de un pedido, la bolsa, el último boleto. Es lo que más
+ *     pide el examen. En una figura, solo si se da (el rótulo «38 caramelos»), nunca si se pide;
+ *   - turquesa (c-i): la base n: el contorno de la bolsita, la caja y el cajón, el subíndice ₍ₙ₎ y el divisor;
+ *   - naranja (c-o): las cifras: el numeral, cuántas bolsitas o sueltos hay, cada resto (es una cifra);
+ *   - verde (c-d): solo la segunda base, al pasar entre dos bases que no son 10 (idea 3), siempre con su rótulo;
+ *   - tinta: los cocientes, los caramelos dibujados y lo que se pide antes de responder («?»);
+ *   - el carmín (de los ángulos) no se usa.
+ *   La respuesta lleva el color de su magnitud. La letra de una alternativa va en negrita, con el color de lo que nombra.
+ *   Cada ficha de color dice su magnitud (m); contenido/teoria/aritmetica/numeracion.test.js falla si una magnitud
+ *   cambia de color (hoy en la idea 1; cada idea que se rehaga se suma a IDEAS_REHECHAS).
+ * Errores: los AT-* son hipótesis de aula, sin medir (el informe de aritmética no trae cifras de numeración); algunos los
+ * respalda la trampa 23 de docs/clasificacion/trampas-admision-unmsm/aritmetica-algebra.md. Ver el bloque de cada idea.
  *
  * Ficha de tarea (diseno-y-animacion):
- *   Promesa: ver que una base es una regla de canje (b sueltas = 1 del orden siguiente) y que el valor no cambia al cambiar de base.
- *   Persona y condiciones: postulante de 3.º, celular de 360 px, sin audio, con lápiz al lado.
- *   Resultado observable: pasa un numeral de base b a base 10 y al revés, detecta cifras imposibles y cuenta cifras por bloques.
- *   Orden de atención: 1.º las fichas o la tabla · 2.º la fila que se acaba de llenar · acción: el botón fijo de abajo.
- *   Estados: juego sin tocar · casos probados · predicción · coincide / no coincide · paso a paso · caso nuevo · «No sé».
- *   Duda que resuelve: «¿por qué en base 5 no existe la cifra 5, y por qué (132)₄ no es ciento treinta y dos?».
- * Colores (regla 4): la base b naranja (c-o), las cifras turquesa (c-i), los restos rojo (c-h), el valor en base 10 verde (c-d).
+ *   Promesa: una base es una regla de juntar (n de un orden = 1 del siguiente); un numeral anota lo que queda.
+ *   Persona y condiciones: postulante de 5.º o de academia, celular de 360 px de gama baja, sin audio, con lápiz al lado.
+ *   Resultado observable: escribe una cantidad en base n juntando por órdenes, reconoce cifras imposibles y halla la
+ *     menor base; después (ideas 2 a 5) pasa entre bases, halla bases ocultas y cuenta cifras.
+ *   Orden de atención: 1.º el pedido sobre el mostrador · 2.º la etiqueta · acción: los controles o el botón fijo.
+ *   Estados: juego sin tocar · casos probados · misión lograda · predicción · coincide / no coincide · paso a paso ·
+ *     caso nuevo · «No sé».
+ *   Duda que resuelve: «¿por qué en base 5 no existe la cifra 5, y por qué 132₍₄₎ no es ciento treinta y dos?».
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -50,6 +80,23 @@
     return ops.slice(0, 4);
   }
 
+  // ---------- Colores de la unidad: un color fijo por magnitud (cabecera; lo comprueba numeracion.test.js) ----------
+  // Cada ficha de color dice su magnitud en m. La cantidad en base 10 violeta, la base turquesa, las cifras (y los
+  // restos, que son cifras) naranja, la segunda base verde; el carmín no se usa (es de los ángulos).
+  const COLORES = { cantidad: 'f', base: 'i', cifras: 'o', 'segunda base': 'd' };
+  const ficha = m => t => ({ v: `c-${COLORES[m]}`, t: String(t), m });
+  const cant = ficha('cantidad'), bas = ficha('base'), cif = ficha('cifras');
+  // Un numeral, 342₍₆₎: las cifras naranja y la base de subíndice, entre paréntesis, turquesa. Con letras, lleva raya
+  // (a̅b̅₍ₙ₎: son cifras, no un producto; nucleo/ecuacion.js, { raya }).
+  const num = (cifras, base) => { const c = cif(cifras); return { sub: [/[a-z]/.test(String(cifras)) ? { raya: [c] } : c, bas(`(${base})`)] }; };
+  // El mismo numeral en un texto plano (siFuera, voz, bien): 342₍₆₎.
+  const numT = (cifras, base) => `${cifras}₍${subi(base)}₎`;
+  // La letra de una alternativa, en negrita (Gerson, mesa de revisión, 17 nov), con el color de lo que nombra. El
+  // U+2060 (invisible) evita que la letra sola salga en cursiva como una variable.
+  const letra = (L, m = 'cifras') => ({ v: `c-${COLORES[m]}`, t: `${L}\u2060`, m });
+  // Entre dos relaciones de una misma ecuación (en la regla, cada una en su línea).
+  const SEP = '   ·   ';
+
   // Gesto directo (docs/teoria.md §4b). En las fichas se tira del borde derecho de la primera fila: la fila se
   // alarga o se acorta y la base cambia. El bloque está centrado y la ficha no cambia de tamaño, así que el borde
   // está en centro + b · ficha / 2: de ahí sale b sin depender del estado (la manija no se dispara al soltar).
@@ -59,144 +106,456 @@
   const bordeFila = (datos, base) => { const g = FICHAS().geometria(datos), c = g.caja(0); return { x: c.x + c.ancho / 2 + base * g.paso / 2, y: c.y + g.paso / 2 }; };
   const baseEn = (datos, x) => { const g = FICHAS().geometria(datos), c = g.caja(0); return 2 * (x - (c.x + c.ancho / 2)) / g.paso; };
 
-  // ---------- Idea 1: agrupar de b en b (base de un sistema) ----------
-  // Cambia: cuántas fichas y de a cuántas se agrupan. Permanece: el tamaño de cada ficha (la cantidad no se estira).
-  // Progresa: sueltas → fila llena → canje por una ficha del orden siguiente. Se reserva: la ficha número b, que nunca queda suelta.
-  // Debe verse: con b sueltas ya hay un grupo; por eso la cifra b no existe en base b.
-  const fichasBase = (n, base) => {
-    const q = Math.floor(n / base), s = n % base;
-    return { bloques: [{ n, columnas: base, color: 'i', marcoFilas: true, rotulo: `${n} = ${nb(enBase(n, base), base)}`, tramos: s ? [{ de: n - s, a: n - 1, color: 'h' }] : [] }], altoMax: 150, ficha: 30, alt: `${n} fichas en filas de ${base}: ${q} grupos completos y ${s} sueltas` };
+  // ---------- Idea 1 (rehecha, 17 nov): agrupar de n en n ----------
+  // Propuesta aprobada por Gerson: docs/etapa3/propuesta-aritmetica.md y docs/etapa3/decisiones.md (mandan sobre la
+  // propuesta). Objeto de la primera pantalla: el puesto de caramelos de doña Juana en el mercado de Juliaca (pieza
+  // arit-puesto, dibujo de prueba). Colores: la tabla COLORES de arriba (un color fijo por magnitud).
+  // Cambia: cuántos caramelos hay y de cuántos es la bolsita (n). · Permanece: la regla del puesto (nunca quedan n
+  // sueltos sin juntar) y la escala del dibujo. · Progresa: sueltos → bolsitas; la etiqueta anota lo que queda.
+  // · Se reserva: el tercer orden, la caja (la predicción: 44₍₅₎ + 1 = 100₍₅₎). · Debe verse: con n sueltos ya hay una
+  // bolsita; por eso ninguna cifra llega a n.
+  // Errores (hipótesis de aula, sin medir; trampa 23 de docs/clasificacion/trampas-admision-unmsm/aritmetica-algebra.md:
+  // «cifra igual o mayor que la base, primera cifra cero»): AT-CIFRA-B deja n sueltos (escribe la cifra n) ·
+  // AT-LLEVA-UNA junta una vez y no sigue · AT-PIERDE pone 0 y pierde lo que juntó · AT-DECIMAL lee o suma como en base
+  // 10 · AT-LARGO cree que la base depende de cuántas cifras hay · AT-CIFRA-MAYOR cree que n − 1 tampoco existe ·
+  // AT-CERO cree que el 0 no va en medio · AT-SIN-BASE cree que un numeral sin base está mal escrito · AT-UNO-SOLO mira
+  // las cifras de un solo numeral · AT-MENOR confunde cuántas bases hay con la menor base.
+  // El juego llega solo a dos órdenes (con 24 caramelos y bolsitas de 5 o más, nunca hay caja): la caja es de la
+  // predicción. Ningún ejemplo usa «le llega un caramelo» (es la predicción); «Ahora tú» sí, ya después de predecir.
+  const PU = 'arit-puesto';
+  const PUESTO = () => Kit.piezas[PU];
+  const fig = datos => ({ pieza: PU, datos, estado: {} });
+  const pl = (k, uno, varios) => `${k} ${k === 1 ? uno : varios}`;
+  // La regla de las cifras y la escritura de la etiqueta, como datos (punto 13: herramientas, no el paso hecho).
+  const DN = {
+    cifras: ['En base ', bas('n'), ', las cifras van de 0 a ', bas('n'), ' − 1'],
+    sinBase: 'Un numeral sin base escrita está en base 10',
+    primera: 'La primera cifra de un numeral de varias cifras no es 0',
+    etiqueta: 'Etiqueta: primero las bolsitas, después los sueltos; abajo y entre paréntesis, la base',
+    bolsita: n => ['1 bolsita = ', bas(n), ' caramelos'],
+    caja: n => ['1 caja = ', bas(n), ' bolsitas'],
+    todo: n => ['1 bolsita = ', bas(n), ' caramelos; 1 caja = ', bas(n), ' bolsitas; 1 cajón = ', bas(n), ' cajas'],
   };
-  // Las mismas fichas sin el numeral en el rótulo: el enunciado de «Así se resuelve» no regala la respuesta.
-  const fichasSinNumeral = (n, base) => { const x = fichasBase(n, base); x.bloques[0].rotulo = `${n} fichas`; return x; };
+  // El juego: el pedido ya empacado (doña Juana nunca deja n sueltos). La escala es la misma en todos los casos del
+  // juego (la que hace caber el más ancho), para que la bolsita no cambie de tamaño al mover un control.
+  const puestoJ = (v, escala) => ({ n: v.b, bolsitas: Math.floor(v.n / v.b), sueltos: v.n % v.b, ceros: true, regla: 1, rotulos: true,
+    etiqueta: { cifras: enBase(v.n, v.b) }, escala });
+  let escJ = null;
+  const escalaJ = () => {
+    if (escJ) return escJ;
+    let m = 1.7;
+    for (let N = 5; N <= 24; N++) for (let B = 5; B <= 9; B++) m = Math.min(m, PUESTO().geometria(puestoJ({ n: N, b: B })).sCabe);
+    return (escJ = Math.floor(m * 100) / 100);
+  };
+  // «Mira»: el pedido 44₍₅₎ recibe un caramelo; cada paso junta un orden (la misma escala en todos los pasos).
+  const MIRA = { n: 5, regla: 2, rotulos: true, ceros: true, escala: 1.2, pasos: [
+    { bolsitas: 4, sueltos: 4, llega: 1, etiqueta: { cifras: '44' } },
+    { bolsitas: 4, sueltos: 5, juntar: 'sueltos', etiqueta: { cifras: '?' } },
+    { bolsitas: 5, sueltos: 0, juntar: 'bolsitas', etiqueta: { cifras: '?' } },
+    { cajas: 1, bolsitas: 0, sueltos: 0, etiqueta: { cifras: '100' } },
+    { cajas: 1, bolsitas: 0, sueltos: 0, etiqueta: { cifras: '100' } },
+  ] };
+  const cajasDe = (n, cifras) => { const c = String(cifras).split('').map(Number).reverse(); return { sueltos: c[0] || 0, bolsitas: c[1] || 0, cajas: c[2] || 0, cajones: c[3] || 0 }; };
+  // Cuatro opciones siempre en «Ahora tú»: si dos errores dan el mismo texto, se arma otro caso con el mismo azar.
+  function conCuatro(caso, r) {
+    for (let i = 0; i < 80; i++) { const c = caso(r); if (c.opciones.length >= 4) return c; }
+    throw new Error(`${caso.name}: no salieron cuatro opciones distintas`);
+  }
+  // Texto plano de una opción con partes (para no repetir opciones).
+  const planoP = x => (Array.isArray(x) ? x.map(planoP).join('') : x && typeof x === 'object'
+    ? (x.t !== undefined ? String(x.t) : x.sub ? planoP(x.sub[0]) + planoP(x.sub[1]) : x.raya ? planoP(x.raya) : '') : String(x));
+  // Opciones con numerales (partes de ecuación): distintas por su texto, la correcta primero; hasta 4.
+  function opcionesNum(correcta, distractores) {
+    const ops = [{ id: 'c', texto: correcta, correcta: true }], vistos = new Set([planoP(correcta)]);
+    for (const x of distractores) {
+      const t = planoP(x.texto);
+      if (vistos.has(t)) continue;
+      vistos.add(t);
+      ops.push({ id: x.id, texto: x.texto, error: x.error, siFuera: x.siFuera });
+    }
+    return ops.slice(0, 4);
+  }
+  // Un numeral como opción: con base (342₍₆₎) o sin ella (base 10).
+  const opNum = (cifras, base) => [base === 10 ? cif(cifras) : num(cifras, base)];
+
+  // Ahora tú 1: ¿cuál está mal escrito? (la cifra n en base n; los demás, trampas que sí están bien).
+  function casoMalEscrito(r) {
+    const n = r.ent(3, 8), k = r.ent(3, 4);
+    const malo = [r.ent(1, n - 1)].concat(Array.from({ length: k - 1 }, () => r.ent(0, n - 1)));
+    malo[r.ent(1, k - 1)] = n;
+    const m1 = r.ent(3, 9), mayor = [r.ent(1, m1 - 1), r.ent(0, m1 - 1), m1 - 1].join('');
+    const m2 = r.ent(3, 9), conCero = [r.ent(1, m2 - 1), 0, r.ent(1, m2 - 1)].join('');
+    const diez = [r.ent(6, 9), r.ent(5, 9), r.ent(7, 9)].join('');
+    const mt = malo.join('');
+    return {
+      pregunta: '¿Cuál de estos numerales está mal escrito?',
+      datos: [DN.cifras, DN.sinBase],
+      opciones: opcionesNum(opNum(mt, n), [
+        { id: 'mayor', texto: opNum(mayor, m1), error: 'AT-CIFRA-MAYOR', siFuera: `Revisar cada cifra está bien. Pero ${m1 - 1} sí existe en base ${m1}: es la cifra mayor.` },
+        { id: 'cero', texto: opNum(conCero, m2), error: 'AT-CERO', siFuera: 'Bien que mires el 0. Pero sí va: dice que en ese orden no quedó nada.' },
+        { id: 'diez', texto: opNum(diez, 10), error: 'AT-SIN-BASE', siFuera: 'Bien que busques la base. Sin base escrita está en base 10, y ahí todas sirven.' },
+      ]),
+      solucion: { texto: `En ${numT(mt, n)} aparece la cifra ${n}, y en base ${n} las cifras llegan solo hasta ${n - 1}.`,
+        ecuacion: ['cifra ', cif(n), ', base ', bas(n), ': ', cif(n), ' no es menor que ', bas(n)] },
+    };
+  }
+  // Ahora tú 2: la menor base en la que un numeral está bien escrito.
+  function casoMenorBase(r) {
+    const mayor = r.ent(3, 8), k = r.ent(3, 4);
+    const c = [r.ent(1, mayor)].concat(Array.from({ length: k - 1 }, () => r.ent(0, mayor)));
+    if (!c.includes(mayor)) c[r.ent(1, k - 1)] = mayor;
+    const txt = c.join(''), min = mayor + 1;
+    return {
+      pregunta: ['¿Cuál es la menor base en la que el numeral ', cif(txt), ' está bien escrito?'],
+      datos: [DN.cifras],
+      opciones: opciones(min, [
+        { id: 'igual', valor: mayor, error: 'AT-CIFRA-B', siFuera: `Mirar la cifra mayor está bien. Pero en base ${mayor} la cifra ${mayor} no existe.` },
+        { id: 'diez', valor: 10, error: 'AT-DECIMAL', siFuera: 'En base 10 está bien escrito, es cierto. Pero hay bases más chicas que también sirven.' },
+        { id: 'largo', valor: k, error: 'AT-LARGO', siFuera: `Contar las cifras está bien, pero la base no depende de cuántas son: depende de la mayor.` },
+      ], x => `base ${x}`),
+      solucion: { texto: `La cifra mayor es ${mayor}; la base tiene que ser mayor que ella.`, ecuacion: [cif(mayor), ' < ', bas('n'), '   →   ', bas('n'), ' = ', bas(min)] },
+    };
+  }
+  // Ahora tú 3 (nivel examen): el numeral que sigue, con llevadas en cadena (le llega un caramelo).
+  function casoSucesor(r, sem) {
+    const n = r.ent(4, 7), k = r.ent(3, 4), t = r.ent(2, k - 1);
+    const D = [r.ent(1, n - 1)];
+    while (D.length < k - t) D.push(r.ent(0, n - 1));
+    D[D.length - 1] = r.ent(D.length === 1 ? 1 : 0, n - 2);
+    while (D.length < k) D.push(n - 1);
+    const val = D.reduce((a, x) => a * n + x, 0), ans = enBase(val + 1, n);
+    const dt = D.join(''), sin = D.slice(0, -1).join(''), antes = D.slice(0, -2).join('');
+    const pregunta = sem % 2 === 0
+      ? ['Un pedido de bolsitas de ', bas(n), ' se anota ', num(dt, n), '. Le agregan un caramelo. ¿Cómo queda la etiqueta?']
+      : ['¿Cuál es el numeral que sigue a ', num(dt, n), '?'];
+    return {
+      pregunta,
+      datos: [DN.todo(n), DN.cifras],
+      dibujo: sem % 2 === 0 ? fig(Object.assign({ n, ceros: true, regla: k - 1, rotulos: true, llega: 1, etiqueta: { cifras: '?' } }, cajasDe(n, dt))) : undefined,
+      opciones: opcionesNum(opNum(ans, n), [
+        { id: 'cifra-n', texto: opNum(`${sin}${n}`, n), error: 'AT-CIFRA-B', siFuera: `Sumar 1 a la última cifra está bien. Pero ${n} sueltos ya forman una bolsita: la cifra ${n} no existe.` },
+        { id: 'una', texto: opNum(`${antes}${n}0`, n), error: 'AT-LLEVA-UNA', siFuera: `Bien: los sueltos forman una bolsita. Pero entonces hay ${n} bolsitas, y también se juntan.` },
+        { id: 'pierde', texto: opNum(`${sin}0`, n), error: 'AT-PIERDE', siFuera: 'El 0 de los sueltos está bien. Pero la bolsita nueva tiene que sumarse al orden siguiente.' },
+      ]),
+      solucion: { texto: `Cada orden que llega a ${n} se junta en 1 del siguiente, hasta que uno no llega.`, ecuacion: [num(dt, n), ' + 1 = ', num(ans, n)] },
+    };
+  }
+  // Ahora tú 4 (nivel examen): llegan k caramelos a un pedido de tres cifras; hay que juntar dos veces.
+  function casoLlegan(r) {
+    for (;;) {
+      const n = r.ent(4, 6), c = r.ent(1, n - 2), bb = r.ent(n - 2, n - 1), s = r.ent(1, n - 1), k = r.ent(n, 2 * n + 2);
+      const q1 = Math.floor((s + k) / n), r0 = (s + k) % n, q2 = Math.floor((bb + q1) / n), r1 = (bb + q1) % n;
+      if (q2 < 1 || c + q2 >= n) continue;
+      const dt = `${c}${bb}${s}`, ans = `${c + q2}${r1}${r0}`;
+      return {
+        pregunta: ['Un pedido de bolsitas de ', bas(n), ' se anota ', num(dt, n), '. Le agregan ', cant(k), ' caramelos. ¿Cuál es la nueva etiqueta?'],
+        datos: [DN.bolsita(n), DN.caja(n)],
+        dibujo: fig({ n, cajas: c, bolsitas: bb, sueltos: s, llega: k, regla: 2, rotulos: true, etiqueta: { cifras: '?' } }),
+        opciones: opcionesNum(opNum(ans, n), [
+          { id: 'decimal', texto: opNum(String(+dt + k), n), error: 'AT-DECIMAL', siFuera: `Sumar los que llegan está bien. Pero eso suma como en base 10, y aquí se junta de a ${n}.` },
+          { id: 'una', texto: opNum(`${c}${bb + q1}${r0}`, n), error: 'AT-LLEVA-UNA', siFuera: `Bien: los sueltos forman bolsitas. Pero las bolsitas pasan de ${n - 1} y también se juntan.` },
+          { id: 'pierde', texto: opNum(`${c}${bb}${r0}`, n), error: 'AT-PIERDE', siFuera: 'Los sueltos que quedan están bien. Pero las bolsitas que se armaron hay que sumarlas.' },
+        ]),
+        solucion: { texto: 'Junta los sueltos en bolsitas; después, las bolsitas en cajas.',
+          ecuacion: [`${s} + ${k} = ${q1} × `, bas(n), ' + ', cif(r0), SEP, `${bb} + ${q1} = ${q2} × `, bas(n), ' + ', cif(r1), SEP, `${c} + ${q2} = `, cif(c + q2)] },
+      };
+    }
+  }
+  // Ahora tú 5 (nivel examen): la menor base común a tres numerales, o cuántas bases menores que 10 sirven.
+  function casoBases(r, sem) {
+    if (sem % 10 === 4) {
+      const m = r.ent(4, 8), m1 = r.ent(2, m - 2);
+      const a = [r.ent(1, m1)].concat([r.ent(0, m1), r.ent(0, m1), m1]);
+      const bq = [r.ent(1, m - 1), r.ent(0, m - 1), r.ent(0, m - 1)], cq = [r.ent(1, m - 1), r.ent(0, m - 1), m];
+      const [A, B, C] = [a.join(''), bq.join(''), cq.join('')];
+      return {
+        pregunta: ['Los numerales ', cif(A), ', ', cif(B), ' y ', cif(C), ' están escritos en la misma base. ¿Cuál es la menor base posible?'],
+        datos: [DN.cifras],
+        opciones: opciones(m + 1, [
+          { id: 'igual', valor: m, error: 'AT-CIFRA-B', siFuera: `Buscar la cifra mayor está bien. Pero en base ${m} la cifra ${m} no existe.` },
+          { id: 'uno', valor: m1 + 1, error: 'AT-UNO-SOLO', siFuera: `Para ${A} sirve, es cierto. Pero la misma base tiene que servir para los tres numerales.` },
+          { id: 'diez', valor: 10, error: 'AT-DECIMAL', siFuera: 'En base 10 los tres están bien escritos. Pero hay bases más chicas que también sirven.' },
+        ], x => `base ${x}`),
+        solucion: { texto: `La cifra mayor de los tres es ${m}: la base tiene que pasarla.`, ecuacion: [cif(m), ' < ', bas('n'), '   →   ', bas('n'), ' = ', bas(m + 1)] },
+      };
+    }
+    const m = r.ent(2, 6), k = r.ent(3, 4);
+    const c = [r.ent(1, m)].concat(Array.from({ length: k - 1 }, () => r.ent(0, m)));
+    if (!c.includes(m)) c[k - 1] = m;
+    const txt = c.join(''), cuantas = 9 - m;
+    return {
+      pregunta: ['El numeral ', cif(txt), ' está escrito en una base menor que 10. ¿En cuántas bases puede estar?'],
+      datos: [DN.cifras, 'La base es un número entero de 2 o más'],
+      opciones: opciones(cuantas, [
+        { id: 'igual', valor: cuantas + 1, error: 'AT-CIFRA-B', siFuera: `Contar las bases está bien. Pero la base ${m} no sirve: ahí la cifra ${m} no existe.` },
+        { id: 'diez', valor: cuantas + 2, error: 'AT-DECIMAL', siFuera: `Bien que cuentes desde ${m + 1}. Pero la base 10 no es menor que 10, y la ${m} no sirve.` },
+        { id: 'menor', valor: m + 1, error: 'AT-MENOR', siFuera: `${m + 1} es la menor base posible, es cierto. Pero piden cuántas bases sirven.` },
+      ], x => (x === 1 ? '1 base' : `${x} bases`)),
+      solucion: { texto: `La cifra mayor es ${m}: sirven las bases de ${m + 1} a 9.`, ecuacion: ['bases ', bas(`${m + 1} a 9`), ': 9 − ', String(m), ' = ', String(cuantas)] },
+    };
+  }
+
+  // Ejemplos resueltos (pestaña «Ejemplos», docs/teoria.md 4h): 5 de nivel 1, 5 de nivel 2 y 5 de nivel 3. Cuentas
+  // rehechas aparte, sin este archivo (scratchpad de la sesión, cuentas-idea1.js): 11 = 2 × 4 + 3; 35₍₆₎; 42₍₇₎ = 4 bolsitas
+  // de 7 y 2; cifras de base 3; 26₍₅₎ → 31₍₅₎ (2 × 5 + 6 = 16 = 3 × 5 + 1); 38 = 212₍₄₎; 77₍₈₎ = 63; 2 bolsitas de 5 y 9
+  // sueltos = 34₍₅₎ (19); 20 = 32₍₆₎ = 26₍₇₎; 1201₍₂₎ mal escrita; menor base común de 2031, 425 y 106 = 7; 3021 en
+  // bases 4 a 9 (6); 543₍₆₎ y 102₍₆₎; dos bien escritos de cinco; 45 caramelos con bolsitas de 7 = 63₍₇₎ (6 × 6 = 36 ≤ 45 <
+  // 49 = 7 × 7). Ninguna figura muestra la respuesta: lo que se pide va con «?».
+  const sueltosF = (n, k, extra) => fig(Object.assign({ n, sueltos: k, rotulos: { sueltos: [[`${k} caramelos`, 'f', 700]] } }, extra || {}));
+  const EJEMPLOS_AGRUPAR = [
+    { nivel: 1, titulo: 'Bolsitas de 4',
+      enunciado: ['Doña Juana tiene ', cant(11), ' caramelos sueltos y los junta en bolsitas de ', bas(4), '. ¿Cuántas bolsitas llena y cuántos caramelos quedan sueltos?'],
+      datos: [DN.bolsita(4)],
+      figura: sueltosF(4, 11, { regla: 1 }),
+      solucion: [
+        { texto: ['Cada ', bas(4), ' caramelos llenan una bolsita. Dos bolsitas usan 8; para 3 bolsitas harían falta 12, y solo hay 11.'], ecuacion: [cant(11), ' = ', cif(2), ' × ', bas(4), ' + ', cif(3)] },
+        { texto: ['Sobran 11 − 8 = ', cif(3), ' caramelos: son menos que ', bas(4), ', no alcanzan para otra bolsita.'] },
+      ],
+      respuesta: [cif(2), ' bolsitas y ', cif(3), ' sueltos'] },
+    { nivel: 1, titulo: 'Anotar la etiqueta',
+      enunciado: ['En un puesto de bolsitas de ', bas(6), ', un pedido tiene ', cif(3), ' bolsitas y ', cif(5), ' caramelos sueltos. ¿Cómo se anota su etiqueta?'],
+      datos: [DN.etiqueta],
+      figura: fig({ n: 6, bolsitas: 3, sueltos: 5, regla: 1, rotulos: true, etiqueta: { cifras: '?' } }),
+      solucion: [
+        { texto: ['5 sueltos son menos que ', bas(6), ': ya no se puede juntar nada. La cifra de la izquierda cuenta bolsitas; la de la derecha, sueltos.'] },
+        { texto: 'La base va abajo y entre paréntesis: dice de cuántos caramelos es cada bolsita.', ecuacion: [cif(3), ' bolsitas y ', cif(5), ' sueltos   →   ', num('35', 6)] },
+      ],
+      respuesta: ['La etiqueta es ', num('35', 6)] },
+    { nivel: 1, titulo: 'Leer la etiqueta',
+      enunciado: ['La etiqueta de una bolsa cerrada dice ', num('42', 7), '. ¿Cuántas bolsitas hay adentro, de cuántos caramelos cada una, y cuántos sueltos?'],
+      datos: ['En la etiqueta, la cifra de la izquierda cuenta bolsitas y la de la derecha, sueltos', 'La base, abajo, dice de cuántos caramelos es cada bolsita'],
+      figura: fig({ n: 7, cerrado: true, etiqueta: { cifras: '42' } }),
+      solucion: [
+        { texto: ['La base es ', bas(7), ': cada bolsita lleva ', bas(7), ' caramelos.'] },
+        { texto: ['La cifra ', cif(4), ' cuenta bolsitas y la cifra ', cif(2), ' cuenta sueltos. Está bien anotada: 2 es menos que 7.'] },
+      ],
+      respuesta: [cif(4), ' bolsitas de ', bas(7), ' y ', cif(2), ' sueltos'] },
+    { nivel: 1, titulo: 'Las cifras del puesto',
+      enunciado: ['En el puesto de al lado, las bolsitas son de ', bas(3), ' caramelos. ¿Qué cifras pueden aparecer en sus etiquetas?'],
+      datos: [DN.bolsita(3), ['Lo que llega a ', bas(3), ' se junta en el orden siguiente']],
+      figura: fig({ n: 3, sueltos: 3, juntar: 'sueltos', regla: 1 }),
+      solucion: [
+        { texto: ['En cada orden pueden quedar 0, 1 o 2. Si quedan ', bas(3), ', se juntan: el 3 nunca se anota.'] },
+        { texto: 'Tampoco aparecen 4, 5 ni las demás: son más que 3, y también se juntarían.' },
+      ],
+      respuesta: ['Solo ', cif('0, 1 y 2')] },
+    { nivel: 1, titulo: '¿Está bien anotada?',
+      enunciado: ['Un ayudante dejó 2 bolsitas de ', bas(5), ' y 6 sueltos, y anotó ', num('26', 5), '. ¿Está bien escrita la etiqueta?'],
+      datos: [DN.cifras],
+      figura: fig({ n: 5, bolsitas: 2, sueltos: 6, regla: 1, rotulos: true, colorCifras: false, etiqueta: { cifras: '26' } }),
+      solucion: [
+        { texto: ['En base ', bas(5), ' las cifras llegan hasta 4. La cifra ', cif(6), ' no existe: 6 sueltos todavía se pueden juntar.'] },
+        { texto: 'Con 5 de ellos se llena otra bolsita: quedan 3 bolsitas y 1 suelto.', ecuacion: [num('26', 5), ' está mal   →   ', num('31', 5)] },
+      ],
+      respuesta: ['No: el 6 no existe en base 5. Va ', num('31', 5)] },
+    { nivel: 2, titulo: 'Hasta la caja',
+      enunciado: ['Doña Juana empaca ', cant(38), ' caramelos en bolsitas de ', bas(4), ', y cada ', bas(4), ' bolsitas van en una caja. ¿Qué etiqueta lleva el pedido?'],
+      datos: [DN.bolsita(4), DN.caja(4)],
+      figura: sueltosF(4, 38, { regla: 2, etiqueta: { cifras: '?' } }),
+      solucion: [
+        { texto: 'Primero los caramelos: 38 llenan 9 bolsitas y sobran 2.', ecuacion: [cant(38), ' = 9 × ', bas(4), ' + ', cif(2)] },
+        { texto: ['Pero 9 bolsitas son más que ', bas(4), ': se juntan en 2 cajas y sobra 1 bolsita.'], ecuacion: ['9 = ', cif(2), ' × ', bas(4), ' + ', cif(1)] },
+        { texto: ['Quedan 2 cajas, 1 bolsita y 2 sueltos: los tres, menos que ', bas(4), '.'] },
+      ],
+      respuesta: ['La etiqueta es ', num('212', 4)] },
+    { nivel: 2, titulo: 'La etiqueta más grande',
+      enunciado: ['En un puesto de bolsitas de ', bas(8), ', ¿cuál es la etiqueta más grande de dos cifras, y cuántos caramelos son?'],
+      datos: [DN.bolsita(8), DN.cifras],
+      figura: fig({ n: 8, cerrado: true, regla: 1, etiqueta: { cifras: '??' } }),
+      solucion: [
+        { texto: ['La cifra más grande en base ', bas(8), ' es 7: con 8 ya se junta. Con dos cifras: 7 bolsitas y 7 sueltos.'], ecuacion: [num('77', 8)] },
+        { texto: ['7 bolsitas de 8 son 56 caramelos; con los 7 sueltos, ', cant(63), '.'], ecuacion: ['7 × ', bas(8), ' + 7 = ', cant(63)] },
+      ],
+      respuesta: [num('77', 8), ', con ', cant(63), ' caramelos'] },
+    { nivel: 2, titulo: 'Mal empacado',
+      enunciado: ['Un ayudante dejó 2 bolsitas de ', bas(5), ' y 9 caramelos sueltos. ¿Cómo debe quedar el pedido, y qué etiqueta lleva?'],
+      datos: [DN.bolsita(5), DN.cifras],
+      figura: fig({ n: 5, bolsitas: 2, sueltos: 9, regla: 1, rotulos: true, colorCifras: false, etiqueta: { cifras: '?' } }),
+      solucion: [
+        { texto: ['9 sueltos son más que ', bas(5), ': con 5 de ellos se llena otra bolsita y quedan 4.'], ecuacion: ['9 = 1 × ', bas(5), ' + ', cif(4)] },
+        { texto: 'Las bolsitas pasan de 2 a 3. Ya no se puede juntar nada.', ecuacion: [cif(3), ' bolsitas y ', cif(4), ' sueltos   →   ', num('34', 5)] },
+      ],
+      respuesta: [cif(3), ' bolsitas y ', cif(4), ' sueltos: ', num('34', 5)] },
+    { nivel: 2, titulo: 'Dos puestos, un pedido',
+      enunciado: ['Un cliente pide ', cant(20), ' caramelos. ¿Qué etiqueta lleva el pedido en el puesto de bolsitas de ', bas(6), ', y en el de bolsitas de ', bas(7), '?'],
+      datos: [DN.etiqueta],
+      figura: sueltosF(6, 20, { regla: [[['Puesto A: bolsitas de '], ['6', 'i', 700]], [['Puesto B: bolsitas de '], ['7', 'i', 700]]] }),
+      solucion: [
+        { texto: ['Con bolsitas de ', bas(6), ': 3 bolsitas usan 18 y sobran 2.'], ecuacion: [cant(20), ' = ', cif(3), ' × ', bas(6), ' + ', cif(2), '   →   ', num('32', 6)] },
+        { texto: ['Con bolsitas de ', bas(7), ': 2 bolsitas usan 14 y sobran 6, menos que 7.'], ecuacion: [cant(20), ' = ', cif(2), ' × ', bas(7), ' + ', cif(6), '   →   ', num('26', 7)] },
+        { texto: 'Los mismos 20 caramelos llevan otra etiqueta: con bolsitas más grandes salen menos bolsitas.' },
+      ],
+      respuesta: [num('32', 6), ' y ', num('26', 7)] },
+    { nivel: 2, titulo: '¿Cuál está mal escrita?',
+      enunciado: ['¿Cuál de estas etiquetas está mal escrita? A) ', num('304', 5), '   B) ', num('2110', 3), '   C) ', num('657', 8), '   D) ', num('1201', 2)],
+      datos: [DN.cifras],
+      solucion: [
+        { texto: ['Comparo la cifra más grande de cada una con su base: en ', letra('A'), ', 4 < 5; en ', letra('B'), ', 2 < 3; en ', letra('C'), ', 7 < 8.'] },
+        { texto: ['En ', letra('D'), ', la base es ', bas(2), ': solo existen el 0 y el 1. La cifra 2 no existe.'] },
+      ],
+      respuesta: [letra('D'), ', ', num('1201', 2)] },
+    { nivel: 3, titulo: 'Una base para tres',
+      enunciado: ['Los numerales ', cif('2031'), ', ', cif('425'), ' y ', cif('106'), ' están escritos en la misma base. ¿Cuál es la menor base posible? A) 5   B) 6   C) 7   D) 10'],
+      datos: [DN.cifras],
+      solucion: [
+        { texto: 'La base tiene que ser mayor que todas las cifras de los tres numerales, no solo que las del primero.' },
+        { texto: ['La cifra más grande es el 6, de ', cif('106'), '. La base pasa al 6: la menor es 7.'], ecuacion: ['6 < ', bas('n'), '   →   ', bas('n'), ' = ', bas(7)] },
+        { texto: ['Con 5 o 6 no alcanza: el 6 no existiría. Con 10 sirve, pero no es la menor.'] },
+      ],
+      respuesta: [letra('C', 'base'), ', base ', bas(7)] },
+    { nivel: 3, titulo: '¿En qué bases?',
+      enunciado: ['El numeral ', cif('3021'), ' está escrito en una base menor que 10. ¿En qué bases puede estar, y cuántas son?'],
+      datos: [DN.cifras, 'La base es un número entero de 2 o más'],
+      solucion: [
+        { texto: ['La cifra más grande de ', cif('3021'), ' es el 3: la base tiene que ser mayor que 3.'] },
+        { texto: ['Sirven ', bas('4, 5, 6, 7, 8 y 9'), '. La base 3 no: ahí el 3 no existe. La 10 tampoco: no es menor que 10.'] },
+      ],
+      respuesta: ['Las bases ', bas('4, 5, 6, 7, 8 y 9'), ': son seis'] },
+    { nivel: 3, titulo: 'Tres cifras distintas',
+      enunciado: ['En base ', bas(6), ', ¿cuál es el mayor numeral de tres cifras distintas, y cuál el menor?'],
+      datos: [DN.cifras, DN.primera],
+      solucion: [
+        { texto: ['En base ', bas(6), ' las cifras van de 0 a 5. El mayor usa las tres más grandes, de mayor a menor.'], ecuacion: [num('543', 6)] },
+        { texto: 'El menor empieza con la cifra más chica que no es 0, el 1; después van el 0 y el 2.', ecuacion: [num('102', 6)] },
+        { texto: 'No sirven 555, que repite cifras, ni 012, que empieza en 0 y en realidad tiene dos cifras.' },
+      ],
+      respuesta: ['Mayor, ', num('543', 6), '; menor, ', num('102', 6)] },
+    { nivel: 3, titulo: '¿Cuántas están bien?',
+      enunciado: ['¿Cuántos de estos numerales están bien escritos? ', num('1203', 4), ', ', num('3401', 4), ', ', num('2230', 3), ', ', num('1111', 2), ' y ', num('0312', 5)],
+      datos: [DN.cifras, DN.primera],
+      solucion: [
+        { texto: [num('1203', 4), ' sí: todas sus cifras son menores que 4. ', num('3401', 4), ' no: tiene un 4. ', num('2230', 3), ' no: tiene un 3.'] },
+        { texto: [num('1111', 2), ' sí: en base 2 valen el 0 y el 1. ', num('0312', 5), ' no: empieza en 0.'] },
+      ],
+      respuesta: ['Solo dos: ', num('1203', 4), ' y ', num('1111', 2)] },
+    { nivel: 3, titulo: 'Bolsitas para 45',
+      enunciado: ['Doña Juana quiere anotar ', cant(45), ' caramelos con solo dos cifras, sin llenar ninguna caja. ¿Cuál es la bolsita más chica que sirve, y qué etiqueta sale?'],
+      datos: [['1 caja = ', bas('n'), ' bolsitas = ', bas('n'), ' × ', bas('n'), ' caramelos'], DN.cifras],
+      figura: fig({ sueltos: 45, rotulos: { sueltos: [['45 caramelos', 'f', 700]] }, regla: [[['1 bolsita = '], ['?', 'i', 700], [' caramelos']]], etiqueta: { cifras: '?', base: '?' } }),
+      solucion: [
+        { texto: ['Con dos cifras hay a lo más ', bas('n'), ' − 1 bolsitas: para no llenar una caja, 45 tiene que ser menos que ', bas('n'), ' × ', bas('n'), '.'] },
+        { texto: ['Con bolsitas de 6 no: 6 × 6 = 36, y 45 llenaría una caja. Con bolsitas de ', bas(7), ' sí: 7 × 7 = 49, más que 45.'] },
+        { texto: '45 caramelos en bolsitas de 7 dan 6 bolsitas y sobran 3.', ecuacion: [cant(45), ' = ', cif(6), ' × ', bas(7), ' + ', cif(3), '   →   ', num('63', 7)] },
+      ],
+      respuesta: ['Bolsitas de ', bas(7), '; etiqueta ', num('63', 7)] },
+  ];
+
   const agrupar = {
     id: 'agrupar',
-    titulo: 'Agrupar de b en b',
+    titulo: 'Agrupar de n en n',
+    pregunta: '¿Por qué en base 5 no existe la cifra 5?',
     temas: ['Base de un sistema'],
-    pieza: 'arit-fichas',
-    // Lee (fase 2): contar por grupos y el nombre «base», sin decir qué cifra no existe (eso lo pregunta Predice).
+    pieza: PU,
+    aprendizaje: 'En base n, n de un orden forman 1 del siguiente: las cifras van de 0 a n − 1; la cifra n no existe.',
+    actividad: 'Empacar caramelos en bolsitas de un mismo tamaño y leer la etiqueta.',
+    // Lee: el puesto, la etiqueta (la notación 23₍₅₎ se presenta aquí, antes de usarla) y los órdenes. No dice qué pasa
+    // cuando las bolsitas llegan a n (eso lo pregunta Predice).
     lee: {
       tarjetas: [
-        { titulo: 'Contar de a montones', texto: 'En la feria de Juliaca nadie cuenta los huevos uno por uno: se venden por docenas. Hacer grupos iguales ayuda a contar rápido y a decir cuánto hay con pocas palabras.' },
-        { titulo: 'La base', texto: 'El tamaño de cada grupo se llama base de numeración. Nosotros contamos en base 10: diez monedas de un sol se cambian por un billete de diez soles.' },
-        { titulo: 'Qué mirar', texto: ['En el juego, cada fila llena es un grupo y las fichas rojas son las sueltas. Cambia la base ', b, ' y mira cómo cambia el numeral escrito debajo de las fichas.'] },
+        { titulo: 'El puesto de doña Juana', texto: ['En el mercado de Juliaca, doña Juana vende caramelos. No los cuenta uno por uno: los junta en bolsitas iguales, aquí de ', bas(5), '. Nunca deja ', bas(5), ' sueltos: con ', bas(5), ' llena otra bolsita.'],
+          pieza: PU, dibujo: { datos: { n: 5, bolsitas: 2, sueltos: 3, regla: 1, rotulos: true, colorCifras: false }, estado: {} } },
+        { titulo: 'La etiqueta', texto: ['Cada pedido lleva una etiqueta. 2 bolsitas y 3 sueltos se anota 23₍₅₎ y se lee «dos, tres en base cinco». El 2 y el 3 son cifras; todo lo escrito, un numeral. El 5 de abajo es la base de numeración.'],
+          ecuacion: [cif(2), ' bolsitas y ', cif(3), ' sueltos   →   ', num('23', 5)],
+          pieza: PU, dibujo: { datos: { n: 5, bolsitas: 2, sueltos: 3, regla: 1, rotulos: true, etiqueta: { cifras: '23' } }, estado: {} } },
+        { titulo: 'Órdenes y base 10', texto: ['Sueltos, bolsitas y cajas son los órdenes del pedido: una caja guarda 5 bolsitas. Nosotros contamos de 10 en 10: diez monedas de S/ 1 son un billete de S/ 10. Un numeral sin base escrita está en base 10.'] },
+        { titulo: 'Qué mirar al jugar', texto: ['Vas a cambiar cuántos caramelos hay y de cuántos es la bolsita, ', bas('n'), '. Mira cuántas bolsitas salen, cuántos caramelos sobran y qué cifras aparecen en la etiqueta.'] },
       ],
     },
+    ejemplos: EJEMPLOS_AGRUPAR,
     juega: {
-      consigna: 'Elige cuántas fichas hay y la base de numeración. Cada fila llena es un grupo; las rojas quedan sueltas.',
-      voz: 'Cuenta los grupos y las sueltas antes de leer el numeral.',
-      controles: [
-        { id: 'n', etiqueta: 'Fichas', min: 5, max: 24, paso: 1, inicio: 13, decimales: 0 },
-        { id: 'b', etiqueta: 'b', color: 'c-o', min: 5, max: 9, paso: 1, inicio: 5, decimales: 0 },
+      pieza: PU,
+      consigna: 'Doña Juana junta los caramelos en bolsitas iguales y anota cada pedido en su etiqueta.',
+      mision: {
+        texto: ['Con bolsitas de ', bas(6), ', arma un pedido que se anote ', num('40', 6), '.'],
+        logrado: val => val.b === 6 && val.n === 24,
+        bien: 'Listo: 4 bolsitas de 6 son 24, y el 0 dice que no sobró ninguno.',
+      },
+      voz: '¿Cuántas bolsitas salen y cuántos caramelos sobran?',
+      leyenda: [
+        { s: cant('13'), t: 'caramelos del pedido, contados uno por uno' },
+        { s: bas('n'), t: 'caramelos por bolsita: la base' },
+        { s: cif('2'), t: 'cifra: cuántas bolsitas o cuántos sueltos' },
+        { s: num('23', 5), t: 'etiqueta: 2 bolsitas de 5 y 3 sueltos' },
+        { s: '→', t: 'se anota en la etiqueta' },
       ],
-      dibujo: v => ({ datos: fichasBase(v.n, v.b), estado: {} }),
-      lectura: v => { const q = Math.floor(v.n / v.b); return [`${q} ${q === 1 ? 'grupo' : 'grupos'} de ${v.b} y ${v.n % v.b} sueltas → ${nb(enBase(v.n, v.b), v.b)}`]; },
+      controles: [
+        { id: 'n', etiqueta: 'Caramelos del pedido', color: 'c-f', min: 5, max: 24, paso: 1, inicio: 13, decimales: 0 },
+        { id: 'b', etiqueta: 'Caramelos por bolsita, n', color: 'c-i', min: 5, max: 9, paso: 1, inicio: 5, decimales: 0 },
+      ],
+      dibujo: v => ({ datos: puestoJ(v, escalaJ()), estado: {} }),
+      // La relación: los caramelos son bolsitas de n más sueltos, y eso se anota así.
+      lectura: v => {
+        const q = Math.floor(v.n / v.b), s = v.n % v.b;
+        return [cant(v.n), ' caramelos = ', cif(q), q === 1 ? ' bolsita de ' : ' bolsitas de ', bas(v.b), ' + ', cif(s), s === 1 ? ' suelto   →   ' : ' sueltos   →   ', num(enBase(v.n, v.b), v.b)];
+      },
       minimo: 3,
-      // La cantidad de fichas va con − y +: el bloque se apoya abajo, y su última ficha queda siempre en la fila de
-      // abajo, así que arrastrarla no tiene una posición estable que leer.
-      arrastres: [{ id: 'fila', etiqueta: 'largo de la fila (la base)', color: 'c-o',
-        donde: v => bordeFila(fichasBase(v.n, v.b), v.b),
-        mover: (pt, v) => ({ b: baseEn(fichasBase(v.n, v.b), pt.x) }) }],
     },
     predice: {
-      pregunta: ['En base ', { v: 'c-o', t: '4' }, ', ¿cuál de estas cifras nunca aparece en un numeral?'],
+      pregunta: ['Doña Juana tiene un pedido anotado ', num('44', 5), ': ', cif(4), ' bolsitas y ', cif(4), ' sueltos. Le llega un caramelo más. ¿Cómo queda la etiqueta?'],
+      datos: [DN.bolsita(5), DN.caja(5)],
+      voz: 'Piensa qué hace doña Juana con el caramelo nuevo.',
       opciones: [
-        { id: 'c', texto: '4', correcta: true },
-        { id: 'cero', texto: '0', error: 'AT-CERO', siFuera: 'El 0 sí aparece: dice que en ese lugar no quedó nada, como en (10)₄.' },
-        { id: 'tres', texto: '3', error: 'AT-CIFRA-B', siFuera: 'El 3 sí cabe: 3 sueltas todavía no completan un grupo de 4.' },
-        { id: 'uno', texto: '1', error: 'AT-CIFRA-B', siFuera: 'El 1 sí aparece: un grupo completo se escribe con 1.' },
+        { id: 'c', texto: [num('100', 5)], correcta: true },
+        { id: 'cifra-b', texto: [num('45', 5)], error: 'AT-CIFRA-B', siFuera: 'Sumar el caramelo a los sueltos está bien. Pero 5 sueltos ya llenan una bolsita: la cifra 5 no existe.' },
+        { id: 'una', texto: [num('50', 5)], error: 'AT-LLEVA-UNA', siFuera: 'Bien: los 5 sueltos llenan una bolsita. Pero ahora hay 5 bolsitas, y 5 bolsitas llenan una caja.' },
+        { id: 'pierde', texto: [num('40', 5)], error: 'AT-PIERDE', siFuera: 'El 0 de los sueltos está bien: no queda ninguno. Pero la bolsita nueva tiene que contarse.' },
       ],
-      dibujo: { datos: fichasBase(3, 4), estado: {} },
-      revelar: { datos: fichasBase(4, 4), estado: {} },
-      coincide: 'Coincide: con 4 sueltas ya hay un grupo, y se escribe (10)₄.',
+      dibujo: fig({ n: 5, bolsitas: 4, sueltos: 4, llega: 1, regla: 2, rotulos: true, escala: 1.2, etiqueta: { cifras: '?' } }),
+      revelar: fig({ n: 5, cajas: 1, ceros: true, regla: 2, rotulos: true, escala: 1.2, etiqueta: { cifras: '100' } }),
+      coincide: 'Coincide: los 5 sueltos llenan una bolsita, y las 5 bolsitas, una caja.',
+      noCoincide: 'Revisemos: con 5 sueltos se llena una bolsita, y entonces hay 5 bolsitas.',
     },
     mira: {
-      datos: { bloques: [
-        { n: 3, columnas: 4, color: 'h', rotulo: '(3)₄' },
-        { n: 4, columnas: 4, color: 'i', marcoFilas: true, rotulo: '1 grupo', paso: 1 },
-        { n: 1, columnas: 1, color: 'd', rotulo: '(10)₄', paso: 2 },
-      ], altoMax: 36, ficha: 32, alt: 'Tres sueltas; cuatro fichas que forman un grupo; una ficha del orden siguiente' },
+      pieza: PU,
+      datos: MIRA,
+      voz: 'Junta lo que se pueda juntar, de los sueltos hacia arriba.',
       pasos: [
-        { estado: { paso: 0 }, texto: 'Tres fichas sueltas en base 4: se escribe 3.', ecuacion: ['3 < ', b, ' = 4'] },
-        { estado: { paso: 1 }, texto: 'Con la cuarta ficha se completa un grupo.', ecuacion: ['4 sueltas = 1 grupo'] },
-        { estado: { paso: 2 }, texto: 'El grupo se canjea por una ficha del orden siguiente.', ecuacion: ['4 = (10)₄'] },
+        { estado: { paso: 0 }, texto: ['El pedido ', num('44', 5), ' tiene 4 bolsitas y 4 sueltos. Llega un caramelo.'], ecuacion: ['4 sueltos + 1 = ', bas(5), ' sueltos'] },
+        { estado: { paso: 1 }, texto: ['Cinco sueltos llenan una bolsita: se embolsan.'], ecuacion: [bas(5), ' sueltos = 1 bolsita'] },
+        { estado: { paso: 2 }, texto: ['Ahora hay 5 bolsitas: con ellas se llena una caja.'], ecuacion: [bas(5), ' bolsitas = 1 caja'] },
+        { estado: { paso: 3 }, texto: 'Ya no se puede juntar nada: 1 caja, 0 bolsitas y 0 sueltos.', ecuacion: [num('100', 5), ' = ', cif(1), ' caja + ', cif(0), ' bolsitas + ', cif(0), ' sueltos'] },
+        { estado: { paso: 4 }, texto: ['Ninguna cifra llega a 5: en base ', bas(5), ' van de 0 a 4.'], ecuacion: ['cifras en base ', bas(5), ': ', cif('0, 1, 2, 3, 4')] },
       ],
     },
     regla: {
-      texto: 'En base b, cada b unidades de un orden se canjean por una del orden siguiente. Por eso cada cifra va de 0 a b − 1.',
-      ecuacion: ['0 ≤ ', d, ' ≤ ', { llave: [b, ' − 1'], nota: 'la cifra mayor', color: 'c-o' }],
-      condicion: 'b es un entero de 2 o más. En un numeral de varias cifras, la primera no es 0.',
+      texto: 'En base n, cada n de un orden se juntan en 1 del orden siguiente. Por eso ninguna cifra llega a n: van de 0 a n − 1.',
+      ecuacion: [bas('n'), ' de un orden = 1 del siguiente', SEP, '0 ≤ ', cif('cifra'), ' ≤ ', bas('n'), ' − 1'],
+      condicion: 'n es un entero de 2 o más; la primera cifra de un numeral no es 0. Sin base escrita, es 10.',
+      voz: 'Junta hasta que ningún orden llegue a n.',
     },
-    // Así se resuelve (fase 2): los dos tipos de «Ahora tú» (menor base y fichas a numeral), con otras semillas.
+    // Así se resuelve: empacar un montón en bolsitas y cajas (dos rondas) y escribir la etiqueta. «Ahora tú» pide otra
+    // cosa: la cifra que no existe, la menor base, el numeral que sigue o lo que queda cuando llegan caramelos.
     resuelve: {
+      pieza: PU,
       generar(s) {
-        const q = azar(s + 900);
-        if (s % 2 === 0) {
-          const base = q.ent(4, 9), c = [q.ent(1, base - 1), q.ent(0, base - 1), q.ent(0, base - 1)];
-          c[q.ent(0, 2) || 1] = base - 1;
-          const txt = c.join(''), mayor = Math.max(...c), min = mayor + 1;
-          return {
-            enunciado: ['¿Cuál es la menor base en la que el numeral ', { v: 'c-i', t: txt }, ' está bien escrito?'],
-            pasos: [
-              { tipo: 'pide', texto: ['Piden la base más chica en la que ', { v: 'c-i', t: txt }, ' se puede escribir.'] },
-              { tipo: 'datos', texto: ['Las cifras son ', { v: 'c-i', t: c.join(', ') }, `. La mayor de ellas es ${mayor}.`] },
-              { tipo: 'regla', texto: ['En base ', b, ', con ', b, ' fichas sueltas ya se arma un grupo. Por eso toda cifra tiene que ser menor que la base.'],
-                ecuacion: ['0 ≤ ', d, ' ≤ ', b, ' − 1'] },
-              { tipo: 'cuentas', texto: 'La base tiene que pasar a la cifra mayor. La más chica que lo logra es una más que ella.',
-                ecuacion: [b, ` > ${mayor}   →   `, b, ` = ${mayor} + 1 = `, { v: 'c-o', t: String(min) }] },
-              { tipo: 'sentido', texto: `En base ${min} la cifra más grande posible es ${min - 1}, justo la mayor del numeral. En base ${mayor}, la cifra ${mayor} ya no existiría.` },
-            ],
-            respuesta: ['La menor base es ', { v: 'c-o', t: String(min) }, '.'],
-          };
-        }
-        const base = q.ent(3, 8), n = q.ent(base + 1, base * base - 1);
-        const qq = Math.floor(n / base), ss = n % base, cifras = enBase(n, base), B = { v: 'c-o', t: String(base) };
+        const r = azar(s + 900), n = r.ent(3, 5), N = r.ent(n * n, Math.min(n * n * n - 1, 80));
+        const b1 = Math.floor(N / n), s0 = N % n, c2 = Math.floor(b1 / n), b1r = b1 % n, cifras = enBase(N, n);
         return {
-          enunciado: [`Hay ${n} fichas. Se agrupan de `, B, ' en ', B, '. ¿Cómo se escribe la cantidad en esa base?'],
-          dibujo: { datos: fichasSinNumeral(n, base), estado: {} },
+          enunciado: ['Doña Juana tiene ', cant(N), ' caramelos sueltos. Los empaca en bolsitas de ', bas(n), ', y cada ', bas(n), ' bolsitas van en una caja. ¿Qué etiqueta lleva el pedido?'],
+          datos: [DN.bolsita(n), DN.caja(n), 'Etiqueta: primero las cajas, después las bolsitas y al final los sueltos; abajo, la base'],
+          dibujo: sueltosF(n, N, { regla: 2, etiqueta: { cifras: '?' } }),
           pasos: [
-            { tipo: 'pide', texto: [`Piden escribir las ${n} fichas como un numeral en base `, B, '.'] },
-            { tipo: 'datos', texto: [`Hay ${n} fichas, y cada fila llena tiene `, B, ' fichas: es un grupo.'] },
-            { tipo: 'regla', texto: 'Los grupos completos van en el lugar de la izquierda. Las fichas que sobran van en el lugar de las unidades.' },
-            { tipo: 'cuentas', texto: `Divido ${n} entre ${base}: salen ${qq} ${qq === 1 ? 'fila llena' : 'filas llenas'} y ${ss} ${ss === 1 ? 'ficha suelta' : 'fichas sueltas'}.`,
-              ecuacion: [`${n} = ${qq} · `, B, ` + ${ss}   →   `, { sub: [{ v: 'c-i', t: `(${cifras})` }, B] }],
-              dibujo: { datos: fichasBase(n, base), estado: {} } },
-            { tipo: 'sentido', texto: `De vuelta: ${qq} ${qq === 1 ? 'grupo' : 'grupos'} de ${base} son ${qq * base} fichas, más ${ss} sueltas, dan ${qq * base + ss}. Y las dos cifras son menores que ${base}.` },
+            { tipo: 'pide', texto: 'Piden la etiqueta: cuántas cajas, bolsitas y sueltos quedan cuando ya no se puede juntar nada.' },
+            { tipo: 'regla', texto: ['Cada ', bas(n), ' de un orden se juntan en 1 del orden siguiente. Lo que queda de cada orden es menos que ', bas(n), '.'] },
+            { tipo: 'cuentas', texto: `Ronda 1: ${N} caramelos llenan ${pl(b1, 'bolsita', 'bolsitas')} y sobran ${s0}. Ronda 2: ${pl(b1, 'bolsita', 'bolsitas')} llenan ${pl(c2, 'caja', 'cajas')} y sobran ${b1r}.`,
+              ecuacion: [cant(N), ` = ${b1} × `, bas(n), ' + ', cif(s0), SEP, `${b1} = `, cif(c2), ' × ', bas(n), ' + ', cif(b1r)],
+              dibujo: fig({ n, cajas: c2, bolsitas: b1r, sueltos: s0, ceros: true, regla: 2, rotulos: true, etiqueta: { cifras: cifras } }) },
+            { tipo: 'sentido', texto: `De vuelta: ${pl(c2, 'caja', 'cajas')} son ${c2 * n} bolsitas, más ${b1r}, ${b1}; ${b1} bolsitas son ${b1 * n} caramelos, más ${s0}, ${N}. Cada cifra es menor que ${n}.` },
           ],
-          respuesta: [`${n} = `, { sub: [{ v: 'c-i', t: `(${cifras})` }, B] }],
+          respuesta: ['La etiqueta es ', num(cifras, n)],
         };
       },
     },
     ahoraTu: {
-      generar(s) {
-        const q = azar(s);
-        if (s % 2 === 0) {
-          // La menor base posible para un numeral: la cifra mayor más uno.
-          const base = q.ent(4, 9), c = [q.ent(1, base - 1), q.ent(0, base - 1), q.ent(0, base - 1)];
-          c[q.ent(0, 2) || 1] = base - 1;
-          const txt = c.join(''), mayor = Math.max(...c), min = mayor + 1;
-          return {
-            pregunta: ['¿Cuál es la menor base en la que el numeral ', { v: 'c-i', t: txt }, ' está bien escrito?'],
-            opciones: opciones(min, [
-              { id: 'igual', valor: mayor, error: 'AT-CIFRA-B', siFuera: `En base ${mayor} la cifra ${mayor} no existe: ${mayor} sueltas ya son un grupo.` },
-              { id: 'diez', valor: 10, error: 'AT-DECIMAL', siFuera: 'Base 10 sirve, pero no es la menor posible.' },
-              { id: 'cifras', valor: c.length, error: 'AT-LARGO', siFuera: 'La base no depende de cuántas cifras tiene el numeral.' },
-            ], x => `base ${x}`),
-            solucion: { texto: `La cifra mayor es ${mayor}; la base tiene que ser mayor que ella.`, ecuacion: [b, ` > ${mayor} → `, b, ` = ${min}`] },
-          };
-        }
-        const base = q.ent(3, 8), n = q.ent(base + 1, base * base - 1);
-        const qq = Math.floor(n / base), ss = n % base;
-        return {
-          pregunta: [`Hay ${n} fichas. Se agrupan de `, { v: 'c-o', t: String(base) }, ' en ', { v: 'c-o', t: String(base) }, '. ¿Cómo se escribe la cantidad en esa base?'],
-          dibujo: { datos: fichasBase(n, base), estado: {} },
-          opciones: opciones(nb(enBase(n, base), base), [
-            { id: 'decimal', valor: nb(String(n), base), error: 'AT-DECIMAL', siFuera: 'Eso copia el número en base 10; en otra base las cifras cambian.' },
-            { id: 'al-reves', valor: nb(`${ss}${qq}`, base), error: 'AT-ORDEN', siFuera: 'Los grupos van a la izquierda y las sueltas a la derecha.' },
-            { id: 'uno-mas', valor: nb(`${qq + 1}${ss}`, base), error: 'AT-CONTEO', siFuera: `Cuenta otra vez las filas llenas: son ${qq}.` },
-          ]),
-          solucion: { texto: `${qq} grupos de ${base} y ${ss} sueltas.`, ecuacion: [`${n} = ${qq} · ${base} + ${ss} = ${nb(enBase(n, base), base)}`] },
-        };
+      pieza: PU,
+      voz: 'Junta lo que se pueda; ninguna cifra llega a la base.',
+      generar(sem) {
+        const r = azar(sem + 31), tipo = sem % 5;
+        if (tipo === 0) return conCuatro(casoMalEscrito, r);
+        if (tipo === 1) return conCuatro(casoMenorBase, r);
+        if (tipo === 2) return conCuatro(q => casoSucesor(q, Math.floor(sem / 5)), r);
+        if (tipo === 3) return conCuatro(casoLlegan, r);
+        return conCuatro(q => casoBases(q, sem), r);
       },
     },
   };
@@ -630,7 +989,8 @@
   // quede en centro + b · 16 / 2 en todos los casos.
   const fichasLab = (n, base) => {
     const q = Math.floor(n / base), s = n % base;
-    return { bloques: [{ n, columnas: base, color: 'i', marcoFilas: true, rotulo: `${n} = ${nb(enBase(n, base), base)}`, tramos: s ? [{ de: n - s, a: n - 1, color: 'h' }] : [] }], altoMax: 160, ficha: 16, alt: `${n} fichas en filas de ${base}: ${q} grupos completos y ${s} sueltas` };
+    // Colores de la unidad (idea 1 rehecha): las filas llenas, grupos de n, en turquesa; las sueltas en tinta (antes, carmín).
+    return { bloques: [{ n, columnas: base, color: 'i', marcoFilas: true, rotulo: `${n} = ${numT(enBase(n, base), base)}`, tramos: s ? [{ de: n - s, a: n - 1, color: 't' }] : [] }], altoMax: 160, ficha: 16, alt: `${n} fichas en filas de ${base}: ${q} grupos completos y ${s} sueltas` };
   };
 
   // Mesa 3D (ronda 4, docs/3d.md, 3D de contexto): los bloques de base b. Una barra son b cubitos, una placa son b
@@ -705,19 +1065,31 @@
 
   return {
     unidad: 'aritmetica.numeracion',
-    version: '0.2.0',
+    version: '0.3.0',
+    // Un color fijo por magnitud (cabecera); lo comprueba numeracion.test.js.
+    colores: COLORES,
     estado: 'completa',
-    requiere: ['/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-tiras.js', '/plantillas/numeracion/motor.js', '/nucleo/kit/piezas/ari-cubitos-3d.js'],
+    requiere: ['/nucleo/kit/piezas/arit-puesto.js', '/nucleo/kit/piezas/arit-fichas.js', '/nucleo/kit/piezas/arit-tabla.js', '/nucleo/kit/piezas/arit-tiras.js', '/plantillas/numeracion/motor.js', '/nucleo/kit/piezas/ari-cubitos-3d.js'],
     // Glosario: las palabras que esta unidad estrena en el curso (docs/teoria.md §4d).
     glosario: [
       { termino: 'sistema de numeración', def: 'Conjunto de símbolos y reglas para escribir y leer cualquier número.',
         formas: ['sistema de numeración', 'sistemas de numeración'], ver: ['base de numeración', 'cifra'] },
-      { termino: 'base de numeración', simbolo: 'b', def: 'Cuántas unidades de un orden se canjean por una del orden siguiente.',
-        formas: ['base de numeración', 'bases de numeración'], ejemplo: 'En base 5, cinco sueltas forman un grupo: 5 = (10)₅.', ver: ['cifra', 'numeral'] },
-      { termino: 'cifra', simbolo: 'd', def: 'Cada símbolo con que se escribe un número. En base b va de 0 a b − 1.',
-        ejemplo: 'En base 4 solo hay cuatro: 0, 1, 2 y 3.', ver: ['numeral'] },
-      { termino: 'numeral', def: 'La escritura de un número con cifras. Un mismo número tiene distinta escritura en cada base.',
-        ejemplo: 'Treinta se escribe (30) en base 10 y (132)₄ en base 4.', ver: ['cifra', 'base de numeración'] },
+      // Los cuatro que estrena la idea 1 (rehecha, 17 nov), con su aproximación (simple) y tres ejemplos.
+      { termino: 'base de numeración', simbolo: 'n', def: 'Cuántas unidades de un orden se juntan para formar una del orden siguiente.',
+        simple: 'De cuántos es cada paquete: 5 caramelos por bolsita, 10 monedas por billete.',
+        formas: ['base de numeración', 'bases de numeración'], ver: ['cifra', 'numeral'],
+        ejemplos: ['En base 5, cinco sueltos llenan una bolsita: se anota 10₍₅₎.', 'Contamos en base 10: diez monedas de S/ 1 son un billete de S/ 10.', 'En base 2 solo hay dos cifras: el 0 y el 1.'] },
+      { termino: 'cifra', def: 'Cada símbolo con que se escribe un número. En base n va de 0 a n − 1.',
+        simple: 'Cada marca suelta de un número escrito: el 2 y el 3 de 23.',
+        ver: ['numeral'], ejemplos: ['En 23₍₅₎ hay dos: el 2 y el 3.', 'En base 4 solo existen cuatro: 0, 1, 2 y 3.', 'En base 10 hay diez: del 0 al 9.'] },
+      { termino: 'numeral', def: 'La escritura de un número con cifras y su base. Un mismo número se escribe distinto en cada base.',
+        simple: 'Lo que se escribe en la etiqueta: sus cifras y, abajo, la base.',
+        ver: ['cifra', 'base de numeración'],
+        ejemplos: ['13 caramelos en bolsitas de 5 se anotan 23₍₅₎.', 'Veinticuatro se escribe 24 en base 10 y 40₍₆₎ en base 6.', '23₍₅₎ se lee «dos, tres en base cinco», no «veintitrés».'] },
+      // «orden» es local: en otras unidades del curso la palabra dice otra cosa (el orden importa, en combinatoria).
+      { termino: 'orden', local: true, def: 'Cada tamaño de grupo al escribir un número: unidades sueltas, grupos, grupos de grupos.',
+        simple: 'Cada tamaño de paquete: sueltos, bolsitas, cajas.', formas: ['orden', 'órdenes'],
+        ejemplos: ['En el puesto: los sueltos, las bolsitas y las cajas.', 'En base 10: unidades, decenas y centenas.', 'En 100₍₅₎ hay tres: 1 caja, 0 bolsitas y 0 sueltos.'] },
       { termino: 'potencia', def: 'Resultado de multiplicar un número por sí mismo varias veces; el exponente dice cuántas.',
         ejemplo: '4² = 4 · 4 = 16 y 2³ = 2 · 2 · 2 = 8.' },
       { termino: 'descomposición polinómica', def: 'Escribir un numeral como suma de cada cifra por la potencia de la base de su lugar.',
@@ -736,10 +1108,10 @@
         consigna: 'Hasta 40 fichas y bases de 4 a 10. Tira del borde de la fila para cambiar la base.',
         controles: [
           { id: 'n', etiqueta: 'Fichas', min: 3, max: 40, paso: 1, inicio: 30, decimales: 0 },
-          { id: 'b', etiqueta: 'b', color: 'c-o', min: 4, max: 10, paso: 1, inicio: 7, decimales: 0 },
+          { id: 'b', etiqueta: 'n', color: 'c-i', min: 4, max: 10, paso: 1, inicio: 7, decimales: 0 },
         ],
         dibujo: v => ({ datos: fichasLab(v.n, v.b), estado: {} }),
-        lectura: v => [`${v.n} fichas en base ${v.b}: ${nb(enBase(v.n, v.b), v.b)}`],
+        lectura: v => [cant(v.n), ' fichas en base ', bas(v.b), ': ', num(enBase(v.n, v.b), v.b)],
         // Retos: cada uno lee el numeral con enBase, la misma función que rotula las fichas.
         invitaciones: [
           { texto: 'Consigue un numeral que termine en 0: ninguna ficha suelta.',
@@ -747,18 +1119,18 @@
             bien: 'Sin sueltas, la cifra de las unidades es 0. ¿Pasa en otra base?' },
           { texto: 'Con 40 fichas, busca la base más chica que las escriba con dos cifras.',
             logrado: v => v.n === 40 && enBase(v.n, v.b).length === 2 && enBase(v.n, v.b - 1).length > 2,
-            bien: 'Base 7: 40 = (55)₇. Con una base menos, ya hacen falta tres cifras.' },
+            bien: 'Base 7: 40 = 55₍₇₎. Con una base menos, ya hacen falta tres cifras.' },
           { texto: 'Arma un numeral de tres cifras iguales.',
             logrado: v => /^(\d)\1\1$/.test(enBase(v.n, v.b)),
             bien: 'Tres unos: un grupo de grupos, un grupo y una suelta.' },
           { texto: 'Haz que el numeral copie la cantidad de fichas, con dos cifras o más.',
             logrado: v => v.n >= 10 && enBase(v.n, v.b) === String(v.n),
-            bien: 'Solo en base 10 el numeral copia la cantidad. Por eso (132)₄ no es 132.' },
+            bien: 'Solo en base 10 el numeral copia la cantidad. Por eso 132₍₄₎ no es 132.' },
           { texto: 'Guarda dos casos con las mismas cifras en bases distintas.',
             logrado: (v, guardados) => guardados.some(g => g.b !== v.b && enBase(g.n, g.b) === enBase(v.n, v.b)),
             bien: 'Mismas cifras, distinta cantidad: el numeral solo no dice cuánto es.' },
         ],
-        arrastres: [{ id: 'fila', etiqueta: 'largo de la fila (la base)', color: 'c-o',
+        arrastres: [{ id: 'fila', etiqueta: 'largo de la fila (la base)', color: 'c-i',
           donde: v => bordeFila(fichasLab(v.n, v.b), v.b),
           mover: (pt, v) => ({ b: baseEn(fichasLab(v.n, v.b), pt.x) }) }],
       },

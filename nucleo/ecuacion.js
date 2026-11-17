@@ -17,6 +17,9 @@
  *   { tacha: partes }               unidad tachada: se cancela arriba con abajo (conversiones, 16 nov)
  *   { abs: partes }                 valor absoluto |…|
  *   { par: partes }                 entre paréntesis que crecen con lo de adentro
+ *   { raya: partes }                raya encima de un numeral con letras: a̅b̅c̅₍ₙ₎ dice que a, b y c son cifras, no a · b · c
+ *                                   (numeración, 17 nov). La raya es de tinta aunque las cifras lleven color; va con estilo
+ *                                   en línea (text-decoration: overline), así no depende de una regla de app/estilos.css.
  *   { llave: partes, nota, color? } llave horizontal («}» girada) debajo de un trozo, con su nota: explica qué es cada
  *                                   símbolo sin depender solo del color. nota es texto (o partes); color, el de la variable.
  *                                   Con arriba: true, la llave va encima.
@@ -56,7 +59,7 @@
       lista(p.llave).forEach(x => revisar(x, donde)); lista(p.nota).forEach(x => revisar(x, donde));
       return;
     }
-    const k = Object.keys(p).find(c => ['frac', 'sup', 'sub', 'raiz', 'vec', 'tacha', 'abs', 'par'].includes(c));
+    const k = Object.keys(p).find(c => ['frac', 'sup', 'sub', 'raiz', 'vec', 'tacha', 'abs', 'par', 'raya'].includes(c));
     if (!k) throw new Error(`${donde}: parte desconocida ${JSON.stringify(p)}`);
     if (['frac', 'sup', 'sub'].includes(k) && !(Array.isArray(p[k]) && p[k].length === 2)) throw new Error(`${donde}: ${k} lleva dos partes`);
     lista(p[k]).forEach(x => revisar(x, donde));
@@ -78,6 +81,7 @@
       if (p.tacha) return `<span class="ec-tacha">${html(p.tacha)}</span>`;
       if (p.abs) return `<span class="ec-abs">|${html(p.abs)}|</span>`;
       if (p.par) return `<span class="ec-par">(${html(p.par)})</span>`;
+      if (p.raya) return `<span class="ec-raya" style="text-decoration:overline;text-decoration-thickness:.08em">${html(p.raya)}</span>`;
       if ('llave' in p) {
         // La llave es un trazo de tres piezas (dos tramos y la punta), para que su curva no se deforme al estirarse.
         const tono = p.color ? ` style="--llave:var(--${esc(p.color)})"` : '';
@@ -104,6 +108,7 @@
       if (p.tacha) return `${texto(p.tacha)} (tachado)`;
       if (p.abs) return `valor absoluto de ${texto(p.abs)}`;
       if (p.par) return `(${texto(p.par)})`;
+      if (p.raya) return texto(p.raya);
       if ('llave' in p) return `${texto(p.llave)} (${texto(p.nota)})`;
       return '';
     }).join('').replace(/\s+/g, ' ').trim();
@@ -115,7 +120,7 @@
       if (!p || typeof p !== 'object') continue;
       if (Array.isArray(p)) { colores(p, acc); continue; }
       if ('v' in p) { acc.add(p.v); continue; }
-      for (const k of ['frac', 'sup', 'sub', 'raiz', 'vec', 'tacha', 'abs', 'par', 'llave']) if (p[k]) colores(p[k], acc);
+      for (const k of ['frac', 'sup', 'sub', 'raiz', 'vec', 'tacha', 'abs', 'par', 'raya', 'llave']) if (p[k]) colores(p[k], acc);
     }
     return acc;
   }

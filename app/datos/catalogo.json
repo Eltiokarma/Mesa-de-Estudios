@@ -3355,6 +3355,7 @@
      "teoria": {
       "archivo": "/contenido/teoria/aritmetica/numeracion.js",
       "requiere": [
+       "/nucleo/kit/piezas/arit-puesto.js",
        "/nucleo/kit/piezas/arit-fichas.js",
        "/nucleo/kit/piezas/arit-tabla.js",
        "/nucleo/kit/piezas/arit-tiras.js",
@@ -3362,7 +3363,7 @@
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 4,
-      "terminos": 12
+      "terminos": 13
      }
     },
     {

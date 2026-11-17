@@ -44,3 +44,18 @@ test('una unidad tachada se dibuja tachada y se lee en voz alta', () => {
   assert.match(E2.html(eq), /<span class="ec-tacha">km<\/span>/);
   assert.match(E2.texto(eq), /km \(tachado\)/);
 });
+
+test('raya: un numeral con letras lleva raya encima, sin cambiar las demás partes', () => {
+  // Lo que ya existía se ve igual (la raya es una parte nueva, 17 nov).
+  const antes = [{ v: 'c-o', t: 'v' }, ' = ', { frac: ['d', 't'] }, ' + ', { sub: ['A', 'x'] }, { par: ['2'] }, { tacha: 'km' }];
+  assert.equal(E.html(antes), '<span class="var c-o ec-v ec-letra">v</span> = <span class="ec-frac"><span class="ec-num">d</span><span class="ec-den">t</span></span> + A<sub class="ec-sub">x</sub><span class="ec-par">(2)</span><span class="ec-tacha">km</span>');
+  // a̅b̅c̅₍ₙ₎: las cifras naranja, la base turquesa, la raya en tinta sobre las cifras.
+  const num = [{ sub: [{ raya: [{ v: 'c-o', t: 'abc' }] }, { v: 'c-i', t: '(n)' }] }];
+  E.revisar(num, 'prueba');
+  const h = E.html(num);
+  assert.match(h, /<span class="ec-raya" style="text-decoration:overline[^"]*"><span class="var c-o ec-v">abc<\/span><\/span><sub class="ec-sub">/);
+  assert.equal(E.texto(num), 'abc(n)');
+  assert.deepEqual([...E.colores(num)].sort(), ['c-i', 'c-o']);
+  assert.equal(E.texto([{ raya: '2a3' }]), '2a3');
+  assert.throws(() => E.revisar([{ raya: [{ v: 'rojo', t: 'a' }] }]), /color/);
+});
