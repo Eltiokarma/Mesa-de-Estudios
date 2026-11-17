@@ -43,6 +43,18 @@ instrucción». Quedan aprobadas las recomendaciones de las tres propuestas (`pr
   idea principal en cualquier lugar (no siempre al final).
 - 15 ejemplos por idea, como en física.
 
+## Cambios posteriores (mesa de revisión, 17 nov)
+
+Las respuestas de Gerson en la mesa de revisión (`herramientas/revision/`) mandan sobre lo de arriba:
+- **Química:** la vida media **vuelve** a la unidad (cambia «Radiactividad y vida media salen»): idea 6 propia con el
+  hueso de C-14, salvo que Gerson elija otro lugar en la mesa. En la práctica se queda la vida media y salen la
+  configuración electrónica y el calor latente molar. La sal lleva sus cargas (Na⁺, Cl⁻) y, disuelta, los iones van
+  separados. Agua destilada (no hervida); propano en vez de bosta.
+- **Trigonometría:** θ dibujado en la chacra (ejemplo 13 de la idea 1); `grado: 5` en la ficha de esta unidad.
+- **Verbal:** letra de cada alternativa en negrita (en color), en toda la teoría (regla del molde §3); se tacha una
+  alternativa tocándola en la hoja; «cubrir» se marca en todo verbal; sin migración del avance viejo.
+- **General:** ninguna figura delata la respuesta por su color (molde §3); no se hace todavía una skill del método.
+
 ## Orden de trabajo
 Fase 2 del método (`docs/metodo/unidad/LEEME.md`): la primera idea de cada unidad completa, para el visto bueno de
 Gerson, antes del resto.
