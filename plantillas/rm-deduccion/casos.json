@@ -1,8 +1,8 @@
 {
   "plantilla": "rm-deduccion",
   "tolerancia": 0,
-  "nota": "Respuestas de texto: la clave de armarTexto y el texto que ve el alumno. Silogismos: clave sil:F:s:p (s y p son índices de entrada.terminos; M = terminos[1] es el término medio; sil:nada = ninguna de las otras se deduce). Frascos: sc:… (o = frasco 0–3 = A–D, c = índice de entrada.cosas; pueden repetirse). Asignación: as:o:c o cosa:c (índices de personas y cosas; cada cosa la tiene una sola persona). Un contrafáctico «si X fuera…, Y sería…» se lee como «X no es…».",
-  "verificacion": "Verificador ciego (subagente, 8 nov 2026): resolvió los 15 casos sin ver el generador. Frascos por fuerza bruta (3^4), repartos por las 24 permutaciones con tres lecturas del contrafáctico (condicional común, «X no es…» y «ni X ni Y»), silogismos con los 256 modelos de Venn en lectura moderna y tradicional. Coinciden los 15, y cada caso da la misma respuesta con cualquier lectura. Barrido de las semillas 0 a 999: respuesta única y sin distractores válidos. Cierre-100 (12 nov 2026): los casos nuevos se resolvieron a ciegas por fuerza bruta propia (todos los repartos de dados y puntajes con todas las pistas): 3/3 coinciden, con reparto único.",
+  "nota": "Respuestas de texto: la clave de armarTexto y el texto que ve el alumno. Silogismos: clave sil:F:s:p (s y p son índices de entrada.terminos; M = terminos[1] es el término medio; sil:nada = ninguna de las otras se deduce). Frascos: sc:… (o = frasco 0–3 = A–D, c = índice de entrada.cosas; pueden repetirse). Asignación: as:o:c o cosa:c (índices de personas y cosas; cada cosa la tiene una sola persona). Un contrafáctico «si X fuera…, Y sería…» se lee como «X no es…». Condicional simple (fase 5, 17 nov 2026; solo con la unidad de Razonamiento deductivo, por eso el caso trae «opciones»): un dato por sujeto (p, np, q o nq, con la regla «si p, q»); clave si:i:lit (lit: p, np, q, nq o excusa, que es «p y no q» con una razón agregada) o si:nada.",
+  "verificacion": "Verificador ciego (subagente, 8 nov 2026): resolvió los 15 casos sin ver el generador. Frascos por fuerza bruta (3^4), repartos por las 24 permutaciones con tres lecturas del contrafáctico (condicional común, «X no es…» y «ni X ni Y»), silogismos con los 256 modelos de Venn en lectura moderna y tradicional. Coinciden los 15, y cada caso da la misma respuesta con cualquier lectura. Barrido de las semillas 0 a 999: respuesta única y sin distractores válidos. Cierre-100 (12 nov 2026): los casos nuevos se resolvieron a ciegas por fuerza bruta propia (todos los repartos de dados y puntajes con todas las pistas): 3/3 coinciden, con reparto único. Fase 5 (17 nov 2026): los 4 casos del condicional simple se resolvieron con un script aparte (python3, sin el generador): para cada sujeto, los 4 casos de p y q, menos el que la regla prohíbe y los que el dato tacha; coinciden los 4, con una sola afirmación segura (o ninguna, y entonces «Ninguna»).",
   "casos": [
     {
       "semilla": 1,
@@ -82,7 +82,7 @@
         ]
       },
       "esperado": {
-        "respuesta": "El frasco A no tiene quinua.",
+        "respuesta": "El frasco A no tiene quinua",
         "clave": "sc:no:0:0"
       }
     },
@@ -116,7 +116,7 @@
         ]
       },
       "esperado": {
-        "respuesta": "Algunos bailarines son dibujantes.",
+        "respuesta": "Algunos bailarines son dibujantes",
         "clave": "sil:I:0:2"
       }
     },
@@ -185,7 +185,7 @@
         ]
       },
       "esperado": {
-        "respuesta": "Beto lleva Historia.",
+        "respuesta": "Beto lleva Historia",
         "clave": "as:0:0"
       }
     },
@@ -400,7 +400,7 @@
         ]
       },
       "esperado": {
-        "respuesta": "Ningún pianista es futbolista.",
+        "respuesta": "Ningún pianista es futbolista",
         "clave": "sil:E:0:2"
       }
     },
@@ -433,7 +433,7 @@
         ]
       },
       "esperado": {
-        "respuesta": "Ningún futbolista es ciclista.",
+        "respuesta": "Ningún futbolista es ciclista",
         "clave": "sil:E:0:2"
       }
     },
@@ -510,7 +510,7 @@
         ]
       },
       "esperado": {
-        "respuesta": "La caja D guarda un borrador.",
+        "respuesta": "La caja D guarda un borrador",
         "clave": "sc:es:3:1"
       }
     },
@@ -579,7 +579,7 @@
         ]
       },
       "esperado": {
-        "respuesta": "La caja B guarda un lápiz.",
+        "respuesta": "La caja B guarda un lápiz",
         "clave": "sc:es:1:0"
       }
     },
@@ -612,7 +612,7 @@
         ]
       },
       "esperado": {
-        "respuesta": "Ninguna de las otras conclusiones se deduce.",
+        "respuesta": "Ninguna de las otras conclusiones se deduce",
         "clave": "sil:nada"
       }
     },
@@ -671,7 +671,7 @@
         ]
       },
       "esperado": {
-        "respuesta": "El frasco D tiene sal.",
+        "respuesta": "El frasco D tiene sal",
         "clave": "sc:es:3:0"
       }
     },
@@ -761,7 +761,7 @@
         ]
       },
       "esperado": {
-        "respuesta": "Tania practica fútbol.",
+        "respuesta": "Tania practica fútbol",
         "clave": "as:3:1"
       }
     },
@@ -795,7 +795,7 @@
         ]
       },
       "esperado": {
-        "respuesta": "Algunos cantantes son ciclistas.",
+        "respuesta": "Algunos cantantes son ciclistas",
         "clave": "sil:I:0:2"
       }
     },
@@ -864,7 +864,7 @@
         ]
       },
       "esperado": {
-        "respuesta": "El frasco C tiene maíz.",
+        "respuesta": "El frasco C tiene maíz",
         "clave": "sc:es:2:1"
       }
     },
@@ -927,7 +927,7 @@
         ]
       },
       "esperado": {
-        "respuesta": "Gaby lleva Historia.",
+        "respuesta": "Gaby lleva Historia",
         "clave": "as:1:1"
       }
     },
@@ -1080,6 +1080,126 @@
         "respuesta": "24 puntos, dado negro"
       },
       "nuevo": "cierre-100"
+    },
+    {
+      "semilla": "condicional-1",
+      "opciones": {
+        "unidad": "razonamiento-matematico.razonamiento-deductivo"
+      },
+      "entrada": {
+        "tipo": "condicional",
+        "situacion": "numero",
+        "nivel": 1,
+        "sujetos": [
+          "Julio",
+          "Dante"
+        ],
+        "datos": [
+          "np",
+          "nq"
+        ],
+        "opciones": [
+          "si:0:nq",
+          "si:1:p",
+          "si:nada",
+          "si:1:np"
+        ]
+      },
+      "esperado": {
+        "respuesta": "El número de Dante no termina en 0"
+      }
+    },
+    {
+      "semilla": "condicional-2",
+      "opciones": {
+        "unidad": "razonamiento-matematico.razonamiento-deductivo"
+      },
+      "entrada": {
+        "tipo": "condicional",
+        "situacion": "celular",
+        "nivel": 2,
+        "sujetos": [
+          "Carla",
+          "Beto",
+          "Gaby"
+        ],
+        "datos": [
+          "nq",
+          "np",
+          "np"
+        ],
+        "opciones": [
+          "si:0:p",
+          "si:2:nq",
+          "si:0:np",
+          "si:1:nq",
+          "si:0:excusa"
+        ]
+      },
+      "esperado": {
+        "respuesta": "El celular de Carla no tiene batería"
+      }
+    },
+    {
+      "semilla": "condicional-6",
+      "opciones": {
+        "unidad": "razonamiento-matematico.razonamiento-deductivo"
+      },
+      "entrada": {
+        "tipo": "condicional",
+        "situacion": "plaza",
+        "nivel": 2,
+        "sujetos": [
+          "Juli",
+          "Azángaro",
+          "Ayaviri"
+        ],
+        "datos": [
+          "np",
+          "np",
+          "p"
+        ],
+        "opciones": [
+          "si:0:nq",
+          "si:nada",
+          "si:1:nq",
+          "si:2:q",
+          "si:2:nq"
+        ]
+      },
+      "esperado": {
+        "respuesta": "La plaza de Ayaviri amaneció mojada"
+      }
+    },
+    {
+      "semilla": "condicional-19",
+      "opciones": {
+        "unidad": "razonamiento-matematico.razonamiento-deductivo"
+      },
+      "entrada": {
+        "tipo": "condicional",
+        "situacion": "celular",
+        "nivel": 2,
+        "sujetos": [
+          "Luis",
+          "Saúl",
+          "Tania"
+        ],
+        "datos": [
+          "q",
+          "np",
+          "np"
+        ],
+        "opciones": [
+          "si:2:nq",
+          "si:1:nq",
+          "si:0:p",
+          "si:nada"
+        ]
+      },
+      "esperado": {
+        "respuesta": "Ninguna: no se puede asegurar nada más"
+      }
     }
   ]
 }

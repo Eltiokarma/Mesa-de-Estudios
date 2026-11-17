@@ -1,0 +1,17 @@
+{
+  "id": "rm-cuadros",
+  "titulo": "El cuadro que descarta",
+  "formato": "predicciones",
+  "unidades": [
+    "razonamiento-matematico.razonamiento-deductivo"
+  ],
+  "temas": [
+    "Cuadros de doble entrada"
+  ],
+  "estado": "borrador",
+  "version": "0.1.0",
+  "generador": "generador.js",
+  "casos": "casos.json",
+  "pruebas": "generador.test.js",
+  "papel": "papel.json"
+}

@@ -1,0 +1,131 @@
+{
+  "titulo": "El cuadro que descarta: problemas para lápiz y papel",
+  "indicacion": "Resuélvelos en tu cuaderno antes de mirar las alternativas, con unos 3 minutos por problema. Después compara con la respuesta y la solución.",
+  "origen": "Generado por herramientas/papel-generador.js desde el generador del módulo; no se edita a mano.",
+  "problemas": [
+    {
+      "id": "p1",
+      "nivel": "básico",
+      "enunciado": "Ciro, Fito y Gaby están cada uno en un taller distinto del colegio. Talleres: danza, teatro y dibujo. Se sabe que: I. Fito no está en el taller de teatro. II. Ciro no está en el taller de dibujo. III. Fito no está en el taller de dibujo. ¿En qué taller está Ciro? Datos: Cada uno está en un solo taller, y ningún taller se repite. Reparto: una manera de darle a cada uno lo suyo que cumple la regla. Alternativas: A) Dibujo   B) Faltan datos para saberlo   C) Teatro   D) Danza",
+      "respuesta": "C) Teatro",
+      "pasos": [
+        "Se arma un cuadro: una fila por persona y una columna por cada taller. Sin pistas hay 6 repartos.",
+        "Pista I: Fito no está en el taller de teatro. Se tacha esa casilla (✗).",
+        "Pista II: Ciro no está en el taller de dibujo. Se tacha esa casilla (✗).",
+        "Pista III: Fito no está en el taller de dibujo. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Ciro está en el taller de teatro, Fito está en el taller de danza y Gaby está en el taller de dibujo.",
+        "Queda un solo reparto: Ciro: teatro; Fito: danza; Gaby: dibujo.",
+        "Respuesta: Ciro está en el taller de teatro."
+      ]
+    },
+    {
+      "id": "p2",
+      "nivel": "básico",
+      "enunciado": "Fito, Luis y Saúl se inscribieron en el campeonato del aniversario del colegio, cada uno en un deporte distinto. Deportes: fútbol, vóley y ajedrez. Se sabe que: I. Saúl no juega ajedrez. II. Saúl no juega vóley. ¿Cuál de estas afirmaciones es segura? Datos: Cada uno juega un solo deporte, y ningún deporte se repite. Reparto: una manera de darle a cada uno lo suyo que cumple la regla. Seguro: se cumple en todos los repartos que dejan las pistas. Alternativas: A) Ninguna: faltan pistas   B) Fito juega fútbol   C) Fito juega ajedrez   D) Saúl juega fútbol   E) Luis juega ajedrez",
+      "respuesta": "D) Saúl juega fútbol",
+      "pasos": [
+        "Se arma un cuadro: una fila por persona y una columna por cada deporte. Sin pistas hay 6 repartos.",
+        "Pista I: Saúl no juega ajedrez. Se tacha esa casilla (✗).",
+        "Pista II: Saúl no juega vóley. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Saúl juega fútbol.",
+        "Quedan 2 repartos: (1) Fito: vóley; Luis: ajedrez; Saúl: fútbol; (2) Fito: ajedrez; Luis: vóley; Saúl: fútbol.",
+        "En los dos, Saúl juega fútbol. Las otras afirmaciones fallan en por lo menos uno."
+      ]
+    },
+    {
+      "id": "p3",
+      "nivel": "básico",
+      "enunciado": "Eva, Hugo y Luis están cada uno en un taller distinto del colegio. Talleres: danza, teatro y dibujo. Se sabe que: I. Eva no está en el taller de dibujo. II. Luis no está en el taller de dibujo. III. Eva no está en el taller de teatro. ¿Quién está en el taller de danza? Datos: Cada uno está en un solo taller, y ningún taller se repite. Reparto: una manera de darle a cada uno lo suyo que cumple la regla. Alternativas: A) Luis   B) Eva   C) Faltan datos para saberlo   D) Hugo",
+      "respuesta": "B) Eva",
+      "pasos": [
+        "Se arma un cuadro: una fila por persona y una columna por cada taller. Sin pistas hay 6 repartos.",
+        "Pista I: Eva no está en el taller de dibujo. Se tacha esa casilla (✗).",
+        "Pista II: Luis no está en el taller de dibujo. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Hugo está en el taller de dibujo.",
+        "Pista III: Eva no está en el taller de teatro. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Eva está en el taller de danza y Luis está en el taller de teatro.",
+        "Queda un solo reparto: Eva: danza; Hugo: dibujo; Luis: teatro.",
+        "Respuesta: Eva está en el taller de danza."
+      ]
+    },
+    {
+      "id": "p4",
+      "nivel": "intermedio",
+      "enunciado": "Inés, Luis, Rosa y Saúl están cada uno en un taller distinto del colegio. Talleres: danza, teatro, dibujo y oratoria. Se sabe que: I. Inés no está en el taller de oratoria. II. Luis está en el taller de dibujo. III. Inés no está en el taller de teatro. IV. Rosa no está en el taller de teatro. ¿En qué taller está Rosa? Datos: Cada uno está en un solo taller, y ningún taller se repite. Reparto: una manera de darle a cada uno lo suyo que cumple la regla. Alternativas: A) Faltan datos para saberlo   B) Oratoria   C) Dibujo   D) Teatro   E) Danza",
+      "respuesta": "B) Oratoria",
+      "pasos": [
+        "Se arma un cuadro: una fila por persona y una columna por cada taller. Sin pistas hay 24 repartos.",
+        "Pista I: Inés no está en el taller de oratoria. Se tacha esa casilla (✗).",
+        "Pista II: Luis está en el taller de dibujo. Se marca ✓ y se tacha el resto de su fila y de su columna.",
+        "Pista III: Inés no está en el taller de teatro. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Inés está en el taller de danza.",
+        "Pista IV: Rosa no está en el taller de teatro. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Rosa está en el taller de oratoria y Saúl está en el taller de teatro.",
+        "Queda un solo reparto: Inés: danza; Luis: dibujo; Rosa: oratoria; Saúl: teatro.",
+        "Respuesta: Rosa está en el taller de oratoria."
+      ]
+    },
+    {
+      "id": "p5",
+      "nivel": "intermedio",
+      "enunciado": "Beto, Fito y Inés tocan en la comparsa del colegio. Instrumentos: quena, charango y bombo; ciudades: Puno, Juliaca y Ilave. Se sabe que: I. Beto no vive en Puno. II. Quien vive en Ilave toca charango. III. Quien vive en Juliaca toca bombo. IV. Beto no toca charango. V. Fito no toca quena. ¿Dónde vive Beto? Datos: Cada uno tiene una sola cosa de cada lista, y nada se repite. Reparto: una manera de darle a cada uno lo suyo que cumple la regla. Una pista con «quien…» habla de una sola persona, aunque no diga su nombre. Alternativas: A) Faltan datos para saberlo   B) Puno   C) Ilave   D) Juliaca",
+      "respuesta": "D) Juliaca",
+      "pasos": [
+        "Se arma un cuadro por lista (instrumentos y ciudades), con una fila por persona. Una pista con «quien…» une dos listas.",
+        "Pista I: Beto no vive en Puno. Se tacha esa casilla (✗).",
+        "Pista II: Quien vive en Ilave toca charango. Une Ilave con charango: si una persona tiene una, tiene la otra.",
+        "Pista III: Quien vive en Juliaca toca bombo. Une Juliaca con bombo: si una persona tiene una, tiene la otra.",
+        "Pista IV: Beto no toca charango. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Beto toca bombo y Beto vive en Juliaca.",
+        "Pista V: Fito no toca quena. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Fito toca charango, Inés toca quena, Fito vive en Ilave y Inés vive en Puno.",
+        "Queda un solo reparto: Beto: bombo y Juliaca; Fito: charango y Ilave; Inés: quena y Puno.",
+        "Respuesta: Beto vive en Juliaca."
+      ]
+    },
+    {
+      "id": "p6",
+      "nivel": "intermedio",
+      "enunciado": "Gaby, Inés y Rosa compiten en la olimpiada del colegio. Deportes: fútbol, vóley y básquet; números: 5, 7 y 9. Se sabe que: I. Inés no lleva el número 9. II. Inés no lleva el número 5. III. Rosa no juega vóley. IV. Quien juega fútbol lleva el número 5. ¿Cuál de estas afirmaciones es segura? Datos: Cada uno tiene una sola cosa de cada lista, y nada se repite. Reparto: una manera de darle a cada uno lo suyo que cumple la regla. Una pista con «quien…» habla de una sola persona, aunque no diga su nombre. Seguro: se cumple en todos los repartos que dejan las pistas. Alternativas: A) Gaby juega básquet   B) Rosa lleva el número 9   C) Inés lleva el número 7   D) Rosa lleva el número 7   E) Ninguna: faltan pistas",
+      "respuesta": "C) Inés lleva el número 7",
+      "pasos": [
+        "Se arma un cuadro por lista (deportes y números), con una fila por persona. Una pista con «quien…» une dos listas.",
+        "Pista I: Inés no lleva el número 9. Se tacha esa casilla (✗).",
+        "Pista II: Inés no lleva el número 5. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Inés lleva el número 7.",
+        "Pista III: Rosa no juega vóley. Se tacha esa casilla (✗).",
+        "Pista IV: Quien juega fútbol lleva el número 5. Une fútbol con el número 5: si una persona tiene una, tiene la otra.",
+        "Quedan 3 repartos: (1) Gaby: fútbol y el número 5; Inés: vóley y el número 7; Rosa: básquet y el número 9; (2) Gaby: vóley y el número 9; Inés: básquet y el número 7; Rosa: fútbol y el número 5; (3) Gaby: básquet y el número 9; Inés: vóley y el número 7; Rosa: fútbol y el número 5.",
+        "En los 3, Inés lleva el número 7. Las otras afirmaciones fallan en por lo menos uno."
+      ]
+    },
+    {
+      "id": "p7",
+      "nivel": "avanzado",
+      "enunciado": "Beto, Ciro y Eva tocan en la comparsa del colegio. Instrumentos: quena, charango y bombo; ciudades: Puno, Juliaca y Ilave; edades: 15 años, 16 años y 17 años. Se sabe que: I. Eva no vive en Juliaca. II. Ciro no vive en Juliaca. III. Beto no tiene 15 años. IV. Quien tiene 16 años toca charango. V. Quien tiene 15 años no toca bombo. VI. Ciro no toca quena. VII. Quien vive en Ilave tiene 16 años. ¿Qué toca quien tiene 15 años? Datos: Cada uno tiene una sola cosa de cada lista, y nada se repite. Reparto: una manera de darle a cada uno lo suyo que cumple la regla. Una pista con «quien…» habla de una sola persona, aunque no diga su nombre. Alternativas: A) Charango   B) Faltan datos para saberlo   C) Quena   D) Bombo",
+      "respuesta": "C) Quena",
+      "pasos": [
+        "Se arma un cuadro por lista (instrumentos, ciudades y edades), con una fila por persona. Una pista con «quien…» une dos listas.",
+        "Pista I: Eva no vive en Juliaca. Se tacha esa casilla (✗).",
+        "Pista II: Ciro no vive en Juliaca. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Beto vive en Juliaca.",
+        "Pista III: Beto no tiene 15 años. Se tacha esa casilla (✗).",
+        "Pista IV: Quien tiene 16 años toca charango. Une 16 años con charango: si una persona tiene una, tiene la otra.",
+        "Pista V: Quien tiene 15 años no toca bombo. Separa 15 años de bombo: nadie tiene las dos.",
+        "Pista VI: Ciro no toca quena. Se tacha esa casilla (✗). Con lo que va, ya es seguro: Eva toca quena y Eva tiene 15 años.",
+        "Pista VII: Quien vive en Ilave tiene 16 años. Une Ilave con 16 años: si una persona tiene una, tiene la otra. Con lo que va, ya es seguro: Beto toca bombo, Ciro toca charango, Ciro vive en Ilave, Eva vive en Puno, Beto tiene 17 años y Ciro tiene 16 años.",
+        "Queda un solo reparto: Beto: bombo, Juliaca y 17 años; Ciro: charango, Ilave y 16 años; Eva: quena, Puno y 15 años.",
+        "Respuesta: Quien tiene 15 años toca quena."
+      ]
+    },
+    {
+      "id": "p8",
+      "nivel": "avanzado",
+      "enunciado": "Dina, Hugo, Luis y Saúl atienden cada uno un puesto en la kermés. Productos: tamales, jugos, choclo y queso; mandiles: rojo, azul, blanco y negro. Se sabe que: I. Dina no vende queso. II. Hugo no vende jugos. III. Hugo no vende choclo. IV. Quien usa mandil blanco no vende tamales. V. Quien usa mandil rojo vende queso. VI. Saúl no usa mandil azul. VII. Dina no vende jugos. VIII. Quien usa mandil azul vende jugos. ¿Cuál de estas afirmaciones es segura? Datos: Cada uno tiene una sola cosa de cada lista, y nada se repite. Reparto: una manera de darle a cada uno lo suyo que cumple la regla. Una pista con «quien…» habla de una sola persona, aunque no diga su nombre. Seguro: se cumple en todos los repartos que dejan las pistas. Alternativas: A) Ninguna: faltan pistas   B) Dina usa mandil negro   C) Saúl vende tamales   D) Quien usa mandil rojo vende choclo   E) Quien usa mandil negro vende tamales",
+      "respuesta": "E) Quien usa mandil negro vende tamales",
+      "pasos": [
+        "Se arma un cuadro por lista (productos y mandiles), con una fila por persona. Una pista con «quien…» une dos listas.",
+        "Pista I: Dina no vende queso. Se tacha esa casilla (✗).",
+        "Pista II: Hugo no vende jugos. Se tacha esa casilla (✗).",
+        "Pista III: Hugo no vende choclo. Se tacha esa casilla (✗).",
+        "Pista IV: Quien usa mandil blanco no vende tamales. Separa blanco de tamales: nadie tiene las dos.",
+        "Pista V: Quien usa mandil rojo vende queso. Une rojo con queso: si una persona tiene una, tiene la otra.",
+        "Pista VI: Saúl no usa mandil azul. Se tacha esa casilla (✗).",
+        "Pista VII: Dina no vende jugos. Se tacha esa casilla (✗).",
+        "Pista VIII: Quien usa mandil azul vende jugos. Une azul con jugos: si una persona tiene una, tiene la otra. Con lo que va, ya es seguro: Luis vende jugos y Luis usa mandil azul.",
+        "Quedan 3 repartos: (1) Dina: tamales y negro; Hugo: queso y rojo; Luis: jugos y azul; Saúl: choclo y blanco; (2) Dina: choclo y blanco; Hugo: tamales y negro; Luis: jugos y azul; Saúl: queso y rojo; (3) Dina: choclo y blanco; Hugo: queso y rojo; Luis: jugos y azul; Saúl: tamales y negro.",
+        "En los 3, quien usa mandil negro vende tamales. Las otras afirmaciones fallan en por lo menos uno."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1695 @@
+{
+  "plantilla": "rm-cuadros",
+  "tolerancia": 0,
+  "nota": "Respuestas de texto: la clave de armarTexto y el texto que ve el alumno. «quien»: r:<valor> (o r:<persona> si se pregunta quién tiene algo); «seguro»: a:<afirmación en el formato de pista del motor>. repartos: cuántos repartos cumplen todas las pistas (1 en «quien», 2 o 3 en «seguro»). Las pistas: es / noEs (persona, atributo, valor) y mismo / noMismo (atr1, val1, atr2, val2: «quien … (no) …»).",
+  "verificacion": "Script aparte (17 nov 2026, python3 con itertools, fuera del repo), que no usa el generador ni el motor de orden-informacion: arma todos los repartos (permutaciones de cada lista), aplica las pistas leídas de la entrada, comprueba que la pregunta tiene una sola respuesta (o que una sola afirmación vale en todos los repartos que quedan) y que cada pista hace falta, y escribe la clave y el texto de la alternativa correcta con sus propias plantillas de frase. Los 20 casos cuadran con el generador.",
+  "casos": [
+    {
+      "semilla": 0,
+      "entrada": {
+        "tipo": "cuadro",
+        "sub": "seguro",
+        "nivel": 2,
+        "contexto": "talleres",
+        "personas": [
+          "Ana",
+          "Fito",
+          "Hugo",
+          "Luis"
+        ],
+        "listas": [
+          {
+            "id": "taller",
+            "items": [
+              "danza",
+              "teatro",
+              "dibujo",
+              "oratoria"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Ana",
+            "atributo": "taller",
+            "valor": "dibujo"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Fito",
+            "atributo": "taller",
+            "valor": "oratoria"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Fito",
+            "atributo": "taller",
+            "valor": "dibujo"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Ana",
+            "atributo": "taller",
+            "valor": "oratoria"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Ana",
+            "atributo": "taller",
+            "valor": "teatro"
+          }
+        ],
+        "pide": {
+          "t": "seguro",
+          "opciones": [
+            {
+              "tipo": "nada"
+            },
+            {
+              "tipo": "es",
+              "persona": "Luis",
+              "atributo": "taller",
+              "valor": "oratoria"
+            },
+            {
+              "tipo": "es",
+              "persona": "Fito",
+              "atributo": "taller",
+              "valor": "danza"
+            },
+            {
+              "tipo": "es",
+              "persona": "Fito",
+              "atributo": "taller",
+              "valor": "teatro"
+            },
+            {
+              "tipo": "es",
+              "persona": "Hugo",
+              "atributo": "taller",
+              "valor": "dibujo"
+            }
+          ]
+        }
+      },
+      "esperado": {
+        "respuesta": "a:{\"tipo\":\"es\",\"persona\":\"Fito\",\"atributo\":\"taller\",\"valor\":\"teatro\"}",
+        "texto": "Fito está en el taller de teatro",
+        "repartos": 2
+      }
+    },
+    {
+      "semilla": 1,
+      "entrada": {
+        "tipo": "cuadro",
+        "sub": "quien",
+        "nivel": 1,
+        "contexto": "kermes",
+        "personas": [
+          "Hugo",
+          "Luis",
+          "Saúl"
+        ],
+        "listas": [
+          {
+            "id": "venta",
+            "items": [
+              "tamales",
+              "jugos",
+              "choclo"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Saúl",
+            "atributo": "venta",
+            "valor": "tamales"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Hugo",
+            "atributo": "venta",
+            "valor": "jugos"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Saúl",
+            "atributo": "venta",
+            "valor": "jugos"
+          }
+        ],
+        "pide": {
+          "t": "valor",
+          "persona": "Hugo",
+          "atributo": "venta"
+        }
+      },
+      "esperado": {
+        "respuesta": "r:tamales",
+        "texto": "Tamales",
+        "repartos": 1
+      }
+    },
+    {
+      "semilla": 2,
+      "entrada": {
+        "tipo": "cuadro",
+        "sub": "seguro",
+        "nivel": 2,
+        "contexto": "talleres",
+        "personas": [
+          "Gaby",
+          "Hugo",
+          "Inés",
+          "Saúl"
+        ],
+        "listas": [
+          {
+            "id": "taller",
+            "items": [
+              "danza",
+              "teatro",
+              "dibujo",
+              "oratoria"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Inés",
+            "atributo": "taller",
+            "valor": "teatro"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Hugo",
+            "atributo": "taller",
+            "valor": "dibujo"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Inés",
+            "atributo": "taller",
+            "valor": "dibujo"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Hugo",
+            "atributo": "taller",
+            "valor": "danza"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Inés",
+            "atributo": "taller",
+            "valor": "danza"
+          }
+        ],
+        "pide": {
+          "t": "seguro",
+          "opciones": [
+            {
+              "tipo": "es",
+              "persona": "Saúl",
+              "atributo": "taller",
+              "valor": "oratoria"
+            },
+            {
+              "tipo": "es",
+              "persona": "Saúl",
+              "atributo": "taller",
+              "valor": "danza"
+            },
+            {
+              "tipo": "es",
+              "persona": "Inés",
+              "atributo": "taller",
+              "valor": "oratoria"
+            },
+            {
+              "tipo": "es",
+              "persona": "Gaby",
+              "atributo": "taller",
+              "valor": "dibujo"
+            },
+            {
+              "tipo": "nada"
+            }
+          ]
+        }
+      },
+      "esperado": {
+        "respuesta": "a:{\"tipo\":\"es\",\"persona\":\"Inés\",\"atributo\":\"taller\",\"valor\":\"oratoria\"}",
+        "texto": "Inés está en el taller de oratoria",
+        "repartos": 2
+      }
+    },
+    {
+      "semilla": 3,
+      "entrada": {
+        "tipo": "cuadro",
+        "sub": "quien",
+        "nivel": 2,
+        "contexto": "talleres",
+        "personas": [
+          "Ana",
+          "Dina",
+          "Inés",
+          "Luis"
+        ],
+        "listas": [
+          {
+            "id": "taller",
+            "items": [
+              "danza",
+              "teatro",
+              "dibujo",
+              "oratoria"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "es",
+            "persona": "Ana",
+            "atributo": "taller",
+            "valor": "teatro"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Luis",
+            "atributo": "taller",
+            "valor": "oratoria"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Inés",
+            "atributo": "taller",
+            "valor": "oratoria"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Luis",
+            "atributo": "taller",
+            "valor": "dibujo"
+          }
+        ],
+        "pide": {
+          "t": "valor",
+          "persona": "Inés",
+          "atributo": "taller"
+        }
+      },
+      "esperado": {
+        "respuesta": "r:dibujo",
+        "texto": "Dibujo",
+        "repartos": 1
+      }
+    },
+    {
+      "semilla": 4,
+      "entrada": {
+        "tipo": "atributos",
+        "sub": "quien",
+        "nivel": 3,
+        "contexto": "olimpiada",
+        "personas": [
+          "Ana",
+          "Dina",
+          "Rosa",
+          "Saúl"
+        ],
+        "listas": [
+          {
+            "id": "juego",
+            "items": [
+              "fútbol",
+              "vóley",
+              "básquet",
+              "ajedrez"
+            ]
+          },
+          {
+            "id": "numero",
+            "items": [
+              "5",
+              "7",
+              "9",
+              "10"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "es",
+            "persona": "Dina",
+            "atributo": "numero",
+            "valor": "7"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Saúl",
+            "atributo": "numero",
+            "valor": "5"
+          },
+          {
+            "tipo": "mismo",
+            "atr1": "juego",
+            "val1": "fútbol",
+            "atr2": "numero",
+            "val2": "5"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Rosa",
+            "atributo": "numero",
+            "valor": "5"
+          },
+          {
+            "tipo": "noMismo",
+            "atr1": "juego",
+            "val1": "vóley",
+            "atr2": "numero",
+            "val2": "7"
+          },
+          {
+            "tipo": "noMismo",
+            "atr1": "juego",
+            "val1": "vóley",
+            "atr2": "numero",
+            "val2": "10"
+          },
+          {
+            "tipo": "noMismo",
+            "atr1": "juego",
+            "val1": "básquet",
+            "atr2": "numero",
+            "val2": "10"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Saúl",
+            "atributo": "numero",
+            "valor": "10"
+          }
+        ],
+        "pide": {
+          "t": "quienTiene",
+          "atributo": "numero",
+          "valor": "5"
+        }
+      },
+      "esperado": {
+        "respuesta": "r:Ana",
+        "texto": "Ana",
+        "repartos": 1
+      }
+    },
+    {
+      "semilla": 5,
+      "entrada": {
+        "tipo": "cuadro",
+        "sub": "seguro",
+        "nivel": 2,
+        "contexto": "comisiones",
+        "personas": [
+          "Ana",
+          "Beto",
+          "Luis",
+          "Rosa"
+        ],
+        "listas": [
+          {
+            "id": "comision",
+            "items": [
+              "adornos",
+              "música",
+              "juegos",
+              "limpieza"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Rosa",
+            "atributo": "comision",
+            "valor": "juegos"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Luis",
+            "atributo": "comision",
+            "valor": "limpieza"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Luis",
+            "atributo": "comision",
+            "valor": "juegos"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Beto",
+            "atributo": "comision",
+            "valor": "limpieza"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Beto",
+            "atributo": "comision",
+            "valor": "juegos"
+          }
+        ],
+        "pide": {
+          "t": "seguro",
+          "opciones": [
+            {
+              "tipo": "es",
+              "persona": "Rosa",
+              "atributo": "comision",
+              "valor": "limpieza"
+            },
+            {
+              "tipo": "es",
+              "persona": "Luis",
+              "atributo": "comision",
+              "valor": "música"
+            },
+            {
+              "tipo": "es",
+              "persona": "Beto",
+              "atributo": "comision",
+              "valor": "adornos"
+            },
+            {
+              "tipo": "nada"
+            },
+            {
+              "tipo": "es",
+              "persona": "Rosa",
+              "atributo": "comision",
+              "valor": "música"
+            }
+          ]
+        }
+      },
+      "esperado": {
+        "respuesta": "a:{\"tipo\":\"es\",\"persona\":\"Rosa\",\"atributo\":\"comision\",\"valor\":\"limpieza\"}",
+        "texto": "Rosa está en la comisión de limpieza",
+        "repartos": 2
+      }
+    },
+    {
+      "semilla": 6,
+      "entrada": {
+        "tipo": "atributos",
+        "sub": "seguro",
+        "nivel": 2,
+        "contexto": "olimpiada",
+        "personas": [
+          "Ana",
+          "Gaby",
+          "Luis"
+        ],
+        "listas": [
+          {
+            "id": "juego",
+            "items": [
+              "fútbol",
+              "vóley",
+              "básquet"
+            ]
+          },
+          {
+            "id": "numero",
+            "items": [
+              "5",
+              "7",
+              "9"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Gaby",
+            "atributo": "numero",
+            "valor": "9"
+          },
+          {
+            "tipo": "mismo",
+            "atr1": "juego",
+            "val1": "vóley",
+            "atr2": "numero",
+            "val2": "7"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Ana",
+            "atributo": "numero",
+            "valor": "7"
+          },
+          {
+            "tipo": "mismo",
+            "atr1": "juego",
+            "val1": "fútbol",
+            "atr2": "numero",
+            "val2": "9"
+          }
+        ],
+        "pide": {
+          "t": "seguro",
+          "opciones": [
+            {
+              "tipo": "mismo",
+              "atr1": "juego",
+              "val1": "básquet",
+              "atr2": "numero",
+              "val2": "5"
+            },
+            {
+              "tipo": "nada"
+            },
+            {
+              "tipo": "es",
+              "persona": "Ana",
+              "atributo": "juego",
+              "valor": "fútbol"
+            },
+            {
+              "tipo": "es",
+              "persona": "Ana",
+              "atributo": "juego",
+              "valor": "vóley"
+            },
+            {
+              "tipo": "es",
+              "persona": "Gaby",
+              "atributo": "juego",
+              "valor": "básquet"
+            }
+          ]
+        }
+      },
+      "esperado": {
+        "respuesta": "a:{\"tipo\":\"mismo\",\"atr1\":\"juego\",\"val1\":\"básquet\",\"atr2\":\"numero\",\"val2\":\"5\"}",
+        "texto": "Quien juega básquet lleva el número 5",
+        "repartos": 3
+      }
+    },
+    {
+      "semilla": 7,
+      "entrada": {
+        "tipo": "cuadro",
+        "sub": "seguro",
+        "nivel": 2,
+        "contexto": "campeonato",
+        "personas": [
+          "Beto",
+          "Ciro",
+          "Dina",
+          "Luis"
+        ],
+        "listas": [
+          {
+            "id": "deporte",
+            "items": [
+              "fútbol",
+              "vóley",
+              "ajedrez",
+              "básquet"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Ciro",
+            "atributo": "deporte",
+            "valor": "básquet"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Dina",
+            "atributo": "deporte",
+            "valor": "básquet"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Ciro",
+            "atributo": "deporte",
+            "valor": "vóley"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Luis",
+            "atributo": "deporte",
+            "valor": "básquet"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Dina",
+            "atributo": "deporte",
+            "valor": "fútbol"
+          }
+        ],
+        "pide": {
+          "t": "seguro",
+          "opciones": [
+            {
+              "tipo": "nada"
+            },
+            {
+              "tipo": "es",
+              "persona": "Luis",
+              "atributo": "deporte",
+              "valor": "ajedrez"
+            },
+            {
+              "tipo": "es",
+              "persona": "Beto",
+              "atributo": "deporte",
+              "valor": "vóley"
+            },
+            {
+              "tipo": "es",
+              "persona": "Ciro",
+              "atributo": "deporte",
+              "valor": "ajedrez"
+            },
+            {
+              "tipo": "es",
+              "persona": "Beto",
+              "atributo": "deporte",
+              "valor": "básquet"
+            }
+          ]
+        }
+      },
+      "esperado": {
+        "respuesta": "a:{\"tipo\":\"es\",\"persona\":\"Beto\",\"atributo\":\"deporte\",\"valor\":\"básquet\"}",
+        "texto": "Beto juega básquet",
+        "repartos": 3
+      }
+    },
+    {
+      "semilla": 8,
+      "entrada": {
+        "tipo": "cuadro",
+        "sub": "quien",
+        "nivel": 1,
+        "contexto": "comisiones",
+        "personas": [
+          "Ciro",
+          "Hugo",
+          "Saúl"
+        ],
+        "listas": [
+          {
+            "id": "comision",
+            "items": [
+              "adornos",
+              "música",
+              "juegos"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Saúl",
+            "atributo": "comision",
+            "valor": "juegos"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Saúl",
+            "atributo": "comision",
+            "valor": "adornos"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Ciro",
+            "atributo": "comision",
+            "valor": "adornos"
+          }
+        ],
+        "pide": {
+          "t": "valor",
+          "persona": "Saúl",
+          "atributo": "comision"
+        }
+      },
+      "esperado": {
+        "respuesta": "r:música",
+        "texto": "Música",
+        "repartos": 1
+      }
+    },
+    {
+      "semilla": 9,
+      "entrada": {
+        "tipo": "cuadro",
+        "sub": "quien",
+        "nivel": 2,
+        "contexto": "kermes",
+        "personas": [
+          "Eva",
+          "Fito",
+          "Luis",
+          "Rosa"
+        ],
+        "listas": [
+          {
+            "id": "venta",
+            "items": [
+              "tamales",
+              "jugos",
+              "choclo",
+              "queso"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Rosa",
+            "atributo": "venta",
+            "valor": "queso"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Luis",
+            "atributo": "venta",
+            "valor": "jugos"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Luis",
+            "atributo": "venta",
+            "valor": "choclo"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Rosa",
+            "atributo": "venta",
+            "valor": "jugos"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Eva",
+            "atributo": "venta",
+            "valor": "choclo"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Rosa",
+            "atributo": "venta",
+            "valor": "choclo"
+          }
+        ],
+        "pide": {
+          "t": "quienTiene",
+          "atributo": "venta",
+          "valor": "choclo"
+        }
+      },
+      "esperado": {
+        "respuesta": "r:Fito",
+        "texto": "Fito",
+        "repartos": 1
+      }
+    },
+    {
+      "semilla": 10,
+      "entrada": {
+        "tipo": "atributos",
+        "sub": "seguro",
+        "nivel": 3,
+        "contexto": "puesto",
+        "personas": [
+          "Ana",
+          "Ciro",
+          "Eva",
+          "Luis"
+        ],
+        "listas": [
+          {
+            "id": "producto",
+            "items": [
+              "tamales",
+              "jugos",
+              "choclo",
+              "queso"
+            ]
+          },
+          {
+            "id": "mandil",
+            "items": [
+              "rojo",
+              "azul",
+              "blanco",
+              "negro"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Ciro",
+            "atributo": "mandil",
+            "valor": "azul"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Ciro",
+            "atributo": "producto",
+            "valor": "jugos"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Luis",
+            "atributo": "producto",
+            "valor": "jugos"
+          },
+          {
+            "tipo": "mismo",
+            "atr1": "mandil",
+            "val1": "blanco",
+            "atr2": "producto",
+            "val2": "queso"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Ciro",
+            "atributo": "mandil",
+            "valor": "rojo"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Eva",
+            "atributo": "mandil",
+            "valor": "negro"
+          },
+          {
+            "tipo": "noMismo",
+            "atr1": "mandil",
+            "val1": "rojo",
+            "atr2": "producto",
+            "val2": "jugos"
+          },
+          {
+            "tipo": "mismo",
+            "atr1": "mandil",
+            "val1": "azul",
+            "atr2": "producto",
+            "val2": "tamales"
+          }
+        ],
+        "pide": {
+          "t": "seguro",
+          "opciones": [
+            {
+              "tipo": "es",
+              "persona": "Luis",
+              "atributo": "producto",
+              "valor": "tamales"
+            },
+            {
+              "tipo": "es",
+              "persona": "Eva",
+              "atributo": "mandil",
+              "valor": "azul"
+            },
+            {
+              "tipo": "es",
+              "persona": "Ciro",
+              "atributo": "mandil",
+              "valor": "azul"
+            },
+            {
+              "tipo": "nada"
+            },
+            {
+              "tipo": "es",
+              "persona": "Ciro",
+              "atributo": "producto",
+              "valor": "queso"
+            }
+          ]
+        }
+      },
+      "esperado": {
+        "respuesta": "a:{\"tipo\":\"es\",\"persona\":\"Ciro\",\"atributo\":\"producto\",\"valor\":\"queso\"}",
+        "texto": "Ciro vende queso",
+        "repartos": 2
+      }
+    },
+    {
+      "semilla": 11,
+      "entrada": {
+        "tipo": "cuadro",
+        "sub": "quien",
+        "nivel": 2,
+        "contexto": "comisiones",
+        "personas": [
+          "Ana",
+          "Ciro",
+          "Fito",
+          "Rosa"
+        ],
+        "listas": [
+          {
+            "id": "comision",
+            "items": [
+              "adornos",
+              "música",
+              "juegos",
+              "limpieza"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Rosa",
+            "atributo": "comision",
+            "valor": "limpieza"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Rosa",
+            "atributo": "comision",
+            "valor": "música"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Fito",
+            "atributo": "comision",
+            "valor": "música"
+          },
+          {
+            "tipo": "es",
+            "persona": "Ciro",
+            "atributo": "comision",
+            "valor": "juegos"
+          }
+        ],
+        "pide": {
+          "t": "quienTiene",
+          "atributo": "comision",
+          "valor": "limpieza"
+        }
+      },
+      "esperado": {
+        "respuesta": "r:Fito",
+        "texto": "Fito",
+        "repartos": 1
+      }
+    },
+    {
+      "semilla": 12,
+      "entrada": {
+        "tipo": "atributos",
+        "sub": "quien",
+        "nivel": 2,
+        "contexto": "comparsa",
+        "personas": [
+          "Beto",
+          "Ciro",
+          "Gaby"
+        ],
+        "listas": [
+          {
+            "id": "instrumento",
+            "items": [
+              "quena",
+              "charango",
+              "bombo"
+            ]
+          },
+          {
+            "id": "ciudad",
+            "items": [
+              "Puno",
+              "Juliaca",
+              "Ilave"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Beto",
+            "atributo": "instrumento",
+            "valor": "bombo"
+          },
+          {
+            "tipo": "mismo",
+            "atr1": "ciudad",
+            "val1": "Juliaca",
+            "atr2": "instrumento",
+            "val2": "bombo"
+          },
+          {
+            "tipo": "noMismo",
+            "atr1": "ciudad",
+            "val1": "Ilave",
+            "atr2": "instrumento",
+            "val2": "quena"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Gaby",
+            "atributo": "ciudad",
+            "valor": "Ilave"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Gaby",
+            "atributo": "instrumento",
+            "valor": "bombo"
+          }
+        ],
+        "pide": {
+          "t": "valor",
+          "persona": "Ciro",
+          "atributo": "ciudad"
+        }
+      },
+      "esperado": {
+        "respuesta": "r:Juliaca",
+        "texto": "Juliaca",
+        "repartos": 1
+      }
+    },
+    {
+      "semilla": 13,
+      "entrada": {
+        "tipo": "atributos",
+        "sub": "quien",
+        "nivel": 2,
+        "contexto": "comparsa",
+        "personas": [
+          "Eva",
+          "Fito",
+          "Rosa"
+        ],
+        "listas": [
+          {
+            "id": "instrumento",
+            "items": [
+              "quena",
+              "charango",
+              "bombo"
+            ]
+          },
+          {
+            "id": "ciudad",
+            "items": [
+              "Puno",
+              "Juliaca",
+              "Ilave"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Fito",
+            "atributo": "ciudad",
+            "valor": "Ilave"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Fito",
+            "atributo": "instrumento",
+            "valor": "charango"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Fito",
+            "atributo": "ciudad",
+            "valor": "Puno"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Rosa",
+            "atributo": "ciudad",
+            "valor": "Ilave"
+          },
+          {
+            "tipo": "mismo",
+            "atr1": "ciudad",
+            "val1": "Ilave",
+            "atr2": "instrumento",
+            "val2": "bombo"
+          }
+        ],
+        "pide": {
+          "t": "quienTiene",
+          "atributo": "ciudad",
+          "valor": "Juliaca"
+        }
+      },
+      "esperado": {
+        "respuesta": "r:Fito",
+        "texto": "Fito",
+        "repartos": 1
+      }
+    },
+    {
+      "semilla": 14,
+      "entrada": {
+        "tipo": "atributos",
+        "sub": "seguro",
+        "nivel": 2,
+        "contexto": "comparsa",
+        "personas": [
+          "Eva",
+          "Rosa",
+          "Saúl"
+        ],
+        "listas": [
+          {
+            "id": "instrumento",
+            "items": [
+              "quena",
+              "charango",
+              "bombo"
+            ]
+          },
+          {
+            "id": "ciudad",
+            "items": [
+              "Puno",
+              "Juliaca",
+              "Ilave"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "mismo",
+            "atr1": "ciudad",
+            "val1": "Juliaca",
+            "atr2": "instrumento",
+            "val2": "charango"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Rosa",
+            "atributo": "ciudad",
+            "valor": "Puno"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Saúl",
+            "atributo": "instrumento",
+            "valor": "charango"
+          },
+          {
+            "tipo": "noMismo",
+            "atr1": "ciudad",
+            "val1": "Ilave",
+            "atr2": "instrumento",
+            "val2": "bombo"
+          }
+        ],
+        "pide": {
+          "t": "seguro",
+          "opciones": [
+            {
+              "tipo": "mismo",
+              "atr1": "ciudad",
+              "val1": "Puno",
+              "atr2": "instrumento",
+              "val2": "bombo"
+            },
+            {
+              "tipo": "nada"
+            },
+            {
+              "tipo": "es",
+              "persona": "Eva",
+              "atributo": "ciudad",
+              "valor": "Juliaca"
+            },
+            {
+              "tipo": "mismo",
+              "atr1": "ciudad",
+              "val1": "Ilave",
+              "atr2": "instrumento",
+              "val2": "charango"
+            },
+            {
+              "tipo": "es",
+              "persona": "Eva",
+              "atributo": "instrumento",
+              "valor": "bombo"
+            }
+          ]
+        }
+      },
+      "esperado": {
+        "respuesta": "a:{\"tipo\":\"mismo\",\"atr1\":\"ciudad\",\"val1\":\"Puno\",\"atr2\":\"instrumento\",\"val2\":\"bombo\"}",
+        "texto": "Quien vive en Puno toca bombo",
+        "repartos": 3
+      }
+    },
+    {
+      "semilla": 15,
+      "entrada": {
+        "tipo": "atributos",
+        "sub": "quien",
+        "nivel": 2,
+        "contexto": "puesto",
+        "personas": [
+          "Ana",
+          "Ciro",
+          "Saúl"
+        ],
+        "listas": [
+          {
+            "id": "producto",
+            "items": [
+              "tamales",
+              "jugos",
+              "choclo"
+            ]
+          },
+          {
+            "id": "mandil",
+            "items": [
+              "rojo",
+              "azul",
+              "blanco"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Ciro",
+            "atributo": "producto",
+            "valor": "choclo"
+          },
+          {
+            "tipo": "mismo",
+            "atr1": "mandil",
+            "val1": "azul",
+            "atr2": "producto",
+            "val2": "choclo"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Ana",
+            "atributo": "producto",
+            "valor": "choclo"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Ciro",
+            "atributo": "producto",
+            "valor": "jugos"
+          },
+          {
+            "tipo": "noMismo",
+            "atr1": "mandil",
+            "val1": "blanco",
+            "atr2": "producto",
+            "val2": "jugos"
+          }
+        ],
+        "pide": {
+          "t": "valor",
+          "persona": "Ciro",
+          "atributo": "producto"
+        }
+      },
+      "esperado": {
+        "respuesta": "r:tamales",
+        "texto": "Tamales",
+        "repartos": 1
+      }
+    },
+    {
+      "semilla": 16,
+      "entrada": {
+        "tipo": "atributos",
+        "sub": "seguro",
+        "nivel": 3,
+        "contexto": "puesto",
+        "personas": [
+          "Beto",
+          "Fito",
+          "Gaby",
+          "Rosa"
+        ],
+        "listas": [
+          {
+            "id": "producto",
+            "items": [
+              "tamales",
+              "jugos",
+              "choclo",
+              "queso"
+            ]
+          },
+          {
+            "id": "mandil",
+            "items": [
+              "rojo",
+              "azul",
+              "blanco",
+              "negro"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "mismo",
+            "atr1": "mandil",
+            "val1": "negro",
+            "atr2": "producto",
+            "val2": "tamales"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Gaby",
+            "atributo": "producto",
+            "valor": "queso"
+          },
+          {
+            "tipo": "es",
+            "persona": "Rosa",
+            "atributo": "mandil",
+            "valor": "azul"
+          },
+          {
+            "tipo": "mismo",
+            "atr1": "mandil",
+            "val1": "rojo",
+            "atr2": "producto",
+            "val2": "queso"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Beto",
+            "atributo": "producto",
+            "valor": "choclo"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Rosa",
+            "atributo": "producto",
+            "valor": "choclo"
+          }
+        ],
+        "pide": {
+          "t": "seguro",
+          "opciones": [
+            {
+              "tipo": "es",
+              "persona": "Gaby",
+              "atributo": "mandil",
+              "valor": "blanco"
+            },
+            {
+              "tipo": "es",
+              "persona": "Rosa",
+              "atributo": "producto",
+              "valor": "jugos"
+            },
+            {
+              "tipo": "es",
+              "persona": "Fito",
+              "atributo": "producto",
+              "valor": "choclo"
+            },
+            {
+              "tipo": "es",
+              "persona": "Rosa",
+              "atributo": "producto",
+              "valor": "choclo"
+            },
+            {
+              "tipo": "nada"
+            }
+          ]
+        }
+      },
+      "esperado": {
+        "respuesta": "a:{\"tipo\":\"es\",\"persona\":\"Rosa\",\"atributo\":\"producto\",\"valor\":\"jugos\"}",
+        "texto": "Rosa vende jugos",
+        "repartos": 3
+      }
+    },
+    {
+      "semilla": 30,
+      "entrada": {
+        "tipo": "atributos",
+        "sub": "quien",
+        "nivel": 3,
+        "contexto": "comparsa",
+        "personas": [
+          "Gaby",
+          "Luis",
+          "Saúl"
+        ],
+        "listas": [
+          {
+            "id": "instrumento",
+            "items": [
+              "quena",
+              "charango",
+              "bombo"
+            ]
+          },
+          {
+            "id": "ciudad",
+            "items": [
+              "Puno",
+              "Juliaca",
+              "Ilave"
+            ]
+          },
+          {
+            "id": "edad",
+            "items": [
+              "15",
+              "16",
+              "17"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Saúl",
+            "atributo": "ciudad",
+            "valor": "Puno"
+          },
+          {
+            "tipo": "mismo",
+            "atr1": "ciudad",
+            "val1": "Ilave",
+            "atr2": "edad",
+            "val2": "15"
+          },
+          {
+            "tipo": "es",
+            "persona": "Gaby",
+            "atributo": "instrumento",
+            "valor": "bombo"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Gaby",
+            "atributo": "edad",
+            "valor": "16"
+          },
+          {
+            "tipo": "mismo",
+            "atr1": "ciudad",
+            "val1": "Juliaca",
+            "atr2": "instrumento",
+            "val2": "bombo"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Luis",
+            "atributo": "instrumento",
+            "valor": "charango"
+          }
+        ],
+        "pide": {
+          "t": "cruce",
+          "atr1": "edad",
+          "val1": "17",
+          "atr2": "ciudad"
+        }
+      },
+      "esperado": {
+        "respuesta": "r:Juliaca",
+        "texto": "Juliaca",
+        "repartos": 1
+      }
+    },
+    {
+      "semilla": "entrada-1",
+      "entrada": {
+        "tipo": "cuadro",
+        "sub": "quien",
+        "nivel": 2,
+        "contexto": "comisiones",
+        "personas": [
+          "Beto",
+          "Eva",
+          "Fito",
+          "Hugo"
+        ],
+        "listas": [
+          {
+            "id": "comision",
+            "items": [
+              "adornos",
+              "música",
+              "juegos",
+              "limpieza"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Eva",
+            "atributo": "comision",
+            "valor": "música"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Fito",
+            "atributo": "comision",
+            "valor": "música"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Hugo",
+            "atributo": "comision",
+            "valor": "juegos"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Fito",
+            "atributo": "comision",
+            "valor": "adornos"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Hugo",
+            "atributo": "comision",
+            "valor": "música"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Hugo",
+            "atributo": "comision",
+            "valor": "adornos"
+          }
+        ],
+        "pide": {
+          "t": "valor",
+          "persona": "Eva",
+          "atributo": "comision"
+        }
+      },
+      "esperado": {
+        "respuesta": "r:adornos",
+        "texto": "Adornos",
+        "repartos": 1
+      }
+    },
+    {
+      "semilla": "salida-2",
+      "entrada": {
+        "tipo": "atributos",
+        "sub": "quien",
+        "nivel": 2,
+        "contexto": "comparsa",
+        "personas": [
+          "Beto",
+          "Gaby",
+          "Saúl"
+        ],
+        "listas": [
+          {
+            "id": "instrumento",
+            "items": [
+              "quena",
+              "charango",
+              "bombo"
+            ]
+          },
+          {
+            "id": "ciudad",
+            "items": [
+              "Puno",
+              "Juliaca",
+              "Ilave"
+            ]
+          }
+        ],
+        "pistas": [
+          {
+            "tipo": "noEs",
+            "persona": "Gaby",
+            "atributo": "ciudad",
+            "valor": "Juliaca"
+          },
+          {
+            "tipo": "mismo",
+            "atr1": "ciudad",
+            "val1": "Ilave",
+            "atr2": "instrumento",
+            "val2": "quena"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Beto",
+            "atributo": "ciudad",
+            "valor": "Juliaca"
+          },
+          {
+            "tipo": "noEs",
+            "persona": "Gaby",
+            "atributo": "instrumento",
+            "valor": "bombo"
+          },
+          {
+            "tipo": "mismo",
+            "atr1": "ciudad",
+            "val1": "Juliaca",
+            "atr2": "instrumento",
+            "val2": "charango"
+          }
+        ],
+        "pide": {
+          "t": "quienTiene",
+          "atributo": "instrumento",
+          "valor": "bombo"
+        }
+      },
+      "esperado": {
+        "respuesta": "r:Beto",
+        "texto": "Beto",
+        "repartos": 1
+      }
+    }
+  ]
+}

@@ -139,6 +139,23 @@
       ],
       "verificar": [ { "fn": "puntajeMaximo", "args": [ { "lanz": 4, "persona": 0, "pistas": [
         { "t": "mayor", "p": 1, "c": 1 }, { "t": "menor-todos", "c": 0 }, { "t": "paridad", "par": "impar" }, { "t": "no", "p": 2, "c": 0 } ] } ], "espera": { "color": 0, "puntaje": 19 } } ]
+    },
+    {
+      "id": "p10",
+      "nivel": "básico",
+      "enunciado": "En el colegio se cumple una regla sin excepciones: si un alumno tiene fiebre, se queda en casa. Se sabe que Rosa no se quedó en casa, que Luis se quedó en casa y que Ana no tuvo fiebre. ¿De quién se puede asegurar algo más, y qué? Datos: «Si p, q»: siempre que pasa p, también pasa q. p: un alumno tiene fiebre. q: se queda en casa. Seguro: se cumple en todos los casos que dejan la regla y el dato.",
+      "respuesta": "Solo de Rosa: no tuvo fiebre. De Luis no se sabe si tuvo fiebre, y de Ana no se sabe si se quedó en casa.",
+      "pasos": [
+        "Para cada uno hay cuatro casos: fiebre y en casa; fiebre y no en casa; sin fiebre y en casa; sin fiebre y no en casa. La regla tacha uno solo: fiebre y no en casa.",
+        "Rosa no se quedó en casa: quedan «fiebre y no en casa» (tachado por la regla) y «sin fiebre y no en casa». Queda un solo caso: Rosa no tuvo fiebre.",
+        "Luis se quedó en casa: quedan «fiebre y en casa» y «sin fiebre y en casa». La regla no va al revés: pudo quedarse por otra razón. No se sabe si tuvo fiebre.",
+        "Ana no tuvo fiebre: quedan «sin fiebre y en casa» y «sin fiebre y no en casa». La regla no dice qué pasa sin fiebre. No se sabe si se quedó en casa."
+      ],
+      "verificar": [
+        { "fn": "conclusionSi", "args": ["nq"], "espera": "np" },
+        { "fn": "conclusionSi", "args": ["q"], "espera": null },
+        { "fn": "conclusionSi", "args": ["np"], "espera": null }
+      ]
     }
   ]
 }

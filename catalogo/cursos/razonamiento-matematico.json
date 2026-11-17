@@ -23,7 +23,7 @@
       "potencial_visual": "medio",
       "grado": 3,
       "requiere": [],
-      "plantillas": ["orden-informacion", "rm-deduccion", "rm-parentesco"],
+      "plantillas": ["orden-informacion", "rm-cuadros", "rm-deduccion", "rm-parentesco"],
       "investigacion": null
     },
     {

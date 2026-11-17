@@ -268,7 +268,7 @@ test('las explicaciones hablan en segunda persona y no se repiten dentro de un p
 
 for (const c of casos.casos) {
   test(`casos.json: semilla ${c.semilla}`, () => {
-    const p = gen.generar(c.semilla);
+    const p = gen.generar(c.semilla, c.opciones);
     assert.deepEqual(p._datos, c.entrada, 'el generador cambió: recalcula casos.json');
     assert.equal(p.respuesta.texto, c.esperado.respuesta);
   });
@@ -277,7 +277,7 @@ for (const c of casos.casos) {
 test('casos.json trae al menos 2 casos por tipo y las semillas de entrada y salida', () => {
   const tipos = {};
   for (const c of casos.casos) tipos[c.entrada.tipo] = (tipos[c.entrada.tipo] || 0) + 1;
-  for (const t of ['silogismo', 'siempre-cierto', 'asignacion']) assert.ok(tipos[t] >= 2, t);
+  for (const t of ['silogismo', 'siempre-cierto', 'asignacion', 'condicional']) assert.ok(tipos[t] >= 2, t);
   for (const s of ['entrada-1', 'entrada-2', 'entrada-3', 'salida-1', 'salida-2', 'salida-3']) assert.ok(casos.casos.some(c => c.semilla === s), s);
 });
 
@@ -287,4 +287,119 @@ test('papel.json: entre 5 y 10 problemas y cada verificación da lo esperado', (
     assert.ok(pr.enunciado && pr.respuesta && pr.pasos.length && pr.verificar.length, pr.id);
     for (const vf of pr.verificar) assert.deepEqual(gen.calc[vf.fn](...vf.args), vf.espera, `${pr.id}: ${vf.fn}`);
   }
+});
+
+// ---------------------------------------------------------------- fase 5 de Razonamiento deductivo (17 nov)
+const DED = 'razonamiento-matematico.razonamiento-deductivo', CERT = 'razonamiento-matematico.certezas';
+const plano = x => (Array.isArray(x) ? x.map(plano).join('') : x && typeof x === 'object' ? String(x.t) : String(x));
+// 400 problemas de cada unidad, generados una sola vez para las pruebas de abajo (puntajes tarda hasta 0,3 s).
+const MUESTRA = {};
+const muestra = u => MUESTRA[u] || (MUESTRA[u] = Array.from({ length: 400 }, (_, s) => gen.generar(`u-${s}`, { unidad: u })));
+
+// Condicional simple, por fuerza bruta y sin el generador: para cada sujeto, los 4 casos de p y q; la regla tacha
+// «p sin q» y el dato tacha los que no lo cumplen. Una afirmación es segura si vale en todos los casos que quedan.
+const LIT = { p: (p, q) => p, np: (p, q) => !p, q: (p, q) => q, nq: (p, q) => !q, excusa: (p, q) => p && !q };
+const quedanSi = dato => [[true, true], [true, false], [false, true], [false, false]].filter(([p, q]) => !(p && !q) && LIT[dato](p, q));
+function segurasSi(d) {
+  const out = [];
+  d.datos.forEach((dato, i) => { for (const l of ['p', 'np', 'q', 'nq', 'excusa']) if (l !== dato && quedanSi(dato).every(([p, q]) => LIT[l](p, q))) out.push(`si:${i}:${l}`); });
+  return out;
+}
+test('condicional simple: una sola respuesta por fuerza bruta en 400 semillas, y cada distractor es solo posible o imposible', () => {
+  let vistos = 0;
+  const ids = new Set(), formas = new Set();
+  for (let s = 0; vistos < 400; s++) {
+    const p = gen.generar(`si-${s}`, { unidad: DED, tipo: 'condicional' }), d = p._datos;
+    assert.equal(d.tipo, 'condicional');
+    vistos++;
+    const todas = segurasSi(d);
+    const esperada = todas.length ? todas : ['si:nada'];
+    assert.equal(esperada.length, 1, `si-${s}: ${esperada.length} conclusiones seguras`);
+    assert.equal(p.respuesta.valor, esperada[0], `si-${s}`);
+    for (const a of p.alternativas.filter(x => !x.correcta)) {
+      assert.ok(a.valor === 'si:nada' || !todas.includes(a.valor), `si-${s}: «${a.texto}» también es segura`);
+      ids.add(a.error.id.replace(/-.*/, ''));
+    }
+    d.datos.forEach(x => formas.add(x));
+    assert.ok(d.sujetos.length === (d.nivel === 1 ? 2 : 3));
+  }
+  for (const id of ['RMP70', 'RMP71', 'RMP72', 'RMP78', 'RMP87']) assert.ok(ids.has(id), `no sale ${id}`);
+  assert.deepEqual([...formas].sort(), ['np', 'nq', 'p', 'q']);
+});
+
+test('generar(semilla, { unidad }): Razonamiento deductivo recibe sus cinco tipos; Certezas, solo «siempre cierto»; sin unidad, como antes', () => {
+  const ded = new Set(), cert = new Set();
+  for (let s = 0; s < 120; s++) { ded.add(gen.generar(s, { unidad: DED })._datos.tipo); cert.add(gen.generar(s, { unidad: CERT })._datos.tipo); }
+  assert.deepEqual([...ded].sort(), ['asignacion', 'condicional', 'puntajes', 'siempre-cierto', 'silogismo']);
+  assert.deepEqual([...cert], ['siempre-cierto']);
+  for (let s = 0; s < 120; s++) assert.notEqual(gen.generar(s)._datos.tipo, 'condicional', `semilla ${s}: sin unidad no sale el tipo nuevo`);
+  assert.equal(gen.generar(3, { unidad: CERT, tipo: 'condicional' })._datos.tipo, 'siempre-cierto', 'Certezas no recibe un tipo que no es suyo');
+  assert.deepEqual(gen.generar(5, { unidad: 'otra.unidad' }), gen.generar(5));
+  for (let i = 1; i <= 3; i++) {
+    for (const u of [DED, CERT]) assert.equal(gen.generar(`entrada-${i}`, { unidad: u })._datos.tipo, gen.generar(`salida-${i}`, { unidad: u })._datos.tipo);
+  }
+  assert.deepEqual(gen.tiposPorUnidad[CERT], ['siempre-cierto']);
+});
+
+test('con la unidad: problemas bien armados y la respuesta recalculada aparte, en 400 semillas de cada unidad', () => {
+  for (const u of [DED, CERT]) muestra(u).forEach((p, s) => {
+    const alt = p.alternativas;
+    assert.ok(alt.length >= 4 && alt.length <= 5, `u-${s}`);
+    assert.equal(alt.filter(a => a.correcta).length, 1);
+    assert.equal(new Set(alt.map(a => a.texto)).size, alt.length);
+    assert.equal(alt.find(a => a.correcta).valor, p.respuesta.valor);
+    const visto = [p.enunciado, p.pregunta, p.solucion, alt.map(a => a.texto), alt.filter(a => a.error).map(a => a.error.explicacion)].map(plano).join(' ');
+    assert.ok(!/\bnull\b|\bNaN\b|\bundefined\b/.test(visto), `u-${s}: ${visto}`);
+    if (p._datos.tipo !== 'condicional') assert.equal(recalcular(p), p.respuesta.valor, `u-${s}: el recálculo no coincide`);
+  });
+});
+
+// Recuadro «Datos» (contrato, punto 13; molde §4 y §7): definiciones y reglas, una por línea; nunca la respuesta.
+test('datos: una lista de líneas cortas con la regla de cada tipo y sin la respuesta, en 400 semillas de cada unidad', () => {
+  const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
+  for (const u of [DED, CERT]) muestra(u).forEach((p, s) => {
+    const d = p._datos;
+    assert.ok(Array.isArray(p.datos) && p.datos.length, `d-${s}: datos debe ser una lista no vacía`);
+    for (const l of p.datos) {
+      assert.ok(typeof l === 'string' && l.trim() === l && l.length);
+      assert.ok(palabras(l) <= 22, `d-${s}: «${l}» tiene ${palabras(l)} palabras`);
+      assert.ok(!/^Dato:/i.test(l) && !/\bnull\b|\bNaN\b|\bundefined\b/.test(l));
+    }
+    assert.equal(new Set(p.datos).size, p.datos.length);
+    const todo = p.datos.join('\n'), c = p.respuesta.texto.replace(/\.$/, '');
+    assert.ok(!todo.toLowerCase().includes(c.toLowerCase()), `d-${s}: los datos traen la respuesta ${c}`);
+    if (d.tipo === 'silogismo') { assert.ok(/^«(Todos|Ningún|Algunos)/.test(p.datos[0])); assert.ok(todo.includes('Se deduce:')); }
+    if (d.tipo === 'condicional' || d.tipo === 'siempre-cierto' || d.tipo === 'asignacion') assert.ok(todo.includes('«Si p, q»'), `d-${s}: falta qué dice «si p, q»`);
+    if (d.tipo === 'condicional') assert.ok(todo.includes('Seguro:'));
+    if (d.tipo === 'siempre-cierto') assert.ok(todo.includes('Siempre cierto:'));
+    if (d.tipo === 'asignacion' && d.pistas.some(q => q.t === 'contra')) assert.ok(todo.includes('«Si X fuera…'));
+    if (d.tipo === 'puntajes') assert.ok(todo.includes('Par:') && todo.includes('1 al 6'));
+  });
+});
+
+// Paleta de deducción (Gerson, 17 nov): naranja lo primero, turquesa lo segundo, tinta lo que amarra, violeta lo seguro;
+// sin verde ni carmín. Silogismo: X naranja, Z turquesa, el medio en tinta; condicional: p naranja, q turquesa.
+test('paleta de deducción: solo naranja, turquesa y violeta, cada papel con su color, y la respuesta en violeta', () => {
+  for (const u of [DED, CERT]) muestra(u).forEach((p, s) => {
+    const V = p.variables, t = p._datos.tipo;
+    for (const [k, x] of Object.entries(V)) assert.ok(['o', 'i', 'f'].includes(x.color), `c-${s}: ${k} en ${x.color}`);
+    assert.equal(V.C.color, 'f');
+    if (t === 'silogismo') { assert.equal(V.X.color, 'o'); assert.equal(V.Z.color, 'i'); assert.ok(!V.M); }
+    if (t === 'condicional') { assert.equal(V.p.color, 'o'); assert.equal(V.q.color, 'i'); }
+    if (['siempre-cierto', 'asignacion', 'puntajes'].includes(t)) assert.deepEqual(Object.keys(V), ['C'], `c-${s}: personas o cosas con color`);
+    for (const linea of [p.enunciado, p.pregunta, ...p.solucion]) for (const x of linea) if (x && typeof x === 'object') assert.ok(V[x.v], `c-${s}: «${x.t}» usa ${x.v}, que no existe`);
+    assert.ok(p.solucion.some(l => l.some(x => x && typeof x === 'object' && x.v === 'C')), `c-${s}: la conclusión no va en violeta`);
+    for (const linea of [p.enunciado, p.pregunta]) for (const x of linea) assert.ok(!(x && typeof x === 'object' && x.v === 'C'), `c-${s}: violeta antes de resolver`);
+    if (p.figuraSolucion) assert.ok(!/--c-[hd]\b/.test(p.figuraSolucion.svg), `c-${s}: la figura usa verde o carmín`);
+  });
+});
+
+test('cada explicación empieza por lo que el alumno hizo bien y es hipótesis (las dos unidades)', () => {
+  for (const u of [DED, CERT]) muestra(u).forEach((p, s) => {
+    for (const a of p.alternativas.filter(x => x.error)) {
+      assert.match(a.error.explicacion, /^Bien\b/, `e-${s}: ${a.error.explicacion}`);
+      assert.equal(a.error.respaldo, 'hipotesis');
+      assert.match(a.error.id, /^RMP\d+/);
+    }
+  });
 });

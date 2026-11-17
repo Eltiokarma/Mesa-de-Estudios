@@ -47,6 +47,12 @@
  *   RMP63-*                 no aplicar una condición: el «único», una pista, un tope; o leerla mal (el 1 primo)
  *   RMP64-linea             cambiar la línea paterna por la materna (o la madre por el padre en el árbol)
  *   RMP2-primera            quedarse con la primera familia o el primer reparto que cumple, sin minimizar
+ *
+ * Por unidad (fase 5 de Razonamiento deductivo, 17 nov; modelo plantillas/velocidad-relativa/): generar(semilla,
+ * { unidad }) da en Razonamiento deductivo cadena, árbol, mínimo, billetes y edades, y en Ordenamiento de información
+ * solo orden. Sin unidad, todos, como antes. Datos: lista de definiciones (hermanos, tío, primo, «único», primo y par).
+ * Paleta de deducción (Gerson, 17 nov): naranja quien habla («mi …»), violeta lo pedido ya comprobado, el resto en tinta
+ * («único» también); sin verde ni carmín. Cada explicación empieza por lo que el alumno hizo bien.
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -164,6 +170,9 @@
         else if (i === pasos.length - 1) sig = { amb: [r.def, r.gen] };
         else return null;
       } else sig = r.def || r.gen;
+      // «La única hermana de…» nombra una clase de un solo miembro: más adelante, «la hermana de esa hermana» ya no
+      // puede ser otra de esa clase (fase 5, 17 nov: antes daba «su abuela materna o su tía abuela», y es la abuela).
+      if (unicos[i] && !r.def && r.gen && !opciones.forzarUnico && opciones.ignora !== i) vacias.add(k(r.gen));
       if (!sig.amb && k(sig)) { if (vistas.has(k(sig))) return null; vistas.add(k(sig)); }
       nodos.push({ pos: sig, dos: !!(r.def && r.gen), def: r.def, gen: r.gen });
       pos = sig;
@@ -989,18 +998,82 @@
   // =====================================================================
   const TIPOS = { cadena: construirCadena, arbol: construirArbol, minimo: construirMinimo, orden: construirOrden, billetes: construirBilletes, edades: construirEdades };
   const SORTEO = ['cadena', 'cadena', 'cadena', 'arbol', 'arbol', 'minimo', 'minimo', 'orden', 'orden', 'billetes', 'edades'];
-  function generar(semilla) {
+  // Qué tipos sirve a cada unidad (fase 5 de Razonamiento deductivo, 17 nov; modelo plantillas/velocidad-relativa/):
+  // en Razonamiento deductivo, el parentesco (cadena, árbol, mínimo; idea 5) y los repartos con números (billetes y
+  // edades; idea 2, nivel examen); en Ordenamiento de información, el orden por sumas de edades, que es lo suyo. Sin
+  // unidad (o con otra), todos, como antes: las semillas de casos.json no cambian.
+  const TIPOS_POR_UNIDAD = {
+    'razonamiento-matematico.razonamiento-deductivo': ['cadena', 'arbol', 'minimo', 'billetes', 'edades'],
+    'razonamiento-matematico.ordenamiento-de-informacion': ['orden'],
+  };
+
+  // Recuadro «Datos» (contrato, punto 13; molde §4 y §7): definiciones, una por línea; nunca la respuesta.
+  const D_HERMANOS = 'Hermanos: hijos del mismo padre y de la misma madre.';
+  const D_TIO = 'Tío: hermano del padre (paterno) o de la madre (materno); primo: hijo de un tío.';
+  const D_OTROS = 'Sobrino: hijo de un hermano. Abuelo: padre del padre o de la madre. Nieto: hijo de un hijo.';
+  function lineasDatos(d) {
+    if (d.tipo === 'cadena') return [D_HERMANOS, D_TIO, D_OTROS, ...(d.unicos.some(Boolean) ? ['«Único»: no hay otro con ese parentesco.'] : [])];
+    if (d.tipo === 'arbol') return ['En el árbol, cada hijo cuelga de la línea que une a su padre y a su madre.', D_HERMANOS, D_TIO];
+    if (d.tipo === 'minimo') return ['Cada persona cuenta en todos los parentescos que tiene con alguien de la reunión.', D_HERMANOS, 'Abuelo: padre del padre o de la madre. Nieto: hijo de un hijo o de una hija.'];
+    if (d.tipo === 'billetes') return ['Cada uno recibe dos sobres, y ningún sobre se repite.', 'Lo que recibe cada uno: la suma de sus dos sobres.'];
+    if (d.tipo === 'edades') return ['Primo: número con exactamente dos divisores, 1 y él mismo.', 'Par: se divide entre 2 sin residuo.'];
+    return ['Las cuatro cantidades son distintas.', 'Si a + b > a + c, entonces b > c: lo que aparece a los dos lados se cancela.'];
+  }
+  // Paleta de deducción (Gerson, 17 nov; la de la teoría): en el árbol, naranja quien habla («mi …»), violeta la persona
+  // o la respuesta pedida, ya comprobada; el resto en tinta («único» incluido). Sin verde ni carmín.
+  const PALETA = { u: null, x: 'f', N: 'f' };
+  function pintarPaleta(p) {
+    const variables = {};
+    for (const [k, x] of Object.entries(p.variables)) {
+      if (k in PALETA && PALETA[k] === null) continue;
+      variables[k] = { ...x, color: PALETA[k] || x.color };
+    }
+    const linea = segs => {
+      const out = [];
+      for (const x of segs) {
+        const t = x && typeof x === 'object' && !variables[x.v] ? x.t : x;
+        if (typeof t === 'string' && typeof out[out.length - 1] === 'string') out[out.length - 1] += t; else out.push(t);
+      }
+      return out;
+    };
+    const solucion = p.solucion.map(linea);
+    // La respuesta pedida va en violeta: si la última línea no la trae, se agrega.
+    if (!solucion.some(l => l.some(x => x && typeof x === 'object' && x.v === 'x')) && variables.x) solucion.push(['Respuesta: ', v('x', String(p.respuesta.texto).replace(/\.$/, '')), '.']);
+    return { ...p, variables, enunciado: linea(p.enunciado), pregunta: linea(p.pregunta), solucion };
+  }
+  // Cada explicación empieza por lo que el alumno hizo bien (fase 5).
+  const BIEN = {
+    RMP60: 'Bien: seguiste la cadena eslabón por eslabón.', RMP61: 'Bien: los primeros pasos de la cadena están bien.',
+    RMP62: 'Bien: tuviste en cuenta todos los parentescos pedidos.', RMP63: 'Bien: usaste casi todas las condiciones.',
+    RMP64: 'Bien: diste los pasos de la cadena en orden.', RMP2: 'Bien: esa respuesta cumple las condiciones.',
+  };
+  function conBien(e) {
+    const t = e.explicacion;
+    if (/^Bien\b/.test(t)) return t;
+    if (/^(Con \d|Ese orden cumple)/.test(t)) return `Bien: ${t.charAt(0).toLowerCase()}${t.slice(1)}`;
+    const lead = BIEN[(String(e.id).match(/^RMP\d+/) || [''])[0]];
+    return lead ? `${lead} ${t}` : t;
+  }
+  function pulir(p) {
+    const q = pintarPaleta(p);
+    q.datos = lineasDatos(p._datos);
+    q.alternativas = p.alternativas.map(a => (a.error ? { ...a, error: { ...a.error, explicacion: conBien(a.error) } } : a));
+    return q;
+  }
+  function generar(semilla, opciones) {
+    const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
+    const permitidos = TIPOS_POR_UNIDAD[unidad];
     const rng = Azar.crear('rm-parentesco|' + semilla);
-    const tipo = rng.elegir(SORTEO);
+    const tipo = rng.elegir(permitidos ? SORTEO.filter(t => permitidos.includes(t)) : SORTEO);
     for (let intento = 0; intento < 20; intento++) {
       const p = TIPOS[tipo](rng, semilla);
-      if (p && p.alternativas.length >= 4) return p;
+      if (p && p.alternativas.length >= 4) return pulir(p);
     }
     throw new Error('No se pudo generar un problema con 4 alternativas distintas');
   }
 
   return {
-    id: 'rm-parentesco', titulo: 'Parentescos, órdenes y repartos con pistas', generar,
+    id: 'rm-parentesco', titulo: 'Parentescos, órdenes y repartos con pistas', generar, tiposPorUnidad: TIPOS_POR_UNIDAD,
     calc: { cadena, nombre, minimoPersonas, cota, roles, ordenes, repartos, edades, recorrerArbol, esPrimo },
   };
 });

@@ -314,3 +314,63 @@ test('orden: cada pista hace falta (sin una, hay más de un orden)', () => {
     ps.forEach((_, i) => assert.ok(gen.calc.ordenes(ps.filter((__, j) => j !== i)).length > 1));
   }
 });
+
+// ---------------------------------------------------------------- fase 5 de Razonamiento deductivo (17 nov)
+const DED = 'razonamiento-matematico.razonamiento-deductivo', ORD = 'razonamiento-matematico.ordenamiento-de-informacion';
+const MUESTRA = {};
+const muestra = u => MUESTRA[u] || (MUESTRA[u] = Array.from({ length: 400 }, (_, s) => gen.generar(`u-${s}`, { unidad: u })));
+
+test('generar(semilla, { unidad }): Razonamiento deductivo recibe parentesco y repartos; Ordenamiento, el orden por sumas', () => {
+  assert.deepEqual([...new Set(muestra(DED).map(p => p._datos.tipo))].sort(), ['arbol', 'billetes', 'cadena', 'edades', 'minimo']);
+  assert.deepEqual([...new Set(muestra(ORD).map(p => p._datos.tipo))], ['orden']);
+  assert.deepEqual(gen.generar(9, { unidad: 'otra.unidad' }), gen.generar(9));
+  // El recálculo de la cadena prueba familias al azar: con una respuesta doble puede no dar con la segunda (pocas
+  // familias con tres hermanos), así que ahí basta con que lo que encuentra esté entre las dos.
+  for (const p of muestra(DED)) {
+    const r = recalcular(p), val = p.respuesta.valor;
+    if (typeof val === 'string' && val.startsWith('amb:')) assert.ok([].concat(r).every(x => claveCadena(val).includes(x)), `${p.id}: el recálculo da ${r}`);
+    else assert.ok(igual(r, val), `${p.id}: el recálculo da ${JSON.stringify(r)}, el generador ${val}`);
+  }
+});
+
+test('datos: una lista de líneas cortas con las definiciones de cada tipo y sin la respuesta, en 400 semillas de cada unidad', () => {
+  const palabras = t => t.split(/\s+/).filter(w => /\p{L}/u.test(w)).length;
+  for (const u of [DED, ORD]) for (const p of muestra(u)) {
+    const d = p._datos;
+    assert.ok(Array.isArray(p.datos) && p.datos.length, `${p.id}: datos debe ser una lista no vacía`);
+    for (const l of p.datos) assert.ok(palabras(l) <= 22 && l.trim() === l && !/^Dato:/i.test(l), `${p.id}: «${l}»`);
+    const todo = p.datos.join('\n').toLowerCase(), c = String(p.respuesta.texto).toLowerCase();
+    assert.ok(!todo.includes(c), `${p.id}: los datos traen la respuesta ${c}`);
+    if (d.tipo === 'cadena' || d.tipo === 'arbol' || d.tipo === 'minimo') assert.ok(todo.includes('hermanos:'), `${p.id}: falta qué son hermanos`);
+    if (d.tipo === 'cadena' && d.unicos.some(Boolean)) assert.ok(todo.includes('«único»'), `${p.id}: falta qué es «único»`);
+    if (d.tipo === 'edades') assert.ok(todo.includes('primo:') && todo.includes('par:'));
+    if (d.tipo === 'billetes') assert.ok(todo.includes('dos sobres'));
+  }
+});
+
+// Paleta de deducción (Gerson, 17 nov): naranja quien habla («mi …»), violeta lo pedido ya comprobado, el resto en tinta;
+// sin verde ni carmín.
+test('paleta de deducción: sin verde ni carmín, «único» en tinta y la respuesta en violeta', () => {
+  for (const u of [DED, ORD]) for (const p of muestra(u)) {
+    const V = p.variables;
+    for (const [k, x] of Object.entries(V)) assert.ok(['o', 'i', 'f'].includes(x.color), `${p.id}: ${k} en ${x.color}`);
+    assert.ok(!V.u, `${p.id}: «único» con color`);
+    if (V.a) assert.equal(V.a.color, 'o');
+    for (const linea of [p.enunciado, p.pregunta, ...p.solucion]) for (const x of linea) if (x && typeof x === 'object') assert.ok(V[x.v], `${p.id}: «${x.t}» usa ${x.v}, que no existe`);
+    assert.ok(p.solucion.some(l => l.some(x => x && typeof x === 'object' && V[x.v] && V[x.v].color === 'f')), `${p.id}: la respuesta no va en violeta`);
+    for (const f of [p.figura, p.figuraSolucion]) if (f) assert.ok(!/--c-[hd]\b/.test(f.svg), `${p.id}: la figura usa verde o carmín`);
+  }
+});
+
+test('cada explicación empieza por lo que el alumno hizo bien y es hipótesis', () => {
+  for (const u of [DED, ORD]) for (const p of muestra(u)) for (const a of p.alternativas.filter(x => x.error)) {
+    assert.match(a.error.explicacion, /^Bien\b/, `${p.id}: ${a.error.explicacion}`);
+    assert.equal(a.error.respaldo, 'hipotesis');
+  }
+});
+
+test('cadena: «la hermana de la única hermana de la madre de mi madre» es la abuela materna, sin otra opción', () => {
+  assert.equal(gen.calc.cadena('v', ['madre', 'madre', 'hermana', 'hermana'], [false, false, true, false]).clave, 'D:M2m');
+  // Sin el «única», sí quedan dos: la abuela u otra tía abuela.
+  assert.equal(gen.calc.cadena('v', ['madre', 'madre', 'hermana', 'hermana'], [false, false, false, false]).clave, 'amb:D:M2m|C:3,1m');
+});

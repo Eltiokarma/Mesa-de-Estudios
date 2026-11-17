@@ -45,6 +45,22 @@
  *                           { t: 'paridad', par: 'impar' | 'par' }. Claves: 'pt:puntaje:color' (índice de color).
  *                   Solo con semillas de práctica y numéricas desde 400 (ver «generar»).
  *
+ *   condicional     (nuevo, fase 5 de Razonamiento deductivo, 17 nov; idea 4 «si-entonces») una regla general «si p, q»
+ *                   (simulacro, lluvia y plaza, fiebre, concierto, celular, número que termina en 0) y un dato por sujeto
+ *                   (2 sujetos en nivel 1, 3 en nivel 2): p o «no q» dejan un solo caso (directa e indirecta); q o «no p»,
+ *                   dos. Se pide la afirmación segura (a veces, «Ninguna»). Solo con la unidad de Razonamiento deductivo.
+ *                   _datos: { tipo, situacion, nivel, sujetos, datos: ['p'|'np'|'q'|'nq'], opciones }.
+ *                   Claves: 'si:i:lit' (lit: p, np, q, nq o excusa, «p y no q» con una razón agregada) y 'si:nada'.
+ *
+ * Por unidad (fase 5, 17 nov; modelo plantillas/velocidad-relativa/): generar(semilla, { unidad }) da en Razonamiento
+ * deductivo los cinco tipos (con más peso el condicional y los silogismos) y en Certezas solo «siempre cierto», que es
+ * lo que esa unidad tomaba de aquí. Sin unidad, todo como antes (casos.json no cambia). { tipo } pide un tipo, si la
+ * unidad lo tiene (pruebas).
+ * Datos: lista de líneas (definiciones de «todos», «algunos», «ningún», «si p, q», «seguro», el contrafáctico, par).
+ * Paleta de deducción (Gerson, 17 nov; la de la teoría): silogismo, el primer grupo (X) naranja, el segundo (Z) turquesa
+ * y el del medio en tinta; condicional, p naranja y q turquesa; personas, frascos y cosas en tinta; lo que se concluye,
+ * violeta (variable C), solo en la solución. Sin verde ni carmín. Cada explicación empieza por lo que el alumno hizo bien.
+ *
  * calc (funciones puras, para el papel y las pruebas):
  *   proposicion(f, s, p) → clave · modelosSilogismo(premisas, existencial) → [modelo (8 bits)]
  *   validaSilogismo(premisas, clave, existencial) → bool
@@ -53,6 +69,7 @@
  *   necesaria(pistas, clave) → bool (cierta en todos los casos de casosFrascos)
  *   repartos(pistas, n = 4) → [[cosa de cada persona]] (permutaciones que cumplen las pistas)
  *   puntajes({ lanz, pistas, persona }) → { respuesta: { color, puntaje } | null, repartos, maximos } (tipo puntajes)
+ *   casosSi(dato) → casos [p, q] que dejan la regla y el dato · seguroSi(dato, lit) · conclusionSi(dato) → lit o null
  *
  * Errores (todos hipótesis: el informe de razonamiento no trae datos de lógica; las trampas salen
  * de docs/clasificacion/trampas-admision-unmsm/rm-a.md, filas 16 y 25):
@@ -62,6 +79,8 @@
  *   en vez de «ninguno», o generalizar un «algunos») · RMP75 «algunos son» leído como «solo algunos»
  *   · RMP76 encadenar por un término medio que no conecta · RMP77 posible pero no necesaria ·
  *   RMP78 creer que no se deduce nada · RMP79 contrafáctico con su primera parte tomada como dato.
+ *   Condicional simple: RMP70-al-reves (concluir p de q), RMP71-negar-las-dos (concluir «no q» de «no p»),
+ *   RMP72-choca-con-la-regla, RMP78-nada y RMP87-agrega-a-la-regla («estudió, pero el simulacro estuvo difícil»).
  *   Tipo puntajes (cierre-100): RMP72-… (una pista sin revisar o dado cruzado) y RMP2-sin-maximizar (puntaje posible, no el mayor).
  */
 (function (root, fabrica) {
@@ -214,7 +233,7 @@
 
   function figuraVenn(prem, T, idf) {
     const C = [[130, 120], [180, 205], [230, 120]], R = 78; // X, M, Z
-    const COL = ['var(--c-o)', 'var(--c-i)', 'var(--c-h)'];
+    const COL = ['var(--c-o)', 'currentColor', 'var(--c-i)']; // paleta de deducción: X naranja, el medio en tinta, Z turquesa
     const CENTRO = { 1: [88, 100], 2: [180, 258], 4: [272, 100], 3: [126, 182], 6: [234, 182], 5: [180, 82], 7: [180, 148] };
     const vacias = new Set();
     for (const q of prem) if (q.f === 'A' || q.f === 'E') for (let r = 1; r < 8; r++) {
@@ -321,11 +340,12 @@
         : cc.f === 'E' ? `toda la zona común de los ${T[0]} y los ${T[2]} quedó tachada`
         : cc.f === 'I' ? `hay una × dentro de la zona común de los ${T[0]} y los ${T[2]}`
         : `hay una × entre los ${T[cc.s]} que no son ${T[cc.p]}`;
-      solucion.push([`En el diagrama, ${lectura}. Por eso: `, ...frase(cc.f, cc.s, cc.p, T, true), '.']);
+      solucion.push([`En el diagrama, ${lectura}. Por eso: `, v('C', frase(cc.f, cc.s, cc.p, T, false)), '.']);
       solucion.push(['Las otras conclusiones piden algo que el diagrama no asegura (una zona tachada o una × que no está), así que no se deducen. «Algunos» quiere decir «por lo menos uno».']);
     } else {
       solucion.push([`Entre los `, v('X', T[0]), ' y los ', v('Z', T[2]), ' el diagrama no obliga nada: para cada conclusión queda una zona sin decidir (sin tachar y sin ×) donde puede fallar.']);
       solucion.push([`Los `, v('M', T[1]), ' no conectan a las otras dos clases: para encadenar, una premisa tiene que hablar de todos los ', v('M', T[1]), ' (o de ninguno), y aquí no alcanza.']);
+      solucion.push(['Respuesta: ', v('C', 'ninguna de esas conclusiones se deduce'), '.']);
     }
     return {
       enunciado, pregunta, solucion, alternativas, correcta: opcionSil(correcta, T), figuraSolucion: fig,
@@ -646,6 +666,7 @@
     lineas.push(`En ${casos.length === 2 ? 'los dos' : `los ${casos.length}`} se cumple que ${okSin}. Las otras afirmaciones fallan en por lo menos uno de esos casos.`);
     const pintarCosas = colorear(cosas.map((c, i) => [c, CV[i]]));
     const solucion = lineas.map(pintarCosas);
+    solucion.push(['Respuesta: ', v('C', ok.slice(0, -1)), '.']);
     return {
       enunciado, pregunta, solucion, alternativas, correcta: op(correctaClave),
       variables: { a: { nombre: cosas[0], color: 'o' }, b: { nombre: cosas[1], color: 'i' }, c: { nombre: cosas[2], color: 'h' } },
@@ -945,22 +966,222 @@
   }
 
   // =====================================================================================
+  // 5. Condicional simple (idea 4, si-entonces; propuesta de la etapa 3, §7): una regla general y un dato por persona
+  // =====================================================================================
+  // Cada persona tiene cuatro casos (p y q, p sin q, q sin p, ninguno); la regla tacha «p sin q» y su dato tacha los que
+  // no lo cumplen. Una afirmación es segura si vale en todos los casos que le quedan. Datos: 'p' y 'nq' dejan un solo caso
+  // (formas directa e indirecta); 'q' y 'np' dejan dos (no se concluye nada).
+  const CASOS_SI = [[true, true], [true, false], [false, true], [false, false]];
+  const DATO_SI = { p: c => c[0], np: c => !c[0], q: c => c[1], nq: c => !c[1] };
+  const LIT_SI = { p: c => c[0], np: c => !c[0], q: c => c[1], nq: c => !c[1], excusa: c => c[0] && !c[1] };
+  const casosSi = dato => CASOS_SI.filter(c => !(c[0] && !c[1]) && DATO_SI[dato](c));
+  const seguroSi = (dato, lit) => casosSi(dato).every(LIT_SI[lit]);
+  // Lo que se concluye con certeza de cada dato (null si nada).
+  const conclusionSi = dato => ['p', 'np', 'q', 'nq'].find(l => l !== dato && seguroSi(dato, l) && !(l === 'p' && dato === 'p')) || null;
+  // Reglas de todos los días: el sujeto cambia (una persona, un pueblo, el celular de alguien). excusa: lo que
+  // agrega quien cree que la regla tiene excepciones (RMP87); null si no hay una natural.
+  const SITUACIONES_SI = [
+    { id: 'simulacro', gente: true, intro: 'En la academia, este ciclo se cumplió una regla sin excepciones.', reglaP: 'alguien estudia para el simulacro', reglaQ: 'lo aprueba',
+      p: x => `${x} estudió para el simulacro`, np: x => `${x} no estudió para el simulacro`, q: x => `${x} aprobó el simulacro`, nq: x => `${x} no aprobó el simulacro`,
+      excusa: x => `${x} estudió, pero el simulacro estuvo difícil` },
+    { id: 'plaza', gente: false, sujetos: ['Ilave', 'Juli', 'Lampa', 'Ayaviri', 'Pomata', 'Azángaro'], intro: 'Anoche se cumplió una regla sin excepciones.',
+      reglaP: 'llueve en un pueblo', reglaQ: 'su plaza amanece mojada',
+      p: x => `llovió en ${x}`, np: x => `no llovió en ${x}`, q: x => `la plaza de ${x} amaneció mojada`, nq: x => `la plaza de ${x} amaneció seca`,
+      excusa: x => `llovió en ${x}, pero la plaza se secó antes del amanecer` },
+    { id: 'fiebre', gente: true, intro: 'En el colegio se cumple una regla sin excepciones.', reglaP: 'un alumno tiene fiebre', reglaQ: 'se queda en casa',
+      p: x => `${x} tuvo fiebre`, np: x => `${x} no tuvo fiebre`, q: x => `${x} se quedó en casa`, nq: x => `${x} no se quedó en casa`,
+      excusa: x => `${x} tuvo fiebre, pero igual fue al colegio` },
+    { id: 'concierto', gente: true, intro: 'En el concierto del aniversario se cumplió una regla sin excepciones.', reglaP: 'alguien tiene entrada', reglaQ: 'entra al concierto',
+      p: x => `${x} tenía entrada`, np: x => `${x} no tenía entrada`, q: x => `${x} entró al concierto`, nq: x => `${x} no entró al concierto`,
+      excusa: x => `${x} tenía entrada, pero llegó tarde` },
+    { id: 'celular', gente: true, intro: 'En el salón se cumple una regla sin excepciones.', reglaP: 'un celular tiene batería', reglaQ: 'prende',
+      p: x => `el celular de ${x} tiene batería`, np: x => `el celular de ${x} no tiene batería`, q: x => `el celular de ${x} prende`, nq: x => `el celular de ${x} no prende`,
+      excusa: x => `el celular de ${x} tiene batería, pero está malogrado` },
+    { id: 'numero', gente: true, intro: 'Cada uno escribió un número entero en su ficha. Se cumple una regla sin excepciones.', reglaP: 'un número termina en 0', reglaQ: 'es par',
+      p: x => `el número de ${x} termina en 0`, np: x => `el número de ${x} no termina en 0`, q: x => `el número de ${x} es par`, nq: x => `el número de ${x} no es par`,
+      excusa: null },
+  ];
+  const D_SI = '«Si p, q»: siempre que pasa p, también pasa q.';
+  const D_SEGURO_SI = 'Seguro: se cumple en todos los casos que dejan la regla y el dato.';
+
+  function construirCondicional(rng, semilla, nivelFijo) {
+    const S = rng.elegir(SITUACIONES_SI);
+    const nivel = nivelFijo || (rng.sig() < 0.5 ? 1 : 2), n = nivel === 1 ? 2 : 3;
+    const sujetos = rng.barajar(S.gente ? NOMBRES : S.sujetos).slice(0, n);
+    const nada = n === 3 && rng.sig() < 0.25;
+    const datos = sujetos.map(() => rng.elegir(['q', 'np']));
+    let x = -1;
+    if (!nada) { x = rng.entero(0, n - 1); datos[x] = rng.elegir(['p', 'nq']); }
+    // Que los datos no sean todos iguales en la forma (así cada persona pide pensar).
+    if (n === 3 && new Set(datos).size === 1) return null;
+    const dicho = (i, l) => S[l](sujetos[i]);
+    const op = (i, l) => ({ clave: i < 0 ? 'si:nada' : `si:${i}:${l}`, texto: i < 0 ? 'Ninguna: no se puede asegurar nada más' : `${mayus(dicho(i, l))}.` });
+    const correcta = nada ? op(-1) : op(x, conclusionSi(datos[x]));
+    const errores = [];
+    sujetos.forEach((_, i) => {
+      if (i === x) return;
+      const y = sujetos[i];
+      if (datos[i] === 'q') errores.push(err('RMP70-al-reves', op(i, 'p'), `Bien: usaste la regla con ${y}. Pero la regla va en un solo sentido: dice qué pasa cuando ${S.reglaP}, no por qué ${S.reglaQ}. Si ${dicho(i, 'q')}, quedan dos casos: que ${dicho(i, 'p')} o que ${dicho(i, 'np')}.`));
+      else errores.push(err('RMP71-negar-las-dos', op(i, 'nq'), `Bien: usaste la regla con ${y}. Pero la regla no dice qué pasa cuando no se cumple su primera parte. Si ${dicho(i, 'np')}, quedan dos casos: que ${dicho(i, 'q')} o que ${dicho(i, 'nq')}.`));
+    });
+    if (!nada) {
+      const xx = sujetos[x];
+      if (datos[x] === 'p') errores.push(err('RMP72-choca-con-la-regla', op(x, 'nq'), `Bien: miraste el dato de ${xx}. Pero eso choca con la regla: si ${dicho(x, 'p')}, entonces ${dicho(x, 'q')}. «${mayus(dicho(x, 'p'))} y ${dicho(x, 'nq')}» es justo el caso que la regla prohíbe.`));
+      else {
+        errores.push(err('RMP72-choca-con-la-regla', op(x, 'p'), `Bien: miraste el dato de ${xx}. Pero eso choca con la regla: si ${dicho(x, 'p')}, también ${dicho(x, 'q')}, y el dato dice que ${dicho(x, 'nq')}.`));
+        if (S.excusa) errores.push(err('RMP87-agrega-a-la-regla', { clave: `si:${x}:excusa`, texto: `${mayus(S.excusa(xx))}.` }, `Bien: buscaste una explicación para el dato de ${xx}. Pero eso le agrega a la regla algo que no dice: la regla no tiene excepciones, así que no puede pasar a la vez que ${dicho(x, 'p')} y que ${dicho(x, 'nq')}.`));
+      }
+      errores.push(err('RMP78-nada', op(-1), `Bien: no diste por seguro lo que solo es posible. Pero con ${xx} sí se concluye algo: la regla y su dato le dejan un solo caso, y en él ${dicho(x, conclusionSi(datos[x]))}.`));
+    }
+    const alternativas = P.armarTexto({ correcta, errores: rng.barajar(errores), rng });
+    if (alternativas.length < 4) return null;
+    const enunciado = [`${S.intro} Regla: si `, v('p', S.reglaP), ', ', v('q', S.reglaQ), '. Además se sabe que '];
+    sujetos.forEach((_, i) => {
+      if (i) enunciado.push(i === n - 1 ? ' y que ' : '; que ');
+      enunciado.push(v(datos[i] === 'p' || datos[i] === 'np' ? 'p' : 'q', dicho(i, datos[i])));
+    });
+    enunciado.push('.');
+    const pregunta = ['¿Cuál de estas afirmaciones es segura?'];
+    const casoT = (i, c) => `${c[0] ? dicho(i, 'p') : dicho(i, 'np')} y ${c[1] ? dicho(i, 'q') : dicho(i, 'nq')}`;
+    const solucion = [['Para cada uno hay cuatro casos: p y q, p sin q, q sin p, o ninguno. La regla tacha uno solo: ', v('p', 'p'), ' sin ', v('q', 'q'), '.']];
+    sujetos.forEach((y, i) => {
+      const quedan = casosSi(datos[i]);
+      const head = [`${mayus(y)}: el dato es «`, v(datos[i] === 'p' || datos[i] === 'np' ? 'p' : 'q', dicho(i, datos[i])), '». '];
+      if (quedan.length === 1) solucion.push([...head, `La regla y el dato dejan un solo caso: ${casoT(i, quedan[0])}. Es seguro que `, v('C', dicho(i, conclusionSi(datos[i]))), '.']);
+      else solucion.push([...head, `Quedan dos casos: ${casoT(i, quedan[0])}, o ${casoT(i, quedan[1])}. No se asegura nada más.`]);
+    });
+    solucion.push(['Respuesta: ', v('C', correcta.texto.replace(/\.$/, '')), '.']);
+    return {
+      enunciado, pregunta, solucion, alternativas, correcta,
+      variables: { p: { nombre: `p: ${S.reglaP}`, color: 'o' }, q: { nombre: `q: ${S.reglaQ}`, color: 'i' }, C: { nombre: 'lo que se concluye (seguro)', color: 'f' } },
+      lineasDatos: [D_SI, `p: ${S.reglaP}. q: ${S.reglaQ}.`, D_SEGURO_SI],
+      datos: { tipo: 'condicional', situacion: S.id, nivel, sujetos, datos, opciones: alternativas.map(a => a.valor) },
+    };
+  }
+
+  // =====================================================================================
+  // Por unidad, datos, paleta y explicaciones (fase 5 de Razonamiento deductivo, 17 nov)
+  // =====================================================================================
+  // Qué tipos sirve a cada unidad (modelo: plantillas/velocidad-relativa/). En Razonamiento deductivo, los cinco (el
+  // condicional simple es nuevo); en Certezas, solo «siempre cierto» (lo que es cierto en todos los casos), que es lo que
+  // esa unidad recibía de este generador. Sin unidad (o con otra), todo sigue como antes: las semillas de casos.json no
+  // cambian.
+  const TIPOS_POR_UNIDAD = {
+    'razonamiento-matematico.razonamiento-deductivo': ['silogismo', 'siempre-cierto', 'asignacion', 'puntajes', 'condicional'],
+    'razonamiento-matematico.certezas': ['siempre-cierto'],
+  };
+  // Sorteo dentro de la unidad: el condicional simple y los silogismos (ideas 3 y 4, nivel de entrada) salen más.
+  const PESOS = { condicional: 3, silogismo: 2, 'siempre-cierto': 2, asignacion: 2, puntajes: 1 };
+  // Entrada y salida de la unidad: formas paralelas, el mismo tipo en el mismo lugar.
+  const PRUEBA_DED = ['condicional', 'silogismo', 'asignacion'];
+
+  // Recuadro «Datos» (contrato, punto 13; molde §4 y §7): definiciones y reglas, una por línea; nunca la respuesta.
+  const D_CUANT = {
+    A: '«Todos los A son B»: no hay ningún A fuera de B.',
+    E: '«Ningún A es B»: no hay nadie que sea A y B a la vez.',
+    I: '«Algunos A son B»: por lo menos un A es B; quizás todos.',
+    O: '«Algunos A no son B»: por lo menos un A no es B.',
+  };
+  function lineasDatos(pr, d) {
+    if (pr.lineasDatos) return pr.lineasDatos;
+    if (d.tipo === 'silogismo') {
+      const fs = [...new Set(d.premisas.map(q => q.f))].sort();
+      return [...fs.map(f => D_CUANT[f]), 'Se deduce: vale en todos los dibujos que cumplen las dos premisas.'];
+    }
+    if (d.tipo === 'siempre-cierto') {
+      const out = [D_SI, 'Siempre cierto: se cumple en todos los casos que dejan las pistas.'];
+      if (d.pistas.some(q => q.t === 'nocond')) out.splice(1, 0, '«Si p, q» solo es falso cuando pasa p y no pasa q.');
+      return out;
+    }
+    if (d.tipo === 'asignacion') {
+      const out = [`${mayus(PIELES_AS[d.piel].unico)}.`, D_SI];
+      if (d.pistas.some(q => q.t === 'contra')) out.push('«Si X fuera…, Y sería…»: habla de algo que no pasa; X no es así.');
+      return out;
+    }
+    if (d.tipo === 'puntajes') return ['Un dado tiene caras del 1 al 6.', 'Puntaje: la suma de los resultados de todos sus lanzamientos.', 'Par: se divide entre 2 sin residuo; impar: no.'];
+    return [];
+  }
+  // Paleta de deducción (Gerson, 17 nov; la de la teoría): naranja lo primero, turquesa lo segundo, tinta lo que amarra
+  // (personas, cosas, el grupo del medio), violeta lo seguro y lo que se pide; sin verde ni carmín.
+  const PALETA = {
+    silogismo: { tinta: ['M'], color: { X: 'o', Z: 'i' } },
+    'siempre-cierto': { tinta: ['a', 'b', 'c'], color: {} },
+    asignacion: { tinta: PV, color: {} },
+    puntajes: { tinta: PV, color: {} },
+    condicional: { tinta: [], color: {} },
+  };
+  const VIOLETA = { nombre: 'lo que se concluye (seguro)', color: 'f' };
+  function pintarPaleta(pr, tipo) {
+    const pal = PALETA[tipo], tinta = new Set(pal.tinta);
+    const linea = segs => {
+      const out = [];
+      for (const x of segs) {
+        const t = x && typeof x === 'object' && tinta.has(x.v) ? x.t : x;
+        if (typeof t === 'string' && typeof out[out.length - 1] === 'string') out[out.length - 1] += t; else out.push(t);
+      }
+      // «Respuesta: …» suelto, en tinta: lo pedido ya comprobado va en violeta.
+      if (out.length === 1 && typeof out[0] === 'string' && /^Respuesta: /.test(out[0])) return ['Respuesta: ', v('C', out[0].slice(11).replace(/\.$/, '')), '.'];
+      return out;
+    };
+    const variables = {};
+    for (const [k, x] of Object.entries(pr.variables)) if (!tinta.has(k)) variables[k] = { ...x, color: pal.color[k] || x.color };
+    variables.C = VIOLETA;
+    return { enunciado: linea(pr.enunciado), pregunta: linea(pr.pregunta), solucion: pr.solucion.map(linea), variables };
+  }
+  // Cada explicación empieza por lo que el alumno hizo bien (fase 5): si ya empieza así, se le antepone «Bien:»; si no,
+  // una frase corta según su código.
+  const BIEN = {
+    RMP70: 'Bien: tomaste en cuenta el «si…, entonces…».', RMP71: 'Bien: trabajaste con el «si…, entonces…».',
+    RMP72: 'Bien: esa opción cumple casi todas las pistas.', RMP73: 'Bien: partiste de lo que dicen las premisas.',
+    RMP74: 'Bien: viste qué grupos se relacionan.', RMP75: 'Bien: viste que algunos sí lo son.',
+    RMP76: 'Bien: buscaste un grupo que una a los otros dos.', RMP77: 'Bien: eso puede pasar con las pistas.',
+    RMP78: 'Bien: no diste por seguro algo sin revisarlo.', RMP79: 'Bien: usaste la pista del «si… fuera…».',
+    RMP2: 'Bien: ese puntaje cumple las pistas.',
+  };
+  const sinPunto = t => String(t).replace(/\.$/, '');
+  function conBien(e) {
+    const t = e.explicacion;
+    if (/^Bien\b/.test(t)) return t;
+    if (/^(Con todas las pistas|El reparto |Puede pasar)/.test(t)) return `Bien: ${minus(t)}`;
+    if (/^\d/.test(t)) return `Bien: ${t}`;
+    if (e.id === 'RMP72-dado-cruzado') return `Bien: el puntaje es el que corresponde. ${t}`;
+    const lead = BIEN[(String(e.id).match(/^RMP\d+/) || [''])[0]];
+    return lead ? `${lead} ${t}` : t;
+  }
+
+  // =====================================================================================
   const conNuevos = s => (typeof s === 'number' ? s >= 400 : !/^(entrada|salida)-/.test(s));
-  function generar(semilla) {
+  const HACER = { silogismo: construirSilogismo, 'siempre-cierto': construirSiempre, asignacion: construirAsignacion, puntajes: construirPuntajes, condicional: construirCondicional };
+  function generar(semilla, opciones) {
+    const unidad = typeof opciones === 'string' ? opciones : opciones && opciones.unidad;
+    const permitidos = TIPOS_POR_UNIDAD[unidad];
     const rng = Azar.crear(`${ID}|${semilla}`);
     // Las pruebas de entrada y salida traen un problema de cada tipo (formas paralelas).
     const prueba = /^(entrada|salida)-(\d+)$/.exec(String(semilla));
-    let tipo = prueba ? TIPOS[(+prueba[2] - 1) % TIPOS.length] : rng.elegir(TIPOS);
-    // Tipo nuevo (cierre-100): sorteo aparte, para que las semillas ya fijadas en casos.json no cambien.
-    if (!prueba && conNuevos(semilla) && Azar.crear(`${ID}+nuevos|${semilla}`).sig() < 0.25) tipo = 'puntajes';
-    const hacer = { silogismo: construirSilogismo, 'siempre-cierto': construirSiempre, asignacion: construirAsignacion, puntajes: construirPuntajes }[tipo];
+    let tipo;
+    if (!permitidos) {
+      // Como antes (sin unidad): las semillas ya fijadas en casos.json no cambian.
+      tipo = prueba ? TIPOS[(+prueba[2] - 1) % TIPOS.length] : rng.elegir(TIPOS);
+      // Tipo nuevo (cierre-100): sorteo aparte, para que las semillas ya fijadas en casos.json no cambien.
+      if (!prueba && conNuevos(semilla) && Azar.crear(`${ID}+nuevos|${semilla}`).sig() < 0.25) tipo = 'puntajes';
+    } else if (prueba) {
+      const lista = permitidos.length > 1 ? PRUEBA_DED : permitidos;
+      tipo = lista[(+prueba[2] - 1) % lista.length];
+    } else tipo = rng.elegir(permitidos.flatMap(t => Array(PESOS[t] || 1).fill(t)));
+    // Un tipo pedido (pruebas y papel): solo si la unidad lo tiene.
+    const pedido = opciones && typeof opciones === 'object' && opciones.tipo;
+    if (pedido && HACER[pedido] && (!permitidos || permitidos.includes(pedido))) tipo = pedido;
+    const hacer = HACER[tipo];
     for (let intento = 0; intento < 4000; intento++) {
       const pr = hacer(rng, semilla);
       if (!pr) continue;
+      const pal = pintarPaleta(pr, tipo);
       const out = {
-        id: `${ID}#${semilla}`, variables: pr.variables, enunciado: pr.enunciado, pregunta: pr.pregunta, datos: '',
-        alternativas: pr.alternativas, solucion: pr.solucion,
-        respuesta: { valor: pr.correcta.clave, texto: pr.correcta.texto, unidad: '' },
+        id: `${ID}#${semilla}`, variables: pal.variables, enunciado: pal.enunciado, pregunta: pal.pregunta, datos: lineasDatos(pr, pr.datos),
+        // Sin punto final en las alternativas: la app escribe «La respuesta es la B: …» y agrega el suyo.
+        alternativas: pr.alternativas.map(a => ({ ...a, texto: sinPunto(a.texto), ...(a.error ? { error: { ...a.error, explicacion: conBien(a.error) } } : {}) })),
+        solucion: pal.solucion,
+        respuesta: { valor: pr.correcta.clave, texto: sinPunto(pr.correcta.texto), unidad: '' },
         _datos: pr.datos,
       };
       if (pr.figuraSolucion) out.figuraSolucion = pr.figuraSolucion;
@@ -969,6 +1190,6 @@
     throw new Error(`${ID}: no se pudo generar un problema (${tipo})`);
   }
 
-  const calc = { proposicion, modelosSilogismo, validaSilogismo, conclusionesValidas, casosFrascos, necesaria, repartos, puntajes, puntajeMaximo };
-  return { id: ID, titulo: 'Lo que se deduce: clases, frascos y condicionales', generar, calc };
+  const calc = { proposicion, modelosSilogismo, validaSilogismo, conclusionesValidas, casosFrascos, necesaria, repartos, puntajes, puntajeMaximo, casosSi, seguroSi, conclusionSi };
+  return { id: ID, titulo: 'Lo que se deduce: clases, frascos y condicionales', generar, calc, tiposPorUnidad: TIPOS_POR_UNIDAD };
 });
