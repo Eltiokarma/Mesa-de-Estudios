@@ -238,8 +238,10 @@
     const ords = ordenes(d), llega = d.cerrado ? 0 : entero(d.llega);
     const tipos = d.cerrado ? ['cerrado'] : ords.concat(llega ? ['llega'] : []);
     const reglas = lineasRegla(d, ords);
-    const tope = (reglas.length >= 3 ? 102 : TOPE) + (reglas.length || d.etiqueta ? 0 : -50);
-    const SEP = 12, AW = ZONA.x1 - ZONA.x0, AH = PISO - tope;
+    // Con tres líneas en el letrero, el pedido baja un poco más; el aro punteado de «juntar» sobresale 5 del grupo
+    // (numeracion, idea 3: rondas con el letrero completo).
+    const tope = (reglas.length >= 3 ? 108 : TOPE) + (reglas.length || d.etiqueta ? 0 : -50);
+    const SEP = 12, AW = ZONA.x1 - ZONA.x0, AH = PISO - tope - (d.juntar && reglas.length >= 3 ? 6 : 0);
     // Cuántas filas lleva cada grupo: la combinación que deja el pedido más grande (a igual tamaño, menos filas).
     const opciones = tipos.map(t => (['bolsitas', 'cajas', 'cajones'].includes(t) && entero(d[t]) > 1 ? [1, 2, 3].filter(f => f <= entero(d[t])) : [1]));
     let mejor = null;

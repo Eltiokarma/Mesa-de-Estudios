@@ -4,7 +4,7 @@
 // carmín. Con números (no a ojo; docs/molde-unidad.md §6): todo cabe en el lienzo con 4 de margen, ningún texto pisa a
 // otro ni a un objeto (el pedido, la etiqueta, los que llegan), y el número de la etiqueta queda dentro de la etiqueta.
 // Se revisan las muestras de abajo y todas las figuras de la teoría que usan la pieza (Lee, el juego en toda su grilla,
-// Predice, «Mira» paso a paso, ejemplos, «Así se resuelve» y «Ahora tú» en 120 semillas).
+// Predice, «Mira» paso a paso, ejemplos, «Así se resuelve» y «Ahora tú» en 120 semillas), de las cinco ideas.
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
@@ -135,7 +135,15 @@ test('todas las figuras de la teoría que usan la pieza: caben y sus textos no s
   assert.ok(figs.length > 200, `${figs.length} figuras`);
   for (const [nombre, d, e] of figs) revisar(d, e, nombre, mal);
   assert.deepEqual(mal.slice(0, 20), []);
-  // El juego no cambia de escala entre un caso y otro (la bolsita no salta de tamaño al mover un control).
-  const escalas = new Set(figs.filter(f => / juego /.test(f[0])).map(([, d, e]) => P.geometria(d, e).s));
-  assert.equal(escalas.size, 1, [...escalas].join(', '));
+  // El juego no cambia de escala entre un caso y otro (la bolsita no salta de tamaño al mover un control). En la idea 3
+  // la escala es fija para cada montón (caramelos y bolsita): no cambia entre una ronda y otra.
+  const grupos = new Map();
+  for (const [nombre, d, e] of figs.filter(f => / juego /.test(f[0]))) {
+    const [id, v] = [nombre.split(' juego ')[0], JSON.parse(nombre.split(' juego ')[1])];
+    const k = id === 'cambio-base' ? `${id} ${v.n},${v.b}` : id;
+    if (!grupos.has(k)) grupos.set(k, new Set());
+    grupos.get(k).add(P.geometria(d, e).s);
+  }
+  assert.ok(grupos.size > 4);
+  for (const [k, esc] of grupos) assert.equal(esc.size, 1, `${k}: ${[...esc].join(', ')}`);
 });

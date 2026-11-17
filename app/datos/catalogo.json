@@ -3369,6 +3369,7 @@
       "Base de un sistema",
       "Descomposición polinómica",
       "Cambio de base",
+      "Base desconocida y cifras ocultas",
       "Conteo de números y cifras"
      ],
      "universidades": {
@@ -3395,14 +3396,15 @@
       "archivo": "/contenido/teoria/aritmetica/numeracion.js",
       "requiere": [
        "/nucleo/kit/piezas/arit-puesto.js",
+       "/nucleo/kit/piezas/arit-talonario.js",
        "/nucleo/kit/piezas/arit-fichas.js",
        "/nucleo/kit/piezas/arit-tabla.js",
        "/nucleo/kit/piezas/arit-tiras.js",
        "/plantillas/numeracion/motor.js",
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
-      "ideas": 4,
-      "terminos": 13
+      "ideas": 5,
+      "terminos": 20
      }
     },
     {
@@ -3448,7 +3450,7 @@
        "/nucleo/kit/piezas/arit-tiras.js"
       ],
       "ideas": 6,
-      "terminos": 25
+      "terminos": 26
      }
     },
     {
@@ -3490,7 +3492,7 @@
        "/nucleo/kit/piezas/arit-tabla.js"
       ],
       "ideas": 5,
-      "terminos": 23
+      "terminos": 24
      }
     },
     {
@@ -3536,7 +3538,7 @@
        "/nucleo/kit/piezas/ari-cubitos-3d.js"
       ],
       "ideas": 6,
-      "terminos": 28
+      "terminos": 29
      }
     },
     {
@@ -3627,7 +3629,7 @@
        "/nucleo/kit/piezas/arit-tabla.js"
       ],
       "ideas": 5,
-      "terminos": 31
+      "terminos": 32
      }
     },
     {
