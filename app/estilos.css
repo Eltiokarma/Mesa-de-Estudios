@@ -815,7 +815,7 @@ input[type=file]{font:inherit;max-width:100%}
 .te-aviso{margin:0;min-height:20px;font-size:14px;font-weight:600}
 .te-aviso:empty{min-height:0}
 .te-accion{position:sticky;bottom:calc(76px + env(safe-area-inset-bottom));z-index:2}
-.te-accion:has(.te-atras:not([hidden])){display:flex;gap:8px}.te-atras{flex:none;min-width:96px}.te-accion .te-sig{flex:1}
+.te-atras[hidden]{display:none!important}.te-accion:has(.te-atras:not([hidden])){display:flex;gap:8px}.te-atras{flex:none;min-width:96px;background:var(--card)}.te-accion .te-sig{flex:1}
 .te-momentos li.pasado{cursor:pointer}.te-momentos li.pasado:hover{color:var(--ink)}
 .te-fichas{display:flex;flex-direction:column;gap:14px}
 .te-fic h2{margin:0 0 8px;font-size:18px}

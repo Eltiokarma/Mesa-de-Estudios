@@ -84,11 +84,13 @@ function cargarGenerador(pl) {
   });
 }
 
-async function vista(ctx, id) {
+async function vista(ctx, id, desde) {
   const { $app, cat, est, esc, guardar, registrar, marcarDia } = ctx;
   const pl = cat.plantillas[id];
   if (!pl || pl.formato !== 'predicciones') { location.hash = '#/cursos'; return; }
-  const unidad = pl.unidades[0];
+  // La unidad desde la que se abrió (#/practica/<id>/<unidad>): un generador que sirve a varias unidades le da a cada
+  // una solo sus tipos (velocidad-relativa: los botes con sacos son de choques, no de vectores; auditoría, 17 nov).
+  const unidad = pl.unidades.includes(desde) ? desde : pl.unidades[0];
   const curso = cat.cursos.find(c => c.unidades.some(u => u.id === unidad));
   $app.innerHTML = '<p class="vacio">Cargando…</p>';
   let gen;
@@ -132,7 +134,7 @@ async function vista(ctx, id) {
         registrar({ tipo: 'prueba', fase, modulo: id, unidad, aciertos, total: N_PRUEBA, respuestas: respuestas.join(''), nose, ms: Date.now() - t0 });
         return fase === 'entrada' ? practica() : resultado();
       }
-      const p = gen.generar(`${fase}-${i + 1}`);
+      const p = gen.generar(`${fase}-${i + 1}`, { unidad });
       $app.innerHTML = cabecera(fase === 'entrada'
         ? 'Antes de empezar: 3 preguntas rápidas para saber de dónde partes. No cuentan para nada. Si no lo sabes, marca «No sé»: nos ayuda más que adivinar.'
         : 'Prueba final: 3 preguntas parecidas a las del inicio, para ver cuánto avanzaste.') + problemaHTML(p, i + 1, N_PRUEBA, fase === 'entrada' ? 'Prueba de entrada' : 'Prueba de salida');
@@ -162,7 +164,7 @@ async function vista(ctx, id) {
 
   async function practica() {
     const n = st.hechos + 1;
-    const p = gen.generar(`${est.alumno}-${n}`);
+    const p = gen.generar(`${est.alumno}-${n}`, { unidad });
     if (p.escena && p.escena.pieza) {
       const h = location.hash;
       let pieza = null;

@@ -125,7 +125,7 @@ const ctxPrueba = () => ({ $app, cat, est, esc, guardar, registrar, marcarDia, p
 const salidaAbierta = curso => (est.salidaHabilitada || []).some(x => x === curso || x === 'todas');
 // Las escenas abren su propia página (con botón para volver); las predicciones y la lectura van dentro de la app.
 // La lectura recibe además la unidad, para mostrar solo los textos que la tocan.
-const enlace = (p, unidad) => p.formato === 'escena' ? `${p.url}?desde=app${unidad ? `&unidad=${encodeURIComponent(unidad)}` : ''}` : p.formato === 'lectura' && unidad ? `${p.url}/${encodeURIComponent(unidad)}` : p.url;
+const enlace = (p, unidad) => p.formato === 'escena' ? `${p.url}?desde=app${unidad ? `&unidad=${encodeURIComponent(unidad)}` : ''}` : (p.formato === 'lectura' || p.formato === 'predicciones') && unidad ? `${p.url}/${encodeURIComponent(unidad)}` : p.url;
 const VERBO = { escena: 'Abrir escena', predicciones: 'Practicar', lectura: 'Leer' };
 const ETIQUETA = { escena: 'Escena', predicciones: 'Práctica', lectura: 'Lectura' };
 function avance(c, uni) { const us = unidadesDe(c, uni); return us.length ? us.filter(estudiada).length / us.length : 0; }
@@ -635,7 +635,7 @@ async function vExamen(c, u) {
   const preguntas = [];
   for (let i = 0, k = 0; preguntas.length < N_EXAMEN && k < N_EXAMEN * 4; k++) {
     const g = fabricas[i % fabricas.length];
-    try { const p = g.generar(`examen-${est.alumno}-${u.id}-${intento}-${k}`); if (p && Array.isArray(p.alternativas) && p.alternativas.length > 1) { preguntas.push({ g, p }); i++; } } catch { /* semilla sin problema válido: otra */ }
+    try { const p = g.generar(`examen-${est.alumno}-${u.id}-${intento}-${k}`, { unidad: u.id }); if (p && Array.isArray(p.alternativas) && p.alternativas.length > 1) { preguntas.push({ g, p }); i++; } } catch { /* semilla sin problema válido: otra */ }
   }
   if (!preguntas.length) { $app.querySelector('.vacio').textContent = 'No se pudieron armar las preguntas de esta unidad.'; return; }
   const resp = guardado ? preguntas.map((_, k) => guardado.resp[k] || null) : preguntas.map(() => null);
@@ -1375,7 +1375,7 @@ function render() {
   if (ruta === 'cierre') return vCierre();
   if (ruta === 'practica') {
     $nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.ruta === 'cursos'));
-    return cuandoListo(modulo('practica'), () => Practica.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || '')));
+    return cuandoListo(modulo('practica'), () => Practica.vista({ $app, cat, est, esc, guardar, registrar, marcarDia }, decodeURIComponent(arg || ''), decodeURIComponent(location.hash.split('/')[3] || '')));
   }
   if (ruta === 'repaso') {
     sembrarRepaso();

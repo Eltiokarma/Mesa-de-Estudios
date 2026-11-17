@@ -71,7 +71,7 @@ async function vista(ctx) {
         if (!g) continue; // sin conexión y sin la copia guardada
         for (const k of ks) {
           let p = null;
-          try { p = g.generar(R.semilla(est.alumno, id, ficha, k)); } catch { /* semilla sin problema válido: otra */ }
+          try { p = g.generar(R.semilla(est.alumno, id, ficha, k), { unidad: id }); } catch { /* semilla sin problema válido: otra */ }
           if (delaUnidad(pl, p, id)) {
             return { fuente: 'generador', plantilla: pl.id, problema: p.id,
               enunHTML: `<p class="enun">${textoPlano(p.enunciado, esc)}</p>${cajaDatos(p.datos, esc)}${figura(p.figura, esc)}`,
