@@ -49,14 +49,21 @@
  * datos = {
  *   objeto, medidas: { piso: 3, pared: 4 },          largos de los catetos ra y rb, en la unidad del problema
  *   marco: [ra, rb],                                 opcional: fija la escala (el juego, para que el pie siga al dedo)
- *   lados: { piso: { color: 'f', texto, texto2, paso } },   color: token del kit; texto (línea 1, 16) y texto2 (línea 2,
- *            14): un texto o [{ t, paso }] (se ve el último cuyo paso ya llegó); paso: desde cuándo se pinta el color
+ *   lados: { piso: { color: 'f', texto, texto2, texto3, color2, color3, paso } },   color: token del kit o [{ c, paso }]
+ *            (cambia con los pasos); texto (línea 1, 16), texto2 y texto3 (líneas 2 y 3, 14): un texto o [{ t, paso }] (se
+ *            ve el último cuyo paso ya llegó); color2 y color3: el color de esas líneas (por omisión, el del lado);
+ *            paso: desde cuándo se pinta el color
  *   angulos: { pie: { texto: 'θ', color: 'h', paso } },     solo los que se nombran; color carmín por omisión
  *   recto: true,                                     el cuadradito del ángulo recto (por omisión, sí)
  *   nota: 'sen 60° = √3/2',                          opcional: una línea arriba, al centro (un texto o [{ t, paso }])
+ *   otra: { ra, rb },                                solo la escalera: otra posición de la misma escalera, punteada (la
+ *                                                    escalera que resbala), con su ángulo en angulos.pie2
  * }
  * estado = { paso: 0..n, final }. Función pura de (datos, estado): sin ids, sin azar, sin reloj. Lienzo de 320 × 256.
- * Colores: currentColor (tinta) y var(--c-*); el halo de los rótulos, var(--card).
+ * Colores: currentColor (tinta) y var(--c-*); el halo de los rótulos, var(--card). La unidad decide qué color lleva cada
+ * lado (regla de colores en el comentario de la unidad: el opuesto naranja, el adyacente turquesa, la hipotenusa en tinta).
+ * La letra de un ángulo va dentro de su abertura, tan lejos del vértice como haga falta para no tocar un lado; el arco
+ * la sigue (lector en frío, 17 nov: «25°», «α» y «30°» quedaban lejos de su arquito).
  */
 (function (root, fabrica) {
   const nodo = typeof module === 'object' && module.exports;
@@ -102,7 +109,7 @@
   };
   // Nombres de los lados para el texto alternativo.
   const NOMBRES = {
-    escalera: { ra: 'piso', rb: 'pared', h: 'escalera' }, rampa: { ra: 'base', rb: 'altura', h: 'rampa' },
+    escalera: { ra: 'piso', rb: 'pared', h: 'escalera', otra: 'la escalera después de resbalar' }, rampa: { ra: 'base', rb: 'altura', h: 'rampa' },
     poste: { ra: 'suelo', rb: 'poste', h: 'cable' }, sombra: { ra: 'sombra', rb: 'poste', h: 'rayo de sol' },
     repisa: { ra: 'pared', rb: 'brazo', h: 'tirante' }, chacra: { ra: 'cerca', rb: 'cerca', h: 'cerca larga' },
     triangulo: { ra: 'cateto', rb: 'cateto', h: 'hipotenusa' },
@@ -122,8 +129,6 @@
   // Suelo: línea y banda tenue, de punta a punta.
   const suelo = (x0 = 8, x1 = W - 6, y = SUELO) => linea([x0, y], [x1, y], tinta(2)) + `<rect x="${x0}" y="${y}" width="${x1 - x0}" height="4" fill="currentColor" fill-opacity="0.12"/>`;
   const centro = (...ps) => [ps.reduce((t, p) => t + p[0], 0) / ps.length, ps.reduce((t, p) => t + p[1], 0) / ps.length];
-  // Un punto de un triángulo llevado hacia su centro (k = 1: el centro; k = 0: el punto). Para el hueco de una escuadra.
-  const hacia = (p, c, k) => [p[0] + (c[0] - p[0]) * k, p[1] + (c[1] - p[1]) * k];
   // Estaca vista desde arriba: un círculo con una cruz.
   const estaca = p => `<circle cx="${n(p[0])}" cy="${n(p[1])}" r="4.5" fill="var(--card)" ${tinta(2)}/>` + linea([p[0] - 3, p[1] - 3], [p[0] + 3, p[1] + 3], tinta(1.5)) + linea([p[0] - 3, p[1] + 3], [p[0] + 3, p[1] - 3], tinta(1.5));
   // Sol lejos, en la dirección de un rayo (de la punta de la sombra a la punta del objeto), sin salirse del lienzo.
@@ -150,8 +155,8 @@
   const OBJETOS = {
     // escalera: «una escalera apoyada en la pared de una casa de adobe es la hipotenusa; la pared y el piso, los catetos».
     escalera(m, d, col) {
-      const mk = d.marco || [];
-      const s = Math.min(160 / Math.max(m.ra, mk[0] || 0), 168 / Math.max(m.rb, mk[1] || 0));
+      const mk = d.marco || [], ot = d.otra || {};
+      const s = Math.min(160 / Math.max(m.ra, mk[0] || 0, ot.ra || 0), 168 / Math.max(m.rb, mk[1] || 0, ot.rb || 0));
       const XW = 196, r = [XW, SUELO], a = [XW - m.ra * s, SUELO], b = [XW, SUELO - m.rb * s];
       let fondo = adobe(XW, 16, W - 6, SUELO) + linea([XW, 16], [XW, SUELO], tinta(2));
       fondo += `<path d="M${XW - 10} 16L${W - 6} 16L${W - 6} 9L${XW - 4} 9Z" fill="currentColor" fill-opacity="0.3" ${tinta(1.5)}/>`;
@@ -166,8 +171,17 @@
       let pel = '';
       for (let i = 1; i < k; i++) { const p = suma(a, resta(b, a), i / k), p2 = suma(p, q, 7); pel += `M${n(p[0])} ${n(p[1])}L${n(p2[0])} ${n(p2[1])}`; }
       frente += `<path d="${pel}" fill="none" ${tinta(1.5)}/>` + linea(a, b, `stroke="${col('h')}" stroke-width="3" stroke-linecap="round"`);
-      // El rótulo de la escalera va más afuera: el segundo larguero está a 7 del lado.
-      return { r, a, b, s, fondo, frente, propios: ['h'], separa: { h: 19 } };
+      // Otra posición de la misma escalera (la que resbala): punteada, con su ángulo en el piso (pie2).
+      const extras = {}, extraAng = {};
+      if (d.otra) {
+        const a3 = [XW - d.otra.ra * s, SUELO], b3 = [XW, SUELO - d.otra.rb * s];
+        fondo += linea(a3, b3, `${tinta(2.5)} stroke-dasharray="6 5"`);
+        extras.otra = [a3, b3];
+        extraAng.pie2 = { v: a3, p1: r, p2: b3 };
+      }
+      // El rótulo de la escalera va más afuera: el segundo larguero está a 7 del lado. Las letras de los ángulos evitan
+      // también ese larguero (lector en frío, 17 nov: «74°» quedaba encima de la escalera).
+      return { r, a, b, s, fondo, frente, propios: ['h'], separa: { h: 19 }, evitar: [[a2, b2]], extras, extraAng, extraG: centro(r, a, b) };
     },
     // rampa: «la rampa es la hipotenusa; lo que sube (la vereda) y la base en el piso son los catetos».
     rampa(m, d) {
@@ -270,7 +284,8 @@
       return { r, a, b, s, fondo, frente, propios: ['primo'], punteado: ['h', 'rayo2'],
         extras: { sombra2: [r2, a2], primo: [r2, b2], rayo2: [b2, a2] }, extraG: centro(r2, a2, b2),
         extraAng: { suelo2: { v: a2, p1: r2, p2: b2, R: 12 } },
-        lugar: { primo: { x: XQ, y: b2[1] - 8, ancla: 'middle' } } };
+        // El alto del primo a la izquierda de su cabeza y el largo de su rayo a la derecha: centrados se pisaban.
+        lugar: { primo: { x: XQ - 5, y: b2[1] - 6, ancla: 'end' }, rayo2: { x: XQ + 7, y: b2[1] - 6, ancla: 'start' } } };
     },
     // senal: «una señal "Ceda el paso" es un triángulo equilátero; su altura la parte en dos triángulos rectángulos
     // iguales, cada uno con 30° abajo y 60° arriba». La mitad derecha es el triángulo principal.
@@ -282,12 +297,12 @@
       const G = centro(TL, TR, V);
       let fondo = suelo(8, W - 6, YS) + `<rect x="${cx - 3}" y="${n(V[1])}" width="6" height="${n(YS - V[1])}" rx="2" fill="currentColor" fill-opacity="0.25" ${tinta(1.5)}/>`;
       fondo += poli([TL, TR, V], `fill="var(--card)" ${tinta(2.5)}`) + poli([r, a, b], 'fill="currentColor" fill-opacity="0.1" stroke="none"');
-      // Borde interior de la señal (el filete), un poco hacia adentro.
-      fondo += poli([hacia(TL, G, 0.16), hacia(TR, G, 0.16), hacia(V, G, 0.16)], `fill="none" ${tinta(1.2, 0.45)}`);
+      // Sin el filete interior: cruzaba los rótulos (lector en frío, 17 nov).
       const frente = linea(r, b, `${tinta(2)} stroke-dasharray="6 5"`);
-      // El rótulo de la altura va arriba, en la mitad izquierda, donde la señal es ancha.
+      // El rótulo de la altura va en la mitad sombreada (el triángulo que se usa), pegado a la línea punteada, a media
+      // altura: arriba está el 60° y abajo la mitad se angosta.
       return { r, a, b, s, fondo, frente, propios: [], punteado: ['rb'], suelo: YS,
-        extras: { izqLado: [TL, V], izqMedia: [TL, r] }, centro: G, lugar: { rb: { x: cx - 8, y: YT + 26, ancla: 'end' } } };
+        extras: { izqLado: [TL, V], izqMedia: [TL, r] }, centro: G, lugar: { rb: { x: cx + 4, y: YT + 64, ancla: 'start', partir: true } } };
     },
     // loseta: «una loseta cuadrada partida por su diagonal da dos triángulos rectángulos iguales, con 45° y 45°».
     loseta(m, d) {
@@ -302,8 +317,10 @@
     // escuadras: «las dos escuadras del colegio son una media loseta (45° y 45°) y una media señal (30° y 60°)».
     escuadras(m, d) {
       // sola: solo la de 30° y 60°, más grande y al centro (cuando sus rótulos llevan unidades).
-      const c = +((d.medidas || {}).corto) || 1, s = (d.sola ? 106 : 86) / c, y0 = 200, X2 = 28, X1 = d.sola ? 52 : X2 + 86 + 30;
-      const r2 = [X2, y0], a2 = [X2 + c * s, y0], b2 = [X2, y0 - c * s];
+      // La de 45° más grande que antes (lector en frío, 17 nov: sus dos «45°» quedaban juntos en el medio) y las dos un poco
+      // más arriba, para que no sobre lienzo encima.
+      const c = +((d.medidas || {}).corto) || 1, s = (d.sola ? 106 : 80) / c, s45 = 100 / c, y0 = d.sola ? 200 : 190, X2 = 20, X1 = d.sola ? 52 : X2 + 100 + 26;
+      const r2 = [X2, y0], a2 = [X2 + c * s45, y0], b2 = [X2, y0 - c * s45];
       const a = [X1, y0], r = [X1 + c * Math.sqrt(3) * s, y0], b = [r[0], y0 - c * s];
       // Sin el hueco del centro: en una escuadra tan chica, sus bordes le quitaban sitio a las letras de los ángulos.
       const escuadra = (p, q, t) => poli([p, q, t], `fill="currentColor" fill-opacity="0.1" ${tinta(2)}`);
@@ -326,20 +343,21 @@
       let marcas = '';
       for (let g = 10; g < 180; g += 10) { const t = Math.PI + g * Math.PI / 180, L = g % 30 === 0 ? 6 : 3; marcas += `M${n(a[0] + R * Math.cos(t))} ${n(a[1] + R * Math.sin(t))}L${n(a[0] + (R - L) * Math.cos(t))} ${n(a[1] + (R - L) * Math.sin(t))}`; }
       let fondo = `<path d="M${n(a[0] - R)} ${n(a[1])}A${R} ${R} 0 0 1 ${n(a[0] + R)} ${n(a[1])}Z" fill="currentColor" fill-opacity="0.08" ${tinta(1.5)}/><path d="${marcas}" fill="none" ${tinta(1, 0.6)}/>`;
-      // Unos adobes apilados, arriba a la derecha: aquí se va a levantar una pared.
-      for (const [x, y] of [[258, 36], [280, 36], [269, 26], [258, 56], [280, 56], [269, 46]]) fondo += `<rect x="${x}" y="${y}" width="20" height="9" rx="1.5" fill="currentColor" fill-opacity="0.12" ${tinta(1.2)}/>`;
+      // Sin los adobes apilados de antes: nadie los explicaba (lector en frío, 17 nov).
       // Las tres cuerdas, en tinta (las que llevan color se pintan encima) y las estacas sobre todo.
       const frente = linea(r, a, tinta(2)) + linea(r, b, tinta(2)) + linea(a, b, tinta(2));
       // La lectura del transportador va a su derecha, sobre la base: ahí no llega la cuerda en ningún ángulo.
-      return { r, a, b, s, fondo, frente, encima: estaca(r) + estaca(b) + estaca(a), propios: [], lugarAng: { a: { x: a[0] + R + 34, y: a[1] - 9 } } };
+      return { r, a, b, s, fondo, frente, encima: estaca(r) + estaca(b) + estaca(a), propios: [], lugarAng: { a: { x: a[0] + R + 22, y: a[1] - 12 } } };
     },
     // techo: «el poste del centro parte el techo a dos aguas en dos triángulos rectángulos: la viga, el poste y la
     // calamina». La mitad derecha es el triángulo; la izquierda, su reflejo en tinta.
     techo(m, d) {
       const mk = d.marco || [], s = Math.min(144 / Math.max(m.ra, mk[0] || 0), 150 / Math.max(m.rb, mk[1] || 0));
       const cx = 160, YV = 196, r = [cx, YV], a = [cx + m.ra * s, YV], b = [cx, YV - m.rb * s], Lz = [cx - m.ra * s, YV];
-      const pared = 12;
-      let fondo = `<rect x="${n(Lz[0] + pared)}" y="${YV}" width="${n(a[0] - Lz[0] - 2 * pared)}" height="${H - 8 - YV}" fill="currentColor" fill-opacity="0.07" ${tinta(2)}/>`;
+      // La pared de la casa termina antes que la viga: lo que sobra es el alero, y ahí abajo va el rótulo «viga», que ya
+      // no queda sobre la pared (lector en frío, 17 nov: parecía nombrar la pared).
+      const vuelo = 56;
+      let fondo = `<rect x="${n(Lz[0] + vuelo)}" y="${YV}" width="${n(a[0] - Lz[0] - 2 * vuelo)}" height="${H - 8 - YV}" fill="currentColor" fill-opacity="0.07" ${tinta(2)}/>`;
       fondo += `<rect x="${n(Lz[0] - 6)}" y="${YV}" width="${n(a[0] - Lz[0] + 12)}" height="6" rx="2" fill="currentColor" fill-opacity="0.3" ${tinta(1.5)}/>`;
       fondo += `<rect x="${n(cx - 3)}" y="${n(b[1])}" width="6" height="${n(YV - b[1])}" fill="currentColor" fill-opacity="0.22" ${tinta(1.2)}/>`;
       // La calamina: una lámina ondulada sobre cada mitad (dos líneas y las ondas entre ellas).
@@ -355,7 +373,9 @@
       // La puerta de la casa.
       fondo += `<rect x="${cx + 26}" y="${H - 8 - 34}" width="20" height="34" rx="2" fill="none" ${tinta(1.5)}/>`;
       // El rótulo del poste va abajo a su izquierda, sobre la viga: arriba lo taparía el techo de la otra mitad.
-      return { r, a, b, s, fondo, frente: '', propios: [], separa: { h: 20 }, lugar: { rb: { x: cx - 10, y: YV - 10, ancla: 'end' } } };
+      // La nota va cerca del techo, no arriba del todo: con un techo bajo quedaba un hueco.
+      return { r, a, b, s, fondo, frente: '', propios: [], separa: { h: 20 }, notaY: Math.max(19, b[1] - 30),
+        lugar: { rb: { x: cx - 10, y: YV - 10, ancla: 'end' }, ra: { x: a[0] - vuelo / 2, y: YV + 25, ancla: 'middle' } } };
     },
     // figura: «el triángulo rectángulo está escondido en la figura del examen: hay que verlo para usar la razón».
     figura(m, d) {
@@ -386,6 +406,13 @@
     },
   };
 
+  // El color de un lado en un paso: un token, o [{ c, paso }] (el último cuyo paso ya llegó).
+  const colorEn = (c, p) => {
+    if (!Array.isArray(c)) return c;
+    let out;
+    for (const x of c) if (x && (x.paso || 0) <= p) out = x.c;
+    return out;
+  };
   // Lo que se ve de un texto con pasos: el último cuyo paso ya llegó.
   const textoEn = (t, p) => {
     if (t === undefined || t === null || t === '') return null;
@@ -395,15 +422,15 @@
     return out;
   };
 
-  // Rótulo de un lado: una o dos líneas junto a su mitad, del lado de afuera del triángulo.
-  function rotulosLado(p, q, G, lineas, color, dist = 12) {
+  // Rótulo de un lado: de una a tres líneas ([texto, color]) junto a su mitad, del lado de afuera del triángulo.
+  function rotulosLado(p, q, G, lineas, dist = 12) {
     const mid = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2];
     let nv = unit([-(q[1] - p[1]), q[0] - p[0]]);
     if ((mid[0] - G[0]) * nv[0] + (mid[1] - G[1]) * nv[1] < 0) nv = [-nv[0], -nv[1]];
     const P = suma(mid, nv, dist), alto = lineas.length * 18;
     const ancla = Math.abs(nv[0]) < 0.4 ? 'middle' : nv[0] > 0 ? 'start' : 'end';
     const arriba = nv[1] > 0.4 ? P[1] : nv[1] < -0.4 ? P[1] - alto : P[1] - alto / 2;
-    return lineas.map((t, i) => T.rotulo(P[0], arriba + 13 + i * 18, t, { ancla, peso: 700, tam: i === 0 ? 16 : 14, color, min: M, max: W - M })).join('');
+    return lineas.map(([t, color], i) => T.rotulo(P[0], arriba + 13 + i * 18, t, { ancla, peso: 700, tam: i === 0 ? 16 : 14, color, min: M, max: W - M })).join('');
   }
 
   // ¿El segmento p–q cruza la caja [x0, y0, x1, y1]? Recorte de Liang-Barsky.
@@ -425,20 +452,26 @@
     let dt = t2 - t1; while (dt > Math.PI) dt -= 2 * Math.PI; while (dt < -Math.PI) dt += 2 * Math.PI;
     const c = T.color(an.color || 'h');
     const pt = (t, rr) => [v[0] + rr * Math.cos(t), v[1] + rr * Math.sin(t)];
-    const [ax, ay] = pt(t1, R), [bx, by] = pt(t2, R);
-    let s = `<path d="M${n(ax)} ${n(ay)}A${R} ${R} 0 0 ${dt > 0 ? 1 : 0} ${n(bx)} ${n(by)}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/>`;
+    let s = '', Ra = R;
     if (an.texto) {
-      const w = T.ancho(an.texto, 16, 700), caja = (x, y) => [x - w / 2 - 3, y - 10, x + w / 2 + 3, y + 7];
-      let rr = R + 12, tx, ty;
+      // La caja de la letra: de la línea base − 12,8 a + 4 (con la letra 5,5 bajo el centro) y 2 de aire.
+      const w = T.ancho(an.texto, 16, 700), caja = (x, y) => [x - w / 2 - 3, y - 10, x + w / 2 + 3, y + 11];
+      let rr = 20, tx, ty;
       if (an.lugar) [tx, ty] = [an.lugar.x, an.lugar.y];
-      else for (; rr < 130; rr += 2) {
-        [tx, ty] = pt(t1 + dt / 2, rr);
-        const k = caja(tx, ty);
-        if (![[v, p1], [v, p2], [p1, p2]].concat(segs || []).some(([p, q]) => cruza(p, q, k))) break;
+      else {
+        for (; rr < 130; rr += 2) {
+          [tx, ty] = pt(t1 + dt / 2, rr);
+          const k = caja(tx, ty);
+          if (![[v, p1], [v, p2], [p1, p2]].concat(segs || []).some(([p, q]) => cruza(p, q, k))) break;
+        }
+        // El arco sigue a la letra: queda justo antes de su caja (medio largo de la caja sobre la bisectriz y 4 de aire).
+        const tb = t1 + dt / 2, medio = Math.abs(Math.cos(tb)) * (w / 2 + 3) + Math.abs(Math.sin(tb)) * 10;
+        Ra = Math.max(11, Math.min(rr - medio - 3, 70));
       }
       s += T.rotulo(tx, ty + 5.5, an.texto, { color: an.color || 'h', ancla: 'middle', peso: 700, tam: 16 });
     }
-    return s;
+    const [ax, ay] = pt(t1, Ra), [bx, by] = pt(t2, Ra);
+    return `<path d="M${n(ax)} ${n(ay)}A${n(Ra)} ${n(Ra)} 0 0 ${dt > 0 ? 1 : 0} ${n(bx)} ${n(by)}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/>` + s;
   }
   // Cuadradito de un ángulo recto en v, entre los lados que van a p y q.
   function cuadradito(v, p, q, lado = 11) {
@@ -451,7 +484,7 @@
     const f = OBJETOS[d.objeto];
     if (!f) return null;
     const N = normal(d), m = { ra: +N.med.ra || 1, rb: +N.med.rb || 1 };
-    return f(m, d, k => T.color((N.lados[k] || {}).color));
+    return f(m, d, k => T.color(colorEn((N.lados[k] || {}).color, 0)));
   }
   // Todos los segmentos con nombre de una figura: los tres lados del triángulo principal y los extras.
   const segmentos = g => Object.assign({ ra: [g.r, g.a], rb: [g.r, g.b], h: [g.a, g.b] }, g.extras || {});
@@ -467,10 +500,10 @@
     // tirante) y debajo de lo que el objeto pone «encima» (las estacas de la cuerda).
     let cuerpo = g.fondo + g.frente;
     for (const k of Object.keys(lados)) {
-      const st = N.lados[k];
-      if (!st || !st.color || !ve(st) || (g.propios || []).includes(k)) continue;
+      const st = N.lados[k], c = st && colorEn(st.color, p);
+      if (!c || !ve(st) || (g.propios || []).includes(k)) continue;
       const [a, b] = lados[k];
-      cuerpo += linea(a, b, `stroke="${T.color(st.color)}" stroke-width="3" stroke-linecap="round"${(g.punteado || []).includes(k) ? ' stroke-dasharray="6 5"' : ''}`);
+      cuerpo += linea(a, b, `stroke="${T.color(c)}" stroke-width="3" stroke-linecap="round"${(g.punteado || []).includes(k) ? ' stroke-dasharray="6 5"' : ''}`);
     }
     cuerpo += g.encima || '';
     let marcas = '';
@@ -503,14 +536,18 @@
     for (const k of Object.keys(lados)) {
       const st = N.lados[k];
       if (!st) continue;
-      const lin = [textoEn(st.texto, p), textoEn(st.texto2, p)].filter(x => x !== null);
+      const base = st.colorTexto || colorEn(st.color, p);
+      const lin = [[st.texto, base], [st.texto2, st.color2 === undefined ? base : colorEn(st.color2, p)], [st.texto3, st.color3 === undefined ? base : colorEn(st.color3, p)]]
+        .map(([t, c]) => [textoEn(t, p), c]).filter(x => x[0] !== null);
       if (!lin.length) continue;
       const [a, b] = lados[k], lu = (g.lugar || {})[k];
-      if (lu) textos += lin.map((t, i) => T.rotulo(lu.x, lu.y - (lin.length - 1 - i) * 18, t, { ancla: lu.ancla, peso: 700, tam: i === 0 ? 16 : 14, color: st.colorTexto || st.color, min: M, max: W - M })).join('');
-      else textos += rotulosLado(a, b, ['ra', 'rb', 'h'].includes(k) ? G : g.extraG || G, lin, st.colorTexto || st.color, (g.separa || {})[k]);
+      // partir: un rótulo de una línea con espacio se escribe en dos (la medida arriba, la unidad abajo) donde falta ancho.
+      if (lu && lu.partir && lin.length === 1 && / /.test(lin[0][0])) { const t = lin[0][0], i = t.lastIndexOf(' '); lin.splice(0, 1, [t.slice(0, i), lin[0][1]], [t.slice(i + 1), lin[0][1]]); }
+      if (lu) textos += lin.map(([t, c], i) => T.rotulo(lu.x, lu.y - (lin.length - 1 - i) * 18, t, { ancla: lu.ancla, peso: 700, tam: i === 0 ? 16 : 14, color: c, min: M, max: W - M })).join('');
+      else textos += rotulosLado(a, b, ['ra', 'rb', 'h'].includes(k) ? G : g.extraG || G, lin, (g.separa || {})[k]);
     }
     const nota = textoEn(d.nota, p);
-    if (nota) textos += T.rotulo(W / 2, 19, nota, { ancla: 'middle', peso: 700, tam: 15, min: M, max: W - M });
+    if (nota) textos += T.rotulo(W / 2, g.notaY || 19, nota, { ancla: 'middle', peso: 700, tam: 15, min: M, max: W - M });
     const nombre = d.objeto === 'poste' && d.sombra ? 'poste-sombra' : d.objeto === 'figura' ? `figura-${d.forma}` : d.objeto;
     return T.svg(W, H, obj(nombre, cuerpo) + marcas + halo(textos), { alt: alt(d) });
   }
@@ -534,8 +571,9 @@
     if (!base) return 'Un dibujo.';
     const N = normal(d), nom = d.objeto === 'figura' ? (FORMAS[d.forma] || {}).nombres || {} : NOMBRES[d.objeto === 'poste' && d.sombra ? 'sombra' : d.objeto] || {};
     const plano = t => (Array.isArray(t) ? t.map(x => x && x.t).filter(Boolean).join(', ') : t);
-    const lados = Object.keys(N.lados).filter(k => N.lados[k] && N.lados[k].texto).map(k => `${nom[k] || k}: ${plano(N.lados[k].texto)}`);
-    const angs = Object.keys(N.angulos).filter(k => N.angulos[k] && N.angulos[k].texto).map(k => N.angulos[k].texto);
+    const lados = Object.keys(N.lados).filter(k => N.lados[k] && N.lados[k].texto)
+      .map(k => `${nom[k] || k}: ${[N.lados[k].texto, N.lados[k].texto2, N.lados[k].texto3].filter(Boolean).map(plano).join(', ')}`);
+    const angs = Object.keys(N.angulos).filter(k => N.angulos[k] && N.angulos[k].texto).map(k => plano(N.angulos[k].texto));
     const v = d.vertices ? `; vértices ${['r', 'a', 'b'].map(k => d.vertices[k]).filter(Boolean).join(', ')}, recto en ${d.vertices.r || ''}` : '';
     const nt = d.nota ? `; ${plano(d.nota)}` : '';
     return `${base}${v}${lados.length ? `; ${lados.join('; ')}` : ''}${angs.length ? `; ángulos ${angs.join(' y ')}` : ''}${nt}.`;

@@ -42,6 +42,9 @@ const VARIANTES = [
   { objeto: 'techo', marco: [3, 3], medidas: { viga: 3, poste: 3 * Math.tan(25 * Math.PI / 180) }, lados: { viga: lado('viga'), poste: lado('poste', 'o'), calamina: lado('calamina', 'i') }, angulos: { alero: { texto: 'θ' }, cumbre: { texto: 'α' } } },
   { objeto: 'figura', forma: 'diagonal', medidas: { ra: 8, rb: 6 }, lados: { AB: lado('8 cm', 'o'), BC: lado('6 cm', 'i'), AC: lado('?') }, angulos: { A: { texto: 'θ' } } },
   { objeto: 'figura', forma: 'medio', medidas: { ra: 4, rb: 2 }, lados: { DA: lado('4', 'i'), AB: lado('4') }, angulos: { A: { texto: 'θ' } } },
+  // La escalera que resbala (17 nov): la otra posición, punteada, con su ángulo; y un rótulo de tres líneas.
+  { objeto: 'escalera', medidas: { piso: 1.5, pared: 2 }, otra: { ra: 0.7, rb: 2.4 }, lados: { escalera: lado('2,5 m') }, angulos: { pie: { texto: '53°' }, pie2: { texto: '74°' } } },
+  { objeto: 'escalera', medidas: { piso: 3, pared: 4 }, marco: [4.5, 5], lados: { pared: { color: 'o', texto: '4 m', texto2: 'CO de θ', texto3: 'CA de α', color3: 'i' } }, angulos: { pie: { texto: 'θ' }, arriba: { texto: 'α' } } },
 ];
 const casos = () => Object.entries(MUESTRAS).map(([o, d]) => Object.assign({ objeto: o }, d)).concat(VARIANTES).map(d => [d, {}]);
 
@@ -139,6 +142,17 @@ test('los rótulos con pasos: se ve el último texto cuyo paso ya llegó', () =>
   assert.ok(P.dibujar(d, { paso: 1 }).includes('>3 m<'));
   assert.ok(P.dibujar(d, { paso: 2 }).includes('>CA = 3 m<'));
   assert.ok(P.dibujar(d, { final: true }).includes('>CA = 3 m<'));
+});
+
+test('colores con pasos y por línea: el lado toma su color cuando llega su paso; cada línea del rótulo, el suyo', () => {
+  const d = { objeto: 'escalera', medidas: { piso: 3, pared: 4 }, lados: { pared: { color: [{ c: 'o', paso: 2 }], texto: 'CO de θ', texto2: 'CA de α', color2: 'i' } } };
+  assert.ok(!P.dibujar(d, { paso: 1 }).includes('var(--c-o)'), 'antes del paso 2, en tinta');
+  const s2 = P.dibujar(d, { paso: 2 });
+  assert.ok(/stroke="var\(--c-o\)"/.test(s2), 'la línea en naranja');
+  assert.ok(/fill="var\(--c-i\)"[^>]*>CA de α</.test(s2), 'la segunda línea en turquesa');
+  // La otra posición de la escalera va punteada y dentro del lienzo aunque su pared sea más alta que la principal.
+  const g = P.geometria({ objeto: 'escalera', medidas: { piso: 1.5, pared: 2 }, otra: { ra: 0.7, rb: 2.4 } });
+  assert.ok(g.extras.otra[1][1] >= 4, 'la punta de la otra escalera cabe');
 });
 
 test('muestras: todo cabe con 4 de margen y ningún rótulo pisa a otro, a un lado ni al suelo', () => {
